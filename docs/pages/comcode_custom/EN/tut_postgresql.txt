@@ -3,40 +3,16 @@
 [media float="right" framed="0"]data_custom/images/docs/tut_postgresql/postgresql_logo.png[/media]
 This tutorial provides some advice targeted towards PostgreSQL (also known simply as 'Postgres').
 
-Composr has internal 'support' for many different databases backends and is intentionally written with a combination of simple common-denominator SQL and use of an abstraction API. However officially only MySQL is supported outside of a commercial relationship, due to the significant effort testing across new versions of Composr and the database backends involved. Different database systems vary in all kinds of surprising and subtle ways. Inside a commercial relationship whatever extra testing and bug fixing is required will be done under that relationship, and fixes put back into the mainline version of Composr.
+Composr has internal 'support' for many different databases backends and is intentionally written with a combination of simple common-denominator SQL and use of an abstraction API. However officially only MySQL is supported, due to the significant effort testing across new versions of Composr and the database backends involved. Different database systems vary in all kinds of surprising and subtle ways. Those wanting to do extra testing and bug fixing can put fixes put back into the mainline version of Composr if they choose to.
+Composr functionality that only works on MySQL can be identified by looking on the [url="Composr feature tracker"]https://compo.sr/tracker/view.php?id=4909[/url].
 
-Postgres has been tested for Composr v10.0.x under a commercial relationship (starting with 10.0.5). We tested on Postgres 9.6.3 across our whole test set and all screens and blocks, with both multi-lang-content on and off. We expect in practice Postgres 8.4+ is supported (we use subquery string joining [via arrays] in 8.4 as an alternative to MySQL's [tt]GROUP_CONCAT[/tt] function).
+Postgres has been tested for Composr v10.0.x for a commercial user of Composr CMS (starting with Composr version 10.0.5). Testing was done on Postgres 9.6.3 across our whole test set and all screens and blocks, with both multi-lang-content on and off. We expect in practice Postgres 8.4+ is supported (we use subquery string joining [via arrays] in 8.4 as an alternative to MySQL's [tt]GROUP_CONCAT[/tt] function).
 
 Postgres is a very high quality Open Source database backend developed by developers working for a number of different companies. It is much more sophisticated than MySQL, although it also tends to be stricter in a number of ways, more technical, and not as available on shared hosting. Usage is likely of most interest to technical organisations that are standardising on Postgres.
 
 This tutorial broadly assumes you are responsible for configuring and managing the server that is running Postgres. It is not written for shared hosting customers, who would typically configure a database using a proprietary control panel of some kind.
 
 [contents]decimal,lower-alpha[/contents]
-
-[title="2"]What is and is not supported[/title]
-
-The following parts of our ecosystem are MySQL-specific:
- - Automatic database creation when installing, if installing using a MySQL admin account
- - Some non-bundled addons marked as requiring MySQL (at the time of writing nothing significant)
- - Certain esoteric performance optimisations for certain cases of large amounts of data are only for MySQL (the MySQL support is heavily optimised for a wide range of high load scenarios; similar Postgres optimisations will be made as client requirements come up)
- - Commandr-fs feature for listing when tables were last updated is only for MySQL (other database backends tend to not provide last-updated timestamps for tables)
- - Documentation is written with MySQL in mind, particularly tutorials relating to installation, performance, and maintenance (however experienced system/database administrators will be able to adapt instructions to the systems they use without too much trouble)
- - The database repair cleanup tool is only for MySQL (we use this to help test our upgrade code works perfectly, or to make it easier for 3rd-party developers who don't know how to correctly code to our database meta-system; it is not required and SQL structure dump comparison will work as a substitute in most cases)
- - We only do minimum version check for MySQL (MySQL is the only serious database backend that tends to not support basic stuff until recent versions!)
- - The bundled [tt]rootkit_detector[/tt] addon is hard-coded to MySQL (this is developed for experts and bakes in assumption of [tt]mysqli[/tt] due to running outside of Composr; the code can be customised to other backends as required)
- - The MySQL optimiser cleanup tool is MySQL only (other database backends are better at doing automatic cleanup)
- - Upgrade code is only tested for MySQL (upgrades for professional sites should be done by a developer, who should be able to patch around any issues in the upgrade code and pass fixes back to mainline Composr)
- - Extra development mode security checks designed to help ensure amateur Composr developers write secure code
- - Laxness modes designed to help ensure amateur Composr developers write or port code without knowing too much about database portability (MySQL is the only database backend that has non-strictness, and in other cases we are just doing some niceties to smooth things over when developers assume MySQL)
-Nothing in the above list is likely to be of concern for the vast majority of Composr users who also who would want to use Postgres.
-
-The following parts of our ecosystem are supported by MySQL and Postgres (and possibly some other database drivers, but not all):
- - Showing database server version on the PHP-Info page
- - Commandr [tt]db_table_sizes[/tt] command
- - Full-text search
- - Proper Unicode support (so full-text search will search using knowledge of Unicode characters, so sorting will, and maximum column lengths will be based on character length)
-
-Third-parties may write code that assumes (intentionally or not) MySQL, so don't assume any third party code is going to work without putting it through testing.
 
 [title="2"]Installing Postgres[/title]
 

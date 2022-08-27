@@ -116,6 +116,7 @@ You may want to put them in your Git \'cmd\' directory, as that is in your path.
         return [
             'requires' => [
                 'meta_toolkit',
+                'MySQL',
             ],
             'recommends' => [
                 'composr_homesite',

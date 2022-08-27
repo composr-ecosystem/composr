@@ -30,7 +30,7 @@ function init__database()
     global $HAS_MULTI_LANG_CONTENT;
     $HAS_MULTI_LANG_CONTENT = null;
 
-    global $QUERY_LIST, $QUERY_COUNT, $QUERY_LIMITING, $DB_SCOPE_CHECK, $QUERY_FILE_LOG, $SITE_INFO, $DB_STATIC_OBJECT;
+    global $QUERY_LIST, $QUERY_COUNT, $QUERY_LIMITING, $DB_SCOPE_CHECK, $QUERY_FILE_LOG, $SITE_INFO, $DB_DRIVER;
     $QUERY_LIST = [];
     $QUERY_COUNT = 0;
     $QUERY_LIMITING = [[true, 0]];
@@ -48,9 +48,9 @@ function init__database()
     require_code('database/' . get_db_type());
     /** The connection to the database driver.
      *
-     * @global object $DB_STATIC_OBJECT
+     * @global object $DB_DRIVER
      */
-    $DB_STATIC_OBJECT = object_factory('Database_Static_' . get_db_type(), false, [get_table_prefix()]);
+    $DB_DRIVER = object_factory('Database_Static_' . get_db_type(), false, [get_table_prefix()]);
 
     // Create our main database objects
     global $SITE_DB, $TABLE_LANG_FIELDS_CACHE;
@@ -243,7 +243,7 @@ function reload_lang_fields(bool $full = false, ?string $only_table = null)
  */
 function db_get_first_id() : int
 {
-    return $GLOBALS['DB_STATIC_OBJECT']->get_first_id();
+    return $GLOBALS['DB_DRIVER']->get_first_id();
 }
 
 /**
@@ -255,7 +255,7 @@ function db_get_first_id() : int
  */
 function db_string_equal_to(string $attribute, string $compare) : string
 {
-    return $GLOBALS['DB_STATIC_OBJECT']->string_equal_to($attribute, $compare);
+    return $GLOBALS['DB_DRIVER']->string_equal_to($attribute, $compare);
 }
 
 /**
@@ -267,7 +267,7 @@ function db_string_equal_to(string $attribute, string $compare) : string
  */
 function db_string_not_equal_to(string $attribute, string $compare) : string
 {
-    return $GLOBALS['DB_STATIC_OBJECT']->string_not_equal_to($attribute, $compare);
+    return $GLOBALS['DB_DRIVER']->string_not_equal_to($attribute, $compare);
 }
 
 /**
@@ -279,7 +279,7 @@ function db_string_not_equal_to(string $attribute, string $compare) : string
  */
 function db_encode_like(string $pattern) : string
 {
-    $ret = $GLOBALS['DB_STATIC_OBJECT']->encode_like($pattern);
+    $ret = $GLOBALS['DB_DRIVER']->encode_like($pattern);
 
     if (($GLOBALS['DEV_MODE']) || (!function_exists('has_solemnly_declared')) || (!has_solemnly_declared(I_UNDERSTAND_SQL_INJECTION))) {
         require_code('database_security_filter');
@@ -301,11 +301,11 @@ function db_escape_string(string $string) : string
     if (function_exists('has_solemnly_declared')) {
         if (($GLOBALS['DEV_MODE']) || (!has_solemnly_declared(I_UNDERSTAND_SQL_INJECTION))) {
             require_code('database_security_filter');
-            $GLOBALS['DB_ESCAPE_STRING_LIST'][trim($GLOBALS['DB_STATIC_OBJECT']->escape_string($string), ' %')] = true;
+            $GLOBALS['DB_ESCAPE_STRING_LIST'][trim($GLOBALS['DB_DRIVER']->escape_string($string), ' %')] = true;
         }
     }
 
-    return $GLOBALS['DB_STATIC_OBJECT']->escape_string($string);
+    return $GLOBALS['DB_DRIVER']->escape_string($string);
 }
 
 /**
@@ -320,7 +320,7 @@ function db_escape_string(string $string) : string
  */
 function db_function(string $function, array $args = []) : string
 {
-    return $GLOBALS['DB_STATIC_OBJECT']->db_function($function, $args);
+    return $GLOBALS['DB_DRIVER']->db_function($function, $args);
 }
 
 /**
@@ -357,7 +357,7 @@ function db_map_restrict(array $row, array $fields, array $remap = []) : array
  */
 function db_cast(string $field, string $type) : string
 {
-    return $GLOBALS['DB_STATIC_OBJECT']->cast($field, $type);
+    return $GLOBALS['DB_DRIVER']->cast($field, $type);
 }
 
 /**
@@ -613,20 +613,6 @@ abstract class DatabaseDriver
     abstract public function apply_sql_limit_clause(string &$query, ?int $max = null, int $start = 0);
 
     /**
-     * Start a transaction.
-     */
-    public function start_transaction()
-    {
-    }
-
-    /**
-     * End a transaction.
-     */
-    public function end_transaction()
-    {
-    }
-
-    /**
      * This function is a very basic query executor. It shouldn't usually be used by you, as there are abstracted versions available.
      *
      * @param  string $query The complete SQL query
@@ -663,6 +649,57 @@ abstract class DatabaseDriver
      */
     abstract public function get_type_remap(bool $for_alter = false) : array;
 
+    /**
+     * Get the implicit field default for a Composr field type.
+     *
+     * @param  string $type Field type
+     * @return mixed The default
+     */
+    public function get_implicit_field_default(string $type)
+    {
+        $default = mixed();
+
+        // We need to create a sensible default when none was provided, if the field cannot be null
+        switch ($type) {
+            case 'AUTO':
+                $default = null;
+                break;
+
+            case 'AUTO_LINK':
+            case 'INTEGER':
+            case 'UINTEGER':
+            case 'SHORT_INTEGER':
+            case 'BINARY':
+            case 'MEMBER':
+            case 'GROUP':
+                $default = 0;
+                break;
+
+            case 'REAL':
+                $default = 0.0;
+                break;
+
+            case 'TIME':
+                $default = time();
+                break;
+
+            case 'LONG_TRANS':
+            case 'SHORT_TRANS':
+            case 'LONG_TRANS__COMCODE':
+            case 'SHORT_TRANS__COMCODE':
+            case 'SHORT_TEXT':
+            case 'LONG_TEXT':
+            case 'ID_TEXT':
+            case 'MINIID_TEXT':
+            case 'IP':
+            case 'LANGUAGE_NAME':
+            case 'URLPATH':
+                $default = '';
+                break;
+        }
+
+        return $default;
+    }
 
     /**
      * Get SQL for creating a new table.
@@ -674,8 +711,97 @@ abstract class DatabaseDriver
      * @param  boolean $save_bytes Whether to use lower-byte table storage, with trade-offs of not being able to support all unicode characters; use this if key length is an issue
      * @return array List of SQL queries to run
      */
-    abstract public function create_table(string $table_name, array $fields, $connection, string $raw_table_name, bool $save_bytes = false) : array;
+    abstract public function create_table__sql(string $table_name, array $fields, $connection, string $raw_table_name, bool $save_bytes = false) : array;
 
+    /**
+     * Get SQL for renaming a table.
+     *
+     * @param  ID_TEXT $old Old name
+     * @param  ID_TEXT $new New name
+     * @return string SQL query to run
+     */
+    abstract public function rename_table__sql(string $old, string $new) : string;
+
+    /**
+     * Get SQL for adding a field to an existing table.
+     *
+     * @param  ID_TEXT $table_name The table name
+     * @param  ID_TEXT $name The field name
+     * @param  ID_TEXT $type The field type
+     * @param  ?mixed $default The default value; for a translatable field should still be a string value (null: null default)
+     * @return string SQL query to run
+     */
+    public function add_table_field__sql(string $table_name, string $name, string $type, $default) : string
+    {
+        // This is standardised by ANSI-SQL.
+        //  However, there is a quirk with MySQL to consider (has_default_for_text_fields),
+        //  and forum driver install code needs the functionality to easily generate this raw SQL without touching the meta DB,
+        //  so it's easier just to define a somewhat-heavyweight function here in driver.
+        // Plus we need a function to generate the raw SQL in other places too.
+
+        $type_remap = $this->get_type_remap(true);
+
+        $_type = $type;
+        if (strpos($type, '_TRANS') !== false) {
+            // Some remapping is needed based on multi-lang-content setting
+            if (multi_lang_content()) {
+                if (is_string($default)) {
+                    $default = 0; // The caller function is responsible for updating this by creating translate references for each field value
+                }
+            } else {
+                $_type = 'LONG_TEXT'; // In the DB layer, it must now save as such
+            }
+        }
+
+        if ($_type[0] == '?') {
+            $perhaps_null = 'NULL';
+        } else {
+            $perhaps_null = 'NOT NULL';
+        }
+        $__type = str_replace(['*', '?'], ['', ''], $_type);
+        $sql_type = $type_remap[$__type] . ' ' . $perhaps_null;
+
+        if (($__type != 'LONG_TEXT') || ($this->driver->has_default_for_text_fields())) {
+            // We have to provide a default value for any non-NULL field so the database knows what to put in here
+            if ($default === null) {
+                $extra = ' DEFAULT NULL';
+            } else {
+                $extra = ' DEFAULT ' . (is_string($default) ? ('\'' . db_escape_string($default) . '\'') : strval($default));
+            }
+        } else {
+            //  The exception is where !has_default_for_text_fields (MySQL), where this is not allowed for TEXT fields and MySQL instead has some weird internal equivalent to an empty string that isn't actually saved onto disk
+            $extra = '';
+        }
+
+        $query = 'ALTER TABLE ' . $table_name . ' ADD ' . $name . ' ' . $sql_type . $extra;
+
+        return $query;
+    }
+
+    /**
+     * Get SQL for changing the type of a DB field in a table. Note: this function does not support ascension/descension of translatability.
+     *
+     * @param  ID_TEXT $table_name The table name
+     * @param  ID_TEXT $name The field name
+     * @param  ID_TEXT $db_type The new field type
+     * @param  boolean $may_be_null If the field may be null
+     * @param  ID_TEXT $new_name The new field name
+     * @return array List of SQL queries to run
+     */
+    abstract public function alter_table_field__sql(string $table_name, string $name, string $db_type, bool $may_be_null, string $new_name) : array;
+
+    /**
+     * Get SQL for deleting the specified field from the specified table.
+     *
+     * @param  ID_TEXT $table_name The table name
+     * @param  ID_TEXT $name The field name
+     * @return string SQL query to run
+     */
+    public function alter_delete_table_field__sql(string $table_name, string $name) : string
+    {
+        // While this is not in the ANSI SQL standard, all databases support it
+        return 'ALTER TABLE ' . $table_name . ' DROP COLUMN ' . $name;
+    }
 
     /**
      * Get SQL for creating a table index.
@@ -683,23 +809,31 @@ abstract class DatabaseDriver
      * @param  ID_TEXT $table_name The name of the table to create the index on
      * @param  ID_TEXT $index_name The index name (not really important at all)
      * @param  string $_fields Part of the SQL query: a comma-separated list of fields to use on the index
-     * @param  mixed $connection The DB connection to make on
+     * @param  mixed $connection_read The DB connection, may be used for running checks
      * @param  ID_TEXT $raw_table_name The table name with no table prefix
      * @param  string $unique_key_fields The name of the unique key field for the table
      * @param  string $table_prefix The table prefix
      * @return array List of SQL queries to run
      */
-    abstract public function create_index(string $table_name, string $index_name, string $_fields, $connection, string $raw_table_name, string $unique_key_fields, string $table_prefix) : array;
-
+    abstract public function create_index__sql(string $table_name, string $index_name, string $_fields, $connection_read, string $raw_table_name, string $unique_key_fields, string $table_prefix) : array;
 
     /**
-     * Change the primary key of a table.
+     * Get SQL for deleting a table index.
+     *
+     * @param  ID_TEXT $table_name The name of the table the index is on
+     * @param  ID_TEXT $index_name The index name
+     * @return ?string SQL query to run (null: not supported)
+     */
+    abstract public function drop_index__sql(string $table_name, string $index_name) : ?string;
+
+    /**
+     * Get SQL for changing the primary key of a table.
      *
      * @param  ID_TEXT $table_name The name of the table to create the index on
      * @param  array $new_key A list of fields to put in the new key
-     * @param  mixed $connection The DB connection to make on
+     * @return array List of SQL queries to run
      */
-    abstract public function change_primary_key(string $table_name, array $new_key, $connection);
+    abstract public function change_primary_key__sql(string $table_name, array $new_key) : array;
 
     /**
      * Get the number of rows in a table, with approximation support for performance (if necessary on the particular database backend).
@@ -728,14 +862,13 @@ abstract class DatabaseDriver
     abstract public function close_connections();
 
     /**
-     * Get SQL to delete a table.
+     * Get SQL for deleting a table.
      * When running this SQL you must suppress errors.
      *
      * @param  ID_TEXT $table The table name
-     * @param  mixed $connection The DB connection
      * @return array List of SQL queries to run
      */
-    public function drop_table_if_exists(string $table, $connection) : array
+    public function drop_table_if_exists__sql(string $table) : array
     {
         if ($this->has_drop_table_if_exists()) {
             return ['DROP TABLE IF EXISTS ' . $table];
@@ -781,6 +914,16 @@ abstract class DatabaseDriver
      * @return boolean Whether it is
      */
     public function has_full_text_boolean() : bool
+    {
+        return false;
+    }
+
+    /**
+     * Find whether full-text-search only works on tables with a single key.
+     *
+     * @return boolean Whether it does
+     */
+    public function full_text_needs_single_key() : bool
     {
         return false;
     }
@@ -850,7 +993,17 @@ abstract class DatabaseDriver
     }
 
     /**
-     * Find whether text fields can/should have default values.
+     * Find whether auto-increment IDs may be used alongside other IDs.
+     *
+     * @return boolean Whether it does
+     */
+    public function has_compound_auto_increment_support() : bool
+    {
+        return true;
+    }
+
+    /**
+     * Find whether text fields can/should be given default values when added as a new column to an existing table.
      *
      * @return boolean Whether they do
      */
@@ -891,12 +1044,14 @@ abstract class DatabaseDriver
 
     /**
      * Get the character used to surround fields to protect from keyword status.
+     * We generally only use it when renaming fields (renaming them on upgrade so that we don't get a conflict with a keyword).
      *
+     * @param  boolean $end Whether to get end character
      * @return string Character (blank: has none defined)
      */
-    public function get_field_encapsulator() : string
+    public function get_delimited_identifier(bool $end = false) : string
     {
-        return '';
+        return '"';
     }
 
     /**
@@ -1075,8 +1230,10 @@ abstract class DatabaseDriver
      *
      * Note that AVG may return an integer or float, depending on whether the DB engine auto-converts round numbers to integers. MySQL seems to.
      *
+     * Note that we are hard-coding for different database drivers in here, as it is easier to maintain the code in one place. Database drivers can still override this whole method if they need to.
+     *
      * @param  string $function Function name
-     * @set IFF CONCAT REPLACE SUBSTR LENGTH RAND COALESCE LEAST GREATEST MOD ABS MD5 GROUP_CONCAT X_ORDER_BY_BOOLEAN
+     * @set REVERSE IFF CONCAT REPLACE SUBSTR LENGTH RAND COALESCE LEAST GREATEST MOD ABS MD5 GROUP_CONCAT X_ORDER_BY_BOOLEAN
      * @param  array $args List of string arguments, assumed already quoted/escaped correctly for the particular database
      * @return ?string SQL fragment (null: not supported)
      */
@@ -1085,6 +1242,16 @@ abstract class DatabaseDriver
         $args = @array_map('strval', $args);
 
         switch ($function) {
+            case 'REVERSE':
+                if (count($args) != 1) {
+                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                }
+                switch (get_db_type()) {
+                    case 'db2':
+                        return null;
+                }
+                break;
+
             case 'IFF':
                 /*
                              CASE construct   IF func   IIF func   IF construct
@@ -1228,7 +1395,7 @@ abstract class DatabaseDriver
                 break;
 
             case 'ABS':
-                return 'ABS(' . $args[0] . ')';
+                break;
 
             case 'MD5':
                 if (count($args) != 1) {
@@ -1312,7 +1479,7 @@ class DatabaseConnector
     public $table_exists_cache;
     public $table_exists_real_cache;
 
-    public $static_ob;
+    public $driver;
 
     public $dedupe_mode = false;
 
@@ -1347,9 +1514,9 @@ class DatabaseConnector
         $this->connection_unique_identifier = serialize([$db_name, $db_host, $db_user, $db_password, $table_prefix]);
 
         if ($static !== null) {
-            $this->static_ob = $static;
+            $this->driver = $static;
         } else {
-            $this->static_ob = $GLOBALS['DB_STATIC_OBJECT'];
+            $this->driver = $GLOBALS['DB_DRIVER'];
         }
     }
 
@@ -1359,9 +1526,9 @@ class DatabaseConnector
     public function ensure_connected()
     {
         if ((is_array($this->connection_read)) && (isset($this->connection_read[4]))) { // Okay, we can't be lazy anymore
-            $this->connection_read = call_user_func_array([$this->static_ob, 'get_connection'], $this->connection_read);
+            $this->connection_read = call_user_func_array([$this->driver, 'get_connection'], $this->connection_read);
             if ((is_array($this->connection_write)) && (isset($this->connection_write[4]))) { // Okay, we can't be lazy anymore
-                $this->connection_write = call_user_func_array([$this->static_ob, 'get_connection'], $this->connection_write);
+                $this->connection_write = call_user_func_array([$this->driver, 'get_connection'], $this->connection_write);
             }
             if (isset($GLOBALS['SITE_DB']) && $this === $GLOBALS['SITE_DB']) {
                 _general_db_init();
@@ -1430,7 +1597,7 @@ class DatabaseConnector
                     if ($value === null) {
                         $where .= $key . ' IS NULL';
                     } else {
-                        if (($value === '') && ($this->static_ob->empty_is_null())) {
+                        if (($value === '') && ($this->driver->empty_is_null())) {
                             $value = ' ';
                         }
 
@@ -1465,7 +1632,7 @@ class DatabaseConnector
             return null; // error
         }
         if (!array_key_exists(0, $values)) {
-            $this->static_ob->failed_query_exit(do_lang_tempcode('QUERY_NULL', escape_html($this->_get_where_expand($this->table_prefix . $table, [$selected_value], $where_map, $end)))); // No result found
+            $this->driver->failed_query_exit(do_lang_tempcode('QUERY_NULL', escape_html($this->_get_where_expand($this->table_prefix . $table, [$selected_value], $where_map, $end)))); // No result found
         }
         return $this->_query_select_value($values);
     }
@@ -1701,7 +1868,7 @@ class DatabaseConnector
             } else {
                 if ($c == '}') {
                     if ($current_parameter == 'prefix') {
-                        $query_new .= $this->get_table_prefix();
+                        $query_new .= $this->table_prefix;
                     } elseif (array_key_exists($current_parameter, $parameters)) {
                         $in_quotes_end = (($i < $len - 1) && ($query[$i + 1] == "'"));
 
@@ -1831,18 +1998,18 @@ class DatabaseConnector
             $lang = user_lang();
         }
 
-        $join = ' ' . $join_type . ' ' . $this->get_table_prefix() . 'translate ' . $join_alias . ' ON ' . $join_alias . '.id=' . $field;
+        $join = ' ' . $join_type . ' ' . $this->table_prefix . 'translate ' . $join_alias . ' ON ' . $join_alias . '.id=' . $field;
         $translate_order_by = db_function('X_ORDER_BY_BOOLEAN', [db_string_equal_to('language', $lang)]);
         if ($translate_order_by !== null) {
             if ($lang != get_site_default_lang()) {
                 $translate_order_by = ',' . db_function('X_ORDER_BY_BOOLEAN', [db_string_equal_to('language', get_site_default_lang())]);
             }
         }
-        $subquery = 'SELECT language FROM ' . $this->get_table_prefix() . 'translate WHERE id=' . $field;
+        $subquery = 'SELECT language FROM ' . $this->table_prefix . 'translate WHERE id=' . $field;
         if ($translate_order_by !== null) {
             $subquery .= ' ORDER BY ' . $translate_order_by;
         }
-        $this->static_ob->apply_sql_limit_clause($subquery, 1);
+        $this->driver->apply_sql_limit_clause($subquery, 1);
         $join .= ' AND ' . $join_alias . '.language=(' . $subquery . ')';
         return $join;
     }
@@ -1873,7 +2040,7 @@ class DatabaseConnector
 
         if ($DEV_MODE) {
             if (peek_db_scope_check()) {
-                if ((!multi_lang_content()) && (strpos($query, $this->get_table_prefix() . 'translate') !== false) && (strpos($query, 'CHECK TABLE') === false) && (strpos($query, 'DROP TABLE') === false) && (strpos($query, 'DROP INDEX') === false) && (strpos($query, 'ALTER TABLE') === false) && (strpos($query, 'CREATE TABLE') === false) && (trim($query) != 'SELECT * FROM cms_translate WHERE 1=1')) {
+                if ((!multi_lang_content()) && (strpos($query, $this->table_prefix . 'translate') !== false) && (strpos($query, 'CHECK TABLE') === false) && (strpos($query, 'DROP TABLE') === false) && (strpos($query, 'DROP INDEX') === false) && (strpos($query, 'ALTER TABLE') === false) && (strpos($query, 'CREATE TABLE') === false) && (trim($query) != 'SELECT * FROM cms_translate WHERE 1=1')) {
                     fatal_exit('Assumption of multi-lang-content being on, and it\'s not');
                 }
 
@@ -1999,11 +2166,11 @@ class DatabaseConnector
                 $real_query .= ' LIMIT ' . strval($start) . ',30000000';
             }
 
-            $ret = $this->static_ob->query('SHOW FULL PROCESSLIST', $connection, null, 0, true); // Suppress errors in case access denied
+            $ret = $this->driver->query('SHOW FULL PROCESSLIST', $connection, null, 0, true); // Suppress errors in case access denied
             if (is_array($ret)) {
                 foreach ($ret as $process) {
                     if ($process['Info'] === $real_query) {
-                        $this->static_ob->query('KILL ' . strval($process['Id']), $connection, null, 0, true); // Suppress errors in case access denied
+                        $this->driver->query('KILL ' . strval($process['Id']), $connection, null, 0, true); // Suppress errors in case access denied
                     }
                 }
             }
@@ -2024,7 +2191,7 @@ class DatabaseConnector
         }
 
         // Run/log query
-        $ret = $this->static_ob->query($query, $connection, $max, $start, $fail_ok, $get_insert_id, false, $save_as_volatile);
+        $ret = $this->driver->query($query, $connection, $max, $start, $fail_ok, $get_insert_id, false, $save_as_volatile);
         if ($QUERY_LOG) {
             $after = microtime(true);
             $text = ($max !== null) ? ($query . ' (' . strval($start) . '-' . strval($start + $max) . ')') : $query;
@@ -2169,17 +2336,7 @@ class DatabaseConnector
             }
         }
 
-        return $this->static_ob->has_full_text($this->connection_read);
-    }
-
-    /**
-     * Find whether full-text-boolean-search is present.
-     *
-     * @return boolean Whether it is
-     */
-    public function has_full_text_boolean() : bool
-    {
-        return $this->static_ob->has_full_text_boolean($this->connection_read);
+        return $this->driver->has_full_text($this->connection_read);
     }
 
     /**
@@ -2190,26 +2347,14 @@ class DatabaseConnector
      */
     public function full_text_assemble(string $content) : string
     {
-        $ret = $this->static_ob->full_text_assemble($content);
+        $ret = $this->driver->full_text_assemble($content);
 
         if (($GLOBALS['DEV_MODE']) || (!has_solemnly_declared(I_UNDERSTAND_SQL_INJECTION))) {
             require_code('database_security_filter');
-            $GLOBALS['DB_ESCAPE_STRING_LIST'][$this->static_ob->escape_string($content)] = true;
+            $GLOBALS['DB_ESCAPE_STRING_LIST'][$this->driver->escape_string($content)] = true;
         }
 
         return $ret;
-    }
-
-    /**
-     * Find if a database query may run, showing errors if it cannot.
-     *
-     * @param  string $query The complete SQL query
-     * @param  boolean $get_insert_id Whether to get the autoincrement ID created for an insert query
-     * @return boolean Whether it can
-     */
-    public function query_may_run(string $query, bool $get_insert_id) : bool
-    {
-        return $this->static_ob->query_may_run($query, $this->connection, $get_insert_id);
     }
 
     /**
@@ -2244,7 +2389,7 @@ class DatabaseConnector
      */
     public function query_insert_or_replace(string $table, array $map, array $key_map, bool $fail_ok = false, bool $save_as_volatile = false) : bool
     {
-        $query = $this->static_ob->query_insert_or_replace($this->get_table_prefix() . $table, $map, $key_map, $fail_ok, $save_as_volatile);
+        $query = $this->driver->query_insert_or_replace($this->table_prefix . $table, $map, $key_map, $fail_ok, $save_as_volatile);
         if ($query !== null) {
             $this->_query($query, null, 0, $fail_ok, false, null, '', $save_as_volatile);
             return true;
@@ -2271,7 +2416,7 @@ class DatabaseConnector
         $keys = '';
         $all_values = []; // will usually only have a single entry; for bulk-inserts it will have as many as there are inserts
 
-        $eis = $this->static_ob->empty_is_null();
+        $eis = $this->driver->empty_is_null();
 
         foreach ($map as $key => $value) {
             if ($keys !== '') {
@@ -2309,7 +2454,7 @@ class DatabaseConnector
                     } elseif (($key === 'begin_num') || ($key === 'end_num')) {
                         $values .= $v; // FUDGE: for all our known large unsigned integers #3046
                     } else {
-                        $values .= '\'' . $this->static_ob->escape_string($v) . '\'';
+                        $values .= '\'' . $this->driver->escape_string($v) . '\'';
                     }
                 }
 
@@ -2326,7 +2471,7 @@ class DatabaseConnector
         } elseif (empty($all_values)) {
             return null;
         } else {
-            if (!$this->static_ob->has_batch_inserts()) {
+            if (!$this->driver->has_batch_inserts()) {
                 foreach ($all_values as $v) {
                     $query = 'INSERT INTO ' . $this->table_prefix . $table . ' (' . $keys . ') VALUES (' . $v . ')';
                     $this->_query($query, null, 0, $fail_ok, $ret, null, '', $save_as_volatile);
@@ -2385,7 +2530,7 @@ class DatabaseConnector
                 if ($value === null) {
                     $where .= $key . ' IS NULL';
                 } else {
-                    if (($value === '') && ($this->static_ob->empty_is_null())) {
+                    if (($value === '') && ($this->driver->empty_is_null())) {
                         $value = ' ';
                     }
                     $where .= db_string_equal_to($key, $value);
@@ -2411,7 +2556,7 @@ class DatabaseConnector
                 } elseif (($key === 'begin_num') || ($key === 'end_num')) {
                     $where .= $key . '=' . $value; // FUDGE: for all our known large unsigned integers #3046
                 } else {
-                    $update .= $key . '=\'' . $this->static_ob->escape_string($value) . '\'';
+                    $update .= $key . '=\'' . $this->driver->escape_string($value) . '\'';
                 }
             }
         }
@@ -2439,8 +2584,8 @@ class DatabaseConnector
     public function query_delete(string $table, array $where_map = [], string $end = '', ?int $max = null, int $start = 0, bool $fail_ok = false)
     {
         if (empty($where_map)) {
-            if (($end === '') && ($max === null) && ($start == 0) && ($this->static_ob->has_truncate_table($GLOBALS['SITE_DB']->connection_read))) {
-                $this->_query('TRUNCATE ' . $this->table_prefix . $table, null, 0, $fail_ok);
+            if (($end === '') && ($max === null) && ($start == 0) && ($this->driver->has_truncate_table($GLOBALS['SITE_DB']->connection_read))) {
+                $this->_query('TRUNCATE TABLE ' . $this->table_prefix . $table, null, 0, $fail_ok);
             } else {
                 $this->_query('DELETE FROM ' . $this->table_prefix . $table . ' ' . $end, $max, $start, $fail_ok);
             }
@@ -2464,7 +2609,7 @@ class DatabaseConnector
                 if ($value === null) {
                     $where .= $key . ' IS NULL';
                 } else {
-                    if (($value === '') && ($this->static_ob->empty_is_null())) {
+                    if (($value === '') && ($this->driver->empty_is_null())) {
                         $where .= $key . ' IS NULL'; // $value = ' ';
                     } else {
                         $where .= db_string_equal_to($key, $value);
@@ -2495,10 +2640,10 @@ class DatabaseConnector
 
         if (strpos(get_db_type(), 'mysql') !== false) {
             // Just works with MySQL (too complex to do for all SQL's http://forums.whirlpool.net.au/forum-replies-archive.cfm/523219.html)...
-            $prefix = $this->get_table_prefix();
+            $prefix = $this->table_prefix;
             static $cached_show_tables = [];
             if (!array_key_exists($this->connection_unique_identifier, $cached_show_tables)) {
-                $cached_show_tables[$this->connection_unique_identifier] = $this->query('SHOW TABLES LIKE \'' . db_encode_like($this->get_table_prefix() . '%') . '\'');
+                $cached_show_tables[$this->connection_unique_identifier] = $this->query('SHOW TABLES LIKE \'' . db_encode_like($this->table_prefix . '%') . '\'');
             }
             foreach ($cached_show_tables[$this->connection_unique_identifier] as $row) {
                 foreach ($row as $field) {
@@ -2540,7 +2685,7 @@ class DatabaseConnector
      */
     public function singular_join(string $table, string $alias, string $join_clause, string $threshold_field = 'id', string $threshold_func = 'MIN', string $join_type = 'LEFT JOIN', ?string $prefer_index = null) : string
     {
-        $_table = $this->get_table_prefix() . $table;
+        $_table = $this->table_prefix . $table;
         $on_clause = $alias . '.' . $threshold_field . '=(SELECT ' . $threshold_func . '(dedupe.' . $threshold_field . ') FROM ' . $_table . ' dedupe WHERE ' . $join_clause . ')';
         $ret = ' ' . $join_type . ' ' . $_table . ' ' . $alias;
         if ($prefer_index !== null) {
@@ -2594,13 +2739,13 @@ class DatabaseConnector
      *
      * @param  ID_TEXT $table_name The table name
      * @param  ID_TEXT $name The field name
-     * @param  ID_TEXT $_type The field type
+     * @param  ID_TEXT $type The field type
      * @param  ?mixed $default The default value; for a translatable field should still be a string value (null: null default / default default)
      */
-    public function add_table_field(string $table_name, string $name, string $_type, $default = null)
+    public function add_table_field(string $table_name, string $name, string $type, $default = null)
     {
         require_code('database_helper');
-        _helper_add_table_field($this, $table_name, $name, $_type, $default);
+        _helper_add_table_field($this, $table_name, $name, $type, $default);
     }
 
     /**
@@ -2608,13 +2753,13 @@ class DatabaseConnector
      *
      * @param  ID_TEXT $table_name The table name
      * @param  ID_TEXT $name The field name
-     * @param  ID_TEXT $_type The new field type
+     * @param  ID_TEXT $type The new field type
      * @param  ?ID_TEXT $new_name The new field name (null: leave name)
      */
-    public function alter_table_field(string $table_name, string $name, string $_type, ?string $new_name = null)
+    public function alter_table_field(string $table_name, string $name, string $type, ?string $new_name = null)
     {
         require_code('database_helper');
-        _helper_alter_table_field($this, $table_name, $name, $_type, $new_name);
+        _helper_alter_table_field($this, $table_name, $name, $type, $new_name);
     }
 
     /**
@@ -2734,33 +2879,6 @@ class DatabaseConnector
     }
 
     /**
-     * Start a transaction.
-     */
-    public function start_transaction()
-    {
-        $this->static_ob->start_transaction($this->connection_write);
-    }
-
-    /**
-     * End a transaction.
-     */
-    public function end_transaction()
-    {
-        $this->static_ob->end_transaction($this->connection_write);
-    }
-
-    /**
-     * Get minimum search length.
-     * This is broadly MySQL-specific. For other databases we will usually return 4, although there may truly not be a limit on it.
-     *
-     * @return integer Search length
-     */
-    public function get_minimum_search_length() : int
-    {
-        return $this->static_ob->get_minimum_search_length($this->connection_read);
-    }
-
-    /**
      * Get the number of rows in a table, with approximation support for performance (if necessary on the particular database backend).
      *
      * @param  string $table The table name
@@ -2770,7 +2888,7 @@ class DatabaseConnector
      */
     public function get_table_count_approx(string $table, array $where = [], ?string $where_clause = null) : ?int
     {
-        $ret = $this->static_ob->get_table_count_approx($this->get_table_prefix() . $table, $this->connection_read);
+        $ret = $this->driver->get_table_count_approx($this->table_prefix . $table, $this->connection_read);
         if ($ret !== null) {
             return $ret;
         }
@@ -2806,7 +2924,7 @@ class DatabaseConnector
             } else {
                 $db_name = get_db_site();
             }
-            $locks = $this->query('SHOW OPEN TABLES FROM ' . $db_name . ' WHERE `Table`=\'' . db_escape_string($this->get_table_prefix() . $table) . '\' AND In_use>=1', null, 0, true); // Suppress errors in case access denied
+            $locks = $this->query('SHOW OPEN TABLES FROM ' . $db_name . ' WHERE `Table`=\'' . db_escape_string($this->table_prefix . $table) . '\' AND In_use>=1', null, 0, true); // Suppress errors in case access denied
             if ($locks === null) {
                 return false; // MySQL version older than 5.0 (e.g. 4.1.x)
             }
@@ -2831,7 +2949,7 @@ class DatabaseConnector
      */
     public function set_query_time_limit(int $seconds)
     {
-        $this->static_ob->set_query_time_limit($seconds, $this->connection_read);
+        $this->driver->set_query_time_limit($seconds, $this->connection_read);
     }
 
     /**
@@ -2842,6 +2960,6 @@ class DatabaseConnector
      */
     public function strict_mode_query(bool $setting) : ?string
     {
-        return $this->static_ob->strict_mode_query($setting);
+        return $this->driver->strict_mode_query($setting);
     }
 }

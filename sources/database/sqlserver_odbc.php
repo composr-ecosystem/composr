@@ -217,25 +217,4 @@ class Database_Static_sqlserver_odbc extends Database_super_sqlserver
     {
         $this->cache_db = [];
     }
-
-    /**
-     * Start a transaction.
-     *
-     * @param  array $connection A DB connection
-     */
-    public function start_transaction(array $connection)
-    {
-        odbc_autocommit($connection, false);
-    }
-
-    /**
-     * End a transaction.
-     *
-     * @param  array $connection A DB connection
-     */
-    public function end_transaction(array $connection)
-    {
-        odbc_commit($connection);
-        odbc_autocommit($connection, true);
-    }
 }

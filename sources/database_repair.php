@@ -42,8 +42,7 @@ function database_repair_inbuilt() : object
     $tables = $GLOBALS['SITE_DB']->query_select('db_meta', ['DISTINCT m_table']);
 
     $GLOBALS['SITE_DB']->ensure_connected();
-    $connection = $GLOBALS['SITE_DB']->connection_write;
-    $static_ob = $GLOBALS['DB_STATIC_OBJECT'];
+    $driver = $GLOBALS['DB_DRIVER'];
 
     foreach ($tables as $table) {
         if ($table['m_table'] == 'sessions') {
@@ -53,11 +52,11 @@ function database_repair_inbuilt() : object
         $table = get_table_prefix() . $table['m_table'];
 
         // Check/Repair
-        $result = $static_ob->query('CHECK TABLE ' . $table . ' FAST', $connection);
+        $result = $driver->query('CHECK TABLE ' . $table . ' FAST');
         $status_row = end($result);
         if ($status_row['Msg_type'] != 'status') {
             $out->attach(paragraph(do_lang_tempcode('TABLE_ERROR', escape_html($table), escape_html($status_row['Msg_type']), [escape_html($status_row['Msg_text'])]), 'dfsdgdsgfgd'));
-            $result2 = $static_ob->query('REPAIR TABLE ' . $table, $connection);
+            $result2 = $driver->query('REPAIR TABLE ' . $table);
             $status_row_2 = end($result2);
             $out->attach(paragraph(do_lang_tempcode('TABLE_FIXED', escape_html($table), escape_html($status_row_2['Msg_type']), [escape_html($status_row_2['Msg_text'])]), 'dfsdfgdst4'));
         }
@@ -268,7 +267,7 @@ class DatabaseRepair
     {
         $needs_changes = false;
 
-        $type_map = $GLOBALS['DB_STATIC_OBJECT']->get_type_remap();
+        $type_map = $GLOBALS['DB_DRIVER']->get_type_remap();
 
         // Tables missing from DB -or- inconsistent in DB
         foreach ($meta_tables as $table_name => $table) {
@@ -463,7 +462,7 @@ class DatabaseRepair
     {
         $needs_changes = false;
 
-        $type_map = $GLOBALS['DB_STATIC_OBJECT']->get_type_remap();
+        $type_map = $GLOBALS['DB_DRIVER']->get_type_remap();
 
         // Tables missing from DB -or- inconsistent in DB
         foreach ($expected_tables as $table_name => $table) {
@@ -764,7 +763,7 @@ class DatabaseRepair
             }
         }
 
-        $queries = $GLOBALS['DB_STATIC_OBJECT']->create_table(get_table_prefix() . $table_name, $table, $table_name, null);
+        $queries = $GLOBALS['DB_DRIVER']->create_table(get_table_prefix() . $table_name, $table, $table_name, null);
         foreach ($queries as $sql) {
             $this->add_fixup_query($sql);
         }
@@ -784,21 +783,25 @@ class DatabaseRepair
             $this->fix_table_missing_in_meta__create_field($table_name, $field_name, $field_type);
         }
 
-        list($query, $default_st) = _helper_add_table_field_sql($GLOBALS['SITE_DB'], $table_name, $field_name, $field_type);
+        $default = $GLOBALS['SITE_DB']->driver->get_implicit_field_default($field_type);
+
+        $query = $GLOBALS['SITE_DB']->driver->add_table_field__sql(get_table_prefix() . $table_name, $field_name, $field_type, $default);
         $this->add_fixup_query($query);
 
         if ((!multi_lang_content()) && (strpos($field_type, '__COMCODE') !== false)) {
-            $type_remap = $GLOBALS['DB_STATIC_OBJECT']->get_type_remap();
+            $type_remap = $GLOBALS['DB_DRIVER']->get_type_remap();
 
             foreach (['text_parsed' => 'LONG_TEXT', 'source_user' => 'MEMBER'] as $sub_name => $sub_type) {
                 $sub_name = $field_name . '__' . $sub_name;
-                $query = 'ALTER TABLE ' . get_table_prefix() . $table_name . ' ADD ' . $sub_name . ' ' . $type_remap[$sub_type];
-                if ($sub_name == 'text_parsed') {
-                    $query .= ' DEFAULT \'\'';
-                } elseif ($sub_name == 'source_user') {
-                    $query .= ' DEFAULT ' . strval(db_get_first_id());
+
+                $sub_default = mixed();
+                if ($sub_type == 'LONG_TEXT') {
+                    $sub_default = '';
+                } else {
+                    $sub_default = db_get_first_id();
                 }
-                $query .= ' NOT NULL';
+
+                $query = $GLOBALS['SITE_DB']->driver->add_table_field__sql(get_table_prefix() . $table_name, $sub_name, $sub_type, $sub_default);
                 $this->add_fixup_query($query);
             }
         }
@@ -819,21 +822,20 @@ class DatabaseRepair
             $this->add_fixup_query($query);
         }
 
-        $cols_to_delete = [$field_name];
+        $fields_to_delete = [$field_name];
 
         if (strpos($field_type, '_TRANS__COMCODE') !== false) {
             if (!multi_lang_content()) {
-                $cols_to_delete[] = $field_name . '__text_parsed';
-                $cols_to_delete[] = $field_name . '__source_user';
+                $fields_to_delete[] = $field_name . '__text_parsed';
+                $fields_to_delete[] = $field_name . '__source_user';
             }
         }
 
-        foreach ($cols_to_delete as $_field_name) {
-            $query = 'ALTER TABLE ' . get_table_prefix() . $table_name . ' DROP COLUMN ' . $_field_name;
+        foreach ($fields_to_delete as $_field_name) {
+            $query = $GLOBALS['SITE_DB']->driver->alter_delete_table_field__sql(get_table_prefix() . $table_name, $_field_name);
             $this->add_fixup_query($query);
 
             $query = 'DELETE FROM ' . get_table_prefix() . 'db_meta WHERE ' . db_string_equal_to('m_table', $table_name) . ' AND ' . db_string_equal_to('m_name', $field_name);
-            $this->add_fixup_query($query);
         }
     }
 
@@ -852,7 +854,7 @@ class DatabaseRepair
             $this->add_fixup_query($query);
         }
 
-        $query = _helper_alter_table_field_sql($GLOBALS['SITE_DB'], $table_name, $field_name, $field_type);
+        $query = $GLOBALS['SITE_DB']->driver->alter_table_field__sql(get_table_prefix() . $table_name, $field_name, $field_type);
         $this->add_fixup_query($query);
     }
 
@@ -877,11 +879,7 @@ class DatabaseRepair
             }
         }
 
-        $_key_fields = implode(', ', $key_fields);
-        $create_key_query = 'ALTER TABLE ' . get_table_prefix() . $table_name . ' DROP PRIMARY KEY';
-        if ($_key_fields != '') {
-            $create_key_query .= ', ADD PRIMARY KEY (' . $_key_fields . ')';
-        }
+        $create_key_query = $GLOBALS['SITE_DB']->driver->change_primary_key__sql(get_table_prefix() . $table_name, $key_fields);
         if (!$return_queries) {
             $this->add_fixup_query($create_key_query);
         }
@@ -979,7 +977,7 @@ class DatabaseRepair
         if ($_fields !== null) {
             $unique_key_fields = implode(',', _helper_get_table_key_fields($table_name));
 
-            $queries = $GLOBALS['DB_STATIC_OBJECT']->create_index(get_table_prefix() . $table_name, $_index_name, $_fields, $GLOBALS['SITE_DB']->connection_write, $table_name, $unique_key_fields, $GLOBALS['SITE_DB']->get_table_prefix());
+            $queries = $GLOBALS['DB_DRIVER']->create_index(get_table_prefix() . $table_name, $_index_name, $_fields, $GLOBALS['SITE_DB']->connection_write, $table_name, $unique_key_fields, $GLOBALS['SITE_DB']->get_table_prefix());
             foreach ($queries as $sql) {
                 $this->add_fixup_query($sql);
             }
@@ -1019,8 +1017,10 @@ class DatabaseRepair
         }
 
         if (!in_array($index['table'], $this->deleting_tables)) {
-            $query = 'DROP INDEX ' . $index_name . ' ON ' . get_table_prefix() . $index['table'];
-            $this->add_fixup_query($query);
+            $query = $GLOBALS['SITE_DB']->driver->drop_index__sql(get_table_prefix() . $index['table'], $index_name);
+            if ($query !== null) {
+                $this->add_fixup_query($query);
+            }
 
             $query = 'DELETE FROM ' . get_table_prefix() . 'db_meta_indices WHERE ' . db_string_equal_to('i_table', $index['table']);
             $this->add_fixup_query($query);

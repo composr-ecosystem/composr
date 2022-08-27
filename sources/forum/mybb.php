@@ -108,7 +108,8 @@ class Forum_driver_mybb extends Forum_driver_base
      */
     public function install_create_custom_field(string $name, int $length) : bool
     {
-        $this->db->query('ALTER TABLE ' . $this->db->get_table_prefix() . 'users ADD cms_' . $name . ' TEXT', null, 0, true); // Suppress errors in case field already exists
+        $query = $this->db->driver->add_table_field__sql($this->db->get_table_prefix() . 'members', 'cms_' . $name, 'LONG_TEXT', '');
+        $this->db->query($query, null, 0, true); // Suppress errors in case field already exists
         return true;
     }
 

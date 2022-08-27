@@ -112,16 +112,14 @@ class Forum_driver_wbb22 extends Forum_driver_base
      */
     public function install_create_custom_field(string $name, int $length, int $locked = 1, int $viewable = 0, int $settable = 0, int $required = 0) : bool
     {
-        if (!array_key_exists('bb_forum_number', $_POST)) {
-            $_POST['bb_forum_number'] = ''; // for now
-        }
-
         $name = 'cms_' . $name;
         $test = $this->db->query('profilefields', ['profilefieldid'], ['title' => $name]);
         if (!array_key_exists(0, $test)) {
-            $this->db->query('INSERT INTO bb' . $_POST['bb_forum_number'] . '_profilefields (title,description,required,hidden,maxlength,fieldsize) VALUES (\'' . db_escape_string($name) . '\',\'\',' . strval($required) . ',' . strval(1 - $viewable) . ',' . strval($length) . ',' . strval($length) . ')');
+            $this->db->query_insert('profilefields', ['title' => $name, 'description' =>'', 'required' => $required, 'hidden' => 1 - $viewable, 'maxlength' => $length, 'fieldsize' => $length]);
             $key = $this->db->query_select_value('profilefields', 'MAX(profilefieldid)');
-            $this->db->query('ALTER TABLE bb' . $_POST['bb_forum_number'] . '_userfields ADD field' . $key . ' TEXT', null, 0, true); // Suppress errors in case field already exists
+            $query = $this->db->driver->add_table_field__sql($this->db->get_table_prefix() . 'userfields', 'field' . strval($key), 'LONG_TEXT', '');
+            $this->db->query($query, null, 0, true); // Suppress errors in case field already exists
+
             return true;
         }
         return false;

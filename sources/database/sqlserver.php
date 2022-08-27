@@ -177,28 +177,4 @@ class Database_Static_sqlserver extends Database_super_sqlserver
     {
         $this->cache_db = [];
     }
-
-    /**
-     * Start a transaction.
-     *
-     * @param  array $connection A DB connection
-     */
-    public function start_transaction(array $connection)
-    {
-        if (function_exists('sqlsrv_begin_transaction')) {
-            sqlsrv_begin_transaction($connection);
-        }
-    }
-
-    /**
-     * End a transaction.
-     *
-     * @param  array $connection A DB connection
-     */
-    public function end_transaction(array $connection)
-    {
-        if (function_exists('sqlsrv_commit')) {
-            sqlsrv_commit($connection);
-        }
-    }
 }

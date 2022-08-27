@@ -178,10 +178,7 @@ function load_version_download_rows()
             ];
         } else {
             // Live data
-            $sql = 'SELECT d.* FROM ' . get_table_prefix() . 'download_downloads d';
-            if (strpos(get_db_type(), 'mysql') !== false) {
-                $sql .= ' FORCE INDEX (recent_downloads)';
-            }
+            $sql = 'SELECT d.* FROM ' . get_table_prefix() . 'download_downloads d' . $GLOBALS['SITE_DB']->prefer_index('download_downloads', 'recent_downloads', false);
             $sql .= ' WHERE validated=1 AND ' . $GLOBALS['SITE_DB']->translate_field_ref('name') . ' LIKE \'' . db_encode_like('Composr Version %') . '\' ORDER BY add_date';
             $DOWNLOAD_ROWS = $GLOBALS['SITE_DB']->query($sql, null, 0, false, false, ['name' => 'SHORT_TRANS', 'the_description' => 'LONG_TRANS__COMCODE']);
             foreach ($DOWNLOAD_ROWS as $i => $row) {

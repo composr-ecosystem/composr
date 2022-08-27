@@ -592,7 +592,7 @@ class Module_admin_customers
 
         if (($upgrade_from !== null) && ($upgrade_from < 3)) { // LEGACY
             if (strpos(get_db_type(), 'mysql') !== false) {
-                $GLOBALS['SITE_DB']->query("ALTER TABLE mantis_bug_file_table ADD COLUMN bugnote_id int(10) unsigned NOT NULL DEFAULT '0'");
+                $GLOBALS['SITE_DB']->query("ALTER TABLE mantis_bug_file_table ADD bugnote_id int(10) unsigned NOT NULL DEFAULT '0'");
             }
         }
     }

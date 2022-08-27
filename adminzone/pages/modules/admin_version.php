@@ -312,7 +312,7 @@ class Module_admin_version
                 'the_theme' => '*ID_TEXT',
                 'cc_page_title' => '?SHORT_TRANS',
             ];
-            if (strpos(get_db_type(), 'sqlserver') !== false) { // Full-text search requires a single key
+            if ($GLOBALS['SITE_DB']->driver->full_text_needs_single_key()) { // HACKHACK: Full-text search requires a single key
                 $fields = [
                     'id' => '*AUTO',
                     'the_zone' => 'ID_TEXT',
@@ -724,8 +724,9 @@ class Module_admin_version
 
             $GLOBALS['SITE_DB']->add_table_field('url_id_monikers', 'm_manually_chosen', 'BINARY');
             $GLOBALS['SITE_DB']->add_table_field('url_id_monikers', 'm_moniker_reversed', 'SHORT_TEXT');
-            if (strpos(get_db_type(), 'mysql') !== false) {
-                $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'url_id_monikers SET m_moniker_reversed=REVERSE(m_moniker)');
+            $reverse_function = db_function('REVERSE', ['m_moniker']);
+            if ($reverse_function !== null) {
+                $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'url_id_monikers SET m_moniker_reversed=' . $reverse_function);
             } else {
                 $start = 0;
                 $max = 500;

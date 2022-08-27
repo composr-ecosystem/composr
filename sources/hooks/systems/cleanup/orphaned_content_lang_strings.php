@@ -40,7 +40,7 @@ class Hook_cleanup_orphaned_content_lang_strings
             }
         }
 
-        if (($GLOBALS['SITE_DB']->query_select_value('translate', 'COUNT(*)') > 10000) && ((get_value('innodb') !== '1') || (strpos(get_db_type(), 'mysql') === false))) {
+        if (($GLOBALS['SITE_DB']->query_select_value('translate', 'COUNT(*)') > 10000) && (get_value('innodb') !== '1') && (strpos(get_db_type(), 'mysql') !== false)) {
             return null; // Too much, and we don't have much use for it outside development anyway
         }
 

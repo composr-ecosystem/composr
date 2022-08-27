@@ -104,7 +104,7 @@ class CMSSearchRead
         if (($keywords != '') && (!$titleonly)) {
             $full_sql1 .= ' LIMIT ' . strval($max + $start);
         } else {
-            if ($GLOBALS['DB_STATIC_OBJECT']->uses_offset_syntax($GLOBALS['FORUM_DB']->connection_read)) {
+            if ($GLOBALS['FORUM_DB']->driver->uses_offset_syntax()) {
                 $full_sql1 .= ' LIMIT ' . strval($max) . ' OFFSET ' . strval($start);
             } else {
                 $full_sql1 .= ' LIMIT ' . strval($start) . ',' . strval($max);

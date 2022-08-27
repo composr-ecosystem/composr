@@ -4097,7 +4097,7 @@ function appengine_live_guard()
  */
 function update_catalogue_content_ref(string $type, string $from, string $to)
 {
-    if ($GLOBALS['DB_STATIC_OBJECT']->has_update_joins()) {
+    if ($GLOBALS['SITE_DB']->driver->has_update_joins()) {
         $GLOBALS['SITE_DB']->query_update('catalogue_fields f JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_efv_short v ON v.cf_id=f.id', ['cv_value' => $to], ['cv_value' => $from, 'cf_type' => $type]);
     } else {
         $fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['id'], ['cf_type' => $type]);

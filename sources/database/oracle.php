@@ -309,7 +309,7 @@ class Database_Static_oracle extends DatabaseDriver
      * @param  boolean $save_bytes Whether to use lower-byte table storage, with trade-offs of not being able to support all unicode characters; use this if key length is an issue
      * @return array List of SQL queries to run
      */
-    public function create_table(string $table_name, array $fields, $connection, string $raw_table_name, bool $save_bytes = false) : array
+    public function create_table__sql(string $table_name, array $fields, $connection, string $raw_table_name, bool $save_bytes = false) : array
     {
         $type_remap = $this->get_type_remap();
 
@@ -339,11 +339,14 @@ class Database_Static_oracle extends DatabaseDriver
             $type = isset($type_remap[$type]) ? $type_remap[$type] : $type;
 
             $_fields .= '    ' . $name . ' ' . $type;
+
+            // We specify default values for special Comcode fields, so we don't need to worry about populating them when manually editing the database
             if (substr($name, -13) == '__text_parsed') {
                 $_fields .= ' DEFAULT \'\'';
             } elseif (substr($name, -13) == '__source_user') {
                 $_fields .= ' DEFAULT ' . strval(db_get_first_id());
             }
+
             $_fields .= ' ' . $perhaps_null . ',' . "\n";
         }
 
@@ -370,6 +373,18 @@ class Database_Static_oracle extends DatabaseDriver
     }
 
     /**
+     * Get SQL for renaming a table.
+     *
+     * @param  ID_TEXT $old Old name
+     * @param  ID_TEXT $new New name
+     * @return string SQL query to run
+     */
+    public function rename_table__sql(string $old, string $new) : string
+    {
+        return 'ALTER TABLE ' . $old . ' RENAME TO ' . $new;
+    }
+
+    /**
      * Find whether table truncation support is present.
      *
      * @return boolean Whether it is
@@ -390,18 +405,46 @@ class Database_Static_oracle extends DatabaseDriver
     }
 
     /**
+     * Get SQL for changing the type of a DB field in a table. Note: this function does not support ascension/descension of translatability.
+     *
+     * @param  ID_TEXT $table_name The table name
+     * @param  ID_TEXT $name The field name
+     * @param  ID_TEXT $db_type The new field type
+     * @param  boolean $may_be_null If the field may be null
+     * @param  ID_TEXT $new_name The new field name
+     * @return array List of SQL queries to run
+     */
+    public function alter_table_field__sql(string $table_name, string $name, string $db_type, bool $may_be_null, string $new_name) : array
+    {
+        $sql_type = $db_type . ' ' . ($may_be_null ? 'NULL' : 'NOT NULL');
+
+        $delimiter_start = $this->get_delimited_identifier(false);
+        $delimiter_end = $this->get_delimited_identifier(true);
+
+        $queries = [];
+
+        $queries[] = 'ALTER TABLE ' . $table_name . ' MODIFY ' . $delimiter_start . $name . $delimiter_end . ' ' . $sql_type;
+
+        if ($name != $new_name) {
+            $queries[] = 'ALTER TABLE ' . $table_name . ' RENAME COLUMN ' . $delimiter_start . $name . $delimiter_end . ' TO ' . $new_name;
+        }
+
+        return $queries;
+    }
+
+    /**
      * Get SQL for creating a table index.
      *
      * @param  ID_TEXT $table_name The name of the table to create the index on
      * @param  ID_TEXT $index_name The index name (not really important at all)
      * @param  string $_fields Part of the SQL query: a comma-separated list of fields to use on the index
-     * @param  mixed $connection The DB connection to make on
+     * @param  mixed $connection_read The DB connection, may be used for running checks
      * @param  ID_TEXT $raw_table_name The table name with no table prefix
      * @param  string $unique_key_fields The name of the unique key field for the table
      * @param  string $table_prefix The table prefix
      * @return array List of SQL queries to run
      */
-    public function create_index(string $table_name, string $index_name, string $_fields, $connection, string $raw_table_name, string $unique_key_fields, string $table_prefix) : array
+    public function create_index__sql(string $table_name, string $index_name, string $_fields, $connection_read, string $raw_table_name, string $unique_key_fields, string $table_prefix) : array
     {
         if ($index_name[0] == '#') {
             $ret = [];
@@ -419,7 +462,7 @@ class Database_Static_oracle extends DatabaseDriver
         $fields = explode(',', $_fields);
         foreach ($fields as $field) {
             $sql = 'SELECT m_type FROM ' . $table_prefix . 'db_meta WHERE m_table=\'' . $this->escape_string($raw_table_name) . '\' AND m_name=\'' . $this->escape_string($field) . '\'';
-            $values = $this->query($sql, $connection, null, 0, true);
+            $values = $this->query($sql, $connection_read, null, 0, true);
             if (!isset($values[0])) {
                 continue; // No result found
             }
@@ -437,16 +480,32 @@ class Database_Static_oracle extends DatabaseDriver
     }
 
     /**
-     * Change the primary key of a table.
+     * Get SQL for deleting a table index.
+     *
+     * @param  ID_TEXT $table_name The name of the table the index is on
+     * @param  ID_TEXT $index_name The index name
+     * @return ?string SQL query to run (null: not supported)
+     */
+    public function drop_index__sql(string $table_name, string $index_name) : ?string
+    {
+        return 'DROP INDEX ' . $index_name . '__' . $table_name;
+    }
+
+    /**
+     * Get SQL for changing the primary key of a table.
      *
      * @param  ID_TEXT $table_name The name of the table to create the index on
      * @param  array $new_key A list of fields to put in the new key
-     * @param  mixed $connection The DB connection to make on
+     * @return array List of SQL queries to run
      */
-    public function change_primary_key(string $table_name, array $new_key, $connection)
+    public function change_primary_key__sql(string $table_name, array $new_key) : array
     {
-        $this->query('ALTER TABLE ' . $table_name . ' DROP PRIMARY KEY', $connection);
-        $this->query('ALTER TABLE ' . $table_name . ' ADD PRIMARY KEY (' . implode(',', $new_key) . ')', $connection);
+        $queries = [];
+        $queries[] = 'ALTER TABLE ' . $table_name . ' DROP PRIMARY KEY';
+        if (!empty($new_key)) {
+            $queries[] = 'ALTER TABLE ' . $table_name . ' ADD PRIMARY KEY (' . implode(',', $new_key) . ')';
+        }
+        return $queries;
     }
 
     /**

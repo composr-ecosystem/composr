@@ -18,6 +18,8 @@
  * @package    core_database_drivers
  */
 
+// Useful documentation: https://dev.mysql.com/doc/refman/8.0/en/extensions-to-ansi.html
+
 /**
  * Base class for MySQL database drivers.
  *
@@ -96,7 +98,7 @@ abstract class Database_super_mysql extends DatabaseDriver
     }
 
     /**
-     * Find whether text fields can/should have default values.
+     * Find whether text fields can/should be given default values when added as a new column to an existing table.
      *
      * @return boolean Whether they do
      */
@@ -107,10 +109,12 @@ abstract class Database_super_mysql extends DatabaseDriver
 
     /**
      * Get the character used to surround fields to protect from keyword status.
+     * We generally only use it when renaming fields (renaming them on upgrade so that we don't get a conflict with a keyword).
      *
+     * @param  boolean $end Whether to get end character
      * @return string Character (blank: has none defined)
      */
-    public function get_field_encapsulator() : string
+    public function get_delimited_identifier(bool $end = false) : string
     {
         return '`';
     }
@@ -319,7 +323,7 @@ abstract class Database_super_mysql extends DatabaseDriver
     protected function _strict_mode_query(bool $setting) : string
     {
         if (($setting) && (get_forum_type() == 'cns') && (!$GLOBALS['IN_MINIKERNEL_VERSION'])) {
-            $value = 'STRICT_ALL_TABLES,ONLY_FULL_GROUP_BY';
+            $value = 'STRICT_ALL_TABLES,ONLY_FULL_GROUP_BY,ANSI_QUOTES';
         } else {
             $value = 'MYSQL40';
         }
@@ -467,7 +471,7 @@ abstract class Database_super_mysql extends DatabaseDriver
      * @param  boolean $save_bytes Whether to use lower-byte table storage, with trade-offs of not being able to support all unicode characters; use this if key length is an issue
      * @return array List of SQL queries to run
      */
-    public function create_table(string $table_name, array $fields, $connection, string $raw_table_name, bool $save_bytes = false) : array
+    public function create_table__sql(string $table_name, array $fields, $connection, string $raw_table_name, bool $save_bytes = false) : array
     {
         $type_remap = $this->get_type_remap();
 
@@ -492,12 +496,15 @@ abstract class Database_super_mysql extends DatabaseDriver
             $type = isset($type_remap[$type]) ? $type_remap[$type] : $type;
 
             $_fields .= '    ' . $name . ' ' . $type;
-            /*if (substr($name, -13) == '__text_parsed') {    BLOB/TEXT column 'the_description__text_parsed' can't have a default value
+
+            // We specify default values for special Comcode fields, so we don't need to worry about populating them when manually editing the database
+            /*if (substr($name, -13) == '__text_parsed') {    "BLOB/TEXT column 'the_description__text_parsed' can't have a default value" due to has_default_for_text_fields
                 $_fields .= ' DEFAULT \'\'';
             } else*/
             if (substr($name, -13) == '__source_user') {
                 $_fields .= ' DEFAULT ' . strval(db_get_first_id());
             }
+
             $_fields .= ' ' . $perhaps_null . ',' . "\n";
         }
 
@@ -527,6 +534,18 @@ abstract class Database_super_mysql extends DatabaseDriver
     }
 
     /**
+     * Get SQL for renaming a table.
+     *
+     * @param  ID_TEXT $old Old name
+     * @param  ID_TEXT $new New name
+     * @return string SQL query to run
+     */
+    public function rename_table__sql(string $old, string $new) : string
+    {
+        return 'RENAME TABLE ' . $old . ' ' . $new;
+    }
+
+    /**
      * Find whether drop table "if exists" is present.
      *
      * @return boolean Whether it is
@@ -537,15 +556,23 @@ abstract class Database_super_mysql extends DatabaseDriver
     }
 
     /**
-     * Change the primary key of a table.
+     * Get SQL for changing the primary key of a table.
      *
      * @param  ID_TEXT $table_name The name of the table to create the index on
      * @param  array $new_key A list of fields to put in the new key
-     * @param  mixed $connection The DB connection to make on
+     * @return array List of SQL queries to run
      */
-    public function change_primary_key(string $table_name, array $new_key, $connection)
+    public function change_primary_key__sql(string $table_name, array $new_key) : array
     {
-        $this->query('ALTER TABLE ' . $table_name . ' DROP PRIMARY KEY, ADD PRIMARY KEY (' . implode(',', $new_key) . ')', $connection);
+        $queries = [];
+
+        $query = 'ALTER TABLE ' . $table_name . ' DROP PRIMARY KEY';
+        if (!empty($new_key)) {
+            $query .= ', ADD PRIMARY KEY (' . implode(',', $new_key) . ')';
+        }
+        $queries[] = $query;
+
+        return $queries;
     }
 
     /**
@@ -592,18 +619,40 @@ abstract class Database_super_mysql extends DatabaseDriver
     }
 
     /**
+     * Get SQL for changing the type of a DB field in a table. Note: this function does not support ascension/descension of translatability.
+     *
+     * @param  ID_TEXT $table_name The table name
+     * @param  ID_TEXT $name The field name
+     * @param  ID_TEXT $db_type The new field type
+     * @param  boolean $may_be_null If the field may be null
+     * @param  ID_TEXT $new_name The new field name
+     * @return array List of SQL queries to run
+     */
+    public function alter_table_field__sql(string $table_name, string $name, string $db_type, bool $may_be_null, string $new_name) : array
+    {
+        $sql_type = $db_type . ' ' . ($may_be_null ? 'NULL' : 'NOT NULL');
+
+        $delimiter_start = $this->get_delimited_identifier(false);
+        $delimiter_end = $this->get_delimited_identifier(true);
+
+        $query = 'ALTER TABLE ' . $table_name . ' CHANGE ' . $delimiter_start . $name . $delimiter_end . ' ' . $new_name . ' ' . $sql_type;
+
+        return [$query];
+    }
+
+    /**
      * Get SQL for creating a table index.
      *
      * @param  ID_TEXT $table_name The name of the table to create the index on
      * @param  ID_TEXT $index_name The index name (not really important at all)
      * @param  string $_fields Part of the SQL query: a comma-separated list of fields to use on the index
-     * @param  mixed $connection The DB connection to make on
+     * @param  mixed $connection_read The DB connection, may be used for running checks
      * @param  ID_TEXT $raw_table_name The table name with no table prefix
      * @param  string $unique_key_fields The name of the unique key field for the table
      * @param  string $table_prefix The table prefix
      * @return array List of SQL queries to run
      */
-    public function create_index(string $table_name, string $index_name, string $_fields, $connection, string $raw_table_name, string $unique_key_fields, string $table_prefix) : array
+    public function create_index__sql(string $table_name, string $index_name, string $_fields, $connection_read, string $raw_table_name, string $unique_key_fields, string $table_prefix) : array
     {
         if ($index_name[0] == '#') {
             $index_name = substr($index_name, 1);
@@ -612,6 +661,18 @@ abstract class Database_super_mysql extends DatabaseDriver
             $type = 'INDEX';
         }
         return [$this->fix_mysql8_query('ALTER TABLE ' . $table_name . ' ADD ' . $type . ' ' . $index_name . ' (' . $_fields . ')')];
+    }
+
+    /**
+     * Get SQL for deleting a table index.
+     *
+     * @param  ID_TEXT $table_name The name of the table the index is on
+     * @param  ID_TEXT $index_name The index name
+     * @return ?string SQL query to run (null: not supported)
+     */
+    public function drop_index__sql(string $table_name, string $index_name) : ?string
+    {
+        return 'DROP INDEX ' . $index_name . ' ON ' . $table_name;
     }
 
     /**

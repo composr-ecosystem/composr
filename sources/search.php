@@ -158,7 +158,7 @@ function find_search_suggestions(string $request, string $search_type = '') : ar
         require_code('database_search');
 
         $q = 'SELECT s_primary AS search FROM ' . get_table_prefix() . 'searches_logged WHERE ';
-        if (($GLOBALS['SITE_DB']->has_full_text()) && ($GLOBALS['SITE_DB']->has_full_text_boolean()) && (!is_under_radar($request))) {
+        if (($GLOBALS['SITE_DB']->has_full_text()) && ($GLOBALS['SITE_DB']->driver->has_full_text_boolean()) && (!is_under_radar($request))) {
             $q .= preg_replace('#\?#', 's_primary', $GLOBALS['SITE_DB']->full_text_assemble($request));
         } else {
             $q .= 's_primary LIKE \'' . db_encode_like($request . '%') . '\'';

@@ -420,7 +420,7 @@ class Composr_fast_custom_index
                     $key_i++;
                 }
                 $join_condition .= 'i' . strval($i) . '.i_ngram=' . strval($this->crc($ngram));
-                if (strpos(get_db_type(), 'mysql') !== false) {
+                if (strpos(get_db_type(), 'xml') === false) {
                     $join_condition .= '/*' . str_replace('/', '\\', $ngram) . '*/';
                 }
                 $join_condition .= str_replace('ixxx.', 'i' . strval($i) . '.', $extra_join_clause);
@@ -1190,7 +1190,7 @@ abstract class FieldsSearchHook
                                     $where_clause .= db_string_equal_to($search_field, $param);
                                 }
                             } else {
-                                if (($GLOBALS['SITE_DB']->has_full_text()) && ($GLOBALS['SITE_DB']->has_full_text_boolean()) && (!is_under_radar($param))) {
+                                if (($GLOBALS['SITE_DB']->has_full_text()) && ($GLOBALS['SITE_DB']->driver->has_full_text_boolean()) && (!is_under_radar($param))) {
                                     $temp = $GLOBALS['SITE_DB']->full_text_assemble('+"' . $param . '"');
                                 } else {
                                     list($temp) = db_like_assemble($param);
@@ -1313,7 +1313,7 @@ abstract class FieldsSearchHook
  */
 function is_under_radar(string $test) : bool
 {
-    return (strlen($test) < $GLOBALS['SITE_DB']->get_minimum_search_length()) && ($test != '');
+    return (strlen($test) < $GLOBALS['SITE_DB']->driver->get_minimum_search_length()) && ($test != '');
 }
 
 /**
@@ -2046,7 +2046,7 @@ function get_search_rows(?string $meta_type, string $id_field, string $search_qu
 
         $keywords_query = 'SELECT DISTINCT ' . $select . ' FROM ' . $_keywords_query;
         $tmp_subquery = 'SELECT 1 AS x FROM ' . $_keywords_query;
-        $GLOBALS['SITE_DB']->static_ob->apply_sql_limit_clause($tmp_subquery, MAXIMUM_RESULT_COUNT_POINT);
+        $GLOBALS['SITE_DB']->driver->apply_sql_limit_clause($tmp_subquery, MAXIMUM_RESULT_COUNT_POINT);
         $_count_query_keywords_search = '(SELECT COUNT(*) FROM (' . $tmp_subquery . ') counter)';
 
         if (($order != '') && ($order . ' ' . $direction != 'contextual_relevance DESC')) {
@@ -2106,7 +2106,7 @@ function get_search_rows(?string $meta_type, string $id_field, string $search_qu
 
                     $_where_clause = ' AND ' . preg_replace('#\?#', 't' . strval($i) . '.text_original', $content_where);
 
-                    if (($order == '') && ($GLOBALS['DB_STATIC_OBJECT']->has_expression_ordering()) && ($content_where != '')) {
+                    if (($order == '') && ($db->driver->has_expression_ordering()) && ($content_where != '')) {
                         $_select = preg_replace('#\?#', 't' . strval($i) . '.text_original', $content_where) . ' AS contextual_relevance';
                     } else {
                         $_select = null;
@@ -2127,7 +2127,7 @@ function get_search_rows(?string $meta_type, string $id_field, string $search_qu
 
                         $_where_clause = ' AND ' . preg_replace('#\?#', $field, $content_where);
 
-                        if (($order == '') && ($GLOBALS['DB_STATIC_OBJECT']->has_expression_ordering()) && ($content_where != '')) {
+                        if (($order == '') && ($db->driver->has_expression_ordering()) && ($content_where != '')) {
                             $_select = preg_replace('#\?#', $field, $content_where) . ' AS contextual_relevance';
                         } else {
                             $_select = null;
@@ -2141,7 +2141,7 @@ function get_search_rows(?string $meta_type, string $id_field, string $search_qu
             if (empty($where_alternative_matches)) {
                 $where_alternative_matches[] = [$where_clause, null, $table_clause, null, null];
             } else {
-                if (($order == '') && ($GLOBALS['DB_STATIC_OBJECT']->has_expression_ordering()) && ($content_where != '')) {
+                if (($order == '') && ($db->driver->has_expression_ordering()) && ($content_where != '')) {
                     $order = 'contextual_relevance DESC';
                 }
             }
@@ -2173,12 +2173,12 @@ function get_search_rows(?string $meta_type, string $id_field, string $search_qu
                         $main_query_part .= ' DESC';
                     }
                 }
-                $GLOBALS['SITE_DB']->static_ob->apply_sql_limit_clause($main_query_part, $max + $start);
+                $GLOBALS['SITE_DB']->driver->apply_sql_limit_clause($main_query_part, $max + $start);
                 $main_query_parts[] = remove_unneeded_joins_rough($main_query_part);
 
                 // Has to do a nested subquery to reduce scope of COUNT(*), because the unbounded full-text's binary tree descendance can be extremely slow on physical disks if common words exist that aren't defined as MySQL stop words
                 $_count_query_part = 'SELECT 1 AS x FROM ' . $__table_clause . ' WHERE ' . $__where_clause;
-                $GLOBALS['SITE_DB']->static_ob->apply_sql_limit_clause($_count_query_part, MAXIMUM_RESULT_COUNT_POINT);
+                $GLOBALS['SITE_DB']->driver->apply_sql_limit_clause($_count_query_part, MAXIMUM_RESULT_COUNT_POINT);
                 $count_query_part = '(SELECT COUNT(*) FROM (' . $_count_query_part . ') counter)';
                 $count_query_parts[] = remove_unneeded_joins_rough($count_query_part);
             }
@@ -2336,7 +2336,7 @@ function get_search_rows(?string $meta_type, string $id_field, string $search_qu
             // Count query
             //  Has to do a nested subquery to reduce scope of COUNT(*), because the unbounded full-text's binary tree descendance can be extremely slow on physical disks if common words exist that aren't defined as MySQL stop words
             $tmp_subquery = 'SELECT 1 AS x' . $query;
-            $GLOBALS['SITE_DB']->static_ob->apply_sql_limit_clause($tmp_subquery, MAXIMUM_RESULT_COUNT_POINT);
+            $GLOBALS['SITE_DB']->driver->apply_sql_limit_clause($tmp_subquery, MAXIMUM_RESULT_COUNT_POINT);
             $_count_query_main_search = '(SELECT COUNT(*) FROM (' . $tmp_subquery . ') counter)';
 
             // Main query
@@ -2497,7 +2497,7 @@ function build_content_where(string $search_query, bool $full_coverage = false, 
     } else {
         $under_radar = is_under_radar($search_query);
         $boolean = (preg_match('#[\-+"]#', $search_query) != 0);
-        if (($GLOBALS['SITE_DB']->has_full_text()) && (!$under_radar) && (!$force_like) && (($GLOBALS['SITE_DB']->has_full_text_boolean()) || (!$boolean))) {
+        if (($GLOBALS['SITE_DB']->has_full_text()) && (!$under_radar) && (!$force_like) && (($GLOBALS['SITE_DB']->driver->has_full_text_boolean()) || (!$boolean))) {
             $content_where = $GLOBALS['SITE_DB']->full_text_assemble($search_query);
             $body_where = [$content_where];
             $include_where = [];

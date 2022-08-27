@@ -49,7 +49,7 @@ function _helper_apply_emoticons(object $this_ref, ?int $member_id = null) : arr
     $EMOTICON_LEVELS = [];
 
     $query = 'SELECT e_code,e_theme_img_code,e_relevance_level FROM ' . $this_ref->db->get_table_prefix() . 'f_emoticons WHERE e_relevance_level<4' . $extra;
-    if ($GLOBALS['DB_STATIC_OBJECT']->has_expression_ordering()) {
+    if ($GLOBALS['FORUM_DB']->driver->has_expression_ordering()) {
         $query .= ' ORDER BY ' . db_function('LENGTH', ['e_code']) . ' DESC';
     }
     $rows = $this_ref->db->query($query);
@@ -58,7 +58,7 @@ function _helper_apply_emoticons(object $this_ref, ?int $member_id = null) : arr
         $this_ref->EMOTICON_CACHE[$myrow['e_code']] = [$tpl, $myrow['e_theme_img_code'], $myrow['e_code']];
         $EMOTICON_LEVELS[$myrow['e_code']] = $myrow['e_relevance_level'];
     }
-    if (!$GLOBALS['DB_STATIC_OBJECT']->has_expression_ordering()) {
+    if (!$GLOBALS['FORUM_DB']->driver->has_expression_ordering()) {
         uksort($this_ref->EMOTICON_CACHE, '_strlen_sort');
         $this_ref->EMOTICON_CACHE = array_reverse($this_ref->EMOTICON_CACHE);
     }

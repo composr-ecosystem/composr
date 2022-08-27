@@ -242,9 +242,9 @@ function _helper_create_table(object $this_ref, string $table_name, array $field
 
     $this_ref->ensure_connected();
 
-    $queries = $this_ref->static_ob->create_table($this_ref->table_prefix . $table_name, $fields, $this_ref->connection_write, $table_name, $save_bytes);
+    $queries = $this_ref->driver->create_table__sql($this_ref->table_prefix . $table_name, $fields, $this_ref->connection_write, $table_name, $save_bytes);
     foreach ($queries as $sql) {
-        $this_ref->static_ob->query($sql, $this_ref->connection_write);
+        $this_ref->query($sql);
     }
 
     // Considering tables in a DB reference may be in multiple (if they point to same actual DB's), make sure all our DB objects have their cache cleared
@@ -350,9 +350,9 @@ function _helper_create_index(object $this_ref, string $table_name, string $inde
             $unique_key_fields = implode(',', _helper_get_table_key_fields($table_name));
         }
 
-        $queries = $this_ref->static_ob->create_index($this_ref->table_prefix . $table_name, $index_name, $_fields, $this_ref->connection_write, $table_name, $unique_key_fields, $this_ref->get_table_prefix());
+        $queries = $this_ref->driver->create_index__sql($this_ref->table_prefix . $table_name, $index_name, $_fields, $this_ref->connection_read, $table_name, $unique_key_fields, $this_ref->table_prefix);
         foreach ($queries as $i => $sql) {
-            $this_ref->static_ob->query($sql, $this_ref->connection_write, null, 0, $is_full_text/*May fail on database backends that don't cleanup full-text well when dropping tables*/);
+            $this_ref->query($sql, null, 0, $is_full_text/*May fail on database backends that don't cleanup full-text well when dropping tables*/);
         }
     }
 }
@@ -428,12 +428,14 @@ function _helper_delete_index_if_exists(object $this_ref, string $table_name, st
 
         // Some DB drivers have to make it globally unique via using table name in name
         $index_name . '__' . $table_name,
-        $index_name . '__' . $this_ref->get_table_prefix() . $table_name,
+        $index_name . '__' . $this_ref->table_prefix . $table_name,
     ];
 
     foreach ($possible_final_index_names as $_index_name) {
-        $query = 'DROP INDEX ' . $_index_name . ' ON ' . $this_ref->get_table_prefix() . $table_name;
-        $this_ref->query($query, null, 0, true); // Suppress errors in case does not exist
+        $query = $this_ref->driver->drop_index__sql($this_ref->table_prefix . $table_name, $_index_name);
+        if ($query !== null) {
+            $this_ref->query($query, null, 0, true); // Suppress errors in case does not exist
+        }
     }
 
     $this_ref->query_delete('db_meta_indices', ['i_table' => $table_name, 'i_name' => $full_index_name]);
@@ -474,9 +476,9 @@ function _helper_drop_table_if_exists(object $this_ref, string $table)
 
     $this_ref->ensure_connected();
 
-    $queries = $this_ref->static_ob->drop_table_if_exists($this_ref->table_prefix . $table, $this_ref->connection_write);
+    $queries = $this_ref->driver->drop_table_if_exists__sql($this_ref->table_prefix . $table);
     foreach ($queries as $sql) {
-        $this_ref->static_ob->query($sql, $this_ref->connection_write, null, 0, true); // Might already exist so suppress errors
+        $this_ref->query($sql, $this_ref->connection_write, null, 0, true); // Might already exist so suppress errors
     }
 
     if (function_exists('persistent_cache_delete')) {
@@ -516,7 +518,7 @@ function _helper_needs_to_save_bytes(string $table_name, array $fields) : bool
  */
 function _helper_rename_table(object $this_ref, string $old, string $new)
 {
-    $query = 'ALTER TABLE ' . $this_ref->table_prefix . $old . ' RENAME ' . $this_ref->table_prefix . $new;
+    $query = $this_ref->driver->rename_table__sql($this_ref->table_prefix . $old, $this_ref->table_prefix . $new);
     $this_ref->query($query);
 
     $this_ref->query_update('db_meta', ['m_table' => $new], ['m_table' => $old]);
@@ -533,96 +535,63 @@ function _helper_rename_table(object $this_ref, string $old, string $new)
  * @param  object $this_ref Link to the real database object
  * @param  ID_TEXT $table_name The table name
  * @param  ID_TEXT $name The field name
- * @param  ID_TEXT $_type The field type
+ * @param  ID_TEXT $type The field type
  * @param  ?mixed $default The default value; for a translatable field should still be a string value (null: null default / default default)
  * @ignore
  */
-function _helper_add_table_field(object $this_ref, string $table_name, string $name, string $_type, $default = null)
+function _helper_add_table_field(object $this_ref, string $table_name, string $name, string $type, $default = null)
 {
-    if (($default === null) && (substr($_type, 0, 1) != '?')) {
-        switch ($_type) {
-            case 'AUTO':
-            case 'AUTO_LINK':
-            case 'INTEGER':
-            case 'UINTEGER':
-            case 'SHORT_INTEGER':
-            case 'BINARY':
-            case 'MEMBER':
-            case 'GROUP':
-                $default = 0;
-                break;
-
-            case 'REAL':
-                $default = 0.0;
-                break;
-
-            case 'TIME':
-                $default = time();
-                break;
-
-            case 'LONG_TRANS':
-            case 'SHORT_TRANS':
-            case 'LONG_TRANS__COMCODE':
-            case 'SHORT_TRANS__COMCODE':
-            case 'SHORT_TEXT':
-            case 'LONG_TEXT':
-            case 'ID_TEXT':
-            case 'MINIID_TEXT':
-            case 'IP':
-            case 'LANGUAGE_NAME':
-            case 'URLPATH':
-                $default = '';
-                break;
-        }
+    if (($default === null) && (substr($type, 0, 1) != '?')) {
+        $default = $this_ref->driver->get_implicit_field_default($type);
     }
 
-    list($query, $default_st) = _helper_add_table_field_sql($this_ref, $table_name, $name, $_type, $default);
-    $this_ref->_query($query);
+    $query = $this_ref->driver->add_table_field__sql($this_ref->table_prefix . $table_name, $name, $type, $default);
+    $this_ref->query($query);
 
-    $lang_level = 3;
+    // If adding a translatable field to a multi-lang-content site we need to populate blank strings into the translate table for each field instance
+    if ((multi_lang_content()) && ($default !== null)) {
+        $lang_level = 3;
 
-    if (multi_lang_content()) {
-        if ($default_st !== null) {
-            $key_sql = 'SELECT m_name FROM ' . $this_ref->get_table_prefix() . 'db_meta WHERE m_type LIKE \'*%\' AND ' . db_string_equal_to('m_table', $table_name);
-            $key_fields = $this_ref->query($key_sql);
-            $select = collapse_1d_complexity('m_name', $key_fields);
+        $key_sql = 'SELECT m_name FROM ' . $this_ref->table_prefix . 'db_meta WHERE m_type LIKE \'*%\' AND ' . db_string_equal_to('m_table', $table_name);
+        $key_fields = $this_ref->query($key_sql);
+        $select = collapse_1d_complexity('m_name', $key_fields);
 
-            $start = 0;
-            do {
-                $rows = $this_ref->_query('SELECT ' . implode(',', $select) . ' FROM ' . $this_ref->get_table_prefix() . $table_name, 1000, $start);
-                if ($rows === null) {
-                    break; // Issue inside upgrader
-                }
-                foreach ($rows as $row) {
-                    $this_ref->query_update($table_name, insert_lang($name, $default_st, $lang_level), $row);
-                }
-                $start += 1000;
-            } while (!empty($rows));
-        }
+        $start = 0;
+        do {
+            $rows = $this_ref->_query('SELECT ' . implode(',', $select) . ' FROM ' . $this_ref->table_prefix . $table_name, 1000, $start);
+            if ($rows === null) {
+                break; // Issue inside upgrader
+            }
+            foreach ($rows as $row) {
+                $this_ref->query_update($table_name, insert_lang($name, $default, $lang_level), $row);
+            }
+            $start += 1000;
+        } while (!empty($rows));
     }
 
-    $this_ref->query_insert('db_meta', ['m_table' => $table_name, 'm_name' => $name, 'm_type' => $_type]);
+    // Insert into meta-database
+    $this_ref->query_insert('db_meta', ['m_table' => $table_name, 'm_name' => $name, 'm_type' => $type]);
     reload_lang_fields(false, $table_name);
 
-    if (strpos($_type, '_TRANS') !== false) {
+    // Add full-text search for any translatable field
+    if (strpos($type, '_TRANS') !== false) {
         $GLOBALS['SITE_DB']->create_index($table_name, '#' . $name, [$name]);
     }
 
-    if ((!multi_lang_content()) && (strpos($_type, '__COMCODE') !== false)) {
-        $type_remap = $this_ref->static_ob->get_type_remap();
-
+    // For Comcode fields on non-multi-lang-content sites we need to add some additional fields
+    if ((!multi_lang_content()) && (strpos($type, '__COMCODE') !== false)) {
         foreach (['text_parsed' => 'LONG_TEXT', 'source_user' => 'MEMBER'] as $_sub_name => $sub_type) {
             $sub_name = $name . '__' . $_sub_name;
-            $query = 'ALTER TABLE ' . $this_ref->table_prefix . $table_name . ' ADD ' . $sub_name . ' ' . $type_remap[$sub_type];
-            if ($_sub_name == 'text_parsed') {
-                if (strpos(get_db_type(), 'mysql') === false) {
-                    $query .= ' DEFAULT \'\'';
-                }
-            } elseif ($_sub_name == 'source_user') {
-                $query .= ' DEFAULT ' . strval(db_get_first_id());
+
+            $sub_default = mixed();
+            if ($sub_type == 'LONG_TEXT') {
+                $sub_default = '';
+            } else {
+                $sub_default = db_get_first_id();
             }
-            $query .= ' NOT NULL';
-            $this_ref->_query($query);
+
+            $query = $this_ref->driver->add_table_field__sql($this_ref->table_prefix . $table_name, $sub_name, $sub_type, $sub_default);
+            $this_ref->query($query);
         }
     }
 
@@ -632,117 +601,57 @@ function _helper_add_table_field(object $this_ref, string $table_name, string $n
 }
 
 /**
- * SQL to add a field to an existing table.
- *
- * @param  object $this_ref Link to the real database object
- * @param  ID_TEXT $table_name The table name
- * @param  ID_TEXT $name The field name
- * @param  ID_TEXT $_type The field type
- * @param  ?mixed $default The default value (null: no default)
- * @return array A pair: SQL, default value for fields
- *
- * @ignore
- */
-function _helper_add_table_field_sql(object $this_ref, string $table_name, string $name, string $_type, $default = null) : array
-{
-    $default_st = null;
-
-    if ($default === null) {
-        switch (str_replace(['*', '?'], ['', ''], $_type)) {
-            case 'AUTO':
-                $default = null;
-                break;
-
-            case 'AUTO_LINK':
-            case 'UINTEGER':
-            case 'INTEGER':
-            case 'SHORT_INTEGER':
-            case 'REAL':
-            case 'BINARY':
-            case 'MEMBER':
-            case 'GROUP':
-            case 'TIME':
-                $default = ($_type[0] == '?') ? null : 1;
-                break;
-
-            case 'LONG_TRANS':
-            case 'SHORT_TRANS':
-                $default = null;
-                break;
-
-            case 'LONG_TRANS__COMCODE':
-            case 'SHORT_TRANS__COMCODE':
-                $default = multi_lang_content() ? null : '';
-                break;
-
-            case 'SHORT_TEXT':
-            case 'LONG_TEXT':
-            case 'ID_TEXT':
-            case 'MINIID_TEXT':
-            case 'IP':
-            case 'LANGUAGE_NAME':
-            case 'URLPATH':
-                $default = '';
-                break;
-        }
-    }
-
-    $type_remap = $this_ref->static_ob->get_type_remap(true);
-
-    $_final_type = $_type;
-    if (strpos($_type, '_TRANS') !== false) {
-        if (($default === null) && (strpos($_type, '?') === false)) {
-            $default = '';
-        }
-
-        if (multi_lang_content()) {
-            if (is_string($default)) {
-                $default_st = $default;
-                $default = 0;
-            }
-        } else {
-            $_final_type = 'LONG_TEXT'; // In the DB layer, it must now save as such
-        }
-    }
-
-    if ($_final_type[0] == '?') {
-        $tag = ' NULL';
-    } else {
-        $tag = ' NOT NULL';
-    }
-    $final_type = str_replace(['*', '?'], ['', ''], $_final_type);
-    $extra = '';
-    if ((($final_type != 'LONG_TEXT') || ($this_ref->static_ob->has_default_for_text_fields())) && ($default !== null)) {
-        $extra = ($default === null) ? 'DEFAULT NULL' : ('DEFAULT ' . (is_string($default) ? ('\'' . db_escape_string($default) . '\'') : strval($default)));
-    }
-    $query = 'ALTER TABLE ' . $this_ref->table_prefix . $table_name;
-    $query .= ' ADD ' . $name . ' ' . $type_remap[$final_type] . ' ' . $extra . ' ' . $tag;
-
-    return [$query, $default_st];
-}
-
-/**
  * Change the type of a DB field in a table. Note: this function does not support ascension/descension of translatability.
  *
  * @param  object $this_ref Link to the real database object
  * @param  ID_TEXT $table_name The table name
  * @param  ID_TEXT $name The field name
- * @param  ID_TEXT $_type The new field type
+ * @param  ID_TEXT $type The new field type
  * @param  ?ID_TEXT $new_name The new field name (null: leave name)
  * @ignore
  */
-function _helper_alter_table_field(object $this_ref, string $table_name, string $name, string $_type, ?string $new_name = null)
+function _helper_alter_table_field(object $this_ref, string $table_name, string $name, string $type, ?string $new_name = null)
 {
-    $query = _helper_alter_table_field_sql($this_ref, $table_name, $name, $_type, $new_name);
+    // Handle renaming of special Comcode fields on non-multi-lang-content sites
+    if ((strpos($type, '__COMCODE') !== false) && ($new_name != $name) && (!multi_lang_content())) {
+        $type_remap = $this_ref->driver->get_type_remap();
 
-    $this_ref->_query($query);
+        foreach (['text_parsed' => 'LONG_TEXT', 'source_user' => 'MEMBER'] as $sub_name => $sub_type) {
+            $sub_old_name = $name . '__' . $sub_name;
+            $sub_new_name = $new_name . '__' . $sub_name;
 
-    $update_map = ['m_type' => $_type];
+            $db_type = $type_remap[$sub_type];
+
+            $queries = $this_ref->driver->alter_table_field__sql($this_ref->table_prefix . $table_name, $sub_old_name, $db_type, false, $sub_new_name);
+            foreach ($queries as $query) {
+                $this_ref->_query($query);
+            }
+        }
+    }
+
+    // Work out field type
+    $_type = $type;
+    if ((strpos($type, '_TRANS') !== false) && (!multi_lang_content())) {
+        $_type = 'LONG_TEXT'; // In the DB layer, it must now save as such
+    }
+    $__type = str_replace(['*', '?'], ['', ''], $_type);
+    $type_remap = $this_ref->driver->get_type_remap();
+    $db_type = $type_remap[$__type];
+
+    // Work out and run SQL
+    $queries = $this_ref->driver->alter_table_field__sql($this_ref->table_prefix . $table_name, $name, $db_type, $_type[0] == '?', ($new_name === null) ? $name : $new_name);
+    foreach ($queries as $query) {
+        $this_ref->_query($query);
+    }
+
+    // Adjust meta database
+    $update_map = ['m_type' => $type];
     if ($new_name !== null) {
         $update_map['m_name'] = $new_name;
     }
     $this_ref->query_update('db_meta', $update_map, ['m_table' => $table_name, 'm_name' => $name]);
 
+    // Adjust indices in meta database
     if ($new_name !== null) {
         $indices = $this_ref->query_select('db_meta_indices', ['*'], ['i_table' => $table_name]);
         foreach ($indices as $index) {
@@ -766,61 +675,6 @@ function _helper_alter_table_field(object $this_ref, string $table_name, string 
 }
 
 /**
- * Get the SQL to change the type of a DB field in a table. Note: this function does not support ascension/descension of translatability.
- *
- * @param  object $this_ref Link to the real database object
- * @param  ID_TEXT $table_name The table name
- * @param  ID_TEXT $name The field name
- * @param  ID_TEXT $_type The new field type
- * @param  ?ID_TEXT $new_name The new field name (null: leave name)
- * @return string SQL
- *
- * @ignore
- */
-function _helper_alter_table_field_sql(object $this_ref, string $table_name, string $name, string $_type, ?string $new_name = null) : string
-{
-    $type_remap = $this_ref->static_ob->get_type_remap();
-
-    if ((strpos($_type, '__COMCODE') !== false) && ($new_name !== null) && ($new_name != $name) && (!multi_lang_content())) {
-        foreach (['text_parsed' => 'LONG_TEXT', 'source_user' => 'MEMBER'] as $sub_name => $sub_type) {
-            $sub_old_name = $name . '__' . $sub_name;
-            $sub_new_name = $new_name . '__' . $sub_name;
-            $query = 'ALTER TABLE ' . $this_ref->table_prefix . $table_name . ' CHANGE ' . $sub_old_name . ' ' . $sub_new_name . ' ' . $type_remap[$sub_type];
-            if ($sub_name == 'text_parsed') {
-                // $query .= ' DEFAULT \'\'';
-                // ^ Commented out because it throws an error on Windows: "BLOB, TEXT, GEOMETRY or JSON column 'foo__text_parsed' can't have a default value"
-            } elseif ($sub_name == 'source_user') {
-                $query .= ' DEFAULT ' . strval(db_get_first_id());
-            }
-            $query .= ' NOT NULL';
-            $this_ref->_query($query);
-        }
-    }
-
-    $_final_type = $_type;
-    if (strpos($_type, '_TRANS') !== false) {
-        if (!multi_lang_content()) {
-            $_final_type = 'LONG_TEXT'; // In the DB layer, it must now save as such
-        }
-    }
-
-    if ($_final_type[0] == '?') {
-        $tag = ' NULL';
-    } else {
-        $tag = ' NOT NULL';
-    }
-    $final_type = str_replace(['*', '?'], ['', ''], $_final_type);
-    $extra = ($new_name !== null) ? $new_name : $name;
-    $query = 'ALTER TABLE ' . $this_ref->table_prefix . $table_name;
-    $query .= ' CHANGE ';
-    $e = $this_ref->static_ob->get_field_encapsulator();
-    $query .= $e . $name . $e; // Encapsulated in case we renamed due to change in keywords
-    $query .= ' ' . $extra . ' ' . $type_remap[$final_type] . $tag;
-
-    return $query;
-}
-
-/**
  * Change the primary key of a table.
  *
  * @param  object $this_ref Link to the real database object
@@ -833,12 +687,15 @@ function _helper_change_primary_key(object $this_ref, string $table_name, array 
 {
     $this_ref->ensure_connected();
 
-    $this_ref->query('UPDATE ' . $this_ref->get_table_prefix() . 'db_meta SET m_type=REPLACE(m_type,\'*\',\'\') WHERE ' . db_string_equal_to('m_table', $table_name));
+    $this_ref->query('UPDATE ' . $this_ref->table_prefix . 'db_meta SET m_type=REPLACE(m_type,\'*\',\'\') WHERE ' . db_string_equal_to('m_table', $table_name));
     foreach ($new_key as $_new_key) {
-        $this_ref->query('UPDATE ' . $this_ref->get_table_prefix() . 'db_meta SET m_type=' . db_function('CONCAT', ['\'*\'', 'm_type']) . ' WHERE ' . db_string_equal_to('m_table', $table_name) . ' AND ' . db_string_equal_to('m_name', $_new_key) . ' AND m_type NOT LIKE \'' . db_encode_like('*%') . '\'');
+        $this_ref->query('UPDATE ' . $this_ref->table_prefix . 'db_meta SET m_type=' . db_function('CONCAT', ['\'*\'', 'm_type']) . ' WHERE ' . db_string_equal_to('m_table', $table_name) . ' AND ' . db_string_equal_to('m_name', $_new_key) . ' AND m_type NOT LIKE \'' . db_encode_like('*%') . '\'');
     }
 
-    $this_ref->static_ob->change_primary_key($this_ref->table_prefix . $table_name, $new_key, $this_ref->connection_write);
+    $queries = $this_ref->driver->change_primary_key__sql($this_ref->table_prefix . $table_name, $new_key);
+    foreach ($queries as $sql) {
+        $this_ref->query($sql, $this_ref->connection_write);
+    }
 }
 
 /**
@@ -855,7 +712,7 @@ function _helper_add_auto_key(object $this_ref, string $table_name, string $fiel
     push_query_limiting(false);
 
     // Current key fields
-    $key_sql = 'SELECT m_name FROM ' . $this_ref->get_table_prefix() . 'db_meta WHERE m_type LIKE \'*%\' AND ' . db_string_equal_to('m_table', $table_name);
+    $key_sql = 'SELECT m_name FROM ' . $this_ref->table_prefix . 'db_meta WHERE m_type LIKE \'*%\' AND ' . db_string_equal_to('m_table', $table_name);
     $key_fields = $this_ref->query($key_sql);
     $select = collapse_1d_complexity('m_name', $key_fields);
 
@@ -937,17 +794,17 @@ function _helper_delete_table_field(object $this_ref, string $table_name, string
         mass_delete_lang($table_name, [$name], $this_ref);
     }
 
-    $cols_to_delete = [$name];
+    $fields_to_delete = [$name];
     if (strpos($type, '_TRANS__COMCODE') !== false) {
         if (!multi_lang_content()) {
-            $cols_to_delete[] = $name . '__text_parsed';
-            $cols_to_delete[] = $name . '__source_user';
+            $fields_to_delete[] = $name . '__text_parsed';
+            $fields_to_delete[] = $name . '__source_user';
         }
     }
 
-    foreach ($cols_to_delete as $col) {
-        $query = 'ALTER TABLE ' . $this_ref->table_prefix . $table_name . ' DROP COLUMN ' . $col;
-        $this_ref->_query($query);
+    foreach ($fields_to_delete as $_name) {
+        $query = $this_ref->driver->alter_delete_table_field__sql($this_ref->table_prefix . $table_name, $_name);
+        $this_ref->query($query);
     }
 
     $this_ref->query_delete('db_meta', ['m_table' => $table_name, 'm_name' => $name]);

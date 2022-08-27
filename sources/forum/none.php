@@ -145,8 +145,8 @@ class Forum_driver_none extends Forum_driver_base
         global $PROBED_FORUM_CONFIG;
         $PROBED_FORUM_CONFIG = [];
         $PROBED_FORUM_CONFIG['sql_database'] = 'cms';
-        $PROBED_FORUM_CONFIG['sql_user'] = $GLOBALS['DB_STATIC_OBJECT']->default_user();
-        $PROBED_FORUM_CONFIG['sql_pass'] = $GLOBALS['DB_STATIC_OBJECT']->default_password();
+        $PROBED_FORUM_CONFIG['sql_user'] = $GLOBALS['DB_DRIVER']->default_user();
+        $PROBED_FORUM_CONFIG['sql_pass'] = $GLOBALS['DB_DRIVER']->default_password();
         return true;
     }
 

@@ -91,10 +91,6 @@ class Forum_driver_vb3 extends Forum_driver_base
      */
     public function install_create_custom_field(string $name, int $length, int $locked = 1, int $viewable = 0, int $settable = 0, int $required = 0) : bool
     {
-        if (!array_key_exists('vb_table_prefix', $_POST)) {
-            $_POST['vb_table_prefix'] = ''; // for now
-        }
-
         $name = 'cms_' . $name;
         if ((!isset($GLOBALS['SITE_INFO']['vb_version'])) || ($GLOBALS['SITE_INFO']['vb_version'] >= 3.6)) {
             $r = $this->db->query('SELECT f.profilefieldid FROM ' . $this->db->get_table_prefix() . 'profilefield f LEFT JOIN ' . $this->db->get_table_prefix() . 'phrase p ON ' . db_string_equal_to('product', 'vbulletin') . ' AND p.varname=' . db_function('CONCAT', ['\'field\'', 'f.profilefieldid', '\'_title\'']) . ' WHERE ' . db_string_equal_to('p.text', $name));
@@ -107,10 +103,12 @@ class Forum_driver_vb3 extends Forum_driver_base
                 $key = $this->db->query_insert('profilefield', ['required' => $required, 'hidden' => 1 - $viewable, 'maxlength' => $length, 'size' => $length, 'editable' => $settable], true);
                 $this->db->query_insert('phrase', ['languageid' => 0, 'varname' => 'field' . strval($key) . '_title', 'fieldname' => 'cprofilefield', 'text' => $name, 'product' => 'vbulletin', 'username' => '', 'dateline' => 0, 'version' => '']);
             } else {
-                $this->db->query('INSERT INTO ' . $_POST['vb_table_prefix'] . 'profilefield (title,description,required,hidden,maxlength,size,editable) VALUES (\'' . db_escape_string($name) . '\',\'\',' . strval($required) . ',' . strval(1 - $viewable) . ',\'' . strval($length) . '\',\'' . strval($length) . '\',' . strval($settable) . ')');
+                $this->db->query_insert('profilefield', ['title' => $name, 'description' =>'', 'required' => $required, 'hidden' => 1 - $viewable, 'maxlength' => $length, 'size' => $length, 'editable' => $settable]);
                 $key = $this->db->query_select_value('profilefield', 'MAX(profilefieldid)');
             }
-            $this->db->query('ALTER TABLE ' . $_POST['vb_table_prefix'] . 'userfield ADD field' . strval($key) . ' TEXT', null, 0, true); // Suppress errors in case field already exists
+            $query = $this->db->driver->add_table_field__sql($this->db->get_table_prefix() . 'userfield', 'field' . strval($key), 'LONG_TEXT', '');
+            $this->db->query($query, null, 0, true); // Suppress errors in case field already exists
+
             return true;
         }
         return false;

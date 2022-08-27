@@ -75,7 +75,7 @@ function disable_content_translation()
 
     $db = $GLOBALS['SITE_DB'];
 
-    $type_remap = $GLOBALS['DB_STATIC_OBJECT']->get_type_remap();
+    $type_remap = $db->driver->get_type_remap();
 
     $_table_lang_fields = $db->query('SELECT m_table,m_name,m_type FROM ' . $db->get_table_prefix() . 'db_meta WHERE m_type LIKE \'' . db_encode_like('%\_TRANS%') . '\' ORDER BY m_table,m_name');
     foreach ($_table_lang_fields as $field) {
@@ -90,16 +90,16 @@ function disable_content_translation()
         }
         foreach ($to_add as $sub_name => $sub_type) {
             $sub_name = $field['m_name'] . '__' . $sub_name;
-            $query = 'ALTER TABLE ' . $db->table_prefix . $field['m_table'] . ' ADD ' . $sub_name . ' ' . $type_remap[$sub_type];
-            if ($sub_name == $field['m_name'] . '__' . 'text_parsed') {
-                //$query .= ' DEFAULT \'\''; Gives "BLOB, TEXT, GEOMETRY or JSON column 'xxx__text_parsed' can't have a default value"
-            } elseif ($sub_name == $field['m_name'] . '__' . 'new') {
-                //Actually this causes issues in at least MySQL 5.6 and MySQL 8.0 (defaults not allowed for blobby fields) $query .= ' DEFAULT \'\''; // Has a default of '' for now, will be removed further down
-            } elseif ($sub_name == $field['m_name'] . '__' . 'source_user') {
-                $query .= ' DEFAULT ' . strval(db_get_first_id());
+
+            $sub_default = mixed();
+            if ($sub_type == 'LONG_TEXT') {
+                $sub_default = '';
+            } else {
+                $sub_default = db_get_first_id();
             }
-            $query .= ' NOT NULL';
-            $db->_query($query);
+
+            $query = $db->driver->add_table_field__sql($db->table_prefix . $field['m_table'], $sub_name, $sub_type, $sub_default);
+            $db->query($query);
         }
 
         // Copy from translate table
@@ -112,12 +112,14 @@ function disable_content_translation()
         $db->_query($query);
 
         // Delete old main field
-        $query = 'ALTER TABLE ' . $db->table_prefix . $field['m_table'] . ' DROP COLUMN ' . $field['m_name'];
-        $db->_query($query);
+        $query = $db->driver->alter_delete_table_field__sql($db->table_prefix . $field['m_table'], $field['m_name']);
+        $db->query($query);
 
-        // Rename Comcode field to main field, and don't put default of '' on it anymore
-        $query = 'ALTER TABLE ' . $db->table_prefix . $field['m_table'] . ' CHANGE ' . $field['m_name'] . '__new ' . $field['m_name'] . ' ' . $type_remap['LONG_TEXT'] . ' NOT NULL';
-        $db->_query($query);
+        // Rename Comcode field to main field
+        $queries = $db->driver->alter_table_field__sql($db->table_prefix . $field['m_table'], $field['m_name'] . '__new', $type_remap['LONG_TEXT'], false, $field['m_name']);
+        foreach ($queries as $query) {
+            $db->query($query);
+        }
 
         // Create full-text search index
         $GLOBALS['SITE_DB']->create_index($field['m_table'], '#' . $field['m_name'], [$field['m_name']]);
@@ -157,7 +159,7 @@ function enable_content_translation()
 
     $db = $GLOBALS['SITE_DB'];
 
-    $type_remap = $GLOBALS['DB_STATIC_OBJECT']->get_type_remap();
+    $type_remap = $db->driver->get_type_remap();
 
     $_table_lang_fields = $db->query('SELECT m_table,m_name,m_type FROM ' . $db->get_table_prefix() . 'db_meta WHERE m_type LIKE \'' . db_encode_like('%\_TRANS%') . '\' ORDER BY m_table,m_name');
     foreach ($_table_lang_fields as $field) {
@@ -169,30 +171,14 @@ function enable_content_translation()
         $GLOBALS['SITE_DB']->delete_index_if_exists($field['m_table'], '#' . $field['m_name']);
 
         // Rename main field to temporary one
-        $query = 'ALTER TABLE ' . $db->table_prefix . $field['m_table'] . ' CHANGE ' . $field['m_name'] . ' ' . $field['m_name'] . '__old ' . $type_remap['LONG_TEXT'];
-        $db->_query($query);
-
-        $_type = $field['m_type'];
-        if (substr($_type, 0, 1) == '*') {
-            $_type = substr($_type, 1);
-        }
-        if (substr($_type, 0, 1) == '?') {
-            $_type = substr($_type, 1);
+        $queries = $db->driver->alter_table_field__sql($db->table_prefix . $field['m_table'], $field['m_name'], $type_remap['LONG_TEXT'], false, $field['m_name'] . '__old');
+        foreach ($queries as $query) {
+            $db->query($query);
         }
 
         // Add new field for translate reference
-        $query = 'ALTER TABLE ' . $db->table_prefix . $field['m_table'] . ' ADD ' . $field['m_name'] . ' ' . $type_remap[$_type];
-        $query .= ' DEFAULT 0';
-        if (substr($field['m_type'], 0, 1) != '?') {
-            $query .= ' NOT NULL';
-        }
-        $db->_query($query);
-        // Now alter it without the default
-        $query = 'ALTER TABLE ' . $db->table_prefix . $field['m_table'] . ' CHANGE ' . $field['m_name'] . ' ' . $field['m_name'] . ' ' . $type_remap[$_type];
-        if (substr($field['m_type'], 0, 1) != '?') {
-            $query .= ' NOT NULL';
-        }
-        $db->_query($query);
+        $query = $db->driver->add_table_field__sql($db->table_prefix . $field['m_table'], $field['m_name'], $field['m_type'], 0);
+        $db->query($query);
 
         $has_comcode = (strpos($field['m_type'], '__COMCODE') !== false);
 
@@ -234,8 +220,8 @@ function enable_content_translation()
         }
         foreach ($to_delete as $sub_name) {
             $sub_name = $field['m_name'] . '__' . $sub_name;
-            $query = 'ALTER TABLE ' . $db->table_prefix . $field['m_table'] . ' DROP COLUMN ' . $sub_name;
-            $db->_query($query);
+            $query = $db->driver->alter_delete_table_field__sql($db->table_prefix . $field['m_table'], $sub_name);
+            $db->query($query);
         }
 
         reload_lang_fields(true, $field['m_table']);

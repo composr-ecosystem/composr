@@ -624,7 +624,7 @@ function get_sql_dump($out_file, bool $include_drops = false, bool $output_statu
     require_code('database/' . filter_naughty_harsh($intended_db_type));
     $db_static = object_factory('Database_Static_' . filter_naughty_harsh($intended_db_type), false, [get_table_prefix()]);
 
-    if (!$GLOBALS['DB_STATIC_OBJECT']->has_drop_table_if_exists($db->connection_write)) {
+    if (!$db->driver->has_drop_table_if_exists($db->connection_write)) {
         $include_drops = false; // "DROP IF EXISTS" only supported on some DBs.
     }
 
@@ -756,7 +756,7 @@ function get_sql_dump($out_file, bool $include_drops = false, bool $output_statu
                     }
                 }
 
-                if ((!$db->static_ob->has_batch_inserts()) || (!isset($data[$row_counter + 1])) || (($row_counter != 0) && ($row_counter % 40) == 0)) {
+                if ((!$db->driver->has_batch_inserts()) || (!isset($data[$row_counter + 1])) || (($row_counter != 0) && ($row_counter % 40) == 0)) {
                     $sql = 'INSERT INTO ' . $db->get_table_prefix() . $table_name . ' (' . $keys . ') VALUES ' . $values_buildup . '(' . $all_values[0] . ')';
                     fwrite($out_file, $sql . ";\n");
 

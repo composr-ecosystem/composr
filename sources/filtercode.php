@@ -628,7 +628,7 @@ function _default_conv_func(object $db, array $info, ?string $catalogue_name, ar
                     $clause = 'SELECT AVG(' . db_cast('rating' , 'FLOAT') . ') OVER (ORDER BY rating_time DESC ROWS BETWEEN 0 PRECEDING AND ' . strval(intval($time_sensitivity)) . ' FOLLOWING)/2 FROM ' . $table_and_where;
                     $clause = '(' . $db->apply_sql_limit_clause($clause, 1) . ')';
                 } else {
-                    // The below may work in databases that do not support window functions - but won't work in MariaDB or MySQL < 8.0.14
+                    // The below should work in databases that do not support window functions - but won't work in MariaDB or MySQL < 8.0.14
                     $table_and_where = '(' . $db->apply_sql_limit_clause('SELECT * FROM ' . $table_and_where, $time_sensitivity) . ') ' . uniqid('', false);
                     $clause = '(SELECT AVG(' . db_cast('rating' , 'FLOAT') . ')/2 FROM ' . $table_and_where . ')';
                 }
@@ -950,7 +950,7 @@ function filtercode_to_sql(object $db, ?array $filters, ?string $content_type = 
                     break;
 
                 case '~':
-                    if (($GLOBALS['SITE_DB']->has_full_text($table, $filter_key)) && (strlen($filter_val) > $GLOBALS['SITE_DB']->get_minimum_search_length())) {
+                    if (($GLOBALS['SITE_DB']->has_full_text($table, $filter_key)) && (strlen($filter_val) > $GLOBALS['SITE_DB']->driver->get_minimum_search_length())) {
                         if ($filter_val != '') {
                             if ($alt != '') {
                                 $alt .= ' OR ';

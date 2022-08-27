@@ -823,19 +823,19 @@ function newsletter_domain_subscriber_stats(string $key) : array
     $start = 0;
     do {
         if (substr($key, 0, 1) == 'g') {
-            if ($GLOBALS['DB_STATIC_OBJECT']->has_expression_ordering()) {
+            if ($GLOBALS['FORUM_DB']->driver->has_expression_ordering()) {
                 $rows = $GLOBALS['FORUM_DB']->query_select('f_members', ['DISTINCT m_email_address AS email', 'COUNT(*) as cnt'], ['m_allow_emails' => 1, 'm_primary_group' => intval(substr($key, 1))], 'GROUP BY SUBSTRING_INDEX(m_email_address,\'@\',-1)'); // Far less PHP processing
             } else {
                 $rows = $GLOBALS['FORUM_DB']->query_select('f_members', ['DISTINCT m_email_address AS email'], ['m_allow_emails' => 1, 'm_primary_group' => intval(substr($key, 1))], '', 500, $start);
             }
         } elseif ($key == '-1') {
-            if ($GLOBALS['DB_STATIC_OBJECT']->has_expression_ordering()) {
+            if ($GLOBALS['FORUM_DB']->driver->has_expression_ordering()) {
                 $rows = $GLOBALS['FORUM_DB']->query_select('f_members', ['DISTINCT m_email_address AS email', 'COUNT(*) as cnt'], ['m_allow_emails' => 1], 'GROUP BY SUBSTRING_INDEX(m_email_address,\'@\',-1)'); // Far less PHP processing
             } else {
                 $rows = $GLOBALS['FORUM_DB']->query_select('f_members', ['DISTINCT m_email_address AS email'], ['m_allow_emails' => 1], '', 500, $start);
             }
         } else {
-            if ($GLOBALS['DB_STATIC_OBJECT']->has_expression_ordering()) {
+            if ($GLOBALS['FORUM_DB']->driver->has_expression_ordering()) {
                 $rows = $GLOBALS['SITE_DB']->query_select('newsletter_subscribe', ['DISTINCT email', 'COUNT(*) as cnt'], [], 'GROUP BY SUBSTRING_INDEX(email,\'@\',-1)'); // Far less PHP processing
             } else {
                 $where = ['newsletter_id' => $key, 'code_confirm' => 0];
@@ -859,7 +859,7 @@ function newsletter_domain_subscriber_stats(string $key) : array
         }
 
         $start += 500;
-    } while ((array_key_exists(0, $rows)) && (!$GLOBALS['DB_STATIC_OBJECT']->has_expression_ordering()));
+    } while ((array_key_exists(0, $rows)) && (!$GLOBALS['FORUM_DB']->driver->has_expression_ordering()));
 
     arsort($domains);
 

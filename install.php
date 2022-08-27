@@ -756,7 +756,7 @@ function step_4() : object
 
     require_code('database');
     require_code('database/' . $db_type);
-    $GLOBALS['DB_STATIC_OBJECT'] = object_factory('Database_Static_' . $db_type, false, [$table_prefix]);
+    $GLOBALS['DB_DRIVER'] = object_factory('Database_Static_' . $db_type, false, [$table_prefix]);
 
     // Probing
 
@@ -1004,7 +1004,7 @@ function step_4() : object
                 $forum_text = do_lang_tempcode('AUTODETECT');
             }
             $forum_options->attach(make_option(do_lang_tempcode('DATABASE_NAME'), new Tempcode(), 'db_forums', $db_forums, false, true));
-            if (!$GLOBALS['DB_STATIC_OBJECT']->is_flat_file_simple()) {
+            if (!$GLOBALS['DB_DRIVER']->is_flat_file_simple()) {
                 $forum_options->attach(make_option(do_lang_tempcode('DATABASE_HOST'), example('', 'DATABASE_HOST_TEXT'), 'db_forums_host', $db_forums_host, false, true));
                 $forum_options->attach(make_option(do_lang_tempcode('DATABASE_USERNAME'), new Tempcode(), 'db_forums_user', $db_forums_user, false, true));
                 $forum_options->attach(make_option(do_lang_tempcode('DATABASE_PASSWORD'), new Tempcode(), 'db_forums_password', $db_forums_password, true));
@@ -1038,7 +1038,7 @@ function step_4() : object
 
     $text = ($use_msn == 1) ? do_lang_tempcode(($forum_type == 'cns') ? 'DUPLICATE_CNS' : 'DUPLICATE') : new Tempcode();
     $options = make_option(do_lang_tempcode('DATABASE_NAME'), new Tempcode(), 'db_site', $db_site, false, true);
-    if (!$GLOBALS['DB_STATIC_OBJECT']->is_flat_file_simple()) {
+    if (!$GLOBALS['DB_DRIVER']->is_flat_file_simple()) {
         $options->attach(make_option(do_lang_tempcode('DATABASE_HOST'), example('', 'DATABASE_HOST_TEXT'), 'db_site_host', $db_site_host, false, true));
         $options->attach(make_option(do_lang_tempcode('DATABASE_USERNAME'), new Tempcode(), 'db_site_user', $db_site_user, false, true));
         $options->attach(make_option(do_lang_tempcode('DATABASE_PASSWORD'), new Tempcode(), 'db_site_password', $db_site_password, true));
@@ -2016,7 +2016,7 @@ function step_5_core() : object
         'broken' => 'BINARY',
         'source_user' => 'MEMBER',
     ];
-    if (strpos(get_db_type(), 'sqlserver') !== false) { // Full-text search requires a single key
+    if ($GLOBALS['SITE_DB']->driver->full_text_needs_single_key()) { // HACKHACK: Full-text search requires a single key
         $fields['_id'] = '*AUTO';
         $fields['id'] = 'AUTO_LINK';
         $fields['language'] = 'LANGUAGE_NAME';
@@ -2025,8 +2025,9 @@ function step_5_core() : object
     $GLOBALS['SITE_DB']->create_index('translate', '#tsearch', ['text_original']);
     $GLOBALS['SITE_DB']->create_index('translate', 'importance_level', ['importance_level']);
     if (strpos(get_db_type(), 'mysql') !== false) {
-        $GLOBALS['SITE_DB']->create_index('translate', 'equiv_lang', ['text_original(4)']);
-        $GLOBALS['SITE_DB']->create_index('translate', 'decache', ['text_parsed(2)']);
+        // Only MySQL has these prefix indexes https://compo.sr/tracker/view.php?id=4909
+        $GLOBALS['SITE_DB']->create_index('translate', 'equiv_lang', ['text_original(4)']); // Make finding particular strings easier, but this is not a common operation
+        $GLOBALS['SITE_DB']->create_index('translate', 'decache', ['text_parsed(2)']); // Makes Comcode cache emptying a little faster, but this is not a common operation
     }
 
     $GLOBALS['SITE_DB']->drop_table_if_exists('values');

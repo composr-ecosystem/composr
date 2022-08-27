@@ -21,7 +21,7 @@
 /*EXTRA FUNCTIONS: glob*/
 
 /*
-    Known (intentional) issues in SQL support (we are targeting rough MySQL-4.3 parity, similar to SQL-92)
+    Known (intentional) issues in SQL support (we are targeting rough MySQL-4.3 parity, similar to SQL-92):
         We support a few SQL/MySQL functions, the ones the Composr db_function outputs and the very basic operators. However we prefix with 'X_' so that we don't accidentally code in assumptions about MySQL.
         We do not support SQL data types, we use Composr ones instead.
         We do not have any special table/field naming escaping support-- so you need to use names that aren't awkward
@@ -30,7 +30,7 @@
         We ARE type strict, unlike MySQL (even MySQL strict mode won't complain if a type conversion is always lossless, such as integer to string)
         Data Control Language (DCL) is not supported
         Information schemas are not supported
-        We are case sensitive
+        We are case sensitive (as is MySQL on Linux systems)
         Semi-colons to split queries are not supported at the driver level
         Temporary tables are not supported
         Views are not supported
@@ -39,20 +39,23 @@
         COUNT only works on fields or the '*' wildcard, not any expressions or 'alias.*', unless DISTINCT is used
         DISTINCT is not supported in aggregate functions other than COUNT
         Full-text-search is not supported
-        ANY, ALL subquery syntax
-        ROW constructors
-        Stored queries
-        Prepared statements
+        ANY, ALL subquery syntax is not supported
+        ROW constructors are not supported
+        Stored queries are not supported
+        Prepared statements are not supported
         Special foreign key support is not supported
-        INTERSECT and EXCEPT are not supported
+        INTERSECT and EXCEPT and MINUS are not supported
         JOIN's are not supported in DELETE or UPDATE queries
         Character set support is just whatever Composr is set to; there is no special supported
         SELECT INTO is not supported
-        Detection of missing field in SELECT wrt ORDER BY or GROUP BY is not 100% perfect when joining/aliasing tables
         Default values for fields are not supported
         Field naming for things like COUNT(*) will not be consistent with MySQL
         You must specify the field names in INSERT queries
+    The following are deficits that don't matter as the queries around them are invalid anyway, so would not exist at the point of the XML driver being used:
+        Detection of missing field in SELECT wrt ORDER BY or GROUP BY is not 100% perfect when joining/aliasing tables
+    The following issues would be nice to resolve but MIGHT be challenging:
         Expressions in ORDER BY clauses will be ignored
+        Comments are not supported (we have to support at the lexer level, as we can't mess with quoted strings)
     This database system is intended only for Composr, and not as a general purpose database. In Composr our philosophy is to write logic in PHP, not SQL, hence the subset supported.
     Also as we have to target a database baseline across multiple vendors we can't implement some more sophisticated featured, in case programmers rely on them!
 */
@@ -221,36 +224,69 @@ class Database_Static_xml extends DatabaseDriver
     }
 
     /**
+     * Get SQL for changing the type of a DB field in a table. Note: this function does not support ascension/descension of translatability.
+     *
+     * @param  ID_TEXT $table_name The table name
+     * @param  ID_TEXT $name The field name
+     * @param  ID_TEXT $db_type The new field type
+     * @param  boolean $may_be_null If the field may be null
+     * @param  ID_TEXT $new_name The new field name
+     * @return array List of SQL queries to run
+     */
+    public function alter_table_field__sql(string $table_name, string $name, string $db_type, bool $may_be_null, string $new_name) : array
+    {
+        $sql_type = $db_type . ' ' . ($may_be_null ? 'NULL' : 'NOT NULL');
+
+        $query = 'ALTER TABLE ' . $table_name . ' CHANGE ' . $name . ' ' . $new_name . ' ' . $sql_type;
+
+        return [$query];
+    }
+
+    /**
      * Get SQL for creating a table index.
      *
      * @param  ID_TEXT $table_name The name of the table to create the index on
      * @param  ID_TEXT $index_name The index name (not really important at all)
      * @param  string $_fields Part of the SQL query: a comma-separated list of fields to use on the index
-     * @param  mixed $connection The DB connection to make on
+     * @param  mixed $connection_read The DB connection, may be used for running checks
      * @param  ID_TEXT $raw_table_name The table name with no table prefix
      * @param  string $unique_key_fields The name of the unique key field for the table
      * @param  string $table_prefix The table prefix
      * @return array List of SQL queries to run
      */
-    public function create_index(string $table_name, string $index_name, string $_fields, $connection, string $raw_table_name, string $unique_key_fields, string $table_prefix) : array
+    public function create_index__sql(string $table_name, string $index_name, string $_fields, $connection_read, string $raw_table_name, string $unique_key_fields, string $table_prefix) : array
     {
         // Indexes not supported
         return [];
     }
 
     /**
-     * Change the primary key of a table.
+     * Get SQL for deleting a table index.
+     *
+     * @param  ID_TEXT $table_name The name of the table the index is on
+     * @param  ID_TEXT $index_name The index name
+     * @return ?string SQL query to run (null: not supported)
+     */
+    public function drop_index__sql(string $table_name, string $index_name) : ?string
+    {
+        return null;
+    }
+
+    /**
+     * Get SQL for changing the primary key of a table.
      *
      * @param  ID_TEXT $table_name The name of the table to create the index on
      * @param  array $new_key A list of fields to put in the new key
-     * @param  mixed $db The DB connection to make on
+     * @return array List of SQL queries to run
      */
-    public function change_primary_key(string $table_name, array $new_key, $db)
+    public function change_primary_key__sql(string $table_name, array $new_key) : array
     {
-        $this->query('UPDATE db_meta SET m_type=X_REPLACE(m_type,\'*\',\'\') WHERE ' . db_string_equal_to('m_table', $table_name), $db);
+        $queries = [];
+        $queries[] = 'UPDATE db_meta SET m_type=X_REPLACE(m_type,\'*\',\'\') WHERE ' . db_string_equal_to('m_table', $table_name);
         foreach ($new_key as $_new_key) {
-            $this->query('UPDATE db_meta SET m_type=' . db_function('CONCAT', ['\'*\'', 'm_type']) . ' WHERE ' . db_string_equal_to('m_table', $table_name) . ' AND ' . db_string_equal_to('m_name', $_new_key), $db);
+            $queries[] = 'UPDATE db_meta SET m_type=' . db_function('CONCAT', ['\'*\'', 'm_type']) . ' WHERE ' . db_string_equal_to('m_table', $table_name) . ' AND ' . db_string_equal_to('m_name', $_new_key);
         }
+        return $queries;
     }
 
     /**
@@ -263,7 +299,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  boolean $save_bytes Whether to use lower-byte table storage, with trade-offs of not being able to support all unicode characters; use this if key length is an issue
      * @return array List of SQL queries to run
      */
-    public function create_table(string $table_name, array $fields, $connection, string $raw_table_name, bool $save_bytes = false) : array
+    public function create_table__sql(string $table_name, array $fields, $connection, string $raw_table_name, bool $save_bytes = false) : array
     {
         $type_remap = $this->get_type_remap();
 
@@ -294,6 +330,18 @@ class Database_Static_xml extends DatabaseDriver
         $query = 'CREATE TABLE ' . $table_name . ' (' . "\n" . $_fields . '    PRIMARY KEY (' . $keys . ")\n)";
 
         return [$query];
+    }
+
+    /**
+     * Get SQL for renaming a table.
+     *
+     * @param  ID_TEXT $old Old name
+     * @param  ID_TEXT $new New name
+     * @return string SQL query to run
+     */
+    public function rename_table__sql(string $old, string $new) : string
+    {
+        return 'RENAME TABLE ' . $old . ' ' . $new;
     }
 
     /**
@@ -467,6 +515,18 @@ class Database_Static_xml extends DatabaseDriver
     public function has_truncate_table() : bool
     {
         return true;
+    }
+
+    /**
+     * Get the character used to surround fields to protect from keyword status.
+     * We generally only use it when renaming fields (renaming them on upgrade so that we don't get a conflict with a keyword).
+     *
+     * @param  boolean $end Whether to get end character
+     * @return string Character (blank: has none defined)
+     */
+    public function get_delimited_identifier(bool $end = false) : string
+    {
+        return '';
     }
 
     /**
@@ -2062,6 +2122,28 @@ class Database_Static_xml extends DatabaseDriver
                 $expr = [$token, $expr1, $expr2, $expr3];
                 break;
 
+            case 'X_REVERSE':
+                if (!$this->_parsing_expects($at, $tokens, '(', $query)) {
+                    return null;
+                }
+                $expr1 = $this->_parsing_read_expression($at, $tokens, $query, $db, true, true, $fail_ok);
+                if (!$this->_parsing_expects($at, $tokens, ')', $query)) {
+                    return null;
+                }
+                $expr = [$token, $expr1];
+                break;
+
+            case 'X_ABS':
+                if (!$this->_parsing_expects($at, $tokens, '(', $query)) {
+                    return null;
+                }
+                $expr1 = $this->_parsing_read_expression($at, $tokens, $query, $db, true, true, $fail_ok);
+                if (!$this->_parsing_expects($at, $tokens, ')', $query)) {
+                    return null;
+                }
+                $expr = [$token, $expr1];
+                break;
+
             case 'X_LENGTH':
                 if (!$this->_parsing_expects($at, $tokens, '(', $query)) {
                     return null;
@@ -2525,6 +2607,20 @@ class Database_Static_xml extends DatabaseDriver
                     $vals[] = $value;
                 }
                 return implode('', $vals);
+
+            case 'X_REVERSE':
+                $value = $this->_execute_expression($expr[1], $bindings, $query, $db, $fail_ok, $full_set);
+                if ($value === null) {
+                    return null;
+                }
+                return strrev($value);
+
+            case 'X_ABS':
+                $value = $this->_execute_expression($expr[1], $bindings, $query, $db, $fail_ok, $full_set);
+                if ($value === null) {
+                    return null;
+                }
+                return abs($value);
 
             case 'X_LENGTH':
                 $value = $this->_execute_expression($expr[1], $bindings, $query, $db, $fail_ok, $full_set);

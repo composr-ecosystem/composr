@@ -195,7 +195,7 @@ Never-the-less, it encourages good coding discipline -- clean, intuitive code.
 
 [title="3"]MySQL errors[/title]
 
-Composr is not just built for MySQL. It is designed to work with any kind of database software. It is all to common for developers to assume specifics of the MySQL platform are standard SQL and can be used freely. MySQL in fact is very non-standard in certain ways. Composr enables "MySQL strict mode" to force MySQL to (correctly) complain when mistakes (such as non-specified field values) are made.
+Composr is not just built for MySQL. It is designed to work with any kind of SQL-based database software. It is all to common for developers to assume specifics of the MySQL platform are standard SQL and can be used freely. MySQL in fact is very non-standard in certain ways. Composr enables "MySQL strict mode" to force MySQL to (correctly) complain when mistakes (such as non-specified field values) are made.
 
 It is advisable for you to:
  - write SQL conservatively: avoid SQL syntax/functionality that Composr does not already use somewhere because that syntax/functionality probably is vendor-specific

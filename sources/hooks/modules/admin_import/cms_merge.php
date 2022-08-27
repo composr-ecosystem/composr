@@ -202,7 +202,7 @@ class Hook_import_cms_merge
                 if (empty($SITE_INFO['db_forums_host'])) {
                     $SITE_INFO['db_forums_host'] = 'localhost';
                 }
-                $same_forum = (!isset($SITE_INFO['db_forums'])) || ($this_site_info['db_forums'] == $SITE_INFO['db_forums']) && ($this_site_info['db_forums_host'] == $SITE_INFO['db_forums_host']) && ($db->table_prefix);
+                $same_forum = (!isset($SITE_INFO['db_forums'])) || ($this_site_info['db_forums'] == $SITE_INFO['db_forums']) && ($this_site_info['db_forums_host'] == $SITE_INFO['db_forums_host']) && ($db->get_table_prefix());
                 if (($this_site_info['forum_type'] != 'cns') && (!$same_forum)) {
                     attach_message(do_lang_tempcode('ERROR_NOT_CORRECT_LINKING'), 'warn');
                     $bad = true;
