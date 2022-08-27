@@ -478,7 +478,7 @@ function _helper_drop_table_if_exists(object $this_ref, string $table)
 
     $queries = $this_ref->driver->drop_table_if_exists__sql($this_ref->table_prefix . $table);
     foreach ($queries as $sql) {
-        $this_ref->query($sql, $this_ref->connection_write, null, 0, true); // Might already exist so suppress errors
+        $this_ref->query($sql, null, 0, true); // Might already exist so suppress errors
     }
 
     if (function_exists('persistent_cache_delete')) {

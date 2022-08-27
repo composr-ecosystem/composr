@@ -55,7 +55,6 @@
         Detection of missing field in SELECT wrt ORDER BY or GROUP BY is not 100% perfect when joining/aliasing tables
     The following issues would be nice to resolve but MIGHT be challenging:
         Expressions in ORDER BY clauses will be ignored
-        Comments are not supported (we have to support at the lexer level, as we can't mess with quoted strings)
     This database system is intended only for Composr, and not as a general purpose database. In Composr our philosophy is to write logic in PHP, not SQL, hence the subset supported.
     Also as we have to target a database baseline across multiple vendors we can't implement some more sophisticated featured, in case programmers rely on them!
 */
@@ -135,7 +134,7 @@ function _get_sql_keywords() : array
         'WHERE',
         'SELECT', 'FROM', 'AS', 'UNION', 'ALL', 'DISTINCT',
         'INSERT', 'INTO', 'VALUES', 'UPDATE', 'SET', 'DELETE',
-        'ALTER', 'CREATE', 'X_CREATE_TABLE', 'DROP', 'X_DROP_TABLE', 'ADD', 'CHANGE', 'RENAME', 'DEFAULT', 'TABLE', 'PRIMARY', 'KEY',
+        'ALTER', 'CREATE', 'X_CREATE_TABLE', 'DROP', 'X_DROP_TABLE', 'ADD', 'CHANGE', 'RENAME', 'TO', 'DEFAULT', 'TABLE', 'PRIMARY', 'KEY',
         'LIKE', 'IF', 'NOT', 'IS', 'NULL', 'AND', 'OR', 'BETWEEN', 'IN', 'EXISTS',
         'GROUP', 'BY', 'ORDER', 'ASC', 'DESC',
         'JOIN', 'OUTER', 'INNER', 'ON',
@@ -145,6 +144,7 @@ function _get_sql_keywords() : array
         '<>', '>', '<', '>=', '<=', '=',
         '"', "'", "\\'",
         '(', ')', ',',
+        '/*', '*/',
         // Anything else is put into a value token
         // Tokens are delimited by white space or one of the symbol tokens
     ];
@@ -341,7 +341,7 @@ class Database_Static_xml extends DatabaseDriver
      */
     public function rename_table__sql(string $old, string $new) : string
     {
-        return 'RENAME TABLE ' . $old . ' ' . $new;
+        return 'ALTER TABLE RENAME TO ' . $old . ' ' . $new;
     }
 
     /**
@@ -597,6 +597,7 @@ class Database_Static_xml extends DatabaseDriver
         $tokens = [];
         $current_token = '';
         $doing_symbol_delimiter = true;
+        $in_comment = false;
         while ($i < $len) {
             $next = $query[$i];
 
@@ -642,8 +643,14 @@ class Database_Static_xml extends DatabaseDriver
                 ) {
                     if (trim($current_token) != '') {
                         if (isset($DELIMITERS_FLIPPED[cms_strtoupper_ascii($current_token)])) {
-                            $tokens[] = cms_strtoupper_ascii($current_token);
-                        } else {
+                            if ($current_token == '/*') {
+                                $in_comment = true;
+                            } elseif ($current_token == '*/') {
+                                $in_comment = false;
+                            } elseif (!$in_comment) {
+                                $tokens[] = cms_strtoupper_ascii($current_token);
+                            }
+                        } elseif (!$in_comment) {
                             $tokens[] = $current_token;
                         }
                     }
@@ -1552,6 +1559,10 @@ class Database_Static_xml extends DatabaseDriver
         $op = $this->_parsing_read($at, $tokens, $query);
         switch ($op) {
             case 'RENAME':
+                if (!$this->_parsing_expects($at, $tokens, 'TO', $query)) {
+                    return null;
+                }
+
                 $new_table_name = $this->_parsing_read($at, $tokens, $query);
                 rename($db[0] . '/' . $table_name, $db[0] . '/' . $new_table_name);
                 sync_file_move($db[0] . '/' . $table_name, $db[0] . '/' . $new_table_name);
@@ -1568,17 +1579,6 @@ class Database_Static_xml extends DatabaseDriver
                 }
                 $data_type = $this->_parsing_read($at, $tokens, $query);
                 $next = $this->_parsing_read($at, $tokens, $query, true);
-                if ($next == 'DEFAULT') {
-                    $_default = $this->_parsing_read_expression($at, $tokens, $query, $db, false, false, $fail_ok);
-                    $default = $this->_execute_expression($_default, [], $query, $db, $fail_ok);
-                } else {
-                    $default = false;
-
-                    if ($next !== null) {
-                        $at--;
-                    }
-                }
-                $next = $this->_parsing_read($at, $tokens, $query, true);
                 $allow_null = null; // No change
                 if ($next !== null) {
                     if ($next == 'NOT') {
@@ -1588,6 +1588,17 @@ class Database_Static_xml extends DatabaseDriver
                     } elseif ($next == 'NULL') {
                         $allow_null = true;
                     } else {
+                        $at--;
+                    }
+                }
+                $next = $this->_parsing_read($at, $tokens, $query, true);
+                if ($next == 'DEFAULT') {
+                    $_default = $this->_parsing_read_expression($at, $tokens, $query, $db, false, false, $fail_ok);
+                    $default = $this->_execute_expression($_default, [], $query, $db, $fail_ok);
+                } else {
+                    $default = false;
+
+                    if ($next !== null) {
                         $at--;
                     }
                 }
@@ -2902,6 +2913,10 @@ class Database_Static_xml extends DatabaseDriver
             return null;
         }
 
+        if (!$this->_parsing_expects($at, $tokens, 'TABLE', $query)) {
+            return null;
+        }
+
         $table_name = $this->_parsing_read($at, $tokens, $query);
 
         $_path = $db[0] . '/' . $table_name;
@@ -4197,7 +4212,7 @@ class Database_Static_xml extends DatabaseDriver
             return $this->_bad_query($query, false, 'Unexpected end of query');
         }
 
-        return preg_replace('#^`(.*)`$#', '${1}', $tokens[$at - 1]);
+        return $tokens[$at - 1];
     }
 
     /**

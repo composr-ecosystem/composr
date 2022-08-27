@@ -761,7 +761,7 @@ abstract class DatabaseDriver
         $__type = str_replace(['*', '?'], ['', ''], $_type);
         $sql_type = $type_remap[$__type] . ' ' . $perhaps_null;
 
-        if (($__type != 'LONG_TEXT') || ($this->driver->has_default_for_text_fields())) {
+        if (($__type != 'LONG_TEXT') || ($this->has_default_for_text_fields())) {
             // We have to provide a default value for any non-NULL field so the database knows what to put in here
             if ($default === null) {
                 $extra = ' DEFAULT NULL';
