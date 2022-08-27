@@ -385,16 +385,6 @@ class Database_Static_oracle extends DatabaseDriver
     }
 
     /**
-     * Find whether table truncation support is present.
-     *
-     * @return boolean Whether it is
-     */
-    public function has_truncate_table() : bool
-    {
-        return true;
-    }
-
-    /**
      * Find whether batch inserts are supported.
      *
      * @return boolean Whether they are

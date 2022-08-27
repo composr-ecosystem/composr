@@ -243,6 +243,16 @@ abstract class Database_super_sqlserver extends DatabaseDriver
     }
 
     /**
+     * Find whether drop table "if exists" is present.
+     *
+     * @return boolean Whether it is
+     */
+    public function has_drop_table_if_exists() : bool
+    {
+        return true;
+    }
+
+    /**
      * Get SQL for renaming a table.
      *
      * @param  ID_TEXT $old Old name
@@ -252,16 +262,6 @@ abstract class Database_super_sqlserver extends DatabaseDriver
     public function rename_table__sql(string $old, string $new) : string
     {
         return 'EXEC sp_rename \'' . $old . '\', \'' . $new . '\'';
-    }
-
-    /**
-     * Find whether table truncation support is present.
-     *
-     * @return boolean Whether it is
-     */
-    public function has_truncate_table() : bool
-    {
-        return true;
     }
 
     /**

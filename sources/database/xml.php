@@ -488,6 +488,16 @@ class Database_Static_xml extends DatabaseDriver
     }
 
     /**
+     * Find whether expression ordering support is present.
+     *
+     * @return boolean Whether it is
+     */
+    public function has_expression_ordering() : bool
+    {
+        return false;
+    }
+
+    /**
      * Find whether full-text-boolean-search is present.
      *
      * @return boolean Whether it is
@@ -503,16 +513,6 @@ class Database_Static_xml extends DatabaseDriver
      * @return boolean Whether it is
      */
     public function has_drop_table_if_exists() : bool
-    {
-        return true;
-    }
-
-    /**
-     * Find whether table truncation support is present.
-     *
-     * @return boolean Whether it is
-     */
-    public function has_truncate_table() : bool
     {
         return true;
     }

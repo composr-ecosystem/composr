@@ -339,11 +339,11 @@ class Database_Static_postgresql extends DatabaseDriver
     }
 
     /**
-     * Find whether table truncation support is present.
+     * Find whether drop table "if exists" is present.
      *
      * @return boolean Whether it is
      */
-    public function has_truncate_table() : bool
+    public function has_drop_table_if_exists() : bool
     {
         return true;
     }

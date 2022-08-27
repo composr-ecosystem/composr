@@ -676,16 +676,6 @@ abstract class Database_super_mysql extends DatabaseDriver
     }
 
     /**
-     * Find whether table truncation support is present.
-     *
-     * @return boolean Whether it is
-     */
-    public function has_truncate_table() : bool
-    {
-        return true;
-    }
-
-    /**
      * Insert a update a row (depending on whether a row with the key exists already).
      *
      * @param  string $table The table name

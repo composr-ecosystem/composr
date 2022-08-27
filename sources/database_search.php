@@ -420,9 +420,7 @@ class Composr_fast_custom_index
                     $key_i++;
                 }
                 $join_condition .= 'i' . strval($i) . '.i_ngram=' . strval($this->crc($ngram));
-                if (strpos(get_db_type(), 'xml') === false) {
-                    $join_condition .= '/*' . str_replace('/', '\\', $ngram) . '*/';
-                }
+                $join_condition .= '/*' . str_replace('/', '\\', $ngram) . '*/';
                 $join_condition .= str_replace('ixxx.', 'i' . strval($i) . '.', $extra_join_clause);
                 $join_condition .= ' AND ' . db_string_equal_to('i' . strval($i) . '.i_lang', $lang);
                 if ($appearance_context !== null) {

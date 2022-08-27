@@ -894,7 +894,7 @@ abstract class DatabaseDriver
      */
     public function has_truncate_table() : bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -969,7 +969,7 @@ abstract class DatabaseDriver
      */
     public function has_expression_ordering() : bool
     {
-        return false;
+        return true;
     }
 
     /**
