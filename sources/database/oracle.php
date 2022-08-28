@@ -149,6 +149,17 @@ class Database_Static_oracle extends DatabaseDriver
     }
 
     /**
+     * Find whether expression ordering support is present.
+     *
+     * @param bool $including_alias_references boolean Whether aliased selected fields may be referenced in the ORDER BY clause
+     * @return boolean Whether it is
+     */
+    public function has_expression_ordering(bool $including_alias_references = false) : bool
+    {
+        return true;
+    }
+
+    /**
      * This function is a very basic query executor. It shouldn't usually be used by you, as there are abstracted versions available.
      *
      * @param  string $query The complete SQL query

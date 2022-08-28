@@ -2104,7 +2104,7 @@ function get_search_rows(?string $meta_type, string $id_field, string $search_qu
 
                     $_where_clause = ' AND ' . preg_replace('#\?#', 't' . strval($i) . '.text_original', $content_where);
 
-                    if (($order == '') && ($db->driver->has_expression_ordering()) && ($content_where != '')) {
+                    if (($order == '') && ($db->driver->has_expression_ordering(true)) && ($content_where != '')) {
                         $_select = preg_replace('#\?#', 't' . strval($i) . '.text_original', $content_where) . ' AS contextual_relevance';
                     } else {
                         $_select = null;
@@ -2125,7 +2125,7 @@ function get_search_rows(?string $meta_type, string $id_field, string $search_qu
 
                         $_where_clause = ' AND ' . preg_replace('#\?#', $field, $content_where);
 
-                        if (($order == '') && ($db->driver->has_expression_ordering()) && ($content_where != '')) {
+                        if (($order == '') && ($db->driver->has_expression_ordering(true)) && ($content_where != '')) {
                             $_select = preg_replace('#\?#', $field, $content_where) . ' AS contextual_relevance';
                         } else {
                             $_select = null;
@@ -2139,7 +2139,7 @@ function get_search_rows(?string $meta_type, string $id_field, string $search_qu
             if (empty($where_alternative_matches)) {
                 $where_alternative_matches[] = [$where_clause, null, $table_clause, null, null];
             } else {
-                if (($order == '') && ($db->driver->has_expression_ordering()) && ($content_where != '')) {
+                if (($order == '') && ($db->driver->has_expression_ordering(true)) && ($content_where != '')) {
                     $order = 'contextual_relevance DESC';
                 }
             }
