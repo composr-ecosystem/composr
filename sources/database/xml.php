@@ -53,8 +53,6 @@
         You must specify the field names in INSERT queries
     The following are deficits that don't matter as the queries around them are invalid anyway, so would not exist at the point of the XML driver being used:
         Detection of missing field in SELECT wrt ORDER BY or GROUP BY is not 100% perfect when joining/aliasing tables
-    The following issues would be nice to resolve but MIGHT be challenging:
-        Expressions in ORDER BY clauses will be ignored
     This database system is intended only for Composr, and not as a general purpose database. In Composr our philosophy is to write logic in PHP, not SQL, hence the subset supported.
     Also as we have to target a database baseline across multiple vendors we can't implement some more sophisticated featured, in case programmers rely on them!
 */
@@ -495,7 +493,7 @@ class Database_Static_xml extends DatabaseDriver
      */
     public function has_expression_ordering(bool $including_alias_references = false) : bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -3115,16 +3113,16 @@ class Database_Static_xml extends DatabaseDriver
             }
         }
 
-        // ORDER
+        // ORDER BY
 
         $token = $this->_parsing_read($at, $tokens, $query, true);
         if ($token === 'ORDER') {
             if (!$this->_parsing_expects($at, $tokens, 'BY', $query)) {
                 return null;
             }
-            $orders = '';
+            $orders = [];
             do {
-                $order = $this->_parsing_read($at, $tokens, $query);
+                $order = $this->_parsing_read_expression($at, $tokens, $query, $db, true, true, $fail_ok);
                 $token = $this->_parsing_read($at, $tokens, $query, true);
                 $reverse = false;
                 if (($token === 'ASC') || ($token === 'DESC') || ($token === ',') || (!array_key_exists($token, $GLOBALS['DELIMITERS_FLIPPED']))) {
@@ -3147,13 +3145,7 @@ class Database_Static_xml extends DatabaseDriver
                         break;
                     }
                 }
-                if ($orders != '') {
-                    $orders .= ',';
-                }
-                if ($reverse) {
-                    $orders .= '!';
-                }
-                $orders .= $order;
+                $orders[] = [$order, $reverse];
                 $test = $this->_parsing_read($at, $tokens, $query, true);
             } while ($test === ',');
             if ($token !== null) {
@@ -3291,7 +3283,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  array $where_expr Where constructs
      * @param  ?array $group_by Grouping by constructs (null: none)
      * @param  ?array $having Having construct (null: none)
-     * @param  ?string $orders Ordering string for sort_maps_by (null: none)
+     * @param  ?array $orders Ordering string for sort_maps_by (null: none)
      * @param  array $unions Union constructs
      * @param  string $query Query that was executed
      * @param  array $db Database connection
@@ -3303,7 +3295,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  ?array $schema Schema filled in function (null: none passed)
      * @return ?mixed The results (null: no results)
      */
-    protected function _execute_query_select(array $select, ?string $as, array $joins, array $where_expr, ?array $group_by, ?array $having, ?string $orders, array $unions, string $query, array $db, ?int $max, int $start, bool $is_distinct, array $bindings, bool $fail_ok, ?array &$schema = null)
+    protected function _execute_query_select(array $select, ?string $as, array $joins, array $where_expr, ?array $group_by, ?array $having, ?array $orders, array $unions, string $query, array $db, ?int $max, int $start, bool $is_distinct, array $bindings, bool $fail_ok, ?array &$schema = null)
     {
         // Execute to get records
         $done = 0;
@@ -3573,7 +3565,30 @@ class Database_Static_xml extends DatabaseDriver
             }
 
             // Do sorting
-            sort_maps_by($records, $orders);
+            $_orders = '';
+            foreach ($orders as $order_i => $order) {
+                if ($_orders != '') {
+                    $_orders .= ',';
+                }
+                if ($order[0][0] == 'FIELD') {
+                    // Optimisation
+                    if ($order[1]) {
+                        $_orders .= '!'; // Reverse order
+                    }
+                    $_orders .= $order[0][1];
+                } else {
+                    // Expression, so we need to calculate expression for all rows and put it somewhere
+                    $order_by_key = '__order_value_' . strval($order_i);
+                    foreach ($records as $h => $record) {
+                        $records[$h][$order_by_key] = $this->_execute_expression($order[0], $record, $query, $db, $fail_ok);
+                    }
+                    if ($order[1]) {
+                        $_orders .= '!'; // Reverse order
+                    }
+                    $_orders .= $order_by_key;
+                }
+            }
+            sort_maps_by($records, $_orders);
         }
 
         // Cut
@@ -3691,11 +3706,10 @@ class Database_Static_xml extends DatabaseDriver
         // See if sorting by something that is not selected
         //  Can't dig into expressions because the XML driver doesn't support ordering by them
         if (($orders !== null) && (!$has_wildcard_selected_fields)) {
-            $matches = [];
-            foreach (explode(',', $orders) as $order) {
-                if (preg_match('#^\!?(\w+)$#', $order, $matches) != 0) {
-                    if ((!in_array($matches[1], preg_replace('#^.*\.#', '', $selected_fields))) && (!in_array($matches[1], preg_replace('#^.*\.#', '', $selected_fields_aliases)))) {
-                        return $this->_bad_query($query, $fail_ok, 'Cannot sort by ' . $matches[1] . ', it\'s not selected');
+            foreach ($orders as $order) {
+                if ($order[0][0] == 'FIELD') {
+                    if ((!in_array($order[0][1], preg_replace('#^.*\.#', '', $selected_fields))) && (!in_array($order[0][1], preg_replace('#^.*\.#', '', $selected_fields_aliases)))) {
+                        return $this->_bad_query($query, $fail_ok, 'Cannot sort by ' . $order[0][1] . ', it\'s not selected');
                     }
                 }
             }
