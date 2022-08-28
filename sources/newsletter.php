@@ -820,46 +820,29 @@ function detect_newsletter_spreadsheet_columns(array $header_row) : array
 function newsletter_domain_subscriber_stats(string $key) : array
 {
     $domains = [];
-    $start = 0;
-    do {
-        if (substr($key, 0, 1) == 'g') {
-            if ($GLOBALS['FORUM_DB']->driver->has_expression_ordering()) {
-                $rows = $GLOBALS['FORUM_DB']->query_select('f_members', ['DISTINCT m_email_address AS email', 'COUNT(*) as cnt'], ['m_allow_emails' => 1, 'm_primary_group' => intval(substr($key, 1))], 'GROUP BY SUBSTRING_INDEX(m_email_address,\'@\',-1)'); // Far less PHP processing
-            } else {
-                $rows = $GLOBALS['FORUM_DB']->query_select('f_members', ['DISTINCT m_email_address AS email'], ['m_allow_emails' => 1, 'm_primary_group' => intval(substr($key, 1))], '', 500, $start);
-            }
-        } elseif ($key == '-1') {
-            if ($GLOBALS['FORUM_DB']->driver->has_expression_ordering()) {
-                $rows = $GLOBALS['FORUM_DB']->query_select('f_members', ['DISTINCT m_email_address AS email', 'COUNT(*) as cnt'], ['m_allow_emails' => 1], 'GROUP BY SUBSTRING_INDEX(m_email_address,\'@\',-1)'); // Far less PHP processing
-            } else {
-                $rows = $GLOBALS['FORUM_DB']->query_select('f_members', ['DISTINCT m_email_address AS email'], ['m_allow_emails' => 1], '', 500, $start);
-            }
-        } else {
-            if ($GLOBALS['FORUM_DB']->driver->has_expression_ordering()) {
-                $rows = $GLOBALS['SITE_DB']->query_select('newsletter_subscribe', ['DISTINCT email', 'COUNT(*) as cnt'], [], 'GROUP BY SUBSTRING_INDEX(email,\'@\',-1)'); // Far less PHP processing
-            } else {
-                $where = ['newsletter_id' => $key, 'code_confirm' => 0];
-                $rows = $GLOBALS['SITE_DB']->query_select('newsletter_subscribe s JOIN ' . get_table_prefix() . 'newsletter_subscribers x ON s.email=x.email', ['DISTINCT s.email'], $where, '', 500, $start);
-            }
-        }
-        foreach ($rows as $row) {
-            $email = $row['email'];
-            if (strpos($email, '@') === false) {
-                continue;
-            }
-            $domain = substr($email, strpos($email, '@') + 1);
-            if (!is_string($domain)) {
-                continue;
-            }
-            $cnt = array_key_exists('cnt', $row) ? $row['cnt'] : 1;
-            if (!array_key_exists($domain, $domains)) {
-                $domains[$domain] = 0;
-            }
-            $domains[$domain] += $cnt;
-        }
 
-        $start += 500;
-    } while ((array_key_exists(0, $rows)) && (!$GLOBALS['FORUM_DB']->driver->has_expression_ordering()));
+    if (substr($key, 0, 1) == 'g') {
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_members', ['DISTINCT m_email_address AS email', 'COUNT(*) as cnt'], ['m_allow_emails' => 1, 'm_primary_group' => intval(substr($key, 1))], 'GROUP BY SUBSTRING_INDEX(m_email_address,\'@\',-1)'); // Far less PHP processing
+    } elseif ($key == '-1') {
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_members', ['DISTINCT m_email_address AS email', 'COUNT(*) as cnt'], ['m_allow_emails' => 1], 'GROUP BY SUBSTRING_INDEX(m_email_address,\'@\',-1)'); // Far less PHP processing
+    } else {
+        $rows = $GLOBALS['SITE_DB']->query_select('newsletter_subscribe', ['DISTINCT email', 'COUNT(*) as cnt'], [], 'GROUP BY SUBSTRING_INDEX(email,\'@\',-1)'); // Far less PHP processing
+    }
+    foreach ($rows as $row) {
+        $email = $row['email'];
+        if (strpos($email, '@') === false) {
+            continue;
+        }
+        $domain = substr($email, strpos($email, '@') + 1);
+        if (!is_string($domain)) {
+            continue;
+        }
+        $cnt = array_key_exists('cnt', $row) ? $row['cnt'] : 1;
+        if (!array_key_exists($domain, $domains)) {
+            $domains[$domain] = 0;
+        }
+        $domains[$domain] += $cnt;
+    }
 
     arsort($domains);
 

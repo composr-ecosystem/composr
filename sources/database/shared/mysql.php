@@ -78,12 +78,11 @@ abstract class Database_super_mysql extends DatabaseDriver
     }
 
     /**
-     * Find whether expression ordering support is present.
+     * Find whether expression ordering can happen using ALIASes from the SELECT clause.
      *
-     * @param bool $including_alias_references boolean Whether aliased selected fields may be referenced in the ORDER BY clause
      * @return boolean Whether it is
      */
-    public function has_expression_ordering(bool $including_alias_references = false) : bool
+    public function has_expression_ordering_by_alias() : bool
     {
         return true;
     }

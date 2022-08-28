@@ -301,10 +301,8 @@ PHP;
             'm_last_visit_time' => do_lang_tempcode('LAST_VISIT_TIME'),
             'm_profile_views' => do_lang_tempcode('PROFILE_VIEWS'),
             'random' => do_lang_tempcode('RANDOM'),
+            'm_total_sessions' => do_lang_tempcode('LOGIN_FREQUENCY'),
         ];
-        if ($GLOBALS['FORUM_DB']->driver->has_expression_ordering()) {
-            $sortables['m_total_sessions'] = do_lang_tempcode('LOGIN_FREQUENCY');
-        }
         if (strpos($sort, ' ') === false) {
             $sort .= ' ASC';
         }
