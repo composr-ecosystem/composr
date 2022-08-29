@@ -88,7 +88,7 @@ class Block_main_activity_feed
             $GLOBALS['SITE_DB']->alter_table_field('activities', 'a_pagelink_2', 'SHORT_TEXT', 'a_page_link_2');
             $GLOBALS['SITE_DB']->alter_table_field('activities', 'a_pagelink_3', 'SHORT_TEXT', 'a_page_link_3');
 
-            $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'activities SET a_language_string_code=REPLACE(a_language_string_code,\'ocf:\',\'cns:\') WHERE a_language_string_code LIKE \'ocf:%\'');
+            $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'activities SET a_language_string_code=' . db_function('REPLACE', ['a_language_string_code', '\'ocf:\'', '\'cns:\'']) . ' WHERE a_language_string_code LIKE \'ocf:%\'');
         }
     }
 

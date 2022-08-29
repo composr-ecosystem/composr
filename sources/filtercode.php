@@ -950,7 +950,7 @@ function filtercode_to_sql(object $db, ?array $filters, ?string $content_type = 
                     break;
 
                 case '~':
-                    if (($GLOBALS['SITE_DB']->has_full_text($table, $filter_key)) && (strlen($filter_val) > $GLOBALS['SITE_DB']->driver->get_minimum_search_length())) {
+                    if (($GLOBALS['SITE_DB']->has_full_text($table, $filter_key)) && (strlen($filter_val) > $GLOBALS['SITE_DB']->get_minimum_search_length())) {
                         if ($filter_val != '') {
                             if ($alt != '') {
                                 $alt .= ' OR ';

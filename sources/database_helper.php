@@ -284,7 +284,7 @@ function _helper_create_table(object $this_ref, string $table_name, array $field
  *
  * @ignore
  */
-function _helper_create_index(object $this_ref, string $table_name, string $index_name, array $fields, ?string $unique_key_fields = null, $skip_fulltext_key_check = false)
+function _helper_create_index(object $this_ref, string $table_name, string $index_name, array $fields, ?string $unique_key_fields = null, bool $skip_fulltext_key_check = false)
 {
     $fields_with_types = [];
     if ($table_name != 'db_meta') {
@@ -694,14 +694,14 @@ function _helper_change_primary_key(object $this_ref, string $table_name, array 
 {
     $this_ref->ensure_connected();
 
-    $this_ref->query('UPDATE ' . $this_ref->table_prefix . 'db_meta SET m_type=REPLACE(m_type,\'*\',\'\') WHERE ' . db_string_equal_to('m_table', $table_name));
+    $this_ref->query('UPDATE ' . $this_ref->table_prefix . 'db_meta SET m_type=' . db_function('REPLACE', ['m_type', '\'*\'', '\'\'']) . ' WHERE ' . db_string_equal_to('m_table', $table_name));
     foreach ($new_key as $_new_key) {
         $this_ref->query('UPDATE ' . $this_ref->table_prefix . 'db_meta SET m_type=' . db_function('CONCAT', ['\'*\'', 'm_type']) . ' WHERE ' . db_string_equal_to('m_table', $table_name) . ' AND ' . db_string_equal_to('m_name', $_new_key) . ' AND m_type NOT LIKE \'' . db_encode_like('*%') . '\'');
     }
 
-    $queries = $this_ref->driver->change_primary_key__sql($this_ref->table_prefix . $table_name, $new_key);
+    $queries = $this_ref->driver->change_primary_key__sql($this_ref->table_prefix, $table_name, $new_key);
     foreach ($queries as $sql) {
-        $this_ref->query($sql, $this_ref->connection_write);
+        $this_ref->query($sql);
     }
 }
 
@@ -730,7 +730,7 @@ function _helper_add_auto_key(object $this_ref, string $table_name, string $fiel
     $start = 0;
     $i = db_get_first_id();
     do {
-        $rows = $this_ref->query_select($table_name, $select, [], '', 100, $start);
+        $rows = $this_ref->query_select($table_name, empty($select) ? ['*'] : $select, [], '', 100, $start);
         foreach ($rows as $row) {
             $this_ref->query_update($table_name, [$field_name => $i], $row, '', 1);
             $i++;

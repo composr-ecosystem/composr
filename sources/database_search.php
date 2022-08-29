@@ -1311,7 +1311,7 @@ abstract class FieldsSearchHook
  */
 function is_under_radar(string $test) : bool
 {
-    return (strlen($test) < $GLOBALS['SITE_DB']->driver->get_minimum_search_length()) && ($test != '');
+    return (strlen($test) < $GLOBALS['SITE_DB']->get_minimum_search_length()) && ($test != '');
 }
 
 /**
@@ -2613,9 +2613,9 @@ function _boolean_search_prepare(string $search_query) : array
         }
 
         if ($word[0] == '+') {
-            $include_words[] = $word;
+            $include_words[] = ltrim($word, '+');
         } elseif ($word[0] == '-') {
-            $exclude_words[] = $word;
+            $exclude_words[] = ltrim($word, '-');
         } else {
             $body_words[] = $word;
         }

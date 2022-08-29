@@ -829,11 +829,12 @@ abstract class DatabaseDriver
     /**
      * Get SQL for changing the primary key of a table.
      *
+     * @param  string $table_prefix The table prefix
      * @param  ID_TEXT $table_name The name of the table to create the index on
      * @param  array $new_key A list of fields to put in the new key
      * @return array List of SQL queries to run
      */
-    abstract public function change_primary_key__sql(string $table_name, array $new_key) : array;
+    abstract public function change_primary_key__sql(string $table_prefix, string $table_name, array $new_key) : array;
 
     /**
      * Get the number of rows in a table, with approximation support for performance (if necessary on the particular database backend).
@@ -1230,10 +1231,11 @@ abstract class DatabaseDriver
      *
      * Note that AVG may return an integer or float, depending on whether the DB engine auto-converts round numbers to integers. MySQL seems to.
      *
-     * Note that we are hard-coding for different database drivers in here, as it is easier to maintain the code in one place. Database drivers can still override this whole method if they need to.
+     * Note that we are hard-coding for different database drivers in here, as it is easier to maintain the code and reference possibilities in one place.
+     * Database drivers can still override this whole method if they need to.
      *
      * @param  string $function Function name
-     * @set REVERSE IFF CONCAT REPLACE SUBSTR LENGTH RAND COALESCE LEAST GREATEST MOD ABS MD5 GROUP_CONCAT X_ORDER_BY_BOOLEAN
+     * @set IFF CONCAT REPLACE SUBSTR LENGTH RAND COALESCE LEAST GREATEST MOD ABS MD5 REVERSE GROUP_CONCAT X_ORDER_BY_BOOLEAN
      * @param  array $args List of string arguments, assumed already quoted/escaped correctly for the particular database
      * @return ?string SQL fragment (null: not supported)
      */
@@ -1242,15 +1244,7 @@ abstract class DatabaseDriver
         $args = @array_map('strval', $args);
 
         switch ($function) {
-            case 'REVERSE':
-                if (count($args) != 1) {
-                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
-                }
-                switch (get_db_type()) {
-                    case 'db2':
-                        return null;
-                }
-                break;
+            // REMEMBER: Add tests to database_misc.php for anything new you add
 
             case 'IFF':
                 /*
@@ -1283,7 +1277,6 @@ abstract class DatabaseDriver
                 }
                 switch (get_db_type()) {
                     // Supported on all http://troels.arvin.dk/db/rdbms/#functions-REPLACE
-                    // You don't even need to call this function.
                 }
                 break;
 
@@ -1412,7 +1405,18 @@ abstract class DatabaseDriver
                 }
                 break;
 
-            // This may not be fully supported on all database systems
+            // The following may not be fully supported on all database systems...
+
+            case 'REVERSE':
+                if (count($args) != 1) {
+                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                }
+                switch (get_db_type()) {
+                    case 'db2':
+                        return null;
+                }
+                break;
+
             case 'GROUP_CONCAT':
                 if (count($args) != 2) {
                     fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -1444,8 +1448,6 @@ abstract class DatabaseDriver
                     case 'sqlserver':
                     case 'sqlserver_odbc':
                         return '(CASE WHEN ' . $args[0] . ' THEN 0 ELSE 1 END)';
-                    case 'xml':
-                        return null;
                     default:
                         return $args[0];
                 }
@@ -2862,7 +2864,7 @@ class DatabaseConnector
      * @param  ?string $unique_key_fields Comma-separated names of the unique key field for the table (null: lookup)
      * @param  boolean $skip_fulltext_key_check Whether to skip checking if keys are appropriate for any auto-created fulltext indices
      */
-    public function create_index(string $table_name, string $index_name, array $fields, ?string $unique_key_fields = null, $skip_fulltext_key_check = false)
+    public function create_index(string $table_name, string $index_name, array $fields, ?string $unique_key_fields = null, bool $skip_fulltext_key_check = false)
     {
         require_code('database_helper');
         _helper_create_index($this, $table_name, $index_name, $fields, $unique_key_fields, $skip_fulltext_key_check);
@@ -2963,5 +2965,16 @@ class DatabaseConnector
     public function strict_mode_query(bool $setting) : ?string
     {
         return $this->driver->strict_mode_query($setting);
+    }
+
+    /**
+     * Get minimum search length.
+     * This is broadly MySQL-specific. For other databases we will usually return 4, although there may truly not be a limit on it.
+     *
+     * @return integer Search length
+     */
+    public function get_minimum_search_length() : int
+    {
+        return $this->driver->get_minimum_search_length($this->connection_read);
     }
 }

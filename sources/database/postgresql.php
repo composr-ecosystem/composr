@@ -443,18 +443,19 @@ class Database_Static_postgresql extends DatabaseDriver
     }
 
     /**
-     * Change the primary key of a table.
+     * Get SQL for changing the primary key of a table.
      *
+     * @param  string $table_prefix The table prefix
      * @param  ID_TEXT $table_name The name of the table to create the index on
      * @param  array $new_key A list of fields to put in the new key
      * @return array List of SQL queries to run
      */
-    public function change_primary_key__sql(string $table_name, array $new_key) : array
+    public function change_primary_key__sql(string $table_prefix, string $table_name, array $new_key) : array
     {
         $queries = [];
-        $queries[] = 'ALTER TABLE ' . $table_name . ' DROP PRIMARY KEY';
+        $queries[] = 'ALTER TABLE ' . $table_prefix . $table_name . ' DROP PRIMARY KEY';
         if (!empty($new_key)) {
-            $queries[] = 'ALTER TABLE ' . $table_name . ' ADD PRIMARY KEY (' . implode(',', $new_key) . ')';
+            $queries[] = 'ALTER TABLE ' . $table_prefix . $table_name . ' ADD PRIMARY KEY (' . implode(',', $new_key) . ')';
         }
         return $queries;
     }

@@ -870,7 +870,7 @@ class DatabaseRepair
     private function fix_table_inconsistent_in_db__bad_primary_key(string $table_name, array $key_fields, bool $include_meta, bool $return_queries = false) : ?array
     {
         if ($include_meta) {
-            $query = 'UPDATE ' . get_table_prefix() . 'db_meta SET m_type=REPLACE(m_type,\'*\',\'\') WHERE m_table=\'' . db_escape_string($table_name) . '\'';
+            $query = 'UPDATE ' . get_table_prefix() . 'db_meta SET m_type=' . db_function('REPLACE', ['m_type', '\'*\'', '\'\'']) . ' WHERE m_table=\'' . db_escape_string($table_name) . '\'';
             $this->add_fixup_query($query);
 
             foreach ($key_fields as $key_field) {
@@ -879,7 +879,7 @@ class DatabaseRepair
             }
         }
 
-        $create_key_query = $GLOBALS['SITE_DB']->driver->change_primary_key__sql(get_table_prefix() . $table_name, $key_fields);
+        $create_key_query = $GLOBALS['SITE_DB']->driver->change_primary_key__sql(get_table_prefix(), $table_name, $key_fields);
         if (!$return_queries) {
             $this->add_fixup_query($create_key_query);
         }

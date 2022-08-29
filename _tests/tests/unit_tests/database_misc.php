@@ -117,14 +117,6 @@ class database_misc_test_set extends cms_test_case
         $this->assertTrue($result == $expected_result);
     }
 
-    public function testGROUP_CONCAT()
-    {
-        $sql = 'SELECT ' . db_function('GROUP_CONCAT', ['x', '(SELECT \'a\' AS x UNION SELECT \'b\' AS x) x']);
-        $expected_result = 'a,b';
-        $result = $GLOBALS['SITE_DB']->query_value_if_there($sql, false, true);
-        $this->assertTrue($result == $expected_result);
-    }
-
     public function testCOUNT()
     {
         $sql = 'SELECT COUNT(*) FROM (SELECT 1 AS x UNION SELECT 2 AS x UNION SELECT 3 AS x) x';
@@ -171,6 +163,65 @@ class database_misc_test_set extends cms_test_case
         $expected_result = 1;
         $result = $GLOBALS['SITE_DB']->query_value_if_there($sql, false, true);
         $this->assertTrue($result == $expected_result);
+    }
+
+    public function testGROUP_CONCAT()
+    {
+        $sql = 'SELECT ' . db_function('GROUP_CONCAT', ['x', '(SELECT \'a\' AS x UNION SELECT \'b\' AS x) x']);
+        $expected_result = 'a,b';
+        $result = $GLOBALS['SITE_DB']->query_value_if_there($sql, false, true);
+        $this->assertTrue($result == $expected_result);
+    }
+
+    public function testX_ORDER_BY_BOOLEAN()
+    {
+        $sql = 'SELECT x FROM (SELECT 1 AS x UNION SELECT 2 AS x) y ORDER BY ' . db_function('X_ORDER_BY_BOOLEAN', ['x=1']);
+        $expected_result = 2;
+        $result = $GLOBALS['SITE_DB']->query_value_if_there($sql, false, true);
+        $this->assertTrue($result == $expected_result);
+    }
+
+    public function testREVERSE()
+    {
+        $sql = 'SELECT ' . db_function('REVERSE', ['\'abca\'']);
+        $result = $GLOBALS['SITE_DB']->query_value_if_there($sql);
+        $this->assertTrue($result == 'acba');
+    }
+
+    public function testDDL()
+    {
+        $db = $GLOBALS['SITE_DB'];
+
+        // In case test had crashed previously
+        $db->drop_table_if_exists('dbmisc_test');
+        $db->drop_table_if_exists('dbmisc_renamed');
+
+        // Tables and fields
+        $db->create_table('dbmisc_test', [
+            'id' => '*INTEGER',
+            'blah' => 'INTEGER',
+        ]);
+        $db->query_insert('dbmisc_test', ['id' => 1, 'blah' => 123]);
+        $db->change_primary_key('dbmisc_test', ['blah']);
+        $db->delete_table_field('dbmisc_test', 'id');
+        $db->add_auto_key('dbmisc_test', 'id');
+        $db->add_table_field('dbmisc_test', 'whatever', 'REAL', 0.0);
+        $db->add_table_field('dbmisc_test', 'whatever_nullable', '?REAL');
+        $db->add_table_field('dbmisc_test', 'long_text', 'LONG_TEXT', 'test');
+        $db->add_table_field('dbmisc_test', 'long_text_no_default', 'LONG_TEXT');
+        $db->rename_table('dbmisc_test', 'dbmisc_renamed');
+        $db->drop_table_if_exists('dbmisc_renamed');
+
+        // Indexes
+        $db->create_table('dbmisc_test', [
+            'id' => '*AUTO',
+            'blah' => 'INTEGER',
+            'some_text' => 'SHORT_TEXT',
+        ]);
+        $db->create_index('dbmisc_test', 'test_index', ['blah']);
+        $db->create_index('dbmisc_test', 'test_fulltext_index', ['some_text']);
+        $db->delete_index_if_exists('dbmisc_test', 'test_index');
+        $db->drop_table_if_exists('dbmisc_test');
     }
 
     public function testOperations()

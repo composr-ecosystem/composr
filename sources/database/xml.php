@@ -127,7 +127,7 @@ function _get_sql_keywords() : array
 {
     return [
         'LEFT', 'RIGHT', // Join types
-        'X_CONCAT', 'X_LENGTH', 'X_REPLACE', 'X_COALESCE',
+        'X_CONCAT', 'X_LENGTH', 'X_REPLACE', 'X_COALESCE', 'X_IFF',
         'X_SUBSTR', 'X_RAND', 'X_LEAST', 'X_GREATEST', 'X_MOD', 'X_MD5',
         'WHERE',
         'SELECT', 'FROM', 'AS', 'UNION', 'ALL', 'DISTINCT',
@@ -273,16 +273,17 @@ class Database_Static_xml extends DatabaseDriver
     /**
      * Get SQL for changing the primary key of a table.
      *
+     * @param  string $table_prefix The table prefix
      * @param  ID_TEXT $table_name The name of the table to create the index on
      * @param  array $new_key A list of fields to put in the new key
      * @return array List of SQL queries to run
      */
-    public function change_primary_key__sql(string $table_name, array $new_key) : array
+    public function change_primary_key__sql(string $table_prefix, string $table_name, array $new_key) : array
     {
         $queries = [];
-        $queries[] = 'UPDATE db_meta SET m_type=X_REPLACE(m_type,\'*\',\'\') WHERE ' . db_string_equal_to('m_table', $table_name);
+        $queries[] = 'UPDATE ' . $table_prefix . 'db_meta SET m_type=X_REPLACE(m_type,\'*\',\'\') WHERE ' . db_string_equal_to('m_table', $table_prefix . $table_name);
         foreach ($new_key as $_new_key) {
-            $queries[] = 'UPDATE db_meta SET m_type=' . db_function('CONCAT', ['\'*\'', 'm_type']) . ' WHERE ' . db_string_equal_to('m_table', $table_name) . ' AND ' . db_string_equal_to('m_name', $_new_key);
+            $queries[] = 'UPDATE ' . $table_prefix . 'db_meta SET m_type=' . db_function('CONCAT', ['\'*\'', 'm_type']) . ' WHERE ' . db_string_equal_to('m_table', $table_prefix . $table_name) . ' AND ' . db_string_equal_to('m_name', $_new_key);
         }
         return $queries;
     }
@@ -339,7 +340,7 @@ class Database_Static_xml extends DatabaseDriver
      */
     public function rename_table__sql(string $old, string $new) : string
     {
-        return 'ALTER TABLE RENAME TO ' . $old . ' ' . $new;
+        return 'ALTER TABLE ' . $old . ' RENAME TO ' . $new;
     }
 
     /**
@@ -388,7 +389,7 @@ class Database_Static_xml extends DatabaseDriver
         $dh = @opendir($file_path);
         if ($dh !== false) {
             while (($file = readdir($dh)) !== false) {
-                if ((substr($file, -4) == '.xml') || (substr($file, -13) == '.xml-volatile')) {
+                if ((substr($file, -4) == '.xml') || (substr($file, -13) == '.xml-volatile') || ($file == 'index.html') || ($file == '.htaccess')) {
                     unlink($file_path . '/' . $file);
                     sync_file($file_path . '/' . $file);
                 }
@@ -1427,6 +1428,10 @@ class Database_Static_xml extends DatabaseDriver
             }
         }
 
+        if ($where == '') { // No key
+            return false;
+        }
+
         $test_results = $this->query('SELECT * FROM ' . $table_name . ' WHERE ' . $where, $db, 2, 0, $fail_ok);
         if (empty($test_results)) {
             return false;
@@ -1565,7 +1570,8 @@ class Database_Static_xml extends DatabaseDriver
                 rename($db[0] . '/' . $table_name, $db[0] . '/' . $new_table_name);
                 sync_file_move($db[0] . '/' . $table_name, $db[0] . '/' . $new_table_name);
                 $this->_clear_caching_for($table_name);
-                break;
+                return null;
+
             case 'CHANGE':
             case 'ADD':
                 // Parse
@@ -2042,6 +2048,7 @@ class Database_Static_xml extends DatabaseDriver
 
             // Conventional expressions...
 
+            // 0-operand
             case 'X_RAND':
                 if (!$this->_parsing_expects($at, $tokens, '(', $query)) {
                     return null;
@@ -2052,6 +2059,22 @@ class Database_Static_xml extends DatabaseDriver
                 $expr = [$token];
                 break;
 
+            // 1-operand
+            case 'X_MD5':
+            case 'X_ABS':
+            case 'X_LENGTH':
+            case 'X_REVERSE':
+                if (!$this->_parsing_expects($at, $tokens, '(', $query)) {
+                    return null;
+                }
+                $expr = $this->_parsing_read_expression($at, $tokens, $query, $db, true, true, $fail_ok);
+                if (!$this->_parsing_expects($at, $tokens, ')', $query)) {
+                    return null;
+                }
+                $expr = [$token, $expr];
+                break;
+
+            // 2-operand
             case 'X_MOD':
                 if (!$this->_parsing_expects($at, $tokens, '(', $query)) {
                     return null;
@@ -2067,14 +2090,29 @@ class Database_Static_xml extends DatabaseDriver
                 $expr = [$token, $expr1, $expr2];
                 break;
 
-            case 'X_MD5':
+            // 3-operand
+            case 'X_REPLACE':
+            case 'X_SUBSTR':
+            case 'X_IFF':
                 if (!$this->_parsing_expects($at, $tokens, '(', $query)) {
                     return null;
                 }
-                $expr = $this->_parsing_read_expression($at, $tokens, $query, $db, true, true, $fail_ok);
-                $expr = [$token, $expr];
+                $expr1 = $this->_parsing_read_expression($at, $tokens, $query, $db, true, true, $fail_ok);
+                if (!$this->_parsing_expects($at, $tokens, ',', $query)) {
+                    return null;
+                }
+                $expr2 = $this->_parsing_read_expression($at, $tokens, $query, $db, true, true, $fail_ok);
+                if (!$this->_parsing_expects($at, $tokens, ',', $query)) {
+                    return null;
+                }
+                $expr3 = $this->_parsing_read_expression($at, $tokens, $query, $db, true, true, $fail_ok);
+                if (!$this->_parsing_expects($at, $tokens, ')', $query)) {
+                    return null;
+                }
+                $expr = [$token, $expr1, $expr2, $expr3];
                 break;
 
+            // n-operand
             case 'X_LEAST':
             case 'X_GREATEST':
             case 'X_COALESCE':
@@ -2109,59 +2147,6 @@ class Database_Static_xml extends DatabaseDriver
                     return null;
                 }
                 $expr = [$token, $expr, $type];
-                break;
-
-            case 'X_REPLACE':
-            case 'X_SUBSTR':
-                if (!$this->_parsing_expects($at, $tokens, '(', $query)) {
-                    return null;
-                }
-                $expr1 = $this->_parsing_read_expression($at, $tokens, $query, $db, true, true, $fail_ok);
-                if (!$this->_parsing_expects($at, $tokens, ',', $query)) {
-                    return null;
-                }
-                $expr2 = $this->_parsing_read_expression($at, $tokens, $query, $db, true, true, $fail_ok);
-                if (!$this->_parsing_expects($at, $tokens, ',', $query)) {
-                    return null;
-                }
-                $expr3 = $this->_parsing_read_expression($at, $tokens, $query, $db, true, true, $fail_ok);
-                if (!$this->_parsing_expects($at, $tokens, ')', $query)) {
-                    return null;
-                }
-                $expr = [$token, $expr1, $expr2, $expr3];
-                break;
-
-            case 'X_REVERSE':
-                if (!$this->_parsing_expects($at, $tokens, '(', $query)) {
-                    return null;
-                }
-                $expr1 = $this->_parsing_read_expression($at, $tokens, $query, $db, true, true, $fail_ok);
-                if (!$this->_parsing_expects($at, $tokens, ')', $query)) {
-                    return null;
-                }
-                $expr = [$token, $expr1];
-                break;
-
-            case 'X_ABS':
-                if (!$this->_parsing_expects($at, $tokens, '(', $query)) {
-                    return null;
-                }
-                $expr1 = $this->_parsing_read_expression($at, $tokens, $query, $db, true, true, $fail_ok);
-                if (!$this->_parsing_expects($at, $tokens, ')', $query)) {
-                    return null;
-                }
-                $expr = [$token, $expr1];
-                break;
-
-            case 'X_LENGTH':
-                if (!$this->_parsing_expects($at, $tokens, '(', $query)) {
-                    return null;
-                }
-                $expr1 = $this->_parsing_read_expression($at, $tokens, $query, $db, true, true, $fail_ok);
-                if (!$this->_parsing_expects($at, $tokens, ')', $query)) {
-                    return null;
-                }
-                $expr = [$token, $expr1];
                 break;
 
             case 'EXISTS':
@@ -2418,6 +2403,15 @@ class Database_Static_xml extends DatabaseDriver
                     if ($val !== null) {
                         break;
                     }
+                }
+                return $val;
+
+            case 'X_IFF':
+                $conditional = $this->_execute_expression($expr[1], $bindings, $query, $db, $fail_ok, $full_set);
+                if ($conditional) {
+                    $val = $this->_execute_expression($expr[2], $bindings, $query, $db, $fail_ok, $full_set);
+                } else {
+                    $val = $this->_execute_expression($expr[3], $bindings, $query, $db, $fail_ok, $full_set);
                 }
                 return $val;
 
