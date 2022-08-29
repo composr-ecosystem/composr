@@ -249,6 +249,10 @@ function get_file_extension(?string $name, ?string $mime_type = null) : string
         }
     }
 
+    if ($name === null) {
+        return '';
+    }
+
     $dot_pos = strrpos($name, '.');
     if ($dot_pos === false) {
         return '';
