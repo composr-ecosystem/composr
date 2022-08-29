@@ -694,6 +694,10 @@ class Hook_health_check_install_env extends Hook_Health_Check
             return;
         }
 
+        if ($check_context == CHECK_CONTEXT__INSTALL) {
+            return; // Too pedantic to confuse people at installation
+        }
+
         if (function_exists('php_sapi_name')) {
             $current_locale = setlocale(LC_ALL, '0');
             setlocale(LC_ALL, 'tr_TR');
