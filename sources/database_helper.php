@@ -188,10 +188,11 @@ function _check_sizes(string $table_name, bool $primary_key, array $fields, stri
  * @param  boolean $skip_size_check Whether to skip the size check for the table (only do this for addon modules that don't need to support anything other than MySQL)
  * @param  boolean $skip_null_check Whether to skip the check for NULL string fields
  * @param  ?boolean $save_bytes Whether to use lower-byte table storage, with trade-offs of not being able to support all unicode characters; use this if key length is an issue (null: auto-detect if needed). Pass as true/false for normal install code to make intentions explicit, maintenance code may use auto-detect.
+ * @param  boolean $skip_fulltext_key_check Whether to skip checking if keys are appropriate for any auto-created fulltext indices
  *
  * @ignore
  */
-function _helper_create_table(object $this_ref, string $table_name, array $fields, bool $skip_size_check = false, bool $skip_null_check = false, ?bool $save_bytes = false)
+function _helper_create_table(object $this_ref, string $table_name, array $fields, bool $skip_size_check = false, bool $skip_null_check = false, ?bool $save_bytes = false, bool $skip_fulltext_key_check = false)
 {
     if (preg_match('#^[\w]+$#', $table_name) == 0) {
         fatal_exit('Inappropriate identifier: ' . $table_name); // (the +7 is for prefix: max length of 7 chars allocated for prefix)
@@ -263,7 +264,7 @@ function _helper_create_table(object $this_ref, string $table_name, array $field
     if (!multi_lang_content()) {
         foreach ($fields_copy as $name => $type) {
             if (strpos($type, '_TRANS') !== false) {
-                $GLOBALS['SITE_DB']->create_index($table_name, '#' . $name, [$name]);
+                $GLOBALS['SITE_DB']->create_index($table_name, '#' . $name, [$name], null, $skip_fulltext_key_check);
             }
         }
     }
@@ -279,10 +280,11 @@ function _helper_create_table(object $this_ref, string $table_name, array $field
  * @param  ID_TEXT $index_name The index name
  * @param  array $fields The fields
  * @param  ?string $unique_key_fields Comma-separated names of the unique key field for the table (null: lookup)
+ * @param  boolean $skip_fulltext_key_check Whether to skip checking if keys are appropriate for any auto-created fulltext indices
  *
  * @ignore
  */
-function _helper_create_index(object $this_ref, string $table_name, string $index_name, array $fields, ?string $unique_key_fields = null)
+function _helper_create_index(object $this_ref, string $table_name, string $index_name, array $fields, ?string $unique_key_fields = null, $skip_fulltext_key_check = false)
 {
     $fields_with_types = [];
     if ($table_name != 'db_meta') {
@@ -348,6 +350,11 @@ function _helper_create_index(object $this_ref, string $table_name, string $inde
 
         if ($unique_key_fields === null) {
             $unique_key_fields = implode(',', _helper_get_table_key_fields($table_name));
+        }
+
+        // Check if it's a fulltext index that we do not have multiple
+        if (($is_full_text) && (!$skip_fulltext_key_check) && (strpos($unique_key_fields, ',') !== false)) {
+            fatal_exit('Fulltext indexes should only be on tables with a single key field');
         }
 
         $queries = $this_ref->driver->create_index__sql($this_ref->table_prefix . $table_name, $index_name, $_fields, $this_ref->connection_read, $table_name, $unique_key_fields, $this_ref->table_prefix);

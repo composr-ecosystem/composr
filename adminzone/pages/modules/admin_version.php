@@ -320,7 +320,7 @@ class Module_admin_version
                     'the_theme' => 'ID_TEXT',
                 ] + $fields;
             }
-            $GLOBALS['SITE_DB']->create_table('cached_comcode_pages', $fields);
+            $GLOBALS['SITE_DB']->create_table('cached_comcode_pages', $fields, false, false, false, true);
 
             $GLOBALS['SITE_DB']->create_index('cached_comcode_pages', 'ftjoin_ccpt', ['cc_page_title']);
             $GLOBALS['SITE_DB']->create_index('cached_comcode_pages', 'ftjoin_ccsi', ['string_index']);
@@ -932,7 +932,7 @@ class Module_admin_version
                 'p_order' => 0,
             ], false, true);
 
-            $GLOBALS['SITE_DB']->create_index('cached_comcode_pages', '#page_search__combined', ['cc_page_title', 'string_index']);
+            $GLOBALS['SITE_DB']->create_index('cached_comcode_pages', '#page_search__combined', ['cc_page_title', 'string_index'], null, true);
 
             $GLOBALS['SITE_DB']->create_table('sitemap_cache', [
                 'page_link' => '*SHORT_TEXT',

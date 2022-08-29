@@ -2704,11 +2704,12 @@ class DatabaseConnector
      * @param  boolean $skip_size_check Whether to skip the size check for the table (only do this for addon modules that don't need to support anything other than MySQL)
      * @param  boolean $skip_null_check Whether to skip the check for null string fields
      * @param  ?boolean $save_bytes Whether to use lower-byte table storage, with trade-offs of not being able to support all unicode characters; use this if key length is an issue (null: autodetect)
+     * @param  boolean $skip_fulltext_key_check Whether to skip checking if keys are appropriate for any auto-created fulltext indices
      */
-    public function create_table(string $table_name, array $fields, bool $skip_size_check = false, bool $skip_null_check = false, ?bool $save_bytes = false)
+    public function create_table(string $table_name, array $fields, bool $skip_size_check = false, bool $skip_null_check = false, ?bool $save_bytes = false, bool $skip_fulltext_key_check = false)
     {
         require_code('database_helper');
-        _helper_create_table($this, $table_name, $fields, $skip_size_check, $skip_null_check, $save_bytes);
+        _helper_create_table($this, $table_name, $fields, $skip_size_check, $skip_null_check, $save_bytes, $skip_fulltext_key_check);
     }
 
     /**
@@ -2859,11 +2860,12 @@ class DatabaseConnector
      * @param  ID_TEXT $index_name The index name
      * @param  array $fields The fields
      * @param  ?string $unique_key_fields Comma-separated names of the unique key field for the table (null: lookup)
+     * @param  boolean $skip_fulltext_key_check Whether to skip checking if keys are appropriate for any auto-created fulltext indices
      */
-    public function create_index(string $table_name, string $index_name, array $fields, ?string $unique_key_fields = null)
+    public function create_index(string $table_name, string $index_name, array $fields, ?string $unique_key_fields = null, $skip_fulltext_key_check = false)
     {
         require_code('database_helper');
-        _helper_create_index($this, $table_name, $index_name, $fields, $unique_key_fields);
+        _helper_create_index($this, $table_name, $index_name, $fields, $unique_key_fields, $skip_fulltext_key_check);
     }
 
     /**

@@ -2022,7 +2022,7 @@ function step_5_core() : object
         $fields['language'] = 'LANGUAGE_NAME';
     }
     $GLOBALS['SITE_DB']->create_table('translate', $fields);
-    $GLOBALS['SITE_DB']->create_index('translate', '#tsearch', ['text_original']);
+    $GLOBALS['SITE_DB']->create_index('translate', '#tsearch', ['text_original'], null, true);
     $GLOBALS['SITE_DB']->create_index('translate', 'importance_level', ['importance_level']);
     if (strpos(get_db_type(), 'mysql') !== false) {
         // Only MySQL has these prefix indexes https://compo.sr/tracker/view.php?id=4909
