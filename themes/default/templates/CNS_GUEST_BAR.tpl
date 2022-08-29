@@ -31,7 +31,7 @@
 								<input type="hidden" name="remember" value="1" />
 							{+END}
 
-							<button class="btn btn-primary btn-scri menu--site-meta--user-actions--login" type="submit">{+START,INCLUDE,ICON}NAME=menu/site_meta/user_actions/login{+END} {!_LOGIN}</button>
+							<button class="btn btn-primary btn-scri menu--site-meta--user-actions--login" type="submit">{+START,INCLUDE,ICON}NAME=menu/site_meta/user_actions/login{+END} <span>{!_LOGIN}</span></button>
 						</div>
 					</form>
 

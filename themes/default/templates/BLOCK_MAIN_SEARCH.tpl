@@ -33,7 +33,7 @@
 			{+END}
 
 			<p class="proceed-button">
-				<button class="btn btn-primary btn-scri buttons--search" type="submit">{+START,INCLUDE,ICON}NAME=buttons/search{+END} {!SEARCH}</button>
+				<button class="btn btn-primary btn-scri buttons--search" type="submit">{+START,INCLUDE,ICON}NAME=buttons/search{+END} <span>{!SEARCH}</span></button>
 			</p>
 
 			{+START,LOOP,LIMIT_TO}

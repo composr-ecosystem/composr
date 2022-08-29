@@ -32,7 +32,7 @@
 							<form title="{!_ASSIGNED_TO}" action="{$PAGE_LINK*,_SEARCH:tickets:unassign:ticket_id={ID}:member_id={_loop_key}}" method="post" class="inline vertical-alignment">
 								{$INSERT_FORM_POST_SECURITY}
 
-								<button class="btn btn-danger btn-sm" type="submit">{+START,INCLUDE,ICON}NAME=admin/delete3{+END} {!REMOVE}</button>
+								<button class="btn btn-danger btn-sm" type="submit">{+START,INCLUDE,ICON}NAME=admin/delete3{+END} <span>{!REMOVE}</span></button>
 							</form>
 						{+END}
 					</li>
@@ -51,7 +51,7 @@
 
 						<label for="assign-username" class="accessibility-hidden">{!USERNAME}</label>
 						<input {+START,IF,{$MOBILE}} autocorrect="off"{+END} maxlength="255" class="form-control form-control-sm input-username js-focus-update-ajax-member-list js-keyup-update-ajax-member-list" type="text" id="assign-username" name="username" value="{$USERNAME*}" />
-						<button class="btn btn-primary btn-sm buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!ASSIGN_TO}</button>
+						<button class="btn btn-primary btn-sm buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} <span>{!ASSIGN_TO}</span></button>
 					</form>
 				</li>
 			{+END}

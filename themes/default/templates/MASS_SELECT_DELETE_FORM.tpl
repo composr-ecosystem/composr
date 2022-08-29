@@ -2,6 +2,6 @@
 	{$INSERT_FORM_POST_SECURITY}
 
 	<p class="proceed-button">
-		<button class="btn btn-danger btn-scri" type="submit">{+START,INCLUDE,ICON}NAME=admin/delete3{+END} {!DELETE_SELECTION}</button>
+		<button class="btn btn-danger btn-scri" type="submit">{+START,INCLUDE,ICON}NAME=admin/delete3{+END} <span>{!DELETE_SELECTION}</span></button>
 	</p>
 </form>

@@ -107,7 +107,7 @@
 								<td colspan="5"></td>
 
 								<td>
-									<button class="btn btn-danger btn-scri" type="submit">{+START,INCLUDE,ICON}NAME=admin/delete3{+END} {!DELETE}</button>
+									<button class="btn btn-danger btn-scri" type="submit">{+START,INCLUDE,ICON}NAME=admin/delete3{+END} <span>{!DELETE}</span></button>
 								</td>
 							</tr>
 						</tfoot>

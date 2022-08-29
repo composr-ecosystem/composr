@@ -8,7 +8,7 @@
 				<div class="vertical-alignment">
 					<label class="accessibility-hidden" for="member-bar-search">{!_SEARCH_PRIVATE_TOPICS}</label>
 					<input maxlength="255" type="text" name="content" id="member-bar-search" class="form-control form-control-sm" placeholder="{!_SEARCH_PRIVATE_TOPICS}" />
-					<button class="btn btn-primary btn-sm buttons--search" type="submit" data-disable-on-click="1">{+START,INCLUDE,ICON}NAME=buttons/search{+END} {!SEARCH}</button>
+					<button class="btn btn-primary btn-sm buttons--search" type="submit" data-disable-on-click="1">{+START,INCLUDE,ICON}NAME=buttons/search{+END} <span>{!SEARCH}</span></button>
 					<a class="associated-link" href="{$PAGE_LINK*,_SEARCH:search:browse:cns_own_pt}" title="{!MORE}: {!search:SEARCH_OPTIONS}">{!MORE}</a>
 				</div>
 			</form>
@@ -22,7 +22,7 @@
 				<div class="vertical-alignment">
 					<label class="accessibility-hidden" for="member-bar-search">{!SEARCH_FORUM_POSTS}</label>
 					<input maxlength="255" type="text" name="content" id="member-bar-search" class="form-control form-control-sm" placeholder="{!SEARCH_FORUM_POSTS}" />
-					<button class="btn btn-primary btn-sm buttons--search" type="submit" data-disable-on-click="1">{+START,INCLUDE,ICON}NAME=buttons/search{+END} {!SEARCH}</button>
+					<button class="btn btn-primary btn-sm buttons--search" type="submit" data-disable-on-click="1">{+START,INCLUDE,ICON}NAME=buttons/search{+END} <span>{!SEARCH}</span></button>
 					<a class="associated-link" href="{$PAGE_LINK*,_SEARCH:search:browse:cns_posts:search_under={$_GET,id}}" title="{!MORE}: {!search:SEARCH_OPTIONS}">{!MORE}</a>
 				</div>
 			</form>
@@ -39,7 +39,7 @@
 			<div class="vertical-alignment">
 				<label class="accessibility-hidden" for="member-bar-search">{!SEARCH_POSTS_WITHIN_TOPIC}</label>
 				<input maxlength="255" type="text" name="content" id="member-bar-search" class="form-control form-control-sm" placeholder="{!SEARCH_POSTS_WITHIN_TOPIC}" />
-				<button class="btn btn-primary btn-sm buttons--search" type="submit" data-disable-on-click="1">{+START,INCLUDE,ICON}NAME=buttons/search{+END} {!SEARCH}</button>
+				<button class="btn btn-primary btn-sm buttons--search" type="submit" data-disable-on-click="1">{+START,INCLUDE,ICON}NAME=buttons/search{+END} <span>{!SEARCH}</span></button>
 				<a class="associated-link" href="{$PAGE_LINK*,_SEARCH:search:browse:cns_within_topic:search_under={$_GET,id}}" title="{!MORE}: {!search:SEARCH_OPTIONS}">{!MORE}</a>
 			</div>
 		</form>
@@ -55,7 +55,7 @@
 			<div class="vertical-alignment">
 				<label class="accessibility-hidden" for="member-bar-search">{!SEARCH}</label>
 				<input maxlength="255" type="text" name="content" id="member-bar-search" class="form-control form-control-sm" placeholder="{!SEARCH}" />
-				<button class="btn btn-primary btn-sm buttons--search" type="submit" data-disable-on-click="1">{+START,INCLUDE,ICON}NAME=buttons/search{+END} {!SEARCH}</button>
+				<button class="btn btn-primary btn-sm buttons--search" type="submit" data-disable-on-click="1">{+START,INCLUDE,ICON}NAME=buttons/search{+END} <span>{!SEARCH}</span></button>
 				<a class="associated-link" href="{$PAGE_LINK*,_SEARCH:search:browse}" title="{!MORE}: {!search:SEARCH_OPTIONS}">{!MORE}</a>
 			</div>
 		</form>

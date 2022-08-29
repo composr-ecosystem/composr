@@ -62,7 +62,7 @@
 					</select>
 				</label>
 
-				<button class="btn btn-primary btn-sm buttons--filter" type="submit">{+START,INCLUDE,ICON}NAME=buttons/filter{+END} {!FILTER}</button>
+				<button class="btn btn-primary btn-sm buttons--filter" type="submit">{+START,INCLUDE,ICON}NAME=buttons/filter{+END} <span>{!FILTER}</span></button>
 			</p>
 		</form>
 	{+END}

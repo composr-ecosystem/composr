@@ -10,7 +10,7 @@
 		</div>
 
 		<p class="proceed-button">
-			<button class="button-screen buttons--save" id="submit-button" accesskey="u" type="submit">{+START,INCLUDE,ICON}NAME=buttons/save{+END} {!SAVE}</button>
+			<button class="button-screen buttons--save" id="submit-button" accesskey="u" type="submit">{+START,INCLUDE,ICON}NAME=buttons/save{+END} <span>{!SAVE}</span></button>
 		</p>
 
 		<h2>{!DEFAULT}</h2>

@@ -42,7 +42,7 @@
 		</div>
 
 		<p class="proceed-button vertical-alignment">
-			<button class="btn btn-primary btn-scr buttons--save js-btn-fetch-and-submit" type="button">{+START,INCLUDE,ICON}NAME=buttons/save{+END} {!SAVE}</button> <span class="associated-details">{!ZE_CLICK_TO_EDIT}</span>
+			<button class="btn btn-primary btn-scr buttons--save js-btn-fetch-and-submit" type="button">{+START,INCLUDE,ICON}NAME=buttons/save{+END} <span>{!SAVE}</span></button> <span class="associated-details">{!ZE_CLICK_TO_EDIT}</span>
 		</p>
 	</form>
 

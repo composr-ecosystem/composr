@@ -36,7 +36,7 @@
 
 	{+START,IF,{$OR,{FORCE_PRESETS},{$IS_NON_EMPTY,{OVERRIDES}}}}
 		<td class="form-table-field-input">
-			<button class="btn btn-primary btn-scri buttons--copy js-click-perm-repeating" type="button" id="copy-button-access-{GROUP_ID*}">{+START,INCLUDE,ICON}NAME=buttons/copy{+END} {!REPEAT_PERMISSION}</button>
+			<button class="btn btn-primary btn-scri buttons--copy js-click-perm-repeating" type="button" id="copy-button-access-{GROUP_ID*}">{+START,INCLUDE,ICON}NAME=buttons/copy{+END} <span>{!REPEAT_PERMISSION}</span></button>
 		</td>
 	{+END}
 </tr>

@@ -35,7 +35,7 @@
 	</div>
 
 	<p class="proceed-button">
-		<button class="btn btn-primary btn-scr buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!HEALTH_CHECK}</button>
+		<button class="btn btn-primary btn-scr buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} <span>{!HEALTH_CHECK}</span></button>
 	</p>
 </form>
 

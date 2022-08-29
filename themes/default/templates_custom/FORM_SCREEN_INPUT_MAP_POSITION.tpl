@@ -13,5 +13,5 @@
 		<input class="form-control js-change-set-place-marker {+START,IF,{REQUIRED}}hidden-required{+END}" type="number" step="any" id="{NAME*}_longitude" name="longitude" value="{LONGITUDE*}" />
 	</label>
 
-	<button class="btn btn-primary btn-sm buttons--search js-click-geolocate-user-for-map-field" data-click-pd type="button">{+START,INCLUDE,ICON}NAME=buttons/search{+END} {!FIND_ME}</button>
+	<button class="btn btn-primary btn-sm buttons--search js-click-geolocate-user-for-map-field" data-click-pd type="button">{+START,INCLUDE,ICON}NAME=buttons/search{+END} <span>{!FIND_ME}</span></button>
 </div>

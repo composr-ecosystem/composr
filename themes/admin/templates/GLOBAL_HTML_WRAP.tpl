@@ -193,7 +193,7 @@
 								<div class="input-group">
 									<select id="special-page-type" name="special_page_type" class="form-control form-control-sm">{$STAFF_ACTIONS}</select>
 									<div class="input-group-append">
-										<button class="btn btn-primary btn-sm buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!PROCEED_SHORT}</button>
+										<button class="btn btn-primary btn-sm buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} <span>{!PROCEED_SHORT}</span></button>
 									</div>
 								</div>
 							</div>

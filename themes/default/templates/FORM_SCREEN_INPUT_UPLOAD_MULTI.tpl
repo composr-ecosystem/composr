@@ -25,7 +25,7 @@
 			{+END}
 		{+END}
 
-		<button class="btn btn-primary btn-sm buttons--clear js-click-clear-name-stub-input" type="button" id="clear-button-{NAME_STUB*}_{I*}">{+START,INCLUDE,ICON}NAME=buttons/clear{+END} {!CLEAR}</button>
+		<button class="btn btn-primary btn-sm buttons--clear js-click-clear-name-stub-input" type="button" id="clear-button-{NAME_STUB*}_{I*}">{+START,INCLUDE,ICON}NAME=buttons/clear{+END} <span>{!CLEAR}</span></button>
 
 		<!--Additional uploaders will auto-append here-->
 	</div>

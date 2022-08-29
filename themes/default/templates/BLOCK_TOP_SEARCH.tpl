@@ -28,7 +28,7 @@
 				<div class="input-group">
 					<input {+START,IF,{$MOBILE}} autocorrect="off"{+END} size="{$?,{!takes_lots_of_space},10,20}" maxlength="255" class="form-control form-control-sm js-input-keyup-update-ajax-search-list" type="search" id="top-search-content-{BLOCK_ID%}" name="content" />
 					<div class="input-group-append">
-						<button class="btn btn-primary btn-sm buttons--search" type="submit">{+START,INCLUDE,ICON}NAME=buttons/search{+END} {!SEARCH}</button>
+						<button class="btn btn-primary btn-sm buttons--search" type="submit">{+START,INCLUDE,ICON}NAME=buttons/search{+END} <span>{!SEARCH}</span></button>
 					</div>
 				</div>
 			</div>

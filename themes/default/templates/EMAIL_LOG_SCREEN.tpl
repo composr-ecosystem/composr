@@ -8,14 +8,14 @@
 			{$INSERT_FORM_POST_SECURITY}
 
 			<div class="inline">
-				<button class="btn btn-danger btn-scr" type="submit">{+START,INCLUDE,ICON}NAME=admin/delete3{+END} {!DELETE_ALL}</button>
+				<button class="btn btn-danger btn-scr" type="submit">{+START,INCLUDE,ICON}NAME=admin/delete3{+END} <span>{!DELETE_ALL}</span></button>
 			</div>
 		</form>
 		<form title="{!SEND_ALL}" class="right" action="{MASS_SEND_URL*}" method="post">
 			{$INSERT_FORM_POST_SECURITY}
 
 			<div class="inline">
-				<button class="btn btn-primary btn-scr buttons--send" type="submit">{+START,INCLUDE,ICON}NAME=buttons/send{+END} {!SEND_ALL}</button>
+				<button class="btn btn-primary btn-scr buttons--send" type="submit">{+START,INCLUDE,ICON}NAME=buttons/send{+END} <span>{!SEND_ALL}</span></button>
 			</div>
 		</form>
 	</div>

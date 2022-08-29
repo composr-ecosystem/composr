@@ -86,8 +86,8 @@
 
 								<div class="friend-actions btn-row">
 									{+START,IF,{CAN_IM}}
-										<button class="btn btn-primary btn-scri admin--add-to-category js-click-btn-im-invite-ticked-people" disabled="disabled" id="invite-ongoing-im-button" type="button">{+START,INCLUDE,ICON}NAME=admin/add_to_category{+END} {!INVITE_CURRENT_IM}</button>
-										<button class="btn btn-primary btn-scri menu--social--chat--chat js-click-btn-im-start-ticked-people" type="button">{+START,INCLUDE,ICON}NAME=menu/social/chat/chat{+END} {!START_IM}</button>
+										<button class="btn btn-primary btn-scri admin--add-to-category js-click-btn-im-invite-ticked-people" disabled="disabled" id="invite-ongoing-im-button" type="button">{+START,INCLUDE,ICON}NAME=admin/add_to_category{+END} <span>{!INVITE_CURRENT_IM}</span></button>
+										<button class="btn btn-primary btn-scri menu--social--chat--chat js-click-btn-im-start-ticked-people" type="button">{+START,INCLUDE,ICON}NAME=menu/social/chat/chat{+END} <span>{!START_IM}</span></button>
 									{+END}
 									{+START,IF_NON_EMPTY,{URL_REMOVE_FRIENDS}}
 										<button data-click-pd="1" class="btn btn-danger btn-scri js-click-btn-dump-friends-confirm" type="submit">{+START,INCLUDE,ICON}NAME=admin/delete3{+END} {!DUMP_FRIENDS}</button>
@@ -106,7 +106,7 @@
 								<div class="input-group">
 									<input {+START,IF,{$MOBILE}} autocorrect="off"{+END} size="18" maxlength="80" class="form-control form-control-sm js-keyup-input-update-ajax-member-list" type="text" placeholder="{!USERNAME}" id="friend_username" name="friend_username" />
 									<div class="input-group-append">
-										<button class="btn btn-primary btn-sm admin--add" type="submit">{+START,INCLUDE,ICON}NAME=admin/add{+END} {!ADD}</button>
+										<button class="btn btn-primary btn-sm admin--add" type="submit">{+START,INCLUDE,ICON}NAME=admin/add{+END} <span>{!ADD}</span></button>
 									</div>
 								</div>
 							</form>

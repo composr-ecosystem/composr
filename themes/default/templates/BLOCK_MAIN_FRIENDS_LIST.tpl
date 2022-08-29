@@ -13,7 +13,7 @@
 			<div class="input-group">
 				<input maxlength="255" class="form-control form-control-sm js-input-friends-search" type="search" id="friends_search" name="friends_search" value="{$_GET*,friends_search}" />
 				<div class="input-group-append">
-					<button class="btn btn-primary btn-sm buttons--filter" type="submit">{+START,INCLUDE,ICON}NAME=buttons/filter{+END} {!FILTER}</button>
+					<button class="btn btn-primary btn-sm buttons--filter" type="submit">{+START,INCLUDE,ICON}NAME=buttons/filter{+END} <span>{!FILTER}</span></button>
 				</div>
 			</div>
 		</form>

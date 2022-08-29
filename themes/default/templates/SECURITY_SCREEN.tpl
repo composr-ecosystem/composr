@@ -20,7 +20,7 @@
 			{$INSERT_FORM_POST_SECURITY}
 
 			<p class="proceed-button">
-				<button class="btn btn-danger btn-scr js-click-btn-delete-add-form-marked-posts" type="submit">{+START,INCLUDE,ICON}NAME=admin/delete3{+END} {!DELETE}</button>
+				<button class="btn btn-danger btn-scr js-click-btn-delete-add-form-marked-posts" type="submit">{+START,INCLUDE,ICON}NAME=admin/delete3{+END} <span>{!DELETE}</span></button>
 			</p>
 		</form>
 	{+END}

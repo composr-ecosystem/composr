@@ -47,7 +47,7 @@
 								{+END}
 							</select>
 
-							<button class="btn btn-primary btn-scri menu--social--chat--sound js-click-require-sound-selection" data-tp-select-id="select_{KEY*}{+START,IF_PASSED,MEMBER_ID}_{MEMBER_ID*}{+END}" type="button" title="{EFFECT_TITLE*}">{+START,INCLUDE,ICON}NAME=menu/social/chat/sound{+END} {!TEST_SOUND}</button>
+							<button class="btn btn-primary btn-scri menu--social--chat--sound js-click-require-sound-selection" data-tp-select-id="select_{KEY*}{+START,IF_PASSED,MEMBER_ID}_{MEMBER_ID*}{+END}" type="button" title="{EFFECT_TITLE*}">{+START,INCLUDE,ICON}NAME=menu/social/chat/sound{+END} <span>{!TEST_SOUND}</span></button>
 						</td>
 					</tr>
 

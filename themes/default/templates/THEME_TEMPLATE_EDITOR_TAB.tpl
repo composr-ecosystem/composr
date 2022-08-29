@@ -474,11 +474,11 @@
 		{+START,SET,preview_buttons}
 			{+START,IF_PASSED,LIVE_PREVIEW_URL}
 				<!-- Preview in live rendering -->
-				<button class="btn btn-primary btn-scr buttons--preview js-btn-live-preview" type="submit">{+START,INCLUDE,ICON}NAME=buttons/preview{+END} {!LIVE_PREVIEW}</button>
+				<button class="btn btn-primary btn-scr buttons--preview js-btn-live-preview" type="submit">{+START,INCLUDE,ICON}NAME=buttons/preview{+END} <span>{!LIVE_PREVIEW}</span></button>
 			{+END}
 			{+START,IF_PASSED,SCREEN_PREVIEW_URL}
 				<!-- Preview in screen preview (Lorem ipsum) -->
-				<button class="btn btn-primary btn-scr buttons--preview js-btn-screen-preview" type="submit">{+START,INCLUDE,ICON}NAME=buttons/preview{+END} {!LOREM_PREVIEW}</button>
+				<button class="btn btn-primary btn-scr buttons--preview js-btn-screen-preview" type="submit">{+START,INCLUDE,ICON}NAME=buttons/preview{+END} <span>{!LOREM_PREVIEW}</span></button>
 			{+END}
 		{+END}
 		{+START,IF_NON_EMPTY,{$TRIM,{$GET,preview_buttons}}}
@@ -573,7 +573,7 @@
 			<label for="css-equation-{FILE_ID*}">{!CSS_EQUATION_HELPER}</label>
 			<input name="css_equation" id="css-equation-{FILE_ID*}" class="form-control" type="text" value="100% seed" />
 
-			<button class="btn btn-primary btn-scri buttons--calculate js-btn-equation-helper" type="submit">{+START,INCLUDE,ICON}NAME=buttons/calculate{+END} {!CALCULATE}</button>
+			<button class="btn btn-primary btn-scri buttons--calculate js-btn-equation-helper" type="submit">{+START,INCLUDE,ICON}NAME=buttons/calculate{+END} <span>{!CALCULATE}</span></button>
 
 			&rarr;
 

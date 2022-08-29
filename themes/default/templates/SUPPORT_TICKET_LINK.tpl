@@ -63,7 +63,7 @@
 			<form title="{!MERGE_SUPPORT_TICKETS}" action="{$PAGE_LINK*,_SEARCH:tickets:merge:from={$GET,ticket_merge_into}:to={ID}}" method="post">
 				{$INSERT_FORM_POST_SECURITY}
 
-				<button class="btn btn-primary btn-scri admin--merge" type="submit" title="{!MERGE_SUPPORT_TICKETS}">{+START,INCLUDE,ICON}NAME=admin/merge{+END} {!_MERGE}</button>
+				<button class="btn btn-primary btn-scri admin--merge" type="submit" title="{!MERGE_SUPPORT_TICKETS}">{+START,INCLUDE,ICON}NAME=admin/merge{+END} <span>{!_MERGE}</span></button>
 			</form>
 		</td>
 	{+END}{+END}

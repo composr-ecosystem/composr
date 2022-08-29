@@ -9,7 +9,7 @@
 
 			<input type="hidden" name="set_pause" value="0" />
 
-			<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!UNPAUSE}</button>
+			<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} <span>{!UNPAUSE}</span></button>
 		</form>
 	{+END}
 
@@ -19,7 +19,7 @@
 
 			<input type="hidden" name="set_pause" value="1" />
 
-			<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!PAUSE}</button>
+			<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} <span>{!PAUSE}</span></button>
 		</form>
 	{+END}
 {+END}

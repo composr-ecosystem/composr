@@ -17,7 +17,7 @@
 					{+END}
 
 					{+START,IF_NON_EMPTY,{EMPTY_CART_URL}}
-						<button class="btn btn-primary btn-scri buttons--cart-empty js-click-btn-cart-empty" type="submit">{+START,INCLUDE,ICON}NAME=buttons/cart_empty{+END} {!EMPTY_CART}</button>
+						<button class="btn btn-primary btn-scri buttons--cart-empty js-click-btn-cart-empty" type="submit">{+START,INCLUDE,ICON}NAME=buttons/cart_empty{+END} <span>{!EMPTY_CART}</span></button>
 					{+END}
 				</div>
 			</div>

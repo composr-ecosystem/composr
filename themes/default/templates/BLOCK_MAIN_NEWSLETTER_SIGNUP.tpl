@@ -30,7 +30,7 @@
 			{+END}
 
 			<p class="proceed-button">
-				<button class="btn btn-primary btn-scri" type="submit">{+START,INCLUDE,ICON}NAME=menu/site_meta/newsletters{+END} {!SUBSCRIBE}</button>
+				<button class="btn btn-primary btn-scri" type="submit">{+START,INCLUDE,ICON}NAME=menu/site_meta/newsletters{+END} <span>{!SUBSCRIBE}</span></button>
 			</p>
 		</form>
 	</div></section>

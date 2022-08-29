@@ -14,7 +14,7 @@
 
 		<div>
 			<div class="proceed-button">
-				<button class="btn btn-primary btn-scr buttons--proceed js-click-btn-disable-self" accesskey="u" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!PROCEED}</button>
+				<button class="btn btn-primary btn-scr buttons--proceed js-click-btn-disable-self" accesskey="u" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} <span>{!PROCEED}</span></button>
 			</div>
 		</div>
 	</form>

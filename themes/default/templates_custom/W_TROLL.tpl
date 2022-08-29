@@ -8,5 +8,5 @@
 	{$INSERT_FORM_POST_SECURITY}
 
 	{QUESTIONS}
-	<p><button class="btn btn-primary btn-scr buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!PROCEED}</button></p>
+	<p><button class="btn btn-primary btn-scr buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} <span>{!PROCEED}</span></button></p>
 </form>

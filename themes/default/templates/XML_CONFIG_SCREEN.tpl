@@ -12,7 +12,7 @@
 		</div>
 
 		<p class="proceed-button">
-			<button class="btn btn-primary btn-scr buttons--save" id="submit-button" accesskey="u" type="submit">{+START,INCLUDE,ICON}NAME=buttons/save{+END} {!SAVE}</button>
+			<button class="btn btn-primary btn-scr buttons--save" id="submit-button" accesskey="u" type="submit">{+START,INCLUDE,ICON}NAME=buttons/save{+END} <span>{!SAVE}</span></button>
 		</p>
 	</form>
 </div>

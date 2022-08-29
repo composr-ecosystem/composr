@@ -110,7 +110,7 @@
 								<input type="hidden" name="confirm" value="1" />
 								<input type="hidden" name="delete_confirm" value="1" />
 
-								<button class="btn btn-danger btn-scri" type="submit" data-cms-confirm-click="{!CONFIRM_DELETE*,{MENU_NAME}}">{+START,INCLUDE,ICON}NAME=admin/delete3{+END} {!DELETE}</button>
+								<button class="btn btn-danger btn-scri" type="submit" data-cms-confirm-click="{!CONFIRM_DELETE*,{MENU_NAME}}">{+START,INCLUDE,ICON}NAME=admin/delete3{+END} <span>{!DELETE}</span></button>
 							</p>
 						</form>
 					</div>

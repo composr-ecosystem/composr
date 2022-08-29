@@ -42,18 +42,18 @@
 
 	<p class="proceed-button{+START,IF_PASSED,SUBMIT_BUTTON_CLASS} {SUBMIT_BUTTON_CLASS*}{+END}">
 		{+START,IF_PASSED_AND_TRUE,BACK}
-			<button class="btn btn-primary btn-scr buttons--back" type="button" data-cms-btn-go-back="1">{+START,INCLUDE,ICON}NAME=buttons/back{+END} {!GO_BACK}</button>
+			<button class="btn btn-primary btn-scr buttons--back" type="button" data-cms-btn-go-back="1">{+START,INCLUDE,ICON}NAME=buttons/back{+END} <span>{!GO_BACK}</span></button>
 		{+END}
 		{+START,IF_PASSED,BACK_URL}
-			<button class="btn btn-primary btn-scr buttons--back js-click-btn-go-back" type="button">{+START,INCLUDE,ICON}NAME=buttons/back{+END} {!GO_BACK}</button>
+			<button class="btn btn-primary btn-scr buttons--back js-click-btn-go-back" type="button">{+START,INCLUDE,ICON}NAME=buttons/back{+END} <span>{!GO_BACK}</span></button>
 		{+END}
 
 		{+START,IF_PASSED,EXTRA_BUTTONS}{EXTRA_BUTTONS}{+END}
 		{+START,IF_PASSED,CANCEL_URL}
-			<button class="btn btn-primary btn-scr buttons--cancel js-click-do-form-cancel" type="button">{+START,INCLUDE,ICON}NAME=buttons/cancel{+END} {!INPUTSYSTEM_CANCEL}</button>
+			<button class="btn btn-primary btn-scr buttons--cancel js-click-do-form-cancel" type="button">{+START,INCLUDE,ICON}NAME=buttons/cancel{+END} <span>{!INPUTSYSTEM_CANCEL}</span></button>
 		{+END}
 		{+START,IF_PASSED_AND_TRUE,PREVIEW}{+START,IF,{$CONFIG_OPTION,enable_previews}}
-			<button class="btn btn-primary btn-scr buttons--preview js-click-do-form-preview" id="preview-button" accesskey="p" tabindex="{+START,IF_PASSED,TABINDEX}{TABINDEX}{+END}{+START,IF_NON_PASSED,TABINDEX}250{+END}" type="button">{+START,INCLUDE,ICON}NAME=buttons/preview{+END} {!PREVIEW}</button>
+			<button class="btn btn-primary btn-scr buttons--preview js-click-do-form-preview" id="preview-button" accesskey="p" tabindex="{+START,IF_PASSED,TABINDEX}{TABINDEX}{+END}{+START,IF_NON_PASSED,TABINDEX}250{+END}" type="button">{+START,INCLUDE,ICON}NAME=buttons/preview{+END} <span>{!PREVIEW}</span></button>
 		{+END}{+END}
 		<button class="btn btn-primary btn-scr btn-main-submit-form"{+START,IF_NON_PASSED_OR_FALSE,SECONDARY_FORM}{+START,IF_NON_PASSED,BUTTON_ID} id="submit-button"{+END} accesskey="u"{+END}{+START,IF_PASSED,BUTTON_ID} id="{BUTTON_ID*}"{+END} tabindex="{+START,IF_PASSED,TABINDEX}{TABINDEX}{+END}{+START,IF_NON_PASSED,TABINDEX}250{+END}" type="button">{+START,INCLUDE,ICON}NAME={SUBMIT_ICON}{+END} {SUBMIT_NAME*}</button>
 	</p>

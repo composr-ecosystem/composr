@@ -73,7 +73,7 @@
 		</div></div>
 
 		<p class="proceed-button">
-			<button class="btn btn-primary btn-scr buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {$?,{$IS_GUEST},{!PROCEED},{!BOOK}}</button>
+			<button class="btn btn-primary btn-scr buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} <span>{$?,{$IS_GUEST},{!PROCEED},{!BOOK}}</span></button>
 		</p>
 	</form>
 

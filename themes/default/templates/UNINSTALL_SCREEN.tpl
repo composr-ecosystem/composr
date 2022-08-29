@@ -11,6 +11,6 @@
 	</div>
 
 	<p>
-		<button class="btn btn-danger btn-scr" type="submit">{+START,INCLUDE,ICON}NAME=admin/delete3{+END} {!UNINSTALL}</button>
+		<button class="btn btn-danger btn-scr" type="submit">{+START,INCLUDE,ICON}NAME=admin/delete3{+END} <span>{!UNINSTALL}</span></button>
 	</p>
 </form>
