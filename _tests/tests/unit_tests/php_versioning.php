@@ -22,13 +22,16 @@ class php_versioning_test_set extends cms_test_case
     {
         require_code('version2');
 
+        // NOTE: These tests may fail if PHP changes the format of their supported version data
+        //  Or just naturally as PHP supported versions change
+
         $v = strval(PHP_MAJOR_VERSION) . '.' . strval(PHP_MINOR_VERSION);
-        $this->assertTrue(is_php_version_supported($v) !== null);
+        $this->assertTrue(is_php_version_supported_by_phpdevs($v) !== null);
 
         // This needs updating occasionally. The key thing is Composr itself will update itself, and this just checks that automatic updating works as we'd expect.
-        $this->assertTrue(is_php_version_supported(float_to_raw_string(7.2, 1))); // Normally supported
-        $this->assertTrue(is_php_version_supported(float_to_raw_string(9.0, 1))); // Future, assume supported
-        $this->assertTrue(!is_php_version_supported(float_to_raw_string(5.5, 1))); // Known unsupported
-        $this->assertTrue(!is_php_version_supported(float_to_raw_string(4.4, 1))); // Known unsupported and too old to be tracked
+        $this->assertTrue(is_php_version_supported_by_phpdevs(float_to_raw_string(7.2, 1))); // Normally supported
+        $this->assertTrue(is_php_version_supported_by_phpdevs(float_to_raw_string(9.0, 1))); // Future, assume supported
+        $this->assertTrue(!is_php_version_supported_by_phpdevs(float_to_raw_string(5.5, 1))); // Known unsupported
+        $this->assertTrue(!is_php_version_supported_by_phpdevs(float_to_raw_string(4.4, 1))); // Known unsupported and too old to be tracked
     }
 }

@@ -219,7 +219,7 @@ function is_substantial_release(string $dotted) : bool
  * @param  string $v The version
  * @return ?boolean Whether it is (null: some kind of error)
  */
-function is_php_version_supported(string $v) : ?bool
+function is_php_version_supported_by_phpdevs(string $v) : ?bool
 {
     static $data = null;
     if ($data === null) {
@@ -234,13 +234,13 @@ function is_php_version_supported(string $v) : ?bool
     $matches = [];
 
     // Corruption?
-    if (preg_match('#\'\d+\.\d+\' => array\([^\(\)]*\'security\' => \'(\d\d\d\d-\d\d-\d\d)\'#Us', $data, $matches) == 0) {
+    if (preg_match('#\'\d+\.\d+\' => \[[^\(\)]*\'security\' => \'(\d\d\d\d-\d\d-\d\d)\'#Us', $data, $matches) == 0) {
         return null;
     }
 
     // Do we have actual data?
     $matches = [];
-    if (preg_match('#\'' . preg_quote($v, '#') . '\' => array\([^\(\)]*\'security\' => \'(\d\d\d\d)-(\d\d)-(\d\d)\'#is', $data, $matches) != 0) {
+    if (preg_match('#\'' . preg_quote($v, '#') . '\' => \[[^\(\)]*\'security\' => \'(\d\d\d\d)-(\d\d)-(\d\d)\'#is', $data, $matches) != 0) {
         $eol = mktime(0, 0, 0, intval($matches[2]), intval($matches[3]), intval($matches[1]));
         return ($eol > time());
     }
@@ -248,7 +248,7 @@ function is_php_version_supported(string $v) : ?bool
     // Is it older than all releases provided?
     $matches = [];
     $min_version = null;
-    $num_matches = preg_match_all('#\'(\d+\.\d+)\' => array\(#', $data, $matches);
+    $num_matches = preg_match_all('#\'(\d+\.\d+)\' => \[#', $data, $matches);
     for ($i = 0; $i < $num_matches; $i++) {
         $version = floatval($matches[1][$i]);
         if ($version != 3.0/*special case*/) {

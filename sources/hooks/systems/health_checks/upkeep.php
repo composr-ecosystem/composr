@@ -107,7 +107,7 @@ class Hook_health_check_upkeep extends Hook_Health_Check
 
         require_code('version2');
         $v = strval(PHP_MAJOR_VERSION) . '.' . strval(PHP_MINOR_VERSION);
-        $this->assertTrue(is_php_version_supported($v) !== false, 'PHP version supported by the PHP developers ' . $v);
+        $this->assertTrue(is_php_version_supported_by_phpdevs($v) !== false, 'PHP version supported by the PHP developers ' . $v);
     }
 
     /**
@@ -129,7 +129,7 @@ class Hook_health_check_upkeep extends Hook_Health_Check
         if (php_function_allowed('shell_exec')) {
             require_code('version2');
             $v = strval(PHP_MAJOR_VERSION) . '.' . strval(PHP_MINOR_VERSION);
-            $this->assertTrue((@trim(shell_exec('which php')) == '/usr/bin/php') || (is_php_version_supported($v) !== false), 'Unsupported PHP version ' . $v);
+            $this->assertTrue((@trim(shell_exec('which php')) == '/usr/bin/php') || (is_php_version_supported_by_phpdevs($v) !== false), 'Unsupported PHP version ' . $v);
         } else {
             $this->stateCheckSkipped('PHP [tt]shell_exec[/tt] function not available');
         }
