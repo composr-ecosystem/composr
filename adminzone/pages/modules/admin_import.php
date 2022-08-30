@@ -65,6 +65,14 @@ class Module_admin_import
      */
     public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
+        if (($upgrade_from !== null) && ($upgrade_from < 5)) { // LEGACY
+            $GLOBALS['SITE_DB']->alter_table_field('import_id_remap', 'id_old', 'ID_TEXT');
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 6)) { // LEGACY
+            $GLOBALS['SITE_DB']->add_table_field('import_session', 'imp_db_host', 'ID_TEXT');
+        }
+
         if (($upgrade_from !== null) && ($upgrade_from < 7)) { // LEGACY
             $GLOBALS['SITE_DB']->alter_table_field('import_id_remap', 'id_session', '*ID_TEXT');
 
@@ -77,14 +85,6 @@ class Module_admin_import
                 // Could not be made utf8mb4 in advance but can be now because 'id' fields was added as the key
                 $GLOBALS['SITE_DB']->query('ALTER TABLE ' . get_table_prefix() . 'import_parts_done CONVERT TO CHARACTER SET utf8mb4');
             }
-        }
-
-        if (($upgrade_from !== null) && ($upgrade_from < 6)) { // LEGACY
-            $GLOBALS['SITE_DB']->add_table_field('import_session', 'imp_db_host', 'ID_TEXT');
-        }
-
-        if (($upgrade_from !== null) && ($upgrade_from < 5)) { // LEGACY
-            $GLOBALS['SITE_DB']->alter_table_field('import_id_remap', 'id_old', 'ID_TEXT');
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 4)) {

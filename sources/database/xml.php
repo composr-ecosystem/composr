@@ -222,16 +222,17 @@ class Database_Static_xml extends DatabaseDriver
     }
 
     /**
-     * Get SQL for changing the type of a DB field in a table. Note: this function does not support ascension/descension of translatability.
+     * Get SQL for changing the type of a DB field in a table.
      *
      * @param  ID_TEXT $table_name The table name
      * @param  ID_TEXT $name The field name
      * @param  ID_TEXT $db_type The new field type
      * @param  boolean $may_be_null If the field may be null
+     * @param  ?boolean $is_autoincrement Whether it is an autoincrement field (null: could not set it, returned by reference)
      * @param  ID_TEXT $new_name The new field name
      * @return array List of SQL queries to run
      */
-    public function alter_table_field__sql(string $table_name, string $name, string $db_type, bool $may_be_null, string $new_name) : array
+    public function alter_table_field__sql(string $table_name, string $name, string $db_type, bool $may_be_null, ?bool &$is_autoincrement, string $new_name) : array
     {
         $sql_type = $db_type . ' ' . ($may_be_null ? 'NULL' : 'NOT NULL');
 

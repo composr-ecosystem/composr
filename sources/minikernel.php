@@ -635,6 +635,10 @@ function catch_fatal_errors()
  */
 function composr_error_handler($errno, $errstr, $errfile, $errline)
 {
+    if (peek_suppress_error_death()) {
+        return false;
+    }
+
     if ((error_reporting() & $errno) === 0) {
         return false; // This actually tells if @ was used oddly enough. You wouldn't figure from the PHP docs.
     }

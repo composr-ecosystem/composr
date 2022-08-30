@@ -70,7 +70,7 @@ class Database_Static_sqlserver extends Database_super_sqlserver
         $connection = @sqlsrv_connect($db_host, ($db_user == '') ? ['Database' => $db_name] : ['UID' => $db_user, 'PWD' => $db_password, 'Database' => $db_name, 'CharacterSet' => 'UTF-8']);
         if ($connection === false) {
             $err = serialize(sqlsrv_errors());
-            $error = 'Could not connect to database-server (' . $err . ')';
+            $error = 'Could not connect to database-server (' . $err . ', ' . cms_error_get_last() . ')';
             if ($fail_ok) {
                 echo ((running_script('install')) && (get_param_string('type', '') == 'ajax_db_details')) ? strip_html($error) : $error;
                 return null;
@@ -107,6 +107,7 @@ class Database_Static_sqlserver extends Database_super_sqlserver
 
         $results = @sqlsrv_query($connection, $query, [], ['Scrollable' => 'static', 'QueryTimeout' => $this->query_timeout]);
         if (($results === false) && (cms_strtoupper_ascii(substr(ltrim($query), 0, 12)) == 'INSERT INTO ') && ((strpos($query, '(id, ') !== false) || (strpos($query, '(_id, ') !== false))) {
+            // HACKHACK: Horrible, but we need to switch the active identity column somehow
             $pos = strpos($query, '(');
             $table_name = substr($query, 12, $pos - 13);
             if ((!multi_lang_content()) || (substr($table_name, -strlen('translate')) != 'translate')) {

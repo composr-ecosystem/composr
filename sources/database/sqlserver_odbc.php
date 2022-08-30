@@ -74,7 +74,7 @@ class Database_Static_sqlserver_odbc extends Database_super_sqlserver
 
         $connection = $persistent ? @odbc_pconnect($dsn, $db_user, $db_password) : @odbc_connect($dsn, $db_user, $db_password);
         if ($connection === false) {
-            $error = 'Could not connect to database-server (' . odbc_errormsg() . ')';
+            $error = 'Could not connect to database-server (' . odbc_errormsg() . ', ' . cms_error_get_last() . ')';
             if ($fail_ok) {
                 echo ((running_script('install')) && (get_param_string('type', '') == 'ajax_db_details')) ? strip_html($error) : $error;
                 return null;
@@ -111,6 +111,7 @@ class Database_Static_sqlserver_odbc extends Database_super_sqlserver
 
         $results = @odbc_exec($connection, $query);
         if (($results === false) && (cms_strtoupper_ascii(substr($query, 0, 12)) == 'INSERT INTO ') && ((strpos($query, '(id, ') !== false) || (strpos($query, '(_id, ') !== false))) {
+            // HACKHACK: Horrible, but we need to switch the active identity column somehow
             $pos = strpos($query, '(');
             $table_name = substr($query, 12, $pos - 13);
             if ((!multi_lang_content()) || (substr($table_name, -strlen('translate')) != 'translate')) {

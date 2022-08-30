@@ -141,7 +141,7 @@ class Module_tickets
 
         if (($upgrade_from !== null) && ($upgrade_from < 6)) { // LEGACY
             $GLOBALS['SITE_DB']->delete_index_if_exists('ticket_types', '#ticket_type');
-            $GLOBALS['SITE_DB']->alter_table_field('ticket_types', 'ticket_type', '*AUTO', 'id');
+            $GLOBALS['SITE_DB']->alter_table_field('ticket_types', 'ticket_type', '*AUTO', 'id'); // Note that this is not valid code for cross-database support. For future code do it differently, using add_auto_key.
             $GLOBALS['SITE_DB']->add_table_field('ticket_types', 'ticket_type_name', 'SHORT_TRANS', 0);
             $GLOBALS['SITE_DB']->query('UPDATE ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'ticket_types SET ticket_type_name=id');
         }

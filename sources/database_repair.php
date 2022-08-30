@@ -267,7 +267,7 @@ class DatabaseRepair
     {
         $needs_changes = false;
 
-        $type_map = $GLOBALS['DB_DRIVER']->get_type_remap();
+        $type_remap = $GLOBALS['DB_DRIVER']->get_type_remap(true);
 
         // Tables missing from DB -or- inconsistent in DB
         foreach ($meta_tables as $table_name => $table) {
@@ -294,7 +294,7 @@ class DatabaseRepair
 
                         // Fields of inconsistent type?
                         $meta_field_type = trim($field_type, '*?');
-                        $meta_field_type_raw = $type_map[$meta_field_type];
+                        $meta_field_type_raw = $type_remap[$meta_field_type];
                         $meta_is_primary = (strpos($field_type, '*') !== false);
                         $meta_null_ok = (strpos($field_type, '?') !== false) && (multi_lang_content() || strpos($field_type, '_TRANS') === false);
                         $meta_is_auto_increment = ($meta_field_type == 'AUTO');
@@ -462,7 +462,7 @@ class DatabaseRepair
     {
         $needs_changes = false;
 
-        $type_map = $GLOBALS['DB_DRIVER']->get_type_remap();
+        $type_remap = $GLOBALS['DB_DRIVER']->get_type_remap(true);
 
         // Tables missing from DB -or- inconsistent in DB
         foreach ($expected_tables as $table_name => $table) {
@@ -497,7 +497,7 @@ class DatabaseRepair
 
                         // Fields of inconsistent type?
                         $field_type_trimmed = trim($field_type, '*?');
-                        $expected_field_type_raw = $type_map[$field_type_trimmed];
+                        $expected_field_type_raw = $type_remap[$field_type_trimmed];
                         $expected_is_primary = (strpos($field_type, '*') !== false);
                         $expected_null_ok = (strpos($field_type, '?') !== false) && (multi_lang_content() || strpos($field_type, '_TRANS') === false);
                         $expected_is_auto_increment = ($field_type_trimmed == 'AUTO');
@@ -789,7 +789,7 @@ class DatabaseRepair
         $this->add_fixup_query($query);
 
         if ((!multi_lang_content()) && (strpos($field_type, '__COMCODE') !== false)) {
-            $type_remap = $GLOBALS['DB_DRIVER']->get_type_remap();
+            $type_remap = $GLOBALS['DB_DRIVER']->get_type_remap(true);
 
             foreach (['text_parsed' => 'LONG_TEXT', 'source_user' => 'MEMBER'] as $sub_name => $sub_type) {
                 $sub_name = $field_name . '__' . $sub_name;
@@ -854,7 +854,11 @@ class DatabaseRepair
             $this->add_fixup_query($query);
         }
 
-        $query = $GLOBALS['SITE_DB']->driver->alter_table_field__sql(get_table_prefix() . $table_name, $field_name, $field_type);
+        $type_remap = $GLOBALS['SITE_DB']->driver->get_type_remap(true);
+        $_field_type = str_replace(['*', '?'], ['', ''], $field_type);
+        $db_type = $type_remap[$_field_type];
+
+        $query = $GLOBALS['SITE_DB']->driver->alter_table_field__sql(get_table_prefix() . $table_name, $field_name, $db_type, $field_type[0] == '?', $field_type == '*AUTO');
         $this->add_fixup_query($query);
     }
 

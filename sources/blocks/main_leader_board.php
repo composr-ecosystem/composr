@@ -95,6 +95,7 @@ class Block_main_leader_board
             require_code('leader_board2');
             $new_leader_board = add_leader_board(do_lang('POINT_LEADER_BOARD'), 'holders', 10, 'week', 1, 0, null);
             $GLOBALS['SITE_DB']->add_table_field('leader_board', 'lb_leader_board_id', '*AUTO_LINK', $new_leader_board);
+            $GLOBALS['SITE_DB']->change_primary_key('leader_board', ['lb_leader_board_id', 'lb_member', 'lb_date_and_time']);
 
             // Calculate rankings for legacy result sets
             $dates = $GLOBALS['SITE_DB']->query('SELECT DISTINCT date_and_time FROM ' . get_table_prefix() . 'leader_board');

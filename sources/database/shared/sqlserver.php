@@ -152,7 +152,7 @@ abstract class Database_super_sqlserver extends DatabaseDriver
     public function get_type_remap(bool $for_alter = false) : array
     {
         $type_remap = [
-            'AUTO' => 'integer identity',
+            'AUTO' => $for_alter ? 'integer' : 'integer identity',
             'AUTO_LINK' => 'integer',
             'INTEGER' => 'integer',
             'UINTEGER' => 'bigint',
@@ -226,19 +226,6 @@ abstract class Database_super_sqlserver extends DatabaseDriver
         $query_create = 'CREATE TABLE ' . $table_name . ' (' . "\n" . $_fields . '    PRIMARY KEY (' . $keys . ")\n)";
         $ret = [$query_create];
 
-        if (running_script('commandr')) {
-            if (in_array('*AUTO', $fields)) {
-                static $query_insert_last_table_name = null;
-                if ($query_insert_last_table_name !== null) {
-                    $query_identity_off = 'SET IDENTITY_INSERT ' . $query_insert_last_table_name . ' OFF';
-                    $ret[] = $query_identity_off;
-                }
-                $query_insert_last_table_name = $table_name;
-                $query_identity_on = 'SET IDENTITY_INSERT ' . $table_name . ' ON';
-                $ret[] = $query_identity_on;
-            }
-        }
-
         return $ret;
     }
 
@@ -287,17 +274,22 @@ abstract class Database_super_sqlserver extends DatabaseDriver
     }
 
     /**
-     * Get SQL for changing the type of a DB field in a table. Note: this function does not support ascension/descension of translatability.
+     * Get SQL for changing the type of a DB field in a table.
      *
      * @param  ID_TEXT $table_name The table name
      * @param  ID_TEXT $name The field name
      * @param  ID_TEXT $db_type The new field type
      * @param  boolean $may_be_null If the field may be null
+     * @param  ?boolean $is_autoincrement Whether it is an autoincrement field (null: could not set it, returned by reference)
      * @param  ID_TEXT $new_name The new field name
      * @return array List of SQL queries to run
      */
-    public function alter_table_field__sql(string $table_name, string $name, string $db_type, bool $may_be_null, string $new_name) : array
+    public function alter_table_field__sql(string $table_name, string $name, string $db_type, bool $may_be_null, ?bool &$is_autoincrement, string $new_name) : array
     {
+        if ($is_autoincrement) {
+            $is_autoincrement = null; // Error
+        }
+
         $sql_type = $db_type . ' ' . ($may_be_null ? 'NULL' : 'NOT NULL');
 
         $delimiter_start = $this->get_delimited_identifier(false);

@@ -436,7 +436,7 @@ abstract class Database_super_mysql extends DatabaseDriver
     public function get_type_remap(bool $for_alter = false) : array
     {
         $type_remap = [
-            'AUTO' => $for_alter ? 'integer unsigned PRIMARY KEY auto_increment' : 'integer unsigned auto_increment',
+            'AUTO' => $for_alter ? 'integer unsigned' : 'integer unsigned auto_increment',
             'AUTO_LINK' => 'integer', // not unsigned because it's useful to have -ve for temporary usage while importing (NB: *_TRANS is signed, so trans fields are not perfectly AUTO_LINK compatible and can have double the positive range -- in the real world it will not matter though)
             'INTEGER' => 'integer',
             'UINTEGER' => 'integer unsigned',
@@ -620,17 +620,22 @@ abstract class Database_super_mysql extends DatabaseDriver
     }
 
     /**
-     * Get SQL for changing the type of a DB field in a table. Note: this function does not support ascension/descension of translatability.
+     * Get SQL for changing the type of a DB field in a table.
      *
      * @param  ID_TEXT $table_name The table name
      * @param  ID_TEXT $name The field name
      * @param  ID_TEXT $db_type The new field type
      * @param  boolean $may_be_null If the field may be null
+     * @param  ?boolean $is_autoincrement Whether it is an autoincrement field (null: could not set it, returned by reference)
      * @param  ID_TEXT $new_name The new field name
      * @return array List of SQL queries to run
      */
-    public function alter_table_field__sql(string $table_name, string $name, string $db_type, bool $may_be_null, string $new_name) : array
+    public function alter_table_field__sql(string $table_name, string $name, string $db_type, bool $may_be_null, ?bool &$is_autoincrement, string $new_name) : array
     {
+        if ($is_autoincrement) {
+            $db_type .= ' PRIMARY KEY auto_increment';
+        }
+
         $sql_type = $db_type . ' ' . ($may_be_null ? 'NULL' : 'NOT NULL');
 
         $delimiter_start = $this->get_delimited_identifier(false);

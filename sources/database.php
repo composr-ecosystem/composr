@@ -779,16 +779,17 @@ abstract class DatabaseDriver
     }
 
     /**
-     * Get SQL for changing the type of a DB field in a table. Note: this function does not support ascension/descension of translatability.
+     * Get SQL for changing the type of a DB field in a table.
      *
      * @param  ID_TEXT $table_name The table name
      * @param  ID_TEXT $name The field name
      * @param  ID_TEXT $db_type The new field type
      * @param  boolean $may_be_null If the field may be null
+     * @param  ?boolean $is_autoincrement Whether it is an autoincrement field (null: could not set it, returned by reference)
      * @param  ID_TEXT $new_name The new field name
      * @return array List of SQL queries to run
      */
-    abstract public function alter_table_field__sql(string $table_name, string $name, string $db_type, bool $may_be_null, string $new_name) : array;
+    abstract public function alter_table_field__sql(string $table_name, string $name, string $db_type, bool $may_be_null, ?bool &$is_autoincrement, string $new_name) : array;
 
     /**
      * Get SQL for deleting the specified field from the specified table.
@@ -1529,13 +1530,29 @@ class DatabaseConnector
     {
         if ((is_array($this->connection_read)) && (isset($this->connection_read[4]))) { // Okay, we can't be lazy anymore
             $this->connection_read = call_user_func_array([$this->driver, 'get_connection'], $this->connection_read);
+            if ($this->connection_read === null) {
+                return; // Failed already
+            }
             if ((is_array($this->connection_write)) && (isset($this->connection_write[4]))) { // Okay, we can't be lazy anymore
                 $this->connection_write = call_user_func_array([$this->driver, 'get_connection'], $this->connection_write);
+            }
+            if ($this->connection_write === null) {
+                return; // Failed already
             }
             if (isset($GLOBALS['SITE_DB']) && $this === $GLOBALS['SITE_DB']) {
                 _general_db_init();
             }
+
+            register_shutdown_function([$this, '_close_connections']);
         }
+    }
+
+    /**
+     * Called to close connections from a register_shutdown_function handler.
+     */
+    public function _close_connections()
+    {
+        register_shutdown_function([$this->driver, 'close_connections']);
     }
 
     /**
@@ -2739,6 +2756,8 @@ class DatabaseConnector
 
     /**
      * Adds a field to an existing table.
+     * Note: this function cannot add a new AUTO key, use add_auto_key for that.
+     * Note: this function cannot change the keys in the database on its own (use change_primary_key for that), although you should include * if something will be a key.
      *
      * @param  ID_TEXT $table_name The table name
      * @param  ID_TEXT $name The field name
@@ -2752,17 +2771,20 @@ class DatabaseConnector
     }
 
     /**
-     * Change the type of a DB field in a table. Note: this function does not support ascension/descension of translatability.
+     * Change the type of a DB field in a table.
+     * Note: this function cannot change the keys in the database on its own (use change_primary_key for that), although you should include * if something will be a key.
+     * Note: this function does not support ascension/descension of translatability, use promote_text_field_to_comcode for that.
      *
      * @param  ID_TEXT $table_name The table name
      * @param  ID_TEXT $name The field name
      * @param  ID_TEXT $type The new field type
      * @param  ?ID_TEXT $new_name The new field name (null: leave name)
+     * @return boolean Whether we failed to set an auto-increment
      */
-    public function alter_table_field(string $table_name, string $name, string $type, ?string $new_name = null)
+    public function alter_table_field(string $table_name, string $name, string $type, ?string $new_name = null) : bool
     {
         require_code('database_helper');
-        _helper_alter_table_field($this, $table_name, $name, $type, $new_name);
+        return _helper_alter_table_field($this, $table_name, $name, $type, $new_name);
     }
 
     /**
@@ -2791,11 +2813,9 @@ class DatabaseConnector
 
     /**
      * Use an *AUTO key for a table that had some other key before.
-     *
+
      * @param  ID_TEXT $table_name Table name
-     * @param  ID_TEXT $field_name Field name for new key
-     *
-     * @ignore
+     * @param  ID_TEXT $field_name Field name for new key, must always be 'id'
      */
     public function add_auto_key(string $table_name, string $field_name = 'id')
     {

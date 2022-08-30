@@ -221,6 +221,18 @@ function _helper_create_table(object $this_ref, string $table_name, array $field
     $ins_m_type = [];
     $fields_copy = $fields;
     foreach ($fields_copy as $name => $type) {
+        if (($type == 'AUTO') || ($type == '?AUTO')) {
+            fatal_exit('AUTO fields must always be a key');
+        }
+
+        if ((strpos($type, '?') !== false) && (strpos($type, '*') !== false)) {
+            fatal_exit('Fields cannot be both null and part of keys');
+        }
+
+        if (($type == '*AUTO') && ($name != 'id')) {
+            fatal_exit('AUTO columns must always have a field name of \'id\''); // This is so the HACKHACK done for sqlserver to switch identity columns can work
+        }
+
         if (($table_name != 'db_meta') && ($table_name != 'db_meta_indices')) {
             $ins_m_table[] = $table_name;
             $ins_m_name[] = $name;
@@ -538,6 +550,8 @@ function _helper_rename_table(object $this_ref, string $old, string $new)
 
 /**
  * Adds a field to an existing table.
+ * Note: this function cannot add a new AUTO key, use add_auto_key for that.
+ * Note: this function cannot change the keys in the database on its own (use change_primary_key for that), although you should include * if something will be a key.
  *
  * @param  object $this_ref Link to the real database object
  * @param  ID_TEXT $table_name The table name
@@ -548,6 +562,22 @@ function _helper_rename_table(object $this_ref, string $old, string $new)
  */
 function _helper_add_table_field(object $this_ref, string $table_name, string $name, string $type, $default = null)
 {
+    if ($type == '*AUTO') {
+        fatal_exit('Cannot add a new AUTO field to an existing table using add_table_field, use add_auto_key');
+    }
+
+    if (($type == 'AUTO') || ($type == '?AUTO')) {
+        fatal_exit('AUTO fields must always be a key');
+    }
+
+    if ((strpos($type, '?') !== false) && (strpos($type, '*') !== false)) {
+        fatal_exit('Fields cannot be both null and part of keys');
+    }
+
+    if (($type == '*AUTO') && ($name != 'id')) {
+        fatal_exit('AUTO columns must always have a field name of \'id\'');
+    }
+
     if (($default === null) && (substr($type, 0, 1) != '?')) {
         $default = $this_ref->driver->get_implicit_field_default($type);
     }
@@ -608,28 +638,41 @@ function _helper_add_table_field(object $this_ref, string $table_name, string $n
 }
 
 /**
- * Change the type of a DB field in a table. Note: this function does not support ascension/descension of translatability.
+ * Change the type of a DB field in a table.
  *
  * @param  object $this_ref Link to the real database object
  * @param  ID_TEXT $table_name The table name
  * @param  ID_TEXT $name The field name
  * @param  ID_TEXT $type The new field type
  * @param  ?ID_TEXT $new_name The new field name (null: leave name)
+ * @return boolean Whether we failed to set an auto-increment
  * @ignore
  */
-function _helper_alter_table_field(object $this_ref, string $table_name, string $name, string $type, ?string $new_name = null)
+function _helper_alter_table_field(object $this_ref, string $table_name, string $name, string $type, ?string $new_name = null) : bool
 {
+    if (($type == 'AUTO') || ($type == '?AUTO')) {
+        fatal_exit('AUTO fields must always be a key');
+    }
+
+    if ((strpos($type, '?') !== false) && (strpos($type, '*') !== false)) {
+        fatal_exit('Fields cannot be both null and part of keys');
+    }
+
+    if (($type == '*AUTO') && ($name != 'id')) {
+        fatal_exit('AUTO columns must always have a field name of \'id\'');
+    }
+
+    $type_remap = $this_ref->driver->get_type_remap(true);
+
     // Handle renaming of special Comcode fields on non-multi-lang-content sites
     if ((strpos($type, '__COMCODE') !== false) && ($new_name != $name) && (!multi_lang_content())) {
-        $type_remap = $this_ref->driver->get_type_remap();
-
         foreach (['text_parsed' => 'LONG_TEXT', 'source_user' => 'MEMBER'] as $sub_name => $sub_type) {
             $sub_old_name = $name . '__' . $sub_name;
             $sub_new_name = $new_name . '__' . $sub_name;
 
             $db_type = $type_remap[$sub_type];
 
-            $queries = $this_ref->driver->alter_table_field__sql($this_ref->table_prefix . $table_name, $sub_old_name, $db_type, false, $sub_new_name);
+            $queries = $this_ref->driver->alter_table_field__sql($this_ref->table_prefix . $table_name, $sub_old_name, $db_type, false, false, $sub_new_name);
             foreach ($queries as $query) {
                 $this_ref->_query($query);
             }
@@ -642,11 +685,11 @@ function _helper_alter_table_field(object $this_ref, string $table_name, string 
         $_type = 'LONG_TEXT'; // In the DB layer, it must now save as such
     }
     $__type = str_replace(['*', '?'], ['', ''], $_type);
-    $type_remap = $this_ref->driver->get_type_remap();
     $db_type = $type_remap[$__type];
 
     // Work out and run SQL
-    $queries = $this_ref->driver->alter_table_field__sql($this_ref->table_prefix . $table_name, $name, $db_type, $_type[0] == '?', ($new_name === null) ? $name : $new_name);
+    $is_autoincrement = ($_type == '*AUTO');
+    $queries = $this_ref->driver->alter_table_field__sql($this_ref->table_prefix . $table_name, $name, $db_type, $_type[0] == '?', $is_autoincrement, ($new_name === null) ? $name : $new_name);
     foreach ($queries as $query) {
         $this_ref->_query($query);
     }
@@ -679,10 +722,13 @@ function _helper_alter_table_field(object $this_ref, string $table_name, string 
     if (function_exists('persistent_cache_delete')) {
         persistent_cache_delete('TABLE_LANG_FIELDS_CACHE');
     }
+
+    return ($is_autoincrement === null);
 }
 
 /**
  * Change the primary key of a table.
+ * Note: this function cannot initialise a new AUTO key, use add_auto_key for that.
  *
  * @param  object $this_ref Link to the real database object
  * @param  ID_TEXT $table_name The name of the table to create the index on
@@ -710,7 +756,7 @@ function _helper_change_primary_key(object $this_ref, string $table_name, array 
  *
  * @param  object $this_ref Link to the real database object
  * @param  ID_TEXT $table_name Table name
- * @param  ID_TEXT $field_name Field name for new key
+ * @param  ID_TEXT $field_name Field name for new key, must always be 'id'
  *
  * @ignore
  */
@@ -718,12 +764,16 @@ function _helper_add_auto_key(object $this_ref, string $table_name, string $fiel
 {
     push_query_limiting(false);
 
+    if ($field_name != 'id') {
+        fatal_exit('AUTO columns must always have a field name of \'id\'');
+    }
+
     // Current key fields
     $key_sql = 'SELECT m_name FROM ' . $this_ref->table_prefix . 'db_meta WHERE m_type LIKE \'*%\' AND ' . db_string_equal_to('m_table', $table_name);
     $key_fields = $this_ref->query($key_sql);
     $select = collapse_1d_complexity('m_name', $key_fields);
 
-    // Add integer field, as it is a safe op (auto_increment can only be active key, and we already have a key)
+    // Add integer field, as it is a safe op (auto_increment must be part of active key, and we already have a key)
     $this_ref->add_table_field($table_name, $field_name, 'INTEGER');
 
     // But it does need to be unique
@@ -742,7 +792,29 @@ function _helper_add_auto_key(object $this_ref, string $table_name, string $fiel
     $this_ref->change_primary_key($table_name, [$field_name]);
 
     // Switch to auto_increment in DB, and update meta DB
-    $this_ref->alter_table_field($table_name, $field_name, '*AUTO');
+    $failed_autoincrement = $this_ref->alter_table_field($table_name, $field_name, '*AUTO');
+
+    // Rebuild whole table?
+    if ($failed_autoincrement) {
+        $fields = $this_ref->query_select('db_meta', ['*'], ['m_table' => $table_name]);
+
+        $table_name_old = $table_name . '__old';
+
+        $this_ref->rename_table($table_name, $table_name_old);
+
+        $this_ref->create_table($table_name, $fields);
+
+        $start = 0;
+        $max = 50;
+        do {
+            $rows = $this_ref->query_select($table_name, ['*'], null, '', $max, $start);
+            foreach ($rows as $row) {
+                $this_ref->query_insert($table_name_old, $row);
+            }
+        } while (count($rows) == $max);
+
+        $this_ref->drop_table_if_exists($table_name_old);
+    }
 }
 
 /**

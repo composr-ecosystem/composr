@@ -75,7 +75,7 @@ function disable_content_translation()
 
     $db = $GLOBALS['SITE_DB'];
 
-    $type_remap = $db->driver->get_type_remap();
+    $type_remap = $db->driver->get_type_remap(true);
 
     $_table_lang_fields = $db->query('SELECT m_table,m_name,m_type FROM ' . $db->get_table_prefix() . 'db_meta WHERE m_type LIKE \'' . db_encode_like('%\_TRANS%') . '\' ORDER BY m_table,m_name');
     foreach ($_table_lang_fields as $field) {
@@ -116,7 +116,7 @@ function disable_content_translation()
         $db->query($query);
 
         // Rename Comcode field to main field
-        $queries = $db->driver->alter_table_field__sql($db->table_prefix . $field['m_table'], $field['m_name'] . '__new', $type_remap['LONG_TEXT'], false, $field['m_name']);
+        $queries = $db->driver->alter_table_field__sql($db->table_prefix . $field['m_table'], $field['m_name'] . '__new', $type_remap['LONG_TEXT'], false, false, $field['m_name']);
         foreach ($queries as $query) {
             $db->query($query);
         }
@@ -159,7 +159,7 @@ function enable_content_translation()
 
     $db = $GLOBALS['SITE_DB'];
 
-    $type_remap = $db->driver->get_type_remap();
+    $type_remap = $db->driver->get_type_remap(true);
 
     $_table_lang_fields = $db->query('SELECT m_table,m_name,m_type FROM ' . $db->get_table_prefix() . 'db_meta WHERE m_type LIKE \'' . db_encode_like('%\_TRANS%') . '\' ORDER BY m_table,m_name');
     foreach ($_table_lang_fields as $field) {
@@ -171,7 +171,7 @@ function enable_content_translation()
         $GLOBALS['SITE_DB']->delete_index_if_exists($field['m_table'], '#' . $field['m_name']);
 
         // Rename main field to temporary one
-        $queries = $db->driver->alter_table_field__sql($db->table_prefix . $field['m_table'], $field['m_name'], $type_remap['LONG_TEXT'], false, $field['m_name'] . '__old');
+        $queries = $db->driver->alter_table_field__sql($db->table_prefix . $field['m_table'], $field['m_name'], $type_remap['LONG_TEXT'], false, false, $field['m_name'] . '__old');
         foreach ($queries as $query) {
             $db->query($query);
         }

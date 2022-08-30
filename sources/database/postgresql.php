@@ -100,7 +100,7 @@ class Database_Static_postgresql extends DatabaseDriver
 
         $connection = $persistent ? @pg_pconnect('host=' . $db_host . ' dbname=' . $db_name . ' user=' . $db_user . ' password=' . $db_password) : @pg_connect('host=' . $db_host . ' dbname=' . $db_name . ' user=' . $db_user . ' password=' . $db_password);
         if ($connection === false) {
-            $error = 'Could not connect to database-server (' . @pg_last_error() . ')';
+            $error = 'Could not connect to database-server (' . @strval(pg_last_error()) . ', ' . cms_error_get_last() . ')';
             if ($fail_ok) {
                 echo ((running_script('install')) && (get_param_string('type', '') == 'ajax_db_details')) ? strip_html($error) : $error;
                 return null;
@@ -219,14 +219,16 @@ class Database_Static_postgresql extends DatabaseDriver
                 $name = $names[$j];
                 $type = $types[$j];
 
-                if (($type == 'INTEGER') || ($type == 'SMALLINT') || ($type == 'SERIAL') || ($type == 'UINTEGER')) {
+                if (($type == 'INTEGER') || ($type == 'SMALLINT') || ($type == 'SERIAL') || ($type == 'UINTEGER') || ($type == 'int8') || ($type == 'int4') || ($type == 'int2')) {
                     if ($v !== null) {
                         $newrow[$name] = intval($v);
                     } else {
                         $newrow[$name] = null;
                     }
-                } elseif (substr($type, 0, 5) == 'FLOAT') {
+                } elseif ((substr($type, 0, 5) == 'FLOAT') || ($type == 'numeric')) {
                         $newrow[$name] = floatval($v);
+                } elseif (($type == 'varchar') || ($type == 'text')) {
+                    $newrow[$name] = $v;
                 } else {
                     $newrow[$name] = $v;
                 }
@@ -251,7 +253,7 @@ class Database_Static_postgresql extends DatabaseDriver
     public function get_type_remap(bool $for_alter = false) : array
     {
         $type_remap = [
-            'AUTO' => 'serial',
+            'AUTO' => $for_alter ? 'integer' : 'serial',
             'AUTO_LINK' => 'integer',
             'INTEGER' => 'integer',
             'UINTEGER' => 'bigint',
@@ -349,28 +351,38 @@ class Database_Static_postgresql extends DatabaseDriver
     }
 
     /**
-     * Get SQL for changing the type of a DB field in a table. Note: this function does not support ascension/descension of translatability.
+     * Get SQL for changing the type of a DB field in a table.
      *
      * @param  ID_TEXT $table_name The table name
      * @param  ID_TEXT $name The field name
      * @param  ID_TEXT $db_type The new field type
      * @param  boolean $may_be_null If the field may be null
+     * @param  ?boolean $is_autoincrement Whether it is an autoincrement field (null: could not set it, returned by reference)
      * @param  ID_TEXT $new_name The new field name
      * @return array List of SQL queries to run
      */
-    public function alter_table_field__sql(string $table_name, string $name, string $db_type, bool $may_be_null, string $new_name) : array
+    public function alter_table_field__sql(string $table_name, string $name, string $db_type, bool $may_be_null, ?bool &$is_autoincrement, string $new_name) : array
     {
-        $sql_type = $db_type . ' ' . ($may_be_null ? 'NULL' : 'NOT NULL');
-
         $delimiter_start = $this->get_delimited_identifier(false);
         $delimiter_end = $this->get_delimited_identifier(true);
 
         $queries = [];
 
-        $queries[] = 'ALTER TABLE ' . $table_name . ' ALTER COLUMN ' . $delimiter_start . $name . $delimiter_end . ' TYPE ' . $sql_type;
+        $queries[] = 'ALTER TABLE ' . $table_name . ' ALTER COLUMN ' . $delimiter_start . $name . $delimiter_end . ' TYPE ' . $db_type;
+
+        if ($may_be_null) {
+            $queries[] = 'ALTER TABLE ' . $table_name . ' ALTER COLUMN ' . $delimiter_start . $name . $delimiter_end . ' DROP NOT NULL';
+        } else {
+            $queries[] = 'ALTER TABLE ' . $table_name . ' ALTER COLUMN ' . $delimiter_start . $name . $delimiter_end . ' SET NOT NULL';
+        }
 
         if ($name != $new_name) {
             $queries[] = 'ALTER TABLE ' . $table_name . ' RENAME COLUMN ' . $delimiter_start . $name . $delimiter_end . ' TO ' . $new_name;
+        }
+
+        if ($is_autoincrement) {
+            $queries[] = 'CREATE SEQUENCE ' . $table_name . '_' . $name . '_seq OWNED BY ' . $table_name . '.' . $name;
+            $queries[] = 'ALTER TABLE ' . $table_name . ' ALTER COLUMN ' . $name . ' SET DEFAULT nextval(\'' . $table_name . '_' . $name . '_seq\')';
         }
 
         return $queries;
@@ -453,7 +465,7 @@ class Database_Static_postgresql extends DatabaseDriver
     public function change_primary_key__sql(string $table_prefix, string $table_name, array $new_key) : array
     {
         $queries = [];
-        $queries[] = 'ALTER TABLE ' . $table_prefix . $table_name . ' DROP PRIMARY KEY';
+        $queries[] = 'ALTER TABLE ' . $table_prefix . $table_name . ' DROP CONSTRAINT ' . $table_prefix . $table_name . '_pkey';
         if (!empty($new_key)) {
             $queries[] = 'ALTER TABLE ' . $table_prefix . $table_name . ' ADD PRIMARY KEY (' . implode(',', $new_key) . ')';
         }
@@ -536,7 +548,7 @@ class Database_Static_postgresql extends DatabaseDriver
             $postgres_fulltext_language = 'english';
         }
 
-        return 'to_tsvector(?) @@ plainto_tsquery(\'pg_catalog.' . $postgres_fulltext_language . '\', \'' . $this->escape_string($content) . '\')';
+        return 'to_tsvector(?) @@ websearch_to_tsquery(\'pg_catalog.' . $postgres_fulltext_language . '\', \'' . $this->escape_string($content) . '\')';
     }
 
     /**
@@ -591,6 +603,11 @@ class Database_Static_postgresql extends DatabaseDriver
      */
     public function close_connections()
     {
+        foreach ($this->cache_db as $db_names => $connections) {
+            foreach ($connections as $connection) {
+                @pg_close($connection);
+            }
+        }
         $this->cache_db = [];
     }
 }
