@@ -18,9 +18,13 @@
  */
 class _api_confluence_test_set extends cms_test_case
 {
+    protected $backup_url_scheme;
+
     public function setUp()
     {
         parent::setUp();
+
+        $this->backup_url_scheme = get_option('url_scheme');
 
         set_option('confluence_subdomain', 'confluence.atlassian.com');
         set_option('confluence_space', 'Cloud');
@@ -37,5 +41,10 @@ class _api_confluence_test_set extends cms_test_case
         }
 
         $this->run_health_check('API connections', 'Confluence');
+    }
+
+    public function tearDown()
+    {
+        set_option('url_scheme', $this->backup_url_scheme);
     }
 }

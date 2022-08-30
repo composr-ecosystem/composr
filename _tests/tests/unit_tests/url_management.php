@@ -18,12 +18,16 @@
  */
 class url_management_test_set extends cms_test_case
 {
+    protected $backup_url_scheme;
+
     public function testUrlToPageLink()
     {
         $zone_pathed = (get_option('single_public_zone') == '1') ? '' : 'site/';
         $zone = (get_option('single_public_zone') == '1') ? '' : 'site';
 
         $expected = $zone . ':downloads:browse:testxx123:foo=bar';
+
+        $this->backup_url_scheme = get_option('url_scheme');
 
         set_option('url_scheme', 'RAW');
         $test = url_to_page_link(get_base_url() . '/' . $zone_pathed . 'index.php?page=downloads&type=browse&id=testxx123&&foo=bar', false, false);
@@ -373,5 +377,10 @@ class url_management_test_set extends cms_test_case
         $_url = preg_replace('#[&?]keep_devtest=1#', '', $_url);
 
         return $_url;
+    }
+
+    public function tearDown()
+    {
+        set_option('url_scheme', $this->backup_url_scheme);
     }
 }
