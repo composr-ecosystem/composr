@@ -368,7 +368,13 @@ class Database_Static_postgresql extends DatabaseDriver
 
         $queries = [];
 
-        $queries[] = 'ALTER TABLE ' . $table_name . ' ALTER COLUMN ' . $delimiter_start . $name . $delimiter_end . ' TYPE ' . $db_type;
+        $query = 'ALTER TABLE ' . $table_name . ' ALTER COLUMN ' . $delimiter_start . $name . $delimiter_end . ' SET DATA TYPE ' . $db_type;
+        if (strpos($db_type, 'int') !== false) {
+            $query .= ' USING ' . $name . '::integer'; // Because the conversion is not guaranteed to be perfect we have to force a cast
+        } elseif (strpos($db_type, 'real') !== false) {
+            $query .= ' USING ' . $name . '::real'; // Because the conversion is not guaranteed to be perfect we have to force a cast
+        }
+        $queries[] = $query;
 
         if ($may_be_null) {
             $queries[] = 'ALTER TABLE ' . $table_name . ' ALTER COLUMN ' . $delimiter_start . $name . $delimiter_end . ' DROP NOT NULL';
