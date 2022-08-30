@@ -633,7 +633,7 @@ abstract class Database_super_mysql extends DatabaseDriver
     public function alter_table_field__sql(string $table_name, string $name, string $db_type, bool $may_be_null, ?bool &$is_autoincrement, string $new_name) : array
     {
         if ($is_autoincrement) {
-            $db_type .= ' PRIMARY KEY auto_increment';
+            $db_type .= ' auto_increment';
         }
 
         $sql_type = $db_type . ' ' . ($may_be_null ? 'NULL' : 'NOT NULL');
