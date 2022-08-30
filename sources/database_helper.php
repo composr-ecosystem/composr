@@ -811,6 +811,7 @@ function _helper_add_auto_key(object $this_ref, string $table_name, string $fiel
             foreach ($rows as $row) {
                 $this_ref->query_insert($table_name_old, $row);
             }
+            $start += $max;
         } while (count($rows) == $max);
 
         $this_ref->drop_table_if_exists($table_name_old);
