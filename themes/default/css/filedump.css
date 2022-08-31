@@ -116,7 +116,6 @@
 .filedump-generated-comcode {
 	width: 50%;
 	padding-right: 0.5em;
-	box-sizing: border-box;
 }
 
 .filedump-generated-comcode textarea {
@@ -128,7 +127,6 @@
 	float: right;
 	overflow-wrap: break-word;
 	width: 50%;
-	box-sizing: border-box;
 }
 
 .filedump-image-sizes label {

@@ -29,9 +29,10 @@ This (if you remove the slashes) is how you'd do a Tempcode include from your ov
 =========================
 */
 
-*,
-*::before,
-*::after {
+*:not(.trad-box-model, .trad-box-model *),
+*:not(.trad-box-model, .trad-box-model *)::before,
+*:not(.trad-box-model, .trad-box-model *)::after {
+	/* This code places a big assumption on layout; if you have code that does not work with it, place the trad-box-model class around that portion of the DOM */
 	box-sizing: border-box;
 }
 
@@ -268,7 +269,6 @@ button::-moz-focus-inner,
 
 input[type="radio"],
 input[type="checkbox"] {
-	box-sizing: border-box;
 	padding: 0;
 }
 
