@@ -796,26 +796,43 @@ function _helper_add_auto_key(object $this_ref, string $table_name, string $fiel
 
     // Rebuild whole table?
     if ($failed_autoincrement) {
-        $fields = $this_ref->query_select('db_meta', ['*'], ['m_table' => $table_name]);
-
-        $table_name_old = $table_name . '__old';
-
-        $this_ref->rename_table($table_name, $table_name_old);
-
-        $this_ref->create_table($table_name, $fields);
-
-        $start = 0;
-        $max = 50;
-        do {
-            $rows = $this_ref->query_select($table_name, ['*'], null, '', $max, $start);
-            foreach ($rows as $row) {
-                $this_ref->query_insert($table_name_old, $row);
-            }
-            $start += $max;
-        } while (count($rows) == $max);
-
-        $this_ref->drop_table_if_exists($table_name_old);
+        rebuild_table_from_meta_database($this_ref, $table_name);
     }
+}
+
+/**
+ * Rebuild a table from the metadata in the meta database.
+ *
+ * @param  object $db Link to the real database object
+ * @param  ID_TEXT $table_name The table name
+ */
+function rebuild_table_from_meta_database(object $db, string $table_name)
+{
+    $fields = $db->query_select('db_meta', ['*'], ['m_table' => $table_name]);
+    $indexes = $db->query_select('db_meta_indices', ['*'], ['i_table' => $table_name]);
+
+    $table_name_old = $table_name . '__old';
+
+    $db->rename_table($table_name, $table_name_old);
+
+    $db->create_table($table_name, collapse_2d_complexity('m_name', 'm_type', $fields));
+
+    $start = 0;
+    $max = 50;
+    do {
+        $rows = $db->query_select($table_name, ['*'], [], '', $max, $start);
+        foreach ($rows as $row) {
+            $db->query_insert($table_name_old, $row);
+        }
+        $start += $max;
+    } while (count($rows) == $max);
+
+    foreach ($indexes as $index) {
+        $fields = explode(',', $index['i_fields']);
+        $GLOBALS['SITE_DB']->create_index($index['i_table'], $index['i_name'], $fields);
+    }
+
+    $db->drop_table_if_exists($table_name_old);
 }
 
 /**

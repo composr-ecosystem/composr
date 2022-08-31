@@ -276,7 +276,7 @@ function get_innodb_table_sql($tables, $all_tables)
             }
         }
 
-        $queries = $db_static->create_table($table_prefix . $table_name, $fields, $table_name, $db->connection_write, null);
+        $queries = $db_static->create_table__sql($table_prefix . $table_name, $fields, $table_name, $db->connection_write, null);
         foreach ($queries as $sql) {
             $sql = str_replace('MyISAM', 'InnoDB', $sql);
             $out .= $sql . ";\n";

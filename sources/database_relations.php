@@ -668,7 +668,7 @@ function get_sql_dump($out_file, bool $include_drops = false, bool $output_statu
             }
         }
         $save_bytes = _helper_needs_to_save_bytes($table_name, $fields);
-        $queries = $db_static->create_table($db->get_table_prefix() . $table_name, $fields, $db->connection_write, $table_name, $save_bytes);
+        $queries = $db_static->create_table__sql($db->get_table_prefix() . $table_name, $fields, $db->connection_write, $table_name, $save_bytes);
         foreach ($queries as $i => $sql) {
             if ($i != 0) {
                 fwrite($out_file, "\n");
@@ -705,7 +705,7 @@ function get_sql_dump($out_file, bool $include_drops = false, bool $output_statu
             if ($_fields !== null) {
                 $unique_key_fields = implode(',', _helper_get_table_key_fields($table_name));
 
-                $queries = $db_static->create_index($db->get_table_prefix() . $table_name, $index_name, $_fields, $db->connection_write, $table_name, $unique_key_fields, $db);
+                $queries = $db_static->create_index__sql($db->get_table_prefix() . $table_name, $index_name, $_fields, $db->connection_write, $table_name, $unique_key_fields, $db);
                 foreach ($queries as $sql) {
                     fwrite($out_file, $sql . ";\n");
                 }
