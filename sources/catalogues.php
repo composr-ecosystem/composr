@@ -524,7 +524,7 @@ function render_catalogue_category_entry_buildup(?int $category_id, string $cata
                         $tab_entry_map['VIEW_URL'] = '';
                     }
 
-                    $entry_buildup->attach(/*Preserve memory*/static_evaluate_tempcode(do_template('CATALOGUE_' . $tpl_set . '_TABULAR_ENTRY_WRAP', $tab_entry_map, null, false, 'CATALOGUE_DEFAULT_TABULAR_ENTRY_WRAP')));
+                    $entry_buildup->attach(/*XHTMLXHTML*/static_evaluate_tempcode(do_template('CATALOGUE_' . $tpl_set . '_TABULAR_ENTRY_WRAP', $tab_entry_map, null, false, 'CATALOGUE_DEFAULT_TABULAR_ENTRY_WRAP')));
                 }
                 if ($i >= $start + $max) {
                     break;
