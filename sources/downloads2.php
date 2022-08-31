@@ -908,7 +908,7 @@ function _is_valid_data_mash_char(string &$ch) : bool
  * @param  URLPATH $url_redirect The URL to redirect
  * @return AUTO_LINK The ID of the newly added download
  */
-function add_download(int $category_id, string $name, string $url, string $description, string $author, string $additional_details, ?int $out_mode_id, int $validated, int $allow_rating, int $allow_comments, int $allow_trackbacks, string $notes, string $original_filename, int $file_size, int $cost, int $submitter_gets_points, ?int $licence = null, ?int $add_date = null, int $num_downloads = 0, int $views = 0, ?int $submitter = null, ?int $edit_date = null, ?int $id = null, string $meta_keywords = '', string $meta_description = '', int $default_pic = 1, string $url_redirect = '') : int
+function add_download(int $category_id, string $name, string $url, string $description, string $author, string $additional_details, ?int $out_mode_id, int $validated, int $allow_rating, int $allow_comments, int $allow_trackbacks, string $notes, string $original_filename, int $file_size, int $cost = 0, int $submitter_gets_points = 0, ?int $licence = null, ?int $add_date = null, int $num_downloads = 0, int $views = 0, ?int $submitter = null, ?int $edit_date = null, ?int $id = null, string $meta_keywords = '', string $meta_description = '', int $default_pic = 1, string $url_redirect = '') : int
 {
     require_code('global4');
     prevent_double_submit('ADD_DOWNLOAD', null, $name);
