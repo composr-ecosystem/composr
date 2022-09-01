@@ -22,19 +22,39 @@ class cms_merge_test_set extends cms_test_case
     {
         $c = cms_file_get_contents_safe(get_file_base() . '/sources/hooks/modules/admin_import/cms_merge.php', FILE_READ_LOCK);
 
+        // Check all tables are referenced...
+
         require_code('database_relations');
 
         $skip_flags = TABLE_PURPOSE__FLUSHABLE | TABLE_PURPOSE__NON_BUNDLED | TABLE_PURPOSE__AUTOGEN_STATIC | TABLE_PURPOSE__MISC_NO_MERGE | TABLE_PURPOSE__NOT_KNOWN;
 
         $tables = $GLOBALS['SITE_DB']->query_select('db_meta', ['DISTINCT m_table']);
         foreach ($tables as $table) {
+            // Exceptions
             if (strpos($table['m_table'], 'catalogue_efv_') !== false) {
                 continue; // These are imported, but the test can't detect it
             }
-
-            if (!table_has_purpose_flag($table['m_table'], $skip_flags)) {
-                $this->assertTrue(strpos($c, $table['m_table']) !== false, 'No import defined for ' . $table['m_table']);
+            if (table_has_purpose_flag($table['m_table'], $skip_flags)) {
+                continue;
             }
+
+            $table_is_referenced = (strpos($c, $table['m_table']) !== false);
+            $this->assertTrue($table_is_referenced, 'No cms_merge import defined for ' . $table['m_table']);
+        }
+
+        // Check every function is usable...
+
+        $lang_array = [];
+        $hooks = find_all_hook_obs('modules', 'admin_import_types', 'Hook_admin_import_types_');
+        foreach ($hooks as $_hook) {
+            $lang_array += $_hook->run();
+        }
+
+        $matches = [];
+        $num_matches = preg_match_all('#^\s+public function import_(\w+)\(#m', $c, $matches);
+        for ($i = 0; $i < $num_matches; $i++) {
+            $import_type = $matches[1][$i];
+            $this->assertTrue(isset($lang_array[$import_type]), 'Unrecognised import type in cms_merge importer: ' . $import_type);
         }
     }
 }
