@@ -93,7 +93,7 @@ class Hook_health_check_security_hackattack extends Hook_Health_Check
                         }
                     }
 
-                    $this->assertTrue(count($countries) <= 1, 'Admin account "' . $username . '" appears to have logged in from multiple countries (' . implode(', ', $countries) . ')');
+                    $this->assertTrue(count(array_unique($countries)) <= 1, 'Admin account "' . $username . '" appears to have logged in from multiple countries (' . implode(', ', $countries) . ')');
                 }
             } else {
                 $this->stateCheckSkipped('Geolocation data not installed so cannot do admin country checks');
