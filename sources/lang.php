@@ -1029,7 +1029,7 @@ function insert_lang_comcode(string $field_name, string $text, int $level, ?obje
  * @set 1 2 3 4
  * @param  ?object $db The database connector to use (null: standard site connector)
  * @param  boolean $comcode Whether it is to be parsed as Comcode
- * @param  ?integer $id The ID to use for the content language string (null: work out next available)
+ * @param  ?integer $lang_id The ID to use for the content language string (null: work out next available)
  * @param  ?LANGUAGE_NAME $lang The language (null: uses the current language)
  * @param  boolean $insert_as_admin Whether to insert it as an admin (any Comcode parsing will be carried out with admin privileges)
  * @param  ?string $pass_id The special identifier for this content language string on the page it will be displayed on; this is used to provide an explicit binding between languaged elements and greater templated areas (null: none)
@@ -1038,17 +1038,17 @@ function insert_lang_comcode(string $field_name, string $text, int $level, ?obje
  * @param  boolean $save_as_volatile Whether we are saving as a 'volatile' file extension (used in the XML DB driver, to mark things as being non-syndicated to Git)
  * @return array The content language string save fields
  */
-function insert_lang(string $field_name, string $text, int $level, ?object $db = null, bool $comcode = false, ?int $id = null, ?string $lang = null, bool $insert_as_admin = false, ?string $pass_id = null, ?string $text_parsed = null, bool $preparse_mode = true, bool $save_as_volatile = false) : array
+function insert_lang(string $field_name, string $text, int $level, ?object $db = null, bool $comcode = false, ?int $lang_id = null, ?string $lang = null, bool $insert_as_admin = false, ?string $pass_id = null, ?string $text_parsed = null, bool $preparse_mode = true, bool $save_as_volatile = false) : array
 {
     require_code('lang3');
-    return _insert_lang($field_name, $text, $level, $db, $comcode, $id, $lang, $insert_as_admin, $pass_id, $text_parsed, $preparse_mode, $save_as_volatile);
+    return _insert_lang($field_name, $text, $level, $db, $comcode, $lang_id, $lang, $insert_as_admin, $pass_id, $text_parsed, $preparse_mode, $save_as_volatile);
 }
 
 /**
  * Remap the specified Comcode content language string, and return details of the content language string.
  *
  * @param  ID_TEXT $field_name The field name
- * @param  mixed $id The ID (if multi-lang-content on), or the string itself
+ * @param  mixed $lang_id The ID (if multi-lang-content on), or the string itself
  * @param  string $text The text to remap to
  * @param  ?object $db The database connector to use (null: standard site connector)
  * @param  ?string $pass_id The special identifier for this content language string on the page it will be displayed on; this is used to provide an explicit binding between languaged elements and greater templated areas (null: none)
@@ -1056,21 +1056,21 @@ function insert_lang(string $field_name, string $text, int $level, ?object $db =
  * @param  boolean $as_admin Whether to generate Comcode as arbitrary admin
  * @return array The content language string save fields
  */
-function lang_remap_comcode(string $field_name, $id, string $text, ?object $db = null, ?string $pass_id = null, ?int $source_user = null, bool $as_admin = false) : array
+function lang_remap_comcode(string $field_name, $lang_id, string $text, ?object $db = null, ?string $pass_id = null, ?int $source_user = null, bool $as_admin = false) : array
 {
     if ((strpos($text, '[attachment') !== false) && ($pass_id === null)) {
         require_code('attachments3');
-        return update_lang_comcode_attachments($field_name, $id, $text, 'null', '', $db);
+        return update_lang_comcode_attachments($field_name, $lang_id, $text, 'null', '', $db);
     }
 
-    return lang_remap($field_name, $id, $text, $db, true, $pass_id, $source_user, $as_admin);
+    return lang_remap($field_name, $lang_id, $text, $db, true, $pass_id, $source_user, $as_admin);
 }
 
 /**
  * Remap the specified content language string, and return details of the content language string.
  *
  * @param  ID_TEXT $field_name The field name
- * @param  mixed $id The ID (if multi-lang-content on), or the string itself
+ * @param  mixed $lang_id The ID (if multi-lang-content on), or the string itself
  * @param  string $text The text to remap to
  * @param  ?object $db The database connector to use (null: standard site connector)
  * @param  boolean $comcode Whether it is to be parsed as Comcode
@@ -1079,19 +1079,19 @@ function lang_remap_comcode(string $field_name, $id, string $text, ?object $db =
  * @param  boolean $as_admin Whether to generate Comcode as arbitrary admin
  * @return array The content language string save fields
  */
-function lang_remap(string $field_name, $id, string $text, ?object $db = null, bool $comcode = false, ?string $pass_id = null, ?int $source_user = null, bool $as_admin = false) : array
+function lang_remap(string $field_name, $lang_id, string $text, ?object $db = null, bool $comcode = false, ?string $pass_id = null, ?int $source_user = null, bool $as_admin = false) : array
 {
     require_code('lang3');
-    return _lang_remap($field_name, $id, $text, $db, $comcode, $pass_id, $source_user, $as_admin);
+    return _lang_remap($field_name, $lang_id, $text, $db, $comcode, $pass_id, $source_user, $as_admin);
 }
 
 /**
  * Delete the specified content language string from the translation table.
  *
- * @param  mixed $id The ID
+ * @param  mixed $lang_id The ID
  * @param  ?object $db The database connector to use (null: standard site connector)
  */
-function delete_lang($id, ?object $db = null)
+function delete_lang($lang_id, ?object $db = null)
 {
     if (!multi_lang_content()) {
         return;
@@ -1100,7 +1100,7 @@ function delete_lang($id, ?object $db = null)
     if ($db === null) {
         $db = $GLOBALS['SITE_DB'];
     }
-    $db->query_delete('translate', ['id' => $id]);
+    $db->query_delete('translate', ['id' => $lang_id]);
 }
 
 /**

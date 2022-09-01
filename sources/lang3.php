@@ -318,7 +318,7 @@ function lang_code_to_static_content(string $field_name, string $str, bool $comc
  * @set 1 2 3 4
  * @param  ?object $db The database connector to use (null: standard site connector)
  * @param  boolean $comcode Whether it is to be parsed as Comcode
- * @param  ?integer $id The ID to use for the content language string (null: work out next available)
+ * @param  ?integer $lang_id The ID to use for the content language string (null: work out next available)
  * @param  ?LANGUAGE_NAME $lang The language (null: uses the current language)
  * @param  boolean $insert_as_admin Whether to insert it as an admin (any Comcode parsing will be carried out with admin privileges)
  * @param  ?string $pass_id The special identifier for this content language string on the page it will be displayed on; this is used to provide an explicit binding between languaged elements and greater templated areas (null: none)
@@ -329,7 +329,7 @@ function lang_code_to_static_content(string $field_name, string $str, bool $comc
  *
  * @ignore
  */
-function _insert_lang(string $field_name, string $text, int $level, ?object $db = null, bool $comcode = false, ?int $id = null, ?string $lang = null, bool $insert_as_admin = false, ?string $pass_id = null, ?string $text_parsed = null, bool $preparse_mode = true, bool $save_as_volatile = false) : array
+function _insert_lang(string $field_name, string $text, int $level, ?object $db = null, bool $comcode = false, ?int $lang_id = null, ?string $lang = null, bool $insert_as_admin = false, ?string $pass_id = null, ?string $text_parsed = null, bool $preparse_mode = true, bool $save_as_volatile = false) : array
 {
     if ($db === null) {
         $db = $GLOBALS['SITE_DB'];
@@ -384,36 +384,36 @@ function _insert_lang(string $field_name, string $text, int $level, ?object $db 
     }
 
     $lock = false;
-    table_id_locking_start($db, $id, $lock);
+    table_id_locking_start($db, $lang_id, $lock);
 
     if ($lang == 'Gibb') { // Debug code to help us spot language layer bugs. We expect &keep_lang=EN to show EnglishEnglish content, but otherwise no EnglishEnglish content.
         $map = ['source_user' => $source_user, 'broken' => 0, 'importance_level' => $level, 'text_original' => 'EnglishEnglishWarningWrongLanguageWantGibberishLang', 'text_parsed' => '', 'language' => 'EN'];
-        if ($id === null) {
-            $id = $db->query_insert('translate', $map, true, false, $save_as_volatile);
+        if ($lang_id === null) {
+            $lang_id = $db->query_insert('translate', $map, true, false, $save_as_volatile);
         } else {
-            $db->query_insert('translate', ['id' => $id] + $map, false, false, $save_as_volatile);
+            $db->query_insert('translate', ['id' => $lang_id] + $map, false, false, $save_as_volatile);
         }
     }
 
     $map = ['source_user' => $source_user, 'broken' => 0, 'importance_level' => $level, 'text_original' => $text, 'text_parsed' => $text_parsed, 'language' => $lang];
-    if (($id === null) || ($id === 0)) { //==0 because unless MySQL NO_AUTO_VALUE_ON_ZERO is on, 0 insertion is same as null is same as "use autoincrement"
-        $id = $db->query_insert('translate', $map, true, false, $save_as_volatile);
+    if (($lang_id === null) || ($lang_id === 0)) { //==0 because unless MySQL NO_AUTO_VALUE_ON_ZERO is on, 0 insertion is same as null is same as "use autoincrement"
+        $lang_id = $db->query_insert('translate', $map, true, false, $save_as_volatile);
     } else {
-        $db->query_insert('translate', ['id' => $id] + $map, false, false, $save_as_volatile);
+        $db->query_insert('translate', ['id' => $lang_id] + $map, false, false, $save_as_volatile);
     }
 
-    table_id_locking_end($db, $id, $lock);
+    table_id_locking_end($db, $lang_id, $lock);
 
     if (count($db->text_lookup_cache) < 5000) {
         if ($_text_parsed !== null) {
-            $db->text_lookup_cache[$id] = $_text_parsed;
+            $db->text_lookup_cache[$lang_id] = $_text_parsed;
         } else {
-            $db->text_lookup_original_cache[$id] = $text;
+            $db->text_lookup_original_cache[$lang_id] = $text;
         }
     }
 
     return [
-        $field_name => $id,
+        $field_name => $lang_id,
     ];
 }
 
@@ -421,7 +421,7 @@ function _insert_lang(string $field_name, string $text, int $level, ?object $db 
  * Remap the specified content language string, and return details of the content language string.
  *
  * @param  ID_TEXT $field_name The field name
- * @param  mixed $id The ID (if multi-lang-content on), or the string itself
+ * @param  mixed $lang_id The ID (if multi-lang-content on), or the string itself
  * @param  string $text The text to remap to
  * @param  ?object $db The database connector to use (null: standard site connector)
  * @param  boolean $comcode Whether it is to be parsed as Comcode
@@ -433,15 +433,15 @@ function _insert_lang(string $field_name, string $text, int $level, ?object $db 
  *
  * @ignore
  */
-function _lang_remap(string $field_name, $id, string $text, ?object $db = null, bool $comcode = false, ?string $pass_id = null, ?int $for_member = null, bool $as_admin = false, bool $leave_source_user = false) : array
+function _lang_remap(string $field_name, $lang_id, string $text, ?object $db = null, bool $comcode = false, ?string $pass_id = null, ?int $for_member = null, bool $as_admin = false, bool $leave_source_user = false) : array
 {
-    if ($id === 0) {
+    if ($lang_id === 0) {
         return insert_lang($field_name, $text, 3, $db, $comcode, null, null, $as_admin, $pass_id);
     }
 
     if ($text === STRING_MAGIC_NULL) {
         return [
-            $field_name => $id,
+            $field_name => $lang_id,
         ];
     }
 
@@ -481,7 +481,7 @@ function _lang_remap(string $field_name, $id, string $text, ?object $db = null, 
 
     if ($comcode) {
         $_text_parsed = comcode_to_tempcode($text, ($source_user === null) ? $for_member : $source_user, $as_admin, $pass_id, $db);
-        $db->text_lookup_cache[$id] = $_text_parsed;
+        $db->text_lookup_cache[$lang_id] = $_text_parsed;
         $text_parsed = $_text_parsed->to_assembly();
     } else {
         $text_parsed = '';
@@ -499,11 +499,11 @@ function _lang_remap(string $field_name, $id, string $text, ?object $db = null, 
         return $ret;
     }
 
-    $test = $db->query_select_value_if_there('translate', 'text_original', ['id' => $id, 'language' => $lang]);
+    $test = $db->query_select_value_if_there('translate', 'text_original', ['id' => $lang_id, 'language' => $lang]);
 
     // Mark old as out-of-date
     if ($test !== $text) {
-        $GLOBALS['SITE_DB']->query_update('translate', ['broken' => 1], ['id' => $id]);
+        $GLOBALS['SITE_DB']->query_update('translate', ['broken' => 1], ['id' => $lang_id]);
     }
 
     $remap = [
@@ -516,15 +516,15 @@ function _lang_remap(string $field_name, $id, string $text, ?object $db = null, 
     }
 
     if ($test !== null) { // Good, we save into our own language, as we have a translation for the lang entry setup properly
-        $db->query_update('translate', $remap, ['id' => $id, 'language' => $lang], '', 1);
+        $db->query_update('translate', $remap, ['id' => $lang_id, 'language' => $lang], '', 1);
     } else { // Darn, we'll have to save over whatever we did load from
-        $db->query_update('translate', $remap, ['id' => $id], '', 1);
+        $db->query_update('translate', $remap, ['id' => $lang_id], '', 1);
     }
 
-    $db->text_lookup_original_cache[$id] = $text;
+    $db->text_lookup_original_cache[$lang_id] = $text;
 
     return [
-        $field_name => $id,
+        $field_name => $lang_id,
     ];
 }
 

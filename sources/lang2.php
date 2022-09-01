@@ -303,10 +303,10 @@ function get_lang_files(?string $lang = null) : array
 /**
  * Search the database to find human-readable names for content language string IDs.
  *
- * @param  array $ids The content language string IDs (array of AUTO_LINK)
+ * @param  array $lang_ids The content language string IDs (array of AUTO_LINK)
  * @return array Human readable names (List of string against same IDs in input array or null for orphan strings)
  */
-function find_lang_content_names(array $ids) : array
+function find_lang_content_names(array $lang_ids) : array
 {
     require_code('content');
 
@@ -338,12 +338,12 @@ function find_lang_content_names(array $ids) : array
             continue; // None forum driver
         }
         $or_list = '';
-        foreach ($ids as $id) {
-            if (!isset($ret[$id])) { // Try and lookup anything not found yet
+        foreach ($lang_ids as $lang_id) {
+            if (!isset($ret[$lang_id])) { // Try and lookup anything not found yet
                 if ($or_list != '') {
                     $or_list .= ' OR ';
                 }
-                $or_list .= ($field['m_table'] == 'config') ? db_string_equal_to($field['m_name'], strval($id)) : ($field['m_name'] . '=' . strval($id));
+                $or_list .= ($field['m_table'] == 'config') ? db_string_equal_to($field['m_name'], strval($lang_id)) : ($field['m_name'] . '=' . strval($lang_id));
             }
         }
         if ($or_list != '') {
@@ -362,16 +362,16 @@ function find_lang_content_names(array $ids) : array
             }
             append_content_select_for_fields($fields_to_select, $info, ['id', 'title']);
             $test = list_to_map($field['m_name'], $db->query('SELECT ' . implode(',', $fields_to_select) . ' FROM ' . $db->get_table_prefix() . $field['m_table'] . ' WHERE ' . $or_list));
-            foreach ($ids as $id) {
-                if (array_key_exists($id, $test)) {
+            foreach ($lang_ids as $lang_id) {
+                if (array_key_exists($lang_id, $test)) {
                     if ($info !== null) {
-                        $ret[$id] = $field['m_table'] . ' \ ' . $ob->get_title($test[$id]) . ' \ ' . $field['m_name'];
+                        $ret[$lang_id] = $field['m_table'] . ' \ ' . $ob->get_title($test[$lang_id]) . ' \ ' . $field['m_name'];
                     } else {
-                        $ret[$id] = $field['m_table'] . ' \ ' . (is_integer($test[$id][$field['key']]) ? strval($test[$id][$field['key']]) : $test[$id][$field['key']]) . ' \ ' . $field['m_name'];
+                        $ret[$lang_id] = $field['m_table'] . ' \ ' . (is_integer($test[$lang_id][$field['key']]) ? strval($test[$lang_id][$field['key']]) : $test[$lang_id][$field['key']]) . ' \ ' . $field['m_name'];
                     }
                 } else {
-                    if (!array_key_exists($id, $ret)) {
-                        $ret[$id] = null;
+                    if (!array_key_exists($lang_id, $ret)) {
+                        $ret[$lang_id] = null;
                     }
                 }
             }
