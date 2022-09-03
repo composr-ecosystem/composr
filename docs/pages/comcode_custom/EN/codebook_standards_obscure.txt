@@ -494,11 +494,15 @@ Reinstalls must be handled correctly
 | For an example of how to do this, see [tt]global.ini[/tt].
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
-[color="red"]When referencing key names, refer to them like Ctrl or Shift or Option or Alt: capitalise the first letter, don't use quotes, and don't use [tt]tt[/tt]/[tt]kbd[/tt][/color]
+[color="red"]Use quotes consistently[/color]
 | Consistent UI
 | Product development only
 | Manually
-| 
+| When quoting phrases use double quotes (speech marks), which in language files and templates would generally be done using the HTML ldquo and rdquo entities.
+When quoting single words or terms use single quotes, which in language files and templates would generally be done using the HTML lsquo and rsquo entities.
+When quoting something code-related like a language keyword use Comcode's [tt]tt[/tt] or HTML's [tt]kbd[/tt].
+When referencing keyboard key names, refer to them like Ctrl or Shift or Option or Alt: capitalise the first letter.
+When in general trying to draw attention to a word/term/phrase that isn't part of any quotation, use bold.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Don't use Composr-specific terms on the main website[/color]
