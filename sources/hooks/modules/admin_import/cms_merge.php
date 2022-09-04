@@ -52,7 +52,7 @@ class Hook_import_cms_merge
             'banners',
             'calendar',
             'catalogues', // including rating, trackbacks, seo
-            'points_gifts_and_charges', // including daily visits
+            'point_transactions', // including daily visits
             'chat_rooms',
             'config',
             'custom_comcode',
@@ -114,7 +114,7 @@ class Hook_import_cms_merge
            'wiki' => ['cns_members', 'attachments', 'catalogues'],
            'useronline_tracking' => ['cns_members'],
            'ip_bans' => ['cns_members'],
-           'points_gifts_and_charges' => ['cns_members'],
+           'point_transactions' => ['cns_members'],
            'calendar' => ['cns_members', 'catalogues'],
            'comcode_pages' => ['cns_members', 'catalogues'],
            'match_key_messages' => [],
@@ -970,52 +970,163 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_points_gifts_and_charges(object $db, string $table_prefix, string $file_base)
+    public function import_points_ledger(object $db, string $table_prefix, string $file_base)
     {
         require_code('points2');
 
-        $rows = $db->query_select('chargelog', ['*'], [], '', null, 0, true);
-        if ($rows === null) {
-            $rows = [];
-        }
-        $this->_fix_comcode_ownership($rows);
+        $max = 300;
+        $start = 0;
+        do {
+            $rows = $db->query_select('points_ledger', ['*'], [], '', $max, $start, true);
+            if ($rows === null) {
+                $rows = [];
+            }
+            $on_same_msn = ($this->on_same_msn($file_base));
+            $this->_fix_comcode_ownership($rows);
+            foreach ($rows as $row) {
+                unset($row['reason__text_parsed']);
+                unset($row['reason__source_user']);
+
+                $viewer_member = $on_same_msn ? $row['sender_id'] : import_id_remap_get('member', strval($row['sender_id']), true);
+                $member_id = $on_same_msn ? $row['recipient_id'] : import_id_remap_get('member', strval($row['recipient_id']), true);
+                if ($viewer_member === null) {
+                    $viewer_member = $GLOBALS['FORUM_DRIVER']->get_guest_id();
+                }
+                if ($member_id === null) {
+                    $member_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
+                }
+
+                $map = [
+                    'date_and_time' => $row['date_and_time'],
+                    'amount_gift_points' => $row['amount_gift_points'],
+                    'amount_points' => $row['amount_points'],
+                    'sender_id' => $viewer_member,
+                    'recipient_id' => $member_id,
+                    'anonymous' => $row['anonymous'],
+                    'linked_to' => $row['linked_to'],
+                    'code_explanation' => $row['code_explanation'],
+                    'status' => $row['status']
+                ];
+                $map += insert_lang_comcode('reason', $this->get_lang_string($db, $row['reason']), 4);
+                $id_new = $GLOBALS['SITE_DB']->query_insert('points_ledger', $map, true);
+
+                import_id_remap_put('points_ledger', strval($row['id']), $id_new);
+            }
+
+            // Update linked_to to new IDs
+            foreach ($rows as $row) {
+                $id_new = import_id_remap_get('points_ledger', strval($row['id']), true);
+                if ($id_new !== null) {
+                    $GLOBALS['SITE_DB']->query_update('points_ledger', ['linked_to' => $id_new], ['linked_to' => $row['id']]);
+                }
+            }
+
+            $start += $max;
+        } while (!empty($rows));
+    }
+
+    /**
+     * Standard import function.
+     *
+     * @param  object $db The database connector to import from
+     * @param  string $table_prefix The table prefix the target prefix is using
+     * @param  PATH $file_base The base directory we are importing from
+     */
+    public function import_escrow(object $db, string $table_prefix, string $file_base)
+    {
+        // Escrows
+        $max = 300;
+        $start = 0;
+        do {
+            $rows = $db->query_select('escrow', ['*'], [], '', $max, $start, true);
+            if ($rows === null) {
+                $rows = [];
+            }
+            $on_same_msn = ($this->on_same_msn($file_base));
+            $this->_fix_comcode_ownership($rows);
+            foreach ($rows as $row) {
+                $viewer_member = $on_same_msn ? $row['sender_id'] : import_id_remap_get('member', strval($row['sender_id']), true);
+                $member_id = $on_same_msn ? $row['recipient_id'] : import_id_remap_get('member', strval($row['recipient_id']), true);
+                if ($viewer_member === null) {
+                    $viewer_member = $GLOBALS['FORUM_DRIVER']->get_guest_id();
+                }
+                if ($member_id === null) {
+                    $member_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
+                }
+
+                $reason = get_translated_text($row['reason']);
+                $agreement = get_translated_text($row['agreement']);
+
+                $ledger_id_new = import_id_remap_get('points_ledger', strval($row['original_points_ledger_id']));
+                $map = [
+                    'date_and_time' => $row['date_and_time'],
+                    'amount' => $row['amount'],
+                    'original_points_ledger_id' => $ledger_id_new,
+                    'sender_id' => $viewer_member,
+                    'recipient_id' => $member_id,
+                    'expiration' => $row['expiration'],
+                    'sender_status' => $row['sender_status'],
+                    'recipient_status' => $row['recipient_status'],
+                    'status' => $row['status'],
+                ];
+                $map += insert_lang_comcode('reason', $reason, 4);
+                $map += insert_lang_comcode('agreement', $agreement, 5);
+                $id_new = $GLOBALS['SITE_DB']->query_insert('escrow', $map, true);
+
+                import_id_remap_put('escrow', strval($row['id']), $id_new);
+            }
+
+            $start += $max;
+        } while (!empty($rows));
+
+        // Logs
+        $max = 300;
+        $start = 0;
+        do {
+            $rows = $db->query_select('escrow_logs', ['*'], [], '', $max, $start, true);
+            if ($rows === null) {
+                $rows = [];
+            }
+            $on_same_msn = ($this->on_same_msn($file_base));
+            $this->_fix_comcode_ownership($rows);
+            foreach ($rows as $row) {
+                if ($row['member_id'] !== null) {
+                    $member_id = $on_same_msn ? $row['member_id'] : import_id_remap_get('member', strval($row['member_id']), true);
+                    if ($member_id === null) {
+                        $member_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
+                    }
+                } else {
+                    $member_id = null;
+                }
+
+                $information = get_translated_text($row['information']);
+                $escrow_id_new = import_id_remap_get('escrow', strval($row['escrow_id']));
+                $map = [
+                    'escrow_id' => $escrow_id_new,
+                    'date_and_time' => $row['date_and_time'],
+                    'log_type' => $row['log_type'],
+                    'member_id' => $member_id,
+                ];
+                $map += insert_lang_comcode('information', $information, 5);
+                $id_new = $GLOBALS['SITE_DB']->query_insert('escrow_logs', $map, true);
+                import_id_remap_put('escrow_logs', strval($row['id']), $id_new);
+            }
+
+            $start += $max;
+        } while (!empty($rows));
+    }
+
+    /**
+     * Standard import function.
+     *
+     * @param  object $db The database connector to import from
+     * @param  string $table_prefix The table prefix the target prefix is using
+     * @param  PATH $file_base The base directory we are importing from
+     */
+    public function import_daily_visits(object $db, string $table_prefix, string $file_base)
+    {
         $on_same_msn = ($this->on_same_msn($file_base));
-        foreach ($rows as $row) {
-            $member_id = $on_same_msn ? $row['member_id'] : import_id_remap_get('member', strval($row['member_id']), true);
-            if ($member_id === null) {
-                $member_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
-            }
-            add_to_charge_log($member_id, $row['amount'], $this->get_lang_string($db, $row['reason']), $row['date_and_time']);
-        }
-        $rows = $db->query_select('gifts', ['*'], [], '', null, 0, true);
-        if ($rows === null) {
-            $rows = [];
-        }
-        $this->_fix_comcode_ownership($rows);
-        foreach ($rows as $row) {
-            unset($row['reason__text_parsed']);
-            unset($row['reason__source_user']);
 
-            $viewer_member = $on_same_msn ? $row['gift_from'] : import_id_remap_get('member', strval($row['gift_from']), true);
-            $member_id = $on_same_msn ? $row['gift_to'] : import_id_remap_get('member', strval($row['gift_to']), true);
-            if ($viewer_member === null) {
-                $viewer_member = $GLOBALS['FORUM_DRIVER']->get_guest_id();
-            }
-            if ($member_id === null) {
-                $member_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
-            }
-            $map = [
-                'date_and_time' => $row['date_and_time'],
-                'amount' => $row['amount'],
-                'gift_from' => $viewer_member,
-                'gift_to' => $member_id,
-                'anonymous' => $row['anonymous'],
-            ];
-            $map += insert_lang_comcode('reason', $this->get_lang_string($db, $row['reason']), 4);
-            $GLOBALS['SITE_DB']->query_insert('gifts', $map);
-        }
-
-        // Daily visits
         $max = 300;
         $start = 0;
         do {

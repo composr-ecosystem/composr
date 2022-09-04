@@ -535,8 +535,8 @@ $member_id = get_member();
 require_code('points');
 
 // Call the functions and store their values in some variables
-$available = available_points($member_id);
-$used = points_used($member_id);
+$balance = points_balance($member_id);
+$spent = points_spent($member_id);
 
 // Now we create a pie chart of these results. The way we do this
 // is to send the user an HTML image with the URL containing the
@@ -559,19 +559,19 @@ echo '&chtt=Your Points';  // The chart title
 echo '&chco=0000FF';  // Make the chart blue
 echo '&chs=300x150';  // Make it 300 pixels wide and 150 pixels tall
 echo '&chd=t:';  // Start declaring the data
-echo strval($used);  // The amount of points used
+echo strval($spent);  // The amount of points spent
 echo ',';  // Separator
-echo strval($available);  // The amount of unused points
+echo strval($balance);  // The amount of unspent points
 echo '&chds=0,';  // The smallest data value
-echo strval($available);  // The largest data value
-echo '&chl=Used|Available';  // Give labels to the data
+echo strval($balance);  // The largest data value
+echo '&chl=Spent|Balance';  // Give labels to the data
 
 // Now we give a text alternative and finish the declaration
 echo '" alt="Your Points: ';
-echo strval($used);
-echo ' used, ';
-echo strval($available);
-echo ' available." />';
+echo strval($spent);
+echo ' spent, ';
+echo strval($balance);
+echo ' in your balance." />';
 [/code]
 
 The parameters we add to the end of the image URL may seem incomprehensible, but they are described with plenty of examples on [url="https://developers.google.com/chart/interactive/docs/reference"]Google's site[/url]. I hope you have fun playing with variables, state and Google's chart generator. I've saved this to my Composr test installation as [tt]sources_custom/miniblocks/main_userpoints.php[/tt] and here is a screenshot of the mini-block used in a news article, via the Comcode [tt][block]main_userpoints[/block][/tt] (after I'd gambled away some points in the points store ;)). Every user who views the article will see a chart of their own points.

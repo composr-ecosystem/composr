@@ -34,7 +34,7 @@ class Hook_config_points_ADD_NEWS
             'human_name' => 'ADD_NEWS',
             'type' => 'integer',
             'category' => 'POINTS',
-            'group' => 'COUNT_POINTS_GIVEN',
+            'group' => 'COUNT_POINTS_SENT',
             'explanation' => 'CONFIG_OPTION_points_ADD_NEWS',
             'shared_hosting_restricted' => '0',
             'list_options' => '',

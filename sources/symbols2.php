@@ -237,13 +237,13 @@ function ecv2_ATTACHMENT_DOWNLOADS(string $lang, array $escaped, array $param) :
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv2_AVAILABLE_POINTS(string $lang, array $escaped, array $param) : string
+function ecv2_POINTS_BALANCE(string $lang, array $escaped, array $param) : string
 {
     $value = '';
 
     if (addon_installed('points')) {
         require_code('points');
-        $value = strval(available_points(((isset($param[0])) && (is_numeric($param[0]))) ? intval($param[0]) : get_member()));
+        $value = strval(points_balance(((isset($param[0])) && (is_numeric($param[0]))) ? intval($param[0]) : get_member()));
     }
 
     if ($GLOBALS['XSS_DETECT']) {
@@ -1681,13 +1681,13 @@ function ecv2_PAD_RIGHT(string $lang, array $escaped, array $param) : string
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv2_POINTS_USED(string $lang, array $escaped, array $param) : string
+function ecv2_POINTS_SPENT(string $lang, array $escaped, array $param) : string
 {
     $value = '';
 
     if (addon_installed('points')) {
         require_code('points');
-        $value = strval(points_used(((isset($param[0])) && (is_numeric($param[0]))) ? intval($param[0]) : get_member()));
+        $value = strval(points_spent(((isset($param[0])) && (is_numeric($param[0]))) ? intval($param[0]) : get_member()));
     }
 
     if ($GLOBALS['XSS_DETECT']) {

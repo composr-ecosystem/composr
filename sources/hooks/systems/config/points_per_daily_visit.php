@@ -34,7 +34,7 @@ class Hook_config_points_per_daily_visit
             'human_name' => 'POINTS_PER_DAILY_VISIT',
             'type' => 'integer',
             'category' => 'POINTS',
-            'group' => 'COUNT_POINTS_GIVEN',
+            'group' => 'COUNT_POINTS_SENT',
             'explanation' => 'CONFIG_OPTION_points_per_daily_visit',
             'shared_hosting_restricted' => '0',
             'list_options' => '',

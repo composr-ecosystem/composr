@@ -56,7 +56,7 @@ class Module_admin_points
         }
 
         $ret = [
-            'browse' => ['GIFT_TRANSACTIONS', 'menu/adminzone/audit/points_log'],
+            'browse' => ['POINTS_LEDGER', 'menu/adminzone/audit/points_log'],
         ];
         if (!$be_deferential) {
             $ret += [
@@ -89,7 +89,7 @@ class Module_admin_points
         if ($type == 'export') {
             set_helper_panel_text(comcode_lang_string('DOC_EXPORT_POINTS'));
 
-            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('POINTS')]]);
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('POINTS_LEDGER')]]);
             breadcrumb_set_self(do_lang_tempcode('EXPORT'));
 
             $this->title = get_screen_title('EXPORT_POINTS');
@@ -98,15 +98,29 @@ class Module_admin_points
         }
 
         if ($type == 'browse') {
-            $this->title = get_screen_title('GIFT_TRANSACTIONS');
+            $this->title = get_screen_title('POINTS_LEDGER');
+        }
+
+        if ($type == 'view') {
+            $id = get_param_integer('id');
+
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('POINTS_LEDGER')]]);
+
+            $this->title = get_screen_title('VIEW_POINT_TRANSACTION', true, [strval($id)]);
         }
 
         if ($type == 'reverse') {
-            $this->title = get_screen_title('REVERSE_TITLE');
+            $id = post_param_integer('id');
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('POINTS_LEDGER')], ['_SELF:_SELF:view:' . strval($id), do_lang_tempcode('VIEW_POINT_TRANSACTION', strval($id))]]);
+
+            $this->title = get_screen_title('REVERSE_TRANSACTION');
         }
 
-        if ($type == 'charge') {
-            $this->title = get_screen_title('CHARGE_MEMBER');
+        if ($type == 'amend') {
+            $id = post_param_integer('id');
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('POINTS_LEDGER')], ['_SELF:_SELF:view:' . strval($id), do_lang_tempcode('VIEW_POINT_TRANSACTION', strval($id))]]);
+
+            $this->title = get_screen_title('AMEND_REASON');
         }
 
         return null;
@@ -127,14 +141,17 @@ class Module_admin_points
         if ($type == 'export') {
             return $this->points_export();
         }
-        if ($type == 'charge') {
-            return $this->points_charge();
-        }
         if ($type == 'reverse') {
             return $this->reverse();
         }
+        if ($type == 'amend') {
+            return $this->amend();
+        }
         if ($type == 'browse') {
-            return $this->points_log();
+            return $this->points_ledger();
+        }
+        if ($type == 'view') {
+            return $this->view();
         }
 
         return new Tempcode();
@@ -187,15 +204,27 @@ class Module_admin_points
     }
 
     /**
-     * The UI to view all point transactions ordered by date.
+     * The UI to view point transactions ordered by date.
      *
      * @return Tempcode The UI
      */
-    public function points_log() : object
+    public function points_ledger() : object
     {
+        if (!has_privilege(get_member(), 'view_points_ledger')) {
+            access_denied('PRIVILEGE', 'view_points_ledger');
+        }
+
         $start = get_param_integer('start', 0);
         $max = get_param_integer('max', 50);
-        $sortables = ['date_and_time' => do_lang_tempcode('DATE_TIME'), 'amount' => do_lang_tempcode('AMOUNT')];
+
+        $max_rows = $GLOBALS['SITE_DB']->query_select_value('points_ledger', 'COUNT(*)');
+        $has_gift_points = $GLOBALS['SITE_DB']->query_select_value('points_ledger', 'COUNT(*)', [], ' AND amount_gift_points>0');
+
+        $sortables = ['date_and_time' => do_lang_tempcode('DATE_TIME')];
+        if ($has_gift_points > 0) {
+            $sortables['amount_gift_points'] = do_lang_tempcode('GIFT_POINTS');
+        }
+        $sortables['amount_points'] = do_lang_tempcode('POINTS');
         $test = explode(' ', get_param_string('sort', 'date_and_time DESC', INPUT_FILTER_GET_COMPLEX), 2);
         if (count($test) == 1) {
             $test[1] = 'DESC';
@@ -205,49 +234,86 @@ class Module_admin_points
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 
-        $max_rows = $GLOBALS['SITE_DB']->query_select_value('gifts', 'COUNT(*)');
-        $rows = $GLOBALS['SITE_DB']->query_select('gifts', ['*'], [], 'ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
+        $rows = $GLOBALS['SITE_DB']->query_select('points_ledger', ['*'], [], 'ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
         if (empty($rows)) {
             return inform_screen($this->title, do_lang_tempcode('NO_ENTRIES'));
         }
         $result_entries = new Tempcode();
         require_code('templates_results_table');
-        $header_row = results_header_row([do_lang_tempcode('DATE_TIME'), do_lang_tempcode('AMOUNT'), do_lang_tempcode('FROM'), do_lang_tempcode('TO'), do_lang_tempcode('REASON'), do_lang_tempcode('REVERSE')], $sortables, 'sort', $sortable . ' ' . $sort_order);
+        $map = [do_lang_tempcode('IDENTIFIER'), do_lang_tempcode('DATE_TIME')];
+        if ($has_gift_points > 0) {
+            $map[] = do_lang_tempcode('GIFT_POINTS');
+        }
+        $map = array_merge($map, [do_lang_tempcode('POINTS'), do_lang_tempcode('SENDER'), do_lang_tempcode('RECIPIENT'), do_lang_tempcode('REASON'), do_lang_tempcode('STATUS'), do_lang_tempcode('ACTIONS')]);
+        $header_row = results_header_row($map, $sortables, 'sort', $sortable . ' ' . $sort_order);
         foreach ($rows as $myrow) {
-            $date = get_timezoned_date_time($myrow['date_and_time']);
+            $date = get_timezoned_date_time($myrow['date_and_time'], false);
+            $reason = get_translated_tempcode('points_ledger', $myrow, 'reason');
+            $_date = hyperlink(build_url(['page' => 'admin_points', 'type' => 'view', 'id' => $myrow['id']]), $date, false, true);
 
-            $reason = get_translated_tempcode('gifts', $myrow, 'reason');
-
-            if (is_guest($myrow['gift_to'])) {
+            if (is_guest($myrow['recipient_id'])) {
                 $to = do_lang_tempcode('USER_SYSTEM');
             } else {
-                $to_name = $GLOBALS['FORUM_DRIVER']->get_username($myrow['gift_to'], false, USERNAME_DEFAULT_NULL);
-                $to_url = build_url(['page' => 'points', 'type' => 'member', 'id' => $myrow['gift_to']], get_module_zone('points'));
+                $to_name = $GLOBALS['FORUM_DRIVER']->get_username($myrow['recipient_id'], false, USERNAME_DEFAULT_NULL);
+                $to_url = points_url($myrow['recipient_id']);
                 $to = ($to_name === null) ? do_lang_tempcode('UNKNOWN_EM') : hyperlink($to_url, $to_name, false, true);
             }
-            if (is_guest($myrow['gift_from'])) {
+            if (is_guest($myrow['sender_id'])) {
                 $from = do_lang_tempcode('USER_SYSTEM');
             } else {
-                $from_name = $GLOBALS['FORUM_DRIVER']->get_username($myrow['gift_from'], false, USERNAME_DEFAULT_NULL);
-                $from_url = build_url(['page' => 'points', 'type' => 'member', 'id' => $myrow['gift_from']], get_module_zone('points'));
+                $from_name = $GLOBALS['FORUM_DRIVER']->get_username($myrow['sender_id'], false, USERNAME_DEFAULT_NULL);
+                $from_url = points_url($myrow['sender_id']);
                 $from = ($from_name === null) ? do_lang_tempcode('UNKNOWN_EM') : hyperlink($from_url, $from_name, false, true);
+
+                // Mask sender if we do not have permission to trace anonymous transactions
+                if (($myrow['anonymous'] == 1) && (!has_privilege(get_member(), 'trace_anonymous_transactions'))) {
+                    $from = do_lang_tempcode('ANONYMOUS');
+                }
             }
 
-            $delete_url = build_url(['page' => '_SELF', 'type' => 'reverse', 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF');
-            $delete = do_template('COLUMNED_TABLE_ACTION', [
-                '_GUID' => '3585ec7f35a1027e8584d62ffeb41e56',
-                'NAME' => do_lang_tempcode('REVERSE'),
-                'URL' => $delete_url,
-                'HIDDEN' => form_input_hidden('id', strval($myrow['id'])),
-                'ACTION_TITLE' => do_lang_tempcode('DELETE'),
-                'ICON' => 'admin/delete',
-                'GET' => true,
-            ]);
+            $actions = new Tempcode();
 
-            $result_entries->attach(results_entry([$date, integer_format($myrow['amount']), $from, $to, $reason, $delete], true));
+            if ($myrow['locked'] == 0) {
+                if (has_privilege(get_member(), 'moderate_points')) {
+                    $delete_url = build_url(['page' => '_SELF', 'type' => 'reverse', 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF');
+                    $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
+                        '_GUID' => '3585ec7f35a1027e8584d62ffeb41e56',
+                        'NAME' => '#' . strval($myrow['id']),
+                        'URL' => $delete_url,
+                        'HIDDEN' => form_input_hidden('id', strval($myrow['id'])),
+                        'ACTION_TITLE' => do_lang_tempcode('UNDO'),
+                        'ICON' => 'buttons/undo',
+                        'GET' => false,
+                    ]));
+                }
+            }
+
+            if (has_privilege(get_member(), 'amend_point_transactions')) {
+                $edit_url = build_url(['page' => '_SELF', 'type' => 'amend', 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF');
+                $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
+                    '_GUID' => 'b7dff48f5758ee05da8fe02beed935b6',
+                    'URL' => $edit_url,
+                    'HIDDEN' => form_input_hidden('id', strval($myrow['id'])),
+                    'NAME' => '#' . strval($myrow['id']),
+                    'ACTION_TITLE' => do_lang_tempcode('AMEND'),
+                    'ICON' => 'admin/edit',
+                    'GET' => false,
+                ]));
+            }
+            $map = [$myrow['id'], $_date];
+            if ($has_gift_points > 0) {
+                $map[] = integer_format($myrow['amount_gift_points']);
+            }
+            if ($myrow['status'] == 'normal') {
+                $status = do_lang_tempcode('LEDGER_STATUS_normal');
+            } else {
+                $status = do_lang_tempcode('LEDGER_STATUS_SHORT_' . $myrow['status'], strval($myrow['linked_to']));
+            }
+            $map = array_merge($map, [integer_format($myrow['amount_points']), $from, $to, $reason, $status, $actions]);
+            $result_entries->attach(results_entry($map, true));
         }
 
-        $results_table = results_table(do_lang_tempcode('GIFT_TRANSACTIONS'), $start, 'start', $max, 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort', paragraph(do_lang_tempcode('GIFT_POINTS_LOG')));
+        $results_table = results_table(do_lang_tempcode('POINTS_LEDGER'), $start, 'start', $max, 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort', paragraph(do_lang_tempcode('POINTS_LEDGER_HEAD')));
 
         $tpl = do_template('RESULTS_TABLE_SCREEN', ['_GUID' => '12ce8cf5c2f669948b14e68bd6c00fe9', 'TITLE' => $this->title, 'RESULTS_TABLE' => $results_table]);
 
@@ -256,72 +322,158 @@ class Module_admin_points
     }
 
     /**
-     * The UI/actualiser to reverse a point gift transaction.
+     * The UI/actualiser to reverse a point transaction.
      *
      * @return Tempcode The UI
      */
     public function reverse() : object
     {
+        if (!has_privilege(get_member(), 'moderate_points')) {
+            access_denied('PRIVILEGE', 'moderate_points');
+        }
+
+        require_code('points3');
+
         $id = post_param_integer('id');
-        $rows = $GLOBALS['SITE_DB']->query_select('gifts', ['*'], ['id' => $id], '', 1);
-        if (!array_key_exists(0, $rows)) {
-            warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
-        }
-        $myrow = $rows[0];
-        $amount = $myrow['amount'];
-        $sender_id = $myrow['gift_from'];
-        $recipient_id = $myrow['gift_to'];
-
         $confirm = get_param_integer('confirm', 0);
-        if ($confirm == 0) {
-            $_sender_id = (is_guest($sender_id)) ? get_site_name() : $GLOBALS['FORUM_DRIVER']->get_username($sender_id);
-            $_recipient_id = (is_guest($recipient_id)) ? get_site_name() : $GLOBALS['FORUM_DRIVER']->get_username($recipient_id);
-            $preview = do_lang_tempcode('ARE_YOU_SURE_REVERSE', escape_html(integer_format($amount)), escape_html($_sender_id), escape_html($_recipient_id));
-            return do_template('CONFIRM_SCREEN', [
-                '_GUID' => 'd3d654c7dcffb353638d08b53697488b',
-                'TITLE' => $this->title,
-                'PREVIEW' => $preview,
-                'URL' => get_self_url(false, false, ['confirm' => 1]),
-                'FIELDS' => build_keep_post_fields(),
-            ]);
-        }
 
-        require_code('points2');
-        reverse_point_gift_transaction($id);
+        $out = transaction_reverse_screen($id, $confirm, $this->title);
 
-        // Show it worked / Refresh
-        $url = get_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL);
-        if ($url == '') {
-            $_url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
-            $url = $_url->evaluate();
+        if ($out === null) {
+            // Show it worked / Refresh
+            $url = get_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL);
+            if ($url == '') {
+                $_url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
+                $url = $_url->evaluate();
+            }
+            return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
+        } else {
+            return $out;
         }
-        return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 
     /**
-     * The actualiser to charge a member points.
+     * The UI/actualiser to edit a point transaction.
      *
      * @return Tempcode The UI
      */
-    public function points_charge() : object
+    public function amend() : object
     {
-        $member_id = post_param_integer('member');
-        $amount = post_param_integer('amount');
-        $reason = post_param_string('reason');
-
-        require_code('points2');
-        charge_member($member_id, $amount, $reason);
-        $left = available_points($member_id);
-
-        $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
-        $text = do_lang_tempcode('MEMBER_HAS_BEEN_CHARGED', escape_html($username), escape_html(integer_format($amount)), escape_html(integer_format($left)));
-
-        // Show it worked / Refresh
-        $url = get_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL);
-        if ($url == '') {
-            $_url = build_url(['page' => 'points', 'type' => 'member', 'id' => $member_id], get_module_zone('points'));
-            $url = $_url->evaluate();
+        if (!has_privilege(get_member(), 'amend_point_transactions')) {
+            access_denied('PRIVILEGE', 'amend_point_transactions');
         }
-        return redirect_screen($this->title, $url, $text);
+
+        require_code('points3');
+
+        $id = post_param_integer('id');
+        $reason = post_param_string('reason', null);
+        $redirect = get_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL);
+
+        $out = transaction_amend_screen($id, $this->title, $reason, $redirect);
+        if ($out === null) {
+            // Show it worked / Refresh
+            if ($redirect == '') {
+                $_redirect = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
+                $redirect = $_redirect->evaluate();
+            }
+            return redirect_screen($this->title, $redirect, do_lang_tempcode('SUCCESS'));
+        } else {
+            return $out;
+        }
+    }
+
+    /**
+     * The UI for a single point transaction.
+     *
+     * @return Tempcode The UI
+     */
+    public function view() : object
+    {
+        $member_id_viewing = get_member();
+
+        // No guests allowed
+        if (is_guest($member_id_viewing)) {
+            access_denied('NOT_AS_GUEST');
+        }
+
+        if (!has_privilege($member_id_viewing, 'view_points_ledger')) {
+            access_denied('PRIVILEGE', 'view_points_ledger');
+        }
+
+        $id = get_param_integer('id');
+
+        $_row = $GLOBALS['SITE_DB']->query_select('points_ledger', ['*'], ['id' => $id], '', 1);
+        if ($_row === null || !array_key_exists(0, $_row)) {
+            warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
+        }
+        $row = $_row[0];
+        $reason = get_translated_tempcode('points_ledger', $row, 'reason');
+
+        require_code('templates_map_table');
+
+        $status = '';
+        switch ($row['status']) {
+            case 'reversing':
+            case 'reversed':
+                $_row2 = $GLOBALS['SITE_DB']->query_select('points_ledger', ['*'], ['id' => $row['linked_to']], '', 1);
+                if ($_row2 === null || !array_key_exists(0, $_row2)) {
+                    warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
+                }
+                $row2 = $_row2[0];
+                $date = get_timezoned_date_time($row2['date_and_time'], false);
+                $_status = do_lang('LEDGER_STATUS_' . $row['status'], strval($row['linked_to']), $date);
+                $status = hyperlink(build_url(['page' => 'admin_points', 'type' => 'view', 'id' => $row['linked_to']]), $_status, false, true);
+                break;
+            default:
+                $status = do_lang('LEDGER_STATUS_' . $row['status']);
+        }
+
+        $date = get_timezoned_date_time($row['date_and_time'], false);
+        $from_name = is_guest($row['sender_id']) ? do_lang('SYSTEM') : $GLOBALS['FORUM_DRIVER']->get_username($row['sender_id'], true);
+        $_from_name = (is_guest($row['sender_id'])) ? make_string_tempcode(escape_html($from_name)) : hyperlink(points_url($row['sender_id']), escape_html($from_name), false, false, do_lang_tempcode('VIEW_POINTS'));
+        $to_name = is_guest($row['recipient_id']) ? do_lang('SYSTEM') : $GLOBALS['FORUM_DRIVER']->get_username($row['recipient_id'], true);
+        $_to_name = (is_guest($row['recipient_id'])) ? make_string_tempcode(escape_html($to_name)) : hyperlink(points_url($row['recipient_id']), escape_html($to_name), false, false, do_lang_tempcode('VIEW_POINTS'));
+
+        // Mask sender if we do not have permission to trace anonymous transactions
+        if (($row['anonymous'] == 1) && (!has_privilege($member_id_viewing, 'trace_anonymous_transactions'))) {
+            $_from_name = do_lang('ANONYMOUS');
+        }
+
+        $buttons = new Tempcode();
+        if ($row['locked'] == 0) {
+            if (has_privilege(get_member(), 'moderate_points')) {
+                $delete_url = build_url(['page' => '_SELF', 'type' => 'reverse', 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF');
+                $buttons->attach(do_template('BUTTON_SCREEN', [
+                    '_GUID' => 'da69b2ee5495c9af670399dd080f662e',
+                    'IMMEDIATE' => true,
+                    'HIDDEN' => form_input_hidden('id', strval($row['id'])),
+                    'URL' => $delete_url,
+                    'TITLE' => do_lang_tempcode('UNDO'),
+                    'IMG' => 'buttons/undo',
+                ]));
+            }
+            if (has_privilege(get_member(), 'amend_point_transactions')) {
+                $edit_url = build_url(['page' => '_SELF', 'type' => 'edit', 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF');
+                $buttons->attach(do_template('BUTTON_SCREEN', [
+                    '_GUID' => 'da69b2ee5495c9af670399dd080f662e',
+                    'IMMEDIATE' => true,
+                    'HIDDEN' => form_input_hidden('id', strval($row['id'])),
+                    'URL' => $edit_url,
+                    'TITLE' => do_lang_tempcode('EDIT'),
+                    'IMG' => 'admin/edit',
+                ]));
+            }
+        }
+
+        return map_table_screen(get_screen_title('VIEW_POINT_TRANSACTION', true, [strval($id)]), [
+            'IDENTIFIER' => strval($id),
+            'DATE' => $date,
+            'STATUS' => $status,
+            'POINTS' => integer_format($row['amount_points']),
+            'GIFT_POINTS' => integer_format($row['amount_gift_points']),
+            'FROM' => $_from_name,
+            'TO' => $_to_name,
+            'REASON' => $reason,
+        ], null, $buttons, true);
     }
 }

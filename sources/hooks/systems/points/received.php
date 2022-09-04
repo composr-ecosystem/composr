@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_points_given
+class Hook_points_received
 {
     /**
      * Get number of points given as gift transaction; some of these will probably have been spent already.
@@ -33,14 +33,14 @@ class Hook_points_given
      */
     public function total_points(int $member_id, ?int $timestamp, array $point_info) : int
     {
-        $points_gained_given = isset($point_info['points_gained_given']) ? $point_info['points_gained_given'] : 0;
+        $points_received = isset($point_info['points_received']) ? $point_info['points_received'] : 0;
 
         if ($timestamp !== null) {
-            $_points_gained_given = $GLOBALS['SITE_DB']->query_value_if_there('SELECT SUM(amount) FROM ' . get_table_prefix() . 'gifts WHERE date_and_time>' . strval($timestamp) . ' AND gift_to=' . strval($member_id));
-            $points_gained_given -= min($points_gained_given, @intval($_points_gained_given));
+            $_points_received = $GLOBALS['SITE_DB']->query_value_if_there('SELECT SUM(amount_gift_points+amount_points) FROM ' . get_table_prefix() . 'points_ledger WHERE date_and_time>' . strval($timestamp) . ' AND recipient_id=' . strval($member_id));
+            $points_received -= min($points_received, @intval($_points_received));
         }
 
-        return $points_gained_given;
+        return $points_received;
     }
 
     /**
@@ -53,11 +53,11 @@ class Hook_points_given
      */
     public function points_profile(int $member_id_of, ?int $member_id_viewing, array $point_info) : ?array
     {
-        $points_gained_given = array_key_exists('points_gained_given', $point_info) ? $point_info['points_gained_given'] : 0;
+        $points_received = array_key_exists('points_received', $point_info) ? $point_info['points_received'] : 0;
 
         return [
-            '_POINTS_GAINED_GIVEN' => strval($points_gained_given),
-            'POINTS_GAINED_GIVEN' => integer_format($points_gained_given, 0),
+            '_POINTS_RECEIVED' => strval($points_received),
+            'POINTS_RECEIVED' => integer_format($points_received, 0),
         ];
     }
 }

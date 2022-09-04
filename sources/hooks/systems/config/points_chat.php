@@ -34,7 +34,7 @@ class Hook_config_points_chat
             'human_name' => 'CHATTING',
             'type' => 'integer',
             'category' => 'POINTS',
-            'group' => 'COUNT_POINTS_GIVEN',
+            'group' => 'COUNT_POINTS_SENT',
             'explanation' => 'CONFIG_OPTION_points_chat',
             'shared_hosting_restricted' => '0',
             'list_options' => '',

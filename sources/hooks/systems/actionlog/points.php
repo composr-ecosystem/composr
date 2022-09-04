@@ -44,7 +44,81 @@ class Hook_actionlog_points extends Hook_actionlog
                 'written_context_index' => 1,
                 'followup_page_links' => [
                     'VIEW_PROFILE' => ['FORUM_DRIVER__PROFILE_URL', '{ID}'],
-                    'GIFT_TRANSACTIONS' => '_SEARCH:admin_points',
+                    'POINTS_LEDGER' => '_SEARCH:admin_points',
+                ],
+            ],
+            'REVERSE_TRANSACTION' => [
+                'flags' => ACTIONLOG_FLAGS_NONE,
+                'cma_hook' => 'member',
+                'identifier_index' => 0,
+                'written_context_index' => 1,
+                'followup_page_links' => [
+                    '_VIEW_POINT_TRANSACTION' => '_SEARCH:admin_points:view:{ID}',
+                    'POINTS_LEDGER' => '_SEARCH:admin_points',
+                ],
+            ],
+            'AMEND_POINT_TRANSACTION' => [
+                'flags' => ACTIONLOG_FLAGS_NONE,
+                'cma_hook' => 'member',
+                'identifier_index' => 0,
+                'written_context_index' => 1,
+                'followup_page_links' => [
+                    '_VIEW_POINT_TRANSACTION' => '_SEARCH:admin_points:view:{ID}',
+                    'POINTS_LEDGER' => '_SEARCH:admin_points',
+                ],
+            ],
+            'LOG_ESCROW_CREATED' => [
+                'flags' => ACTIONLOG_FLAGS_NONE,
+                'cma_hook' => 'member',
+                'identifier_index' => 0,
+                'written_context_index' => 1,
+                'followup_page_links' => [
+                    'ESCROW_VIEW' => '_SEARCH:points:view_escrow:{ID}',
+                ],
+            ],
+            'LOG_ESCROW_SATISFIED' => [
+                'flags' => ACTIONLOG_FLAGS_NONE,
+                'cma_hook' => 'member',
+                'identifier_index' => 0,
+                'written_context_index' => 1,
+                'followup_page_links' => [
+                    'ESCROW_VIEW' => '_SEARCH:points:view_escrow:{ID}',
+                ],
+            ],
+            'LOG_ESCROW_COMPLETED' => [
+                'flags' => ACTIONLOG_FLAGS_NONE,
+                'cma_hook' => 'member',
+                'identifier_index' => 0,
+                'written_context_index' => 1,
+                'followup_page_links' => [
+                    'ESCROW_VIEW' => '_SEARCH:points:view_escrow:{ID}',
+                ],
+            ],
+            'LOG_ESCROW_DISPUTED' => [
+                'flags' => ACTIONLOG_FLAGS_NONE,
+                'cma_hook' => 'member',
+                'identifier_index' => 0,
+                'written_context_index' => 1,
+                'followup_page_links' => [
+                    'ESCROW_VIEW' => '_SEARCH:points:view_escrow:{ID}',
+                ],
+            ],
+            'LOG_ESCROW_CANCELLED' => [
+                'flags' => ACTIONLOG_FLAGS_NONE,
+                'cma_hook' => 'member',
+                'identifier_index' => 0,
+                'written_context_index' => 1,
+                'followup_page_links' => [
+                    'ESCROW_VIEW' => '_SEARCH:points:view_escrow:{ID}',
+                ],
+            ],
+            'LOG_ESCROW_AMENDED' => [
+                'flags' => ACTIONLOG_FLAGS_NONE,
+                'cma_hook' => 'member',
+                'identifier_index' => 0,
+                'written_context_index' => 1,
+                'followup_page_links' => [
+                    'ESCROW_VIEW' => '_SEARCH:points:view_escrow:{ID}',
                 ],
             ],
         ];

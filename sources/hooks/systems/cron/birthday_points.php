@@ -97,7 +97,7 @@ class Hook_cron_birthday_points
 
                     require_code('points2');
 
-                    system_gift_transfer(do_lang('BIRTHDAY_POINTS'), intval($birthday_points), $_birthday['id']);
+                    points_credit_member($_birthday['id'], do_lang('BIRTHDAY_POINTS'), intval($birthday_points), 0, 0, true, 0, ['birthday_points']);
                 } else {
                     $mail = do_notification_lang(
                         'BIRTHDAY_POINTS_NOTIFICATION_MAIL_NO_POINTS',

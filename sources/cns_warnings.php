@@ -45,7 +45,7 @@ function generate_punitive_text() : string
     $banned_member = post_param_integer('banned_member', 0);
     $stopforumspam = post_param_integer('stopforumspam', 0);
     $banned_ip = post_param_integer('banned_ip', 0);
-    $changed_usergroup_to = post_param_integer('changed_usergroup_to');
+    $changed_usergroup_to = post_param_integer('changed_usergroup_to', null);
 
     // Prepare punitive actions
     $punitive_messages = [];
@@ -116,7 +116,6 @@ function generate_punitive_text() : string
         if (!has_privilege(get_member(), 'view_other_pt')) {
             $sup = ' AND p_cache_forum_id IS NOT NULL ' . $sup;
         }
-        $posts_already_deleted = [];
         $posts_by_member = $GLOBALS['FORUM_DB']->query_select('f_posts', ['id', 'p_title', 'p_topic_id', 'p_time'], $where, $sup);
         foreach ($posts_by_member as $post) {
             $p_title = do_lang('POST_IN_TITLED', strval($post['p_title']), $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_cache_first_title', ['id' => $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_topic_id', ['id' => intval($post['id'])])]));
@@ -157,7 +156,7 @@ function generate_punitive_text() : string
 
     // Charge points
     if (addon_installed('points')) {
-        if (has_actual_page_access(get_member(), 'admin_points')) {
+        if (has_privilege(get_member(), 'moderate_points')) {
             if ($charged_points != 0) {
                 array_push($punitive_messages, do_lang('PUNITIVE_CHARGE_POINTS', strval($charged_points), null, null, null, false));
             }

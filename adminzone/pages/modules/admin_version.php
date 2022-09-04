@@ -601,11 +601,15 @@ class Module_admin_version
                     'news',
                     'news_article',
                 ],
-                'chargelog' => [
+                'points_ledger' => [
                     'reason',
                 ],
-                'gifts' => [
+                'escrow' => [
                     'reason',
+                    'terms',
+                ],
+                'escrow_logs' => [
+                    'information',
                 ],
                 'pstore_customs' => [
                     'c_description',

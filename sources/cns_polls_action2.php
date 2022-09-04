@@ -256,7 +256,7 @@ function cns_vote_in_poll(int $poll_id, array $votes, ?int $member_id = null, ?a
             'pv_ip' => get_ip_address(),
             'pv_revoked' => 0,
             'pv_date_time' => time(),
-            'pv_cached_points' => addon_installed('points') ? available_points($member_id) : 0
+            'pv_cached_points' => addon_installed('points') ? points_balance($member_id) : 0
         ]);
 
         $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_poll_answers SET pa_cache_num_votes=(pa_cache_num_votes+1) WHERE id=' . strval($vote), 1);

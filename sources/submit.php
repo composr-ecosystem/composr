@@ -111,13 +111,15 @@ function send_validation_request(string $type, string $table, bool $non_integer_
 }
 
 /**
- * Give points to a member for submitting something, then returns the XHTML page to say so.
+ * Credit points to a member for submitting something, then returns the XHTML page to say so.
  *
  * @param  ID_TEXT $type One of this type has been submitted. By convention it is the language string codename of what was done, e.g. ADD_DOWNLOAD
+ * @param  ID_TEXT $content_type The content type submitted
+ * @param  ID_TEXT $content_id The content ID that was submitted
  * @param  ?MEMBER $member_id The member to give the points to (null: give to current member)
  * @return ?string A message about the member being given these submit points (null: no message)
  */
-function give_submit_points(string $type, ?int $member_id = null) : ?string
+function give_submit_points(string $type, string $content_type, string $content_id, ?int $member_id = null) : ?string
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -132,9 +134,14 @@ function give_submit_points(string $type, ?int $member_id = null) : ?string
         if ($points === null) {
             return '';
         }
-        require_code('points2');
-        system_gift_transfer(do_lang($type), intval($points), $member_id);
-        return do_lang('SUBMIT_AWARD', integer_format(intval($points), 0));
+
+        $already_awarded = $GLOBALS['SITE_DB']->query_select_value('points_ledger', 'COUNT(*)', ['status' => 'normal', 'recipient_id' => $member_id, 'code_explanation' => json_encode(['submit', $content_type, $content_id])]);
+        if ($already_awarded == 0) {
+            require_code('points2');
+            points_credit_member($member_id, do_lang($type), intval($points), 0, 0, true, 0, ['submit', $content_type, $content_id]);
+            return do_lang('SUBMIT_AWARD', integer_format(intval($points), 0));
+        }
+        return '';
     }
     return null;
 }

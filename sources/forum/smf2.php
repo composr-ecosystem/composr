@@ -113,6 +113,20 @@ class Forum_driver_smf2 extends Forum_driver_base
     }
 
     /**
+     * Edit the specified custom field to the forum (some forums implemented this using proper Custom Profile Fields, others through adding a new field).
+     *
+     * @param  string $old_name The name of the custom field to edit
+     * @param  string $name The new name of the custom field
+     * @param  integer $length The length of the custom field
+     * @return boolean Whether the custom field was edited successfully
+     */
+    public function install_edit_custom_field(string $old_name, string $name, int $length) : bool
+    {
+        $this->db->query('ALTER TABLE ' . $this->db->get_table_prefix() . 'members CHANGE COLUMN cms_' . db_escape_string($old_name) . ' TO cms_' . db_escape_string($name), null, 0, true); // Suppress errors in case field already exists
+        return true;
+    }
+
+    /**
      * Get an array of attributes to take in from the installer. Almost all forums require a table prefix, which the requirement there-of is defined through this function.
      * The attributes have 4 values in an array:
      * - name, the name of the attribute for _config.php

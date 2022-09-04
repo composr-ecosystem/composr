@@ -34,7 +34,7 @@ class Hook_config_points_if_liked
             'human_name' => 'POINTS_IF_LIKED',
             'type' => 'integer',
             'category' => 'POINTS',
-            'group' => 'COUNT_POINTS_GIVEN',
+            'group' => 'COUNT_POINTS_SENT',
             'explanation' => 'CONFIG_OPTION_points_if_liked',
             'shared_hosting_restricted' => '0',
             'list_options' => '',

@@ -211,50 +211,50 @@ function member_personal_links_and_details(int $member_id) : array
     if (addon_installed('points')) {
         require_lang('points');
         require_code('points');
-        if (get_option('points_show_personal_stats_points_left') == '1') {
-            $available_points = available_points($member_id);
+        if (get_option('points_show_personal_stats_points_balance') == '1') {
+            $points_balance = points_balance($member_id);
             $details->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINE', [
                 '_GUID' => '6241e58e30457576735f3a2618fd7fff',
-                'KEY' => do_lang_tempcode('COUNT_POINTS_LEFT'),
-                'RAW_VALUE' => strval($available_points),
-                'VALUE' => integer_format($available_points, 0),
+                'KEY' => do_lang_tempcode('COUNT_POINTS_BALANCE'),
+                'RAW_VALUE' => strval($points_balance),
+                'VALUE' => integer_format($points_balance, 0),
             ]));
         }
-        if (get_option('points_show_personal_stats_points_used') == '1') {
-            $points_used = points_used($member_id);
+        if (get_option('points_show_personal_stats_points_spent') == '1') {
+            $points_spent = points_spent($member_id);
             $details->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINE', [
                 '_GUID' => '6241e58edfdsf735f3a2618fd7fff',
-                'KEY' => do_lang_tempcode('COUNT_POINTS_USED'),
-                'RAW_VALUE' => strval($points_used),
-                'VALUE' => integer_format($points_used, 0),
+                'KEY' => do_lang_tempcode('COUNT_POINTS_SPENT'),
+                'RAW_VALUE' => strval($points_spent),
+                'VALUE' => integer_format($points_spent, 0),
             ]));
         }
         if (get_option('points_show_personal_stats_total_points') == '1') {
             $total_points = total_points($member_id);
             $details->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINE', [
                 '_GUID' => '3e6183abf9054574c0cd292d25a4fe5c',
-                'KEY' => do_lang_tempcode((get_option('points_show_personal_stats_points_left') == '1') ? 'COUNT_POINTS_EVER' : 'COUNT_POINTS'),
+                'KEY' => do_lang_tempcode((get_option('points_show_personal_stats_points_balance') == '1') ? 'COUNT_POINTS_EVER' : 'COUNT_POINTS'),
                 'RAW_VALUE' => strval($total_points),
                 'VALUE' => integer_format($total_points, 0),
             ]));
         }
         if (get_option('enable_gift_points') == '1') {
-            if (get_option('points_show_personal_stats_gift_points_left') == '1') {
-                $gift_points_to_give = get_gift_points_to_give($member_id);
+            if (get_option('points_show_personal_stats_gift_points_balance') == '1') {
+                $gift_points_balance = gift_points_balance($member_id);
                 $details->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINE', [
                     '_GUID' => '6241e5ssd45ddsdsdsa2618fd7fff',
-                    'KEY' => do_lang_tempcode('COUNT_GIFT_POINTS_LEFT'),
-                    'RAW_VALUE' => strval($gift_points_to_give),
-                    'VALUE' => integer_format($gift_points_to_give, 0),
+                    'KEY' => do_lang_tempcode('COUNT_GIFT_POINTS_BALANCE'),
+                    'RAW_VALUE' => strval($gift_points_balance),
+                    'VALUE' => integer_format($gift_points_balance, 0),
                 ]));
             }
-            if (get_option('points_show_personal_stats_gift_points_used') == '1') {
-                $gift_points_used = get_gift_points_used($member_id);
+            if (get_option('points_show_personal_stats_gift_points_sent') == '1') {
+                $gift_points_sent = gift_points_sent($member_id);
                 $details->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINE', [
                     '_GUID' => '6241eddsd4sdddssdsa2618fd7fff',
-                    'KEY' => do_lang_tempcode('COUNT_GIFT_POINTS_USED'),
-                    'RAW_VALUE' => strval($gift_points_used),
-                    'VALUE' => integer_format($gift_points_used, 0),
+                    'KEY' => do_lang_tempcode('COUNT_GIFT_POINTS_SENT'),
+                    'RAW_VALUE' => strval($gift_points_sent),
+                    'VALUE' => integer_format($gift_points_sent, 0),
                 ]));
             }
         }

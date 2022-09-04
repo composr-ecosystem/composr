@@ -190,7 +190,7 @@ class Hook_ecommerce_gambling
 
         // Actuate
         require_code('points2');
-        give_points($winnings, $member_id, $GLOBALS['FORUM_DRIVER']->get_guest_id(), do_lang('GAMBLING_WINNINGS'), false, false);
+        points_credit_member($member_id, do_lang('GAMBLING_WINNINGS'), $winnings);
 
         // Show an instant message so the member knows how it worked out (plus buying via points, so will definitely be seen)
         if ($winnings > $amount) {

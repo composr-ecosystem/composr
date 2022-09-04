@@ -80,7 +80,7 @@ class Hook_cron_stealr
                 foreach ($all_members as $member) {
                     $id = $GLOBALS['FORUM_DRIVER']->mrow_id($member);
                     $signin_time = $member['m_last_visit_time'];
-                    $members_points[$signin_time] = ['points' => available_points($id), 'id' => $id];
+                    $members_points[$signin_time] = ['points' => points_balance($id), 'id' => $id];
                 }
                 ksort($members_points);
 
@@ -108,7 +108,7 @@ class Hook_cron_stealr
                 $members_points = [];
                 foreach ($all_members as $member) {
                     $id = $GLOBALS['FORUM_DRIVER']->mrow_id($member);
-                    $members_points[$id] = available_points($id);
+                    $members_points[$id] = points_balance($id);
                 }
                 arsort($members_points);
 
@@ -144,7 +144,7 @@ class Hook_cron_stealr
                     $victim_member_id = $member['id'];
                     $victor_member_id = $this->pick_victor($victim_member_id);
 
-                    $total_points = available_points($victim_member_id);
+                    $total_points = points_balance($victim_member_id);
 
                     $this->do_point_transfer(min($total_points, $points_to_steal), $victim_member_id, $victor_member_id);
                 }
@@ -173,7 +173,7 @@ class Hook_cron_stealr
                     $victim_member_id = $members[$member_rand_key];
                     $victor_member_id = $this->pick_victor($victim_member_id);
 
-                    $total_points = available_points($victim_member_id);
+                    $total_points = points_balance($victim_member_id);
 
                     $this->do_point_transfer(min($total_points, $points_to_steal), $victim_member_id, $victor_member_id);
                 }
@@ -199,11 +199,11 @@ class Hook_cron_stealr
         require_code('points2');
 
         // Get STOLEN points
-        charge_member($victim_member_id, $points_to_steal, do_lang('STEALR_GET', integer_format($points_to_steal, 0)));
+        points_debit_member($victim_member_id, do_lang('STEALR_GET', integer_format($points_to_steal, 0)), $points_to_steal);
 
         if ($victor_member_id !== null) {
             // Give STOLEN points
-            system_gift_transfer(do_lang('STEALR_GAVE_YOU', integer_format($points_to_steal, 0)), $points_to_steal, $victor_member_id);
+            points_credit_member($victor_member_id, do_lang('STEALR_GAVE_YOU', $points_to_steal, integer_format($points_to_steal, 0)), $points_to_steal);
 
             // Create private topic to message about it...
 

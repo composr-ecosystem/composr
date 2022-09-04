@@ -60,6 +60,13 @@ class Hook_realtime_rain_chat
                     continue;
                 }
 
+                if (addon_installed('points')) {
+                    require_code('points');
+                    $points_url = points_url($member_id);
+                } else {
+                    $points_url = null;
+                }
+
                 $drops[] = rain_get_special_icons($row['ip_address'], $timestamp, null, $message) + [
                     'TYPE' => 'chat',
                     'FROM_MEMBER_ID' => strval($member_id),
@@ -69,7 +76,7 @@ class Hook_realtime_rain_chat
                     'TIMESTAMP' => strval($timestamp),
                     'RELATIVE_TIMESTAMP' => strval($timestamp - $from),
                     'TICKER_TEXT' => $message,
-                    'URL' => build_url(['page' => 'points', 'type' => 'member', 'id' => $member_id], get_module_zone('points')),
+                    'URL' => $points_url,
                     'IS_POSITIVE' => false,
                     'IS_NEGATIVE' => false,
 

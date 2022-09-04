@@ -45,7 +45,7 @@ function realtime_rain_script()
     $to = get_param_integer('to', $time_now);
 
     if (get_param_integer('keep_realtime_test', 0) == 1) {
-        $types = ['post', 'news', 'recommend', 'polls', 'ecommerce', 'actionlog', 'security', 'chat', 'stats', 'join', 'calendar', 'search', 'point_charges', 'banners', 'point_gifts'];
+        $types = ['post', 'news', 'recommend', 'polls', 'ecommerce', 'actionlog', 'security', 'chat', 'stats', 'join', 'calendar', 'search', 'banners', 'point_transactions', 'point_debits', 'point_credits'];
         shuffle($types);
 
         $events = [];
@@ -65,7 +65,7 @@ function realtime_rain_script()
                     'TICKER_TEXT' => null,
                     'URL' => null,
                     'IS_POSITIVE' => ($type == 'ecommerce' || $type == 'join'),
-                    'IS_NEGATIVE' => ($type == 'security' || $type == 'point_charges'),
+                    'IS_NEGATIVE' => ($type == 'security' || $type == 'point_debits'),
 
                     // These are for showing connections between drops. They are not discriminated, it's just three slots to give an ID code that may be seen as a commonality with other drops.
                     'FROM_ID' => null,

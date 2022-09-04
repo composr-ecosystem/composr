@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_points_show_personal_stats_gift_points_left
+class Hook_config_reward_credit_amount
 {
     /**
      * Gets the details relating to the config option.
@@ -31,13 +31,14 @@ class Hook_config_points_show_personal_stats_gift_points_left
     public function get_details() : ?array
     {
         return [
-            'human_name' => 'COUNT_GIFT_POINTS_LEFT',
-            'type' => 'tick',
-            'category' => 'BLOCKS',
-            'group' => 'PERSONAL_BLOCK',
-            'explanation' => 'CONFIG_OPTION_points_show_personal_stats_gift_points_left',
+            'human_name' => 'REWARD_CREDIT_AMOUNT',
+            'type' => 'integer',
+            'category' => 'POINTS',
+            'group' => 'POINT_TRANSACTIONS',
+            'explanation' => 'CONFIG_OPTION_reward_credit_amount',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
+            'order_in_category_group' => 3,
             'required' => true,
             'public' => false,
             'addon' => 'points',
@@ -55,6 +56,6 @@ class Hook_config_points_show_personal_stats_gift_points_left
             return null;
         }
 
-        return '0';
+        return '25';
     }
 }

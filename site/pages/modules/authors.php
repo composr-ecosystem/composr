@@ -223,10 +223,11 @@ class Module_authors
                 'ACTION' => hyperlink($GLOBALS['FORUM_DRIVER']->member_profile_url($handle, true), do_lang_tempcode('AUTHOR_PROFILE'), false, false, '', null, null, 'me'),
             ]);
             if (addon_installed('points')) {
-                $give_points_url = build_url(['page' => 'points', 'type' => 'member', 'id' => $handle], get_module_zone('points'));
+                require_code('points');
+                $send_points_url = points_url($handle);
                 $point_details = do_template('AUTHOR_SCREEN_POTENTIAL_ACTION_ENTRY', [
                     '_GUID' => '2bfb9bf9b5fdf1dad34102abd4bc4648',
-                    'ACTION' => hyperlink($give_points_url, do_lang_tempcode('AUTHOR_POINTS'), false, false),
+                    'ACTION' => hyperlink($send_points_url, do_lang_tempcode('AUTHOR_POINTS'), false, false),
                 ]);
             } else {
                 $point_details = new Tempcode();

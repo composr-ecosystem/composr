@@ -133,16 +133,17 @@ function dload_script()
             if ($got_before === null) {
                 $cost = $myrow['download_cost'];
 
-                $dif = $cost - available_points($member_id);
-                if (($dif > 0) && (!has_privilege($member_id, 'have_negative_gift_points'))) {
+                $dif = $cost - points_balance($member_id);
+
+                if ($dif > 0) {
                     require_lang('points');
                     warn_exit(do_lang_tempcode('LACKING_POINTS', escape_html(integer_format($dif, 0))));
                 }
                 require_code('points2');
-                charge_member($member_id, $cost, do_lang('DOWNLOADED_THIS', get_translated_text($myrow['name'])));
-
                 if ($myrow['download_submitter_gets_points'] == 1) {
-                    system_gift_transfer(do_lang('THEY_DOWNLOADED_THIS', get_translated_text($myrow['name'])), $cost, $myrow['submitter']);
+                    points_transact($member_id, $myrow['submitter'], do_lang('DOWNLOADED_THIS', get_translated_text($myrow['name'])), $cost, 0, 1, true, 0, ['download', 'download', strval($id)]);
+                } else {
+                    points_debit_member($member_id, do_lang('DOWNLOADED_THIS', get_translated_text($myrow['name'])), $cost, 0, 1, true, 0, ['download', 'download', strval($id)]);
                 }
             }
         }

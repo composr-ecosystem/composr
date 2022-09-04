@@ -1,8 +1,8 @@
-{+START,IF_EMPTY,{GIFTS}}
+{+START,IF_EMPTY,{TRANSACTIONS}}
 	<p class="nothing-here">{!NONE}</p>
 {+END}
 
-{+START,IF_NON_EMPTY,{GIFTS}}
+{+START,IF_NON_EMPTY,{TRANSACTIONS}}
 	<div class="wide-table-wrap">
 		<table class="columned-table results-table wide-table autosized-table">
 			<thead>
@@ -14,7 +14,7 @@
 			</thead>
 
 			<tbody>
-				{+START,LOOP,GIFTS}
+				{+START,LOOP,TRANSACTIONS}
 					<tr>
 						<td>{TO_LINK}</td>
 

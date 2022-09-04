@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_commandr_fs_extended_member__point_charges
+class Hook_commandr_fs_extended_member__point_credits
 {
     /**
      * Whether the filesystem hook is active.
@@ -41,17 +41,25 @@ class Hook_commandr_fs_extended_member__point_charges
      */
     public function read_property(int $member_id)
     {
-        return table_to_portable_rows('chargelog', ['id'], ['member_id' => $member_id]);
+        $data = table_to_portable_rows('points_ledger', ['id'], ['recipient_id' => $member_id]);
+        if (array_key_exists('code_explanation', $data) && ($data['code_explanation'] !== null) && ($data['code_explanation'] !== '')) {
+            $data['code_explanation'] = json_decode($data['code_explanation']);
+        }
+
+        return $data;
     }
 
     /**
-     * Read a virtual property for a member file.
+     * Write a virtual property for a member file.
      *
      * @param  MEMBER $member_id The member ID
      * @param  mixed $data The data
      */
     public function write_property(int $member_id, $data)
     {
-        table_from_portable_rows('chargelog', $data, ['member_id' => $member_id], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
+        if (array_key_exists('code_explanation', $data) && ($data['code_explanation'] !== null) && ($data['code_explanation'] !== '')) {
+            $data['code_explanation'] = json_encode($data['code_explanation']);
+        }
+        table_from_portable_rows('points_ledger', $data, ['recipient_id' => $member_id], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
     }
 }

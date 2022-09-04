@@ -493,11 +493,11 @@ You are very unlikely to ever want to use rows in red, as they are intended for 
 			<td>Get the total points the specified member has</td>
 		</tr>
 		<tr style="background: #DDFFDD">
-			<td>{$POINTS_USED,3}</td>
+			<td>{$POINTS_SPENT,3}</td>
 			<td>Get the total points the specified member has used (spent).</td>
 		</tr>
 		<tr style="background: #DDFFDD">
-			<td>{$AVAILABLE_POINTS,3}</td>
+			<td>{$POINTS_BALANCE,3}</td>
 			<td>Get the total points in the specified member's account; some of these will probably have been spent already</td>
 		</tr>
 		<tr style="background: #DDFFDD">

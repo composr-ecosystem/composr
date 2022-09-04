@@ -7027,6 +7027,10 @@ a[rel="lightbox"] {
 	padding-left: 1em;
 }
 
+.justify-space-between {
+	justify-content: space-between;
+}
+
 /*{+START,CSS_MODE,desktop}*/
 	.floats-wrap .float-surrounder + .float-surrounder {
 		margin-top: 1em;

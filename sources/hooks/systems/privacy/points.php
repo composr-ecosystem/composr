@@ -45,7 +45,19 @@ class Hook_privacy_points extends Hook_privacy_base
             ],
 
             'database_records' => [
-                'chargelog' => [
+                'escrow' => [
+                    'timestamp_field' => 'date_and_time',
+                    'retention_days' => null,
+                    'retention_handle_method' => PRIVACY_METHOD__LEAVE,
+                    'member_id_fields' => ['sender_id', 'recipient_id'],
+                    'ip_address_fields' => [],
+                    'email_fields' => [],
+                    'additional_anonymise_fields' => [],
+                    'extra_where' => null,
+                    'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
+                ],
+                'escrow_logs' => [
                     'timestamp_field' => 'date_and_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
@@ -57,11 +69,11 @@ class Hook_privacy_points extends Hook_privacy_base
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
                 ],
-                'gifts' => [
+                'points_ledger' => [
                     'timestamp_field' => 'date_and_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => ['gift_from', 'gift_to'],
+                    'member_id_fields' => ['sender_id', 'recipient_id'],
                     'ip_address_fields' => [],
                     'email_fields' => [],
                     'additional_anonymise_fields' => [],

@@ -310,7 +310,7 @@ function cns_make_member(string $username, string $password, string $email_addre
                 if ((addon_installed('points')) && (addon_installed('recommend'))) {
                     require_code('points2');
                     require_lang('recommend');
-                    system_gift_transfer(do_lang('RECOMMEND_SITE_TO', $username, get_site_name()), intval(get_option('points_RECOMMEND_SITE')), $referrer);
+                    points_credit_member($referrer, do_lang('RECOMMEND_SITE_TO', $username, get_site_name()), intval(get_option('points_RECOMMEND_SITE')), 0, 0, true, 0, ['recommend_site']);
                 }
                 if (addon_installed('chat')) {
                     require_code('chat2');

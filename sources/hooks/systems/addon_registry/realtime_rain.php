@@ -176,10 +176,10 @@ class Hook_addon_registry_realtime_rain
             'themes/default/images/realtime_rain/join-bubble.svg',
             'themes/default/images/realtime_rain/news-avatar.svg',
             'themes/default/images/realtime_rain/news-bubble.svg',
-            'themes/default/images/realtime_rain/point_charges-avatar.svg',
-            'themes/default/images/realtime_rain/point_charges-bubble.svg',
-            'themes/default/images/realtime_rain/point_gifts-avatar.svg',
-            'themes/default/images/realtime_rain/point_gifts-bubble.svg',
+            'themes/default/images/realtime_rain/point_charges-avatar.svg', // TODO: rename
+            'themes/default/images/realtime_rain/point_charges-bubble.svg', // TODO: rename
+            'themes/default/images/realtime_rain/point_gifts-avatar.svg', // TODO: rename
+            'themes/default/images/realtime_rain/point_gifts-bubble.svg', // TODO: rename
             'themes/default/images/realtime_rain/polls-avatar.svg',
             'themes/default/images/realtime_rain/polls-bubble.svg',
             'themes/default/images/realtime_rain/post-avatar.svg',

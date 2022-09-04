@@ -35,7 +35,8 @@ class Hook_admin_import_types_points
         }
 
         return [
-            'points_gifts_and_charges' => 'POINTS',
+            'points_ledger' => 'POINTS_LEDGER',
+            'escrow' => 'ESCROW'
         ];
     }
 }

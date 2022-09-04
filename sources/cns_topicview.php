@@ -838,11 +838,12 @@ function cns_render_post_buttons(array $topic_info, array $_postdetails, bool $m
         $buttons->attach(do_template('BUTTON_SCREEN_ITEM', ['_GUID' => '6086b2ae226bf2a69d1e34641d22ae21', 'REL' => 'history nofollow', 'IMMEDIATE' => false, 'IMG' => 'admin/revisions', 'TITLE' => $_title, 'FULL_TITLE' => $_title_full, 'URL' => $action_url]));
     }
 
-    // Give points
+    // Send points as thanks
     if ($rendering_context != 'tickets') {
-        if ((addon_installed('points')) && (!is_guest()) && (!is_guest($_postdetails['poster'])) && ($_postdetails['poster'] != get_member()) && (has_privilege($_postdetails['poster'], 'use_points'))) {
+        if ((addon_installed('points')) && (!is_guest()) && (!is_guest($_postdetails['poster'])) && ($_postdetails['poster'] != get_member()) && (has_privilege($_postdetails['poster'], 'use_points')) && (has_privilege($_postdetails['poster'], 'send_points'))) {
+            require_code('points');
             require_css('points');
-            $action_url = build_url(['page' => 'points', 'type' => 'member', 'id' => $_postdetails['poster']], get_module_zone('points'));
+            $action_url = points_url($_postdetails['poster']);
             $_title = do_lang_tempcode('__POINTS_THANKS');
             $_title_full = do_lang_tempcode('POINTS_THANKS');
             $buttons->attach(do_template('BUTTON_SCREEN_ITEM', ['_GUID' => 'a66f98cb4d56bd0d64e9ecc44d357141', 'IMMEDIATE' => false, 'IMG' => 'buttons/points', 'TITLE' => $_title, 'FULL_TITLE' => $_title_full, 'URL' => $action_url]));

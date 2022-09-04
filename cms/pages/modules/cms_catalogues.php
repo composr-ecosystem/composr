@@ -799,17 +799,20 @@ class Module_cms_catalogues extends Standard_crud_module
 
         $map = $this->get_set_field_map($catalogue_name, get_member());
 
-        if ((!is_guest()) && (addon_installed('points'))) {
-            $points = $GLOBALS['SITE_DB']->query_select_value('catalogues', 'c_submit_points', ['c_name' => $catalogue_name]);
-            require_code('points2');
-            system_gift_transfer(do_lang('ADD_CATALOGUE_ENTRY'), intval($points), get_member());
-        }
-
         $metadata = actual_metadata_get_fields('catalogue_entry', null);
 
         $id = actual_add_catalogue_entry($category_id, $validated, $notes, $allow_rating, $allow_comments, $allow_trackbacks, $map, $metadata['add_time'], $metadata['submitter'], null, $metadata['views']);
 
         set_url_moniker('catalogue_entry', strval($id));
+
+        // Award points here instead of from give_submit_points (submit.php) because catalogues have their own submit point options
+        if ((!is_guest()) && (addon_installed('points'))) {
+            $points = $GLOBALS['SITE_DB']->query_select_value('catalogues', 'c_submit_points', ['c_name' => $catalogue_name]);
+            require_code('points2');
+
+            // code_explanation should still follow give_submit_points because catalogues use standard CRUD for point reversal
+            points_credit_member(get_member(), do_lang('ADD_CATALOGUE_ENTRY'), intval($points), 0, 0, true, 0, ['submit', 'catalogue_entry', strval($id)]);
+        }
 
         if (addon_installed('content_privacy')) {
             require_code('content_privacy2');

@@ -1281,10 +1281,30 @@ class Module_cms_comcode_pages
         $text_raw = post_param_string('post');
         $metadata = actual_metadata_get_fields('comcode_page', $zone . ':' . $file, [], $new_file);
 
+        // Deleting?
+        $is_deleting = (post_param_integer('delete', 0) == 1);
+        if ($is_deleting) {
+            $is_translation = ($lang != get_site_default_lang());
+
+            require_code('zones3');
+            delete_cms_page($zone, $file, 'comcode_custom', false, $is_translation ? $lang : null);
+
+            $completion_text = do_lang_tempcode($is_translation ? 'SUCCESS_PAGE_TRANSLATION_DELETED' : 'SUCCESS_PAGE_DELETED');
+            $after_delete_url = build_url(['page' => '_SELF', 'translations' => $is_translation ? 1 : null, 'lang' => $lang], '_SELF');
+            return redirect_screen($this->title, $after_delete_url, $completion_text);
+        }
+
         // Handle attachments
         require_code('attachments2');
         $_text = do_comcode_attachments($text_raw, 'comcode_page', $zone . ':' . $file);
         $text = $_text['comcode'];
+
+        // Save custom fields
+        require_code('fields');
+        save_form_custom_fields('comcode_page', $zone . ':' . $new_file, $zone . ':' . $file);
+
+        // Main save function
+        $path = save_comcode_page($zone, $new_file, $lang, $text, $validated, $include_on_sitemap, $parent_page, $order, $metadata['add_time'], $metadata['edit_time'], $show_as_edit, $metadata['submitter'], $file, post_param_string('meta_keywords', ''), post_param_string('meta_description', ''));
 
         // Some general CRUD maintenance that we don't do within the save_comcode_page function
         $resource_owner = $GLOBALS['SITE_DB']->query_select_value_if_there('comcode_pages', 'p_submitter', ['the_zone' => $zone, 'the_page' => $file]);
@@ -1294,7 +1314,7 @@ class Module_cms_comcode_pages
             }
 
             require_code('submit');
-            give_submit_points('COMCODE_PAGE_ADD');
+            give_submit_points('COMCODE_PAGE_ADD', 'comcode_page', $path);
 
             require_code('member_mentions');
             dispatch_member_mention_notifications('comcode_page', $zone . ':' . $file, $resource_owner);
@@ -1310,24 +1330,6 @@ class Module_cms_comcode_pages
             }
         }
 
-        // Deleting?
-        $is_deleting = (post_param_integer('delete', 0) == 1);
-        if ($is_deleting) {
-            $is_translation = ($lang != get_site_default_lang());
-
-            require_code('zones3');
-            delete_cms_page($zone, $file, 'comcode_custom', false, $is_translation ? $lang : null);
-
-            $completion_text = do_lang_tempcode($is_translation ? 'SUCCESS_PAGE_TRANSLATION_DELETED' : 'SUCCESS_PAGE_DELETED');
-            $after_delete_url = build_url(['page' => '_SELF', 'translations' => $is_translation ? 1 : null, 'lang' => $lang], '_SELF');
-            return redirect_screen($this->title, $after_delete_url, $completion_text);
-        } else {
-            // Save custom fields
-            require_code('fields');
-            save_form_custom_fields('comcode_page', $zone . ':' . $new_file, $zone . ':' . $file);
-        }
-
-        // Some more general CRUD maintenance that we don't do within the save_comcode_page function
         require_code('permissions2');
         set_page_permissions_from_environment($zone, $file);
         if (addon_installed('awards')) {
@@ -1338,9 +1340,6 @@ class Module_cms_comcode_pages
             require_code('content_reviews2');
             content_review_set('comcode_page', $zone . ':' . $new_file, $zone . ':' . $file);
         }
-
-        // Main save function
-        $path = save_comcode_page($zone, $new_file, $lang, $text, $validated, $include_on_sitemap, $parent_page, $order, $metadata['add_time'], $metadata['edit_time'], $show_as_edit, $metadata['submitter'], $file, post_param_string('meta_keywords', ''), post_param_string('meta_description', ''));
 
         // Update any current menu link(s)
         $GLOBALS['SITE_DB']->query_update('menu_items', ['i_url' => $zone . ':' . $new_file], ['i_url' => $zone . ':' . $file]);
@@ -1354,7 +1353,6 @@ class Module_cms_comcode_pages
             } else {
                 $_existing_menu_branch = $GLOBALS['SITE_DB']->query_select('menu_items', ['i_parent'], ['i_url' => $zone . ':' . $new_file], '', 1);
                 if (array_key_exists(0, $_existing_menu_branch)) {
-                    $existing_menu_branch = $_existing_menu_branch[0]['i_parent'];
                     $GLOBALS['SITE_DB']->query_update('menu_items', ['i_parent' => $menu_item_under], ['i_url' => $zone . ':' . $new_file], '', 1);
                 } else {
                     $menu = $GLOBALS['SITE_DB']->query_select_value('menu_items', 'i_menu');

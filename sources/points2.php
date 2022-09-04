@@ -29,156 +29,165 @@ function init__points2()
 }
 
 /**
- * Transfer gift-points into the specified member's account, courtesy of the system.
+ * Add a record to the point transactions.
  *
- * @param  SHORT_TEXT $reason The reason for the transfer
- * @param  integer $amount The size of the transfer
- * @param  MEMBER $member_id The member the transfer is to
- * @param  boolean $include_in_log Whether to include a log line
- * @return ?AUTO_LINK ID of the gifts record if include_in_log was true (null: log was not created)
+ * @param  MEMBER $sender_id The member sending the points (use guest ID for a credit from the system)
+ * @param  MEMBER $recipient_id The member receiving the points (use guest ID for a debit to the system)
+ * @param  SHORT_TEXT $reason The reason for this transaction used in the logs
+ * @param  integer $total_points Number of regular points transacted (does not include gift points)
+ * @param  integer $amount_gift_points Number of gift points transacted
+ * @param  BINARY $anonymous Whether the sender_id for this transaction should be hidden
+ * @param  ID_TEXT $status The status of this transaction
+ * @set normal reversing reversed
+ * @param  BINARY $locked Whether this transaction is irreversible
+ * @param  ?AUTO_LINK $linked_to The ID of the points ledger this one relates to (null: does not relate to another ledger)
+ * @param  ?TIME $time The time this transaction occurred (null: now)
+ * @param  ?array $code_explanation A Tuple explaining this ledger from a coding / API standpoint (it should follow the standard ['action', 'type', 'ID']) (null: there is no code explanation)
+ * @return AUTO_LINK The ID of the point transaction
  */
-function system_gift_transfer(string $reason, int $amount, int $member_id, bool $include_in_log = true) : ?int
+function _add_to_points_ledger(int $sender_id, int $recipient_id, string $reason, int $total_points, int $amount_gift_points, int $anonymous = 0, string $status = 'normal', int $locked = 0, ?int $linked_to = null, ?int $time = null, ?array $code_explanation = null) : int
 {
-    require_lang('points');
-    require_code('points');
+    if ($time === null) {
+        $time = time();
+    }
 
+    if (!in_array($status, ['normal', 'reversing', 'reversed'])) {
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+    }
+
+    $map = [
+        'sender_id' => $sender_id,
+        'recipient_id' => $recipient_id,
+        'amount_gift_points' => $amount_gift_points,
+        'amount_points' => $total_points,
+        'date_and_time' => $time,
+        'anonymous' => $anonymous,
+        'linked_to' => $linked_to,
+        'code_explanation' => ($code_explanation === null) ? '' : json_encode($code_explanation),
+        'status' => $status,
+        'locked' => $locked,
+    ];
+    $map += insert_lang_comcode('reason', $reason, 4);
+    return $GLOBALS['SITE_DB']->query_insert('points_ledger', $map, true);
+}
+
+/**
+ * Credit or refund points to a member from the system.
+ *
+ * @param  MEMBER $member_id The member to credit
+ * @param  SHORT_TEXT $reason The reason for this credit in the logs
+ * @param  integer $total_points The total points to credit (including gift points when applicable)
+ * @param  integer $amount_gift_points The number of $total_points which should be credited as gift points (subtracts from gift points sent; only use to refund sent gift points)
+ * @param  BINARY $anonymous Whether this transaction should be anonymous
+ * @param  ?boolean $send_notifications Whether to send a notification to the member receiving the points (null: false, and staff should not receive a notifcation either)
+ * @param  BINARY $locked Whether this transaction is irreversible (Ignored / always 1 when $amount_gift_points is > 0)
+ * @param  ?array $code_explanation A Tuple explaining this ledger from a coding / API standpoint (it should follow the standard ['action', 'type', 'ID']) (null: there is no code explanation)
+ * @return ?AUTO_LINK The ID of the point transaction (null: no transaction took place)
+ */
+function points_credit_member(int $member_id, string $reason, int $total_points, int $amount_gift_points = 0, int $anonymous = 0, ?bool $send_notifications = true, int $locked = 0, ?array $code_explanation = null) : ?int
+{
     if (is_guest($member_id)) {
         return null;
     }
-    if ($amount == 0) {
+    if ($total_points == 0) {
         return null;
     }
 
-    $id = null;
-
-    if ($include_in_log) {
-        $map = [
-            'date_and_time' => time(),
-            'amount' => $amount,
-            'gift_from' => $GLOBALS['FORUM_DRIVER']->get_guest_id(),
-            'gift_to' => $member_id,
-            'anonymous' => 1,
-        ];
-        $map += insert_lang_comcode('reason', $reason, 4);
-        $id = $GLOBALS['SITE_DB']->query_insert('gifts', $map, true);
-    }
-
-    $_before = point_info($member_id);
-    $before = array_key_exists('points_gained_given', $_before) ? $_before['points_gained_given'] : 0;
-    $new = strval($before + $amount);
-    $GLOBALS['FORUM_DRIVER']->set_custom_field($member_id, 'points_gained_given', $new);
-
-    global $TOTAL_POINTS_CACHE, $POINT_INFO_CACHE;
-    if (array_key_exists($member_id, $TOTAL_POINTS_CACHE)) {
-        $TOTAL_POINTS_CACHE[$member_id] += $amount;
-    }
-    if ((array_key_exists($member_id, $POINT_INFO_CACHE)) && (array_key_exists('points_gained_given', $POINT_INFO_CACHE[$member_id]))) {
-        $POINT_INFO_CACHE[$member_id]['points_gained_given'] += $amount;
-    }
-
-    if (get_forum_type() == 'cns') {
-        require_code('cns_posts_action');
-        require_code('cns_posts_action2');
-        cns_member_handle_promotion($member_id);
+    if ($amount_gift_points > 0) { // Should be processed as a refund instead
+        $id = points_refund($GLOBALS['FORUM_DRIVER']->get_guest_id(), $member_id, $reason, $total_points, $amount_gift_points, $anonymous, null, $send_notifications, $code_explanation);
+    } else {
+        $id = points_transact($GLOBALS['FORUM_DRIVER']->get_guest_id(), $member_id, $reason, $total_points, 0, $anonymous, $send_notifications, $locked, $code_explanation);
     }
 
     return $id;
 }
 
 /**
- * Give a member some points, from another member.
+ * Debit points from a member to the system. This does not use gift points.
  *
- * @param  integer $amount The amount being given
- * @param  MEMBER $recipient_id The member receiving the points
- * @param  MEMBER $sender_id The member sending the points
- * @param  SHORT_TEXT $reason The reason for the gift
- * @param  boolean $anonymous Does the sender want to remain anonymous?
- * @param  boolean $send_email Whether to send out an e-mail about it
- * @return AUTO_LINK The ID of the gift point record created
+ * @param  MEMBER $member_id The member to debit
+ * @param  SHORT_TEXT $reason The reason for this debit in the logs
+ * @param  integer $total_points The total points to debit (including gift points when applicable)
+ * @param  ?integer $amount_gift_points The number of $total_points that should be debited from the gift points balance (null: use as many gift points as is available)
+ * @param  BINARY $anonymous Whether this transaction should be anonymous
+ * @param  ?boolean $send_notifications Whether to send notifications for this transaction (null: false, and staff should not receive a notifcation either)
+ * @param  BINARY $locked Whether this transaction is irreversible
+ * @param  ?array $code_explanation A Tuple explaining this ledger from a coding / API standpoint (it should follow the standard ['action', 'type', 'ID']) (null: there is no code explanation)
+ * @return ?AUTO_LINK The ID of the point transaction (null: no transaction took place)
  */
-function give_points(int $amount, int $recipient_id, int $sender_id, string $reason, bool $anonymous = false, bool $send_email = true) : int
+function points_debit_member(int $member_id, string $reason, int $total_points, ?int $amount_gift_points = 0, int $anonymous = 0, ?bool $send_notifications = true, int $locked = 0, ?array $code_explanation = null) : ?int
 {
-    require_lang('points');
-    require_code('points');
-
-    $map = [
-        'date_and_time' => time(),
-        'amount' => $amount,
-        'gift_from' => $sender_id,
-        'gift_to' => $recipient_id,
-        'anonymous' => $anonymous ? 1 : 0,
-    ];
-    $map += insert_lang_comcode('reason', $reason, 4);
-    $id = $GLOBALS['SITE_DB']->query_insert('gifts', $map, true);
-
-    $sender_point_info = point_info($sender_id);
-
-    // Use gift points if enabled. Otherwise, use regular points.
-    if (get_option('enable_gift_points') == '1') {
-        $sender_gift_points_used_old = array_key_exists('gift_points_used', $sender_point_info) ? $sender_point_info['gift_points_used'] : 0;
-        $sender_gift_points_used_new = max(-2147483648, min(2147483647, $sender_gift_points_used_old + $amount)); // TODO: #3046 in tracker
-        $GLOBALS['FORUM_DRIVER']->set_custom_field($sender_id, 'gift_points_used', strval($sender_gift_points_used_new));
-    } else {
-        $sender_points_used_old = array_key_exists('points_used', $sender_point_info) ? $sender_point_info['points_used'] : 0;
-        $sender_points_used_new = max(-2147483648, min(2147483647, $sender_points_used_old + $amount)); // TODO: #3046 in tracker
-        $GLOBALS['FORUM_DRIVER']->set_custom_field($sender_id, 'points_used', strval($sender_points_used_new));
+    if (is_guest($member_id)) {
+        return null;
+    }
+    if ($total_points == 0) {
+        return null;
     }
 
-    $recipient_point_info = point_info($recipient_id);
-    $recipient_points_given_new = array_key_exists('points_gained_given', $recipient_point_info) ? $recipient_point_info['points_gained_given'] : 0;
-    $recipient_points_given_new = max(-2147483648, min(2147483647, $recipient_points_given_new + $amount)); // TODO: #3046 in tracker
-    $GLOBALS['FORUM_DRIVER']->set_custom_field($recipient_id, 'points_gained_given', strval($recipient_points_given_new));
+    $id = points_transact($member_id, $GLOBALS['FORUM_DRIVER']->get_guest_id(), $reason, $total_points, $amount_gift_points, $anonymous, $send_notifications, $locked, $code_explanation);
 
-    $your_username = $GLOBALS['FORUM_DRIVER']->get_username($sender_id);
-    $your_displayname = $GLOBALS['FORUM_DRIVER']->get_username($sender_id, true);
+    return $id;
+}
 
-    $their_username = $GLOBALS['FORUM_DRIVER']->get_username($recipient_id, false, USERNAME_DEFAULT_ERROR);
-    $their_displayname = $GLOBALS['FORUM_DRIVER']->get_username($recipient_id, true, USERNAME_DEFAULT_ERROR);
-
-    $yes = $GLOBALS['FORUM_DRIVER']->get_member_email_allowed($recipient_id);
-    if (($yes) && ($send_email)) {
-        $_url = build_url(['page' => 'points', 'type' => 'member', 'id' => $recipient_id], get_module_zone('points'), [], false, false, true);
-        $url = $_url->evaluate();
-        require_code('notifications');
-        if ($anonymous) {
-            $message_raw = do_notification_lang('GIVEN_POINTS_FOR_ANON', comcode_escape(get_site_name()), comcode_escape(integer_format($amount)), [comcode_escape($reason), comcode_escape($url)], get_lang($recipient_id));
-            dispatch_notification('received_points', null, do_lang('YOU_GIVEN_POINTS', integer_format($amount), null, null, get_lang($recipient_id)), $message_raw, [$recipient_id], A_FROM_SYSTEM_UNPRIVILEGED);
-        } else {
-            $message_raw = do_notification_lang('GIVEN_POINTS_FOR', comcode_escape(get_site_name()), comcode_escape(integer_format($amount)), [comcode_escape($reason), comcode_escape($url), comcode_escape($your_displayname), comcode_escape($your_username), comcode_escape($their_username)], get_lang($recipient_id));
-            dispatch_notification('received_points', null, do_lang('YOU_GIVEN_POINTS', integer_format($amount), null, null, get_lang($recipient_id)), $message_raw, [$recipient_id], $sender_id, ['use_real_from' => true]);
-        }
-        $message_raw = do_notification_lang('MEMBER_GIVEN_POINTS_FOR', comcode_escape($their_displayname), comcode_escape(integer_format($amount)), [comcode_escape($reason), comcode_escape($url), comcode_escape($your_displayname), comcode_escape($your_username), comcode_escape($their_username)], get_site_default_lang());
-        dispatch_notification('receive_points_staff', null, do_lang('MEMBER_GIVEN_POINTS', integer_format($amount), null, null, get_site_default_lang()), $message_raw, null, $sender_id);
+/**
+ * Transact points from one member to another. This uses gift points where possible and if enabled.
+ *
+ * @param  MEMBER $sender_id The ID of the member sending the points
+ * @param  MEMBER $recipient_id The ID of the member receiving the points
+ * @param  SHORT_TEXT $reason The reason for this transaction in the logs
+ * @param  integer $total_points The total number of points to transact (includes gift points when applicable)
+ * @param  ?integer $amount_gift_points The strict number of $total_points which should come from the sender's gift points balance (null: use as many gift points the sender has available)
+ * @param  BINARY $anonymous Whether the sender should be hidden from those without the privilege to trace anonymous transactions
+ * @param  ?boolean $send_notifications Whether notifications should be dispatched for this transaction to the relevant members (null: false, and staff should not receive a notifcation either)
+ * @param  BINARY $locked Whether this transaction is irreversible
+ * @param  ?array $code_explanation A Tuple explaining this ledger from a coding / API standpoint (it should follow the standard ['action', 'type', 'ID']) (null: there is no code explanation)
+ * @return ?AUTO_LINK The ID of the transaction (null: a transaction was not created)
+ */
+function points_transact(int $sender_id, int $recipient_id, string $reason, int $total_points, ?int $amount_gift_points = null, int $anonymous = 0, ?bool $send_notifications = true, int $locked = 0, ?array $code_explanation = null) : ?int
+{
+    // Do nothing if we are transacting 0 points
+    if ($total_points == 0) {
+        return null;
     }
 
-    global $TOTAL_POINTS_CACHE, $POINT_INFO_CACHE;
-    if (array_key_exists($recipient_id, $TOTAL_POINTS_CACHE)) {
-        $TOTAL_POINTS_CACHE[$recipient_id] += $amount;
-    }
-    if ((array_key_exists($recipient_id, $POINT_INFO_CACHE)) && (array_key_exists('points_gained_given', $POINT_INFO_CACHE[$recipient_id]))) {
-        $POINT_INFO_CACHE[$recipient_id]['points_gained_given'] = $recipient_points_given_new;
-    }
-    if (get_option('enable_gift_points') == '1') {
-        if ((array_key_exists($sender_id, $POINT_INFO_CACHE)) && (array_key_exists('gift_points_used', $POINT_INFO_CACHE[$sender_id]))) {
-            $POINT_INFO_CACHE[$sender_id]['gift_points_used'] = $sender_gift_points_used_new;
-        }
-    } else {
-        if ((array_key_exists($sender_id, $POINT_INFO_CACHE)) && (array_key_exists('points_used', $POINT_INFO_CACHE[$sender_id]))) {
-            $POINT_INFO_CACHE[$sender_id]['points_used'] = $sender_points_used_new;
-        }
+    // Gift points should not be greater than total points to transact; that makes no sense
+    if ($amount_gift_points !== null && $amount_gift_points > $total_points) {
+        $amount_gift_points = $total_points;
     }
 
+    // Determine how the points will be divided between gift and regular
+    $points_to_process = _points_transact_calculate($sender_id, $total_points, $amount_gift_points);
+    if ($points_to_process === null) {
+        return null; // Not enough points to proceed
+    }
+    list($actual_points, $actual_gift_points) = $points_to_process;
+
+    // Log the transaction
+    $id = _add_to_points_ledger($sender_id, $recipient_id, $reason, $actual_points, $actual_gift_points, $anonymous, 'normal', $locked, null, null, $code_explanation);
+
+    // Process the points
+    points_adjust_cpf($sender_id, 'gift_points_sent', $actual_gift_points);
+    points_adjust_cpf($sender_id, 'points_spent', $actual_points);
+    points_adjust_cpf($recipient_id, 'points_received', $total_points);
+
+    // Process notifications
+    if ($send_notifications !== null) {
+        points_dispatch_notification($id, $sender_id, $recipient_id, $reason, $actual_points, $actual_gift_points, $anonymous, $send_notifications, false);
+    }
+
+    // Process usergroup promotion
     if (get_forum_type() == 'cns') {
         require_code('cns_posts_action');
         require_code('cns_posts_action2');
         cns_member_handle_promotion($recipient_id);
     }
 
-    if (!$anonymous) {
+    // Process activity syndication
+    if ($anonymous == 0) {
         require_code('users2');
         if (has_actual_page_access(get_modal_user(), 'points')) {
             require_code('syndication');
-            syndicate_described_activity((($recipient_id === null) || (is_guest($recipient_id))) ? 'points:_ACTIVITY_GIVE_POINTS' : 'points:ACTIVITY_GIVE_POINTS', $reason, integer_format($amount), '', '_SEARCH:points:member:' . strval($recipient_id), '', '', 'points', 1, null, false, $recipient_id);
+            syndicate_described_activity((($recipient_id === null) || (is_guest($recipient_id))) ? 'points:_ACTIVITY_SEND_POINTS' : 'points:ACTIVITY_SEND_POINTS', $reason, integer_format($total_points), '', '_SEARCH:points:member:' . strval($recipient_id), '', '', 'points', 1, null, false, $recipient_id);
         }
     }
 
@@ -186,120 +195,335 @@ function give_points(int $amount, int $recipient_id, int $sender_id, string $rea
 }
 
 /**
- * Charge points from a specified member's account.
+ * Calculate how many points will be transacted from the sender to the recipient.
  *
- * @param  MEMBER $member_id The member that is being charged
- * @param  integer $amount The amount being charged
- * @param  SHORT_TEXT $reason The reason for the charging
- * @return AUTO_LINK The ID of the chargelog record
+ * @param  MEMBER $sender_id The ID of the member sending the points
+ * @param  integer $total_points The total number of points to transact (includes gift points when applicable)
+ * @param  ?integer $amount_gift_points The strict number of $total_points which should come from the sender's gift points (null: use what gift points the sender has available)
+ * @return ?array Duple containing the number of regular points (key 0) and number of gift points (key 1) that should be transacted from the sender (null: not enough points to satisfy the conditions specified)
  */
-function charge_member(int $member_id, int $amount, string $reason) : int
+function _points_transact_calculate(int $sender_id, int $total_points, ?int $amount_gift_points = null) : ?array
+{
+    $actual_points = $total_points;
+    $actual_gift_points = ($amount_gift_points !== null) ? $amount_gift_points : 0;
+
+    // Calculate how many gift points to use
+    if (get_option('enable_gift_points') == '1') {
+        if (!is_guest($sender_id)) {
+            $sender_gift_points_balance = gift_points_balance($sender_id);
+            if ($amount_gift_points !== null && $sender_gift_points_balance < $amount_gift_points) {
+                return null; // Not enough points to proceed
+            }
+        }
+        if ($amount_gift_points === null) {
+            $actual_gift_points = min($total_points, $sender_gift_points_balance);
+        }
+        $actual_points = $total_points - $actual_gift_points;
+    } else {
+        $actual_points = $total_points;
+        $actual_gift_points = 0;
+    }
+
+    // Make sure the member has enough points for the rest
+    if (!is_guest($sender_id)) {
+        $points_balance = points_balance($sender_id);
+        if ($points_balance < $actual_points) {
+            return null; // Not enough points to proceed
+        }
+    }
+
+    return [$actual_points, $actual_gift_points];
+}
+
+/**
+ * Refund points from one member to another. This uses gift points where possible and if enabled.
+ *
+ * @param  MEMBER $sender_id The ID of the member refunding the points (eg. the recipient_id in the original transaction)
+ * @param  MEMBER $recipient_id The ID of the member receiving the refunded points (eg. the sender_id in the original transaction)
+ * @param  SHORT_TEXT $reason The reason for this refund in the logs
+ * @param  integer $total_points The total number of points to refund (includes gift points when applicable)
+ * @param  integer $amount_gift_points The number of $total_points which should be refunded as gift points (subtracted from gift_points_sent)
+ * @param  BINARY $anonymous Whether the sender should be hidden from those without the privilege to trace anonymous transactions
+ * @param  ?AUTO_LINK $linked_to The ID of the points ledger transaction being refunded by this (null: this refund is not related to any past ledger)
+ * @param  ?boolean $send_notifications Whether notifications should be dispatched for this refund to the relevant members (null: false, and staff should not receive a notifcation either)
+ * @param  ?array $code_explanation A Tuple explaining this ledger from a coding / API standpoint (it should follow the standard ['action', 'type', 'ID']) (null: there is no code explanation)
+ * @return ?AUTO_LINK The ID of the transaction (null: a transaction was not created)
+ */
+function points_refund(int $sender_id, int $recipient_id, string $reason, int $total_points, int $amount_gift_points = 0, int $anonymous = 0, ?int $linked_to = null, ?bool $send_notifications = true, ?array $code_explanation = null) : ?int
+{
+    // Do nothing if we are transacting 0 points
+    if ($total_points == 0) {
+        return null;
+    }
+
+    // Gift points should not be greater than total points to transact; that makes no sense
+    if ($amount_gift_points !== null && $amount_gift_points > $total_points) {
+        $amount_gift_points = $total_points;
+    }
+
+    // Determine how the points will be divided between gift and regular
+    $points_to_process = _points_refund_calculate($total_points, $amount_gift_points);
+    list($actual_points, $actual_gift_points) = $points_to_process;
+
+    // Log the transaction
+    $id = _add_to_points_ledger($sender_id, $recipient_id, $reason, $actual_points, $actual_gift_points, $anonymous, ($linked_to !== null) ? 'reversing' : 'normal', 1, $linked_to, null, $code_explanation);
+
+    // Link the other ledger if applicable
+    if ($linked_to !== null) {
+        $GLOBALS['SITE_DB']->query_update('points_ledger', ['linked_to' => $id, 'status' => 'reversed', 'locked' => 1], ['id' => $linked_to], '', 1);
+    }
+
+    // Process the points refund
+    points_adjust_cpf($sender_id, 'points_received', -$total_points);
+    points_adjust_cpf($recipient_id, 'points_spent', -$actual_points);
+    points_adjust_cpf($recipient_id, 'gift_points_sent', -$actual_gift_points);
+
+    // Process notifications
+    if ($send_notifications !== null) {
+        points_dispatch_notification($id, $sender_id, $recipient_id, $reason, $actual_points, $actual_gift_points, $anonymous, $send_notifications, true);
+    }
+
+    // Process usergroup promotion
+    if (get_forum_type() == 'cns') {
+        require_code('cns_posts_action');
+        require_code('cns_posts_action2');
+        cns_member_handle_promotion($recipient_id);
+    }
+
+    return $id;
+}
+
+/**
+ * Calculate how many points will be refunded to the recipient.
+ *
+ * @param  integer $total_points The total number of points to refund (includes gift points when applicable)
+ * @param  integer $amount_gift_points The strict number of $total_points which should be refunded
+ * @return array Duple containing the number of regular points (key 0) and number of gift points (key 1) that should be refunded
+ */
+function _points_refund_calculate(int $total_points, int $amount_gift_points = 0) : array
+{
+    $actual_points = $total_points;
+    $actual_gift_points = $amount_gift_points;
+
+    // Calculate how many gift points to use
+    if (get_option('enable_gift_points') == '1') {
+        $actual_points = $total_points - $amount_gift_points;
+        $actual_gift_points = $amount_gift_points;
+    } else {
+        $actual_points = $total_points;
+        $actual_gift_points = 0;
+    }
+
+    return [$actual_points, $actual_gift_points];
+}
+
+/**
+ * Reverse a points transaction and refund the points.
+ * This should only ever be done to reverse a mistake or to reverse a transaction for moderation purposes.
+ * Do not use this for refunds. Instead, make a new transaction via points_credit_member to refund points.
+ *
+ * @param  AUTO_LINK $id The ID of the transaction ledger to reverse
+ * @param  ?boolean $send_notifications Whether to send notifications for this transaction reversal (null: false, and staff should not receive a notifcation either)
+ * @return array Duple; the ID of the new transaction reversing, and a boolean whether an escrow was also cancelled during the reversal
+ */
+function points_transaction_reverse(int $id, ?bool $send_notifications = true) : array
 {
     require_lang('points');
-    require_code('points');
 
-    $_before = point_info($member_id);
-    $before = array_key_exists('points_used', $_before) ? intval($_before['points_used']) : 0;
-    $new = max(-2147483648, min(2147483647, $before + $amount)); // TODO: #3046 in tracker
-    $GLOBALS['FORUM_DRIVER']->set_custom_field($member_id, 'points_used', strval($new));
-    $id = add_to_charge_log($member_id, $amount, $reason);
-
-    global $POINT_INFO_CACHE, $POINTS_USED_CACHE;
-    // TOTAL_POINTS_CACHE is not reduced as the total points does NOT go down when charged, points-used goes up!
-    if ((array_key_exists($member_id, $POINT_INFO_CACHE)) && (array_key_exists('points_used', $POINT_INFO_CACHE[$member_id]))) {
-        $POINT_INFO_CACHE[$member_id]['points_used'] += $amount;
-    }
-    if (array_key_exists($member_id, $POINTS_USED_CACHE)) {
-        $POINTS_USED_CACHE[$member_id] += $amount;
-    }
-
-    return $id;
-}
-
-/**
- * Add an entry to the change log.
- *
- * @param  MEMBER $member_id The member that is being charged
- * @param  integer $amount The amount being charged
- * @param  SHORT_TEXT $reason The reason for the charging
- * @param  ?TIME $time The time this is recorded to have happened (null: use current time)
- * @return AUTO_LINK The ID of the chargelog record
- */
-function add_to_charge_log(int $member_id, int $amount, string $reason, ?int $time = null) : int
-{
-    if ($time === null) {
-        $time = time();
-    }
-    $map = [
-        'member_id' => $member_id,
-        'amount' => $amount,
-        'date_and_time' => $time,
-    ];
-    $map += insert_lang_comcode('reason', $reason, 4);
-    return $GLOBALS['SITE_DB']->query_insert('chargelog', $map, true);
-}
-
-/**
- * Reverse a particular gift point transaction.
- *
- * @param  AUTO_LINK $id The transaction ID
- */
-function reverse_point_gift_transaction(int $id)
-{
-    $rows = $GLOBALS['SITE_DB']->query_select('gifts', ['*'], ['id' => $id], '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('points_ledger', ['*'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
     }
     $myrow = $rows[0];
-    $amount = $myrow['amount'];
-    $sender_id = $myrow['gift_from'];
-    $recipient_id = $myrow['gift_to'];
 
-    global $POINT_INFO_CACHE, $TOTAL_POINTS_CACHE;
+    // Cannot reverse locked transactions or transactions already reversed
+    if (($myrow['locked'] == 1) || ($myrow['status'] == 'reversed') || ($myrow['status'] == 'reversing')) {
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+    }
 
-    $GLOBALS['SITE_DB']->query_delete('gifts', ['id' => $id], '', 1);
-    if (!is_guest($sender_id)) {
-        if (get_option('enable_gift_points') == '1') {
-            $_sender_gift_points_used = point_info($sender_id);
-            $sender_gift_points_used = array_key_exists('gift_points_used', $_sender_gift_points_used) ? $_sender_gift_points_used['gift_points_used'] : 0;
-            $GLOBALS['FORUM_DRIVER']->set_custom_field($sender_id, 'gift_points_used', strval($sender_gift_points_used - $amount));
-            unset($POINT_INFO_CACHE[$sender_id]);
-        } else {
-            $_sender_points_used = point_info($sender_id);
-            $sender_points_used = array_key_exists('points_used', $_sender_points_used) ? $_sender_points_used['points_used'] : 0;
-            $GLOBALS['FORUM_DRIVER']->set_custom_field($sender_id, 'points_used', strval($sender_points_used - $amount));
+    $amount_gift_points = $myrow['amount_gift_points'];
+    $total_points = $myrow['amount_points'];
+    $sender_id = $myrow['sender_id'];
+    $recipient_id = $myrow['recipient_id'];
+    $_reason = get_translated_tempcode('points_ledger', $myrow, 'reason');
+    $reason = do_lang_tempcode('REVERSED_TRANSACTION', $_reason);
+
+    // Process the reversal as a new refund transaction
+    $new_record = points_refund($recipient_id, $sender_id, $reason->evaluate(), $total_points + $amount_gift_points, $amount_gift_points, $myrow['anonymous'], $myrow['id'], $send_notifications);
+
+    // Log it
+    log_it('REVERSE_TRANSACTION', strval($id), get_translated_text($myrow['reason']));
+
+    // Also cancel active escrows relating to this transaction, but do not create refund transactions for them (the reversal already refunded them)
+    $cancelled_escrow = false;
+    require_code('points_escrow');
+    $escrows = $GLOBALS['SITE_DB']->query_select('escrow', ['*'], ['original_points_ledger_id' => $id]);
+    foreach ($escrows as $escrow) {
+        if ($escrow['status'] < 1) {
+            continue;
+        }
+        $reason = do_lang_tempcode('ESCROW_CANCELLED_LEDGER_REVERSED');
+        cancel_escrow($escrow['id'], get_member(), $reason->evaluate(), $escrow, false);
+        $cancelled_escrow = true;
+    }
+
+    return [$new_record, $cancelled_escrow];
+}
+
+/**
+ * Adjust a custom profile field for points and update the cache.
+ *
+ * @param  MEMBER $member_id The member to adjust
+ * @param  ID_TEXT $field_name The custom field to adjust
+ * @set gift_points_sent points_spent points_received
+ * @param  integer $adjustment By how much to adjust the field (use a negative number to subtract)
+ */
+function points_adjust_cpf(int $member_id, string $field_name, int $adjustment) : void
+{
+    // Check for invalid field
+    if (!in_array($field_name, ['gift_points_sent', 'points_spent', 'points_received'])) {
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+    }
+
+    // Skip if there is nothing to change
+    if ($adjustment == 0) {
+        return;
+    }
+
+    // Skip guests
+    if (is_guest($member_id)) {
+        return;
+    }
+
+    // Set the value
+    $point_info = point_info($member_id);
+    $old = array_key_exists($field_name, $point_info) ? $point_info[$field_name] : 0;
+    $new = max(-2147483648, min(2147483647, $old + $adjustment)); // TODO: #3046 in tracker
+    $GLOBALS['FORUM_DRIVER']->set_custom_field($member_id, $field_name, strval($new));
+
+    // Update cache
+    global $TOTAL_POINTS_CACHE, $POINT_INFO_CACHE;
+    if ($field_name == 'points_received' && array_key_exists($member_id, $TOTAL_POINTS_CACHE)) {
+        $TOTAL_POINTS_CACHE[$member_id] += $adjustment;
+    }
+    if ((array_key_exists($member_id, $POINT_INFO_CACHE)) && (array_key_exists($field_name, $POINT_INFO_CACHE[$member_id]))) {
+        $POINT_INFO_CACHE[$member_id][$field_name] = $new;
+    }
+}
+
+/**
+ * Dispatch a points transaction notification to staff and optionally to the members involved.
+ *
+ * @param  AUTO_LINK $id The ID of the points ledger record pertaining to this notification
+ * @param  MEMBER $sender_id The member sending points
+ * @param  MEMBER $recipient_id The member receiving points
+ * @param  SHORT_TEXT $reason The reason for this transaction
+ * @param  integer $actual_points The actual number of regular points transacted
+ * @param  integer $actual_gift_points The actual number of gift points transacted
+ * @param  BINARY $anonymous Whether the sender should be kept hidden
+ * @param  boolean $send_member_notifications Also send the notification to the members involved in this transaction
+ * @param  boolean $is_refund Whether the transaction was a refund
+ */
+function points_dispatch_notification(int $id, int $sender_id, int $recipient_id, string $reason, int $actual_points, int $actual_gift_points, int $anonymous = 0, bool $send_member_notifications = true, bool $is_refund = false)
+{
+    require_code('notifications');
+    require_lang('points');
+
+    $your_username = $GLOBALS['FORUM_DRIVER']->get_username($sender_id);
+    $your_displayname = $GLOBALS['FORUM_DRIVER']->get_username($sender_id, true);
+    $total_points = $actual_points + $actual_gift_points;
+
+    // Mask sender on anonymous transactions
+    if ($anonymous == 1) {
+        $_your_username = do_lang('NOTIFICATION_POINTS_TRANSACTION_ANON_L');
+        $_your_displayname = do_lang('NOTIFICATION_POINTS_TRANSACTION_ANON_L');
+    } else {
+        $_your_username = $your_username;
+        $_your_displayname = $your_displayname;
+    }
+
+    $their_username = $GLOBALS['FORUM_DRIVER']->get_username($recipient_id, false, USERNAME_DEFAULT_ERROR);
+    $their_displayname = $GLOBALS['FORUM_DRIVER']->get_username($recipient_id, true, USERNAME_DEFAULT_ERROR);
+
+    if ($send_member_notifications) {
+        // Sender
+        if (!is_guest($sender_id)) {
+            $transaction_type = is_guest($recipient_id) ? do_lang('NOTIFICATION_POINTS_TRANSACTION_DEBITED_L') : do_lang('NOTIFICATION_POINTS_TRANSACTION_SENT_L');
+            $url = points_url($sender_id);
+            $message_raw = do_lang_tempcode(
+                is_guest($recipient_id) ? 'NOTIFICATION_POINTS_TRANSACTION_GUEST' : 'NOTIFICATION_POINTS_TRANSACTION',
+                $transaction_type,
+                ($actual_gift_points !== 0 && !$is_refund) ? do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_GIFT_POINTS_L', integer_format($actual_points), integer_format($actual_gift_points)) : do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_POINTS_L', integer_format($total_points)),
+                [
+                    is_guest($recipient_id) ? '' : do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_TO_L', $their_displayname),
+                    $reason,
+                    $url->evaluate(),
+                    do_lang('_POINTS', $your_displayname),
+                ]
+            );
+            dispatch_notification('points_transaction', null, do_lang('NOTIFICATION_POINTS_TRANSACTION_SUBJECT', $transaction_type), $message_raw->evaluate(get_lang($sender_id)), [$sender_id], A_FROM_SYSTEM_UNPRIVILEGED);
+        }
+
+        // Recipient
+        if (!is_guest($recipient_id)) {
+            $transaction_type = '';
+            if ($is_refund) {
+                $transaction_type = do_lang('NOTIFICATION_POINTS_TRANSACTION_REFUNDED_L');
+            } elseif (is_guest($sender_id)) {
+                $transaction_type = do_lang('NOTIFICATION_POINTS_TRANSACTION_CREDITED_L');
+            } else {
+                $transaction_type = do_lang('NOTIFICATION_POINTS_TRANSACTION_RECEIVED_L');
+            }
+            $url = points_url($recipient_id);
+            $message_raw = do_lang_tempcode(
+                is_guest($recipient_id) ? 'NOTIFICATION_POINTS_TRANSACTION_GUEST' : 'NOTIFICATION_POINTS_TRANSACTION',
+                $transaction_type,
+                (($is_refund) && ($actual_gift_points !== 0)) ? do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_GIFT_POINTS_L', integer_format($actual_points), integer_format($actual_gift_points)) : do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_POINTS_L', integer_format($total_points)),
+                [
+                    is_guest($recipient_id) ? '' : do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_FROM_L', $_your_displayname),
+                    $reason,
+                    $url->evaluate(),
+                    do_lang('_POINTS', $their_displayname),
+                ]
+            );
+            dispatch_notification('points_transaction', null, do_lang('NOTIFICATION_POINTS_TRANSACTION_SUBJECT', $transaction_type), $message_raw->evaluate(get_lang($recipient_id)), [$recipient_id], A_FROM_SYSTEM_UNPRIVILEGED);
         }
     }
-    $recipient_point_info = point_info($recipient_id);
-    $GLOBALS['FORUM_DRIVER']->set_custom_field($recipient_id, 'points_gained_given', strval((array_key_exists('points_gained_given', $recipient_point_info) ? $recipient_point_info['points_gained_given'] : 0) - $amount));
-    unset($POINT_INFO_CACHE[$recipient_id]);
-    unset($TOTAL_POINTS_CACHE[$recipient_id]);
-}
 
-/**
- * Reverse a particular charge log.
- *
- * @param  AUTO_LINK $id The transaction ID
- */
-function reverse_charge_transaction(int $id)
-{
-    $rows = $GLOBALS['SITE_DB']->query_select('chargelog', ['*'], ['id' => $id], '', 1);
-    if (!array_key_exists(0, $rows)) {
-        warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
+    // Staff notifications
+    $transaction_type = '';
+    $subject = '';
+    $primary_member = '';
+    $secondary_member = '';
+    if ($is_refund) {
+        $transaction_type = do_lang('NOTIFICATION_POINTS_TRANSACTION_REFUNDED_L');
+        $subject = do_lang('NOTIFICATION_POINTS_TRANSACTION_SUBJECT_STAFF', $their_username, $transaction_type);
+        $primary_member = $their_username;
+    } elseif (is_guest($sender_id)) {
+        $transaction_type = do_lang('NOTIFICATION_POINTS_TRANSACTION_CREDITED_L');
+        $subject = do_lang('NOTIFICATION_POINTS_TRANSACTION_SUBJECT_STAFF', $their_username, $transaction_type);
+        $primary_member = $their_username;
+    } elseif (is_guest($recipient_id)) {
+        $transaction_type = do_lang('NOTIFICATION_POINTS_TRANSACTION_DEBITED_L');
+        $subject = do_lang('NOTIFICATION_POINTS_TRANSACTION_SUBJECT_STAFF', $_your_username, $transaction_type);
+        $primary_member = $_your_username;
+    } else {
+        $transaction_type = do_lang('NOTIFICATION_POINTS_TRANSACTION_RECEIVED_L');
+        $subject = do_lang('NOTIFICATION_POINTS_TRANSACTION_SUBJECT_STAFF', $their_username, $transaction_type);
+        $primary_member = $their_username;
+        $secondary_member = do_lang('NOTIFICATION_POINTS_TRANSACTION_FROM_L', $_your_username);
     }
-    $myrow = $rows[0];
-    $amount = $myrow['amount'];
-    $member_id = $myrow['member_id'];
-
-    global $POINT_INFO_CACHE, $POINTS_USED_CACHE, $TOTAL_POINTS_CACHE;
-
-    $GLOBALS['SITE_DB']->query_delete('chargelog', ['id' => $id], '', 1);
-    if (!is_guest($member_id)) {
-        $_points_charged = point_info($member_id);
-        $points_charged = array_key_exists('points_used', $_points_charged) ? $_points_charged['points_used'] : 0;
-        $GLOBALS['FORUM_DRIVER']->set_custom_field($member_id, 'points_used', strval($points_charged - $amount));
-        unset($POINT_INFO_CACHE[$member_id]);
-        unset($POINTS_USED_CACHE[$member_id]);
-        unset($TOTAL_POINTS_CACHE[$member_id]);
-    }
+    $url = build_url(['page' => 'admin_points', 'type' => 'view', 'id' => $id], get_module_zone('admin_points'));
+    $message_raw = do_lang_tempcode(
+        ($secondary_member != '') ? 'NOTIFICATION_POINTS_TRANSACTION_STAFF' : 'NOTIFICATION_POINTS_TRANSACTION_STAFF_GUEST',
+        $primary_member,
+        $transaction_type,
+        [
+            (($is_refund) && ($actual_gift_points !== 0)) ? do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_GIFT_POINTS_L', integer_format($actual_points), integer_format($actual_gift_points)) : do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_POINTS_L', integer_format($total_points)),
+            $secondary_member,
+            $url->evaluate(),
+            $reason,
+        ]
+    );
+    dispatch_notification('points_transaction_staff', null, $subject, $message_raw->evaluate(), null, A_FROM_SYSTEM_UNPRIVILEGED);
 }

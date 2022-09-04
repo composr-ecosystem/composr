@@ -62,7 +62,7 @@ $feature_tree = [
                 (get_forum_type() != 'cns') ? null : ['Reach out to other users', '{$COMCODE,[page="forum:forumview:browse:{$FIND_ID_VIA_LABEL,forum,Introduce yourself}"]Welcome new users[/page]} and help make sure people don\'t get lost.[html]<br />[/html]Also {$COMCODE,[page="forum:topicview:browse:{$FIND_ID_VIA_LABEL,topic,Post your location}"]put yourself on the map[/page]} so people near you can get in contact.'],
                 ['Help others on the forum', 'Where you can, answer other user\'s questions.'],
                 ['Hang out in the chat', 'If we have users in the [page="site:chat"]chatroom[/page] 24&times;7 then users (including yourself) are less likely to feel stuck or isolated.'],
-                ['Give gift points', 'If you see other members doing good things, give them some gift points.'],
+                ['Send points', 'If you see other members doing good things, send them some points.'],
             ],
         ],
 
@@ -207,11 +207,12 @@ $feature_tree = [
             [
                 ['So many ways to earn points', 'From submitting different content to how active they are, you control the economy'],
                 ['eCommerce integration', 'Members can buy advertising space, temporary privileges, gamble, or any other eCommerce product you configure to accept points! <a target="_blank" class="link-exempt no-print" title="(Opens in new window) Example of eCommerce" href="http://shareddemo.composr.info/site/index.php?page=purchase"><img class="inline-image-3" alt="" width="12" height="12" src="{$IMG*,icons/arrow_box/arrow_box}" /></a>'],
-                ['Gift system', 'Allows members to reward each other with gift points <a target="_blank" class="link-exempt no-print" title="(Opens in new window) Example of Points" href="http://shareddemo.composr.info/site/index.php?page=points"><img class="inline-image-3" alt="" width="12" height="12" src="{$IMG*,icons/arrow_box/arrow_box}" /></a>'],
+                ['Gift points', 'Allows members to reward each other using gift points instead of regular points <a target="_blank" class="link-exempt no-print" title="(Opens in new window) Example of Points" href="http://shareddemo.composr.info/site/index.php?page=points"><img class="inline-image-3" alt="" width="12" height="12" src="{$IMG*,icons/arrow_box/arrow_box}" /></a>'],
                 ['Leader board', 'Create some community competition, by showing a week-by-week who has the most points <a target="_blank" class="link-exempt no-print" title="(Opens in new window) Example of Leaderboard" href="http://shareddemo.composr.info/site/index.php?page=leader_board"><img class="inline-image-3" alt="" width="12" height="12" src="{$IMG*,icons/arrow_box/arrow_box}" /></a>'],
                 null, // divider
-                ['Auditing', 'See what gifts have been given to crack down on any abuse'],
-                ['Profiles', 'Browse through member points profiles, and see what gifts members have been given'],
+                ['Ledger', 'See all of the point transactions to crack down on any abuse, and reverse any transactions as necessary'],
+                ['Profiles', 'Browse through member points profiles, see what points members have received and sent, and send / escrow points with them'],
+                ['Escrow', 'Send points to another member, but keep them from being received until conditions are agreed met'],
             ],
             'A virtual economy for your members',
         ],
@@ -643,6 +644,7 @@ $feature_tree = [
                 ['Post Templates', 'Use your forum as a database for record gathering <a target="_blank" class="link-exempt no-print" title="(Opens in new window) Example of Post Templates" href="http://shareddemo.composr.info/adminzone/index.php?admin_cns_post_templates"><img class="inline-image-3" alt="" width="12" height="12" src="{$IMG*,icons/arrow_box/arrow_box}" /></a>'],
                 ['Post preview', 'Read a topics first post directly from the forum-view'],
                 ['Highlight posts as &lsquo;important&rsquo; <a target="_blank" class="link-exempt no-print" title="(Opens in new window) Example of Highlighted Posts" href="http://shareddemo.composr.info/forum/index.php?page=topicview&amp;id=3"><img class="inline-image-3" alt="" width="12" height="12" src="{$IMG*,icons/arrow_box/arrow_box}" /></a>', 'Your posts will be <a href="https://www.youtube.com/watch?v=5hARDXYz2io" target="_blank" title="(Opens in new window)">high as a kite by then</a>'],
+                ['Constitutionally-suitable poll voting', 'Weighted voting and per-forum configurable setting defaults/enforcement'],
             ],
             'Conversr-only',
         ],

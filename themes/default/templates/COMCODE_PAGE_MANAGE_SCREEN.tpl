@@ -5,7 +5,7 @@
 
 	{TABLE}
 
-	<form title="{!PRIMARY_PAGE_FORM}" action="{$URL_FOR_GET_FORM,{URL}}" method="get">
+	<form title="{!PRIMARY_PAGE_FORM}" action="{$URL_FOR_GET_FORM*,{URL}}" method="get">
 		{$HIDDENS_FOR_GET_FORM,{URL}}
 
 		{$INSERT_FORM_POST_SECURITY}

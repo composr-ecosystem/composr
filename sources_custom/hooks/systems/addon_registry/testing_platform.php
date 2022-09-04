@@ -126,7 +126,7 @@ We welcome any new tests you might want to write for us. We only have one at the
 Test writing can be fun, and doesn\'t take long if you already know programming. It\'s a great way to contribute in your free time without getting stuck in large projects.
 
 If you\'ve written some tests please make a pull request.
-We hope other users will appreciate your efforts and give you some gift points to reward your work.';
+We hope other users will appreciate your efforts and give you some points to reward your work.';
     }
 
     /**

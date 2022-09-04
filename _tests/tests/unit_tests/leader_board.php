@@ -484,15 +484,18 @@ class leader_board_test_set extends cms_test_case
         $member = $GLOBALS['FORUM_DRIVER']->mrow_id($members[0]);
 
         // Determine our current points for the test_id member
+        init__points();
         $current_points = total_points($member, null, false);
         $past_points = total_points($member, $forced_period_start, false);
         $earned_points = ($current_points - $past_points);
 
         // Process a dummy point transaction; amount should be absurdly high to ensure member is at the top of the results in our test
-        $points_to_give = 100000000;
-        $transfer = system_gift_transfer("unit test", $points_to_give, $member);
+        $points_to_send = 100000000;
+        $transfer = points_credit_member($member, 'unit test', $points_to_send, 0, 0, null);
 
-        // Test 1: Holders leader-board result for this member should equal $current_points + $points_to_give
+        init__points();
+
+        // Test 1: Holders leader-board result for this member should equal $current_points + $points_to_send
         $rows = $GLOBALS['SITE_DB']->query_select('leader_boards', ['*'], ['id' => $this->leaderboards['holders']], '', 1);
         $process = calculate_leader_board($rows[0], time(), $forced_period_start);
         if ($process === null) {
@@ -505,7 +508,7 @@ class leader_board_test_set extends cms_test_case
                 $found = false;
                 foreach ($results as $result) {
                     if ($result['lb_member'] == $member) {
-                        $correct_points = $current_points + $points_to_give;
+                        $correct_points = $current_points + $points_to_send;
                         $this->assertTrue(($result['lb_points'] == $correct_points), 'holders: Expected total points to be ' . integer_format($correct_points) . ', but it was instead ' . integer_format($result['lb_points']) . ', in testLeaderBoardHoldersEarners() test 1.');
                         $found = true;
                         break;
@@ -515,7 +518,7 @@ class leader_board_test_set extends cms_test_case
             }
         }
 
-        // Test 2: Earners leader-board result for this member should equal $points_to_give + $earned_points
+        // Test 2: Earners leader-board result for this member should equal $points_to_send + $earned_points
         $rows = $GLOBALS['SITE_DB']->query_select('leader_boards', ['*'], ['id' => $this->leaderboards['earners']], '', 1);
         $process = calculate_leader_board($rows[0], time(), $forced_period_start);
         if ($process === null) {
@@ -528,7 +531,7 @@ class leader_board_test_set extends cms_test_case
                 $found = false;
                 foreach ($results as $result) {
                     if ($result['lb_member'] == $member) {
-                        $correct_points = $earned_points + $points_to_give;
+                        $correct_points = $earned_points + $points_to_send;
                         $this->assertTrue(($result['lb_points'] == $correct_points), 'earners: Expected points earned to be ' . integer_format($correct_points) . ', but it was instead ' . integer_format($result['lb_points']) . ', in testLeaderBoardHoldersEarners() test 2.');
                         $found = true;
                         break;
@@ -539,7 +542,11 @@ class leader_board_test_set extends cms_test_case
         }
 
         // Reverse the dummy transaction
-        reverse_point_gift_transaction($transfer);
+        $data = points_transaction_reverse($transfer, false);
+
+        // Do not keep unit tests in the ledger
+        $GLOBALS['FORUM_DB']->query_delete('points_ledger', ['id' => $transfer], '', 1);
+        $GLOBALS['FORUM_DB']->query_delete('points_ledger', ['id' => $data[0]], '', 1);
     }
 
     public function tearDown()

@@ -97,7 +97,7 @@ If you're really serious about programming, read lots of books and write lots of
 
 [title="3"]Players module[/title]
 
-Make a mini-module that shows the top 10 point givers, and the top 10 point gift receivers.
+Make a mini-module that shows the top 10 point givers, and the top 10 point recipients.
 
 [title="3"]Be imaginative[/title]
 

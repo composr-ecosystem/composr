@@ -297,7 +297,12 @@ class Module_admin_lookup
 
         // Generate appropriate follow-up links to find more (noting that member profiles are the primary place for member links)...
 
-        $points_url = ((addon_installed('points')) && (!is_guest($member_id))) ? build_url(['page' => 'points', 'type' => 'member', 'id' => $member_id], get_module_zone('points')) : null;
+        if ((addon_installed('points')) && (!is_guest($member_id))) {
+            require_code('points');
+            $points_url = points_url($member_id);
+        } else {
+            $points_url = null;
+        }
         if (addon_installed('authors')) {
             $author_url = ($username == do_lang('UNKNOWN')) ? null : build_url(['page' => 'authors', 'author' => $username], get_module_zone('authors'));
         } else {

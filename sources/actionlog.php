@@ -60,14 +60,13 @@ abstract class Hook_actionlog
 
             $identifier = $this->get_identifier($actionlog_row, $handler_data);
             if ($identifier === '') {
-                // Fail (note null does not fail, it just means we have no identifier which is fine)
+                // Fail (note $identifier === null does not fail, it just means we have no identifier which is fine)
                 return false;
             }
 
             $written_context = $this->get_written_context($actionlog_row, $handler_data, $identifier);
-            if ($written_context === null || $written_context === '') {
-                // Fail
-                return false;
+            if (empty($written_context)) {
+                $written_context = ($identifier === null) ? '' : $identifier;
             }
 
             $bindings = [

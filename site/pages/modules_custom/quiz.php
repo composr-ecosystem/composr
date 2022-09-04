@@ -21,7 +21,7 @@ function init__site__pages__modules_custom__quiz($in)
         warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('quizzes')));
     }
 
-    if (!addon_installed('challengr')) {
+    if ((!addon_installed('challengr')) || (!addon_installed('points'))) {
         return $in;
     }
 
@@ -29,8 +29,9 @@ function init__site__pages__modules_custom__quiz($in)
         "// We have not already got points",
         "
         <ditto>
+        require_code('points2');
         \$cost = intval(ceil(floatval(\$quiz['q_points_for_passing']) / 2.0));
-        charge_member(get_member(), \$cost, 'Entered a test');
+        points_debit_member(get_member(), 'Entered a test', \$cost, 0, 0, true, 0, ['enter_test', 'quiz', strval(\$quiz['id'])]);
         \$points_difference -= \$cost;
         ",
         $in

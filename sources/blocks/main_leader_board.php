@@ -168,6 +168,7 @@ PHP;
         require_lang('leader_board');
         require_code('leader_board');
         require_css('leader_board');
+        require_code('points');
 
         if (!array_key_exists('param', $map)) {
             $boards = $GLOBALS['FORUM_DB']->query_select('leader_boards', ['*'], [], 'ORDER BY id', 1);
@@ -209,7 +210,7 @@ PHP;
         $has_rank_images = (get_forum_type() == 'cns') && ($GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups WHERE (' . $or_list . ') AND ' . db_string_not_equal_to('g_rank_image', '')) != 0);
 
         foreach ($rows as $member_id => $points) {
-            $points_url = build_url(['page' => 'points', 'type' => 'member', 'id' => $member_id], get_module_zone('points'));
+            $points_url = points_url($member_id);
 
             $profile_url = $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, true);
 

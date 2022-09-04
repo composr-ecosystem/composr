@@ -720,7 +720,7 @@ function buy(int $member_id, string $item_name, int $copy_owner)
         buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', $GLOBALS['FORUM_DRIVER']->get_username(get_member())), 'warn');
     }
 
-    if ($price > available_points($member_id)) {
+    if ($price > points_balance($member_id)) {
         buildr_refresh_with_message(do_lang_tempcode('W_EXPENSIVE', escape_html(integer_format($price, 0))), 'warn');
     }
     if ($price == 0) {
@@ -731,12 +731,11 @@ function buy(int $member_id, string $item_name, int $copy_owner)
     if ((!has_privilege($member_id, 'administer_buildr')) || (!is_guest($copy_owner))) {
         require_code('points2');
 
-        if (available_points($member_id) < $price) {
+        if (points_balance($member_id) < $price) {
             buildr_refresh_with_message(do_lang_tempcode('W_EXPENSIVE', escape_html(integer_format($price, 0))), 'warn');
         }
-        charge_member($member_id, $price, do_lang('W_PURCHASED_BUILDR', escape_html($item_name)));
-
-        charge_member($copy_owner, -$price * 0.7, do_lang('W_SOLD_BUILDR', escape_html($item_name)));
+        points_debit_member($member_id, do_lang('W_PURCHASED_BUILDR', escape_html($item_name)), $price);
+        points_credit_member($copy_owner, do_lang('W_SOLD_BUILDR', escape_html($item_name)), $price * 0.7);
     }
 
     basic_pickup($member_id, $item_name, $copy_owner);

@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_admin_stats_point_gifts extends CMSStatsProvider
+class Hook_admin_stats_point_transactions extends CMSStatsProvider
 {
     /**
      * Find metadata about stats graphs that are provided by this stats hook.
@@ -38,13 +38,13 @@ class Hook_admin_stats_point_gifts extends CMSStatsProvider
         require_lang('points');
 
         return [
-            'gifts' => [
-                'label' => do_lang_tempcode('GIFTS'),
+            'point_transactions' => [
+                'label' => do_lang_tempcode('POINT_TRANSACTIONS'),
                 'category' => 'inter_member_engagement',
                 'filters' => [
-                    'gifts__month_range' => new CMSStatsDateMonthRangeFilter('gifts__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
+                    'point_transactions__month_range' => new CMSStatsDateMonthRangeFilter('point_transactions__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
                 ],
-                'pivot' => new CMSStatsDatePivot('gifts__pivot', $this->get_date_pivots(!$for_kpi)),
+                'pivot' => new CMSStatsDatePivot('point_transactions__pivot', $this->get_date_pivots(!$for_kpi)),
                 'support_kpis' => self::KPI_HIGH_IS_GOOD,
             ],
         ];
@@ -66,7 +66,8 @@ class Hook_admin_stats_point_gifts extends CMSStatsProvider
 
         $date_pivots = $this->get_date_pivots();
 
-        $query = 'SELECT * FROM ' . get_table_prefix() . 'gifts WHERE ';
+        $query = 'SELECT * FROM ' . get_table_prefix() . 'points_ledger WHERE ';
+        $query .= 'sender_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' AND recipient_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' AND ';
         $query .= 'date_and_time>=' . strval($start_time) . ' AND ';
         $query .= 'date_and_time<=' . strval($end_time);
         $query .= ' ORDER BY date_and_time';
@@ -81,10 +82,10 @@ class Hook_admin_stats_point_gifts extends CMSStatsProvider
                 foreach (array_keys($date_pivots) as $pivot) {
                     $pivot_value = $this->calculate_date_pivot_value($pivot, $timestamp);
 
-                    if (!isset($data_buckets['gifts'][$month][$pivot][$pivot_value])) {
-                        $data_buckets['gifts'][$month][$pivot][$pivot_value] = 0;
+                    if (!isset($data_buckets['point_transactions'][$month][$pivot][$pivot_value])) {
+                        $data_buckets['point_transactions'][$month][$pivot][$pivot_value] = 0;
                     }
-                    $data_buckets['gifts'][$month][$pivot][$pivot_value] += $row['amount'];
+                    $data_buckets['point_transactions'][$month][$pivot][$pivot_value] += ($row['amount_gift_points'] + $row['amount_points']);
                 }
             }
 
@@ -114,10 +115,10 @@ class Hook_admin_stats_point_gifts extends CMSStatsProvider
         $data_rows = $GLOBALS['SITE_DB']->query_select('stats_preprocessed', ['p_data'], $where, $extra);
         foreach ($data_rows as $data_row) {
             $_data = @unserialize($data_row['p_data']);
-            foreach ($_data as $pivot_value => $num_gifts) {
+            foreach ($_data as $pivot_value => $num_transactions) {
                 $pivot_value = $this->make_date_pivot_value_nice($pivot, $pivot_value);
 
-                $data[$pivot_value] = $num_gifts;
+                $data[$pivot_value] = $num_transactions;
             }
         }
 
@@ -125,7 +126,7 @@ class Hook_admin_stats_point_gifts extends CMSStatsProvider
             'type' => null,
             'data' => $data,
             'x_axis_label' => do_lang_tempcode('TIME_IN_TIMEZONE', escape_html(make_nice_timezone_name(get_site_timezone()))),
-            'y_axis_label' => do_lang_tempcode('COUNT_POINTS_GIVEN'),
+            'y_axis_label' => do_lang_tempcode('COUNT_POINTS_SENT'),
         ];
     }
 }

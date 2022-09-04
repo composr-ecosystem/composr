@@ -73,7 +73,7 @@ class Hook_cron_disastr
                 require_lang('disastr');
 
                 // Charge disease points
-                charge_member($sick_member['member_id'], $disease['points_per_spread'], do_lang('DISEASE_GET') . ' "' . $disease['name'] . '"');
+                points_debit_member($sick_member['member_id'], do_lang('DISEASE_GET') . ' "' . $disease['name'] . '"', $disease['points_per_spread']);
 
                 // Pick a random friend to infect
                 $friends_a = [];

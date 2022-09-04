@@ -14,45 +14,31 @@
  */
 
 /**
- * Transfer gift-points into the specified member's account, courtesy of the system.
+ * Credit or refund points to a member from the system.
  *
- * @param  SHORT_TEXT $reason The reason for the transfer
- * @param  integer $amount The size of the transfer
- * @param  MEMBER $member_id The member the transfer is to
- * @param  boolean $include_in_log Whether to include a log line
- * @return ?AUTO_LINK ID of the gifts record if include_in_log was true (null: log was not created)
+ * @param  MEMBER $member_id The member to credit
+ * @param  SHORT_TEXT $reason The reason for this credit in the logs
+ * @param  integer $total_points The total points to credit (including gift points when applicable)
+ * @param  integer $amount_gift_points The number of $total_points which should be credited as gift points (subtracts from gift points sent; only use to refund sent gift points)
+ * @param  BINARY $anonymous Whether this transaction should be anonymous
+ * @param  ?boolean $send_notifications Whether to send a notification to the member receiving the points (null: false, and staff should not receive a notifcation either)
+ * @param  BINARY $locked Whether this transaction is irreversible (Ignored / always 1 when $amount_gift_points is > 0)
+ * @param  ?array $code_explanation A Tuple explaining this ledger from a coding / API standpoint (it should follow the standard ['action', 'type', 'ID']) (null: there is no code explanation)
+ * @return ?AUTO_LINK The ID of the point transaction (null: no transaction took place)
  */
-function system_gift_transfer(string $reason, int $amount, int $member_id, bool $include_in_log = true) : ?int
+function points_credit_member(int $member_id, string $reason, int $total_points, int $amount_gift_points = 0, int $anonymous = 0, ?bool $send_notifications = true, int $locked = 0, ?array $code_explanation = null) : ?int
 {
-    $id = non_overridden__system_gift_transfer($reason, $amount, $member_id, $include_in_log);
+    $id = non_overridden__points_credit_member($member_id, $reason, $total_points, $amount_gift_points, $anonymous, $send_notifications, $locked, $code_explanation);
 
     if (addon_installed('mentorr')) {
         // Start add to mentor points if needed
+        // TODO: Check date to see if they were added in the last week
         $mentor_id = $GLOBALS['SITE_DB']->query_select_value_if_there('members_mentors', 'mentor_id', ['member_id' => $member_id]);
 
         if ((isset($mentor_id)) && ($mentor_id !== null) && (intval($mentor_id) != 0)) {
-            // Give points to mentor too
-            $map = [
-                'date_and_time' => time(),
-                'amount' => $amount,
-                'gift_from' => $GLOBALS['FORUM_DRIVER']->get_guest_id(),
-                'gift_to' => $mentor_id,
-                'anonymous' => 1,
-            ];
-            $map += insert_lang_comcode('reason', $reason, 4);
-            $GLOBALS['SITE_DB']->query_insert('gifts', $map);
-            $_before = point_info($mentor_id);
-            $before = array_key_exists('points_gained_given', $_before) ? $_before['points_gained_given'] : 0;
-            $new = strval($before + $amount);
-            $GLOBALS['FORUM_DRIVER']->set_custom_field($mentor_id, 'points_gained_given', $new);
-
-            global $TOTAL_POINTS_CACHE, $POINT_INFO_CACHE;
-            if (array_key_exists($mentor_id, $TOTAL_POINTS_CACHE)) {
-                $TOTAL_POINTS_CACHE[$mentor_id] += $amount;
-            }
-            if ((array_key_exists($mentor_id, $POINT_INFO_CACHE)) && (array_key_exists('points_gained_given', $POINT_INFO_CACHE[$mentor_id]))) {
-                $POINT_INFO_CACHE[$mentor_id]['points_gained_given'] += $amount;
-            }
+            // Credit points to mentor too
+            // TODO: What if the original transaction is reversed?
+            non_overridden__points_credit_member($mentor_id, $reason, $total_points, $amount_gift_points, $anonymous, $send_notifications, $locked, $code_explanation);
         }
     }
 

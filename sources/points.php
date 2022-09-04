@@ -27,8 +27,8 @@ function init__points()
 {
     global $TOTAL_POINTS_CACHE;
     $TOTAL_POINTS_CACHE = [];
-    global $POINTS_USED_CACHE;
-    $POINTS_USED_CACHE = [];
+    global $POINTS_SPENT_CACHE;
+    $POINTS_SPENT_CACHE = [];
     global $POINT_INFO_CACHE;
     $POINT_INFO_CACHE = [];
 }
@@ -85,38 +85,51 @@ function total_points(int $member_id, ?int $timestamp = null, bool $cache = true
 }
 
 /**
- * Get the total points the specified member has used (spent).
+ * Get the total points the specified member has spent, including sent to other members.
  *
  * @param  MEMBER $member_id The member
  * @return integer The number of points the member has spent
  */
-function points_used(int $member_id) : int
+function points_spent(int $member_id) : int
 {
-    global $POINTS_USED_CACHE;
-    if (isset($POINTS_USED_CACHE[$member_id])) {
-        return $POINTS_USED_CACHE[$member_id];
+    global $POINTS_SPENT_CACHE;
+    if (isset($POINTS_SPENT_CACHE[$member_id])) {
+        return $POINTS_SPENT_CACHE[$member_id];
     }
 
     $_points = point_info($member_id);
-    $points = isset($_points['points_used']) ? $_points['points_used'] : 0;
-    $POINTS_USED_CACHE[$member_id] = $points;
+    $points = isset($_points['points_spent']) ? $_points['points_spent'] : 0;
+    $POINTS_SPENT_CACHE[$member_id] = $points;
 
     return $points;
 }
 
 /**
- * Get the total points the specified member has.
+ * Get the total points the specified member has spent, but only to the system.
  *
  * @param  MEMBER $member_id The member
- * @return integer The number of points the member has
+ * @return integer The number of points the member has spent to the system
  */
-function available_points(int $member_id) : int
+function points_spent_system(int $member_id) : int
+{
+    $_spent = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'SUM(amount_points)', ['sender_id' => $member_id, 'recipient_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(), 'status' => 'normal']);
+    $actual_spent = @intval($_spent); // Most reliable way
+    return $actual_spent;
+}
+
+/**
+ * Get the number of points a member has to spend.
+ *
+ * @param  MEMBER $member_id The member
+ * @return integer The number of points the member has to spend
+ */
+function points_balance(int $member_id) : int
 {
     if (!has_privilege($member_id, 'use_points')) {
         return 0;
     }
 
-    return total_points($member_id) - points_used($member_id);
+    return total_points($member_id) - points_spent($member_id);
 }
 
 /**
@@ -157,39 +170,52 @@ function point_info(int $member_id, bool $cache = true) : array
 }
 
 /**
- * Get the number of gift points used by the given member.
+ * Get the number of gift points sent by the given member.
  * If gift points is disabled, this function provides a ceremonial figure rather than a mathematical figure.
  *
  * @param  MEMBER $member_id The member we want it for
- * @return integer The number of gift points used by the member
+ * @return integer The number of gift points sent by the member to others
  */
-function get_gift_points_used(int $member_id) : int
+function gift_points_sent(int $member_id) : int
 {
-    $_used = point_info($member_id);
+    $_sent = point_info($member_id);
 
-    if ((!isset($_used['gift_points_used'])) || (get_option('enable_gift_points') == '0')) { // Either DB error or gift points disabled
-        $_actual_used = $GLOBALS['SITE_DB']->query_select_value_if_there('gifts', 'SUM(amount)', ['gift_from' => $member_id]);
-        $actual_used = @intval($_actual_used); // Most reliable way
-        return $actual_used;
+    if ((!isset($_sent['gift_points_sent'])) || (get_option('enable_gift_points') == '0')) { // Either DB error or gift points disabled
+        $_actual_sent = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'SUM(amount_gift_points)', ['sender_id' => $member_id, 'status' => 'normal']);
+        $actual_sent = @intval($_actual_sent); // Most reliable way
+        return $actual_sent;
     }
 
-    return $_used['gift_points_used'];
+    return $_sent['gift_points_sent'];
 }
 
 /**
- * Get the number of gifts points to give that the given member has.
+ * Get the total points the provided member sent to other members (and not the system). This includes gift points.
+ *
+ * @param  MEMBER $member_id The member which to get the total sent points
+ * @return integer The total number of points the member sent to other members
+ */
+function total_points_sent(int $member_id) : int
+{
+    $_sent = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'SUM(amount_gift_points+amount_points)', ['sender_id' => $member_id, 'status' => 'normal'], ' AND recipient_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()));
+    $actual_sent = @intval($_sent); // Most reliable way
+    return $actual_sent;
+}
+
+/**
+ * Get the number of gift points that the given member has which they can send to others.
  *
  * @param  MEMBER $member_id The member we want it for
- * @return integer The number of gifts points to give that the given member has
+ * @return integer The number of gifts points that the given member has
  */
-function get_gift_points_to_give(int $member_id) : int
+function gift_points_balance(int $member_id) : int
 {
-    // If gift points is disabled, return available points instead.
+    // If gift points is disabled, return point balance instead.
     if (get_option('enable_gift_points') == '0') {
-        return available_points($member_id);
+        return points_balance($member_id);
     }
 
-    $used = get_gift_points_used($member_id);
+    $sent = gift_points_sent($member_id);
     if (get_forum_type() == 'cns') {
         require_lang('cns');
         require_code('cns_groups');
@@ -200,7 +226,41 @@ function get_gift_points_to_give(int $member_id) : int
         $base = 25;
         $per_day = 1;
     }
-    $available = $base + $per_day * intval(floor((time() - $GLOBALS['FORUM_DRIVER']->get_member_join_timestamp($member_id)) / (60 * 60 * 24))) - $used;
+    $available = $base + $per_day * intval(floor((time() - $GLOBALS['FORUM_DRIVER']->get_member_join_timestamp($member_id)) / (60 * 60 * 24))) - $sent;
 
     return $available;
+}
+
+/**
+ * Generate a proper URL to a member's points profile and optionally pre-populate fields for sending / modifying points.
+ *
+ * @param  MEMBER $member_id The member to view the profile
+ * @param  boolean $skip_keep Whether to skip actually putting on keep_ parameters (rarely will this skipping be desirable)
+ * @param  ?integer $points The number of points to pre-populate in the send / modify form (null: leave blank)
+ * @param  ?SHORT_TEXT $reason The reason to pre-populate in the send / modify form (null: leave blank)
+ * @param  ID_TEXT $transaction_type The type of transaction to pre-select (ignored for those without "Moderate points" privilege)
+ * @return Tempcode The URL to the member's points profile
+ *
+ */
+function points_url(int $member_id, $skip_keep = false, ?int $points = null, ?string $reason = null, string $transaction_type = 'send') : object
+{
+    $map = ['transaction_type' => $transaction_type];
+    if ($points !== null) {
+        $map['points'] = $points;
+    }
+    if ($reason !== null) {
+        $map['reason'] = $reason;
+    }
+
+    if (get_forum_type() == 'cns') {
+        $url = $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, true, null, ['conversr_tab' => 'points', 'extra_get_params' => $map]); // TODO: Implement (see Skype)
+        if (!is_object($url)) {
+            $url = make_string_tempcode($url);
+        }
+    } else {
+        $map = array_merge($map, ['page' => 'points', 'type' => 'member', 'id' => $member_id]);
+        $url = build_url($map, get_module_zone('points'));
+    }
+
+    return $url;
 }
