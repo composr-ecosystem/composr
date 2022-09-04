@@ -317,12 +317,12 @@ class LangFilter_EN extends LangFilter
         foreach ($remapping as $authentic => $perverted) {
             if (stripos($lc_value, $authentic) !== false) {
                 $value = preg_replace(
-                    '#(^|\s|\(|"|\')' . preg_quote($authentic, '#') . '#',
+                    '#(^|\s|\(|"|\'|>)' . preg_quote($authentic, '#') . '#',
                     '$1' . $perverted,
                     $value
                 );
                 $value = preg_replace(
-                    '#(^|\s|\(|"|\')' . preg_quote(cms_ucfirst_ascii($authentic), '#') . '#',
+                    '#(^|\s|\(|"|\'|>)' . preg_quote(cms_ucfirst_ascii($authentic), '#') . '#',
                     '$1' . cms_ucfirst_ascii($perverted),
                     $value
                 );
