@@ -96,7 +96,7 @@ class Module_admin_workflow extends Standard_crud_module
             'content_id' => 'ID_TEXT', // The ID of the content, wherever it happens to be
             'workflow_id' => 'AUTO_LINK', // The ID of the workflow this content is in
             'notes' => 'LONG_TEXT', // No point translating the notes, since they're transient
-            'original_submitter' => 'MEMBER', // Save this here since there's no standard way to discover it later (eg. through content-meta-aware hooks)
+            'original_submitter' => 'MEMBER', // Save this here since there's no standard way to discover it later (e.g. through content-meta-aware hooks)
         ]);
 
         // The workflow_content_status table records the status of each approval point for a piece of content and the member who approved the point (if any)

@@ -121,7 +121,7 @@ You can create multiple different leader-boards with different options. Some of 
  - Type of leader-board (rank according to total points, or rank according to points earned since the previous time frame)
  - Whether or not to include staff
  - Filter to one or more usergroups
- - The "Cycle basis": whether generation is relative to when the leader-board was created or at the start of a time frame (eg. start of the week / month / year)
+ - The "Cycle basis": whether generation is relative to when the leader-board was created or at the start of a time frame (e.g. start of the week / month / year)
 
 Please be aware when you change the options of a leader-board, it only affects future results; it does not re-calculate past results.
 

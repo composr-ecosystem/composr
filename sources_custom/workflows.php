@@ -689,7 +689,7 @@ function workflow_update_handler() : object
  * @param  ID_TEXT $content_id The ID of this content. Must be a string. Integers will be extracted from the string if needed.
  * @param  ?AUTO_LINK $workflow_id The ID of the desired workflow. (null: system default)
  * @param  boolean $remove_existing Whether to remove any existing workflows from this content beforehand (current permissions must allow this)
- * @return ?AUTO_LINK The content's ID in the workflow_content table. (null: if not added (eg. told to use default when there isn't one))
+ * @return ?AUTO_LINK The content's ID in the workflow_content table. (null: if not added (e.g. told to use default when there isn't one))
  */
 function add_content_to_workflow(string $content_type = '', string $content_id = '', ?int $workflow_id = null, bool $remove_existing = false) : ?int
 {
@@ -808,7 +808,7 @@ function get_approval_point_position(int $approval_point_id) : ?int
 /**
  * Get the workflow content ID for the given piece of content.
  *
- * @param  string $content_type The type of the content (eg. download, gallery, etc.)
+ * @param  string $content_type The type of the content (e.g. download, gallery, etc.)
  * @param  string $content_id The ID of the specific piece of content (if numeric, pass as a string anyway)
  * @return AUTO_LINK The workflow_content_id
  */
