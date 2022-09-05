@@ -367,6 +367,9 @@ class lang_spelling_test_set extends cms_test_case
         if (stripos($string, 'CMS system') !== false) {
             $ob->assertTrue(false, 'The phrase \'CMS system\' was used in ' . $path . '. That would expand to Content Management System System. The plural of CMS is CMSs.');
         }
+        if (strpos($string, 'eg.') !== false) {
+            $ob->assertTrue(false, 'The phrase \'eg.\' was used in ' . $path . '. It should be \'e.g.\'.');
+        }
 
         // Bad way of writing PHP versions etc
         if (stripos($string, 'PHP5.') !== false || stripos($string, 'PHP7.') !== false) {
