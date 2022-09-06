@@ -202,7 +202,11 @@ class Module_leader_board
             $rows = collapse_2d_complexity('lb_member', 'lb_points', get_leader_board($id, $date));
             $set_tpl = new Tempcode();
             foreach ($rows as $member_id => $points) {
-                $points_url = points_url($member_id);
+                if (get_forum() == 'cns') {
+                    $points_url = null; // No link, as $profile_url essentially links to the same place
+                } else {
+                    $points_url = points_url($member_id);
+                }
 
                 $profile_url = $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, true);
 
