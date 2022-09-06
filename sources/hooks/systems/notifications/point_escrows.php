@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_notification_escrow_amended extends Hook_Notification
+class Hook_notification_point_escrows extends Hook_Notification
 {
     /**
      * Find the initial setting that members have for a notification code (only applies to the member_could_potentially_enable members).
@@ -48,7 +48,7 @@ class Hook_notification_escrow_amended extends Hook_Notification
         }
 
         $list = [];
-        $list['escrow_amended'] = [do_lang('ACTIVITY'), do_lang('points:NOTIFICATION_TYPE_escrow_amended')];
+        $list['point_escrows'] = [do_lang('ACTIVITY'), do_lang('points:NOTIFICATION_TYPE_point_escrows')];
         return $list;
     }
 

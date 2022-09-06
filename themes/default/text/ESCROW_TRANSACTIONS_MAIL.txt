@@ -1,4 +1,4 @@
-{!NEW_ESCROW_TRANSACTION_INTRO,[page="_SEARCH:points:view_escrow:{ID@}"]{REASON@}[/page]}
+{INTRO}
 
 {!MEMBER@}: [page="_SEARCH:members:member:{ESCROW_FROM#}"]{$USERNAME@,{ESCROW_FROM}}[/page]
 {!POINTS@}: [b]{AMOUNT@}[/b]

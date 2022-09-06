@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_notification_new_points_escrow extends Hook_Notification
+class Hook_notification_point_escrows_staff_passive extends Hook_Notification
 {
     /**
      * Find the initial setting that members have for a notification code (only applies to the member_could_potentially_enable members).
@@ -32,7 +32,7 @@ class Hook_notification_new_points_escrow extends Hook_Notification
      */
     public function get_initial_setting(string $notification_code, ?string $category = null) : int
     {
-        return A__ALL & ~A_INSTANT_PT;
+        return A_NA;
     }
 
     /**
@@ -48,7 +48,7 @@ class Hook_notification_new_points_escrow extends Hook_Notification
         }
 
         $list = [];
-        $list['new_points_escrow'] = [do_lang('ACTIVITY'), do_lang('points:NOTIFICATION_TYPE_new_points_escrow')];
+        $list['point_escrows_staff_passive'] = [do_lang('ACTIVITY'), do_lang('points:NOTIFICATION_TYPE_point_escrows_staff_passive')];
         return $list;
     }
 
@@ -66,6 +66,7 @@ class Hook_notification_new_points_escrow extends Hook_Notification
     public function list_members_who_have_enabled(string $notification_code, ?string $category = null, ?array $to_member_ids = null, ?int $from_member_id = null, int $start = 0, int $max = 300) : array
     {
         $members = $this->_all_members_who_have_enabled($notification_code, $category, $to_member_ids, $start, $max);
+        $members = $this->_all_members_who_have_enabled_with_privilege($members, 'moderate_points_escrow', $notification_code, $category, $to_member_ids, $start, $max);
         $members = $this->_all_members_who_have_enabled_with_page_access($members, 'points', $notification_code, $category, $to_member_ids, $start, $max);
 
         return $members;

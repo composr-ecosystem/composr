@@ -8323,6 +8323,9 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NOTIFICATION_POINTS_TRANSACTION_STAFF_GUEST
         ARE_YOU_SURE_TRANSACTION_CREDIT
         ARE_YOU_SURE_TRANSACTION_DEBIT
+        NOTIFICATION_TYPE_point_escrows_staff_passive
+        NOTIFICATION_TYPE_point_escrows_staff_active
+        NEW_ESCROW_TRANSACTION_SUBJECT_STAFF
     ')));
 
     $non_admin_files = [
@@ -11661,11 +11664,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NOTIFICATION_POINTS_TRANSACTION_SUBJECT
         NOTIFICATION_POINTS_TRANSACTION_SYSTEM_L
         NOTIFICATION_POINTS_TRANSACTION_TO_L
-        NOTIFICATION_TYPE_escrow_cancelled
-        NOTIFICATION_TYPE_escrow_disputed
-        NOTIFICATION_TYPE_escrow_fully_satisfied
-        NOTIFICATION_TYPE_escrow_amended
-        NOTIFICATION_TYPE_new_points_escrow
         POINTS_REFUNDED
         PRIVILEGE_amend_point_transactions
         PRIVILEGE_moderate_points
@@ -11685,6 +11683,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         LEDGER_STATUS_SHORT_reversed
         AMEND
         NOTIFICATION_POINTS_TRANSACTION_GUEST
+        NOTIFICATION_TYPE_point_escrows
     ')));
 
     if ($GLOBALS['DEV_MODE']) {

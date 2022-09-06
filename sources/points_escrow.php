@@ -223,12 +223,13 @@ function escrow_points(int $sender_id, int $recipient_id, int $amount, string $r
     log_it('LOG_ESCROW_CREATED', strval($id), $username);
 
     // Dispatch notification
-    if ($send_notifications !== null && $send_notifications) {
-        require_code('notifications');
-        $subject = do_notification_lang('NEW_ESCROW_TRANSACTION_SUBJECT');
+    require_code('notifications');
+    if ($send_notifications !== null) {
+        $link_comcode = '[page="_SEARCH:points:view_escrow:' . comcode_escape(strval($id)) . '"]' . comcode_escape($reason) . '[/page]';
         $map = [
             '_GUID' => '1225d89038254b979fe8068a57766e0e',
             'ID' => strval($id),
+            'INTRO' => do_lang_tempcode('NEW_ESCROW_TRANSACTION_INTRO', $link_comcode),
             'ESCROW_FROM' => strval($sender_id),
             'ESCROW_TO' => strval($recipient_id),
             'AMOUNT' => integer_format($amount),
@@ -238,8 +239,19 @@ function escrow_points(int $sender_id, int $recipient_id, int $amount, string $r
         if ($expiry_time !== null) {
             $map['EXPIRATION'] = strval($expiry_time);
         }
+
+        // Involved members
+        if ($send_notifications) {
+            $subject = do_notification_lang('NEW_ESCROW_TRANSACTION_SUBJECT', $reason);
+            $mail = do_notification_template('ESCROW_TRANSACTIONS_MAIL', $map, null, false, null, '.txt', 'text');
+            dispatch_notification('point_escrows', null, $subject, $mail->evaluate(get_site_default_lang()), [$recipient_id], $sender_id);
+        }
+
+        // Staff
+        $subject = do_notification_lang('NEW_ESCROW_TRANSACTION_SUBJECT_STAFF', $reason);
+        $map['INTRO'] = do_lang_tempcode('NEW_ESCROW_TRANSACTION_INTRO_STAFF', $link_comcode);
         $mail = do_notification_template('ESCROW_TRANSACTIONS_MAIL', $map, null, false, null, '.txt', 'text');
-        dispatch_notification('new_points_escrow', null, $subject, $mail->evaluate(get_site_default_lang()), [$recipient_id], $sender_id);
+        dispatch_notification('point_escrows_staff_passive', null, $subject, $mail->evaluate(get_site_default_lang()), null, $sender_id);
     }
 
     return $id;
@@ -360,25 +372,32 @@ function _complete_escrow(array $row, ?int $amount = null, bool $escrow_log = tr
     }
     log_it('LOG_ESCROW_COMPLETED', strval($id), do_lang('NOTIFICATION_POINTS_TRANSACTION_POINTS_L', integer_format($amount)));
 
-    if ($send_notifications !== null && $send_notifications) {
+    if ($send_notifications !== null) {
         // Process notifications
         require_code('notifications');
-        $notification_members = [$sender_id, $recipient_id];
-        foreach ($notification_members as $n_member) {
-            $yes = $GLOBALS['FORUM_DRIVER']->get_member_email_allowed($n_member);
-            if ($yes) {
-                $subject = do_notification_lang('ESCROW_FULLY_SATISFIED_SUBJECT', $reason);
-                $map = [
-                    '_GUID' => 'ffcc0e59fb7040308076826f8d1307d6',
-                    'ID' => strval($id),
-                    'ESCROW_TO' => strval($recipient_id),
-                    'AMOUNT' => integer_format($amount),
-                    'REASON' => $reason,
-                ];
-                $mail = do_notification_template('ESCROW_FULLY_SATISFIED_MAIL', $map, null, false, null, '.txt', 'text');
-                dispatch_notification('escrow_fully_satisfied', null, $subject, $mail->evaluate(get_lang($n_member)), [$n_member], A_FROM_SYSTEM_UNPRIVILEGED);
+
+        $map = [
+            '_GUID' => 'ffcc0e59fb7040308076826f8d1307d6',
+            'ID' => strval($id),
+            'ESCROW_FROM' => strval($sender_id),
+            'ESCROW_TO' => strval($recipient_id),
+            'AMOUNT' => integer_format($amount),
+            'REASON' => $reason,
+        ];
+        $mail = do_notification_template('ESCROW_FULLY_SATISFIED_MAIL', $map, null, false, null, '.txt', 'text');
+
+        // Involved members
+        if ($send_notifications) {
+            $notification_members = [$sender_id, $recipient_id];
+            $subject = do_notification_lang('ESCROW_FULLY_SATISFIED_SUBJECT', $reason);
+            foreach ($notification_members as $n_member) {
+                dispatch_notification('point_escrows', null, $subject, $mail->evaluate(get_lang($n_member)), [$n_member], A_FROM_SYSTEM_UNPRIVILEGED);
             }
         }
+
+        // Staff
+        $subject = do_notification_lang('ESCROW_FULLY_SATISFIED_SUBJECT', $reason);
+        dispatch_notification('point_escrows_staff_passive', null, $subject, $mail->evaluate(), null, A_FROM_SYSTEM_UNPRIVILEGED);
     }
 
     return $response;
@@ -435,6 +454,8 @@ function cancel_escrow(int $id, int $member_id, string $reason, ?array $row = nu
     log_it('LOG_ESCROW_CANCELLED', strval($id), $username);
 
     // Send out a notification
+    require_code('notifications');
+
     $subject = do_notification_lang('ESCROW_CANCELLED_SUBJECT', $escrow_reason);
     $map = [
         '_GUID' => '9981b4baa98547ad9a2571e5b2464c91',
@@ -444,7 +465,15 @@ function cancel_escrow(int $id, int $member_id, string $reason, ?array $row = nu
         'REASON' => $reason,
     ];
     $mail = do_notification_template('ESCROW_CANCELLED_MAIL', $map, null, false, null, '.txt', 'text');
-    dispatch_notification('escrow_cancelled', null, $subject->evaluate(), $mail->evaluate(), null, $member_id);
+
+    // Involved members
+    $notification_members = [$row['recipient_id'], $row['sender_id']];
+    foreach ($notification_members as $n_member) {
+        dispatch_notification('point_escrows', null, $subject->evaluate(get_lang($n_member)), $mail->evaluate(get_lang($n_member)), [$n_member], $member_id);
+    }
+
+    // Staff
+    dispatch_notification('point_escrows_staff_passive', null, $subject->evaluate(), $mail->evaluate(), null, $member_id);
 
     return $refund_id;
 }
@@ -482,7 +511,7 @@ function dispute_escrow(int $id, int $member_id, string $reason, ?array $row = n
     escrow_log_it('LOG_ESCROW_DISPUTED', $id, $member_id, $reason);
     log_it('LOG_ESCROW_DISPUTED', strval($id), $username);
 
-    // Send out a notification
+    // Send out a notification to staff
     require_code('notifications');
     $subject = do_notification_lang('ESCROW_DISPUTED_SUBJECT', $escrow);
     $map = [
@@ -493,7 +522,7 @@ function dispute_escrow(int $id, int $member_id, string $reason, ?array $row = n
         'REASON' => $reason,
     ];
     $mail = do_notification_template('ESCROW_DISPUTED_MAIL', $map, null, false, null, '.txt', 'text');
-    dispatch_notification('escrow_disputed', null, $subject->evaluate(), $mail->evaluate(), null, A_FROM_SYSTEM_UNPRIVILEGED);
+    dispatch_notification('point_escrows_staff_active', null, $subject->evaluate(), $mail->evaluate(), null, $member_id);
 }
 
 /**
@@ -574,7 +603,15 @@ function moderate_escrow(int $id, int $member_id, string $action, string $new_re
                 'REASON' => $reason,
             ];
             $mail = do_notification_template('ESCROW_AMENDED_MAIL', $map, null, false, null, '.txt', 'text');
-            dispatch_notification('escrow_amended', null, $subject->evaluate(), $mail->evaluate(), null, $member_id);
+
+            // Involved members
+            $notification_members = [$row['recipient_id'], $row['sender_id']];
+            foreach ($notification_members as $n_member) {
+                dispatch_notification('point_escrows', null, $subject->evaluate(get_lang($n_member)), $mail->evaluate(get_lang($n_member)), [$n_member], $member_id);
+            }
+
+            // Staff
+            dispatch_notification('point_escrows_staff_passive', null, $subject->evaluate(), $mail->evaluate(), null, $member_id);
             break;
         case 'amend':
             // Log it
@@ -591,7 +628,15 @@ function moderate_escrow(int $id, int $member_id, string $action, string $new_re
                 'REASON' => $reason,
             ];
             $mail = do_notification_template('ESCROW_AMENDED_MAIL', $map, null, false, null, '.txt', 'text');
-            dispatch_notification('escrow_amended', null, $subject->evaluate(), $mail->evaluate(), null, $member_id);
+
+            // Involved members
+            $notification_members = [$row['recipient_id'], $row['sender_id']];
+            foreach ($notification_members as $n_member) {
+                dispatch_notification('point_escrows', null, $subject->evaluate(get_lang($n_member)), $mail->evaluate(get_lang($n_member)), [$n_member], $member_id);
+            }
+
+            // Staff
+            dispatch_notification('point_escrows_staff_passive', null, $subject->evaluate(), $mail->evaluate(), null, $member_id);
             break;
     }
 }
