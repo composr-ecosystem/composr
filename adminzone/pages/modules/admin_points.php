@@ -347,9 +347,9 @@ class Module_admin_points
                 $url = $_url->evaluate();
             }
             return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
-        } else {
-            return $out;
         }
+
+        return $out;
     }
 
     /**
@@ -377,9 +377,9 @@ class Module_admin_points
                 $redirect = $_redirect->evaluate();
             }
             return redirect_screen($this->title, $redirect, do_lang_tempcode('SUCCESS'));
-        } else {
-            return $out;
         }
+
+        return $out;
     }
 
     /**
