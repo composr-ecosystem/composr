@@ -266,7 +266,7 @@ function satisfy_escrow(int $id, int $member_id, ?array $row = null, bool $escro
 
     // Cannot mark an escrow satisfied if it is not active
     if (($row['status'] < 1)) {
-        warn_exit("INTERNAL_ERROR");
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
 
     // Mark the escrow satisfied
@@ -276,7 +276,7 @@ function satisfy_escrow(int $id, int $member_id, ?array $row = null, bool $escro
     } elseif ($row['recipient_id'] == $member_id) {
         $map['recipient_status'] = 1;
     } else { // This should never happen!
-        warn_exit(do_lang_tempcode("INTERNAL_ERROR"));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
     $GLOBALS['SITE_DB']->query_update('escrow', $map, ['id' => $id], '', 1);
 
@@ -309,7 +309,7 @@ function satisfy_escrow(int $id, int $member_id, ?array $row = null, bool $escro
 function _complete_escrow(array $row, ?int $amount = null, bool $escrow_log = true, ?bool $send_notifications = true) : array
 {
     if ($amount !== null && $amount <= 0) {
-        warn_exit("INTERNAL_ERROR");
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
     if ($amount === null || $amount > $row['amount']) {
         $amount = $row['amount'];
@@ -403,7 +403,7 @@ function cancel_escrow(int $id, int $member_id, string $reason, ?array $row = nu
 
     // Cannot mark an escrow cancelled if it is not active
     if (($row['status'] < 1)) {
-        warn_exit("INTERNAL_ERROR");
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
 
     $escrow_reason = get_translated_tempcode('escrow', $row, 'reason');
@@ -466,7 +466,7 @@ function dispute_escrow(int $id, int $member_id, string $reason, ?array $row = n
 
     // Cannot dispute a non-active escrow
     if (($row['status'] < 1)) {
-        warn_exit("INTERNAL_ERROR");
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
 
     $escrow = get_translated_tempcode('escrow', $row, 'reason');
