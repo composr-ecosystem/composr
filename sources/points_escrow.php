@@ -60,6 +60,7 @@ function points_get_escrow(int $member_id_of, int $member_id_viewing) : object
         return new Tempcode();
     }
     $rows = $GLOBALS['SITE_DB']->query_select('escrow', ['*'], [], $where . ' ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
+
     $out = new Tempcode();
 
     $viewing_name = $GLOBALS['FORUM_DRIVER']->get_username($member_id_of, true);
