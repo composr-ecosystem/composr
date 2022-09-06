@@ -553,6 +553,9 @@ function lex($text = null)
                         if (in_array($token_found, ['IF', 'ELSE', 'ELSEIF', 'FOREACH', 'FOR', 'FOREACH', 'WHILE', 'DO', 'TRY', 'CATCH', 'SWITCH', 'INTERFACE', 'CLASS', 'FUNCTION'])) {
                             $line_end = strpos($TEXT, "\n", $i);
                             if (($line_end !== false) && ((empty($tokens)) || ($tokens[count($tokens) - 1][0] != 'NEW'))) {
+                                $line_start = strrpos(substr($TEXT, 0, $i), "\n") + 1;
+                                $line = str_replace("\r", '', substr($TEXT, $line_start, $line_end - $line_start + 1));
+
                                 $remaining_line = str_replace("\r", '', substr($TEXT, $i, $line_end - $i + 1));
 
                                 $next_line_end = strpos($TEXT, "\n", $line_end + 1);
@@ -562,6 +565,9 @@ function lex($text = null)
                                     log_warning('Incorrect bracing spacing (for ' . $token_found . ') against coding standards', $i, true);
                                 }
                                 if ((strpos($remaining_line, ' {') !== false) && (strpos($remaining_line, ' (') === false) && (strpos($next_line, '{') === false/*To weed out edge cases like when a parameter default contains ' {'*/) && (in_array($token_found, ['INTERFACE', 'CLASS', 'FUNCTION']))) {
+                                    log_warning('Incorrect bracing spacing (for ' . $token_found . ') against coding standards', $i, true);
+                                }
+                                if ((strpos($remaining_line, ' {') !== false) && (strpos($line, '}') === false) && (in_array($token_found, ['ELSE', 'ELSEIF']))) {
                                     log_warning('Incorrect bracing spacing (for ' . $token_found . ') against coding standards', $i, true);
                                 }
                             }

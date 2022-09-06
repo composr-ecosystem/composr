@@ -754,6 +754,9 @@ function _read_php_function_line(string $_line) : array
             case 'after_args':
                 if ($char == ':') {
                     $parse = 'before_return_type';
+                    if ($_line[$k - 1] != ' ') {
+                        attach_message('Coding standard is to have a space before the colon of the return type', 'warn');
+                    }
                 } elseif (trim($char) != '') {
                     $parse = 'done';
                 }
