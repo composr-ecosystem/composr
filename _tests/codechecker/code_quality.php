@@ -1016,6 +1016,8 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
                 check_command($c[2], $depth, $temp_function_guard, $nogo_parameters, $jump_structures);
                 if ($c[0] == 'IF_ELSE') {
                     check_command($c[3], $depth, $function_guard, $nogo_parameters, $jump_structures);
+
+                    // TODO
                 }
                 break;
             case 'INNER_FUNCTION':

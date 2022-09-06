@@ -111,8 +111,8 @@ function _get_notification_ob_for_code($notification_code)
 }
 
 /**
- * Wraps do_lang, keeping a record of the last call. You can use when building the notification $message.
- * This allows notification handlers to possibly repeat the call with a customised language string.
+ * Wraps do_lang, keeping a record of the last call. You can use when building the notification $message (i.e. the body NOT the subject).
+ * This allows notification handlers (e.g. push notifications) to possibly repeat the call with very customised output.
  *
  * @param  ID_TEXT $codename The language string ID
  * @param  ?mixed $parameter1 The first parameter [string or Tempcode] (replaces {1}) (null: none)
