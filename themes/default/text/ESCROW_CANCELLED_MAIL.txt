@@ -1,5 +1,7 @@
 {!ESCROW_CANCELLED_INTRO,[page="_SEARCH:points:view_escrow:{ID@}"]{ESCROW_REASON@}[/page]}
 
 {!ESCROW_CANCELLING_MEMBER@}: [page="_SEARCH:members:member:{CANCELLING_MEMBER#}"]{$USERNAME@,{CANCELLING_MEMBER}}[/page]
+
 [title="2"]{!EXPLANATION@}[/title]
+
 {REASON}

@@ -1,5 +1,7 @@
 {!ESCROW_DISPUTED_INTRO,[page="_SEARCH:points:view_escrow:{ID@}"]{ESCROW_REASON@}[/page]}
 
 {!ESCROW_DISPUTING_MEMBER@}: [page="_SEARCH:members:member:{DISPUTING_MEMBER#}"]{$USERNAME@,{DISPUTING_MEMBER}}[/page]
+
 [title="2"]{!REASON@}[/title]
+
 {REASON}

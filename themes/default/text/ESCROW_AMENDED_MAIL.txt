@@ -6,5 +6,7 @@
 {!SENDER@}: [page="_SEARCH:members:member:{SENDER#}"]{$USERNAME@,{SENDER}}[/page]
 {!POINTS_REFUNDED@}: [b]{POINTS_REFUNDED@}[/b]{+END}{+START,IF,{GIFT_POINTS_REFUNDED}}
 {!GIFT_POINTS_REFUNDED@}: [b]{GIFT_POINTS_REFUNDED@}[/b]{+END}
+
 [title="2"]{!EXPLANATION@}[/title]
+
 {REASON}
