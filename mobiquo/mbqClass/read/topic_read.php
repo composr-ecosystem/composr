@@ -188,9 +188,9 @@ class CMSTopicRead
                     $or_list .= strval($_forum_id);
                 }
                 if ($or_list != '') {
-                    array_push($conditions, 't_forum_id IN (' . $or_list . ')');
+                    $conditions[] = 't_forum_id IN (' . $or_list . ')';
                 } else {
-                    array_push($conditions, '0=1');
+                    $conditions[] = '0=1';
                 }
             }
 
@@ -203,7 +203,7 @@ class CMSTopicRead
                     $or_list .= strval($_forum_id);
                 }
                 if ($or_list != '') {
-                    array_push($conditions, 't_forum_id NOT IN (' . $or_list . ')');
+                    $conditions[] = 't_forum_id NOT IN (' . $or_list . ')';
                 }
             }
 
@@ -216,27 +216,27 @@ class CMSTopicRead
                     $or_list .= strval($_forum_id);
                 }
                 if ($or_list != '') {
-                    array_push($conditions, 'id NOT IN (' . $or_list . ')');
+                    $conditions[] = 'id NOT IN (' . $or_list . ')';
                 }
             }
         }
 
         // Enforce permissions
         if (get_allowed_forum_sql() != '') {
-            array_push($conditions, 't_forum_id IN (' . get_allowed_forum_sql() . ')');
+            $conditions[] = 't_forum_id IN (' . get_allowed_forum_sql() . ')';
         } else {
             // No PTs at least
-            array_push($conditions, 't_forum_id IS NOT NULL');
+            $conditions[] = 't_forum_id IS NOT NULL';
         }
 
         $conditions_full = []; // For performance we won't put the less important ones that aren't easily indexable into a count query
 
         // No empty topic shells
-        array_push($conditions_full, 't_cache_first_member_id IS NOT NULL');
+        $conditions_full[] = 't_cache_first_member_id IS NOT NULL';
 
         // Validated-only
         if (addon_installed('unvalidated')) {
-            array_push($conditions_full, 't_validated=1');
+            $conditions_full[] = 't_validated=1';
         }
 
         // Only unread ones?
@@ -250,7 +250,7 @@ class CMSTopicRead
             $subquery .= 'l_topic_id=t.id AND ';
             $subquery .= 'l_time>=t_cache_last_time';
 
-            array_push($conditions, 't_cache_last_time>' . strval(time() - 60 * 60 * 24 * intval(get_option('post_read_history_days'))) . ' AND NOT EXISTS(' . $subquery . ')');
+            $conditions[] = 't_cache_last_time>' . strval(time() - 60 * 60 * 24 * intval(get_option('post_read_history_days'))) . ' AND NOT EXISTS(' . $subquery . ')';
         }
 
         // Only participated ones?
@@ -261,7 +261,7 @@ class CMSTopicRead
 
             $participant_id = $method_data;
 
-            array_push($conditions, 'pp.p_poster=' . strval($participant_id));
+            $conditions[] = 'pp.p_poster=' . strval($participant_id);
 
             // Run query
             $table_prefix = $GLOBALS['FORUM_DB']->get_table_prefix();

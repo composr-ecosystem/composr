@@ -135,7 +135,7 @@ function cns_get_default_poll_options(?int $forum_id = null) : array
                 $map['mandatory'] = false;
             }
         }
-        array_push($default_options['options'], $map);
+        $default_options['options'][] = $map;
     }
 
     return $default_options;
@@ -177,7 +177,7 @@ function cns_validate_poll(int $topic_id, ?int $poll_id, array $answers, int &$i
             if (in_array($answer, $answers_text)) {
                 warn_exit('POLL_NO_DUPLICATE_OPTIONS', $answer);
             }
-            array_push($answers_text, $answer);
+            $answers_text[] = $answer;
         }
     }
 

@@ -1013,19 +1013,19 @@ function form_input_line_multi($pretty_name, $description, string $name, array $
     foreach ($_default_array as $default) {
         $_required = ($i < $num_required) ? '-required' : '';
         if (is_array($default) && array_key_exists('name', $default)) {
-            array_push($default_array, [
+            $default_array[] = [
                 'NAME' => $default['name'],
                 'I' => strval($i),
                 'REQUIRED' => $_required,
                 'READONLY' => array_key_exists('readonly', $default)
-            ]);
+            ];
         } else {
-            array_push($default_array, [
+            $default_array[] = [
                 'NAME' => $default,
                 'I' => strval($i),
                 'REQUIRED' => $_required,
                 'READONLY' => false
-            ]);
+            ];
         }
         $i++;
     }
@@ -1033,12 +1033,12 @@ function form_input_line_multi($pretty_name, $description, string $name, array $
     // Add in blank / initial lines where applicable
     $num_to_show_initially = max($num_required, count($default_array) + 1);
     for (; $i < $num_to_show_initially; $i++) {
-        array_push($default_array, [
+        $default_array[] = [
             'NAME' => ($i === 0) ? filter_form_field_default($name, '') : '',
             'I' => strval($i),
             'REQUIRED' => ($i >= $num_required) ? '' : '-required',
             'READONLY' => false
-        ]);
+        ];
         $i++;
     }
 

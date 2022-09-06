@@ -1332,12 +1332,12 @@ class Hook_addon_registry_core_form_interfaces
 
         $placeholder_line_multi = [];
         for ($i = 0; $i < 3; $i++) {
-            array_push($placeholder_line_multi, [
+            $placeholder_line_multi [] = [
                 'NAME' => 'LOREM',
                 'I' => strval($i),
                 'REQUIRED' => '-required',
                 'READONLY' => $i === 1
-            ]);
+            ];
         }
 
         $input = new Tempcode();

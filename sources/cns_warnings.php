@@ -52,14 +52,14 @@ function generate_punitive_text() : string
 
     // Stop Forum Spam report
     if ($stopforumspam == 1) {
-        array_push($punitive_messages, do_lang('PUNITIVE_STOP_FORUM_SPAM', null, null, null, null, false));
+        $punitive_messages[] = do_lang('PUNITIVE_STOP_FORUM_SPAM', null, null, null, null, false);
     }
 
     // IP ban
     if (addon_installed('securitylogging')) {
         if (has_actual_page_access(get_member(), 'admin_ip_ban')) {
             if ($banned_ip == 1) {
-                array_push($punitive_messages, do_lang('PUNITIVE_BAN_IP', null, null, null, null, false));
+                $punitive_messages[] = do_lang('PUNITIVE_BAN_IP', null, null, null, null, false);
             }
         }
     }
@@ -67,7 +67,7 @@ function generate_punitive_text() : string
     // Member ban
     if (has_privilege(get_member(), 'member_maintenance')) {
         if ($banned_member == 1) {
-            array_push($punitive_messages, do_lang('PUNITIVE_BAN_ACCOUNT', null, null, null, null, false));
+            $punitive_messages[] = do_lang('PUNITIVE_BAN_ACCOUNT', null, null, null, null, false);
         }
     }
 
@@ -79,7 +79,7 @@ function generate_punitive_text() : string
                 $on_probation_until = time();
             }
             $on_probation_until += $probation * 60 * 60 * 24;
-            array_push($punitive_messages, do_lang('PUNITIVE_PROBATION', strval($probation), strval(get_timezoned_date_time($on_probation_until, false, false, $member_id)), null, null, false));
+            $punitive_messages[] = do_lang('PUNITIVE_PROBATION', strval($probation), strval(get_timezoned_date_time($on_probation_until, false, false, $member_id)), null, null, false);
         }
     }
 
@@ -87,7 +87,7 @@ function generate_punitive_text() : string
     if (has_privilege(get_member(), 'member_maintenance')) {
         if ($changed_usergroup_to !== null) {
             $_changed_usergroup_to = cns_get_group_name($changed_usergroup_to, true);
-            array_push($punitive_messages, do_lang('PUNITIVE_CHANGE_USERGROUP', $_changed_usergroup_to, null, null, null, false));
+            $punitive_messages[] = do_lang('PUNITIVE_CHANGE_USERGROUP', $_changed_usergroup_to, null, null, null, false);
         }
     }
 
@@ -97,7 +97,7 @@ function generate_punitive_text() : string
         if (get_forum_type() == 'cns') {
             $silence_from_forum_title = $GLOBALS['FORUM_DB']->query_select_value('f_forums', 'f_name', ['id' => $silence_from_forum]);
         }
-        array_push($punitive_messages, do_lang('PUNITIVE_SILENCE_FROM_FORUM', $silence_from_forum_title, do_lang('PUNITIVE_UNTIL', get_timezoned_date_time($_silence_from_forum, false, false, $member_id)), null, null, false));
+        $punitive_messages[] = do_lang('PUNITIVE_SILENCE_FROM_FORUM', $silence_from_forum_title, do_lang('PUNITIVE_UNTIL', get_timezoned_date_time($_silence_from_forum, false, false, $member_id)), null, null, false);
     }
 
     // Topic silencing
@@ -106,7 +106,7 @@ function generate_punitive_text() : string
         if (get_forum_type() == 'cns') {
             $silence_from_topic_title = $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_cache_first_title', ['id' => $silence_from_topic]);
         }
-        array_push($punitive_messages, do_lang('PUNITIVE_SILENCE_FROM_TOPIC', strval($silence_from_topic_title), strval(do_lang('PUNITIVE_UNTIL', strval(get_timezoned_date_time($_silence_from_topic, false, false, $member_id)))), null, null, false));
+        $punitive_messages[] = do_lang('PUNITIVE_SILENCE_FROM_TOPIC', strval($silence_from_topic_title), strval(do_lang('PUNITIVE_UNTIL', strval(get_timezoned_date_time($_silence_from_topic, false, false, $member_id)))), null, null, false);
     }
 
     // Post deletion
@@ -126,10 +126,10 @@ function generate_punitive_text() : string
             $post_action = post_param_string('handle_post__' . strval($post['id']), '');
             switch ($post_action) {
                 case 'delete_post':
-                    array_push($punitive_messages, do_lang('PUNITIVE_DELETE_POST', strval($p_title), null, null, null, false));
+                    $punitive_messages[] = do_lang('PUNITIVE_DELETE_POST', strval($p_title), null, null, null, false);
                     break;
                 case 'delete_post_and_following':
-                    array_push($punitive_messages, do_lang('PUNITIVE_DELETE_POST_AND_FOLLOWING', strval($p_title), null, null, null, false));
+                    $punitive_messages[] = do_lang('PUNITIVE_DELETE_POST_AND_FOLLOWING', strval($p_title), null, null, null, false);
                     break;
             }
         }
@@ -148,7 +148,7 @@ function generate_punitive_text() : string
                 if ($object_fs !== null) {
                     $filename = $object_fs->convert_id_to_filename($content_type, $content_id);
                     if ($filename !== null) {
-                        array_push($punitive_messages, do_lang('PUNITIVE_DELETE_CONTENT', strval(do_lang($content_type_title)), strval($content_title), null, null, false));
+                        $punitive_messages[] = do_lang('PUNITIVE_DELETE_CONTENT', strval(do_lang($content_type_title)), strval($content_title), null, null, false);
                     }
                 }
             }
@@ -159,7 +159,7 @@ function generate_punitive_text() : string
     if (addon_installed('points')) {
         if (has_actual_page_access(get_member(), 'admin_points')) {
             if ($charged_points != 0) {
-                array_push($punitive_messages, do_lang('PUNITIVE_CHARGE_POINTS', strval($charged_points), null, null, null, false));
+                $punitive_messages[] = do_lang('PUNITIVE_CHARGE_POINTS', strval($charged_points), null, null, null, false);
             }
         }
     }

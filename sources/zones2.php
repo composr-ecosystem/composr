@@ -787,7 +787,7 @@ function extract_module_functions_page(string $zone, string $page, array $functi
     if (!file_exists($path)) {
         $ret = [];
         for ($i = 0; $i < count($functions); $i++) {
-            array_push($ret, null);
+            $ret[] = null;
         }
         return $ret;
     }

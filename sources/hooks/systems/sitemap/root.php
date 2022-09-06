@@ -196,7 +196,7 @@ class Hook_sitemap_root extends Hook_sitemap_base
                         continue;
                     }
                     if ($zone == 'adminzone') {
-                        array_push($last_ones, $_zone);
+                        $last_ones[] = $_zone;
                         continue;
                     }
 

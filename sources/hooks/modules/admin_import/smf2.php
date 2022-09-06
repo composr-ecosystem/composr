@@ -593,7 +593,7 @@ class Hook_import_smf2
     {
         $temp_array = [];
         $default = trim($default);
-        array_push($temp_array, $default);
+        $temp_array[] = $default;
         $values = explode(',', $options);
         foreach ($values as $value) {
             $value = trim($value);
@@ -601,7 +601,7 @@ class Hook_import_smf2
                 if ($value == '') {
                     continue;
                 }
-                array_push($temp_array, $value);
+                $temp_array[] = $value;
             }
         }
         $result = implode('|', $temp_array);

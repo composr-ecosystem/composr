@@ -347,7 +347,7 @@ function cns_revoke_vote_in_poll(array $topic_info, ?int $member_id = null)
 
         $_cell = array_search($vote['pv_answer_id'], array_column($_answers, 'id'));
         if ($_cell !== null) {
-            array_push($answers, $_answers[$_cell]['answer']);
+            $answers[] = $_answers[$_cell]['answer'];
         }
     }
 

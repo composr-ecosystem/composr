@@ -2985,16 +2985,16 @@ class Module_topics
             if (array_key_exists('mandatory', $option)) {
                 $map['readonly'] = true;
             }
-            array_push($default_options, $map);
+            $default_options[] = $map;
         }
         $default_options_names = array_column($default_options, 'name');
 
         // Also add any $answers not already in the array, if we are editing a poll, so they appear when editing.
         foreach ($answers as $answer) {
             if (!in_array($answer, $default_options_names)) {
-                array_push($default_options, [
+                $default_options[] = [
                     'name' => $answer,
-                ]);
+                ];
             }
         }
         $fields->attach(form_input_line_multi(do_lang_tempcode('ANSWERS'), do_lang_tempcode('_DESCRIPTION_ANSWERS'), 'answer_', $default_options, 0, null, 'line', null, null, $_default_options['confined']));
