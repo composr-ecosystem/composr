@@ -34,23 +34,16 @@ function init__mail()
     $SENDING_MAIL = false;
     $EMAIL_ATTACHMENTS = [];
     $SMTP_SOCKET = [];
-    register_shutdown_function('_close_smtp_sockets');
-}
-
-/**
- * Close any SMTP sockets that are still open.
- *
- * @ignore
- */
-function _close_smtp_sockets()
-{
-    global $SMTP_SOCKET;
-    foreach ($SMTP_SOCKET as &$socket) {
-        if (($socket !== null) && ($socket !== false)) {
-            @fclose($socket);
-            $socket = null;
+    cms_register_shutdown_function_safe(function () {
+        // Close any SMTP sockets that are still open
+        global $SMTP_SOCKET;
+        foreach ($SMTP_SOCKET as &$socket) {
+            if (($socket !== null) && ($socket !== false)) {
+                @fclose($socket);
+                $socket = null;
+            }
         }
-    }
+    });
 }
 
 /**

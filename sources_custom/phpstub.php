@@ -2471,17 +2471,6 @@ function realpath(string $path) : string
 }
 
 /**
- * Register a function for execution on shutdown.
- * Do not rely on this function working. Use it for development/debug/cleanup-niceties only.
- *
- * @param  mixed $callback Callback
- * @param  mixed ...$params Parameters
- */
-function register_shutdown_function($callback, ...$params)
-{
-}
-
-/**
  * Renames a file.
  *
  * @param  PATH $oldname Old name

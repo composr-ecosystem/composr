@@ -1543,30 +1543,14 @@ class DatabaseConnector
                 _general_db_init();
             }
 
-            register_shutdown_function([$this, '_close_connections']);
+            // We need database connections closed after absolutely everything else, so chain some cms_register_shutdown_function_safe calls.
+            $driver = $this->driver;
+            cms_register_shutdown_function_safe(function () use ($driver) {
+                cms_register_shutdown_function_safe(function () use ($driver) {
+                    cms_register_shutdown_function_safe([$driver, 'close_connections']);
+                });
+            });
         }
-    }
-
-    /**
-     * Called to close connections from a register_shutdown_function handler.
-     * We need them closed after absolutely everything else, so chain some register_shutdown_function calls.
-     *
-     * @ignore
-     */
-    public function _close_connections()
-    {
-        register_shutdown_function([$this, '__close_connections']);
-    }
-
-    /**
-     * Called to close connections from a register_shutdown_function handler.
-     * We need them closed after absolutely everything else, so chain some register_shutdown_function calls.
-     *
-     * @ignore
-     */
-    public function __close_connections()
-    {
-        register_shutdown_function([$this->driver, 'close_connections']);
     }
 
     /**

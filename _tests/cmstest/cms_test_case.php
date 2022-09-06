@@ -34,7 +34,7 @@ class cms_test_case extends WebTestCase
             $this->site_closed = get_option('site_closed');
             set_option('site_closed', '0', 0);
             $done_once = true;
-            register_shutdown_function([$this, 'reopen_site']);
+            cms_register_shutdown_function_safe([$this, 'reopen_site']);
         }
 
         $args = isset($_SERVER['argv']) ? array_slice($_SERVER['argv'], 2) : [];

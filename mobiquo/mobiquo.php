@@ -107,8 +107,8 @@ if ((is_file(TAPATALK_LOG)) && (cms_is_writable(TAPATALK_LOG))) {
     // Response
     ob_start();
     ob_start();
-    function _do_response_logging()
-    {
+
+    cms_register_shutdown_function_safe(function () {
         $log_file = fopen(TAPATALK_LOG, 'ab');
         flock($log_file, LOCK_EX);
         fseek($log_file, 0, SEEK_END);
@@ -120,9 +120,7 @@ if ((is_file(TAPATALK_LOG)) && (cms_is_writable(TAPATALK_LOG))) {
         fclose($log_file);
 
         @ob_end_flush();
-    }
-
-    register_shutdown_function('_do_response_logging');
+    });
 }
 
 require_code('failure');

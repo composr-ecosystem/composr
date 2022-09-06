@@ -61,7 +61,7 @@ class ComposrHybridauthValuesStorage implements Hybridauth\Storage\StorageInterf
     protected function prepare_for_save()
     {
         if (!$this->made_change) {
-            register_shutdown_function([$this, 'save']);
+            cms_register_shutdown_function_safe([$this, 'save']);
             $this->made_change = true;
         }
     }

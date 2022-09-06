@@ -18,7 +18,7 @@
  * @package    core
  */
 
-/*EXTRA FUNCTIONS: ucwords*/
+/*EXTRA FUNCTIONS: ucwords|register_shutdown_function*/
 
 // NB: Make sure to update the version in minikernel.php too if you add new common functions or change behaviours
 

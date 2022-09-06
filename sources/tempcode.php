@@ -2597,7 +2597,7 @@ function tempcode_include(string $filepath)
 }
 
 /**
- * Record (in memory) that a template has been loaded up. Tallies are kept.
+ * Record that a template has been loaded up. Tallies are kept.
  *
  * @param  string $tpl_path_descrip Template that's getting loaded
  */
@@ -2615,7 +2615,47 @@ function record_template_used(string $tpl_path_descrip)
     if (!$called_once) {
         if (running_script('index')) {
             require_code('themes_meta_tree');
-            register_shutdown_function('_record_templates_used');
+            cms_register_shutdown_function_safe(function () {
+                // Save into the database...
+
+                if (strpos($_SERVER['SCRIPT_NAME'], '/_tests/') !== false) {
+                    return;
+                }
+
+                if (get_option('grow_template_meta_tree') == '0') {
+                    return;
+                }
+
+                global $RECORDED_TEMPLATES_USED;
+                $templates_used = array_keys($RECORDED_TEMPLATES_USED);
+                sort($templates_used);
+
+                foreach ($templates_used as $i => $rel_a) {
+                    $has_currently = collapse_1d_complexity('rel_b', $GLOBALS['SITE_DB']->query_select('theme_template_relations', ['rel_b'], [
+                        'rel_a' => $rel_a,
+                    ]));
+                    sort($has_currently);
+                    $has_currently_flipped = array_flip($has_currently);
+
+                    $templates_used_copy = $templates_used;
+                    unset($templates_used_copy[$i]);
+
+                    if ($has_currently != $templates_used_copy) {
+                        foreach ($templates_used_copy as $rel_b) {
+                            if (!isset($has_currently_flipped[$rel_b])) {
+                                $insert_map = [
+                                    'rel_a' => $rel_a,
+                                    'rel_b' => $rel_b,
+                                ];
+                                $GLOBALS['SITE_DB']->query_insert('theme_template_relations', $insert_map, false, true); // errors suppressed in case of race condition
+                            }
+                        }
+
+                        $meta_tree_builder = new Meta_tree_builder();
+                        $meta_tree_builder->refresh(dirname($rel_a) . '-related', basename($rel_a));
+                    }
+                }
+            });
         }
     }
 

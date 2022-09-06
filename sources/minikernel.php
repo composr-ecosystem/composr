@@ -18,7 +18,7 @@
  * @package    core
  */
 
-/*EXTRA FUNCTIONS: strtoupper|strtolower|ucfirst*/
+/*EXTRA FUNCTIONS: strtoupper|strtolower|ucfirst|register_shutdown_function*/
 
 // Composr can install basically from the real final code, except for...
 // -- global.php

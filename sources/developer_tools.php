@@ -78,61 +78,55 @@ function semi_dev_mode_startup()
 
     global $_CREATED_FILES;
     if (isset($_CREATED_FILES)) { // Comes from ocProducts custom PHP version
-        /**
-         * Run after-tests for dev mode, to make sure coding standards are met.
-         */
-        function dev_mode_aftertests()
-        {
-            global $_CREATED_FILES, $_MODIFIED_FILES;
-
-            // Use the info from ocProduct's custom PHP version to make sure that all files that were created/modified got synched as they should have been.
-            foreach ($_CREATED_FILES as $file) {
-                if ((substr($file, 0, strlen(get_file_base())) == get_file_base()) && (is_file($file)) && (strpos($file, 'log') === false) && (strpos($file, 'tmp') === false) && (strpos($file, 'temp') === false) && (strpos($file, 'cache') === false) && (strpos($file, 'backup') === false) && (strpos($file, 'incoming') === false)) {
-                    @exit(escape_html('File not permission-synched: ' . $file));
-                }
-            }
-            foreach ($_MODIFIED_FILES as $file) {
-                if ((substr($file, 0, strlen(get_file_base())) == get_file_base()) && (is_file($file)) && (strpos($file, 'log') === false) && (strpos($file, 'tmp') === false) && (strpos($file, 'temp') === false) && (strpos($file, 'cache') === false) && (strpos($file, 'backup') === false) && (strpos($file, 'builds') === false) && (strpos($file, 'incoming') === false)) {
-                    if ((strpos($file, '_config.php') === false) && (strpos($file, 'failover_rewritemap') === false) && (basename($file) != 'rate_limiter.php')) {
-                        @exit(escape_html('File not change-synched: ' . $file));
-                    }
-                }
-            }
-
-            global $TITLE_CALLED, $SCREEN_TEMPLATE_CALLED, $EXITING;
-            if (($SCREEN_TEMPLATE_CALLED === null) && ($EXITING == 0) && (running_script('index'))) {
-                @exit(escape_html('No screen template called.'));
-            }
-            if ((!$TITLE_CALLED) && (($SCREEN_TEMPLATE_CALLED === null) || ($SCREEN_TEMPLATE_CALLED != '')) && ($EXITING == 0) && (strpos($_SERVER['SCRIPT_NAME'], 'index.php') !== false)) {
-                @exit(escape_html('No title used on screen.'));
-            }
-
-            if (function_exists('get_resources') && function_exists('get_resource_type') && function_exists('stream_get_meta_data')) {
-                if (function_exists('_cms_profiler_script_end')) {
-                    _cms_profiler_script_end();
-                }
-
-                $rs = get_resources();
-                foreach ($rs as $r) {
-                    $type = get_resource_type($r);
-                    if (!in_array($type, ['Unknown', 'stream-context', 'pspell', 'pspell config'])) {
-                        if ($type == 'stream') {
-                            $stream_meta = stream_get_meta_data($r);
-                        } else {
-                            $stream_meta = null;
-                        }
-
-                        if (($stream_meta === null) || (!in_array($stream_meta['stream_type'], ['TEMP', 'MEMORY', 'STDIO']))) {
-                            @exit(escape_html('Unexpected resource left open of type, ' . $type . (($type == 'stream') ? ('; ' . var_export($stream_meta, true)) : '')));
-                        }
-                    }
-                }
-            }
-        }
-
-        register_shutdown_function(function () {
+        cms_register_shutdown_function_safe(function () {
             // Nested so it will run last
-            register_shutdown_function('dev_mode_aftertests');
+            cms_register_shutdown_function_safe(function () {
+                global $_CREATED_FILES, $_MODIFIED_FILES;
+
+                // Use the info from ocProduct's custom PHP version to make sure that all files that were created/modified got synched as they should have been.
+                foreach ($_CREATED_FILES as $file) {
+                    if ((substr($file, 0, strlen(get_file_base())) == get_file_base()) && (is_file($file)) && (strpos($file, 'log') === false) && (strpos($file, 'tmp') === false) && (strpos($file, 'temp') === false) && (strpos($file, 'cache') === false) && (strpos($file, 'backup') === false) && (strpos($file, 'incoming') === false)) {
+                        @exit(escape_html('File not permission-synched: ' . $file));
+                    }
+                }
+                foreach ($_MODIFIED_FILES as $file) {
+                    if ((substr($file, 0, strlen(get_file_base())) == get_file_base()) && (is_file($file)) && (strpos($file, 'log') === false) && (strpos($file, 'tmp') === false) && (strpos($file, 'temp') === false) && (strpos($file, 'cache') === false) && (strpos($file, 'backup') === false) && (strpos($file, 'builds') === false) && (strpos($file, 'incoming') === false)) {
+                        if ((strpos($file, '_config.php') === false) && (strpos($file, 'failover_rewritemap') === false) && (basename($file) != 'rate_limiter.php')) {
+                            @exit(escape_html('File not change-synched: ' . $file));
+                        }
+                    }
+                }
+
+                global $TITLE_CALLED, $SCREEN_TEMPLATE_CALLED, $EXITING;
+                if (($SCREEN_TEMPLATE_CALLED === null) && ($EXITING == 0) && (running_script('index'))) {
+                    @exit(escape_html('No screen template called.'));
+                }
+                if ((!$TITLE_CALLED) && (($SCREEN_TEMPLATE_CALLED === null) || ($SCREEN_TEMPLATE_CALLED != '')) && ($EXITING == 0) && (strpos($_SERVER['SCRIPT_NAME'], 'index.php') !== false)) {
+                    @exit(escape_html('No title used on screen.'));
+                }
+
+                if (function_exists('get_resources') && function_exists('get_resource_type') && function_exists('stream_get_meta_data')) {
+                    if (function_exists('_cms_profiler_script_end')) {
+                        _cms_profiler_script_end();
+                    }
+
+                    $rs = get_resources();
+                    foreach ($rs as $r) {
+                        $type = get_resource_type($r);
+                        if (!in_array($type, ['Unknown', 'stream-context', 'pspell', 'pspell config'])) {
+                            if ($type == 'stream') {
+                                $stream_meta = stream_get_meta_data($r);
+                            } else {
+                                $stream_meta = null;
+                            }
+
+                            if (($stream_meta === null) || (!in_array($stream_meta['stream_type'], ['TEMP', 'MEMORY', 'STDIO']))) {
+                                @exit(escape_html('Unexpected resource left open of type, ' . $type . (($type == 'stream') ? ('; ' . var_export($stream_meta, true)) : '')));
+                            }
+                        }
+                    }
+                }
+            });
         });
     }
 

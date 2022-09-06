@@ -1533,7 +1533,7 @@ function site_maintenance_lock_engage()
 
     set_value('site_maintenance_lock', strval(time()));
 
-    register_shutdown_function('site_maintenance_lock_disengage'); // Auto-unlocks on some kind of crash
+    cms_register_shutdown_function_safe('site_maintenance_lock_disengage'); // Auto-unlocks on some kind of crash
 }
 
 /**
