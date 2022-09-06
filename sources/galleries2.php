@@ -1914,10 +1914,10 @@ function get_potential_gallery_title(string $cat) : ?string
             $fullname = do_lang('GALLERY');
         }
         return do_lang('PERSONAL_GALLERY_OF', $username, $fullname);
-    } else {
-        // Does exist
-        return get_translated_text($test);
     }
+
+    // Does exist
+    return get_translated_text($test);
 }
 
 /**

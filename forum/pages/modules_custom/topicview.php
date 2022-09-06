@@ -149,9 +149,9 @@ function pigLatin($word)
 {
     if (isVowel(substr($word, 0, 1))) {
         return "$word" . "way ";
-    } else {
-        return moveLetter($word) . "ay ";
     }
+
+    return moveLetter($word) . "ay ";
 }
 
 // Recursive function to take off a non vowel letter and put it on the end
@@ -166,9 +166,9 @@ function moveLetter(&$word)
         $ch_letter = cms_strtolower_ascii(substr($word, 0, 1));
         $word = substr($word, 1) . $ch_letter;
         return moveLetter($word);
-    } else {
-        return $word;
     }
+
+    return $word;
 }
 
 function containsVowel($word)

@@ -141,8 +141,8 @@ class Hook_ajax_tree_choose_catalogue_category
                 $out .= static_evaluate_tempcode(create_selection_list_catalogue_category_tree($catalogue['c_name'], ($it === null) ? null : intval($it), $addable_filter, $compound_list));
             }
             return make_string_tempcode($out);
-        } else {
-            return create_selection_list_catalogue_category_tree($catalogue_name, ($it === null) ? null : intval($it), $addable_filter, $compound_list);
         }
+
+        return create_selection_list_catalogue_category_tree($catalogue_name, ($it === null) ? null : intval($it), $addable_filter, $compound_list);
     }
 }

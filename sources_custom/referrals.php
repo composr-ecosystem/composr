@@ -461,9 +461,8 @@ function referrer_is_qualified($scheme, $member_id)
     $referrer_qualification_logic = isset($scheme['referrer_qualification_logic']) ? $scheme['referrer_qualification_logic'] : 'OR';
     if ($referrer_qualification_logic == 'OR') {
         return ($positive > 0);
-    } else {
-        return ($negative == 0);
     }
+    return ($negative == 0);
 }
 
 function referrer_report_script($ret = false)

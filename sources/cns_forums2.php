@@ -368,7 +368,6 @@ function cns_get_forum_tree(?int $member_id = null, ?int $base_forum = null, str
 
     if ($use_compound_list) {
         return [$real_out, $compound_list];
-    } else {
-        return $real_out;
     }
+    return $real_out;
 }

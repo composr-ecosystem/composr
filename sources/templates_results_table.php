@@ -357,7 +357,6 @@ function results_table_member_cell(int $member_id) : object
             'USERNAME' => $username,
             'MEMBER_ID' => strval($member_id)
         ]);
-    } else {
-        return do_lang_tempcode('GUEST');
     }
+    return do_lang_tempcode('GUEST');
 }

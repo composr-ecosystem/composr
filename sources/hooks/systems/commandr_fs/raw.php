@@ -80,9 +80,9 @@ class Hook_commandr_fs_raw
             fix_permissions($path . '/' . $new_dir_name);
             sync_file($path . '/' . $new_dir_name);
             return $ret;
-        } else {
-            return false; // Directory exists
         }
+
+        return false; // Directory exists
     }
 
     /**
@@ -109,9 +109,9 @@ class Hook_commandr_fs_raw
                 warn_exit(do_lang_tempcode('WRITE_ERROR', escape_html($path . '/' . $dir_name)), false, true);
             }
             return true;
-        } else {
-            return false; // Directory doesn't exist
         }
+
+        return false; // Directory doesn't exist
     }
 
     /**
@@ -135,9 +135,9 @@ class Hook_commandr_fs_raw
             $ret = @unlink($path . '/' . $file_name) or intelligent_write_error($path . '/' . $file_name);
             sync_file($path . '/' . $file_name);
             return $ret;
-        } else {
-            return false; // File doesn't exist
         }
+
+        return false; // File doesn't exist
     }
 
     /**
@@ -159,9 +159,9 @@ class Hook_commandr_fs_raw
 
         if ((is_dir($path)) && (file_exists($path . '/' . $file_name)) && (is_readable($path . '/' . $file_name))) {
             return cms_file_get_contents_safe($path . '/' . $file_name, FILE_READ_LOCK);
-        } else {
-            return false; // File doesn't exist
         }
+
+        return false; // File doesn't exist
     }
 
     /**
@@ -186,8 +186,8 @@ class Hook_commandr_fs_raw
             require_code('files');
             $output = cms_file_put_contents_safe($path . '/' . $file_name, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
             return $output;
-        } else {
-            return false; // File doesn't exist
         }
+
+        return false; // File doesn't exist
     }
 }

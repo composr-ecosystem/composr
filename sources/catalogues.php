@@ -1806,11 +1806,7 @@ function is_ecommerce_catalogue(string $catalogue_name, ?array $catalogue = null
         return false;
     }
 
-    if ($GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_name', ['c_name' => $catalogue_name, 'c_ecommerce' => 1]) === null) {
-        return false;
-    } else {
-        return true;
-    }
+    return ($GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_name', ['c_name' => $catalogue_name, 'c_ecommerce' => 1]) !== null);
 }
 
 /**

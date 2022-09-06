@@ -241,7 +241,6 @@ function staff_checklist_time_ago_and_due(?int $seconds_ago, ?int $recur_hours =
     }
     if ($seconds_to_go > 0) {
         return [do_lang_tempcode('DUE_TIME', ($seconds_ago === null) ? do_lang_tempcode('NA_EM') : make_string_tempcode(escape_html(display_time_period($seconds_ago))), make_string_tempcode(escape_html(display_time_period($seconds_to_go)))), $seconds_to_go];
-    } else {
-        return [do_lang_tempcode('DUE_TIME_AGO', ($seconds_ago === null) ? do_lang_tempcode('NA_EM') : make_string_tempcode(escape_html(display_time_period($seconds_ago))), make_string_tempcode(escape_html(display_time_period(-$seconds_to_go)))), $seconds_to_go];
     }
+    return [do_lang_tempcode('DUE_TIME_AGO', ($seconds_ago === null) ? do_lang_tempcode('NA_EM') : make_string_tempcode(escape_html(display_time_period($seconds_ago))), make_string_tempcode(escape_html(display_time_period(-$seconds_to_go)))), $seconds_to_go];
 }

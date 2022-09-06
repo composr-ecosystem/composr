@@ -463,9 +463,8 @@ function _selectcode_neq(string $field_name, string $var, bool $numeric) : strin
 {
     if ($numeric) {
         return $field_name . '<>' . strval(intval($var));
-    } else {
-        return db_string_not_equal_to($field_name, $var);
     }
+    return db_string_not_equal_to($field_name, $var);
 }
 
 /**
@@ -482,9 +481,8 @@ function _selectcode_eq(string $field_name, string $var, bool $numeric) : string
 {
     if ($numeric) {
         return $field_name . '=' . strval(intval($var));
-    } else {
-        return db_string_equal_to($field_name, $var);
     }
+    return db_string_equal_to($field_name, $var);
 }
 
 /**

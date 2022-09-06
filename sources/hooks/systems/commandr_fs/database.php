@@ -255,9 +255,9 @@ class Hook_commandr_fs_database
                 return false;
             }
             return ($output[0][$file_name] === null) ? '' : strval($output[0][$file_name]);
-        } else {
-            return false; // Files shouldn't even exist anywhere else!
         }
+
+        return false; // Files shouldn't even exist anywhere else!
     }
 
     /**

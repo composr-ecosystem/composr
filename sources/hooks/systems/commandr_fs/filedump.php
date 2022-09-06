@@ -122,9 +122,9 @@ class Hook_commandr_fs_filedump
             fix_permissions($path . '/' . $new_dir_name);
             sync_file($path . '/' . $new_dir_name);
             return $ret;
-        } else {
-            return false; // Directory exists
         }
+
+        return false; // Directory exists
     }
 
     /**
@@ -157,9 +157,9 @@ class Hook_commandr_fs_filedump
             }
 
             return true;
-        } else {
-            return false; // Directory doesn't exist
         }
+
+        return false; // Directory doesn't exist
     }
 
     /**
@@ -205,9 +205,9 @@ class Hook_commandr_fs_filedump
             }
 
             return $ret;
-        } else {
-            return false; // File doesn't exist
         }
+
+        return false; // File doesn't exist
     }
 
     /**
@@ -253,9 +253,9 @@ class Hook_commandr_fs_filedump
             }
 
             return $data;
-        } else {
-            return false; // File doesn't exist
         }
+
+        return false; // File doesn't exist
     }
 
     /**
@@ -310,8 +310,8 @@ class Hook_commandr_fs_filedump
             }
 
             return true;
-        } else {
-            return false; // File doesn't exist
         }
+
+        return false; // File doesn't exist
     }
 }

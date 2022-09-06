@@ -638,9 +638,8 @@ class Module_galleries
             return $this->do_gallery_carousel_mode($rating_details, $comment_details, $cat, $root, $description, $may_download_gallery, $edit_url, $add_gallery_url, $submit_image_url, $submit_video_url, $this->title, $rep_image, $start, $max, $fullname, $sorting, $myrow);
         } elseif ($myrow['layout_mode'] === GALLERY_LAYOUT_MODE_MOSAIC) {
             return $this->do_gallery_mosaic_mode($rating_details, $comment_details, $cat, $root, $description, $may_download_gallery, $edit_url, $add_gallery_url, $submit_image_url, $submit_video_url, $this->title, $fullname, $myrow);
-        } else {
-            return $this->do_gallery_grid_mode($rating_details, $comment_details, $cat, $root, $description, $may_download_gallery, $edit_url, $add_gallery_url, $submit_image_url, $submit_video_url, $this->title, $fullname, $myrow);
         }
+        return $this->do_gallery_grid_mode($rating_details, $comment_details, $cat, $root, $description, $may_download_gallery, $edit_url, $add_gallery_url, $submit_image_url, $submit_video_url, $this->title, $fullname, $myrow);
     }
 
     /**

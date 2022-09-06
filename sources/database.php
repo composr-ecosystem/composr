@@ -2599,9 +2599,9 @@ class DatabaseConnector
 
         if ($where === '') {
             return $this->_query('UPDATE ' . $this->table_prefix . $table . ' SET ' . $update . ' ' . $end, $max, $start, $fail_ok, $num_touched);
-        } else {
-            return $this->_query('UPDATE ' . $this->table_prefix . $table . ' SET ' . $update . ' WHERE (' . $where . ') ' . $end, $max, $start, $fail_ok, $num_touched);
         }
+
+        return $this->_query('UPDATE ' . $this->table_prefix . $table . ' SET ' . $update . ' WHERE (' . $where . ') ' . $end, $max, $start, $fail_ok, $num_touched);
     }
 
     /**

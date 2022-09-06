@@ -606,9 +606,9 @@ class Forum_driver_none extends Forum_driver_base
     {
         if ($member < 1) {
             return [[1]];
-        } else {
-            return [];
         }
+
+        return [];
     }
 
     /**

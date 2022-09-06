@@ -49,8 +49,7 @@ class Hook_commandr_command_version
             return ['', '', cms_version_minor(), ''];
         } elseif (((array_key_exists('g', $options)) || (array_key_exists('general-version', $options))) && ((!array_key_exists('v', $options)) && (!array_key_exists('major-version', $options)))) {
             return ['', '', cms_version_number(), ''];
-        } else {
-            return ['', '', cms_version_pretty(), ''];
         }
+        return ['', '', cms_version_pretty(), ''];
     }
 }

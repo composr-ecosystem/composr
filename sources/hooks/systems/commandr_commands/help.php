@@ -49,14 +49,14 @@ class Hook_commandr_command_help
             } else {
                 return ['', '', '', do_lang('NO_HELP')];
             }
-        } else {
-            // Output a standard "how to use Commandr" help page
-            $stdcommand = [
-                'commandName' => 'openWindow',
-                'options' => ['url' => get_tutorial_url('tut_commandr'), 'windowName' => 'commandr_window1']
-            ];
-
-            return [$stdcommand, '', do_lang('SUCCESS'), ''];
         }
+
+        // Output a standard "how to use Commandr" help page
+        $stdcommand = [
+            'commandName' => 'openWindow',
+            'options' => ['url' => get_tutorial_url('tut_commandr'), 'windowName' => 'commandr_window1']
+        ];
+
+        return [$stdcommand, '', do_lang('SUCCESS'), ''];
     }
 }

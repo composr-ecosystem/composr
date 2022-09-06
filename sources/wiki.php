@@ -891,9 +891,8 @@ function _create_selection_list_wiki_page_tree(array &$wiki_seen, ?int $select, 
 
     if ($use_compound_list) {
         return [$out, $compound_list];
-    } else {
-        return $out;
     }
+    return $out;
 }
 
 /**

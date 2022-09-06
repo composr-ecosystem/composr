@@ -35,8 +35,8 @@ class Hook_commandr_command_pwd
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('pwd', ['h'], []), '', ''];
-        } else {
-            return ['', '', $commandr_fs->print_working_directory(), ''];
         }
+
+        return ['', '', $commandr_fs->print_working_directory(), ''];
     }
 }

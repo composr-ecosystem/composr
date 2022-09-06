@@ -81,9 +81,9 @@ function workflow_choose_ui(bool $include_inherit = false, bool $include_current
         return form_input_list(do_lang_tempcode('USE_WORKFLOW'), do_lang_tempcode('USE_WORKFLOW_DESCRIPTION', $help), 'workflow', $workflows, null, false);
     } elseif (count($all_workflows) == 1) {
         return form_input_hidden('workflow', 'wf_' . strval(current(array_keys($all_workflows))));
-    } else {
-        return new Tempcode();
     }
+
+    return new Tempcode();
 }
 
 /**
@@ -128,9 +128,9 @@ function get_default_workflow() : ?int
     } elseif (count($workflows) == 1) { // Otherwise just give back what we've found (singleton or empty)
         $keys = array_keys($workflows);
         return $keys[0];
-    } else {
-        return null;
     }
+
+    return null;
 }
 
 /**

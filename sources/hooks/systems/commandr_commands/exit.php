@@ -35,14 +35,14 @@ class Hook_commandr_command_exit
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('exit', ['h'], []), '', ''];
-        } else {
-            $stdcommand = [
-                'commandName' => 'exit',
-                'options' => [
-                    'redirectUrl' => static_evaluate_tempcode(build_url(['page' => ''], '')),
-                ],
-            ];
-            return [$stdcommand, '', do_lang('SUCCESS'), ''];
         }
+
+        $stdcommand = [
+            'commandName' => 'exit',
+            'options' => [
+                'redirectUrl' => static_evaluate_tempcode(build_url(['page' => ''], '')),
+            ],
+        ];
+        return [$stdcommand, '', do_lang('SUCCESS'), ''];
     }
 }

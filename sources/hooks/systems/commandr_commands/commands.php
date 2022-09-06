@@ -35,13 +35,13 @@ class Hook_commandr_command_commands
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('commands', ['h'], []), '', ''];
-        } else {
-            $hooks = find_all_hooks('systems', 'commandr_commands');
-
-            $commands = array_keys($hooks);
-            sort($commands);
-
-            return ['', do_template('COMMANDR_COMMANDS', ['_GUID' => 'bd0354a12a05a6116be62f4d77b47657', 'COMMANDS' => $commands]), '', ''];
         }
+
+        $hooks = find_all_hooks('systems', 'commandr_commands');
+
+        $commands = array_keys($hooks);
+        sort($commands);
+
+        return ['', do_template('COMMANDR_COMMANDS', ['_GUID' => 'bd0354a12a05a6116be62f4d77b47657', 'COMMANDS' => $commands]), '', ''];
     }
 }

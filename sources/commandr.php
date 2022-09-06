@@ -213,9 +213,9 @@ class Virtual_shell
     {
         if (count($this->parsed_input) >= 1) {
             return $this->parsed_input;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -227,9 +227,9 @@ class Virtual_shell
     {
         if (count($this->output) >= 1) {
             return $this->output;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**

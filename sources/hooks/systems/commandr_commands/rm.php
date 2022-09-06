@@ -58,8 +58,8 @@ class Hook_commandr_command_rm
 
         if ($success) {
             return ['', '', do_lang('SUCCESS'), ''];
-        } else {
-            return ['', '', '', do_lang('INCOMPLETE_ERROR')];
         }
+
+        return ['', '', '', do_lang('INCOMPLETE_ERROR')];
     }
 }

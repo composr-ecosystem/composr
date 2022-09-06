@@ -35,9 +35,9 @@ class Hook_commandr_command_bsod
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('bsod', ['h'], []), '', ''];
-        } else {
-            $stdcommand = ['commandName' => 'bsod'];
-            return [$stdcommand, '', '', '(A(*$&(*!$*$!@$!*$NO CARRIER'];
         }
+
+        $stdcommand = ['commandName' => 'bsod'];
+        return [$stdcommand, '', '', '(A(*$&(*!$*$!@$!*$NO CARRIER'];
     }
 }

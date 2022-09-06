@@ -870,11 +870,11 @@ class Hook_payment_gateway_authorize
     {
         if (strpos($haystack, $start) === false || strpos($haystack, $end) === false) {
             return null;
-        } else {
-            $start_position = strpos($haystack, $start) + strlen($start);
-            $end_position = strpos($haystack, $end);
-
-            return substr($haystack, $start_position, $end_position - $start_position);
         }
+
+        $start_position = strpos($haystack, $start) + strlen($start);
+        $end_position = strpos($haystack, $end);
+
+        return substr($haystack, $start_position, $end_position - $start_position);
     }
 }

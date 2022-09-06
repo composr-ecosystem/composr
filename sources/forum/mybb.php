@@ -1391,9 +1391,9 @@ class Forum_driver_mybb extends Forum_driver_base
                 // Return the default guest ID, because the login key is not correct
                 return $this->get_guest_id();
             }
-        } else {
-            // Return the default guest ID, because there is no member cookie information
-            return $this->get_guest_id();
         }
+
+        // Return the default guest ID, because there is no member cookie information
+        return $this->get_guest_id();
     }
 }

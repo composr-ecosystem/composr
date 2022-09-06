@@ -955,28 +955,28 @@ abstract class Standard_crud_module
                 'SUPPORT_AUTOSAVE' => true,
                 'CANCEL_URL' => $cancel_url,
             ] + $extra_tpl_params);
-        } else {
-            $fields->attach($fields2);
-            return do_template(
-                'FORM_SCREEN',
-                [
-                    '_GUID' => '1df73fdfccb387640340f15d5d6dae54' . get_class($this),
-                    'PREVIEW' => $this->do_preview,
-                    'SEPARATE_PREVIEW' => $this->second_stage_preview,
-                    'HIDDEN' => $hidden,
-                    'TITLE' => $this->title,
-                    'SKIP_WEBSTANDARDS' => $this->skip_webstandards,
-                    'TEXT' => $this->add_text,
-                    'URL' => $post_url,
-                    'FIELDS' => $fields->evaluate()/*Conserve memory*/,
-                    'SUBMIT_ICON' => $submit_icon,
-                    'SUBMIT_NAME' => $submit_name,
-                    'JS_FUNCTION_CALLS' => $this->js_function_calls,
-                    'SUPPORT_AUTOSAVE' => true,
-                    'CANCEL_URL' => $cancel_url,
-                ] + $extra_tpl_params
-            );
         }
+
+        $fields->attach($fields2);
+        return do_template(
+            'FORM_SCREEN',
+            [
+                '_GUID' => '1df73fdfccb387640340f15d5d6dae54' . get_class($this),
+                'PREVIEW' => $this->do_preview,
+                'SEPARATE_PREVIEW' => $this->second_stage_preview,
+                'HIDDEN' => $hidden,
+                'TITLE' => $this->title,
+                'SKIP_WEBSTANDARDS' => $this->skip_webstandards,
+                'TEXT' => $this->add_text,
+                'URL' => $post_url,
+                'FIELDS' => $fields->evaluate()/*Conserve memory*/,
+                'SUBMIT_ICON' => $submit_icon,
+                'SUBMIT_NAME' => $submit_name,
+                'JS_FUNCTION_CALLS' => $this->js_function_calls,
+                'SUPPORT_AUTOSAVE' => true,
+                'CANCEL_URL' => $cancel_url,
+            ] + $extra_tpl_params
+        );
     }
 
     /**
@@ -1615,27 +1615,27 @@ abstract class Standard_crud_module
                 'SUPPORT_AUTOSAVE' => true,
                 'CANCEL_URL' => $cancel_url,
             ] + $extra_tpl_params);
-        } else {
-            $fields->attach($fields2);
-            return do_template('FORM_SCREEN', [
-                '_GUID' => '2d70be34595a16c6f170d966b894bfe2' . get_class($this),
-                'PREVIEW' => $this->do_preview,
-                'SEPARATE_PREVIEW' => $this->second_stage_preview,
-                'TITLE' => $this->title,
-                'SKIP_WEBSTANDARDS' => $this->skip_webstandards,
-                'PING_URL' => $ping_url,
-                'WARNING_DETAILS' => $warning_details,
-                'HIDDEN' => $hidden,
-                'TEXT' => $this->edit_text,
-                'URL' => $post_url,
-                'FIELDS' => $fields->evaluate()/*Conserve memory*/,
-                'SUBMIT_ICON' => $submit_icon,
-                'SUBMIT_NAME' => $submit_name,
-                'JS_FUNCTION_CALLS' => $this->js_function_calls,
-                'SUPPORT_AUTOSAVE' => true,
-                'CANCEL_URL' => $cancel_url,
-            ] + $extra_tpl_params);
         }
+
+        $fields->attach($fields2);
+        return do_template('FORM_SCREEN', [
+            '_GUID' => '2d70be34595a16c6f170d966b894bfe2' . get_class($this),
+            'PREVIEW' => $this->do_preview,
+            'SEPARATE_PREVIEW' => $this->second_stage_preview,
+            'TITLE' => $this->title,
+            'SKIP_WEBSTANDARDS' => $this->skip_webstandards,
+            'PING_URL' => $ping_url,
+            'WARNING_DETAILS' => $warning_details,
+            'HIDDEN' => $hidden,
+            'TEXT' => $this->edit_text,
+            'URL' => $post_url,
+            'FIELDS' => $fields->evaluate()/*Conserve memory*/,
+            'SUBMIT_ICON' => $submit_icon,
+            'SUBMIT_NAME' => $submit_name,
+            'JS_FUNCTION_CALLS' => $this->js_function_calls,
+            'SUPPORT_AUTOSAVE' => true,
+            'CANCEL_URL' => $cancel_url,
+        ] + $extra_tpl_params);
     }
 
     /**

@@ -311,9 +311,8 @@ class Module_cms_chat
             return (-1);
         } elseif ($messages_a == $messages_b) {
             return 0;
-        } else {
-            return 1;
         }
+        return 1;
     }
 
     /**

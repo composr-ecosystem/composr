@@ -83,18 +83,18 @@ class Block_side_personal_stats
                 'LINKS_ECOMMERCE' => $links_ecommerce,
                 'DETAILS' => $details,
             ]);
-        } else {
-            $title = do_lang_tempcode('NOT_LOGGED_IN');
-
-            list($full_url, $login_url, $join_url) = get_login_url();
-            return do_template('BLOCK_SIDE_PERSONAL_STATS_NO', [
-                '_GUID' => '32aade68b98dfd191f0f84c6648f7dde',
-                'BLOCK_ID' => $block_id,
-                'TITLE' => $title,
-                'FULL_LOGIN_URL' => $full_url,
-                'JOIN_URL' => $join_url,
-                'LOGIN_URL' => $login_url,
-            ]);
         }
+
+        $title = do_lang_tempcode('NOT_LOGGED_IN');
+
+        list($full_url, $login_url, $join_url) = get_login_url();
+        return do_template('BLOCK_SIDE_PERSONAL_STATS_NO', [
+            '_GUID' => '32aade68b98dfd191f0f84c6648f7dde',
+            'BLOCK_ID' => $block_id,
+            'TITLE' => $title,
+            'FULL_LOGIN_URL' => $full_url,
+            'JOIN_URL' => $join_url,
+            'LOGIN_URL' => $login_url,
+        ]);
     }
 }

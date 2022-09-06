@@ -509,9 +509,8 @@ function _unichr(int $c)
 {
     if ($c <= 0x7F) {
         return chr($c);
-    } else {
-        return '#&' . strval($c) . ';';
     }
+    return '#&' . strval($c) . ';';
 }
 
 /**

@@ -546,9 +546,9 @@ function copy_r($path, $dest)
         return true;
     } elseif (is_file($path)) {
         return copy($path, $dest);
-    } else {
-        return false;
     }
+
+    return false;
 }
 
 function do_build_file_output($path)

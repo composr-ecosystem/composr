@@ -111,11 +111,11 @@ class Commandr_fs
         // Fetch the pwd from a cookie, or generate a new one
         if (array_key_exists('commandr_dir', $_COOKIE)) {
             return $this->_pwd_to_array(base64_decode($_COOKIE['commandr_dir']));
-        } else {
-            $default_dir = [];
-            cms_setcookie('commandr_dir', base64_encode($this->pwd_to_string($default_dir)), false, false);
-            return $default_dir;
         }
+
+        $default_dir = [];
+        cms_setcookie('commandr_dir', base64_encode($this->pwd_to_string($default_dir)), false, false);
+        return $default_dir;
     }
 
     /**
@@ -412,9 +412,9 @@ class Commandr_fs
         // Return the current working directory
         if ($array_form) {
             return $this->pwd;
-        } else {
-            return $this->pwd_to_string();
         }
+
+        return $this->pwd_to_string();
     }
 
     /**
@@ -524,9 +524,9 @@ class Commandr_fs
             cms_setcookie('commandr_dir', base64_encode($this->pwd_to_string($target_directory)), false, false);
 
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -548,9 +548,9 @@ class Commandr_fs
             require_code('hooks/systems/commandr_fs/' . filter_naughty_harsh($meta_root_node_type));
             $object = object_factory('Hook_commandr_fs_' . filter_naughty_harsh($meta_root_node_type));
             return $object->make_directory($meta_dir, $meta_root_node, $directory_name, $this);
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -589,9 +589,9 @@ class Commandr_fs
 
             // Remove directory itself
             return $object->remove_directory($meta_dir, $meta_root_node, $directory_name, $this);
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -664,9 +664,9 @@ class Commandr_fs
         $success = $this->copy_directory($to_move, $destination);
         if ($success) {
             return $this->remove_directory($to_move);
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -739,9 +739,9 @@ class Commandr_fs
             require_code('hooks/systems/commandr_fs/' . filter_naughty_harsh($meta_root_node_type));
             $object = object_factory('Hook_commandr_fs_' . filter_naughty_harsh($meta_root_node_type));
             return $object->remove_file($meta_dir, $meta_root_node, $filename, $this);
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -763,9 +763,9 @@ class Commandr_fs
             require_code('hooks/systems/commandr_fs/' . filter_naughty_harsh($meta_root_node_type));
             $object = object_factory('Hook_commandr_fs_' . filter_naughty_harsh($meta_root_node_type));
             return $object->read_file($meta_dir, $meta_root_node, $filename, $this);
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -788,9 +788,9 @@ class Commandr_fs
             require_code('hooks/systems/commandr_fs/' . filter_naughty_harsh($meta_root_node_type));
             $object = object_factory('Hook_commandr_fs_' . filter_naughty_harsh($meta_root_node_type));
             return $object->write_file($meta_dir, $meta_root_node, $filename, $contents, $this) !== false;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -814,8 +814,8 @@ class Commandr_fs
             $object = object_factory('Hook_commandr_fs_' . filter_naughty_harsh($meta_root_node_type));
             $old_contents = $object->read_file($meta_dir, $meta_root_node, $filename, $this);
             return $object->write_file($meta_dir, $meta_root_node, $filename, $old_contents . $contents, $this);
-        } else {
-            return false;
         }
+
+        return false;
     }
 }
