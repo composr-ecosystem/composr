@@ -136,7 +136,7 @@ function do_notification_lang($codename, $parameter1 = null, $parameter2 = null,
 
 /**
  * Wraps do_template, keeping a record of the last call. You can use when building the notification $message.
- * This allows notification handlers to possibly repeat the call with a customised template.
+ * This allows notification handlers (e.g. push notifications) to possibly repeat the call with a customised template.
  *
  * @param  ID_TEXT $codename The codename of the template being loaded
  * @param  ?array $parameters A map of parameters for the template (key to value); you can have any number of parameters of any name, there is no set standard; having a _GUID parameter of random value is a convention (null: no parameters)
