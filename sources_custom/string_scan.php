@@ -4982,7 +4982,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DOC_EMAIL_LOG
         DOC_EMOTICONS
         DOC_ERRORLOG
-        DOC_EXPORT_POINTS
+        DOC_EXPORT_POINTS_OVERVIEW
         DOC_FIELD_FILTERS
         DOC_FILEDUMP
         DOC_FIND_LANG_STRING_TIP
@@ -5345,7 +5345,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ORDER_STATUS_FILTER_DESCRIPTION
         TRANSACTION_STATUS_FILTER_DESCRIPTION
         EXPORT_TRANSACTIONS_TEXT
-        EXPORT_POINTS
+        EXPORT_POINTS_OVERVIEW
         EXPORT_QUIZ
         EXPORT_QUIZ_TEXT
         EXPORT_STATS_TO_SPREADSHEET

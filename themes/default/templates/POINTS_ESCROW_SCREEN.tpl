@@ -15,4 +15,5 @@
 {+END}
 
 <h2>{!ESCROW_LOGS}</h2>
+
 {ESCROW_LOGS}

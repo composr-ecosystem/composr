@@ -60,7 +60,7 @@ class Module_admin_points
         ];
         if (!$be_deferential) {
             $ret += [
-                'export' => ['EXPORT_POINTS', 'menu/social/points'],
+                'export_overview' => ['EXPORT_POINTS_OVERVIEW', 'menu/social/points'],
             ];
         }
         return $ret;
@@ -86,13 +86,13 @@ class Module_admin_points
 
         require_lang('points');
 
-        if ($type == 'export') {
-            set_helper_panel_text(comcode_lang_string('DOC_EXPORT_POINTS'));
+        if ($type == 'export_overview') {
+            set_helper_panel_text(comcode_lang_string('DOC_EXPORT_POINTS_OVERVIEW'));
 
             breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('POINTS_LEDGER')]]);
             breadcrumb_set_self(do_lang_tempcode('EXPORT'));
 
-            $this->title = get_screen_title('EXPORT_POINTS');
+            $this->title = get_screen_title('EXPORT_POINTS_OVERVIEW');
         } else {
             set_helper_panel_tutorial('tut_points');
         }
@@ -138,8 +138,8 @@ class Module_admin_points
 
         $type = get_param_string('type', 'browse');
 
-        if ($type == 'export') {
-            return $this->points_export();
+        if ($type == 'export_overview') {
+            return $this->export_overview();
         }
         if ($type == 'reverse') {
             return $this->reverse();
@@ -187,11 +187,11 @@ class Module_admin_points
     }
 
     /**
-     * Export a spreadsheet of point transactions.
+     * Export a spreadsheet showing a point overview for all members.
      *
      * @return Tempcode The result of execution
      */
-    public function points_export() : object
+    public function export_overview() : object
     {
         $d = [post_param_date('from', true), post_param_date('to', true)];
         if ($d[0] === null) {
@@ -200,7 +200,7 @@ class Module_admin_points
         list($from, $to) = $d;
 
         require_code('tasks');
-        return call_user_func_array__long_task(do_lang('EXPORT_POINTS'), $this->title, 'export_points_log', [$from, $to]);
+        return call_user_func_array__long_task(do_lang('EXPORT_POINTS_OVERVIEW'), $this->title, 'export_points_overview', [$from, $to]);
     }
 
     /**
@@ -347,9 +347,9 @@ class Module_admin_points
                 $url = $_url->evaluate();
             }
             return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
-        } else {
-            return $out;
         }
+
+        return $out;
     }
 
     /**
@@ -377,9 +377,9 @@ class Module_admin_points
                 $redirect = $_redirect->evaluate();
             }
             return redirect_screen($this->title, $redirect, do_lang_tempcode('SUCCESS'));
-        } else {
-            return $out;
         }
+
+        return $out;
     }
 
     /**
