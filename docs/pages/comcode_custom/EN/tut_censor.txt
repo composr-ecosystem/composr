@@ -64,19 +64,19 @@ This screen can be accessed from either:
 The warnings form consists of the following options that can be utilised to easily deal with problematic members or spammers:
  - [b]Warning Type[/b]: A "Formal Warning" counts towards the member's total number of warnings, whereas an "Off-the-book Warning" does not. Furthermore, off-the-book warnings are not listed to the member on their profile.
  - [b]Punitive Actions[/b]
-	- [b]Ban the member's IP address[/b]: Bans the last-known IP address of the member so they (and others) can no longer access the website from that IP. The ban is performed on the .htaccess file so they cannot even access the website anymore.
-	- [b]Ban member[/b]: Unlike banning the IP address, the member can still access the website. But they can no longer log in to / use their account.
-	- [b]Change usergroup to[/b]: Change the primary usergroup which this member belongs (such as to de-rank them).
-	- [b]Extend probation[/b]: Start a probation period, or extend an existing one, by this many days. The member will only have the permissions assigned to the "Probation" usergroup regardless of any other usergroup they are in.
-	- [b]Charge points[/b]: Take points away from the member. It is permissible to charge more points than they have in their balance; this will put their balance in negative points.
+  - [b]Ban the member's IP address[/b]: Bans the last-known IP address of the member so they (and others) can no longer access the website from that IP. The ban is performed on the .htaccess file so they cannot even access the website anymore.
+  - [b]Ban member[/b]: Unlike banning the IP address, the member can still access the website. But they can no longer log in to / use their account.
+  - [b]Change usergroup to[/b]: Change the primary usergroup which this member belongs (such as to de-rank them).
+  - [b]Extend probation[/b]: Start a probation period, or extend an existing one, by this many days. The member will only have the permissions assigned to the "Probation" usergroup regardless of any other usergroup they are in.
+  - [b]Charge points[/b]: Take points away from the member. It is permissible to charge more points than they have in their balance; this will put their balance in negative points.
  - [b]Delete[/b]
-	- A list of recently posted content by the member will appear in this section. You can choose which content to delete. This is handy for quickly mass-deleting spam content posted by a member.
+  - A list of recently posted content by the member will appear in this section. You can choose which content to delete. This is handy for quickly mass-deleting spam content posted by a member.
  - [b]Explanatory Text[/b]
- 	- You can load a previously-saved explanatory reason and message by clicking the "Load an explanation/message" link.
-	- [b]Reason[/b]: A brief reason / explanation for the warning, used in the logs. You might reference rule numbers or Terms of Service section numbers that were violated in here.
-	- [b]Message[/b]: You have the ability to write a Private Topic message to be sent to the member for their warning. You could include details about what punitive actions you are taking, reminders to re-read the rules / next steps to take, repercussions for future violations, and so on. Keep in mind that you may not want to include punitive actions in this field if you tick (check) the "Include punitive actions in message" tickbox (checkbox).
-	- [b]Save explanatory details[/b]: If you want to save what you wrote in the "Reason" and "Message" fields for later use, you can provide a name here. The next time you want to use it, click the "Load an explanation/message" link at the top of the "Explanatory Text" section to pre-populate a saved reason and message.
-	- [b]Include punitive actions in message[/b]: Auto-generate information about what punitive actions you are taking for the Private Topic sent to the member. This is beneficial so you do not have to write them yourself in the message. But it also allows you to better manage saved reasons / messages; you can re-use a saved reason / message without having to edit it for the punitive actions you are taking now.
+  - You can load a previously-saved explanatory reason and message by clicking the "Load an explanation/message" link.
+  - [b]Reason[/b]: A brief reason / explanation for the warning, used in the logs. You might reference rule numbers or Terms of Service section numbers that were violated in here.
+  - [b]Message[/b]: You have the ability to write a Private Topic message to be sent to the member for their warning. You could include details about what punitive actions you are taking, reminders to re-read the rules / next steps to take, repercussions for future violations, and so on. Keep in mind that you may not want to include punitive actions in this field if you tick (check) the "Include punitive actions in message" tickbox (checkbox).
+  - [b]Save explanatory details[/b]: If you want to save what you wrote in the "Reason" and "Message" fields for later use, you can provide a name here. The next time you want to use it, click the "Load an explanation/message" link at the top of the "Explanatory Text" section to pre-populate a saved reason and message.
+  - [b]Include punitive actions in message[/b]: Auto-generate information about what punitive actions you are taking for the Private Topic sent to the member. This is beneficial so you do not have to write them yourself in the message. But it also allows you to better manage saved reasons / messages; you can re-use a saved reason / message without having to edit it for the punitive actions you are taking now.
 
 A note about Private Topics sent for warnings: A private topic will not get sent to the member for their warning if nothing is written in the "Message" field and "Include punitive actions in message" is unticked (unchecked). Also, if "Message" is blank but "Include punitive actions in message" is ticked (checked), a private topic will get sent, but it will only contain the punitive actions taken.
 

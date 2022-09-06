@@ -90,7 +90,7 @@ function points_get_escrow(int $member_id_of, int $member_id_viewing) : object
         $reason = get_translated_tempcode('escrow', $myrow, 'reason');
 
         $results_entry = [
-            strval($myrow['id']),
+            escape_html(strval($myrow['id'])),
             $_date,
             escape_html(integer_format($amount)),
             $_from_name,
@@ -155,7 +155,7 @@ function escrow_get_logs(int $id) : object
         }
 
         $results_entry = [
-            $date,
+            escape_html($date),
             do_lang_tempcode($myrow['log_type']),
             ($myrow['member_id'] !== null) ? $name : '',
             ($myrow['information'] !== null) ? symbol_truncator([$reason, '200', '1', '1'], 'left') : ''
@@ -290,7 +290,7 @@ function satisfy_escrow(int $id, int $member_id, ?array $row = null, bool $escro
     log_it('LOG_ESCROW_SATISFIED', strval($id), $username);
 
     // If both members satisfied the escrow, then complete it
-    $finished = $GLOBALS['SITE_DB']->query_select_value('escrow', 'SUM(sender_status+recipient_status)', ['id' => $id]);
+    $finished = $GLOBALS['SITE_DB']->query_select_value('escrow', '(SUM(sender_status)+SUM(recipient_status))', ['id' => $id]);
     if ($finished == 2) {
         return _complete_escrow($row, null, $escrow_log, $send_notifications);
     } else {
@@ -332,7 +332,7 @@ function _complete_escrow(array $row, ?int $amount = null, bool $escrow_log = tr
 
     // Credit the points to the recipient in a new transaction
     $_id = points_credit_member($recipient_id, do_lang('ESCROW_REASON_FROM', $username, $reason), $amount, 0, 0, true, 0, ['complete', 'points_escrow', strval($id)]);
-    array_push($response, $_id);
+    $response[] = $_id;
 
     // If we are not crediting the recipient with the full escrow points, then we need to refund the rest to the sender
     if ($amount < $row['amount']) {
@@ -346,7 +346,9 @@ function _complete_escrow(array $row, ?int $amount = null, bool $escrow_log = tr
         $refund_gift_points = min($refund, $ledger['amount_gift_points']);
 
         $id_b = points_credit_member($row['sender_id'], do_lang('ESCROW_REASON_FROM', $username, $reason), $amount, $refund_gift_points, 0, true, 1, ['partial_refund', 'points_escrow', strval($id)]);
-        array_push($response, $id_b, $refund, $refund_gift_points);
+        $response[] = $id_b;
+        $response[] = $refund;
+        $response[] = $refund_gift_points;
 
         // Also, edit the points amount on the escrow itself
         $GLOBALS['SITE_DB']->query_update('escrow', ['amount' => $amount], ['id' => $id], '', 1);
@@ -600,33 +602,10 @@ function moderate_escrow(int $id, int $member_id, string $action, string $new_re
  * @param  ID_TEXT $type The type of log; a language string
  * @param  AUTO_LINK $id The ID of the escrow
  * @param  ?MEMBER $member_id The member associated with this log (null: no member associated)
- * @param  ?LONG_TEXT $information Additional information pertaining to this log (null: none)
- * @param  boolean $return_id Whether to immediately log the entry and return its ID
- * @return ?AUTO_LINK The ID of the record (null: $return_id was false)
- */
-function escrow_log_it(string $type, int $id, ?int $member_id = null, ?string $information = null, bool $return_id = false) : ?int
-{
-    if ($return_id) {
-        return _escrow_log_it($type, $id, $member_id, $information);
-    }
-
-    cms_register_shutdown_function_safe(function () use ($type, $id, $member_id, $information) {
-        return _escrow_log_it($type, $id, $member_id, $information);
-    });
-
-    return null;
-}
-
-/**
- * The actualiser for logging something in a points escrow.
- *
- * @param  ID_TEXT $type The type of log
- * @param  AUTO_LINK $id The ID of the escrow
- * @param  ?MEMBER $member_id The member associated with this log (null: no member associated)
- * @param  ?LONG_TEXT $information Additional information pertaining to this log (null: none)
+ * @param  LONG_TEXT $information Additional information pertaining to this log
  * @return AUTO_LINK The ID of the record
  */
-function _escrow_log_it(string $type, int $id, ?int $member_id = null, ?string $information = null) : int
+function escrow_log_it(string $type, int $id, ?int $member_id = null, string $information = '') : int
 {
     $map = [
         'escrow_id' => $id,
@@ -634,9 +613,7 @@ function _escrow_log_it(string $type, int $id, ?int $member_id = null, ?string $
         'log_type' => $type,
         'member_id' => $member_id
     ];
-    if ($information !== null) {
-        $map += insert_lang_comcode('information', $information, 5);
-    }
+    $map += insert_lang_comcode('information', $information, 5);
 
     return $GLOBALS['SITE_DB']->query_insert('escrow_logs', $map, true);
 }

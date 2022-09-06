@@ -50,7 +50,7 @@ class Module_points
         delete_privilege('send_points_to_self');
         delete_privilege('view_points_ledger');
         delete_privilege('use_points');
-        delete_privilege('trace_anonymous_transactions');
+        delete_privilege('trace_anonymous_points_transactions');
         delete_privilege('use_points_escrow');
         delete_privilege('moderate_points_escrow');
         delete_privilege('send_points');
@@ -89,11 +89,12 @@ class Module_points
             ]);
             $GLOBALS['SITE_DB']->create_index('points_ledger', 'sender_id', ['sender_id']);
             $GLOBALS['SITE_DB']->create_index('points_ledger', 'recipient_id', ['recipient_id']);
+            $GLOBALS['SITE_DB']->create_index('points_ledger', 'amount_gift_points', ['amount_gift_points']); // admin_points
             $GLOBALS['SITE_DB']->create_index('points_ledger', 'linked_to', ['linked_to']);
             $GLOBALS['SITE_DB']->create_index('points_ledger', 'status', ['status']);
 
             add_privilege('POINTS', 'use_points', true);
-            add_privilege('POINTS', 'trace_anonymous_transactions', false);
+            add_privilege('POINTS', 'trace_anonymous_points_transactions', false);
             add_privilege('POINTS', 'send_points_to_self', false);
             add_privilege('POINTS', 'view_points_ledger', false);
 
@@ -138,7 +139,7 @@ class Module_points
                 'id' => '*AUTO',
                 'escrow_id' => 'AUTO_LINK',
                 'date_and_time' => 'TIME',
-                'log_type' => 'ID_TEXT',
+                'log_type' => 'ID_TEXT', // Will be a language string from points.ini, one of LOG_ESCROW_*
                 'member_id' => '?MEMBER',
                 'information' => '?LONG_TRANS__COMCODE',
             ]);
@@ -167,6 +168,7 @@ class Module_points
 
             $GLOBALS['SITE_DB']->create_index('points_ledger', 'linked_to', ['linked_to']);
             $GLOBALS['SITE_DB']->create_index('points_ledger', 'status', ['status']);
+            $GLOBALS['SITE_DB']->create_index('points_ledger', 'amount_gift_points', ['amount_gift_points']); // admin_points
 
             // Migrate all chargelog entries to points_ledger, and delete the chargelog table
             $start = 0;
@@ -197,7 +199,7 @@ class Module_points
 
             rename_privilege('give_points_self', 'send_points_to_self');
             rename_privilege('view_charge_log', 'view_points_ledger');
-            rename_privilege('trace_anonymous_gifts', 'trace_anonymous_transactions');
+            rename_privilege('trace_anonymous_gifts', 'trace_anonymous_points_transactions');
 
             $GLOBALS['FORUM_DRIVER']->install_edit_custom_field('points_used', 'points_spent', 20, /*locked=*/1, /*viewable=*/0, /*settable=*/0, /*required=*/0, '', 'integer');
             $GLOBALS['FORUM_DRIVER']->install_edit_custom_field('points_gained_given', 'points_received', 20, /*locked=*/1, /*viewable=*/0, /*settable=*/0, /*required=*/0, '', 'integer');
@@ -293,6 +295,18 @@ class Module_points
             $id = get_param_integer('id');
             $member_id_of = get_param_integer('member_id_of', null);
 
+            // Set title
+            if ($type == 'satisfy_escrow') {
+                $this->title = get_screen_title('_ESCROW_SATISFY', true, [escape_html(strval($id))]);
+            } elseif ($type == 'dispute_escrow') {
+                $this->title = get_screen_title('_ESCROW_DISPUTE', true, [escape_html(strval($id))]);
+            } elseif ($type == 'moderate_escrow') {
+                $this->title = get_screen_title('_ESCROW_MODERATE', true, [escape_html(strval($id))]);
+            } else {
+                $this->title = get_screen_title('ESCROW_VIEW');
+            }
+
+            // Set breadcrumbs
             if ($member_id_of === null) {
                 $member_id_viewing = get_member();
                 $_row = $GLOBALS['SITE_DB']->query_select('escrow', ['id', 'sender_id', 'recipient_id'], ['id' => $id], '', 1);
@@ -307,15 +321,13 @@ class Module_points
                     $member_id_of = $row['sender_id'];
                 }
             }
-
             $map = [['_SELF:_SELF:browse', do_lang_tempcode('MEMBER_POINT_FIND')], ['_SELF:_SELF:member:' . strval($member_id_of), do_lang_tempcode('_POINTS', escape_html($GLOBALS['FORUM_DRIVER']->get_username($member_id_of, true)))]];
             if ($type != 'view_escrow') {
-                $map[] = ['_SELF:_SELF:view_escrow:' . strval($row['id']), do_lang_tempcode('_ESCROW_VIEW', strval($row['id']))];
+                $map[] = ['_SELF:_SELF:view_escrow:' . strval($row['id']), do_lang_tempcode('_ESCROW_VIEW', escape_html(strval($row['id'])))];
             }
             breadcrumb_set_parents($map);
-
-            $this->title = get_screen_title('ESCROW_VIEW');
         }
+
 
         if ($type == 'member') {
             $this->member_id_of = get_param_integer('id', get_member());
@@ -674,8 +686,6 @@ class Module_points
         $member_id_viewing = get_member();
         $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id_of, true, USERNAME_GUEST_AS_DEFAULT | USERNAME_DEFAULT_ERROR);
 
-        $this->title = get_screen_title('_ESCROW_TO', true, [$username]);
-
         // Check privileges
         if (is_guest($member_id_viewing)) {
             access_denied('NOT_AS_GUEST');
@@ -690,7 +700,7 @@ class Module_points
             return warn_screen($this->title, do_lang_tempcode('ESCROW_NO_SELF'));
         }
         elseif (!has_privilege($member_id_of, 'use_points')) {
-            return warn_screen($this->title, do_lang_tempcode('ESCROW_MEMBER_CANNOT_USE_POINTS', $username));
+            return warn_screen($this->title, do_lang_tempcode('ESCROW_MEMBER_CANNOT_USE_POINTS', escape_html($username)));
         }
 
         require_code('form_templates');
@@ -699,7 +709,7 @@ class Module_points
         $fields->attach(form_input_integer(do_lang_tempcode('POINTS'), do_lang_tempcode('DESCRIPTION_ESCROW_POINTS'), 'escrow_amount', null, true));
         $fields->attach(form_input_line_comcode(do_lang_tempcode('REASON'), do_lang_tempcode('DESCRIPTION_ESCROW_REASON'), 'escrow_reason', '', true, null));
         $fields->attach(form_input_text_comcode(do_lang_tempcode('ESCROW_AGREEMENT'), do_lang_tempcode('DESCRIPTION_ESCROW_AGREEMENT'), 'escrow_agreement', '', true));
-        $fields->attach(form_input_date(do_lang_tempcode('EXPIRY_DATE'), do_lang_tempcode('DESCRIPTION_ESCROW_EXPIRY_TIME', $username), 'escrow_expiry_time', false, true, true));
+        $fields->attach(form_input_date(do_lang_tempcode('EXPIRY_DATE'), do_lang_tempcode('DESCRIPTION_ESCROW_EXPIRY_TIME', escape_html($username)), 'escrow_expiry_time', false, true, true));
 
         $escrow_url = build_url(['page' => 'points', 'type' => 'do_escrow', 'id' => $member_id_of], get_module_zone('points'));
 
@@ -708,7 +718,7 @@ class Module_points
             'HIDDEN' => new Tempcode(),
             'TITLE' => $this->title,
             'FIELDS' => $fields,
-            'TEXT' => do_lang_tempcode('DESCRIPTION_ESCROW', $username),
+            'TEXT' => do_lang_tempcode('DESCRIPTION_ESCROW', escape_html($username)),
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => do_lang_tempcode('PROCEED'),
             'URL' => $escrow_url,
@@ -752,16 +762,16 @@ class Module_points
         }
         elseif (!has_privilege($member_id_of, 'use_points')) {
             $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id_of, true, USERNAME_GUEST_AS_DEFAULT | USERNAME_DEFAULT_ERROR);
-            return warn_screen($this->title, do_lang_tempcode('ESCROW_MEMBER_CANNOT_USE_POINTS', $username));
+            return warn_screen($this->title, do_lang_tempcode('ESCROW_MEMBER_CANNOT_USE_POINTS', escape_html($username)));
         }
         elseif (($amount < 0) || ($reason == '') || (($expiry_time !== null) && ($expiry_time < time()))) {
             return warn_screen($this->title, do_lang_tempcode('IMPROPERLY_FILLED_IN'));
         }
         elseif ($viewer_balance < $amount) {
             if (get_option('enable_gift_points') == '1') {
-                return warn_screen($this->title, do_lang_tempcode('ESCROW_NOT_ENOUGH_GIFT_POINTS', integer_format($amount), integer_format($viewer_gift_points_balance), integer_format($viewer_points_balance)));
+                return warn_screen($this->title, do_lang_tempcode('ESCROW_NOT_ENOUGH_GIFT_POINTS', escape_html(integer_format($amount)), escape_html(integer_format($viewer_gift_points_balance)), escape_html(integer_format($viewer_points_balance))));
             } else {
-                return warn_screen($this->title, do_lang_tempcode('ESCROW_NOT_ENOUGH_POINTS', integer_format($amount), integer_format($viewer_points_balance)));
+                return warn_screen($this->title, do_lang_tempcode('ESCROW_NOT_ENOUGH_POINTS', escape_html(integer_format($amount)), escape_html(integer_format($viewer_points_balance))));
             }
         }
 
@@ -827,10 +837,10 @@ class Module_points
         $reason = get_translated_tempcode('escrow', $row, 'reason');
 
         $date = get_timezoned_date_time($row['date_and_time']);
-        $expiry = ($row['expiration'] !== null) ? get_timezoned_date_time($row['expiration']) : do_lang_tempcode('NA');
-        $from_name = is_guest($row['sender_id']) ? get_site_name() : $GLOBALS['FORUM_DRIVER']->get_username($row['sender_id'], true);
+        $expiry = ($row['expiration'] !== null) ? get_timezoned_date_time($row['expiration']) : do_lang_tempcode('NA_EM');
+        $from_name = is_guest($row['sender_id']) ? do_lang('SYSTEM') : $GLOBALS['FORUM_DRIVER']->get_username($row['sender_id'], true);
         $_from_name = (is_guest($row['sender_id'])) ? make_string_tempcode(escape_html($from_name)) : hyperlink(points_url($row['sender_id']), escape_html($from_name), false, false, do_lang_tempcode('VIEW_POINTS'));
-        $to_name = is_guest($row['recipient_id']) ? get_site_name() : $GLOBALS['FORUM_DRIVER']->get_username($row['recipient_id'], true);
+        $to_name = is_guest($row['recipient_id']) ? do_lang('SYSTEM') : $GLOBALS['FORUM_DRIVER']->get_username($row['recipient_id'], true);
         $_to_name = (is_guest($row['recipient_id'])) ? make_string_tempcode(escape_html($to_name)) : hyperlink(points_url($row['recipient_id']), escape_html($to_name), false, false, do_lang_tempcode('VIEW_POINTS'));
 
         $buttons = new Tempcode();
@@ -866,9 +876,9 @@ class Module_points
                 } elseif ($row['sender_status'] == 0 && $row['recipient_status'] == 0) {
                     $status = do_lang_tempcode('ESCROW_STATUS__PENDING', do_lang('_ESCROW_STATUS__PENDING_BOTH_L'));
                 } elseif ($row['sender_status'] == 1 && $row['recipient_status'] == 0) {
-                    $status = do_lang_tempcode('ESCROW_STATUS__PENDING', $to_name);
+                    $status = do_lang_tempcode('ESCROW_STATUS__PENDING', escape_html($to_name));
                 } elseif ($row['sender_status'] == 0 && $row['recipient_status'] == 1) {
-                    $status = do_lang_tempcode('ESCROW_STATUS__PENDING', $from_name);
+                    $status = do_lang_tempcode('ESCROW_STATUS__PENDING', escape_html($from_name));
                 }
 
                 // Moderation button
@@ -884,10 +894,10 @@ class Module_points
 
         // Modified map_table_screen since we also have escrow logs on the same page
         $fields = [
-            'IDENTIFIER' => strval($row['id']),
-            'DATE' => $date,
+            'IDENTIFIER' => escape_html(strval($row['id'])),
+            'DATE' => escape_html($date),
             'STATUS' => $status,
-            'POINTS' => integer_format($row['amount']),
+            'POINTS' => escape_html(integer_format($row['amount'])),
             'FROM' => $_from_name,
             'TO' => $_to_name,
             'REASON' => $reason,
@@ -896,11 +906,7 @@ class Module_points
         ];
         $_fields = new Tempcode();
         foreach ($fields as $key => $val) {
-            if (!is_array($val)) {
-                $raw = is_object($val);
-            } else {
-                list($val, $raw) = $val;
-            }
+            $raw = is_object($val);
             $_fields->attach(map_table_field(do_lang_tempcode($key), $val, $raw));
         }
 
@@ -951,7 +957,6 @@ class Module_points
         }
 
         $escrow = get_translated_tempcode('escrow', $row, 'reason');
-        $this->title = get_screen_title('_ESCROW_SATISFY', true, [strval($row['id'])]);
 
         // Confirmation screen
         if ($confirm == 0) {
@@ -960,7 +965,7 @@ class Module_points
             } else {
                 $other_member = $GLOBALS['FORUM_DRIVER']->get_username($row['sender_id'], true);
             }
-            $preview = do_lang_tempcode('ARE_YOU_SURE_ESCROW_SATISFY', $other_member, $escrow);
+            $preview = do_lang_tempcode('ARE_YOU_SURE_ESCROW_SATISFY', escape_html($other_member), $escrow);
             return do_template('CONFIRM_SCREEN', [
                 '_GUID' => 'd3d654c7dcffb353638d08b53697488b',
                 'TITLE' => $this->title,
@@ -1000,9 +1005,6 @@ class Module_points
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
         $row = $_row[0];
-
-        $escrow = get_translated_tempcode('escrow', $row, 'reason');
-        $this->title = get_screen_title('_ESCROW_DISPUTE', true, [strval($row['id'])]);
 
         // Are we trying to access an escrow we do not have the privilege to access?
         if ($row['sender_id'] != $member_id_viewing && $row['recipient_id'] != $member_id_viewing) {
@@ -1084,8 +1086,6 @@ class Module_points
 
         $escrow_reason = get_translated_text($row['reason']);
         $escrow_agreement = get_translated_text($row['agreement']);
-
-        $this->title = get_screen_title('_ESCROW_MODERATE', true, [strval($row['id'])]);
 
         if ($mod_reason === null) {
             // Dispute resolution form
@@ -1171,7 +1171,7 @@ class Module_points
     }
 
     /**
-     * The UI/actualiser to edit a point transaction.
+     * The UI/actualiser to amend a point transaction.
      *
      * @return Tempcode The UI
      */

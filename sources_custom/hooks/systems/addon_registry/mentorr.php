@@ -169,7 +169,16 @@ New users should then be assigned a mentor/buddy who will receive an equal amoun
                 'id' => '*AUTO',
                 'member_id' => '*MEMBER',
                 'mentor_id' => '*MEMBER',
+                'date_and_time' => 'TIME'
             ]);
+        }
+
+        if ($upgrade_from !== null && $upgrade_from < 11) { // LEGACY
+            $GLOBALS['SITE_DB']->add_table_field('members_mentors', 'date_and_time', 'TIME');
+        }
+
+        if ($upgrade_from === null || $upgrade_from < 11) {
+            $GLOBALS['SITE_DB']->create_index('members_mentors', 'date_and_time', ['date_and_time']);
         }
     }
 }

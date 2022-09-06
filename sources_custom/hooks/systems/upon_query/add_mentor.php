@@ -106,6 +106,7 @@ class Hook_upon_query_add_mentor
             $GLOBALS['SITE_DB']->query_insert('members_mentors', [
                 'member_id' => $member_id,
                 'mentor_id' => $mentor_id,
+                'date_and_time' => time(),
             ]);
 
             log_it('MAKE_FRIEND', strval($mentor_id), strval($member_id));

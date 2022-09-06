@@ -53,7 +53,7 @@ class Hook_realtime_rain_points
                     'TYPE' => 'point_debits',
                     'FROM_MEMBER_ID' => strval($sender_id),
                     'TO_MEMBER_ID' => null,
-                    'TITLE' => do_lang('MEMBER_CHARGED_POINTS', integer_format($row['amount_gift_points'] + $row['amount_points'], 0), get_translated_text($row['reason'])),
+                    'TITLE' => do_lang('MEMBER_SPENT_POINTS', integer_format($row['amount_gift_points'] + $row['amount_points'], 0), get_translated_text($row['reason'])),
                     'IMAGE' => $GLOBALS['FORUM_DRIVER']->get_member_avatar_url($sender_id),
                     'TIMESTAMP' => strval($timestamp),
                     'RELATIVE_TIMESTAMP' => strval($timestamp - $from),

@@ -6150,7 +6150,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         MEMBER_ADDED_TO_GROUP
         MEMBER_BAD_STRONGHOLD
         MEMBER_BANNED
-        MEMBER_CHARGED_POINTS
+        MEMBER_SPENT_POINTS
         MEMBER_EXPORT_ORDER
         MEMBER_FILES
         MEMBER_SENT_POINTS
@@ -6958,7 +6958,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PRIVILEGE_submit_lowrange_content
         PRIVILEGE_submit_midrange_content
         PRIVILEGE_support_operator
-        PRIVILEGE_trace_anonymous_transactions
+        PRIVILEGE_trace_anonymous_points_transactions
         PRIVILEGE_undo_revisions
         PRIVILEGE_unfiltered_input
         PRIVILEGE_upload_anything_filedump
@@ -8318,6 +8318,11 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CREDIT_LONG
         DEBIT_LONG
         SEND_LONG
+        LEDGER_STATUS_reversing_UNLINKED
+        LEDGER_STATUS_reversed_UNLINKED
+        NOTIFICATION_POINTS_TRANSACTION_STAFF_GUEST
+        ARE_YOU_SURE_TRANSACTION_CREDIT
+        ARE_YOU_SURE_TRANSACTION_DEBIT
     ')));
 
     $non_admin_files = [
@@ -11578,8 +11583,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ARE_YOU_SURE_ESCROW_POINTS
         ARE_YOU_SURE_ESCROW_SATISFY
         ARE_YOU_SURE_ESCROW_SATISFY_DISPUTE
-        ARE_YOU_SURE_TRANSACTION_CREDIT
-        ARE_YOU_SURE_TRANSACTION_DEBIT
         COUNT_POINTS_SPENT
         CREDIT
         DEBIT
@@ -11682,7 +11685,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         LEDGER_STATUS_SHORT_reversed
         AMEND
         NOTIFICATION_POINTS_TRANSACTION_GUEST
-        NOTIFICATION_POINTS_TRANSACTION_STAFF_GUEST
     ')));
 
     if ($GLOBALS['DEV_MODE']) {

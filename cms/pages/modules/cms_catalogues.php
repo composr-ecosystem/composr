@@ -811,7 +811,7 @@ class Module_cms_catalogues extends Standard_crud_module
             require_code('points2');
 
             // code_explanation should still follow give_submit_points because catalogues use standard CRUD for point reversal
-            points_credit_member(get_member(), do_lang('ADD_CATALOGUE_ENTRY'), intval($points), 0, 0, true, 0, ['submit', 'catalogue_entry', strval($id)]);
+            points_credit_member(get_member(), do_lang('ADD_CATALOGUE_ENTRY'), $points, 0, 0, true, 0, ['submit', 'catalogue_entry', strval($id)]);
         }
 
         if (addon_installed('content_privacy')) {

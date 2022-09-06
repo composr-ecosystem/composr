@@ -238,8 +238,8 @@ function _points_transact_calculate(int $sender_id, int $total_points, ?int $amo
 /**
  * Refund points from one member to another. This uses gift points where possible and if enabled.
  *
- * @param  MEMBER $sender_id The ID of the member refunding the points (eg. the recipient_id in the original transaction)
- * @param  MEMBER $recipient_id The ID of the member receiving the refunded points (eg. the sender_id in the original transaction)
+ * @param  MEMBER $sender_id The ID of the member refunding the points (e.g. the recipient_id in the original transaction)
+ * @param  MEMBER $recipient_id The ID of the member receiving the refunded points (e.g. the sender_id in the original transaction)
  * @param  SHORT_TEXT $reason The reason for this refund in the logs
  * @param  integer $total_points The total number of points to refund (includes gift points when applicable)
  * @param  integer $amount_gift_points The number of $total_points which should be refunded as gift points (subtracted from gift_points_sent)
@@ -324,20 +324,27 @@ function _points_refund_calculate(int $total_points, int $amount_gift_points = 0
  *
  * @param  AUTO_LINK $id The ID of the transaction ledger to reverse
  * @param  ?boolean $send_notifications Whether to send notifications for this transaction reversal (null: false, and staff should not receive a notifcation either)
- * @return array Duple; the ID of the new transaction reversing, and a boolean whether an escrow was also cancelled during the reversal
+ * @param  boolean $fail_ok Whether having a missing resource or condition preventing transaction reversal should not warn_exit
+ * @return ?array Tuple; the ID of the new transaction reversing, a boolean whether an escrow was also cancelled during the reversal, and an array of additional point transactions that were reversed because they had a reverse_link to this one (null: the transaction was not reversed and $fail_ok was true)
  */
-function points_transaction_reverse(int $id, ?bool $send_notifications = true) : array
+function points_transaction_reverse(int $id, ?bool $send_notifications = true, bool $fail_ok = false) : ?array
 {
     require_lang('points');
 
     $rows = $GLOBALS['SITE_DB']->query_select('points_ledger', ['*'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
+        if ($fail_ok) {
+            return null;
+        }
         warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
     }
     $myrow = $rows[0];
 
     // Cannot reverse locked transactions or transactions already reversed
     if (($myrow['locked'] == 1) || ($myrow['status'] == 'reversed') || ($myrow['status'] == 'reversing')) {
+        if ($fail_ok) {
+            return null;
+        }
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
 
@@ -367,7 +374,15 @@ function points_transaction_reverse(int $id, ?bool $send_notifications = true) :
         $cancelled_escrow = true;
     }
 
-    return [$new_record, $cancelled_escrow];
+    // Also reverse any transactions with reverse_link to this one (cyclic links are averted by the additional status/locked check towards the beginning of this function)
+    $also_reverse = $GLOBALS['SITE_DB']->query_select('points_ledger', ['id'], ['locked' => 0, 'code_explanation' => json_encode(['reverse_link', $id])]);
+    $also_reversed = [];
+    foreach ($also_reverse as $row2) {
+        points_transaction_reverse($row2['id'], true, true); // Do not warn_exit on errors pertaining to recursive reversals; just ignore them
+        $also_reversed[] = $row2['id'];
+    }
+
+    return [$new_record, $cancelled_escrow, $also_reversed];
 }
 
 /**
@@ -448,82 +463,84 @@ function points_dispatch_notification(int $id, int $sender_id, int $recipient_id
     if ($send_member_notifications) {
         // Sender
         if (!is_guest($sender_id)) {
-            $transaction_type = is_guest($recipient_id) ? do_lang('NOTIFICATION_POINTS_TRANSACTION_DEBITED_L') : do_lang('NOTIFICATION_POINTS_TRANSACTION_SENT_L');
+            $transaction_type = is_guest($recipient_id) ? do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_DEBITED_L') : do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_SENT_L');
             $url = points_url($sender_id);
             $message_raw = do_lang_tempcode(
                 is_guest($recipient_id) ? 'NOTIFICATION_POINTS_TRANSACTION_GUEST' : 'NOTIFICATION_POINTS_TRANSACTION',
                 $transaction_type,
-                ($actual_gift_points !== 0 && !$is_refund) ? do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_GIFT_POINTS_L', integer_format($actual_points), integer_format($actual_gift_points)) : do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_POINTS_L', integer_format($total_points)),
+                ($actual_gift_points !== 0 && !$is_refund) ? do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_GIFT_POINTS_L', escape_html(integer_format($actual_points)), escape_html(integer_format($actual_gift_points))) : do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_POINTS_L', escape_html(integer_format($total_points))),
                 [
-                    is_guest($recipient_id) ? '' : do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_TO_L', $their_displayname),
-                    $reason,
+                    is_guest($recipient_id) ? '' : do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_TO_L', escape_html($their_displayname)),
+                    escape_html($reason),
                     $url->evaluate(),
-                    do_lang('_POINTS', $your_displayname),
+                    do_lang('_POINTS', escape_html($your_displayname)),
                 ]
             );
-            dispatch_notification('points_transaction', null, do_lang('NOTIFICATION_POINTS_TRANSACTION_SUBJECT', $transaction_type), $message_raw->evaluate(get_lang($sender_id)), [$sender_id], A_FROM_SYSTEM_UNPRIVILEGED);
+            $subject = do_lang('NOTIFICATION_POINTS_TRANSACTION_SUBJECT', $transaction_type);
+            dispatch_notification('points_transaction', null, $subject->evaluate(), $message_raw->evaluate(get_lang($sender_id)), [$sender_id], A_FROM_SYSTEM_UNPRIVILEGED);
         }
 
         // Recipient
         if (!is_guest($recipient_id)) {
-            $transaction_type = '';
+            $transaction_type = new Tempcode();
             if ($is_refund) {
-                $transaction_type = do_lang('NOTIFICATION_POINTS_TRANSACTION_REFUNDED_L');
+                $transaction_type = do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_REFUNDED_L');
             } elseif (is_guest($sender_id)) {
-                $transaction_type = do_lang('NOTIFICATION_POINTS_TRANSACTION_CREDITED_L');
+                $transaction_type = do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_CREDITED_L');
             } else {
-                $transaction_type = do_lang('NOTIFICATION_POINTS_TRANSACTION_RECEIVED_L');
+                $transaction_type = do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_RECEIVED_L');
             }
             $url = points_url($recipient_id);
             $message_raw = do_lang_tempcode(
                 is_guest($recipient_id) ? 'NOTIFICATION_POINTS_TRANSACTION_GUEST' : 'NOTIFICATION_POINTS_TRANSACTION',
                 $transaction_type,
-                (($is_refund) && ($actual_gift_points !== 0)) ? do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_GIFT_POINTS_L', integer_format($actual_points), integer_format($actual_gift_points)) : do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_POINTS_L', integer_format($total_points)),
+                (($is_refund) && ($actual_gift_points !== 0)) ? do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_GIFT_POINTS_L', escape_html(integer_format($actual_points)), escape_html(integer_format($actual_gift_points))) : do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_POINTS_L', escape_html(integer_format($total_points))),
                 [
-                    is_guest($recipient_id) ? '' : do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_FROM_L', $_your_displayname),
-                    $reason,
+                    is_guest($recipient_id) ? '' : do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_FROM_L', escape_html($_your_displayname)),
+                    escape_html($reason),
                     $url->evaluate(),
-                    do_lang('_POINTS', $their_displayname),
+                    do_lang('_POINTS', escape_html($their_displayname)),
                 ]
             );
-            dispatch_notification('points_transaction', null, do_lang('NOTIFICATION_POINTS_TRANSACTION_SUBJECT', $transaction_type), $message_raw->evaluate(get_lang($recipient_id)), [$recipient_id], A_FROM_SYSTEM_UNPRIVILEGED);
+            $subject = do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_SUBJECT', $transaction_type);
+            dispatch_notification('points_transaction', null, $subject->evaluate(), $message_raw->evaluate(get_lang($recipient_id)), [$recipient_id], A_FROM_SYSTEM_UNPRIVILEGED);
         }
     }
 
     // Staff notifications
-    $transaction_type = '';
-    $subject = '';
+    $transaction_type = new Tempcode();
+    $subject = new Tempcode();
     $primary_member = '';
     $secondary_member = '';
     if ($is_refund) {
-        $transaction_type = do_lang('NOTIFICATION_POINTS_TRANSACTION_REFUNDED_L');
-        $subject = do_lang('NOTIFICATION_POINTS_TRANSACTION_SUBJECT_STAFF', $their_username, $transaction_type);
+        $transaction_type = do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_REFUNDED_L');
+        $subject = do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_SUBJECT_STAFF', escape_html($their_username), $transaction_type);
         $primary_member = $their_username;
     } elseif (is_guest($sender_id)) {
-        $transaction_type = do_lang('NOTIFICATION_POINTS_TRANSACTION_CREDITED_L');
-        $subject = do_lang('NOTIFICATION_POINTS_TRANSACTION_SUBJECT_STAFF', $their_username, $transaction_type);
+        $transaction_type = do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_CREDITED_L');
+        $subject = do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_SUBJECT_STAFF', escape_html($their_username), $transaction_type);
         $primary_member = $their_username;
     } elseif (is_guest($recipient_id)) {
-        $transaction_type = do_lang('NOTIFICATION_POINTS_TRANSACTION_DEBITED_L');
-        $subject = do_lang('NOTIFICATION_POINTS_TRANSACTION_SUBJECT_STAFF', $_your_username, $transaction_type);
+        $transaction_type = do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_DEBITED_L');
+        $subject = do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_SUBJECT_STAFF', escape_html($_your_username), $transaction_type);
         $primary_member = $_your_username;
     } else {
-        $transaction_type = do_lang('NOTIFICATION_POINTS_TRANSACTION_RECEIVED_L');
-        $subject = do_lang('NOTIFICATION_POINTS_TRANSACTION_SUBJECT_STAFF', $their_username, $transaction_type);
+        $transaction_type = do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_RECEIVED_L');
+        $subject = do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_SUBJECT_STAFF', escape_html($their_username), $transaction_type);
         $primary_member = $their_username;
-        $secondary_member = do_lang('NOTIFICATION_POINTS_TRANSACTION_FROM_L', $_your_username);
+        $secondary_member = do_lang('NOTIFICATION_POINTS_TRANSACTION_FROM_L', escape_html($_your_username));
     }
     $url = build_url(['page' => 'admin_points', 'type' => 'view', 'id' => $id], get_module_zone('admin_points'));
     $message_raw = do_lang_tempcode(
         ($secondary_member != '') ? 'NOTIFICATION_POINTS_TRANSACTION_STAFF' : 'NOTIFICATION_POINTS_TRANSACTION_STAFF_GUEST',
-        $primary_member,
+        escape_html($primary_member),
         $transaction_type,
         [
-            (($is_refund) && ($actual_gift_points !== 0)) ? do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_GIFT_POINTS_L', integer_format($actual_points), integer_format($actual_gift_points)) : do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_POINTS_L', integer_format($total_points)),
-            $secondary_member,
+            (($is_refund) && ($actual_gift_points !== 0)) ? do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_GIFT_POINTS_L', escape_html(integer_format($actual_points)), escape_html(integer_format($actual_gift_points))) : do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_POINTS_L', escape_html(integer_format($total_points))),
+            escape_html($secondary_member),
             $url->evaluate(),
-            $reason,
+            escape_html($reason),
         ]
     );
-    dispatch_notification('points_transaction_staff', null, $subject, $message_raw->evaluate(), null, A_FROM_SYSTEM_UNPRIVILEGED);
+    dispatch_notification('points_transaction_staff', null, $subject->evaluate(), $message_raw->evaluate(), null, A_FROM_SYSTEM_UNPRIVILEGED);
 }

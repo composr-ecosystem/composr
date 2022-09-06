@@ -197,7 +197,7 @@ function gift_points_sent(int $member_id) : int
  */
 function total_points_sent(int $member_id) : int
 {
-    $_sent = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'SUM(amount_gift_points+amount_points)', ['sender_id' => $member_id, 'status' => 'normal'], ' AND recipient_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()));
+    $_sent = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', '(SUM(amount_gift_points)+SUM(amount_points))', ['sender_id' => $member_id, 'status' => 'normal'], ' AND recipient_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()));
     $actual_sent = @intval($_sent); // Most reliable way
     return $actual_sent;
 }
@@ -242,7 +242,7 @@ function gift_points_balance(int $member_id) : int
  * @return Tempcode The URL to the member's points profile
  *
  */
-function points_url(int $member_id, $skip_keep = false, ?int $points = null, ?string $reason = null, string $transaction_type = 'send') : object
+function points_url(int $member_id, bool $skip_keep = false, ?int $points = null, ?string $reason = null, string $transaction_type = 'send') : object
 {
     $map = ['transaction_type' => $transaction_type];
     if ($points !== null) {

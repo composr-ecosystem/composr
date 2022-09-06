@@ -30,15 +30,13 @@ function points_credit_member(int $member_id, string $reason, int $total_points,
 {
     $id = non_overridden__points_credit_member($member_id, $reason, $total_points, $amount_gift_points, $anonymous, $send_notifications, $locked, $code_explanation);
 
-    if (addon_installed('mentorr')) {
+    if (($id !== null) && (addon_installed('mentorr'))) {
         // Start add to mentor points if needed
-        // TODO: Check date to see if they were added in the last week
-        $mentor_id = $GLOBALS['SITE_DB']->query_select_value_if_there('members_mentors', 'mentor_id', ['member_id' => $member_id]);
+        $mentor_id = $GLOBALS['SITE_DB']->query_select_value_if_there('members_mentors', 'mentor_id', ['member_id' => $member_id], ' AND date_and_time>' . strval(time() - (60 * 60 * 24 * 7)));
 
         if ((isset($mentor_id)) && ($mentor_id !== null) && (intval($mentor_id) != 0)) {
             // Credit points to mentor too
-            // TODO: What if the original transaction is reversed?
-            non_overridden__points_credit_member($mentor_id, $reason, $total_points, $amount_gift_points, $anonymous, $send_notifications, $locked, $code_explanation);
+            non_overridden__points_credit_member($mentor_id, $reason, $total_points, $amount_gift_points, $anonymous, $send_notifications, $locked, json_encode(['reverse_link', $id]));
         }
     }
 

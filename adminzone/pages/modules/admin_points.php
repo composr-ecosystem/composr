@@ -218,10 +218,10 @@ class Module_admin_points
         $max = get_param_integer('max', 50);
 
         $max_rows = $GLOBALS['SITE_DB']->query_select_value('points_ledger', 'COUNT(*)');
-        $has_gift_points = $GLOBALS['SITE_DB']->query_select_value('points_ledger', 'COUNT(*)', [], ' AND amount_gift_points>0');
+        $has_gift_points = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'id', [], ' AND amount_gift_points>0');
 
         $sortables = ['date_and_time' => do_lang_tempcode('DATE_TIME')];
-        if ($has_gift_points > 0) {
+        if ($has_gift_points !== null) {
             $sortables['amount_gift_points'] = do_lang_tempcode('GIFT_POINTS');
         }
         $sortables['amount_points'] = do_lang_tempcode('POINTS');
@@ -241,7 +241,7 @@ class Module_admin_points
         $result_entries = new Tempcode();
         require_code('templates_results_table');
         $map = [do_lang_tempcode('IDENTIFIER'), do_lang_tempcode('DATE_TIME')];
-        if ($has_gift_points > 0) {
+        if ($has_gift_points !== null) {
             $map[] = do_lang_tempcode('GIFT_POINTS');
         }
         $map = array_merge($map, [do_lang_tempcode('POINTS'), do_lang_tempcode('SENDER'), do_lang_tempcode('RECIPIENT'), do_lang_tempcode('REASON'), do_lang_tempcode('STATUS'), do_lang_tempcode('ACTIONS')]);
@@ -266,7 +266,7 @@ class Module_admin_points
                 $from = ($from_name === null) ? do_lang_tempcode('UNKNOWN_EM') : hyperlink($from_url, $from_name, false, true);
 
                 // Mask sender if we do not have permission to trace anonymous transactions
-                if (($myrow['anonymous'] == 1) && (!has_privilege(get_member(), 'trace_anonymous_transactions'))) {
+                if (($myrow['anonymous'] == 1) && (!has_privilege(get_member(), 'trace_anonymous_points_transactions'))) {
                     $from = do_lang_tempcode('ANONYMOUS');
                 }
             }
@@ -278,7 +278,7 @@ class Module_admin_points
                     $delete_url = build_url(['page' => '_SELF', 'type' => 'reverse', 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF');
                     $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
                         '_GUID' => '3585ec7f35a1027e8584d62ffeb41e56',
-                        'NAME' => '#' . strval($myrow['id']),
+                        'NAME' => '#' . escape_html(strval($myrow['id'])),
                         'URL' => $delete_url,
                         'HIDDEN' => form_input_hidden('id', strval($myrow['id'])),
                         'ACTION_TITLE' => do_lang_tempcode('UNDO'),
@@ -294,7 +294,7 @@ class Module_admin_points
                     '_GUID' => 'b7dff48f5758ee05da8fe02beed935b6',
                     'URL' => $edit_url,
                     'HIDDEN' => form_input_hidden('id', strval($myrow['id'])),
-                    'NAME' => '#' . strval($myrow['id']),
+                    'NAME' => '#' . escape_html(strval($myrow['id'])),
                     'ACTION_TITLE' => do_lang_tempcode('AMEND'),
                     'ICON' => 'admin/edit',
                     'GET' => false,
@@ -307,7 +307,7 @@ class Module_admin_points
             if ($myrow['status'] == 'normal') {
                 $status = do_lang_tempcode('LEDGER_STATUS_normal');
             } else {
-                $status = do_lang_tempcode('LEDGER_STATUS_SHORT_' . $myrow['status'], strval($myrow['linked_to']));
+                $status = do_lang_tempcode('LEDGER_STATUS_SHORT_' . $myrow['status'], escape_html(strval($myrow['linked_to'])));
             }
             $map = array_merge($map, [integer_format($myrow['amount_points']), $from, $to, $reason, $status, $actions]);
             $result_entries->attach(results_entry($map, true));
@@ -353,7 +353,7 @@ class Module_admin_points
     }
 
     /**
-     * The UI/actualiser to edit a point transaction.
+     * The UI/actualiser to amend a point transaction.
      *
      * @return Tempcode The UI
      */
@@ -411,21 +411,22 @@ class Module_admin_points
 
         require_code('templates_map_table');
 
-        $status = '';
+        $status = new Tempcode();
         switch ($row['status']) {
             case 'reversing':
             case 'reversed':
-                $_row2 = $GLOBALS['SITE_DB']->query_select('points_ledger', ['*'], ['id' => $row['linked_to']], '', 1);
-                if ($_row2 === null || !array_key_exists(0, $_row2)) {
-                    warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
+                $_row2 = $GLOBALS['SITE_DB']->query_select('points_ledger', ['*'], ['id' => $row['linked_to'], 'status' => ($row['status'] == 'reversing') ? 'reversed' : 'reversing'], '', 1);
+                if (empty($_row2)) {
+                    $status = do_lang_tempcode('LEDGER_STATUS_' . $row['status'] . '_UNLINKED');
+                } else {
+                    $row2 = $_row2[0];
+                    $date = get_timezoned_date_time($row2['date_and_time'], false);
+                    $_status = do_lang('LEDGER_STATUS_' . $row['status'], escape_html(strval($row['linked_to'])), escape_html($date));
+                    $status = hyperlink(build_url(['page' => 'admin_points', 'type' => 'view', 'id' => $row['linked_to']]), $_status, false, true);
                 }
-                $row2 = $_row2[0];
-                $date = get_timezoned_date_time($row2['date_and_time'], false);
-                $_status = do_lang('LEDGER_STATUS_' . $row['status'], strval($row['linked_to']), $date);
-                $status = hyperlink(build_url(['page' => 'admin_points', 'type' => 'view', 'id' => $row['linked_to']]), $_status, false, true);
                 break;
             default:
-                $status = do_lang('LEDGER_STATUS_' . $row['status']);
+                $status = do_lang_tempcode('LEDGER_STATUS_' . $row['status']);
         }
 
         $date = get_timezoned_date_time($row['date_and_time'], false);
@@ -435,8 +436,8 @@ class Module_admin_points
         $_to_name = (is_guest($row['recipient_id'])) ? make_string_tempcode(escape_html($to_name)) : hyperlink(points_url($row['recipient_id']), escape_html($to_name), false, false, do_lang_tempcode('VIEW_POINTS'));
 
         // Mask sender if we do not have permission to trace anonymous transactions
-        if (($row['anonymous'] == 1) && (!has_privilege($member_id_viewing, 'trace_anonymous_transactions'))) {
-            $_from_name = do_lang('ANONYMOUS');
+        if (($row['anonymous'] == 1) && (!has_privilege($member_id_viewing, 'trace_anonymous_points_transactions'))) {
+            $_from_name = do_lang_tempcode('ANONYMOUS');
         }
 
         $buttons = new Tempcode();
@@ -466,8 +467,8 @@ class Module_admin_points
         }
 
         return map_table_screen(get_screen_title('VIEW_POINT_TRANSACTION', true, [strval($id)]), [
-            'IDENTIFIER' => strval($id),
-            'DATE' => $date,
+            'IDENTIFIER' => escape_html(strval($id)),
+            'DATE' => escape_html($date),
             'STATUS' => $status,
             'POINTS' => integer_format($row['amount_points']),
             'GIFT_POINTS' => integer_format($row['amount_gift_points']),
