@@ -215,7 +215,6 @@ function escrow_points(int $sender_id, int $recipient_id, int $amount, string $r
     $id = $GLOBALS['SITE_DB']->query_insert('escrow', $map, true);
     $GLOBALS['SITE_DB']->query_update('points_ledger', ['code_explanation' => json_encode(['create', 'points_escrow', strval($id)])], ['id' => $escrow_id], '', 1);
 
-
     // Log it
     if ($escrow_log) {
         escrow_log_it('LOG_ESCROW_CREATED', $id, $sender_id, $agreement);
