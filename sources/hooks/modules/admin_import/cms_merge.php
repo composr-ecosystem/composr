@@ -27,6 +27,14 @@ cms_merge is intended to merge disparate sites in a more complete way.
 There is overlap, but intentionally each approach is optimised in a different way.
 */
 
+/*
+Our merge code works in one of two ways...
+1) Read in of rows, remapping, insertion of rows in destination database
+2) Read in of rows, remapping, call of APIs (e.g. add_download)
+
+It's impossible to say which is best in a clear way. Sometimes APIs do extra stuff we want (or do not want), but row copying is simpler.
+*/
+
 /**
  * Hook class.
  */
