@@ -4650,6 +4650,9 @@ ul.actions-list-super-compact > li > .icon {
 	width: 14px;
 	height: 14px;
 }
+ul.actions-list > li > * {
+	vertical-align: middle;
+}
 ul.actions-list h4 {
 	display: inline;
 	line-height: 2em;

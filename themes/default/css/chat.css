@@ -46,6 +46,9 @@
 .chat-multi-tab {
 	font-size: 0.9em;
 }
+.chat-multi-tab * {
+	vertical-align: middle;
+}
 
 /* Chatrooms */
 

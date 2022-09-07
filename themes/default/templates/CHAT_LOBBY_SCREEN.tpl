@@ -23,7 +23,7 @@
 						{+END}
 					</ul>
 
-					<p class="chat-multi-tab">{+START,INCLUDE,ICON}NAME=help{+END} {!OPEN_CHATROOMS_IN_TABS}</p>
+					<p class="chat-multi-tab">{+START,INCLUDE,ICON}NAME=help{+END} <span>{!OPEN_CHATROOMS_IN_TABS}</span></p>
 				{+END}
 				{+START,IF_EMPTY,{CHATROOMS}}
 					<p class="nothing-here">{!NO_CATEGORIES,chat}</p>
@@ -40,16 +40,16 @@
 								<li>{+START,INCLUDE,ICON}NAME=admin/add{+END} <a href="{ADD_CHATROOM_URL*}" rel="add">{!ADD_CHATROOM}</a></li>
 							{+END}
 							{+START,IF_NON_EMPTY,{PRIVATE_CHATROOM}}
-								<li>{+START,INCLUDE,ICON}NAME=buttons/proceed2{+END} {PRIVATE_CHATROOM}</li>
+								<li>{+START,INCLUDE,ICON}NAME=buttons/proceed2{+END} <span>{PRIVATE_CHATROOM}</span></li>
 							{+END}
 							{+START,IF_NON_EMPTY,{BLOCKING_LINK}}
-								<li>{+START,INCLUDE,ICON}NAME=admin/remove{+END} {BLOCKING_LINK}</li>
+								<li>{+START,INCLUDE,ICON}NAME=admin/remove{+END} <span>{BLOCKING_LINK}</span></li>
 							{+END}
 							{+START,IF_NON_EMPTY,{MOD_LINK}}
-								<li>{+START,INCLUDE,ICON}NAME=checklist/toggle{+END} {MOD_LINK}</li>
+								<li>{+START,INCLUDE,ICON}NAME=checklist/toggle{+END} <span>{MOD_LINK}</span></li>
 							{+END}
 							{+START,IF_NON_EMPTY,{SETEFFECTS_LINK}}
-								<li>{+START,INCLUDE,ICON}NAME=buttons/sound_effects{+END} {SETEFFECTS_LINK}</li>
+								<li>{+START,INCLUDE,ICON}NAME=buttons/sound_effects{+END} <span>{SETEFFECTS_LINK}</span></li>
 							{+END}
 						</ul>
 					</nav>
