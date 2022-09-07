@@ -64,9 +64,9 @@ function init__resource_fs()
     $RESOURCE_FS_ADD_ONLY = false;
 
     if (!defined('TABLE_REPLACE_MODE_NONE')) {
-        define('TABLE_REPLACE_MODE_NONE', 0);
-        define('TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA', 1);
-        define('TABLE_REPLACE_MODE_SEVERE', 2);
+        define('TABLE_REPLACE_MODE_NONE', 0); // No old rows will be removed
+        define('TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA', 1); // Some old rows will be removed based on $extra_field_data being used as a $where clause
+        define('TABLE_REPLACE_MODE_SEVERE', 2); // All old rows will be removed
     }
 }
 
