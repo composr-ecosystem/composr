@@ -973,7 +973,7 @@ function chat_post_message(int $room_id, string $message, string $font_name, str
             require_code('points');
             $_count = point_info($member_id);
             $count = array_key_exists('points_gained_chat', $_count) ? $_count['points_gained_chat'] : 0;
-            $GLOBALS['FORUM_DRIVER']->set_custom_field($member_id, 'points_gained_chat', $count + 1);
+            $GLOBALS['FORUM_DRIVER']->set_custom_field($member_id, 'points_gained_chat', strval($count + 1));
 
             global $POINT_INFO_CACHE, $TOTAL_POINTS_CACHE;
             unset($POINT_INFO_CACHE[$member_id]);
@@ -1162,12 +1162,12 @@ function chat_get_all_rooms() : array
  * @param  ?integer $finish The datetime stamp to stop gathering messages at (null: current time)
  * @param  ?integer $uptoid The lowest message ID to return (null: no special lowest number)
  * @param  ?ID_TEXT $zone The zone the chat module is in (null: find it)
- * @param  ?AUTO_LINK $entering_room The content language string ID for the "entering room" message (null: not entering the room)
+ * @param  ?mixed $entering_room The content language string ID for the "entering room" message (null: not entering the room)
  * @param  boolean $return_my_messages Return the current user's messages?
  * @param  boolean $return_system_messages Return system messages
  * @return array An array of all the messages collected according to the search criteria
  */
-function chat_get_room_content(?int $room_id, array $_rooms, ?int $max_messages = null, bool $dereference = false, bool $downloading = false, ?int $start = null, ?int $finish = null, ?int $uptoid = null, ?string $zone = null, ?int $entering_room = null, bool $return_my_messages = true, bool $return_system_messages = true) : array
+function chat_get_room_content(?int $room_id, array $_rooms, ?int $max_messages = null, bool $dereference = false, bool $downloading = false, ?int $start = null, ?int $finish = null, ?int $uptoid = null, ?string $zone = null, $entering_room = null, bool $return_my_messages = true, bool $return_system_messages = true) : array
 {
     if ($zone === null) {
         $zone = get_module_zone('chat');
