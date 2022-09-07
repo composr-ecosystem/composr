@@ -417,7 +417,7 @@ function install_cns(?float $upgrade_from = null)
 
         $GLOBALS['FORUM_DB']->add_table_field('f_poll_votes', 'pv_date_time', 'TIME');
         $GLOBALS['FORUM_DB']->add_table_field('f_poll_votes', 'pv_revoked', 'BINARY');
-        $GLOBALS['FORUM_DB']->add_table_field('f_poll_votes', 'pv_cache_points', 'INTEGER');
+        $GLOBALS['FORUM_DB']->add_table_field('f_poll_votes', 'pv_cache_points_at_voting_time', 'INTEGER');
         $GLOBALS['FORUM_DB']->add_table_field('f_poll_votes', 'pv_cache_voting_power', '?REAL');
 
         $GLOBALS['FORUM_DB']->alter_table_field('f_poll_votes', 'pv_answer_id', '?AUTO_LINK');
@@ -867,7 +867,7 @@ function install_cns(?float $upgrade_from = null)
             'pv_ip' => 'IP',
             'pv_date_time' => 'TIME',
             'pv_revoked' => 'BINARY', // True means the member revoked this vote
-            'pv_cache_points' => 'INTEGER',
+            'pv_cache_points_at_voting_time' => 'INTEGER',
             'pv_cache_voting_power' => '?REAL'
         ]);
 

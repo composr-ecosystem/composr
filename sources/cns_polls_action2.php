@@ -259,7 +259,7 @@ function cns_vote_in_poll(int $poll_id, array $votes, ?int $member_id = null, ?a
             'pv_ip' => get_ip_address(),
             'pv_revoked' => 0,
             'pv_date_time' => time(),
-            'pv_cache_points' => $points,
+            'pv_cache_points_at_voting_time' => $points,
             'pv_cache_voting_power' => $voting_power,
         ]);
 
@@ -370,9 +370,11 @@ function cns_revoke_vote_in_poll(array $topic_info, ?int $member_id = null)
     // Calculate how much voting power was removed
     $total_voting_power_removed = 0.0;
     $answer_voting_power_removed = [];
+    $clear_cache_voting_power = false;
     foreach ($to_revoke as $revoked) {
         $voting_power = $revoked['pv_cache_voting_power'];
         if ($voting_power === null) {
+            $clear_cache_voting_power = true;
             continue;
         }
 
@@ -384,13 +386,20 @@ function cns_revoke_vote_in_poll(array $topic_info, ?int $member_id = null)
     }
 
     // Update the poll cache
-    $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_polls SET po_cache_total_votes=(po_cache_total_votes-' . strval(count($to_revoke)) . '), po_cache_voting_power=(po_cache_voting_power-' . float_to_raw_string($total_voting_power_removed, 10) . ') WHERE id=' . strval($poll_info['id']), 1);
-
+    if ($clear_cache_voting_power) {
+        $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_polls SET po_cache_total_votes=(po_cache_total_votes-' . strval(count($to_revoke)) . '), po_cache_voting_power=NULL WHERE id=' . strval($poll_info['id']), 1);
+    } else {
+        $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_polls SET po_cache_total_votes=(po_cache_total_votes-' . strval(count($to_revoke)) . '), po_cache_voting_power=(po_cache_voting_power-' . float_to_raw_string($total_voting_power_removed, 10) . ') WHERE id=' . strval($poll_info['id']), 1);
+    }
     // Update the poll answers caches
     $poll_answers = $GLOBALS['FORUM_DB']->query_select('f_poll_answers', ['id'], ['pa_poll_id' => $poll_info['id']]);
     foreach ($poll_answers as $answer) {
         if (array_key_exists($answer['id'], $answer_voting_power_removed)) {
-            $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_poll_answers SET pa_cache_num_votes=(pa_cache_num_votes-1), pa_cache_voting_power=(pa_cache_voting_power-' . float_to_raw_string($answer_voting_power_removed[$answer['id']], 10) . ') WHERE id=' . strval($answer['id']), 1);
+            if ($clear_cache_voting_power) {
+                $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_poll_answers SET pa_cache_num_votes=(pa_cache_num_votes-1), pa_cache_voting_power=NULL WHERE id=' . strval($answer['id']), 1);
+            } else {
+                $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_poll_answers SET pa_cache_num_votes=(pa_cache_num_votes-1), pa_cache_voting_power=(pa_cache_voting_power-' . float_to_raw_string($answer_voting_power_removed[$answer['id']], 10) . ') WHERE id=' . strval($answer['id']), 1);
+            }
         }
     }
 
@@ -456,7 +465,7 @@ function cns_calculate_answer_voting_power(int $answer_id, bool $recalculate = f
 
     $voting_power = 0.0;
 
-    $votes = $GLOBALS['FORUM_DB']->query_select('f_poll_votes', ['id', 'pv_cache_points', 'pv_cache_voting_power'], ['pv_answer_id' => $answer_id, 'pv_revoked' => 0], '');
+    $votes = $GLOBALS['FORUM_DB']->query_select('f_poll_votes', ['id', 'pv_cache_points_at_voting_time', 'pv_cache_voting_power'], ['pv_answer_id' => $answer_id, 'pv_revoked' => 0], '');
     foreach ($votes as $vote) {
         $voting_power += cns_calculate_vote_voting_power($vote['id'], $recalculate, $vote);
     }
@@ -477,7 +486,7 @@ function cns_calculate_answer_voting_power(int $answer_id, bool $recalculate = f
 function cns_calculate_vote_voting_power(int $vote_id, bool $recalculate = false, ?array $row = null) : float
 {
     if ($row === null) {
-        $_row = $GLOBALS['FORUM_DB']->query_select('f_poll_votes', ['id', 'pv_cache_points', 'pv_cache_voting_power'], ['id' => $vote_id], '', 1);
+        $_row = $GLOBALS['FORUM_DB']->query_select('f_poll_votes', ['id', 'pv_cache_points_at_voting_time', 'pv_cache_voting_power'], ['id' => $vote_id], '', 1);
         if ($_row === null || !array_key_exists(0, $_row)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
@@ -492,7 +501,7 @@ function cns_calculate_vote_voting_power(int $vote_id, bool $recalculate = false
         return $row['pv_cache_voting_power'];
     }
 
-    $voting_power = cns_points_to_voting_power($row['pv_cache_points']);
+    $voting_power = cns_points_to_voting_power($row['pv_cache_points_at_voting_time']);
 
     $GLOBALS['FORUM_DB']->query_update('f_poll_votes', ['pv_cache_voting_power' => $voting_power], ['id' => $vote_id]);
 

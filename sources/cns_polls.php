@@ -198,7 +198,7 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array
                     'pv_member_id' => $vote['pv_member_id'],
                     'pv_date_time' => $vote['pv_date_time'],
                     'voting_power' => $point_weighting ? cns_calculate_vote_voting_power($vote['id'], false, $vote) : $vote['pv_cache_voting_power'],
-                    'voting_equation' => cns_points_to_voting_power_text($vote['pv_cache_points']),
+                    'voting_equation' => cns_points_to_voting_power_text($vote['pv_cache_points_at_voting_time']),
                 ];
             }
         }
@@ -228,7 +228,7 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array
                         'pv_ip' => get_ip_address(),
                         'pv_revoked' => 0,
                         'pv_date_time' => time(),
-                        'pv_cache_points' => 0, // We do not need to know a member's points for forfeights.
+                        'pv_cache_points_at_voting_time' => 0, // We do not need to know a member's points for forfeights.
                     ]);
                 }
             }
