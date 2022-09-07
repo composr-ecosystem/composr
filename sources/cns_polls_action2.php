@@ -240,7 +240,7 @@ function cns_vote_in_poll(int $poll_id, array $votes, ?int $member_id = null, ?a
     }
 
     $points = addon_installed('points') ? points_balance($member_id) : 0;
-    $voting_power = cns_calculate_poll_voting_power($points);
+    $voting_power = cns_points_to_voting_power($points);
     $total_voting_power_adjust = 0.0;
 
     // Insert votes
@@ -501,9 +501,35 @@ function cns_calculate_vote_voting_power(int $vote_id, bool $recalculate = false
         return $row['pv_cache_voting_power'];
     }
 
-    $voting_power = cns_calculate_poll_voting_power($row['pv_cache_points_at_voting_time']);
+    $voting_power = cns_points_to_voting_power($row['pv_cache_points_at_voting_time']);
 
     $GLOBALS['FORUM_DB']->query_update('f_poll_votes', ['pv_cache_voting_power' => $voting_power], ['id' => $vote_id]);
+
+    return $voting_power;
+}
+
+/**
+ * Calculate how much voting power a certain amount of points has.
+ *
+ * @param  integer $points The number of points from which to calculate the voting power
+ * @return float The amount of voting power associated with the points
+ */
+function cns_points_to_voting_power(int $points) : float
+{
+    $ceiling = get_option('topic_polls_weighting_ceiling'); // Could be blank
+    $offset = intval(get_option('topic_polls_weighting_offset'));
+    $multiplier = abs(floatval(get_option('topic_polls_weighting_multiplier')));
+    $base = abs(floatval(get_option('topic_polls_weighting_logarithmic_base')));
+
+    // Voting power formula (!cns_polls:VOTING_POWER_EQUATION)
+    $_voting_power = max(0, $offset + $multiplier * log(max(0, $points) + $base, $base));
+
+    $voting_power = $_voting_power;
+
+    // Max out at ceiling value
+    if ($ceiling !== null && $ceiling !== '') {
+        $voting_power = min(abs(intval($ceiling)), $_voting_power);
+    }
 
     return $voting_power;
 }
@@ -531,7 +557,7 @@ function cns_calculate_poll_voting_power_text(int $points) : array
 
     $equation = with_whitespace(do_lang_tempcode('VOTING_POWER_EQUATION', 'maximumVotingPower', 'offset', ['multiplier', 'points', 'logBase']));
     $equation_with_numbers = with_whitespace(do_lang_tempcode('VOTING_POWER_EQUATION', $ceiling, strval($offset), [float_to_raw_string($multiplier, 2, true), strval($points), float_to_raw_string($base, 2, true)]));
-    $calculation = cns_calculate_poll_voting_power($points);
+    $calculation = cns_points_to_voting_power($points);
 
     return [$equation, $equation_with_numbers, $calculation];
 }

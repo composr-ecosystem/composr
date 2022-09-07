@@ -198,7 +198,7 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array
         foreach ($_vote_rows as $vote) {
             $voting_power = 1.0;
             if ($point_weighting) {
-                $voting_power = cns_calculate_poll_voting_power($vote['pv_cached_points']);
+                $voting_power = cns_points_to_voting_power($vote['pv_cached_points']);
                 $voting_equation = cns_calculate_poll_voting_power_text($vote['pv_cached_points']);
 
                 // Add voting power to the total for the poll
