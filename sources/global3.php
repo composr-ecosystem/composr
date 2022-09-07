@@ -4918,7 +4918,7 @@ function cms_extend_time_limit(int $secs) : int
  */
 function cms_register_shutdown_function_safe($callback, $param_a = null, $param_b = null, $param_c = null, $param_d = null, $param_e = null, $param_f = null, $param_g = null, $param_h = null, $param_i = null, $param_j = null, $param_k = null, $param_l = null, $param_m = null) : bool
 {
-    if (get_value('avoid_register_shutdown_function') === '1') {
+    if (function_exists('get_value') && get_value('avoid_register_shutdown_function') === '1') {
         $args = [$param_a, $param_b, $param_c, $param_d, $param_e, $param_f, $param_g, $param_h, $param_i, $param_j, $param_k, $param_l, $param_m];
         while ((!empty($args)) && (end($args) === null)) {
             array_pop($args);

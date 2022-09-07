@@ -194,25 +194,25 @@ class Hook_ecommerce_support_credits
             }
         }
 
-        $purchase_id = strval($GLOBALS['SITE_DB']->query_insert('credit_purchases', ['member_id' => $member_id, 'date_and_time' => time(), 'num_credits' => $num_credits, 'is_manual' => $manual, 'purchase_validated' => 0], true));
-        return [$purchase_id, null];
+        $id = strval($GLOBALS['SITE_DB']->query_insert('credit_purchases', ['member_id' => $member_id, 'date_and_time' => time(), 'num_credits' => $num_credits, 'is_manual' => $manual, 'purchase_validated' => 0], true));
+        return [$id, null];
     }
 
     /**
      * Handling of a product purchase change state.
      *
      * @param  ID_TEXT $type_code The product codename
-     * @param  ID_TEXT $purchase_id The purchase ID
+     * @param  ID_TEXT $id The purchase ID
      * @param  array $details Details of the product, with added keys: TXN_ID, STATUS, ORDER_STATUS
      * @return boolean Whether the product was automatically dispatched (if not then hopefully this function sent a staff notification)
      */
-    public function actualiser(string $type_code, string $purchase_id, array $details) : bool
+    public function actualiser(string $type_code, string $id, array $details) : bool
     {
         if ($details['STATUS'] != 'Completed') {
             return false;
         }
 
-        $row = $GLOBALS['SITE_DB']->query_select('credit_purchases', ['member_id', 'num_credits'], ['purchase_validated' => 0, 'purchase_id' => intval($purchase_id)], '', 1);
+        $row = $GLOBALS['SITE_DB']->query_select('credit_purchases', ['member_id', 'num_credits'], ['id' => intval($id)], '', 1);
         if (count($row) != 1) {
             return null;
         }
@@ -234,7 +234,7 @@ class Hook_ecommerce_support_credits
         cns_set_custom_field($member_id, $cpf_id, strval($fields['field_' . strval($cpf_id)] + $num_credits));
 
         // Update the row in the credit_purchases table
-        $GLOBALS['SITE_DB']->query_update('credit_purchases', ['purchase_validated' => 1], ['purchase_id' => intval($purchase_id)]);
+        $GLOBALS['SITE_DB']->query_update('credit_purchases', ['purchase_validated' => 1], ['id' => intval($id)]);
 
         $GLOBALS['SITE_DB']->query_insert('ecom_sales', ['date_and_time' => time(), 'member_id' => $member_id, 'details' => do_lang('CREDITS', null, null, null, get_site_default_lang()), 'details2' => strval($num_credits), 'txn_id' => $details['TXN_ID']]);
 
@@ -245,11 +245,11 @@ class Hook_ecommerce_support_credits
      * Get the member who made the purchase.
      *
      * @param  ID_TEXT $type_code The product codename
-     * @param  ID_TEXT $purchase_id The purchase ID
+     * @param  ID_TEXT $id The purchase ID
      * @return ?MEMBER The member ID (null: none)
      */
-    public function member_for(string $type_code, string $purchase_id) : ?int
+    public function member_for(string $type_code, string $id) : ?int
     {
-        return $GLOBALS['SITE_DB']->query_select_value_if_there('credit_purchases', 'member_id', ['purchase_id' => intval($purchase_id)]);
+        return $GLOBALS['SITE_DB']->query_select_value_if_there('credit_purchases', 'member_id', ['id' => intval($id)]);
     }
 }

@@ -119,7 +119,7 @@ class Module_admin_customers
             // Credit logging...
 
             $GLOBALS['SITE_DB']->create_table('credit_purchases', [
-                'purchase_id' => '*AUTO',
+                'id' => '*AUTO',
                 'member_id' => 'MEMBER',
                 'num_credits' => 'INTEGER',
                 'date_and_time' => 'TIME',
@@ -594,6 +594,8 @@ class Module_admin_customers
             if (strpos(get_db_type(), 'mysql') !== false) {
                 $GLOBALS['SITE_DB']->query("ALTER TABLE mantis_bug_file_table ADD bugnote_id int(10) unsigned NOT NULL DEFAULT '0'");
             }
+
+            $GLOBALS['SITE_DB']->alter_table_field('credit_purchases', 'purchase_id', '*AUTO', 'id');
         }
     }
 
