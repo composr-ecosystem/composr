@@ -194,8 +194,8 @@ class Hook_ecommerce_support_credits
             }
         }
 
-        $purchase_id = strval($GLOBALS['SITE_DB']->query_insert('credit_purchases', ['member_id' => $member_id, 'date_and_time' => time(), 'num_credits' => $num_credits, 'is_manual' => $manual, 'purchase_validated' => 0], true));
-        return [$purchase_id, null];
+        $id = strval($GLOBALS['SITE_DB']->query_insert('credit_purchases', ['member_id' => $member_id, 'date_and_time' => time(), 'num_credits' => $num_credits, 'is_manual' => $manual, 'purchase_validated' => 0], true));
+        return [$id, null];
     }
 
     /**
@@ -234,7 +234,7 @@ class Hook_ecommerce_support_credits
         cns_set_custom_field($member_id, $cpf_id, strval($fields['field_' . strval($cpf_id)] + $num_credits));
 
         // Update the row in the credit_purchases table
-        $GLOBALS['SITE_DB']->query_update('credit_purchases', ['purchase_validated' => 1], ['purchase_id' => intval($purchase_id)]);
+        $GLOBALS['SITE_DB']->query_update('credit_purchases', ['purchase_validated' => 1], ['id' => intval($purchase_id)]);
 
         $GLOBALS['SITE_DB']->query_insert('ecom_sales', ['date_and_time' => time(), 'member_id' => $member_id, 'details' => do_lang('CREDITS', null, null, null, get_site_default_lang()), 'details2' => strval($num_credits), 'txn_id' => $details['TXN_ID']]);
 
