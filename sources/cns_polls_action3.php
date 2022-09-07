@@ -320,19 +320,19 @@ function cns_validate_default_poll_options_xml(string $xml = '') : ?object
         switch ($allowed_root_attributes[$attribute]) {
             // true or false
             case 'boolean':
-                if (!in_array(cms_strtolower_ascii($value), ['true', 'false'])) {
+                if ((!is_string($value)) || (!in_array(cms_strtolower_ascii($value), ['true', 'false']))) {
                     return do_lang_tempcode('POLL_XML_TRUE_FALSE_ONLY', $attribute);
                 }
                 break;
             // Any number greater than 0
             case '0<number':
-                if (!is_numeric($value) || $value <= 0) {
+                if (!is_numeric($value) || intval($value) <= 0) {
                     return do_lang_tempcode('POLL_XML_NUMBER_ONLY', $attribute);
                 }
                 break;
             // Any number greater than 0 but less than maximumSelections
             case '0<number<maximumSelections':
-                if (!is_numeric($value) || $value <= 0) {
+                if (!is_numeric($value) || intval($value) <= 0) {
                     return do_lang_tempcode('POLL_XML_NUMBER_ONLY', $attribute);
                 }
                 if (array_key_exists('maximumSelections', $root_attributes) && is_numeric($root_attributes['maximumSelections']) && intval($value) > intval($root_attributes['maximumSelections'])) {
@@ -341,7 +341,7 @@ function cns_validate_default_poll_options_xml(string $xml = '') : ?object
                 break;
             // Any number greater than 0, or false
             case '0<numberOrFalse':
-                if ((!is_numeric($value) || $value <= 0) && cms_strtolower_ascii($value) != 'false') {
+                if ((!is_numeric($value) || intval($value) <= 0) && ((is_numeric($value)) || (cms_strtolower_ascii($value) != 'false'))) {
                     return do_lang_tempcode('POLL_XML_NUMBER_FALSE_ONLY', $attribute);
                 }
                 break;

@@ -273,7 +273,7 @@ function cns_vote_in_poll(int $poll_id, array $votes, ?int $member_id = null, ?a
     }
 
     // Update cache
-    $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_polls SET po_cache_total_votes=(po_cache_total_votes+' . strval(count($votes)) . '), po_cache_voting_power=(po_cache_voting_power+' . float_to_raw_string($total_voting_power_adjust, 10) . ') WHERE id=' . strval($poll_info['id']), 1);
+    $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_polls SET po_cache_total_votes=(po_cache_total_votes+' . strval(count($votes)) . '), po_cache_voting_power=(po_cache_voting_power+' . float_to_raw_string($total_voting_power_adjust, 10) . ') WHERE id=' . strval($poll_id), 1);
 
     // Send notification to topic subscribers if the poll is not private and is set to reveal which members voted for each option (otherwise this can be too revealing as members can predict the outcome of the poll)
     if ($rows[0]['po_is_private'] == 0 && $rows[0]['po_view_member_votes'] == 1) {

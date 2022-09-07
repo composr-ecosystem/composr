@@ -481,6 +481,7 @@ class Hook_addon_registry_shopping
             'WIDTHS' => [
                 placeholder_number(),
             ],
+            'NONRESPONSIVE' => false,
         ]), null, '', true);
     }
 

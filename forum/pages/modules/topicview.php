@@ -753,14 +753,12 @@ class Module_topicview
                             }
                             $revoke_url = build_url($map, get_module_zone('topics'));
                         }
-                        if ($_poll['view_member_votes']) {
-                            $all_votes_url = build_url(['page' => 'topics', 'type' => 'view_poll_voters', 'id' => $_poll['id']], '_SELF');
-                        }
-                        if (($_poll['view_member_votes']) || ($_poll['vote_revocation'] == 1 && !is_guest())) {
+                        if (($_poll['view_member_votes'] == 1) || ($_poll['vote_revocation'] == 1 && !is_guest())) {
                             $show_buttons = true;
                             $footer_message = new Tempcode();
                             $map = ['GUID' => '00662ec1c9d84b96a5e1d8e197ef6de4'];
-                            if ($_poll['view_member_votes']) {
+                            if (($_poll['view_member_votes'] == 1) && ($_poll['is_private'] != 1)) {
+                                $all_votes_url = build_url(['page' => 'topics', 'type' => 'view_poll_voters', 'id' => $_poll['id']], '_SELF');
                                 $map['ALL_VOTES_URL'] = $all_votes_url;
                             }
                             if ($_poll['vote_revocation'] == 1 && !is_guest()) {
@@ -821,10 +819,10 @@ class Module_topicview
                         '_GUID' => 'b32f4c526e147abf20ca0d668e40d515',
                         'ID' => strval($_poll['id']),
                         '_NUM_VOTES' => strval($num_votes),
-                        '_TOTAL_VOTES' => $point_weighting ? float_to_raw_string($total_votes) : strval($total_votes),
-                        'NUM_VOTES' => $point_weighting ? float_format($num_votes, 2) : integer_format($num_votes),
+                        '_TOTAL_VOTES' => strval($total_votes),
+                        'NUM_VOTES' => integer_format($num_votes),
                         'VOTING_POWER' => ($voting_power !== null) ? float_format($answer['voting_power'], 2) : null,
-                        'TOTAL_VOTES' => $point_weighting ? float_format($total_votes, 2) : integer_format($total_votes),
+                        'TOTAL_VOTES' => integer_format($total_votes),
                         'TOTAL_VOTING_POWER' => ($total_voting_power !== null) ? float_format($total_voting_power, 2) : null,
                         'POINT_WEIGHTING' => $point_weighting,
                         'WIDTH' => strval($width),

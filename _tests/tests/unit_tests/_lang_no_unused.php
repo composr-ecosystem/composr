@@ -179,6 +179,7 @@ class _lang_no_unused_test_set extends cms_test_case
             'AUTOFILL_TYPE_DESCRIPTION_',
             'LEADER_BOARD_TYPE_SHORT_',
             'DEFAULT_SLIDE',
+            'LEDGER_STATUS_',
         ];
         $_skip_prefixes = '#^(' . implode('|', $skip_prefixes) . ')#';
 
