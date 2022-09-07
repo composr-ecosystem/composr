@@ -230,6 +230,7 @@ class Hook_addon_registry_core_abstract_interfaces
             'templates/RESULTS_TABLE_ENTRY.tpl' => 'result_table_screen',
             'templates/RESULTS_TABLE_FIELD_TITLE_SORTABLE.tpl' => 'result_table_screen',
             'templates/RESULTS_TABLE_FIELD_TITLE.tpl' => 'result_table_screen',
+            'templates/RESULTS_TABLE_FIELD_FOOTER.tpl' => 'result_table_screen',
             'templates/COLUMNED_TABLE_HEADER_ROW_CELL.tpl' => 'full_table_screen',
             'templates/COLUMNED_TABLE_HEADER_ROW.tpl' => 'full_table_screen',
             'templates/COLUMNED_TABLE_ROW_CELL.tpl' => 'full_table_screen',
@@ -858,6 +859,10 @@ class Hook_addon_registry_core_abstract_interfaces
                 'VALUES' => $cells,
             ]));
         }
+        $order_entries->attach(do_lorem_template('RESULTS_TABLE_FIELD_FOOTER', [
+            'VALUE' => lorem_phrase(),
+            'COLSPAN' => strval(2),
+        ]));
 
         $selectors = new Tempcode();
         $sortable = null;
@@ -883,6 +888,7 @@ class Hook_addon_registry_core_abstract_interfaces
             'MESSAGE' => '',
             'SORT' => $sort,
             'PAGINATION' => placeholder_pagination(),
+            'NONRESPONSIVE' => false
         ]);
 
         return lorem_globalise(do_lorem_template('RESULTS_TABLE_SCREEN', [

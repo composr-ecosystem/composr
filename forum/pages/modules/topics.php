@@ -3375,7 +3375,7 @@ class Module_topics
                     'GUID' => '690423ddee434df79de7bead4fb5e79e',
                     'EQUATION' => $vote['voting_equation'][0],
                     'EQUATION_WITH_NUMBERS' => $vote['voting_equation'][1],
-                    'VOTING_POWER' => float_format($vote['voting_power'], 2)
+                    'VOTING_POWER' => float_format($vote['voting_power'], 2),
                 ]);
             }
             if ($answer_id === null) {

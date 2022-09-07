@@ -422,6 +422,7 @@ class Hook_addon_registry_cns_forum
             'templates/RESULTS_TABLE_MEMBER_CELL.tpl' => 'cns_topic_poll_voters',
             'templates/CNS_TOPIC_POLL_VOTERS_SCREEN.tpl' => 'cns_topic_poll_voters',
             'templates/CNS_TOPIC_POLL_VOTING_POWER.tpl' => 'cns_topic_poll_voters',
+            'templates/HELP_ICON_PHRASE.tpl' => 'cns_topic_poll_voters',
             'templates/CNS_TOPIC_POLL_VIEW_RESULTS.tpl' => 'cns_topic_voted_wrap',
             'templates/CNS_PRIVATE_TOPIC_LINK.tpl' => 'cns_private_topic_link',
             'templates/CNS_PT_FILTERS.tpl' => 'cns_forum',

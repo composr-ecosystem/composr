@@ -182,7 +182,7 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array
 
         $order_by = (($request_voters !== null) && (array_key_exists(1, $request_voters))) ? $request_voters[1] : 'pv_date_time DESC';
 
-        $vote_rows_select = ['pv_answer_id', 'pv_member_id', 'pv_date_time', 'pv_cached_points'];
+        $vote_rows_select = ['pv_answer_id', 'pv_member_id', 'pv_date_time', 'pv_cache_points_at_voting_time'];
         $vote_rows_where = ['pv_poll_id' => $poll_id, 'pv_revoked' => 0];
         if ($answer_id !== null) {
             $vote_rows_where['pv_answer_id'] = $answer_id;
@@ -197,9 +197,10 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array
         $_vote_rows = $GLOBALS['FORUM_DB']->query_select('f_poll_votes', ['*'], $vote_rows_where, 'AND pv_answer_id IS NOT NULL ORDER BY ' . $order_by, $max, $start);
         foreach ($_vote_rows as $vote) {
             $voting_power = 1.0;
+            $voting_equation = '';
             if ($point_weighting) {
-                $voting_power = cns_points_to_voting_power($vote['pv_cached_points']);
-                $voting_equation = cns_calculate_poll_voting_power_text($vote['pv_cached_points']);
+                $voting_power = cns_points_to_voting_power($vote['pv_cache_points_at_voting_time']);
+                $voting_equation = cns_calculate_poll_voting_power_text($vote['pv_cache_points_at_voting_time']);
 
                 // Add voting power to the total for the poll
                 $total_voting_power += $voting_power;

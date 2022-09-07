@@ -13,7 +13,7 @@
 
 		<div id="command-prompt">
 			<label for="commandr-command">{PROMPT*}</label>
-			<input type="text" id="commandr-command" name="command" autofocus class="form-control js-keyup-input-commandr-handle-history" />
+			<input type="text" id="commandr-command" name="command" autofocus="autofocus" class="form-control js-keyup-input-commandr-handle-history" />
 			<button class="btn btn-primary btn-sm buttons--proceed" type="submit" role="textbox">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} <span>{$STRIP_TAGS,{!PROCEED_SHORT}}</span></button>
 			<img id="commandr-loading-image" style="display: none" width="20" height="20" src="{$IMG*,loading}" title="{!LOADING}" alt="{!LOADING}" />
 		</div>

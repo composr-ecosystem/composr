@@ -481,6 +481,7 @@ class Hook_addon_registry_shopping
             'WIDTHS' => [
                 placeholder_number(),
             ],
+            'NONRESPONSIVE' => false,
         ]), null, '', true);
     }
 
@@ -658,6 +659,7 @@ class Hook_addon_registry_shopping
             'MESSAGE' => new Tempcode(),
             'SORT' => $sort,
             'PAGINATION' => placeholder_pagination(),
+            'NONRESPONSIVE' => false,
         ]);
 
         return lorem_globalise(do_lorem_template('ECOM_SHOPPING_CART_SCREEN', [

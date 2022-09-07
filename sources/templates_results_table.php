@@ -310,7 +310,7 @@ function results_sorter(array $sortables, ?string $sortable = null, ?string $sor
             }
 
             $selector_value = $_sortable . ' ASC';
-            $selected = (($sortable . ' ' . $sort_order) == $selector_value);
+            $selected = (($sortable !== null) && ($sort_order !== null) && (($sortable . ' ' . $sort_order) == $selector_value));
             $selectors->attach(do_template('PAGINATION_SORTER', ['_GUID' => '6a57bbaeed04743ba2cafa2d262a1c98', 'SELECTED' => $selected, 'NAME' => $text_ascending, 'VALUE' => $selector_value]));
         }
 
@@ -322,7 +322,7 @@ function results_sorter(array $sortables, ?string $sortable = null, ?string $sor
             }
 
             $selector_value = $_sortable . ' DESC';
-            $selected = (($sortable . ' ' . $sort_order) == $selector_value);
+            $selected = (($sortable !== null) && ($sort_order !== null) && (($sortable . ' ' . $sort_order) == $selector_value));
             $selectors->attach(do_template('PAGINATION_SORTER', ['_GUID' => 'bbf97817fa4f5e744a414b303a3d21fe', 'SELECTED' => $selected, 'NAME' => $text_descending, 'VALUE' => $selector_value]));
         }
     }

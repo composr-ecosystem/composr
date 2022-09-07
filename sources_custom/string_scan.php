@@ -2737,8 +2737,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CHANGE_REGULARITY
         CHANGE_USERGROUP_TO
         CHARGED_POINTS
-        DEBIT_MEMBER
-        CREDIT_MEMBER
         CHATROOMS
         CHATROOM_LANG
         CHATROOM_OWNER
@@ -8315,7 +8313,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         _ESCROW_MODERATE
         AMEND_POINT_TRANSACTION
         _VIEW_POINT_TRANSACTION
-        LOG_ESCROW_DISPUTE_AMENDED
         CREDIT_LONG
         DEBIT_LONG
         SEND_LONG
@@ -8807,7 +8804,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         FAX_US
         MAIL_US
         CHARGE
-        CHARGES
         CHAT
         DIGEST_ITEM_OMITTED
         INSTEAD_OF_SMS
@@ -10512,7 +10508,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         REDIRECT_TO_TOPIC
         REDO_TIME
         REFERENCE_SOURCE
-        REFUND
         REINSTALL
         RELATED_FIELD
         RELEVANCE
@@ -11532,7 +11527,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         GIVE
         POINTS_L
         GIFT_POINTS
-        GIFT_POINTS_L
         POINTS_CHOOSE_ACTION
         SENT_BY
         LEADER_BOARDS
@@ -11570,7 +11564,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         VOTING_POWER
         DESCRIPTION_VOTING_POWER
         VOTING_POWER_EQUATION
-        VOTING_POWER_DERIVATION
         DATE_OF_BIRTH_NO_SELF_EDIT
         BIRTHDAY_POINTS
         BIRTHDAY_POINTS_NOTIFICATION_MAIL_SUBJECT
@@ -11586,7 +11579,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ARE_YOU_SURE_ESCROW_GIFT_POINTS
         ARE_YOU_SURE_ESCROW_POINTS
         ARE_YOU_SURE_ESCROW_SATISFY
-        ARE_YOU_SURE_ESCROW_SATISFY_DISPUTE
         COUNT_POINTS_SPENT
         CREDIT
         DEBIT
@@ -11636,7 +11628,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ESCROW_TO
         _ESCROW_TO
         ESCROW_TRANSACTIONS
-        ESCROW_TRANSACTIONS_FOR
         ESCROW_TRANSACTIONS_MAIL_INTRO
         E_ESCROW_ALREADY_DONE
         E_ESCROW_ALREADY_SATISFIED
@@ -11663,7 +11654,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NOTIFICATION_POINTS_TRANSACTION_REFUNDED_L
         NOTIFICATION_POINTS_TRANSACTION_SENT_L
         NOTIFICATION_POINTS_TRANSACTION_SUBJECT
-        NOTIFICATION_POINTS_TRANSACTION_SYSTEM_L
         NOTIFICATION_POINTS_TRANSACTION_TO_L
         POINTS_REFUNDED
         PRIVILEGE_amend_point_transactions
@@ -11671,15 +11661,12 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PRIVILEGE_moderate_points_escrow
         PRIVILEGE_use_points_escrow
         REVERSED_TRANSACTION
-        SENT_POINTS_FOR
         VIEW_POINT_TRANSACTION
-        _ANONYMOUS_L
         _ESCROW
         _ESCROW_DISPUTE
         _ESCROW_VIEW
         _ESCROW_SATISFY
         _ESCROW_STATUS__PENDING_BOTH_L
-        REVERSED
         LEDGER_STATUS_SHORT_reversing
         LEDGER_STATUS_SHORT_reversed
         AMEND
