@@ -363,13 +363,12 @@ class Module_admin_points
             access_denied('PRIVILEGE', 'amend_point_transactions');
         }
 
-        require_code('points3');
-
         $id = post_param_integer('id');
         $reason = post_param_string('reason', null);
         $redirect = get_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL);
 
-        $out = transaction_amend_screen($id, $this->title, $reason, $redirect);
+        require_code('points3');
+        $out = transaction_amend_screen($id, $this->title, null, $reason, $redirect);
         if ($out === null) {
             // Show it worked / Refresh
             if ($redirect == '') {

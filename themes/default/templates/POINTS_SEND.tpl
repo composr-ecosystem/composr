@@ -19,14 +19,14 @@
 					<label for="send-amount">
 						{!SEND}
 					</label>
-					<input maxlength="7" data-prevent-input="[^\-\d{$BACKSLASH}{$DECIMAL_POINT*}]" size="7" id="send-amount" class="form-control input-integer-required" placeholder="({!AMOUNT})" type="text" name="amount" />
+					<input maxlength="7" data-prevent-input="[^\-\d{$BACKSLASH}{$DECIMAL_POINT*}]" size="7" id="send-amount" class="form-control input-integer-required" placeholder="({!AMOUNT})" type="text" name="amount" value="{DEFAULT__SEND_AMOUNT*}" />
 					{!POINTS_L}
 				</span>
 				<span class="send-fragment">
 					<label for="send-reason">
 						{!POINTS_SEND_FOR}
 					</label>
-					<input maxlength="150" size="26" id="send-reason" class="form-control input-line-required" placeholder="({!REASON})" type="text" name="reason" />
+					<input maxlength="150" size="26" id="send-reason" class="form-control input-line-required" placeholder="({!REASON})" type="text" name="reason" value="{DEFAULT__SEND_REASON*}" />
 				</span>
 				<!--LAST-FIELD-->
 				<p>
@@ -62,17 +62,17 @@
 					</label>
 					<select id="trans_type" class="form-control js-click-check-send-options js-change-check-send-options" name="trans_type">
 						<option value="">({!POINTS_CHOOSE_ACTION})</option>
-						<option value="send">{!SEND_LONG}</option>
-						<option value="credit">{!CREDIT_LONG}</option>
-						<option value="debit">{!DEBIT_LONG}</option>
+						<option value="send"{+START,IF,{$EQ,send,{DEFAULT__TRANS_TYPE}}} selected="selected"{+END}>{!SEND_LONG}</option>
+						<option value="credit"{+START,IF,{$EQ,credit,{DEFAULT__TRANS_TYPE}}} selected="selected"{+END}>{!CREDIT_LONG}</option>
+						<option value="debit"{+START,IF,{$EQ,debit,{DEFAULT__TRANS_TYPE}}} selected="selected"{+END}>{!DEBIT_LONG}</option>
 					</select>
-					<input maxlength="7" data-prevent-input="[^\-\d{$BACKSLASH}{$DECIMAL_POINT*}]" size="7" id="send-amount" class="form-control input-integer-required" placeholder="({!AMOUNT})" type="text" name="amount" />
+					<input maxlength="7" data-prevent-input="[^\-\d{$BACKSLASH}{$DECIMAL_POINT*}]" size="7" id="send-amount" class="form-control input-integer-required" placeholder="({!AMOUNT})" type="text" name="amount" value="{DEFAULT__SEND_AMOUNT*}" />
 					{!POINTS_L}
 				</span>
 				<span class="send-fragment">
 					<label for="send-reason">
 						{!POINTS_SEND_FOR}
-						<input maxlength="150" size="26" id="send-reason" class="form-control input-line-required" placeholder="({!REASON})" type="text" name="reason" />
+						<input maxlength="150" size="26" id="send-reason" class="form-control input-line-required" placeholder="({!REASON})" type="text" name="reason" value="{DEFAULT__SEND_REASON*}" />
 					</label>
 				</span>
 				<!--LAST-FIELD-->

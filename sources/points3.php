@@ -92,6 +92,9 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
     }
 
     // Show send form
+    $trans_type = get_param_string('trans_type', 'send');
+    $send_amount = get_param_integer('send_amount', null);
+    $send_reason = get_param_string('send_reason', null);
     if (is_guest($member_id_viewing)) {
         $send_template = do_lang_tempcode('POINTS_MUST_LOGIN');
     } else {
@@ -104,6 +107,9 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
                 '_GUID' => 'fa1749d5a803d86b1efbcfde2ad81702',
                 'SEND_URL' => $send_url,
                 'MEMBER' => escape_html(strval($member_id_of)),
+                'DEFAULT__TRANS_TYPE' => escape_html($trans_type),
+                'DEFAULT__SEND_AMOUNT' => ($send_amount !== null) ? escape_html(strval($send_amount)) : '',
+                'DEFAULT__SEND_REASON' => escape_html($send_reason),
                 '_VIEWER_GIFT_POINTS_BALANCE' => escape_html(strval($viewer_gift_points_balance)),
                 'VIEWER_GIFT_POINTS_BALANCE' => integer_format($viewer_gift_points_balance),
                 '_VIEWER_POINTS_BALANCE' => escape_html(strval($viewer_points_balance)),
@@ -126,23 +132,17 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
     $viewer_balance = ($viewer_gift_points_balance + $viewer_points_balance);
     if (is_guest($member_id_viewing)) {
         $escrow_template = do_lang_tempcode('ESCROW_MUST_LOGIN');
-    }
-    elseif (!has_privilege($member_id_viewing, 'use_points_escrow')) {
+    } elseif (!has_privilege($member_id_viewing, 'use_points_escrow')) {
         $escrow_template = do_lang_tempcode('ESCROW_NOT_ALLOWED_YOU');
-    }
-    elseif ($member_id_viewing == $member_id_of) {
+    } elseif ($member_id_viewing == $member_id_of) {
         $escrow_template = do_lang_tempcode('ESCROW_NO_SELF');
-    }
-    elseif (is_guest($member_id_of)) {
+    } elseif (is_guest($member_id_of)) {
         $escrow_template = do_lang_tempcode('ESCROW_NO_GUEST');
-    }
-    elseif (!has_privilege($member_id_of, 'use_points')) {
+    } elseif (!has_privilege($member_id_of, 'use_points')) {
         $escrow_template = do_lang_tempcode('ESCROW_MEMBER_CANNOT_USE_POINTS', escape_html($username));
-    }
-    elseif ($viewer_balance <= 0) {
+    } elseif ($viewer_balance <= 0) {
         $escrow_template = do_lang_tempcode('ESCROW_LACKING_POINTS');
-    }
-    else {
+    } else {
         $escrow_url = build_url(['page' => 'points', 'type' => 'escrow', 'id' => $member_id_of], get_module_zone('points'));
 
         $form = new Tempcode();
@@ -399,14 +399,15 @@ function transaction_reverse_screen(int $id, int $confirm, object $title) : ?obj
  *
  * @param  AUTO_LINK $id The ID of the transaction record to edit
  * @param  Tempcode $title The title of the screen
+ * @param  ?MEMBER $member_id_of The member belonging to the transaction being amended (null: We are using the points ledger from admin_points)
  * @param  ?SHORT_TEXT $reason The new reason to set for the transaction (null: not yet specified)
  * @param  URLPATH $redirect Where to redirect after editing the transaction
  * @return ?Tempcode The UI to edit a transaction (null: the edit was successful)
  */
-function transaction_amend_screen(int $id, object $title, ?string $reason = null, string $redirect = '') : ?object
+function transaction_amend_screen(int $id, object $title, ?int $member_id_of = null, ?string $reason = null, string $redirect = '') : ?object
 {
     if (!has_privilege(get_member(), 'amend_point_transactions')) {
-        access_denied("I_ERROR");
+        access_denied('I_ERROR');
     }
 
     $rows = $GLOBALS['SITE_DB']->query_select('points_ledger', ['*'], ['id' => $id], '', 1);
@@ -423,7 +424,11 @@ function transaction_amend_screen(int $id, object $title, ?string $reason = null
         $fields = build_keep_post_fields();
         $fields->attach(form_input_line_comcode(do_lang('REASON'), do_lang('DESCRIPTION_POINTS_REASON'), 'reason', $myreason, true));
 
-        $url = build_url(['page' => '_SELF', 'type' => 'edit', 'redirect' => $redirect], '_SELF');
+        $map = ['page' => '_SELF', 'type' => 'amend', 'redirect' => $redirect];
+        if ($member_id_of !== null) {
+            $map['member_id_of'] = $member_id_of;
+        }
+        $url = build_url($map, '_SELF');
 
         return do_template('FORM_SCREEN', [
             '_GUID' => 'ce1752a0c5508a061bffbf242a13e5bd',

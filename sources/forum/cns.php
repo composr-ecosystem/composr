@@ -618,10 +618,16 @@ class Forum_driver_cns extends Forum_driver_base
      * @param  MEMBER $id The member ID
      * @param  boolean $tempcode_okay Whether it is okay to return the result using Tempcode (more efficient, and allows keep_* parameters to propagate which you almost certainly want!)
      * @param  ?string $username Username, passed for performance reasons (null: look it up)
+     * @param  array $hints Extra parameters for the URL
      * @return mixed The URL to the member profile
      */
-    protected function _member_profile_url(int $id, bool $tempcode_okay = false, ?string $username = null)
+    protected function _member_profile_url(int $id, bool $tempcode_okay = false, ?string $username = null, array $hints = [])
     {
+        $hash = '';
+        if (array_key_exists('conversr_tab', $hints)) {
+            $hash = 'tab--' . $hints['conversr_tab'];
+        }
+
         if (get_option('username_profile_links') == '1') {
             if ($username === null) {
                 $username = $GLOBALS['FORUM_DRIVER']->get_username($id, false, USERNAME_DEFAULT_ID_TIDY);
@@ -630,13 +636,19 @@ class Forum_driver_cns extends Forum_driver_base
             if (get_page_name() == 'members') {
                 $map += propagate_filtercode();
             }
-            $_url = build_url($map, get_module_zone('members'), [], false, false, !$tempcode_okay);
+            if (array_key_exists('extra_get_params', $hints)) {
+                $map += $hints['extra_get_params'];
+            }
+            $_url = build_url($map, get_module_zone('members'), [], false, false, !$tempcode_okay, $hash);
         } else {
             $map = ['page' => 'members', 'type' => 'view', 'id' => ($id == get_member() && $tempcode_okay) ? null : $id];
             if (get_page_name() == 'members') {
                 $map += propagate_filtercode();
             }
-            $_url = build_url($map, get_module_zone('members'), [], false, false, !$tempcode_okay);
+            if (array_key_exists('extra_get_params', $hints)) {
+                $map += $hints['extra_get_params'];
+            }
+            $_url = build_url($map, get_module_zone('members'), [], false, false, !$tempcode_okay, $hash);
         }
         if (($tempcode_okay) && (get_base_url() == get_forum_base_url())) {
             return $_url;

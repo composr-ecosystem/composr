@@ -8326,6 +8326,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NOTIFICATION_TYPE_point_escrows_staff_passive
         NOTIFICATION_TYPE_point_escrows_staff_active
         NEW_ESCROW_TRANSACTION_SUBJECT_STAFF
+        NEW_ESCROW_TRANSACTION_INTRO_STAFF
     ')));
 
     $non_admin_files = [

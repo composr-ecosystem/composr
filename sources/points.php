@@ -236,24 +236,28 @@ function gift_points_balance(int $member_id) : int
  *
  * @param  MEMBER $member_id The member to view the profile
  * @param  boolean $skip_keep Whether to skip actually putting on keep_ parameters (rarely will this skipping be desirable)
- * @param  ?integer $points The number of points to pre-populate in the send / modify form (null: leave blank)
- * @param  ?SHORT_TEXT $reason The reason to pre-populate in the send / modify form (null: leave blank)
- * @param  ID_TEXT $transaction_type The type of transaction to pre-select (ignored for those without "Moderate points" privilege)
+ * @param  ?integer $send_amount The number of points to pre-populate in the send / modify form (null: leave blank)
+ * @param  ?SHORT_TEXT $send_reason The reason to pre-populate in the send / modify form (null: leave blank)
+ * @param  ?ID_TEXT $trans_type The type of transaction to pre-select (ignored for those without "Moderate points" privilege) (null: do not set a default)
+ * @set send credit debit
  * @return Tempcode The URL to the member's points profile
  *
  */
-function points_url(int $member_id, bool $skip_keep = false, ?int $points = null, ?string $reason = null, string $transaction_type = 'send') : object
+function points_url(int $member_id, bool $skip_keep = false, ?int $send_amount = null, ?string $send_reason = null, ?string $trans_type = null) : object
 {
-    $map = ['transaction_type' => $transaction_type];
-    if ($points !== null) {
-        $map['points'] = $points;
+    $map = [];
+    if ($trans_type !== null) {
+        $map['trans_type'] = $trans_type;
     }
-    if ($reason !== null) {
-        $map['reason'] = $reason;
+    if ($send_amount !== null) {
+        $map['send_amount'] = $send_amount;
+    }
+    if ($send_reason !== null) {
+        $map['send_reason'] = $send_reason;
     }
 
     if (get_forum_type() == 'cns') {
-        $url = $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, true, null, ['conversr_tab' => 'points', 'extra_get_params' => $map]); // TODO: Implement (see Skype)
+        $url = $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, true, null, ['conversr_tab' => 'points', 'extra_get_params' => $map]);
         if (!is_object($url)) {
             $url = make_string_tempcode($url);
         }

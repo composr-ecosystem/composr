@@ -25,7 +25,7 @@ class Module_points
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info(): ?array
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -216,7 +216,7 @@ class Module_points
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false): ?array
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('points')) {
             return null;
@@ -242,7 +242,7 @@ class Module_points
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run(): ?object
+    public function pre_run() : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('points', $error_msg)) {
@@ -361,7 +361,7 @@ class Module_points
      *
      * @return Tempcode The result of execution
      */
-    public function run(): object
+    public function run() : object
     {
         if (get_forum_type() == 'none') {
             warn_exit(do_lang_tempcode('NO_FORUM_INSTALLED'));
@@ -418,14 +418,13 @@ class Module_points
      *
      * @return Tempcode The UI
      */
-    public function points_search_form(): object
+    public function points_search_form() : object
     {
         $post_url = build_url(['page' => '_SELF', 'type' => '_search'], '_SELF', [], false, true);
         require_code('form_templates');
         if (!is_guest()) {
             $username = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
-        }
-        else {
+        } else {
             $username = '';
         }
         $fields = form_input_username(do_lang_tempcode('USERNAME'), '', 'username', $username, true, false);
@@ -453,7 +452,7 @@ class Module_points
      *
      * @return Tempcode The UI
      */
-    public function points_search_results(): object
+    public function points_search_results() : object
     {
         $username = str_replace('*', '%', get_param_string('username'));
         if ((substr($username, 0, 1) == '%') && ($GLOBALS['FORUM_DRIVER']->get_num_members() > 3000)) {
@@ -489,7 +488,7 @@ class Module_points
      *
      * @return Tempcode The UI
      */
-    public function points_profile(): object
+    public function points_profile() : object
     {
         $member_id_of = $this->member_id_of;
 
@@ -512,7 +511,7 @@ class Module_points
      *
      * @return Tempcode The UI
      */
-    public function do_transact(): object
+    public function do_transact() : object
     {
         $member_id_of = get_param_integer('id');
 
@@ -527,8 +526,7 @@ class Module_points
         $member_id_viewing = get_member();
         if (is_guest($member_id_viewing)) { // No cheating
             $message = do_lang_tempcode('MUST_LOGIN');
-        }
-        else {
+        } else {
             if ($trans_type == 'send') {
                 $anonymous = post_param_integer('anonymous', 0);
 
@@ -538,30 +536,20 @@ class Module_points
                 // Check that the member has permission to send points
                 if (!has_privilege($member_id_viewing, 'send_points') && !has_privilege($member_id_viewing, 'moderate_points')) {
                     access_denied('PRIVILEGE', 'send_points');
-                }
-
-                // Check if the member is trying to send points to themself
-                elseif (($member_id_of == $member_id_viewing) && (!has_privilege($member_id_viewing, 'send_points_to_self'))) { // No cheating
+                } elseif (($member_id_of == $member_id_viewing) && (!has_privilege($member_id_viewing, 'send_points_to_self'))) { // No cheating
+                    // Handle if the member is trying to send points to themself
                     $message = do_lang_tempcode('PE_SELF');
-                }
-
-                // Do not allow sending negative points
-                elseif ($amount < 0) {
+                } elseif ($amount < 0) {
+                    // Handle trying to send negative points
                     $message = do_lang_tempcode('PE_NEGATIVE_POINTS');
-                }
-
-                // Reason is required
-                elseif ($reason == '') {
+                } elseif ($reason == '') {
+                    // Handle if reason is not specified
                     $message = do_lang_tempcode('IMPROPERLY_FILLED_IN');
-                }
-
-                // Validate the member has enough points to do this
-                elseif ((($viewer_gift_points_balance + $viewer_points_balance) < $amount)) {
+                } elseif ((($viewer_gift_points_balance + $viewer_points_balance) < $amount)) {
+                    // Handle if the member does not have enough points
                     $message = do_lang_tempcode('PE_LACKING_POINTS');
-                }
-
-                // Confirm / make the transaction
-                else {
+                } else {
+                    // Confirm / make the transaction
                     require_code('points2');
 
                     $member_of = $GLOBALS['FORUM_DRIVER']->get_username($member_id_of);
@@ -592,8 +580,7 @@ class Module_points
                             points_credit_member($member_id_viewing, do_lang('_PR_LUCKY'), $reward_credit_amount);
 
                             $message = do_lang_tempcode('PR_LUCKY', escape_html(integer_format($reward_credit_amount)));
-                        }
-                        else {
+                        } else {
                             $message = do_lang_tempcode('PR_NORMAL');
                         }
                     }
@@ -628,8 +615,7 @@ class Module_points
                     $message = do_lang_tempcode('MEMBER_HAS_BEEN_CREDITED', escape_html($member_of), escape_html(integer_format($amount)), escape_html(integer_format($balance)));
 
                     $worked = true;
-                }
-                else {
+                } else {
                     access_denied('I_ERROR');
                 }
             }
@@ -660,8 +646,7 @@ class Module_points
                     $message = do_lang_tempcode('MEMBER_HAS_BEEN_DEBITED', escape_html($member_of), escape_html(integer_format($amount)), escape_html(integer_format($balance)));
 
                     $worked = true;
-                }
-                else {
+                } else {
                     access_denied('I_ERROR');
                 }
             }
@@ -680,7 +665,7 @@ class Module_points
      *
      * @return Tempcode The UI
      */
-    public function escrow(): object
+    public function escrow() : object
     {
         $member_id_of = get_param_integer('id');
         $member_id_viewing = get_member();
@@ -689,17 +674,13 @@ class Module_points
         // Check privileges
         if (is_guest($member_id_viewing)) {
             access_denied('NOT_AS_GUEST');
-        }
-        elseif (!has_privilege($member_id_viewing, 'use_points_escrow')) {
+        } elseif (!has_privilege($member_id_viewing, 'use_points_escrow')) {
             access_denied('PRIVILEGE', 'use_points_escrow');
-        }
-        elseif (is_guest($member_id_of)) {
+        } elseif (is_guest($member_id_of)) {
             return warn_screen($this->title, do_lang_tempcode('ESCROW_NO_GUEST'));
-        }
-        elseif ($member_id_of == $member_id_viewing) {
+        } elseif ($member_id_of == $member_id_viewing) {
             return warn_screen($this->title, do_lang_tempcode('ESCROW_NO_SELF'));
-        }
-        elseif (!has_privilege($member_id_of, 'use_points')) {
+        } elseif (!has_privilege($member_id_of, 'use_points')) {
             return warn_screen($this->title, do_lang_tempcode('ESCROW_MEMBER_CANNOT_USE_POINTS', escape_html($username)));
         }
 
@@ -731,7 +712,7 @@ class Module_points
      *
      * @return Tempcode The UI
      */
-    public function do_escrow(): object
+    public function do_escrow() : object
     {
         require_code('points2');
 
@@ -750,24 +731,18 @@ class Module_points
         // Make sure this is a valid transaction
         if (is_guest($member_id_viewing)) {
             access_denied('NOT_AS_GUEST');
-        }
-        elseif (!has_privilege($member_id_viewing, 'use_points_escrow')) {
+        } elseif (!has_privilege($member_id_viewing, 'use_points_escrow')) {
             access_denied('PRIVILEGE', 'use_points_escrow');
-        }
-        elseif (is_guest($member_id_of)) {
+        } elseif (is_guest($member_id_of)) {
             return warn_screen($this->title, do_lang_tempcode('ESCROW_NO_GUEST'));
-        }
-        elseif ($member_id_of == $member_id_viewing) {
+        } elseif ($member_id_of == $member_id_viewing) {
             return warn_screen($this->title, do_lang_tempcode('ESCROW_NO_SELF'));
-        }
-        elseif (!has_privilege($member_id_of, 'use_points')) {
+        } elseif (!has_privilege($member_id_of, 'use_points')) {
             $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id_of, true, USERNAME_GUEST_AS_DEFAULT | USERNAME_DEFAULT_ERROR);
             return warn_screen($this->title, do_lang_tempcode('ESCROW_MEMBER_CANNOT_USE_POINTS', escape_html($username)));
-        }
-        elseif (($amount < 0) || ($reason == '') || (($expiry_time !== null) && ($expiry_time < time()))) {
+        } elseif (($amount < 0) || ($reason == '') || (($expiry_time !== null) && ($expiry_time < time()))) {
             return warn_screen($this->title, do_lang_tempcode('IMPROPERLY_FILLED_IN'));
-        }
-        elseif ($viewer_balance < $amount) {
+        } elseif ($viewer_balance < $amount) {
             if (get_option('enable_gift_points') == '1') {
                 return warn_screen($this->title, do_lang_tempcode('ESCROW_NOT_ENOUGH_GIFT_POINTS', escape_html(integer_format($amount)), escape_html(integer_format($viewer_gift_points_balance)), escape_html(integer_format($viewer_points_balance))));
             } else {
@@ -1186,8 +1161,9 @@ class Module_points
         $id = post_param_integer('id');
         $reason = post_param_string('reason', null);
         $redirect = get_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL);
+        $member_id_of = get_param_integer('member_id_of');
 
-        $out = transaction_amend_screen($id, $this->title, $reason, $redirect);
+        $out = transaction_amend_screen($id, $this->title, $member_id_of, $reason, $redirect);
         if ($out === null) {
             // Show it worked / Refresh
             if ($redirect == '') {

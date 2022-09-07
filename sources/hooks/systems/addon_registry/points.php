@@ -116,9 +116,6 @@ class Hook_addon_registry_points
             'themes/default/images/icons_monochrome/menu/adminzone/audit/points_log.svg',
             'themes/default/images/icons_monochrome/buttons/points.svg',
             'themes/default/templates/POINTS_PROFILE.tpl',
-            'sources/hooks/systems/notifications/escrow_disputed.php',
-            'sources/hooks/systems/notifications/escrow_fully_satisfied.php',
-            'sources/hooks/systems/notifications/new_points_escrow.php',
             'sources/hooks/systems/config/points_joining.php',
             'sources/hooks/systems/config/points_per_daily_visit.php',
             'sources/hooks/systems/config/points_per_day.php',
@@ -156,7 +153,7 @@ class Hook_addon_registry_points
             'sources/hooks/systems/config/reward_credit_amount.php',
             'sources/hooks/systems/config/reward_credit_chance.php',
             'sources/hooks/systems/config/enable_gift_points.php',
-            'sources/hooks/systems/tasks/export_points_log.php',
+            'sources/hooks/systems/tasks/export_points_overview.php',
             'sources/hooks/systems/commandr_fs_extended_member/point_credits.php',
             'sources/hooks/systems/commandr_fs_extended_member/point_debits.php',
             'themes/default/javascript/points.js',
@@ -171,13 +168,14 @@ class Hook_addon_registry_points
             'sources/hooks/systems/notifications/birthday_points.php',
             'sources/hooks/modules/admin_stats/point_transactions.php',
             'sources/hooks/systems/notifications/points_transaction.php',
-            'sources/hooks/systems/notifications/escrow_amended.php',
-            'sources/hooks/systems/notifications/escrow_cancelled.php',
             'sources/hooks/systems/notifications/points_transaction_staff.php',
             'sources/hooks/systems/cron/points_escrow.php',
             'sources/hooks/systems/commandr_commands/send_points.php',
             'sources/points_escrow.php',
-            'themes/default/templates/POINTS_ESCROW_SCREEN.tpl'
+            'themes/default/templates/POINTS_ESCROW_SCREEN.tpl',
+            'sources/hooks/systems/notifications/point_escrows_staff_active.php',
+            'sources/hooks/systems/notifications/point_escrows_staff_passive.php',
+            'sources/hooks/systems/notifications/point_escrows.php',
         ];
     }
 
@@ -233,14 +231,29 @@ class Hook_addon_registry_points
     public function tpl_preview__points_screen() : object
     {
         $chargelog_details = placeholder_table();
+        $escrow_details = placeholder_table();
+        $ledger_details = placeholder_table();
 
         $from = placeholder_table();
-
         $to = placeholder_table();
+
+        $escrow = do_lorem_template('ESCROW_TRANSACTIONS', [
+            '_GUID' => 'ac97ee94388e4db2b8753273694cb2a1',
+            'MEMBER' => placeholder_number(),
+            '_VIEWER_POINTS_BALANCE' => placeholder_number(),
+            'VIEWER_POINTS_BALANCE' => placeholder_number(),
+            '_VIEWER_GIFT_POINTS_BALANCE' => placeholder_number(),
+            'VIEWER_GIFT_POINTS_BALANCE' => placeholder_number(),
+            'GIFT_POINTS_ENABLED' => true,
+            'FORM' => placeholder_button(),
+        ]);
 
         $give_template = do_lorem_template('POINTS_SEND', [
             'SEND_URL' => placeholder_url(),
             'MEMBER' => placeholder_numeric_id(),
+            'DEFAULT__TRANS_TYPE' => 'send',
+            'DEFAULT__SEND_AMOUNT' => placeholder_number(),
+            'DEFAULT__SEND_REASON' => lorem_phrase(),
             '_VIEWER_GIFT_POINTS_BALANCE' => placeholder_number(),
             'VIEWER_GIFT_POINTS_BALANCE' => placeholder_number(),
             '_VIEWER_POINTS_BALANCE' => placeholder_number(),
@@ -277,6 +290,9 @@ class Hook_addon_registry_points
             'CHARGELOG_DETAILS' => $chargelog_details,
             'GIVE' => $give_template,
             'POINTS_RECORDS' => $points_records,
+            'ESCROW_DETAILS' => $escrow_details,
+            'LEDGER_DETAILS' => $ledger_details,
+            'ESCROW' => $escrow,
         ]);
 
         return lorem_globalise(do_lorem_template('POINTS_SCREEN', [
