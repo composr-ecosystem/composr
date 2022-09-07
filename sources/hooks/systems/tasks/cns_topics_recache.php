@@ -26,12 +26,13 @@ class Hook_task_cns_topics_recache
     /**
      * Run the task hook.
      *
+     * @param  ?AUTO_LINK $topic_scope The topic ID which all de-cacheing should take place (null: all topics)
      * @param  boolean $recache_topics Whether to re-cache topics
      * @param  boolean $recache_poll_votes Whether to re-cache poll votes
      * @param  boolean $nullify_poll_voting_power Whether to nullify the voting_power cache (recalculated individually when polls are viewed)
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
-    public function run(bool $recache_topics = true, bool $recache_poll_votes = true, bool $nullify_poll_voting_power = false) : ?array
+    public function run(?int $topic_scope = null, bool $recache_topics = true, bool $recache_poll_votes = true, bool $nullify_poll_voting_power = false) : ?array
     {
         if (!addon_installed('cns_forum')) {
             return null;
@@ -41,9 +42,13 @@ class Hook_task_cns_topics_recache
 
         // Topics and posts
         if ($recache_topics) {
+            $map = [];
+            if ($topic_scope !== null) {
+                $map['id'] = $topic_scope;
+            }
             $start = 0;
             do {
-                $topics = $GLOBALS['FORUM_DB']->query_select('f_topics', ['id', 't_forum_id'], [], '', 500, $start);
+                $topics = $GLOBALS['FORUM_DB']->query_select('f_topics', ['id', 't_forum_id'], $map, '', 500, $start);
                 foreach ($topics as $i => $topic) {
                     task_log($this, 'Recaching topic', $i, count($topics));
 
@@ -65,7 +70,16 @@ class Hook_task_cns_topics_recache
         if (addon_installed('polls') && ($recache_poll_votes || $nullify_poll_voting_power)) {
             $start = 0;
             do {
-                $polls = $GLOBALS['FORUM_DB']->query_select('f_polls', ['id'], [], '', 500, $start);
+                if ($topic_scope === null) {
+                    $polls = $GLOBALS['FORUM_DB']->query_select('f_polls', ['id'], [], '', 500, $start);
+                } else {
+                    $topic = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_poll_id'], ['id' => $topic_scope], '', 1);
+                    if (!array_key_exists(0, $topic)) {
+                        // Break out of the do-while loop if the topic scope could not be found
+                        break;
+                    }
+                    $polls = $GLOBALS['FORUM_DB']->query_select('f_polls', ['id'], ['id' => $topic[0]['t_poll_id']], '', 500, $start);
+                }
                 foreach ($polls as $i => $poll) {
                     task_log($this, 'Recaching poll', $i, count($polls));
 
