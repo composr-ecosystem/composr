@@ -5,7 +5,7 @@
 		{$INSERT_FORM_POST_SECURITY}
 
 		<div class="inline">
-			{+START,IF,{$NOT,{$IS_GUEST}}}<div class="accessibility-hidden"><label for="mark_{ID*}">{!MARKER} #{ID*}</label></div>{+END}{$,Guests don't see this so search engines don't; hopefully people with screen-readers are logged in}
+			<label for="mark_{ID*}" class="accessibility-hidden">{!MARKER} #{ID*}</label>
 			<input value="1" type="checkbox" id="mark_{ID*}" name="mark_{ID*}" class="js-click-checkbox-set-row-mark-class"{+START,IF,{$NOT,{$IS_GUEST}}} title="{!MARKER} #{ID*}"{+END} />
 		</div>
 	</form>

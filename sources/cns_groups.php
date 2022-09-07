@@ -485,7 +485,7 @@ function cns_get_members_groups(?int $member_id = null, bool $skip_secret = fals
             $groups[$group_id] = true;
         }
 
-        $_groups = $GLOBALS['FORUM_DB']->query_select('f_group_members m LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups g ON g.id=m.gm_group_id', ['gm_group_id', 'g_hidden'], ['gm_member_id' => $member_id, 'gm_validated' => 1], 'ORDER BY g.g_order');
+        $_groups = $GLOBALS['FORUM_DB']->query_select('f_group_members m LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups g ON g.id=m.gm_group_id', ['gm_group_id', 'g_hidden', 'g_order'], ['gm_member_id' => $member_id, 'gm_validated' => 1], 'ORDER BY g.g_order');
         foreach ($_groups as $group) {
             $groups[$group['gm_group_id']] = true;
         }

@@ -3702,7 +3702,7 @@ class Database_Static_xml extends DatabaseDriver
         if (($orders !== null) && (!$has_wildcard_selected_fields)) {
             foreach ($orders as $order) {
                 if ($order[0][0] == 'FIELD') {
-                    if ((!in_array($order[0][1], preg_replace('#^.*\.#', '', $selected_fields))) && (!in_array($order[0][1], preg_replace('#^.*\.#', '', $selected_fields_aliases)))) {
+                    if ((!in_array(preg_replace('#^.*\.#', '', $order[0][1]), preg_replace('#^.*\.#', '', $selected_fields))) && (!in_array(preg_replace('#^.*\.#', '', $order[0][1]), preg_replace('#^.*\.#', '', $selected_fields_aliases)))) {
                         return $this->_bad_query($query, $fail_ok, 'Cannot sort by ' . $order[0][1] . ', it\'s not selected');
                     }
                 }

@@ -76,7 +76,7 @@
 								{$INSERT_FORM_POST_SECURITY}
 
 								<div>
-									{+START,IF,{$NOT,{$IS_GUEST}}}<div class="accessibility-hidden"><label for="mark_{ID*}">{!FORUM_POST} {!MARKER} #{ID*}</label></div>{+END}{$,Guests don't see this so search engines don't; hopefully people with screen-readers are logged in}
+									<label for="mark_{ID*}" class="accessibility-hidden">{!FORUM_POST} {!MARKER} #{ID*}</label>
 									<input {+START,IF,{$NOT,{$IS_GUEST}}} title="{!FORUM_POST} {!MARKER} #{ID*}"{+END} value="1" type="checkbox" id="mark_{ID*}" name="mark_{ID*}" class="js-click-checkbox-set-cell-mark-class" />
 								</div>
 							</form>
