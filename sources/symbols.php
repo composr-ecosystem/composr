@@ -552,13 +552,15 @@ function ecv(string $lang, array $escaped, int $type, string $name, array $param
 
                             $attributes = preg_replace('#\s+(cellspacing|cellpadding|border|width|height|align)="[^"]*"#', '', $attributes);
                             return '<div' . $attributes . '>';
-                        } else { // Closing element
-                            if ($is_in_remaining_table) {
-                                return $matches[0];
-                            }
-
-                            return '</div>';
                         }
+
+                        // Closing element
+
+                        if ($is_in_remaining_table) {
+                            return $matches[0];
+                        }
+
+                        return '</div>';
                     };
                     $value = preg_replace_callback('#<()(table|tbody|thead|tr|th|td)(\s[^<>]*)?' . '>#i', $table_cleanup_func, $value);
                     $value = preg_replace_callback('#<(/)(table|tbody|thead|tr|th|td)>#', $table_cleanup_func, $value);

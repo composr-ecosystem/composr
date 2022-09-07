@@ -35,22 +35,22 @@ class Hook_commandr_command_find_id_via_label
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('find_id_via_label', ['h'], [true, true]), '', ''];
-        } else {
-            if (!array_key_exists(0, $parameters)) {
-                return ['', '', '', do_lang('MISSING_PARAM', '1', 'find_id_via_label')];
-            }
-            if (!array_key_exists(1, $parameters)) {
-                return ['', '', '', do_lang('MISSING_PARAM', '2', 'find_id_via_label')];
-            }
-
-            require_code('resource_fs');
-
-            $result = find_id_via_label($parameters[0], $parameters[1], array_key_exists(2, $parameters) ? $parameters[2] : null);
-            if ($result !== null) {
-                return ['', '', $result, ''];
-            } else {
-                return ['', '', '', do_lang('MISSING_RESOURCE')];
-            }
         }
+
+        if (!array_key_exists(0, $parameters)) {
+            return ['', '', '', do_lang('MISSING_PARAM', '1', 'find_id_via_label')];
+        }
+        if (!array_key_exists(1, $parameters)) {
+            return ['', '', '', do_lang('MISSING_PARAM', '2', 'find_id_via_label')];
+        }
+
+        require_code('resource_fs');
+
+        $result = find_id_via_label($parameters[0], $parameters[1], array_key_exists(2, $parameters) ? $parameters[2] : null);
+        if ($result === null) {
+            return ['', '', '', do_lang('MISSING_RESOURCE')];
+        }
+
+        return ['', '', $result, ''];
     }
 }

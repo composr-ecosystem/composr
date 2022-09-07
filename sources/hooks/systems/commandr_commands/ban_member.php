@@ -35,31 +35,31 @@ class Hook_commandr_command_ban_member
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('ban_member', ['h', 'u'], [true]), '', ''];
-        } else {
-            if (get_forum_type() != 'cns') {
-                return ['', '', '', do_lang('NO_CNS')];
-            }
-
-            if (!array_key_exists(0, $parameters)) {
-                return ['', '', '', do_lang('MISSING_PARAM', '1', 'ban_member')];
-            }
-
-            require_code('cns_members_action');
-            require_code('cns_members_action2');
-            require_lang('cns');
-
-            $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($parameters[0]);
-
-            if (($member_id === null) || (is_guest($member_id))) {
-                return ['', '', '', do_lang('_MEMBER_NO_EXIST', $parameters[0])];
-            }
-
-            if ((array_key_exists('u', $options)) || (array_key_exists('unban', $options))) {
-                cns_unban_member($member_id);
-            } else {
-                cns_ban_member($member_id);
-            }
-            return ['', '', do_lang('SUCCESS'), ''];
         }
+
+        if (get_forum_type() != 'cns') {
+            return ['', '', '', do_lang('NO_CNS')];
+        }
+
+        if (!array_key_exists(0, $parameters)) {
+            return ['', '', '', do_lang('MISSING_PARAM', '1', 'ban_member')];
+        }
+
+        require_code('cns_members_action');
+        require_code('cns_members_action2');
+        require_lang('cns');
+
+        $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($parameters[0]);
+
+        if (($member_id === null) || (is_guest($member_id))) {
+            return ['', '', '', do_lang('_MEMBER_NO_EXIST', $parameters[0])];
+        }
+
+        if ((array_key_exists('u', $options)) || (array_key_exists('unban', $options))) {
+            cns_unban_member($member_id);
+        } else {
+            cns_ban_member($member_id);
+        }
+        return ['', '', do_lang('SUCCESS'), ''];
     }
 }

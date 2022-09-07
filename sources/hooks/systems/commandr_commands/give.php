@@ -41,39 +41,39 @@ class Hook_commandr_command_give
 
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('give', ['h', 'a'], [true, true, true, true]), '', ''];
-        } else {
-            if (!array_key_exists(0, $parameters)) {
-                return ['', '', '', do_lang('MISSING_PARAM', '1', 'give')];
+        }
+
+        if (!array_key_exists(0, $parameters)) {
+            return ['', '', '', do_lang('MISSING_PARAM', '1', 'give')];
+        }
+        if (!array_key_exists(1, $parameters)) {
+            return ['', '', '', do_lang('MISSING_PARAM', '2', 'give')];
+        }
+        if (!array_key_exists(2, $parameters)) {
+            return ['', '', '', do_lang('MISSING_PARAM', '3', 'give')];
+        }
+
+        require_code('points2');
+
+        $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($parameters[0]);
+        if (($member_id === null) || (is_guest($member_id))) {
+            return ['', '', '', do_lang('MEMBER_NO_EXIST')];
+        }
+
+        // If parameter 4 is not provided, this is a system gift transfer
+        if (!array_key_exists(3, $parameters)) {
+            // Include name of member who awarded the points if not anonymous
+            if (!(array_key_exists('a', $options)) && !(array_key_exists('anonymous', $options))) {
+                $parameters[2] .= ' (' . do_lang('GIFTED_BY', $GLOBALS['FORUM_DRIVER']->get_username(get_member())) . ')';
             }
-            if (!array_key_exists(1, $parameters)) {
-                return ['', '', '', do_lang('MISSING_PARAM', '2', 'give')];
-            }
-            if (!array_key_exists(2, $parameters)) {
-                return ['', '', '', do_lang('MISSING_PARAM', '3', 'give')];
-            }
-
-            require_code('points2');
-
-            $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($parameters[0]);
-            if (($member_id === null) || (is_guest($member_id))) {
-                return ['', '', '', do_lang('MEMBER_NO_EXIST')];
-            }
-
-            // If parameter 4 is not provided, this is a system gift transfer
-            if (!array_key_exists(3, $parameters)) {
-                // Include name of member who awarded the points if not anonymous
-                if (!(array_key_exists('a', $options)) && !(array_key_exists('anonymous', $options))) {
-                    $parameters[2] .= ' (' . do_lang('GIFTED_BY', $GLOBALS['FORUM_DRIVER']->get_username(get_member())) . ')';
-                }
-                system_gift_transfer($parameters[2], $parameters[1], intval($parameters[0]), true);
-                return ['', '', do_lang('SUCCESS'), ''];
-            }
-
-            $member_id_sender = $GLOBALS['FORUM_DRIVER']->get_member_from_username($parameters[3]);
-
-            give_points(intval($parameters[1]), $member_id, $member_id_sender, $parameters[2], ((array_key_exists('a', $options)) || (array_key_exists('anonymous', $options))));
-
+            system_gift_transfer($parameters[2], $parameters[1], intval($parameters[0]), true);
             return ['', '', do_lang('SUCCESS'), ''];
         }
+
+        $member_id_sender = $GLOBALS['FORUM_DRIVER']->get_member_from_username($parameters[3]);
+
+        give_points(intval($parameters[1]), $member_id, $member_id_sender, $parameters[2], ((array_key_exists('a', $options)) || (array_key_exists('anonymous', $options))));
+
+        return ['', '', do_lang('SUCCESS'), ''];
     }
 }

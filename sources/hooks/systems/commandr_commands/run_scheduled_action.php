@@ -41,46 +41,46 @@ class Hook_commandr_command_run_scheduled_action
 
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('run_scheduled_action', ['h'], [true, true, true]), '', ''];
-        } else {
-            // Error if first parameter not specified; we do not know which scheduled hook to run
-            if (!array_key_exists(0, $parameters)) {
-                return ['', '', '', do_lang('MISSING_PARAM', '1', 'run_scheduled_action')];
-            }
+        }
 
-            $hook_obs = find_all_hook_obs('systems', 'commandr_scheduled', 'Hook_commandr_scheduled_');
+        // Error if first parameter not specified; we do not know which scheduled hook to run
+        if (!array_key_exists(0, $parameters)) {
+            return ['', '', '', do_lang('MISSING_PARAM', '1', 'run_scheduled_action')];
+        }
 
-            // Error if the provided scheduled hook does not exist
-            if (!array_key_exists($parameters[0], $hook_obs)) {
-                return ['', '', '', do_lang('NOT_A_HOOK', '1')];
-            }
+        $hook_obs = find_all_hook_obs('systems', 'commandr_scheduled', 'Hook_commandr_scheduled_');
 
-            // Error if parameter 2 (id) does not exist
-            if (!array_key_exists(1, $parameters)) {
-                return ['', '', '', do_lang('MISSING_PARAM', '2', 'run_scheduled_action')];
-            }
+        // Error if the provided scheduled hook does not exist
+        if (!array_key_exists($parameters[0], $hook_obs)) {
+            return ['', '', '', do_lang('NOT_A_HOOK', '1')];
+        }
 
-            $id = $parameters[1];
+        // Error if parameter 2 (id) does not exist
+        if (!array_key_exists(1, $parameters)) {
+            return ['', '', '', do_lang('MISSING_PARAM', '2', 'run_scheduled_action')];
+        }
 
-            // Get the required number of parameters for this hook
-            $hook_info = $hook_obs[$parameters[0]]->info();
-            if ($hook_info === null) {
-                return ['', '', '', do_lang('NOT_A_HOOK', '1')];
-            }
-            $required_parameters = $hook_info['required_parameters'];
+        $id = $parameters[1];
 
-            // Parameter 3 is json_encoded as an array to account for variable types and lengths. Decode it.
-            $_parameters = isset($parameters[2]) ? json_decode($parameters[2], true) : [];
+        // Get the required number of parameters for this hook
+        $hook_info = $hook_obs[$parameters[0]]->info();
+        if ($hook_info === null) {
+            return ['', '', '', do_lang('NOT_A_HOOK', '1')];
+        }
+        $required_parameters = $hook_info['required_parameters'];
 
-            // Parameters check
-            if ($required_parameters > 0) {
-                for ($i = 0; $i < $required_parameters; $i++) {
-                    if (!array_key_exists($i, $_parameters)) {
-                        return ['', '', '', do_lang('MISSING_PARAM_JSON', strval($i), strval($i + 1), 'run_scheduled_action')];
-                    }
+        // Parameter 3 is json_encoded as an array to account for variable types and lengths. Decode it.
+        $_parameters = isset($parameters[2]) ? json_decode($parameters[2], true) : [];
+
+        // Parameters check
+        if ($required_parameters > 0) {
+            for ($i = 0; $i < $required_parameters; $i++) {
+                if (!array_key_exists($i, $_parameters)) {
+                    return ['', '', '', do_lang('MISSING_PARAM_JSON', strval($i), strval($i + 1), 'run_scheduled_action')];
                 }
             }
-
-            return $hook_obs[$parameters[0]]->run($options, $id, $_parameters, $commandr_fs);
         }
+
+        return $hook_obs[$parameters[0]]->run($options, $id, $_parameters, $commandr_fs);
     }
 }

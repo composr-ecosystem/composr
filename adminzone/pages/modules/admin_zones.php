@@ -929,45 +929,45 @@ class Module_admin_zones
             // Show it worked / Refresh
             $_url = build_url(['page' => '_SELF', 'type' => 'edit'], '_SELF');
             return redirect_screen($this->title, $_url, do_lang_tempcode('SUCCESS'));
-        } else {
-            $_title = post_param_string('title');
-            $default_page = post_param_string('default_page');
-            $header_text = post_param_string('header_text');
-            $theme = post_param_string('theme');
-            $require_session = post_param_integer('require_session', 0);
-            $base_url = post_param_string('base_url', '', INPUT_FILTER_URL_GENERAL);
-
-            $new_zone = post_param_string('new_zone');
-            if ($new_zone != $zone) {
-                appengine_live_guard();
-                check_zone_name($new_zone);
-            }
-            actual_edit_zone($zone, $_title, $default_page, $header_text, $theme, $require_session, $new_zone, false, false, $base_url);
-
-            if ($new_zone != '') {
-                $this->set_permissions($new_zone);
-                if (addon_installed('ecommerce')) {
-                    require_code('ecommerce_permission_products');
-                    permission_product_save('zone', $zone, $new_zone);
-                }
-            }
-
-            $this->title = get_screen_title('EDIT_ZONE'); // Re-get title late, as we might be changing the theme this title is got from
-
-            sync_htaccess_with_zones();
-
-            // Show it worked / Refresh
-            if ($new_zone == $zone) {
-                $url = get_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL);
-            } else {
-                $url = ''; // Can't redirect back
-            }
-            if ($url == '') {
-                $_url = build_url(['page' => '_SELF', 'type' => 'edit'], '_SELF');
-                $url = $_url->evaluate();
-            }
-            return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
         }
+
+        $_title = post_param_string('title');
+        $default_page = post_param_string('default_page');
+        $header_text = post_param_string('header_text');
+        $theme = post_param_string('theme');
+        $require_session = post_param_integer('require_session', 0);
+        $base_url = post_param_string('base_url', '', INPUT_FILTER_URL_GENERAL);
+
+        $new_zone = post_param_string('new_zone');
+        if ($new_zone != $zone) {
+            appengine_live_guard();
+            check_zone_name($new_zone);
+        }
+        actual_edit_zone($zone, $_title, $default_page, $header_text, $theme, $require_session, $new_zone, false, false, $base_url);
+
+        if ($new_zone != '') {
+            $this->set_permissions($new_zone);
+            if (addon_installed('ecommerce')) {
+                require_code('ecommerce_permission_products');
+                permission_product_save('zone', $zone, $new_zone);
+            }
+        }
+
+        $this->title = get_screen_title('EDIT_ZONE'); // Re-get title late, as we might be changing the theme this title is got from
+
+        sync_htaccess_with_zones();
+
+        // Show it worked / Refresh
+        if ($new_zone == $zone) {
+            $url = get_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL);
+        } else {
+            $url = ''; // Can't redirect back
+        }
+        if ($url == '') {
+            $_url = build_url(['page' => '_SELF', 'type' => 'edit'], '_SELF');
+            $url = $_url->evaluate();
+        }
+        return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 
     /**

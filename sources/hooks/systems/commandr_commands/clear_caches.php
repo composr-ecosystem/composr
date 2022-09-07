@@ -35,23 +35,23 @@ class Hook_commandr_command_clear_caches
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('clear_caches', ['h'], [true]), '', ''];
-        } else {
-            require_code('caches3');
-
-            $_caches = null;
-            if (array_key_exists(0, $parameters)) {
-                $_caches = [];
-                $caches = explode(',', $parameters[0]);
-                foreach ($caches as $cache) {
-                    $_caches[] = trim($cache);
-                }
-            }
-
-            $messages = static_evaluate_tempcode(composr_cleanup($_caches));
-            if ($messages == '') {
-                $messages = do_lang('SUCCESS');
-            }
-            return ['', $messages, '', ''];
         }
+
+        require_code('caches3');
+
+        $_caches = null;
+        if (array_key_exists(0, $parameters)) {
+            $_caches = [];
+            $caches = explode(',', $parameters[0]);
+            foreach ($caches as $cache) {
+                $_caches[] = trim($cache);
+            }
+        }
+
+        $messages = static_evaluate_tempcode(composr_cleanup($_caches));
+        if ($messages == '') {
+            $messages = do_lang('SUCCESS');
+        }
+        return ['', $messages, '', ''];
     }
 }

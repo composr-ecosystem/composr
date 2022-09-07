@@ -35,90 +35,90 @@ class Hook_deep_clean
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('deep_clean', ['h'], [true, true, false]), '', ''];
-        } else {
-            if (!array_key_exists(0, $parameters)) {
-                return ['', '', '', do_lang('MISSING_PARAM', '1', 'deep_clean')];
-            }
-            if (!array_key_exists(1, $parameters)) {
-                return ['', '', '', do_lang('MISSING_PARAM', '2', 'deep_clean')];
-            }
-
-            require_code('deep_clean');
-            $table = $parameters[0];
-            $field = $parameters[1];
-            $title_field = isset($parameters[2]) ? $parameters[2] : null;
-
-            global $TABLE_LANG_FIELDS;
-            $is_trans = ((isset($TABLE_LANG_FIELDS[$table])) && (in_array($field, $TABLE_LANG_FIELDS[$table])));
-            $is_title_trans = ((isset($TABLE_LANG_FIELDS[$table])) && (in_array($title_field, $TABLE_LANG_FIELDS[$table])));
-
-            $db = get_db_for($table);
-
-            $total_changed = 0;
-            $total = 0;
-
-            $start = 0;
-            $max = 100;
-            do {
-                $rows = $db->query_select($table, ['*'], [], '', $max, $start);
-                foreach ($rows as $row) {
-                    $where = $row;
-                    unset($where[$field]);
-
-                    $_old_value = $row[$field];
-                    if (is_integer($_old_value)) {
-                        if ($is_trans) {
-                            $old_value = get_translated_text($_old_value);
-                        } else {
-                            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
-                        }
-                    } else {
-                        if ($is_trans) {
-                            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
-                        } else {
-                            $old_value = $_old_value;
-                        }
-                    }
-
-                    if (empty($title_field)) {
-                        $title = '';
-                    } else {
-                        $_title = $row[$title_field];
-                        if (is_integer($_old_value)) {
-                            if ($is_title_trans) {
-                                $title = get_translated_text($_title);
-                            } else {
-                                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
-                            }
-                        } else {
-                            if ($is_title_trans) {
-                                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
-                            } else {
-                                $title = $_title;
-                            }
-                        }
-                    }
-
-                    $new_value = deep_clean($old_value, $title);
-                    if ($new_value != $old_value) {
-                        $update = [$field => $new_value];
-                        if ($is_trans) {
-                            $update += lang_remap($field, $_old_value, $new_value, $db);
-                        } else {
-                        }
-                        $db->query_update($table, $update, $where, '', 1);
-
-                        $total_changed++;
-                    }
-
-                    $total++;
-                }
-                $start += $max;
-            } while (!empty($rows));
-
-            $result = do_lang('CLEANED_X_FIELDS', integer_format($total, 0), integer_format($total_changed, 0));
-
-            return ['', $result, '', ''];
         }
+
+        if (!array_key_exists(0, $parameters)) {
+            return ['', '', '', do_lang('MISSING_PARAM', '1', 'deep_clean')];
+        }
+        if (!array_key_exists(1, $parameters)) {
+            return ['', '', '', do_lang('MISSING_PARAM', '2', 'deep_clean')];
+        }
+
+        require_code('deep_clean');
+        $table = $parameters[0];
+        $field = $parameters[1];
+        $title_field = isset($parameters[2]) ? $parameters[2] : null;
+
+        global $TABLE_LANG_FIELDS;
+        $is_trans = ((isset($TABLE_LANG_FIELDS[$table])) && (in_array($field, $TABLE_LANG_FIELDS[$table])));
+        $is_title_trans = ((isset($TABLE_LANG_FIELDS[$table])) && (in_array($title_field, $TABLE_LANG_FIELDS[$table])));
+
+        $db = get_db_for($table);
+
+        $total_changed = 0;
+        $total = 0;
+
+        $start = 0;
+        $max = 100;
+        do {
+            $rows = $db->query_select($table, ['*'], [], '', $max, $start);
+            foreach ($rows as $row) {
+                $where = $row;
+                unset($where[$field]);
+
+                $_old_value = $row[$field];
+                if (is_integer($_old_value)) {
+                    if ($is_trans) {
+                        $old_value = get_translated_text($_old_value);
+                    } else {
+                        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                    }
+                } else {
+                    if ($is_trans) {
+                        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                    } else {
+                        $old_value = $_old_value;
+                    }
+                }
+
+                if (empty($title_field)) {
+                    $title = '';
+                } else {
+                    $_title = $row[$title_field];
+                    if (is_integer($_old_value)) {
+                        if ($is_title_trans) {
+                            $title = get_translated_text($_title);
+                        } else {
+                            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                        }
+                    } else {
+                        if ($is_title_trans) {
+                            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                        } else {
+                            $title = $_title;
+                        }
+                    }
+                }
+
+                $new_value = deep_clean($old_value, $title);
+                if ($new_value != $old_value) {
+                    $update = [$field => $new_value];
+                    if ($is_trans) {
+                        $update += lang_remap($field, $_old_value, $new_value, $db);
+                    } else {
+                    }
+                    $db->query_update($table, $update, $where, '', 1);
+
+                    $total_changed++;
+                }
+
+                $total++;
+            }
+            $start += $max;
+        } while (!empty($rows));
+
+        $result = do_lang('CLEANED_X_FIELDS', integer_format($total, 0), integer_format($total_changed, 0));
+
+        return ['', $result, '', ''];
     }
 }

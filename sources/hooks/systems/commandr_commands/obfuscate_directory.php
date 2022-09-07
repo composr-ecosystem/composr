@@ -35,94 +35,94 @@ class Hook_commandr_command_obfuscate_directory
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('obfuscate_directory', ['h'], [true, true]), '', ''];
-        } else {
-            if (empty($parameters[0])) {
-                return ['', '', '', do_lang('MISSING_PARAM', '1', 'obfuscate_directory')];
+        }
+
+        if (empty($parameters[0])) {
+            return ['', '', '', do_lang('MISSING_PARAM', '1', 'obfuscate_directory')];
+        }
+
+        $dir = $parameters[0];
+        if (substr($dir, -1) == '/') {
+            $dir = substr($dir, 0, strlen($dir) - 1);
+        }
+        $root_path = get_custom_file_base() . '/' . $dir;
+
+        if (!is_dir($root_path)) {
+            return ['', '', '', do_lang('NOT_A_DIR', '1')];
+        }
+
+        $ext_too = (array_key_exists(1, $parameters)) && ($parameters[1] == '1');
+
+        $_upload_fields = $GLOBALS['SITE_DB']->query_select('db_meta', ['m_table', 'm_name'], ['m_type' => 'URLPATH']);
+        $upload_fields = [];
+        foreach ($_upload_fields as $field) {
+            $sup = ' AND ' . $field['m_name'] . ' LIKE \'' . db_encode_like($dir . '/%') . '\'';
+            $has_our_files = $GLOBALS['SITE_DB']->query_select_value_if_there($field['m_table'], $field['m_name'], [], $sup);
+            if ($has_our_files !== null) {
+                $upload_fields[] = $field;
+            }
+        }
+
+        $out = '';
+
+        require_code('files2');
+        $files = get_directory_contents($root_path);
+        foreach ($files as $path) {
+            $regexp_ext = 'bin';
+            if (!$ext_too) {
+                $regexp_ext .= '|\w+';
+            }
+            if (preg_match('#^[\da-f]{14}.\d{8}\.(' . $regexp_ext . ')$#', basename($path)) != 0) {
+                continue; // Already obfuscated
             }
 
-            $dir = $parameters[0];
-            if (substr($dir, -1) == '/') {
-                $dir = substr($dir, 0, strlen($dir) - 1);
-            }
-            $root_path = get_custom_file_base() . '/' . $dir;
-
-            if (!is_dir($root_path)) {
-                return ['', '', '', do_lang('NOT_A_DIR', '1')];
+            $ext = get_file_extension($path);
+            if ($ext == '') {
+                continue;
             }
 
-            $ext_too = (array_key_exists(1, $parameters)) && ($parameters[1] == '1');
+            do {
+                $obfuscated_filename_stub = uniqid('', true);
+                if ($ext_too) {
+                    $obfuscated_filename = $obfuscated_filename_stub . '.bin';
+                } else {
+                    $obfuscated_filename = $obfuscated_filename_stub . '.' . $ext;
+                }
 
-            $_upload_fields = $GLOBALS['SITE_DB']->query_select('db_meta', ['m_table', 'm_name'], ['m_type' => 'URLPATH']);
-            $upload_fields = [];
-            foreach ($_upload_fields as $field) {
-                $sup = ' AND ' . $field['m_name'] . ' LIKE \'' . db_encode_like($dir . '/%') . '\'';
-                $has_our_files = $GLOBALS['SITE_DB']->query_select_value_if_there($field['m_table'], $field['m_name'], [], $sup);
-                if ($has_our_files !== null) {
-                    $upload_fields[] = $field;
+                $full_path = get_custom_file_base() . '/' . $dir . '/' . $path;
+                $obfuscated_full_path = dirname($full_path) . '/' . $obfuscated_filename;
+            } while (file_exists($obfuscated_full_path));
+
+            $url = str_replace('%2F', '/', rawurlencode($dir . '/' . $path));
+            $obfuscated_url = str_replace('%2F', '/', rawurlencode(dirname($dir . '/' . $path) . '/' . $obfuscated_filename));
+
+            $upload_fields_for_file = [];
+            foreach ($upload_fields as $field) {
+                $test = $GLOBALS['SITE_DB']->query_select_value_if_there($field['m_table'], $field['m_name'], [$field['m_name'] => $url]);
+                if ($test !== null) {
+                    $upload_fields_for_file[] = $field;
                 }
             }
+            if (!empty($upload_fields_for_file)) {
+                $success = @rename($full_path, $obfuscated_full_path);
+                if ($success) {
+                    $out .= $full_path . ' --> ' . $obfuscated_full_path . "\n";
 
-            $out = '';
-
-            require_code('files2');
-            $files = get_directory_contents($root_path);
-            foreach ($files as $path) {
-                $regexp_ext = 'bin';
-                if (!$ext_too) {
-                    $regexp_ext .= '|\w+';
-                }
-                if (preg_match('#^[\da-f]{14}.\d{8}\.(' . $regexp_ext . ')$#', basename($path)) != 0) {
-                    continue; // Already obfuscated
-                }
-
-                $ext = get_file_extension($path);
-                if ($ext == '') {
-                    continue;
-                }
-
-                do {
-                    $obfuscated_filename_stub = uniqid('', true);
-                    if ($ext_too) {
-                        $obfuscated_filename = $obfuscated_filename_stub . '.bin';
-                    } else {
-                        $obfuscated_filename = $obfuscated_filename_stub . '.' . $ext;
-                    }
-
-                    $full_path = get_custom_file_base() . '/' . $dir . '/' . $path;
-                    $obfuscated_full_path = dirname($full_path) . '/' . $obfuscated_filename;
-                } while (file_exists($obfuscated_full_path));
-
-                $url = str_replace('%2F', '/', rawurlencode($dir . '/' . $path));
-                $obfuscated_url = str_replace('%2F', '/', rawurlencode(dirname($dir . '/' . $path) . '/' . $obfuscated_filename));
-
-                $upload_fields_for_file = [];
-                foreach ($upload_fields as $field) {
-                    $test = $GLOBALS['SITE_DB']->query_select_value_if_there($field['m_table'], $field['m_name'], [$field['m_name'] => $url]);
-                    if ($test !== null) {
-                        $upload_fields_for_file[] = $field;
-                    }
-                }
-                if (!empty($upload_fields_for_file)) {
-                    $success = @rename($full_path, $obfuscated_full_path);
-                    if ($success) {
-                        $out .= $full_path . ' --> ' . $obfuscated_full_path . "\n";
-
-                        foreach ($upload_fields_for_file as $field) {
-                            $GLOBALS['SITE_DB']->query_update($field['m_table'], [$field['m_name'] => $obfuscated_url], [$field['m_name'] => $url]);
-                        }
-                    } else {
-                        $out .= 'Failed to rename: ' . $full_path . "\n";
+                    foreach ($upload_fields_for_file as $field) {
+                        $GLOBALS['SITE_DB']->query_update($field['m_table'], [$field['m_name'] => $obfuscated_url], [$field['m_name'] => $url]);
                     }
                 } else {
-                    $out .= 'Orphaned?' . $full_path . "\n";
+                    $out .= 'Failed to rename: ' . $full_path . "\n";
                 }
+            } else {
+                $out .= 'Orphaned?' . $full_path . "\n";
             }
-
-            if ($out == '') {
-                $out = '(' . do_lang('NONE') . ')';
-            }
-
-            return ['', '', $out, ''];
         }
+
+        if ($out == '') {
+            $out = '(' . do_lang('NONE') . ')';
+        }
+
+        return ['', '', $out, ''];
     }
 }

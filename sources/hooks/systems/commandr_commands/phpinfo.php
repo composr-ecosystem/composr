@@ -35,48 +35,48 @@ class Hook_commandr_command_phpinfo
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('phpinfo', ['h'], []), '', ''];
-        } else {
-            ob_start();
-            if (php_function_allowed('phpinfo')) {
-                phpinfo();
-            } else {
-                var_dump(PHP_VERSION);
-                var_dump($_SERVER);
-                var_dump($_ENV);
-                var_dump($_COOKIE);
-                if (function_exists('ini_get_all')) {
-                    var_dump(ini_get_all());
-                }
-                if (function_exists('get_loaded_extensions')) {
-                    var_dump(get_loaded_extensions());
-                }
-                if (function_exists('phpcredits')) {
-                    var_dump(phpcredits());
-                }
-            }
-            $out = ob_get_clean();
-            require_code('xhtml');
-
-            $out = preg_replace('#<!DOCTYPE[^>]*>#s', '', preg_replace('#</body[^>]*>#', '', preg_replace('#<body[^>]*>#', '', preg_replace('#</html[^>]*>#', '', preg_replace('#<html[^>]*>#', '', $out)))));
-            $matches = [];
-            if (preg_match('#<style[^>]*>#', $out, $matches) != 0) {
-                $offset = strpos($out, $matches[0]) + strlen($matches[0]);
-                $end = strpos($out, '</style>', $offset);
-                if ($end !== false) {
-                    $style = substr($out, $offset - strlen($matches[0]), $end - $offset + strlen('</style>') + strlen($matches[0]));
-                    //attach_to_screen_header($style);      Not relevant due to running in Commandr
-
-                    $out = substr($out, 0, $offset) . substr($out, $end);
-                }
-            }
-            $out = preg_replace('#<head[^>]*>.*</head[^>]*>#s', '', $out);
-
-            $out = str_replace(' width="600"', ' width="100%"', $out);
-            $out = cms_preg_replace_safe('#([^\s<>"\']{65}&[^;]+;)#', '${1}<br />', $out);
-            $out = cms_preg_replace_safe('#([^\s<>"\']{95})#', '${1}<br />', $out);
-            $out = str_replace('<img border="0" src="/', '<img border="0" style="padding-top: 20px" src="http://' . escape_html(get_base_url_hostname()) . '/', $out);
-
-            return ['', xhtmlise_html($out, true), '', ''];
         }
+
+        ob_start();
+        if (php_function_allowed('phpinfo')) {
+            phpinfo();
+        } else {
+            var_dump(PHP_VERSION);
+            var_dump($_SERVER);
+            var_dump($_ENV);
+            var_dump($_COOKIE);
+            if (function_exists('ini_get_all')) {
+                var_dump(ini_get_all());
+            }
+            if (function_exists('get_loaded_extensions')) {
+                var_dump(get_loaded_extensions());
+            }
+            if (function_exists('phpcredits')) {
+                var_dump(phpcredits());
+            }
+        }
+        $out = ob_get_clean();
+        require_code('xhtml');
+
+        $out = preg_replace('#<!DOCTYPE[^>]*>#s', '', preg_replace('#</body[^>]*>#', '', preg_replace('#<body[^>]*>#', '', preg_replace('#</html[^>]*>#', '', preg_replace('#<html[^>]*>#', '', $out)))));
+        $matches = [];
+        if (preg_match('#<style[^>]*>#', $out, $matches) != 0) {
+            $offset = strpos($out, $matches[0]) + strlen($matches[0]);
+            $end = strpos($out, '</style>', $offset);
+            if ($end !== false) {
+                $style = substr($out, $offset - strlen($matches[0]), $end - $offset + strlen('</style>') + strlen($matches[0]));
+                //attach_to_screen_header($style);      Not relevant due to running in Commandr
+
+                $out = substr($out, 0, $offset) . substr($out, $end);
+            }
+        }
+        $out = preg_replace('#<head[^>]*>.*</head[^>]*>#s', '', $out);
+
+        $out = str_replace(' width="600"', ' width="100%"', $out);
+        $out = cms_preg_replace_safe('#([^\s<>"\']{65}&[^;]+;)#', '${1}<br />', $out);
+        $out = cms_preg_replace_safe('#([^\s<>"\']{95})#', '${1}<br />', $out);
+        $out = str_replace('<img border="0" src="/', '<img border="0" style="padding-top: 20px" src="http://' . escape_html(get_base_url_hostname()) . '/', $out);
+
+        return ['', xhtmlise_html($out, true), '', ''];
     }
 }

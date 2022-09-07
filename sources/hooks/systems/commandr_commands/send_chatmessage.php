@@ -41,32 +41,32 @@ class Hook_commandr_command_send_chatmessage
 
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('send_chatmessage', ['h'], [true, true]), '', ''];
-        } else {
-            if (!array_key_exists(0, $parameters)) {
-                return ['', '', '', do_lang('MISSING_PARAM', '1', 'send_chatmessage')];
-            }
-            if (!array_key_exists(1, $parameters)) {
-                return ['', '', '', do_lang('MISSING_PARAM', '2', 'send_chatmessage')];
-            }
-
-            require_code('chat');
-
-            if (is_numeric($parameters[0])) {
-                $chatroom = $parameters[0];
-            } elseif ($parameters[0] == 'first-watched') {
-                $_chatroom = get_value('commandr_watched_chatroom');
-                $chatroom = ($_chatroom === null) ? $GLOBALS['SITE_DB']->query_select_value_if_there('chat_rooms', 'id', [], 'ORDER BY id') : intval($_chatroom);
-            } else {
-                $chatroom = get_chatroom_id($parameters[0]);
-            }
-
-            if ($chatroom === null) {
-                return ['', '', '', do_lang('MISSING_RESOURCE')];
-            }
-
-            chat_post_message($chatroom, $parameters[1], get_option('chat_default_post_font'), get_option('chat_default_post_colour'));
-
-            return ['', '', do_lang('SUCCESS'), ''];
         }
+
+        if (!array_key_exists(0, $parameters)) {
+            return ['', '', '', do_lang('MISSING_PARAM', '1', 'send_chatmessage')];
+        }
+        if (!array_key_exists(1, $parameters)) {
+            return ['', '', '', do_lang('MISSING_PARAM', '2', 'send_chatmessage')];
+        }
+
+        require_code('chat');
+
+        if (is_numeric($parameters[0])) {
+            $chatroom = $parameters[0];
+        } elseif ($parameters[0] == 'first-watched') {
+            $_chatroom = get_value('commandr_watched_chatroom');
+            $chatroom = ($_chatroom === null) ? $GLOBALS['SITE_DB']->query_select_value_if_there('chat_rooms', 'id', [], 'ORDER BY id') : intval($_chatroom);
+        } else {
+            $chatroom = get_chatroom_id($parameters[0]);
+        }
+
+        if ($chatroom === null) {
+            return ['', '', '', do_lang('MISSING_RESOURCE')];
+        }
+
+        chat_post_message($chatroom, $parameters[1], get_option('chat_default_post_font'), get_option('chat_default_post_colour'));
+
+        return ['', '', do_lang('SUCCESS'), ''];
     }
 }

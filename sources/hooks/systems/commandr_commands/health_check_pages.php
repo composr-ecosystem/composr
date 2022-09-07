@@ -41,28 +41,28 @@ class Hook_commandr_command_health_check_pages
 
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('health_check', ['h'], []), '', ''];
-        } else {
-            if (!array_key_exists(0, $parameters)) {
-                return ['', '', '', do_lang('MISSING_PARAM', '1', 'health_check')];
-            }
+        }
 
-            require_code('health_check');
+        if (!array_key_exists(0, $parameters)) {
+            return ['', '', '', do_lang('MISSING_PARAM', '1', 'health_check')];
+        }
 
-            $verbose = array_key_exists('v', $options);
+        require_code('health_check');
 
-            $has_fails = false;
-            $_categories = run_health_check($has_fails, null, $verbose, true, true, false, null, $parameters, null, CHECK_CONTEXT__SPECIFIC_PAGE_LINKS);
+        $verbose = array_key_exists('v', $options);
 
-            $result = '';
-            foreach ($_categories as $_category_label => $_sections) {
-                foreach ($_sections['SECTIONS'] as $_section_label => $_section) {
-                    foreach ($_section['RESULTS'] as $_result) {
-                        $result .= $_result['RESULT'] . ': ' . $_result['MESSAGE']->evaluate() . ' (' . $_category_label . ' \\ ' . $_section_label . ')<br />';
-                    }
+        $has_fails = false;
+        $_categories = run_health_check($has_fails, null, $verbose, true, true, false, null, $parameters, null, CHECK_CONTEXT__SPECIFIC_PAGE_LINKS);
+
+        $result = '';
+        foreach ($_categories as $_category_label => $_sections) {
+            foreach ($_sections['SECTIONS'] as $_section_label => $_section) {
+                foreach ($_section['RESULTS'] as $_result) {
+                    $result .= $_result['RESULT'] . ': ' . $_result['MESSAGE']->evaluate() . ' (' . $_category_label . ' \\ ' . $_section_label . ')<br />';
                 }
             }
-
-            return ['', $result, '', ''];
         }
+
+        return ['', $result, '', ''];
     }
 }

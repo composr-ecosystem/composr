@@ -45,72 +45,72 @@ class Hook_commandr_command_feed_display
 
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('feed_display', ['h', 'm'], [true]), '', ''];
-        } else {
-            if (!array_key_exists(0, $parameters)) {
-                return ['', '', '', do_lang('MISSING_PARAM', '1', 'feed_display')];
-            }
-
-            require_lang('news');
-            require_lang('rss');
-            require_code('rss');
-
-            $rss = new CMS_RSS($parameters[0]);
-            if ($rss->error !== null) {
-                return ['', '', '', $rss->error];
-            }
-
-            if (!array_key_exists('title', $rss->gleamed_feed)) {
-                $rss->gleamed_feed['title'] = do_lang('RSS_STREAM');
-            }
-            if (!array_key_exists('copyright', $rss->gleamed_feed)) {
-                $rss->gleamed_feed['copyright'] = '';
-            }
-
-            // Reduce what we collected about the feed to a minimum. This is very awkward, as we don't know what's here.
-            if (array_key_exists('author', $rss->gleamed_feed)) {
-                $__author = null;
-                $_author = $rss->gleamed_feed['author'];
-                if (array_key_exists('url', $rss->gleamed_feed)) {
-                    $__author = hyperlink($rss->gleamed_feed['url'], $_author, true, true);
-                } elseif (array_key_exists('author_url', $rss->gleamed_feed)) {
-                    $__author = hyperlink($rss->gleamed_feed['author_url'], $_author, true, true);
-                } elseif (array_key_exists('author_email', $rss->gleamed_feed)) {
-                    $__author = hyperlink(mailto_obfuscated() . obfuscate_email_address($rss->gleamed_feed['author_email']), $_author, true, true);
-                }
-                if ($__author !== null) {
-                    $_author = $__author->evaluate();
-                }
-                $_author = do_lang('RSS_SOURCE_FROM', $_author);
-            } else {
-                $_author = '';
-            }
-
-            // Now for the actual stream contents
-            $max = (array_key_exists('max', $options)) ? intval($options['max']) : 5;
-            $content = [];
-            require_code('xhtml');
-            foreach ($rss->gleamed_items as $i => $item) {
-                if ($i >= $max) {
-                    break;
-                }
-
-                if (array_key_exists('guid', $item)) {
-                    $full_url = $item['guid'];
-                } elseif (array_key_exists('comment_url', $item)) {
-                    $full_url = $item['comment_url'];
-                } elseif (array_key_exists('full_url', $item)) {
-                    $full_url = $item['full_url'];
-                } else {
-                    $full_url = '';
-                }
-
-                $_title = $item['title'];
-                $date = array_key_exists('clean_add_date', $item) ? get_timezoned_date_time($item['clean_add_date']) : (array_key_exists('add_date', $item) ? $item['add_date'] : '');
-
-                $content[] = ['FULL_URL' => $full_url, 'NEWS_TITLE' => $_title, 'DATE' => $date, 'SUMMARY' => xhtmlise_html($item['news'])];
-            }
-
-            return ['', do_template('COMMANDR_RSS', ['_GUID' => 'c01334f868079f9e0c2dba751550aa40', 'TITLE' => $rss->gleamed_feed['title'], 'CONTENT' => $content]), '', ''];
         }
+
+        if (!array_key_exists(0, $parameters)) {
+            return ['', '', '', do_lang('MISSING_PARAM', '1', 'feed_display')];
+        }
+
+        require_lang('news');
+        require_lang('rss');
+        require_code('rss');
+
+        $rss = new CMS_RSS($parameters[0]);
+        if ($rss->error !== null) {
+            return ['', '', '', $rss->error];
+        }
+
+        if (!array_key_exists('title', $rss->gleamed_feed)) {
+            $rss->gleamed_feed['title'] = do_lang('RSS_STREAM');
+        }
+        if (!array_key_exists('copyright', $rss->gleamed_feed)) {
+            $rss->gleamed_feed['copyright'] = '';
+        }
+
+        // Reduce what we collected about the feed to a minimum. This is very awkward, as we don't know what's here.
+        if (array_key_exists('author', $rss->gleamed_feed)) {
+            $__author = null;
+            $_author = $rss->gleamed_feed['author'];
+            if (array_key_exists('url', $rss->gleamed_feed)) {
+                $__author = hyperlink($rss->gleamed_feed['url'], $_author, true, true);
+            } elseif (array_key_exists('author_url', $rss->gleamed_feed)) {
+                $__author = hyperlink($rss->gleamed_feed['author_url'], $_author, true, true);
+            } elseif (array_key_exists('author_email', $rss->gleamed_feed)) {
+                $__author = hyperlink(mailto_obfuscated() . obfuscate_email_address($rss->gleamed_feed['author_email']), $_author, true, true);
+            }
+            if ($__author !== null) {
+                $_author = $__author->evaluate();
+            }
+            $_author = do_lang('RSS_SOURCE_FROM', $_author);
+        } else {
+            $_author = '';
+        }
+
+        // Now for the actual stream contents
+        $max = (array_key_exists('max', $options)) ? intval($options['max']) : 5;
+        $content = [];
+        require_code('xhtml');
+        foreach ($rss->gleamed_items as $i => $item) {
+            if ($i >= $max) {
+                break;
+            }
+
+            if (array_key_exists('guid', $item)) {
+                $full_url = $item['guid'];
+            } elseif (array_key_exists('comment_url', $item)) {
+                $full_url = $item['comment_url'];
+            } elseif (array_key_exists('full_url', $item)) {
+                $full_url = $item['full_url'];
+            } else {
+                $full_url = '';
+            }
+
+            $_title = $item['title'];
+            $date = array_key_exists('clean_add_date', $item) ? get_timezoned_date_time($item['clean_add_date']) : (array_key_exists('add_date', $item) ? $item['add_date'] : '');
+
+            $content[] = ['FULL_URL' => $full_url, 'NEWS_TITLE' => $_title, 'DATE' => $date, 'SUMMARY' => xhtmlise_html($item['news'])];
+        }
+
+        return ['', do_template('COMMANDR_RSS', ['_GUID' => 'c01334f868079f9e0c2dba751550aa40', 'TITLE' => $rss->gleamed_feed['title'], 'CONTENT' => $content]), '', ''];
     }
 }

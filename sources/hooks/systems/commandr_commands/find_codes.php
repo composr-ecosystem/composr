@@ -35,33 +35,33 @@ class Hook_commandr_command_find_codes
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('find_codes', ['h'], [true]), '', ''];
-        } else {
-            if (!array_key_exists(0, $parameters)) {
-                return ['', '', '', do_lang('MISSING_PARAM', '1', 'find_codes')];
-            }
+        }
 
-            $path = get_custom_file_base() . '/sources/';
-            $files = [];
+        if (!array_key_exists(0, $parameters)) {
+            return ['', '', '', do_lang('MISSING_PARAM', '1', 'find_codes')];
+        }
 
-            if (is_dir($path)) {
-                $dh = opendir($path);
-                while (($file = readdir($dh)) !== false) {
-                    if (($file != '.') && ($file != '..')) {
-                        if (!is_dir($path . $file)) {
-                            $contents = cms_file_get_contents_safe($path . $file, FILE_READ_LOCK);
-                            if (strpos($contents, $parameters[0]) !== false) {
-                                $files[] = $path . $file;
-                            }
-                        }
-                        unset($contents); // Got to be careful with that memory :-(
+        $path = get_custom_file_base() . '/sources/';
+        $files = [];
+
+        if (!is_dir($path)) {
+            return ['', '', '', do_lang('INCOMPLETE_ERROR')]; // Directory doesn't exist
+        }
+
+        $dh = opendir($path);
+        while (($file = readdir($dh)) !== false) {
+            if (($file != '.') && ($file != '..')) {
+                if (!is_dir($path . $file)) {
+                    $contents = cms_file_get_contents_safe($path . $file, FILE_READ_LOCK);
+                    if (strpos($contents, $parameters[0]) !== false) {
+                        $files[] = $path . $file;
                     }
                 }
-                closedir($dh);
-
-                return ['', do_template('COMMANDR_FIND_CODES', ['_GUID' => '3374d1a80727aecc271722f2184743d0', 'FILES' => $files]), '', ''];
-            } else {
-                return ['', '', '', do_lang('INCOMPLETE_ERROR')]; // Directory doesn't exist
+                unset($contents); // Got to be careful with that memory :-(
             }
         }
+        closedir($dh);
+
+        return ['', do_template('COMMANDR_FIND_CODES', ['_GUID' => '3374d1a80727aecc271722f2184743d0', 'FILES' => $files]), '', ''];
     }
 }

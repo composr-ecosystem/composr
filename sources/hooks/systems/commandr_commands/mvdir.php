@@ -35,35 +35,35 @@ class Hook_commandr_command_mvdir
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('mvdir', ['h'], [true, true, true]), '', ''];
-        } else {
-            if (!array_key_exists(0, $parameters)) {
-                return ['', '', '', do_lang('MISSING_PARAM', '1', 'mvdir')];
-            } else {
-                $parameters[0] = $commandr_fs->_pwd_to_array($parameters[0]);
-            }
-            if (!array_key_exists(1, $parameters)) {
-                $parameters[1] = $commandr_fs->print_working_directory(true);
-            } else {
-                $parameters[1] = $commandr_fs->_pwd_to_array($parameters[1]);
-            }
-
-            if (!$commandr_fs->_is_dir($parameters[0])) {
-                return ['', '', '', do_lang('NOT_A_DIR', '1')];
-            }
-            if (!$commandr_fs->_is_dir($parameters[1])) {
-                return ['', '', '', do_lang('NOT_A_DIR', '2')];
-            }
-
-            if (!array_key_exists(2, $parameters)) {
-                $parameters[2] = end($parameters[1]);
-            }
-
-            $success = $commandr_fs->move_directory($parameters[0], array_merge($parameters[1], [$parameters[2]]));
-            if ($success) {
-                return ['', '', do_lang('SUCCESS'), ''];
-            } else {
-                return ['', '', '', do_lang('INCOMPLETE_ERROR')];
-            }
         }
+
+        if (!array_key_exists(0, $parameters)) {
+            return ['', '', '', do_lang('MISSING_PARAM', '1', 'mvdir')];
+        } else {
+            $parameters[0] = $commandr_fs->_pwd_to_array($parameters[0]);
+        }
+        if (!array_key_exists(1, $parameters)) {
+            $parameters[1] = $commandr_fs->print_working_directory(true);
+        } else {
+            $parameters[1] = $commandr_fs->_pwd_to_array($parameters[1]);
+        }
+
+        if (!$commandr_fs->_is_dir($parameters[0])) {
+            return ['', '', '', do_lang('NOT_A_DIR', '1')];
+        }
+        if (!$commandr_fs->_is_dir($parameters[1])) {
+            return ['', '', '', do_lang('NOT_A_DIR', '2')];
+        }
+
+        if (!array_key_exists(2, $parameters)) {
+            $parameters[2] = end($parameters[1]);
+        }
+
+        $success = $commandr_fs->move_directory($parameters[0], array_merge($parameters[1], [$parameters[2]]));
+        if (!$success) {
+            return ['', '', '', do_lang('INCOMPLETE_ERROR')];
+        }
+
+        return ['', '', do_lang('SUCCESS'), ''];
     }
 }

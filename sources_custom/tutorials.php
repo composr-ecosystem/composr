@@ -273,109 +273,109 @@ function get_tutorial_metadata($tutorial_name, $db_row = null, $tags = null)
             'likes' => @intval(round($db_row['likes'])),
             'likes_recent' => @intval(round($db_row['likes_recent'])),
         ];
-    } else {
-        // From Git
-
-        if ($db_row === null) {
-            $db_rows = $GLOBALS['SITE_DB']->query_select('tutorials_internal t', ['t.*', tutorial_sql_rating(TUTORIAL_VIRTUAL_FIELD__PAGE_NAME), tutorial_sql_rating_recent(TUTORIAL_VIRTUAL_FIELD__PAGE_NAME), tutorial_sql_likes(TUTORIAL_VIRTUAL_FIELD__PAGE_NAME), tutorial_sql_likes_recent(TUTORIAL_VIRTUAL_FIELD__PAGE_NAME)], ['t_page_name' => $tutorial_name], '', 1);
-            if (isset($db_rows[0])) {
-                $db_row = $db_rows[0];
-            } else {
-                $db_row = false;
-            }
-        }
-
-        if ($db_row === false) {
-            $db_row = [
-                't_page_name' => $tutorial_name,
-                't_views' => 0,
-
-                'rating' => null,
-                'rating_recent' => null,
-                'likes' => null,
-                'likes_recent' => null,
-            ];
-            $GLOBALS['SITE_DB']->query_insert('tutorials_internal', [
-                't_page_name' => $tutorial_name,
-                't_views' => 0,
-            ]);
-        }
-
-        $tutorial_path = get_file_base() . '/docs/pages/comcode_custom/EN/' . $tutorial_name . '.txt';
-        $c = remove_code_block_contents(cms_file_get_contents_safe($tutorial_path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM));
-        $matches = [];
-
-        if (preg_match('#\[title sub="Written by ([^"]*)"\]([^\[\]]*)\[/title\]#', $c, $matches) != 0) {
-            $title = preg_replace('#^Composr (Tutorial|Supplementary): #', '', $matches[2]);
-            $author = $matches[1];
-        } else {
-            $title = '';
-            $author = '';
-        }
-
-        if (preg_match('#\{\$SET,tutorial_tags,([^{}]*)\}#', $c, $matches) != 0) {
-            $raw_tags = ($matches[1] == '') ? [] : explode(',', $matches[1]);
-        } else {
-            $raw_tags = [];
-        }
-        $tags = array_diff($raw_tags, ['document', 'video', 'audio', 'slideshow', 'book', 'novice', 'regular', 'expert', 'pinned']);
-
-        if (preg_match('#\{\$SET,tutorial_summary,([^{}]*)\}#', $c, $matches) != 0) {
-            $summary = $matches[1];
-        } else {
-            $summary = '';
-        }
-
-        if (preg_match('#\{\$SET,tutorial_add_date,([^{}]*)\}#', $c, $matches) != 0) {
-            $add_date = strtotime($matches[1]);
-        } else {
-            $add_date = filectime($tutorial_path);
-        }
-
-        $url = build_url(['page' => $tutorial_name], '_SEARCH', [], false, false, true);
-
-        $media_type = 'document';
-        if (in_array('audio', $raw_tags)) {
-            $media_type = 'audio';
-        }
-        if (in_array('video', $raw_tags)) {
-            $media_type = 'video';
-        }
-        if (in_array('slideshow', $raw_tags)) {
-            $media_type = 'slideshow';
-        }
-        if (in_array('audio', $raw_tags)) {
-            $media_type = 'audio';
-        }
-        if (in_array('book', $raw_tags)) {
-            $media_type = 'book';
-        }
-        $difficulty_level = in_array('expert', $raw_tags) ? 'expert' : (in_array('novice', $raw_tags) ? 'novice' : 'regular');
-
-        return [
-            'name' => $tutorial_name,
-
-            'url' => static_evaluate_tempcode($url),
-            'title' => $title,
-            'summary' => $summary,
-            'icon' => find_tutorial_image('', $raw_tags),
-            'tags' => $tags,
-            'raw_tags' => $raw_tags,
-            'media_type' => $media_type,
-            'difficulty_level' => $difficulty_level,
-            'core' => (preg_match('#^sup_#', $tutorial_name) == 0),
-            'pinned' => in_array('pinned', $raw_tags),
-            'author' => $author,
-            'views' => $db_row['t_views'],
-            'add_date' => $add_date,
-            'edit_date' => filemtime($tutorial_path),
-
-            'rating' => $db_row['rating'],
-            'rating_recent' => $db_row['rating_recent'],
-            'likes' => $db_row['likes'],
-            'likes_recent' => $db_row['likes_recent'],
-        ];
     }
+
+    // From Git
+
+    if ($db_row === null) {
+        $db_rows = $GLOBALS['SITE_DB']->query_select('tutorials_internal t', ['t.*', tutorial_sql_rating(TUTORIAL_VIRTUAL_FIELD__PAGE_NAME), tutorial_sql_rating_recent(TUTORIAL_VIRTUAL_FIELD__PAGE_NAME), tutorial_sql_likes(TUTORIAL_VIRTUAL_FIELD__PAGE_NAME), tutorial_sql_likes_recent(TUTORIAL_VIRTUAL_FIELD__PAGE_NAME)], ['t_page_name' => $tutorial_name], '', 1);
+        if (isset($db_rows[0])) {
+            $db_row = $db_rows[0];
+        } else {
+            $db_row = false;
+        }
+    }
+
+    if ($db_row === false) {
+        $db_row = [
+            't_page_name' => $tutorial_name,
+            't_views' => 0,
+
+            'rating' => null,
+            'rating_recent' => null,
+            'likes' => null,
+            'likes_recent' => null,
+        ];
+        $GLOBALS['SITE_DB']->query_insert('tutorials_internal', [
+            't_page_name' => $tutorial_name,
+            't_views' => 0,
+        ]);
+    }
+
+    $tutorial_path = get_file_base() . '/docs/pages/comcode_custom/EN/' . $tutorial_name . '.txt';
+    $c = remove_code_block_contents(cms_file_get_contents_safe($tutorial_path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM));
+    $matches = [];
+
+    if (preg_match('#\[title sub="Written by ([^"]*)"\]([^\[\]]*)\[/title\]#', $c, $matches) != 0) {
+        $title = preg_replace('#^Composr (Tutorial|Supplementary): #', '', $matches[2]);
+        $author = $matches[1];
+    } else {
+        $title = '';
+        $author = '';
+    }
+
+    if (preg_match('#\{\$SET,tutorial_tags,([^{}]*)\}#', $c, $matches) != 0) {
+        $raw_tags = ($matches[1] == '') ? [] : explode(',', $matches[1]);
+    } else {
+        $raw_tags = [];
+    }
+    $tags = array_diff($raw_tags, ['document', 'video', 'audio', 'slideshow', 'book', 'novice', 'regular', 'expert', 'pinned']);
+
+    if (preg_match('#\{\$SET,tutorial_summary,([^{}]*)\}#', $c, $matches) != 0) {
+        $summary = $matches[1];
+    } else {
+        $summary = '';
+    }
+
+    if (preg_match('#\{\$SET,tutorial_add_date,([^{}]*)\}#', $c, $matches) != 0) {
+        $add_date = strtotime($matches[1]);
+    } else {
+        $add_date = filectime($tutorial_path);
+    }
+
+    $url = build_url(['page' => $tutorial_name], '_SEARCH', [], false, false, true);
+
+    $media_type = 'document';
+    if (in_array('audio', $raw_tags)) {
+        $media_type = 'audio';
+    }
+    if (in_array('video', $raw_tags)) {
+        $media_type = 'video';
+    }
+    if (in_array('slideshow', $raw_tags)) {
+        $media_type = 'slideshow';
+    }
+    if (in_array('audio', $raw_tags)) {
+        $media_type = 'audio';
+    }
+    if (in_array('book', $raw_tags)) {
+        $media_type = 'book';
+    }
+    $difficulty_level = in_array('expert', $raw_tags) ? 'expert' : (in_array('novice', $raw_tags) ? 'novice' : 'regular');
+
+    return [
+        'name' => $tutorial_name,
+
+        'url' => static_evaluate_tempcode($url),
+        'title' => $title,
+        'summary' => $summary,
+        'icon' => find_tutorial_image('', $raw_tags),
+        'tags' => $tags,
+        'raw_tags' => $raw_tags,
+        'media_type' => $media_type,
+        'difficulty_level' => $difficulty_level,
+        'core' => (preg_match('#^sup_#', $tutorial_name) == 0),
+        'pinned' => in_array('pinned', $raw_tags),
+        'author' => $author,
+        'views' => $db_row['t_views'],
+        'add_date' => $add_date,
+        'edit_date' => filemtime($tutorial_path),
+
+        'rating' => $db_row['rating'],
+        'rating_recent' => $db_row['rating_recent'],
+        'likes' => $db_row['likes'],
+        'likes_recent' => $db_row['likes_recent'],
+    ];
 }
 
 function tutorial_sql_rating($field)

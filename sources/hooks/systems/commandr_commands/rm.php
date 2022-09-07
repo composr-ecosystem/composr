@@ -35,25 +35,25 @@ class Hook_commandr_command_rm
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('rm', ['h'], [true]), '', ''];
-        } else {
-            if (!array_key_exists(0, $parameters)) {
-                return ['', '', '', do_lang('MISSING_PARAM', '1', 'rm')];
-            }
+        }
 
-            $success = true;
+        if (!array_key_exists(0, $parameters)) {
+            return ['', '', '', do_lang('MISSING_PARAM', '1', 'rm')];
+        }
 
-            foreach ($parameters as $i => $param) {
-                $param = $commandr_fs->_pwd_to_array($param);
+        $success = true;
 
-                if (!$commandr_fs->_is_file($param)) {
-                    $success = false;
-                    if (($i == 0) && (count($parameters) == 1)) {
-                        return ['', '', '', do_lang('NOT_A_FILE', strval($i + 1))];
-                    }
+        foreach ($parameters as $i => $param) {
+            $param = $commandr_fs->_pwd_to_array($param);
+
+            if (!$commandr_fs->_is_file($param)) {
+                $success = false;
+                if (($i == 0) && (count($parameters) == 1)) {
+                    return ['', '', '', do_lang('NOT_A_FILE', strval($i + 1))];
                 }
-
-                $success = $success && $commandr_fs->remove_file($param);
             }
+
+            $success = $success && $commandr_fs->remove_file($param);
         }
 
         if ($success) {

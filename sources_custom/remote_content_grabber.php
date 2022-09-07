@@ -28,9 +28,9 @@ function grab_photobucket_content()
         'filename_extractor' => function ($url) {
             if (strpos($url, find_script('external_url_proxy')) !== false) {
                 return preg_replace('#\?.*$#', '', basename(urldecode(preg_replace('#^.*\?url=$#', '', $url))));
-            } else {
-                return preg_replace('#\?.*$#', '', basename($url));
             }
+
+            return preg_replace('#\?.*$#', '', basename($url));
         },
         'testing_mode' => false,
         'start_from_id' => db_get_first_id(),

@@ -37,71 +37,71 @@ class Hook_commandr_command_whois
 
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('whois', ['h', 's', 'm', 'f', 'o'], [true]), '', ''];
-        } else {
-            if (!array_key_exists(0, $parameters)) {
-                return ['', '', '', do_lang('MISSING_PARAM', '1', 'whois')];
-            }
-
-            $start = (array_key_exists('s', $options)) ? intval($options['s']) : 0;
-            $start = (array_key_exists('start', $options)) ? intval($options['start']) : 0;
-            $max = (array_key_exists('m', $options)) ? intval($options['m']) : 50;
-            $max = (array_key_exists('max', $options)) ? intval($options['max']) : 50;
-            $sortable = (array_key_exists('f', $options)) ? $options['f'] : 'date_and_time';
-            $sortable = (array_key_exists('field', $options)) ? $options['field'] : 'date_and_time';
-            $sort_order = (array_key_exists('o', $options)) ? $options['o'] : 'DESC';
-            $sort_order = (array_key_exists('order', $options)) ? $options['order'] : 'DESC';
-
-            $username = null;
-            $member_id = null;
-            $ip = null;
-            $email_address = null;
-            $known_ip_addresses = lookup_user($parameters[0], $username, $member_id, $ip, $email_address);
-            if ($username === null) {
-                $username = do_lang('UNKNOWN');
-            }
-            if ($member_id === null) {
-                $member_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
-            }
-            if ($ip === null) {
-                $ip = '';
-            }
-            if ($email_address === null) {
-                $email_address = '';
-            }
-
-            if (addon_installed('securitylogging')) {
-                $all_banned = collapse_1d_complexity('ip', $GLOBALS['SITE_DB']->query('SELECT ip FROM ' . get_table_prefix() . 'banned_ip WHERE i_ban_positive=1 AND (i_ban_until IS NULL OR i_ban_until>' . strval(time()) . ')'));
-            } else {
-                $all_banned = [];
-            }
-
-            $ip_list = new Tempcode();
-            foreach ($known_ip_addresses as $row) {
-                $date = get_timezoned_date_time($row['date_and_time']);
-                $lookup_url = build_url(['page' => '_SELF', 'param' => $row['ip']], '_SELF');
-                $ip_list->attach(do_template('LOOKUP_IP_LIST_ENTRY', [
-                    '_GUID' => '01e74a2a146dab9a407b23c40f4555ad',
-                    'LOOKUP_URL' => $lookup_url,
-                    'DATE' => $date,
-                    '_DATE' => strval($row['date_and_time']),
-                    'IP' => $row['ip'],
-                    'BANNED' => in_array($row['ip'], $all_banned),
-                ]));
-            }
-
-            $stats = find_page_stats_for($member_id, $ip, $start, $max, $sortable, $sort_order);
-
-            $tpl = do_template('COMMANDR_WHOIS', [
-                '_GUID' => 'f315a705e9a2a2fb50b78ae3a8fc6a05',
-                'STATS' => $stats,
-                'IP_LIST' => $ip_list,
-                'MEMBER_ID' => strval($member_id),
-                'IP' => $ip,
-                'USERNAME' => $username,
-                'EMAIL_ADDRESS' => $email_address,
-            ]);
-
-            return ['', commandr_make_normal_html_visible($tpl), '', ''];
         }
+
+        if (!array_key_exists(0, $parameters)) {
+            return ['', '', '', do_lang('MISSING_PARAM', '1', 'whois')];
+        }
+
+        $start = (array_key_exists('s', $options)) ? intval($options['s']) : 0;
+        $start = (array_key_exists('start', $options)) ? intval($options['start']) : 0;
+        $max = (array_key_exists('m', $options)) ? intval($options['m']) : 50;
+        $max = (array_key_exists('max', $options)) ? intval($options['max']) : 50;
+        $sortable = (array_key_exists('f', $options)) ? $options['f'] : 'date_and_time';
+        $sortable = (array_key_exists('field', $options)) ? $options['field'] : 'date_and_time';
+        $sort_order = (array_key_exists('o', $options)) ? $options['o'] : 'DESC';
+        $sort_order = (array_key_exists('order', $options)) ? $options['order'] : 'DESC';
+
+        $username = null;
+        $member_id = null;
+        $ip = null;
+        $email_address = null;
+        $known_ip_addresses = lookup_user($parameters[0], $username, $member_id, $ip, $email_address);
+        if ($username === null) {
+            $username = do_lang('UNKNOWN');
+        }
+        if ($member_id === null) {
+            $member_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
+        }
+        if ($ip === null) {
+            $ip = '';
+        }
+        if ($email_address === null) {
+            $email_address = '';
+        }
+
+        if (addon_installed('securitylogging')) {
+            $all_banned = collapse_1d_complexity('ip', $GLOBALS['SITE_DB']->query('SELECT ip FROM ' . get_table_prefix() . 'banned_ip WHERE i_ban_positive=1 AND (i_ban_until IS NULL OR i_ban_until>' . strval(time()) . ')'));
+        } else {
+            $all_banned = [];
+        }
+
+        $ip_list = new Tempcode();
+        foreach ($known_ip_addresses as $row) {
+            $date = get_timezoned_date_time($row['date_and_time']);
+            $lookup_url = build_url(['page' => '_SELF', 'param' => $row['ip']], '_SELF');
+            $ip_list->attach(do_template('LOOKUP_IP_LIST_ENTRY', [
+                '_GUID' => '01e74a2a146dab9a407b23c40f4555ad',
+                'LOOKUP_URL' => $lookup_url,
+                'DATE' => $date,
+                '_DATE' => strval($row['date_and_time']),
+                'IP' => $row['ip'],
+                'BANNED' => in_array($row['ip'], $all_banned),
+            ]));
+        }
+
+        $stats = find_page_stats_for($member_id, $ip, $start, $max, $sortable, $sort_order);
+
+        $tpl = do_template('COMMANDR_WHOIS', [
+            '_GUID' => 'f315a705e9a2a2fb50b78ae3a8fc6a05',
+            'STATS' => $stats,
+            'IP_LIST' => $ip_list,
+            'MEMBER_ID' => strval($member_id),
+            'IP' => $ip,
+            'USERNAME' => $username,
+            'EMAIL_ADDRESS' => $email_address,
+        ]);
+
+        return ['', commandr_make_normal_html_visible($tpl), '', ''];
     }
 }

@@ -35,49 +35,49 @@ class Hook_commandr_command_passwd
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('passwd', ['h', 'u'], [true]), '', ''];
-        } else {
-            if (!array_key_exists(0, $parameters)) {
-                return ['', '', '', do_lang('MISSING_PARAM', '1', 'passwd')];
-            }
-
-            if (get_forum_type() != 'cns') {
-                return ['', '', '', do_lang('NO_CNS')];
-            }
-
-            require_code('cns_members_action');
-            require_code('cns_members_action2');
-
-            if (array_key_exists('u', $options)) {
-                $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($options['u']);
-            } elseif (array_key_exists('username', $options)) {
-                $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($options['username']);
-                if (($member_id === null) || (is_guest($member_id))) {
-                    return ['', '', '', do_lang('MEMBER_NO_EXIST')];
-                }
-            } else {
-                $member_id = get_member();
-            }
-
-            $update = [];
-            $update['m_password_change_code'] = '';
-            $update['m_password_change_code_time'] = null;
-            $salt = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_pass_salt');
-            if ($salt === null) {
-                return ['', '', '', do_lang('_MEMBER_NO_EXIST', array_key_exists('username', $options) ? $options['username'] : $options['u'])];
-            }
-
-            if (get_value('disable_password_hashing') === '1') {
-                $update['m_password_compat_scheme'] = 'plain';
-                $update['m_pass_salt'] = '';
-                $update['m_pass_hash_salted'] = $parameters[0];
-            } else {
-                $update['m_password_compat_scheme'] = '';
-                require_code('crypt');
-                $update['m_pass_hash_salted'] = ratchet_hash($parameters[0], $salt);
-            }
-
-            $GLOBALS['FORUM_DB']->query_update('f_members', $update, ['id' => $member_id], '', 1);
-            return ['', '', do_lang('SUCCESS'), ''];
         }
+
+        if (!array_key_exists(0, $parameters)) {
+            return ['', '', '', do_lang('MISSING_PARAM', '1', 'passwd')];
+        }
+
+        if (get_forum_type() != 'cns') {
+            return ['', '', '', do_lang('NO_CNS')];
+        }
+
+        require_code('cns_members_action');
+        require_code('cns_members_action2');
+
+        if (array_key_exists('u', $options)) {
+            $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($options['u']);
+        } elseif (array_key_exists('username', $options)) {
+            $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($options['username']);
+            if (($member_id === null) || (is_guest($member_id))) {
+                return ['', '', '', do_lang('MEMBER_NO_EXIST')];
+            }
+        } else {
+            $member_id = get_member();
+        }
+
+        $update = [];
+        $update['m_password_change_code'] = '';
+        $update['m_password_change_code_time'] = null;
+        $salt = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_pass_salt');
+        if ($salt === null) {
+            return ['', '', '', do_lang('_MEMBER_NO_EXIST', array_key_exists('username', $options) ? $options['username'] : $options['u'])];
+        }
+
+        if (get_value('disable_password_hashing') === '1') {
+            $update['m_password_compat_scheme'] = 'plain';
+            $update['m_pass_salt'] = '';
+            $update['m_pass_hash_salted'] = $parameters[0];
+        } else {
+            $update['m_password_compat_scheme'] = '';
+            require_code('crypt');
+            $update['m_pass_hash_salted'] = ratchet_hash($parameters[0], $salt);
+        }
+
+        $GLOBALS['FORUM_DB']->query_update('f_members', $update, ['id' => $member_id], '', 1);
+        return ['', '', do_lang('SUCCESS'), ''];
     }
 }

@@ -39,26 +39,26 @@ class Hook_commandr_command_untar
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('untar', ['h'], [true]), '', ''];
-        } else {
-            if (!array_key_exists(0, $parameters)) {
-                return ['', '', '', do_lang('MISSING_PARAM', '1', 'untar')];
-            }
-
-            $path = $parameters[0];
-
-            if (!is_file(get_custom_file_base() . '/' . $path)) {
-                return ['', '', '', do_lang('MISSING_RESOURCE')];
-            }
-
-            disable_php_memory_limit();
-
-            require_code('tar');
-
-            $myfile = tar_open(get_custom_file_base() . '/' . $path, 'rb');
-            tar_extract_to_folder($myfile, '');
-            tar_close($myfile);
-
-            return ['', '', do_lang('SUCCESS'), ''];
         }
+
+        if (!array_key_exists(0, $parameters)) {
+            return ['', '', '', do_lang('MISSING_PARAM', '1', 'untar')];
+        }
+
+        $path = $parameters[0];
+
+        if (!is_file(get_custom_file_base() . '/' . $path)) {
+            return ['', '', '', do_lang('MISSING_RESOURCE')];
+        }
+
+        disable_php_memory_limit();
+
+        require_code('tar');
+
+        $myfile = tar_open(get_custom_file_base() . '/' . $path, 'rb');
+        tar_extract_to_folder($myfile, '');
+        tar_close($myfile);
+
+        return ['', '', do_lang('SUCCESS'), ''];
     }
 }

@@ -35,28 +35,28 @@ class Hook_commandr_command_test_mail
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('test_mail', ['h'], [true]), '', ''];
-        } else {
-            $to_email = $GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member());
-
-            if (!array_key_exists(0, $parameters)) {
-                if ($to_email == '') {
-                    return ['', '', '', do_lang('MISSING_PARAM', '1', 'test_mail')];
-                }
-            } else {
-                $to_email = $parameters[0];
-            }
-
-            require_code('mail');
-
-            global $ATTACHED_MESSAGES_RAW;
-            $ATTACHED_MESSAGES_RAW = [];
-
-            if (@$GLOBALS['SITE_INFO']['no_email_output'] === '1') {
-                return ['', '', '', 'no_email_output==1'];
-            }
-
-            $mail_ob = dispatch_mail('Testing', 'Testing', [$to_email], 'Tester', '', '', ['priority' => 1, 'bypass_queue' => true]);
-            return ['', '', $mail_ob->log, ''];
         }
+
+        $to_email = $GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member());
+
+        if (!array_key_exists(0, $parameters)) {
+            if ($to_email == '') {
+                return ['', '', '', do_lang('MISSING_PARAM', '1', 'test_mail')];
+            }
+        } else {
+            $to_email = $parameters[0];
+        }
+
+        require_code('mail');
+
+        global $ATTACHED_MESSAGES_RAW;
+        $ATTACHED_MESSAGES_RAW = [];
+
+        if (@$GLOBALS['SITE_INFO']['no_email_output'] === '1') {
+            return ['', '', '', 'no_email_output==1'];
+        }
+
+        $mail_ob = dispatch_mail('Testing', 'Testing', [$to_email], 'Tester', '', '', ['priority' => 1, 'bypass_queue' => true]);
+        return ['', '', $mail_ob->log, ''];
     }
 }

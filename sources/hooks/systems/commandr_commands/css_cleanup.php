@@ -35,41 +35,41 @@ class Hook_commandr_command_css_cleanup
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('css_cleanup', ['h'], [true, true]), '', ''];
-        } else {
-            if (!array_key_exists(0, $parameters)) {
-                return ['', '', '', do_lang('MISSING_PARAM', '1', 'css_cleanup')];
-            }
-            if (!array_key_exists(1, $parameters)) {
-                return ['', '', '', do_lang('MISSING_PARAM', '2', 'css_cleanup')];
-            }
-
-            require_code('css_cleanup');
-
-            for ($i = 1; $i < count($parameters); $i++) {
-                $parameter = $parameters[$i];
-
-                switch ($parameter) {
-                    case 'DirSimplify':
-                        $ob = new DirSimplify($parameters[0]);
-                        break;
-
-                    case 'EmToPx':
-                        $ob = new EmToPx($parameters[0]);
-                        break;
-
-                    default:
-                        return ['', '', '', do_lang('MISSING_RESOURCE')];
-                }
-
-                $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
-                $css_files = $ob->work_out_changes();
-                $ob->save_changes();
-                cms_set_time_limit($old_limit);
-            }
-
-            $result = do_lang('SUCCESS');
-
-            return ['', $result, '', ''];
         }
+
+        if (!array_key_exists(0, $parameters)) {
+            return ['', '', '', do_lang('MISSING_PARAM', '1', 'css_cleanup')];
+        }
+        if (!array_key_exists(1, $parameters)) {
+            return ['', '', '', do_lang('MISSING_PARAM', '2', 'css_cleanup')];
+        }
+
+        require_code('css_cleanup');
+
+        for ($i = 1; $i < count($parameters); $i++) {
+            $parameter = $parameters[$i];
+
+            switch ($parameter) {
+                case 'DirSimplify':
+                    $ob = new DirSimplify($parameters[0]);
+                    break;
+
+                case 'EmToPx':
+                    $ob = new EmToPx($parameters[0]);
+                    break;
+
+                default:
+                    return ['', '', '', do_lang('MISSING_RESOURCE')];
+            }
+
+            $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
+            $css_files = $ob->work_out_changes();
+            $ob->save_changes();
+            cms_set_time_limit($old_limit);
+        }
+
+        $result = do_lang('SUCCESS');
+
+        return ['', $result, '', ''];
     }
 }

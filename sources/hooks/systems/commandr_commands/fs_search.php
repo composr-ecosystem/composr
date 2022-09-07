@@ -40,69 +40,69 @@ class Hook_commandr_command_fs_search
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('fs_search', ['h'], [true, true]), '', ''];
-        } else {
-            if (!array_key_exists(0, $parameters)) {
-                return ['', '', '', do_lang('MISSING_PARAM', '1', 'fs_search')];
-            }
-            if (!array_key_exists(1, $parameters)) {
-                return ['', '', '', do_lang('MISSING_PARAM', '2', 'fs_search')];
-            }
-
-            $search = $parameters[0];
-
-            $extensions = explode(',', $parameters[1]);
-
-            // Do search...
-
-            $sql_for = [];
-            $out = '';
-            $matched_files = [];
-
-            require_code('files2');
-            $files = get_directory_contents(get_custom_file_base(), '', null, true, true, $extensions);
-            foreach ($files as $path) {
-                $c = cms_file_get_contents_safe(get_custom_file_base() . '/' . $path, FILE_READ_LOCK);
-                if (stripos($c, $search) !== false) {
-                    $out .= '<p><kbd>' . $path . '</kbd></p>';
-                    $matched_files[] = $path;
-                }
-            }
-
-            if ($out == '') {
-                $out = do_lang('NONE');
-            }
-
-            // Generate replacement SQL...
-
-            if ((isset($parameters[2])) && (!empty($matched_files))) {
-                if (isset($parameters[1])) {
-                    $out_filename = $parameters[2];
-                    if (substr($out_filename, -4) != '.tar') {
-                        $out_filename .= '.tar';
-                    }
-                } else {
-                    $out_filename = 'matches_' . uniqid('', true) . '.tar';
-                }
-                $out_file_path = get_custom_file_base() . '/exports/backups/' . $out_filename;
-
-                // Generate TAR
-                require_code('tar');
-                $out_file = tar_open($out_file_path, 'wb');
-                foreach ($matched_files as $path) {
-                    $full_path = get_custom_file_base() . '/' . $path;
-                    tar_add_file($out_file, $path, $full_path, fileperms($full_path), filemtime($full_path), true, false, true);
-                }
-                tar_close($out_file);
-                sync_file($out_file_path);
-                fix_permissions($out_file_path);
-
-                $out .= '<br />' . do_lang('MATCHES_TAR_SAVED_TO', escape_html('exports/backups/' . $out_filename), escape_html(get_custom_base_url() . '/exports/backups/' . rawurlencode($out_filename)));
-            }
-
-            // ---
-
-            return ['', $out, '', ''];
         }
+
+        if (!array_key_exists(0, $parameters)) {
+            return ['', '', '', do_lang('MISSING_PARAM', '1', 'fs_search')];
+        }
+        if (!array_key_exists(1, $parameters)) {
+            return ['', '', '', do_lang('MISSING_PARAM', '2', 'fs_search')];
+        }
+
+        $search = $parameters[0];
+
+        $extensions = explode(',', $parameters[1]);
+
+        // Do search...
+
+        $sql_for = [];
+        $out = '';
+        $matched_files = [];
+
+        require_code('files2');
+        $files = get_directory_contents(get_custom_file_base(), '', null, true, true, $extensions);
+        foreach ($files as $path) {
+            $c = cms_file_get_contents_safe(get_custom_file_base() . '/' . $path, FILE_READ_LOCK);
+            if (stripos($c, $search) !== false) {
+                $out .= '<p><kbd>' . $path . '</kbd></p>';
+                $matched_files[] = $path;
+            }
+        }
+
+        if ($out == '') {
+            $out = do_lang('NONE');
+        }
+
+        // Generate replacement SQL...
+
+        if ((isset($parameters[2])) && (!empty($matched_files))) {
+            if (isset($parameters[1])) {
+                $out_filename = $parameters[2];
+                if (substr($out_filename, -4) != '.tar') {
+                    $out_filename .= '.tar';
+                }
+            } else {
+                $out_filename = 'matches_' . uniqid('', true) . '.tar';
+            }
+            $out_file_path = get_custom_file_base() . '/exports/backups/' . $out_filename;
+
+            // Generate TAR
+            require_code('tar');
+            $out_file = tar_open($out_file_path, 'wb');
+            foreach ($matched_files as $path) {
+                $full_path = get_custom_file_base() . '/' . $path;
+                tar_add_file($out_file, $path, $full_path, fileperms($full_path), filemtime($full_path), true, false, true);
+            }
+            tar_close($out_file);
+            sync_file($out_file_path);
+            fix_permissions($out_file_path);
+
+            $out .= '<br />' . do_lang('MATCHES_TAR_SAVED_TO', escape_html('exports/backups/' . $out_filename), escape_html(get_custom_base_url() . '/exports/backups/' . rawurlencode($out_filename)));
+        }
+
+        // ---
+
+        return ['', $out, '', ''];
     }
 
     /**

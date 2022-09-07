@@ -119,20 +119,21 @@ class Hook_implicit_usergroups_usergroup_field_match
             $pairs = $for_group[0];
             $cpf_key = 'field_' . strval($pairs[0]);
             return $GLOBALS['FORUM_DB']->query_select_value('f_member_custom_fields', 'COUNT(*)', [$cpf_key => $pairs[1]]);
-        } else { // Much more complex if multiple CPFs are mapped, we need to find all and de-dupe
-            $out = [];
-
-            foreach ($for_group as $pairs) {
-                $cpf_key = 'field_' . strval($pairs[0]);
-                $_members = $GLOBALS['FORUM_DB']->query_select('f_member_custom_fields', ['mf_member_id'], [$cpf_key => $pairs[1]]);
-                foreach ($_members as $m) {
-                    $member_id = $m['mf_member_id'];
-                    $out[$member_id/*automatic de-dupe*/] = true;
-                }
-            }
-
-            return count($out);
         }
+
+        // Much more complex if multiple CPFs are mapped, we need to find all and de-dupe
+        $out = [];
+
+        foreach ($for_group as $pairs) {
+            $cpf_key = 'field_' . strval($pairs[0]);
+            $_members = $GLOBALS['FORUM_DB']->query_select('f_member_custom_fields', ['mf_member_id'], [$cpf_key => $pairs[1]]);
+            foreach ($_members as $m) {
+                $member_id = $m['mf_member_id'];
+                $out[$member_id/*automatic de-dupe*/] = true;
+            }
+        }
+
+        return count($out);
     }
 
     /**

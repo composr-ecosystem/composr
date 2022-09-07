@@ -992,21 +992,21 @@ class Module_wiki
 
         if ($id == $target) {
             return warn_screen($this->title, do_lang_tempcode('INVALID_OPERATION'));
-        } else {
-            $GLOBALS['SITE_DB']->query_update('wiki_posts', ['page_id' => $target], ['id' => $post_id], '', 1);
-
-            if (addon_installed('actionlog')) {
-                require_code('revisions_engine_database');
-                $revision_engine = new RevisionEngineDatabase();
-                $revision_engine->recategorise_old_revisions('wiki_post', strval($post_id), strval($target));
-            }
-
-            log_it('WIKI_MOVE_POST', strval($post_id), strval($target));
-
-            // Show it worked / Refresh
-            $url = get_param_string('redirect', false, INPUT_FILTER_URL_INTERNAL);
-            return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
         }
+
+        $GLOBALS['SITE_DB']->query_update('wiki_posts', ['page_id' => $target], ['id' => $post_id], '', 1);
+
+        if (addon_installed('actionlog')) {
+            require_code('revisions_engine_database');
+            $revision_engine = new RevisionEngineDatabase();
+            $revision_engine->recategorise_old_revisions('wiki_post', strval($post_id), strval($target));
+        }
+
+        log_it('WIKI_MOVE_POST', strval($post_id), strval($target));
+
+        // Show it worked / Refresh
+        $url = get_param_string('redirect', false, INPUT_FILTER_URL_INTERNAL);
+        return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 
     /**

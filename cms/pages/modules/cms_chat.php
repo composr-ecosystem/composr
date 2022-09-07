@@ -552,63 +552,63 @@ class Module_cms_chat
         $delete = post_param_integer('delete', 0);
         if ($delete == 1) {
             return $this->_chat_delete_message();
-        } else {
-            $message_id = get_param_integer('id');
-
-            $room_id = $GLOBALS['SITE_DB']->query_select_value_if_there('chat_messages', 'room_id', ['id' => $message_id]);
-            if ($room_id === null) {
-                warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
-            }
-            check_chatroom_access($room_id);
-
-            $room_details = $GLOBALS['SITE_DB']->query_select('chat_rooms', ['*'], ['id' => $room_id], '', 1);
-            if (!array_key_exists(0, $room_details)) {
-                warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
-            }
-            $row = $room_details[0];
-            $has_mod_access = ((has_privilege(get_member(), 'edit_lowrange_content', 'cms_chat', ['chat', $room_id])) || ($row['room_owner'] == get_member()) && (has_privilege(get_member(), 'moderate_my_private_rooms')));
-            if (!$has_mod_access) {
-                access_denied('PRIVILEGE', 'edit_lowrange_content');
-            }
-
-            $map = ['text_colour' => post_param_string('text_colour'), 'font_name' => post_param_string('fontname')];
-            $map += insert_lang_comcode('the_message', wordfilter_text(post_param_string('message')), 4);
-            $GLOBALS['SITE_DB']->query_update('chat_messages', $map, ['id' => $message_id], '', 1);
-
-            log_it('EDIT_MESSAGE', strval($message_id), post_param_string('message'));
-
-            delete_cache_entry('side_shoutbox');
-
-            require_code('templates_donext');
-            return do_next_manager(
-                $this->title,
-                do_lang_tempcode('SUCCESS'),
-                [],
-                null,
-                /* TYPED-ORDERED LIST OF 'LINKS' */
-                null, // Add one
-                ['_SELF', ['type' => 'edit', 'id' => $message_id, 'room_id' => $room_id], '_SELF'], // Edit this
-                ['_SELF', ['type' => 'room', 'id' => $room_id], '_SELF'], // Edit one
-                null, // View this
-                ['_SELF', [], '_SELF'], // View archive
-                null, // Add one category
-                null, // Edit one category
-                null, // Edit this category
-                null, // View this category
-                /* SPECIALLY TYPED 'LINKS' */
-                [],
-                [],
-                [
-                    has_actual_page_access(get_member(), 'admin_chat') ? ['menu/social/chat/chat', ['admin_chat', ['type' => 'browse'], get_module_zone('admin_chat')], do_lang('CHATROOMS')] : null,
-                ],
-                do_lang('SETUP'),
-                null,
-                null,
-                null,
-                null,
-                'chat'
-            );
         }
+
+        $message_id = get_param_integer('id');
+
+        $room_id = $GLOBALS['SITE_DB']->query_select_value_if_there('chat_messages', 'room_id', ['id' => $message_id]);
+        if ($room_id === null) {
+            warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
+        }
+        check_chatroom_access($room_id);
+
+        $room_details = $GLOBALS['SITE_DB']->query_select('chat_rooms', ['*'], ['id' => $room_id], '', 1);
+        if (!array_key_exists(0, $room_details)) {
+            warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
+        }
+        $row = $room_details[0];
+        $has_mod_access = ((has_privilege(get_member(), 'edit_lowrange_content', 'cms_chat', ['chat', $room_id])) || ($row['room_owner'] == get_member()) && (has_privilege(get_member(), 'moderate_my_private_rooms')));
+        if (!$has_mod_access) {
+            access_denied('PRIVILEGE', 'edit_lowrange_content');
+        }
+
+        $map = ['text_colour' => post_param_string('text_colour'), 'font_name' => post_param_string('fontname')];
+        $map += insert_lang_comcode('the_message', wordfilter_text(post_param_string('message')), 4);
+        $GLOBALS['SITE_DB']->query_update('chat_messages', $map, ['id' => $message_id], '', 1);
+
+        log_it('EDIT_MESSAGE', strval($message_id), post_param_string('message'));
+
+        delete_cache_entry('side_shoutbox');
+
+        require_code('templates_donext');
+        return do_next_manager(
+            $this->title,
+            do_lang_tempcode('SUCCESS'),
+            [],
+            null,
+            /* TYPED-ORDERED LIST OF 'LINKS' */
+            null, // Add one
+            ['_SELF', ['type' => 'edit', 'id' => $message_id, 'room_id' => $room_id], '_SELF'], // Edit this
+            ['_SELF', ['type' => 'room', 'id' => $room_id], '_SELF'], // Edit one
+            null, // View this
+            ['_SELF', [], '_SELF'], // View archive
+            null, // Add one category
+            null, // Edit one category
+            null, // Edit this category
+            null, // View this category
+            /* SPECIALLY TYPED 'LINKS' */
+            [],
+            [],
+            [
+                has_actual_page_access(get_member(), 'admin_chat') ? ['menu/social/chat/chat', ['admin_chat', ['type' => 'browse'], get_module_zone('admin_chat')], do_lang('CHATROOMS')] : null,
+            ],
+            do_lang('SETUP'),
+            null,
+            null,
+            null,
+            null,
+            'chat'
+        );
     }
 
     /**
@@ -725,30 +725,30 @@ class Module_cms_chat
         if ($delete != 1) {
             $url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
             return redirect_screen($this->title, $url, do_lang_tempcode('CANCELLED'));
-        } else {
-            $room_id = get_param_integer('id');
-            check_chatroom_access($room_id);
-
-            $room_details = $GLOBALS['SITE_DB']->query_select('chat_rooms', ['*'], ['id' => $room_id], '', 1);
-            if (!array_key_exists(0, $room_details)) {
-                warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'chat'));
-            }
-            $row = $room_details[0];
-            $has_mod_access = ((has_privilege(get_member(), 'edit_lowrange_content', 'cms_chat', ['chat', $room_id])) || ($row['room_owner'] == get_member()) && (has_privilege(get_member(), 'moderate_my_private_rooms')));
-            if (!$has_mod_access) {
-                access_denied('PRIVILEGE', 'edit_lowrange_content');
-            }
-
-            delete_chat_messages(['room_id' => $room_id]);
-
-            delete_cache_entry('side_shoutbox');
-
-            log_it('DELETE_ALL_MESSAGES', strval($room_id), $row['room_name']);
-
-            // Redirect
-            $url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
-            return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
         }
+
+        $room_id = get_param_integer('id');
+        check_chatroom_access($room_id);
+
+        $room_details = $GLOBALS['SITE_DB']->query_select('chat_rooms', ['*'], ['id' => $room_id], '', 1);
+        if (!array_key_exists(0, $room_details)) {
+            warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'chat'));
+        }
+        $row = $room_details[0];
+        $has_mod_access = ((has_privilege(get_member(), 'edit_lowrange_content', 'cms_chat', ['chat', $room_id])) || ($row['room_owner'] == get_member()) && (has_privilege(get_member(), 'moderate_my_private_rooms')));
+        if (!$has_mod_access) {
+            access_denied('PRIVILEGE', 'edit_lowrange_content');
+        }
+
+        delete_chat_messages(['room_id' => $room_id]);
+
+        delete_cache_entry('side_shoutbox');
+
+        log_it('DELETE_ALL_MESSAGES', strval($room_id), $row['room_name']);
+
+        // Redirect
+        $url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
+        return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 
     /**

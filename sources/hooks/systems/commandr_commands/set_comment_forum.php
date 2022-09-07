@@ -35,25 +35,25 @@ class Hook_commandr_command_set_comment_forum
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('set_comment_forum', ['h'], [true, true, true]), '', ''];
-        } else {
-            if (!array_key_exists(0, $parameters)) {
-                return ['', '', '', do_lang('MISSING_PARAM', '1', 'set_comment_forum')];
-            }
-            if (!array_key_exists(1, $parameters)) {
-                return ['', '', '', do_lang('MISSING_PARAM', '2', 'set_comment_forum')];
-            }
-            if (!array_key_exists(2, $parameters)) {
-                return ['', '', '', do_lang('MISSING_PARAM', '3', 'set_comment_forum')];
-            }
-
-            list($feedback_code, $category_id, $forum_id) = $parameters;
-
-            require_code('feedback2');
-            set_comment_forum_for($feedback_code, $category_id, $forum_id);
-
-            $result = do_lang('SUCCESS');
-
-            return ['', $result, '', ''];
         }
+
+        if (!array_key_exists(0, $parameters)) {
+            return ['', '', '', do_lang('MISSING_PARAM', '1', 'set_comment_forum')];
+        }
+        if (!array_key_exists(1, $parameters)) {
+            return ['', '', '', do_lang('MISSING_PARAM', '2', 'set_comment_forum')];
+        }
+        if (!array_key_exists(2, $parameters)) {
+            return ['', '', '', do_lang('MISSING_PARAM', '3', 'set_comment_forum')];
+        }
+
+        list($feedback_code, $category_id, $forum_id) = $parameters;
+
+        require_code('feedback2');
+        set_comment_forum_for($feedback_code, $category_id, $forum_id);
+
+        $result = do_lang('SUCCESS');
+
+        return ['', $result, '', ''];
     }
 }

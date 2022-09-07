@@ -35,18 +35,18 @@ class Hook_commandr_command_ban_ip
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('ban_ip', ['h', 'u'], [true]), '', ''];
-        } else {
-            if (!array_key_exists(0, $parameters)) {
-                return ['', '', '', do_lang('MISSING_PARAM', '1', 'ban_ip')];
-            }
-
-            require_code('submit');
-            if ((array_key_exists('u', $options)) || (array_key_exists('unban', $options))) {
-                wrap_remove_ip_ban($parameters[0]);
-            } else {
-                wrap_add_ip_ban($parameters[0], array_key_exists(1, $parameters) ? $parameters[1] : '');
-            }
-            return ['', '', do_lang('SUCCESS'), ''];
         }
+
+        if (!array_key_exists(0, $parameters)) {
+            return ['', '', '', do_lang('MISSING_PARAM', '1', 'ban_ip')];
+        }
+
+        require_code('submit');
+        if ((array_key_exists('u', $options)) || (array_key_exists('unban', $options))) {
+            wrap_remove_ip_ban($parameters[0]);
+        } else {
+            wrap_add_ip_ban($parameters[0], array_key_exists(1, $parameters) ? $parameters[1] : '');
+        }
+        return ['', '', do_lang('SUCCESS'), ''];
     }
 }

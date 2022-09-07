@@ -554,29 +554,29 @@ function cns_move_posts(int $from_topic_id, ?int $to_topic_id, array $posts, str
         require_code('cns_topics_action2');
         cns_delete_topic($from_topic_id, do_lang('MOVE_POSTS'));
         return true;
-    } else {
-        // Make informative post
-        $topic_title = $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_cache_first_title', ['id' => $to_topic_id]);
-        if ($is_support_ticket) {
-            $to_link = '[page="' . get_module_zone('tickets') . ':tickets:ticket:' . $ticket_id . '"]' . str_replace('"', '\"', str_replace('[', '\\[', $topic_title)) . '[/page]';
-        } else {
-            $to_link = '[page="' . get_module_zone('topicview') . ':topicview:browse:' . strval($to_topic_id) . '"]' . str_replace('"', '\"', str_replace('[', '\\[', $topic_title)) . '[/page]';
-        }
-        $me_link = '[page="' . get_module_zone('members') . ':members:view:' . strval(get_member()) . '"]' . $GLOBALS['CNS_DRIVER']->get_username(get_member(), true) . '[/page]';
-        $lang = do_lang('INLINE_POSTS_MOVED_MESSAGE', $me_link, integer_format(count($posts), 0), [$to_link, get_timezoned_date_time(time())]);
-        require_code('cns_posts_action');
-        cns_make_post($from_topic_id, '', $lang, 0, false, 1, 1, null, null, $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_time', ['id' => $posts[0]]) + 1, null, null, null, null, false);
-
-        require_code('cns_general_action2');
-        cns_mod_log_it('MOVE_POSTS', strval($to_topic_id), strval(count($posts)), $reason);
-
-        if ($from_forum_id !== null) {
-            cns_decache_cms_blocks($from_forum_id);
-        }
-        if ($to_forum_id !== null) {
-            cns_decache_cms_blocks($to_forum_id);
-        }
-
-        return false;
     }
+
+    // Make informative post
+    $topic_title = $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_cache_first_title', ['id' => $to_topic_id]);
+    if ($is_support_ticket) {
+        $to_link = '[page="' . get_module_zone('tickets') . ':tickets:ticket:' . $ticket_id . '"]' . str_replace('"', '\"', str_replace('[', '\\[', $topic_title)) . '[/page]';
+    } else {
+        $to_link = '[page="' . get_module_zone('topicview') . ':topicview:browse:' . strval($to_topic_id) . '"]' . str_replace('"', '\"', str_replace('[', '\\[', $topic_title)) . '[/page]';
+    }
+    $me_link = '[page="' . get_module_zone('members') . ':members:view:' . strval(get_member()) . '"]' . $GLOBALS['CNS_DRIVER']->get_username(get_member(), true) . '[/page]';
+    $lang = do_lang('INLINE_POSTS_MOVED_MESSAGE', $me_link, integer_format(count($posts), 0), [$to_link, get_timezoned_date_time(time())]);
+    require_code('cns_posts_action');
+    cns_make_post($from_topic_id, '', $lang, 0, false, 1, 1, null, null, $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_time', ['id' => $posts[0]]) + 1, null, null, null, null, false);
+
+    require_code('cns_general_action2');
+    cns_mod_log_it('MOVE_POSTS', strval($to_topic_id), strval(count($posts)), $reason);
+
+    if ($from_forum_id !== null) {
+        cns_decache_cms_blocks($from_forum_id);
+    }
+    if ($to_forum_id !== null) {
+        cns_decache_cms_blocks($to_forum_id);
+    }
+
+    return false;
 }

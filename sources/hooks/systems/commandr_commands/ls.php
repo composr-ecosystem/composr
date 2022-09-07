@@ -35,44 +35,44 @@ class Hook_commandr_command_ls
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('ls', ['h'], [true]), '', ''];
+        }
+
+        if (!array_key_exists(0, $parameters)) {
+            $dir = $commandr_fs->print_working_directory(true);
         } else {
-            if (!array_key_exists(0, $parameters)) {
-                $dir = $commandr_fs->print_working_directory(true);
-            } else {
-                $dir = $commandr_fs->_pwd_to_array($parameters[0]);
+            $dir = $commandr_fs->_pwd_to_array($parameters[0]);
 
-                if ((!$commandr_fs->_is_dir($dir)) && (strpos($parameters[0], '*') === false)) {
-                    return ['', '', '', do_lang('NOT_A_DIR', '1')];
-                }
+            if ((!$commandr_fs->_is_dir($dir)) && (strpos($parameters[0], '*') === false)) {
+                return ['', '', '', do_lang('NOT_A_DIR', '1')];
             }
+        }
 
-            if ((!empty($dir)) && (strpos(end($dir), '*') !== false)) {
-                // Very limited ad-hoc wildcard support
-                $file_expression = str_replace('*', '%', array_pop($dir));
-                $listing_all = $commandr_fs->listing($dir);
-                $listing = [[], []];
-                foreach ($listing_all as $i => $set) {
-                    foreach ($set as $entry) {
-                        if (simulated_wildcard_match($entry[0], $file_expression, true, true)) {
-                            $listing[$i][] = $entry;
-                        }
+        if ((!empty($dir)) && (strpos(end($dir), '*') !== false)) {
+            // Very limited ad-hoc wildcard support
+            $file_expression = str_replace('*', '%', array_pop($dir));
+            $listing_all = $commandr_fs->listing($dir);
+            $listing = [[], []];
+            foreach ($listing_all as $i => $set) {
+                foreach ($set as $entry) {
+                    if (simulated_wildcard_match($entry[0], $file_expression, true, true)) {
+                        $listing[$i][] = $entry;
                     }
                 }
-            } else {
-                $listing = $commandr_fs->listing($dir);
             }
-
-            return [
-                '',
-                do_template('COMMANDR_LS', [
-                    '_GUID' => '705c3382e34e3d73479521bb8d05902f',
-                    'DIRECTORY' => $commandr_fs->pwd_to_string($dir),
-                    'DIRECTORIES' => $commandr_fs->prepare_dir_contents_for_listing($listing[0]),
-                    'FILES' => $commandr_fs->prepare_dir_contents_for_listing($listing[1]),
-                ]),
-                '',
-                ''
-            ];
+        } else {
+            $listing = $commandr_fs->listing($dir);
         }
+
+        return [
+            '',
+            do_template('COMMANDR_LS', [
+                '_GUID' => '705c3382e34e3d73479521bb8d05902f',
+                'DIRECTORY' => $commandr_fs->pwd_to_string($dir),
+                'DIRECTORIES' => $commandr_fs->prepare_dir_contents_for_listing($listing[0]),
+                'FILES' => $commandr_fs->prepare_dir_contents_for_listing($listing[1]),
+            ]),
+            '',
+            ''
+        ];
     }
 }

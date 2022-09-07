@@ -371,9 +371,9 @@ function _m_zip_RelPath(string $base_path, string $path): string
 
     if (strpos($path, $base_path) === 0) {
         return substr($path, strlen($base_path));
-    } else {
-        return $path;
     }
+
+    return $path;
 }
 
 /**

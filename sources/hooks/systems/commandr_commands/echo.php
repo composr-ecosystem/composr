@@ -35,12 +35,12 @@ class Hook_commandr_command_echo
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('echo', ['h'], [true]), '', ''];
-        } else {
-            if (!array_key_exists(0, $parameters)) {
-                return ['', '', '', ''];
-            }
-
-            return ['', '', implode(' ', $parameters), ''];
         }
+
+        if (!array_key_exists(0, $parameters)) {
+            return ['', '', '', ''];
+        }
+
+        return ['', '', implode(' ', $parameters), ''];
     }
 }

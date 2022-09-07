@@ -35,25 +35,25 @@ class Hook_commandr_command_mkdir
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('mkdir', ['h'], [true]), '', ''];
-        } else {
-            if (!array_key_exists(0, $parameters)) {
-                return ['', '', '', do_lang('MISSING_PARAM', '1', 'mkdir')];
-            } else {
-                $parameters[0] = $commandr_fs->_pwd_to_array($parameters[0]);
-            }
-
-            $path = $parameters[0];
-            array_pop($path);
-            if (!$commandr_fs->_is_dir($path)) {
-                return ['', '', '', do_lang('NOT_A_DIR', '1')];
-            }
-
-            $success = $commandr_fs->make_directory($parameters[0]);
-            if ($success) {
-                return ['', '', do_lang('SUCCESS'), ''];
-            } else {
-                return ['', '', '', do_lang('INCOMPLETE_ERROR')];
-            }
         }
+
+        if (!array_key_exists(0, $parameters)) {
+            return ['', '', '', do_lang('MISSING_PARAM', '1', 'mkdir')];
+        } else {
+            $parameters[0] = $commandr_fs->_pwd_to_array($parameters[0]);
+        }
+
+        $path = $parameters[0];
+        array_pop($path);
+        if (!$commandr_fs->_is_dir($path)) {
+            return ['', '', '', do_lang('NOT_A_DIR', '1')];
+        }
+
+        $success = $commandr_fs->make_directory($parameters[0]);
+        if (!$success) {
+            return ['', '', '', do_lang('INCOMPLETE_ERROR')];
+        }
+
+        return ['', '', do_lang('SUCCESS'), ''];
     }
 }

@@ -39,48 +39,48 @@ class Hook_commandr_command_grep
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('grep', ['h'], [true, true]), '', ''];
-        } else {
-            if (!array_key_exists(0, $parameters)) {
-                return ['', '', '', do_lang('MISSING_PARAM', '1', 'grep')];
-            }
-            if (!array_key_exists(1, $parameters)) {
-                return ['', '', '', do_lang('MISSING_PARAM', '2', 'grep')];
-            }
-            $_parameters = $commandr_fs->_pwd_to_array($parameters[1]);
+        }
 
-            if (!$commandr_fs->_is_file($_parameters)) {
-                if ($parameters[1] == '<comcode_pages>') {
-                    $output = '';
+        if (!array_key_exists(0, $parameters)) {
+            return ['', '', '', do_lang('MISSING_PARAM', '1', 'grep')];
+        }
+        if (!array_key_exists(1, $parameters)) {
+            return ['', '', '', do_lang('MISSING_PARAM', '2', 'grep')];
+        }
+        $_parameters = $commandr_fs->_pwd_to_array($parameters[1]);
 
-                    $zones = find_all_zones(false, false, true);
-                    foreach ($zones as $zone) {
-                        $pages = find_all_pages_wrap($zone, true, false, FIND_ALL_PAGES__ALL, 'comcode');
-                        foreach ($pages as $page => $type) {
-                            $contents = cms_file_get_contents_safe(get_custom_file_base() . '/' . $zone . (($zone == '') ? '' : '/') . 'pages/' . $type . '/' . $page, FILE_READ_LOCK);
-                            if (preg_match('#' . $parameters[0] . '#', $contents) != 0) {
-                                $output .= $zone . ':' . basename($page, '.txt') . "\n";
-                            }
+        if (!$commandr_fs->_is_file($_parameters)) {
+            if ($parameters[1] == '<comcode_pages>') {
+                $output = '';
+
+                $zones = find_all_zones(false, false, true);
+                foreach ($zones as $zone) {
+                    $pages = find_all_pages_wrap($zone, true, false, FIND_ALL_PAGES__ALL, 'comcode');
+                    foreach ($pages as $page => $type) {
+                        $contents = cms_file_get_contents_safe(get_custom_file_base() . '/' . $zone . (($zone == '') ? '' : '/') . 'pages/' . $type . '/' . $page, FILE_READ_LOCK);
+                        if (preg_match('#' . $parameters[0] . '#', $contents) != 0) {
+                            $output .= $zone . ':' . basename($page, '.txt') . "\n";
                         }
                     }
-
-                    return ['', '', $output, ''];
                 }
 
-                return ['', '', '', do_lang('NOT_A_FILE', '2')];
+                return ['', '', $output, ''];
             }
 
-            $_lines = unixify_line_format($commandr_fs->read_file($_parameters));
-            $lines = explode("\n", $_lines);
-            if (($parameters[0] == '') || (($parameters[0][0] != '#') && ($parameters[0][0] != '/'))) {
-                $parameters[0] = '#' . $parameters[0] . '#';
-            }
-            $matches = preg_grep($parameters[0], $lines);
-            $output = '';
-            foreach ($matches as $value) {
-                $output .= $value . "\n";
-            }
-
-            return ['', '', $output, ''];
+            return ['', '', '', do_lang('NOT_A_FILE', '2')];
         }
+
+        $_lines = unixify_line_format($commandr_fs->read_file($_parameters));
+        $lines = explode("\n", $_lines);
+        if (($parameters[0] == '') || (($parameters[0][0] != '#') && ($parameters[0][0] != '/'))) {
+            $parameters[0] = '#' . $parameters[0] . '#';
+        }
+        $matches = preg_grep($parameters[0], $lines);
+        $output = '';
+        foreach ($matches as $value) {
+            $output .= $value . "\n";
+        }
+
+        return ['', '', $output, ''];
     }
 }

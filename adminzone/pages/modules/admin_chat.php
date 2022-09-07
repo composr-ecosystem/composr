@@ -347,10 +347,10 @@ class Module_admin_chat extends Standard_crud_module
         if ($delete != 1) {
             $url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
             return redirect_screen($this->title, $url, do_lang_tempcode('CANCELLED'));
-        } else {
-            delete_all_chatrooms();
-
-            return $this->do_next_manager($this->title, do_lang_tempcode('SUCCESS'));
         }
+
+        delete_all_chatrooms();
+
+        return $this->do_next_manager($this->title, do_lang_tempcode('SUCCESS'));
     }
 }

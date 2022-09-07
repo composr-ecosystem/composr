@@ -523,14 +523,14 @@ function cms_is_writable(string $path) : bool
         }*/
 
         return is_writable($path); // imperfect unfortunately; but unlikely to cause a problem
-    } else {
-        $test = @fopen($path, 'cb');
-        if ($test !== false) {
-            fclose($test);
-            return true;
-        }
-        return false;
     }
+
+    $test = @fopen($path, 'cb');
+    if ($test !== false) {
+        fclose($test);
+        return true;
+    }
+    return false;
 }
 
 /**
@@ -3743,34 +3743,34 @@ function get_zone_default_page(string $zone_name, bool &$zone_missing = false) :
     global $ZONE;
     if (($ZONE !== null) && ($ZONE['zone_name'] == $zone_name) && ($ZONE['zone_default_page'] !== null)) {
         return $ZONE['zone_default_page'];
-    } else {
-        global $ZONE_DEFAULT_PAGES_CACHE;
-        if (!isset($ZONE_DEFAULT_PAGES_CACHE[$zone_name])) {
-            $_zone_default_page = null;
-            if (function_exists('persistent_cache_get')) {
-                $temp = persistent_cache_get('ALL_ZONES_TITLED');
-                if ($temp !== null) {
-                    $_zone_default_page = [];
-                    foreach ($temp as $_temp) {
-                        list($_zone_name, , $zone_default_page) = $_temp;
-                        $_zone_default_page[] = ['zone_name' => $_zone_name, 'zone_default_page' => $zone_default_page];
-                    }
+    }
+
+    global $ZONE_DEFAULT_PAGES_CACHE;
+    if (!isset($ZONE_DEFAULT_PAGES_CACHE[$zone_name])) {
+        $_zone_default_page = null;
+        if (function_exists('persistent_cache_get')) {
+            $temp = persistent_cache_get('ALL_ZONES_TITLED');
+            if ($temp !== null) {
+                $_zone_default_page = [];
+                foreach ($temp as $_temp) {
+                    list($_zone_name, , $zone_default_page) = $_temp;
+                    $_zone_default_page[] = ['zone_name' => $_zone_name, 'zone_default_page' => $zone_default_page];
                 }
             }
-            if ($_zone_default_page === null) {
-                $_zone_default_page = $GLOBALS['SITE_DB']->query_select('zones', ['zone_name', 'zone_default_page', 'zone_title'], []/*Load multiple so we can cache for performance ['zone_name' => $zone_name]*/, 'ORDER BY zone_title', 50/*reasonable limit; zone_title is sequential for default zones*/);
-            }
-            foreach ($_zone_default_page as $zone_row) {
-                $ZONE_DEFAULT_PAGES_CACHE[$zone_row['zone_name']] = $zone_row['zone_default_page'];
-            }
-            if (!isset($ZONE_DEFAULT_PAGES_CACHE[$zone_name])) {
-                $zone_missing = true;
-                $ZONE_DEFAULT_PAGES_CACHE[$zone_name] = DEFAULT_ZONE_PAGE_NAME;
-            }
         }
-
-        return $ZONE_DEFAULT_PAGES_CACHE[$zone_name];
+        if ($_zone_default_page === null) {
+            $_zone_default_page = $GLOBALS['SITE_DB']->query_select('zones', ['zone_name', 'zone_default_page', 'zone_title'], []/*Load multiple so we can cache for performance ['zone_name' => $zone_name]*/, 'ORDER BY zone_title', 50/*reasonable limit; zone_title is sequential for default zones*/);
+        }
+        foreach ($_zone_default_page as $zone_row) {
+            $ZONE_DEFAULT_PAGES_CACHE[$zone_row['zone_name']] = $zone_row['zone_default_page'];
+        }
+        if (!isset($ZONE_DEFAULT_PAGES_CACHE[$zone_name])) {
+            $zone_missing = true;
+            $ZONE_DEFAULT_PAGES_CACHE[$zone_name] = DEFAULT_ZONE_PAGE_NAME;
+        }
     }
+
+    return $ZONE_DEFAULT_PAGES_CACHE[$zone_name];
 }
 
 /**

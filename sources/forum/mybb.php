@@ -912,9 +912,9 @@ class Forum_driver_mybb extends Forum_driver_base
             return true; // The member is permanently banned
         } elseif ($ban_till < time()) {
             return false; // The ban time is over
-        } else {
-            return true; // The member is still banned (not permanently banned)
         }
+
+        return true; // The member is still banned (not permanently banned)
     }
 
     /**

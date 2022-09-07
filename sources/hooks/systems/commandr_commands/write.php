@@ -35,23 +35,23 @@ class Hook_commandr_command_write
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('write', ['h'], [true, true]), '', ''];
-        } else {
-            if (!array_key_exists(0, $parameters)) {
-                return ['', '', '', do_lang('MISSING_PARAM', '1', 'write')];
-            } else {
-                $parameters[0] = $commandr_fs->_pwd_to_array($parameters[0]);
-            }
-            if (!array_key_exists(1, $parameters)) {
-                return ['', '', '', do_lang('MISSING_PARAM', '2', 'write')];
-            }
-
-            // NOTE: Lack of existence-checking for the file, since this command can create files.
-            $success = $commandr_fs->write_file($parameters[0], $parameters[1]);
-            if ($success) {
-                return ['', '', do_lang('SUCCESS'), ''];
-            } else {
-                return ['', '', '', do_lang('INCOMPLETE_ERROR')];
-            }
         }
+
+        if (!array_key_exists(0, $parameters)) {
+            return ['', '', '', do_lang('MISSING_PARAM', '1', 'write')];
+        } else {
+            $parameters[0] = $commandr_fs->_pwd_to_array($parameters[0]);
+        }
+        if (!array_key_exists(1, $parameters)) {
+            return ['', '', '', do_lang('MISSING_PARAM', '2', 'write')];
+        }
+
+        // NOTE: Lack of existence-checking for the file, since this command can create files.
+        $success = $commandr_fs->write_file($parameters[0], $parameters[1]);
+        if (!$success) {
+            return ['', '', '', do_lang('INCOMPLETE_ERROR')];
+        }
+
+        return ['', '', do_lang('SUCCESS'), ''];
     }
 }

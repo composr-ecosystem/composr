@@ -310,52 +310,53 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
             $this->_resource_save_extend('catalogue_category', strval($id), $filename, $label, $properties);
 
             return strval($id);
-        } else { // Catalogue
-            list($properties, $label) = $this->_folder_magic_filter($filename, $path, $properties);
-
-            list($description, $display_type, $is_tree, $notes, $submit_points, $ecommerce, $categories_sort_order, $send_view_reports, $default_review_freq, $add_time) = $this->__folder_read_in_properties_catalogue($path, $properties);
-
-            $name = $this->_create_name_from_label($label);
-
-            $name = actual_add_catalogue($name, $label, $description, $display_type, $is_tree, $notes, $submit_points, $ecommerce, $categories_sort_order, $send_view_reports, $default_review_freq, $add_time, true);
-
-            if ((array_key_exists('fields', $properties)) && ($properties['fields'] != '')) {
-                $fields_data = $properties['fields'];
-                foreach ($fields_data as $field_data) {
-                    $type = $field_data['type'];
-                    $order = $field_data['order'];
-                    $defines_order = $field_data['defines_order'];
-                    $visible = $field_data['visible'];
-                    $is_sortable = $field_data['is_sortable'];
-                    $include_in_main_search = $field_data['include_in_main_search'];
-                    $allow_template_search = $field_data['allow_template_search'];
-                    $default = $field_data['default'];
-                    $required = $field_data['required'];
-                    $put_in_category = $field_data['put_in_category'];
-                    $put_in_search = $field_data['put_in_search'];
-                    $options = $field_data['options'];
-
-                    $_field_title = $field_data['field_title'];
-                    $_description = $field_data['description'];
-                    $field_title = null;
-                    foreach ($_field_title as $lang => $val) {
-                        $field_title = insert_lang('cf_name', $val, 2, null, false, $field_title, $lang);
-                    }
-                    $description = null;
-                    foreach ($_description as $lang => $val) {
-                        $description = insert_lang('cf_description', $val, 2, null, false, $description, $lang);
-                    }
-
-                    actual_add_catalogue_field($name, $field_title, $description, $type, $order, $defines_order, $visible, $default, $required, $is_sortable, $include_in_main_search, $allow_template_search, $put_in_category, $put_in_search, $options);
-                }
-            } else {
-                actual_add_catalogue_field($name, do_lang('TITLE'), '', 'short_text', 0, 1, 1, '', 1, 1, 1);
-            }
-
-            $this->_resource_save_extend('catalogue', $name, $filename, $label, $properties);
-
-            return $name;
         }
+
+        // Catalogue
+        list($properties, $label) = $this->_folder_magic_filter($filename, $path, $properties);
+
+        list($description, $display_type, $is_tree, $notes, $submit_points, $ecommerce, $categories_sort_order, $send_view_reports, $default_review_freq, $add_time) = $this->__folder_read_in_properties_catalogue($path, $properties);
+
+        $name = $this->_create_name_from_label($label);
+
+        $name = actual_add_catalogue($name, $label, $description, $display_type, $is_tree, $notes, $submit_points, $ecommerce, $categories_sort_order, $send_view_reports, $default_review_freq, $add_time, true);
+
+        if ((array_key_exists('fields', $properties)) && ($properties['fields'] != '')) {
+            $fields_data = $properties['fields'];
+            foreach ($fields_data as $field_data) {
+                $type = $field_data['type'];
+                $order = $field_data['order'];
+                $defines_order = $field_data['defines_order'];
+                $visible = $field_data['visible'];
+                $is_sortable = $field_data['is_sortable'];
+                $include_in_main_search = $field_data['include_in_main_search'];
+                $allow_template_search = $field_data['allow_template_search'];
+                $default = $field_data['default'];
+                $required = $field_data['required'];
+                $put_in_category = $field_data['put_in_category'];
+                $put_in_search = $field_data['put_in_search'];
+                $options = $field_data['options'];
+
+                $_field_title = $field_data['field_title'];
+                $_description = $field_data['description'];
+                $field_title = null;
+                foreach ($_field_title as $lang => $val) {
+                    $field_title = insert_lang('cf_name', $val, 2, null, false, $field_title, $lang);
+                }
+                $description = null;
+                foreach ($_description as $lang => $val) {
+                    $description = insert_lang('cf_description', $val, 2, null, false, $description, $lang);
+                }
+
+                actual_add_catalogue_field($name, $field_title, $description, $type, $order, $defines_order, $visible, $default, $required, $is_sortable, $include_in_main_search, $allow_template_search, $put_in_category, $put_in_search, $options);
+            }
+        } else {
+            actual_add_catalogue_field($name, do_lang('TITLE'), '', 'short_text', 0, 1, 1, '', 1, 1, 1);
+        }
+
+        $this->_resource_save_extend('catalogue', $name, $filename, $label, $properties);
+
+        return $name;
     }
 
     /**

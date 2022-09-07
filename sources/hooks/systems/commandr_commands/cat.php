@@ -35,30 +35,30 @@ class Hook_commandr_command_cat
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('cat', ['h'], ['l']), '', ''];
-        } else {
-            if (!array_key_exists(0, $parameters)) {
-                return ['', '', '', do_lang('MISSING_PARAM', '1', 'cat')];
-            }
-
-            $line_numbers = array_key_exists('l', $options);
-
-            $output = '';
-            for ($i = 0; $i < count($parameters); $i++) {
-                $parameters[$i] = $commandr_fs->_pwd_to_array($parameters[$i]);
-                if (!$commandr_fs->_is_file($parameters[$i])) {
-                    return ['', '', '', do_lang('NOT_A_FILE', integer_format($i + 1))];
-                }
-                $data = $commandr_fs->read_file($parameters[$i]);
-                $lines = explode("\n", $data);
-                foreach ($lines as $j => $line) {
-                    if ($line_numbers) {
-                        $output .= str_pad(strval($j + 1), strlen(strval(count($lines)))) . '  ';
-                    }
-                    $output .= $line . "\n";
-                }
-            }
-
-            return ['', '', $output, ''];
         }
+
+        if (!array_key_exists(0, $parameters)) {
+            return ['', '', '', do_lang('MISSING_PARAM', '1', 'cat')];
+        }
+
+        $line_numbers = array_key_exists('l', $options);
+
+        $output = '';
+        for ($i = 0; $i < count($parameters); $i++) {
+            $parameters[$i] = $commandr_fs->_pwd_to_array($parameters[$i]);
+            if (!$commandr_fs->_is_file($parameters[$i])) {
+                return ['', '', '', do_lang('NOT_A_FILE', integer_format($i + 1))];
+            }
+            $data = $commandr_fs->read_file($parameters[$i]);
+            $lines = explode("\n", $data);
+            foreach ($lines as $j => $line) {
+                if ($line_numbers) {
+                    $output .= str_pad(strval($j + 1), strlen(strval(count($lines)))) . '  ';
+                }
+                $output .= $line . "\n";
+            }
+        }
+
+        return ['', '', $output, ''];
     }
 }

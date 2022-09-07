@@ -2036,7 +2036,7 @@ function add_gallery_media_wrap(string $url, string $cat, int $member_id, int $a
             }
         }
 
-        return ['video', $id];
+        $ret = ['video', $id];
     } else {
         // Image...
 
@@ -2077,8 +2077,8 @@ function add_gallery_media_wrap(string $url, string $cat, int $member_id, int $a
             }
         }
 
-        return ['image', $id];
+        $ret = ['image', $id];
     }
 
-    return null;
+    return $ret;
 }

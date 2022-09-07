@@ -41,32 +41,32 @@ class Hook_commandr_command_themewizard_compute_equation
 
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('themewizard_compute_equation', ['h'], [true, true]), '', ''];
-        } else {
-            if (!array_key_exists(0, $parameters)) {
-                return ['', '', '', do_lang('MISSING_PARAM', '1', 'themewizard_compute_equation')];
-            }
-
-            $equation = $parameters[0];
-
-            $theme = array_key_exists(1, $parameters) ? $parameters[1] : 'default';
-
-            require_code('themewizard');
-            require_code('themes2');
-
-            $seed = find_theme_seed($theme);
-            $dark = find_theme_dark($theme);
-
-            list($colours, $landscape) = calculate_themewizard_css_colours($seed, $dark, $theme, 'equations');
-            $parsed_equation = parse_themewizard_css_colour_expression($equation);
-            if ($parsed_equation === null) {
-                return ['', '', '', '?'];
-            }
-            $answer = execute_themewizard_css_colour_expression($parsed_equation, $colours);
-            if ($answer === null) {
-                return ['', '', '', '?'];
-            }
-
-            return ['', '<span style="padding: 0.5em 0.8em; display: inline-block; background: white"><span style="border: 1px solid black; width: 2em; height: 1em; display: inline-block; background: #' . escape_html($answer) . '"></span></span>', '#' . $answer, ''];
         }
+
+        if (!array_key_exists(0, $parameters)) {
+            return ['', '', '', do_lang('MISSING_PARAM', '1', 'themewizard_compute_equation')];
+        }
+
+        $equation = $parameters[0];
+
+        $theme = array_key_exists(1, $parameters) ? $parameters[1] : 'default';
+
+        require_code('themewizard');
+        require_code('themes2');
+
+        $seed = find_theme_seed($theme);
+        $dark = find_theme_dark($theme);
+
+        list($colours, $landscape) = calculate_themewizard_css_colours($seed, $dark, $theme, 'equations');
+        $parsed_equation = parse_themewizard_css_colour_expression($equation);
+        if ($parsed_equation === null) {
+            return ['', '', '', '?'];
+        }
+        $answer = execute_themewizard_css_colour_expression($parsed_equation, $colours);
+        if ($answer === null) {
+            return ['', '', '', '?'];
+        }
+
+        return ['', '<span style="padding: 0.5em 0.8em; display: inline-block; background: white"><span style="border: 1px solid black; width: 2em; height: 1em; display: inline-block; background: #' . escape_html($answer) . '"></span></span>', '#' . $answer, ''];
     }
 }

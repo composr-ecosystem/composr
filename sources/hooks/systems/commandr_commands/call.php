@@ -35,18 +35,18 @@ class Hook_commandr_command_call
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('call', ['h'], [true]), '', ''];
-        } else {
-            if (!array_key_exists(0, $parameters)) {
-                return ['', '', '', do_lang('MISSING_PARAM', '1', 'call')];
-            }
-
-            $url = page_link_to_url($parameters[0]);
-            $stdcommand = [
-                'commandName' => 'openWindow',
-                'options' => ['url' => $url, 'windowName' => 'commandr_window1']
-            ];
-
-            return [$stdcommand, '', do_lang('SUCCESS'), ''];
         }
+
+        if (!array_key_exists(0, $parameters)) {
+            return ['', '', '', do_lang('MISSING_PARAM', '1', 'call')];
+        }
+
+        $url = page_link_to_url($parameters[0]);
+        $stdcommand = [
+            'commandName' => 'openWindow',
+            'options' => ['url' => $url, 'windowName' => 'commandr_window1']
+        ];
+
+        return [$stdcommand, '', do_lang('SUCCESS'), ''];
     }
 }

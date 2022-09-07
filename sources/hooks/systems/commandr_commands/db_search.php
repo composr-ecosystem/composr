@@ -39,100 +39,100 @@ class Hook_commandr_command_db_search
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('db_search', ['h'], [true, true]), '', ''];
-        } else {
-            if (!array_key_exists(0, $parameters)) {
-                return ['', '', '', do_lang('MISSING_PARAM', '1', 'db_search')];
-            }
-
-            $search = $parameters[0];
-
-            // Discern $fields and $replace...
-
-            $fields = [];
-            $replace = null;
-
-            $i = 1;
-            while (array_key_exists($i, $parameters)) {
-                $more_fields = $this->find_fields_of($parameters[$i]);
-                if (!empty($more_fields)) {
-                    $fields = array_merge(
-                        $fields,
-                        $more_fields
-                    );
-                } else {
-                    $replace = $parameters[$i];
-                }
-
-                $i++;
-            }
-
-            // Could not find any fields, revert to default types...
-
-            if (empty($fields)) {
-                $field_types = [
-                    'LONG_TRANS',
-                    'SHORT_TRANS',
-                    'LONG_TRANS__COMCODE',
-                    'SHORT_TRANS__COMCODE',
-                    'SHORT_TEXT',
-                    'LONG_TEXT',
-                    'ID_TEXT',
-                    'MINIID_TEXT',
-                    'IP',
-                    'LANGUAGE_NAME',
-                    'URLPATH' ,
-                ];
-                foreach ($field_types as $field_type) {
-                    $fields = array_merge($fields, $this->find_fields_of($field_type));
-                }
-            }
-
-            // Do search...
-
-            $sql_for = [];
-            $out = '';
-
-            foreach ($fields as $field) {
-                $db = get_db_for($field['m_table']);
-                $ofs = $db->query_select($field['m_table'], ['*'], [$field['m_name'] => $search]);
-
-                if (!empty($ofs)) {
-                    $out .= '<h2>' . escape_html($field['m_table']) . ':' . escape_html($field['m_name']) . '</h2>';
-
-                    foreach ($ofs as $of) {
-                        $out .= '<table class="results-table">';
-                        $val = null;
-                        foreach ($of as $key => $val) {
-                            if (!is_string($val)) {
-                                $val = strval($val);
-                            }
-                            $out .= '<tr><td>' . escape_html($key) . '</td><td>' . escape_html($val) . '</td></tr>';
-                        }
-                        $out .= '</table>';
-                    }
-
-                    $sql_for[] = [$db->get_table_prefix() . $field['m_table'], $field['m_name']];
-                }
-            }
-
-            if ($out == '') {
-                $out = do_lang('NONE');
-            }
-
-            // Generate replacement SQL...
-
-            if (($replace !== null) && (!empty($sql_for))) {
-                $_out = '';
-                foreach ($sql_for as $table_bits) {
-                    $_out .= escape_html('UPDATE ' . $table_bits[0] . ' SET ' . $table_bits[1] . '=' . db_function('REPLACE', [$table_bits[1], "'" . db_escape_string($search) . "'", "'" . db_escape_string($replace) . "'"]) . ';') . '<br />';
-                }
-                $out .= '<br /><br />' . do_lang('DATABASE_UPDATE_QUERY', $_out);
-            }
-
-            // ---
-
-            return ['', $out, '', ''];
         }
+
+        if (!array_key_exists(0, $parameters)) {
+            return ['', '', '', do_lang('MISSING_PARAM', '1', 'db_search')];
+        }
+
+        $search = $parameters[0];
+
+        // Discern $fields and $replace...
+
+        $fields = [];
+        $replace = null;
+
+        $i = 1;
+        while (array_key_exists($i, $parameters)) {
+            $more_fields = $this->find_fields_of($parameters[$i]);
+            if (!empty($more_fields)) {
+                $fields = array_merge(
+                    $fields,
+                    $more_fields
+                );
+            } else {
+                $replace = $parameters[$i];
+            }
+
+            $i++;
+        }
+
+        // Could not find any fields, revert to default types...
+
+        if (empty($fields)) {
+            $field_types = [
+                'LONG_TRANS',
+                'SHORT_TRANS',
+                'LONG_TRANS__COMCODE',
+                'SHORT_TRANS__COMCODE',
+                'SHORT_TEXT',
+                'LONG_TEXT',
+                'ID_TEXT',
+                'MINIID_TEXT',
+                'IP',
+                'LANGUAGE_NAME',
+                'URLPATH' ,
+            ];
+            foreach ($field_types as $field_type) {
+                $fields = array_merge($fields, $this->find_fields_of($field_type));
+            }
+        }
+
+        // Do search...
+
+        $sql_for = [];
+        $out = '';
+
+        foreach ($fields as $field) {
+            $db = get_db_for($field['m_table']);
+            $ofs = $db->query_select($field['m_table'], ['*'], [$field['m_name'] => $search]);
+
+            if (!empty($ofs)) {
+                $out .= '<h2>' . escape_html($field['m_table']) . ':' . escape_html($field['m_name']) . '</h2>';
+
+                foreach ($ofs as $of) {
+                    $out .= '<table class="results-table">';
+                    $val = null;
+                    foreach ($of as $key => $val) {
+                        if (!is_string($val)) {
+                            $val = strval($val);
+                        }
+                        $out .= '<tr><td>' . escape_html($key) . '</td><td>' . escape_html($val) . '</td></tr>';
+                    }
+                    $out .= '</table>';
+                }
+
+                $sql_for[] = [$db->get_table_prefix() . $field['m_table'], $field['m_name']];
+            }
+        }
+
+        if ($out == '') {
+            $out = do_lang('NONE');
+        }
+
+        // Generate replacement SQL...
+
+        if (($replace !== null) && (!empty($sql_for))) {
+            $_out = '';
+            foreach ($sql_for as $table_bits) {
+                $_out .= escape_html('UPDATE ' . $table_bits[0] . ' SET ' . $table_bits[1] . '=' . db_function('REPLACE', [$table_bits[1], "'" . db_escape_string($search) . "'", "'" . db_escape_string($replace) . "'"]) . ';') . '<br />';
+            }
+            $out .= '<br /><br />' . do_lang('DATABASE_UPDATE_QUERY', $_out);
+        }
+
+        // ---
+
+        return ['', $out, '', ''];
     }
 
     /**

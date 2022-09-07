@@ -417,6 +417,8 @@ function check_variable_list($LOCAL_VARIABLES, $offset = -1)
 
 function check_command($command, $depth, $function_guard = '', $nogo_parameters = [], $jump_structures = [])
 {
+    $ends_with_return = false;
+
     global $LOCAL_VARIABLES, $CURRENT_CLASS, $FUNCTION_SIGNATURES;
     foreach ($command as $i => $c) {
         if (empty($c)) {
@@ -499,6 +501,11 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
                 if (count($command) - 1 > $i) {
                     log_warning('There is unreachable code (after a return statement)', $c_pos);
                 }
+
+                if (!isset($command[$i + 1])) {
+                    $ends_with_return = true;
+                }
+
                 break;
 
             case 'SWITCH':
@@ -609,9 +616,18 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
                 }
 
                 // Check commands
-                check_command($c[2], $depth, $temp_function_guard, $nogo_parameters, $jump_structures);
+                $ends_with_returns = [];
+                $ends_with_returns[] = check_command($c[2], $depth + 1, $temp_function_guard, $nogo_parameters, $jump_structures);
                 if ($c[0] == 'IF_ELSE') {
-                    check_command($c[3], $depth, $function_guard, $nogo_parameters, $jump_structures);
+                    $ends_with_returns[] = check_command($c[3], $depth + 1, $function_guard, $nogo_parameters, $jump_structures);
+
+                    if (array_unique($ends_with_returns) == [true]) {
+                        if ($depth == 0) {
+                            log_warning('All branches of a top level if statement return - this is a code smell', $c_pos);
+                        } else {
+                            $ends_with_return = true;
+                        }
+                    }
                 }
 
                 break;
@@ -794,6 +810,8 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
             check_command([$c[count($c) - 1]], $depth, $function_guard, $nogo_parameters, $jump_structures);
         }
     }
+
+    return $ends_with_return;
 }
 
 function process_unused_return($type, $c_pos)

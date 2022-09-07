@@ -37,38 +37,38 @@ class Hook_commandr_command_sql_dump
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('sql_dump', ['h'], [true, true]), '', ''];
-        } else {
-            $intended_db_type = empty($parameters[0]) ? get_db_type() : $parameters[0];
-
-            if (count($parameters) > 2) {
-                $only = [];
-                for ($i = 2; $i < count($parameters); $i++) {
-                    $only[] = $parameters[$i];
-                }
-            } else {
-                $only = null;
-            }
-
-            // Where to save dump
-            if (isset($parameters[1])) {
-                $out_filename = $parameters[1];
-            } else {
-                $out_filename = 'dump_' . uniqid('', true) . '.sql';
-            }
-            $out_file_path = get_custom_file_base() . '/exports/backups/' . $out_filename;
-
-            // Generate dump
-            require_code('database_relations');
-            require_code('files');
-            $out_file = cms_fopen_text_write($out_file_path);
-            get_sql_dump($out_file, true, false, [], $only, null, $intended_db_type);
-            fclose($out_file);
-            sync_file($out_file_path);
-            fix_permissions($out_file_path);
-
-            $out = do_lang('SQL_DUMP_SAVED_TO', escape_html('exports/backups/' . $out_filename), escape_html(get_custom_base_url() . '/exports/backups/' . rawurlencode($out_filename)));
-
-            return ['', $out, '', ''];
         }
+
+        $intended_db_type = empty($parameters[0]) ? get_db_type() : $parameters[0];
+
+        if (count($parameters) > 2) {
+            $only = [];
+            for ($i = 2; $i < count($parameters); $i++) {
+                $only[] = $parameters[$i];
+            }
+        } else {
+            $only = null;
+        }
+
+        // Where to save dump
+        if (isset($parameters[1])) {
+            $out_filename = $parameters[1];
+        } else {
+            $out_filename = 'dump_' . uniqid('', true) . '.sql';
+        }
+        $out_file_path = get_custom_file_base() . '/exports/backups/' . $out_filename;
+
+        // Generate dump
+        require_code('database_relations');
+        require_code('files');
+        $out_file = cms_fopen_text_write($out_file_path);
+        get_sql_dump($out_file, true, false, [], $only, null, $intended_db_type);
+        fclose($out_file);
+        sync_file($out_file_path);
+        fix_permissions($out_file_path);
+
+        $out = do_lang('SQL_DUMP_SAVED_TO', escape_html('exports/backups/' . $out_filename), escape_html(get_custom_base_url() . '/exports/backups/' . rawurlencode($out_filename)));
+
+        return ['', $out, '', ''];
     }
 }

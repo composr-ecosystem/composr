@@ -35,27 +35,27 @@ class Hook_commandr_command_edit
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('edit', ['h'], [true]), '', ''];
-        } else {
-            // Show the editing UI
-            if (!array_key_exists(0, $parameters)) {
-                return ['', '', '', do_lang('MISSING_PARAM', '1', 'edit')];
-            } else {
-                $parameters[0] = $commandr_fs->_pwd_to_array($parameters[0]);
-            }
-
-            if (!$commandr_fs->_is_file($parameters[0])) {
-                return ['', '', '', do_lang('NOT_A_FILE', '1')];
-            }
-
-            $file_contents = $commandr_fs->read_file($parameters[0]);
-            $parameters[0] = $commandr_fs->pwd_to_string($parameters[0]);
-
-            return ['', do_template('COMMANDR_EDIT', [
-                '_GUID' => '8bbf2f9ef545a92b6865c35ed27cd6d4',
-                'FILE' => $parameters[0],
-                'SUBMIT_URL' => build_url(['page' => 'admin_commandr', 'command' => 'write "' . $parameters[0] . '" "{0}" < :echo addslashes(get_param_string(\'edit_content\'));'], get_module_zone('admin_commandr')),
-                'FILE_CONTENTS' => $file_contents,
-            ])];
         }
+
+        // Show the editing UI
+        if (!array_key_exists(0, $parameters)) {
+            return ['', '', '', do_lang('MISSING_PARAM', '1', 'edit')];
+        } else {
+            $parameters[0] = $commandr_fs->_pwd_to_array($parameters[0]);
+        }
+
+        if (!$commandr_fs->_is_file($parameters[0])) {
+            return ['', '', '', do_lang('NOT_A_FILE', '1')];
+        }
+
+        $file_contents = $commandr_fs->read_file($parameters[0]);
+        $parameters[0] = $commandr_fs->pwd_to_string($parameters[0]);
+
+        return ['', do_template('COMMANDR_EDIT', [
+            '_GUID' => '8bbf2f9ef545a92b6865c35ed27cd6d4',
+            'FILE' => $parameters[0],
+            'SUBMIT_URL' => build_url(['page' => 'admin_commandr', 'command' => 'write "' . $parameters[0] . '" "{0}" < :echo addslashes(get_param_string(\'edit_content\'));'], get_module_zone('admin_commandr')),
+            'FILE_CONTENTS' => $file_contents,
+        ])];
     }
 }

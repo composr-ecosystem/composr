@@ -41,71 +41,71 @@ class Hook_commandr_command_themewizard_find_color
 
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('themewizard_find_color', ['h'], [true, true]), '', ''];
-        } else {
-            if (!array_key_exists(0, $parameters)) {
-                return ['', '', '', do_lang('MISSING_PARAM', '1', 'themewizard_find_color')];
-            }
-
-            $input = $parameters[0];
-            if (substr($input, 0, 1) == '#') {
-                $input = substr($input, 1);
-            }
-            if (strlen($input) == 3) {
-                $input = $input[0] . $input[0] . $input[1] . $input[1] . $input[2] . $input[2];
-            }
-            list($ir, $ig, $ib) = [hexdec(substr($input, 0, 2)), hexdec(substr($input, 2, 2)), hexdec(substr($input, 4, 2))];
-
-            $theme = array_key_exists(1, $parameters) ? $parameters[1] : 'default';
-
-            $results = [];
-
-            require_code('files2');
-            $d = get_directory_contents(get_file_base() . '/themes/' . filter_naughty($theme) . '/css', '', 0, true, true, ['css']);
-            foreach ($d as $f) {
-                $c = cms_file_get_contents_safe(get_file_base() . '/themes/' . filter_naughty($theme) . '/css/' . $f, FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
-                $matches = [];
-                $num_matches = preg_match_all('/#([A-Za-f\d]{6}).*\{\$,(.*)\}/', $c, $matches);
-                $matches2 = [];
-                $num_matches2 = preg_match_all('/\{\$THEMEWIZARD_COLOR,\#([A-Za-f\d]{6}),(.*)\}/', $c, $matches2);
-                for ($i = 0; $i < $num_matches2; $i++) {
-                    $matches[0][$num_matches] = $matches2[0][$i];
-                    $matches[1][$num_matches] = $matches2[1][$i];
-                    $matches[2][$num_matches] = $matches2[2][$i];
-                    $num_matches++;
-                }
-                if ($num_matches != 0) {
-                    for ($i = 0; $i < $num_matches; $i++) {
-                        $color = $matches[1][$i];
-                        $equation = $matches[2][$i];
-                        list($r, $g, $b) = [hexdec(substr($color, 0, 2)), hexdec(substr($color, 2, 2)), hexdec(substr($color, 4, 2))];
-                        $dist = sqrt(pow(floatval($r - $ir), 2.0) + pow(floatval($g - $ig), 2.0) + pow(floatval($b - $ib), 2.0));
-                        $results[] = [$color, $dist, $equation, $f, [$r, $g, $b]];
-                    }
-                }
-            }
-
-            sort_maps_by($results, 1);
-            $results = array_reverse($results);
-
-            $results_printed = '';
-            foreach ($results as $i => $result) {
-                if ($i < count($results) - 10) {
-                    continue;
-                }
-
-                $results_printed .= '#' . $result[0];
-                $results_printed .= ' (' . $result[2] . ')';
-                $results_printed .= ' [';
-                if ($result[1] == 0.0) {
-                    $results_printed .= '=';
-                } else {
-                    $results_printed .= '-' . float_format($result[1]);
-                }
-                $results_printed .= ']';
-                $results_printed .= "\n";
-            }
-
-            return ['', '', $results_printed, ''];
         }
+
+        if (!array_key_exists(0, $parameters)) {
+            return ['', '', '', do_lang('MISSING_PARAM', '1', 'themewizard_find_color')];
+        }
+
+        $input = $parameters[0];
+        if (substr($input, 0, 1) == '#') {
+            $input = substr($input, 1);
+        }
+        if (strlen($input) == 3) {
+            $input = $input[0] . $input[0] . $input[1] . $input[1] . $input[2] . $input[2];
+        }
+        list($ir, $ig, $ib) = [hexdec(substr($input, 0, 2)), hexdec(substr($input, 2, 2)), hexdec(substr($input, 4, 2))];
+
+        $theme = array_key_exists(1, $parameters) ? $parameters[1] : 'default';
+
+        $results = [];
+
+        require_code('files2');
+        $d = get_directory_contents(get_file_base() . '/themes/' . filter_naughty($theme) . '/css', '', 0, true, true, ['css']);
+        foreach ($d as $f) {
+            $c = cms_file_get_contents_safe(get_file_base() . '/themes/' . filter_naughty($theme) . '/css/' . $f, FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
+            $matches = [];
+            $num_matches = preg_match_all('/#([A-Za-f\d]{6}).*\{\$,(.*)\}/', $c, $matches);
+            $matches2 = [];
+            $num_matches2 = preg_match_all('/\{\$THEMEWIZARD_COLOR,\#([A-Za-f\d]{6}),(.*)\}/', $c, $matches2);
+            for ($i = 0; $i < $num_matches2; $i++) {
+                $matches[0][$num_matches] = $matches2[0][$i];
+                $matches[1][$num_matches] = $matches2[1][$i];
+                $matches[2][$num_matches] = $matches2[2][$i];
+                $num_matches++;
+            }
+            if ($num_matches != 0) {
+                for ($i = 0; $i < $num_matches; $i++) {
+                    $color = $matches[1][$i];
+                    $equation = $matches[2][$i];
+                    list($r, $g, $b) = [hexdec(substr($color, 0, 2)), hexdec(substr($color, 2, 2)), hexdec(substr($color, 4, 2))];
+                    $dist = sqrt(pow(floatval($r - $ir), 2.0) + pow(floatval($g - $ig), 2.0) + pow(floatval($b - $ib), 2.0));
+                    $results[] = [$color, $dist, $equation, $f, [$r, $g, $b]];
+                }
+            }
+        }
+
+        sort_maps_by($results, 1);
+        $results = array_reverse($results);
+
+        $results_printed = '';
+        foreach ($results as $i => $result) {
+            if ($i < count($results) - 10) {
+                continue;
+            }
+
+            $results_printed .= '#' . $result[0];
+            $results_printed .= ' (' . $result[2] . ')';
+            $results_printed .= ' [';
+            if ($result[1] == 0.0) {
+                $results_printed .= '=';
+            } else {
+                $results_printed .= '-' . float_format($result[1]);
+            }
+            $results_printed .= ']';
+            $results_printed .= "\n";
+        }
+
+        return ['', '', $results_printed, ''];
     }
 }

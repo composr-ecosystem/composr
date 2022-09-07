@@ -272,46 +272,8 @@ class Module_login
         $feedback = $this->feedback;
 
         $id = $feedback['id'];
-        if ($id !== null) {
-            $url = enforce_sessioned_url(either_param_string('redirect', false, INPUT_FILTER_URL_INTERNAL)); // Now that we're logged in, we need to ensure the redirect URL contains our new session ID
 
-            if (!has_interesting_post_fields()) {
-                $page_after_login = get_option('page_after_login');
-                if ($page_after_login != '') {
-                    if (strpos($page_after_login, ':') === false) {
-                        $zone = get_page_zone($page_after_login, false);
-                        if ($zone === null) {
-                            $zone = 'site';
-                        }
-                        $url = static_evaluate_tempcode(build_url(['page' => $page_after_login], $zone));
-                    } else {
-                        $url = page_link_to_url($page_after_login);
-                    }
-                }
-
-                require_code('site2');
-                assign_refresh($url, 0.0); // redirect_screen not used because there is already a legitimate output screen happening
-                $post = new Tempcode();
-                $refresh = new Tempcode();
-            } else {
-                $post = build_keep_post_fields($this->fields_to_not_relay);
-                $redirect_passon = post_param_string('redirect_passon', null, INPUT_FILTER_URL_INTERNAL & ~INPUT_FILTER_TRUSTED_SITES); // redirect_passon is used when there are POST fields, as it says what the redirect will be on this post-login-check hop (post fields prevent us doing an immediate HTTP-level redirect).
-                if ($redirect_passon !== null) {
-                    $post->attach(form_input_hidden('redirect', static_evaluate_tempcode(protect_url_parameter(enforce_sessioned_url($redirect_passon)))));
-                }
-                $refresh = do_template('JS_REFRESH', ['_GUID' => 'c7d2f9e7a2cc637f3cf9ac4d1cf97eca', 'FORM_NAME' => 'redir-form']);
-            }
-            delete_cache_entry('side_users_online');
-
-            return do_template('REDIRECT_POST_METHOD_SCREEN', [
-                '_GUID' => '82e056de9150bbed185120eac3571f40',
-                'REFRESH' => $refresh,
-                'TITLE' => $this->title,
-                'TEXT' => do_lang_tempcode('_LOGIN_TEXT'),
-                'URL' => $url,
-                'POST' => $post,
-            ]);
-        } else {
+        if ($id === null) {
             $text = $feedback['error'];
 
             if ($text->evaluate() == do_lang('YOU_ARE_BANNED')) {
@@ -341,6 +303,45 @@ class Module_login
 
             return $this->login_before();
         }
+
+        $url = enforce_sessioned_url(either_param_string('redirect', false, INPUT_FILTER_URL_INTERNAL)); // Now that we're logged in, we need to ensure the redirect URL contains our new session ID
+
+        if (!has_interesting_post_fields()) {
+            $page_after_login = get_option('page_after_login');
+            if ($page_after_login != '') {
+                if (strpos($page_after_login, ':') === false) {
+                    $zone = get_page_zone($page_after_login, false);
+                    if ($zone === null) {
+                        $zone = 'site';
+                    }
+                    $url = static_evaluate_tempcode(build_url(['page' => $page_after_login], $zone));
+                } else {
+                    $url = page_link_to_url($page_after_login);
+                }
+            }
+
+            require_code('site2');
+            assign_refresh($url, 0.0); // redirect_screen not used because there is already a legitimate output screen happening
+            $post = new Tempcode();
+            $refresh = new Tempcode();
+        } else {
+            $post = build_keep_post_fields($this->fields_to_not_relay);
+            $redirect_passon = post_param_string('redirect_passon', null, INPUT_FILTER_URL_INTERNAL & ~INPUT_FILTER_TRUSTED_SITES); // redirect_passon is used when there are POST fields, as it says what the redirect will be on this post-login-check hop (post fields prevent us doing an immediate HTTP-level redirect).
+            if ($redirect_passon !== null) {
+                $post->attach(form_input_hidden('redirect', static_evaluate_tempcode(protect_url_parameter(enforce_sessioned_url($redirect_passon)))));
+            }
+            $refresh = do_template('JS_REFRESH', ['_GUID' => 'c7d2f9e7a2cc637f3cf9ac4d1cf97eca', 'FORM_NAME' => 'redir-form']);
+        }
+        delete_cache_entry('side_users_online');
+
+        return do_template('REDIRECT_POST_METHOD_SCREEN', [
+            '_GUID' => '82e056de9150bbed185120eac3571f40',
+            'REFRESH' => $refresh,
+            'TITLE' => $this->title,
+            'TEXT' => do_lang_tempcode('_LOGIN_TEXT'),
+            'URL' => $url,
+            'POST' => $post,
+        ]);
     }
 
     /**

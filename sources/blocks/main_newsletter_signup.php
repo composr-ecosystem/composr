@@ -154,24 +154,24 @@ PHP;
                 'PASSWORD' => $password,
                 'PATH_EXISTS' => $path_exists,
             ]);
-        } else {
-            // Form...
-
-            if ($button_only) {
-                $url = build_url(['page' => 'newsletter'], get_module_zone('newsletter'));
-            } else {
-                $url = get_self_url();
-            }
-
-            return do_template('BLOCK_MAIN_NEWSLETTER_SIGNUP', [
-                '_GUID' => 'c0e6f9cdab3d624bf3d27b745e3de38f',
-                'BLOCK_PARAMS' => block_params_arr_to_str($map),
-                'BLOCK_ID' => $block_id,
-                'NEWSLETTER_TITLE' => $newsletter_title,
-                'NID' => strval($newsletter_id),
-                'URL' => $url,
-                'BUTTON_ONLY' => $button_only,
-            ]);
         }
+
+        // Form...
+
+        if ($button_only) {
+            $url = build_url(['page' => 'newsletter'], get_module_zone('newsletter'));
+        } else {
+            $url = get_self_url();
+        }
+
+        return do_template('BLOCK_MAIN_NEWSLETTER_SIGNUP', [
+            '_GUID' => 'c0e6f9cdab3d624bf3d27b745e3de38f',
+            'BLOCK_PARAMS' => block_params_arr_to_str($map),
+            'BLOCK_ID' => $block_id,
+            'NEWSLETTER_TITLE' => $newsletter_title,
+            'NID' => strval($newsletter_id),
+            'URL' => $url,
+            'BUTTON_ONLY' => $button_only,
+        ]);
     }
 }

@@ -35,24 +35,24 @@ class Hook_commandr_command_cd
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('cd', ['h'], [true]), '', ''];
-        } else {
-            if (!array_key_exists(0, $parameters)) {
-                $pwd = $commandr_fs->print_working_directory(true);
-                array_pop($pwd);
-                $parameters[0] = $pwd;
-            } else {
-                if ($parameters[0] == '~') {
-                    $parameters[0] = '/home'; // Not really a part of the architecture, but handy
-                }
-                $parameters[0] = $commandr_fs->_pwd_to_array($parameters[0]);
-            }
-
-            if (!$commandr_fs->_is_dir($parameters[0])) {
-                return ['', '', '', do_lang('NOT_A_DIR', '1')];
-            }
-
-            $commandr_fs->change_directory($parameters[0]);
-            return ['', '', $commandr_fs->print_working_directory(), ''];
         }
+
+        if (!array_key_exists(0, $parameters)) {
+            $pwd = $commandr_fs->print_working_directory(true);
+            array_pop($pwd);
+            $parameters[0] = $pwd;
+        } else {
+            if ($parameters[0] == '~') {
+                $parameters[0] = '/home'; // Not really a part of the architecture, but handy
+            }
+            $parameters[0] = $commandr_fs->_pwd_to_array($parameters[0]);
+        }
+
+        if (!$commandr_fs->_is_dir($parameters[0])) {
+            return ['', '', '', do_lang('NOT_A_DIR', '1')];
+        }
+
+        $commandr_fs->change_directory($parameters[0]);
+        return ['', '', $commandr_fs->print_working_directory(), ''];
     }
 }
