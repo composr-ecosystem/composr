@@ -284,6 +284,7 @@ class Hook_addon_registry_quizzes
         $content_surveys = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
             $link = do_lorem_template('QUIZ_BOX', [
+                'GIVE_CONTEXT' => true,
                 'TYPE' => lorem_word(),
                 '_TYPE' => lorem_word(),
                 'DATE' => placeholder_date(),

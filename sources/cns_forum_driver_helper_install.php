@@ -63,6 +63,53 @@ function _helper_install_create_custom_field(object $this_ref, string $name, int
 }
 
 /**
+ * Edit the specified custom profile field (some forums implemented this using proper Custom Profile Fields, others through adding a new field).
+ *
+ * @param  object $this_ref Link to the real forum driver
+ * @param  ID_TEXT $old_name The name of the custom field to modify
+ * @param  string $name The new name of the new custom field
+ * @param  integer $length The length of the new custom field
+ * @param  BINARY $locked Whether the field is locked
+ * @param  BINARY $viewable Whether the field is for viewing
+ * @param  BINARY $settable Whether the field is for setting
+ * @param  BINARY $required Whether the field is required
+ * @param  string $description Description
+ * @param  string $type The field type
+ * @param  BINARY $encrypted Whether the field is encrypted
+ * @param  ?string $default Default field value (null: standard for field type)
+ * @param  SHORT_TEXT $options Field options
+ * @param  BINARY $include_in_main_search Whether to include in main keyword search
+ * @param  BINARY $allow_template_search Whether to allow template search
+ * @param  ID_TEXT $icon Whether it is required that every member have this field filled in
+ * @param  ID_TEXT $section Whether it is required that every member have this field filled in
+ * @param  LONG_TEXT $tempcode Whether it is required that every member have this field filled in
+ * @param  ID_TEXT $autofill_type Autofill field name from https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofill-field
+ * @param  ID_TEXT $autofill_hint Autofill hint: '' or 'shipping' or 'billing'
+ * @return boolean Whether the custom field was edited successfully
+ *
+ * @ignore
+ */
+function _helper_install_edit_custom_field(object $this_ref, string $old_name, string $name, int $length, int $locked = 1, int $viewable = 0, int $settable = 0, int $required = 0, string $description = '', string $type = 'long_text', int $encrypted = 0, ?string $default = null, string $options = '', int $include_in_main_search = 0, int $allow_template_search = 0, string $icon = '', string $section = '', string $tempcode = '', string $autofill_type = '', string $autofill_hint = '') : bool
+{
+    cns_require_all_forum_stuff();
+    require_code('cns_members_action');
+
+    $old_name = 'cms_' . $old_name;
+    $name = 'cms_' . $name;
+
+    $id = $this_ref->db->query_select_value_if_there('f_custom_fields', 'id', [$this_ref->db->translate_field_ref('cf_name') => $old_name]);
+    if ($id === null) {
+        return false;
+    } else {
+        if ($default === null) {
+            $default = (strpos($name, 'points') !== false) ? '0' : '';
+        }
+        cns_edit_custom_field($id, $name, $description, $default, $viewable, $viewable, $settable, $encrypted, $required, 0, 0, 0, '', $type, 0, $options, $include_in_main_search, $allow_template_search, $icon, $section, $tempcode, $autofill_type, $autofill_hint);
+        return true;
+    }
+}
+
+/**
  * Get an array of attributes to take in from the installer. Almost all forums require a table prefix, which the requirement there-of is defined through this function.
  * The attributes have 4 values in an array:
  * - name, the name of the attribute for _config.php

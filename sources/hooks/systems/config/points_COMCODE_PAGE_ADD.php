@@ -34,7 +34,7 @@ class Hook_config_points_COMCODE_PAGE_ADD
             'human_name' => 'COMCODE_PAGE_ADD',
             'type' => 'integer',
             'category' => 'POINTS',
-            'group' => 'COUNT_POINTS_GIVEN',
+            'group' => 'COUNT_POINTS_SENT',
             'explanation' => 'CONFIG_OPTION_points_COMCODE_PAGE_ADD',
             'shared_hosting_restricted' => '0',
             'list_options' => '',

@@ -44,39 +44,39 @@ class Hook_rss_points
             return null;
         }
 
-        $filters = selectcode_to_sqlfragment($_filters, 'gift_to', 'f_members', null, 'gift_to', 'id', true, true); // Note that the parameters are fiddled here so that category-set and record-set are the same, yet SQL is returned to deal in an entirely different record-set (entries' record-set)
+        $filters = selectcode_to_sqlfragment($_filters, 'recipient_id', 'f_members', null, 'recipient_id', 'id', true, true); // Note that the parameters are fiddled here so that category-set and record-set are the same, yet SQL is returned to deal in an entirely different record-set (entries' record-set)
 
         require_lang('points');
+        require_code('points');
 
         $content = new Tempcode();
-        $rows = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'gifts WHERE ' . $filters . ' AND date_and_time>' . strval($cutoff) . ' ORDER BY date_and_time DESC', $max);
+        $rows = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'points_ledger WHERE ' . $filters . ' AND date_and_time>' . strval($cutoff) . ' ORDER BY date_and_time DESC', $max);
         foreach ($rows as $row) {
             $id = strval($row['id']);
 
             $author = '';
             if ($row['anonymous'] == 0) {
-                $author = $GLOBALS['FORUM_DRIVER']->get_username($row['gift_from'], false, USERNAME_DEFAULT_BLANK);
+                $author = $GLOBALS['FORUM_DRIVER']->get_username($row['sender_id'], false, USERNAME_DEFAULT_BLANK);
             }
 
             $news_date = date($date_string, $row['date_and_time']);
             $edit_date = '';
 
-            $to = $GLOBALS['FORUM_DRIVER']->get_username($row['gift_to']);
-            $news_title = xmlentities(do_lang('POINTS_RSS_LINE', $to, integer_format($row['amount'])));
+            $to = $GLOBALS['FORUM_DRIVER']->get_username($row['recipient_id']);
+            $news_title = xmlentities(do_lang('POINTS_RSS_LINE', $to, integer_format($row['amount_gift_points'] + $row['amount_points'])));
             $summary = xmlentities(get_translated_text($row['reason']));
             $news = '';
 
             $category = '';
             $category_raw = '';
 
-            $view_url = build_url(['page' => 'points', 'type' => 'member', 'id' => $row['gift_to']], get_module_zone('points'), [], false, false, true);
+            $view_url = points_url($row['recipient_id'], true);
 
             $if_comments = new Tempcode();
 
             $content->attach(do_template($prefix . 'ENTRY', ['VIEW_URL' => $view_url, 'SUMMARY' => $summary, 'EDIT_DATE' => $edit_date, 'IF_COMMENTS' => $if_comments, 'TITLE' => $news_title, 'CATEGORY_RAW' => $category_raw, 'CATEGORY' => $category, 'AUTHOR' => $author, 'ID' => $id, 'NEWS' => $news, 'DATE' => $news_date], null, false, null, '.xml', 'xml'));
         }
 
-        require_lang('points');
         return [$content, do_lang('POINTS')];
     }
 }

@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_points_show_personal_stats_points_used
+class Hook_config_points_show_personal_stats_gift_points_sent
 {
     /**
      * Gets the details relating to the config option.
@@ -31,11 +31,11 @@ class Hook_config_points_show_personal_stats_points_used
     public function get_details() : ?array
     {
         return [
-            'human_name' => 'COUNT_POINTS_USED',
+            'human_name' => 'COUNT_GIFT_POINTS_SENT',
             'type' => 'tick',
             'category' => 'BLOCKS',
             'group' => 'PERSONAL_BLOCK',
-            'explanation' => 'CONFIG_OPTION_points_show_personal_stats_points_used',
+            'explanation' => 'CONFIG_OPTION_points_show_personal_stats_gift_points_sent',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,

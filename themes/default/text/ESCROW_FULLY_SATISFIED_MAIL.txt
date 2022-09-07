@@ -1,0 +1,5 @@
+{!ESCROW_TRANSACTIONS_MAIL_INTRO,[page="_SEARCH:points:view_escrow:{ID@}"]{REASON@}[/page]}
+
+{!SENDER@}: [page="_SEARCH:members:member:{ESCROW_FROM#}"]{$USERNAME@,{ESCROW_FROM}}[/page]
+{!RECIPIENT@}: [page="_SEARCH:members:member:{ESCROW_TO#}"]{$USERNAME@,{ESCROW_TO}}[/page]
+{!POINTS@}: [b]{AMOUNT@}[/b]

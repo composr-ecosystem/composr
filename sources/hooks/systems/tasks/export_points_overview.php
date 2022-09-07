@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_task_export_points_log
+class Hook_task_export_points_overview
 {
     /**
      * Run the task hook.
@@ -46,7 +46,7 @@ class Hook_task_export_points_log
         if ($file_type === null) {
             $file_type = spreadsheet_write_default();
         }
-        $filename = 'points_log_' . date('Y-m-d', $from) . '--' . date('Y-m-d', $to) . '.' . $file_type;
+        $filename = 'points_overview_' . date('Y-m-d', $from) . '--' . date('Y-m-d', $to) . '.' . $file_type;
         $outfile_path = null;
         $sheet_writer = spreadsheet_open_write($outfile_path, $filename);
 

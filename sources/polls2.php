@@ -352,7 +352,7 @@ function set_poll(int $id)
         require_code('points2');
         $points_chosen = intval(get_option('points_CHOOSE_POLL'));
         if ($points_chosen != 0) {
-            system_gift_transfer(do_lang('POLL_CHOSEN'), $points_chosen, $submitter);
+            points_credit_member($submitter, do_lang('POLL_CHOSEN'), $points_chosen, 0, 0, true, 0, ['choose', 'poll', strval($id)]);
         }
     }
 

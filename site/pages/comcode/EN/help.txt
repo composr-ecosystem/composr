@@ -18,7 +18,7 @@ Every logged-in member can gain points as they contribute to our community, in w
 
 Products that require manual setup will usually only be charged for upon activation, not at point of sale.{+END}
 The points system extends further than this though, as members have the ability to give each-other points.{+START,IF,{$EQ,{$CONFIG_OPTION,enable_gift_points},1}} Members can only give each other points via gift points. Gift points are given out to all our members at a rate of 1 per day for every day they are a member but are useless until they are given to people who you feel have done you or the community a good service. It's like a quota of "thank you"s that you can give out.{+END} For example, somebody might release some works to the community and then members might give them a whole load of points for it, giving them credit for their work.
-To give points to a member you visit the points tab of their profile. The point gift will then show on that tab and will also count towards their point total (which they can use to buy things with).
+To send points to a member you visit the points tab of their profile. The point gift will then show on that tab and will also count towards their point total (which they can use to buy things with).
 {+START,IF,{$EQ,{$CONFIG_OPTION,enable_gift_points},1}}Occasionally upon giving a gift, you will be awarded points yourself, as a random award for your consideration.{+END}
 
 Members of staff have the ability to give any number of points they like to people, including huge numbers, or even negative numbers. Please the staff and you could be awarded massively in points; abuse our systems and you could be penalised.

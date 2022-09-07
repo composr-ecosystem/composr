@@ -31,26 +31,26 @@ $block_id = get_block_id($map);
 
 $stars = [];
 
-$sql = 'SELECT gift_to,SUM(amount) as cnt FROM ' . get_table_prefix() . 'gifts g WHERE ';
-$sql .= $GLOBALS['SITE_DB']->translate_field_ref('reason') . ' LIKE \'' . db_encode_like($map['param'] . ': %') . '\' AND gift_from<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
-$sql .= ' GROUP BY gift_to ORDER BY cnt DESC';
-$gifts = $GLOBALS['SITE_DB']->query($sql, 10, 0, false, false, ['reason' => 'SHORT_TRANS']);
+$sql = 'SELECT recipient_id,SUM(amount_gift_points+amount_points) as cnt FROM ' . get_table_prefix() . 'points_ledger g WHERE ';
+$sql .= $GLOBALS['SITE_DB']->translate_field_ref('reason') . ' LIKE \'' . db_encode_like($map['param'] . ': %') . '\' AND sender_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
+$sql .= ' GROUP BY recipient_id ORDER BY cnt DESC';
+$rows = $GLOBALS['SITE_DB']->query($sql, 10, 0, false, false, ['reason' => 'SHORT_TRANS']);
 
-if (empty($gifts) && $GLOBALS['DEV_MODE']) {
-    $gifts[] = ['gift_to' => 2, 'cnt' => 123];
-    $gifts[] = ['gift_to' => 3, 'cnt' => 7334];
+if (empty($rows) && $GLOBALS['DEV_MODE']) {
+    $rows[] = ['recipient_id' => 2, 'cnt' => 123];
+    $rows[] = ['recipient_id' => 3, 'cnt' => 7334];
 }
 
 $count = 0;
-foreach ($gifts as $gift) {
-    $member_id = $gift['gift_to'];
+foreach ($rows as $row) {
+    $member_id = $row['recipient_id'];
     $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id, true, USERNAME_DEFAULT_NULL);
     if ($username !== null) {
         $url = $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, true);
         $avatar_url = $GLOBALS['FORUM_DRIVER']->get_member_avatar_url($member_id);
         $just_member_row = db_map_restrict($GLOBALS['FORUM_DRIVER']->get_member_row($member_id), ['id', 'm_signature']);
         $signature = get_translated_tempcode('f_members', $just_member_row, 'm_signature', $GLOBALS['FORUM_DB']);
-        $points = $gift['cnt'];
+        $points = $row['cnt'];
         $rank = get_translated_text(cns_get_group_property(cns_get_member_primary_group($member_id), 'name'), $GLOBALS['FORUM_DB']);
 
         $stars[] = [

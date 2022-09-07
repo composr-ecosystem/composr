@@ -190,6 +190,36 @@ class Forum_driver_cns extends Forum_driver_base
     }
 
     /**
+     * Edit the specified custom field in the forum (some forums implemented this using proper Custom Profile Fields, others through adding a new field).
+     *
+     * @param  string $old_name The name of the existing custom field to edit
+     * @param  string $name The new name of the custom field
+     * @param  integer $length The length of the custom field (ignored for Conversr, $type used instead)
+     * @param  BINARY $locked Whether the field is locked
+     * @param  BINARY $viewable Whether the field is for viewing
+     * @param  BINARY $settable Whether the field is for setting
+     * @param  BINARY $required Whether the field is required
+     * @param  string $description Description
+     * @param  string $type The field type
+     * @param  BINARY $encrypted Whether the field is encrypted
+     * @param  ?string $default Default field value (null: standard for field type)
+     * @param  SHORT_TEXT $options Field options
+     * @param  BINARY $include_in_main_search Whether to include in main keyword search
+     * @param  BINARY $allow_template_search Whether to allow template search
+     * @param  ID_TEXT $icon Whether it is required that every member have this field filled in
+     * @param  ID_TEXT $section Whether it is required that every member have this field filled in
+     * @param  LONG_TEXT $tempcode Whether it is required that every member have this field filled in
+     * @param  ID_TEXT $autofill_type Autofill field name from https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofill-field
+     * @param  ID_TEXT $autofill_hint Autofill hint: '' or 'shipping' or 'billing'
+     * @return boolean Whether the custom field was edited successfully
+     */
+    public function install_edit_custom_field(string $old_name, string $name, int $length, int $locked = 1, int $viewable = 0, int $settable = 0, int $required = 0, string $description = '', string $type = 'long_text', int $encrypted = 0, ?string $default = null, string $options = '', int $include_in_main_search = 0, int $allow_template_search = 0, string $icon = '', string $section = '', string $tempcode = '', string $autofill_type = '', string $autofill_hint = '') : bool
+    {
+        require_code('cns_forum_driver_helper_install');
+        return _helper_install_edit_custom_field($this, $old_name, $name, $length, $locked, $viewable, $settable, $required, $description, $type, $encrypted, $default, $options, $include_in_main_search, $allow_template_search, $icon, $section, $tempcode, $autofill_type, $autofill_hint);
+    }
+
+    /**
      * Get an array of attributes to take in from the installer. Almost all forums require a table prefix, which the requirement there-of is defined through this function.
      * The attributes have 4 values in an array:
      * - name, the name of the attribute for _config.php
@@ -588,10 +618,16 @@ class Forum_driver_cns extends Forum_driver_base
      * @param  MEMBER $id The member ID
      * @param  boolean $tempcode_okay Whether it is okay to return the result using Tempcode (more efficient, and allows keep_* parameters to propagate which you almost certainly want!)
      * @param  ?string $username Username, passed for performance reasons (null: look it up)
+     * @param  array $hints Extra parameters for the URL
      * @return mixed The URL to the member profile
      */
-    protected function _member_profile_url(int $id, bool $tempcode_okay = false, ?string $username = null)
+    protected function _member_profile_url(int $id, bool $tempcode_okay = false, ?string $username = null, array $hints = [])
     {
+        $hash = '';
+        if (array_key_exists('conversr_tab', $hints)) {
+            $hash = 'tab--' . $hints['conversr_tab'];
+        }
+
         if (get_option('username_profile_links') == '1') {
             if ($username === null) {
                 $username = $GLOBALS['FORUM_DRIVER']->get_username($id, false, USERNAME_DEFAULT_ID_TIDY);
@@ -600,13 +636,19 @@ class Forum_driver_cns extends Forum_driver_base
             if (get_page_name() == 'members') {
                 $map += propagate_filtercode();
             }
-            $_url = build_url($map, get_module_zone('members'), [], false, false, !$tempcode_okay);
+            if (array_key_exists('extra_get_params', $hints)) {
+                $map += $hints['extra_get_params'];
+            }
+            $_url = build_url($map, get_module_zone('members'), [], false, false, !$tempcode_okay, $hash);
         } else {
             $map = ['page' => 'members', 'type' => 'view', 'id' => ($id == get_member() && $tempcode_okay) ? null : $id];
             if (get_page_name() == 'members') {
                 $map += propagate_filtercode();
             }
-            $_url = build_url($map, get_module_zone('members'), [], false, false, !$tempcode_okay);
+            if (array_key_exists('extra_get_params', $hints)) {
+                $map += $hints['extra_get_params'];
+            }
+            $_url = build_url($map, get_module_zone('members'), [], false, false, !$tempcode_okay, $hash);
         }
         if (($tempcode_okay) && (get_base_url() == get_forum_base_url())) {
             return $_url;

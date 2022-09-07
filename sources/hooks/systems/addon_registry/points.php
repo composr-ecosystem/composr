@@ -116,16 +116,14 @@ class Hook_addon_registry_points
             'themes/default/images/icons_monochrome/menu/adminzone/audit/points_log.svg',
             'themes/default/images/icons_monochrome/buttons/points.svg',
             'themes/default/templates/POINTS_PROFILE.tpl',
-            'sources/hooks/systems/notifications/received_points.php',
-            'sources/hooks/systems/notifications/receive_points_staff.php',
             'sources/hooks/systems/config/points_joining.php',
             'sources/hooks/systems/config/points_per_daily_visit.php',
             'sources/hooks/systems/config/points_per_day.php',
             'sources/hooks/systems/config/points_rating.php',
-            'sources/hooks/systems/config/points_show_personal_stats_gift_points_left.php',
-            'sources/hooks/systems/config/points_show_personal_stats_gift_points_used.php',
-            'sources/hooks/systems/config/points_show_personal_stats_points_left.php',
-            'sources/hooks/systems/config/points_show_personal_stats_points_used.php',
+            'sources/hooks/systems/config/points_show_personal_stats_gift_points_balance.php',
+            'sources/hooks/systems/config/points_show_personal_stats_gift_points_sent.php',
+            'sources/hooks/systems/config/points_show_personal_stats_points_balance.php',
+            'sources/hooks/systems/config/points_show_personal_stats_points_spent.php',
             'sources/hooks/systems/config/points_show_personal_stats_total_points.php',
             'sources/hooks/systems/config/points_voting.php',
             'sources/hooks/systems/config/points_birthday.php',
@@ -136,7 +134,7 @@ class Hook_addon_registry_points
             'sources/hooks/modules/admin_import_types/points.php',
             'sources/hooks/systems/profiles_tabs/points.php',
             'sources/points3.php',
-            'themes/default/templates/POINTS_GIVE.tpl',
+            'themes/default/templates/POINTS_SEND.tpl',
             'themes/default/templates/POINTS_SCREEN.tpl',
             'themes/default/templates/POINTS_SEARCH_SCREEN.tpl',
             'themes/default/templates/POINTS_SEARCH_RESULT.tpl',
@@ -149,28 +147,35 @@ class Hook_addon_registry_points
             'sources/hooks/systems/rss/points.php',
             'sources/points.php',
             'sources/points2.php',
-            'sources/hooks/systems/commandr_commands/give.php',
             'sources/hooks/systems/config/points_per_currency_unit.php',
             'sources/hooks/systems/config/point_logs_per_page.php',
             'sources/hooks/systems/config/points_if_liked.php',
-            'sources/hooks/systems/config/gift_reward_amount.php',
-            'sources/hooks/systems/config/gift_reward_chance.php',
+            'sources/hooks/systems/config/reward_credit_amount.php',
+            'sources/hooks/systems/config/reward_credit_chance.php',
             'sources/hooks/systems/config/enable_gift_points.php',
-            'sources/hooks/systems/tasks/export_points_log.php',
-            'sources/hooks/systems/commandr_fs_extended_member/point_charges.php',
-            'sources/hooks/systems/commandr_fs_extended_member/point_gifts_given.php',
+            'sources/hooks/systems/tasks/export_points_overview.php',
+            'sources/hooks/systems/commandr_fs_extended_member/point_credits.php',
+            'sources/hooks/systems/commandr_fs_extended_member/point_debits.php',
             'themes/default/javascript/points.js',
             'sources/hooks/systems/actionlog/points.php',
             'sources/hooks/systems/points/.htaccess',
-            'sources/hooks/systems/points/given.php',
+            'sources/hooks/systems/points/received.php',
             'sources/hooks/systems/points/rating.php',
             'sources/hooks/systems/points/joining.php',
             'sources/hooks/systems/points/daily.php',
             'sources/hooks/systems/points/visiting.php',
             'sources/hooks/systems/points/index.html',
             'sources/hooks/systems/notifications/birthday_points.php',
-
-            'sources/hooks/modules/admin_stats/point_gifts.php',
+            'sources/hooks/modules/admin_stats/point_transactions.php',
+            'sources/hooks/systems/notifications/points_transaction.php',
+            'sources/hooks/systems/notifications/points_transaction_staff.php',
+            'sources/hooks/systems/cron/points_escrow.php',
+            'sources/hooks/systems/commandr_commands/send_points.php',
+            'sources/points_escrow.php',
+            'themes/default/templates/POINTS_ESCROW_SCREEN.tpl',
+            'sources/hooks/systems/notifications/point_escrows_staff_active.php',
+            'sources/hooks/systems/notifications/point_escrows_staff_passive.php',
+            'sources/hooks/systems/notifications/point_escrows.php',
         ];
     }
 
@@ -184,9 +189,11 @@ class Hook_addon_registry_points
         return [
             'templates/POINTS_SEARCH_RESULT.tpl' => 'points_search_screen',
             'templates/POINTS_SEARCH_SCREEN.tpl' => 'points_search_screen',
-            'templates/POINTS_GIVE.tpl' => 'points_screen',
+            'templates/POINTS_SEND.tpl' => 'points_screen',
             'templates/POINTS_PROFILE.tpl' => 'points_screen',
             'templates/POINTS_SCREEN.tpl' => 'points_screen',
+            'templates/ESCROW_TRANSACTIONS.tpl' => 'points_escrow_transactions',
+            'templates/POINTS_ESCROW_SCREEN.tpl' => 'points_escrow_screen',
         ];
     }
 
@@ -224,16 +231,33 @@ class Hook_addon_registry_points
     public function tpl_preview__points_screen() : object
     {
         $chargelog_details = placeholder_table();
+        $escrow_details = placeholder_table();
+        $ledger_details = placeholder_table();
 
         $from = placeholder_table();
-
         $to = placeholder_table();
 
-        $give_template = do_lorem_template('POINTS_GIVE', [
-            'GIVE_URL' => placeholder_url(),
+        $escrow = do_lorem_template('ESCROW_TRANSACTIONS', [
+            '_GUID' => 'ac97ee94388e4db2b8753273694cb2a1',
+            'MEMBER' => placeholder_number(),
+            '_VIEWER_POINTS_BALANCE' => placeholder_number(),
+            'VIEWER_POINTS_BALANCE' => placeholder_number(),
+            '_VIEWER_GIFT_POINTS_BALANCE' => placeholder_number(),
+            'VIEWER_GIFT_POINTS_BALANCE' => placeholder_number(),
+            'GIFT_POINTS_ENABLED' => true,
+            'FORM' => placeholder_button(),
+        ]);
+
+        $give_template = do_lorem_template('POINTS_SEND', [
+            'SEND_URL' => placeholder_url(),
             'MEMBER' => placeholder_numeric_id(),
-            '_VIEWER_GIFT_POINTS_AVAILABLE' => placeholder_number(),
-            'VIEWER_GIFT_POINTS_AVAILABLE' => placeholder_number(),
+            'DEFAULT__TRANS_TYPE' => 'send',
+            'DEFAULT__SEND_AMOUNT' => placeholder_number(),
+            'DEFAULT__SEND_REASON' => lorem_phrase(),
+            '_VIEWER_GIFT_POINTS_BALANCE' => placeholder_number(),
+            'VIEWER_GIFT_POINTS_BALANCE' => placeholder_number(),
+            '_VIEWER_POINTS_BALANCE' => placeholder_number(),
+            'VIEWER_POINTS_BALANCE' => placeholder_number(),
         ]);
 
         $points_records = [];
@@ -251,26 +275,72 @@ class Hook_addon_registry_points
             'MEMBER' => placeholder_numeric_id(),
             'PROFILE_URL' => placeholder_url(),
             'USERNAME' => lorem_word(),
-            'POINTS_USED' => placeholder_number(),
+            'POINTS_SPENT' => placeholder_number(),
             'REMAINING' => placeholder_number(),
-            'GIFT_POINTS_USED' => placeholder_number(),
-            'GIFT_POINTS_AVAILABLE' => placeholder_number(),
-            'POINTS_GAINED_GIVEN' => placeholder_number(),
-            '_POINTS_USED' => placeholder_number(),
+            'TOTAL_POINTS_SENT' => placeholder_number(),
+            'GIFT_POINTS_BALANCE' => placeholder_number(),
+            'POINTS_RECEIVED' => placeholder_number(),
+            '_POINTS_SPENT' => placeholder_number(),
             '_REMAINING' => placeholder_number(),
-            '_GIFT_POINTS_USED' => placeholder_number(),
-            '_GIFT_POINTS_AVAILABLE' => placeholder_number(),
-            '_POINTS_GAINED_GIVEN' => placeholder_number(),
+            '_TOTAL_POINTS_SENT' => placeholder_number(),
+            '_GIFT_POINTS_BALANCE' => placeholder_number(),
+            '_POINTS_RECEIVED' => placeholder_number(),
             'TO' => $to,
             'FROM' => $from,
             'CHARGELOG_DETAILS' => $chargelog_details,
             'GIVE' => $give_template,
             'POINTS_RECORDS' => $points_records,
+            'ESCROW_DETAILS' => $escrow_details,
+            'LEDGER_DETAILS' => $ledger_details,
+            'ESCROW' => $escrow,
         ]);
 
         return lorem_globalise(do_lorem_template('POINTS_SCREEN', [
             'TITLE' => lorem_title(),
             'CONTENT' => $content,
+        ]), null, '', true);
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return Tempcode Preview
+     */
+    public function tpl_preview__points_escrow_transactions() : object
+    {
+        require_lang('points');
+        require_code('form_templates');
+
+        $form = new Tempcode();
+        $form->attach(do_template('BUTTON_SCREEN', ['_GUID' => 'da69b2ee5495c9af670399dd080f662e', 'IMMEDIATE' => false, 'URL' => placeholder_url(), 'TITLE' => do_lang_tempcode('ESCROW_TO'), 'IMG' => 'buttons/proceed', 'HIDDEN' => new Tempcode()]));
+
+        return lorem_globalise(do_lorem_template('ESCROW_TRANSACTIONS', [
+            'MEMBER' => placeholder_numeric_id(),
+            '_VIEWER_POINTS_BALANCE' => placeholder_numeric_id(),
+            'VIEWER_POINTS_BALANCE' => placeholder_numeric_id(),
+            '_VIEWER_GIFT_POINTS_BALANCE' => placeholder_numeric_id(),
+            'VIEWER_GIFT_POINTS_BALANCE' => placeholder_numeric_id(),
+            'GIFT_POINTS_ENABLED' => true,
+            'FORM' => $form,
+        ]), null, '', true);
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return Tempcode Preview
+     */
+    public function tpl_preview__points_escrow_screen() : object
+    {
+        return lorem_globalise(do_lorem_template('POINTS_ESCROW_SCREEN', [
+            'TITLE' => lorem_title(),
+            'FIELDS' => placeholder_fields(),
+            'BUTTONS' => placeholder_button(),
+            'ESCROW_LOGS' => placeholder_table()
         ]), null, '', true);
     }
 }

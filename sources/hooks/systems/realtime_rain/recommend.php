@@ -49,6 +49,13 @@ class Hook_realtime_rain_recommend
 
                 $invited_member = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'id', ['m_email_address' => $row['i_email_address']]);
 
+                if (addon_installed('points')) {
+                    require_code('points');
+                    $points_url = points_url($member_id);
+                } else {
+                    $points_url = null;
+                }
+
                 $drops[] = rain_get_special_icons(null, $timestamp) + [
                     'TYPE' => 'recommend',
                     'FROM_MEMBER_ID' => strval($member_id),
@@ -58,7 +65,7 @@ class Hook_realtime_rain_recommend
                     'TIMESTAMP' => strval($timestamp),
                     'RELATIVE_TIMESTAMP' => strval($timestamp - $from),
                     'TICKER_TEXT' => null,
-                    'URL' => build_url(['page' => 'points', 'type' => 'member', 'id' => $member_id], get_module_zone('points')),
+                    'URL' => $points_url,
                     'IS_POSITIVE' => true,
                     'IS_NEGATIVE' => false,
 

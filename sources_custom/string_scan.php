@@ -113,6 +113,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         'THEME_CAPABILITY_',
     ];
 
+    // These strings are de-prioritised for translation sponsorships because they are less likely to be used by regular members
     $lang_strings_admin_initial = array_map('trim', explode("\n", trim('
         SYNC_REVISIONS_WITH_GIT
         SYNC_REVISIONS_WITH_GIT_CONFIRM
@@ -537,12 +538,13 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CMD_FS_SEARCH_HELP_PARAM_0
         CMD_FS_SEARCH_HELP_PARAM_1
         CMD_FS_SEARCH_HELP_PARAM_2
-        CMD_GIVE_HELP
-        CMD_GIVE_HELP_A
-        CMD_GIVE_HELP_PARAM_0
-        CMD_GIVE_HELP_PARAM_1
-        CMD_GIVE_HELP_PARAM_2
-        CMD_GIVE_HELP_PARAM_3
+        CMD_SEND_POINTS_HELP
+        CMD_SEND_POINTS_HELP_A
+        CMD_SEND_POINTS_HELP_PARAM_0
+        CMD_SEND_POINTS_HELP_PARAM_1
+        CMD_SEND_POINTS_HELP_PARAM_2
+        CMD_SEND_POINTS_HELP_PARAM_3
+        CMD_SEND_POINTS_HELP_PARAM_4
         CMD_GREP_HELP
         CMD_GREP_HELP_PARAM_0
         CMD_GREP_HELP_PARAM_1
@@ -744,7 +746,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         _COUNTRIES
         _GOOGLE_ANALYTICS
         _INCOME
-        GIFTS
+        POINT_TRANSACTIONS
+        POINTS_LEDGER
         RESTORE_USERGROUP_TO
         UNDO_GROUP_CHANGE
         GROUP_CHANGE
@@ -2733,7 +2736,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CHANGE_REGULARITY
         CHANGE_USERGROUP_TO
         CHARGED_POINTS
-        CHARGE_MEMBER
+        DEBIT_MEMBER
+        CREDIT_MEMBER
         CHATROOMS
         CHATROOM_LANG
         CHATROOM_OWNER
@@ -3578,8 +3582,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_gallery_selectors
         CONFIG_OPTION_gallery_watermarks
         CONFIG_OPTION_general_safety_listing_limit
-        CONFIG_OPTION_gift_reward_amount
-        CONFIG_OPTION_gift_reward_chance
+        CONFIG_OPTION_reward_credit_amount
+        CONFIG_OPTION_reward_credit_chance
         CONFIG_OPTION_global_donext_icons
         CONFIG_OPTION_google_analytics
         CONFIG_OPTION_google_geocoding_api_enabled
@@ -4978,7 +4982,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DOC_EMAIL_LOG
         DOC_EMOTICONS
         DOC_ERRORLOG
-        DOC_EXPORT_POINTS
+        DOC_EXPORT_POINTS_OVERVIEW
         DOC_FIELD_FILTERS
         DOC_FILEDUMP
         DOC_FIND_LANG_STRING_TIP
@@ -5341,7 +5345,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ORDER_STATUS_FILTER_DESCRIPTION
         TRANSACTION_STATUS_FILTER_DESCRIPTION
         EXPORT_TRANSACTIONS_TEXT
-        EXPORT_POINTS
+        EXPORT_POINTS_OVERVIEW
         EXPORT_QUIZ
         EXPORT_QUIZ_TEXT
         EXPORT_STATS_TO_SPREADSHEET
@@ -5689,11 +5693,10 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         GENERATE_PAGE_SITEMAP
         GENERATE_SITEMAP
         GIFT_POINTS_BASE
-        GIFT_POINTS_LOG
+        POINTS_LEDGER_HEAD
         GIFT_POINTS_PER_DAY
-        GIFT_REWARD_AMOUNT
-        GIFT_REWARD_CHANCE
-        GIFT_TRANSACTIONS
+        REWARD_CREDIT_AMOUNT
+        REWARD_CREDIT_CHANCE
         GIVE_AWARD
         GLOBAL_DONEXT_ICONS
         GLOBAL_NAVIGATION
@@ -6147,11 +6150,10 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         MEMBER_ADDED_TO_GROUP
         MEMBER_BAD_STRONGHOLD
         MEMBER_BANNED
-        MEMBER_CHARGED_POINTS
+        MEMBER_SPENT_POINTS
         MEMBER_EXPORT_ORDER
         MEMBER_FILES
-        MEMBER_GIVEN_POINTS
-        MEMBER_GIVEN_POINTS_FOR
+        MEMBER_SENT_POINTS
         MEMBER_ID
         HISTORY
         MEMBER_IMPORT_CPF_ADDED
@@ -6497,7 +6499,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NOTIFICATION_TYPE_ecom_product_request_forwarding
         NOTIFICATION_TYPE_ecom_product_request_pop3
         NOTIFICATION_TYPE_ecom_product_request_quota
-        NOTIFICATION_TYPE_receive_points_staff
+        NOTIFICATION_TYPE_points_transaction_staff
         NOTIFICATION_TYPE_service_cancelled_staff
         NOTIFICATION_TYPE_service_paid_for_staff
         NOTIFICATION_TYPE_spam_check_block
@@ -6903,9 +6905,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PRIVILEGE_exceed_post_edit_time_limit
         PRIVILEGE_feature
         PRIVILEGE_full_banner_setup
-        PRIVILEGE_give_negative_points
-        PRIVILEGE_give_points_self
-        PRIVILEGE_have_negative_gift_points
+        PRIVILEGE_send_points_to_self
+        PRIVILEGE_send_points
         PRIVILEGE_have_personal_category
         PRIVILEGE_high_catalogue_entry_timeout
         PRIVILEGE_high_personal_gallery_limit
@@ -6957,7 +6958,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PRIVILEGE_submit_lowrange_content
         PRIVILEGE_submit_midrange_content
         PRIVILEGE_support_operator
-        PRIVILEGE_trace_anonymous_gifts
+        PRIVILEGE_trace_anonymous_points_transactions
         PRIVILEGE_undo_revisions
         PRIVILEGE_unfiltered_input
         PRIVILEGE_upload_anything_filedump
@@ -6973,7 +6974,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PRIVILEGE_view_any_profile_field
         PRIVILEGE_view_anyones_banner_stats
         PRIVILEGE_view_calendar
-        PRIVILEGE_view_charge_log
+        PRIVILEGE_view_points_ledger
         PRIVILEGE_view_event_subscriptions
         PRIVILEGE_view_member_photos
         PRIVILEGE_view_other_pt
@@ -7147,8 +7148,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         REVEAL_ANSWERS
         REVERSE
         REVERSE_THUMB_ORDER
-        REVERSE_TITLE
-        REVERSE_TITLE_DESCRIPTION
+        REVERSE_TRANSACTION
+        REVERSE_TRANSACTION_DESCRIPTION
         REVIEW_FREQ
         REVISION_UNDO_DESCRIPTION
         RIGHT_CLICK_SAVE_AS
@@ -8296,6 +8297,36 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_topic_polls_weighting_logarithmic_base
         CONFIG_OPTION_points_birthday
         DOC_CRON_HOOKS
+        DESCRIPTION_ESCROW_MODERATE_ACTION
+        DESCRIPTION_ESCROW_MODERATE_AMEND_REASON
+        DESCRIPTION_ESCROW_MODERATE_ESCROW_AGREEMENT
+        DESCRIPTION_ESCROW_MODERATE_POINTS
+        DESCRIPTION_ESCROW_MODERATE_REASON
+        AMEND_REASON
+        AMEND_ESCROW_AGREEMENT
+        ESCROW_ALSO_CANCELLED
+        ESCROW_MODERATE
+        ESCROW_MODERATE_ACTION__CANCEL
+        ESCROW_MODERATE_ACTION__COMPLETE
+        ESCROW_MODERATE_ACTION__AMEND
+        NOTIFICATION_POINTS_TRANSACTION_STAFF
+        NOTIFICATION_POINTS_TRANSACTION_SUBJECT_STAFF
+        _ESCROW_MODERATE
+        AMEND_POINT_TRANSACTION
+        _VIEW_POINT_TRANSACTION
+        LOG_ESCROW_DISPUTE_AMENDED
+        CREDIT_LONG
+        DEBIT_LONG
+        SEND_LONG
+        LEDGER_STATUS_reversing_UNLINKED
+        LEDGER_STATUS_reversed_UNLINKED
+        NOTIFICATION_POINTS_TRANSACTION_STAFF_GUEST
+        ARE_YOU_SURE_TRANSACTION_CREDIT
+        ARE_YOU_SURE_TRANSACTION_DEBIT
+        NOTIFICATION_TYPE_point_escrows_staff_passive
+        NOTIFICATION_TYPE_point_escrows_staff_active
+        NEW_ESCROW_TRANSACTION_SUBJECT_STAFF
+        NEW_ESCROW_TRANSACTION_INTRO_STAFF
     ')));
 
     $non_admin_files = [
@@ -8307,6 +8338,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         'NOTIFICATION_TYPE_',
     ];
 
+    // These strings are prioritised for translation sponsorships because regular members will likely see them
     $lang_strings_non_admin_initial = array_map('trim', explode("\n", trim('
         OFF
         ON
@@ -8494,13 +8526,12 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         COUNT_CHATPOSTS
         COUNT_CHATTERS
         COUNT_FILES
-        COUNT_GIFT_POINTS_USED
+        COUNT_GIFT_POINTS_SENT
         COUNT_ONFORUMS
         COUNT_ONSITE
         COUNT_ONSITE_RECORD
         COUNT_POINTS_EVER
-        COUNT_POINTS_LEFT
-        COUNT_POINTS_USED
+        COUNT_POINTS_BALANCE
         COUNT_POSTSCOUNT
         COUNT_POSTSTODAY
         COUNT_TOPICSCOUNT
@@ -8537,7 +8568,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ACTIVITY_ADD_TOPIC
         ACTIVITY_ENTERED_COMPETITION
         ACTIVITY_FILLED_SURVEY
-        ACTIVITY_GIVE_POINTS
+        ACTIVITY_SEND_POINTS
+        _ACTIVITY_SEND_POINTS
         ACTIVITY_LIKES
         ACTIVITY_LIKES_UNTITLED
         ACTIVITY_PASSED_TEST
@@ -8635,7 +8667,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_SOUND_ENABLED
         MAILING_LIST_STYLE
         SOUND_ENABLED
-        POINTS_GIVE_FOR
+        POINTS_SEND_FOR
         ATTACHMENT
         ATTACHMENTS
         ATTACHMENTS_OF
@@ -8941,12 +8973,12 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         COUNT_ARCHIVE
         COUNT_BANDWIDTH
         COUNT_DOWNLOADS
-        COUNT_GIFT_POINTS_LEFT
+        COUNT_GIFT_POINTS_BALANCE
         CHAT_GUEST_YOU
         COUNT_MEMBERS
         COUNT_PAGES
         COUNT_POINTS
-        COUNT_POINTS_GIVEN
+        COUNT_POINTS_SENT
         COUNT_POSTS
         COUNT_RESULTS
         COUNT_TOPICS
@@ -8962,7 +8994,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CREATE_TICKET_MAKE_POST
         CURRENT
         CURRENTLY_AWARDED_TO
-        CURRENT_POINTS
         CUSTOM_PROFILE_FIELD
         CUSTOM_UPLOAD
         DAILY
@@ -9557,12 +9588,10 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         GAMBLING_DESCRIPTION
         GENERAL
         GIVEN_ANSWER
-        GIVEN_POINTS_FOR
-        GIVEN_POINTS_FOR_ANON
-        GIVE_POINTS
-        GIVE_TEXT
-        GIVE_TEXT_UNLIMITED
-        GIVE_TO
+        SEND_POINTS
+        SEND_TEXT_GIFT_POINTS
+        SEND_TEXT_POINTS
+        SEND_TO
         GOTO_CHAT_LOBBY
         GOTO_CHAT_LOBBY_FOR_MORE
         GO_BACK
@@ -9860,7 +9889,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         MEMBER_DIRECTORY_UNFILTERED
         MEMBER_DIRECTORY_UNFILTERED_NO_RESULTS
         MEMBER_DIRECTORY_UNFILTERED_NO_RESULTS_GALLERIES
-        MEMBER_HAS_BEEN_CHARGED
+        MEMBER_HAS_BEEN_CREDITED
+        MEMBER_HAS_BEEN_DEBITED
         MEMBER_INFORMATION
         MEMBER_IS_IN_GROUP
         MEMBER_IS_UNCONFIRMED
@@ -10095,7 +10125,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NOTIFICATION_TYPE_paid_subscription_messages
         NOTIFICATION_TYPE_poll_chosen
         NOTIFICATION_TYPE_quiz_results
-        NOTIFICATION_TYPE_received_points
+        NOTIFICATION_TYPE_points_transaction
         NOTIFICATION_TYPE_ticket_reply
         NOTIFICATION_TYPE_wiki
         NOTIFICATION_VIEW
@@ -10258,8 +10288,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PER_PAGE
         PER_WEEK
         PER_YEAR
-        PE_LACKING_GIFT_POINTS
-        PE_NEGATIVE_GIFT
+        PE_LACKING_POINTS
+        PE_NEGATIVE_POINTS
         PE_SELF
         PGE_X
         PGE_A
@@ -10288,8 +10318,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         POINTS_COMPLETED_QUIZ
         POINTS_EARNED
         POINTS_GAINED_BETWEEN
-        POINTS_GIFTED
-        POINTS_IN_ADDITION
+        POINTS_SENT
+        _POINTS_RECEIVED
         POINTS_MUST_LOGIN
         POINTS_NOW
         POINTS_RECEIVED
@@ -10297,10 +10327,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         POINTS_SEARCH_FORM
         POINTS_SPENT
         POINTS_THANKS
-        POINTS_TO_GIVE
-        POINTS_TO_SPEND
         POINTS_UNIT
-        POINTS_USED
         POINT_LEADER_BOARD
         POLL
         POLLS
@@ -10630,7 +10657,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SPECIAL_CPF__cms_county
         SPECIAL_CPF__cms_currency
         SPECIAL_CPF__cms_firstname
-        SPECIAL_CPF__cms_gift_points_used
+        SPECIAL_CPF__cms_gift_points_sent
         SPECIAL_CPF__cms_lastname
         SPECIAL_CPF__cms_latitude
         SPECIAL_CPF__cms_longitude
@@ -10643,12 +10670,12 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SPECIAL_CPF__cms_payment_cardholder_name
         SPECIAL_CPF__cms_payment_card_type
         SPECIAL_CPF__cms_points_gained_chat
-        SPECIAL_CPF__cms_points_gained_given
+        SPECIAL_CPF__cms_points_received
         SPECIAL_CPF__cms_points_gained_rating
         SPECIAL_CPF__cms_points_gained_visiting
         SPECIAL_CPF__cms_points_gained_voting
         SPECIAL_CPF__cms_points_gained_wiki
-        SPECIAL_CPF__cms_points_used
+        SPECIAL_CPF__cms_points_spent
         SPECIAL_CPF__cms_post_code
         SPECIAL_CPF__cms_role
         SPECIAL_CPF__cms_sites
@@ -11085,7 +11112,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         YOU_ARE_BANNED
         YOU_ARE_HERE
         YOU_CAN_DELETE_PHOTO
-        YOU_GIVEN_POINTS
         YOU_HAVE_TEMPORARY_PASSWORD
         _ACTIVITY_GIVE_AWARD
         _ACTIVITY_LIKES
@@ -11170,7 +11196,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         _PAID_SUBSCRIPTION_STARTED
         _PAID_SUBSCRIPTION_UHOH
         _POINTS
-        _POINTS_GIFTED
+        _POINTS_SENT
         _POINTS_SPENT
         _POLL_REQUIRES_REPLY
         _PR_LUCKY
@@ -11505,10 +11531,10 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         COUNTRY_WF
         GIVE
         POINTS_L
+        GIFT_POINTS
         GIFT_POINTS_L
         POINTS_CHOOSE_ACTION
-        PAYEE
-        GIFTED_BY
+        SENT_BY
         LEADER_BOARDS
         LEADER_BOARD_TIME_FRAME_week
         LEADER_BOARD_TIME_FRAME_month
@@ -11552,6 +11578,113 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BIRTHDAY_POINTS_NOTIFICATION_MAIL_NO_POINTS
         NOTIFICATION_TYPE_birthday_points
         POLL_CHOSEN
+        ARE_YOU_SURE_TRANSACTION_POINTS
+        ARE_YOU_SURE_TRANSACTION_GIFT_POINTS
+        SENDER
+        RECIPIENT
+        ANONYMOUS
+        ARE_YOU_SURE_ESCROW_GIFT_POINTS
+        ARE_YOU_SURE_ESCROW_POINTS
+        ARE_YOU_SURE_ESCROW_SATISFY
+        ARE_YOU_SURE_ESCROW_SATISFY_DISPUTE
+        COUNT_POINTS_SPENT
+        CREDIT
+        DEBIT
+        DESCRIPTION_ESCROW
+        DESCRIPTION_ESCROW_AGREEMENT
+        DESCRIPTION_ESCROW_DISPUTE_REASON
+        DESCRIPTION_ESCROW_EXPIRY_TIME
+        DESCRIPTION_ESCROW_POINTS
+        DESCRIPTION_ESCROW_REASON
+        DESCRIPTION_POINTS_REASON
+        ESCROW
+        ESCROW_AGREEMENT
+        ESCROW_CANCELLED_INTRO
+        ESCROW_CANCELLED_LEDGER_REVERSED
+        ESCROW_CANCELLED_SUBJECT
+        ESCROW_CANCELLING_MEMBER
+        ESCROW_DISPUTE
+        ESCROW_DISPUTED_INTRO
+        ESCROW_DISPUTED_SUBJECT
+        ESCROW_DISPUTE_REASON
+        ESCROW_DISPUTING_MEMBER
+        ESCROW_EXPIRED
+        ESCROW_FULLY_SATISFIED_SUBJECT
+        ESCROW_LACKING_POINTS
+        ESCROW_LOGS
+        ESCROW_VIEW
+        ESCROW_MEMBER_CANNOT_USE_POINTS
+        ESCROW_AMENDED_INTRO
+        ESCROW_AMENDED_SUBJECT
+        ESCROW_MODERATING_MEMBER
+        ESCROW_MUST_LOGIN
+        ESCROW_NOT_ALLOWED_YOU
+        ESCROW_NOT_ENOUGH_GIFT_POINTS
+        ESCROW_NOT_ENOUGH_POINTS
+        ESCROW_NO_GUEST
+        ESCROW_NO_SELF
+        ESCROW_REASON
+        ESCROW_REASON_CANCELLED
+        ESCROW_REASON_FROM
+        ESCROW_SATISFIED
+        ESCROW_STATUS__CANCELLED
+        ESCROW_STATUS__COMPLETED
+        ESCROW_STATUS__DISPUTED
+        ESCROW_STATUS__PENDING
+        ESCROW_TEXT
+        ESCROW_TEXT_GIFT_POINTS
+        ESCROW_TO
+        _ESCROW_TO
+        ESCROW_TRANSACTIONS
+        ESCROW_TRANSACTIONS_FOR
+        ESCROW_TRANSACTIONS_MAIL_INTRO
+        E_ESCROW_ALREADY_DONE
+        E_ESCROW_ALREADY_SATISFIED
+        GIFT_POINTS_REFUNDED
+        LEDGER_STATUS_normal
+        LEDGER_STATUS_reversed
+        LEDGER_STATUS_reversing
+        LOG_ESCROW_CANCELLED
+        LOG_ESCROW_COMPLETED
+        LOG_ESCROW_CREATED
+        LOG_ESCROW_DISPUTED
+        LOG_ESCROW_AMENDED
+        LOG_ESCROW_SATISFIED
+        NEW_ESCROW_TRANSACTION_INTRO
+        NEW_ESCROW_TRANSACTION_SUBJECT
+        NOTIFICATION_POINTS_TRANSACTION
+        NOTIFICATION_POINTS_TRANSACTION_ANON_L
+        NOTIFICATION_POINTS_TRANSACTION_CREDITED_L
+        NOTIFICATION_POINTS_TRANSACTION_DEBITED_L
+        NOTIFICATION_POINTS_TRANSACTION_FROM_L
+        NOTIFICATION_POINTS_TRANSACTION_GIFT_POINTS_L
+        NOTIFICATION_POINTS_TRANSACTION_POINTS_L
+        NOTIFICATION_POINTS_TRANSACTION_RECEIVED_L
+        NOTIFICATION_POINTS_TRANSACTION_REFUNDED_L
+        NOTIFICATION_POINTS_TRANSACTION_SENT_L
+        NOTIFICATION_POINTS_TRANSACTION_SUBJECT
+        NOTIFICATION_POINTS_TRANSACTION_SYSTEM_L
+        NOTIFICATION_POINTS_TRANSACTION_TO_L
+        POINTS_REFUNDED
+        PRIVILEGE_amend_point_transactions
+        PRIVILEGE_moderate_points
+        PRIVILEGE_moderate_points_escrow
+        PRIVILEGE_use_points_escrow
+        REVERSED_TRANSACTION
+        SENT_POINTS_FOR
+        VIEW_POINT_TRANSACTION
+        _ANONYMOUS_L
+        _ESCROW
+        _ESCROW_DISPUTE
+        _ESCROW_VIEW
+        _ESCROW_SATISFY
+        _ESCROW_STATUS__PENDING_BOTH_L
+        REVERSED
+        LEDGER_STATUS_SHORT_reversing
+        LEDGER_STATUS_SHORT_reversed
+        AMEND
+        NOTIFICATION_POINTS_TRANSACTION_GUEST
+        NOTIFICATION_TYPE_point_escrows
     ')));
 
     if ($GLOBALS['DEV_MODE']) {

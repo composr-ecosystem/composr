@@ -444,9 +444,9 @@ class Module_warnings extends Standard_crud_module
             }
 
             if (addon_installed('points')) {
-                if (has_actual_page_access(get_member(), 'admin_points')) {
+                if (has_privilege(get_member(), 'moderate_points')) {
                     require_code('points');
-                    $num_points_currently = available_points($member_id);
+                    $num_points_currently = points_balance($member_id);
                     $fields->attach(form_input_integer(do_lang_tempcode('CHARGED_POINTS'), do_lang_tempcode('DESCRIPTION_CHARGED_POINTS', escape_html(integer_format($num_points_currently, 0))), 'charged_points', 0, true));
                 }
             }
@@ -700,11 +700,13 @@ class Module_warnings extends Standard_crud_module
         }
 
         // Attach punitive actions to end of message
-        $_message = generate_punitive_text();
-        if ($message != '' && $_message != '') {
-            $message .= "\n\n" . $_message;
-        } else {
-            $message .= $_message;
+        if ($message_punitive == 1) {
+            $_message = generate_punitive_text();
+            if ($message != '' && $_message != '') {
+                $message .= "\n\n" . $_message;
+            } else {
+                $message .= $_message;
+            }
         }
 
         // Make the warning now so we can associate its warning ID with logs
@@ -877,10 +879,10 @@ class Module_warnings extends Standard_crud_module
 
         // Charge points
         if (addon_installed('points')) {
-            if (has_actual_page_access(get_member(), 'admin_points')) {
+            if (has_privilege(get_member(), 'moderate_points')) {
                 if ($charged_points != 0) {
                     require_code('points2');
-                    charge_member($member_id, $charged_points, $explanation);
+                    points_debit_member($member_id, $explanation, $charged_points, 0, 1, false, 0, ['charge', 'warning', strval($warning_id)]);
                 }
             }
         }
@@ -1210,7 +1212,7 @@ class Module_warnings extends Standard_crud_module
         $member_id = $GLOBALS['FORUM_DB']->query_select_value('f_warnings', 'w_member_id', ['id' => $id]);
         $charged_points = $GLOBALS['FORUM_DB']->query_select_value('f_warnings', 'p_charged_points', ['id' => $id]);
         require_code('points2');
-        charge_member($member_id, -$charged_points, do_lang('UNDO_CHARGE_FOR', strval($id)));
+        points_credit_member($member_id,  do_lang('UNDO_CHARGE_FOR', strval($id)), $charged_points, 0, 1, true, 1, ['undo_charge', 'warnings', $id]);
         $GLOBALS['FORUM_DB']->query_update('f_warnings', ['p_charged_points' => 0], ['id' => $id], '', 1);
 
         log_it('UNDO_CHARGE', strval($id), $GLOBALS['FORUM_DRIVER']->get_username($member_id));

@@ -47,7 +47,7 @@ function realtime_rain_script()
     if (get_param_integer('keep_realtime_test', 0) == 1) {
         require_code('lorem');
 
-        $types = ['post', 'news', 'recommend', 'polls', 'ecommerce', 'actionlog', 'security', 'chat', 'stats', 'join', 'calendar', 'search', 'point_charges', 'banners', 'point_gifts'];
+        $types = ['post', 'news', 'recommend', 'polls', 'ecommerce', 'actionlog', 'security', 'chat', 'stats', 'join', 'calendar', 'search', 'banners', 'point_transactions', 'point_debits', 'point_credits'];
         shuffle($types);
 
         $special_icons = ['email', 'news', 'phone', 'searchengine'];
@@ -74,7 +74,7 @@ function realtime_rain_script()
                 'TICKER_TEXT' => ($i == 0) ? lorem_sentence_html() : null,
                 'URL' => null,
                 'IS_POSITIVE' => ($type == 'ecommerce' || $type == 'join'),
-                'IS_NEGATIVE' => ($type == 'security' || $type == 'point_charges'),
+                'IS_NEGATIVE' => ($type == 'security' || $type == 'point_debits' || $type == 'point_credits'),
 
                 // These are for showing connections between drops. They are not discriminated, it's just three slots to give an ID code that may be seen as a commonality with other drops.
                 'FROM_ID' => null,

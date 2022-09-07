@@ -155,7 +155,7 @@ When editing poll answers, the votes will be maintained; you should generally on
 
 [title="3"]Weighting poll results with points[/title]
 
-A site-wide setting can be enabled to allow poll results to be weighted according to the number of points each voter had at the time of voting. These settings are located in the Admin Zone > Setup > Configuration > Forum options > Point-weighting for polls.
+A site-wide setting can be enabled to allow poll results to be weighted according to the number of points each voter had in their balance at the time of voting. These settings are located in the Admin Zone > Setup > Configuration > Forum options > Point-weighting for polls.
 
 When the site-wide setting is enabled, individual polls can then have point-weighting enabled or disabled (they will be disabled by default).
 

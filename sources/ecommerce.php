@@ -1657,7 +1657,7 @@ function handle_confirmed_transaction(?string $trans_expecting_id, ?string $txn_
     // Charge points if required
     if (($status == 'Completed') && ($check_amounts) && ($expected_price_points != 0)) {
         require_code('points2');
-        charge_member($member_id_paying, $expected_price_points, do_lang(($expected_amount == 0.00) ? 'FREE_ECOMMERCE_PRODUCT' : 'DISCOUNTED_ECOMMERCE_PRODUCT', $item_name));
+        points_debit_member($member_id_paying, do_lang(($expected_amount == 0.00) ? 'FREE_ECOMMERCE_PRODUCT' : 'DISCOUNTED_ECOMMERCE_PRODUCT', $item_name), $expected_price_points, 0, 0, true, 0, ['purchase', 'ecommerce', strval($txn_id)]);
     }
     $amount_points = $expected_price_points;
 
@@ -1966,7 +1966,7 @@ function get_discounted_price(array $details, bool $consider_free = false, ?int 
 
     if (($consider_free) && ($details['price_points'] !== null)) {
         require_code('points');
-        if ((available_points($member_id) >= $details['price_points']) || ($details['price'] === null/*has to be points as no monetary-price*/) || (has_privilege($member_id, 'give_points_self'))) {
+        if ((points_balance($member_id) >= $details['price_points']) || ($details['price'] === null/*has to be points as no monetary-price*/) || (has_privilege($member_id, 'send_points_to_self'))) {
             return [
                 0.00,
                 '0.00',
@@ -1978,7 +1978,7 @@ function get_discounted_price(array $details, bool $consider_free = false, ?int 
 
     if (($details['discount_points__num_points'] !== null) && ($details['discount_points__price_reduction'] !== null) && ($details['price'] !== null)) {
         require_code('points');
-        if ((available_points($member_id) >= $details['discount_points__num_points']) || (has_privilege($member_id, 'give_points_self'))) {
+        if ((points_balance($member_id) >= $details['discount_points__num_points']) || (has_privilege($member_id, 'send_points_to_self'))) {
             $discounted_price = max(0.00, $details['price'] - $details['discount_points__price_reduction']);
             return [
                 $discounted_price,

@@ -21,8 +21,20 @@
 /**
  * Hook class.
  */
-class Hook_notification_received_points extends Hook_Notification
+class Hook_notification_points_transaction extends Hook_Notification
 {
+    /**
+     * Find the initial setting that members have for a notification code (only applies to the member_could_potentially_enable members).
+     *
+     * @param  ID_TEXT $notification_code Notification code
+     * @param  ?SHORT_TEXT $category The category within the notification code (null: none)
+     * @return integer Initial setting
+     */
+    public function get_initial_setting(string $notification_code, ?string $category = null) : int
+    {
+        return A__ALL & ~A_INSTANT_PT;
+    }
+
     /**
      * Get a list of all the notification codes this hook can handle.
      * (Addons can define hooks that handle whole sets of codes, so hooks are written so they can take wide authority).
@@ -36,7 +48,7 @@ class Hook_notification_received_points extends Hook_Notification
         }
 
         $list = [];
-        $list['received_points'] = [do_lang('ACTIVITY'), do_lang('points:NOTIFICATION_TYPE_received_points')];
+        $list['points_transaction'] = [do_lang('ACTIVITY'), do_lang('points:NOTIFICATION_TYPE_points_transaction')];
         return $list;
     }
 

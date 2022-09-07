@@ -62,7 +62,7 @@ class Hook_upon_query_banner_click_points
                 if ($cnt == 0) {
                     require_code('points');
                     require_code('points2');
-                    system_gift_transfer('Clicking a banner', 1, $member_id);
+                    points_credit_member($member_id, 'Clicking a banner', 1);
                 }
             }
         }

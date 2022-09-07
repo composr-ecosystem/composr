@@ -634,12 +634,12 @@ function actualise_specific_rating(?int $rating, string $page_name, int $member_
             $real_content_type = convert_composr_type_codes('feedback_type_code', $real_feedback_type, 'content_type');
 
             if (($submitter !== null) && (!is_guest($submitter))) {
-                // Give points
+                // Credit points
                 if ($member_id != $submitter) {
                     if ((addon_installed('points')) && (!$already_rated)) {
                         require_code('points2');
                         require_lang('points');
-                        system_gift_transfer(do_lang('CONTENT_LIKED'), intval(get_option('points_if_liked')), $submitter);
+                        points_credit_member($submitter, do_lang('CONTENT_LIKED'), intval(get_option('points_if_liked')), 0, 0, true, 0, ['feedback', $real_content_type, strval($content_id)]);
                     }
                 }
 

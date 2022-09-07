@@ -518,6 +518,7 @@ class Module_quiz
         $post_url = build_url(['page' => '_SELF', 'type' => '_do', 'id' => $quiz_id], '_SELF');
         return do_template('QUIZ_SCREEN', [
             '_GUID' => 'f390877672938ba62f79f9528bef742f',
+            'GIVE_CONTEXT' => true,
             'EDIT_URL' => $edit_url,
             'TAGS' => get_loaded_tags('quiz'),
             'ID' => strval($quiz_id),
@@ -652,10 +653,10 @@ class Module_quiz
             ]);
 
             if ($num_entries != 1) {
-                $num_point_events = $GLOBALS['SITE_DB']->query_select_value('gifts', 'COUNT(*)', [
-                    'gift_from' => $GLOBALS['FORUM_DRIVER']->get_guest_id(),
-                    'gift_to' => get_member(),
-                    $GLOBALS['SITE_DB']->translate_field_ref('reason') => do_lang('POINTS_COMPLETED_QUIZ', $quiz_name),
+                $num_point_events = $GLOBALS['SITE_DB']->query_select_value('points_ledger', 'COUNT(*)', [
+                    'code_explanation' => json_encode(['pass', 'quiz', strval($quiz_id)]),
+                    'recipient_id' => get_member(),
+                    'status' => 'normal',
                 ]);
             }
 
@@ -664,7 +665,7 @@ class Module_quiz
                 if (($quiz['q_type'] != 'TEST') || ($passed === true)) {
                     // Final points transaction
                     require_code('points2');
-                    system_gift_transfer(do_lang('POINTS_COMPLETED_QUIZ', $quiz_name), $quiz['q_points_for_passing'], get_member());
+                    points_credit_member(get_member(), do_lang('POINTS_COMPLETED_QUIZ', $quiz_name), $quiz['q_points_for_passing'], 0, 0, true, 0, ['pass', 'quiz', strval($quiz_id)]);
                     $points_difference += $quiz['q_points_for_passing'];
                 }
             }

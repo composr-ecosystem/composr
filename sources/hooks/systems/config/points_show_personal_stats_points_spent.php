@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_points_show_personal_stats_points_left
+class Hook_config_points_show_personal_stats_points_spent
 {
     /**
      * Gets the details relating to the config option.
@@ -31,11 +31,11 @@ class Hook_config_points_show_personal_stats_points_left
     public function get_details() : ?array
     {
         return [
-            'human_name' => 'COUNT_POINTS_LEFT',
+            'human_name' => 'COUNT_POINTS_SPENT',
             'type' => 'tick',
             'category' => 'BLOCKS',
             'group' => 'PERSONAL_BLOCK',
-            'explanation' => 'CONFIG_OPTION_points_show_personal_stats_points_left',
+            'explanation' => 'CONFIG_OPTION_points_show_personal_stats_points_spent',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,

@@ -31,7 +31,7 @@ class Hook_addon_registry_leader_board
      * @param  boolean $runtime Whether to include wildcards represented runtime-created chmoddable files
      * @return array File permissions to set
      */
-    public function get_chmod_array(bool $runtime = false): array
+    public function get_chmod_array(bool $runtime = false) : array
     {
         return [];
     }
@@ -41,7 +41,7 @@ class Hook_addon_registry_leader_board
      *
      * @return float Version number
      */
-    public function get_version(): float
+    public function get_version() : float
     {
         return cms_version_number();
     }
@@ -51,7 +51,7 @@ class Hook_addon_registry_leader_board
      *
      * @return string The category
      */
-    public function get_category(): string
+    public function get_category() : string
     {
         return 'Fun and Games';
     }
@@ -61,7 +61,7 @@ class Hook_addon_registry_leader_board
      *
      * @return string Description of the addon
      */
-    public function get_description(): string
+    public function get_description() : string
     {
         return 'Allow website administrators to display leader-boards of members earning the most points.';
     }
@@ -71,7 +71,7 @@ class Hook_addon_registry_leader_board
      *
      * @return array List of tutorials
      */
-    public function get_applicable_tutorials(): array
+    public function get_applicable_tutorials() : array
     {
         return [
             'tut_points',
@@ -83,10 +83,10 @@ class Hook_addon_registry_leader_board
      *
      * @return array A structure specifying dependency information
      */
-    public function get_dependencies(): array
+    public function get_dependencies() : array
     {
         return [
-            'requires' => ["points"],
+            'requires' => ['points'],
             'recommends' => [],
             'conflicts_with' => [],
         ];
@@ -97,7 +97,7 @@ class Hook_addon_registry_leader_board
      *
      * @return URLPATH Icon
      */
-    public function get_default_icon(): string
+    public function get_default_icon() : string
     {
         return 'themes/default/images/icons/menu/social/leader_board.svg';
     }
@@ -107,7 +107,7 @@ class Hook_addon_registry_leader_board
      *
      * @return array List of files
      */
-    public function get_file_list(): array
+    public function get_file_list() : array
     {
         return [
             'sources/hooks/systems/addon_registry/leader_board.php',
@@ -140,7 +140,7 @@ class Hook_addon_registry_leader_board
      *
      * @return array The mapping
      */
-    public function tpl_previews(): array
+    public function tpl_previews() : array
     {
         return [
             'templates/POINTS_LEADER_BOARD_ROW.tpl' => 'points_leader_board_screen',
@@ -244,7 +244,7 @@ class Hook_addon_registry_leader_board
      *
      * @return Tempcode Preview
      */
-    public function tpl_preview__points_leader_board_screen(): object
+    public function tpl_preview__points_leader_board_screen() : object
     {
         require_lang('leader_board');
 

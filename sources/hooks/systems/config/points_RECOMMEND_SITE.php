@@ -34,7 +34,7 @@ class Hook_config_points_RECOMMEND_SITE
             'human_name' => 'RECOMMEND_SITE',
             'type' => 'integer',
             'category' => 'POINTS',
-            'group' => 'COUNT_POINTS_GIVEN',
+            'group' => 'COUNT_POINTS_SENT',
             'explanation' => 'CONFIG_OPTION_points_RECOMMEND_SITE',
             'shared_hosting_restricted' => '0',
             'list_options' => '',

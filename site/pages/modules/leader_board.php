@@ -203,9 +203,9 @@ class Module_leader_board
             $set_tpl = new Tempcode();
             foreach ($rows as $member_id => $points) {
                 if (get_forum_type() == 'cns') {
-                    $points_url = null;
+                    $points_url = null; // No link, as $profile_url essentially links to the same place
                 } else {
-                    $points_url = build_url(['page' => 'points', 'type' => 'member', 'id' => $member_id], get_module_zone('points'));
+                    $points_url = points_url($member_id);
                 }
 
                 $profile_url = $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, true);

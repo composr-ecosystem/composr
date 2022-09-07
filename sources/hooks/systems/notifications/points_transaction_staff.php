@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_notification_receive_points_staff extends Hook_notification__Staff
+class Hook_notification_points_transaction_staff extends Hook_notification__Staff
 {
     /**
      * Find the initial setting that members have for a notification code (only applies to the member_could_potentially_enable members).
@@ -48,7 +48,7 @@ class Hook_notification_receive_points_staff extends Hook_notification__Staff
         }
 
         $list = [];
-        $list['receive_points_staff'] = [do_lang('ACTIVITY'), do_lang('points:NOTIFICATION_TYPE_receive_points_staff')];
+        $list['points_transaction_staff'] = [do_lang('ACTIVITY'), do_lang('points:NOTIFICATION_TYPE_points_transaction_staff')];
         return $list;
     }
 }

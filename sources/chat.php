@@ -1258,7 +1258,7 @@ function chat_get_room_content(?int $room_id, array $_rooms, ?int $max_messages 
             if ($where != '') {
                 $where .= ' AND ';
             }
-            $where .= 'member_id!=' . strval(get_member());
+            $where .= 'member_id<>' . strval(get_member());
         }
         if (!$return_system_messages) {
             if ($where != '') {

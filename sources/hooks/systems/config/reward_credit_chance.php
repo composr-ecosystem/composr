@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_gift_reward_chance
+class Hook_config_reward_credit_chance
 {
     /**
      * Gets the details relating to the config option.
@@ -31,11 +31,11 @@ class Hook_config_gift_reward_chance
     public function get_details() : ?array
     {
         return [
-            'human_name' => 'GIFT_REWARD_CHANCE',
+            'human_name' => 'REWARD_CREDIT_CHANCE',
             'type' => 'integer',
             'category' => 'POINTS',
-            'group' => 'GIFT_TRANSACTIONS',
-            'explanation' => 'CONFIG_OPTION_gift_reward_chance',
+            'group' => 'POINT_TRANSACTIONS',
+            'explanation' => 'CONFIG_OPTION_reward_credit_chance',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'order_in_category_group' => 2,

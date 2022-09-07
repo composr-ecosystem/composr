@@ -12,7 +12,7 @@ public class Main {
     public static boolean relay__todo = true;
     public static boolean relay__mixed = false;
     public static boolean relay__pedantic = false;
-    public static boolean relay__somewhat_pedantic = false;
+    public static boolean relay__somewhat_pedantic = true;
     public static boolean relay__security = false;
     public static boolean relay__manual_checks = false;
     public static boolean relay__spelling = false;

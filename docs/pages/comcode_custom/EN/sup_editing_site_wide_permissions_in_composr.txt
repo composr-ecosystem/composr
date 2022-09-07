@@ -11,7 +11,7 @@ Composr boasts a detailed section to edit all of the privileges associated to al
 [*] [b]Staff actions[/b] -- Covers whether users can access the site when closed and which staff notifications they see
 [*] [b]Comcode[/b] -- Which usergroups can use various Comcode options
 [*] [b]Feedback[/b] -- Whether users can comment or rate content
-[*] [b]Points[/b] -- Who can give points and who can they give them to
+[*] [b]Points[/b] -- Who can send points and whom can they send them to
 [/list]
 [media width="150" description="Setting privileges" float="right"]data_custom/images/docs/sup_editing_site_wide_permissions_in_composr/83d33d7280975dd2bd12b1c710241a93.jpg[/media]
 There are a number of other sections which deal with specifics such as Polls, Banners and Newsletters but the majority of the options are in the first list of options. Many of the options are extremely straight forward in what they refer to. However in the Submission settings there are "Submit low-impact (low visibility) content" and "Submit mid-impact (medium visibility) content" which can be confusing if you don't have knowledge of the system.

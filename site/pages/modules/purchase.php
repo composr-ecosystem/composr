@@ -1530,9 +1530,9 @@ class Module_purchase
 
             // Can't afford the points?
             require_code('points');
-            $available_points = available_points(get_member());
-            if (($available_points < $points_for_discount) && (!has_privilege(get_member(), 'give_points_self'))) {
-                return warn_screen($this->title, do_lang_tempcode('CANT_AFFORD', escape_html(integer_format($points_for_discount, 0)), escape_html(integer_format($available_points, 0))));
+            $points_balance = points_balance(get_member());
+            if (($points_balance < $points_for_discount) && (!has_privilege(get_member(), 'send_points_to_self'))) {
+                return warn_screen($this->title, do_lang_tempcode('CANT_AFFORD', escape_html(integer_format($points_for_discount, 0)), escape_html(integer_format($points_balance, 0))));
             }
         }
 

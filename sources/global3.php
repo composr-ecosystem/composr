@@ -1626,7 +1626,7 @@ function addon_installed(string $addon_name, bool $check_hookless = false, bool 
     }
 
     // Check addons table
-    if ((!$GLOBALS['IN_MINIKERNEL_VERSION']) && (!in_safe_mode())) {
+    if ((!$GLOBALS['IN_MINIKERNEL_VERSION']) && (!in_safe_mode()) && (!$GLOBALS['DEV_MODE']/*stuff maybe changed during dev*/)) {
         require_code('database');
 
         if ((!$answer) && ($check_hookless)) {

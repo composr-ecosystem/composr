@@ -37,8 +37,8 @@ class Hook_page_groupings_points
         }
 
         return [
-            ['audit', 'menu/adminzone/audit/points_log', ['admin_points', ['type' => 'browse'], get_module_zone('admin_points')], do_lang_tempcode('points:GIFT_TRANSACTIONS'), 'points:DOC_POINTS'],
-            ['audit', 'menu/social/points', ['admin_points', ['type' => 'export'], get_module_zone('admin_points')], do_lang_tempcode('points:EXPORT_POINTS'), 'points:DOC_EXPORT_POINTS'],
+            ['audit', 'menu/adminzone/audit/points_log', ['admin_points', ['type' => 'browse'], get_module_zone('admin_points')], do_lang_tempcode('points:POINTS_LEDGER'), 'points:DOC_POINTS'],
+            ['audit', 'menu/social/points', ['admin_points', ['type' => 'export_overview'], get_module_zone('admin_points')], do_lang_tempcode('points:EXPORT_POINTS_OVERVIEW'), 'points:DOC_EXPORT_POINTS_OVERVIEW'],
             (get_forum_type() == 'cns' || get_forum_type() == 'none') ? null : ['social', 'menu/social/points', ['points', [], get_module_zone('points')], do_lang_tempcode('points:VIEW_POINTS')],
         ];
     }

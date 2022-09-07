@@ -126,6 +126,34 @@ class Forum_driver_wbb22 extends Forum_driver_base
     }
 
     /**
+     * Edit the specified custom field to the forum (some forums implemented this using proper Custom Profile Fields, others through adding a new field).
+     *
+     * @param  string $old_name The name of the custom field to edit
+     * @param  string $name The new name of the custom field
+     * @param  integer $length The length of the custom field
+     * @param  BINARY $locked Whether the field is locked
+     * @param  BINARY $viewable Whether the field is for viewing
+     * @param  BINARY $settable Whether the field is for setting
+     * @param  BINARY $required Whether the field is required
+     * @return boolean Whether the custom field was edited successfully
+     */
+    public function install_edit_custom_field(string $old_name, string $name, int $length, int $locked = 1, int $viewable = 0, int $settable = 0, int $required = 0) : bool
+    {
+        if (!array_key_exists('bb_forum_number', $_POST)) {
+            $_POST['bb_forum_number'] = ''; // for now
+        }
+
+        $old_name = 'cms_' . $old_name;
+        $name = 'cms_' . $name;
+        $test = $this->db->query('profilefields', ['profilefieldid'], ['title' => $old_name]);
+        if (array_key_exists(0, $test)) {
+            $this->db->query('UPDATE bb' . $_POST['bb_forum_number'] . '_profilefields SET \'' . db_escape_string($name) . '\',\'\',' . strval($required) . ',' . strval(1 - $viewable) . ',' . strval($length) . ',' . strval($length) . ' WHERE title=\'' . strval($old_name) . '\'');
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Get an array of attributes to take in from the installer. Almost all forums require a table prefix, which the requirement there-of is defined through this function.
      * The attributes have 4 values in an array:
      * - name, the name of the attribute for _config.php

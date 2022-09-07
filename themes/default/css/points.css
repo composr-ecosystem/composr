@@ -13,7 +13,7 @@
 	content: "";
 }
 
-.points-give-box-header {
+.points-send-box-header {
 	margin-top: 0;
 	font-size: 0.85em;
 	padding-bottom: 0.5em;
@@ -21,7 +21,7 @@
 	border-bottom: 1px solid {$GET,pale_border};
 }
 
-.points-give-box-header span {
+.points-send-box-header span {
 	color: {$GET,heading_text};
 	font-size: 1.1em;
 	display: inline-block;
@@ -41,25 +41,16 @@
 }
 .points-earned {
 	margin-bottom: 2em;
+	margin-right: 2em;
 }
-
-/*{+START,CSS_MODE,desktop}*/
-	.points-earned {
-		margin-right: 15em;
-	}
-/*{+END}*/
-/*{+START,CSS_MODE,mobile}*/
-	.points-earned {
-		margin-right: 5.1em;
-	}
-/*{+END}*/
 
 .points-boxes {
 	float: right;
 }
 
 .points-box {
-	width: 14em;
+	max-width: 14em;
+	width: 12em;
 	margin: 0 0 2em 1em;
 	text-align: center;
 }
@@ -108,12 +99,8 @@ table.points-summary-table .answer {
 	display: none;
 }
 
-.give-fragment {
+.send-fragment {
 	display: inline-block;
 	font-size: 1em;
 	padding-bottom: 0.5em;
-}
-
-#points-payee-span {
-	padding-left: 2em;
 }

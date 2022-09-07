@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_commandr_command_give
+class Hook_commandr_command_send_points
 {
     /**
      * Run function for Commandr hooks.
@@ -40,17 +40,17 @@ class Hook_commandr_command_give
         require_lang('points');
 
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return ['', do_command_help('give', ['h', 'a'], [true, true, true, true]), '', ''];
+            return ['', do_command_help('send_points', ['h', 'a'], [true, true, true, true]), '', ''];
         }
 
         if (!array_key_exists(0, $parameters)) {
-            return ['', '', '', do_lang('MISSING_PARAM', '1', 'give')];
+            return ['', '', '', do_lang('MISSING_PARAM', '1', 'send_points')];
         }
         if (!array_key_exists(1, $parameters)) {
-            return ['', '', '', do_lang('MISSING_PARAM', '2', 'give')];
+            return ['', '', '', do_lang('MISSING_PARAM', '2', 'send_points')];
         }
         if (!array_key_exists(2, $parameters)) {
-            return ['', '', '', do_lang('MISSING_PARAM', '3', 'give')];
+            return ['', '', '', do_lang('MISSING_PARAM', '3', 'send_points')];
         }
 
         require_code('points2');
@@ -60,19 +60,21 @@ class Hook_commandr_command_give
             return ['', '', '', do_lang('MEMBER_NO_EXIST')];
         }
 
-        // If parameter 4 is not provided, this is a system gift transfer
-        if (!array_key_exists(3, $parameters)) {
+        $amount_gift_points = (((array_key_exists(3, $parameters)) && ($parameters[3] != 'null')) ? intval($parameters[3]) : null);
+        $anonymous = ((array_key_exists('a', $options)) || (array_key_exists('anonymous', $options))) ? 1 : 0;
+
+        // If parameter 4 is not provided, this is a system credit
+        if (!array_key_exists(4, $parameters)) {
             // Include name of member who awarded the points if not anonymous
             if (!(array_key_exists('a', $options)) && !(array_key_exists('anonymous', $options))) {
-                $parameters[2] .= ' (' . do_lang('GIFTED_BY', $GLOBALS['FORUM_DRIVER']->get_username(get_member())) . ')';
+                $parameters[1] .= ' (' . do_lang('SENT_BY', $GLOBALS['FORUM_DRIVER']->get_username(get_member())) . ')';
             }
-            system_gift_transfer($parameters[2], $parameters[1], intval($parameters[0]), true);
+            points_credit_member(intval($parameters[0]), $parameters[1], intval($parameters[2]), $amount_gift_points, $anonymous);
             return ['', '', do_lang('SUCCESS'), ''];
         }
 
-        $member_id_sender = $GLOBALS['FORUM_DRIVER']->get_member_from_username($parameters[3]);
-
-        give_points(intval($parameters[1]), $member_id, $member_id_sender, $parameters[2], ((array_key_exists('a', $options)) || (array_key_exists('anonymous', $options))));
+        $member_id_sender = $GLOBALS['FORUM_DRIVER']->get_member_from_username($parameters[4]);
+        points_transact($member_id_sender, $member_id, $parameters[1], intval($parameters[2]), $amount_gift_points, $anonymous);
 
         return ['', '', do_lang('SUCCESS'), ''];
     }

@@ -91,7 +91,7 @@ class Hook_addon_registry_idolisr
 Usage:
 [code="Comcode"][block max="10"]side_recent_points[/block][/code]
 and
-[code="Comcode"][block="Helpful soul"]main_stars[/block][/code]The [tt]POINTS_GIVE[/tt] ([tt]themes/default/templates_custom[/tt]) template contains hard-coded HTML that defines each kind of points category that can be used. It is likely you will want to put out one an instance of the [tt]main_stars[/tt] block for each category (using the syntax demonstrated above).';
+[code="Comcode"][block="Helpful soul"]main_stars[/block][/code]The [tt]POINTS_SEND[/tt] ([tt]themes/default/templates_custom[/tt]) template contains hard-coded HTML that defines each kind of points category that can be used. It is likely you will want to put out one an instance of the [tt]main_stars[/tt] block for each category (using the syntax demonstrated above).';
     }
 
     /**
@@ -143,7 +143,7 @@ and
             'sources_custom/miniblocks/main_stars.php',
             'sources_custom/miniblocks/side_recent_points.php',
             'site/pages/modules_custom/points.php',
-            'themes/default/templates_custom/POINTS_GIVE.tpl',
+            'themes/default/templates_custom/POINTS_SEND.tpl',
             'themes/default/templates_custom/BLOCK_MAIN_STARS.tpl',
             'themes/default/templates_custom/BLOCK_SIDE_RECENT_POINTS.tpl',
             'themes/default/javascript_custom/idolisr.js',

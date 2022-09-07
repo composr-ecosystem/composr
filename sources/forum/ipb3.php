@@ -685,6 +685,30 @@ class Forum_driver_ipb3 extends Forum_driver_base
     }
 
     /**
+     * Edit the specified custom field to the forum (some forums implemented this using proper Custom Profile Fields, others through adding a new field).
+     *
+     * @param  ID_TEXT $old_name The name of the custom field to edit
+     * @param  string $name The new name of the custom field
+     * @param  integer $length The length of the custom field
+     * @param  BINARY $locked Whether the field is locked
+     * @param  BINARY $viewable Whether the field is for viewing
+     * @param  BINARY $settable Whether the field is for setting
+     * @return boolean Whether the custom field was edited successfully
+     */
+    public function install_edit_custom_field(string $old_name, string $name, int $length, int $locked = 1, int $viewable = 0, int $settable = 0) : bool
+    {
+        $old_name = 'cms_' . $old_name;
+        $name = 'cms_' . $name;
+        $id = $this->db->query_select_value_if_there('pfields_data', 'pf_id', ['pf_title' => $old_name]);
+        if ($id === null) {
+            return false;
+        } else {
+            $this->db->query_update('pfields_data', ['pf_group_id' => 1, 'pf_input_format' => '', 'pf_topic_format' => '{title} : {content}', 'pf_content' => '', 'pf_title' => $name, 'pf_type' => 'text', 'pf_member_hide' => 1 - $viewable, 'pf_max_input' => $length, 'pf_member_edit' => $settable, 'pf_position' => 0], ['id' => $id], '', 1);
+            return true;
+        }
+    }
+
+    /**
      * Set a Custom Profile Field's value, if the custom field exists. Only works on specially-named (titled) fields.
      *
      * @param  MEMBER $member The member ID

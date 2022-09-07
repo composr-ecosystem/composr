@@ -1040,7 +1040,7 @@ abstract class Standard_crud_module
             if ($submitter === null) {
                 $submitter = get_member();
             }
-            give_submit_points($this->doing, $submitter);
+            give_submit_points($this->doing, $this->content_type, strval($id), $submitter);
         }
 
         if (addon_installed('awards')) {
@@ -1495,10 +1495,10 @@ abstract class Standard_crud_module
             }
 
             if ((addon_installed('points')) && ($submitter !== null) && ($timestamp !== null)) {
-                $points_test = $GLOBALS['SITE_DB']->query_select_value_if_there('gifts', 'id', ['date_and_time' => $timestamp, 'gift_to' => $submitter, 'gift_from' => $GLOBALS['FORUM_DRIVER']->get_guest_id()]);
+                $points_test = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'id', ['date_and_time' => $timestamp, 'recipient_id' => $submitter, 'sender_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(), 'status' => 'normal']);
                 if ($points_test !== null) {
                     require_lang('points');
-                    $action_fields->attach(form_input_tick(do_lang_tempcode('REVERSE_TITLE'), do_lang_tempcode('REVERSE_TITLE_DESCRIPTION', $this->content_type), 'reverse_point_transaction', false));
+                    $action_fields->attach(form_input_tick(do_lang_tempcode('REVERSE_TRANSACTION'), do_lang_tempcode('REVERSE_TRANSACTION_DESCRIPTION', $this->content_type), 'reverse_point_transaction', false));
                 }
             }
             $action_fields->attach($delete_fields);
@@ -1652,14 +1652,18 @@ abstract class Standard_crud_module
             return $this->preview_intercept($this->title);
         }
 
-        list($submitter, $timestamp) = $this->get_submitter($id);
-        if (($timestamp !== null) && (addon_installed('points'))) {
+        list($submitter) = $this->get_submitter($id);
+        if (addon_installed('points')) {
             $reverse = post_param_integer('reverse_point_transaction', 0);
             if ($reverse == 1) {
-                $points_test = $GLOBALS['SITE_DB']->query_select('gifts', ['id'], ['date_and_time' => $timestamp, 'gift_to' => $submitter, 'gift_from' => $GLOBALS['FORUM_DRIVER']->get_guest_id()]);
+                $points_test = $GLOBALS['SITE_DB']->query_select('points_ledger', ['id'], [
+                    'recipient_id' => $submitter,
+                    'status' => 'normal',
+                    'code_explanation' => json_encode(['submit', $this->content_type, strval($id)])
+                ]);
                 if (array_key_exists(0, $points_test)) {
                     require_code('points2');
-                    reverse_point_gift_transaction($points_test[0]['id']);
+                    points_transaction_reverse($points_test[0]['id']);
                 }
             }
         }

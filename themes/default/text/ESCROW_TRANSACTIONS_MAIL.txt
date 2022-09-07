@@ -1,0 +1,10 @@
+{INTRO}
+
+{!SENDER@}: [page="_SEARCH:members:member:{ESCROW_FROM#}"]{$USERNAME@,{ESCROW_FROM}}[/page]
+{!RECIPIENT@}: [page="_SEARCH:members:member:{ESCROW_TO#}"]{$USERNAME@,{ESCROW_TO}}[/page]
+{!POINTS@}: [b]{AMOUNT@}[/b]
+{+START,IF_PASSED,EXPIRATION}{!EXPIRY_DATE@}: [b]{$FROM_TIMESTAMP@,%d %B %Y,{EXPIRATION}}[/b]{+END}
+
+[title="2"]{!ESCROW_AGREEMENT@}[/title]
+
+{TERMS}

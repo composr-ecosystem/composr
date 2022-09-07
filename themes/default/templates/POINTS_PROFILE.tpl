@@ -1,56 +1,58 @@
-<div class="points-boxes">
-	<div class="points-box box">
-		{+START,IF,{$HAS_PRIVILEGE,use_points,{MEMBER}}}
-			<p class="intro">{!CURRENT_POINTS}:</p>
-			<p>{!POINTS_TO_SPEND,<span class="figure">{REMAINING*}</span>}</p>
-		{+END}
-		{+START,IF,{$NOT,{$HAS_PRIVILEGE,use_points,{MEMBER}}}}
-			{!NO_PERMISSION_TO_USE_POINTS}
-		{+END}
+<div class="flex-wrapper justify-space-between">
+	<div class="points-earned">
+		<h2>{!POINTS_EARNED}</h2>
+
+		<p>
+			{!VIEWING_POINTS_PROFILE_OF,<a href="{PROFILE_URL*}">{$DISPLAYED_USERNAME*,{USERNAME}}</a>}
+		</p>
+
+		<table class="columned-table autosized-table points-summary-table">
+			<thead>
+				<tr>
+					<th>{!ACTIVITY}</th>
+					<th>{!AMOUNT}</th>
+					<th>{!COUNT_TOTAL}</th>
+				</tr>
+			</thead>
+
+			<tbody>
+			{+START,LOOP,POINTS_RECORDS}
+				{+START,IF,{$NEQ,{COUNT},0}}
+					<tr>
+						<td>&bull;&nbsp;{LABEL*}:</td>
+						<td class="equation">{COUNT*} &times; {POINTS_EACH*} {!POINTS_UNIT}</td>
+						<td class="answer">= {POINTS_TOTAL*} {!POINTS_UNIT}</td>
+					</tr>
+				{+END}
+			{+END}
+			</tbody>
+		</table>
 	</div>
 
-		{+START,IF,{$EQ,{$CONFIG_OPTION,enable_gift_points},1}}
-			<div class="points-box box">
-				<p class="intro">{!COUNT_GIFT_POINTS_LEFT}:</p>
-				<p>{!POINTS_TO_GIVE,<span class="figure">{GIFT_POINTS_AVAILABLE*}</span>}</p>
-			</div>
-		{+END}
-</div>
-
-<div class="points-earned">
-	<h2>{!POINTS_EARNED}</h2>
-
-	<p>
-		{!VIEWING_POINTS_PROFILE_OF,<a href="{PROFILE_URL*}">{$DISPLAYED_USERNAME*,{USERNAME}}</a>}
-	</p>
-
-	<table class="columned-table autosized-table points-summary-table">
-		<thead>
-			<tr>
-				<th>{!ACTIVITY}</th>
-				<th>{!AMOUNT}</th>
-				<th>{!COUNT_TOTAL}</th>
-			</tr>
-		</thead>
-
-		<tbody>
-		{+START,LOOP,POINTS_RECORDS}
-			{+START,IF,{$NEQ,{COUNT},0}}
-				<tr>
-					<td>&bull;&nbsp;{LABEL*}:</td>
-					<td class="equation">{COUNT*} &times; {POINTS_EACH*} {!POINTS_UNIT}</td>
-					<td class="answer">= {POINTS_TOTAL*} {!POINTS_UNIT}</td>
-				</tr>
+	<div class="points-boxes">
+		<div class="points-box box">
+			{+START,IF,{$HAS_PRIVILEGE,use_points,{MEMBER}}}
+				<p class="intro">{!COUNT_POINTS_BALANCE}:</p>
+				<p><span class="figure">{REMAINING*}</span></p>
 			{+END}
-		{+END}
-		</tbody>
-	</table>
+			{+START,IF,{$NOT,{$HAS_PRIVILEGE,use_points,{MEMBER}}}}
+				{!NO_PERMISSION_TO_USE_POINTS}
+			{+END}
+		</div>
+
+			{+START,IF,{$EQ,{$CONFIG_OPTION,enable_gift_points},1}}
+				<div class="points-box box">
+					<p class="intro">{!COUNT_GIFT_POINTS_BALANCE}:</p>
+					<p><span class="figure">{GIFT_POINTS_BALANCE*}</span></p>
+				</div>
+			{+END}
+	</div>
 </div>
 
 <h2>{!POINTS_RECEIVED}</h2>
 
 {+START,IF_NON_EMPTY,{TO}}
-	<p>{!POINTS_IN_ADDITION,{$DISPLAYED_USERNAME*,{USERNAME}},{POINTS_GAINED_GIVEN*}}</p>
+	<p>{!_POINTS_RECEIVED,{$DISPLAYED_USERNAME*,{USERNAME}},{POINTS_RECEIVED*}}</p>
 {+END}
 
 {+START,IF_NON_EMPTY,{TO}}
@@ -69,10 +71,28 @@
 	</div></div>
 {+END}
 
-{+START,IF_NON_EMPTY,{FROM}}
-	<h2>{!POINTS_GIFTED}</h2>
+<h2>{!ESCROW_TRANSACTIONS}</h2>
 
-	<p>{!_POINTS_GIFTED,{$DISPLAYED_USERNAME*,{USERNAME}},{GIFT_POINTS_USED*}}</p>
+{+START,IF_NON_EMPTY,{ESCROW_DETAILS}}
+	{$SET,ajax_points_profile_escrow_wrapper,ajax-points-profile-escrow-wrapper-{$RAND%}}
+	<div id="{$GET*,ajax_points_profile_escrow_wrapper}">
+		{ESCROW_DETAILS}
+	</div>
+{+END}
+{+START,IF_EMPTY,{ESCROW_DETAILS}}
+	<p class="nothing-here">{!NONE}</p>
+{+END}
+
+{+START,IF_NON_EMPTY,{ESCROW}}
+	<div class="box box---points-profile"><div class="box-inner">
+		{ESCROW}
+	</div></div>
+{+END}
+
+{+START,IF_NON_EMPTY,{FROM}}
+	<h2>{!POINTS_SENT}</h2>
+
+	<p>{!_POINTS_SENT,{$DISPLAYED_USERNAME*,{USERNAME}},{TOTAL_POINTS_SENT*}}</p>
 
 	{$SET,ajax_points_profile_from_wrapper,ajax-points-profile-from-wrapper-{$RAND%}}
 	<div id="{$GET*,ajax_points_profile_from_wrapper}">
@@ -80,13 +100,13 @@
 	</div>
 {+END}
 
-{+START,IF_NON_EMPTY,{CHARGELOG_DETAILS}}
+{+START,IF_NON_EMPTY,{LEDGER_DETAILS}}
 	<h2>{!POINTS_SPENT}</h2>
 
-	<p>{!_POINTS_SPENT,{$DISPLAYED_USERNAME*,{USERNAME}},{POINTS_USED*}}</p>
+	<p>{!_POINTS_SPENT,{$DISPLAYED_USERNAME*,{USERNAME}},{POINTS_SPENT*}}</p>
 
-	{$SET,ajax_points_profile_chargelog_wrapper,ajax-points-profile-chargelog-wrapper-{$RAND%}}
-	<div id="{$GET*,ajax_points_profile_chargelog_wrapper}">
-		{CHARGELOG_DETAILS}
+	{$SET,ajax_points_profile_ledger_wrapper,ajax-points-profile-ledger-wrapper-{$RAND%}}
+	<div id="{$GET*,ajax_points_profile_ledger_wrapper}">
+		{LEDGER_DETAILS}
 	</div>
 {+END}

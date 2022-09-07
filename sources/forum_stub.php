@@ -115,11 +115,12 @@ class Forum_driver_base
      * @param  MEMBER $id The forum member
      * @param  boolean $tempcode_okay Whether it is okay to return the result using Tempcode (more efficient, and allows keep_* parameters to propagate which you almost certainly want!)
      * @param  ?string $username Username, passed for performance reasons (null: look it up)
+     * @param  array $hints Extra parameters to pass to the forum drivers
      * @return mixed The URL
      */
-    public function member_profile_url(int $id, bool $tempcode_okay = false, ?string $username = null)
+    public function member_profile_url(int $id, bool $tempcode_okay = false, ?string $username = null, array $hints = [])
     {
-        $url = $this->_member_profile_url($id, $tempcode_okay, $username);
+        $url = $this->_member_profile_url($id, $tempcode_okay, $username, $hints);
         if (($tempcode_okay) && (!is_object($url))) {
             $url = make_string_tempcode($url);
         }

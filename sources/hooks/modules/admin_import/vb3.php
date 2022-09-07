@@ -56,7 +56,7 @@ class Hook_import_vb3
             'custom_comcode',
             'cns_members',
             'cns_member_files',
-            'points_gifts_and_charges',
+            'point_transactions',
             'cns_custom_profile_fields',
             'cns_forum_groupings',
             'cns_forums',
@@ -82,7 +82,7 @@ class Hook_import_vb3
            'cns_post_files' => ['cns_posts'],
            'notifications' => ['cns_topics', 'cns_members'],
            'cns_private_topics' => ['custom_comcode', 'cns_members'],
-           'points_gifts_and_charges' => ['cns_members'],
+           'point_transactions' => ['cns_members'],
            'logs' => ['cns_members', 'cns_posts'],
            'calendar' => ['cns_members'],
         ];
@@ -1397,9 +1397,9 @@ class Hook_import_vb3
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_points_gifts_and_charges(object $db, string $table_prefix, string $file_base)
+    public function import_points_ledger(object $db, string $table_prefix, string $file_base)
     {
-        $row_start = get_param_integer('JUMPSTART_import_points_gifts_and_charges', 0);
+        $row_start = get_param_integer('JUMPSTART_import_points_ledger', 0);
         do {
             $rows = $db->query_select('reputation', ['*'], [], '', 200, $row_start);
             foreach ($rows as $row) {
@@ -1415,19 +1415,23 @@ class Hook_import_vb3
                 $anonymous = 0;
                 $map = [
                     'date_and_time' => $time,
-                    'amount' => $amount,
-                    'gift_from' => $viewer_member,
-                    'gift_to' => $member_id,
+                    'amount_gift_points' => $amount,
+                    'amount_points' => 0,
+                    'sender_id' => $viewer_member,
+                    'recipient_id' => $member_id,
                     'anonymous' => $anonymous,
+                    'linked_to' => null,
+                    'code_explanation' => '',
+                    'status' => 'normal',
                 ];
                 $map += insert_lang_comcode('reason', $reason, 4);
-                $GLOBALS['SITE_DB']->query_insert('gifts', $map);
+                $GLOBALS['SITE_DB']->query_insert('points_ledger', $map);
 
                 import_id_remap_put('points', strval($row['reputationid']), -1);
             }
 
             $row_start += 200;
-            $GLOBALS['JUMPSTART_import_points_gifts_and_charges'] = $row_start;
+            $GLOBALS['JUMPSTART_import_points_ledger'] = $row_start;
         } while (!empty($rows));
     }
 

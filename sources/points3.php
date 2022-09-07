@@ -28,6 +28,7 @@
 function points_profile(int $member_id_of, ?int $member_id_viewing) : object
 {
     require_code('points');
+    require_code('points_escrow');
     require_css('points');
     require_lang('points');
 
@@ -35,7 +36,11 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
 
     // Get info about viewing/giving user
     if (!is_guest($member_id_viewing)) {
-        $viewer_gift_points_available = get_gift_points_to_give($member_id_viewing);
+        $viewer_gift_points_balance = gift_points_balance($member_id_viewing);
+        $viewer_points_balance = points_balance($member_id_viewing);
+    } else {
+        $viewer_gift_points_balance = 0;
+        $viewer_points_balance = 0;
     }
 
     // Get info about viewed user
@@ -71,97 +76,115 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
     }
 
     // Get additional points info
-    $points_used = points_used($member_id_of);
-    $remaining = available_points($member_id_of);
-    $gift_points_used = get_gift_points_used($member_id_of); //$_point_info['gift_points_used'];
-    $gift_points_available = get_gift_points_to_give($member_id_of);
+    $points_spent = points_spent_system($member_id_of);
+    $points_balance = points_balance($member_id_of);
+    $total_points_sent = total_points_sent($member_id_of);
+    $gift_points_balance = gift_points_balance($member_id_of);
 
-    $to = points_get_transactions('to', $member_id_of, $member_id_viewing);
-    $from = points_get_transactions('from', $member_id_of, $member_id_viewing);
+    $to = points_get_transactions('recipient', $member_id_of, $member_id_viewing, true, false);
+    $from = points_get_transactions('sender', $member_id_of, $member_id_viewing, false, true);
+    $escrow_details = points_get_escrow($member_id_of, $member_id_viewing);
 
-    // If we're staff, or the member, we can show the charge log too
-    $chargelog_details = new Tempcode();
-    if ((has_privilege($member_id_viewing, 'view_charge_log')) || ($member_id_viewing == $member_id_of)) {
-        $start = get_param_integer('charge_start', 0);
-        $max = get_param_integer('charge_max', intval(get_option('point_logs_per_page')));
-        $sortables = ['date_and_time' => do_lang_tempcode('DATE'), 'amount' => do_lang_tempcode('AMOUNT')];
-        $test = explode(' ', get_param_string('charge_sort', 'date_and_time DESC', INPUT_FILTER_GET_COMPLEX), 2);
-        if (count($test) == 1) {
-            $test[1] = 'DESC';
-        }
-        list($sortable, $sort_order) = $test;
-        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
-            log_hack_attack_and_exit('ORDERBY_HACK');
-        }
-
-        $max_rows = $GLOBALS['SITE_DB']->query_select_value('chargelog', 'COUNT(*)', ['member_id' => $member_id_of]);
-        $rows = $GLOBALS['SITE_DB']->query_select('chargelog', ['*'], ['member_id' => $member_id_of], 'ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
-        $charges = new Tempcode();
-        $from_name = get_site_name();
-        $to_name = $GLOBALS['FORUM_DRIVER']->get_username($member_id_of, true);
-        require_code('templates_results_table');
-        $header_row = results_header_row([do_lang_tempcode('DATE'), do_lang_tempcode('AMOUNT'), do_lang_tempcode('FROM'), do_lang_tempcode('TO'), do_lang_tempcode('REASON')], $sortables, 'charge_sort', $sortable . ' ' . $sort_order);
-        foreach ($rows as $myrow) {
-            $date = get_timezoned_date_time($myrow['date_and_time']);
-            $amount = $myrow['amount'];
-            $reason = get_translated_tempcode('chargelog', $myrow, 'reason');
-
-            $charges->attach(results_entry([$date, integer_format($amount), $from_name, $to_name, $reason], true));
-        }
-        $chargelog_details = results_table(do_lang_tempcode('CHARGES'), $start, 'charge_start', $max, 'charge_max', $max_rows, $header_row, $charges, $sortables, $sortable, $sort_order, 'charge_sort', null, [], null, 8, 'fgfdgfdgfdgfdger4gtrhg', false, 'tab--points');
+    // If we're staff, or the member, we can show the ledger too
+    $ledger_details = new Tempcode();
+    if ((has_privilege($member_id_viewing, 'view_points_ledger')) || ($member_id_viewing == $member_id_of)) {
+        $ledger_details = points_get_transactions('debit', $member_id_of, $member_id_viewing, false, false);
     }
 
-    // Show giving form
+    // Show send form
+    $trans_type = get_param_string('trans_type', 'send');
+    $send_amount = get_param_integer('send_amount', null);
+    $send_reason = get_param_string('send_reason', null);
     if (is_guest($member_id_viewing)) {
-        $give_template = do_lang_tempcode('POINTS_MUST_LOGIN');
+        $send_template = do_lang_tempcode('POINTS_MUST_LOGIN');
     } else {
-        $have_negative_gift_points = has_privilege($member_id_viewing, 'have_negative_gift_points');
-        $enough_ok = (($viewer_gift_points_available > 0) || ($have_negative_gift_points));
-        $give_ok = (($member_id_viewing != $member_id_of) || (has_privilege($member_id_viewing, 'give_points_self')));
+        $enough_ok = (($viewer_gift_points_balance > 0) || ($viewer_points_balance > 0));
+        $give_ok = (($member_id_viewing != $member_id_of) || (has_privilege($member_id_viewing, 'send_points_to_self')));
         if (($enough_ok) && ($give_ok)) {
             // Show how many points are available also
-            $give_url = build_url(['page' => 'points', 'type' => 'give', 'id' => $member_id_of], get_module_zone('points'));
-            $give_template = do_template('POINTS_GIVE', [
+            $send_url = build_url(['page' => 'points', 'type' => 'transact', 'id' => $member_id_of], get_module_zone('points'));
+            $send_template = do_template('POINTS_SEND', [
                 '_GUID' => 'fa1749d5a803d86b1efbcfde2ad81702',
-                'GIVE_URL' => $give_url,
-                'MEMBER' => strval($member_id_of),
-                '_VIEWER_GIFT_POINTS_AVAILABLE' => $have_negative_gift_points ? '' : strval($viewer_gift_points_available),
-                'VIEWER_GIFT_POINTS_AVAILABLE' => $have_negative_gift_points ? '' : integer_format($viewer_gift_points_available),
+                'SEND_URL' => $send_url,
+                'MEMBER' => escape_html(strval($member_id_of)),
+                'DEFAULT__TRANS_TYPE' => escape_html($trans_type),
+                'DEFAULT__SEND_AMOUNT' => ($send_amount !== null) ? escape_html(strval($send_amount)) : '',
+                'DEFAULT__SEND_REASON' => escape_html($send_reason),
+                '_VIEWER_GIFT_POINTS_BALANCE' => escape_html(strval($viewer_gift_points_balance)),
+                'VIEWER_GIFT_POINTS_BALANCE' => integer_format($viewer_gift_points_balance),
+                '_VIEWER_POINTS_BALANCE' => escape_html(strval($viewer_points_balance)),
+                'VIEWER_POINTS_BALANCE' => integer_format($viewer_points_balance),
             ]);
         } else {
-            $give_template = do_lang_tempcode('PE_LACKING_GIFT_POINTS', (get_option('enable_gift_points') == '1') ? do_lang_tempcode('GIFT_POINTS_L') : do_lang_tempcode('POINTS_L'));
+            $send_template = do_lang_tempcode('PE_LACKING_POINTS');
         }
         if (!$give_ok) {
-            $give_template = new Tempcode();
+            $send_template = new Tempcode();
         }
-        if (!has_privilege($member_id_of, 'use_points')) {
-            $give_template = new Tempcode();
+        if ((!has_privilege($member_id_of, 'use_points')) || (!has_privilege($member_id_viewing, 'send_points'))) {
+            $send_template = new Tempcode();
         }
+    }
+
+    // Show escrow box
+    $viewer_gift_points_balance = gift_points_balance($member_id_viewing);
+    $viewer_points_balance = points_balance($member_id_viewing);
+    $viewer_balance = ($viewer_gift_points_balance + $viewer_points_balance);
+    if (is_guest($member_id_viewing)) {
+        $escrow_template = do_lang_tempcode('ESCROW_MUST_LOGIN');
+    } elseif (!has_privilege($member_id_viewing, 'use_points_escrow')) {
+        $escrow_template = do_lang_tempcode('ESCROW_NOT_ALLOWED_YOU');
+    } elseif ($member_id_viewing == $member_id_of) {
+        $escrow_template = do_lang_tempcode('ESCROW_NO_SELF');
+    } elseif (is_guest($member_id_of)) {
+        $escrow_template = do_lang_tempcode('ESCROW_NO_GUEST');
+    } elseif (!has_privilege($member_id_of, 'use_points')) {
+        $escrow_template = do_lang_tempcode('ESCROW_MEMBER_CANNOT_USE_POINTS', escape_html($username));
+    } elseif ($viewer_balance <= 0) {
+        $escrow_template = do_lang_tempcode('ESCROW_LACKING_POINTS');
+    } else {
+        $escrow_url = build_url(['page' => 'points', 'type' => 'escrow', 'id' => $member_id_of], get_module_zone('points'));
+
+        $form = new Tempcode();
+        $form->attach(do_template('BUTTON_SCREEN', ['_GUID' => 'da69b2ee5495c9af670399dd080f662e', 'IMMEDIATE' => false, 'URL' => $escrow_url, 'TITLE' => do_lang_tempcode('ESCROW_TO'), 'IMG' => 'buttons/proceed', 'HIDDEN' => new Tempcode()]));
+
+        $escrow_template = do_template('ESCROW_TRANSACTIONS', [
+            '_GUID' => 'ac97ee94388e4db2b8753273694cb2a1',
+            'MEMBER' => escape_html(strval($member_id_of)),
+            '_VIEWER_POINTS_BALANCE' => escape_html(strval($viewer_points_balance)),
+            'VIEWER_POINTS_BALANCE' => integer_format($viewer_points_balance),
+            '_VIEWER_GIFT_POINTS_BALANCE' => escape_html(strval($viewer_gift_points_balance)),
+            'VIEWER_GIFT_POINTS_BALANCE' => integer_format($viewer_gift_points_balance),
+            'GIFT_POINTS_ENABLED' => (get_option('enable_gift_points') == '1'),
+            'FORM' => $form,
+        ]);
     }
 
     return do_template('POINTS_PROFILE', array_merge(
         [
             '_GUID' => 'f91208ef0f9a1e1a8633ce307a778a8d',
 
-            'MEMBER' => strval($member_id_of),
+            'MEMBER' => escape_html(strval($member_id_of)),
             'PROFILE_URL' => $profile_url,
-            'USERNAME' => $username,
+            'USERNAME' => escape_html($username),
 
             'POINTS_RECORDS' => $points_records,
 
-            '_POINTS_USED' => strval($points_used),
-            'POINTS_USED' => integer_format($points_used),
-            '_REMAINING' => strval($remaining),
-            'REMAINING' => integer_format($remaining),
-            '_GIFT_POINTS_USED' => strval($gift_points_used),
-            'GIFT_POINTS_USED' => integer_format($gift_points_used),
-            '_GIFT_POINTS_AVAILABLE' => strval($gift_points_available),
-            'GIFT_POINTS_AVAILABLE' => integer_format($gift_points_available),
+            '_POINTS_SPENT' => escape_html(strval($points_spent)),
+            'POINTS_SPENT' => integer_format($points_spent),
+            '_REMAINING' => escape_html(strval($points_balance)),
+            'REMAINING' => integer_format($points_balance),
+            '_TOTAL_POINTS_SENT' => escape_html(strval($total_points_sent)),
+            'TOTAL_POINTS_SENT' => integer_format($total_points_sent),
+            '_GIFT_POINTS_BALANCE' => escape_html(strval($gift_points_balance)),
+            'GIFT_POINTS_BALANCE' => integer_format($gift_points_balance),
 
             'TO' => $to,
             'FROM' => $from,
-            'CHARGELOG_DETAILS' => $chargelog_details,
-            'GIVE' => $give_template,
+            'LEDGER_DETAILS' => $ledger_details,
+            'ESCROW_DETAILS' => $escrow_details,
+            'GIVE' => $send_template,
+            'ESCROW' => $escrow_template,
         ],
         $additional_fields
     ));
@@ -171,21 +194,50 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
  * Show the point transactions a member has had.
  *
  * @param  ID_TEXT $type The type of transactions we are looking for
- * @set from to
+ * @set sender recipient credit debit all
  * @param  MEMBER $member_id_of Who we are looking at transactions for
  * @param  MEMBER $member_id_viewing Who we are looking at transactions using the account of
+ * @param  boolean $include_sender Whether to include the "Sender" column on the table
+ * @param  boolean $include_recipient Whether to include the "Recipient" column on the table
  * @return Tempcode The UI
  */
-function points_get_transactions(string $type, int $member_id_of, int $member_id_viewing) : object
+function points_get_transactions(string $type, int $member_id_of, int $member_id_viewing, bool $include_sender = true, bool $include_recipient = true) : object
 {
-    $where = ['gift_' . $type => $member_id_of];
-    if ($type == 'from') {
-        $where['anonymous'] = 0;
+    require_code('points');
+
+    $where = [];
+    $end = '';
+
+    switch ($type) {
+        case 'sender':
+            $where = ['sender_id' => $member_id_of];
+            if ($member_id_of != $member_id_viewing) { // Members should be able to see their own anonymous transactions
+                $where['anonymous'] = 0;
+            }
+            $end = ' AND recipient_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()); // Do not include debits
+            break;
+        case 'recipient':
+            $where = ['recipient_id' => $member_id_of];
+            $end = ''; // We also want to include credits, so do not filter out system senders
+            break;
+        case 'credit':
+            $where = ['recipient_id' => $member_id_of, 'sender_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id()];
+            $end = '';
+            break;
+        case 'debit':
+            $where = ['sender_id' => $member_id_of, 'recipient_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id()];
+            $end = '';
+            break;
+        case 'all':
+            $where = [];
+            $end = '';
+            break;
     }
-    $start = get_param_integer('gift_start_' . $type, 0);
-    $max = get_param_integer('gift_max_' . $type, intval(get_option('point_logs_per_page')));
+
+    $start = get_param_integer('ledger_start_' . $type, 0);
+    $max = get_param_integer('ledger_max_' . $type, intval(get_option('point_logs_per_page')));
     $sortables = ['date_and_time' => do_lang_tempcode('DATE'), 'amount' => do_lang_tempcode('AMOUNT')];
-    $test = explode(' ', get_param_string('gift_sort_' . $type, 'date_and_time DESC', INPUT_FILTER_GET_COMPLEX));
+    $test = explode(' ', get_param_string('ledger_sort_' . $type, 'date_and_time DESC', INPUT_FILTER_GET_COMPLEX));
     if (count($test) == 1) {
         $test[1] = 'DESC';
     }
@@ -193,39 +245,210 @@ function points_get_transactions(string $type, int $member_id_of, int $member_id
     if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
         log_hack_attack_and_exit('ORDERBY_HACK');
     }
-    $max_rows = $GLOBALS['SITE_DB']->query_select_value('gifts', 'COUNT(*)', $where);
+    $max_rows = $GLOBALS['SITE_DB']->query_select_value('points_ledger', 'COUNT(*)', $where, $end);
     if ($max_rows == 0) {
         return new Tempcode();
     }
-    $rows = $GLOBALS['SITE_DB']->query_select('gifts', ['*'], $where, 'ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
+    $rows = $GLOBALS['SITE_DB']->query_select('points_ledger', ['*'], $where, $end . ' ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
     $out = new Tempcode();
     $viewing_name = $GLOBALS['FORUM_DRIVER']->get_username($member_id_of, true);
+
     require_code('templates_results_table');
-    $header_row = results_header_row([do_lang_tempcode('DATE'), do_lang_tempcode('AMOUNT'), do_lang_tempcode('FROM'), do_lang_tempcode('TO'), do_lang_tempcode('REASON')], $sortables, 'gift_sort_' . $type, $sortable . ' ' . $sort_order);
+
+    $header_columns = [do_lang_tempcode('DATE'), do_lang_tempcode('AMOUNT')];
+    if ($include_sender) {
+        $header_columns[] = do_lang_tempcode('SENDER');
+    }
+    if ($include_recipient) {
+        $header_columns[] = do_lang_tempcode('RECIPIENT');
+    }
+    $header_columns[] = do_lang_tempcode('REASON');
+    $header_columns[] = do_lang_tempcode('STATUS');
+    if ((has_privilege($member_id_viewing, 'moderate_points')) || (has_privilege($member_id_viewing, 'amend_point_transactions'))) {
+        $header_columns[] = do_lang_tempcode('ACTIONS');
+    }
+    $header_row = results_header_row($header_columns, $sortables, 'ledger_sort_' . $type, $sortable . ' ' . $sort_order);
+
     foreach ($rows as $myrow) {
         if (($myrow['anonymous'] == 1) && ($type == 'from')) {
             continue;
         }
 
         // Their name
-        $from_name = is_guest($myrow['gift_from']) ? get_site_name() : $GLOBALS['FORUM_DRIVER']->get_username($myrow['gift_from'], true);
-        $to_name = $GLOBALS['FORUM_DRIVER']->get_username($myrow['gift_to'], true);
-        if (($myrow['anonymous'] == 1) && (!is_guest($myrow['gift_from']))) {
-            if (!has_privilege($member_id_viewing, 'trace_anonymous_gifts')) {
+        $from_name = is_guest($myrow['sender_id']) ? do_lang('SYSTEM') : $GLOBALS['FORUM_DRIVER']->get_username($myrow['sender_id'], true);
+        $to_name = is_guest($myrow['recipient_id']) ? do_lang('SYSTEM') : $GLOBALS['FORUM_DRIVER']->get_username($myrow['recipient_id'], true);
+        if (($myrow['anonymous'] == 1) && (!is_guest($myrow['sender_id']))) {
+            if (!has_privilege($member_id_viewing, 'trace_anonymous_points_transactions')) {
                 $_from_name = do_lang_tempcode('ANON');
             } else {
-                $_from_name = hyperlink(build_url(['page' => 'points', 'type' => 'member', 'id' => $myrow['gift_from']], get_module_zone('points')), do_lang_tempcode('ANON'), false, false, escape_html($from_name));
+                $_from_name = hyperlink(points_url($myrow['sender_id']), do_lang_tempcode('ANON'), false, false, escape_html($from_name));
             }
         } else {
-            $_from_name = (is_guest($myrow['gift_from'])) ? make_string_tempcode(escape_html($from_name)) : hyperlink(build_url(['page' => 'points', 'type' => 'member', 'id' => $myrow['gift_from']], get_module_zone('points')), escape_html($from_name), false, false, do_lang_tempcode('VIEW_POINTS'));
+            $_from_name = (is_guest($myrow['sender_id'])) ? make_string_tempcode(escape_html($from_name)) : hyperlink(points_url($myrow['sender_id']), escape_html($from_name), false, false, do_lang_tempcode('VIEW_POINTS'));
         }
-        $_to_name = hyperlink(build_url(['page' => 'points', 'type' => 'member', 'id' => $myrow['gift_to']], get_module_zone('points')), escape_html($to_name), false, false, do_lang_tempcode('VIEW_POINTS'));
+        $_to_name = hyperlink(points_url($myrow['recipient_id']), escape_html($to_name), false, false, do_lang_tempcode('VIEW_POINTS'));
 
-        $date = get_timezoned_date_time($myrow['date_and_time']);
-        $amount = $myrow['amount'];
-        $reason = get_translated_tempcode('gifts', $myrow, 'reason');
+        $date = make_string_tempcode(escape_html(get_timezoned_date_time($myrow['date_and_time'], false)));
+        $amount = $myrow['amount_gift_points'] + $myrow['amount_points'];
+        $reason = get_translated_tempcode('points_ledger', $myrow, 'reason');
 
-        $out->attach(results_entry([escape_html($date), escape_html(integer_format($amount)), $_from_name, $_to_name, $reason], false));
+        if (has_privilege($member_id_viewing, 'view_points_ledger')) {
+            $_date = hyperlink(build_url(['page' => 'admin_points', 'type' => 'view', 'id' => $myrow['id']]), $date, false, true);
+            $date = $_date;
+        }
+
+        $results_entry = [$date, escape_html(integer_format($amount))];
+        if ($include_sender) {
+            $results_entry[] = $_from_name;
+        }
+        if ($include_recipient) {
+            $results_entry[] = $_to_name;
+        }
+        $results_entry[] = $reason;
+
+        if ($myrow['status'] == 'normal') {
+            $status = do_lang_tempcode('LEDGER_STATUS_normal');
+        } else {
+            $status = do_lang_tempcode('LEDGER_STATUS_SHORT_' . $myrow['status'], escape_html(strval($myrow['linked_to'])));
+        }
+        $results_entry[] = $status;
+        if ((has_privilege($member_id_viewing, 'moderate_points')) || (has_privilege($member_id_viewing, 'amend_point_transactions'))) {
+            $actions = new Tempcode();
+            if (($myrow['locked'] == 0) && ($myrow['status'] != 'reversed') && ($myrow['status'] != 'reversing') && (has_privilege($member_id_viewing, 'moderate_points'))) {
+                $redirect_url = points_url($member_id_of);
+                $delete_url = build_url(['page' => 'points', 'type' => 'reverse', 'member_id_of' => $member_id_of, 'redirect' => protect_url_parameter($redirect_url)], '_SELF');
+                $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
+                    '_GUID' => '3585ec7f35a1027e8584d62ffeb41e56',
+                    'NAME' => '#' . escape_html(strval($myrow['id'])),
+                    'URL' => $delete_url,
+                    'HIDDEN' => form_input_hidden('id', strval($myrow['id'])),
+                    'ACTION_TITLE' => do_lang_tempcode('UNDO'),
+                    'ICON' => 'buttons/undo',
+                    'GET' => false,
+                ]));
+            }
+            if ((has_privilege($member_id_viewing, 'amend_point_transactions'))) {
+                $redirect_url = points_url($member_id_of);
+                $edit_url = build_url(['page' => 'points', 'type' => 'amend', 'member_id_of' => $member_id_of, 'redirect' => protect_url_parameter($redirect_url)], '_SELF');
+                $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
+                    '_GUID' => 'b7dff48f5758ee05da8fe02beed935b6',
+                    'URL' => $edit_url,
+                    'HIDDEN' => form_input_hidden('id', strval($myrow['id'])),
+                    'NAME' => '#' . escape_html(strval($myrow['id'])),
+                    'ACTION_TITLE' => do_lang_tempcode('AMEND'),
+                    'ICON' => 'admin/edit',
+                    'GET' => false,
+                ]));
+            }
+
+            $results_entry[] = $actions;
+        }
+        $out->attach(results_entry($results_entry, false));
     }
-    return results_table(do_lang_tempcode('_POINTS', escape_html($viewing_name)), $start, 'gift_start_' . $type, $max, 'gift_max_' . $type, $max_rows, $header_row, $out, $sortables, $sortable, $sort_order, 'gift_sort_' . $type, null, [], null, 8, 'gfhfghtrhhjghgfhfgf', false, 'tab--points');
+    return results_table(do_lang_tempcode('_POINTS', escape_html($viewing_name)), $start, 'ledger_start_' . $type, $max, 'ledger_max_' . $type, $max_rows, $header_row, $out, $sortables, $sortable, $sort_order, 'ledger_sort_' . $type, null, [], null, 8, 'gfhfghtrhhjghgfhfgf', false, 'tab--points');
+}
+
+/**
+ * The UI/actualiser to reverse a point transaction. Should be called from a module.
+ *
+ * @param  AUTO_LINK $id The ID of the transaction being reversed
+ * @param  BINARY $confirm Whether the reversal was confirmed already
+ * @param  Tempcode $title The title of the page
+ * @return ?Tempcode The confirmation screen (null: $confirm was 1 and the reversal was successful)
+ */
+function transaction_reverse_screen(int $id, int $confirm, object $title) : ?object
+{
+    if (!has_privilege(get_member(), 'moderate_points')) {
+        access_denied("I_ERROR");
+    }
+
+    $rows = $GLOBALS['SITE_DB']->query_select('points_ledger', ['*'], ['id' => $id], '', 1);
+    if (!array_key_exists(0, $rows)) {
+        warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
+    }
+    $myrow = $rows[0];
+    $amount_points = $myrow['amount_points'];
+    $amount_gift_points = $myrow['amount_gift_points'];
+    $sender_id = $myrow['sender_id'];
+    $recipient_id = $myrow['recipient_id'];
+
+    if ($confirm == 0) {
+        $_sender_id = (is_guest($sender_id)) ? do_lang('SYSTEM') : $GLOBALS['FORUM_DRIVER']->get_username($sender_id);
+        $_recipient_id = (is_guest($recipient_id)) ? do_lang('SYSTEM') : $GLOBALS['FORUM_DRIVER']->get_username($recipient_id);
+        $preview = do_lang_tempcode('ARE_YOU_SURE_REVERSE', escape_html(integer_format($amount_points)), escape_html(integer_format($amount_gift_points)), [escape_html($_sender_id), escape_html($_recipient_id)]);
+        return do_template('CONFIRM_SCREEN', [
+            '_GUID' => 'd3d654c7dcffb353638d08b53697488b',
+            'TITLE' => $title,
+            'PREVIEW' => $preview,
+            'URL' => get_self_url(false, false, ['confirm' => 1]),
+            'FIELDS' => build_keep_post_fields(),
+        ]);
+    }
+
+    require_code('points2');
+    $reversed_data = points_transaction_reverse($id);
+    if ($reversed_data[1]) {
+        attach_message(do_lang_tempcode('ESCROW_ALSO_CANCELLED'));
+    }
+
+    return null;
+}
+
+/**
+ * The UI/actualiser to amend a point transaction.
+ *
+ * @param  AUTO_LINK $id The ID of the transaction record to edit
+ * @param  Tempcode $title The title of the screen
+ * @param  ?MEMBER $member_id_of The member belonging to the transaction being amended (null: We are using the points ledger from admin_points)
+ * @param  ?SHORT_TEXT $reason The new reason to set for the transaction (null: not yet specified)
+ * @param  URLPATH $redirect Where to redirect after editing the transaction
+ * @return ?Tempcode The UI to edit a transaction (null: the edit was successful)
+ */
+function transaction_amend_screen(int $id, object $title, ?int $member_id_of = null, ?string $reason = null, string $redirect = '') : ?object
+{
+    if (!has_privilege(get_member(), 'amend_point_transactions')) {
+        access_denied('I_ERROR');
+    }
+
+    $rows = $GLOBALS['SITE_DB']->query_select('points_ledger', ['*'], ['id' => $id], '', 1);
+    if (!array_key_exists(0, $rows)) {
+        warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
+    }
+    $myrow = $rows[0];
+    $myreason = get_translated_text($myrow['reason']);
+
+    if ($reason === null) {
+        // Edit reason form
+        require_code('form_templates');
+
+        $fields = build_keep_post_fields();
+        $fields->attach(form_input_line_comcode(do_lang('REASON'), do_lang('DESCRIPTION_POINTS_REASON'), 'reason', $myreason, true));
+
+        $map = ['page' => '_SELF', 'type' => 'amend', 'redirect' => $redirect];
+        if ($member_id_of !== null) {
+            $map['member_id_of'] = $member_id_of;
+        }
+        $url = build_url($map, '_SELF');
+
+        return do_template('FORM_SCREEN', [
+            '_GUID' => 'ce1752a0c5508a061bffbf242a13e5bd',
+            'HIDDEN' => new Tempcode(),
+            'TITLE' => $title,
+            'FIELDS' => $fields,
+            'TEXT' => '',
+            'SUBMIT_ICON' => 'buttons/proceed',
+            'SUBMIT_NAME' => do_lang_tempcode('PROCEED'),
+            'URL' => $url,
+            'JS_FUNCTION_CALLS' => [],
+        ]);
+    } else {
+        // Edit reason
+        $_reason = lang_remap_comcode('reason', $id, $reason);
+        $GLOBALS['SITE_DB']->query_update('points_ledger', $_reason, ['id' => $id], '', 1);
+
+        // Log it
+        log_it('AMEND_POINT_TRANSACTION', strval($id), $reason);
+
+        return null;
+    }
 }

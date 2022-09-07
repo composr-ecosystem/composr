@@ -242,25 +242,25 @@ function cns_read_in_member_profile(int $member_id, ?array $need = null, bool $i
 
     // Points
     if (addon_installed('points')) {
-        if (($need === null) || (in_array('points_used', $need))) {
+        if (($need === null) || (in_array('points_spent', $need))) {
             $member_info += [
-                'points_used' => points_used($member_id),
+                'points_spent' => points_spent($member_id),
             ];
         }
-        if (($need === null) || (in_array('available_points', $need))) {
+        if (($need === null) || (in_array('points_balance', $need))) {
             $member_info += [
-                'available_points' => available_points($member_id),
+                'points_balance' => points_balance($member_id),
             ];
         }
         if (get_option('enable_gift_points') == '1') {
-            if (($need === null) || (in_array('gift_points_to_give', $need))) {
+            if (($need === null) || (in_array('gift_points_balance', $need))) {
                 $member_info += [
-                    'gift_points_to_give' => get_gift_points_to_give($member_id),
+                    'gift_points_balance' => gift_points_balance($member_id),
                 ];
             }
-            if (($need === null) || (in_array('gift_points_used', $need))) {
+            if (($need === null) || (in_array('gift_points_sent', $need))) {
                 $member_info += [
-                    'gift_points_used' => get_gift_points_used($member_id),
+                    'gift_points_sent' => gift_points_sent($member_id),
                 ];
             }
         }

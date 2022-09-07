@@ -35,35 +35,56 @@ It's a common practice to use rank to automatically grant additional access, suc
 
 Members may specify the privacy settings for content they post, if the [tt]content_privacy[/tt] addon is installed. For example, they may post an image and set it so only their friends may view it.
 
-[title="2"]Warning/punishment[/title]
+[title="2"]Warnings / Punishments[/title]
 
 [surround]
 [media width="150" description="Using the points system for punishment" float="right"]data_custom/images/docs/tut_censor/censor_point_in_right_direction.png[/media]
 There are a number of ways to punish members who do not follow site policy (such as trolls), including:
- - Charging points to the member or giving them a negative number of points (which might result in sustaining a reduced rank for a time, if you also moving them down to a lower ranking usergroup on the rank scale). Points are primarily charged from a member's points profile (in Conversr this is a member profile tab, otherwise it's via the [tt]points[/tt] module).
+ - Charging points from the member (which might result in sustaining a reduced rank for a time, if you also moving them down to a lower ranking usergroup on the rank scale). This is done on the member's points profile or via the warn form.
  - Banning them in various ways described under "Banning"
- - Moving them to a restricted usergroup (there's an inbuilt "Probation" feature to move them automatically into probation usergroup for a limited period of time). This is done by editing their account settings or via the warn/punish form.
- - 'Verbally' (unofficially) warning them, via a Private Topic.
- - Giving them a formal warning (read on).
+ - Moving them to a restricted usergroup (there's an inbuilt "Probation" feature to move them automatically into probation usergroup for a limited period of time). This is done by editing their account settings or via the warn form.
+ - 'Verbally' (unofficially) warning them, via a Private Topic or other means of private communication.
+ - Giving them a formal warning via the warn form (read on).
 
-As all these methods work on members, but not users in general (i.e. not guest users), you may wish to consider making it a requirement for all users to join in order to participate on the website. In other words, you may wish to remove permission for guests to make submissions.
+As all these methods work on members, but only banning by IP address works for guests, you may wish to consider making it a requirement for all users to join in order to participate on the website. In other words, you may wish to remove permission for guests to make submissions.
 [/surround]
 
 [surround]
 [media width="150" description="A warning as displayed on the account of a member" float="right"]data_custom/images/docs/tut_censor/censor_warning.png[/media]
 [media width="150" description="Making a warning / potentially other punitive actions" float="right"]data_custom/images/docs/tut_censor/censor_make_warning.png[/media]
-[media width="150" description="Links for member warning/punishment from their profile" float="right"]data_custom/images/docs/tut_censor/member_links.png[/media]
-All the various punishment tools are brought together for convenience on one screen named "Add warning/punishment" (Conversr only). This screen is the only way to make warnings, but the other punitive actions can be carried out in other places also.
+[media width="150" description="Links for member warning from their profile" float="right"]data_custom/images/docs/tut_censor/member_links.png[/media]
+All the various punishment tools are brought together for convenience on one screen named "Warn member" (Conversr only).
 
 This screen can be accessed from either:
-1) members' post ("Punish member" button)
-2) or, from any member-profile screen
+1) members' post ("Warn" button)
+2) or, from any member-profile screen ("Warn member" under Audit)
+
+[title="3"]Warnings Form[/title]
+
+The warnings form consists of the following options that can be utilised to easily deal with problematic members or spammers:
+ - [b]Warning Type[/b]: A "Formal Warning" counts towards the member's total number of warnings, whereas an "Off-the-book Warning" does not. Furthermore, off-the-book warnings are not listed to the member on their profile.
+ - [b]Punitive Actions[/b]
+  - [b]Ban the member's IP address[/b]: Bans the last-known IP address of the member so they (and others) can no longer access the website from that IP. The ban is performed on the .htaccess file so they cannot even access the website anymore.
+  - [b]Ban member[/b]: Unlike banning the IP address, the member can still access the website. But they can no longer log in to / use their account.
+  - [b]Change usergroup to[/b]: Change the primary usergroup which this member belongs (such as to de-rank them).
+  - [b]Extend probation[/b]: Start a probation period, or extend an existing one, by this many days. The member will only have the permissions assigned to the "Probation" usergroup regardless of any other usergroup they are in.
+  - [b]Charge points[/b]: Take points away from the member. It is permissible to charge more points than they have in their balance; this will put their balance in negative points.
+ - [b]Delete[/b]
+  - A list of recently posted content by the member will appear in this section. You can choose which content to delete. This is handy for quickly mass-deleting spam content posted by a member.
+ - [b]Explanatory Text[/b]
+  - You can load a previously-saved explanatory reason and message by clicking the "Load an explanation/message" link.
+  - [b]Reason[/b]: A brief reason / explanation for the warning, used in the logs. You might reference rule numbers or Terms of Service section numbers that were violated in here.
+  - [b]Message[/b]: You have the ability to write a Private Topic message to be sent to the member for their warning. You could include details about what punitive actions you are taking, reminders to re-read the rules / next steps to take, repercussions for future violations, and so on. Keep in mind that you may not want to include punitive actions in this field if you tick (check) the "Include punitive actions in message" tickbox (checkbox).
+  - [b]Save explanatory details[/b]: If you want to save what you wrote in the "Reason" and "Message" fields for later use, you can provide a name here. The next time you want to use it, click the "Load an explanation/message" link at the top of the "Explanatory Text" section to pre-populate a saved reason and message.
+  - [b]Include punitive actions in message[/b]: Auto-generate information about what punitive actions you are taking for the Private Topic sent to the member. This is beneficial so you do not have to write them yourself in the message. But it also allows you to better manage saved reasons / messages; you can re-use a saved reason / message without having to edit it for the punitive actions you are taking now.
+
+A note about Private Topics sent for warnings: A private topic will not get sent to the member for their warning if nothing is written in the "Message" field and "Include punitive actions in message" is unticked (unchecked). Also, if "Message" is blank but "Include punitive actions in message" is ticked (checked), a private topic will get sent, but it will only contain the punitive actions taken.
 
 [title="3"]Probation[/title]
 
-The probation feature is designed to work via the punishment system. You could manually put a member into the probation usergroup, but it's not advisable because any secondary usergroups they are in may lead to extra undesirable privileges. The recommended method is to set the time until which they finish probation, either via editing their account or using the warn/punish form.
+The probation feature is designed to work via the warnings system. You could manually put a member into the probation usergroup, but it's not advisable because any secondary usergroups they are in may lead to extra undesirable privileges. The recommended method is to set the time until which they finish probation, either via editing their account or using the warn form.
 
-If you use the punishment system to put a user in probation, Composr automatically returns their only usergroup as Probation, disregarding other settings until their probation expires. Their usergroups will continue to [i]display[/i] as normal, but from a permission point of view, they'll only be in the probations usergroup.
+If you use the warnings system to put a user in probation, Composr automatically returns their only usergroup as Probation, disregarding other settings until their probation expires. Their usergroups will continue to [i]display[/i] as normal, but from a permission point of view, they'll only be in the probations usergroup.
 [/surround]
 
 [title="3"]Banning[/title]
@@ -71,9 +92,9 @@ If you use the punishment system to put a user in probation, Composr automatical
 [surround]
 [media width="150" description="Banning a member via editing their member account" float="right"]data_custom/images/docs/tut_censor/censor_member.png[/media]
 There are many methods for banning a Composr user:
- - [b]Banning a member[/b] via editing their member account. This is perhaps the most useful method of banning and shows them an error when they next log in telling them they've been banned. Note that there is no way to prevent a user re-joining with a new username.
+ - [b]Banning a member[/b] via editing their member account. This is perhaps the most useful method of banning and shows them an error when they next log in telling them they've been banned. Note that there is no way to prevent a user re-joining with a new username; members can still re-join with a different IP, username, and/or e-mail address.
  - [b]Banning an IP address[/b], or IP address range. {!submitban:DOC_IP_BAN} More information about IP addresses is given in the [page="_SEARCH:tut_trace"]Using IP addresses to trace users[/page] tutorial.
- - Banning a member via [b]changing their usergroup[/b] to one with virtually no privileges. This is useful if you want to reduce access in a highly customised fashion.
+ - 'Banning' a member via [b]changing their usergroup[/b] to one with virtually no privileges. This is useful if you want to reduce access in a highly customised fashion.
  - [b]Banning member submission[/b]. This is useful if you only want to ban a member from making submissions, and not the whole site; it is done from the Action Logs module (accessed from Admin Zone > Audit > Action logs). This feature is also useful if you are not using [concept]Conversr[/concept], and want to ban a member in Composr, but not in the forum.
 [/surround]
 
