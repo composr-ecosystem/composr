@@ -726,27 +726,28 @@ function apply_tempcode_escaping_inline(array $escaped, string $value) : string
 
 /**
  * This will create a new Tempcode object that is containing a single specified language string codename.
+ * See do_lang for more documentation.
  *
  * @param  ID_TEXT $lang_string The codename of the language string to use
- * @param  ?mixed $token1 The first token [string or Tempcode] (replaces {1}) (null: none)
- * @param  ?mixed $token2 The second token [string or Tempcode] (replaces {2}) (null: none)
- * @param  ?mixed $token3 The third token (replaces {3}). May be an array of [of string], to allow any number of additional args (null: none)
+ * @param  ?mixed $parameter1 The first parameter [string or Tempcode] (replaces {1}) (null: none)
+ * @param  ?mixed $parameter2 The second parameter [string or Tempcode] (replaces {2}) (null: none)
+ * @param  ?mixed $parameter3 The third parameter (replaces {3}). May be an array of [of string or Tempcode], to allow any number of additional args (null: none)
  * @return Tempcode A language Tempcode object
  */
-function do_lang_tempcode(string $lang_string, $token1 = null, $token2 = null, $token3 = null) : object
+function do_lang_tempcode(string $lang_string, $parameter1 = null, $parameter2 = null, $parameter3 = null) : object
 {
     $parameters = [];
-    if (isset($token1)) {
-        $parameters[] = $token1;
+    if (isset($parameter1)) {
+        $parameters[] = $parameter1;
     }
-    if (isset($token2)) {
-        $parameters[] = $token2;
+    if (isset($parameter2)) {
+        $parameters[] = $parameter2;
     }
-    if (isset($token3)) {
-        if (!is_array($token3)) {
-            $parameters[] = $token3;
+    if (isset($parameter3)) {
+        if (!is_array($parameter3)) {
+            $parameters[] = $parameter3;
         } else {
-            $parameters = array_merge($parameters, $token3);
+            $parameters = array_merge($parameters, $parameter3);
         }
     }
 

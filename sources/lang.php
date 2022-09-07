@@ -153,6 +153,8 @@ function lang_load_runtime_processing()
 
 /**
  * Get the human-readable form of a language string codename.
+ * There must never be a non-null parameter after a null parameter, and if $parameter3 is an array none of those array elements may be null.
+ * Ideally either all parameters are Tempcode, or none are. If the first parameter is Tempcode, we will consider we want to avoid evaluating Tempcode and therefore we will return Tempcode.
  * Further documentation: https://www.youtube.com/watch?v=rinz9Avvq6A.
  *
  * @param  ID_TEXT $codename The language string codename
@@ -161,7 +163,7 @@ function lang_load_runtime_processing()
  * @param  ?mixed $parameter3 The third parameter (replaces {3}). May be an array of [of string or Tempcode], to allow any number of additional args (null: none)
  * @param  ?LANGUAGE_NAME $lang The language to use (null: user's language)
  * @param  boolean $require_result Whether to cause Composr to exit if the lookup does not succeed
- * @return ?mixed The human-readable content (null: not found). String normally. Tempcode if Tempcode parameters.
+ * @return ?mixed The human-readable content (null: not found). The same type as $parameter1.
  */
 function do_lang(string $codename, $parameter1 = null, $parameter2 = null, $parameter3 = null, ?string $lang = null, bool $require_result = true)
 {
@@ -712,7 +714,8 @@ function protect_from_escaping($in) : object
 }
 
 /**
- * Get the human-readable form of a language string codename.
+ * Helper for do_lang.
+ * See do_lang for more documentation.
  *
  * @param  ID_TEXT $codename The language string codename
  * @param  ?mixed $parameter1 The first parameter [string or Tempcode] (replaces {1}) (null: none)
@@ -720,7 +723,7 @@ function protect_from_escaping($in) : object
  * @param  ?mixed $parameter3 The third parameter (replaces {3}). May be an array of [of string or Tempcode], to allow any number of additional args (null: none)
  * @param  ?LANGUAGE_NAME $lang The language to use (null: user's language)
  * @param  boolean $require_result Whether to cause Composr to exit if the lookup does not succeed
- * @return ?mixed The human-readable content (null: not found). String normally. Tempcode if Tempcode parameters.
+ * @return ?mixed The human-readable content (null: not found). The same type as $parameter1.
  *
  * @ignore
  */
@@ -830,7 +833,15 @@ function _do_lang(string $codename, $parameter1 = null, $parameter2 = null, $par
         }
     }
 
-    // Put in parameters
+    // A simple list of parameters will be useful
+    $parameters = [$parameter1, $parameter2];
+    if (is_array($parameter3)) {
+        $parameters = array_merge($parameters, $parameter3);
+    } else {
+        $parameters[] = $parameter3;
+    }
+
+    // Put in parameters; this code is HEAVILY OPTIMISED (and therefore has a lot of copy and pasting)
     static $non_plural_non_vowel = ['1', 'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z', '{'/*for no-op param usage*/];
     $out = $LANGUAGE_STRINGS_CACHE[$lang][$codename];
     if ($out === null) {
@@ -841,73 +852,84 @@ function _do_lang(string $codename, $parameter1 = null, $parameter2 = null, $par
         ocp_mark_as_escaped($out);
     }
     if ($parameter1 !== null) {
-        if (((isset($parameter1->codename)/*faster than is_object*/) && ($parameter2 === null)) || (($parameter2 !== null) && (isset($parameter2->codename)/*faster than is_object*/))) { // Tempcode only supported in first two
-            $bits = preg_split('#\{\d[^\}]*\}#', $out, 2, PREG_SPLIT_OFFSET_CAPTURE);
+        // We have AT LEAST one parameter...
 
-            $ret = new Tempcode();
-            foreach ($bits as $bit) {
-                if ($XSS_DETECT) {
-                    ocp_mark_as_escaped($bit[0]);
-                }
+        if (isset($parameter1->codename)/*faster than is_object*/) {
+            // If the first parameter is Tempcode then we are going to return Tempcode...
 
-                $at = $bit[1];
+            $bits = preg_split('#\{(\d[^\}]*)\}#', $out, -1, PREG_SPLIT_DELIM_CAPTURE);
 
-                if ($at != 0) {
-                    if ($out[$at - 2] === '1') {
-                        $ret->attach($parameter1);
-                    } elseif ($out[$at - 2] === '2') {
-                        $ret->attach($parameter2);
-                    } elseif (($plural_or_vowel_check) && (substr($out[$at - 2], 0, 2) === '1|')) {
-                        $exploded = explode('|', $out[$at - 2]);
-                        $_parameter = $parameter1->evaluate();
-                        $numeric = (preg_match('#^([\d,]+|' . implode('|', [do_lang('INTEGER_UNITS_billions', '[\d,]+'), do_lang('INTEGER_UNITS_millions', '[\d,]+'), do_lang('INTEGER_UNITS_thousands', '[\d,]+')]) . ')$#', $_parameter) != 0);
-                        $_parameter_denum = $numeric ? str_replace(',', '', $_parameter) : $_parameter;
-                        $ret->attach((in_array($numeric ? $_parameter_denum : cms_mb_strtolower(cms_mb_substr($_parameter, 0, 1)), $non_plural_non_vowel)) ? $exploded[1] : $exploded[2]);
-                    } elseif (($plural_or_vowel_check) && (substr($out[$at - 2], 0, 2) === '2|')) {
-                        $exploded = explode('|', $out[$at - 2]);
-                        $_parameter = $parameter2->evaluate();
-                        $numeric = (preg_match('#^([\d,]+|' . implode('|', [do_lang('INTEGER_UNITS_billions', '[\d,]+'), do_lang('INTEGER_UNITS_millions', '[\d,]+'), do_lang('INTEGER_UNITS_thousands', '[\d,]+')]) . ')$#', $_parameter) != 0);
-                        $_parameter_denum = $numeric ? str_replace(',', '', $_parameter) : $_parameter;
-                        $ret->attach((in_array($numeric ? $_parameter_denum : cms_mb_strtolower(cms_mb_substr($_parameter, 0, 1)), $non_plural_non_vowel)) ? $exploded[1] : $exploded[2]);
+            $out_tempcode = new Tempcode();
+            foreach ($bits as $i => $bit) {
+                if ($i % 2 == 1) {
+                    // Delimiter part
+                    if (is_numeric($bit)) {
+                        $parameter_num = intval($bit) - 1;
+                        if (isset($parameters[$parameter_num])) {
+                            $out_tempcode->attach($parameters[$parameter_num]);
+                            continue;
+                        }
+                    } elseif (($plural_or_vowel_check) && (preg_match('#^\d+\|#', $bit) != 0)) {
+                        $exploded = explode('|', $bit);
+                        $parameter_num = intval($exploded[0]) - 1;
+                        if (isset($parameters[$parameter_num])) {
+                            $_parameter = is_object($parameters[$parameter_num]) ? $parameters[$parameter_num]->evaluate($lang) : $parameters[$parameter_num];
+                            $numeric = (preg_match('#^([\d,]+|' . implode('|', [do_lang('INTEGER_UNITS_billions', '[\d,]+'), do_lang('INTEGER_UNITS_millions', '[\d,]+'), do_lang('INTEGER_UNITS_thousands', '[\d,]+')]) . ')$#', $_parameter) != 0);
+                            $_parameter_denum = $numeric ? str_replace(',', '', $_parameter) : $_parameter;
+                            $out_tempcode->attach((in_array($numeric ? $_parameter_denum : cms_mb_strtolower(cms_mb_substr($_parameter, 0, 1)), $non_plural_non_vowel)) ? $exploded[1] : $exploded[2]);
+                            continue;
+                        }
                     }
+
+                    // Could not bind
+                    $bit = '{' . $bit . '}';
                 }
-                $ret->attach($bit[0]);
+
+                // Non-delimiter part
+                if ($XSS_DETECT) {
+                    ocp_mark_as_escaped($bit);
+                }
+                $out_tempcode->attach($bit);
             }
 
+            // Apply some special filtering to the output, based on the language filter
             if (isset($LANG_RUNTIME_PROCESSING[$codename])) {
                 $flag = $LANG_RUNTIME_PROCESSING[$codename];
-                $parameters = [$parameter1, $parameter2];
-                if (is_array($parameter3)) {
-                    $parameters = array_merge($parameters, $parameter3);
-                } else {
-                    $parameters[] = $parameter3;
+                $_out = $out_tempcode->evaluate();
+                $out = $LANG_FILTER_OB->run_time($codename, $_out, $flag, $parameters);
+                if ($_out != $out) {
+                    $out_tempcode = make_string_tempcode($out);
                 }
-                $ret = protect_from_escaping($LANG_FILTER_OB->run_time($codename, $ret->evaluate(), $flag, $parameters));
             }
 
-            return $ret;
-        } elseif ($parameter1 !== null) {
-            $kg = function_exists('has_solemnly_declared') && !has_solemnly_declared(I_UNDERSTAND_XSS);
-            if ($kg) {
-                kid_gloves_html_escaping_singular($parameter1);
-            }
+            return $out_tempcode;
+        }
 
-            $out = str_replace('{1}', $parameter1, $out);
-            if ($plural_or_vowel_check) {
-                $numeric = (preg_match('#^([\d,]+|' . implode('|', [do_lang('INTEGER_UNITS_billions', '[\d,]+'), do_lang('INTEGER_UNITS_millions', '[\d,]+'), do_lang('INTEGER_UNITS_thousands', '[\d,]+')]) . ')$#', $parameter1) != 0);
-                $_parameter_denum = $numeric ? str_replace(',', '', $parameter1) : $parameter1;
-                $out = preg_replace('#\{1\|(.*)\|(.*)\}#U', (in_array($numeric ? $_parameter_denum : cms_mb_strtolower(cms_mb_substr($parameter1, 0, 1)), $non_plural_non_vowel)) ? '\\1' : '\\2', $out);
-            }
-            if (($XSS_DETECT) && (ocp_is_escaped($parameter1))) {
-                ocp_mark_as_escaped($out);
-            }
+        // We are handling string parameters, and returning a string...
+
+        // Handle $parameter1
+        $kg = function_exists('has_solemnly_declared') && !has_solemnly_declared(I_UNDERSTAND_XSS);
+        if ($kg) {
+            kid_gloves_html_escaping_singular($parameter1);
+        }
+        $out = str_replace('{1}', $parameter1, $out);
+        if ($plural_or_vowel_check) {
+            $numeric = (preg_match('#^([\d,]+|' . implode('|', [do_lang('INTEGER_UNITS_billions', '[\d,]+'), do_lang('INTEGER_UNITS_millions', '[\d,]+'), do_lang('INTEGER_UNITS_thousands', '[\d,]+')]) . ')$#', $parameter1) != 0);
+            $_parameter_denum = $numeric ? str_replace(',', '', $parameter1) : $parameter1;
+            $out = preg_replace('#\{1\|(.*)\|(.*)\}#U', (in_array($numeric ? $_parameter_denum : cms_mb_strtolower(cms_mb_substr($parameter1, 0, 1)), $non_plural_non_vowel)) ? '\\1' : '\\2', $out);
+        }
+        if (($XSS_DETECT) && (ocp_is_escaped($parameter1))) {
+            ocp_mark_as_escaped($out);
         }
 
         if ($parameter2 !== null) {
+            // Handle $parameter2
+            if (isset($parameter2->codename)/*faster than is_object*/) {
+                $parameter2 = $parameter2->evaluate($lang);
+            }
             if ($kg) {
                 kid_gloves_html_escaping_singular($parameter2);
             }
-
             if ($XSS_DETECT) {
                 $escaped = ocp_is_escaped($out);
             }
@@ -922,11 +944,16 @@ function _do_lang(string $codename, $parameter1 = null, $parameter2 = null, $par
             }
 
             if ($parameter3 !== null) {
+                // Handle $parameter3 (multiple)
                 $i = 3;
                 if (!is_array($parameter3)) {
                     $parameter3 = [$parameter3];
                 }
                 foreach ($parameter3 as $parameter) {
+                    if (isset($parameter->codename)/*faster than is_object*/) {
+                        $parameter = $parameter->evaluate($lang);
+                    }
+
                     if ($kg) {
                         kid_gloves_html_escaping_singular($parameter);
                     }
@@ -949,17 +976,13 @@ function _do_lang(string $codename, $parameter1 = null, $parameter2 = null, $par
         }
     }
 
+    // Apply some special filtering to the output, based on the language filter
     if (isset($LANG_RUNTIME_PROCESSING[$codename])) {
         $flag = $LANG_RUNTIME_PROCESSING[$codename];
-        $parameters = [$parameter1, $parameter2];
-        if (is_array($parameter3)) {
-            $parameters = array_merge($parameters, $parameter3);
-        } else {
-            $parameters[] = $parameter3;
-        }
         $out = $LANG_FILTER_OB->run_time($codename, $out, $flag, $parameters);
     }
 
+    // Done
     return $out;
 }
 

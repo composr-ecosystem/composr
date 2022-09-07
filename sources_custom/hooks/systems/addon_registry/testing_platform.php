@@ -822,6 +822,7 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/tests/unit_tests/js_standards.php',
             '_tests/tests/unit_tests/js_strict_mode.php',
             '_tests/tests/unit_tests/gravatars.php',
+            '_tests/tests/unit_tests/lang_api.php',
             '_tests/tests/unit_tests/lang_administrative_split.php',
             '_tests/tests/unit_tests/lang_descriptions.php',
             '_tests/tests/unit_tests/lang_duplication.php',

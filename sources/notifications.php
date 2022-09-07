@@ -78,6 +78,7 @@ function init__notifications()
 /**
  * Wraps do_lang, keeping a record of the last call. You can use when building the notification $message.
  * This allows notification handlers to possibly repeat the call with a customised language string.
+ * See do_lang for more documentation.
  *
  * @param  ID_TEXT $codename The language string codename
  * @param  ?mixed $parameter1 The first parameter [string or Tempcode] (replaces {1}) (null: none)
@@ -85,7 +86,7 @@ function init__notifications()
  * @param  ?mixed $parameter3 The third parameter (replaces {3}). May be an array of [of string or Tempcode], to allow any number of additional args (null: none)
  * @param  ?LANGUAGE_NAME $lang The language to use (null: user's language)
  * @param  boolean $require_result Whether to cause Composr to exit if the lookup does not succeed
- * @return ?mixed The human-readable content (null: not found). String normally. Tempcode if Tempcode parameters.
+ * @return ?mixed The human-readable content (null: not found). The same type as $parameter1.
  */
 function do_notification_lang(string $codename, $parameter1 = null, $parameter2 = null, $parameter3 = null, ?string $lang = null, bool $require_result = true)
 {
