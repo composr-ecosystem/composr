@@ -534,7 +534,7 @@ class Hook_addon_registry_core_menus
 
         $menu->attach(do_lorem_template('MENU_STAFF_LINK', ['TYPE' => 'dropdown', 'EDIT_URL' => placeholder_url(), 'NAME' => lorem_phrase()]));
 
-        return lorem_globalise($menu, null, '', true);
+        return lorem_globalise($menu, null, '', false);
     }
 
     /**

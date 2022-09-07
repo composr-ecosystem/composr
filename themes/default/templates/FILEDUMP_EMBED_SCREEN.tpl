@@ -45,10 +45,10 @@
 			</ul>
 
 			{+START,IF,{IMAGE}}
-				<p class="lonely-label">
-					<abbr title="HyperText Markup Language">HTML</abbr>:
-				</p>
-				<form action="#" method="post" autocomplete="off">
+				<form action="#" method="post" autocomplete="off" title="HTML">
+					<p class="lonely-label">
+						<label for="generated_html"><abbr title="HyperText Markup Language">HTML</abbr>:</label>
+					</p>
 					<div>
 						<textarea readonly="readonly" id="generated_html" name="generated_html" class="js-click-generated-html-select" cols="50" rows="2">{$SET,html,<img alt="{DESCRIPTION*}" src="{URL*}" />}{$GET*,html}</textarea>
 					</div>
