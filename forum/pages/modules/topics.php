@@ -3279,7 +3279,7 @@ class Module_topics
 
             if (substr($key, 0, 7) == 'answer_') {
                 if ($val != '') {
-                    $answers[] = [$val, 0];
+                    $answers[] = $val;
                 }
             }
         }
@@ -3352,12 +3352,11 @@ class Module_topics
                 'LABEL' => do_lang_tempcode('VOTING_POWER'),
                 'TOOLTIP' => do_lang_tempcode('DESCRIPTION_VOTING_POWER'),
             ]));
-            $sortables['voting_power'] = do_lang_tempcode('VOTING_POWER');
+            $sortables['pv_cache_voting_power'] = do_lang_tempcode('VOTING_POWER');
             $footer_fields[] = do_lang_tempcode('TOTAL_VOTING_POWER', float_format($results['total_voting_power'], 2));
         }
         if ($answer_id === null) {
             $field_titles[] = do_lang_tempcode('ANSWER');
-            $sortables['answer'] = do_lang_tempcode('ANSWER');
             $footer_fields[] = '';
         }
         $header_row = results_header_row($field_titles, $sortables, 'sort', $order_by);

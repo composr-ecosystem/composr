@@ -1137,7 +1137,7 @@ class Hook_import_ipb2
             $_answers = unserialize($row['choices']);
             $answers = []; // An array of answers
             foreach ($_answers as $answer) {
-                $answers[] = [@html_entity_decode($answer[1], ENT_QUOTES), $answer[2]];
+                $answers[] = @html_entity_decode($answer[1], ENT_QUOTES);
             }
 
             $rows2 = $db->query_select('voters', ['*'], ['tid' => $row['tid']]);
@@ -1165,7 +1165,7 @@ class Hook_import_ipb2
                     if ($answer === null) {
                         $answer = -1;
                     }
-                    $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', ['pv_poll_id' => $id_new, 'pv_member_id' => $member_id, 'pv_answer_id' => $answer, 'pv_ip' => $row2['ip_address'], 'pv_revoked' => 0, 'pv_date_time' => $row2['vote_date'], 'pv_cached_points' => 0]);
+                    $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', ['pv_poll_id' => $id_new, 'pv_member_id' => $member_id, 'pv_answer_id' => $answer, 'pv_ip' => $row2['ip_address'], 'pv_revoked' => 0, 'pv_date_time' => $row2['vote_date'], 'pv_cache_points_at_voting_time' => 0]);
                 }
             }
 

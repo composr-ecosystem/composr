@@ -3593,7 +3593,7 @@ class Hook_import_cms_merge
             $answers = [];
             $id_ordinal_map = [];
             foreach ($rows3 as $i => $row3) {
-                $answers[] = [$row3['pa_answer'], 0];
+                $answers[] = $row3['pa_answer'];
                 $id_ordinal_map[$row3['id']] = $i;
             }
 
@@ -3612,7 +3612,7 @@ class Hook_import_cms_merge
                 if ($row2['pv_member_id'] === null) {
                     continue;
                 }
-                $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', ['pv_poll_id' => $id_new, 'pv_member_id' => $row2['pv_member_id'], 'pv_answer_id' => $answer, 'pv_ip' => $row2['pv_ip'], 'pv_revoked' => $row2['pv_revoked'], 'pv_date_time' => $row2['pv_date_time'], 'pv_cached_points' => $row2['pv_cached_points']]);
+                $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', ['pv_poll_id' => $id_new, 'pv_member_id' => $row2['pv_member_id'], 'pv_answer_id' => $answer, 'pv_ip' => $row2['pv_ip'], 'pv_revoked' => $row2['pv_revoked'], 'pv_date_time' => $row2['pv_date_time'], 'pv_cache_points_at_voting_time' => $row2['pv_cache_points_at_voting_time']]);
             }
 
             import_id_remap_put('f_poll', strval($row['id']), $id_new);

@@ -1265,7 +1265,7 @@ class Hook_import_smf2
 
                     $answer = $answers[strval($row2['id_choice'])];
 
-                    $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', ['pv_poll_id' => $id_new, 'pv_member_id' => $member_id, 'pv_answer_id' => $answer, 'pv_ip' => '', 'pv_revoked' => 0, 'pv_date_time' => 0, 'pv_cached_points' => 0]);
+                    $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', ['pv_poll_id' => $id_new, 'pv_member_id' => $member_id, 'pv_answer_id' => $answer, 'pv_ip' => '', 'pv_revoked' => 0, 'pv_date_time' => 0, 'pv_cache_points_at_voting_time' => 0]);
                 }
             }
 

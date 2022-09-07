@@ -357,12 +357,16 @@ class Hook_commandr_fs_forums extends Resource_fs_base
                 $vote_revocation = $poll_data['vote_revocation'];
                 $guests_can_vote = $poll_data['guests_can_vote'];
                 $point_weighting = $poll_data['point_weighting'];
-                $answers = $poll_data['answers']; // A list of pairs of the potential voteable answers and the cached number of votes.
+                $answers = $poll_data['answers'];
 
                 $poll_id = cns_make_poll($id, $question, $is_private, $is_open, $minimum_selections, $maximum_selections, $requires_reply, $answers, $view_member_votes, $vote_revocation, $guests_can_vote, $point_weighting, false, $closing_time);
 
                 $votes = $poll_data['votes'];
-                table_from_portable_rows('f_poll_votes', $properties['votes'], ['pv_poll_id' => $poll_id], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
+                table_from_portable_rows('f_poll_votes', $votes, ['pv_poll_id' => $poll_id], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
+
+                require_lang('cns');
+                require_code('tasks');
+                call_user_func_array__long_task(do_lang('CACHE_TOPICS'), null, 'cns_topics_recache', [$id, false, true, true]);
             }
 
             if (isset($properties['special_pt_access'])) {
@@ -461,10 +465,10 @@ class Hook_commandr_fs_forums extends Resource_fs_base
 
         $rows = $GLOBALS['FORUM_DB']->query_select('f_polls', ['*'], ['id' => intval($row['t_poll_id'])], '', 1);
         if (array_key_exists(0, $rows)) {
-            $answers = $GLOBALS['FORUM_DB']->query_select('f_poll_answers', ['pa_answer', 'pa_cache_num_votes'], ['pa_poll_id' => $row['t_poll_id']]);
+            $answers = $GLOBALS['FORUM_DB']->query_select('f_poll_answers', ['pa_answer'], ['pa_poll_id' => $row['t_poll_id']]);
             $_answers = [];
             foreach ($answers as $a) {
-                $_answers[] = [$a['pa_answer'], $a['pa_cache_num_votes']];
+                $_answers[] = $a['pa_answer'];
             }
             $poll_data = [
                 'question' => $rows[0]['po_question'],
@@ -577,7 +581,7 @@ class Hook_commandr_fs_forums extends Resource_fs_base
                 $vote_revocation = $poll_data['vote_revocation'];
                 $guests_can_vote = $poll_data['guests_can_vote'];
                 $point_weighting = $poll_data['point_weighting'];
-                $answers = $poll_data['answers']; // A list of pairs of the potential voteable answers and the number of votes.
+                $answers = $poll_data['answers'];
 
                 if ($poll_id === null) {
                     require_code('cns_polls_action');
@@ -588,7 +592,7 @@ class Hook_commandr_fs_forums extends Resource_fs_base
                 }
 
                 $votes = $poll_data['votes'];
-                table_from_portable_rows('f_poll_votes', $properties['votes'], ['pv_poll_id' => $poll_id], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
+                table_from_portable_rows('f_poll_votes', $votes, ['pv_poll_id' => $poll_id], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
             } else {
                 if ($poll_id !== null) {
                     require_code('cns_polls_action2');

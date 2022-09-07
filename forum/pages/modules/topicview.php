@@ -806,10 +806,12 @@ class Module_topicview
 
             // Work out results / voting UI
             $point_weighting = (get_option('enable_poll_point_weighting') == '1') && ($_poll['point_weighting'] == 1);
-            $total_votes = $point_weighting ? $_poll['total_voting_power'] : $_poll['total_votes'];
+            $total_votes = $_poll['total_votes'];
+            $total_voting_power = $_poll['total_voting_power'];
             foreach ($_poll['answers'] as $answer) {
                 if (($poll_results) && (($_poll['requires_reply'] == 0) || ($replied))) {
-                    $num_votes = $point_weighting ? $answer['voting_power'] : $answer['num_votes'];
+                    $num_votes = $answer['num_votes'];
+                    $voting_power = $answer['voting_power'];
                     if ($total_votes != 0) {
                         $width = intval(round(100.0 * floatval($num_votes) / floatval($total_votes)));
                     } else {
@@ -819,9 +821,11 @@ class Module_topicview
                         '_GUID' => 'b32f4c526e147abf20ca0d668e40d515',
                         'ID' => strval($_poll['id']),
                         '_NUM_VOTES' => strval($num_votes),
-                        '_TOTAL_VOTES' => strval($total_votes),
+                        '_TOTAL_VOTES' => $point_weighting ? float_to_raw_string($total_votes) : strval($total_votes),
                         'NUM_VOTES' => $point_weighting ? float_format($num_votes, 2) : integer_format($num_votes),
+                        'VOTING_POWER' => ($voting_power !== null) ? float_format($answer['voting_power'], 2) : null,
                         'TOTAL_VOTES' => $point_weighting ? float_format($total_votes, 2) : integer_format($total_votes),
+                        'TOTAL_VOTING_POWER' => ($total_voting_power !== null) ? float_format($total_voting_power, 2) : null,
                         'POINT_WEIGHTING' => $point_weighting,
                         'WIDTH' => strval($width),
                         'ANSWER' => $answer['answer'],
@@ -854,7 +858,9 @@ class Module_topicview
                 'MINIMUM_SELECTIONS' => integer_format($_poll['minimum_selections']),
                 'MAXIMUM_SELECTIONS' => integer_format($_poll['maximum_selections']),
                 'CLOSING_TIME' => ($poll_is_open && $_poll['closing_time'] !== null) ? strval($_poll['closing_time']) : '0',
-                'TOTAL_VOTES' => $point_weighting ? float_format($total_votes, 2) : integer_format($total_votes),
+                'TOTAL_VOTES' => integer_format($total_votes),
+                'TOTAL_VOTING_POWER' => ($total_voting_power !== null) ? float_format($total_voting_power, 2) : null,
+                'POINT_WEIGHTING' => $point_weighting,
             ]);
         } else {
             $poll = new Tempcode();

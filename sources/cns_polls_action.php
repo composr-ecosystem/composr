@@ -28,7 +28,7 @@
  * @param  integer $minimum_selections The minimum number of selections that may be made
  * @param  integer $maximum_selections The maximum number of selections that may be made
  * @param  BINARY $requires_reply Whether members must have a post in the topic before they made vote
- * @param  array $answers A list of pairs of the potential voteable answers and the number of votes
+ * @param  array $answers A list of the potential voteable answers
  * @param  BINARY $view_member_votes Whether others should be able to view individual members' votes in the results
  * @param  BINARY $vote_revocation Whether to allow voters to revoke their vote when the poll's voting is still open
  * @param  BINARY $guests_can_vote Whether guests can vote on the poll without logging in
@@ -56,6 +56,7 @@ function cns_make_poll(int $topic_id, string $question, int $is_private, int $is
     $poll_id = $GLOBALS['FORUM_DB']->query_insert('f_polls', [
         'po_question' => $question,
         'po_cache_total_votes' => 0,
+        'po_cache_voting_power' => 0.0,
         'po_is_private' => $is_private,
         'po_is_open' => $is_open,
         'po_minimum_selections' => $minimum_selections,
@@ -69,16 +70,11 @@ function cns_make_poll(int $topic_id, string $question, int $is_private, int $is
     ], true);
 
     foreach ($answers as $i => $answer) {
-        if (is_array($answer)) {
-            list($answer, $num_votes) = $answer;
-        } else {
-            $num_votes = 0;
-        }
-
         $GLOBALS['FORUM_DB']->query_insert('f_poll_answers', [
             'pa_poll_id' => $poll_id,
             'pa_answer' => $answer,
-            'pa_cache_num_votes' => $num_votes,
+            'pa_cache_num_votes' => 0,
+            'pa_cache_voting_power' => 0.0,
             'pa_order' => $i
         ]);
     }

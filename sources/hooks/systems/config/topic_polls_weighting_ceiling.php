@@ -58,4 +58,18 @@ class Hook_config_topic_polls_weighting_ceiling
 
         return '';
     }
+
+    /**
+     * Code to run after the option is saved.
+     *
+     * @param  string $new_value The new value
+     */
+    public function postsave_handler(string $new_value)
+    {
+        require_lang('cns');
+        require_code('tasks');
+
+        // Flush voting power cache
+        call_user_func_array__long_task(do_lang('CACHE_TOPICS'), null, 'cns_topics_recache', [null, false, false, true]);
+    }
 }
