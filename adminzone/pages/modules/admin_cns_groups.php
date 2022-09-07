@@ -215,9 +215,12 @@ class Module_admin_cns_groups extends Standard_crud_module
 
         $fields->attach(form_input_line(do_lang_tempcode('NAME'), do_lang_tempcode('DESCRIPTION_USERGROUP_TITLE'), 'usergroup_name', $name, true));
 
+        // This will just cause trouble if the group is then edited in cms_cns_groups, with lost data. Best to just not allow this
+        /*
         if ((addon_installed('cns_clubs')) && ($id !== null)) {
             $fields->attach(form_input_tick(do_lang_tempcode('IS_PRIVATE_CLUB'), do_lang_tempcode('IS_PRIVATE_CLUB_DESCRIPTION'), 'is_private_club', $is_private_club == 1));
         }
+        */
 
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '9a3e18560632564111aecb8f27341fb2', 'SECTION_HIDDEN' => $title == '' && $group_leader == '', 'TITLE' => do_lang_tempcode('ADVANCED')]));
 
@@ -404,9 +407,9 @@ class Module_admin_cns_groups extends Standard_crud_module
 
         $result_entries = new Tempcode();
 
-        $group_count = $GLOBALS['FORUM_DB']->query_select_value('f_groups', 'COUNT(*)');
+        $group_count = $GLOBALS['FORUM_DB']->query_select_value('f_groups', 'COUNT(*)', ['g_is_private_club' => 0]);
 
-        list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering, ($group_count > 300) ? ['g_is_private_club' => 0] : []);
+        list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering, ['g_is_private_club' => 0]);
         $changed = false;
         foreach ($rows as $row) {
             $new_order = post_param_integer('order_' . strval($row['id']), null);
