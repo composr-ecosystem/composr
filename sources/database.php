@@ -1545,9 +1545,9 @@ class DatabaseConnector
 
             // We need database connections closed after absolutely everything else, so chain some cms_register_shutdown_function_safe calls.
             $driver = $this->driver;
-            cms_register_shutdown_function_safe(function () use ($driver) {
-                cms_register_shutdown_function_safe(function () use ($driver) {
-                    cms_register_shutdown_function_safe([$driver, 'close_connections']);
+            cms_register_shutdown_function_if_available(function () use ($driver) {
+                cms_register_shutdown_function_if_available(function () use ($driver) {
+                    cms_register_shutdown_function_if_available([$driver, 'close_connections']);
                 });
             });
         }

@@ -115,6 +115,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
 
     // These strings are de-prioritised for translation sponsorships because they are less likely to be used by regular members
     $lang_strings_admin_initial = array_map('trim', explode("\n", trim('
+        DAILY_VISITS
         SYNC_REVISIONS_WITH_GIT
         SYNC_REVISIONS_WITH_GIT_CONFIRM
         SYNC_REVISIONS_WITH_GIT_MESSAGE
@@ -10778,7 +10779,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         THANKYOU_VOTING
         THEIR_ADDRESS
         THEM
-        THEY_DOWNLOADED_THIS
         THIS
         THIS_IS_COMMENT_TOPIC
         THIS_WITH_SIMPLE

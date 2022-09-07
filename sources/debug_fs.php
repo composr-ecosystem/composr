@@ -37,7 +37,7 @@ function init__debug_fs()
     if (is_file(get_file_base() . '/data_custom/debug_fs.log')) {
         require_code('files');
         $DEBUG_FS__LOG_FILE = cms_fopen_text_write(get_file_base() . '/data_custom/debug_fs.log', false, 'ab');
-        cms_register_shutdown_function_safe('close_debug_fs');
+        cms_register_shutdown_function_if_available('close_debug_fs');
     }
 }
 

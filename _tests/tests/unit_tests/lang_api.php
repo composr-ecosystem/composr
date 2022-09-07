@@ -24,6 +24,8 @@ class lang_api_test_set extends cms_test_case
         $lang_str = 'FORUM_POST_ISOLATED_RESULT'; // A nice one with 4 parameters to test
 
         set_option('yeehaw', '1');
+        require_code('caches3');
+        erase_cached_language();
 
         // If no parameters, no substitutions
         $this->assertTrue(do_lang($lang_str) === 'Post #{1} by {2} on {3} (in topic &ldquo;{4}&rdquo;)');

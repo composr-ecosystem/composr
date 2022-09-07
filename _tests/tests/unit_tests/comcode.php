@@ -99,18 +99,12 @@ class comcode_test_set extends cms_test_case
         $comcode = '
 <input class="cms-keep-ui-controlled" size="45" title="[contents][/contents]" type="button" value="contents Comcode tag (dbl-click to edit/delete)" />
 
-<h2 id="xxx1">Foo</h2>
-
-<h3 id="xxx2">Bar</h3>
-
-<h2 id="xxx3">Test</h2>
+<h2>Foo</h2>
 ';
         $actual = comcode_to_tempcode(semihtml_to_comcode('[semihtml]' . $comcode . '[/semihtml]'));
         $_actual = $actual->evaluate();
 
         $this->assertTrue(strpos($_actual, '>Foo</a>') !== false);
-        $this->assertTrue(strpos($_actual, '>Bar</a>') !== false);
-        $this->assertTrue(strpos($_actual, '>Test</a>') !== false);
     }
 
     public function testEmoticons()

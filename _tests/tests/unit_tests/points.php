@@ -79,7 +79,8 @@ class points_test_set extends cms_test_case
         $this->_testSendGiftPointsAndReverse('refund 2 points with 1 of them being gift points', 2, 1, true);
     }
 
-    private function _testSendGiftPointsAndReverse($test, $points_to_send, $use_gift_points = null, $is_refund = false) {
+    private function _testSendGiftPointsAndReverse($test, $points_to_send, $use_gift_points = null, $is_refund = false)
+    {
         init__points();
         $initial_gift_points_sent = gift_points_sent(2);
         $initial_gift_points = gift_points_balance(2);
@@ -102,7 +103,6 @@ class points_test_set extends cms_test_case
 
         // We requested to allocate as many gift points as possible
         if ($use_gift_points === null) {
-
             // We have enough gift points to cover the entire transaction; make sure regular points are untouched
             if (($initial_gift_points >= $points_to_send)) {
                 $this->assertTrue($this->points_transact_record !== null, 'Test ' . strval($test) . ': Expected the transaction to process, but it failed.');
@@ -195,6 +195,7 @@ class points_test_set extends cms_test_case
 
         // Now test reversal
         if ($this->points_transact_record !== null) {
+            $id = mixed();
             if ($is_refund) { // Since refunds are irreversible, we must manually reverse them with a transact
                 $id = points_transact(2, 3, 'Reverse points unit test: ' . $test, $points_to_send, $use_gift_points, 0, null, 1);
             } else {

@@ -34,7 +34,7 @@ class comcode_from_html_test_set extends cms_test_case
             $got = semihtml_to_comcode($html, true);
 
             $ok = trim($got) == trim($expected);
-            $this->assertTrue($ok);
+            $this->assertTrue($ok, 'Expected: ' . $expected . '; Got: ' . $got);
             if (!$ok) {
                 require_code('diff');
                 echo '<code style="white-space: pre">' . diff_simple_text(trim($got), trim($expected)) . '</code>';

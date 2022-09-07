@@ -441,14 +441,14 @@ function transaction_amend_screen(int $id, object $title, ?int $member_id_of = n
             'URL' => $url,
             'JS_FUNCTION_CALLS' => [],
         ]);
-    } else {
-        // Edit reason
-        $_reason = lang_remap_comcode('reason', $id, $reason);
-        $GLOBALS['SITE_DB']->query_update('points_ledger', $_reason, ['id' => $id], '', 1);
-
-        // Log it
-        log_it('AMEND_POINT_TRANSACTION', strval($id), $reason);
-
-        return null;
     }
+
+    // Edit reason
+    $_reason = lang_remap_comcode('reason', $id, $reason);
+    $GLOBALS['SITE_DB']->query_update('points_ledger', $_reason, ['id' => $id], '', 1);
+
+    // Log it
+    log_it('AMEND_POINT_TRANSACTION', strval($id), $reason);
+
+    return null;
 }

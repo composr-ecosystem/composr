@@ -366,6 +366,9 @@ class css_file_test_set extends cms_test_case
         }
 
         $exceptions = [
+            'cart-table',
+            'date-calendar-dialog',
+            'trad-box-model',
             'box---points-leader-board-page',
             'first',
             'cms-modal-container',

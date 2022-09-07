@@ -142,16 +142,16 @@ class Forum_driver_vb3 extends Forum_driver_base
 
         if (!array_key_exists(0, $r)) {
             return false;
-        } else {
-            if ((!isset($GLOBALS['SITE_INFO']['vb_version'])) || ($GLOBALS['SITE_INFO']['vb_version'] >= 3.6)) {
-                $this->db->query_update('profilefield', ['required' => $required, 'hidden' => 1 - $viewable, 'maxlength' => $length, 'size' => $length, 'editable' => $settable], ['profilefieldid' => $r[0]['profilefieldid']], '', 1);
-                $this->db->query_update('phrase', ['languageid' => 0, 'varname' => 'field' . strval($r[0]['profilefieldid']) . '_title', 'fieldname' => 'cprofilefield', 'text' => $name, 'product' => 'vbulletin', 'username' => '', 'dateline' => 0, 'version' => ''], ['varname' => 'field' . strval($r[0]['profilefieldid']) . '_title'], '', 1);
-            } else {
-                $this->db->query('UPDATE ' . $_POST['vb_table_prefix'] . 'profilefield SET title=\'' . db_escape_string($name) . '\',description=\'\',required=' . strval($required) . ',hidden=' . strval(1 - $viewable) . ',maxlength=\'' . strval($length) . '\',size=\'' . strval($length) . '\',editable=' . strval($settable) . ' WHERE title=\'' . db_escape_string($old_name) . '\' LIMIT 1');
-            }
-            $this->db->query('ALTER TABLE ' . $_POST['vb_table_prefix'] . 'userfield CHANGE COLUMN field' . strval($r['profilefieldid']) . ' TO field' . db_escape_string($name), null, 0, true); // Suppress errors in case field already exists
-            return true;
         }
+
+        if ((!isset($GLOBALS['SITE_INFO']['vb_version'])) || ($GLOBALS['SITE_INFO']['vb_version'] >= 3.6)) {
+            $this->db->query_update('profilefield', ['required' => $required, 'hidden' => 1 - $viewable, 'maxlength' => $length, 'size' => $length, 'editable' => $settable], ['profilefieldid' => $r[0]['profilefieldid']], '', 1);
+            $this->db->query_update('phrase', ['languageid' => 0, 'varname' => 'field' . strval($r[0]['profilefieldid']) . '_title', 'fieldname' => 'cprofilefield', 'text' => $name, 'product' => 'vbulletin', 'username' => '', 'dateline' => 0, 'version' => ''], ['varname' => 'field' . strval($r[0]['profilefieldid']) . '_title'], '', 1);
+        } else {
+            $this->db->query('UPDATE ' . $_POST['vb_table_prefix'] . 'profilefield SET title=\'' . db_escape_string($name) . '\',description=\'\',required=' . strval($required) . ',hidden=' . strval(1 - $viewable) . ',maxlength=\'' . strval($length) . '\',size=\'' . strval($length) . '\',editable=' . strval($settable) . ' WHERE title=\'' . db_escape_string($old_name) . '\' LIMIT 1');
+        }
+        $this->db->query('ALTER TABLE ' . $_POST['vb_table_prefix'] . 'userfield CHANGE COLUMN field' . strval($r['profilefieldid']) . ' TO field' . db_escape_string($name), null, 0, true); // Suppress errors in case field already exists
+        return true;
     }
 
     /**

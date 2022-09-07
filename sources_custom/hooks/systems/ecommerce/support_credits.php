@@ -178,10 +178,10 @@ class Hook_ecommerce_support_credits
 
         // Allow admins to specify the member who should receive the credits with the field in get_needed_fields
         if ($from_admin) {
-            $id = post_param_integer('member_id', null);
-            if ($id !== null) {
+            $url_id = post_param_integer('member_id', null);
+            if ($url_id !== null) {
                 $manual = 1;
-                $member_id = $id;
+                $member_id = $url_id;
             } else {
                 $username = post_param_string('member_username', null, INPUT_FILTER_POST_IDENTIFIER);
                 if ($username !== null) {

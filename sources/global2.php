@@ -18,7 +18,7 @@
  * @package    core
  */
 
-/*EXTRA FUNCTIONS: ucwords|register_shutdown_function*/
+/*EXTRA FUNCTIONS: ucwords*/
 
 // NB: Make sure to update the version in minikernel.php too if you add new common functions or change behaviours
 
@@ -416,7 +416,9 @@ function init__global2()
 
     // At this point we can display errors nicely
     set_error_handler('composr_error_handler');
-    register_shutdown_function('catch_fatal_errors');
+    if (function_exists('register_shutdown_function')) {
+        register_shutdown_function('catch_fatal_errors');
+    }
     $HAS_SET_ERROR_HANDLER = true;
 
     // Initialise members
@@ -554,7 +556,9 @@ function init__global2()
     }
     $memory_tracking = get_value('memory_tracking');
     if (!empty($memory_tracking)) {
-        register_shutdown_function('memory_tracking');
+        if (function_exists('register_shutdown_function')) {
+            register_shutdown_function('memory_tracking');
+        }
     }
 
     if (!empty(array_diff(array_keys($_POST), ['x', 'y', 'http_referer'/*added by our JS*/]))) {
@@ -598,7 +602,9 @@ function init__global2()
 
     // For performance testing
     if (get_value('monitor_slow_urls', '0') !== '0') {
-        register_shutdown_function('monitor_slow_urls');
+        if (function_exists('register_shutdown_function')) {
+            register_shutdown_function('monitor_slow_urls');
+        }
     }
 }
 

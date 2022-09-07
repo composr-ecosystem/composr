@@ -242,7 +242,7 @@ class Hook_health_check_install_env_php_lock_down extends Hook_Health_Check
             mkdir mktime move_uploaded_file mt_getrandmax mt_rand mt_srand number_format ob_end_clean
             ob_end_flush ob_get_contents ob_start octdec opendir ord pack parse_url pathinfo
             preg_replace preg_replace_callback preg_split print_r rawurldecode rmdir
-            rawurlencode readdir realpath register_shutdown_function rename require require_once reset
+            rawurlencode readdir realpath rename require require_once reset
             round rsort rtrim serialize set_error_handler preg_match preg_grep preg_match_all
             setcookie setlocale sha1 sin sort fprintf sprintf srand str_pad str_repeat str_replace
             strcmp strip_tags stripslashes strlen strpos strrpos strstr strtok

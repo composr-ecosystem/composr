@@ -702,10 +702,10 @@ class Forum_driver_ipb3 extends Forum_driver_base
         $id = $this->db->query_select_value_if_there('pfields_data', 'pf_id', ['pf_title' => $old_name]);
         if ($id === null) {
             return false;
-        } else {
-            $this->db->query_update('pfields_data', ['pf_group_id' => 1, 'pf_input_format' => '', 'pf_topic_format' => '{title} : {content}', 'pf_content' => '', 'pf_title' => $name, 'pf_type' => 'text', 'pf_member_hide' => 1 - $viewable, 'pf_max_input' => $length, 'pf_member_edit' => $settable, 'pf_position' => 0], ['id' => $id], '', 1);
-            return true;
         }
+
+        $this->db->query_update('pfields_data', ['pf_group_id' => 1, 'pf_input_format' => '', 'pf_topic_format' => '{title} : {content}', 'pf_content' => '', 'pf_title' => $name, 'pf_type' => 'text', 'pf_member_hide' => 1 - $viewable, 'pf_max_input' => $length, 'pf_member_edit' => $settable, 'pf_position' => 0], ['id' => $id], '', 1);
+        return true;
     }
 
     /**

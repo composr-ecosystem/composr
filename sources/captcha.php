@@ -558,7 +558,7 @@ function check_captcha(?string $code_entered = null, bool $regenerate_on_error =
     if ($regenerate_on_error) {
         if (get_option('captcha_single_guess') == '1') {
             if ($passes) {
-                cms_register_shutdown_function_safe(function () {
+                cms_register_shutdown_function_if_available(function () {
                     if (get_option('recaptcha_site_key') != '') {
                         return;
                     }

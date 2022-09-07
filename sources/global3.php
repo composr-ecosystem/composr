@@ -3206,7 +3206,15 @@ function escape_html($string)
  */
 function escape_html_in_comcode($string)
 {
-    return preg_replace('#\[(/html)#i', '&#91;$1', $string);
+    $is_tempcode = is_object($string);
+    if ($is_tempcode) {
+        $string = $string->evaluate();
+    }
+    $ret = preg_replace('#\[(/html)#i', '&#91;$1', $string);
+    if ($is_tempcode) {
+        $ret = make_string_tempcode($ret);
+    }
+    return $ret;
 }
 
 /**
@@ -4898,6 +4906,40 @@ function cms_extend_time_limit(int $secs) : int
 
 /**
  * Register a function for execution on shutdown.
+ * Does not call it if shutdown functions are not available on this server.
+ *
+ * @param  mixed $callback Callback
+ * @param  ?mixed $param_a Parameter (null: not used)
+ * @param  ?mixed $param_b Parameter (null: not used)
+ * @param  ?mixed $param_c Parameter (null: not used)
+ * @param  ?mixed $param_d Parameter (null: not used)
+ * @param  ?mixed $param_e Parameter (null: not used)
+ * @param  ?mixed $param_f Parameter (null: not used)
+ * @param  ?mixed $param_g Parameter (null: not used)
+ * @param  ?mixed $param_h Parameter (null: not used)
+ * @param  ?mixed $param_i Parameter (null: not used)
+ * @param  ?mixed $param_j Parameter (null: not used)
+ * @param  ?mixed $param_k Parameter (null: not used)
+ * @param  ?mixed $param_l Parameter (null: not used)
+ * @param  ?mixed $param_m Parameter (null: not used)
+ * @return boolean Whether it scheduled for later (as normally expected)
+ */
+function cms_register_shutdown_function_if_available($callback, $param_a = null, $param_b = null, $param_c = null, $param_d = null, $param_e = null, $param_f = null, $param_g = null, $param_h = null, $param_i = null, $param_j = null, $param_k = null, $param_l = null, $param_m = null) : bool
+{
+    if (function_exists('register_shutdown_function')) {
+        $args = [$callback, $param_a, $param_b, $param_c, $param_d, $param_e, $param_f, $param_g, $param_h, $param_i, $param_j, $param_k, $param_l, $param_m];
+        while ((!empty($args)) && (end($args) === null)) {
+            array_pop($args);
+        }
+        call_user_func_array('register_shutdown_function', $args);
+        return true;
+    }
+
+    return false;
+}
+
+/**
+ * Register a function for execution on shutdown.
  * Calls it immediately if shutdown functions are not reliable on this server.
  *
  * @param  mixed $callback Callback
@@ -4918,7 +4960,7 @@ function cms_extend_time_limit(int $secs) : int
  */
 function cms_register_shutdown_function_safe($callback, $param_a = null, $param_b = null, $param_c = null, $param_d = null, $param_e = null, $param_f = null, $param_g = null, $param_h = null, $param_i = null, $param_j = null, $param_k = null, $param_l = null, $param_m = null) : bool
 {
-    if (function_exists('get_value') && get_value('avoid_register_shutdown_function') === '1') {
+    if (function_exists('get_value') && get_value('avoid_register_shutdown_function') === '1' || !function_exists('register_shutdown_function')) {
         $args = [$param_a, $param_b, $param_c, $param_d, $param_e, $param_f, $param_g, $param_h, $param_i, $param_j, $param_k, $param_l, $param_m];
         while ((!empty($args)) && (end($args) === null)) {
             array_pop($args);
@@ -4928,12 +4970,16 @@ function cms_register_shutdown_function_safe($callback, $param_a = null, $param_
         return false;
     }
 
-    $args = [$callback, $param_a, $param_b, $param_c, $param_d, $param_e, $param_f, $param_g, $param_h, $param_i, $param_j, $param_k, $param_l, $param_m];
-    while ((!empty($args)) && (end($args) === null)) {
-        array_pop($args);
+    if (function_exists('register_shutdown_function')) {
+        $args = [$callback, $param_a, $param_b, $param_c, $param_d, $param_e, $param_f, $param_g, $param_h, $param_i, $param_j, $param_k, $param_l, $param_m];
+        while ((!empty($args)) && (end($args) === null)) {
+            array_pop($args);
+        }
+        call_user_func_array('register_shutdown_function', $args);
+        return true;
     }
-    call_user_func_array('register_shutdown_function', $args);
-    return true;
+
+    return false; // Should never get here
 }
 
 /**

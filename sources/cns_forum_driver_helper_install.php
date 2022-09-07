@@ -100,13 +100,13 @@ function _helper_install_edit_custom_field(object $this_ref, string $old_name, s
     $id = $this_ref->db->query_select_value_if_there('f_custom_fields', 'id', [$this_ref->db->translate_field_ref('cf_name') => $old_name]);
     if ($id === null) {
         return false;
-    } else {
-        if ($default === null) {
-            $default = (strpos($name, 'points') !== false) ? '0' : '';
-        }
-        cns_edit_custom_field($id, $name, $description, $default, $viewable, $viewable, $settable, $encrypted, $required, 0, 0, 0, '', $type, 0, $options, $include_in_main_search, $allow_template_search, $icon, $section, $tempcode, $autofill_type, $autofill_hint);
-        return true;
     }
+
+    if ($default === null) {
+        $default = (strpos($name, 'points') !== false) ? '0' : '';
+    }
+    cns_edit_custom_field($id, $name, $description, $default, $viewable, $viewable, $settable, $encrypted, $required, 0, 0, 0, '', $type, 0, $options, $include_in_main_search, $allow_template_search, $icon, $section, $tempcode, $autofill_type, $autofill_hint);
+    return true;
 }
 
 /**

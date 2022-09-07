@@ -170,7 +170,7 @@ class Module_points
             $GLOBALS['SITE_DB']->create_index('points_ledger', 'status', ['status']);
             $GLOBALS['SITE_DB']->create_index('points_ledger', 'amount_gift_points', ['amount_gift_points']); // admin_points
 
-            // Migrate all chargelog entries to points_ledger, and delete the chargelog table
+            // Migrate all charge-log entries to points_ledger, and delete the chargelog table
             $start = 0;
             do {
                 $chargelogs = $GLOBALS['FORUM_DB']->query_select('chargelog', ['*'], [], '', 500, $start);
@@ -537,7 +537,7 @@ class Module_points
                 if (!has_privilege($member_id_viewing, 'send_points') && !has_privilege($member_id_viewing, 'moderate_points')) {
                     access_denied('PRIVILEGE', 'send_points');
                 } elseif (($member_id_of == $member_id_viewing) && (!has_privilege($member_id_viewing, 'send_points_to_self'))) { // No cheating
-                    // Handle if the member is trying to send points to themself
+                    // Handle if the member is trying to send points to themselves
                     $message = do_lang_tempcode('PE_SELF');
                 } elseif ($amount < 0) {
                     // Handle trying to send negative points

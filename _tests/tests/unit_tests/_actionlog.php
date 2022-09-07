@@ -30,6 +30,10 @@ class _actionlog_test_set extends cms_test_case
 
     public function testNoCrashes()
     {
+        if ($this->only !== null) {
+            return;
+        }
+
         $hook_obs = find_all_hook_obs('systems', 'actionlog', 'Hook_actionlog_');
         foreach ($hook_obs as $hook => $ob) {
             $handlers = $ob->get_handlers();
@@ -53,6 +57,13 @@ class _actionlog_test_set extends cms_test_case
             $handlers = $ob->get_handlers();
             foreach ($handlers as $handler => $mappings) {
                 if (($handler == 'CHARGE_CUSTOMER') && (strpos(get_db_type(), 'mysql') === false)) {
+                    continue;
+                }
+                if ($handler == 'SET_URL_REDIRECTS') {
+                    continue; // Sometimes returns a configuration error
+                }
+
+                if (($this->only !== null) && ($this->only != $handler)) {
                     continue;
                 }
 
@@ -87,8 +98,12 @@ class _actionlog_test_set extends cms_test_case
                         static $done_urls = [];
 
                         if (!array_key_exists($url, $done_urls)) {
-                            $http_result = cms_http_request($url, ['byte_limit' => 0, 'trigger_error' => false, 'cookies' => [get_session_cookie() => $session_id]]);
-                            $this->assertTrue(in_array($http_result->message, ['200', '404']), 'Unexpected HTTP response, ' . $http_result->message . ', for ' . $url . ' from ' . $handler);
+                            $http_result = cms_http_request($url, ['byte_limit' => 0, 'trigger_error' => false, 'cookies' => [get_session_cookie() => $session_id, 'ignore_http_status']]);
+                            $ok = in_array($http_result->message, ['200', '404']);
+                            $this->assertTrue($ok, 'Unexpected HTTP response, ' . $http_result->message . ', for ' . $url . ' from ' . $handler);
+                            if ($this->debug && !$ok) {
+                                var_dump($http_result);
+                            }
 
                             $done_urls[$url] = true;
                         }
@@ -100,6 +115,10 @@ class _actionlog_test_set extends cms_test_case
 
     public function testLangStringReferences()
     {
+        if ($this->only !== null) {
+            return;
+        }
+
         $hook_obs = find_all_hook_obs('systems', 'actionlog', 'Hook_actionlog_');
         foreach ($hook_obs as $hook => $ob) {
             $handlers = $ob->get_handlers();
@@ -115,6 +134,10 @@ class _actionlog_test_set extends cms_test_case
 
     public function testCMAHookReferences()
     {
+        if ($this->only !== null) {
+            return;
+        }
+
         $hook_obs = find_all_hook_obs('systems', 'actionlog', 'Hook_actionlog_');
         foreach ($hook_obs as $hook => $ob) {
             $handlers = $ob->get_handlers();
@@ -128,6 +151,10 @@ class _actionlog_test_set extends cms_test_case
 
     public function testAllActionsCovered()
     {
+        if ($this->only !== null) {
+            return;
+        }
+
         // Gather data...
 
         $handlers = [];

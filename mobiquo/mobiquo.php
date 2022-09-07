@@ -108,7 +108,7 @@ if ((is_file(TAPATALK_LOG)) && (cms_is_writable(TAPATALK_LOG))) {
     ob_start();
     ob_start();
 
-    cms_register_shutdown_function_safe(function () {
+    cms_register_shutdown_function_if_available(function () {
         $log_file = fopen(TAPATALK_LOG, 'ab');
         flock($log_file, LOCK_EX);
         fseek($log_file, 0, SEEK_END);

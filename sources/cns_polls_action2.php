@@ -239,8 +239,8 @@ function cns_vote_in_poll(int $poll_id, array $votes, ?int $member_id = null, ?a
         access_denied('NOT_AS_GUEST');
     }
 
-    $points = addon_installed('points') ? available_points($member_id) : 0;
-    $voting_power = cns_points_to_voting_power($points);
+    $points = addon_installed('points') ? points_balance($member_id) : 0;
+    $voting_power = cns_calculate_poll_voting_power($points);
     $total_voting_power_adjust = 0.0;
 
     // Insert votes
@@ -501,7 +501,7 @@ function cns_calculate_vote_voting_power(int $vote_id, bool $recalculate = false
         return $row['pv_cache_voting_power'];
     }
 
-    $voting_power = cns_points_to_voting_power($row['pv_cache_points_at_voting_time']);
+    $voting_power = cns_calculate_poll_voting_power($row['pv_cache_points_at_voting_time']);
 
     $GLOBALS['FORUM_DB']->query_update('f_poll_votes', ['pv_cache_voting_power' => $voting_power], ['id' => $vote_id]);
 

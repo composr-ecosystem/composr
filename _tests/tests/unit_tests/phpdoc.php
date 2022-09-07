@@ -23,6 +23,9 @@ class phpdoc_test_set extends cms_test_case
         $phpdoc_to_functions = [];
 
         $exceptions = [
+            'Get SQL for creating a new table.',
+            'Get SQL for changing the type of a DB field in a table.',
+            'Get SQL for creating a table index.',
             'Convert a field value to something renderable.',
             'Get details of action log entry types handled by this hook.',
             'Find the e-mail address for system e-mails (Reply-To header).',

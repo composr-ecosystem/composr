@@ -347,11 +347,25 @@
 	background: url('{$IMG;,realtime_rain/avatars/search-avatar}') no-repeat;
 }
 
-.bubble-point-charges {
-	background: url('{$IMG;,realtime_rain/bubbles/point_charges-bubble}') no-repeat;
+.bubble-point-credits {
+	background: url('{$IMG;,realtime_rain/bubbles/point_credits-bubble}') no-repeat;
 }
-.bubble-point-charges .avatar-icon {
-	background: url('{$IMG;,realtime_rain/avatars/point_charges-avatar}') no-repeat;
+.bubble-point-credits .avatar-icon {
+	background: url('{$IMG;,realtime_rain/avatars/point_credits-avatar}') no-repeat;
+}
+
+.bubble-point-debits {
+	background: url('{$IMG;,realtime_rain/bubbles/point_debits-bubble}') no-repeat;
+}
+.bubble-point-debits .avatar-icon {
+	background: url('{$IMG;,realtime_rain/avatars/point_debits-avatar}') no-repeat;
+}
+
+.bubble-point-transactions {
+	background: url('{$IMG;,realtime_rain/bubbles/point_transactions-bubble}') no-repeat;
+}
+.bubble-point-transactions .avatar-icon {
+	background: url('{$IMG;,realtime_rain/avatars/point_transactions-avatar}') no-repeat;
 }
 
 .bubble-banners {
@@ -359,13 +373,6 @@
 }
 .bubble-banners .avatar-icon {
 	background: url('{$IMG;,realtime_rain/avatars/banners-avatar}') no-repeat;
-}
-
-.bubble-point-gifts {
-	background: url('{$IMG;,realtime_rain/bubbles/point_gifts-bubble}') no-repeat;
-}
-.bubble-point-gifts .avatar-icon {
-	background: url('{$IMG;,realtime_rain/avatars/point_gifts-avatar}') no-repeat;
 }
 
 .bubble-wrap {

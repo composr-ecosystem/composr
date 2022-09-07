@@ -78,9 +78,9 @@ function semi_dev_mode_startup()
 
     global $_CREATED_FILES;
     if (isset($_CREATED_FILES)) { // Comes from ocProducts custom PHP version
-        cms_register_shutdown_function_safe(function () {
+        cms_register_shutdown_function_if_available(function () {
             // Nested so it will run last
-            cms_register_shutdown_function_safe(function () {
+            cms_register_shutdown_function_if_available(function () {
                 global $_CREATED_FILES, $_MODIFIED_FILES;
 
                 // Use the info from ocProduct's custom PHP version to make sure that all files that were created/modified got synched as they should have been.

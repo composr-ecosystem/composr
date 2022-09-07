@@ -230,7 +230,6 @@ class Hook_addon_registry_points
      */
     public function tpl_preview__points_screen() : object
     {
-        $chargelog_details = placeholder_table();
         $escrow_details = placeholder_table();
         $ledger_details = placeholder_table();
 
@@ -287,7 +286,6 @@ class Hook_addon_registry_points
             '_POINTS_RECEIVED' => placeholder_number(),
             'TO' => $to,
             'FROM' => $from,
-            'CHARGELOG_DETAILS' => $chargelog_details,
             'GIVE' => $give_template,
             'POINTS_RECORDS' => $points_records,
             'ESCROW_DETAILS' => $escrow_details,

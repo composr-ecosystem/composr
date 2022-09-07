@@ -2613,7 +2613,7 @@ function record_template_used(string $tpl_path_descrip)
     }
     $RECORDED_TEMPLATES_USED[$tpl_path_descrip]++;
 
-    if (!$called_once) {
+    if (!$called_once || !function_exists('register_shutdown_function')) {
         if (running_script('index')) {
             require_code('themes_meta_tree');
             cms_register_shutdown_function_safe(function () {

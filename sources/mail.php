@@ -34,7 +34,7 @@ function init__mail()
     $SENDING_MAIL = false;
     $EMAIL_ATTACHMENTS = [];
     $SMTP_SOCKET = [];
-    cms_register_shutdown_function_safe(function () {
+    cms_register_shutdown_function_if_available(function () {
         // Close any SMTP sockets that are still open
         global $SMTP_SOCKET;
         foreach ($SMTP_SOCKET as &$socket) {

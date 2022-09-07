@@ -54,7 +54,7 @@ function init__profiler()
     global $PROFILER_DATA;
     $PROFILER_DATA = [];
 
-    cms_register_shutdown_function_safe('_cms_profiler_script_end');
+    cms_register_shutdown_function_if_available('_cms_profiler_script_end');
 }
 
 /**

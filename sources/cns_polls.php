@@ -220,7 +220,7 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array
                 $answer_index = array_search($vote['pv_answer_id'], $_answer_ids);
                 if ($answer_index !== false) {
                     $answer = ((array_key_exists($answer_index, $answers)) && (array_key_exists('answer', $answers[$answer_index]))) ? $answers[$answer_index]['answer'] : do_lang_tempcode('UNKNOWN');
-                    $_votes[] = [
+                    $votes[] = [
                         'pv_answer_id' => $vote['pv_answer_id'],
                         'answer' => $answer,
                         'pv_member_id' => $vote['pv_member_id'],
@@ -257,7 +257,7 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array
                         'pv_ip' => get_ip_address(),
                         'pv_revoked' => 0,
                         'pv_date_time' => time(),
-                        'pv_cache_points_at_voting_time' => 0, // We do not need to know a member's points for forfeights.
+                        'pv_cache_points_at_voting_time' => 0, // We do not need to know a member's points for forfeits.
                     ]);
                 }
             }

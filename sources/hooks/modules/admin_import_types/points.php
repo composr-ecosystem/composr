@@ -36,7 +36,8 @@ class Hook_admin_import_types_points
 
         return [
             'points_ledger' => 'POINTS_LEDGER',
-            'escrow' => 'ESCROW'
+            'escrow' => 'ESCROW',
+            'daily_visits' => 'DAILY_VISITS',
         ];
     }
 }

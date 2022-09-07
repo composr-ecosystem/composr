@@ -197,7 +197,7 @@ function gift_points_sent(int $member_id) : int
  */
 function total_points_sent(int $member_id) : int
 {
-    $_sent = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', '(SUM(amount_gift_points)+SUM(amount_points))', ['sender_id' => $member_id, 'status' => 'normal'], ' AND recipient_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()));
+    $_sent = $GLOBALS['SITE_DB']->query_select_value('points_ledger', '(SUM(amount_gift_points)+SUM(amount_points))', ['sender_id' => $member_id, 'status' => 'normal'], ' AND recipient_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()));
     $actual_sent = @intval($_sent); // Most reliable way
     return $actual_sent;
 }

@@ -421,7 +421,7 @@ function convert_html_headers_to_titles(string $semihtml, bool $forceful) : stri
         for ($i = 2; $i <= 4; $i++) {
             $array_html_preg_replace = [];
             $array_html_preg_replace[] = ['#^\s*<h' . strval($i) . '><span class="inner">(.*)</span></h' . strval($i) . '>\s*<a id="[^"]*"></a>\s*$#siU', '[title="' . strval($i) . '"]${1}[/title]' . "\n"];
-            $array_html_preg_replace[] = ['#^\s*<h' . strval($i) . '>(.*)</h' . strval($i) . '>\s*<a id="[^"]*"></a>\s*$#siU', '[title="' . strval($i) . '"]${1}[/title]' . "\n"];
+            $array_html_preg_replace[] = ['#^\s*<h' . strval($i) . '>(.*)</h' . strval($i) . '>\s*(<a id="[^"]*"></a>)?\s*$#siU', '[title="' . strval($i) . '"]${1}[/title]' . "\n"];
             if ($forceful) {
                 $array_html_preg_replace[] = ['#^\s*<h' . strval($i) . '[^<>]*>(.*)</h' . strval($i) . '>\s*<a id="[^"]*"></a>\s*$#siU', '[title="' . strval($i) . '"]${1}[/title]' . "\n"];
             }
