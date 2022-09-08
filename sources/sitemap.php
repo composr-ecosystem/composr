@@ -1120,6 +1120,9 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
 
                     $lang_fields = [];
                     $select = $this->select_fields($cma_entry_info, 'r', $lang_fields);
+                    if ($explicit_order_by_entries !== null) {
+                        $select[] = preg_replace('# .*$#', '', $explicit_order_by_entries);
+                    }
 
                     $db = get_db_for($cma_entry_info['table']);
 
@@ -1171,6 +1174,9 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
                 $table .= ' JOIN ' . $cma_info['db']->get_table_prefix() . $cma_info['table'] . ' r2 ON r2.' . $cma_info['id_field'] . '=r.' . $cma_info['parent_spec__field_name'];
             } else {
                 $select = $this->select_fields($cma_info, 'r', $lang_fields);
+            }
+            if ($explicit_order_by_subcategories !== null) {
+                $select[] = preg_replace('# .*$#', '', $explicit_order_by_subcategories);
             }
 
             $db = get_db_for($cma_info['table']);
