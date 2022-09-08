@@ -171,5 +171,12 @@ a.top-left-toggle .icon {
 .action-log-filter-part {
 	float: left;
 	margin-right: 1em;
+}
+
+.action-log-filter-part * {
+	vertical-align: middle;
+}
+
+.action-log-filter-part + .action-log-filter-part {
 	padding-top: 0.2em;
 }

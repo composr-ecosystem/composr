@@ -18,7 +18,7 @@
 					{$HIDDENS_FOR_GET_FORM,{$SELF_URL,0,0,0,filter_by_member=<null>,include_duplicates=<null>,include_user_activities=<null>}}
 
 					<div class="action-log-filter-part">
-						<label for="filter_by_member">{!SHOW_ACTIONS_FOR}</label>:
+						<label for="filter_by_member">{!SHOW_ACTIONS_FOR}:</label>
 						<select name="filter_by_member" id="filter_by_member" class="form-control form-control-sm js-onchange-submit-form">
 							<option value="0"{+START,IF,{$NOT,{FILTER_BY_MEMBER}}} selected="selected"{+END}>{!ALL_USERS}</option>
 							<option value="1"{+START,IF,{FILTER_BY_MEMBER}} selected="selected"{+END}>{!ME_ONLY}</option>
@@ -26,12 +26,12 @@
 					</div>
 
 					<div class="action-log-filter-part">
-						<label for="include_duplicates">{!INCLUDE_DUPLICATES}</label>:
+						<label for="include_duplicates">{!INCLUDE_DUPLICATES}:</label>
 						<input type="checkbox" name="include_duplicates" id="include_duplicates" class="js-onchange-submit-form" value="1"{+START,IF,{INCLUDE_DUPLICATES}} checked="checked"{+END} />
 					</div>
 
 					<div class="action-log-filter-part">
-						<label for="include_user_activities">{!INCLUDE_USER_ACTIVITIES}</label>:
+						<label for="include_user_activities">{!INCLUDE_USER_ACTIVITIES}:</label>
 						<input type="checkbox" name="include_user_activities" id="include_user_activities" class="js-onchange-submit-form" value="1"{+START,IF,{INCLUDE_USER_ACTIVITIES}} checked="checked"{+END} />
 					</div>
 
