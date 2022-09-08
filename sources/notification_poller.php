@@ -245,7 +245,7 @@ function get_web_notifications(?int $max = null, int $start = 0) : array
 
     if ($start == 0) {
         require_code('caches2');
-        set_cache_entry('_get_notifications', 60 * 24, serialize([$max]), $ret);
+        set_cache_entry('_get_notifications', 60 * 24, serialize([$max]), $ret, CACHE_AGAINST_MEMBER);
     }
 
     return $ret;
@@ -403,7 +403,7 @@ function get_pts(?int $max = null, int $start = 0) : array
 
     if ($start == 0) {
         require_code('caches2');
-        set_cache_entry('_get_pts', 60 * 24, serialize([$max]), $ret);
+        set_cache_entry('_get_pts', 60 * 24, serialize([$max]), $ret, CACHE_AGAINST_MEMBER);
     }
 
     return $ret;

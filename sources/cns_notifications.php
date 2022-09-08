@@ -151,7 +151,7 @@ function generate_notifications_count(int $member_id) : int
 
         if ($do_caching) {
             require_code('caches2');
-            set_cache_entry('_new_pts', 60 * 24, $cache_identifier, $num_unread_pts);
+            set_cache_entry('_new_pts', 60 * 24, $cache_identifier, $num_unread_pts, CACHE_AGAINST_MEMBER);
         }
     }
 

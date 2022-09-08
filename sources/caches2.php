@@ -22,7 +22,7 @@
  * Remove an item from the general cache (most commonly used for blocks).
  *
  * @param  mixed $cached_for The type of what we are caching (e.g. block name) (ID_TEXT or an array of ID_TEXT, the array may be pairs re-specifying $identifier)
- * @param  ?array $identifier A map of identifying characteristics (null: no identifying characteristics, decache all)
+ * @param  ?array $identifier A map of identifying characteristics (null: no identifying characteristics, decache all OR $cached_for is an array)
  * @param  ?MEMBER $member_id Member to only decache for (null: no limit)
  * @ignore
  */
