@@ -465,16 +465,17 @@ function points_dispatch_notification(int $id, int $sender_id, int $recipient_id
         if (!is_guest($sender_id)) {
             $transaction_type = is_guest($recipient_id) ? do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_DEBITED_L') : do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_SENT_L');
             $url = points_url($sender_id);
-            $message_raw = do_lang_tempcode(
+            $message_raw = do_notification_lang(
                 is_guest($recipient_id) ? 'NOTIFICATION_POINTS_TRANSACTION_GUEST' : 'NOTIFICATION_POINTS_TRANSACTION',
                 $transaction_type,
-                (($actual_gift_points !== 0) && (!$is_refund)) ? do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_GIFT_POINTS_L', escape_html(integer_format($actual_points)), escape_html(integer_format($actual_gift_points))) : do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_POINTS_L', escape_html(integer_format($total_points))),
+                (($actual_gift_points !== 0) && (!$is_refund)) ? do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_GIFT_POINTS_L', comcode_escape(integer_format($actual_points)), comcode_escape(integer_format($actual_gift_points))) : do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_POINTS_L', comcode_escape(integer_format($total_points))),
                 [
-                    is_guest($recipient_id) ? '' : do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_TO_L', escape_html($their_displayname)),
-                    escape_html($reason),
+                    is_guest($recipient_id) ? '' : do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_TO_L', comcode_escape($their_displayname)),
+                    comcode_escape($reason),
                     $url->evaluate(),
-                    do_lang('_POINTS', escape_html($your_displayname)),
-                ]
+                    do_lang('_POINTS', comcode_escape($your_displayname)),
+                ],
+                get_lang($sender_id)
             );
             $subject = do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_SUBJECT', $transaction_type);
             dispatch_notification('points_transaction', null, $subject->evaluate(get_lang($sender_id)), $message_raw->evaluate(get_lang($sender_id)), [$sender_id], A_FROM_SYSTEM_UNPRIVILEGED);
@@ -491,16 +492,17 @@ function points_dispatch_notification(int $id, int $sender_id, int $recipient_id
                 $transaction_type = do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_RECEIVED_L');
             }
             $url = points_url($recipient_id);
-            $message_raw = do_lang_tempcode(
+            $message_raw = do_notification_lang(
                 is_guest($sender_id) ? 'NOTIFICATION_POINTS_TRANSACTION_GUEST' : 'NOTIFICATION_POINTS_TRANSACTION',
                 $transaction_type,
-                (($is_refund) && ($actual_gift_points !== 0)) ? do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_GIFT_POINTS_L', escape_html(integer_format($actual_points)), escape_html(integer_format($actual_gift_points))) : do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_POINTS_L', escape_html(integer_format($total_points))),
+                (($is_refund) && ($actual_gift_points !== 0)) ? do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_GIFT_POINTS_L', comcode_escape(integer_format($actual_points)), comcode_escape(integer_format($actual_gift_points))) : do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_POINTS_L', comcode_escape(integer_format($total_points))),
                 [
-                    is_guest($recipient_id) ? '' : do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_FROM_L', escape_html($_your_displayname)),
-                    escape_html($reason),
+                    is_guest($recipient_id) ? '' : do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_FROM_L', comcode_escape($_your_displayname)),
+                    comcode_escape($reason),
                     $url->evaluate(),
-                    do_lang('_POINTS', escape_html($their_displayname)),
-                ]
+                    do_lang('_POINTS', comcode_escape($their_displayname)),
+                ],
+                get_lang($recipient_id)
             );
             $subject = do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_SUBJECT', $transaction_type);
             dispatch_notification('points_transaction', null, $subject->evaluate(get_lang($recipient_id)), $message_raw->evaluate(get_lang($recipient_id)), [$recipient_id], A_FROM_SYSTEM_UNPRIVILEGED);
@@ -531,15 +533,15 @@ function points_dispatch_notification(int $id, int $sender_id, int $recipient_id
         $secondary_member = do_lang('NOTIFICATION_POINTS_TRANSACTION_FROM_L', escape_html($_your_username));
     }
     $url = build_url(['page' => 'admin_points', 'type' => 'view', 'id' => $id], get_module_zone('admin_points'));
-    $message_raw = do_lang_tempcode(
+    $message_raw = do_notification_lang(
         ($secondary_member != '') ? 'NOTIFICATION_POINTS_TRANSACTION_STAFF' : 'NOTIFICATION_POINTS_TRANSACTION_STAFF_GUEST',
-        escape_html($primary_member),
         $transaction_type,
+        comcode_escape($primary_member),
         [
-            (($is_refund) && ($actual_gift_points !== 0)) ? do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_GIFT_POINTS_L', escape_html(integer_format($actual_points)), escape_html(integer_format($actual_gift_points))) : do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_POINTS_L', escape_html(integer_format($total_points))),
-            escape_html($secondary_member),
+            (($is_refund) && ($actual_gift_points !== 0)) ? do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_GIFT_POINTS_L', comcode_escape(integer_format($actual_points)), comcode_escape(integer_format($actual_gift_points))) : do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_POINTS_L', comcode_escape(integer_format($total_points))),
+            comcode_escape($secondary_member),
             $url->evaluate(),
-            escape_html($reason),
+            comcode_escape($reason),
         ]
     );
     dispatch_notification('points_transaction_staff', null, $subject->evaluate(), $message_raw->evaluate(), null, A_FROM_SYSTEM_UNPRIVILEGED);

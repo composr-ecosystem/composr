@@ -91,14 +91,14 @@ function points_get_escrow(int $member_id_of, int $member_id_viewing) : object
         $reason = get_translated_tempcode('escrow', $myrow, 'reason');
 
         $results_entry = [
-            escape_html(strval($myrow['id'])),
+            strval($myrow['id']),
             $_date,
-            escape_html(integer_format($amount)),
+            integer_format($amount),
             $_from_name,
             $_to_name,
             $reason
         ];
-        $out->attach(results_entry($results_entry, false));
+        $out->attach(results_entry($results_entry, true));
     }
     return results_table(do_lang_tempcode('_ESCROW', escape_html($viewing_name)), $start, 'escrow_start', $max, 'escrow_max', $max_rows, $header_row, $out, $sortables, $sortable, $sort_order, 'escrow_sort', null, [], null, 8, 'gfhfghtrhhjghgfhfgf', false, 'tab--points');
 }
@@ -156,13 +156,13 @@ function escrow_get_logs(int $id) : object
         }
 
         $results_entry = [
-            escape_html($date),
+            $date,
             do_lang_tempcode($myrow['log_type']),
             ($myrow['member_id'] !== null) ? $name : '',
             ($myrow['information'] !== null) ? symbol_truncator([$reason, '200', '1', '1'], 'left') : ''
         ];
 
-        $out->attach(results_entry($results_entry, false));
+        $out->attach(results_entry($results_entry, true));
     }
     return results_table(do_lang_tempcode('ESCROW_LOGS'), $start, 'start', $max, 'max', $max_rows, $header_row, $out, $sortables, $sortable, $sort_order, 'sort', null, [], null, 8, 'gfhfghtrhhjghgfhfgf', false, null, false, false);
 }

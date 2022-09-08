@@ -869,10 +869,10 @@ class Module_points
 
         // Modified map_table_screen since we also have escrow logs on the same page
         $fields = [
-            'IDENTIFIER' => escape_html(strval($row['id'])),
-            'DATE' => escape_html($date),
+            'IDENTIFIER' => strval($row['id']),
+            'DATE' => $date,
             'STATUS' => $status,
-            'POINTS' => escape_html(integer_format($row['amount'])),
+            'POINTS' => integer_format($row['amount']),
             'FROM' => $_from_name,
             'TO' => $_to_name,
             'REASON' => $reason,

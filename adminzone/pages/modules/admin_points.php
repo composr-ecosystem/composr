@@ -278,7 +278,7 @@ class Module_admin_points
                     $delete_url = build_url(['page' => '_SELF', 'type' => 'reverse', 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF');
                     $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
                         '_GUID' => '3585ec7f35a1027e8584d62ffeb41e56',
-                        'NAME' => '#' . escape_html(strval($myrow['id'])),
+                        'NAME' => '#' . strval($myrow['id']),
                         'URL' => $delete_url,
                         'HIDDEN' => form_input_hidden('id', strval($myrow['id'])),
                         'ACTION_TITLE' => do_lang_tempcode('UNDO'),
@@ -294,7 +294,7 @@ class Module_admin_points
                     '_GUID' => 'b7dff48f5758ee05da8fe02beed935b6',
                     'URL' => $edit_url,
                     'HIDDEN' => form_input_hidden('id', strval($myrow['id'])),
-                    'NAME' => '#' . escape_html(strval($myrow['id'])),
+                    'NAME' => '#' . strval($myrow['id']),
                     'ACTION_TITLE' => do_lang_tempcode('AMEND'),
                     'ICON' => 'admin/edit',
                     'GET' => false,
@@ -466,8 +466,8 @@ class Module_admin_points
         }
 
         return map_table_screen(get_screen_title('VIEW_POINT_TRANSACTION', true, [strval($id)]), [
-            'IDENTIFIER' => escape_html(strval($id)),
-            'DATE' => escape_html($date),
+            'IDENTIFIER' => strval($id),
+            'DATE' => $date,
             'STATUS' => $status,
             'POINTS' => integer_format($row['amount_points']),
             'GIFT_POINTS' => integer_format($row['amount_gift_points']),

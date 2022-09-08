@@ -94,7 +94,7 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
     // Show send form
     $trans_type = get_param_string('trans_type', 'send');
     $send_amount = get_param_integer('send_amount', null);
-    $send_reason = get_param_string('send_reason', null);
+    $send_reason = get_param_string('send_reason', '');
     if (is_guest($member_id_viewing)) {
         $send_template = do_lang_tempcode('POINTS_MUST_LOGIN');
     } else {
@@ -106,13 +106,13 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
             $send_template = do_template('POINTS_SEND', [
                 '_GUID' => 'fa1749d5a803d86b1efbcfde2ad81702',
                 'SEND_URL' => $send_url,
-                'MEMBER' => escape_html(strval($member_id_of)),
-                'DEFAULT__TRANS_TYPE' => escape_html($trans_type),
-                'DEFAULT__SEND_AMOUNT' => ($send_amount !== null) ? escape_html(strval($send_amount)) : '',
-                'DEFAULT__SEND_REASON' => escape_html($send_reason),
-                '_VIEWER_GIFT_POINTS_BALANCE' => escape_html(strval($viewer_gift_points_balance)),
+                'MEMBER' => strval($member_id_of),
+                'DEFAULT__TRANS_TYPE' => $trans_type,
+                'DEFAULT__SEND_AMOUNT' => ($send_amount !== null) ? strval($send_amount) : '',
+                'DEFAULT__SEND_REASON' => $send_reason,
+                '_VIEWER_GIFT_POINTS_BALANCE' => strval($viewer_gift_points_balance),
                 'VIEWER_GIFT_POINTS_BALANCE' => integer_format($viewer_gift_points_balance),
-                '_VIEWER_POINTS_BALANCE' => escape_html(strval($viewer_points_balance)),
+                '_VIEWER_POINTS_BALANCE' => strval($viewer_points_balance),
                 'VIEWER_POINTS_BALANCE' => integer_format($viewer_points_balance),
             ]);
         } else {
@@ -150,10 +150,10 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
 
         $escrow_template = do_template('ESCROW_TRANSACTIONS', [
             '_GUID' => 'ac97ee94388e4db2b8753273694cb2a1',
-            'MEMBER' => escape_html(strval($member_id_of)),
-            '_VIEWER_POINTS_BALANCE' => escape_html(strval($viewer_points_balance)),
+            'MEMBER' => strval($member_id_of),
+            '_VIEWER_POINTS_BALANCE' => strval($viewer_points_balance),
             'VIEWER_POINTS_BALANCE' => integer_format($viewer_points_balance),
-            '_VIEWER_GIFT_POINTS_BALANCE' => escape_html(strval($viewer_gift_points_balance)),
+            '_VIEWER_GIFT_POINTS_BALANCE' => strval($viewer_gift_points_balance),
             'VIEWER_GIFT_POINTS_BALANCE' => integer_format($viewer_gift_points_balance),
             'GIFT_POINTS_ENABLED' => (get_option('enable_gift_points') == '1'),
             'FORM' => $form,
@@ -164,19 +164,19 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
         [
             '_GUID' => 'f91208ef0f9a1e1a8633ce307a778a8d',
 
-            'MEMBER' => escape_html(strval($member_id_of)),
+            'MEMBER' => strval($member_id_of),
             'PROFILE_URL' => $profile_url,
-            'USERNAME' => escape_html($username),
+            'USERNAME' => $username,
 
             'POINTS_RECORDS' => $points_records,
 
-            '_POINTS_SPENT' => escape_html(strval($points_spent)),
+            '_POINTS_SPENT' => strval($points_spent),
             'POINTS_SPENT' => integer_format($points_spent),
-            '_REMAINING' => escape_html(strval($points_balance)),
+            '_REMAINING' => strval($points_balance),
             'REMAINING' => integer_format($points_balance),
-            '_TOTAL_POINTS_SENT' => escape_html(strval($total_points_sent)),
+            '_TOTAL_POINTS_SENT' => strval($total_points_sent),
             'TOTAL_POINTS_SENT' => integer_format($total_points_sent),
-            '_GIFT_POINTS_BALANCE' => escape_html(strval($gift_points_balance)),
+            '_GIFT_POINTS_BALANCE' => strval($gift_points_balance),
             'GIFT_POINTS_BALANCE' => integer_format($gift_points_balance),
 
             'TO' => $to,
@@ -297,7 +297,7 @@ function points_get_transactions(string $type, int $member_id_of, int $member_id
             $date = $_date;
         }
 
-        $results_entry = [$date, escape_html(integer_format($amount))];
+        $results_entry = [$date, integer_format($amount)];
         if ($include_sender) {
             $results_entry[] = $_from_name;
         }
@@ -319,7 +319,7 @@ function points_get_transactions(string $type, int $member_id_of, int $member_id
                 $delete_url = build_url(['page' => 'points', 'type' => 'reverse', 'member_id_of' => $member_id_of, 'redirect' => protect_url_parameter($redirect_url)], '_SELF');
                 $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
                     '_GUID' => '3585ec7f35a1027e8584d62ffeb41e56',
-                    'NAME' => '#' . escape_html(strval($myrow['id'])),
+                    'NAME' => '#' . strval($myrow['id']),
                     'URL' => $delete_url,
                     'HIDDEN' => form_input_hidden('id', strval($myrow['id'])),
                     'ACTION_TITLE' => do_lang_tempcode('UNDO'),
@@ -334,7 +334,7 @@ function points_get_transactions(string $type, int $member_id_of, int $member_id
                     '_GUID' => 'b7dff48f5758ee05da8fe02beed935b6',
                     'URL' => $edit_url,
                     'HIDDEN' => form_input_hidden('id', strval($myrow['id'])),
-                    'NAME' => '#' . escape_html(strval($myrow['id'])),
+                    'NAME' => '#' . strval($myrow['id']),
                     'ACTION_TITLE' => do_lang_tempcode('AMEND'),
                     'ICON' => 'admin/edit',
                     'GET' => false,
@@ -343,7 +343,7 @@ function points_get_transactions(string $type, int $member_id_of, int $member_id
 
             $results_entry[] = $actions;
         }
-        $out->attach(results_entry($results_entry, false));
+        $out->attach(results_entry($results_entry, true));
     }
     return results_table(do_lang_tempcode('_POINTS', escape_html($viewing_name)), $start, 'ledger_start_' . $type, $max, 'ledger_max_' . $type, $max_rows, $header_row, $out, $sortables, $sortable, $sort_order, 'ledger_sort_' . $type, null, [], null, 8, 'gfhfghtrhhjghgfhfgf', false, 'tab--points');
 }

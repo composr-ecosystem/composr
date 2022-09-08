@@ -228,7 +228,7 @@ PHP;
                 $mode_nice = ($mode == 'cms') ? 'Composr' : 'Conversr';
                 $date = hyperlink(
                     $url,
-                    symbol_tempcode('MAKE_RELATIVE_DATE', [strval($myrow['date_and_time']), '1', '1'], [ENTITY_ESCAPED]),
+                    symbol_tempcode('MAKE_RELATIVE_DATE', [strval($myrow['date_and_time']), '1'], [ENTITY_ESCAPED]),
                     false,
                     false,
                     '#' . strval($myrow['id']),
