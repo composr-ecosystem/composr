@@ -19,6 +19,96 @@
  */
 
 /**
+ * Get a list of fields that should not be preserved when preserving POST fields on the login form.
+ *
+ * @return array List of fields
+ */
+function login_get_fields_to_not_relay() : array
+{
+    return ['username', 'password', 'remember', 'login_invisible', 'redirect', 'session_id'];
+}
+
+/**
+ * Generate a log in screen.
+ *
+ * @param  Tempcode $title Screen title
+ * @param  string $target The form target
+ * @param  ?mixed $redirect Where to redirect to (null: redirect to same URL)
+ * @return Tempcode The log in screen
+ */
+function generate_login_screen(object $title, string $target = '_top', $redirect = null) : object
+{
+    global $CURRENTLY_LOGGING_IN;
+    $CURRENTLY_LOGGING_IN = true;
+
+    $passion = new Tempcode(); // Hidden fields
+
+    $fields_to_not_relay = login_get_fields_to_not_relay();
+
+    // Where we will be redirected to after login, for GET requests (POST requests are handled further in the code)
+    if ($redirect === null) {
+        $redirect_default = get_self_url(true); // The default is to go back to where we are after login. This URL is coded to not redirect to root if we have $_POST, because we relay $_POST values and have intelligence (via $passion).
+        $redirect = get_param_string('redirect', $redirect_default, INPUT_FILTER_URL_INTERNAL); // ... but often the login screen's URL tells us where to go back to
+    }
+    require_code('global4');
+    if (($redirect != '') && (!is_unhelpful_redirect($redirect))) {
+        $passion->attach(form_input_hidden('redirect', $redirect));
+    } else { // We will only go to the zone-default page if an explicitly blank redirect URL is given or if the redirect would take us direct to another login or logout page
+        global $ZONE;
+        $_url = build_url(['page' => $ZONE['zone_default_page']], '_SELF');
+        $url = $_url->evaluate();
+        $passion->attach(form_input_hidden('redirect', static_evaluate_tempcode(protect_url_parameter($url))));
+    }
+
+    // POST field relaying
+    if (empty($_FILES)) { // Only if we don't have _FILES (which could never be relayed)
+        $passion->attach(build_keep_post_fields($fields_to_not_relay));
+        $redirect_passon = post_param_string('redirect', null, INPUT_FILTER_URL_INTERNAL & ~INPUT_FILTER_TRUSTED_SITES);
+        if ($redirect_passon !== null) {
+            $passion->attach(form_input_hidden('redirect_passon', static_evaluate_tempcode(protect_url_parameter($redirect_passon)))); // redirect_passon is used when there are POST fields, as it says what the redirect will be on the post-login-check hop (post fields prevent us doing an immediate HTTP-level redirect).
+        }
+    }
+
+    if (either_param_string('_lead_source_description', '') == '') {
+        global $METADATA;
+        $_lead_source_description = (isset($METADATA['real_page']) ? $METADATA['real_page'] : get_page_name()) . ' (' . get_self_url_easy() . ')';
+        $passion->attach(form_input_hidden('_lead_source_description', $_lead_source_description)); // Not specified, and we want the default for what the login screen is to be carried through (before real_page and get_self_url_easy is lost)
+    }
+
+    // Lost password link
+    if (get_forum_type() == 'cns' && !has_interesting_post_fields()) {
+        require_lang('cns');
+        $lost_password_url = build_url(['page' => 'lost_password', 'wide_high' => get_param_integer('wide_high', null)], get_module_zone('lost_password'));
+        $extra = do_lang_tempcode('cns:IF_FORGOTTEN_PASSWORD', escape_html($lost_password_url->evaluate()));
+    } else {
+        $extra = new Tempcode();
+    }
+
+    // It's just a session confirm to an existing cookie login, so we can make "remember me" ticked to avoid making user re-tick (check) it
+    if (!is_guest() && isset($_COOKIE[get_member_cookie()]) && !$GLOBALS['SESSION_CONFIRMED_CACHE']) {
+        $_POST['remember'] = '1';
+    }
+
+    // Render
+    $login_url = build_url(['page' => 'login', 'type' => 'login'], '_SELF');
+    require_css('login');
+    $username = get_param_string('username', '', INPUT_FILTER_GET_IDENTIFIER);
+    if (!is_guest()) {
+        $username = $GLOBALS['FORUM_DRIVER']->get_username(get_member(), false, USERNAME_DEFAULT_BLANK);
+    }
+    return do_template('LOGIN_SCREEN', [
+        '_GUID' => '0940dbf2c42493c53b7e99eb50ca51f1',
+        'EXTRA' => $extra,
+        'USERNAME' => $username,
+        'JOIN_URL' => $GLOBALS['FORUM_DRIVER']->join_url(true),
+        'TITLE' => $title,
+        'LOGIN_URL' => $login_url,
+        'PASSION' => $passion,
+        'TARGET' => $target,
+    ]);
+}
+
+/**
  * Backdoor handler. Can only be activated by those with FTP write-access.
  *
  * @return MEMBER The member to simulate

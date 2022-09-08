@@ -25,7 +25,7 @@
  */
 function csrf_filter_active() : bool
 {
-    if (get_page_name() == 'login') {
+    if (currently_logging_in()) {
         return false;
     }
 

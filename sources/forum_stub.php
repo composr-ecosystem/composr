@@ -508,7 +508,7 @@ class Forum_driver_base
 
         // Try hardcoded in Composr zone settings
         $zone_theme = ($ZONE === null || !$current_zone_requested) ? $GLOBALS['SITE_DB']->query_select_value_if_there('zones', 'zone_theme', ['zone_name' => $zone_for]) : $ZONE['zone_theme'];
-        $default_theme = ((get_page_name() == 'login') && (get_option('root_zone_login_theme') == '1') && ($zone_for != '')) ? $GLOBALS['SITE_DB']->query_select_value('zones', 'zone_theme', ['zone_name' => '']) : $zone_theme;
+        $default_theme = ((currently_logging_in()) && (get_option('root_zone_login_theme') == '1') && ($zone_for != '')) ? $GLOBALS['SITE_DB']->query_select_value('zones', 'zone_theme', ['zone_name' => '']) : $zone_theme;
         if (empty($default_theme)) { // Cleanup bad data
             $default_theme = '-1';
         }

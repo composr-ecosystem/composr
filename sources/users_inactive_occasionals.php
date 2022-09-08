@@ -122,7 +122,7 @@ function create_session(int $member_id, int $session_confirmed = 0, bool $invisi
         if (
             (running_script('index')) &&
             ($member_id != $GLOBALS['FORUM_DRIVER']->get_guest_id()) &&
-            (($_SERVER['REQUEST_METHOD'] == 'POST') || (get_page_name() != 'login')) &&
+            (($_SERVER['REQUEST_METHOD'] == 'POST') || (!currently_logging_in())) &&
             (!has_privilege(get_member(), 'access_overrun_site')) &&
             (intval(get_option('maximum_users')) > 0) &&
             ($num_members_online > intval(get_option('maximum_users')))

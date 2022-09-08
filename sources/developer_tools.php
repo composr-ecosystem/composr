@@ -64,7 +64,7 @@ function semi_dev_mode_startup()
             (!running_script('hybridauth')) &&
             (!running_script('upgrader')) &&
             (strpos($_SERVER['HTTP_REFERER'], 'login') === false) &&
-            (get_page_name() != 'login') &&
+            (!currently_logging_in()) &&
             (get_page_name() != '404') &&
             (get_param_string('keep_devtest', null) === null)
         ) {

@@ -110,8 +110,7 @@ function handle_logins()
     }
 
     // If it was a log out
-    $page = get_param_string('page', ''); // Not get_page_name for bootstrap order reasons
-    if (($page == 'login') && (get_param_string('type', '', INPUT_FILTER_GET_COMPLEX) == 'logout')) {
+    if ((currently_logging_in()) && (get_param_string('type', '', INPUT_FILTER_GET_COMPLEX) == 'logout')) {
         require_code('users_active_actions');
         handle_active_logout();
     }

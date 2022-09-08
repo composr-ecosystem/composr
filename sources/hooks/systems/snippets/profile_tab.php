@@ -77,20 +77,11 @@ class Hook_snippet_profile_tab
 
         // Very likely a session was lost
         if (is_guest()) {
-            $login_url = build_url(['page' => 'login', 'type' => 'login'], '_SELF');
-            require_css('login');
-            $passion = form_input_hidden('redirect', static_evaluate_tempcode(protect_url_parameter($GLOBALS['FORUM_DRIVER']->member_profile_url($member_id_of, true))));
-            $ret = do_template('LOGIN_SCREEN', [
-                '_GUID' => 'f401d48a9d2a70af6c2976d396207fc1',
-                'EXTRA' => '',
-                'USERNAME' => $GLOBALS['FORUM_DRIVER']->get_username($member_id_of),
-                'JOIN_URL' => $GLOBALS['FORUM_DRIVER']->join_url(true),
-                'TITLE' => '',
-                'LOGIN_URL' => $login_url,
-                'PASSION' => $passion,
-            ]);
+            require_code('users_active_actions');
+            $middle = generate_login_screen(get_screen_title('_LOGIN'), '_top', $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id_of, true));
+
             $out = new Tempcode();
-            $eval = $ret->evaluate();
+            $eval = $middle->evaluate();
             $out->attach(symbol_tempcode('CSS_TEMPCODE'));
             $out->attach($eval);
             $out->attach(symbol_tempcode('JS_TEMPCODE'));

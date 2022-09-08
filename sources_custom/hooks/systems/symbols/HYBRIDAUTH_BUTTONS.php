@@ -47,7 +47,7 @@ class Hook_symbol_HYBRIDAUTH_BUTTONS
                 $return_url = page_link_to_url($page_after_login);
             }
         } else {
-            if (in_array(get_page_name(), ['login', 'join'])) {
+            if ((get_page_name() == 'join') || (currently_logging_in())) {
                 $return_url = static_evaluate_tempcode(build_url(['page' => ''], ''));
             } else {
                 $return_url = get_self_url(true, true);

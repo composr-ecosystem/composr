@@ -4431,7 +4431,7 @@ function get_login_url() : array
         $_lead_source_description = (isset($METADATA['real_page']) ? $METADATA['real_page'] : get_page_name()) . ' (' . get_self_url_easy() . ')';
     }
 
-    if (has_interesting_post_fields() || (get_page_name() == 'join') || (get_page_name() == 'login') || (get_page_name() == 'lost_password')) {
+    if (has_interesting_post_fields() || (get_page_name() == 'join') || (currently_logging_in()) || (get_page_name() == 'lost_password')) {
         $_this_url = build_url(['page' => ''], '_SELF', ['keep_session' => true]);
     } else {
         $_this_url = build_url(['page' => '_SELF'], '_SELF', ['keep_session' => true, 'redirect' => true], true);

@@ -2309,6 +2309,7 @@ class Hook_addon_registry_core
             'TITLE' => lorem_title(),
             'LOGIN_URL' => placeholder_url(),
             'PASSION' => '',
+            'TARGET' => '_top',
         ]), null, '', true);
     }
 

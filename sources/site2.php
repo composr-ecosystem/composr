@@ -220,7 +220,7 @@ function assign_refresh($url, float $multiplier = 0.0)
  */
 function closed_site_exit()
 {
-    if ((get_page_name() != 'login') && (get_page_name() != 'join') && (get_page_name() != 'lost_password')) {
+    if ((!currently_logging_in()) && (get_page_name() != 'join') && (get_page_name() != 'lost_password')) {
         $closed_message = comcode_to_tempcode(get_option('closed'), null, true);
 
         require_code('failure');

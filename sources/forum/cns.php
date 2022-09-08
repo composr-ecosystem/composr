@@ -669,7 +669,7 @@ class Forum_driver_cns extends Forum_driver_base
     protected function _join_url(bool $tempcode_okay = false)
     {
         $page = '_SELF';
-        if (has_interesting_post_fields() || (get_page_name() == 'join') || (get_page_name() == 'login') || (get_page_name() == 'lost_password')) {
+        if (has_interesting_post_fields() || (get_page_name() == 'join') || (currently_logging_in()) || (get_page_name() == 'lost_password')) {
             $page = '';
         }
         if (get_page_name() == 'join') {

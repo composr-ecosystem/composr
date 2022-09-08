@@ -1562,19 +1562,11 @@ function _access_denied(string $class, string $param, bool $force_login)
 
         cms_ob_end_clean(); // Emergency output, potentially, so kill off any active buffer
 
-        $real_page = get_page_name();
-        $redirect = get_self_url(true, false, ['page' => $real_page]); // We have to pass in 'page' because an access-denied situation tells get_page_name() (which get_self_url() relies on) that we are on page ''.
-        set_extra_request_metadata([
-            'real_page' => $real_page,
-        ]);
-        ecv_CANONICAL_URL(user_lang(), [], []); // Cause this to be pre-cached with the correct value
-        $_GET['redirect'] = $redirect;
-        $_GET['page'] = 'login';
-        $_GET['type'] = 'browse';
-        global $PAGE_NAME_CACHE;
-        $PAGE_NAME_CACHE = 'login';
+        $redirect = get_self_url(true, false);
 
-        $middle = load_module_page(_get_module_path('', 'login'), 'login');
+        require_code('users_active_actions');
+        $middle = generate_login_screen(get_screen_title('_LOGIN'), '_self', $redirect);
+
         require_code('site');
         if ((get_value('no_tech_login_messages') !== '1') && (!is_guest())) {
             attach_message($message, 'warn');

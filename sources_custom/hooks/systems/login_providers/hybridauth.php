@@ -43,7 +43,7 @@ class Hook_login_provider_hybridauth
             return $member_id;
         }
 
-        if ((($member_id === null) || (is_guest($member_id))) && (!running_script('hybridauth')) && (!in_array(get_page_name(), ['login', 'join']))) {
+        if ((($member_id === null) || (is_guest($member_id))) && (!running_script('hybridauth')) && (get_page_name() == 'join') || (currently_logging_in())) {
             require_code('hybridauth');
             require_lang('hybridauth');
 
