@@ -2089,7 +2089,7 @@ body .accessibility-hidden { /* Contents should be made visible (or interpreted)
 	font-family: sans-serif;
 	color: {$GET,seed};
 	content: '\025BA'; /* Rightward triangle */
-	vertical-align: middle;
+	vertical-align: top;
 	padding-right: 1em;
 	display: inline-block;
 	transform: scale(0.5, 1);
