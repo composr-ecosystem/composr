@@ -129,7 +129,7 @@ function perform_keyword_search(?array $limit_to = null, ?string $keyword_prefix
         FROM ' . get_table_prefix() . 'seo_meta_keywords m
         WHERE ' . $where . '
         GROUP BY ' . $GLOBALS['SITE_DB']->translate_field_ref('meta_keyword') . '
-        ORDER BY COUNT(*) DESC';
+        ORDER BY cnt DESC';
 
     $meta_rows = $GLOBALS['SITE_DB']->query($sql, $max, 0, false, false, ['meta_keyword' => 'SHORT_TRANS']);
 
@@ -157,7 +157,7 @@ function find_search_suggestions(string $request, string $search_type = '') : ar
     if (has_privilege(get_member(), 'autocomplete_past_search')) {
         require_code('database_search');
 
-        $q = 'SELECT s_primary AS search FROM ' . get_table_prefix() . 'searches_logged WHERE ';
+        $q = 'SELECT s_primary AS search,COUNT(*) AS cnt FROM ' . get_table_prefix() . 'searches_logged WHERE ';
         if (($GLOBALS['SITE_DB']->has_full_text()) && ($GLOBALS['SITE_DB']->driver->has_full_text_boolean()) && (!is_under_radar($request))) {
             $q .= preg_replace('#\?#', 's_primary', $GLOBALS['SITE_DB']->full_text_assemble($request));
         } else {
@@ -166,7 +166,7 @@ function find_search_suggestions(string $request, string $search_type = '') : ar
         $q .= ' AND s_primary NOT LIKE \'' . db_encode_like('%<' . '%') . '\'';
         $q .= ' AND ' . db_string_not_equal_to('s_primary', '');
         $q .= ' GROUP BY s_primary HAVING COUNT(*)>' . strval(MINIMUM_AUTOCOMPLETE_PAST_SEARCH);
-        $q .= ' ORDER BY COUNT(*) DESC';
+        $q .= ' ORDER BY cnt DESC';
         $rows = $GLOBALS['SITE_DB']->query($q, MAXIMUM_AUTOCOMPLETE_SUGGESTIONS);
         foreach ($rows as $search) {
             if (count($suggestions) < MAXIMUM_AUTOCOMPLETE_SUGGESTIONS) {
@@ -204,24 +204,24 @@ function find_search_suggestions(string $request, string $search_type = '') : ar
 
                 if (strpos($title_field, 'CALL:') === false) {
                     if ($cma_info['title_field_dereference']) {
-                        $q = 'SELECT ' . $GLOBALS['SITE_DB']->translate_field_ref($title_field) . ' AS search FROM ' . get_table_prefix() . $cma_info['table'];
+                        $q = 'SELECT ' . $GLOBALS['SITE_DB']->translate_field_ref($title_field) . ' AS search,COUNT(*) AS cnt FROM ' . get_table_prefix() . $cma_info['table'];
                         if ($GLOBALS['SITE_DB']->has_full_text()) {
                             $q .= ' WHERE ' . preg_replace('#\?#', $GLOBALS['SITE_DB']->translate_field_ref($title_field), $GLOBALS['SITE_DB']->full_text_assemble($request));
                         } else {
                             $q .= ' WHERE ' . $GLOBALS['SITE_DB']->translate_field_ref($title_field) . ' LIKE \'' . db_encode_like($request . '%') . '\'';
                         }
                         $q .= ' GROUP BY ' . $GLOBALS['SITE_DB']->translate_field_ref($title_field);
-                        $q .= ' ORDER BY COUNT(*) DESC';
+                        $q .= ' ORDER BY cnt DESC';
                         $rows = $GLOBALS['SITE_DB']->query($q, MAXIMUM_AUTOCOMPLETE_SUGGESTIONS, 0, false, false, [$title_field => 'SHORT_TRANS']);
                     } else {
-                        $q = 'SELECT ' . $title_field . ' AS search FROM ' . get_table_prefix() . $cma_info['table'];
+                        $q = 'SELECT ' . $title_field . ' AS search,COUNT(*) AS cnt FROM ' . get_table_prefix() . $cma_info['table'];
                         if ($GLOBALS['SITE_DB']->has_full_text($cma_info['table'], $cma_info['title_field'])) {
                             $q .= ' WHERE ' . preg_replace('#\?#', $title_field, $GLOBALS['SITE_DB']->full_text_assemble($request));
                         } else {
                             $q .= ' WHERE ' . $title_field . ' LIKE \'' . db_encode_like($request . '%') . '\'';
                         }
                         $q .= ' GROUP BY ' . $title_field;
-                        $q .= ' ORDER BY COUNT(*) DESC';
+                        $q .= ' ORDER BY cnt DESC';
                         $rows = $GLOBALS['SITE_DB']->query($q, MAXIMUM_AUTOCOMPLETE_SUGGESTIONS);
                     }
                     foreach ($rows as $search) {

@@ -114,8 +114,10 @@ PHP;
 
         // Read selection parameters
         if (@cms_empty_safe($map['param'])) {
-            $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('images', 'cat', [], 'GROUP BY cat ORDER BY COUNT(*) DESC');
-            if ($cat === null) {
+            $_cat = $GLOBALS['SITE_DB']->query_select('images', ['cat', 'COUNT(*) AS cnt'], [], 'GROUP BY cat ORDER BY cnt DESC', 1);
+            if (!empty($_cat)) {
+                $cat = $_cat[0]['cat'];
+            } else {
                 $cat = 'root';
             }
         } else {

@@ -144,7 +144,7 @@ class Module_admin_actionlog
         $_member_choice_list = [];
         if (get_forum_type() == 'cns') {
             if ($GLOBALS['FORUM_DB']->query_select_value('f_moderator_logs', 'COUNT(DISTINCT l_by)') < 5000) {
-                $members = list_to_map('l_by', $GLOBALS['FORUM_DB']->query_select('f_moderator_logs', ['l_by', 'COUNT(*) AS cnt'], [], 'GROUP BY l_by ORDER BY COUNT(*) DESC'));
+                $members = list_to_map('l_by', $GLOBALS['FORUM_DB']->query_select('f_moderator_logs', ['l_by', 'COUNT(*) AS cnt'], [], 'GROUP BY l_by ORDER BY cnt DESC'));
                 foreach ($members as $member) {
                     $username = $GLOBALS['FORUM_DRIVER']->get_username($member['l_by'], false, USERNAME_DEFAULT_ID_RAW);
                     $_member_choice_list[$member['l_by']] = [$username, $member['cnt']];

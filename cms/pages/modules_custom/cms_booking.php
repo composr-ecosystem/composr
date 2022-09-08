@@ -340,11 +340,11 @@ class Module_cms_booking extends Standard_crud_module
         $fields->attach(form_input_line(do_lang_tempcode('PRICE'), do_lang_tempcode('DESCRIPTION_BOOKABLE_PRICE'), 'price', float_to_raw_string($details['price'], 2), true));
         $categorisation = ($details['categorisation'] === null) ? '' : get_translated_text($details['categorisation']);
         if ($categorisation == '') {
-            $_categorisation = $GLOBALS['SITE_DB']->query_select_value_if_there('bookable', 'categorisation', [], 'GROUP BY categorisation ORDER BY COUNT(*) DESC');
-            if ($_categorisation === null) {
-                $categorisation = do_lang('GENERAL');
+            $_categorisation = $GLOBALS['SITE_DB']->query_select('bookable', ['categorisation', 'COUNT(*) AS cnt'], [], 'GROUP BY categorisation ORDER BY cnt DESC', 1);
+            if (!empty($_categorisation)) {
+                $categorisation = get_translated_text($_categorisation[0]['categorisation']);
             } else {
-                $categorisation = get_translated_text($_categorisation);
+                $categorisation = do_lang('GENERAL');
             }
         }
         $fields->attach(form_input_line(do_lang_tempcode('BOOKABLE_CATEGORISATION'), do_lang_tempcode('DESCRIPTION_BOOKABLE_CATEGORISATION'), 'categorisation', $categorisation, true));

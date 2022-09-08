@@ -410,8 +410,8 @@ function get_topic_participant_uids(int $topic_id, int $max, ?array $topic_detai
     $sql = '';
     $sql .= ' FROM ' . $table_prefix . 'f_posts p';
     $sql .= ' WHERE ' . tapatalk_get_topic_where($topic_id);
-    $sql .= ' GROUP BY p_poster ORDER BY COUNT(*) DESC';
-    $participants = $GLOBALS['FORUM_DB']->query('SELECT p_poster' . $sql, $max);
+    $sql .= ' GROUP BY p_poster ORDER BY cnt DESC';
+    $participants = $GLOBALS['FORUM_DB']->query('SELECT p_poster,COUNT(*) AS cnt' . $sql, $max);
     $ret = collapse_1d_complexity('p_poster', $participants);
     if (($topic_details !== null) && ($topic_details['t_forum_id'] === null)) {
         $ret[] = $topic_details['t_pt_from'];

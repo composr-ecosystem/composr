@@ -97,8 +97,10 @@ PHP;
         $check_perms = array_key_exists('check', $map) ? ($map['check'] == '1') : true;
 
         if (@cms_empty_safe($map['param'])) {
-            $category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entries', 'cc_id', [], 'GROUP BY cc_id ORDER BY COUNT(*) DESC');
-            if ($category_id === null) {
+            $_category_id = $GLOBALS['SITE_DB']->query_select('catalogue_entries', ['cc_id', 'COUNT(*) AS cnt'], [], 'GROUP BY cc_id ORDER BY cnt DESC', 1);
+            if (!empty($_category_id)) {
+                $category_id = $_category_id[0]['cc_id'];
+            } else {
                 $category_id = db_get_first_id();
             }
         } else {

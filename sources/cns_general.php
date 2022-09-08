@@ -397,7 +397,7 @@ function cns_read_in_member_profile(int $member_id, ?array $need = null, bool $i
         $best_yet_forum = 0; // Initialise to integer type
         $best_yet_forum = null;
         $_most_active_forum = null;
-        $_best_yet_forum = $GLOBALS['FORUM_DB']->query_select('f_posts', ['COUNT(*) as cnt', 'p_cache_forum_id'], ['p_poster' => $member_id], 'GROUP BY p_cache_forum_id ORDER BY COUNT(*) DESC', 1); // order by and limit have been added since original code, makes it run a bit faster
+        $_best_yet_forum = $GLOBALS['FORUM_DB']->query_select('f_posts', ['COUNT(*) as cnt', 'p_cache_forum_id'], ['p_poster' => $member_id], 'GROUP BY p_cache_forum_id ORDER BY cnt DESC', 1); // order by and limit have been added since original code, makes it run a bit faster
         $_best_yet_forum = collapse_2d_complexity('p_cache_forum_id', 'cnt', $_best_yet_forum);
         foreach ($forums as $forum) {
             if (((array_key_exists($forum['id'], $_best_yet_forum)) && (($best_yet_forum === null) || ($_best_yet_forum[$forum['id']] > $best_yet_forum)))) {

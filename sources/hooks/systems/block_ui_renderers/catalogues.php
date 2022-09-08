@@ -65,7 +65,7 @@ class Hook_block_ui_renderers_catalogues
         }
 
         if (($parameter == 'sort') && (in_array($block, ['main_cc_embed']))) {
-            $max_field_count = $GLOBALS['SITE_DB']->query_select_value('catalogue_fields', 'COUNT(*)', [], 'GROUP BY c_name ORDER BY COUNT(*) DESC');
+            $max_field_count = $GLOBALS['SITE_DB']->query_select_value('catalogue_fields', 'COUNT(*) AS cnt', [], 'GROUP BY c_name ORDER BY cnt DESC');
 
             require_lang('fields');
 
