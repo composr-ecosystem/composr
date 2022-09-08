@@ -55,8 +55,9 @@ a.top-left-toggle .icon {
 	width: calc(100% - 18em);
 }
 
-.checklist-task > * {
+.checklist-task :last-child {
 	vertical-align: middle;
+	/* The image is an icon so already set to be vertically aligned */
 }
 
 .checklist-task-status {
