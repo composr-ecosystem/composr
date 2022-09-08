@@ -96,7 +96,7 @@ class Module_points
             add_privilege('POINTS', 'use_points', true);
             add_privilege('POINTS', 'trace_anonymous_points_transactions', false);
             add_privilege('POINTS', 'send_points_to_self', false);
-            add_privilege('POINTS', 'view_points_ledger', false);
+            add_privilege('POINTS', 'view_points_ledger', true);
 
             $GLOBALS['FORUM_DRIVER']->install_create_custom_field('points_spent', 20, /*locked=*/1, /*viewable=*/0, /*settable=*/0, /*required=*/0, '', 'integer');
             $GLOBALS['FORUM_DRIVER']->install_create_custom_field('gift_points_sent', 20, /*locked=*/1, /*viewable=*/0, /*settable=*/0, /*required=*/0, '', 'integer');

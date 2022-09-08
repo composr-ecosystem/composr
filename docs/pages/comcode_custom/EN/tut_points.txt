@@ -52,6 +52,8 @@ Some reasons someone might send points include:
 
 To send or escrow points to another member, visit their profile and go in their points tab. There will be a form to send points and a separate form to escrow points. Members must have the &ldquo;Send points to other members&rdquo; privilege to send points to other members, and they must have the &ldquo;Escrow points to others&rdquo; privilege to hold points in escrow for another member. The member being sent or escrowed points must also have the &ldquo;Use points&rdquo; privilege to be sent or escrowed points.
 
+Members may not send points to themselves unless they have the &ldquo;Send points to self&rdquo; privilege.
+
 [title="3"]Gift points (advanced)[/title]
 
 By default, members have a single point balance that they can use both to spend on things and to send to other members (if they have the &ldquo;Send points to other members&rdquo; privilege). However, website administrators can enable a separate gift points balance by ticking (checking) the &ldquo;Enable gift points&rdquo; configuration option (under Admin Zone > Setup > Configuration > Points options > Point transactions).
@@ -79,17 +81,17 @@ If an escrow expires and neither member marked it as satisfied nor disputed, the
 Escrows can be viewed in a table on each member's points profile. Only those with the &ldquo;Moderate points escrowed&rdquo; privilege can see all escrows. Otherwise, members can only see escrows in which they were either the sender or recipient.
 [/surround]
 
+[title="2"]Viewing the points ledger[/title]
+
+The full points ledger is accessible in the Admin Zone > Audit > Points ledger. There, you can see all of the points transactions that occurred on the website. Additionally, members can view each other's point transactions on their points profiles. Be aware that anonymous transactions will not show for members not involved in them (unless the member has the &ldquo;Trace the origin of anonymous point transactions&rdquo; privilege). Therefore, the total tally of a member's points received or sent may be higher than what the visible ledger sums to on a member's profile, but it will never be lower.
+
 [title="2"]Modifying points[/title]
 
 Those with the &ldquo;Moderate members' points&rdquo; privilege will see a &ldquo;Modify points&rdquo; box on member points profiles instead of &ldquo;Send points&rdquo;. This allows them to indirectly modify the points of others. A drop-down will be provided which allows, in addition to the sending of points, these actions:
  - [b]Credit[/b]: Credit (add) points to a member from the system. An example is to refund them for an outside purchase, or to reward them for something on behalf of the website.
  - [b]Debit[/b]: Debit (remove) points from a member to the system. An example is when a member makes a purchase outside of eCommerce and points escrow, or when they are being punished outside of a warning.
 
-Crediting or debiting points, just like sending points, will create a new transaction visible in the ledger. It will also send a notification to the member (if they have the &ldquo;Your points transactions&rdquo; notification enabled). This is to ensure the transparency and legitimacy of the points system.
-
-[title="2"]Viewing the points ledger[/title]
-
-The full points ledger is accessible in the Admin Zone > Audit > Points ledger. There, you can see all of the points transactions that occurred on the website. Additionally, members can view each other's point transactions on their points profiles. Be aware that anonymous transactions will not show for members not involved in them. Therefore, the total tally of a member's points received or sent may be higher than what the visible ledger sums to on a member's profile, but it will never be lower.
+Crediting or debiting points, just like sending points, will create a new transaction visible in the ledger. It will also send a notification to the member (if they have the &ldquo;Your points transactions&rdquo; notification enabled).
 
 [title="2"]Modifying point transactions[/title]
 
@@ -97,7 +99,7 @@ There are two permissible edit actions for point transactions: reversing a trans
 
 When you [concept]reverse[/concept] a transaction, that involves creating a new transaction that offsets the original one. For example, Bob sends Sue 50 points in the form of 25 gift points and 25 regular points. When reversing this, a new transaction will be created where Sue sends back 50 regular points to Bob, and Bob receives them as 25 gift points and 25 regular points. The two transactions will also be linked together so the ledger displays that one reversed the other. Escrow cancellations and undoing warning charges work in the same way. To reverse a transaction, those with the &ldquo;Moderate members' points&rdquo; privilege can click the &ldquo;Undo&rdquo; icon in the actions column next to a point transaction either in the ledger or on a member's points profile. If you reverse a points transaction created from an escrow, the escrow will also automatically be cancelled.
 
-The &ldquo;reason&rdquo; text for the ledger is the only thing that can be amended in a transaction. We carve out this exception because it is important to be able to moderate potentially dangerous or illegal content from any part of a website. Those with the &ldquo;Amend reason on point transactions&rdquo; privilege can either use the Points ledger (Admin Zone > Audit > Points ledger) or the transactions on a member's points profile to amend the reason text.
+The &ldquo;reason&rdquo; text for the ledger is the only thing that can be amended in a transaction. Those with the &ldquo;Amend reason on point transactions&rdquo; privilege can either use the Points ledger (Admin Zone > Audit > Points ledger) or the transactions on a member's points profile to amend the reason text.
 
 [title="2"]Other economy tie-ins[/title]
 
@@ -172,23 +174,35 @@ The leader-board uses the system scheduler to generate its results. To generate 
 
 [title="2"]Tenets of the point system[/title]
 
-The point system is designed to provide high levels of trust.
+The point system is designed to provide high levels of transparency, as a legitimate micro-economy. These strict tenets apply even for the highest privileged members.
 
-[title="3"]The ledger is immutable[/title]
+[title="3"]Points are not directly edited[/title]
 
-There are no convenient API methods offered to delete records or edit the members / point values in the points ledger even for the highest privileged members. Furthermore, no part of the points system will delete ledger records or edit member's point values. The ledger serves as a transparent and honest record of every point transaction that took place on the website. And members should be able to trace every transaction that took place.
+There are no convenient methods provided to directly edit members' point values. Changes go through the ledger.
+
+[title="3"]Public ledger[/title]
+
+Assuming members have the &ldquo;View full points ledger&rdquo; privilege (which they do by default), the ledger is publicly available. Senders are not visible for anonymous transactions, however, unless members have the &ldquo;Trace the origin of anonymous point transactions&rdquo; privilege.
+
+[title="3"]Immutable ledger[/title]
+
+The ledger serves as a transparent and honest record of every point transaction that took place on the website. And members should be able to trace every transaction that took place.
+
+It is not possible to edit transactions, with the exception of the reason text. We carve out this exception because it is important to be able to moderate potentially dangerous or illegal content from any part of a website.
+
+It is not possible to delete transactions.
+
+Even the system maintains the immutability of the ledger.
 
 [title="3"]Transactions cannot involve negative points[/title]
 
-The system does not allow sending, crediting, debiting, nor charging (via warnings) negative points. Members also cannot have negative points in their gift points balance (if gift points are enabled). However, it is possible for members to have a negative regular points balance but only as a result of a charge from a warning or a debit made by a staff member; they cannot spend / send / escrow more points than they have. 
+The system does not allow sending, crediting, debiting, nor charging (via warnings) negative points. Instead clear positive transactions must be added to the ledger.
 
-It is assumed the proper function will be used when handling negative points:
- - [b]Punitive Action[/b]: Create a warning for the member and include the number of points to charge as a punitive action. You cannot charge negative points as that would contradict the nature of punitive actions.
- - [b]Send[/b]: You cannot send negative points to forcefully take points from another member and credit them to yourself. You can use debit instead with a positive amount to forcefully take points away from a member to the system. If you really want to force a send transaction, you could [concept]SU[/concept] as the member you want to send the points to force a send transaction between them and the member to receive those points (such as yourself). However, they could receive a notification of the transaction if they have it enabled.
- - [b]Credit[/b]: Credit negative points implies taking points away. Use debit with the absolute (positive) value.
- - [b]Debit[/b]: Debiting negative points implies crediting a member with points. Use credit with the absolute (positive) value.
+[title="3"]Negative balances[/title]
 
-We believe having these features available (sending, crediting, and debiting) instead of allowing negative point transactions are a reasonable trade-off so the points system can be properly administered while also being respected as legitimate.
+Members can have a negative balance. Various things could put a member into this state (such as a manual debit of more from a member than they have, or changing the weights in the configuration that change their Life-time points value). Nothing the member can directly do themselves can lead to them having a negative balance, however.
+
+Members cannot have negative points in their gift points balance (if gift points are enabled).
 
 [title="2"]Points system implementation details (advanced)[/title]
 
@@ -198,7 +212,7 @@ We believe having these features available (sending, crediting, and debiting) in
 The number of points a member has is not stored in any single consistent tally, so it is not directly editable as a single number. Instead, a member's points are dynamically calculated from multiple sources according to various weights. Editing a member's points should only be indirectly done by creating a new points transaction on a member's points profile.
 
 There are two reasons points operate in this way:
-1) To provide a transparent ledger of every point transaction that occurred on the website. Imagine that the points system operates as a bank. There is no direct way to edit how much someone has in their balance at the bank. Instead, everything is processed as a 'transaction' which is logged and can be traced (e.g. bank statements). The points system operates in a similar way. Every effective edit of someone's points is a transaction logged in the points ledger. Therefore, every change in a member's points can be traced.
+1) To provide a transparent ledger.
 2) Some sources of points are not held on the ledger, as they are accumulated from actions too far-flung and numerous to be held in live detail on the ledger.
 
 Follows are some specific caveats:
