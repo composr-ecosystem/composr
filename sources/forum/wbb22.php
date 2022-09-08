@@ -147,7 +147,7 @@ class Forum_driver_wbb22 extends Forum_driver_base
         $name = 'cms_' . $name;
         $test = $this->db->query('profilefields', ['profilefieldid'], ['title' => $old_name]);
         if (array_key_exists(0, $test)) {
-            $this->db->query('UPDATE bb' . $_POST['bb_forum_number'] . '_profilefields SET \'' . db_escape_string($name) . '\',\'\',' . strval($required) . ',' . strval(1 - $viewable) . ',' . strval($length) . ',' . strval($length) . ' WHERE title=\'' . strval($old_name) . '\'');
+            $this->db->query_update('profilefields', ['title' => $name, 'description' => '', 'required' => $required, 'hidden' => 1 - $viewable, 'maxlength' => $length, 'fieldsize' => $length], ['title' => $old_name], '', 1);
             return true;
         }
         return false;

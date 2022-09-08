@@ -123,7 +123,8 @@ class Forum_driver_mybb extends Forum_driver_base
      */
     public function install_edit_custom_field(string $old_name, string $name, int $length) : bool
     {
-        $this->db->query('ALTER TABLE ' . $this->db->get_table_prefix() . 'users CHANGE COLUMN cms_' . db_escape_string($old_name) . ' TO cms_' . db_escape_string($name), null, 0, true); // Suppress errors
+        $query = $this->db->driver->alter_table_field($this->db->get_table_prefix() . 'users', 'cms_' . $old_name, 'LONG_TEXT', 'cms_' . $name);
+        $this->db->query($query, null, 0, true); // Suppress errors in case field already edited
         return true;
     }
 

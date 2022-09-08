@@ -43,7 +43,11 @@ class Hook_symbol_CURRENCY
             $to_currency = (!empty($param[2])) ? $param[2] : null;
             $display_method = ((isset($param[3])) && (is_numeric($param[3]))) ? intval($param[2]) : CURRENCY_DISPLAY_TEMPLATED;
 
-            $value = currency_convert($amount, $from_currency, $to_currency, $display_method);
+            if (!$GLOBALS['STATIC_TEMPLATE_TEST_MODE']) { // Normal operation
+                $value = currency_convert($amount, $from_currency, $to_currency, $display_method);
+            } else {
+                $value = '123';
+            }
         } else {
             $value = get_option('currency');
         }

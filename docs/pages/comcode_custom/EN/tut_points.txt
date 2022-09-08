@@ -170,30 +170,13 @@ Please be aware when you change the options of a leader-board, it only affects f
 The leader-board uses the system scheduler to generate its results. To generate a leader-board, Composr has to first go through all the members to calculate how many points they have. Points are calculated on-the-fly, and its intensive to do this for very large numbers of members. If you are concerned about the leader-board using a lot of server resources when it generates, you could consider limiting it to certain higher usergroups in a rank ladder. This way, effectively only members above a certain point threshold would be considered.
 [/surround]
 
-[title="2"]The tenets of the points system[/title]
+[title="2"]Tenets of the point system[/title]
 
-There are several tenets of the Composr points system that always hold true in every part of the system.
+The point system is designed to provide high levels of trust.
 
-[title="3"]Points are not stored in a single consistent tally[/title]
+[title="3"]The ledger is immutable[/title]
 
-[media float="right" thumb="0" framed="0"]data_custom/images/docs/remember.png[/media]
-The number of points a member has is not stored in any single consistent tally, so it is not directly editable. Instead, a member's points are dynamically calculated from multiple sources according to various weights. Editing a member's points can only be indirectly done by creating a new points transaction on a member's points profile.
-
-The main reason points operate in this way is to provide a transparent ledger of every point transaction that occurred on the website. Imagine that the points system operates as a bank. There is no direct way to edit how much someone has in their balance at the bank. Instead, everything is processed as a 'transaction' which is logged and can be traced (e.g. bank statements). The points system operates in a similar way. Every effective edit of someone's points is a transaction logged in the points ledger. Therefore, every change in a member's points can be traced.
-
-[title="3"]Forum posts do not use point transactions[/title]
-
-Be aware that the forum driver system operates differently for point tallies. Composr has no way of determining when a member makes a forum post (the forum does not tell Composr, as it is sometimes a third-party piece of software instead of Conversr). Therefore, the points earned from forum posts are calculated from a member's post count instead of using points transactions.
-
-The main ramification of this is that if posts are deleted, the point count goes backwards for the members with deleted posts. And this cannot be traced in the points ledger (but the post deletion can be traced in the action logs). We consider this a feature (e.g. deleting spam automatically will reverse the point count, at least on robust forums where post count is automatically adjusted upon moderation). And our tenet is that the only reason for a post to be deleted is if it never should have existed to begin with. Deleting posts are the enemy of historical records. And the reasons for doing it are few because text generally takes up a trivial amount of space; databases are designed to deal with inconceivable amounts of data, and the topics can be just as easily closed or moved to a hidden archive forum if they are seen as 'getting in the way'.
-
-[title="3"]Point balances may vary when configuration is changed[/title]
-
-The number of points (and gift points if applicable) every member has in their balance is subject to change. It can vary when the site configuration is changed.
-
-[title="3"]The points ledger is a transparent transaction log[/title]
-
-The points ledger serves to keep track of how points were accumulated from explicit transactions (but not statistical rewards, such as post counts or daily visits). The ledger itself is only a log and not a way of calculating how many points someone has in their balance. That is stored in dedicated custom profile fields that represent ongoing tallies of ledger activity (sending and receiving) and other activity that may modify a member's points balance.
+There are no convenient API methods offered to delete records or edit the members / point values in the points ledger even for the highest privileged members. Furthermore, no part of the points system will delete ledger records or edit member's point values. The ledger serves as a transparent and honest record of every point transaction that took place on the website. And members should be able to trace every transaction that took place.
 
 [title="3"]Transactions cannot involve negative points[/title]
 
@@ -207,34 +190,57 @@ It is assumed the proper function will be used when handling negative points:
 
 We believe having these features available (sending, crediting, and debiting) instead of allowing negative point transactions are a reasonable trade-off so the points system can be properly administered while also being respected as legitimate.
 
-[title="3"]The ledger will not be blackholed[/title]
+[title="2"]Points system implementation details (advanced)[/title]
 
-There are no convenient API methods offered to delete records or edit the members / point values in the points ledger even for the highest privileged members. Furthermore, no part of the points system will delete ledger records or edit members / point values. The ledger serves as a transparent and honest record of every point transaction that took place on the website. And members should be able to trace every transaction that took place.
+[title="3"]Points are not stored in a single consistent tally[/title]
+
+[media float="right" thumb="0" framed="0"]data_custom/images/docs/remember.png[/media]
+The number of points a member has is not stored in any single consistent tally, so it is not directly editable as a single number. Instead, a member's points are dynamically calculated from multiple sources according to various weights. Editing a member's points should only be indirectly done by creating a new points transaction on a member's points profile.
+
+There are two reasons points operate in this way:
+1) To provide a transparent ledger of every point transaction that occurred on the website. Imagine that the points system operates as a bank. There is no direct way to edit how much someone has in their balance at the bank. Instead, everything is processed as a 'transaction' which is logged and can be traced (e.g. bank statements). The points system operates in a similar way. Every effective edit of someone's points is a transaction logged in the points ledger. Therefore, every change in a member's points can be traced.
+2) Some sources of points are not held on the ledger, as they are accumulated from actions too far-flung and numerous to be held in live detail on the ledger.
+
+Follows are some specific caveats:
+
+[title="4"]Forum posts do not use point transactions[/title]
+
+Be aware that posts, under the forum driver system, operate under case '2' as described above. Composr has no way of determining when a member makes a forum post (the forum does not tell Composr, as it is sometimes a third-party piece of software instead of Conversr). Therefore, the points earned from forum posts are calculated from a member's post count instead of using points transactions.
+
+The main ramification of this is that if posts are deleted, the point count goes backwards for the members with deleted posts. And this cannot be traced in the points ledger (but the post deletion can be traced in the action logs). We consider this a feature (e.g. deleting spam automatically will reverse the point count, at least on robust forums where post count is automatically adjusted upon moderation). And our tenet is that the only reason for a post to be deleted is if it never should have existed to begin with. Deleting posts are the enemy of historical records. And the reasons for doing it are few because text generally takes up a trivial amount of space; databases are designed to deal with inconceivable amounts of data, and the topics can be just as easily closed or moved to a hidden archive forum if they are seen as 'getting in the way'.
+
+[title="4"]Point balances may vary when configuration is changed[/title]
+
+The number of points (and gift points if applicable) every member has in their balance is subject to change. It can vary when the site configuration is changed.
+
+[title="3"]The points ledger is merely a log[/title]
+
+The points ledger serves to keep track of how points were accumulated from explicit transactions. The ledger itself is only a log and not directly used to calculate how many points someone has in their balance. That is stored in dedicated custom profile fields that represent ongoing tallies of ledger activity (sending and receiving) and other activity that may modify a member's points balance.
 
 [concepts
  1_key="Points"                1_value="Points are accumulated by various means, illustrate rank, provide spending power (currency), and provide voting power in weighted polls"
- 2_key="Rank"                  2_value="Rank is determined by the total of points ever earned, and is a status symbol"
- 3_key="Gift points"           3_value="Gift points accumulate over time and exist only as points to send to other members, where they translate to regular (spendable) points. This is only applicable when the option is enabled. Otherwise, members can only send each other regular points."
+ 2_key="Gift points"           2_value="Gift points accumulate over time and exist only as points to send to other members, where they translate to regular (spendable) points. This is only applicable when the option is enabled. Otherwise, members can only send each other regular points."
+ 3_key="Rank"                  3_value="Rank is determined by the total of points ever earned, and is a status symbol"
  4_key="Leader-board"          4_value="The point leader-board shows top members by points using configurable options and is re-calculated on a specified frequency"
- 5_key="Buildr"                5_value="A Composr addon that provides a simple virtual world environment to interact in; points are the currency of Buildr"
- 6_key="Transact"              6_value="To transfer points from one member (or the system) to another member (or the system)"
- 7_key="Transaction"           7_value="A single entry in the ledger when points are transacted"
- 8_key="Ledger"                8_value="A log of the point transactions which occurred on the website"
- 9_key="Sender"                9_value="The member who sent the points or had points debited"
- 10_key="Recipient"            10_value="The member who received the points or had points credited"
- 11_key="Credit"               11_value="To receive points from the system"
- 12_key="Debit"                12_value="To spend points to the system (such as a purchase, but could also include a staff debiting points from a member)"
- 13_key="Charge"               13_value="Points debited to the system as a punitive action from a warning"
- 14_key="Life-time points"     14_value="The total number of points a member ever earned or received, but not necessarily the number they have available in their balance"
- 15_key="Reverse"              15_value="To undo a point transaction via creating a new transaction that offsets the original one; the recipient loses the points they originally received and the sender receives the points they originally sent (including gift points when applicable)"
- 16_key="Escrow"               16_value="To hold points in the system until a written set of agreements are met between two members"
- 17_key="Dispute"              17_value="To mark the agreement of a points escrow as not satisfied according to what was written, thereby requiring review by someone with the privilege to resolve escrow disputes"
- 18_key="Send (points)"        18_value="To transact points from one member's balance to another member (does not involve the system)"
- 19_key="Receive (points)"     19_value="To be transacted points from another member (not the system)"
- 20_key="Spend (points)"       20_value="To transact points from the member to the system (executed by the member) by means of purchasing something"
- 21_key="Gift Points Sent"     21_value="The number of points sent to other members that came from the member's Gift Points Balance"
- 22_key="Points balance"       22_value="The number of points currently available for the member to send, escrow, or spend"
- 23_key="Gift Points balance"  23_value="The number of points currently available for the member to send or escrow to other members before the member's regular points balance is used"
+ 5_key="Transact"              5_value="To transfer points from one member (or the system) to another member (or the system)"
+ 6_key="Transaction"           6_value="A single entry in the ledger when points are transacted"
+ 7_key="Ledger"                7_value="A log of the point transactions which occurred on the website"
+ 8_key="Sender"                8_value="The member who sent the points or had points debited"
+ 9_key="Recipient"             9_value="The member who received the points or had points credited"
+ 10_key="Credit"               10_value="To receive points from the system"
+ 11_key="Debit"                11_value="To spend points to the system (such as a purchase, but could also include a staff debiting points from a member)"
+ 12_key="Charge"               12_value="Points debited to the system as a punitive action from a warning"
+ 13_key="Send (points)"        13_value="To transact points from one member's balance to another member (does not involve the system)"
+ 14_key="Receive (points)"     14_value="To be transacted points from another member (not the system)"
+ 15_key="Spend (points)"       15_value="To transact points from the member to the system (executed by the member) by means of purchasing something"
+ 16_key="Reverse"              16_value="To undo a point transaction via creating a new transaction that offsets the original one; the recipient loses the points they originally received and the sender receives the points they originally sent (including gift points when applicable)"
+ 17_key="Escrow"               17_value="To hold points in the system until a written set of agreements are met between two members"
+ 18_key="Dispute"              18_value="To mark the agreement of a points escrow as not satisfied according to what was written, thereby requiring review by someone with the privilege to resolve escrow disputes"
+ 19_key="Gift Points Sent"     19_value="The number of points sent to other members that came from the member's Gift Points Balance"
+ 20_key="Points balance"       20_value="The number of points currently available for the member to send, escrow, or spend"
+ 21_key="Gift Points balance"  21_value="The number of points currently available for the member to send or escrow to other members before the member's regular points balance is used"
+ 22_key="Life-time points"     22_value="The total number of points a member ever earned or received, but not necessarily the number they have available in their balance"
+ 23_key="Buildr"               23_value="A Composr addon that provides a simple virtual world environment to interact in; points are the currency of Buildr"
 ]Concepts[/concepts]
 
 [title="2"]See also[/title]
