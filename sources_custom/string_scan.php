@@ -11564,6 +11564,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         VOTING_POWER
         DESCRIPTION_VOTING_POWER
         VOTING_POWER_EQUATION
+        VOTING_POWER_DERIVATION
         DATE_OF_BIRTH_NO_SELF_EDIT
         BIRTHDAY_POINTS
         BIRTHDAY_POINTS_NOTIFICATION_MAIL_SUBJECT
