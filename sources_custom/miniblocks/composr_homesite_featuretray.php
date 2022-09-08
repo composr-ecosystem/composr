@@ -636,6 +636,7 @@ $feature_tree = [
                 ['Over 50 bundled emoticons', 'Also, support for batch importing new ones <a target="_blank" class="link-exempt no-print" title="(Opens in new window) Example of Emoticons" href="http://shareddemo.composr.info/adminzone/index.php?page=admin_cns_emoticons"><img class="inline-image-3" alt="" width="12" height="12" src="{$IMG*,icons/arrow_box/arrow_box}" /></a>'],
                 ['Multi-moderation', 'Record and perform complex routine tasks <a target="_blank" class="link-exempt no-print" title="(Opens in new window) Example of Multi Moderation" href="http://shareddemo.composr.info/adminzone/index.php?page=admin_cns_multi_moderations"><img class="inline-image-3" alt="" width="12" height="12" src="{$IMG*,icons/arrow_box/arrow_box}" /></a>'],
                 null, // divider
+                ['Constitutionally-suitable poll voting', 'Weighted voting and per-forum configurable setting defaults/enforcement, suitable for running autonomous organisations (similar to DAOs)'],
                 ['Announcements'],
                 ['Quick reply'],
                 ['Post/topic moderation and validation'],
@@ -644,7 +645,6 @@ $feature_tree = [
                 ['Post Templates', 'Use your forum as a database for record gathering <a target="_blank" class="link-exempt no-print" title="(Opens in new window) Example of Post Templates" href="http://shareddemo.composr.info/adminzone/index.php?admin_cns_post_templates"><img class="inline-image-3" alt="" width="12" height="12" src="{$IMG*,icons/arrow_box/arrow_box}" /></a>'],
                 ['Post preview', 'Read a topics first post directly from the forum-view'],
                 ['Highlight posts as &lsquo;important&rsquo; <a target="_blank" class="link-exempt no-print" title="(Opens in new window) Example of Highlighted Posts" href="http://shareddemo.composr.info/forum/index.php?page=topicview&amp;id=3"><img class="inline-image-3" alt="" width="12" height="12" src="{$IMG*,icons/arrow_box/arrow_box}" /></a>', 'Your posts will be <a href="https://www.youtube.com/watch?v=5hARDXYz2io" target="_blank" title="(Opens in new window)">high as a kite by then</a>'],
-                ['Constitutionally-suitable poll voting', 'Weighted voting and per-forum configurable setting defaults/enforcement'],
             ],
             'Conversr-only',
         ],
