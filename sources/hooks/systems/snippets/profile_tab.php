@@ -78,7 +78,7 @@ class Hook_snippet_profile_tab
         // Very likely a session was lost
         if (is_guest()) {
             require_code('users_active_actions');
-            $middle = generate_login_screen(get_screen_title('_LOGIN'), '_top', $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id_of, true));
+            $middle = generate_login_screen(get_screen_title('_LOGIN'), '_top', $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id_of));
 
             $out = new Tempcode();
             $eval = $middle->evaluate();
