@@ -292,7 +292,7 @@ function web_notification_to_xml(array $row) : string
             message="' . escape_html(static_evaluate_tempcode($_message)) . '"
             from_username="' . escape_html($username) . '"
             from_member_id="' . escape_html(strval($member_id)) . '"
-            from_url="' . escape_html($from_url) . '"
+            from_url="' . escape_html(is_object($from_url) ? $from_url->evaluate() : $from_url) . '"
             from_avatar_url="' . escape_html($avatar_url) . '"
             priority="' . escape_html(strval($row['d_priority'])) . '"
             date_timestamp="' . escape_html(strval($row['d_date_and_time'])) . '"
