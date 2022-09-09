@@ -284,7 +284,7 @@ class Hook_import_mybb
 
             $id_new = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', [$GLOBALS['FORUM_DB']->translate_field_ref('g_name') => $row['title']]);
             if ($id_new === null) {
-                $id_new = cns_make_group($row['title'], 0, $is_super_admin, $is_super_moderator, '', '', null, null, null, null, null, null, null, $avatar_max_width, $avatar_max_height, null);
+                $id_new = cns_make_group($row['title'], 0, $is_super_admin, $is_super_moderator, '', '', null, null, 0, null, null, null, null, null, $avatar_max_width, $avatar_max_height, null);
             }
 
             set_privilege($id_new, 'allow_html', true);

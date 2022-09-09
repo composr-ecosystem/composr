@@ -207,7 +207,7 @@ class Hook_addon_registry_core_cns
             'sources/hooks/systems/config/show_first_join_page.php',
             'sources/hooks/systems/notifications/cns_username_changed.php',
             'sources/hooks/systems/notifications/cns_group_join_request.php',
-            'sources/hooks/systems/notifications/cns_group_declined.php',
+            'sources/hooks/systems/notifications/cns_group_join_decision.php',
             'sources/hooks/systems/notifications/cns_birthday.php',
             'sources/hooks/systems/notifications/cns_member_joined_group.php',
             'sources/hooks/systems/notifications/cns_new_member.php',
@@ -1179,6 +1179,7 @@ class Hook_addon_registry_core_cns
             'MESSAGE' => '',
             'SORT' => '',
             'PAGINATION' => '',
+            'NONRESPONSIVE' => false,
         ]);
 
         $temp = new Tempcode();
@@ -1210,6 +1211,7 @@ class Hook_addon_registry_core_cns
             'MESSAGE' => '',
             'SORT' => '',
             'PAGINATION' => '',
+            'NONRESPONSIVE' => false,
         ]);
 
         foreach (placeholder_array() as $i => $v) {
@@ -1241,6 +1243,18 @@ class Hook_addon_registry_core_cns
             'MESSAGE' => '',
             'SORT' => '',
             'PAGINATION' => '',
+            'NONRESPONSIVE' => false,
+        ]);
+
+        $prospective_promoted_members = do_lorem_template('RESULTS_TABLE', [
+            'WIDTHS' => [],
+            'TEXT_ID' => placeholder_random_id(),
+            'HEADER_ROW' => $header_row,
+            'RESULT_ENTRIES' => $_prospective_members,
+            'MESSAGE' => '',
+            'SORT' => '',
+            'PAGINATION' => '',
+            'NONRESPONSIVE' => false,
         ]);
 
         return lorem_globalise(do_lorem_template('CNS_VIEW_GROUP_SCREEN', [
@@ -1258,6 +1272,7 @@ class Hook_addon_registry_core_cns
             'PRIMARY_MEMBERS' => $primary_members,
             'SECONDARY_MEMBERS' => $secondary_members,
             'PROSPECTIVE_MEMBERS' => $prospective_members,
+            'PROSPECTIVE_PROMOTED_MEMBERS' => $prospective_promoted_members,
         ]), null, '', true);
     }
 

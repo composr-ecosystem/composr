@@ -135,8 +135,8 @@ function do_notification_template(string $codename, ?array $parameters = null, ?
  * @param  ?SHORT_TEXT $code_category The category within the notification code (null: none)
  * @param  SHORT_TEXT $subject Message subject (in Comcode)
  * @param  LONG_TEXT $message Message body (in Comcode)
- * @param  ?array $to_member_ids List of enabled members to limit sending to (null: everyone)
- * @param  ?integer $from_member_id The member ID doing the sending. Either a MEMBER or a negative number (e.g. A_FROM_SYSTEM_UNPRIVILEGED) (null: current member)
+ * @param  ?array $to_member_ids List of enabled members to limit sending to (null: everyone); ignores the member defined in $from_member_id
+ * @param  ?integer $from_member_id The member ID doing the sending. Either a MEMBER or a negative number (e.g. A_FROM_SYSTEM_UNPRIVILEGED) (null: current member); this member will be excluded from receiving the notification
  * @param  array $advanced_parameters A map of additional parameters. See comments within this function implementation to know what can be sent.
  */
 function dispatch_notification(string $notification_code, ?string $code_category, string $subject, string $message, ?array $to_member_ids = null, ?int $from_member_id = null, array $advanced_parameters = [])

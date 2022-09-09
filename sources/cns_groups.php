@@ -315,7 +315,7 @@ function cns_get_group_name(int $group, bool $hide_hidden = true) : string
 }
 
 /**
- * Get a certain property of a certain.
+ * Get a certain property of a certain group.
  *
  * @param  GROUP $group The ID of the group
  * @param  ID_TEXT $property The identifier of the property

@@ -2981,7 +2981,7 @@ class Hook_import_cms_merge
             if ($id_new === null) {
                 $title = $this->get_lang_string($db, $row['g_title']);
 
-                $id_new = cns_make_group($name, $row['g_is_default'], $row['g_is_super_admin'], $row['g_is_super_moderator'], $title, '', $row['g_promotion_target'], $row['g_promotion_threshold'], -$row['g_group_leader'], $row['g_flood_control_submit_secs'], $row['g_flood_control_access_secs'], $row['g_max_daily_upload_mb'], $row['g_max_attachments_per_post'], $row['g_max_avatar_width'], $row['g_max_avatar_height'], $row['g_max_post_length_comcode'], $row['g_max_sig_length_comcode'], $row['g_gift_points_base'], $row['g_gift_points_per_day'], $row['g_enquire_on_new_ips'], $row['g_is_presented_at_install'], $row['g_hidden'], $row['g_order'], $row['g_rank_image_pri_only'], $row['g_open_membership'], $row['g_is_private_club']);
+                $id_new = cns_make_group($name, $row['g_is_default'], $row['g_is_super_admin'], $row['g_is_super_moderator'], $title, '', $row['g_promotion_target'], $row['g_promotion_threshold'], $row['g_promotion_approval'], -$row['g_group_leader'], $row['g_flood_control_submit_secs'], $row['g_flood_control_access_secs'], $row['g_max_daily_upload_mb'], $row['g_max_attachments_per_post'], $row['g_max_avatar_width'], $row['g_max_avatar_height'], $row['g_max_post_length_comcode'], $row['g_max_sig_length_comcode'], $row['g_gift_points_base'], $row['g_gift_points_per_day'], $row['g_enquire_on_new_ips'], $row['g_is_presented_at_install'], $row['g_hidden'], $row['g_order'], $row['g_rank_image_pri_only'], $row['g_open_membership'], $row['g_is_private_club']);
             }
 
             import_id_remap_put('group', strval($row['id']), $id_new);

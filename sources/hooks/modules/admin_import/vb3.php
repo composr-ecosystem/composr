@@ -252,7 +252,7 @@ class Hook_import_vb3
 
             $id_new = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', [$GLOBALS['FORUM_DB']->translate_field_ref('g_name') => $row['title']]);
             if ($id_new === null) {
-                $id_new = cns_make_group($row['title'], 0, $is_super_admin, $is_super_moderator, $row['usertitle'], '', $row_promotion_target, $row['reputation'], $row_group_leader, 5, 0, 5, $row['attachlimit'], $row['avatarmaxwidth'], $row['avatarmaxheight'], $PROBED_FORUM_CONFIG['postmaxchars'], array_key_exists('sigmax', $PROBED_FORUM_CONFIG) ? $PROBED_FORUM_CONFIG['sigmax'] : 700);
+                $id_new = cns_make_group($row['title'], 0, $is_super_admin, $is_super_moderator, $row['usertitle'], '', $row_promotion_target, $row['reputation'], 0, $row_group_leader, 5, 0, 5, $row['attachlimit'], $row['avatarmaxwidth'], $row['avatarmaxheight'], $PROBED_FORUM_CONFIG['postmaxchars'], array_key_exists('sigmax', $PROBED_FORUM_CONFIG) ? $PROBED_FORUM_CONFIG['sigmax'] : 700);
             }
 
             // Zone permissions

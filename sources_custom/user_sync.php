@@ -329,7 +329,7 @@ function user_sync__inbound($since = null)
                 }
                 foreach ($members_groups as $group_id) {
                     if ((!in_array($group_id, $groups)) && ($group_id != $primary_group)) {
-                        cns_member_leave_group($group_id, $member_id);
+                        cns_member_leave_secondary_group($group_id, $member_id);
                     }
                 }
             }

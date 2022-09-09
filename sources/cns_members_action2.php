@@ -1221,6 +1221,10 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
                 'join_time' => time(),
             ]);
 
+            // Update approval records
+            $GLOBALS['FORUM_DB']->query_update('f_group_approvals', ['ga_status' => 1], ['ga_member_id' => $member_id, 'ga_new_group_id' => $primary_group, 'ga_status' => 0]);
+            $GLOBALS['FORUM_DB']->query_update('f_group_approvals', ['ga_status' => -1], ['ga_member_id' => $member_id, 'ga_old_group_id' => $old_primary_group, 'ga_status' => 0]);
+
             log_it('MEMBER_PRIMARY_GROUP_CHANGED', strval($member_id), strval($primary_group));
         }
     }

@@ -135,6 +135,7 @@ function uninstall_cns()
     $GLOBALS['FORUM_DB']->drop_table_if_exists('f_member_known_login_ips');
     $GLOBALS['FORUM_DB']->drop_table_if_exists('f_members');
     $GLOBALS['FORUM_DB']->drop_table_if_exists('f_group_members');
+    $GLOBALS['FORUM_DB']->drop_table_if_exists('f_group_approvals');
     $GLOBALS['FORUM_DB']->drop_table_if_exists('f_read_logs');
     $GLOBALS['FORUM_DB']->drop_table_if_exists('f_forum_tracking');
     $GLOBALS['FORUM_DB']->drop_table_if_exists('f_topic_tracking');
@@ -238,6 +239,8 @@ function install_cns(?float $upgrade_from = null)
 
         $GLOBALS['FORUM_DB']->add_table_field('f_warnings', 'w_topic_id', '?AUTO_LINK');
         $GLOBALS['FORUM_DB']->add_table_field('f_moderator_logs', 'l_warning_id', '?AUTO_LINK');
+
+        $GLOBALS['FORUM_DB']->add_table_field('f_groups', 'g_promotion_approval', 'BINARY');
 
         // Optionally provide autofill types for bundled CPFs (if any found)
         $autofill_map = [
@@ -619,6 +622,7 @@ function install_cns(?float $upgrade_from = null)
             'g_title' => 'SHORT_TRANS',
             'g_promotion_target' => '?GROUP',
             'g_promotion_threshold' => '?INTEGER',
+            'g_promotion_approval' => 'BINARY',
             'g_flood_control_submit_secs' => 'INTEGER',
             'g_flood_control_access_secs' => 'INTEGER',
             'g_gift_points_base' => 'INTEGER',
@@ -655,13 +659,13 @@ function install_cns(?float $upgrade_from = null)
         // Make guest
         $guest_group = cns_make_group(do_lang('GUESTS'), 0, 0, 0, do_lang('DESCRIPTION_GUESTS'));
         // Make administrators
-        $administrator_group = cns_make_group(do_lang('ADMINISTRATORS'), 0, 1, 0, do_lang('DESCRIPTION_ADMINISTRATORS'), 'cns_rank_images/admin', null, null, null, 0);
+        $administrator_group = cns_make_group(do_lang('ADMINISTRATORS'), 0, 1, 0, do_lang('DESCRIPTION_ADMINISTRATORS'), 'cns_rank_images/admin', null, null, 0, null, 0);
         // Make super-moderators
-        $super_moderator_group = cns_make_group(do_lang('SUPER_MODERATORS'), 0, 0, 1, do_lang('DESCRIPTION_SUPER_MODERATORS'), 'cns_rank_images/mod', null, null, null, 0);
+        $super_moderator_group = cns_make_group(do_lang('SUPER_MODERATORS'), 0, 0, 1, do_lang('DESCRIPTION_SUPER_MODERATORS'), 'cns_rank_images/mod', null, null, 0, null, 0);
         // Make member
         list($member_group_0, $member_group_1, $member_group_2, $member_group_3, $member_group_4) = cns_make_rank_set('fun');
         // Make probation
-        $probation_group = cns_make_group(do_lang('PROBATION'), 0, 0, 0, do_lang('DESCRIPTION_PROBATION'), '', null, null, null, 0);
+        $probation_group = cns_make_group(do_lang('PROBATION'), 0, 0, 0, do_lang('DESCRIPTION_PROBATION'), '', null, null, 0, null, 0);
 
         $GLOBALS['FORUM_DB']->create_table('f_forum_groupings', [
             'id' => '*AUTO',
@@ -1093,6 +1097,19 @@ function install_cns(?float $upgrade_from = null)
         if ($test === null) {
             $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_is_default' => 1], ['id' => db_get_first_id() + 8], '', 1);
         }
+
+        $GLOBALS['FORUM_DB']->create_table('f_group_approvals', [
+            'id' => '*AUTO',
+            'ga_date_and_time' => 'TIME',
+            'ga_member_id' => '*MEMBER',
+            'ga_old_group_id' => '?GROUP',
+            'ga_new_group_id' => 'GROUP',
+            'ga_status' => 'INTEGER', // -1 = declined, 0 = pending, 1 = approved
+        ]);
+        $GLOBALS['FORUM_DB']->create_index('f_group_approvals', 'ga_date_and_time', ['ga_date_and_time']);
+        $GLOBALS['FORUM_DB']->create_index('f_group_approvals', 'ga_member_id', ['ga_member_id']);
+        $GLOBALS['FORUM_DB']->create_index('f_group_approvals', 'ga_old_group_id', ['ga_old_group_id']);
+        $GLOBALS['FORUM_DB']->create_index('f_group_approvals', 'ga_new_group_id', ['ga_new_group_id']);
 
         $GLOBALS['FORUM_DB']->create_table('f_pposts_fulltext_index', [
             'i_post_id' => '*AUTO_LINK',

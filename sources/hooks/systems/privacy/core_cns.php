@@ -103,6 +103,18 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
                     'allowed_handle_methods' => PRIVACY_METHOD__DELETE,
                 ],
+                'f_group_approvals' => [
+                    'timestamp_field' => 'ga_date_and_time',
+                    'retention_days' => null,
+                    'retention_handle_method' => PRIVACY_METHOD__LEAVE,
+                    'member_id_fields' => ['ga_member_id'],
+                    'ip_address_fields' => [],
+                    'email_fields' => [],
+                    'additional_anonymise_fields' => [],
+                    'extra_where' => null,
+                    'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'allowed_handle_methods' => PRIVACY_METHOD__DELETE,
+                ],
                 'f_invites' => [
                     'timestamp_field' => 'i_time',
                     'retention_days' => null,

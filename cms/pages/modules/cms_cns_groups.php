@@ -292,7 +292,7 @@ class Module_cms_cns_groups extends Standard_crud_module
         }
 
         $name = post_param_string('usergroup_name');
-        $id = cns_make_group($name, 0, 0, 0, '', '', null, null, $group_leader, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1000, 0, post_param_integer('open_membership', 0), 1);
+        $id = cns_make_group($name, 0, 0, 0, '', '', null, null, 0, $group_leader, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1000, 0, post_param_integer('open_membership', 0), 1);
 
         // Create forum
         $mods = $GLOBALS['FORUM_DRIVER']->get_moderator_groups();
@@ -394,7 +394,7 @@ class Module_cms_cns_groups extends Standard_crud_module
 
         $name = post_param_string('usergroup_name');
 
-        cns_edit_group($group_id, $name, null, null, null, null, null, null, null, $group_leader, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, post_param_integer('open_membership', 0), 1);
+        cns_edit_group($group_id, $name, null, null, null, null, null, null, null, 0, $group_leader, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, post_param_integer('open_membership', 0), 1);
 
         $forum_where = ['f_name' => $old_name, 'f_forum_grouping_id' => intval(get_option('club_forum_parent_forum_grouping')), 'f_parent_forum' => intval(get_option('club_forum_parent_forum'))];
         $forum_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'id', $forum_where);

@@ -207,7 +207,7 @@ function do_user_import()
                 }
                 foreach ($members_groups as $group_id) {
                     if (!in_array($group_id, $groups)) {
-                        cns_member_leave_group($group_id, $member_id);
+                        cns_member_leave_secondary_group($group_id, $member_id);
                     }
                 }
             }

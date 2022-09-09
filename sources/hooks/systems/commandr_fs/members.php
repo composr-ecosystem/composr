@@ -314,7 +314,7 @@ class Hook_commandr_fs_members
             $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list();
             $group_id = array_search($file_name, $groups);
             if ($group_id !== false) {
-                cns_member_leave_group($group_id, $GLOBALS['FORUM_DRIVER']->get_member_from_username($meta_dir[0]));
+                cns_member_leave_secondary_group($group_id, $GLOBALS['FORUM_DRIVER']->get_member_from_username($meta_dir[0]));
             } else {
                 return false;
             }

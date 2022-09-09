@@ -8325,6 +8325,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NOTIFICATION_TYPE_point_escrows_staff_active
         NEW_ESCROW_TRANSACTION_SUBJECT_STAFF
         NEW_ESCROW_TRANSACTION_INTRO_STAFF
+        PROMOTION_APPROVAL
+        DESCRIPTION_PROMOTION_APPROVAL
     ')));
 
     $non_admin_files = [
@@ -8881,7 +8883,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CNS_DESCRIPTION_PUBLICATION_TIME
         CNS_LOGIN_AUTO
         CNS_LOGIN_INSTANT
-        CNS_PROMOTION_INFO
         CNS_PUBLICATION_TIME
         CNS_SIGNUP_TEXT
         CNS_WAITING_CONFIRM_MAIL
@@ -10094,7 +10095,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NOTIFICATION_TYPE_cns_birthday
         NOTIFICATION_TYPE_cns_club
         NOTIFICATION_TYPE_cns_friend_birthday
-        NOTIFICATION_TYPE_cns_group_declined
+        NOTIFICATION_TYPE_cns_group_join_decision
         NOTIFICATION_TYPE_cns_group_join_request
         NOTIFICATION_TYPE_cns_member_joined_group
         NOTIFICATION_TYPE_cns_new_member
@@ -11673,6 +11674,17 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         AMEND
         NOTIFICATION_POINTS_TRANSACTION_GUEST
         NOTIFICATION_TYPE_point_escrows
+        CNS_PROMOTION_INFO_AUTO
+        CNS_PROMOTION_INFO_MANUAL
+        GROUP_PROMOTION_REQUEST_MAIL
+        GROUP_PROMOTION_REQUEST_MAIL_SUBJECT
+        PENDING_APPLICATIONS
+        PROSPECTIVE_PROMOTED_MEMBERS
+        RANK_PROMOTED_APPROVAL_MAIL
+        RANK_PROMOTED_APPROVAL_MAIL_SUBJECT
+        GROUP_PROMOTION_ALREADY_ACCEPTED
+        GROUP_PROMOTION_ALREADY_DECLINED
+        GROUP_PROMOTION_INVALID
     ')));
 
     if ($GLOBALS['DEV_MODE']) {

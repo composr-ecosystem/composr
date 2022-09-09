@@ -50,6 +50,7 @@ function cns_may_control_group(int $group_id, int $member_id, ?array $group_row 
  * @param  ?URLPATH $rank_image The rank image for this. (null: do not change)
  * @param  ?GROUP $promotion_target The that members of this usergroup get promoted to at point threshold (null: no promotion prospects)
  * @param  ?integer $promotion_threshold The point threshold for promotion (null: no promotion prospects)
+ * @param  ?BINARY $promotion_approval Whether usergroup promotion should require manual approval (null: do not change)
  * @param  ?MEMBER $group_leader The leader of this usergroup (null: none)
  * @param  ?integer $flood_control_submit_secs The number of seconds that members of this usergroup must endure between submits (group 'best of' applies). (null: do not change)
  * @param  ?integer $flood_control_access_secs The number of seconds that members of this usergroup must endure between accesses (group 'best of' applies). (null: do not change)
@@ -70,7 +71,7 @@ function cns_may_control_group(int $group_id, int $member_id, ?array $group_row 
  * @param  ?BINARY $is_private_club Whether this usergroup is a private club. Private clubs may be managed in the CMS zone, and do not have any special permissions - except over their own associated forum. (null: do not change)
  * @param  boolean $uniqify Whether to force the title as unique, if there's a conflict
  */
-function cns_edit_group(int $group_id, ?string $name, ?int $is_default, ?int $is_super_admin, ?int $is_super_moderator, ?string $title, ?string $rank_image, ?int $promotion_target, ?int $promotion_threshold, ?int $group_leader, ?int $flood_control_submit_secs, ?int $flood_control_access_secs, ?int $max_daily_upload_mb, ?int $max_attachments_per_post, ?int $max_avatar_width, ?int $max_avatar_height, ?int $max_post_length_comcode, ?int $max_sig_length_comcode, ?int $gift_points_base, ?int $gift_points_per_day, ?int $enquire_on_new_ips, ?int $is_presented_at_install, ?int $hidden, ?int $order, ?int $rank_image_pri_only, ?int $open_membership, ?int $is_private_club, bool $uniqify = false)
+function cns_edit_group(int $group_id, ?string $name, ?int $is_default, ?int $is_super_admin, ?int $is_super_moderator, ?string $title, ?string $rank_image, ?int $promotion_target, ?int $promotion_threshold, ?int $promotion_approval, ?int $group_leader, ?int $flood_control_submit_secs, ?int $flood_control_access_secs, ?int $max_daily_upload_mb, ?int $max_attachments_per_post, ?int $max_avatar_width, ?int $max_avatar_height, ?int $max_post_length_comcode, ?int $max_sig_length_comcode, ?int $gift_points_base, ?int $gift_points_per_day, ?int $enquire_on_new_ips, ?int $is_presented_at_install, ?int $hidden, ?int $order, ?int $rank_image_pri_only, ?int $open_membership, ?int $is_private_club, bool $uniqify = false)
 {
     $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', [$GLOBALS['FORUM_DB']->translate_field_ref('g_name') => $name]);
     if (($test !== null) && ($test != $group_id)) {
@@ -116,6 +117,7 @@ function cns_edit_group(int $group_id, ?string $name, ?int $is_default, ?int $is
     if (addon_installed('points')) {
         $map['g_promotion_target'] = $promotion_target;
         $map['g_promotion_threshold'] = $promotion_threshold;
+        $map['g_promotion_approval'] = $promotion_approval;
     }
     if ($flood_control_submit_secs !== null) {
         $map['g_flood_control_submit_secs'] = $flood_control_submit_secs;
@@ -347,12 +349,12 @@ function cns_member_ask_join_group(int $group_id, ?int $member_id = null)
 }
 
 /**
- * Remove a member from a certain usergroup.
+ * Remove a usergroup from a member's secondary usergroup memberships.
  *
  * @param  GROUP $group_id The usergroup to remove from
  * @param  ?MEMBER $member_id The member leaving (null: current member)
  */
-function cns_member_leave_group(int $group_id, ?int $member_id = null)
+function cns_member_leave_secondary_group(int $group_id, ?int $member_id = null)
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -375,6 +377,9 @@ function cns_member_leave_group(int $group_id, ?int $member_id = null)
             'member_id' => $member_id,
             'usergroup_id' => $group_id,
         ]);
+
+        // Decline pending approval records where we were supposed to get promoted from this usergroup
+        $GLOBALS['FORUM_DB']->query_update('f_group_approvals', ['ga_status' => -1], ['ga_member_id' => $member_id, 'ga_old_group_id' => $group_id, 'ga_status' => 0]);
 
         log_it('MEMBER_REMOVED_FROM_GROUP', strval($member_id), strval($group_id));
     }
@@ -411,6 +416,9 @@ function cns_add_member_to_group(int $member_id, int $id, int $validated = 1)
         'gm_validated' => $validated,
     ], false, true);
 
+    // Remove approval records since we're in the usergroup now
+    $GLOBALS['FORUM_DB']->query_delete('f_group_approvals', ['ga_member_id' => $member_id, 'ga_new_group_id' => $id]);
+
     log_it('MEMBER_ADDED_TO_GROUP', strval($member_id), strval($id));
 
     if (cns_get_group_property($id, 'hidden') == 0) {
@@ -435,7 +443,7 @@ function cns_add_member_to_group(int $member_id, int $id, int $validated = 1)
 }
 
 /**
- * Set whether a member that has applied to be in a, may be in it, and inform them of the decision.
+ * Set whether a member that has applied to be in a usergroup (or is pending a promotion approval) may be in it, and inform them of the decision.
  *
  * @param  GROUP $group_id The usergroup
  * @param  MEMBER $prospective_member_id The prospective member
@@ -450,28 +458,63 @@ function cns_member_validate_into_group(int $group_id, int $prospective_member_i
 
     require_code('notifications');
 
+    // Check if the member is actually pending to be added to the usergroup (if not, cns_add_member_to_group should be used instead if approving)
+    $pending = $GLOBALS['FORUM_DB']->query_select_value('f_group_approvals', 'COUNT(*)', ['ga_member_id' => $prospective_member_id, 'ga_new_group_id' => $group_id, 'ga_status' => 0]);
+    $pending += $GLOBALS['FORUM_DB']->query_select_value('f_group_members', 'COUNT(*)', ['gm_member_id' => $prospective_member_id, 'gm_group_id' => $group_id, 'gm_validated' => 0]);
+    if ($pending == 0) {
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+    }
+
     $GLOBALS['FORUM_DB']->query_delete('f_group_members', ['gm_member_id' => $prospective_member_id, 'gm_group_id' => $group_id], '', 1);
 
     $name = cns_get_group_name($group_id);
 
     if (!$decline) {
-        $GLOBALS['FORUM_DB']->query_insert('f_group_members', [
-            'gm_group_id' => $group_id,
-            'gm_member_id' => $prospective_member_id,
-            'gm_validated' => 1,
-        ]);
+        // Update approval records
+        $GLOBALS['FORUM_DB']->query_update('f_group_approvals', ['ga_status' => 1], ['ga_member_id' => $prospective_member_id, 'ga_new_group_id' => $group_id, 'ga_status' => 0]);
 
-        $GLOBALS['FORUM_DB']->query_insert('f_group_join_log', [
-            'member_id' => $prospective_member_id,
-            'usergroup_id' => $group_id,
-            'join_time' => time(),
-        ]);
+        // Remove member from old usergroups in pending promotion approvals
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_group_approvals', ['ga_old_group_id'], ['ga_member_id' => $prospective_member_id, 'ga_new_group_id' => $group_id, 'ga_status' => 0]);
+        $is_primary = false;
+        foreach ($rows as $row) {
+            if ($row['ga_old_group_id'] === null) {
+                continue;
+            }
+
+            // If the old group is the member's current primary usergroup, change their primary usergroup to $group_id (and clean out approval records)
+            $current_primary_usergroup = $GLOBALS['FORUM_DRIVER']->get_member_row_field($prospective_member_id, 'm_primary_group');
+            if ($current_primary_usergroup == $row['ga_old_group_id']) {
+                $GLOBALS['FORUM_DB']->query_update('f_members', ['m_primary_group' => $group_id], ['id' => $prospective_member_id], '', 1);
+                $GLOBALS['FORUM_DB']->query_update('f_group_approvals', ['ga_status' => -1], ['ga_member_id' => $prospective_member_id, 'ga_old_group_id' => $current_primary_usergroup, 'ga_status' => 0]);
+                $is_primary = true;
+            }
+
+            cns_member_leave_secondary_group($row['ga_old_group_id'], $prospective_member_id);
+        }
+
+        // If this usergroup did not become the member's primary usergroup, add it as a secondary usergroup.
+        if (!$is_primary) {
+            $GLOBALS['FORUM_DB']->query_insert('f_group_members', [
+                'gm_group_id' => $group_id,
+                'gm_member_id' => $prospective_member_id,
+                'gm_validated' => 1,
+            ]);
+
+            $GLOBALS['FORUM_DB']->query_insert('f_group_join_log', [
+                'member_id' => $prospective_member_id,
+                'usergroup_id' => $group_id,
+                'join_time' => time(),
+            ]);
+        }
 
         log_it('MEMBER_ADDED_TO_GROUP', strval($prospective_member_id), strval($group_id));
 
         $mail = do_notification_lang('GROUP_ACCEPTED_MAIL', get_site_name(), $name, null, get_lang($prospective_member_id));
         $subject = do_lang('GROUP_ACCEPTED_MAIL_SUBJECT', $name, null, null, get_lang($prospective_member_id));
     } else {
+        // Update promotion approval records to declined
+        $GLOBALS['FORUM_DB']->query_update('f_group_approvals', ['ga_status' => -1], ['ga_member_id' => $prospective_member_id, 'ga_new_group_id' => $group_id, 'ga_status' => 0]);
+
         if ($reason != '') {
             $mail = do_notification_lang('GROUP_DECLINED_MAIL_REASON', comcode_escape(get_site_name()), comcode_escape($name), comcode_escape($reason), get_lang($prospective_member_id));
         } else {
@@ -480,7 +523,7 @@ function cns_member_validate_into_group(int $group_id, int $prospective_member_i
         $subject = do_lang('GROUP_DECLINED_MAIL_SUBJECT', $name, null, null, get_lang($prospective_member_id));
     }
 
-    dispatch_notification('cns_group_declined', null, $subject, $mail, [$prospective_member_id]);
+    dispatch_notification('cns_group_join_decision', null, $subject, $mail, [$prospective_member_id]);
 }
 
 /**

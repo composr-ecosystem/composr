@@ -965,6 +965,7 @@ class Hook_addon_registry_core_abstract_interfaces
             'MESSAGE' => '',
             'SORT' => $sort,
             'PAGINATION' => placeholder_pagination(),
+            'NONRESPONSIVE' => false,
         ]);
 
         return lorem_globalise(do_lorem_template('RESULTS_TABLE_SCREEN', [

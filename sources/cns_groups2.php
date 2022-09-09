@@ -19,7 +19,7 @@
  */
 
 /**
- * Get a count of members in a (or more full details if $non_validated is true).
+ * Get a count of members in a group (or more full details if $non_validated is true).
  *
  * @param  GROUP $group_id The ID of the group
  * @param  boolean $include_primaries Whether to include those in the as a primary member
@@ -83,7 +83,7 @@ function cns_get_group_members_raw_count(int $group_id, bool $include_primaries 
 }
 
 /**
- * Get a list of members in a (or more full details if $non_validated is true).
+ * Get a list of members in a group (or more full details if $non_validated is true).
  *
  * @param  GROUP $group_id The ID of the group
  * @param  boolean $include_primaries Whether to include those in the as a primary member

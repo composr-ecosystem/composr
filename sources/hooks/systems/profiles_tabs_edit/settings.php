@@ -268,7 +268,7 @@ class Hook_profiles_tabs_edit_settings
                     }
                     foreach ($members_groups as $group_id) { // Remove from old secondary groups that member is no longer in
                         if (!in_array(strval($group_id), $_POST['secondary_groups'])) {
-                            cns_member_leave_group($group_id, $member_id_of);
+                            cns_member_leave_secondary_group($group_id, $member_id_of);
                         }
                     }
                     //}

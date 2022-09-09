@@ -25,9 +25,11 @@ Usergroup(s) is commonly abbreviated to group(s).
 
 [title="3"]Ranks[/title]
 
-Members will automatically enter usergroups on their rank ladder as they accumulate points. Specifically, the total points ever earned, as point spending does not impede raising through the ranks.
+Members will enter (be promoted to) usergroups on their rank ladder one step at a time as they accumulate points (specifically, the total points ever earned, as point spending does not impede raising through the ranks). Usually, ranking up is automatic. However, usergroups may have enabled the &lquot;Promotions require manual approval&rquot; setting. To be promoted to a usergroup with this setting enabled, the group leader or someone with the &lquot;Control usergroups that member is not leader of&rquot; privilege must manually approve the promotion. Note that if a promotion is declined, then the member will also be unable to get promoted to any usergroups further up the ladder unless they are later manually added to one of those usergroups.
 
-Their visible rank, and privileges change in accordance to their new rank usergroups.
+Members are only promoted up the usergroup ladder one step at a time each time they earn points. For example, a member is in usergroup A which defines 100 points to rank up to usergroup B. Usergroup B defines 200 points to rank up to usergroup C. The member earns 300 points in one go. They will still only be promoted from usergroup A to usergroup B; they will subsequently be promoted to usergroup C the next time they earn any points.
+
+A member's visible rank and privileges change in accordance to their new rank usergroups.
 
 Rank ladders are not formally codified. A member can be considered on a rank ladder if they are on a usergroup with any particular promotion path. Members may be on multiple ladders by being in multiple promotable usergroups. Usually a site will only have on rank ladder though.
 
@@ -275,6 +277,7 @@ Tolerances:
  2_key="Page Redirect"      2_value="Allows pages to be redirected to from different zone+page URLs, either transparently, or with a redirection message"
  3_key="URL Redirect"       3_value="Allows redirecting any arbitrary URL you configure to be redirected"
  4_key="Club"               4_value="A special usergroup with no permissions that comes with its own forum"
+ 5_key="Promotion"          5_value="When a member moves (ranks up) from one usergroup to another from earning points"
 ]Concepts[/concepts]
 
 [title="2"]See also[/title]
