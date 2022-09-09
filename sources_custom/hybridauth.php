@@ -33,7 +33,7 @@ function initiate_hybridauth_session_state()
     if (strpos(get_base_url(), 'https://') !== false) {
         $options['cookie_secure'] = 'On';
     }
-    session_start($options);
+    @session_start($options);
 }
 
 function initiate_hybridauth()
