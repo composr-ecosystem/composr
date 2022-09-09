@@ -198,9 +198,9 @@ class CMSUserRead
         cms_verify_parameters_phpdoc();
 
         if ($id === null) {
-            $sessions = $GLOBALS['SITE_DB']->query_select('sessions', ['DISTINCT member_id'], ['session_invisible' => 0], ' AND member_id>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()), $max, $start);
+            $sessions = $GLOBALS['SITE_DB']->query_select('sessions', ['DISTINCT member_id'], ['session_invisible' => 0], ' AND member_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()), $max, $start);
 
-            $member_count = $GLOBALS['SITE_DB']->query_select_value('sessions', 'COUNT(DISTINCT member_id)', ['session_invisible' => 0], ' AND member_id>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()));
+            $member_count = $GLOBALS['SITE_DB']->query_select_value('sessions', 'COUNT(DISTINCT member_id)', ['session_invisible' => 0], ' AND member_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()));
 
             $list = [];
             foreach ($sessions as $session) {

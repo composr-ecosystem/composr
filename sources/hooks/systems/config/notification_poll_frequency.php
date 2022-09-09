@@ -51,7 +51,7 @@ class Hook_config_notification_poll_frequency
      */
     public function get_default() : ?string
     {
-        if (get_db_type() == 'xml') {
+        if (get_db_type() == 'xml') { // Too much overhead
             return '1000';
         }
 

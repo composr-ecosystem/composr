@@ -201,10 +201,10 @@ function get_thread_by_unread_func($raw_params)
             $last_read_time = 0;
         }
     }
-    $first_unread_id = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_topic_id=' . strval($topic_id) . ' AND p_time>' . strval($last_read_time) . ' ORDER BY p_time');
+    $first_unread_id_p_time = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT p_time FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_topic_id=' . strval($topic_id) . ' AND p_time>' . strval($last_read_time) . ' ORDER BY p_time');
     if ($first_unread_id !== null) {
         // What page is it on?
-        $before = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE id<' . strval($first_unread_id) . ' AND ' . tapatalk_get_topic_where($topic_id));
+        $before = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_time<' . strval($first_unread_id_p_time) . ' AND ' . tapatalk_get_topic_where($topic_id));
         $start = intval(floor(floatval($before) / floatval($max))) * $max;
     } else {
         // What page is it on?
@@ -240,13 +240,16 @@ function get_thread_by_post_func($raw_params)
     $max = isset($params[1]) ? $params[1] : 20;
     $return_html = isset($params[2]) && $params[2];
 
-    $topic_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_topic_id', ['id' => $post_id]);
-    if ($topic_id === null) {
+    $post_details = $GLOBALS['FORUM_DB']->query_select('f_posts', ['p_topic_id', 'p_time'], ['id' => $post_id]);
+    if (empty($post_details)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'post'));
     }
 
+    $post_time = $post_details[0]['p_time'];
+    $topic_id = $post_details[0]['p_topic_id'];
+
     // What page is it on?
-    $sql = 'SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE id<' . strval($post_id) . ' AND ' . tapatalk_get_topic_where($topic_id);
+    $sql = 'SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_time<=' . strval($post_time) . ' AND id<>' . strval($post_id) . ' AND ' . tapatalk_get_topic_where($topic_id);
     $before = $GLOBALS['FORUM_DB']->query_value_if_there($sql);
     $start = intval(floor(floatval($before) / floatval($max))) * $max;
     $position = $before + 1;

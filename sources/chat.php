@@ -584,7 +584,14 @@ function _chat_messages_script_ajax(int $room_id, bool $backlog = false, ?int $m
         }
 
         if ($event_id !== null) {
-            $events = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'chat_events WHERE id>' . strval($event_id));
+            $events_sql = 'SELECT * FROM ' . get_table_prefix() . 'chat_events';
+            if ($event_id != -1) {
+                $event_time = $GLOBALS['SITE_DB']->query_select_value_if_there('chat_events', 'e_date_and_time', ['id' => $event_id]);
+                if ($event_time !== null) {
+                    $events_sql .= ' WHERE e_date_and_time>=' . strval($event_time) . ' AND id<>' . strval($event_id);
+                }
+            }
+            $events = $GLOBALS['SITE_DB']->query($events_sql);
             foreach ($events as $event) {
                 if ($event['e_member_id'] == get_member()) {
                     continue;
@@ -1238,20 +1245,12 @@ function chat_get_room_content(?int $room_id, array $_rooms, ?int $max_messages 
             $where .= 'date_and_time>=' . strval($start) . ' AND date_and_time<=' . strval($finish);
         }
         if (($uptoid !== null) && ($uptoid != -1)) {
-            if (get_db_type() == 'xml') {
-                $timestamp = $GLOBALS['SITE_DB']->query_select_value_if_there('chat_messages', 'date_and_time', ['id' => $uptoid]);
-                if ($timestamp === null) {
-                    $timestamp = 0;
-                }
+            $timestamp = $GLOBALS['SITE_DB']->query_select_value_if_there('chat_messages', 'date_and_time', ['id' => $uptoid]);
+            if ($timestamp !== null) {
                 if ($where != '') {
                     $where .= ' AND ';
                 }
-                $where .= 'main.date_and_time>' . strval($timestamp);
-            } else {
-                if ($where != '') {
-                    $where .= ' AND ';
-                }
-                $where .= 'main.id>' . strval($uptoid);
+                $where .= 'main.date_and_time>=' . strval($timestamp) . ' AND id<>' . strval($uptoid);
             }
         }
         if (!$return_my_messages) {

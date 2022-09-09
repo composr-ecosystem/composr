@@ -965,7 +965,8 @@ class Forum_driver_cns extends Forum_driver_base
      */
     public function get_previous_members(int $member, int $total = 1) : array
     {
-        $sql = 'SELECT * FROM ' . $this->db->get_table_prefix() . 'f_members WHERE id<' . strval($member) . ' AND id>0 AND ' . db_string_equal_to('m_validated_email_confirm_code', '');
+        $join_time = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member, 'm_join_time');
+        $sql = 'SELECT * FROM ' . $this->db->get_table_prefix() . 'f_members WHERE m_join_time<=' . strval($join_time) . ' AND id<>' . strval($member) . ' AND id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' AND ' . db_string_equal_to('m_validated_email_confirm_code', '');
         if (addon_installed('unvalidated')) {
             $sql .= ' AND m_validated=1';
         }
@@ -984,7 +985,8 @@ class Forum_driver_cns extends Forum_driver_base
      */
     public function get_next_members(int $member, int $total = 1) : array
     {
-        $sql = 'SELECT * FROM ' . $this->db->get_table_prefix() . 'f_members WHERE id>' . strval($member) . ' AND ' . db_string_equal_to('m_validated_email_confirm_code', '');
+        $join_time = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member, 'm_join_time');
+        $sql = 'SELECT * FROM ' . $this->db->get_table_prefix() . 'f_members WHERE m_join_time>=' . strval($join_time) . ' AND id<>' . strval($member) . ' AND id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' AND ' . db_string_equal_to('m_validated_email_confirm_code', '');
         if (addon_installed('unvalidated')) {
             $sql .= ' AND m_validated=1';
         }

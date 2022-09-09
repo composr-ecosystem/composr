@@ -26,7 +26,7 @@ function activity_feed_updater_script()
 
     $max = get_param_integer('max', 10);
 
-    $last_id = get_param_string('last_id', '-1');
+    $last_id = get_param_integer('last_id', null);
     $mode = get_param_string('mode', 'all');
 
     require_lang('activity_feed');
@@ -52,7 +52,15 @@ function activity_feed_updater_script()
     $can_remove_others = (has_zone_access($viewer_id, 'adminzone'));
 
     if ($proceed_selection === true) {
-        $activities = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'activities WHERE ((' . $where_clause . ') AND id>' . (($last_id == '') ? '-1' : $last_id) . ') ORDER BY a_time DESC', intval($max));
+        $query = 'SELECT * FROM ' . get_table_prefix() . 'activities WHERE (' . $where_clause . ')';
+        if ($last_id !== null) {
+            $last_time = $GLOBALS['SITE_DB']->query_select_value_if_there('activities', 'a_time', ['id' => $last_id]);
+            if ($last_time !== null) {
+                $query .= ' AND a_time>=' . strval($last_time) . ' AND id<>' . strval($last_id);
+            }
+        }
+        $query .= ' ORDER BY a_time DESC';
+        $activities = $GLOBALS['SITE_DB']->query($query, intval($max));
 
         if (!empty($activities)) {
             $list_items = '';

@@ -4991,7 +4991,7 @@ function cms_register_shutdown_function_safe($callback, $param_a = null, $param_
  */
 function statistical_update_model(string $table, int $view_count) : int
 {
-    if (get_db_type() == 'xml') {
+    if (get_db_type() == 'xml') { // Too much overhead
         return 0;
     }
 

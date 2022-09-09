@@ -475,7 +475,7 @@ function cns_force_update_member_post_count(int $member_id, ?int $member_post_co
     if ($GLOBALS['CNS_DRIVER']->get_guest_id() == $member_id) {
         return;
     }
-    if (get_db_type() == 'xml') {
+    if (get_db_type() == 'xml') { // Too much overhead
         return;
     }
 

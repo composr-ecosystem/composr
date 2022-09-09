@@ -31,17 +31,20 @@ function find_post_id_url(int $post_id) : string
         $max = 1;
     }
 
-    $id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_topic_id', ['id' => $post_id]);
-    if ($id === null) {
+    $post_details = $GLOBALS['FORUM_DB']->query_select('f_posts', ['p_topic_id', 'p_time'], ['id' => $post_id]);
+    if (empty($post_details)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'post'));
     }
 
+    $post_time = $post_details[0]['p_time'];
+    $topic_id = $post_details[0]['id'];
+
     // What page is it on?
-    $before = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE id<' . strval($post_id) . ' AND ' . cns_get_topic_where($id), false, true);
+    $before = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_time<=' . strval($post_time) . ' AND id<>' . strval($post_id) . ' AND ' . cns_get_topic_where($topic_id), false, true);
     $start = intval(floor(floatval($before) / floatval($max))) * $max;
 
     // Now redirect accordingly
-    $map = ['page' => 'topicview', 'type' => null, 'id' => $id, 'topic_start' => ($start == 0) ? null : $start, 'post_id' => $post_id, 'threaded' => get_param_integer('threaded', null)];
+    $map = ['page' => 'topicview', 'type' => null, 'id' => $topic_id, 'topic_start' => ($start == 0) ? null : $start, 'post_id' => $post_id, 'threaded' => get_param_integer('threaded', null)];
     foreach ($_GET as $key => $val) {
         if ((substr($key, 0, 3) == 'kfs') || (in_array($key, ['topic_start', 'topic_max']))) {
             $map[$key] = $val;
@@ -60,37 +63,37 @@ function find_post_id_url(int $post_id) : string
 /**
  * Find the URL to the latest unread post in a topic.
  *
- * @param  AUTO_LINK $id The topic ID
+ * @param  AUTO_LINK $topic_id The topic ID
  * @return URLPATH The URL
  */
-function find_first_unread_url(int $id) : string
+function find_first_unread_url(int $topic_id) : string
 {
     $max = intval(get_option('forum_posts_per_page'));
     if ($max == 0) {
         $max = 1;
     }
 
-    $last_read_time = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_read_logs', 'l_time', ['l_member_id' => get_member(), 'l_topic_id' => $id]);
+    $last_read_time = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_read_logs', 'l_time', ['l_member_id' => get_member(), 'l_topic_id' => $topic_id]);
     if ($last_read_time === null) {
         // Assumes that everything made in the last two weeks has not been read
-        $unread_details = $GLOBALS['FORUM_DB']->query('SELECT id,p_time FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_topic_id=' . strval($id) . ' AND p_time>' . strval(time() - 60 * 60 * 24 * intval(get_option('post_read_history_days'))) . ' ORDER BY p_time', 1);
+        $unread_details = $GLOBALS['FORUM_DB']->query('SELECT id,p_time FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_topic_id=' . strval($topic_id) . ' AND p_time>' . strval(time() - 60 * 60 * 24 * intval(get_option('post_read_history_days'))) . ' ORDER BY p_time', 1);
         if (array_key_exists(0, $unread_details)) {
             $last_read_time = $unread_details[0]['p_time'] - 1;
         } else {
             $last_read_time = 0;
         }
     }
-    $_first_unread_id = $GLOBALS['FORUM_DB']->query('SELECT id,p_time FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_topic_id=' . strval($id) . ' AND p_time>' . strval($last_read_time) . ' ORDER BY p_time');
-    if (!empty($_first_unread_id)) {
+    $post_details = $GLOBALS['FORUM_DB']->query('SELECT p_time FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_topic_id=' . strval($topic_id) . ' AND p_time>=' . strval($last_read_time) . ' ORDER BY p_time');
+    if (!empty($post_details)) {
         // What page is it on?
-        $first_unread_id = $_first_unread_id[0]['id'];
-        $before = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE id<' . strval($first_unread_id) . ' AND ' . cns_get_topic_where($id), false, true);
+        $first_unread_id_post_time = $post_details[0]['p_time'];
+        $before = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_time<' . strval($first_unread_id_post_time) . ' AND ' . cns_get_topic_where($topic_id), false, true);
         $start = intval(floor(floatval($before) / floatval($max))) * $max;
     } else {
         $first_unread_id = null;
 
         // What page is it on?
-        $before = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE ' . cns_get_topic_where($id), false, true);
+        $before = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE ' . cns_get_topic_where($topic_id), false, true);
         $start = intval(floor(floatval($before) / floatval($max))) * $max;
         if ($start == $before) {
             $start = max(0, $before - $max);
@@ -98,7 +101,7 @@ function find_first_unread_url(int $id) : string
     }
 
     // Now redirect accordingly
-    $map = ['page' => 'topicview', 'id' => $id, 'type' => null, 'topic_start' => ($start == 0) ? null : $start, 'post_id' => $first_unread_id];
+    $map = ['page' => 'topicview', 'id' => $topic_id, 'type' => null, 'topic_start' => ($start == 0) ? null : $start, 'post_id' => $first_unread_id];
     foreach ($_GET as $key => $val) {
         if ((substr($key, 0, 3) == 'kfs') || (in_array($key, ['topic_start', 'topic_max']))) {
             $map[$key] = $val;

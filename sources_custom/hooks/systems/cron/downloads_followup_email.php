@@ -47,7 +47,7 @@ class Hook_cron_downloads_followup_email
 
         return [
             'label' => 'Send download follow-up e-mails',
-            'num_queued' => $calculate_num_queued ? $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(DISTINCT member_id) FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'download_logging WHERE member_id>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' AND date_and_time>' . strval($last_run)) : 0,
+            'num_queued' => $calculate_num_queued ? $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(DISTINCT member_id) FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'download_logging WHERE member_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' AND date_and_time>' . strval($last_run)) : 0,
             'minutes_between_runs' => 60 * 24,
         ];
     }
@@ -91,7 +91,7 @@ class Hook_cron_downloads_followup_email
         }
 
         // Get all distinct member IDs (except for guest) from download_logging table where the date_and_time is newer than the last runtime of this hook (or last 48 hours if hook hasn't been run recently)
-        $query = 'SELECT DISTINCT member_id FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'download_logging WHERE member_id>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' AND date_and_time>' . strval($last_run) . ' ORDER BY member_id';
+        $query = 'SELECT DISTINCT member_id FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'download_logging WHERE member_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' AND date_and_time>' . strval($last_run) . ' ORDER BY member_id';
         if ($debug) {
             echo 'downloads_followup_email: distinct user query = ' . $query . "\n";
         }
