@@ -2410,7 +2410,7 @@ function cms_empty_safe($var) : bool
  *
  * @return boolean Whether we are
  */
-function currently_logging_in()
+function currently_logging_in() : bool
 {
     global $CURRENTLY_LOGGING_IN;
     if ($CURRENTLY_LOGGING_IN) {
