@@ -45,6 +45,11 @@ class Hook_profiles_tabs_edit_notifications
      */
     public function render_tab(int $member_id_of, int $member_id_viewing, bool $leave_to_ajax_if_possible = false) : ?array
     {
+        $memory_debugging = (get_param_integer('keep_show_loading', 0) == 1);
+        if ($memory_debugging) {
+            $usage_before = memory_get_usage();
+        }
+
         require_lang('notifications');
         $title = do_lang_tempcode('NOTIFICATIONS');
 
@@ -77,6 +82,12 @@ class Hook_profiles_tabs_edit_notifications
         $text = notifications_ui($member_id_of);
         if ($text->is_empty()) {
             return null;
+        }
+
+        if ($memory_debugging) {
+            require_code('files');
+            $usage_after = memory_get_usage();
+            $text->attach(paragraph('Memory debugging: ' . clean_file_size($usage_after - $usage_before) . ' used, now at ' . clean_file_size($usage_after)));
         }
 
         return [$title, new Tempcode(), $text, null, $order, null, 'tool_buttons/notifications2'];

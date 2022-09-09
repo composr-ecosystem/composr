@@ -53,6 +53,11 @@ class Hook_profiles_tabs_edit_privacy
      */
     public function render_tab(int $member_id_of, int $member_id_viewing, bool $leave_to_ajax_if_possible = false) : ?array
     {
+        $memory_debugging = (get_param_integer('keep_show_loading', 0) == 1);
+        if ($memory_debugging) {
+            $usage_before = memory_get_usage();
+        }
+
         $title = do_lang_tempcode('PRIVACY');
 
         $order = 60;
@@ -201,6 +206,12 @@ class Hook_profiles_tabs_edit_privacy
         $text = do_template('CNS_CPF_PERMISSIONS_TAB', ['_GUID' => '1ca98f8ea5009be2229491d341ec6e87', 'FIELDS' => $fields]);
 
         $javascript = '';
+
+        if ($memory_debugging) {
+            require_code('files');
+            $usage_after = memory_get_usage();
+            $text->attach(paragraph('Memory debugging: ' . clean_file_size($usage_after - $usage_before) . ' used, now at ' . clean_file_size($usage_after)));
+        }
 
         return [$title, $fields, $text, $javascript, $order, $cpfs_hidden, 'menu/pages/privacy_policy'];
     }

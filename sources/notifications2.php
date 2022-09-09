@@ -144,6 +144,8 @@ function notifications_ui(int $member_id_of) : object
                     ];
                 }
 
+                $notification_types_tempcode = do_template('NOTIFICATION_TYPES', ['NOTIFICATION_TYPES' => $notification_types]);
+
                 if (!isset($notification_sections[$notification_details[0]])) {
                     $notification_sections[$notification_details[0]] = [
                         'NOTIFICATION_SECTION' => $notification_details[0],
@@ -153,7 +155,7 @@ function notifications_ui(int $member_id_of) : object
                 $notification_sections[$notification_details[0]]['NOTIFICATION_CODES'][] = [
                     'NOTIFICATION_CODE' => $notification_code,
                     'NOTIFICATION_LABEL' => $notification_details[1],
-                    'NOTIFICATION_TYPES' => $notification_types,
+                    'NOTIFICATION_TYPES' => $notification_types_tempcode,
                     'SUPPORTS_CATEGORIES' => $supports_categories,
                 ];
             }
@@ -224,7 +226,7 @@ function notifications_ui(int $member_id_of) : object
     $custom_fields = $GLOBALS['FORUM_DRIVER']->get_custom_fields($member_id_of);
     $smart_topic_notification_content = (array_key_exists('smart_topic_notification', $custom_fields)) && ($custom_fields['smart_topic_notification'] == '1');
 
-    return do_template('NOTIFICATIONS_MANAGE', [
+    $ret = do_template('NOTIFICATIONS_MANAGE', [
         '_GUID' => '838165ca739c45c2dcf994bed6fefe3e',
         'COLOR' => $color,
         'INTRO' => do_lang_tempcode('NOTIFICATIONS_INTRO'),
@@ -238,6 +240,10 @@ function notifications_ui(int $member_id_of) : object
         'ADVANCED_COLUMN' => true,
         'SHOW_PRIVILEGES' => false,
     ]);
+
+    $ret = make_string_tempcode($ret->evaluate()); // XHTMLXHTML
+
+    return $ret;
 }
 
 /**

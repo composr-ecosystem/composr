@@ -256,6 +256,8 @@ class Module_admin_notifications
                     ];
                 }
 
+                $notification_types_tempcode = do_template('NOTIFICATION_TYPES', ['NOTIFICATION_TYPES' => $notification_types]);
+
                 if (!isset($notification_sections[$notification_details[0]])) {
                     $notification_sections[$notification_details[0]] = [
                         'NOTIFICATION_SECTION' => $notification_details[0],
@@ -265,7 +267,7 @@ class Module_admin_notifications
                 $notification_sections[$notification_details[0]]['NOTIFICATION_CODES'][] = [
                     'NOTIFICATION_CODE' => $notification_code,
                     'NOTIFICATION_LABEL' => $notification_details[1],
-                    'NOTIFICATION_TYPES' => $notification_types,
+                    'NOTIFICATION_TYPES' => $notification_types_tempcode,
                     'SUPPORTS_CATEGORIES' => false,
                     'PRIVILEGED' => !$ob->member_could_potentially_enable($ntype, $GLOBALS['FORUM_DRIVER']->get_guest_id()),
                 ];

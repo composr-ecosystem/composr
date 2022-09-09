@@ -1033,6 +1033,10 @@ function memory_tracking()
  */
 function prepare_backend_response(?string $content_type = 'text/xml', int $settings = 19)
 {
+    if (get_param_integer('keep_show_loading', 0) == 1) {
+        return;
+    }
+
     if (($settings & BACKEND_RESPONSE_NOINDEX) != 0) {
         header('X-Robots-Tag: noindex');
     }

@@ -49,6 +49,11 @@ class Hook_profiles_tabs_edit_title
      */
     public function render_tab(int $member_id_of, int $member_id_viewing, bool $leave_to_ajax_if_possible = false) : ?array
     {
+        $memory_debugging = (get_param_integer('keep_show_loading', 0) == 1);
+        if ($memory_debugging) {
+            $usage_before = memory_get_usage();
+        }
+
         $title = do_lang_tempcode('MEMBER_TITLE');
 
         $order = 50;
@@ -73,7 +78,13 @@ class Hook_profiles_tabs_edit_title
         require_code('form_templates');
         $fields->attach(form_input_line(do_lang_tempcode('MEMBER_TITLE'), '', 'member_title', $_title, false, null, intval(get_option('max_member_title_length'))));
 
-        $text = do_lang_tempcode('DESCRIPTION_MEMBER_TITLE', escape_html($GLOBALS['FORUM_DRIVER']->get_username($member_id_of, true)));
+        $text = paragraph(do_lang_tempcode('DESCRIPTION_MEMBER_TITLE', escape_html($GLOBALS['FORUM_DRIVER']->get_username($member_id_of, true))));
+
+        if ($memory_debugging) {
+            require_code('files');
+            $usage_after = memory_get_usage();
+            $text->attach(paragraph('Memory debugging: ' . clean_file_size($usage_after - $usage_before) . ' used, now at ' . clean_file_size($usage_after)));
+        }
 
         return [$title, $fields, $text, '', $order, null, 'tabs/member_account/edit/title'];
     }

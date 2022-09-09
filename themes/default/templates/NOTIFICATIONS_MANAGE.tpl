@@ -53,7 +53,7 @@
 						<td>{$?,{PRIVILEGED},{!YES},{!NO}}</td>
 					{+END}
 
-					{+START,INCLUDE,NOTIFICATION_TYPES}{+END}
+					{NOTIFICATION_TYPES}
 
 					{+START,IF,{ADVANCED_COLUMN}}
 						{+START,SET,advanced_link}

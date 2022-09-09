@@ -49,6 +49,11 @@ class Hook_profiles_tabs_edit_signature
      */
     public function render_tab(int $member_id_of, int $member_id_viewing, bool $leave_to_ajax_if_possible = false) : ?array
     {
+        $memory_debugging = (get_param_integer('keep_show_loading', 0) == 1);
+        if ($memory_debugging) {
+            $usage_before = memory_get_usage();
+        }
+
         $title = do_lang_tempcode('SIGNATURE');
 
         $order = 40;
@@ -144,6 +149,12 @@ class Hook_profiles_tabs_edit_signature
         ]));
 
         $text = do_template('CNS_EDIT_SIGNATURE_TAB', ['_GUID' => 'f5f2eb2552c34840c9cf46886422401e', 'SIZE' => integer_format($size), 'SIGNATURE' => $signature, 'TITLE' => $title]);
+
+        if ($memory_debugging) {
+            require_code('files');
+            $usage_after = memory_get_usage();
+            $text->attach(paragraph('Memory debugging: ' . clean_file_size($usage_after - $usage_before) . ' used, now at ' . clean_file_size($usage_after)));
+        }
 
         return [$title, $fields, $text, $js_function_calls, $order, null, 'tabs/member_account/edit/signature'];
     }

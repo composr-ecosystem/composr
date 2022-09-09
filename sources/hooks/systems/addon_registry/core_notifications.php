@@ -390,10 +390,11 @@ class Hook_addon_registry_core_notifications
             'LABEL' => lorem_phrase(),
             'RAW' => placeholder_number(),
         ];
+        $notification_types_tempcode = do_template('NOTIFICATION_TYPES', ['NOTIFICATION_TYPES' => $notification_types]);
         $notification_code_map = [
             'NOTIFICATION_CODE' => placeholder_codename(),
             'NOTIFICATION_LABEL' => lorem_phrase(),
-            'NOTIFICATION_TYPES' => $notification_types,
+            'NOTIFICATION_TYPES' => $notification_types_tempcode,
             'SUPPORTS_CATEGORIES' => true,
         ];
         $notification_sections = [];
