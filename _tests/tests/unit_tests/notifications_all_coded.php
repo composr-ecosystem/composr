@@ -25,17 +25,24 @@ class notifications_all_coded_test_set extends cms_test_case
         }
 
         // Ensure all notification types used
-        $hooks = find_all_hooks('systems', 'notifications');
+        require_code('notifications');
+        $hook_obs= find_all_hooks('systems', 'notifications');
+        $notification_types = [];
+        foreach (array_keys($hook_obs) as $hook) {
+            require_code('hooks/systems/notifications/' . $hook);
+            $hook_ob = object_factory('Hook_notification_' . $hook);
+            $notification_types += $hook_ob->list_handled_codes();
+        }
 
         require_code('files2');
         $php_path = find_php_path();
         $contents = get_directory_contents(get_file_base());
         foreach ($contents as $c) {
             if ((substr($c, -4) == '.php') && (basename($c) != 'errorlog.php') && (basename($c) != 'phpstub.php') && (basename($c) != 'permissioncheckslog.php')) {
-                foreach (array_keys($hooks) as $hook) {
+                foreach (array_keys($notification_types) as $notification_type) {
                     $file = file_get_contents($c);
-                    if (preg_match('#dispatch_notification\(\s*\'' . $hook . '\'#', $file) != 0) {
-                        unset($hooks[$hook]);
+                    if (preg_match('#dispatch_notification\(\s*\'' . $notification_type . '\'#', $file) != 0) {
+                        unset($notification_types[$notification_type]);
                     }
                 }
             }
@@ -52,11 +59,14 @@ class notifications_all_coded_test_set extends cms_test_case
                           'ticket_new_staff',
                           'ticket_reply_staff',
                           'catalogue_view_reports',
-                          'catalogue_entry',
-                          'classifieds',
         );
-        foreach (array_keys($hooks) as $hook) {
-            $this->assertTrue(in_array($hook, $allowed), $hook . ' is unused');
+        foreach (array_keys($notification_types) as $notification_type) {
+            // Exceptions
+            if (preg_match('#^(classifieds|catalogue_entry|catalogue_view_reports)__#', $notification_type) != 0) {
+                continue;
+            }
+
+            $this->assertTrue(in_array($notification_type, $allowed), $notification_type . ' is unused');
         }
     }
 }

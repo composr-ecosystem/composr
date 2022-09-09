@@ -78,7 +78,7 @@ class Hook_cron_staff_checklist_notify
             $subject = do_lang('STAFF_CHECKLIST_MAIL_SUBJECT', integer_format($outstanding), get_site_name(), null, get_site_default_lang());
             $adminzone_url = build_url(array('page' => ''), 'adminzone', null, false, false, true);
             $message = do_notification_lang('STAFF_CHECKLIST_MAIL_BODY', integer_format($outstanding), get_site_name(), static_evaluate_tempcode($adminzone_url), get_site_default_lang());
-            dispatch_notification('staff_checklist', null, $subject, $message, null, A_FROM_SYSTEM_PRIVILEGED);
+            dispatch_notification('staff_checklist_notify', null, $subject, $message, null, A_FROM_SYSTEM_PRIVILEGED);
         }
     }
 }
