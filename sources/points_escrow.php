@@ -302,7 +302,7 @@ function satisfy_escrow(int $id, int $member_id, ?array $row = null, bool $escro
     log_it('LOG_ESCROW_SATISFIED', strval($id), $username);
 
     // If both members satisfied the escrow, then complete it
-    $finished = @intval($GLOBALS['SITE_DB']->query_select_value('escrow', '(SUM(sender_status)+SUM(recipient_status))', ['id' => $id]));
+    $finished = @intval($GLOBALS['SITE_DB']->query_select_value('escrow', 'sender_status+recipient_status', ['id' => $id]));
     if ($finished == 2) {
         return _complete_escrow($row, null, $escrow_log, $send_notifications);
     }

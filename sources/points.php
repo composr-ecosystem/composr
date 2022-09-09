@@ -112,7 +112,7 @@ function points_spent(int $member_id) : int
  */
 function points_spent_system(int $member_id) : int
 {
-    $_spent = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'SUM(amount_points)', ['sender_id' => $member_id, 'recipient_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(), 'status' => 'normal']);
+    $_spent = $GLOBALS['SITE_DB']->query_select_value('points_ledger', 'SUM(amount_points)', ['sender_id' => $member_id, 'recipient_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(), 'status' => 'normal']);
     $actual_spent = @intval($_spent); // Most reliable way
     return $actual_spent;
 }
@@ -181,7 +181,7 @@ function gift_points_sent(int $member_id) : int
     $_sent = point_info($member_id);
 
     if ((!isset($_sent['gift_points_sent'])) || (get_option('enable_gift_points') == '0')) { // Either DB error or gift points disabled
-        $_actual_sent = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'SUM(amount_gift_points)', ['sender_id' => $member_id, 'status' => 'normal']);
+        $_actual_sent = $GLOBALS['SITE_DB']->query_select_value('points_ledger', 'SUM(amount_gift_points)', ['sender_id' => $member_id, 'status' => 'normal']);
         $actual_sent = @intval($_actual_sent); // Most reliable way
         return $actual_sent;
     }
@@ -197,8 +197,11 @@ function gift_points_sent(int $member_id) : int
  */
 function total_points_sent(int $member_id) : int
 {
-    $_sent = $GLOBALS['SITE_DB']->query_select_value('points_ledger', '(SUM(amount_gift_points)+SUM(amount_points))', ['sender_id' => $member_id, 'status' => 'normal'], ' AND recipient_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()));
-    $actual_sent = @intval($_sent); // Most reliable way
+    $_sent = $GLOBALS['SITE_DB']->query_select('points_ledger', ['SUM(amount_gift_points) AS _amount_gift_points', 'SUM(amount_points) AS _amount_points'], ['sender_id' => $member_id, 'status' => 'normal'], ' AND recipient_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()));
+    if (empty($_sent)) {
+        return 0;
+    }
+    $actual_sent = @intval($_sent[0]['_amount_gift_points']) + @intval($_sent[0]['_amount_points']); // Most reliable way
     return $actual_sent;
 }
 

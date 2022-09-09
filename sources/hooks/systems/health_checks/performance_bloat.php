@@ -120,7 +120,7 @@ class Hook_health_check_performance_bloat extends Hook_Health_Check
             return;
         }
 
-        $query = 'SELECT sum(data_length)+sum(index_length) AS db_size FROM information_schema.TABLES WHERE ' . db_string_equal_to('table_schema', get_db_site()) . ' AND table_name LIKE \'' . db_encode_like(get_table_prefix() . '%') . '\'';
+        $query = 'SELECT SUM(data_length)+SUM(index_length) AS db_size FROM information_schema.TABLES WHERE ' . db_string_equal_to('table_schema', get_db_site()) . ' AND table_name LIKE \'' . db_encode_like(get_table_prefix() . '%') . '\'';
         $db_size = $GLOBALS['SITE_DB']->query_value_if_there($query, true);
         if ($db_size === null) {
             $this->stateCheckSkipped('Failed to check database size, possible lack of permissions');
