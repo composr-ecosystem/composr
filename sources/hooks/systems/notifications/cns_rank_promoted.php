@@ -36,7 +36,7 @@ class Hook_notification_cns_rank_promoted extends Hook_Notification
         }
 
         $list = [];
-        $list['cns_promotion'] = [do_lang('USERGROUPS'), do_lang('NOTIFICATION_TYPE_cns_rank_promoted')];
+        $list['cns_rank_promoted'] = [do_lang('USERGROUPS'), do_lang('NOTIFICATION_TYPE_cns_rank_promoted')];
         return $list;
     }
 }

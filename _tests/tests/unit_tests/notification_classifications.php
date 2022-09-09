@@ -64,11 +64,13 @@ class notification_classifications_test_set extends cms_test_case
             'error_occurred_rss',
             'ticket_new_staff',
             'ticket_reply_staff',
-            'catalogue_view_reports',
-            'catalogue_entry',
-            'classifieds__classifieds',
         ];
         foreach (array_keys($notification_types) as $notification_type) {
+            // Exceptions
+            if (preg_match('#^(classifieds|catalogue_entry|catalogue_view_reports)__#', $notification_type) != 0) {
+                continue;
+            }
+
             $this->assertTrue(in_array($notification_type, $allowed), $notification_type . ' is unused');
         }
     }

@@ -128,7 +128,7 @@ function cns_member_handle_promotion(?int $member_id = null)
             require_lang('cns');
             $subject = do_lang('RANK_PROMOTED_MAIL_SUBJECT', cns_get_group_name($_p), null, null, get_lang($member_id));
             $mail = do_notification_lang('RANK_PROMOTED_MAIL', comcode_escape(cns_get_group_name($_p)), null, null, get_lang($member_id));
-            dispatch_notification('cns_promotion', null, $subject, $mail, [$member_id]);
+            dispatch_notification('cns_rank_promoted', null, $subject, $mail, [$member_id]);
 
             // Carefully update run-time caching
             global $USERS_GROUPS_CACHE;
