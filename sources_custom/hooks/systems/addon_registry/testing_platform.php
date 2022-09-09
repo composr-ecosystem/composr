@@ -854,7 +854,7 @@ We hope other users will appreciate your efforts and give you some points to rew
             '_tests/tests/unit_tests/_newsletters.php',
             '_tests/tests/unit_tests/newsletters.php',
             '_tests/tests/unit_tests/news.php',
-            '_tests/tests/unit_tests/notifications_all_coded.php',
+            '_tests/tests/unit_tests/notification_classifications.php',
             '_tests/tests/unit_tests/notifications.php',
             '_tests/tests/unit_tests/_oembed.php',
             '_tests/tests/unit_tests/optimisations_fragile.php',

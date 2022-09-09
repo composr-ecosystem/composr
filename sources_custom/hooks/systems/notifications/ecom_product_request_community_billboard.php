@@ -31,7 +31,7 @@ class Hook_notification_ecom_product_request_community_billboard extends Hook_no
         }
 
         $list = [];
-        $list['ecom_request_community_billboard'] = [do_lang('ecommerce:ECOMMERCE'), do_lang('community_billboard:NOTIFICATION_TYPE_ecom_request_community_billboard')];
+        $list['ecom_product_request_community_billboard'] = [do_lang('ecommerce:ECOMMERCE'), do_lang('community_billboard:NOTIFICATION_TYPE_ecom_product_request_community_billboard')];
         return $list;
     }
 }
