@@ -663,7 +663,7 @@ function _log_it(string $type, ?string $a = null, ?string $b = null, ?int $relat
     clear_cms_autosave();
 
     // Notification
-    if ((!get_mass_import_mode()) && ($ADMIN_LOGGING_ON)) {
+    if ((!get_mass_import_mode()) && ($ADMIN_LOGGING_ON) && (!in_array($type, ['MEMBER_SEARCH', 'VIEW_PROFILE']/*HACKHACK: Ideally would be parameter driven for these low-information/high-frequency notification types, but there are only two*/))) {
         if ($logged < 10) { // Be extra sure it's not some kind of import, causing spam
             if (addon_installed('actionlog')) {
                 if (do_lang($type, null, null, null, null, false) === null) {
