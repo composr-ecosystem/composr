@@ -32,7 +32,7 @@ class notifications_test_set extends cms_test_case
 
         require_code('notifications');
         require_code('hooks/systems/notifications/comment_posted');
-        require_code('hooks/systems/notifications/cns_password_changed');
+        require_code('hooks/systems/notifications/cns_login_changed');
 
         $GLOBALS['SITE_DB']->query_delete('notifications_enabled');
         $GLOBALS['SITE_DB']->query_delete('notification_lockdown');
@@ -56,8 +56,8 @@ class notifications_test_set extends cms_test_case
         $this->assertTrue(empty($results[0]));
         $results = $ob->list_members_who_have_enabled('comment_posted', null, [get_member()]); // Just make sure the member-ID filter doesn't crash
 
-        $ob = new Hook_notification_cns_password_changed();
-        $results = $ob->list_members_who_have_enabled('cns_password_changed');
+        $ob = new Hook_notification_cns_login_changed();
+        $results = $ob->list_members_who_have_enabled('cns_login_changed');
         $this->assertTrue(count($results[0]) == count($all_members));
 
         // Check explicitly flipped state...
@@ -72,7 +72,7 @@ class notifications_test_set extends cms_test_case
 
             $GLOBALS['SITE_DB']->query_insert('notifications_enabled', [
                 'l_member_id' => $member['id'],
-                'l_notification_code' => 'cns_password_changed',
+                'l_notification_code' => 'cns_login_changed',
                 'l_code_category' => '',
                 'l_setting' => A_NA,
             ]);
@@ -82,8 +82,8 @@ class notifications_test_set extends cms_test_case
         $results = $ob->list_members_who_have_enabled('comment_posted');
         $this->assertTrue(count($results[0]) == count($all_members));
 
-        $ob = new Hook_notification_cns_password_changed();
-        $results = $ob->list_members_who_have_enabled('cns_password_changed');
+        $ob = new Hook_notification_cns_login_changed();
+        $results = $ob->list_members_who_have_enabled('cns_login_changed');
         $this->assertTrue(empty($results[0]));
 
         // Check with locking...
@@ -93,7 +93,7 @@ class notifications_test_set extends cms_test_case
             'l_setting' => A_NA,
         ]);
         $GLOBALS['SITE_DB']->query_insert('notification_lockdown', [
-            'l_notification_code' => 'cns_password_changed',
+            'l_notification_code' => 'cns_login_changed',
             'l_setting' => A_INSTANT_EMAIL,
         ]);
 
@@ -104,8 +104,8 @@ class notifications_test_set extends cms_test_case
         $results = $ob->list_members_who_have_enabled('comment_posted');
         $this->assertTrue(empty($results[0]));
 
-        $ob = new Hook_notification_cns_password_changed();
-        $results = $ob->list_members_who_have_enabled('cns_password_changed');
+        $ob = new Hook_notification_cns_login_changed();
+        $results = $ob->list_members_who_have_enabled('cns_login_changed');
         $this->assertTrue(count($results[0]) == count($all_members));
     }
 

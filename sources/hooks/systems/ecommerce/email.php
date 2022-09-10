@@ -586,7 +586,7 @@ class Hook_ecommerce_email
                     'SUFFIX' => $suffix,
                     'POP3_URL' => $pop3_url,
                 ], null, false, null, '.txt', 'text');
-                dispatch_notification('ecom_product_request_pop3', 'pop3_' . strval($sale_id), $subject, $body->evaluate(get_site_default_lang()), null, null, ['create_ticket' => true, 'use_real_from' => true]);
+                dispatch_notification('ecom_product_request_email', 'pop3_' . strval($sale_id), $subject, $body->evaluate(get_site_default_lang()), null, null, ['create_ticket' => true, 'use_real_from' => true]);
 
                 break;
 
@@ -619,7 +619,7 @@ class Hook_ecommerce_email
                     'EMAIL' => $prefix . $suffix,
                     'QUOTA_URL' => $quota_url,
                 ], null, false, null, '.txt', 'text');
-                dispatch_notification('ecom_product_request_quota', 'quota_' . uniqid('', true), $subject, $body->evaluate(get_site_default_lang()), null, null, ['create_ticket' => true, 'use_real_from' => true]);
+                dispatch_notification('ecom_product_request_email', 'quota_' . uniqid('', true), $subject, $body->evaluate(get_site_default_lang()), null, null, ['create_ticket' => true, 'use_real_from' => true]);
 
                 break;
 
@@ -646,7 +646,7 @@ class Hook_ecommerce_email
                     'SUFFIX' => $suffix,
                     'FORW_URL' => $forw_url,
                 ], null, false, null, '.txt', 'text');
-                dispatch_notification('ecom_product_request_forwarding', 'forw_' . strval($sale_id), $subject, $body->evaluate(get_site_default_lang()), null, null, ['create_ticket' => true, 'use_real_from' => true]);
+                dispatch_notification('ecom_product_request_email', 'forw_' . strval($sale_id), $subject, $body->evaluate(get_site_default_lang()), null, null, ['create_ticket' => true, 'use_real_from' => true]);
 
                 break;
         }

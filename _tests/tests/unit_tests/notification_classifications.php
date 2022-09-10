@@ -55,13 +55,6 @@ class notification_classifications_test_set extends cms_test_case
 
         $allowed = [
             // Adjust this to account for cases of notifications coded up in non-direct ways
-            'error_occurred_cron',
-            'error_occurred_missing_page',
-            'error_occurred_missing_reference',
-            'error_occurred_missing_reference_important',
-            'error_occurred_missing_resource',
-            'error_occurred_api',
-            'error_occurred_rss',
             'ticket_new_staff',
             'ticket_reply_staff',
         ];

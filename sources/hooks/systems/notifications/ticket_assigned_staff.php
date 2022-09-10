@@ -83,7 +83,7 @@ class Hook_notification_ticket_assigned_staff extends Hook_Notification
      */
     public function allowed_settings(string $notification_code) : int
     {
-        return A__ALL & ~A_INSTANT_PT;
+        return A__ALL & ~A_INSTANT_PT; // Tickets use topics, so do not allow PT
     }
 
     /**

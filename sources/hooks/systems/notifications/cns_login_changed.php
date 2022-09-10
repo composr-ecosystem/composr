@@ -15,14 +15,26 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    ecommerce
+ * @package    core_cns
  */
 
 /**
  * Hook class.
  */
-class Hook_notification_service_paid_for_staff extends Hook_notification__Staff
+class Hook_notification_cns_login_changed extends Hook_Notification
 {
+    /**
+     * Find a bitmask of settings (e-mail, SMS, etc) a notification code supports for listening on.
+     *
+     * @param  ID_TEXT $notification_code Notification code
+     * @return integer Allowed settings
+     */
+    public function allowed_settings(string $notification_code) : int
+    {
+        // Internal methods (web notification & PT) are pointless since this is a change in login credentials
+        return A__ALL & ~A_INSTANT_PT & ~A_WEB_NOTIFICATION;
+    }
+
     /**
      * Find the initial setting that members have for a notification code (only applies to the member_could_potentially_enable members).
      *
@@ -32,7 +44,7 @@ class Hook_notification_service_paid_for_staff extends Hook_notification__Staff
      */
     public function get_initial_setting(string $notification_code, ?string $category = null) : int
     {
-        return A_NA;
+        return A__ALL & ~A_INSTANT_PT & ~A_WEB_NOTIFICATION;
     }
 
     /**
@@ -43,12 +55,12 @@ class Hook_notification_service_paid_for_staff extends Hook_notification__Staff
      */
     public function list_handled_codes() : array
     {
-        if (!addon_installed('ecommerce')) {
+        if (get_forum_type() != 'cns') {
             return [];
         }
 
         $list = [];
-        $list['service_paid_for_staff'] = [do_lang('ecommerce:ECOMMERCE'), do_lang('ecommerce:NOTIFICATION_TYPE_service_paid_for_staff')];
+        $list['cns_login_changed'] = [do_lang('MEMBERS'), do_lang('cns:NOTIFICATION_TYPE_cns_login_changed')];
         return $list;
     }
 }

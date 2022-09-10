@@ -65,11 +65,11 @@ SITUATION                                                                       
 ---------                                                                           -----------------
 raw transaction gone through (to user)                                              framework: payment_received
 raw transaction gone through (to staff)                                             framework: payment_received_staff
-transaction gone through, stuff sent for individual hooks (to user or to staff)     per product hook: ecom_product_request_*, new_order, paid_subscription_messages, service_paid_for_staff, service_cancelled_staff
+transaction gone through, stuff sent for individual hooks (to user or to staff)     per product hook: ecom_product_request_*, new_order, paid_subscription_messages, subscriptions_staff
 invoice created (to user)                                                           manual trigger: invoice
 invoice created (to staff)                                                          (none, staff know they created it)
 subscription cancel request, needs manual attention (to user)                       (none, user knows they just did this)
-subscription cancel request, needs manual attention (to staff)                      manual trigger: subscription_cancelled_staff
+subscription cancel request, needs manual attention (to staff)                      manual trigger: subscriptions_staff
 order manually dispatched (to user)                                                 per product hook: ecom_product_?, order_dispatched
 order manually dispatched (to staff)                                                (none, staff know they just did this)
 

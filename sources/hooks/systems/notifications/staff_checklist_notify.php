@@ -15,13 +15,13 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    core
+ * @package    core_adminzone_dashboard
  */
 
 /**
  * Hook class.
  */
-class Hook_notification_error_occurred_api extends Hook_notification__Staff
+class Hook_notification_staff_checklist_notify extends Hook_notification__Staff
 {
     /**
      * Find the initial setting that members have for a notification code (only applies to the member_could_potentially_enable members).
@@ -44,7 +44,7 @@ class Hook_notification_error_occurred_api extends Hook_notification__Staff
     public function list_handled_codes() : array
     {
         $list = [];
-        $list['error_occurred_api'] = [do_lang('ERRORS'), do_lang('NOTIFICATION_TYPE_error_occurred_api')];
+        $list['staff_checklist_notify'] = [do_lang('STAFF'), do_lang('staff_checklist:NOTIFICATION_TYPE_staff_checklist_notify')];
         return $list;
     }
 }

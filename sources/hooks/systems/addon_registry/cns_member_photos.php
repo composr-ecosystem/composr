@@ -114,7 +114,6 @@ class Hook_addon_registry_cns_member_photos
             'uploads/cns_photos/index.html',
             'uploads/cns_photos/.htaccess',
             'sources/hooks/systems/profiles_tabs_edit/photo.php',
-            'sources/hooks/systems/notifications/cns_choose_photo.php',
             'themes/default/templates/CNS_EDIT_PHOTO_TAB.tpl',
         ];
     }

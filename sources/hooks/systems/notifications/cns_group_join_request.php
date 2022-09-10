@@ -41,6 +41,25 @@ class Hook_notification_cns_group_join_request extends Hook_Notification
     }
 
     /**
+     * Find whether a member could enable this notification (i.e. have permission to).
+     *
+     * @param  ID_TEXT $notification_code Notification code
+     * @param  MEMBER $member_id Member to check against
+     * @param  ?SHORT_TEXT $category The category within the notification code (null: none)
+     * @return boolean Whether they could
+     */
+    public function member_could_potentially_enable(string $notification_code, int $member_id, ?string $category = null) : bool
+    {
+        if (get_forum_type() != 'cns') {
+            return false;
+        }
+
+        // Only members who are a leader of a usergroup should see this notification
+        $is_usergroup_leader = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', ['g_group_leader' => $member_id]);
+        return ($is_usergroup_leader !== null);
+    }
+
+    /**
      * Get a list of members who have enabled this notification (i.e. have permission to AND have chosen to or are defaulted to).
      *
      * @param  ID_TEXT $notification_code Notification code

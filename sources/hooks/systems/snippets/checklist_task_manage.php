@@ -57,7 +57,7 @@ class Hook_snippet_checklist_task_manage
                 require_code('notifications');
                 $subject = do_lang('CT_NOTIFICATION_MAIL_SUBJECT', get_site_name(), $task_title);
                 $mail = do_notification_lang('CT_NOTIFICATION_MAIL', comcode_escape(get_site_name()), comcode_escape($task_title));
-                dispatch_notification('checklist_task', null, $subject, $mail);
+                dispatch_notification('staff_checklist_notify', null, $subject, $mail);
 
                 log_it('CHECK_LIST_ADD', strval($id), $task_title);
 

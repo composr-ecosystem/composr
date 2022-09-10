@@ -1166,7 +1166,7 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
 
         $subject = do_lang('USERNAME_CHANGED_MAIL_SUBJECT', $username, $old_username, null, get_lang($member_id));
         $mail = do_notification_lang('USERNAME_CHANGED_MAIL', comcode_escape(get_site_name()), comcode_escape($username), comcode_escape($old_username), get_lang($member_id));
-        dispatch_notification('cns_username_changed', null, $subject, $mail, [$member_id]);
+        dispatch_notification('cns_login_changed', null, $subject, $mail, [$member_id]);
 
         $subject = do_lang('STAFF_USERNAME_CHANGED_MAIL_SUBJECT', $username, $old_username, null, get_site_default_lang());
         $mail = do_notification_lang('STAFF_USERNAME_CHANGED_MAIL', comcode_escape(get_site_name()), comcode_escape($username), comcode_escape($old_username), get_site_default_lang());
@@ -1193,7 +1193,7 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
                     }
                     $mail = do_notification_lang('PASSWORD_CHANGED_MAIL_BODY', get_site_name(), $part_b, null, get_lang($member_id));
 
-                    dispatch_notification('cns_password_changed', null, do_lang('PASSWORD_CHANGED_MAIL_SUBJECT', null, null, null, get_lang($member_id)), $mail, [$member_id], null, ['priority' => 2]);
+                    dispatch_notification('cns_login_changed', null, do_lang('PASSWORD_CHANGED_MAIL_SUBJECT', null, null, null, get_lang($member_id)), $mail, [$member_id], null, ['priority' => 2]);
                 }
             }
         }
@@ -1898,7 +1898,7 @@ function cns_member_choose_signature(string $new_signature, ?int $member_id = nu
     require_code('notifications');
     $subject = do_lang('CHOOSE_SIGNATURE_SUBJECT', $GLOBALS['FORUM_DRIVER']->get_username($member_id, true), $GLOBALS['FORUM_DRIVER']->get_username($member_id), null, get_lang($member_id));
     $body = do_notification_lang('CHOOSE_SIGNATURE_BODY', $new_signature, $GLOBALS['FORUM_DRIVER']->get_username($member_id), $GLOBALS['FORUM_DRIVER']->get_username($member_id, true), get_lang($member_id));
-    dispatch_notification('cns_choose_signature', null, $subject, $body, null, get_member(), ['use_real_from' => true]);
+    dispatch_notification('cns_profile_high_impact_edit', null, $subject, $body, null, get_member(), ['use_real_from' => true]);
 
     // Decache from run-time cache
     unset($GLOBALS['FORUM_DRIVER']->MEMBER_ROWS_CACHED[$member_id]);
@@ -1962,7 +1962,7 @@ function cns_member_choose_avatar(string $avatar_url, ?int $member_id = null)
             require_code('notifications');
             $subject = do_lang('CHOOSE_AVATAR_SUBJECT', $GLOBALS['FORUM_DRIVER']->get_username($member_id, true), $GLOBALS['FORUM_DRIVER']->get_username($member_id), null, get_lang($member_id));
             $body = do_notification_lang('CHOOSE_AVATAR_BODY', $stub . $avatar_url, $GLOBALS['FORUM_DRIVER']->get_username($member_id), $GLOBALS['FORUM_DRIVER']->get_username($member_id, true), get_lang($member_id));
-            dispatch_notification('cns_choose_avatar', null, $subject, $body, null, get_member(), ['use_real_from' => true]);
+            dispatch_notification('cns_profile_high_impact_edit', null, $subject, $body, null, get_member(), ['use_real_from' => true]);
         }
     }
 
@@ -2053,7 +2053,7 @@ function cns_member_choose_photo_concrete(string $url, ?int $member_id = null)
     require_code('notifications');
     $subject = do_lang('CHOOSE_PHOTO_SUBJECT', $GLOBALS['FORUM_DRIVER']->get_username($member_id, true), $GLOBALS['FORUM_DRIVER']->get_username($member_id), null, get_lang($member_id));
     $body = do_notification_lang('CHOOSE_PHOTO_BODY', $url, [$GLOBALS['FORUM_DRIVER']->get_username($member_id), $GLOBALS['FORUM_DRIVER']->get_username($member_id, true)], get_lang($member_id));
-    dispatch_notification('cns_choose_photo', null, $subject, $body, null, get_member(), ['use_real_from' => true]);
+    dispatch_notification('cns_profile_high_impact_edit', null, $subject, $body, null, get_member(), ['use_real_from' => true]);
 
     // If Avatars addon not installed, use photo for it
     if (!addon_installed('cns_avatars')) {

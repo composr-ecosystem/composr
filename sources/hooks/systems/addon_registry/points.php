@@ -165,7 +165,6 @@ class Hook_addon_registry_points
             'sources/hooks/systems/points/daily.php',
             'sources/hooks/systems/points/visiting.php',
             'sources/hooks/systems/points/index.html',
-            'sources/hooks/systems/notifications/birthday_points.php',
             'sources/hooks/modules/admin_stats/point_transactions.php',
             'sources/hooks/systems/notifications/points_transaction.php',
             'sources/hooks/systems/notifications/points_transaction_staff.php',

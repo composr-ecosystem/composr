@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_notification_cns_group_declined extends Hook_Notification
+class Hook_notification_cns_group_status extends Hook_Notification
 {
     /**
      * Get a list of all the notification codes this hook can handle.
@@ -36,7 +36,7 @@ class Hook_notification_cns_group_declined extends Hook_Notification
         }
 
         $list = [];
-        $list['cns_group_declined'] = [do_lang('USERGROUPS'), do_lang('cns:NOTIFICATION_TYPE_cns_group_declined')];
+        $list['cns_group_status'] = [do_lang('USERGROUPS'), do_lang('cns:NOTIFICATION_TYPE_cns_group_status')];
         return $list;
     }
 

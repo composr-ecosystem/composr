@@ -70,7 +70,7 @@ class Hook_cron__health_check
             require_code('notifications');
             $subject = do_lang('HEALTH_CHECK_SUBJECT_' . ($has_fails ? 'fail' : 'misc'));
             $message = do_lang('HEALTH_CHECK_BODY', $results->evaluate());
-            dispatch_notification('health_check', $has_fails ? '1' : '0', $subject, $message, null, A_FROM_SYSTEM_PRIVILEGED, ['priority' => $has_fails ? 1 : 4]);
+            dispatch_notification('error_occurred', $has_fails ? 'health_check_failed' : 'health_check_passed', $subject, $message, null, A_FROM_SYSTEM_PRIVILEGED, ['priority' => $has_fails ? 1 : 4]);
         }
     }
 }

@@ -289,9 +289,9 @@ class Hook_ecommerce_usergroup
                     dispatch_notification('paid_subscription_messages', null/*Not currently per-sub settable strval($usergroup_subscription_id)*/, $subject, $body, [$member_id], A_FROM_SYSTEM_PRIVILEGED);
 
                     // Notification to staff
-                    $subject = do_lang('SERVICE_CANCELLED', $item_name, $username, get_site_name(), get_site_default_lang());
-                    $body = do_notification_lang('_SERVICE_CANCELLED', $item_name, $username, get_site_name(), get_site_default_lang());
-                    dispatch_notification('service_cancelled_staff', null, $subject, $body);
+                    $subject = do_lang('SUBSCRIPTION_CANCELLED', $item_name, $username, get_site_name(), get_site_default_lang());
+                    $body = do_notification_lang('_SUBSCRIPTION_CANCELLED', $item_name, $username, get_site_name(), get_site_default_lang());
+                    dispatch_notification('subscriptions_staff', null, $subject, $body);
                 }
             }
         } else { // Completed
@@ -353,9 +353,9 @@ class Hook_ecommerce_usergroup
             dispatch_notification('paid_subscription_messages', null/*Not currently per-sub settable strval($usergroup_subscription_id)*/, $subject, $body, [$member_id], A_FROM_SYSTEM_PRIVILEGED);
 
             // Notification to staff
-            $subject = do_lang('SERVICE_PAID_FOR', $item_name, $username, get_site_name(), get_site_default_lang());
-            $body = do_notification_lang('_SERVICE_PAID_FOR', $item_name, $username, get_site_name(), get_site_default_lang());
-            dispatch_notification('service_paid_for_staff', null, $subject, $body);
+            $subject = do_lang('SUBSCRIPTION_PAID_FOR', $item_name, $username, get_site_name(), get_site_default_lang());
+            $body = do_notification_lang('_SUBSCRIPTION_PAID_FOR', $item_name, $username, get_site_name(), get_site_default_lang());
+            dispatch_notification('subscriptions_staff', null, $subject, $body);
 
             $GLOBALS['SITE_DB']->query_insert('ecom_sales', ['date_and_time' => time(), 'member_id' => $member_id, 'details' => $details['item_name'], 'details2' => strval($usergroup_subscription_id), 'txn_id' => $details['TXN_ID']]);
         }

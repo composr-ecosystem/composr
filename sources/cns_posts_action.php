@@ -302,7 +302,7 @@ function cns_make_post(int $topic_id, string $title, string $post, int $skip_sig
             $subject = do_lang('POST_REQUIRING_VALIDATION_MAIL_SUBJECT', $topic_title, null, null, get_site_default_lang());
             $post_text = get_translated_text($map['p_post'], $GLOBALS['FORUM_DB'], get_site_default_lang());
             $mail = do_notification_lang('POST_REQUIRING_VALIDATION_MAIL', comcode_escape($url), comcode_escape($poster_name_if_guest), [$post_text, $poster_name_if_guest, strval($anonymous ? db_get_first_id() : $poster)]);
-            dispatch_notification('needs_validation', null, $subject, $mail, null, $poster, ['use_real_from' => true]);
+            dispatch_notification('content_validation', 'requires_validation', $subject, $mail, null, $poster, ['use_real_from' => true]);
         }
     } else {
         if ($send_notification) {

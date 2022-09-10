@@ -6475,10 +6475,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NOTIFICATION_TYPE_adminzone_dashboard_accessed
         NOTIFICATION_TYPE_auto_ban
         NOTIFICATION_TYPE_catalogue_view_reports
-        NOTIFICATION_TYPE_checklist_task
-        NOTIFICATION_TYPE_cns_choose_avatar
-        NOTIFICATION_TYPE_cns_choose_photo
-        NOTIFICATION_TYPE_cns_choose_signature
+        NOTIFICATION_TYPE_cns_profile_high_impact_edit
         NOTIFICATION_TYPE_cns_group_join_request_staff
         NOTIFICATION_TYPE_cns_member_needs_validation
         NOTIFICATION_TYPE_error_occurred
@@ -6493,18 +6490,12 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NOTIFICATION_TYPE_hack_attack
         NOTIFICATION_TYPE_ip_address_sharing
         NOTIFICATION_TYPE_low_stock
-        NOTIFICATION_TYPE_needs_validation
         NOTIFICATION_TYPE_ecom_product_request_custom
-        NOTIFICATION_TYPE_ecom_product_request_forwarding
-        NOTIFICATION_TYPE_ecom_product_request_pop3
-        NOTIFICATION_TYPE_ecom_product_request_quota
+        NOTIFICATION_TYPE_ecom_product_request_email
         NOTIFICATION_TYPE_points_transaction_staff
-        NOTIFICATION_TYPE_service_cancelled_staff
-        NOTIFICATION_TYPE_service_paid_for_staff
         NOTIFICATION_TYPE_spam_check_block
         NOTIFICATION_TYPE_staff_checklist_notify
-        NOTIFICATION_TYPE_subscription_cancelled_staff
-        NOTIFICATION_TYPE_task_completed
+        NOTIFICATION_TYPE_subscriptions_staff
         NOTIFICATION_TYPE_ticket_assigned_staff
         NOTIFICATION_TYPE_ticket_new_staff
         NOTIFICATION_TYPE_ticket_reply_staff
@@ -8325,6 +8316,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NOTIFICATION_TYPE_point_escrows_staff_active
         NEW_ESCROW_TRANSACTION_SUBJECT_STAFF
         NEW_ESCROW_TRANSACTION_INTRO_STAFF
+        REQUIRES_VALIDATION
     ')));
 
     $non_admin_files = [
@@ -10094,18 +10086,16 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NOTIFICATION_TYPE_cns_birthday
         NOTIFICATION_TYPE_cns_club
         NOTIFICATION_TYPE_cns_friend_birthday
-        NOTIFICATION_TYPE_cns_group_declined
+        NOTIFICATION_TYPE_cns_group_status
         NOTIFICATION_TYPE_cns_group_join_request
         NOTIFICATION_TYPE_cns_member_joined_group
         NOTIFICATION_TYPE_cns_new_member
         NOTIFICATION_TYPE_cns_new_pt
-        NOTIFICATION_TYPE_cns_password_changed
-        NOTIFICATION_TYPE_cns_rank_promoted
+        NOTIFICATION_TYPE_cns_login_changed
         NOTIFICATION_TYPE_cns_topic
         NOTIFICATION_TYPE_cns_topic_invite
-        NOTIFICATION_TYPE_cns_username_changed
         NOTIFICATION_TYPE_comment_posted
-        NOTIFICATION_TYPE_content_validated
+        NOTIFICATION_TYPE_content_validation
         NOTIFICATION_TYPE_download
         NOTIFICATION_TYPE_gallery_entry
         NOTIFICATION_TYPE_im_invited
@@ -10604,8 +10594,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SEND_NOTIFICATION
         SENT_SIMPLE
         SEPARATOR
-        SERVICE_CANCELLED
-        SERVICE_PAID_FOR
+        SUBSCRIPTION_CANCELLED
+        SUBSCRIPTION_PAID_FOR
         SETTINGS
         SET_TICKET_EXTRA_ACCESS
         SHIPPING_COST
@@ -11207,8 +11197,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         _SEARCH_TITLE
         _SECTION_DOWNLOADS
         _SEND_NOTIFICATION
-        _SERVICE_CANCELLED
-        _SERVICE_PAID_FOR
+        _SUBSCRIPTION_CANCELLED
+        _SUBSCRIPTION_PAID_FOR
         _SLIDESHOW
         _STATISTICS
         _SUBGALLERY_BITS
@@ -11570,7 +11560,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BIRTHDAY_POINTS_NOTIFICATION_MAIL_SUBJECT
         BIRTHDAY_POINTS_NOTIFICATION_MAIL_POINTS
         BIRTHDAY_POINTS_NOTIFICATION_MAIL_NO_POINTS
-        NOTIFICATION_TYPE_birthday_points
         POLL_CHOSEN
         ARE_YOU_SURE_TRANSACTION_POINTS
         ARE_YOU_SURE_TRANSACTION_GIFT_POINTS
