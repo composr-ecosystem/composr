@@ -45,8 +45,6 @@ class Hook_spam_heuristics_header_absence
             'HTTP_ACCEPT_ENCODING',
             'HTTP_ACCEPT_LANGUAGE',
             'HTTP_USER_AGENT',
-            'HTTP_COOKIE',
-            'HTTP_CONNECTION',
         ];
         foreach ($headers as $header) {
             if (@cms_empty_safe($_SERVER[$header])) {
