@@ -242,6 +242,9 @@ function install_cns(?float $upgrade_from = null)
 
         $GLOBALS['FORUM_DB']->add_table_field('f_groups', 'g_promotion_approval', 'BINARY');
 
+        // $GLOBALS['FORUM_DB']->delete_index_if_exists('f_group_members', 'gm_validated');
+        // $GLOBALS['FORUM_DB']->delete_table_field('f_group_members', 'gm_validated');
+
         // Optionally provide autofill types for bundled CPFs (if any found)
         $autofill_map = [
             'cms_currency' => ['transaction-currency'],
@@ -512,9 +515,9 @@ function install_cns(?float $upgrade_from = null)
             'gm_member_id' => '*MEMBER',
             'gm_validated' => 'BINARY',
         ]);
-        $GLOBALS['FORUM_DB']->create_index('f_group_members', 'gm_validated', ['gm_validated']);
         $GLOBALS['FORUM_DB']->create_index('f_group_members', 'gm_member_id', ['gm_member_id']);
         $GLOBALS['FORUM_DB']->create_index('f_group_members', 'gm_group_id', ['gm_group_id']);
+        $GLOBALS['FORUM_DB']->create_index('f_group_members', 'gm_validated', ['gm_validated']);
 
         $GLOBALS['FORUM_DB']->create_table('f_members', [
             // Basic details
@@ -1102,14 +1105,19 @@ function install_cns(?float $upgrade_from = null)
             'id' => '*AUTO',
             'ga_date_and_time' => 'TIME',
             'ga_member_id' => '*MEMBER',
-            'ga_old_group_id' => '?GROUP',
+            'ga_old_group_id' => '?GROUP', // null: join request, not null: rank (promotion)
             'ga_new_group_id' => 'GROUP',
-            'ga_status' => 'INTEGER', // -1 = declined, 0 = pending, 1 = approved
+            'ga_status' => 'SHORT_INTEGER', // -1 = declined, 0 = pending, 1 = approved
+            'ga_status_member_id' => '?MEMBER', // Member who accepted / declined the request
+            'ga_status_member_username' => 'SHORT_TEXT',
         ]);
         $GLOBALS['FORUM_DB']->create_index('f_group_approvals', 'ga_date_and_time', ['ga_date_and_time']);
         $GLOBALS['FORUM_DB']->create_index('f_group_approvals', 'ga_member_id', ['ga_member_id']);
         $GLOBALS['FORUM_DB']->create_index('f_group_approvals', 'ga_old_group_id', ['ga_old_group_id']);
         $GLOBALS['FORUM_DB']->create_index('f_group_approvals', 'ga_new_group_id', ['ga_new_group_id']);
+        $GLOBALS['FORUM_DB']->create_index('f_group_approvals', 'ga_status', ['ga_status']);
+        $GLOBALS['FORUM_DB']->create_index('f_group_approvals', 'ga_status_member_id', ['ga_status_member_id']);
+        $GLOBALS['FORUM_DB']->create_index('f_group_approvals', 'ga_promotion_to', ['ga_new_group_id', 'ga_status']);
 
         $GLOBALS['FORUM_DB']->create_table('f_pposts_fulltext_index', [
             'i_post_id' => '*AUTO_LINK',

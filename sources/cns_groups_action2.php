@@ -234,6 +234,7 @@ function cns_delete_group(int $group_id, ?int $target_group = null)
     }
     $GLOBALS['FORUM_DB']->query_delete('f_group_members', ['gm_group_id' => $group_id]);
     $GLOBALS['FORUM_DB']->query_delete('f_groups', ['id' => $group_id], '', 1);
+
     // No need to delete Composr permission stuff, as it could be on any MSN site, and Composr is coded with a tolerance due to the forum driver system. However, to be tidy...
     $GLOBALS['SITE_DB']->query_delete('group_privileges', ['group_id' => $group_id]);
     if (is_on_multi_site_network() && (get_forum_type() == 'cns')) {
@@ -259,6 +260,10 @@ function cns_delete_group(int $group_id, ?int $target_group = null)
 
     $GLOBALS['SITE_DB']->query_update('url_id_monikers', ['m_deprecated' => 1], ['m_resource_page' => 'groups', 'm_resource_type' => 'view', 'm_resource_id' => strval($group_id)]);
 
+    // Clean up approval records
+    $GLOBALS['FORUM_DB']->query_delete('f_group_approvals', ['ga_new_group_id' => $group_id]);
+    $GLOBALS['FORUM_DB']->query_update('f_group_approvals', ['ga_status' => -1, 'ga_status_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(), 'ga_status_member_username' => do_lang('SYSTEM')], ['ga_old_group_id' => $group_id, 'ga_status' => 0]);
+
     log_it('DELETE_GROUP', strval($group_id), $name);
 
     if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
@@ -279,7 +284,7 @@ function cns_delete_group(int $group_id, ?int $target_group = null)
 }
 
 /**
- * Mark a member as applying to be in a certain, and inform the leader.
+ * Mark a member as applying to be in a certain group, and inform the leader.
  *
  * @param  GROUP $group_id The usergroup to apply to
  * @param  ?MEMBER $member_id The member applying (null: current member)
@@ -349,7 +354,7 @@ function cns_member_ask_join_group(int $group_id, ?int $member_id = null)
 }
 
 /**
- * Remove a usergroup from a member's secondary usergroup memberships.
+ * Remove a usergroup from a member's secondary usergroup memberships. Be sure to call cns_update_group_approvals at some point after this.
  *
  * @param  GROUP $group_id The usergroup to remove from
  * @param  ?MEMBER $member_id The member leaving (null: current member)
@@ -378,21 +383,18 @@ function cns_member_leave_secondary_group(int $group_id, ?int $member_id = null)
             'usergroup_id' => $group_id,
         ]);
 
-        // Decline pending approval records where we were supposed to get promoted from this usergroup
-        $GLOBALS['FORUM_DB']->query_update('f_group_approvals', ['ga_status' => -1], ['ga_member_id' => $member_id, 'ga_old_group_id' => $group_id, 'ga_status' => 0]);
-
         log_it('MEMBER_REMOVED_FROM_GROUP', strval($member_id), strval($group_id));
     }
 }
 
 /**
- * Add a member to a certain usergroup.
+ * Add a usergroup to a member's secondary usergroup memberships. Be sure to call cns_update_group_approvals at some point after this.
  *
  * @param  MEMBER $member_id The member
  * @param  GROUP $id The usergroup
  * @param  BINARY $validated Whether the member is validated into the usergroup
  */
-function cns_add_member_to_group(int $member_id, int $id, int $validated = 1)
+function cns_add_member_to_secondary_group(int $member_id, int $id, int $validated = 1)
 {
     if (cns_is_ldap_member($member_id)) {
         return;
@@ -410,14 +412,12 @@ function cns_add_member_to_group(int $member_id, int $id, int $validated = 1)
             'gm_validated' => 0,
         ], '', 1);
     }
+
     $GLOBALS['FORUM_DB']->query_insert('f_group_members', [
         'gm_group_id' => $id,
         'gm_member_id' => $member_id,
         'gm_validated' => $validated,
     ], false, true);
-
-    // Remove approval records since we're in the usergroup now
-    $GLOBALS['FORUM_DB']->query_delete('f_group_approvals', ['ga_member_id' => $member_id, 'ga_new_group_id' => $id]);
 
     log_it('MEMBER_ADDED_TO_GROUP', strval($member_id), strval($id));
 
@@ -458,7 +458,7 @@ function cns_member_validate_into_group(int $group_id, int $prospective_member_i
 
     require_code('notifications');
 
-    // Check if the member is actually pending to be added to the usergroup (if not, cns_add_member_to_group should be used instead if approving)
+    // Check if the member is actually pending to be added to the usergroup (if not, cns_add_member_to_secondary_group should be used instead)
     $pending = $GLOBALS['FORUM_DB']->query_select_value('f_group_approvals', 'COUNT(*)', ['ga_member_id' => $prospective_member_id, 'ga_new_group_id' => $group_id, 'ga_status' => 0]);
     $pending += $GLOBALS['FORUM_DB']->query_select_value('f_group_members', 'COUNT(*)', ['gm_member_id' => $prospective_member_id, 'gm_group_id' => $group_id, 'gm_validated' => 0]);
     if ($pending == 0) {
@@ -470,12 +470,10 @@ function cns_member_validate_into_group(int $group_id, int $prospective_member_i
     $name = cns_get_group_name($group_id);
 
     if (!$decline) {
-        // Update approval records
-        $GLOBALS['FORUM_DB']->query_update('f_group_approvals', ['ga_status' => 1], ['ga_member_id' => $prospective_member_id, 'ga_new_group_id' => $group_id, 'ga_status' => 0]);
-
         // Remove member from old usergroups in pending promotion approvals
         $rows = $GLOBALS['FORUM_DB']->query_select('f_group_approvals', ['ga_old_group_id'], ['ga_member_id' => $prospective_member_id, 'ga_new_group_id' => $group_id, 'ga_status' => 0]);
         $is_primary = false;
+        $removed_usergroups = [];
         foreach ($rows as $row) {
             if ($row['ga_old_group_id'] === null) {
                 continue;
@@ -485,11 +483,11 @@ function cns_member_validate_into_group(int $group_id, int $prospective_member_i
             $current_primary_usergroup = $GLOBALS['FORUM_DRIVER']->get_member_row_field($prospective_member_id, 'm_primary_group');
             if ($current_primary_usergroup == $row['ga_old_group_id']) {
                 $GLOBALS['FORUM_DB']->query_update('f_members', ['m_primary_group' => $group_id], ['id' => $prospective_member_id], '', 1);
-                $GLOBALS['FORUM_DB']->query_update('f_group_approvals', ['ga_status' => -1], ['ga_member_id' => $prospective_member_id, 'ga_old_group_id' => $current_primary_usergroup, 'ga_status' => 0]);
                 $is_primary = true;
             }
 
             cns_member_leave_secondary_group($row['ga_old_group_id'], $prospective_member_id);
+            $removed_usergroups[] = $row['ga_old_group_id'];
         }
 
         // If this usergroup did not become the member's primary usergroup, add it as a secondary usergroup.
@@ -499,21 +497,31 @@ function cns_member_validate_into_group(int $group_id, int $prospective_member_i
                 'gm_member_id' => $prospective_member_id,
                 'gm_validated' => 1,
             ]);
-
-            $GLOBALS['FORUM_DB']->query_insert('f_group_join_log', [
-                'member_id' => $prospective_member_id,
-                'usergroup_id' => $group_id,
-                'join_time' => time(),
-            ]);
+        } else {
+            // Decache and log
+            unset($GLOBALS['FORUM_DRIVER']->MEMBER_ROWS_CACHED[$prospective_member_id]);
+            unset($GLOBALS['MEMBER_CACHE_FIELD_MAPPINGS'][$prospective_member_id]);
+            unset($GLOBALS['TIMEZONE_MEMBER_CACHE'][$prospective_member_id]);
+            unset($GLOBALS['USER_NAME_CACHE'][$prospective_member_id]);
+            log_it('MEMBER_PRIMARY_GROUP_CHANGED', strval($prospective_member_id), strval($group_id));
         }
+
+        $GLOBALS['FORUM_DB']->query_insert('f_group_join_log', [
+            'member_id' => $prospective_member_id,
+            'usergroup_id' => $group_id,
+            'join_time' => time(),
+        ]);
 
         log_it('MEMBER_ADDED_TO_GROUP', strval($prospective_member_id), strval($group_id));
 
         $mail = do_notification_lang('GROUP_ACCEPTED_MAIL', get_site_name(), $name, null, get_lang($prospective_member_id));
         $subject = do_lang('GROUP_ACCEPTED_MAIL_SUBJECT', $name, null, null, get_lang($prospective_member_id));
+
+        // This will also handle marking approved the approval record if applicable since the member was added to the usergroup
+        cns_update_group_approvals($prospective_member_id, get_member(), $removed_usergroups);
     } else {
-        // Update promotion approval records to declined
-        $GLOBALS['FORUM_DB']->query_update('f_group_approvals', ['ga_status' => -1], ['ga_member_id' => $prospective_member_id, 'ga_new_group_id' => $group_id, 'ga_status' => 0]);
+        // Decline the approval
+        $GLOBALS['FORUM_DB']->query_update('f_group_approvals', ['ga_status' => -1, 'ga_status_member_id' => get_member(), 'ga_status_member_username' => $GLOBALS['FORUM_DRIVER']->get_username(get_member(), false, USERNAME_DEFAULT_DELETED)], ['ga_member_id' => $prospective_member_id, 'ga_old_group_id' => $group_id, 'ga_status' => 0]);
 
         if ($reason != '') {
             $mail = do_notification_lang('GROUP_DECLINED_MAIL_REASON', comcode_escape(get_site_name()), comcode_escape($name), comcode_escape($reason), get_lang($prospective_member_id));
@@ -524,6 +532,36 @@ function cns_member_validate_into_group(int $group_id, int $prospective_member_i
     }
 
     dispatch_notification('cns_group_join_decision', null, $subject, $mail, [$prospective_member_id]);
+}
+
+/**
+ * Call this after making changes to a member's usergroups to update approval records.
+ *
+ * @param  MEMBER $member_id The member whose usergroups we are checking
+ * @param  ?MEMBER $status_member_id The member who made the changes to the usergroups (null: the system)
+ * @param  array $groups_to_check Array of usergroups that the member could possibly have been removed from (e.g. all the groups they belonged in before changes were made, or the explicit groups from which they were removed)
+ */
+function cns_update_group_approvals(int $member_id, ?int $status_member_id = null, array $groups_to_check = []) : void
+{
+    if ($status_member_id === null) {
+        $status_member_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
+    }
+
+    // Get all of the usergroups this member belongs in right now; skip cache in case changes were recently made
+    $all_current_groups = $GLOBALS['FORUM_DRIVER']->get_members_groups($member_id, false, true, true);
+
+    // Mark all approval records approved for current usergroups the member is in
+    foreach ($all_current_groups as $group) {
+        $GLOBALS['FORUM_DB']->query_update('f_group_approvals', ['ga_status' => 1, 'ga_status_member_id' => $status_member_id, 'ga_status_member_username' => $GLOBALS['FORUM_DRIVER']->get_username($status_member_id, false, USERNAME_DEFAULT_DELETED)], ['ga_member_id' => $member_id, 'ga_new_group_id' => $group, 'ga_status' => 0]);
+    }
+
+    // Mark all approval records declined for usergroups which the member was supposed to promote from but is no longer in
+    foreach ($groups_to_check as $group) {
+        if (in_array($group, $all_current_groups)) { // Member is still in the usergroup, so skip it
+            continue;
+        }
+        $GLOBALS['FORUM_DB']->query_update('f_group_approvals', ['ga_status' => -1, 'ga_status_member_id' => $status_member_id, 'ga_status_member_username' => $GLOBALS['FORUM_DRIVER']->get_username($status_member_id, false, USERNAME_DEFAULT_DELETED)], ['ga_member_id' => $member_id, 'ga_old_group_id' => $group, 'ga_status' => 0]);
+    }
 }
 
 /**

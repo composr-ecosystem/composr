@@ -591,7 +591,8 @@ class Module_admin_cns_groups extends Standard_crud_module
 
             $members = $GLOBALS['FORUM_DRIVER']->member_group_query(array_map('intval', $_POST['copy_members_into']), 300, $start);
             foreach (array_keys($members) as $member_id) {
-                cns_add_member_to_group($member_id, $g, 1);
+                cns_add_member_to_secondary_group($member_id, $g, 1);
+                cns_update_group_approvals($member_id, get_member());
             }
 
             $start += 300;
@@ -662,7 +663,8 @@ class Module_admin_cns_groups extends Standard_crud_module
         }
 
         if ($group_leader !== null) {
-            cns_add_member_to_group($group_leader, $id);
+            cns_add_member_to_secondary_group($group_leader, $id);
+            cns_update_group_approvals($group_leader, get_member());
         }
 
         if (addon_installed('ecommerce')) {
@@ -747,7 +749,8 @@ class Module_admin_cns_groups extends Standard_crud_module
         }
 
         if (($group_leader !== null) && ($group_leader != INTEGER_MAGIC_NULL) && (!in_array(intval($id), $GLOBALS['FORUM_DRIVER']->get_members_groups($group_leader)))) {
-            cns_add_member_to_group($group_leader, intval($id));
+            cns_add_member_to_secondary_group($group_leader, intval($id));
+            cns_update_group_approvals($group_leader, get_member());
         }
 
         if (!fractional_edit()) {

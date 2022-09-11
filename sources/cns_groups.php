@@ -406,9 +406,10 @@ function cns_get_best_group_property(array $groups, string $property)
  * @param  boolean $skip_secret Whether to skip looking at secret usergroups, unless we have access
  * @param  boolean $handle_probation Whether to take probation into account
  * @param  boolean $include_implicit Whether to include implicit groups
+ * @param  boolean $skip_cache Whether to skip the user groups cache
  * @return array Flipped list (e.g. [1=>true,2=>true,3=>true] for someone in (1,2,3)).
  */
-function cns_get_members_groups(?int $member_id = null, bool $skip_secret = false, bool $handle_probation = true, bool $include_implicit = true) : array
+function cns_get_members_groups(?int $member_id = null, bool $skip_secret = false, bool $handle_probation = true, bool $include_implicit = true, bool $skip_cache = false) : array
 {
     if (is_guest($member_id)) {
         $ret = [];
@@ -446,9 +447,11 @@ function cns_get_members_groups(?int $member_id = null, bool $skip_secret = fals
         ((!function_exists('has_privilege')) || (!has_privilege(get_member(), 'see_hidden_groups')))
     );
 
-    global $GROUP_MEMBERS_CACHE;
-    if (isset($GROUP_MEMBERS_CACHE[$member_id][$skip_secret][$include_implicit])) {
-        return $GROUP_MEMBERS_CACHE[$member_id][$skip_secret][$include_implicit];
+    if (!$skip_cache) {
+        global $GROUP_MEMBERS_CACHE;
+        if (isset($GROUP_MEMBERS_CACHE[$member_id][$skip_secret][$include_implicit])) {
+            return $GROUP_MEMBERS_CACHE[$member_id][$skip_secret][$include_implicit];
+        }
     }
 
     $groups = [];

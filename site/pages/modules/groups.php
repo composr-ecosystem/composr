@@ -214,6 +214,7 @@ class Module_groups
      */
     public function directory() : object
     {
+        // Calculate the number of pending promotions (approvals) and join requests (validations) for each usergroup
         $_pending_approvals = $GLOBALS['FORUM_DB']->query_select('f_group_approvals', ['ga_new_group_id'], ['ga_status' => 0]);
         $_pending_validations = $GLOBALS['FORUM_DB']->query_select('f_group_members', ['gm_group_id'], ['gm_validated' => 0]);
         $pending_approvals = [];
@@ -221,13 +222,13 @@ class Module_groups
             if (!array_key_exists($row['ga_new_group_id'], $pending_approvals)) {
                 $pending_approvals[$row['ga_new_group_id']] = 0;
             }
-            $pending_approvals[$row['ga_new_group_id']] += 1;
+            $pending_approvals[$row['ga_new_group_id']]++;
         }
         foreach ($_pending_validations as $row) {
             if (!array_key_exists($row['gm_group_id'], $pending_approvals)) {
                 $pending_approvals[$row['gm_group_id']] = 0;
             }
-            $pending_approvals[$row['gm_group_id']] += 1;
+            $pending_approvals[$row['gm_group_id']]++;
         }
 
         $staff_groups = array_merge($GLOBALS['FORUM_DRIVER']->get_super_admin_groups(), $GLOBALS['FORUM_DRIVER']->get_moderator_groups());
@@ -342,7 +343,7 @@ class Module_groups
             $entry[] = escape_html($num_members);
             if ($show_pending_applications) {
                 if (cns_may_control_group($row['id'], get_member(), $row)) {
-                    $entry[] = (array_key_exists($row['id'], $pending_approvals)) ? escape_html(integer_format($pending_approvals[$row['id']])) : '0';
+                    $entry[] = escape_html(integer_format(array_key_exists($row['id'], $pending_approvals) ? $pending_approvals[$row['id']] : 0));
                 } else {
                     $entry[] = do_lang_tempcode('NA_EM');
                 }
@@ -387,7 +388,7 @@ class Module_groups
                 $_p_t = $row['g_promotion_threshold'];
                 $p_t = new Tempcode();
                 if (($_p_t !== null) && (array_key_exists($row['g_promotion_target'], $_rank))) {
-                    $p_t = do_lang_tempcode('PROMOTION_TO', escape_html(integer_format($_p_t, null)), escape_html($_rank[$row['g_promotion_target']]['_name']));
+                    $p_t = do_lang_tempcode('PROMOTION_TO', escape_html(integer_format($_p_t)), escape_html($_rank[$row['g_promotion_target']]['_name']));
                 }
 
                 $entry = [];
@@ -400,7 +401,7 @@ class Module_groups
                 $entry[] = escape_html($num_members);
                 if ($show_pending_applications) {
                     if (cns_may_control_group($row['id'], get_member(), $row)) {
-                        $entry[] = (array_key_exists($row['id'], $pending_approvals)) ? escape_html(integer_format($pending_approvals[$row['id']])) : '0';
+                        $entry[] = escape_html(integer_format(array_key_exists($row['id'], $pending_approvals) ? $pending_approvals[$row['id']] : 0));
                     } else {
                         $entry[] = do_lang_tempcode('NA_EM');
                     }
@@ -456,7 +457,7 @@ class Module_groups
                 $entry[] = escape_html($num_members);
                 if ($show_pending_applications) {
                     if (cns_may_control_group($row['id'], get_member(), $row)) {
-                        $entry[] = (array_key_exists($row['id'], $pending_approvals)) ? escape_html(integer_format($pending_approvals[$row['id']])) : '0';
+                        $entry[] = escape_html(integer_format(array_key_exists($row['id'], $pending_approvals) ? $pending_approvals[$row['id']] : 0));
                     } else {
                         $entry[] = do_lang_tempcode('NA_EM');
                     }
@@ -575,13 +576,21 @@ class Module_groups
         // Came from a notification for approving a promotion
         $approval_id = get_param_integer('approval_id', null);
         if ($approval_id !== null) {
-            $approval_status = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_group_approvals', 'ga_status', ['id' => $approval_id]);
-            if ($approval_status === null) {
+            $rows = $GLOBALS['FORUM_DB']->query_select('f_group_approvals', ['ga_status', 'ga_status_member_id'], ['id' => $approval_id]);
+            if (count($rows) == 0) {
                 attach_message(do_lang_tempcode('GROUP_PROMOTION_INVALID'), 'warn');
-            } elseif ($approval_status == -1) {
-                attach_message(do_lang_tempcode('GROUP_PROMOTION_ALREADY_DECLINED'), 'warn');
-            } elseif ($approval_status == 1) {
-                attach_message(do_lang_tempcode('GROUP_PROMOTION_ALREADY_ACCEPTED'), 'warn');
+            } elseif ($rows[0]['ga_status'] == -1) {
+                $username = $GLOBALS['FORUM_DRIVER']->get_username($rows[0]['ga_status_member_id'], true, USERNAME_DEFAULT_NULL);
+                if ($username === null) {
+                    $username = $rows[0]['ga_status_member_username'];
+                }
+                attach_message(do_lang_tempcode('GROUP_PROMOTION_ALREADY_DECLINED', escape_html($username)), 'warn');
+            } elseif ($rows[0]['ga_status'] == 1) {
+                $username = $GLOBALS['FORUM_DRIVER']->get_username($rows[0]['ga_status_member_id'], true, USERNAME_DEFAULT_NULL);
+                if ($username === null) {
+                    $username = $rows[0]['ga_status_member_username'];
+                }
+                attach_message(do_lang_tempcode('GROUP_PROMOTION_ALREADY_ACCEPTED', escape_html($username)), 'warn');
             }
         }
 
@@ -731,12 +740,6 @@ class Module_groups
 
                     $groups = $GLOBALS['CNS_DRIVER']->get_members_groups($row['ga_member_id'], false, true);
 
-                    // Clean up promotions where the member is already in the promoted group
-                    if ((array_key_exists($row['ga_new_group_id'], $groups))) {
-                        $GLOBALS['FORUM_DB']->query_delete('f_group_approvals', ['id' => $row['id']], '', 1);
-                        continue;
-                    }
-
                     $url = $GLOBALS['FORUM_DRIVER']->member_profile_url($row['ga_member_id'], true);
                     $username = $GLOBALS['FORUM_DRIVER']->get_username($row['ga_member_id'], true, USERNAME_DEFAULT_DELETED);
 
@@ -871,7 +874,8 @@ class Module_groups
             warn_exit(do_lang_tempcode('ALREADY_IN_GROUP'));
         }
 
-        cns_add_member_to_group($member_id, $id);
+        cns_add_member_to_secondary_group($member_id, $id);
+        cns_update_group_approvals($member_id, get_member());
 
         $url = build_url(['page' => '_SELF', 'type' => 'view', 'id' => $id], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
@@ -910,6 +914,7 @@ class Module_groups
         }
 
         cns_member_leave_secondary_group($id, $member_id);
+        cns_update_group_approvals($member_id, get_member(), [$id]);
 
         $url = build_url(['page' => '_SELF', 'type' => 'view', 'id' => $id], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
@@ -1083,6 +1088,7 @@ class Module_groups
         }
 
         cns_member_leave_secondary_group($id, get_member());
+        cns_update_group_approvals(get_member(), get_member(), [$id]);
 
         $url = build_url(['page' => '_SELF', 'type' => 'view', 'id' => $id], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));

@@ -426,11 +426,12 @@ class Hook_import_vb3
                 // Set up usergroup membership
                 foreach ($secondary_groups as $group) {
                     $group = import_id_remap_get('group', strval($group['usergroupid']));
-                    cns_add_member_to_group($id_new, $group, 1);
+                    cns_add_member_to_secondary_group($id_new, $group, 1);
                 }
                 foreach ($requests as $request) {
-                    cns_add_member_to_group($id_new, $request['usergroupid'], 0);
+                    cns_add_member_to_secondary_group($id_new, $request['usergroupid'], 0);
                 }
+                cns_update_group_approvals($id_new, get_member());
             }
 
             $row_start += 200;

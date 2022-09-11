@@ -324,7 +324,8 @@ class Module_cms_cns_groups extends Standard_crud_module
         $this->_set_permissions($id, $forum_id);
 
         require_code('cns_groups_action2');
-        cns_add_member_to_group(get_member(), $id);
+        cns_add_member_to_secondary_group(get_member(), $id);
+        cns_update_group_approvals(get_member(), get_member());
 
         require_code('users2');
         if (has_actual_page_access(get_modal_user(), 'groups')) {

@@ -918,7 +918,7 @@ function cns_get_member_fields_profile(bool $mini_mode = true, ?int $member_id =
  * @param  ?string $username The username (null: don't change)
  * @param  ?string $password The password (null: don't change)
  * @param  ?SHORT_TEXT $email_address The e-mail address (null: don't change)
- * @param  ?GROUP $primary_group The member's primary usergroup (null: don't change)
+ * @param  ?GROUP $primary_group The member's primary usergroup (null: don't change) (you must handle updating group approvals manually)
  * @param  ?integer $dob_day Day of date of birth (null: don't change) (-1: unset)
  * @param  ?integer $dob_month Month of date of birth (null: don't change) (-1: unset)
  * @param  ?integer $dob_year Year of date of birth (null: don't change) (-1: unset)
@@ -1220,10 +1220,6 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
                 'usergroup_id' => $primary_group,
                 'join_time' => time(),
             ]);
-
-            // Update approval records
-            $GLOBALS['FORUM_DB']->query_update('f_group_approvals', ['ga_status' => 1], ['ga_member_id' => $member_id, 'ga_new_group_id' => $primary_group, 'ga_status' => 0]);
-            $GLOBALS['FORUM_DB']->query_update('f_group_approvals', ['ga_status' => -1], ['ga_member_id' => $member_id, 'ga_old_group_id' => $old_primary_group, 'ga_status' => 0]);
 
             log_it('MEMBER_PRIMARY_GROUP_CHANGED', strval($member_id), strval($primary_group));
         }

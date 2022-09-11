@@ -105,7 +105,8 @@ function cns_member_handle_promotion(?int $member_id = null)
         }
         $or_list .= 'id=' . strval($id);
     }
-    $promotions = $GLOBALS['FORUM_DB']->query('SELECT id,g_promotion_target,g_promotion_threshold FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups WHERE (' . $or_list . ') AND g_promotion_target IS NOT NULL AND NOT EXISTS (SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_group_approvals WHERE ga_new_group_id=g_promotion_target AND ga_status<>0) AND g_promotion_threshold<=' . strval($total_points) . ' ORDER BY g_promotion_threshold');    $promotes_today = [];
+    $promotions = $GLOBALS['FORUM_DB']->query('SELECT id,g_promotion_target,g_promotion_threshold FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups WHERE (' . $or_list . ') AND g_promotion_target IS NOT NULL AND NOT EXISTS (SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_group_approvals WHERE ga_new_group_id=g_promotion_target AND ga_status<>0) AND g_promotion_threshold<=' . strval($total_points) . ' ORDER BY g_promotion_threshold');
+    $promotes_today = [];
     foreach ($promotions as $promotion) {
         $_p = $promotion['g_promotion_target'];
         if ((!array_key_exists($_p, $groups)) && (!array_key_exists($_p, $promotes_today))) { // If we're not already in the group
@@ -153,7 +154,7 @@ function cns_member_handle_promotion(?int $member_id = null)
                 $already_pending = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_group_approvals', 'id', ['ga_member_id' => $member_id, 'ga_new_group_id' => $_p]);
                 if ($already_pending === null) {
                     // Add the pending approval record
-                    $id = $GLOBALS['FORUM_DB']->query_insert('f_group_approvals', ['ga_date_and_time' => time(), 'ga_member_id' => $member_id, 'ga_old_group_id' => $promotion['id'], 'ga_new_group_id' => $_p, 'ga_status' => 0], true);
+                    $id = $GLOBALS['FORUM_DB']->query_insert('f_group_approvals', ['ga_date_and_time' => time(), 'ga_member_id' => $member_id, 'ga_old_group_id' => $promotion['id'], 'ga_new_group_id' => $_p, 'ga_status' => 0, 'ga_status_member_username' => ''], true);
 
                     // Dispatch notification to member
                     require_code('notifications');
@@ -166,17 +167,18 @@ function cns_member_handle_promotion(?int $member_id = null)
                     $group_info = $GLOBALS['FORUM_DB']->query_select('f_groups', ['g_name', 'g_group_leader'], ['id' => $_p], '', 1);
                     $group_name = get_translated_text($group_info[0]['g_name'], $GLOBALS['FORUM_DB']);
                     $their_username = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_username');
+                    $_their_username = $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id);
                     $_url = build_url(['page' => 'groups', 'type' => 'view', 'id' => $_p, 'approval_id' => $id], get_module_zone('groups'), [], false, false, true);
                     $url = $_url->evaluate();
                     $leader_id = $group_info[0]['g_group_leader'];
                     $leader_username = do_lang('UNKNOWN');
                     if ($leader_id !== null) {
                         $leader_username = $GLOBALS['CNS_DRIVER']->get_member_row_field($leader_id, 'm_username');
-                        $mail = do_notification_lang('GROUP_PROMOTION_REQUEST_MAIL', comcode_escape($their_username), comcode_escape($group_name), [$url, comcode_escape($leader_username)], get_lang($leader_id));
+                        $mail = do_notification_lang('GROUP_PROMOTION_REQUEST_MAIL', comcode_escape($_their_username), comcode_escape($their_username), [comcode_escape($url), comcode_escape($group_name), comcode_escape($leader_username)], get_lang($leader_id));
                         $subject = do_lang('GROUP_PROMOTION_REQUEST_MAIL_SUBJECT', null, null, null, get_lang($leader_id));
                         dispatch_notification('cns_group_join_request', null, $subject, $mail, [$leader_id], A_FROM_SYSTEM_PRIVILEGED);
                     }
-                    $mail = do_notification_lang('GROUP_PROMOTION_REQUEST_MAIL', comcode_escape($their_username), comcode_escape($group_name), [$url, (($leader_id !== null) ? comcode_escape($leader_username) : do_lang('NA'))], get_site_default_lang());
+                    $mail = do_notification_lang('GROUP_PROMOTION_REQUEST_MAIL', comcode_escape($_their_username), comcode_escape($their_username), [comcode_escape($url), comcode_escape($group_name), (($leader_id !== null) ? comcode_escape($leader_username) : do_lang('NA'))], get_site_default_lang());
                     $subject = do_lang('GROUP_PROMOTION_REQUEST_MAIL_SUBJECT', null, null, null, get_site_default_lang());
                     dispatch_notification('cns_group_join_request_staff', null, $subject, $mail, null, A_FROM_SYSTEM_PRIVILEGED, ['use_real_from' => true]);
                 }

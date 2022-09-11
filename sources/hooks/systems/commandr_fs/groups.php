@@ -560,10 +560,12 @@ class Hook_commandr_fs_groups extends Resource_fs_base
         }
 
         require_code('cns_members_action2');
+        require_code('cns_groups_action2');
 
         $label = $this->_default_property_str($properties, 'label');
         list($password_hashed, $email_address, $groups, $dob_day, $dob_month, $dob_year, $custom_fields, $timezone, $language, $theme, $title, $photo_url, $avatar_url, $signature, $preview_posts, $reveal_age, $views_signatures, $auto_monitor_contrib_content, $smart_topic_notification, $mailing_list_style, $auto_mark_read, $sound_enabled, $allow_emails, $allow_emails_from_staff, $highlighted_name, $pt_allow, $pt_rules_text, $validated, $validated_email_confirm_code, $on_probation_until, $is_perm_banned, $ip_address, $password_compatibility_scheme, $salt, $join_time) = $this->__file_read_in_properties($path, $properties, true);
 
+        $old_groups = $GLOBALS['CNS_DRIVER']->get_members_groups(intval($resource_id));
         cns_edit_member(
             intval($resource_id), // member_id
             $label, // username
@@ -606,6 +608,8 @@ class Hook_commandr_fs_groups extends Resource_fs_base
         if (isset($properties['groups'])) {
             table_from_portable_rows('f_group_members', $properties['groups'], ['gm_member_id' => intval($resource_id)], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
         }
+
+        cns_update_group_approvals(intval($resource_id), get_member(), $old_groups);
 
         $hooks = find_all_hook_obs('systems', 'commandr_fs_extended_member', 'Hook_commandr_fs_extended_member__');
         foreach ($hooks as $hook => $ob) {

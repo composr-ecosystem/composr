@@ -129,7 +129,8 @@ function edit_usergroup_subscription(int $id, string $title, string $description
                 }
             } else {
                 $db->query_delete('f_group_members', ['gm_group_id' => $group_id, 'gm_member_id' => $member_id], '', 1);
-                cns_add_member_to_group($member_id, $group_id);
+                cns_add_member_to_secondary_group($member_id, $group_id);
+                cns_update_group_approvals($member_id, get_member(), [$group_id]);
             }
         }
     }

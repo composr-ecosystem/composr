@@ -79,7 +79,8 @@ function set_member_group_timeout(int $member_id, int $group_id, int $timestamp,
                     'join_time' => time(),
                 ]);
             } else {
-                cns_add_member_to_group($member_id, $group_id);
+                cns_add_member_to_secondary_group($member_id, $group_id);
+                cns_update_group_approvals($member_id, get_member());
             }
         }
     }

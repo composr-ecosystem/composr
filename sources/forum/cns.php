@@ -1613,12 +1613,13 @@ class Forum_driver_cns extends Forum_driver_base
      * @param  MEMBER $member The member ID
      * @param  boolean $skip_secret Whether to skip looking at secret usergroups, unless we have access
      * @param  boolean $handle_probation Whether to take probation into account
+     * @param  boolean $skip_cache Whether to skip the user groups cache
      * @return array The array of forum usergroups
      */
-    protected function _get_members_groups(int $member, bool $skip_secret = false, bool $handle_probation = true) : array
+    protected function _get_members_groups(int $member, bool $skip_secret = false, bool $handle_probation = true, bool $skip_cache = false) : array
     {
         require_code('cns_groups');
-        return array_keys(cns_get_members_groups($member, $skip_secret, $handle_probation));
+        return array_keys(cns_get_members_groups($member, $skip_secret, $handle_probation, true, $skip_cache));
     }
 
     /**

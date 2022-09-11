@@ -487,8 +487,9 @@ class Hook_import_phpbb3
                 // Set up usergroup membership
                 foreach ($secondary_groups as $s) {
                     list($group, $userpending) = $s;
-                    cns_add_member_to_group($id_new, $group, 1 - $userpending);
+                    cns_add_member_to_secondary_group($id_new, $group, 1 - $userpending);
                 }
+                cns_update_group_approvals($id_new, get_member());
             }
 
             $row_start += 200;

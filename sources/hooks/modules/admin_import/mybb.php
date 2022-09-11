@@ -429,8 +429,9 @@ class Hook_import_mybb
 
                 // Set up usergroup membership
                 foreach ($secondary_groups as $s) {
-                    cns_add_member_to_group($id_new, $s, 1);
+                    cns_add_member_to_secondary_group($id_new, $s, 1);
                 }
+                cns_update_group_approvals($id_new, get_member());
             }
 
             $row_start += 200;

@@ -429,6 +429,7 @@ class Hook_task_import_members
                     $username = null;
                 }
 
+                $old_groups = $GLOBALS['CNS_DRIVER']->get_members_groups($linked_id);
                 cns_edit_member(
                     $linked_id, // member_id
                     $username, // username
@@ -477,6 +478,9 @@ class Hook_task_import_members
                         ], false, true);
                     }
                 }
+
+                require_code('cns_groups_action2');
+                cns_update_group_approvals($linked_id, get_member(), $old_groups);
                 $num_edited++;
             }
 
