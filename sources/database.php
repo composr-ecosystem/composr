@@ -160,7 +160,11 @@ function multi_lang_content() : bool
     global $HAS_MULTI_LANG_CONTENT;
     if ($HAS_MULTI_LANG_CONTENT === null) {
         global $SITE_INFO;
-        $HAS_MULTI_LANG_CONTENT = isset($SITE_INFO['multi_lang_content']) ? ($SITE_INFO['multi_lang_content'] === '1') : true; // For legacy reasons
+        $ret = isset($SITE_INFO['multi_lang_content']) ? ($SITE_INFO['multi_lang_content'] === '1') : true; // For legacy reasons
+        if (!isset($SITE_INFO)) {
+            return $ret;
+        }
+        $HAS_MULTI_LANG_CONTENT = $ret;
     }
     return $HAS_MULTI_LANG_CONTENT;
 }
