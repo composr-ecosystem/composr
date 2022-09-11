@@ -8,7 +8,8 @@
         }
 
         var button = document.getElementById('proceed-button'),
-            timer;
+            timer,
+            unloading = false;
 
         button.countdown = 6;
 
@@ -20,14 +21,17 @@
                 timer = null;
             }
         });
-        window.addEventListener('unload', function () {
+        window.addEventListener('beforeunload', function () {
             if (timer) {
                 window.clearInterval(timer);
                 timer = null;
             }
+            unloading = true;
         });
         button.addEventListener('mouseout', function () {
-            timer = window.setInterval(continueFunc, 1000);
+            if (!unloading) {
+                timer = window.setInterval(continueFunc, 1000);
+            }
         });
 
         function continueFunc() {
