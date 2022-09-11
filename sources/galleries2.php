@@ -35,6 +35,7 @@ function init__galleries2()
 
 /**
  * Get image details from POST environment and details/metadata.
+ * Allows required fields to be found in metadata before an error is raised.
  *
  * @param  boolean $is_edit Whether this is for an edit operation
  * @param  URLPATH $url URL to the image (blank: not known yet, calculate here if possible)
@@ -67,7 +68,7 @@ function image_get_defaults__post(bool $is_edit = false, string $url = '', ?stri
     if ($url == '') {
         $_filename = '';
         require_code('images2');
-        $_url = post_param_image('image', 'uploads/galleries', null, true, $is_edit, $_filename);
+        $_url = post_param_image('image', 'uploads/galleries', null, false, $is_edit, $_filename);
         if ($url == '') {
             if ($_url != '') {
                 $url = $_url;
@@ -85,6 +86,10 @@ function image_get_defaults__post(bool $is_edit = false, string $url = '', ?stri
 
     if ($title == '') {
         $title = post_param_string('title', '');
+    }
+
+    if ($cat == '') {
+        $cat = post_param_string('cat', '');
     }
 
     list(
@@ -210,6 +215,10 @@ function video_get_defaults__post(bool $is_edit = false, string $url = '', strin
 
     if ($title == '') {
         $title = post_param_string('title', '');
+    }
+
+    if ($cat == '') {
+        $cat = post_param_string('cat', '');
     }
 
     list(

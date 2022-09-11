@@ -204,7 +204,7 @@ function find_periods_recurrence(string $timezone, int $do_timezone_conv, int $s
     if ($period_end === null) {
         $period_end = time() + 60 * 60 * 24 * 365 * 20;
         if (is_float($period_end)) {
-            $period_end = max($period_start, 2147483647 - 60 * 60 * 24 * 365 * 2); // Y-2038 issue, so bring back comfortably before that
+            $period_end = max($period_start, 2147483647 - 60 * 60 * 24 * 365 * 2); // Y-2038 issue, so bring back comfortably before that // TODO: #3046 in tracker
         }
         $period_end = utctime_to_usertime($period_end);
     }

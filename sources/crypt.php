@@ -83,7 +83,7 @@ function get_secure_random_string() : string
 }
 
 /**
- * Get a secure random number, the best this PHP version can do.
+ * Get a secure random number, the best this PHP version / our MySQL schema can do.
  * Will be between 1 and max signed 32 bit integer (so it can be stored in a 32 bit database).
  *
  * @return integer The randomised number

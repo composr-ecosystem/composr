@@ -726,7 +726,7 @@ class Module_groups
      */
     public function filter_out(array $member_row) : bool
     {
-        // Some special non-documented filters to help find likely spammers
+        // Some special non-documented (FUDGE) filters to help find likely spammers
         if ((get_param_integer('with_sig', 0) == 1) && ($member_row['m_signature'] == '')) {
             return true;
         }
