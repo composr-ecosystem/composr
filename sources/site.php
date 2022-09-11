@@ -1051,7 +1051,7 @@ function do_site()
                     'site_message_usergroup_select' => get_option('site_message_usergroup_select'),
                 ];
             }
-            foreach ($site_messages as $site_message) {
+            foreach ($site_messages['messages'] as $site_message) {
                 if (!empty($site_message['site_message'])) {
                     if ((empty($site_message['site_message_start_datetime'])) || ((!empty($site_message['site_message_start_datetime'])) && (((is_numeric($site_message['site_message_start_datetime'])) && (intval($site_message['site_message_start_datetime']) <= time())) || ((!is_numeric($site_message['site_message_start_datetime'])) && (strtotime($site_message['site_message_start_datetime']) <= time()))))) {
                         if ((empty($site_message['site_message_end_datetime'])) || ((!empty($site_message['site_message_end_datetime'])) && (((is_numeric($site_message['site_message_end_datetime'])) && (intval($site_message['site_message_end_datetime']) > time())) || ((!is_numeric($site_message['site_message_end_datetime'])) && (strtotime($site_message['site_message_end_datetime']) > time()))))) {
