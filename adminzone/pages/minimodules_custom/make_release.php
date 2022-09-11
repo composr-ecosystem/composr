@@ -122,6 +122,9 @@ function phase_0()
 
         // Show Git-only commits
         foreach ($__changes as $git_id => $change_label) {
+            // Some required substitutions
+            $change_label = str_replace('<script>', 'script', $change_label);
+
             $url = COMPOSR_REPOS_URL . '/commit/' . $git_id;
             $changes .= ' - [url="' . comcode_escape($change_label) . '"]' . $url . '[/url]' . "\n";
         }

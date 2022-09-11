@@ -397,16 +397,12 @@ function _generic_exit($text, string $template, ?bool $support_match_key_message
 
     cms_ob_end_clean(); // Emergency output, potentially, so kill off any active buffer
 
-    if ($http_status !== null) {
-        set_http_status_code($http_status);
-    }
-
     if (is_object($text)) {
         $text = $text->evaluate();
         $text = _sanitise_error_msg($text);
         $text = protect_from_escaping($text);
     } else {
-        $text = _sanitise_error_msg($text);
+        $text = _sanitise_error_msg(htmlentities($text)); // Intentionally not using escape_html, as may not be defined yet
     }
 
     $see_php_errors = ($GLOBALS['DEV_MODE'] || function_exists('has_privilege') && has_privilege(get_member(), 'see_php_errors'));
@@ -420,7 +416,7 @@ function _generic_exit($text, string $template, ?bool $support_match_key_message
             }
             if (is_object($text)) {
                 if (!empty($text->pure_lang)) {
-                    $sup = escape_html($sup);
+                    $sup = htmlentities($sup); // Intentionally not using escape_html, as may not be defined yet
                 }
                 $text->attach($sup);
             } else {
@@ -430,6 +426,20 @@ function _generic_exit($text, string $template, ?bool $support_match_key_message
     }
 
     $text_eval = is_object($text) ? $text->evaluate() : $text;
+
+    global $EXITING, $MICRO_BOOTUP, $BOOTSTRAPPING;
+    if (($EXITING >= 1) || (!function_exists('get_member')) || (!function_exists('get_screen_title')) || (!function_exists('do_lang')) || (running_script('upgrader')) || (!class_exists('Tempcode')) || ($MICRO_BOOTUP) || ($BOOTSTRAPPING)) {
+        if (($EXITING == 2) && (!$BOOTSTRAPPING) && (function_exists('may_see_stack_traces')) && (may_see_stack_traces()) && ($GLOBALS['HAS_SET_ERROR_HANDLER'])) {
+            die_html_trace($text_eval);
+        } else { // Failed even in die_html_trace
+            critical_error('EMERGENCY', $text_eval);
+        }
+    }
+    $EXITING++;
+
+    if ($http_status !== null) {
+        set_http_status_code($http_status);
+    }
 
     if ($see_php_errors) {
         if (!headers_sent()) {
@@ -458,7 +468,7 @@ function _generic_exit($text, string $template, ?bool $support_match_key_message
             }
 
             $trace = get_html_trace();
-            relay_error_notification($text_eval . '[html]' . $trace->evaluate() . '[/html]');
+            relay_error_notification('[html]' . $text_eval . $trace->evaluate() . '[/html]');
         }
     }
 
@@ -509,17 +519,7 @@ function _generic_exit($text, string $template, ?bool $support_match_key_message
         $GLOBALS['MSN_DB'] = null;
     }
 
-    global $EXITING, $MICRO_BOOTUP, $BOOTSTRAPPING;
-    if (($EXITING >= 1) || (!function_exists('get_member')) || (!function_exists('get_screen_title')) || (!function_exists('do_lang')) || (running_script('upgrader')) || (!class_exists('Tempcode')) || ($MICRO_BOOTUP) || ($BOOTSTRAPPING)) {
-        if (($EXITING == 2) && (!$BOOTSTRAPPING) && (function_exists('may_see_stack_traces')) && (may_see_stack_traces()) && ($GLOBALS['HAS_SET_ERROR_HANDLER'])) {
-            die_html_trace($text_eval);
-        } else { // Failed even in die_html_trace
-            critical_error('EMERGENCY', $text_eval);
-        }
-    }
-    $EXITING++;
-
-    if ((get_forum_type() == 'cns') && (get_db_type() != 'xml') && (isset($GLOBALS['FORUM_DRIVER']))) {
+    if ((get_forum_type() == 'cns') && (get_db_type() != 'xml'/*Too intensive*/) && (isset($GLOBALS['FORUM_DRIVER']))) {
         require_code('cns_groups');
         $restrict_answer = cns_get_best_group_property($GLOBALS['FORUM_DRIVER']->get_members_groups(get_member()), 'flood_control_submit_secs');
         $GLOBALS['FORUM_DB']->query_update('f_members', ['m_last_submit_time' => time() - $restrict_answer - 1], ['id' => get_member()], '', 1);
