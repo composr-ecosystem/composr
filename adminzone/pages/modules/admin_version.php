@@ -1133,6 +1133,10 @@ class Module_admin_version
 
             $GLOBALS['SITE_DB']->change_primary_key('db_meta_indices', ['i_table', 'i_name']);
             $GLOBALS['SITE_DB']->alter_table_field('db_meta_indices', 'i_fields', 'LONG_TEXT');
+
+            $GLOBALS['SITE_DB']->query_update('db_meta', ['m_type' => '*MEMBER'], ['m_name' => 'member_id', 'm_table' => 'member_privileges'], '', 1);
+
+            $GLOBALS['SITE_DB']->add_table_field('seo_meta_keywords', 'sort_order', 'INTEGER');
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 18)) {
@@ -1192,15 +1196,11 @@ class Module_admin_version
                 'i_occurrence_rate', // For sorting
             ]);
 
-            $GLOBALS['SITE_DB']->query_update('db_meta', ['m_type' => '*MEMBER'], ['m_name' => 'member_id', 'm_table' => 'member_privileges'], '', 1);
-
             $GLOBALS['SITE_DB']->create_table('daily_visits', [
                 'id' => '*AUTO',
                 'd_member_id' => '*MEMBER',
                 'd_date_and_time' => 'TIME',
             ]);
-
-            $GLOBALS['SITE_DB']->add_table_field('seo_meta_keywords', 'sort_order', 'INTEGER');
         }
     }
 
