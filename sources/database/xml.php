@@ -54,7 +54,7 @@
     The following are deficits that don't matter as the queries around them are invalid anyway, so would not exist at the point of the XML driver being used:
         Detection of missing field in SELECT wrt ORDER BY or GROUP BY is not 100% perfect when joining/aliasing tables
     The following is not implemented for technical reasons:
-        Expressions using aggregate functions, like SUM(a)+SUM(b) or (SUM(a)+1)
+        Expressions using aggregate functions, like SUM(a)+SUM(b) or (SUM(a)+1) or SUM(a+b)
     This database system is intended only for Composr, and not as a general purpose database. In Composr our philosophy is to write logic in PHP, not SQL, hence the subset supported.
     Also as we have to target a database baseline across multiple vendors we can't implement some more sophisticated featured, in case programmers rely on them!
 */

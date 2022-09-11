@@ -204,7 +204,7 @@ Reference in [tt]web.config[/tt] file
 ! Notes
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
-[color="red"]Don't require write queries on normal views[/color]
+[color="red"]Don't require write queries on normal page views[/color]
 | Stability, Performance
 | Product development only
 | Manually

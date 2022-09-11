@@ -832,7 +832,7 @@ function handle_abstract_sorting(string $sort, array $info, ?array $allowed_sort
     } elseif ($url_sort == 'average_rating') {
         $sql_sort = '(SELECT AVG(rating) FROM ' . get_table_prefix() . 'rating WHERE ' . db_string_equal_to('rating_for_type', $feedback_type) . ' AND rating_for_id=r.' . $first_id_field . ')';
     } elseif ($url_sort == 'compound_rating') {
-        $sql_sort = '(SELECT SUM(rating-1) FROM ' . get_table_prefix() . 'rating WHERE ' . db_string_equal_to('rating_for_type', $feedback_type) . ' AND rating_for_id=r.' . $first_id_field . ')';
+        $sql_sort = '(SELECT SUM(rating) FROM ' . get_table_prefix() . 'rating WHERE ' . db_string_equal_to('rating_for_type', $feedback_type) . ' AND rating_for_id=r.' . $first_id_field . ')';
     } elseif ($url_sort == 'random') {
         $sql_sort = '(' . db_function('RAND') . ')';
     } elseif ($url_sort == 'fixed_random') {

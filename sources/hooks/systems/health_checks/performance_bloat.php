@@ -120,12 +120,12 @@ class Hook_health_check_performance_bloat extends Hook_Health_Check
             return;
         }
 
-        $query = 'SELECT SUM(data_length)+SUM(index_length) AS db_size FROM information_schema.TABLES WHERE ' . db_string_equal_to('table_schema', get_db_site()) . ' AND table_name LIKE \'' . db_encode_like(get_table_prefix() . '%') . '\'';
-        $db_size = $GLOBALS['SITE_DB']->query_value_if_there($query, true);
-        if ($db_size === null) {
+        $query = 'SELECT SUM(data_length) AS size_data_length,SUM(index_length) AS size_index_length FROM information_schema.TABLES WHERE ' . db_string_equal_to('table_schema', get_db_site()) . ' AND table_name LIKE \'' . db_encode_like(get_table_prefix() . '%') . '\'';
+        $db_size = $GLOBALS['SITE_DB']->query($query, null, 0, true);
+        if (empty($db_size)) {
             $this->stateCheckSkipped('Failed to check database size, possible lack of permissions');
         } else {
-            $db_size = @intval($db_size);
+            $db_size = @intval($db_size['size_data_length']) + @intval($db_size['size_index_length']);
             require_code('files');
             $max_threshold = intval(get_option('hc_database_threshold'));
             $this->assertTrue($db_size < $max_threshold * 1024 * 1024, 'Database is very large @ ' . clean_file_size($db_size));

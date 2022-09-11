@@ -903,6 +903,7 @@ We hope other users will appreciate your efforts and give you some points to rew
             '_tests/tests/unit_tests/strip_tags.php',
             '_tests/tests/unit_tests/tar.php',
             '_tests/tests/unit_tests/_tasks.php',
+            '_tests/tests/unit_tests/database_unsupported_sql.php',
             '_tests/tests/unit_tests/tempcode_errors.php',
             '_tests/tests/unit_tests/tempcode_mistakes.php',
             '_tests/tests/unit_tests/tempcode.php',

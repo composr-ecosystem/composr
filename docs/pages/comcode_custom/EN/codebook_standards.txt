@@ -951,8 +951,8 @@ Be type-strict
 Avoid complex SQL
 | Portability
 | Product development only
-| Automated test ([tt]__installer_xml_db.php[/tt])
-| You cannot use SQL syntax that is not widely supported such as the MySQL substring functions, unless the [tt]db_function[/tt] function supports it.
+| Automated test ([tt]__installer_xml_db.php[/tt], [tt]database_unsupported_sql.php[/tt])
+| You cannot use SQL syntax that is not widely supported, unless the [tt]db_function[/tt] function supports it. Expressions on aggregate functions are not allowed.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 Don't use [tt]LIMIT[/tt] manually, use the API
