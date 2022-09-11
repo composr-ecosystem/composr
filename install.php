@@ -870,28 +870,28 @@ function step_4() : object
         if (isset($SITE_INFO['cookie_path'])) {
             $cookie_path = $SITE_INFO['cookie_path'];
         }
-        if (isset($SITE_INFO['cookie_days'])) {
+        if (!empty($SITE_INFO['cookie_days'])) {
             $cookie_days = $SITE_INFO['cookie_days'];
         }
         if (isset($SITE_INFO['table_prefix'])) {
             $table_prefix = $SITE_INFO['table_prefix'];
         }
-        if (isset($SITE_INFO['db_site_host'])) {
+        if (!empty($SITE_INFO['db_site_host'])) {
             $db_site_host = $SITE_INFO['db_site_host'];
         }
-        if (isset($SITE_INFO['db_site_user'])) {
+        if (!empty($SITE_INFO['db_site_user'])) {
             $db_site_user = $SITE_INFO['db_site_user'];
         }
-        if (isset($SITE_INFO['db_site_password'])) {
+        if (!empty($SITE_INFO['db_site_password'])) {
             $db_site_password = $SITE_INFO['db_site_password'];
         }
-        if (isset($SITE_INFO['db_site'])) {
+        if (!empty($SITE_INFO['db_site'])) {
             $db_site = $SITE_INFO['db_site'];
         }
-        if (isset($SITE_INFO['member_cookie'])) {
+        if (!empty($SITE_INFO['member_cookie'])) {
             $member_cookie = $SITE_INFO['member_cookie'];
         }
-        if (isset($SITE_INFO['pass_cookie'])) {
+        if (!empty($SITE_INFO['pass_cookie'])) {
             $pass_cookie = $SITE_INFO['pass_cookie'];
         }
         if (isset($SITE_INFO['domain'])) {
