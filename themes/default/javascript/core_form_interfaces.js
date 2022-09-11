@@ -1445,12 +1445,13 @@
         }
 
         if ((count === 1) && (found.localName === 'select')) {
-            $dom.on(found, 'change', foundChangeHandler);
-
-            if ((found.size > 1) || (found.multiple)) {
-                $dom.on(found, 'click', foundChangeHandler);
-            }
             if (iframe) {
+                $dom.on(found, 'change', foundChangeHandler);
+
+                if ((found.size > 1) || (found.multiple)) {
+                    $dom.on(found, 'click', foundChangeHandler);
+                }
+
                 foundButton.style.display = 'none';
             }
         }
