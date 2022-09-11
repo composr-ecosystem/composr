@@ -469,12 +469,16 @@ function find_iso_country_from_name(string $country) : ?string
 /**
  * Find the country name of an ISO country code.
  *
- * @param  string $iso ISO country code
+ * @param  ?string $iso ISO country code (null: unknown)
  * @return ?string Country name (null: not found)
  */
-function find_country_name_from_iso(string $iso) : ?string
+function find_country_name_from_iso(?string $iso) : ?string
 {
     static $cache = [];
+
+    if ($iso === null) {
+        return null;
+    }
 
     if (isset($cache[$iso])) {
         return $cache[$iso];
