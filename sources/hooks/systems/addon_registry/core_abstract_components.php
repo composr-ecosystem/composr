@@ -109,8 +109,8 @@ class Hook_addon_registry_core_abstract_components
     {
         return [
             'sources/hooks/systems/addon_registry/core_abstract_components.php',
-            'themes/default/templates/CROP_TEXT_MOUSE_OVER.tpl',
-            'themes/default/templates/CROP_TEXT_MOUSE_OVER_INLINE.tpl',
+            'themes/default/templates/BLOCK_TOOLTIP.tpl',
+            'themes/default/templates/INLINE_TOOLTIP.tpl',
             'themes/default/templates/IMG_THUMB.tpl',
             'themes/default/templates/POST.tpl',
             'themes/default/templates/POST_CHILD_LOAD_LINK.tpl',
@@ -152,9 +152,9 @@ class Hook_addon_registry_core_abstract_components
         return [
             'templates/BUTTON_SCREEN_ITEM.tpl' => 'button_screen_item',
             'templates/FRACTIONAL_EDIT.tpl' => 'administrative__fractional_edit',
-            'templates/CROP_TEXT_MOUSE_OVER_INLINE.tpl' => 'crop_text_mouse_over_inline',
+            'templates/INLINE_TOOLTIP.tpl' => 'inline_tooltip',
+            'templates/BLOCK_TOOLTIP.tpl' => 'block_tooltip',
             'templates/IMG_THUMB.tpl' => 'img_thumb',
-            'templates/CROP_TEXT_MOUSE_OVER.tpl' => 'crop_text_mouse_over',
             'templates/BUTTON_SCREEN.tpl' => 'button_screen',
             'templates/STANDARDBOX_default.tpl' => 'standardbox_default',
             'templates/STANDARDBOX_accordion.tpl' => 'standardbox_accordion',
@@ -234,11 +234,26 @@ class Hook_addon_registry_core_abstract_components
      *
      * @return Tempcode Preview
      */
-    public function tpl_preview__crop_text_mouse_over_inline() : object
+    public function tpl_preview__inline_tooltip() : object
     {
-        return lorem_globalise(do_lorem_template('CROP_TEXT_MOUSE_OVER_INLINE', [
-            'TEXT_SMALL' => lorem_sentence_html(),
-            'TEXT_LARGE' => lorem_sentence_html(),
+        return lorem_globalise(do_lorem_template('INLINE_TOOLTIP', [
+            'LABEL' => lorem_sentence_html(),
+            'TOOLTIP' => lorem_sentence_html(),
+        ]), null, '', true);
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return Tempcode Preview
+     */
+    public function tpl_preview__block_tooltip() : object
+    {
+        return lorem_globalise(do_lorem_template('BLOCK_TOOLTIP', [
+            'LABEL' => lorem_phrase(),
+            'TOOLTIP' => lorem_phrase(),
         ]), null, '', true);
     }
 
@@ -257,21 +272,6 @@ class Hook_addon_registry_core_abstract_components
             'URL' => placeholder_image_url(),
             'WIDTH' => placeholder_number(),
             'HEIGHT' => placeholder_number(),
-        ]), null, '', true);
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return Tempcode Preview
-     */
-    public function tpl_preview__crop_text_mouse_over() : object
-    {
-        return lorem_globalise(do_lorem_template('CROP_TEXT_MOUSE_OVER', [
-            'TEXT_LARGE' => lorem_phrase(),
-            'TEXT_SMALL' => lorem_phrase(),
         ]), null, '', true);
     }
 

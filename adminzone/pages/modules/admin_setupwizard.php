@@ -643,7 +643,7 @@ class Module_admin_setupwizard
                 if ((substr($addon_description, -1) != '.') && ($addon_description != '')) {
                     $addon_description .= '.';
                 }
-                $_addon_description = protect_from_escaping(symbol_truncator([static_evaluate_tempcode(comcode_to_tempcode($addon_description)), '1000', '0', '1'], 'left'));
+                $_addon_description = protect_from_escaping(generate_truncation(static_evaluate_tempcode($addon_description), 'left', 1000, true));
 
                 $addon_icon = find_addon_icon($addon_name, false, array_key_exists('tar_path', $row) ? $row['tar_path'] : null);
                 $addon_name_pretty = protect_from_escaping(do_template('ADDON_NAME', ['_GUID' => 'c036db4d27417f79e1f395d1edb44020', 'IMAGE_URL' => $addon_icon, 'NAME' => $row['name']]));

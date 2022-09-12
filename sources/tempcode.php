@@ -2765,7 +2765,7 @@ function tempcode_error(object $e, string $code)
 /**
  * Reduce down a template parameter to a maximum reasonable length, to avoid too much data being stuck in Tempcode trees.
  *
- * @param  Tempcode $text Text
+ * @param  Tempcode $text Text (in HTML)
  * @param  integer $max_length Maximum length
  * @return Tempcode Reduced length version of $text if required
  */
@@ -2773,7 +2773,7 @@ function reasonable_html_reduce(object $text, int $max_length = 1000) : object
 {
     $text_flat = $text->evaluate();
     if (strlen($text_flat) > $max_length) {
-        $text = make_string_tempcode(symbol_truncator([$text_flat, strval($max_length), '0', '1'], 'left'));
+        $text = make_string_tempcode(generate_truncation($text_flat, 'left', $max_length, false, true));
     }
     return $text;
 }

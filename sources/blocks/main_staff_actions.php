@@ -185,11 +185,11 @@ PHP;
                     $b = '';
                 }
 
-                require_code('templates_interfaces');
+                require_code('templates_tooltip');
                 $crop_length_a = 17;
                 $crop_length_b = 22;
-                $_a = tpl_crop_text_mouse_over($a, ($b == '') ? ($crop_length_a + $crop_length_b + 3/*A bit of extra tolerance*/) : $crop_length_a);
-                $_b = ($b == '') ? null : tpl_crop_text_mouse_over($b, $crop_length_b);
+                $_a = generate_tooltip_by_truncation($a, ($b == '') ? ($crop_length_a + $crop_length_b + 3/*A bit of extra tolerance*/) : $crop_length_a);
+                $_b = ($b == '') ? null : generate_tooltip_by_truncation($b, $crop_length_b);
 
                 $type_str = do_lang($myrow['the_type'], $_a, $_b, null, null, false);
                 if ($type_str === null) {
@@ -221,7 +221,7 @@ PHP;
                     $username = do_lang('UNKNOWN');
                 }
 
-                $ip = tpl_crop_text_mouse_over($myrow['ip'], 12);
+                $ip = generate_tooltip_by_truncation($myrow['ip'], 12);
 
                 $mode = array_key_exists('l_reason', $myrow) ? 'cns' : 'cms';
                 $url = build_url(['page' => 'admin_actionlog', 'type' => 'view', 'id' => $myrow['id'], 'mode' => $mode], get_module_zone('admin_actionlog'));

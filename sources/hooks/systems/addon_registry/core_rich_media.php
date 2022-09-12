@@ -147,7 +147,6 @@ class Hook_addon_registry_core_rich_media
             'themes/default/templates/COMCODE_EDITOR_BUTTON.tpl',
             'themes/default/templates/COMCODE_EDITOR_MICRO_BUTTON.tpl',
             'themes/default/templates/COMCODE_PAGE_EDIT_SCREEN.tpl',
-            'themes/default/templates/COMCODE_EMAIL.tpl',
             'themes/default/templates/COMCODE_FONT.tpl',
             'themes/default/templates/COMCODE_TELETYPE.tpl',
             'themes/default/templates/COMCODE_SAMP.tpl',
@@ -425,7 +424,6 @@ class Hook_addon_registry_core_rich_media
             'templates/COMCODE_THUMB.tpl' => 'comcode_thumb',
             'templates/COMCODE_IMG.tpl' => 'comcode_img',
             'templates/COMCODE_URL.tpl' => 'comcode_url',
-            'templates/COMCODE_EMAIL.tpl' => 'comcode_email',
             'templates/COMCODE_REFERENCE.tpl' => 'comcode_reference',
             'templates/COMCODE_HIDE.tpl' => 'comcode_hide',
             'templates/COMCODE_SHOCKER.tpl' => 'comcode_shocker',
@@ -1251,24 +1249,6 @@ class Hook_addon_registry_core_rich_media
             'REL' => lorem_phrase(),
             'TARGET' => lorem_phrase(),
             'URL' => placeholder_url(),
-            'CAPTION' => lorem_phrase(),
-        ]), null, '', true);
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return Tempcode Preview
-     */
-    public function tpl_preview__comcode_email() : object
-    {
-        return lorem_globalise(do_lorem_template('COMCODE_EMAIL', [
-            'TITLE' => lorem_phrase(),
-            'ADDRESS' => lorem_phrase(),
-            'SUBJECT' => lorem_phrase(),
-            'BODY' => lorem_phrase(),
             'CAPTION' => lorem_phrase(),
         ]), null, '', true);
     }

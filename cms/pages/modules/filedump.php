@@ -1340,7 +1340,6 @@ class Module_filedump
         // Done...
 
         if (count($conflict_files) > 0) {
-            require_code('templates');
             require_code('form_templates');
             require_code('templates_results_table');
 

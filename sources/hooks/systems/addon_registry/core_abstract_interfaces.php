@@ -178,7 +178,7 @@ class Hook_addon_registry_core_abstract_interfaces
             'themes/default/templates/MEMBER_TOOLTIP.tpl',
             'themes/default/templates/SIMPLE_PREVIEW_BOX.tpl',
             'themes/default/templates/RESULTS_TABLE_SCREEN.tpl',
-            'sources/templates_interfaces.php',
+            'sources/templates_tooltip.php',
             'sources/templates_redirect_screen.php',
             'sources/templates_confirm_screen.php',
             'sources/templates_internalise_screen.php',

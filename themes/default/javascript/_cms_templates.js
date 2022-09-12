@@ -580,15 +580,7 @@
         }
     };
 
-    $cms.templates.cropTextMouseOver = function (params, el) {
-        var textLarge = $cms.filter.nl(params.textLarge);
-
-        $dom.on(el, 'mouseover', function (e) {
-            $cms.ui.activateTooltip(el, e, textLarge, '40%');
-        });
-    };
-
-    $cms.templates.cropTextMouseOverInline = function (params, el) {
+    $cms.templates.tooltip = function (params, el) {
         var textLarge = $cms.filter.nl(params.textLarge);
 
         $dom.on(el, 'mouseover', function (e) {

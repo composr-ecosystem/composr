@@ -1051,7 +1051,7 @@ class Hook_addon_registry_core_form_interfaces
         $_description = new Tempcode();
         $_description->attach(lorem_phrase());
         $_description->attach(do_lorem_template('FORM_DESCRIP_SEP'));
-        $extra = do_lorem_template('HYPERLINK_POPUP_WINDOW', [
+        $extra = do_lorem_template('HYPERLINK_OVERLAY', [
             'URL' => placeholder_url(),
             'TITLE' => lorem_phrase(),
             'CAPTION' => lorem_phrase(),

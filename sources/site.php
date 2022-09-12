@@ -246,11 +246,8 @@ function attach_message($message, string $type = 'inform', bool $put_in_helper_p
             } else {
                 $message = escape_html($message);
             }
-            $message = do_template('CROP_TEXT_MOUSE_OVER', [
-                '_GUID' => '36ccd2ff13867ed000a46f15df0a4a22',
-                'TEXT_LARGE' => $webservice_result,
-                'TEXT_SMALL' => protect_from_escaping($message),
-            ]);
+            require_code('templates_tooltip');
+            $message = tooltip($message, $webservice_result);
             $message = protect_from_escaping($message);
         }
     }

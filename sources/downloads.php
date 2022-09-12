@@ -161,7 +161,7 @@ function render_download_box(array $row, bool $pic = true, bool $include_breadcr
         if ($licence_title !== null) {
             $keep = symbol_tempcode('KEEP');
             $licence_url = find_script('download_licence') . '?id=' . strval($licence) . $keep->evaluate();
-            $licence_hyperlink = do_template('HYPERLINK_POPUP_WINDOW', [
+            $licence_hyperlink = do_template('HYPERLINK_OVERLAY', [
                 '_GUID' => ($guid != '') ? $guid : '58a9e5c99bd236290009b6eab44dbac3',
                 'TITLE' => '',
                 'CAPTION' => $licence_title,

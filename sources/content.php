@@ -1501,8 +1501,6 @@ abstract class Hook_CMA
      */
     public function render_hyperlink(array $row) : object
     {
-        require_code('templates');
-
         $url = $this->get_view_url($row);
         $caption = $this->get_title($row, FIELD_RENDER_HTML);
 
@@ -1537,7 +1535,6 @@ abstract class Hook_CMA
     public function render_hyperlink_thumbnail(array $row) : object
     {
         require_code('images');
-        require_code('templates');
 
         $img = $this->get_image_url($row, IMAGE_URL_FALLBACK_HARD);
 

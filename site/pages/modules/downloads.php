@@ -771,7 +771,7 @@ class Module_downloads
             if ($licence_title !== null) {
                 $keep = symbol_tempcode('KEEP');
                 $licence_url = find_script('download_licence') . '?id=' . strval($licence) . $keep->evaluate();
-                $licence_hyperlink = do_template('HYPERLINK_POPUP_WINDOW', [
+                $licence_hyperlink = do_template('HYPERLINK_OVERLAY', [
                     '_GUID' => '10582f28c37ee7e9e462fdbd6a2cb8dd',
                     'TITLE' => '',
                     'CAPTION' => $licence_title,

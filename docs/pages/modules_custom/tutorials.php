@@ -665,7 +665,6 @@ class Module_tutorials
 
         $title = get_screen_title(protect_from_escaping($tutorial_row['t_title']), false);
 
-        require_code('templates');
         $url = $tutorial_row['t_url'];
         return redirect_screen($title, $url, do_lang_tempcode('SUCCESS'));
     }

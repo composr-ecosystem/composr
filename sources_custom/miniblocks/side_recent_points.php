@@ -32,7 +32,7 @@ $rows = $GLOBALS['SITE_DB']->query($sql, $max, 0, false, false, ['reason' => 'SH
 
 $_rows = [];
 
-require_code('templates_interfaces');
+require_code('templates_tooltip');
 require_code('points');
 
 foreach ($rows as $row) {

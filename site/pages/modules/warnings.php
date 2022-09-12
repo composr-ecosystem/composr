@@ -1082,7 +1082,7 @@ class Module_warnings extends Standard_crud_module
     {
         require_code('actionlog');
         require_code('cns_topics');
-        require_code('templates_interfaces');
+        require_code('templates_tooltip');
 
         $fields = [];
 

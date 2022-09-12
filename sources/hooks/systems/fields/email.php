@@ -94,7 +94,7 @@ class Hook_fields_email
         if ($ev == '') {
             return '';
         }
-        return do_template('HYPERLINK_EMAIL', ['_GUID' => 'f074c9a299fb3b1836a5a76270378666', 'VALUE' => $ev]);
+        return do_template('HYPERLINK_EMAIL', ['_GUID' => 'f074c9a299fb3b1836a5a76270378666', 'ADDRESS' => $ev, 'CAPTION' => $ev]);
     }
 
     // ======================

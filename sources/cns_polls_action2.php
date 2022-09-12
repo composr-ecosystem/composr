@@ -542,7 +542,6 @@ function cns_points_to_voting_power(int $points) : float
  */
 function cns_calculate_poll_voting_power_text(int $points) : array
 {
-    require_code('templates');
     require_lang('cns_polls');
 
     $ceiling = get_option('topic_polls_weighting_ceiling');

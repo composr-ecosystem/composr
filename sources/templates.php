@@ -362,3 +362,120 @@ function redirect_screen(?object $title, $url, $text = null, bool $intermediary_
     require_code('templates_redirect_screen');
     return _redirect_screen($title, $url, $text, $intermediary_hop, $msg_type);
 }
+
+/**
+ * Advanced truncation/tooltip generator.
+ * Note we also have the generate_tooltip_by_truncation function, which is good for simple plain-text tooltips.
+ *
+ * @param  mixed $label Label to truncate, string or Tempcode
+ * @param  string $type The type of truncation to do
+ * @set left right spread
+ * @param  integer $len The length to truncate at
+ * @param  boolean $generate_tooltip Whether to generate a tooltip
+ * @param  ?boolean $is_html Whether $label is HTML (null: HTML if $label is Tempcode)
+ * @param  boolean $literal_pos Whether to use $len as an HTML actual-text-character length, rather than a simple byte length
+ * @param  float $grammar_completeness_tolerance Fractional-deviation-tolerance for grammar-preservation
+ * @param  ?mixed $tooltip_if_truncated Tooltip to add on, but only if we end up creating our own tooltip, string or mixed (null: none)
+ * @return string The result
+ */
+function generate_truncation($label, string $type, int $len = 60, bool $generate_tooltip = false, ?bool $is_html = null, bool $literal_pos = false, float $grammar_completeness_tolerance = 0.0, $tooltip_if_truncated = null) : string
+{
+    $value = '';
+
+    if (is_object($label)) {
+        $label = $label->evaluate();
+        if ($is_html === null) {
+            $is_html = true;
+        }
+    }
+
+    if ($GLOBALS['XSS_DETECT']) {
+        $is_escaped = ocp_is_escaped($label);
+    }
+
+    // Optimisation
+    if (strlen($label) < $len) {
+        if ($is_html) {
+            if ($GLOBALS['XSS_DETECT']) {
+                if ($is_escaped) {
+                    ocp_mark_as_escaped($label);
+                }
+            }
+            return $label;
+        } else {
+            return escape_html($label);
+        }
+    }
+
+    if ($is_html) {
+        $not_html = strip_html($label); // In case it contains HTML. This is imperfect, but having to cut something up is imperfect from the offset.
+        $html = $label;
+        if (($html == $not_html) && (strpos($html, '&') === false) && (strpos($html, '<') === false)) {
+            $is_html = false; // Conserve memory
+        }
+    } else {
+        $not_html = $label;
+        $html = escape_html($label);
+    }
+
+    if ((isset($not_html[$len])/*optimisation*/) && ((cms_mb_strlen($not_html) > $len)) || (stripos($html, '<img') !== false)) {
+        if ($is_html || $grammar_completeness_tolerance != 0.0) {
+            require_code('xhtml');
+        }
+
+        $truncated = $not_html;
+        switch ($type) {
+            case 'left':
+                $temp = (($is_html || $grammar_completeness_tolerance != 0.0) ? xhtml_substr($html, 0, max($len - 3, 1), $literal_pos, false, $grammar_completeness_tolerance) : escape_html(cms_mb_substr($not_html, 0, max($len - 3, 1))));
+                if ($temp != $html && in_array(substr($temp, -1), ['.', '?', '!'])) {
+                    $temp .= '<br class="ellipsis-break" />'; // so the "..." does not go right after the sentence terminator
+                }
+                $truncated = ($temp == $html) ? $temp : str_replace(['</p>&hellip;', '</div>&hellip;'], ['&hellip;</p>', '&hellip;</div>'], (cms_trim($temp, true) . '&hellip;'));
+                break;
+            case 'expand':
+                $temp = (($is_html || $grammar_completeness_tolerance != 0.0) ? xhtml_substr($html, 0, max($len - 3, 1), $literal_pos, false, $grammar_completeness_tolerance) : escape_html(cms_mb_substr($not_html, 0, max($len - 3, 1))));
+                if ($temp != $html && in_array(substr($temp, -1), ['.', '?', '!'])) {
+                    $temp .= '<br class="ellipsis-break" />'; // so the "..." does not go right after the sentence terminator
+                }
+                $_truncated = do_template('COMCODE_HIDE', ['_GUID' => '3ead7fdb5b510930f54310e3c32147c2', 'TEXT' => protect_from_escaping($temp), 'CONTENT' => protect_from_escaping($html)]);
+                $truncated = $_truncated->evaluate();
+                break;
+            case 'right':
+                $truncated = str_replace(['</p>&hellip;', '</div>&hellip;'], ['&hellip;</p>', '&hellip;</div>'], ('&hellip;' . ltrim(($is_html || $grammar_completeness_tolerance != 0.0) ? xhtml_substr($html, -max($len - 3, 1), null, $literal_pos, false, $grammar_completeness_tolerance) : escape_html(cms_mb_substr($not_html, -max($len - 3, 1))))));
+                break;
+            case 'spread':
+                $pos = intval(floor(floatval($len) / 2.0)) - 1;
+                $truncated = str_replace(['</p>&hellip;', '</div>&hellip;'], ['&hellip;</p>', '&hellip;</div>'], cms_trim((($is_html || $grammar_completeness_tolerance != 0.0) ? xhtml_substr($html, 0, $pos, $literal_pos, false, $grammar_completeness_tolerance) : escape_html(cms_mb_substr($not_html, 0, $pos))) . '&hellip;' . ltrim(($is_html || $grammar_completeness_tolerance != 0.0) ? xhtml_substr($html, -$pos - 1) : escape_html(cms_mb_substr($not_html, -$pos - 1))), true));
+                break;
+        }
+
+        if (($generate_tooltip) && (preg_replace('#\s+#', ' ', html_entity_decode(strip_tags($truncated), ENT_QUOTES, get_charset()))) != preg_replace('#\s+#', ' ', html_entity_decode(strip_tags($html), ENT_QUOTES, get_charset()))) {
+            if ($tooltip_if_truncated !== null) {
+                $tif = (is_object($tooltip_if_truncated) ? $tooltip_if_truncated->evaluate() : $tooltip_if_truncated);
+                if (strpos($tif, $html) !== false) {
+                    $html = $tif;
+                } else {
+                    $html .= ' &ndash; ' . $tif;
+                }
+            }
+            $tpl = ((strpos($truncated, '<div') !== false || strpos($truncated, '<p') !== false || strpos($truncated, '<table') !== false) ? 'BLOCK_TOOLTIP' : 'INLINE_TOOLTIP');
+            $value_tempcode = do_template($tpl, ['_GUID' => '36ae945ed864633cfa0d67e5c3f2d1c8', 'LABEL' => $truncated, 'TOOLTIP' => $html]);
+            $value = $value_tempcode->evaluate();
+            if ($GLOBALS['XSS_DETECT']) {
+                ocp_mark_as_escaped($value);
+            }
+        } else {
+            $value = $truncated;
+        }
+    } else {
+        $value = $html;
+    }
+
+    if ($GLOBALS['XSS_DETECT']) {
+        if ($is_escaped || !$is_html/*Will have been explicitly escaped by this function*/) {
+            ocp_mark_as_escaped($value);
+        }
+    }
+
+    return $value;
+}

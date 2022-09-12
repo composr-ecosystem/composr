@@ -2094,7 +2094,21 @@ function ecv_STRIP_TAGS(string $lang, array $escaped, array $param) : string
  */
 function ecv_TRUNCATE_LEFT(string $lang, array $escaped, array $param) : string
 {
-    $value = symbol_truncator($param, 'left');
+    if (isset($param[0])) {
+        $len = (!empty($param[1])) ? intval($param[1]) : 60;
+        $generate_tooltip = (!empty($param[2]));
+        if (cms_empty_safe($param[3])) {
+            $is_html = null;
+        } else {
+            $is_html = ($param[3] == '1');
+        }
+        $literal_pos = (!empty($param[4]));
+        $grammar_completeness_tolerance = (!empty($param[5])) ? floatval($param[5]) : 0.0;
+
+        $value = generate_truncation($param[0], 'left', $len, $generate_tooltip, $is_html, $literal_pos, $grammar_completeness_tolerance);
+    } else {
+        $value = '';
+    }
 
     if (!empty($escaped)) {
         apply_tempcode_escaping($escaped, $value);
@@ -2114,129 +2128,25 @@ function ecv_TRUNCATE_LEFT(string $lang, array $escaped, array $param) : string
  */
 function ecv_TRUNCATE_SPREAD(string $lang, array $escaped, array $param) : string
 {
-    $value = symbol_truncator($param, 'spread');
+    if (isset($param[0])) {
+        $len = (!empty($param[1])) ? intval($param[1]) : 60;
+        $generate_tooltip = (!empty($param[2]));
+        if (cms_empty_safe($param[3])) {
+            $is_html = null;
+        } else {
+            $is_html = ($param[3] == '1');
+        }
+        $literal_pos = (!empty($param[4]));
+        $grammar_completeness_tolerance = (!empty($param[5])) ? floatval($param[5]) : 0.0;
+
+        $value = generate_truncation($param[0], 'spread', $len, $generate_tooltip, $is_html, $literal_pos, $grammar_completeness_tolerance);
+    } else {
+        $value = '';
+    }
 
     if (!empty($escaped)) {
         apply_tempcode_escaping($escaped, $value);
     }
-    return $value;
-}
-
-/**
- * Handle truncation symbols in all their complexity.
- *
- * @param  array $param Parameters passed to the symbol (0=text, 1=amount, 2=tooltip?, 3=is_html?, 4=use as grammatical length rather than HTML byte length, 5=fractional-deviation-tolerance for grammar-preservation)
- * @param  string $type The type of truncation to do
- * @set left right spread
- * @param  ?mixed $tooltip_if_truncated Tooltip to add on, but only if we end up creating our own tooltip (null: none)
- * @return string The result
- */
-function symbol_truncator(array $param, string $type, $tooltip_if_truncated = null) : string
-{
-    $value = '';
-
-    if (is_object($param[0])) {
-        $param[0] = $param[0]->evaluate();
-        if (!isset($param[2])) {
-            $param[2] = '0';
-        }
-        $param[3] = '1';
-    }
-
-    if ($GLOBALS['XSS_DETECT']) {
-        $is_escaped = ocp_is_escaped($param[0]);
-    }
-
-    $amount = intval((!empty($param[1])) ? $param[1] : '60');
-    $is_html = (!empty($param[3]));
-
-    if (strlen($param[0]) < $amount) {
-        if ($is_html) {
-            if ($GLOBALS['XSS_DETECT']) {
-                if ($is_escaped) {
-                    ocp_mark_as_escaped($param[0]);
-                }
-            }
-            return $param[0];
-        } else {
-            return escape_html($param[0]);
-        }
-    }
-
-    if ($is_html) {
-        $not_html = strip_html($param[0]); // In case it contains HTML. This is imperfect, but having to cut something up is imperfect from the offset.
-        $html = $param[0];
-        if (($html == $not_html) && (strpos($html, '&') === false) && (strpos($html, '<') === false)) {
-            $is_html = false; // Conserve memory
-        }
-    } else {
-        $not_html = $param[0];
-        $html = escape_html($param[0]);
-    }
-
-    if ((isset($not_html[$amount])/*optimisation*/) && ((cms_mb_strlen($not_html) > $amount)) || (stripos($html, '<img') !== false)) {
-        $tooltip = (!empty($param[2]));
-        $literal_pos = (!empty($param[4]));
-        $grammar_completeness_tolerance = (!empty($param[5])) ? floatval($param[5]) : 0.0;
-
-        if ($is_html || $grammar_completeness_tolerance != 0.0) {
-            require_code('xhtml');
-        }
-
-        $truncated = $not_html;
-        switch ($type) {
-            case 'left':
-                $temp = (($is_html || $grammar_completeness_tolerance != 0.0) ? xhtml_substr($html, 0, max($amount - 3, 1), $literal_pos, false, $grammar_completeness_tolerance) : escape_html(cms_mb_substr($not_html, 0, max($amount - 3, 1))));
-                if ($temp != $html && in_array(substr($temp, -1), ['.', '?', '!'])) {
-                    $temp .= '<br class="ellipsis-break" />'; // so the "..." does not go right after the sentence terminator
-                }
-                $truncated = ($temp == $html) ? $temp : str_replace(['</p>&hellip;', '</div>&hellip;'], ['&hellip;</p>', '&hellip;</div>'], (cms_trim($temp, true) . '&hellip;'));
-                break;
-            case 'expand':
-                $temp = (($is_html || $grammar_completeness_tolerance != 0.0) ? xhtml_substr($html, 0, max($amount - 3, 1), $literal_pos, false, $grammar_completeness_tolerance) : escape_html(cms_mb_substr($not_html, 0, max($amount - 3, 1))));
-                if ($temp != $html && in_array(substr($temp, -1), ['.', '?', '!'])) {
-                    $temp .= '<br class="ellipsis-break" />'; // so the "..." does not go right after the sentence terminator
-                }
-                $_truncated = do_template('COMCODE_HIDE', ['_GUID' => '3ead7fdb5b510930f54310e3c32147c2', 'TEXT' => protect_from_escaping($temp), 'CONTENT' => protect_from_escaping($html)]);
-                $truncated = $_truncated->evaluate();
-                break;
-            case 'right':
-                $truncated = str_replace(['</p>&hellip;', '</div>&hellip;'], ['&hellip;</p>', '&hellip;</div>'], ('&hellip;' . ltrim(($is_html || $grammar_completeness_tolerance != 0.0) ? xhtml_substr($html, -max($amount - 3, 1), null, $literal_pos, false, $grammar_completeness_tolerance) : escape_html(cms_mb_substr($not_html, -max($amount - 3, 1))))));
-                break;
-            case 'spread':
-                $pos = intval(floor(floatval($amount) / 2.0)) - 1;
-                $truncated = str_replace(['</p>&hellip;', '</div>&hellip;'], ['&hellip;</p>', '&hellip;</div>'], cms_trim((($is_html || $grammar_completeness_tolerance != 0.0) ? xhtml_substr($html, 0, $pos, $literal_pos, false, $grammar_completeness_tolerance) : escape_html(cms_mb_substr($not_html, 0, $pos))) . '&hellip;' . ltrim(($is_html || $grammar_completeness_tolerance != 0.0) ? xhtml_substr($html, -$pos - 1) : escape_html(cms_mb_substr($not_html, -$pos - 1))), true));
-                break;
-        }
-
-        if (($tooltip) && (preg_replace('#\s+#', ' ', html_entity_decode(strip_tags($truncated), ENT_QUOTES, get_charset()))) != preg_replace('#\s+#', ' ', html_entity_decode(strip_tags($html), ENT_QUOTES, get_charset()))) {
-            if ($tooltip_if_truncated !== null) {
-                $tif = (is_object($tooltip_if_truncated) ? $tooltip_if_truncated->evaluate() : $tooltip_if_truncated);
-                if (strpos($tif, $html) !== false) {
-                    $html = $tif;
-                } else {
-                    $html .= ' &ndash; ' . $tif;
-                }
-            }
-            $tpl = ((strpos($truncated, '<div') !== false || strpos($truncated, '<p') !== false || strpos($truncated, '<table') !== false) ? 'CROP_TEXT_MOUSE_OVER' : 'CROP_TEXT_MOUSE_OVER_INLINE');
-            $value_tempcode = do_template($tpl, ['_GUID' => '36ae945ed864633cfa0d67e5c3f2d1c8', 'TEXT_SMALL' => $truncated, 'TEXT_LARGE' => $html]);
-            $value = $value_tempcode->evaluate();
-            if ($GLOBALS['XSS_DETECT']) {
-                ocp_mark_as_escaped($value);
-            }
-        } else {
-            $value = $truncated;
-        }
-    } else {
-        $value = $html;
-    }
-
-    if ($GLOBALS['XSS_DETECT']) {
-        if ($is_escaped || !$is_html/*Will have been explicitly escaped by this function*/) {
-            ocp_mark_as_escaped($value);
-        }
-    }
-
     return $value;
 }
 

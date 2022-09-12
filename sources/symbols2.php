@@ -2100,7 +2100,21 @@ function ecv2_TO_TIMESTAMP(string $lang, array $escaped, array $param) : string
  */
 function ecv2_TRUNCATE_EXPAND(string $lang, array $escaped, array $param) : string
 {
-    $value = symbol_truncator($param, 'expand');
+    if (isset($param[0])) {
+        $len = (!empty($param[1])) ? intval($param[1]) : 60;
+        $generate_tooltip = (!empty($param[2]));
+        if (cms_empty_safe($param[3])) {
+            $is_html = null;
+        } else {
+            $is_html = ($param[3] == '1');
+        }
+        $literal_pos = (!empty($param[4]));
+        $grammar_completeness_tolerance = (!empty($param[5])) ? floatval($param[5]) : 0.0;
+
+        $value = generate_truncation($param[0], 'expand', $len, $generate_tooltip, $is_html, $literal_pos, $grammar_completeness_tolerance);
+    } else {
+        $value = '';
+    }
 
     if (!empty($escaped)) {
         apply_tempcode_escaping($escaped, $value);
@@ -2120,7 +2134,21 @@ function ecv2_TRUNCATE_EXPAND(string $lang, array $escaped, array $param) : stri
  */
 function ecv2_TRUNCATE_RIGHT(string $lang, array $escaped, array $param) : string
 {
-    $value = symbol_truncator($param, 'right');
+    if (isset($param[0])) {
+        $len = (!empty($param[1])) ? intval($param[1]) : 60;
+        $generate_tooltip = (!empty($param[2]));
+        if (cms_empty_safe($param[3])) {
+            $is_html = null;
+        } else {
+            $is_html = ($param[3] == '1');
+        }
+        $literal_pos = (!empty($param[4]));
+        $grammar_completeness_tolerance = (!empty($param[5])) ? floatval($param[5]) : 0.0;
+
+        $value = generate_truncation($param[0], 'right', $len, $generate_tooltip, $is_html, $literal_pos, $grammar_completeness_tolerance);
+    } else {
+        $value = '';
+    }
 
     if (!empty($escaped)) {
         apply_tempcode_escaping($escaped, $value);

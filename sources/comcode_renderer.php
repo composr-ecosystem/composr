@@ -1836,13 +1836,13 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
             if (array_key_exists('title', $attributes)) {
                 $title = $attributes['title'];
             }
-            $temp_tpl = do_template('COMCODE_EMAIL', [
+            $temp_tpl = do_template('HYPERLINK_EMAIL', [
                 '_GUID' => '5f6ade8fe07701b6858575153d78f4e9',
                 'TITLE' => $title,
                 'ADDRESS' => obfuscate_email_address($_embed),
                 'SUBJECT' => $subject,
                 'BODY' => $body,
-                'CAPTION' => $attributes['param'],
+                'CAPTION' => protect_from_escaping($attributes['param']),
             ]);
             break;
 

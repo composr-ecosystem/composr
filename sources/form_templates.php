@@ -806,7 +806,7 @@ function form_input_author($pretty_name, $description, string $name, ?string $de
         $_description->attach(do_template('FORM_DESCRIP_SEP'));
     }
     $keep = symbol_tempcode('KEEP');
-    $extra = do_template('HYPERLINK_POPUP_WINDOW', [
+    $extra = do_template('HYPERLINK_OVERLAY', [
         '_GUID' => 'fb25dc4777a166c143a1bc32ff0c3239',
         'URL' => find_script('authors') . '?field_name=' . urlencode($name) . $keep->evaluate(),
         'TITLE' => do_lang_tempcode('AUTHOR'),

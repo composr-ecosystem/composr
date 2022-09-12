@@ -1,0 +1,1 @@
+<span class="inline-mobile">{TOOLTIP}</span>{+START,IF,{$DESKTOP}}<span class="inline-desktop"><abbr data-tpl="tooltip" data-tpl-params="{+START,PARAMS_JSON,TOOLTIP}{_*}{+END}" title="{$REPLACE,",&quot;,{$STRIP_TAGS,{TOOLTIP}}}">{LABEL}</abbr></span>{+END}

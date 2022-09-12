@@ -214,7 +214,7 @@ The following are the core Composr APIs (green is used to indicate the most impo
 | [color="green"]Templating (sophisticated interfaces)[/color]
 | [tt]sources/templates_confirm_screen.php[/tt]
 [tt]sources/templates_donext.php[/tt]
-[tt]sources/templates_interfaces.php[/tt]
+[tt]sources/templates_tooltip.php[/tt]
 [tt]sources/templates_internalise_screen.php[/tt]
 [tt]sources/templates_redirect_screen.php[/tt]
 [tt]sources/templates_result_launcher.php[/tt]

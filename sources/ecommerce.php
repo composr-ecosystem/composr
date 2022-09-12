@@ -514,7 +514,8 @@ function build_transaction_linker(string $txn_id, bool $awaiting_payment, ?array
         }
         $map_table = do_template('MAP_TABLE', ['_GUID' => '1fd78e5f75f9f838b468fc6151a2da02', 'FIELDS' => $_transaction_fields]);
 
-        $transaction_linker = do_template('CROP_TEXT_MOUSE_OVER', ['_GUID' => '2f364d18dc8a4073f8d29d9c09cb46c1', 'TEXT_LARGE' => $map_table, 'TEXT_SMALL' => $transaction_link]);
+        require_code('templates_tooltip');
+        return tooltip($transaction_link, $map_table);
     } else {
         $transaction_linker = do_lang_tempcode('PAYMENT_STATE_new');
     }

@@ -111,7 +111,7 @@ function points_get_escrow(int $member_id_of, int $member_id_viewing) : object
  */
 function escrow_get_logs(int $id) : object
 {
-    require_code('templates_interfaces');
+    require_code('templates_tooltip');
 
     $start = get_param_integer('start', 0);
     $max = get_param_integer('max', 50);
@@ -159,7 +159,7 @@ function escrow_get_logs(int $id) : object
             $date,
             do_lang_tempcode($myrow['log_type']),
             ($myrow['member_id'] !== null) ? $name : '',
-            ($myrow['information'] !== null) ? symbol_truncator([$reason, '200', '1', '1'], 'left') : ''
+            ($myrow['information'] !== null) ? generate_truncation($reason, 'left', 200, true, true) : ''
         ];
 
         $out->attach(results_entry($results_entry, true));

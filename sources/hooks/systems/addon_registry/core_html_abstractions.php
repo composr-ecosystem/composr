@@ -113,8 +113,7 @@ class Hook_addon_registry_core_html_abstractions
             'themes/default/templates/META_REFRESH_LINE.tpl',
             'themes/default/templates/ANCHOR.tpl',
             'themes/default/templates/HYPERLINK.tpl',
-            'themes/default/templates/HYPERLINK_POPUP_WINDOW.tpl',
-            'themes/default/templates/HYPERLINK_TOOLTIP.tpl',
+            'themes/default/templates/HYPERLINK_OVERLAY.tpl',
             'themes/default/templates/HYPERLINK_BUTTON.tpl',
             'themes/default/templates/HYPERLINK_EMAIL.tpl',
             'themes/default/templates/DIV.tpl',
@@ -144,7 +143,7 @@ class Hook_addon_registry_core_html_abstractions
             'templates/ANCHOR.tpl' => 'anchor',
             'templates/STANDALONE_HTML_WRAP.tpl' => 'standalone_html_wrap',
             'templates/META_REFRESH_LINE.tpl' => 'meta_refresh_line',
-            'templates/HYPERLINK_POPUP_WINDOW.tpl' => 'hyperlink_popup_window',
+            'templates/HYPERLINK_OVERLAY.tpl' => 'hyperlink_overlay',
             'templates/BASIC_HTML_WRAP.tpl' => 'basic_html_wrap',
             'templates/HTML_HEAD.tpl' => 'basic_html_wrap',
             'templates/HTML_HEAD_POLYFILLS.tpl' => 'basic_html_wrap',
@@ -152,7 +151,6 @@ class Hook_addon_registry_core_html_abstractions
             'templates/HYPERLINK.tpl' => 'hyperlink',
             'templates/HYPERLINK_BUTTON.tpl' => 'hyperlink_button',
             'templates/HYPERLINK_EMAIL.tpl' => 'hyperlink_email',
-            'templates/HYPERLINK_TOOLTIP.tpl' => 'hyperlink_tooltip',
             'templates/DIV.tpl' => 'div',
             'templates/SPAN.tpl' => 'span',
             'templates/PARAGRAPH.tpl' => 'paragraph',
@@ -244,9 +242,9 @@ class Hook_addon_registry_core_html_abstractions
      *
      * @return Tempcode Preview
      */
-    public function tpl_preview__hyperlink_popup_window() : object
+    public function tpl_preview__hyperlink_overlay() : object
     {
-        return lorem_globalise(do_lorem_template('HYPERLINK_POPUP_WINDOW', [
+        return lorem_globalise(do_lorem_template('HYPERLINK_OVERLAY', [
             'TITLE' => lorem_phrase(),
             'CAPTION' => lorem_phrase(),
             'URL' => placeholder_url(),
@@ -294,27 +292,14 @@ class Hook_addon_registry_core_html_abstractions
      *
      * @return Tempcode Preview
      */
-    public function tpl_preview__hyperlink_email() : object
+    public function tpl_preview__comcode_email() : object
     {
         return lorem_globalise(do_lorem_template('HYPERLINK_EMAIL', [
-            'VALUE' => lorem_phrase(),
-        ]), null, '', true);
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return Tempcode Preview
-     */
-    public function tpl_preview__hyperlink_tooltip() : object
-    {
-        return lorem_globalise(do_lorem_template('HYPERLINK_TOOLTIP', [
-            'TOOLTIP' => lorem_phrase(),
+            'TITLE' => lorem_phrase(),
+            'ADDRESS' => lorem_phrase(),
+            'SUBJECT' => lorem_phrase(),
+            'BODY' => lorem_phrase(),
             'CAPTION' => lorem_phrase(),
-            'URL' => placeholder_url(),
-            'NEW_WINDOW' => lorem_phrase(),
         ]), null, '', true);
     }
 

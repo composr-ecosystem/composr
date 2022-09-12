@@ -286,11 +286,11 @@ function actionlog_linkage(array $actionlog_row, ?int $crop_length_a = null, ?in
                 return null;
             }
 
-            require_code('templates_interfaces');
+            require_code('templates_tooltip');
             if ($crop_length_a === null || $crop_length_b === null) {
                 $_written_context = make_string_tempcode(escape_html($extended_data['written_context']));
             } else {
-                $_written_context = tpl_crop_text_mouse_over($extended_data['written_context'], $crop_length_a + $crop_length_b + 3/*A bit of extra tolerance*/);
+                $_written_context = generate_tooltip_by_truncation($extended_data['written_context'], $crop_length_a + $crop_length_b + 3/*A bit of extra tolerance*/);
             }
             $_a = do_template('ACTIONLOG_FOLLOWUP_URLS', [
                 '_GUID' => 'd6d634cca4fdf5ff4e8c57a1190fca5d',
