@@ -446,8 +446,8 @@ class Forum_driver_base
             return $ret;
         }
 
+        global $USERS_GROUPS_CACHE;
         if (!$skip_cache) {
-            global $USERS_GROUPS_CACHE;
             if (isset($USERS_GROUPS_CACHE[$id][$skip_secret][$handle_probation])) {
                 return $USERS_GROUPS_CACHE[$id][$skip_secret][$handle_probation];
             }

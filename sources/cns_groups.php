@@ -447,8 +447,8 @@ function cns_get_members_groups(?int $member_id = null, bool $skip_secret = fals
         ((!function_exists('has_privilege')) || (!has_privilege(get_member(), 'see_hidden_groups')))
     );
 
+    global $GROUP_MEMBERS_CACHE;
     if (!$skip_cache) {
-        global $GROUP_MEMBERS_CACHE;
         if (isset($GROUP_MEMBERS_CACHE[$member_id][$skip_secret][$include_implicit])) {
             return $GROUP_MEMBERS_CACHE[$member_id][$skip_secret][$include_implicit];
         }
