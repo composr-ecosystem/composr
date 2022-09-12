@@ -130,7 +130,7 @@ function get_realtime_events(int $from, int $to) : array
 function rain_truncate_for_title(string $text) : object
 {
     require_code('templates_tooltip');
-    return protect_from_escaping(generate_tooltip_by_truncation($text, 'left', 40));
+    return protect_from_escaping(generate_tooltip_by_truncation($text, 40));
 }
 
 /**

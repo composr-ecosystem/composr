@@ -161,7 +161,7 @@ class CMSSocialRead
                 if ($test !== null) {
                     $arr['topic_id'] = strval($test['topic_id']);
                     $post_time = $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_time', ['id' => $test['post_id']]);
-                    $arr['position'] = $GLOBALS['FORUM_DB']->query_value('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_time<=' . strval($post_time) . ' AND id<>' . strval($test['post_id'])) + 1;
+                    $arr['position'] = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_time<=' . strval($post_time) . ' AND id<>' . strval($test['post_id'])) + 1;
                     break;
                 }
             }

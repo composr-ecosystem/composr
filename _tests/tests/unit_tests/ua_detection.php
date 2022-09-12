@@ -42,10 +42,18 @@ class ua_detection_test_set extends cms_test_case
         cns_make_post($topic_id, 'Welcome', 'Welcome to the posts', 0, false, null, 0, null, null, null, null, null, null, null, true, true, null, true, '', null, false, false, false);
 
         $data = http_get_contents($url->evaluate(), ['convert_to_internal_encoding' => true, 'timeout' => 20.0, 'ignore_http_status' => true, 'trigger_error' => false, 'ua' => 'bingbot', 'cookies' => [get_session_cookie() => $session_id]]);
-        $this->assertTrue($data !== null && strpos($data, 'findpost') === false, 'Could not find findpost in ' . $url->evaluate());
+        $pass = ($data !== null && strpos($data, 'findpost') === false);
+        if (($this->debug) && (!$pass)) {
+            @var_dump($data);
+        }
+        $this->assertTrue($pass, 'Found findpost as bingbot in ' . $url->evaluate());
 
         $data = http_get_contents($url->evaluate(), ['convert_to_internal_encoding' => true, 'timeout' => 20.0, 'ignore_http_status' => true, 'trigger_error' => false, 'cookies' => [get_session_cookie() => $session_id]]);
-        $this->assertTrue($data !== null && strpos($data, 'findpost') !== false, 'Could not find findpost in ' . $url->evaluate());
+        $pass = ($data !== null && strpos($data, 'findpost') !== false);
+        if (($this->debug) && (!$pass)) {
+            @var_dump($data);
+        }
+        $this->assertTrue($pass, 'Could not find findpost in ' . $url->evaluate());
     }
 
     public function testMobileDetection()
@@ -73,9 +81,17 @@ class ua_detection_test_set extends cms_test_case
             'Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5376e Safari/8536.25', // iPad
         ];
         foreach ($uas as $ua) {
-            $data = http_get_contents($url->evaluate(), ['convert_to_internal_encoding' => true, 'ua' => $ua, 'timeout' => 20.0]);
-            $this->assertTrue($data !== null && strpos($data, '>Mobile version') !== false, 'Issue with ' . $ua);
-            $this->assertTrue($data !== null && strpos($data, '>Non-Mobile version') === false, 'Issue with ' . $ua);
+            $data = http_get_contents($url->evaluate(), ['convert_to_internal_encoding' => true, 'ua' => $ua, 'timeout' => 20.0, 'ignore_http_status' => true]);
+            $pass = ($data !== null && strpos($data, '>Mobile version') !== false);
+            if (($this->debug) && (!$pass)) {
+                @var_dump($data);
+            }
+            $this->assertTrue($pass, 'Issue with ' . $ua);
+            $pass = ($data !== null && strpos($data, '>Non-Mobile version') === false);
+            if (($this->debug) && (!$pass)) {
+                @var_dump($data);
+            }
+            $this->assertTrue($pass, 'Issue with ' . $ua);
         }
     }
 }

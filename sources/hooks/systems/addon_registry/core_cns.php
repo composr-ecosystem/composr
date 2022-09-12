@@ -1179,6 +1179,7 @@ class Hook_addon_registry_core_cns
             'MESSAGE' => '',
             'SORT' => '',
             'PAGINATION' => '',
+            'NONRESPONSIVE' => false,
         ]);
 
         $temp = new Tempcode();
@@ -1210,6 +1211,7 @@ class Hook_addon_registry_core_cns
             'MESSAGE' => '',
             'SORT' => '',
             'PAGINATION' => '',
+            'NONRESPONSIVE' => false,
         ]);
 
         foreach (placeholder_array() as $i => $v) {
@@ -1241,6 +1243,7 @@ class Hook_addon_registry_core_cns
             'MESSAGE' => '',
             'SORT' => '',
             'PAGINATION' => '',
+            'NONRESPONSIVE' => false,
         ]);
 
         return lorem_globalise(do_lorem_template('CNS_VIEW_GROUP_SCREEN', [

@@ -195,6 +195,8 @@ function find_page_stats_for(int $member_id, string $ip, int $start = 0, int $ma
  */
 function find_security_alerts(array $where = []) : array
 {
+    require_code('templates_tooltip');
+
     require_lang('security');
 
     $start = get_param_integer('alert_start', 0);
@@ -231,7 +233,7 @@ function find_security_alerts(array $where = []) : array
         if ($reason === null) {
             $reason = $row['reason'];
         }
-        $reason = symbol_truncator([$reason, '50', '1'], 'left');
+        $reason = generate_tooltip_by_truncation($reason, 50);
 
         $username = $GLOBALS['FORUM_DRIVER']->get_username($row['member_id']);
 

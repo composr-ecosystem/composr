@@ -46,7 +46,8 @@ function generate_tooltip_by_truncation(string $text, int $len = 60) : object
  */
 function tooltip($label, $tooltip) : object
 {
-    $is_block = (strpos($label, '<div') !== false || strpos($label, '<p') !== false || strpos($label, '<table') !== false);
+    $_label = is_object($label) ? $label->evaluate() : $label;
+    $is_block = (strpos($_label, '<div') !== false || strpos($_label, '<p') !== false || strpos($_label, '<table') !== false);
     return $is_block ? block_tooltip($label, $tooltip) : inline_tooltip($label, $tooltip);
 }
 

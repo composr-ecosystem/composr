@@ -28,7 +28,7 @@ class notification_classifications_test_set extends cms_test_case
 
         // Ensure all notification types used
         require_code('notifications');
-        $hook_obs= find_all_hook_obs('systems', 'notifications', 'Hook_notification_');
+        $hook_obs = find_all_hook_obs('systems', 'notifications', 'Hook_notification_');
         $notification_types = [];
         foreach ($hook_obs as $hook_ob) {
             $notification_types += $hook_ob->list_handled_codes();

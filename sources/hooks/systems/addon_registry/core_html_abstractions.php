@@ -292,7 +292,7 @@ class Hook_addon_registry_core_html_abstractions
      *
      * @return Tempcode Preview
      */
-    public function tpl_preview__comcode_email() : object
+    public function tpl_preview__hyperlink_email() : object
     {
         return lorem_globalise(do_lorem_template('HYPERLINK_EMAIL', [
             'TITLE' => lorem_phrase(),

@@ -62,6 +62,9 @@ class _actionlog_test_set extends cms_test_case
                 if ($handler == 'SET_URL_REDIRECTS') {
                     continue; // Sometimes returns a configuration error
                 }
+                if ($handler == 'ADD_ZONE' || $handler == 'COMCODE_PAGE_EDIT') {
+                    continue; // Points to non-existent zones
+                }
 
                 if (($this->only !== null) && ($this->only != $handler)) {
                     continue;
@@ -98,7 +101,7 @@ class _actionlog_test_set extends cms_test_case
                         static $done_urls = [];
 
                         if (!array_key_exists($url, $done_urls)) {
-                            $http_result = cms_http_request($url, ['byte_limit' => 0, 'trigger_error' => false, 'cookies' => [get_session_cookie() => $session_id, 'ignore_http_status']]);
+                            $http_result = cms_http_request($url, ['byte_limit' => 0, 'trigger_error' => false, 'cookies' => [get_session_cookie() => $session_id, 'ignore_http_status' => true]]);
                             $ok = in_array($http_result->message, ['200', '404']);
                             $this->assertTrue($ok, 'Unexpected HTTP response, ' . $http_result->message . ', for ' . $url . ' from ' . $handler);
                             if ($this->debug && !$ok) {

@@ -2097,7 +2097,7 @@ function ecv_TRUNCATE_LEFT(string $lang, array $escaped, array $param) : string
     if (isset($param[0])) {
         $len = (!empty($param[1])) ? intval($param[1]) : 60;
         $generate_tooltip = (!empty($param[2]));
-        if (cms_empty_safe($param[3])) {
+        if (@cms_empty_safe($param[3])) {
             $is_html = null;
         } else {
             $is_html = ($param[3] == '1');
@@ -2131,7 +2131,7 @@ function ecv_TRUNCATE_SPREAD(string $lang, array $escaped, array $param) : strin
     if (isset($param[0])) {
         $len = (!empty($param[1])) ? intval($param[1]) : 60;
         $generate_tooltip = (!empty($param[2]));
-        if (cms_empty_safe($param[3])) {
+        if (@cms_empty_safe($param[3])) {
             $is_html = null;
         } else {
             $is_html = ($param[3] == '1');

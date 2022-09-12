@@ -202,7 +202,7 @@ function get_thread_by_unread_func($raw_params)
         }
     }
     $first_unread_id_p_time = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT p_time FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_topic_id=' . strval($topic_id) . ' AND p_time>' . strval($last_read_time) . ' ORDER BY p_time');
-    if ($first_unread_id !== null) {
+    if ($first_unread_id_p_time !== null) {
         // What page is it on?
         $before = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_time<' . strval($first_unread_id_p_time) . ' AND ' . tapatalk_get_topic_where($topic_id));
         $start = intval(floor(floatval($before) / floatval($max))) * $max;
