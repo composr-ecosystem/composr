@@ -2217,6 +2217,7 @@ function step_5_core_2() : object
     $GLOBALS['SITE_DB']->drop_table_if_exists('seo_meta_keywords');
     $GLOBALS['SITE_DB']->create_table('seo_meta_keywords', [
         'id' => '*AUTO',
+        'sort_order' => 'INTEGER',
         'meta_for_type' => 'ID_TEXT',
         'meta_for_id' => 'ID_TEXT',
         'meta_keyword' => 'SHORT_TRANS',
