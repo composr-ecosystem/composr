@@ -312,7 +312,7 @@ class Module_admin_version
                 'the_theme' => '*ID_TEXT',
                 'cc_page_title' => '?SHORT_TRANS',
             ];
-            if ($GLOBALS['SITE_DB']->driver->full_text_needs_single_key()) { // HACKHACK: Full-text search requires a single key
+            if ($GLOBALS['SITE_DB']->driver->full_text_needs_single_key()) { // FUDGE: Full-text search requires a single key
                 $fields = [
                     'id' => '*AUTO',
                     'the_zone' => 'ID_TEXT',

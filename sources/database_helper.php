@@ -230,7 +230,7 @@ function _helper_create_table(object $this_ref, string $table_name, array $field
         }
 
         if (($type == '*AUTO') && ($name != 'id')) {
-            fatal_exit('AUTO columns must always have a field name of \'id\''); // This is so the HACKHACK done for sqlserver to switch identity columns can work
+            fatal_exit('AUTO columns must always have a field name of \'id\''); // This is so the FUDGE done for sqlserver to switch identity columns can work
         }
 
         if (($table_name != 'db_meta') && ($table_name != 'db_meta_indices')) {

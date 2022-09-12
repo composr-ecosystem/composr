@@ -2016,7 +2016,7 @@ function step_5_core() : object
         'broken' => 'BINARY',
         'source_user' => 'MEMBER',
     ];
-    if ($GLOBALS['SITE_DB']->driver->full_text_needs_single_key()) { // HACKHACK: Full-text search requires a single key
+    if ($GLOBALS['SITE_DB']->driver->full_text_needs_single_key()) { // FUDGE: Full-text search requires a single key
         $fields['_id'] = '*AUTO';
         $fields['id'] = 'AUTO_LINK';
         $fields['language'] = 'LANGUAGE_NAME';

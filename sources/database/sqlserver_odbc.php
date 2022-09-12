@@ -111,7 +111,7 @@ class Database_Static_sqlserver_odbc extends Database_super_sqlserver
 
         $results = @odbc_exec($connection, $query);
         if (($results === false) && (cms_strtoupper_ascii(substr($query, 0, 12)) == 'INSERT INTO ') && ((strpos($query, '(id, ') !== false) || (strpos($query, '(_id, ') !== false))) {
-            // HACKHACK: Horrible, but we need to switch the active identity column somehow
+            // FUDGE: Horrible, but we need to switch the active identity column somehow
             $pos = strpos($query, '(');
             $table_name = substr($query, 12, $pos - 13);
             if ((!multi_lang_content()) || (substr($table_name, -strlen('translate')) != 'translate')) {
