@@ -592,7 +592,7 @@ function cns_get_group_members_raw_ldap(array &$members, int $group_id, bool $in
                     $member_id = cns_member_ldapcn_to_cnsid(ldap_unescape($member));
                     if ($member_id !== null) {
                         if ($non_validated) {
-                            $members[$member_id] = ['gm_member_id' => $member_id, 'gm_validated' => 1, 'm_username' => ldap_unescape($member), 'implicit' => false];
+                            $members[$member_id] = ['gm_member_id' => $member_id, 'validated' => true, 'm_username' => ldap_unescape($member), 'implicit' => false];
                         } else {
                             $members[$member_id] = $member_id;
                         }
@@ -626,7 +626,7 @@ function cns_get_group_members_raw_ldap(array &$members, int $group_id, bool $in
                 $member_id = cns_member_ldapcn_to_cnsid(ldap_unescape($member[member_property()][0]));
                 if ($member_id !== null) {
                     if ($non_validated) {
-                        $members[$member_id] = ['m_username' => ldap_unescape($member[member_property()][0]), 'gm_member_id' => $member_id, 'gm_validated' => 1, 'implicit' => false];
+                        $members[$member_id] = ['m_username' => ldap_unescape($member[member_property()][0]), 'gm_member_id' => $member_id, 'validated' => true, 'implicit' => false];
                     } else {
                         $members[$member_id] = $member_id;
                     }
@@ -652,7 +652,7 @@ function cns_get_group_members_raw_ldap(array &$members, int $group_id, bool $in
                             ((!$include_primaries) && ($include_secondaries) && (cns_ldap_get_member_primary_group($member_id) != $gid))
                         ) {
                             if ($non_validated) {
-                                $members[$member_id] = ['gm_member_id' => $member_id, 'gm_validated' => 1, 'm_username' => ldap_unescape(cns_long_cn_to_short_cn($member, member_property())), 'implicit' => false];
+                                $members[$member_id] = ['gm_member_id' => $member_id, 'validated' => true, 'm_username' => ldap_unescape(cns_long_cn_to_short_cn($member, member_property())), 'implicit' => false];
                             } else {
                                 $members[$member_id] = $member_id;
                             }

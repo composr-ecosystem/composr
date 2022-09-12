@@ -19,23 +19,22 @@
  */
 
 /**
- * Get a count of members in a group (or more full details if $non_validated is true).
+ * Get a count of members in a group.
  *
  * @param  GROUP $group_id The ID of the group
- * @param  boolean $include_primaries Whether to include those in the as a primary member
- * @param  boolean $non_validated Whether to include those applied to join the, but not validated in
- * @param  boolean $include_secondaries Whether to include those in the as a secondary member
+ * @param  boolean $include_primaries Whether to include those in the group as a primary member
+ * @param  boolean $non_validated Whether to include those applied to join the group, but not validated in
+ * @param  boolean $include_secondaries Whether to include those in the group as a secondary member
  * @param  boolean $include_unvalidated_members Whether to include those members who are not validated as site members at all yet (parameter currently ignored)
  * @return integer The count
  */
 function cns_get_group_members_raw_count(int $group_id, bool $include_primaries = true, bool $non_validated = false, bool $include_secondaries = true, bool $include_unvalidated_members = true) : int
 {
-    // Find for conventional members
-    $where = ['gm_group_id' => $group_id];
-    if (!$non_validated) {
-        $where['gm_validated'] = 1;
+    // Find groups for conventional members
+    $a = $GLOBALS['FORUM_DB']->query_select_value('f_group_members', 'COUNT(*)', ['gm_group_id' => $group_id]);
+    if ($non_validated) {
+        $a += $GLOBALS['FORUM_DB']->query_select_value('f_group_approvals', 'COUNT(*)', ['ga_new_group_id' => $group_id, 'ga_status' => 0]);
     }
-    $a = $GLOBALS['FORUM_DB']->query_select_value('f_group_members', 'COUNT(*)', $where);
     if ($include_primaries) {
         $map = ['m_primary_group' => $group_id];
         if (!$include_unvalidated_members) {
@@ -87,7 +86,7 @@ function cns_get_group_members_raw_count(int $group_id, bool $include_primaries 
  *
  * @param  GROUP $group_id The ID of the group
  * @param  boolean $include_primaries Whether to include those in the as a primary member
- * @param  boolean $non_validated Whether to include those applied to join the, but not validated in (also causes it to return maps that contain this info)
+ * @param  boolean $non_validated Whether to include those applied to join the group, but not validated in (also causes it to return maps that contain this info)
  * @param  boolean $include_secondaries Whether to include those in the as a secondary member
  * @param  boolean $include_unvalidated_members Whether to include those members who are not validated as site members at all yet (parameter currently ignored)
  * @param  ?integer $max Return up to this many entries for primary members and this many entries for secondary members and all LDAP members (null: no limit, only use no limit if querying very restricted usergroups!)
@@ -96,18 +95,22 @@ function cns_get_group_members_raw_count(int $group_id, bool $include_primaries 
  */
 function cns_get_group_members_raw(int $group_id, bool $include_primaries = true, bool $non_validated = false, bool $include_secondaries = true, bool $include_unvalidated_members = true, ?int $max = null, int $start = 0) : array
 {
-    // Find for conventional members
-    $where = ['gm_group_id' => $group_id];
-    if (!$non_validated) {
-        $where['gm_validated'] = 1;
-    }
-    $_members = $GLOBALS['FORUM_DB']->query_select('f_group_members', ['gm_member_id', 'gm_validated'], $where, 'ORDER BY gm_member_id', $max, $start);
+    // Find groups for conventional members
     $members = [];
     if ($include_secondaries) {
+        $_members = $GLOBALS['FORUM_DB']->query_select('f_group_members', ['gm_member_id'], ['gm_group_id' => $group_id], 'ORDER BY gm_member_id', $max, $start);
         foreach ($_members as $member) {
-            $members[$member['gm_member_id']] = $non_validated ? ($member + ['implicit' => false]) : $member['gm_member_id'];
+            $members[$member['gm_member_id']] = $non_validated ? ($member + ['implicit' => false, 'validated' => true]) : $member['gm_member_id'];
+        }
+
+        if ($non_validated) {
+            $_members = $GLOBALS['FORUM_DB']->query_select('f_group_approvals', ['ga_member_id AS gm_member_id'], ['ga_new_group_id' => $group_id, 'ga_status' => 0], 'ORDER BY ga_member_id', $max, $start);
+            foreach ($_members as $member) {
+                $members[$member['gm_member_id']] = $non_validated ? ($member + ['implicit' => false, 'validated' => false]) : $member['gm_member_id'];
+            }
         }
     }
+
     if ($include_primaries) {
         $map = ['m_primary_group' => $group_id];
         if (!$include_unvalidated_members) {
@@ -116,7 +119,7 @@ function cns_get_group_members_raw(int $group_id, bool $include_primaries = true
         }
         $_members2 = $GLOBALS['FORUM_DB']->query_select('f_members', ['id', 'm_username'], $map, '', $max, $start);
         foreach ($_members2 as $member) {
-            $members[$member['id']] = $non_validated ? ['gm_member_id' => $member['id'], 'gm_validated' => 1, 'm_username' => $member['m_username'], 'implicit' => false] : $member['id'];
+            $members[$member['id']] = $non_validated ? ['gm_member_id' => $member['id'], 'validated' => true, 'm_username' => $member['m_username'], 'implicit' => false] : $member['id'];
         }
     }
 
@@ -128,7 +131,7 @@ function cns_get_group_members_raw(int $group_id, bool $include_primaries = true
                 $c = $ob->get_member_list($group_id, $max, $start);
                 if ($c !== null) {
                     foreach ($c as $member_id => $member_row) {
-                        $members[$member_id] = $non_validated ? ['gm_member_id' => $member_id, 'gm_validated' => 1, 'm_username' => $member_row['m_username'], 'implicit' => true] : $member_id;
+                        $members[$member_id] = $non_validated ? ['gm_member_id' => $member_id, 'validated' => true, 'm_username' => $member_row['m_username'], 'implicit' => true] : $member_id;
                     }
                 }
             }
@@ -148,7 +151,7 @@ function cns_get_group_members_raw(int $group_id, bool $include_primaries = true
             $d = $GLOBALS['FORUM_DB']->query('SELECT id,m_username FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE m_on_probation_until>' . strval(time()), $max);
             foreach ($d as $member_row) {
                 $member_id = $member_row['id'];
-                $members[] = $non_validated ? ['gm_member_id' => $member_id, 'gm_validated' => 1, 'm_username' => $member_row['m_username'], 'implicit' => false] : $member_id;
+                $members[] = $non_validated ? ['gm_member_id' => $member_id, 'validated' => true, 'm_username' => $member_row['m_username'], 'implicit' => false] : $member_id;
             }
         }
     }

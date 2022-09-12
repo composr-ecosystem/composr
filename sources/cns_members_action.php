@@ -377,7 +377,6 @@ function cns_make_member(string $username, string $password, string $email_addre
             $GLOBALS['FORUM_DB']->query_insert('f_group_members', [
                 'gm_group_id' => $g,
                 'gm_member_id' => $member_id,
-                'gm_validated' => 1,
             ]);
         }
     }

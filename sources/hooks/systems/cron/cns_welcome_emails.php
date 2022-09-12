@@ -92,7 +92,7 @@ class Hook_cron_cns_welcome_emails
                                 $ok = ($GLOBALS['FORUM_DRIVER']->get_member_row_field($member['id'], 'm_primary_group') == $mail['w_usergroup']); // If member still in the group
                                 break;
                             case 'secondary':
-                                $ok = ($GLOBALS['FORUM_DB']->query_select_value_if_there('f_group_members', 'gm_member_id', ['gm_group_id' => $mail['w_usergroup'], 'gm_member_id' => $member['id'], 'gm_validated' => 1]) !== null);
+                                $ok = ($GLOBALS['FORUM_DB']->query_select_value_if_there('f_group_members', 'gm_member_id', ['gm_group_id' => $mail['w_usergroup'], 'gm_member_id' => $member['id']]) !== null);
                                 break;
                         }
                         if ($ok) {

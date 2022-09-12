@@ -926,7 +926,7 @@ class Forum_driver_cns extends Forum_driver_base
         if ($_groups == '') {
             return [];
         }
-        $sql = 'SELECT * FROM ' . $this->db->get_table_prefix() . 'f_members m WHERE m_primary_group IN (' . $_groups . ') OR EXISTS(SELECT * FROM ' . $this->db->get_table_prefix() . 'f_group_members WHERE gm_group_id IN (' . $_groups . ') AND gm_member_id=m.id AND gm_validated=1) ORDER BY m_primary_group ASC,id ASC';
+        $sql = 'SELECT * FROM ' . $this->db->get_table_prefix() . 'f_members m WHERE m_primary_group IN (' . $_groups . ') OR EXISTS(SELECT * FROM ' . $this->db->get_table_prefix() . 'f_group_members WHERE gm_group_id IN (' . $_groups . ') AND gm_member_id=m.id) ORDER BY m_primary_group ASC,id ASC';
         $a = $this->db->query($sql, $max, $start, false, true);
         foreach ($a as $x) {
             $out[$x['id']] = $x;

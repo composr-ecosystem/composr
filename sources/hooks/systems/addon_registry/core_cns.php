@@ -257,7 +257,6 @@ class Hook_addon_registry_core_cns
             'themes/default/templates/CNS_USER_MEMBER.tpl',
             'themes/default/templates/CNS_VIEW_GROUP_SCREEN.tpl',
             'themes/default/templates/CNS_VIEW_GROUP_MEMBER.tpl',
-            'themes/default/templates/CNS_VIEW_GROUP_MEMBER_PROSPECTIVE.tpl',
             'themes/default/templates/CNS_VIEW_GROUP_MEMBER_SECONDARY.tpl',
             'data/approve_ip.php',
             'themes/default/images/cns_emoticons/birthday.png',
@@ -530,7 +529,6 @@ class Hook_addon_registry_core_cns
             'templates/CNS_USERS_ONLINE_SCREEN.tpl' => 'cns_users_online_screen',
             'templates/CNS_GROUP_DIRECTORY_SCREEN.tpl' => 'cns_group_directory_screen',
             'templates/CNS_VIEW_GROUP_MEMBER.tpl' => 'cns_view_group_screen',
-            'templates/CNS_VIEW_GROUP_MEMBER_PROSPECTIVE.tpl' => 'cns_view_group_screen',
             'templates/CNS_VIEW_GROUP_MEMBER_SECONDARY.tpl' => 'cns_view_group_screen',
             'templates/CNS_VIEW_GROUP_SCREEN.tpl' => 'cns_view_group_screen',
             'templates/BLOCK_MAIN_MEMBERS.tpl' => 'block_main_members',
@@ -1215,13 +1213,6 @@ class Hook_addon_registry_core_cns
         ]);
 
         foreach (placeholder_array() as $i => $v) {
-            $temp = do_lorem_template('CNS_VIEW_GROUP_MEMBER_PROSPECTIVE', [
-                'ID' => placeholder_numeric_id(),
-                'ACCEPT_URL' => placeholder_url(),
-                'DECLINE_URL' => placeholder_url(),
-                'NAME' => lorem_word(),
-                'URL' => placeholder_url(),
-            ]);
             $cells = do_lorem_template('RESULTS_TABLE_FIELD', [
                 'VALUE' => $temp,
             ]);
@@ -1236,17 +1227,6 @@ class Hook_addon_registry_core_cns
         ]);
 
         $prospective_members = do_lorem_template('RESULTS_TABLE', [
-            'WIDTHS' => [],
-            'TEXT_ID' => placeholder_random_id(),
-            'HEADER_ROW' => $header_row,
-            'RESULT_ENTRIES' => $_prospective_members,
-            'MESSAGE' => '',
-            'SORT' => '',
-            'PAGINATION' => '',
-            'NONRESPONSIVE' => false,
-        ]);
-
-        $prospective_promoted_members = do_lorem_template('RESULTS_TABLE', [
             'WIDTHS' => [],
             'TEXT_ID' => placeholder_random_id(),
             'HEADER_ROW' => $header_row,
@@ -1272,7 +1252,6 @@ class Hook_addon_registry_core_cns
             'PRIMARY_MEMBERS' => $primary_members,
             'SECONDARY_MEMBERS' => $secondary_members,
             'PROSPECTIVE_MEMBERS' => $prospective_members,
-            'PROSPECTIVE_PROMOTED_MEMBERS' => $prospective_promoted_members,
         ]), null, '', true);
     }
 

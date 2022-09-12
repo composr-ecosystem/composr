@@ -8330,10 +8330,12 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         GROUP_PROMOTION_REQUEST_MAIL
         GROUP_PROMOTION_REQUEST_MAIL_SUBJECT
         PENDING_APPLICATIONS
-        PROSPECTIVE_PROMOTED_MEMBERS
         GROUP_PROMOTION_ALREADY_ACCEPTED
         GROUP_PROMOTION_ALREADY_DECLINED
         GROUP_PROMOTION_INVALID
+        GROUP_PROMOTION_PENDING
+        ORIGINAL_USERGROUP_DELETED
+        ORIGINAL_USERGROUP_RESIGNED
     ')));
 
     $non_admin_files = [
@@ -11685,6 +11687,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CNS_PROMOTION_INFO_MANUAL
         RANK_PROMOTED_APPROVAL_MAIL
         RANK_PROMOTED_APPROVAL_MAIL_SUBJECT
+        PROMOTION_FROM
     ')));
 
     if ($GLOBALS['DEV_MODE']) {

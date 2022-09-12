@@ -216,19 +216,12 @@ class Module_groups
     {
         // Calculate the number of pending promotions (approvals) and join requests (validations) for each usergroup
         $_pending_approvals = $GLOBALS['FORUM_DB']->query_select('f_group_approvals', ['ga_new_group_id'], ['ga_status' => 0]);
-        $_pending_validations = $GLOBALS['FORUM_DB']->query_select('f_group_members', ['gm_group_id'], ['gm_validated' => 0]);
         $pending_approvals = [];
         foreach ($_pending_approvals as $row) {
             if (!array_key_exists($row['ga_new_group_id'], $pending_approvals)) {
                 $pending_approvals[$row['ga_new_group_id']] = 0;
             }
             $pending_approvals[$row['ga_new_group_id']]++;
-        }
-        foreach ($_pending_validations as $row) {
-            if (!array_key_exists($row['gm_group_id'], $pending_approvals)) {
-                $pending_approvals[$row['gm_group_id']] = 0;
-            }
-            $pending_approvals[$row['gm_group_id']]++;
         }
 
         $staff_groups = array_merge($GLOBALS['FORUM_DRIVER']->get_super_admin_groups(), $GLOBALS['FORUM_DRIVER']->get_moderator_groups());
@@ -576,22 +569,30 @@ class Module_groups
         // Came from a notification for approving a promotion
         $approval_id = get_param_integer('approval_id', null);
         if ($approval_id !== null) {
-            $rows = $GLOBALS['FORUM_DB']->query_select('f_group_approvals', ['ga_status', 'ga_status_member_id'], ['id' => $approval_id]);
+            $rows = $GLOBALS['FORUM_DB']->query_select('f_group_approvals', ['ga_status', 'ga_status_member_id', 'ga_reason'], ['id' => $approval_id]);
             if (count($rows) == 0) {
                 attach_message(do_lang_tempcode('GROUP_PROMOTION_INVALID'), 'warn');
             } elseif ($rows[0]['ga_status'] == -1) {
+                $reason = get_translated_text($rows[0]['ga_reason']);
                 $username = $GLOBALS['FORUM_DRIVER']->get_username($rows[0]['ga_status_member_id'], true, USERNAME_DEFAULT_NULL);
                 if ($username === null) {
                     $username = $rows[0]['ga_status_member_username'];
                 }
-                attach_message(do_lang_tempcode('GROUP_PROMOTION_ALREADY_DECLINED', escape_html($username)), 'warn');
+                attach_message(do_lang_tempcode('GROUP_PROMOTION_ALREADY_DECLINED', escape_html($username), escape_html($reason)), 'warn');
             } elseif ($rows[0]['ga_status'] == 1) {
+                $reason = get_translated_text($rows[0]['ga_reason']);
                 $username = $GLOBALS['FORUM_DRIVER']->get_username($rows[0]['ga_status_member_id'], true, USERNAME_DEFAULT_NULL);
                 if ($username === null) {
                     $username = $rows[0]['ga_status_member_username'];
                 }
-                attach_message(do_lang_tempcode('GROUP_PROMOTION_ALREADY_ACCEPTED', escape_html($username)), 'warn');
+                attach_message(do_lang_tempcode('GROUP_PROMOTION_ALREADY_ACCEPTED', escape_html($username), escape_html($reason)), 'warn');
             }
+        }
+
+        // Check for pending approval into this usergroup
+        $pending = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_group_approvals', 'id', ['ga_new_group_id' => $id, 'ga_member_id' => get_member()]);
+        if ($pending !== null) {
+            attach_message(do_lang_tempcode('GROUP_PROMOTION_PENDING'), 'inform');
         }
 
         // Leadership
@@ -651,11 +652,11 @@ class Module_groups
         if (!empty($_primary_members)) {
             $max_rows = cns_get_group_members_raw_count($id, true, true, false, false);
             $primary_members = new Tempcode();
+            $may_control_any = false;
             foreach ($_primary_members as $i => $primary_member) {
                 if ($this->filter_out($primary_member)) {
                     continue;
                 }
-
                 $url = $GLOBALS['FORUM_DRIVER']->member_profile_url($primary_member['gm_member_id'], true);
 
                 $temp = do_template('CNS_VIEW_GROUP_MEMBER', [
@@ -664,6 +665,7 @@ class Module_groups
                     'NAME' => $primary_member['m_username'],
                     'URL' => $url,
                 ]);
+
                 $primary_members->attach(results_entry([$temp], false));
             }
             $header_row = results_header_row([do_lang_tempcode('PRIMARY_MEMBERS')], $sortables, 'p_sort', $sortable . ' ' . $sort_order);
@@ -679,9 +681,9 @@ class Module_groups
         $secondary_members = new Tempcode();
         $prospective_members = new Tempcode();
         $s_max_rows = cns_get_group_members_raw_count($id, false, false, true, false);
-        $d_max_rows = $may_control_group ? cns_get_group_members_raw_count($id, false, true, true) : 0;
+        $may_control_any = false;
         foreach ($_secondary_members as $secondary_member) {
-            if ($this->filter_out($GLOBALS['FORUM_DRIVER']->get_member_row($secondary_member['gm_member_id']))) {
+            if ((!$secondary_member['validated']) || ($this->filter_out($GLOBALS['FORUM_DRIVER']->get_member_row($secondary_member['gm_member_id'])))) {
                 continue;
             }
 
@@ -689,44 +691,46 @@ class Module_groups
             if ($m_username === null) {
                 continue;
             }
-            if ($secondary_member['gm_validated'] == 1) {
-                $url = $GLOBALS['FORUM_DRIVER']->member_profile_url($secondary_member['gm_member_id'], true);
-                $remove_url = build_url(['page' => '_SELF', 'type' => 'remove_from', 'id' => $id, 'member_id' => $secondary_member['gm_member_id']], '_SELF');
-                $may_control = ($may_control_group && (!$secondary_member['implicit']));
-                $temp = do_template('CNS_VIEW_GROUP_MEMBER' . ($may_control ? '_SECONDARY' : ''), [
-                    'ID' => strval($secondary_member['gm_member_id']),
-                    'REMOVE_URL' => $remove_url,
+
+            $url = $GLOBALS['FORUM_DRIVER']->member_profile_url($secondary_member['gm_member_id'], true);
+            $temp = do_template('CNS_VIEW_GROUP_MEMBER', [
+                '_GUID' => 'b96b674ac713e9790ecb78c15af1baab',
+                'ID' => strval($secondary_member['gm_member_id']),
+                'NAME' => $m_username,
+                'URL' => $url,
+            ]);
+
+            $remove_url = build_url(['page' => '_SELF', 'type' => 'remove_from', 'id' => $id, 'member_id' => $secondary_member['gm_member_id']], '_SELF');
+            $results_map = [$temp];
+
+            $may_control = ($may_control_group && (!$secondary_member['implicit']));
+            if ($may_control) {
+                $may_control_any = true;
+                $actions = new Tempcode();
+                $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
+                    '_GUID' => '3585ec7f35a1027e8584d62ffeb41e56',
                     'NAME' => $m_username,
-                    'URL' => $url,
-                ]);
-                $secondary_members->attach(results_entry([$temp], false));
-            } elseif (!$add_url->is_empty()) {
-                $url = $GLOBALS['FORUM_DRIVER']->member_profile_url($secondary_member['gm_member_id'], true);
-                $accept_url = build_url(['page' => '_SELF', 'type' => 'accept', 'id' => $id, 'member_id' => $secondary_member['gm_member_id']], '_SELF');
-                $decline_url = build_url(['page' => '_SELF', 'type' => 'decline', 'id' => $id, 'member_id' => $secondary_member['gm_member_id']], '_SELF');
-                $temp = do_template('CNS_VIEW_GROUP_MEMBER_PROSPECTIVE', [
-                    '_GUID' => '16e93cf50a14e3b6a3bdf31525fd5e7f',
-                    'ID' => strval($secondary_member['gm_member_id']),
-                    'ACCEPT_URL' => $accept_url,
-                    'DECLINE_URL' => $decline_url,
-                    'NAME' => $m_username,
-                    'URL' => $url,
-                ]);
-                $prospective_members->attach(results_entry([$temp], false));
+                    'URL' => $remove_url,
+                    'ACTION_TITLE' => do_lang_tempcode('REMOVE_MEMBER_FROM_GROUP'),
+                    'ICON' => 'buttons/cancel',
+                    'GET' => true,
+                ]));
+                $results_map[] = $actions;
             }
+            $secondary_members->attach(results_entry($results_map, false));
         }
         if (!$secondary_members->is_empty()) {
-            $header_row = results_header_row([do_lang_tempcode('SECONDARY_MEMBERS')], $sortables, 'p_sort', $sortable . ' ' . $sort_order);
+            $header_map = [do_lang_tempcode('SECONDARY_MEMBERS')];
+            if ($may_control_any) {
+                $header_map[] = do_lang_tempcode('ACTIONS');
+            }
+            $header_row = results_header_row($header_map, $sortables, 'p_sort', $sortable . ' ' . $sort_order);
             $secondary_members = results_table(do_lang_tempcode('SECONDARY_MEMBERS'), $s_start, 's_start', $s_max, 's_max', $s_max_rows, $header_row, $secondary_members, $sortables, $sortable, $sort_order, 's_sort', null, [], null, 6);
         }
-        if (!$prospective_members->is_empty()) {
-            $header_row = results_header_row([do_lang_tempcode('PROSPECTIVE_MEMBERS')], $sortables, 'p_sort', $sortable . ' ' . $sort_order);
-            $prospective_members = results_table(do_lang_tempcode('PROSPECTIVE_MEMBERS'), $s_start, 's_start', $s_max, 's_max', $d_max_rows, $header_row, $prospective_members, $sortables, $sortable, $sort_order, 'd_sort', null, [], null, 6);
-        }
 
-        // Prospective promoted members
-        $_prospective_promoted_members = new Tempcode();
-        $prospective_promoted_members = new Tempcode();
+        // Prospective members
+        $_prospective_members = new Tempcode();
+        $prospective_members = new Tempcode();
         if ($may_control_group) {
             $start = get_param_integer('pp_start', 0);
             $max = get_param_integer('pp_max', 50);
@@ -738,26 +742,40 @@ class Module_groups
                         continue;
                     }
 
-                    $groups = $GLOBALS['CNS_DRIVER']->get_members_groups($row['ga_member_id'], false, true);
-
-                    $url = $GLOBALS['FORUM_DRIVER']->member_profile_url($row['ga_member_id'], true);
                     $username = $GLOBALS['FORUM_DRIVER']->get_username($row['ga_member_id'], true, USERNAME_DEFAULT_DELETED);
+                    $profile_url = hyperlink($GLOBALS['FORUM_DRIVER']->member_profile_url($row['ga_member_id'], true), $username, false, true);
+
+                    $promotion_url = do_lang_tempcode('NA_EM');
+                    if ($row['ga_old_group_id'] !== null) {
+                        $promotion_url = cns_get_group_link($row['ga_old_group_id']);
+                    }
+
+                    $actions = new Tempcode();
 
                     $accept_url = build_url(['page' => '_SELF', 'type' => 'accept', 'id' => $id, 'member_id' => $row['ga_member_id']], '_SELF');
-                    $decline_url = build_url(['page' => '_SELF', 'type' => 'decline', 'id' => $id, 'member_id' => $row['ga_member_id']], '_SELF');
-                    $temp = do_template('CNS_VIEW_GROUP_MEMBER_PROSPECTIVE', [
-                        '_GUID' => '16e93cf50a14e3b6a3bdf31525fd5e7f',
-                        'ID' => strval($row['ga_member_id']),
-                        'ACCEPT_URL' => $accept_url,
-                        'DECLINE_URL' => $decline_url,
-                        'NAME' => $username,
-                        'URL' => $url,
-                    ]);
+                    $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
+                        '_GUID' => '3585ec7f35a1027e8584d62ffeb41e56',
+                        'NAME' => '#' . strval($row['id']),
+                        'URL' => $accept_url,
+                        'ACTION_TITLE' => do_lang_tempcode('ACCEPT_INTO_GROUP'),
+                        'ICON' => 'buttons/yes',
+                        'GET' => true,
+                    ]));
 
-                    $_prospective_promoted_members->attach(results_entry([$temp], false));
+                    $decline_url = build_url(['page' => '_SELF', 'type' => 'decline', 'id' => $id, 'member_id' => $row['ga_member_id']], '_SELF');
+                    $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
+                        '_GUID' => '3585ec7f35a1027e8584d62ffeb41e56',
+                        'NAME' => '#' . strval($row['id']),
+                        'URL' => $decline_url,
+                        'ACTION_TITLE' => do_lang_tempcode('DECLINE_FROM_GROUP'),
+                        'ICON' => 'buttons/cancel',
+                        'GET' => true,
+                    ]));
+
+                    $_prospective_members->attach(results_entry([$profile_url, $promotion_url, $actions], false));
                 }
-                $header_row = results_header_row([do_lang_tempcode('PROSPECTIVE_PROMOTED_MEMBERS')], $sortables, 'pp_sort', $sortable . ' ' . $sort_order);
-                $prospective_promoted_members = results_table(do_lang_tempcode('PROSPECTIVE_PROMOTED_MEMBERS'), $start, 'pp_start', $max, 'pp_max', $max_rows, $header_row, $_prospective_promoted_members, $sortables, $sortable, $sort_order, 'pp_sort', null, [], null, 6);
+                $header_row = results_header_row([do_lang_tempcode('PROSPECTIVE_MEMBERS'), do_lang_tempcode('PROMOTION_FROM'), do_lang_tempcode('ACTIONS')], $sortables, 'pp_sort', $sortable . ' ' . $sort_order);
+                $prospective_members = results_table(do_lang_tempcode('PROSPECTIVE_MEMBERS'), $start, 'pp_start', $max, 'pp_max', $max_rows, $header_row, $_prospective_members, $sortables, $sortable, $sort_order, 'pp_sort', null, [], null, 6);
             }
         }
 
@@ -800,7 +818,6 @@ class Module_groups
             'PRIMARY_MEMBERS' => $primary_members,
             'SECONDARY_MEMBERS' => $secondary_members,
             'PROSPECTIVE_MEMBERS' => $prospective_members,
-            'PROSPECTIVE_PROMOTED_MEMBERS' => $prospective_promoted_members,
         ]);
 
         require_code('templates_internalise_screen');

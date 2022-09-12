@@ -586,7 +586,7 @@ function cns_cache_member_details(array $members)
         global $TABLE_LANG_FIELDS_CACHE;
         $member_rows = $GLOBALS['FORUM_DB']->query('SELECT m.*,f.* FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members m LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields f ON f.mf_member_id=m.id WHERE ' . $member_or_list, null, 0, false, true);
         global $TABLE_LANG_FIELDS_CACHE;
-        $member_rows_g = $GLOBALS['FORUM_DB']->query('SELECT gm_group_id,gm_member_id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_group_members WHERE gm_validated=1 AND (' . str_replace('m.id', 'gm_member_id', $member_or_list) . ')', null, 0, false, true);
+        $member_rows_g = $GLOBALS['FORUM_DB']->query('SELECT gm_group_id,gm_member_id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_group_members WHERE (' . str_replace('m.id', 'gm_member_id', $member_or_list) . ')', null, 0, false, true);
         global $MEMBER_CACHE_FIELD_MAPPINGS, $SIGNATURES_CACHE;
         $found_groups = [];
         foreach ($member_rows as $row) {

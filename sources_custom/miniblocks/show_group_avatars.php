@@ -56,7 +56,7 @@ if (isset($map['param'])) {
             return;
         }
     }
-    $where .= ' AND (m_primary_group=' . strval($group_id) . ' OR EXISTS(SELECT gm_member_id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_group_members x WHERE x.gm_member_id=m.id AND gm_validated=1 AND gm_group_id=' . strval($group_id) . '))';
+    $where .= ' AND (m_primary_group=' . strval($group_id) . ' OR EXISTS(SELECT gm_member_id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_group_members x WHERE x.gm_member_id=m.id AND gm_group_id=' . strval($group_id) . '))';
 }
 
 $limit = isset($map['limit']) ? intval($map['limit']) : 200;

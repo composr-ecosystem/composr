@@ -92,7 +92,7 @@ class Hook_cron_ip_address_sharing
             $sql = 'SELECT DISTINCT id,m_username FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members m';
             $sql .= ' LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_group_members g ON m.id=g.gm_member_id AND (' . $group_or_list_2 . ')';
             $sql .= ' WHERE';
-            $sql .= ' (' . $group_or_list_1 . ' OR gm_validated=1)';
+            $sql .= ' (' . $group_or_list_1 . ')';
             $sql .= ' AND (SELECT COUNT(DISTINCT ip) FROM ' . get_table_prefix() . 'stats s WHERE s.member_id=m.id AND date_and_time>' . strval($time_now - 60 * 60 * 24) . ')>' . strval($limit);
             $members = $GLOBALS['FORUM_DB']->query($sql);
 

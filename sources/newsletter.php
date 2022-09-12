@@ -593,7 +593,7 @@ function newsletter_who_send_to(?array $send_details = null, ?string $lang = nul
             $key = 'g' . strval($group_id);
             if (($send_details === null) || (!empty($send_details[$key]))) {
                 if ($group_id != db_get_first_id()) {
-                    $table_a = $table . ' LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_group_members g ON m.id=g.gm_member_id AND g.gm_validated=1';
+                    $table_a = $table . ' LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_group_members g ON m.id=g.gm_member_id';
                     $where_a = 'gm_group_id=' . strval($group_id) . ' AND ' . $where;
                     $sql_a = 'SELECT ' . $fields . ' FROM ' . $table_a . ' WHERE ' . $where_a;
 

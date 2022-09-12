@@ -242,8 +242,8 @@ function install_cns(?float $upgrade_from = null)
 
         $GLOBALS['FORUM_DB']->add_table_field('f_groups', 'g_promotion_approval', 'BINARY');
 
-        // $GLOBALS['FORUM_DB']->delete_index_if_exists('f_group_members', 'gm_validated');
-        // $GLOBALS['FORUM_DB']->delete_table_field('f_group_members', 'gm_validated');
+        $GLOBALS['FORUM_DB']->delete_index_if_exists('f_group_members', 'gm_validated');
+        $GLOBALS['FORUM_DB']->delete_table_field('f_group_members', 'gm_validated');
 
         // Optionally provide autofill types for bundled CPFs (if any found)
         $autofill_map = [
@@ -513,11 +513,9 @@ function install_cns(?float $upgrade_from = null)
         $GLOBALS['FORUM_DB']->create_table('f_group_members', [
             'gm_group_id' => '*GROUP',
             'gm_member_id' => '*MEMBER',
-            'gm_validated' => 'BINARY',
         ]);
         $GLOBALS['FORUM_DB']->create_index('f_group_members', 'gm_member_id', ['gm_member_id']);
         $GLOBALS['FORUM_DB']->create_index('f_group_members', 'gm_group_id', ['gm_group_id']);
-        $GLOBALS['FORUM_DB']->create_index('f_group_members', 'gm_validated', ['gm_validated']);
 
         $GLOBALS['FORUM_DB']->create_table('f_members', [
             // Basic details
@@ -1110,6 +1108,7 @@ function install_cns(?float $upgrade_from = null)
             'ga_status' => 'SHORT_INTEGER', // -1 = declined, 0 = pending, 1 = approved
             'ga_status_member_id' => '?MEMBER', // Member who accepted / declined the request
             'ga_status_member_username' => 'SHORT_TEXT',
+            'ga_reason' => '?SHORT_TRANS__COMCODE',
         ]);
         $GLOBALS['FORUM_DB']->create_index('f_group_approvals', 'ga_date_and_time', ['ga_date_and_time']);
         $GLOBALS['FORUM_DB']->create_index('f_group_approvals', 'ga_member_id', ['ga_member_id']);

@@ -170,7 +170,7 @@ class Hook_task_import_members
 
             // If it's an edited member, add in their existing spreadsheet details, so that if it's a partial merge it'll still work without deleting anything!
             if (!$new_member) {
-                $member_groups = $GLOBALS['FORUM_DB']->query_select('f_group_members', ['gm_member_id', 'gm_group_id'], ['gm_validated' => 1, 'gm_member_id' => $linked_id]);
+                $member_groups = $GLOBALS['FORUM_DB']->query_select('f_group_members', ['gm_member_id', 'gm_group_id'], ['gm_member_id' => $linked_id]);
                 $member_cpfs = list_to_map('mf_member_id', $GLOBALS['FORUM_DB']->query_select('f_member_custom_fields', ['*'], ['mf_member_id' => $linked_id], '', 1));
                 $this_record = $download_ob->_get_spreadsheet_member_record($member_cpfs + $GLOBALS['FORUM_DRIVER']->get_member_row($linked_id), $_all_groups, $headings, $all_cpfs, $member_groups, []); // Remember "+" in PHP won't overwrite existing keys
                 if (!array_key_exists($email_address_key, $line)) {
@@ -474,7 +474,6 @@ class Hook_task_import_members
                         $GLOBALS['FORUM_DB']->query_insert('f_group_members', [
                             'gm_group_id' => $g_id,
                             'gm_member_id' => $linked_id,
-                            'gm_validated' => 1,
                         ], false, true);
                     }
                 }
