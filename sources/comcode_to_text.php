@@ -374,7 +374,7 @@ function _strip_comcode(string $in, bool $for_extract = false, array $tags_to_pr
         }
     }
 
-    return trim($text);
+    return trim($text, "\n");
 }
 
 /**

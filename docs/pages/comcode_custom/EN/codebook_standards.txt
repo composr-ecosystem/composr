@@ -826,11 +826,18 @@ Use the [tt]build_url[/tt] function and [tt]PAGE_LINK[/tt] symbol
 | Do not hard-code URLs -- use [tt]build_url()[/tt] correctly. This function will convert to whatever URL scheme is in place, as well as propagate [tt]keep_[/tt] fields. Never use relative URLs as a [tt]<base>[/tt] tag can break them, and we also want all URLs to easily be downloadable server-side in utility functions and when debugging.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
-[color="red"]Use [tt]build_url[/tt]'s [tt]$skip_keep[/tt] parameter for e-mailed Comcode[/color]
+Use [tt]build_url[/tt]'s [tt]$skip_keep[/tt] parameter for e-mailed Comcode
+| URL schemes
+| All development
+| Composr development mode
+| If you are using a URL in an e-mail, make sure the [tt]$skip_keep[/tt] parameter is set to true, as [tt]keep_[/tt] parameters should not go out in e-mails.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Use Comcode [tt]url[/tt] or [tt]page[/tt] tags for URLs within notifications[/color]
 | URL schemes
 | All development
 | Manually
-| If you are using a URL in an e-mail, make sure the [tt]$skip_keep[/tt] parameter is set to true, as [tt]keep_[/tt] parameters should not go out in e-mails.
+| This ensures the URL is not parsed incorrectly, or that the media system doesn't process the URL as an embed rather than a hyperlink.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Fix broken user input[/color]

@@ -20,89 +20,109 @@ class comcode_to_text_test_set extends cms_test_case
 {
     public function testComcodeToText()
     {
-        $text = '
-[list]
+        $test_url = static_evaluate_tempcode(build_url(['page' => 'admin_actionlog'], 'adminzone', [], false, false, true));
+
+        $text_sections = [
+            '[list]
 [*]A
 [*]B
 [*]C
-[/list]
+[/list]',
 
-[title]header 1[/title]
+            '[title]header 1[/title]',
 
-under header 1
+            'under header 1',
 
-[title="2"]header 2[/title]
+            '[title="2"]header 2[/title]',
 
-under header 2
+            'under header 2',
 
-[box="box title"]
+            '[box="box title"]
 box contents
-[/box]
+[/box]',
 
-[b]test bold[/b]
+            '[b]test bold[/b]',
 
-[b]test italics[/b]
+            '[b]test italics[/b]',
 
-[highlight]test highlight[/highlight]
+            '[highlight]test highlight[/highlight]',
 
-[staff_note]secret do not want[/staff_note]
+            '[staff_note]secret do not want[/staff_note]',
 
-[indent]blah
+            '[indent]blah
 blah
-blah[/indent]
+blah[/indent]',
 
-[random a="Want"]1233[/random]
+            '[random a="Want"]1233[/random]',
 
-[abbr="Cascading Style Sheets"]CSS[/abbr]
+            '[abbr="Cascading Style Sheets"]CSS[/abbr]',
 
-{+START,IF_NON_EMPTY,foo}bar{+END}
+            '{+START,IF_NON_EMPTY,foo}bar{+END}',
 
-{+START,IF_EMPTY,foo}bar{+END}
+            '{+START,IF_EMPTY,foo}bar{+END}',
 
-{$SITE_NAME}
-';
+            '{$SITE_NAME}',
+
+            '[page="adminzone:admin_actionlog"]test[/page]',
+
+            '[url="' . $test_url . '"]test[/url]',
+
+            $test_url,
+        ];
+        $text = implode("\n\n", $text_sections);
 
         $got = strip_comcode($text);
 
-        $expected = '
- - A
+        $expected_sections = [
+            ' - A
  - B
- - C
+ - C',
 
-header 1
-========
+            'header 1
+========',
 
-under header 1
+            'under header 1',
 
-header 2
---------
+            'header 2
+--------',
 
-under header 2
+            'under header 2',
 
-box title
----------
+            'box title
+---------',
 
-box contents
+            'box contents',
 
-**test bold**
+            '**test bold**',
 
-**test italics**
+            '**test italics**',
 
-***test highlight***
+            '***test highlight***',
 
+            '      blah
       blah
-      blah
-      blah
+      blah',
 
-Want
+            'Want',
 
-CSS (Cascading Style Sheets)
+            'CSS (Cascading Style Sheets)',
 
-bar
+            'bar',
 
-' . get_site_name();
+            //'', Actually it will just be stripped entirely, no blank lines
+
+            get_site_name(),
+
+            'test (' . $test_url . ')',
+
+            'test (' . $test_url . ')',
+
+            $test_url,
+        ];
+        $expected = implode("\n\n", $expected_sections);
 
         $ok = trim($got) == trim($expected);
+
         $this->assertTrue($ok);
         if (!$ok) {
             require_code('diff');
