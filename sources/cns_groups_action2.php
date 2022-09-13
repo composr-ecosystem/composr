@@ -547,7 +547,7 @@ function cns_member_validate_into_group(int $group_id, int $prospective_member_i
         $subject = do_lang('GROUP_DECLINED_MAIL_SUBJECT', $name, null, null, get_lang($prospective_member_id));
     }
 
-    dispatch_notification('cns_group_join_decision', null, $subject, $mail, [$prospective_member_id]);
+    dispatch_notification('cns_group_status', null, $subject, $mail, [$prospective_member_id]);
 }
 
 /**

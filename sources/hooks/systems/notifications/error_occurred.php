@@ -24,6 +24,45 @@
 class Hook_notification_error_occurred extends Hook_notification__Staff
 {
     /**
+     * Find whether a handled notification code supports categories.
+     * (Content types, for example, will define notifications on specific categories, not just in general. The categories are interpreted by the hook and may be complex. E.g. it might be like a regexp match, or like FORUM:3 or TOPIC:100).
+     *
+     * @param  ID_TEXT $notification_code Notification code
+     * @return boolean Whether it does
+     */
+    public function supports_categories(string $notification_code) : bool
+    {
+        return true;
+    }
+
+    /**
+     * Standard function to create the standardised category tree.
+     *
+     * @param  ID_TEXT $notification_code Notification code
+     * @param  ?ID_TEXT $id The ID of where we're looking under (null: N/A)
+     * @return array Tree structure
+     */
+    public function create_category_tree(string $notification_code, ?string $id) : array
+    {
+        $page_links = [];
+        $page_links[] = ['id' => 'error_occurred_api', 'title' => do_lang('NOTIFICATION_CATEGORY_TYPE_error_occurred_api')];
+        $page_links[] = ['id' => 'error_occurred_cron', 'title' => do_lang('NOTIFICATION_CATEGORY_TYPE_error_occurred_cron')];
+        $page_links[] = ['id' => 'error_occurred_missing_page', 'title' => do_lang('NOTIFICATION_CATEGORY_TYPE_error_occurred_missing_page')];
+        $page_links[] = ['id' => 'error_occurred_missing_reference_important', 'title' => do_lang('NOTIFICATION_CATEGORY_TYPE_error_occurred_missing_reference_important')];
+        $page_links[] = ['id' => 'error_occurred_missing_reference', 'title' => do_lang('NOTIFICATION_CATEGORY_TYPE_error_occurred_missing_reference')];
+        $page_links[] = ['id' => 'error_occurred_missing_resource', 'title' => do_lang('NOTIFICATION_CATEGORY_TYPE_error_occurred_missing_resource')];
+        $page_links[] = ['id' => 'error_occurred_rss', 'title' => do_lang('NOTIFICATION_CATEGORY_TYPE_error_occurred_rss')];
+        $page_links[] = ['id' => 'error_occurred', 'title' => do_lang('GENERAL')];
+
+        if (addon_installed('health_check')) {
+            $page_links[] = ['id' => 'health_check_failed', 'title' => do_lang('health_check:HEALTH_CHECK_SUBJECT_fail')];
+            $page_links[] = ['id' => 'health_check_passed', 'title' => do_lang('health_check:HEALTH_CHECK_SUBJECT_misc')];
+        }
+
+        return $page_links;
+    }
+
+    /**
      * Find the initial setting that members have for a notification code (only applies to the member_could_potentially_enable members).
      *
      * @param  ID_TEXT $notification_code Notification code

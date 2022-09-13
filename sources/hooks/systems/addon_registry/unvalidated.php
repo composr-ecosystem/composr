@@ -111,8 +111,6 @@ class Hook_addon_registry_unvalidated
         return [
             'themes/default/images/icons/menu/adminzone/audit/unvalidated.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/audit/unvalidated.svg',
-            'sources/hooks/systems/notifications/content_validated.php',
-            'sources/hooks/systems/notifications/needs_validation.php',
             'sources/hooks/systems/addon_registry/unvalidated.php',
             'themes/default/templates/UNVALIDATED_SCREEN.tpl',
             'themes/default/templates/UNVALIDATED_SECTION.tpl',
@@ -120,6 +118,8 @@ class Hook_addon_registry_unvalidated
             'adminzone/pages/modules/admin_unvalidated.php',
             'lang/EN/unvalidated.ini',
             'sources/hooks/blocks/main_staff_checklist/unvalidated.php',
+            'sources/hooks/systems/notifications/content_validated.php',
+            'sources/hooks/systems/notifications/needs_validation.php',
             'sources/hooks/systems/page_groupings/unvalidated.php',
         ];
     }

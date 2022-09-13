@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_notification_ecom_product_request_quota extends Hook_notification__Staff
+class Hook_notification_subscriptions_staff extends Hook_notification__Staff
 {
     /**
      * Get a list of all the notification codes this hook can handle.
@@ -36,7 +36,7 @@ class Hook_notification_ecom_product_request_quota extends Hook_notification__St
         }
 
         $list = [];
-        $list['ecom_product_request_quota'] = [do_lang('ecommerce:ECOMMERCE'), do_lang('ecommerce:NOTIFICATION_TYPE_ecom_product_request_quota')];
+        $list['subscriptions_staff'] = [do_lang('ecommerce:ECOMMERCE'), do_lang('ecommerce:NOTIFICATION_TYPE_subscriptions_staff')];
         return $list;
     }
 }

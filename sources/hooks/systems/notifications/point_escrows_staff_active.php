@@ -53,6 +53,23 @@ class Hook_notification_point_escrows_staff_active extends Hook_Notification
     }
 
     /**
+     * Find whether a member could enable this notification (i.e. have permission to).
+     *
+     * @param  ID_TEXT $notification_code Notification code
+     * @param  MEMBER $member_id Member to check against
+     * @param  ?SHORT_TEXT $category The category within the notification code (null: none)
+     * @return boolean Whether they could
+     */
+    public function member_could_potentially_enable(string $notification_code, int $member_id, ?string $category = null) : bool
+    {
+        if (!addon_installed('points')) {
+            return false;
+        }
+
+        return ((has_privilege($member_id, 'moderate_points_escrow')) && (has_actual_page_access($member_id, 'points')));
+    }
+
+    /**
      * Get a list of members who have enabled this notification (i.e. have permission to AND have chosen to or are defaulted to).
      *
      * @param  ID_TEXT $notification_code Notification code

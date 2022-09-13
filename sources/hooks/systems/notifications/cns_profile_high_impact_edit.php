@@ -15,13 +15,13 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    core
+ * @package    core_cns
  */
 
 /**
  * Hook class.
  */
-class Hook_notification_error_occurred_missing_resource extends Hook_notification__Staff
+class Hook_notification_cns_profile_high_impact_edit extends Hook_notification__Staff
 {
     /**
      * Find the initial setting that members have for a notification code (only applies to the member_could_potentially_enable members).
@@ -43,8 +43,12 @@ class Hook_notification_error_occurred_missing_resource extends Hook_notificatio
      */
     public function list_handled_codes() : array
     {
+        if (get_forum_type() != 'cns') {
+            return [];
+        }
+
         $list = [];
-        $list['error_occurred_missing_resource'] = [do_lang('ERRORS'), do_lang('NOTIFICATION_TYPE_error_occurred_missing_resource')];
+        $list['cns_profile_high_impact_edit'] = [do_lang('MEMBERS'), do_lang('cns:NOTIFICATION_TYPE_cns_profile_high_impact_edit')];
         return $list;
     }
 }

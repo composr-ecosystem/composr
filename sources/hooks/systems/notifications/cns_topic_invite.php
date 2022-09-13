@@ -31,7 +31,7 @@ class Hook_notification_cns_topic_invite extends Hook_Notification
      */
     public function allowed_settings(string $notification_code) : int
     {
-        return A__ALL & ~A_INSTANT_PT;
+        return A__ALL & ~A_INSTANT_PT; // Topic, so do not allow PT
     }
 
     /**

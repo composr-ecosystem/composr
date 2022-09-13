@@ -111,7 +111,6 @@ class Hook_addon_registry_syndication_blocks
     public function get_file_list() : array
     {
         return [
-            'sources/hooks/systems/notifications/error_occurred_rss.php',
             'sources/hooks/systems/config/is_on_rss.php',
             'sources/hooks/systems/config/is_rss_advertised.php',
             'sources/hooks/systems/config/rss_update_time.php',

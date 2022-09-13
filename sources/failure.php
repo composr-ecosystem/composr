@@ -1109,14 +1109,14 @@ function get_webservice_result($error_message) : ?string
  * Generally used when a web API fails.
  *
  * @param  string $errormsg A error message
- * @param  ID_TEXT $notification_type The notification type
+ * @param  ID_TEXT $notification_category The error_occurred notification category
  */
-function cms_error_log(string $errormsg, string $notification_type = 'error_occurred')
+function cms_error_log(string $errormsg, string $notification_category = 'error_occurred')
 {
     if (php_function_allowed('error_log')) {
         @error_log($errormsg);
     }
-    relay_error_notification(escape_html($errormsg), false, $notification_type);
+    relay_error_notification(escape_html($errormsg), false, $notification_category);
 }
 
 /**
@@ -1124,9 +1124,9 @@ function cms_error_log(string $errormsg, string $notification_type = 'error_occu
  *
  * @param  string $text A error message (in HTML)
  * @param  boolean $ocproducts Also send to ocProducts
- * @param  ID_TEXT $notification_type The notification type
+ * @param  ID_TEXT $notification_category The error_occurred notification category
  */
-function relay_error_notification(string $text, bool $ocproducts = true, string $notification_type = 'error_occurred')
+function relay_error_notification(string $text, bool $ocproducts = true, string $notification_category = 'error_occurred')
 {
     if (isset($GLOBALS['SENDING_MAIL']) && $GLOBALS['SENDING_MAIL']) {
         return;
@@ -1157,7 +1157,7 @@ function relay_error_notification(string $text, bool $ocproducts = true, string 
     require_code('notifications');
     require_code('comcode');
     $mail = do_notification_lang('ERROR_MAIL', comcode_escape($error_url), $text, $ocproducts ? '?' : get_ip_address(), get_site_default_lang());
-    dispatch_notification($notification_type, null, do_lang('ERROR_OCCURRED_SUBJECT', get_page_or_script_name(), $ocproducts ? '?' : get_ip_address(), null, get_site_default_lang()), $mail, null, A_FROM_SYSTEM_PRIVILEGED);
+    dispatch_notification('error_occurred', $notification_category, do_lang('ERROR_OCCURRED_SUBJECT', get_page_or_script_name(), $ocproducts ? '?' : get_ip_address(), null, get_site_default_lang()), $mail, null, A_FROM_SYSTEM_PRIVILEGED);
     if (
         ($ocproducts) &&
         (get_option('send_error_emails_ocproducts') == '1') &&

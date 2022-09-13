@@ -53,6 +53,25 @@ class Hook_notification_cns_group_join_request extends Hook_Notification
     }
 
     /**
+     * Find whether a member could enable this notification (i.e. have permission to).
+     *
+     * @param  ID_TEXT $notification_code Notification code
+     * @param  MEMBER $member_id Member to check against
+     * @param  ?SHORT_TEXT $category The category within the notification code (null: none)
+     * @return boolean Whether they could
+     */
+    public function member_could_potentially_enable(string $notification_code, int $member_id, ?string $category = null) : bool
+    {
+        if (get_forum_type() != 'cns') {
+            return false;
+        }
+
+        // Only members who are a leader of a usergroup should see this notification
+        $is_usergroup_leader = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', ['g_group_leader' => $member_id]);
+        return ($is_usergroup_leader !== null);
+    }
+
+    /**
      * Get a list of members who have enabled this notification (i.e. have permission to AND have chosen to or are defaulted to).
      *
      * @param  ID_TEXT $notification_code Notification code
@@ -65,8 +84,16 @@ class Hook_notification_cns_group_join_request extends Hook_Notification
      */
     public function list_members_who_have_enabled(string $notification_code, ?string $category = null, ?array $to_member_ids = null, ?int $from_member_id = null, int $start = 0, int $max = 300) : array
     {
-        $members = $this->_all_members_who_have_enabled($notification_code, $category, $to_member_ids, $start, $max);
-        $members = $this->_all_members_who_have_enabled_with_page_access($members, 'groups', $notification_code, $category, $to_member_ids, $start, $max);
+        $_members = $this->_all_members_who_have_enabled($notification_code, $category, $to_member_ids, $start, $max);
+        $_members = $this->_all_members_who_have_enabled_with_page_access($_members, 'groups', $notification_code, $category, $to_member_ids, $start, $max);
+
+        $members = [];
+        foreach ($_members as $member => $notifications) {
+            $is_usergroup_leader = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', ['g_group_leader' => $member]);
+            if ($is_usergroup_leader !== null) {
+                $members[$member] = $notifications;
+            }
+        }
 
         return $members;
     }

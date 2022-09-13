@@ -67,7 +67,6 @@ class Hook_notification_point_escrows extends Hook_Notification
     {
         $members = $this->_all_members_who_have_enabled($notification_code, $category, $to_member_ids, $start, $max);
         $members = $this->_all_members_who_have_enabled_with_page_access($members, 'points', $notification_code, $category, $to_member_ids, $start, $max);
-
         return $members;
     }
 }

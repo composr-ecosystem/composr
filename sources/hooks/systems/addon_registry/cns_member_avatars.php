@@ -110,7 +110,6 @@ class Hook_addon_registry_cns_member_avatars
         return [
             'themes/default/images/icons/tabs/member_account/edit/avatar.svg',
             'themes/default/images/icons_monochrome/tabs/member_account/edit/avatar.svg',
-            'sources/hooks/systems/notifications/cns_choose_avatar.php',
             'sources/hooks/systems/addon_registry/cns_member_avatars.php',
             'themes/default/templates/CNS_EDIT_AVATAR_TAB.tpl',
             'uploads/cns_avatars/index.html',
