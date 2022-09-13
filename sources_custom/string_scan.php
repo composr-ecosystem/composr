@@ -6409,7 +6409,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NEW_MENU
         NEW_REDIRECT
         NEW_TASK_RUNNING
-        NEW_THEME
+        NEW_THEME_NAME
+        NEW_THEME_NAME_DESCRIPTION
         NEW_USERGROUP
         NEXT_ITEM_add_image_to_this
         NEXT_ITEM_add

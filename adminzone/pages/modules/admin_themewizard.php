@@ -129,6 +129,7 @@ class Module_admin_themewizard
     public function run() : object
     {
         require_code('themes2');
+        require_code('themes3');
         require_code('themewizard');
         require_css('themes_editor');
 
@@ -182,7 +183,6 @@ class Module_admin_themewizard
 
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '0373ce292326fa209a6a44d829f547d4', 'SECTION_HIDDEN' => false, 'TITLE' => do_lang_tempcode('PARAMETERS')]));
 
-        require_code('themes2');
         $fields->attach(form_input_colour(do_lang_tempcode('SEED_COLOUR'), do_lang_tempcode('DESCRIPTION_SEED_COLOUR'), 'seed', '#' . preg_replace('/^\#/', '', get_param_string('seed', find_theme_seed('default'))), true));
 
         if ($num_available_themes != 1) {
@@ -198,7 +198,11 @@ class Module_admin_themewizard
 
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '1373ce292326fa209a6a44d829f547d4', 'SECTION_HIDDEN' => false, 'TITLE' => do_lang_tempcode('SETTINGS')]));
 
-        $fields->attach(form_input_codename(do_lang_tempcode('NEW_THEME'), do_lang_tempcode('DESCRIPTION_NAME'), 'name', get_param_string('name', ''), false));
+        $new_theme_name = get_param_string('name', '');
+        if ($new_theme_name == '') {
+            $new_theme_name = generate_theme_name(get_site_name());
+        }
+        $fields->attach(form_input_codename(do_lang_tempcode('NEW_THEME_NAME'), do_lang_tempcode('NEW_THEME_NAME_DESCRIPTION'), 'name', $new_theme_name, false));
 
         $fields->attach(form_input_tick(do_lang_tempcode('USE_ON_ZONES'), do_lang_tempcode('DESCRIPTION_USE_ON_ZONES'), 'use_on_all', get_param_integer('use_on_all', 0) == 1));
 
@@ -279,7 +283,6 @@ class Module_admin_themewizard
             }
             create_zip_file('php://stdout', $file_array);
 
-            require_code('themes3');
             actual_delete_theme('_temp_');
 
             $GLOBALS['SCREEN_TEMPLATE_CALLED'] = '';
@@ -381,7 +384,6 @@ class Module_admin_themewizard
         if (!file_exists(get_custom_file_base() . '/themes/' . $theme)) {
             $theme = 'default';
         }
-        require_code('themes2');
 
         $fields->attach(form_input_list(do_lang_tempcode('THEME'), do_lang_tempcode('DESCRIPTION_LOGOWIZARD_THEME'), 'theme', create_selection_list_themes($theme, false)));
 
@@ -413,8 +415,6 @@ class Module_admin_themewizard
         $colour = post_param_string('colour');
 
         // Do it
-        require_code('themes2');
-        require_code('themes3');
         require_code('images');
         foreach ([$theme, 'default'] as $logo_save_theme) {
             foreach (['large' => '-logo', 'standalone' => 'standalone_logo', 'small' => 'small_logo', 'small_white' => 'small_white_logo'] as $logo_type => $logo_output_theme_image) {

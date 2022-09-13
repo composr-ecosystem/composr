@@ -766,3 +766,22 @@ function _override_icon_paths(array $icon_paths, array $overriding_icon_paths) :
 
     return array_merge($icon_paths, $overriding_icon_paths);
 }
+
+/**
+ * Generate a new theme name for the new site name.
+ *
+ * @param  string $name The new site name
+ * @return string The new theme name
+ */
+function generate_theme_name(string $name) : string
+{
+    $i = 1;
+    do {
+        $name = substr(preg_replace('#[^' . URL_CONTENT_REGEXP . ']#', '_', $name), 0, 40);
+        if ($i > 1) {
+            $name .= '_' . strval($i);
+        }
+        $i++;
+    } while (file_exists(get_custom_file_base() . '/themes/' . $name));
+    return $name;
+}

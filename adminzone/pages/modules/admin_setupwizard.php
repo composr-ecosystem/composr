@@ -1062,8 +1062,10 @@ class Module_admin_setupwizard
 
         $doing_themewizard = $this->has_themewizard_step();
 
+        require_code('themes3');
+
         $name = post_param_string('site_name');
-        $new_theme_name = $this->generate_theme_name($name);
+        $new_theme_name = generate_theme_name($name);
         $generating_new_theme = !file_exists(get_custom_file_base() . '/themes/' . $new_theme_name);
         list($addons_install, $addons_uninstall) = $this->detect_addon_operations();
 
@@ -1094,7 +1096,6 @@ class Module_admin_setupwizard
 
         require_code('config2');
         require_code('themes2');
-        require_code('themes3');
         require_lang('zones');
         require_code('files');
         require_code('images');
@@ -1422,17 +1423,6 @@ class Module_admin_setupwizard
 
         $url = build_url(['page' => '_SELF', 'type' => 'step11'], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
-    }
-
-    /**
-     * Generate a new theme name for the new site name.
-     *
-     * @param  string $name The new site name
-     * @return string The new theme name
-     */
-    protected function generate_theme_name(string $name) : string
-    {
-        return substr(preg_replace('#[^' . URL_CONTENT_REGEXP . ']#', '_', $name), 0, 40);
     }
 
     /**
