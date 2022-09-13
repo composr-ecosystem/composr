@@ -55,7 +55,7 @@ function send_content_validated_notification(string $content_type, string $conte
         require_lang('unvalidated');
         $subject = do_lang('CONTENT_VALIDATED_NOTIFICATION_MAIL_SUBJECT', $content_title, get_site_name());
         $mail = do_notification_lang('CONTENT_VALIDATED_NOTIFICATION_MAIL', comcode_escape(get_site_name()), comcode_escape($content_title), [$content_url_safe->evaluate()]);
-        dispatch_notification('content_validation', 'validated', $subject, $mail, [$submitter_id]);
+        dispatch_notification('content_validated', null, $subject, $mail, [$submitter_id]);
     }
 }
 
@@ -107,7 +107,7 @@ function send_validation_request(string $type, string $table, bool $non_integer_
 
     $subject = do_lang('UNVALIDATED_TITLE', $title, '', '', get_site_default_lang());
     $message = $comcode->evaluate(get_site_default_lang());
-    dispatch_notification('content_validation', 'requires_validation', $subject, $message, null, $member_id, ['use_real_from' => true]);
+    dispatch_notification('content_validated', null, $subject, $message, null, $member_id, ['use_real_from' => true]);
 }
 
 /**

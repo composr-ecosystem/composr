@@ -45,14 +45,14 @@ class Hook_notification_error_occurred extends Hook_notification__Staff
     public function create_category_tree(string $notification_code, ?string $id) : array
     {
         $page_links = [];
-        $page_links[] = ['id' => 'error_occurred_api', 'title' => do_lang('NOTIFICATION_TYPE_error_occurred_api')];
-        $page_links[] = ['id' => 'error_occurred_cron', 'title' => do_lang('NOTIFICATION_TYPE_error_occurred_cron')];
-        $page_links[] = ['id' => 'error_occurred_missing_page', 'title' => do_lang('NOTIFICATION_TYPE_error_occurred_missing_page')];
-        $page_links[] = ['id' => 'error_occurred_missing_reference_important', 'title' => do_lang('NOTIFICATION_TYPE_error_occurred_missing_reference_important')];
-        $page_links[] = ['id' => 'error_occurred_missing_reference', 'title' => do_lang('NOTIFICATION_TYPE_error_occurred_missing_reference')];
-        $page_links[] = ['id' => 'error_occurred_missing_resource', 'title' => do_lang('NOTIFICATION_TYPE_error_occurred_missing_resource')];
-        $page_links[] = ['id' => 'error_occurred_rss', 'title' => do_lang('NOTIFICATION_TYPE_error_occurred_rss')];
-        $page_links[] = ['id' => 'error_occurred', 'title' => do_lang('NOTIFICATION_TYPE_error_occurred')];
+        $page_links[] = ['id' => 'error_occurred_api', 'title' => do_lang('NOTIFICATION_CATEGORY_TYPE_error_occurred_api')];
+        $page_links[] = ['id' => 'error_occurred_cron', 'title' => do_lang('NOTIFICATION_CATEGORY_TYPE_error_occurred_cron')];
+        $page_links[] = ['id' => 'error_occurred_missing_page', 'title' => do_lang('NOTIFICATION_CATEGORY_TYPE_error_occurred_missing_page')];
+        $page_links[] = ['id' => 'error_occurred_missing_reference_important', 'title' => do_lang('NOTIFICATION_CATEGORY_TYPE_error_occurred_missing_reference_important')];
+        $page_links[] = ['id' => 'error_occurred_missing_reference', 'title' => do_lang('NOTIFICATION_CATEGORY_TYPE_error_occurred_missing_reference')];
+        $page_links[] = ['id' => 'error_occurred_missing_resource', 'title' => do_lang('NOTIFICATION_CATEGORY_TYPE_error_occurred_missing_resource')];
+        $page_links[] = ['id' => 'error_occurred_rss', 'title' => do_lang('NOTIFICATION_CATEGORY_TYPE_error_occurred_rss')];
+        $page_links[] = ['id' => 'error_occurred', 'title' => do_lang('GENERAL')];
 
         if (addon_installed('health_check')) {
             $page_links[] = ['id' => 'health_check_failed', 'title' => do_lang('health_check:HEALTH_CHECK_SUBJECT_fail')];

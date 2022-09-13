@@ -2529,7 +2529,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BLOCK_top_search_USE
         BLOG_NEWS_ARTICLE
         ORDER_AUTOMATED_CRITERIA
-        NOTIFICATION_TYPE_cns_username_changed_staff
         BLOG_NEWS_SUMMARY
         BLOG_REGULARITY
         BOARD_INSTALL_NUMBER
@@ -6479,13 +6478,13 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NOTIFICATION_TYPE_cns_group_join_request_staff
         NOTIFICATION_TYPE_cns_member_needs_validation
         NOTIFICATION_TYPE_error_occurred
-        NOTIFICATION_TYPE_error_occurred_api
-        NOTIFICATION_TYPE_error_occurred_cron
-        NOTIFICATION_TYPE_error_occurred_missing_page
-        NOTIFICATION_TYPE_error_occurred_missing_reference
-        NOTIFICATION_TYPE_error_occurred_missing_reference_important
-        NOTIFICATION_TYPE_error_occurred_missing_resource
-        NOTIFICATION_TYPE_error_occurred_rss
+        NOTIFICATION_CATEGORY_TYPE_error_occurred_api
+        NOTIFICATION_CATEGORY_TYPE_error_occurred_cron
+        NOTIFICATION_CATEGORY_TYPE_error_occurred_missing_page
+        NOTIFICATION_CATEGORY_TYPE_error_occurred_missing_reference
+        NOTIFICATION_CATEGORY_TYPE_error_occurred_missing_reference_important
+        NOTIFICATION_CATEGORY_TYPE_error_occurred_missing_resource
+        NOTIFICATION_CATEGORY_TYPE_error_occurred_rss
         NOTIFICATION_TYPE_filedump
         NOTIFICATION_TYPE_hack_attack
         NOTIFICATION_TYPE_ip_address_sharing
@@ -8317,6 +8316,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NEW_ESCROW_TRANSACTION_SUBJECT_STAFF
         NEW_ESCROW_TRANSACTION_INTRO_STAFF
         REQUIRES_VALIDATION
+        NOTIFICATION_TYPE_needs_validation
+        NOTIFICATION_TYPE_task_completed
     ')));
 
     $non_admin_files = [
@@ -10095,7 +10096,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NOTIFICATION_TYPE_cns_topic
         NOTIFICATION_TYPE_cns_topic_invite
         NOTIFICATION_TYPE_comment_posted
-        NOTIFICATION_TYPE_content_validation
+        NOTIFICATION_TYPE_content_validated
         NOTIFICATION_TYPE_download
         NOTIFICATION_TYPE_gallery_entry
         NOTIFICATION_TYPE_im_invited

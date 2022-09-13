@@ -1170,7 +1170,7 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
 
         $subject = do_lang('STAFF_USERNAME_CHANGED_MAIL_SUBJECT', $username, $old_username, null, get_site_default_lang());
         $mail = do_notification_lang('STAFF_USERNAME_CHANGED_MAIL', comcode_escape(get_site_name()), comcode_escape($username), comcode_escape($old_username), get_site_default_lang());
-        dispatch_notification('cns_username_changed_staff', null, $subject, $mail, null, get_member(), ['use_real_from' => true]);
+        dispatch_notification('cns_profile_high_impact_edit', null, $subject, $mail, null, get_member(), ['use_real_from' => true]);
 
         if (addon_installed('news')) {
             $GLOBALS['SITE_DB']->query_update('news', ['author' => $username], ['author' => $old_username]);

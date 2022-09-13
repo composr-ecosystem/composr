@@ -161,7 +161,7 @@ function execute_task_background(array $task_row)
             }
         }
 
-        dispatch_notification('staff_checklist_notify', null, $subject, $message, [$requester], A_FROM_SYSTEM_PRIVILEGED, ['priority' => 2, 'attachments' => $attachments, 'send_immediately' => true]);
+        dispatch_notification('task_completed', null, $subject, $message, [$requester], A_FROM_SYSTEM_PRIVILEGED, ['priority' => 2, 'attachments' => $attachments, 'send_immediately' => true]);
     }
 
     if (is_array($result)) {

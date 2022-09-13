@@ -118,8 +118,9 @@ class Hook_addon_registry_unvalidated
             'adminzone/pages/modules/admin_unvalidated.php',
             'lang/EN/unvalidated.ini',
             'sources/hooks/blocks/main_staff_checklist/unvalidated.php',
+            'sources/hooks/systems/notifications/content_validated.php',
+            'sources/hooks/systems/notifications/needs_validation.php',
             'sources/hooks/systems/page_groupings/unvalidated.php',
-            'sources/hooks/systems/notifications/content_validation.php'
         ];
     }
 

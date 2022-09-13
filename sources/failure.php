@@ -468,7 +468,7 @@ function _generic_exit($text, string $template, ?bool $support_match_key_message
         require_lang('tasks');
         $n_subject = do_lang('_TASK_FAILED_SUBJECT');
         $n_message = do_notification_lang('TASK_FAILED_BODY', '[semihtml]' . $text_eval . '[/semihtml]');
-        dispatch_notification('staff_checklist_notify', null, $n_subject, $n_message, [get_member()], A_FROM_SYSTEM_PRIVILEGED, ['priority' => 2, 'send_immediately' => true]);
+        dispatch_notification('task_completed', null, $n_subject, $n_message, [get_member()], A_FROM_SYSTEM_PRIVILEGED, ['priority' => 2, 'send_immediately' => true]);
     }
 
     if ($support_match_key_messages === null) {

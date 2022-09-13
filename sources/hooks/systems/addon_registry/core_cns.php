@@ -210,7 +210,6 @@ class Hook_addon_registry_core_cns
             'sources/hooks/systems/notifications/cns_member_joined_group.php',
             'sources/hooks/systems/notifications/cns_new_member.php',
             'sources/hooks/systems/notifications/cns_member_needs_validation.php',
-            'sources/hooks/systems/notifications/cns_username_changed_staff.php',
             'sources/hooks/systems/notifications/cns_group_join_request_staff.php',
             'sources/hooks/systems/realtime_rain/cns.php',
             'sources/hooks/systems/cron/cns_birthdays.php',
