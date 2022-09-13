@@ -86,6 +86,8 @@ function execute_task_background(array $task_row)
 
     require_code('users_inactive_occasionals');
     $requester = $task_row['t_member_id'];
+    $old_member_id = get_member();
+    $old_session_id = get_session_id();
     create_session($requester, 1);
 
     disable_php_memory_limit();
@@ -193,6 +195,8 @@ function execute_task_background(array $task_row)
     $RUNNING_TASK = false;
 
     cms_set_time_limit($old_limit);
+
+    set_session_id($old_session_id, is_guest($old_member_id));
 }
 
 /**
