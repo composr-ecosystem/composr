@@ -310,7 +310,7 @@ class Module_admin_version
                 'the_page' => '*ID_TEXT',
                 'string_index' => 'LONG_TRANS__COMCODE',
                 'the_theme' => '*ID_TEXT',
-                'cc_page_title' => '?SHORT_TRANS',
+                'cc_page_title' => '?SHORT_TRANS', // We need to be very careful with nullable translatable fields, as they will not be nullable when !multi_lang_content()
             ];
             if ($GLOBALS['SITE_DB']->driver->full_text_needs_single_key()) { // FUDGE: Full-text search requires a single key
                 $fields = [

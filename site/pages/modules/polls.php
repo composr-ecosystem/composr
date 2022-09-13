@@ -73,14 +73,14 @@ class Module_polls
                 'question' => 'SHORT_TRANS__COMCODE',
                 'option1' => 'SHORT_TRANS__COMCODE',
                 'option2' => 'SHORT_TRANS__COMCODE',
-                'option3' => '?SHORT_TRANS__COMCODE',
-                'option4' => '?SHORT_TRANS__COMCODE',
-                'option5' => '?SHORT_TRANS__COMCODE',
-                'option6' => '?SHORT_TRANS__COMCODE',
-                'option7' => '?SHORT_TRANS__COMCODE',
-                'option8' => '?SHORT_TRANS__COMCODE',
-                'option9' => '?SHORT_TRANS__COMCODE',
-                'option10' => '?SHORT_TRANS__COMCODE',
+                'option3' => 'SHORT_TRANS__COMCODE',
+                'option4' => 'SHORT_TRANS__COMCODE',
+                'option5' => 'SHORT_TRANS__COMCODE',
+                'option6' => 'SHORT_TRANS__COMCODE',
+                'option7' => 'SHORT_TRANS__COMCODE',
+                'option8' => 'SHORT_TRANS__COMCODE',
+                'option9' => 'SHORT_TRANS__COMCODE',
+                'option10' => 'SHORT_TRANS__COMCODE',
                 'votes1' => 'INTEGER',
                 'votes2' => 'INTEGER',
                 'votes3' => 'INTEGER',
@@ -155,9 +155,6 @@ class Module_polls
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 6)) { // LEGACY
-            $GLOBALS['SITE_DB']->alter_table_field('poll', 'option6', '?SHORT_TRANS__COMCODE');
-            $GLOBALS['SITE_DB']->alter_table_field('poll', 'option7', '?SHORT_TRANS__COMCODE');
-
             $GLOBALS['SITE_DB']->add_table_field('poll_votes', 'v_vote_time', 'TIME', time());
         }
 
@@ -166,6 +163,12 @@ class Module_polls
 
             add_privilege('SEARCH', 'autocomplete_keyword_poll', false);
             add_privilege('SEARCH', 'autocomplete_title_poll', false);
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 7)) { // LEGACY
+            for ($i = 1 ; $i <= 10; $i++) {
+                $GLOBALS['SITE_DB']->alter_table_field('poll', 'option' . strval($i), 'SHORT_TRANS__COMCODE');
+            }
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 7)) {
