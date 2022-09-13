@@ -774,7 +774,7 @@ function get_gallery_tree(?string $gallery = 'root', string $breadcrumbs = '', ?
             $members = $GLOBALS['FORUM_DB']->query_select('f_members', ['id', 'm_username', 'm_primary_group'], [], 'ORDER BY m_username', 100);
             if (count($members) != 100) { // Performance tweak. Only do if we don't have too many results
                 $done_for_all = true;
-                $group_membership = $GLOBALS['FORUM_DB']->query_select('f_group_members', ['gm_group_id', 'gm_member_id'], ['gm_validated' => 1]);
+                $group_membership = $GLOBALS['FORUM_DB']->query_select('f_group_members', ['gm_group_id', 'gm_member_id'], []);
                 $group_permissions = $GLOBALS['SITE_DB']->query('SELECT group_id,the_page,the_value FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_privileges WHERE ' . db_string_equal_to('privilege', 'have_personal_category') . ' AND (' . db_string_equal_to('the_page', '') . ' OR ' . db_string_equal_to('the_page', 'cms_galleries') . ')');
                 $is_super_admin = $GLOBALS['FORUM_DRIVER']->is_super_admin(get_member());
                 foreach ($members as $_member) {

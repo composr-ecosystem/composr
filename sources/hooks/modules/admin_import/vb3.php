@@ -252,7 +252,7 @@ class Hook_import_vb3
 
             $id_new = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', [$GLOBALS['FORUM_DB']->translate_field_ref('g_name') => $row['title']]);
             if ($id_new === null) {
-                $id_new = cns_make_group($row['title'], 0, $is_super_admin, $is_super_moderator, $row['usertitle'], '', $row_promotion_target, $row['reputation'], $row_group_leader, 5, 0, 5, $row['attachlimit'], $row['avatarmaxwidth'], $row['avatarmaxheight'], $PROBED_FORUM_CONFIG['postmaxchars'], array_key_exists('sigmax', $PROBED_FORUM_CONFIG) ? $PROBED_FORUM_CONFIG['sigmax'] : 700);
+                $id_new = cns_make_group($row['title'], 0, $is_super_admin, $is_super_moderator, $row['usertitle'], '', $row_promotion_target, $row['reputation'], 0, $row_group_leader, 5, 0, 5, $row['attachlimit'], $row['avatarmaxwidth'], $row['avatarmaxheight'], $PROBED_FORUM_CONFIG['postmaxchars'], array_key_exists('sigmax', $PROBED_FORUM_CONFIG) ? $PROBED_FORUM_CONFIG['sigmax'] : 700);
             }
 
             // Zone permissions
@@ -426,11 +426,12 @@ class Hook_import_vb3
                 // Set up usergroup membership
                 foreach ($secondary_groups as $group) {
                     $group = import_id_remap_get('group', strval($group['usergroupid']));
-                    cns_add_member_to_group($id_new, $group, 1);
+                    cns_add_member_to_secondary_group($id_new, $group, 1);
                 }
                 foreach ($requests as $request) {
-                    cns_add_member_to_group($id_new, $request['usergroupid'], 0);
+                    cns_add_member_to_secondary_group($id_new, $request['usergroupid'], 0);
                 }
+                cns_update_group_approvals($id_new, get_member());
             }
 
             $row_start += 200;

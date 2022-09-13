@@ -926,7 +926,7 @@ class Forum_driver_cns extends Forum_driver_base
         if ($_groups == '') {
             return [];
         }
-        $sql = 'SELECT * FROM ' . $this->db->get_table_prefix() . 'f_members m WHERE m_primary_group IN (' . $_groups . ') OR EXISTS(SELECT * FROM ' . $this->db->get_table_prefix() . 'f_group_members WHERE gm_group_id IN (' . $_groups . ') AND gm_member_id=m.id AND gm_validated=1) ORDER BY m_primary_group ASC,id ASC';
+        $sql = 'SELECT * FROM ' . $this->db->get_table_prefix() . 'f_members m WHERE m_primary_group IN (' . $_groups . ') OR EXISTS(SELECT * FROM ' . $this->db->get_table_prefix() . 'f_group_members WHERE gm_group_id IN (' . $_groups . ') AND gm_member_id=m.id) ORDER BY m_primary_group ASC,id ASC';
         $a = $this->db->query($sql, $max, $start, false, true);
         foreach ($a as $x) {
             $out[$x['id']] = $x;
@@ -1621,12 +1621,13 @@ class Forum_driver_cns extends Forum_driver_base
      * @param  MEMBER $member The member ID
      * @param  boolean $skip_secret Whether to skip looking at secret usergroups, unless we have access
      * @param  boolean $handle_probation Whether to take probation into account
+     * @param  boolean $skip_cache Whether to skip the user groups cache
      * @return array The array of forum usergroups
      */
-    protected function _get_members_groups(int $member, bool $skip_secret = false, bool $handle_probation = true) : array
+    protected function _get_members_groups(int $member, bool $skip_secret = false, bool $handle_probation = true, bool $skip_cache = false) : array
     {
         require_code('cns_groups');
-        return array_keys(cns_get_members_groups($member, $skip_secret, $handle_probation));
+        return array_keys(cns_get_members_groups($member, $skip_secret, $handle_probation, true, $skip_cache));
     }
 
     /**

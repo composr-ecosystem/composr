@@ -261,7 +261,7 @@ class Hook_import_smf2
 
             $id_new = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', [$GLOBALS['FORUM_DB']->translate_field_ref('g_name') => $group_name]);
             if ($id_new === null) {
-                $id_new = cns_make_group($group_name, 0, $is_super_admin, $is_super_moderator, '', '', null, null, $leader, null, null, null, $max_attachments_upload, $avatar_max_width, $avatar_max_height, null);
+                $id_new = cns_make_group($group_name, 0, $is_super_admin, $is_super_moderator, '', '', null, null, 0, $leader, null, null, null, $max_attachments_upload, $avatar_max_width, $avatar_max_height, null);
             }
 
             set_privilege($id_new, 'allow_html', true);
@@ -462,8 +462,9 @@ class Hook_import_smf2
 
                 // Set up usergroup membership
                 foreach ($secondary_groups as $s) {
-                    cns_add_member_to_group($id_new, $s, 1);
+                    cns_add_member_to_secondary_group($id_new, $s, 1);
                 }
+                cns_update_group_approvals($id_new, get_member());
             }
 
             $row_start += 200;

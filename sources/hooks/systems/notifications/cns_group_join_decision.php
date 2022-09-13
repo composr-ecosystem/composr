@@ -21,8 +21,20 @@
 /**
  * Hook class.
  */
-class Hook_notification_cns_group_declined extends Hook_Notification
+class Hook_notification_cns_group_join_decision extends Hook_Notification
 {
+    /**
+     * Find the initial setting that members have for a notification code (only applies to the member_could_potentially_enable members).
+     *
+     * @param  ID_TEXT $notification_code Notification code
+     * @param  ?SHORT_TEXT $category The category within the notification code (null: none)
+     * @return integer Initial setting
+     */
+    public function get_initial_setting(string $notification_code, ?string $category = null) : int
+    {
+        return A__ALL & ~A_INSTANT_PT;
+    }
+
     /**
      * Get a list of all the notification codes this hook can handle.
      * (Addons can define hooks that handle whole sets of codes, so hooks are written so they can take wide authority).
@@ -36,7 +48,7 @@ class Hook_notification_cns_group_declined extends Hook_Notification
         }
 
         $list = [];
-        $list['cns_group_declined'] = [do_lang('USERGROUPS'), do_lang('cns:NOTIFICATION_TYPE_cns_group_declined')];
+        $list['cns_group_join_decision'] = [do_lang('USERGROUPS'), do_lang('cns:NOTIFICATION_TYPE_cns_group_join_decision')];
         return $list;
     }
 

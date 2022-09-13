@@ -34,7 +34,7 @@ class Hook_checklist_usergroup_membership
             return [];
         }
 
-        $cnt = $GLOBALS['FORUM_DB']->query_select_value('f_group_members', 'COUNT(*)', ['gm_validated' => 0]);
+        $cnt = $GLOBALS['FORUM_DB']->query_select_value('f_group_approvals', 'COUNT(*)', ['ga_status' => 0]);
 
         if ($cnt > 0) {
             $status = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_0', ['_GUID' => 'o578142633c6f3d37776e82a869deb91']);

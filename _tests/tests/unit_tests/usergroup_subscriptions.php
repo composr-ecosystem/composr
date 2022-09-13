@@ -124,7 +124,7 @@ class usergroup_subscriptions_test_set extends cms_test_case
         handle_ipn_transaction_script(true, false);
 
         // Test was actioned
-        $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_group_members', 'gm_member_id', ['gm_member_id' => $member_id, 'gm_group_id' => 3, 'gm_validated' => 1]);
+        $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_group_members', 'gm_member_id', ['gm_member_id' => $member_id, 'gm_group_id' => 3]);
         $this->assertTrue($test !== null);
 
         // Cancellation of subscription (put through fake IPN response)
@@ -134,7 +134,7 @@ class usergroup_subscriptions_test_set extends cms_test_case
         handle_ipn_transaction_script(true, false);
 
         // Test was actioned
-        $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_group_members', 'gm_member_id', ['gm_member_id' => $member_id, 'gm_group_id' => 3, 'gm_validated' => 1]);
+        $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_group_members', 'gm_member_id', ['gm_member_id' => $member_id, 'gm_group_id' => 3]);
         $this->assertTrue($test === null);
     }
 

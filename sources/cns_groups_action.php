@@ -29,6 +29,7 @@
  * @param  URLPATH $rank_image The rank image for this
  * @param  ?GROUP $promotion_target The that members of this usergroup get promoted to at point threshold (null: no promotion prospects)
  * @param  ?integer $promotion_threshold The point threshold for promotion (null: no promotion prospects)
+ * @param  BINARY $promotion_approval Whether usergroup promotion should require manual approval
  * @param  ?MEMBER $group_leader The leader of this usergroup (null: none)
  * @param  ?integer $flood_control_submit_secs The number of seconds that members of this usergroup must endure between submits (group 'best of' applies). 0 means N/A. (null: average for existing usergroups)
  * @param  ?integer $flood_control_access_secs The number of seconds that members of this usergroup must endure between accesses (group 'best of' applies). 0 means N/A. (null: average for existing usergroups)
@@ -51,7 +52,7 @@
  * @param  boolean $comes_with_permissions Whether permissions should be auto-copied
  * @return AUTO_LINK The ID of the new usergroup
  */
-function cns_make_group(string $name, int $is_default = 0, int $is_super_admin = 0, int $is_super_moderator = 0, string $title = '', string $rank_image = '', ?int $promotion_target = null, ?int $promotion_threshold = null, ?int $group_leader = null, ?int $flood_control_submit_secs = null, ?int $flood_control_access_secs = null, ?int $max_daily_upload_mb = null, ?int $max_attachments_per_post = null, ?int $max_avatar_width = null, ?int $max_avatar_height = null, ?int $max_post_length_comcode = null, ?int $max_sig_length_comcode = null, ?int $gift_points_base = null, ?int $gift_points_per_day = null, int $enquire_on_new_ips = 0, int $is_presented_at_install = 0, int $hidden = 0, ?int $order = null, int $rank_image_pri_only = 1, int $open_membership = 0, int $is_private_club = 0, bool $uniqify = false, bool $comes_with_permissions = true) : int
+function cns_make_group(string $name, int $is_default = 0, int $is_super_admin = 0, int $is_super_moderator = 0, string $title = '', string $rank_image = '', ?int $promotion_target = null, ?int $promotion_threshold = null, int $promotion_approval = 0, ?int $group_leader = null, ?int $flood_control_submit_secs = null, ?int $flood_control_access_secs = null, ?int $max_daily_upload_mb = null, ?int $max_attachments_per_post = null, ?int $max_avatar_width = null, ?int $max_avatar_height = null, ?int $max_post_length_comcode = null, ?int $max_sig_length_comcode = null, ?int $gift_points_base = null, ?int $gift_points_per_day = null, int $enquire_on_new_ips = 0, int $is_presented_at_install = 0, int $hidden = 0, ?int $order = null, int $rank_image_pri_only = 1, int $open_membership = 0, int $is_private_club = 0, bool $uniqify = false, bool $comes_with_permissions = true) : int
 {
     require_code('global4');
     prevent_double_submit('ADD_GROUP', null, $name);
@@ -108,6 +109,7 @@ function cns_make_group(string $name, int $is_default = 0, int $is_super_admin =
         'g_group_leader' => $group_leader,
         'g_promotion_target' => $promotion_target,
         'g_promotion_threshold' => $promotion_threshold,
+        'g_promotion_approval' => $promotion_approval,
         'g_flood_control_submit_secs' => $flood_control_submit_secs,
         'g_flood_control_access_secs' => $flood_control_access_secs,
         'g_max_daily_upload_mb' => $max_daily_upload_mb,
@@ -297,15 +299,16 @@ function cns_make_rank_set(string $rank_set) : array
  * @param  URLPATH $rank_image The rank image for this
  * @param  ?GROUP $promotion_target The that members of this usergroup get promoted to at point threshold (null: no promotion prospects)
  * @param  ?integer $promotion_threshold The point threshold for promotion (null: no promotion prospects)
+ * @param  BINARY $promotion_approval Whether usergroup promotion should require manual approval
  * @return AUTO_LINK The ID of the usergroup
  */
-function cns_make_or_edit_group(?int $group_id, string $name, int $is_default = 0, int $is_super_admin = 0, int $is_super_moderator = 0, string $title = '', string $rank_image = '', ?int $promotion_target = null, ?int $promotion_threshold = null) : int
+function cns_make_or_edit_group(?int $group_id, string $name, int $is_default = 0, int $is_super_admin = 0, int $is_super_moderator = 0, string $title = '', string $rank_image = '', ?int $promotion_target = null, ?int $promotion_threshold = null, int $promotion_approval = 0) : int
 {
     if ($group_id === null) {
-        $group_id = cns_make_group($name, $is_default, $is_super_admin, $is_super_moderator, $title, $rank_image, $promotion_target, $promotion_threshold);
+        $group_id = cns_make_group($name, $is_default, $is_super_admin, $is_super_moderator, $title, $rank_image, $promotion_target, $promotion_threshold, $promotion_approval);
     } else {
         require_code('cns_groups_action2');
-        cns_edit_group($group_id, $name, $is_default, $is_super_admin, $is_super_moderator, $title, $rank_image, $promotion_target, $promotion_threshold, null, null, null, null, null, null, null, null, null, null, null, 0, 0, 0, null, 1, 0, 0);
+        cns_edit_group($group_id, $name, $is_default, $is_super_admin, $is_super_moderator, $title, $rank_image, $promotion_target, $promotion_threshold, $promotion_approval, null, null, null, null, null, null, null, null, null, null, null, 0, 0, 0, null, 1, 0, 0);
     }
 
     return $group_id;

@@ -162,6 +162,7 @@ function do_user_import()
             }
         } else {
             // Edit
+            $old_groups = $GLOBALS['CNS_DRIVER']->get_members_groups($member_id);
             cns_edit_member(
                 $member_id, // member_id
                 $username, // username
@@ -197,20 +198,22 @@ function do_user_import()
                 $is_perm_banned, // is_perm_banned
                 false // check_correctness
             );
+
             require_code('cns_groups_action2');
             if ($groups !== null) {
                 $members_groups = $GLOBALS['CNS_DRIVER']->get_members_groups($member_id);
                 foreach ($groups as $group_id) {
                     if (!in_array($group_id, $members_groups)) {
-                        cns_add_member_to_group($member_id, $group_id);
+                        cns_add_member_to_secondary_group($member_id, $group_id);
                     }
                 }
                 foreach ($members_groups as $group_id) {
                     if (!in_array($group_id, $groups)) {
-                        cns_member_leave_group($group_id, $member_id);
+                        cns_member_leave_secondary_group($group_id, $member_id);
                     }
                 }
             }
+            cns_update_group_approvals($member_id, get_member(), $old_groups);
         }
     }
 

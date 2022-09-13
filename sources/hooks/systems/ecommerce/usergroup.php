@@ -311,8 +311,9 @@ class Hook_ecommerce_usergroup
                             'join_time' => time(),
                         ]);
                     } else {
-                        cns_add_member_to_group($member_id, $new_group);
+                        cns_add_member_to_secondary_group($member_id, $new_group);
                     }
+                    cns_update_group_approvals($member_id, get_member());
 
                     global $GROUP_MEMBERS_CACHE;
                     $GROUP_MEMBERS_CACHE = [];

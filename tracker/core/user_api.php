@@ -134,7 +134,7 @@ function user_cache_array_rows( array $p_user_id_array ) {
 		if (in_array($cms_row['m_primary_group'], $cms_admin_groups)) $access_level = ADMINISTRATOR;
 
 		// Process additional groups
-		$result = db_query("SELECT gm_group_id FROM ".$cms_sc_db_prefix."f_group_members WHERE gm_validated=1 AND gm_member_id=" . db_param(), Array( $t_user_id ) );
+		$result = db_query("SELECT gm_group_id FROM ".$cms_sc_db_prefix."f_group_members WHERE gm_member_id=" . db_param(), Array( $t_user_id ) );
 		$num_groups = db_num_rows( $result );
 		for ($i = 0; $i < $num_groups; $i++) {
 			$group_row = db_fetch_array( $result );

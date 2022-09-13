@@ -62,7 +62,7 @@ class Hook_cron_implicit_usergroup_sync
                 $list = $ob->get_member_list($group_id);
                 if ($list !== null) {
                     foreach ($list as $member_row) {
-                        $GLOBALS['FORUM_DB']->query_insert('f_group_members', ['gm_group_id' => $group_id, 'gm_member_id' => $member_row['id'], 'gm_validated' => 1]);
+                        $GLOBALS['FORUM_DB']->query_insert('f_group_members', ['gm_group_id' => $group_id, 'gm_member_id' => $member_row['id']]);
                     }
                 } else {
                     $start = 0;
@@ -70,7 +70,7 @@ class Hook_cron_implicit_usergroup_sync
                         $members = collapse_1d_complexity('id', $GLOBALS['FORUM_DB']->query_select('f_members', ['id'], [], '', 400, $start));
                         foreach ($members as $member_id) {
                             if ($ob->is_member_within($member_id, $group_id)) {
-                                $GLOBALS['FORUM_DB']->query_insert('f_group_members', ['gm_group_id' => $group_id, 'gm_member_id' => $member_id, 'gm_validated' => 1]);
+                                $GLOBALS['FORUM_DB']->query_insert('f_group_members', ['gm_group_id' => $group_id, 'gm_member_id' => $member_id]);
                             }
                         }
                         $start += 400;

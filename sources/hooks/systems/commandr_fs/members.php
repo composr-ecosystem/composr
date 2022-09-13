@@ -314,7 +314,9 @@ class Hook_commandr_fs_members
             $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list();
             $group_id = array_search($file_name, $groups);
             if ($group_id !== false) {
-                cns_member_leave_group($group_id, $GLOBALS['FORUM_DRIVER']->get_member_from_username($meta_dir[0]));
+                $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($meta_dir[0]);
+                cns_member_leave_secondary_group($group_id, $member_id);
+                cns_update_group_approvals($member_id, get_member(), [$group_id]);
             } else {
                 return false;
             }
@@ -439,11 +441,13 @@ class Hook_commandr_fs_members
             require_code('cns_groups_action2');
             $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list();
             $group_id = array_search($file_name, $groups);
+            $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($meta_dir[0]);
             if ($group_id !== false) {
-                cns_add_member_to_group($GLOBALS['FORUM_DRIVER']->get_member_from_username($meta_dir[0]), $group_id, 1);
+                cns_add_member_to_secondary_group($member_id, $group_id, 1);
             } else {
                 return false;
             }
+            cns_update_group_approvals($member_id, get_member());
         } else {
             return false; // Group files can't be written, and other files shouldn't even exist anywhere else!
         }

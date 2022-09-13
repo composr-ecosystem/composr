@@ -918,7 +918,7 @@ function cns_get_member_fields_profile(bool $mini_mode = true, ?int $member_id =
  * @param  ?string $username The username (null: don't change)
  * @param  ?string $password The password (null: don't change)
  * @param  ?SHORT_TEXT $email_address The e-mail address (null: don't change)
- * @param  ?GROUP $primary_group The member's primary usergroup (null: don't change)
+ * @param  ?GROUP $primary_group The member's primary usergroup (null: don't change) (you must handle updating group approvals manually)
  * @param  ?integer $dob_day Day of date of birth (null: don't change) (-1: unset)
  * @param  ?integer $dob_month Month of date of birth (null: don't change) (-1: unset)
  * @param  ?integer $dob_year Year of date of birth (null: don't change) (-1: unset)

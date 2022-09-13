@@ -348,7 +348,7 @@ function do_work()
     require_code('cns_groups_action');
     require_code('cns_groups');
     for ($i = $GLOBALS['FORUM_DB']->query_select_value('f_groups', 'COUNT(*)'); $i < $num_wanted; $i++) {
-        cns_make_group(random_line(), 0, 0, 0, random_line(), '', null, null, null, 5, 0, 70, 50, 100, 100, 30000, 700, 25, 1, 0, 0, 0, $i, 1, 0, 1);
+        cns_make_group(random_line(), 0, 0, 0, random_line(), '', null, null, 0, null, 5, 0, 70, 50, 100, 100, 30000, 700, 25, 1, 0, 0, 0, $i, 1, 0, 1);
     }
     echo 'done club stuff' . "\n";
 

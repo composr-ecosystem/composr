@@ -167,7 +167,7 @@ END;
     while (($row = mysqli_fetch_assoc($r)) !== null) {
         $results .= "In-staff-group (primary): {$row['id']}=N/A\n";
     }
-    $r = mysqli_query($db, 'SELECT * FROM ' . $prefix . 'f_group_members WHERE (' . str_replace('m_primary_group', 'gm_group_id', $pg) . ') AND gm_validated=1 ORDER BY gm_member_id');
+    $r = mysqli_query($db, 'SELECT * FROM ' . $prefix . 'f_group_members WHERE (' . str_replace('m_primary_group', 'gm_group_id', $pg) . ') ORDER BY gm_member_id');
     while (($row = mysqli_fetch_assoc($r)) !== null) {
         $results .= "In-staff-group (secondary): {$row['gm_member_id']}=N/A\n";
     }

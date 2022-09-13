@@ -281,6 +281,7 @@ function user_sync__inbound($since = null)
                 $password_compatibility_scheme = null;
                 $salt = null;
 
+                $old_groups = $GLOBALS['CNS_DRIVER']->get_members_groups($member_id);
                 cns_edit_member(
                     $member_id, // member_id
                     $username, // username
@@ -329,9 +330,10 @@ function user_sync__inbound($since = null)
                 }
                 foreach ($members_groups as $group_id) {
                     if ((!in_array($group_id, $groups)) && ($group_id != $primary_group)) {
-                        cns_member_leave_group($group_id, $member_id);
+                        cns_member_leave_secondary_group($group_id, $member_id);
                     }
                 }
+                cns_update_group_approvals($member_id, get_member(), $old_groups);
             }
 
             $i++;

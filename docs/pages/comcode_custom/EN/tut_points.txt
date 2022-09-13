@@ -31,7 +31,7 @@ Methods of earning points include:
 
 Most methods of earning points may be altered in the configuration (Admin Zone > Setup > Configuration > Points options), so that the number of points earned from various activities is appropriate for your website.
 
-There is a distinction between the point count for points available for spending, and the point count for the total points ever earned (which contributes to rank and leader-board position). This will usually be made clear, but sometimes circumstance will dictate what is the appropriate meaning.
+There is a distinction between the point count for points available for spending, and life-time points (which contributes to rank and leader-board position). This will usually be made clear, but sometimes circumstance will dictate what is the appropriate meaning.
 
 [title="3"]A note about birthday points[/title]
 
@@ -234,7 +234,7 @@ The points ledger serves to keep track of how points were accumulated from expli
 [concepts
  1_key="Points"                1_value="Points are accumulated by various means, illustrate rank, provide spending power (currency), and provide voting power in weighted polls"
  2_key="Gift points"           2_value="Gift points accumulate over time and exist only as points to send to other members, where they translate to regular (spendable) points. This is only applicable when the option is enabled. Otherwise, members can only send each other regular points."
- 3_key="Rank"                  3_value="Rank is determined by the total of points ever earned, and is a status symbol"
+ 3_key="Rank"                  3_value="Rank is determined by life-time points, and is a status symbol"
  4_key="Leader-board"          4_value="The point leader-board shows top members by points using configurable options and is re-calculated on a specified frequency"
  5_key="Transact"              5_value="To transfer points from one member (or the system) to another member (or the system)"
  6_key="Transaction"           6_value="A single entry in the ledger when points are transacted"

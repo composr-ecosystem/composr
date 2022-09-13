@@ -286,7 +286,7 @@ class Hook_import_phpbb3
                 $id_new = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', [$GLOBALS['FORUM_DB']->translate_field_ref('g_name') => $row['group_name']]);
             }
             if ($id_new === null) {
-                $id_new = cns_make_group($row['group_name'], 0, $is_super_admin, $is_super_moderator, '', '', null, null, $row_group_leader, null, null, null, null, $row['group_avatar_width'], $row['group_avatar_height'], null, $row['group_sig_chars']);
+                $id_new = cns_make_group($row['group_name'], 0, $is_super_admin, $is_super_moderator, '', '', null, null, 0, $row_group_leader, null, null, null, null, $row['group_avatar_width'], $row['group_avatar_height'], null, $row['group_sig_chars']);
             }
 
             $permissions = $db->query_select('acl_groups', ['*'], ['group_id' => $row['group_id']]);
@@ -487,8 +487,9 @@ class Hook_import_phpbb3
                 // Set up usergroup membership
                 foreach ($secondary_groups as $s) {
                     list($group, $userpending) = $s;
-                    cns_add_member_to_group($id_new, $group, 1 - $userpending);
+                    cns_add_member_to_secondary_group($id_new, $group, 1 - $userpending);
                 }
+                cns_update_group_approvals($id_new, get_member());
             }
 
             $row_start += 200;

@@ -433,9 +433,10 @@ class Forum_driver_base
      * @param  MEMBER $id The member
      * @param  boolean $skip_secret Whether to skip looking at secret usergroups, unless we have access
      * @param  boolean $handle_probation Whether to take probation into account
+     * @param  boolean $skip_cache Whether to skip the user groups cache
      * @return array The list of usergroups
      */
-    public function get_members_groups(int $id, bool $skip_secret = false, bool $handle_probation = true) : array
+    public function get_members_groups(int $id, bool $skip_secret = false, bool $handle_probation = true, bool $skip_cache = false) : array
     {
         if ((is_guest($id)) && (get_forum_type() == 'cns')) {
             static $ret = null;
@@ -446,11 +447,13 @@ class Forum_driver_base
         }
 
         global $USERS_GROUPS_CACHE;
-        if (isset($USERS_GROUPS_CACHE[$id][$skip_secret][$handle_probation])) {
-            return $USERS_GROUPS_CACHE[$id][$skip_secret][$handle_probation];
+        if (!$skip_cache) {
+            if (isset($USERS_GROUPS_CACHE[$id][$skip_secret][$handle_probation])) {
+                return $USERS_GROUPS_CACHE[$id][$skip_secret][$handle_probation];
+            }
         }
 
-        $ret = $this->_get_members_groups($id, $skip_secret, $handle_probation);
+        $ret = $this->_get_members_groups($id, $skip_secret, $handle_probation, $skip_cache);
         $USERS_GROUPS_CACHE[$id][$skip_secret][$handle_probation] = array_unique($ret);
         return $ret;
     }

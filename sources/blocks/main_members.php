@@ -227,7 +227,7 @@ PHP;
                         return paragraph(do_lang_tempcode('MISSING_RESOURCE', 'group'), '3e6642ua0bf7q3qcmlt322rpnik8nlhh', 'nothing-here');
                     }
                 }
-                $where .= ' OR (m_primary_group=' . strval($group_id) . ' OR EXISTS(SELECT gm_member_id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_group_members x WHERE x.gm_member_id=r.id AND gm_validated=1 AND gm_group_id=' . strval($group_id) . '))';
+                $where .= ' OR (m_primary_group=' . strval($group_id) . ' OR EXISTS(SELECT gm_member_id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_group_members x WHERE x.gm_member_id=r.id AND gm_group_id=' . strval($group_id) . '))';
             }
             $where .= ')';
         }

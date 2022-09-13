@@ -318,7 +318,7 @@ class Hook_search_cns_members extends FieldsSearchHook
                 if ($group_where_clause != '') {
                     $group_where_clause .= ' OR ';
                 }
-                $group_where_clause .= 'g' . strval($i) . '.gm_validated=1 OR m_primary_group=' . strval($group);
+                $group_where_clause .= 'g' . strval($i) . '.gm_group_id=' . strval($group) . ' OR m_primary_group=' . strval($group);
             }
             $where_clause .= '(' . $group_where_clause . ')';
         }

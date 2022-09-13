@@ -197,7 +197,7 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array
         $_vote_rows = $GLOBALS['FORUM_DB']->query_select('f_poll_votes', ['*'], $vote_rows_where, 'AND pv_answer_id IS NOT NULL ORDER BY ' . $order_by, $max, $start);
         foreach ($_vote_rows as $vote) {
             $voting_power = 1.0;
-            $voting_equation = null;
+            $voting_equation = ['', '', 1.0];
             if ($point_weighting) {
                 $voting_power = cns_points_to_voting_power($vote['pv_cache_points_at_voting_time']);
                 $voting_equation = cns_calculate_poll_voting_power_text($vote['pv_cache_points_at_voting_time']);

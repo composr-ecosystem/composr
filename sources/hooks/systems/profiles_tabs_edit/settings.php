@@ -207,6 +207,8 @@ class Hook_profiles_tabs_edit_settings
                 }
             }
 
+            $old_groups = $GLOBALS['FORUM_DRIVER']->get_members_groups($member_id_of);
+
             cns_edit_member(
                 $member_id_of, // member_id
                 $username, // username
@@ -268,12 +270,12 @@ class Hook_profiles_tabs_edit_settings
                         }
 
                         if ((!in_array($group['id'], $members_groups)) && ((has_privilege($member_id_viewing, 'assume_any_member')) || ($group['g_open_membership'] == 1))) {
-                            cns_add_member_to_group($member_id_of, $group['id']);
+                            cns_add_member_to_secondary_group($member_id_of, $group['id']);
                         }
                     }
                     foreach ($members_groups as $group_id) { // Remove from old secondary groups that member is no longer in
                         if (!in_array(strval($group_id), $_POST['secondary_groups'])) {
-                            cns_member_leave_group($group_id, $member_id_of);
+                            cns_member_leave_secondary_group($group_id, $member_id_of);
                         }
                     }
                     //}
@@ -300,6 +302,8 @@ class Hook_profiles_tabs_edit_settings
 
                 attach_message(do_lang_tempcode('SUCCESS_SAVE'), 'inform');
             }
+
+            cns_update_group_approvals($member_id_of, $member_id_viewing, $old_groups);
         } elseif (post_param_integer('validated', 0) == 1) { // Special support for just approving
             $GLOBALS['FORUM_DB']->query_update('f_members', ['m_validated' => 1], ['id' => $member_id_of], '', 1);
 

@@ -475,7 +475,7 @@ class Hook_import_ipb2
 
             $id_new = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', [$GLOBALS['FORUM_DB']->translate_field_ref('g_name') => $row['g_title']]);
             if ($id_new === null) {
-                $id_new = cns_make_group(@html_entity_decode($row['g_title'], ENT_QUOTES), 0, $row['g_access_cp'], $row['g_is_supmod'], '', '', $promotion_target, $promotion_threshold, null, $row['g_avoid_flood'] ? 0 : $row['g_search_flood'], 0, 5, 5, $max_avatar_width, $max_avatar_height, $max_post_length_comcode, $max_sig_length_comcode);
+                $id_new = cns_make_group(@html_entity_decode($row['g_title'], ENT_QUOTES), 0, $row['g_access_cp'], $row['g_is_supmod'], '', '', $promotion_target, $promotion_threshold, 0, null, $row['g_avoid_flood'] ? 0 : $row['g_search_flood'], 0, 5, 5, $max_avatar_width, $max_avatar_height, $max_post_length_comcode, $max_sig_length_comcode);
             }
 
             // Zone permissions

@@ -315,7 +315,7 @@ function cns_get_group_name(int $group, bool $hide_hidden = true) : string
 }
 
 /**
- * Get a certain property of a certain.
+ * Get a certain property of a certain group.
  *
  * @param  GROUP $group The ID of the group
  * @param  ID_TEXT $property The identifier of the property
@@ -406,9 +406,10 @@ function cns_get_best_group_property(array $groups, string $property)
  * @param  boolean $skip_secret Whether to skip looking at secret usergroups, unless we have access
  * @param  boolean $handle_probation Whether to take probation into account
  * @param  boolean $include_implicit Whether to include implicit groups
+ * @param  boolean $skip_cache Whether to skip the user groups cache
  * @return array Flipped list (e.g. [1=>true,2=>true,3=>true] for someone in (1,2,3)).
  */
-function cns_get_members_groups(?int $member_id = null, bool $skip_secret = false, bool $handle_probation = true, bool $include_implicit = true) : array
+function cns_get_members_groups(?int $member_id = null, bool $skip_secret = false, bool $handle_probation = true, bool $include_implicit = true, bool $skip_cache = false) : array
 {
     if (is_guest($member_id)) {
         $ret = [];
@@ -447,8 +448,10 @@ function cns_get_members_groups(?int $member_id = null, bool $skip_secret = fals
     );
 
     global $GROUP_MEMBERS_CACHE;
-    if (isset($GROUP_MEMBERS_CACHE[$member_id][$skip_secret][$include_implicit])) {
-        return $GROUP_MEMBERS_CACHE[$member_id][$skip_secret][$include_implicit];
+    if (!$skip_cache) {
+        if (isset($GROUP_MEMBERS_CACHE[$member_id][$skip_secret][$include_implicit])) {
+            return $GROUP_MEMBERS_CACHE[$member_id][$skip_secret][$include_implicit];
+        }
     }
 
     $groups = [];
@@ -485,7 +488,7 @@ function cns_get_members_groups(?int $member_id = null, bool $skip_secret = fals
             $groups[$group_id] = true;
         }
 
-        $_groups = $GLOBALS['FORUM_DB']->query_select('f_group_members m LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups g ON g.id=m.gm_group_id', ['gm_group_id', 'g_hidden', 'g_order'], ['gm_member_id' => $member_id, 'gm_validated' => 1], 'ORDER BY g.g_order');
+        $_groups = $GLOBALS['FORUM_DB']->query_select('f_group_members m LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups g ON g.id=m.gm_group_id', ['gm_group_id', 'g_hidden', 'g_order'], ['gm_member_id' => $member_id], 'ORDER BY g.g_order');
         foreach ($_groups as $group) {
             $groups[$group['gm_group_id']] = true;
         }
@@ -513,7 +516,6 @@ function cns_get_members_groups(?int $member_id = null, bool $skip_secret = fals
             $GLOBALS['FORUM_DB']->query_insert('f_group_members', [
                 'gm_group_id' => $group_id,
                 'gm_member_id' => $member_id,
-                'gm_validated' => 1,
             ]);
         }
     }

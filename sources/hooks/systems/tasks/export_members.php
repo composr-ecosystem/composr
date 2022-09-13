@@ -100,9 +100,9 @@ class Hook_task_export_members
 
         // Read member groups
         $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, false, true);
-        $member_groups_count = $GLOBALS['FORUM_DB']->query_select_value('f_group_members', 'COUNT(*)', ['gm_validated' => 1], ' AND ' . $group_filter);
+        $member_groups_count = $GLOBALS['FORUM_DB']->query_select_value('f_group_members', 'COUNT(*)', [], ' AND ' . $group_filter);
         if ($member_groups_count < 500) {
-            $member_groups = $GLOBALS['FORUM_DB']->query_select('f_group_members', ['gm_member_id', 'gm_group_id'], ['gm_validated' => 1], ' AND ' . $group_filter);
+            $member_groups = $GLOBALS['FORUM_DB']->query_select('f_group_members', ['gm_member_id', 'gm_group_id'], [], ' AND ' . $group_filter);
         } else {
             $member_groups = [];
         }
@@ -134,7 +134,7 @@ class Hook_task_export_members
                     }
                     $or_list .= 'mf_member_id=' . strval($m['id']);
                 }
-                $member_groups = $GLOBALS['FORUM_DB']->query('SELECT gm_member_id,gm_group_id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_group_members WHERE (' . $or_list . ') AND gm_validated=1');
+                $member_groups = $GLOBALS['FORUM_DB']->query('SELECT gm_member_id,gm_group_id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_group_members WHERE (' . $or_list . ')');
             }
 
             foreach ($members as $i => $m) {

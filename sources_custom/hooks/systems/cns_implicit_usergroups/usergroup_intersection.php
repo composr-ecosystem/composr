@@ -41,7 +41,7 @@ class Hook_implicit_usergroups_usergroup_intersection
             if ($sql != '') {
                 $sql .= ' AND ';
             }
-            $sql .= '(m_primary_group=' . strval($group_id) . ' OR EXISTS(SELECT * FROM ' . $db->get_table_prefix() . 'f_group_members WHERE gm_member_id=m.id AND gm_group_id=' . strval($group_id) . ' AND gm_validated=1))';
+            $sql .= '(m_primary_group=' . strval($group_id) . ' OR EXISTS(SELECT * FROM ' . $db->get_table_prefix() . 'f_group_members WHERE gm_member_id=m.id AND gm_group_id=' . strval($group_id) . '))';
         }
         return $sql;
     }
