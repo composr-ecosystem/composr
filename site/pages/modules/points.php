@@ -141,7 +141,7 @@ class Module_points
                 'date_and_time' => 'TIME',
                 'log_type' => 'ID_TEXT', // Will be a language string from points.ini, one of LOG_ESCROW_*
                 'member_id' => '?MEMBER',
-                'information' => '?LONG_TRANS__COMCODE',
+                'information' => 'LONG_TRANS__COMCODE',
             ]);
             $GLOBALS['SITE_DB']->create_index('escrow_logs', 'escrow_id', ['escrow_id']);
             $GLOBALS['SITE_DB']->create_index('escrow_logs', 'date_and_time', ['date_and_time']);

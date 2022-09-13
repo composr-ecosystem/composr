@@ -151,15 +151,13 @@ function escrow_get_logs(int $id) : object
 
         $date = get_timezoned_date_time($myrow['date_and_time'], false);
 
-        if ($myrow['information'] !== null) {
-            $reason = get_translated_tempcode('escrow_logs', $myrow, 'information');
-        }
+        $reason = get_translated_tempcode('escrow_logs', $myrow, 'information');
 
         $results_entry = [
             $date,
             do_lang_tempcode($myrow['log_type']),
             ($myrow['member_id'] !== null) ? $name : '',
-            ($myrow['information'] !== null) ? generate_truncation($reason, 'left', 200, true, true) : ''
+            generate_truncation($reason, 'left', 200, true, true)
         ];
 
         $out->attach(results_entry($results_entry, true));
