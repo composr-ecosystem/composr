@@ -110,7 +110,7 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                     'member_id_fields' => ['ga_member_id', 'ga_status_member_id'],
                     'ip_address_fields' => [],
                     'email_fields' => [],
-                    'additional_anonymise_fields' => ['ga_status_member_username'],
+                    'additional_anonymise_fields' => ['ga_member_username'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
                     'allowed_handle_methods' => PRIVACY_METHOD__DELETE,

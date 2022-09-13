@@ -1102,13 +1102,13 @@ function install_cns(?float $upgrade_from = null)
         $GLOBALS['FORUM_DB']->create_table('f_group_approvals', [
             'id' => '*AUTO',
             'ga_date_and_time' => 'TIME',
-            'ga_member_id' => '*MEMBER',
+            'ga_member_id' => 'MEMBER',
+            'ga_member_username' => 'SHORT_TEXT',
             'ga_old_group_id' => '?GROUP', // null: join request, not null: rank (promotion)
             'ga_new_group_id' => 'GROUP',
             'ga_status' => 'SHORT_INTEGER', // -1 = declined, 0 = pending, 1 = approved
             'ga_status_member_id' => '?MEMBER', // Member who accepted / declined the request
-            'ga_status_member_username' => 'SHORT_TEXT',
-            'ga_reason' => '?SHORT_TRANS__COMCODE',
+            'ga_reason' => 'SHORT_TRANS__COMCODE',
         ]);
         $GLOBALS['FORUM_DB']->create_index('f_group_approvals', 'ga_date_and_time', ['ga_date_and_time']);
         $GLOBALS['FORUM_DB']->create_index('f_group_approvals', 'ga_member_id', ['ga_member_id']);

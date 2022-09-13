@@ -569,30 +569,34 @@ class Module_groups
         // Came from a notification for approving a promotion
         $approval_id = get_param_integer('approval_id', null);
         if ($approval_id !== null) {
-            $rows = $GLOBALS['FORUM_DB']->query_select('f_group_approvals', ['ga_status', 'ga_status_member_id', 'ga_reason'], ['id' => $approval_id]);
+            $rows = $GLOBALS['FORUM_DB']->query_select('f_group_approvals', ['*'], ['id' => $approval_id]);
             if (count($rows) == 0) {
-                attach_message(do_lang_tempcode('GROUP_PROMOTION_INVALID'), 'warn');
-            } elseif ($rows[0]['ga_status'] == -1) {
-                $reason = get_translated_text($rows[0]['ga_reason']);
-                $username = $GLOBALS['FORUM_DRIVER']->get_username($rows[0]['ga_status_member_id'], true, USERNAME_DEFAULT_NULL);
-                if ($username === null) {
-                    $username = $rows[0]['ga_status_member_username'];
+                attach_message(do_lang_tempcode('GROUP_REQUEST_INVALID'), 'warn');
+            } else {
+                if ($rows[0]['ga_old_group_id'] === null) {
+                    $type = do_lang_tempcode('GROUP_REQUEST_JOIN_L');
+                } else {
+                    $type = do_lang_tempcode('GROUP_REQUEST_PROMOTION_L');
                 }
-                attach_message(do_lang_tempcode('GROUP_PROMOTION_ALREADY_DECLINED', escape_html($username), escape_html($reason)), 'warn');
-            } elseif ($rows[0]['ga_status'] == 1) {
                 $reason = get_translated_text($rows[0]['ga_reason']);
-                $username = $GLOBALS['FORUM_DRIVER']->get_username($rows[0]['ga_status_member_id'], true, USERNAME_DEFAULT_NULL);
-                if ($username === null) {
-                    $username = $rows[0]['ga_status_member_username'];
+                $username = ($rows[0]['ga_status_member_id'] !== null) ? $GLOBALS['FORUM_DRIVER']->get_username($rows[0]['ga_status_member_id'], false, USERNAME_DEFAULT_DELETED) : do_lang('UNKNOWN');
+                $m_username = $GLOBALS['FORUM_DRIVER']->get_username($rows[0]['ga_member_id'], false, USERNAME_DEFAULT_NULL);
+                if ($m_username === null) {
+                    $m_username = $rows[0]['ga_member_username'];
                 }
-                attach_message(do_lang_tempcode('GROUP_PROMOTION_ALREADY_ACCEPTED', escape_html($username), escape_html($reason)), 'warn');
+
+                if ($rows[0]['ga_status'] == -1) {
+                    attach_message(do_lang_tempcode('GROUP_REQUEST_ALREADY_DECLINED', escape_html($username), $type, [escape_html($m_username), escape_html($reason)]), 'warn');
+                } elseif ($rows[0]['ga_status'] == 1) {
+                    attach_message(do_lang_tempcode('GROUP_REQUEST_ALREADY_ACCEPTED', escape_html($username), $type, [escape_html($m_username), escape_html($reason)]), 'warn');
+                }
             }
         }
 
         // Check for pending approval into this usergroup
-        $pending = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_group_approvals', 'id', ['ga_new_group_id' => $id, 'ga_member_id' => get_member()]);
+        $pending = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_group_approvals', 'id', ['ga_new_group_id' => $id, 'ga_member_id' => get_member(), 'ga_status' => 0]);
         if ($pending !== null) {
-            attach_message(do_lang_tempcode('GROUP_PROMOTION_PENDING'), 'inform');
+            attach_message(do_lang_tempcode('GROUP_REQUEST_PENDING'), 'inform');
         }
 
         // Leadership
@@ -736,6 +740,7 @@ class Module_groups
             $max = get_param_integer('pp_max', 50);
             $max_rows = $GLOBALS['FORUM_DB']->query_select_value('f_group_approvals', 'COUNT(*)', ['ga_new_group_id' => $id, 'ga_status' => 0]);
             $rows = $GLOBALS['FORUM_DB']->query_select('f_group_approvals', ['*'], ['ga_new_group_id' => $id, 'ga_status' => 0], '', $max, $start);
+            $can_be_promoted_to = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', ['g_promotion_target' => $id]);
             if (!empty($rows)) {
                 foreach ($rows as $row) {
                     if ($this->filter_out($GLOBALS['FORUM_DRIVER']->get_member_row($row['ga_member_id']))) {
@@ -772,9 +777,20 @@ class Module_groups
                         'GET' => true,
                     ]));
 
-                    $_prospective_members->attach(results_entry([$profile_url, $promotion_url, $actions], false));
+                    $map = [$profile_url];
+                    if ($can_be_promoted_to) {
+                        $map[] = $promotion_url;
+                    }
+                    $map[] = $actions;
+                    $_prospective_members->attach(results_entry($map, false));
                 }
-                $header_row = results_header_row([do_lang_tempcode('PROSPECTIVE_MEMBERS'), do_lang_tempcode('PROMOTION_FROM'), do_lang_tempcode('ACTIONS')], $sortables, 'pp_sort', $sortable . ' ' . $sort_order);
+
+                $header_map = [do_lang_tempcode('PROSPECTIVE_MEMBERS')];
+                if ($can_be_promoted_to) {
+                    $header_map[] = do_lang_tempcode('PROMOTION_FROM');
+                }
+                $header_map[] = do_lang_tempcode('ACTIONS');
+                $header_row = results_header_row($header_map, $sortables, 'pp_sort', $sortable . ' ' . $sort_order);
                 $prospective_members = results_table(do_lang_tempcode('PROSPECTIVE_MEMBERS'), $start, 'pp_start', $max, 'pp_max', $max_rows, $header_row, $_prospective_members, $sortables, $sortable, $sort_order, 'pp_sort', null, [], null, 6);
             }
         }

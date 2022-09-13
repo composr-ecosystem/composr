@@ -262,8 +262,7 @@ function cns_delete_group(int $group_id, ?int $target_group = null)
 
     // Clean up approval records
     $GLOBALS['FORUM_DB']->query_delete('f_group_approvals', ['ga_new_group_id' => $group_id]);
-
-    $map = ['ga_status' => -1, 'ga_status_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(), 'ga_status_member_username' => do_lang('SYSTEM')];
+    $map = ['ga_status' => -1, 'ga_status_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id()];
     $map += insert_lang_comcode('ga_reason', do_lang('ORIGINAL_USERGROUP_DELETED'), 4, $GLOBALS['FORUM_DB']);
     $GLOBALS['FORUM_DB']->query_update('f_group_approvals', $map, ['ga_old_group_id' => $group_id, 'ga_status' => 0]);
 
@@ -309,6 +308,8 @@ function cns_member_ask_join_group(int $group_id, ?int $member_id = null)
         return;
     }
 
+    $their_username = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_username');
+
     $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_group_members', 'gm_member_id', ['gm_member_id' => $member_id, 'gm_group_id' => $group_id]);
     if ($test !== null) {
         warn_exit(do_lang_tempcode('ALREADY_IN_GROUP'));
@@ -330,19 +331,20 @@ function cns_member_ask_join_group(int $group_id, ?int $member_id = null)
             'join_time' => time(),
         ]);
     } else {
-        $GLOBALS['FORUM_DB']->query_insert('f_group_approvals', [
+        $map = [
             'ga_date_and_time' => time(),
             'ga_member_id' => $member_id,
+            'ga_member_username' => $their_username,
             'ga_old_group_id' => null,
             'ga_new_group_id' => $group_id,
             'ga_status' => 0,
-            'ga_status_member_username' => '',
-        ]);
+        ];
+        $map += insert_lang_comcode('ga_reason', '', 4, $GLOBALS['FORUM_DB']);
+        $id = $GLOBALS['FORUM_DB']->query_insert('f_group_approvals', $map, true);
 
         $group_name = get_translated_text($group_info[0]['g_name'], $GLOBALS['FORUM_DB']);
-        $_url = build_url(['page' => 'groups', 'type' => 'view', 'id' => $group_id], get_module_zone('groups'), [], false, false, true);
+        $_url = build_url(['page' => 'groups', 'type' => 'view', 'id' => $group_id, 'approval_id' => $id], get_module_zone('groups'), [], false, false, true);
         $url = $_url->evaluate();
-        $their_username = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_username');
 
         $leader_id = $group_info[0]['g_group_leader'];
         if ($leader_id !== null) {
@@ -409,6 +411,8 @@ function cns_add_member_to_secondary_group(int $member_id, int $id, int $validat
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'group'));
     }
 
+    $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
+
     $GLOBALS['FORUM_DB']->query_delete('f_group_members', [
         'gm_group_id' => $id,
         'gm_member_id' => $member_id,
@@ -420,14 +424,16 @@ function cns_add_member_to_secondary_group(int $member_id, int $id, int $validat
             'gm_member_id' => $member_id,
         ], false, true);
     } else {
-        $GLOBALS['FORUM_DB']->query_insert('f_group_approvals', [
+        $map = [
             'ga_date_and_time' => time(),
             'ga_member_id' => $member_id,
+            'ga_member_username' => $username,
             'ga_old_group_id' => null,
             'ga_new_group_id' => $id,
             'ga_status' => 0,
-            'ga_status_member_username' => '',
-        ]);
+        ];
+        $map += insert_lang_comcode('ga_reason', '', 4, $GLOBALS['FORUM_DB']);
+        $GLOBALS['FORUM_DB']->query_insert('f_group_approvals', $map);
     }
 
     log_it('MEMBER_ADDED_TO_GROUP', strval($member_id), strval($id));
@@ -435,7 +441,6 @@ function cns_add_member_to_secondary_group(int $member_id, int $id, int $validat
     if (cns_get_group_property($id, 'hidden') == 0) {
         require_lang('cns');
         require_code('notifications');
-        $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
         $displayname = $GLOBALS['FORUM_DRIVER']->get_username($member_id, true);
         $group_name = cns_get_group_name($id);
         $subject = do_lang('MJG_NOTIFICATION_MAIL_SUBJECT', get_site_name(), $username, $group_name);
@@ -530,9 +535,9 @@ function cns_member_validate_into_group(int $group_id, int $prospective_member_i
         cns_update_group_approvals($prospective_member_id, get_member(), $removed_usergroups);
     } else {
         // Decline the approval
-        $map = ['ga_status' => -1, 'ga_status_member_id' => get_member(), 'ga_status_member_username' => $GLOBALS['FORUM_DRIVER']->get_username(get_member(), false, USERNAME_DEFAULT_DELETED)];
+        $map = ['ga_status' => -1, 'ga_status_member_id' => get_member()];
         $map += insert_lang_comcode('ga_reason', $reason, 4, $GLOBALS['FORUM_DB']);
-        $GLOBALS['FORUM_DB']->query_update('f_group_approvals', $map, ['ga_member_id' => $prospective_member_id, 'ga_old_group_id' => $group_id, 'ga_status' => 0]);
+        $GLOBALS['FORUM_DB']->query_update('f_group_approvals', $map, ['ga_member_id' => $prospective_member_id, 'ga_new_group_id' => $group_id, 'ga_status' => 0]);
 
         if ($reason != '') {
             $mail = do_notification_lang('GROUP_DECLINED_MAIL_REASON', comcode_escape(get_site_name()), comcode_escape($name), comcode_escape($reason), get_lang($prospective_member_id));
@@ -563,8 +568,8 @@ function cns_update_group_approvals(int $member_id, ?int $status_member_id = nul
 
     // Mark all approval records approved for current usergroups the member is in
     foreach ($all_current_groups as $group) {
-        $map = ['ga_status' => 1, 'ga_status_member_id' => $status_member_id, 'ga_status_member_username' => $GLOBALS['FORUM_DRIVER']->get_username($status_member_id, false, USERNAME_DEFAULT_DELETED)];
-        $map += insert_lang_comcode('ga_reason', do_lang('MEMBER_ADDED_TO_GROUP'), 4, $GLOBALS['FORUM_DB']);
+        $map = ['ga_status' => 1, 'ga_status_member_id' => $status_member_id];
+        $map += insert_lang_comcode('ga_reason', do_lang('UNCONVENTIONAL_MEMBER_ADDED_TO_GROUP'), 4, $GLOBALS['FORUM_DB']);
         $GLOBALS['FORUM_DB']->query_update('f_group_approvals', $map, ['ga_member_id' => $member_id, 'ga_new_group_id' => $group, 'ga_status' => 0]);
     }
 
@@ -573,7 +578,7 @@ function cns_update_group_approvals(int $member_id, ?int $status_member_id = nul
         if (in_array($group, $all_current_groups)) { // Member is still in the usergroup, so skip it
             continue;
         }
-        $map = ['ga_status' => -1, 'ga_status_member_id' => $status_member_id, 'ga_status_member_username' => $GLOBALS['FORUM_DRIVER']->get_username($status_member_id, false, USERNAME_DEFAULT_DELETED)];
+        $map = ['ga_status' => -1, 'ga_status_member_id' => $status_member_id];
         $map += insert_lang_comcode('ga_reason', do_lang('ORIGINAL_USERGROUP_RESIGNED'), 4, $GLOBALS['FORUM_DB']);
         $GLOBALS['FORUM_DB']->query_update('f_group_approvals', $map, ['ga_member_id' => $member_id, 'ga_old_group_id' => $group, 'ga_status' => 0]);
     }
