@@ -740,7 +740,7 @@ class Module_groups
             $max = get_param_integer('pp_max', 50);
             $max_rows = $GLOBALS['FORUM_DB']->query_select_value('f_group_approvals', 'COUNT(*)', ['ga_new_group_id' => $id, 'ga_status' => 0]);
             $rows = $GLOBALS['FORUM_DB']->query_select('f_group_approvals', ['*'], ['ga_new_group_id' => $id, 'ga_status' => 0], '', $max, $start);
-            $can_be_promoted_to = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', ['g_promotion_target' => $id]);
+            $can_be_promoted_to = ($GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', ['g_promotion_target' => $id]) !== null);
             if (!empty($rows)) {
                 foreach ($rows as $row) {
                     if ($this->filter_out($GLOBALS['FORUM_DRIVER']->get_member_row($row['ga_member_id']))) {
