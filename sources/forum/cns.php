@@ -965,12 +965,14 @@ class Forum_driver_cns extends Forum_driver_base
      */
     public function get_previous_members(int $member, int $total = 1) : array
     {
+        $sql = 'SELECT * FROM ' . $this->db->get_table_prefix() . 'f_members WHERE AND id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
         $join_time = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member, 'm_join_time');
-        $sql = 'SELECT * FROM ' . $this->db->get_table_prefix() . 'f_members WHERE m_join_time<=' . strval($join_time) . ' AND id<>' . strval($member) . ' AND id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' AND ' . db_string_equal_to('m_validated_email_confirm_code', '');
+        $sql .= ' AND (m_join_time<' . strval($join_time) . ' OR m_join_time=' . strval($join_time) . ' AND id<' . strval($member) . ')';
+        $sql .= ' AND ' . db_string_equal_to('m_validated_email_confirm_code', '');
         if (addon_installed('unvalidated')) {
             $sql .= ' AND m_validated=1';
         }
-        $sql .= ' ORDER BY id DESC';
+        $sql .= ' ORDER BY m_join_time DESC,id DESC';
         $rows = $this->db->query($sql, $total);
         return $rows;
     }
@@ -979,18 +981,22 @@ class Forum_driver_cns extends Forum_driver_base
      * Get rows of members after the given one.
      * It cannot be assumed there are no gaps in member IDs, as members may be deleted.
      *
-     * @param  MEMBER $member The member ID to increment
+     * @param  ?MEMBER $member The member ID to increment (null: find the very first members)
      * @param  integer $total Number of members to retrieve
      * @return array Member rows
      */
-    public function get_next_members(int $member, int $total = 1) : array
+    public function get_next_members(?int $member, int $total = 1) : array
     {
-        $join_time = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member, 'm_join_time');
-        $sql = 'SELECT * FROM ' . $this->db->get_table_prefix() . 'f_members WHERE m_join_time>=' . strval($join_time) . ' AND id<>' . strval($member) . ' AND id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' AND ' . db_string_equal_to('m_validated_email_confirm_code', '');
+        $sql = 'SELECT * FROM ' . $this->db->get_table_prefix() . 'f_members WHERE id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
+        if ($member !== null) {
+            $join_time = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member, 'm_join_time');
+            $sql .= ' AND (m_join_time>' . strval($join_time) . ' OR m_join_time=' . strval($join_time) . ' AND id>' . strval($member) . ')';
+        }
+        $sql .= ' AND ' . db_string_equal_to('m_validated_email_confirm_code', '');
         if (addon_installed('unvalidated')) {
             $sql .= ' AND m_validated=1';
         }
-        $sql .= ' ORDER BY id';
+        $sql .= ' ORDER BY m_join_time ASC,id ASC';
         $rows = $this->db->query($sql, $total);
         return $rows;
     }

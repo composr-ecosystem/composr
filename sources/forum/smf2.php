@@ -710,7 +710,10 @@ class Forum_driver_smf2 extends Forum_driver_base
      */
     public function get_previous_members(int $member, int $total = 1) : array
     {
-        $rows = $this->db->query('SELECT id_member FROM ' . $this->db->get_table_prefix() . 'members WHERE id_member<' . strval($member) . ' ORDER BY id_member DESC', $total);
+        $sql = 'SELECT id_member FROM ' . $this->db->get_table_prefix() . 'members WHERE id_member<>0';
+        $sql .= ' AND id_member<' . strval($member);
+        $sql .= ' ORDER BY id_member DESC';
+        $rows = $this->db->query($sql, $total);
         return $rows;
     }
 
@@ -718,13 +721,18 @@ class Forum_driver_smf2 extends Forum_driver_base
      * Get rows of members after the given one.
      * It cannot be assumed there are no gaps in member IDs, as members may be deleted.
      *
-     * @param  MEMBER $member The member ID to increment
+     * @param  ?MEMBER $member The member ID to increment (null: find the very first members)
      * @param  integer $total Number of members to retrieve
      * @return array Member rows
      */
-    public function get_next_members(int $member, int $total = 1) : array
+    public function get_next_members(?int $member, int $total = 1) : array
     {
-        $rows = $this->db->query('SELECT id_member FROM ' . $this->db->get_table_prefix() . 'members WHERE id_member>' . strval($member) . ' ORDER BY id_member', $total);
+        $sql = 'SELECT id_member FROM ' . $this->db->get_table_prefix() . 'members WHERE id_member<>0';
+        if ($member !== null) {
+            $sql .= ' AND id_member>' . strval($member);
+        }
+        $sql .= ' ORDER BY id_member DESC';
+        $rows = $this->db->query($sql, $total);
         return $rows;
     }
 

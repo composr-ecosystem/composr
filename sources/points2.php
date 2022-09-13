@@ -82,9 +82,10 @@ function _add_to_points_ledger(int $sender_id, int $recipient_id, string $reason
  * @param  ?boolean $send_notifications Whether to send a notification to the member receiving the points (null: false, and staff should not receive a notifcation either)
  * @param  BINARY $locked Whether this transaction is irreversible (Ignored / always 1 when $amount_gift_points is > 0)
  * @param  ?array $code_explanation A Tuple explaining this ledger from a coding / API standpoint (it should follow the standard ['action', 'type', 'ID']) (null: there is no code explanation)
+ * @param  ?TIME $time The time this transaction occurred (null: now)
  * @return ?AUTO_LINK The ID of the point transaction (null: no transaction took place)
  */
-function points_credit_member(int $member_id, string $reason, int $total_points, int $amount_gift_points = 0, int $anonymous = 0, ?bool $send_notifications = true, int $locked = 0, ?array $code_explanation = null) : ?int
+function points_credit_member(int $member_id, string $reason, int $total_points, int $amount_gift_points = 0, int $anonymous = 0, ?bool $send_notifications = true, int $locked = 0, ?array $code_explanation = null, ?int $time = null) : ?int
 {
     if (is_guest($member_id)) {
         return null;
@@ -94,9 +95,9 @@ function points_credit_member(int $member_id, string $reason, int $total_points,
     }
 
     if ($amount_gift_points > 0) { // Should be processed as a refund instead
-        $id = points_refund($GLOBALS['FORUM_DRIVER']->get_guest_id(), $member_id, $reason, $total_points, $amount_gift_points, $anonymous, null, $send_notifications, $code_explanation);
+        $id = points_refund($GLOBALS['FORUM_DRIVER']->get_guest_id(), $member_id, $reason, $total_points, $amount_gift_points, $anonymous, null, $send_notifications, $code_explanation, $time);
     } else {
-        $id = points_transact($GLOBALS['FORUM_DRIVER']->get_guest_id(), $member_id, $reason, $total_points, 0, $anonymous, $send_notifications, $locked, $code_explanation);
+        $id = points_transact($GLOBALS['FORUM_DRIVER']->get_guest_id(), $member_id, $reason, $total_points, 0, $anonymous, $send_notifications, $locked, $code_explanation, $time);
     }
 
     return $id;
@@ -113,9 +114,10 @@ function points_credit_member(int $member_id, string $reason, int $total_points,
  * @param  ?boolean $send_notifications Whether to send notifications for this transaction (null: false, and staff should not receive a notifcation either)
  * @param  BINARY $locked Whether this transaction is irreversible
  * @param  ?array $code_explanation A Tuple explaining this ledger from a coding / API standpoint (it should follow the standard ['action', 'type', 'ID']) (null: there is no code explanation)
+ * @param  ?TIME $time The time this transaction occurred (null: now)
  * @return ?AUTO_LINK The ID of the point transaction (null: no transaction took place)
  */
-function points_debit_member(int $member_id, string $reason, int $total_points, ?int $amount_gift_points = 0, int $anonymous = 0, ?bool $send_notifications = true, int $locked = 0, ?array $code_explanation = null) : ?int
+function points_debit_member(int $member_id, string $reason, int $total_points, ?int $amount_gift_points = 0, int $anonymous = 0, ?bool $send_notifications = true, int $locked = 0, ?array $code_explanation = null, ?int $time = null) : ?int
 {
     if (is_guest($member_id)) {
         return null;
@@ -124,7 +126,7 @@ function points_debit_member(int $member_id, string $reason, int $total_points, 
         return null;
     }
 
-    $id = points_transact($member_id, $GLOBALS['FORUM_DRIVER']->get_guest_id(), $reason, $total_points, $amount_gift_points, $anonymous, $send_notifications, $locked, $code_explanation);
+    $id = points_transact($member_id, $GLOBALS['FORUM_DRIVER']->get_guest_id(), $reason, $total_points, $amount_gift_points, $anonymous, $send_notifications, $locked, $code_explanation, $time);
 
     return $id;
 }
@@ -141,9 +143,10 @@ function points_debit_member(int $member_id, string $reason, int $total_points, 
  * @param  ?boolean $send_notifications Whether notifications should be dispatched for this transaction to the relevant members (null: false, and staff should not receive a notifcation either)
  * @param  BINARY $locked Whether this transaction is irreversible
  * @param  ?array $code_explanation A Tuple explaining this ledger from a coding / API standpoint (it should follow the standard ['action', 'type', 'ID']) (null: there is no code explanation)
+ * @param  ?TIME $time The time this transaction occurred (null: now)
  * @return ?AUTO_LINK The ID of the transaction (null: a transaction was not created)
  */
-function points_transact(int $sender_id, int $recipient_id, string $reason, int $total_points, ?int $amount_gift_points = null, int $anonymous = 0, ?bool $send_notifications = true, int $locked = 0, ?array $code_explanation = null) : ?int
+function points_transact(int $sender_id, int $recipient_id, string $reason, int $total_points, ?int $amount_gift_points = null, int $anonymous = 0, ?bool $send_notifications = true, int $locked = 0, ?array $code_explanation = null, ?int $time = null) : ?int
 {
     // Do nothing if we are transacting 0 points
     if ($total_points == 0) {
@@ -163,7 +166,7 @@ function points_transact(int $sender_id, int $recipient_id, string $reason, int 
     list($actual_points, $actual_gift_points) = $points_to_process;
 
     // Log the transaction
-    $id = _add_to_points_ledger($sender_id, $recipient_id, $reason, $actual_points, $actual_gift_points, $anonymous, 'normal', $locked, null, null, $code_explanation);
+    $id = _add_to_points_ledger($sender_id, $recipient_id, $reason, $actual_points, $actual_gift_points, $anonymous, 'normal', $locked, null, $time, $code_explanation);
 
     // Process the points
     points_adjust_cpf($sender_id, 'gift_points_sent', $actual_gift_points);
@@ -247,9 +250,10 @@ function _points_transact_calculate(int $sender_id, int $total_points, ?int $amo
  * @param  ?AUTO_LINK $linked_to The ID of the points ledger transaction being refunded by this (null: this refund is not related to any past ledger)
  * @param  ?boolean $send_notifications Whether notifications should be dispatched for this refund to the relevant members (null: false, and staff should not receive a notifcation either)
  * @param  ?array $code_explanation A Tuple explaining this ledger from a coding / API standpoint (it should follow the standard ['action', 'type', 'ID']) (null: there is no code explanation)
+ * @param  ?TIME $time The time this transaction occurred (null: now)
  * @return ?AUTO_LINK The ID of the transaction (null: a transaction was not created)
  */
-function points_refund(int $sender_id, int $recipient_id, string $reason, int $total_points, int $amount_gift_points = 0, int $anonymous = 0, ?int $linked_to = null, ?bool $send_notifications = true, ?array $code_explanation = null) : ?int
+function points_refund(int $sender_id, int $recipient_id, string $reason, int $total_points, int $amount_gift_points = 0, int $anonymous = 0, ?int $linked_to = null, ?bool $send_notifications = true, ?array $code_explanation = null, ?int $time = null) : ?int
 {
     // Do nothing if we are transacting 0 points
     if ($total_points == 0) {
@@ -266,7 +270,7 @@ function points_refund(int $sender_id, int $recipient_id, string $reason, int $t
     list($actual_points, $actual_gift_points) = $points_to_process;
 
     // Log the transaction
-    $id = _add_to_points_ledger($sender_id, $recipient_id, $reason, $actual_points, $actual_gift_points, $anonymous, ($linked_to !== null) ? 'reversing' : 'normal', 1, $linked_to, null, $code_explanation);
+    $id = _add_to_points_ledger($sender_id, $recipient_id, $reason, $actual_points, $actual_gift_points, $anonymous, ($linked_to !== null) ? 'reversing' : 'normal', 1, $linked_to, $time, $code_explanation);
 
     // Link the other ledger if applicable
     if ($linked_to !== null) {

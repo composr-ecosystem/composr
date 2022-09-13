@@ -29,7 +29,6 @@ class leader_board_test_set extends cms_test_case
             return;
         }
 
-        $this->test_id = db_get_first_id();
         $this->leaderboards = [];
 
         require_code('leader_board');
@@ -363,7 +362,7 @@ class leader_board_test_set extends cms_test_case
             $this->assertTrue(false, 'include_staff: The leader-board did not generate a new result set when it should have in testLeaderBoardIncludeStaff() test 1.');
         } else {
             $results = get_leader_board($this->leaderboards['include_staff'], $process);
-            $this->assertTrue((!empty($results)), 'include_staff: The leader-board returned an empty result set when we expected at least one member in testLeaderBoardIncludeStaff() test 1.');
+            $this->assertTrue(!empty($results), 'include_staff: The leader-board returned an empty result set when we expected at least one member in testLeaderBoardIncludeStaff() test 1.');
         }
 
         // Test 2: test for no staff
@@ -388,7 +387,7 @@ class leader_board_test_set extends cms_test_case
         }
 
         // Test using the primary usergroup of the first member; we know there will always be at least one member in the leader-board by doing so
-        $current_id = $this->test_id;
+        $current_id = null;
         $groups = [];
         do {
             $members = $GLOBALS['FORUM_DRIVER']->get_next_members($current_id, 1);
@@ -480,10 +479,10 @@ class leader_board_test_set extends cms_test_case
         $forced_period_start = strtotime("-1 week");
 
         // Determine our test member
-        $members = $GLOBALS['FORUM_DRIVER']->get_next_members(db_get_first_id(), 1);
+        $members = $GLOBALS['FORUM_DRIVER']->get_next_members(null, 1);
         $member = $GLOBALS['FORUM_DRIVER']->mrow_id($members[0]);
 
-        // Determine our current points for the test_id member
+        // Determine our current points for the member
         init__points();
         $current_points = total_points($member, null, false);
         $past_points = total_points($member, $forced_period_start, false);
@@ -491,7 +490,7 @@ class leader_board_test_set extends cms_test_case
 
         // Process a dummy point transaction; amount should be absurdly high to ensure member is at the top of the results in our test
         $points_to_send = 100000000;
-        $transfer = points_credit_member($member, 'unit test', $points_to_send, 0, 0, null);
+        $transfer = points_credit_member($member, 'unit test', $points_to_send, 0, 0, null, 0, null, time() - 60);
 
         init__points();
 
@@ -532,7 +531,8 @@ class leader_board_test_set extends cms_test_case
                 foreach ($results as $result) {
                     if ($result['lb_member'] == $member) {
                         $correct_points = $earned_points + $points_to_send;
-                        $this->assertTrue(($result['lb_points'] == $correct_points), 'earners: Expected points earned to be ' . integer_format($correct_points) . ', but it was instead ' . integer_format($result['lb_points']) . ', in testLeaderBoardHoldersEarners() test 2.');
+                        $pass = ($result['lb_points'] == $correct_points);
+                        $this->assertTrue($pass, 'earners: Expected points earned by #' . strval($member) . ' to be ' . integer_format($correct_points) . ', but it was instead ' . integer_format($result['lb_points']) . ', in testLeaderBoardHoldersEarners() test 2.');
                         $found = true;
                         break;
                     }

@@ -37,7 +37,7 @@ class Hook_points_received
 
         if ($timestamp !== null) {
             // Most reliable way
-            $_points_received = $GLOBALS['SITE_DB']->query_value_if_there('SELECT SUM(amount_gift_points) AS _amount_gift_points,SUM(amount_points) AS _amount_points FROM ' . get_table_prefix() . 'points_ledger WHERE date_and_time>' . strval($timestamp) . ' AND recipient_id=' . strval($member_id));
+            $_points_received = $GLOBALS['SITE_DB']->query('SELECT SUM(amount_gift_points) AS _amount_gift_points,SUM(amount_points) AS _amount_points FROM ' . get_table_prefix() . 'points_ledger WHERE date_and_time>' . strval($timestamp) . ' AND recipient_id=' . strval($member_id));
             if (!empty($_points_received)) {
                 $points_received -= @intval($_points_received[0]['_amount_gift_points']) + @intval($_points_received[0]['_amount_points']);
             }

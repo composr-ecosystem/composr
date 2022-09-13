@@ -790,7 +790,10 @@ class Forum_driver_mybb extends Forum_driver_base
      */
     public function get_previous_members(int $member, int $total = 1) : array
     {
-        $rows = $this->db->query('SELECT uid FROM ' . $this->db->get_table_prefix() . 'users WHERE uid<' . strval($member) . ' AND uid>0 ORDER BY uid DESC', $total);
+        $sql = 'SELECT uid FROM ' . $this->db->get_table_prefix() . 'users WHERE uid<>0';
+        $sql .= ' AND uid<' . strval($member);
+        $sql .= ' ORDER BY uid DESC';
+        $rows = $this->db->query($sql, $total);
         return $rows;
     }
 
@@ -798,13 +801,18 @@ class Forum_driver_mybb extends Forum_driver_base
      * Get rows of members after the given one.
      * It cannot be assumed there are no gaps in member IDs, as members may be deleted.
      *
-     * @param  MEMBER $member The member ID to increment
+     * @param  ?MEMBER $member The member ID to increment (null: find the very first members)
      * @param  integer $total Number of members to retrieve
      * @return array Member rows
      */
-    public function get_next_members(int $member, int $total = 1) : array
+    public function get_next_members(?int $member, int $total = 1) : array
     {
-        $rows = $this->db->query('SELECT uid FROM ' . $this->db->get_table_prefix() . 'users WHERE uid>' . strval($member) . ' ORDER BY uid', $total);
+        $sql = 'SELECT uid FROM ' . $this->db->get_table_prefix() . 'users WHERE uid<>0';
+        if ($member !== null) {
+            $sql .= ' AND uid>' . strval($member);
+        }
+        $sql .= ' ORDER BY uid DESC';
+        $rows = $this->db->query($sql, $total);
         return $rows;
     }
 

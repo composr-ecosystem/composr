@@ -611,11 +611,11 @@ class Forum_driver_none extends Forum_driver_base
      * Get rows of members after the given one.
      * It cannot be assumed there are no gaps in member IDs, as members may be deleted.
      *
-     * @param  MEMBER $member The member ID to increment
+     * @param  ?MEMBER $member The member ID to increment (null: find the very first members)
      * @param  integer $total Number of members to retrieve
      * @return array Member rows
      */
-    public function get_next_members(int $member, int $total = 1) : array
+    public function get_next_members(?int $member, int $total = 1) : array
     {
         if ($member < 1) {
             return [[1]];

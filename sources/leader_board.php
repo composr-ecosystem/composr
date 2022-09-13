@@ -65,7 +65,7 @@ function get_leader_board_calculation_count() : int
 /**
  * Check all leader-boards and generate new result sets when applicable.
  *
- * @param  ?TIME $forced_time Pretend the current time is the provided time stamp (null: use the current time in the site's timezone)
+ * @param  ?TIME $forced_time Pretend the current time is the provided timestamp (null: use the current time in the site's timezone)
  * @param  ?TIME $forced_period_start Pretend the most recent result set was generated on the provided timestamp (null: use the actual most recent timestamp)
  * @return array Map of leader_board IDs to their new result set timestamp
  */
@@ -86,7 +86,7 @@ function calculate_all_leader_boards(?int $forced_time = null, ?int $forced_peri
  * Calculate a leader-board.
  *
  * @param  array $row The leader-board row to calculate
- * @param  ?TIME $forced_time Pretend the current time is the provided time stamp (null: use the current time in the site's timezone)
+ * @param  ?TIME $forced_time Pretend the current time is the provided timestamp (null: use the current time in the site's timezone)
  * @param  ?TIME $forced_period_start Pretend the most recent result set was generated on the provided timestamp (null: use the actual most recent timestamp)
  * @return ?TIME The timestamp of the result set (null: a new result set was not generated)
  */
@@ -111,7 +111,7 @@ function calculate_leader_board(array $row, ?int $forced_time = null, ?int $forc
 
     // Process in sets of 100 members at a time
     $rows = [];
-    $current_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
+    $current_id = null;
     do {
         $rows = $GLOBALS['FORUM_DRIVER']->get_next_members($current_id, 100);
         foreach ($rows as $member) {
@@ -207,7 +207,7 @@ function get_leader_board(int $id, ?int $timestamp = null) : array
  * Determine the start and end times for the next result set that needs generating for a leader-board.
  *
  * @param  array $row The leader-board row
- * @param  ?TIME $forced_time Pretend the current time is the provided time stamp (null: use the current time in the site's timezone)
+ * @param  ?TIME $forced_time Pretend the current time is the provided timestamp (null: use the current time in the site's timezone)
  * @param  ?TIME $forced_period_start Pretend the most recent result set was generated on the provided timestamp (null: use the actual most recent timestamp)
  * @return array A ?TIME duple containing start and end; both will be null if this leader-board should not generate a result set at this time
  */
