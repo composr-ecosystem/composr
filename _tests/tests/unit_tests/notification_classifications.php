@@ -152,6 +152,9 @@ class notification_classifications_test_set extends cms_test_case
             if ($types == ["adminzone_dashboard_accessed","auto_ban","error_occurred","hack_attack","spam_check_block"]) {
                 continue;
             }
+            if ($types == ["chat","cns_friend_birthday","member_entered_chatroom"]) {
+                continue;
+            }
 
             $this->assertTrue(count($types) == 1, json_encode($types) . ' can all be merged into a single hook based on addon being ' . $addon);
         }

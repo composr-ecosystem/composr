@@ -15,13 +15,13 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    catalogues
+ * @package    calendar
  */
 
 /**
  * Hook class.
  */
-class Hook_notification_catalogue_entry extends Hook_Notification
+class Hook_notification_calendar extends Hook_Notification
 {
     /**
      * Find whether a handled notification code supports categories.
@@ -32,7 +32,10 @@ class Hook_notification_catalogue_entry extends Hook_Notification
      */
     public function supports_categories(string $notification_code) : bool
     {
-        return true;
+        if ($notification_code == 'calendar_event') {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -44,27 +47,26 @@ class Hook_notification_catalogue_entry extends Hook_Notification
      */
     public function create_category_tree(string $notification_code, ?string $id) : array
     {
-        if (!addon_installed('catalogues')) {
+        if (!addon_installed('calendar')) {
             return [];
         }
 
-        require_code('catalogues');
+        $page_links = [];
 
-        $name = substr($notification_code, strlen('catalogue_entry__'));
-
-        $total = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'COUNT(*)', ['c_name' => $name]);
-        if ($total > intval(get_option('general_safety_listing_limit'))/*reasonable limit*/) {
-            return parent::create_category_tree($notification_code, $id); // Too many, so just allow removing UI
-        }
-
-        $page_links = get_catalogue_category_tree($name, ($id === null) ? null : intval($id), '', null, ($id === null) ? 0 : 1);
-        $filtered = [];
-        foreach ($page_links as $p) {
-            if (strval($p['id']) !== $id) {
-                $filtered[] = $p;
+        if ($notification_code == 'calendar_event') {
+            $types = $GLOBALS['SITE_DB']->query_select('calendar_types', ['id', 't_title']);
+            foreach ($types as $type) {
+                if ((has_category_access(get_member(), 'calendar', strval($type['id']))) && ($type['id'] != db_get_first_id())) {
+                    $page_links[] = [
+                        'id' => $type['id'],
+                        'title' => get_translated_text($type['t_title']),
+                    ];
+                }
             }
+            sort_maps_by($page_links, 'title', false, true);
         }
-        return $filtered;
+
+        return $page_links;
     }
 
     /**
@@ -76,7 +78,10 @@ class Hook_notification_catalogue_entry extends Hook_Notification
      */
     public function get_initial_setting(string $notification_code, ?string $category = null) : int
     {
-        return A_NA;
+        if ($notification_code == 'calendar_event') {
+            return A_NA;
+        }
+        return A__STATISTICAL;
     }
 
     /**
@@ -87,20 +92,14 @@ class Hook_notification_catalogue_entry extends Hook_Notification
      */
     public function list_handled_codes() : array
     {
-        if (!addon_installed('catalogues')) {
+        if (!addon_installed('calendar')) {
             return [];
         }
 
         $list = [];
-        $catalogues = $GLOBALS['SITE_DB']->query('SELECT c_name,c_title FROM ' . get_table_prefix() . 'catalogues WHERE c_name NOT LIKE \'\_%\'');
-        foreach ($catalogues as $catalogue) {
-            $catalogue_name = $catalogue['c_name'];
-            $nl = do_lang('catalogues:NOTIFICATION_TYPE_catalogue_entry__' . $catalogue_name, null, null, null, null, false);
-            if ($nl === null) {
-                $nl = do_lang('catalogues:NOTIFICATION_TYPE_catalogue_entry', get_translated_text($catalogue['c_title']));
-            }
-            $list['catalogue_entry__' . $catalogue_name] = [do_lang('CONTENT'), $nl];
-        }
+        $list['calendar_event'] = [do_lang('CONTENT'), do_lang('calendar:NOTIFICATION_TYPE_calendar_event')];
+        $list['calendar_reminder'] = [do_lang('GENERAL'), do_lang('calendar:NOTIFICATION_TYPE_calendar_reminder')];
+        $list['member_calendar_changes'] = [do_lang('calendar:CALENDAR'), do_lang('calendar:NOTIFICATION_TYPE_member_calendar_changes')];
         return $list;
     }
 
@@ -118,13 +117,9 @@ class Hook_notification_catalogue_entry extends Hook_Notification
     public function list_members_who_have_enabled(string $notification_code, ?string $category = null, ?array $to_member_ids = null, ?int $from_member_id = null, int $start = 0, int $max = 300) : array
     {
         $members = $this->_all_members_who_have_enabled($notification_code, $category, $to_member_ids, $start, $max);
-        $members = $this->_all_members_who_have_enabled_with_page_access($members, 'catalogues', $notification_code, $category, $to_member_ids, $start, $max);
-        $catalogue_category_id = intval($category);
-        $catalogue_name = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'c_name', ['id' => $catalogue_category_id]);
-        $members = $this->_all_members_who_have_enabled_with_category_access($members, 'catalogues_catalogue', $notification_code, $catalogue_name, $to_member_ids, $start, $max);
-        if (get_value('disable_cat_cat_perms') !== '1') {
-            $members = $this->_all_members_who_have_enabled_with_category_access($members, 'catalogues_category', $notification_code, strval($catalogue_category_id), $to_member_ids, $start, $max);
-        }
+        $members = $this->_all_members_who_have_enabled_with_page_access($members, 'calendar', $notification_code, $category, $to_member_ids, $start, $max);
+        $members = $this->_all_members_who_have_enabled_with_category_access($members, 'calendar', $notification_code, $category, $to_member_ids, $start, $max);
+
         return $members;
     }
 }
