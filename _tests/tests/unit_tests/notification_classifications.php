@@ -18,6 +18,26 @@
  */
 class notification_classifications_test_set extends cms_test_case
 {
+    public function testReasonableHooksCount()
+    {
+        if (($this->only !== null) && ($this->only != 'testReasonableHooksCount')) {
+            return;
+        }
+
+        $hooks = find_all_hooks('systems', 'notifications');
+
+        $cnt_main = 0;
+        foreach ($hooks as $hook_dir) {
+            if (strpos($hook_dir, '_custom') === false) {
+                $cnt_main++;
+            }
+        }
+        $this->assertTrue($cnt_main <= 50, 'We have a lot of notification hooks now (' . integer_format($cnt_main) . '), this will hurt performance (memory usage on notifications UI in particular)');
+
+        $cnt_all = count($hooks);
+        $this->assertTrue($cnt_all <= 70, 'We have a lot of notification hooks now (' . integer_format($cnt_all) . '), this will hurt performance (memory usage on notifications UI in particular)');
+    }
+
     public function testAllNotificationsCoded()
     {
         cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
