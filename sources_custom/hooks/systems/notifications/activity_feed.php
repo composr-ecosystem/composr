@@ -104,7 +104,7 @@ class Hook_notification_activity_feed extends Hook_Notification
         }
 
         $list = [];
-        $list['activity'] = [do_lang('ACTIVITY'), do_lang('activity_feed:NOTIFICATION_TYPE_activity')];
+        $list['activity_feed'] = [do_lang('ACTIVITY'), do_lang('activity_feed:NOTIFICATION_TYPE_activity')];
         return $list;
     }
 }

@@ -210,7 +210,7 @@ class Hook_addon_registry_core_cns
             'sources/hooks/systems/notifications/cns_member_joined_group.php',
             'sources/hooks/systems/notifications/cns_new_member.php',
             'sources/hooks/systems/notifications/cns_member_needs_validation.php',
-            'sources/hooks/systems/notifications/cns_group_join_request_staff.php',
+            'sources/hooks/systems/notifications/cns_staff.php',
             'sources/hooks/systems/realtime_rain/cns.php',
             'sources/hooks/systems/cron/cns_birthdays.php',
             'sources/hooks/systems/content_meta_aware/member.php',
@@ -487,7 +487,6 @@ class Hook_addon_registry_core_cns
             'sources/hooks/systems/actionlog/core_cns.php',
             'themes/default/templates/CNS_MEMBER_PROFILE_FIELD.tpl',
             'themes/default/templates/CNS_MEMBER_PROFILE_FIELDS.tpl',
-            'sources/hooks/systems/notifications/cns_profile_high_impact_edit.php',
 
             // Files for post map functionality
             'themes/default/templates/CNS_POST_MAP.tpl',

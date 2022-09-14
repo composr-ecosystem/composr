@@ -15,26 +15,14 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    shopping
+ * @package    ecommerce
  */
 
 /**
  * Hook class.
  */
-class Hook_notification_low_stock extends Hook_notification__Staff
+class Hook_notification_ecommerce_staff extends Hook_notification__Staff
 {
-    /**
-     * Find the initial setting that members have for a notification code (only applies to the member_could_potentially_enable members).
-     *
-     * @param  ID_TEXT $notification_code Notification code
-     * @param  ?SHORT_TEXT $category The category within the notification code (null: none)
-     * @return integer Initial setting
-     */
-    public function get_initial_setting(string $notification_code, ?string $category = null) : int
-    {
-        return A_NA;
-    }
-
     /**
      * Get a list of all the notification codes this hook can handle.
      * (Addons can define hooks that handle whole sets of codes, so hooks are written so they can take wide authority).
@@ -43,12 +31,13 @@ class Hook_notification_low_stock extends Hook_notification__Staff
      */
     public function list_handled_codes() : array
     {
-        if (!addon_installed('shopping')) {
+        if (!addon_installed('ecommerce')) {
             return [];
         }
 
         $list = [];
-        $list['low_stock'] = [do_lang('ecommerce:ECOMMERCE'), do_lang('shopping:NOTIFICATION_TYPE_low_stock')];
+        $list['ecom_product_request_email'] = [do_lang('ecommerce:ECOMMERCE'), do_lang('ecommerce:NOTIFICATION_TYPE_ecom_product_request_email')];
+        $list['subscriptions_staff'] = [do_lang('ecommerce:ECOMMERCE'), do_lang('ecommerce:NOTIFICATION_TYPE_subscriptions_staff')];
         return $list;
     }
 }

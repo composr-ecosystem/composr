@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_notification_point_escrows_staff_active extends Hook_Notification
+class Hook_notification_point_escrows_staff extends Hook_Notification
 {
     /**
      * Find the initial setting that members have for a notification code (only applies to the member_could_potentially_enable members).
@@ -32,7 +32,10 @@ class Hook_notification_point_escrows_staff_active extends Hook_Notification
      */
     public function get_initial_setting(string $notification_code, ?string $category = null) : int
     {
-        return A__ALL & ~A_INSTANT_PT;
+        if ($notification_code == 'point_escrows_staff_active') {
+            return A__ALL & ~A_INSTANT_PT;
+        }
+        return A_NA;
     }
 
     /**
@@ -49,6 +52,7 @@ class Hook_notification_point_escrows_staff_active extends Hook_Notification
 
         $list = [];
         $list['point_escrows_staff_active'] = [do_lang('ACTIVITY'), do_lang('points:NOTIFICATION_TYPE_point_escrows_staff_active')];
+        $list['point_escrows_staff_passive'] = [do_lang('ACTIVITY'), do_lang('points:NOTIFICATION_TYPE_point_escrows_staff_passive')];
         return $list;
     }
 

@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_notification_cns_profile_high_impact_edit extends Hook_notification__Staff
+class Hook_notification_cns_staff extends Hook_notification__Staff
 {
     /**
      * Find the initial setting that members have for a notification code (only applies to the member_could_potentially_enable members).
@@ -48,6 +48,7 @@ class Hook_notification_cns_profile_high_impact_edit extends Hook_notification__
         }
 
         $list = [];
+        $list['cns_group_join_request_staff'] = [do_lang('USERGROUPS'), do_lang('cns:NOTIFICATION_TYPE_cns_group_join_request_staff')];
         $list['cns_profile_high_impact_edit'] = [do_lang('MEMBERS'), do_lang('cns:NOTIFICATION_TYPE_cns_profile_high_impact_edit')];
         return $list;
     }

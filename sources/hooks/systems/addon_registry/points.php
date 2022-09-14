@@ -172,8 +172,7 @@ class Hook_addon_registry_points
             'sources/hooks/systems/commandr_commands/send_points.php',
             'sources/points_escrow.php',
             'themes/default/templates/POINTS_ESCROW_SCREEN.tpl',
-            'sources/hooks/systems/notifications/point_escrows_staff_active.php',
-            'sources/hooks/systems/notifications/point_escrows_staff_passive.php',
+            'sources/hooks/systems/notifications/point_escrows_staff.php',
             'sources/hooks/systems/notifications/point_escrows.php',
         ];
     }

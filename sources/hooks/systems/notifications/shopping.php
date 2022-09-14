@@ -15,13 +15,13 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    core_cns
+ * @package    shopping
  */
 
 /**
  * Hook class.
  */
-class Hook_notification_cns_group_join_request_staff extends Hook_notification__Staff
+class Hook_notification_shopping extends Hook_notification__Staff
 {
     /**
      * Find the initial setting that members have for a notification code (only applies to the member_could_potentially_enable members).
@@ -43,12 +43,13 @@ class Hook_notification_cns_group_join_request_staff extends Hook_notification__
      */
     public function list_handled_codes() : array
     {
-        if (get_forum_type() != 'cns') {
+        if (!addon_installed('shopping')) {
             return [];
         }
 
         $list = [];
-        $list['cns_group_join_request_staff'] = [do_lang('USERGROUPS'), do_lang('cns:NOTIFICATION_TYPE_cns_group_join_request_staff')];
+        $list['low_stock'] = [do_lang('ecommerce:ECOMMERCE'), do_lang('shopping:NOTIFICATION_TYPE_low_stock')];
+        $list['new_order'] = [do_lang('ecommerce:ECOMMERCE'), do_lang('shopping:NOTIFICATION_TYPE_new_order')];
         return $list;
     }
 }

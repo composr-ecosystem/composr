@@ -15,13 +15,13 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    ecommerce
+ * @package    chat
  */
 
 /**
  * Hook class.
  */
-class Hook_notification_paid_subscription_messages extends Hook_Notification
+class Hook_notification_chat extends Hook_Notification
 {
     /**
      * Get a list of all the notification codes this hook can handle.
@@ -31,12 +31,13 @@ class Hook_notification_paid_subscription_messages extends Hook_Notification
      */
     public function list_handled_codes() : array
     {
-        if (!addon_installed('ecommerce')) {
+        if (!addon_installed('chat')) {
             return [];
         }
 
         $list = [];
-        $list['paid_subscription_messages'] = [do_lang('ecommerce:ECOMMERCE'), do_lang('ecommerce:NOTIFICATION_TYPE_paid_subscription_messages')];
+        $list['new_friend'] = [do_lang('ACTIVITY'), do_lang('chat:NOTIFICATION_TYPE_new_friend')];
+        $list['im_invited'] = [do_lang('MESSAGES'), do_lang('chat:NOTIFICATION_TYPE_im_invited')];
         return $list;
     }
 
@@ -54,7 +55,7 @@ class Hook_notification_paid_subscription_messages extends Hook_Notification
     public function list_members_who_have_enabled(string $notification_code, ?string $category = null, ?array $to_member_ids = null, ?int $from_member_id = null, int $start = 0, int $max = 300) : array
     {
         $members = $this->_all_members_who_have_enabled($notification_code, $category, $to_member_ids, $start, $max);
-        $members = $this->_all_members_who_have_enabled_with_page_access($members, 'purchase', $notification_code, $category, $to_member_ids, $start, $max);
+        $members = $this->_all_members_who_have_enabled_with_page_access($members, 'chat', $notification_code, $category, $to_member_ids, $start, $max);
 
         return $members;
     }

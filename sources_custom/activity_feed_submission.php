@@ -127,7 +127,7 @@ function activity_feed_syndicate_described_activity(string $language_string_code
         $displayname = $GLOBALS['FORUM_DRIVER']->get_username($member_id, true);
         $subject = do_lang('ACTIVITY_NOTIFICATION_MAIL_SUBJECT', get_site_name(), $username, strip_html($message->evaluate()));
         $mail = do_notification_lang('ACTIVITY_NOTIFICATION_MAIL', comcode_escape(get_site_name()), comcode_escape($username), ['[semihtml]' . $message->evaluate() . '[/semihtml]', $displayname]);
-        dispatch_notification('activity', strval($member_id), $subject, $mail);
+        dispatch_notification('activity_feed', strval($member_id), $subject, $mail);
     }
 
     return $stored_id;
