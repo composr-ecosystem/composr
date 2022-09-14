@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_notification_point_escrows_staff extends Hook_Notification
+class Hook_notification_points extends Hook_Notification
 {
     /**
      * Find the initial setting that members have for a notification code (only applies to the member_could_potentially_enable members).
@@ -32,6 +32,12 @@ class Hook_notification_point_escrows_staff extends Hook_Notification
      */
     public function get_initial_setting(string $notification_code, ?string $category = null) : int
     {
+        if ($notification_code == 'points_transactions') {
+            return A_DAILY_EMAIL_DIGEST & A_WEB_NOTIFICATION; // Could have a lot of them, so use an email digest to avoid annoying users
+        }
+        if ($notification_code == 'point_escrows') {
+            return A__ALL & ~A_INSTANT_PT;
+        }
         if ($notification_code == 'point_escrows_staff_active') {
             return A__ALL & ~A_INSTANT_PT;
         }
@@ -51,6 +57,8 @@ class Hook_notification_point_escrows_staff extends Hook_Notification
         }
 
         $list = [];
+        $list['points_transaction'] = [do_lang('ACTIVITY'), do_lang('points:NOTIFICATION_TYPE_points_transaction')];
+        $list['point_escrows'] = [do_lang('ACTIVITY'), do_lang('points:NOTIFICATION_TYPE_point_escrows')];
         $list['point_escrows_staff_active'] = [do_lang('ACTIVITY'), do_lang('points:NOTIFICATION_TYPE_point_escrows_staff_active')];
         $list['point_escrows_staff_passive'] = [do_lang('ACTIVITY'), do_lang('points:NOTIFICATION_TYPE_point_escrows_staff_passive')];
         return $list;
@@ -66,11 +74,14 @@ class Hook_notification_point_escrows_staff extends Hook_Notification
      */
     public function member_could_potentially_enable(string $notification_code, int $member_id, ?string $category = null) : bool
     {
-        if (!addon_installed('points')) {
-            return false;
-        }
+        if ($notification_code == 'point_escrows_staff_active' || $notification_code == 'point_escrows_staff_passive') {
+            if (!addon_installed('points')) {
+                return false;
+            }
 
-        return ((has_privilege($member_id, 'moderate_points_escrow')) && (has_actual_page_access($member_id, 'points')));
+            return ((has_privilege($member_id, 'moderate_points_escrow')) && (has_actual_page_access($member_id, 'points')));
+        }
+        return parent::member_could_potentially_enable($notification_code, $member_id, $category);
     }
 
     /**
@@ -86,9 +97,15 @@ class Hook_notification_point_escrows_staff extends Hook_Notification
      */
     public function list_members_who_have_enabled(string $notification_code, ?string $category = null, ?array $to_member_ids = null, ?int $from_member_id = null, int $start = 0, int $max = 300) : array
     {
-        $members = $this->_all_members_who_have_enabled($notification_code, $category, $to_member_ids, $start, $max);
-        $members = $this->_all_members_who_have_enabled_with_privilege($members, 'moderate_points_escrow', $notification_code, $category, $to_member_ids, $start, $max);
-        $members = $this->_all_members_who_have_enabled_with_page_access($members, 'points', $notification_code, $category, $to_member_ids, $start, $max);
+        if ($notification_code == 'points_transaction' || $notification_code == 'point_escrows') {
+            $members = $this->_all_members_who_have_enabled($notification_code, $category, $to_member_ids, $start, $max);
+            $members = $this->_all_members_who_have_enabled_with_page_access($members, 'points', $notification_code, $category, $to_member_ids, $start, $max);
+        }
+        if ($notification_code == 'point_escrows_staff_active' || $notification_code == 'point_escrows_staff_passive') {
+            $members = $this->_all_members_who_have_enabled($notification_code, $category, $to_member_ids, $start, $max);
+            $members = $this->_all_members_who_have_enabled_with_privilege($members, 'moderate_points_escrow', $notification_code, $category, $to_member_ids, $start, $max);
+            $members = $this->_all_members_who_have_enabled_with_page_access($members, 'points', $notification_code, $category, $to_member_ids, $start, $max);
+        }
 
         return $members;
     }

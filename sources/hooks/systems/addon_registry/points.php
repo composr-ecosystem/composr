@@ -166,14 +166,12 @@ class Hook_addon_registry_points
             'sources/hooks/systems/points/visiting.php',
             'sources/hooks/systems/points/index.html',
             'sources/hooks/modules/admin_stats/point_transactions.php',
-            'sources/hooks/systems/notifications/points_transaction.php',
             'sources/hooks/systems/notifications/points_transaction_staff.php',
             'sources/hooks/systems/cron/points_escrow.php',
             'sources/hooks/systems/commandr_commands/send_points.php',
             'sources/points_escrow.php',
             'themes/default/templates/POINTS_ESCROW_SCREEN.tpl',
-            'sources/hooks/systems/notifications/point_escrows_staff.php',
-            'sources/hooks/systems/notifications/point_escrows.php',
+            'sources/hooks/systems/notifications/points.php',
         ];
     }
 

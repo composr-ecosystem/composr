@@ -107,6 +107,9 @@ class notification_classifications_test_set extends cms_test_case
             $matches = [];
             if (preg_match('#@package\s+(\w+)#', $contents, $matches) != 0) {
                 $addon = $matches[1];
+                if ($addon != 'core_cns') {
+                    //$addon = preg_replace('#^core_\w+$#', 'core', $addon);    Nah, means merging stuff that doesn't semantically fit well together
+                }
             }
             if (strpos($contents, 'Hook_notification__Staff') !== false) {
                 $addon .= '__staff';
@@ -131,14 +134,14 @@ class notification_classifications_test_set extends cms_test_case
         /*
         Actually it is a bad idea to try and merge all the notification types into a smaller number of hook files as it breaks the optimisation of automatically finding the correct file based on matching filename and hook type.
         Theoretically we could find a new optimisation, like specifying the hook file in the notification dispatch call, but right now there is no strong incentive for this as our number of hooks has been brought down to a reasonable level - not worth the work/overhead-complexity.
-        So, it is NORMAL to keep adding stuff to the exceptions listed in the below sections.
+        So, it is COMMON to keep adding stuff to the exceptions listed in the below sections.
         */
 
         foreach ($code as $contents => $types) {
             sort($types);
 
             // Exceptions
-            if ($types == ["adminzone_dashboard_accessed", "auto_ban", "hack_attack"]) {
+            if ($types == ["adminzone_dashboard_accessed", "auto_ban", "hack_attack"]) { // Used in high-stakes fast-speed situations
                 continue;
             }
 
@@ -149,10 +152,19 @@ class notification_classifications_test_set extends cms_test_case
             sort($types);
 
             // Exceptions
-            if ($types == ["adminzone_dashboard_accessed","auto_ban","error_occurred","hack_attack","spam_check_block"]) {
+            if ($types == ["adminzone_dashboard_accessed","auto_ban","error_occurred","hack_attack","spam_check_block"]) { // Used in high-stakes fast-speed situations
                 continue;
             }
-            if ($types == ["chat","cns_friend_birthday","member_entered_chatroom"]) {
+            if ($types == ["chat","cns_friend_birthday","member_entered_chatroom"]) { // Used too commonly
+                continue;
+            }
+            if ($types == ["ticket_assigned_staff","ticket_new_staff","ticket_reply","ticket_reply_staff"]) { // Too complex
+                continue;
+            }
+            if ($types == ["comment_posted","like"]) { // Used too commonly
+                continue;
+            }
+            if ($types == ["cns_pts","cns_topic"]) { // cns_topic used too commonly
                 continue;
             }
 

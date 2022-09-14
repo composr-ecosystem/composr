@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_notification_cns_topic_invite extends Hook_Notification
+class Hook_notification_cns_pts extends Hook_Notification
 {
     /**
      * Find a bitmask of settings (e-mail, SMS, etc) a notification code supports for listening on.
@@ -31,7 +31,13 @@ class Hook_notification_cns_topic_invite extends Hook_Notification
      */
     public function allowed_settings(string $notification_code) : int
     {
-        return A__ALL & ~A_INSTANT_PT; // Topic, so do not allow PT
+        $ret = A__ALL & ~A_INSTANT_PT; // Topic, so do not allow PT
+        if ($notification_code == 'cns_new_pt') {
+            if (get_option('pt_notifications_as_web') == '0') {
+                $ret = $ret & ~A_WEB_NOTIFICATION;
+            }
+        }
+        return $ret;
     }
 
     /**
@@ -51,6 +57,7 @@ class Hook_notification_cns_topic_invite extends Hook_Notification
         }
 
         $list = [];
+        $list['cns_new_pt'] = [do_lang('MESSAGES'), do_lang('cns:NOTIFICATION_TYPE_cns_new_pt')];
         $list['cns_topic_invite'] = [do_lang('MESSAGES'), do_lang('cns:NOTIFICATION_TYPE_cns_topic_invite')];
         return $list;
     }
@@ -68,10 +75,20 @@ class Hook_notification_cns_topic_invite extends Hook_Notification
      */
     public function list_members_who_have_enabled(string $notification_code, ?string $category = null, ?array $to_member_ids = null, ?int $from_member_id = null, int $start = 0, int $max = 300) : array
     {
-        $members = $this->_all_members_who_have_enabled($notification_code, $category, $to_member_ids, $start, $max);
-        $members = $this->_all_members_who_have_enabled_with_privilege($members, 'use_pt', $notification_code, $category, $to_member_ids, $start, $max);
+        if ($notification_code == 'cns_new_pt') {
+            $members = $this->_all_members_who_have_enabled($notification_code, $category, $to_member_ids, $start, $max);
+            if (empty($to_member_ids)) { // Only if we're not actually sending a PT now (notification should happen if sending a PT to someone who can't send them, with default settings)
+                $members = $this->_all_members_who_have_enabled_with_privilege($members, 'use_pt', $notification_code, $category, $to_member_ids, $start, $max);
+            }
+            return $members;
+        }
         $members = $this->_all_members_who_have_enabled_with_zone_access($members, 'forum', $notification_code, $category, $to_member_ids, $start, $max);
-
-        return $members;
+        if ($notification_code == 'cns_topic_invite') {
+            $members = $this->_all_members_who_have_enabled($notification_code, $category, $to_member_ids, $start, $max);
+            $members = $this->_all_members_who_have_enabled_with_privilege($members, 'use_pt', $notification_code, $category, $to_member_ids, $start, $max);
+            $members = $this->_all_members_who_have_enabled_with_zone_access($members, 'forum', $notification_code, $category, $to_member_ids, $start, $max);
+            return $members;
+        }
+        return parent::list_members_who_have_enabled($notification_code, $category, $to_member_ids, $from_member_id, $start, $max);
     }
 }

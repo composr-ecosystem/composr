@@ -24,6 +24,65 @@
 class Hook_notification_ecommerce_staff extends Hook_notification__Staff
 {
     /**
+     * Find whether a handled notification code supports categories.
+     * (Content types, for example, will define notifications on specific categories, not just in general. The categories are interpreted by the hook and may be complex. E.g. it might be like a regexp match, or like FORUM:3 or TOPIC:100).
+     *
+     * @param  ID_TEXT $notification_code Notification code
+     * @return boolean Whether it does
+     */
+    public function supports_categories(string $notification_code) : bool
+    {
+        if ($notification_code == 'ecom_product_request_custom') {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Standard function to create the standardised category tree.
+     *
+     * @param  ID_TEXT $notification_code Notification code
+     * @param  ?ID_TEXT $id The ID of where we're looking under (null: N/A)
+     * @return array Tree structure
+     */
+    public function create_category_tree(string $notification_code, ?string $id) : array
+    {
+        if (!addon_installed('ecommerce')) {
+            return [];
+        }
+
+        $page_links = [];
+
+        if ($notification_code == 'ecom_product_request_custom') {
+            $types = $GLOBALS['SITE_DB']->query_select('ecom_prods_custom', ['id', 'c_title']);
+            foreach ($types as $type) {
+                $page_links[] = [
+                    'id' => $type['id'],
+                    'title' => get_translated_text($type['c_title']),
+                ];
+            }
+            sort_maps_by($page_links, 'title', false, true);
+        }
+
+        return $page_links;
+    }
+
+    /**
+     * Find the initial setting that members have for a notification code (only applies to the member_could_potentially_enable members).
+     *
+     * @param  ID_TEXT $notification_code Notification code
+     * @param  ?SHORT_TEXT $category The category within the notification code (null: none)
+     * @return integer Initial setting
+     */
+    public function get_initial_setting(string $notification_code, ?string $category = null) : int
+    {
+        if ($notification_code == 'ip_address_sharing') {
+            return A_NA;
+        }
+        return A__STATISTICAL;
+    }
+
+    /**
      * Get a list of all the notification codes this hook can handle.
      * (Addons can define hooks that handle whole sets of codes, so hooks are written so they can take wide authority).
      *
@@ -36,8 +95,17 @@ class Hook_notification_ecommerce_staff extends Hook_notification__Staff
         }
 
         $list = [];
-        $list['ecom_product_request_email'] = [do_lang('ecommerce:ECOMMERCE'), do_lang('ecommerce:NOTIFICATION_TYPE_ecom_product_request_email')];
+
+        $list['payment_received_staff'] = [do_lang('ecommerce:ECOMMERCE'), do_lang('ecommerce:NOTIFICATION_TYPE_payment_received_staff')];
         $list['subscriptions_staff'] = [do_lang('ecommerce:ECOMMERCE'), do_lang('ecommerce:NOTIFICATION_TYPE_subscriptions_staff')];
+        $list['ecom_product_request_custom'] = [do_lang('ecommerce:ECOMMERCE'), do_lang('ecommerce:NOTIFICATION_TYPE_ecom_product_request_custom')];
+        $list['ecom_product_request_email'] = [do_lang('ecommerce:ECOMMERCE'), do_lang('ecommerce:NOTIFICATION_TYPE_ecom_product_request_email')];
+
+        $limit = get_option('max_ip_addresses_per_subscriber');
+        if (($limit != '') || (get_forum_type() == 'cns') || (addon_installed('stats')) || (!is_on_multi_site_network())) {
+            $list['ip_address_sharing'] = [do_lang('MEMBERS'), do_lang('ecommerce:NOTIFICATION_TYPE_ip_address_sharing')];
+        }
+
         return $list;
     }
 }

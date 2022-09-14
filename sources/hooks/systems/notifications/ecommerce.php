@@ -36,8 +36,9 @@ class Hook_notification_ecommerce extends Hook_Notification
         }
 
         $list = [];
-        $list['paid_subscription_messages'] = [do_lang('ecommerce:ECOMMERCE'), do_lang('ecommerce:NOTIFICATION_TYPE_paid_subscription_messages')];
         $list['payment_received'] = [do_lang('ecommerce:ECOMMERCE'), do_lang('ecommerce:NOTIFICATION_TYPE_payment_received')];
+        $list['paid_subscription_messages'] = [do_lang('ecommerce:ECOMMERCE'), do_lang('ecommerce:NOTIFICATION_TYPE_paid_subscription_messages')];
+        $list['invoice'] = [do_lang('ecommerce:ECOMMERCE'), do_lang('ecommerce:NOTIFICATION_TYPE_invoice')];
         return $list;
     }
 
@@ -54,9 +55,16 @@ class Hook_notification_ecommerce extends Hook_Notification
      */
     public function list_members_who_have_enabled(string $notification_code, ?string $category = null, ?array $to_member_ids = null, ?int $from_member_id = null, int $start = 0, int $max = 300) : array
     {
-        $members = $this->_all_members_who_have_enabled($notification_code, $category, $to_member_ids, $start, $max);
-        $members = $this->_all_members_who_have_enabled_with_page_access($members, 'purchase', $notification_code, $category, $to_member_ids, $start, $max);
-
-        return $members;
+        if ($notification_code == 'payment_received' || $notification_code == 'paid_subscription_messages') {
+            $members = $this->_all_members_who_have_enabled($notification_code, $category, $to_member_ids, $start, $max);
+            $members = $this->_all_members_who_have_enabled_with_page_access($members, 'purchase', $notification_code, $category, $to_member_ids, $start, $max);
+            return $members;
+        }
+        if ($notification_code == 'invoice') {
+            $members = $this->_all_members_who_have_enabled($notification_code, $category, $to_member_ids, $start, $max);
+            $members = $this->_all_members_who_have_enabled_with_page_access($members, 'invoices', $notification_code, $category, $to_member_ids, $start, $max);
+            return $members;
+        }
+        return parent::list_members_who_have_enabled($notification_code, $category, $to_member_ids, $from_member_id, $start, $max);
     }
 }
