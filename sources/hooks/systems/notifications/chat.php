@@ -24,6 +24,68 @@
 class Hook_notification_chat extends Hook_Notification
 {
     /**
+     * Find whether a handled notification code supports categories.
+     * (Content types, for example, will define notifications on specific categories, not just in general. The categories are interpreted by the hook and may be complex. E.g. it might be like a regexp match, or like FORUM:3 or TOPIC:100).
+     *
+     * @param  ID_TEXT $notification_code Notification code
+     * @return boolean Whether it does
+     */
+    public function supports_categories(string $notification_code) : bool
+    {
+        if ($notification_code == 'member_entered_chatroom') {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Standard function to create the standardised category tree.
+     *
+     * @param  ID_TEXT $notification_code Notification code
+     * @param  ?ID_TEXT $id The ID of where we're looking under (null: N/A)
+     * @return array Tree structure
+     */
+    public function create_category_tree(string $notification_code, ?string $id) : array
+    {
+        if (!addon_installed('chat')) {
+            return [];
+        }
+
+        $page_links = [];
+
+        if ($notification_code == 'member_entered_chatroom') {
+            require_code('chat');
+            $types = $GLOBALS['SITE_DB']->query_select('chat_rooms', ['*'], ['is_im' => 0]);
+            foreach ($types as $type) {
+                if (check_chatroom_access($type, true)) {
+                    $page_links[] = [
+                        'id' => $type['id'],
+                        'title' => $type['room_name'],
+                    ];
+                }
+            }
+            sort_maps_by($page_links, 'title', false, true);
+        }
+
+        return $page_links;
+    }
+
+    /**
+     * Find the initial setting that members have for a notification code (only applies to the member_could_potentially_enable members).
+     *
+     * @param  ID_TEXT $notification_code Notification code
+     * @param  ?SHORT_TEXT $category The category within the notification code (null: none)
+     * @return integer Initial setting
+     */
+    public function get_initial_setting(string $notification_code, ?string $category = null) : int
+    {
+        if ($notification_code == 'member_entered_chatroom') {
+            return A_NA;
+        }
+        return A__STATISTICAL;
+    }
+
+    /**
      * Get a list of all the notification codes this hook can handle.
      * (Addons can define hooks that handle whole sets of codes, so hooks are written so they can take wide authority).
      *
@@ -36,8 +98,12 @@ class Hook_notification_chat extends Hook_Notification
         }
 
         $list = [];
+        $list['member_entered_chatroom'] = [do_lang('ACTIVITY'), do_lang('chat:NOTIFICATION_TYPE_member_entered_chatroom')];
         $list['new_friend'] = [do_lang('ACTIVITY'), do_lang('chat:NOTIFICATION_TYPE_new_friend')];
         $list['im_invited'] = [do_lang('MESSAGES'), do_lang('chat:NOTIFICATION_TYPE_im_invited')];
+        if ((get_option('enable_birthdays') != '0') && (get_forum_type() == 'cns')) {
+            $list['cns_friend_birthday'] = [do_lang('MEMBERS'), do_lang('cns:NOTIFICATION_TYPE_cns_friend_birthday')];
+        }
         return $list;
     }
 
@@ -54,6 +120,17 @@ class Hook_notification_chat extends Hook_Notification
      */
     public function list_members_who_have_enabled(string $notification_code, ?string $category = null, ?array $to_member_ids = null, ?int $from_member_id = null, int $start = 0, int $max = 300) : array
     {
+        if ($notification_code == 'cns_friend_birthday') {
+            $members = $this->_all_members_who_have_enabled($notification_code, $category, $to_member_ids, $start, $max);
+            $members = $this->_all_members_who_have_enabled_with_page_access($members, 'members', $notification_code, $category, $to_member_ids, $start, $max);
+        }
+
+        if ($notification_code == 'member_entered_chatroom') {
+            $members = $this->_all_members_who_have_enabled($notification_code, $category, $to_member_ids, $start, $max);
+            $members = $this->_all_members_who_have_enabled_with_page_access($members, 'chat', $notification_code, $category, $to_member_ids, $start, $max);
+            $members = $this->_all_members_who_have_enabled_with_category_access($members, 'chat', $notification_code, $category, $to_member_ids, $start, $max);
+        }
+
         $members = $this->_all_members_who_have_enabled($notification_code, $category, $to_member_ids, $start, $max);
         $members = $this->_all_members_who_have_enabled_with_page_access($members, 'chat', $notification_code, $category, $to_member_ids, $start, $max);
 

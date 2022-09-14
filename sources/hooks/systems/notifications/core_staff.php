@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_notification_hack_attack extends Hook_notification__Staff
+class Hook_notification_core_staff extends Hook_notification__Staff
 {
     /**
      * Find the initial setting that members have for a notification code (only applies to the member_could_potentially_enable members).
@@ -32,6 +32,9 @@ class Hook_notification_hack_attack extends Hook_notification__Staff
      */
     public function get_initial_setting(string $notification_code, ?string $category = null) : int
     {
+        if ($notification_code == 'spam_check_block') {
+            return A_WEEKLY_EMAIL_DIGEST;
+        }
         return A_NA;
     }
 
@@ -44,7 +47,10 @@ class Hook_notification_hack_attack extends Hook_notification__Staff
     public function list_handled_codes() : array
     {
         $list = [];
+        $list['auto_ban'] = [do_lang('SECURITY'), do_lang('NOTIFICATION_TYPE_auto_ban')];
         $list['hack_attack'] = [do_lang('SECURITY'), do_lang('NOTIFICATION_TYPE_hack_attack')];
+        $list['spam_check_block'] = [do_lang('SECURITY'), do_lang('NOTIFICATION_TYPE_spam_check_block')];
+        $list['adminzone_dashboard_accessed'] = [do_lang('SECURITY'), do_lang('NOTIFICATION_TYPE_adminzone_dashboard_accessed')];
         return $list;
     }
 }

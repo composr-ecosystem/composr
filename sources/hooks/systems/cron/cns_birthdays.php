@@ -113,7 +113,7 @@ class Hook_cron_cns_birthdays
 
                 if (addon_installed('chat')) {
                     $friends = $GLOBALS['SITE_DB']->query_select('chat_friends', ['member_likes'], ['member_liked' => $_birthday['id']]);
-                    dispatch_notification('cns_friend_birthday', null, $subject, $mail, collapse_1d_complexity('member_likes', $friends));
+                    dispatch_notification('chat:cns_friend_birthday', null, $subject, $mail, collapse_1d_complexity('member_likes', $friends));
                 }
 
                 if (count($_birthdays) == 1) {

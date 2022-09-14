@@ -359,7 +359,7 @@ function handle_perceived_spammer_by_confidence(string $user_ip, float $confiden
             require_code('notifications');
             $subject = do_lang('NOTIFICATION_SPAM_CHECK_BLOCK_SUBJECT_BAN', $user_ip, $blocked_by, float_format($confidence_level), get_site_default_lang());
             $message = do_notification_lang('NOTIFICATION_SPAM_CHECK_BLOCK_BODY_BAN', $user_ip, $blocked_by, float_format($confidence_level), get_site_default_lang());
-            dispatch_notification('spam_check_block', null, $subject, $message, null, A_FROM_SYSTEM_PRIVILEGED);
+            dispatch_notification('core_staff:spam_check_block', null, $subject, $message, null, A_FROM_SYSTEM_PRIVILEGED);
         }
 
         log_hack_attack_and_exit('ANTISPAM', 'ban', float_to_raw_string($confidence_level));
@@ -374,7 +374,7 @@ function handle_perceived_spammer_by_confidence(string $user_ip, float $confiden
             require_code('notifications');
             $subject = do_lang('NOTIFICATION_SPAM_CHECK_BLOCK_SUBJECT_BLOCK', $user_ip, $blocked_by, float_format($confidence_level), get_site_default_lang());
             $message = do_notification_lang('NOTIFICATION_SPAM_CHECK_BLOCK_BODY_BLOCK', $user_ip, $blocked_by, float_format($confidence_level), get_site_default_lang());
-            dispatch_notification('spam_check_block', null, $subject, $message, null, A_FROM_SYSTEM_PRIVILEGED);
+            dispatch_notification('core_staff:spam_check_block', null, $subject, $message, null, A_FROM_SYSTEM_PRIVILEGED);
 
             log_hack_attack_and_exit('ANTISPAM', 'block', float_to_raw_string($confidence_level));
 
@@ -391,7 +391,7 @@ function handle_perceived_spammer_by_confidence(string $user_ip, float $confiden
         require_code('notifications');
         $subject = do_lang('NOTIFICATION_SPAM_CHECK_BLOCK_SUBJECT_APPROVE', $user_ip, $blocked_by, float_format($confidence_level), get_site_default_lang());
         $message = do_notification_lang('NOTIFICATION_SPAM_CHECK_BLOCK_BODY_APPROVE', $user_ip, $blocked_by, float_format($confidence_level), get_site_default_lang());
-        dispatch_notification('spam_check_block', null, $subject, $message, null, A_FROM_SYSTEM_PRIVILEGED);
+        dispatch_notification('core_staff:spam_check_block', null, $subject, $message, null, A_FROM_SYSTEM_PRIVILEGED);
     }
 }
 

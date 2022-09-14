@@ -785,14 +785,14 @@ function _log_hack_attack_and_exit(string $reason, string $reason_param_a = '', 
 
         if (!$silent_to_staff_notifications) {
             $subject = do_lang('HACK_ATTACK_SUBJECT', $ip, null, null, get_site_default_lang());
-            dispatch_notification('hack_attack', null, $subject, $message->evaluate(get_site_default_lang()), null, A_FROM_SYSTEM_PRIVILEGED);
+            dispatch_notification('core_staff:hack_attack', null, $subject, $message->evaluate(get_site_default_lang()), null, A_FROM_SYSTEM_PRIVILEGED);
         }
 
         // IP ban notification (if applicable)...
 
         if ($ip_ban_todo !== null) {
             $subject = do_lang('AUTO_BAN_SUBJECT', $ip, null, null, get_site_default_lang());
-            dispatch_notification('auto_ban', null, $subject, $ip_ban_todo, null, A_FROM_SYSTEM_PRIVILEGED);
+            dispatch_notification('core_staff:auto_ban', null, $subject, $ip_ban_todo, null, A_FROM_SYSTEM_PRIVILEGED);
         }
     }
 

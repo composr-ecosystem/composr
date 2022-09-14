@@ -131,7 +131,7 @@ function do_notification_template(string $codename, ?array $parameters = null, ?
 /**
  * Send out a notification to members enabled.
  *
- * @param  ID_TEXT $notification_code The notification code to use
+ * @param  ID_TEXT $notification_code The notification code to use. May be prefixed with the filename for faster performance where the filename doesn't match the code (allows Composr to find the hook without scanning all notification hooks), i.e. filename:code.
  * @param  ?SHORT_TEXT $code_category The category within the notification code (null: none)
  * @param  SHORT_TEXT $subject Message subject (in Comcode)
  * @param  LONG_TEXT $message Message body (in Comcode)
@@ -176,6 +176,12 @@ function dispatch_notification(string $notification_code, ?string $code_category
         return;
     }
 
+    if (strpos($notification_code, ':') !== false) {
+        list($notification_hook, $notification_code) = explode(':', $notification_code);
+    } else {
+        $notification_hook = null;
+    }
+
     if ($subject == '') {
         $subject = '<' . $notification_code . ' -- ' . (($code_category === null) ? '' : $code_category) . '>';
     }
@@ -189,7 +195,7 @@ function dispatch_notification(string $notification_code, ?string $code_category
         return;
     }
 
-    $dispatcher = new Notification_dispatcher($notification_code, $code_category, $subject, $message, $to_member_ids, $from_member_id);
+    $dispatcher = new Notification_dispatcher($notification_code, $code_category, $subject, $message, $to_member_ids, $from_member_id, $notification_hook);
     $dispatcher->priority = $priority;
     $dispatcher->create_ticket = $create_ticket;
     $dispatcher->no_cc = $no_cc;
@@ -219,13 +225,23 @@ function dispatch_notification(string $notification_code, ?string $code_category
  * Find the notification object for a particular notification code.
  *
  * @param  ID_TEXT $notification_code The notification code to use
+ * @param  ?string $notification_hook Notification hook $notification_code exists in (null: auto-detect)
  * @return ?object Notification object (null: could not find)
  * @ignore
  */
-function _get_notification_ob_for_code(string $notification_code) : ?object
+function _get_notification_ob_for_code(string $notification_code, ?string $notification_hook = null) : ?object
 {
-    $path = 'hooks/systems/notifications/' . filter_naughty(preg_replace('#__\w*$#', '', $notification_code));
-    if ((!is_file(get_file_base() . '/sources/' . $path . '.php')) && (!is_file(get_file_base() . '/sources_custom/' . $path . '.php'))) {
+    if ($notification_hook === null) {
+        $notification_hook = $notification_code; // We'll try it
+    }
+    $path = 'hooks/systems/notifications/' . $notification_hook;
+
+    if ((is_file(get_file_base() . '/sources/' . $path . '.php')) || (is_file(get_file_base() . '/sources_custom/' . $path . '.php'))) {
+        // Ah, we know already (file exists directly) - so quick route
+        require_code($path);
+        return object_factory('Hook_notification_' . filter_naughty(preg_replace('#__\w*$#', '', $notification_hook)));
+    } else {
+        // Full scan
         require_all_lang();
         $hooks = find_all_hook_obs('systems', 'notifications', 'Hook_notification_');
         foreach ($hooks as $ob) {
@@ -235,12 +251,8 @@ function _get_notification_ob_for_code(string $notification_code) : ?object
                 }
             }
         }
-    } else { // Ah, we know already (file exists directly) - so quick route
-        require_code($path);
-        return object_factory('Hook_notification_' . filter_naughty(preg_replace('#__\w*$#', '', $notification_code)));
     }
     return null;
-    //return object_factory('Hook_Notification'); // default
 }
 
 /**
@@ -251,6 +263,7 @@ function _get_notification_ob_for_code(string $notification_code) : ?object
 class Notification_dispatcher
 {
     public $notification_code = null;
+    public $notification_hook = null;
     public $code_category = null;
     public $subject = null;
     public $message = null;
@@ -278,10 +291,12 @@ class Notification_dispatcher
      * @param  LONG_TEXT $message Message body (in Comcode)
      * @param  ?array $to_member_ids List of enabled members to limit sending to (null: everyone)
      * @param  ?integer $from_member_id The member ID doing the sending. Either a MEMBER or a negative number (e.g. A_FROM_SYSTEM_UNPRIVILEGED) (null: current member)
+     * @param  ?string $notification_hook Notification hook $notification_code exists in (null: auto-detect)
      */
-    public function __construct(string $notification_code, ?string $code_category, string $subject, string $message, ?array $to_member_ids, ?int $from_member_id)
+    public function __construct(string $notification_code, ?string $code_category, string $subject, string $message, ?array $to_member_ids, ?int $from_member_id, ?string $notification_hook)
     {
         $this->notification_code = $notification_code;
+        $this->notification_hook = $notification_hook;
         $this->code_category = $code_category;
         $this->subject = $subject;
         $this->message = $message;
@@ -321,7 +336,7 @@ class Notification_dispatcher
             }
         }
 
-        $ob = _get_notification_ob_for_code($this->notification_code);
+        $ob = _get_notification_ob_for_code($this->notification_code, $this->notification_hook);
         if ($ob === null) {
             if ((strpos($this->notification_code, '__') === false) && (get_page_name() != 'admin_setupwizard')) { // Setupwizard may have removed after register_shutdown_function was called
                 fatal_exit('Missing notification code: ' . $this->notification_code);
@@ -818,13 +833,13 @@ function _find_member_statistical_notification_type(int $to_member_id, string $n
 }
 
 /**
- * Enable notifications for a member on a notification type+category.
+ * Enable notifications for a member on a notification code+category.
  *
  * @param  ID_TEXT $notification_code The notification code to use
  * @param  ?SHORT_TEXT $notification_category The category within the notification code (null: none)
  * @param  ?MEMBER $member_id The member being signed up (null: current member)
  * @param  ?integer $setting Setting to use (null: default)
- * @param  boolean $reset_for_all_types Reset all notification types, not just set for $setting
+ * @param  boolean $reset_for_all_types Reset all notification codes, not just set for $setting
  */
 function enable_notifications(string $notification_code, ?string $notification_category, ?int $member_id = null, ?int $setting = null, bool $reset_for_all_types = true)
 {
@@ -879,7 +894,7 @@ function enable_notifications(string $notification_code, ?string $notification_c
 }
 
 /**
- * Disable notifications for a member on a notification type+category.
+ * Disable notifications for a member on a notification code+category.
  * Chances are you don't want to call this, you want to call enable_notifications with $setting = A_NA. That'll stop the default coming back.
  *
  * @param  ID_TEXT $notification_code The notification code to use
@@ -916,7 +931,7 @@ function disable_notifications(string $notification_code, string $notification_c
 }
 
 /**
- * Find whether notifications are enabled for a member on a notification type+category. Does not check security (must go through notification object for that).
+ * Find whether notifications are enabled for a member on a notification code+category. Does not check security (must go through notification object for that).
  *
  * @param  ID_TEXT $notification_code The notification code to check
  * @param  ?SHORT_TEXT $notification_category The category within the notification code (null: none)
@@ -952,7 +967,7 @@ function notification_locked_down(string $notification_code) : ?int
 }
 
 /**
- * Find how notifications are enabled for a member on a notification type+category. Does not check security (must go through notification object for that).
+ * Find how notifications are enabled for a member on a notification code+category. Does not check security (must go through notification object for that).
  *
  * @param  ID_TEXT $notification_code The notification code to check
  * @param  ?SHORT_TEXT $notification_category The category within the notification code (null: none)
@@ -1009,7 +1024,7 @@ function notifications_setting(string $notification_code, ?string $notification_
 }
 
 /**
- * Disable notifications for all members on a certain notification type+category.
+ * Disable notifications for all members on a certain notification code+category.
  *
  * @param  ID_TEXT $notification_code The notification code
  * @param  ?SHORT_TEXT $notification_category The category within the notification code (null: none)

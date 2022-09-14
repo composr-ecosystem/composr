@@ -1496,7 +1496,7 @@ where:
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$NOTIFICATIONS_AVAILABLE,download}</td>
-			<td>Find whether notifications are allowed for this notification type (i.e. not locked down)</td>
+			<td>Find whether notifications are allowed for this notification code (i.e. not locked down)</td>
 		</tr>
 		<tr style="background: #FFDDDD">
 			<td>{$HONEYPOT_LINK}</td>

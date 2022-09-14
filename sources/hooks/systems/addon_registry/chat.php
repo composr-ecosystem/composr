@@ -133,8 +133,6 @@ class Hook_addon_registry_chat
             'themes/default/templates/CHAT_FRIENDS.tpl',
             'sources/hooks/systems/startup/im.php',
             'sources/hooks/systems/notifications/chat.php',
-            'sources/hooks/systems/notifications/member_entered_chatroom.php',
-            'sources/hooks/systems/notifications/cns_friend_birthday.php',
             'sources/hooks/systems/config/chat_default_post_colour.php',
             'sources/hooks/systems/config/chat_default_post_font.php',
             'sources/hooks/systems/config/chat_flood_timelimit.php',

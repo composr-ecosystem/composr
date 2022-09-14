@@ -52,7 +52,7 @@ Additionally, most content has an explicit 'staff notes' field for you to share 
 
 [title="3"]Validation and workflows[/title]
 
-You may wish to intentionally not validate content, even when a staff member adds it. This provides an opportunity for another member of staff (perhaps monitoring the needs-validation notification type) to check the content is ready for publishing.
+You may wish to intentionally not validate content, even when a staff member adds it. This provides an opportunity for another member of staff (perhaps monitoring the needs-validation notification) to check the content is ready for publishing.
 
 Larger enterprises may require a more sophisticated workflow system. Composr has a non-bundled workflows addon, which provides a fully-managed process of multiple configurable approval steps for content (to different staff usergroups), before it goes live. The workflow system can be implemented for different content types, and is currently implemented for galleries out-of-the-box. Enterprise customers will want the system tuning for individual needs. If you require an advanced enterprise workflow system, you should enquire with ocProducts (or other third-party developers) with your specific needs, and whatever system you require can be set up for you.
 

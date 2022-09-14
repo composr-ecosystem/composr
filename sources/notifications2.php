@@ -171,7 +171,7 @@ function notifications_ui(int $member_id_of) : object
         sort_maps_by($notification_sections[$i]['NOTIFICATION_CODES'], 'NOTIFICATION_LABEL', false, true);
     }
 
-    // Save via form post (for top-level notification types, not under a notification code)
+    // Save via form post (for top-level notification code, not under a notification category)
     if (has_interesting_post_fields()) {
         foreach ($notification_sections as $notification_section) {
             foreach ($notification_section['NOTIFICATION_CODES'] as $notification_code) {

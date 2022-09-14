@@ -7,10 +7,10 @@ Composr includes a highly-configurable notification system for members to be ale
 [title="2"]Choosing notifications[/title]
 
 [media width="150" description="Setting notifications" float="right"]data_custom/images/docs/tut_notifications/notifications.png[/media]
-There are a wide number of notification types that members can receive.
+There are a wide number of notifications that members can receive.
 Some are set to be enabled by default, and some are only available based on privileges.
 
-Some notification types allow fine-grained control, allowing you to choose to receive them only for certain notification categories. For example, with forum topic notifications you can choose to receive them only for certain forums. This is similar to what some forum software calls 'tracking'.
+Some notifications allow fine-grained control, allowing you to choose to receive them only for certain notification categories. For example, with forum topic notifications you can choose to receive them only for certain forums. This is similar to what some forum software calls 'tracking'.
 
 [box="Double notifications" width="25em" float="right"]
 [media thumb="0" framed="0" float="right"]data_custom/images/docs/remember.png[/media]
@@ -63,16 +63,16 @@ Note that it will only CC a notification e-mail to this address once, not once p
 
 [title="2"]Limits[/title]
 
-If the number of categories for a notification type exceeds the value of the "Safety listing limit" configuration option (Admin Zone > Setup > Configuration > Content editing options > Advanced) then a full selection tree will not be provided under the advanced notification settings.
-For example, if you have a large number of download categories, the Download notification type will not show a full download category tree.
+If the number of categories for a notification exceeds the value of the "Safety listing limit" configuration option (Admin Zone > Setup > Configuration > Content editing options > Advanced) then a full selection tree will not be provided under the advanced notification settings.
+For example, if you have a large number of download categories, the Download notification will not show a full download category tree.
 Instead, only the IDs of notification categories that the user has already monitored will show. New notifications may be set via clicking Monitor buttons when browsing through content in the normal fashion.
 
 [title="2"]Lock-down[/title]
 
-[media width="150" description="Setting notification type lock-downs" float="right"]data_custom/images/docs/tut_notifications/lockdown.png[/media]
-In the Admin Zone you can define what notification types are "locked-down". You can use this to:
+[media width="150" description="Setting notification lock-downs" float="right"]data_custom/images/docs/tut_notifications/lockdown.png[/media]
+In the Admin Zone you can define what notifications are "locked-down". You can use this to:
  - See which notifications are designed for staff only
- - Stop any member from receiving particular notification types
+ - Stop any member from receiving particular notifications
  - Force members to receive particular notifications types
 
 Locked-down notifications will not show on the user's notification configuration at all.
@@ -81,12 +81,12 @@ Set lock-downs from Admin Zone > Setup > Notification lock-down.
 
 You will see the following columns:
  - Notification title (the column title is actually unlabelled, but this is what it is)
- - "Privileged / Restricted" -- this is Yes or No, and shows the general access for this notification type in Composr (it is non-configurable, shown for informative purposes only)
+ - "Privileged / Restricted" -- this is Yes or No, and shows the general access for this notification in Composr (it is non-configurable, shown for informative purposes only)
  - "Not locked down, free choice" -- this is a checkbox, defaulting to 'On'. If you uncheck it then the members will have the settings that you choose in the interface (i.e. they can no longer choose their own settings). If it stays checked, the following checkboxes have no effect.
- - "Member's typical notification type" -- specifies that a notification type will be forcibly sent out in the member's average way they've set to receive notifications
- - (All the different ways of receiving notifications) -- the checkbox selections here determine [i]specifically[/i] how members will forcibly receive this notification type (you will not typically use this in combination with "Member's typical notification type").
+ - "Member's typical notification type" -- specifies that a notification will be forcibly sent out in the member's average way they've set to receive notifications
+ - (All the different ways of receiving notifications) -- the checkbox selections here determine [i]specifically[/i] how members will forcibly receive this notification (you will not typically use this in combination with "Member's typical notification type").
 
-If no checkboxes are checked then the members will not be able to receive the notification type at all. This is quite a common configuration, essentially allowing you to turn off a notification type for the whole website.
+If no checkboxes are checked then the members will not be able to receive the notification at all. This is quite a common configuration, essentially allowing you to turn off a notification for the whole website.
 
 Note that the settings apply to all members (while respecting the notification permissions). You cannot set lock-downs against specific usergroups.
 

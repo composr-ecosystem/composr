@@ -26,12 +26,12 @@ class notification_classifications_test_set extends cms_test_case
             return;
         }
 
-        // Ensure all notification types used
+        // Ensure all notification codes used
         require_code('notifications');
         $hook_obs = find_all_hook_obs('systems', 'notifications', 'Hook_notification_');
-        $notification_types = [];
+        $notification_codes = [];
         foreach ($hook_obs as $hook_ob) {
-            $notification_types += $hook_ob->list_handled_codes();
+            $notification_codes += $hook_ob->list_handled_codes();
         }
 
         require_code('files2');
@@ -45,10 +45,10 @@ class notification_classifications_test_set extends cms_test_case
                 continue;
             }
 
-            foreach (array_keys($notification_types) as $notification_type) {
+            foreach (array_keys($notification_codes) as $notification_code) {
                 $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
-                if (preg_match('#dispatch_notification\(\s*\'' . $notification_type . '\'#', $c) != 0) {
-                    unset($notification_types[$notification_type]);
+                if (preg_match('#dispatch_notification\(\s*\'(\w+:)?' . $notification_code . '\'#', $c) != 0) {
+                    unset($notification_codes[$notification_code]);
                 }
             }
         }
@@ -58,33 +58,33 @@ class notification_classifications_test_set extends cms_test_case
             'ticket_new_staff',
             'ticket_reply_staff',
         ];
-        foreach (array_keys($notification_types) as $notification_type) {
+        foreach (array_keys($notification_codes) as $notification_code) {
             // Exceptions
-            if (preg_match('#^(classifieds|catalogue_entry|catalogue_view_reports)__#', $notification_type) != 0) {
+            if (preg_match('#^(classifieds|catalogue_entry|catalogue_view_reports)__#', $notification_code) != 0) {
                 continue;
             }
 
-            $this->assertTrue(in_array($notification_type, $allowed), $notification_type . ' is unused');
+            $this->assertTrue(in_array($notification_code, $allowed), $notification_code . ' is unused');
         }
     }
 
-    public function testNonOptimalNotificationTypes()
+    public function testNonOptimalNotificationCodes()
     {
         require_code('notifications');
         $hook_obs = find_all_hook_obs('systems', 'notifications', 'Hook_notification_');
-        $notification_types = [];
+        $notification_codes = [];
         foreach ($hook_obs as $hook => $hook_ob) {
-            $notification_types = array_keys($hook_ob->list_handled_codes());
+            $notification_codes = array_keys($hook_ob->list_handled_codes());
 
-            if (count($notification_types) == 1) {
-                $notification_type = $notification_types[0];
+            if (count($notification_codes) == 1) {
+                $notification_code = $notification_codes[0];
 
-                // Exception: programattically generated notification types
-                if (strpos($notification_type, '__') !== false) {
+                // Exception: programattically generated notification codes
+                if (strpos($notification_code, '__') !== false) {
                     continue;
                 }
 
-                $this->assertTrue($notification_type == $hook, 'Needless notification type/filename inconsistency: ' . $hook . ' vs ' . $notification_type);
+                $this->assertTrue($notification_code == $hook, 'Needless notification code/filename inconsistency: ' . $hook . ' vs ' . $notification_code);
             }
         }
     }
@@ -132,43 +132,36 @@ class notification_classifications_test_set extends cms_test_case
         }
 
         /*
-        Actually it is a bad idea to try and merge all the notification types into a smaller number of hook files as it breaks the optimisation of automatically finding the correct file based on matching filename and hook type.
-        Theoretically we could find a new optimisation, like specifying the hook file in the notification dispatch call, but right now there is no strong incentive for this as our number of hooks has been brought down to a reasonable level - not worth the work/overhead-complexity.
-        So, it is COMMON to keep adding stuff to the exceptions listed in the below sections.
+        If merging notification codes that are in the 'critical path' (i.e. need to be able to run quickly), call dispatch_notification with the file:code syntax.
         */
 
-        foreach ($code as $contents => $types) {
-            sort($types);
+        foreach ($code as $contents => $codes) {
+            sort($codes);
 
             // Exceptions
-            if ($types == ["adminzone_dashboard_accessed", "auto_ban", "hack_attack"]) { // Used in high-stakes fast-speed situations
-                continue;
-            }
+            // (None right now)
 
-            $this->assertTrue(count($types) == 1, json_encode($types) . ' can all be merged into a single hook based on code similarity');
+            $this->assertTrue(count($codes) == 1, json_encode($codes) . ' can all be merged into a single hook based on code similarity');
         }
 
-        foreach ($packages as $addon => $types) {
-            sort($types);
+        foreach ($packages as $addon => $codes) {
+            sort($codes);
 
             // Exceptions
-            if ($types == ["adminzone_dashboard_accessed","auto_ban","error_occurred","hack_attack","spam_check_block"]) { // Used in high-stakes fast-speed situations
+            if ($codes == ["core_staff","error_occurred"]) { // error_occurred is too complex to want to mix in
                 continue;
             }
-            if ($types == ["chat","cns_friend_birthday","member_entered_chatroom"]) { // Used too commonly
+            if ($codes == ["ticket_assigned_staff","ticket_new_staff","ticket_reply","ticket_reply_staff"]) { // Too complex to want to mix together
                 continue;
             }
-            if ($types == ["ticket_assigned_staff","ticket_new_staff","ticket_reply","ticket_reply_staff"]) { // Too complex
+            if ($codes == ["comment_posted","like"]) { // comment_posted is too complex to want to mix in
                 continue;
             }
-            if ($types == ["comment_posted","like"]) { // Used too commonly
-                continue;
-            }
-            if ($types == ["cns_pts","cns_topic"]) { // cns_topic used too commonly
+            if ($codes == ["cns_pts","cns_topic"]) { // cns_topic is too complex to want to mix in
                 continue;
             }
 
-            $this->assertTrue(count($types) == 1, json_encode($types) . ' can all be merged into a single hook based on addon being ' . $addon);
+            $this->assertTrue(count($codes) == 1, json_encode($codes) . ' can all be merged into a single hook based on addon being ' . $addon);
         }
     }
 }
