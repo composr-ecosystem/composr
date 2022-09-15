@@ -674,36 +674,63 @@ class Forum_driver_ipb3 extends Forum_driver_base
      * Add the specified custom field to the forum (some forums implemented this using proper Custom Profile Fields, others through adding a new field).
      *
      * @param  string $name The name of the new custom field
-     * @param  integer $length The length of the new custom field
+     * @param  integer $length The length of the new custom field (ignored for Conversr, $type used instead)
      * @param  BINARY $locked Whether the field is locked
      * @param  BINARY $viewable Whether the field is for viewing
      * @param  BINARY $settable Whether the field is for setting
+     * @param  BINARY $required Whether the field is required
+     * @param  string $description Description
+     * @param  string $type The field type (it's the same as the Composr field types, although we only expect forum drivers to specifically support short_text/long_text/integer/float and for the rest to be mapped to long_text)
+     * @param  BINARY $encrypted Whether the field is encrypted
+     * @param  ?string $default Default field value (null: standard for field type)
+     * @param  SHORT_TEXT $options Field options
+     * @param  BINARY $include_in_main_search Whether to include in main keyword search
+     * @param  BINARY $allow_template_search Whether to allow template search
+     * @param  ID_TEXT $icon Whether it is required that every member have this field filled in
+     * @param  ID_TEXT $section Whether it is required that every member have this field filled in
+     * @param  LONG_TEXT $tempcode Whether it is required that every member have this field filled in
+     * @param  ID_TEXT $autofill_type Autofill field name from https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofill-field
+     * @param  ID_TEXT $autofill_hint Autofill hint: '' or 'shipping' or 'billing'
      * @return boolean Whether the custom field was created successfully
      */
-    public function install_create_custom_field(string $name, int $length, int $locked = 1, int $viewable = 0, int $settable = 0) : bool
+    public function install_create_custom_field(string $name, int $length, int $locked = 1, int $viewable = 0, int $settable = 0, int $required = 0, string $description = '', string $type = 'long_text', int $encrypted = 0, ?string $default = null, string $options = '', int $include_in_main_search = 0, int $allow_template_search = 0, string $icon = '', string $section = '', string $tempcode = '', string $autofill_type = '', string $autofill_hint = '') : bool
     {
         $name = 'cms_' . $name;
         $id = $this->db->query_select_value_if_there('pfields_data', 'pf_id', ['pf_title' => $name]);
         if ($id === null) {
             $id = $this->db->query_insert('pfields_data', ['pf_group_id' => 1, 'pf_input_format' => '', 'pf_topic_format' => '{title} : {content}', 'pf_content' => '', 'pf_title' => $name, 'pf_type' => 'text', 'pf_member_hide' => 1 - $viewable, 'pf_max_input' => $length, 'pf_member_edit' => $settable, 'pf_position' => 0], true);
-            $query = $this->db->driver->add_table_field__sql($this->db->get_table_prefix() . 'pfields_content', 'field_' . strval($id), 'LONG_TEXT', '');
+            $db_type = $this->remap_composr_field_type_to_db_type($type);
+            $query = $this->db->driver->add_table_field__sql($this->db->get_table_prefix() . 'pfields_content', 'field_' . strval($id), $db_type, '');
             $this->db->query($query, null, 0, true); // Suppress errors in case field already exists
         }
         return $id !== null;
     }
 
     /**
-     * Edit the specified custom field to the forum (some forums implemented this using proper Custom Profile Fields, others through adding a new field).
+     * Edit the specified custom field in the forum (some forums implemented this using proper Custom Profile Fields, others through adding a new field).
      *
-     * @param  ID_TEXT $old_name The name of the custom field to edit
+     * @param  string $old_name The name of the existing custom field to edit
      * @param  string $name The new name of the custom field
-     * @param  integer $length The length of the custom field
+     * @param  integer $length The length of the custom field (ignored for Conversr, $type used instead)
      * @param  BINARY $locked Whether the field is locked
      * @param  BINARY $viewable Whether the field is for viewing
      * @param  BINARY $settable Whether the field is for setting
+     * @param  BINARY $required Whether the field is required
+     * @param  string $description Description
+     * @param  string $type The field type (it's the same as the Composr field types, although we only expect forum drivers to specifically support short_text/long_text/integer/float and for the rest to be mapped to long_text)
+     * @param  BINARY $encrypted Whether the field is encrypted
+     * @param  ?string $default Default field value (null: standard for field type)
+     * @param  SHORT_TEXT $options Field options
+     * @param  BINARY $include_in_main_search Whether to include in main keyword search
+     * @param  BINARY $allow_template_search Whether to allow template search
+     * @param  ID_TEXT $icon Whether it is required that every member have this field filled in
+     * @param  ID_TEXT $section Whether it is required that every member have this field filled in
+     * @param  LONG_TEXT $tempcode Whether it is required that every member have this field filled in
+     * @param  ID_TEXT $autofill_type Autofill field name from https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofill-field
+     * @param  ID_TEXT $autofill_hint Autofill hint: '' or 'shipping' or 'billing'
      * @return boolean Whether the custom field was edited successfully
      */
-    public function install_edit_custom_field(string $old_name, string $name, int $length, int $locked = 1, int $viewable = 0, int $settable = 0) : bool
+    public function install_edit_custom_field(string $old_name, string $name, int $length, int $locked = 1, int $viewable = 0, int $settable = 0, int $required = 0, string $description = '', string $type = 'long_text', int $encrypted = 0, ?string $default = null, string $options = '', int $include_in_main_search = 0, int $allow_template_search = 0, string $icon = '', string $section = '', string $tempcode = '', string $autofill_type = '', string $autofill_hint = '') : bool
     {
         $old_name = 'cms_' . $old_name;
         $name = 'cms_' . $name;
@@ -1436,25 +1463,25 @@ class Forum_driver_ipb3 extends Forum_driver_base
      * Some forums do cookie logins differently, so a Boolean is passed in to indicate whether it is a cookie login.
      *
      * @param  ?SHORT_TEXT $username The member username (null: don't use this in the authentication - but look it up using the ID if needed)
-     * @param  MEMBER $user_id The member ID
+     * @param  ?MEMBER $member The member ID (null: use $username)
      * @param  SHORT_TEXT $password_hashed The md5-hashed password
      * @param  string $password_raw The raw password
-     * @param  boolean $cookie_login Whether this is a cookie login
+     * @param  boolean $cookie_login Whether this is a cookie login, determines how the hashed password is treated for the value passed in
      * @return array A map of 'id' and 'error'. If 'id' is null, an error occurred and 'error' is set
      */
-    public function forum_authorise_login(?string $username, int $user_id, string $password_hashed, string $password_raw, bool $cookie_login = false) : array
+    public function forum_authorise_login(?string $username, ?int $member, string $password_hashed, string $password_raw, bool $cookie_login = false) : array
     {
         $out = [];
         $out['id'] = null;
 
-        if ($user_id === null) {
+        if ($member === null) {
             $rows = $this->db->query_select('members', ['*'], ['name' => $this->ipb_escape($username)], '', 1);
             if (array_key_exists(0, $rows)) {
                 $this->MEMBER_ROWS_CACHED[$rows[0]['member_id']] = $rows[0];
             }
         } else {
             $rows = [];
-            $rows[0] = $this->get_member_row($user_id);
+            $rows[0] = $this->get_member_row($member);
         }
 
         if (!array_key_exists(0, $rows) || $rows[0] === null) { // All hands to lifeboats

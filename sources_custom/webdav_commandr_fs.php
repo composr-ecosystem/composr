@@ -439,11 +439,11 @@ namespace webdav_commandr_fs {
                 return false;
             }
 
-            $password_hashed = $GLOBALS['FORUM_DRIVER']->forum_md5($password, $username);
+            $password_hashed = $GLOBALS['FORUM_DRIVER']->password_hash($password, $username);
             $result = $GLOBALS['FORUM_DRIVER']->forum_authorise_login($username, null, $password_hashed, $password);
             if ($result['id'] === null) { // Failure, try blank password (as some clients don't let us input a blank password, so the real password could be blank)
                 $password = '';
-                $password_hashed = $GLOBALS['FORUM_DRIVER']->forum_md5($password, $username);
+                $password_hashed = $GLOBALS['FORUM_DRIVER']->password_hash($password, $username);
                 $result = $GLOBALS['FORUM_DRIVER']->forum_authorise_login($username, null, $password_hashed, $password);
             }
             if ($result['id'] !== null) {

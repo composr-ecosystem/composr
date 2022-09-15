@@ -366,22 +366,6 @@ function get_displayname(string $username) : string
 }
 
 /**
- * Apply hashing to some input. To this date, all forum drivers use md5, but some use it differently.
- * This function will pass through the parameters to an equivalent forum_md5 function if it is defined.
- *
- * @param  string $data The data to hash (the password in actuality)
- * @param  string $key The string converted member-ID in actuality, although this function is more general
- * @return string The hashed data
- */
-function apply_forum_driver_md5_variant(string $data, string $key) : string
-{
-    if (method_exists($GLOBALS['FORUM_DRIVER'], 'forum_md5')) {
-        return $GLOBALS['FORUM_DRIVER']->forum_md5($data, $key);
-    }
-    return md5($data);
-}
-
-/**
  * Get the current session ID.
  *
  * @param  boolean $ignore_static_cache Whether to ignore the fact there may be a static cache; used to get true session ID during authentication code to break a paradox

@@ -197,7 +197,7 @@ function handle_active_login(string $username)
     }
 
     $password = post_param_string('password', false, INPUT_FILTER_PASSWORD);
-    $login_array = $GLOBALS['FORUM_DRIVER']->forum_authorise_login($username, null, apply_forum_driver_md5_variant($password, $username), $password);
+    $login_array = $GLOBALS['FORUM_DRIVER']->forum_authorise_login($username, null, $GLOBALS['FORUM_DRIVER']->password_hash($password, $username), $password);
     $member_id = $login_array['id'];
 
     // Run hooks, if any exist
@@ -249,13 +249,13 @@ function handle_active_login(string $username)
                 // Create password cookie
                 if (!$serialized) {
                     if ($GLOBALS['FORUM_DRIVER']->is_hashed()) {
-                        cms_setcookie(get_pass_cookie(), apply_forum_driver_md5_variant($password, $username), false, true);
+                        cms_setcookie(get_pass_cookie(), $GLOBALS['FORUM_DRIVER']->password_hash($password, $username), false, true);
                     } else {
                         cms_setcookie(get_pass_cookie(), $password, false, true);
                     }
                 } else {
                     if ($GLOBALS['FORUM_DRIVER']->is_hashed()) {
-                        $result[$real_pass_cookie] = apply_forum_driver_md5_variant($password, $username);
+                        $result[$real_pass_cookie] = $GLOBALS['FORUM_DRIVER']->password_hash($password, $username);
                     } else {
                         $result[$real_pass_cookie] = $password;
                     }

@@ -364,7 +364,7 @@ class db_correctness_test_set extends cms_test_case
             'forum_get_lang',
             'forum_id_from_name',
             'forum_layer_initialise',
-            'forum_md5',
+            'password_hash',
             'forum_url',
             'get_custom_fields',
             'get_displayname',

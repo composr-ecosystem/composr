@@ -151,7 +151,7 @@ class Forum_driver_cns extends Forum_driver_base
      *
      * @param  string $name The name of the new custom field
      */
-    protected function _install_delete_custom_field(string $name)
+    public function install_delete_custom_field(string $name)
     {
         $id = $this->db->query_select_value_if_there('f_custom_fields', 'id', [$this->db->translate_field_ref('cf_name') => 'cms_' . $name]);
         if ($id !== null) {
@@ -170,7 +170,7 @@ class Forum_driver_cns extends Forum_driver_base
      * @param  BINARY $settable Whether the field is for setting
      * @param  BINARY $required Whether the field is required
      * @param  string $description Description
-     * @param  string $type The field type
+     * @param  string $type The field type (it's the same as the Composr field types, although we only expect forum drivers to specifically support short_text/long_text/integer/float and for the rest to be mapped to long_text)
      * @param  BINARY $encrypted Whether the field is encrypted
      * @param  ?string $default Default field value (null: standard for field type)
      * @param  SHORT_TEXT $options Field options
@@ -200,7 +200,7 @@ class Forum_driver_cns extends Forum_driver_base
      * @param  BINARY $settable Whether the field is for setting
      * @param  BINARY $required Whether the field is required
      * @param  string $description Description
-     * @param  string $type The field type
+     * @param  string $type The field type (it's the same as the Composr field types, although we only expect forum drivers to specifically support short_text/long_text/integer/float and for the rest to be mapped to long_text)
      * @param  BINARY $encrypted Whether the field is encrypted
      * @param  ?string $default Default field value (null: standard for field type)
      * @param  SHORT_TEXT $options Field options
@@ -1041,7 +1041,7 @@ class Forum_driver_cns extends Forum_driver_base
      * @param  ID_TEXT $username The username
      * @return SHORT_TEXT The display name
      */
-    protected function _get_displayname(string $username) : string
+    public function get_displayname(string $username) : string
     {
         $generator = get_option('display_name_generator');
         if ($generator != '') {
@@ -1092,9 +1092,10 @@ class Forum_driver_cns extends Forum_driver_base
      * Get the photo URL for the specified member ID.
      *
      * @param  MEMBER $member The member ID
+     * @param  boolean $full Get full photo
      * @return URLPATH The URL (blank: none)
      */
-    public function get_member_photo_url(int $member) : string
+    public function get_member_photo_url(int $member, bool $full = false) : string
     {
         if ($member == db_get_first_id()) {
             return '';
@@ -1658,7 +1659,7 @@ class Forum_driver_cns extends Forum_driver_base
      * @param  SHORT_TEXT $username The username
      * @return string The hashed data
      */
-    public function forum_md5(string $password, string $username) : string
+    public function password_hash(string $password, string $username) : string
     {
         require_code('cns_members');
 
@@ -1683,16 +1684,16 @@ class Forum_driver_cns extends Forum_driver_base
      * Some forums do cookie logins differently, so a Boolean is passed in to indicate whether it is a cookie login.
      *
      * @param  ?SHORT_TEXT $username The member username (null: don't use this in the authentication - but look it up using the ID if needed)
-     * @param  ?MEMBER $user_id The member ID (null: use member name)
+     * @param  ?MEMBER $member The member ID (null: use $username)
      * @param  SHORT_TEXT $password_hashed The md5-hashed password
      * @param  string $password_raw The raw password
      * @param  boolean $cookie_login Whether this is a cookie login, determines how the hashed password is treated for the value passed in
      * @return array A map of 'id' and 'error'. If 'id' is null, an error occurred and 'error' is set
      */
-    public function forum_authorise_login(?string $username, ?int $user_id, string $password_hashed, string $password_raw, bool $cookie_login = false) : array
+    public function forum_authorise_login(?string $username, ?int $member, string $password_hashed, string $password_raw, bool $cookie_login = false) : array
     {
         require_code('cns_forum_driver_helper_auth');
-        return _forum_authorise_login($this, $username, $user_id, $password_hashed, $password_raw, $cookie_login);
+        return _forum_authorise_login($this, $username, $member, $password_hashed, $password_raw, $cookie_login);
     }
 
     /**
@@ -1841,12 +1842,12 @@ class Forum_driver_cns extends Forum_driver_base
     /**
      * Get a first known IP address of the given member.
      *
-     * @param  MEMBER $id The member ID
+     * @param  MEMBER $member The member ID
      * @return IP The IP address
      */
-    public function get_member_ip(int $id) : string
+    public function get_member_ip(int $member) : string
     {
-        return $this->get_member_row_field($id, 'm_ip_address');
+        return $this->get_member_row_field($member, 'm_ip_address');
     }
 
     /**

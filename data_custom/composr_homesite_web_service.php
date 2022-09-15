@@ -75,7 +75,7 @@ if ($password_given === null) {
     if (strpos($password_given, ':') !== false) {
         list($username, $password) = array_map('trim', explode(':', $password_given, 2));
 
-        $login_array = $GLOBALS['FORUM_DRIVER']->forum_authorise_login($username, null, apply_forum_driver_md5_variant($password, $username), $password);
+        $login_array = $GLOBALS['FORUM_DRIVER']->forum_authorise_login($username, null, $GLOBALS['FORUM_DRIVER']->password_hash($password, $username), $password);
         $member = $login_array['id'];
         if (($member === null) || (!$GLOBALS['FORUM_DRIVER']->is_super_admin($member))) {
             exit('Access Denied');

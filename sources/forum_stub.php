@@ -57,15 +57,34 @@ class Forum_driver_base
     }
 
     /**
+     * Find the Composr database type for a Composr field type.
+     * Limited selection, and hard-coded (it does not actually use the real Composr field type system at all).
+     * The Conversr implementation actually uses Conversr CPFs which fully supports the actual Composr field type system.
+     *
+     * @param  string $type The Composr field type
+     * @return string The Composr database type
+     */
+    protected function remap_composr_field_type_to_db_type(string $type) : string
+    {
+        switch ($type) {
+            case 'short_text':
+                return 'SHORT_TEXT';
+            case 'integer':
+                return 'INTEGER';
+            case 'float':
+                return 'REAL';
+        }
+        return 'LONG_TEXT';
+    }
+
+    /**
      * Delete the specified custom field from the forum.
      *
      * @param  string $name The name of the new custom field
      */
     public function install_delete_custom_field(string $name)
     {
-        if (method_exists($this, '_install_delete_custom_field')) {
-            $this->_install_delete_custom_field($name);
-        }
+        // Default implementation does nothing
     }
 
     /**
@@ -297,10 +316,8 @@ class Forum_driver_base
      */
     public function get_displayname(string $username) : string
     {
-        if (!method_exists($this, '_get_displayname')) {
-            return $username;
-        }
-        return $this->_get_displayname($username);
+        // Default implementation just uses usernames
+        return $username;
     }
 
     /**
@@ -590,5 +607,18 @@ class Forum_driver_base
     public function get_post_remaining_details(int $topic_id, array $post_ids) : array
     {
         return [];
+    }
+
+    /**
+     * The hashing algorithm of this forum driver.
+     *
+     * @param  string $data The data to hash (the password in actuality)
+     * @param  string $key The string converted member-ID in actuality, although this function is more general. For cookie logins, 'ys'
+     * @param  boolean $just_first Whether to just get the old style hash
+     * @return string The hashed data
+     */
+    public function forum_md5(string $data, string $key, bool $just_first = false) : string
+    {
+        return md5($data);
     }
 }

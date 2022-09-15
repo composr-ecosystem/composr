@@ -38,49 +38,80 @@ class forum_drivers_test_set extends cms_test_case
         }
         closedir($dh);
 
-        $functions = [];
+        $file_functions = [];
 
         foreach ($files as $file => $path) {
             $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK);
-            $functions[$file] = [];
+            $file_functions[$file] = [];
             $matches = [];
-            $num_matches = preg_match_all('#^\s*((protected|public) )?function (\w+)\(#m', $c, $matches);
+            $num_matches = preg_match_all('#^\s*((protected|public) )?function (\w+)\((.*)\)#m', $c, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
-                $functions[$file][] = $matches[3][$i];
+                $function = $matches[3][$i];
+                $file_functions[$file][$function] = $matches[4][$i];
             }
-            sort($functions[$file]);
+            ksort($file_functions[$file]);
         }
 
-        foreach ($functions as $file => $has) {
+        foreach ($file_functions as $file => $functions) {
             if ($file == 'cns') {
-                continue;
+                continue; // CNS is the baseline we are comparing against
             }
 
-            foreach ($functions['cns'] as $func) {
+            foreach ($file_functions['cns'] as $function => $cns_parameters) {
                 $exceptions = [
                     // Optional
-                    'forum_md5',
                     'forum_create_cookie',
-
-                    // Optional, guarded by forum_stub.php
-                    '_get_displayname',
-                    '_install_delete_custom_field',
 
                     // Defined with basic implementations in forum_stub.php anyway
                     'forum_layer_initialise',
                     'get_post_remaining_details',
                     'topic_is_threaded',
+                    'get_displayname',
+                    'install_delete_custom_field',
+                    'password_hash',
 
                     // Conversr-only
                     'init__forum__cns',
                     'cns_flood_control',
                 ];
-
-                if (in_array($func, $exceptions)) {
+                if (in_array($function, $exceptions)) {
                     continue;
                 }
 
-                $this->assertTrue(in_array($func, $has), 'Missing ' . $func . ' in ' . $file);
+                $present = array_key_exists($function, $functions);
+                $this->assertTrue($present, 'Missing ' . $function . ' in ' . $file);
+                if ($present) {
+                    $exceptions = [
+                        // Extra $tempcode_okay parameter in CNS
+                        '_forum_url',
+                        '_join_url',
+                        '_member_pm_url',
+                        '_users_online_url',
+                        'member_home_url',
+                        'post_url',
+                        'topic_url',
+
+                        // Various filter parameters in CNS
+                        '_get_members_groups',
+                        '_get_usergroup_list',
+                        'find_emoticons',
+                        'get_forum_topic_posts',
+                        'get_matching_members',
+                        'show_forum_topics',
+
+                        // Extra $tempcode_okay parameter in CNS & Various filter parameters in CNS
+                        '_member_profile_url',
+
+                        // Miscellaneous extra parameters in CNS
+                        'find_topic_id_for_topic_identifier',
+                        'make_post_forum_topic',
+                    ];
+                    if (in_array($function, $exceptions)) {
+                        continue;
+                    }
+
+                    $this->assertTrue($cns_parameters == $functions[$function], 'Inconsistent parameters for ' . $function . ' in ' . $file);
+                }
             }
         }
     }

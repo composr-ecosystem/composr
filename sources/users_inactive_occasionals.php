@@ -457,7 +457,7 @@ function try_cookie_login() : ?int
                 $member_id = $login_array['id'];
             } else {
                 // Test password plain
-                $login_array = $GLOBALS['FORUM_DRIVER']->forum_authorise_login(null, $member_id, apply_forum_driver_md5_variant($pass, $username), $pass, true);
+                $login_array = $GLOBALS['FORUM_DRIVER']->forum_authorise_login(null, $member_id, $GLOBALS['FORUM_DRIVER']->password_hash($pass, $username), $pass, true);
                 $member_id = $login_array['id'];
             }
 

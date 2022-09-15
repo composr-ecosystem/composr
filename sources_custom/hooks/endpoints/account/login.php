@@ -38,7 +38,7 @@ class Hook_endpoint_account_login
         $username = post_param_string('username', false, INPUT_FILTER_POST_IDENTIFIER);
         $password = post_param_string('password', false, INPUT_FILTER_POST_IDENTIFIER);
 
-        $feedback = $GLOBALS['FORUM_DRIVER']->forum_authorise_login($username, null, apply_forum_driver_md5_variant($password, $username), $password);
+        $feedback = $GLOBALS['FORUM_DRIVER']->forum_authorise_login($username, null, $GLOBALS['FORUM_DRIVER']->password_hash($password, $username), $password);
         $member_id = $feedback['id'];
         if ($member_id === null) {
             warn_exit($feedback['error']);
