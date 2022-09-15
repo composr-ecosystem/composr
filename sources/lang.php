@@ -636,7 +636,7 @@ function require_lang(string $codename, ?string $lang = null, ?string $type = nu
 
     $REQUIRE_LANG_LOOP--;
 
-    if ((isset($_GET['keep_show_loading'])) && ($_GET['keep_show_loading'] == '1')) {
+    if ((isset($_GET['keep_show_loading'])) && ($_GET['keep_show_loading'] == '1') && ((!function_exists('running_script')) || (!running_script('gd_text')))) {
         $msg = function_exists('clean_file_size') ? clean_file_size(memory_get_usage() - $before) : integer_format(memory_get_usage() - $before);
         if (function_exists('attach_message')) {
             attach_message('require_lang: ' . $codename . ' (' . $msg . ' used)', 'inform');

@@ -242,7 +242,6 @@ function _get_notification_ob_for_code(string $notification_code, ?string $notif
         return object_factory('Hook_notification_' . filter_naughty(preg_replace('#__\w*$#', '', $notification_hook)));
     } else {
         // Full scan
-        require_all_lang();
         $hooks = find_all_hook_obs('systems', 'notifications', 'Hook_notification_');
         foreach ($hooks as $ob) {
             if (method_exists($ob, 'list_handled_codes')) {

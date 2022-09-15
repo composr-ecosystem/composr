@@ -122,7 +122,9 @@ class Hook_profiles_tabs_edit
             return [$title, null, $order, 'buttons/settings'];
         }
 
-        sort_maps_by($tabs, 4, false, true);
+        if (get_param_integer('keep_show_loading', 0) == 0) { // We only sort if not doing memory testing, as it makes it harder to debug
+            sort_maps_by($tabs, 4, false, true);
+        }
         $tabs = array_values($tabs); // Reindex, needed for lastness check
 
         $js_function_calls = [];

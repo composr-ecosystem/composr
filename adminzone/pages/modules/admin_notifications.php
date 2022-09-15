@@ -167,7 +167,6 @@ class Module_admin_notifications
         require_css('notifications');
         require_code('notifications');
         require_code('notifications2');
-        require_all_lang();
 
         if ($mode == self::NOTIFICATIONS_LOCKDOWN) {
             $intro = do_lang_tempcode('NOTIFICATIONS_DEFINE_LOCKDOWN');

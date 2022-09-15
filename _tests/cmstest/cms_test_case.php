@@ -70,6 +70,8 @@ class cms_test_case extends WebTestCase
     public function tearDown()
     {
         cms_ini_set('ocproducts.type_strictness', '0');
+
+        delete_value('memory_limit');
     }
 
     protected function should_filter_cqc_line($line)

@@ -2836,6 +2836,7 @@ function _form_input(string $name, $pretty_name, $description, object $input, bo
         'COMCODE' => $_comcode,
         'PATTERN_ERROR' => $pattern_error,
     ]);
+    $tpl = make_string_tempcode($tpl->evaluate()); // XHTMLXHTML
     return $tpl;
 }
 

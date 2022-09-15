@@ -64,7 +64,6 @@ function notifications_ui(int $member_id_of) : object
     require_css('notifications');
     require_code('notifications');
     require_lang('notifications');
-    require_all_lang();
 
     if (is_guest($member_id_of)) {
         access_denied('NOT_AS_GUEST');

@@ -183,7 +183,9 @@ class Hook_profiles_tabs_edit_avatar
         if ($memory_debugging) {
             require_code('files');
             $usage_after = memory_get_usage();
-            $text->attach(paragraph('Memory debugging: ' . clean_file_size($usage_after - $usage_before) . ' used, now at ' . clean_file_size($usage_after)));
+            $usage = clean_file_size($usage_after - $usage_before);
+            $text->attach(paragraph('Memory debugging: ' . $usage . ' used, now at ' . clean_file_size($usage_after)));
+            $title->attach(' (' . $usage . ')');
         }
 
         return [$title, $fields, $text, '', $order, $hidden, 'tabs/member_account/edit/avatar', true];
