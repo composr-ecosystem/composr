@@ -37,9 +37,9 @@ function _get_available_notification_types(?int $member_id_of = null) : array
         A_WEB_NOTIFICATION => 'WEB_NOTIFICATION',
     ];
     $_notification_types = [];
-    foreach ($__notification_types as $possible => $ntype) {
-        if (_notification_setting_available($possible, $member_id_of)) {
-            $_notification_types[$possible] = $ntype;
+    foreach ($__notification_types as $notification_type_constant => $notification_type_codename) {
+        if (_notification_setting_available($notification_type_constant, $member_id_of)) {
+            $_notification_types[$notification_type_constant] = $notification_type_codename;
         }
     }
 
@@ -83,6 +83,7 @@ function notifications_ui(int $member_id_of) : object
     $has_interesting_post_fields = has_interesting_post_fields();
 
     $notification_sections = [];
+    $all_notification_codes = [];
     $hooks = find_all_hooks('systems', 'notifications');
     foreach (array_keys($hooks) as $hook) {
         if (array_key_exists($hook, $lockdown)) {
@@ -101,6 +102,8 @@ function notifications_ui(int $member_id_of) : object
             }
 
             if ($ob->member_could_potentially_enable($notification_code, $member_id_of)) {
+                $all_notification_codes[$notification_code] = [];
+
                 $current_setting = notifications_setting($notification_code, null, $member_id_of);
                 if ($current_setting == A__STATISTICAL) {
                     $current_setting = _find_member_statistical_notification_type($member_id_of, $notification_code);
@@ -115,29 +118,31 @@ function notifications_ui(int $member_id_of) : object
                 }
 
                 $notification_types = [];
-                foreach ($_notification_types as $possible => $ntype) {
-                    $available = (($possible & $allowed_setting) != 0);
+                foreach ($_notification_types as $notification_type_constant => $notification_type_codename) {
+                    $available = (($notification_type_constant & $allowed_setting) != 0);
+
+                    $all_notification_codes[$notification_code][$notification_type_constant] = $notification_type_codename;
 
                     if ($has_interesting_post_fields) {
-                        $checked = post_param_integer('notification_' . $notification_code . '_' . $ntype, 0);
+                        $checked = post_param_integer('notification_' . $notification_code . '_' . $notification_type_codename, 0);
                     } else {
-                        $checked = (($possible & $current_setting) != 0) ? 1 : 0;
+                        $checked = (($notification_type_constant & $current_setting) != 0) ? 1 : 0;
                     }
 
                     $type_has_children_set = false;
                     if (($supports_categories) && ($available)) {
                         foreach ($is_there_test as $_is) {
-                            if (($_is['l_setting'] & $possible) != 0) {
+                            if (($_is['l_setting'] & $notification_type_constant) != 0) {
                                 $type_has_children_set = true;
                             }
                         }
                     }
 
                     $notification_types[] = [
-                        'NTYPE' => $ntype,
-                        'LABEL' => do_lang_tempcode('ENABLE_NOTIFICATIONS_' . $ntype),
+                        'NTYPE' => $notification_type_codename,
+                        'LABEL' => do_lang_tempcode('ENABLE_NOTIFICATIONS_' . $notification_type_codename),
                         'CHECKED' => ($checked == 1),
-                        'RAW' => strval($possible),
+                        'RAW' => strval($notification_type_constant),
                         'AVAILABLE' => $available,
                         'SCOPE' => $notification_code,
                         'TYPE_HAS_CHILDREN_SET' => $type_has_children_set,
@@ -173,28 +178,25 @@ function notifications_ui(int $member_id_of) : object
 
     // Save via form post (for top-level notification code, not under a notification category)
     if (has_interesting_post_fields()) {
-        foreach ($notification_sections as $notification_section) {
-            foreach ($notification_section['NOTIFICATION_CODES'] as $notification_code) {
-                $new_setting = A_NA;
-                foreach ($notification_code['NOTIFICATION_TYPES'] as $notification_type) {
-                    $ntype = $notification_type['NTYPE'];
-                    if (post_param_integer('notification_' . $notification_code['NOTIFICATION_CODE'] . '_' . $ntype, 0) == 1) {
-                        $new_setting = $new_setting | intval($notification_type['RAW']);
-                    }
+        foreach ($all_notification_codes as $notification_code => $notification_types) {
+            $new_setting = A_NA;
+            foreach ($notification_types as $notification_type_constant => $notification_type_codename) {
+                if (post_param_integer('notification_' . $notification_code . '_' . $notification_type_codename, 0) == 1) {
+                    $new_setting = $new_setting | $notification_type_constant;
                 }
-                enable_notifications($notification_code['NOTIFICATION_CODE'], null, $member_id_of, $new_setting);
             }
+            enable_notifications($notification_code, null, $member_id_of, $new_setting);
         }
     }
 
     // Main UI...
 
     $notification_types_titles = [];
-    foreach ($_notification_types as $possible => $ntype) {
+    foreach ($_notification_types as $notification_type_constant => $notification_type_codename) {
         $notification_types_titles[] = [
-            'NTYPE' => $ntype,
-            'LABEL' => do_lang_tempcode('ENABLE_NOTIFICATIONS_' . $ntype),
-            'RAW' => strval($possible),
+            'NTYPE' => $notification_type_codename,
+            'LABEL' => do_lang_tempcode('ENABLE_NOTIFICATIONS_' . $notification_type_codename),
+            'RAW' => strval($notification_type_constant),
         ];
     }
 
@@ -301,9 +303,9 @@ function notifications_ui_advanced(string $notification_code, ?object $enable_me
                     $notification_category = $matches[1];
 
                     $new_setting = A_NA;
-                    foreach ($_notification_types as $possible => $ntype) {
-                        if (post_param_integer('notification_' . $notification_category . '_' . $ntype, 0) == 1) {
-                            $new_setting = $new_setting | $possible;
+                    foreach ($_notification_types as $notification_type_constant => $notification_type_codename) {
+                        if (post_param_integer('notification_' . $notification_category . '_' . $notification_type_codename, 0) == 1) {
+                            $new_setting = $new_setting | $notification_type_constant;
                         }
                     }
 
@@ -353,11 +355,11 @@ function notifications_ui_advanced(string $notification_code, ?object $enable_me
     }
 
     $notification_types_titles = [];
-    foreach ($_notification_types as $possible => $ntype) {
+    foreach ($_notification_types as $notification_type_constant => $notification_type_codename) {
         $notification_types_titles[] = [
-            'NTYPE' => $ntype,
-            'LABEL' => do_lang_tempcode('ENABLE_NOTIFICATIONS_' . $ntype),
-            'RAW' => strval($possible),
+            'NTYPE' => $notification_type_codename,
+            'LABEL' => do_lang_tempcode('ENABLE_NOTIFICATIONS_' . $notification_type_codename),
+            'RAW' => strval($notification_type_constant),
         ];
     }
 
@@ -432,20 +434,20 @@ function _notifications_build_category_tree(array $_notification_types, string $
         }
 
         $notification_types = [];
-        foreach ($_notification_types as $possible => $ntype) {
-            $available = (($possible & $allowed_setting) != 0);
+        foreach ($_notification_types as $notification_type_constant => $notification_type_codename) {
+            $available = (($notification_type_constant & $allowed_setting) != 0);
 
             if (has_interesting_post_fields()) {
-                $checked = post_param_integer('notification_' . $notification_category . '_' . $ntype, 0);
+                $checked = post_param_integer('notification_' . $notification_category . '_' . $notification_type_codename, 0);
             } else {
-                $checked = (($possible & $current_setting) != 0) ? 1 : 0;
+                $checked = (($notification_type_constant & $current_setting) != 0) ? 1 : 0;
             }
 
             $notification_types[] = [
-                'NTYPE' => $ntype,
-                'LABEL' => do_lang_tempcode('ENABLE_NOTIFICATIONS_' . $ntype),
+                'NTYPE' => $notification_type_codename,
+                'LABEL' => do_lang_tempcode('ENABLE_NOTIFICATIONS_' . $notification_type_codename),
                 'CHECKED' => ($checked == 1),
-                'RAW' => strval($possible),
+                'RAW' => strval($notification_type_constant),
                 'AVAILABLE' => $available,
                 'SCOPE' => $notification_category,
             ];

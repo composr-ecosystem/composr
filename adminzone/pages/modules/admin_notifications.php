@@ -195,6 +195,7 @@ class Module_admin_notifications
         $current_setting = null;
 
         $notification_sections = [];
+        $all_notification_codes = [];
         $hooks = find_all_hook_obs('systems', 'notifications', 'Hook_notification_');
         foreach ($hooks as $hook => $ob) {
             if ((substr($hook, 0, 4) == 'cns_') && (get_forum_type() != 'cns')) {
@@ -202,55 +203,58 @@ class Module_admin_notifications
             }
             $_notification_codes = $ob->list_handled_codes();
             foreach ($_notification_codes as $notification_code => $notification_details) {
-                $allowed_setting = $ob->allowed_settings($notification_code);
+                $all_notification_codes[$notification_code] = [];
 
                 $current_setting = array_key_exists($notification_code, $saved_settings) ? $saved_settings[$notification_code] : null;
+                $allowed_setting = $ob->allowed_settings($notification_code);
 
                 $notification_types = [];
                 $save_query = false;
-                foreach ($_notification_types as $possible => $ntype) {
-                    $save_query = ($save_query) || (post_param_integer('notification_' . $notification_code . '_' . $ntype, 0) == 1);
+                foreach ($_notification_types as $notification_type_constant => $notification_type_codename) {
+                    $save_query = ($save_query) || (post_param_integer('notification_' . $notification_code . '_' . $notification_type_codename, 0) == 1);
                 }
-                foreach ($_notification_types as $possible => $ntype) {
-                    $available = ($possible == A__CHOICE) || ($possible == A__INBUILT_DEFAULT) || ($possible == A__STATISTICAL) || (($possible & $allowed_setting) != 0);
+                foreach ($_notification_types as $notification_type_constant => $notification_type_codename) {
+                    $all_notification_codes[$notification_code][$notification_type_constant] = $notification_type_codename;
+
+                    $available = ($notification_type_constant == A__CHOICE) || ($notification_type_constant == A__INBUILT_DEFAULT) || ($notification_type_constant == A__STATISTICAL) || (($notification_type_constant & $allowed_setting) != 0);
 
                     if ($save_query) {
                         $checked = false; // Will strictly read from POST
                     } else {
                         if ($current_setting === null) {
                             if ($mode == self::NOTIFICATIONS_LOCKDOWN) {
-                                $checked = ($possible == A__CHOICE);
+                                $checked = ($notification_type_constant == A__CHOICE);
                             } else { // NOTIFICATIONS_DEFAULT
-                                $checked = ($possible == A__INBUILT_DEFAULT);
+                                $checked = ($notification_type_constant == A__INBUILT_DEFAULT);
                             }
                         } else {
-                            if ($possible == A__STATISTICAL) {
+                            if ($notification_type_constant == A__STATISTICAL) {
                                 $checked = ($current_setting == A__STATISTICAL);
-                            } elseif ($possible == A__CHOICE) {
+                            } elseif ($notification_type_constant == A__CHOICE) {
                                 $checked = false;
-                            } elseif ($possible == A__INBUILT_DEFAULT) {
+                            } elseif ($notification_type_constant == A__INBUILT_DEFAULT) {
                                 $checked = false;
                             } elseif ($current_setting == -1) {
                                 $checked = false;
                             } else {
-                                $checked = (($possible & $current_setting) != 0);
+                                $checked = (($notification_type_constant & $current_setting) != 0);
                             }
                         }
                     }
 
-                    $tick_label = do_lang_tempcode('ENABLE_NOTIFICATIONS_' . $ntype);
-                    if (($possible == A__CHOICE) || ($possible == A__INBUILT_DEFAULT)) {
+                    $tick_label = do_lang_tempcode('ENABLE_NOTIFICATIONS_' . $notification_type_codename);
+                    if (($notification_type_constant == A__CHOICE) || ($notification_type_constant == A__INBUILT_DEFAULT)) {
                         $inbuilt_default = $ob->get_initial_setting($notification_code);
                         $tick_label = do_lang_tempcode('INBUILT_DEFAULT_WRAP', $tick_label, $inbuilt_default ? do_lang_tempcode('YES') : do_lang_tempcode('NO'));
                     }
 
-                    $_checked = post_param_integer('notification_' . $notification_code . '_' . $ntype, ((post_param_integer('submitting', 0) == 0) && $checked) ? 1 : 0);
+                    $_checked = post_param_integer('notification_' . $notification_code . '_' . $notification_type_codename, ((post_param_integer('submitting', 0) == 0) && $checked) ? 1 : 0);
 
                     $notification_types[] = [
-                        'NTYPE' => $ntype,
+                        'NTYPE' => $notification_type_codename,
                         'LABEL' => $tick_label,
                         'CHECKED' => ($_checked == 1),
-                        'RAW' => strval($possible),
+                        'RAW' => strval($notification_type_constant),
                         'AVAILABLE' => $available,
                         'SCOPE' => $notification_code,
                     ];
@@ -269,7 +273,7 @@ class Module_admin_notifications
                     'NOTIFICATION_LABEL' => $notification_details[1],
                     'NOTIFICATION_TYPES' => $notification_types_tempcode,
                     'SUPPORTS_CATEGORIES' => false,
-                    'PRIVILEGED' => !$ob->member_could_potentially_enable($ntype, $GLOBALS['FORUM_DRIVER']->get_guest_id()),
+                    'PRIVILEGED' => !$ob->member_could_potentially_enable($notification_type_codename, $GLOBALS['FORUM_DRIVER']->get_guest_id()),
                 ];
             }
         }
@@ -282,30 +286,27 @@ class Module_admin_notifications
                 $GLOBALS['SITE_DB']->query_delete('notifications_enabled', ['l_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(), 'l_code_category' => '']);
             }
 
-            foreach ($notification_sections as $notification_section) {
-                foreach ($notification_section['NOTIFICATION_CODES'] as $notification_code) {
-                    $new_setting = A_NA;
-                    foreach ($notification_code['NOTIFICATION_TYPES'] as $notification_type) {
-                        $ntype = $notification_type['NTYPE'];
-                        if (post_param_integer('notification_' . $notification_code['NOTIFICATION_CODE'] . '_' . $ntype, 0) == 1) {
-                            $new_setting = $new_setting | intval($notification_type['RAW']);
-                        }
+            foreach ($all_notification_codes as $notification_code => $notification_types) {
+                $new_setting = A_NA;
+                foreach ($notification_types as $notification_type_constant => $notification_type_codename) {
+                    if (post_param_integer('notification_' . $notification_code . '_' . $notification_type_codename, 0) == 1) {
+                        $new_setting = $new_setting | $notification_type_constant;
                     }
+                }
 
-                    if (($new_setting != A__CHOICE) && ($new_setting != A__INBUILT_DEFAULT)) {
-                        if ($mode == self::NOTIFICATIONS_LOCKDOWN) {
-                            $GLOBALS['SITE_DB']->query_insert('notification_lockdown', [
-                                'l_notification_code' => substr($notification_code['NOTIFICATION_CODE'], 0, 80),
-                                'l_setting' => $new_setting,
-                            ]);
-                        } else { // NOTIFICATIONS_DEFAULT
-                            $GLOBALS['SITE_DB']->query_insert('notifications_enabled', [
-                                'l_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(),
-                                'l_notification_code' => substr($notification_code['NOTIFICATION_CODE'], 0, 80),
-                                'l_code_category' => '',
-                                'l_setting' => $new_setting,
-                            ]);
-                        }
+                if (($new_setting != A__CHOICE) && ($new_setting != A__INBUILT_DEFAULT)) {
+                    if ($mode == self::NOTIFICATIONS_LOCKDOWN) {
+                        $GLOBALS['SITE_DB']->query_insert('notification_lockdown', [
+                            'l_notification_code' => substr($notification_code, 0, 80),
+                            'l_setting' => $new_setting,
+                        ]);
+                    } else { // NOTIFICATIONS_DEFAULT
+                        $GLOBALS['SITE_DB']->query_insert('notifications_enabled', [
+                            'l_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(),
+                            'l_notification_code' => substr($notification_code, 0, 80),
+                            'l_code_category' => '',
+                            'l_setting' => $new_setting,
+                        ]);
                     }
                 }
             }
@@ -329,11 +330,11 @@ class Module_admin_notifications
         $color = ltrim(find_theme_seed($GLOBALS['FORUM_DRIVER']->get_theme()), '#');
 
         $notification_types_titles = [];
-        foreach ($_notification_types as $possible => $ntype) {
+        foreach ($_notification_types as $notification_type_constant => $notification_type_codename) {
             $notification_types_titles[] = [
-                'NTYPE' => $ntype,
-                'LABEL' => do_lang_tempcode('ENABLE_NOTIFICATIONS_' . $ntype),
-                'RAW' => strval($possible),
+                'NTYPE' => $notification_type_codename,
+                'LABEL' => do_lang_tempcode('ENABLE_NOTIFICATIONS_' . $notification_type_codename),
+                'RAW' => strval($notification_type_constant),
             ];
         }
 

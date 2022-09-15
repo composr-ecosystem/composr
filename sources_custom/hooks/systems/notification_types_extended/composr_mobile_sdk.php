@@ -57,9 +57,9 @@ class Hook_notification_types_extended_composr_mobile_sdk
             A_INSTANT_ANDROID => 'NOTIFICATIONS_INSTANT_ANDROID',
         ];
         $_notification_types = [];
-        foreach ($__notification_types as $possible => $ntype) {
-            if (_notification_setting_available($possible, $member_id_of)) {
-                $_notification_types[$possible] = $ntype;
+        foreach ($__notification_types as $notification_type_constant => $notification_type_codename) {
+            if (_notification_setting_available($notification_type_constant, $member_id_of)) {
+                $_notification_types[$notification_type_constant] = $notification_type_codename;
             }
         }
         return $_notification_types;
