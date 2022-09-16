@@ -2325,6 +2325,7 @@ class Module_topics
         if (is_null($title)) {
             $title = '';
         }
+        $title = substr($title, 0, 255); // Spambots may bypass normal UI restriction, and we don't want a crash
 
         $check_permissions = true;
         $add_poll = post_param_integer('add_poll', 0);
