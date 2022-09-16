@@ -134,12 +134,12 @@ class Hook_chat_bot_trickstr
 				  name varchar(255) NOT NULL default '',
 				  value text NOT NULL,
 				  PRIMARY KEY  (id),
-				  KEY botname (bot,name)
+				  KEY botname (bot,name(200))
 				) ENGINE=MyISAM");
                 $GLOBALS['SITE_DB']->query("CREATE TABLE bots (
 				  id tinyint(3) unsigned NOT NULL auto_increment,
 				  botname varchar(255) NOT NULL default '',
-				  PRIMARY KEY  (botname),
+				  PRIMARY KEY  (botname(200)),
 				  KEY id (id)
 				) ENGINE=MyISAM");
                 $GLOBALS['SITE_DB']->query("CREATE TABLE conversationlog (
@@ -172,7 +172,7 @@ class Hook_chat_bot_trickstr
 				  inputmatched text,
 				  combined text NOT NULL,
 				  PRIMARY KEY  (id),
-				  KEY combined (bot,combined(255))
+				  KEY combined (bot,combined(200))
 				) ENGINE=MyISAM");
                 $GLOBALS['SITE_DB']->query("CREATE TABLE gossip (
 				  bot tinyint(3) unsigned NOT NULL default '0',
@@ -189,7 +189,7 @@ class Hook_chat_bot_trickstr
 				  parent int(11) NOT NULL default '0',
 				  isend tinyint(4) NOT NULL default '0',
 				  PRIMARY KEY  (id),
-				  KEY wordparent (parent,word),
+				  KEY wordparent (parent,word(200)),
 				  KEY botid (bot)
 				) ENGINE=MyISAM");
                 $GLOBALS['SITE_DB']->query("CREATE TABLE templates (
