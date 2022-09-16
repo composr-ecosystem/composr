@@ -63,6 +63,7 @@ function semi_dev_mode_startup()
             (!running_script('external_url_proxy')) &&
             (!running_script('hybridauth')) &&
             (!running_script('upgrader')) &&
+            (!running_script('csp_logging')) &&
             (strpos($_SERVER['HTTP_REFERER'], 'login') === false) &&
             (!currently_logging_in()) &&
             (get_page_name() != '404') &&
