@@ -328,7 +328,7 @@
 
         $dom.on(container, 'click', '.js-click-ignore-notification', function () {
             var el = this;
-            $cms.doAjaxRequest(ignoreUrl, function () {
+            $cms.doAjaxRequest(ignoreUrl, [function () {
                 var o = el.parentNode.parentNode.parentNode.parentNode;
                 o.parentNode.removeChild(o);
 
@@ -336,7 +336,7 @@
                 if (nots && !document.querySelector('.cns-notification')) {
                     nots.parentNode.removeChild(nots);
                 }
-            });
+            }]);
         });
     };
 

@@ -682,7 +682,7 @@
                         }
 
                         var self = this;
-                        $cms.doAjaxRequest(url, function (responseXml) {
+                        $cms.doAjaxRequest(url, [function (responseXml) {
                             var ajaxResult = responseXml && responseXml.querySelector('result');
 
                             if (ajaxResult) {
@@ -697,7 +697,7 @@
                                     self.title = self.origTitle;
                                 }
                             }
-                        }, 'data=' + encodeURIComponent('[semihtml]' + tagText.replace(/<\/?span[^>]*>/gi, '')).substr(0, 1000).replace(new RegExp(String.fromCharCode(8203), 'g'), '') + '[/semihtml]');
+                        }], 'data=' + encodeURIComponent('[semihtml]' + tagText.replace(/<\/?span[^>]*>/gi, '')).substr(0, 1000).replace(new RegExp(String.fromCharCode(8203), 'g'), '') + '[/semihtml]');
                     } else if (this.renderedTooltip !== undefined) {
                         $cms.ui.activateTooltip(this, eventCopy, this.renderedTooltip, '400px', null, null, false, 0);
                     }
@@ -1050,7 +1050,7 @@
                 if ($cms.form.isModSecurityWorkaroundEnabled()) {
                     post = $cms.form.modSecurityWorkaroundAjax(post);
                 }
-                $cms.doAjaxRequest(url, function (responseXml) {
+                $cms.doAjaxRequest(url, [function (responseXml) {
                     if (responseXml && (responseXml.querySelector('result'))) {
                         var result = responseXml.querySelector('result');
                         newHtml = result.textContent.replace(/\s*$/, '');
@@ -1061,7 +1061,7 @@
 
                     _insertTextboxWrappingWysiwyg(element, editor, newHtml);
                     resolvePromise();
-                }, post);
+                }], post);
             });
         }
 

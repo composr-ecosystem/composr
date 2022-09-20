@@ -816,7 +816,7 @@
                     _retrieveFormAutosave(result, form);
                 };
             }(form));
-            $cms.doAjaxRequest(url, callback);
+            $cms.doAjaxRequest(url, [callback]);
         }
 
         function handleFormSavingExplicit(event, form) {
@@ -856,12 +856,8 @@
                                 document.body.style.cursor = '';
                             }
 
-                            if (xhr.status != 500) {
-                                var message = foundValidatedField ? '{!javascript:DRAFT_SAVED_WITH_VALIDATION;^}' : '{!javascript:DRAFT_SAVED_WITHOUT_VALIDATION;^}';
-                                $cms.ui.alert(message, '{!javascript:DRAFT_SAVE;^}');
-                            } else {
-                                $cms.ui.alert(message, '{!INTERNAL_ERROR;^}');
-                            }
+                            var message = foundValidatedField ? '{!javascript:DRAFT_SAVED_WITH_VALIDATION;^}' : '{!javascript:DRAFT_SAVED_WITHOUT_VALIDATION;^}';
+                            $cms.ui.alert(message, '{!javascript:DRAFT_SAVE;^}');
                         });
                     }
                 }

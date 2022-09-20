@@ -557,7 +557,7 @@
             window.topWindow.currentlySendingMessage = true;
             var fullUrl = $util.rel($cms.maintainThemeInLink(url + window.topWindow.$cms.keep()));
             var postData = 'room_id=' + encodeURIComponent(currentRoomId) + '&message=' + encodeURIComponent(messageText) + '&font=' + encodeURIComponent(fontName) + '&colour=' + encodeURIComponent(fontColour) + '&message_id=' + encodeURIComponent((window.topWindow.lastMessageId === null) ? -1 : window.topWindow.lastMessageId) + '&event_id=' + encodeURIComponent(window.topWindow.lastEventId);
-            $cms.doAjaxRequest(fullUrl, function (responseXML) {
+            $cms.doAjaxRequest(fullUrl, function (responseXML, xhr) {
                 if (responseXML != null) {
                     window.topWindow.currentlySendingMessage = false;
                     element.disabled = false;
@@ -575,27 +575,25 @@
                         $cms.ui.alert('{!chat:MESSAGE_POSTING_ERROR;^}');
                     }
 
-                    // Reschedule the next check (ccTimer was reset already higher up in function)
-                    window.topWindow.$util.inform('Setting new chat timer (' + new Date().getTime() + ')');
-                    window.topWindow.ccTimer = window.topWindow.setTimeout(function () {
-                        window.topWindow.chatCheck(false, window.topWindow.lastMessageId, window.topWindow.lastEventId);
-                    }, window.MESSAGE_CHECK_INTERVAL);
-
                     try {
                         element.focus();
                     } catch (e) {}
                 } else {
-                    window.topWindow.$util.inform('Successfully posted chat message (' + new Date().getTime() + ')');
+                    if (xhr.status == 200) {
+                        window.topWindow.$util.inform('Successfully posted chat message (' + new Date().getTime() + ')');
+                    } else {
+                        $cms.ui.alert('{!chat:MESSAGE_POSTING_ERROR;^}');
+                    }
 
                     window.topWindow.currentlySendingMessage = false;
                     element.disabled = false;
-
-                    // Reschedule the next check (ccTimer was reset already higher up in function)
-                    window.topWindow.$util.inform('Setting new chat timer (' + new Date().getTime() + ')');
-                    window.topWindow.ccTimer = window.topWindow.setTimeout(function () {
-                        window.topWindow.chatCheck(false, window.topWindow.lastMessageId, window.topWindow.lastEventId);
-                    }, window.MESSAGE_CHECK_INTERVAL);
                 }
+
+                // Reschedule the next check (ccTimer was reset already higher up in function)
+                window.topWindow.$util.inform('Setting new chat timer (' + new Date().getTime() + ')');
+                window.topWindow.ccTimer = window.topWindow.setTimeout(function () {
+                    window.topWindow.chatCheck(false, window.topWindow.lastMessageId, window.topWindow.lastEventId);
+                }, window.MESSAGE_CHECK_INTERVAL);
             }, postData);
         }
 
@@ -636,6 +634,10 @@
                 if (responseXML != null) {
                     chatCheckResponse(responseXML, xhr, /*skipIncomingSound*/backlog);
                 } else {
+                    if ((xhr.status != 200) && (backlog)) {
+                        $cms.ui.alert('{!chat:MESSAGE_CHECKING_ERROR;^}');
+                    }
+
                     chatCheckResponse(null, null);
                 }
             });
@@ -1143,10 +1145,10 @@
                 chatSelectTab(newDiv);
 
                 // Tell server we've joined
-                $cms.doAjaxRequest(url, function (responseXml) {
+                $cms.doAjaxRequest(url, [function (responseXml) {
                     var ajaxResult = responseXml && responseXml.querySelector('result');
                     processChatXmlMessages(ajaxResult, true);
-                }, post);
+                }], post);
             } else {
                 // Open pop-up
                 var imPopupWindowOptions = 'width=370,height=460,menubar=no,toolbar=no,location=no,resizable=no,scrollbars=yes,top=' + ((screen.height - 520) / 2) + ',left=' + ((screen.width - 440) / 2);
@@ -1186,10 +1188,10 @@
                             } catch (e) {}
 
                             // Tell server we have joined
-                            $cms.doAjaxRequest(url, function (responseXml) {
+                            $cms.doAjaxRequest(url, [function (responseXml) {
                                 var ajaxResult = responseXml && responseXml.querySelector('result');
                                 processChatXmlMessages(ajaxResult, true);
-                            }, post);
+                            }], post);
 
                             // Set title
                             var domTitle = newWindow.document.querySelector('title');
@@ -1373,7 +1375,7 @@
             div.className = 'loading-overlay';
             $dom.html(div, '{!LOADING;^}');
             document.body.appendChild(div);
-            $cms.doAjaxRequest($util.rel($cms.maintainThemeInLink('{$FIND_SCRIPT_NOHTTP;,messages}?action=start_im&message_id=' + encodeURIComponent((window.topWindow.lastMessageId === null) ? -1 : window.topWindow.lastMessageId) + '&mayRecycle=' + (mayRecycle ? '1' : '0') + '&event_id=' + encodeURIComponent(window.topWindow.lastEventId) + $cms.keep())), function (responseXml) {
+            $cms.doAjaxRequest($util.rel($cms.maintainThemeInLink('{$FIND_SCRIPT_NOHTTP;,messages}?action=start_im&message_id=' + encodeURIComponent((window.topWindow.lastMessageId === null) ? -1 : window.topWindow.lastMessageId) + '&mayRecycle=' + (mayRecycle ? '1' : '0') + '&event_id=' + encodeURIComponent(window.topWindow.lastEventId) + $cms.keep())), [function (responseXml) {
                 var result = responseXml.querySelector('result');
                 if (result) {
                     window.instantGo = true;
@@ -1381,7 +1383,7 @@
                     window.instantGo = false;
                 }
                 document.body.removeChild(div);
-            }, 'people=' + people);
+            }], 'people=' + people);
         }
 
     }

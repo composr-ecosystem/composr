@@ -90,7 +90,7 @@
             url += '&time_barrier=' + encodeURIComponent(window.notificationsTimeBarrier);
             url += '&forced_update=1';
             url += $cms.keep();
-            $cms.doAjaxRequest(url, _pollForNotifications);
+            $cms.doAjaxRequest(url, [_pollForNotifications]);
         }
     };
 
@@ -190,7 +190,7 @@
             url += '&forced_update=1';
         }
         url += $cms.keep();
-        $cms.doAjaxRequest(url, _pollForNotifications);
+        $cms.doAjaxRequest(url, [_pollForNotifications]);
     };
 
     function _pollForNotifications(responseXml) {

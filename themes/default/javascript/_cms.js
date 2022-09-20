@@ -1202,10 +1202,11 @@
     };
 
     var networkDownAlerted = false;
+    var genericAjaxErrorAlerted = false;
     /**
      * @memberof $cms
      * @param {string} url
-     * @param {function|null} [callback]
+     * @param {array|function|null} [callback]
      * @param {string|null} [post] - Note that 'post' is not an array, it's a string (a=b)
      * @param {integer} [timeout]
      * @param {boolean} [synchronous]
@@ -1214,6 +1215,22 @@
     $cms.doAjaxRequest = function doAjaxRequest(url, callback, post, timeout, synchronous) {
         url = strVal(url);
         timeout = intVal(timeout, 30000);
+
+        var callbackSuccess = null,
+            callbackError = null;
+        if (Array.isArray(callback)) {
+            if (callback[0]) {
+                callbackSuccess = callback[0];
+            }
+            if (callback[1]) {
+                // A tip is to not pass this if you want generic error messages generated for you
+                callbackError = callback[1];
+            }
+        } else if (callback != null) {
+            // A single callback handle both success and error
+            callbackSuccess = callback;
+            callbackError = callback;
+        }
 
         if ((typeof post === 'string') && (!post.startsWith('csrf_token=') && !post.includes('&csrf_token='))) {
             return $cms.getCsrfToken().then(function (text) {
@@ -1230,11 +1247,14 @@
 
                 xhr.onreadystatechange = function () {
                     if (xhr.readyState === XMLHttpRequest.DONE) {
-                        readyStateChangeListener(xhr, function (responseXml) {
-                            if (callback != null) {
-                                callback(responseXml, xhr);
+                        readyStateChangeListener(xhr, function (responseXml, xhr, success) {
+                            if (success && callbackSuccess != null) {
+                                callbackSuccess(responseXml, xhr, success);
                             }
-                            resolvePromise(xhr);
+                            if (!success && callbackError != null) {
+                                callbackError(responseXml, xhr, success);
+                            }
+                            resolvePromise(xhr, responseXml, success);
                         });
                     }
                 };
@@ -1262,25 +1282,17 @@
         }
 
         function readyStateChangeListener(xhr, ajaxCallback) {
-            var okStatusCodes = [200, 500, 400, 401];
+            var okStatusCodes = [200];
             // If status is 'OK'
-            if (xhr.status && okStatusCodes.includes(xhr.status)) {
-                // Process the result
-                // XML result. Handle with a potentially complex call
-                var responseXML = (xhr.responseXML && xhr.responseXML.firstChild) ? xhr.responseXML : null;
+            var responseXML = (xhr.responseXML && xhr.responseXML.firstChild) ? xhr.responseXML : null;
 
-                // if ((responseXML == null) && xhr.responseText && xhr.responseText.includes('<html')) {
-                //     $cms.ui.alert(xhr.responseText, '{!ERROR_OCCURRED;^}', true);
-                // }
-
-                if (ajaxCallback != null) {
-                    ajaxCallback(responseXML, xhr);
-                }
+            if (xhr.status && okStatusCodes.includes(xhr.status) || responseXML != null && responseXML.querySelector('message')) {
+                // Process the result...
 
                 if (responseXML != null) {
                     var messageEl = responseXML.querySelector('message');
                     if (messageEl) {
-                        // Either an error or a message was returned. :(
+                        // A message was returned. As it's our messaging framework, we show the message from here.
                         var message = messageEl.firstChild.textContent;
                         if (responseXML.querySelector('error')) {
                             // It's an error :|
@@ -1289,26 +1301,40 @@
                         }
 
                         $cms.ui.alert({notice: 'An informational message was returned by the server: ' + message});
+
+                        ajaxCallback(responseXML, xhr, false);
+                    } else {
+                        ajaxCallback(responseXML, xhr, true);
                     }
+                } else {
+                    ajaxCallback(responseXML, xhr, true);
                 }
             } else {
                 // HTTP error...
-                if (ajaxCallback != null) {
-                    ajaxCallback(null, xhr);
-                }
 
                 try {
+                    $util.fatal('$cms.doAjaxRequest(): {!PROBLEM_RETRIEVING_XML;^}\n' + xhr.status + ': ' + xhr.statusText + '.', xhr);
+
                     if ((xhr.status === 0) || (xhr.status > 10000)) { // implies site down, or network down
                         if (!networkDownAlerted) {
                             //$cms.ui.alert('{!NETWORK_DOWN;^}');   Annoying because it happens when unsleeping a laptop (for example)
                             networkDownAlerted = true;
                         }
                     } else {
-                        $util.fatal('$cms.doAjaxRequest(): {!PROBLEM_RETRIEVING_XML;^}\n' + xhr.status + ': ' + xhr.statusText + '.', xhr);
+                        // We have no error callback, so we will show the error here.
+                        if (callbackError == null) {
+                            if (!genericAjaxErrorAlerted) {
+                                // There's no callback to handle the error
+                                $cms.ui.alert('{!ERROR_OCCURRED;^}');
+                                genericAjaxErrorAlerted = true;
+                            }
+                        }
                     }
                 } catch (e) {
                     $util.fatal('$cms.doAjaxRequest(): {!PROBLEM_RETRIEVING_XML;^}', e); // This is probably clicking back
                 }
+
+                ajaxCallback(responseXML, xhr, false);
             }
         }
     };

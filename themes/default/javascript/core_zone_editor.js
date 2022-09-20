@@ -155,7 +155,7 @@
                 if ($cms.form.isModSecurityWorkaroundEnabled()) {
                     post = $cms.form.modSecurityWorkaroundAjax(post);
                 }
-                $cms.doAjaxRequest(url, reloadedPreview, post);
+                $cms.doAjaxRequest(url, [reloadedPreview], post);
 
                 function reloadedPreview(responseXml) {
                     var ajaxResult = responseXml && responseXml.querySelector('result');

@@ -9914,6 +9914,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         MESSAGE
         MESSAGE_POSTED
         MESSAGE_POSTING_ERROR
+        MESSAGE_CHECKING_ERROR
         MESSAGE_SENT
         PREDEFINED_CONTENT
         PREDEFINED_CONTENT_DESCRIPTION

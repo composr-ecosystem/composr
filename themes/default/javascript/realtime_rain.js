@@ -180,7 +180,7 @@
         to = Math.round(to);
 
         var url = '{$FIND_SCRIPT_NOHTTP;,realtime_rain}?from=' + encodeURIComponent(from) + '&to=' + encodeURIComponent(to) + $cms.keep();
-        $cms.doAjaxRequest(url, receivedEvents);
+        $cms.doAjaxRequest(url, [receivedEvents]);
     }
 
     function receivedEvents(responseXml) {
