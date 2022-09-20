@@ -655,7 +655,7 @@ class Module_admin
                     continue;
                 }
                 $n = do_lang_tempcode($p['human_name']);
-                $t = do_lang($p['explanation'], null, null, null, null, false);
+                $t = ($p['explanation'] === null) ? '' : do_lang($p['explanation']);
 
                 $value = array_key_exists('c_value', $p) ? $p['c_value'] : get_option($name);
 

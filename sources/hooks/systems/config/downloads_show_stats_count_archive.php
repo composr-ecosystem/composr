@@ -35,7 +35,7 @@ class Hook_config_downloads_show_stats_count_archive
             'type' => 'tick',
             'category' => 'BLOCKS',
             'group' => 'STATISTICS',
-            'explanation' => 'CONFIG_OPTION_downloads_show_stats_count_archive',
+            'explanation' => null,
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,

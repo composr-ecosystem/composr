@@ -46,7 +46,11 @@ function build_config_inputter(string $name, array $details, ?string $current_va
     } else {
         $title = do_lang_tempcode($details['human_name']);
     }
-    $_explanation = do_lang($details['explanation'], isset($details['explanation_param_a']) ? $details['explanation_param_a'] : null, isset($details['explanation_param_b']) ? $details['explanation_param_b'] : null, isset($details['explanation_param_c']) ? $details['explanation_param_c'] : null, null, false);
+    if ($details['explanation'] === null) {
+        $_explanation = null;
+    } else {
+        $_explanation = do_lang($details['explanation'], isset($details['explanation_param_a']) ? $details['explanation_param_a'] : null, isset($details['explanation_param_b']) ? $details['explanation_param_b'] : null, isset($details['explanation_param_c']) ? $details['explanation_param_c'] : null);
+    }
     if ($_explanation === null) {
         $_explanation = do_lang('CONFIG_GROUP_DEFAULT_DESCRIP_' . $details['group'], null, null, null, null, false);
         if ($_explanation === null) {

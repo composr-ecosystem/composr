@@ -35,7 +35,7 @@ class Hook_config_chat_show_stats_count_messages
             'type' => 'tick',
             'category' => 'BLOCKS',
             'group' => 'STATISTICS',
-            'explanation' => 'CONFIG_OPTION_chat_show_stats_count_messages',
+            'explanation' => null,
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,

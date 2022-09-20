@@ -35,7 +35,7 @@ class Hook_config_cns_show_profile_link
             'type' => 'tick',
             'category' => 'BLOCKS',
             'group' => 'PERSONAL_BLOCK',
-            'explanation' => 'CONFIG_OPTION_cns_show_profile_link',
+            'explanation' => null,
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,

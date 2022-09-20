@@ -35,7 +35,7 @@ class Hook_config_points_show_personal_stats_total_points
             'type' => 'tick',
             'category' => 'BLOCKS',
             'group' => 'PERSONAL_BLOCK',
-            'explanation' => 'CONFIG_OPTION_points_show_personal_stats_total_points',
+            'explanation' => null,
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,

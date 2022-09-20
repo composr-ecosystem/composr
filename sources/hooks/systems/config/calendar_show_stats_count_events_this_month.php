@@ -35,7 +35,7 @@ class Hook_config_calendar_show_stats_count_events_this_month
             'type' => 'tick',
             'category' => 'BLOCKS',
             'group' => 'STATISTICS',
-            'explanation' => 'CONFIG_OPTION_calendar_show_stats_count_events_this_month',
+            'explanation' => null,
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,

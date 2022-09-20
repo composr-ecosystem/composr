@@ -35,7 +35,7 @@ class Hook_config_wiki_show_stats_count_posts
             'type' => 'tick',
             'category' => 'BLOCKS',
             'group' => 'STATISTICS',
-            'explanation' => 'CONFIG_OPTION_wiki_show_stats_count_posts',
+            'explanation' => null,
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,

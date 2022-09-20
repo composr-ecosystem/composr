@@ -35,7 +35,7 @@ class Hook_config_quiz_show_stats_count_total_open
             'type' => 'tick',
             'category' => 'BLOCKS',
             'group' => 'STATISTICS',
-            'explanation' => 'CONFIG_OPTION_quiz_show_stats_count_total_open',
+            'explanation' => null,
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,

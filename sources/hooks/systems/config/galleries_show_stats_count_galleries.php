@@ -35,7 +35,7 @@ class Hook_config_galleries_show_stats_count_galleries
             'type' => 'tick',
             'category' => 'BLOCKS',
             'group' => 'STATISTICS',
-            'explanation' => 'CONFIG_OPTION_galleries_show_stats_count_galleries',
+            'explanation' => null,
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,

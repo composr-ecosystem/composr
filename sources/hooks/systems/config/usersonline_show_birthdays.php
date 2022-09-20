@@ -35,7 +35,7 @@ class Hook_config_usersonline_show_birthdays
             'type' => 'tick',
             'category' => 'BLOCKS',
             'group' => 'USERS_ONLINE_BLOCK',
-            'explanation' => 'CONFIG_OPTION_usersonline_show_birthdays',
+            'explanation' => null,
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,

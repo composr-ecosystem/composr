@@ -35,7 +35,7 @@ class Hook_config_points_show_personal_stats_gift_points_balance
             'type' => 'tick',
             'category' => 'BLOCKS',
             'group' => 'PERSONAL_BLOCK',
-            'explanation' => 'CONFIG_OPTION_points_show_personal_stats_gift_points_balance',
+            'explanation' => null,
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,

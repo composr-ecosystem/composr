@@ -35,7 +35,7 @@ class Hook_config_forum_show_personal_stats_posts
             'type' => 'tick',
             'category' => 'BLOCKS',
             'group' => 'PERSONAL_BLOCK',
-            'explanation' => 'CONFIG_OPTION_forum_show_personal_stats_posts',
+            'explanation' => null,
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,

@@ -35,7 +35,7 @@ class Hook_config_show_personal_last_visit
             'type' => 'tick',
             'category' => 'BLOCKS',
             'group' => 'PERSONAL_BLOCK',
-            'explanation' => 'CONFIG_OPTION_show_personal_last_visit',
+            'explanation' => null,
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,

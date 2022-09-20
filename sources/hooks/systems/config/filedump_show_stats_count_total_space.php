@@ -35,7 +35,7 @@ class Hook_config_filedump_show_stats_count_total_space
             'type' => 'tick',
             'category' => 'BLOCKS',
             'group' => 'STATISTICS',
-            'explanation' => 'CONFIG_OPTION_filedump_show_stats_count_total_space',
+            'explanation' => null,
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,

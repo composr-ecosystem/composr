@@ -35,7 +35,7 @@ class Hook_config_points_show_personal_stats_points_spent
             'type' => 'tick',
             'category' => 'BLOCKS',
             'group' => 'PERSONAL_BLOCK',
-            'explanation' => 'CONFIG_OPTION_points_show_personal_stats_points_spent',
+            'explanation' => null,
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,

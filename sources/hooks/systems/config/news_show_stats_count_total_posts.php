@@ -35,7 +35,7 @@ class Hook_config_news_show_stats_count_total_posts
             'type' => 'tick',
             'category' => 'BLOCKS',
             'group' => 'STATISTICS',
-            'explanation' => 'CONFIG_OPTION_news_show_stats_count_total_posts',
+            'explanation' => null,
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,

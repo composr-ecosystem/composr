@@ -35,7 +35,7 @@ class Hook_config_usersonline_show_newest_member
             'type' => 'tick',
             'category' => 'BLOCKS',
             'group' => 'USERS_ONLINE_BLOCK',
-            'explanation' => 'CONFIG_OPTION_usersonline_show_newest_member',
+            'explanation' => null,
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,

@@ -35,7 +35,7 @@ class Hook_config_forum_show_stats_count_members_active_today
             'type' => 'tick',
             'category' => 'BLOCKS',
             'group' => 'STATISTICS',
-            'explanation' => 'CONFIG_OPTION_forum_show_stats_count_members_active_today',
+            'explanation' => null,
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,
