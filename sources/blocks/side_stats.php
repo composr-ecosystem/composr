@@ -166,18 +166,13 @@ PHP;
             $full_tpl->attach(do_template('BLOCK_SIDE_STATS_SECTION', ['_GUID' => 'e2408c71a7c74f1d14089412d4538b6d', 'SECTION' => $title, 'CONTENT' => $bits]));
         }
 
-        $_hooks = find_all_hooks('blocks', 'side_stats');
+        $_hooks = find_all_hook_obs('blocks', 'side_stats', 'Hook_stats_');
         if (array_key_exists('stats_forum', $_hooks)) { // Fudge the order
             $forum_hook = $_hooks['stats_forum'];
             unset($_hooks['stats_forum']);
             $_hooks = array_merge(['stats_forum' => $forum_hook], $_hooks);
         }
-        foreach (array_keys($_hooks) as $hook) {
-            require_code('hooks/blocks/side_stats/' . filter_naughty_harsh($hook));
-            $object = object_factory('Hook_stats_' . filter_naughty_harsh($hook), true);
-            if ($object === null) {
-                continue;
-            }
+        foreach ($_hooks as $object) {
             $bits = $object->run();
             if (!$bits->is_empty_shell()) {
                 $full_tpl->attach($bits);

@@ -24,10 +24,8 @@ class config_test_set extends cms_test_case
             return;
         }
 
-        $hooks = find_all_hooks('systems', 'config');
-        foreach (array_keys($hooks) as $hook) {
-            require_code('hooks/systems/config/' . filter_naughty_harsh($hook));
-            $ob = object_factory('Hook_config_' . filter_naughty_harsh($hook));
+        $hooks = find_all_hook_obs('systems', 'config', 'Hook_config_');
+        foreach ($hooks as $hook => $ob) {
             $details = $ob->get_details();
 
             $default = $ob->get_default();
@@ -54,10 +52,8 @@ class config_test_set extends cms_test_case
             return;
         }
 
-        $hooks = find_all_hooks('systems', 'config');
-        foreach (array_keys($hooks) as $hook) {
-            require_code('hooks/systems/config/' . filter_naughty_harsh($hook));
-            $ob = object_factory('Hook_config_' . filter_naughty_harsh($hook));
+        $hooks = find_all_hook_obs('systems', 'config', 'Hook_config_');
+        foreach ($hooks as $hook => $ob) {
             $details = $ob->get_details();
 
             $default = $ob->get_default();
@@ -308,6 +304,10 @@ class config_test_set extends cms_test_case
             foreach ($settings_needed as $setting => $type) {
                 $this->assertTrue(array_key_exists($setting, $details), 'Missing setting: ' . $setting . ' in ' . $hook);
                 if (array_key_exists($setting, $details)) {
+                    if (($setting == 'explanation') && ($details[$setting] === null)) {
+                        continue;
+                    }
+
                     $this->assertTrue(gettype($details[$setting]) == $type, 'Incorrect data type for: ' . $setting . ' in ' . $hook);
                 }
             }
@@ -484,11 +484,9 @@ class config_test_set extends cms_test_case
         }
 
         // Find all categories by searching
-        $hooks = find_all_hooks('systems', 'config');
         $categories_found = [];
-        foreach (array_keys($hooks) as $hook) {
-            require_code('hooks/systems/config/' . filter_naughty_harsh($hook));
-            $ob = object_factory('Hook_config_' . filter_naughty_harsh($hook));
+        $hooks = find_all_hook_obs('systems', 'config', 'Hook_config_');
+        foreach ($hooks as $hook => $ob) {
             $details = $ob->get_details();
             $categories_found[cms_strtolower_ascii($details['category'])] = true;
         }
