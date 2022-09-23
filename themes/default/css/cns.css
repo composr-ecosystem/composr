@@ -276,6 +276,10 @@ div.cns-table-footer > div > div {
 	background-color: {$GET,area_background};
 	color: {$GET,box_title_text};
 }
+.cns-topic-post + .cns-topic-post .cns-forum-box-left,
+.cns-topic-post + .cns-topic-post .cns-post-details {
+	border-top-width: 15px !important;
+}
 .cns-topic .cns-forum-box-left, .cns-post-details, .cns-post-details a, .cns-post-details a:hover {
 	color: {$GET,box_title_text} !important;
 }
