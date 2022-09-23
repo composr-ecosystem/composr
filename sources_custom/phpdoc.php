@@ -702,10 +702,12 @@ function _read_php_function_line(string $_line) : array
                 break;
 
             case 'in_arg_default':
-                if (($char == '/') && ($_line[$k + 1] == '*') && ($in_string === null) && (!$escaping)) {
+                $in_array = (preg_match('#^\s*(\[[^\]]*|array\([^)]*)$#', $arg_default) != 0);
+                $closed_array = ($in_array) && (preg_match('#^\s*(\[[^\]]*\]|array\([^)]*\))$#', $arg_default) != 0);
+                if (($char == '/') && ($_line[$k + 1] == '*') && ($in_string === null) && ((!$in_array) || ($closed_array)) && (!$escaping)) {
                     $post_comment_state = $parse;
                     $parse = 'in_comment';
-                } elseif (((($char == ')') && (preg_match('#^\s*(\[[^\]]*|array\([^)]*)$#', $arg_default) == 0)) || ($char == ',')) && ($in_string === null) && (!$escaping)) {
+                } elseif ((($char == ',') || ($char == ')')) && ($in_string === null) && ((!$in_array) || ($closed_array)) && (!$escaping)) {
                     $new_parameter = ['name' => $arg_name, 'php_type' => $arg_type, 'php_type_nullable' => $arg_type_nullable, 'ref' => $ref, 'is_variadic' => $is_variadic];
 
                     $default_raw = $arg_default;
@@ -745,7 +747,7 @@ function _read_php_function_line(string $_line) : array
                     }
                 } else {
                     $arg_default .= $char;
-                    if (($char == '"') || ($char == "'")) {
+                    if ((($char == '"') || ($char == "'")) && ((!$in_array) || ($closed_array))) {
                         $in_string = $char;
                     }
                 }
