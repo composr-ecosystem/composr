@@ -1250,7 +1250,7 @@ function chat_get_room_content(?int $room_id, array $_rooms, ?int $max_messages 
                 if ($where != '') {
                     $where .= ' AND ';
                 }
-                $where .= 'main.date_and_time>=' . strval($timestamp) . ' AND id<>' . strval($uptoid);
+                $where .= 'main.date_and_time>=' . strval($timestamp) . ' AND main.id<>' . strval($uptoid);
             }
         }
         if (!$return_my_messages) {
