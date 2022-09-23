@@ -396,9 +396,14 @@ function get_php_file_api(string $filename, bool $include_code = false, bool $pe
                     if (strpos($parameter['description'], '(false: ') === false) {
                         attach_message(do_lang_tempcode('NULL_MEANING_NOT_SPECIFIED', escape_html($parameter['name']), escape_html($function_name), [escape_html('false')]), 'warn');
                     }
-                } else {
+                } elseif (strpos($parameter['type'], 'boolean') === false) {
                     if (strpos($parameter['description'], '(false: ') !== false) {
                         attach_message(do_lang_tempcode('NULL_MEANING_SHOULDNT_BE_SPECIFIED', escape_html($parameter['name']), escape_html($function_name), [escape_html('false')]), 'warn');
+                    }
+                }
+                if (strpos($parameter['type'], 'boolean') === false) {
+                    if (strpos($parameter['description'], '(true: ') !== false) {
+                        attach_message(do_lang_tempcode('NULL_MEANING_SHOULDNT_BE_SPECIFIED', escape_html($parameter['name']), escape_html($function_name), [escape_html('true')]), 'warn');
                     }
                 }
             }
