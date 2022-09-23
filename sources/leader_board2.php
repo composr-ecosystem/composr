@@ -66,7 +66,7 @@ function add_leader_board(string $title, string $board_type, int $member_count, 
     // Insert usergroup references
     if ($usergroups !== null && !empty($usergroups)) {
         foreach ($usergroups as $group) {
-            if ($group === null) {
+            if (!is_numeric($group) && (($group === null) || $group == '')) {
                 continue; // skip empty or null groups
             }
             $GLOBALS['SITE_DB']->query_insert('leader_boards_groups', [

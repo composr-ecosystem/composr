@@ -221,7 +221,6 @@ class Hook_addon_registry_cns_forum
             'themes/default/templates/CNS_FORUM_LIST_LINE.tpl',
             'themes/default/templates/CNS_FORUM_TOPIC_LIST_LINE.tpl',
             'themes/default/templates/CNS_VFORUM_SCREEN.tpl',
-            'sources/hooks/systems/points/posts.php',
             'sources/hooks/systems/config/points_posting.php',
             'forum/index.php',
             'forum/pages/comcode/.htaccess',

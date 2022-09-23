@@ -188,16 +188,19 @@ function wiki_add_post(int $page_id, string $message, int $validated = 1, ?int $
     // Log
     log_it('WIKI_MAKE_POST', strval($post_id), strval($page_id));
 
-    // Update post count
+    // Award points if the wiki post was over 1kb in size
     if ((addon_installed('points')) && (cms_mb_strlen($message) > 1024)) {
-        require_code('points');
-        $_count = point_info($member_id);
-        $count = array_key_exists('points_gained_wiki', $_count) ? $_count['points_gained_wiki'] : 0;
-        $GLOBALS['FORUM_DRIVER']->set_custom_field($member_id, 'points_gained_wiki', $count + 1);
+        require_code('points2');
 
-        global $POINT_INFO_CACHE, $TOTAL_POINTS_CACHE;
-        unset($POINT_INFO_CACHE[$member_id]);
-        unset($TOTAL_POINTS_CACHE[$member_id]);
+        $_points_wiki_posting = get_option('points_wiki', true);
+        if ($_points_wiki_posting === null) {
+            $_points_wiki_posting = '0';
+        }
+        $points_wiki_posting = intval($_points_wiki_posting);
+
+        if ($points_wiki_posting > 0) {
+            points_credit_member($member_id, do_lang('WIKI_MAKE_POST'), $points_wiki_posting, 0, 0, null, null, 0, 'wiki_post', 'add', strval($post_id));
+        }
     }
 
     // Stat
@@ -401,18 +404,6 @@ function wiki_add_page(string $title, string $description, string $notes, int $s
     require_code('comcode_check');
     check_comcode($description, null, false, null, true);
 
-    // Update post count
-    if ((addon_installed('points')) && (cms_mb_strlen($description) > 1024)) {
-        require_code('points');
-        $_count = point_info($member_id);
-        $count = array_key_exists('points_gained_wiki', $_count) ? $_count['points_gained_wiki'] : 0;
-        $GLOBALS['FORUM_DRIVER']->set_custom_field($member_id, 'points_gained_wiki', $count + 1);
-
-        global $POINT_INFO_CACHE, $TOTAL_POINTS_CACHE;
-        unset($POINT_INFO_CACHE[$member_id]);
-        unset($TOTAL_POINTS_CACHE[$member_id]);
-    }
-
     $map = [
         'show_posts' => $show_posts,
         'notes' => $notes,
@@ -437,6 +428,21 @@ function wiki_add_page(string $title, string $description, string $notes, int $s
     } else {
         $map = insert_lang_comcode('the_description', $description, 2) + $map;
         $page_id = $GLOBALS['SITE_DB']->query_insert('wiki_pages', $map, true);
+    }
+
+    // Award points if the wiki page was over 1kb in size
+    if ((addon_installed('points')) && (cms_mb_strlen($description) > 1024)) {
+        require_code('points2');
+
+        $_points_wiki_posting = get_option('points_wiki', true);
+        if ($_points_wiki_posting === null) {
+            $_points_wiki_posting = '0';
+        }
+        $points_wiki_posting = intval($_points_wiki_posting);
+
+        if ($points_wiki_posting > 0) {
+            points_credit_member($member_id, do_lang('WIKI_ADD_PAGE'), $points_wiki_posting, 0, 0, null, true, 0, 'wiki_page', 'add', strval($page_id));
+        }
     }
 
     update_stat('num_wiki_pages', 1);

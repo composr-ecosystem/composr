@@ -77,8 +77,8 @@ class Hook_task_export_points_overview
                 $usergroups .= $all_usergroups[$_usergroup];
             }
 
-            $points_gained = total_points($member_id, $to) - total_points($member_id, $from);
-            $points_now = total_points($member_id);
+            $points_gained = points_lifetime($member_id, $to) - points_lifetime($member_id, $from);
+            $points_now = points_lifetime($member_id);
 
             $data_point = [];
 

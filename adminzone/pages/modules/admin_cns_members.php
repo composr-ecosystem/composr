@@ -654,7 +654,7 @@ class Module_admin_cns_members
             }
             foreach ($rows as $row) {
                 if (addon_installed('points')) {
-                    if (total_points($row['id']) > $max_points) {
+                    if (points_lifetime($row['id']) > $max_points) {
                         continue;
                     }
                 }

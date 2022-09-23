@@ -1422,7 +1422,9 @@ class Hook_import_vb3
                     'recipient_id' => $member_id,
                     'anonymous' => $anonymous,
                     'linked_to' => null,
-                    'code_explanation' => '',
+                    't_type' => 'legacy',
+                    't_subtype' => '',
+                    't_type_id' => 'admin_import__vb3',
                     'status' => 'normal',
                 ];
                 $map += insert_lang_comcode('reason', $reason, 4);

@@ -34,7 +34,7 @@ class Hook_config_points_ADD_QUIZ
             'human_name' => 'ADD_QUIZ',
             'type' => 'integer',
             'category' => 'POINTS',
-            'group' => 'COUNT_POINTS_SENT',
+            'group' => 'POINTS_EARNED',
             'explanation' => 'CONFIG_OPTION_points_ADD_QUIZ',
             'shared_hosting_restricted' => '0',
             'list_options' => '',

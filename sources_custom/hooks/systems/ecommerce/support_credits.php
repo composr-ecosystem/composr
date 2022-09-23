@@ -195,6 +195,7 @@ class Hook_ecommerce_support_credits
         }
 
         $id = strval($GLOBALS['SITE_DB']->query_insert('credit_purchases', ['member_id' => $member_id, 'date_and_time' => time(), 'num_credits' => $num_credits, 'is_manual' => $manual, 'purchase_validated' => 0], true));
+
         return [$id, null];
     }
 
@@ -235,6 +236,12 @@ class Hook_ecommerce_support_credits
 
         // Update the row in the credit_purchases table
         $GLOBALS['SITE_DB']->query_update('credit_purchases', ['purchase_validated' => 1], ['id' => intval($id)]);
+
+        // Award points for the credits
+        if (addon_installed('points') && ($num_credits > 0)) {
+            require_code('points2');
+            points_credit_member($member_id, do_lang('CREDITS'), 50 * $num_credits, 0, 0, null, true, 0, 'support_credits', 'purchase', strval($num_credits)); // FUDGE: 50 points per credit
+        }
 
         $GLOBALS['SITE_DB']->query_insert('ecom_sales', ['date_and_time' => time(), 'member_id' => $member_id, 'details' => do_lang('CREDITS', null, null, null, get_site_default_lang()), 'details2' => strval($num_credits), 'txn_id' => $details['TXN_ID']]);
 

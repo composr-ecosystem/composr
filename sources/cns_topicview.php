@@ -37,7 +37,7 @@ function find_post_id_url(int $post_id) : string
     }
 
     $post_time = $post_details[0]['p_time'];
-    $topic_id = $post_details[0]['id'];
+    $topic_id = $post_details[0]['p_topic_id'];
 
     // What page is it on?
     $before = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_time<=' . strval($post_time) . ' AND id<>' . strval($post_id) . ' AND ' . cns_get_topic_where($topic_id), false, true);

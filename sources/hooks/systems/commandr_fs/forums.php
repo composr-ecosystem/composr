@@ -794,7 +794,7 @@ class Hook_commandr_fs_forums extends Resource_fs_base
         $topic_id = $this->_integer_category($category);
 
         require_code('cns_posts_action3');
-        cns_delete_posts_topic($topic_id, [intval($resource_id)], '', false, false);
+        cns_delete_posts_topic($topic_id, [intval($resource_id)], '', false, false, true, false);
 
         return true;
     }

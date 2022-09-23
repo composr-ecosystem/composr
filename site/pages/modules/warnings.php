@@ -454,7 +454,11 @@ class Module_warnings extends Standard_crud_module
 
         // Moderation actions
         if ($new) {
-            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'c7eb70b13be74d8f3bd1f1c5e739d9ab', 'TITLE' => do_lang_tempcode('DELETE'), 'HELP' => do_lang_tempcode('DESCRIPTION_DELETE_CONTENT')]));
+            $description = do_lang_tempcode('DESCRIPTION_DELETE_CONTENT');
+            if (addon_installed('points')) {
+                $description->attach(do_lang_tempcode('DESCRIPTION_DELETE_CONTENT_SUP_POINTS'));
+            }
+            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'c7eb70b13be74d8f3bd1f1c5e739d9ab', 'TITLE' => do_lang_tempcode('DELETE'), 'HELP' => $description]));
 
             foreach ($posts_deletable as $_post_id => $_post_deletable) {
                 list($post_context, $_post_id, $topic_id, $topic_title, $post_time, $forum_id) = $_post_deletable;
@@ -878,13 +882,11 @@ class Module_warnings extends Standard_crud_module
         }
 
         // Charge points
-        if (addon_installed('points')) {
-            if (has_privilege(get_member(), 'moderate_points')) {
-                if ($charged_points != 0) {
-                    require_code('points2');
-                    points_debit_member($member_id, $explanation, $charged_points, 0, 1, false, 0, ['charge', 'warning', strval($warning_id)]);
-                }
-            }
+        if (addon_installed('points') && ($charged_points > 0) && (has_privilege(get_member(), 'moderate_points'))) {
+            require_code('points2');
+
+            // Note we pass false for sending notifications, which mean they only get sent to staff. The member will be 'notified' in the private topic message they receive.
+            points_debit_member($member_id, $explanation, $charged_points, 0, 1, false, 0, 'warning', 'add', strval($warning_id));
         }
 
         // Delete content
@@ -1209,16 +1211,18 @@ class Module_warnings extends Standard_crud_module
     public function undo_charge() : object
     {
         $id = post_param_integer('id');
-        $member_id = $GLOBALS['FORUM_DB']->query_select_value('f_warnings', 'w_member_id', ['id' => $id]);
-        $charged_points = $GLOBALS['FORUM_DB']->query_select_value('f_warnings', 'p_charged_points', ['id' => $id]);
-        require_code('points2');
-        points_credit_member($member_id,  do_lang('UNDO_CHARGE_FOR', strval($id)), $charged_points, 0, 1, true, 1, ['undo_charge', 'warnings', $id]);
-        $GLOBALS['FORUM_DB']->query_update('f_warnings', ['p_charged_points' => 0], ['id' => $id], '', 1);
+        $ledger = $GLOBALS['SITE_DB']->query_select('points_ledger', ['id', 'sender_id'], ['t_type' => 'warning', 't_subtype' => 'add', 't_type_id' => strval($id)]);
+        if (!array_key_exists(0, $ledger)) {
+            warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
+        }
 
-        log_it('UNDO_CHARGE', strval($id), $GLOBALS['FORUM_DRIVER']->get_username($member_id));
+        require_code('points2');
+        points_transaction_reverse($ledger['id']);
+
+        log_it('UNDO_CHARGE', strval($id), $GLOBALS['FORUM_DRIVER']->get_username($ledger['sender_id']));
 
         // Show it worked / Refresh
-        $url = build_url(['page' => '_SELF', 'type' => 'history', 'id' => $member_id], '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => 'history', 'id' => $ledger['sender_id']], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 

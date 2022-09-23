@@ -25,12 +25,46 @@
  */
 function init__points()
 {
-    global $TOTAL_POINTS_CACHE;
-    $TOTAL_POINTS_CACHE = [];
-    global $POINTS_SPENT_CACHE;
-    $POINTS_SPENT_CACHE = [];
+    // Initialise points cache
     global $POINT_INFO_CACHE;
     $POINT_INFO_CACHE = [];
+
+    // Define constants for points_ledger_calculate
+    if (!defined('LEDGER_TYPE_RECEIVED')) {
+        define('LEDGER_TYPE_RECEIVED', 0x1); // (1 in decimal)
+    }
+    if (!defined('LEDGER_TYPE_SENT')) {
+        define('LEDGER_TYPE_SENT', 0x2); // (2 in decimal)
+    }
+    if (!defined('LEDGER_TYPE_SPENT')) {
+        define('LEDGER_TYPE_SPENT', 0x4); // (4 in decimal)
+    }
+}
+
+/**
+ * Flush the points cache.
+ *
+ * @param  ?MEMBER $member_id Only flush the points cache for the specified member (null: flush all members)
+ * @param  ?ID_TEXT $property Only flush this property from a member's points cache (null: flush all properties)
+ * @set points_used points_spent points_sent points_received gift_points_sent
+ */
+function points_flush_cache(?int $member_id = null, ?string $property = null)
+{
+    global $POINT_INFO_CACHE;
+
+    if (($member_id === null) && ($property === null)) { // Clear the entire points cache
+        $POINT_INFO_CACHE = [];
+    } elseif (($member_id !== null) && ($property === null)) { // Clear the points cache for a member
+        $POINT_INFO_CACHE[$member_id] = [];
+    } elseif (($member_id !== null) && ($property !== null)) { // Clear a specific cache on a specific member
+        if (isset($POINT_INFO_CACHE[$member_id])) {
+            unset($POINT_INFO_CACHE[$member_id][$property]);
+        }
+    } elseif (($member_id === null) && ($property !== null)) { // Clear a specific cache on all members
+        foreach (array_keys($POINT_INFO_CACHE) as $member_id) {
+            unset($POINT_INFO_CACHE[$member_id][$property]);
+        }
+    }
 }
 
 /**
@@ -45,76 +79,102 @@ function get_product_price_points(string $item) : int
 }
 
 /**
- * Get the total points in the specified member's account; some of these will probably have been spent already.
+ * Get the total points a member has ever received (life-time points); some of these may have been used already.
  *
  * @param  MEMBER $member_id The member
  * @param  ?TIME $timestamp Time to get for (null: now)
  * @param  boolean $cache Whether to retrieve from and store the results in the run-time cache
  * @return integer The number of points the member has
  */
-function total_points(int $member_id, ?int $timestamp = null, bool $cache = true) : int
+function points_lifetime(int $member_id, ?int $timestamp = null, bool $cache = true) : int
 {
     if (!has_privilege($member_id, 'use_points')) {
         return 0;
     }
 
-    if ($cache) {
-        global $TOTAL_POINTS_CACHE;
-
-        if ($timestamp === null) {
-            if (isset($TOTAL_POINTS_CACHE[$member_id])) {
-                return $TOTAL_POINTS_CACHE[$member_id];
-            }
-        }
-    }
-
-    $point_info = point_info($member_id, $cache);
-    $points = 0;
-
-    // Run points hooks
-    $hook_obs = find_all_hook_obs('systems', 'points', 'Hook_points_');
-    foreach ($hook_obs as $hook_ob) {
-        $points += $hook_ob->total_points($member_id, $timestamp, $point_info);
-    }
-
     if ($timestamp === null && $cache) {
-        $TOTAL_POINTS_CACHE[$member_id] = $points;
+        $values = $GLOBALS['FORUM_DRIVER']->get_custom_fields($member_id);
+        if ($values === null) {
+            $values = [];
+        }
+
+        if (array_key_exists('points_lifetime', $values)) {
+            return intval($values['points_lifetime']);
+        }
+
+        return 0;
     }
 
-    return $points;
+    $end = '';
+    if ($timestamp !== null) {
+        $end .= ' AND date_and_time<=' . strval($timestamp);
+    }
+
+    // Calculate total points ever received
+    $_points = points_ledger_calculate(LEDGER_TYPE_RECEIVED, $member_id, null, $end);
+    list(, $t_points, $t_gift_points) = $_points['received'];
+    $points = ($t_points + $t_gift_points);
+
+    return intval($points);
 }
 
 /**
- * Get the total points the specified member has spent, including sent to other members.
+ * Get the total points the specified member has used (does not include gift points).
  *
  * @param  MEMBER $member_id The member
  * @return integer The number of points the member has spent
  */
-function points_spent(int $member_id) : int
+function points_used(int $member_id) : int
 {
-    global $POINTS_SPENT_CACHE;
-    if (isset($POINTS_SPENT_CACHE[$member_id])) {
-        return $POINTS_SPENT_CACHE[$member_id];
+    if (!has_privilege($member_id, 'use_points')) {
+        return 0;
     }
 
-    $_points = point_info($member_id);
-    $points = isset($_points['points_spent']) ? $_points['points_spent'] : 0;
-    $POINTS_SPENT_CACHE[$member_id] = $points;
+    global $POINT_INFO_CACHE;
+    if (isset($POINT_INFO_CACHE[$member_id]['points_used'])) {
+        return $POINT_INFO_CACHE[$member_id]['points_used'];
+    } elseif (!array_key_exists($member_id, $POINT_INFO_CACHE)) {
+        $POINT_INFO_CACHE[$member_id] = [];
+    }
+
+    // Calculate total points ever used
+    $_points = points_ledger_calculate(LEDGER_TYPE_SENT | LEDGER_TYPE_SPENT, $member_id);
+    list(, $sent_points, ) = $_points['sent'];
+    list(, $spent_points, ) = $_points['spent'];
+    $points = ($sent_points + $spent_points);
+
+    $POINT_INFO_CACHE[$member_id]['points_used'] = $points;
 
     return $points;
 }
 
 /**
- * Get the total points the specified member has spent, but only to the system.
+ * Get the total points the specified member has spent to the system.
  *
  * @param  MEMBER $member_id The member
  * @return integer The number of points the member has spent to the system
  */
-function points_spent_system(int $member_id) : int
+function points_spent(int $member_id) : int
 {
-    $_spent = $GLOBALS['SITE_DB']->query_select_value('points_ledger', 'SUM(amount_points)', ['sender_id' => $member_id, 'recipient_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(), 'status' => 'normal']);
-    $actual_spent = @intval($_spent); // Most reliable way
-    return $actual_spent;
+    if (!has_privilege($member_id, 'use_points')) {
+        return 0;
+    }
+
+    global $POINT_INFO_CACHE;
+    if (isset($POINT_INFO_CACHE[$member_id]['points_spent'])) {
+        return $POINT_INFO_CACHE[$member_id]['points_spent'];
+    } elseif (!array_key_exists($member_id, $POINT_INFO_CACHE)) {
+        $POINT_INFO_CACHE[$member_id] = [];
+    }
+
+    // Calculate total points ever spent to the system
+    $_points = points_ledger_calculate(LEDGER_TYPE_SPENT, $member_id);
+    list(, $spent_points, ) = $_points['spent'];
+    $points = $spent_points;
+
+    $POINT_INFO_CACHE[$member_id]['points_spent'] = $points;
+
+    return $points;
 }
 
 /**
@@ -129,64 +189,43 @@ function points_balance(int $member_id) : int
         return 0;
     }
 
-    return total_points($member_id) - points_spent($member_id);
-}
-
-/**
- * Get all sorts of information about a specified member's point account.
- *
- * @param  MEMBER $member_id The member the point info is of
- * @param  boolean $cache Whether to retrieve from and store the results in a run-time cache
- * @return array The map containing the members point info (fields as enumerated in description)
- */
-function point_info(int $member_id, bool $cache = true) : array
-{
-    require_code('lang');
-    require_lang('points');
-
-    if ($cache) {
-        global $POINT_INFO_CACHE;
-        if (isset($POINT_INFO_CACHE[$member_id])) {
-            return $POINT_INFO_CACHE[$member_id];
-        }
-    }
-
     $values = $GLOBALS['FORUM_DRIVER']->get_custom_fields($member_id);
     if ($values === null) {
         $values = [];
     }
 
-    $ret = [];
-    $ret[$member_id] = [];
-    foreach ($values as $key => $val) {
-        if (!isset($val->codename/*faster than is_object*/)) {
-            $ret[$member_id][$key] = @intval($val);
-        }
+    if (array_key_exists('points_balance', $values)) {
+        return @intval($values['points_balance']);
     }
-    if ($cache) {
-        $POINT_INFO_CACHE[$member_id] = $ret[$member_id];
-    }
-    return $ret[$member_id];
+
+    return 0;
 }
 
 /**
  * Get the number of gift points sent by the given member.
- * If gift points is disabled, this function provides a ceremonial figure rather than a mathematical figure.
  *
  * @param  MEMBER $member_id The member we want it for
  * @return integer The number of gift points sent by the member to others
  */
 function gift_points_sent(int $member_id) : int
 {
-    $_sent = point_info($member_id);
-
-    if ((!isset($_sent['gift_points_sent'])) || (get_option('enable_gift_points') == '0')) { // Either DB error or gift points disabled
-        $_actual_sent = $GLOBALS['SITE_DB']->query_select_value('points_ledger', 'SUM(amount_gift_points)', ['sender_id' => $member_id, 'status' => 'normal']);
-        $actual_sent = @intval($_actual_sent); // Most reliable way
-        return $actual_sent;
+    global $POINT_INFO_CACHE;
+    if (isset($POINT_INFO_CACHE[$member_id]['gift_points_sent'])) {
+        return $POINT_INFO_CACHE[$member_id]['gift_points_sent'];
+    } elseif (!array_key_exists($member_id, $POINT_INFO_CACHE)) {
+        $POINT_INFO_CACHE[$member_id] = [];
     }
 
-    return $_sent['gift_points_sent'];
+    // Calculate gift points sent
+    $_points = points_ledger_calculate(LEDGER_TYPE_SENT | LEDGER_TYPE_SPENT, $member_id);
+    list(, , $sent_gift_points) = $_points['sent'];
+    $points = $sent_gift_points;
+    list(, , $spent_gift_points) = $_points['spent'];
+    $points += $spent_gift_points;
+
+    $POINT_INFO_CACHE[$member_id]['gift_points_sent'] = $points;
+
+    return $points;
 }
 
 /**
@@ -195,30 +234,42 @@ function gift_points_sent(int $member_id) : int
  * @param  MEMBER $member_id The member which to get the total sent points
  * @return integer The total number of points the member sent to other members
  */
-function total_points_sent(int $member_id) : int
+function points_sent(int $member_id) : int
 {
-    $_sent = $GLOBALS['SITE_DB']->query_select('points_ledger', ['SUM(amount_gift_points) AS _amount_gift_points', 'SUM(amount_points) AS _amount_points'], ['sender_id' => $member_id, 'status' => 'normal'], ' AND recipient_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()));
-    if (empty($_sent)) {
+    if (!has_privilege($member_id, 'use_points')) {
         return 0;
     }
-    $actual_sent = @intval($_sent[0]['_amount_gift_points']) + @intval($_sent[0]['_amount_points']); // Most reliable way
-    return $actual_sent;
+
+    global $POINT_INFO_CACHE;
+    if (isset($POINT_INFO_CACHE[$member_id]['points_sent'])) {
+        return $POINT_INFO_CACHE[$member_id]['points_sent'];
+    } elseif (!array_key_exists($member_id, $POINT_INFO_CACHE)) {
+        $POINT_INFO_CACHE[$member_id] = [];
+    }
+
+    // Calculate total points ever spent to the system
+    $_points = points_ledger_calculate(LEDGER_TYPE_SENT, $member_id);
+    list(, $sent_points, $sent_gift_points) = $_points['sent'];
+    $points = ($sent_points + $sent_gift_points);
+
+    $POINT_INFO_CACHE[$member_id]['points_sent'] = $points;
+
+    return $points;
 }
 
 /**
- * Get the number of gift points that the given member has which they can send to others.
+ * Calculate the maximum number of gift points a member can possibly have based on usergroup membership and time since joining.
  *
- * @param  MEMBER $member_id The member we want it for
- * @return integer The number of gifts points that the given member has
+ * @param  MEMBER $member_id The member to calculate
+ * @return integer The maximum gift points the member can possibly have
  */
-function gift_points_balance(int $member_id) : int
+function gift_points_maximum(int $member_id) : int
 {
-    // If gift points is disabled, return point balance instead.
+    // If gift points is disabled, return 0.
     if (get_option('enable_gift_points') == '0') {
-        return points_balance($member_id);
+        return 0;
     }
 
-    $sent = gift_points_sent($member_id);
     if (get_forum_type() == 'cns') {
         require_lang('cns');
         require_code('cns_groups');
@@ -229,9 +280,29 @@ function gift_points_balance(int $member_id) : int
         $base = 25;
         $per_day = 1;
     }
-    $available = $base + $per_day * intval(floor((time() - $GLOBALS['FORUM_DRIVER']->get_member_join_timestamp($member_id)) / (60 * 60 * 24))) - $sent;
 
-    return $available;
+    $points = $base + ($per_day * intval(floor((time() - $GLOBALS['FORUM_DRIVER']->get_member_join_timestamp($member_id)) / (60 * 60 * 24))));
+
+    return $points;
+}
+
+/**
+ * Get the number of gift points that the given member has which they can send to others.
+ *
+ * @param  MEMBER $member_id The member we want it for
+ * @return integer The number of gifts points that the given member has
+ */
+function gift_points_balance(int $member_id) : int
+{
+    // If gift points is disabled, return 0.
+    if (get_option('enable_gift_points') == '0') {
+        return 0;
+    }
+
+    $gift_points_maximum = gift_points_maximum($member_id);
+    $sent = gift_points_sent($member_id);
+
+    return ($gift_points_maximum - $sent);
 }
 
 /**
@@ -270,4 +341,97 @@ function points_url(int $member_id, bool $skip_keep = false, ?int $send_amount =
     }
 
     return $url;
+}
+
+/**
+ * Calculate the number of active transactions and number of points for the specified criteria.
+ * This function accounts (adjusts) for reversed and refunded transactions as well.
+ *
+ * @param  integer $types The calculations we want to return (see LEDGER_TYPE_*)
+ * @param  MEMBER $primary_member The member to calculate (received: The member receiving the points) (sent and spent: the member using the points)
+ * @param  ?MEMBER $secondary_member Optionally filter to a secondary member (received: The member who sent the points to the primary member) (sent: The member who received the points from the primary member) (spent: ignored; always the system) (null: any member)
+ * @param  LONG_TEXT $where Optionally add additional WHERE to the SQL (should start with ' AND')
+ * @return array List of Tuples; key is a type from $types, value is the tuple of [count of active transactions matching criteria, number of points, number of gift points]
+ */
+function points_ledger_calculate(int $types, int $primary_member, ?int $secondary_member = null, string $where = '') : array
+{
+    // Invalid bitmask
+    if ($types <= 0 || $types > 7) {
+        return [];
+    }
+
+    $ret = [];
+
+    // Build our queries
+    $cases = 'CASE';
+    $cases_refund = 'CASE';
+    $case_when = '';
+    $case_when_refund = '';
+    if (($types & LEDGER_TYPE_RECEIVED) != 0) {
+        $ret['received'] = [0, 0, 0];
+        $case_when .= ' WHEN recipient_id=' . strval($primary_member);
+        $case_when_refund = ' WHEN sender_id=' . strval($primary_member);
+        if ($secondary_member !== null) {
+            $case_when .= ' AND sender_id=' . strval($secondary_member);
+            $case_when_refund .= ' AND recipient_id=' . strval($secondary_member);
+        }
+        $case_when .= ' THEN \'received\'';
+        $case_when_refund .= ' THEN \'received\'';
+    }
+    if (($types & LEDGER_TYPE_SENT) != 0) {
+        $ret['sent'] = [0, 0, 0];
+        $case_when .= ' WHEN sender_id=' . strval($primary_member);
+        $case_when_refund .= ' WHEN recipient_id=' . strval($primary_member);
+        if ($secondary_member !== null) {
+            $case_when .= ' AND recipient_id=' . strval($secondary_member);
+            $case_when_refund .= ' AND sender_id=' . strval($secondary_member);
+        } else {
+            $case_when .= ' AND recipient_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
+            $case_when_refund .= ' AND sender_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
+        }
+        $case_when .= ' THEN \'sent\'';
+        $case_when_refund .= ' THEN \'sent\'';
+    }
+    if (($types & LEDGER_TYPE_SPENT) != 0) {
+        $ret['spent'] = [0, 0, 0];
+        $case_when .= ' WHEN sender_id=' . strval($primary_member);
+        $case_when .= ' AND recipient_id=' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
+        $case_when .= ' THEN \'spent\'';
+        $case_when_refund .= ' WHEN recipient_id=' . strval($primary_member);
+        $case_when_refund .= ' AND sender_id=' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
+        $case_when_refund .= ' THEN \'spent\'';
+    }
+    $more_where = ' AND (recipient_id=' . strval($primary_member) . ' OR sender_id=' . strval($primary_member) . ')';
+    if ($secondary_member !== null) {
+        $more_where .= ' AND (recipient_id=' . strval($secondary_member) . ' OR sender_id=' . strval($secondary_member) . ')';
+    }
+
+    $cases .= $case_when . ' END AS type';
+    $query_select = 'SELECT COUNT(*) as count, SUM(amount_points) as points, SUM(amount_gift_points) as gift_points, ' . $cases . ' FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'points_ledger';
+    $cases_refund .= $case_when_refund . ' END AS type';
+    $query_select_refund = 'SELECT COUNT(*) as count, SUM(amount_points) as points, SUM(amount_gift_points) as gift_points, ' . $cases_refund . ' FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'points_ledger';
+
+    // Get our base calculation for all status=normal transactions matching criteria; we ignore reversed and reversing as they cancel each other 1:1 (refund transactions are handled in the next block)
+    $rows = $GLOBALS['SITE_DB']->query($query_select . ' WHERE status=\'normal\'' . $more_where . $where . ' GROUP BY type');
+    foreach ($rows as $row) {
+        if ($row['type'] === null) {
+            continue; // Did not match any of our SELECT CASE conditions, so skip.
+        }
+        $ret[$row['type']] = [intval($row['count']), intval($row['points']), intval($row['gift_points'])];
+    }
+
+    // Get status=refund transactions for the same criteria and subtract them from our base calculation; these are usually partial refunds
+    $rows = $GLOBALS['SITE_DB']->query($query_select_refund . ' WHERE status=\'refund\'' . $more_where . $where . ' GROUP BY type');
+    foreach ($rows as $row) {
+        if ($row['type'] === null) {
+            continue; // Did not match any of our SELECT CASE conditions, so skip.
+        }
+
+        // Refund transactions are neither 'active' in of themselves nor do they cancel (reverse) a previous transaction (since they are usually partial refunds only). Thus, we probably want to leave count alone.
+        // $ret[$row['type']][0] -= intval($row['count']);
+        $ret[$row['type']][1] -= intval($row['points']);
+        $ret[$row['type']][2] -= intval($row['gift_points']);
+    }
+
+    return $ret;
 }

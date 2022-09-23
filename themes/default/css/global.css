@@ -7028,8 +7028,12 @@ a[rel="lightbox"] {
 	padding-left: 1em;
 }
 
-.justify-space-between {
-	justify-content: space-between;
+.flex-wrapper-wrap {
+	flex-wrap: wrap;
+}
+
+.justify-space-evenly {
+	justify-content: space-evenly;
 }
 
 /*{+START,CSS_MODE,desktop}*/

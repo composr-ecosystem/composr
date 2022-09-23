@@ -191,6 +191,8 @@ class Hook_addon_registry_downloads
             'themes/default/javascript/downloads.js',
             'sources/hooks/systems/config/download_cat_access_late.php',
             'sources/hooks/systems/actionlog/downloads.php',
+            'sources/hooks/systems/points/download__download.php',
+            'sources/hooks/systems/points/download__add.php',
         ];
     }
 

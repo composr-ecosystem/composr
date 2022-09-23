@@ -213,12 +213,14 @@ function create_session(int $member_id, int $session_confirmed = 0, bool $invisi
             if (date('d/m/Y', tz_time($test, get_site_timezone())) != date('d/m/Y', tz_time(time(), get_site_timezone()))) {
                 // New daily visit; log it
                 $GLOBALS['SITE_DB']->query_insert('daily_visits', ['d_member_id' => $member_id, 'd_date_and_time' => time()]);
+
+                // Award points
                 if (addon_installed('points')) {
-                    // Award points
-                    require_code('points');
-                    $_before = point_info($member_id);
-                    if (array_key_exists('points_gained_visiting', $_before)) {
-                        $GLOBALS['FORUM_DRIVER']->set_custom_field($member_id, 'points_gained_visiting', strval($_before['points_gained_visiting'] + 1));
+                    $points_visit = intval(get_option('points_per_daily_visit'));
+                    if ($points_visit > 0) {
+                        require_code('points2');
+                        require_lang('points');
+                        points_credit_member($member_id, do_lang('DAILY_VISITS'), $points_visit, 0, 0, null, null, 0, 'member', 'visit', strval($member_id));
                     }
                 }
             }

@@ -175,7 +175,7 @@ function escrow_get_logs(int $id) : object
  * @param  LONG_TEXT $agreement The detailed terms and conditions for the escrow
  * @param  ?TIME $expiry_time The time this escrow will automatically cancel or enter dispute if the terms are not met (null: do not automatically expire)
  * @param  boolean $escrow_log Whether to log the escrow creation in its own log
- * @param  ?boolean $send_notifications Whether to send notifications for this escrow (null: false, and do not send to staff)
+ * @param  ?boolean $send_notifications Whether to send notifications for this transaction (false: only the staff get it) (true: both the member and staff get it) (null: neither the member nor staff get it)
  * @return ?AUTO_LINK The ID of the escrow record (null: There was an error)
  */
 function escrow_points(int $sender_id, int $recipient_id, int $amount, string $reason, string $agreement, ?int $expiry_time = null, bool $escrow_log = true, ?bool $send_notifications = true) : ?int
@@ -192,7 +192,7 @@ function escrow_points(int $sender_id, int $recipient_id, int $amount, string $r
     require_code('points2');
 
     // Actually debit the points into escrow (use null for gift points so we prioritize escrowing gift points first, when applicable)
-    $escrow_id = points_debit_member($sender_id, do_lang('ESCROW_REASON', $username, $reason), $amount, null, 0, $send_notifications, 0, ['create', 'points_escrow']);
+    $escrow_id = points_debit_member($sender_id, do_lang('ESCROW_REASON', $username, $reason), $amount, null, 0, $send_notifications, 0, 'points_escrow', 'add');
     if ($escrow_id === null) {
         return null;
     }
@@ -212,7 +212,7 @@ function escrow_points(int $sender_id, int $recipient_id, int $amount, string $r
     $map += insert_lang_comcode('reason', $reason, 4);
     $map += insert_lang_comcode('agreement', $agreement, 5);
     $id = $GLOBALS['SITE_DB']->query_insert('escrow', $map, true);
-    $GLOBALS['SITE_DB']->query_update('points_ledger', ['code_explanation' => json_encode(['create', 'points_escrow', strval($id)])], ['id' => $escrow_id], '', 1);
+    $GLOBALS['SITE_DB']->query_update('points_ledger', ['t_type' => 'points_escrow', 't_subtype' => 'add', 't_type_id' => strval($id)], ['id' => $escrow_id], '', 1);
 
     // Log it
     if ($escrow_log) {
@@ -262,7 +262,7 @@ function escrow_points(int $sender_id, int $recipient_id, int $amount, string $r
  * @param  MEMBER $member_id The member who is satisfying it
  * @param  ?array $row If the escrow was already queried from the database, this is the row (null: query for the escrow)
  * @param  boolean $escrow_log Whether to log this in the escrow logs
- * @param  ?boolean $send_notifications Whether to send notifications (null: false, and do not send to escrow moderators)
+ * @param  ?boolean $send_notifications Whether to send notifications for this transaction (false: only the staff get it) (true: both the member and staff get it) (null: neither the member nor staff get it)
  * @return ?array Tuple [integer ID of the recipient ledger, ?integer ID of the ledger refunding the sender (null means no refund processed), ?integer total points refunded (null means no refund), ?integer number of refunded points that were gift points (null means no refund)] (null: the escrow was not yet fully satisfied by all members)
  */
 function satisfy_escrow(int $id, int $member_id, ?array $row = null, bool $escrow_log = true, ?bool $send_notifications = true) : ?array
@@ -313,7 +313,7 @@ function satisfy_escrow(int $id, int $member_id, ?array $row = null, bool $escro
  * @param  array $row The database row for the escrow to mark complete
  * @param  ?integer $amount The number of points to credit to the recipient; the rest will be refunded to the sender (null: credit the full amount from the escrow)
  * @param  boolean $escrow_log Whether to log this in the escrow logs
- * @param  ?boolean $send_notifications Whether to send notifications for the completion of this escrow (null: false, and do not notify staff)
+ * @param  ?boolean $send_notifications Whether to send notifications for this transaction (false: only the staff get it) (true: both the member and staff get it) (null: neither the member nor staff get it)
  * @return array Tuple [integer ID of the recipient ledger, ?integer ID of the ledger refunding the sender (null means no refund processed), ?integer total points refunded (null means no refund), ?integer number of refunded points that were gift points (null means no refund)]
  */
 function _complete_escrow(array $row, ?int $amount = null, bool $escrow_log = true, ?bool $send_notifications = true) : array
@@ -340,7 +340,7 @@ function _complete_escrow(array $row, ?int $amount = null, bool $escrow_log = tr
     $GLOBALS['SITE_DB']->query_update('escrow', ['status' => 0], ['id' => $id], '', 1);
 
     // Credit the points to the recipient in a new transaction
-    $_id = points_credit_member($recipient_id, do_lang('ESCROW_REASON_FROM', $username, $reason), $amount, 0, 0, true, 0, ['complete', 'points_escrow', strval($id)]);
+    $_id = points_credit_member($recipient_id, do_lang('ESCROW_REASON_FROM', $username, $reason), $amount, 0, 0, null, null, 0, 'points_escrow', 'complete', strval($id));
     $response[] = $_id;
 
     // If we are not crediting the recipient with the full escrow points, then we need to refund the rest to the sender
@@ -354,7 +354,7 @@ function _complete_escrow(array $row, ?int $amount = null, bool $escrow_log = tr
         $refund = ($row['amount'] - $amount);
         $refund_gift_points = min($refund, $ledger['amount_gift_points']);
 
-        $id_b = points_credit_member($row['sender_id'], do_lang('ESCROW_REASON_FROM', $username, $reason), $amount, $refund_gift_points, 0, true, 1, ['partial_refund', 'points_escrow', strval($id)]);
+        $id_b = points_credit_member($row['sender_id'], do_lang('ESCROW_REASON_FROM', $username, $reason), $amount, $refund_gift_points, 0, $row['original_points_ledger_id'], null, 1, 'points_escrow', 'refund', strval($id));
         $response[] = $id_b;
         $response[] = $refund;
         $response[] = $refund_gift_points;
@@ -444,7 +444,7 @@ function cancel_escrow(int $id, int $member_id, string $reason, ?array $row = nu
         // Refund points to the sender
         require_code('points2');
         $_reason = do_lang_tempcode('ESCROW_REASON_CANCELLED', $escrow_reason);
-        $refund_id = points_refund($GLOBALS['FORUM_DRIVER']->get_guest_id(), $row['sender_id'], $_reason->evaluate(), $row['amount'], $ledger['amount_gift_points'], 0, $ledger['id'], true, ['escrow', 'cancel', strval($id)]);
+        $refund_id = points_refund($GLOBALS['FORUM_DRIVER']->get_guest_id(), $row['sender_id'], $_reason->evaluate(), $row['amount'], $ledger['amount_gift_points'], 0, $ledger['id'], true, 'escrow', 'cancel', strval($id));
     }
 
     // Log it

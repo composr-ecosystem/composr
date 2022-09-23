@@ -78,6 +78,9 @@ function cns_get_safe_specified_poster_name(?bool $is_required_good_value = null
  */
 function cns_member_handle_promotion(?int $member_id = null)
 {
+    if (is_guest($member_id)) {
+        return;
+    }
     if (!addon_installed('points')) {
         return;
     }
@@ -95,7 +98,7 @@ function cns_member_handle_promotion(?int $member_id = null)
     }
 
     require_code('points');
-    $total_points = total_points($member_id);
+    $points_lifetime = points_lifetime($member_id);
     $groups = $GLOBALS['CNS_DRIVER']->get_members_groups($member_id, false, true);
 
     $or_list = '';
@@ -105,7 +108,7 @@ function cns_member_handle_promotion(?int $member_id = null)
         }
         $or_list .= 'id=' . strval($id);
     }
-    $promotions = $GLOBALS['FORUM_DB']->query('SELECT id,g_promotion_target,g_promotion_threshold FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups WHERE (' . $or_list . ') AND g_promotion_target IS NOT NULL AND NOT EXISTS (SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_group_approvals WHERE ga_new_group_id=g_promotion_target AND ga_status<>0) AND g_promotion_threshold<=' . strval($total_points) . ' ORDER BY g_promotion_threshold');
+    $promotions = $GLOBALS['FORUM_DB']->query('SELECT id,g_promotion_target,g_promotion_threshold FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups WHERE (' . $or_list . ') AND g_promotion_target IS NOT NULL AND NOT EXISTS (SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_group_approvals WHERE ga_new_group_id=g_promotion_target AND ga_status<>0) AND g_promotion_threshold<=' . strval($points_lifetime) . ' ORDER BY g_promotion_threshold');
     $promotes_today = [];
     foreach ($promotions as $promotion) {
         $_p = $promotion['g_promotion_target'];

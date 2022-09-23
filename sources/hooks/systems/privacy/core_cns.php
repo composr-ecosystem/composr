@@ -493,7 +493,7 @@ class Hook_privacy_core_cns extends Hook_privacy_base
             case 'f_posts':
                 require_code('cns_posts_action3');
                 $topic_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_topic_id', ['id' => $row['id']]);
-                cns_delete_posts_topic($topic_id, [$row['id']], '', false, true, false);
+                cns_delete_posts_topic($topic_id, [$row['id']], '', false, true, false, false);
                 break;
 
             case 'f_groups':

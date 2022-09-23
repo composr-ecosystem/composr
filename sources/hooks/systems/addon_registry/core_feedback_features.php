@@ -183,6 +183,8 @@ class Hook_addon_registry_core_feedback_features
             'data/form_to_email.php',
             'themes/default/javascript/core_feedback_features.js',
             'themes/default/templates/BLOCK_MAIN_CONTACT_SIMPLE.tpl',
+            'sources/hooks/systems/points/feedback__add.php',
+
         ];
     }
 

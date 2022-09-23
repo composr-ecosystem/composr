@@ -1040,7 +1040,12 @@ abstract class Standard_crud_module
             if ($submitter === null) {
                 $submitter = get_member();
             }
-            give_submit_points($this->doing, $this->content_type, strval($id), $submitter);
+            $message = give_submit_points($this->doing, $this->content_type, strval($id), $submitter);
+            /*
+            if ($message !== null) {
+                attach_message($message);
+            }
+            */
         }
 
         if (addon_installed('awards')) {
@@ -1659,7 +1664,9 @@ abstract class Standard_crud_module
                 $points_test = $GLOBALS['SITE_DB']->query_select('points_ledger', ['id'], [
                     'recipient_id' => $submitter,
                     'status' => 'normal',
-                    'code_explanation' => json_encode(['submit', $this->content_type, strval($id)])
+                    't_type' => $this->content_type,
+                    't_subtype' => 'add',
+                    't_type_id' => strval($id),
                 ]);
                 if (array_key_exists(0, $points_test)) {
                     require_code('points2');

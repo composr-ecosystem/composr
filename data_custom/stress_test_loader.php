@@ -81,6 +81,7 @@ function do_work()
         'galleries',
         'news',
         'newsletter',
+        'points',
         'polls',
         'quizzes',
         'shopping',
@@ -163,10 +164,16 @@ function do_work()
         ], false, true);
     }
     $member_id = db_get_first_id() + 2;
+
     // point earn list to a single member
     require_code('points2');
     for ($j = $GLOBALS['SITE_DB']->query_select_value('points_ledger', 'COUNT(*)'); $j < $num_wanted; $j++) {
-        points_transact(mt_rand(db_get_first_id(), /*don't want wide distribution as points caching then eats RAM*/min(100, $num_wanted - 1)), $member_id, random_line(), 10, null, 0, null);
+        points_transact(mt_rand(db_get_first_id(), $num_wanted - 1), $member_id, random_line(), floor(mt_rand(1, 10000) / mt_rand(1, 100)), null, 0, null);
+
+        // Flush runtime cache every 100 transactions
+        if (($j % 100) == 0) {
+            points_flush_cache();
+        }
     }
     // number of friends of a single member
     for ($j = intval(floatval($GLOBALS['SITE_DB']->query_select_value('chat_friends', 'COUNT(*)')) / 2.0); $j < $num_wanted; $j++) {

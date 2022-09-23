@@ -123,6 +123,7 @@ This script takes days to run properly.';
                 'galleries',
                 'news',
                 'newsletter',
+                'points',
                 'polls',
                 'quizzes',
                 'shopping',

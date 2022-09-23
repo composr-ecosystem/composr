@@ -221,7 +221,7 @@ function member_personal_links_and_details(int $member_id) : array
             ]));
         }
         if (get_option('points_show_personal_stats_points_spent') == '1') {
-            $points_spent = points_spent($member_id);
+            $points_spent = points_used($member_id);
             $details->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINE', [
                 '_GUID' => '6241e58edfdsf735f3a2618fd7fff',
                 'KEY' => do_lang_tempcode('COUNT_POINTS_SPENT'),
@@ -229,13 +229,13 @@ function member_personal_links_and_details(int $member_id) : array
                 'VALUE' => integer_format($points_spent, 0),
             ]));
         }
-        if (get_option('points_show_personal_stats_total_points') == '1') {
-            $total_points = total_points($member_id);
+        if (get_option('points_show_personal_stats_points_lifetime') == '1') {
+            $points_lifetime = points_lifetime($member_id);
             $details->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINE', [
                 '_GUID' => '3e6183abf9054574c0cd292d25a4fe5c',
-                'KEY' => do_lang_tempcode((get_option('points_show_personal_stats_points_balance') == '1') ? 'COUNT_POINTS_EVER' : 'COUNT_POINTS'),
-                'RAW_VALUE' => strval($total_points),
-                'VALUE' => integer_format($total_points, 0),
+                'KEY' => do_lang_tempcode((get_option('points_show_personal_stats_points_balance') == '1') ? 'COUNT_POINTS' : 'COUNT_LIFETIME_POINTS'),
+                'RAW_VALUE' => strval($points_lifetime),
+                'VALUE' => integer_format($points_lifetime, 0),
             ]));
         }
         if (get_option('enable_gift_points') == '1') {

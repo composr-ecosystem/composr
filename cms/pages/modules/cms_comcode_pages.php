@@ -1307,7 +1307,12 @@ class Module_cms_comcode_pages
             }
 
             require_code('submit');
-            give_submit_points('COMCODE_PAGE_ADD', 'comcode_page', $path);
+            $message = give_submit_points('COMCODE_PAGE_ADD', 'comcode_page', $path);
+            /*
+            if ($message !== null) {
+                attach_message($message);
+            }
+            */
 
             require_code('member_mentions');
             dispatch_member_mention_notifications('comcode_page', $zone . ':' . $file, $resource_owner);

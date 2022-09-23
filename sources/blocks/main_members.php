@@ -458,7 +458,7 @@ PHP;
 
                 if (addon_installed('points')) {
                     require_code('points');
-                    $_entry[] = escape_html(integer_format(total_points($row['id']), 0));
+                    $_entry[] = escape_html(integer_format(points_lifetime($row['id']), 0));
                 }
 
                 if (addon_installed('cns_forum')) {

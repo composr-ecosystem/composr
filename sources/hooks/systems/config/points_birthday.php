@@ -34,7 +34,7 @@ class Hook_config_points_birthday
             'human_name' => 'BIRTHDAY_POINTS',
             'type' => 'integer',
             'category' => 'POINTS',
-            'group' => 'COUNT_POINTS_SENT',
+            'group' => 'POINTS_EARNED',
             'explanation' => 'CONFIG_OPTION_points_birthday',
             'shared_hosting_restricted' => '0',
             'list_options' => '',

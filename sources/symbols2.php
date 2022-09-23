@@ -1687,7 +1687,7 @@ function ecv2_POINTS_SPENT(string $lang, array $escaped, array $param) : string
 
     if (addon_installed('points')) {
         require_code('points');
-        $value = strval(points_spent(((isset($param[0])) && (is_numeric($param[0]))) ? intval($param[0]) : get_member()));
+        $value = strval(points_used(((isset($param[0])) && (is_numeric($param[0]))) ? intval($param[0]) : get_member()));
     }
 
     if ($GLOBALS['XSS_DETECT']) {
@@ -2052,7 +2052,7 @@ function ecv2_TOTAL_POINTS(string $lang, array $escaped, array $param) : string
 
     if (addon_installed('points')) {
         require_code('points');
-        $value = strval(total_points(((isset($param[0])) && (is_numeric($param[0]))) ? intval($param[0]) : get_member()));
+        $value = strval(points_lifetime(((isset($param[0])) && (is_numeric($param[0]))) ? intval($param[0]) : get_member()));
     }
 
     if ($GLOBALS['XSS_DETECT']) {

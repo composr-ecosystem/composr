@@ -44,8 +44,9 @@ function content_validated(string $content_type, string $content_id) : bool
  *
  * @param  ID_TEXT $content_type Content type
  * @param  ID_TEXT $content_id Content ID
+ * @param  integer $points_credited If points were not credited until after validation, specify how many points were credited (<=0: no mention of points will be included in this notification)
  */
-function send_content_validated_notification(string $content_type, string $content_id)
+function send_content_validated_notification(string $content_type, string $content_id, int $points_credited = 0)
 {
     require_code('content');
     list($content_title, $submitter_id, , , , $content_url_safe) = content_get_details($content_type, $content_id);
@@ -55,6 +56,9 @@ function send_content_validated_notification(string $content_type, string $conte
         require_lang('unvalidated');
         $subject = do_lang('CONTENT_VALIDATED_NOTIFICATION_MAIL_SUBJECT', $content_title, get_site_name());
         $mail = do_notification_lang('CONTENT_VALIDATED_NOTIFICATION_MAIL', comcode_escape(get_site_name()), comcode_escape($content_title), [$content_url_safe->evaluate()]);
+        if (addon_installed('points') && ($points_credited > 0)) {
+            $mail .= do_notification_lang('CONTENT_VALIDATED_NOTIFICATION_MAIL_SUP_POINTS', comcode_escape(integer_format($points_credited, 0)));
+        }
         dispatch_notification('content_validated', null, $subject, $mail, [$submitter_id]);
     }
 }
@@ -131,17 +135,16 @@ function give_submit_points(string $type, string $content_type, string $content_
         }
 
         $points = get_option('points_' . $type, true);
-        if ($points === null) {
-            return '';
+        if ($points === null || intval($points) <= 0) {
+            return null;
         }
 
-        $already_awarded = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'id', ['status' => 'normal', 'recipient_id' => $member_id, 'code_explanation' => json_encode(['submit', $content_type, $content_id])]);
+        $already_awarded = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'id', ['status' => 'normal', 'recipient_id' => $member_id, 't_type' => $content_type, 't_subtype' => 'add', 't_type_id' => strval($content_id)]);
         if ($already_awarded === null) {
             require_code('points2');
-            points_credit_member($member_id, do_lang($type), intval($points), 0, 0, true, 0, ['submit', $content_type, $content_id]);
+            points_credit_member($member_id, do_lang($type), intval($points), 0, 0, null, true, 0, $content_type, 'add', strval($content_id));
             return do_lang('SUBMIT_AWARD', integer_format(intval($points), 0));
         }
-        return '';
     }
     return null;
 }

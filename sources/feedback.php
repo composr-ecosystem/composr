@@ -544,28 +544,31 @@ function actualise_rating(bool $allow_rating, string $content_type, string $cont
         actualise_specific_rating($rating, get_page_name(), get_member(), $content_type, $type, $content_id, $content_url, $content_title);
     }
 
-    actualise_give_rating_points();
+    actualise_credit_rating_points($content_type, $content_id);
 
     // Ok, so just thank 'em
     attach_message(do_lang_tempcode('THANKYOU_FOR_RATING'), 'inform');
 }
 
 /**
- * Assign points to the current member for rating.
+ * Credit points to the current member for rating.
+ *
+ * @param  ID_TEXT $content_type The type of content that was rated
+ * @param  ID_TEXT $content_id The ID of the content that was rated
  */
-function actualise_give_rating_points()
+function actualise_credit_rating_points(string $content_type, string $content_id)
 {
     $member_id = get_member();
 
     if ((!is_guest($member_id)) && (addon_installed('points'))) {
-        require_code('points');
-        $_count = point_info($member_id);
-        $count = array_key_exists('points_gained_rating', $_count) ? $_count['points_gained_rating'] : 0;
-        $GLOBALS['FORUM_DRIVER']->set_custom_field(get_member(), 'points_gained_rating', $count + 1);
+        $points_rating = intval(get_option('points_rating'));
+        if ($points_rating > 0) {
+            require_code('points2');
 
-        global $POINT_INFO_CACHE, $TOTAL_POINTS_CACHE;
-        unset($POINT_INFO_CACHE[$member_id]);
-        unset($TOTAL_POINTS_CACHE[$member_id]);
+            // All feedback ledger records will have a t_type_id format of content_type:content_id
+            points_credit_member($member_id, do_lang('RATING'), $points_rating, 0, 0, null, null, 0, 'feedback', 'add', $content_type . ':' . $content_id);
+            attach_message(do_lang('SUBMIT_AWARD', integer_format(intval($points_rating), 0)));
+        }
     }
 }
 
@@ -635,11 +638,17 @@ function actualise_specific_rating(?int $rating, string $page_name, int $member_
 
             if (($submitter !== null) && (!is_guest($submitter))) {
                 // Credit points
+                $points_liked = 0;
                 if ($member_id != $submitter) {
                     if ((addon_installed('points')) && (!$already_rated)) {
-                        require_code('points2');
-                        require_lang('points');
-                        points_credit_member($submitter, do_lang('CONTENT_LIKED'), intval(get_option('points_if_liked')), 0, 0, true, 0, ['feedback', $real_content_type, strval($content_id)]);
+                        $points_liked = intval(get_option('points_if_liked'));
+                        if ($points_liked > 0) {
+                            require_code('points2');
+                            require_lang('points');
+
+                            // Note we pass null for sending notifications, which mean they are not sent. The member will be notified in the like notification.
+                            points_credit_member($submitter, do_lang('CONTENT_LIKED'), $points_liked, 0, 0, null, null, 0, 'feedback', 'add', $real_content_type . ':' . strval($content_id));
+                        }
                     }
                 }
 

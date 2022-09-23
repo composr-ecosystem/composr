@@ -617,7 +617,7 @@ class Forum_driver_base
      * @param  boolean $just_first Whether to just get the old style hash
      * @return string The hashed data
      */
-    public function forum_md5(string $data, string $key, bool $just_first = false) : string
+    public function password_hash(string $data, string $key, bool $just_first = false) : string
     {
         return md5($data);
     }

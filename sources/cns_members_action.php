@@ -308,9 +308,12 @@ function cns_make_member(string $username, string $password, string $email_addre
                 $referrer = intval($tracking_code);
 
                 if ((addon_installed('points')) && (addon_installed('recommend'))) {
-                    require_code('points2');
-                    require_lang('recommend');
-                    points_credit_member($referrer, do_lang('RECOMMEND_SITE_TO', $username, get_site_name()), intval(get_option('points_RECOMMEND_SITE')), 0, 0, true, 0, ['recommend_site']);
+                    $points_recommend_site = intval(get_option('points_RECOMMEND_SITE'));
+                    if ($points_recommend_site > 0) {
+                        require_code('points2');
+                        require_lang('recommend');
+                        points_credit_member($referrer, do_lang('RECOMMEND_SITE_TO', $username, get_site_name()), $points_recommend_site, 0, 0, null, true, 0, 'recommend_site');
+                    }
                 }
                 if (addon_installed('chat')) {
                     require_code('chat2');
@@ -418,6 +421,15 @@ function cns_make_member(string $username, string $password, string $email_addre
             $GLOBALS['FORUM_DB']->query_insert('notifications_enabled', ['l_member_id' => $member_id] + $notification_settings);
         }
         push_db_scope_check(true);
+    }
+
+    // Award joining points
+    if (addon_installed('points')) {
+        $points_joining = intval(get_option('points_joining'));
+        if ($points_joining > 0) {
+            require_code('points2');
+            points_credit_member($member_id, do_lang('JOINING'), $points_joining, 0, 0, null, null, 0, 'member', 'join');
+        }
     }
 
     require_code('member_mentions');

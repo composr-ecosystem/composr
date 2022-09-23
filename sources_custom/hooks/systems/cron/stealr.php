@@ -199,11 +199,11 @@ class Hook_cron_stealr
         require_code('points2');
 
         // Get STOLEN points
-        points_debit_member($victim_member_id, do_lang('STEALR_GET', integer_format($points_to_steal, 0)), $points_to_steal);
+        points_debit_member($victim_member_id, do_lang('STEALR_GET', integer_format($points_to_steal, 0)), $points_to_steal, 0, 0, false);
 
         if ($victor_member_id !== null) {
             // Give STOLEN points
-            points_credit_member($victor_member_id, do_lang('STEALR_GAVE_YOU', $points_to_steal, integer_format($points_to_steal, 0)), $points_to_steal);
+            points_credit_member($victor_member_id, do_lang('STEALR_GAVE_YOU', $points_to_steal, integer_format($points_to_steal, 0)), $points_to_steal, 0, 0, null, null);
 
             // Create private topic to message about it...
 

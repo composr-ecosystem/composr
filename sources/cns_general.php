@@ -164,7 +164,7 @@ function cns_read_in_member_profile(int $member_id, ?array $need = null, bool $i
     if (($need === null) || (in_array('points', $need))) {
         if (addon_installed('points')) {
             require_code('points');
-            $num_points = total_points($member_id);
+            $num_points = points_lifetime($member_id);
             $member_info['points'] = $num_points;
         }
     }
@@ -242,9 +242,9 @@ function cns_read_in_member_profile(int $member_id, ?array $need = null, bool $i
 
     // Points
     if (addon_installed('points')) {
-        if (($need === null) || (in_array('points_spent', $need))) {
+        if (($need === null) || (in_array('points_used', $need))) {
             $member_info += [
-                'points_spent' => points_spent($member_id),
+                'points_used' => points_used($member_id),
             ];
         }
         if (($need === null) || (in_array('points_balance', $need))) {
@@ -335,6 +335,15 @@ function cns_read_in_member_profile(int $member_id, ?array $need = null, bool $i
             ($cpf_preview_mode !== true) ? null : 1, // show in posts
             ($cpf_preview_mode !== false) ? null : 1 // show in post previews
         );
+
+        // Remove internal use only fields
+        require_code('cns_members_action2');
+        $fields_to_skip = _cpfs_internal_use_only();
+        foreach ($member_info['custom_fields'] as $key => $field) {
+            if (in_array(@intval($field['FIELD_ID']), $fields_to_skip)) {
+                unset($member_info['custom_fields'][$key]);
+            }
+        }
     }
 
     // Custom data

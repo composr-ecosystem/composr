@@ -110,7 +110,7 @@ class CMSModerationWrite
         }
 
         require_code('cns_topics_action2');
-        cns_delete_topic($topic_id, $reason); // NB: Checks perms implicitly
+        cns_delete_topic($topic_id, $reason, null, true, true); // NB: Checks perms implicitly
         return true;
     }
 
@@ -134,6 +134,7 @@ class CMSModerationWrite
         if ($topic_id === null) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'post'));
         }
+        // TODO: Will this skip prompts?
         cns_delete_posts_topic($topic_id, [$post_id], $reason); // NB: Checks perms implicitly
         return true;
     }

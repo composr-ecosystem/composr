@@ -136,6 +136,7 @@ class Hook_addon_registry_banner_click_points
         return [
             'sources_custom/hooks/systems/addon_registry/banner_click_points.php',
             'sources_custom/hooks/systems/upon_query/banner_click_points.php',
+            'sources_custom/hooks/systems/points/banner__click.php',
         ];
     }
 }

@@ -34,7 +34,7 @@ class Hook_config_reward_credit_chance
             'human_name' => 'REWARD_CREDIT_CHANCE',
             'type' => 'integer',
             'category' => 'POINTS',
-            'group' => 'POINT_TRANSACTIONS',
+            'group' => 'GIFT_POINTS',
             'explanation' => 'CONFIG_OPTION_reward_credit_chance',
             'shared_hosting_restricted' => '0',
             'list_options' => '',

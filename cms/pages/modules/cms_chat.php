@@ -322,6 +322,8 @@ class Module_cms_chat
      */
     public function moderate_chat_room() : object
     {
+        require_javascript('core_form_interfaces');
+
         $room_id = get_param_integer('id');
         check_chatroom_access($room_id);
         $room_details = $GLOBALS['SITE_DB']->query_select('chat_rooms', ['*'], ['id' => $room_id], '', 1);
@@ -384,7 +386,12 @@ class Module_cms_chat
 
         $delete_url = build_url(['page' => '_SELF', 'type' => 'mass_delete', 'room_id' => $room_id, 'start' => $start, 'max' => $max], '_SELF');
 
-        $tpl = do_template('CHAT_MODERATE_SCREEN', ['_GUID' => '940de7e8c9a0ac3c575892887c7ef3c0', 'URL' => $delete_url, 'TITLE' => $this->title, 'INTRODUCTION' => '', 'CONTENT' => $content, 'LINKS' => $links]);
+        $introduction = new Tempcode();
+        if (addon_installed('points')) {
+            require_lang('points');
+            $introduction = do_lang_tempcode('CHAT_MODERATION_REVERSE_POINTS');
+        }
+        $tpl = do_template('CHAT_MODERATE_SCREEN', ['_GUID' => '940de7e8c9a0ac3c575892887c7ef3c0', 'URL' => $delete_url, 'TITLE' => $this->title, 'INTRODUCTION' => $introduction, 'CONTENT' => $content, 'LINKS' => $links]);
         require_code('templates_internalise_screen');
         return internalise_own_screen($tpl);
     }
@@ -529,7 +536,10 @@ class Module_cms_chat
         $fields->attach(form_input_line(do_lang_tempcode('CHAT_OPTIONS_TEXT_NAME'), do_lang_tempcode('CHAT_OPTIONS_TEXT_DESCRIPTION'), 'fontname', $font_name, false));
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '43ca9d141f23445a018634bdc70f1c7c', 'TITLE' => do_lang_tempcode('ACTIONS')]));
         $fields->attach(form_input_tick(do_lang_tempcode('DELETE'), do_lang_tempcode('DESCRIPTION_DELETE_MESSAGE'), 'delete', false));
-
+        if (addon_installed('points')) {
+            require_lang('points');
+            $fields->attach(form_input_tick(do_lang_tempcode('REVERSE_TRANSACTION'), do_lang_tempcode('REVERSE_TRANSACTION_DESCRIPTION'/*, 'chat_message'*/), 'reverse_point_transaction', false));
+        }
         return do_template('FORM_SCREEN', [
             '_GUID' => 'bf92ecd4d5f923f78bbed4faca6c0cb6',
             'HIDDEN' => '',
@@ -618,6 +628,7 @@ class Module_cms_chat
      */
     public function _chat_delete_message() : object
     {
+        $reverse_point_transaction = post_param_integer('reverse_point_transaction', 0) == 1;
         $myrow = $this->myrow;
         $message_id = $this->message_id;
 
@@ -634,7 +645,7 @@ class Module_cms_chat
             access_denied('PRIVILEGE', 'edit_lowrange_content');
         }
 
-        $GLOBALS['SITE_DB']->query_delete('chat_messages', ['id' => $message_id], '', 1);
+        delete_chat_messages(['id' => $message_id], $reverse_point_transaction);
 
         delete_cache_entry('side_shoutbox');
 
@@ -696,6 +707,10 @@ class Module_cms_chat
 
         $fields = new Tempcode();
         require_code('form_templates');
+        if (addon_installed('points')) {
+            require_lang('points');
+            $fields->attach(form_input_tick(do_lang_tempcode('REVERSE_TRANSACTION'), do_lang_tempcode('REVERSE_TRANSACTION_DESCRIPTION_PLURAL'/*, 'chat_message'*/), 'reverse_point_transaction', false));
+        }
         $fields->attach(form_input_tick(do_lang_tempcode('PROCEED'), do_lang_tempcode('Q_SURE'), 'continue_delete', false));
         $text = paragraph(do_lang_tempcode('CONFIRM_DELETE_ALL_MESSAGES', escape_html(get_chatroom_name($id))));
         $post_url = build_url(['page' => '_SELF', 'type' => '_delete', 'id' => $id], '_SELF');
@@ -721,6 +736,7 @@ class Module_cms_chat
      */
     public function _chat_delete_all_messages() : object
     {
+        $reverse_point_transaction = post_param_integer('reverse_point_transaction', 0) == 1;
         $delete = post_param_integer('continue_delete', 0);
         if ($delete != 1) {
             $url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
@@ -740,7 +756,7 @@ class Module_cms_chat
             access_denied('PRIVILEGE', 'edit_lowrange_content');
         }
 
-        delete_chat_messages(['room_id' => $room_id]);
+        delete_chat_messages(['room_id' => $room_id], $reverse_point_transaction);
 
         delete_cache_entry('side_shoutbox');
 
@@ -775,7 +791,7 @@ class Module_cms_chat
         $count = 0;
         foreach (array_keys($_REQUEST) as $key) {
             if (substr($key, 0, 4) == 'del_') {
-                delete_chat_messages(['room_id' => $room_id, 'id' => intval(substr($key, 4))]);
+                delete_chat_messages(['room_id' => $room_id, 'id' => intval(substr($key, 4))], true);
                 $count++;
             }
         }

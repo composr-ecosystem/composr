@@ -34,7 +34,7 @@ class Hook_config_points_ADD_DOWNLOAD
             'human_name' => 'ADD_DOWNLOAD',
             'type' => 'integer',
             'category' => 'POINTS',
-            'group' => 'COUNT_POINTS_SENT',
+            'group' => 'POINTS_EARNED',
             'explanation' => 'CONFIG_OPTION_points_ADD_DOWNLOAD',
             'shared_hosting_restricted' => '0',
             'list_options' => '',

@@ -124,7 +124,7 @@ class Hook_addon_registry_points
             'sources/hooks/systems/config/points_show_personal_stats_gift_points_sent.php',
             'sources/hooks/systems/config/points_show_personal_stats_points_balance.php',
             'sources/hooks/systems/config/points_show_personal_stats_points_spent.php',
-            'sources/hooks/systems/config/points_show_personal_stats_total_points.php',
+            'sources/hooks/systems/config/points_show_personal_stats_points_lifetime.php',
             'sources/hooks/systems/config/points_voting.php',
             'sources/hooks/systems/config/points_birthday.php',
             'sources/hooks/systems/cron/birthday_points.php',
@@ -159,11 +159,6 @@ class Hook_addon_registry_points
             'themes/default/javascript/points.js',
             'sources/hooks/systems/actionlog/points.php',
             'sources/hooks/systems/points/.htaccess',
-            'sources/hooks/systems/points/received.php',
-            'sources/hooks/systems/points/rating.php',
-            'sources/hooks/systems/points/joining.php',
-            'sources/hooks/systems/points/daily.php',
-            'sources/hooks/systems/points/visiting.php',
             'sources/hooks/systems/points/index.html',
             'sources/hooks/modules/admin_stats/point_transactions.php',
             'sources/hooks/systems/notifications/points_transaction_staff.php',
@@ -172,6 +167,16 @@ class Hook_addon_registry_points
             'sources/points_escrow.php',
             'themes/default/templates/POINTS_ESCROW_SCREEN.tpl',
             'sources/hooks/systems/notifications/points.php',
+            'sources/hooks/systems/tasks/points_balance.php',
+            'sources/hooks/systems/cron/points_daily.php',
+            'sources/hooks/systems/cron/points_posts.php',
+            'sources/hooks/systems/points/member__visit.php',
+            'sources/hooks/systems/points/post__add.php',
+            'sources/hooks/systems/points/member__join.php',
+            'sources/hooks/systems/points/points__credit_daily.php',
+            'sources/hooks/systems/points/comcode_page__add.php',
+            'sources/hooks/systems/points/points_escrow__add.php',
+            'sources/hooks/systems/cleanup/points_balance.php',
         ];
     }
 
@@ -226,13 +231,7 @@ class Hook_addon_registry_points
      */
     public function tpl_preview__points_screen() : object
     {
-        $escrow_details = placeholder_table();
-        $ledger_details = placeholder_table();
-
-        $from = placeholder_table();
-        $to = placeholder_table();
-
-        $escrow = do_lorem_template('ESCROW_TRANSACTIONS', [
+        $escrow_template = do_lorem_template('ESCROW_TRANSACTIONS', [
             '_GUID' => 'ac97ee94388e4db2b8753273694cb2a1',
             'MEMBER' => placeholder_number(),
             '_VIEWER_POINTS_BALANCE' => placeholder_number(),
@@ -243,7 +242,7 @@ class Hook_addon_registry_points
             'FORM' => placeholder_button(),
         ]);
 
-        $give_template = do_lorem_template('POINTS_SEND', [
+        $send_template = do_lorem_template('POINTS_SEND', [
             'SEND_URL' => placeholder_url(),
             'MEMBER' => placeholder_numeric_id(),
             'DEFAULT__TRANS_TYPE' => 'send',
@@ -255,38 +254,37 @@ class Hook_addon_registry_points
             'VIEWER_POINTS_BALANCE' => placeholder_number(),
         ]);
 
-        $points_records = [];
-        $points_records[] = [
-            'LABEL' => lorem_phrase(),
-            '_COUNT' => placeholder_number(),
-            '_POINTS_EACH' => placeholder_number(),
-            '_POINTS_TOTAL' => placeholder_number(),
-            'COUNT' => placeholder_number(),
-            'POINTS_EACH' => placeholder_number(),
-            'POINTS_TOTAL' => placeholder_number(),
-        ];
-
         $content = do_lorem_template('POINTS_PROFILE', [
             'MEMBER' => placeholder_numeric_id(),
             'PROFILE_URL' => placeholder_url(),
             'USERNAME' => lorem_word(),
-            'POINTS_SPENT' => placeholder_number(),
-            'REMAINING' => placeholder_number(),
-            'TOTAL_POINTS_SENT' => placeholder_number(),
-            'GIFT_POINTS_BALANCE' => placeholder_number(),
-            'POINTS_RECEIVED' => placeholder_number(),
-            '_POINTS_SPENT' => placeholder_number(),
-            '_REMAINING' => placeholder_number(),
-            '_TOTAL_POINTS_SENT' => placeholder_number(),
+            '_POINTS_LIFETIME' => placeholder_number(),
+            'POINTS_LIFETIME' => placeholder_number(),
+            '_POINTS_BALANCE' => placeholder_number(),
+            'POINTS_BALANCE' => placeholder_number(),
             '_GIFT_POINTS_BALANCE' => placeholder_number(),
+            'GIFT_POINTS_BALANCE' => placeholder_number(),
+            '_POINTS_RECEIVED_AGGREGATE' => placeholder_number(),
+            'POINTS_RECEIVED_AGGREGATE' => placeholder_number(),
             '_POINTS_RECEIVED' => placeholder_number(),
-            'TO' => $to,
-            'FROM' => $from,
-            'GIVE' => $give_template,
-            'POINTS_RECORDS' => $points_records,
-            'ESCROW_DETAILS' => $escrow_details,
-            'LEDGER_DETAILS' => $ledger_details,
-            'ESCROW' => $escrow,
+            'POINTS_RECEIVED' => placeholder_number(),
+            '_POINTS_SENT_AGGREGATE' => placeholder_number(),
+            'POINTS_SENT_AGGREGATE' => placeholder_number(),
+            '_POINTS_SENT' => placeholder_number(),
+            'POINTS_SENT' => placeholder_number(),
+            '_POINTS_SPENT_AGGREGATE' => placeholder_number(),
+            'POINTS_SPENT_AGGREGATE' => placeholder_number(),
+            '_POINTS_SPENT' => placeholder_number(),
+            'POINTS_SPENT' => placeholder_number(),
+            'RECEIVED_TABLE_AGGREGATE' => placeholder_table(),
+            'RECEIVED_TABLE' => placeholder_table(),
+            'SENT_TABLE_AGGREGATE' => placeholder_table(),
+            'SENT_TABLE' => placeholder_table(),
+            'SPENT_TABLE_AGGREGATE' => placeholder_table(),
+            'SPENT_TABLE' => placeholder_table(),
+            'ESCROW_DETAILS' => placeholder_table(),
+            'GIVE' => $send_template,
+            'ESCROW' => $escrow_template,
         ]);
 
         return lorem_globalise(do_lorem_template('POINTS_SCREEN', [

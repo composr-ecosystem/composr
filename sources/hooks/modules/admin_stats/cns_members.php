@@ -209,7 +209,7 @@ class Hook_admin_stats_cns_members extends CMSStatsProvider
                 }
 
                 if (addon_installed('points')) {
-                    $points = total_points($member_id);
+                    $points = points_lifetime($member_id);
                     if ($points > 100) { // Hard-coded minimum
                         $data_buckets['top_members_by_points'][$username] = $points;
                     }

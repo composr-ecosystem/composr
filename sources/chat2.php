@@ -455,8 +455,9 @@ function delete_chatroom(int $id)
  * Delete chat messages.
  *
  * @param  array $where Where query to specify what to delete
+ * @param  boolean $reverse_points Whether to reverse the point transactions for every deleted message
  */
-function delete_chat_messages(array $where)
+function delete_chat_messages(array $where, bool $reverse_points = false)
 {
     do {
         $old_limit = cms_set_time_limit(10);
@@ -467,6 +468,15 @@ function delete_chat_messages(array $where)
         foreach ($messages as $message) {
             delete_lang($message['the_message']);
             $GLOBALS['SITE_DB']->query_delete('chat_messages', ['id' => $message['id']], '', 1);
+
+            // Reverse points if requested
+            if (($reverse_points) && (addon_installed('points'))) {
+                require_code('points2');
+                $ledger_id = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'id', ['status' => 'normal', 't_type' => 'chat_message', 't_subtype' => 'add', 't_type_id' => strval($message['id'])]);
+                if ($ledger_id !== null) {
+                    points_transaction_reverse($ledger_id);
+                }
+            }
         }
 
         cms_set_time_limit($old_limit);

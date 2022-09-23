@@ -39,18 +39,12 @@
 	vertical-align: middle;
 	margin: 0;
 }
-.points-earned {
-	margin-bottom: 2em;
-	margin-right: 2em;
-}
-
-.points-boxes {
-	float: right;
-}
 
 .points-box {
 	max-width: 14em;
 	width: 12em;
+	min-width: 12em;
+	padding: 0 !important;
 	margin: 0 0 2em 1em;
 	text-align: center;
 }
@@ -61,38 +55,6 @@
 
 .points-box .figure {
 	font-size: 1.8em;
-}
-
-table.points-summary-table {
-	border-collapse: collapse;
-}
-/*{+START,CSS_MODE,mobile}*/
-	table.points-summary-table {
-		margin-left: 2em;
-		width: 100%;
-	}
-/*{+END}*/
-/*{+START,CSS_MODE,desktop}*/
-	table.points-summary-table {
-		margin-left: 0;
-	}
-/*{+END}*/
-
-table.points-summary-table thead {
-	display: none;
-}
-
-table.points-summary-table td {
-	padding: 0.5em 0.8em;
-}
-
-table.points-summary-table .equation {
-	border-left: 1px solid {$GET,standard_border};
-}
-
-table.points-summary-table .answer {
-	font-weight: bold;
-	padding-left: 0;
 }
 
 .leader-board-rank {

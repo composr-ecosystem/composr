@@ -34,7 +34,7 @@ class Hook_config_enable_gift_points
             'human_name' => 'ENABLE_GIFT_POINTS',
             'type' => 'tick',
             'category' => 'POINTS',
-            'group' => 'POINT_TRANSACTIONS',
+            'group' => 'GIFT_POINTS',
             'explanation' => 'CONFIG_OPTION_enable_gift_points',
             'shared_hosting_restricted' => '0',
             'list_options' => '',

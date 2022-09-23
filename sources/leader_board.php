@@ -107,65 +107,52 @@ function calculate_leader_board(array $row, ?int $forced_time = null, ?int $forc
     $usergroups = $GLOBALS['SITE_DB']->query_select('leader_boards_groups', ['*'], ['lb_leader_board_id' => $row['id']]);
     $usergroups = collapse_1d_complexity('lb_group', $usergroups);
 
+    // Calculate points earned within the range (accounting for refunds), grouping by member
+    $_points_earned = $GLOBALS['SITE_DB']->query_select('points_ledger', ['recipient_id', 'SUM(amount_points) AS points', 'SUM(amount_gift_points) AS gift_points'], ['status' => 'normal'], ' AND date_and_time>=' . strval($start) . ' AND date_and_time<' . strval($end) . ' GROUP BY recipient_id');
+    $points_earned = list_to_map('recipient_id', $_points_earned);
+    $_points_refunded = $GLOBALS['SITE_DB']->query_select('points_ledger', ['sender_id', 'SUM(amount_points) AS points', 'SUM(amount_gift_points) AS gift_points'], ['status' => 'refund'], ' AND date_and_time>=' . strval($start) . ' AND date_and_time<' . strval($end) . ' GROUP BY sender_id');
+    $points_refunded = list_to_map('sender_id', $_points_refunded);
+    foreach ($points_earned as $member_id => $prow) {
+        $points_earned[$member_id]['total_points'] = (@intval($prow['points']) + @intval($prow['gift_points']));
+        if (isset($points_refunded[$member_id])) {
+            $points_earned[$member_id]['total_points'] -= (@intval($points_refunded[$member_id]['points']) + @intval($points_refunded[$member_id]['gift_points']));
+        }
+    }
+
+    // Now, process our leaderboard records
     $points = [];
-
-    // Process in sets of 100 members at a time
-    $rows = [];
-    $current_id = null;
-    do {
-        $rows = $GLOBALS['FORUM_DRIVER']->get_next_members($current_id, 100);
-        foreach ($rows as $member) {
-            $current_id = $GLOBALS['FORUM_DRIVER']->mrow_id($member);
-
-            if (is_guest($current_id)) {
-                continue; // Should not happen, but some forum drivers might suck ;)
-            }
-
-            // Skip if staff and not including staff
-            if ((!$show_staff) && ($GLOBALS['FORUM_DRIVER']->is_staff($current_id))) {
-                continue;
-            }
-
-            // Skip if usergroups are defined and member is not in any of the defined usergroups
-            if ((get_forum_type() == 'cns') && (!empty($usergroups)) && (count(array_intersect($usergroups, $GLOBALS['FORUM_DRIVER']->get_members_groups($current_id))) == 0)) {
-                continue;
-            }
-
-            // Calculate points
-            if ($row['lb_type'] == 'holders') { // Leader-board ranks according to total cumulative point balance
-                $points_now = total_points($current_id, $end, false);
-                $points[] = ['member_id' => $current_id, 'points' => $points_now];
-            } elseif ($row['lb_type'] == 'earners') { // Leader-board ranks according to number of points earned during result time span
-                $points_then = total_points($current_id, $start, false);
-                $points_now = total_points($current_id, $end, false);
-                $points_earned = $points_now - $points_then;
-                $points[] = ['member_id' => $current_id, 'points' => $points_earned];
-            }
+    foreach ($points_earned as $member_id => $prow) {
+        if (is_guest($member_id)) {
+            continue; // Should not happen, but some forum drivers might suck ;)
         }
 
-        // Sort the array according to points (highest to lowest)
-        usort($points, function (array $a, array $b) : int {
-            if ($a['points'] == $b['points']) {
-                return mt_rand(-1, 1); // Randomise members with equal points earned
-            }
-            return ($a['points'] > $b['points']) ? -1 : 1;
-        });
-
-        // Remove members from the bottom that we know will not make the leader-board
-        if (count($points) > $limit) {
-            $remove_count = count($points) - $limit;
-            while ($remove_count > 0) {
-                $remove_count--;
-                array_pop($points);
-            }
+        // Skip if staff and not including staff
+        if ((!$show_staff) && ($GLOBALS['FORUM_DRIVER']->is_staff($member_id))) {
+            continue;
         }
-    } while (!empty($rows));
+
+        // Skip if usergroups are defined and member is not in any of the defined usergroups
+        if ((get_forum_type() == 'cns') && (!empty($usergroups)) && (count(array_intersect($usergroups, $GLOBALS['FORUM_DRIVER']->get_members_groups($member_id))) == 0)) {
+            continue;
+        }
+
+        // By this point, member qualifies for the leader-board
+        $points[] = ['member_id' => $member_id, 'points' => $prow['total_points']];
+    }
+
+    // Sort the array according to points (highest to lowest)
+    usort($points, function (array $a, array $b) : int {
+        if ($a['points'] == $b['points']) {
+            return 0;
+        }
+        return ($a['points'] > $b['points']) ? -1 : 1;
+    });
 
     // Construct the leader-board results
     $i = 0;
     foreach ($points as $v) {
         if ($i >= $limit) {
-            break; // This should not happen because $points is pre-filtered in the do...while loop
+            break;
         }
 
         $result_row = [

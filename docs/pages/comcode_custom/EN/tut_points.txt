@@ -56,13 +56,13 @@ Members may not send points to themselves unless they have the &ldquo;Send point
 
 [title="3"]Gift points (advanced)[/title]
 
-By default, members have a single point balance that they can use both to spend on things and to send to other members (if they have the &ldquo;Send points to other members&rdquo; privilege). However, website administrators can enable a separate gift points balance by ticking (checking) the &ldquo;Enable gift points&rdquo; configuration option (under Admin Zone > Setup > Configuration > Points options > Point transactions).
+By default, members have a single point balance that they can use both to spend on things and to send to other members (if they have the &ldquo;Send points to other members&rdquo; privilege). However, website administrators can enable a separate gift points balance by ticking (checking) the &ldquo;Enable gift points&rdquo; configuration option (under Admin Zone > Setup > Configuration > Points options > Gift points).
 
 [concept]Gift points[/concept] (when enabled) are a separate point balance allowing members to send points without affecting their regular points balance. Gift points cannot be spent on anything; they can only be sent to others. Gift points become regular spendable points for recipients when they are sent. Members receive a configurable amount of gift points per day that they can send to others based on which usergroups they are in. When a member tries to send more points than they have in gift points, the remainder will be deducted from their regular points balance. Confirmation screens ensure the member understands how their points will be distributed.
 
 For example, member A has 100 points and 25 gift points. They can spend their 100 points on things, but they cannot spend their 25 gift points. Member A wants to give Member B 50 points. Since member A only has 25 gift points, the other 25 points will be deducted from their regular points. Therefore, after the transaction, member A will have 75 regular points and 0 gift points. And member B will receive 50 regular points which they can spend.
 
-When gift points are enabled, members can be randomly rewarded for sending points to others. The amount rewarded and the chance of being rewarded can be configured (Admin Zone > Setup > Configuration > Points options > Point transactions). Only non-anonymous transactions will qualify for this random lottery.
+When gift points are enabled, members can be randomly rewarded for sending points to others. The amount rewarded and the chance of being rewarded can be configured (Admin Zone > Setup > Configuration > Points options > Gift points). Only non-anonymous transactions will qualify for this random lottery.
 
 [title="3"]Points escrow[/title]
 

@@ -204,6 +204,7 @@ class Hook_addon_registry_news
             'themes/default/templates/BLOCK_MAIN_NEWS_GRID_ITEM.tpl',
             'themes/default/templates/BLOCK_MAIN_NEWS_SLIDER.tpl',
             'themes/default/templates/BLOCK_MAIN_NEWS_SLIDER_SLIDE.tpl',
+            'sources/hooks/systems/points/news__add.php',
         ];
     }
 

@@ -1012,7 +1012,12 @@ class Hook_import_cms_merge
                     'recipient_id' => $member_id,
                     'anonymous' => $row['anonymous'],
                     'linked_to' => $row['linked_to'],
-                    'code_explanation' => $row['code_explanation'],
+
+                    // FUDGE: Currently blanking these because they may refer to improperly mapped content IDs
+                    't_type' => 'legacy',
+                    't_subtype' => '',
+                    't_type_id' => 'admin_import__cms_merge',
+
                     'status' => $row['status']
                 ];
                 $map += insert_lang_comcode('reason', $this->get_lang_string($db, $row['reason']), 4);

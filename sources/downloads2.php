@@ -141,9 +141,9 @@ function dload_script()
                 }
                 require_code('points2');
                 if ($myrow['download_submitter_gets_points'] == 1) {
-                    points_transact($member_id, $myrow['submitter'], do_lang('DOWNLOADED_THIS', get_translated_text($myrow['name'])), $cost, 0, 1, true, 0, ['download', 'download', strval($id)]);
+                    points_transact($member_id, $myrow['submitter'], do_lang('DOWNLOADED_THIS', get_translated_text($myrow['name'])), $cost, 0, 1, true, 0, 'download', 'download', strval($id));
                 } else {
-                    points_debit_member($member_id, do_lang('DOWNLOADED_THIS', get_translated_text($myrow['name'])), $cost, 0, 1, true, 0, ['download', 'download', strval($id)]);
+                    points_debit_member($member_id, do_lang('DOWNLOADED_THIS', get_translated_text($myrow['name'])), $cost, 0, 1, false, 0, 'download', 'download', strval($id));
                 }
             }
         }
