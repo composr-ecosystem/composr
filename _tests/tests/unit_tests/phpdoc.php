@@ -23,6 +23,7 @@ class phpdoc_test_set extends cms_test_case
         $phpdoc_to_functions = [];
 
         $exceptions = [
+            'The hashing algorithm of this forum driver.',
             'Get SQL for creating a new table.',
             'Get SQL for changing the type of a DB field in a table.',
             'Get SQL for creating a table index.',

@@ -32,7 +32,7 @@ class notifications_test_set extends cms_test_case
 
         require_code('notifications');
         require_code('hooks/systems/notifications/comment_posted');
-        require_code('hooks/systems/notifications/cns_login_changed');
+        require_code('hooks/systems/notifications/cns');
 
         $GLOBALS['SITE_DB']->query_delete('notifications_enabled');
         $GLOBALS['SITE_DB']->query_delete('notification_lockdown');
@@ -56,7 +56,7 @@ class notifications_test_set extends cms_test_case
         $this->assertTrue(empty($results[0]));
         $results = $ob->list_members_who_have_enabled('comment_posted', null, [get_member()]); // Just make sure the member-ID filter doesn't crash
 
-        $ob = new Hook_notification_cns_login_changed();
+        $ob = new Hook_notification_cns();
         $results = $ob->list_members_who_have_enabled('cns_login_changed');
         $this->assertTrue(count($results[0]) == count($all_members));
 
@@ -82,7 +82,7 @@ class notifications_test_set extends cms_test_case
         $results = $ob->list_members_who_have_enabled('comment_posted');
         $this->assertTrue(count($results[0]) == count($all_members));
 
-        $ob = new Hook_notification_cns_login_changed();
+        $ob = new Hook_notification_cns();
         $results = $ob->list_members_who_have_enabled('cns_login_changed');
         $this->assertTrue(empty($results[0]));
 
@@ -104,7 +104,7 @@ class notifications_test_set extends cms_test_case
         $results = $ob->list_members_who_have_enabled('comment_posted');
         $this->assertTrue(empty($results[0]));
 
-        $ob = new Hook_notification_cns_login_changed();
+        $ob = new Hook_notification_cns();
         $results = $ob->list_members_who_have_enabled('cns_login_changed');
         $this->assertTrue(count($results[0]) == count($all_members));
     }
