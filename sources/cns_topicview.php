@@ -37,7 +37,7 @@ function find_post_id_url(int $post_id) : string
     }
 
     $post_time = $post_details[0]['p_time'];
-    $topic_id = $post_details[0]['id'];
+    $topic_id = $post_details[0]['p_topic_id'];
 
     // What page is it on?
     $before = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_time<=' . strval($post_time) . ' AND id<>' . strval($post_id) . ' AND ' . cns_get_topic_where($topic_id), false, true);
@@ -54,7 +54,7 @@ function find_post_id_url(int $post_id) : string
     if ($test_threaded !== null) {
         $map['threaded'] = $test_threaded;
     }
-    $_redirect = build_url($map, '_SELF', [], true, false, false, 'post_' . strval($post_id));
+    $_redirect = build_url($map, '_SELF', [], false, false, false, 'post_' . strval($post_id));
     $redirect = $_redirect->evaluate();
 
     return $redirect;
@@ -112,7 +112,7 @@ function find_first_unread_url(int $topic_id) : string
     } else {
         $hash = 'first-unread';
     }
-    $_redirect = build_url($map, '_SELF', [], true, false, false, $hash);
+    $_redirect = build_url($map, '_SELF', [], false, false, false, $hash);
     $redirect = $_redirect->evaluate();
 
     return $redirect;

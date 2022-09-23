@@ -864,7 +864,6 @@ class Module_topicview
             $poll = new Tempcode();
         }
 
-
         // Quick reply
         if ((array_key_exists('may_use_quick_reply', $topic_info)) && ($may_reply) && ($id !== null)) {
             $map = ['page' => 'topics', 'type' => '_add_reply', 'topic_id' => $id, 'timestamp' => time()];
