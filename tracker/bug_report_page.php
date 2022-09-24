@@ -681,7 +681,7 @@ if( $t_show_attachments ) {
 			&#160;&#160;&#160;&#160;
 			<label>
 				<input <?php echo helper_get_tab_index() ?> type="radio" class="ace" name="view_state" value="<?php echo VS_PRIVATE ?>" <?php check_checked( $f_view_state, VS_PRIVATE ) ?> />
-				<span class="lbl padding-6"><?php echo lang_get( 'private' ) ?> (contains confidential information<?php if (current_user_is_anonymous()) echo '; <strong>you will not be able to see your issue as you are not logged in</strong>'; ?>)<!-- Composr - made label clearer in context --></span>
+				<span class="lbl padding-6"><?php echo lang_get( 'private' ) ?> (for use for security issues or if your issue strictly requires disclosing private information<?php if (current_user_is_anonymous()) echo '; <strong>you will not be able to see your issue as you are not logged in</strong>'; ?>)<!-- Composr - made label clearer in context --></span>
 			</label>
 		</td>
 	</tr>
