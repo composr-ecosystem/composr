@@ -579,7 +579,7 @@ function newsletter_who_send_to(?array $send_details = null, ?string $lang = nul
         $table = $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members m';
 
         $where_lang = ((multi_lang()) && ($lang !== null)) ? (' AND (' . db_string_equal_to('m_language', $lang) . ' OR ' . db_string_equal_to('m_language', '') . ')') : '';
-        $where = db_string_not_equal_to('m_email_address', '') . $where_lang . ' AND m_validated=1 AND m_is_perm_banned=\'0\'';
+        $where = db_string_not_equal_to('m_email_address', '') . $where_lang . ' AND m_validated=1 AND ' . db_string_equal_to('m_is_perm_banned', '0');
         if ($filter_confirms) {
             $where .= ' AND ' . db_string_equal_to('m_validated_email_confirm_code', '');
         }

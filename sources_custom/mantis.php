@@ -30,12 +30,12 @@ function get_tracker_issue_titles($ids, $version = null, $previous_version = nul
     }
 
     if ($version !== null) {
-        $where_version = 'status=80 AND fixed_in_version=\'' . db_escape_string($version) . '\'';
+        $where_version = 'status=80 AND ' . db_string_equal_to('fixed_in_version', $version);
         $sql .= ' OR ' . $where_version;
     }
 
     if ($previous_version !== null) {
-        $where_version = 'status=80 AND version=\'' . db_escape_string($previous_version) . '\' AND fixed_in_version=\'\' AND severity<>10';
+        $where_version = 'status=80 AND ' . db_string_equal_to('version', $previous_version) . ' AND ' . db_string_equal_to('fixed_in_version', '') . ' AND severity<>10';
         $sql .= ' OR ' . $where_version;
     }
 

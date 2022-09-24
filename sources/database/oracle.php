@@ -446,7 +446,7 @@ class Database_Static_oracle extends DatabaseDriver
 
         $fields = explode(',', $_fields);
         foreach ($fields as $field) {
-            $sql = 'SELECT m_type FROM ' . $table_prefix . 'db_meta WHERE m_table=\'' . $this->escape_string($raw_table_name) . '\' AND m_name=\'' . $this->escape_string($field) . '\'';
+            $sql = 'SELECT m_type FROM ' . $table_prefix . 'db_meta WHERE ' . $this->string_equal_to('m_table', $raw_table_name) . ' AND ' . $this->string_equal_to('m_name', $field);
             $values = $this->query($sql, $connection_read, null, 0, true);
             if (!isset($values[0])) {
                 continue; // No result found

@@ -266,7 +266,7 @@ if (!empty($issues_found)) {
         $or_list .= 'id=' . strval($id);
     }
 
-    $sql = 'UPDATE mantis_bug_table SET fixed_in_version=\'' . db_escape_string($version_dotted) . '\' WHERE (' . $or_list . ') AND fixed_in_version=\'\'';
+    $sql = 'UPDATE mantis_bug_table SET fixed_in_version=\'' . db_escape_string($version_dotted) . '\' WHERE (' . $or_list . ') AND ' . db_string_equal_to('fixed_in_version', '');
     $GLOBALS['SITE_DB']->query($sql);
 }
 

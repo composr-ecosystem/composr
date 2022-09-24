@@ -523,7 +523,7 @@ class CMSUserRead
 
         $table_prefix = $GLOBALS['FORUM_DB']->get_table_prefix();
 
-        $sql = 'FROM ' . $table_prefix . 'f_members WHERE m_username LIKE \'' . db_encode_like('%' . $keywords . '%') . '\' AND m_validated_email_confirm_code=\'\'';
+        $sql = 'FROM ' . $table_prefix . 'f_members WHERE m_username LIKE \'' . db_encode_like('%' . $keywords . '%') . '\' AND ' . db_string_equal_to('m_validated_email_confirm_code', '');
         if (addon_installed('unvalidated')) {
             $sql .= ' AND m_validated=1';
         }
