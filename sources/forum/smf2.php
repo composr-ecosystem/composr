@@ -1158,21 +1158,21 @@ class Forum_driver_smf2 extends Forum_driver_base
     /**
      * The hashing algorithm of this forum driver.
      *
-     * @param  string $data The data to hash (the password in actuality)
-     * @param  string $key The string converted member-ID in actuality, although this function is more general. For cookie logins, 'ys'
-     * @param  boolean $just_first Whether to just get the old style hash
+     * @param  string $password The password to hash, although the forum driver may internally call this function with another meaning to this parameter
+     * @param  string $key The string converted member-ID generally, although the forum driver may internally call this function with another meaning to this parameter
+     * @param  boolean $just_first Whether to just get the primary hashing mechanism (the meaning of this depends on the forum drivers but may mean a legacy hashing mechanism or one of two alternative mechanisms)
      * @return string The hashed data
      */
-    public function password_hash(string $data, string $key, bool $just_first = false) : string
+    public function password_hash(string $password, string $key, bool $just_first = false) : string
     {
         $key = cms_strtolower_ascii($key);
         $new_key = str_pad((strlen($key) <= 64) ? $key : pack('H*', md5($key)), 64, chr(0x00));
 
-        $a = md5(($new_key ^ str_repeat(chr(0x5c), 64)) . pack('H*', md5(($new_key ^ str_repeat(chr(0x36), 64)) . $data))); // SMF 1.0 style
+        $a = md5(($new_key ^ str_repeat(chr(0x5c), 64)) . pack('H*', md5(($new_key ^ str_repeat(chr(0x36), 64)) . $password))); // SMF 1.0 style
         if ($just_first) {
             return $a;
         }
-        $b = sha1($key . $data); // SMF 1.1 style
+        $b = sha1($key . $password); // SMF 1.1 style
 
         return $a . '::' . $b;
     }

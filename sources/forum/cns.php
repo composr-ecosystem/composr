@@ -1655,11 +1655,12 @@ class Forum_driver_cns extends Forum_driver_base
     /**
      * The hashing algorithm of this forum driver.
      *
-     * @param  string $password The data to hash (the password in actuality)
-     * @param  SHORT_TEXT $username The username
+     * @param  string $password The password to hash, although the forum driver may internally call this function with another meaning to this parameter
+     * @param  string $key The string converted member-ID generally, although the forum driver may internally call this function with another meaning to this parameter
+     * @param  boolean $just_first Whether to just get the primary hashing mechanism (the meaning of this depends on the forum drivers but may mean a legacy hashing mechanism or one of two alternative mechanisms)
      * @return string The hashed data
      */
-    public function password_hash(string $password, string $username) : string
+    public function password_hash(string $password, string $key, bool $just_first = false) : string
     {
         require_code('cns_members');
 

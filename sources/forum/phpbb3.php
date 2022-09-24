@@ -1395,14 +1395,14 @@ class Forum_driver_phpbb3 extends Forum_driver_base
     }
 
     /**
-     * The hashing algorithm of this forum driver. NOT used for cookie logins for this forum driver (cookies store a generated session ID).
+     * The hashing algorithm of this forum driver.
      *
-     * @param  string $data The data to hash (the password in actuality)
-     * @param  string $key The string converted member-ID in actuality, although this function is more general. For cookie logins, 'ys'
-     * @param  boolean $just_first Whether to just get the old style hash
+     * @param  string $password The password to hash, although the forum driver may internally call this function with another meaning to this parameter
+     * @param  string $key The string converted member-ID generally, although the forum driver may internally call this function with another meaning to this parameter
+     * @param  boolean $just_first Whether to just get the primary hashing mechanism (the meaning of this depends on the forum drivers but may mean a legacy hashing mechanism or one of two alternative mechanisms)
      * @return string The hashed data
      */
-    public function password_hash(string $data, string $key, bool $just_first = false) : string
+    public function password_hash(string $password, string $key, bool $just_first = false) : string
     {
         $itoa64 = './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
         $hash = $GLOBALS['FORUM_DB']->query_select_value_if_there('users', 'user_password', ['username_clean' => cms_mb_strtolower($key)]);
@@ -1410,7 +1410,7 @@ class Forum_driver_phpbb3 extends Forum_driver_base
             return '';
         }
 
-        $test = _hash_crypt_private($data, $hash, $itoa64);
+        $test = _hash_crypt_private($password, $hash, $itoa64);
         if ($test === false) {
             return '';
         }

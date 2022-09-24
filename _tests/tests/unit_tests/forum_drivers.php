@@ -74,12 +74,15 @@ class forum_drivers_test_set extends cms_test_case
                     'init__forum__cns',
                     'cns_flood_control',
                 ];
-                if (in_array($function, $exceptions)) {
+
+                $present = array_key_exists($function, $functions);
+
+                if (!in_array($function, $exceptions)) {
+                    $this->assertTrue($present, 'Missing ' . $function . ' in ' . $file);
+
                     continue;
                 }
 
-                $present = array_key_exists($function, $functions);
-                $this->assertTrue($present, 'Missing ' . $function . ' in ' . $file);
                 if ($present) {
                     $exceptions = [
                         // Extra $tempcode_okay parameter in CNS
