@@ -43,9 +43,6 @@ function _decache($cached_for, $identifier = null, $member = null)
 
     $where = '';
 
-    $bot_statuses = array(true, false);
-    $timezones = array_keys(get_timezone_list());
-
     foreach ($cached_for as $_cached_for) {
         if (is_array($_cached_for)) {
             $_identifier = $_cached_for[1];
