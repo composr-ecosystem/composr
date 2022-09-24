@@ -38,6 +38,28 @@ class database_unsupported_sql_test_set extends cms_test_case
             for ($i = 0; $i < $num_matches; $i++) {
                 $this->assertTrue(false, 'Unsupported SQL aggregate syntax (expression between aggregate functions) in ' . $path);
             }
+
+            // Exceptions...
+            if (in_array($path, [
+                'rootkit_detection.php',
+                'tracker/bug_sponsorship_list_view_inc.php',
+                'tracker/core/authentication_api.php',
+                'tracker/core/news_api.php',
+                'tracker/vendor/adodb/adodb-php/drivers/adodb-ibase.inc.php',
+                'tracker/vendor/adodb/adodb-php/drivers/adodb-postgres64.inc.php',
+                'sources/database_repair.php',
+                'sources/database/oracle.php',
+                'sources/database/shared/sqlserver.php',
+                'sources/database/shared/mysql.php',
+                'sources/database/postgresql.php',
+            ])) {
+                continue;
+            }
+
+            $num_matches = preg_match_all('#WHERE.*\w+(<>|=)\\\\\'#i', $c, $matches);
+            for ($i = 0; $i < $num_matches; $i++) {
+                $this->assertTrue(false, 'SQL equal/not-equal operations have to use db_string_equal_to/db_string_not_equal_to for Oracle, in ' . $path);
+            }
         }
     }
 }

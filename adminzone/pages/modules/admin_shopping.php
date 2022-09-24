@@ -326,7 +326,7 @@ class Module_admin_shopping
             do_lang_tempcode('ACTIONS'),
         ], $sortables, 'sort', $sortable . ' ' . $sort_order);
 
-        $sql = 'SELECT * FROM ' . get_table_prefix() . 'shopping_orders WHERE ' . $where . ' ORDER BY order_status=\'' . /*Not using db_string_equal_to because LIKE must not be used here*/db_escape_string('ORDER_STATUS_cancelled')/*cancelled always last*/ . '\',' . $sortable . ' ' . $sort_order;
+        $sql = 'SELECT * FROM ' . get_table_prefix() . 'shopping_orders WHERE ' . $where . ' ORDER BY ' . db_string_equal_to('order_status', 'ORDER_STATUS_cancelled')/*cancelled always last*/ . ',' . $sortable . ' ' . $sort_order;
         $rows = $GLOBALS['SITE_DB']->query($sql, $max, $start, false, true);
         $order_entries = new Tempcode();
         foreach ($rows as $row) {

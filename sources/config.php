@@ -146,7 +146,13 @@ function load_config_options()
             $temp = [];
         } else {
             if ($GLOBALS['SITE_DB']->table_exists('config', true)) { // LEGACY: Has to use old naming from pre v10; also has to use $really, because of possibility of corrupt db_meta table
-                $temp = $GLOBALS['SITE_DB']->query_select('config', ['the_name AS c_name', 'config_value AS c_value', 'config_value AS c_value_trans', 'if(the_type=\'transline\' OR the_type=\'transtext\' OR the_type=\'comcodeline\' OR the_type=\'comcodetext\',1,0) AS c_needs_dereference'], [], '', null, 0, true);
+                $string_types = [
+                    db_string_equal_to('the_type', 'transline'),
+                    db_string_equal_to('the_type', 'transtext'),
+                    db_string_equal_to('the_type', 'comcodeline'),
+                    db_string_equal_to('the_type', 'comcodetext'),
+                ];
+                $temp = $GLOBALS['SITE_DB']->query_select('config', ['the_name AS c_name', 'config_value AS c_value', 'config_value AS c_value_trans', 'if(' . implode(' OR ', $string_types) . ',1,0) AS c_needs_dereference'], [], '', null, 0, true);
                 if ($temp === null) {
                     critical_error('DATABASE_FAIL');
                 }

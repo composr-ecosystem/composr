@@ -295,7 +295,7 @@ function attachments_script()
     cms_ob_end_clean();
 
     if ($from == 0) {
-        $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'values SET the_value=' . db_cast('(' . db_cast('the_value', 'INT') . '+' . strval($size) . ')', 'CHAR') . ' WHERE the_name=\'download_bandwidth\'', 1);
+        $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'values SET the_value=' . db_cast('(' . db_cast('the_value', 'INT') . '+' . strval($size) . ')', 'CHAR') . ' WHERE ' . db_string_equal_to('the_name', 'download_bandwidth'), 1);
     }
 
     cms_ini_set('ocproducts.xss_detect', '0');

@@ -516,7 +516,7 @@ class Forum_driver_wbb22 extends Forum_driver_base
         }
 
         $this->db->query_insert('posts', ['threadid' => $topic_id, 'username' => $username, 'userid' => $member, 'posttopic' => $post_title, 'posttime' => $time, 'message' => $post, 'allowsmilies' => 1, 'ipaddress' => $ip, 'visible' => 1]);
-        $this->db->query('UPDATE ' . $this->db->get_table_prefix() . 'boards SET lastthreadid=' . strval($topic_id) . ', postcount=(postcount+1), lastposttime=' . strval($time) . ', lastposterid=' . strval($member) . ', lastposter=\'' . db_escape_string($username) . '\' WHERE boardid=\'' . strval($forum_id) . '\'', 1);
+        $this->db->query('UPDATE ' . $this->db->get_table_prefix() . 'boards SET lastthreadid=' . strval($topic_id) . ', postcount=(postcount+1), lastposttime=' . strval($time) . ', lastposterid=' . strval($member) . ', lastposter=\'' . db_escape_string($username) . '\' WHERE boardid=' . strval($forum_id) . '', 1);
         $this->db->query('UPDATE ' . $this->db->get_table_prefix() . 'threads SET replycount=(replycount+1), lastposttime=' . strval($time) . ', lastposterid=' . strval($member) . ', lastposter=\'' . db_escape_string($username) . '\' WHERE threadid=' . strval($topic_id), 1);
 
         return [$topic_id, false];

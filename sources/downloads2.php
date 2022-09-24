@@ -1416,9 +1416,9 @@ function log_download(int $id, int $size, bool $got_before)
     $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'download_downloads SET num_downloads=(num_downloads+1) WHERE id=' . strval($id), 1, 0, true); // Suppress errors in case DB access lost
 
     // Update stats
-    $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'values SET the_value=' . db_cast('(' . db_cast('the_value', 'INT') . '+1)', 'CHAR') . ' WHERE the_name=\'num_downloads_downloaded\'', 1, 0, true); // Suppress errors in case DB access lost
+    $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'values SET the_value=' . db_cast('(' . db_cast('the_value', 'INT') . '+1)', 'CHAR') . ' WHERE ' . db_string_equal_to('the_name', 'num_downloads_downloaded'), 1, 0, true); // Suppress errors in case DB access lost
     if ($size != 0) {
-        $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'values SET the_value=' . db_cast('(' . db_cast('the_value', 'INT') . '+' . strval($size) . ')', 'CHAR') . ' WHERE the_name=\'download_bandwidth\'', 1, 0, true); // Suppress errors in case DB access lost
+        $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'values SET the_value=' . db_cast('(' . db_cast('the_value', 'INT') . '+' . strval($size) . ')', 'CHAR') . ' WHERE ' . db_string_equal_to('the_name', 'download_bandwidth'), 1, 0, true); // Suppress errors in case DB access lost
     }
 }
 

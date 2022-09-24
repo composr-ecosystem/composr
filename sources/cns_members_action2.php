@@ -2539,7 +2539,7 @@ function rebuild_all_cpf_indices(bool $leave_existing = false)
         // Delete any stragglers (already deleted fields or inconsistent naming)
         $GLOBALS['FORUM_DB']->query_delete('db_meta_indices', ['i_table' => 'f_member_custom_fields']);
         if (strpos(get_db_type(), 'mysql') !== false) {
-            $indexes = $GLOBALS['FORUM_DB']->query('SHOW INDEXES FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields WHERE Column_name<>\'mf_member_id\'');
+            $indexes = $GLOBALS['FORUM_DB']->query('SHOW INDEXES FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields WHERE ' . db_string_not_equal_to('Column_name', 'mf_member_id'));
             foreach ($indexes as $index) {
                 $query = $GLOBALS['FORUM_DB']->driver->drop_index__sql($GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields', $index['Key_name']);
                 if ($query !== null) {

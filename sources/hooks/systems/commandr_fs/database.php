@@ -45,7 +45,7 @@ class Hook_commandr_fs_database
 
                 $modification_time = null;
                 if (strpos(get_db_type(), 'mysql') !== false) {
-                    $_modification_time = $GLOBALS['SITE_DB']->query_value_if_there('SELECT UPDATE_TIME FROM information_schema.tables WHERE TABLE_SCHEMA=\'' . db_escape_string(get_db_site()) . '\' AND TABLE_NAME=\'' . db_escape_string(get_table_prefix() . $table_name) . '\'', false, true);
+                    $_modification_time = $GLOBALS['SITE_DB']->query_value_if_there('SELECT UPDATE_TIME FROM information_schema.tables WHERE ' . db_string_equal_to('TABLE_SCHEMA', get_db_site()) . ' AND ' . db_strng_equal_to('TABLE_NAME', get_table_prefix() . $table_name), false, true);
                     $modification_time = strtotime($_modification_time);
                     if ($modification_time === false) {
                         $modification_time = null;

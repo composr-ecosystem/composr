@@ -1257,10 +1257,8 @@ abstract class DatabaseDriver
 
                 mysql        Yes              Yes       No         IF...THEN...ELSEIF...ELSE...END IF
                 postgresql   Yes              No        No         IF...THEN...ELSIF...ELSE...END IF
-                sqlite       Yes              No        No         No
                 oracle       Yes              No        Yes        IF...THEN...ELSIF...ELSE...END IF
                 db2          Yes              No        No         IF...THEN...ELSEIF...ELSE...END IF
-                access       No               No        Yes        No
                 SQL server   Yes              No        Yes        IF...ELSE...
 
                 Anything supporting CASE supports both simple and complex forms, as both are standardised.
