@@ -263,6 +263,10 @@ class Module_login
         $id = $feedback['id'];
         if (!is_null($id)) {
             $url = enforce_sessioned_url(either_param_string('redirect')); // Now that we're logged in, we need to ensure the redirect URL contains our new session ID
+            if ($url == '') {
+                $_url = build_url(array('page' => ''), '_SELF');
+                $url = $_url->evaluate();
+            }
 
             if (!has_interesting_post_fields()) {
                 require_code('site2');

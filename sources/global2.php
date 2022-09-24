@@ -1578,6 +1578,10 @@ function post_param_string($name, $default = false, $html = false, $conv_from_wy
         return null;
     }
     if ((trim($ret) === '') && ($default !== '') && (array_key_exists('require__' . $name, $_POST)) && ($_POST['require__' . $name] !== '0')) {
+        // __param already triggered improperly_filled_in_post for completely missing or unparseable POST parameters.
+        // This branch handles cases of BLANK parameters for when the POST environment said blank parameters were not acceptable.
+        // A blank parameter is never remapped to $default - the blank is considered its true value, it is just a question of whether that is acceptable as a value vs an error.
+
         if ($default === null) {
             return null;
         }
@@ -1609,6 +1613,16 @@ function post_param_string($name, $default = false, $html = false, $conv_from_wy
         } else {
             require_code('comcode_from_html');
             $ret = trim(semihtml_to_comcode($ret));
+
+            // Now that we potentially stripped down our code a lot, we can try again and see if it is blank
+            if ((trim($ret) === '') && ($default !== '') && (array_key_exists('require__' . $name, $_POST)) && ($_POST['require__' . $name] !== '0')) {
+                if ($default === null) {
+                    return null;
+                }
+
+                require_code('failure');
+                improperly_filled_in_post($name);
+            }
         }
     } else {
         if ((substr($ret, 0, 10) === '[semihtml]') && (substr(trim($ret), -11) === '[/semihtml]')) {
@@ -1658,7 +1672,7 @@ function get_param_string($name, $default = false, $no_security = false)
 {
     $ret = __param($_GET, $name, $default);
     if (($ret === '') && (isset($_GET['require__' . $name])) && ($default !== $ret) && ($_GET['require__' . $name] !== '0')) {
-        // We didn't give some required input
+        // We didn't give some required input. See equivalent comments in the post_param_string function
         set_http_status_code('400');
         warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN'));
     }

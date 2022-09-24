@@ -111,8 +111,8 @@ function _get_notification_ob_for_code($notification_code)
 }
 
 /**
- * Wraps do_lang, keeping a record of the last call. You can use when building the notification $message.
- * This allows notification handlers to possibly repeat the call with a customised language string.
+ * Wraps do_lang, keeping a record of the last call. You can use when building the notification $message (i.e. the body NOT the subject).
+ * This allows notification handlers (e.g. push notifications) to possibly repeat the call with very customised output.
  *
  * @param  ID_TEXT $codename The language string ID
  * @param  ?mixed $parameter1 The first parameter [string or Tempcode] (replaces {1}) (null: none)
@@ -136,7 +136,7 @@ function do_notification_lang($codename, $parameter1 = null, $parameter2 = null,
 
 /**
  * Wraps do_template, keeping a record of the last call. You can use when building the notification $message.
- * This allows notification handlers to possibly repeat the call with a customised template.
+ * This allows notification handlers (e.g. push notifications) to possibly repeat the call with a customised template.
  *
  * @param  ID_TEXT $codename The codename of the template being loaded
  * @param  ?array $parameters A map of parameters for the template (key to value); you can have any number of parameters of any name, there is no set standard; having a _GUID parameter of random value is a convention (null: no parameters)

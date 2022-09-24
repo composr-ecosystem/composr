@@ -60,9 +60,9 @@ class Hook_rss_news
             $extra_where .= sql_region_filter('news', 'p.id');
         }
 
-        $query = 'SELECT *,p.id AS id FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news p LEFT JOIN ' . get_table_prefix() . 'news_category_entries d ON d.news_entry=p.id' . $extra_join . ' WHERE date_and_time>' . strval($cutoff) . (((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) ? ' AND validated=1 ' : '') . ' AND ' . $filters . $extra_where . (can_arbitrary_groupby() ? ' GROUP BY p.id' : '') . ' ORDER BY date_and_time DESC';
+        $query = 'SELECT *,p.id AS p_id FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news p LEFT JOIN ' . get_table_prefix() . 'news_category_entries d ON d.news_entry=p.id' . $extra_join . ' WHERE date_and_time>' . strval($cutoff) . (((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) ? ' AND validated=1 ' : '') . ' AND ' . $filters . $extra_where . (can_arbitrary_groupby() ? ' GROUP BY p.id' : '') . ' ORDER BY date_and_time DESC';
         $rows = $GLOBALS['SITE_DB']->query($query, $max, null, false, false, array('title' => 'SHORT_TRANS__COMCODE', 'news' => 'LONG_TRANS__COMCODE', 'news_article' => 'LONG_TRANS__COMCODE'));
-        $rows = remove_duplicate_rows($rows, 'id');
+        $rows = remove_duplicate_rows($rows, 'p_id');
         $_categories = $GLOBALS['SITE_DB']->query_select('news_categories', array('id', 'nc_title'), array('nc_owner' => null));
         foreach ($_categories as $i => $_category) {
             $_categories[$i]['_title'] = get_translated_text($_category['nc_title']);
@@ -71,6 +71,10 @@ class Hook_rss_news
 
         $content = new Tempcode();
         foreach ($rows as $row) {
+            // Workaround that some DB backends don't allow multiple fields to have the same name, so we have to use p_id for our specifically selected field instead of id
+            $row['id'] = $row['p_id'];
+            unset($row['p_id']);
+
             if (has_category_access(get_member(), 'news', strval($row['news_category']))) {
                 $id = strval($row['id']);
                 $author = $row['author'];

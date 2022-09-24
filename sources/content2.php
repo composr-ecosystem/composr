@@ -182,7 +182,14 @@ function metadata_get_fields($content_type, $content_id, $allow_no_owner = false
         $add_time_field = in_array('add_time', $fields_to_skip) ? null : $info['add_time_field'];
         if (!is_null($add_time_field)) {
             $add_time = is_null($content_row) ? null : $content_row[$add_time_field];
-            $fields->attach(form_input_date(do_lang_tempcode('ADD_TIME'), do_lang_tempcode('DESCRIPTION_META_ADD_TIME'), 'meta_add_time', !is_null($content_row), is_null($content_row), true, $add_time, 40, intval(date('Y')) - 20));
+            if (true||@strftime('%Y', @mktime(0, 0, 0, 1, 1, 1963)) != '1963') { // TODO: Fix in v11
+                $year_start = 1970;
+                $total_years_to_show = 2038 - 1970 - 1; // https://en.wikipedia.org/wiki/Year_2038_problem
+            } else {
+                $year_start = 0;
+                $total_years_to_show = 2038 - 1; // https://en.wikipedia.org/wiki/Year_2038_problem
+            }
+            $fields->attach(form_input_date(do_lang_tempcode('ADD_TIME'), do_lang_tempcode('DESCRIPTION_META_ADD_TIME'), 'meta_add_time', !is_null($content_row), is_null($content_row), true, $add_time, $total_years_to_show, $year_start));
         }
 
         if (!is_null($content_id)) {
@@ -255,7 +262,7 @@ function metadata_get_fields($content_type, $content_id, $allow_no_owner = false
  * @param  ID_TEXT $content_type The type of resource (e.g. download)
  * @param  ?ID_TEXT $content_id The old ID of the resource (null: adding)
  * @param  ?array $fields_to_skip List of fields to NOT take in (null: empty list)
- * @param  ?ID_TEXT $new_content_id The new ID of the resource (null: not being renamed)
+ * @param  ?ID_TEXT $new_content_id The new ID of the resource, which may be the same as the old one (null: new content)
  * @return array A map of standard metadata fields (name to value). If adding, this map is accurate for adding. If editing, nulls mean do-not-edit or non-editable.
  */
 function actual_metadata_get_fields($content_type, $content_id, $fields_to_skip = null, $new_content_id = null)
@@ -366,8 +373,9 @@ function actual_metadata_get_fields($content_type, $content_id, $fields_to_skip 
         }
     }
 
-    if (!is_null($content_id)) {
-        set_url_moniker($content_type, $content_id, $fields_to_skip, $new_content_id);
+    if (($content_id !== null) && (!in_array('url_moniker', $fields_to_skip))) {
+        // Only call for existing resources
+        set_url_moniker($content_type, $content_id, $new_content_id);
     }
 
     return array(
@@ -384,16 +392,11 @@ function actual_metadata_get_fields($content_type, $content_id, $fields_to_skip 
  *
  * @param  ID_TEXT $content_type The type of resource (e.g. download)
  * @param  ID_TEXT $content_id The old ID of the resource
- * @param  ?array $fields_to_skip List of fields to NOT take in (null: empty list)
  * @param  ?ID_TEXT $new_content_id The new ID of the resource (null: not being renamed)
  */
-function set_url_moniker($content_type, $content_id, $fields_to_skip = null, $new_content_id = null)
+function set_url_moniker($content_type, $content_id, $new_content_id = null)
 {
     require_lang('metadata');
-
-    if (is_null($fields_to_skip)) {
-        $fields_to_skip = array();
-    }
 
     require_code('content');
     $ob = get_content_object($content_type);
@@ -401,151 +404,155 @@ function set_url_moniker($content_type, $content_id, $fields_to_skip = null, $ne
     if ($info === null) {
         return;
     }
+    if (!$info['support_url_monikers']) {
+        return;
+    }
 
     $url_moniker = mixed();
-    if (($info['support_url_monikers']) && (!in_array('url_moniker', $fields_to_skip))) {
-        $url_moniker = post_param_string('meta_url_moniker', '');
-        if ($url_moniker == '') {
-            if ($content_type == 'comcode_page') {
-                $url_moniker = '';
-                $parent = post_param_string('parent_page', '');
-                while ($parent != '') {
-                    $url_moniker = str_replace('_', '-', $parent) . (($url_moniker != '') ? ('/' . $url_moniker) : '');
 
-                    $parent = $GLOBALS['SITE_DB']->query_select_value_if_there('comcode_pages', 'p_parent_page', array('the_page' => $parent));
-                    if ($parent === null) {
-                        $parent = '';
-                    }
+    $url_moniker = post_param_string('meta_url_moniker', '');
+    if ($url_moniker == '') {
+        if ($content_type == 'comcode_page') {
+            $url_moniker = '';
+            $parent = post_param_string('parent_page', '');
+            while ($parent != '') {
+                $url_moniker = str_replace('_', '-', $parent) . (($url_moniker != '') ? ('/' . $url_moniker) : '');
+
+                $parent = $GLOBALS['SITE_DB']->query_select_value_if_there('comcode_pages', 'p_parent_page', array('the_page' => $parent));
+                if ($parent === null) {
+                    $parent = '';
                 }
-                if ($url_moniker != '') {
-                    $url_moniker .= '/' . preg_replace('#^.*:#', '', str_replace('_', '-', $content_id));
-                } else {
-                    $url_moniker = null;
-                }
+            }
+            if ($url_moniker != '') {
+                $url_moniker .= '/' . preg_replace('#^.*:#', '', str_replace('_', '-', $content_id));
             } else {
                 $url_moniker = null;
             }
+        } else {
+            $url_moniker = null;
+        }
+    }
+
+    // Invalid moniker. Complain and exit function
+    require_code('type_sanitisation');
+    if ((!is_alphanumeric(str_replace('/', '', $url_moniker))) || (is_numeric($url_moniker))) {
+        attach_message(do_lang_tempcode('BAD_CODENAME'), 'warn');
+        return;
+    }
+
+    // Update ID of existing moniker(s)
+    if ($content_type == 'comcode_page') {
+        list($zone, $page) = explode(':', $content_id);
+        $type = '';
+        $_content_id = $zone;
+
+        if (!is_null($new_content_id)) {
+            $GLOBALS['SITE_DB']->query_update('url_id_monikers', array(
+                'm_resource_page' => $new_content_id,
+            ), array('m_resource_page' => $page, 'm_resource_type' => '', 'm_resource_id' => $zone));
+        }
+    } else {
+        list($zone, $attributes,) = page_link_decode($info['view_page_link_pattern']);
+        $page = $attributes['page'];
+        $type = $attributes['type'];
+        $_content_id = $content_id;
+
+        if (!is_null($new_content_id)) {
+            $GLOBALS['SITE_DB']->query_update('url_id_monikers', array(
+                'm_resource_id' => $new_content_id,
+            ), array('m_resource_page' => $page, 'm_resource_type' => $type, 'm_resource_id' => $content_id));
+        }
+    }
+
+    // Moniker was erased. Just deprecate the existing moniker and exit function
+    if ($url_moniker === null) {
+        $GLOBALS['SITE_DB']->query_update('url_id_monikers', array('m_deprecated' => 1), array('m_resource_page' => $page, 'm_resource_type' => $type, 'm_resource_id' => $_content_id, 'm_deprecated' => 0), '', 1); // Deprecate
+        return;
+    }
+
+    $ok = true;
+
+    // Test for conflicts
+    $conflict_test_map = array(
+        'm_moniker' => $url_moniker,
+    );
+    if (substr($url_moniker, 0, 1) != '/') { // Can narrow the conflict-check scope if it's relative to a module rather than a zone ('/' prefix)
+        $conflict_test_map += array(
+            'm_resource_page' => $page,
+            'm_resource_type' => $type,
+        );
+    }
+    $test = $GLOBALS['SITE_DB']->query_select('url_id_monikers', array('*'), $conflict_test_map);
+    if ((array_key_exists(0, $test)) && ($test[0]['m_resource_id'] !== $_content_id)) {
+        if ($test[0]['m_deprecated'] == 0) {
+            $ok = false;
+
+            if ($content_type == 'comcode_page') {
+                $competing_page_link = $test[0]['m_resource_id'] . ':' . $test[0]['m_resource_page'];
+            } else {
+                $competing_page_link = '_WILD' . ':' . $test[0]['m_resource_page'];
+                if ($test[0]['m_resource_type']) {
+                    $competing_page_link .= ':' . $test[0]['m_resource_type'];
+                }
+                if ($test[0]['m_resource_id'] != '') {
+                    $competing_page_link .= ':' . $test[0]['m_resource_id'];
+                }
+            }
+            attach_message(do_lang_tempcode('URL_MONIKER_TAKEN', escape_html($competing_page_link), escape_html($url_moniker)), 'warn');
+        } else { // Deprecated, so we can claim it
+            $GLOBALS['SITE_DB']->query_delete('url_id_monikers', $conflict_test_map);
+        }
+    }
+
+    if (substr($url_moniker, 0, 1) == '/') { // ah, relative to zones, better run some anti-conflict tests!
+        $parts = explode('/', substr($url_moniker, 1), 3);
+
+        if ($ok) {
+            // Test there are no zone conflicts
+            if ((file_exists(get_file_base() . '/' . $parts[0])) || (file_exists(get_custom_file_base() . '/' . $parts[0]))) {
+                $ok = false;
+                attach_message(do_lang_tempcode('URL_MONIKER_CONFLICT_ZONE'), 'warn');
+            }
         }
 
-        if ($url_moniker !== null) {
-            require_code('type_sanitisation');
-            if ((!is_alphanumeric(str_replace('/', '', $url_moniker))) || (is_numeric($url_moniker))) {
-                attach_message(do_lang_tempcode('BAD_CODENAME'), 'warn');
-                $url_moniker = null;
+        if ($ok) {
+            // Test there are no page conflicts, from perspective of welcome zone
+            require_code('site');
+            $test1 = (count($parts) < 2) ? _request_page($parts[0], '') : false;
+            $test2 = false;
+            if (isset($parts[1])) {
+                $test2 = (count($parts) < 3) ? _request_page($parts[1], $parts[0]) : false;
             }
+            if (($test1 !== false) || ($test2 !== false)) {
+                $ok = false;
+                attach_message(do_lang_tempcode('URL_MONIKER_CONFLICT_PAGE'), 'warn');
+            }
+        }
 
-            if (!is_null($url_moniker)) {
-                if ($content_type == 'comcode_page') {
-                    list($zone, $page) = explode(':', $content_id);
-                    $type = '';
-                    $_content_id = $zone;
-
-                    // Update ID of existing moniker(s)
-                    if (!is_null($new_content_id)) {
-                        $GLOBALS['SITE_DB']->query_update('url_id_monikers', array(
-                            'm_resource_page' => $new_content_id,
-                        ), array('m_resource_page' => $page, 'm_resource_type' => '', 'm_resource_id' => $zone));
-                    }
-                } else {
-                    list($zone, $attributes,) = page_link_decode($info['view_page_link_pattern']);
-                    $page = $attributes['page'];
-                    $type = $attributes['type'];
-                    $_content_id = $content_id;
-
-                    // Update ID of existing moniker(s)
-                    if (!is_null($new_content_id)) {
-                        $GLOBALS['SITE_DB']->query_update('url_id_monikers', array(
-                            'm_resource_id' => $new_content_id,
-                        ), array('m_resource_page' => $page, 'm_resource_type' => $type, 'm_resource_id' => $content_id));
-                    }
-                }
-
-                $ok = true;
-
-                // Test for conflicts
-                $conflict_test_map = array(
-                    'm_moniker' => $url_moniker,
-                );
-                if (substr($url_moniker, 0, 1) != '/') { // Can narrow the conflict-check scope if it's relative to a module rather than a zone ('/' prefix)
-                    $conflict_test_map += array(
-                        'm_resource_page' => $page,
-                        'm_resource_type' => $type,
-                    );
-                }
-                $test = $GLOBALS['SITE_DB']->query_select('url_id_monikers', array('*'), $conflict_test_map);
-                if ((array_key_exists(0, $test)) && ($test[0]['m_resource_id'] !== $_content_id)) {
-                    if ($test[0]['m_deprecated'] == 0) {
+        if ($ok) {
+            // Test there are no page conflicts, from perspective of deep zones
+            require_code('site');
+            $start = 0;
+            $zones = array();
+            do {
+                $zones = find_all_zones(false, false, false, $start, 50);
+                foreach ($zones as $zone_name) {
+                    $test1 = (count($parts) < 2) ? _request_page($parts[0], $zone_name) : false;
+                    if ($test1 !== false) {
                         $ok = false;
-
-                        if ($content_type == 'comcode_page') {
-                            $competing_page_link = $test[0]['m_resource_id'] . ':' . $test[0]['m_resource_page'];
-                        } else {
-                            $competing_page_link = '_WILD' . ':' . $test[0]['m_resource_page'];
-                            if ($test[0]['m_resource_type']) {
-                                $competing_page_link .= ':' . $test[0]['m_resource_type'];
-                            }
-                            if ($test[0]['m_resource_id'] != '') {
-                                $competing_page_link .= ':' . $test[0]['m_resource_id'];
-                            }
-                        }
-                        attach_message(do_lang_tempcode('URL_MONIKER_TAKEN', escape_html($competing_page_link), escape_html($url_moniker)), 'warn');
-                    } else { // Deprecated, so we can claim it
-                        $GLOBALS['SITE_DB']->query_delete('url_id_monikers', $conflict_test_map);
+                        attach_message(do_lang_tempcode('URL_MONIKER_CONFLICT_PAGE'), 'warn');
+                        break 2;
                     }
                 }
-
-                if (substr($url_moniker, 0, 1) == '/') { // ah, relative to zones, better run some anti-conflict tests!
-                    $parts = explode('/', substr($url_moniker, 1), 3);
-
-                    if ($ok) {
-                        // Test there are no zone conflicts
-                        if ((file_exists(get_file_base() . '/' . $parts[0])) || (file_exists(get_custom_file_base() . '/' . $parts[0]))) {
-                            $ok = false;
-                            attach_message(do_lang_tempcode('URL_MONIKER_CONFLICT_ZONE'), 'warn');
-                        }
-                    }
-
-                    if ($ok) {
-                        // Test there are no page conflicts, from perspective of welcome zone
-                        require_code('site');
-                        $test1 = (count($parts) < 2) ? _request_page($parts[0], '') : false;
-                        $test2 = false;
-                        if (isset($parts[1])) {
-                            $test2 = (count($parts) < 3) ? _request_page($parts[1], $parts[0]) : false;
-                        }
-                        if (($test1 !== false) || ($test2 !== false)) {
-                            $ok = false;
-                            attach_message(do_lang_tempcode('URL_MONIKER_CONFLICT_PAGE'), 'warn');
-                        }
-                    }
-
-                    if ($ok) {
-                        // Test there are no page conflicts, from perspective of deep zones
-                        require_code('site');
-                        $start = 0;
-                        $zones = array();
-                        do {
-                            $zones = find_all_zones(false, false, false, $start, 50);
-                            foreach ($zones as $zone_name) {
-                                $test1 = (count($parts) < 2) ? _request_page($parts[0], $zone_name) : false;
-                                if ($test1 !== false) {
-                                    $ok = false;
-                                    attach_message(do_lang_tempcode('URL_MONIKER_CONFLICT_PAGE'), 'warn');
-                                    break 2;
-                                }
-                            }
-                            $start += 50;
-                        } while (count($zones) != 0);
-                    }
-                }
-
-                if ($ok) {
-                    // Insert
-                    require_code('urls2');
-                    suggest_new_idmoniker_for($page, $type, $_content_id, ($content_type == 'comcode_page') ? $zone : '', $url_moniker, false, $url_moniker);
-                }
-            }
+                $start += 50;
+            } while (count($zones) != 0);
         }
+    }
+
+    if ($ok) {
+        // Insert
+        require_code('urls2');
+        suggest_new_idmoniker_for($page, $type, $_content_id, ($content_type == 'comcode_page') ? $zone : '', $url_moniker, false, $url_moniker);
     }
 }
 
