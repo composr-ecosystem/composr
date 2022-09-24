@@ -983,10 +983,10 @@ Don't use [tt]LIMIT[/tt] manually, use the API
 | Not all databases support the latter syntax.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
-[color="red"]Use [tt]db_string_equal_to[/tt][/color]
+Use [tt]db_string_equal_to[/tt]
 | Portability: Oracle
 | Product development only
-| Manually
+| Automated test ([tt]database_unsupported_sql.php[/tt])
 | Do not build string equalities into WHERE clauses directly (e.g. [tt]WHERE foo='bar'[/tt]), use the [tt]db_string_equal_to[/tt] function (e.g. [tt]WHERE ' . db_string_equal_to('foo', 'bar')[/tt]).
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
