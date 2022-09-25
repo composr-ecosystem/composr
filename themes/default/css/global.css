@@ -7028,14 +7028,6 @@ a[rel="lightbox"] {
 	padding-left: 1em;
 }
 
-.flex-wrapper-wrap {
-	flex-wrap: wrap;
-}
-
-.justify-space-evenly {
-	justify-content: space-evenly;
-}
-
 /*{+START,CSS_MODE,desktop}*/
 	.floats-wrap .float-surrounder + .float-surrounder {
 		margin-top: 1em;

@@ -190,8 +190,6 @@ function wiki_add_post(int $page_id, string $message, int $validated = 1, ?int $
 
     // Award points if the wiki post was over 1kb in size
     if ((addon_installed('points')) && (cms_mb_strlen($message) > 1024)) {
-        require_code('points2');
-
         $_points_wiki_posting = get_option('points_wiki', true);
         if ($_points_wiki_posting === null) {
             $_points_wiki_posting = '0';
@@ -199,6 +197,7 @@ function wiki_add_post(int $page_id, string $message, int $validated = 1, ?int $
         $points_wiki_posting = intval($_points_wiki_posting);
 
         if ($points_wiki_posting > 0) {
+            require_code('points2');
             points_credit_member($member_id, do_lang('WIKI_MAKE_POST'), $points_wiki_posting, 0, 0, null, null, 0, 'wiki_post', 'add', strval($post_id));
         }
     }
@@ -432,8 +431,6 @@ function wiki_add_page(string $title, string $description, string $notes, int $s
 
     // Award points if the wiki page was over 1kb in size
     if ((addon_installed('points')) && (cms_mb_strlen($description) > 1024)) {
-        require_code('points2');
-
         $_points_wiki_posting = get_option('points_wiki', true);
         if ($_points_wiki_posting === null) {
             $_points_wiki_posting = '0';
@@ -441,6 +438,7 @@ function wiki_add_page(string $title, string $description, string $notes, int $s
         $points_wiki_posting = intval($_points_wiki_posting);
 
         if ($points_wiki_posting > 0) {
+            require_code('points2');
             points_credit_member($member_id, do_lang('WIKI_ADD_PAGE'), $points_wiki_posting, 0, 0, null, true, 0, 'wiki_page', 'add', strval($page_id));
         }
     }

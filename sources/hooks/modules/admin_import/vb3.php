@@ -1423,9 +1423,9 @@ class Hook_import_vb3
                     'anonymous' => $anonymous,
                     'linked_to' => null,
                     't_type' => 'legacy',
-                    't_subtype' => '',
-                    't_type_id' => 'admin_import__vb3',
-                    'status' => 'normal',
+                    't_subtype' => 'admin_import',
+                    't_type_id' => 'vb3',
+                    'status' => 0,
                 ];
                 $map += insert_lang_comcode('reason', $reason, 4);
                 $GLOBALS['SITE_DB']->query_insert('points_ledger', $map);

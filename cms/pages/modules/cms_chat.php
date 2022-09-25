@@ -388,7 +388,6 @@ class Module_cms_chat
 
         $introduction = new Tempcode();
         if (addon_installed('points')) {
-            require_lang('points');
             $introduction = do_lang_tempcode('CHAT_MODERATION_REVERSE_POINTS');
         }
         $tpl = do_template('CHAT_MODERATE_SCREEN', ['_GUID' => '940de7e8c9a0ac3c575892887c7ef3c0', 'URL' => $delete_url, 'TITLE' => $this->title, 'INTRODUCTION' => $introduction, 'CONTENT' => $content, 'LINKS' => $links]);
@@ -628,7 +627,7 @@ class Module_cms_chat
      */
     public function _chat_delete_message() : object
     {
-        $reverse_point_transaction = post_param_integer('reverse_point_transaction', 0) == 1;
+        $reverse_point_transaction = (post_param_integer('reverse_point_transaction', 0) == 1);
         $myrow = $this->myrow;
         $message_id = $this->message_id;
 
@@ -736,7 +735,7 @@ class Module_cms_chat
      */
     public function _chat_delete_all_messages() : object
     {
-        $reverse_point_transaction = post_param_integer('reverse_point_transaction', 0) == 1;
+        $reverse_point_transaction = (post_param_integer('reverse_point_transaction', 0) == 1);
         $delete = post_param_integer('continue_delete', 0);
         if ($delete != 1) {
             $url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');

@@ -130,7 +130,7 @@ function points_transact(int $sender_id, int $recipient_id, string $reason, int 
     list($actual_points, $actual_gift_points) = $points_to_process;
 
     // Log the transaction
-    $id = _points_transact($sender_id, $recipient_id, $reason, $actual_points, $actual_gift_points, $anonymous, 'normal', $locked, null, $t_type, $t_subtype, $t_type_id, $time);
+    $id = _points_transact($sender_id, $recipient_id, $reason, $actual_points, $actual_gift_points, $anonymous, LEDGER_STATUS_NORMAL, $locked, null, $t_type, $t_subtype, $t_type_id, $time);
 
     // Process notifications
     if ($send_notifications !== null) {
@@ -171,11 +171,10 @@ function points_transact(int $sender_id, int $recipient_id, string $reason, int 
  * @param  ID_TEXT $t_subtype An identifier to relate this transaction with other transactions of the same $type and $subtype (e.g. an action performed on the $type)
  * @param  ID_TEXT $t_type_id Some content or row ID of the specified $type
  * @param  ?TIME $time The time this transaction occurred (null: now)
- * @param  ID_TEXT $status The status to use for the record
- * @set refund reversing
+ * @param  integer $status The status to use for the record (see LEDGER_STATUS_*)
  * @return ?AUTO_LINK The ID of the transaction (null: a transaction was not created)
  */
-function points_refund(int $sender_id, int $recipient_id, string $reason, int $total_points, int $amount_gift_points = 0, int $anonymous = 0, ?int $linked_to = null, ?bool $send_notifications = true, string $t_type = '', string $t_subtype = '', string $t_type_id = '', ?int $time = null, string $status = 'refund') : ?int
+function points_refund(int $sender_id, int $recipient_id, string $reason, int $total_points, int $amount_gift_points = 0, int $anonymous = 0, ?int $linked_to = null, ?bool $send_notifications = true, string $t_type = '', string $t_subtype = '', string $t_type_id = '', ?int $time = null, int $status = 3) : ?int
 {
     // Do nothing if we are transacting 0 points
     if ($total_points == 0) {
@@ -192,15 +191,15 @@ function points_refund(int $sender_id, int $recipient_id, string $reason, int $t
     list($actual_points, $actual_gift_points) = $points_to_process;
 
     // Actualise the transaction
-    $id = _points_transact($sender_id, $recipient_id, $reason, $actual_points, $actual_gift_points, $anonymous, $status, 0, $linked_to, $t_type, $t_subtype, $t_type_id, $time);
+    $id = _points_transact($sender_id, $recipient_id, $reason, $actual_points, $actual_gift_points, $anonymous, $status, (($status == LEDGER_STATUS_REVERSING) ? 1 : 0), $linked_to, $t_type, $t_subtype, $t_type_id, $time);
 
     // Link the other ledger / lock if applicable
     $map = [];
     if ($linked_to !== null) {
         $map['linked_to'] = $id;
     }
-    if ($status == 'reversing') {
-        $map['status'] = 'reversed';
+    if ($status == LEDGER_STATUS_REVERSING) {
+        $map['status'] = LEDGER_STATUS_REVERSED;
         $map['locked'] = 1;
     }
     if (count($map) > 0) {
@@ -232,7 +231,7 @@ function points_refund(int $sender_id, int $recipient_id, string $reason, int $t
  * @param  integer $amount_points Number of regular points transacted (does not include gift points)
  * @param  integer $amount_gift_points Number of gift points transacted
  * @param  BINARY $anonymous Whether the sender_id for this transaction should be hidden
- * @param  ID_TEXT $status The status of this transaction
+ * @param  integer $status The status of this transaction (see LEDGER_STATUS_*)
  * @set normal reversing reversed
  * @param  BINARY $locked Whether this transaction is irreversible
  * @param  ?AUTO_LINK $linked_to The ID of the points ledger this one relates to (null: does not relate to another ledger)
@@ -243,14 +242,10 @@ function points_refund(int $sender_id, int $recipient_id, string $reason, int $t
  * @return AUTO_LINK The ID of the point transaction in the ledger
  * @ignore
  */
-function _points_transact(int $sender_id, int $recipient_id, string $reason, int $amount_points, int $amount_gift_points, int $anonymous = 0, string $status = 'normal', int $locked = 0, ?int $linked_to = null, string $t_type = '', string $t_subtype = '', string $t_type_id = '', ?int $time = null) : int
+function _points_transact(int $sender_id, int $recipient_id, string $reason, int $amount_points, int $amount_gift_points, int $anonymous = 0, int $status = 0, int $locked = 0, ?int $linked_to = null, string $t_type = '', string $t_subtype = '', string $t_type_id = '', ?int $time = null) : int
 {
     if ($time === null) {
         $time = time();
-    }
-
-    if (!in_array($status, ['normal', 'reversing', 'reversed', 'refund'])) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
 
     $map = [
@@ -275,15 +270,15 @@ function _points_transact(int $sender_id, int $recipient_id, string $reason, int
 
     // Adjust CPFs (it is assumed we would never add a 'reversed' transaction; the transaction should have already existed and is being updated)
     switch ($status) {
-        case 'normal':
+        case LEDGER_STATUS_NORMAL:
             _points_adjust_cpf($sender_id, 'points_balance', -$amount_points);
             _points_adjust_cpf($recipient_id, 'points_balance', $amount_total);
             if (!is_guest($recipient_id)) {
                 _points_adjust_cpf($recipient_id, 'points_lifetime', $amount_total);
             }
             break;
-        case 'reversing':
-        case 'refund':
+        case LEDGER_STATUS_REVERSING:
+        case LEDGER_STATUS_REFUND:
             _points_adjust_cpf($sender_id, 'points_balance', -$amount_total);
             _points_adjust_cpf($recipient_id, 'points_balance', $amount_points);
             if (!is_guest($sender_id)) {
@@ -293,8 +288,8 @@ function _points_transact(int $sender_id, int $recipient_id, string $reason, int
     }
 
     // Flush cache
-    points_flush_cache($sender_id);
-    points_flush_cache($recipient_id);
+    points_flush_runtime_cache($sender_id);
+    points_flush_runtime_cache($recipient_id);
 
     return $id;
 }
@@ -315,13 +310,17 @@ function _points_transact_calculate(int $sender_id, int $total_points, ?int $amo
     // Calculate how many gift points to use
     if (get_option('enable_gift_points') == '1') {
         if (!is_guest($sender_id)) {
-            $sender_gift_points_balance = gift_points_balance($sender_id);
-            if ($amount_gift_points !== null && $sender_gift_points_balance < $amount_gift_points) {
-                return null; // Not enough points to proceed
+            if (($amount_gift_points === null) || ($amount_gift_points > 0)) {
+                $sender_gift_points_balance = gift_points_balance($sender_id);
+                if ($amount_gift_points !== null && $sender_gift_points_balance < $amount_gift_points) {
+                    return null; // Not enough points to proceed
+                }
+                if ($amount_gift_points === null) {
+                    $actual_gift_points = min($total_points, $sender_gift_points_balance);
+                }
+            } else {
+                $actual_gift_points = 0;
             }
-        }
-        if ($amount_gift_points === null) {
-            $actual_gift_points = min($total_points, $sender_gift_points_balance);
         }
         $actual_points = $total_points - $actual_gift_points;
     } else {
@@ -330,7 +329,7 @@ function _points_transact_calculate(int $sender_id, int $total_points, ?int $amo
     }
 
     // Make sure the member has enough points for the rest
-    if (!is_guest($sender_id)) {
+    if (!is_guest($sender_id) && ($actual_points > 0)) { // If actual_points <=0, transaction should pass even if balance is <=0
         $points_balance = points_balance($sender_id);
         if ($points_balance < $actual_points) {
             return null; // Not enough points to proceed
@@ -387,7 +386,7 @@ function points_transaction_reverse(int $id, ?bool $send_notifications = true, b
     $myrow = $rows[0];
 
     // Cannot reverse locked transactions or transactions already reversed
-    if (($myrow['locked'] == 1) || ($myrow['status'] == 'reversed') || ($myrow['status'] == 'reversing')) {
+    if (($myrow['locked'] == 1) || ($myrow['status'] == LEDGER_STATUS_REVERSED) || ($myrow['status'] == LEDGER_STATUS_REVERSING)) {
         if ($fail_ok) {
             return null;
         }
@@ -401,8 +400,8 @@ function points_transaction_reverse(int $id, ?bool $send_notifications = true, b
     $_reason = get_translated_tempcode('points_ledger', $myrow, 'reason');
     $reason = do_lang_tempcode('REVERSED_TRANSACTION', $_reason);
 
-    // Process the reversal as a new 'reversing' 'transaction
-    $new_record = points_refund($recipient_id, $sender_id, $reason->evaluate(), $total_points + $amount_gift_points, $amount_gift_points, $myrow['anonymous'], $myrow['id'], $send_notifications, '', '', '', null, 'reversing');
+    // Process the reversal as a new 'reversing' transaction
+    $new_record = points_refund($recipient_id, $sender_id, $reason->evaluate(), $total_points + $amount_gift_points, $amount_gift_points, $myrow['anonymous'], $myrow['id'], $send_notifications, '', '', '', null, LEDGER_STATUS_REVERSING);
 
     // Log it
     log_it('REVERSE_TRANSACTION', strval($id), get_translated_text($myrow['reason']));

@@ -134,7 +134,6 @@ class CMSModerationWrite
         if ($topic_id === null) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'post'));
         }
-        // TODO: Will this skip prompts?
         cns_delete_posts_topic($topic_id, [$post_id], $reason); // NB: Checks perms implicitly
         return true;
     }

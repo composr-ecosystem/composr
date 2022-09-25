@@ -167,7 +167,7 @@ class Hook_addon_registry_points
             'sources/points_escrow.php',
             'themes/default/templates/POINTS_ESCROW_SCREEN.tpl',
             'sources/hooks/systems/notifications/points.php',
-            'sources/hooks/systems/tasks/points_balance.php',
+            'sources/hooks/systems/tasks/points_recalculate_cpf.php',
             'sources/hooks/systems/cron/points_daily.php',
             'sources/hooks/systems/cron/points_posts.php',
             'sources/hooks/systems/points/member__visit.php',
@@ -176,7 +176,7 @@ class Hook_addon_registry_points
             'sources/hooks/systems/points/points__credit_daily.php',
             'sources/hooks/systems/points/comcode_page__add.php',
             'sources/hooks/systems/points/points_escrow__add.php',
-            'sources/hooks/systems/cleanup/points_balance.php',
+            'sources/hooks/systems/cleanup/points_recalculate_cpf.php',
         ];
     }
 

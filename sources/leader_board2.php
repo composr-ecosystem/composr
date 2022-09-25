@@ -66,12 +66,9 @@ function add_leader_board(string $title, string $board_type, int $member_count, 
     // Insert usergroup references
     if ($usergroups !== null && !empty($usergroups)) {
         foreach ($usergroups as $group) {
-            if (!is_numeric($group) && (($group === null) || $group == '')) {
-                continue; // skip empty or null groups
-            }
             $GLOBALS['SITE_DB']->query_insert('leader_boards_groups', [
                 'lb_leader_board_id' => $id,
-                'lb_group' => intval($group), // Might be a string from post parameters
+                'lb_group' => ((is_numeric($group)) ? $group : intval($group)),
             ]);
         }
     }

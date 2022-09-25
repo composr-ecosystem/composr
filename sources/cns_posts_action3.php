@@ -44,7 +44,6 @@ function cns_validate_post(int $post_id, ?int $topic_id = null, ?int $forum_id =
         access_denied('I_ERROR');
     }
 
-    $post_info = $GLOBALS['FORUM_DB']->query_select('f_posts', ['p_poster', 'p_intended_solely_for', 'p_poster_name_if_guest'], ['id' => $post_id], '', 1);
     $topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_cache_first_post_id', 't_pt_from', 't_cache_first_title'], ['id' => $topic_id], '', 1);
 
     $GLOBALS['FORUM_DB']->query_update('f_posts', [

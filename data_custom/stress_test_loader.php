@@ -112,6 +112,7 @@ function do_work()
     require_code('authors');
     require_code('cns_members_action');
     require_code('notifications');
+    echo 'STARTING: Create members' . "\n";
     for ($i = $GLOBALS['FORUM_DB']->query_select_value('f_members', 'COUNT(*)'); $i < $num_wanted; $i++) {
         $member_id = cns_make_member(
             uniqid('', false), // username
@@ -163,19 +164,29 @@ function do_work()
             'date_and_time' => time(),
         ], false, true);
     }
+    echo 'FINISHED: Create members' . "\n";
     $member_id = db_get_first_id() + 2;
 
     // point earn list to a single member
     require_code('points2');
-    for ($j = $GLOBALS['SITE_DB']->query_select_value('points_ledger', 'COUNT(*)'); $j < $num_wanted; $j++) {
-        points_transact(mt_rand(db_get_first_id(), $num_wanted - 1), $member_id, random_line(), floor(mt_rand(1, 10000) / mt_rand(1, 100)), null, 0, null);
+    echo 'STARTING: Points' . "\n";
+    for ($j = $GLOBALS['SITE_DB']->query_select_value('points_ledger', 'COUNT(*)'); $j < ($num_wanted * 600); $j += 6) {
+        points_credit_member(mt_rand(db_get_first_id(), $num_wanted - 1), random_line(), random_points(), 0, 0, null, null);
+        points_transact(mt_rand(db_get_first_id(), $num_wanted - 1), $member_id, random_line(), random_points(), ((mt_rand(1, 100) == 1) ? null : 0), 0, null);
+        points_transact($member_id, mt_rand(db_get_first_id(), $num_wanted - 1), random_line(), random_points(), ((mt_rand(1, 100) == 1) ? null : 0), 0, null);
+        points_debit_member(mt_rand(db_get_first_id(), $num_wanted - 1), random_line(), random_points(), 0, 0, null);
 
-        // Flush runtime cache every 100 transactions
-        if (($j % 100) == 0) {
-            points_flush_cache();
+        $reverse = points_credit_member($member_id, random_line(), random_points(), 0, 0, null, null);
+        points_transaction_reverse($reverse);
+
+        // Flush runtime cache every 180 transactions
+        if (($j % 180) == 0) {
+            points_flush_runtime_cache();
         }
     }
+    echo 'FINISHED: Points' . "\n";
     // number of friends of a single member
+    echo 'STARTING: Friends' . "\n";
     for ($j = intval(floatval($GLOBALS['SITE_DB']->query_select_value('chat_friends', 'COUNT(*)')) / 2.0); $j < $num_wanted; $j++) {
         $GLOBALS['SITE_DB']->query_insert('chat_friends', [
             'member_likes' => $member_id,
@@ -183,7 +194,7 @@ function do_work()
             'date_and_time' => time(),
         ], false, true);
     }
-    echo 'done member/authors/points/notifications/friends stuff' . "\n";
+    echo 'FINISHED: Friends' . "\n";
 
     if (function_exists('gc_collect_cycles')) {
         gc_enable();
@@ -192,10 +203,11 @@ function do_work()
     // banners
     require_code('banners');
     require_code('banners2');
+    echo 'STARTING: Banners' . "\n";
     for ($i = $GLOBALS['SITE_DB']->query_select_value('banners', 'COUNT(*)'); $i < $num_wanted; $i++) {
         add_banner(uniqid('', false), get_logo_url(), random_line(), random_text(), '', 100, get_base_url(), 3, '', BANNER_PERMANENT, null, db_get_first_id() + 1, 1);
     }
-    echo 'done banner stuff' . "\n";
+    echo 'FINISHED: Banners' . "\n";
 
     if (function_exists('gc_collect_cycles')) {
         gc_enable();
@@ -204,6 +216,7 @@ function do_work()
     // comcode pages
     require_code('files');
     require_code('files2');
+    echo 'STARTING: Comcode Pages' . "\n";
     for ($i = $GLOBALS['SITE_DB']->query_select_value('comcode_pages', 'COUNT(*)'); $i < $num_wanted; $i++) {
         $file = uniqid('', false);
         /*$path = get_custom_file_base() . '/site/pages/comcode_custom/' . fallback_lang() . '/' . $file . '.txt';
@@ -221,7 +234,7 @@ function do_work()
             'p_order' => 0,
         ]);
     }
-    echo 'done comcode stuff' . "\n";
+    echo 'FINISHED: Comcode Pages' . "\n";
 
     if (function_exists('gc_collect_cycles')) {
         gc_enable();
@@ -231,10 +244,11 @@ function do_work()
     if ($want_zones) {
         require_code('zones2');
         require_code('abstract_file_manager');
+        echo 'STARTING: Zones' . "\n";
         for ($i = $GLOBALS['SITE_DB']->query_select_value('zones', 'COUNT(*)'); $i < min($num_wanted, 1000/* lets be somewhat reasonable! */); $i++) {
             actual_add_zone(uniqid('', false), random_line(), DEFAULT_ZONE_PAGE_NAME, random_line(), 'default', 0);
         }
-        echo 'done zone stuff' . "\n";
+        echo 'FINISHED: Zones' . "\n";
 
         if (function_exists('gc_collect_cycles')) {
             gc_enable();
@@ -243,10 +257,11 @@ function do_work()
 
     // calendar events
     require_code('calendar2');
+    echo 'STARTING: Calendar events' . "\n";
     for ($i = $GLOBALS['SITE_DB']->query_select_value('calendar_events', 'COUNT(*)'); $i < $num_wanted; $i++) {
         add_calendar_event(db_get_first_id(), 'none', null, 0, random_line(), random_text(), 1, intval(date('Y')), intval(date('m')), intval(date('d')), 'day_of_month', 0, 0);
     }
-    echo 'done event stuff' . "\n";
+    echo 'FINISHED: Calendar events' . "\n";
 
     if (function_exists('gc_collect_cycles')) {
         gc_enable();
@@ -255,11 +270,15 @@ function do_work()
     // chatrooms
     require_code('chat2');
     require_code('chat');
+    echo 'STARTING: Chat rooms' . "\n";
     for ($i = $GLOBALS['SITE_DB']->query_select_value('chat_rooms', 'COUNT(*)'); $i < $num_wanted; $i++) {
         $room_id = add_chatroom(random_text(), random_line(), mt_rand(db_get_first_id() + 1, $num_wanted - 1), strval(db_get_first_id() + 1), '', '', '', fallback_lang());
     }
+    echo 'FINISHED: Chat rooms' . "\n";
     $room_id = db_get_first_id() + 1;
+
     // messages in chatroom
+    echo 'STARTING: Chat messages' . "\n";
     for ($j = $GLOBALS['SITE_DB']->query_select_value('chat_messages', 'COUNT(*)'); $j < $num_wanted; $j++) {
         $map = [
             'system_message' => 0,
@@ -273,7 +292,7 @@ function do_work()
         $map += insert_lang_comcode('the_message', random_text(), 4);
         $GLOBALS['SITE_DB']->query_insert('chat_messages', $map);
     }
-    echo 'done chat stuff' . "\n";
+    echo 'FINISHED: Chat messages' . "\n";
 
     if (function_exists('gc_collect_cycles')) {
         gc_enable();
@@ -282,19 +301,26 @@ function do_work()
     // download categories under a subcategory
     require_code('downloads2');
     $subcat_id = add_download_category(random_line(), db_get_first_id(), random_text(), '');
+    echo 'STARTING: Download categories' . "\n";
     for ($i = $GLOBALS['SITE_DB']->query_select_value('download_categories', 'COUNT(*)'); $i < $num_wanted; $i++) {
         add_download_category(random_line(), $subcat_id, random_text(), '');
     }
+    echo 'FINISHED: Download categories' . "\n";
+
     // downloads (remember to test content by the single author)
     require_code('downloads2');
     require_code('awards');
     $time = time();
+    echo 'STARTING: Downloads / Awards' . "\n";
     for ($i = $GLOBALS['SITE_DB']->query_select_value('download_downloads', 'COUNT(*)'); $i < $num_wanted; $i++) {
         $content_id = add_download(db_get_first_id(), random_line(), get_logo_url(), random_text(), 'admin', random_text(), null, 1, 1, 1, 1, '', uniqid('', true) . '.jpg', 100, 110, 1);
         give_award(db_get_first_id(), strval($content_id), $time - $i);
     }
+    echo 'FINISHED: Downloads / Awards' . "\n";
+
     $content_id = db_get_first_id();
     $content_url = build_url(['page' => 'downloads', 'type' => 'entry', 'id' => $content_id], 'site');
+    echo 'STARTING: Trackbacks / Ratings / Comment topics' . "\n";
     for ($j = $GLOBALS['SITE_DB']->query_select_value('trackbacks', 'COUNT(*)'); $j < $num_wanted; $j++) {
         // trackbacks
         $GLOBALS['SITE_DB']->query_insert('trackbacks', ['trackback_for_type' => 'download', 'trackback_for_id' => strval($content_id), 'trackback_ip' => '', 'trackback_time' => time(), 'trackback_url' => '', 'trackback_title' => random_line(), 'trackback_excerpt' => random_text(), 'trackback_name' => random_line()]);
@@ -318,7 +344,7 @@ function do_work()
             1
         );
     }
-    echo 'done download stuff' . "\n";
+    echo 'FINISHED: Trackbacks / Ratings / Comment topics' . "\n";
 
     if (function_exists('gc_collect_cycles')) {
         gc_enable();
@@ -326,26 +352,33 @@ function do_work()
 
     // forums under a forum (don't test it can display, just make sure the main index still works)
     require_code('cns_forums_action');
+    echo 'STARTING: Sub-forums' . "\n";
     for ($i = $GLOBALS['FORUM_DB']->query_select_value('f_forums', 'COUNT(*)'); $i < $num_wanted; $i++) {
         cns_make_forum(random_line(), random_text(), db_get_first_id(), [], db_get_first_id() + 3);
     }
+    echo 'FINISHED: Sub-forums' . "\n";
+
     // forum topics
     require_code('cns_topics_action');
     require_code('cns_posts_action');
     require_code('cns_forums');
     require_code('cns_topics');
+    echo 'STARTING: Topics' . "\n";
     for ($i = intval(floatval($GLOBALS['FORUM_DB']->query_select_value('f_topics', 'COUNT(*)')) / 2.0); $i < $num_wanted; $i++) {
         $topic_id = cns_make_topic(db_get_first_id(), '', '', null, 1, 0, 0, null, null, false);
         cns_make_post($topic_id, random_line(), random_text(), 0, true, 0, 0, null, null, null, null, null, null, null, false, false);
     }
+    echo 'FINISHED: Topics' . "\n";
+
     // forum posts in a topic
     require_code('cns_topics_action');
     require_code('cns_posts_action');
     $topic_id = cns_make_topic(db_get_first_id() + 1, '', '', null, 1, 0, 0, null, null, false);
+    echo 'STARTING: Topic Posts' . "\n";
     for ($i = intval(floatval($GLOBALS['FORUM_DB']->query_select_value('f_posts', 'COUNT(*)')) / 3.0); $i < $num_wanted; $i++) {
         cns_make_post($topic_id, random_line(), random_text(), 0, true, 0, 0, null, null, null, mt_rand(db_get_first_id(), $num_wanted - 1), null, null, null, false, false);
     }
-    echo 'done forum stuff' . "\n";
+    echo 'FINISHED: Topic Posts' . "\n";
 
     if (function_exists('gc_collect_cycles')) {
         gc_enable();
@@ -354,10 +387,11 @@ function do_work()
     // clubs
     require_code('cns_groups_action');
     require_code('cns_groups');
+    echo 'STARTING: Groups' . "\n";
     for ($i = $GLOBALS['FORUM_DB']->query_select_value('f_groups', 'COUNT(*)'); $i < $num_wanted; $i++) {
         cns_make_group(random_line(), 0, 0, 0, random_line(), '', null, null, 0, null, 5, 0, 70, 50, 100, 100, 30000, 700, 25, 1, 0, 0, 0, $i, 1, 0, 1);
     }
-    echo 'done club stuff' . "\n";
+    echo 'FINISHED: Groups' . "\n";
 
     if (function_exists('gc_collect_cycles')) {
         gc_enable();
@@ -367,20 +401,27 @@ function do_work()
     require_code('galleries2');
     $xsubcat_id = uniqid('', false);
     add_gallery($xsubcat_id, random_line(), random_text(), '', 'root');
+    echo 'STARTING: Galleries in a Subcategory' . "\n";
     for ($i = $GLOBALS['SITE_DB']->query_select_value('galleries', 'COUNT(*)'); $i < $num_wanted; $i++) {
         add_gallery(uniqid('', false), random_line(), random_text(), '', $xsubcat_id);
     }
+    echo 'FINISHED: Galleries in a Subcategory' . "\n";
+
     // images
     require_code('galleries2');
+    echo 'STARTING: Images' . "\n";
     for ($i = $GLOBALS['SITE_DB']->query_select_value('images', 'COUNT(*)'); $i < $num_wanted; $i++) {
         add_image('', 'root', random_text(), get_logo_url(), 1, 1, 1, 1, '');
     }
+    echo 'FINISHED: Images' . "\n";
+
     // videos / validation queue
     require_code('galleries2');
+    echo 'STARTING: Unvalidated Videos' . "\n";
     for ($i = $GLOBALS['SITE_DB']->query_select_value('videos', 'COUNT(*)'); $i < $num_wanted; $i++) {
         add_video('', 'root', random_text(), get_logo_url(), get_logo_url(), 0, 1, 1, 1, '', 0, 0, 0);
     }
-    echo 'done galleries stuff' . "\n";
+    echo 'FINISHED: Unvalidated Videos' . "\n";
 
     if (function_exists('gc_collect_cycles')) {
         gc_enable();
@@ -389,10 +430,11 @@ function do_work()
     // newsletter subscribers
     require_code('newsletter');
     require_code('newsletter2');
+    echo 'STARTING: Newsletter Subscriptions' . "\n";
     for ($i = $GLOBALS['SITE_DB']->query_select_value('newsletter_subscribers', 'COUNT(*)'); $i < $num_wanted; $i++) {
         basic_newsletter_join(uniqid('', true) . '@example.com');
     }
-    echo 'done newsletter stuff' . "\n";
+    echo 'FINISHED: Newsletter Subscriptions' . "\n";
 
     if (function_exists('gc_collect_cycles')) {
         gc_enable();
@@ -400,11 +442,15 @@ function do_work()
 
     // polls (remember to test poll archive)
     require_code('polls2');
+    echo 'STARTING: Polls' . "\n";
     for ($i = $GLOBALS['SITE_DB']->query_select_value('poll', 'COUNT(*)'); $i < $num_wanted; $i++) {
         $poll_id = add_poll(random_line(), random_line(), random_line(), random_line(), random_line(), random_line(), random_line(), random_line(), random_line(), random_line(), random_line(), 10, 0, 0, 0, 0, '');
     }
+    echo 'FINISHED: Polls' . "\n";
+
     // votes on a poll
     $poll_id = db_get_first_id();
+    echo 'STARTING: Poll Votes' . "\n";
     for ($j = $GLOBALS['SITE_DB']->query_select_value('poll_votes', 'COUNT(*)'); $j < $num_wanted; $j++) {
         $cast = mt_rand(1, 6);
         $ip = uniqid('', true);
@@ -417,7 +463,7 @@ function do_work()
             'v_vote_time' => time(),
         ]);
     }
-    echo 'done polls stuff' . "\n";
+    echo 'FINISHED: Poll Votes' . "\n";
 
     if (function_exists('gc_collect_cycles')) {
         gc_enable();
@@ -425,10 +471,11 @@ function do_work()
 
     // quizzes
     require_code('quiz2');
+    echo 'STARTING: Quizzes' . "\n";
     for ($i = $GLOBALS['SITE_DB']->query_select_value('quizzes', 'COUNT(*)'); $i < $num_wanted; $i++) {
         add_quiz(random_line(), 0, random_text(), random_text(), random_text(), '', 0, time(), null, 3, 300, 'SURVEY', 1, '1) Some question');
     }
-    echo 'done quizzes stuff' . "\n";
+    echo 'FINISHED: Quizzes' . "\n";
 
     if (function_exists('gc_collect_cycles')) {
         gc_enable();
@@ -440,17 +487,19 @@ function do_work()
     // Wiki+ pages (do a long descendant tree for some, and orphans for others)
     // Wiki+ posts (remember to test Wiki+ changes screen)
     require_code('wiki');
+    echo 'STARTING: Wiki+' . "\n";
     for ($i = $GLOBALS['SITE_DB']->query_select_value('wiki_pages', 'COUNT(*)'); $i < $num_wanted; $i++) {
         $page_id = wiki_add_page(random_line(), random_text(), '', 1);
         wiki_add_post($page_id, random_text(), 1, null, false);
     }
-    echo 'done Wiki+ stuff' . "\n";
+    echo 'FINISHED: Wiki+' . "\n";
 
     if (function_exists('gc_collect_cycles')) {
         gc_enable();
     }
 
     // logged hack attempts
+    echo 'STARTING: Hack Attack Logs' . "\n";
     for ($i = $GLOBALS['SITE_DB']->query_select_value('hackattack', 'COUNT(*)'); $i < $num_wanted; $i++) {
         $GLOBALS['SITE_DB']->query_insert('hackattack', [
             'url' => get_base_url(),
@@ -468,12 +517,15 @@ function do_work()
             'silent_to_staff_log' => 0,
         ]);
     }
+    echo 'FINISHED: Hack Attack Logs' . "\n";
+
     // logged hits in one day
     require_code('site');
+    echo 'STARTING: Page Hits' . "\n";
     for ($i = $GLOBALS['SITE_DB']->query_select_value('stats', 'COUNT(*)'); $i < $num_wanted; $i++) {
         log_stats(':' . uniqid('', true), mt_rand(100, 2000));
     }
-    echo 'done logs stuff' . "\n";
+    echo 'FINISHED: Page Hits' . "\n";
 
     if (function_exists('gc_collect_cycles')) {
         gc_enable();
@@ -481,10 +533,11 @@ function do_work()
 
     // blogs and news entries (remember to test both blogs [categories] list, and a list of all news entries)
     require_code('news2');
+    echo 'STARTING: Blogs and News' . "\n";
     for ($i = $GLOBALS['SITE_DB']->query_select_value('news', 'COUNT(*)'); $i < $num_wanted; $i++) {
         add_news(random_line(), random_text(), 'admin', 1, 1, 1, 1, '', random_text(), null, [], null, db_get_first_id() + $i);
     }
-    echo 'done news stuff' . "\n";
+    echo 'FINISHED: Blogs and News' . "\n";
 
     if (function_exists('gc_collect_cycles')) {
         gc_enable();
@@ -494,11 +547,12 @@ function do_work()
     require_lang('tickets');
     require_code('tickets');
     require_code('tickets2');
+    echo 'STARTING: Support Tickets' . "\n";
     for ($i = intval(floatval($GLOBALS['FORUM_DB']->query_select_value('f_topics', 'COUNT(*)')) / 2.0); $i < $num_wanted; $i++) {
         $ticket_member_id = mt_rand(db_get_first_id(), $num_wanted - 1);
         ticket_add_post(ticket_generate_new_id($ticket_member_id), db_get_first_id(), random_line(), random_text(), false, $ticket_member_id);
     }
-    echo 'done tickets stuff' . "\n";
+    echo 'FINISHED: Support Tickets' . "\n";
 
     if (function_exists('gc_collect_cycles')) {
         gc_enable();
@@ -507,18 +561,21 @@ function do_work()
     // catalogues
     require_code('catalogues2');
     $root_id = db_get_first_id();
+    echo 'STARTING: Catalogues' . "\n";
     for ($i = $GLOBALS['SITE_DB']->query_select_value('catalogues', 'COUNT(*)'); $i < $num_wanted; $i++) {
         $catalogue_name = uniqid('', false);
         actual_add_catalogue($catalogue_name, random_line(), random_text(), mt_rand(0, 3), 1, '', 30);
     }
+    echo 'FINISHED: Catalogues' . "\n";
     $catalogue_name = 'products';
     $root_id = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_categories', 'id', ['c_name' => $catalogue_name]);
     // catalogue categories under a subcategory (remember to test all catalogue views: atoz, index, and root cat)
     $subcat_id = actual_add_catalogue_category($catalogue_name, random_line(), random_text(), '', $root_id);
+    echo 'STARTING: Catalogue Sub-categories' . "\n";
     for ($j = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'COUNT(*)'); $j < $num_wanted; $j++) {
         actual_add_catalogue_category($catalogue_name, random_line(), random_text(), '', $subcat_id);
     }
-    echo 'done catalogue stuff' . "\n";
+    echo 'FINISHED: Catalogue Sub-categories' . "\n";
 
     if (function_exists('gc_collect_cycles')) {
         gc_enable();
@@ -528,6 +585,7 @@ function do_work()
     require_code('catalogues2');
     $cat_id = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'MIN(id)', ['c_name' => 'products']);
     $fields = collapse_1d_complexity('id', $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['id'], ['c_name' => 'products']));
+    echo 'STARTING: Shopping Items (Catalogue)' . "\n";
     for ($i = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'COUNT(*)'); $i < $num_wanted; $i++) {
         $map = [
             $fields[0] => random_line(),
@@ -544,12 +602,14 @@ function do_work()
         $pid = actual_add_catalogue_entry($cat_id, 1, '', 1, 1, 1, $map);
         unset($map);
     }
+    echo 'FINISHED: Shopping Items (Catalogue)' . "\n";
     // outstanding shopping orders
     $pid = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'MIN(id)', ['c_name' => 'products']);
     if ($pid === null) {
         $pid = db_get_first_id();
     }
     require_code('shopping');
+    echo 'STARTING: Shopping Cart' . "\n";
     for ($j = $GLOBALS['SITE_DB']->query_select_value('shopping_cart', 'COUNT(*)'); $j < $num_wanted; $j++) {
         $GLOBALS['SITE_DB']->query_insert('shopping_cart', [
             'session_id' => get_secure_random_string(),
@@ -560,6 +620,8 @@ function do_work()
             'add_time' => time()
         ]);
     }
+    echo 'FINISHED: Shopping Cart' . "\n";
+    echo 'STARTING: Shopping Orders' . "\n";
     for ($j = $GLOBALS['SITE_DB']->query_select_value('shopping_orders', 'COUNT(*)'); $j < $num_wanted; $j++) {
         $order_id = $GLOBALS['SITE_DB']->query_insert('shopping_orders', [
             'member_id' => mt_rand(db_get_first_id() + 1, $num_wanted - 1),
@@ -595,7 +657,7 @@ function do_work()
             'p_dispatch_status' => 'ORDER_STATUS_awaiting_payment',
         ]);
     }
-    echo 'done store stuff' . "\n";
+    echo 'FINISHED: Shopping Orders' . "\n";
 
     if (function_exists('gc_collect_cycles')) {
         gc_enable();
@@ -646,4 +708,16 @@ function random_line()
 
     $word = $words[mt_rand(0, $word_count - 1)];
     return md5(uniqid('', true)) . ' ' . $word . ' ' . md5(uniqid('', true));
+}
+
+/**
+ * Return a random integer between 1 and 10,000 with a 50% chance of it being <100 and 50% chance of it being >= 100.
+ *
+ * @return int A random number
+ */
+function random_points() : int
+{
+    $num1 = mt_rand(1, 10000);
+    $num2 = mt_rand(1, 100);
+    return intval(floor($num1 / $num2) + 1.0);
 }

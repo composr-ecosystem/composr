@@ -286,7 +286,6 @@ class Module_admin_leader_board extends Standard_crud_module
 
         if (get_forum_type() == 'cns') {
             $usergroups_select = new Tempcode();
-            $usergroups_select->attach(form_input_list_entry('', $usergroups == [], do_lang_tempcode('NA_EM')));
             $usergroups_select->attach(cns_create_multi_list_usergroups($usergroups, false));
             $fields->attach(form_input_multi_list(do_lang_tempcode('USERGROUPS'), do_lang_tempcode('DESCRIPTION_LEADER_BOARD_USERGROUPS'), 'usergroups', $usergroups_select));
         }

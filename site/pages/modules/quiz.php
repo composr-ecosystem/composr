@@ -658,7 +658,7 @@ class Module_quiz
                     'status' => 'normal',
                     't_type' => 'quiz',
                     't_subtype' => 'pass',
-                    't_type_id' => strval($quiz_id),
+                    't_type_id' => (($quiz_id !== null) ? strval($quiz_id) : ''),
                 ]);
             }
 

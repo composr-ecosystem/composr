@@ -233,7 +233,7 @@ function member_personal_links_and_details(int $member_id) : array
             $points_lifetime = points_lifetime($member_id);
             $details->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINE', [
                 '_GUID' => '3e6183abf9054574c0cd292d25a4fe5c',
-                'KEY' => do_lang_tempcode((get_option('points_show_personal_stats_points_balance') == '1') ? 'COUNT_POINTS' : 'COUNT_LIFETIME_POINTS'),
+                'KEY' => do_lang_tempcode('COUNT_LIFETIME_POINTS'),
                 'RAW_VALUE' => strval($points_lifetime),
                 'VALUE' => integer_format($points_lifetime, 0),
             ]));

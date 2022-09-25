@@ -1013,10 +1013,9 @@ class Hook_import_cms_merge
                     'anonymous' => $row['anonymous'],
                     'linked_to' => $row['linked_to'],
 
-                    // FUDGE: Currently blanking these because they may refer to improperly mapped content IDs
-                    't_type' => 'legacy',
-                    't_subtype' => '',
-                    't_type_id' => 'admin_import__cms_merge',
+                    't_type' => $row['t_type'],
+                    't_subtype' => $row['t_subtype'],
+                    't_type_id' => '', // FUDGE: Currently blanking theis because it may refer to an improperly mapped content ID
 
                     'status' => $row['status']
                 ];

@@ -139,7 +139,7 @@ function give_submit_points(string $type, string $content_type, string $content_
             return null;
         }
 
-        $already_awarded = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'id', ['status' => 'normal', 'recipient_id' => $member_id, 't_type' => $content_type, 't_subtype' => 'add', 't_type_id' => strval($content_id)]);
+        $already_awarded = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'id', ['status' => 0, 'recipient_id' => $member_id, 't_type' => $content_type, 't_subtype' => 'add', 't_type_id' => strval($content_id)]);
         if ($already_awarded === null) {
             require_code('points2');
             points_credit_member($member_id, do_lang($type), intval($points), 0, 0, null, true, 0, $content_type, 'add', strval($content_id));

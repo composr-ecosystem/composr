@@ -31,13 +31,30 @@ function init__points()
 
     // Define constants for points_ledger_calculate
     if (!defined('LEDGER_TYPE_RECEIVED')) {
-        define('LEDGER_TYPE_RECEIVED', 0x1); // (1 in decimal)
+        define('LEDGER_TYPE_RECEIVED', 0x1); // (1 in decimal) Points received from anyone
     }
     if (!defined('LEDGER_TYPE_SENT')) {
-        define('LEDGER_TYPE_SENT', 0x2); // (2 in decimal)
+        define('LEDGER_TYPE_SENT', 0x2); // (2 in decimal) Points sent to other members
     }
     if (!defined('LEDGER_TYPE_SPENT')) {
-        define('LEDGER_TYPE_SPENT', 0x4); // (4 in decimal)
+        define('LEDGER_TYPE_SPENT', 0x4); // (4 in decimal) Points spent to the system
+    }
+    if (!defined('LEDGER_TYPE__ALL')) {
+        define('LEDGER_TYPE__ALL', LEDGER_TYPE_RECEIVED | LEDGER_TYPE_SENT | LEDGER_TYPE_SPENT);
+    }
+
+    // Define constants for points_ledger.status in the database
+    if (!defined('LEDGER_STATUS_NORMAL')) {
+        define('LEDGER_STATUS_NORMAL', 0); // Normal (active) transaction; should be included in point calculations
+    }
+    if (!defined('LEDGER_STATUS_REVERSED')) {
+        define('LEDGER_STATUS_REVERSED', 1); // Transaction no longer valid; should be ignored in point calculations
+    }
+    if (!defined('LEDGER_STATUS_REVERSING')) {
+        define('LEDGER_STATUS_REVERSING', 2); // Transaction reverses (invalidates) another transaction; should be ignored in point calculations
+    }
+    if (!defined('LEDGER_STATUS_REFUND')) {
+        define('LEDGER_STATUS_REFUND', 3); // Transaction refunds part or all of the points from another; should be included in point transactions but should subtract from used points and gift points
     }
 }
 
@@ -48,7 +65,7 @@ function init__points()
  * @param  ?ID_TEXT $property Only flush this property from a member's points cache (null: flush all properties)
  * @set points_used points_spent points_sent points_received gift_points_sent
  */
-function points_flush_cache(?int $member_id = null, ?string $property = null)
+function points_flush_runtime_cache(?int $member_id = null, ?string $property = null)
 {
     global $POINT_INFO_CACHE;
 
@@ -83,7 +100,7 @@ function get_product_price_points(string $item) : int
  *
  * @param  MEMBER $member_id The member
  * @param  ?TIME $timestamp Time to get for (null: now)
- * @param  boolean $cache Whether to retrieve from and store the results in the run-time cache
+ * @param  boolean $cache Whether to retrieve from the CPF (always false if $timestamp is not null)
  * @return integer The number of points the member has
  */
 function points_lifetime(int $member_id, ?int $timestamp = null, bool $cache = true) : int
@@ -355,6 +372,8 @@ function points_url(int $member_id, bool $skip_keep = false, ?int $send_amount =
  */
 function points_ledger_calculate(int $types, int $primary_member, ?int $secondary_member = null, string $where = '') : array
 {
+    // TODO: Stress test (make more efficient)
+
     // Invalid bitmask
     if ($types <= 0 || $types > 7) {
         return [];
@@ -406,31 +425,35 @@ function points_ledger_calculate(int $types, int $primary_member, ?int $secondar
         $more_where .= ' AND (recipient_id=' . strval($secondary_member) . ' OR sender_id=' . strval($secondary_member) . ')';
     }
 
-    $cases .= $case_when . ' END AS type';
+    $cases .= $case_when . ' END AS transaction_type';
     $query_select = 'SELECT COUNT(*) as count, SUM(amount_points) as points, SUM(amount_gift_points) as gift_points, ' . $cases . ' FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'points_ledger';
-    $cases_refund .= $case_when_refund . ' END AS type';
+    $cases_refund .= $case_when_refund . ' END AS transaction_type';
     $query_select_refund = 'SELECT COUNT(*) as count, SUM(amount_points) as points, SUM(amount_gift_points) as gift_points, ' . $cases_refund . ' FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'points_ledger';
 
+    //$test = $query_select . ' WHERE status=0' . $more_where . $where . ' GROUP BY transaction_type';
+    //var_dump($test);
+    //exit;
+
     // Get our base calculation for all status=normal transactions matching criteria; we ignore reversed and reversing as they cancel each other 1:1 (refund transactions are handled in the next block)
-    $rows = $GLOBALS['SITE_DB']->query($query_select . ' WHERE status=\'normal\'' . $more_where . $where . ' GROUP BY type');
+    $rows = $GLOBALS['SITE_DB']->query($query_select . ' WHERE status=' . strval(LEDGER_STATUS_NORMAL) . $more_where . $where . ' GROUP BY transaction_type');
     foreach ($rows as $row) {
-        if ($row['type'] === null) {
+        if ($row['transaction_type'] === null) {
             continue; // Did not match any of our SELECT CASE conditions, so skip.
         }
-        $ret[$row['type']] = [intval($row['count']), intval($row['points']), intval($row['gift_points'])];
+        $ret[$row['transaction_type']] = [intval($row['count']), intval($row['points']), intval($row['gift_points'])];
     }
 
     // Get status=refund transactions for the same criteria and subtract them from our base calculation; these are usually partial refunds
-    $rows = $GLOBALS['SITE_DB']->query($query_select_refund . ' WHERE status=\'refund\'' . $more_where . $where . ' GROUP BY type');
+    $rows = $GLOBALS['SITE_DB']->query($query_select_refund . ' WHERE status=' . strval(LEDGER_STATUS_REFUND) . $more_where . $where . ' GROUP BY transaction_type');
     foreach ($rows as $row) {
-        if ($row['type'] === null) {
+        if ($row['transaction_type'] === null) {
             continue; // Did not match any of our SELECT CASE conditions, so skip.
         }
 
         // Refund transactions are neither 'active' in of themselves nor do they cancel (reverse) a previous transaction (since they are usually partial refunds only). Thus, we probably want to leave count alone.
-        // $ret[$row['type']][0] -= intval($row['count']);
-        $ret[$row['type']][1] -= intval($row['points']);
-        $ret[$row['type']][2] -= intval($row['gift_points']);
+        // $ret[$row['transaction_type']][0] -= intval($row['count']);
+        $ret[$row['transaction_type']][1] -= intval($row['points']);
+        $ret[$row['transaction_type']][2] -= intval($row['gift_points']);
     }
 
     return $ret;

@@ -78,14 +78,21 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
 
     // Run points hooks for low-impact transactions / aggregate tables
     $hook_obs = find_all_hook_obs('systems', 'points', 'Hook_points_');
-    foreach ($hook_obs as $hook_ob) {
+    foreach ($hook_obs as $name => $hook_ob) {
+        $type_subtype = explode('__', $name);
+        $where = ' AND (' . db_string_equal_to('t_type', $type_subtype[0]);
+        if (array_key_exists(1, $type_subtype)) {
+            $where .= ' AND ' . db_string_equal_to('t_subtype', $type_subtype[1]);
+        }
+        $where .= ')';
         $_array = $hook_ob->points_profile($member_id_of, $member_id_viewing);
         if ($_array !== null) {
-            foreach ($_array['data'] as $type => $data) {
+            $data = points_ledger_calculate(LEDGER_TYPE__ALL, $member_id_of, null, $where);
+            foreach ($data as $type => $data) {
                 list($count, $points, $gift_points) = $data;
 
                 // Ignore aggregate types with no count / points
-                if ($count <= 0 && $points == 0 && $gift_points == 0) {
+                if (($count <= 0) && ($points == 0) && ($gift_points == 0)) {
                     continue;
                 }
 
@@ -169,7 +176,7 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
             $out->attach(results_entry([$label, integer_format($count), integer_format($points)], true));
         }
 
-        $aggregate_tables[$type] = results_table(do_lang_tempcode('AGGREGATE_ROWS'), $start, 'a_start_' . $type, $max, 'a_max_' . $type, $max_rows, $header_row, $out, $sortables, $sortable, $sort_order, 'a_sort_' . $type, null, [], null, 8, 'gfhfghtrhhjghgfhfgf', false, 'tab--points');
+        $aggregate_tables[$type] = results_table(do_lang_tempcode('POINTS_AGGREGATE_ROWS'), $start, 'a_start_' . $type, $max, 'a_max_' . $type, $max_rows, $header_row, $out, $sortables, $sortable, $sort_order, 'a_sort_' . $type, null, [], null, 8, 'gfhfghtrhhjghgfhfgf', false, 'tab--points');
     }
 
     // Show send / modify points form
@@ -328,17 +335,16 @@ function points_get_transactions(string $type, int $member_id_of, int $member_id
             break;
     }
 
-    // If a transaction has a t_type__t_subtype, or a t_type, matching the name of a points hook, then it is a low impact transaction.
+    // If a transaction has a t_type__t_subtype or a t_type matching the name of a points hook, then it is a low impact transaction; filter it out in the query.
     if ($skip_low_impact) {
         $hooks = find_all_hooks('systems', 'points');
         foreach ($hooks as $hook => $place) {
             $parts = explode('__', $hook);
-            $end .= ' AND NOT (t_type=\'' . strval($parts[0]) . '\'';
+            $end .= ' AND NOT (' . db_string_equal_to('t_type', strval($parts[0]));
             if (array_key_exists(1, $parts)) {
-                $end .= ' AND t_subtype=\'' . strval($parts[1]) . '\')';
-            } else {
-                $end .= ')';
+                $end .= ' AND ' . db_string_equal_to('t_subtype', strval($parts[1]));
             }
+            $end .= ')';
         }
     }
 
@@ -414,17 +420,17 @@ function points_get_transactions(string $type, int $member_id_of, int $member_id
         }
         $results_entry[] = $reason;
 
-        if ($myrow['status'] == 'normal') {
-            $status = do_lang_tempcode('LEDGER_STATUS_normal');
+        if ($myrow['status'] == LEDGER_STATUS_NORMAL) {
+            $status = do_lang_tempcode('LEDGER_STATUS_0');
         } elseif (($myrow['linked_to'] !== null) && (has_privilege($member_id_viewing, 'moderate_points'))) {
-            $status = do_lang_tempcode('LEDGER_STATUS_SHORT_' . $myrow['status'], escape_html(strval($myrow['linked_to'])));
+            $status = do_lang_tempcode('LEDGER_STATUS_SHORT_' . strval($myrow['status']), escape_html(strval($myrow['linked_to'])));
         } else {
-            $status = do_lang_tempcode('LEDGER_STATUS_SHORT_B_' . $myrow['status']);
+            $status = do_lang_tempcode('LEDGER_STATUS_SHORT_B_' . strval($myrow['status']));
         }
         $results_entry[] = $status;
         if ((has_privilege($member_id_viewing, 'moderate_points')) || (has_privilege($member_id_viewing, 'amend_point_transactions'))) {
             $actions = new Tempcode();
-            if (($myrow['locked'] == 0) && ($myrow['status'] != 'reversed') && ($myrow['status'] != 'reversing') && (has_privilege($member_id_viewing, 'moderate_points'))) {
+            if (($myrow['locked'] == 0) && ($myrow['status'] != LEDGER_STATUS_REVERSED) && ($myrow['status'] != LEDGER_STATUS_REVERSING) && (has_privilege($member_id_viewing, 'moderate_points'))) {
                 $redirect_url = points_url($member_id_of);
                 $delete_url = build_url(['page' => 'points', 'type' => 'reverse', 'member_id_of' => $member_id_of, 'redirect' => protect_url_parameter($redirect_url)], '_SELF');
                 $actions->attach(do_template('COLUMNED_TABLE_ACTION', [

@@ -25,24 +25,16 @@
 class Hook_points_download__download
 {
     /**
-     * Calculate points earned to be displayed on POINTS_PROFILE.tpl.
+     * Determine the aggregate row language for POINTS_PROFILE.tpl.
      *
      * @param  MEMBER $member_id_of The ID of the member who is being viewed
      * @param  ?MEMBER $member_id_viewing The ID of the member who is doing the viewing (null: current member)
-     * @return ?array Point record map containing label and data for use an aggregate tables. (null: addon disabled)
+     * @return array List containing label for use with aggregate point tables
      */
-    public function points_profile(int $member_id_of, ?int $member_id_viewing) : ?array
+    public function points_profile(int $member_id_of, ?int $member_id_viewing) : array
     {
-        if (!addon_installed('downloads') || !addon_installed('points')) {
-            return null;
-        }
-
-        require_code('points');
-        $data = points_ledger_calculate(LEDGER_TYPE_RECEIVED | LEDGER_TYPE_SENT | LEDGER_TYPE_SPENT, $member_id_of, null, ' AND t_type=\'download\' AND t_subtype=\'download\'');
-
         return [
             'label' => do_lang('downloads:COUNT_DOWNLOADS_DOWNLOADED'),
-            'data' => $data,
         ];
     }
 }

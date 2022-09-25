@@ -1244,7 +1244,7 @@ class Module_topics
      */
     public function _delete_topics() : object // Type
     {
-        $reverse_point_transaction = post_param_integer('reverse_point_transaction', 0) == 1;
+        $reverse_point_transaction = (post_param_integer('reverse_point_transaction', 0) == 1);
         $topics = $this->get_markers();
         if (empty($topics)) {
             warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'), false, false, 400);
@@ -1315,7 +1315,7 @@ class Module_topics
         require_code('cns_posts_action3');
 
         $reason = post_param_string('reason');
-        $reverse_point_transaction = post_param_integer('reverse_point_transaction', 0) == 1;
+        $reverse_point_transaction = (post_param_integer('reverse_point_transaction', 0) == 1);
 
         foreach ($topics as $topic_id) {
             $own_topic = ($GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_cache_first_member_id', ['id' => $topic_id]) == get_member());
@@ -2854,7 +2854,7 @@ class Module_topics
             $post_id = either_param_integer('post_id');
         }
         $reason = post_param_string('reason');
-        $reverse_point_transaction = post_param_integer('reverse_point_transaction', 0) == 1;
+        $reverse_point_transaction = (post_param_integer('reverse_point_transaction', 0) == 1);
 
         require_code('cns_posts_action');
         require_code('cns_posts_action2');
@@ -3954,7 +3954,7 @@ class Module_topics
         if ($post_target_topic_id === null) {
             $post_target_topic_id = post_param_integer('manual_topic_id', null);
         }
-        $reverse_point_transaction = post_param_integer('reverse_point_transaction', 0) == 1;
+        $reverse_point_transaction = (post_param_integer('reverse_point_transaction', 0) == 1);
 
         require_code('cns_topics_action');
         require_code('cns_topics_action2');

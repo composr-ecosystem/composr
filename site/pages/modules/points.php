@@ -80,8 +80,7 @@ class Module_points
                 'reason' => 'SHORT_TRANS__COMCODE',
                 'anonymous' => 'BINARY',
 
-                // Status: Normal, reversed (with linked_to), reversing (with linked_to), and refund. It is assumed reversing will always be an exact opposite of the linked_to reversed transaction (sender and recipient are swapped, and amount_points / amount_gift_points are the same between both transactions). If this is not the case, the status should be refund with no linked_to instead of reversing / reversed.
-                'status' => 'ID_TEXT',
+                'status' => 'INTEGER', // See LEDGER_STATUS_* in points.php
                 'linked_to' => '?AUTO_LINK',
                 'locked' => 'BINARY', // 1 = status cannot be changed
 
@@ -90,8 +89,9 @@ class Module_points
                 't_subtype' => 'ID_TEXT', // Content action or subcategory of transaction
                 't_type_id' => 'ID_TEXT', // Content or row ID of t_type
             ]);
-            $GLOBALS['SITE_DB']->create_index('points_ledger', 'sender_id', ['sender_id']);
-            $GLOBALS['SITE_DB']->create_index('points_ledger', 'recipient_id', ['recipient_id']);
+            $GLOBALS['SITE_DB']->create_index('points_ledger', 'send_to', ['sender_id', 'recipient_id']);
+            $GLOBALS['SITE_DB']->create_index('points_ledger', 'receive_from', ['recipient_id', 'sender_id']);
+            $GLOBALS['SITE_DB']->create_index('points_ledger', 'points', ['amount_points', 'amount_gift_points']);
             $GLOBALS['SITE_DB']->create_index('points_ledger', 'amount_gift_points', ['amount_gift_points']); // admin_points
             $GLOBALS['SITE_DB']->create_index('points_ledger', 'linked_to', ['linked_to']);
             $GLOBALS['SITE_DB']->create_index('points_ledger', 'status', ['status']);
@@ -123,7 +123,7 @@ class Module_points
                 'expiration' => '?TIME',
                 'sender_status' => 'BINARY', // 1 = sender marked satisfied
                 'recipient_status' => 'BINARY', // 1 = recipient marked satisfied
-                'status' => 'INTEGER', // -1, = cancelled, 0 = completed, 1 = active / not disputed, 2 = active / disputed
+                'status' => 'INTEGER', // See ESCROW_STATUS_* in points_escrow.php
             ]);
             $GLOBALS['SITE_DB']->create_index('escrow', 'original_points_ledger_id', ['original_points_ledger_id']);
             $GLOBALS['SITE_DB']->create_index('escrow', 'sender_id', ['sender_id']);
@@ -179,7 +179,7 @@ class Module_points
             $GLOBALS['SITE_DB']->create_index('points_ledger', 't_search_no_subtype', ['t_type', 't_type_id']); // We can also search t_type & t_type_id, but this requires a separate index
 
             // Add legacy explanation and default values for all the gift records
-            $GLOBALS['FORUM_DB']->query_update('points_ledger', ['amount_points' => 0, 'status' => 'normal', 'locked' => 0, 't_type' => 'legacy', 't_type_id' => 'gifts'], []);
+            $GLOBALS['FORUM_DB']->query_update('points_ledger', ['amount_points' => 0, 'status' => 0, 'locked' => 0, 't_type' => 'legacy', 't_type_id' => 'gifts'], []);
 
             // Never allow negative points in our new ledger; update to the absolute value, swap sender and recipient, and mark as refund.
             $GLOBALS['FORUM_DB']->query('UPDATE ' . get_table_prefix() . 'points_ledger SET amount_gift_points=' . db_function('ABS', ['amount_gift_points']) . ', sender_id=recipient_id, recipient_id=sender_id, status=refund WHERE amount_gift_points<0');
@@ -192,11 +192,11 @@ class Module_points
                     if ($chargelog['amount'] < 0) { // For negative amounts, it is a credit; reverse sender and recipient (we do absolute value in the query_insert)
                         $sender_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
                         $recipient_id = $chargelog['member_id'];
-                        $status = 'refund';
+                        $status = 3;
                     } else {
                         $recipient_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
                         $sender_id = $chargelog['member_id'];
-                        $status = 'normal';
+                        $status = 0;
                     }
                     $GLOBALS['FORUM_DB']->query_insert('points_ledger', [
                         'date_and_time' => $chargelog['date_and_time'],
@@ -242,12 +242,12 @@ class Module_points
                         'anonymous' => 0,
                         'linked_to' => null,
                         't_type' => 'legacy',
-                        't_subtype' => '',
+                        't_subtype' => 'upgrader',
                         't_type_id' => 'points_gained_given',
-                        'status' => ($difference < 0) ? 'refund' : 'normal', // Refunding gained points back to the system
+                        'status' => ($difference < 0) ? 3 : 0, // Refunding gained points back to the system
                         'locked' => 0,
                     ];
-                    $map += insert_lang_comcode('reason', 'Legacy: Points Gained Given', 4);
+                    $map += insert_lang_comcode('reason', 'Upgrader: Fixing Points-Gained-Given discrepancy', 4);
                     $GLOBALS['FORUM_DB']->query_insert('points_ledger', $map);
                 }
             }
@@ -268,12 +268,12 @@ class Module_points
                         'anonymous' => 0,
                         'linked_to' => null,
                         't_type' => 'legacy',
-                        't_subtype' => '',
+                        't_subtype' => 'upgrader',
                         't_type_id' => 'points_used',
-                        'status' => ($difference < 0) ? 'refund' : 'normal',
+                        'status' => ($difference < 0) ? 3 : 0,
                         'locked' => 0,
                     ];
-                    $map += insert_lang_comcode('reason', 'Legacy: Points Used', 4);
+                    $map += insert_lang_comcode('reason', 'Upgrader: Fixing Points-Used discrepancy', 4);
                     $GLOBALS['FORUM_DB']->query_insert('points_ledger', $map);
                 }
                 if ($row['gift_points_used'] !== $fields['gift_points']) {
@@ -287,12 +287,12 @@ class Module_points
                         'anonymous' => 0,
                         'linked_to' => null,
                         't_type' => 'legacy',
-                        't_subtype' => '',
+                        't_subtype' => 'upgrader',
                         't_type_id' => 'gift_points_used',
-                        'status' => ($difference < 0) ? 'refund' : 'normal',
+                        'status' => ($difference < 0) ? 3 : 0,
                         'locked' => 0,
                     ];
-                    $map += insert_lang_comcode('reason', 'Legacy: Gift Points Used', 4);
+                    $map += insert_lang_comcode('reason', 'Upgrader: Fixing Gift-Points-Used discrepancy', 4);
                     $GLOBALS['FORUM_DB']->query_insert('points_ledger', $map);
                 }
             }
@@ -301,7 +301,13 @@ class Module_points
 
             // Add legacy records for the other custom fields, and remove them.
             $start = null;
-            $deprecated_fields = ['points_gained_chat', 'points_gained_visiting', 'points_gained_rating', 'points_gained_voting', 'points_gained_wiki'];
+            $deprecated_fields = [
+                'points_gained_chat' => 'Points Gained Chat',
+                'points_gained_visiting' => 'Points Gained Visiting',
+                'points_gained_rating' => 'Points Gained Rating',
+                'points_gained_voting' => 'Points Gained Voting',
+                'points_gained_wiki' => 'Points Gained Wiki',
+            ];
             do {
                 $rows = $GLOBALS['FORUM_DRIVER']->get_next_members($start, 100);
                 foreach ($rows as $row) {
@@ -310,7 +316,7 @@ class Module_points
                     $member_id = $GLOBALS['FORUM_DRIVER']->mrow_id($row);
                     $fields = $GLOBALS['FORUM_DRIVER']->get_custom_fields($member_id);
 
-                    foreach ($deprecated_fields as $field) {
+                    foreach ($deprecated_fields as $field => $name) {
                         if (array_key_exists($field, $fields)) {
                             $map = [
                                 'sender_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(),
@@ -321,9 +327,9 @@ class Module_points
                                 'anonymous' => 0,
                                 'linked_to' => null,
                                 't_type' => 'legacy',
-                                't_subtype' => '',
+                                't_subtype' => 'upgrader',
                                 't_type_id' => $field,
-                                'status' => 'normal',
+                                'status' => 0,
                                 'locked' => 0,
                             ];
                             if ($fields[$field] < 0) { // Never have negative points
@@ -332,15 +338,15 @@ class Module_points
                                 $map['sender_id'] = $recipient_id;
                                 $map['recipient_id'] = $sender_id;
                                 $map['amount_points'] = abs($fields[$field]);
-                                $map['status'] = 'refund'; // Refunding earned points back to the system
+                                $map['status'] = 3; // Refunding earned points back to the system
                             };
-                            $map += insert_lang_comcode('reason', 'Legacy: ' . $field, 4);
+                            $map += insert_lang_comcode('reason', 'Upgrader: Importing legacy ' . $name . ' as a ledger item', 4);
                             $GLOBALS['FORUM_DB']->query_insert('points_ledger', $map);
                         }
                     }
                 }
             } while (count($rows) > 0);
-            foreach ($deprecated_fields as $field) {
+            foreach ($deprecated_fields as $field => $name) {
                 $GLOBALS['FORUM_DRIVER']->install_delete_custom_field($field);
             }
         }

@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_cleanup_points_balance
+class Hook_cleanup_points_recalculate_cpf
 {
     /**
      * Find details about this cleanup hook.
@@ -54,7 +54,7 @@ class Hook_cleanup_points_balance
         }
 
         require_code('tasks');
-        call_user_func_array__long_task(do_lang('points:POINTS_CACHE'), get_screen_title('points:POINTS_CACHE'), 'points_balance', [], false, false, false);
+        call_user_func_array__long_task(do_lang('points:POINTS_CACHE'), get_screen_title('points:POINTS_CACHE'), 'points_recalculate_cpf', [], false, false, false);
 
         return new Tempcode();
     }

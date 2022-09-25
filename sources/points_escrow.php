@@ -26,6 +26,20 @@
 function init__points_escrow()
 {
     require_lang('points');
+
+    // Define constants for escrow.status in the database
+    if (!defined('ESCROW_STATUS_CANCELLED')) {
+        define('ESCROW_STATUS_CANCELLED', 0);
+    }
+    if (!defined('ESCROW_STATUS_COMPLETED')) {
+        define('ESCROW_STATUS_COMPLETED', 1);
+    }
+    if (!defined('ESCROW_STATUS_PENDING')) {
+        define('ESCROW_STATUS_PENDING', 2);
+    }
+    if (!defined('ESCROW_STATUS_DISPUTED')) {
+        define('ESCROW_STATUS_DISPUTED', 3);
+    }
 }
 
 /**

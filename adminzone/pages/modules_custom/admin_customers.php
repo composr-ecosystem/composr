@@ -596,6 +596,15 @@ class Module_admin_customers
             }
 
             $GLOBALS['SITE_DB']->alter_table_field('credit_purchases', 'purchase_id', '*AUTO', 'id');
+
+            // Add a ledger record in for support credit points; we are no longer calculating these on runtime.
+            if (addon_installed('points')) {
+                require_code('points2');
+                $credits = $GLOBALS['SITE_DB']->query_select('credit_purchases', ['SUM(num_credits) as credits', 'member_id'], ['purchase_validated' => 1], ' GROUP BY member_id');
+                foreach ($credits as $credit) {
+                    points_credit_member($credit['member_id'], 'Upgrader: Importing legacy support credit points as a ledger item', (50 * $credit['credits']), 0, 0, null, null, 0, 'legacy', 'upgrader', 'support_credits');
+                }
+            }
         }
     }
 

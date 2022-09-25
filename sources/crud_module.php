@@ -1040,12 +1040,7 @@ abstract class Standard_crud_module
             if ($submitter === null) {
                 $submitter = get_member();
             }
-            $message = give_submit_points($this->doing, $this->content_type, strval($id), $submitter);
-            /*
-            if ($message !== null) {
-                attach_message($message);
-            }
-            */
+            give_submit_points($this->doing, $this->content_type, strval($id), $submitter);
         }
 
         if (addon_installed('awards')) {
@@ -1499,8 +1494,8 @@ abstract class Standard_crud_module
                 }
             }
 
-            if ((addon_installed('points')) && ($submitter !== null) && ($timestamp !== null)) {
-                $points_test = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'id', ['date_and_time' => $timestamp, 'recipient_id' => $submitter, 'sender_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(), 'status' => 'normal']);
+            if ((addon_installed('points')) && ($submitter !== null)) {
+                $points_test = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'id', ['recipient_id' => $submitter, 'status' => 0, 't_type' => $this->content_type, 't_subtype' => 'add', 't_type_id' => (($id !== null) ? strval($id) : '')]);
                 if ($points_test !== null) {
                     require_lang('points');
                     $action_fields->attach(form_input_tick(do_lang_tempcode('REVERSE_TRANSACTION'), do_lang_tempcode('REVERSE_TRANSACTION_DESCRIPTION', $this->content_type), 'reverse_point_transaction', false));
@@ -1663,10 +1658,10 @@ abstract class Standard_crud_module
             if ($reverse == 1) {
                 $points_test = $GLOBALS['SITE_DB']->query_select('points_ledger', ['id'], [
                     'recipient_id' => $submitter,
-                    'status' => 'normal',
+                    'status' => 0,
                     't_type' => $this->content_type,
                     't_subtype' => 'add',
-                    't_type_id' => strval($id),
+                    't_type_id' => (($this->non_integer_id) ? $id : strval($id)),
                 ]);
                 if (array_key_exists(0, $points_test)) {
                     require_code('points2');

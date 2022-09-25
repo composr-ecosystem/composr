@@ -71,23 +71,23 @@ class points_test_set extends cms_test_case
 
         set_option('enable_gift_points', '1', 0);
 
-        points_flush_cache();
+        points_flush_runtime_cache();
         $this->_testSendGiftPointsAndReverse('have enough gift points', gift_points_balance(2));
-        points_flush_cache();
+        points_flush_runtime_cache();
         $this->_testSendGiftPointsAndReverse('not enough gift points', gift_points_balance(2) + 1);
-        points_flush_cache();
+        points_flush_runtime_cache();
         $this->_testSendGiftPointsAndReverse('force use 0 gift points', 10, 0);
-        points_flush_cache();
+        points_flush_runtime_cache();
         $this->_testSendGiftPointsAndReverse('force use 1 gift point', gift_points_balance(2) + 1, 1);
-        points_flush_cache();
+        points_flush_runtime_cache();
         $this->_testSendGiftPointsAndReverse('force use more gift points than we have', gift_points_balance(2) + 1, gift_points_balance(2) + 1);
-        points_flush_cache();
+        points_flush_runtime_cache();
         $this->_testSendGiftPointsAndReverse('refund 2 points with 1 of them being gift points', 2, 1, true);
     }
 
     private function _testSendGiftPointsAndReverse($test, $points_to_send, $use_gift_points = null, $is_refund = false)
     {
-        points_flush_cache();
+        points_flush_runtime_cache();
         $initial_gift_points_sent = gift_points_sent(2);
         $initial_gift_points = gift_points_balance(2);
         $initial_points_spent = points_used(2);
@@ -100,7 +100,7 @@ class points_test_set extends cms_test_case
             $this->points_transact_record = points_transact(2, 3, 'Points unit test: ' . $test, $points_to_send, $use_gift_points, 0, null);
         }
 
-        points_flush_cache();
+        points_flush_runtime_cache();
         $current_gift_points_sent = gift_points_sent(2);
         $current_gift_points = gift_points_balance(2);
         $current_points_spent = points_used(2);
@@ -208,7 +208,7 @@ class points_test_set extends cms_test_case
                 $id = points_transaction_reverse($this->points_transact_record, null);
             }
 
-            points_flush_cache();
+            points_flush_runtime_cache();
             $reversed_gift_points_sent = gift_points_sent(2);
             $reversed_gift_points = gift_points_balance(2);
             $reversed_points_spent = points_used(2);
@@ -237,7 +237,7 @@ class points_test_set extends cms_test_case
 
         set_option('enable_gift_points', '0', 0);
 
-        points_flush_cache();
+        points_flush_runtime_cache();
         $initial_points_spent = points_used(2);
         $initial_points_to_send = points_balance(2);
         $initial_points = points_balance(3);
@@ -249,7 +249,7 @@ class points_test_set extends cms_test_case
             return;
         }
 
-        points_flush_cache();
+        points_flush_runtime_cache();
         $current_points_spent = points_used(2);
         $current_points_to_send = points_balance(2);
         $current_points = points_balance(3);
@@ -262,7 +262,7 @@ class points_test_set extends cms_test_case
         // Now test reversal
         $id = points_transaction_reverse($this->points_transact_record, null);
 
-        points_flush_cache();
+        points_flush_runtime_cache();
         $reversed_points_spent = points_used(2);
         $reversed_points_to_send = points_balance(2);
         $reversed_points = points_balance(3);
@@ -312,7 +312,7 @@ class points_test_set extends cms_test_case
 
         $points_to_credit = 1;
 
-        points_flush_cache();
+        points_flush_runtime_cache();
         $initial_points = points_balance(3);
 
         $this->points_credit_member = points_credit_member(3, 'Points unit test: credit member', $points_to_credit, 0, 0, null, null);
@@ -321,7 +321,7 @@ class points_test_set extends cms_test_case
             return;
         }
 
-        points_flush_cache();
+        points_flush_runtime_cache();
         $current_points = points_balance(3);
 
         $this->assertTrue(($current_points - $initial_points) == $points_to_credit, 'Points to spend did not increase with points credit member as expected.');
@@ -340,7 +340,7 @@ class points_test_set extends cms_test_case
 
         $points_to_debit = 1;
 
-        points_flush_cache();
+        points_flush_runtime_cache();
         $initial_points = points_balance(3);
 
         $this->points_debit_member = points_debit_member(3, 'Points unit test: debit member', $points_to_debit, 0, 0, null);
@@ -349,7 +349,7 @@ class points_test_set extends cms_test_case
             return;
         }
 
-        points_flush_cache();
+        points_flush_runtime_cache();
         $current_points = points_balance(3);
 
         $this->assertTrue(($initial_points - $current_points) == $points_to_debit, 'Points to spend did not decrease as expected with points debit member.');
@@ -370,7 +370,7 @@ class points_test_set extends cms_test_case
 
         require_code('points_escrow');
 
-        points_flush_cache();
+        points_flush_runtime_cache();
         $initial_gift_points_sent = gift_points_sent(2);
         $initial_gift_points = gift_points_balance(2);
         $initial_points_spent = points_used(2);
@@ -391,7 +391,7 @@ class points_test_set extends cms_test_case
         }
         $myrow = $rows[0];
 
-        points_flush_cache();
+        points_flush_runtime_cache();
         $current_gift_points_sent = gift_points_sent(2);
         $current_gift_points = gift_points_balance(2);
         $current_points_spent = points_used(2);
@@ -413,7 +413,7 @@ class points_test_set extends cms_test_case
 
         satisfy_escrow($this->escrow, 2, null, false, null);
 
-        points_flush_cache();
+        points_flush_runtime_cache();
         $current_points_recipient2 = points_balance(3);
         $this->assertTrue(($current_points_recipient == $current_points_recipient2), 'Escrow first member satisfied: Expected the recipient to not yet have any change in their points balance, but a change happened.');
 
@@ -430,7 +430,7 @@ class points_test_set extends cms_test_case
             $id2 = points_transaction_reverse($data[0], null);
         }
 
-        points_flush_cache();
+        points_flush_runtime_cache();
         $reversed_gift_points_sent = gift_points_sent(2);
         $reversed_gift_points = gift_points_balance(2);
         $reversed_points_spent = points_used(2);

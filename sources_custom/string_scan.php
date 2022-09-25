@@ -7774,7 +7774,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         TO_NAME
         TRACKBACK_ERROR
         TRACKBACK_SPAM
-        TRANSACTIONS
         TRANSACTION_FEES
         TRANSLATE_CODE
         TRANSLATE_CONTENT
@@ -8311,8 +8310,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CREDIT_LONG
         DEBIT_LONG
         SEND_LONG
-        LEDGER_STATUS_reversing_UNLINKED
-        LEDGER_STATUS_reversed_UNLINKED
+        LEDGER_STATUS_2_UNLINKED
+        LEDGER_STATUS_1_UNLINKED
         NOTIFICATION_POINTS_TRANSACTION_STAFF_GUEST
         ARE_YOU_SURE_TRANSACTION_CREDIT
         ARE_YOU_SURE_TRANSACTION_DEBIT
@@ -8340,9 +8339,9 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CHAT_MODERATION_REVERSE_POINTS
         POINTS_CACHE
         DESCRIPTION_POINTS_CACHE
-        LEDGER_STATUS_SHORT_reversing
-        LEDGER_STATUS_SHORT_reversed
-        LEDGER_STATUS_SHORT_refund
+        LEDGER_STATUS_SHORT_2
+        LEDGER_STATUS_SHORT_1
+        LEDGER_STATUS_SHORT_3
     ')));
 
     $non_admin_files = [
@@ -11649,10 +11648,10 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         E_ESCROW_ALREADY_DONE
         E_ESCROW_ALREADY_SATISFIED
         GIFT_POINTS_REFUNDED
-        LEDGER_STATUS_normal
-        LEDGER_STATUS_reversed
-        LEDGER_STATUS_reversing
-        LEDGER_STATUS_refund
+        LEDGER_STATUS_0
+        LEDGER_STATUS_1
+        LEDGER_STATUS_2
+        LEDGER_STATUS_3
         LOG_ESCROW_CANCELLED
         LOG_ESCROW_COMPLETED
         LOG_ESCROW_CREATED
@@ -11693,17 +11692,18 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         RANK_PROMOTED_APPROVAL_MAIL
         RANK_PROMOTED_APPROVAL_MAIL_SUBJECT
         PROMOTION_FROM
-        AGGREGATE_ROWS
+        POINTS_AGGREGATE_ROWS
         CONTENT_LIKED_NOTIFICATION_MAIL_POINTS
         COUNT_DOWNLOADS_DOWNLOADED
         DESCRIPTION_TRANSACTIONS_AGGREGATE
-        LEDGER_STATUS_SHORT_B_refund
-        LEDGER_STATUS_SHORT_B_reversed
-        LEDGER_STATUS_SHORT_B_reversing
-        LEDGER_STATUS_refund_UNLINKED
+        LEDGER_STATUS_SHORT_B_3
+        LEDGER_STATUS_SHORT_B_1
+        LEDGER_STATUS_SHORT_B_2
+        LEDGER_STATUS_3_UNLINKED
         PASSED_QUIZZES
         POINTS_SENT_AGGREGATE
         POINTS_SPENT_AGGREGATE
+        TRANSACTIONS
     ')));
 
     if ($GLOBALS['DEV_MODE']) {

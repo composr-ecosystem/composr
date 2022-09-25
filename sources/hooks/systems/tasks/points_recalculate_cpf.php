@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_task_points_balance
+class Hook_task_points_recalculate_cpf
 {
     /**
      * Run the task hook.
@@ -50,7 +50,7 @@ class Hook_task_points_balance
                     continue;
                 }
 
-                task_log($this, 'Re-calculating points_balance for member ID ' . strval($member_id), $start, null);
+                // task_log($this, 'Re-calculating points_balance for member ID ' . strval($member_id), $start, null);
 
                 $data = points_ledger_calculate(LEDGER_TYPE_RECEIVED | LEDGER_TYPE_SENT, $member_id);
 

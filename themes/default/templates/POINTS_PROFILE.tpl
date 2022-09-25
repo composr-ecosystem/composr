@@ -2,7 +2,7 @@
 	{!NO_PERMISSION_TO_USE_POINTS}
 {+END}
 {+START,IF,{$HAS_PRIVILEGE,use_points,{MEMBER}}}
-	<div class="flex-wrapper flex-wrapper-wrap justify-space-evenly">
+	<div class="flex-wrapper points-boxes">
 		<div class="points-box box">
 			<p class="intro">{!COUNT_LIFETIME_POINTS}:</p>
 			<p><span class="figure">{POINTS_LIFETIME*}</span></p>
