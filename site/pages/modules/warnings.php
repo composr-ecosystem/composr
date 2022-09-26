@@ -1211,7 +1211,7 @@ class Module_warnings extends Standard_crud_module
     public function undo_charge() : object
     {
         $id = post_param_integer('id');
-        $ledger = $GLOBALS['SITE_DB']->query_select('points_ledger', ['id', 'sender_id'], ['t_type' => 'warning', 't_subtype' => 'add', 't_type_id' => (($id !== null) ? strval($id) : '')]);
+        $ledger = $GLOBALS['SITE_DB']->query_select('points_ledger', ['id', 'sender_id'], ['t_type' => 'warning', 't_subtype' => 'add', 't_type_id' => strval($id)]);
         if (!array_key_exists(0, $ledger)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }

@@ -41,9 +41,9 @@ If you want to encourage high quality content with points, the awards addon can 
 
 [title="3"]A note about forum points[/title]
 
-For Conversr, points are awarded immediately when a post is made, and points can be reversed via a tickbox (checkbox) when deleting posts or topics. Note that points are not awarded for anonymous posts, whispers, nor posts in private topics because it will cause a privacy leak in the points ledger.
+For Conversr, points are awarded immediately when a post is made, and points can be reversed via a tickbox (checkbox) when deleting posts or topics. Note that points are not awarded for anonymous posts, whispers, nor posts in private topics because it would cause a privacy leak in the points ledger.
 
-For all other forums, because the forum driver cannot directly communicate with Composr, points are instead awarded daily via Cron based on the change in post count. Note that points will never be debited if the post count goes down; moderators should manually charge members to resolve discrepancies.
+For all other forums, because the forum driver cannot directly communicate with Composr, points are instead awarded daily via the system scheduler based on the change in post count. Note that points will never be debited if the post count goes down; moderators should manually charge members to resolve discrepancies.
 
 [title="3"]A note about birthday points[/title]
 
@@ -123,7 +123,7 @@ The &ldquo;reason&rdquo; text for the ledger is the only thing that can be amend
 
 [title="3"]A note about points refunds (advanced)[/title]
 
-There exists an API method to [concept]refund[/concept] any amount of points (such as a partial refund). This is a low-level method and, to avoid competition/confusion with transaction reversal, is not available for direct UI use. The method is indirectly used in two places: points escrow moderation (when completing an escrow but specifying only a partial amount to be credited to the recipient; the rest are refunded back to the sender) and points transaction reversal (as a subset / actualiser to refunding the points).
+There exists an API method to [concept]refund[/concept] any amount of points (such as a partial refund). This is a low-level method and, to avoid competition/confusion with transaction reversal, is not available for direct UI use. The method is indirectly used in two places: points escrow moderation (when completing an escrow but specifying only a partial amount to be credited to the recipient; the rest are refunded back to the sender) and points transaction reversal (as the mechanism for refunding the points).
 
 [title="2"]Other economy tie-ins[/title]
 
@@ -230,24 +230,14 @@ Members cannot have negative points in their gift points balance (if gift points
 
 [title="2"]Points system implementation details (advanced)[/title]
 
-[title="3"]Points are dynamically calculated[/title]
+[title="3"]Points are calculated from the ledger[/title]
 
 [media float="right" thumb="0" framed="0"]data_custom/images/docs/remember.png[/media]
-While the number of points a member has in their balance and the number of life-time points a member received is tallied in a custom field, these fields cannot be edited on the UI and only serve as a non-volatile cache. A member's points are dynamically calculated from multiple sources (including the ledger) according to various weights. Editing a member's points should only be indirectly done by creating a new points transaction on a member's points profile.
-
-There are two reasons points operate in this way:
-1) To provide a transparent ledger.
-2) Non-Conversr forum drivers cannot communicate with Composr directly when a member makes a post.
-
-Follows are some specific caveats:
+The ledger serves as the real source of truth for calculating how many points a member has. While the number of points a member has in their balance and the number of life-time points a member received is tallied in a custom field, these fields cannot be edited on the UI and only serve as a non-volatile cache. Editing a member's points should only be indirectly done by creating a new points transaction on a member's points profile.
 
 [title="4"]Syncing issues with Points balance and Life-time points[/title]
 
-It is possible for a member's life-time points and/or points balance to get out of sync with the ledger. This would only ever happen due to a bug or manipulating a member's points or the ledger outside of the Composr API (e.g. the database). Should this happen, you can trigger a re-calculation of these fields in the Admin Zone > Tools > Cleanup tools and tick (check) &ldquo;Points Cache&rdquo;. Re-calculation is a resource-intensive process and therefore only done when triggered through the Cleanup tools. Otherwise, the custom field values are adjusted when point transactions are made.
-
-[title="4"]Non-Conversr forums and post points[/title]
-
-Composr has no way of determining when a member makes a forum post or a forum post is deleted when using a non-Conversr forum driver (the forum does not tell Composr through some sort of event trigger when a post is made or deleted; instead, it only changes its own post count tally). Instead, Composr will run a daily Cron to compare changes to each member's post count from the day prior and credit points accordingly in a single transaction. Note that the Cron will only credit points for increases in the post count; it will not debit points for decreases in the count (e.g. deleting posts).
+It is conceivable for a member's life-time points and/or points balance to get out of sync with the ledger. This would only happen due to a bug or to manipulating the ledger outside of the Composr API (e.g. the database). Should this happen, you can trigger a re-calculation of these values (custom fields) in the Admin Zone > Tools > Cleanup tools and tick (check) &ldquo;Points Cache&rdquo;. Re-calculation is a resource-intensive process and therefore only done when triggered through the Cleanup tools. Otherwise, the custom field values are adjusted when point transactions are made.
 
 [concepts
 1_key="Points"                1_value="Points are a virtual currency and economy; members can utilise them for voting power, purchases, rewarding each other, or other things as defined by site staff"

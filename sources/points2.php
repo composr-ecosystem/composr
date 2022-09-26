@@ -285,6 +285,8 @@ function _points_transact(int $sender_id, int $recipient_id, string $reason, int
                 _points_adjust_cpf($sender_id, 'points_lifetime', -$amount_total);
             }
             break;
+        default: // LEDGER_STATUS_REVERSED (should never be added as a new transaction) or a non-valid status
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
 
     // Flush cache
@@ -411,7 +413,7 @@ function points_transaction_reverse(int $id, ?bool $send_notifications = true, b
     require_code('points_escrow');
     $escrows = $GLOBALS['SITE_DB']->query_select('escrow', ['*'], ['original_points_ledger_id' => $id]);
     foreach ($escrows as $escrow) {
-        if ($escrow['status'] < 1) {
+        if ($escrow['status'] < ESCROW_STATUS_PENDING) {
             continue;
         }
         $reason = do_lang_tempcode('ESCROW_CANCELLED_LEDGER_REVERSED');

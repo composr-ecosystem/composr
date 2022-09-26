@@ -221,7 +221,7 @@ function escrow_points(int $sender_id, int $recipient_id, int $amount, string $r
         'expiration' => $expiry_time,
         'sender_status' => 0,
         'recipient_status' => 0,
-        'status' => 1,
+        'status' => ESCROW_STATUS_PENDING,
     ];
     $map += insert_lang_comcode('reason', $reason, 4);
     $map += insert_lang_comcode('agreement', $agreement, 5);
@@ -290,7 +290,7 @@ function satisfy_escrow(int $id, int $member_id, ?array $row = null, bool $escro
     }
 
     // Cannot mark an escrow satisfied if it is not active
-    if (($row['status'] < 1)) {
+    if (($row['status'] < ESCROW_STATUS_PENDING)) {
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
 
@@ -351,7 +351,7 @@ function _complete_escrow(array $row, ?int $amount = null, bool $escrow_log = tr
     $username = $GLOBALS['FORUM_DRIVER']->get_username($sender_id, true, USERNAME_GUEST_AS_DEFAULT | USERNAME_DEFAULT_ERROR);
 
     // Update the escrow status
-    $GLOBALS['SITE_DB']->query_update('escrow', ['status' => 0], ['id' => $id], '', 1);
+    $GLOBALS['SITE_DB']->query_update('escrow', ['status' => ESCROW_STATUS_COMPLETED], ['id' => $id], '', 1);
 
     // Credit the points to the recipient in a new transaction
     $_id = points_credit_member($recipient_id, do_lang('ESCROW_REASON_FROM', $username, $reason), $amount, 0, 0, null, null, 0, 'points_escrow', 'complete', strval($id));
@@ -436,7 +436,7 @@ function cancel_escrow(int $id, int $member_id, string $reason, ?array $row = nu
     }
 
     // Cannot mark an escrow cancelled if it is not active
-    if (($row['status'] < 1)) {
+    if (($row['status'] < ESCROW_STATUS_PENDING)) {
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
 
@@ -444,7 +444,7 @@ function cancel_escrow(int $id, int $member_id, string $reason, ?array $row = nu
     $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id, true, USERNAME_GUEST_AS_DEFAULT);
 
     // Update status
-    $GLOBALS['SITE_DB']->query_update('escrow', ['status' => -1], ['id' => $id], '', 1);
+    $GLOBALS['SITE_DB']->query_update('escrow', ['status' => ESCROW_STATUS_CANCELLED], ['id' => $id], '', 1);
 
     $refund_id = null;
     if ($actually_refund) {
@@ -510,7 +510,7 @@ function dispute_escrow(int $id, int $member_id, string $reason, ?array $row = n
     }
 
     // Cannot dispute a non-active escrow
-    if (($row['status'] < 1)) {
+    if ($row['status'] < ESCROW_STATUS_PENDING) {
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
 
@@ -518,7 +518,7 @@ function dispute_escrow(int $id, int $member_id, string $reason, ?array $row = n
     $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id, true, USERNAME_GUEST_AS_DEFAULT);
 
     // Update status
-    $GLOBALS['SITE_DB']->query_update('escrow', ['status' => 2], ['id' => $id], '', 1);
+    $GLOBALS['SITE_DB']->query_update('escrow', ['status' => ESCROW_STATUS_DISPUTED], ['id' => $id], '', 1);
 
     // Log it
     escrow_log_it('LOG_ESCROW_DISPUTED', $id, $member_id, $reason);
@@ -577,7 +577,7 @@ function moderate_escrow(int $id, int $member_id, string $action, string $new_re
     $GLOBALS['SITE_DB']->query_update('escrow', $map, ['id' => $id], '', 1);
 
     // Do not proceed further if the escrow is not active
-    if ($row['status'] < 1) {
+    if ($row['status'] < ESCROW_STATUS_PENDING) {
         escrow_log_it('LOG_ESCROW_AMENDED', $id, $member_id, $reason);
         log_it('LOG_ESCROW_AMENDED', strval($id), $username);
         return;

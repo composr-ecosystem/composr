@@ -68,7 +68,7 @@ function add_leader_board(string $title, string $board_type, int $member_count, 
         foreach ($usergroups as $group) {
             $GLOBALS['SITE_DB']->query_insert('leader_boards_groups', [
                 'lb_leader_board_id' => $id,
-                'lb_group' => ((is_numeric($group)) ? $group : intval($group)),
+                'lb_group' => intval($group),
             ]);
         }
     }

@@ -170,12 +170,18 @@ function do_work()
     // point earn list to a single member
     require_code('points2');
     echo 'STARTING: Points' . "\n";
-    for ($j = $GLOBALS['SITE_DB']->query_select_value('points_ledger', 'COUNT(*)'); $j < ($num_wanted * 600); $j += 6) {
-        points_credit_member(mt_rand(db_get_first_id(), $num_wanted - 1), random_line(), random_points(), 0, 0, null, null);
+    for ($j = $GLOBALS['SITE_DB']->query_select_value('points_ledger', 'COUNT(*)'); $j < ($num_wanted * 6); $j += 6) {
+        // Credit transaction with a random aggregate type
+        points_credit_member(mt_rand(db_get_first_id(), $num_wanted - 1), random_line(), random_points(), 0, 0, null, null, 0, random_t_type(), 'add', '');
+
+        // Transactions between two members of random point values with a 1% chance of it using gift points too.
         points_transact(mt_rand(db_get_first_id(), $num_wanted - 1), $member_id, random_line(), random_points(), ((mt_rand(1, 100) == 1) ? null : 0), 0, null);
         points_transact($member_id, mt_rand(db_get_first_id(), $num_wanted - 1), random_line(), random_points(), ((mt_rand(1, 100) == 1) ? null : 0), 0, null);
+
+        // Debit transaction
         points_debit_member(mt_rand(db_get_first_id(), $num_wanted - 1), random_line(), random_points(), 0, 0, null);
 
+        // Credit transaction that gets reversed
         $reverse = points_credit_member($member_id, random_line(), random_points(), 0, 0, null, null);
         points_transaction_reverse($reverse);
 
@@ -713,11 +719,44 @@ function random_line()
 /**
  * Return a random integer between 1 and 10,000 with a 50% chance of it being <100 and 50% chance of it being >= 100.
  *
- * @return int A random number
+ * @return integer A random number
  */
 function random_points() : int
 {
     $num1 = mt_rand(1, 10000);
     $num2 = mt_rand(1, 100);
     return intval(floor($num1 / $num2) + 1.0);
+}
+
+/**
+ * Return a random content type (t_type) that could be used in a points transaction.
+ *
+ * @return string A content type
+ */
+function random_t_type() : string
+{
+    $content_types = [
+        'escrow',
+        'banner',
+        'comcode_page',
+        'zone',
+        'event',
+        'chat',
+        'chat_message',
+        'download',
+        'download_download',
+        'forum',
+        'topic',
+        'post',
+        'image',
+        'video',
+        'poll',
+        'quiz',
+        'wiki_page',
+        'wiki_post',
+        'news',
+        'catalogue_entry'
+    ];
+
+    return $content_types[mt_rand(0, (count($content_types) - 1))];
 }

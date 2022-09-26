@@ -372,8 +372,6 @@ function points_url(int $member_id, bool $skip_keep = false, ?int $send_amount =
  */
 function points_ledger_calculate(int $types, int $primary_member, ?int $secondary_member = null, string $where = '') : array
 {
-    // TODO: Stress test (make more efficient)
-
     // Invalid bitmask
     if ($types <= 0 || $types > 7) {
         return [];
@@ -429,10 +427,6 @@ function points_ledger_calculate(int $types, int $primary_member, ?int $secondar
     $query_select = 'SELECT COUNT(*) as count, SUM(amount_points) as points, SUM(amount_gift_points) as gift_points, ' . $cases . ' FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'points_ledger';
     $cases_refund .= $case_when_refund . ' END AS transaction_type';
     $query_select_refund = 'SELECT COUNT(*) as count, SUM(amount_points) as points, SUM(amount_gift_points) as gift_points, ' . $cases_refund . ' FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'points_ledger';
-
-    //$test = $query_select . ' WHERE status=0' . $more_where . $where . ' GROUP BY transaction_type';
-    //var_dump($test);
-    //exit;
 
     // Get our base calculation for all status=normal transactions matching criteria; we ignore reversed and reversing as they cancel each other 1:1 (refund transactions are handled in the next block)
     $rows = $GLOBALS['SITE_DB']->query($query_select . ' WHERE status=' . strval(LEDGER_STATUS_NORMAL) . $more_where . $where . ' GROUP BY transaction_type');

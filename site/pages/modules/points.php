@@ -69,6 +69,8 @@ class Module_points
      */
     public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
+        require_code('points');
+
         if ($upgrade_from === null) {
             $GLOBALS['SITE_DB']->create_table('points_ledger', [
                 'id' => '*AUTO',
@@ -179,7 +181,7 @@ class Module_points
             $GLOBALS['SITE_DB']->create_index('points_ledger', 't_search_no_subtype', ['t_type', 't_type_id']); // We can also search t_type & t_type_id, but this requires a separate index
 
             // Add legacy explanation and default values for all the gift records
-            $GLOBALS['FORUM_DB']->query_update('points_ledger', ['amount_points' => 0, 'status' => 0, 'locked' => 0, 't_type' => 'legacy', 't_type_id' => 'gifts'], []);
+            $GLOBALS['FORUM_DB']->query_update('points_ledger', ['amount_points' => 0, 'status' => LEDGER_STATUS_NORMAL, 'locked' => 0, 't_type' => 'legacy', 't_type_id' => 'gifts'], []);
 
             // Never allow negative points in our new ledger; update to the absolute value, swap sender and recipient, and mark as refund.
             $GLOBALS['FORUM_DB']->query('UPDATE ' . get_table_prefix() . 'points_ledger SET amount_gift_points=' . db_function('ABS', ['amount_gift_points']) . ', sender_id=recipient_id, recipient_id=sender_id, status=refund WHERE amount_gift_points<0');
@@ -192,11 +194,11 @@ class Module_points
                     if ($chargelog['amount'] < 0) { // For negative amounts, it is a credit; reverse sender and recipient (we do absolute value in the query_insert)
                         $sender_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
                         $recipient_id = $chargelog['member_id'];
-                        $status = 3;
+                        $status = LEDGER_STATUS_REFUND;
                     } else {
                         $recipient_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
                         $sender_id = $chargelog['member_id'];
-                        $status = 0;
+                        $status = LEDGER_STATUS_NORMAL;
                     }
                     $GLOBALS['FORUM_DB']->query_insert('points_ledger', [
                         'date_and_time' => $chargelog['date_and_time'],
@@ -244,7 +246,7 @@ class Module_points
                         't_type' => 'legacy',
                         't_subtype' => 'upgrader',
                         't_type_id' => 'points_gained_given',
-                        'status' => ($difference < 0) ? 3 : 0, // Refunding gained points back to the system
+                        'status' => ($difference < 0) ? LEDGER_STATUS_REFUND : LEDGER_STATUS_NORMAL, // Refunding gained points back to the system
                         'locked' => 0,
                     ];
                     $map += insert_lang_comcode('reason', 'Upgrader: Fixing Points-Gained-Given discrepancy', 4);
@@ -270,7 +272,7 @@ class Module_points
                         't_type' => 'legacy',
                         't_subtype' => 'upgrader',
                         't_type_id' => 'points_used',
-                        'status' => ($difference < 0) ? 3 : 0,
+                        'status' => ($difference < 0) ? LEDGER_STATUS_REFUND : LEDGER_STATUS_NORMAL,
                         'locked' => 0,
                     ];
                     $map += insert_lang_comcode('reason', 'Upgrader: Fixing Points-Used discrepancy', 4);
@@ -289,7 +291,7 @@ class Module_points
                         't_type' => 'legacy',
                         't_subtype' => 'upgrader',
                         't_type_id' => 'gift_points_used',
-                        'status' => ($difference < 0) ? 3 : 0,
+                        'status' => ($difference < 0) ? LEDGER_STATUS_REFUND : LEDGER_STATUS_NORMAL,
                         'locked' => 0,
                     ];
                     $map += insert_lang_comcode('reason', 'Upgrader: Fixing Gift-Points-Used discrepancy', 4);
@@ -316,8 +318,8 @@ class Module_points
                     $member_id = $GLOBALS['FORUM_DRIVER']->mrow_id($row);
                     $fields = $GLOBALS['FORUM_DRIVER']->get_custom_fields($member_id);
 
-                    foreach ($deprecated_fields as $field => $name) {
-                        if (array_key_exists($field, $fields)) {
+                    foreach ($deprecated_fields as $field => $title) {
+                        if (array_key_exists($title, $fields)) {
                             $map = [
                                 'sender_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(),
                                 'recipient_id' => $member_id,
@@ -329,7 +331,7 @@ class Module_points
                                 't_type' => 'legacy',
                                 't_subtype' => 'upgrader',
                                 't_type_id' => $field,
-                                'status' => 0,
+                                'status' => LEDGER_STATUS_NORMAL,
                                 'locked' => 0,
                             ];
                             if ($fields[$field] < 0) { // Never have negative points
@@ -338,15 +340,15 @@ class Module_points
                                 $map['sender_id'] = $recipient_id;
                                 $map['recipient_id'] = $sender_id;
                                 $map['amount_points'] = abs($fields[$field]);
-                                $map['status'] = 3; // Refunding earned points back to the system
+                                $map['status'] = LEDGER_STATUS_REFUND; // Refunding earned points back to the system
                             };
-                            $map += insert_lang_comcode('reason', 'Upgrader: Importing legacy ' . $name . ' as a ledger item', 4);
+                            $map += insert_lang_comcode('reason', 'Upgrader: Importing legacy ' . $title . ' as a ledger item', 4);
                             $GLOBALS['FORUM_DB']->query_insert('points_ledger', $map);
                         }
                     }
                 }
             } while (count($rows) > 0);
-            foreach ($deprecated_fields as $field => $name) {
+            foreach ($deprecated_fields as $field => $title) {
                 $GLOBALS['FORUM_DRIVER']->install_delete_custom_field($field);
             }
         }
@@ -967,13 +969,13 @@ class Module_points
         $status = new Tempcode();
 
         switch ($row['status']) {
-            case -1: // In points2.php points_transaction_reverse, reversing the points transaction will also cancel / mark the escrow as -1
+            case ESCROW_STATUS_CANCELLED: // In points2.php points_transaction_reverse, reversing the points transaction will also cancel the escrow
                 $status = do_lang_tempcode('ESCROW_STATUS__CANCELLED');
                 break;
-            case 0:
+            case ESCROW_STATUS_COMPLETED:
                 $status = do_lang_tempcode('ESCROW_STATUS__COMPLETED');
                 break;
-            default: // 1 and 2
+            default: // ESCROW_STATUS_PENDING and ESCROW_STATUS_DISPUTED
                 $involved = ($member_id_viewing == $row['sender_id']) || ($member_id_viewing == $row['recipient_id']);
 
                 // Dispute button
@@ -984,14 +986,14 @@ class Module_points
                 }
 
                 // Satisfy escrow buttons; not shown / allowed if an escrow is disputed
-                if (($row['status'] == 1) && (($member_id_viewing == $row['sender_id'] && $row['sender_status'] == 0) || ($member_id_viewing == $row['recipient_id'] && $row['recipient_status'] == 0))) {
+                if (($row['status'] == ESCROW_STATUS_PENDING) && (($member_id_viewing == $row['sender_id'] && $row['sender_status'] == 0) || ($member_id_viewing == $row['recipient_id'] && $row['recipient_status'] == 0))) {
                     $hidden = new Tempcode();
                     $escrow_url = build_url(['page' => 'points', 'type' => 'satisfy_escrow', 'id' => $row['id']]);
                     $buttons->attach(do_template('BUTTON_SCREEN', ['_GUID' => 'da69b2ee5495c9af670399dd080f662e', 'IMMEDIATE' => true, 'URL' => $escrow_url, 'TITLE' => do_lang_tempcode('ESCROW_SATISFIED'), 'IMG' => 'buttons/yes', 'HIDDEN' => $hidden]));
                 }
 
                 // Determine actual status
-                if ($row['status'] == 2) {
+                if ($row['status'] == ESCROW_STATUS_DISPUTED) {
                     $status = do_lang_tempcode('ESCROW_STATUS__DISPUTED');
                 } elseif ($row['sender_status'] == 0 && $row['recipient_status'] == 0) {
                     $status = do_lang_tempcode('ESCROW_STATUS__PENDING', do_lang('_ESCROW_STATUS__PENDING_BOTH_L'));
@@ -1002,7 +1004,7 @@ class Module_points
                 }
 
                 // Moderation button
-                if ((!$involved) && ($row['status'] >= 1) && (has_privilege($member_id_viewing, 'moderate_points_escrow'))) {
+                if ((!$involved) && ($row['status'] >= ESCROW_STATUS_PENDING) && (has_privilege($member_id_viewing, 'moderate_points_escrow'))) {
                     $hidden = new Tempcode();
                     $resolve_url = build_url(['page' => 'points', 'type' => 'moderate_escrow', 'id' => $row['id']]);
                     $buttons->attach(do_template('BUTTON_SCREEN', ['_GUID' => 'da69b2ee5495c9af670399dd080f662e', 'IMMEDIATE' => true, 'URL' => $resolve_url, 'TITLE' => do_lang_tempcode('ESCROW_MODERATE'), 'IMG' => 'buttons/advanced', 'HIDDEN' => $hidden]));
@@ -1045,6 +1047,8 @@ class Module_points
      */
     public function satisfy_escrow() : object
     {
+        require_code('points_escrow');
+
         $member_id_viewing = get_member();
 
         // No guests allowed
@@ -1067,7 +1071,7 @@ class Module_points
         }
 
         // Escrow already completed
-        if ($row['status'] < 1) {
+        if ($row['status'] < ESCROW_STATUS_PENDING) {
             return warn_screen($this->title, do_lang_tempcode('E_ESCROW_ALREADY_DONE'));
         }
 
@@ -1095,7 +1099,6 @@ class Module_points
             ]);
         }
 
-        require_code('points_escrow');
         satisfy_escrow($id, $member_id_viewing, $row);
 
         // Show it worked / Refresh
@@ -1110,6 +1113,8 @@ class Module_points
      */
     public function dispute_escrow() : object
     {
+        require_code('points_escrow');
+
         $member_id_viewing = get_member();
 
         // No guests allowed
@@ -1132,7 +1137,7 @@ class Module_points
         }
 
         // Escrow already completed
-        if ($row['status'] < 1) {
+        if ($row['status'] < ESCROW_STATUS_PENDING) {
             return warn_screen($this->title, do_lang_tempcode('E_ESCROW_ALREADY_DONE'));
         }
 
@@ -1158,7 +1163,6 @@ class Module_points
             ]);
         }
 
-        require_code('points_escrow');
         dispute_escrow($id, $member_id_viewing, $reason);
 
         // Show it worked / Refresh
@@ -1173,6 +1177,8 @@ class Module_points
      */
     public function moderate_escrow() : object
     {
+        require_code('points_escrow');
+
         $member_id_viewing = get_member();
 
         // No guests allowed
@@ -1215,7 +1221,7 @@ class Module_points
             $entries = new Tempcode();
 
             // Cannot perform an action on an escrow that is already completed / cancelled; edit text only
-            if ($row['status'] >= 1) {
+            if ($row['status'] >= ESCROW_STATUS_PENDING) {
                 $entries = new Tempcode();
                 $entries->attach(form_input_radio_entry('action', 'amend', true, do_lang_tempcode('ESCROW_MODERATE_ACTION__AMEND')));
                 $entries->attach(form_input_radio_entry('action', 'complete', false, do_lang_tempcode('ESCROW_MODERATE_ACTION__COMPLETE')));
@@ -1251,7 +1257,6 @@ class Module_points
             return warn_screen($this->title, do_lang_tempcode('IMPROPERLY_FILLED_IN'));
         }
 
-        require_code('points_escrow');
         moderate_escrow($id, $member_id_viewing, $action, $reason, $agreement, $points, $mod_reason, $row);
 
         // Show it worked / Refresh

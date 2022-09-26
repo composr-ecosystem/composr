@@ -36,12 +36,14 @@ class Hook_cron_points_escrow
             return null;
         }
 
+        require_code('points_escrow');
+
         if ($calculate_num_queued === null) {
             $calculate_num_queued = true;
         }
 
         if ($calculate_num_queued) {
-            $num_queued = $GLOBALS['SITE_DB']->query_select_value('escrow', 'COUNT(*)', [/*ONLY non-disputed active escrows*/'status' => 1], ' AND expiration IS NOT NULL AND expiration<=' . strval(time()));
+            $num_queued = $GLOBALS['SITE_DB']->query_select_value('escrow', 'COUNT(*)', ['status' => ESCROW_STATUS_PENDING], ' AND expiration IS NOT NULL AND expiration<=' . strval(time()));
         } else {
             $num_queued = null;
         }
@@ -62,7 +64,7 @@ class Hook_cron_points_escrow
     {
         require_code('points_escrow');
 
-        $rows = $GLOBALS['SITE_DB']->query_select('escrow', ['*'], [/*ONLY non-disputed active escrows*/'status' => 1], ' AND expiration IS NOT NULL AND expiration<=' . strval(time()), 100);
+        $rows = $GLOBALS['SITE_DB']->query_select('escrow', ['*'], ['status' => ESCROW_STATUS_PENDING], ' AND expiration IS NOT NULL AND expiration<=' . strval(time()), 100);
         foreach ($rows as $row) {
             if ($row['sender_status'] == 0 && $row['recipient_status'] == 0) { // No one satisfied it
                 cancel_escrow($row['id'], $GLOBALS['FORUM_DRIVER']->get_guest_id(), do_lang('ESCROW_EXPIRED'), $row);

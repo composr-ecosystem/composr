@@ -29,7 +29,7 @@ class Hook_points_post__add
      *
      * @param  MEMBER $member_id_of The ID of the member who is being viewed
      * @param  ?MEMBER $member_id_viewing The ID of the member who is doing the viewing (null: current member)
-     * @return ?array Point record map containing LABEL, COUNT, POINTS_EACH, and POINTS_TOTAL for use in POINTS_PROFILE.tpl. (null: not using cns forum)
+     * @return array List containing label for use with aggregate point tables
      */
     public function points_profile(int $member_id_of, ?int $member_id_viewing) : array
     {

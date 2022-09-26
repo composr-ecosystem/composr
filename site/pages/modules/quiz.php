@@ -647,6 +647,8 @@ class Module_quiz
         // Award points?
         $points_difference = 0;
         if ((addon_installed('points')) && ($quiz['q_points_for_passing'] > 0)) {
+            require_code('points');
+
             $num_entries = $GLOBALS['SITE_DB']->query_select_value('quiz_entries', 'COUNT(*)', [
                 'q_member' => get_member(),
                 'q_quiz' => $quiz_id,
@@ -655,10 +657,10 @@ class Module_quiz
             if ($num_entries != 1) {
                 $num_point_events = $GLOBALS['SITE_DB']->query_select_value('points_ledger', 'COUNT(*)', [
                     'recipient_id' => get_member(),
-                    'status' => 'normal',
+                    'status' => LEDGER_STATUS_NORMAL,
                     't_type' => 'quiz',
                     't_subtype' => 'pass',
-                    't_type_id' => (($quiz_id !== null) ? strval($quiz_id) : ''),
+                    't_type_id' => strval($quiz_id),
                 ]);
             }
 

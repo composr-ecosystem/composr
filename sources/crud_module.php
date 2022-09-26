@@ -1495,9 +1495,9 @@ abstract class Standard_crud_module
             }
 
             if ((addon_installed('points')) && ($submitter !== null)) {
-                $points_test = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'id', ['recipient_id' => $submitter, 'status' => 0, 't_type' => $this->content_type, 't_subtype' => 'add', 't_type_id' => (($id !== null) ? strval($id) : '')]);
+                require_lang('points');
+                $points_test = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'id', ['recipient_id' => $submitter, 'status' => LEDGER_STATUS_NORMAL, 't_type' => $this->content_type, 't_subtype' => 'add', 't_type_id' => (($id !== null) ? strval($id) : '')]);
                 if ($points_test !== null) {
-                    require_lang('points');
                     $action_fields->attach(form_input_tick(do_lang_tempcode('REVERSE_TRANSACTION'), do_lang_tempcode('REVERSE_TRANSACTION_DESCRIPTION', $this->content_type), 'reverse_point_transaction', false));
                 }
             }
@@ -1654,11 +1654,12 @@ abstract class Standard_crud_module
 
         list($submitter) = $this->get_submitter($id);
         if (addon_installed('points')) {
+            require_code('points');
             $reverse = post_param_integer('reverse_point_transaction', 0);
             if ($reverse == 1) {
                 $points_test = $GLOBALS['SITE_DB']->query_select('points_ledger', ['id'], [
                     'recipient_id' => $submitter,
-                    'status' => 0,
+                    'status' => LEDGER_STATUS_NORMAL,
                     't_type' => $this->content_type,
                     't_subtype' => 'add',
                     't_type_id' => (($this->non_integer_id) ? $id : strval($id)),
