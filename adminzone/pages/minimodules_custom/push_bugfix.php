@@ -210,12 +210,13 @@ END;
         }
         $_default_project_id = strval($default_project_id);
         $_git_found = json_encode($git_found);
+        $nonce_html = csp_nonce_html();
         echo <<<END
                 </select>
             </div>
         </fieldset>
 
-        <script>
+        <script {$nonce_html}>
             function update_automatic_category()
             {
                 // See if we can match all the selected files to a particular category

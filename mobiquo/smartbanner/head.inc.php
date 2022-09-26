@@ -134,7 +134,7 @@ if (file_exists(__DIR__ . '/appbanner.js') &&
     $app_banner_head = '
         <!-- Tapatalk Banner&Welcome head start -->
         ' . ($is_byo ? '<link href="'.tt_html_escape($app_banner_css_link).'" rel="stylesheet" type="text/css" media="screen" />' : '') . '
-        <script>
+        <script ' . csp_nonce_html() . '>
             var is_byo             = '.$is_byo.';
             var is_mobile_skin     = '.$is_mobile_skin.';
             var app_ios_id         = "'.$app_ios_id.'";

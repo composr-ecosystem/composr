@@ -216,9 +216,6 @@ function display_version_upgrade_path($higher_version)
                 <button class="btn btn-primary btn-scri menu--adminzone--tools--upgrade" type="submit" title="Upgrade to <?= escape_html($higher_version['version_pretty']) ?>"><?= do_template('ICON', ['_GUID' => '083acd2905f7296c7a41e0db83e19cef', 'NAME' => 'menu/adminzone/tools/upgrade'])->evaluate() ?> Launch upgrader</button>
             </form>
         </span>
-        <script>
-            document.querySelector('#link-pos-<?= strval($i) ?> form').action = $util.rel(<?= json_encode($upgrade_script) ?>);
-        </script>
         <!-- Version News link -->
         <span class="version-news-link">[ <a onclick="window.open(this.href,null,'status=yes,toolbar=no,location=no,menubar=no,resizable=yes,scrollbars=yes,width=976,height=600'); return false;" target="_blank" title="<?= escape_html($higher_version['version_pretty']) ?> news post (this link will open in a new window)" href="<?= escape_html($upgrade_url) ?>">view news post</a> ]</span>
         <!-- Details -->
