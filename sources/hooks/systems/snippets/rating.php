@@ -50,7 +50,7 @@ class Hook_snippet_rating
         require_code('feedback');
         actualise_specific_rating($rating, get_page_name(), get_member(), $content_type, $type, $content_id, $content_url, $content_title);
 
-        actualise_give_rating_points();
+        actualise_credit_rating_points($content_type, $content_id);
 
         $template = get_param_string('template', null);
         if ($template !== '') {

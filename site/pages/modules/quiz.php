@@ -646,7 +646,9 @@ class Module_quiz
 
         // Award points?
         $points_difference = 0;
-        if ((addon_installed('points')) && ($quiz['q_points_for_passing'] != 0)) {
+        if ((addon_installed('points')) && ($quiz['q_points_for_passing'] > 0)) {
+            require_code('points');
+
             $num_entries = $GLOBALS['SITE_DB']->query_select_value('quiz_entries', 'COUNT(*)', [
                 'q_member' => get_member(),
                 'q_quiz' => $quiz_id,
@@ -654,9 +656,11 @@ class Module_quiz
 
             if ($num_entries != 1) {
                 $num_point_events = $GLOBALS['SITE_DB']->query_select_value('points_ledger', 'COUNT(*)', [
-                    'code_explanation' => json_encode(['pass', 'quiz', strval($quiz_id)]),
                     'recipient_id' => get_member(),
-                    'status' => 'normal',
+                    'status' => LEDGER_STATUS_NORMAL,
+                    't_type' => 'quiz',
+                    't_subtype' => 'pass',
+                    't_type_id' => strval($quiz_id),
                 ]);
             }
 
@@ -665,7 +669,7 @@ class Module_quiz
                 if (($quiz['q_type'] != 'TEST') || ($passed === true)) {
                     // Final points transaction
                     require_code('points2');
-                    points_credit_member(get_member(), do_lang('POINTS_COMPLETED_QUIZ', $quiz_name), $quiz['q_points_for_passing'], 0, 0, true, 0, ['pass', 'quiz', strval($quiz_id)]);
+                    points_credit_member(get_member(), do_lang('POINTS_COMPLETED_QUIZ', $quiz_name), $quiz['q_points_for_passing'], 0, 0, null, false, 0, 'quiz', 'pass', strval($quiz_id));
                     $points_difference += $quiz['q_points_for_passing'];
                 }
             }

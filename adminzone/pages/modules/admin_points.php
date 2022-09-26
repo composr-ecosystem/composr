@@ -304,10 +304,12 @@ class Module_admin_points
             if ($has_gift_points > 0) {
                 $map[] = integer_format($myrow['amount_gift_points']);
             }
-            if ($myrow['status'] == 'normal') {
-                $status = do_lang_tempcode('LEDGER_STATUS_normal');
+            if ($myrow['status'] == LEDGER_STATUS_NORMAL) {
+                $status = do_lang_tempcode('LEDGER_STATUS_0');
+            } elseif ($myrow['linked_to'] !== null) {
+                $status = do_lang_tempcode('LEDGER_STATUS_SHORT_' . strval($myrow['status']), escape_html(strval($myrow['linked_to'])));
             } else {
-                $status = do_lang_tempcode('LEDGER_STATUS_SHORT_' . $myrow['status'], escape_html(strval($myrow['linked_to'])));
+                $status = do_lang_tempcode('LEDGER_STATUS_SHORT_B_' . strval($myrow['status']));
             }
             $map = array_merge($map, [integer_format($myrow['amount_points']), $from, $to, $reason, $status, $actions]);
             $result_entries->attach(results_entry($map, true));
@@ -412,20 +414,31 @@ class Module_admin_points
 
         $status = new Tempcode();
         switch ($row['status']) {
-            case 'reversing':
-            case 'reversed':
-                $_row2 = $GLOBALS['SITE_DB']->query_select('points_ledger', ['*'], ['id' => $row['linked_to'], 'status' => ($row['status'] == 'reversing') ? 'reversed' : 'reversing'], '', 1);
+            case LEDGER_STATUS_REVERSING:
+            case LEDGER_STATUS_REVERSED:
+                $_row2 = $GLOBALS['SITE_DB']->query_select('points_ledger', ['*'], ['id' => $row['linked_to'], 'status' => ($row['status'] == LEDGER_STATUS_REVERSING) ? LEDGER_STATUS_REVERSED : LEDGER_STATUS_REVERSING], '', 1);
                 if (empty($_row2)) {
-                    $status = do_lang_tempcode('LEDGER_STATUS_' . $row['status'] . '_UNLINKED');
+                    $status = do_lang_tempcode('LEDGER_STATUS_' . strval($row['status']) . '_UNLINKED');
                 } else {
                     $row2 = $_row2[0];
                     $date = get_timezoned_date_time($row2['date_and_time'], false);
-                    $_status = do_lang('LEDGER_STATUS_' . $row['status'], escape_html(strval($row['linked_to'])), escape_html($date));
+                    $_status = do_lang_tempcode('LEDGER_STATUS_' . strval($row['status']), escape_html(strval($row['linked_to'])), escape_html($date));
+                    $status = hyperlink(build_url(['page' => 'admin_points', 'type' => 'view', 'id' => $row['linked_to']]), $_status, false, true);
+                }
+                break;
+            case LEDGER_STATUS_REFUND:
+                $_row2 = $GLOBALS['SITE_DB']->query_select('points_ledger', ['*'], ['id' => $row['linked_to']], '', 1);
+                if (empty($_row2)) {
+                    $status = do_lang_tempcode('LEDGER_STATUS_' . strval($row['status']) . '_UNLINKED');
+                } else {
+                    $row2 = $_row2[0];
+                    $date = get_timezoned_date_time($row2['date_and_time'], false);
+                    $_status = do_lang_tempcode('LEDGER_STATUS_' . strval($row['status']), escape_html(strval($row['linked_to'])), escape_html($date));
                     $status = hyperlink(build_url(['page' => 'admin_points', 'type' => 'view', 'id' => $row['linked_to']]), $_status, false, true);
                 }
                 break;
             default:
-                $status = do_lang_tempcode('LEDGER_STATUS_' . $row['status']);
+                $status = do_lang_tempcode('LEDGER_STATUS_' . strval($row['status']));
         }
 
         $date = get_timezoned_date_time($row['date_and_time'], false);

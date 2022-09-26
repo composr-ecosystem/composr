@@ -1012,7 +1012,11 @@ class Hook_import_cms_merge
                     'recipient_id' => $member_id,
                     'anonymous' => $row['anonymous'],
                     'linked_to' => $row['linked_to'],
-                    'code_explanation' => $row['code_explanation'],
+
+                    't_type' => $row['t_type'],
+                    't_subtype' => $row['t_subtype'],
+                    't_type_id' => '', // FUDGE: Currently blanking theis because it may refer to an improperly mapped content ID
+
                     'status' => $row['status']
                 ];
                 $map += insert_lang_comcode('reason', $this->get_lang_string($db, $row['reason']), 4);

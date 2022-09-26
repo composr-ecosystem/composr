@@ -7140,6 +7140,9 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         REVERSE_THUMB_ORDER
         REVERSE_TRANSACTION
         REVERSE_TRANSACTION_DESCRIPTION
+        REVERSE_TRANSACTION_DESCRIPTION_PLURAL
+        REVERSE_TRANSACTION_DESCRIPTION_CATEGORY
+        REVERSE_TRANSACTION_DESCRIPTION_CATEGORY_PLURAL
         REVIEW_FREQ
         REVISION_UNDO_DESCRIPTION
         RIGHT_CLICK_SAVE_AS
@@ -7771,7 +7774,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         TO_NAME
         TRACKBACK_ERROR
         TRACKBACK_SPAM
-        TRANSACTIONS
         TRANSACTION_FEES
         TRANSLATE_CODE
         TRANSLATE_CONTENT
@@ -8227,6 +8229,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SPAM
         DESCRIPTION_MONOCHROME_ICONS
         DESCRIPTION_DELETE_CONTENT
+        DESCRIPTION_DELETE_CONTENT_SUP_POINTS
         DESCRIPTION_DELETE_THIS
         USE_MONOCHROME_ICONS
         SVG_SPRITES
@@ -8307,8 +8310,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CREDIT_LONG
         DEBIT_LONG
         SEND_LONG
-        LEDGER_STATUS_reversing_UNLINKED
-        LEDGER_STATUS_reversed_UNLINKED
+        LEDGER_STATUS_2_UNLINKED
+        LEDGER_STATUS_1_UNLINKED
         NOTIFICATION_POINTS_TRANSACTION_STAFF_GUEST
         ARE_YOU_SURE_TRANSACTION_CREDIT
         ARE_YOU_SURE_TRANSACTION_DEBIT
@@ -8333,6 +8336,12 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         REQUIRES_VALIDATION
         NOTIFICATION_TYPE_needs_validation
         NOTIFICATION_TYPE_task_completed
+        CHAT_MODERATION_REVERSE_POINTS
+        POINTS_CACHE
+        DESCRIPTION_POINTS_CACHE
+        LEDGER_STATUS_SHORT_2
+        LEDGER_STATUS_SHORT_1
+        LEDGER_STATUS_SHORT_3
     ')));
 
     $non_admin_files = [
@@ -8536,7 +8545,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         COUNT_ONFORUMS
         COUNT_ONSITE
         COUNT_ONSITE_RECORD
-        COUNT_POINTS_EVER
+        COUNT_LIFETIME_POINTS
         COUNT_POINTS_BALANCE
         COUNT_POSTSCOUNT
         COUNT_POSTSTODAY
@@ -8960,6 +8969,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONTENT_LIKED_NOTIFICATION_MAIL
         CONTENT_LIKED_NOTIFICATION_MAIL_SUBJECT
         CONTENT_VALIDATED_NOTIFICATION_MAIL
+        CONTENT_VALIDATED_NOTIFICATION_MAIL_SUP_POINTS
         CONTENT_VALIDATED_NOTIFICATION_MAIL_SUBJECT
         CONTINUE_SHOPPING
         CONTRACT
@@ -10934,7 +10944,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         POLL_VOTE_MAIL_SUBJECT
         POLL_VOTE_MAIL_BODY
         VIEW
-        VIEWING_POINTS_PROFILE_OF
+        POINTS_RECEIVED_AGGREGATE
         VIEWING_SLIDE
         VIEWS_SIGNATURES
         VIEWS_SIMPLE
@@ -11638,9 +11648,10 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         E_ESCROW_ALREADY_DONE
         E_ESCROW_ALREADY_SATISFIED
         GIFT_POINTS_REFUNDED
-        LEDGER_STATUS_normal
-        LEDGER_STATUS_reversed
-        LEDGER_STATUS_reversing
+        LEDGER_STATUS_0
+        LEDGER_STATUS_1
+        LEDGER_STATUS_2
+        LEDGER_STATUS_3
         LOG_ESCROW_CANCELLED
         LOG_ESCROW_COMPLETED
         LOG_ESCROW_CREATED
@@ -11673,8 +11684,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         _ESCROW_VIEW
         _ESCROW_SATISFY
         _ESCROW_STATUS__PENDING_BOTH_L
-        LEDGER_STATUS_SHORT_reversing
-        LEDGER_STATUS_SHORT_reversed
         AMEND
         NOTIFICATION_POINTS_TRANSACTION_GUEST
         NOTIFICATION_TYPE_point_escrows
@@ -11683,6 +11692,18 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         RANK_PROMOTED_APPROVAL_MAIL
         RANK_PROMOTED_APPROVAL_MAIL_SUBJECT
         PROMOTION_FROM
+        POINTS_AGGREGATE_ROWS
+        CONTENT_LIKED_NOTIFICATION_MAIL_POINTS
+        COUNT_DOWNLOADS_DOWNLOADED
+        DESCRIPTION_TRANSACTIONS_AGGREGATE
+        LEDGER_STATUS_SHORT_B_3
+        LEDGER_STATUS_SHORT_B_1
+        LEDGER_STATUS_SHORT_B_2
+        LEDGER_STATUS_3_UNLINKED
+        PASSED_QUIZZES
+        POINTS_SENT_AGGREGATE
+        POINTS_SPENT_AGGREGATE
+        TRANSACTIONS
     ')));
 
     if ($GLOBALS['DEV_MODE']) {

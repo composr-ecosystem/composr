@@ -808,10 +808,10 @@ class Module_cms_catalogues extends Standard_crud_module
         // Award points here instead of from give_submit_points (submit.php) because catalogues have their own submit point options
         if ((!is_guest()) && (addon_installed('points'))) {
             $points = $GLOBALS['SITE_DB']->query_select_value('catalogues', 'c_submit_points', ['c_name' => $catalogue_name]);
-            require_code('points2');
-
-            // code_explanation should still follow give_submit_points because catalogues use standard CRUD for point reversal
-            points_credit_member(get_member(), do_lang('ADD_CATALOGUE_ENTRY'), $points, 0, 0, true, 0, ['submit', 'catalogue_entry', strval($id)]);
+            if ($points > 0) {
+                require_code('points2');
+                points_credit_member(get_member(), do_lang('ADD_CATALOGUE_ENTRY'), $points, 0, 0, null, true, 0, 'catalogue_entry', 'add', strval($id));
+            }
         }
 
         if (addon_installed('content_privacy')) {

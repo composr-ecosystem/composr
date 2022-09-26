@@ -175,14 +175,12 @@ function vote_in_poll(int $poll_id, ?int $cast, ?array $myrow = null, ?int $memb
     if ($cast !== null) {
         if (may_vote_in_poll($poll_id, $member_id, $ip)) {
             if (addon_installed('points')) {
-                require_code('points');
-                $_before = point_info($member_id);
-                $before = array_key_exists('points_gained_voting', $_before) ? $_before['points_gained_voting'] : 0;
-                $GLOBALS['FORUM_DRIVER']->set_custom_field($member_id, 'points_gained_voting', strval($before + 1));
-
-                global $POINT_INFO_CACHE, $TOTAL_POINTS_CACHE;
-                unset($POINT_INFO_CACHE[$member_id]);
-                unset($TOTAL_POINTS_CACHE[$member_id]);
+                $points_voting = intval(get_option('points_voting'));
+                if ($points_voting > 0) {
+                    require_code('points2');
+                    require_lang('points');
+                    points_credit_member($member_id, do_lang('VOTING'), $points_voting, 0, 0, null, null, 0, 'poll', 'vote', strval($poll_id));
+                }
             }
             $GLOBALS['SITE_DB']->query_update(
                 'poll',

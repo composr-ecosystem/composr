@@ -59,6 +59,7 @@ class addon_guards_test_set extends cms_test_case
             // These contain no code
             '(sources|sources_custom)/hooks/systems/disposable_values/\w+\.php',
             '(sources|sources_custom)/hooks/systems/non_active_urls/\w+\.php',
+            '(sources|sources_custom)/hooks/systems/points/\w+\.php',
         ];
 
         $hooks_files = get_directory_contents(get_file_base() . '/sources/hooks', 'sources/hooks', null, true, true, ['php']);

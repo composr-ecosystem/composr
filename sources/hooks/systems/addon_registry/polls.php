@@ -147,8 +147,9 @@ class Hook_addon_registry_polls
             'themes/default/javascript/polls.js',
             'sources/hooks/systems/actionlog/polls.php',
             'sources/hooks/modules/admin_stats/polls.php',
-            'sources/hooks/systems/points/voting.php',
             'themes/default/templates/POLL_ARCHIVE_SCREEN.tpl',
+            'sources/hooks/systems/points/poll__add.php',
+            'sources/hooks/systems/points/poll__vote.php',
         ];
     }
 

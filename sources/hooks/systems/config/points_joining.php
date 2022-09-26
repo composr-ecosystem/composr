@@ -34,7 +34,7 @@ class Hook_config_points_joining
             'human_name' => 'JOINING',
             'type' => 'integer',
             'category' => 'POINTS',
-            'group' => 'COUNT_POINTS_SENT',
+            'group' => 'POINTS_EARNED',
             'explanation' => 'CONFIG_OPTION_points_joining',
             'shared_hosting_restricted' => '0',
             'list_options' => '',

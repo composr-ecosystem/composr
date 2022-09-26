@@ -16,7 +16,7 @@
 /**
  * Composr test case class (unit testing).
  */
-class leader_board_test_set extends cms_test_case
+class _leader_board_test_set extends cms_test_case
 {
     protected $leaderboards;
 
@@ -483,16 +483,16 @@ class leader_board_test_set extends cms_test_case
         $member = $GLOBALS['FORUM_DRIVER']->mrow_id($members[0]);
 
         // Determine our current points for the member
-        init__points();
-        $current_points = total_points($member, null, false);
-        $past_points = total_points($member, $forced_period_start, false);
+        points_flush_runtime_cache();
+        $current_points = points_lifetime($member, null, false);
+        $past_points = points_lifetime($member, $forced_period_start, false);
         $earned_points = ($current_points - $past_points);
 
         // Process a dummy point transaction; amount should be absurdly high to ensure member is at the top of the results in our test
         $points_to_send = 100000000;
-        $transfer = points_credit_member($member, 'unit test', $points_to_send, 0, 0, null, 0, null, time() - 60);
+        $transfer = points_credit_member($member, 'unit test', $points_to_send, 0, 0, null, null, 0, '', '', '', (time() - 60));
 
-        init__points();
+        points_flush_runtime_cache();
 
         // Test 1: Holders leader-board result for this member should equal $current_points + $points_to_send
         $rows = $GLOBALS['SITE_DB']->query_select('leader_boards', ['*'], ['id' => $this->leaderboards['holders']], '', 1);

@@ -72,13 +72,13 @@ class Hook_cron_group_points
         foreach ($groups as $group_id => $group_name) {
             if (isset($group_points[$group_id])) {
                 $points = $group_points[$group_id];
-                if ($points['p_points_per_month'] != 0) {
+                if ($points['p_points_per_month'] > 0) {
                     $start = 0;
                     do {
                         $members = $GLOBALS['FORUM_DRIVER']->member_group_query([$group_id], 100, $start);
                         foreach ($members as $member_row) {
                             $member_id = $GLOBALS['FORUM_DRIVER']->mrow_id($member_row);
-                            points_credit_member($member_id, 'Being in the ' . $group_name . ' usergroup', $points['p_points_per_month'], 0, 0, true, 0, ['group_points', 'usergroup', strval($group_id)]);
+                            points_credit_member($member_id, 'Being in the ' . $group_name . ' usergroup', $points['p_points_per_month'], 0, 0, null, true, 0, 'usergroup', 'group_points', strval($group_id));
                         }
                         $start += 100;
                     } while (!empty($members));

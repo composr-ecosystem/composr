@@ -31,7 +31,6 @@
 function cns_validate_post(int $post_id, ?int $topic_id = null, ?int $forum_id = null, ?int $poster = null, ?string $post = null) : int
 {
     require_code('submit');
-    send_content_validated_notification('post', strval($post_id));
 
     $post_info = $GLOBALS['FORUM_DB']->query_select('f_posts', ['*'], ['id' => $post_id], '', 1);
     if ($topic_id === null) {
@@ -59,6 +58,21 @@ function cns_validate_post(int $post_id, ?int $topic_id = null, ?int $forum_id =
     $GLOBALS['FORUM_DB']->query_update('f_topics', [ // Validating a post will also validate a topic
         't_validated' => 1,
     ], ['id' => $topic_id], '', 1);
+
+    // Award points when necessary and if not already awarded
+    $post_points = 0;
+    if ((addon_installed('points')) && (!is_guest($post_info[0]['p_poster'])) && ($post_info[0]['p_intended_solely_for'] === null) && ($topic_info[0]['t_pt_from'] === null)) {
+        $already_awarded = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'id', ['t_type' => 'post', 't_subtype' => 'add', 't_type_id' => strval($post_id)]);
+        if ($already_awarded === null) {
+            $post_points = intval(get_option('points_posting'));
+            if ($post_points > 0) {
+                require_code('points2');
+                points_credit_member($poster, do_lang('FORUM_POST'), $post_points, 0, 0, null, null, 0, 'post', 'add', strval($post_id));
+            }
+        }
+    }
+
+    send_content_validated_notification('post', strval($post_id), $post_points);
 
     $_url = build_url(['page' => 'topicview', 'id' => $topic_id], 'forum', [], false, false, true, 'post_' . strval($post_id));
     $url = $_url->evaluate();
@@ -120,6 +134,8 @@ function cns_edit_post(int $post_id, ?int $validated, string $title, string $pos
     $post_owner = $post_info[0]['p_poster'];
     $forum_id = $post_info[0]['p_cache_forum_id'];
     $topic_id = $post_info[0]['p_topic_id'];
+
+    $topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_cache_first_post_id', 't_pt_from', 't_cache_first_title'], ['id' => $topic_id], '', 1);
 
     require_code('cns_posts_action');
     require_code('cns_posts');
@@ -224,6 +240,18 @@ function cns_edit_post(int $post_id, ?int $validated, string $title, string $pos
         cns_decache_cms_blocks($forum_id);
     }
 
+    // Award points when necessary and if not already awarded
+    if (($validated == 1) && (addon_installed('points')) && (!is_guest($post_info[0]['p_poster'])) && ($post_info[0]['p_intended_solely_for'] === null) && ($topic_info[0]['t_pt_from'] === null)) {
+        $already_awarded = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'id', ['t_type' => 'post', 't_subtype' => 'add', 't_type_id' => strval($post_id)]);
+        if ($already_awarded === null) {
+            $post_points = intval(get_option('points_posting'));
+            if ($post_points > 0) {
+                require_code('points2');
+                points_credit_member($post_owner, do_lang('FORUM_POST'), $post_points, 0, 0, null, null, 0, 'post', 'add', strval($post_id));
+            }
+        }
+    }
+
     if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
         require_code('resource_fs');
         generate_resource_fs_moniker('post', strval($post_id));
@@ -241,9 +269,10 @@ function cns_edit_post(int $post_id, ?int $validated, string $title, string $pos
  * @param  boolean $check_perms Whether to check permissions
  * @param  boolean $cleanup Whether to do a cleanup: delete the topic if there will be no posts left in it
  * @param  boolean $save_revision Whether to save a revision
+ * @param  boolean $reverse_point_transactions Whether to also reverse any relevant point transactions for deleted posts
  * @return boolean Whether the topic was deleted, due to all posts in said topic being deleted
  */
-function cns_delete_posts_topic(int $topic_id, array $posts, string $reason = '', bool $check_perms = true, bool $cleanup = true, bool $save_revision = true) : bool
+function cns_delete_posts_topic(int $topic_id, array $posts, string $reason = '', bool $check_perms = true, bool $cleanup = true, bool $save_revision = true, bool $reverse_point_transactions = true) : bool
 {
     if (empty($posts)) {
         return false;
@@ -344,7 +373,7 @@ function cns_delete_posts_topic(int $topic_id, array $posts, string $reason = ''
     require_code('attachments2');
     require_code('attachments3');
     foreach ($_postdetails as $post) {
-        delete_lang_comcode_attachments($post['p_post'], 'cns_post', $post['id'], $GLOBALS['FORUM_DB']);
+        delete_lang_comcode_attachments($post['p_post'], 'cns_post', strval($post['id']), $GLOBALS['FORUM_DB']);
     }
 
     // Delete everything...
@@ -356,7 +385,7 @@ function cns_delete_posts_topic(int $topic_id, array $posts, string $reason = ''
     if (($test == 0) && ($cleanup)) {
         require_code('cns_topics_action');
         require_code('cns_topics_action2');
-        cns_delete_topic($topic_id, do_lang('DELETE_POSTS'));
+        cns_delete_topic($topic_id, do_lang('DELETE_POSTS')); // We will be reversing the points later, so don't reverse them here
         $ret = true;
     } else {
         $ret = false;
@@ -377,6 +406,17 @@ function cns_delete_posts_topic(int $topic_id, array $posts, string $reason = ''
                 Composr_fast_custom_index::delete_from_index($GLOBALS['FORUM_DB'], 'f_pposts_fulltext_index', ['i_post_id' => $post['id']]);
             } else {
                 Composr_fast_custom_index::delete_from_index($GLOBALS['FORUM_DB'], 'f_posts_fulltext_index', ['i_post_id' => $post['id']]);
+            }
+        }
+    }
+
+    // Reverse points if applicable
+    if (($reverse_point_transactions) && (addon_installed('points'))) {
+        require_code('points2');
+        foreach ($posts as $post) {
+            $ledger_id = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'id', ['t_type' => 'post', 't_subtype' => 'add', 't_type_id' => strval($post)]);
+            if ($ledger_id !== null) {
+                points_transaction_reverse($ledger_id);
             }
         }
     }
@@ -552,7 +592,7 @@ function cns_move_posts(int $from_topic_id, ?int $to_topic_id, array $posts, str
 
         require_code('cns_topics_action');
         require_code('cns_topics_action2');
-        cns_delete_topic($from_topic_id, do_lang('MOVE_POSTS'));
+        cns_delete_topic($from_topic_id, do_lang('MOVE_POSTS')); // Do not reverse points when moving posts
         return true;
     }
 

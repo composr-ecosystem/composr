@@ -215,8 +215,9 @@ function cns_edit_forum(int $forum_id, string $name, string $description, int $f
  * @param  AUTO_LINK $forum_id The ID of the forum we are deleting
  * @param  ?AUTO_LINK $target_forum_id The ID of the forum that topics will be moved to (null: root forum)
  * @param  BINARY $delete_topics Whether to delete topics instead of moving them to the target forum
+ * @param  boolean $reverse_point_transaction Whether to reverse the points of all the posts in this forum (ignored if not $delete_topics)
  */
-function cns_delete_forum(int $forum_id, ?int $target_forum_id = null, int $delete_topics = 0)
+function cns_delete_forum(int $forum_id, ?int $target_forum_id = null, int $delete_topics = 0, bool $reverse_point_transaction = false)
 {
     if ($target_forum_id === null) {
         $target_forum_id = db_get_first_id();
@@ -232,7 +233,7 @@ function cns_delete_forum(int $forum_id, ?int $target_forum_id = null, int $dele
     } else {
         $rows = $GLOBALS['FORUM_DB']->query_select('f_topics', ['id'], ['t_forum_id' => $forum_id]);
         foreach ($rows as $row) {
-            cns_delete_topic($row['id'], '');
+            cns_delete_topic($row['id'], '', null, true, $reverse_point_transaction);
         }
     }
 

@@ -303,12 +303,14 @@ PHP;
                 'TO_TIME_VCAL' => ($real_to === null) ? null : (date('Y-m-d', $real_to) . ' ' . date('H:i:s', $real_to)),
             ];
 
-            $test = date('d', $to);
-            $test2 = date('d', $from);
-            if (($to !== null) && ((intval($test) > intval($test2)) || (intval(date('m', $to)) != intval(date('m', $from))) || (intval(date('Y', $to)) != intval(date('Y', $from))))) {
-                $ntime = mktime(0, 0, 0, intval(date('m', $from)), intval($test2) + 1, intval(date('Y', $from)));
-                if ($ntime < $period_end) {
-                    $happenings[] = [$e_id, $event, $ntime, $to, $real_from, $real_to];
+            if ($to !== null) {
+                $test = date('d', $to);
+                $test2 = date('d', $from);
+                if (((intval($test) > intval($test2)) || (intval(date('m', $to)) != intval(date('m', $from))) || (intval(date('Y', $to)) != intval(date('Y', $from))))) {
+                    $ntime = mktime(0, 0, 0, intval(date('m', $from)), intval($test2) + 1, intval(date('Y', $from)));
+                    if ($ntime < $period_end) {
+                        $happenings[] = [$e_id, $event, $ntime, $to, $real_from, $real_to];
+                    }
                 }
             }
         }

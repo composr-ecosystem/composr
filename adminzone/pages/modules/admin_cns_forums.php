@@ -855,6 +855,6 @@ class Module_admin_cns_forums extends Standard_crud_module
      */
     public function delete_actualisation(string $id)
     {
-        cns_delete_forum(intval($id), post_param_integer('target_forum'), post_param_integer('delete_topics', 0));
+        cns_delete_forum(intval($id), post_param_integer('target_forum'), post_param_integer('delete_topics', 0), (post_param_integer('reverse_point_transaction', 0) == 1));
     }
 }

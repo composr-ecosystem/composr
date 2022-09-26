@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_points_show_personal_stats_total_points
+class Hook_config_points_show_personal_stats_points_lifetime
 {
     /**
      * Gets the details relating to the config option.
@@ -31,7 +31,7 @@ class Hook_config_points_show_personal_stats_total_points
     public function get_details() : ?array
     {
         return [
-            'human_name' => 'COUNT_POINTS_EVER',
+            'human_name' => 'COUNT_LIFETIME_POINTS',
             'type' => 'tick',
             'category' => 'BLOCKS',
             'group' => 'PERSONAL_BLOCK',

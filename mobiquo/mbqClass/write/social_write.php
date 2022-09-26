@@ -52,7 +52,7 @@ class CMSSocialWrite
 
         require_code('points2');
 
-        points_transact(get_member(), $user_id, do_lang('TAPATALK_THANK_POST', strval($post_id)), intval(get_option('points_for_thanking')), null, 0, true, 0, ['thank', 'mobiquo', strval($post_id)]);
+        points_transact(get_member(), $user_id, do_lang('TAPATALK_THANK_POST', strval($post_id)), intval(get_option('points_for_thanking')), null, 0, true, 0, 'mobiquo', 'thank', strval($post_id));
     }
 
     /**

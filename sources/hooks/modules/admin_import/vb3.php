@@ -1400,6 +1400,8 @@ class Hook_import_vb3
      */
     public function import_points_ledger(object $db, string $table_prefix, string $file_base)
     {
+        require_code('points');
+
         $row_start = get_param_integer('JUMPSTART_import_points_ledger', 0);
         do {
             $rows = $db->query_select('reputation', ['*'], [], '', 200, $row_start);
@@ -1422,8 +1424,10 @@ class Hook_import_vb3
                     'recipient_id' => $member_id,
                     'anonymous' => $anonymous,
                     'linked_to' => null,
-                    'code_explanation' => '',
-                    'status' => 'normal',
+                    't_type' => 'legacy',
+                    't_subtype' => 'admin_import',
+                    't_type_id' => 'vb3',
+                    'status' => LEDGER_STATUS_NORMAL,
                 ];
                 $map += insert_lang_comcode('reason', $reason, 4);
                 $GLOBALS['SITE_DB']->query_insert('points_ledger', $map);

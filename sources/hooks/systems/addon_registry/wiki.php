@@ -162,7 +162,8 @@ class Hook_addon_registry_wiki
             'sources/hooks/systems/config/search_wiki_posts.php',
             'themes/default/javascript/wiki.js',
             'sources/hooks/systems/actionlog/wiki.php',
-            'sources/hooks/systems/points/wiki.php',
+            'sources/hooks/systems/points/wiki_post__add.php',
+            'sources/hooks/systems/points/wiki_page__add.php',
         ];
     }
 

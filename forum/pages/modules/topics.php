@@ -276,12 +276,13 @@ class Module_topics
     }
 
     /**
-     * The UI for a trivial form page that just asks a reason before relaying the results to the same URL, but with an underscored type.
+     * The UI for a trivial form page that asks a reason before relaying the results to the same URL, but with an underscored type.
      *
      * @param  ID_TEXT $_title The language string codename for the title to use in the page
+     * @param  array $additional_fields Array of additional Tempcode fields to attach after the reason field
      * @return Tempcode The UI
      */
-    public function relay_with_reason(string $_title) : object
+    public function relay_with_reason(string $_title, array $additional_fields = []) : object
     {
         $title = get_screen_title($_title);
         $text = paragraph(do_lang_tempcode('OPTIONAL_REASON'));
@@ -294,6 +295,10 @@ class Module_topics
         $hidden->attach(build_keep_post_fields());
         $hidden->attach(build_keep_form_fields());
         $fields->attach(form_input_line(do_lang_tempcode('REASON'), '', 'reason', '', false));
+
+        foreach ($additional_fields as $field) {
+            $fields->attach($field);
+        }
 
         return do_template('FORM_SCREEN', [
             '_GUID' => '85e30370bb9e45b2b9a7cd6463d69557',
@@ -474,7 +479,15 @@ class Module_topics
         $topic_info = $_topic_info[0];
         $this->handle_topic_breadcrumbs($topic_info['t_forum_id'], $topic_id, $topic_info['t_cache_first_title'], do_lang_tempcode('DELETE_POSTS'));
 
-        return $this->relay_with_reason('DELETE_POSTS');
+        require_code('form_templates');
+
+        if (addon_installed('points')) {
+            require_lang('points');
+            $reverse_point_transaction = form_input_tick(do_lang_tempcode('REVERSE_TRANSACTION'), do_lang_tempcode('REVERSE_TRANSACTION_DESCRIPTION_PLURAL', 'post'), 'reverse_point_transaction', false);
+        } else {
+            $reverse_point_transaction = new Tempcode();
+        }
+        return $this->relay_with_reason('DELETE_POSTS', [$reverse_point_transaction]);
     }
 
     /**
@@ -496,7 +509,7 @@ class Module_topics
         require_code('cns_posts_action');
         require_code('cns_posts_action2');
         require_code('cns_posts_action3');
-        cns_delete_posts_topic($topic_id, $posts, post_param_string('reason'));
+        cns_delete_posts_topic($topic_id, $posts, post_param_string('reason'), true, true, true, (post_param_integer('reverse_point_transaction', 0) == 1));
 
         $test = $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'COUNT(*)', ['p_topic_id' => $topic_id]);
         if ($test == 0) {
@@ -1212,7 +1225,16 @@ class Module_topics
         $topic_info = $_topic_info[0];
         $this->handle_topic_breadcrumbs($topic_info['t_forum_id'], $topic_id, $topic_info['t_cache_first_title'], do_lang_tempcode('DELETE_TOPICS'));
 
-        return $this->relay_with_reason('DELETE_TOPICS');
+        require_code('form_templates');
+
+        if (addon_installed('points')) {
+            require_lang('points');
+            $reverse_point_transaction = form_input_tick(do_lang_tempcode('REVERSE_TRANSACTION'), do_lang_tempcode('REVERSE_TRANSACTION_DESCRIPTION_CATEGORY_PLURAL', 'post', 'topic'), 'reverse_point_transaction', false);
+        } else {
+            $reverse_point_transaction = new Tempcode();
+        }
+
+        return $this->relay_with_reason('DELETE_TOPICS', [$reverse_point_transaction]);
     }
 
     /**
@@ -1222,6 +1244,7 @@ class Module_topics
      */
     public function _delete_topics() : object // Type
     {
+        $reverse_point_transaction = (post_param_integer('reverse_point_transaction', 0) == 1);
         $topics = $this->get_markers();
         if (empty($topics)) {
             warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'), false, false, 400);
@@ -1229,7 +1252,7 @@ class Module_topics
         require_code('cns_topics_action');
         require_code('cns_topics_action2');
         foreach ($topics as $topic_id) {
-            $forum_id = cns_delete_topic($topic_id, post_param_string('reason'), null);
+            $forum_id = cns_delete_topic($topic_id, post_param_string('reason'), null, true, $reverse_point_transaction);
         }
         return $this->redirect_to_forum('DELETE_TOPICS', $forum_id);
     }
@@ -1258,7 +1281,15 @@ class Module_topics
         $topic_info = $_topic_info[0];
         //$this->handle_topic_breadcrumbs($topic_info['t_forum_id'], $topic_id, $topic_info['t_cache_first_title'], do_lang_tempcode('DELETE_TOPICS_AND_POSTS'));
 
-        return $this->relay_with_reason('DELETE_TOPICS_AND_POSTS');
+        require_code('form_templates');
+
+        if (addon_installed('points')) {
+            require_lang('points');
+            $reverse_point_transaction = form_input_tick(do_lang_tempcode('REVERSE_TRANSACTION'), do_lang_tempcode('REVERSE_TRANSACTION_DESCRIPTION_CATEGORY_PLURAL', 'post', 'topic'), 'reverse_point_transaction', false);
+        } else {
+            $reverse_point_transaction = new Tempcode();
+        }
+        return $this->relay_with_reason('DELETE_TOPICS_AND_POSTS', [$reverse_point_transaction]);
     }
 
     /**
@@ -1284,6 +1315,7 @@ class Module_topics
         require_code('cns_posts_action3');
 
         $reason = post_param_string('reason');
+        $reverse_point_transaction = (post_param_integer('reverse_point_transaction', 0) == 1);
 
         foreach ($topics as $topic_id) {
             $own_topic = ($GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_cache_first_member_id', ['id' => $topic_id]) == get_member());
@@ -1292,10 +1324,10 @@ class Module_topics
             }
 
             if ($own_topic) {
-                cns_delete_topic($topic_id, $reason, null);
+                cns_delete_topic($topic_id, $reason, null, true, $reverse_point_transaction);
             } else {
                 $posts = collapse_1d_complexity('id', $GLOBALS['FORUM_DB']->query_select('f_posts', ['id'], ['p_poster' => get_member(), 'p_topic_id' => $topic_id]));
-                cns_delete_posts_topic($topic_id, $posts, $reason);
+                cns_delete_posts_topic($topic_id, $posts, $reason, true, true, true, $reverse_point_transaction);
             }
         }
 
@@ -2781,6 +2813,10 @@ class Module_topics
 
             $fields->attach(form_input_tick(do_lang_tempcode('DELETE_POSTS_FROM_IP'), do_lang_tempcode('DELETE_POSTS_FROM_IP_DESCRIPTION'), 'post_all', false));
 
+            if (addon_installed('points')) {
+                require_lang('points');
+                $fields->attach(form_input_tick(do_lang_tempcode('REVERSE_TRANSACTION'), do_lang_tempcode('REVERSE_TRANSACTION_DESCRIPTION', 'post'), 'reverse_point_transaction', false));
+            }
             return do_template('FORM_SCREEN', [
                 '_GUID' => 'c10e882fa621b5230f455b41f40514c0',
                 'SKIP_WEBSTANDARDS' => true,
@@ -2795,7 +2831,15 @@ class Module_topics
             ]);
         }
 
-        return $this->relay_with_reason('DELETE_POST');
+        require_code('form_templates');
+
+        if (addon_installed('points')) {
+            require_lang('points');
+            $reverse_point_transaction = form_input_tick(do_lang_tempcode('REVERSE_TRANSACTION'), do_lang_tempcode('REVERSE_TRANSACTION_DESCRIPTION', 'post'), 'reverse_point_transaction', false);
+        } else {
+            $reverse_point_transaction = new Tempcode();
+        }
+        return $this->relay_with_reason('DELETE_POST', [$reverse_point_transaction]);
     }
 
     /**
@@ -2810,6 +2854,7 @@ class Module_topics
             $post_id = either_param_integer('post_id');
         }
         $reason = post_param_string('reason');
+        $reverse_point_transaction = (post_param_integer('reverse_point_transaction', 0) == 1);
 
         require_code('cns_posts_action');
         require_code('cns_posts_action2');
@@ -2867,7 +2912,7 @@ class Module_topics
                     delete_form_custom_fields('post', $post['id']);
                 }
 
-                cns_delete_posts_topic($post['p_topic_id'], [$post['id']], $reason);
+                cns_delete_posts_topic($post['p_topic_id'], [$post['id']], $reason, true, true, true, $reverse_point_transaction);
             }
 
             return $this->redirect_to('DELETE_POSTS_FROM_IP', $topic_id);
@@ -2879,7 +2924,7 @@ class Module_topics
         }
         $_topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_cache_first_title', 't_cache_first_post_id', 't_forum_id'], ['id' => $topic_id], '', 1);
         $current_title = $_topic_info[0]['t_cache_first_title'];
-        $deleted_all = cns_delete_posts_topic($topic_id, [$post_id], $reason);
+        $deleted_all = cns_delete_posts_topic($topic_id, [$post_id], $reason, true, true, true, $reverse_point_transaction);
         if ($_topic_info[0]['t_cache_first_post_id'] == $post_id) { // See if we need to copy title
             $_topic_info2 = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_cache_first_title', 't_cache_first_post_id'], ['id' => $topic_id], '', 1);
             if (array_key_exists(0, $_topic_info2)) {
@@ -3874,6 +3919,11 @@ class Module_topics
 
         $fields->attach(form_input_line(do_lang_tempcode('REASON'), do_lang_tempcode('DESCRIPTION_REASON'), 'reason', '', false));
 
+        if (addon_installed('points')) {
+            require_lang('points');
+            $fields->attach(form_input_tick(do_lang_tempcode('REVERSE_TRANSACTION'), do_lang_tempcode('REVERSE_TRANSACTION_DESCRIPTION_CATEGORY', 'post', 'topic'), 'reverse_point_transaction', false));
+        }
+
         $topic_title = $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_cache_first_title', ['id' => $topic_id]);
         $title = get_screen_title('_DELETE_TOPIC', true, [escape_html($topic_title)]);
         $submit_name = do_lang_tempcode('DELETE');
@@ -3904,10 +3954,11 @@ class Module_topics
         if ($post_target_topic_id === null) {
             $post_target_topic_id = post_param_integer('manual_topic_id', null);
         }
+        $reverse_point_transaction = (post_param_integer('reverse_point_transaction', 0) == 1);
 
         require_code('cns_topics_action');
         require_code('cns_topics_action2');
-        $forum_id = cns_delete_topic($topic_id, post_param_string('reason'), $post_target_topic_id);
+        $forum_id = cns_delete_topic($topic_id, post_param_string('reason'), $post_target_topic_id, true, $reverse_point_transaction);
 
         require_code('fields');
         if (has_tied_catalogue('topic')) {

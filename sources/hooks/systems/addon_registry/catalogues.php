@@ -207,6 +207,7 @@ class Hook_addon_registry_catalogues
             'sources/hooks/systems/config/search_catalogue_entries.php',
             'sources/hooks/systems/cleanup/catalogues.php',
             'sources/hooks/systems/actionlog/catalogues.php',
+            'sources/hooks/systems/points/catalogue_entry__add.php',
         ];
     }
 

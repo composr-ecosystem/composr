@@ -829,11 +829,17 @@ function cns_get_member_fields_profile(bool $mini_mode = true, ?int $member_id =
         $mini_mode ? true : null, // show on join form,
         $adjusted_config_options
     );
+    $fields_to_skip = _cpfs_internal_use_only();
     $GLOBALS['NO_DEV_MODE_FULLSTOP_CHECK'] = true;
     $field_groups = [];
     require_code('fields');
     require_code('encryption');
     foreach ($_custom_fields as $custom_field) {
+        // Skip internal use only fields
+        if (in_array($custom_field['id'], $fields_to_skip)) {
+            continue;
+        }
+
         $ob = get_fields_hook($custom_field['cf_type']);
         list(, , $storage_type) = $ob->get_field_value_row_bits($custom_field);
 
@@ -909,6 +915,30 @@ function cns_get_member_fields_profile(bool $mini_mode = true, ?int $member_id =
     $GLOBALS['NO_DEV_MODE_FULLSTOP_CHECK'] = false;
 
     return [$fields, $hidden, $added_section];
+}
+
+/**
+ * FUDGE: Return an array of custom fields that should never be editable on the UI.
+ *
+ * @return array Array of custom field IDs that should never be editable on the UI
+ * @ignore
+ */
+function _cpfs_internal_use_only() : array
+{
+    require_code('cns_members');
+
+    $ret = [];
+
+    $fields_to_find = ['cms_points_balance'];
+
+    foreach ($fields_to_find as $field) {
+        $cpf_id = find_cms_cpf_field_id($field);
+        if ($cpf_id !== null) {
+            $ret[] = $cpf_id;
+        }
+    }
+
+    return $ret;
 }
 
 /**
@@ -1024,8 +1054,10 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
 
     if ($custom_fields !== null) {
         // Check constraints
-        $all_fields = cns_get_all_custom_fields_match($GLOBALS['CNS_DRIVER']->get_members_groups($member_id));
-        foreach ($all_fields as $field) {
+        $_all_fields = cns_get_all_custom_fields_match($GLOBALS['CNS_DRIVER']->get_members_groups($member_id));
+        $all_fields = [];
+        $fields_to_skip = _cpfs_internal_use_only();
+        foreach ($_all_fields as $field) {
             $field_id = $field['id'];
 
             if (array_key_exists($field_id, $custom_fields)) {
@@ -1042,6 +1074,10 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
         foreach ($custom_fields as $field_id => $value) {
             if (!array_key_exists($field_id, $all_fields_types)) {
                 continue; // Trying to set a field we're not allowed to (doesn't apply to our group)
+            }
+
+            if (in_array($field_id, $fields_to_skip)) {
+                continue; // Trying to set a field we're not allowed to (internal field)
             }
 
             $change = cns_set_custom_field($member_id, $field_id, $value, $all_fields_types[$field_id], true);

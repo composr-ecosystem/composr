@@ -280,6 +280,8 @@ class Hook_addon_registry_galleries
             'data/images/homepage_hero_slider/rustic.webp',
             'data/images/homepage_hero_slider/waterfall.webp',
             'themes/default/templates/GALLERY_HOMEPAGE_HERO_SLIDE.tpl',
+            'sources/hooks/systems/points/video__add.php',
+            'sources/hooks/systems/points/image__add.php',
         ];
     }
 

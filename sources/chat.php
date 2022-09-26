@@ -879,6 +879,8 @@ function _chat_post_message_ajax(int $room_id, string $message, string $font, st
  */
 function chat_post_message(int $room_id, string $message, string $font_name, string $text_colour) : bool
 {
+    require_lang('chat');
+
     $member_id = get_member();
 
     // Have we been blocked by flood control?
@@ -975,16 +977,13 @@ function chat_post_message(int $room_id, string $message, string $font_name, str
             }
         }
 
-        // Update points
+        // Award points
         if (addon_installed('points')) {
-            require_code('points');
-            $_count = point_info($member_id);
-            $count = array_key_exists('points_gained_chat', $_count) ? $_count['points_gained_chat'] : 0;
-            $GLOBALS['FORUM_DRIVER']->set_custom_field($member_id, 'points_gained_chat', strval($count + 1));
-
-            global $POINT_INFO_CACHE, $TOTAL_POINTS_CACHE;
-            unset($POINT_INFO_CACHE[$member_id]);
-            unset($TOTAL_POINTS_CACHE[$member_id]);
+            $points_chat = intval(get_option('points_chat'));
+            if ($points_chat > 0) {
+                require_code('points2');
+                points_credit_member($member_id, do_lang('CHAT'), $points_chat, 0, 0, null, null, 0, 'chat_message', 'add', strval($message_id));
+            }
         }
 
         // Log

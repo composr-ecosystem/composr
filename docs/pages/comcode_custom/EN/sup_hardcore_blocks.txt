@@ -536,7 +536,7 @@ require_code('points');
 
 // Call the functions and store their values in some variables
 $balance = points_balance($member_id);
-$spent = points_spent($member_id);
+$spent = points_used($member_id);
 
 // Now we create a pie chart of these results. The way we do this
 // is to send the user an HTML image with the URL containing the

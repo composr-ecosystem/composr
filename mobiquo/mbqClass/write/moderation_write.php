@@ -110,7 +110,7 @@ class CMSModerationWrite
         }
 
         require_code('cns_topics_action2');
-        cns_delete_topic($topic_id, $reason); // NB: Checks perms implicitly
+        cns_delete_topic($topic_id, $reason, null, true, true); // NB: Checks perms implicitly
         return true;
     }
 

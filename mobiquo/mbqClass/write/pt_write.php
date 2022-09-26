@@ -173,8 +173,8 @@ class CMSPtWrite
             $us = 't_pt_to_category';
             $them = 't_pt_from_category';
         } else {
-            // Moderator deleting, so not categorising under a particular member
-            cns_delete_topic($topic_id, do_lang('REASON_TAPATALK_DELETING_TOPIC')); // NB: Checks perms implicitly
+            // Moderator deleting, so not categorising under a particular member, and reversing points
+            cns_delete_topic($topic_id, do_lang('REASON_TAPATALK_DELETING_TOPIC'), null, true, true); // NB: Checks perms implicitly
             return;
         }
 

@@ -189,8 +189,10 @@ class Hook_ecommerce_gambling
         $GLOBALS['SITE_DB']->query_insert('ecom_sales', ['date_and_time' => time(), 'member_id' => $member_id, 'details' => do_lang('GAMBLING', null, null, null, get_site_default_lang()), 'details2' => strval($amount) . ' --> ' . strval($winnings), 'txn_id' => $details['TXN_ID']]);
 
         // Actuate
-        require_code('points2');
-        points_credit_member($member_id, do_lang('GAMBLING_WINNINGS'), $winnings);
+        if ($winnings > 0) {
+            require_code('points2');
+            points_credit_member($member_id, do_lang('GAMBLING_WINNINGS'), $winnings, 0, 0, null, null, 0, 'ecommerce', 'gamble_win');
+        }
 
         // Show an instant message so the member knows how it worked out (plus buying via points, so will definitely be seen)
         if ($winnings > $amount) {

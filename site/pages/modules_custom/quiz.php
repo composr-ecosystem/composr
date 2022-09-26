@@ -29,10 +29,12 @@ function init__site__pages__modules_custom__quiz($in)
         "// We have not already got points",
         "
         <ditto>
-        require_code('points2');
         \$cost = intval(ceil(floatval(\$quiz['q_points_for_passing']) / 2.0));
-        points_debit_member(get_member(), 'Entered a test', \$cost, 0, 0, true, 0, ['enter_test', 'quiz', strval(\$quiz['id'])]);
-        \$points_difference -= \$cost;
+        if (\$cost > 0) {
+            require_code('points2');
+            points_debit_member(get_member(), 'Entered a test', \$cost, 0, 0, false, 0, 'quiz', 'enter_test', strval(\$quiz['id']));
+            \$points_difference -= \$cost;
+        }
         ",
         $in
     );

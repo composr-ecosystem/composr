@@ -434,6 +434,15 @@ function cns_make_post(int $topic_id, string $title, string $post, int $skip_sig
         }
     }
 
+    // Award points when necessary (otherwise it is awarded in cns_validate_post)
+    if ((addon_installed('points')) && (!running_script('install')) && (!get_mass_import_mode()) && ($validated == 1) && (!$anonymous) && ($intended_solely_for === null) && (!$is_pt)) {
+        $post_points = intval(get_option('points_posting'));
+        if ($post_points > 0) {
+            require_code('points2');
+            points_credit_member($poster, do_lang('FORUM_POST'), $post_points, 0, 0, null, null, 0, 'post', 'add', strval($post_id));
+        }
+    }
+
     if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
         cms_profile_start_for('cns_make_post:generate_resource_fs_moniker');
         require_code('resource_fs');
@@ -527,8 +536,11 @@ function cns_force_update_member_post_count(int $member_id, ?int $member_post_co
         }
     }
 
-    global $TOTAL_POINTS_CACHE;
-    unset($TOTAL_POINTS_CACHE[$member_id]);
+    // Flush points cache for total points
+    if (addon_installed('points')) {
+        require_code('points');
+        points_flush_runtime_cache(null, 'points_lifetime');
+    }
 }
 
 /**

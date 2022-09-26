@@ -34,7 +34,7 @@ class Hook_config_points_per_day
             'human_name' => 'POINTS_PER_DAY',
             'type' => 'integer',
             'category' => 'POINTS',
-            'group' => 'COUNT_POINTS_SENT',
+            'group' => 'POINTS_EARNED',
             'explanation' => 'CONFIG_OPTION_points_per_day',
             'shared_hosting_restricted' => '0',
             'list_options' => '',

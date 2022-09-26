@@ -34,6 +34,19 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
 
     require_javascript('checking');
 
+    $aggregate_rows = [
+        'received' => [],
+        'sent' => [],
+        'spent' => [],
+    ];
+    $aggregate_totals = [
+        'received' => 0,
+        'sent' => 0,
+        'spent' => 0,
+        'total' => 0,
+    ];
+    $additional_fields = [];
+
     // Get info about viewing/giving user
     if (!is_guest($member_id_viewing)) {
         $viewer_gift_points_balance = gift_points_balance($member_id_viewing);
@@ -45,53 +58,128 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
 
     // Get info about viewed user
     $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id_of, true, USERNAME_GUEST_AS_DEFAULT | USERNAME_DEFAULT_ERROR);
-
     $profile_url = $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id_of, true);
 
-    // Get point info
-    $point_info = point_info($member_id_of);
+    // Get additional points info
+    $points_spent = points_spent($member_id_of);
+    $points_balance = points_balance($member_id_of);
+    $points_sent = points_sent($member_id_of);
+    $gift_points_balance = gift_points_balance($member_id_of);
+    $escrow_details = points_get_escrow($member_id_of, $member_id_viewing);
+    $points_lifetime = points_lifetime($member_id_of);
 
-    $points_records = [];
-    $additional_fields = [];
+    // Get transaction tables
+    $received_table = points_get_transactions('recipient', $member_id_of, $member_id_viewing, true, false);
+    $sent_table = points_get_transactions('sender', $member_id_of, $member_id_viewing, false, true);
+    $spent_table = new Tempcode();
+    if ((has_privilege($member_id_viewing, 'view_points_ledger')) || ($member_id_viewing == $member_id_of)) {
+        $spent_table = points_get_transactions('debit', $member_id_of, $member_id_viewing, false, false);
+    }
 
-    // Run points hooks
+    // Run points hooks for low-impact transactions / aggregate tables
     $hook_obs = find_all_hook_obs('systems', 'points', 'Hook_points_');
-    foreach ($hook_obs as $hook_ob) {
-        $_array = $hook_ob->points_profile($member_id_of, $member_id_viewing, $point_info);
+    foreach ($hook_obs as $name => $hook_ob) {
+        $type_subtype = explode('__', $name);
+        $where = ' AND (' . db_string_equal_to('t_type', $type_subtype[0]);
+        if (array_key_exists(1, $type_subtype)) {
+            $where .= ' AND ' . db_string_equal_to('t_subtype', $type_subtype[1]);
+        }
+        $where .= ')';
+        $_array = $hook_ob->points_profile($member_id_of, $member_id_viewing);
         if ($_array !== null) {
-            if (array_key_exists('label', $_array)) {
-                $points_records[] = [
-                    'LABEL' => $_array['label'],
-                    '_COUNT' => strval($_array['count']),
-                    'COUNT' => integer_format($_array['count']),
-                    '_POINTS_EACH' => strval($_array['points_each']),
-                    'POINTS_EACH' => integer_format($_array['points_each']),
-                    '_POINTS_TOTAL' => strval($_array['points_total']),
-                    'POINTS_TOTAL' => integer_format($_array['points_total']),
+            $data = points_ledger_calculate(LEDGER_TYPE__ALL, $member_id_of, null, $where);
+            foreach ($data as $type => $data) {
+                list($count, $points, $gift_points) = $data;
+
+                // Ignore aggregate types with no count / points
+                if (($count <= 0) && ($points == 0) && ($gift_points == 0)) {
+                    continue;
+                }
+
+                $total = intval($points + $gift_points);
+
+                $aggregate_rows[$type][] = [
+                    $_array['label'],
+                    $count,
+                    $total
                 ];
-            } else {
-                $additional_fields += $_array;
+
+                $aggregate_totals[$type] += $total;
+                $aggregate_totals['total'] += $total;
             }
         }
     }
 
-    // Get additional points info
-    $points_spent = points_spent_system($member_id_of);
-    $points_balance = points_balance($member_id_of);
-    $total_points_sent = total_points_sent($member_id_of);
-    $gift_points_balance = gift_points_balance($member_id_of);
+    require_code('templates_results_table');
 
-    $to = points_get_transactions('recipient', $member_id_of, $member_id_viewing, true, false);
-    $from = points_get_transactions('sender', $member_id_of, $member_id_viewing, false, true);
-    $escrow_details = points_get_escrow($member_id_of, $member_id_viewing);
+    // Generate aggregate tables
+    $aggregate_tables = [];
+    foreach ($aggregate_rows as $type => $rows) {
+        $max_rows = count($rows);
 
-    // If we're staff, or the member, we can show the ledger too
-    $ledger_details = new Tempcode();
-    if ((has_privilege($member_id_viewing, 'view_points_ledger')) || ($member_id_viewing == $member_id_of)) {
-        $ledger_details = points_get_transactions('debit', $member_id_of, $member_id_viewing, false, false);
+        // No aggregate rows? No table.
+        if ($max_rows <= 0) {
+            $aggregate_tables[$type] = new Tempcode();
+            continue;
+        }
+
+        // Not allowed to view ledgers? No table for spent aggregates.
+        if (($type == 'spent') && (!has_privilege($member_id_viewing, 'view_points_ledger')) && ($member_id_viewing != $member_id_of)) {
+            $aggregate_tables[$type] = new Tempcode();
+            continue;
+        }
+
+        $start = get_param_integer('a_start_' . $type, 0);
+        $max = get_param_integer('a_max_' . $type, intval(get_option('point_logs_per_page')));
+        $sortables = ['count' => do_lang('TRANSACTIONS'), 'points' => do_lang('POINTS')];
+        $test = explode(' ', get_param_string('a_sort_' . $type, 'points DESC', INPUT_FILTER_GET_COMPLEX));
+        if (count($test) == 1) {
+            $test[1] = 'DESC';
+        }
+        list($sortable, $sort_order) = $test;
+        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
+            log_hack_attack_and_exit('ORDERBY_HACK');
+        }
+
+        $out = new Tempcode();
+        $transactions_header = protect_from_escaping(do_template('HELP_ICON_PHRASE', [
+            'LABEL' => do_lang_tempcode('TRANSACTIONS'),
+            'TOOLTIP' => do_lang_tempcode('DESCRIPTION_TRANSACTIONS_AGGREGATE'),
+        ]));
+        $header_row = results_header_row([do_lang('TYPE'), $transactions_header, do_lang('POINTS')], $sortables, 'a_sort_' . $type, $sortable . ' ' . $sort_order);
+
+        // Sort the results (we have to do it this way because the usort callback does not scope to variables within this function)
+        if ($sort_order == 'ASC') {
+            if ($sortable == 'count') {
+                usort($rows, function (array $a, array $b) : int {
+                    return $a[1] - $b[1];
+                });
+            } elseif ($sortable == 'points') {
+                usort($rows, function (array $a, array $b) : int {
+                    return $a[2] - $b[2];
+                });
+            }
+        } else {
+            if ($sortable == 'count') {
+                usort($rows, function (array $a, array $b) : int {
+                    return $b[1] - $a[1];
+                });
+            } elseif ($sortable == 'points') {
+                usort($rows, function (array $a, array $b) : int {
+                    return $b[2] - $a[2];
+                });
+            }
+        }
+
+        foreach ($rows as $row) {
+            list($label, $count, $points) = $row;
+            $out->attach(results_entry([$label, integer_format($count), integer_format($points)], true));
+        }
+
+        $aggregate_tables[$type] = results_table(do_lang_tempcode('POINTS_AGGREGATE_ROWS'), $start, 'a_start_' . $type, $max, 'a_max_' . $type, $max_rows, $header_row, $out, $sortables, $sortable, $sort_order, 'a_sort_' . $type, null, [], null, 8, 'gfhfghtrhhjghgfhfgf', false, 'tab--points');
     }
 
-    // Show send form
+    // Show send / modify points form
     $trans_type = get_param_string('trans_type', 'send');
     $send_amount = get_param_integer('send_amount', null);
     $send_reason = get_param_string('send_reason', '');
@@ -168,21 +256,33 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
             'PROFILE_URL' => $profile_url,
             'USERNAME' => $username,
 
-            'POINTS_RECORDS' => $points_records,
-
-            '_POINTS_SPENT' => strval($points_spent),
-            'POINTS_SPENT' => integer_format($points_spent),
-            '_REMAINING' => strval($points_balance),
-            'REMAINING' => integer_format($points_balance),
-            '_TOTAL_POINTS_SENT' => strval($total_points_sent),
-            'TOTAL_POINTS_SENT' => integer_format($total_points_sent),
+            '_POINTS_LIFETIME' => strval($points_lifetime),
+            'POINTS_LIFETIME' => integer_format($points_lifetime),
+            '_POINTS_BALANCE' => strval($points_balance),
+            'POINTS_BALANCE' => integer_format($points_balance),
             '_GIFT_POINTS_BALANCE' => strval($gift_points_balance),
             'GIFT_POINTS_BALANCE' => integer_format($gift_points_balance),
+            '_POINTS_RECEIVED_AGGREGATE' => strval($aggregate_totals['received']),
+            'POINTS_RECEIVED_AGGREGATE' => integer_format($aggregate_totals['received']),
+            '_POINTS_RECEIVED' => strval($points_lifetime - $aggregate_totals['received']),
+            'POINTS_RECEIVED' => integer_format($points_lifetime - $aggregate_totals['received']),
+            '_POINTS_SENT_AGGREGATE' => strval($aggregate_totals['sent']),
+            'POINTS_SENT_AGGREGATE' => integer_format($aggregate_totals['sent']),
+            '_POINTS_SENT' => strval($points_sent - $aggregate_totals['sent']),
+            'POINTS_SENT' => integer_format($points_sent - $aggregate_totals['sent']),
+            '_POINTS_SPENT_AGGREGATE' => strval($aggregate_totals['spent']),
+            'POINTS_SPENT_AGGREGATE' => integer_format($aggregate_totals['spent']),
+            '_POINTS_SPENT' => strval($points_spent - $aggregate_totals['spent']),
+            'POINTS_SPENT' => integer_format($points_spent - $aggregate_totals['spent']),
 
-            'TO' => $to,
-            'FROM' => $from,
-            'LEDGER_DETAILS' => $ledger_details,
+            'RECEIVED_TABLE_AGGREGATE' => $aggregate_tables['received'],
+            'RECEIVED_TABLE' => $received_table,
+            'SENT_TABLE_AGGREGATE' => $aggregate_tables['sent'],
+            'SENT_TABLE' => $sent_table,
+            'SPENT_TABLE_AGGREGATE' => $aggregate_tables['spent'],
+            'SPENT_TABLE' => $spent_table,
             'ESCROW_DETAILS' => $escrow_details,
+
             'GIVE' => $send_template,
             'ESCROW' => $escrow_template,
         ],
@@ -199,9 +299,10 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
  * @param  MEMBER $member_id_viewing Who we are looking at transactions using the account of
  * @param  boolean $include_sender Whether to include the "Sender" column on the table
  * @param  boolean $include_recipient Whether to include the "Recipient" column on the table
+ * @param  boolean $skip_low_impact Whether to skip low-impact records (like forum posts)
  * @return Tempcode The UI
  */
-function points_get_transactions(string $type, int $member_id_of, int $member_id_viewing, bool $include_sender = true, bool $include_recipient = true) : object
+function points_get_transactions(string $type, int $member_id_of, int $member_id_viewing, bool $include_sender = true, bool $include_recipient = true, bool $skip_low_impact = true) : object
 {
     require_code('points');
 
@@ -232,6 +333,19 @@ function points_get_transactions(string $type, int $member_id_of, int $member_id
             $where = [];
             $end = '';
             break;
+    }
+
+    // If a transaction has a t_type__t_subtype or a t_type matching the name of a points hook, then it is a low impact transaction; filter it out in the query.
+    if ($skip_low_impact) {
+        $hooks = find_all_hooks('systems', 'points');
+        foreach ($hooks as $hook => $place) {
+            $parts = explode('__', $hook);
+            $end .= ' AND NOT (' . db_string_equal_to('t_type', strval($parts[0]));
+            if (array_key_exists(1, $parts)) {
+                $end .= ' AND ' . db_string_equal_to('t_subtype', strval($parts[1]));
+            }
+            $end .= ')';
+        }
     }
 
     $start = get_param_integer('ledger_start_' . $type, 0);
@@ -306,15 +420,17 @@ function points_get_transactions(string $type, int $member_id_of, int $member_id
         }
         $results_entry[] = $reason;
 
-        if ($myrow['status'] == 'normal') {
-            $status = do_lang_tempcode('LEDGER_STATUS_normal');
+        if ($myrow['status'] == LEDGER_STATUS_NORMAL) {
+            $status = do_lang_tempcode('LEDGER_STATUS_0');
+        } elseif (($myrow['linked_to'] !== null) && (has_privilege($member_id_viewing, 'moderate_points'))) {
+            $status = do_lang_tempcode('LEDGER_STATUS_SHORT_' . strval($myrow['status']), escape_html(strval($myrow['linked_to'])));
         } else {
-            $status = do_lang_tempcode('LEDGER_STATUS_SHORT_' . $myrow['status'], escape_html(strval($myrow['linked_to'])));
+            $status = do_lang_tempcode('LEDGER_STATUS_SHORT_B_' . strval($myrow['status']));
         }
         $results_entry[] = $status;
         if ((has_privilege($member_id_viewing, 'moderate_points')) || (has_privilege($member_id_viewing, 'amend_point_transactions'))) {
             $actions = new Tempcode();
-            if (($myrow['locked'] == 0) && ($myrow['status'] != 'reversed') && ($myrow['status'] != 'reversing') && (has_privilege($member_id_viewing, 'moderate_points'))) {
+            if (($myrow['locked'] == 0) && ($myrow['status'] != LEDGER_STATUS_REVERSED) && ($myrow['status'] != LEDGER_STATUS_REVERSING) && (has_privilege($member_id_viewing, 'moderate_points'))) {
                 $redirect_url = points_url($member_id_of);
                 $delete_url = build_url(['page' => 'points', 'type' => 'reverse', 'member_id_of' => $member_id_of, 'redirect' => protect_url_parameter($redirect_url)], '_SELF');
                 $actions->attach(do_template('COLUMNED_TABLE_ACTION', [

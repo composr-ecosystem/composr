@@ -352,8 +352,10 @@ function set_poll(int $id)
         require_code('points2');
         $points_chosen = intval(get_option('points_CHOOSE_POLL'));
         if ($points_chosen != 0) {
-            points_credit_member($submitter, do_lang('POLL_CHOSEN'), $points_chosen, 0, 0, true, 0, ['choose', 'poll', strval($id)]);
+            points_credit_member($submitter, do_lang('POLL_CHOSEN'), $points_chosen, 0, 0, null, true, 0, 'poll', 'choose', strval($id));
         }
+    } else {
+        $points_chosen = 0;
     }
 
     $GLOBALS['SITE_DB']->query_update('poll', ['is_current' => 0], ['is_current' => 1]);

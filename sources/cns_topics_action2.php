@@ -170,9 +170,10 @@ function cns_edit_topic(?int $topic_id, ?string $description = null, ?string $em
  * @param  LONG_TEXT $reason The reason for this action
  * @param  ?AUTO_LINK $post_target_topic_id Where topic to move posts in this topic to (null: delete the posts)
  * @param  boolean $check_perms Whether to check permissions
+ * @param  boolean $reverse_point_transaction Whether to reverse the point transactions associated with the posts in this topic (ignored if $post_target_topic_id is specified)
  * @return AUTO_LINK The forum ID the topic is in (could be found without calling the function, but as we've looked it up, it is worth keeping)
  */
-function cns_delete_topic(int $topic_id, string $reason = '', ?int $post_target_topic_id = null, bool $check_perms = true) : int
+function cns_delete_topic(int $topic_id, string $reason = '', ?int $post_target_topic_id = null, bool $check_perms = true, bool $reverse_point_transaction = false) : int
 {
     // Info about source
     $info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['*'], ['id' => $topic_id], '', 1);
@@ -260,13 +261,26 @@ function cns_delete_topic(int $topic_id, string $reason = '', ?int $post_target_
         }
     } else {
         $_postdetails = [];
+        $posts_deleted = [];
         do {
             $_postdetails = $GLOBALS['FORUM_DB']->query_select('f_posts', ['p_post', 'id'], ['p_topic_id' => $topic_id], '', 200);
             foreach ($_postdetails as $post) {
                 delete_lang($post['p_post'], $GLOBALS['FORUM_DB']);
                 $GLOBALS['FORUM_DB']->query_delete('f_posts', ['id' => $post['id']], '', 1);
+                $posts_deleted[] = $post['id'];
             }
         } while (!empty($_postdetails));
+
+        // Reverse points
+        if ($reverse_point_transaction && addon_installed('points')) {
+            require_code('points2');
+            foreach ($posts_deleted as $post) {
+                $ledger = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'id', ['t_type' => 'post', 't_subtype' => 'add', 't_type_id' => strval($post)]);
+                if ($ledger !== null) {
+                    points_transaction_reverse($ledger);
+                }
+            }
+        }
     }
 
     // Delete stuff

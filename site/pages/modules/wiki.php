@@ -132,8 +132,6 @@ class Module_wiki
             $GLOBALS['SITE_DB']->create_index('wiki_posts', 'cdate_and_time', ['date_and_time']);
             $GLOBALS['SITE_DB']->create_index('wiki_posts', 'svalidated', ['validated']);
 
-            $GLOBALS['FORUM_DRIVER']->install_create_custom_field('points_gained_wiki', 20, 1, 0, 0, 0, '', 'integer');
-
             $GLOBALS['SITE_DB']->create_index('wiki_posts', 'ftjoin_spm', ['the_message']);
             $GLOBALS['SITE_DB']->create_index('wiki_pages', 'ftjoin_spt', ['title']);
             $GLOBALS['SITE_DB']->create_index('wiki_pages', 'ftjoin_spd', ['the_description']);
@@ -205,6 +203,8 @@ class Module_wiki
             $GLOBALS['SITE_DB']->alter_table_field('wiki_pages', 'hide_posts', 'BINARY', 'show_posts');
             $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'wiki_pages SET show_posts=1-show_posts');
             $GLOBALS['SITE_DB']->alter_table_field('wiki_pages', 'description', 'LONG_TRANS__COMCODE', 'the_description');
+
+            $GLOBALS['FORUM_DRIVER']->install_delete_custom_field('points_gained_wiki');
         }
     }
 
