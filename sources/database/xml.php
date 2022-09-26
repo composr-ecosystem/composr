@@ -131,6 +131,7 @@ function _get_sql_keywords() : array
         'LEFT', 'RIGHT', // Join types
         'X_CONCAT', 'X_LENGTH', 'X_REPLACE', 'X_COALESCE', 'X_IFF',
         'X_SUBSTR', 'X_RAND', 'X_LEAST', 'X_GREATEST', 'X_MOD', 'X_MD5',
+        'CASE', 'WHEN', 'ELSE', 'END',
         'WHERE',
         'SELECT', 'FROM', 'AS', 'UNION', 'ALL', 'DISTINCT',
         'INSERT', 'INTO', 'VALUES', 'UPDATE', 'SET', 'DELETE',
@@ -2166,6 +2167,36 @@ class Database_Static_xml extends DatabaseDriver
                 $expr = [$token, $results];
                 break;
 
+            case 'CASE':
+                if ($this->_parsing_peek($at, $tokens, $query) != 'WHEN') {
+                    $main_expr = $this->_parsing_read_expression($at, $tokens, $query, $db, false, true, $fail_ok);
+                } else {
+                    $main_expr = null;
+                }
+                $case_expressions = [];
+                while ($this->_parsing_peek($at, $tokens, $query) == 'WHEN') {
+                    $this->_parsing_expects($at, $tokens, 'WHEN', $query);
+                    $check_expr = $this->_parsing_read_expression($at, $tokens, $query, $db, false, true, $fail_ok);
+                    if (!$this->_parsing_expects($at, $tokens, 'THEN', $query)) {
+                        return null;
+                    }
+                    $value_expr = $this->_parsing_read_expression($at, $tokens, $query, $db, false, true, $fail_ok);
+                    $case_expressions[] = [$check_expr, $value_expr];
+                }
+                if ($this->_parsing_peek($at, $tokens, $query) == 'ELSE') {
+                    $this->_parsing_expects($at, $tokens, 'ELSE', $query);
+                    $else_expr = $this->_parsing_read_expression($at, $tokens, $query, $db, false, true, $fail_ok);
+                } else {
+                    $else_expr = null;
+                }
+                if (!$this->_parsing_expects($at, $tokens, 'END', $query)) {
+                    return null;
+                }
+                $expr = ['CASE', $main_expr, $case_expressions, $else_expr];
+                break;
+
+            // Operators...
+
             case '(':
                 $next_token = $this->_parsing_read($at, $tokens, $query);
                 $at--;
@@ -2691,6 +2722,37 @@ class Database_Static_xml extends DatabaseDriver
                     return null;
                 }
                 return md5($value);
+
+            case 'CASE':
+                list(, $main_expr, $case_expressions, $else_expr) = $expr;
+
+                if ($main_expr === null) {
+                    foreach ($case_expressions as $case_expression) {
+                        $check_val = $this->_execute_expression($case_expression[0], $bindings, $query, $db, $fail_ok, $full_set);
+                        if (!is_bool($check_val)) {
+                            $this->_bad_query($query, false, 'Non boolean expression in CASE statement where we have no main expression to compare a value against');
+                            return null;
+                        }
+                        if ($check_val) {
+                            $value_val = $this->_execute_expression($case_expression[1], $bindings, $query, $db, $fail_ok, $full_set);
+                            return $value_val;
+                        }
+                    }
+                } else {
+                    $main_val = $this->_execute_expression($main_expr, $bindings, $query, $db, $fail_ok, $full_set);
+                    foreach ($case_expressions as $case_expression) {
+                        $check_val = $this->_execute_expression($case_expression[0], $bindings, $query, $db, $fail_ok, $full_set);
+                        if ($check_val == $main_val) {
+                            $value_val = $this->_execute_expression($case_expression[1], $bindings, $query, $db, $fail_ok, $full_set);
+                            return $value_val;
+                        }
+                    }
+                }
+                if ($else_expr !== null) {
+                    $else_val = $this->_execute_expression($else_expr, $bindings, $query, $db, $fail_ok, $full_set);
+                    return $else_val;
+                }
+                return null;
 
             case 'IN':
                 $val = $this->_execute_expression($expr[1], $bindings, $query, $db, $fail_ok, $full_set);
@@ -4224,6 +4286,27 @@ class Database_Static_xml extends DatabaseDriver
         }
 
         return $tokens[$at - 1];
+    }
+
+    /**
+     * Reads the next token.
+     *
+     * @param  integer $at Our offset counter
+     * @param  array $tokens Tokens
+     * @param  string $query Query that was executed
+     * @param  boolean $fail_ok Whether it can return null if we're out of output (otherwise fails)
+     * @return ?string Token read (null: error, read too far)
+     */
+    protected function _parsing_peek(int &$at, array $tokens, string $query, bool $fail_ok = false) : ?string
+    {
+        if (!array_key_exists($at, $tokens)) {
+            if ($fail_ok) {
+                return null;
+            }
+            return $this->_bad_query($query, false, 'Unexpected end of query');
+        }
+
+        return $tokens[$at];
     }
 
     /**

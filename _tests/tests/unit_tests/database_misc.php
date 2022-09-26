@@ -20,8 +20,55 @@
  */
 class database_misc_test_set extends cms_test_case
 {
+    public function testCASE()
+    {
+        if (($this->only !== null) && ($this->only != 'sql')) {
+            return;
+        }
+
+        // Simple syntax...
+
+        $sql = "SELECT CASE 1 WHEN 1 THEN 'a' WHEN 2 THEN 'b' END";
+        $result = $GLOBALS['SITE_DB']->query_value_if_there($sql);
+        $this->assertTrue($result === 'a');
+
+        $sql = "SELECT CASE 2 WHEN 1 THEN 'a' WHEN 2 THEN 'b' END";
+        $result = $GLOBALS['SITE_DB']->query_value_if_there($sql);
+        $this->assertTrue($result === 'b');
+
+        $sql = "SELECT CASE 3 WHEN 1 THEN 'a' WHEN 2 THEN 'b' END";
+        $result = $GLOBALS['SITE_DB']->query_value_if_there($sql);
+        $this->assertTrue($result === null);
+
+        $sql = "SELECT CASE 3 WHEN 1 THEN 'a' WHEN 2 THEN 'b' ELSE 'c' END";
+        $result = $GLOBALS['SITE_DB']->query_value_if_there($sql);
+        $this->assertTrue($result === 'c');
+
+        // Expanded syntax...
+
+        $sql = "SELECT CASE WHEN 1=1 THEN 'a' WHEN 1=2 THEN 'b' END";
+        $result = $GLOBALS['SITE_DB']->query_value_if_there($sql);
+        $this->assertTrue($result === 'a');
+
+        $sql = "SELECT CASE WHEN 2=1 THEN 'a' WHEN 2=2 THEN 'b' END";
+        $result = $GLOBALS['SITE_DB']->query_value_if_there($sql);
+        $this->assertTrue($result === 'b');
+
+        $sql = "SELECT CASE WHEN 3=1 THEN 'a' WHEN 3=2 THEN 'b' END";
+        $result = $GLOBALS['SITE_DB']->query_value_if_there($sql);
+        $this->assertTrue($result === null);
+
+        $sql = "SELECT CASE WHEN 3=1 THEN 'a' WHEN 4=2 THEN 'b' ELSE 'c' END";
+        $result = $GLOBALS['SITE_DB']->query_value_if_there($sql);
+        $this->assertTrue($result === 'c');
+    }
+
     public function testIFF()
     {
+        if (($this->only !== null) && ($this->only != 'sql')) {
+            return;
+        }
+
         $sql = 'SELECT ' . db_function('IFF', ['1=1', '2', '3']);
         $result = $GLOBALS['SITE_DB']->query_value_if_there($sql);
         $this->assertTrue($result === 2);
@@ -33,6 +80,10 @@ class database_misc_test_set extends cms_test_case
 
     public function testCONCAT()
     {
+        if (($this->only !== null) && ($this->only != 'sql')) {
+            return;
+        }
+
         $sql = 'SELECT ' . db_function('CONCAT', ['\'a\'', '\'b\'']);
         $expected_result = 'ab';
         $result = $GLOBALS['SITE_DB']->query_value_if_there($sql);
@@ -41,6 +92,10 @@ class database_misc_test_set extends cms_test_case
 
     public function testREPLACE()
     {
+        if (($this->only !== null) && ($this->only != 'sql')) {
+            return;
+        }
+
         $sql = 'SELECT ' . db_function('REPLACE', ['\'ab\'', '\'a\'', '\'b\'']);
         $expected_result = 'bb';
         $result = $GLOBALS['SITE_DB']->query_value_if_there($sql);
@@ -49,6 +104,10 @@ class database_misc_test_set extends cms_test_case
 
     public function testSUBSTR()
     {
+        if (($this->only !== null) && ($this->only != 'sql')) {
+            return;
+        }
+
         $sql = 'SELECT ' . db_function('SUBSTR', ['\'test\'', '1', '1']);
         $expected_result = 't';
         $result = $GLOBALS['SITE_DB']->query_value_if_there($sql);
@@ -57,6 +116,10 @@ class database_misc_test_set extends cms_test_case
 
     public function testLENGTH()
     {
+        if (($this->only !== null) && ($this->only != 'sql')) {
+            return;
+        }
+
         $sql = 'SELECT ' . db_function('LENGTH', ['\'test\'']);
         $expected_result = 4;
         $result = $GLOBALS['SITE_DB']->query_value_if_there($sql);
@@ -65,6 +128,10 @@ class database_misc_test_set extends cms_test_case
 
     public function testRAND()
     {
+        if (($this->only !== null) && ($this->only != 'sql')) {
+            return;
+        }
+
         $sql = 'SELECT ' . db_function('RAND');
         $result = $GLOBALS['SITE_DB']->query_value_if_there($sql);
         $this->assertTrue(is_numeric($result)/*NB: On MySQL it will come as a string and we have no way of changing that*/);
@@ -72,6 +139,10 @@ class database_misc_test_set extends cms_test_case
 
     public function testCOALESCE()
     {
+        if (($this->only !== null) && ($this->only != 'sql')) {
+            return;
+        }
+
         $sql = 'SELECT ' . db_function('COALESCE', ['\'a\'', '\'b\'']);
         $expected_result = 'a';
         $result = $GLOBALS['SITE_DB']->query_value_if_there($sql);
@@ -90,6 +161,10 @@ class database_misc_test_set extends cms_test_case
 
     public function testLEAST()
     {
+        if (($this->only !== null) && ($this->only != 'sql')) {
+            return;
+        }
+
         $sql = 'SELECT ' . db_function('LEAST', ['1', '2', '3']);
         $expected_result = 1;
         $result = $GLOBALS['SITE_DB']->query_value_if_there($sql);
@@ -98,6 +173,10 @@ class database_misc_test_set extends cms_test_case
 
     public function testGREATEST()
     {
+        if (($this->only !== null) && ($this->only != 'sql')) {
+            return;
+        }
+
         $sql = 'SELECT ' . db_function('GREATEST', ['1', '2', '3']);
         $expected_result = 3;
         $result = $GLOBALS['SITE_DB']->query_value_if_there($sql);
@@ -106,6 +185,10 @@ class database_misc_test_set extends cms_test_case
 
     public function testMOD()
     {
+        if (($this->only !== null) && ($this->only != 'sql')) {
+            return;
+        }
+
         $sql = 'SELECT ' . db_function('MOD', ['4', '2']);
         $expected_result = 0;
         $result = $GLOBALS['SITE_DB']->query_value_if_there($sql);
@@ -119,6 +202,10 @@ class database_misc_test_set extends cms_test_case
 
     public function testCOUNT()
     {
+        if (($this->only !== null) && ($this->only != 'sql')) {
+            return;
+        }
+
         $sql = 'SELECT COUNT(*) FROM (SELECT 1 AS x UNION SELECT 2 AS x UNION SELECT 3 AS x) x';
         $expected_result = 3;
         $result = $GLOBALS['SITE_DB']->query_value_if_there($sql, false, true);
@@ -132,6 +219,10 @@ class database_misc_test_set extends cms_test_case
 
     public function testSUM()
     {
+        if (($this->only !== null) && ($this->only != 'sql')) {
+            return;
+        }
+
         $sql = 'SELECT SUM(x) FROM (SELECT 1 AS x UNION SELECT 2 AS x UNION SELECT 3 AS x) x';
         $expected_result = 6;
         $result = $GLOBALS['SITE_DB']->query_value_if_there($sql, false, true);
@@ -140,6 +231,10 @@ class database_misc_test_set extends cms_test_case
 
     public function testAVG()
     {
+        if (($this->only !== null) && ($this->only != 'sql')) {
+            return;
+        }
+
         $sql = 'SELECT AVG(x) FROM (SELECT 1 AS x UNION SELECT 2 AS x UNION SELECT 3 AS x) x';
         $expected_result = 2.0;
         $result = $GLOBALS['SITE_DB']->query_value_if_there($sql, false, true);
@@ -151,6 +246,10 @@ class database_misc_test_set extends cms_test_case
 
     public function testMAX()
     {
+        if (($this->only !== null) && ($this->only != 'sql')) {
+            return;
+        }
+
         $sql = 'SELECT MAX(x) FROM (SELECT 1 AS x UNION SELECT 2 AS x UNION SELECT 3 AS x) x';
         $expected_result = 3;
         $result = $GLOBALS['SITE_DB']->query_value_if_there($sql, false, true);
@@ -159,6 +258,10 @@ class database_misc_test_set extends cms_test_case
 
     public function testMIN()
     {
+        if (($this->only !== null) && ($this->only != 'sql')) {
+            return;
+        }
+
         $sql = 'SELECT MIN(x) FROM (SELECT 1 AS x UNION SELECT 2 AS x UNION SELECT 3 AS x) x';
         $expected_result = 1;
         $result = $GLOBALS['SITE_DB']->query_value_if_there($sql, false, true);
@@ -167,6 +270,10 @@ class database_misc_test_set extends cms_test_case
 
     public function testGROUP_CONCAT()
     {
+        if (($this->only !== null) && ($this->only != 'sql')) {
+            return;
+        }
+
         $sql = 'SELECT ' . db_function('GROUP_CONCAT', ['x', '(SELECT \'a\' AS x UNION SELECT \'b\' AS x) x']);
         $expected_result = 'a,b';
         $result = $GLOBALS['SITE_DB']->query_value_if_there($sql, false, true);
@@ -175,6 +282,10 @@ class database_misc_test_set extends cms_test_case
 
     public function testX_ORDER_BY_BOOLEAN()
     {
+        if (($this->only !== null) && ($this->only != 'sql')) {
+            return;
+        }
+
         $sql = 'SELECT x FROM (SELECT 1 AS x UNION SELECT 2 AS x) y ORDER BY ' . db_function('X_ORDER_BY_BOOLEAN', ['x=1']);
         $expected_result = 2;
         $result = $GLOBALS['SITE_DB']->query_value_if_there($sql, false, true);
@@ -183,49 +294,21 @@ class database_misc_test_set extends cms_test_case
 
     public function testREVERSE()
     {
+        if (($this->only !== null) && ($this->only != 'sql')) {
+            return;
+        }
+
         $sql = 'SELECT ' . db_function('REVERSE', ['\'abca\'']);
         $result = $GLOBALS['SITE_DB']->query_value_if_there($sql);
         $this->assertTrue($result == 'acba');
     }
 
-    public function testDDL()
-    {
-        $db = $GLOBALS['SITE_DB'];
-
-        // In case test had crashed previously
-        $db->drop_table_if_exists('dbmisc_test');
-        $db->drop_table_if_exists('dbmisc_renamed');
-
-        // Tables and fields
-        $db->create_table('dbmisc_test', [
-            'id' => '*INTEGER',
-            'blah' => 'INTEGER',
-        ]);
-        $db->query_insert('dbmisc_test', ['id' => 1, 'blah' => 123]);
-        $db->change_primary_key('dbmisc_test', ['blah']);
-        $db->delete_table_field('dbmisc_test', 'id');
-        $db->add_auto_key('dbmisc_test', 'id');
-        $db->add_table_field('dbmisc_test', 'whatever', 'REAL', 0.0);
-        $db->add_table_field('dbmisc_test', 'whatever_nullable', '?REAL');
-        $db->add_table_field('dbmisc_test', 'long_text', 'LONG_TEXT', 'test');
-        $db->add_table_field('dbmisc_test', 'long_text_no_default', 'LONG_TEXT');
-        $db->rename_table('dbmisc_test', 'dbmisc_renamed');
-        $db->drop_table_if_exists('dbmisc_renamed');
-
-        // Indexes
-        $db->create_table('dbmisc_test', [
-            'id' => '*AUTO',
-            'blah' => 'INTEGER',
-            'some_text' => 'SHORT_TEXT',
-        ]);
-        $db->create_index('dbmisc_test', 'test_index', ['blah']);
-        $db->create_index('dbmisc_test', 'test_fulltext_index', ['some_text']);
-        $db->delete_index_if_exists('dbmisc_test', 'test_index');
-        $db->drop_table_if_exists('dbmisc_test');
-    }
-
     public function testOperations()
     {
+        if (($this->only !== null) && ($this->only != 'sql')) {
+            return;
+        }
+
         $sql = 'SELECT 1+2';
         $expected_result = 3;
         $result = $GLOBALS['SITE_DB']->query_value_if_there($sql);
@@ -249,6 +332,10 @@ class database_misc_test_set extends cms_test_case
 
     public function testInequalities()
     {
+        if (($this->only !== null) && ($this->only != 'sql')) {
+            return;
+        }
+
         $sql = 'SELECT 1 FROM (SELECT 1 AS x) x WHERE 1>2';
         $result = $GLOBALS['SITE_DB']->query($sql);
         $this->assertTrue(empty($result));
@@ -290,24 +377,64 @@ class database_misc_test_set extends cms_test_case
         $this->assertTrue(empty($result));
     }
 
+    public function testDDL()
+    {
+        if (($this->only !== null) && ($this->only != 'ddl')) {
+            return;
+        }
+
+        $db = $GLOBALS['SITE_DB'];
+
+        // In case test had crashed previously
+        $db->drop_table_if_exists('dbmisc_test');
+        $db->drop_table_if_exists('dbmisc_renamed');
+
+        // Tables and fields
+        $db->create_table('dbmisc_test', [
+            'id' => '*INTEGER',
+            'blah' => 'INTEGER',
+        ]);
+        $db->query_insert('dbmisc_test', ['id' => 1, 'blah' => 123]);
+        $db->change_primary_key('dbmisc_test', ['blah']);
+        $db->delete_table_field('dbmisc_test', 'id');
+        $db->add_auto_key('dbmisc_test', 'id');
+        $db->add_table_field('dbmisc_test', 'whatever', 'REAL', 0.0);
+        $db->add_table_field('dbmisc_test', 'whatever_nullable', '?REAL');
+        $db->add_table_field('dbmisc_test', 'long_text', 'LONG_TEXT', 'test');
+        $db->add_table_field('dbmisc_test', 'long_text_no_default', 'LONG_TEXT');
+        $db->rename_table('dbmisc_test', 'dbmisc_renamed');
+        $db->drop_table_if_exists('dbmisc_renamed');
+
+        // Indexes
+        $db->create_table('dbmisc_test', [
+            'id' => '*AUTO',
+            'blah' => 'INTEGER',
+            'some_text' => 'SHORT_TEXT',
+        ]);
+        $db->create_index('dbmisc_test', 'test_index', ['blah']);
+        $db->create_index('dbmisc_test', 'test_fulltext_index', ['some_text']);
+        $db->delete_index_if_exists('dbmisc_test', 'test_index');
+        $db->drop_table_if_exists('dbmisc_test');
+    }
+
     public function testEmoji()
     {
+        if (($this->only !== null) && ($this->only != 'utf')) {
+            return;
+        }
+
         $emoji = "\u{1F601}";
         set_value('emoji_test', $emoji);
         $this->assertTrue($emoji == get_value('emoji_test'));
         delete_value('emoji_test');
     }
 
-    public function testCountApprox()
-    {
-        $this->assertTrue($GLOBALS['SITE_DB']->get_table_count_approx('download_categories', [], null) > 0);
-        $this->assertTrue($GLOBALS['SITE_DB']->get_table_count_approx('download_categories', ['id' => db_get_first_id()], null) > 0);
-        $this->assertTrue($GLOBALS['SITE_DB']->get_table_count_approx('download_categories', [], 'id=' . strval(db_get_first_id())) > 0);
-        $this->assertTrue($GLOBALS['SITE_DB']->get_table_count_approx('download_categories', ['id' => db_get_first_id()], 'id=' . strval(db_get_first_id())) > 0);
-    }
-
     public function testSmoothUtf8()
     {
+        if (($this->only !== null) && ($this->only != 'utf')) {
+            return;
+        }
+
         // Really you should also manually check the DB is storing utf-8, not just working as a byte-bucket
 
         $GLOBALS['SITE_DB']->drop_table_if_exists('testy_test_test_2');
@@ -330,8 +457,24 @@ class database_misc_test_set extends cms_test_case
         $GLOBALS['SITE_DB']->drop_table_if_exists('testy_test_test_2');
     }
 
+    public function testCountApprox()
+    {
+        if (($this->only !== null) && ($this->only != 'count')) {
+            return;
+        }
+
+        $this->assertTrue($GLOBALS['SITE_DB']->get_table_count_approx('download_categories', [], null) > 0);
+        $this->assertTrue($GLOBALS['SITE_DB']->get_table_count_approx('download_categories', ['id' => db_get_first_id()], null) > 0);
+        $this->assertTrue($GLOBALS['SITE_DB']->get_table_count_approx('download_categories', [], 'id=' . strval(db_get_first_id())) > 0);
+        $this->assertTrue($GLOBALS['SITE_DB']->get_table_count_approx('download_categories', ['id' => db_get_first_id()], 'id=' . strval(db_get_first_id())) > 0);
+    }
+
     public function testFullTextSearch()
     {
+        if (($this->only !== null) && ($this->only != 'fulltext')) {
+            return;
+        }
+
         require_code('database_search');
 
         $GLOBALS['SITE_DB']->drop_table_if_exists('testy_test_test');

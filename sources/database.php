@@ -1261,7 +1261,9 @@ abstract class DatabaseDriver
                 db2          Yes              No        No         IF...THEN...ELSEIF...ELSE...END IF
                 SQL server   Yes              No        Yes        IF...ELSE...
 
-                Anything supporting CASE supports both simple and complex forms, as both are standardised.
+                Anything supporting CASE supports both simple and complex forms, as both are standardised. So CASE does not require db_function.
+
+                For IF checks, we will standardise on IIF as it is the most common.
                 */
                 switch (get_db_type()) {
                     case 'mysql':
