@@ -89,7 +89,7 @@ function points_get_escrow(int $member_id_of, int $member_id_viewing) : object
         do_lang_tempcode('RECIPIENT'),
         do_lang_tempcode('REASON')
     ];
-    $header_row = results_header_row($header_columns, $sortables, 'escrow_sort', $sortable . ' ' . $sort_order);
+    $header_row = results_header_row($header_columns, $sortables, 'escrow_sort', $sortable . ' ' . $sort_order, 'gbcaf8b021e3939bfce1dce9ff8ed63a', null, 'tab--points');
 
     foreach ($rows as $myrow) {
         // Their name
@@ -114,7 +114,7 @@ function points_get_escrow(int $member_id_of, int $member_id_viewing) : object
         ];
         $out->attach(results_entry($results_entry, true));
     }
-    return results_table(do_lang_tempcode('_ESCROW', escape_html($viewing_name)), $start, 'escrow_start', $max, 'escrow_max', $max_rows, $header_row, $out, $sortables, $sortable, $sort_order, 'escrow_sort', null, [], null, 8, 'gfhfghtrhhjghgfhfgf', false, 'tab--points');
+    return results_table(do_lang_tempcode('_ESCROW', escape_html($viewing_name)), $start, 'escrow_start', $max, 'escrow_max', $max_rows, $header_row, $out, $sortables, $sortable, $sort_order, 'escrow_sort', null, [], null, 8, 'gbcaf8b021e3939bfce1dce9ff8ed63a', false, 'tab--points');
 }
 
 /**
@@ -176,7 +176,7 @@ function escrow_get_logs(int $id) : object
 
         $out->attach(results_entry($results_entry, true));
     }
-    return results_table(do_lang_tempcode('ESCROW_LOGS'), $start, 'start', $max, 'max', $max_rows, $header_row, $out, $sortables, $sortable, $sort_order, 'sort', null, [], null, 8, 'gfhfghtrhhjghgfhfgf', false, null, false, false);
+    return results_table(do_lang_tempcode('ESCROW_LOGS'), $start, 'start', $max, 'max', $max_rows, $header_row, $out, $sortables, $sortable, $sort_order, 'sort', null, [], null, 8, 'gbcaf8b021e3939bfce1dce9ff8ed63a', false, null, false, false);
 }
 
 /**

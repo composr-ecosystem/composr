@@ -433,6 +433,7 @@ class Hook_addon_registry_shopping
                     'SORT_DESC_SELECTED' => true,
                     'SORT_URL_ASC' => placeholder_url(),
                     'SORT_ASC_SELECTED' => false,
+                    'HASH' => null,
                 ]));
             }
         }

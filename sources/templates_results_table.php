@@ -44,7 +44,7 @@ Results table = Built on top of columned table, with inbuilt integration of Comp
  * @param  ?integer $max_pagination_links The maximum number of quick-jump pagination-links to show (null: configured default)
  * @param  string $guid GUID to pass to template
  * @param  boolean $skip_sortables_form Whether to skip showing a sort form (useful if there is another form wrapped around this)
- * @param  ?ID_TEXT $hash URL hash component (null: none)
+ * @param  ?ID_TEXT $hash URL hash component without the # (null: none)
  * @param  boolean $interactive Whether to allow interactive sorting and filtering
  * @param  boolean $responsive Whether the table should be responsive
  * @param  ?Tempcode $footer_row The footer row of the fields we are showing in our table, presented in pre-prepared Tempcode (null: do not show a footer)
@@ -116,9 +116,10 @@ function results_table($text_id, int $start, string $start_name, int $max, strin
  * @param  ID_TEXT $current_ordering The current ordering ("$sortable $sort_order")
  * @param  string $guid GUID to pass to template
  * @param  ?array $interactive_options Array of tuples matching the indices of $values, each pair being a boolean whether the value is searchable, boolean whether the value is filterable, and a sortable type supported by sortable_tables.js (or null) (null: no interactivity)
+ * @param  ?ID_TEXT $hash URL hash component without the # (null: none)
  * @return Tempcode The generated header row
  */
-function results_header_row(array $values, array $sortables = [], string $order_param = 'sort', string $current_ordering = '', string $guid = 'fbcaf8b021e3939bfce1dce9ff8ed63a', ?array $interactive_options = null) : object
+function results_header_row(array $values, array $sortables = [], string $order_param = 'sort', string $current_ordering = '', string $guid = 'fbcaf8b021e3939bfce1dce9ff8ed63a', ?array $interactive_options = null, ?string $hash = null) : object
 {
     $cells = new Tempcode();
     $cnt = count($values);
@@ -175,6 +176,7 @@ function results_header_row(array $values, array $sortables = [], string $order_
                 'SORT_DESC_SELECTED' => $sort_desc_selected,
                 'SORT_URL_DESC' => $sort_url_desc,
                 'SORT_URL_ASC' => $sort_url_asc,
+                'HASH' => $hash,
             ];
             $cells->attach(do_template('RESULTS_TABLE_FIELD_TITLE_SORTABLE', $map));
         } else {
@@ -286,7 +288,7 @@ function results_entry(array $values, bool $auto_escape, ?string $tpl_set = null
  * @param  ?ID_TEXT $sort_order The order we are sorting in (null: none)
  * @set ASC DESC
  * @param  ?ID_TEXT $sort_name The parameter name used to store our sortable (usually 'sort') (null: none)
- * @param  ?ID_TEXT $hash URL hash component (null: none)
+ * @param  ?ID_TEXT $hash URL hash component without the # (null: none)
  * @return Tempcode The results sorter
  */
 function results_sorter(array $sortables, ?string $sortable = null, ?string $sort_order = null, ?string $sort_name = 'sort', ?string $hash = '') : object

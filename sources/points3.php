@@ -146,7 +146,7 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
             'LABEL' => do_lang_tempcode('TRANSACTIONS'),
             'TOOLTIP' => do_lang_tempcode('DESCRIPTION_TRANSACTIONS_AGGREGATE'),
         ]));
-        $header_row = results_header_row([do_lang('TYPE'), $transactions_header, do_lang('POINTS')], $sortables, 'a_sort_' . $type, $sortable . ' ' . $sort_order);
+        $header_row = results_header_row([do_lang('TYPE'), $transactions_header, do_lang('POINTS')], $sortables, 'a_sort_' . $type, $sortable . ' ' . $sort_order, 'ibcaf8b021e3939bfce1dce9ff8ed63a', null, 'tab--points');
 
         // Sort the results (we have to do it this way because the usort callback does not scope to variables within this function)
         if ($sort_order == 'ASC') {
@@ -176,7 +176,7 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
             $out->attach(results_entry([$label, integer_format($count), integer_format($points)], true));
         }
 
-        $aggregate_tables[$type] = results_table(do_lang_tempcode('POINTS_AGGREGATE_ROWS'), $start, 'a_start_' . $type, $max, 'a_max_' . $type, $max_rows, $header_row, $out, $sortables, $sortable, $sort_order, 'a_sort_' . $type, null, [], null, 8, 'gfhfghtrhhjghgfhfgf', false, 'tab--points');
+        $aggregate_tables[$type] = results_table(do_lang_tempcode('POINTS_AGGREGATE_ROWS'), $start, 'a_start_' . $type, $max, 'a_max_' . $type, $max_rows, $header_row, $out, $sortables, $sortable, $sort_order, 'a_sort_' . $type, null, [], null, 8, 'ibcaf8b021e3939bfce1dce9ff8ed63a', false, 'tab--points');
     }
 
     // Show send / modify points form
@@ -381,7 +381,7 @@ function points_get_transactions(string $type, int $member_id_of, int $member_id
     if ((has_privilege($member_id_viewing, 'moderate_points')) || (has_privilege($member_id_viewing, 'amend_point_transactions'))) {
         $header_columns[] = do_lang_tempcode('ACTIONS');
     }
-    $header_row = results_header_row($header_columns, $sortables, 'ledger_sort_' . $type, $sortable . ' ' . $sort_order);
+    $header_row = results_header_row($header_columns, $sortables, 'ledger_sort_' . $type, $sortable . ' ' . $sort_order, 'jbcaf8b021e3939bfce1dce9ff8ed63a', null, 'tab--points');
 
     foreach ($rows as $myrow) {
         if (($myrow['anonymous'] == 1) && ($type == 'from')) {
@@ -461,7 +461,7 @@ function points_get_transactions(string $type, int $member_id_of, int $member_id
         }
         $out->attach(results_entry($results_entry, true));
     }
-    return results_table(do_lang_tempcode('_POINTS', escape_html($viewing_name)), $start, 'ledger_start_' . $type, $max, 'ledger_max_' . $type, $max_rows, $header_row, $out, $sortables, $sortable, $sort_order, 'ledger_sort_' . $type, null, [], null, 8, 'gfhfghtrhhjghgfhfgf', false, 'tab--points');
+    return results_table(do_lang_tempcode('_POINTS', escape_html($viewing_name)), $start, 'ledger_start_' . $type, $max, 'ledger_max_' . $type, $max_rows, $header_row, $out, $sortables, $sortable, $sort_order, 'ledger_sort_' . $type, null, [], null, 8, 'jbcaf8b021e3939bfce1dce9ff8ed63a', false, 'tab--points');
 }
 
 /**

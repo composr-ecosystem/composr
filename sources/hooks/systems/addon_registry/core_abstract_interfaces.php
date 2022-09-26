@@ -839,6 +839,7 @@ class Hook_addon_registry_core_abstract_interfaces
                     'SORT_DESC_SELECTED' => true,
                     'SORT_URL_ASC' => placeholder_url(),
                     'SORT_ASC_SELECTED' => false,
+                    'HASH' => null,
                 ]));
             }
         }
@@ -920,6 +921,7 @@ class Hook_addon_registry_core_abstract_interfaces
                     'SORT_DESC_SELECTED' => true,
                     'SORT_URL_ASC' => placeholder_url(),
                     'SORT_ASC_SELECTED' => false,
+                    'HASH' => null,
                 ]));
             }
         }
