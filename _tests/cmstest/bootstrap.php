@@ -114,16 +114,57 @@ function unit_testing_run()
         </select>
         <p><button class=\"btn btn-primary btn-scr buttons--proceed\" type=\"button\"id=\"select-button\" />{$proceed_icon} Call selection</button></p>
         <script nonce=\"" . $GLOBALS['CSP_NONCE'] . "\" id=\"select-list\">
+            var process_urls_process;
+            var test_urls;
+            var open_windows;
+
             var list = document.getElementById('select-list');
             var button = document.getElementById('select-button');
             button.onclick = function() {
+                button.disabled = true;
+
+                test_urls = [];
                 for (var i = 0; i < list.options.length; i++) {
                     if (list.options[i].selected) {
                         var url = 'index.php?id=' + list.options[i].value + '&close_if_passed=1" . ((get_param_integer('keep_safe_mode', 0) == 1) ? '&keep_safe_mode=1' : '') . "';
-                        window.open(url);
+                        test_urls.push(url);
                     }
                 }
+
+                process_urls_process = window.setInterval(process_urls, 10);
+
+                open_windows = [];
             };
+
+            function process_urls()
+            {
+                var open_windows_cleaned = [];
+                for (var i = 0; i < open_windows.length; i++) {
+                    if (!open_windows[i].closed) {
+                        open_windows_cleaned.push(open_windows[i]);
+                    }
+                }
+                open_windows = open_windows_cleaned;
+
+                var free_slots = 4 - open_windows.length, open_window;
+                while ((free_slots > 0) && (test_urls.length > 0)) {
+                    console.log('Opening ' + test_urls[0]);
+
+                    open_window = window.open(test_urls[0]);
+                    open_windows.push(open_window);
+
+                    test_urls.splice(0, 1); // Delete array element
+
+                    free_slots--;
+                }
+
+                if (open_windows.length == 0) {
+                    button.disabled = false;
+                    window.clearTimeout(process_urls_process);
+
+                    console.log('Finished testing');
+                }
+            }
         </script>
     </div>
     <br style=\"clear: both\" />";
