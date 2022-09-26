@@ -16,7 +16,7 @@
 /**
  * Composr test case class (unit testing).
  */
-class leader_board_test_set extends cms_test_case
+class _leader_board_test_set extends cms_test_case
 {
     protected $leaderboards;
 
