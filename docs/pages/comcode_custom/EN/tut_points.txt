@@ -21,7 +21,7 @@ Methods of earning points include:
  - Poll being chosen
  - Submitting various forms of content (See &ldquo;A note about points and content validation&rdquo;)
  - Posting on the forum (see &ldquo;A note about forum points&rdquo;)
- - Posting in a chat room
+ - Posting in a chatroom
  - Entering/passing quizzes
  - Recommended the website to others
  - Receiving points from other members (this is described in a later section)

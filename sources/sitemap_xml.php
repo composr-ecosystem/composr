@@ -286,7 +286,10 @@ function ping_sitemap_xml(string $url, bool $trigger_error = false) : string
                 'http://www.bing.com/webmaster/ping.aspx?siteMap=',
             ];
             foreach ($services as $service) {
-                $out .= http_get_contents($service . urlencode($url), ['convert_to_internal_encoding' => true, 'trigger_error' => $trigger_error]);
+                $result = http_get_contents($service . urlencode($url), ['convert_to_internal_encoding' => true, 'trigger_error' => $trigger_error]);
+                if (is_string($result)) {
+                    $out .= $result;
+                }
             }
         }
     }

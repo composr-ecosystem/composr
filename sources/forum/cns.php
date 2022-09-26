@@ -1664,9 +1664,9 @@ class Forum_driver_cns extends Forum_driver_base
     {
         require_code('cns_members');
 
-        $member_id = $this->get_member_from_username($username);
-        if ((($GLOBALS['LDAP_CONNECTION'] === null) || (!cns_is_on_ldap($username))) && ($member_id === null)) {
-            $member_id = $this->db->query_select_value_if_there('f_members', 'id', ['m_email_address' => $username]);
+        $member_id = $this->get_member_from_username($key);
+        if ((($GLOBALS['LDAP_CONNECTION'] === null) || (!cns_is_on_ldap($key))) && ($member_id === null)) {
+            $member_id = $this->db->query_select_value_if_there('f_members', 'id', ['m_email_address' => $key]);
             if ($member_id === null) {
                 return '!'; // Invalid user logging in
             }

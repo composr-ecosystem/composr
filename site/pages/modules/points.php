@@ -341,7 +341,7 @@ class Module_points
                                 $map['recipient_id'] = $sender_id;
                                 $map['amount_points'] = abs($fields[$field]);
                                 $map['status'] = LEDGER_STATUS_REFUND; // Refunding earned points back to the system
-                            };
+                            }
                             $map += insert_lang_comcode('reason', 'Upgrader: Importing legacy ' . $title . ' as a ledger item', 4);
                             $GLOBALS['FORUM_DB']->query_insert('points_ledger', $map);
                         }
