@@ -5,15 +5,11 @@
 
 [contents]decimal,lower-alpha[/contents]
 
-[title="2"]Points Introduction[/title]
-
-The [concept]Points[/concept] addon allows webmasters to provide a sophisticated virtual economy and rewards system for their members in Composr. Members can earn points through various actions on the website. Then, they can spend those points on site products, services, or account upgrades... or they can send them to other members for appreciation or payment for goods and services.
-
 [title="2"]Earning points[/title]
 
 [media width="150" description="Configuring the points balance" float="right"]data_custom/images/docs/tut_points/points_config.png[/media]
 [media width="150" description="The points tab on a member's profile ([concept]Conversr[/concept])" float="right"]data_custom/images/docs/tut_points/points_page.png[/media]
-There are many ways to earn points in Composr. You may not wish to tell your members the precise details for these, in order to avoid abuse and unbalanced member activity, although of course they could educate themselves by reading this tutorial.
+There are many ways to earn points in Composr. You may not wish to educate your members on the precise details of these, although of course they could educate themselves by reading this tutorial.
 
 Methods of earning points include:
  - Joining
@@ -21,23 +17,26 @@ Methods of earning points include:
  - A daily stipend ('Universal Basic Income')
  - Voting in a poll
  - Rating content
+ - Having your content being liked
  - Poll being chosen
  - Submitting various forms of content (See &ldquo;A note about points and content validation&rdquo;)
  - Posting on the forum (see &ldquo;A note about forum points&rdquo;)
+ - Posting in a chat room
  - Entering/passing quizzes
+ - Recommended the website to others
  - Receiving points from other members (this is described in a later section)
  - Earning points from selling a download (this is described in a later section)
  - Birthdays (see &ldquo;A note about birthday points&rdquo;)
 
 Most methods of earning points may be altered in the configuration (Admin Zone > Setup > Configuration > Points options), so that the number of points earned from various activities is appropriate for your website.
 
-There is a distinction between the point count for points available for spending ([concept]points balance[/concept]), and the point count for the total points ever earned (which contributes to rank and leader-board position) ([concept]life-time points[/concept]). This will usually be made clear, but sometimes circumstance will dictate what is the appropriate meaning.
+There is a distinction between the point count for points available for spending ([concept]points balance[/concept]), and the point count for the total points ever earned (which contributes to rank and leader-board position) ([concept]life-time points[/concept]). This will usually be made explicit, but sometimes context will let users easily identify what is the appropriate meaning.
 
 [title="3"]A note about points and content validation[/title]
 
-The points system can be considered encouragement for participation more than a standard of content quality. Forum post moderation is generally done to prevent spam and not to enforce a content quality standard, which would be the case for other content types. Therefore, when a submitted forum post requires validation, points will not be credited until the post is validated. However, other content types will credit points on submission even if they require validation before becoming visible. Points can always be reversed by ticking (checking) the &ldquo;Reverse point transaction&rdquo; box when editing content.
+The earning of points for submitted content can be considered encouragement for participation more than as a judgement on the particular quality for that content. Therefore points are credited as soon as content is submitted, regardless of validation. Points can always be reversed by ticking (checking) the &ldquo;Reverse point transaction&rdquo; box when editing/deleting content.
 
-If you want to encourage high quality content with points, the awards addon can be utilised to award high-quality content and subsequently credit the awardee some points.
+Forum posts are treated differently to other content, due to the prevalent problem of spam. Spam is not just low quality content (which is common and allowed on most forums), it is intentional abuse of the website. Therefore, when a submitted forum post requires validation, points will not be credited until the post is validated. If you want to encourage high quality content with points, the awards addon can be utilised to award high-quality content and subsequently credit the awardee some points.
 
 [title="3"]A note about forum points[/title]
 
@@ -95,11 +94,14 @@ Escrows can be viewed in a table on each member's points profile. Only those wit
 
 [title="2"]Point transaction notifications[/title]
 
-There exists two types of notifications for point transactions: &ldquo;Your points transactions&rdquo; (available to all members) and &ldquo;Others' points transactions&rdquo; (available to staff). Notifications are dispatched for the mentioned types when these conditions hold true:
- - Transactions happen which you would not reasonably know happened and should know, such as from other members, in the background, or highly-tangential to an action you are doing yet significant
- - When other notifications are not going to be sent to you at the same time
+There exists two types of notifications for point transactions: &ldquo;Your points transactions&rdquo; (available to all members) and &ldquo;Others' points transactions&rdquo; (available to staff). Notifications are generally only dispatched for the mentioned types when these conditions hold true:
+ - Transactions happening which the recipient would not otherwise reasonably know happened. For example:
+  - transactions from other members
+  - transactions sent by the system scheduler
+  - transactions that are highly-tangential to an action the recipient is doing, yet are of significance (for example, getting points for a content submission)
+ - When other notifications are not going to be sent to you at the same time (for example, the &ldquo;Your content was liked&rdquo; notification would mention credited points, and no other notifications would be sent)
 
-For this reason, some point transactions will instead be mentioned in other relevant notifications (e.g. &ldquo;Your content was liked&rdquo; when being credited points because someone liked your content) opposed to being sent in the mentioned types. Transactions might not be delievered as a notification at all if they are insignificant (e.g. chat message points) or the member would reasonably know they would earn points (e.g. daily points). Members can regularly check their points profile to monitor their points.
+Transactions might not be delivered as a notification at all if they are insignificant (e.g. chat message points) or the member would reasonably know they would earn points (e.g. daily points). Members can regularly check their points profile to monitor their points.
 
 [title="2"]Viewing the points ledger[/title]
 
@@ -156,9 +158,11 @@ This is covered in the [page="_SEARCH:tut_adv_downloads"]Advanced provision of d
 
 [title="3"]The real world[/title]
 
-A small number of sites may wish to set up a payment system (outside of the scope of Composr, at the time of writing), to allow members to exchange points for real money, or tangible products or services. Sites that may wish to do this are likely to be sites where the earning of points has a real effect on business goals, such that real-world reimbursement may be appropriate; for example, on a site where members collaborate on art for a published catalogue.
+A small number of sites may wish to set up a system to allow members to exchange points for real money, or tangible products or services. Sites that may wish to do this are likely to be sites where the earning of points has a real effect on business goals, such that real-world reimbursement may be appropriate; for example, on a site where members collaborate on art for a published catalogue.
 
-Alternatively, and perhaps more popularly, sites may allow members to exchange real money, for points (again, outside the scope of Composr, at the time of writing). Hence web-masters could earn money from their more enthusiastic members, and those members could elevate themselves on the website.
+Alternatively, and perhaps more popularly, sites may allow members to exchange real money, for points. Hence web-masters could earn money from their more enthusiastic members, and those members could elevate themselves on the website.
+
+The eCommerce addon allows setting up custom products that may be purchased in either real currency or in points. It is flexible enough to allow the above scenarios, although it would require either doing the conversions (e.g. crediting a member with more points after they buy some) by hand, or some custom coding.
 
 [title="2"]Rank in Conversr[/title]
 
@@ -200,13 +204,12 @@ The leader-board uses the system scheduler to generate its results. To generate 
 
 The point system is designed to provide high levels of transparency, as a legitimate micro-economy. These strict tenets apply even for the highest privileged members.
 
-[title="3"]Points are not directly edited[/title]
-
-There are no convenient methods provided to directly edit members' point values. All changes go through the ledger.
-
 [title="3"]Public ledger[/title]
 
-Assuming members have the &ldquo;View full points ledger&rdquo; privilege (which they do by default), the ledger is publicly available. Senders are not visible for anonymous transactions, however, unless members have the &ldquo;Trace the origin of anonymous point transactions&rdquo; privilege.
+Assuming members have the &ldquo;View full points ledger&rdquo; privilege (which they do by default), the ledger is publicly available.
+
+An exception:
+Senders are not visible for anonymous transactions unless members have the &ldquo;Trace the origin of anonymous point transactions&rdquo; privilege.
 
 [title="3"]Immutable ledger[/title]
 
@@ -217,6 +220,8 @@ It is not possible to edit transactions, with the exception of the reason text. 
 It is not possible to delete transactions; reversals and refunds always result in a new, linked transaction being created to offset the original one.
 
 Even the system maintains the immutability of the ledger.
+
+Of course, a webmaster could always edit the database by hand, but we would discourage this because, unless done under exceptional circumstances, it is a violation of trust.
 
 [title="3"]Transactions cannot involve negative points[/title]
 
@@ -230,10 +235,10 @@ Members cannot have negative points in their gift points balance (if gift points
 
 [title="2"]Points system implementation details (advanced)[/title]
 
-[title="3"]Points are calculated from the ledger[/title]
+[title="3"]Points are calculated from the ledger but there is some caching[/title]
 
 [media float="right" thumb="0" framed="0"]data_custom/images/docs/remember.png[/media]
-The ledger serves as the real source of truth for calculating how many points a member has. While the number of points a member has in their balance and the number of life-time points a member received is tallied in a custom field, these fields cannot be edited on the UI and only serve as a non-volatile cache. Editing a member's points should only be indirectly done by creating a new points transaction on a member's points profile.
+The ledger serves as the real source of truth for calculating how many points a member has. While the number of points a member has in their balance and the number of life-time points a member received is tallied in a custom field, these fields cannot be edited on the UI and only serve as a non-volatile cache.
 
 [title="4"]Syncing issues with Points balance and Life-time points[/title]
 
