@@ -118,35 +118,35 @@ function _build_keep_form_fields(string $page = '', bool $keep_all = false, arra
 
     foreach ($_GET as $key => $val) {
         $process_for_key = ((is_string($key)) && (substr($key, 0, 5) == 'keep_') || ($keep_all)) && (!in_array($key, $exclude)) && ($key != 'page') && (!skippable_keep($key, $val));
+        if (!$process_for_key) {
+            continue;
+        }
 
         if (is_array($val)) {
             foreach ($val as $_key => $_val) { // We'll only support one level deep. Also no keep parameter array support.
-                if (is_array($_val)) {
+                if (!is_string($_val)) {
                     continue; // Nested $_POST arrays should not happen in Composr, but may happen by hack-bots
                 }
 
-                if ($process_for_key) {
-                    $out->attach(form_input_hidden($key . '[' . $_key . ']', $_val));
+                if (is_integer($_key)) {
+                    $_key = strval($_key);
                 }
-            }
-        } else {
-            if (!is_string($val)) {
-                continue;
-            }
 
+                $out->attach(form_input_hidden($key . '[' . $_key . ']', $_val));
+            }
+        } elseif (is_string($val)) {
             if (is_integer($key)) {
                 $key = strval($key);
             }
 
-            if ($process_for_key) {
-                $out->attach(form_input_hidden($key, $val));
-            }
+            $out->attach(form_input_hidden($key, $val));
         }
     }
 
     if ($page != '') {
         $out->attach(form_input_hidden('page', $page));
     }
+
     return $out;
 }
 
