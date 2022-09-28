@@ -125,6 +125,10 @@ function _build_keep_form_fields(string $page = '', bool $keep_all = false, arra
                     continue; // Nested $_POST arrays should not happen in Composr, but may happen by hack-bots
                 }
 
+                if (!is_string($_key)) {
+                    $_key = strval($_key);
+                }
+
                 if ($process_for_key) {
                     $out->attach(form_input_hidden($key . '[' . $_key . ']', $_val));
                 }
