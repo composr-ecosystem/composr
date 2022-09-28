@@ -1011,7 +1011,7 @@ These are advanced symbols, and mirror Composr's internal API. The parameters ar
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$HIDDENS_FOR_GET_FORM,someurl}</td>
-			<td>Takes the query string parameters of a URL and turns them into hidden form inputs, so that a GET form will relay them</td>
+			<td>Takes the query string parameters of a URL and turns them into hidden form inputs, so that a GET form will relay them. Any further symbol parameters are of URL parameters to skip over (commonly done when you have input widgets for those same parameters)</td>
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$FIND_SCRIPT}</td>
