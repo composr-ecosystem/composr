@@ -177,6 +177,7 @@ class Hook_addon_registry_points
             'sources/hooks/systems/points/comcode_page__add.php',
             'sources/hooks/systems/points/points_escrow__add.php',
             'sources/hooks/systems/cleanup/points_recalculate_cpf.php',
+            'sources/hooks/systems/tasks/export_points_ledger.php',
         ];
     }
 
@@ -188,6 +189,8 @@ class Hook_addon_registry_points
     public function tpl_previews() : array
     {
         return [
+            'templates/ADMIN_POINTS_LEDGER_SCREEN.tpl' => 'admin_points_ledger_screen',
+            'templates/ADMIN_POINTS_LEDGER_SCREEN_FILTERS.tpl' => 'admin_points_ledger_screen',
             'templates/POINTS_SEARCH_RESULT.tpl' => 'points_search_screen',
             'templates/POINTS_SEARCH_SCREEN.tpl' => 'points_search_screen',
             'templates/POINTS_SEND.tpl' => 'points_screen',
@@ -333,6 +336,47 @@ class Hook_addon_registry_points
             'FIELDS' => placeholder_fields(),
             'BUTTONS' => placeholder_button(),
             'ESCROW_LOGS' => placeholder_table()
+        ]), null, '', true);
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return Tempcode Preview
+     */
+    public function tpl_preview__admin_points_ledger_screen() : object
+    {
+        require_code('form_templates');
+
+        push_field_encapsulation(FIELD_ENCAPSULATION_RAW);
+
+        $filters_row_a = [
+            [
+                'PARAM' => 'placeholder_a',
+                'LABEL' => lorem_word(),
+                'FIELD' => form_input_text(lorem_word(), new Tempcode(), 'placeholder_a', '', false),
+            ],
+        ];
+        $filters_row_b = [
+            [
+                'PARAM' => 'placeholder_b',
+                'LABEL' => lorem_word(),
+                'FIELD' => form_input_date(lorem_word(), new Tempcode(), 'placeholder_b', false, true, true),
+            ],
+        ];
+
+        pop_field_encapsulation();
+
+        return lorem_globalise(do_lorem_template('ADMIN_POINTS_LEDGER_SCREEN', [
+            '_GUID' => 'bd66789c028148928b87d04e6dc51fc8',
+            'BLOCK_ID' => 'ledger',
+            'TITLE' => lorem_title(),
+            'RESULTS_TABLE' => placeholder_table(),
+            'FORM' => placeholder_button(),
+            'FILTERS_ROW_A' => $filters_row_a,
+            'FILTERS_ROW_B' => $filters_row_b,
         ]), null, '', true);
     }
 }

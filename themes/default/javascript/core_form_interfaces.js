@@ -697,11 +697,13 @@
         }
     };
 
-    $cms.templates.formScreenInputMultiList = function formScreenInputMultiList(params, selectEl) {
+    $cms.templates.formScreenInputMultiList = function formScreenInputMultiList(params, parentEl) {
         var select2Options = {
             dropdownAutoWidth: window.parent == window, /*Otherwise can overflow*/
             containerCssClass: 'form-control-wide'
         };
+
+        var selectEl = parentEl.querySelector('select');
 
         if (window.jQuery && (window.jQuery.fn.select2 != null) && (selectEl.size == 5)/*only for short UIs*/) {
             selectEl.classList.remove('form-control');
@@ -713,11 +715,13 @@
         });
     };
 
-    $cms.templates.formScreenInputHugeList_input = function (params, selectEl) {
+    $cms.templates.formScreenInputHugeList_input = function (params, parentEl) {
         var select2Options = {
             dropdownAutoWidth: window.parent == window, /*Otherwise can overflow*/
             containerCssClass: 'form-control-wide'
         };
+
+        var selectEl = parentEl.querySelector('select');
 
         if (window.jQuery && (window.jQuery.fn.select2 != null) && (selectEl.size <= 1)) {
             selectEl.classList.remove('form-control');

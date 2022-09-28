@@ -27,11 +27,11 @@ class Hook_points_member__join
     /**
      * Determine the aggregate row language for POINTS_PROFILE.tpl.
      *
-     * @param  MEMBER $member_id_of The ID of the member who is being viewed
+     * @param  ?MEMBER $member_id_of The ID of the member who is being viewed (null: was run from the admin ledger)
      * @param  ?MEMBER $member_id_viewing The ID of the member who is doing the viewing (null: current member)
      * @return array List containing label for use with aggregate point tables
      */
-    public function points_profile(int $member_id_of, ?int $member_id_viewing) : array
+    public function points_profile(?int $member_id_of, ?int $member_id_viewing) : array
     {
         return [
             'label' => do_lang('JOINING'),

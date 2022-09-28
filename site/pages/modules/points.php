@@ -105,7 +105,7 @@ class Module_points
             add_privilege('POINTS', 'use_points', true);
             add_privilege('POINTS', 'trace_anonymous_points_transactions', false);
             add_privilege('POINTS', 'send_points_to_self', false);
-            add_privilege('POINTS', 'view_points_ledger', true);
+            add_privilege('POINTS', 'view_points_ledger', false);
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 8)) { // LEGACY
@@ -548,13 +548,16 @@ class Module_points
             return $this->moderate_escrow();
         }
         if ($type == 'member') {
-            return $this->points_profile();
+            return $this();
         }
         if ($type == 'reverse') {
             return $this->reverse();
         }
         if ($type == 'amend') {
             return $this->amend();
+        }
+        if ($type == 'export') {
+            return $this->export();
         }
 
         return new Tempcode();
@@ -1324,5 +1327,18 @@ class Module_points
         }
 
         return $out;
+    }
+
+    /**
+     * Export a spreadsheet showing the ledger for a member.
+     *
+     * @return Tempcode The result of execution
+     */
+    public function export() : object
+    {
+        $id = get_param_integer('id');
+
+        require_code('tasks');
+        return call_user_func_array__long_task(do_lang('EXPORT_POINTS_LEDGER'), $this->title, 'export_points_ledger', [$id]);
     }
 }

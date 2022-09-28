@@ -62,8 +62,6 @@ class Module_wiki
         delete_privilege('wiki_edit');
 
         $GLOBALS['SITE_DB']->query_delete('group_category_access', ['module_the_name' => 'wiki_page']);
-
-        $GLOBALS['FORUM_DRIVER']->install_delete_custom_field('points_gained_wiki');
     }
 
     /**

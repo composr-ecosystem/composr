@@ -918,7 +918,7 @@ function cns_get_member_fields_profile(bool $mini_mode = true, ?int $member_id =
 }
 
 /**
- * FUDGE: Return an array of custom fields that should never be editable on the UI.
+ * Return an array of custom fields that should never be editable on the UI.
  *
  * @return array Array of custom field IDs that should never be editable on the UI
  * @ignore
@@ -929,7 +929,7 @@ function _cpfs_internal_use_only() : array
 
     $ret = [];
 
-    $fields_to_find = ['cms_points_balance'];
+    $fields_to_find = ['cms_points_balance', 'cms_points_lifetime']; // FUDGE
 
     foreach ($fields_to_find as $field) {
         $cpf_id = find_cms_cpf_field_id($field);

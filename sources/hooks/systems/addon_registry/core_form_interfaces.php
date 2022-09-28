@@ -1451,6 +1451,7 @@ class Hook_addon_registry_core_form_interfaces
             'CUSTOM_VALUE' => '',
             'NAME' => $name,
             'CONTENT' => $list,
+            'INLINE' => false,
         ]);
         $fields->attach(do_lorem_template('FORM_SCREEN_FIELD', [
             'REQUIRED' => true,

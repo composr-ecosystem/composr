@@ -2659,7 +2659,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_hc_cron_regularity
         HC_CRON_NOTIFY_REGARDLESS
         CONFIG_OPTION_hc_cron_notify_regardless
-        NOTIFICATION_TYPE_health_check
         HEALTH_CHECK_SUBJECT_fail
         HEALTH_CHECK_SUBJECT_misc
         HEALTH_CHECK_BODY
@@ -7803,7 +7802,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         UNDER_CONSTRUCTION_MARKERS
         UNDO
         UNDO_CHARGE
-        UNDO_CHARGE_FOR
         UNDO_PROBATION
         UNDO_REVISION
         UNINSTALL
@@ -8342,6 +8340,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         LEDGER_STATUS_SHORT_2
         LEDGER_STATUS_SHORT_1
         LEDGER_STATUS_SHORT_3
+        DOC_EXPORT_POINTS_LEDGER
     ')));
 
     $non_admin_files = [
@@ -10340,7 +10339,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         POINTS_SEARCH_FORM
         POINTS_SPENT
         POINTS_THANKS
-        POINTS_UNIT
         POINT_LEADER_BOARD
         POLL
         POLLS
@@ -10669,7 +10667,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SPECIAL_CPF__cms_county
         SPECIAL_CPF__cms_currency
         SPECIAL_CPF__cms_firstname
-        SPECIAL_CPF__cms_gift_points_sent
         SPECIAL_CPF__cms_lastname
         SPECIAL_CPF__cms_latitude
         SPECIAL_CPF__cms_longitude
@@ -10681,13 +10678,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SPECIAL_CPF__cms_payment_card_start_date
         SPECIAL_CPF__cms_payment_cardholder_name
         SPECIAL_CPF__cms_payment_card_type
-        SPECIAL_CPF__cms_points_gained_chat
-        SPECIAL_CPF__cms_points_received
-        SPECIAL_CPF__cms_points_gained_rating
-        SPECIAL_CPF__cms_points_gained_visiting
-        SPECIAL_CPF__cms_points_gained_voting
-        SPECIAL_CPF__cms_points_gained_wiki
-        SPECIAL_CPF__cms_points_spent
+        SPECIAL_CPF__cms_points_lifetime
+        SPECIAL_CPF__cms_points_balance
         SPECIAL_CPF__cms_post_code
         SPECIAL_CPF__cms_role
         SPECIAL_CPF__cms_sites
@@ -11693,7 +11685,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         RANK_PROMOTED_APPROVAL_MAIL_SUBJECT
         PROMOTION_FROM
         POINTS_AGGREGATE_ROWS
-        CONTENT_LIKED_NOTIFICATION_MAIL_POINTS
         COUNT_DOWNLOADS_DOWNLOADED
         DESCRIPTION_TRANSACTIONS_AGGREGATE
         LEDGER_STATUS_SHORT_B_3
@@ -11704,6 +11695,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         POINTS_SENT_AGGREGATE
         POINTS_SPENT_AGGREGATE
         TRANSACTIONS
+        DESCRIPTION_EXPORT_MEMBER_POINTS_LEDGER
+        EXPORT_POINTS_LEDGER
     ')));
 
     if ($GLOBALS['DEV_MODE']) {
