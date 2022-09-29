@@ -190,7 +190,6 @@ class Hook_addon_registry_points
     {
         return [
             'templates/ADMIN_POINTS_LEDGER_SCREEN.tpl' => 'admin_points_ledger_screen',
-            'templates/ADMIN_POINTS_LEDGER_SCREEN_FILTERS.tpl' => 'admin_points_ledger_screen',
             'templates/POINTS_SEARCH_RESULT.tpl' => 'points_search_screen',
             'templates/POINTS_SEARCH_SCREEN.tpl' => 'points_search_screen',
             'templates/POINTS_SEND.tpl' => 'points_screen',
