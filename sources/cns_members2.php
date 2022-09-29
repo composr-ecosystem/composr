@@ -76,7 +76,7 @@ function cns_choose_default_avatar(string $email_address = '', string $algorithm
  *
  * @param  object $db Database connector
  * @param  array $info Content type info
- * @param  ID_TEXT $context Context (unused)
+ * @param  ?ID_TEXT $context Context (unused) (null: none)
  * @param  array $extra_join List of joins (passed as reference)
  * @param  ID_TEXT $filter_key The field to get
  * @param  string $field_val The field value for this
@@ -85,7 +85,7 @@ function cns_choose_default_avatar(string $email_address = '', string $algorithm
  * @return ?array A triple: Proper database field name to access with, The fields API table type (blank: no special table), The new filter value (null: error)
  * @ignore
  */
-function _members_filtercode(object $db, array $info, string $context, array &$extra_join, string $filter_key, string $field_val, array $db_fields, string $table_join_code) : ?array
+function _members_filtercode(object $db, array $info, ?string $context, array &$extra_join, string $filter_key, string $field_val, array $db_fields, string $table_join_code) : ?array
 {
     // If it's trivial
     if (($filter_key == 'id') || (preg_match('#^m_\w+$#', $filter_key) != 0)) {
