@@ -824,14 +824,16 @@ function compile_template(string $data, string $template_name, string $theme, st
                                 break;
 
                             case 'LOOP':
-                                $current_level_data[] = 'closure_loop([' . $directive_params . ',\'vars\'=>$parameters],[$parameters,$cl],' . "\n" . 'recall_named_function(\'' . uniqid('', true) . '\',\'$parameters,$cl\',"extract(\$parameters,EXTR_PREFIX_ALL,\'bound\'); return ' . php_addslashes($directive_internal) . ';"))';
+                                if (!empty($directive_params)) {
+                                    $current_level_data[] = 'closure_loop([' . $directive_params . ',\'vars\'=>$parameters],[$parameters,$cl],' . "\n" . 'recall_named_function(\'' . uniqid('', true) . '\',\'$parameters,$cl\',"extract(\$parameters,EXTR_PREFIX_ALL,\'bound\'); return ' . php_addslashes($directive_internal) . ';"))';
 
-                                $parameter = tempcode_compiler_eval('return ' . $first_directive_param . ';', $tpl_funcs, [], $cl);
-                                if (!is_string($parameter)) {
-                                    $parameter = '';
-                                }
-                                if ($parameters_used !== null) {
-                                    $parameters_used[$parameter] = true;
+                                    $parameter = tempcode_compiler_eval('return ' . $first_directive_param . ';', $tpl_funcs, [], $cl);
+                                    if (!is_string($parameter)) {
+                                        $parameter = '';
+                                    }
+                                    if ($parameters_used !== null) {
+                                        $parameters_used[$parameter] = true;
+                                    }
                                 }
 
                                 break;
@@ -841,7 +843,9 @@ function compile_template(string $data, string $template_name, string $theme, st
                                 break;
 
                             case 'PARAMS_JSON':
-                                $current_level_data[] = 'closure_params_json([' . $directive_params . ',\'vars\'=>$parameters],[$parameters,$cl],' . "\n" . 'recall_named_function(\'' . uniqid('', true) . '\',\'$parameters,$cl\',"extract(\$parameters,EXTR_PREFIX_ALL,\'bound\'); return ' . php_addslashes($directive_internal) . ';"))';
+                                if (!empty($directive_params)) {
+                                    $current_level_data[] = 'closure_params_json([' . $directive_params . ',\'vars\'=>$parameters],[$parameters,$cl],' . "\n" . 'recall_named_function(\'' . uniqid('', true) . '\',\'$parameters,$cl\',"extract(\$parameters,EXTR_PREFIX_ALL,\'bound\'); return ' . php_addslashes($directive_internal) . ';"))';
+                                }
                                 break;
 
                             case 'INCLUDE':
