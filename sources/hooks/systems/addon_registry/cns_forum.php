@@ -356,6 +356,7 @@ class Hook_addon_registry_cns_forum
             'sources/cns_forum_email_integration.php',
             'themes/default/text/CNS_POST_FROM_MAILING_LIST.txt',
             'sources/hooks/systems/actionlog/cns_forum.php',
+            'sources/hooks/systems/config/points_voting_cns.php',
         ];
     }
 

@@ -73,6 +73,8 @@ function find_first_unread_url(int $topic_id) : string
         $max = 1;
     }
 
+    $first_unread_id = null;
+
     $last_read_time = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_read_logs', 'l_time', ['l_member_id' => get_member(), 'l_topic_id' => $topic_id]);
     if ($last_read_time === null) {
         // Assumes that everything made in the last two weeks has not been read
@@ -90,8 +92,6 @@ function find_first_unread_url(int $topic_id) : string
         $before = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_time<' . strval($first_unread_id_post_time) . ' AND ' . cns_get_topic_where($topic_id), false, true);
         $start = intval(floor(floatval($before) / floatval($max))) * $max;
     } else {
-        $first_unread_id = null;
-
         // What page is it on?
         $before = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE ' . cns_get_topic_where($topic_id), false, true);
         $start = intval(floor(floatval($before) / floatval($max))) * $max;

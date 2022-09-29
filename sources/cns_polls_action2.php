@@ -275,6 +275,16 @@ function cns_vote_in_poll(int $poll_id, array $votes, ?int $member_id = null, ?a
     // Update cache
     $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_polls SET po_cache_total_votes=(po_cache_total_votes+' . strval(count($votes)) . '), po_cache_voting_power=(po_cache_voting_power+' . float_to_raw_string($total_voting_power_adjust, 10) . ') WHERE id=' . strval($poll_id), 1);
 
+    // Award points
+    if (addon_installed('points')) {
+        $points_voting_cns = intval(get_option('points_voting_cns'));
+        if ($points_voting_cns > 0) {
+            require_code('points2');
+            require_lang('points');
+            points_credit_member($member_id, do_lang('CNS_VOTING'), $points_voting_cns, 0, 0, null, null, 0, 'topic_poll', 'vote', strval($poll_id));
+        }
+    }
+
     // Send notification to topic subscribers if the poll is not private and is set to reveal which members voted for each option (otherwise this can be too revealing as members can predict the outcome of the poll)
     if ($rows[0]['po_is_private'] == 0 && $rows[0]['po_view_member_votes'] == 1) {
         $poll_title = $rows[0]['po_question'];
@@ -400,6 +410,16 @@ function cns_revoke_vote_in_poll(array $topic_info, ?int $member_id = null)
             } else {
                 $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_poll_answers SET pa_cache_num_votes=(pa_cache_num_votes-1), pa_cache_voting_power=(pa_cache_voting_power-' . float_to_raw_string($answer_voting_power_removed[$answer['id']], 10) . ') WHERE id=' . strval($answer['id']), 1);
             }
+        }
+    }
+
+    // Reverse points
+    if (addon_installed('points')) {
+        require_code('points');
+        $ledger = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'id', ['status' => LEDGER_STATUS_NORMAL, 't_type' => 'topic_poll', 't_subtype' => 'vote', 't_type_id' => strval($poll['id'])]);
+        if ($ledger !== null) {
+            require_code('points2');
+            points_transaction_reverse($ledger, null);
         }
     }
 

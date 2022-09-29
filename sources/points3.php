@@ -126,8 +126,8 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
             continue;
         }
 
-        // Not allowed to view ledgers? No table for spent aggregates.
-        if (($type == 'spent') && (!has_privilege($member_id_viewing, 'view_points_ledger')) && ($member_id_viewing != $member_id_of)) {
+        // Not allowed to view ledgers? No table!
+        if ((!has_privilege($member_id_viewing, 'view_points_ledger')) && ($member_id_viewing != $member_id_of)) {
             $aggregate_tables[$type] = new Tempcode();
             continue;
         }

@@ -5,6 +5,8 @@
 
 [contents]decimal,lower-alpha[/contents]
 
+The Composr points system is a virtual currency and economy; members can utilise them for voting power, purchases, rewarding each other, or other things as defined by site staff. Those with the &ldquo;Use points&rdquo; privilege can use this feature (enabled by default for all members).
+
 [title="2"]Earning points[/title]
 
 [media width="150" description="Configuring the points balance" float="right"]data_custom/images/docs/tut_points/points_config.png[/media]
@@ -63,7 +65,7 @@ Some reasons someone might send points include:
 
 To send or escrow points to another member, visit their profile and go in their points tab. There will be a form to send points and a separate form to escrow points. Members must have the &ldquo;Send points to other members&rdquo; privilege to send points to other members, and they must have the &ldquo;Escrow points to others&rdquo; privilege to hold points in escrow for another member. The member being sent or escrowed points must also have the &ldquo;Use points&rdquo; privilege to be sent or escrowed points.
 
-Members may not send points to themselves unless they have the &ldquo;Send points to self&rdquo; privilege.
+Members may not send points to themselves (e.g. to convert their gift points to regular points) unless they have the &ldquo;Send points to self&rdquo; privilege.
 
 [title="3"]Gift points (advanced)[/title]
 

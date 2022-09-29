@@ -8341,6 +8341,9 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         LEDGER_STATUS_SHORT_1
         LEDGER_STATUS_SHORT_3
         DOC_EXPORT_POINTS_LEDGER
+        REVERSAL
+        REFUND
+        CONFIG_OPTION_points_voting_cns
     ')));
 
     $non_admin_files = [
@@ -11697,6 +11700,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         TRANSACTIONS
         DESCRIPTION_EXPORT_MEMBER_POINTS_LEDGER
         EXPORT_POINTS_LEDGER
+        CNS_VOTING
     ')));
 
     if ($GLOBALS['DEV_MODE']) {

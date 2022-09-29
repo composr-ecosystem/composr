@@ -1,6 +1,6 @@
 {+START,IF_NON_EMPTY,{FILTERS_ROW_A}{FILTERS_ROW_B}}
 	<div class="box advanced-ledger-search"><div class="box-inner">
-		<form title="{!SEARCH}" action="{$URL_FOR_GET_FORM*,{$SELF_URL}}" target="_self" method="get">
+		<form title="{!SEARCH}" action="{$URL_FOR_GET_FORM*,{URL}}" target="_self" method="get">
 
 			<div class="search-fields clearfix">
 				<div class="filter-inputs">

@@ -320,7 +320,9 @@ class Module_admin_points
 
         $rows = $GLOBALS['SITE_DB']->query_select('points_ledger', ['*'], $where, $end . ' ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
         $result_entries = new Tempcode();
+
         require_code('templates_results_table');
+
         $map = [do_lang_tempcode('IDENTIFIER'), do_lang_tempcode('DATE_TIME')];
         if ($has_gift_points !== null) {
             $map[] = do_lang_tempcode('GIFT_POINTS');
@@ -411,20 +413,33 @@ class Module_admin_points
         push_field_encapsulation(FIELD_ENCAPSULATION_RAW);
 
         $transaction_types = new Tempcode();
-        $transaction_types->attach(form_input_list_entry('all', ($filter_type == 'all')));
-        $transaction_types->attach(form_input_list_entry('send', ($filter_type == 'send')));
-        $transaction_types->attach(form_input_list_entry('credit', ($filter_type == 'credit')));
-        $transaction_types->attach(form_input_list_entry('debit', ($filter_type == 'debit')));
-        $transaction_types->attach(form_input_list_entry('reversal', ($filter_type == 'reversal')));
-        $transaction_types->attach(form_input_list_entry('refund', ($filter_type == 'refund')));
+        $transaction_types->attach(form_input_list_entry('all', ($filter_type == 'all'), do_lang_tempcode('ALL')));
+        $transaction_types->attach(form_input_list_entry('credit', ($filter_type == 'credit'), do_lang_tempcode('CREDIT')));
+        $transaction_types->attach(form_input_list_entry('debit', ($filter_type == 'debit'), do_lang_tempcode('DEBIT')));
+        $transaction_types->attach(form_input_list_entry('refund', ($filter_type == 'refund'), do_lang_tempcode('REFUND')));
+        $transaction_types->attach(form_input_list_entry('reversal', ($filter_type == 'reversal'), do_lang_tempcode('REVERSAL')));
+        $transaction_types->attach(form_input_list_entry('send', ($filter_type == 'send'), do_lang_tempcode('SEND')));
 
         // List item for every aggregate content type per points hooks
         $t_types = new Tempcode();
         $hook_obs = find_all_hook_obs('systems', 'points', 'Hook_points_');
+
+        $labels = [];
         foreach ($hook_obs as $name => $hook_ob) {
             $data = $hook_ob->points_profile(null, null);
             $selected = (($_filter_t_type != '') && (in_array($name, $filter_t_type)));
-            $t_types->attach(form_input_list_entry($name, $selected, $data['label']));
+            array_push($labels, [
+                'label' => $data['label'],
+                'name' => $name,
+                'selected' => $selected,
+            ]);
+        }
+        usort($labels, function (array $a, array $b)
+        {
+            return strcmp($a['label'], $b['label']);
+        });
+        foreach ($labels as $label) {
+            $t_types->attach(form_input_list_entry($label['name'], $label['selected'], $label['label']));
         }
 
         $filters_row_a = [
@@ -458,6 +473,8 @@ class Module_admin_points
             ],
         ];
 
+        $url = build_url(['page' => 'admin_points', 'type' => 'browse'], get_module_zone('admin_points'));
+
         $tpl = do_template('ADMIN_POINTS_LEDGER_SCREEN', [
             '_GUID' => 'bd66789c028148928b87d04e6dc51fc8',
             'BLOCK_ID' => 'ledger',
@@ -466,6 +483,7 @@ class Module_admin_points
             'FORM' => $form,
             'FILTERS_ROW_A' => $filters_row_a,
             'FILTERS_ROW_B' => $filters_row_b,
+            'URL' => $url,
         ]);
 
         pop_field_encapsulation();

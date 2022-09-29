@@ -377,6 +377,7 @@ class Hook_addon_registry_points
             'FORM' => placeholder_button(),
             'FILTERS_ROW_A' => $filters_row_a,
             'FILTERS_ROW_B' => $filters_row_b,
+            'URL' => placeholder_url(),
         ]), null, '', true);
     }
 }
