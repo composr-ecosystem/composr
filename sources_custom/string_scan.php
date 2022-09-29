@@ -8344,6 +8344,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         REVERSAL
         REFUND
         CONFIG_OPTION_points_voting_cns
+        ENABLE_ANONYMOUS_TRANSACTIONS
+        CONFIG_OPTION_enable_anonymous_transactions
     ')));
 
     $non_admin_files = [

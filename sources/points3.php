@@ -183,7 +183,7 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
     }
 
     // Show send / modify points form
-    $trans_type = get_param_string('trans_type', 'send');
+    $trans_type = get_param_string('trans_type', '');
     $send_amount = get_param_integer('send_amount', null);
     $send_reason = get_param_string('send_reason', '');
     if (is_guest($member_id_viewing)) {

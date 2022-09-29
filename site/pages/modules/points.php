@@ -680,6 +680,11 @@ class Module_points
             if ($trans_type == 'send') {
                 $anonymous = post_param_integer('anonymous', 0);
 
+                // Force non-anonymity if anonymous transactions are not allowed
+                if (get_option('enable_anonymous_transactions') == '0') {
+                    $anonymous = 0;
+                }
+
                 $viewer_points_balance = points_balance($member_id_viewing);
                 $viewer_gift_points_balance = gift_points_balance($member_id_viewing);
 

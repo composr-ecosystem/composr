@@ -23,6 +23,9 @@
 
         $dom.on(container, 'click', '.js-click-check-send-options', function (e, el) {
             var anonymous = document.getElementById('points-anon-span');
+            if (anonymous === null) {
+                return;
+            }
             if (el.value === "send") {
                 anonymous.style.display = "";
             } else {
@@ -32,6 +35,9 @@
 
         $dom.on(container, 'change', '.js-change-check-send-options', function (e, el) {
             var anonymous = document.getElementById('points-anon-span');
+            if (anonymous === null) {
+                return;
+            }
             if (el.value === "send") {
                 anonymous.style.display = "";
             } else {
