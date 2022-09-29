@@ -1900,6 +1900,7 @@ function get_complex_base_url(string $at) : string
 /**
  * Get a parameter value (either POST *or* GET, i.e. like $_REQUEST[$name]), or the default if neither can be found.
  * Implements additional security over the direct PHP access mechanism which should not be used.
+ * If the requested POST parameter is an array, it will be returned as a comma-delimited string.
  * Use with caution, as this has very limited CSRF protection compared to post_param_string.
  *
  * @param  ID_TEXT $name The name of the parameter to get
@@ -1935,6 +1936,7 @@ function either_param_string(string $name, $default = false, int $filters = INPU
 /**
  * Get the value of the specified POST parameter (i.e. like $_POST[$name]) if it is passed, or the default otherwise.
  * Implements additional security over the direct PHP access mechanism which should not be used.
+ * If the requested POST parameter is an array, it will be returned as a comma-delimited string.
  *
  * @param  ID_TEXT $name The name of the parameter to get
  * @param  ?~mixed $default The default value to give the parameter if the parameter value is not defined (null: allow missing parameter) (false: give error on missing parameter)
@@ -2022,6 +2024,7 @@ function post_param_string(string $name, $default = false, int $filters = INPUT_
 /**
  * Get the value of the specified GET parameter (i.e. like $_GET[$name]) if it is passed, or the default otherwise.
  * Implements additional security over the direct PHP access mechanism which should not be used.
+ * If the requested POST parameter is an array, it will be returned as a comma-delimited string.
  *
  * @param  ID_TEXT $name The name of the parameter to get
  * @param  ?~mixed $default The default value to give the parameter if the parameter value is not defined (null: allow missing parameter) (false: give error on missing parameter)
@@ -2057,6 +2060,7 @@ function get_param_string(string $name, $default = false, int $filters = INPUT_F
 
 /**
  * Helper function to load up a GET/POST parameter.
+ * If the requested POST parameter is an array, it will be returned as a comma-delimited string.
  *
  * @param  array $array The array we're extracting parameters from
  * @param  string $name The name of the parameter
