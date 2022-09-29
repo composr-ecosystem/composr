@@ -91,7 +91,7 @@ class _tasks_test_set extends cms_test_case
 
     public function testCalendarICal()
     {
-        if (($this->only !== null) && ($this->only != 'testCalendarICal')) {
+        if (($this->only !== null) && ($this->only != 'testCalendarICal') && ($this->only != 'testCalendarICalNoValidator')) {
             return;
         }
 
@@ -110,14 +110,10 @@ class _tasks_test_set extends cms_test_case
         require_code('calendar2');
 
         // Add complex event with start and recurrence
-        $complex_event_id = add_calendar_event(8, 'daily', 3, 0, 'complex event', '', 3, 2010, 1, 10, 'day_of_month', 10, 15, 2010, 1, 10, 'day_of_month', 11, 15, null, 1, null, 1, 1, 1, 1, '', null, 0, null, null, null);
-
-        if (get_db_type() == 'xml') {
-            sleep(1);
-        }
+        $complex_event_id = add_calendar_event(8, 'daily', 3, 0, 'complex event', '', 3, 2010, 1, 10, 'day_of_month', 10, 15, 2010, 1, 10, 'day_of_month', 11, 15, null, 1, null, 1, 1, 1, 1, '', null, 0, time() - 1, null, null);
 
         // Add event with start only
-        $simple_event_id = add_calendar_event(8, 'none', null, 0, 'simple event', '', 3, 2010, 1, 10, 'day_of_month', 10, 15, null, null, null, 'day_of_month', null, null, null, 1, null, 1, 1, 1, 1, '', null, 0, null, null, null);
+        $simple_event_id = add_calendar_event(8, 'none', null, 0, 'simple event', '', 3, 2010, 1, 10, 'day_of_month', 10, 15, null, null, null, 'day_of_month', null, null, null, 1, null, 1, 1, 1, 1, '', null, 0, time(), null, null);
 
         $last_rows_before = $GLOBALS['SITE_DB']->query_select('calendar_events', ['*'], [], 'ORDER BY e_add_date DESC,id DESC', 2);
         $this->clean_event_rows_for_comparison($last_rows_before);
@@ -144,8 +140,13 @@ class _tasks_test_set extends cms_test_case
         }
         */
 
-        $result = http_get_contents('https://ical-validator.herokuapp.com/validate/', ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 20.0]);
-        if ($result !== null) {
+        $result = mixed();
+        if ($this->only != 'testCalendarICalNoValidator') {
+            $result = http_get_contents('https://ical-validator.herokuapp.com/validate/', ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 20.0]);
+        } else {
+            $result = false;
+        }
+        if ($result !== null && $result !== false) {
             /* Could not get this working with upload method
             $matches = [];
             preg_match('#<form id="id2" method="post" action="([^"]*)"#', $result, $matches);
@@ -174,7 +175,9 @@ class _tasks_test_set extends cms_test_case
                 exit();
             }
         }
-        if ($result === null) {
+        if ($result === false) {
+            // Skipped
+        } elseif ($result === null) {
             //Validator often down also so show no error $this->assertTrue(false, 'ical validator is down?');
         } else {
             $this->assertTrue((strpos($result, '1 results in 1 components') !== false) && (strpos($result, 'CRLF should be used for newlines')/*bug in validator*/ !== false), $result);
