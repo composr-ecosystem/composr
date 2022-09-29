@@ -116,7 +116,7 @@ function unit_testing_run()
         <script nonce=\"" . $GLOBALS['CSP_NONCE'] . "\" id=\"select-list\">
             var process_urls_process;
             var test_urls;
-            var open_windows;
+            var navigated_windows;
 
             var list = document.getElementById('select-list');
             var button = document.getElementById('select-button');
@@ -127,42 +127,53 @@ function unit_testing_run()
                 for (var i = 0; i < list.options.length; i++) {
                     if (list.options[i].selected) {
                         var url = 'index.php?id=' + list.options[i].value + '&close_if_passed=1" . ((get_param_integer('keep_safe_mode', 0) == 1) ? '&keep_safe_mode=1' : '') . "';
-                        test_urls.push(url);
+                        var url_window = window.open('');
+                        test_urls.push([url, url_window]);
                     }
                 }
 
                 process_urls_process = window.setInterval(process_urls, 10);
 
-                open_windows = [];
+                navigated_windows = [];
             };
 
             function process_urls()
             {
-                var open_windows_cleaned = [];
-                for (var i = 0; i < open_windows.length; i++) {
-                    if (!open_windows[i].closed) {
-                        open_windows_cleaned.push(open_windows[i]);
+                var navigated_windows_cleaned = [];
+                for (var i = 0; i < navigated_windows.length; i++) {
+                    var url = navigated_windows[i][0];
+                    var url_window = navigated_windows[i][1];
+                    if (!url_window.closed && url_window.document.readyState != 'complete') {
+                        navigated_windows_cleaned.push([url, url_window]);
+                    } else {
+                        console.log('Concluded ' + url);
                     }
                 }
-                open_windows = open_windows_cleaned;
+                navigated_windows = navigated_windows_cleaned;
 
-                var free_slots = 4 - open_windows.length, open_window;
+                var free_slots = 4 - navigated_windows.length;
                 while ((free_slots > 0) && (test_urls.length > 0)) {
-                    console.log('Opening ' + test_urls[0]);
+                    var url = test_urls[0][0];
+                    var url_window = test_urls[0][1];
 
-                    open_window = window.open(test_urls[0]);
-                    open_windows.push(open_window);
+                    console.log('Loading ' + url);
+
+                    url_window.location.replace(url);
+
+                    navigated_windows.push([url, url_window]);
 
                     test_urls.splice(0, 1); // Delete array element
 
                     free_slots--;
                 }
 
-                if (open_windows.length == 0) {
+                if (navigated_windows.length == 0) {
                     button.disabled = false;
                     window.clearTimeout(process_urls_process);
 
                     console.log('Finished testing');
+                } else {
+                    console.log('(Sleeping for 10ms)');
                 }
             }
         </script>
