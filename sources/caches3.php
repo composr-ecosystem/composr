@@ -316,7 +316,7 @@ function erase_cached_templates(bool $preserve_some = false, ?array $only_templa
                         continue;
                     }
 
-                    $file_template_name = preg_replace('#(\.tcp|\.gz|\.br|_mobile|_non_minified|_ssl)#', '', $file);
+                    $file_template_name = preg_replace('#(\.tcp|\.gz|\.br|_mobile|_non_minified|_ssl|_non_custom_only)#', '', $file);
 
                     // $preserve_some filter
                     if (
