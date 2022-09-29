@@ -63,8 +63,9 @@ function init__form_templates()
         define('FIELD_ENCAPSULATION_RAW', 1);
     }
 
-    global $FIELD_ENCAPSULATION;
-    pop_field_encapsulation();
+    global $FIELD_ENCAPSULATION, $FIELD_ENCAPSULATION_STACK;
+    $FIELD_ENCAPSULATION = FIELD_ENCAPSULATION_ROWS;
+    $FIELD_ENCAPSULATION_STACK = [];
 
     require_css('forms');
 
@@ -3007,27 +3008,28 @@ function handle_default_comcode_text_input(string &$post)
 }
 
 /**
- * Change how form inputs are returned.
+ * Place a global marker as to what field encapsulation to use.
  *
- * @param  integer $encapsulation The encapsulation to use (see FIELD_ENCAPSULATION_*)
+ * @param  integer $setting Temporary setting (see FIELD_ENCAPSULATION_*)
  */
-function push_field_encapsulation(int $encapsulation)
+function push_field_encapsulation(int $setting)
 {
-    global $FIELD_ENCAPSULATION;
-    $FIELD_ENCAPSULATION = $encapsulation;
+    global $FIELD_ENCAPSULATION, $FIELD_ENCAPSULATION_STACK;
+    array_push($FIELD_ENCAPSULATION_STACK, $FIELD_ENCAPSULATION);
+    $FIELD_ENCAPSULATION = $setting;
 }
 
 /**
- * Reset field encapsulation to the default.
+ * Go back to the previous field encapsulation global marker.
  */
 function pop_field_encapsulation()
 {
-    global $FIELD_ENCAPSULATION;
-    $FIELD_ENCAPSULATION = FIELD_ENCAPSULATION_ROWS;
+    global $FIELD_ENCAPSULATION, $FIELD_ENCAPSULATION_STACK;
+    $FIELD_ENCAPSULATION = array_pop($FIELD_ENCAPSULATION_STACK);
 }
 
 /**
- * Get which field encapsulation mode we should use.
+ * Get which field encapsulation marker is current.
  *
  * @return integer FIELD_ENCAPSULATION_*
  */

@@ -5,8 +5,6 @@
 
 [contents]decimal,lower-alpha[/contents]
 
-The Composr points system is a virtual currency and economy; members can utilise them for voting power, purchases, rewarding each other, or other things as defined by site staff. Those with the &ldquo;Use points&rdquo; privilege can use this feature (enabled by default for all members).
-
 [title="2"]Earning points[/title]
 
 [media width="150" description="Configuring the points balance" float="right"]data_custom/images/docs/tut_points/points_config.png[/media]
@@ -216,7 +214,7 @@ The point system is designed to provide high levels of transparency, as a legiti
 
 [title="3"]Public ledger[/title]
 
-Assuming members have the &ldquo;View others' point ledger&rdquo; privilege (which they do by default), the ledger is publicly available. Members can view each other's ledger on the points profile. And those with access to the Admin Zone can view the master ledger at Admin Zone > Audit > Points ledger. When a member does not have this privilege, they can only see point tallies for life-time points, points balance, gift points balance, points sent, and points spent on members' profiles.
+Assuming members have the &ldquo;View others' point ledger&rdquo; privilege (which they do by default), the ledger is publicly available. Members can view each other's ledger on the points profile. And those with access to the Admin Zone can view the combined ledger at Admin Zone > Audit > Points ledger. When a member does not have this privilege, they can only see point tallies for life-time points, points balance, gift points balance, points sent, and points spent on members' profiles.
 
 An exception:
 Senders are not visible for anonymous transactions (if enabled) unless members have the &ldquo;Trace the origin of anonymous point transactions&rdquo; privilege.
@@ -256,7 +254,7 @@ It is conceivable for a member's life-time points and/or points balance to get o
 
 [title="3"]Gift Points are calculated dynamically[/title]
 
-The number of gift points a member has is calculated dynamically. First, we take the highest base gift points setting from all the usergroups the member is in. Then, we take the highest gift points per day and multiply it by the number of days the member has been a member, adding it to the base gift points. Finally, the number of gift points used (according to the ledger) is subtracted from this maximum to get the final gift points balance.
+The number of gift points a member has is calculated dynamically (if gift points are enabled). First, we take the highest base gift points setting from all the usergroups the member is in. Then, we take the highest gift points per day and multiply it by the number of days the member has been a member, adding it to the base gift points. Finally, the number of gift points used (according to the ledger) is subtracted from this maximum to get the final gift points balance.
 
 This means a member's gift points balance can change when their usergroups change.
 

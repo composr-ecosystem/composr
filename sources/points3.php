@@ -237,7 +237,7 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
         $escrow_url = build_url(['page' => 'points', 'type' => 'escrow', 'id' => $member_id_of], get_module_zone('points'));
 
         $form = new Tempcode();
-        $form->attach(do_template('BUTTON_SCREEN', ['_GUID' => 'da69b2ee5495c9af670399dd080f662e', 'IMMEDIATE' => false, 'URL' => $escrow_url, 'TITLE' => do_lang_tempcode('ESCROW_TO'), 'IMG' => 'buttons/proceed', 'HIDDEN' => new Tempcode()]));
+        $form->attach(do_template('BUTTON_SCREEN', ['IMMEDIATE' => false, 'URL' => $escrow_url, 'TITLE' => do_lang_tempcode('ESCROW_TO'), 'IMG' => 'buttons/proceed', 'HIDDEN' => new Tempcode()]));
 
         $escrow_template = do_template('ESCROW_TRANSACTIONS', [
             '_GUID' => 'ac97ee94388e4db2b8753273694cb2a1',
@@ -255,7 +255,7 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
     $export_points_ledger = new Tempcode();
     if (($member_id_of == $member_id_viewing) || (has_privilege($member_id_viewing, 'view_points_ledger'))) {
         $export_url = build_url(['page' => 'points', 'type' => 'export', 'id' => $member_id_of], get_module_zone('points'));
-        $export_points_ledger->attach(do_template('BUTTON_SCREEN', ['_GUID' => 'da69b2ee5495c9af670399dd080f662e', 'IMMEDIATE' => false, 'URL' => $export_url, 'TITLE' => do_lang_tempcode('EXPORT'), 'IMG' => 'admin/export_spreadsheet', 'HIDDEN' => new Tempcode()]));
+        $export_points_ledger->attach(do_template('BUTTON_SCREEN', ['IMMEDIATE' => false, 'URL' => $export_url, 'TITLE' => do_lang_tempcode('EXPORT'), 'IMG' => 'admin/export_spreadsheet', 'HIDDEN' => new Tempcode()]));
     }
 
     return do_template('POINTS_PROFILE', array_merge(
@@ -374,7 +374,6 @@ function points_get_transactions(string $type, int $member_id_of, int $member_id
     $max_rows = $GLOBALS['SITE_DB']->query_select_value('points_ledger', 'COUNT(*)', $where, $end);
     if ($max_rows == 0) {
         return do_template('BLOCK_NO_ENTRIES', [
-            '_GUID' => 'f32b50770fd6581c4a2c839a1ed25801',
             'TITLE' => new Tempcode(),
             'MESSAGE' => do_lang_tempcode('NO_ENTRIES'),
         ]);

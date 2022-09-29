@@ -548,7 +548,7 @@ class Module_points
             return $this->moderate_escrow();
         }
         if ($type == 'member') {
-            return $this();
+            return $this->points_profile();
         }
         if ($type == 'reverse') {
             return $this->reverse();
@@ -990,14 +990,14 @@ class Module_points
                 if ($involved) {
                     $hidden = new Tempcode();
                     $escrow_url = build_url(['page' => 'points', 'type' => 'dispute_escrow', 'id' => $row['id']]);
-                    $buttons->attach(do_template('BUTTON_SCREEN', ['_GUID' => 'da69b2ee5495c9af670399dd080f662e', 'IMMEDIATE' => true, 'URL' => $escrow_url, 'TITLE' => do_lang_tempcode('ESCROW_DISPUTE'), 'IMG' => 'buttons/report', 'HIDDEN' => $hidden]));
+                    $buttons->attach(do_template('BUTTON_SCREEN', ['IMMEDIATE' => true, 'URL' => $escrow_url, 'TITLE' => do_lang_tempcode('ESCROW_DISPUTE'), 'IMG' => 'buttons/report', 'HIDDEN' => $hidden]));
                 }
 
                 // Satisfy escrow buttons; not shown / allowed if an escrow is disputed
                 if (($row['status'] == ESCROW_STATUS_PENDING) && (($member_id_viewing == $row['sender_id'] && $row['sender_status'] == 0) || ($member_id_viewing == $row['recipient_id'] && $row['recipient_status'] == 0))) {
                     $hidden = new Tempcode();
                     $escrow_url = build_url(['page' => 'points', 'type' => 'satisfy_escrow', 'id' => $row['id']]);
-                    $buttons->attach(do_template('BUTTON_SCREEN', ['_GUID' => 'da69b2ee5495c9af670399dd080f662e', 'IMMEDIATE' => true, 'URL' => $escrow_url, 'TITLE' => do_lang_tempcode('ESCROW_SATISFIED'), 'IMG' => 'buttons/yes', 'HIDDEN' => $hidden]));
+                    $buttons->attach(do_template('BUTTON_SCREEN', ['IMMEDIATE' => true, 'URL' => $escrow_url, 'TITLE' => do_lang_tempcode('ESCROW_SATISFIED'), 'IMG' => 'buttons/yes', 'HIDDEN' => $hidden]));
                 }
 
                 // Determine actual status
@@ -1015,7 +1015,7 @@ class Module_points
                 if ((!$involved) && ($row['status'] >= ESCROW_STATUS_PENDING) && (has_privilege($member_id_viewing, 'moderate_points_escrow'))) {
                     $hidden = new Tempcode();
                     $resolve_url = build_url(['page' => 'points', 'type' => 'moderate_escrow', 'id' => $row['id']]);
-                    $buttons->attach(do_template('BUTTON_SCREEN', ['_GUID' => 'da69b2ee5495c9af670399dd080f662e', 'IMMEDIATE' => true, 'URL' => $resolve_url, 'TITLE' => do_lang_tempcode('ESCROW_MODERATE'), 'IMG' => 'buttons/advanced', 'HIDDEN' => $hidden]));
+                    $buttons->attach(do_template('BUTTON_SCREEN', ['IMMEDIATE' => true, 'URL' => $resolve_url, 'TITLE' => do_lang_tempcode('ESCROW_MODERATE'), 'IMG' => 'buttons/advanced', 'HIDDEN' => $hidden]));
                 }
         }
 

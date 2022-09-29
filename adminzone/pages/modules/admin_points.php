@@ -239,7 +239,7 @@ class Module_admin_points
         $max = get_param_integer('ledger_max', 50);
 
         // Filter parameters
-        $filter_username = get_param_string('filter_ledger_username', '');
+        $filter_username = get_param_string('filter_ledger_username', '', INPUT_FILTER_NONE);
         $filter_type = get_param_string('filter_ledger_type', 'all');
         $filter_from = post_param_date('filter_ledger_from', true);
         $filter_to = post_param_date('filter_ledger_to', true);
@@ -254,7 +254,7 @@ class Module_admin_points
             if ($member_id !== null) {
                 $end .= ' AND (sender_id=' . strval($member_id) . ' OR recipient_id=' . strval($member_id) . ')';
             } else {
-                $filter_username = '';
+                attach_message(do_lang_tempcode('_MEMBER_NO_EXIST', $filter_username));
             }
         }
         if ($filter_type !== 'all') {
@@ -407,7 +407,7 @@ class Module_admin_points
         // Export button
         $form = new Tempcode();
         $export_url = build_url(['page' => '_SELF', 'type' => 'export'], get_module_zone('admin_points'));
-        $form->attach(do_template('BUTTON_SCREEN', ['_GUID' => 'da69b2ee5495c9af670399dd080f662e', 'IMMEDIATE' => false, 'URL' => $export_url, 'TITLE' => do_lang_tempcode('EXPORT'), 'IMG' => 'admin/export_spreadsheet', 'HIDDEN' => new Tempcode()]));
+        $form->attach(do_template('BUTTON_SCREEN', ['_GUID' => '29a25bc2a39049dab57ff6b1eeb1a413', 'IMMEDIATE' => false, 'URL' => $export_url, 'TITLE' => do_lang_tempcode('EXPORT'), 'IMG' => 'admin/export_spreadsheet', 'HIDDEN' => new Tempcode()]));
 
         // Start building fields for the filter box
         push_field_encapsulation(FIELD_ENCAPSULATION_RAW);
@@ -428,16 +428,13 @@ class Module_admin_points
         foreach ($hook_obs as $name => $hook_ob) {
             $data = $hook_ob->points_profile(null, null);
             $selected = (($_filter_t_type != '') && (in_array($name, $filter_t_type)));
-            array_push($labels, [
+            $labels[] = [
                 'label' => $data['label'],
                 'name' => $name,
                 'selected' => $selected,
-            ]);
+            ];
         }
-        usort($labels, function (array $a, array $b)
-        {
-            return strcmp($a['label'], $b['label']);
-        });
+        sort_maps_by($labels, 'label');
         foreach ($labels as $label) {
             $t_types->attach(form_input_list_entry($label['name'], $label['selected'], $label['label']));
         }
@@ -626,7 +623,7 @@ class Module_admin_points
             if (has_privilege(get_member(), 'moderate_points')) {
                 $delete_url = build_url(['page' => '_SELF', 'type' => 'reverse', 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF');
                 $buttons->attach(do_template('BUTTON_SCREEN', [
-                    '_GUID' => 'da69b2ee5495c9af670399dd080f662e',
+                    '_GUID' => '787c80a9dc8e4a4b9679277696da9fc9',
                     'IMMEDIATE' => true,
                     'HIDDEN' => form_input_hidden('id', strval($row['id'])),
                     'URL' => $delete_url,
@@ -637,7 +634,7 @@ class Module_admin_points
             if (has_privilege(get_member(), 'amend_point_transactions')) {
                 $edit_url = build_url(['page' => '_SELF', 'type' => 'edit', 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF');
                 $buttons->attach(do_template('BUTTON_SCREEN', [
-                    '_GUID' => 'da69b2ee5495c9af670399dd080f662e',
+                    '_GUID' => 'a4085e1641804fa8b4ca4794ea57b3f0',
                     'IMMEDIATE' => true,
                     'HIDDEN' => form_input_hidden('id', strval($row['id'])),
                     'URL' => $edit_url,

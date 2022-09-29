@@ -308,7 +308,7 @@ class Hook_addon_registry_points
         require_code('form_templates');
 
         $form = new Tempcode();
-        $form->attach(do_template('BUTTON_SCREEN', ['_GUID' => 'da69b2ee5495c9af670399dd080f662e', 'IMMEDIATE' => false, 'URL' => placeholder_url(), 'TITLE' => do_lang_tempcode('ESCROW_TO'), 'IMG' => 'buttons/proceed', 'HIDDEN' => new Tempcode()]));
+        $form->attach(do_template('BUTTON_SCREEN', ['IMMEDIATE' => false, 'URL' => placeholder_url(), 'TITLE' => do_lang_tempcode('ESCROW_TO'), 'IMG' => 'buttons/proceed', 'HIDDEN' => new Tempcode()]));
 
         return lorem_globalise(do_lorem_template('ESCROW_TRANSACTIONS', [
             'MEMBER' => placeholder_numeric_id(),
@@ -355,14 +355,48 @@ class Hook_addon_registry_points
             [
                 'PARAM' => 'placeholder_a',
                 'LABEL' => lorem_word(),
-                'FIELD' => form_input_text(lorem_word(), new Tempcode(), 'placeholder_a', '', false),
+                'FIELD' => do_lorem_template('FORM_SCREEN_INPUT_LINE', [
+                    '_GUID' => '02789c9af25cbc971e86bfcc0ad322d5',
+                    'PLACEHOLDER' => null,
+                    'MAXLENGTH' => strval(16),
+                    'TABINDEX' => strval(-1),
+                    'REQUIRED' => false,
+                    'NAME' => 'placeholder_a',
+                    'DEFAULT' => '',
+                    'TYPE' => 'text',
+                    'PATTERN' => null,
+                    'SIZE' => strval(16),
+                    'AUTOCOMPLETE' => false,
+                ]),
             ],
         ];
         $filters_row_b = [
             [
                 'PARAM' => 'placeholder_b',
                 'LABEL' => lorem_word(),
-                'FIELD' => form_input_date(lorem_word(), new Tempcode(), 'placeholder_b', false, true, true),
+                'FIELD' => do_lorem_template('FORM_SCREEN_INPUT_DATE', [
+                    '_GUID' => '5ace58dd0f540f70fb3bd440fb02a430',
+                    'REQUIRED' => false,
+                    'TABINDEX' => strval(-1),
+                    'NAME' => 'placeholder_b',
+                    'TYPE' => 'datetime',
+
+                    'YEAR' => '',
+                    'MONTH' => '',
+                    'DAY' => '',
+                    'HOUR' => '',
+                    'MINUTE' => '',
+
+                    'MIN_DATE_DAY' => '',
+                    'MIN_DATE_MONTH' => '',
+                    'MIN_DATE_YEAR' => '',
+                    'MAX_DATE_DAY' => '',
+                    'MAX_DATE_MONTH' => '',
+                    'MAX_DATE_YEAR' => '',
+
+                    'AUTOCOMPLETE' => false,
+                    'READ_ONLY' => strval(0)
+                ]),
             ],
         ];
 

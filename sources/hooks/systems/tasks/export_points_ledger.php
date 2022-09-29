@@ -78,7 +78,7 @@ class Hook_task_export_points_ledger
                 if ($row['status'] == LEDGER_STATUS_NORMAL) {
                     $data_point[do_lang('STATUS')] = do_lang('LEDGER_STATUS_0');
                 } elseif (($row['linked_to'] !== null) && ($member_id === null)) { // Only show linked transaction identifiers if we are generating the full (admin) ledger
-                    $data_point[do_lang('STATUS')] = do_lang('LEDGER_STATUS_SHORT_' . strval($row['status']), escape_html(strval($row['linked_to'])));
+                    $data_point[do_lang('STATUS')] = do_lang('LEDGER_STATUS_SHORT_' . strval($row['status']), strval($row['linked_to']));
                 } else {
                     $data_point[do_lang('STATUS')] = do_lang('LEDGER_STATUS_SHORT_B_' . strval($row['status']));
                 }
