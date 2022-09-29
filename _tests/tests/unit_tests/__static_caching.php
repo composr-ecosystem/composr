@@ -20,7 +20,7 @@ class __static_caching_test_set extends cms_test_case
 {
     public function testStaticCacheWorks()
     {
-        $panel_text = @file_get_contents(get_custom_file_base() . '/pages/comcode_custom/' . get_site_default_lang() . '/panel_left.txt') . @file_get_contents(get_custom_file_base() . '/pages/comcode_custom/' . get_site_default_lang() . '/panel_right.txt');
+        $panel_text = @strval(file_get_contents(get_custom_file_base() . '/pages/comcode_custom/' . get_site_default_lang() . '/panel_left.txt') . file_get_contents(get_custom_file_base() . '/pages/comcode_custom/' . get_site_default_lang() . '/panel_right.txt'));
         if ((strpos($panel_text, 'main_newsletter_signup') !== false) || (strpos($panel_text, 'side_newsletter') !== false) || (strpos($panel_text, 'side_shoutbox') !== false)) {
             $this->assertTrue(false, 'Cannot have a POSTing block in a side panel for this test');
         }
