@@ -85,26 +85,6 @@ class PasswordHash
         $this->random_state = microtime(false) . (function_exists('getmypid') ? strval(getmypid()) : '') . uniqid(strval(mt_rand(0, mt_getrandmax())), true);
     }
 
-    public function get_random_bytes($count)
-    {
-        $output = '';
-        if (($fh = @fopen('/dev/urandom', 'rb')) !== false) {
-            $output = fread($fh, $count);
-            fclose($fh);
-        }
-
-        if (strlen($output) < $count) {
-            $output = '';
-            for ($i = 0; $i < $count; $i += 16) {
-                $this->random_state = md5(microtime(false) . $this->random_state);
-                $output .= pack('H*', md5($this->random_state));
-            }
-            $output = substr($output, 0, $count);
-        }
-
-        return $output;
-    }
-
     public function encode64($input, $count)
     {
         $output = '';
@@ -252,7 +232,7 @@ class PasswordHash
         $random = '';
 
         if (CRYPT_BLOWFISH == 1 && !$this->portable_hashes) {
-            $random = $this->get_random_bytes(16);
+            $random = random_bytes(16);
             $hash = crypt($password, $this->gensalt_blowfish($random));
             if (strlen($hash) == 60) {
                 return $hash;
@@ -261,7 +241,7 @@ class PasswordHash
 
         if (CRYPT_EXT_DES == 1 && !$this->portable_hashes) {
             if (strlen($random) < 3) {
-                $random = $this->get_random_bytes(3);
+                $random = random_bytes(3);
             }
             $hash = crypt($password, $this->gensalt_extended($random));
             if (strlen($hash) == 20) {
@@ -270,7 +250,7 @@ class PasswordHash
         }
 
         if (strlen($random) < 6) {
-            $random = $this->get_random_bytes(6);
+            $random = random_bytes(6);
         }
         $hash = $this->crypt_private($password, $this->gensalt_private($random));
         if (strlen($hash) == 34) {
