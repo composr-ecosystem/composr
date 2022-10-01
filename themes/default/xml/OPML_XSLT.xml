@@ -15,7 +15,7 @@
 				</xsl:element>
 				{$CSS_TEMPCODE}
 			</head>
-			<body class="website-body" onload="goDecoding();">
+			<body class="website-body">
 				<div id="cometestme" style="display: none;">
 					<xsl:text disable-output-escaping="yes">&amp;amp;</xsl:text>
 				</div>
@@ -29,6 +29,8 @@
 						<p class="rss-copyright"><span name="decodeable"><xsl:value-of select="/opml/head/ownerName" disable-output-escaping="yes" /></span></p>
 					</div></div>
 				</div>
+
+				<script {$CSP_NONCE_HTML}>goDecoding();</script>
 			</body>
 		</html>
 	</xsl:template>

@@ -79,8 +79,6 @@ function rss_backend_script()
     require_lang('rss');
     require_code('xml');
 
-    load_csp(['csp_enabled' => '0']); // FUDGE: We need this for XSLT to work. We cannot put a nonce on an XSLT import, and we can't safelist specific scripts
-
     if ($type == 'xslt-rss') {
         // Feed stylesheet for RSS
         header('Content-Type: text/xsl; charset=' . get_charset());
@@ -108,6 +106,8 @@ function rss_backend_script()
         $echo->evaluate_echo();
         return;
     }
+
+    load_csp(['csp_enabled' => '0']); // FUDGE: We need this for XSLT to work. We cannot put a nonce on an XSLT import, and we can't safelist specific scripts. Besides, no JS can run in Atom/RSS on its own so we don't need it.
 
     $type = cms_strtoupper_ascii($type);
     if (($type != 'RSS2') && ($type != 'ATOM')) {
@@ -151,7 +151,7 @@ function rss_backend_script()
     }
 
     if ($mode == 'opml') {
-        prepare_backend_response('text/xml', BACKEND_RESPONSE_CSP_STRICT);
+        prepare_backend_response('text/xml', BACKEND_RESPONSE_CACHE_BREAK);
 
         $_feeds = find_all_hook_obs('systems', 'rss', 'Hook_rss_');
         $feeds = [];
@@ -182,7 +182,7 @@ function rss_backend_script()
         return;
     }
 
-    prepare_backend_response('text/xml', BACKEND_RESPONSE_CSP_STRICT);
+    prepare_backend_response('text/xml', BACKEND_RESPONSE_CACHE_BREAK);
     // NB: Firefox (and probably other browsers, but I didn't test) doesn't want to display Atom feeds inline if they're sent as text/xml+atom / text/xml+rss, even if the Content-Disposition is sent to inline :(
 
     push_query_limiting(false);

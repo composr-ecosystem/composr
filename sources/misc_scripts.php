@@ -686,7 +686,7 @@ function iframe_script()
 
     // AJAX prep
     if ($ajax) {
-        prepare_backend_response(null, BACKEND_RESPONSE_NOINDEX | BACKEND_RESPONSE_AJAX);
+        prepare_backend_response(null, BACKEND_RESPONSE_NOINDEX | BACKEND_RESPONSE_CACHE_BREAK);
     }
 
     // Check permissions

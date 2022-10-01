@@ -1,3 +1,5 @@
+/*{$,parser hint: .innerHTML okay}*/
+
 /* LEGACY https://bugzilla.mozilla.org/show_bug.cgi?id=98168 */
 
 // A workaround for XSL-to-XHTML systems that don't
@@ -83,7 +85,7 @@ function goDecoding() {
         ) {
             // the null or markupless element needs no reworking
         } else {
-            $dom.html(toDecode[i], s); // that's the magic
+            toDecode[i].innerHTML = s; // that's the magic
         }
     }
 

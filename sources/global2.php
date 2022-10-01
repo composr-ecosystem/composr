@@ -58,11 +58,13 @@ function init__global2()
     define('INPUT_FILTER_POST_IDENTIFIER', INPUT_FILTER_DEFAULT_POST | INPUT_FILTER_TRIMMED);
     define('INPUT_FILTER_PASSWORD', INPUT_FILTER_TRIMMED);
 
-    define('BACKEND_RESPONSE_NOINDEX', 1);
-    define('BACKEND_RESPONSE_CSP_SUPER_STRICT', 2);
+    define('BACKEND_RESPONSE_NOINDEX', 1); // on by default
+    define('BACKEND_RESPONSE_CSP_SUPER_STRICT', 2); // on by default
     define('BACKEND_RESPONSE_CSP_STRICT', 4);
-    define('BACKEND_RESPONSE_CHARSET_UTF8', 8);
-    define('BACKEND_RESPONSE_AJAX', 16);
+    define('BACKEND_RESPONSE_CSP_OPEN', 8);
+    define('BACKEND_RESPONSE_CHARSET_UTF8', 16);
+    define('BACKEND_RESPONSE_AJAX', 32); // on by default
+    define('BACKEND_RESPONSE_CACHE_BREAK', 64); // on by default
 
     fixup_bad_php_env_vars();
 
@@ -1031,7 +1033,7 @@ function memory_tracking()
  * @param  ?string $content_type The MIME content type (null: don't output one)
  * @param  integer $settings Bitmask of BACKEND_RESPONSE_* settings
  */
-function prepare_backend_response(?string $content_type = 'text/xml', int $settings = 19)
+function prepare_backend_response(?string $content_type = 'text/xml', int $settings = 101)
 {
     if (get_param_integer('keep_show_loading', 0) == 1) {
         return;
@@ -1048,15 +1050,20 @@ function prepare_backend_response(?string $content_type = 'text/xml', int $setti
     if (($settings & BACKEND_RESPONSE_CSP_STRICT) != 0) {
         header("Content-Security-Policy: default-src 'self'; style-src 'self' data: 'unsafe-inline'");
     }
+    if (($settings & BACKEND_RESPONSE_CSP_OPEN) != 0) {
+        header("Content-Security-Policy: default-src * 'unsafe-inline'");
+    }
 
     if ($content_type !== null) {
         $charset = (($settings & BACKEND_RESPONSE_CHARSET_UTF8) != 0) ? 'utf-8' : get_charset();
         header('Content-Type: ' . $content_type . '; charset=' . $charset);
     }
 
-    if (($settings & BACKEND_RESPONSE_AJAX) != 0) {
+    if (($settings & BACKEND_RESPONSE_CACHE_BREAK) != 0) {
         set_http_caching(null);
+    }
 
+    if (($settings & BACKEND_RESPONSE_AJAX) != 0) {
         convert_request_data_encodings(true);
 
         global $KNOWN_AJAX;

@@ -333,7 +333,11 @@ function static_cache(int $mode)
                 header('Content-Type: text/html; charset=utf-8');
             } else {
                 header('Content-Type: text/xml; charset=utf-8');
-                header("Content-Security-Policy: default-src 'self'; style-src 'self' data: 'unsafe-inline'"); // Don't allow special execution via a vector of namespace-injected HTML
+                if ($file_extension == '.xml') {
+                    header("Content-Security-Policy: default-src * 'unsafe-inline'"); // Very permissive policy, needed for XSLT to be injecting JavaScript to an RSS/Atom file
+                } else {
+                    header("Content-Security-Policy: default-src 'self'; style-src 'self' data: 'unsafe-inline'"); // Don't allow special execution via a vector of namespace-injected HTML
+                }
             }
 
             // Only bots can do HTTP caching, as they won't try to login and end up reaching a previously cached page
