@@ -25,10 +25,10 @@ class Block_side_choose_showing
         }
 
         if (!addon_installed('calendar')) {
-            return do_template('RED_ALERT', ['_GUID' => '3o9nkf4sbm0yzo8jmdrmvqctvcu6njds', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('calendar'))]);
+            return do_template('RED_ALERT', ['TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('calendar'))]);
         }
         if (!addon_installed('ecommerce')) {
-            return do_template('RED_ALERT', ['_GUID' => 'zslwc37lxcpsluxrjvydbyiecdk6bq3m', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('ecommerce'))]);
+            return do_template('RED_ALERT', ['TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('ecommerce'))]);
         }
 
         return new Tempcode();

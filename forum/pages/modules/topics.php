@@ -3242,7 +3242,6 @@ class Module_topics
         }
 
         return do_template('FORM_SCREEN', [
-            '_GUID' => 'ce1752a0c5508a061bffbf242a13e5bd',
             'HIDDEN' => $hidden,
             'TITLE' => $title,
             'FIELDS' => $fields,

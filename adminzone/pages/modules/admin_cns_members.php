@@ -293,7 +293,6 @@ class Module_admin_cns_members
         $default_email_message = get_option('new_member_default_email_message');
 
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', [
-            '_GUID' => '101063c817a45c10bca5c384e1f32bf1',
             'SECTION_HIDDEN' => ($default_email_subject == '') && ($default_email_message == ''),
             'TITLE' => do_lang_tempcode('config:_EMAIL'),
             'HELP' => do_lang_tempcode('ADD_MEMBER_EMAIL_HELP'),

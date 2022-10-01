@@ -72,5 +72,5 @@ function inline_tooltip($label, $tooltip) : object
  */
 function block_tooltip($label, $tooltip) : object
 {
-    return do_template('BLOCK_TOOLTIP', ['_GUID' => '5e6bb4853dd4bc2064e999b6820a3088', 'LABEL' => $label, 'TOOLTIP' => $tooltip]);
+    return do_template('BLOCK_TOOLTIP', ['LABEL' => $label, 'TOOLTIP' => $tooltip]);
 }

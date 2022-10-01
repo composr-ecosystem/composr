@@ -516,7 +516,7 @@ class Module_admin_errorlog
 
         $table = results_table(do_lang_tempcode('CRON_HOOKS'), 0, 'start', 1000, 'max', 1000, $header_row, $result_entries);
 
-        $tpl = do_template('RESULTS_TABLE_SCREEN', ['_GUID' => 'c9270fd515e76918a37edf3f573c6da2', 'RESULTS_TABLE' => $table, 'TITLE' => $this->title]);
+        $tpl = do_template('RESULTS_TABLE_SCREEN', ['RESULTS_TABLE' => $table, 'TITLE' => $this->title]);
 
         require_code('templates_internalise_screen');
         return internalise_own_screen($tpl);

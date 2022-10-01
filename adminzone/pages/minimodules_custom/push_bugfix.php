@@ -138,7 +138,7 @@ function push_bugfix_ui()
 
     $_post_url = escape_html(get_self_url(true, false, ['type' => 'actual']));
     $spammer_blackhole = static_evaluate_tempcode(symbol_tempcode('INSERT_FORM_POST_SECURITY'));
-    $proceed_icon = static_evaluate_tempcode(do_template('ICON', ['_GUID' => '3806e63e8f1e854871afe200b9c0dabe', 'NAME' => 'buttons/proceed']));
+    $proceed_icon = static_evaluate_tempcode(do_template('ICON', ['NAME' => 'buttons/proceed']));
 
     $categories = get_tracker_categories();
     if ($categories === null) {

@@ -1086,6 +1086,105 @@ function _download_latest_data_no_banning()
     cms_file_put_contents_safe(get_file_base() . '/text/unbannable_ips.txt', $data, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
 }
 
+function guid_scan_init()
+{
+    global $FOUND_GUID, $GUID_LANDSCAPE;
+    $FOUND_GUID = [];
+    $GUID_LANDSCAPE = [];
+
+    require_code('files');
+}
+
+function guid_scan($path)
+{
+    // Exceptions
+    if (preg_match('#^exports/#', $path) != 0) {
+        return null;
+    }
+    if (in_array($path, [
+        'adminzone/pages/minimodules_custom/plug_guid.php',
+        'sources_custom/make_release.php',
+    ])) {
+        return null;
+    }
+
+    global $GUID_SCAN_PATH, $GUID_ORIGINAL_CONTENTS, $GUID_ERRORS_MISSING, $GUID_ERRORS_DUPLICATE;
+
+    $GUID_SCAN_PATH = $path;
+
+    $GUID_ORIGINAL_CONTENTS = cms_file_get_contents_safe(get_custom_file_base() . '/' . $path, FILE_READ_LOCK);
+
+    $GUID_ERRORS_MISSING = [];
+    $GUID_ERRORS_DUPLICATE = [];
+    $out = $GUID_ORIGINAL_CONTENTS;
+    preg_replace_callback("#do_template\('([^']*)', \[(\s*)'([^']+)' => ('[^']+')(.*)#", '_guid_scan_callback', $out); // First sweep. Bind template calls with a simple initial string value for the first parameter (the GUID hopefully) - finds us all the existing GUIDs
+    $out = preg_replace_callback("#do_template\('([^']*)', \[(\s*)'([^']+)()(.*)' => #", '_guid_scan_callback', $out); // Second sweep. Bind all remaining template calls - allows us to look at each call
+
+    return [
+        'errors_missing' => $GUID_ERRORS_MISSING,
+        'errors_duplicate' => $GUID_ERRORS_DUPLICATE,
+        'new_contents' => $out,
+        'changes' => !empty($GUID_ERRORS),
+    ];
+}
+
+function _guid_scan_callback($match)
+{
+    $full_match_line = $match[0];
+    $template_name = $match[1];
+    $whitespace = $match[2];
+    $first_param_name = $match[3];
+    $first_param_value = empty($match[4]) ? null : $match[4];
+    $remaining_of_line = $match[5];
+
+    /*
+    For debugging:
+    echo $full_match_line . '<br />';
+    return $full_match_line;
+    */
+
+    global $GUID_LANDSCAPE, $GUID_SCAN_PATH, $GUID_ORIGINAL_CONTENTS, $FOUND_GUID, $GUID_ERRORS_MISSING, $GUID_ERRORS_DUPLICATE;
+
+    $new_guid = md5(uniqid('', true));
+    if (!array_key_exists($template_name, $GUID_LANDSCAPE)) {
+        $GUID_LANDSCAPE[$template_name] = [];
+    }
+
+    $match_pos = strpos($GUID_ORIGINAL_CONTENTS, $full_match_line);
+    $line_num = substr_count(substr($GUID_ORIGINAL_CONTENTS, 0, $match_pos), "\n") + 1;
+
+    // First sweep
+    if (($first_param_value !== null) && ($first_param_name == '_GUID')) {
+        $guid_value = str_replace("'", '', $first_param_value);
+
+        // Handle duplicated GUIDs
+        if (array_key_exists($guid_value, $FOUND_GUID)) {
+            $error_msg = 'Repair duplicated GUID needed for ' . $template_name . ' in ' . $GUID_SCAN_PATH . ':' . strval($line_num);
+            if ($FOUND_GUID[$guid_value] != $template_name) {
+                $error_msg .= ' (from a call to the ' . $FOUND_GUID[$guid_value] . ' template)';
+            }
+            $GUID_ERRORS_DUPLICATE[] = $error_msg;
+            $GUID_LANDSCAPE[$template_name][] = [$GUID_SCAN_PATH, $line_num, $new_guid];
+            return "do_template('" . $template_name . "', [" . $whitespace . "'_GUID' => '" . $new_guid . "'";
+        }
+
+        // Record GUIDs
+        $FOUND_GUID[$guid_value] = $template_name;
+        $GUID_LANDSCAPE[$template_name][] = [$GUID_SCAN_PATH, $line_num, $guid_value];
+    }
+
+    // Second sweep
+    if ($first_param_value === null) {
+        if ($first_param_name != '_GUID') {
+            $GUID_ERRORS_MISSING[] = 'Insert needed for ' . $template_name . ' in ' . $GUID_SCAN_PATH . ':' . strval($line_num);
+            $GUID_LANDSCAPE[$template_name][] = [$GUID_SCAN_PATH, $line_num, $new_guid];
+            return "do_template('" . $template_name . "', [" . $whitespace . "'_GUID' => '" . $new_guid . "'," . $whitespace . "'" . $first_param_name . "' => " . (($first_param_value === null) ? ' ' : $first_param_value);
+        }
+    }
+
+    return $full_match_line;
+}
+
 // See phpdoc_parser.php for functions.bin manifest building
 
 // Also see chmod_consistency.php, and build_rewrite_rules.php

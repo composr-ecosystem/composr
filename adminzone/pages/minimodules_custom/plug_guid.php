@@ -39,100 +39,48 @@ if (post_param_integer('confirm', 0) == 0) {
 $title = get_screen_title('Plug in missing GUIDs', false);
 $title->evaluate_echo();
 
-global $FOUND_GUID;
-$FOUND_GUID = [];
-global $GUID_LANDSCAPE;
-$GUID_LANDSCAPE = [];
-global $FILENAME, $IN;
+require_code('make_release');
 
-require_code('files');
-require_code('files2');
-
+// URL parameters
 $limit_file = get_param_string('file', '');
+$debug = (get_param_integer('debug', 0) == 1); // Show changes, do not save anything
+
+guid_scan_init();
+
 if ($limit_file == '') {
+    require_code('files2');
     $files = get_directory_contents(get_file_base(), '', 0, true, true, ['php']);
 } else {
     $files = [$limit_file];
 }
-foreach ($files as $i => $file) {
-    if (preg_match('#^exports/#', $file) != 0) {
-        continue;
-    }
-    if (strpos($file, 'plug_guid') !== false) {
-        continue;
+foreach ($files as $i => $path) {
+    $scan = guid_scan($path);
+    if ($scan === null) {
+        continue; // Was skipped
     }
 
-    $FILENAME = $file;
+    foreach ($scan['errors_missing'] as $error) {
+        echo escape_html($error) . '<br />';
+    }
+    foreach ($scan['errors_duplicate'] as $error) {
+        echo escape_html($error) . '<br />';
+    }
 
-    echo 'Doing ' . escape_html($file) . '<br />';
-
-    $IN = cms_file_get_contents_safe(get_custom_file_base() . '/' . $file, FILE_READ_LOCK);
-
-    $out = preg_replace_callback("#do_template\('([^']*)', \[(\s*)'([^']+)' => ('[^']+')#", 'callback', $IN);
-    $out = preg_replace_callback("#do_template\('([^']*)', \[(\s*)'([^']+)' => #", 'callback', $IN);
-
-    if ($IN != $out) {
-        if (get_param_integer('debug', 0) == 1) {
+    if ($scan['changes']) {
+        if ($debug) {
             echo '<pre>';
-            echo(escape_html($out));
+            echo(escape_html($scan['new_contents']));
             echo '</pre>';
         } else {
-            echo '<span style="color: orange">Re-saved ' . escape_html($file) . '</span><br />';
+            echo '<span style="color: orange">Re-saved ' . escape_html($path) . '</span><br />';
 
-            cms_file_put_contents_safe(get_file_base() . '/' . $file, $out, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+            cms_file_put_contents_safe(get_file_base() . '/' . $path, $scan['new_contents'], FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
         }
     }
 }
 echo 'Finished!';
 
+// Re-save if we were not limiting scanning to a particular file
 if ($limit_file == '') {
     cms_file_put_contents_safe(get_file_base() . '/data/guids.bin', serialize($GUID_LANDSCAPE), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
-}
-
-function callback($match)
-{
-    $full_match_line = $match[0];
-    $template_name = $match[1];
-    $whitespace = $match[2];
-    $first_param_name = $match[3];
-    $first_param_value = isset($match[4]) ? $match[4] : null;
-
-    /*
-    For debugging:
-    echo $full_match_line . '<br />';
-    return $full_match_line;
-    */
-
-    global $GUID_LANDSCAPE, $FILENAME, $IN;
-    $new_guid = md5(uniqid('', true));
-    if (!array_key_exists($template_name, $GUID_LANDSCAPE)) {
-        $GUID_LANDSCAPE[$template_name] = [];
-    }
-
-    $line = substr_count(substr($IN, 0, strpos($IN, $full_match_line)), "\n") + 1;
-
-    // Handle missing GUIDs
-    if ($first_param_name != '_GUID') {
-        echo 'Insert needed for ' . escape_html($template_name) . '<br />';
-        $GUID_LANDSCAPE[$template_name][] = [$FILENAME, $line, $new_guid];
-        return "do_template('" . $template_name . "', [" . $whitespace . "'_GUID' => '" . $new_guid . "'," . $whitespace . "'" . $first_param_name . "' => " . (($first_param_value === null) ? ' ' : $first_param_value);
-    }
-
-    // Handle existing GUIDs
-    if ($first_param_value !== null) {
-        global $FOUND_GUID;
-        $guid_value = str_replace("'", '', $first_param_value);
-
-        // Handle duplicated GUIDs
-        if (array_key_exists($guid_value, $FOUND_GUID)) {
-            echo 'Repair needed for ' . escape_html($template_name) . '<br />';
-            $GUID_LANDSCAPE[$template_name][] = [$FILENAME, $line, $new_guid];
-            return "do_template('" . $template_name . "', [" . $whitespace . "'_GUID' => '" . $new_guid . "'";
-        }
-
-        $FOUND_GUID[$guid_value] = true;
-        $GUID_LANDSCAPE[$template_name][] = [$FILENAME, $line, $guid_value];
-    }
-
-    return $full_match_line;
 }

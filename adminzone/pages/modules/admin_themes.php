@@ -1630,7 +1630,7 @@ class Module_admin_themes
                 return make_string_tempcode(check_xhtml_webstandards($global->evaluate(), true, 2, true));
 
             case 'w3c':
-                $refresh = do_template('JS_REFRESH', ['_GUID' => 'd7d2f9e7a2cc637f3cf9ac4d1cf97eca', 'FORM_NAME' => 'redir-form']);
+                $refresh = do_template('JS_REFRESH', ['FORM_NAME' => 'redir-form']);
 
                 $global = globalise($preview);
 
@@ -1640,7 +1640,6 @@ class Module_admin_themes
                 $url = 'https://validator.w3.org/check';
 
                 return do_template('REDIRECT_POST_METHOD_SCREEN', [
-                    '_GUID' => '92e056de9150bbed185120eac3571f40',
                     'REFRESH' => $refresh,
                     'TITLE' => $this->title,
                     'TEXT' => do_lang_tempcode('REDIRECTING'),

@@ -119,7 +119,7 @@ class Hook_preview_cns_post
         $signature = get_translated_tempcode('f_members', $just_member_row, 'm_signature', $GLOBALS['FORUM_DB']);
         $_postdetails_avatar = $GLOBALS['FORUM_DRIVER']->get_member_avatar_url($post_owner);
         if ($_postdetails_avatar != '') {
-            $post_avatar = do_template('CNS_TOPIC_POST_AVATAR', ['_GUID' => '2683c09eabd7a9f1fdc57a20117483ef', 'AVATAR' => $_postdetails_avatar]);
+            $post_avatar = do_template('CNS_TOPIC_POST_AVATAR', ['AVATAR' => $_postdetails_avatar]);
         } else {
             $post_avatar = new Tempcode();
         }
@@ -134,7 +134,6 @@ class Hook_preview_cns_post
             $poster_details = render_member_box($post_owner, false, false, [], false);
             $poster_username = $GLOBALS['FORUM_DRIVER']->get_username($post_owner);
             $poster = do_template('CNS_POSTER_MEMBER', [
-                '_GUID' => '976a6ceb631bbdcdd950b723cb5d2487',
                 'ONLINE' => true,
                 'ID' => strval($post_owner),
                 'POSTER_DETAILS' => $poster_details,
@@ -145,13 +144,12 @@ class Hook_preview_cns_post
         } else {
             $poster_details = new Tempcode();
             $custom_fields = do_template('CNS_MEMBER_BOX_CUSTOM_FIELD', [
-                '_GUID' => '9cbbc5913d8164970f19c38a210fda95',
                 'NAME' => do_lang_tempcode('IP_ADDRESS'),
                 'RAW' => get_ip_address(),
                 'VALUE' => get_ip_address(),
                 'MEMBER_ID' => strval($post_owner),
             ]);
-            $poster_details = do_template('CNS_GUEST_DETAILS', ['_GUID' => '2db48e17db9f060c04386843f2d0f105', 'CUSTOM_FIELDS' => $custom_fields]);
+            $poster_details = do_template('CNS_GUEST_DETAILS', ['CUSTOM_FIELDS' => $custom_fields]);
             $poster_username = cns_get_safe_specified_poster_name();
             if ((has_actual_page_access(get_member(), 'admin_lookup')) && (addon_installed('securitylogging'))) {
                 $ip_url = build_url(['page' => 'admin_lookup', 'type' => 'results', 'param' => get_ip_address()], get_module_zone('admin_lookup'));
@@ -159,7 +157,6 @@ class Hook_preview_cns_post
                 $ip_url = new Tempcode();
             }
             $poster = do_template('CNS_POSTER_GUEST', [
-                '_GUID' => '9c0ba6198663de96facc7399a08e8281',
                 'LOOKUP_IP_URL' => $ip_url,
                 'POSTER_DETAILS' => $poster_details,
                 'POSTER_USERNAME' => $poster_username,
@@ -175,7 +172,6 @@ class Hook_preview_cns_post
             $group_name = cns_get_group_name($group);
             if ($rank_image != '') {
                 $rank_images->attach(do_template('CNS_RANK_IMAGE', [
-                    '_GUID' => 'a6a413fc07e05b28ab995b072718b755',
                     'GROUP_NAME' => $group_name,
                     'USERNAME' => $GLOBALS['FORUM_DRIVER']->get_username(get_member()),
                     'IMG' => $rank_image,
@@ -223,7 +219,7 @@ class Hook_preview_cns_post
             'POSTER_ID' => strval($post_owner),
         ];
         $post = do_template('CNS_TOPIC_POST', $map);
-        $out = do_template('CNS_POST_BOX', ['_GUID' => '62bbfabfa5c16c2aa6724a0b79839626', 'GIVE_CONTEXT' => false, 'POST' => $post] + $map + ['ACTUAL_POST' => $post_html]);
+        $out = do_template('CNS_POST_BOX', ['GIVE_CONTEXT' => false, 'POST' => $post] + $map + ['ACTUAL_POST' => $post_html]);
 
         return [$out, $post_comcode];
     }

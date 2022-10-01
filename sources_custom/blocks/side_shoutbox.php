@@ -126,7 +126,6 @@ class Block_side_shoutbox
                 $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($_message['username']);
                 $member_link = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($member_id, $_message['username']);
                 $_tpl[] = do_template('BLOCK_SIDE_SHOUTBOX_MESSAGE', [
-                    '_GUID' => 'a6f86aa48af7de7ec78423864c82c626',
                     'MEMBER_ID' => strval($member_id),
                     'MEMBER_URL' => $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id),
                     'MEMBER_LINK' => $member_link,

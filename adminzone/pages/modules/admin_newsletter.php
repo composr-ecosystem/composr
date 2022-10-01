@@ -1594,7 +1594,7 @@ class Module_admin_newsletter extends Standard_crud_module
         $hidden->attach(form_input_hidden('template', $rows[0]['template']));
         $hidden->attach(form_input_hidden('html_only', strval($rows[0]['html_only'])));
         $hidden->attach(form_input_hidden('message', $message));
-        $buttons->attach(do_template('BUTTON_SCREEN', ['_GUID' => 'da69b2ee5495c9af670399dd080f662e', 'IMMEDIATE' => true, 'URL' => $copy_url, 'TITLE' => do_lang_tempcode('RESEND_NEWSLETTER'), 'IMG' => 'buttons/send', 'HIDDEN' => $hidden]));
+        $buttons->attach(do_template('BUTTON_SCREEN', ['IMMEDIATE' => true, 'URL' => $copy_url, 'TITLE' => do_lang_tempcode('RESEND_NEWSLETTER'), 'IMG' => 'buttons/send', 'HIDDEN' => $hidden]));
 
         $text = do_lang_tempcode('NEWSLETTER_WITH_SAMPLE_NAME');
 

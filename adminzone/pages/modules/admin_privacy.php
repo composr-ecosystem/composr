@@ -195,7 +195,6 @@ class Module_admin_privacy
                 $fields->attach(form_input_various_ticks($options, '', null, do_lang_tempcode('TABLES'), true));
 
                 $out = do_template('FORM_SCREEN', [
-                    '_GUID' => '2cc407037ec01a8f3483746a22889471',
                     'GET' => false,
                     'SKIP_WEBSTANDARDS' => true,
                     'HIDDEN' => build_keep_post_fields(['csrf_token_preserve']),

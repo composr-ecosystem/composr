@@ -414,7 +414,7 @@ class Module_admin_actionlog
         }
         $table = results_table(do_lang_tempcode('ACTIONS'), $start, 'start', $max, 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort');
 
-        $tpl = do_template('ACTIONLOGS_SCREEN', ['_GUID' => 'd75c813e372c3ca8d1204609e54c9d65', 'TABLE' => $table, 'TITLE' => $this->title]);
+        $tpl = do_template('ACTIONLOGS_SCREEN', ['TABLE' => $table, 'TITLE' => $this->title]);
 
         require_code('templates_internalise_screen');
         return internalise_own_screen($tpl);

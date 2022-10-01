@@ -1097,6 +1097,6 @@ class Module_admin_ecommerce_logs
         $fields = form_input_hidden('id', strval($id));
         $map = ['page' => '_SELF', 'type' => get_param_string('type'), 'subscription_id' => $id];
         $url = build_url($map, '_SELF');
-        return do_template('CONFIRM_SCREEN', ['_GUID' => '3b76b0e41541d5a38671134e92128d9f', 'TITLE' => $this->title, 'FIELDS' => $fields, 'URL' => $url, 'PREVIEW' => $preview]);
+        return do_template('CONFIRM_SCREEN', ['TITLE' => $this->title, 'FIELDS' => $fields, 'URL' => $url, 'PREVIEW' => $preview]);
     }
 }

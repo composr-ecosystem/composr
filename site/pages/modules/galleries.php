@@ -1089,7 +1089,6 @@ class Module_galleries
 
         // Render
         return do_template('GALLERY_MOSAIC_MODE_SCREEN', [
-            '_GUID' => 'cec405597f47f5079b7c7f581fa6b5c2',
             '_TITLE' => $fullname,
             'MEMBER_ID' => ($member_id === null) ? '' : strval($member_id),
             'TAGS' => get_loaded_tags('galleries'),

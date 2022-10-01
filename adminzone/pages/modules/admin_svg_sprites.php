@@ -198,7 +198,6 @@ class Module_admin_svg_sprites
         $submit_name = do_lang_tempcode('PREVIEW_SPRITE');
 
         return do_template('FORM_SCREEN', [
-            '_GUID' => '2887f783aea9475bb0955a9ee985e36e',
             'HIDDEN' => '',
             'SUBMIT_ICON' => 'admin/view_this',
             'SUBMIT_NAME' => $submit_name,

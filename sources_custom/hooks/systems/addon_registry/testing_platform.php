@@ -769,6 +769,7 @@ We hope other users will appreciate your efforts and give you some points to rew
             '_tests/tests/unit_tests/dev_environment.php',
             '_tests/tests/unit_tests/diff.php',
             '_tests/tests/unit_tests/dns.php',
+            '_tests/tests/unit_tests/guids.php',
             '_tests/tests/unit_tests/file_security.php',
             '_tests/tests/unit_tests/download_indexing.php',
             '_tests/tests/unit_tests/downloads_categories.php',

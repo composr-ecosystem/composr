@@ -63,7 +63,7 @@ class Hook_preview_newsletter_whatsnew
             $message = generate_whatsnew_comcode($chosen_categories, $in_full, $lang, $cutoff_time);
 
             list($preview) = newsletter_preview($message, do_lang('EXAMPLE'), $lang, true, do_lang('SAMPLE_FORENAME'), do_lang('SAMPLE_SURNAME'), do_lang('SAMPLE_NAME'), do_lang('SAMPLE_ADDRESS'));
-            $output = do_template('NEWSLETTER_PREVIEW', ['_GUID' => '3790bb2b050e0c8c4339db54a063579a', 'HTML_PREVIEW' => $preview]);
+            $output = do_template('NEWSLETTER_PREVIEW', ['HTML_PREVIEW' => $preview]);
         }
 
         return [$output, null, false];

@@ -69,7 +69,7 @@ function permission_product_form(string $resource_type, ?string $category_id = n
 
     $fields = new Tempcode();
 
-    $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '096274e977e4cd99ef20eb4b1c2174e3', 'TITLE' => do_lang_tempcode('SELL_CATEGORY_ACCESS'), 'HELP' => do_lang_tempcode('DESCRIPTION_SELL_CATEGORY_ACCESS'), 'SECTION_HIDDEN' => $section_hidden]));
+    $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['TITLE' => do_lang_tempcode('SELL_CATEGORY_ACCESS'), 'HELP' => do_lang_tempcode('DESCRIPTION_SELL_CATEGORY_ACCESS'), 'SECTION_HIDDEN' => $section_hidden]));
 
     $fields->attach(form_input_float(do_lang_tempcode('PRICE'), do_lang_tempcode('DESCRIPTION_PRICE'), 'permission_product__price', $price, false));
     $fields->attach(form_input_tax_code(do_lang_tempcode(get_option('tax_system')), do_lang_tempcode('DESCRIPTION_TAX_CODE'), 'permission_product__tax_code', $tax_code, false));
