@@ -139,7 +139,7 @@ class Module_forumview
             $this->id = $id;
             $this->forum_info = $forum_info;
 
-            set_feed_url('?mode=cns_forumview&select=' . strval($id));
+            inject_feed_url('?mode=cns_forumview&select=' . strval($id), do_lang('FORUM'));
 
             require_code('cns_forums');
             $breadcrumbs = cns_forum_breadcrumbs($id, $forum_name, $forum_info['f_parent_forum']);

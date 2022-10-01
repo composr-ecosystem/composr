@@ -91,8 +91,7 @@ function init__global3()
         'SHORT_TITLE',
         'FORCE_SET_TITLE',
         'BREADCRUMB_SET_SELF',
-        'FEED_URL',
-        'FEED_URL_2',
+        'FEED_URLS',
         'OUTPUT_STATE_STACK',
         'REFRESH_URL',
         'FORCE_META_REFRESH',
@@ -620,9 +619,8 @@ function _load_blank_output_state(bool $just_tempcode = false, bool $true_blank 
         $FORCE_SET_TITLE = false;
         $BREADCRUMB_SET_SELF = null;
 
-        global $FEED_URL, $FEED_URL_2;
-        $FEED_URL = null;
-        $FEED_URL_2 = null;
+        global $FEED_URLS;
+        $FEED_URLS = [];
 
         global $REFRESH_URL, $FORCE_META_REFRESH, $QUICK_REDIRECT;
         $REFRESH_URL[0] = '';

@@ -249,10 +249,10 @@ class Module_downloads
         require_code('downloads');
         require_lang('downloads');
 
-        set_feed_url('?mode=downloads&select=');
+        inject_feed_url('?mode=downloads&select=');
 
         if ($type == 'index') {
-            set_feed_url('?mode=downloads&select=');
+            inject_feed_url('?mode=downloads&select=');
         }
 
         if ($type == 'browse') {
@@ -260,7 +260,7 @@ class Module_downloads
 
             $root = get_param_integer('keep_download_root', db_get_first_id());
 
-            set_feed_url('?mode=downloads&select=' . strval($category_id));
+            inject_feed_url('?mode=downloads&select=' . strval($category_id));
 
             // Get details
             $rows = $GLOBALS['SITE_DB']->query_select('download_categories', ['*'], ['id' => $category_id], '', 1);
@@ -321,7 +321,7 @@ class Module_downloads
                 return warn_screen(get_screen_title('SECTION_DOWNLOADS'), do_lang_tempcode('MISSING_RESOURCE', 'download'));
             }
             $myrow = $rows[0];
-            set_feed_url('?mode=downloads&select=' . strval($myrow['category_id']));
+            inject_feed_url('?mode=downloads&select=' . strval($myrow['category_id']));
 
             // Permissions
             if (!may_enter_download_category(get_member(), $myrow['category_id'])) {

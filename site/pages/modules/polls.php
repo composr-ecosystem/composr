@@ -230,7 +230,7 @@ class Module_polls
         }
 
         if ($type == 'view') {
-            set_feed_url('?mode=polls&select=');
+            inject_feed_url('?mode=polls&select=');
 
             $id = get_param_integer('id');
 

@@ -260,7 +260,7 @@ class Module_wiki
         require_lang('wiki');
         require_code('wiki');
 
-        set_feed_url('?mode=wiki&select=');
+        inject_feed_url('?mode=wiki&select=');
 
         if ($type == 'browse') {
             // Find our page by whatever means

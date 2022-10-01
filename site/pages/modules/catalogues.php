@@ -720,12 +720,12 @@ class Module_catalogues
         if ($type == 'browse') {
             $this->title = get_screen_title('CATALOGUES');
 
-            set_feed_url('?mode=catalogues&select=');
+            inject_feed_url('?mode=catalogues&select=');
         }
 
         if ($type == 'index') {
             $catalogue_name = get_param_string('id');
-            set_feed_url('?mode=catalogues&select=' . urlencode($catalogue_name));
+            inject_feed_url('?mode=catalogues&select=' . urlencode($catalogue_name));
 
             // Read in catalogue details
             $catalogue = load_catalogue_row($catalogue_name);
@@ -778,7 +778,7 @@ class Module_catalogues
                 }
             }
 
-            set_feed_url('?mode=catalogues&select=' . strval($id));
+            inject_feed_url('?mode=catalogues&select=' . strval($id));
 
             // Get category
             $categories = $GLOBALS['SITE_DB']->query_select('catalogue_categories', ['*'], ['id' => $id], '', 1);
@@ -878,7 +878,7 @@ class Module_catalogues
             if ($true_id === null) {
                 $id = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'MIN(id)', ['c_name' => get_param_string('catalogue_name'), 'cc_parent_id' => null]);
             }
-            set_feed_url('?mode=catalogues&select=' . strval($id));
+            inject_feed_url('?mode=catalogues&select=' . strval($id));
 
             $categories = $GLOBALS['SITE_DB']->query_select('catalogue_categories', ['*'], ['id' => $id], '', 1);
             if (!array_key_exists(0, $categories)) {

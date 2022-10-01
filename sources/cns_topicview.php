@@ -83,8 +83,10 @@ function find_first_unread_url(int $topic_id) : string
             $last_read_time = 0;
         }
     }
-    $post_details = $GLOBALS['FORUM_DB']->query('SELECT p_time FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_topic_id=' . strval($topic_id) . ' AND p_time>=' . strval($last_read_time) . ' ORDER BY p_time');
+    $post_details = $GLOBALS['FORUM_DB']->query('SELECT p_time,id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_topic_id=' . strval($topic_id) . ' AND p_time>=' . strval($last_read_time) . ' ORDER BY p_time');
     if (!empty($post_details)) {
+        $first_unread_id = $post_details[0]['id'];
+
         // What page is it on?
         $first_unread_id_post_time = $post_details[0]['p_time'];
         $before = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_time<' . strval($first_unread_id_post_time) . ' AND ' . cns_get_topic_where($topic_id), false, true);

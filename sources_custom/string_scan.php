@@ -11704,6 +11704,12 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         POINTS_SENT_AGGREGATE
         POINTS_SPENT_AGGREGATE
         TRANSACTIONS
+        POLL_RSS_SUMMARY_CONTENT_1
+        POLL_RSS_SUMMARY_CONTENT_2
+        POLL_RSS_SUMMARY_CONTENT_3
+        POLL_RSS_VOTE_TITLE
+        POLL_RSS_VOTE_TITLE_REVOKED
+        TOPIC_POLL_VOTES
     ')));
 
     if ($GLOBALS['DEV_MODE']) {

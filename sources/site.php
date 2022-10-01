@@ -463,16 +463,17 @@ function breadcrumb_set_self($title)
 }
 
 /**
- * Set the feed (RSS/Atom) URL.
+ * Add a feed (RSS/Atom) URL to the metadata for this page.
  *
  * @sets_output_state
  *
- * @param  URLPATH $url The URL
+ * @param  URLPATH $url The URL to the feed (if this starts with ?, then the backend script will be prepended automatically)
+ * @param  ?SHORT_TEXT $title The title of the feed (null: no title)
  */
-function set_feed_url(string $url)
+function inject_feed_url(string $url, ?string $title = null)
 {
-    global $FEED_URL;
-    $FEED_URL = $url;
+    global $FEED_URLS;
+    $FEED_URLS[] = ['TITLE' => $title, 'URL' => $url];
 }
 
 /**
@@ -1963,7 +1964,7 @@ function load_comcode_page(string $string, string $zone, string $codename, ?stri
     }
 
     if ($codename == 'sitemap') {
-        set_feed_url('?mode=comcode_pages&select=' . urlencode($zone));
+        inject_feed_url('?mode=comcode_pages&select=' . urlencode($zone));
     }
 
     global $PAGE_STRING, $COMCODE_PARSE_TITLE, $LAST_COMCODE_PARSED_TITLE;

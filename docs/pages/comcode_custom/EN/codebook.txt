@@ -148,7 +148,7 @@ Composr contains many "cross-cutting" features that are often present in differe
  - [b]Preview[/b] support (just implement a hook)
  - AJAX [b]fractional-edit[/b] support where appropriate (see how CMS CRUD module's use [tt]INTEGER_MAGIC_NULL[/tt] and [tt]STRING_MAGIC_NULL[/tt], and how their view templates use the FRACTIONAL_EDITABLE directive)
  - [b]Rep-images[/b] (implementation varies, but basically these are icons for a module's categories)
- - [b]RSS[/b] (just implement a hook, and call [tt]set_feed_url[/tt] in the code when viewing what the RSS feed subscribes to)
+ - [b]RSS[/b] (just implement a hook, and call [tt]inject_feed_url[/tt] in the code when viewing what the RSS feed subscribes to)
  - [b]Awards[/b] (just implement a content-meta-aware hook)
  - [i]Possible others I've forgotten to list[/i]
 

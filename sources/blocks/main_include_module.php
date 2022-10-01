@@ -140,8 +140,7 @@ class Block_main_include_module
                 'DISPLAYED_TITLE',
                 'SHORT_TITLE',
                 'FORCE_SET_TITLE',
-                'FEED_URL',
-                'FEED_URL_2',
+                'FEED_URLS',
             ];
         }
         if ($use_attached_messages) {

@@ -4266,7 +4266,7 @@ class Database_Static_xml extends DatabaseDriver
     }
 
     /**
-     * Reads the next token.
+     * Reads the current token.
      *
      * @param  integer $at Our offset counter
      * @param  array $tokens Tokens

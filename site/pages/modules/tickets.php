@@ -215,14 +215,14 @@ class Module_tickets
 
         require_lang('tickets');
 
-        set_feed_url('?mode=tickets&select=');
+        inject_feed_url('?mode=tickets&select=');
 
         if ($type == 'browse') {
             if (!is_guest()) {
                 // Our tickets
                 $default_ticket_type_id = $this->get_ticket_type_id();
                 if ($default_ticket_type_id !== null) {
-                    set_feed_url('?mode=tickets&select=' . strval($default_ticket_type_id));
+                    inject_feed_url('?mode=tickets&select=' . strval($default_ticket_type_id));
                 }
                 $this->ticket_type_id = $default_ticket_type_id;
             }
