@@ -334,7 +334,7 @@ class Module_calendar
         require_lang('calendar');
         require_code('calendar');
 
-        inject_feed_url('?mode=calendar&select=' . urlencode(implode(',', array_map('strval', $this->get_and_filter()))));
+        inject_feed_url('?mode=calendar&select=' . urlencode(implode(',', array_map('strval', $this->get_and_filter()))), do_lang('CALENDAR'));
 
         inform_non_canonical_parameter('#^int_.*$#');
         inform_non_canonical_parameter('member_id');
@@ -402,7 +402,7 @@ class Module_calendar
                 'identifier' => '_SEARCH:calendar:view:' . strval($id),
             ], $event, 'event', strval($id));
 
-            inject_feed_url(find_script('backend') . '?mode=calendar&select=' . urlencode(implode(',', $this->get_and_filter())));
+            inject_feed_url(find_script('backend') . '?mode=calendar&select=' . urlencode(implode(',', $this->get_and_filter())), do_lang('CALENDAR'));
 
             // Back URL / breadcrumbs
             list(, $_first_date) = find_event_start_timestamp($event); // Will be first recurrence as we have not called adjust_event_dates_for_a_recurrence yet

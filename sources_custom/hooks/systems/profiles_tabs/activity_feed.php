@@ -51,7 +51,7 @@ class Hook_profiles_tabs_activity_feed
         require_javascript('jquery');
 
         require_code('site');
-        inject_feed_url('?mode=activities&select=' . strval($member_id_of));
+        inject_feed_url('?mode=activities&select=' . strval($member_id_of), do_lang('ACTIVITY'));
 
         require_lang('activity_feed');
 

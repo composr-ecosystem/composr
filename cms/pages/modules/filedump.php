@@ -154,7 +154,7 @@ class Module_filedump
                 $subpath .= '/';
             }
 
-            inject_feed_url('?mode=filedump&select=' . urlencode($subpath));
+            inject_feed_url('?mode=filedump&select=' . urlencode($subpath), do_lang('FILEDUMP'));
 
             // Show breadcrumbs
             $dirs = explode('/', substr($subpath, 0, strlen($subpath) - 1));

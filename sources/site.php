@@ -468,9 +468,9 @@ function breadcrumb_set_self($title)
  * @sets_output_state
  *
  * @param  URLPATH $url The URL to the feed (if this starts with ?, then the backend script will be prepended automatically)
- * @param  ?SHORT_TEXT $title The title of the feed (null: no title)
+ * @param  SHORT_TEXT $title The title of the feed
  */
-function inject_feed_url(string $url, ?string $title = null)
+function inject_feed_url(string $url, string $title)
 {
     global $FEED_URLS;
     $FEED_URLS[] = ['TITLE' => $title, 'URL' => $url];
@@ -1964,7 +1964,7 @@ function load_comcode_page(string $string, string $zone, string $codename, ?stri
     }
 
     if ($codename == 'sitemap') {
-        inject_feed_url('?mode=comcode_pages&select=' . urlencode($zone));
+        inject_feed_url('?mode=comcode_pages&select=' . urlencode($zone), do_lang('COMCODE_PAGES'));
     }
 
     global $PAGE_STRING, $COMCODE_PARSE_TITLE, $LAST_COMCODE_PARSED_TITLE;

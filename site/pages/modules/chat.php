@@ -302,7 +302,7 @@ class Module_chat
         require_lang('chat');
 
         if ($type == 'browse') {
-            inject_feed_url('?mode=chat&select=');
+            inject_feed_url('?mode=chat&select=', do_lang('CHATROOMS'));
 
             $this->title = get_screen_title('CHAT_LOBBY', true, [escape_html($GLOBALS['FORUM_DRIVER']->get_username(get_member()))]);
 
@@ -313,7 +313,7 @@ class Module_chat
 
         if ($type == 'room') {
             $room_id = get_param_integer('id', db_get_first_id());
-            inject_feed_url('?mode=chat&select=' . strval($room_id));
+            inject_feed_url('?mode=chat&select=' . strval($room_id), do_lang('CHATROOM'));
             $this->room_id = $room_id;
 
             $room_check = $GLOBALS['SITE_DB']->query_select('chat_rooms', ['*'], ['id' => $room_id], '', 1);
