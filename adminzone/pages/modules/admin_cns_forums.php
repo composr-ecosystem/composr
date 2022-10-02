@@ -63,6 +63,7 @@ class Module_admin_cns_forums extends Standard_crud_module
 
         $ret = [
             'browse' => ['MANAGE_FORUMS', 'menu/social/forum/forums'],
+            'calculate_voting_power' => [do_lang_tempcode('cns_polls:VOTING_POWER_CALCULATOR'), 'cns_topic_modifiers/poll']
         ] + parent::get_entry_points();
 
         if ($support_crosslinks) {
@@ -119,6 +120,9 @@ class Module_admin_cns_forums extends Standard_crud_module
         if ($type == 'reorder' || $type == 'edit') {
             $this->title = get_screen_title('EDIT_FORUM');
         }
+        if ($type == 'calculate_voting_power' || $type == '_calculate_voting_power') {
+            $this->title = get_screen_title('VOTING_POWER_CALCULATOR');
+        }
 
         return parent::pre_run($top_level);
     }
@@ -154,6 +158,12 @@ class Module_admin_cns_forums extends Standard_crud_module
         if ($type == 'reorder') {
             return $this->reorder();
         }
+        if ($type == 'calculate_voting_power') {
+            return $this->calculate_voting_power();
+        }
+        if ($type == '_calculate_voting_power') {
+            return $this->_calculate_voting_power();
+        }
 
         return new Tempcode();
     }
@@ -166,6 +176,7 @@ class Module_admin_cns_forums extends Standard_crud_module
     public function browse() : object
     {
         $menu_links = [
+            ['cns_topic_modifiers/poll', ['_SELF', ['type' => 'calculate_voting_power'], get_module_zone('admin_cns_forums')], do_lang('cns_polls:VOTING_POWER_CALCULATOR')],
             ['admin/add_one_category', ['admin_cns_forum_groupings', ['type' => 'add'], get_module_zone('admin_cns_forum_groupings')], do_lang('ADD_FORUM_GROUPING')],
             ['admin/edit_one_category', ['admin_cns_forum_groupings', ['type' => 'edit'], get_module_zone('admin_cns_forum_groupings')], do_lang('EDIT_FORUM_GROUPING')],
             ['admin/add', ['_SELF', ['type' => 'add'], '_SELF'], do_lang('ADD_FORUM')],
@@ -856,5 +867,68 @@ class Module_admin_cns_forums extends Standard_crud_module
     public function delete_actualisation(string $id)
     {
         cns_delete_forum(intval($id), post_param_integer('target_forum'), post_param_integer('delete_topics', 0), (post_param_integer('reverse_point_transaction', 0) == 1));
+    }
+
+    /**
+     * The UI to generate a spreadsheet of voting power calculations.
+     *
+     * @return Tempcode The form UI
+     */
+    public function calculate_voting_power() : object
+    {
+        require_code('form_templates');
+
+        $fields = new Tempcode();
+
+        $logarithmic_base = floatval(get_option('topic_polls_weighting_logarithmic_base'));
+        $fields->attach(form_input_float(do_lang_tempcode('TOPIC_POLLS_WEIGHTING_LOGARITHMIC_BASE'), do_lang_tempcode('CONFIG_OPTION_topic_polls_weighting_logarithmic_base'), 'logarithmic_base', $logarithmic_base, true));
+
+        $multiplier = floatval(get_option('topic_polls_weighting_multiplier'));
+        $fields->attach(form_input_float(do_lang_tempcode('TOPIC_POLLS_WEIGHTING_MULTIPLIER'), do_lang_tempcode('CONFIG_OPTION_topic_polls_weighting_multiplier'), 'multiplier', $multiplier, true));
+
+        $offset = intval(get_option('topic_polls_weighting_offset'));
+        $fields->attach(form_input_integer(do_lang_tempcode('TOPIC_POLLS_WEIGHTING_OFFSET'), do_lang_tempcode('CONFIG_OPTION_topic_polls_weighting_offset'), 'offset', $offset, true));
+
+        $_ceiling = get_option('topic_polls_weighting_ceiling');
+        if ($_ceiling !== null && $_ceiling != '') {
+            $ceiling = intval($_ceiling);
+        } else {
+            $ceiling = null;
+        }
+        $fields->attach(form_input_integer(do_lang_tempcode('TOPIC_POLLS_WEIGHTING_CEILING'), do_lang_tempcode('CONFIG_OPTION_topic_polls_weighting_ceiling'), 'ceiling', $ceiling, false));
+
+        $submit_url = build_url(['page' => 'admin_cns_forums', 'type' => '_calculate_voting_power'], get_module_zone('admin_cns_forums'));
+        $config_url = build_url(['page' => 'admin-config', 'type' => 'category', 'id' => 'FORUMS'], get_module_zone('admin_config'));
+
+        return do_template('FORM_SCREEN', [
+            '_GUID' => '1eadb98e94da438f95bddb9886f43cab',
+            'HIDDEN' => new Tempcode(),
+            'TITLE' => $this->title,
+            'FIELDS' => $fields,
+            'TEXT' => do_lang_tempcode('DESCRIPTION_VOTING_POWER_CALCULATOR', escape_html($config_url->evaluate())),
+            'SUBMIT_ICON' => 'admin/export_spreadsheet',
+            'SUBMIT_NAME' => do_lang_tempcode('EXPORT'),
+            'URL' => $submit_url,
+            'JS_FUNCTION_CALLS' => [],
+        ]);
+    }
+
+    /**
+     * Actualisation for generating a voting power spreadsheet.
+     *
+     * @return Tempcode The result
+     */
+    public function _calculate_voting_power() : object
+    {
+        $logarithmic_base = floatval(post_param_string('logarithmic_base'));
+        $multiplier = floatval(post_param_string('multiplier'));
+        $offset = post_param_integer('offset');
+        $ceiling = post_param_integer('ceiling', null);
+
+        require_code('tasks');
+        $ret_message = call_user_func_array__long_task(do_lang('VOTING_POWER_CALCULATOR'), $this->title, 'export_voting_power', [$logarithmic_base, $multiplier, $offset, $ceiling]);
+
+        $url = build_url(['page' => '_SELF'], '_SELF');
+        return redirect_screen($this->title, $url, $ret_message);
     }
 }

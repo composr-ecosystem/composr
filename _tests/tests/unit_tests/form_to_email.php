@@ -43,6 +43,6 @@ class form_to_email_test_set extends cms_test_case
             $this->assertTrue(strpos($row['m_message'], 'bar') !== false);
         }
 
-        $this->assertTrue(count($rows) == 1);
+        $this->assertTrue((count($rows) == 1), 'Expected 1 but got ' . strval(count($rows)));
     }
 }
