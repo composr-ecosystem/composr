@@ -175,7 +175,7 @@ class Module_topicview
         $SEO_TITLE = do_lang('_VIEW_TOPIC', $topic_info['title']);
 
         if ($id !== null) {
-            set_feed_url('?mode=cns_topicview&select=' . strval($id));
+            inject_feed_url('?mode=cns_topicview&select=' . strval($id), do_lang('FORUM_TOPIC'));
         }
 
         if ($id === null) { // Just inline personal posts
@@ -811,7 +811,11 @@ class Module_topicview
                     $num_votes = $answer['num_votes'];
                     $voting_power = $answer['voting_power'];
                     if ($total_votes != 0) {
-                        $width = intval(round(100.0 * floatval($num_votes) / floatval($total_votes)));
+                        if ($point_weighting) {
+                            $width = intval(round(100.0 * floatval($voting_power) / floatval($total_voting_power)));
+                        } else {
+                            $width = intval(round(100.0 * floatval($num_votes) / floatval($total_votes)));
+                        }
                     } else {
                         $width = 0;
                     }
@@ -821,7 +825,7 @@ class Module_topicview
                         '_NUM_VOTES' => strval($num_votes),
                         '_TOTAL_VOTES' => strval($total_votes),
                         'NUM_VOTES' => integer_format($num_votes),
-                        'VOTING_POWER' => ($voting_power !== null) ? float_format($answer['voting_power'], 2) : null,
+                        'VOTING_POWER' => ($voting_power !== null) ? float_format($voting_power, 2) : null,
                         'TOTAL_VOTES' => integer_format($total_votes),
                         'TOTAL_VOTING_POWER' => ($total_voting_power !== null) ? float_format($total_voting_power, 2) : null,
                         'POINT_WEIGHTING' => $point_weighting,
@@ -860,6 +864,9 @@ class Module_topicview
                 'TOTAL_VOTING_POWER' => ($total_voting_power !== null) ? float_format($total_voting_power, 2) : null,
                 'POINT_WEIGHTING' => $point_weighting,
             ]);
+
+            // Add polls RSS feed
+            inject_feed_url('?mode=cns_polls&select=' . strval($topic_info['id']), do_lang('TOPIC_POLL_VOTES'));
         } else {
             $poll = new Tempcode();
         }

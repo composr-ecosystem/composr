@@ -1645,17 +1645,12 @@ function ecv_FEEDS(string $lang, array $escaped, array $param) : string
         if (addon_installed('news')) {
             $feeds->attach(do_template('RSS_HEADER', ['_GUID' => '53e135b04502d6df64f1570b61310f30', 'FEED_URL' => find_script('backend') . '?mode=news', 'TITLE' => do_lang('NEWS')]));
         }
-        if ($GLOBALS['FEED_URL'] !== null) {
-            if (substr($GLOBALS['FEED_URL'], 0, 1) == '?') {
-                $GLOBALS['FEED_URL'] = find_script('backend') . $GLOBALS['FEED_URL'];
+        foreach ($GLOBALS['FEED_URLS'] as $feed) {
+            if (substr($feed['url'], 0, 1) == '?') {
+                $feed['url'] = find_script('backend') . $feed['URL'];
             }
-            $feeds->attach(do_template('RSS_HEADER', ['_GUID' => '3a289a821e87e954494753edf7cb2ebd', 'FEED_URL' => $GLOBALS['FEED_URL']]));
-        }
-        if ($GLOBALS['FEED_URL_2'] !== null) {
-            if (substr($GLOBALS['FEED_URL_2'], 0, 1) == '?') {
-                $GLOBALS['FEED_URL_2'] = find_script('backend') . $GLOBALS['FEED_URL_2'];
-            }
-            $feeds->attach(do_template('RSS_HEADER', ['_GUID' => 'fa8c7aaa3601c24d1986fa2598416558', 'FEED_URL' => $GLOBALS['FEED_URL_2'], 'TITLE' => do_lang('COMMENTS')]));
+            $map = ['_GUID' => '371ef26788e14c17b6ad2bab9f9ffd1c', 'FEED_URL' => $feed['url'], 'TITLE' => $feed['title']];
+            $feeds->attach(do_template('RSS_HEADER', $map));
         }
         $value = $feeds->evaluate();
     } else {

@@ -223,13 +223,13 @@ class Module_polls
 
         require_lang('polls');
 
+        inject_feed_url('?mode=polls&select=', do_lang('POLLS'));
+
         if ($type == 'browse') {
             $this->title = get_screen_title('POLL_ARCHIVE');
         }
 
         if ($type == 'view') {
-            set_feed_url('?mode=polls&select=');
-
             $id = get_param_integer('id');
 
             // Breadcrumbs

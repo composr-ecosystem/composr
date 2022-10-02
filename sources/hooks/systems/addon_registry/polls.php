@@ -200,7 +200,7 @@ class Hook_addon_registry_polls
         require_code('xml');
 
         $_summary = do_lorem_template('POLL_RSS_SUMMARY', [
-            'ANSWERS' => placeholder_array(),
+            'VOTE_METADATA' => placeholder_array(),
         ]);
         $summary = xmlentities($_summary->evaluate());
 

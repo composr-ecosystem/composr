@@ -11708,6 +11708,12 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         EXPORT_POINTS_LEDGER
         CNS_VOTING
         VOTING_POWER_CONTROL_PERCENTAGE
+        POLL_RSS_SUMMARY_CONTENT_1
+        POLL_RSS_SUMMARY_CONTENT_2
+        POLL_RSS_SUMMARY_CONTENT_3
+        POLL_RSS_VOTE_TITLE
+        POLL_RSS_VOTE_TITLE_REVOKED
+        TOPIC_POLL_VOTES
     ')));
 
     if ($GLOBALS['DEV_MODE']) {

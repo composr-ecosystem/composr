@@ -401,12 +401,12 @@ class Module_points
         require_lang('points');
 
         if ($type == 'browse' || $type == '_search') {
-            set_feed_url('?mode=points&select=');
+            inject_feed_url('?mode=points&select=', do_lang('POINTS'));
         }
 
         if ($type == 'browse') {
             $this->member_id_of = db_get_first_id() + 1;
-            set_feed_url('?mode=points&select=' . strval($this->member_id_of));
+            inject_feed_url('?mode=points&select=' . strval($this->member_id_of), do_lang('POINTS'));
 
             breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('MEMBER_POINT_FIND')]]);
 
@@ -478,7 +478,7 @@ class Module_points
 
         if ($type == 'member') {
             $this->member_id_of = get_param_integer('id', get_member());
-            set_feed_url('?mode=points&select=' . strval($this->member_id_of));
+            inject_feed_url('?mode=points&select=' . strval($this->member_id_of), do_lang('POINTS'));
 
             $username = $GLOBALS['FORUM_DRIVER']->get_username($this->member_id_of, true, USERNAME_DEFAULT_ERROR | USERNAME_GUEST_AS_DEFAULT);
             $this->title = get_screen_title('_POINTS', true, [escape_html($username)]);

@@ -345,7 +345,7 @@ class Module_galleries
 
         if ($type == 'browse') {
             $cat = get_param_string('id', 'root');
-            set_feed_url('?mode=galleries&select=' . urlencode($cat));
+            inject_feed_url('?mode=galleries&select=' . urlencode($cat), do_lang('GALLERY'));
 
             $root = get_param_string('keep_gallery_root', 'root');
 
@@ -442,7 +442,7 @@ class Module_galleries
             }
             $myrow = $rows[0];
             $cat = $myrow['cat'];
-            set_feed_url('?mode=galleries&select=' . urlencode($cat));
+            inject_feed_url('?mode=galleries&select=' . urlencode($cat), do_lang('GALLERY'));
 
             $url = $myrow['url'];
             if (url_is_local($url)) {

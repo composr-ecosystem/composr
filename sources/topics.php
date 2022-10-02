@@ -1070,7 +1070,7 @@ class CMS_Topic
      */
     public function inject_rss_url(string $forum, string $type, string $id)
     {
-        $GLOBALS['FEED_URL_2'] = '?mode=comments&forum=' . urlencode($forum) . '&select=' . urlencode($type . '_' . $id);
+        inject_feed_url('?mode=comments&forum=' . urlencode($forum) . '&select=' . urlencode($type . '_' . $id), do_lang('COMMENTS'));
     }
 
     /**

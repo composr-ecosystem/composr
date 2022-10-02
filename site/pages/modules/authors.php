@@ -193,7 +193,7 @@ class Module_authors
      */
     public function run() : object
     {
-        set_feed_url('?mode=authors&select=');
+        inject_feed_url('?mode=authors&select=', do_lang('AUTHORS'));
 
         // Decide what we're doing
         $type = get_param_string('type', 'browse');

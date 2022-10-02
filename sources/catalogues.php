@@ -1857,7 +1857,7 @@ function render_catalogue_entry_screen(int $id) : object
     }
     $category = $categories[0];
     require_code('site');
-    set_feed_url('?mode=catalogues&select=' . strval($entry['cc_id']));
+    inject_feed_url('?mode=catalogues&select=' . strval($entry['cc_id']), do_lang('CATALOGUE_CATEGORY'));
 
     $catalogue_name = $category['c_name'];
     $catalogue = load_catalogue_row($catalogue_name);
