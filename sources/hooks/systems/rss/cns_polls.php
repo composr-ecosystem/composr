@@ -73,7 +73,6 @@ class Hook_rss_cns_polls
         $content = new Tempcode();
         foreach ($rows as $row) {
             if ((($row['t_forum_id'] !== null) || ($row['t_pt_from'] == get_member()) || ($row['t_pt_to'] == get_member())) && (($row['t_forum_id'] !== null) && (has_category_access(get_member(), 'forums', strval($row['t_forum_id']))))) {
-                // XML
                 $id = strval($row['pv_id']);
 
                 $author = $GLOBALS['FORUM_DRIVER']->get_username($row['pv_member_id'], true, USERNAME_DEFAULT_BLANK);
@@ -103,14 +102,14 @@ class Hook_rss_cns_polls
                 $_voting_power = $row['pv_cache_voting_power'];
                 $_points = $row['pv_cache_points_at_voting_time'];
 
-                $answers = [];
-                $answers[] = do_lang_tempcode('POLL_RSS_SUMMARY_CONTENT_1', $author, $news_title, [$category, $_category_author, $news_date]);
+                $vote_metadata = [];
+                $vote_metadata[] = do_lang_tempcode('POLL_RSS_SUMMARY_CONTENT_1', $author, $news_title, [$category, $_category_author, $news_date]);
                 if ((get_option('enable_poll_point_weighting') == '1') && ($row['po_point_weighting'] == 1)) {
-                    $answers[] = do_lang_tempcode('POLL_RSS_SUMMARY_CONTENT_2', float_format($_voting_power), integer_format($_points));
+                    $vote_metadata[] = do_lang_tempcode('POLL_RSS_SUMMARY_CONTENT_2', float_format($_voting_power), integer_format($_points));
                 }
-                $answers[] = do_lang_tempcode('POLL_RSS_SUMMARY_CONTENT_3', $author, $_author_join_date, [$_author_primary_group]);
+                $vote_metadata[] = do_lang_tempcode('POLL_RSS_SUMMARY_CONTENT_3', $author, $_author_join_date, [$_author_primary_group]);
 
-                $_summary = do_template('POLL_RSS_SUMMARY', ['_GUID' => '380e1014e941457db1dad71babfca028', 'ANSWERS' => $answers]);
+                $_summary = do_template('POLL_RSS_SUMMARY', ['_GUID' => '380e1014e941457db1dad71babfca028', 'VOTE_METADATA' => $vote_metadata]);
                 $summary = xmlentities($_summary->evaluate());
                 $news = '';
 
@@ -118,7 +117,6 @@ class Hook_rss_cns_polls
             }
         }
 
-        require_lang('polls');
-        return [$content, do_lang('POLLS')];
+        return [$content, do_lang('TOPIC_POLL_VOTES')];
     }
 }

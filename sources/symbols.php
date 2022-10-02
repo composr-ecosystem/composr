@@ -1646,13 +1646,10 @@ function ecv_FEEDS(string $lang, array $escaped, array $param) : string
             $feeds->attach(do_template('RSS_HEADER', ['_GUID' => '53e135b04502d6df64f1570b61310f30', 'FEED_URL' => find_script('backend') . '?mode=news', 'TITLE' => do_lang('NEWS')]));
         }
         foreach ($GLOBALS['FEED_URLS'] as $feed) {
-            if (substr($feed['URL'], 0, 1) == '?') {
-                $feed['URL'] = find_script('backend') . $feed['URL'];
+            if (substr($feed['url'], 0, 1) == '?') {
+                $feed['url'] = find_script('backend') . $feed['URL'];
             }
-            $map = ['_GUID' => '371ef26788e14c17b6ad2bab9f9ffd1c', 'FEED_URL' => $feed['URL']];
-            if ($feed['TITLE'] !== null) {
-                $map['TITLE'] = $feed['TITLE'];
-            }
+            $map = ['_GUID' => '371ef26788e14c17b6ad2bab9f9ffd1c', 'FEED_URL' => $feed['url'], 'TITLE' => $feed['title']];
             $feeds->attach(do_template('RSS_HEADER', $map));
         }
         $value = $feeds->evaluate();

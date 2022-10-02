@@ -473,7 +473,7 @@ function breadcrumb_set_self($title)
 function inject_feed_url(string $url, string $title)
 {
     global $FEED_URLS;
-    $FEED_URLS[] = ['TITLE' => $title, 'URL' => $url];
+    $FEED_URLS[] = ['title' => $title, 'url' => $url];
 }
 
 /**
