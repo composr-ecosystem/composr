@@ -74,25 +74,25 @@ class Hook_task_export_voting_power
                 }
 
                 $data[] = [
-                    'MEMBER' => $member_id,
-                    'USERNAME' => $username,
-                    'POINTS' => $points,
-                    'VOTING_POWER' => floatval($voting_power),
+                    'member' => $member_id,
+                    'username' => $username,
+                    'points' => $points,
+                    'voting_power' => floatval($voting_power),
                 ];
 
                 $total_power += floatval($voting_power);
             }
         } while (count($rows) > 0);
 
-        sort_maps_by($data, '!VOTING_POWER,!POINTS');
+        sort_maps_by($data, '!voting_power,!points');
 
         foreach ($data as $datum) {
             $data_point = [
-                do_lang('MEMBER') => $datum['MEMBER'],
-                do_lang('USERNAME') => $datum['USERNAME'],
-                do_lang('POINTS') => strval($datum['POINTS']),
-                do_lang('VOTING_POWER') => float_to_raw_string($datum['VOTING_POWER'], 10),
-                do_lang('VOTING_POWER_CONTROL_PERCENTAGE') => float_to_raw_string((($datum['VOTING_POWER'] / $total_power) * 100), 10),
+                do_lang('MEMBER') => $datum['member'],
+                do_lang('USERNAME') => $datum['username'],
+                do_lang('POINTS') => strval($datum['points']),
+                do_lang('VOTING_POWER') => float_to_raw_string($datum['voting_power'], 10),
+                do_lang('VOTING_POWER_CONTROL_PERCENTAGE') => float_to_raw_string((($datum['voting_power'] / $total_power) * 100), 10),
             ];
             $sheet_writer->write_row($data_point);
         }
