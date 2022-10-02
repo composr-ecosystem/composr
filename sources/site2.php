@@ -301,8 +301,8 @@ function page_not_found($codename, $zone)
         $dist = 0.0;
         similar_text($from, $to, $dist);
         $threshold = 75.0;
-        if (($dist > $threshold) && (has_page_access(get_member(), $possibility, $zone))) {
-            $did_mean[$dist] = $possibility;
+        if (($dist >= $threshold) && (has_page_access(get_member(), $possibility, $zone))) {
+            $did_mean[intval($dist * 10000000.0)] = $possibility;
         }
     }
     ksort($did_mean);
