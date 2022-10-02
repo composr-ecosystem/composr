@@ -466,7 +466,6 @@ class Module_admin_errorlog
             if ($available) {
                 $keep = symbol_tempcode('KEEP');
                 $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
-                    '_GUID' => 'b7dff48f5758ee05da8fe02beed935b6',
                     'URL' => find_script('cron_bridge') . '?limit_hooks=' . urlencode($hook) . '&manual_run=1' . $keep->evaluate(),
                     'NAME' => $label,
                     'ACTION_TITLE' => do_lang_tempcode('EXECUTE_SCRIPT'),

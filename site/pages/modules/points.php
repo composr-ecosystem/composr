@@ -717,7 +717,6 @@ class Module_points
                             $preview = do_lang_tempcode('ARE_YOU_SURE_TRANSACTION_POINTS', escape_html($member_of), escape_html(integer_format($amount)));
                         }
                         return do_template('CONFIRM_SCREEN', [
-                            '_GUID' => 'd3d654c7dcffb353638d08b53697488b',
                             'TITLE' => $this->title,
                             'PREVIEW' => $preview,
                             'URL' => get_self_url(false, false, ['confirm' => 1]),
@@ -755,7 +754,6 @@ class Module_points
                         $member_points_balance = points_balance($member_id_of);
                         $preview = do_lang_tempcode('ARE_YOU_SURE_TRANSACTION_CREDIT', escape_html($member_of), escape_html(integer_format($amount)), [escape_html(integer_format($member_points_balance)), escape_html(integer_format($member_points_balance + $amount)), escape_html(get_timezoned_date_time(time(), false))]);
                         return do_template('CONFIRM_SCREEN', [
-                            '_GUID' => 'd3d654c7dcffb353638d08b53697488b',
                             'TITLE' => $this->title,
                             'PREVIEW' => $preview,
                             'URL' => get_self_url(false, false, ['confirm' => 1]),
@@ -786,7 +784,6 @@ class Module_points
                         $member_points_balance = points_balance($member_id_of);
                         $preview = do_lang_tempcode('ARE_YOU_SURE_TRANSACTION_DEBIT', escape_html($member_of), escape_html(integer_format($amount)), [escape_html(integer_format($member_points_balance)), escape_html(integer_format($member_points_balance - $amount)), escape_html(get_timezoned_date_time(time(), false))]);
                         return do_template('CONFIRM_SCREEN', [
-                            '_GUID' => 'd3d654c7dcffb353638d08b53697488b',
                             'TITLE' => $this->title,
                             'PREVIEW' => $preview,
                             'URL' => get_self_url(false, false, ['confirm' => 1]),
@@ -850,7 +847,6 @@ class Module_points
         $escrow_url = build_url(['page' => 'points', 'type' => 'do_escrow', 'id' => $member_id_of], get_module_zone('points'));
 
         return do_template('FORM_SCREEN', [
-            '_GUID' => 'ce1752a0c5508a061bffbf242a13e5bd',
             'HIDDEN' => new Tempcode(),
             'TITLE' => $this->title,
             'FIELDS' => $fields,
@@ -916,7 +912,6 @@ class Module_points
                 $preview = do_lang_tempcode('ARE_YOU_SURE_ESCROW_POINTS', escape_html($member_of), escape_html(integer_format($amount)));
             }
             return do_template('CONFIRM_SCREEN', [
-                '_GUID' => 'd3d654c7dcffb353638d08b53697488b',
                 'TITLE' => $this->title,
                 'PREVIEW' => $preview,
                 'URL' => get_self_url(false, false, ['confirm' => 1]),
@@ -1099,7 +1094,6 @@ class Module_points
             }
             $preview = do_lang_tempcode('ARE_YOU_SURE_ESCROW_SATISFY', escape_html($other_member), $escrow);
             return do_template('CONFIRM_SCREEN', [
-                '_GUID' => 'd3d654c7dcffb353638d08b53697488b',
                 'TITLE' => $this->title,
                 'PREVIEW' => $preview,
                 'URL' => get_self_url(false, false, ['confirm' => 1]),
@@ -1159,7 +1153,6 @@ class Module_points
             $url = build_url(['page' => '_SELF', 'type' => 'dispute_escrow', 'id' => $id], '_SELF');
 
             return do_template('FORM_SCREEN', [
-                '_GUID' => 'ce1752a0c5508a061bffbf242a13e5bd',
                 'HIDDEN' => new Tempcode(),
                 'TITLE' => $this->title,
                 'FIELDS' => $fields,
@@ -1249,7 +1242,6 @@ class Module_points
 
             require_javascript('points_escrow');
             return do_template('FORM_SCREEN', [
-                '_GUID' => 'ce1752a0c5508a061bffbf242a13e5bd',
                 'HIDDEN' => new Tempcode(),
                 'TITLE' => $this->title,
                 'FIELDS' => $fields,
