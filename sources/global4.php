@@ -663,7 +663,8 @@ function _log_it(string $type, ?string $a = null, ?string $b = null, ?int $relat
     clear_cms_autosave();
 
     // Notification
-    if ((!get_mass_import_mode()) && ($ADMIN_LOGGING_ON) && (!in_array($type, ['MEMBER_SEARCH', 'VIEW_PROFILE']/*FUDGE: Ideally would be parameter driven for these low-information/high-frequency notifications, but there are only two*/))) {
+    require_code('actionlog');
+    if ((!get_mass_import_mode()) && ($ADMIN_LOGGING_ON) && ((get_handler_flags($type) & ACTIONLOG_FLAG__GDPR) == 0)) {
         if ($logged < 10) { // Be extra sure it's not some kind of import, causing spam
             if (addon_installed('actionlog')) {
                 if (do_lang($type, null, null, null, null, false) === null) {

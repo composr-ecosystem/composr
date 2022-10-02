@@ -147,7 +147,7 @@ There are also 'sort by' and 'show per page' options at the bottom of this modul
 Access the action log from:
 Admin Zone > Audit > Action logs (audit trail)
 
-Staff may set up a notification so they know whenever anything is added to the action log. This will not be sent out for very high-traffic/low-information log entries, however.
+Staff may set up a notification so they know whenever anything is added to the action log. This will not be sent out for entries that only relate to private data accesses, however (as those are potentially very high-traffic).
 [/surround]
 
 [title="2"]Post history[/title]
