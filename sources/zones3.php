@@ -397,15 +397,6 @@ function actual_delete_zone(string $zone, bool $force = false, bool $skip_afm = 
  */
 function actual_delete_zone_lite(string $zone)
 {
-    $zone_header_text = $GLOBALS['SITE_DB']->query_select_value_if_there('zones', 'zone_header_text', ['zone_name' => $zone]);
-    if ($zone_header_text === null) {
-        return;
-    }
-    $zone_title = $GLOBALS['SITE_DB']->query_select_value('zones', 'zone_title', ['zone_name' => $zone]);
-    $_zone_title = get_translated_text($zone_title);
-    delete_lang($zone_header_text);
-    delete_lang($zone_title);
-
     $GLOBALS['SITE_DB']->query_delete('zones', ['zone_name' => $zone], '', 1);
     $GLOBALS['SITE_DB']->query_delete('group_zone_access', ['zone_name' => $zone]);
     $GLOBALS['SITE_DB']->query_delete('group_page_access', ['zone_name' => $zone]);
@@ -415,6 +406,15 @@ function actual_delete_zone_lite(string $zone)
         $GLOBALS['SITE_DB']->query_delete('redirects', ['r_to_zone' => $zone]);
     }
     $GLOBALS['SITE_DB']->query_delete('menu_items', ['i_url' => $zone . ':']);
+
+    $zone_header_text = $GLOBALS['SITE_DB']->query_select_value_if_there('zones', 'zone_header_text', ['zone_name' => $zone]);
+    if ($zone_header_text === null) {
+        return;
+    }
+    $zone_title = $GLOBALS['SITE_DB']->query_select_value('zones', 'zone_title', ['zone_name' => $zone]);
+    $_zone_title = get_translated_text($zone_title);
+    delete_lang($zone_header_text);
+    delete_lang($zone_title);
 
     if (addon_installed('catalogues')) {
         update_catalogue_content_ref('zone', $zone, '');
