@@ -63,9 +63,8 @@ function init__form_templates()
         define('FIELD_ENCAPSULATION_RAW', 1);
     }
 
-    global $FIELD_ENCAPSULATION, $FIELD_ENCAPSULATION_STACK;
-    $FIELD_ENCAPSULATION = FIELD_ENCAPSULATION_ROWS;
-    $FIELD_ENCAPSULATION_STACK = [];
+    global $FIELD_ENCAPSULATION_STACK;
+    $FIELD_ENCAPSULATION_STACK = [FIELD_ENCAPSULATION_ROWS];
 
     require_css('forms');
 
@@ -3014,9 +3013,8 @@ function handle_default_comcode_text_input(string &$post)
  */
 function push_field_encapsulation(int $setting)
 {
-    global $FIELD_ENCAPSULATION, $FIELD_ENCAPSULATION_STACK;
-    array_push($FIELD_ENCAPSULATION_STACK, $FIELD_ENCAPSULATION);
-    $FIELD_ENCAPSULATION = $setting;
+    global $FIELD_ENCAPSULATION_STACK;
+    array_push($FIELD_ENCAPSULATION_STACK, $setting);
 }
 
 /**
@@ -3024,8 +3022,8 @@ function push_field_encapsulation(int $setting)
  */
 function pop_field_encapsulation()
 {
-    global $FIELD_ENCAPSULATION, $FIELD_ENCAPSULATION_STACK;
-    $FIELD_ENCAPSULATION = array_pop($FIELD_ENCAPSULATION_STACK);
+    global $FIELD_ENCAPSULATION_STACK;
+    array_pop($FIELD_ENCAPSULATION_STACK);
 }
 
 /**
@@ -3035,6 +3033,6 @@ function pop_field_encapsulation()
  */
 function peek_field_encapsulation() : int
 {
-    global $FIELD_ENCAPSULATION;
-    return $FIELD_ENCAPSULATION;
+    global $FIELD_ENCAPSULATION_STACK;
+    return end($FIELD_ENCAPSULATION_STACK);
 }
