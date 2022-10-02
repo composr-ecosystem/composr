@@ -47,6 +47,7 @@ class Hook_rss_cns_polls
         }
 
         require_lang('cns_polls');
+        require_code('cns_topics');
 
         $cutoff = max($cutoff, time() - 60 * 60 * 24 * 60);
 
@@ -72,7 +73,7 @@ class Hook_rss_cns_polls
 
         $content = new Tempcode();
         foreach ($rows as $row) {
-            if ((($row['t_forum_id'] !== null) || ($row['t_pt_from'] == get_member()) || ($row['t_pt_to'] == get_member())) && (($row['t_forum_id'] !== null) && (has_category_access(get_member(), 'forums', strval($row['t_forum_id']))))) {
+            if (cns_may_access_topic($row['t_id'])) {
                 $id = strval($row['pv_id']);
 
                 $author = $GLOBALS['FORUM_DRIVER']->get_username($row['pv_member_id'], true, USERNAME_DEFAULT_BLANK);

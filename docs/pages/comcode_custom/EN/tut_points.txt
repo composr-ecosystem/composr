@@ -219,6 +219,8 @@ Assuming members have the &ldquo;View others' point ledger&rdquo; privilege (whi
 An exception:
 Senders are not visible for anonymous transactions (if enabled) unless members have the &ldquo;Trace the origin of anonymous point transactions&rdquo; privilege.
 
+In order to help assure users on the long-term integrity of the ledger, there is an option to download a spreadsheet (on any member's points profile), and also an RSS/Atom feed of transactions. These allow members to collectively download records and compare them at a later date.
+
 [title="3"]Immutable ledger[/title]
 
 The ledger serves as a transparent and honest record of every point transaction that took place on the website. And members should be able to trace every transaction that took place.

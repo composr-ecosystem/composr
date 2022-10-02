@@ -174,7 +174,7 @@ class CMS_Topic
             }
 
             // Environment metadata
-            $this->inject_rss_url($forum_name, $content_type, $content_id);
+            $this->inject_feed_url($forum_name, $content_type, $content_id);
             $this->inject_metadata();
 
             // Make-a-comment form
@@ -1068,7 +1068,7 @@ class CMS_Topic
      * @param  ID_TEXT $type The content type the comments are for
      * @param  ID_TEXT $id The content ID the comments are for
      */
-    public function inject_rss_url(string $forum, string $type, string $id)
+    public function inject_feed_url(string $forum, string $type, string $id)
     {
         inject_feed_url('?mode=comments&forum=' . urlencode($forum) . '&select=' . urlencode($type . '_' . $id), do_lang('COMMENTS'));
     }

@@ -1647,7 +1647,7 @@ function ecv_FEEDS(string $lang, array $escaped, array $param) : string
         }
         foreach ($GLOBALS['FEED_URLS'] as $feed) {
             if (substr($feed['url'], 0, 1) == '?') {
-                $feed['url'] = find_script('backend') . $feed['URL'];
+                $feed['url'] = find_script('backend') . $feed['url'];
             }
             $map = ['_GUID' => '371ef26788e14c17b6ad2bab9f9ffd1c', 'FEED_URL' => $feed['url'], 'TITLE' => $feed['title']];
             $feeds->attach(do_template('RSS_HEADER', $map));

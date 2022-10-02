@@ -50,6 +50,8 @@ class Hook_rss_cns_unread_topics
             return null;
         }
 
+        require_code('cns_topics');
+
         $condition = 'l_time<t_cache_last_time OR (l_time IS NULL AND t_cache_last_time>' . strval(time() - 60 * 60 * 24 * intval(get_option('post_read_history_days'))) . ')';
         $query = 'SELECT *,t.id AS t_id';
         if (multi_lang_content()) {
@@ -73,7 +75,7 @@ class Hook_rss_cns_unread_topics
 
         $content = new Tempcode();
         foreach ($rows as $row) {
-            if ((($row['t_forum_id'] !== null) || ($row['t_pt_to'] == get_member())) && (has_category_access(get_member(), 'forums', strval($row['t_forum_id'])))) {
+            if (cns_may_access_topic($row['t_id'])) {
                 if ($row['p_post'] === null) {
                     continue; // Post was deleted from database manually
                 }

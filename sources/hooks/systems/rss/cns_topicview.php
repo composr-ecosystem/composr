@@ -47,6 +47,8 @@ class Hook_rss_cns_topicview
             return null;
         }
 
+        require_code('cns_topics');
+
         $filters = selectcode_to_sqlfragment($_filters, 'p_topic_id', 'f_forums', 'f_parent_forum', 'p_cache_forum_id', 'id', true, true, $GLOBALS['FORUM_DB']);
 
         $cutoff = max($cutoff, time() - 60 * 60 * 24 * 60);
@@ -64,7 +66,7 @@ class Hook_rss_cns_topicview
                 continue;
             }
             $category = $categories[$row['p_topic_id']]['t_cache_first_title'];
-            if ((($row['p_cache_forum_id'] !== null) || ($categories[$row['p_topic_id']]['t_pt_from'] == get_member()) || ($categories[$row['p_topic_id']]['t_pt_to'] == get_member())) && ((($row['p_intended_solely_for'] === null) || ($row['p_intended_solely_for'] == get_member()))) && (has_category_access(get_member(), 'forums', strval($row['p_cache_forum_id'])))) {
+            if ((cns_may_access_topic($row['p_topic_id'])) && (($row['p_intended_solely_for'] === null) || ($row['p_intended_solely_for'] == get_member()))) {
                 $id = strval($row['id']);
                 $author = $row['p_poster_name_if_guest'];
 
