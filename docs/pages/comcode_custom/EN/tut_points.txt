@@ -63,7 +63,9 @@ Some reasons someone might send points include:
 
 To send or escrow points to another member, visit their profile and go in their points tab. There will be a form to send points and a separate form to escrow points. Members must have the &ldquo;Send points to other members&rdquo; privilege to send points to other members, and they must have the &ldquo;Escrow points to others&rdquo; privilege to hold points in escrow for another member. The member being sent or escrowed points must also have the &ldquo;Use points&rdquo; privilege to be sent or escrowed points.
 
-Members may not send points to themselves unless they have the &ldquo;Send points to self&rdquo; privilege.
+Members may not send points to themselves (e.g. to convert their gift points to regular points) unless they have the &ldquo;Send points to self&rdquo; privilege.
+
+If the &ldquo;Enable anonymous transactions&rdquo; configuration option is enabled (Admin Zone > Setup > Configuration > Points options), then members can also tick (check) &ldquo;Anonymous transaction&rdquo; to hide themselves as the sender in the points ledger and in notifications (except for those with the &ldquo;Trace the origin of anonymous point transactions&rdquo; privilege).
 
 [title="3"]Gift points (advanced)[/title]
 
@@ -73,7 +75,7 @@ By default, members have a single point balance that they can use both to spend 
 
 For example, member A has 100 points and 25 gift points. They can spend their 100 points on things, but they cannot spend their 25 gift points. Member A wants to give Member B 50 points. Since member A only has 25 gift points, the other 25 points will be deducted from their regular points. Therefore, after the transaction, member A will have 75 regular points and 0 gift points. And member B will receive 50 regular points which they can spend.
 
-When gift points are enabled, members can be randomly rewarded for sending points to others. The amount rewarded and the chance of being rewarded can be configured (Admin Zone > Setup > Configuration > Points options > Gift points). Only non-anonymous transactions will qualify for this random lottery.
+When gift points are enabled, members can be randomly rewarded for sending points to others. The amount rewarded and the chance of being rewarded can be configured (Admin Zone > Setup > Configuration > Points options > Gift points). Only non-anonymous transactions (if anonymous transactions are enabled) will qualify for this random lottery.
 
 [title="3"]Points escrow[/title]
 
@@ -105,7 +107,7 @@ Transactions might not be delivered as a notification at all if they are insigni
 
 [title="2"]Viewing the points ledger[/title]
 
-The full points ledger is accessible in the Admin Zone > Audit > Points ledger. There, you can see all of the points transactions that occurred on the website. Additionally, members can view each other's point transactions on their points profiles. Be aware that anonymous transactions will not show for members not involved in them (unless the member has the &ldquo;Trace the origin of anonymous point transactions&rdquo; privilege). Therefore, the total tally of a member's points received or sent may be higher than what the visible ledger sums to on a member's profile, but it will never be lower.
+The full points ledger is accessible in the Admin Zone > Audit > Points ledger. There, you can see all of the points transactions that occurred on the website. Additionally, members can view their own ledgers on their points profile. And if they have the &ldquo;View others' point ledger&rdquo; privilege, they can view the ledgers of other members on their points profile. Be aware that anonymous transactions (if enabled) will not show for members not involved in them (unless the member has the &ldquo;Trace the origin of anonymous point transactions&rdquo; privilege). Therefore, the total tally of a member's points received or sent may be higher than what the visible ledger sums to on a member's profile, but it will never be lower.
 
 [title="2"]Modifying points[/title]
 
@@ -169,14 +171,20 @@ The eCommerce addon allows setting up custom products that may be purchased in e
 [surround]
 [media width="150" description="Rank ladder shown in the usergroup directory" float="right"]data_custom/images/docs/tut_points/rank.png[/media]
 [media width="150" description="Rank configured when editing a usergroup" float="right"]data_custom/images/docs/tut_points/rank_options.png[/media]
-[concept]Conversr[/concept] has a usergroup system that allows automated progression from one usergroup to another, according to point count. This is configured by default such that the usergroup rank images for the usergroups involved imply a rising rank.
+[concept]Conversr[/concept] has a usergroup system that allows automated or manual (with approval) progression from one usergroup to another, according to life-time points. This is configured by default such that the usergroup rank images for the usergroups involved imply a rising rank.
 
 The 'status symbol' of rank is an incentive for members to earn points (hence contributing to the site and community), but permissions may also be configured such as to give permission according to rank, simply by assigning the permissions differently for different usergroups.
 
-If you would like to use rank, but not other point features, remove view permissions to the 'points' module and edit the 'Block options' (in the configuration) to not display point details. You cannot remove the points addon if you wish to use ranks.
-
-Note that rank changes are triggered by actions. Someone will not go up in rank based on things like how long they've been a member, until some action (e.g. posting on the forum) triggers a rank recalculation.
+If you would like to use rank, but not other point features, remove view permissions to the 'points' module and edit the 'Block options' (in the configuration) to not display point details. You cannot remove the points addon if you wish to use ranks as ranks depends on points to determine a member's rank.
 [/surround]
+
+[title="3"]Gift Points and Groups (advanced)[/title]
+
+When gift points are enabled, the number of base gift points and gift points earned per day can be configured per usergroup. This allows setting groups or ranks which earn progressively more gift points as members rank up.
+
+Be aware that unlike regular points, the gift points balance is dynamically calculated. This means if a member transitions to a group with more or less gift points, their gift points balance will be adjusted immediately and retroactively. It is highly recommended that as a member ranks up, their gift points increase. Remember that members will take the best setting of all groups they are in, including gift points.
+
+For example, Bob has been a member for 10 days. He is in the "Newbie" usergroup which awards 25 base gift points and 1 gift point per day. So far, Bob used 10 of his gift points. Bob will have 25 gift points in his balance (25 base + [10 * 1 daily] - 10 used). But Bob gets promoted to "Regular", which has 30 base gift points and 3 gift points per day. Bob's gift points balance will immediately change to 50 gift points (30 base + [10 * 3 daily] - 10 used) as a result of the promotion.
 
 [title="2"]The leader-board[/title]
 
@@ -206,10 +214,10 @@ The point system is designed to provide high levels of transparency, as a legiti
 
 [title="3"]Public ledger[/title]
 
-Assuming members have the &ldquo;View full points ledger&rdquo; privilege (which they do by default), the ledger is publicly available.
+Assuming members have the &ldquo;View others' point ledger&rdquo; privilege (which they do by default), the ledger is publicly available. Members can view each other's ledger on the points profile. And those with access to the Admin Zone can view the combined ledger at Admin Zone > Audit > Points ledger. When a member does not have this privilege, they can only see point tallies for life-time points, points balance, gift points balance, points sent, and points spent on members' profiles.
 
 An exception:
-Senders are not visible for anonymous transactions unless members have the &ldquo;Trace the origin of anonymous point transactions&rdquo; privilege.
+Senders are not visible for anonymous transactions (if enabled) unless members have the &ldquo;Trace the origin of anonymous point transactions&rdquo; privilege.
 
 [title="3"]Immutable ledger[/title]
 
@@ -231,7 +239,7 @@ The system does not allow negative points in transactions of any kind. Instead c
 
 Members can have a negative balance. Various things could put a member into this state (such as a manual debit or charge of more from a member than they have). Nothing the member can directly do themselves can lead to them having a negative balance, however.
 
-Members cannot have negative points in their gift points balance (if gift points are enabled); once the balance reaches 0, their regular points balance will be tapped instead.
+The only time a member can have a negative gift points balance is if they get demoted in their usergroups, and the resulting change in base gift points / daily gift points puts them in the negative due to the gift points they already used. Members cannot use more gift points when they have 0 or a negative number in their balance; instead, regular points are tapped when sending points to other members.
 
 [title="2"]Points system implementation details (advanced)[/title]
 
@@ -244,6 +252,12 @@ The ledger serves as the real source of truth for calculating how many points a 
 
 It is conceivable for a member's life-time points and/or points balance to get out of sync with the ledger. This would only happen due to a bug or to manipulating the ledger outside of the Composr API (e.g. the database). Should this happen, you can trigger a re-calculation of these values (custom fields) in the Admin Zone > Tools > Cleanup tools and tick (check) &ldquo;Points Cache&rdquo;. Re-calculation is a resource-intensive process and therefore only done when triggered through the Cleanup tools. Otherwise, the custom field values are adjusted when point transactions are made.
 
+[title="3"]Gift Points are calculated dynamically[/title]
+
+The number of gift points a member has is calculated dynamically (if gift points are enabled). First, we take the highest base gift points setting from all the usergroups the member is in. Then, we take the highest gift points per day and multiply it by the number of days the member has been a member, adding it to the base gift points. Finally, the number of gift points used (according to the ledger) is subtracted from this maximum to get the final gift points balance.
+
+This means a member's gift points balance can change when their usergroups change.
+
 [concepts
 1_key="Points"                1_value="Points are a virtual currency and economy; members can utilise them for voting power, purchases, rewarding each other, or other things as defined by site staff"
 2_key="Gift points"           2_value="Gift points accumulate over time and exist only as points to send to other members where they convert to regular (spendable) points. This is only applicable if they are enabled in the configuration. If not enabled, members can only send each other regular points."
@@ -253,7 +267,7 @@ It is conceivable for a member's life-time points and/or points balance to get o
 6_key="Transact"              6_value="To transfer (move) points from one member (or the system) to another member (or the system)"
 7_key="Refund"                7_value="To transact some (or all) of the points from a past transaction back to the sender via a new transaction. The old and new transactions will be linked with each other in the ledger for easy tracking. This is a low-level operation and not available for direct use on the UI."
 8_key="Reverse"               8_value="A superset of refund; to refund all of the points from a previous transaction via a new transaction, link both transactions together, and lock the transactions so the reversal cannot be reversed."
-9_key="Transaction"           8_value="A single instance of a member or the system transacting points; a single record in the ledger"
+9_key="Transaction"           9_value="A single instance of a member or the system transacting points; a single record in the ledger"
 10_key="Sender"               10_value="The member who used the points in a transaction"
 11_key="Recipient"            11_value="The member who received the points in a transaction"
 12_key="Ledger"               12_value="A log of every transaction which occurred on the site"

@@ -168,16 +168,16 @@ class notification_classifications_test_set extends cms_test_case
             sort($codes);
 
             // Exceptions
-            if ($codes == ["core_staff","error_occurred"]) { // error_occurred is too complex to want to mix in
+            if ($codes == ["core_staff", "error_occurred"]) { // error_occurred is too complex to want to mix in
                 continue;
             }
-            if ($codes == ["ticket_assigned_staff","ticket_new_staff","ticket_reply","ticket_reply_staff"]) { // Too complex to want to mix together
+            if ($codes == ["ticket_assigned_staff", "ticket_new_staff", "ticket_reply", "ticket_reply_staff"]) { // Too complex to want to mix together
                 continue;
             }
-            if ($codes == ["comment_posted","like"]) { // comment_posted is too complex to want to mix in
+            if ($codes == ["comment_posted", "like"]) { // comment_posted is too complex to want to mix in
                 continue;
             }
-            if ($codes == ["cns_pts","cns_topic"]) { // cns_topic is too complex to want to mix in
+            if ($codes == ["cns_pts", "cns_topic"]) { // cns_topic is too complex to want to mix in
                 continue;
             }
 

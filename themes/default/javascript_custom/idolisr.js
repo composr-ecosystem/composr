@@ -26,10 +26,14 @@
             var anonymous = document.getElementById('points-anon-span');
             var role = document.getElementById('points-role-span');
             if (el.value === "send") {
-                anonymous.style.display = "";
+                if (anonymous !== null) {
+                    anonymous.style.display = "";
+                }
                 role.style.display = "";
             } else {
-                anonymous.style.display = "none";
+                if (anonymous !== null) {
+                    anonymous.style.display = "none";
+                }
                 role.style.display = "none";
             }
         });
@@ -38,10 +42,14 @@
             var anonymous = document.getElementById('points-anon-span');
             var role = document.getElementById('points-role-span');
             if (el.value === "send") {
-                anonymous.style.display = "";
+                if (anonymous !== null) {
+                    anonymous.style.display = "";
+                }
                 role.style.display = "";
             } else {
-                anonymous.style.display = "none";
+                if (anonymous !== null) {
+                    anonymous.style.display = "none";
+                }
                 role.style.display = "none";
             }
         });

@@ -55,8 +55,6 @@ class Module_polls
         delete_privilege('autocomplete_title_poll');
 
         $GLOBALS['SITE_DB']->query_delete('trackbacks', ['trackback_for_type' => 'polls']);
-
-        $GLOBALS['FORUM_DRIVER']->install_delete_custom_field('points_gained_voting');
     }
 
     /**
@@ -118,8 +116,6 @@ class Module_polls
             $GLOBALS['SITE_DB']->create_index('poll', 'ftjoin_po3', ['option3']);
             $GLOBALS['SITE_DB']->create_index('poll', 'ftjoin_po4', ['option4']);
             $GLOBALS['SITE_DB']->create_index('poll', 'ftjoin_po5', ['option5']);
-
-            $GLOBALS['FORUM_DRIVER']->install_create_custom_field('points_gained_voting', 20, /*locked=*/1, /*viewable=*/0, /*settable=*/0, /*required=*/0, '', 'integer');
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 5)) {
@@ -169,6 +165,8 @@ class Module_polls
             for ($i = 1 ; $i <= 10; $i++) {
                 $GLOBALS['SITE_DB']->alter_table_field('poll', 'option' . strval($i), 'SHORT_TRANS__COMCODE');
             }
+
+            $GLOBALS['FORUM_DRIVER']->install_delete_custom_field('points_gained_voting');
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 7)) {

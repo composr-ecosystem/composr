@@ -667,7 +667,11 @@ function actualise_specific_rating(?int $rating, string $page_name, int $member_
                         pop_no_keep_context();
                     }
                 }
-                $mail = do_notification_lang('CONTENT_LIKED_NOTIFICATION_MAIL', comcode_escape(get_site_name()), comcode_escape(($content_title == '') ? cms_mb_strtolower($content_type_title) : $content_title), [comcode_escape(is_object($safe_content_url) ? $safe_content_url->evaluate() : $safe_content_url), $rendered, comcode_escape($displayname), comcode_escape($username)]);
+                if ($points_liked > 0) {
+                    $mail = do_notification_lang('CONTENT_LIKED_NOTIFICATION_MAIL_POINTS', comcode_escape(get_site_name()), comcode_escape(($content_title == '') ? cms_mb_strtolower($content_type_title) : $content_title), [comcode_escape(is_object($safe_content_url) ? $safe_content_url->evaluate() : $safe_content_url), $rendered, comcode_escape($displayname), comcode_escape($username), comcode_escape(integer_format($points_liked))]);
+                } else {
+                    $mail = do_notification_lang('CONTENT_LIKED_NOTIFICATION_MAIL', comcode_escape(get_site_name()), comcode_escape(($content_title == '') ? cms_mb_strtolower($content_type_title) : $content_title), [comcode_escape(is_object($safe_content_url) ? $safe_content_url->evaluate() : $safe_content_url), $rendered, comcode_escape($displayname), comcode_escape($username)]);
+                }
                 dispatch_notification('like', null, $subject, $mail, [$submitter], A_FROM_SYSTEM_PRIVILEGED);
             }
 

@@ -31,7 +31,9 @@
 				<!--LAST-FIELD-->
 				<p>
 					<button id="send-points-submit" class="btn btn-primary buttons--points" type="submit">{!PROCEED_SHORT}</button>
-					<label class="points-anon" for="send-anonymous">{!TICK_ANON}: <input type="checkbox" id="send-anonymous" name="anonymous" value="1" /></label>
+					{+START,IF,{$CONFIG_OPTION,enable_anonymous_transactions}}
+						<label class="points-anon" for="send-anonymous">{!TICK_ANON}: <input type="checkbox" id="send-anonymous" name="anonymous" value="1" /></label>
+					{+END}
 				</p>
 		</div>
 		</form>
@@ -78,7 +80,9 @@
 				<!--LAST-FIELD-->
 				<p>
 					<button id="send-points-submit" class="btn btn-primary buttons--points" type="submit">{!PROCEED_SHORT}</button>
-					<span id="points-anon-span" style="display: none;"><label class="points-anon" for="send-anonymous">{!TICK_ANON}: <input type="checkbox" id="send-anonymous" name="anonymous" value="1" /></label></span>
+					{+START,IF,{$CONFIG_OPTION,enable_anonymous_transactions}}
+						<span id="points-anon-span" style="display: none;"><label class="points-anon" for="send-anonymous">{!TICK_ANON}: <input type="checkbox" id="send-anonymous" name="anonymous" value="1" /></label></span>
+					{+END}
 				</p>
 			</div>
 		</form>

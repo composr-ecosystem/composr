@@ -33,6 +33,7 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
     require_lang('points');
 
     require_javascript('checking');
+    require_javascript('points');
 
     $aggregate_rows = [
         'received' => [],
@@ -69,10 +70,12 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
     $points_lifetime = points_lifetime($member_id_of);
 
     // Get transaction tables
-    $received_table = points_get_transactions('recipient', $member_id_of, $member_id_viewing, true, false);
-    $sent_table = points_get_transactions('sender', $member_id_of, $member_id_viewing, false, true);
+    $received_table = new Tempcode();
+    $sent_table = new Tempcode();
     $spent_table = new Tempcode();
-    if ((has_privilege($member_id_viewing, 'view_points_ledger')) || ($member_id_viewing == $member_id_of)) {
+    if (($member_id_viewing == $member_id_of) || (has_privilege($member_id_viewing, 'view_points_ledger'))) {
+        $received_table = points_get_transactions('recipient', $member_id_of, $member_id_viewing, true, false);
+        $sent_table = points_get_transactions('sender', $member_id_of, $member_id_viewing, false, true);
         $spent_table = points_get_transactions('debit', $member_id_of, $member_id_viewing, false, false);
     }
 
@@ -123,8 +126,8 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
             continue;
         }
 
-        // Not allowed to view ledgers? No table for spent aggregates.
-        if (($type == 'spent') && (!has_privilege($member_id_viewing, 'view_points_ledger')) && ($member_id_viewing != $member_id_of)) {
+        // Not allowed to view ledgers? No table!
+        if ((!has_privilege($member_id_viewing, 'view_points_ledger')) && ($member_id_viewing != $member_id_of)) {
             $aggregate_tables[$type] = new Tempcode();
             continue;
         }
@@ -180,13 +183,13 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
     }
 
     // Show send / modify points form
-    $trans_type = get_param_string('trans_type', 'send');
+    $trans_type = get_param_string('trans_type', '');
     $send_amount = get_param_integer('send_amount', null);
     $send_reason = get_param_string('send_reason', '');
     if (is_guest($member_id_viewing)) {
         $send_template = do_lang_tempcode('POINTS_MUST_LOGIN');
     } else {
-        $enough_ok = (($viewer_gift_points_balance > 0) || ($viewer_points_balance > 0));
+        $enough_ok = ((has_privilege($member_id_viewing, 'moderate_points')) || ($viewer_gift_points_balance > 0) || ($viewer_points_balance > 0));
         $give_ok = (($member_id_viewing != $member_id_of) || (has_privilege($member_id_viewing, 'send_points_to_self')));
         if (($enough_ok) && ($give_ok)) {
             // Show how many points are available also
@@ -234,7 +237,7 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
         $escrow_url = build_url(['page' => 'points', 'type' => 'escrow', 'id' => $member_id_of], get_module_zone('points'));
 
         $form = new Tempcode();
-        $form->attach(do_template('BUTTON_SCREEN', ['_GUID' => 'da69b2ee5495c9af670399dd080f662e', 'IMMEDIATE' => false, 'URL' => $escrow_url, 'TITLE' => do_lang_tempcode('ESCROW_TO'), 'IMG' => 'buttons/proceed', 'HIDDEN' => new Tempcode()]));
+        $form->attach(do_template('BUTTON_SCREEN', ['IMMEDIATE' => false, 'URL' => $escrow_url, 'TITLE' => do_lang_tempcode('ESCROW_TO'), 'IMG' => 'buttons/proceed', 'HIDDEN' => new Tempcode()]));
 
         $escrow_template = do_template('ESCROW_TRANSACTIONS', [
             '_GUID' => 'ac97ee94388e4db2b8753273694cb2a1',
@@ -246,6 +249,13 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
             'GIFT_POINTS_ENABLED' => (get_option('enable_gift_points') == '1'),
             'FORM' => $form,
         ]);
+    }
+
+    // Ledger export button
+    $export_points_ledger = new Tempcode();
+    if (($member_id_of == $member_id_viewing) || (has_privilege($member_id_viewing, 'view_points_ledger'))) {
+        $export_url = build_url(['page' => 'points', 'type' => 'export', 'id' => $member_id_of], get_module_zone('points'));
+        $export_points_ledger->attach(do_template('BUTTON_SCREEN', ['IMMEDIATE' => false, 'URL' => $export_url, 'TITLE' => do_lang_tempcode('EXPORT'), 'IMG' => 'admin/export_spreadsheet', 'HIDDEN' => new Tempcode()]));
     }
 
     return do_template('POINTS_PROFILE', array_merge(
@@ -285,6 +295,8 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
 
             'GIVE' => $send_template,
             'ESCROW' => $escrow_template,
+
+            'EXPORT_POINTS_LEDGER' => $export_points_ledger,
         ],
         $additional_fields
     ));
@@ -361,7 +373,10 @@ function points_get_transactions(string $type, int $member_id_of, int $member_id
     }
     $max_rows = $GLOBALS['SITE_DB']->query_select_value('points_ledger', 'COUNT(*)', $where, $end);
     if ($max_rows == 0) {
-        return new Tempcode();
+        return do_template('BLOCK_NO_ENTRIES', [
+            'TITLE' => new Tempcode(),
+            'MESSAGE' => do_lang_tempcode('NO_ENTRIES'),
+        ]);
     }
     $rows = $GLOBALS['SITE_DB']->query_select('points_ledger', ['*'], $where, $end . ' ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
     $out = new Tempcode();
@@ -406,7 +421,7 @@ function points_get_transactions(string $type, int $member_id_of, int $member_id
         $amount = $myrow['amount_gift_points'] + $myrow['amount_points'];
         $reason = get_translated_tempcode('points_ledger', $myrow, 'reason');
 
-        if (has_privilege($member_id_viewing, 'view_points_ledger')) {
+        if ((has_privilege($member_id_viewing, 'view_points_ledger')) && (has_actual_page_access($member_id_viewing, 'admin_points'))) {
             $_date = hyperlink(build_url(['page' => 'admin_points', 'type' => 'view', 'id' => $myrow['id']]), $date, false, true);
             $date = $_date;
         }
@@ -461,6 +476,7 @@ function points_get_transactions(string $type, int $member_id_of, int $member_id
         }
         $out->attach(results_entry($results_entry, true));
     }
+
     return results_table(do_lang_tempcode('_POINTS', escape_html($viewing_name)), $start, 'ledger_start_' . $type, $max, 'ledger_max_' . $type, $max_rows, $header_row, $out, $sortables, $sortable, $sort_order, 'ledger_sort_' . $type, null, [], null, 8, 'jbcaf8b021e3939bfce1dce9ff8ed63a', false, 'tab--points');
 }
 

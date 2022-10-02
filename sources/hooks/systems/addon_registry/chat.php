@@ -173,7 +173,6 @@ class Hook_addon_registry_chat
             'sources/hooks/systems/content_meta_aware/chat.php',
             'sources/hooks/systems/commandr_fs/chat.php',
             'sources/hooks/systems/addon_registry/chat.php',
-            'sources/hooks/systems/cns_cpf_filter/points_chat.php',
             'themes/default/templates/BLOCK_SIDE_SHOUTBOX_MESSAGE.tpl',
             'themes/default/templates/BLOCK_SIDE_SHOUTBOX.tpl',
             'themes/default/templates/CHAT_ROOM_SCREEN.tpl',

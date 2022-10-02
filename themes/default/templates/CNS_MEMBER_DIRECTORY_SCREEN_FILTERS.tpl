@@ -14,7 +14,7 @@
 
 				<div class="search-fields clearfix">
 					<div class="search-button">
-						<button data-disable-on-click="1" accesskey="u" class="btn btn-primary btn-scri buttons--filter" type="submit">{+START,INCLUDE,ICON}NAME=buttons/filter{+END} {!FILTER}{+START,IF_NON_EMPTY,{FILTERS_ROW_B}} &#9745;{+END}</button>
+						<button data-disable-on-click="1" accesskey="u" class="btn btn-primary btn-scri buttons--filter" type="submit">{+START,INCLUDE,ICON}NAME=buttons/filter{+END} {!FILTER}</button>
 					</div>
 
 					{+START,LOOP,{FILTERS_ROW_A}}
@@ -29,7 +29,7 @@
 				{+START,IF_NON_EMPTY,{FILTERS_ROW_B}}
 					<div class="search-fields clearfix">
 						<div class="search-button">
-							<button data-cms-href="{$PAGE_LINK*,_SELF:_SELF}" class="btn btn-primary btn-scri buttons--clear" type="button">{+START,INCLUDE,ICON}NAME=buttons/clear{+END} {$,{!RESET_FILTER} }&#9746;</button>
+							<button data-cms-href="{$PAGE_LINK*,_SELF:_SELF}" class="btn btn-primary btn-scri buttons--clear" type="button">{+START,INCLUDE,ICON}NAME=buttons/clear{+END} {!RESET_FILTER}</button>
 						</div>
 
 						{+START,LOOP,{FILTERS_ROW_B}}

@@ -62,8 +62,6 @@ class Module_chat
         $GLOBALS['SITE_DB']->query_delete('group_page_access', ['page_name' => 'cms_chat']);
         $GLOBALS['SITE_DB']->query_delete('group_category_access', ['module_the_name' => 'chat']);
 
-        $GLOBALS['FORUM_DRIVER']->install_delete_custom_field('points_gained_chat');
-
         $GLOBALS['SITE_DB']->query_delete('comcode_pages', [
             'the_zone' => 'site',
             'the_page' => 'userguide_chatcode',
@@ -131,8 +129,6 @@ class Module_chat
 
             $GLOBALS['SITE_DB']->create_index('chat_messages', 'ordering', ['date_and_time']);
             $GLOBALS['SITE_DB']->create_index('chat_messages', 'room_id', ['room_id']);
-
-            $GLOBALS['FORUM_DRIVER']->install_create_custom_field('points_gained_chat', 20, /*locked=*/1, /*viewable=*/0, /*settable=*/0, /*required=*/0, '', 'integer');
 
             $usergroups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, true);
             foreach (array_keys($usergroups) as $id) {
@@ -246,8 +242,10 @@ class Module_chat
             $GLOBALS['SITE_DB']->create_index('chat_rooms', 'is_im', ['is_im'/*, 'room_name' makes key too long*/]);
         }
 
-        if (($upgrade_from !== null) && ($upgrade_from < 13)) {
+        if (($upgrade_from !== null) && ($upgrade_from < 13)) { // LEGACY
             $GLOBALS['SITE_DB']->add_table_field('chat_active', 'ip', 'IP');
+
+            $GLOBALS['FORUM_DRIVER']->install_delete_custom_field('points_gained_chat');
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 13)) {

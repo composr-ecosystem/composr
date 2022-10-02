@@ -105,7 +105,7 @@ class Module_points
             add_privilege('POINTS', 'use_points', true);
             add_privilege('POINTS', 'trace_anonymous_points_transactions', false);
             add_privilege('POINTS', 'send_points_to_self', false);
-            add_privilege('POINTS', 'view_points_ledger', true);
+            add_privilege('POINTS', 'view_points_ledger', false);
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 8)) { // LEGACY
@@ -556,6 +556,9 @@ class Module_points
         if ($type == 'amend') {
             return $this->amend();
         }
+        if ($type == 'export') {
+            return $this->export();
+        }
 
         return new Tempcode();
     }
@@ -676,6 +679,11 @@ class Module_points
         } else {
             if ($trans_type == 'send') {
                 $anonymous = post_param_integer('anonymous', 0);
+
+                // Force non-anonymity if anonymous transactions are not allowed
+                if (get_option('enable_anonymous_transactions') == '0') {
+                    $anonymous = 0;
+                }
 
                 $viewer_points_balance = points_balance($member_id_viewing);
                 $viewer_gift_points_balance = gift_points_balance($member_id_viewing);
@@ -982,14 +990,14 @@ class Module_points
                 if ($involved) {
                     $hidden = new Tempcode();
                     $escrow_url = build_url(['page' => 'points', 'type' => 'dispute_escrow', 'id' => $row['id']]);
-                    $buttons->attach(do_template('BUTTON_SCREEN', ['_GUID' => 'da69b2ee5495c9af670399dd080f662e', 'IMMEDIATE' => true, 'URL' => $escrow_url, 'TITLE' => do_lang_tempcode('ESCROW_DISPUTE'), 'IMG' => 'buttons/report', 'HIDDEN' => $hidden]));
+                    $buttons->attach(do_template('BUTTON_SCREEN', ['IMMEDIATE' => true, 'URL' => $escrow_url, 'TITLE' => do_lang_tempcode('ESCROW_DISPUTE'), 'IMG' => 'buttons/report', 'HIDDEN' => $hidden]));
                 }
 
                 // Satisfy escrow buttons; not shown / allowed if an escrow is disputed
                 if (($row['status'] == ESCROW_STATUS_PENDING) && (($member_id_viewing == $row['sender_id'] && $row['sender_status'] == 0) || ($member_id_viewing == $row['recipient_id'] && $row['recipient_status'] == 0))) {
                     $hidden = new Tempcode();
                     $escrow_url = build_url(['page' => 'points', 'type' => 'satisfy_escrow', 'id' => $row['id']]);
-                    $buttons->attach(do_template('BUTTON_SCREEN', ['_GUID' => 'da69b2ee5495c9af670399dd080f662e', 'IMMEDIATE' => true, 'URL' => $escrow_url, 'TITLE' => do_lang_tempcode('ESCROW_SATISFIED'), 'IMG' => 'buttons/yes', 'HIDDEN' => $hidden]));
+                    $buttons->attach(do_template('BUTTON_SCREEN', ['IMMEDIATE' => true, 'URL' => $escrow_url, 'TITLE' => do_lang_tempcode('ESCROW_SATISFIED'), 'IMG' => 'buttons/yes', 'HIDDEN' => $hidden]));
                 }
 
                 // Determine actual status
@@ -1007,7 +1015,7 @@ class Module_points
                 if ((!$involved) && ($row['status'] >= ESCROW_STATUS_PENDING) && (has_privilege($member_id_viewing, 'moderate_points_escrow'))) {
                     $hidden = new Tempcode();
                     $resolve_url = build_url(['page' => 'points', 'type' => 'moderate_escrow', 'id' => $row['id']]);
-                    $buttons->attach(do_template('BUTTON_SCREEN', ['_GUID' => 'da69b2ee5495c9af670399dd080f662e', 'IMMEDIATE' => true, 'URL' => $resolve_url, 'TITLE' => do_lang_tempcode('ESCROW_MODERATE'), 'IMG' => 'buttons/advanced', 'HIDDEN' => $hidden]));
+                    $buttons->attach(do_template('BUTTON_SCREEN', ['IMMEDIATE' => true, 'URL' => $resolve_url, 'TITLE' => do_lang_tempcode('ESCROW_MODERATE'), 'IMG' => 'buttons/advanced', 'HIDDEN' => $hidden]));
                 }
         }
 
@@ -1324,5 +1332,18 @@ class Module_points
         }
 
         return $out;
+    }
+
+    /**
+     * Export a spreadsheet showing the ledger for a member.
+     *
+     * @return Tempcode The result of execution
+     */
+    public function export() : object
+    {
+        $id = get_param_integer('id');
+
+        require_code('tasks');
+        return call_user_func_array__long_task(do_lang('EXPORT_POINTS_LEDGER'), $this->title, 'export_points_ledger', [$id]);
     }
 }

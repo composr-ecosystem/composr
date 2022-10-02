@@ -154,10 +154,10 @@ function _cms_tempnam(string $prefix = '')
     } else {
         // A fake temporary file, as true ones have been disabled on PHP
         require_code('crypt');
-        $tempnam = 'tmpfile__' . $prefix . get_secure_random_string();
-        $myfile = fopen($local_path . '/' . $tempnam, 'wb');
+        $tempnam = $local_path . '/' . 'tmpfile__' . $prefix . get_secure_random_string();
+        $myfile = fopen($tempnam, 'wb');
         fclose($myfile);
-        fix_permissions($local_path . '/' . $tempnam);
+        fix_permissions($tempnam);
     }
     return $tempnam;
 }

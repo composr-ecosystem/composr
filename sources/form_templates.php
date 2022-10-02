@@ -53,6 +53,19 @@ function init__form_templates()
     global $SKIPPING_LABELS;
     $SKIPPING_LABELS = false;
 
+    // Use pop_field_encapsulation() to return fields wrapped in table rows (the default at runtime).
+    if (!defined('FIELD_ENCAPSULATION_ROWS')) {
+        define('FIELD_ENCAPSULATION_ROWS', 0);
+    }
+
+    // Use push_field_encapsulation(FIELD_ENCAPSULATION_RAW) to return raw fields without being wrapped in table rows.
+    if (!defined('FIELD_ENCAPSULATION_RAW')) {
+        define('FIELD_ENCAPSULATION_RAW', 1);
+    }
+
+    global $FIELD_ENCAPSULATION_STACK;
+    $FIELD_ENCAPSULATION_STACK = [FIELD_ENCAPSULATION_ROWS];
+
     require_css('forms');
 
     if (function_exists('get_member')) {
@@ -1917,6 +1930,7 @@ function form_input_multi_list($pretty_name, $description, string $name, object 
         'CUSTOM_ACCEPT_MULTIPLE' => is_array($custom_value),
         'CUSTOM_NAME' => $custom_name,
         'CUSTOM_VALUE' => ($custom_value === null) ? '' : $custom_value,
+        'INLINE' => (peek_field_encapsulation() == FIELD_ENCAPSULATION_RAW),
     ]);
     return _form_input($name, $pretty_name, $description, $input, $required, false, $tabindex);
 }
@@ -2755,23 +2769,6 @@ function form_input_na($pretty_name, ?int $tabindex = null) : object
  */
 function _form_input(string $name, $pretty_name, $description, object $input, bool $required, bool $comcode = false, ?int $tabindex = null, bool $w = false, bool $skip_label = false, $description_side = '', ?string $pattern_error = null) : object
 {
-    global $_FORM_INPUT_PREFIX, $_FORM_INPUT_SUFFIX;
-    if ($_FORM_INPUT_PREFIX !== null) {
-        $_input = new Tempcode();
-        $_input->attach($_FORM_INPUT_PREFIX);
-        $_input->attach('<br />');
-        $_input->attach('<br />');
-        $_input->attach($input);
-        if ($_FORM_INPUT_SUFFIX !== null) {
-            $_input->attach($_FORM_INPUT_SUFFIX);
-        }
-        $input = $_input;
-    } elseif ($_FORM_INPUT_SUFFIX !== null) {
-        $input->attach('<br />');
-        $input->attach('<br />');
-        $input->attach($_FORM_INPUT_SUFFIX);
-    }
-
     check_suhosin_request_quantity(2, ($name == '') ? 20 : strlen($name));
 
     if (($GLOBALS['DEV_MODE'])) {
@@ -2798,6 +2795,29 @@ function _form_input(string $name, $pretty_name, $description, object $input, bo
                 fatal_exit('Form field $description parameters should end in full stops [' . $_description . '].');
             }
         }
+    }
+
+    // Return raw input field if field encapsulation is set to raw
+    if (peek_field_encapsulation() == FIELD_ENCAPSULATION_RAW) {
+        return make_string_tempcode($input->evaluate()); // XHTMLXHTML
+    }
+
+    // Add prefixes and suffixes to input
+    global $_FORM_INPUT_PREFIX, $_FORM_INPUT_SUFFIX;
+    if ($_FORM_INPUT_PREFIX !== null) {
+        $_input = new Tempcode();
+        $_input->attach($_FORM_INPUT_PREFIX);
+        $_input->attach('<br />');
+        $_input->attach('<br />');
+        $_input->attach($input);
+        if ($_FORM_INPUT_SUFFIX !== null) {
+            $_input->attach($_FORM_INPUT_SUFFIX);
+        }
+        $input = $_input;
+    } elseif ($_FORM_INPUT_SUFFIX !== null) {
+        $input->attach('<br />');
+        $input->attach('<br />');
+        $input->attach($_FORM_INPUT_SUFFIX);
     }
 
     $help_zone = get_comcode_zone('userguide_comcode', false);
@@ -2984,4 +3004,35 @@ function handle_default_comcode_text_input(string &$post)
             }
         }
     }
+}
+
+/**
+ * Place a global marker as to what field encapsulation to use.
+ *
+ * @param  integer $setting Temporary setting (see FIELD_ENCAPSULATION_*)
+ */
+function push_field_encapsulation(int $setting)
+{
+    global $FIELD_ENCAPSULATION_STACK;
+    array_push($FIELD_ENCAPSULATION_STACK, $setting);
+}
+
+/**
+ * Go back to the previous field encapsulation global marker.
+ */
+function pop_field_encapsulation()
+{
+    global $FIELD_ENCAPSULATION_STACK;
+    array_pop($FIELD_ENCAPSULATION_STACK);
+}
+
+/**
+ * Get which field encapsulation marker is current.
+ *
+ * @return integer FIELD_ENCAPSULATION_*
+ */
+function peek_field_encapsulation() : int
+{
+    global $FIELD_ENCAPSULATION_STACK;
+    return end($FIELD_ENCAPSULATION_STACK);
 }

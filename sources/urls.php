@@ -289,10 +289,10 @@ function pop_no_keep_context()
  * Find whether we can skip the normal preservation of a keep value, for whatever reason.
  *
  * @param  string $key Parameter name
- * @param  string $val Parameter value
+ * @param  mixed $val Parameter value
  * @return boolean Whether we can skip it
  */
-function skippable_keep(string $key, string $val) : bool
+function skippable_keep(string $key, $val) : bool
 {
     global $BOT_TYPE_CACHE, $HAS_NO_KEEP_CONTEXT;
     if ($HAS_NO_KEEP_CONTEXT) {
@@ -313,7 +313,7 @@ function skippable_keep(string $key, string $val) : bool
         return true;
     }
 
-    return ((($key === 'keep_session') && (($val == '') || (isset($_COOKIE['has_cookies'])))) || (($key === 'keep_has_js') && ($val === '1'))) && ((isset($_COOKIE['js_on'])) || (get_option('detect_javascript') === '0'));
+    return ((($key === 'keep_session') && (($val === '') || (isset($_COOKIE['has_cookies'])))) || (($key === 'keep_has_js') && ($val === '1'))) && ((isset($_COOKIE['js_on'])) || (get_option('detect_javascript') === '0'));
 }
 
 /**

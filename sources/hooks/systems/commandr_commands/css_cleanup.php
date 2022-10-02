@@ -63,7 +63,7 @@ class Hook_commandr_command_css_cleanup
             }
 
             $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
-            $css_files = $ob->work_out_changes();
+            $ob->work_out_changes();
             $ob->save_changes();
             cms_set_time_limit($old_limit);
         }

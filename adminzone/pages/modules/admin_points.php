@@ -93,6 +93,13 @@ class Module_admin_points
             breadcrumb_set_self(do_lang_tempcode('EXPORT'));
 
             $this->title = get_screen_title('EXPORT_POINTS_OVERVIEW');
+        } elseif ($type == 'export') {
+            set_helper_panel_text(comcode_lang_string('DOC_EXPORT_POINTS_LEDGER'));
+
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('POINTS_LEDGER')]]);
+            breadcrumb_set_self(do_lang_tempcode('EXPORT'));
+
+            $this->title = get_screen_title('EXPORT_POINTS_LEDGER');
         } else {
             set_helper_panel_tutorial('tut_points');
         }
@@ -140,6 +147,9 @@ class Module_admin_points
 
         if ($type == 'export_overview') {
             return $this->export_overview();
+        }
+        if ($type == 'export') {
+            return $this->export();
         }
         if ($type == 'reverse') {
             return $this->reverse();
@@ -204,6 +214,17 @@ class Module_admin_points
     }
 
     /**
+     * Export a spreadsheet showing the entire points ledger.
+     *
+     * @return Tempcode The result of execution
+     */
+    public function export() : object
+    {
+        require_code('tasks');
+        return call_user_func_array__long_task(do_lang('EXPORT_POINTS_LEDGER'), $this->title, 'export_points_ledger', [null]);
+    }
+
+    /**
      * The UI to view point transactions ordered by date.
      *
      * @return Tempcode The UI
@@ -214,18 +235,81 @@ class Module_admin_points
             access_denied('PRIVILEGE', 'view_points_ledger');
         }
 
-        $start = get_param_integer('start', 0);
-        $max = get_param_integer('max', 50);
+        $start = get_param_integer('ledger_start', 0);
+        $max = get_param_integer('ledger_max', 50);
 
-        $max_rows = $GLOBALS['SITE_DB']->query_select_value('points_ledger', 'COUNT(*)');
-        $has_gift_points = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'id', [], ' AND amount_gift_points>0');
+        // Filter parameters
+        $filter_username = get_param_string('filter_ledger_username', '', INPUT_FILTER_NONE);
+        $filter_type = get_param_string('filter_ledger_type', 'all');
+        $filter_from = post_param_date('filter_ledger_from', true);
+        $filter_to = post_param_date('filter_ledger_to', true);
+        $_filter_t_type = get_param_string('filter_ledger_t_type', '');
+        $filter_t_type = explode(',', $_filter_t_type);
+
+        // Build WHERE query with filters
+        $where = [];
+        $end = '';
+        if ($filter_username != '') {
+            $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($filter_username);
+            if ($member_id !== null) {
+                $end .= ' AND (sender_id=' . strval($member_id) . ' OR recipient_id=' . strval($member_id) . ')';
+            } else {
+                attach_message(do_lang_tempcode('_MEMBER_NO_EXIST', $filter_username));
+            }
+        }
+        if ($filter_type !== 'all') {
+            $guest_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
+            switch ($filter_type) {
+                case 'send':
+                    $end .= ' AND recipient_id<>' . strval($guest_id) . ' AND sender_id<>' . strval($guest_id);
+                    break;
+                case 'credit':
+                    $where['sender_id'] = $guest_id;
+                    break;
+                case 'debit':
+                    $where['recipient_id'] = $guest_id;
+                    break;
+                case 'reversal':
+                    $end .= ' AND (status=' . strval(LEDGER_STATUS_REVERSED) . ' OR status=' . strval(LEDGER_STATUS_REVERSING) . ')';
+                    break;
+                case 'refund':
+                    $where['status'] = LEDGER_STATUS_REFUND;
+                    break;
+                default:
+                    $filter_type = 'all';
+            }
+        }
+        if ($filter_from !== null) {
+            $end .= ' AND date_and_time>=' . strval($filter_from);
+        }
+        if ($filter_to !== null) {
+            $end .= ' AND date_and_time<=' . strval($filter_to);
+        }
+        if ($_filter_t_type != '') {
+            $end .= ' AND (';
+            foreach ($filter_t_type as $key => $t_type) {
+                if ($key > 0) {
+                    $end .= ' OR (';
+                }
+                $type_subtype = explode('__', $t_type);
+                $end .= db_string_equal_to('t_type', $type_subtype[0]);
+                if (array_key_exists(1, $type_subtype)) {
+                    $end .= ' AND ' . db_string_equal_to('t_subtype', $type_subtype[1]);
+                }
+                $end .= ')';
+            }
+        }
+
+        // Construct the table
+        $max_rows = $GLOBALS['SITE_DB']->query_select_value('points_ledger', 'COUNT(*)', $where, $end);
+        $has_gift_points = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'id', $where, $end . ' AND amount_gift_points>0');
 
         $sortables = ['date_and_time' => do_lang_tempcode('DATE_TIME')];
         if ($has_gift_points !== null) {
             $sortables['amount_gift_points'] = do_lang_tempcode('GIFT_POINTS');
         }
         $sortables['amount_points'] = do_lang_tempcode('POINTS');
-        $test = explode(' ', get_param_string('sort', 'date_and_time DESC', INPUT_FILTER_GET_COMPLEX), 2);
+        $test = explode(' ', get_param_string('ledger_sort', 'date_and_time DESC', INPUT_FILTER_GET_COMPLEX), 2);
         if (count($test) == 1) {
             $test[1] = 'DESC';
         }
@@ -234,12 +318,11 @@ class Module_admin_points
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 
-        $rows = $GLOBALS['SITE_DB']->query_select('points_ledger', ['*'], [], 'ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
-        if (empty($rows)) {
-            return inform_screen($this->title, do_lang_tempcode('NO_ENTRIES'));
-        }
+        $rows = $GLOBALS['SITE_DB']->query_select('points_ledger', ['*'], $where, $end . ' ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
         $result_entries = new Tempcode();
+
         require_code('templates_results_table');
+
         $map = [do_lang_tempcode('IDENTIFIER'), do_lang_tempcode('DATE_TIME')];
         if ($has_gift_points !== null) {
             $map[] = do_lang_tempcode('GIFT_POINTS');
@@ -273,6 +356,7 @@ class Module_admin_points
 
             $actions = new Tempcode();
 
+            // Undo / reverse transaction button
             if ($myrow['locked'] == 0) {
                 if (has_privilege(get_member(), 'moderate_points')) {
                     $delete_url = build_url(['page' => '_SELF', 'type' => 'reverse', 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF');
@@ -288,6 +372,7 @@ class Module_admin_points
                 }
             }
 
+            // Edit / amend transaction button
             if (has_privilege(get_member(), 'amend_point_transactions')) {
                 $edit_url = build_url(['page' => '_SELF', 'type' => 'amend', 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF');
                 $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
@@ -300,6 +385,7 @@ class Module_admin_points
                     'GET' => false,
                 ]));
             }
+
             $map = [$myrow['id'], $_date];
             if ($has_gift_points > 0) {
                 $map[] = integer_format($myrow['amount_gift_points']);
@@ -312,12 +398,92 @@ class Module_admin_points
                 $status = do_lang_tempcode('LEDGER_STATUS_SHORT_B_' . strval($myrow['status']));
             }
             $map = array_merge($map, [integer_format($myrow['amount_points']), $from, $to, $reason, $status, $actions]);
+
             $result_entries->attach(results_entry($map, true));
         }
 
-        $results_table = results_table(do_lang_tempcode('POINTS_LEDGER'), $start, 'start', $max, 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort', paragraph(do_lang_tempcode('POINTS_LEDGER_HEAD')));
+        $results_table = results_table(do_lang_tempcode('POINTS_LEDGER'), $start, 'ledger_start', $max, 'ledger_max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'ledger_sort', paragraph(do_lang_tempcode('POINTS_LEDGER_HEAD')));
 
-        $tpl = do_template('RESULTS_TABLE_SCREEN', ['_GUID' => '12ce8cf5c2f669948b14e68bd6c00fe9', 'TITLE' => $this->title, 'RESULTS_TABLE' => $results_table]);
+        // Export button
+        $form = new Tempcode();
+        $export_url = build_url(['page' => '_SELF', 'type' => 'export'], get_module_zone('admin_points'));
+        $form->attach(do_template('BUTTON_SCREEN', ['_GUID' => '29a25bc2a39049dab57ff6b1eeb1a413', 'IMMEDIATE' => false, 'URL' => $export_url, 'TITLE' => do_lang_tempcode('EXPORT'), 'IMG' => 'admin/export_spreadsheet', 'HIDDEN' => new Tempcode()]));
+
+        // Start building fields for the filter box
+        push_field_encapsulation(FIELD_ENCAPSULATION_RAW);
+
+        $transaction_types = new Tempcode();
+        $transaction_types->attach(form_input_list_entry('all', ($filter_type == 'all'), do_lang_tempcode('ALL')));
+        $transaction_types->attach(form_input_list_entry('credit', ($filter_type == 'credit'), do_lang_tempcode('CREDIT')));
+        $transaction_types->attach(form_input_list_entry('debit', ($filter_type == 'debit'), do_lang_tempcode('DEBIT')));
+        $transaction_types->attach(form_input_list_entry('refund', ($filter_type == 'refund'), do_lang_tempcode('REFUND')));
+        $transaction_types->attach(form_input_list_entry('reversal', ($filter_type == 'reversal'), do_lang_tempcode('REVERSAL')));
+        $transaction_types->attach(form_input_list_entry('send', ($filter_type == 'send'), do_lang_tempcode('SEND')));
+
+        // List item for every aggregate content type per points hooks
+        $t_types = new Tempcode();
+        $hook_obs = find_all_hook_obs('systems', 'points', 'Hook_points_');
+
+        $labels = [];
+        foreach ($hook_obs as $name => $hook_ob) {
+            $data = $hook_ob->points_profile(null, null);
+            $selected = (($_filter_t_type != '') && (in_array($name, $filter_t_type)));
+            $labels[] = [
+                'label' => $data['label'],
+                'name' => $name,
+                'selected' => $selected,
+            ];
+        }
+        sort_maps_by($labels, 'label');
+        foreach ($labels as $label) {
+            $t_types->attach(form_input_list_entry($label['name'], $label['selected'], $label['label']));
+        }
+
+        $filters_row_a = [
+            [
+                'PARAM' => 'filter_ledger_username',
+                'LABEL' => do_lang_tempcode('USERNAME'),
+                'FIELD' => form_input_username(do_lang_tempcode('USERNAME'), new Tempcode(), 'filter_ledger_username', $filter_username, false),
+            ],
+            [
+                'PARAM' => 'filter_ledger_type',
+                'LABEL' => do_lang_tempcode('TYPE'),
+                'FIELD' => form_input_list(do_lang_tempcode('TYPE'), new Tempcode(), 'filter_ledger_type', $transaction_types, null, false, false),
+            ],
+            [
+                'PARAM' => 'filter_ledger_t_type',
+                'LABEL' => do_lang_tempcode('POINTS_AGGREGATE_ROWS'),
+                'FIELD' => form_input_multi_list(do_lang_tempcode('POINTS_AGGREGATE_ROWS'), new Tempcode(), 'filter_ledger_t_type', $t_types),
+            ],
+        ];
+
+        $filters_row_b = [
+            [
+                'PARAM' => 'filter_ledger_from',
+                'LABEL' => do_lang_tempcode('FROM'),
+                'FIELD' => form_input_date(do_lang_tempcode('FROM'), new Tempcode(), 'filter_ledger_from', false, false, true, $filter_from),
+            ],
+            [
+                'PARAM' => 'filter_ledger_to',
+                'LABEL' => do_lang_tempcode('TO'),
+                'FIELD' => form_input_date(do_lang_tempcode('TO'), new Tempcode(), 'filter_ledger_to', false, false, true, $filter_to),
+            ],
+        ];
+
+        $url = build_url(['page' => 'admin_points', 'type' => 'browse'], get_module_zone('admin_points'));
+
+        $tpl = do_template('ADMIN_POINTS_LEDGER_SCREEN', [
+            '_GUID' => 'bd66789c028148928b87d04e6dc51fc8',
+            'BLOCK_ID' => 'ledger',
+            'TITLE' => $this->title,
+            'RESULTS_TABLE' => $results_table,
+            'FORM' => $form,
+            'FILTERS_ROW_A' => $filters_row_a,
+            'FILTERS_ROW_B' => $filters_row_b,
+            'URL' => $url,
+        ]);
+
+        pop_field_encapsulation();
 
         require_code('templates_internalise_screen');
         return internalise_own_screen($tpl);
@@ -457,7 +623,7 @@ class Module_admin_points
             if (has_privilege(get_member(), 'moderate_points')) {
                 $delete_url = build_url(['page' => '_SELF', 'type' => 'reverse', 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF');
                 $buttons->attach(do_template('BUTTON_SCREEN', [
-                    '_GUID' => 'da69b2ee5495c9af670399dd080f662e',
+                    '_GUID' => '787c80a9dc8e4a4b9679277696da9fc9',
                     'IMMEDIATE' => true,
                     'HIDDEN' => form_input_hidden('id', strval($row['id'])),
                     'URL' => $delete_url,
@@ -468,7 +634,7 @@ class Module_admin_points
             if (has_privilege(get_member(), 'amend_point_transactions')) {
                 $edit_url = build_url(['page' => '_SELF', 'type' => 'edit', 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF');
                 $buttons->attach(do_template('BUTTON_SCREEN', [
-                    '_GUID' => 'da69b2ee5495c9af670399dd080f662e',
+                    '_GUID' => 'a4085e1641804fa8b4ca4794ea57b3f0',
                     'IMMEDIATE' => true,
                     'HIDDEN' => form_input_hidden('id', strval($row['id'])),
                     'URL' => $edit_url,
