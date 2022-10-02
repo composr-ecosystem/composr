@@ -8344,7 +8344,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         LEDGER_STATUS_SHORT_3
         DESCRIPTION_VOTING_POWER_CALCULATOR
         VOTING_POWER_CALCULATOR
-        VOTING_POWER_CONTROL_PERCENTAGE
         _VOTING_POWER_CALCULATOR
     ')));
 
@@ -11708,6 +11707,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         POINTS_SENT_AGGREGATE
         POINTS_SPENT_AGGREGATE
         TRANSACTIONS
+        VOTING_POWER_CONTROL_PERCENTAGE
     ')));
 
     if ($GLOBALS['DEV_MODE']) {

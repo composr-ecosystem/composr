@@ -63,7 +63,6 @@ class Module_admin_cns_forums extends Standard_crud_module
 
         $ret = [
             'browse' => ['MANAGE_FORUMS', 'menu/social/forum/forums'],
-            'calculate_voting_power' => [do_lang_tempcode('cns_polls:VOTING_POWER_CALCULATOR'), 'cns_topic_modifiers/poll']
         ] + parent::get_entry_points();
 
         if ($support_crosslinks) {
@@ -81,6 +80,8 @@ class Module_admin_cns_forums extends Standard_crud_module
             require_code('fields');
             $ret += manage_custom_fields_entry_points('post') + manage_custom_fields_entry_points('topic') + manage_custom_fields_entry_points('forum');
         }
+
+        $ret['calculate_voting_power'] = [do_lang_tempcode('cns_polls:VOTING_POWER_CALCULATOR'), 'cns_topic_modifiers/poll'];
 
         return $ret;
     }
@@ -176,7 +177,6 @@ class Module_admin_cns_forums extends Standard_crud_module
     public function browse() : object
     {
         $menu_links = [
-            ['cns_topic_modifiers/poll', ['_SELF', ['type' => 'calculate_voting_power'], get_module_zone('admin_cns_forums')], do_lang('cns_polls:VOTING_POWER_CALCULATOR')],
             ['admin/add_one_category', ['admin_cns_forum_groupings', ['type' => 'add'], get_module_zone('admin_cns_forum_groupings')], do_lang('ADD_FORUM_GROUPING')],
             ['admin/edit_one_category', ['admin_cns_forum_groupings', ['type' => 'edit'], get_module_zone('admin_cns_forum_groupings')], do_lang('EDIT_FORUM_GROUPING')],
             ['admin/add', ['_SELF', ['type' => 'add'], '_SELF'], do_lang('ADD_FORUM')],
@@ -191,6 +191,8 @@ class Module_admin_cns_forums extends Standard_crud_module
             require_lang('cns_multi_moderations');
             $menu_links[] = ['menu/adminzone/structure/forum/multi_moderations', ['admin_cns_multi_moderations', ['type' => 'browse'], get_module_zone('admin_cns_multi_moderations')], do_lang_tempcode('MULTI_MODERATIONS'), 'DOC_MULTI_MODERATIONS'];
         }
+
+        $menu_links[] = ['cns_topic_modifiers/poll', ['_SELF', ['type' => 'calculate_voting_power'], get_module_zone('admin_cns_forums')], do_lang('cns_polls:VOTING_POWER_CALCULATOR')];
 
         require_code('templates_donext');
         require_code('fields');
@@ -876,8 +878,6 @@ class Module_admin_cns_forums extends Standard_crud_module
      */
     public function calculate_voting_power() : object
     {
-        require_code('form_templates');
-
         $fields = new Tempcode();
 
         $logarithmic_base = floatval(get_option('topic_polls_weighting_logarithmic_base'));
