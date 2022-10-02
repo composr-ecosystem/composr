@@ -141,12 +141,7 @@ function calculate_leader_board(array $row, ?int $forced_time = null, ?int $forc
     }
 
     // Sort the array according to points (highest to lowest)
-    usort($points, function (array $a, array $b) : int {
-        if ($a['points'] == $b['points']) {
-            return 0;
-        }
-        return ($a['points'] > $b['points']) ? -1 : 1;
-    });
+    sort_maps_by($points, '!points');
 
     // Construct the leader-board results
     $i = 0;

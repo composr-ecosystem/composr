@@ -8346,6 +8346,9 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_points_voting_cns
         ENABLE_ANONYMOUS_TRANSACTIONS
         CONFIG_OPTION_enable_anonymous_transactions
+        DESCRIPTION_VOTING_POWER_CALCULATOR
+        VOTING_POWER_CALCULATOR
+        _VOTING_POWER_CALCULATOR
     ')));
 
     $non_admin_files = [
@@ -11704,6 +11707,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_EXPORT_MEMBER_POINTS_LEDGER
         EXPORT_POINTS_LEDGER
         CNS_VOTING
+        VOTING_POWER_CONTROL_PERCENTAGE
     ')));
 
     if ($GLOBALS['DEV_MODE']) {
