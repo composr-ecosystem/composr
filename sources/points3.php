@@ -69,6 +69,15 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
     $escrow_details = points_get_escrow($member_id_of, $member_id_viewing);
     $points_lifetime = points_lifetime($member_id_of);
 
+    if (get_option('enable_poll_point_weighting') == '1') {
+        require_code('cns_polls_action2');
+        $_voting_power = float_to_raw_string(cns_points_to_voting_power($points_balance), 10);
+        $voting_power = float_format(cns_points_to_voting_power($points_balance), 3);
+    } else {
+        $_voting_power = '';
+        $voting_power = '';
+    }
+
     // Get transaction tables
     $received_table = new Tempcode();
     $sent_table = new Tempcode();
@@ -151,27 +160,11 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
         ]));
         $header_row = results_header_row([do_lang('TYPE'), $transactions_header, do_lang('POINTS')], $sortables, 'a_sort_' . $type, $sortable . ' ' . $sort_order, 'ibcaf8b021e3939bfce1dce9ff8ed63a', null, 'tab--points');
 
-        // Sort the results (we have to do it this way because the usort callback does not scope to variables within this function)
-        if ($sort_order == 'ASC') {
-            if ($sortable == 'count') {
-                usort($rows, function (array $a, array $b) : int {
-                    return $a[1] - $b[1];
-                });
-            } elseif ($sortable == 'points') {
-                usort($rows, function (array $a, array $b) : int {
-                    return $a[2] - $b[2];
-                });
-            }
-        } else {
-            if ($sortable == 'count') {
-                usort($rows, function (array $a, array $b) : int {
-                    return $b[1] - $a[1];
-                });
-            } elseif ($sortable == 'points') {
-                usort($rows, function (array $a, array $b) : int {
-                    return $b[2] - $a[2];
-                });
-            }
+        // Sort the results
+        if ($sortable == 'count') {
+            sort_maps_by($rows, (($sort_order == 'ASC') ? '1' : '!1'));
+        } elseif ($sortable == 'points') {
+            sort_maps_by($rows, (($sort_order == 'ASC') ? '2' : '!2'));
         }
 
         foreach ($rows as $row) {
@@ -272,6 +265,8 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
             'POINTS_BALANCE' => integer_format($points_balance),
             '_GIFT_POINTS_BALANCE' => strval($gift_points_balance),
             'GIFT_POINTS_BALANCE' => integer_format($gift_points_balance),
+            '_VOTING_POWER' => $_voting_power,
+            'VOTING_POWER' => $voting_power,
             '_POINTS_RECEIVED_AGGREGATE' => strval($aggregate_totals['received']),
             'POINTS_RECEIVED_AGGREGATE' => integer_format($aggregate_totals['received']),
             '_POINTS_RECEIVED' => strval($points_lifetime - $aggregate_totals['received']),

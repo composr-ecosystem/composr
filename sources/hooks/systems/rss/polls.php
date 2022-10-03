@@ -59,7 +59,7 @@ class Hook_rss_polls
             for ($i = 1; $i <= 5; $i++) {
                 $answers[] = get_translated_tempcode('poll', $row, 'option' . strval($i));
             }
-            $_summary = do_template('POLL_RSS_SUMMARY', ['_GUID' => 'db39d44c1fa871122e1ae717e4947244', 'ANSWERS' => $answers]);
+            $_summary = do_template('POLL_RSS_SUMMARY', ['_GUID' => 'db39d44c1fa871122e1ae717e4947244', 'VOTE_METADATA' => $answers]);
             $summary = xmlentities($_summary->evaluate());
             $news = '';
 
