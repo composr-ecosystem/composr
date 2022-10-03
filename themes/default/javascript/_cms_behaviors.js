@@ -1241,8 +1241,6 @@
                     return; // Prevent infinite loop
                 }
 
-                console.log('setHeight()', el);
-
                 settingHeight.set(el, true);
 
                 var cs = getComputedStyle( el ),
