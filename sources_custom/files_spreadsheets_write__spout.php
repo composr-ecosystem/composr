@@ -78,16 +78,21 @@ class CMS_CSV_Writer_Spout extends CMS_Spreadsheet_Writer
         }
 
         require_code('character_sets');
-
         $_row = [];
-        foreach ($row as $column => $val) {
-            $_row[] = convert_to_internal_encoding(@strval($val), get_charset(), 'utf-8');
+        foreach ($row as $val) {
+            if (is_string($val)) {
+                $_val = convert_to_internal_encoding($val, get_charset(), 'utf-8');
+            } else {
+                $_val = $val;
+            }
+            $_row[] = $_val;
         }
 
         $before = ini_get('ocproducts.type_strictness');
         cms_ini_set('ocproducts.type_strictness', '0');
 
-        $this->writer->addRow(Box\Spout\Writer\Common\Creator\WriterEntityFactory::createRowFromArray($_row));
+        $__row = Box\Spout\Writer\Common\Creator\WriterEntityFactory::createRowFromArray($_row);
+        $this->writer->addRow($__row);
 
         cms_ini_set('ocproducts.type_strictness', $before);
     }

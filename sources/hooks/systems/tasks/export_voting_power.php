@@ -90,9 +90,9 @@ class Hook_task_export_voting_power
             $data_point = [
                 do_lang('MEMBER') => $datum['member'],
                 do_lang('USERNAME') => $datum['username'],
-                do_lang('POINTS') => strval($datum['points']),
-                do_lang('VOTING_POWER') => float_to_raw_string($datum['voting_power'], 10),
-                do_lang('VOTING_POWER_CONTROL_PERCENTAGE') => float_to_raw_string((($datum['voting_power'] / $total_power) * 100), 10),
+                do_lang('POINTS') => $datum['points'],
+                do_lang('VOTING_POWER') => $datum['voting_power'],
+                do_lang('VOTING_POWER_CONTROL_PERCENTAGE') => (($datum['voting_power'] / $total_power) * 100),
             ];
             $sheet_writer->write_row($data_point);
         }
