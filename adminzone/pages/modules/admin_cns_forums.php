@@ -926,9 +926,6 @@ class Module_admin_cns_forums extends Standard_crud_module
         $ceiling = post_param_integer('ceiling', null);
 
         require_code('tasks');
-        $ret_message = call_user_func_array__long_task(do_lang('VOTING_POWER_CALCULATOR'), $this->title, 'export_voting_power', [$logarithmic_base, $multiplier, $offset, $ceiling]);
-
-        $url = build_url(['page' => '_SELF'], '_SELF');
-        return redirect_screen($this->title, $url, $ret_message);
+        return call_user_func_array__long_task(do_lang('VOTING_POWER_CALCULATOR'), $this->title, 'export_voting_power', [$logarithmic_base, $multiplier, $offset, $ceiling]);
     }
 }

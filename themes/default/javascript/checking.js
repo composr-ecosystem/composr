@@ -210,8 +210,13 @@
                         expireFresh = $cms.configOption('csrf_token_expire_fresh'),
                         expireNew = $cms.configOption('csrf_token_expire_new');
                     if (tokenField) {
-                        if ((hoursSincePageLoad >= expireNew) || ((expireFresh != 0) && (hoursSincePageLoad >= expireFresh))) {
+                        if (
+                            (form.submittedAtLeastOnce/*Maybe form submitted to something that generated a download or maybe back button was used*/) ||
+                            (hoursSincePageLoad >= expireNew) ||
+                            ((expireFresh != 0) && (hoursSincePageLoad >= expireFresh))) {
                             return $cms.getCsrfToken().then(function (text) {
+                                $util.log('Regenerated CSRF token');
+
                                 tokenField.value = text;
                             });
                         }
@@ -244,10 +249,12 @@
                     $cms.statsEventTrack(null, analyticEventCategory, null).then(function () {
                         resolveSubmitPromise(true);
                         form.submit();
+                        form.submittedAtLeastOnce = true;
                     });
                 } else {
                     resolveSubmitPromise(true);
                     form.submit();
+                    form.submittedAtLeastOnce = true;
                 }
             });
         });
