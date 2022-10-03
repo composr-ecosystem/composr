@@ -15,6 +15,13 @@
 			</div>
 		{+END}
 
+		{+START,IF_NON_EMPTY,{VOTING_POWER}}
+			<div class="points-box box">
+				<p class="intro">{!cns_polls:VOTING_POWER}:</p>
+				<p><span class="figure">{VOTING_POWER*}</span></p>
+			</div>
+		{+END}
+
 		<div class="points-box box">
 			<p class="intro">{!COUNT_LIFETIME_POINTS}:</p>
 			<p><span class="figure">{POINTS_LIFETIME*}</span></p>

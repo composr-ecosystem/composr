@@ -178,6 +178,7 @@ class Hook_addon_registry_points
             'sources/hooks/systems/points/points_escrow__add.php',
             'sources/hooks/systems/cleanup/points_recalculate_cpf.php',
             'sources/hooks/systems/tasks/export_points_ledger.php',
+            'sources/hooks/systems/config/enable_anonymous_transactions.php',
         ];
     }
 
@@ -266,6 +267,8 @@ class Hook_addon_registry_points
             'POINTS_BALANCE' => placeholder_number(),
             '_GIFT_POINTS_BALANCE' => placeholder_number(),
             'GIFT_POINTS_BALANCE' => placeholder_number(),
+            '_VOTING_POWER' => placeholder_number(),
+            'VOTING_POWER' => placeholder_number(),
             '_POINTS_RECEIVED_AGGREGATE' => placeholder_number(),
             'POINTS_RECEIVED_AGGREGATE' => placeholder_number(),
             '_POINTS_RECEIVED' => placeholder_number(),
