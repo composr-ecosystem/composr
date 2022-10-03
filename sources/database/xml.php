@@ -2365,18 +2365,17 @@ class Database_Static_xml extends DatabaseDriver
         // More connectives?
         if ($look_for_connectives) {
             $token = $this->_parsing_read($at, $tokens, $query, true);
-            $tail = &$expr;
+            $chain = [];
             while ($token !== null) {
                 switch ($token) {
                     case 'AND':
                         $next_expr = $this->_parsing_read_expression($at, $tokens, $query, $db, false, true, $fail_ok);
-                        $tail = ['AND', $tail, $next_expr];
+                        $chain[] = ['AND', $next_expr];
                         break;
 
                     case 'OR':
                         $next_expr = $this->_parsing_read_expression($at, $tokens, $query, $db, false, true, $fail_ok);
-                        $expr = ['OR', $expr, $next_expr];
-                        $tail = &$next_expr;
+                        $chain[] = ['OR', $next_expr];
                         break;
 
                     default:
@@ -2384,6 +2383,21 @@ class Database_Static_xml extends DatabaseDriver
                         break 2;
                 }
                 $token = $this->_parsing_read($at, $tokens, $query, true);
+            }
+
+            $chain_deep_end = &$expr;
+            foreach ($chain as $link) {
+                switch ($link[0]) {
+                    case 'OR':
+                        $expr = ['OR', $expr, &$link[1]];
+                        $chain_deep_end = &$link[1];
+                        break;
+
+                    case 'AND';
+                        $chain_deep_end = ['AND', $chain_deep_end, &$link[1]];
+                        $chain_deep_end = &$link[1];
+                        break;
+                }
             }
         }
 
