@@ -44,6 +44,10 @@ class Hook_rss_points
             return null;
         }
 
+        if (!has_privilege(get_member(), 'view_points_ledger')) {
+            return null;
+        }
+
         $filters = selectcode_to_sqlfragment($_filters, 'recipient_id', 'f_members', null, 'recipient_id', 'id', true, true); // Note that the parameters are fiddled here so that category-set and record-set are the same, yet SQL is returned to deal in an entirely different record-set (entries' record-set)
 
         require_lang('points');
@@ -55,8 +59,10 @@ class Hook_rss_points
             $id = strval($row['id']);
 
             $author = '';
-            if ($row['anonymous'] == 0) {
+            if (($row['anonymous'] == 0) || (has_privilege(get_member(), 'trace_anonymous_points_transactions'))) {
                 $author = $GLOBALS['FORUM_DRIVER']->get_username($row['sender_id'], false, USERNAME_DEFAULT_BLANK);
+            } else {
+                $author = do_lang('ANON');
             }
 
             $news_date = date($date_string, $row['date_and_time']);

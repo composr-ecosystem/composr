@@ -36,6 +36,10 @@ class Hook_task_export_points_ledger
             return null;
         }
 
+        if (!has_privilege(get_member(), 'view_points_ledger')) {
+            access_denied('PRIVILEGE', 'view_points_ledger');
+        }
+
         require_lang('points');
         require_code('points');
 
