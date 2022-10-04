@@ -191,7 +191,7 @@ class Hook_ecommerce_gambling
         // Actuate
         if ($winnings > 0) {
             require_code('points2');
-            points_credit_member($member_id, do_lang('GAMBLING_WINNINGS'), $winnings, 0, 0, null, null, 0, 'ecommerce', 'gamble_win');
+            points_credit_member($member_id, do_lang('GAMBLING_WINNINGS'), $winnings, 0, null, 0, 'ecommerce', 'gamble_win');
         }
 
         // Show an instant message so the member knows how it worked out (plus buying via points, so will definitely be seen)

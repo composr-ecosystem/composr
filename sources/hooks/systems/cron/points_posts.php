@@ -88,7 +88,7 @@ class Hook_cron_points_posts
                 $diff = @intval($cur_count - @intval($_prev_count));
 
                 if ($diff > 0) { // Award some points
-                    points_credit_member($member_id, do_lang('COUNT_POSTSTODAY'), ($diff * $points_per_post), 0, 0, null, null, 0, 'post', 'add', '');
+                    points_credit_member($member_id, do_lang('COUNT_POSTSTODAY'), ($diff * $points_per_post), 0, null, 0, 'post', 'add', '');
                 } elseif ($diff < 0) {
                     // We probably do not want to remove points for a negative change as this will make the ledger messy without context
                     // points_debit_member($member_id, do_lang('COUNT_POSTSTODAY'), (abs($diff) * @intval($points_per_post)), 0, 0, true, 0, 'post', 'delete', '');

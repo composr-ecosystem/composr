@@ -490,7 +490,7 @@ class __leader_board_test_set extends cms_test_case
 
         // Process a dummy point transaction; amount should be absurdly high to ensure member is at the top of the results in our test
         $points_to_send = 100000000;
-        $transfer = points_credit_member($member, 'unit test', $points_to_send, 0, 0, null, null, 0, '', '', '', (time() - 60));
+        $transfer = points_credit_member($member, 'unit test', $points_to_send, 0, null, 0, '', '', '', (time() - 60));
 
         points_flush_runtime_cache();
 

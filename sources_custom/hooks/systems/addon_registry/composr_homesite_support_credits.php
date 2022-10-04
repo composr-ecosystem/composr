@@ -157,6 +157,7 @@ class Hook_addon_registry_composr_homesite_support_credits
             'sources_custom/hooks/systems/config/support_credit_tax_code.php',
             'sources_custom/hooks/systems/config/support_priority_backburner_minutes.php',
             'sources_custom/hooks/systems/config/support_priority_regular_minutes.php',
+            'sources_custom/hooks/systems/config/points_support_credits.php',
             'sources_custom/hooks/systems/ecommerce/support_credits.php',
             'sources_custom/hooks/systems/page_groupings/support_credits.php',
             'sources_custom/hooks/systems/symbols/MANTIS_SPONSOR_WEEK_ACTIVITY.php',

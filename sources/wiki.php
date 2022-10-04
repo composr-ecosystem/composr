@@ -198,7 +198,7 @@ function wiki_add_post(int $page_id, string $message, int $validated = 1, ?int $
 
         if ($points_wiki_posting > 0) {
             require_code('points2');
-            points_credit_member($member_id, do_lang('WIKI_MAKE_POST'), $points_wiki_posting, 0, 0, null, null, 0, 'wiki_post', 'add', strval($post_id));
+            points_credit_member($member_id, do_lang('WIKI_MAKE_POST'), $points_wiki_posting, 0, null, 0, 'wiki_post', 'add', strval($post_id));
         }
     }
 
@@ -439,7 +439,7 @@ function wiki_add_page(string $title, string $description, string $notes, int $s
 
         if ($points_wiki_posting > 0) {
             require_code('points2');
-            points_credit_member($member_id, do_lang('WIKI_ADD_PAGE'), $points_wiki_posting, 0, 0, null, true, 0, 'wiki_page', 'add', strval($page_id));
+            points_credit_member($member_id, do_lang('WIKI_ADD_PAGE'), $points_wiki_posting, 0, true, 0, 'wiki_page', 'add', strval($page_id));
         }
     }
 

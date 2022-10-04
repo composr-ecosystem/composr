@@ -59,8 +59,8 @@ class points_test_set extends cms_test_case
         $this->establish_admin_session();
 
         // Credit some points so each member is in the positive (necessary for the tests to succeed)
-        $this->initial_credit_sender = points_credit_member(2, 'Unit test: Points', 100000, 0, 0, null, null);
-        $this->initial_credit_recipient = points_credit_member(3, 'Unit test: Points', 100000, 0, 0, null, null);
+        $this->initial_credit_sender = points_credit_member(2, 'Unit test: Points', 100000, 0, null);
+        $this->initial_credit_recipient = points_credit_member(3, 'Unit test: Points', 100000, 0, null);
     }
 
     public function testSendGiftPointsAndReverse()
@@ -315,7 +315,7 @@ class points_test_set extends cms_test_case
         points_flush_runtime_cache();
         $initial_points = points_balance(3);
 
-        $this->points_credit_member = points_credit_member(3, 'Points unit test: credit member', $points_to_credit, 0, 0, null, null);
+        $this->points_credit_member = points_credit_member(3, 'Points unit test: credit member', $points_to_credit, 0, null);
         if ($this->points_credit_member === null) {
             $this->assertTrue(false, 'points_credit_member failed (returned null instead of an ID).');
             return;
