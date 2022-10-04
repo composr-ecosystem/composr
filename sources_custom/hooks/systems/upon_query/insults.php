@@ -118,7 +118,7 @@ class Hook_upon_query_insults
 
                             // If the member doesn't get reward yet, give him/her his award
                             if (!isset($rows[0]['id']) && (intval($insult_points) > 0)) {
-                                points_credit_member($poster_id, do_lang('SUCCESSFULLY_SUGGESTED_COMEBACK') . ' (' . $insult . ')', intval($insult_points), 0, 0, null, null);
+                                points_credit_member($poster_id, do_lang('SUCCESSFULLY_SUGGESTED_COMEBACK') . ' (' . $insult . ')', intval($insult_points), 0, null);
 
                                 require_code('cns_posts_action');
                                 $congratulations_post = do_lang('CONGRATULATIONS_WON'); // Congratulations that is the correct response

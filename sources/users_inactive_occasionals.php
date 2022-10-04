@@ -220,7 +220,7 @@ function create_session(int $member_id, int $session_confirmed = 0, bool $invisi
                     if ($points_visit > 0) {
                         require_code('points2');
                         require_lang('points');
-                        points_credit_member($member_id, do_lang('DAILY_VISITS'), $points_visit, 0, 0, null, null, 0, 'member', 'visit', strval($member_id));
+                        points_credit_member($member_id, do_lang('DAILY_VISITS'), $points_visit, 0, null, 0, 'member', 'visit', strval($member_id));
                     }
                 }
             }

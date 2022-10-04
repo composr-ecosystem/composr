@@ -29,14 +29,12 @@ function init__points2()
 }
 
 /**
- * Credit or refund points to a member from the system.
+ * Credit points to a member from the system (use points_refund for refunds).
  *
  * @param  MEMBER $member_id The member to credit
  * @param  SHORT_TEXT $reason The reason for this credit in the logs
  * @param  integer $total_points The total points to credit (including gift points when applicable)
- * @param  integer $amount_gift_points The number of $total_points which should be credited as gift points (if > 0, this transaction becomes a refund)
  * @param  BINARY $anonymous Whether this transaction should be anonymous
- * @param  ?AUTO_LINK $linked_to The ID of the points ledger transaction being refunded by this (ignored unless $amount_gift_points > 0) (null: this refund is not related to any past ledger)
  * @param  ?boolean $send_notifications Whether to send notifications for this transaction (false: only the staff get it) (true: both the member and staff get it) (null: neither the member nor staff get it)
  * @param  BINARY $locked Whether this transaction is irreversible (Ignored / always 1 when $amount_gift_points is > 0)
  * @param  ID_TEXT $t_type An identifier to relate this transaction with other transactions of the same $type (e.g. content type)
@@ -45,20 +43,16 @@ function init__points2()
  * @param  ?TIME $time The time this transaction occurred (null: now)
  * @return ?AUTO_LINK The ID of the point transaction (null: no transaction took place)
  */
-function points_credit_member(int $member_id, string $reason, int $total_points, int $amount_gift_points = 0, int $anonymous = 0, ?int $linked_to = null, ?bool $send_notifications = true, int $locked = 0, string $t_type = '', string $t_subtype = '', string $t_type_id = '', ?int $time = null) : ?int
+function points_credit_member(int $member_id, string $reason, int $total_points, int $anonymous = 0, ?bool $send_notifications = true, int $locked = 0, string $t_type = '', string $t_subtype = '', string $t_type_id = '', ?int $time = null) : ?int
 {
     if (is_guest($member_id)) { // Disallow debiting from the system to the system; makes no sense
         return null;
     }
-    if ($total_points == 0) { // Negative transactions are never allowed; 0 transactions are ignored.
+    if ($total_points <= 0) { // Negative transactions are never allowed; 0 transactions are ignored.
         return null;
     }
 
-    if ($amount_gift_points > 0) { // If gift points are specified, then this transaction becomes a refund
-        $id = points_refund($GLOBALS['FORUM_DRIVER']->get_guest_id(), $member_id, $reason, $total_points, $amount_gift_points, $anonymous, $linked_to, $send_notifications, $t_type, $t_subtype, $t_type_id, $time);
-    } else {
-        $id = points_transact($GLOBALS['FORUM_DRIVER']->get_guest_id(), $member_id, $reason, $total_points, 0, $anonymous, $send_notifications, $locked, $t_type, $t_subtype, $t_type_id, $time);
-    }
+    $id = points_transact($GLOBALS['FORUM_DRIVER']->get_guest_id(), $member_id, $reason, $total_points, 0, $anonymous, $send_notifications, $locked, $t_type, $t_subtype, $t_type_id, $time);
 
     return $id;
 }
@@ -129,8 +123,16 @@ function points_transact(int $sender_id, int $recipient_id, string $reason, int 
     }
     list($actual_points, $actual_gift_points) = $points_to_process;
 
-    // Log the transaction
+    // Log / process the transaction
     $id = _points_transact($sender_id, $recipient_id, $reason, $actual_points, $actual_gift_points, $anonymous, LEDGER_STATUS_NORMAL, $locked, null, $t_type, $t_subtype, $t_type_id, $time);
+
+    // Run post-transaction hooks
+    $hook_obs = find_all_hook_obs('systems', 'points_transact', 'Hook_points_transact__');
+    foreach ($hook_obs as $name => $hook_ob) {
+        if (method_exists($hook_ob, 'points_transact')) {
+            $hook_ob->points_transact($id, $sender_id, $recipient_id, $reason, $total_points, $amount_gift_points, $anonymous, $send_notifications, $locked, $t_type, $t_subtype, $t_type_id, $time);
+        }
+    }
 
     // Process notifications
     if ($send_notifications !== null) {
@@ -165,7 +167,7 @@ function points_transact(int $sender_id, int $recipient_id, string $reason, int 
  * @param  integer $total_points The total number of points to refund (includes gift points when applicable)
  * @param  integer $amount_gift_points The number of $total_points which should be refunded as gift points (subtracted from gift_points_sent)
  * @param  BINARY $anonymous Whether the sender should be hidden from those without the privilege to trace anonymous transactions
- * @param  ?AUTO_LINK $linked_to The ID of the points ledger transaction being refunded by this (null: this refund is not related to any past ledger)
+ * @param  ?array $linked_to The database row of the points_ledger transaction being refunded by this (null: this refund is not related to any past ledger)
  * @param  ?boolean $send_notifications Whether to send notifications for this transaction (false: only the staff get it) (true: both the member and staff get it) (null: neither the member nor staff get it)
  * @param  ID_TEXT $t_type An identifier to relate this transaction with other transactions of the same $type (e.g. content type)
  * @param  ID_TEXT $t_subtype An identifier to relate this transaction with other transactions of the same $type and $subtype (e.g. an action performed on the $type)
@@ -174,7 +176,7 @@ function points_transact(int $sender_id, int $recipient_id, string $reason, int 
  * @param  integer $status The status to use for the record (see LEDGER_STATUS_*)
  * @return ?AUTO_LINK The ID of the transaction (null: a transaction was not created)
  */
-function points_refund(int $sender_id, int $recipient_id, string $reason, int $total_points, int $amount_gift_points = 0, int $anonymous = 0, ?int $linked_to = null, ?bool $send_notifications = true, string $t_type = '', string $t_subtype = '', string $t_type_id = '', ?int $time = null, int $status = 3) : ?int
+function points_refund(int $sender_id, int $recipient_id, string $reason, int $total_points, int $amount_gift_points = 0, int $anonymous = 0, ?array $linked_to = null, ?bool $send_notifications = true, string $t_type = '', string $t_subtype = '', string $t_type_id = '', ?int $time = null, int $status = 3) : ?int
 {
     // Do nothing if we are transacting 0 points
     if ($total_points == 0) {
@@ -193,6 +195,14 @@ function points_refund(int $sender_id, int $recipient_id, string $reason, int $t
     // Actualise the transaction
     $id = _points_transact($sender_id, $recipient_id, $reason, $actual_points, $actual_gift_points, $anonymous, $status, (($status == LEDGER_STATUS_REVERSING) ? 1 : 0), $linked_to, $t_type, $t_subtype, $t_type_id, $time);
 
+    // Run post-transaction hooks
+    $hook_obs = find_all_hook_obs('systems', 'points_transact', 'Hook_points_transact__');
+    foreach ($hook_obs as $name => $hook_ob) {
+        if (method_exists($hook_ob, 'points_refund')) {
+            $hook_ob->points_refund($id, $sender_id, $recipient_id, $reason, $total_points, $amount_gift_points, $anonymous, $linked_to, $send_notifications, $t_type, $t_subtype, $t_type_id, $time, $status);
+        }
+    }
+
     // Link the other ledger / lock if applicable
     $map = [];
     if ($linked_to !== null) {
@@ -203,7 +213,7 @@ function points_refund(int $sender_id, int $recipient_id, string $reason, int $t
         $map['locked'] = 1;
     }
     if (count($map) > 0) {
-        $GLOBALS['SITE_DB']->query_update('points_ledger', $map, ['id' => $linked_to], '', 1);
+        $GLOBALS['SITE_DB']->query_update('points_ledger', $map, ['id' => $linked_to['id']], '', 1);
     }
 
     // Process notifications
@@ -234,7 +244,7 @@ function points_refund(int $sender_id, int $recipient_id, string $reason, int $t
  * @param  integer $status The status of this transaction (see LEDGER_STATUS_*)
  * @set normal reversing reversed
  * @param  BINARY $locked Whether this transaction is irreversible
- * @param  ?AUTO_LINK $linked_to The ID of the points ledger this one relates to (null: does not relate to another ledger)
+ * @param  ?array $linked_to The database row of the points_ledger this one relates to (null: does not relate to another ledger)
  * @param  ID_TEXT $t_type An identifier to relate this transaction with other transactions of the same $type (e.g. content type)
  * @param  ID_TEXT $t_subtype An identifier to relate this transaction with other transactions of the same $type and $subtype (e.g. an action performed on the $type)
  * @param  ID_TEXT $t_type_id Some content or row ID of the specified $type
@@ -242,7 +252,7 @@ function points_refund(int $sender_id, int $recipient_id, string $reason, int $t
  * @return AUTO_LINK The ID of the point transaction in the ledger
  * @ignore
  */
-function _points_transact(int $sender_id, int $recipient_id, string $reason, int $amount_points, int $amount_gift_points, int $anonymous = 0, int $status = 0, int $locked = 0, ?int $linked_to = null, string $t_type = '', string $t_subtype = '', string $t_type_id = '', ?int $time = null) : int
+function _points_transact(int $sender_id, int $recipient_id, string $reason, int $amount_points, int $amount_gift_points, int $anonymous = 0, int $status = 0, int $locked = 0, ?array $linked_to = null, string $t_type = '', string $t_subtype = '', string $t_type_id = '', ?int $time = null) : int
 {
     if ($time === null) {
         $time = time();
@@ -255,7 +265,7 @@ function _points_transact(int $sender_id, int $recipient_id, string $reason, int
         'amount_points' => $amount_points,
         'date_and_time' => $time,
         'anonymous' => $anonymous,
-        'linked_to' => $linked_to,
+        'linked_to' => (($linked_to !== null) ? $linked_to['id'] : null),
         'status' => $status,
         'locked' => $locked,
         't_type' => $t_type,
@@ -403,7 +413,7 @@ function points_transaction_reverse(int $id, ?bool $send_notifications = true, b
     $reason = do_lang_tempcode('REVERSED_TRANSACTION', $_reason);
 
     // Process the reversal as a new 'reversing' transaction
-    $new_record = points_refund($recipient_id, $sender_id, $reason->evaluate(), $total_points + $amount_gift_points, $amount_gift_points, $myrow['anonymous'], $myrow['id'], $send_notifications, '', '', '', null, LEDGER_STATUS_REVERSING);
+    $new_record = points_refund($recipient_id, $sender_id, $reason->evaluate(), $total_points + $amount_gift_points, $amount_gift_points, $myrow['anonymous'], $myrow, $send_notifications, '', '', '', null, LEDGER_STATUS_REVERSING);
 
     // Log it
     log_it('REVERSE_TRANSACTION', strval($id), get_translated_text($myrow['reason']));
@@ -526,6 +536,7 @@ function points_dispatch_notification(int $id, int $sender_id, int $recipient_id
                 get_lang($sender_id)
             );
             $subject = do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_SUBJECT', $transaction_type);
+            // Leave this comment: Any code overrides attaching additional information to the sender notification should go here.
             dispatch_notification('points_transaction', null, $subject->evaluate(get_lang($sender_id)), $message_raw->evaluate(get_lang($sender_id)), [$sender_id], A_FROM_SYSTEM_UNPRIVILEGED);
         }
 
@@ -553,6 +564,7 @@ function points_dispatch_notification(int $id, int $sender_id, int $recipient_id
                 get_lang($recipient_id)
             );
             $subject = do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_SUBJECT', $transaction_type);
+            // Leave this comment: Any code overrides attaching additional information to the recipient notification should go here.
             dispatch_notification('points_transaction', null, $subject->evaluate(get_lang($recipient_id)), $message_raw->evaluate(get_lang($recipient_id)), [$recipient_id], A_FROM_SYSTEM_UNPRIVILEGED);
         }
     }
@@ -592,5 +604,6 @@ function points_dispatch_notification(int $id, int $sender_id, int $recipient_id
             comcode_escape($reason),
         ]
     );
+    // Leave this comment: Any code overrides attaching additional information to the staff notification should go here.
     dispatch_notification('points_transaction_staff', null, $subject->evaluate(), $message_raw->evaluate(), null, A_FROM_SYSTEM_UNPRIVILEGED);
 }

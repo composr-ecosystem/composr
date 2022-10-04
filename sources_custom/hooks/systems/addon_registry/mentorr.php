@@ -131,7 +131,7 @@ New users should then be assigned a mentor/friend who will receive an equal amou
     {
         return [
             'sources_custom/hooks/systems/addon_registry/mentorr.php',
-            'sources_custom/points2.php',
+            'sources_custom/hooks/systems/points_transact/mentorr.php',
             'sources_custom/hooks/systems/upon_query/add_mentor.php',
             'lang_custom/EN/mentorr.ini',
             'sources_custom/hooks/systems/config/mentor_usergroup.php',

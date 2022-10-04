@@ -69,7 +69,7 @@ class Hook_commandr_command_send_points
             if (!(array_key_exists('a', $options)) && !(array_key_exists('anonymous', $options))) {
                 $parameters[1] .= ' (' . do_lang('SENT_BY', $GLOBALS['FORUM_DRIVER']->get_username(get_member())) . ')';
             }
-            points_credit_member(intval($parameters[0]), $parameters[1], intval($parameters[2]), 0, $anonymous);
+            points_credit_member(intval($parameters[0]), $parameters[1], intval($parameters[2]), $anonymous);
             return ['', '', do_lang('SUCCESS'), ''];
         }
 

@@ -312,7 +312,7 @@ function cns_make_member(string $username, string $password, string $email_addre
                     if ($points_recommend_site > 0) {
                         require_code('points2');
                         require_lang('recommend');
-                        points_credit_member($referrer, do_lang('RECOMMEND_SITE_TO', $username, get_site_name()), $points_recommend_site, 0, 0, null, true, 0, 'recommend_site');
+                        points_credit_member($referrer, do_lang('RECOMMEND_SITE_TO', $username, get_site_name()), $points_recommend_site, 0, true, 0, 'recommend_site');
                     }
                 }
                 if (addon_installed('chat')) {
@@ -428,7 +428,7 @@ function cns_make_member(string $username, string $password, string $email_addre
         $points_joining = intval(get_option('points_joining'));
         if ($points_joining > 0) {
             require_code('points2');
-            points_credit_member($member_id, do_lang('JOINING'), $points_joining, 0, 0, null, null, 0, 'member', 'join');
+            points_credit_member($member_id, do_lang('JOINING'), $points_joining, 0, null, 0, 'member', 'join');
         }
     }
 

@@ -239,8 +239,11 @@ class Hook_ecommerce_support_credits
 
         // Award points for the credits
         if (addon_installed('points') && ($num_credits > 0)) {
-            require_code('points2');
-            points_credit_member($member_id, do_lang('CREDITS'), 50 * $num_credits, 0, 0, null, true, 0, 'support_credits', 'purchase', strval($num_credits)); // FUDGE: 50 points per credit
+            $points_support_credits = intval(get_option('points_support_credits'));
+            if ($points_support_credits > 0) {
+                require_code('points2');
+                points_credit_member($member_id, do_lang('CREDITS'), ($num_credits * $points_support_credits), 0, true, 0, 'support_credits', 'purchase', strval($num_credits));
+            }
         }
 
         $GLOBALS['SITE_DB']->query_insert('ecom_sales', ['date_and_time' => time(), 'member_id' => $member_id, 'details' => do_lang('CREDITS', null, null, null, get_site_default_lang()), 'details2' => strval($num_credits), 'txn_id' => $details['TXN_ID']]);

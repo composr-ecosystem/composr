@@ -147,6 +147,9 @@ and
             'themes/default/templates_custom/BLOCK_MAIN_STARS.tpl',
             'themes/default/templates_custom/BLOCK_SIDE_RECENT_POINTS.tpl',
             'themes/default/javascript_custom/idolisr.js',
+            'sources_custom/points2.php',
+            'sources_custom/hooks/systems/config/idolisr_roles.php',
+            'lang_custom/EN/idolisr.ini',
         ];
     }
 }

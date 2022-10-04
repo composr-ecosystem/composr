@@ -67,7 +67,7 @@ function cns_validate_post(int $post_id, ?int $topic_id = null, ?int $forum_id =
             $post_points = intval(get_option('points_posting'));
             if ($post_points > 0) {
                 require_code('points2');
-                points_credit_member($poster, do_lang('FORUM_POST'), $post_points, 0, 0, null, null, 0, 'post', 'add', strval($post_id));
+                points_credit_member($poster, do_lang('FORUM_POST'), $post_points, 0, null, 0, 'post', 'add', strval($post_id));
             }
         }
     }
@@ -247,7 +247,7 @@ function cns_edit_post(int $post_id, ?int $validated, string $title, string $pos
             $post_points = intval(get_option('points_posting'));
             if ($post_points > 0) {
                 require_code('points2');
-                points_credit_member($post_owner, do_lang('FORUM_POST'), $post_points, 0, 0, null, null, 0, 'post', 'add', strval($post_id));
+                points_credit_member($post_owner, do_lang('FORUM_POST'), $post_points, 0, null, 0, 'post', 'add', strval($post_id));
             }
         }
     }

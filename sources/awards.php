@@ -113,7 +113,7 @@ function give_award(int $award_id, string $content_id, ?int $time = null)
 
     if ((!is_guest($member_id)) && (addon_installed('points')) && ($awards[0]['a_points'] > 0)) {
         require_code('points2');
-        points_credit_member($member_id, do_lang('_AWARD', get_translated_text($awards[0]['a_title'])), $awards[0]['a_points'], 0, 0, null, true, 0, $awards[0]['a_content_type'], 'award', strval($content_id));
+        points_credit_member($member_id, do_lang('_AWARD', get_translated_text($awards[0]['a_title'])), $awards[0]['a_points'], 0, true, 0, $awards[0]['a_content_type'], 'award', strval($content_id));
     }
 
     $GLOBALS['SITE_DB']->query_insert('award_archive', ['a_type_id' => $award_id, 'member_id' => $member_id, 'content_id' => $content_id, 'date_and_time' => $time]);

@@ -669,7 +669,7 @@ class Module_quiz
                 if (($quiz['q_type'] != 'TEST') || ($passed === true)) {
                     // Final points transaction
                     require_code('points2');
-                    points_credit_member(get_member(), do_lang('POINTS_COMPLETED_QUIZ', $quiz_name), $quiz['q_points_for_passing'], 0, 0, null, false, 0, 'quiz', 'pass', strval($quiz_id));
+                    points_credit_member(get_member(), do_lang('POINTS_COMPLETED_QUIZ', $quiz_name), $quiz['q_points_for_passing'], 0, false, 0, 'quiz', 'pass', strval($quiz_id));
                     $points_difference += $quiz['q_points_for_passing'];
                 }
             }
