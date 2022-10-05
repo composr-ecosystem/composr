@@ -8351,6 +8351,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         _VOTING_POWER_CALCULATOR
         POINTS_SUPPORT_CREDITS
         CONFIG_OPTION_points_support_credits
+        DESCRIPTION_LEADER_BOARD_CALCULATE_VOTING_POWER
+        LEADER_BOARD_CALCULATE_VOTING_POWER
     ')));
 
     $non_admin_files = [
