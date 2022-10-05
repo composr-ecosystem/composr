@@ -67,6 +67,8 @@ class Block_main_leader_board
                 'lb_date_and_time' => '*TIME',
                 'lb_points' => 'INTEGER',
                 'lb_rank' => 'INTEGER',
+                'lb_voting_power' => '?REAL',
+                'lb_voting_control' => '?REAL',
             ]);
         }
 
@@ -80,6 +82,7 @@ class Block_main_leader_board
                 'lb_timeframe' => 'SHORT_TEXT',
                 'lb_rolling' => 'BINARY',
                 'lb_include_staff' => 'BINARY',
+                'lb_calculate_voting_power' => 'BINARY',
             ]);
 
             $GLOBALS['SITE_DB']->create_table('leader_boards_groups', [
@@ -93,21 +96,15 @@ class Block_main_leader_board
             // Create legacy leader-board and a new field will reference it
             require_lang('leader_board');
             require_code('leader_board2');
-            $new_leader_board = add_leader_board(do_lang('POINT_LEADER_BOARD'), 'holders', 10, 'week', 1, 0, null);
+            $new_leader_board = add_leader_board(do_lang('POINT_LEADER_BOARD'), 'holders', 10, 'week', 1, 0, null, 0);
             $GLOBALS['SITE_DB']->add_table_field('leader_board', 'lb_leader_board_id', '*AUTO_LINK', $new_leader_board);
-            $GLOBALS['SITE_DB']->change_primary_key('leader_board', ['lb_leader_board_id', 'lb_member', 'lb_date_and_time']);
 
             // Calculate rankings for legacy result sets
             $dates = $GLOBALS['SITE_DB']->query('SELECT DISTINCT date_and_time FROM ' . get_table_prefix() . 'leader_board');
             foreach ($dates as $date) {
                 $rows = $GLOBALS['SITE_DB']->query_select('leader_board', ['lb_date_and_time' => $date['lb_date_and_time']]);
 
-                usort($rows, function (array $a, array $b) : int {
-                    if ($a['lb_points'] == $b['lb_points']) {
-                        return mt_rand(-1, 1); // Randomise members with equal points earned
-                    }
-                    return ($a['lb_points'] > $b['lb_points']) ? -1 : 1;
-                });
+                sort_maps_by($rows, '!lb_points');
 
                 $i = 0;
                 foreach ($rows as $row) {
@@ -118,12 +115,19 @@ class Block_main_leader_board
 
             // Consistency re-naming
             $GLOBALS['SITE_DB']->alter_table_field('leader_board', 'date_and_time', '*TIME', 'lb_date_and_time');
-
-            // Add indexes
-            $GLOBALS['SITE_DB']->create_index('leader_board', 'leader_board_id', ['lb_leader_board_id']);
-            $GLOBALS['SITE_DB']->create_index('leader_board', 'date_and_time', ['lb_date_and_time']);
-
             $GLOBALS['SITE_DB']->change_primary_key('leader_board', ['lb_leader_board_id', 'lb_member', 'lb_date_and_time']);
+
+            // Voting power support
+            $GLOBALS['SITE_DB']->add_table_field('leader_boards', 'lb_calculate_voting_power', 'BINARY', 0);
+            $GLOBALS['SITE_DB']->add_table_field('leader_board', 'lb_voting_power', '?REAL');
+            $GLOBALS['SITE_DB']->add_table_field('leader_board', 'lb_voting_control', '?REAL');
+        }
+
+        if (($upgrade_from === null) || $upgrade_from < 4) {
+            // Add indexes
+            $GLOBALS['SITE_DB']->create_index('leader_board', 'lb_leader_board_id', ['lb_leader_board_id']);
+            $GLOBALS['SITE_DB']->create_index('leader_board', 'lb_date_and_time', ['lb_date_and_time']);
+            $GLOBALS['SITE_DB']->create_index('leader_board', 'lb_rank', ['lb_leader_board_id', 'lb_date_and_time', 'lb_rank']);
         }
     }
 
@@ -196,8 +200,6 @@ PHP;
         $start_date = strtotime('-1 ' . $board['lb_timeframe'], $date);
         $nice_start_date = get_timezoned_date($start_date, false);
 
-        $rows = collapse_2d_complexity('lb_member', 'lb_points', $rows);
-
         $out = new Tempcode();
         $i = 0;
 
@@ -210,20 +212,33 @@ PHP;
         }
         $has_rank_images = (get_forum_type() == 'cns') && ($GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups WHERE (' . $or_list . ') AND ' . db_string_not_equal_to('g_rank_image', '')) != 0);
 
-        foreach ($rows as $member_id => $points) {
-            $points_url = points_url($member_id);
+        foreach ($rows as $row) {
+            $points_url = points_url($row['lb_member']);
 
-            $profile_url = $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, true);
+            $profile_url = $GLOBALS['FORUM_DRIVER']->member_profile_url($row['lb_member'], true);
 
-            $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id, false, USERNAME_DEFAULT_DELETED);
+            $username = $GLOBALS['FORUM_DRIVER']->get_username($row['lb_member'], false, USERNAME_DEFAULT_DELETED);
+
+            if (addon_installed('cns_forum')) {
+                require_lang('cns_polls');
+                $voting_power = $row['lb_voting_power'];
+                $voting_control = $row['lb_voting_control'];
+            } else {
+                $voting_power = null;
+                $voting_control = null;
+            }
 
             $out->attach(do_template('POINTS_LEADER_BOARD_ROW', [
                 '_GUID' => '3gfy3u54t45287tg1odf8y82dcf98ruf3gt8645t92845',
-                'ID' => strval($member_id),
+                'ID' => strval($row['lb_member']),
                 'POINTS_URL' => $points_url,
                 'PROFILE_URL' => $profile_url,
-                '_POINTS' => strval($points),
-                'POINTS' => integer_format($points, 0),
+                '_POINTS' => strval($row['lb_points']),
+                'POINTS' => integer_format($row['lb_points']),
+                '_VOTING_POWER' => (($voting_power !== null) ? float_to_raw_string($voting_power, 10) : null),
+                'VOTING_POWER' => (($voting_power !== null) ? float_format($voting_power, 3) : null),
+                '_VOTING_CONTROL' => (($voting_control !== null) ? float_to_raw_string($voting_control, 10) : null),
+                'VOTING_CONTROL' => (($voting_control !== null) ? float_format($voting_control, 3) : null),
                 'USERNAME' => $username,
                 'HAS_RANK_IMAGES' => $has_rank_images,
             ]));

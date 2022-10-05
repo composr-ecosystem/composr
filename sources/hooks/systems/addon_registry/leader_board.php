@@ -85,7 +85,9 @@ class Hook_addon_registry_leader_board
     {
         return [
             'requires' => ['points'],
-            'recommends' => [],
+            'recommends' => [
+                'cns_forum', // for voting power display via cns_polls
+            ],
             'conflicts_with' => [],
         ];
     }
@@ -192,11 +194,11 @@ class Hook_addon_registry_leader_board
     {
         if ((($content === null) || (in_array('weekly_10_holders', $content))) && (!has_predefined_content('leader_board', 'weekly_10_holders'))) {
             require_code('leader_board2');
-            add_leader_board(lorem_phrase() . '-holders', 'holders', 10, 'week', 1, 0, []);
+            add_leader_board(lorem_phrase() . '-holders', 'holders', 10, 'week', 1, 0, [], 0);
         }
         if ((($content === null) || (in_array('weekly_10_earners', $content))) && (!has_predefined_content('leader_board', 'weekly_10_earners'))) {
             require_code('leader_board2');
-            add_leader_board(lorem_phrase() . '-earners', 'earners', 10, 'week', 1, 0, []);
+            add_leader_board(lorem_phrase() . '-earners', 'earners', 10, 'week', 1, 0, [], ((get_forum_type() == 'cns') ? 1 : 0));
         }
     }
 
@@ -256,6 +258,10 @@ class Hook_addon_registry_leader_board
                     'PROFILE_URL' => placeholder_url(),
                     '_POINTS' => placeholder_number(),
                     'POINTS' => placeholder_number(),
+                    '_VOTING_POWER' => placeholder_number(),
+                    'VOTING_POWER' => placeholder_number(),
+                    '_VOTING_CONTROL' => placeholder_number(),
+                    'VOTING_CONTROL' => placeholder_number(),
                     'USERNAME' => lorem_phrase(),
                     'HAS_RANK_IMAGES' => true,
                 ]));

@@ -302,7 +302,6 @@ class Module_points
             $GLOBALS['FORUM_DRIVER']->install_delete_custom_field('gift_points_used');
 
             // Add legacy records for the other custom fields, and remove them.
-            $start = null;
             $deprecated_fields = [
                 'points_gained_chat' => 'Points Gained Chat',
                 'points_gained_visiting' => 'Points Gained Visiting',
@@ -310,11 +309,10 @@ class Module_points
                 'points_gained_voting' => 'Points Gained Voting',
                 'points_gained_wiki' => 'Points Gained Wiki',
             ];
+            $member_id = null;
             do {
-                $rows = $GLOBALS['FORUM_DRIVER']->get_next_members($start, 100);
+                $rows = $GLOBALS['FORUM_DRIVER']->get_next_members($member_id, 100);
                 foreach ($rows as $row) {
-                    $start = $row['id'];
-
                     $member_id = $GLOBALS['FORUM_DRIVER']->mrow_id($row);
                     $fields = $GLOBALS['FORUM_DRIVER']->get_custom_fields($member_id);
 

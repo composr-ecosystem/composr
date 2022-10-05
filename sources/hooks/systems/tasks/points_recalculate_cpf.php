@@ -38,12 +38,10 @@ class Hook_task_points_recalculate_cpf
         require_code('points2');
 
         // Re-calculate points balance for every member
-        $start = null;
+        $member_id = null;
         do {
-            $rows = $GLOBALS['FORUM_DRIVER']->get_next_members($start, 100);
+            $rows = $GLOBALS['FORUM_DRIVER']->get_next_members($member_id, 100);
             foreach ($rows as $row) {
-                $start = $row['id'];
-
                 $member_id = $GLOBALS['FORUM_DRIVER']->mrow_id($row);
 
                 if (is_guest($member_id)) {

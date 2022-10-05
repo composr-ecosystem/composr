@@ -51,14 +51,12 @@ class Hook_task_export_voting_power
         $outfile_path = null;
         $sheet_writer = spreadsheet_open_write($outfile_path, $filename);
 
-        $start = null;
+        $member_id = null;
         $data = [];
         $total_power = 0.0;
         do {
-            $rows = $GLOBALS['FORUM_DRIVER']->get_next_members($start, 100);
+            $rows = $GLOBALS['FORUM_DRIVER']->get_next_members($member_id, 100);
             foreach ($rows as $member) {
-                $start = $member['id'];
-
                 $member_id = $GLOBALS['FORUM_DRIVER']->mrow_id($member);
                 $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id, false, USERNAME_DEFAULT_NULL);
                 if ($username === null) {

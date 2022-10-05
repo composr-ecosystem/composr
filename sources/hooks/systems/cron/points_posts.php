@@ -68,19 +68,17 @@ class Hook_cron_points_posts
 
         require_code('points2');
 
-        $start = null;
+        $member_id = null;
         do {
-            $rows = $GLOBALS['FORUM_DRIVER']->get_next_members($start, 100);
+            $rows = $GLOBALS['FORUM_DRIVER']->get_next_members($member_id, 100);
             foreach ($rows as $row) {
-                $start = $row['id'];
-
                 $member_id = $GLOBALS['FORUM_DRIVER']->mrow_id($row);
 
                 if (is_guest($member_id)) {
                     continue;
                 }
 
-                task_log($this, 'Crediting forum post points for member ID ' . strval($member_id), $start, null);
+                task_log($this, 'Crediting forum post points for member ID ' . strval($member_id), $member_id, null);
 
                 $_prev_count = get_value('points_post__' . strval($member_id), '0', true);
                 $cur_count = $GLOBALS['FORUM_DRIVER']->get_post_count($member_id);
