@@ -14,6 +14,7 @@ There are many ways to earn points in Composr. You may not wish to educate your 
 Methods of earning points include:
  - Joining
  - Visiting the site
+  - Bonus points depending on browser / platform criteria (see &ldquo;A note about daily visit points&rdquo;)
  - A daily stipend ('Universal Basic Income')
  - Voting in a poll
  - Rating content
@@ -31,6 +32,20 @@ Methods of earning points include:
 Most methods of earning points may be altered in the configuration (Admin Zone > Setup > Configuration > Points options), so that the number of points earned from various activities is appropriate for your website.
 
 There is a distinction between the point count for points available for spending ([concept]points balance[/concept]), and the point count for the total points ever earned (which contributes to rank and leader-board position) ([concept]life-time points[/concept]). This will usually be made explicit, but sometimes context will let users easily identify what is the appropriate meaning.
+
+[title="3"]A note about daily visit points[/title]
+
+There exists an additional section of options which allows you to credit bonus daily visit points depending on the browser / platform a member uses (see Admin Zone > Setup > Configuration > Points options > Browser / Platform Points). An example use could be rewarding members who use Open Source browsers or operating systems. The following options are available:
+ - [b]Browser / Platform points per daily visit[/b]: Set this to the number of daily visit points a member will receive (in addition to [b]Points per daily-visit[/b]) if their browser / platform matches all the criteria specified. Set to 0 to disable this feature.
+ - [b]DNT (Do Not Track) / GPC (Global Privacy Control) HTTP Header[/b]: A "Do Not Track" / "Global Privacy Control" header can be sent in the browser to tell websites that the user wishes not to have tracking data collected about them. If ticked (checked), members must be sending either the DNT or GPC header to receive the bonus points.
+  - The DNT header has been deprecated from web standards, however it is still supported by most major browsers.
+  - The GPC header is a new standard that is not yet widely supported in browsers.
+ - [b]Inclusive User-Agent Regular Expression[/b]: You can specify a Regular Expression that must pass when tested against a member's browser and/or platform for them to receive the bonus points. For example, specifying [tt]/(Firefox|Brave|DuckDuckGo|Linux)/[/tt] means the member must be using a Firefox, Brave, or DuckDuckGo based browser, or running a Linux operating system, to receive the bonus points.
+ - [b]Exclusive User-Agent Regular Expression[/b]: You can specify a Regular Expression that must fail when tested against a member's browser and/or platform for them to receive the bonus points. For example, specifying [tt]/(Chrome|Edge)/[/tt] means the member will not receive bonus points if they are using the Chrome or Edge browser. Use this option with caution; some web browsers might include other web browsers in the User Agent if they are based off of them, although Chromium-based browsers running on HTTPS websites will be checked via the Sec-CH-UA headers which generally is accurate.
+  - We gave the example of Chrome because Chrome is close to a monopoly taking a large majority of the browser market share. You might want to try and encourage browser-engine competition to avoid promoting a "browser monoculture".
+  - We gave the example of Edge because Microsoft uploads telemetry data and syncs browsing data to their servers by default.
+
+Note that all specified conditions must be satisfied for a member to receive the bonus points.
 
 [title="3"]A note about points and content validation[/title]
 
