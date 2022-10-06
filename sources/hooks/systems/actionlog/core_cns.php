@@ -222,6 +222,15 @@ class Hook_actionlog_core_cns extends Hook_actionlog
                     'VIEW_PROFILE' => '_SEARCH:members:view:{ID}',
                 ],
             ],
+            'EDIT_MEMBER_EMAIL' => [
+                'flags' => ACTIONLOG_FLAGS_NONE,
+                'cma_hook' => 'member',
+                'identifier_index' => 0,
+                'written_context_index' => 1,
+                'followup_page_links' => [
+                    'VIEW_PROFILE' => '_SEARCH:members:view:{ID}',
+                ],
+            ],
             'EDIT_MEMBER_USERNAME' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'member',
