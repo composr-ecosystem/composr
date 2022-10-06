@@ -179,6 +179,11 @@ class Hook_addon_registry_points
             'sources/hooks/systems/cleanup/points_recalculate_cpf.php',
             'sources/hooks/systems/tasks/export_points_ledger.php',
             'sources/hooks/systems/config/enable_anonymous_transactions.php',
+            'sources/hooks/systems/config/points_foss_ua_include.php',
+            'sources/hooks/systems/config/points_foss_http_header.php',
+            'sources/hooks/systems/config/points_foss_reason.php',
+            'sources/hooks/systems/config/points_foss_ua_exclude.php',
+            'sources/hooks/systems/config/points_foss.php',
         ];
     }
 
