@@ -9391,6 +9391,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         EDITING_TOPIC_NOT_POST
         EDIT_LINK
         EDIT_MEMBER_PROFILE
+        EDIT_MEMBER_USERNAME
         EDIT_MENU
         EDIT_OWN_POST
         EDIT_OWN_TOPIC

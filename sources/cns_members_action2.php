@@ -1213,6 +1213,8 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
         }
 
         update_member_username_caching($member_id, $username);
+
+        log_it('EDIT_MEMBER_USERNAME', strval($member_id), $old_username);
     }
     if ($password !== null) { // Password change
         // Security, clear out sessions from other people on this user - just in case the reset is due to suspicious activity
