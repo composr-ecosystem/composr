@@ -280,9 +280,10 @@ class Module_topics
      *
      * @param  ID_TEXT $_title The language string codename for the title to use in the page
      * @param  array $additional_fields Array of additional Tempcode fields to attach after the reason field
+     * @param  array $js_function_calls Array of JavaScript function calls to use
      * @return Tempcode The UI
      */
-    public function relay_with_reason(string $_title, array $additional_fields = []) : object
+    public function relay_with_reason(string $_title, array $additional_fields = [], array $js_function_calls = []) : object
     {
         $title = get_screen_title($_title);
         $text = paragraph(do_lang_tempcode('OPTIONAL_REASON'));
@@ -311,6 +312,7 @@ class Module_topics
             'FIELDS' => $fields,
             'SUBMIT_ICON' => $submit_icon,
             'SUBMIT_NAME' => $submit_name,
+            'JS_FUNCTION_CALLS' => $js_function_calls,
         ]);
     }
 
@@ -3927,6 +3929,9 @@ class Module_topics
         $title = get_screen_title('_DELETE_TOPIC', true, [escape_html($topic_title)]);
         $submit_name = do_lang_tempcode('DELETE');
         $text = paragraph(do_lang_tempcode('DELETE_TOPIC_TEXT'));
+
+        require_javascript('cns_forum');
+
         return do_template('FORM_SCREEN', [
             '_GUID' => '00b84f337de3683bfcdb60ea3086afa0',
             'SKIP_WEBSTANDARDS' => true,
@@ -3938,6 +3943,7 @@ class Module_topics
             'SUBMIT_ICON' => 'admin/delete3',
             'SUBMIT_NAME' => $submit_name,
             'URL' => $post_url,
+            'JS_FUNCTION_CALLS' => ['topicDeleteScreen'],
         ]);
     }
 
