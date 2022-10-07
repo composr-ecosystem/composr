@@ -8353,6 +8353,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_points_support_credits
         DESCRIPTION_LEADER_BOARD_CALCULATE_VOTING_POWER
         LEADER_BOARD_CALCULATE_VOTING_POWER
+        STAFF_SECURITY_ASPECT_CHANGED_BODY
+        STAFF_SECURITY_ASPECT_CHANGED_SUBJECT
     ')));
 
     $non_admin_files = [
@@ -9393,6 +9395,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         EDIT_MEMBER_PROFILE
         EDIT_MEMBER_USERNAME
         EDIT_MEMBER_EMAIL
+        EDIT_MEMBER_PHONE_NUMBER
         EDIT_MENU
         EDIT_OWN_POST
         EDIT_OWN_TOPIC
@@ -10131,7 +10134,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NOTIFICATION_TYPE_cns_member_joined_group
         NOTIFICATION_TYPE_cns_new_member
         NOTIFICATION_TYPE_cns_new_pt
-        NOTIFICATION_TYPE_cns_login_changed
         NOTIFICATION_TYPE_cns_topic
         NOTIFICATION_TYPE_cns_topic_invite
         NOTIFICATION_TYPE_comment_posted
@@ -10275,9 +10277,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PASSWORD
         PASSWORD_ALREADY_RESET
         RESET_CODE_EXPIRED
-        PASSWORD_CHANGED_MAIL_BODY
-        PASSWORD_CHANGED_MAIL_BODY_2
-        PASSWORD_CHANGED_MAIL_SUBJECT
         PASSWORD_DESIRED
         PASSWORD_EXPIRED
         PASSWORD_MISMATCH
@@ -10921,8 +10920,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         USERNAME_ALREADY_EXISTS
         USERNAME_BAD_SUBSTRING
         USERNAME_BAD_SYMBOLS
-        USERNAME_CHANGED_MAIL
-        USERNAME_CHANGED_MAIL_SUBJECT
         USERNAME_NUMERIC
         USERNAME_PASSWORD_WHITESPACE
         USERNAME_TOO_LONG
@@ -11720,6 +11717,20 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         POLL_RSS_VOTE_TITLE
         POLL_RSS_VOTE_TITLE_REVOKED
         TOPIC_POLL_VOTES
+        DESCRIPTION_SENSITIVE_CHANGE_ALERT
+        SECURITY_ASPECT_CHANGED_BODY
+        SECURITY_ASPECT_CHANGED_BODY_2
+        SECURITY_ASPECT_CHANGED_SUBJECT
+        SECURITY_ASPECT_CHANGED__EMAIL_ADDRESS
+        SECURITY_ASPECT_CHANGED__PASSWORD
+        SECURITY_ASPECT_CHANGED__PHONE_NUMBER
+        SECURITY_ASPECT_CHANGED__USERNAME
+        SENSITIVE_CHANGE_ALERT
+        EMAIL_ASSOCIATED_SUBJECT
+        EMAIL_ASSOCIATED_BODY
+        ACCOUNT_DELETED_BODY
+        ACCOUNT_DELETED_SUBJECT
+        EDIT_MEMBER_PASSWORD
     ')));
 
     if ($GLOBALS['DEV_MODE']) {

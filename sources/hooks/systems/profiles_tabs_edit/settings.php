@@ -208,6 +208,11 @@ class Hook_profiles_tabs_edit_settings
             }
 
             $old_groups = $GLOBALS['FORUM_DRIVER']->get_members_groups($member_id_of);
+            if ((has_privilege($member_id_viewing, 'member_maintenance')) && ($member_id_viewing != $member_id_of) && (post_param_integer('sensitive_change_alert', 0) == 0)) {
+                $sensitive_change_alert = false;
+            } else {
+                $sensitive_change_alert = true;
+            }
 
             cns_edit_member(
                 $member_id_of, // member_id
@@ -241,7 +246,12 @@ class Hook_profiles_tabs_edit_settings
                 $pt_rules_text, // pt_rules_text
                 $validated, // validated
                 $on_probation_until, // on_probation_until
-                null // is_perm_banned
+                null, // is perm_banned
+                true, // Check correctness
+                null, // Password scheme
+                null, // Salt
+                null, // Join time
+                $sensitive_change_alert // Email on sensitive changes
             );
 
             if (addon_installed('content_reviews')) {

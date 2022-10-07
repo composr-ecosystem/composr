@@ -8,11 +8,12 @@ This tutorial explains aspects of the Conversr member system.
 
 [title="2"]Default accounts after installation[/title]
 
-During installing Composr, there will be two usernames provided by default:
-1) [tt]admin[/tt] (or whatever you changed it to during installation)
-2) [tt]test[/tt]
+When installing Composr, there will be three members provided by default:
+1) A guest (system) account
+2) [tt]admin[/tt] (or whatever you changed it to during installation)
+3) [tt]test[/tt]
 
-The test username is intended for testing permissions for non-administrators, which is a very important task, as it is easy to make mistakes during configuration.
+The guest (system) account is used for system functionality such as forum posts by the system, points ledger transactions involving the site (system), and e-mails or notifications from the system. The test username is intended for testing permissions for non-administrators, which is a very important task, as it is easy to make mistakes during configuration.
 
 Information about testing permissions is available in the [page="_SEARCH:tut_permissions"]Access control and privileges[/page] tutorial ("Testing access and privileges").
 
@@ -158,6 +159,8 @@ Member birthdays are also shown on forum-view screens. Note that birthdays for m
 To edit a member's account, go to their profile, and go to the 'Edit' tab. There are various sub-tabs for controlling member settings.
 Of course a member can only edit their account, unless they have special privileges to edit the accounts of others.
 
+As a security feature, members are e-mailed from the system whenever their username, e-mail address (sent to their old address with an additional vague e-mail also sent to the new one), password, or phone number is changed. The e-mail explains what was changed and who changed it (for security, the new password is not specified, and the new e-mail address and phone number is partially masked). This allows members to assess the security of their account and report to the site staff should they believe their account was compromised. Edits of usernames, passwords, e-mail addresses, or phone numbers are also logged in the Action Log, and staff are notified.
+
 [title="3"]Edit profile[/title]
 
 Profile settings, mainly Custom Profile Fields, may be edited on the edit profile sub-tab.
@@ -270,6 +273,8 @@ If an account needs deleting due to duplication, there's a merge feature (Admin 
 There is also an admin feature that allows you to delete 'lurkers' (the definition of lurker is up to you, as the feature is quite flexible). You can access this feature from Admin Zone > Tools > Delete Lurkers.
 
 If an admin account is deleted you may wish to add that account's username to the "Restricted usernames" configuration option (Admin Zone > Setup > Configuration > User/usergroup options > Usernames and passwords) to prevent someone else re-registering the username.
+
+When an account is deleted, the e-mail address on record for the account is e-mailed informing them their account was deleted and by whom. The deletion is also logged and sent as a notification to staff.
 
 [title="3"]Privacy[/title]
 

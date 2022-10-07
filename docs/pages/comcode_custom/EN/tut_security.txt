@@ -39,6 +39,7 @@ Auditing systems:
  - Sophisticated tools to analyse the above
  - Logging of failed logins
  - Hack-attack detection / logging / banning (described in further detail in this tutorial)
+ - E-mails to members when their username, e-mail address (e-mail is sent to the old address), password, or phone number is changed
 
 Framework security:
  - CSRF-attack prevention (Cross-Site-Request-Forgery) via referrer checking and form security tokens
