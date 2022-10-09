@@ -44,7 +44,7 @@
 			{+END}
 		</p>
 	</td>
-	<td>
+	<td class="{$?,{BUNDLED},bundled,non_bundled}">
 		{AUTHOR*}
 	</td>
 	<td>
