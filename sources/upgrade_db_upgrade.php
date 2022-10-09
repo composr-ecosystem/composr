@@ -412,6 +412,31 @@ function version_specific() : bool
                 $GLOBALS['SITE_DB']->query_update('blocks', ['block_name' => $to], ['block_name' => $from], '', 1);
             }
 
+            // Delete bundled addons that no longer exist
+            //  Note that any old tables etc should be removed from the upgrade code in admin_version
+            //  Note that any non-bundled addons are not handled by Composr's own upgrade code, and they should ideally be uninstalled manually if they have tables (using safe mode if needed) or cleaned out using the integrity checker if they don't
+            $deleted_addons = [
+                'bookmarks',
+                'cns_reported_posts',
+                'collaboration_zone',
+                'hphp_buildkit',
+                'linux_helper_scripts',
+                'msn',
+                'pointstore',
+                'ssl',
+                'staff_messaging',
+                'staff',
+                'supermember_directory',
+                'textbased_persistent_caching',
+                'windows_helper_scripts',
+                'xml_fields',
+                'zone_logos',
+            ];
+            foreach ($deleted_addons as $addon) {
+                $GLOBALS['SITE_DB']->query_delete('addons', ['addon_name' => $addon]);
+                @unlink(get_custom_file_base() . '/imports/addons/' . $addon . '.tar');
+            }
+
             // File replacements
             $reps = [
                 '#main_activities#' => 'main_activity_feed',
@@ -419,6 +444,8 @@ function version_specific() : bool
             ];
             perform_search_replace($reps);
         }
+
+        // Note: When adding upgrade code for a new version it's a good idea to review old code to get an idea for what might need to be done
 
         set_value('version', float_to_raw_string($version_files, intval($version_database), true));
 
