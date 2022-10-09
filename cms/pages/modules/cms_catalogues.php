@@ -810,7 +810,7 @@ class Module_cms_catalogues extends Standard_crud_module
             $points = $GLOBALS['SITE_DB']->query_select_value('catalogues', 'c_submit_points', ['c_name' => $catalogue_name]);
             if ($points > 0) {
                 require_code('points2');
-                points_credit_member(get_member(), do_lang('ADD_CATALOGUE_ENTRY'), $points, 0, 0, null, true, 0, 'catalogue_entry', 'add', strval($id));
+                points_credit_member(get_member(), do_lang('ADD_CATALOGUE_ENTRY'), $points, 0, true, 0, 'catalogue_entry', 'add', strval($id));
             }
         }
 

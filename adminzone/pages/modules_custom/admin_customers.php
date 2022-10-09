@@ -602,7 +602,7 @@ class Module_admin_customers
                 require_code('points2');
                 $credits = $GLOBALS['SITE_DB']->query_select('credit_purchases', ['SUM(num_credits) as credits', 'member_id'], ['purchase_validated' => 1], ' GROUP BY member_id');
                 foreach ($credits as $credit) {
-                    points_credit_member($credit['member_id'], 'Upgrader: Importing legacy support credit points as a ledger item', (50 * $credit['credits']), 0, 0, null, null, 0, 'legacy', 'upgrader', 'support_credits');
+                    points_credit_member($credit['member_id'], 'Upgrader: Importing legacy support credit points as a ledger item', (50 * $credit['credits']), 0, null, 0, 'legacy', 'upgrader', 'support_credits');
                 }
             }
         }

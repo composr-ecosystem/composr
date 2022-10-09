@@ -982,7 +982,7 @@ function chat_post_message(int $room_id, string $message, string $font_name, str
             $points_chat = intval(get_option('points_chat'));
             if ($points_chat > 0) {
                 require_code('points2');
-                points_credit_member($member_id, do_lang('CHAT'), $points_chat, 0, 0, null, null, 0, 'chat_message', 'add', strval($message_id));
+                points_credit_member($member_id, do_lang('CHAT'), $points_chat, 0, null, 0, 'chat_message', 'add', strval($message_id));
             }
         }
 

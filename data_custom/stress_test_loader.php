@@ -172,7 +172,7 @@ function do_work()
     echo 'STARTING: Points' . "\n";
     for ($j = $GLOBALS['SITE_DB']->query_select_value('points_ledger', 'COUNT(*)'); $j < ($num_wanted * 6); $j += 6) {
         // Credit transaction with a random aggregate type
-        points_credit_member(mt_rand(db_get_first_id(), $num_wanted - 1), random_line(), random_points(), 0, 0, null, null, 0, random_t_type(), 'add', '');
+        points_credit_member(mt_rand(db_get_first_id(), $num_wanted - 1), random_line(), random_points(), 0, null, 0, random_t_type(), 'add', '');
 
         // Transactions between two members of random point values with a 1% chance of it using gift points too.
         points_transact(mt_rand(db_get_first_id(), $num_wanted - 1), $member_id, random_line(), random_points(), ((mt_rand(1, 100) == 1) ? null : 0), 0, null);
@@ -182,7 +182,7 @@ function do_work()
         points_debit_member(mt_rand(db_get_first_id(), $num_wanted - 1), random_line(), random_points(), 0, 0, null);
 
         // Credit transaction that gets reversed
-        $reverse = points_credit_member($member_id, random_line(), random_points(), 0, 0, null, null);
+        $reverse = points_credit_member($member_id, random_line(), random_points(), 0, null);
         points_transaction_reverse($reverse);
 
         // Flush runtime cache every 180 transactions

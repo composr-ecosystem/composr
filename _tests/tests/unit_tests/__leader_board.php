@@ -20,6 +20,10 @@ class __leader_board_test_set extends cms_test_case
 {
     protected $leaderboards;
 
+    protected $points_a;
+    protected $points_b;
+    protected $old_voting_power;
+
     public function setUp()
     {
         parent::setUp();
@@ -33,6 +37,19 @@ class __leader_board_test_set extends cms_test_case
 
         require_code('leader_board');
         require_code('leader_board2');
+
+        // Award some points in case there are none
+        require_code('points2');
+        $members = $GLOBALS['FORUM_DRIVER']->get_next_members(null, 2);
+        $this->points_a = points_credit_member($GLOBALS['FORUM_DRIVER']->mrow_id($members[0]), 'leader-board test', 1000000, 0, null, 0, 'unit_test', '', 'leader_board', (time() - 60));
+        $this->points_b = points_credit_member($GLOBALS['FORUM_DRIVER']->mrow_id($members[1]), 'leader-board test', 100000, 0, null, 0, 'unit_test', '', 'leader_board', (time() - 60));
+        points_flush_runtime_cache();
+
+        // Turn on voting power for this test
+        if (get_forum_type() == 'cns') {
+            $this->old_voting_power = get_option('enable_poll_point_weighting');
+            set_option('enable_poll_point_weighting', '1', 0);
+        }
     }
 
     public function testLeaderBoardRanks() {
@@ -45,7 +62,7 @@ class __leader_board_test_set extends cms_test_case
         }
 
         // Set up leader-board
-        $this->leaderboards['rank'] = add_leader_board("Test rank", 'holders', 100, 'week', 1, 1, []);
+        $this->leaderboards['rank'] = add_leader_board("Test rank", 'holders', 100, 'week', 1, 1, [], ((get_forum_type() == 'cns') ? 1 : 0));
         $this->assertTrue(is_integer($this->leaderboards['rank']), 'Failed to create rank leader-board');
 
         // Set up time
@@ -63,23 +80,26 @@ class __leader_board_test_set extends cms_test_case
                 $this->assertTrue(false, 'rank: We expected at least one member in the result set, but we got none, in testLeaderBoardRanks().');
             } else {
                 // Sort the results according to specified rank
-                usort($results, function (array $a, array $b) : int {
-                    return ($a['lb_rank'] < $b['lb_rank']) ? -1 : 1;
-                });
+                sort_maps_by($results, 'lb_rank');
 
-                // As we go down the rank, the number of points should decrease or stay the same. Fail if this does not happen.
+                // As we go down the rank, the number of points should decrease or stay the same. Fail if this does not happen. Also checks to ensure we have voting power results.
                 $passed = true;
+                $voting_power_passed = true;
                 $prev_points = null;
                 foreach ($results as $result) {
                     if ($prev_points === null) {
                         $prev_points = $result['lb_points'];
                     } elseif ($result['lb_points'] > $prev_points) {
                         $passed = false;
-                        break;
                     }
                     $prev_points = $result['lb_points'];
+
+                    if (($result['lb_voting_power'] === null) && (get_forum_type() == 'cns')) {
+                        $voting_power_passed = false;
+                    }
                 }
                 $this->assertTrue($passed, 'rank: The leader-board assigned ranks in the incorrect order; we expected ranks to be in order from most points to least, in testLeaderBoardRanks().');
+                $this->assertTrue($voting_power_passed, 'rank: Expected the leader-board to also include voting power, but it did not, in testLeaderBoardRanks().');
             }
         }
     }
@@ -95,11 +115,11 @@ class __leader_board_test_set extends cms_test_case
         }
 
         // Set up leader-boards
-        $this->leaderboards['week_r'] = add_leader_board("Test week_r", 'holders', 10, 'week', 1, 0, []);
+        $this->leaderboards['week_r'] = add_leader_board("Test week_r", 'holders', 10, 'week', 1, 0, [], 0);
         $this->assertTrue(is_integer($this->leaderboards['week_r']), 'Failed to create week_r leader-board');
-        $this->leaderboards['month_r'] = add_leader_board("Test month_r", 'holders', 10, 'month', 1, 0, []);
+        $this->leaderboards['month_r'] = add_leader_board("Test month_r", 'holders', 10, 'month', 1, 0, [], 0);
         $this->assertTrue(is_integer($this->leaderboards['month_r']), 'Failed to create month_r leader-board');
-        $this->leaderboards['year_r'] = add_leader_board("Test year_r", 'holders', 10, 'year', 1, 0, []);
+        $this->leaderboards['year_r'] = add_leader_board("Test year_r", 'holders', 10, 'year', 1, 0, [], 0);
         $this->assertTrue(is_integer($this->leaderboards['year_r']), 'Failed to create year_r leader-board');
 
         // Test 2: First, test to see that none of the leader-boards regenerate if the current time is the same as the most recent result set
@@ -187,11 +207,11 @@ class __leader_board_test_set extends cms_test_case
         }
 
         // Test 1: Set up leader-boards
-        $this->leaderboards['week'] = add_leader_board("Test week", 'earners', 10, 'week', 0, 0, []);
+        $this->leaderboards['week'] = add_leader_board("Test week", 'earners', 10, 'week', 0, 0, [], 0);
         $this->assertTrue(is_integer($this->leaderboards['week']), 'Failed to create week_r leader-board');
-        $this->leaderboards['month'] = add_leader_board("Test month", 'earners', 10, 'month', 0, 0, []);
+        $this->leaderboards['month'] = add_leader_board("Test month", 'earners', 10, 'month', 0, 0, [], 0);
         $this->assertTrue(is_integer($this->leaderboards['month']), 'Failed to create month_r leader-board');
-        $this->leaderboards['year'] = add_leader_board("Test year", 'earners', 10, 'year', 0, 0, []);
+        $this->leaderboards['year'] = add_leader_board("Test year", 'earners', 10, 'year', 0, 0, [], 0);
         $this->assertTrue(is_integer($this->leaderboards['year']), 'Failed to create year_r leader-board');
 
         // Test 2A: First, test to see that none of the leader-boards regenerate if the current time is the same as the most recent result set (Sunday)
@@ -309,10 +329,10 @@ class __leader_board_test_set extends cms_test_case
         }
 
         // Set up leader-boards
-        $this->leaderboards['one_member'] = add_leader_board("Test one_member", 'holders', 1, 'month', 0, 0, []);
+        $this->leaderboards['one_member'] = add_leader_board("Test one_member", 'holders', 1, 'month', 0, 0, [], 0);
         $this->assertTrue(is_integer($this->leaderboards['one_member']), 'Failed to create one_member leader-board');
 
-        // The generated leader-board should only contain one member in the results
+        // The generated leader-board should only contain one member in the results (also test for a non voting power leader-board)
         $forced_period_start = strtotime("first day of this month");
         $forced_time = strtotime("+1 month", $forced_period_start);
         $rows = $GLOBALS['SITE_DB']->query_select('leader_boards', ['*'], ['id' => $this->leaderboards['one_member']], '', 1);
@@ -326,6 +346,7 @@ class __leader_board_test_set extends cms_test_case
             }
             $count = count($results);
             $this->assertTrue(($count == 1), 'one_member: The leader-board returned ' . strval($count) . ' members when we expected 1. testLeaderBoardOneMember().');
+            $this->assertTrue((($count < 1) || ($results[0]['lb_voting_power'] === null)), 'one_member: Expected the leader-board not to calculate / return voting power, but it did. testLeaderBoardOneMember().');
         }
     }
 
@@ -346,9 +367,9 @@ class __leader_board_test_set extends cms_test_case
         }
 
         // Set up leader-boards
-        $this->leaderboards['include_staff'] = add_leader_board("Test include_staff", 'holders', 10, 'month', 0, 1, [$groups[0]]);
+        $this->leaderboards['include_staff'] = add_leader_board("Test include_staff", 'holders', 10, 'month', 0, 1, [$groups[0]], 0);
         $this->assertTrue(is_integer($this->leaderboards['include_staff']), 'Failed to create include_staff leader-board');
-        $this->leaderboards['no_staff'] = add_leader_board("Test no_staff", 'holders', 10, 'month', 0, 0, [$groups[0]]);
+        $this->leaderboards['no_staff'] = add_leader_board("Test no_staff", 'holders', 10, 'month', 0, 0, [$groups[0]], 0);
         $this->assertTrue(is_integer($this->leaderboards['no_staff']), 'Failed to create no_staff leader-board');
 
         // Set up time
@@ -403,9 +424,9 @@ class __leader_board_test_set extends cms_test_case
         } while (count($groups) < 2);
 
         // Set up leader-boards
-        $this->leaderboards['single_usergroup'] = add_leader_board("Test single_usergroup", 'holders', 100, 'month', 0, 1, [$groups[0]]);
+        $this->leaderboards['single_usergroup'] = add_leader_board("Test single_usergroup", 'holders', 100, 'month', 0, 1, [$groups[0]], 0);
         $this->assertTrue(is_integer($this->leaderboards['single_usergroup']), 'Failed to create single_usergroup leader-board');
-        $this->leaderboards['multiple_usergroups'] = add_leader_board("Test multiple_usergroups", 'holders', 100, 'month', 0, 1, $groups);
+        $this->leaderboards['multiple_usergroups'] = add_leader_board("Test multiple_usergroups", 'holders', 100, 'month', 0, 1, $groups, 0);
         $this->assertTrue(is_integer($this->leaderboards['multiple_usergroups']), 'Failed to create multiple_usergroups leader-board');
 
         // Set up time
@@ -469,10 +490,10 @@ class __leader_board_test_set extends cms_test_case
         require_code('points2');
 
         // Set up leader-boards (make these rolling for easier calculation)
-        $this->leaderboards['holders'] = add_leader_board("Test holders", 'holders', 10, 'week', 1, 1, []);
+        $this->leaderboards['holders'] = add_leader_board("Test holders", 'holders', 10, 'week', 1, 1, [], 0);
         $this->assertTrue(is_integer($this->leaderboards['holders']), 'Failed to create holders leader-board');
 
-        $this->leaderboards['earners'] = add_leader_board("Test earners", 'earners', 10, 'week', 1, 1, []);
+        $this->leaderboards['earners'] = add_leader_board("Test earners", 'earners', 10, 'week', 1, 1, [], 0);
         $this->assertTrue(is_integer($this->leaderboards['earners']), 'Failed to create earners leader-board');
 
         // Set up time
@@ -490,7 +511,7 @@ class __leader_board_test_set extends cms_test_case
 
         // Process a dummy point transaction; amount should be absurdly high to ensure member is at the top of the results in our test
         $points_to_send = 100000000;
-        $transfer = points_credit_member($member, 'unit test', $points_to_send, 0, 0, null, null, 0, '', '', '', (time() - 60));
+        $transfer = points_credit_member($member, 'unit test', $points_to_send, 0, null, 0, '', '', '', (time() - 60));
 
         points_flush_runtime_cache();
 
@@ -557,6 +578,20 @@ class __leader_board_test_set extends cms_test_case
 
         foreach ($this->leaderboards as $key => $value) {
             delete_leader_board($value);
+        }
+
+        // Clean up point transactions
+        require_code('points2');
+        $a = points_transaction_reverse($this->points_a);
+        $GLOBALS['SITE_DB']->query_delete('points_ledger', ['id' => $this->points_a], '', 1);
+        $GLOBALS['SITE_DB']->query_delete('points_ledger', ['id' => $a[0]], '', 1);
+        $b = points_transaction_reverse($this->points_b);
+        $GLOBALS['SITE_DB']->query_delete('points_ledger', ['id' => $this->points_b], '', 1);
+        $GLOBALS['SITE_DB']->query_delete('points_ledger', ['id' => $b[0]], '', 1);
+
+        // Reset voting power for this test
+        if (get_forum_type() == 'cns') {
+            set_option('enable_poll_point_weighting', $this->old_voting_power, 0);
         }
 
         parent::tearDown();

@@ -354,7 +354,7 @@ function _complete_escrow(array $row, ?int $amount = null, bool $escrow_log = tr
     $GLOBALS['SITE_DB']->query_update('escrow', ['status' => ESCROW_STATUS_COMPLETED], ['id' => $id], '', 1);
 
     // Credit the points to the recipient in a new transaction
-    $_id = points_credit_member($recipient_id, do_lang('ESCROW_REASON_FROM', $username, $reason), $amount, 0, 0, null, null, 0, 'points_escrow', 'complete', strval($id));
+    $_id = points_credit_member($recipient_id, do_lang('ESCROW_REASON_FROM', $username, $reason), $amount, 0, null, 0, 'points_escrow', 'complete', strval($id));
     $response[] = $_id;
 
     // If we are not crediting the recipient with the full escrow points, then we need to refund the rest to the sender
@@ -368,7 +368,7 @@ function _complete_escrow(array $row, ?int $amount = null, bool $escrow_log = tr
         $refund = ($row['amount'] - $amount);
         $refund_gift_points = min($refund, $ledger['amount_gift_points']);
 
-        $id_b = points_credit_member($row['sender_id'], do_lang('ESCROW_REASON_FROM', $username, $reason), $amount, $refund_gift_points, 0, $row['original_points_ledger_id'], null, 1, 'points_escrow', 'refund', strval($id));
+        $id_b = points_refund($GLOBALS['FORUM_DRIVER']->get_guest_id(), $row['sender_id'], do_lang('ESCROW_REASON_FROM', $username, $reason), $amount, $refund_gift_points, 0, $ledger, null, 'points_escrow', 'refund', strval($id), null, LEDGER_STATUS_REFUND);
         $response[] = $id_b;
         $response[] = $refund;
         $response[] = $refund_gift_points;
@@ -458,7 +458,7 @@ function cancel_escrow(int $id, int $member_id, string $reason, ?array $row = nu
         // Refund points to the sender
         require_code('points2');
         $_reason = do_lang_tempcode('ESCROW_REASON_CANCELLED', $escrow_reason);
-        $refund_id = points_refund($GLOBALS['FORUM_DRIVER']->get_guest_id(), $row['sender_id'], $_reason->evaluate(), $row['amount'], $ledger['amount_gift_points'], 0, $ledger['id'], true, 'escrow', 'cancel', strval($id));
+        $refund_id = points_refund($GLOBALS['FORUM_DRIVER']->get_guest_id(), $row['sender_id'], $_reason->evaluate(), $row['amount'], $ledger['amount_gift_points'], 0, $ledger, true, 'escrow', 'cancel', strval($id));
     }
 
     // Log it

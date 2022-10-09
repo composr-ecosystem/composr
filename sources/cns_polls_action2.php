@@ -281,7 +281,7 @@ function cns_vote_in_poll(int $poll_id, array $votes, ?int $member_id = null, ?a
         if ($points_voting_cns > 0) {
             require_code('points2');
             require_lang('points');
-            points_credit_member($member_id, do_lang('CNS_VOTING'), $points_voting_cns, 0, 0, null, null, 0, 'topic_poll', 'vote', strval($poll_id));
+            points_credit_member($member_id, do_lang('CNS_VOTING'), $points_voting_cns, 0, null, 0, 'topic_poll', 'vote', strval($poll_id));
         }
     }
 

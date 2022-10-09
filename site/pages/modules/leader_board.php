@@ -199,27 +199,40 @@ class Module_leader_board
 
         $out = new Tempcode();
         foreach ($sets as $index => $date) {
-            $rows = collapse_2d_complexity('lb_member', 'lb_points', get_leader_board($id, $date));
+            $rows = get_leader_board($id, $date);
             $set_tpl = new Tempcode();
-            foreach ($rows as $member_id => $points) {
+            foreach ($rows as $row) {
                 if (get_forum_type() == 'cns') {
                     $points_url = null; // No link, as $profile_url essentially links to the same place
                 } else {
-                    $points_url = points_url($member_id);
+                    $points_url = points_url($row['lb_member']);
                 }
 
-                $profile_url = $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, true);
+                $profile_url = $GLOBALS['FORUM_DRIVER']->member_profile_url($row['lb_member'], true);
 
-                $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
+                $username = $GLOBALS['FORUM_DRIVER']->get_username($row['lb_member']);
+
+                if (addon_installed('cns_forum')) {
+                    require_lang('cns_polls');
+                    $voting_power = $row['lb_voting_power'];
+                    $voting_control = $row['lb_voting_control'];
+                } else {
+                    $voting_power = null;
+                    $voting_control = null;
+                }
 
                 $set_tpl->attach(do_template('POINTS_LEADER_BOARD_ROW', [
                     '_GUID' => 'fuyi2f2yrhhf894fh1hvnu31ht9945tbnjk',
                     'POINTS_URL' => $points_url,
                     'PROFILE_URL' => $profile_url,
-                    '_POINTS' => strval($points),
-                    'POINTS' => integer_format($points, 0),
+                    '_POINTS' => strval($row['lb_points']),
+                    'POINTS' => integer_format($row['lb_points']),
+                    '_VOTING_POWER' => (($voting_power !== null) ? float_to_raw_string($voting_power, 10) : null),
+                    'VOTING_POWER' => (($voting_power !== null) ? float_format($voting_power, 3) : null),
+                    '_VOTING_CONTROL' => (($voting_control !== null) ? float_to_raw_string($voting_control, 10) : null),
+                    'VOTING_CONTROL' => (($voting_control !== null) ? float_format($voting_control, 3) : null),
                     'USERNAME' => $username,
-                    'ID' => strval($member_id),
+                    'ID' => strval($row['lb_member']),
                     'HAS_RANK_IMAGES' => $has_rank_images,
                 ]));
             }

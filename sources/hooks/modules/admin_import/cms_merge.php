@@ -3693,7 +3693,7 @@ class Hook_import_cms_merge
                 }
             }
 
-            add_leader_board($row['lb_title'], $row['lb_type'], $row['lb_member_count'], $row['lb_timeframe'], $row['lb_rolling'], $row['lb_include_staff'], $groups);
+            add_leader_board($row['lb_title'], $row['lb_type'], $row['lb_member_count'], $row['lb_timeframe'], $row['lb_rolling'], $row['lb_include_staff'], $groups, $row['lb_calculate_voting_power']);
 
             import_id_remap_put('leader_board', strval($row['id']), 0);
         }

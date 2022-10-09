@@ -358,4 +358,11 @@
             row.classList.toggle('cns-off', !checkbox.checked);
         });
     };
+
+    $cms.functions.topicDeleteScreen = function topicDeleteScreen() {
+        // TODO: 1. Add a listener on choose-select_topic_id and choose-manual_topic_id to see which radio is selected
+        // TODO: 2. Add a listener on tree-list--root-select_topic_id that detects when something is selected and choose-select_topic_id radio is also selected
+        // TODO: 3. Add a listener on manual_topic_id that detects when some number is entered in it and choose-manual_topic_id radio is also selected
+        // TODO: When todo 2 OR 3 is true, make reverse_point_transaction read-only. Else, allow it to be ticked.
+    };
 }(window.$cms, window.$util, window.$dom));

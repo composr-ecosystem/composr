@@ -565,7 +565,7 @@ function actualise_credit_rating_points(string $content_type, string $content_id
             require_code('points2');
 
             // All feedback ledger records will have a t_type_id format of content_type:content_id
-            points_credit_member($member_id, do_lang('RATING'), $points_rating, 0, 0, null, null, 0, 'feedback', 'add', $content_type . ':' . $content_id);
+            points_credit_member($member_id, do_lang('RATING'), $points_rating, 0, null, 0, 'feedback', 'add', $content_type . ':' . $content_id);
             attach_message(do_lang('SUBMIT_AWARD', integer_format(intval($points_rating), 0)));
         }
     }
@@ -646,7 +646,7 @@ function actualise_specific_rating(?int $rating, string $page_name, int $member_
                             require_lang('points');
 
                             // Note we pass null for sending notifications, which mean they are not sent. The member will be notified in the like notification.
-                            points_credit_member($submitter, do_lang('CONTENT_LIKED'), $points_liked, 0, 0, null, null, 0, 'feedback', 'add', $real_content_type . ':' . strval($content_id));
+                            points_credit_member($submitter, do_lang('CONTENT_LIKED'), $points_liked, 0, null, 0, 'feedback', 'add', $real_content_type . ':' . strval($content_id));
                         }
                     }
                 }

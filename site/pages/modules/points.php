@@ -302,7 +302,6 @@ class Module_points
             $GLOBALS['FORUM_DRIVER']->install_delete_custom_field('gift_points_used');
 
             // Add legacy records for the other custom fields, and remove them.
-            $start = null;
             $deprecated_fields = [
                 'points_gained_chat' => 'Points Gained Chat',
                 'points_gained_visiting' => 'Points Gained Visiting',
@@ -310,11 +309,10 @@ class Module_points
                 'points_gained_voting' => 'Points Gained Voting',
                 'points_gained_wiki' => 'Points Gained Wiki',
             ];
+            $member_id = null;
             do {
-                $rows = $GLOBALS['FORUM_DRIVER']->get_next_members($start, 100);
+                $rows = $GLOBALS['FORUM_DRIVER']->get_next_members($member_id, 100);
                 foreach ($rows as $row) {
-                    $start = $row['id'];
-
                     $member_id = $GLOBALS['FORUM_DRIVER']->mrow_id($row);
                     $fields = $GLOBALS['FORUM_DRIVER']->get_custom_fields($member_id);
 
@@ -724,14 +722,14 @@ class Module_points
                         ]);
                     }
 
-                    points_transact($member_id_viewing, $member_id_of, $reason, $amount, null, $anonymous);
+                    points_transact($member_id_viewing, $member_id_of, $reason, $amount, null, $anonymous, true, 0, 'points', 'send', '');
 
                     // Randomised gifts but only if gift points system is enabled and the transaction was not anonymous
                     if ($anonymous == 0) {
                         $reward_credit_chance = intval(get_option('reward_credit_chance'));
                         $reward_credit_amount = intval(get_option('reward_credit_amount'));
                         if ((get_option('enable_gift_points') == '1') && (mt_rand(0, 100) < $reward_credit_chance) && ((floatval($reward_credit_chance) / 100.0 * $reward_credit_amount) >= floatval($amount))) {
-                            points_credit_member($member_id_viewing, do_lang('_PR_LUCKY'), $reward_credit_amount, 0, 0, null, false);
+                            points_credit_member($member_id_viewing, do_lang('_PR_LUCKY'), $reward_credit_amount, 0, false);
 
                             $message = do_lang_tempcode('PR_LUCKY', escape_html(integer_format($reward_credit_amount)));
                         } else {
@@ -762,7 +760,7 @@ class Module_points
                     }
 
                     require_code('points2');
-                    points_credit_member($member_id_of, $reason, $amount);
+                    points_credit_member($member_id_of, $reason, $amount, 0, true, 0, 'points', 'credit', '');
                     $balance = points_balance($member_id_of);
 
                     $message = do_lang_tempcode('MEMBER_HAS_BEEN_CREDITED', escape_html($member_of), escape_html(integer_format($amount)), escape_html(integer_format($balance)));
@@ -792,7 +790,7 @@ class Module_points
                     }
 
                     require_code('points2');
-                    points_debit_member($member_id_of, $reason, $amount);
+                    points_debit_member($member_id_of, $reason, $amount, 0, 0, true, 0, 'points', 'debit', '');
                     $balance = points_balance($member_id_of);
 
                     $message = do_lang_tempcode('MEMBER_HAS_BEEN_DEBITED', escape_html($member_of), escape_html(integer_format($amount)), escape_html(integer_format($balance)));

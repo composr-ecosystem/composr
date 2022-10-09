@@ -87,15 +87,13 @@ class Hook_cron_points_daily
             require_lang('points');
 
             // Credit daily points to everyone
-            $start = null;
+            $member_id = null;
             do {
-                $rows = $GLOBALS['FORUM_DRIVER']->get_next_members($start, 100);
+                $rows = $GLOBALS['FORUM_DRIVER']->get_next_members($member_id, 100);
                 foreach ($rows as $row) {
-                    $start = $row['id'];
-
                     $member_id = $GLOBALS['FORUM_DRIVER']->mrow_id($row);
 
-                    points_credit_member($member_id, do_lang('POINTS_PER_DAY'), $points_per_day, 0, 0, null, null, 0, 'points', 'credit_daily');
+                    points_credit_member($member_id, do_lang('POINTS_PER_DAY'), $points_per_day, 0, null, 0, 'points', 'credit_daily');
                 }
             } while (count($rows) > 0);
         }

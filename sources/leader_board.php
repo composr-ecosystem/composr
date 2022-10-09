@@ -100,6 +100,29 @@ function calculate_leader_board(array $row, ?int $forced_time = null, ?int $forc
         return null;
     }
 
+    $use_voting_power = ((get_forum_type() == 'cns') && (get_option('enable_poll_point_weighting') == '1') && ($row['lb_calculate_voting_power'] == 1));
+    if ($use_voting_power) {
+        $total_voting_power = 0.0;
+        require_code('cns_polls_action2');
+
+        // Calculate total site-wide voting power so we can derive voting control values
+        $member_id = null;
+        do {
+            $rows = $GLOBALS['FORUM_DRIVER']->get_next_members($member_id, 100);
+            foreach ($rows as $mrow) {
+                $member_id = $GLOBALS['FORUM_DRIVER']->mrow_id($mrow);
+
+                if (is_guest($member_id)) {
+                    continue;
+                }
+
+                $total_voting_power += cns_points_to_voting_power(points_balance($member_id));
+            }
+        } while (count($rows) > 0);
+    } else {
+        $total_voting_power = null;
+    }
+
     $limit = $row['lb_member_count']; // The number to show on the leader-board
     $show_staff = ($row['lb_include_staff'] == 1); // Whether to include staff
 
@@ -140,6 +163,11 @@ function calculate_leader_board(array $row, ?int $forced_time = null, ?int $forc
         $points[] = ['member_id' => $member_id, 'points' => $prow['total_points']];
     }
 
+    // Add a dummy system record if there are no other records; since leader-boards judge last generation based on result dates, we need to put something in the database.
+    if (count($points) == 0) {
+        $points[] = ['member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(), 'points' => 0];
+    }
+
     // Sort the array according to points (highest to lowest)
     sort_maps_by($points, '!points');
 
@@ -150,9 +178,19 @@ function calculate_leader_board(array $row, ?int $forced_time = null, ?int $forc
             break;
         }
 
+        if ($use_voting_power) {
+            $voting_power = cns_points_to_voting_power(points_balance($v['member_id']));
+            $voting_control = (($total_voting_power > 0.0) ? (($voting_power / $total_voting_power) * 100) : 100);
+        } else {
+            $voting_power = null;
+            $voting_control = null;
+        }
+
         $result_row = [
             'lb_member' => $v['member_id'],
             'lb_points' => $v['points'],
+            'lb_voting_power' => $voting_power,
+            'lb_voting_control' => $voting_control,
             'lb_rank' => $i + 1,
             'lb_leader_board_id' => $row['id'],
             'lb_date_and_time' => $end,
@@ -167,6 +205,7 @@ function calculate_leader_board(array $row, ?int $forced_time = null, ?int $forc
 
 /**
  * Get a result set for a given leader-board.
+ * This ignores dummy guest entries as they only serve to indicate an empty leader-board was generated.
  *
  * @param  AUTO_LINK $id The ID of the leader-board
  * @param  ?TIME $timestamp The timestamp of the result set to fetch (null: fetch the latest result set)
@@ -182,7 +221,7 @@ function get_leader_board(int $id, ?int $timestamp = null) : array
     }
 
     // Get result set ordered by rank
-    return $GLOBALS['SITE_DB']->query_select('leader_board', ['*'], ['lb_leader_board_id' => $id, 'lb_date_and_time' => $timestamp], 'ORDER BY lb_rank');
+    return $GLOBALS['SITE_DB']->query_select('leader_board', ['*'], ['lb_leader_board_id' => $id, 'lb_date_and_time' => $timestamp], ' AND lb_member<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' ORDER BY lb_rank');
 }
 
 /**
@@ -218,54 +257,44 @@ function _get_next_leader_board_timeframe(array $row, ?int $forced_time = null, 
     // Calculate the expected start and end time for our result set
     switch ($row['lb_timeframe']) {
         case 'week':
-            if ($rolling) {
-                $start = $recent;
+            $ssw = (get_option('ssw') == '1');
+            $start = $recent;
+            if ($ssw) {
+                // Do not generate leader-boards from 2 or more weeks ago; just skip to the current week
+                if (($now - $recent) >= (60 * 60 * 24 * 7 * 2)) {
+                    $start = strtotime("last sunday -1 week", $now);
+                } elseif (!$rolling) {
+                    $start = strtotime('sunday', $recent);
+                }
             } else {
-                $ssw = (get_option('ssw') == '1');
-
-                if ($ssw) {
-                    // Do not generate leader-boards from 2 or more weeks ago; just skip to the current week
-                    if (($now - $recent) >= (60 * 60 * 24 * 7 * 2)) {
-                        $start = strtotime("last sunday -1 week", $now);
-                    } else {
-                        $start = strtotime('sunday', $recent);
-                    }
-                } else {
-                    // Do not generate leader-boards from 2 or more weeks ago; just skip to the current week
-                    if (($now - $recent) >= (60 * 60 * 24 * 7 * 2)) {
-                        $start = strtotime("last monday -1 week", $now);
-                    } else {
-                        $start = strtotime('monday', $recent);
-                    }
+                // Do not generate leader-boards from 2 or more weeks ago; just skip to the current week
+                if (($now - $recent) >= (60 * 60 * 24 * 7 * 2)) {
+                    $start = strtotime("last monday -1 week", $now);
+                } elseif (!$rolling) {
+                    $start = strtotime('monday', $recent);
                 }
             }
             $end = strtotime("+1 week", $start);
             break;
 
         case 'month':
-            if ($rolling) {
-                $start = $recent;
-            } else {
-                // Do not generate leader-boards from 2 or more weeks ago; just skip to the current week
-                if ((intval(date('Y', $now)) * 12 + intval(date('m', $now))) - (intval(date('Y', $recent)) * 12 + intval(date('m', $recent))) >= 2) {
-                    $start = strtotime("first day of this month -1 month", $now);
-                } else {
-                    $start = strtotime("first day of this month", $recent);
-                }
+            $start = $recent;
+            // Do not generate leader-boards from 2 or more weeks ago; just skip to the current week
+            if ((intval(date('Y', $now)) * 12 + intval(date('m', $now))) - (intval(date('Y', $recent)) * 12 + intval(date('m', $recent))) >= 2) {
+                $start = strtotime("first day of this month -1 month", $now);
+            } elseif (!$rolling) {
+                $start = strtotime("first day of this month", $recent);
             }
             $end = strtotime("+1 month", $start);
             break;
 
         case 'year':
-            if ($rolling) {
-                $start = $recent;
-            } else {
-                // Do not generate leader-boards from 2 or more years ago; just generate the most recent one
-                if (intval(date('Y', $now)) - intval(date('Y', $recent)) >= 2) {
-                    $start = strtotime("January 1 -1 year", $now);
-                } else {
-                    $start = strtotime("January 1", $recent);
-                }
+            $start = $recent;
+            // Do not generate leader-boards from 2 or more years ago; just generate the most recent one
+            if (intval(date('Y', $now)) - intval(date('Y', $recent)) >= 2) {
+                $start = strtotime("January 1 -1 year", $now);
+            } elseif (!$rolling) {
+                $start = strtotime("January 1", $recent);
             }
             $end = strtotime("+1 year", $start);
             break;
@@ -277,6 +306,11 @@ function _get_next_leader_board_timeframe(array $row, ?int $forced_time = null, 
     // Do not generate if it is too soon AND we have at least one result set
     if (($now < $end) && (($forced_period_start !== null) || (most_recent_leader_board($row['id']) !== null))) {
         return [null, null];
+    }
+
+    // If this is a holders leader-board, start should be epoch to calculate overall points balance.
+    if ($row['lb_type'] == 'holders') {
+        $start = 0;
     }
 
     // Re-set PHP timezone back to its previous setting

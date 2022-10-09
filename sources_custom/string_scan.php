@@ -8349,6 +8349,22 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_VOTING_POWER_CALCULATOR
         VOTING_POWER_CALCULATOR
         _VOTING_POWER_CALCULATOR
+        POINTS_SUPPORT_CREDITS
+        CONFIG_OPTION_points_support_credits
+        DESCRIPTION_LEADER_BOARD_CALCULATE_VOTING_POWER
+        LEADER_BOARD_CALCULATE_VOTING_POWER
+        CONFIG_GROUP_DESCRIP_POINTS_FOSS_GROUP
+        CONFIG_OPTION_points_foss
+        CONFIG_OPTION_points_foss_http_header
+        CONFIG_OPTION_points_foss_reason
+        CONFIG_OPTION_points_foss_ua_exclude
+        CONFIG_OPTION_points_foss_ua_include
+        POINTS_FOSS
+        POINTS_FOSS_GROUP
+        POINTS_FOSS_HTTP_HEADER
+        POINTS_FOSS_REASON
+        POINTS_FOSS_UA_EXCLUDE
+        POINTS_FOSS_UA_INCLUDE
     ')));
 
     $non_admin_files = [
@@ -11714,6 +11730,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         POLL_RSS_VOTE_TITLE
         POLL_RSS_VOTE_TITLE_REVOKED
         TOPIC_POLL_VOTES
+        DEFAULT_points_foss_reason
     ')));
 
     if ($GLOBALS['DEV_MODE']) {

@@ -30,9 +30,10 @@
  * @param  BINARY $rolling Whether or not re-calculation should be relative to the creation time of the leader-board
  * @param  BINARY $include_staff Whether or not to include staff in the leader-board
  * @param  ?array $usergroups Only allow members in one or more of the defined usergroup IDs to be in the leader-board (null: do nothing) (empty array: no usergroup filtering)
+ * @param  BINARY $calculate_voting_power Whether this leader-board should also calculate voting power and control percentages for leaders to display
  * @return AUTO_LINK The ID of the new leader-board
  */
-function add_leader_board(string $title, string $board_type, int $member_count, string $timeframe, int $rolling, int $include_staff, ?array $usergroups = []) : int
+function add_leader_board(string $title, string $board_type, int $member_count, string $timeframe, int $rolling, int $include_staff, ?array $usergroups = [], int $calculate_voting_power = 0) : int
 {
     // Cannot have less than one member
     if ($member_count < 1) {
@@ -61,6 +62,7 @@ function add_leader_board(string $title, string $board_type, int $member_count, 
         'lb_timeframe' => $timeframe,
         'lb_rolling' => $rolling,
         'lb_include_staff' => $include_staff,
+        'lb_calculate_voting_power' => $calculate_voting_power,
     ], true);
 
     // Insert usergroup references
@@ -91,8 +93,9 @@ function add_leader_board(string $title, string $board_type, int $member_count, 
  * @param  BINARY $rolling Whether or not re-calculation should be relative to the creation time of the leader-board
  * @param  BINARY $include_staff Whether or not to include staff in the leader-board
  * @param  ?array $usergroups Only allow members in one or more of the defined usergroup IDs to be in the leader-board (null: do not edit existing usergroups) (empty array: no usergroup filtering)
+ * @param  BINARY $calculate_voting_power Whether this leader-board should also calculate voting power and control percentages for leaders to display
  */
-function edit_leader_board(int $id, string $title, ?string $board_type, int $member_count, string $timeframe, int $rolling, int $include_staff, ?array $usergroups)
+function edit_leader_board(int $id, string $title, ?string $board_type, int $member_count, string $timeframe, int $rolling, int $include_staff, ?array $usergroups, int $calculate_voting_power)
 {
     $_title = $GLOBALS['SITE_DB']->query_select_value_if_there('leader_boards', 'lb_title', ['id' => $id]);
     if ($_title === null) {
@@ -115,6 +118,7 @@ function edit_leader_board(int $id, string $title, ?string $board_type, int $mem
         'lb_timeframe' => $timeframe,
         'lb_rolling' => $rolling,
         'lb_include_staff' => $include_staff,
+        'lb_calculate_voting_power' => $calculate_voting_power,
     ];
     if ($board_type !== null) {
         $map['lb_type'] = $board_type;

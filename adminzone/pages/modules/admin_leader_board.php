@@ -250,9 +250,10 @@ class Module_admin_leader_board extends Standard_crud_module
      * @param  BINARY $rolling Whether or not this leader-board generation time is rolling
      * @param  BINARY $include_staff Whether to include staff in the leader-board
      * @param  array $usergroups Only allow members in one or more defined usergroup IDs to be included in the leader-board (empty: allow all usergroups)
+     * @param  BINARY $calculate_voting_power Whether this leader-board should calculate voting powers and control percentages and also display those
      * @return array A pair: The input fields, Hidden fields
      */
-    public function get_form_fields(?int $id = null, string $title = '', string $board_type = 'holders', int $member_count = 10, string $timeframe = 'week', int $rolling = 0, int $include_staff = 0, array $usergroups = []) : array
+    public function get_form_fields(?int $id = null, string $title = '', string $board_type = 'holders', int $member_count = 10, string $timeframe = 'week', int $rolling = 0, int $include_staff = 0, array $usergroups = [], int $calculate_voting_power = 0) : array
     {
         require_code('leader_board');
 
@@ -284,13 +285,14 @@ class Module_admin_leader_board extends Standard_crud_module
         $radios2->attach(form_input_radio_entry('rolling', '1', $rolling == 1, do_lang_tempcode('LEADER_BOARD_ROLLING_1'), null, ''));
         $fields->attach(form_input_radio(do_lang_tempcode('LEADER_BOARD_ROLLING'), do_lang_tempcode('DESCRIPTION_LEADER_BOARD_ROLLING'), 'rolling', $radios2, true));
 
+        $fields->attach(form_input_tick(do_lang_tempcode('LEADER_BOARD_SHOW_STAFF'), do_lang_tempcode('DESCRIPTION_LEADER_BOARD_SHOW_STAFF'), 'include_staff', $include_staff == 1));
+
         if (get_forum_type() == 'cns') {
             $usergroups_select = new Tempcode();
             $usergroups_select->attach(cns_create_multi_list_usergroups($usergroups, false));
             $fields->attach(form_input_multi_list(do_lang_tempcode('USERGROUPS'), do_lang_tempcode('DESCRIPTION_LEADER_BOARD_USERGROUPS'), 'usergroups', $usergroups_select));
+            $fields->attach(form_input_tick(do_lang_tempcode('LEADER_BOARD_CALCULATE_VOTING_POWER'), do_lang_tempcode('DESCRIPTION_LEADER_BOARD_CALCULATE_VOTING_POWER'), 'calculate_voting_power', $calculate_voting_power == 1));
         }
-
-        $fields->attach(form_input_tick(do_lang_tempcode('LEADER_BOARD_SHOW_STAFF'), do_lang_tempcode('DESCRIPTION_LEADER_BOARD_SHOW_STAFF'), 'include_staff', $include_staff == 1));
 
         return [$fields, new Tempcode()];
     }
@@ -328,7 +330,7 @@ class Module_admin_leader_board extends Standard_crud_module
         $g = $GLOBALS['SITE_DB']->query_select('leader_boards_groups', ['*'], ['lb_leader_board_id' => intval($id)]);
         $g = collapse_1d_complexity('lb_group', $g);
 
-        $fields = $this->get_form_fields(intval($id), $r['lb_title'], $r['lb_type'], $r['lb_member_count'], $r['lb_timeframe'], $r['lb_rolling'], $r['lb_include_staff'], $g);
+        $fields = $this->get_form_fields(intval($id), $r['lb_title'], $r['lb_type'], $r['lb_member_count'], $r['lb_timeframe'], $r['lb_rolling'], $r['lb_include_staff'], $g, $r['lb_calculate_voting_power']);
 
         return $fields;
     }
@@ -348,7 +350,7 @@ class Module_admin_leader_board extends Standard_crud_module
             $usergroups = [];
         }
 
-        $id = add_leader_board(post_param_string('title'), post_param_string('leader_board_type'), post_param_integer('member_count'), post_param_string('timeframe'), post_param_integer('rolling', 0), post_param_integer('include_staff', 0), $usergroups);
+        $id = add_leader_board(post_param_string('title'), post_param_string('leader_board_type'), post_param_integer('member_count'), post_param_string('timeframe'), post_param_integer('rolling', 0), post_param_integer('include_staff', 0), $usergroups, post_param_integer('calculate_voting_power', 0));
 
         return [strval($id), null];
     }
@@ -369,7 +371,7 @@ class Module_admin_leader_board extends Standard_crud_module
             $usergroups = [];
         }
 
-        edit_leader_board(intval($id), post_param_string('title'), post_param_string('leader_board_type', null), post_param_integer('member_count'), post_param_string('timeframe'), post_param_integer('rolling', 0), post_param_integer('include_staff', 0), $usergroups);
+        edit_leader_board(intval($id), post_param_string('title'), post_param_string('leader_board_type', null), post_param_integer('member_count'), post_param_string('timeframe'), post_param_integer('rolling', 0), post_param_integer('include_staff', 0), $usergroups, post_param_integer('calculate_voting_power', 0));
 
         return null;
     }

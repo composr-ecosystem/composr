@@ -207,21 +207,58 @@ function create_session(int $member_id, int $session_confirmed = 0, bool $invisi
         if ($test === null) {
             $test = $GLOBALS['SITE_DB']->query_select_value('daily_visits', 'MAX(d_date_and_time)', ['d_member_id' => $member_id]);
         }
-        if ($test !== null) {
-            require_code('temporal');
-            require_code('tempcode');
-            if (date('d/m/Y', tz_time($test, get_site_timezone())) != date('d/m/Y', tz_time(time(), get_site_timezone()))) {
-                // New daily visit; log it
-                $GLOBALS['SITE_DB']->query_insert('daily_visits', ['d_member_id' => $member_id, 'd_date_and_time' => time()]);
 
-                // Award points
-                if (addon_installed('points')) {
-                    $points_visit = intval(get_option('points_per_daily_visit'));
-                    if ($points_visit > 0) {
-                        require_code('points2');
-                        require_lang('points');
-                        points_credit_member($member_id, do_lang('DAILY_VISITS'), $points_visit, 0, 0, null, null, 0, 'member', 'visit', strval($member_id));
+        require_code('temporal');
+
+        if (($test === null) || (date('d/m/Y', tz_time($test, get_site_timezone())) != date('d/m/Y', tz_time(time(), get_site_timezone())))) {
+            // New daily visit; log it
+            $GLOBALS['SITE_DB']->query_insert('daily_visits', ['d_member_id' => $member_id, 'd_date_and_time' => time()]);
+
+            // Award points
+            if (addon_installed('points')) {
+                // Daily visits
+                $points_visit = intval(get_option('points_per_daily_visit'));
+                $points_to_award = $points_visit;
+
+                // Bonus daily visit points for particular browser / platform choices
+                $points_foss = intval(get_option('points_foss'));
+                if ($points_foss > 0) {
+                    // No points if DNT/GPC header check enabled and neither are provided
+                    if ((get_option('points_foss_http_header') == '1') &&
+                    ((!array_key_exists('HTTP_DNT', $_SERVER)) || ($_SERVER['HTTP_DNT'] != '1')) &&
+                    ((!array_key_exists('HTTP_SEC_GPC_FIELD_VALUE', $_SERVER)) || ($_SERVER['HTTP_SEC_GPC_FIELD_VALUE'] != '1'))) {
+                        $points_foss = 0;
                     }
+
+                    // Determine the user agent / platform string to regex
+                    if (array_key_exists('HTTP_SEC_CH_UA', $_SERVER)) {
+                        $to_test = $_SERVER['HTTP_SEC_CH_UA'];
+                        if (array_key_exists('HTTP_SEC_CH_UA_PLATFORM', $_SERVER)) {
+                            $to_test .= ' ' . $_SERVER['HTTP_SEC_CH_UA_PLATFORM'];
+                        }
+                    } elseif (array_key_exists('HTTP_USER_AGENT', $_SERVER)) { // Fallback
+                        $to_test = $_SERVER['HTTP_USER_AGENT'];
+                    } else {
+                        $to_test = '';
+                    }
+
+                    // Check for inclusive regex. If it fails, then no points.
+                    if ((get_option('points_foss_ua_include') != '') && (preg_match(get_option('points_foss_ua_include'), $to_test) != 1)) {
+                        $points_foss = 0;
+                    }
+
+                    // Check for exclusive regex. If it passes, then no points.
+                    if ((get_option('points_foss_ua_exclude') != '') && (preg_match(get_option('points_foss_ua_exclude'), $to_test) != 0)) {
+                        $points_foss = 0;
+                    }
+
+                    $points_to_award += $points_foss;
+                }
+
+                if ($points_to_award > 0) {
+                    require_code('points2');
+                    require_lang('points');
+                    points_credit_member($member_id, (($points_foss > 0) ? get_option('points_foss_reason') : do_lang('DAILY_VISITS')), $points_to_award, 0, null, 0, 'member', 'visit', strval($member_id));
                 }
             }
         }
