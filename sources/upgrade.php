@@ -1518,7 +1518,12 @@ function check_alien($addon_files, $old_files, $files, $dir, $rela = '', $raw = 
         }
         sort($dir_files);
         foreach ($dir_files as $file) {
-            if (should_ignore_file($rela . $file, IGNORE_ACCESS_CONTROLLERS | IGNORE_USER_CUSTOMISE | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_ZONES |  IGNORE_NONBUNDLED_SCATTERED | IGNORE_BUNDLED_UNSHIPPED_VOLATILE | IGNORE_REVISION_FILES)) {
+            if (should_ignore_file($rela . $file, IGNORE_USER_CUSTOMISE | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_ZONES |  IGNORE_NONBUNDLED_SCATTERED | IGNORE_BUNDLED_UNSHIPPED_VOLATILE | IGNORE_REVISION_FILES)) {
+                continue;
+            }
+
+            if (($file == '.htaccess') && ((!array_key_exists($rela . $file, $old_files)) || (array_key_exists($rela . $file, $files)))) {
+                // We'll let any .htaccess remain if they did not exist before or are meant to exist now (if they existed before but now, it implies we do not want that file now)
                 continue;
             }
 
