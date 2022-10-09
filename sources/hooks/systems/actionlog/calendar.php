@@ -92,6 +92,17 @@ class Hook_actionlog_calendar extends Hook_actionlog
                     'ADD_CALENDAR_EVENT' => '_SEARCH:cms_calendar:add:e_type={TYPE,OPTIONAL}',
                 ],
             ],
+            'VALIDATE_CALENDAR_EVENT' => [
+                'flags' => ACTIONLOG_FLAGS_NONE,
+                'cma_hook' => 'event',
+                'identifier_index' => 0,
+                'written_context_index' => 1,
+                'followup_page_links' => [
+                    'VIEW' => '_SEARCH:calendar:view:{ID}',
+                    'EDIT_THIS_CALENDAR_EVENT' => '_SEARCH:cms_calendar:_edit:{ID}',
+                    'ADD_CALENDAR_EVENT' => '_SEARCH:cms_calendar:add:e_type={TYPE,OPTIONAL}',
+                ],
+            ],
             'DELETE_CALENDAR_EVENT' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'event',

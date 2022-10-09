@@ -951,6 +951,8 @@ function edit_image(int $id, string $title, string $cat, string $description, st
     $just_validated = (!content_validated('image', strval($id))) && ($validated == 1);
     if ($just_validated) {
         send_content_validated_notification('image', strval($id));
+        $username = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
+        log_it('VALIDATE_IMAGE', strval($id), $username);
     }
 
     $update_map = [
@@ -1264,6 +1266,8 @@ function edit_video(int $id, string $title, string $cat, string $description, st
     $just_validated = (!content_validated('video', strval($id))) && ($validated == 1);
     if ($just_validated) {
         send_content_validated_notification('video', strval($id));
+        $username = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
+        log_it('VALIDATE_VIDEO', strval($id), $username);
     }
 
     $update_map = [

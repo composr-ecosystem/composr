@@ -95,6 +95,17 @@ class Hook_actionlog_galleries extends Hook_actionlog
                     'ADD_IMAGE' => '_SEARCH:cms_galleries:add:cat={CAT,OPTIONAL}',
                 ],
             ],
+            'VALIDATE_IMAGE' => [
+                'flags' => ACTIONLOG_FLAGS_NONE,
+                'cma_hook' => 'image',
+                'identifier_index' => 0,
+                'written_context_index' => 1,
+                'followup_page_links' => [
+                    'VIEW' => '_SEARCH:galleries:image:{ID}',
+                    'EDIT_THIS_IMAGE' => '_SEARCH:cms_galleries:_edit:{ID}',
+                    'ADD_IMAGE' => '_SEARCH:cms_galleries:add:cat={CAT,OPTIONAL}',
+                ],
+            ],
             'EDIT_IMAGE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'image',
@@ -116,6 +127,17 @@ class Hook_actionlog_galleries extends Hook_actionlog
                 ],
             ],
             'ADD_VIDEO' => [
+                'flags' => ACTIONLOG_FLAGS_NONE,
+                'cma_hook' => 'video',
+                'identifier_index' => 0,
+                'written_context_index' => 1,
+                'followup_page_links' => [
+                    'VIEW' => '_SEARCH:galleries:video:{ID}',
+                    'EDIT_THIS_VIDEO' => '_SEARCH:cms_galleries:_edit_other:{ID}',
+                    'ADD_VIDEO' => '_SEARCH:cms_galleries:add_other:cat={CAT,OPTIONAL}',
+                ],
+            ],
+            'VALIDATE_VIDEO' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'video',
                 'identifier_index' => 0,

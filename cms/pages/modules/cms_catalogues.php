@@ -616,11 +616,15 @@ class Module_cms_catalogues extends Standard_crud_module
             $fields->attach($extra_fields);
         }
 
+        $_validated = get_param_integer('validated', 0);
         if ($validated == 0) {
-            $validated = get_param_integer('validated', 0);
-            if (($validated == 1) && (addon_installed('unvalidated'))) {
-                attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'), 'inform');
+            if (($_validated == 1) && (addon_installed('unvalidated'))) {
+                $validated = 1;
+                attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'));
             }
+        } elseif (($validated == 1) && ($_validated == 1) && ($id !== null)) {
+            $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_CATALOGUE_ENTRY', 'param_a' => strval($id)]);
+            attach_message(do_lang_tempcode('ALREADY_VALIDATED', $action_log), 'notice');
         }
         if ((has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', null, $this->permissions_cat_require_b)) || (has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', null, $this->permissions_cat_require))) {
             if (addon_installed('unvalidated')) {

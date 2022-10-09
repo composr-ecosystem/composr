@@ -456,6 +456,8 @@ function edit_quiz(int $id, string $name, ?int $timeout, string $start_text, str
     $just_validated = (!content_validated('quiz', strval($id))) && ($validated == 1);
     if ($just_validated) {
         send_content_validated_notification('quiz', strval($id));
+        $username = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
+        log_it('VALIDATE_QUIZ', strval($id), $username);
     }
 
     $update_map = [

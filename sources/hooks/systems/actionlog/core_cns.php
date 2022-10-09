@@ -213,6 +213,15 @@ class Hook_actionlog_core_cns extends Hook_actionlog
                     'ADD_MEMBER' => '_SEARCH:admin_cns_members:step1',
                 ],
             ],
+            'VALIDATE_MEMBER' => [
+                'flags' => ACTIONLOG_FLAGS_NONE,
+                'cma_hook' => 'member',
+                'identifier_index' => 0,
+                'written_context_index' => 1,
+                'followup_page_links' => [
+                    'VIEW_PROFILE' => '_SEARCH:members:view:{ID}',
+                ],
+            ],
             'EDIT_MEMBER_PROFILE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'member',

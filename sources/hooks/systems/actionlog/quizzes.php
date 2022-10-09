@@ -48,6 +48,17 @@ class Hook_actionlog_quizzes extends Hook_actionlog
                     'EDIT_THIS_QUIZ' => '_SEARCH:cms_quiz:_edit:{ID}',
                 ],
             ],
+            'VALIDATE_QUIZ' => [
+                'flags' => ACTIONLOG_FLAGS_NONE,
+                'cma_hook' => 'quiz',
+                'identifier_index' => 0,
+                'written_context_index' => 1,
+                'followup_page_links' => [
+                    'VIEW' => '_SEARCH:quiz:do:{ID}',
+                    'ADD_QUIZ' => '_SEARCH:cms_quiz:add',
+                    'EDIT_THIS_QUIZ' => '_SEARCH:cms_quiz:_edit:{ID}',
+                ],
+            ],
             'EDIT_QUIZ' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'quiz',

@@ -321,12 +321,18 @@ class Module_cms_blogs extends Standard_crud_module
         $fields2 = new Tempcode();
         $hidden = new Tempcode();
         $fields->attach(form_input_line_comcode(do_lang_tempcode('TITLE'), do_lang_tempcode('DESCRIPTION_TITLE'), 'title', $title, true));
+
+        $_validated = get_param_integer('validated', 0);
         if ($validated == 0) {
-            $validated = get_param_integer('validated', 0);
-            if (($validated == 1) && (addon_installed('unvalidated'))) {
+            if (($_validated == 1) && (addon_installed('unvalidated'))) {
+                $validated = 1;
                 attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'));
             }
+        } elseif (($validated == 1) && ($_validated == 1) && ($id !== null)) {
+            $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_NEWS', 'param_a' => strval($id)]);
+            attach_message(do_lang_tempcode('ALREADY_VALIDATED', $action_log), 'notice');
         }
+
         if (has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', 'cms_news', $this->permissions_cat_require)) {
             if (addon_installed('unvalidated')) {
                 $fields2->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'news'), 'validated', $validated == 1));

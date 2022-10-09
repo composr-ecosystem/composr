@@ -8355,6 +8355,16 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         LEADER_BOARD_CALCULATE_VOTING_POWER
         STAFF_SECURITY_ASPECT_CHANGED_BODY
         STAFF_SECURITY_ASPECT_CHANGED_SUBJECT
+        ALREADY_VALIDATED
+        VALIDATE_BANNER
+        VALIDATE_CALENDAR_EVENT
+        VALIDATE_CATALOGUE_ENTRY
+        VALIDATE_DOWNLOAD
+        VALIDATE_IMAGE
+        VALIDATE_MEMBER
+        VALIDATE_NEWS
+        VALIDATE_QUIZ
+        VALIDATE_VIDEO
     ')));
 
     $non_admin_files = [

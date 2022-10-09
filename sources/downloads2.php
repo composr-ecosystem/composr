@@ -1163,6 +1163,8 @@ function edit_download(int $id, int $category_id, string $name, string $url, str
     $just_validated = (!content_validated('download', strval($id))) && ($validated == 1);
     if ($just_validated) {
         send_content_validated_notification('download', strval($id));
+        $username = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
+        log_it('VALIDATE_DOWNLOAD', strval($id), $username);
     }
 
     $update_map = [

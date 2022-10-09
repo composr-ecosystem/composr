@@ -835,11 +835,15 @@ class Module_cms_galleries extends Standard_crud_module
         $fields->attach(form_input_upload_multi_source(do_lang_tempcode('IMAGE'), '', $hidden, 'image', null, true, $url, false, null, IMAGE_CRITERIA_WEBSAFE));
 
         $fields->attach(form_input_text_comcode(do_lang_tempcode('DESCRIPTION'), do_lang_tempcode('DESCRIPTION_DESCRIPTION_ACCESSIBILITY'), 'description', $description, false));
+        $_validated = get_param_integer('validated', 0);
         if ($validated == 0) {
-            $validated = get_param_integer('validated', 0);
-            if (($validated == 1) && (addon_installed('unvalidated'))) {
+            if (($_validated == 1) && (addon_installed('unvalidated'))) {
+                $validated = 1;
                 attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'));
             }
+        } elseif (($validated == 1) && ($_validated == 1) && ($id !== null)) {
+            $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_IMAGE', 'param_a' => strval($id)]);
+            attach_message(do_lang_tempcode('ALREADY_VALIDATED', $action_log), 'notice');
         }
         $validated_field = new Tempcode();
         if (has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', null, $this->permissions_cat_require)) {
@@ -1417,11 +1421,15 @@ class Module_cms_galleries_alt extends Standard_crud_module
 
         $fields->attach(form_input_upload_multi_source(do_lang_tempcode('VIDEO'), '', $hidden, 'video', null, true, $url, false, $supported));
 
+        $_validated = get_param_integer('validated', 0);
         if ($validated == 0) {
-            $validated = get_param_integer('validated', 0);
-            if (($validated == 1) && (addon_installed('unvalidated'))) {
+            if (($_validated == 1) && (addon_installed('unvalidated'))) {
+                $validated = 1;
                 attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'));
             }
+        } elseif (($validated == 1) && ($_validated == 1) && ($id !== null)) {
+            $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_VIDEO', 'param_a' => strval($id)]);
+            attach_message(do_lang_tempcode('ALREADY_VALIDATED', $action_log), 'notice');
         }
         $validated_field = new Tempcode();
         if (has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', null, $this->permissions_cat_require)) {

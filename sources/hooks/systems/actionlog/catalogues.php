@@ -114,6 +114,17 @@ class Hook_actionlog_catalogues extends Hook_actionlog
                     'ADD_CATALOGUE_ENTRY' => '_SEARCH:cms_catalogues:add_entry:category_id={CAT}',
                 ],
             ],
+            'VALIDATE_CATALOGUE_ENTRY' => [
+                'flags' => ACTIONLOG_FLAGS_NONE,
+                'cma_hook' => 'catalogue_entry',
+                'identifier_index' => 0,
+                'written_context_index' => 1,
+                'followup_page_links' => [
+                    'VIEW' => '_SEARCH:catalogues:entry:{ID}',
+                    'EDIT_THIS_CATALOGUE_ENTRY' => '_SEARCH:cms_catalogues:_edit_entry:{ID}',
+                    'ADD_CATALOGUE_ENTRY' => '_SEARCH:cms_catalogues:add_entry:category_id={CAT}',
+                ],
+            ],
             'EDIT_CATALOGUE_ENTRY' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'catalogue_entry',

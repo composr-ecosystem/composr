@@ -77,6 +77,17 @@ class Hook_actionlog_banners extends Hook_actionlog
                     'ADD_BANNER' => '_SEARCH:cms_banners:add:b_type={CAT,OPTIONAL}',
                 ],
             ],
+            'VALIDATE_BANNER' => [
+                'flags' => ACTIONLOG_FLAGS_NONE,
+                'cma_hook' => 'banner',
+                'identifier_index' => 0,
+                'written_context_index' => 1,
+                'followup_page_links' => [
+                    'VIEW' => '_SEARCH:banners:view:source={ID}',
+                    'EDIT_THIS_BANNER' => '_SEARCH:cms_banners:_edit:{ID}',
+                    'ADD_BANNER' => '_SEARCH:cms_banners:add:b_type={CAT,OPTIONAL}',
+                ],
+            ],
             'EDIT_BANNER' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'banner',

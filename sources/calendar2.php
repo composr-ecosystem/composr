@@ -276,6 +276,8 @@ function edit_calendar_event(int $id, ?int $type, string $recurrence, ?int $recu
     $just_validated = (!content_validated('event', strval($id))) && ($validated == 1);
     if ($just_validated) {
         send_content_validated_notification('event', strval($id));
+        $username = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
+        log_it('VALIDATE_CALENDAR_EVENT', strval($id), $username);
     }
 
     $scheduling_map = [

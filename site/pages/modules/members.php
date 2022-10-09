@@ -219,6 +219,18 @@ class Module_members
             unset($_GET['id']); // So self-URL links go without 'id', which is unneeded. oAuth may safelist what URLs may request linkage.
         }
 
+        $validated = $GLOBALS['FORUM_DRIVER']->get_member_row_field($this->member_id_of, 'm_validated');
+        $_validated = get_param_integer('validated', 0);
+        if ($validated == 0) {
+            if (($_validated == 1) && (addon_installed('unvalidated'))) {
+                $validated = 1;
+                attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'));
+            }
+        } elseif (($validated == 1) && ($_validated == 1)) {
+            $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_MEMBER', 'param_a' => strval($this->member_id_of)]);
+            attach_message(do_lang_tempcode('ALREADY_VALIDATED', $action_log), 'notice');
+        }
+
         require_code('cns_profiles');
         return render_profile_tabset($this->title, $this->member_id_of, get_member(), $this->username);
     }

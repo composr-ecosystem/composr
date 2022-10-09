@@ -110,6 +110,17 @@ class Hook_actionlog_downloads extends Hook_actionlog
                     'ADD_DOWNLOAD' => '_SEARCH:cms_downloads:add:cat={CAT,OPTIONAL}',
                 ],
             ],
+            'VALIDATE_DOWNLOAD' => [
+                'flags' => ACTIONLOG_FLAGS_NONE,
+                'cma_hook' => 'download',
+                'identifier_index' => 0,
+                'written_context_index' => 1,
+                'followup_page_links' => [
+                    'VIEW' => '_SEARCH:downloads:entry:{ID}',
+                    'EDIT_THIS_DOWNLOAD' => '_SEARCH:cms_downloads:_edit:{ID}',
+                    'ADD_DOWNLOAD' => '_SEARCH:cms_downloads:add:cat={CAT,OPTIONAL}',
+                ],
+            ],
             'EDIT_DOWNLOAD' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'download',

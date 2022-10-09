@@ -111,7 +111,7 @@ function send_validation_request(string $type, string $table, bool $non_integer_
 
     $subject = do_lang('UNVALIDATED_TITLE', $title, '', '', get_site_default_lang());
     $message = $comcode->evaluate(get_site_default_lang());
-    dispatch_notification('content_validated', null, $subject, $message, null, $member_id, ['use_real_from' => true]);
+    dispatch_notification('needs_validation', null, $subject, $message, null, $member_id, ['use_real_from' => true]);
 }
 
 /**
