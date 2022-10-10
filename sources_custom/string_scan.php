@@ -11743,6 +11743,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         EDIT_MEMBER_PASSWORD
         PER_GALLERY_SORT_galleries_sort_order
         PER_GALLERY_SORT_gallery_media_default_sort_order
+        YOUR_MESSAGE_WAS_SENT_TO_BODY
+        YOUR_MESSAGE_WAS_SENT_TO_SUBJECT
     ')));
 
     if ($GLOBALS['DEV_MODE']) {

@@ -335,9 +335,13 @@ class Module_contact_member
         if ($size_so_far > $size * 1024 * 1024) {
             warn_exit(do_lang_tempcode('EXCEEDED_ATTACHMENT_SIZE', escape_html(integer_format($size))));
         }
+
+        $subject = post_param_string('subject');
+        $message = post_param_string('message');
+
         dispatch_mail(
-            do_lang('EMAIL_MEMBER_SUBJECT', get_site_name(), post_param_string('subject'), null, get_lang($member_id)),
-            post_param_string('message'),
+            do_lang('EMAIL_MEMBER_SUBJECT', get_site_name(), $subject, null, get_lang($member_id)),
+            $message,
             [$email_address],
             $to_name,
             $from_email,
@@ -351,6 +355,22 @@ class Module_contact_member
                 'require_recipient_valid_since' => $join_time,
             ]
         );
+
+        // Send standard confirmation email to current user
+        if (($from_email != '') && (get_option('message_received_emails') == '1')) {
+            dispatch_mail(
+                do_lang('YOUR_MESSAGE_WAS_SENT_TO_SUBJECT', $subject, $to_name),
+                do_lang('YOUR_MESSAGE_WAS_SENT_TO_BODY', $message, $to_name),
+                [$from_email],
+                empty($from_name) ? null : $from_name,
+                '',
+                '',
+                [
+                    'attachments' => $attachments,
+                    'bypass_queue' => (!empty($attachments)),
+                ]
+            );
+        }
 
         log_it('EMAIL', strval($member_id), $to_name);
 
