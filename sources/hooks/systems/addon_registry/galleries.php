@@ -746,6 +746,7 @@ class Hook_addon_registry_galleries
             'VIEWS' => placeholder_number(),
             'OWNER' => null,
             'PROBE_ID' => placeholder_numeric_id(),
+            'GALLERY_SORT' => lorem_phrase(),
         ]), null, '', true);
     }
 
@@ -861,6 +862,7 @@ class Hook_addon_registry_galleries
             'ENTRY_TITLE' => lorem_phrase(),
             'ENTRY_DESCRIPTION' => lorem_paragraph_html(),
             'ENTRY_SUBMITTER' => placeholder_numeric_id(),
+            'GALLERY_SORT' => lorem_phrase(),
         ]), null, '', true);
     }
 
@@ -1014,6 +1016,7 @@ class Hook_addon_registry_galleries
             'IMAGE_SELECT' => '*',
             'VIDEO_SELECT' => '*',
             'FILTER' => '',
+            'GALLERY_SORT' => lorem_phrase(),
         ]), null, '', true);
     }
 
@@ -1261,6 +1264,7 @@ class Hook_addon_registry_galleries
             'IMAGE_SELECT' => '*',
             'VIDEO_SELECT' => '*',
             'FILTER' => '',
+            'GALLERY_SORT' => lorem_phrase(),
         ]), null, '', true);
     }
 

@@ -42,10 +42,10 @@ class lang_administrative_split_test_set extends cms_test_case
         list($just_lang_strings_admin, $just_lang_strings_non_admin, , , $all_strings_in_lang) = string_scan($lang, false, false);
 
         foreach ($just_lang_strings_admin as $str) {
-            $this->assertTrue(array_key_exists($str, $all_strings_in_lang), 'string_scan specifies a lang string which does not exist: ' . $str);
+            $this->assertTrue(array_key_exists($str, $all_strings_in_lang), 'string_scan specifies a lang string which does not exist in a bundled addon: ' . $str);
         }
         foreach ($just_lang_strings_non_admin as $str) {
-            $this->assertTrue(array_key_exists($str, $all_strings_in_lang), 'string_scan specifies a lang string which does not exist: ' . $str);
+            $this->assertTrue(array_key_exists($str, $all_strings_in_lang), 'string_scan specifies a lang string which does not exist in a bundled addon: ' . $str);
         }
     }
 

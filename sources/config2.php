@@ -30,6 +30,8 @@
  */
 function build_config_inputter(string $name, array $details, ?string $current_value = null, bool $is_override = false, bool $include_group = false) : object
 {
+    require_lang('config');
+
     if ($current_value === null) {
         $current_value = get_option($name);
     }

@@ -106,6 +106,8 @@ class Module_galleries
                 'layout_mode' => 'ID_TEXT',
                 'gallery_views' => 'INTEGER',
                 'g_owner' => '?MEMBER',
+                'gallery_sort' => 'SHORT_TEXT',
+                'media_sort' => 'SHORT_TEXT',
             ]);
             $GLOBALS['SITE_DB']->create_index('galleries', 'watermark_top_left', ['watermark_top_left']);
             $GLOBALS['SITE_DB']->create_index('galleries', 'watermark_top_right', ['watermark_top_right']);
@@ -254,9 +256,12 @@ class Module_galleries
             }
         }
 
-        if (($upgrade_from !== null) && ($upgrade_from < 11)) {
+        if (($upgrade_from !== null) && ($upgrade_from < 11)) { // LEGACY
             $GLOBALS['SITE_DB']->add_table_field('galleries', 'layout_mode', 'ID_TEXT');
             $GLOBALS['SITE_DB']->add_table_field('videos', 'closed_captions_url', 'URLPATH');
+
+            $GLOBALS['SITE_DB']->add_table_field('galleries', 'gallery_sort', 'SHORT_TEXT');
+            $GLOBALS['SITE_DB']->add_table_field('galleries', 'media_sort', 'SHORT_TEXT');
 
             $GLOBALS['SITE_DB']->query_update('galleries', ['layout_mode' => GALLERY_LAYOUT_MODE_GRID], ['flow_mode_interface' => '0']);
             $GLOBALS['SITE_DB']->query_update('galleries', ['layout_mode' => GALLERY_LAYOUT_MODE_CAROUSEL], ['flow_mode_interface' => '1']);
@@ -666,6 +671,8 @@ class Module_galleries
      */
     public function do_gallery_carousel_mode(object $rating_details, object $comment_details, string $cat, string $root, object $description, bool $may_download, object $edit_url, object $add_gallery_url, object $submit_image_url, object $submit_video_url, object $title, string $rep_image, int $start, int $max, string $fullname, object $sorting, array $gallery_row) : object
     {
+        $myrow = $this->myrow;
+        $gallery_sort = (($myrow['gallery_sort'] != '') ? $myrow['gallery_sort'] : get_option('galleries_sort_order'));
         $image_select = get_param_string('select', '*', INPUT_FILTER_GET_COMPLEX);
         $video_select = get_param_string('video_select', '*', INPUT_FILTER_GET_COMPLEX);
         $days = get_param_integer('days', null);
@@ -936,6 +943,7 @@ class Module_galleries
         return do_template('GALLERY_CAROUSEL_MODE_SCREEN', [
             '_GUID' => '73728cb94579f06ab487627101011d43',
             'FIRST_ENTRY_ID' => ($first_entry_id === null) ? '' : ($first_type . ':' . strval($first_entry_id)),
+            'GALLERY_SORT' => $gallery_sort,
             'SORTING' => $sorting,
             '_TITLE' => $fullname,
             'MEMBER_ID' => ($member_id === null) ? '' : strval($member_id),
@@ -997,6 +1005,7 @@ class Module_galleries
     public function do_gallery_grid_mode(object $rating_details, object $comment_details, string $cat, string $root, object $description, bool $may_download, object $edit_url, object $add_gallery_url, object $submit_image_url, object $submit_video_url, object $title, string $fullname, array $gallery_row) : object
     {
         list($url_sort, $dir) = $this->get_sort_order();
+        $gallery_sort = (($gallery_row['gallery_sort'] != '') ? $gallery_row['gallery_sort'] : get_option('galleries_sort_order'));
 
         // Entries
         if (get_option('galleries_subcat_narrowin') == '1') {
@@ -1043,6 +1052,7 @@ class Module_galleries
             'IMAGE_SELECT' => $image_select,
             'VIDEO_SELECT' => $video_select,
             'FILTER' => $filter,
+            'GALLERY_SORT' => $gallery_sort,
         ]);
     }
 
@@ -1067,6 +1077,7 @@ class Module_galleries
     public function do_gallery_mosaic_mode(object $rating_details, object $comment_details, string $cat, string $root, object $description, bool $may_download, object $edit_url, object $add_gallery_url, object $submit_image_url, object $submit_video_url, object $title, string $fullname, array $gallery_row) : object
     {
         list($url_sort, $dir) = $this->get_sort_order();
+        $gallery_sort = (($gallery_row['gallery_sort'] != '') ? $gallery_row['gallery_sort'] : get_option('galleries_sort_order'));
 
         // Entries
         if (get_option('galleries_subcat_narrowin') == '1') {
@@ -1112,6 +1123,7 @@ class Module_galleries
             'IMAGE_SELECT' => $image_select,
             'VIDEO_SELECT' => $video_select,
             'FILTER' => $filter,
+            'GALLERY_SORT' => $gallery_sort,
         ]);
     }
 
@@ -1740,6 +1752,10 @@ class Module_galleries
      */
     protected function get_sort_order() : array
     {
+        if (isset($this->myrow) && array_key_exists('media_sort', $this->myrow) && ($this->myrow['media_sort'] != '')) {
+            return read_abstract_sorting_params($this->myrow['media_sort'], $this->get_allowed_sorts());
+        }
+
         $sort = get_param_string('sort', get_option('gallery_media_default_sort_order'), INPUT_FILTER_GET_COMPLEX);
         return read_abstract_sorting_params($sort, $this->get_allowed_sorts());
     }

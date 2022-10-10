@@ -1841,9 +1841,11 @@ class Module_cms_galleries_cat extends Standard_crud_module
      * @param  ?URLPATH $watermark_bottom_right Watermark (null: none)
      * @param  ?BINARY $allow_rating Whether rating is allowed (null: decide statistically, based on existing choices)
      * @param  ?SHORT_INTEGER $allow_comments Whether comments are allowed (0=no, 1=yes, 2=review style) (null: decide statistically, based on existing choices)
+     * @param  ?SHORT_TEXT $gallery_sort The sort order for sub-galleries (null: use site default)
+     * @param  ?SHORT_TEXT $media_sort The sort order for media within the gallery (null: use site default)
      * @return array A pair: The input fields, Hidden fields
      */
-    public function get_form_fields(string $name = '', string $fullname = '', string $description = '', string $notes = '', string $parent_id = '', ?int $accept_images = null, ?int $accept_videos = null, int $is_member_synched = 0, ?string $layout_mode = null, ?string $rep_image = null, ?string $watermark_top_left = null, ?string $watermark_top_right = null, ?string $watermark_bottom_left = null, ?string $watermark_bottom_right = null, ?int $allow_rating = null, ?int $allow_comments = null) : array
+    public function get_form_fields(string $name = '', string $fullname = '', string $description = '', string $notes = '', string $parent_id = '', ?int $accept_images = null, ?int $accept_videos = null, int $is_member_synched = 0, ?string $layout_mode = null, ?string $rep_image = null, ?string $watermark_top_left = null, ?string $watermark_top_right = null, ?string $watermark_bottom_left = null, ?string $watermark_bottom_right = null, ?int $allow_rating = null, ?int $allow_comments = null, ?string $gallery_sort = null, ?string $media_sort = null) : array
     {
         list($allow_rating, $allow_comments,) = $this->choose_feedback_fields_statistically($allow_rating, $allow_comments, 1);
 
@@ -1909,10 +1911,38 @@ class Module_cms_galleries_cat extends Standard_crud_module
             $fields->attach(form_input_radio(do_lang_tempcode('LAYOUT_MODE'), do_lang_tempcode('DESCRIPTION_LAYOUT_MODE'), 'layout_mode', $radios));
         }
 
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '94d1f77eb9fdca010cb9d1eac5d19b9b', 'SECTION_HIDDEN' => ($rep_image == '') && ($is_member_synched == 0), 'TITLE' => do_lang_tempcode('ADVANCED')]));
+
+        // Per-gallery sort order (uses site config hooks)
+        $hooks = find_all_hook_obs('systems', 'config', 'Hook_config_');
+        foreach ($hooks as $hook => $ob) {
+            if (!in_array($hook, ['galleries_sort_order', 'gallery_media_default_sort_order'])) {
+                continue;
+            }
+
+            $default = null;
+            if ($hook == 'galleries_sort_order') {
+                $default = $gallery_sort;
+            }
+            if ($hook == 'gallery_media_default_sort_order') {
+                $default = $media_sort;
+            }
+
+            // Use N/A for default, not the site config setting (a blank string will default to site config; we don't want to explicitly set the site setting in the galleries table)
+            if ($default === null) {
+                $default = '';
+            }
+
+            $details = $ob->get_details();
+            $details['explanation'] = 'PER_GALLERY_SORT_' . $hook;
+            if ($details !== null) {
+                $fields->attach(build_config_inputter($hook, $details, $default, true, false));
+            }
+        }
+
         $request_rep_image = (get_option('gallery_rep_image') == '1') || ($rep_image != '');
         $request_member_synced = (get_option('gallery_member_synced') == '1') || ($is_member_synched == 1) || ($name == 'root');
         if ($request_rep_image || $request_member_synced) {
-            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '94d1f77eb9fdca010cb9d1eac5d19b9b', 'SECTION_HIDDEN' => ($rep_image == '') && ($is_member_synched == 0), 'TITLE' => do_lang_tempcode('ADVANCED')]));
             if ($request_rep_image) {
                 $fields->attach(form_input_upload_multi_source(do_lang_tempcode('REPRESENTATIVE_IMAGE'), do_lang_tempcode('DESCRIPTION_REPRESENTATIVE_IMAGE_GALLERY'), $hidden, 'image', null, false, $rep_image, false, null, IMAGE_CRITERIA_WEBSAFE));
             }
@@ -1993,7 +2023,7 @@ class Module_cms_galleries_cat extends Standard_crud_module
         }
         $myrow = $rows[0];
 
-        return $this->get_form_fields($id, get_translated_text($myrow['fullname']), get_translated_text($myrow['the_description']), $myrow['notes'], $myrow['parent_id'], $myrow['accept_images'], $myrow['accept_videos'], $myrow['is_member_synched'], $myrow['layout_mode'], $myrow['rep_image'], $myrow['watermark_top_left'], $myrow['watermark_top_right'], $myrow['watermark_bottom_left'], $myrow['watermark_bottom_right'], $myrow['allow_rating'], $myrow['allow_comments']);
+        return $this->get_form_fields($id, get_translated_text($myrow['fullname']), get_translated_text($myrow['the_description']), $myrow['notes'], $myrow['parent_id'], $myrow['accept_images'], $myrow['accept_videos'], $myrow['is_member_synched'], $myrow['layout_mode'], $myrow['rep_image'], $myrow['watermark_top_left'], $myrow['watermark_top_right'], $myrow['watermark_bottom_left'], $myrow['watermark_bottom_right'], $myrow['allow_rating'], $myrow['allow_comments'], $myrow['gallery_sort'], $myrow['media_sort']);
     }
 
     /**
@@ -2027,9 +2057,12 @@ class Module_cms_galleries_cat extends Standard_crud_module
         $allow_rating = post_param_integer('allow_rating', 0);
         $allow_comments = post_param_integer('allow_comments', 0);
 
+        $gallery_sort = post_param_string('galleries_sort_order', '');
+        $media_sort = post_param_string('gallery_media_default_sort_order', '');
+
         $metadata = actual_metadata_get_fields('gallery', null);
 
-        add_gallery($name, $fullname, $description, $notes, $parent_id, $accept_images, $accept_videos, $is_member_synched, $layout_mode, $url, $watermark_top_left[0], $watermark_top_right[0], $watermark_bottom_left[0], $watermark_bottom_right[0], $allow_rating, $allow_comments, false, $metadata['add_time'], $metadata['submitter']);
+        add_gallery($name, $fullname, $description, $notes, $parent_id, $accept_images, $accept_videos, $is_member_synched, $layout_mode, $url, $watermark_top_left[0], $watermark_top_right[0], $watermark_bottom_left[0], $watermark_bottom_right[0], $allow_rating, $allow_comments, false, $metadata['add_time'], $metadata['submitter'], '', '', false, $gallery_sort, $media_sort);
 
         set_url_moniker('gallery', $name);
 
@@ -2094,6 +2127,8 @@ class Module_cms_galleries_cat extends Standard_crud_module
         }
         $allow_rating = post_param_integer('allow_rating', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
         $allow_comments = post_param_integer('allow_comments', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
+        $gallery_sort = post_param_string('galleries_sort_order', STRING_MAGIC_NULL);
+        $media_sort = post_param_string('gallery_media_default_sort_order', STRING_MAGIC_NULL);
 
         $metadata = actual_metadata_get_fields('gallery', $id, [], $name);
 
@@ -2119,7 +2154,10 @@ class Module_cms_galleries_cat extends Standard_crud_module
             $allow_comments,
             $metadata['submitter'],
             $metadata['add_time'],
-            true
+            true,
+            false,
+            $gallery_sort,
+            $media_sort
         );
 
         if ($id != $name) {

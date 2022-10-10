@@ -11741,6 +11741,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ACCOUNT_DELETED_BODY
         ACCOUNT_DELETED_SUBJECT
         EDIT_MEMBER_PASSWORD
+        PER_GALLERY_SORT_galleries_sort_order
+        PER_GALLERY_SORT_gallery_media_default_sort_order
     ')));
 
     if ($GLOBALS['DEV_MODE']) {
