@@ -381,6 +381,7 @@ class Hook_addon_registry_installer
         ]);
         return do_lorem_template('INSTALLER_STEP_4_SECTION_OPTION', [
             '_GUID' => '0723f86908f66da7f67ebc4cd07bff2e',
+            'REQUIRED' => false,
             'NAME' => $name,
             'INPUT' => $input,
             'NICE_NAME' => $nice_name,
@@ -416,6 +417,7 @@ class Hook_addon_registry_installer
         }
 
         return do_lorem_template('INSTALLER_STEP_4_SECTION_OPTION', [
+            'REQUIRED' => $required,
             'NAME' => $name,
             'INPUT' => $input,
             'NICE_NAME' => $nice_name,
@@ -527,6 +529,7 @@ class Hook_addon_registry_installer
             'FINAL' => lorem_phrase(),
             'URL' => placeholder_url(),
             'LOG' => $message,
+            'HIDDEN' => '',
         ]), null, '', true);
     }
 }

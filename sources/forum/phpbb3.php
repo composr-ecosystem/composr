@@ -331,7 +331,7 @@ class Forum_driver_phpbb3 extends Forum_driver_base
             @include($path . '/config.php');
             $PROBED_FORUM_CONFIG['sql_database'] = $dbname;
             $PROBED_FORUM_CONFIG['sql_user'] = $dbuser;
-            $PROBED_FORUM_CONFIG['sql_pass'] = $dbpasswd;
+            $PROBED_FORUM_CONFIG['sql_pass_exists'] = ($dbpasswd != '');
             $PROBED_FORUM_CONFIG['board_url'] = $base_url;
             $PROBED_FORUM_CONFIG['sql_tbl_prefix'] = $table_prefix;
             $PROBED_FORUM_CONFIG['cookie_member_id'] = 'phpbb_u';

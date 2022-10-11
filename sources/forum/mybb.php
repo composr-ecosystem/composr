@@ -200,7 +200,7 @@ class Forum_driver_mybb extends Forum_driver_base
             if (array_key_exists('database', $config)) {
                 $PROBED_FORUM_CONFIG['sql_database'] = !empty($config['database']['database']) ? $config['database']['database'] : '';
                 $PROBED_FORUM_CONFIG['sql_user'] = !empty($config['database']['username']) ? $config['database']['username'] : '';
-                $PROBED_FORUM_CONFIG['sql_pass'] = !empty($config['database']['password']) ? $config['database']['password'] : '';
+                $PROBED_FORUM_CONFIG['sql_pass_exists'] = !empty($config['database']['password']);
                 $PROBED_FORUM_CONFIG['cookie_member_id'] = 'mybbuser';
                 $PROBED_FORUM_CONFIG['sql_tbl_prefix'] = !@cms_empty_safe($config['database']['table_prefix']) ? $config['database']['table_prefix'] : '';
             }

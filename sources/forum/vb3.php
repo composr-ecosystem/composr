@@ -1105,14 +1105,14 @@ class Forum_driver_vb3 extends Forum_driver_base
             if ($dbname !== null) {
                 $PROBED_FORUM_CONFIG['sql_database'] = $dbname;
                 $PROBED_FORUM_CONFIG['sql_user'] = $dbusername;
-                $PROBED_FORUM_CONFIG['sql_pass'] = $dbpassword;
+                $PROBED_FORUM_CONFIG['sql_pass_exists'] = ($dbpassword != '');
                 $PROBED_FORUM_CONFIG['prefix'] = $tableprefix;
                 $PROBED_FORUM_CONFIG['cookie_member_id'] = 'bbuserid';
                 $PROBED_FORUM_CONFIG['cookie_member_hash'] = 'bbpassword';
             } elseif (array_key_exists('Database', $config)) {
                 $PROBED_FORUM_CONFIG['sql_database'] = $config['Database']['dbname'];
                 $PROBED_FORUM_CONFIG['sql_user'] = $config['MasterServer']['username'];
-                $PROBED_FORUM_CONFIG['sql_pass'] = $config['MasterServer']['password'];
+                $PROBED_FORUM_CONFIG['sql_pass_exists'] = ($config['MasterServer']['password'] != '');
                 $PROBED_FORUM_CONFIG['prefix'] = $config['Database']['tableprefix'];
                 $PROBED_FORUM_CONFIG['cookie_member_id'] = $config['Misc']['cookieprefix'] . 'userid';
                 $PROBED_FORUM_CONFIG['cookie_member_hash'] = $config['Misc']['cookieprefix'] . 'password';
