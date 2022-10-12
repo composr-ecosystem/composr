@@ -1500,13 +1500,6 @@ header.with-seed-navbar .top-button:hover {
 	width: 100%;
 }
 
-.breadcrumbs {
-}
-
-.breadcrumbs span {
-	vertical-align: middle;
-}
-
 .breadcrumbs .sep::after,
 .associated-breadcrumbs .sep::after {
 	/* Chevron */
