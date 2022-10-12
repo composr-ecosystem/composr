@@ -8367,6 +8367,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         POINTS_FOSS_UA_INCLUDE
         DB_META_CORRUPT_MISSING
         MISSING_DB_PARAMETERS
+        NO_ROOT_DB_WITHOUT_GIT
     ')));
 
     $non_admin_files = [

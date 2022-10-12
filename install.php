@@ -1275,6 +1275,9 @@ function step_5() : object
     if (($table_prefix === false) || ($post_db_site === false) || ($post_db_host === false) || ($post_db_user === false) || ($post_db_password === false)) {
         warn_exit(do_lang_tempcode('MISSING_DB_PARAMETERS'));
     }
+    if (($post_db_user == 'root') && (!file_exists(get_file_base() . '/.git'))) {
+        warn_exit(do_lang_tempcode('NO_ROOT_DB_WITHOUT_GIT'));
+    }
     $tmp = new DatabaseConnector($post_db_site, $post_db_host, $post_db_user, $post_db_password, $table_prefix);
 
     // Give warning if database contains data
@@ -2260,16 +2263,7 @@ function step_6() : object
     include_cns();
 
     // Check database credentials / load DB connection
-    $table_prefix = post_param_string('table_prefix', false, INPUT_FILTER_POST_IDENTIFIER);
-    $post_db_site = post_param_string('db_site', false, INPUT_FILTER_POST_IDENTIFIER);
-    $post_db_host = post_param_string('db_site_host', false, INPUT_FILTER_POST_IDENTIFIER);
-    $post_db_user = post_param_string('db_site_user', false, INPUT_FILTER_POST_IDENTIFIER);
-    $post_db_password = post_param_string('db_site_password', false, INPUT_FILTER_PASSWORD);
-    if (($table_prefix === false) || ($post_db_site === false) || ($post_db_host === false) || ($post_db_user === false) || ($post_db_password === false)) {
-        warn_exit(do_lang_tempcode('MISSING_DB_PARAMETERS'));
-    }
-    $tmp = new DatabaseConnector($post_db_site, $post_db_host, $post_db_user, $post_db_password, $table_prefix);
-    unset($tmp);
+    confirm_db_credentials();
 
     require_code('cns_install');
     install_cns();
@@ -2306,16 +2300,7 @@ function big_installation_common()
     }
 
     // Check database credentials / load DB connection
-    $table_prefix = post_param_string('table_prefix', false, INPUT_FILTER_POST_IDENTIFIER);
-    $post_db_site = post_param_string('db_site', false, INPUT_FILTER_POST_IDENTIFIER);
-    $post_db_host = post_param_string('db_site_host', false, INPUT_FILTER_POST_IDENTIFIER);
-    $post_db_user = post_param_string('db_site_user', false, INPUT_FILTER_POST_IDENTIFIER);
-    $post_db_password = post_param_string('db_site_password', false, INPUT_FILTER_PASSWORD);
-    if (($table_prefix === false) || ($post_db_site === false) || ($post_db_host === false) || ($post_db_user === false) || ($post_db_password === false)) {
-        warn_exit(do_lang_tempcode('MISSING_DB_PARAMETERS'));
-    }
-    $tmp = new DatabaseConnector($post_db_site, $post_db_host, $post_db_user, $post_db_password, $table_prefix);
-    unset($tmp);
+    confirm_db_credentials();
 
     $forum_type = get_forum_type();
     require_code('forum/' . $forum_type);
@@ -3389,5 +3374,30 @@ END;
             @ftp_put($conn, $user_ini, get_file_base() . '/cms_inst_tmp/tmp', FTP_TEXT);
             @ftp_site($conn, 'CHMOD 644 ' . $user_ini);
         }
+    }
+}
+
+/**
+ * Check for POSTed database settings and ensure they are valid.
+ *
+ * @param  boolean $unset Whether to unset the connection after we test it
+ */
+function confirm_db_credentials(bool $unset = true)
+{
+    require_code('database');
+    $table_prefix = post_param_string('table_prefix', false, INPUT_FILTER_POST_IDENTIFIER);
+    $post_db_site = post_param_string('db_site', false, INPUT_FILTER_POST_IDENTIFIER);
+    $post_db_host = post_param_string('db_site_host', false, INPUT_FILTER_POST_IDENTIFIER);
+    $post_db_user = post_param_string('db_site_user', false, INPUT_FILTER_POST_IDENTIFIER);
+    $post_db_password = post_param_string('db_site_password', false, INPUT_FILTER_PASSWORD);
+    if (($table_prefix === false) || ($post_db_site === false) || ($post_db_host === false) || ($post_db_user === false) || ($post_db_password === false)) {
+        warn_exit(do_lang_tempcode('MISSING_DB_PARAMETERS'));
+    }
+    if (($post_db_user == 'root') && (!file_exists(get_file_base() . '/.git'))) {
+        warn_exit(do_lang_tempcode('NO_ROOT_DB_WITHOUT_GIT'));
+    }
+    $tmp = new DatabaseConnector($post_db_site, $post_db_host, $post_db_user, $post_db_password, $table_prefix);
+    if ($unset) {
+        unset($tmp);
     }
 }
