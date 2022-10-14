@@ -6091,7 +6091,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         MANUAL_GALLERY_PARENT
         MANUAL_META
         MANUAL_PRIVACY
-        MANUAL_SUBSCRIPTIONS
+        VIEW_SUBSCRIPTIONS
         MANUAL_SUBSCRIPTION_EXPIRY_NOTICE
         MANUAL_SUBSCRIPTION_NOTIFICATION_MAIL
         MANUAL_SUBSCRIPTION_NOTIFICATION_MAIL_SUBJECT
@@ -8366,6 +8366,12 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         POINTS_FOSS_UA_EXCLUDE
         POINTS_FOSS_UA_INCLUDE
         DB_META_CORRUPT_MISSING
+        EXPORT_SUBSCRIPTIONS
+        FILTER_STATE_ACTIVE
+        FILTER_STATE_CANCELLED
+        FILTER_STATE_NEW
+        FILTER_STATE_PENDING
+        MANUAL_SUBSCRIPTIONS
     ')));
 
     $non_admin_files = [

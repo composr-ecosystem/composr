@@ -328,7 +328,7 @@ class Module_admin_points
             $map[] = do_lang_tempcode('GIFT_POINTS');
         }
         $map = array_merge($map, [do_lang_tempcode('POINTS'), do_lang_tempcode('SENDER'), do_lang_tempcode('RECIPIENT'), do_lang_tempcode('REASON'), do_lang_tempcode('STATUS'), do_lang_tempcode('ACTIONS')]);
-        $header_row = results_header_row($map, $sortables, 'sort', $sortable . ' ' . $sort_order);
+        $header_row = results_header_row($map, $sortables, 'ledger_sort', $sortable . ' ' . $sort_order);
         foreach ($rows as $myrow) {
             $date = get_timezoned_date_time($myrow['date_and_time'], false);
             $reason = get_translated_tempcode('points_ledger', $myrow, 'reason');
@@ -470,7 +470,7 @@ class Module_admin_points
 
         $url = build_url(['page' => 'admin_points', 'type' => 'browse'], get_module_zone('admin_points'));
 
-        $tpl = do_template('ADMIN_POINTS_LEDGER_SCREEN', [
+        $tpl = do_template('RESULTS_TABLE_FILTER_SCREEN', [
             '_GUID' => 'bd66789c028148928b87d04e6dc51fc8',
             'BLOCK_ID' => 'ledger',
             'TITLE' => $this->title,

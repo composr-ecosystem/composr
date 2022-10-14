@@ -185,8 +185,6 @@ class Hook_addon_registry_ecommerce
             'themes/default/templates/ECOM_PURCHASE_STAGE_PAY.tpl',
             'themes/default/templates/ECOM_TRANSACTION_LOGS_MANUAL_TRIGGER.tpl',
             'themes/default/templates/ECOM_TRANSACTION_LOGS_SCREEN.tpl',
-            'themes/default/templates/ECOM_VIEW_MANUAL_SUBSCRIPTIONS_LINE.tpl',
-            'themes/default/templates/ECOM_VIEW_MANUAL_SUBSCRIPTIONS_SCREEN.tpl',
             'themes/default/templates/ECOM_MEMBER_SUBSCRIPTION_STATUS.tpl',
             'themes/default/templates/CNS_MEMBER_PROFILE_ECOMMERCE_LOGS.tpl',
             'themes/default/templates/CURRENCY.tpl',
@@ -322,6 +320,7 @@ class Hook_addon_registry_ecommerce
             'sources/hooks/systems/config/download_cat_buy_max_emailed_count.php',
             'uploads/ecommerce/.htaccess',
             'uploads/ecommerce/index.html',
+            'sources/hooks/systems/tasks/export_subscriptions.php',
 
             'themes/default/templates/ECOM_TRANSACTION_BUTTON_VIA_PAYPAL.tpl',
             'themes/default/templates/ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_PAYPAL.tpl',
@@ -402,8 +401,6 @@ class Hook_addon_registry_ecommerce
             'templates/ECOM_PURCHASE_STAGE_FINISH.tpl' => 'purchase_stage_finish',
             'templates/ECOM_INVOICES_SCREEN.tpl' => 'ecom_invoices_screen',
             'templates/ECOM_SUBSCRIPTIONS_SCREEN.tpl' => 'ecom_subscriptions_screen',
-            'templates/ECOM_VIEW_MANUAL_SUBSCRIPTIONS_LINE.tpl' => 'ecom_view_manual_transactions_screen',
-            'templates/ECOM_VIEW_MANUAL_SUBSCRIPTIONS_SCREEN.tpl' => 'ecom_view_manual_transactions_screen',
             'templates/ECOM_MEMBER_SUBSCRIPTION_STATUS.tpl' => 'member_subscription_status_screen',
             'templates/ECOM_SALES_LOG_SCREEN.tpl' => 'administrative__ecom_sales_log_screen',
             'templates/ECOM_PRODUCTS_PRICES_FORM_WRAP.tpl' => 'administrative__ecom_products_price_screen',
@@ -1316,30 +1313,6 @@ class Hook_addon_registry_ecommerce
         return lorem_globalise(do_lorem_template('ECOM_MEMBER_SUBSCRIPTION_STATUS', [
             'MEMBER_ID' => placeholder_numeric_id(),
             'SUBSCRIPTIONS' => $subscriptions,
-        ]), null, '', true);
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return Tempcode Preview
-     */
-    public function tpl_preview__ecom_view_manual_transactions_screen() : object
-    {
-        $lines = do_lorem_template('ECOM_VIEW_MANUAL_SUBSCRIPTIONS_LINE', [
-            'ID' => placeholder_numeric_id(),
-            'SUBSCRIPTION' => lorem_title(),
-            'ROWSPAN' => '1',
-            'MEMBER' => placeholder_link(),
-            'EXPIRY' => lorem_title(),
-            'CANCEL_URL' => placeholder_url(),
-        ]);
-
-        return lorem_globalise(do_lorem_template('ECOM_VIEW_MANUAL_SUBSCRIPTIONS_SCREEN', [
-            'TITLE' => lorem_title(),
-            'CONTENT' => $lines,
         ]), null, '', true);
     }
 

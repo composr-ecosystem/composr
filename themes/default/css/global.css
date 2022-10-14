@@ -7741,6 +7741,53 @@ span:not(:empty)+#lightbox-position-in-set::before, span:not(:empty)+#lightbox-f
 	}
 }
 
+/* Search filter UI */
+
+.box-filter-inputs {
+	margin-bottom: 1.5em;
+}
+
+.box-filter-inputs .box-inner {
+	margin: 0.25em;
+}
+
+.box-filter-inputs .search-option {
+	width: 10em;
+	padding: 0.3em;
+	margin: 0;
+	float: left;
+}
+
+.box-filter-inputs .search-option label {
+	display: block;
+}
+
+.box-filter-inputs .search-option-value {
+	width: 100%;
+	margin-bottom: 0;
+}
+
+.box-filter-inputs .search-button {
+	margin-top: 0.6em;
+}
+
+.box-filter-inputs .search-option, .box-filter-inputs .search-button {
+	/* Force a neat float alignment */
+	min-height: 2.7em;
+}
+
+.box-filter-inputs .filter-inputs {
+	{$BETA_CSS_PROPERTY,display: flex};
+	align-items: center;
+	flex-wrap: wrap;
+	padding: 0.5em;
+}
+
+.box-filter-inputs .filter-input {
+	margin-right: 1.5em;
+}
+
+
 /*
 =========================
 ========Includes=========

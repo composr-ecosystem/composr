@@ -215,24 +215,29 @@ class Hook_ecommerce_support_credits
 
         $row = $GLOBALS['SITE_DB']->query_select('credit_purchases', ['member_id', 'num_credits'], ['id' => intval($id)], '', 1);
         if (count($row) != 1) {
-            return null;
+            return false;
         }
         $member_id = $row[0]['member_id'];
         if ($member_id === null) {
-            return null;
+            return false;
         }
         $num_credits = $row[0]['num_credits'];
 
         require_code('mantis');
         $cpf_id = get_credits_profile_field_id();
         if ($cpf_id === null) {
-            return null;
+            return false;
         }
 
         // Increment the number of credits this customer has
         require_code('cns_members_action2');
         $fields = cns_get_custom_field_mappings($member_id);
-        cns_set_custom_field($member_id, $cpf_id, strval($fields['field_' . strval($cpf_id)] + $num_credits));
+        if ($fields['field_' . strval($cpf_id)] === null) {
+            $current_credits = 0;
+        } else {
+            $current_credits = intval($fields['field_' . strval($cpf_id)]);
+        }
+        cns_set_custom_field($member_id, $cpf_id, $current_credits + $num_credits);
 
         // Update the row in the credit_purchases table
         $GLOBALS['SITE_DB']->query_update('credit_purchases', ['purchase_validated' => 1], ['id' => intval($id)]);

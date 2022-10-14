@@ -178,6 +178,7 @@ class Hook_addon_registry_core_abstract_interfaces
             'themes/default/templates/MEMBER_TOOLTIP.tpl',
             'themes/default/templates/SIMPLE_PREVIEW_BOX.tpl',
             'themes/default/templates/RESULTS_TABLE_SCREEN.tpl',
+            'themes/default/templates/RESULTS_TABLE_FILTER_SCREEN.tpl',
             'sources/templates_tooltip.php',
             'sources/templates_redirect_screen.php',
             'sources/templates_confirm_screen.php',
@@ -215,6 +216,7 @@ class Hook_addon_registry_core_abstract_interfaces
             'templates/REDIRECT_SCREEN.tpl' => 'redirect_screen',
             'templates/CONFIRM_SCREEN.tpl' => 'confirm_screen',
             'templates/RESULTS_TABLE_SCREEN.tpl' => 'result_table_screen',
+            'templates/RESULTS_TABLE_FILTER_SCREEN.tpl' => 'result_table_filter_screen',
             'templates/COLUMNED_TABLE_ACTION.tpl' => 'full_table_screen',
             'templates/COLUMNED_TABLE.tpl' => 'full_table_screen',
             'templates/INDEX_SCREEN_ENTRY.tpl' => 'index_screen',
@@ -1093,5 +1095,81 @@ class Hook_addon_registry_core_abstract_interfaces
         ');
 
         return lorem_globalise($tpl, null, '', true);
+    }
+
+        /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return Tempcode Preview
+     */
+    public function tpl_preview__result_table_filter_screen() : object
+    {
+        require_code('form_templates');
+
+        push_field_encapsulation(FIELD_ENCAPSULATION_RAW);
+
+        $filters_row_a = [
+            [
+                'PARAM' => 'placeholder_a',
+                'LABEL' => lorem_word(),
+                'FIELD' => do_lorem_template('FORM_SCREEN_INPUT_LINE', [
+                    '_GUID' => '02789c9af25cbc971e86bfcc0ad322d5',
+                    'PLACEHOLDER' => null,
+                    'MAXLENGTH' => strval(16),
+                    'TABINDEX' => strval(-1),
+                    'REQUIRED' => false,
+                    'NAME' => 'placeholder_a',
+                    'DEFAULT' => '',
+                    'TYPE' => 'text',
+                    'PATTERN' => null,
+                    'SIZE' => strval(16),
+                    'AUTOCOMPLETE' => false,
+                ]),
+            ],
+        ];
+        $filters_row_b = [
+            [
+                'PARAM' => 'placeholder_b',
+                'LABEL' => lorem_word(),
+                'FIELD' => do_lorem_template('FORM_SCREEN_INPUT_DATE', [
+                    '_GUID' => '5ace58dd0f540f70fb3bd440fb02a430',
+                    'REQUIRED' => false,
+                    'TABINDEX' => strval(-1),
+                    'NAME' => 'placeholder_b',
+                    'TYPE' => 'datetime',
+
+                    'YEAR' => '',
+                    'MONTH' => '',
+                    'DAY' => '',
+                    'HOUR' => '',
+                    'MINUTE' => '',
+
+                    'MIN_DATE_DAY' => '',
+                    'MIN_DATE_MONTH' => '',
+                    'MIN_DATE_YEAR' => '',
+                    'MAX_DATE_DAY' => '',
+                    'MAX_DATE_MONTH' => '',
+                    'MAX_DATE_YEAR' => '',
+
+                    'AUTOCOMPLETE' => false,
+                    'READ_ONLY' => strval(0)
+                ]),
+            ],
+        ];
+
+        pop_field_encapsulation();
+
+        return lorem_globalise(do_lorem_template('RESULTS_TABLE_FILTER_SCREEN', [
+            '_GUID' => 'bd66789c028148928b87d04e6dc51fc8',
+            'BLOCK_ID' => 'ledger',
+            'TITLE' => lorem_title(),
+            'RESULTS_TABLE' => placeholder_table(),
+            'FORM' => placeholder_button(),
+            'FILTERS_ROW_A' => $filters_row_a,
+            'FILTERS_ROW_B' => $filters_row_b,
+            'URL' => placeholder_url(),
+        ]), null, '', true);
     }
 }

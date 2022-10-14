@@ -70,7 +70,7 @@ class Module_admin_ecommerce_logs
             'trigger' => ['MANUAL_TRANSACTION', 'menu/rich_content/ecommerce/purchase'],
             'profit_loss' => ['PROFIT_LOSS', 'menu/adminzone/audit/ecommerce/profit_loss'],
             'cash_flow' => ['CASH_FLOW', 'menu/adminzone/audit/ecommerce/cash_flow'],
-            'view_manual_subscriptions' => ['MANUAL_SUBSCRIPTIONS', 'menu/adminzone/audit/ecommerce/subscriptions'],
+            'view_subscriptions' => ['VIEW_SUBSCRIPTIONS', 'menu/adminzone/audit/ecommerce/subscriptions'],
         ];
 
         if ($support_crosslinks) {
@@ -161,13 +161,13 @@ class Module_admin_ecommerce_logs
             $this->title = get_screen_title('MANUAL_TRANSACTION');
         }
 
-        if ($type == 'view_manual_subscriptions') {
+        if ($type == 'view_subscriptions') {
             breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('ECOMMERCE')]]);
-            $this->title = get_screen_title('MANUAL_SUBSCRIPTIONS');
+            $this->title = get_screen_title('VIEW_SUBSCRIPTIONS');
         }
 
         if ($type == 'cancel_subscription') {
-            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('ECOMMERCE')], ['_SELF:_SELF:view_manual_subscriptions', do_lang_tempcode('MANUAL_SUBSCRIPTIONS')]]);
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('ECOMMERCE')], ['_SELF:_SELF:view_subscriptions', do_lang_tempcode('VIEW_SUBSCRIPTIONS')]]);
             $this->title = get_screen_title('CANCEL_MANUAL_SUBSCRIPTION');
         }
 
@@ -213,6 +213,9 @@ class Module_admin_ecommerce_logs
         if ($type == '_export_transactions') {
             return $this->_export_transactions();
         }
+        if ($type == 'export_subscriptions') {
+            return $this->export_subscriptions();
+        }
         if ($type == 'tax_invoice') {
             return $this->tax_invoice();
         }
@@ -228,8 +231,8 @@ class Module_admin_ecommerce_logs
         if ($type == '_trigger') {
             return $this->_trigger();
         }
-        if ($type == 'view_manual_subscriptions') {
-            return $this->view_manual_subscriptions();
+        if ($type == 'view_subscriptions') {
+            return $this->view_subscriptions();
         }
         if ($type == 'cancel_subscription') {
             return $this->cancel_subscription();
@@ -255,7 +258,7 @@ class Module_admin_ecommerce_logs
                 ['menu/adminzone/audit/ecommerce/transactions', ['_SELF', ['type' => 'logs'], '_SELF'], do_lang('LOGS')],
                 ['menu/adminzone/audit/ecommerce/cash_flow', ['_SELF', ['type' => 'cash_flow'], '_SELF'], do_lang('CASH_FLOW')],
                 ['menu/adminzone/audit/ecommerce/profit_loss', ['_SELF', ['type' => 'profit_loss'], '_SELF'], do_lang('PROFIT_LOSS')],
-                ['menu/adminzone/audit/ecommerce/subscriptions', ['_SELF', ['type' => 'view_manual_subscriptions'], '_SELF'], do_lang('MANUAL_SUBSCRIPTIONS')],
+                ['menu/adminzone/audit/ecommerce/subscriptions', ['_SELF', ['type' => 'view_subscriptions'], '_SELF'], do_lang('VIEW_SUBSCRIPTIONS')],
                 addon_installed('shopping') ? ['menu/rich_content/ecommerce/orders', ['admin_shopping', ['type' => 'browse'], get_module_zone('admin_shopping')], do_lang('shopping:ORDERS')] : null,
                 ['menu/adminzone/audit/ecommerce/invoices', ['admin_invoices', ['type' => 'browse'], get_module_zone('admin_invoices')], do_lang('INVOICES')],
             ],
@@ -384,7 +387,7 @@ class Module_admin_ecommerce_logs
         }
 
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'f4e52dff9353fb767afbe0be9808591c', 'SECTION_HIDDEN' => true, 'TITLE' => do_lang_tempcode('ADVANCED')]));
-        $fields->attach(form_input_float(do_lang_tempcode('AMOUNT'), do_lang_tempcode('DESCRIPTION_MONEY_AMOUNT', $currency, ecommerce_get_currency_symbol()), 'amount', null, false));
+        $fields->attach(form_input_float(do_lang_tempcode('AMOUNT'), do_lang_tempcode('DESCRIPTION_MONEY_AMOUNT', $currency, ecommerce_get_currency_symbol()), 'amount', null, ($details['price'] === null)));
 
         $hidden->attach(form_input_hidden('type_code', $type_code));
         $hidden->attach(build_keep_post_fields());
@@ -448,8 +451,10 @@ class Module_admin_ecommerce_logs
         if ($amount === null) {
             if ($details['type'] == PRODUCT_INVOICE) {
                 $amount = $invoice_details[0]['i_amount'];
-            } else {
+            } elseif ($details['price'] !== null) {
                 $amount = $details['price'] + $shipping_cost;
+            } else {
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
             }
         }
 
@@ -805,6 +810,25 @@ class Module_admin_ecommerce_logs
     }
 
     /**
+     * Export a spreadsheet showing all subscriptions.
+     *
+     * @return Tempcode The result of execution
+     */
+    public function export_subscriptions() : object
+    {
+        // Filter parameters
+        $filter_manual = get_param_integer('filter_manual', 1);
+        $filter_username = get_param_string('filter_username', '', INPUT_FILTER_NONE);
+        $_filter_state = get_param_string('filter_state', '');
+        $filter_state = explode(',', $_filter_state);
+        $_filter_type_code = get_param_string('filter_type_code', '');
+        $filter_type_code = explode(',', $_filter_type_code);
+
+        require_code('tasks');
+        return call_user_func_array__long_task(do_lang('EXPORT_SUBSCRIPTIONS'), $this->title, 'export_subscriptions', [$filter_manual, $filter_username, $_filter_state, $_filter_type_code]);
+    }
+
+    /**
      * Show a tax invoice for a transaction.
      *
      * @return Tempcode The result of execution
@@ -1003,25 +1027,85 @@ class Module_admin_ecommerce_logs
     }
 
     /**
-     * Show manual subscriptions.
+     * Show subscriptions with the ability to filter or export them.
      *
      * @return Tempcode The result of execution
      */
-    public function view_manual_subscriptions() : object
+    public function view_subscriptions() : object
     {
         disable_php_memory_limit();
 
-        $where = ['s_payment_gateway' => 'manual'];
-        if (get_param_integer('all', 0) == 1) {
-            $where = [];
+        // Pagination
+        $start = get_param_integer('start', 0);
+        $max = get_param_integer('max', 50);
+
+        // Sorting
+        $sortables = ['s_type_code' => do_lang('PRODUCT'), 's_state' => do_lang('STATUS'), 's_time' => do_lang('DATE_TIME')];
+        $test = explode(' ', get_param_string('sort', 's_type_code ASC', INPUT_FILTER_GET_COMPLEX), 2);
+        if (count($test) == 1) {
+            $test[1] = 'DESC';
+        }
+        list($sortable, $sort_order) = $test;
+        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
+            log_hack_attack_and_exit('ORDERBY_HACK');
         }
 
-        $subscriptions = $GLOBALS['SITE_DB']->query_select('ecom_subscriptions', ['*'], $where, 'ORDER BY s_type_code,s_time', 10000/*reasonable limit*/);
-        if (empty($subscriptions)) {
-            inform_exit(do_lang_tempcode('NO_ENTRIES'));
+        // Filter parameters
+        $filter_manual = get_param_integer('filter_manual', 1);
+        $filter_username = get_param_string('filter_username', '', INPUT_FILTER_NONE);
+        $_filter_state = get_param_string('filter_state', '');
+        $filter_state = explode(',', $_filter_state);
+        $_filter_type_code = get_param_string('filter_type_code', '');
+        $filter_type_code = explode(',', $_filter_type_code);
+
+        // Build WHERE query
+        $where = [];
+        $end = '';
+        if ($filter_manual == 1) {
+            $where = ['s_payment_gateway' => 'manual'];
+        }
+        if ($filter_username != '') {
+            $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($filter_username);
+            if ($member_id !== null) {
+                $where['s_member_id'] = $member_id;
+            } else {
+                attach_message(do_lang_tempcode('_MEMBER_NO_EXIST', $filter_username));
+            }
+        }
+        if ($_filter_state != '') {
+            $end .= ' AND (';
+            foreach ($filter_state as $key => $state) {
+                if ($key > 0) {
+                    $end .= ' OR ';
+                }
+                $end .= db_string_equal_to('s_state', $state);
+            }
+            $end .= ')';
+        }
+        if ($_filter_type_code != '') {
+            $end .= ' AND (';
+            foreach ($filter_type_code as $key => $product) {
+                if ($key > 0) {
+                    $end .= ' OR ';
+                }
+                $end .= db_string_equal_to('s_type_code', $product);
+            }
+            $end .= ')';
         }
 
-        $data = [];
+        // Construct the table
+        $max_rows = $GLOBALS['SITE_DB']->query_select_value('ecom_subscriptions', 'COUNT(*)', $where, $end);
+
+        $end .= 'ORDER BY ' . $sortable . ' ' . $sort_order . ', s_time DESC'; // Use s_time as secondary ordering
+        $subscriptions = $GLOBALS['SITE_DB']->query_select('ecom_subscriptions', ['*'], $where, $end, $max, $start);
+
+        require_code('form_templates');
+        require_code('templates_results_table');
+
+        $map = [do_lang('IDENTIFIER'), do_lang('DATE_TIME'), do_lang('MEMBER'), do_lang('PRODUCT'), do_lang('EXPIRY_DATE'), do_lang('ACTIONS')];
+        $header_row = results_header_row($map, $sortables, 'sort', $sortable . ' ' . $sort_order);
+
+        $result = new Tempcode();
         foreach ($subscriptions as $subs) {
             list($details) = find_product_details($subs['s_type_code']);
             if ($details === null) {
@@ -1034,38 +1118,114 @@ class Module_admin_ecommerce_logs
             $time_period_units = ['y' => 'year', 'm' => 'month', 'w' => 'week', 'd' => 'day'];
             $expiry_time = strtotime('+' . strval($s_length) . ' ' . $time_period_units[$s_length_units], $subs['s_time']);
             $expiry_date = get_timezoned_date_time($expiry_time, false);
-            $member_link = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($subs['s_member_id'], '', false);
-            if ($subs['s_state'] == 'cancelled') {
+            if (($subs['s_state'] == 'cancelled') || ($subs['s_payment_gateway'] == 'manual')) {
                 $cancel_url = new Tempcode();
             } else {
-                $cancel_url = build_url(['page' => '_SELF', 'type' => 'cancel_subscription', 'subscription_id' => $subs['id']], '_SELF');
+                $cancel_url = hyperlink(build_url(['page' => '_SELF', 'type' => 'cancel_subscription', 'subscription_id' => $subs['id']], '_SELF'), do_lang('SUBSCRIPTION_CANCEL'), false, true);
             }
 
-            $data[$item_name][] = [$member_link, $expiry_date, $cancel_url, $subs['id']];
+            $map = [
+                strval($subs['id']),
+                get_timezoned_date_time($subs['s_time'], false),
+                results_table_member_cell($subs['s_member_id']),
+                $item_name,
+                $expiry_date,
+                $cancel_url
+            ];
+            $result->attach(results_entry($map, true));
         }
 
-        $result = new Tempcode();
-        foreach ($data as $key => $value) {
-            $continues_for_same_product = true;
-            foreach ($value as $val) {
-                if ($continues_for_same_product) {
-                    $result->attach(do_template('ECOM_VIEW_MANUAL_SUBSCRIPTIONS_LINE', [
-                        '_GUID' => '979a0e7ca87437bc7ee1035afd16e07c',
-                        'ID' => strval($val[3]),
-                        'SUBSCRIPTION' => $key,
-                        'MEMBER' => $val[0],
-                        'EXPIRY' => $val[1],
-                        'ROWSPAN' => strval(count($data[$key])),
-                        'CANCEL_URL' => $val[2],
-                    ]));
-                    $continues_for_same_product = false;
-                } else {
-                    $result->attach(do_template('ECOM_VIEW_MANUAL_SUBSCRIPTIONS_LINE', ['_GUID' => '4abea40b654471f0fec0961a1e8716e4', 'ID' => '', 'SUBSCRIPTION' => '', 'MEMBER' => $val[0], 'EXPIRY' => $val[1], 'ROWSPAN' => '', 'CANCEL_URL' => $val[2]]));
+        $results_table = results_table(do_lang_tempcode('VIEW_SUBSCRIPTIONS'), $start, 'start', $max, 'max', $max_rows, $header_row, $result, $sortables, $sortable, $sort_order, 'sort');
+
+        // Export button
+        $form = new Tempcode();
+        $export_url = build_url(['page' => '_SELF', 'type' => 'export_subscriptions'], get_module_zone('admin_ecommerce_logs'), [], true);
+        $form->attach(do_template('BUTTON_SCREEN', ['IMMEDIATE' => false, 'URL' => $export_url, 'TITLE' => do_lang_tempcode('EXPORT'), 'IMG' => 'admin/export_spreadsheet', 'HIDDEN' => new Tempcode()]));
+
+        // Start building fields for the filter box
+        push_field_encapsulation(FIELD_ENCAPSULATION_RAW);
+
+        // Subscription state
+        $s_states = new Tempcode();
+        $s_states->attach(form_input_list_entry('active', (($_filter_state != '') && in_array('active', $filter_state)), do_lang_tempcode('FILTER_STATE_ACTIVE')));
+        $s_states->attach(form_input_list_entry('cancelled', (($_filter_state != '') && in_array('cancelled', $filter_state)), do_lang_tempcode('FILTER_STATE_CANCELLED')));
+        $s_states->attach(form_input_list_entry('new', (($_filter_state != '') && in_array('new', $filter_state)), do_lang_tempcode('FILTER_STATE_NEW')));
+        $s_states->attach(form_input_list_entry('pending', (($_filter_state != '') && in_array('pending', $filter_state)), do_lang_tempcode('FILTER_STATE_PENDING')));
+
+        // Product types
+        $s_type_codes = new Tempcode();
+        $_hooks = find_all_hooks('systems', 'ecommerce');
+        $__products = [];
+        $hook_products_cache = [];
+        foreach (array_keys($_hooks) as $hook) {
+            require_code('hooks/systems/ecommerce/' . filter_naughty_harsh($hook));
+            $product_object = object_factory('Hook_ecommerce_' . filter_naughty_harsh($hook), true);
+            if ($product_object === null) {
+                continue;
+            }
+
+            if (isset($hook_products_cache[$hook])) {
+                $_products = $hook_products_cache[$hook];
+            } else {
+                $_products = $product_object->get_products();
+                $hook_products_cache[$hook] = $_products;
+            }
+
+            $type_code = null;
+            foreach ($_products as $type_code => $details) {
+                if (is_integer($type_code)) {
+                    $type_code = strval($type_code);
                 }
+
+                $__products[] = ['value' => $type_code, 'caption' => $details['item_name']];
             }
         }
+        sort_maps_by($__products, 'caption');
+        foreach ($__products as $product) {
+            $s_type_codes->attach(form_input_list_entry($product['value'], (($_filter_type_code != '') && in_array($product['value'], $filter_type_code)), $product['caption']));
+        }
 
-        return do_template('ECOM_VIEW_MANUAL_SUBSCRIPTIONS_SCREEN', ['_GUID' => '35a782b45d391f7766303b05c9422305', 'TITLE' => $this->title, 'CONTENT' => $result]);
+        $filters_row_a = [
+            [
+                'PARAM' => 'filter_manual',
+                'LABEL' => do_lang_tempcode('MANUAL_SUBSCRIPTIONS'),
+                'FIELD' => form_input_tick(do_lang_tempcode('MANUAL_SUBSCRIPTIONS'), new Tempcode(), 'filter_manual', ($filter_manual == 1)),
+            ],
+            [
+                'PARAM' => 'filter_state',
+                'LABEL' => do_lang_tempcode('STATUS'),
+                'FIELD' => form_input_multi_list(do_lang_tempcode('STATUS'), new Tempcode(), 'filter_state', $s_states),
+            ],
+            [
+                'PARAM' => 'filter_type_code',
+                'LABEL' => do_lang_tempcode('PRODUCT'),
+                'FIELD' => form_input_multi_list(do_lang_tempcode('PRODUCT'), new Tempcode(), 'filter_type_code', $s_type_codes),
+            ],
+        ];
+        $filters_row_b = [
+            [
+                'PARAM' => 'filter_username',
+                'LABEL' => do_lang_tempcode('USERNAME'),
+                'FIELD' => form_input_username(do_lang_tempcode('USERNAME'), new Tempcode(), 'filter_username', $filter_username, false),
+            ],
+        ];
+
+        $url = build_url(['page' => 'admin_ecommerce_logs', 'type' => 'view_subscriptions'], get_module_zone('admin_ecommerce_logs'));
+
+        $tpl = do_template('RESULTS_TABLE_FILTER_SCREEN', [
+            'BLOCK_ID' => 'subscriptions',
+            'TITLE' => $this->title,
+            'RESULTS_TABLE' => $results_table,
+            'FORM' => $form,
+            'FILTERS_ROW_A' => $filters_row_a,
+            'FILTERS_ROW_B' => $filters_row_b,
+            'URL' => $url,
+        ]);
+
+        pop_field_encapsulation();
+
+        require_code('templates_internalise_screen');
+        return internalise_own_screen($tpl);
     }
 
     /**

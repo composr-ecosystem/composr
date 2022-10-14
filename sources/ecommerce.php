@@ -1639,11 +1639,13 @@ function handle_confirmed_transaction(?string $trans_expecting_id, ?string $txn_
     }
 
     // Check price and currency
+    // TODO: Bug: Does not account for discounts from points, causing paid_amount_matches to fail
     if (($status == 'Completed') && ($check_amounts)) {
         if (!paid_amount_matches($amount, $tax, $expected_amount, $expected_tax)) {
             if ($silent_fail) {
                 return null;
             }
+            // TODO: Bug: Type errors (passing in numbers; $tax and $expected_tax could be null)
             fatal_ipn_exit(do_lang('PURCHASE_WRONG_PRICE', $item_name, $amount + $tax, $expected_amount + $expected_tax));
         }
 
