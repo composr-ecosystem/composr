@@ -306,7 +306,7 @@ class Hook_payment_gateway_paypal
             }
         }
         $txn_id = post_param_string('txn_id', ''); // May be blank for subscription, will be overwritten for them
-        $parent_txn_id = post_param_string('parent_txn_id', '-1');
+        $parent_txn_id = post_param_string('parent_txn_id', '');
         $_amount = post_param_string('mc_gross', ''); // May be blank for subscription
         $amount = ($_amount == '') ? null : floatval($_amount);
         $_tax = post_param_string('tax', '');

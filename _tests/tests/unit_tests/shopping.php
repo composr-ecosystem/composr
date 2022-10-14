@@ -174,8 +174,8 @@ class shopping_test_set extends cms_test_case
         $amount = 65.00 + 2.40 /* shipping */;
         $tax = 5.00;
         $currency = get_option('currency');
-        $txn_id = '0';
-        $parent_txn_id = '0';
+        $txn_id = strval(mt_rand(1, 1000000));
+        $parent_txn_id = '';
         $period = '';
         $payment_gateway = 'manual';
         $is_subscription = false;
