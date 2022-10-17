@@ -116,8 +116,11 @@ Alternatively you can reference it in your [tt]robots.txt[/tt] file, as shown in
 [title="2"]URL Monikers[/title]
 
 The Composr URL moniker feature will put keywords into the URLs instead of ID numbers, which is great for SEO but also makes the URLs more comprehensible to humans.
+The keywords are found by processing some source text, typically the content title.
 
 The URL monikers option can be enabled/disabled via the "URL monikers enabled" option.
+
+Note that URL monikers will be given a leading hyphen if the source text is fully numeric. This is because URL monikers cannot be numbers as they would look like raw content IDs.
 
 One small disadvantage of URL Monikers, is it makes it a bit harder to find out ID numbers, as you can't just look in URLs. However, you can still find them on edit links, or if you look in the HTML source you will often see:
 [code="HTML"]
