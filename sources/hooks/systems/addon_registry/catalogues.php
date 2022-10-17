@@ -731,7 +731,7 @@ class Hook_addon_registry_catalogues
         require_code('catalogues2');
         require_code('fields');
 
-        $catalogues = $GLOBALS['SITE_DB']->query_select('catalogues c' . $GLOBALS['SITE_DB']->singular_join('catalogue_fields', 'f', 'f.c_name=c.c_name', 'cf_order', 'MIN', 'JOIN'), ['c.c_name', 'f.cf_order', 'f.cf_type'], [], 'ORDER BY id');
+        $catalogues = $GLOBALS['SITE_DB']->query_select('catalogues c' . $GLOBALS['SITE_DB']->singular_join('catalogue_fields', 'f', 'f.c_name=c.c_name', 'cf_order', 'MIN', 'JOIN'), ['c.c_name', 'f.cf_order', 'f.cf_type', 'f.id'], [], 'ORDER BY id');
         foreach ($catalogues as $catalogue) {
             if (($catalogue['cf_type'] == 'short_text') || ($catalogue['cf_type'] == 'short_trans')) { // Only if first field is 'short'
                 $is_tree = $GLOBALS['SITE_DB']->query_select_value('catalogues', 'c_is_tree', ['c_name' => $catalogue['c_name']]);

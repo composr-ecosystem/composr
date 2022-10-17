@@ -171,9 +171,9 @@ function cns_edit_topic(?int $topic_id, ?string $description = null, ?string $em
  * @param  ?AUTO_LINK $post_target_topic_id Where topic to move posts in this topic to (null: delete the posts)
  * @param  boolean $check_perms Whether to check permissions
  * @param  boolean $reverse_point_transaction Whether to reverse the point transactions associated with the posts in this topic (ignored if $post_target_topic_id is specified)
- * @return AUTO_LINK The forum ID the topic is in (could be found without calling the function, but as we've looked it up, it is worth keeping)
+ * @return ?AUTO_LINK The forum ID the topic is in (could be found without calling the function, but as we've looked it up, it is worth keeping) (null: private topic)
  */
-function cns_delete_topic(int $topic_id, string $reason = '', ?int $post_target_topic_id = null, bool $check_perms = true, bool $reverse_point_transaction = false) : int
+function cns_delete_topic(int $topic_id, string $reason = '', ?int $post_target_topic_id = null, bool $check_perms = true, bool $reverse_point_transaction = false) : ?int
 {
     // Info about source
     $info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['*'], ['id' => $topic_id], '', 1);

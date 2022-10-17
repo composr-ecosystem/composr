@@ -196,6 +196,6 @@ class Hook_addon_registry_custom_comcode
     {
         require_code('custom_comcode');
 
-        add_custom_comcode_tag('lorem', lorem_phrase(), lorem_paragraph(), lorem_paragraph(), '[lorem][/lorem]', '', 1, 1, 1, 1, true);
+        add_custom_comcode_tag('lorem', lorem_phrase(), lorem_sentence(), lorem_paragraph(), '[lorem][/lorem]', '', 1, 1, 1, 1, true);
     }
 }

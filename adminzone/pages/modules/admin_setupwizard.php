@@ -430,7 +430,7 @@ class Module_admin_setupwizard
             'TEXT' => $text,
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => $submit_name,
-            'HIDDEN' => '',
+            'HIDDEN' => $hidden,
         ]);
         return do_template('SETUPWIZARD_SCREEN', [
             '_GUID' => '6bdae2f0aa24b5dbe81fd0fc72e87feb',
@@ -643,7 +643,7 @@ class Module_admin_setupwizard
                 if ((substr($addon_description, -1) != '.') && ($addon_description != '')) {
                     $addon_description .= '.';
                 }
-                $_addon_description = protect_from_escaping(generate_truncation(static_evaluate_tempcode($addon_description), 'left', 1000, true));
+                $_addon_description = protect_from_escaping(generate_truncation($addon_description, 'left', 1000, true));
 
                 $addon_icon = find_addon_icon($addon_name, false, array_key_exists('tar_path', $row) ? $row['tar_path'] : null);
                 $addon_name_pretty = protect_from_escaping(do_template('ADDON_NAME', ['_GUID' => 'c036db4d27417f79e1f395d1edb44020', 'IMAGE_URL' => $addon_icon, 'NAME' => $row['name']]));
@@ -1335,7 +1335,7 @@ class Module_admin_setupwizard
                     $_hook_bits = extract_module_functions($path, ['set_fields']);
                     if (is_array($_hook_bits[0])) {
                         call_user_func_array($_hook_bits[0][0], $_hook_bits[0][1]);
-                    } else {
+                    } elseif ($_hook_bits[0] !== null) {
                         cms_eval($_hook_bits[0], $path);
                     }
                 }

@@ -13,7 +13,7 @@
  * @package    composr_release_build
  */
 
-// This inserts GUIDs throughout, and records them all to guids.dat (which the template editor uses).
+// This inserts GUIDs throughout, and records them all to guids.bin (which the template editor uses).
 
 // This is useful when wanting to generate quick GUIDs by hand: https://www.browserling.com/tools/random-string
 
