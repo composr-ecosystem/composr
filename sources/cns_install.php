@@ -854,7 +854,7 @@ function install_cns($upgrade_from = null)
         // Make guest
         cns_make_member(do_lang('GUEST'), '', '', null, null, null, null, array(), null, $guest_group, 1, time(), time(), '', null, '', 0, 1, 1, '', '', '', 1, 0, '', 1, 1, null, '', false);
         // Make admin user
-        cns_make_member(post_param_string('admin_username', 'admin'), post_param_string('cns_admin_password', 'admin'), '', null, null, null, null, array(), null, $administrator_group, 1, time(), time(), '', 'themes/default/images/cns_default_avatars/default_set/cool_flare.png', '', 0, 0, 1, '', '', '', 1, 1, '', 1, 1, null, '', false);
+        cns_make_member(post_param_string('admin_username', 'admin'), post_param_string('cns_admin_password', 'admin'), '', null, null, null, null, array(), null, $administrator_group, 1, time(), time(), '', 'themes/default/images/cns_default_avatars/default.png', '', 0, 0, 1, '', '', '', 1, 1, '', 1, 1, null, '', false);
         // Make test user
         cns_make_member('test', post_param_string('cns_admin_password', 'admin'), '', null, null, null, null, array(), null, $member_group_0, 1, time(), time(), '', null, '', 0, 0, 1, '', '', '', 1, 0, '', 1, 1, null, '', false);
 
