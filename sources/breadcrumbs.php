@@ -60,7 +60,6 @@ function load_breadcrumb_substitutions($segments)
     $segments_new = array();
     $done_one = false;
     $final = false;
-
     foreach ($segments as $i => $segment) { // Loop by active breadcrumb segments
         $include_self = true;
 
@@ -102,9 +101,11 @@ function load_breadcrumb_substitutions($segments)
                             $done_one = true;
                         }
 
-                        if ($segment[0] === null) { // New label for active page specified here?
-                            if ($substitution_label !== null) {
+                        if ($substitution_label !== null) {
+                            if ($segment[0] === null) { // New label for active page specified here?
                                 $GLOBALS['BREADCRUMB_SET_SELF'] = $substitution_label;
+                            } elseif (!isset($segments[$i + 1])) { // New label for last segment specified here?
+                                $segment[1] = $substitution_label;
                             }
                         }
 

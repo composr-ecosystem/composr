@@ -202,6 +202,7 @@ class Hook_addon_registry_core_addon_management
                 'TYPE' => lorem_phrase(),
                 'PASSTHROUGH' => lorem_phrase(),
                 'UPDATED' => false,
+                'BUNDLED' => true,
             )));
         }
 

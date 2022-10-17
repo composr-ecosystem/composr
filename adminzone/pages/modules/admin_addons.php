@@ -200,6 +200,19 @@ class Module_admin_addons
             $this->title = get_screen_title('UNINSTALL_ADDON');
         }
 
+        if ($type == 'addon_delete') {
+            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('ADDONS'))));
+
+            $this->title = get_screen_title('DELETE');
+        }
+
+        if ($type == '_addon_delete') {
+            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('ADDONS'))));
+            breadcrumb_set_self(do_lang_tempcode('DONE'));
+
+            $this->title = get_screen_title('DELETE');
+        }
+
         if ($type == 'multi_action') {
             breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('ADDONS'))));
 
@@ -301,6 +314,12 @@ class Module_admin_addons
         if ($type == '_addon_uninstall') {
             return $this->_addon_uninstall();
         }
+        if ($type == 'addon_delete') {
+            return $this->addon_delete();
+        }
+        if ($type == '_addon_delete') {
+            return $this->_addon_delete();
+        }
         if ($type == 'multi_action') {
             return $this->multi_action();
         }
@@ -378,7 +397,7 @@ class Module_admin_addons
                     $row = read_addon_info($name);
                 }
 
-                $actions = do_template('COLUMNED_TABLE_ACTION_DELETE_ENTRY', array('_GUID' => '5a65c9aa87291ecfe46f75e9b2949246', 'GET' => true, 'NAME' => $name, 'URL' => build_url(array('page' => '_SELF', 'type' => 'addon_uninstall', 'name' => $name), '_SELF')));
+                $actions = do_template('COLUMNED_TABLE_ACTION_DELETE_ENTRY', array('_GUID' => '5a65c9aa87291ecfe46f75e9b2949246', 'GET' => true, 'NAME' => $name, 'VERB' => do_lang_tempcode('UNINSTALL'), 'URL' => build_url(array('page' => '_SELF', 'type' => 'addon_uninstall', 'name' => $name), '_SELF')));
                 $updated = array_key_exists($name, $updated_addons_arr);
                 $status = do_lang_tempcode($updated ? 'STATUS_OUTOFDATE' : 'STATUS_INSTALLED');
                 $colour = $updated ? 'red' : 'green';
@@ -406,6 +425,7 @@ class Module_admin_addons
                     'ACTIONS' => $actions,
                     'TYPE' => 'uninstall',
                     'PASSTHROUGH' => $name,
+                    'BUNDLED' => in_array('sources/hooks/systems/addon_registry/' . $name . '.php', $file_list),
                 )));
 
                 if ($do_caching) {
@@ -432,10 +452,30 @@ class Module_admin_addons
                 }
 
                 if ($addon_tpl === null) {
-                    $actions = do_template('COLUMNED_TABLE_ACTION_INSTALL_ENTRY', array('_GUID' => 'e6e2bdac62c0d3afcd5251b3d525a1c9', 'GET' => true, 'NAME' => $addon['name'], 'HIDDEN' => '', 'URL' => build_url(array('page' => '_SELF', 'type' => 'addon_install', 'file' => $filename), '_SELF')));
+                    $file_list = $addon['files'];
+                    $bundled = in_array('sources/hooks/systems/addon_registry/' . $addon['name'] . '.php', $file_list);
+
+                    $actions = new Tempcode();
+                    $actions->attach(do_template('COLUMNED_TABLE_ACTION_INSTALL_ENTRY', array(
+                        '_GUID' => 'e6e2bdac62c0d3afcd5251b3d525a1c9',
+                        'GET' => true,
+                        'NAME' => $addon['name'],
+                        'HIDDEN' => '',
+                        'URL' => build_url(array('page' => '_SELF', 'type' => 'addon_install', 'file' => $filename), '_SELF'),
+                    )));
+                    if (!$bundled) {
+                        $actions->attach(do_template('COLUMNED_TABLE_ACTION_DELETE_ENTRY', array(
+                            '_GUID' => 'f6e2bdac62c0d3afcd5251b3d525a1c9',
+                            'GET' => true,
+                            'NAME' => $addon['name'],
+                            'VERB' => do_lang_tempcode('DELETE'),
+                            'HIDDEN' => '',
+                            'URL' => build_url(array('page' => '_SELF', 'type' => 'addon_delete', 'file' => $filename), '_SELF'),
+                        )));
+                    }
+
                     $status = do_lang_tempcode('STATUS_NOT_INSTALLED');
                     $description = $addon['description'];
-                    $file_list = $addon['files'];
                     if ($addon['version'] == '(version-synched)') {
                         $addon['version'] = float_to_raw_string(cms_version_number());
                     }
@@ -461,6 +501,7 @@ class Module_admin_addons
                         'ACTIONS' => $actions,
                         'TYPE' => 'install',
                         'PASSTHROUGH' => $filename,
+                        'BUNDLED' => $bundled,
                     )));
 
                     if ($do_caching) {
@@ -849,6 +890,47 @@ class Module_admin_addons
         //persistent_cache_delete('OPTIONS');  Done by set_option
         erase_persistent_cache();
         erase_cached_templates(false, null, TEMPLATE_DECACHE_WITH_ADDON);
+
+        // Show it worked / Refresh
+        $url = build_url(array('page' => '_SELF', 'type' => 'browse'), '_SELF');
+        return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
+    }
+
+    /**
+     * The UI to delete an addon TAR file.
+     *
+     * @return Tempcode The UI
+     */
+    public function addon_delete()
+    {
+        appengine_live_guard();
+
+        $file = get_param_string('file');
+
+        $url = build_url(array('page' => '_SELF', 'type' => '_addon_delete'), '_SELF');
+
+        $preview = protect_from_escaping(do_lang('DELETE') . ': ' . escape_html($file));
+
+        $hidden = form_input_hidden('file', $file);
+
+        return do_template('CONFIRM_SCREEN', array('_GUID' => 'fe96098c1f09d091fc10785134803135', 'TITLE' => $this->title, 'URL' => $url, 'PREVIEW' => $preview, 'HIDDEN' => $hidden, 'FIELDS' => ''));
+    }
+
+    /**
+     * The UI to delete an addon TAR file.
+     *
+     * @return Tempcode The UI
+     */
+    public function _addon_delete()
+    {
+        appengine_live_guard();
+
+        require_code('abstract_file_manager');
+        force_have_afm_details();
+
+        $file = filter_naughty(post_param_string('file'));
+
+        unlink(get_custom_file_base() . '/imports/addons/' . $file);
 
         // Show it worked / Refresh
         $url = build_url(array('page' => '_SELF', 'type' => 'browse'), '_SELF');
@@ -1343,7 +1425,7 @@ class Module_admin_addons
                     $hidden = new Tempcode();
                     $hidden->attach(form_input_hidden('zone', $zone));
                     $hidden->attach(form_input_hidden('module', $module));
-                    $actions->attach(do_template('COLUMNED_TABLE_ACTION_DELETE_ENTRY', array('_GUID' => '331afd26f5e62a6a4cdc4e2c520a4114', 'HIDDEN' => $hidden, 'NAME' => $module, 'URL' => build_url(array('page' => '_SELF', 'type' => 'uninstall'), '_SELF'))));
+                    $actions->attach(do_template('COLUMNED_TABLE_ACTION_DELETE_ENTRY', array('_GUID' => '331afd26f5e62a6a4cdc4e2c520a4114', 'HIDDEN' => $hidden, 'NAME' => $module, 'VERB' => do_lang_tempcode('UNINSTALL'), 'URL' => build_url(array('page' => '_SELF', 'type' => 'uninstall'), '_SELF'))));
                 }
                 if ($row[$prefix . '_version'] < $version) {
                     $status = do_lang_tempcode('STATUS_TO_UPGRADE');

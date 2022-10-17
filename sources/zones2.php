@@ -598,6 +598,10 @@ function get_block_parameters($block, $include_standard_parameters = false)
     if (is_null($info)) {
         $params = array();
 
+        if (!is_file($block_path)) {
+            warn_exit(do_lang_tempcode('MISSING_BLOCK_FILE', escape_html($block)));
+        }
+
         $contents = file_get_contents($block_path);
         $matches = array();
         $num_matches = preg_match_all('#\$map\[\'(\w+)\'\]#', $contents, $matches);

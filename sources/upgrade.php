@@ -413,6 +413,21 @@ function upgrade_script()
                         }
                     }
 
+                    $files_previous_path = 'data/files_previous.bin';
+                    $file_data = tar_get_file($upgrade_resource, $files_previous_path);
+                    if ($file_data !== null) {
+                        $files_previous = unserialize($file_data['data']);
+                    } else {
+                        $files_previous = array();
+                    }
+                    $files_current_path = 'data/files.bin';
+                    $file_data = tar_get_file($upgrade_resource, $files_current_path);
+                    if ($file_data !== null) {
+                        $files_current = unserialize($file_data['data']);
+                    } else {
+                        $files_current = array();
+                    }
+
                     // Copy it into our archived addon so that addon is kept up-to-date
                     foreach ($files_for_tar_updating as $found => $files) {
                         $old_addon_file = tar_open(get_file_base() . '/imports/addons/' . $found . '.tar', 'rb');
@@ -421,9 +436,20 @@ function upgrade_script()
                             // New version of TAR file
                             $new_addon_file = tar_open(get_file_base() . '/imports/addons/' . $found . '.new.tar', 'wb');
 
-                            // Add files from old TAR file, except ones we are replacing
+                            // Add files from old TAR file, except ones we are replacing or ones that should no longer exist
                             foreach ($directory2 as $d) {
+                                if (substr($d['path'], -1) == '/') {
+                                    // Ignore folders
+                                    continue;
+                                }
+
                                 if (array_key_exists($d['path'], $files)) {
+                                    // We are replacing this
+                                    continue;
+                                }
+
+                                if ((array_key_exists($d['path'], $files_previous)) && (!array_key_exists($d['path'], $files_current))) {
+                                    // Has been deleted
                                     continue;
                                 }
 
@@ -522,9 +548,11 @@ function upgrade_script()
                     $_version_database_cns = get_value('cns_version');
                     if ($_version_database_cns === null) { // LEGACY
                         $_version_database_cns = get_value('ocf_version');
+                        set_value('cns_version', $_version_database_cns);
                     }
                     if ($_version_database_cns === null) {
                         $_version_database_cns = get_value('version');
+                        set_value('cns_version', $_version_database_cns);
                     }
                     if ($_version_database_cns === null) {
                         $version_database_cns = $version_files;
@@ -1516,7 +1544,12 @@ function check_alien($addon_files, $old_files, $files, $dir, $rela = '', $raw = 
         }
         sort($dir_files);
         foreach ($dir_files as $file) {
-            if (should_ignore_file($rela . $file, IGNORE_ACCESS_CONTROLLERS | IGNORE_USER_CUSTOMISE | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_ZONES |  IGNORE_NONBUNDLED_SCATTERED | IGNORE_BUNDLED_UNSHIPPED_VOLATILE | IGNORE_REVISION_FILES)) {
+            if (should_ignore_file($rela . $file, IGNORE_USER_CUSTOMISE | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_ZONES |  IGNORE_NONBUNDLED_SCATTERED | IGNORE_BUNDLED_UNSHIPPED_VOLATILE | IGNORE_REVISION_FILES)) {
+                continue;
+            }
+
+            if (($file == '.htaccess') && ((!array_key_exists($rela . $file, $old_files)) || (array_key_exists($rela . $file, $files)))) {
+                // We'll let any .htaccess remain if they did not exist before or are meant to exist now (if they existed before but now, it implies we do not want that file now)
                 continue;
             }
 
