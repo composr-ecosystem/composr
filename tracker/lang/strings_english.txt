@@ -1777,7 +1777,7 @@ $s_dropzone_not_supported = 'Dropzone.js does not support older browsers!';
 // Composr - new strings
 $s_cms_my_view_welcome_message = 'Welcome to the feature tracker, the tool used to plan new versions of %1$s (amongst other things). All %2$s planned features are organised on this feature tracker. Please be aware that %3$s maintains no formal roadmap for %1$s (for good reasons that we explain in our FAQ &ndash; in summary, it wouldn\'t work) so no conclusions about &ldquo;what is around the corner&rdquo; should be drawn from the issues here (unless you can sponsor/contribute things). It does however provide a real foundation for transparency and engagement. For more information, see the appropriate part of the <a href="%4$s">providing feedback tutorial</a>.';
 $s_cms_not_logged_in_bad = '<strong>You are not logged in</strong>. This means you will not get any e-mail notifications, and if you reply we will not know for sure you are the original poster of the issue.';
-$s_cms_bug_report_guidance = 'Bug reporting guidance is in the <a href="%1$s">providing feedback tutorial</a>.';
+$s_cms_bug_report_guidance = 'This is the public tracker for features/bugs, not a private support system and not a discussion forum. Bug reporting guidance is in the <a href="%1$s">providing feedback tutorial</a>.';
 $s_cms_sourcecode_link = 'GitLab';
 $s_cms_home_link = 'compo.sr';
 $s_cms_login_instruct = 'Login using your regular %1$s username and password.';
