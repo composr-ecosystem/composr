@@ -103,10 +103,12 @@ class Module_admin_quiz
 
         if ($type == 'quiz_results') {
             breadcrumb_set_self(do_lang_tempcode('CHOOSE'));
+            breadcrumb_set_parents([['_SELF:_SELF', do_lang_tempcode('MANAGE_QUIZZES')]]);
         }
 
         if ($type == '_quiz_results') {
             breadcrumb_set_parents([['_SELF:_SELF', do_lang_tempcode('MANAGE_QUIZZES')]]);
+            breadcrumb_set_parents([['_SELF:_SELF', do_lang_tempcode('MANAGE_QUIZZES')], ['_SELF:_SELF:quiz_results', do_lang_tempcode('CHOOSE')]]);
         }
 
         if ($type == '__quiz_results') {
@@ -125,6 +127,7 @@ class Module_admin_quiz
 
         if ($type == 'export') {
             $this->title = get_screen_title('EXPORT_QUIZ');
+            breadcrumb_set_parents([['_SELF:_SELF', do_lang_tempcode('MANAGE_QUIZZES')]]);
         }
 
         if ($type == 'find_winner' || $type == '_find_winner') {
@@ -213,10 +216,22 @@ class Module_admin_quiz
      */
     public function create_selection_list_entries() : object
     {
-        $_m = $GLOBALS['SITE_DB']->query_select('quizzes', ['id', 'q_name', 'q_add_date'], [], 'ORDER BY q_add_date DESC', intval(get_option('general_safety_listing_limit')));
+        $where = [];
+        $type = get_param_string('q_type', null);
+        if ($type !== null) {
+            $where['q_type'] = $type;
+        }
+
+        $_m = $GLOBALS['SITE_DB']->query_select('quizzes', ['id', 'q_name', 'q_type', 'q_validated', 'q_add_date'], $where, 'ORDER BY q_validated DESC,q_add_date DESC', intval(get_option('general_safety_listing_limit')));
         $entries = new Tempcode();
         foreach ($_m as $m) {
-            $entries->attach(form_input_list_entry(strval($m['id']), false, get_translated_text($m['q_name'])));
+            $num_results = $GLOBALS['SITE_DB']->query_select_value('quiz_entries', 'COUNT(*)', ['q_quiz' => $m['id']]);
+            $quiz_label = get_translated_text($m['q_name']) . ' (' . do_lang($m['q_type']) . ', ' . do_lang('COUNT_RESULTS') . ': ' . integer_format($num_results) . ')';
+
+            $entries->attach(form_input_list_entry(strval($m['id']), false, $quiz_label));
+        }
+        if ($entries->is_empty()) {
+            inform_exit(do_lang_tempcode('NO_ENTRIES'));
         }
 
         return $entries;
@@ -229,14 +244,13 @@ class Module_admin_quiz
      */
     public function export_quiz() : object
     {
-        $fields = new Tempcode();
-
-        $quiz_list = $this->create_selection_list_entries();
-        if ($quiz_list->is_empty()) {
+        $entries = $this->create_selection_list_entries();
+        if ($entries->is_empty()) {
             warn_exit(do_lang_tempcode('NO_ENTRIES', 'quiz'));
         }
 
-        $fields->attach(form_input_list(do_lang_tempcode('QUIZ'), do_lang_tempcode('DESCRIPTION_QUIZZES_EXPORT'), 'quiz_id', $quiz_list));
+        $fields = new Tempcode();
+        $fields->attach(form_input_huge_list(do_lang_tempcode('QUIZ'), do_lang_tempcode('DESCRIPTION_QUIZZES_EXPORT'), 'quiz_id', $entries, null, true));
 
         $post_url = build_url(['page' => '_SELF', 'type' => '_export'], '_SELF');
         $submit_name = do_lang_tempcode('EXPORT_QUIZ');
@@ -274,17 +288,13 @@ class Module_admin_quiz
      */
     public function find_winner() : object
     {
-        $_m = $GLOBALS['SITE_DB']->query_select('quizzes', ['id', 'q_name', 'q_validated', 'q_add_date'], ['q_type' => 'COMPETITION'], 'ORDER BY q_validated DESC,q_add_date DESC', intval(get_option('general_safety_listing_limit')));
-        $entries = new Tempcode();
-        foreach ($_m as $m) {
-            $entries->attach(form_input_list_entry(strval($m['id']), false, get_translated_text($m['q_name'])));
-        }
+        $entries = $this->create_selection_list_entries();
         if ($entries->is_empty()) {
-            inform_exit(do_lang_tempcode('NO_ENTRIES'));
+            warn_exit(do_lang_tempcode('NO_ENTRIES', 'quiz'));
         }
 
         $fields = new Tempcode();
-        $fields->attach(form_input_list(do_lang_tempcode('QUIZ'), '', 'id', $entries, null, true));
+        $fields->attach(form_input_huge_list(do_lang_tempcode('QUIZ'), '', 'id', $entries, null, true));
 
         $post_url = build_url(['page' => '_SELF', 'type' => '_find_winner'], '_SELF');
         $submit_name = do_lang_tempcode('PROCEED');
@@ -415,23 +425,13 @@ class Module_admin_quiz
      */
     public function quiz_results() : object
     {
-        $where = [];
-        $type = get_param_string('q_type', null);
-        if ($type !== null) {
-            $where['q_type'] = $type;
-        }
-
-        $_m = $GLOBALS['SITE_DB']->query_select('quizzes', ['id', 'q_name', 'q_type', 'q_validated', 'q_add_date'], $where, 'ORDER BY q_validated DESC,q_add_date DESC', intval(get_option('general_safety_listing_limit')));
-        $entries = new Tempcode();
-        foreach ($_m as $m) {
-            $entries->attach(form_input_list_entry(strval($m['id']), false, get_translated_text($m['q_name']) . ' (' . do_lang($m['q_type']) . ')'));
-        }
+        $entries = $this->create_selection_list_entries();
         if ($entries->is_empty()) {
-            inform_exit(do_lang_tempcode('NO_ENTRIES'));
+            warn_exit(do_lang_tempcode('NO_ENTRIES', 'quiz'));
         }
 
         $fields = new Tempcode();
-        $fields->attach(form_input_list(do_lang_tempcode('QUIZ'), '', 'id', $entries, null, true));
+        $fields->attach(form_input_huge_list(do_lang_tempcode('QUIZ'), '', 'id', $entries, null, true));
 
         $post_url = build_url(['page' => '_SELF', 'type' => '_quiz_results'], '_SELF', [], false, true);
         $submit_name = do_lang_tempcode('QUIZ_RESULTS');

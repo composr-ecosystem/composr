@@ -272,6 +272,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BOX_SHADOWS
         CONFIG_OPTION_box_shadows
         GRADIENTS
+        QUIZ_EDIT_SKEW_RESULTS
         CONFIG_OPTION_gradients
         CONFIG_OPTION_fixed_width_VALUE_0
         CONFIG_OPTION_fixed_width_VALUE_1
