@@ -1639,16 +1639,19 @@ function addon_installed(string $addon_name, bool $check_hookless = false, bool 
                 // Check tables defined in db_meta.bin (bundled addons)
                 static $data = null;
                 if ($data === null) {
-                    $data = unserialize(cms_file_get_contents_safe(get_file_base() . '/data/db_meta.bin', FILE_READ_LOCK));
-                }
-                foreach ($data['tables'] as $table_name => $table) {
-                    if ($table['addon'] == $addon_name) {
-                        $db = get_db_for($table_name);
-                        if (!$db->table_exists($table_name)) {
-                            $answer = false;
-                            break;
+                    $data = is_file(get_file_base() . '/data/db_meta.bin') ? unserialize(cms_file_get_contents_safe(get_file_base() . '/data/db_meta.bin', FILE_READ_LOCK)) : [];                }
+                if (is_array($data) && array_key_exists('tables', $data)) {
+                    foreach ($data['tables'] as $table_name => $table) {
+                        if (array_key_exists('addon', $table) && ($table['addon'] == $addon_name)) {
+                            $db = get_db_for($table_name);
+                            if (!$db->table_exists($table_name)) {
+                                $answer = false;
+                                break;
+                            }
                         }
                     }
+                } else { // Corrupt db_meta file; delete it silently as we will notice it in git and can re-generate it
+                    @unlink(get_file_base() . '/data/db_meta.bin');
                 }
             }
         }

@@ -214,7 +214,13 @@ class DatabaseRepair
             ];
         }
 
-        $data = unserialize(cms_file_get_contents_safe(get_file_base() . '/data/db_meta.bin', FILE_READ_LOCK));
+        $data = is_file(get_file_base() . '/data/db_meta.bin') ? unserialize(cms_file_get_contents_safe(get_file_base() . '/data/db_meta.bin', FILE_READ_LOCK)) : [];
+
+        // Corrupt db_meta? Delete it and warn_exit.
+        if (!is_array($data) || !array_key_exists('tables', $data) || !array_key_exists('indices', $data) || !array_key_exists('privileges', $data)) {
+            @unlink(get_file_base() . '/data/db_meta.bin');
+            warn_exit(do_lang_tempcode('DB_META_CORRUPT_MISSING'));
+        }
 
         $expected_tables = [];
         foreach ($data['tables'] as $table_name => $table) {
