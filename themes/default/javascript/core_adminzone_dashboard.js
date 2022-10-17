@@ -31,11 +31,11 @@
 
             if (data.vwTaskDone === 'checklist_todo') {
                 $cms.loadSnippet('checklist_task_manage', 'type=mark_done&id=' + id);
-                $cms.setIcon(this.iconChecklistStatus, 'checklist/checklist_done', '{$IMG;,icons/checklist/checklist_done}');
+                $cms.ui.setIcon(this.iconChecklistStatus, 'checklist/checklist_done', '{$IMG;,icons/checklist/checklist_done}');
                 data.vwTaskDone = 'checklist_done';
             } else {
                 $cms.loadSnippet('checklist_task_manage', 'type=mark_undone&id=' + id);
-                $cms.setIcon(this.iconChecklistStatus, 'checklist/checklist_todo', '{$IMG;,icons/checklist/checklist_todo}');
+                $cms.ui.setIcon(this.iconChecklistStatus, 'checklist/checklist_todo', '{$IMG;,icons/checklist/checklist_todo}');
                 data.vwTaskDone = 'checklist_todo';
             }
         },
@@ -68,7 +68,7 @@
         events: function () {
             return {
                 'click .js-click-staff-block-flip': 'staffBlockFlip',
-                'click .js-click-form-submit-headless': 'submitHeadless'
+                'click .js-click-form-submit-headless': 'headlessSubmit'
             };
         },
         staffBlockFlip: function () {
@@ -80,7 +80,7 @@
             $dom.toggleWithAria(show, isHideDisplayed);
             $dom.toggleWithAria(hide, !isHideDisplayed);
         },
-        submitHeadless: function (e, btn) {
+        headlessSubmit: function (e, btn) {
             var form = btn.form,
                 blockName = $cms.filter.nl(this.params.blockName),
                 map = $cms.filter.nl(this.params.map);
@@ -89,50 +89,7 @@
 
             ajaxFormSubmitAdminHeadless(form, blockName, map).then((function (submitForm) {
                 if (submitForm) {
-                    $dom.submit(form);
-                }
-            }).bind(this));
-        }
-    });
-
-    /**
-     * @memberof $cms.views
-     * @class BlockMainStaffWebsiteMonitoring
-     * @extends $cms.View
-     */
-    function BlockMainStaffWebsiteMonitoring() {
-        BlockMainStaffWebsiteMonitoring.base(this, 'constructor', arguments);
-
-        var rand = this.params.randWebsiteMonitoring;
-
-        this.tableEl = this.$('#website-monitoring-list-' + rand);
-        this.formEl = this.$('.js-form-site-watchlist');
-    }
-
-    $util.inherits(BlockMainStaffWebsiteMonitoring, $cms.View, /**@lends BlockMainStaffWebsiteMonitoring#*/{
-        events: function () {
-            return {
-                'click .js-click-staff-block-flip': 'staffBlockFlip',
-                'click .js-click-headless-submit': 'headlessSubmit'
-            };
-        },
-
-        staffBlockFlip: function () {
-            var isTableDisplayed = $dom.isDisplayed(this.tableEl);
-
-            $dom.toggleWithAria(this.formEl, isTableDisplayed);
-            $dom.toggleWithAria(this.tableEl, !isTableDisplayed);
-        },
-
-        headlessSubmit: function (e) {
-            var blockName = $cms.filter.nl(this.params.blockName),
-                map = $cms.filter.nl(this.params.map);
-
-            e.preventDefault();
-
-            ajaxFormSubmitAdminHeadless(this.formEl, blockName, map).then((function (submitForm) {
-                if (submitForm) {
-                    $dom.submit(this.formEl);
+                    $dom.trigger(form, 'submit');
                 }
             }).bind(this));
         }
@@ -167,7 +124,7 @@
 
             ajaxFormSubmitAdminHeadless(this.formEl, blockName, map).then((function (submitForm) {
                 if (submitForm) {
-                    $dom.submit(this.formEl);
+                    $dom.trigger(this.formEl, 'submit');
                 }
             }).bind(this));
         },
@@ -189,7 +146,6 @@
 
     $cms.views.BlockMainStaffChecklistCustomTask = BlockMainStaffChecklistCustomTask;
     $cms.views.BlockMainStaffLinks = BlockMainStaffLinks;
-    $cms.views.BlockMainStaffWebsiteMonitoring = BlockMainStaffWebsiteMonitoring;
     $cms.views.BlockMainNotes = BlockMainNotes;
 
     $cms.templates.blockMainStaffChecklist = function (params, container) {
@@ -206,8 +162,9 @@
             setTaskHiding(false);
         });
 
-        $dom.on(container, 'submit', '.js-submit-custom-task', function (e, form) {
-            submitCustomTask(form);
+        $dom.on(container, 'click', '.js-save-custom-task', function (e, button) {
+            submitCustomTask(button.form);
+            e.preventDefault();
         });
 
         function setTaskHiding(hideEnable) {
@@ -225,7 +182,7 @@
                         checklistRows[i].classList.remove('task-hidden');
                     }
                 } else {
-                    if ($dom.notDisplayed(checklistRows[i])) {
+                    if (!$dom.isDisplayed(checklistRows[i])) {
                         $dom.fadeIn(checklistRows[i]);
                     }
                     checklistRows[i].classList.remove('task-hidden');
@@ -237,7 +194,7 @@
         }
 
         function submitCustomTask(form) {
-            $cms.loadSnippet('checklist_task_manage', 'type=add&recur_every=' + encodeURIComponent(form.elements['recur_every'].value) + '&recur_interval=' + encodeURIComponent(form.elements['recur_interval'].value) + '&task_title=' + encodeURIComponent(form.elements['newTask'].value)).then(function (newTask) {
+            $cms.loadSnippet('checklist_task_manage', 'type=add&recur_every=' + encodeURIComponent(form.elements['recur_every'].value) + '&recur_interval=' + encodeURIComponent(form.elements['recur_interval'].value) + '&task_title=' + encodeURIComponent(form.elements['new_task'].value)).then(function (newTask) {
                 form.elements['recur_every'].value = '';
                 form.elements['recur_interval'].value = '';
                 form.elements['new_task'].value = '';

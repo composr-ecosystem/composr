@@ -6,9 +6,9 @@
             equation = strVal(container.dataset.tpEquation);
 
 
-        $dom.on(container, 'click', '.js-btn-click-calculate-sum', function () {
+        $dom.on(container, 'click', '.js-btn-click-calculate-sum', function (e) {
             var form = this.form;
-            $cms.form.checkForm(this.form, false).then(function (valid) {
+            $cms.form.checkForm(e, this.form, false, []).then(function (valid) {
                 if (valid) {
                     $cms.ui.alert(message.replace('xxx', calculateSum(form.elements)));
                 }

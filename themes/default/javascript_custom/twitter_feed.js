@@ -15,8 +15,8 @@
     };
 
     $cms.templates.blockTwitterFeedStyle = function blockTwitterFeedStyle(params) {
-        $cms.createRollover(params.replyId, $util.srl('{$IMG;,twitter_feed/reply_hover}'));
-        $cms.createRollover(params.retweetId, $util.srl('{$IMG;,twitter_feed/retweet_hover}'));
-        $cms.createRollover(params.favoriteId, $util.srl('{$IMG;,twitter_feed/favorite_hover}'));
+        $cms.ui.createRollover(params.replyId, $util.srl('{$IMG;,twitter_feed/reply_hover}'));
+        $cms.ui.createRollover(params.retweetId, $util.srl('{$IMG;,twitter_feed/retweet_hover}'));
+        $cms.ui.createRollover(params.favoriteId, $util.srl('{$IMG;,twitter_feed/favorite_hover}'));
     };
 }(window.$cms));

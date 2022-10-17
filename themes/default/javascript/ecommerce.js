@@ -27,29 +27,6 @@
         }
     });
 
-    $cms.views.PurchaseWizardScreen = PurchaseWizardScreen;
-    /**
-     * @memberof $cms.views
-     * @class
-     * @extends $cms.View
-     */
-    function PurchaseWizardScreen() {
-        PurchaseWizardScreen.base(this, 'constructor', arguments);
-        this.formEl = this.$('form.js-form-primary');
-    }
-
-    $util.inherits(PurchaseWizardScreen, $cms.View, /**@lends PurchaseWizardScreen#*/{
-        formEl: null,
-        events: function () {
-            return {
-                'click .js-click-do-form-submit': 'doPurchaseFormSubmit'
-            };
-        },
-        doPurchaseFormSubmit: function () {
-            $cms.form.doFormSubmit(this.formEl);
-        }
-    });
-
     $cms.functions.moduleAdminEcommerce = function moduleAdminEcommerce() {
         var _lengthUnits = document.getElementById('length_units'), _length = document.getElementById('length');
         _lengthUnits.addEventListener('change', adjustLengths);
@@ -83,13 +60,17 @@
     };
 
     $cms.functions.ecommerceEmailGetNeededFieldsPop3 = function () {
-        var form = document.getElementById('pass1').form;
-        $dom.on(form, 'submit', function (e) {
+        var extraChecks = [];
+        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
             if (form.elements['pass1'].value !== form.elements['pass2'].value) {
                 $cms.ui.alert('{!PASSWORD_MISMATCH;}');
-                e.preventDefault();
+                alerted.valueOf = function () { return true; };
+                firstFieldWithError = form.elements['pass2'];
+                return false;
             }
+            return true;
         });
+        return extraChecks;
     };
 
     $cms.templates.ecomPurchaseStageDetails = function ecomPurchaseStageDetails(params) {

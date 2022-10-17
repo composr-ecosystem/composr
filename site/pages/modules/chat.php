@@ -481,7 +481,7 @@ class Module_chat
         // Starting an IM? The IM will pop-up by AJAX once the page loads, because it's in the system now
         $enter_im = get_param_integer('enter_im', null);
         if (($enter_im !== null) && (!is_guest())) {
-            $test = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'chat_rooms WHERE is_im=1 AND allow_list LIKE \'' . db_encode_like('%' . strval($enter_im) . '%') . '\'');
+            $test = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'chat_rooms WHERE ' . sql_members_in_im_conversation([get_member(), $enter_im]));
             $found_one = false;
             foreach ($test as $t) {
                 if ((check_chatroom_access($t, true, $enter_im)) && (check_chatroom_access($t, true, get_member()))) {
@@ -494,12 +494,13 @@ class Module_chat
             }
         }
 
-        // And empty IM conversations
+        // Prune empty IM conversations
         $old_dead_ims = $GLOBALS['SITE_DB']->query('SELECT r.* FROM ' . get_table_prefix() . 'chat_rooms r JOIN ' . get_table_prefix() . 'chat_events e ON e.e_room_id=r.id AND ' . db_string_equal_to('e.e_type_code', 'JOIN_IM') . ' LEFT JOIN ' . get_table_prefix() . 'chat_messages m ON m.room_id=r.id WHERE r.is_im=1 AND e_date_and_time<' . strval(time() - CHAT_EVENT_PRUNE) . ' AND m.id IS NULL');
         foreach ($old_dead_ims as $old) {
             require_code('chat2');
             delete_chatroom($old['id']);
         }
+
         // Prune chat events
         cms_register_shutdown_function_safe(function () {
             if (!$GLOBALS['SITE_DB']->table_is_locked('chat_events')) {

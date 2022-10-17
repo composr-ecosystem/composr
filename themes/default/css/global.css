@@ -4879,7 +4879,7 @@ form.associated-link::before {
 	opacity: 0.7;
 }
 /*{+START,CSS_MODE,desktop}*/
-	ul.associated-links-block-group > li:first-child::before,
+	ul.associated-links-block-group > li::before,
 	span.associated-link::before,
 	a.associated-link::before,
 	form.associated-link::before {

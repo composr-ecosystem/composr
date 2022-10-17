@@ -14,12 +14,12 @@
 		{+START,IF,{$NOT,{EMAIL_SENT}}}
 			{+START,IF,{HAS_EMAIL_TO_SEND}}
 				{+START,IF_NON_EMPTY,{EMAIL_ADDRESS}}
-					<form action="{$SELF_URL*}" method="post" class="js-submit-stats-event-track-dl-whitepaper">
+					<form action="{$SELF_URL*}" method="post">
 						{$INSERT_FORM_POST_SECURITY}
 						<input type="hidden" name="_send_document" value="1" />
 
 						<p class="proceed-button">
-							<button class="btn btn-primary btn-scri buttons--send" type="submit">{+START,INCLUDE,ICON}NAME=buttons/send{+END} <span>{!DOWNLOAD_WHITEPAPER}</span></button>
+							<button class="btn btn-primary btn-scri buttons--send js-stats-event-track-dl-whitepaper" type="submit">{+START,INCLUDE,ICON}NAME=buttons/send{+END} <span>{!DOWNLOAD_WHITEPAPER}</span></button>
 						</p>
 					</form>
 				{+END}

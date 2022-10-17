@@ -35,7 +35,7 @@
 
 	<hr class="spaced-rule" />
 
-	<form title="{!SAVE}" action="{URL*}" method="post" target="_self" class="js-form-ze-save zone-editor-form">
+	<form title="{!SAVE}" action="{URL*}" method="post" target="_self" class="zone-editor-form">
 		{$INSERT_FORM_POST_SECURITY}
 
 		<div id="edit-field-store" style="display: none">

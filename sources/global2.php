@@ -1051,7 +1051,7 @@ function prepare_backend_response(?string $content_type = 'text/xml', int $setti
         header("Content-Security-Policy: default-src 'self'; style-src 'self' data: 'unsafe-inline'");
     }
     if (($settings & BACKEND_RESPONSE_CSP_OPEN) != 0) {
-        header("Content-Security-Policy: default-src * 'unsafe-inline'");
+        header("Content-Security-Policy: default-src *  data: 'unsafe-inline'");
     }
 
     if ($content_type !== null) {

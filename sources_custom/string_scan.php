@@ -7015,7 +7015,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         INVALID_REGULAR_EXPRESSION
         PROBATION_USERGROUP
         PROBLEM_ACCESSING_RESPONSE
-        PROBLEM_RETRIEVING_XML
+        PROBLEM_AJAX
         PRODUCT_NAME
         PROFIT_LOSS
         PROGRAMMATIC_SYMBOL__CYCLE

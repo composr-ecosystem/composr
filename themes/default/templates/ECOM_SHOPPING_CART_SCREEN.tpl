@@ -3,7 +3,7 @@
 <div data-tpl="ecomShoppingCartScreen" data-tpl-params="{+START,PARAMS_JSON,TYPE_CODES,EMPTY_CART_URL}{_*}{+END}">
 	{TITLE}
 
-	<form title="{!PRIMARY_PAGE_FORM}" action="{UPDATE_CART_URL*}" method="post" itemscope="itemscope" itemtype="http://schema.org/CheckoutPage">
+	<form title="{!PRIMARY_PAGE_FORM}" action="{UPDATE_CART_URL*}" method="post" itemscope="itemscope" itemtype="http://schema.org/CheckoutPage" class="js-submission-flow" data-view="SubmissionFlow" data-view-params="{+START,PARAMS_JSON,preview_url,force_previews,JS_FUNCTION_CALLS,JAVASCRIPT,SECONDARY_FORM,SUPPORT_AUTOSAVE,FORM_NAME,SEPARATE_PREVIEW,BACK_URL,CANCEL_URL,ANALYTIC_EVENT_CATEGORY}{_*}{+END}">
 		{$INSERT_FORM_POST_SECURITY}
 
 		{RESULTS_TABLE}
@@ -66,7 +66,7 @@
 			{+END}
 
 			<p class="purchase-button">
-				<button id="proceed-button" class="btn btn-primary btn-scr buttons--proceed js-click-do-cart-form-submit" accesskey="u" type="button">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!CHECKOUT}</button>
+				<button id="proceed-button" class="btn btn-primary btn-scr buttons--proceed btn-main-submit-form" accesskey="u" type="button">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!CHECKOUT}</button>
 			</p>
 		</form>
 	{+END}

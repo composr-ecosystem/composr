@@ -39,23 +39,26 @@
         updateForm2();
         $dom.on(allDayEvent, 'click', updateForm2);
 
-        form.addEventListener('submit', function (submitEvent) {
+        var extraChecks = [];
+        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
             if ((form.elements['end_day'] != null) && (form.elements['end_day'].selectedIndex !== 0) || (form.elements['end'] != null) && (form.elements['end'].value !== '')) {
                 var startDate, endDate;
                 if (startDay) {
-                    startDate = new Date(parseInt(form.elements['startYear'].value), parseInt(form.elements['startMonth'].value) - 1, parseInt(form.elements['startDay'].value), parseInt(form.elements['startHour'].value), parseInt(form.elements['startMinute'].value));
-                    endDate = new Date(parseInt(form.elements['end_year'].value), parseInt(form.elements['end_month'].value) - 1, parseInt(form.elements['end_day'].value), parseInt(form.elements['endHour'].value), parseInt(form.elements['endMinute'].value));
+                    startDate = new Date(parseInt(form.elements['start_year'].value), parseInt(form.elements['start_month'].value) - 1, parseInt(form.elements['start_day'].value), parseInt(form.elements['start_hour'].value), parseInt(form.elements['start_minute'].value));
+                    endDate = new Date(parseInt(form.elements['end_year'].value), parseInt(form.elements['end_month'].value) - 1, parseInt(form.elements['end_day'].value), parseInt(form.elements['end_hour'].value), parseInt(form.elements['end_minute'].value));
                 } else {
                     startDate = start.value;
                     endDate = end.value;
                 }
 
                 if (startDate > endDate) {
-                    $dom.cancelSubmit(submitEvent);
                     $cms.ui.alert('{!calendar:EVENT_CANNOT_AROUND;}');
+                    alerted.valueOf = function () { return true; };
+                    firstFieldWithError = form.elements['end'] ? form.elements['end'] : form.elements['end_day'];
                     return false;
                 }
             }
+            return true;
         });
 
         function updateForm(event) {
@@ -131,6 +134,8 @@
                 form.elements['monthly_spec_type'][i].disabled = !monthlyRecurrence;
             }
         }
+
+        return extraChecks;
     };
 
     $cms.templates.calendarEventType = function calendarEventType(params, container) {

@@ -1,11 +1,8 @@
+/* LEGACY */
 /*{+START,INCLUDE,_polyfill_fetch,.js,javascript}{+END}*/
-
 /*{+START,INCLUDE,_polyfill_general,.js,javascript}{+END}*/
-
 /*{+START,INCLUDE,_polyfill_keyboardevent_key,.js,javascript}{+END}*/
-
 /*{+START,INCLUDE,_polyfill_url,.js,javascript}{+END}*/
-
 /*{+START,INCLUDE,_polyfill_web_animations,.js,javascript}{+END}*/
 
 /*{+START,INCLUDE,_json5,.js,javascript}{+END}*/

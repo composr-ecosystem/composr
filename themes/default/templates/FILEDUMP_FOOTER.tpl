@@ -17,6 +17,6 @@
 			<option value="zip">{!FILEDUMP_ZIP}</option>
 		</select>
 
-		<button type="submit" class="btn btn-primary btn-sm buttons--proceed">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!PROCEED}</button>
+		<button type="submit" class="btn btn-primary btn-sm buttons--proceed js-check-filedump-selections">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!PROCEED}</button>
 	</div>
 </div>

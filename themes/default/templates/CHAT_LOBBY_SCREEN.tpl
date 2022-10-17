@@ -99,14 +99,14 @@
 						{+START,IF_NON_EMPTY,{URL_ADD_FRIEND}}
 							<p>{!MUST_ADD_CONTACTS}</p>
 
-							<form class="form-add-friend js-form-submit-add-friend" data-submit-pd="1" title="{!ADD}: {!FRIEND_LIST}" method="post" action="{URL_ADD_FRIEND*}">
+							<form class="form-add-friend" title="{!ADD}: {!FRIEND_LIST}" method="post" action="{URL_ADD_FRIEND*}">
 								{$INSERT_FORM_POST_SECURITY}
 
 								<label class="accessibility-hidden" for="friend_username">{!USERNAME}: </label>
 								<div class="input-group">
 									<input {+START,IF,{$MOBILE}} autocorrect="off"{+END} size="18" maxlength="80" class="form-control form-control-sm js-keyup-input-update-ajax-member-list" type="text" placeholder="{!USERNAME}" id="friend_username" name="friend_username" />
 									<div class="input-group-append">
-										<button class="btn btn-primary btn-sm admin--add" type="submit">{+START,INCLUDE,ICON}NAME=admin/add{+END} <span>{!ADD}</span></button>
+										<button class="btn btn-primary btn-sm admin--add js-add-friend" type="submit">{+START,INCLUDE,ICON}NAME=admin/add{+END} <span>{!ADD}</span></button>
 									</div>
 								</div>
 							</form>

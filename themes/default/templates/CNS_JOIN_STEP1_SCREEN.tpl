@@ -3,8 +3,6 @@
 <div data-tpl="cnsJoinStep1Screen">
 	{TITLE}
 
-	{HIDDEN}
-
 	<p>
 		{!DESCRIPTION_I_AGREE_RULES}
 	</p>
@@ -17,6 +15,8 @@
 
 	<form title="{!PRIMARY_PAGE_FORM}" class="cns-join-1" method="post" action="{URL*}">
 		{$INSERT_FORM_POST_SECURITY}
+
+		{HIDDEN}
 
 		<p class="cns-join-declarations">
 			{+START,LOOP,DECLARATIONS}

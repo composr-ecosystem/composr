@@ -22,7 +22,7 @@
 Our implementation of different parts of CSP...
 
 CONSIDERING:
-default-src                 (default)                                   base on list of trusted sites, and 'self'
+default-src                 (default)                                   base on list of trusted sites, and 'self' and data:
 frame-src                   (frames)                                    base on list of trusted sites, and 'self', and extra configuration ["csp_allowed_iframe_descendants"]
 worker-src                  (webworkers)                                base on list of trusted sites, and 'self'
 connect-src                 (outbound connections from JavaScript)      base on list of trusted sites, and 'self'
@@ -192,7 +192,7 @@ function load_csp(?array $options = null, ?int $enable_more_open_html_for = null
     $CSP_ENABLED = $csp_enabled;
 
     if (!$csp_enabled) {
-        @header("Content-Security-Policy: default-src * 'unsafe-inline'"); // Very permissive policy
+        @header("Content-Security-Policy: default-src *  data: 'unsafe-inline'"); // Very permissive policy
         return;
     }
 
@@ -204,7 +204,7 @@ function load_csp(?array $options = null, ?int $enable_more_open_html_for = null
 
     // default-src
     $_sources_list = $master_sources_list;
-    $clauses[] = 'default-src ' . implode(' ', $_sources_list);
+    $clauses[] = 'default-src ' . implode(' ', $_sources_list) . ' data:';
 
     // style-src
     $_sources_list = $master_sources_list;

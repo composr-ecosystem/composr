@@ -182,7 +182,7 @@
 								<div class="inline">
 									<div class="accessibility-hidden"><label for="su">{!SU}</label></div>
 									<div class="input-group">
-										<input title="{!SU_2}" class="form-control form-control-sm js-global-input-su-keypress-enter-submit-form" accesskey="w" size="10" type="text"{+START,IF_NON_EMPTY,{$_GET,keep_su}} placeholder="{$USERNAME*}"{+END} value="{+START,IF_NON_EMPTY,{$_GET,keep_su}}{$USERNAME*}{+END}" id="su" name="keep_su" />
+										<input title="{!SU_2}" class="form-control form-control-sm" data-submit-on-enter="1" accesskey="w" size="10" type="text"{+START,IF_NON_EMPTY,{$_GET,keep_su}} placeholder="{$USERNAME*}"{+END} value="{+START,IF_NON_EMPTY,{$_GET,keep_su}}{$USERNAME*}{+END}" id="su" name="keep_su" />
 										<div class="input-group-append">
 											<button data-disable-on-click="1" class="btn btn-primary btn-sm menu--site-meta--user-actions--login" type="submit">{+START,INCLUDE,ICON}NAME=menu/site_meta/user_actions/login{+END} {!SU}</button>
 										</div>

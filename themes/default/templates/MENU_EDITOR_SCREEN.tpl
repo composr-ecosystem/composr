@@ -15,7 +15,7 @@
 				<textarea aria-hidden="true" cols="30" rows="3" style="display: none" name="template" id="template">{CHILD_BRANCH_TEMPLATE*}</textarea>
 			</form>
 
-			<form title="{!PRIMARY_PAGE_FORM}" id="edit-form" action="{URL*}" method="post" class="js-submit-modsecurity-workaround">
+			<form title="{!PRIMARY_PAGE_FORM}" id="edit-form" action="{URL*}" method="post" data-submit-modsecurity-workaround="1">
 				{$INSERT_FORM_POST_SECURITY}
 
 				<div class="clearfix menu-edit-main">

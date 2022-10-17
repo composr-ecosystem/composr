@@ -26,8 +26,8 @@
     $util.inherits(NotificationButtons, $cms.View, /**@lends NotificationButtons#*/{
         events: function () {
             return {
-                'submit .js-submit-show-disable-form': 'showDisableForm',
-                'submit .js-submit-show-enable-form': 'showEnableForm'
+                'submit .js-show-disable-form': 'showDisableForm',
+                'submit .js-show-enable-form': 'showEnableForm'
             };
         },
         showDisableForm: function () {

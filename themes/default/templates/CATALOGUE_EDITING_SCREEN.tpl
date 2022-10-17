@@ -3,7 +3,10 @@
 
 	{$PARAGRAPH,{TEXT}}
 
-	<form title="{!PRIMARY_PAGE_FORM}" method="post" action="{URL*}" target="_top" id="catalogue-form" class="js-form-catalogue-edit">
+	<form title="{!PRIMARY_PAGE_FORM}" method="post" action="{URL*}" target="_top" id="catalogue-form" class="js-form-catalogue-edit js-submission-flow" data-submit-modsecurity-workaround="1" data-view="SubmissionFlow" data-view-params="{+START,INCLUDE,FORM_STANDARD_START}
+		FORM_NAME=catalogue-form
+		SUPPORT_AUTOSAVE=1
+	{+END}">
 		{$INSERT_FORM_POST_SECURITY}
 
 		<div>
@@ -29,10 +32,7 @@
 			<p>{!FIELDS_NEW_HELP}</p>
 			{FIELDS_NEW}
 
-			{+START,INCLUDE,FORM_STANDARD_END}
-				FORM_NAME=catalogue-form
-				SUPPORT_AUTOSAVE=1
-			{+END}
+			{+START,INCLUDE,FORM_STANDARD_END}{+END}
 		</div>
 	</form>
 </div>

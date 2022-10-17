@@ -39,7 +39,7 @@
 		{+END}
 	{+END}
 
-	<form title="{!SAVE}" id="quiz-form" class="quiz-form js-quiz-form js-submit-check-form" method="post" action="{URL*}">
+	<form title="{!SAVE}" id="quiz-form" class="quiz-form js-quiz-form" method="post" action="{URL*}">
 		{$INSERT_FORM_POST_SECURITY}
 
 		<div>
@@ -57,7 +57,7 @@
 			</table></div>
 
 			<p class="proceed-button">
-				<button accesskey="u" class="btn btn-primary btn-scr buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!SUBMIT}</button>
+				<button accesskey="u" class="btn btn-primary btn-scr buttons--proceed js-quiz-check-form" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!SUBMIT}</button>
 			</p>
 		</div>
 	</form>

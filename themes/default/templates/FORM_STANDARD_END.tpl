@@ -1,16 +1,4 @@
-{+START,IF_PASSED_AND_TRUE,SUPPORT_AUTOSAVE}{+START,IF_PASSED,FORM_NAME}
-	{$REQUIRE_JAVASCRIPT,posting}
-{+END}{+END}
-
-{$SET,preview_url,{$PREVIEW_URL}{$KEEP}{+START,IF_PASSED,THEME}&utheme={THEME}{+END}}
-{$SET,force_previews,0}
-{+START,IF_PASSED_AND_TRUE,PREVIEW}{+START,IF,{$CONFIG_OPTION,enable_previews}}{+START,IF,{$FORCE_PREVIEWS}}
-	{$SET,force_previews,1}
-{+END}{+END}{+END}
-
-{$REQUIRE_JAVASCRIPT,core_form_interfaces}
-
-<div class="form-standard-end" data-view="FormStandardEnd" data-view-params="{+START,PARAMS_JSON,preview_url,force_previews,JS_FUNCTION_CALLS,JAVASCRIPT,SECONDARY_FORM,SUPPORT_AUTOSAVE,FORM_NAME,SEPARATE_PREVIEW,BACK_URL,CANCEL_URL,ANALYTIC_EVENT_CATEGORY}{_*}{+END}">
+<div class="form-standard-end">
 	{+START,IF_PASSED_AND_TRUE,PREVIEW}{+START,IF,{$CONFIG_OPTION,enable_previews}}
 		{+START,IF_NON_PASSED_OR_FALSE,SKIP_WEBSTANDARDS}{+START,IF,{$OR,{$CONFIG_OPTION,enable_markup_webstandards},{$CONFIG_OPTION,enable_spell_check},{$AND,{$HAS_PRIVILEGE,perform_keyword_check},{$CONFIG_OPTION,enable_keyword_density_check}}}}
 			<div class="preview-checking-box">
@@ -55,7 +43,7 @@
 		{+START,IF_PASSED_AND_TRUE,PREVIEW}{+START,IF,{$CONFIG_OPTION,enable_previews}}
 			<button class="btn btn-primary btn-scr buttons--preview js-click-do-form-preview" id="preview-button" accesskey="p" tabindex="{+START,IF_PASSED,TABINDEX}{TABINDEX}{+END}{+START,IF_NON_PASSED,TABINDEX}250{+END}" type="button">{+START,INCLUDE,ICON}NAME=buttons/preview{+END} <span>{!PREVIEW}</span></button>
 		{+END}{+END}
-		<button class="btn btn-primary btn-scr btn-main-submit-form"{+START,IF_NON_PASSED_OR_FALSE,SECONDARY_FORM}{+START,IF_NON_PASSED,BUTTON_ID} id="submit-button"{+END} accesskey="u"{+END}{+START,IF_PASSED,BUTTON_ID} id="{BUTTON_ID*}"{+END} tabindex="{+START,IF_PASSED,TABINDEX}{TABINDEX}{+END}{+START,IF_NON_PASSED,TABINDEX}250{+END}" type="button">{+START,INCLUDE,ICON}NAME={SUBMIT_ICON}{+END} {SUBMIT_NAME*}</button>
+		<button class="btn btn-primary btn-scr btn-main-submit-form"{+START,IF_NON_PASSED_OR_FALSE,SECONDARY_FORM}{+START,IF_NON_PASSED,BUTTON_ID} id="submit-button"{+END} accesskey="u"{+END}{+START,IF_PASSED,BUTTON_ID} id="{BUTTON_ID*}"{+END} tabindex="{+START,IF_PASSED,TABINDEX}{TABINDEX}{+END}{+START,IF_NON_PASSED,TABINDEX}250{+END}" type="submit">{+START,INCLUDE,ICON}NAME={SUBMIT_ICON}{+END} {SUBMIT_NAME*}</button>
 	</p>
 
 	{+START,IF_PASSED_AND_TRUE,PREVIEW}{+START,IF,{$CONFIG_OPTION,enable_previews}}

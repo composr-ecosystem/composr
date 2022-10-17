@@ -2,10 +2,10 @@
 
 <div data-tpl="activity" data-tpl-params="{+START,PARAMS_JSON,LIID}{_*}{+END}">
 	{+START,IF,{ALLOW_REMOVE}}
-		<form title="{!REMOVE} #{LIID*}" id="feed-remove-{LIID*}" class="activities-remove js-submit-confirm-update-remove" action="#" method="post">
+		<form title="{!REMOVE} #{LIID*}" id="feed-remove-{LIID*}" class="activities-remove" action="#" method="post">
 			{$INSERT_FORM_POST_SECURITY}
 
-			<button class="btn btn-link remove-button" type="submit" title="{!REMOVE}">
+			<button class="btn btn-link remove-button js-confirm-update-remove" type="submit" title="{!REMOVE}">
 				{+START,INCLUDE,ICON}
 					NAME=admin/delete
 					ICON_SIZE=14

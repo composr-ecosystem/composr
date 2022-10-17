@@ -29,7 +29,7 @@
 					TAB=thumbnails
 				{+END}
 
-				<form class="js-submit-check-filedump-selections" title="{!ACTION}" action="{POST_URL*}">
+				<form title="{!ACTION}" action="{POST_URL*}">
 					{$INSERT_FORM_POST_SECURITY}
 
 					{+START,IF_NON_EMPTY,{THUMBNAILS}}
@@ -82,7 +82,7 @@
 					TAB=listing
 				{+END}
 
-				<form class="js-submit-check-filedump-selections" title="{!ACTION}" action="{POST_URL*}" method="post">
+				<form title="{!ACTION}" action="{POST_URL*}" method="post">
 					{$INSERT_FORM_POST_SECURITY}
 
 					{+START,IF_NON_EMPTY,{LISTING}}

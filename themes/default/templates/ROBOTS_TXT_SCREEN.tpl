@@ -1,7 +1,7 @@
 <div data-require-javascript="robots_txt" data-view="RobotsTxtScreen">
 	{TITLE}
 
-	<form title="{!PRIMARY_PAGE_FORM}" action="{POST_URL*}" method="post" autocomplete="off" class="js-form-robots-txt">
+	<form title="{!PRIMARY_PAGE_FORM}" action="{POST_URL*}" method="post" autocomplete="off">
 		{$INSERT_FORM_POST_SECURITY}
 
 		<div>

@@ -1,3 +1,5 @@
+/* See also checking.js, which is not always loaded at the same time as this file */
+
 (function ($cms, $util, $dom) {
     'use strict';
 
@@ -19,17 +21,9 @@
     $util.inherits(PostingForm, $cms.View, {
         events: function () {
             return {
-                'submit .js-submit-modsec-workaround': 'submitWithWorkaround',
                 'click .js-click-pf-toggle-subord-fields': 'toggleSubordFields',
                 'keypress .js-keypress-pf-toggle-subord-fields': 'toggleSubordFields'
             };
-        },
-
-        submitWithWorkaround: function (e, form) {
-            if ($cms.form.isModSecurityWorkaroundEnabled() && !e.defaultPrevented) {
-                e.preventDefault();
-                $cms.form.modSecurityWorkaround(form);
-            }
         },
 
         toggleSubordFields: function (e, target) {
@@ -37,20 +31,24 @@
         }
     });
 
-    $cms.views.FormStandardEnd = FormStandardEnd;
+    $cms.views.SubmissionFlow = SubmissionFlow;
     /**
      * @memberof $cms.views
-     * @class FormStandardEnd
+     * @class SubmissionFlow
      * @extends $cms.View
      */
-    function FormStandardEnd(params) {
-        FormStandardEnd.base(this, 'constructor', arguments);
+    function SubmissionFlow(params) {
+        SubmissionFlow.base(this, 'constructor', arguments);
 
         this.backUrl = strVal(params.backUrl);
         this.cancelUrl = strVal(params.cancelUrl);
         this.analyticEventCategory = params.analyticEventCategory;
-        this.form = $dom.closest(this.el, 'form');
+        this.form = this.el;
         this.btnSubmit = this.$('.btn-main-submit-form');
+
+        if (typeof this.form.extraChecks == 'undefined') {
+            this.form.extraChecks = [];
+        }
 
         window.formPreviewUrl = strVal(params.previewUrl);
         window.separatePreview = Boolean(params.separatePreview);
@@ -63,7 +61,10 @@
         }
 
         if (params.jsFunctionCalls != null) {
-            $cms.executeJsFunctionCalls(params.jsFunctionCalls);
+            var result = $cms.executeJsFunctionCalls(params.jsFunctionCalls);
+            if (Array.isArray(result)) {
+                this.form.extraChecks = this.form.extraChecks.concat(result);
+            }
         }
 
         if (!params.secondaryForm) {
@@ -82,13 +83,16 @@
         }
     }
 
-    $util.inherits(FormStandardEnd, $cms.View, /**@lends FormStandardEnd#*/{
+    $util.inherits(SubmissionFlow, $cms.View, /**@lends SubmissionFlow#*/{
         events: function () {
             return {
                 'click .js-click-do-form-cancel': 'doFormCancel',
-                'click .js-click-do-form-preview': 'doStandardFormPreview',
-                'click .btn-main-submit-form': 'doStandardFormSubmit',
                 'click .js-click-btn-go-back': 'goBack',
+
+                // These are connected
+                'submit': 'cancelNativeFormSubmit',
+                'click .js-click-do-form-preview': 'doStandardFormPreview',
+                'click .btn-main-submit-form': 'doComposrFormSubmitChain',
             };
         },
 
@@ -104,14 +108,26 @@
             );
         },
 
-        doStandardFormPreview: function () {
-            var form = this.form;
-
-            $cms.form.doFormPreview(form, window.formPreviewUrl, window.separatePreview);
+        cancelNativeFormSubmit: function (e) {
+            e.preventDefault(); // Stops native form submit, so that form submit event handlers can be called while doComposrFormSubmitChain remains in control of actual submission after all promises are met
         },
 
-        doStandardFormSubmit: function () {
-            $cms.form.doFormSubmit(this.form, this.analyticEventCategory);
+        doStandardFormPreview: function (e) {
+            e.preventDefault();
+
+            if (typeof this.form.extraChecks == 'undefined') {
+                this.form.extraChecks = [];
+            }
+            $cms.form.doFormPreview(e, this.form, window.formPreviewUrl, window.separatePreview, this.form.extraChecks);
+        },
+
+        doComposrFormSubmitChain: function (e) {
+            e.preventDefault();
+
+            if (typeof this.form.extraChecks == 'undefined') {
+                this.form.extraChecks = [];
+            }
+            $cms.form.doCheckingComposrFormSubmitChain(e, this.form, this.analyticEventCategory, this.form.extraChecks);
         },
 
         goBack: function (e, btn) {
@@ -119,7 +135,7 @@
                 window.location = this.backUrl;
             } else {
                 btn.form.action = this.backUrl;
-                $dom.submit(btn.form);
+                $dom.trigger(btn.form, 'submit');
             }
         },
 
@@ -374,13 +390,6 @@
         $dom.on(container, 'click', '.js-click-btn-skip-step', function () {
             $dom.$('#' + skippable).value = '1';
         });
-
-        $dom.on(container, 'submit', '.js-submit-modesecurity-workaround', function (e, form) {
-            if ($cms.form.isModSecurityWorkaroundEnabled() && !e.defaultPrevented) {
-                e.preventDefault();
-                $cms.form.modSecurityWorkaround(form);
-            }
-        });
     };
 
     $cms.templates.formScreen = function (params, container) {
@@ -489,7 +498,7 @@
         }
 
         if (!$cms.isMobile()) {
-            $cms.manageScrollHeight(textarea);
+            $cms.ui.manageScrollHeight(textarea);
         }
 
         $cms.requireJavascript(['jquery', 'jquery_autocomplete']).then(function () {
@@ -759,7 +768,7 @@
             choosePicture('j-' + stem, img, name, event);
 
             if (window.mainFormVerySimple !== undefined) {
-                $dom.submit(form);
+                $dom.trigger(form, 'submit');
             }
         }
 
@@ -777,7 +786,7 @@
             deselectAltUrl(this.form);
 
             if (window.mainFormVerySimple !== undefined) {
-                $dom.submit(this.form);
+                $dom.trigger(this.form, 'submit');
             }
         });
 
@@ -798,10 +807,10 @@
         }
 
         if (!$cms.isMobile()) {
-            $cms.manageScrollHeight(textArea);
+            $cms.ui.manageScrollHeight(textArea);
 
             $dom.on(textArea, 'change keyup', function () {
-                $cms.manageScrollHeight(textArea);
+                $cms.ui.manageScrollHeight(textArea);
             });
         }
     };
@@ -831,7 +840,7 @@
                 return;
             }
 
-            $dom.submit(el.form);
+            $dom.trigger(el.form, 'submit');
         });
     };
 
@@ -861,7 +870,7 @@
         }
 
         if (!$cms.isMobile()) {
-            $cms.manageScrollHeight(postEl);
+            $cms.ui.manageScrollHeight(postEl);
         }
 
         $cms.requireJavascript(['jquery', 'jquery_autocomplete']).then(function () {
@@ -1228,7 +1237,7 @@
         }
 
         if (!$cms.isMobile()) {
-            $cms.manageScrollHeight(document.getElementById(params.name));
+            $cms.ui.manageScrollHeight(document.getElementById(params.name));
         }
     };
 
@@ -1341,11 +1350,12 @@
         document.body.appendChild(tempForm);
 
         setTimeout(function () {
-            $dom.submit(tempForm);
+            tempForm.submit();
             tempForm.parentNode.removeChild(tempForm);
         });
-    };
 
+        form.submittedFormAlready = true;
+    };
 
     /**
      * @memberof $cms.form
@@ -1460,12 +1470,12 @@
             }
         }
 
-        function foundChangeHandler() {
+        function foundChangeHandler(e) {
             if (iframe) {
                 if (iframe.contentDocument && (iframe.contentDocument.getElementsByTagName('form').length !== 0)) {
                     $cms.ui.confirm('{!Q_SURE_LOSE;^}').then(function (result) {
                         if (result) {
-                            _simplifiedFormContinueSubmit(iframe, formCatSelector);
+                            _simplifiedFormContinueSubmit(e, iframe, formCatSelector);
                         }
                     });
 
@@ -1479,13 +1489,13 @@
         }
     }
 
-    function _simplifiedFormContinueSubmit(iframe, formCatSelector) {
-        $cms.form.checkForm(formCatSelector, false).then(function (valid) {
+    function _simplifiedFormContinueSubmit(e, iframe, formCatSelector) {
+        $cms.form.checkForm(e, formCatSelector, false, []).then(function (valid) {
             if (valid) {
                 if (iframe) {
                     $dom.animateFrameLoad(iframe, 'iframe-under');
                 }
-                $dom.submit(formCatSelector);
+                $dom.trigger(formCatSelector, 'submit');
             }
         });
     }
@@ -1567,7 +1577,7 @@
             if (iconAnchor.cmsTooltipTitle != null) {
                 iconAnchor.cmsTooltipTitle = '{!CONTRACT;^}';
             }
-            $cms.setIcon(icon, 'trays/contract', '{$IMG;,icons_monochrome/trays/contract}');
+            $cms.ui.setIcon(icon, 'trays/contract', '{$IMG;,icons_monochrome/trays/contract}');
             newDisplayState = ''; // default state from CSS
             newDisplayState2 = ''; // default state from CSS
         } else { /* Contracting now */
@@ -1575,7 +1585,7 @@
             if (iconAnchor.cmsTooltipTitle != null) {
                 iconAnchor.cmsTooltipTitle = '{!EXPAND;^}';
             }
-            $cms.setIcon(icon, 'trays/expand', '{$IMG;,icons_monochrome/trays/expand}');
+            $cms.ui.setIcon(icon, 'trays/expand', '{$IMG;,icons_monochrome/trays/expand}');
             newDisplayState = 'none';
             newDisplayState2 = 'none';
         }

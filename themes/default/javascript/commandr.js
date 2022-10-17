@@ -105,14 +105,16 @@
 
     $cms.templates.commandrMain = function commandrMain(params, container) {
         $cms.requireJavascript('core_form_interfaces').then(function () {
-            $dom.on(container, 'submit', '.js-submit-commandr-form-submission', function (e, form) {
+            $dom.on(container, 'click', '.js-commandr-button', function (e, btn) {
                 var command = $dom.$('#commandr-command').value;
 
                 if (command.trim() === '') {
+                    e.preventDefault();
                     return;
                 }
 
-                commandrFormSubmission(command, form);
+                commandrFormSubmission(command, btn.form);
+                e.preventDefault();
             });
 
             $dom.on(container, 'keyup', '.js-keyup-input-commandr-handle-history', function (e, input) {
@@ -166,11 +168,13 @@
 
     $cms.templates.commandrEdit = function commandrEdit(params, container) {
         $cms.requireJavascript('core_form_interfaces').then(function () {
-            var file = strVal(params.file);
+            var file = strVal(params.file),
+                rndx = strVal(params.rndx);
+            $dom.on(container, 'click', '.js-commandr-edit', function (e, btn) {
+                var command = 'write "' + file + '" "' + document.getElementById('edit_content' + rndx).value.replace(/\\/g, '\\\\').replace(/</g, '\\<').replace(/>/g, '\\>').replace(/"/g, '\\"') + '"';
+                commandrFormSubmission(command, btn.form);
 
-            $dom.on(container, 'submit', '.js-submit-commandr-form-submission', function (e, form) {
-                var command = 'write "' + file + '" "' + form.elements['edit_content'].value.replace(/\\/g, '\\\\').replace(/</g, '\\<').replace(/>/g, '\\>').replace(/"/g, '\\"') + '"';
-                commandrFormSubmission(command, form);
+                e.preventDefault();
             });
         });
     };

@@ -6,9 +6,9 @@
             equation = strVal(container.dataset.tpEquation);
 
 
-        $dom.on(container, 'click', '.js-btn-click-calculate-sum', function () {
+        $dom.on(container, 'click', '.js-btn-click-calculate-sum', function (e) {
             var form = this.form;
-            $cms.form.checkForm(this.form, false).then(function (valid) {
+            $cms.form.checkForm(e, this.form, false, []).then(function (valid) {
                 if (valid) {
                     $cms.ui.alert(message.replace('xxx', calculateSum(form.elements)));
                 }
@@ -98,11 +98,11 @@
                 img = document.querySelector('.commandr-img'),
                 bi, cmdLine;
 
-            if ($dom.notDisplayed(commandrBox)) { // Showing Commandr again
+            if (!$dom.isDisplayed(commandrBox)) { // Showing Commandr again
                 $dom.show(commandrBox);
 
                 if (img) {
-                    $cms.setIcon(img, 'tool_buttons/commandr_off', '{$IMG;,icons/tool_buttons/commandr_off}');
+                    $cms.ui.setIcon(img, 'tool_buttons/commandr_off', '{$IMG;,icons/tool_buttons/commandr_off}');
                     img.classList.remove('footer-button-loading');
                 }
 
@@ -122,7 +122,7 @@
                 document.getElementById('commandr-command').focus();
             } else { // Hiding Commandr
                 if (img) {
-                    $cms.setIcon(img, 'tool_buttons/commandr_on', '{$IMG;,icons/tool_buttons/commandr_on}');
+                    $cms.ui.setIcon(img, 'tool_buttons/commandr_on', '{$IMG;,icons/tool_buttons/commandr_on}');
                     img.style.opacity = 1.0;
                 }
 

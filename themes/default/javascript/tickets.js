@@ -2,8 +2,10 @@
     'use strict';
 
     $cms.templates.supportTicketsScreen = function (params, container) {
-        $dom.on(container, 'submit', '.js-form-submit-scroll-to-top', function () {
-            scrollTo(0, 0);
+        $dom.on(container, 'click', '.js-scroll-to-top', function () {
+            try {
+                scrollTo(0, 0);
+            } catch (ignore) {}
         });
     };
 
@@ -23,7 +25,8 @@
             $cms.form.updateAjaxMemberList(input, null, false, e);
         });
 
-        $dom.on(container, 'submit', '.js-submit-check-post-and-ticket-type-id-fields', function (e, form) {
+        $dom.on(container, 'click', '.js-btn-save-comment', function (e, btn) {
+            var form = btn.form;
             if (!$cms.form.checkFieldForBlankness(form.elements.post) || (form.elements['ticket_type_id'] && !$cms.form.checkFieldForBlankness(form.elements['ticket_type_id']))) {
                 e.preventDefault();
             }

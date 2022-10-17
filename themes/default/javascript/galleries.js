@@ -434,7 +434,7 @@
 
             this.el.classList.add('is-playing');
             this.$('.btn-toggle-play').classList.add('is-active');
-            $cms.setIcon(this.$('.btn-toggle-play .icon'), 'buttons/pause');
+            $cms.ui.setIcon(this.$('.btn-toggle-play .icon'), 'buttons/pause');
 
             if (this.isCurrentSlideImage()) {
                 this._slideDelayStartedAt = Date.now();
@@ -519,7 +519,7 @@
 
             this.el.classList.remove('is-playing');
             this.$('.btn-toggle-play').classList.remove('is-active');
-            $cms.setIcon(this.$('.btn-toggle-play .icon'), 'content_types/multimedia');
+            $cms.ui.setIcon(this.$('.btn-toggle-play .icon'), 'content_types/multimedia');
 
             this.updateStatusMessage();
 
@@ -566,11 +566,11 @@
             if (document.fullscreenElement == null) {
                 this.el.requestFullscreen();
                 this.el.classList.add('is-enabled-fullscreen');
-                $cms.setIcon(this.$('.btn-toggle-fullscreen .icon'), 'buttons/shrink_size');
+                $cms.ui.setIcon(this.$('.btn-toggle-fullscreen .icon'), 'buttons/shrink_size');
             } else {
                 document.exitFullscreen();
                 this.el.classList.remove('is-enabled-fullscreen');
-                $cms.setIcon(this.$('.btn-toggle-fullscreen .icon'), 'buttons/full_size');
+                $cms.ui.setIcon(this.$('.btn-toggle-fullscreen .icon'), 'buttons/full_size');
             }
         },
 
@@ -980,27 +980,30 @@
     };
 
     $cms.functions.moduleCmsGalleriesRunStartAddCategory = function moduleCmsGalleriesRunStartAddCategory() {
-        var form = document.getElementById('main-form'),
-            submitBtn = form.querySelector('#submit-button'),
-            validValue;
-        form.addEventListener('submit', function submitCheck(submitEvent) {
+        var validValue,
+            extraChecks = [];
+        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
             var value = form.elements['gallery_name'].value;
-            if ((value === validValue) || $dom.isCancelledSubmit(submitEvent)) {
-                return;
+            if ((value === validValue) || (value === '')) {
+                return true;
             }
 
-            submitEvent.preventDefault();
-            var url = '{$FIND_SCRIPT_NOHTTP;^,snippet}?snippet=exists_gallery&name=' + encodeURIComponent(value) + $cms.keep();
-            var promise = $cms.form.doAjaxFieldTest(url).then(function (valid) {
-                if (valid) {
-                    validValue = value;
-                }
+            return function () {
+                var url = '{$FIND_SCRIPT_NOHTTP;^,snippet}?snippet=exists_gallery&name=' + encodeURIComponent(value) + $cms.keep();
+                return $cms.form.doAjaxFieldTest(url).then(function (valid) {
+                    if (valid) {
+                        validValue = value;
+                    }
 
-                return valid;
-            });
-
-            $dom.awaitValidationPromiseAndResubmit(submitEvent, promise, submitBtn);
+                    if (!valid) {
+                        erroneous.valueOf = function () { return true; };
+                        alerted.valueOf = function () { return true; };
+                        firstFieldWithError = form.elements['gallery_name'];
+                    }
+                });
+            };
         });
+        return extraChecks;
     };
 
     $cms.templates.blockMainGalleryEmbed = function blockMainGalleryEmbed() {

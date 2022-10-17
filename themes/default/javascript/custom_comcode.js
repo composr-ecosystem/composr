@@ -2,7 +2,7 @@
     'use strict';
 
     $cms.functions.gfxRolloverButton = function gfxRolloverButton(combId, url) {
-        $cms.createRollover(combId, url);
+        $cms.ui.createRollover(combId, url);
     };
 
     $cms.functions.moduleAdminCustomComcode = function moduleAdminCustomComcode() {
@@ -40,28 +40,30 @@
     };
 
     $cms.functions.moduleAdminCustomComcodeRunStart = function moduleAdminCustomComcodeRunStart() {
-        var form = document.getElementById('main-form'),
-            submitBtn = form.querySelector('#submit-button'),
+        var extraChecks = [],
             validValue;
-
-        form.addEventListener('submit', function submitCheck(submitEvent) {
+        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
             var value = form.elements['tag'].value;
 
-            if ((value === validValue) || $dom.isCancelledSubmit(submitEvent)) {
-                return;
+            if ((value === validValue) || (value === '')) {
+                return true;
             }
 
-            var url = '{$FIND_SCRIPT_NOHTTP;^,snippet}?snippet=exists_tag&name=' + encodeURIComponent(form.elements['tag'].value) + $cms.keep();
-            submitEvent.preventDefault();
-            var promise = $cms.form.doAjaxFieldTest(url).then(function (valid) {
-                if (valid) {
-                    validValue = value;
-                }
+            return function () {
+                var url = '{$FIND_SCRIPT_NOHTTP;^,snippet}?snippet=exists_tag&name=' + encodeURIComponent(form.elements['tag'].value) + $cms.keep();
+                return $cms.form.doAjaxFieldTest(url).then(function (valid) {
+                    if (valid) {
+                        validValue = value;
+                    }
 
-                return valid;
-            });
-
-            $dom.awaitValidationPromiseAndResubmit(submitEvent, promise, submitBtn);
+                    if (!valid) {
+                        erroneous.valueOf = function () { return true; };
+                        alerted.valueOf = function () { return true; };
+                        firstFieldWithError = form.elements['tag'];
+                    }
+                });
+            };
         });
+        return extraChecks;
     };
 }(window.$cms, window.$util, window.$dom));

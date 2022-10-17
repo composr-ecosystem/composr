@@ -9,7 +9,10 @@
 {$REQUIRE_JAVASCRIPT,core_cns}
 {$REQUIRE_JAVASCRIPT,checking}
 
-<form data-tpl="cnsMemberProfileEdit" data-tpl-params="{+START,PARAMS_JSON,TABS}{_*}{+END}" class="cns-member-profile-edit form-table " title="{!PRIMARY_PAGE_FORM}" method="post" action="{URL*}" enctype="multipart/form-data" id="main-form">
+<form data-tpl="cnsMemberProfileEdit" data-tpl-params="{+START,PARAMS_JSON,TABS}{_*}{+END}" class="cns-member-profile-edit form-table " title="{!PRIMARY_PAGE_FORM}" method="post" action="{URL*}" enctype="multipart/form-data" id="main-form" class="js-submission-flow" data-view="SubmissionFlow" data-view-params="{+START,INCLUDE,FORM_STANDARD_START}
+	FORM_NAME=main-form
+	SUPPORT_AUTOSAVE=1
+{+END}">
 	{$INSERT_FORM_POST_SECURITY}
 
 	{HIDDEN}
@@ -75,8 +78,6 @@
 
 	{+START,IF_NON_EMPTY,{SUBMIT_NAME}}
 		{+START,INCLUDE,FORM_STANDARD_END}
-			FORM_NAME=main-form
-			SUPPORT_AUTOSAVE=1
 			SECONDARY_FORM=1
 			BUTTON_ID=account-submit-button
 		{+END}

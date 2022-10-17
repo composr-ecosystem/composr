@@ -3,14 +3,16 @@
 
     var sendPointsFormLastValid;
     $cms.templates.pointsSend = function pointsSend(params, container) {
-        $dom.on(container, 'submit', '.js-submit-check-form', function (submitEvent, form) {
-            if ($dom.isCancelledSubmit(submitEvent) || (sendPointsFormLastValid && (sendPointsFormLastValid.getTime() === $cms.form.lastChangeTime(form).getTime()))) {
+        $dom.on(container, 'click', '.js-points-check-form', function (e, btn) {
+            var form = btn.form;
+
+            if ($dom.isCancelledSubmit(e) || (sendPointsFormLastValid && (sendPointsFormLastValid.getTime() === $cms.form.lastChangeTime(form).getTime()))) {
                 return;
             }
 
-            submitEvent.preventDefault();
+            e.preventDefault();
 
-            var promise = $cms.form.checkForm(form, false).then(function (valid) {
+            var promise = $cms.form.checkForm(e, form, false, []).then(function (valid) {
                 if (valid) {
                     sendPointsFormLastValid = $cms.form.lastChangeTime(form);
                 }
@@ -18,7 +20,7 @@
                 return valid;
             });
 
-            $dom.awaitValidationPromiseAndResubmit(submitEvent, promise);
+            $dom.awaitValidationPromiseAndSubmitForm(e, promise);
         });
 
         $dom.on(container, 'click', '.js-click-check-send-options', function (e, el) {

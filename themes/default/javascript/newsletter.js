@@ -2,14 +2,17 @@
     'use strict';
 
     $cms.functions.newsletterNewsletterForm = function newsletterNewsletterForm() {
-        var form = document.getElementById('password').form;
-        form.addEventListener('submit', function (submitEvent) {
+        var extraChecks = [];
+        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
             if ((form.elements['password_confirm']) && (form.elements['password_confirm'].value !== form.elements['password'].value)) {
-                $dom.cancelSubmit(submitEvent);
                 $cms.ui.alert('{!PASSWORD_MISMATCH;^}');
+                alerted.valueOf = function () { return true; };
+                firstFieldWithError = form.elements['password_confirm'];
                 return false;
             }
+            return true;
         });
+        return extraChecks;
     };
 
     $cms.templates.newsletterPreview = function (params) {
@@ -56,25 +59,27 @@
     $cms.templates.blockMainNewsletterSignup = function (params, container) {
         var nid = strVal(params.nid);
 
-        $dom.on(container, 'submit', '.js-form-newsletter-email-subscribe', function (submitEvent, form) {
-            if ($dom.isCancelledSubmit(submitEvent)) {
+        $dom.on(container, 'click', '.js-newsletter-email-subscribe', function (e, btn) {
+            if ($dom.isCancelledSubmit(e)) {
                 return;
             }
+
+            var form = btn.form;
 
             var emailInput = form.elements['address' + nid];
 
             if (!$cms.form.checkFieldForBlankness(emailInput)) {
-                $dom.cancelSubmit(submitEvent);
+                $dom.cancelSubmit(e);
                 return;
             }
 
             if (!emailInput.value.match(/^[a-zA-Z0-9._+-]+@[a-zA-Z0-9._-]+$/)) {
                 $cms.ui.alert('{!javascript:NOT_A_EMAIL;}');
-                $dom.cancelSubmit(submitEvent);
+                $dom.cancelSubmit(e);
                 return;
             }
 
-            submitEvent.preventDefault();
+            e.preventDefault();
             $cms.ui.disableFormButtons(form);
 
             // Tracking
@@ -82,7 +87,7 @@
                 return true;
             });
 
-            $dom.awaitValidationPromiseAndResubmit(submitEvent, promise);
+            $dom.awaitValidationPromiseAndSubmitForm(e, promise);
         });
     };
 

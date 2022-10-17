@@ -25,8 +25,8 @@
             $cms.ui.open(params.fileLink, null, 'width=950;height=700', '_top');
         }
 
-        $dom.on(container, 'submit', '.js-submit-check-filedump-selections', function (e, form) {
-            if (checkFiledumpSelections(form) === false) {
+        $dom.on(container, 'click', '.js-check-filedump-selections', function (e, btn) {
+            if (checkFiledumpSelections(btn.form) === false) {
                 e.preventDefault();
             }
         });
@@ -48,12 +48,12 @@
             }
 
             if (action === 'edit') {
-                return;
+                return true;
             }
 
             for (var i = 0; i < form.elements.length; i++) {
                 if ((form.elements[i].name.match(/^select_\d+$/)) && (form.elements[i].checked)) {
-                    return;
+                    return true;
                 }
             }
 

@@ -25,13 +25,13 @@
                 }
 
                 if (th.classList.contains('table-sorted-asc')) {
-                    $cms.setIcon(icon, 'sortable_tables/sorted_up', '{$IMG;,icons/sortable_tables/sorted_up}')
+                    $cms.ui.setIcon(icon, 'sortable_tables/sorted_up', '{$IMG;,icons/sortable_tables/sorted_up}')
                 } else if (th.classList.contains('table-sorted-desc')) {
-                    $cms.setIcon(icon, 'sortable_tables/sorted_down', '{$IMG;,icons/sortable_tables/sorted_down}')
+                    $cms.ui.setIcon(icon, 'sortable_tables/sorted_down', '{$IMG;,icons/sortable_tables/sorted_down}')
                 } else if (th.classList.contains('table-filtered')) {
-                    $cms.setIcon(icon, 'sortable_tables/filter', '{$IMG;,icons/sortable_tables/filter}')
+                    $cms.ui.setIcon(icon, 'sortable_tables/filter', '{$IMG;,icons/sortable_tables/filter}')
                 } else {
-                    $cms.setIcon(icon, 'sortable_tables/sortable', '{$IMG;,icons/sortable_tables/sortable}');
+                    $cms.ui.setIcon(icon, 'sortable_tables/sortable', '{$IMG;,icons/sortable_tables/sortable}');
                 }
             });
         }

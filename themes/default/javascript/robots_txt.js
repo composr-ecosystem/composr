@@ -16,16 +16,8 @@
     $util.inherits(RobotsTxtScreen, $cms.View, /**@lends RobotsTxtScreen#*/{
         events: function () {
             return {
-                'submit .js-form-robots-txt': 'submit',
                 'click #robots_txt_default': 'selectDefault'
             };
-        },
-
-        submit: function (e, form) {
-            if ($cms.form.isModSecurityWorkaroundEnabled() && !e.defaultPrevented) {
-                e.preventDefault();
-                $cms.form.modSecurityWorkaround(form);
-            }
         },
 
         selectDefault: function (e, selectEl) {

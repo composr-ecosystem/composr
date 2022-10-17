@@ -3,7 +3,7 @@
 <section class="box box---block-main-search" data-view="BlockMainSearch" data-view-params="{+START,PARAMS_JSON,SEARCH_TYPE}{_*}{+END}"><div class="box-inner">
 	<h3>{TITLE*}</h3>
 
-	<form role="search" title="{TITLE*}" class="js-form-submit-main-search" action="{$URL_FOR_GET_FORM*,{URL}}" method="get">
+	<form role="search" title="{TITLE*}" action="{$URL_FOR_GET_FORM*,{URL}}" method="get">
 		{$HIDDENS_FOR_GET_FORM,{URL},content}
 
 		<div>
@@ -33,7 +33,7 @@
 			{+END}
 
 			<p class="proceed-button">
-				<button class="btn btn-primary btn-scri buttons--search" type="submit">{+START,INCLUDE,ICON}NAME=buttons/search{+END} <span>{!SEARCH}</span></button>
+				<button class="btn btn-primary btn-scri buttons--search js-main-search" type="submit">{+START,INCLUDE,ICON}NAME=buttons/search{+END} <span>{!SEARCH}</span></button>
 			</p>
 
 			{+START,LOOP,LIMIT_TO}

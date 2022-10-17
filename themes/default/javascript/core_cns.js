@@ -3,6 +3,214 @@
 
     var $coreCns = window.$coreCns = {};
 
+    $cms.templates.cnsGuestBar = function cnsGuestBar(params, container) {
+        $dom.on(container, 'click', '.js-check-field-login-username', function (e, btn) {
+            var form = btn.form;
+
+            if ($cms.form.checkFieldForBlankness(form.elements['username'])) {
+                $cms.ui.disableFormButtons(form);
+            } else {
+                e.preventDefault();
+            }
+        });
+
+        $dom.on(container, 'click', '.js-click-checkbox-remember-me-confirm', function (e, checkbox) {
+            if (checkbox.checked) {
+                $cms.ui.confirm('{!REMEMBER_ME_COOKIE;,{$SITE_NAME}}', function (answer) {
+                    if (!answer) {
+                        checkbox.checked = false;
+                    }
+                });
+            }
+        });
+    };
+
+    $cms.templates.cnsJoinStep1Screen = function cnsJoinStep1Screen(params, container) {
+        var agreeCheckbox = container.querySelector('.js-chb-click-toggle-proceed-btn');
+
+        if (agreeCheckbox) {
+            document.getElementById('proceed-button').disabled = !agreeCheckbox.checked;
+        }
+
+        $dom.on(container, 'click', '.js-chb-click-toggle-proceed-btn', function (e, checkbox) {
+            var checkBoxes = $('.js-chb-click-toggle-proceed-btn');
+            var allChecked = true;
+            for (var i = 0; i < checkBoxes.length; i++) {
+                if (!checkBoxes[i].checked) {
+                    allChecked = false;
+                }
+            }
+            document.getElementById('proceed-button').disabled = !allChecked;
+        });
+
+        $dom.on(container, 'click', '.js-click-set-top-location', function (e, target) {
+            window.top.location = strVal(target.dataset.tpTopLocation);
+        });
+    };
+
+    $cms.templates.joinForm = function (params, container) {
+        var skippable = strVal(params.skippable);
+
+        joinForm(params);
+
+        $dom.on(container, 'click', '.js-click-btn-skip-step', function () {
+            $dom.$('#' + skippable).value = '1';
+        });
+    };
+
+    function joinForm(params) {
+        var form = document.getElementById('username').form,
+            submitBtn = form.querySelector('#submit-button');
+
+        form.elements['username'].onchange = function () {
+            if (form.elements['intro_title']) {
+                form.elements['intro_title'].value = $util.format('{!cns:INTRO_POST_DEFAULT;^}', [form.elements['username'].value]);
+            }
+        };
+
+        var validValues = null;
+        if (typeof form.extraChecks == 'undefined') {
+            form.extraChecks = [];
+        }
+        form.extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
+            if ((form.elements['confirm'] !== undefined) && (form.elements['confirm'].type === 'checkbox') && (!form.elements['confirm'].checked)) {
+                $cms.ui.alert('{!cns:DESCRIPTION_I_AGREE_RULES;^}');
+                alerted.valueOf = function () { return true; };
+                firstFieldWithError = form.elements['confirm'];
+                return false;
+            }
+
+            if ((form.elements['email_address_confirm'] !== undefined) && (form.elements['email'].value != '') && (form.elements['email_address_confirm'].value !== form.elements['email'].value)) {
+                $cms.ui.alert('{!EMAIL_ADDRESS_MISMATCH;^}');
+                alerted.valueOf = function () { return true; };
+                firstFieldWithError = form.elements['email_address_confirm'];
+                return false;
+            }
+
+            if ((form.elements['password_confirm'] !== undefined) && (form.elements['password'].value != '') && (form.elements['password_confirm'].value !== form.elements['password'].value)) {
+                $cms.ui.alert('{!PASSWORD_MISMATCH;^}');
+                alerted.valueOf = function () { return true; };
+                firstFieldWithError = form.elements['password_confirm'];
+                return false;
+            }
+
+            var values = [];
+
+            values.push(form.elements['username'].value);
+            values.push(form.elements['password'].value);
+
+            if (params.invitesEnabled) {
+                values.push(form.elements['email'].value);
+            }
+
+            if (params.onePerEmailAddress) {
+                values.push(form.elements['email'].value);
+            }
+
+            if (params.useCaptcha && ($cms.configOption('recaptcha_site_key') === '')) {
+                values.push(form.elements['captcha'].value);
+            }
+
+            if ((validValues != null) && (validValues.length === values.length)) {
+                var areSame = validValues.every(function (element, index) {
+                    return element === values[index];
+                });
+
+                if (areSame) {
+                    // All valid
+                    return true;
+                }
+            }
+
+            return function () {
+                var checkPromises = [];
+
+                validValues = [];
+
+                if (form.elements['username'].value != '') {
+                    var url = params.usernameCheckScript + '?username=' + encodeURIComponent(form.elements['username'].value) + $cms.keep();
+                    var usernameCheckPromise = $cms.form.doAjaxFieldTest(url, 'password=' + encodeURIComponent(form.elements['password'].value)).then(function (valid) {
+                        if (valid) {
+                            validValues.push(form.elements['password'].value);
+                        } else {
+                            erroneous.valueOf = function () { return true; };
+                            alerted.valueOf = function () { return true; };
+                            firstFieldWithError = form.elements['username'];
+                            validValues.push(null);
+                        }
+                    });
+                    checkPromises.push(usernameCheckPromise);
+                }
+
+                if (form.elements['email'].value != '') {
+                    if (params.invitesEnabled) {
+                        url = params.snippetScript + '?snippet=invite_missing&name=' + encodeURIComponent(form.elements['email'].value) + $cms.keep();
+                        var invitePromise = $cms.form.doAjaxFieldTest(url).then(function (valid) {
+                            if (valid) {
+                                validValues.push(form.elements['email'].value);
+                            } else {
+                                erroneous.valueOf = function () { return true; };
+                                alerted.valueOf = function () { return true; };
+                                firstFieldWithError = form.elements['email'];
+                                validValues.push(null);
+                            }
+                        });
+                        checkPromises.push(invitePromise);
+                    }
+
+                    if (params.onePerEmailAddress) {
+                        url = params.snippetScript + '?snippet=exists_email&name=' + encodeURIComponent(form.elements['email'].value) + $cms.keep();
+                        var emailPromise = $cms.form.doAjaxFieldTest(url).then(function (valid) {
+                            if (valid) {
+                                validValues.push(form.elements['email'].value);
+                            } else {
+                                erroneous.valueOf = function () { return true; };
+                                alerted.valueOf = function () { return true; };
+                                firstFieldWithError = form.elements['email'];
+                                validValues.push(null);
+                            }
+                        });
+                        checkPromises.push(emailPromise);
+                    }
+                }
+
+                if (params.useCaptcha && ($cms.configOption('recaptcha_site_key') === '') && (form.elements['captcha'].value != '')) {
+                    url = params.snippetScript + '?snippet=captcha_wrong&name=' + encodeURIComponent(form.elements['captcha'].value) + $cms.keep();
+                    var captchaPromise = $cms.form.doAjaxFieldTest(url).then(function (valid) {
+                        if (valid) {
+                            validValues.push(form.elements['captcha'].value);
+                        } else {
+                            erroneous.valueOf = function () { return true; };
+                            alerted.valueOf = function () { return true; };
+                            firstFieldWithError = form.elements['captcha'];
+                            validValues.push(null);
+
+                            $cms.functions.refreshCaptcha(document.getElementById('captcha-readable'), document.getElementById('captcha-audio'));
+                        }
+
+                        return valid;
+                    });
+                    checkPromises.push(captchaPromise);
+                }
+
+                return Promise.all(checkPromises);
+            }
+        });
+    }
+
+    $cms.templates.blockMainJoinDone = function blockMainJoinDone(params, container) {
+        $dom.on(container, 'click', '.js-stats-event-track-dl-whitepaper', function (e, btn) {
+            if ($dom.isCancelledSubmit(e)) {
+                return;
+            }
+
+            e.preventDefault();
+            var promise = $cms.statsEventTrack(null, '{!cns_components:DOWNLOAD_WHITEPAPER;}').then(function () {
+                btn.form.submit();
+            });
+        });
+    };
+
     $cms.views.CnsMemberProfileScreen = CnsMemberProfileScreen;
     /**
      * @memberof $cms.views
@@ -42,26 +250,6 @@
         });
     }
 
-    $cms.templates.cnsGuestBar = function cnsGuestBar(params, container) {
-        $dom.on(container, 'submit', '.js-submit-check-field-login-username', function (e, form) {
-            if ($cms.form.checkFieldForBlankness(form.elements['username'])) {
-                $cms.ui.disableFormButtons(form);
-            } else {
-                e.preventDefault();
-            }
-        });
-
-        $dom.on(container, 'click', '.js-click-checkbox-remember-me-confirm', function (e, checkbox) {
-            if (checkbox.checked) {
-                $cms.ui.confirm('{!REMEMBER_ME_COOKIE;,{$SITE_NAME}}', function (answer) {
-                    if (!answer) {
-                        checkbox.checked = false;
-                    }
-                });
-            }
-        });
-    };
-
     $util.inherits(CnsMemberProfileScreen, $cms.View, /**@lends CnsMemberProfileScreen#*/ {
         events: function () {
             return {
@@ -77,21 +265,6 @@
         }
     });
 
-    $cms.templates.blockMainJoinDone = function blockMainJoinDone(params, container) {
-        $dom.on(container, 'submit', '.js-submit-stats-event-track-dl-whitepaper', function (submitEvent) {
-            if ($dom.isCancelledSubmit(submitEvent)) {
-                return;
-            }
-
-            submitEvent.preventDefault();
-            var promise = $cms.statsEventTrack(null, '{!cns_components:DOWNLOAD_WHITEPAPER;}').then(function () {
-                return true;
-            });
-
-            $dom.awaitValidationPromiseAndResubmit(submitEvent, promise);
-        });
-    };
-
     $cms.templates.cnsMemberProfileEdit = function cnsMemberProfileEdit(params, container) {
         $dom.on(container, 'click', '.js-click-select-edit-tab', function (e, clicked) {
             var tabSet = 'edit--',
@@ -101,133 +274,6 @@
                 $cms.ui.selectTab('g', tabSet + tabCode);
             }
         });
-    };
-
-    $cms.templates.cnsMemberDirectoryScreenFilter = function cnsMemberDirectoryScreenFilter(params, container) {
-        $dom.on(container, 'keyup', '.js-keyup-input-filter-update-ajax-member-list', function (e, input) {
-            $cms.form.updateAjaxMemberList(input, null, false, e);
-        });
-    };
-
-    $cms.templates.cnsMemberProfileAbout = function cnsMemberProfileAbout(params, container) {
-        $dom.on(container, 'click', '.js-click-member-profile-about-decrypt-data', function () {
-            $coreCns.decryptData();
-        });
-    };
-
-    $cms.functions.moduleAdminCnsGroups = function moduleAdminCnsGroups() {
-        var form;
-
-        if (document.getElementById('delete')) {
-            form = document.getElementById('delete').form;
-            var crf = function () {
-                if (form.elements['new_usergroup']) {
-                    form.elements['new_usergroup'].disabled = (form.elements['delete'] && !form.elements['delete'].checked);
-                }
-            };
-            crf();
-            if (form.elements['delete']) {
-                form.elements['delete'].onchange = crf;
-            }
-        }
-
-        if (document.getElementById('is_presented_at_install')) {
-            form = document.getElementById('is_presented_at_install').form;
-            var crf2 = function () {
-                if (form.elements['is_default']) {
-                    form.elements['is_default'].disabled = (form.elements['is_presented_at_install'].checked);
-                }
-                if (form.elements['is_presented_at_install'].checked) {
-                    form.elements['is_default'].checked = false;
-                }
-            };
-            crf2();
-            form.elements['is_presented_at_install'].onchange = crf2;
-            var crf3 = function () {
-                if (form.elements['absorb']) {
-                    form.elements['absorb'].disabled = (form.elements['is_private_club'] && form.elements['is_private_club'].checked);
-                }
-            };
-            crf3();
-            if (form.elements['is_private_club']) {
-                form.elements['is_private_club'].onchange = crf3;
-            }
-        }
-    };
-
-    $cms.functions.moduleAdminCnsGroupsRunStart = function moduleAdminCnsGroupsRunStart() {
-        var form = document.getElementById('main-form'),
-            validValue;
-
-        form.addEventListener('submit', function submitCheck(submitEvent) {
-            var value = form.elements['usergroup_name'].value;
-
-            if ($dom.isCancelledSubmit(submitEvent) || (value === validValue)) {
-                return;
-            }
-
-            var submitBtn = form.querySelector('#submit-button');
-            var url = '{$FIND_SCRIPT_NOHTTP;^,snippet}?snippet=exists_usergroup&name=' + encodeURIComponent(value) + $cms.keep();
-            submitEvent.preventDefault();
-            var promise = $cms.form.doAjaxFieldTest(url).then(function (valid) {
-                if (valid) {
-                    validValue = value;
-                }
-
-                return valid;
-            });
-
-            $dom.awaitValidationPromiseAndResubmit(submitEvent, promise, submitBtn);
-        });
-    };
-
-    $cms.functions.moduleAdminCnsEmoticons = function moduleAdminCnsEmoticons() {
-        var form = document.getElementById('main-form'),
-            validValue;
-
-        form.addEventListener('submit', function submitCheck(submitEvent) {
-            var value = form.elements['code'].value;
-
-            if ($dom.isCancelledSubmit(submitEvent) || (value === validValue)) {
-                return;
-            }
-
-            var submitBtn = form.querySelector('#submit-button');
-            var url = '{$FIND_SCRIPT_NOHTTP;^,snippet}?snippet=exists_emoticon&name=' + encodeURIComponent(value) + $cms.keep();
-            submitEvent.preventDefault();
-            var promise = $cms.form.doAjaxFieldTest(url).then(function (valid) {
-                if (valid) {
-                    validValue = value;
-                }
-
-                return valid;
-            });
-
-            $dom.awaitValidationPromiseAndResubmit(submitEvent, promise, submitBtn);
-        });
-    };
-
-    $cms.functions.adminCnsMembersDownloadCsv = function adminCnsMembersDownloadCsv() {
-        var form = $dom.$('#filename').form;
-        crf();
-        for (var i = 0; i < form.elements['preset'].length; i++) {
-            $dom.on(form.elements['preset'][i], 'click', crf);
-        }
-
-        function crf() {
-            var preset = $cms.form.radioValue(form.elements['preset']);
-            if (preset === '') {
-                form.elements['fields_to_use'].disabled = false;
-                form.elements['order_by'].disabled = false;
-                form.elements['usergroups'].disabled = false;
-                form.elements['filename'].value = form.elements['filename'].defaultValue;
-            } else {
-                form.elements['fields_to_use'].disabled = true;
-                form.elements['order_by'].disabled = true;
-                form.elements['usergroups'].disabled = true;
-                form.elements['filename'].value = form.elements['filename'].defaultValue.replace(/^{$LCASE,{!MEMBERS;}}-/, preset + '-');
-            }
-        }
     };
 
     $cms.functions.hookProfilesTabsEditDeleteRenderTab = function hookProfilesTabsEditDeleteRenderTab() {
@@ -247,100 +293,46 @@
     };
 
     $cms.functions.hookProfilesTabsEditSettingsRenderTab = function hookProfilesTabsEditSettingsRenderTab() {
-        var form = document.getElementById('main-form'),
-            submitBtn = form.querySelector('#account-submit-button'),
+        var extraChecks = [],
             validValue;
-
-        form.addEventListener('submit', function submitCheck(submitEvent) {
-            if ((form.elements['edit_password'] == null) || $dom.isCancelledSubmit(submitEvent)) {
-                return;
+        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
+            if (form.elements['edit_password'] == null) {
+                return true;
             }
 
             if ((form.elements['password_confirm']) && (form.elements['password_confirm'].value !== form.elements['edit_password'].value)) {
-                submitBtn.disabled = false;
                 $cms.ui.alert('{!PASSWORD_MISMATCH;^}');
-                $dom.cancelSubmit(submitEvent);
-                return;
+                alerted.valueOf = function () { return true; };
+                firstFieldWithError = form.elements['password_confirm'];
+                return false;
             }
 
             var value = form.elements['edit_password'].value;
-            if ((value !== '') && (value !== validValue)) {
-                submitEvent.preventDefault();
+            if ((value === validValue) || (value === '')) {
+                return true;
+            }
+
+            return function () {
                 var url = '{$FIND_SCRIPT_NOHTTP;^,username_check}' + $cms.keep(true);
-                var promise = $cms.form.doAjaxFieldTest(url, 'password=' + encodeURIComponent(value)).then(function (valid) {
+                return $cms.form.doAjaxFieldTest(url, 'password=' + encodeURIComponent(value)).then(function (valid) {
                     if (valid) {
                         validValue = value;
                     }
 
-                    return valid;
+                    if (!valid) {
+                        erroneous.valueOf = function () { return true; };
+                        alerted.valueOf = function () { return true; };
+                        firstFieldWithError = form.elements['edit_password'];
+                    }
                 });
-
-                $dom.awaitValidationPromiseAndResubmit(submitEvent, promise, submitBtn);
-            }
+            };
         });
+        return extraChecks;
     };
 
-    $cms.templates.cnsJoinStep1Screen = function cnsJoinStep1Screen(params, container) {
-        var agreeCheckbox = container.querySelector('.js-chb-click-toggle-proceed-btn');
-
-        if (agreeCheckbox) {
-            document.getElementById('proceed-button').disabled = !agreeCheckbox.checked;
-        }
-
-        $dom.on(container, 'click', '.js-chb-click-toggle-proceed-btn', function (e, checkbox) {
-            var checkBoxes = $('.js-chb-click-toggle-proceed-btn');
-            var allChecked = true;
-            for (var i = 0; i < checkBoxes.length; i++) {
-                if (!checkBoxes[i].checked) {
-                    allChecked = false;
-                }
-            }
-            document.getElementById('proceed-button').disabled = !allChecked;
-        });
-
-        $dom.on(container, 'click', '.js-click-set-top-location', function (e, target) {
-            window.top.location = strVal(target.dataset.tpTopLocation);
-        });
-    };
-
-
-    $cms.templates.cnsViewGroupScreen = function cnsViewGroupScreen(params, container) {
-        $dom.on(container, 'submit', '.js-form-submit-add-member-to-group', function (e, form) {
-            if ($cms.form.checkFieldForBlankness(form.elements.username)) {
-                $cms.ui.disableFormButtons(form);
-            } else {
-                e.preventDefault();
-            }
-        });
-
-        $dom.on(container, 'keyup', '.js-input-add-member-username', function (e, input) {
-            $cms.form.updateAjaxMemberList(input, null, false, e);
-        });
-    };
-
-    $cms.templates.cnsEmoticonTable = function cnsEmoticonTable(params, container) {
-        $dom.on(container, 'click', '.js-click-do-emoticon', function (e, target) {
-            var fieldName = target.dataset.tpFieldName;
-            if (fieldName) {
-                window.$editing.doEmoticon(fieldName, target, true);
-            }
-        });
-    };
-
-    $cms.templates.joinForm = function (params, container) {
-        var skippable = strVal(params.skippable);
-
-        joinForm(params);
-
-        $dom.on(container, 'click', '.js-click-btn-skip-step', function () {
-            $dom.$('#' + skippable).value = '1';
-        });
-
-        $dom.on(container, 'submit', '.js-submit-modesecurity-workaround', function (e, form) {
-            if ($cms.form.isModSecurityWorkaroundEnabled() && !e.defaultPrevented) {
-                e.preventDefault();
-                $cms.form.modSecurityWorkaround(form);
-            }
+    $cms.templates.cnsMemberProfileAbout = function cnsMemberProfileAbout(params, container) {
+        $dom.on(container, 'click', '.js-click-member-profile-about-decrypt-data', function () {
+            $coreCns.decryptData();
         });
     };
 
@@ -399,9 +391,9 @@
         button.className = 'btn btn-primary btn-scri buttons--cancel';
         $dom.html(button, '{$GET;^,icon_cancel} {!INPUTSYSTEM_CANCEL;^}');
         // Remove the form when it's cancelled
-        button.addEventListener('click', function () {
+        button.addEventListener('click', function (e) {
             document.body.removeChild(container);
-            return false;
+            e.preventDefault();
         });
         proceedDiv.appendChild(button);
 
@@ -439,106 +431,153 @@
         }, 0);
     };
 
-    function joinForm(params) {
-        var form = document.getElementById('username').form,
-            submitBtn = form.querySelector('#submit-button');
+    $cms.templates.cnsMemberDirectoryScreenFilter = function cnsMemberDirectoryScreenFilter(params, container) {
+        $dom.on(container, 'keyup', '.js-keyup-input-filter-update-ajax-member-list', function (e, input) {
+            $cms.form.updateAjaxMemberList(input, null, false, e);
+        });
+    };
 
-        form.elements['username'].onchange = function () {
-            if (form.elements['intro_title']) {
-                form.elements['intro_title'].value = $util.format('{!cns:INTRO_POST_DEFAULT;^}', [form.elements['username'].value]);
-            }
-        };
+    $cms.functions.moduleAdminCnsGroups = function moduleAdminCnsGroups() {
+        var form;
 
-        var validValues;
-
-        form.addEventListener('submit', function submitCheck(submitEvent) {
-            if ($dom.isCancelledSubmit(submitEvent)) {
-                return;
-            }
-
-            if ((form.elements['confirm'] !== undefined) && (form.elements['confirm'].type === 'checkbox') && (!form.elements['confirm'].checked)) {
-                $cms.ui.alert('{!cns:DESCRIPTION_I_AGREE_RULES;^}');
-                $dom.cancelSubmit(submitEvent);
-                return;
-            }
-
-            if ((form.elements['email_address_confirm'] !== undefined) && (form.elements['email_address_confirm'].value !== form.elements['email'].value)) {
-                $cms.ui.alert('{!EMAIL_ADDRESS_MISMATCH;^}');
-                $dom.cancelSubmit(submitEvent);
-                return;
-            }
-
-            if ((form.elements['password_confirm'] !== undefined) && (form.elements['password_confirm'].value !== form.elements['password'].value)) {
-                $cms.ui.alert('{!PASSWORD_MISMATCH;^}');
-                $dom.cancelSubmit(submitEvent);
-                return;
-            }
-
-            var checkPromises = [], values = [];
-
-            values.push(form.elements['username'].value);
-            values.push(form.elements['password'].value);
-
-            if (params.invitesEnabled) {
-                values.push(form.elements['email'].value);
-            }
-
-            if (params.onePerEmailAddress) {
-                values.push(form.elements['email'].value);
-            }
-
-            if (params.useCaptcha && ($cms.configOption('recaptcha_site_key') === '')) {
-                values.push(form.elements['captcha'].value);
-            }
-
-            if ((validValues != null) && (validValues.length === values.length)) {
-                var areSame = validValues.every(function (element, index) {
-                    return element === values[index];
-                });
-
-                if (areSame) {
-                    // All valid
-                    return;
+        if (document.getElementById('delete')) {
+            form = document.getElementById('delete').form;
+            var crf = function () {
+                if (form.elements['new_usergroup']) {
+                    form.elements['new_usergroup'].disabled = (form.elements['delete'] && !form.elements['delete'].checked);
                 }
+            };
+            crf();
+            if (form.elements['delete']) {
+                form.elements['delete'].onchange = crf;
+            }
+        }
+
+        if (document.getElementById('is_presented_at_install')) {
+            form = document.getElementById('is_presented_at_install').form;
+            var crf2 = function () {
+                if (form.elements['is_default']) {
+                    form.elements['is_default'].disabled = (form.elements['is_presented_at_install'].checked);
+                }
+                if (form.elements['is_presented_at_install'].checked) {
+                    form.elements['is_default'].checked = false;
+                }
+            };
+            crf2();
+            form.elements['is_presented_at_install'].onchange = crf2;
+            var crf3 = function () {
+                if (form.elements['absorb']) {
+                    form.elements['absorb'].disabled = (form.elements['is_private_club'] && form.elements['is_private_club'].checked);
+                }
+            };
+            crf3();
+            if (form.elements['is_private_club']) {
+                form.elements['is_private_club'].onchange = crf3;
+            }
+        }
+    };
+
+    $cms.templates.cnsViewGroupScreen = function cnsViewGroupScreen(params, container) {
+        $dom.on(container, 'click', '.js-add-member-to-group', function (e, btn) {
+            var form = btn.form;
+
+            if ($cms.form.checkFieldForBlankness(form.elements.username)) {
+                $cms.ui.disableFormButtons(form);
+            } else {
+                e.preventDefault();
+            }
+        });
+
+        $dom.on(container, 'keyup', '.js-input-add-member-username', function (e, input) {
+            $cms.form.updateAjaxMemberList(input, null, false, e);
+        });
+    };
+
+    $cms.functions.moduleAdminCnsGroupsRunStart = function moduleAdminCnsGroupsRunStart() {
+        var extraChecks = [],
+            validValue;
+        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
+            var value = form.elements['usergroup_name'].value;
+
+            if ((value === validValue) || (value === '')) {
+                return true;
             }
 
-            var url = params.usernameCheckScript + '?username=' + encodeURIComponent(form.elements['username'].value) + $cms.keep();
-            checkPromises.push($cms.form.doAjaxFieldTest(url, 'password=' + encodeURIComponent(form.elements['password'].value)));
-
-            if (params.invitesEnabled) {
-                url = params.snippetScript + '?snippet=invite_missing&name=' + encodeURIComponent(form.elements['email'].value) + $cms.keep();
-                checkPromises.push($cms.form.doAjaxFieldTest(url));
-            }
-
-            if (params.onePerEmailAddress) {
-                url = params.snippetScript + '?snippet=exists_email&name=' + encodeURIComponent(form.elements['email'].value) + $cms.keep();
-                checkPromises.push($cms.form.doAjaxFieldTest(url));
-            }
-
-            if (params.useCaptcha && ($cms.configOption('recaptcha_site_key') === '')) {
-                url = params.snippetScript + '?snippet=captcha_wrong&name=' + encodeURIComponent(form.elements['captcha'].value) + $cms.keep();
-                checkPromises.push($cms.form.doAjaxFieldTest(url).then(function (valid) {
-                    if (!valid) {
-                        $cms.functions.refreshCaptcha(document.getElementById('captcha-readable'), document.getElementById('captcha-audio'));
+            return function () {
+                var url = '{$FIND_SCRIPT_NOHTTP;^,snippet}?snippet=exists_usergroup&name=' + encodeURIComponent(value) + $cms.keep();
+                return $cms.form.doAjaxFieldTest(url).then(function (valid) {
+                    if (valid) {
+                        validValue = value;
                     }
 
-                    return valid;
-                }));
+                    if (!valid) {
+                        erroneous.valueOf = function () { return true; };
+                        alerted.valueOf = function () { return true; };
+                        firstFieldWithError = form.elements['usergroup_name'];
+                    }
+                });
+            };
+        });
+        return extraChecks;
+    };
+
+    $cms.functions.moduleAdminCnsEmoticons = function moduleAdminCnsEmoticons() {
+        var extraChecks = [],
+            validValue;
+        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
+            var value = form.elements['code'].value;
+
+            if ((value === validValue) || (value === '')) {
+                return true;
             }
 
-            submitEvent.preventDefault();
+            return function () {
+                var url = '{$FIND_SCRIPT_NOHTTP;^,snippet}?snippet=exists_emoticon&name=' + encodeURIComponent(value) + $cms.keep();
+                return $cms.form.doAjaxFieldTest(url).then(function (valid) {
+                    if (valid) {
+                        validValue = value;
+                    }
 
-            var promise = Promise.all(checkPromises).then(function (validities) {
-                var allValid = !validities.includes(false);
-
-                if (allValid) {
-                    validValues = values;
-                }
-
-                return allValid;
-            });
-
-            $dom.awaitValidationPromiseAndResubmit(submitEvent, promise, submitBtn);
+                    if (!valid) {
+                        erroneous.valueOf = function () { return true; };
+                        alerted.valueOf = function () { return true; };
+                        firstFieldWithError = form.elements['code'];
+                    }
+                });
+            };
         });
-    }
+        return extraChecks;
+    };
+
+    $cms.functions.adminCnsMembersDownloadCsv = function adminCnsMembersDownloadCsv() {
+        var form = $dom.$('#filename').form;
+        crf();
+        for (var i = 0; i < form.elements['preset'].length; i++) {
+            $dom.on(form.elements['preset'][i], 'click', crf);
+        }
+
+        function crf() {
+            var preset = $cms.form.radioValue(form.elements['preset']);
+            if (preset === '') {
+                form.elements['fields_to_use'].disabled = false;
+                form.elements['order_by'].disabled = false;
+                form.elements['usergroups'].disabled = false;
+                form.elements['filename'].value = form.elements['filename'].defaultValue;
+            } else {
+                form.elements['fields_to_use'].disabled = true;
+                form.elements['order_by'].disabled = true;
+                form.elements['usergroups'].disabled = true;
+                form.elements['filename'].value = form.elements['filename'].defaultValue.replace(/^{$LCASE,{!MEMBERS;}}-/, preset + '-');
+            }
+        }
+    };
+
+    $cms.templates.cnsEmoticonTable = function cnsEmoticonTable(params, container) {
+        $dom.on(container, 'click', '.js-click-do-emoticon', function (e, target) {
+            var fieldName = target.dataset.tpFieldName;
+            if (fieldName) {
+                window.$editing.doEmoticon(fieldName, target, true);
+            }
+        });
+    };
 }(window.$cms, window.$util, window.$dom));

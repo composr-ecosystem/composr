@@ -22,11 +22,11 @@
 
             $cms.ui.confirm('{!cns_polls:VOTE_FORFEIGHT;^}', function (answer) {
                 if (answer) {
-                    $dom.submit(form);
+                    $dom.trigger(form, 'submit');
                 }
             });
 
-            return false;
+            e.preventDefault();
         }
     });
 

@@ -4,7 +4,7 @@
     $cms.templates.cnsSavedWarning = function cnsSavedWarning(params) {
         var id = $cms.filter.id(params.title);
 
-        document.getElementById('saved-use--' + id).addEventListener('submit', function () {
+        $dom.$(document.getElementById('saved-use--' + id), 'button').addEventListener('click', function (e) {
             var win = $cms.getMainCmsWindow();
 
             var explanation = win.document.getElementById('explanation');
@@ -20,19 +20,19 @@
 
             });
 
-            return false;
+            e.preventDefault();
         });
 
-        document.getElementById('saved-delete--' + id).getElementsByTagName('input')[1].addEventListener('click', function () {
+        document.getElementById('saved-delete--' + id).getElementsByTagName('input')[1].addEventListener('click', function (e) {
             var form = this.form;
 
             $cms.ui.confirm(params.question, function (answer) {
                 if (answer) {
-                    $dom.submit(form);
+                    $dom.trigger(form, 'submit');
                 }
             });
 
-            return false;
+            e.preventDefault();
         });
     };
 }(window.$cms, window.$util, window.$dom));

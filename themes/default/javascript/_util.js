@@ -1,3 +1,5 @@
+/* This file contains various utility functions that are not Composr-specific */
+
 (function ($util) {
     'use strict';
     /**
@@ -286,8 +288,8 @@
         promiseFactories = arrVal(promiseFactories);
 
         var result = Promise.resolve();
-        promiseFactories.forEach(function (promiseFactory) {
-            result = result.then(promiseFactory);
+        promiseFactories.forEach(function (promise) {
+            result = result.then(promise);
         });
 
         return result;

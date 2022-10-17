@@ -40,13 +40,13 @@
 		{+START,IF_PASSED_AND_TRUE,RIGHT}<div class="clearfix"><div class="right force-margin">{+END}
 
 		{$INC,notification_id}
-		<form id="nenable-{$GET*,notification_id}" title="{!notifications:NOTIFICATIONS}"{+START,IF,{$NOTIFICATIONS_ENABLED,{NOTIFICATIONS_ID},{$GET,NOTIFICATIONS_TYPE}}} style="display: none" aria-hidden="true"{+END} data-open-as-overlay="{}" class="inline js-submit-show-disable-form" rel="enable-notifications" method="post" action="{$PAGE_LINK*,{$GET,NOTIFICATIONS_PAGE_LINK}:redirect={$SELF_URL&*,1,0,0,wide_high=<null>}}">
+		<form id="nenable-{$GET*,notification_id}" title="{!notifications:NOTIFICATIONS}"{+START,IF,{$NOTIFICATIONS_ENABLED,{NOTIFICATIONS_ID},{$GET,NOTIFICATIONS_TYPE}}} style="display: none" aria-hidden="true"{+END} data-open-as-overlay="{}" class="inline" rel="enable-notifications" method="post" action="{$PAGE_LINK*,{$GET,NOTIFICATIONS_PAGE_LINK}:redirect={$SELF_URL&*,1,0,0,wide_high=<null>}}">
 			{$INSERT_FORM_POST_SECURITY,1}
-			<button type="submit" class="btn btn-primary {$GET*,button_type} buttons--notifications-enable">{+START,INCLUDE,ICON}NAME=buttons/notifications_enable{+END} {$GET,button_label_enable}</button>
+			<button type="submit" class="btn btn-primary {$GET*,button_type} buttons--notifications-enable js-show-disable-form">{+START,INCLUDE,ICON}NAME=buttons/notifications_enable{+END} {$GET,button_label_enable}</button>
 		</form>
-		<form id="ndisable-{$GET*,notification_id}" title="{!notifications:NOTIFICATIONS}"{+START,IF,{$NOT,{$NOTIFICATIONS_ENABLED,{NOTIFICATIONS_ID},{$GET,NOTIFICATIONS_TYPE}}}} style="display: none" aria-hidden="true"{+END} data-open-as-overlay="{}" class="inline js-submit-show-enable-form" rel="disable-notifications" method="post" action="{$PAGE_LINK*,{$GET,NOTIFICATIONS_PAGE_LINK}:redirect={$SELF_URL&*,1,0,0,wide_high=<null>}}">
+		<form id="ndisable-{$GET*,notification_id}" title="{!notifications:NOTIFICATIONS}"{+START,IF,{$NOT,{$NOTIFICATIONS_ENABLED,{NOTIFICATIONS_ID},{$GET,NOTIFICATIONS_TYPE}}}} style="display: none" aria-hidden="true"{+END} data-open-as-overlay="{}" class="inline" rel="disable-notifications" method="post" action="{$PAGE_LINK*,{$GET,NOTIFICATIONS_PAGE_LINK}:redirect={$SELF_URL&*,1,0,0,wide_high=<null>}}">
 			{$INSERT_FORM_POST_SECURITY,1}
-			<button type="submit" class="btn btn-primary {$GET*,button_type} buttons--notifications-disable">{+START,INCLUDE,ICON}NAME=buttons/notifications_disable{+END} {$GET,button_label_disable}</button>
+			<button type="submit" class="btn btn-primary {$GET*,button_type} buttons--notifications-disable js-show-enable-form">{+START,INCLUDE,ICON}NAME=buttons/notifications_disable{+END} {$GET,button_label_disable}</button>
 		</form>
 
 		{+START,IF_PASSED_AND_TRUE,RIGHT}</div></div>{+END}

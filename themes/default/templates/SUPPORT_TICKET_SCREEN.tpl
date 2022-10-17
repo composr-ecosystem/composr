@@ -154,7 +154,7 @@
 	{$SET,COMMENT_POSTING_ROWS,20}
 
 	{+START,IF_NON_EMPTY,{COMMENT_FORM}}
-		<form title="{!PRIMARY_PAGE_FORM}" id="comments-form" class="js-submit-check-post-and-ticket-type-id-fields" action="{URL*}" method="post" enctype="multipart/form-data" itemscope="itemscope" itemtype="http://schema.org/ContactPage">
+		<form title="{!PRIMARY_PAGE_FORM}" id="comments-form" action="{URL*}" method="post" enctype="multipart/form-data" itemscope="itemscope" itemtype="http://schema.org/ContactPage">
 			{$INSERT_FORM_POST_SECURITY}
 
 			{COMMENT_FORM}

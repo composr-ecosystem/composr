@@ -60,7 +60,7 @@
         },
         textareaKeyup: function (e, textarea) {
             if (!$cms.isMobile()) {
-                $cms.manageScrollHeight(textarea);
+                $cms.ui.manageScrollHeight(textarea);
             }
             this.maintainCharCount();
         },
@@ -184,7 +184,7 @@
     $cms.templates.activity = function activity(params, container) {
         var liid = strVal(params.liid);
 
-        $dom.on(container, 'click', '.js-submit-confirm-update-remove', function (e) {
+        $dom.on(container, 'click', '.js-confirm-update-remove', function (e) {
             sUpdateRemove(e, liid);
         });
     };

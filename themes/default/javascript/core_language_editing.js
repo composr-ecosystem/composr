@@ -32,15 +32,6 @@
         document.body.appendChild(newScript);
     };
 
-    $cms.templates.translateScreen = function (params, container) {
-        $dom.on(container, 'submit', '.js-form-submit-modsecurity-workaround', function (e, form) {
-            if ($cms.form.isModSecurityWorkaroundEnabled() && !e.defaultPrevented) {
-                e.preventDefault();
-                $cms.form.modSecurityWorkaround(form);
-            }
-        });
-    };
-
     $cms.templates.translateLine = function (params, container) {
         $dom.on(container, 'mouseover', '.js-mouseover-enable-textarea-translate-field', function () {
             var textarea = $dom.$(container, '.js-textarea-translate-field');

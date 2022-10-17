@@ -54,11 +54,23 @@
 
                     captchaEl.dataset.recaptchaSuccessful = '0';
 
+                    form.lastSubmitEvent = null;
+
                     grecaptchaParameters = {
                         sitekey: $cms.configOption('recaptcha_site_key'),
                         callback: function () {
                             captchaEl.dataset.recaptchaSuccessful = '1';
-                            $dom.submit(form);
+
+                            if (form.lastSubmitEvent && $dom.isCancelledSubmit(form.lastSubmitEvent)) {
+                                return;
+                            }
+
+                            var submitButton = $dom.$(form, 'input[type="submit"], button[type="submit"]');
+                            if (submitButton) {
+                                $dom.trigger(submitButton, 'click');
+                            } else {
+                                $dom.trigger(form, 'submit');
+                            }
                         },
                         theme: '{$?,{$THEME_DARK},dark,light}',
                         size: 'invisible'
@@ -68,16 +80,22 @@
                         grecaptchaParameters.tabindex = captchaEl.dataset.tabindex;
                     }
 
-                    // Decrease perceived page load time - the delay stops the browser 'spinning' while loading 13 URLs right away - people won't submit form within 5 seconds
-                    setTimeout(function () {
-                        window.grecaptcha.render(captchaEl, grecaptchaParameters, false);
-                    }, 5000);
+                    window.grecaptcha.render(captchaEl, grecaptchaParameters, false);
 
-                    $dom.on(form, 'submit', function (e) {
+                    if (typeof form.extraChecks == 'undefined') {
+                        form.extraChecks = [];
+                    }
+
+                    form.extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
                         if (!captchaEl.dataset.recaptchaSuccessful || (captchaEl.dataset.recaptchaSuccessful === '0')) {
-                            e.preventDefault();
+                            // CAPTCHA either not run yet, or failed, so execute it (grecaptchaParameters.callback will submit the form if it passes)
                             window.grecaptcha.execute();
+
+                            alerted.valueOf = function () { return true; }; // Don't show a form-not-filled in error, as it's not that
+
+                            return false;
                         }
+                        return true;
                     });
                 });
             });
@@ -85,43 +103,38 @@
     };
 
     $cms.functions.captchaCaptchaAjaxCheck = function captchaCaptchaAjaxCheck() {
-        var form = document.getElementById('main-form');
-
-        if (!form) {
-            form = document.getElementById('posting-form');
-        }
-
         if ($cms.configOption('recaptcha_site_key') !== '') { // reCAPTCHA Enabled
             return;
         }
 
-        // Need to set a timeout because CAPTCHA might appear via JS
-        setTimeout(function () {
+        var extraChecks = [],
+            validValue;
+        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
             var captchaEl = form.elements['captcha'],
-                validValue;
-            form.addEventListener('submit', function submitCheck(submitEvent) {
-                var value = captchaEl.value;
+                value = captchaEl.value;
 
-                if ($dom.isCancelledSubmit(submitEvent) || (value === validValue)) {
-                    return;
-                }
+            if ((value === validValue) || (value === '')) {
+                return true;
+            }
 
+            return function () {
                 var url = '{$FIND_SCRIPT_NOHTTP;,snippet}?snippet=captcha_wrong&name=' + encodeURIComponent(value) + $cms.keep();
-                submitEvent.preventDefault();
-                var submitBtn = form.querySelector('#submit-button');
-                var promise = $cms.form.doAjaxFieldTest(url).then(function (valid) {
+                return $cms.form.doAjaxFieldTest(url).then(function (valid) {
                     if (valid) {
                         validValue = value;
                     } else {
                         $cms.functions.refreshCaptcha(document.getElementById('captcha-readable'), document.getElementById('captcha-audio'));
                     }
 
-                    return valid;
+                    if (!valid) {
+                        erroneous.valueOf = function () { return true; };
+                        alerted.valueOf = function () { return true; };
+                        firstFieldWithError = captchaEl;
+                    }
                 });
-
-                $dom.awaitValidationPromiseAndResubmit(submitEvent, promise, submitBtn);
-            });
+            };
         });
+        return extraChecks;
     };
 
     $cms.functions.refreshCaptcha = function refreshCaptcha(captchaReadable, audioCaptchaElement) {

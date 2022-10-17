@@ -323,12 +323,12 @@
 
                     // Jump-to
                     a.addEventListener('click', (function (selector) {
-                        return function () {
+                        return function (e) {
                             window.editareaDoSearch(
                                 'e_' + fileId,
                                 '^[ \t]*' + selector.replace(/\./g, '\\.').replace(/\[/g, '\\[').replace(/\]/g, '\\]').replace(/\{/g, '\\{').replace(/\}/g, '\\}').replace(/\+/g, '\\+').replace(/\*/g, '\\*').replace(/\s/g, '[ \t]+') + '\\s*\\{'
                             );
-                            return false;
+                            e.preventDefault();
                         };
                     }(selector)));
 
@@ -482,7 +482,7 @@
                 function (url) {
                     if (url !== null) {
                         button.form.action = url;
-                        $dom.submit(button.form);
+                        $dom.trigger(button.form, 'submit');
                     }
                 },
                 '{!PREVIEW;^}'
@@ -519,29 +519,31 @@
                 codename.value = title.value.replace(/[^{$URL_CONTENT_REGEXP_JS}]/g, '');
             }
         });
-        var form = document.getElementById('main-form'),
-            submitBtn = form.querySelector('#submit-button'),
+        var extraChecks = [],
             validValue;
+        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
+            var value = form.elements['theme'].value;
 
-        form.addEventListener('submit', function submitCheck(submitEvent) {
-            var value = form.elements['theme'].value,
-                url = '{$FIND_SCRIPT_NOHTTP;,snippet}?snippet=exists_theme&name=' + encodeURIComponent(value) + $cms.keep();
-
-            if ($dom.isCancelledSubmit(submitEvent) || (value === validValue)) {
-                return;
+            if ((value === validValue) || (value === '')) {
+                return true;
             }
 
-            submitEvent.preventDefault();
-            var promise = $cms.form.doAjaxFieldTest(url).then(function (valid) {
-                if (valid) {
-                    validValue = value;
-                }
+            return function () {
+                var url = '{$FIND_SCRIPT_NOHTTP;,snippet}?snippet=exists_theme&name=' + encodeURIComponent(value) + $cms.keep();
+                return $cms.form.doAjaxFieldTest(url).then(function (valid) {
+                    if (valid) {
+                        validValue = value;
+                    }
 
-                return valid;
-            });
-
-            $dom.awaitValidationPromiseAndResubmit(submitEvent, promise, submitBtn);
+                    if (!valid) {
+                        erroneous.valueOf = function () { return true; };
+                        alerted.valueOf = function () { return true; };
+                        firstFieldWithError = form.elements['theme'];
+                    }
+                });
+            };
         });
+        return extraChecks;
     };
 
     $cms.templates.tempcodeTesterScreen = function tempcodeTesterScreen(params, container) {
@@ -790,8 +792,9 @@
         var file = strVal(params.file),
             revisionId = strVal(params.revisionId);
 
-        $dom.on(container, 'click', function () {
+        $dom.on(container, 'click', function (e) {
             templateEditorRestoreRevision(file, revisionId);
+            e.preventDefault();
         });
 
         function templateEditorRestoreRevision(file, revisionId) {
@@ -804,8 +807,6 @@
 
                 templateEditorTabLoadedContent(html, file);
             });
-
-            return false;
         }
     };
 

@@ -1,3 +1,5 @@
+/* This file contains CMS-wide Views */
+
 (function ($cms, $util, $dom) {
     'use strict';
 
@@ -301,7 +303,7 @@
         handleTrayCookie: function () {
             var cookieValue = $cms.readCookie(this.cookie), expanded;
 
-            if (($dom.notDisplayed(this.contentEl) && (cookieValue === 'open')) || ($dom.isDisplayed(this.contentEl) && (cookieValue === 'closed'))) {
+            if ((!$dom.isDisplayed(this.contentEl) && (cookieValue === 'open')) || ($dom.isDisplayed(this.contentEl) && (cookieValue === 'closed'))) {
                 expanded = $cms.ui.toggleableTray(this.contentEl, false);
 
                 this.el.classList.toggle('is-expanded', expanded);
@@ -524,8 +526,6 @@
                     });
 
                     this.containerEl.appendChild(iframe);
-
-                    $dom.animateFrameLoad(iframe, 'overlay-iframe', 50, true);
 
                     setTimeout(function () {
                         if (self.el) {
@@ -1178,8 +1178,6 @@
                 'click .js-global-click-load-software-chat': 'loadSoftwareChat',
 
                 'submit .js-global-submit-staff-actions-select': 'staffActionsSelect',
-
-                'keypress .js-global-input-su-keypress-enter-submit-form': 'inputSuKeypress'
             };
         },
 
@@ -1365,12 +1363,6 @@
                 if (test) {
                     form.target = test.name;
                 }
-            }
-        },
-
-        inputSuKeypress: function (e, input) {
-            if ($dom.keyPressed(e, 'Enter')) {
-                $dom.submit(input.form);
             }
         },
 
@@ -1622,7 +1614,7 @@
             };
         },
         toggleHelperPanel: function () {
-            var show = $dom.notDisplayed(this.contentsEl),
+            var show = !$dom.isDisplayed(this.contentsEl),
                 panelRight = $dom.$('#panel-right'),
                 helperPanelContents = $dom.$('#helper-panel-contents'),
                 helperPanelToggle = $dom.$('#helper-panel-toggle'),
@@ -1639,7 +1631,7 @@
                 }
 
                 helperPanelToggle.title = '{!HELP_OR_ADVICE}: {!HIDE}';
-                $cms.setIcon(helperPanelToggleIcon, 'helper_panel/hide', '{$IMG;,icons/helper_panel/hide}');
+                $cms.ui.setIcon(helperPanelToggleIcon, 'helper_panel/hide', '{$IMG;,icons/helper_panel/hide}');
             } else {
                 if ($cms.readCookie('hide_helper_panel') === '') {
                     $cms.ui.confirm('{!CLOSING_HELP_PANEL_CONFIRM;^}').then(function (answer) {
@@ -1659,7 +1651,7 @@
                 helperPanelContents.style.display = 'none';
                 $cms.setCookie('hide_helper_panel', '1', 100);
                 helperPanelToggle.title = '{!HELP_OR_ADVICE}: {!SHOW}';
-                $cms.setIcon(helperPanelToggleIcon, 'helper_panel/show', '{$IMG;,icons/helper_panel/show}');
+                $cms.ui.setIcon(helperPanelToggleIcon, 'helper_panel/show', '{$IMG;,icons/helper_panel/show}');
             }
         }
     });
@@ -1726,7 +1718,7 @@
 
             if ($dom.isDisplayed(sideMenuEl)) {
                 this.el.classList.remove('is-side-menu-open');
-                $cms.setIcon(btn.querySelector('.icon'), 'menus/mobile_menu');
+                $cms.ui.setIcon(btn.querySelector('.icon'), 'menus/mobile_menu');
                 promise = $dom.hide(sideMenuEl, 'normal');
 
                 if (this.getDropdownMenuView() != null) {
@@ -1734,7 +1726,7 @@
                 }
             } else {
                 this.el.classList.add('is-side-menu-open');
-                $cms.setIcon(btn.querySelector('.icon'), 'admin/delete3');
+                $cms.ui.setIcon(btn.querySelector('.icon'), 'admin/delete3');
                 promise = $dom.show(sideMenuEl, 'normal');
             }
 
@@ -1749,7 +1741,7 @@
                 topButtonWrappers.forEach(function (wrapperEl) {
                     var popupEl = wrapperEl.querySelector('.top-button-popup');
 
-                    if (wrapperEl.contains(e.target) || $dom.notDisplayed(popupEl)) {
+                    if (wrapperEl.contains(e.target) || !$dom.isDisplayed(popupEl)) {
                         return;
                     }
 
@@ -1772,7 +1764,7 @@
                 wrapperEl = $dom.parent(btn, '.top-button-wrapper'),
                 popupEl = wrapperEl.querySelector('.top-button-popup');
 
-            if ($dom.notDisplayed(popupEl)) {
+            if (!$dom.isDisplayed(popupEl)) {
                 wrapperEl.classList.add('is-popup-open');
 
                 if (this.el.classList.contains('is-touch-interface')) {
@@ -2048,7 +2040,7 @@
                     menuItem.classList.remove('is-expanded');
                 });
 
-                $cms.setIcon(this.$('.menu-dropdown-toggle-btn .icon'), 'menus/mobile_menu');
+                $cms.ui.setIcon(this.$('.menu-dropdown-toggle-btn .icon'), 'menus/mobile_menu');
 
                 this.menuContentEl.style.removeProperty('display');
             }
@@ -2082,11 +2074,11 @@
             if ($dom.isDisplayed(this.menuContentEl)) {
                 $dom.slideUp(this.menuContentEl);
                 this.closeAllSubMenus(this.el);
-                $cms.setIcon(this.$('.menu-dropdown-toggle-btn .icon'), 'menus/mobile_menu');
+                $cms.ui.setIcon(this.$('.menu-dropdown-toggle-btn .icon'), 'menus/mobile_menu');
                 this.el.classList.remove('is-expanded');
             } else {
                 $dom.slideDown(this.menuContentEl);
-                $cms.setIcon(this.$('.menu-dropdown-toggle-btn .icon'), 'admin/delete3');
+                $cms.ui.setIcon(this.$('.menu-dropdown-toggle-btn .icon'), 'admin/delete3');
                 this.el.classList.add('is-expanded');
             }
 
@@ -2292,7 +2284,7 @@
                 subEl = this.$('#' + subId),
                 href;
 
-            if ($dom.notDisplayed(subEl)) {
+            if (!$dom.isDisplayed(subEl)) {
                 e.preventDefault();
                 $dom.show(subEl);
             } else {
@@ -2618,7 +2610,7 @@
 
         this.withWhitespaceId = strVal(params.withWhitespaceId);
 
-        $cms.manageScrollHeight(document.getElementById('with_whitespace_' + this.withWhitespaceId));
+        $cms.ui.manageScrollHeight(document.getElementById('with_whitespace_' + this.withWhitespaceId));
     }
 
     $util.inherits(TextAreaCopyCode, $cms.View, /**@lends TextAreaCopyCode#*/{

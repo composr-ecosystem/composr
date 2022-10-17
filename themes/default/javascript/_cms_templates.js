@@ -1,3 +1,5 @@
+/* This file contains CMS-wide Templates */
+
 (function ($cms, $util, $dom) {
     'use strict';
 
@@ -124,7 +126,7 @@
     $cms.templates.jsRefresh = function (params) {
         if (!window.location.hash.includes('redirected_once')) {
             window.location.hash = 'redirected_once';
-            $dom.submit(document.getElementById(params.formName));
+            $dom.trigger(document.getElementById(params.formName), 'submit');
         } else {
             window.history.go(-2); // We've used back button, don't redirect forward again
         }
@@ -153,7 +155,7 @@
                     form.method = 'post';
                     form.action = params.actionUrl;
                     form.target = '_top';
-                    $dom.submit(form);
+                    $dom.trigger(form, 'submit');
                 }
             });
         });
@@ -173,8 +175,8 @@
     $cms.templates.massSelectDeleteForm = function (e, form) {
         var confirmedFor;
 
-        $dom.on(form, 'submit', function (submitEvent) {
-            if ($dom.isCancelledSubmit(submitEvent)) {
+        $dom.on(form, 'click', 'button', function (e) {
+            if ($dom.isCancelledSubmit(e)) {
                 return;
             }
 
@@ -182,7 +184,7 @@
                 return;
             }
 
-            submitEvent.preventDefault();
+            e.preventDefault();
 
             var promise = $cms.ui.confirm('{!_ARE_YOU_SURE_DELETE;^}').then(function (result) {
                 if (result) {
@@ -192,7 +194,7 @@
                 return result;
             });
 
-            $dom.awaitValidationPromiseAndResubmit(submitEvent, promise);
+            $dom.awaitValidationPromiseAndSubmitForm(e, promise);
         });
     };
 
@@ -253,7 +255,9 @@
 
         $dom.on(container, 'click', '.js-click-confirm-remember-me', onclickConfirmRememberMe);
 
-        $dom.on(container, 'submit', '.js-submit-check-login-username-field', function (e, form) {
+        $dom.on(container, 'click', '.js-check-login-username-field', function (e, btn) {
+            var form = btn.form;
+
             if ($cms.form.checkFieldForBlankness(form.elements['username'])) {
                 $cms.ui.disableFormButtons(form);
             } else {
@@ -263,7 +267,9 @@
     };
 
     $cms.templates.blockTopLogin = function (blockTopLogin, container) {
-        $dom.on(container, 'submit', '.js-form-top-login', function (e, form) {
+        $dom.on(container, 'click', '.js-top-login', function (e, btn) {
+            var form = btn.form;
+
             if ($cms.form.checkFieldForBlankness(form.elements['username'])) {
                 $cms.ui.disableFormButtons(form);
             } else {
@@ -276,11 +282,11 @@
 
     $cms.templates.ipBanScreen = function (params, container) {
         var textarea = container.querySelector('#bans');
-        $cms.manageScrollHeight(textarea);
+        $cms.ui.manageScrollHeight(textarea);
 
         if (!$cms.isMobile()) {
             $dom.on(container, 'keyup', '#bans', function (e, textarea) {
-                $cms.manageScrollHeight(textarea);
+                $cms.ui.manageScrollHeight(textarea);
             });
         }
     };
@@ -305,7 +311,9 @@
     $cms.templates.blockTopLanguage = function () {};
 
     $cms.templates.blockSidePersonalStatsNo = function blockSidePersonalStatsNo(params, container) {
-        $dom.on(container, 'submit', '.js-submit-check-login-username-field', function (e, form) {
+        $dom.on(container, 'click', '.js-check-login-username-field', function (e, btn) {
+            var form = btn.form;
+
             if ($cms.form.checkFieldForBlankness(form.elements['username'])) {
                 $cms.ui.disableFormButtons(form);
             } else {
@@ -499,7 +507,7 @@
             infiniteScrollCallUrl = params.infiniteScrollCallUrl;
 
         if (infiniteScrollCallUrl) {
-            $dom.enableInternaliseInfiniteScrolling(infiniteScrollCallUrl, wrapperEl);
+            $cms.ui.enableInternaliseInfiniteScrolling(infiniteScrollCallUrl, wrapperEl);
         }
     };
 

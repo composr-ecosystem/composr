@@ -468,7 +468,7 @@ function _helper_get_forum_topic_posts(object $this_ref, ?int $topic_id, ?int &$
     }
 
     if (($light_if_threaded) && ($is_threaded)) {
-        $select = 'p.id,p.p_parent_id,p.p_intended_solely_for,p.p_poster';
+        $select = 'p.id,p.p_time,p.p_parent_id,p.p_intended_solely_for,p.p_poster';
     } else {
         $select = 'p.*';
     }
