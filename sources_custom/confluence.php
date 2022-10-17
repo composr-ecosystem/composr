@@ -140,6 +140,9 @@ function confluence_root_id()
 
     global $CONFLUENCE_SPACE;
     $space = confluence_query('space?spaceKey=' . $CONFLUENCE_SPACE);
+    if (!isset($space['results'][0])) {
+        warn_exit('Could not find Confluence root page for the space');
+    }
     $root_id = intval(preg_replace('#^/rest/api/content/#', '', $space['results'][0]['_expandable']['homepage']));
     return $root_id;
 }
