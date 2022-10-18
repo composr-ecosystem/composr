@@ -2393,7 +2393,7 @@ class Database_Static_xml extends DatabaseDriver
                         $chain_deep_end = &$link[1];
                         break;
 
-                    case 'AND';
+                    case 'AND':
                         $chain_deep_end = ['AND', $chain_deep_end, &$link[1]];
                         $chain_deep_end = &$link[1];
                         break;
