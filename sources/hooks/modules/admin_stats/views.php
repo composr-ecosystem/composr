@@ -461,7 +461,7 @@ class Hook_admin_stats_views extends CMSStatsProvider
                 }
 
                 $referrer_url = preg_replace('#\?.*$#', '', $row['referer']);
-                $referrer_domain = @strval(parse_url($referrer_url, PHP_URL_HOST));
+                $referrer_domain = @strval(cms_parse_url_safe($referrer_url, PHP_URL_HOST));
 
                 if ($referrer_url == '') {
                     $referrer_type = self::REFERRER_TYPE__DIRECT;

@@ -62,7 +62,7 @@ function tracked_redirect_script()
 {
     $url = get_param_string('url', null, INPUT_FILTER_URL_GENERAL);
 
-    if (!is_our_server(parse_url($url, PHP_URL_HOST))) {
+    if (!is_our_server(cms_parse_url_safe($url, PHP_URL_HOST))) {
         $hash = get_param_string('hash', false, INPUT_FILTER_GET_COMPLEX);
         require_code('crypt');
         if (!ratchet_hash_verify($url, get_site_salt(), $hash)) {

@@ -539,7 +539,7 @@ class Hook_health_check_security extends Hook_Health_Check
 
         $files = [];
 
-        $base_url_path = parse_url(get_base_url(), PHP_URL_PATH);
+        $base_url_path = cms_parse_url_safe(get_base_url(), PHP_URL_PATH);
         if ($base_url_path != '/') {
             if (substr($fb, -strlen($base_url_path)) == $base_url_path) {
                 $webroot_path = substr($fb, 0, strlen($fb) - strlen($base_url_path));

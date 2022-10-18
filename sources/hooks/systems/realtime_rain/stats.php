@@ -52,7 +52,7 @@ class Hook_realtime_rain_stats
                 $title = rain_truncate_for_title(do_lang('HIT', $page_link));
 
                 // Show referer domain
-                $referer = @parse_url($row['referer']);
+                $referer = @cms_parse_url_safe($row['referer']);
                 if ($referer !== false) {
                     if (!array_key_exists('host', $referer)) {
                         $referer['host'] = do_lang('UNKNOWN');

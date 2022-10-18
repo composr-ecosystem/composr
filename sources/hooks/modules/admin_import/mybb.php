@@ -468,7 +468,7 @@ class Hook_import_mybb
             }
         }
 
-        $home_dir_parts = parse_url($homeurl);
+        $home_dir_parts = cms_parse_url_safe($homeurl);
         $forum_dir = $_SERVER['DOCUMENT_ROOT'] . urldecode($home_dir_parts['path']);
 
         $avatar_gallery_path = $forum_dir . '/' . $avatar_gallery_path;
@@ -874,7 +874,7 @@ class Hook_import_mybb
 
         $homeurl = empty($options[0]['value']) ? '' : $options[0]['value'];
 
-        $home_dir_parts = parse_url($homeurl);
+        $home_dir_parts = cms_parse_url_safe($homeurl);
         $forum_dir = $_SERVER['DOCUMENT_ROOT'] . urldecode($home_dir_parts['path']);
 
         $attachments_dir = $forum_dir . '/uploads/'; // Forum attachments directory

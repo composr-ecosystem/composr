@@ -346,8 +346,8 @@ class Hook_media_rendering_oembed extends Media_renderer_with_fallback
 
                 // Check security
                 if ($endpoint !== null) {
-                    $url_details = parse_url(normalise_idn_url($url));
-                    $url_details2 = parse_url(normalise_idn_url($endpoint));
+                    $url_details = cms_parse_url_safe(normalise_idn_url($url));
+                    $url_details2 = cms_parse_url_safe(normalise_idn_url($endpoint));
                     $safelist = explode("\n", get_option('oembed_html_safelist'));
                     if ((!in_array($url_details['host'], $safelist)) && (!in_array($url_details2['host'], $safelist)) && (!in_array(preg_replace('#^www\.#', '', $url_details['host']), $safelist))) {
                         /* We could do this but it's not perfect, it still has some level of trust

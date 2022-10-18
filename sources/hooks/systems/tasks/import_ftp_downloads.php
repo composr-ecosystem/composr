@@ -46,7 +46,7 @@ class Hook_task_import_ftp_downloads
         require_lang('downloads');
 
         // Firstly, parse the server URL, to make sure it is fine
-        $parsed_url = @parse_url(normalise_idn_url($server_url));
+        $parsed_url = @cms_parse_url_safe(normalise_idn_url($server_url));
         if ($parsed_url === false) {
             return [null, do_lang_tempcode('HTTP_DOWNLOAD_BAD_URL', escape_html($server_url))];
         }
@@ -60,7 +60,7 @@ class Hook_task_import_ftp_downloads
             $server_url .= '/';
         }
 
-        $parsed_url = parse_url(normalise_idn_url($server_url));
+        $parsed_url = cms_parse_url_safe(normalise_idn_url($server_url));
         $directory = array_key_exists('path', $parsed_url) ? $parsed_url['path'] : '';
 
         require_lang('installer');

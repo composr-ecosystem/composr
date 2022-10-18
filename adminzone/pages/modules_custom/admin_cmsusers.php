@@ -198,7 +198,7 @@ class Module_admin_cmsusers
         $_rows = [];
         foreach ($rows as $i => $r) {
             // Test that they give feature permission
-            $url_parts = parse_url($r['website_url']);
+            $url_parts = cms_parse_url_safe($r['website_url']);
             if (!array_key_exists('host', $url_parts)) {
                 continue;
             }

@@ -385,7 +385,7 @@ class BrokenURLScanner
                             'url' => 'https://' . $_url['target']['page'],
                             'table_name' => null,
                             'field_name' => null,
-                            'identifier' => parse_url('https://' . $_url['source']['page'], PHP_URL_HOST),
+                            'identifier' => cms_parse_url_safe('https://' . $_url['source']['page'], PHP_URL_HOST),
                             'edit_url' => 'https://' . $_url['source']['page'],
                         ];
                     }

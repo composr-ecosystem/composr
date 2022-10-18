@@ -469,7 +469,7 @@ class Module_admin_redirects
 
             $from = get_base_url() . '/' . $from;
             if (url_is_local($to)) {
-                $path = parse_url(get_base_url(), PHP_URL_PATH);
+                $path = cms_parse_url_safe(get_base_url(), PHP_URL_PATH);
                 $to = get_base_url() . $path . (($path == '') ? '/' : '') . $to;
             }
 

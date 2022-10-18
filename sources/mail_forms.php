@@ -41,7 +41,7 @@ function form_to_email_entry_script()
 
     if (addon_installed('stats')) {
         require_code('stats');
-        log_stats_event(do_lang('FORM', null, null, null, get_site_default_lang()) . '-' . post_param_string('form_name', parse_url($_SERVER['HTTP_REFERER'], PHP_URL_PATH)));
+        log_stats_event(do_lang('FORM', null, null, null, get_site_default_lang()) . '-' . post_param_string('form_name', cms_parse_url_safe($_SERVER['HTTP_REFERER'], PHP_URL_PATH)));
     }
 
     form_to_email();

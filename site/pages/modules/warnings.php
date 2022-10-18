@@ -316,7 +316,7 @@ class Module_warnings extends Standard_crud_module
                         for ($i = 0; $i < $num_matches; $i++) {
                             $spam_url = $matches[1][$i];
                             if (!url_is_local($spam_url)) {
-                                $domain = parse_url(normalise_idn_url($spam_url), PHP_URL_HOST);
+                                $domain = cms_parse_url_safe(normalise_idn_url($spam_url), PHP_URL_HOST);
                                 if (($domain != get_domain()) && (!empty($domain))) {
                                     if (!isset($spam_urls[$domain])) {
                                         require_code('mail');

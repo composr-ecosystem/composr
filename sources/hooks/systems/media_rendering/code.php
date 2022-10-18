@@ -64,7 +64,7 @@ class Hook_media_rendering_code
     public function recognises_url(string $url) : int
     {
         // Won't link to local URLs
-        if (@is_local_machine(parse_url($url, PHP_URL_HOST))) {
+        if (@is_local_machine(cms_parse_url_safe($url, PHP_URL_HOST))) {
             return MEDIA_RECOG_PRECEDENCE_NONE;
         }
 

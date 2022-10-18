@@ -84,10 +84,7 @@ function autoprobe_cdns() : string
     require_code('files');
 
     $base_url = get_base_url();
-    $parsed = parse_url($base_url);
-    if (!array_key_exists('path', $parsed)) {
-        $parsed['path'] = '';
-    }
+    $parsed = cms_parse_url_safe($base_url);
     $domain_name = $parsed['host'];
 
     if (is_local_machine()) {

@@ -294,7 +294,10 @@ function get_base_url_hostname()
 {
     global $SITE_INFO;
     if (!empty($SITE_INFO['base_url'])) {
-        return parse_url($SITE_INFO['base_url'], PHP_URL_HOST);
+        $ret = parse_url($SITE_INFO['base_url'], PHP_URL_HOST);
+        if ($ret !== null) {
+            return $ret;
+        }
     }
     if (!empty($_SERVER['HTTP_HOST'])) {
         return preg_replace('#:.*#', '', $_SERVER['HTTP_HOST']);

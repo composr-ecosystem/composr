@@ -1768,7 +1768,7 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
             $url = check_naughty_javascript_url($source_member, $url, $as_admin);
 
             // More URL tidying
-            $local = (url_is_local($url)) || (parse_url($url, PHP_URL_HOST) == get_base_url_hostname());
+            $local = (url_is_local($url)) || (cms_parse_url_safe($url, PHP_URL_HOST) == get_base_url_hostname());
             $given_url = $url;
             if (($url != '') && ($url[0] != '#')) {
                 if (substr($url, 0, 1) == '/') {
@@ -1798,7 +1798,7 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
             } else {
                 $rel = [];
             }
-            if ((!$as_admin) && (!has_privilege($source_member, 'search_engine_links')) && (@parse_url($url_full, PHP_URL_HOST) != parse_url(get_base_url(), PHP_URL_HOST))) {
+            if ((!$as_admin) && (!has_privilege($source_member, 'search_engine_links')) && (@cms_parse_url_safe($url_full, PHP_URL_HOST) != cms_parse_url_safe(get_base_url(), PHP_URL_HOST))) {
                 $rel['nofollow'] = true;
             }
             if (!$comcode_dangerous) {

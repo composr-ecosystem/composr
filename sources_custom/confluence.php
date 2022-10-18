@@ -109,7 +109,7 @@ function confluence_current_page_raw()
 
     $current_url_path = preg_replace('#%25([0-9A-F]{2})#', '%$1', $current_url_path); // Fix buggy user agents that do double-encoding
 
-    $root_url_path = parse_url(get_local_confluence_url(), PHP_URL_PATH);
+    $root_url_path = cms_parse_url_safe(get_local_confluence_url(), PHP_URL_PATH);
     $root_url_path = _strip_url_path($root_url_path);
 
     $current_page = substr($current_url_path, strlen($root_url_path));

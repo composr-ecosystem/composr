@@ -97,7 +97,7 @@ while (($r = $sheet_reader->read_row()) !== false) {
     $url = $r['URL'];
 
     if ($r['Body'] == '') {
-        $parsed_url = parse_url($url);
+        $parsed_url = cms_parse_url_safe($url);
         switch ($parsed_url['host']) {
             case 'ezinearticles.com':
                 $r = parse_ezinearticles($r);

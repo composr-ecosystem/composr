@@ -262,7 +262,7 @@ class Hook_health_check_marketing_seo_robotstxt extends Hook_Health_Check
             return true;
         }
 
-        $url_path = parse_url($url, PHP_URL_PATH);
+        $url_path = cms_parse_url_safe($url, PHP_URL_PATH);
 
         $best_precedence = 0;
         $allowed = true;
@@ -306,7 +306,7 @@ class Hook_health_check_marketing_seo_robotstxt extends Hook_Health_Check
         //  https://developers.google.com/search/reference/robots_txt
 
         $base_url = get_base_url();
-        $base_url_path = parse_url($base_url, PHP_URL_PATH);
+        $base_url_path = cms_parse_url_safe($base_url, PHP_URL_PATH);
         $robots_url = preg_replace('#' . preg_quote($base_url_path, '#') . '$#', '', $base_url) . '/robots.txt';
 
         $agents_regexp = preg_quote('*');

@@ -205,7 +205,7 @@ function check_posted_field(string $name, string $val, int $filters)
  */
 function strip_url_to_representative_domain(string $url) : string
 {
-    return preg_replace('#^www\.#', '', cms_strtolower_ascii(parse_url(normalise_idn_url($url), PHP_URL_HOST)));
+    return preg_replace('#^www\.#', '', cms_strtolower_ascii(cms_parse_url_safe(normalise_idn_url($url), PHP_URL_HOST)));
 }
 
 /**
@@ -259,7 +259,7 @@ function get_trusted_sites(int $level, bool $include_self = true) : array
 
     if (!empty($SITE_INFO['custom_base_url'])) {
         $base_url = $SITE_INFO['custom_base_url'];
-        $trusted_sites[] = parse_url($base_url, PHP_URL_HOST);
+        $trusted_sites[] = cms_parse_url_safe($base_url, PHP_URL_HOST);
     }
 
     return $trusted_sites;

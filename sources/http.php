@@ -438,7 +438,7 @@ abstract class HttpDownloader
 
         // Work out what we'll be connecting to...
 
-        $this->url_parts = @parse_url(normalise_idn_url($url));
+        $this->url_parts = @cms_parse_url_safe(normalise_idn_url($url));
         if (($this->url_parts === false) || (!isset($this->url_parts['host'])) || (!isset($this->url_parts['scheme']))) {
             if ($this->trigger_error) {
                 warn_exit(do_lang_tempcode('HTTP_DOWNLOAD_BAD_URL', escape_html($url)), false, true);
@@ -953,7 +953,7 @@ class HttpDownloaderCurl extends HttpDownloader
      */
     public function may_run_for(string $url, array $options = []) : int
     {
-        $this->url_parts = @parse_url(normalise_idn_url($url));
+        $this->url_parts = @cms_parse_url_safe(normalise_idn_url($url));
         $this->read_in_options($options);
 
         if (!function_exists('curl_init')) {
@@ -1317,7 +1317,7 @@ class HttpDownloaderSockets extends HttpDownloader
      */
     public function may_run_for(string $url, array $options = []) : int
     {
-        $this->url_parts = @parse_url(normalise_idn_url($url));
+        $this->url_parts = @cms_parse_url_safe(normalise_idn_url($url));
         $this->read_in_options($options);
 
         if (isset($this->url_parts['scheme']) && ($this->url_parts['scheme'] == 'http') && (!GOOGLE_APPENGINE) && (php_function_allowed('fsockopen'))) {
@@ -1966,7 +1966,7 @@ class HttpDownloaderFilesystem extends HttpDownloader
      */
     public function may_run_for(string $url, array $options = []) : int
     {
-        $this->url_parts = @parse_url(normalise_idn_url($url));
+        $this->url_parts = @cms_parse_url_safe(normalise_idn_url($url));
         $this->read_in_options($options);
 
         $faux = function_exists('get_value') ? get_value('http_faux_loopback') : null;
@@ -1991,8 +1991,8 @@ class HttpDownloaderFilesystem extends HttpDownloader
      */
     protected function _run(string $url, array $options)
     {
-        $parsed = parse_url(normalise_idn_url($url));
-        $parsed_base_url = parse_url(get_custom_base_url());
+        $parsed = cms_parse_url_safe(normalise_idn_url($url));
+        $parsed_base_url = cms_parse_url_safe(get_custom_base_url());
         $file_base = get_custom_file_base();
         $file_base = preg_replace('#' . preg_quote(urldecode($parsed_base_url['path'])) . '$#', '', $file_base);
         $file_path = $file_base . urldecode($parsed['path']);

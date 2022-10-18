@@ -143,7 +143,7 @@ class Hook_health_check_security_ssl extends Hook_Health_Check
         $html_segments = [];
         foreach ($page_links as $page_link) {
             $url = page_link_to_url($page_link);
-            $protocol = parse_url($url, PHP_URL_SCHEME);
+            $protocol = cms_parse_url_safe($url, PHP_URL_SCHEME);
             if ($protocol == 'http') {
                 continue;
             }
@@ -197,7 +197,7 @@ class Hook_health_check_security_ssl extends Hook_Health_Check
             return;
         }
 
-        $protocol = parse_url($SITE_INFO['base_url'], PHP_URL_SCHEME);
+        $protocol = cms_parse_url_safe($SITE_INFO['base_url'], PHP_URL_SCHEME);
         if ($protocol == 'http') {
             return;
         }
@@ -331,7 +331,7 @@ class Hook_health_check_security_ssl extends Hook_Health_Check
 
         if (function_exists('openssl_x509_parse')) {
             $url = get_base_url();
-            $domain = parse_url($url, PHP_URL_HOST);
+            $domain = cms_parse_url_safe($url, PHP_URL_HOST);
             $context = stream_context_create(['ssl' => ['allow_self_signed' => true, 'verify_peer_name' => false, 'verify_peer' => false, 'capture_peer_cert' => true]]);
             $errno = null;
             $errstr = null;
@@ -380,7 +380,7 @@ class Hook_health_check_security_ssl extends Hook_Health_Check
 
         if (php_function_allowed('checkdnsrr')) {
             $url = get_base_url();
-            $domain = parse_url($url, PHP_URL_HOST);
+            $domain = cms_parse_url_safe($url, PHP_URL_HOST);
 
             $has_caa = @checkdnsrr($domain, 'CAA');
             $this->assertTrue($has_caa, 'CAA record not set for [tt]' . $domain . '[/tt], which increases the risk of 3rd-party certificate forgery');

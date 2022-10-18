@@ -353,7 +353,7 @@ function save_zone_base_url(string $zone, string $base_url)
 
     if ($base_url != '') { // Add new entry, if appropriate
         $main_site_domain = get_base_url_hostname();
-        $main_site_path = trim(parse_url(get_base_url(), PHP_URL_PATH), '/');
+        $main_site_path = trim(cms_parse_url_safe(get_base_url(), PHP_URL_PATH), '/');
 
         if (url_is_local($base_url)) {
             $domain = $main_site_domain;

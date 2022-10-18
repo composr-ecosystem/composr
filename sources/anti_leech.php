@@ -61,7 +61,7 @@ function check_anti_leech()
         } else {
             // We need to do anti-leech protection using referrers - as we cannot rely on ANYTHING dynamic when static-cache is enabled
             if ($_SERVER['HTTP_REFERER'] != '') {
-                $domain = @parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST);
+                $domain = @cms_parse_url_safe($_SERVER['HTTP_REFERER'], PHP_URL_HOST);
                 if (($domain !== false) && (!is_our_server($domain))) {
                     warn_exit(do_lang_tempcode('LEECH_BLOCK'));
                 }

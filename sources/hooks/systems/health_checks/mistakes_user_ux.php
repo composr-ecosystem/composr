@@ -89,7 +89,7 @@ class Hook_health_check_mistakes_user_ux extends Hook_Health_Check
 
         global $SITE_INFO;
         $domains = [
-            '' => parse_url(get_base_url(), PHP_URL_HOST),
+            '' => cms_parse_url_safe(get_base_url(), PHP_URL_HOST),
         ];
         $zl = strlen('ZONE_MAPPING_');
         foreach ($SITE_INFO as $key => $_val) {
@@ -168,7 +168,7 @@ class Hook_health_check_mistakes_user_ux extends Hook_Health_Check
             return; // Will mess up protocol
         }
 
-        $protocol = parse_url($SITE_INFO['base_url'], PHP_URL_SCHEME);
+        $protocol = cms_parse_url_safe($SITE_INFO['base_url'], PHP_URL_SCHEME);
 
         if ($protocol == 'http') {
             return;

@@ -2280,7 +2280,7 @@ function pack(string $format, ...$args) : string
  *
  * @param  string $url The URL to parse
  * @param  integer $component The component to get (-1 get all in an array)
- * @return ~mixed A map of details about the URL (false: URL cannot be parsed)
+ * @return ?~mixed A map of details about the URL (false: URL cannot be parsed) (null: missing component)
  */
 function parse_url(string $url, int $component = -1)
 {

@@ -105,7 +105,7 @@ class _http_timeouts_test_set extends cms_test_case
         $errstr = '';
         $result = mixed();
         $result = false;
-        $parsed = parse_url($url);
+        $parsed = cms_parse_url_safe($url);
         $fh = fsockopen($parsed['host'], isset($parsed['port']) ? $parsed['port'] : 80, $errno, $errstr, $timeout);
         if ($fh !== false) {
             socket_set_timeout($fh, intval($timeout), fmod($timeout, 1.0) / 1000000.0);

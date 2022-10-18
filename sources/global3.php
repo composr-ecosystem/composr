@@ -1862,6 +1862,56 @@ function cms_tempnam(string $prefix = 'cms')
 }
 
 /**
+ * Parse a URL and return its components.
+ * Wrapper around parse_url that adds standard defaults for missing components.
+ *
+ * @param  string $url The URL to parse
+ * @param  integer $component The component to get (-1 get all in an array)
+ * @return ?~mixed A map of details about the URL (false: URL cannot be parsed) (null: missing component)
+ */
+function cms_parse_url_safe(string $url, int $component = -1)
+{
+    $ret = parse_url($url, $component);
+
+    if ($component != -1) {
+        if ($ret === null) {
+            switch ($component) {
+                case PHP_URL_SCHEME:
+                    return 'http';
+
+                case PHP_URL_PORT:
+                    return 80;
+
+                case PHP_URL_PATH:
+                case PHP_URL_QUERY:
+                case PHP_URL_FRAGMENT:
+                    return '';
+            }
+        }
+    } else {
+        if (!array_key_exists('scheme', $ret)) {
+            $ret['scheme'] = 'http';
+        }
+
+        if (!array_key_exists('port', $ret)) {
+            $ret['port'] = '80';
+        }
+
+        if (!array_key_exists('path', $ret)) {
+            $ret['path'] = '';
+        }
+        if (!array_key_exists('query', $ret)) {
+            $ret['query'] = '';
+        }
+        if (!array_key_exists('fragment', $ret)) {
+            $ret['fragment'] = '';
+        }
+    }
+
+    return $ret;
+}
+
+/**
  * Make a value suitable for use in an XML ID.
  *
  * @param  string $param The value to escape
@@ -2672,13 +2722,13 @@ function get_server_names(bool $include_non_web_names = true, bool $include_equi
         $arr[] = $SITE_INFO['domain'];
     }
     if (!empty($SITE_INFO['base_url'])) {
-        $tmp = parse_url($SITE_INFO['base_url'], PHP_URL_HOST);
+        $tmp = cms_parse_url_safe($SITE_INFO['base_url'], PHP_URL_HOST);
         if (!empty($tmp)) {
             $arr[] = $tmp;
         }
     }
     if (get_custom_base_url() != get_base_url()) {
-        $tmp = parse_url(get_custom_base_url(), PHP_URL_HOST);
+        $tmp = cms_parse_url_safe(get_custom_base_url(), PHP_URL_HOST);
         if (!empty($tmp)) {
             $arr[] = $tmp;
         }

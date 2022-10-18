@@ -386,9 +386,9 @@ function _csp_clean_source(string $_source) : ?string
         return $source;
     }
 
-    $parts = parse_url($source);
+    $parts = cms_parse_url_safe($source);
 
-    // parse_url returns false when the URL is seriously malformed
+    // cms_parse_url_safe returns false when the URL is seriously malformed
     if (!is_array($parts)) {
         return null;
     }

@@ -206,10 +206,10 @@ function rss_backend_script()
     if ($type == 'RSS2') {
         // Change a full URL into constituent parts
         $base_url = get_base_url();
-        $url_bits = parse_url($base_url);
+        $url_bits = cms_parse_url_safe($base_url);
         $domain = get_base_url_hostname();
-        $port = isset($url_bits['port']) ? $url_bits['port'] : 80;
-        $path = isset($url_bits['path']) ? $url_bits['path'] : '';
+        $port = $url_bits['port'];
+        $path = $url_bits['path'];
 
         $rss_cloud = do_template('RSS_CLOUD', ['_GUID' => 'a47c40a4c137ea1e5abfc71346547313', 'TYPE' => ($type == 'news') ? '' : $type, 'DOMAIN' => $domain, 'PORT' => strval($port), 'PATH' => $path], null, false, null, '.xml', 'xml');
     } else {

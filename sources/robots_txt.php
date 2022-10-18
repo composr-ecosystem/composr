@@ -26,10 +26,7 @@
 function get_base_url_path() : string
 {
     $base_url = get_base_url();
-    $base_url_path = parse_url($base_url, PHP_URL_PATH);
-    if ($base_url_path === null) {
-        $base_url_path = '';
-    }
+    $base_url_path = cms_parse_url_safe($base_url, PHP_URL_PATH);
     return rtrim($base_url_path, '/');
 }
 

@@ -649,8 +649,8 @@ function fixup_bad_php_env_vars()
         global $SITE_INFO;
         if (isset($SITE_INFO['base_url'])) {
             // Algorithm: backwards from URL-path in base URL
-            $base_url_path = parse_url($SITE_INFO['base_url'], PHP_URL_PATH);
-            if (substr(get_file_base(), -strlen($base_url_path)) == $base_url_path) {
+            $base_url_path = @parse_url($SITE_INFO['base_url'], PHP_URL_PATH);
+            if (($base_url_path !== null) && (substr(get_file_base(), -strlen($base_url_path)) == $base_url_path)) {
                 $document_root = substr(get_file_base(), 0, strlen(get_file_base()) - strlen($base_url_path));
             }
         }
@@ -913,7 +913,10 @@ function get_base_url_hostname() : string
 {
     global $SITE_INFO;
     if (!empty($SITE_INFO['base_url'])) {
-        return parse_url($SITE_INFO['base_url'], PHP_URL_HOST);
+        $ret = parse_url($SITE_INFO['base_url'], PHP_URL_HOST);
+        if ($ret !== null) {
+            return $ret;
+        }
     }
     if (!empty($_SERVER['HTTP_HOST'])) {
         return preg_replace('#:.*#', '', $_SERVER['HTTP_HOST']);
@@ -934,7 +937,10 @@ function get_request_hostname() : string
     }
     global $SITE_INFO;
     if (!empty($SITE_INFO['base_url'])) {
-        return parse_url($SITE_INFO['base_url'], PHP_URL_HOST);
+        $ret = parse_url($SITE_INFO['base_url'], PHP_URL_HOST);
+        if ($ret !== null) {
+            return $ret;
+        }
     }
     return gethostname();
 }

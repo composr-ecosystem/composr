@@ -278,7 +278,7 @@ function ping_sitemap_xml(string $url, bool $trigger_error = false) : string
     $out = '';
     if (get_option('auto_submit_sitemap') == '1') {
         $ping = true;
-        $local = is_local_machine(parse_url($url, PHP_URL_HOST));
+        $local = is_local_machine(cms_parse_url_safe($url, PHP_URL_HOST));
         if (($ping) && (get_option('site_closed') == '0') && (!$local)) {
             // Submit to search engines
             $services = [
