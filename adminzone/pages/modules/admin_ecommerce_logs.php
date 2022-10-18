@@ -332,7 +332,7 @@ class Module_admin_ecommerce_logs
 
         // To work out key
         if (post_param_integer('got_purchase_key_dependencies', 0) == 0) {
-            list($needed_fields, $needed_text, $js_function_calls) = get_needed_fields($type_code, true);
+            list($needed_fields, $needed_text, $js_function_calls) = get_needed_fields($type_code, true, true);
 
             if ($needed_fields !== null) { // Only do step if we actually have fields - create intermediary step. get_self_url ensures first product-choose step choice is propagated.
                 $submit_name = do_lang_tempcode('PROCEED');
@@ -342,6 +342,7 @@ class Module_admin_ecommerce_logs
                 if (is_array($needed_fields)) {
                     $extra_hidden->attach($needed_fields[0]);
                 }
+                $extra_hidden->attach(form_input_hidden('csrf_token_preserve', '1'));
 
                 if ($needed_text !== null) {
                     $text = $needed_text;
@@ -387,6 +388,7 @@ class Module_admin_ecommerce_logs
         $fields->attach(form_input_float(do_lang_tempcode('AMOUNT'), do_lang_tempcode('DESCRIPTION_MONEY_AMOUNT', $currency, ecommerce_get_currency_symbol()), 'amount', null, false));
 
         $hidden->attach(form_input_hidden('type_code', $type_code));
+        $hidden->attach(form_input_hidden('csrf_token_preserve', '1'));
         $hidden->attach(build_keep_post_fields());
 
         url_default_parameters__disable();

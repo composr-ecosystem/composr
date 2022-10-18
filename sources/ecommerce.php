@@ -271,18 +271,23 @@ function has_needed_fields(string $type_code, bool $force_extended = false) : bo
  *
  * @param  ID_TEXT $type_code The product codename
  * @param  boolean $force_extended Show all possible input fields
+ * @param  boolean $from_admin Whether this is being called from the Admin Zone. If so, optionally different fields may be used, including a purchase_id field for direct purchase ID input.
  * @return ?array A triple: The fields (null: none), The text (null: none), The JavaScript (null: none)
  */
-function get_needed_fields(string $type_code, bool $force_extended = false) : ?array
+function get_needed_fields(string $type_code, bool $force_extended = false, bool $from_admin = false) : ?array
 {
     list($details, $product_object) = find_product_details($type_code);
+
+    if ($details === null) {
+        warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
+    }
 
     $fields = null;
     $text = null;
     $js_function_calls = null;
 
     if (method_exists($product_object, 'get_needed_fields')) {
-        list($fields, $text, $js_function_calls) = $product_object->get_needed_fields($type_code);
+        list($fields, $text, $js_function_calls) = $product_object->get_needed_fields($type_code, $from_admin);
     }
 
     $shipping_email = '';
@@ -636,11 +641,11 @@ function make_subscription_button(string $type_code, string $item_name, string $
 /**
  * Make a subscription cancellation button.
  *
- * @param  AUTO_LINK $purchase_id The purchase ID
+ * @param  ID_TEXT $purchase_id The purchase ID
  * @param  ID_TEXT $payment_gateway The payment gateway the payment will go via
  * @return ?Tempcode The button (null: no special cancellation -- just delete the subscription row to stop Composr regularly re-charging)
  */
-function make_cancel_button(int $purchase_id, string $payment_gateway) : ?object
+function make_cancel_button(string $purchase_id, string $payment_gateway) : ?object
 {
     if (in_array($payment_gateway, ['', 'manual', 'points'])) {
         return null;
@@ -1041,14 +1046,14 @@ function get_default_ecommerce_fields(?int $member_id = null, string &$shipping_
         $card_number = empty($_card_number) ? null : intval($_card_number);
 
         $_card_start_date = get_cms_cpf('payment_card_start_date');
-        list($_card_start_date_year, $_card_start_date_month) = empty($_card_start_date) ? ['', ''] : explode('/', $_card_start_date);
-        $card_start_date_year = ($_card_start_date_year == '') ? null : intval($_card_start_date_year);
-        $card_start_date_month = ($_card_start_date_month == '') ? null : intval($_card_start_date_month);
+        list($_card_start_date_month, $_card_start_date_year) = empty($_card_start_date) ? ['', ''] : explode('/', $_card_start_date);
+        $card_start_date_year = ($_card_start_date_year == '' || $_card_start_date_year == 'yy') ? null : intval($_card_start_date_year);
+        $card_start_date_month = ($_card_start_date_month == '' || $_card_start_date_month == 'mm') ? null : intval($_card_start_date_month);
 
         $_card_expiry_date = get_cms_cpf('payment_card_expiry_date');
-        list($_card_expiry_date_year, $_card_expiry_date_month) = empty($_card_expiry_date) ? ['', ''] : explode('/', $_card_expiry_date);
-        $card_expiry_date_year = ($_card_expiry_date_year == '') ? null : intval($_card_expiry_date_year);
-        $card_expiry_date_month = ($_card_expiry_date_month == '') ? null : intval($_card_expiry_date_month);
+        list($_card_expiry_date_month, $_card_expiry_date_year) = empty($_card_expiry_date) ? ['', ''] : explode('/', $_card_expiry_date);
+        $card_expiry_date_year = ($_card_expiry_date_year == '' || $_card_expiry_date_year == 'yy') ? null : intval($_card_expiry_date_year);
+        $card_expiry_date_month = ($_card_expiry_date_month == '' || $_card_expiry_date_month == 'mm') ? null : intval($_card_expiry_date_month);
 
         $_card_issue_number = get_cms_cpf('payment_card_issue_number');
         $card_issue_number = empty($_card_issue_number) ? null : intval($_card_issue_number);

@@ -184,7 +184,9 @@ class Hook_ecommerce_usergroup
                 $list->attach(form_input_list_entry(strval($row['id']), false, do_lang('SUBSCRIPTION_OF', strval($row['id']), $username, get_timezoned_date_time($row['s_time']))));
             }
 
-            $fields = alternate_fields_set__start('options');
+            if (!empty($rows)) {
+                $fields = alternate_fields_set__start('options');
+            }
 
             $fields_inner = new Tempcode();
 
@@ -194,14 +196,23 @@ class Hook_ecommerce_usergroup
 
             $pretty_name = do_lang_tempcode('NEW_UGROUP_SUB_FOR');
             $description = do_lang_tempcode('DESCRIPTION_NEW_UGROUP_SUB_FOR');
-            $fields_inner->attach(form_input_username($pretty_name, $description, 'username', '', true, true)); // This is handled as a special case in admin_ecommerce_logs.php
+            if (empty($rows)) {
+                $default_username = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
+            } else {
+                $default_username = '';
+            }
+            $fields_inner->attach(form_input_username($pretty_name, $description, 'username', $default_username, true, true)); // This is handled as a special case in admin_ecommerce_logs.php
 
-            $fields->attach(alternate_fields_set__end('options', do_lang_tempcode('SUBSCRIPTION'), '', $fields_inner, true));
+            if (!empty($rows)) {
+                $fields->attach(alternate_fields_set__end('options', do_lang_tempcode('SUBSCRIPTION'), '', $fields_inner, true));
+            } else {
+                $fields = $fields_inner;
+            }
         }
 
         ecommerce_attach_memo_field_if_needed($fields);
 
-        return [null, null, null];
+        return [$fields, null, null];
     }
 
     /**
