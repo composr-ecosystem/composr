@@ -106,8 +106,8 @@ class Module_galleries
                 'layout_mode' => 'ID_TEXT',
                 'gallery_views' => 'INTEGER',
                 'g_owner' => '?MEMBER',
-                'gallery_sort' => 'SHORT_TEXT',
-                'media_sort' => 'SHORT_TEXT',
+                'gallery_sort' => 'ID_TEXT', // See allowed values in hooks/systems/config/galleries_sort_order
+                'media_sort' => 'ID_TEXT', // See allowed values in hooks/systems/config/gallery_media_default_sort_order
             ]);
             $GLOBALS['SITE_DB']->create_index('galleries', 'watermark_top_left', ['watermark_top_left']);
             $GLOBALS['SITE_DB']->create_index('galleries', 'watermark_top_right', ['watermark_top_right']);

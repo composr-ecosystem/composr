@@ -144,7 +144,7 @@ class Hook_commandr_fs_galleries extends Resource_fs_base
         $meta_description = $this->_default_property_str($properties, 'meta_description');
         $gallery_sort = $this->_default_property_str($properties, 'gallery_sort');
         $media_sort = $this->_default_property_str($properties, 'media_sort');
-        $name = add_gallery($name, $label, $description, $notes, $parent_id, $accept_images, $accept_videos, $is_member_synched, $layout_mode, $rep_image, $watermark_top_left, $watermark_top_right, $watermark_bottom_left, $watermark_bottom_right, $allow_rating, $allow_comments, false, $add_date, $g_owner, $meta_keywords, $meta_description, true, $gallery_sort, $media_sort);
+        $name = add_gallery($name, $label, $description, $notes, $parent_id, $accept_images, $accept_videos, $is_member_synched, $layout_mode, $rep_image, $watermark_top_left, $watermark_top_right, $watermark_bottom_left, $watermark_bottom_right, $gallery_sort, $media_sort, $allow_rating, $allow_comments, false, $add_date, $g_owner, $meta_keywords, $meta_description, true);
 
         $this->_resource_save_extend($this->folder_resource_type, $name, $filename, $label, $properties);
 
@@ -245,7 +245,7 @@ class Hook_commandr_fs_galleries extends Resource_fs_base
         $gallery_sort = $this->_default_property_str($properties, 'gallery_sort');
         $media_sort = $this->_default_property_str($properties, 'media_sort');
 
-        $name = edit_gallery($resource_id, $name, $label, $description, $notes, $parent_id, $accept_images, $accept_videos, $is_member_synched, $layout_mode, $rep_image, $watermark_top_left, $watermark_top_right, $watermark_bottom_left, $watermark_bottom_right, $meta_keywords, $meta_description, $allow_rating, $allow_comments, $g_owner, $add_time, true, true, $gallery_sort, $media_sort);
+        $name = edit_gallery($resource_id, $name, $label, $description, $notes, $parent_id, $accept_images, $accept_videos, $is_member_synched, $layout_mode, $rep_image, $watermark_top_left, $watermark_top_right, $watermark_bottom_left, $watermark_bottom_right, $gallery_sort, $media_sort, $meta_keywords, $meta_description, $allow_rating, $allow_comments, $g_owner, $add_time, true, true);
 
         $this->_resource_save_extend($this->folder_resource_type, $name, $filename, $label, $properties);
 

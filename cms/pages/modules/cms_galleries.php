@@ -843,7 +843,7 @@ class Module_cms_galleries extends Standard_crud_module
             }
         } elseif (($validated == 1) && ($_validated == 1) && ($id !== null)) {
             $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_IMAGE', 'param_a' => strval($id)]);
-            attach_message(do_lang_tempcode('ALREADY_VALIDATED', $action_log), 'notice');
+            attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'notice');
         }
         $validated_field = new Tempcode();
         if (has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', null, $this->permissions_cat_require)) {
@@ -1429,7 +1429,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
             }
         } elseif (($validated == 1) && ($_validated == 1) && ($id !== null)) {
             $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_VIDEO', 'param_a' => strval($id)]);
-            attach_message(do_lang_tempcode('ALREADY_VALIDATED', $action_log), 'notice');
+            attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'notice');
         }
         $validated_field = new Tempcode();
         if (has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', null, $this->permissions_cat_require)) {
@@ -1914,23 +1914,18 @@ class Module_cms_galleries_cat extends Standard_crud_module
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '94d1f77eb9fdca010cb9d1eac5d19b9b', 'SECTION_HIDDEN' => ($rep_image == '') && ($is_member_synched == 0), 'TITLE' => do_lang_tempcode('ADVANCED')]));
 
         // Per-gallery sort order (uses site config hooks)
-        $hooks = find_all_hook_obs('systems', 'config', 'Hook_config_');
+        require_code('hooks/systems/config/galleries_sort_order');
+        require_code('hooks/systems/config/gallery_media_default_sort_order');
+        $hooks = [
+            'galleries_sort_order' => object_factory('Hook_config_galleries_sort_order'),
+            'gallery_media_default_sort_order' => object_factory('Hook_config_gallery_media_default_sort_order'),
+        ];
         foreach ($hooks as $hook => $ob) {
-            if (!in_array($hook, ['galleries_sort_order', 'gallery_media_default_sort_order'])) {
-                continue;
-            }
-
-            $default = null;
             if ($hook == 'galleries_sort_order') {
                 $default = $gallery_sort;
             }
             if ($hook == 'gallery_media_default_sort_order') {
                 $default = $media_sort;
-            }
-
-            // Use N/A for default, not the site config setting (a blank string will default to site config; we don't want to explicitly set the site setting in the galleries table)
-            if ($default === null) {
-                $default = '';
             }
 
             $details = $ob->get_details();
@@ -2062,7 +2057,7 @@ class Module_cms_galleries_cat extends Standard_crud_module
 
         $metadata = actual_metadata_get_fields('gallery', null);
 
-        add_gallery($name, $fullname, $description, $notes, $parent_id, $accept_images, $accept_videos, $is_member_synched, $layout_mode, $url, $watermark_top_left[0], $watermark_top_right[0], $watermark_bottom_left[0], $watermark_bottom_right[0], $allow_rating, $allow_comments, false, $metadata['add_time'], $metadata['submitter'], '', '', false, $gallery_sort, $media_sort);
+        add_gallery($name, $fullname, $description, $notes, $parent_id, $accept_images, $accept_videos, $is_member_synched, $layout_mode, $url, $watermark_top_left[0], $watermark_top_right[0], $watermark_bottom_left[0], $watermark_bottom_right[0], $gallery_sort, $media_sort, $allow_rating, $allow_comments, false, $metadata['add_time'], $metadata['submitter'], '', '', false);
 
         set_url_moniker('gallery', $name);
 
@@ -2148,6 +2143,8 @@ class Module_cms_galleries_cat extends Standard_crud_module
             $watermark_top_right[0],
             $watermark_bottom_left[0],
             $watermark_bottom_right[0],
+            $gallery_sort,
+            $media_sort,
             post_param_string('meta_keywords', STRING_MAGIC_NULL),
             post_param_string('meta_description', STRING_MAGIC_NULL),
             $allow_rating,
@@ -2155,9 +2152,7 @@ class Module_cms_galleries_cat extends Standard_crud_module
             $metadata['submitter'],
             $metadata['add_time'],
             true,
-            false,
-            $gallery_sort,
-            $media_sort
+            false
         );
 
         if ($id != $name) {

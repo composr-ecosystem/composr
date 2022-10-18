@@ -1545,7 +1545,7 @@ class Hook_import_cms_merge
         foreach ($rows as $row) {
             $test = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'name', ['name' => $row['name']]);
             if ($test === null) {
-                add_gallery($row['name'], $this->get_lang_string($db, $row['fullname']), $this->get_lang_string($db, $row['the_description']), $row['notes'], $row['parent_id'], $row['accept_images'], $row['accept_videos'], $row['is_member_synched'], $row['layout_mode'], $row['rep_image'], $row['watermark_top_left'], $row['watermark_top_right'], $row['watermark_bottom_left'], $row['watermark_bottom_right'], $row['allow_rating'], $row['allow_comments'], false, $row['add_date'], null, '', '', false, $row['gallery_sort'], $row['media_sort']);
+                add_gallery($row['name'], $this->get_lang_string($db, $row['fullname']), $this->get_lang_string($db, $row['the_description']), $row['notes'], $row['parent_id'], $row['accept_images'], $row['accept_videos'], $row['is_member_synched'], $row['layout_mode'], $row['rep_image'], $row['watermark_top_left'], $row['watermark_top_right'], $row['watermark_bottom_left'], $row['watermark_bottom_right'], $row['gallery_sort'], $row['media_sort'], $row['allow_rating'], $row['allow_comments'], false, $row['add_date'], null, '', '', false);
             }
         }
         $this->_import_catalogue_entry_linkage($db, $table_prefix, 'gallery', null);

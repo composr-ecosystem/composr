@@ -146,6 +146,7 @@ PHP;
     public function run(array $map) : object
     {
         $block_id = get_block_id($map);
+
         // Read selection parameters
         $check_perms = array_key_exists('check', $map) ? ($map['check'] == '1') : true;
         $sort = empty($map['sort']) ? 'prominence' : $map['sort']; // recent|top|views|random|title or some manually typed sort order

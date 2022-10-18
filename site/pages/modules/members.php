@@ -228,7 +228,7 @@ class Module_members
             }
         } elseif (($validated == 1) && ($_validated == 1)) {
             $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_MEMBER', 'param_a' => strval($this->member_id_of)]);
-            attach_message(do_lang_tempcode('ALREADY_VALIDATED', $action_log), 'notice');
+            attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'notice');
         }
 
         require_code('cns_profiles');

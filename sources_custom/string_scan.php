@@ -8365,6 +8365,9 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         VALIDATE_NEWS
         VALIDATE_QUIZ
         VALIDATE_VIDEO
+        EDIT_MEMBER_PASSWORD
+        SENSITIVE_CHANGE_ALERT
+        DESCRIPTION_SENSITIVE_CHANGE_ALERT
     ')));
 
     $non_admin_files = [
@@ -11727,7 +11730,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         POLL_RSS_VOTE_TITLE
         POLL_RSS_VOTE_TITLE_REVOKED
         TOPIC_POLL_VOTES
-        DESCRIPTION_SENSITIVE_CHANGE_ALERT
         SECURITY_ASPECT_CHANGED_BODY
         SECURITY_ASPECT_CHANGED_BODY_2
         SECURITY_ASPECT_CHANGED_SUBJECT
@@ -11735,12 +11737,10 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SECURITY_ASPECT_CHANGED__PASSWORD
         SECURITY_ASPECT_CHANGED__PHONE_NUMBER
         SECURITY_ASPECT_CHANGED__USERNAME
-        SENSITIVE_CHANGE_ALERT
         EMAIL_ASSOCIATED_SUBJECT
         EMAIL_ASSOCIATED_BODY
         ACCOUNT_DELETED_BODY
         ACCOUNT_DELETED_SUBJECT
-        EDIT_MEMBER_PASSWORD
         PER_GALLERY_SORT_galleries_sort_order
         PER_GALLERY_SORT_gallery_media_default_sort_order
         YOUR_MESSAGE_WAS_SENT_TO_BODY

@@ -746,7 +746,7 @@ class Hook_addon_registry_galleries
             'VIEWS' => placeholder_number(),
             'OWNER' => null,
             'PROBE_ID' => placeholder_numeric_id(),
-            'GALLERY_SORT' => lorem_phrase(),
+            'GALLERY_SORT' => 'title ASC',
         ]), null, '', true);
     }
 
@@ -862,7 +862,7 @@ class Hook_addon_registry_galleries
             'ENTRY_TITLE' => lorem_phrase(),
             'ENTRY_DESCRIPTION' => lorem_paragraph_html(),
             'ENTRY_SUBMITTER' => placeholder_numeric_id(),
-            'GALLERY_SORT' => lorem_phrase(),
+            'GALLERY_SORT' => 'title ASC',
         ]), null, '', true);
     }
 
@@ -1016,7 +1016,7 @@ class Hook_addon_registry_galleries
             'IMAGE_SELECT' => '*',
             'VIDEO_SELECT' => '*',
             'FILTER' => '',
-            'GALLERY_SORT' => lorem_phrase(),
+            'GALLERY_SORT' => 'title ASC',
         ]), null, '', true);
     }
 
@@ -1264,7 +1264,7 @@ class Hook_addon_registry_galleries
             'IMAGE_SELECT' => '*',
             'VIDEO_SELECT' => '*',
             'FILTER' => '',
-            'GALLERY_SORT' => lorem_phrase(),
+            'GALLERY_SORT' => 'title ASC',
         ]), null, '', true);
     }
 
@@ -1412,7 +1412,7 @@ class Hook_addon_registry_galleries
             require_code('galleries2');
             require_code('lang3');
 
-            add_gallery('homepage_hero_slider', 'Homepage Hero Slider', 'Slides for the homepage hero slider', '', 'root', 1, 1, 0, GALLERY_LAYOUT_MODE_DEFAULT, '', '', '', '', '', 0, 0);
+            add_gallery('homepage_hero_slider', 'Homepage Hero Slider', 'Slides for the homepage hero slider', '', 'root', 1, 1, 0, GALLERY_LAYOUT_MODE_DEFAULT, '', '', '', '', '', '', '', 0, 0);
             set_global_category_access('galleries', 'homepage_hero_slider');
 
             $image_owner_id = get_first_admin_user();

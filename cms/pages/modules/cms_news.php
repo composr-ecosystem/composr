@@ -438,7 +438,7 @@ class Module_cms_news extends Standard_crud_module
             }
         } elseif (($validated == 1) && ($_validated == 1) && ($id !== null)) {
             $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_NEWS', 'param_a' => strval($id)]);
-            attach_message(do_lang_tempcode('ALREADY_VALIDATED', $action_log), 'notice');
+            attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'notice');
         }
         if (has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', null, $this->permissions_cat_require)) {
             if (addon_installed('unvalidated')) {

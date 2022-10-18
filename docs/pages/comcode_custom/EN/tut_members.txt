@@ -8,14 +8,13 @@ This tutorial explains aspects of the Conversr member system.
 
 [title="2"]Default accounts after installation[/title]
 
-When installing Composr, there will be three members provided by default:
-1) A guest (system) account
+When installing Composr, there will be two members provided by default:
 2) [tt]admin[/tt] (or whatever you changed it to during installation)
 3) [tt]test[/tt]
 
-The guest (system) account is used for system functionality such as forum posts by the system, points ledger transactions involving the site (system), and e-mails or notifications from the system. The test username is intended for testing permissions for non-administrators, which is a very important task, as it is easy to make mistakes during configuration.
+The test username is intended for testing permissions for non-administrators, which is a very important task, as it is easy to make mistakes during configuration. Information about testing permissions is available in the [page="_SEARCH:tut_permissions"]Access control and privileges[/page] tutorial ("Testing access and privileges").
 
-Information about testing permissions is available in the [page="_SEARCH:tut_permissions"]Access control and privileges[/page] tutorial ("Testing access and privileges").
+There will also be a virtual member ID called the System (guest). This is used for system functionality such as forum posts by the system, points ledger transactions involving the site (system), and e-mails or notifications from the system. This cannot be used like you would a member account.
 
 [title="2"]Usernames and display names[/title]
 
@@ -159,7 +158,7 @@ Member birthdays are also shown on forum-view screens. Note that birthdays for m
 To edit a member's account, go to their profile, and go to the 'Edit' tab. There are various sub-tabs for controlling member settings.
 Of course a member can only edit their account, unless they have special privileges to edit the accounts of others.
 
-As a security feature, members are e-mailed from the system whenever their username, e-mail address (sent to their old address with an additional vague e-mail also sent to the new one), password, or phone number is changed. The e-mail explains what was changed and who changed it (for security, the new password is not specified, and the new e-mail address and phone number is partially masked). This allows members to assess the security of their account and report to the site staff should they believe their account was compromised. Edits of usernames, passwords, e-mail addresses, or phone numbers are also logged in the Action Log, and staff are notified.
+As a security feature, members are e-mailed from the system whenever their username, e-mail address (sent to their old address with an additional vague e-mail also sent to the new one), password, or phone number is changed. The e-mail explains what was changed and who changed it (for security, a new password is not specified, and a new e-mail address and phone number are partially masked). This allows members to assess the security of their account and report to the site staff should they believe their account was compromised. Edits of usernames, passwords, e-mail addresses, or phone numbers are also logged in the Action Log, and staff are notified.
 
 [title="3"]Edit profile[/title]
 

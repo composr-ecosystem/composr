@@ -211,7 +211,7 @@ function get_banner_form_fields(bool $simplified = false, string $name = '', str
             }
         } elseif (($validated == 1) && ($_validated == 1) && ($name !== null)) {
             $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_DOWNLOAD', 'param_a' => $name]);
-            attach_message(do_lang_tempcode('ALREADY_VALIDATED', $action_log), 'notice');
+            attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'notice');
         }
         if (addon_installed('unvalidated')) {
             $fields->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'banner'), 'validated', $validated == 1));

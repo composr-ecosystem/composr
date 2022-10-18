@@ -32,7 +32,7 @@ class notifications_test_set extends cms_test_case
 
         require_code('notifications');
         require_code('hooks/systems/notifications/comment_posted');
-        require_code('hooks/systems/notifications/cns');
+        require_code('hooks/systems/notifications/points');
 
         $GLOBALS['SITE_DB']->query_delete('notifications_enabled');
         $GLOBALS['SITE_DB']->query_delete('notification_lockdown');
@@ -56,6 +56,10 @@ class notifications_test_set extends cms_test_case
         $this->assertTrue(empty($results[0]));
         $results = $ob->list_members_who_have_enabled('comment_posted', null, [get_member()]); // Just make sure the member-ID filter doesn't crash
 
+        $ob = new Hook_notification_points();
+        $results = $ob->list_members_who_have_enabled('point_escrows');
+        $this->assertTrue(count($results[0]) == count($all_members));
+
         // Check explicitly flipped state...
 
         foreach ($all_members as $member) {
@@ -65,17 +69,32 @@ class notifications_test_set extends cms_test_case
                 'l_code_category' => '',
                 'l_setting' => A_INSTANT_EMAIL,
             ]);
+
+            $GLOBALS['SITE_DB']->query_insert('notifications_enabled', [
+                'l_member_id' => $member['id'],
+                'l_notification_code' => 'point_escrows',
+                'l_code_category' => '',
+                'l_setting' => A_NA,
+            ]);
         }
 
         $ob = new Hook_notification_comment_posted();
         $results = $ob->list_members_who_have_enabled('comment_posted');
         $this->assertTrue(count($results[0]) == count($all_members));
 
+        $ob = new Hook_notification_points();
+        $results = $ob->list_members_who_have_enabled('point_escrows');
+        $this->assertTrue(empty($results[0]));
+
         // Check with locking...
 
         $GLOBALS['SITE_DB']->query_insert('notification_lockdown', [
             'l_notification_code' => 'comment_posted',
             'l_setting' => A_NA,
+        ]);
+        $GLOBALS['SITE_DB']->query_insert('notification_lockdown', [
+            'l_notification_code' => 'point_escrows',
+            'l_setting' => A_INSTANT_EMAIL,
         ]);
 
         global $NOTIFICATION_LOCKDOWN_CACHE;
@@ -84,6 +103,10 @@ class notifications_test_set extends cms_test_case
         $ob = new Hook_notification_comment_posted();
         $results = $ob->list_members_who_have_enabled('comment_posted');
         $this->assertTrue(empty($results[0]));
+
+        $ob = new Hook_notification_points();
+        $results = $ob->list_members_who_have_enabled('point_escrows');
+        $this->assertTrue(count($results[0]) == count($all_members));
     }
 
     public function tearDown()

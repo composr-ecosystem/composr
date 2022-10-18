@@ -314,7 +314,7 @@ class Module_cms_quiz extends Standard_crud_module
             }
         } elseif (($validated == 1) && ($_validated == 1) && ($id !== null)) {
             $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_QUIZ', 'param_a' => strval($id)]);
-            attach_message(do_lang_tempcode('ALREADY_VALIDATED', $action_log), 'notice');
+            attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'notice');
         }
         if (addon_installed('unvalidated')) {
             $fields->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode('DESCRIPTION_VALIDATED_SIMPLE'), 'validated', $validated == 1));

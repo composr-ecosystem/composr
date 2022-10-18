@@ -1497,6 +1497,8 @@ function _watermark_corner($source, string $watermark_url, int $x, int $y)
  * @param  URLPATH $watermark_top_right Watermark (blank: none)
  * @param  URLPATH $watermark_bottom_left Watermark (blank: none)
  * @param  URLPATH $watermark_bottom_right Watermark (blank: none)
+ * @param  SHORT_TEXT $gallery_sort The sub-gallery sort order (blank: site default)
+ * @param  SHORT_TEXT $media_sort The sort order of media in the gallery (blank: site default)
  * @param  BINARY $allow_rating Whether rating are allowed
  * @param  SHORT_INTEGER $allow_comments Whether comments are allowed
  * @param  boolean $skip_exists_check Whether to skip the check for whether the gallery exists (useful for importers)
@@ -1505,11 +1507,9 @@ function _watermark_corner($source, string $watermark_url, int $x, int $y)
  * @param  ?SHORT_TEXT $meta_keywords Meta keywords for this resource (null: do not edit) (blank: implicit)
  * @param  ?LONG_TEXT $meta_description Meta description for this resource (null: do not edit) (blank: implicit)
  * @param  boolean $uniqify Whether to force the name as unique, if there's a conflict
- * @param  SHORT_TEXT $gallery_sort The sub-gallery sort order (blank: site default)
- * @param  SHORT_TEXT $media_sort The sort order of media in the gallery (blank: site default)
  * @return ID_TEXT The name
  */
-function add_gallery(string $name, string $fullname, string $description, string $notes, string $parent_id, int $accept_images = 1, int $accept_videos = 1, int $is_member_synched = 0, ?string $layout_mode = null, string $rep_image = '', string $watermark_top_left = '', string $watermark_top_right = '', string $watermark_bottom_left = '', string $watermark_bottom_right = '', int $allow_rating = 1, int $allow_comments = 1, bool $skip_exists_check = false, ?int $add_date = null, ?int $g_owner = null, ?string $meta_keywords = '', ?string $meta_description = '', bool $uniqify = false, string $gallery_sort = '', string $media_sort = '') : string
+function add_gallery(string $name, string $fullname, string $description, string $notes, string $parent_id, int $accept_images = 1, int $accept_videos = 1, int $is_member_synched = 0, ?string $layout_mode = null, string $rep_image = '', string $watermark_top_left = '', string $watermark_top_right = '', string $watermark_bottom_left = '', string $watermark_bottom_right = '', string $gallery_sort = '', string $media_sort = '', int $allow_rating = 1, int $allow_comments = 1, bool $skip_exists_check = false, ?int $add_date = null, ?int $g_owner = null, ?string $meta_keywords = '', ?string $meta_description = '', bool $uniqify = false) : string
 {
     require_code('galleries');
 
@@ -1614,6 +1614,8 @@ function add_gallery(string $name, string $fullname, string $description, string
  * @param  ?URLPATH $watermark_top_right Watermark (null: none)
  * @param  ?URLPATH $watermark_bottom_left Watermark (null: none)
  * @param  ?URLPATH $watermark_bottom_right Watermark (null: none)
+ * @param  ?SHORT_TEXT $gallery_sort The sort order for sub-galleries (null: do not edit)
+ * @param  ?SHORT_TEXT $media_sort The sort order for media within the gallery (null: do not edit)
  * @param  ?SHORT_TEXT $meta_keywords Meta keywords for this resource (null: do not edit)
  * @param  ?LONG_TEXT $meta_description Meta description for this resource (null: do not edit)
  * @param  BINARY $allow_rating Whether rating are allowed
@@ -1622,11 +1624,9 @@ function add_gallery(string $name, string $fullname, string $description, string
  * @param  ?TIME $add_time The add time (null: now)
  * @param  boolean $null_is_literal Determines whether some nulls passed mean 'use a default' or literally mean 'set to null'
  * @param  boolean $uniqify Whether to force the name as unique, if there's a conflict
- * @param  ?SHORT_TEXT $gallery_sort The sort order for sub-galleries (null: do not edit)
- * @param  ?SHORT_TEXT $media_sort The sort order for media within the gallery (null: do not edit)
  * @return ID_TEXT The name
  */
-function edit_gallery(string $old_name, string $name, string $fullname, string $description, string $notes, ?string $parent_id = null, int $accept_images = 1, int $accept_videos = 1, int $is_member_synched = 0, ?string $layout_mode = null, ?string $rep_image = null, ?string $watermark_top_left = null, ?string $watermark_top_right = null, ?string $watermark_bottom_left = null, ?string $watermark_bottom_right = null, ?string $meta_keywords = null, ?string $meta_description = null, int $allow_rating = 1, int $allow_comments = 1, ?int $g_owner = null, ?int $add_time = null, bool $null_is_literal = false, bool $uniqify = false, ?string $gallery_sort = null, ?string $media_sort = null) : string
+function edit_gallery(string $old_name, string $name, string $fullname, string $description, string $notes, ?string $parent_id = null, int $accept_images = 1, int $accept_videos = 1, int $is_member_synched = 0, ?string $layout_mode = null, ?string $rep_image = null, ?string $watermark_top_left = null, ?string $watermark_top_right = null, ?string $watermark_bottom_left = null, ?string $watermark_bottom_right = null, ?string $gallery_sort = null, ?string $media_sort = null, ?string $meta_keywords = null, ?string $meta_description = null, int $allow_rating = 1, int $allow_comments = 1, ?int $g_owner = null, ?int $add_time = null, bool $null_is_literal = false, bool $uniqify = false) : string
 {
     $rows = $GLOBALS['SITE_DB']->query_select('galleries', ['*'], ['name' => $name], '', 1);
     if (!array_key_exists(0, $rows)) {

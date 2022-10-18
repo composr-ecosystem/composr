@@ -221,21 +221,21 @@ function mask_email_address(string $email_address) : string
     // Get our e-mail parts
     $email_parts = explode('@', $email_address);
     if (!array_key_exists(1, $email_parts)) { // E-mail does not have an @ symbol; this is invalid.
-        warn_exit('INTERNAL_ERROR');
+        return $email_address;
     }
     $_domain_parts = explode('.', $email_parts[1]);
     if (!array_key_exists(1, $_domain_parts)) { // E-mail domain does not have a top-level (.*); this is invalid.
-        warn_exit('INTERNAL_ERROR');
+        return $email_address;
     }
 
     // Email domains might have multiple sub-domains. We only want to expose the top domain; mask everything else.
-    $domain_top = $_domain_parts[count($_domain_parts)-1];
+    $domain_top = $_domain_parts[count($_domain_parts) - 1];
     $domain_sub = '';
-    for ($i = 0; $i < (count($_domain_parts) - 1); $i++) {
+    foreach ($_domain_parts as $i => $part) {
         if ($i > 0) {
             $domain_sub .= '.';
         }
-        $domain_sub .= $_domain_parts[$i];
+        $domain_sub .= $part;
     }
 
     // Do the actual masking

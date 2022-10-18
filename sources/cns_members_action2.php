@@ -760,7 +760,7 @@ function cns_get_member_fields_settings(bool $mini_mode = true, string $special_
                 }
             } elseif (($validated == 1) && ($_validated == 1) && ($member_id !== null)) {
                 $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_MEMBER', 'param_a' => strval($member_id)]);
-                attach_message(do_lang_tempcode('ALREADY_VALIDATED', $action_log), 'notice');
+                attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'notice');
             }
             if (get_option_with_overrides('enable_highlight_name', $adjusted_config_options) == '1') {
                 $fields->attach(form_input_tick(do_lang_tempcode('HIGHLIGHTED_NAME'), do_lang_tempcode(addon_installed('ecommerce') ? 'DESCRIPTION_HIGHLIGHTED_NAME_P' : 'DESCRIPTION_HIGHLIGHTED_NAME'), 'highlighted_name', $highlighted_name == 1));
@@ -1309,14 +1309,14 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
 
         $_sensitive_changes = [];
         if ($username_changed) {
-            $_sensitive_changes[] = do_lang('SECURITY_ASPECT_CHANGED__USERNAME', $old_username, $username);
+            $_sensitive_changes[] = do_lang('SECURITY_ASPECT_CHANGED__USERNAME', comcode_escape($old_username), comcode_escape($username));
         }
         if ($email_address_changed) {
             require_code('crypt');
 
             // New e-mail should be masked in case the member's original e-mail account is compromised so hackers do not target / spam their new address
             $masked_email_address = mask_email_address($email_address);
-            $_sensitive_changes[] = do_lang('SECURITY_ASPECT_CHANGED__EMAIL_ADDRESS', $old_email_address, $masked_email_address);
+            $_sensitive_changes[] = do_lang('SECURITY_ASPECT_CHANGED__EMAIL_ADDRESS', comcode_escape($old_email_address), comcode_escape($masked_email_address));
         }
         if ($password_changed) {
             $_sensitive_changes[] = do_lang('SECURITY_ASPECT_CHANGED__PASSWORD');
@@ -1327,7 +1327,7 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
             // Mask old and new phone number so hackers of compromised accounts cannot spam members' phones
             $masked_old_phone_number = mask_phone_number($old_phone_number);
             $masked_phone_number = mask_phone_number($phone_number);
-            $_sensitive_changes[] = do_lang('SECURITY_ASPECT_CHANGED__PHONE_NUMBER', $masked_old_phone_number, $masked_phone_number);
+            $_sensitive_changes[] = do_lang('SECURITY_ASPECT_CHANGED__PHONE_NUMBER', comcode_escape($masked_old_phone_number), comcode_escape($masked_phone_number));
         }
         $sensitive_changes = implode("\n", $_sensitive_changes);
 
@@ -1341,13 +1341,13 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
             require_code('mail');
 
             if ($old_email_address != '') { // E-mail of security aspects that were changed to the e-mail on file (old)
-                $cm_subject = do_lang('SECURITY_ASPECT_CHANGED_SUBJECT', $old_username, $current_username, [get_site_name()]);
-                $cm_body = do_lang('SECURITY_ASPECT_CHANGED_BODY', $old_username, $current_username, [get_site_name(), $sensitive_changes, $part_b]);
+                $cm_subject = do_lang('SECURITY_ASPECT_CHANGED_SUBJECT', comcode_escape($old_username), comcode_escape($current_username), [get_site_name()]);
+                $cm_body = do_lang('SECURITY_ASPECT_CHANGED_BODY', comcode_escape($old_username), comcode_escape($current_username), [get_site_name(), $sensitive_changes, $part_b]);
                 dispatch_mail($cm_subject, $cm_body, [$old_email_address], $old_username, '', '', ['require_recipient_valid_since' => $join_time]);
             }
-            if ($email_address !== null) { // When a new e-mail is specified, also e-mail the new address a vague message about their e-mail being associated with an account
-                $cm_subject = do_lang('EMAIL_ASSOCIATED_SUBJECT', $old_username, $current_username, [get_site_name()]);
-                $cm_body = do_lang('EMAIL_ASSOCIATED_BODY', $old_username, $current_username, [get_site_name(), $email_address]);
+            if (($email_address !== null) && ($email_address != $old_email_address)) { // When a new e-mail is specified, also e-mail the new address a vague message about their e-mail being associated with an account
+                $cm_subject = do_lang('EMAIL_ASSOCIATED_SUBJECT', comcode_escape($old_username), comcode_escape($current_username), [get_site_name()]);
+                $cm_body = do_lang('EMAIL_ASSOCIATED_BODY', comcode_escape($old_username), comcode_escape($current_username), [get_site_name(), comcode_escape($email_address)]);
                 dispatch_mail($cm_subject, $cm_body, [$email_address], $old_username, '', '', ['require_recipient_valid_since' => $join_time]);
             }
         }
@@ -1355,7 +1355,7 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
         // Notify staff
         require_code('notifications');
 
-        $subject = do_lang('STAFF_SECURITY_ASPECT_CHANGED_SUBJECT', $old_username, $current_username, [get_site_name()], get_site_default_lang());
+        $subject = do_lang('STAFF_SECURITY_ASPECT_CHANGED_SUBJECT', comcode_escape($old_username), comcode_escape($current_username), [get_site_name()], get_site_default_lang());
         $mail = do_notification_lang('STAFF_SECURITY_ASPECT_CHANGED_BODY', comcode_escape($old_username), comcode_escape($current_username), [comcode_escape(get_site_name()), comcode_escape($sensitive_changes), comcode_escape($part_b)], get_site_default_lang());
         dispatch_notification('cns_profile_high_impact_edit', null, $subject, $mail, null, get_member(), ['use_real_from' => true]);
     }
@@ -1463,7 +1463,7 @@ function cns_delete_member(int $member_id)
     log_it('DELETE_MEMBER', strval($member_id), $username);
 
     // E-mail the member to inform them their account was deleted
-    if ($email_address !== null) {
+    if ($email_address != '') {
         $current_username = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
 
         $part_b = '';
@@ -1472,8 +1472,8 @@ function cns_delete_member(int $member_id)
         }
 
         require_code('mail');
-        $dm_subject = do_lang('ACCOUNT_DELETED_SUBJECT', $username, $current_username, [get_site_name()]);
-        $dm_body = do_lang('ACCOUNT_DELETED_BODY', $username, $current_username, [get_site_name(), $email_address, $part_b]);
+        $dm_subject = do_lang('ACCOUNT_DELETED_SUBJECT', comcode_escape($username), comcode_escape($current_username), [get_site_name()]);
+        $dm_body = do_lang('ACCOUNT_DELETED_BODY', comcode_escape($username), comcode_escape($current_username), [get_site_name(), comcode_escape($email_address), $part_b]);
         dispatch_mail($dm_subject, $dm_body, [$email_address], $username, '', '');
     }
 
