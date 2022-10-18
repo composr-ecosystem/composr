@@ -176,8 +176,8 @@
 						{+END}{+END}
 
 						{+START,IF,{$HAS_SU}}
-							<form title="{!SU} {!LINK_NEW_WINDOW}" class="inline su-form" method="get" action="{$URL_FOR_GET_FORM*,{$SELF_URL,0,1}}" target="_blank">
-								{$HIDDENS_FOR_GET_FORM,{$SELF_URL,0,1},keep_su}
+							<form title="{!SU} {!LINK_NEW_WINDOW}" class="inline su-form" method="get" action="{$URL_FOR_GET_FORM*,{$SELF_URL,1}}" target="_blank">
+								{$HIDDENS_FOR_GET_FORM,{$SELF_URL,1},keep_su}
 
 								<div class="inline">
 									<div class="accessibility-hidden"><label for="su">{!SU}</label></div>
@@ -192,8 +192,8 @@
 						{+END}
 
 						{+START,IF,{$DESKTOP}}{+START,IF_NON_EMPTY,{$STAFF_ACTIONS}}{+START,IF,{$CONFIG_OPTION,show_staff_page_actions}}
-							<form title="{!SCREEN_DEV_TOOLS} {!LINK_NEW_WINDOW}" class="inline special-page-type-form js-global-submit-staff-actions-select" action="{$URL_FOR_GET_FORM*,{$SELF_URL,0,1}}" method="get" target="_blank">
-								{$HIDDENS_FOR_GET_FORM,{$SELF_URL,0,1,0,cache_blocks=0,cache_comcode_pages=0,keep_minify=0,special_page_type=<null>,keep_template_magic_markers=<null>}}
+							<form title="{!SCREEN_DEV_TOOLS} {!LINK_NEW_WINDOW}" class="inline special-page-type-form js-global-submit-staff-actions-select" action="{$URL_FOR_GET_FORM*,{$SELF_URL}}" method="get" target="_blank">
+								{$HIDDENS_FOR_GET_FORM,{$SELF_URL,0,0,0,cache_blocks=0,cache_comcode_pages=0,keep_minify=0,special_page_type=<null>,keep_template_magic_markers=<null>}}
 
 								<div class="inline">
 									<p class="accessibility-hidden"><label for="special-page-type">{!SCREEN_DEV_TOOLS}</label></p>

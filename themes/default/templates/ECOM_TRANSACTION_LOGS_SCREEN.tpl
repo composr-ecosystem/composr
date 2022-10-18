@@ -2,8 +2,8 @@
 
 {RESULTS_TABLE}
 
-<form title="{!PRIMARY_PAGE_FORM}" method="get" action="{$URL_FOR_GET_FORM*,{$SELF_URL,0,1}}">
-	{$HIDDENS_FOR_GET_FORM,{$SELF_URL,0,1},product,id}
+<form title="{!PRIMARY_PAGE_FORM}" method="get" action="{$URL_FOR_GET_FORM*,{$SELF_URL}}">
+	{$HIDDENS_FOR_GET_FORM,{$SELF_URL},product,id}
 
 	<div>
 		<p>

@@ -96,8 +96,8 @@
 				</form>
 
 				{+START,IF,{MAY_CHANGE_MAX}}
-					<form title="{!PER_PAGE}" action="{$URL_FOR_GET_FORM*,{$SELF_URL,0,1}}{+START,IF,{$EQ,{TYPE},pt}}#tab--pts{+END}" method="get">
-						{$HIDDENS_FOR_GET_FORM,{$SELF_URL,0,1},forum_max}
+					<form title="{!PER_PAGE}" action="{$URL_FOR_GET_FORM*,{$SELF_URL}}{+START,IF,{$EQ,{TYPE},pt}}#tab--pts{+END}" method="get">
+						{$HIDDENS_FOR_GET_FORM,{$SELF_URL},forum_max}
 
 						<label for="forum_max">{!PER_PAGE}:</label>
 						<select name="forum_max" id="forum_max" class="form-control form-control-sm js-max-change-submit-form">
@@ -110,8 +110,8 @@
 						</select>
 					</form>
 
-					<form title="{!PER_PAGE}" action="{$URL_FOR_GET_FORM*,{$SELF_URL,0,1}}{+START,IF,{$EQ,{TYPE},pt}}#tab--pts{+END}" method="get">
-						{$HIDDENS_FOR_GET_FORM,{$SELF_URL,0,1},max,forum_sort}
+					<form title="{!PER_PAGE}" action="{$URL_FOR_GET_FORM*,{$SELF_URL}}{+START,IF,{$EQ,{TYPE},pt}}#tab--pts{+END}" method="get">
+						{$HIDDENS_FOR_GET_FORM,{$SELF_URL},max,forum_sort}
 
 						<label for="order">{!SORT}:</label>
 						<select class="form-control form-control-sm js-order-change-submit-form" name="forum_sort" id="forum_sort">
