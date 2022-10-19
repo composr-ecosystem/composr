@@ -867,7 +867,7 @@ We have summarised the PCI compliance rules below in a way streamlined toward Co
  7_key="Shopping catalogue item"       7_value="An individual item in a shopping catalogue, another name for a catalogue entry which only applies to a shopping catalogue"
  8_key="Shopping cart"                 8_value="System for collecting and paying for one of more items from a shopping catalogue; typically these will be physical items that are shipped together"
  9_key="Purchasing module"             9_value="The [tt]purchase[/tt] module where one-off purchases are made"
- 10_key="Transaction"						10_value="A low-level record that an action took place (e.g. purchase, payment, or subscription change) in the eCommerce system"
+ 10_key="Transaction"                  10_value="A low-level record that an action took place (e.g. purchase, payment, or subscription change) in the eCommerce system"
  11_key="Sale"									11_value="The act of something in the store being sold / purchased"
  12_key="Subscription"                 12_value="Something purchased that has recurring payments for as long as the subscription is open"
  13_key="Invoice"                      13_value="An invoice created for a website member to pay"

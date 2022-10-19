@@ -31,7 +31,7 @@ This file only contains the code for the sales log and code for viewing an indiv
  * The UI to view sales logs.
  *
  * @param  array $filters List of filters to apply (member_id, txn_id, type_code, start, end)
- * @param  boolean $show_username Whether to show the username column
+ * @param  boolean $show_username Whether to show the username (customer) column
  * @param  boolean $show_delete Whether to show the deletion column
  * @param  integer $max_default Default maximum number of records to show
  * @param  boolean $empty_ok Whether empty results are okay (instead of exiting with a no entries message)
@@ -52,7 +52,7 @@ function build_sales_table(array $filters = [], bool $show_username = false, boo
     $header_row[] = do_lang_tempcode('DATE_TIME');
     $header_row[] = do_lang_tempcode('TRANSACTION');
     if ($show_username) {
-        $header_row[] = do_lang_tempcode('USERNAME');
+        $header_row[] = do_lang_tempcode('CUSTOMER');
     }
     $header_row[] = do_lang_tempcode('PRODUCT');
     $header_row[] = do_lang_tempcode('DETAILS');
@@ -68,7 +68,7 @@ function build_sales_table(array $filters = [], bool $show_username = false, boo
         $where['member_id'] = $filters['member_id'];
     }
     if (array_key_exists('txn_id', $filters)) {
-        $end .= ' AND (' . db_string_equal_to('t_id', $filters['txn_id']) . ' OR ' . db_string_equal_to('t_parent_txn_id', $filters['txn_id']) . ')';
+        $end .= ' AND (t.id LIKE \'' .  db_encode_like('%' . $filters['txn_id'] . '%') . '\' OR t.t_parent_txn_id LIKE \'' . db_encode_like('%' . $filters['txn_id'] . '%') . '\')';
     }
     if (array_key_exists('type_code', $filters)) {
         $end .= ' AND (';
@@ -88,7 +88,7 @@ function build_sales_table(array $filters = [], bool $show_username = false, boo
         $end .= ' AND date_and_time<=' . strval($filters['end']);
     }
 
-    $rows = $GLOBALS['SITE_DB']->query_select('ecom_sales s LEFT JOIN ' . get_table_prefix() . 'ecom_transactions t ON t.id=s.txn_id', ['*', 's.id AS s_id', 't.id AS t_id'], $where, $end . 'ORDER BY date_and_time DESC', $max, $start);
+    $rows = $GLOBALS['SITE_DB']->query_select('ecom_sales s LEFT JOIN ' . get_table_prefix() . 'ecom_transactions t ON t.id=s.txn_id', ['*', 's.id AS s_id', 't.id AS t_id'], $where, $end . ' ORDER BY date_and_time DESC', $max, $start);
     $max_rows = $GLOBALS['SITE_DB']->query_select_value('ecom_sales s LEFT JOIN ' . get_table_prefix() . 'ecom_transactions t ON t.id=s.txn_id', 'COUNT(*)', $where, $end);
     $sales_rows = [];
     foreach ($rows as $row) {
@@ -119,11 +119,11 @@ function build_sales_table(array $filters = [], bool $show_username = false, boo
             $sales_row[] = $date;
             $sales_row[] = protect_from_escaping($row['txn_id']);
             if ($show_username) {
-                $sales_row[] = do_lang('UNKNOWN');
+                $sales_row[] = do_lang_tempcode('UNKNOWN_EM');
             }
-            $sales_row[] = do_lang('UNKNOWN');
-            $sales_row[] = do_lang('UNKNOWN');
-            $sales_row[] = do_lang('UNKNOWN');
+            $sales_row[] = do_lang_tempcode('UNKNOWN_EM');
+            $sales_row[] = do_lang_tempcode('UNKNOWN_EM');
+            $sales_row[] = do_lang_tempcode('UNKNOWN_EM');
             if ($show_delete) {
                 $sales_row[] = $actions;
             }
@@ -160,7 +160,7 @@ function build_sales_table(array $filters = [], bool $show_username = false, boo
         if ($show_username) {
             $sales_row[] = $member_link;
         }
-        $sales_row[] = $item_link;
+        $sales_row[] = tooltip($item_link, escape_html($transaction_row['t_type_code']));
         $sales_row[] = $details_1;
         $sales_row[] = $details_2;
         if ($show_delete) {

@@ -1,11 +1,11 @@
-{+START,IF_NON_EMPTY,{FILTERS_ROW_A}{FILTERS_ROW_B}}
+{+START,IF_PASSED,FILTERS_ROW_A}{+START,IF_PASSED,URL}
 	<div class="box box-filter-inputs"><div class="box-inner">
 		<form title="{!SEARCH}" action="{$URL_FOR_GET_FORM*,{URL}}" target="_self" method="get">
 			{$HIDDENS_FOR_GET_FORM,{URL}}
 
-			{+START,IF_PASSED,FILTERS_HIDDEN}
+			{+START,IF_PASSED,FILTERS_HIDDEN}{+START,IF_NON_EMPTY,{FILTERS_HIDDEN}}
 				{FILTERS_HIDDEN}
-			{+END}
+			{+END}{+END}
 
 			{+START,IF_NON_EMPTY,{FILTERS_ROW_A}}
 				<div class="search-fields clearfix">
@@ -20,7 +20,7 @@
 				</div>
 			{+END}
 
-			{+START,IF_NON_EMPTY,{FILTERS_ROW_B}}
+			{+START,IF_PASSED,FILTERS_ROW_B}{+START,IF_NON_EMPTY,{FILTERS_ROW_B}}
 				<div class="search-fields clearfix">
 					<div class="filter-inputs">
 						{+START,LOOP,FILTERS_ROW_B}
@@ -31,7 +31,7 @@
 						{+END}
 					</div>
 				</div>
-			{+END}
+			{+END}{+END}
 
 			<div class="filter-inputs">
 				<div class="search-button filter-input">
@@ -43,4 +43,4 @@
 			</div>
 		</form>
 	</div></div>
-{+END}
+{+END}{+END}

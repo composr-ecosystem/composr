@@ -64,7 +64,7 @@ class usergroup_subscriptions_test_set extends cms_test_case
 
         // Test button generates
         $subscription_id = strval($GLOBALS['SITE_DB']->query_insert('ecom_subscriptions', [
-            's_type_code' => 'USERGROUP_' . strval($this->usergroup_subscription_id),
+            's_type_code' => 'USERGROUP' . strval($this->usergroup_subscription_id),
             's_member_id' => $member_id,
             's_state' => 'new',
             's_amount' => 123.00,
@@ -81,7 +81,7 @@ class usergroup_subscriptions_test_set extends cms_test_case
             's_length' => 12,
             's_length_units' => 'y',
         ], true));
-        $button = make_subscription_button('USERGROUP_' . strval($this->usergroup_subscription_id), 'test', $subscription_id, 123.00, [], 0.00, [], 'USD', 0, 12, 'y', 'paypal');
+        $button = make_subscription_button('USERGROUP' . strval($this->usergroup_subscription_id), 'test', $subscription_id, 123.00, [], 0.00, [], 'USD', 0, 12, 'y', 'paypal');
 
         // Find custom ID for transaction
         $matches = [];

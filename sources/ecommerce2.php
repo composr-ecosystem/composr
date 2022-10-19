@@ -220,7 +220,7 @@ function delete_usergroup_subscription(int $id, string $uhoh_mail = '')
     $new_group = $myrow['s_group_id'];
 
     // Remove benefits
-    $type_code = 'USERGROUP_' . strval($id);
+    $type_code = 'USERGROUP' . strval($id);
     $subscriptions = $GLOBALS['SITE_DB']->query_select('ecom_subscriptions', ['*'], ['s_type_code' => $type_code]);
     $to_members = [];
     foreach ($subscriptions as $sub) {

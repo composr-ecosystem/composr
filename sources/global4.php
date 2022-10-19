@@ -343,7 +343,7 @@ function member_personal_links_and_details(int $member_id) : array
             sort_maps_by($usergroup_subs, 's_price');
             foreach ($usergroup_subs as $sub) {
                 $db = get_db_for('f_usergroup_subs');
-                $url = build_url(['page' => 'purchase', 'type' => 'message', 'type_code' => 'USERGROUP_' . strval($sub['id'])], get_module_zone('purchase'));
+                $url = build_url(['page' => 'purchase', 'type' => 'message', 'type_code' => 'USERGROUP' . strval($sub['id'])], get_module_zone('purchase'));
                 $links_ecommerce->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINK', [
                     '_GUID' => '5c4a1f300b37722e587fe2f608f1ee3a',
                     'NAME' => do_lang_tempcode('UPGRADE_TO', escape_html(get_translated_text($sub['s_title'], $db))),

@@ -75,7 +75,7 @@ class Hook_ecommerce_usergroup
                 $image_url = find_theme_image('icons/tiers/' . $images[$i % 4]);
             }
 
-            $products['USERGROUP_' . strval($sub['id'])] = [
+            $products['USERGROUP' . strval($sub['id'])] = [
                 'item_name' => do_lang('_SUBSCRIPTION', $item_name),
                 'item_description' => get_translated_tempcode('f_usergroup_subs', $sub, 's_description', $db),
                 'item_image_url' => $image_url,
@@ -122,7 +122,8 @@ class Hook_ecommerce_usergroup
 
         $db = $GLOBALS[(get_forum_type() == 'cns') ? 'FORUM_DB' : 'SITE_DB'];
 
-        $usergroup_subscription_id = intval(substr($type_code, 10));
+        $usergroup_subscription_id = intval(substr($type_code, 9));
+
         $rows = $db->query_select('f_usergroup_subs', ['*'], ['id' => $usergroup_subscription_id]);
         if (!isset($rows[0])) {
             return ECOMMERCE_PRODUCT_MISSING;
@@ -149,7 +150,7 @@ class Hook_ecommerce_usergroup
      */
     public function get_message(string $type_code) : ?object
     {
-        $usergroup_subscription_id = intval(preg_replace('#^USERGROUP_#', '', $type_code));
+        $usergroup_subscription_id = intval(preg_replace('#^USERGROUP#', '', $type_code));
 
         $db = $GLOBALS[(get_forum_type() == 'cns') ? 'FORUM_DB' : 'SITE_DB'];
 
@@ -236,7 +237,7 @@ class Hook_ecommerce_usergroup
         require_code('cns_members');
         require_code('notifications');
 
-        $usergroup_subscription_id = intval(preg_replace('#^USERGROUP_#', '', $type_code));
+        $usergroup_subscription_id = intval(preg_replace('#^USERGROUP#', '', $type_code));
 
         $db = $GLOBALS[(get_forum_type() == 'cns') ? 'FORUM_DB' : 'SITE_DB'];
 

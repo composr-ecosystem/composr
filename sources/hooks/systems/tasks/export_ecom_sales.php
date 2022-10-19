@@ -55,7 +55,7 @@ class Hook_task_export_ecom_sales
         }
         if ($filter_txn_id != '') {
             $end_filename .= '_' . $filter_txn_id;
-            $where .= ' AND (' . db_string_equal_to('t_id', $filter_txn_id) . ' OR ' . db_string_equal_to('t_parent_txn_id', $filter_txn_id) . ')';
+            $where .= ' AND (t.id LIKE \'' . db_encode_like('%' . $filter_txn_id . '%') . '\' OR t.t_parent_txn_id LIKE \'' . db_encode_like('%' . $filter_txn_id . '%') . '\')';
         }
         if ($_filter_type_code != '') {
             $end_filename .= '_' . $_filter_type_code;
@@ -81,7 +81,7 @@ class Hook_task_export_ecom_sales
         if ($file_type === null) {
             $file_type = spreadsheet_write_default();
         }
-        $filename = 'sales' . $end_filename . '.' . $file_type;
+        $filename = 'sales_' . strval(time()) . $end_filename . '.' . $file_type;
         $outfile_path = null;
         $sheet_writer = spreadsheet_open_write($outfile_path, $filename);
 

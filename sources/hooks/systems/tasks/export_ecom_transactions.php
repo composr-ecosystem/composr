@@ -58,7 +58,7 @@ class Hook_task_export_ecom_transactions
         }
         if ($filter_txn_id != '') {
             $end_filename .= '_' . $filter_txn_id;
-            $where .= ' AND (' . db_string_equal_to('id', $filter_txn_id) . ' OR ' . db_string_equal_to('t_parent_txn_id', $filter_txn_id) . ')';
+            $where .= ' AND (t.id LIKE \'' . db_encode_like('%' . $filter_txn_id . '%') . '\' OR t.t_parent_txn_id LIKE \'' . db_encode_like('%' . $filter_txn_id . '%') . '\')';
         }
         if ($filter_purchase_id != '') {
             $end_filename .= '_' . $filter_purchase_id;
@@ -99,7 +99,7 @@ class Hook_task_export_ecom_transactions
         if ($file_type === null) {
             $file_type = spreadsheet_write_default();
         }
-        $filename = 'transactions' . $end_filename . '.' . $file_type;
+        $filename = 'transactions_' . strval(time()) . $end_filename . '.' . $file_type;
         $outfile_path = null;
         $sheet_writer = spreadsheet_open_write($outfile_path, $filename);
 
@@ -131,6 +131,9 @@ class Hook_task_export_ecom_transactions
 
                 $transaction[do_lang('PARENT')] = $_transaction['t_parent_txn_id'];
 
+                $customer = $GLOBALS['FORUM_DRIVER']->get_username($_transaction['t_member_id']);
+                $transaction[do_lang('CUSTOMER')] = $customer;
+
                 $member_id = null;
                 if ($product_object !== null) {
                     $member_id = method_exists($product_object, 'member_for') ? $product_object->member_for($_transaction['t_type_code'], $_transaction['t_purchase_id']) : null;
@@ -138,9 +141,10 @@ class Hook_task_export_ecom_transactions
                 if ($member_id !== null) {
                     $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
                 } else {
-                    $username = do_lang('UNKNOWN');
+                    $username = do_lang('NA');
                 }
-                $transaction[do_lang('MEMBER')] = $username;
+
+                $transaction[do_lang('RELATED_MEMBER')] = $username;
 
                 $transaction[do_lang('PRODUCT')] = $item_name;
 

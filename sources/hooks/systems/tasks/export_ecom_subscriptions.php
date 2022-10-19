@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_task_export_subscriptions
+class Hook_task_export_ecom_subscriptions
 {
     /**
      * Run the task hook.
@@ -39,28 +39,16 @@ class Hook_task_export_subscriptions
             return null;
         }
 
-        if (!has_actual_page_access(get_member(), 'admin_ecommerce_logs')) {
-            access_denied('ADMIN_ONLY');
-        }
-
         $filter_state = explode(',', $_filter_state);
         $filter_type_code = explode(',', $_filter_type_code);
 
         require_lang('ecommerce');
         require_code('ecommerce');
 
-        // Prepare the file
-        require_code('files_spreadsheets_write');
-        if ($file_type === null) {
-            $file_type = spreadsheet_write_default();
-        }
-        $filename = 'subscriptions_' . strval(time()) . '.' . $file_type;
-        $outfile_path = null;
-        $sheet_writer = spreadsheet_open_write($outfile_path, $filename);
-
         // Build WHERE query
         $where = [];
         $end = '';
+        $end_filename = '';
         if ($filter_manual == 1) {
             $where = ['s_payment_gateway' => 'manual'];
         }
@@ -68,11 +56,11 @@ class Hook_task_export_subscriptions
             $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($filter_username);
             if ($member_id !== null) {
                 $where['s_member_id'] = $member_id;
-            } else {
-                attach_message(do_lang_tempcode('_MEMBER_NO_EXIST', $filter_username));
+                $end_filename .= '_' . $filter_username;
             }
         }
         if ($_filter_state != '') {
+            $end_filename .= '_' . $_filter_state;
             $end .= ' AND (';
             foreach ($filter_state as $key => $state) {
                 if ($key > 0) {
@@ -83,6 +71,7 @@ class Hook_task_export_subscriptions
             $end .= ')';
         }
         if ($_filter_type_code != '') {
+            $end_filename .= '_' . $_filter_type_code;
             $end .= ' AND (';
             foreach ($filter_type_code as $key => $product) {
                 if ($key > 0) {
@@ -93,7 +82,17 @@ class Hook_task_export_subscriptions
             $end .= ')';
         }
 
-        $end .= 'ORDER BY s_time DESC';
+        // Prepare the file
+        require_code('files_spreadsheets_write');
+        if ($file_type === null) {
+            $file_type = spreadsheet_write_default();
+        }
+        $filename = 'subscriptions_' . strval(time()) . $end_filename . '.' . $file_type;
+        $outfile_path = null;
+        $sheet_writer = spreadsheet_open_write($outfile_path, $filename);
+
+
+        $end .= ' ORDER BY s_time DESC';
 
         $start = 0;
         $max = 1000;
@@ -105,22 +104,25 @@ class Hook_task_export_subscriptions
             // Write data to the file
             foreach ($subscriptions as $row) {
                 list($details) = find_product_details($row['s_type_code']);
-                if ($details === null) {
-                    continue;
-                }
-
-                $s_length = $details['type_special_details']['length'];
-                $s_length_units = $details['type_special_details']['length_units']; // y-year, m-month, w-week, d-day
-                $time_period_units = ['y' => 'year', 'm' => 'month', 'w' => 'week', 'd' => 'day'];
-                $expiry_time = strtotime('+' . strval($s_length) . ' ' . $time_period_units[$s_length_units], $row['s_time']);
-                $expiry_date = get_timezoned_date_time($expiry_time, false);
 
                 $data_point = [];
                 $data_point[do_lang('IDENTIFIER')] = $row['id'];
                 $data_point[do_lang('DATE_TIME')] = get_timezoned_date_time($row['s_time'], false);
                 $data_point[do_lang('MEMBER')] = $GLOBALS['FORUM_DRIVER']->get_username($row['s_member_id'], false, USERNAME_DEFAULT_DELETED);
-                $data_point[do_lang('PRODUCT')] = $details['item_name'];
-                $data_point[do_lang('EXPIRY_DATE')] = $expiry_date;
+
+                if ($details === null) {
+                    $data_point[do_lang('PRODUCT')] = do_lang('UNKNOWN');
+                    $data_point[do_lang('EXPIRY_DATE')] = do_lang('UNKNOWN');
+                } else {
+                    $s_length = $details['type_special_details']['length'];
+                    $s_length_units = $details['type_special_details']['length_units']; // y-year, m-month, w-week, d-day
+                    $time_period_units = ['y' => 'year', 'm' => 'month', 'w' => 'week', 'd' => 'day'];
+                    $expiry_time = strtotime('+' . strval($s_length) . ' ' . $time_period_units[$s_length_units], $row['s_time']);
+                    $expiry_date = get_timezoned_date_time($expiry_time, false);
+
+                    $data_point[do_lang('PRODUCT')] = $details['item_name'];
+                    $data_point[do_lang('EXPIRY_DATE')] = $expiry_date;
+                }
 
                 $sheet_writer->write_row($data_point);
             }

@@ -8375,6 +8375,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         FILTER_STATE_SMODIFIED
         PARENT_TRANSACTION
         MANUAL_SUBSCRIPTIONS
+        REASON_FOR_PENDING
     ')));
 
     $non_admin_files = [
@@ -11741,6 +11742,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         POLL_RSS_VOTE_TITLE_REVOKED
         TOPIC_POLL_VOTES
         DEFAULT_points_foss_reason
+        RELATED_MEMBER
     ')));
 
     if ($GLOBALS['DEV_MODE']) {

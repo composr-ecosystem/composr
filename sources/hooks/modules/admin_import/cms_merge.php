@@ -604,12 +604,12 @@ class Hook_import_cms_merge
                 continue; // Uh oh - someones deleted and they had invoices - lets hope they paid them ;)
             }
 
-            if (substr($row['s_type_code'], 0, 10) == 'USERGROUP_') {
+            if (substr($row['s_type_code'], 0, 9) == 'USERGROUP') {
                 $remap_id = import_id_remap_get('usergroup_sub', substr($row['s_type_code'], 9), true);
                 if ($remap_id === null) {
                     continue;
                 }
-                $row['s_type_code'] = 'USERGROUP_' . strval($remap_id);
+                $row['s_type_code'] = 'USERGROUP' . strval($remap_id);
             }
 
             if (get_param_integer('keep_preserve_ids', 0) == 0) {

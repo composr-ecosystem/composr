@@ -358,11 +358,15 @@ foreach ($rows as $row) {
 $table = results_table('Example', $start, 'example_start', $max, 'example_max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order);
 
 // Render screen
-return do_template('RESULTS_TABLE_SCREEN', array(
+return do_template('RESULTS_TABLE_SCREEN', [
     'TITLE' => $title,
     'TEXT' => '',
-    'RESULTS_TABLE' => $table;
-));
+    'RESULTS_TABLE' => $table,
+    'FILTERS_ROW_A' => null,
+    'FILTERS_ROW_B' => null,
+    'FILTERS_HIDDEN' => null,
+    'URL' => null,
+]);
 [/code]
 
 [title="3"]URLs[/title]

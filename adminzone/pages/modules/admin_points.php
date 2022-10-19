@@ -472,9 +472,7 @@ class Module_admin_points
 
         $url = build_url(['page' => 'admin_points', 'type' => 'browse'], get_module_zone('admin_points'));
 
-        $tpl = do_template('RESULTS_TABLE_FILTER_SCREEN', [
-            '_GUID' => 'bd66789c028148928b87d04e6dc51fc8',
-            'BLOCK_ID' => 'ledger',
+        $tpl = do_template('RESULTS_TABLE_SCREEN', [
             'TITLE' => $this->title,
             'RESULTS_TABLE' => $results_table,
             'FORM' => $form,

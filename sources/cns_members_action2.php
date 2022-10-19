@@ -65,7 +65,7 @@ function member_get_spreadsheet_headings_extended() : array
             foreach ($heading_lang_strings as $heading_lang_string) {
                 $headings[$item_name . ' (' . do_lang($heading_lang_string) . ')'] = ':' . str_replace('/', '\\', $item_name . ' (' . do_lang($heading_lang_string) . ')'); // Forward slashes are assumed as delimiters
             }
-            $subscription_types['USERGROUP_' . strval($usergroup_subscription_row['id'])] = $item_name;
+            $subscription_types['USERGROUP' . strval($usergroup_subscription_row['id'])] = $item_name;
         }
     }
 

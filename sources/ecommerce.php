@@ -464,7 +464,7 @@ function get_product_details_url(string $type_code, bool $post_purchase_access_u
     }
 
     if ($product_details_url === null) {
-        $product_details_url = build_url(['page' => 'purchase', 'type' => 'message', 'product' => $type_code], get_module_zone('purchase'), [], false, false, $email_safe);
+        $product_details_url = build_url(['page' => 'purchase', 'type' => 'message', 'type_code' => $type_code], get_module_zone('purchase'), [], false, false, $email_safe);
     }
 
     return $product_details_url;
@@ -487,7 +487,7 @@ function build_transaction_linker(string $txn_id, bool $awaiting_payment, ?array
         }
 
         if (has_actual_page_access(get_member(), 'admin_ecommerce_logs')) {
-            $transaction_details_url = build_url(['page' => 'admin_ecommerce_logs', 'type' => 'logs', 'type_code' => $transaction_row['t_type_code'], 'txn_id' => $transaction_row['id']], get_module_zone('admin_ecommerce_logs'));
+            $transaction_details_url = build_url(['page' => 'admin_ecommerce_logs', 'type' => 'logs', 'filter_type_code' => $transaction_row['t_type_code'], 'filter_txn_id' => $transaction_row['id']], get_module_zone('admin_ecommerce_logs'));
             $transaction_link = hyperlink($transaction_details_url, $txn_id, false, true);
         } else {
             $transaction_link = make_string_tempcode(escape_html($txn_id));
@@ -636,11 +636,11 @@ function make_subscription_button(string $type_code, string $item_name, string $
 /**
  * Make a subscription cancellation button.
  *
- * @param  AUTO_LINK $purchase_id The purchase ID
+ * @param  ID_TEXT $purchase_id The purchase ID
  * @param  ID_TEXT $payment_gateway The payment gateway the payment will go via
  * @return ?Tempcode The button (null: no special cancellation -- just delete the subscription row to stop Composr regularly re-charging)
  */
-function make_cancel_button(int $purchase_id, string $payment_gateway) : ?object
+function make_cancel_button(string $purchase_id, string $payment_gateway) : ?object
 {
     if (in_array($payment_gateway, ['', 'manual', 'points'])) {
         return null;

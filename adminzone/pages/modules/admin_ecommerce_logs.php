@@ -603,7 +603,7 @@ class Module_admin_ecommerce_logs
             if ($member_id !== null) {
                 $filters['member_id'] = $member_id;
             } else {
-                attach_message(do_lang_tempcode('_MEMBER_NO_EXIST', $filter_username));
+                warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($filter_username)));
             }
         }
         if ($filter_txn_id != '') {
@@ -620,15 +620,23 @@ class Module_admin_ecommerce_logs
         }
 
         // Build the table
-        list($sales_table, $pagination, $rows) = build_sales_table($filters, true, true, 50);
+        $table = build_sales_table($filters, true, true, 50, true);
+        if ($table !== null) {
+            list($sales_table, $pagination, $rows) = $table;
+        } else {
+            $sales_table = do_lang_tempcode('NO_ENTRIES');
+            $pagination = new Tempcode();
+            $rows = [];
+        }
 
         // Start building fields for the filter box
         push_field_encapsulation(FIELD_ENCAPSULATION_RAW);
 
         // Product types
+        $_products = $GLOBALS['SITE_DB']->query_select('ecom_sales s LEFT JOIN ' . get_table_prefix() . 'ecom_transactions t ON t.id=s.txn_id', ['DISTINCT t.t_type_code'], [], '');
         $products = new Tempcode();
         $__products = [];
-        foreach ($rows as $p) {
+        foreach ($_products as $p) {
             list($details, $product_object) = find_product_details($p['t_type_code']);
             if ($details !== null) {
                 $item_name = $details['item_name'];
@@ -639,7 +647,7 @@ class Module_admin_ecommerce_logs
         }
         sort_maps_by($__products, 'caption');
         foreach ($__products as $p) {
-            $products->attach(form_input_list_entry($p['value'], (($_filter_type_code != '') && (array_key_exists($p['value'], $filter_type_code))), $p['caption']));
+            $products->attach(form_input_list_entry($p['value'], (($_filter_type_code != '') && (in_array($p['value'], $filter_type_code))), $p['caption']));
         }
 
         $filters_row_a = [
@@ -657,8 +665,8 @@ class Module_admin_ecommerce_logs
         $filters_row_b = [
             [
                 'PARAM' => 'filter_username',
-                'LABEL' => do_lang_tempcode('USERNAME'),
-                'FIELD' => form_input_username(do_lang_tempcode('USERNAME'), new Tempcode(), 'filter_username', $filter_username, false),
+                'LABEL' => do_lang_tempcode('CUSTOMER'),
+                'FIELD' => form_input_username(do_lang_tempcode('CUSTOMER'), new Tempcode(), 'filter_username', $filter_username, false),
             ],
             [
                 'PARAM' => 'filter_start',
@@ -672,21 +680,19 @@ class Module_admin_ecommerce_logs
             ],
         ];
 
-        $url = build_url(['page' => 'admin_ecommerce_logs', 'type' => 'sales'], get_module_zone('admin_ecommerce_logs'));
+        $url = build_url(['page' => '_SELF', 'type' => 'sales'], '_SELF');
 
         pop_field_encapsulation();
 
         // Export button
         $form = new Tempcode();
         if (count($rows) > 0) {
-            $export_url = build_url(['page' => '_SELF', 'type' => 'export_sales'], get_module_zone('admin_ecommerce_logs'), [], true);
+            $export_url = build_url(['page' => '_SELF', 'type' => 'export_sales'], '_SELF', [], true);
             $form->attach(do_template('BUTTON_SCREEN', ['IMMEDIATE' => false, 'URL' => $export_url, 'TITLE' => do_lang_tempcode('EXPORT'), 'IMG' => 'admin/export_spreadsheet', 'HIDDEN' => new Tempcode()]));
         }
         $sales_table->attach($form);
 
         return do_template('ECOM_SALES_LOG_SCREEN', [
-            '_GUID' => '014cf9436ece951edb55f2f7b0efb597',
-            'BLOCK_ID' => 'sales',
             'TITLE' => $this->title,
             'CONTENT' => $sales_table,
             'PAGINATION' => $pagination,
@@ -761,11 +767,11 @@ class Module_admin_ecommerce_logs
             if ($member_id !== null) {
                 $where .= ' AND t_member_id=' . strval($member_id);
             } else {
-                attach_message(do_lang_tempcode('_MEMBER_NO_EXIST', $filter_username));
+                warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($filter_username)));
             }
         }
         if ($filter_txn_id != '') {
-            $where .= ' AND (' . db_string_equal_to('id', $filter_txn_id) . ' OR ' . db_string_equal_to('t_parent_txn_id', $filter_txn_id) . ')';
+            $where .= ' AND (id LIKE \'' .  db_encode_like('%' . $filter_txn_id . '%') . '\' OR t_parent_txn_id LIKE \'' . db_encode_like('%' . $filter_txn_id . '%') . '\')';
         }
         if ($filter_purchase_id != '') {
             $where .= ' AND ' . db_string_equal_to('t_purchase_id', $filter_purchase_id);
@@ -808,14 +814,13 @@ class Module_admin_ecommerce_logs
         $header_row = results_header_row([
             do_lang('DATE'),
             do_lang('TRANSACTION'),
-            do_lang('MEMBER'),
+            do_lang('CUSTOMER'),
+            do_lang('RELATED_MEMBER'),
             do_lang('PRODUCT'),
             do_lang('PURCHASE_ID'),
             do_lang('AMOUNT'),
             do_lang(get_option('tax_system')),
             do_lang('STATUS'),
-            do_lang('REASON'),
-            do_lang('NOTES'),
         ], $sortables, 'sort', $sortable . ' ' . $sort_order);
         foreach ($rows as $transaction_row) {
             $date = get_timezoned_date_time($transaction_row['t_time'], false);
@@ -835,10 +840,11 @@ class Module_admin_ecommerce_logs
             if ($details !== null) {
                 $item_name = $details['item_name'];
             } else {
-                $item_name = do_lang('UNKNOWN');
+                $item_name = do_lang_tempcode('UNKNOWN_EM');
             }
 
-            // Find member link, if possible
+            // Find member links, if possible
+            $customer_link = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($transaction_row['t_member_id'], '', false);
             $member_id = null;
             if ($product_object !== null) {
                 $member_id = method_exists($product_object, 'member_for') ? $product_object->member_for($transaction_row['t_type_code'], $transaction_row['t_purchase_id']) : null;
@@ -846,30 +852,31 @@ class Module_admin_ecommerce_logs
             if ($member_id !== null) {
                 $member_link = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($member_id, '', false);
             } else {
-                $member_link = do_lang_tempcode('UNKNOWN_EM');
+                $member_link = do_lang_tempcode('NA_EM');
             }
 
             $tax = ecommerce_get_currency_symbol($transaction_row['t_currency']) . escape_html(float_format($transaction_row['t_tax']));
             $tax_invoice_url = build_url(['page' => '_SELF', 'type' => 'tax_invoice', 'id' => $transaction_row['id'], 'wide_high' => 1], '_SELF');
             $tax_linker = hyperlink($tax_invoice_url, $tax, false, false, '', null, null, null, '_top');
 
-            if ($transaction_row['t_parent_txn_id'] == '') {
-                $transaction_id = escape_html($transaction_row['id']);
-            } else {
-                $transaction_id = tooltip(escape_html($transaction_row['id']), do_lang_tempcode('PARENT_TRANSACTION', $transaction_row['t_parent_txn_id']));
-            }
+            $transaction_tooltip = do_template('TRANSACTION_TOOLTIP', [
+                'TXN_ID' => $transaction_row['id'],
+                'PARENT_ID' => $transaction_row['t_parent_txn_id'],
+                'REASON' => $transaction_row['t_reason'],
+                'PENDING_REASON' => $transaction_row['t_pending_reason'],
+                'MEMO' => $transaction_row['t_memo'],
+            ]);
 
             $result_entries->attach(results_entry([
                 escape_html($date),
-                $transaction_id,
+                $transaction_tooltip,
+                $customer_link,
                 $member_link,
                 tooltip(escape_html($item_name), escape_html($transaction_row['t_type_code'])),
                 escape_html($transaction_row['t_purchase_id']),
                 ecommerce_get_currency_symbol($transaction_row['t_currency']) . escape_html(float_format($transaction_row['t_amount'])),
                 $tax_linker,
                 $status,
-                generate_tooltip_by_truncation(trim($transaction_row['t_reason'] . '; ' . $transaction_row['t_pending_reason'], '; ')),
-                generate_tooltip_by_truncation($transaction_row['t_memo']),
             ], false));
         }
 
@@ -878,7 +885,7 @@ class Module_admin_ecommerce_logs
         // Export button
         $form = new Tempcode();
         if (count($rows) > 0) {
-            $export_url = build_url(['page' => '_SELF', 'type' => 'export_transactions'], get_module_zone('admin_ecommerce_logs'), [], true);
+            $export_url = build_url(['page' => '_SELF', 'type' => 'export_transactions'], '_SELF', [], true);
             $form->attach(do_template('BUTTON_SCREEN', ['IMMEDIATE' => false, 'URL' => $export_url, 'TITLE' => do_lang_tempcode('EXPORT'), 'IMG' => 'admin/export_spreadsheet', 'HIDDEN' => new Tempcode()]));
         }
 
@@ -894,7 +901,7 @@ class Module_admin_ecommerce_logs
 
         // Product types
         $products = new Tempcode();
-        $product_rows = $GLOBALS['SITE_DB']->query_select('ecom_transactions', ['DISTINCT t_type_code'], [], 'ORDER BY t_type_code');
+        $product_rows = $GLOBALS['SITE_DB']->query_select('ecom_transactions', ['DISTINCT t_type_code'], []);
         $__products = [];
         foreach ($product_rows as $p) {
             list($details, $product_object) = find_product_details($p['t_type_code']);
@@ -907,7 +914,7 @@ class Module_admin_ecommerce_logs
         }
         sort_maps_by($__products, 'caption');
         foreach ($__products as $p) {
-            $products->attach(form_input_list_entry($p['value'], (($_filter_type_code != '') && (array_key_exists($p['value'], $filter_type_code))), $p['caption']));
+            $products->attach(form_input_list_entry($p['value'], (($_filter_type_code != '') && (in_array($p['value'], $filter_type_code))), $p['caption']));
         }
 
         $filters_row_a = [
@@ -935,8 +942,8 @@ class Module_admin_ecommerce_logs
         $filters_row_b = [
             [
                 'PARAM' => 'filter_username',
-                'LABEL' => do_lang_tempcode('USERNAME'),
-                'FIELD' => form_input_username(do_lang_tempcode('USERNAME'), new Tempcode(), 'filter_username', $filter_username, false),
+                'LABEL' => do_lang_tempcode('CUSTOMER'),
+                'FIELD' => form_input_username(do_lang_tempcode('CUSTOMER'), new Tempcode(), 'filter_username', $filter_username, false),
             ],
             [
                 'PARAM' => 'filter_start',
@@ -950,10 +957,9 @@ class Module_admin_ecommerce_logs
             ],
         ];
 
-        $url = build_url(['page' => 'admin_ecommerce_logs', 'type' => 'logs'], get_module_zone('admin_ecommerce_logs'));
+        $url = build_url(['page' => '_SELF', 'type' => 'logs'], '_SELF');
 
-        $tpl = do_template('RESULTS_TABLE_FILTER_SCREEN', [
-            'BLOCK_ID' => 'subscriptions',
+        $tpl = do_template('RESULTS_TABLE_SCREEN', [
             'TITLE' => $this->title,
             'RESULTS_TABLE' => $results_table,
             'FORM' => $form,
@@ -1262,14 +1268,14 @@ class Module_admin_ecommerce_logs
         $where = [];
         $end = '';
         if ($filter_manual == 1) {
-            $where = ['s_payment_gateway' => 'manual'];
+            $where['s_payment_gateway'] = 'manual';
         }
         if ($filter_username != '') {
             $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($filter_username);
             if ($member_id !== null) {
                 $where['s_member_id'] = $member_id;
             } else {
-                attach_message(do_lang_tempcode('_MEMBER_NO_EXIST', $filter_username));
+                warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($filter_username)));
             }
         }
         if ($_filter_state != '') {
@@ -1296,7 +1302,7 @@ class Module_admin_ecommerce_logs
         // Construct the table
         $max_rows = $GLOBALS['SITE_DB']->query_select_value('ecom_subscriptions', 'COUNT(*)', $where, $end);
 
-        $end .= 'ORDER BY ' . $sortable . ' ' . $sort_order . ', s_time DESC'; // Use s_time as secondary ordering
+        $end .= ' ORDER BY ' . $sortable . ' ' . $sort_order . ', s_time DESC'; // Use s_time as secondary ordering
         $subscriptions = $GLOBALS['SITE_DB']->query_select('ecom_subscriptions', ['*'], $where, $end, $max, $start);
 
         require_code('form_templates');
@@ -1316,15 +1322,15 @@ class Module_admin_ecommerce_logs
                 $s_length_units = $details['type_special_details']['length_units']; // y-year, m-month, w-week, d-day
                 $time_period_units = ['y' => 'year', 'm' => 'month', 'w' => 'week', 'd' => 'day'];
                 $expiry_time = strtotime('+' . strval($s_length) . ' ' . $time_period_units[$s_length_units], $subs['s_time']);
-                $expiry_date = get_timezoned_date_time($expiry_time, false);
+                $expiry_date = make_string_tempcode(get_timezoned_date_time($expiry_time, false));
             } else {
-                $item_name = do_lang('UNKNOWN');
-                $expiry_date = do_lang('UNKNOWN');
+                $item_name = do_lang_tempcode('UNKNOWN_EM');
+                $expiry_date = do_lang_tempcode('UNKNOWN_EM');
             }
-            if (($subs['s_state'] == 'cancelled') || ($subs['s_payment_gateway'] == 'manual')) {
-                $cancel_url = new Tempcode();
-            } else {
+            if (($subs['s_state'] != 'cancelled') && ($subs['s_payment_gateway'] == 'manual')) {
                 $cancel_url = hyperlink(build_url(['page' => '_SELF', 'type' => 'cancel_subscription', 'subscription_id' => $subs['id']], '_SELF'), do_lang('SUBSCRIPTION_CANCEL'), false, true);
+            } else {
+                $cancel_url = new Tempcode();
             }
 
             $map = [
@@ -1342,7 +1348,7 @@ class Module_admin_ecommerce_logs
 
         // Export button
         $form = new Tempcode();
-        $export_url = build_url(['page' => '_SELF', 'type' => 'export_subscriptions'], get_module_zone('admin_ecommerce_logs'), [], true);
+        $export_url = build_url(['page' => '_SELF', 'type' => 'export_subscriptions'], '_SELF', [], true);
         $form->attach(do_template('BUTTON_SCREEN', ['IMMEDIATE' => false, 'URL' => $export_url, 'TITLE' => do_lang_tempcode('EXPORT'), 'IMG' => 'admin/export_spreadsheet', 'HIDDEN' => new Tempcode()]));
 
         // Start building fields for the filter box
@@ -1370,7 +1376,7 @@ class Module_admin_ecommerce_logs
         }
         sort_maps_by($__products, 'caption');
         foreach ($__products as $p) {
-            $products->attach(form_input_list_entry($p['value'], (($_filter_type_code != '') && (array_key_exists($p['value'], $filter_type_code))), $p['caption']));
+            $products->attach(form_input_list_entry($p['value'], (($_filter_type_code != '') && (in_array($p['value'], $filter_type_code))), $p['caption']));
         }
 
         // Fallback for manual transactions tick to ensure it is 0 when we want it to be 0
@@ -1397,15 +1403,14 @@ class Module_admin_ecommerce_logs
         $filters_row_b = [
             [
                 'PARAM' => 'filter_username',
-                'LABEL' => do_lang_tempcode('USERNAME'),
-                'FIELD' => form_input_username(do_lang_tempcode('USERNAME'), new Tempcode(), 'filter_username', $filter_username, false),
+                'LABEL' => do_lang_tempcode('MEMBER'),
+                'FIELD' => form_input_username(do_lang_tempcode('MEMBER'), new Tempcode(), 'filter_username', $filter_username, false),
             ],
         ];
 
-        $url = build_url(['page' => 'admin_ecommerce_logs', 'type' => 'view_subscriptions'], get_module_zone('admin_ecommerce_logs'));
+        $url = build_url(['page' => '_SELF', 'type' => 'view_subscriptions'], '_SELF');
 
-        $tpl = do_template('RESULTS_TABLE_FILTER_SCREEN', [
-            'BLOCK_ID' => 'subscriptions',
+        $tpl = do_template('RESULTS_TABLE_SCREEN', [
             'TITLE' => $this->title,
             'RESULTS_TABLE' => $results_table,
             'FORM' => $form,
