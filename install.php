@@ -2330,7 +2330,7 @@ function step_7() : object
     }
     $time_after = microtime(true);
     if (get_param_integer('keep_show_timings', 0) == 1) {
-        $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => '1aafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('&raquo; Module installation of admin_version took ' . float_format($time_after - $time_before) . ' seconds'))));
+        $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '1aafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('&raquo; Module installation of admin_version took ' . float_format($time_after - $time_before) . ' seconds')]));
     }
     $time_before = microtime(true);
     if (reinstall_module('adminzone', 'admin_permissions')) {
@@ -2338,7 +2338,7 @@ function step_7() : object
     }
     $time_after = microtime(true);
     if (get_param_integer('keep_show_timings', 0) == 1) {
-        $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => '1aafb3dd014d589fcc057bba54fc4bb3', 'SOMETHING' => protect_from_escaping('&raquo; Module installation of admin_permissions took ' . float_format($time_after - $time_before) . ' seconds'))));
+        $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '1aafb3dd014d589fcc057bba54fc4bb3', 'SOMETHING' => protect_from_escaping('&raquo; Module installation of admin_permissions took ' . float_format($time_after - $time_before) . ' seconds')]));
     }
 
     $modules = find_all_modules('adminzone');
@@ -2354,7 +2354,7 @@ function step_7() : object
 
             $time_after = microtime(true);
             if (get_param_integer('keep_show_timings', 0) == 1) {
-                $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => '1fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('&raquo; Module installation of ' . escape_html($module) . ' took ' . float_format($time_after - $time_before) . ' seconds'))));
+                $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '1fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('&raquo; Module installation of ' . escape_html($module) . ' took ' . float_format($time_after - $time_before) . ' seconds')]));
             }
         }
     }
@@ -2375,7 +2375,7 @@ function step_7() : object
 
         $time_after = microtime(true);
         if (get_param_integer('keep_show_timings', 0) == 1) {
-            $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => '2fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('&raquo; Addon installation of ' . escape_html($addon_name) . ' took ' . float_format($time_after - $time_before) . ' seconds'))));
+            $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '2fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('&raquo; Addon installation of ' . escape_html($addon_name) . ' took ' . float_format($time_after - $time_before) . ' seconds')]));
         }
     }
 
@@ -2420,7 +2420,7 @@ function step_8() : object
 
             $time_after = microtime(true);
             if (get_param_integer('keep_show_timings', 0) == 1) {
-                $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => '3fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('&raquo; Module installation of ' . escape_html($module) . ' took ' . float_format($time_after - $time_before) . ' seconds'))));
+                $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '3fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('&raquo; Module installation of ' . escape_html($module) . ' took ' . float_format($time_after - $time_before) . ' seconds')]));
             }
         }
     }
@@ -2465,7 +2465,7 @@ function step_9() : object
 
             $time_after = microtime(true);
             if (get_param_integer('keep_show_timings', 0) == 1) {
-                $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => '4fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('&raquo; Module installation of ' . escape_html($module) . ' took ' . float_format($time_after - $time_before) . ' seconds'))));
+                $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '4fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('&raquo; Module installation of ' . escape_html($module) . ' took ' . float_format($time_after - $time_before) . ' seconds')]));
             }
         }
     }
@@ -2482,7 +2482,7 @@ function step_9() : object
 
         $time_after = microtime(true);
         if (get_param_integer('keep_show_timings', 0) == 1) {
-            $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => '4fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('&raquo; Block installation of ' . escape_html($block) . ' took ' . float_format($time_after - $time_before) . ' seconds'))));
+            $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '4fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('&raquo; Block installation of ' . escape_html($block) . ' took ' . float_format($time_after - $time_before) . ' seconds')]));
         }
     }
 
@@ -2585,7 +2585,7 @@ function step_10_populate_database() : object
 
                 $time_after = microtime(true);
                 if (get_param_integer('keep_show_timings', 0) == 1) {
-                    $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => '4fafb3dd0146689fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('&raquo; Module installation of ' . escape_html($module) . ' took ' . float_format($time_after - $time_before) . ' seconds'))));
+                    $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '4fafb3dd0146689fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('&raquo; Module installation of ' . escape_html($module) . ' took ' . float_format($time_after - $time_before) . ' seconds')]));
                 }
             }
         }

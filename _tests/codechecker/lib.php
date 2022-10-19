@@ -140,7 +140,8 @@ function do_dir($dir, $rel = '', $enable_custom = true, $orig_priority = false, 
             if (!$enable_custom) {
                 $bitmask = $bitmask | IGNORE_CUSTOM_ZONES | IGNORE_CUSTOM_DIRS | IGNORE_NONBUNDLED;
             }
-            if (should_ignore_file($rel . (($rel != '') ? '/' : '') . $file, $bitmask)) {
+            $_file = $rel . (($rel != '') ? '/' : '') . $file;
+            if (($_file != 'install.php') && (should_ignore_file($_file, $bitmask))) {
                 continue;
             }
 

@@ -25,6 +25,10 @@ class cqc_rest_test_set extends cms_test_case
         $url = $this->extend_cqc_call($url);
         $result = http_get_contents($url, ['convert_to_internal_encoding' => true, 'timeout' => 10000.0]);
         foreach (explode('<br />', $result) as $line) {
+            if (preg_match('#^WARNING "install.php" \d+ \d+ PHP: Could not find function#', $line) != 0) {
+                continue;
+            }
+
             $this->assertTrue($this->should_filter_cqc_line($line), $line);
         }
     }
