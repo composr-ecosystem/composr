@@ -47,6 +47,8 @@
 		<p class="proceed-button">
 			<button class="btn btn-primary btn-scr buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed2{+END} <span>{!GO}</span></button>
 		</p>
+
+		{HIDDEN}
 	</form>
 
 	<p class="installer-done-thanks">

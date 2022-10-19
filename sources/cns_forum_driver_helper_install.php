@@ -164,7 +164,7 @@ function _helper_install_test_load_from(string $path) : bool
     global $PROBED_FORUM_CONFIG;
     $PROBED_FORUM_CONFIG['sql_database'] = 'cms';
     $PROBED_FORUM_CONFIG['sql_user'] = $GLOBALS['DB_DRIVER']->default_user();
-    $PROBED_FORUM_CONFIG['sql_pass'] = $GLOBALS['DB_DRIVER']->default_password();
+    $PROBED_FORUM_CONFIG['sql_pass_exists'] = ($GLOBALS['DB_DRIVER']->default_password() != '');
 
     $base_url = post_param_string('base_url', get_base_url(), INPUT_FILTER_URL_GENERAL);
 

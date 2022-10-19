@@ -216,7 +216,7 @@ class Forum_driver_wbb22 extends Forum_driver_base
             @include($path . '/acp/lib/config.inc.php');
             $PROBED_FORUM_CONFIG['sql_database'] = $sqldb;
             $PROBED_FORUM_CONFIG['sql_user'] = $sqluser;
-            $PROBED_FORUM_CONFIG['sql_pass'] = $sqlpassword;
+            $PROBED_FORUM_CONFIG['sql_pass_exists'] = ($sqlpassword != '');
             $PROBED_FORUM_CONFIG['cookie_member_id'] = 'wbb_userid';
             $PROBED_FORUM_CONFIG['cookie_member_hash'] = 'wbb_userpassword';
             $PROBED_FORUM_CONFIG['board_url'] = '';

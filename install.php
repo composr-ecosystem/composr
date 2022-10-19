@@ -661,8 +661,8 @@ function step_3() : object
             }
         }
 
-        if ((count($databases) == 1) && ($database == 'xml')) {
-            continue; // If they only have experimental XML option, they'll choose it - we don't want that - we want them to get the error
+        if (($database == 'xml') && (!file_exists(get_file_base() . '/.git'))) { // XML should only be an available option if running from a git repository
+            continue;
         }
 
         $selected = false;
@@ -777,7 +777,7 @@ function step_4() : object
     $PROBED_FORUM_CONFIG = [];
     $PROBED_FORUM_CONFIG['sql_database'] = '';
     $PROBED_FORUM_CONFIG['sql_user'] = '';
-    $PROBED_FORUM_CONFIG['sql_pass'] = '';
+    $PROBED_FORUM_CONFIG['sql_pass_exists'] = false; // We never auto-fill the password for security reasons; this gets set to true when not blank in the probe
     $board_path = post_param_string('board_path', '', INPUT_FILTER_POST_IDENTIFIER);
     find_forum_path($board_path);
 
@@ -822,7 +822,7 @@ function step_4() : object
         $db_site_host = 'localhost';
     }
     $db_site_user = $PROBED_FORUM_CONFIG['sql_user'];
-    $db_site_password = $PROBED_FORUM_CONFIG['sql_pass'];
+    $db_password_exists = $PROBED_FORUM_CONFIG['sql_pass_exists'];
     $db_site = $PROBED_FORUM_CONFIG['sql_database'];
     $forum_base_url = $PROBED_FORUM_CONFIG['forum_base_url'];
     $member_cookie = $PROBED_FORUM_CONFIG['cookie_member_id'];
@@ -883,7 +883,7 @@ function step_4() : object
             $db_site_user = $SITE_INFO['db_site_user'];
         }
         if (!empty($SITE_INFO['db_site_password'])) {
-            $db_site_password = $SITE_INFO['db_site_password'];
+            $db_password_exists = ($SITE_INFO['db_site_password'] != '');
         }
         if (!empty($SITE_INFO['db_site'])) {
             $db_site = $SITE_INFO['db_site'];
@@ -906,7 +906,7 @@ function step_4() : object
 
     $db_forums_host = $db_site_host;
     $db_forums_user = $db_site_user;
-    $db_forums_password = $db_site_password;
+    $db_forums_password_exists = $db_password_exists;
     $db_forums = $db_site;
 
     $sections = new Tempcode();
@@ -1007,7 +1007,7 @@ function step_4() : object
             if (!$GLOBALS['DB_DRIVER']->is_flat_file_simple()) {
                 $forum_options->attach(make_option(do_lang_tempcode('DATABASE_HOST'), example('', 'DATABASE_HOST_TEXT'), 'db_forums_host', $db_forums_host, false, true));
                 $forum_options->attach(make_option(do_lang_tempcode('DATABASE_USERNAME'), new Tempcode(), 'db_forums_user', $db_forums_user, false, true));
-                $forum_options->attach(make_option(do_lang_tempcode('DATABASE_PASSWORD'), new Tempcode(), 'db_forums_password', $db_forums_password, true));
+                $forum_options->attach(make_option(do_lang_tempcode('DATABASE_PASSWORD'), new Tempcode(), 'db_forums_password', '', true, $db_forums_password_exists));
             } else {
                 $hidden->attach(form_input_hidden('db_forums_host', 'localhost'));
                 $hidden->attach(form_input_hidden('db_forums_user', ''));
@@ -1041,7 +1041,7 @@ function step_4() : object
     if (!$GLOBALS['DB_DRIVER']->is_flat_file_simple()) {
         $options->attach(make_option(do_lang_tempcode('DATABASE_HOST'), example('', 'DATABASE_HOST_TEXT'), 'db_site_host', $db_site_host, false, true));
         $options->attach(make_option(do_lang_tempcode('DATABASE_USERNAME'), new Tempcode(), 'db_site_user', $db_site_user, false, true));
-        $options->attach(make_option(do_lang_tempcode('DATABASE_PASSWORD'), new Tempcode(), 'db_site_password', $db_site_password, true));
+        $options->attach(make_option(do_lang_tempcode('DATABASE_PASSWORD'), new Tempcode(), 'db_site_password', '', true, $db_password_exists));
     } else {
         $hidden->attach(form_input_hidden('db_site_host', 'localhost'));
         $hidden->attach(form_input_hidden('db_site_user', ''));
@@ -1222,9 +1222,6 @@ function step_5() : object
         }
     }
 
-    // Check table prefix
-    $table_prefix = post_param_string('table_prefix', false, INPUT_FILTER_POST_IDENTIFIER);
-
     // Test base URL isn't subject to redirects
     if (preg_replace('#:\d+$#', '', $_SERVER['HTTP_HOST']) != $url_parts['host']) {
         $test_url = $base_url . '/installer_is_testing_base_urls.php';
@@ -1268,12 +1265,24 @@ function step_5() : object
         $SITE_INFO[$key] = trim($val);
     }
 
-    // Give warning if database contains data
+    // Check database credentials / load DB connection
     require_code('database');
+    $table_prefix = post_param_string('table_prefix', false, INPUT_FILTER_POST_IDENTIFIER);
+    $post_db_site = post_param_string('db_site', false, INPUT_FILTER_POST_IDENTIFIER);
+    $post_db_host = post_param_string('db_site_host', false, INPUT_FILTER_POST_IDENTIFIER);
+    $post_db_user = post_param_string('db_site_user', false, INPUT_FILTER_POST_IDENTIFIER);
+    $post_db_password = post_param_string('db_site_password', false, INPUT_FILTER_PASSWORD);
+    if (($table_prefix === false) || ($post_db_site === false) || ($post_db_host === false) || ($post_db_user === false) || ($post_db_password === false)) {
+        warn_exit(do_lang_tempcode('MISSING_DB_PARAMETERS'));
+    }
+    if (($post_db_user == 'root') && (!file_exists(get_file_base() . '/.git'))) {
+        warn_exit(do_lang_tempcode('NO_ROOT_DB_WITHOUT_GIT'));
+    }
+    $tmp = new DatabaseConnector($post_db_site, $post_db_host, $post_db_user, $post_db_password, $table_prefix);
+
+    // Give warning if database contains data
     if (post_param_integer('confirm', 0) == 0) {
-        $tmp = new DatabaseConnector(post_param_string('db_site', false, INPUT_FILTER_POST_IDENTIFIER), post_param_string('db_site_host', false, INPUT_FILTER_POST_IDENTIFIER), post_param_string('db_site_user', false, INPUT_FILTER_POST_IDENTIFIER), post_param_string('db_site_password', false, INPUT_FILTER_PASSWORD), $table_prefix);
         $test = $tmp->query_select_value_if_there('config', 'c_value', ['c_name' => 'is_on_block_cache'], '', true);
-        unset($tmp);
         if ($test !== null) {
             global $INSTALL_LANG;
             $sections = new Tempcode();
@@ -1300,8 +1309,8 @@ function step_5() : object
 
     // Give warning if setting up a multi-site-network to a bad database
     if (($_POST['db_forums'] != $_POST['db_site']) && (get_forum_type() == 'cns')) {
-        $tmp = new DatabaseConnector(post_param_string('db_forums', false, INPUT_FILTER_POST_IDENTIFIER), post_param_string('db_forums_host', false, INPUT_FILTER_POST_IDENTIFIER), post_param_string('db_forums_user', false, INPUT_FILTER_POST_IDENTIFIER), post_param_string('db_forums_password', false, INPUT_FILTER_PASSWORD), post_param_string('cns_table_prefix', false, INPUT_FILTER_POST_IDENTIFIER));
-        if ($tmp->query_select_value('db_meta', 'COUNT(*)', [], '', true) === null) {
+        $tmp2 = new DatabaseConnector(post_param_string('db_forums', false, INPUT_FILTER_POST_IDENTIFIER), post_param_string('db_forums_host', false, INPUT_FILTER_POST_IDENTIFIER), post_param_string('db_forums_user', false, INPUT_FILTER_POST_IDENTIFIER), post_param_string('db_forums_password', false, INPUT_FILTER_PASSWORD), post_param_string('cns_table_prefix', false, INPUT_FILTER_POST_IDENTIFIER));
+        if ($tmp2->query_select_value('db_meta', 'COUNT(*)', [], '', true) === null) {
             warn_exit(do_lang_tempcode('MSN_FORUM_DB_NOT_CNS_ALREADY'));
         }
     }
@@ -1967,6 +1976,7 @@ function step_5_uninstall() : object
     require_all_core_cms_code();
 
     if (post_param_string('forum_type') != 'none') {
+        require_code('database');
         $tmp = new DatabaseConnector(get_db_forums(), get_db_forums_host(), get_db_forums_user(), get_db_forums_password(), '');
         unset($tmp);
     }
@@ -2252,6 +2262,9 @@ function step_6() : object
     require_all_core_cms_code();
     include_cns();
 
+    // Check database credentials / load DB connection
+    confirm_db_credentials();
+
     require_code('cns_install');
     install_cns();
     $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => 'f268a7e03ca5b06ed9f62b29b1357d25', 'SOMETHING' => do_lang_tempcode('INSTALLED_CNS')]));
@@ -2285,6 +2298,9 @@ function big_installation_common()
     if (!isset($GLOBALS['SITE_DB'])) {
         fatal_exit('Could not initialise database connection');
     }
+
+    // Check database credentials / load DB connection
+    confirm_db_credentials();
 
     $forum_type = get_forum_type();
     require_code('forum/' . $forum_type);
@@ -2551,6 +2567,7 @@ function step_10() : object
         'FINAL' => $final,
         'LOG' => $log,
         'URL' => $url,
+        'HIDDEN' => build_keep_post_fields(),
     ]);
 }
 
@@ -2965,10 +2982,11 @@ function make_option(object $nice_name, object $description, string $name, strin
 
     if ($hidden) {
         $input1 = do_template('INSTALLER_INPUT_PASSWORD', ['_GUID' => '373b85cea71837a30d146df387dc2a42', 'REQUIRED' => $_required, 'NAME' => $name, 'VALUE' => $value]);
-        $a = do_template('INSTALLER_STEP_4_SECTION_OPTION', ['_GUID' => '455b0f61e6ce2eaf2acce2844fdd5e7a', 'NAME' => $name, 'INPUT' => $input1, 'NICE_NAME' => $nice_name, 'DESCRIPTION' => $description]);
+        $a = do_template('INSTALLER_STEP_4_SECTION_OPTION', ['_GUID' => '455b0f61e6ce2eaf2acce2844fdd5e7a', 'REQUIRED' => $required, 'NAME' => $name, 'INPUT' => $input1, 'NICE_NAME' => $nice_name, 'DESCRIPTION' => $description]);
         if ((substr($name, 0, 3) != 'db_') && (substr($name, 0, 12) != 'gae_live_db_') && ($name != 'ftp_password')) {
             $input2 = do_template('INSTALLER_INPUT_PASSWORD', ['_GUID' => '0f15bfe5b58f3ca7830a48791f1a6a6d', 'REQUIRED' => $_required, 'NAME' => $name . '_confirm', 'VALUE' => $value]);
             $b = do_template('INSTALLER_STEP_4_SECTION_OPTION', [
+                'REQUIRED' => $required,
                 '_GUID' => 'c99e7339b7ffe81318ae84953e3c03a3',
                 'NAME' => $name,
                 'INPUT' => $input2,
@@ -2981,7 +2999,7 @@ function make_option(object $nice_name, object $description, string $name, strin
     }
 
     $input = do_template('INSTALLER_INPUT_LINE', ['_GUID' => '31cdfb760d7c61de65656c5256bf2e88', 'REQUIRED' => $_required, 'NAME' => $name, 'VALUE' => $value]);
-    return do_template('INSTALLER_STEP_4_SECTION_OPTION', ['_GUID' => 'a13131994a22b6f646e517c54a7c41d5', 'NAME' => $name, 'INPUT' => $input, 'NICE_NAME' => $nice_name, 'DESCRIPTION' => $description]);
+    return do_template('INSTALLER_STEP_4_SECTION_OPTION', ['_GUID' => 'a13131994a22b6f646e517c54a7c41d5', 'REQUIRED' => $required, 'NAME' => $name, 'INPUT' => $input, 'NICE_NAME' => $nice_name, 'DESCRIPTION' => $description]);
 }
 
 /**
@@ -2996,7 +3014,7 @@ function make_option(object $nice_name, object $description, string $name, strin
 function make_tick(object $nice_name, object $description, string $name, int $value) : object
 {
     $input = do_template('INSTALLER_INPUT_TICK', ['CHECKED' => $value == 1, 'NAME' => $name]);
-    return do_template('INSTALLER_STEP_4_SECTION_OPTION', ['_GUID' => '0723f86908f66da7f67ebc4cd07bff2e', 'NAME' => $name, 'INPUT' => $input, 'NICE_NAME' => $nice_name, 'DESCRIPTION' => $description]);
+    return do_template('INSTALLER_STEP_4_SECTION_OPTION', ['_GUID' => '0723f86908f66da7f67ebc4cd07bff2e', 'REQUIRED' => false, 'NAME' => $name, 'INPUT' => $input, 'NICE_NAME' => $nice_name, 'DESCRIPTION' => $description]);
 }
 
 /**
@@ -3356,5 +3374,30 @@ END;
             @ftp_put($conn, $user_ini, get_file_base() . '/cms_inst_tmp/tmp', FTP_TEXT);
             @ftp_site($conn, 'CHMOD 644 ' . $user_ini);
         }
+    }
+}
+
+/**
+ * Check for POSTed database settings and ensure they are valid.
+ *
+ * @param  boolean $unset Whether to unset the connection after we test it
+ */
+function confirm_db_credentials(bool $unset = true)
+{
+    require_code('database');
+    $table_prefix = post_param_string('table_prefix', false, INPUT_FILTER_POST_IDENTIFIER);
+    $post_db_site = post_param_string('db_site', false, INPUT_FILTER_POST_IDENTIFIER);
+    $post_db_host = post_param_string('db_site_host', false, INPUT_FILTER_POST_IDENTIFIER);
+    $post_db_user = post_param_string('db_site_user', false, INPUT_FILTER_POST_IDENTIFIER);
+    $post_db_password = post_param_string('db_site_password', false, INPUT_FILTER_PASSWORD);
+    if (($table_prefix === false) || ($post_db_site === false) || ($post_db_host === false) || ($post_db_user === false) || ($post_db_password === false)) {
+        warn_exit(do_lang_tempcode('MISSING_DB_PARAMETERS'));
+    }
+    if (($post_db_user == 'root') && (!file_exists(get_file_base() . '/.git'))) {
+        warn_exit(do_lang_tempcode('NO_ROOT_DB_WITHOUT_GIT'));
+    }
+    $tmp = new DatabaseConnector($post_db_site, $post_db_host, $post_db_user, $post_db_password, $table_prefix);
+    if ($unset) {
+        unset($tmp);
     }
 }
