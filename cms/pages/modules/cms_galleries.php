@@ -1915,24 +1915,19 @@ class Module_cms_galleries_cat extends Standard_crud_module
 
         // Per-gallery sort order (uses site config hooks)
         require_code('hooks/systems/config/galleries_sort_order');
-        require_code('hooks/systems/config/gallery_media_default_sort_order');
-        $hooks = [
-            'galleries_sort_order' => object_factory('Hook_config_galleries_sort_order'),
-            'gallery_media_default_sort_order' => object_factory('Hook_config_gallery_media_default_sort_order'),
-        ];
-        foreach ($hooks as $hook => $ob) {
-            if ($hook == 'galleries_sort_order') {
-                $default = $gallery_sort;
-            }
-            if ($hook == 'gallery_media_default_sort_order') {
-                $default = $media_sort;
-            }
+        $ob = object_factory('Hook_config_galleries_sort_order');
+        $details = $ob->get_details();
+        $details['explanation'] = 'PER_GALLERY_SORT_galleries_sort_order';
+        if ($details !== null) {
+            $fields->attach(build_config_inputter('galleries_sort_order', $details, $gallery_sort, true, false));
+        }
 
-            $details = $ob->get_details();
-            $details['explanation'] = 'PER_GALLERY_SORT_' . $hook;
-            if ($details !== null) {
-                $fields->attach(build_config_inputter($hook, $details, $default, true, false));
-            }
+        require_code('hooks/systems/config/gallery_media_default_sort_order');
+        $ob = object_factory('Hook_config_gallery_media_default_sort_order');
+        $details = $ob->get_details();
+        $details['explanation'] = 'PER_GALLERY_SORT_gallery_media_default_sort_order';
+        if ($details !== null) {
+            $fields->attach(build_config_inputter('gallery_media_default_sort_order', $details, $media_sort, true, false));
         }
 
         $request_rep_image = (get_option('gallery_rep_image') == '1') || ($rep_image != '');

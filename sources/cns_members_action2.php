@@ -1345,7 +1345,7 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
                 $cm_body = do_lang('SECURITY_ASPECT_CHANGED_BODY', comcode_escape($old_username), comcode_escape($current_username), [get_site_name(), $sensitive_changes, $part_b]);
                 dispatch_mail($cm_subject, $cm_body, [$old_email_address], $old_username, '', '', ['require_recipient_valid_since' => $join_time]);
             }
-            if (($email_address !== null) && ($email_address != $old_email_address)) { // When a new e-mail is specified, also e-mail the new address a vague message about their e-mail being associated with an account
+            if (($email_address !== null) && ($email_address !== $old_email_address)) { // When a new e-mail is specified, also e-mail the new address a vague message about their e-mail being associated with an account
                 $cm_subject = do_lang('EMAIL_ASSOCIATED_SUBJECT', comcode_escape($old_username), comcode_escape($current_username), [get_site_name()]);
                 $cm_body = do_lang('EMAIL_ASSOCIATED_BODY', comcode_escape($old_username), comcode_escape($current_username), [get_site_name(), comcode_escape($email_address)]);
                 dispatch_mail($cm_subject, $cm_body, [$email_address], $old_username, '', '', ['require_recipient_valid_since' => $join_time]);

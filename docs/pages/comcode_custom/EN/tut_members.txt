@@ -14,7 +14,7 @@ When installing Composr, there will be two members provided by default:
 
 The test username is intended for testing permissions for non-administrators, which is a very important task, as it is easy to make mistakes during configuration. Information about testing permissions is available in the [page="_SEARCH:tut_permissions"]Access control and privileges[/page] tutorial ("Testing access and privileges").
 
-There will also be a virtual member ID called the System (guest). This is used for system functionality such as forum posts by the system, points ledger transactions involving the site (system), and e-mails or notifications from the system. This cannot be used like you would a member account.
+There will also be a virtual member ID called the System (Guest). This is used for system functionality such as forum posts by the system, points ledger transactions involving the site (system), and e-mails or notifications from the system. This cannot be used like you would a member account.
 
 [title="2"]Usernames and display names[/title]
 
