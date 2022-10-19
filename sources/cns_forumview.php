@@ -225,10 +225,10 @@ function cns_render_forumview(?int $id, ?array $forum_info, string $current_filt
                         $new_post_or_not = 'redirect';
                     } else {
                         if ($subforum['redirection'] != '') {
-                            $subforum_url = build_url(['page' => '_SELF', 'id' => $subforum['redirection']], '_SELF');
+                            $subforum_url = build_url(['page' => 'forumview', 'id' => $subforum['redirection']], get_module_zone('forumview'));
                             $new_post_or_not = $subforum['has_new'] ? 'new_posts_redirect' : 'no_new_posts_redirect';
                         } else {
-                            $subforum_url = build_url(['page' => '_SELF', 'id' => $subforum['id']], '_SELF');
+                            $subforum_url = build_url(['page' => 'forumview', 'id' => $subforum['id']], get_module_zone('forumview'));
                             $new_post_or_not = $subforum['has_new'] ? 'new_posts' : 'no_new_posts';
                         }
 
@@ -241,14 +241,14 @@ function cns_render_forumview(?int $id, ?array $forum_info, string $current_filt
                         foreach ($subforum['children'] as $child) {
                             // Work out where the subsubforum URL is
                             if (is_numeric($child['redirection'])) {
-                                $link = hyperlink(build_url(['page' => '_SELF', 'id' => $child['redirection']], '_SELF'), $child['name'], false, true);
+                                $link = hyperlink(build_url(['page' => 'forumview', 'id' => $child['redirection']], get_module_zone('forumview')), $child['name'], false, true);
                             } elseif ($child['redirection'] != '') {
                                 if (url_is_local($child['redirection'])) {
                                     $child['redirection'] = get_base_url() . '/' . $child['redirection'];
                                 }
                                 $link = hyperlink($child['redirection'], $child['name'], false, true);
                             } else {
-                                $link = hyperlink(build_url(['page' => '_SELF', 'id' => $child['id']], '_SELF'), $child['name'], false, true);
+                                $link = hyperlink(build_url(['page' => 'forumview', 'id' => $child['id']], get_module_zone('forumview')), $child['name'], false, true);
                             }
                             if (!$subforums->is_empty()) {
                                 $subforums->attach(do_lang_tempcode('LIST_SEP'));
@@ -450,7 +450,7 @@ function cns_render_forumview(?int $id, ?array $forum_info, string $current_filt
 
             foreach ($filter_cats as $fi => $filter_cat) {
                 if ($filter_cat != '') {
-                    $filtered_url = build_url(['page' => '_SELF', 'category' => $filter_cat], '_SELF', [], true, false, false, 'tab--pts');
+                    $filtered_url = build_url(['page' => 'forumview', 'category' => $filter_cat], get_module_zone('forumview'), [], true, false, false, 'tab--pts');
                     $filter_active = $filter_cat == $current_filter_cat;
                     $filters_arr[] = [
                         'URL' => $filter_active ? new Tempcode() : $filtered_url,
@@ -463,7 +463,7 @@ function cns_render_forumview(?int $id, ?array $forum_info, string $current_filt
             $filters = do_template('CNS_PT_FILTERS', [
                 '_GUID' => '1ffed81e1cfb82d0741d0669cdc38876',
                 'FILTERS' => $filters_arr,
-                'RESET_URL' => build_url(['page' => '_SELF', 'category' => null], '_SELF', [], true),
+                'RESET_URL' => build_url(['page' => 'forumview', 'category' => null], get_module_zone('forumview'), [], true),
             ]);
         }
     }

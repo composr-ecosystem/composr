@@ -695,7 +695,7 @@ class Module_chat
         $admin_link = new Tempcode();
         if (has_actual_page_access(get_member(), 'admin_chat')) {
             // The user is staff, so let him have the admin link
-            $admin_url = build_url(['page' => 'admin_chat', 'type' => '_edit', 'id' => $room_id], 'adminzone');
+            $admin_url = build_url(['page' => 'admin_chat', 'type' => '_edit', 'id' => $room_id], get_module_zone('admin_chat'));
             $admin_link = hyperlink($admin_url, do_lang_tempcode('EDIT_THIS_CHATROOM'), true, false);
         }
 

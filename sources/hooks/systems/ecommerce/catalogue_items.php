@@ -378,16 +378,16 @@ class Hook_ecommerce_catalogue_items
 
         require_lang('shopping');
 
-        $cart_url = build_url(['page' => 'shopping', 'type' => 'browse'], '_SELF');
+        $cart_url = build_url(['page' => 'shopping', 'type' => 'browse'], get_module_zone('shopping'));
 
         $available_quantity = $this->get_available_quantity(strval($id));
         $out_of_stock = ($available_quantity !== null) && ($available_quantity <= 0);
 
-        $action_url = build_url(['page' => 'shopping', 'type' => 'add_item'], '_SELF');
+        $action_url = build_url(['page' => 'shopping', 'type' => 'add_item'], get_module_zone('shopping'));
 
         // Single purchase, by-passing cart
         $next_purchase_step = get_next_purchase_step($this, strval($id), 'browse');
-        $purchase_action_url = build_url(['page' => 'purchase', 'type' => $next_purchase_step, 'type_code' => strval($id), 'id' => $id], '_SELF');
+        $purchase_action_url = build_url(['page' => 'purchase', 'type' => $next_purchase_step, 'type_code' => strval($id), 'id' => $id], get_module_zone('purchase'));
 
         $map['CART_BUTTONS'] = do_template('ECOM_SHOPPING_CART_BUTTONS', [
             '_GUID' => 'd4491c6e221b1f06375a6427da062bac',

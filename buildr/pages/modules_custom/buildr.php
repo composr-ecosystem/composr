@@ -531,7 +531,7 @@ class Module_buildr
 
         // What command are we being asked to do?
         if ($type == 'confirm') {
-            $url = build_url(['page' => 'buildr'], '_SELF');
+            $url = build_url(['page' => '_SELF'], '_SELF');
             $type2 = either_param_string('btype', '');
             $item = either_param_string('item', '');
             $member = either_param_integer('member', -1);

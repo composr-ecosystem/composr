@@ -518,7 +518,7 @@ class Hook_addon_registry_downloads
         }
 
         $content_id = strval($download_id);
-        $content_url = build_url(['page' => 'downloads', 'type' => 'entry', 'id' => $content_id], 'site');
+        $content_url = build_url(['page' => 'downloads', 'type' => 'entry', 'id' => $content_id], get_module_zone('downloads'));
         $GLOBALS['SITE_DB']->query_insert('trackbacks', [
             'trackback_for_type' => 'downloads',
             'trackback_for_id' => $content_id,

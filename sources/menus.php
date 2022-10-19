@@ -61,7 +61,7 @@ function build_menu(string $type, string $menu_id, bool $silent_failure = false,
             }
 
             $redirect = get_self_url(true, true);
-            $_add_url = build_url(['page' => 'admin_menus', 'type' => 'edit', 'id' => $menu_id, 'menu_type' => $type, 'redirect' => protect_url_parameter($redirect)], 'adminzone');
+            $_add_url = build_url(['page' => 'admin_menus', 'type' => 'edit', 'id' => $menu_id, 'menu_type' => $type, 'redirect' => protect_url_parameter($redirect)], get_module_zone('admin_menus'));
             $add_url = $_add_url->evaluate();
 
             $content = do_template('INLINE_WIP_MESSAGE', ['_GUID' => '276e6600571b8b4717ca742b6e9da17a', 'MESSAGE' => do_lang_tempcode('MISSING_MENU', escape_html($menu_id), escape_html($add_url))]);

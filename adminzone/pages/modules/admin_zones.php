@@ -823,7 +823,7 @@ class Module_admin_zones
                 hyperlink(build_url(['page' => ''], $zone_name), ($zone_name == '') ? do_lang_tempcode('NA_EM') : make_string_tempcode(escape_html($zone_name)), false, false),
                 $zone_title,
                 $zone_default_page,
-                ($remaining_row['zone_theme'] == '-1') ? do_lang_tempcode('NA_EM') : hyperlink(build_url(['page' => 'admin_themes'], 'adminzone'), $remaining_row['zone_theme'], false, true),
+                ($remaining_row['zone_theme'] == '-1') ? do_lang_tempcode('NA_EM') : hyperlink(build_url(['page' => 'admin_themes'], get_module_zone('admin_themes')), $remaining_row['zone_theme'], false, true),
                 ($remaining_row['zone_require_session'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO'),
                 protect_from_escaping(hyperlink($edit_url, do_lang_tempcode('EDIT'), false, true, $zone_name)),
             ], true));

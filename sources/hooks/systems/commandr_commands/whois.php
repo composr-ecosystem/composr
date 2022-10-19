@@ -79,7 +79,7 @@ class Hook_commandr_command_whois
         $ip_list = new Tempcode();
         foreach ($known_ip_addresses as $row) {
             $date = get_timezoned_date_time($row['date_and_time']);
-            $lookup_url = build_url(['page' => '_SELF', 'param' => $row['ip']], '_SELF');
+            $lookup_url = build_url(['page' => 'admin_lookup', 'param' => $row['ip']], get_module_zone('admin_lookup'));
             $ip_list->attach(do_template('LOOKUP_IP_LIST_ENTRY', [
                 '_GUID' => '01e74a2a146dab9a407b23c40f4555ad',
                 'LOOKUP_URL' => $lookup_url,

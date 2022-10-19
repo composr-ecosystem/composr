@@ -844,7 +844,7 @@ class Module_admin_newsletter extends Standard_crud_module
             delete_periodic_newsletter(intval($matches[1]));
 
             // We redirect back to the admin_newsletter main page
-            $url = build_url(['page' => 'admin_newsletter', 'type' => 'browse', 'redirected' => '1'], get_module_zone('admin_newsletter'));
+            $url = build_url(['page' => '_SELF', 'type' => 'browse', 'redirected' => '1'], '_SELF');
             return redirect_screen(do_lang('PERIODIC_REMOVED'), $url, do_lang('PERIODIC_REMOVED_TEXT'));
         }
 
@@ -1426,7 +1426,7 @@ class Module_admin_newsletter extends Standard_crud_module
                 $message = do_lang('PERIODIC_SUCCESS_MESSAGE_ADD', $when, $each);
             }
 
-            $url = build_url(['page' => 'admin_newsletter', 'type' => 'browse', 'redirected' => '1'], get_module_zone('admin_newsletter'));
+            $url = build_url(['page' => '_SELF', 'type' => 'browse', 'redirected' => '1'], '_SELF');
             return redirect_screen(do_lang('SUCCESS'), $url, $message, false, 'inform');
         }
 

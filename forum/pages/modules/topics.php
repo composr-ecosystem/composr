@@ -3503,7 +3503,7 @@ class Module_topics
         $this->handle_topic_breadcrumbs($forum_id, $post_details[0]['p_topic_id'], $topic_info['t_cache_first_title'], do_lang_tempcode('EDIT_POST'));
 
         if (($topic_info['t_cache_first_post_id'] == $post_id) && ((cns_may_moderate_forum($topic_info['t_forum_id'])) || ($topic_info['t_cache_first_member_id'] == get_member()))) {
-            $edit_topic_url = build_url(['page' => 'topics', 'type' => 'edit_topic', 'id' => $topic_info['id']], get_module_zone('topics'));
+            $edit_topic_url = build_url(['page' => '_SELF', 'type' => 'edit_topic', 'id' => $topic_info['id']], '_SELF');
             attach_message(do_lang_tempcode('EDITING_FIRST_TOPIC_POST', escape_html($edit_topic_url->evaluate())), 'inform');
         }
 

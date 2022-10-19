@@ -56,7 +56,7 @@ class Hook_checklist_newsletter
         require_code('config2');
         $config_url = config_option_url('newsletter_update_time');
 
-        $url = build_url(['page' => 'admin_newsletter', 'type' => 'whatsnew'], 'adminzone');
+        $url = build_url(['page' => 'admin_newsletter', 'type' => 'whatsnew'], get_module_zone('admin_newsletter'));
         list($info, $seconds_due_in) = staff_checklist_time_ago_and_due($seconds_ago, $limit_hours);
         $tpl = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', [
             '_GUID' => 'fb9483bb05ad90b9f2b7eba0c53996f4',

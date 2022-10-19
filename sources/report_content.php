@@ -95,7 +95,7 @@ function report_content_form(object $title, string $content_type, string $conten
     $hidden_fields = build_keep_form_fields('', true);
     $specialisation = report_content_form_fields($hidden_fields);
 
-    $post_url = build_url(['page' => 'report_content', 'type' => 'actual'], get_page_zone('report_content'));
+    $post_url = build_url(['page' => 'report_content', 'type' => 'actual'], get_module_zone('report_content'));
 
     $posting_form = get_posting_form(do_lang('REPORT_CONTENT'), 'buttons/send', $report_post, $post_url, $hidden_fields, $specialisation, '', '', null, null, [], null, true, false, false);
 
@@ -162,7 +162,7 @@ function report_post_form(object $title, int $post_id, array $js_function_calls,
 
     $hidden->attach(form_input_hidden('post_id', strval($post_id)));
 
-    $post_url = build_url(['page' => 'topics', 'type' => '_report_post'], get_page_zone('topics'));
+    $post_url = build_url(['page' => 'topics', 'type' => '_report_post'], get_module_zone('topics'));
 
     $posting_form = get_posting_form(do_lang('REPORT_POST'), 'buttons/report', $report_post, $post_url, $hidden, $specialisation, '', '', null, null, [], null, true, false, false);
 

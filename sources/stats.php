@@ -110,7 +110,7 @@ function gather_kpis(?int $pivot_filter = null) : array
             continue;
         }
 
-        $edit_url = build_url(['page' => '_SELF', 'type' => '_edit', 'id' => $kpi_row['id']], '_SELF');
+        $edit_url = build_url(['page' => 'admin_stats', 'type' => '_edit', 'id' => $kpi_row['id']], get_module_zone('admin_stats'));
 
         $kpi_method = $graph_details['support_kpis'];
 

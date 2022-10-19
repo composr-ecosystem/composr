@@ -1869,7 +1869,7 @@ function _check_module_installation_status(object $object, string $codename)
             }
         } else {
             $_error_msg = do_lang('MISSING_MODULE', escape_html($codename));
-            $addon_manage_url = build_url(['page' => 'admin_addons'], 'adminzone');
+            $addon_manage_url = build_url(['page' => 'admin_addons'], get_module_zone('admin_addons'));
             $error_msg = do_lang_tempcode('BROKEN_ADDON_REMEDIES', $_error_msg, escape_html(find_script('upgrader')), escape_html(static_evaluate_tempcode($addon_manage_url)));
             warn_exit($error_msg);
         }
@@ -1909,7 +1909,7 @@ function _check_block_installation_status(object $object, string $codename) : ?o
             }
         } else {
             $_error_msg = do_lang('MISSING_BLOCK', escape_html($codename));
-            $addon_manage_url = build_url(['page' => 'admin_addons'], 'adminzone');
+            $addon_manage_url = build_url(['page' => 'admin_addons'], get_module_zone('admin_addons'));
             $error_msg = do_lang_tempcode('BROKEN_ADDON_REMEDIES', $_error_msg, escape_html(find_script('upgrader')), escape_html(static_evaluate_tempcode($addon_manage_url)));
             return do_template('RED_ALERT', ['_GUID' => 'bolznyf0jx9omujol6xbmqetlcuo7d6b', 'TEXT' => $error_msg]);
         }

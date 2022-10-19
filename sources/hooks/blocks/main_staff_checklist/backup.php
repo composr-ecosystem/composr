@@ -56,7 +56,7 @@ class Hook_checklist_backup
         require_code('config2');
         $config_url = config_option_url('backup_time');
 
-        $url = build_url(['page' => 'admin_backup', 'type' => 'browse'], 'adminzone');
+        $url = build_url(['page' => 'admin_backup', 'type' => 'browse'], get_module_zone('admin_backup'));
         list($info, $seconds_due_in) = staff_checklist_time_ago_and_due($seconds_ago, $limit_hours);
         $tpl = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', [
             '_GUID' => '432685ec6c9f7548ce8b488b6ce00030',

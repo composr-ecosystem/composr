@@ -1688,7 +1688,7 @@ function addon_installed__messaged(string $addon_name, object &$error_msg) : boo
 {
     if (!addon_installed($addon_name)) {
         $_error_msg = do_lang('MISSING_ADDON', escape_html($addon_name));
-        $addon_manage_url = build_url(['page' => 'admin_addons'], 'adminzone');
+        $addon_manage_url = build_url(['page' => 'admin_addons'], get_module_zone('admin_addons'));
         $error_msg = do_lang_tempcode('BROKEN_ADDON_REMEDIES', $_error_msg, escape_html(find_script('upgrader')), escape_html(static_evaluate_tempcode($addon_manage_url)));
 
         return false;

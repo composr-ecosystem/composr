@@ -22,7 +22,70 @@
  */
 class find_broken_screen_links_test_set extends cms_test_case
 {
-    // This test is not necessarily required to pass, but it may hint at issues; best just to make it pass anyway (it does at the time at writing)
+    public function testBadlySpecified()
+    {
+        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE, true, true, ['php']);
+        $files[] = 'install.php';
+        foreach ($files as $path) {
+            // Exceptions
+            if (in_array($path, [
+                'adminzone/pages/modules/admin.php',
+                'sources/users_active_actions.php',
+                'sources/notifications.php',
+                'sources_custom/confluence.php',
+            ])) {
+                continue;
+            }
+
+            $c = file_get_contents(get_file_base() . '/' . $path);
+
+            $matches = [];
+            $num_matches = preg_match_all('#build_url\(\[\'page\' => \'([^\']*)\'.*\], (\'([^\']*)\'|get_module_zone\(\'([^\']*)\'\)|get_page_zone\(\'([^\']*)\'\))\)#', $c, $matches);
+
+            for ($i = 0; $i < $num_matches; $i++) {
+                $page = $matches[1][$i];
+                $zone = $matches[3][$i];
+
+                $is_module = (preg_match('#(\w+/)?pages/(mini)?modules(_custom)?/#', $path) != 0) || ($path == 'sources/crud_module.php');
+
+                if ($is_module) {
+                    $module_name = basename($path, '.php');
+
+                    $this->assertTrue($page != $module_name, 'Self-reference to a module can be _SELF in ' . $path);
+                    $this->assertTrue($page != $module_name || $zone == '_SELF', 'Self-zone-reference to a module can be _SELF in ' . $path);
+                } else {
+                    $this->assertTrue($page != '_SELF', 'Should not use page self-references outside of a module in ' . $path);
+                    $this->assertTrue($zone != '_SELF', 'Should not use zone self-references outside of a module in ' . $path);
+                }
+
+                if ($matches[4][$i] != '') {
+                    $this->assertTrue($matches[4][$i] == $page, 'Mismatch between searched zone and page in ' . $path . ' (' . $matches[4][$i] . ' vs ' . $page . ')');
+
+                    $this->assertTrue(strpos($matches[4][$i], '-') === false, 'Module names should have underscores not hyphens, regardless of what the URL says in ' . $path . ' (' . $matches[4][$i] . ')');
+                }
+                if ($matches[5][$i] != '') {
+                    $this->assertTrue($matches[5][$i] == $page, 'Mismatch between searched zone and page in ' . $path . ' (' . $matches[4][$i] . ' vs ' . $page . ')');
+                    $this->assertTrue(get_module_zone($matches[5][$i]) === null, 'Could have used get_module_zone instead of get_page_zone in ' . $path . ' (' . $matches[5][$i] . ')');
+                }
+
+                // Exceptions
+                if (in_array($path, [
+                    'site/pages/modules/search.php',
+                    'sources/blocks/main_quotes.php',
+                    'sources_custom/miniblocks/composr_homesite_featuretray.php',
+                ])) {
+                    continue;
+                }
+                if (preg_match('#^_tests/#', $path) != 0) {
+                    continue;
+                }
+
+                $this->assertTrue(($zone == '' || $zone === '_SELF' || $page == '' || $page == 'login'), 'Should not hard-code zone names in ' . $path . ' (' . $zone . ':' . $page . ')');
+            }
+        }
+    }
+
+    // This test is not necessarily required to pass, but it may hint at issues; best just to make it pass anyway (it does at the time at writing) - and add exceptions as needed
     public function testScreenLinks()
     {
         cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);

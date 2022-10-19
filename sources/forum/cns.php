@@ -673,7 +673,7 @@ class Forum_driver_cns extends Forum_driver_base
             $page = '';
         }
         if (get_page_name() == 'join') {
-            $_redirect_url = build_url(['page' => 'start'], '');
+            $_redirect_url = build_url(['page' => ''], '');
         } else {
             $_redirect_url = build_url(['page' => $page], '_SELF', ['keep_session' => true, 'redirect' => true], true);
         }

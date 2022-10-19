@@ -325,7 +325,7 @@ function do_work()
     echo 'FINISHED: Downloads / Awards' . "\n";
 
     $content_id = db_get_first_id();
-    $content_url = build_url(['page' => 'downloads', 'type' => 'entry', 'id' => $content_id], 'site');
+    $content_url = build_url(['page' => 'downloads', 'type' => 'entry', 'id' => $content_id], get_module_zone('downloads'));
     echo 'STARTING: Trackbacks / Ratings / Comment topics' . "\n";
     for ($j = $GLOBALS['SITE_DB']->query_select_value('trackbacks', 'COUNT(*)'); $j < $num_wanted; $j++) {
         // trackbacks

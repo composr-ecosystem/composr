@@ -227,7 +227,7 @@ function special_page_types(string $special_page_type, object &$out, ?string $ou
                 'lang' => $lang,
                 'id' => $id,
             ];
-            $url = build_url($url_map, 'adminzone');
+            $url = build_url($url_map, get_module_zone('admin_themes'));
 
             $image = find_theme_image($id, false, false, $theme, $lang);
             if ($image == '') {
@@ -315,7 +315,7 @@ function special_page_types(string $special_page_type, object &$out, ?string $ou
 
         $title = get_screen_title('__TRANSLATE_CONTENT', true, [escape_html($lang_name)]);
 
-        $post_url = build_url(['page' => 'admin_lang', 'type' => '_content', 'contextual' => 1], 'adminzone');
+        $post_url = build_url(['page' => 'admin_lang', 'type' => '_content', 'contextual' => 1], get_module_zone('admin_lang'));
 
         $hidden = form_input_hidden('redirect', static_evaluate_tempcode(protect_url_parameter(SELF_REDIRECT_RIP)));
         $hidden = form_input_hidden('lang', user_lang());
@@ -405,7 +405,7 @@ function special_page_types(string $special_page_type, object &$out, ?string $ou
 
         $title = get_screen_title('__TRANSLATE_CODE', true, [escape_html($lang_name)]);
 
-        $post_url = build_url(['page' => 'admin_lang', 'type' => '_code2'], 'adminzone');
+        $post_url = build_url(['page' => 'admin_lang', 'type' => '_code2'], get_module_zone('admin_lang'));
 
         $hidden = form_input_hidden('redirect', static_evaluate_tempcode(protect_url_parameter(SELF_REDIRECT_RIP)));
         $hidden = form_input_hidden('lang', user_lang());

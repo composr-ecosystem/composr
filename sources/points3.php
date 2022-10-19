@@ -442,7 +442,7 @@ function points_get_transactions(string $type, int $member_id_of, int $member_id
             $actions = new Tempcode();
             if (($myrow['locked'] == 0) && ($myrow['status'] != LEDGER_STATUS_REVERSED) && ($myrow['status'] != LEDGER_STATUS_REVERSING) && (has_privilege($member_id_viewing, 'moderate_points'))) {
                 $redirect_url = points_url($member_id_of);
-                $delete_url = build_url(['page' => 'points', 'type' => 'reverse', 'member_id_of' => $member_id_of, 'redirect' => protect_url_parameter($redirect_url)], '_SELF');
+                $delete_url = build_url(['page' => 'points', 'type' => 'reverse', 'member_id_of' => $member_id_of, 'redirect' => protect_url_parameter($redirect_url)], get_module_zone('points'));
                 $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
                     '_GUID' => '3585ec7f35a1027e8584d62ffeb41e56',
                     'NAME' => '#' . strval($myrow['id']),
@@ -455,7 +455,7 @@ function points_get_transactions(string $type, int $member_id_of, int $member_id
             }
             if ((has_privilege($member_id_viewing, 'amend_point_transactions'))) {
                 $redirect_url = points_url($member_id_of);
-                $edit_url = build_url(['page' => 'points', 'type' => 'amend', 'member_id_of' => $member_id_of, 'redirect' => protect_url_parameter($redirect_url)], '_SELF');
+                $edit_url = build_url(['page' => 'points', 'type' => 'amend', 'member_id_of' => $member_id_of, 'redirect' => protect_url_parameter($redirect_url)], get_module_zone('points'));
                 $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
                     '_GUID' => 'b7dff48f5758ee05da8fe02beed935b6',
                     'URL' => $edit_url,

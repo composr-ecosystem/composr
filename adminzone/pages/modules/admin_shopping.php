@@ -429,7 +429,7 @@ class Module_admin_shopping
         $GLOBALS['SITE_DB']->query_update('shopping_orders', ['order_status' => 'ORDER_STATUS_dispatched'], ['id' => $id], '', 1);
         $GLOBALS['SITE_DB']->query_update('shopping_order_details', ['p_dispatch_status' => 'ORDER_STATUS_dispatched'], ['p_order_id' => $id]); // There may be more than one items to update status
 
-        $add_note_url = build_url(['page' => '_SELF', 'type' => 'order_act', 'action' => 'add_note', 'last_act' => 'dispatched', 'id' => $id], get_module_zone('admin_shopping'));
+        $add_note_url = build_url(['page' => '_SELF', 'type' => 'order_act', 'action' => 'add_note', 'last_act' => 'dispatched', 'id' => $id], '_SELF');
 
         return redirect_screen($this->title, $add_note_url, do_lang_tempcode('SUCCESS'));
     }
@@ -506,7 +506,7 @@ class Module_admin_shopping
         $this->send_dispatch_notification($id);
 
         if ($redirect === null) { // If a redirect URL is not passed, redirect to the order list
-            $_redirect = build_url(['page' => '_SELF', 'type' => 'show_orders'], get_module_zone('admin_shopping'));
+            $_redirect = build_url(['page' => '_SELF', 'type' => 'show_orders'], '_SELF');
             $redirect = $_redirect->evaluate();
         }
 
@@ -549,7 +549,7 @@ class Module_admin_shopping
         $GLOBALS['SITE_DB']->query_update('shopping_orders', ['order_status' => 'ORDER_STATUS_cancelled'], ['id' => $id], '', 1);
         $GLOBALS['SITE_DB']->query_update('shopping_order_details', ['p_dispatch_status' => 'ORDER_STATUS_cancelled'], ['p_order_id' => $id], '', 1);
 
-        $add_note_url = build_url(['page' => '_SELF', 'type' => 'order_act', 'action' => 'add_note', 'last_act' => 'cancelled', 'id' => $id], get_module_zone('admin_shopping'));
+        $add_note_url = build_url(['page' => '_SELF', 'type' => 'order_act', 'action' => 'add_note', 'last_act' => 'cancelled', 'id' => $id], '_SELF');
 
         return redirect_screen($this->title, $add_note_url, do_lang_tempcode('SUCCESS'));
     }
@@ -566,7 +566,7 @@ class Module_admin_shopping
         $GLOBALS['SITE_DB']->query_update('shopping_orders', ['order_status' => 'ORDER_STATUS_returned'], ['id' => $id], '', 1);
         $GLOBALS['SITE_DB']->query_update('shopping_order_details', ['p_dispatch_status' => 'ORDER_STATUS_returned'], ['p_order_id' => $id], '', 1);
 
-        $add_note_url = build_url(['page' => '_SELF', 'type' => 'order_act', 'action' => 'add_note', 'last_act' => 'returned', 'id' => $id], get_module_zone('admin_shopping'));
+        $add_note_url = build_url(['page' => '_SELF', 'type' => 'order_act', 'action' => 'add_note', 'last_act' => 'returned', 'id' => $id], '_SELF');
 
         return redirect_screen($this->title, $add_note_url, do_lang_tempcode('SUCCESS'));
     }
@@ -583,7 +583,7 @@ class Module_admin_shopping
         $GLOBALS['SITE_DB']->query_update('shopping_orders', ['order_status' => 'ORDER_STATUS_onhold'], ['id' => $id], '', 1);
         $GLOBALS['SITE_DB']->query_update('shopping_order_details', ['p_dispatch_status' => 'ORDER_STATUS_onhold'], ['p_order_id' => $id], '', 1);
 
-        $add_note_url = build_url(['page' => '_SELF', 'type' => 'order_act', 'action' => 'add_note', 'last_act' => 'onhold', 'id' => $id], get_module_zone('admin_shopping'));
+        $add_note_url = build_url(['page' => '_SELF', 'type' => 'order_act', 'action' => 'add_note', 'last_act' => 'onhold', 'id' => $id], '_SELF');
 
         return redirect_screen($this->title, $add_note_url, do_lang_tempcode('SUCCESS'));
     }

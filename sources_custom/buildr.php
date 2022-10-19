@@ -54,7 +54,7 @@ function grab_new_owner(string $param_name) : ?int
 function buildr_refresh_with_message(object $message, string $msg_type = 'inform')
 {
     if (get_page_name() == 'buildr') {
-        $url = build_url(['page' => 'buildr'], '_SELF');
+        $url = build_url(['page' => 'buildr'], get_module_zone('buildr'));
         require_code('site2');
         redirect_exit($url, get_screen_title('MESSAGE'), $message, false, $msg_type);
     }

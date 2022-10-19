@@ -483,9 +483,9 @@ function _chat_messages_script_ajax(int $room_id, bool $backlog = false, ?int $m
 
         if ((addon_installed('actionlog')) && (has_actual_page_access(get_member(), 'admin_actionlog')) && (preg_match('#[:\.]#', $_message['ip_address']) != 0)) {
             if (is_guest($_message['member_id'])) {
-                $ban_url = build_url(['page' => 'admin_ip_ban', 'type' => 'toggle_ip_ban', 'id' => $_message['ip_address']], get_module_zone('admin_actionlog'));
+                $ban_url = build_url(['page' => 'admin_ip_ban', 'type' => 'toggle_ip_ban', 'id' => $_message['ip_address']], get_module_zone('admin_ip_ban'));
             } else {
-                $ban_url = build_url(['page' => 'admin_ip_ban', 'type' => 'toggle_submitter_ban', 'id' => $_message['member_id']], get_module_zone('admin_actionlog'));
+                $ban_url = build_url(['page' => 'admin_ip_ban', 'type' => 'toggle_submitter_ban', 'id' => $_message['member_id']], get_module_zone('admin_ip_ban'));
             }
         } else {
             $ban_url = new Tempcode();

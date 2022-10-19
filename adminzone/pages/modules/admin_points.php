@@ -332,7 +332,7 @@ class Module_admin_points
         foreach ($rows as $myrow) {
             $date = get_timezoned_date_time($myrow['date_and_time'], false);
             $reason = get_translated_tempcode('points_ledger', $myrow, 'reason');
-            $_date = hyperlink(build_url(['page' => 'admin_points', 'type' => 'view', 'id' => $myrow['id']]), $date, false, true);
+            $_date = hyperlink(build_url(['page' => '_SELF', 'type' => 'view', 'id' => $myrow['id']]), $date, false, true);
 
             if (is_guest($myrow['recipient_id'])) {
                 $to = do_lang_tempcode('USER_SYSTEM');
@@ -404,7 +404,7 @@ class Module_admin_points
 
         // Export button
         $form = new Tempcode();
-        $export_url = build_url(['page' => '_SELF', 'type' => 'export'], get_module_zone('admin_points'));
+        $export_url = build_url(['page' => '_SELF', 'type' => 'export'], '_SELF');
         $form->attach(do_template('BUTTON_SCREEN', ['_GUID' => '29a25bc2a39049dab57ff6b1eeb1a413', 'IMMEDIATE' => false, 'URL' => $export_url, 'TITLE' => do_lang_tempcode('EXPORT'), 'IMG' => 'admin/export_spreadsheet', 'HIDDEN' => new Tempcode()]));
 
         // Start building fields for the filter box
@@ -468,7 +468,7 @@ class Module_admin_points
             ],
         ];
 
-        $url = build_url(['page' => 'admin_points', 'type' => 'browse'], get_module_zone('admin_points'));
+        $url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
 
         $tpl = do_template('ADMIN_POINTS_LEDGER_SCREEN', [
             '_GUID' => 'bd66789c028148928b87d04e6dc51fc8',
@@ -587,7 +587,7 @@ class Module_admin_points
                     $row2 = $_row2[0];
                     $date = get_timezoned_date_time($row2['date_and_time'], false);
                     $_status = do_lang_tempcode('LEDGER_STATUS_' . strval($row['status']), escape_html(strval($row['linked_to'])), escape_html($date));
-                    $status = hyperlink(build_url(['page' => 'admin_points', 'type' => 'view', 'id' => $row['linked_to']]), $_status, false, true);
+                    $status = hyperlink(build_url(['page' => '_SELF', 'type' => 'view', 'id' => $row['linked_to']], '_SELF'), $_status, false, true);
                 }
                 break;
             case LEDGER_STATUS_REFUND:
@@ -598,7 +598,7 @@ class Module_admin_points
                     $row2 = $_row2[0];
                     $date = get_timezoned_date_time($row2['date_and_time'], false);
                     $_status = do_lang_tempcode('LEDGER_STATUS_' . strval($row['status']), escape_html(strval($row['linked_to'])), escape_html($date));
-                    $status = hyperlink(build_url(['page' => 'admin_points', 'type' => 'view', 'id' => $row['linked_to']]), $_status, false, true);
+                    $status = hyperlink(build_url(['page' => '_SELF', 'type' => 'view', 'id' => $row['linked_to']], '_SELF'), $_status, false, true);
                 }
                 break;
             default:

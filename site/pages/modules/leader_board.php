@@ -119,7 +119,7 @@ class Module_leader_board
             $tpl_li = new Tempcode();
             $sets = $GLOBALS['FORUM_DB']->query_select('leader_boards', ['*'], [], '');
             foreach ($sets as $set) {
-                $_url = build_url(['page' => 'leader_board', 'type' => 'browse', 'id' => $set['id'], 'all' => $all, 'lb_date_and_time' => $date], get_module_zone('leader_board'));
+                $_url = build_url(['page' => '_SELF', 'type' => 'browse', 'id' => $set['id'], 'all' => $all, 'lb_date_and_time' => $date], '_SELF');
                 $tpl = do_template('INDEX_SCREEN_FANCIER_ENTRY', [
                     '_GUID' => 'bvjnkjlgn3lgj3pj3lgojlvblfbvmdbmsdlb',
                     'URL' => $_url,
@@ -168,7 +168,7 @@ class Module_leader_board
         if ($num_sets > 1 && $all == 0) {
             $tpl_li = new Tempcode();
             foreach ($sets as $set) {
-                $_url = build_url(['page' => 'leader_board', 'type' => 'browse', 'id' => $id, 'lb_date_and_time' => $set['lb_date_and_time']], get_module_zone('leader_board'));
+                $_url = build_url(['page' => '_SELF', 'type' => 'browse', 'id' => $id, 'lb_date_and_time' => $set['lb_date_and_time']], '_SELF');
                 $tpl = do_template('INDEX_SCREEN_FANCIER_ENTRY', [
                     '_GUID' => 'fvnsfkjehfo3i4tl3g5n42itjg4ljg434',
                     'URL' => $_url,
@@ -242,8 +242,7 @@ class Module_leader_board
 
             $about = ($board['lb_type'] == 'earners') ? do_lang_tempcode('LEADER_BOARD_ABOUT_earners', integer_format(count($sets)), escape_html($nice_start_date), escape_html($nice_date)) : do_lang_tempcode('LEADER_BOARD_ABOUT_holders', integer_format(count($sets)), escape_html($nice_date));
 
-            $zone = get_module_zone('leader_board');
-            $url = build_url(['page' => 'leader_board', 'id' => $board['id']], $zone);
+            $url = build_url(['page' => '_SELF', 'id' => $board['id']], '_SELF');
 
             $out->attach(do_template('POINTS_LEADER_BOARD_SET', [
                 '_GUID' => 'f2r81347fh3f49y134tgf752ythho8317gh1',

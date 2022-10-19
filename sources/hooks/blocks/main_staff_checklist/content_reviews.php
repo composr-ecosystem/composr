@@ -42,7 +42,7 @@ class Hook_checklist_content_reviews
         }
         require_lang('content_reviews');
         $_status = ($status == 0) ? do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_0') : do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_1');
-        $url = build_url(['page' => 'admin_content_reviews'], 'adminzone');
+        $url = build_url(['page' => 'admin_content_reviews'], get_module_zone('admin_content_reviews'));
         $tpl = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', [
             '_GUID' => 'c00c54ed0e3095ff0b653a5799b7cd92',
             'URL' => '',

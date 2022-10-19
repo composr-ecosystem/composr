@@ -44,7 +44,7 @@ class Hook_checklist_unvalidated
         }
         $_status = ($status == 0) ? do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_0') : do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_1');
 
-        $url = build_url(['page' => 'admin_unvalidated'], 'adminzone');
+        $url = build_url(['page' => 'admin_unvalidated'], get_module_zone('admin_unvalidated'));
 
         $tpl = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', [
             '_GUID' => '48f2bc149dca356c8b6bd87092f70d3c',

@@ -223,11 +223,11 @@ function find_security_alerts(array $where = []) : array
     foreach ($rows as $row) {
         $date = get_timezoned_date_time($row['date_and_time']);
 
-        $lookup_url = build_url(['page' => 'admin_lookup', 'type' => 'results', 'param' => $row['ip']], '_SELF');
+        $lookup_url = build_url(['page' => 'admin_lookup', 'type' => 'results', 'param' => $row['ip']], get_module_zone('admin_lookup'));
 
-        $member_url = build_url(['page' => 'admin_lookup', 'type' => 'results', 'param' => $row['member_id']], '_SELF');
+        $member_url = build_url(['page' => 'admin_lookup', 'type' => 'results', 'param' => $row['member_id']], get_module_zone('admin_lookup'));
 
-        $full_url = build_url(['page' => 'admin_security', 'type' => 'view', 'id' => $row['id']], '_SELF');
+        $full_url = build_url(['page' => 'admin_security', 'type' => 'view', 'id' => $row['id']], get_module_zone('admin_security'));
 
         $reason = do_lang($row['reason'], $row['reason_param_a'], $row['reason_param_b'], null, null, false);
         if ($reason === null) {

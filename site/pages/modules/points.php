@@ -842,7 +842,7 @@ class Module_points
         $fields->attach(form_input_text_comcode(do_lang_tempcode('ESCROW_AGREEMENT'), do_lang_tempcode('DESCRIPTION_ESCROW_AGREEMENT'), 'escrow_agreement', '', true));
         $fields->attach(form_input_date(do_lang_tempcode('EXPIRY_DATE'), do_lang_tempcode('DESCRIPTION_ESCROW_EXPIRY_TIME', escape_html($username)), 'escrow_expiry_time', false, true, true));
 
-        $escrow_url = build_url(['page' => 'points', 'type' => 'do_escrow', 'id' => $member_id_of], get_module_zone('points'));
+        $escrow_url = build_url(['page' => '_SELF', 'type' => 'do_escrow', 'id' => $member_id_of], '_SELF');
 
         return do_template('FORM_SCREEN', [
             'HIDDEN' => new Tempcode(),

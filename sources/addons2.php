@@ -679,7 +679,7 @@ function inform_about_addon_install(string $file, array $also_uninstalling = [],
 
             if (get_param_string('type', 'browse') == 'addon_install') {
                 $post_fields->attach(form_input_hidden('install_' . $file, $file));
-                $url = static_evaluate_tempcode(build_url(['page' => '_SELF', 'type' => 'multi_action'], '_SELF'));
+                $url = static_evaluate_tempcode(build_url(['page' => 'admin_addons', 'type' => 'multi_action'], get_module_zone('admin_addons')));
             } else {
                 $url = get_self_url(true);
             }
@@ -1249,7 +1249,7 @@ function inform_about_addon_uninstall(string $addon_name, array $also_uninstalli
             $post_fields->attach(symbol_tempcode('INSERT_FORM_POST_SECURITY'));
             if (get_param_string('type', 'browse') == 'addon_uninstall') {
                 $post_fields->attach(form_input_hidden('uninstall_' . $addon_name, $addon_name));
-                $url = static_evaluate_tempcode(build_url(['page' => '_SELF', 'type' => 'multi_action'], '_SELF'));
+                $url = static_evaluate_tempcode(build_url(['page' => 'admin_addons', 'type' => 'multi_action'], get_module_zone('admin_addons')));
             } else {
                 $url = get_self_url(true);
             }

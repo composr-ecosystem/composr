@@ -204,7 +204,7 @@ function phase_1_pre()
     echo '
     <p>As this is a substantial new release make sure you have done the following (mostly testing):</p>
     <ul>
-        <li>Run the <a href="' . escape_html(static_evaluate_tempcode(build_url(['page' => 'plug_guid'], 'adminzone'))) . '" target="_blank">plug_guid</a> tool to build needed GUIDs into the PHP.</li>
+        <li>Run the <a href="' . escape_html(static_evaluate_tempcode(build_url(['page' => 'plug_guid'], get_page_zone('plug_guid')))) . '" target="_blank">plug_guid</a> tool to build needed GUIDs into the PHP.</li>
     ';
     echo '
         <li>Upgrading prep:<ul>
@@ -351,7 +351,7 @@ function phase_2()
 
     echo '
         <li><strong>Addons</strong>:<ul>
-            <li>Generate the new addon set (<a target="_blank" href="' . escape_html(static_evaluate_tempcode(build_url(['page' => 'build_addons'], 'adminzone'))) . '">build_addons minimodule</a>)</li>
+            <li>Generate the new addon set (<a target="_blank" href="' . escape_html(static_evaluate_tempcode(build_url(['page' => 'build_addons'], get_page_zone('build_addons')))) . '">build_addons minimodule</a>)</li>
     ';
     if ($is_substantial && !$is_bleeding_edge) {
         echo '

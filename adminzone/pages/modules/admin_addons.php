@@ -872,7 +872,7 @@ class Module_admin_addons
 
         // Show it worked / Refresh
         if (($theme !== null) && ($theme != 'default')) {
-            $url = build_url(['page' => 'admin_themes', 'type' => 'edit_theme', 'theme' => $theme], 'adminzone');
+            $url = build_url(['page' => 'admin_themes', 'type' => 'edit_theme', 'theme' => $theme], get_module_zone('admin_themes'));
             return redirect_screen($this->title, $url, do_lang_tempcode('INSTALL_THEME_SUCCESS'));
         }
         $url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
@@ -1414,7 +1414,7 @@ class Module_admin_addons
 
         $map = ['page' => '_SELF', 'type' => '__addon_export'];
         if ($theme !== null) {
-            $_redirect = build_url(['page' => 'admin_themes', 'type' => 'browse'], 'adminzone');
+            $_redirect = build_url(['page' => 'admin_themes', 'type' => 'browse'], get_module_zone('admin_themes'));
             $map['redirect'] = protect_url_parameter($_redirect);
             $map['theme'] = $theme;
         }

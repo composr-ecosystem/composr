@@ -348,19 +348,19 @@ class Module_admin_lookup
             if (((get_forum_type() == 'cns') && (!is_guest($member_id))) && ($member_id != get_member())) {
                 $member_ban_link = do_template('ACTIONLOGS_TOGGLE_LINK', [
                     '_GUID' => '840c361ab217959f8b85141497e6e6a6',
-                    'URL' => build_url(['page' => 'admin_ip_ban', 'type' => 'toggle_member_ban', 'id' => $member_id, 'redirect' => protect_url_parameter(SELF_REDIRECT)], get_module_zone('admin_actionlog')),
+                    'URL' => build_url(['page' => 'admin_ip_ban', 'type' => 'toggle_member_ban', 'id' => $member_id, 'redirect' => protect_url_parameter(SELF_REDIRECT)], get_module_zone('admin_ip_ban')),
                 ]);
             }
             if (($ip != '') && ($ip != get_ip_address()) &&  (!in_array($ip, get_server_ips()))) {
                 $ip_ban_link = do_template('ACTIONLOGS_TOGGLE_LINK', [
                     '_GUID' => '76979d80cdd7d3e664c9a4ec04419bc6',
-                    'URL' => build_url(['page' => 'admin_ip_ban', 'type' => 'toggle_ip_ban', 'id' => $ip], get_module_zone('admin_actionlog')),
+                    'URL' => build_url(['page' => 'admin_ip_ban', 'type' => 'toggle_ip_ban', 'id' => $ip], get_module_zone('admin_ip_ban')),
                 ]);
             }
             if ((!is_guest($member_id)) && ($member_id != get_member())) {
                 $submitter_ban_link = do_template('ACTIONLOGS_TOGGLE_LINK', [
                     '_GUID' => '03834262af908bf78c4eef69e78c8cff',
-                    'URL' => build_url(['page' => 'admin_ip_ban', 'type' => 'toggle_submitter_ban', 'id' => $member_id, 'redirect' => protect_url_parameter(SELF_REDIRECT)], get_module_zone('admin_actionlog')),
+                    'URL' => build_url(['page' => 'admin_ip_ban', 'type' => 'toggle_submitter_ban', 'id' => $member_id, 'redirect' => protect_url_parameter(SELF_REDIRECT)], get_module_zone('admin_ip_ban')),
                 ]);
             }
         }
@@ -425,10 +425,10 @@ class Module_admin_lookup
 
         $fields['URL'] = page_link_to_url($row['page_link']);
 
-        $ip_url = build_url(['page' => 'admin_lookup', 'type' => 'results', 'param' => $row['ip']], get_module_zone('admin_lookup'));
+        $ip_url = build_url(['page' => '_SELF', 'type' => 'results', 'param' => $row['ip']], '_SELF');
         $fields['IP_ADDRESS'] = hyperlink($ip_url, $row['ip'], false, true);
 
-        $member_url = build_url(['page' => 'admin_lookup', 'type' => 'results', 'param' => $row['member_id']], get_module_zone('admin_lookup'));
+        $member_url = build_url(['page' => '_SELF', 'type' => 'results', 'param' => $row['member_id']], '_SELF');
         $fields['MEMBER_ID'] = hyperlink($member_url, '#' . strval($row['member_id']), false, true);
 
         //$fields['SESSION_ID'] = $row['session_id'];   Best not to give out for security reasons

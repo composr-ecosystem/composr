@@ -711,12 +711,12 @@ class Module_news
 
         if (!cms_empty_safe($_prev_article_title)) {
             $prev_article_title = get_translated_text($_prev_article_title);
-            $prev_article_url   = build_url(['page' => 'news', 'type' => 'view', 'id' => $id - 1], get_module_zone('news'));
+            $prev_article_url   = build_url(['page' => '_SELF', 'type' => 'view', 'id' => $id - 1], '_SELF');
         }
 
         if (!cms_empty_safe($_next_article_title)) {
             $next_article_title = get_translated_text($_next_article_title);
-            $next_article_url = build_url(['page' => 'news', 'type' => 'view', 'id' => $id + 1], get_module_zone('news'));
+            $next_article_url = build_url(['page' => '_SELF', 'type' => 'view', 'id' => $id + 1], '_SELF');
         }
 
         $author_entry_url = '';

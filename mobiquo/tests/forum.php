@@ -85,7 +85,7 @@ function get_id_by_url_test()
     $result = mobiquo_xmlrpc_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
         array(
-            static_evaluate_tempcode(build_url(['page' => 'topicview', 'id' => 1], 'forum')),
+            static_evaluate_tempcode(build_url(['page' => 'topicview', 'id' => 1], get_module_zone('topicview'))),
         ),
         'admin'
     );
@@ -95,7 +95,7 @@ function get_id_by_url_test()
     $result = mobiquo_xmlrpc_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
         [
-            static_evaluate_tempcode(build_url(['page' => 'topicview', 'id' => 1], 'forum', [], false, false, false, 'post_4')),
+            static_evaluate_tempcode(build_url(['page' => 'topicview', 'id' => 1], get_module_zone('topicview'), [], false, false, false, 'post_4')),
         ],
         'admin'
     );

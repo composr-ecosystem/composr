@@ -169,7 +169,7 @@ $decision_tree = [
             ],
         ] + $extra_brief_details,
         'needs_captcha' => ((addon_installed('captcha')) && (get_option('captcha_on_feedback') == '1') && (use_captcha())),
-        'next' => build_url(['page' => 'tickets', 'type' => 'post', 'ticket_type' => 'Report community site'], '_SEARCH'),
+        'next' => build_url(['page' => 'tickets', 'type' => 'post', 'ticket_type' => 'Report community site'], get_module_zone('tickets')),
     ],
 
     'contribute_code' => [

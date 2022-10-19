@@ -590,7 +590,7 @@ class Module_newsletter
 
         $_url = build_url(['page' => 'newsletter', 'type' => 'confirm', 'email' => $email, 'confirm' => $code_confirm], '_SELF', [], false, true);
         $url = $_url->evaluate();
-        $newsletter_url = build_url(['page' => 'newsletter'], get_module_zone('newsletter'));
+        $newsletter_url = build_url(['page' => '_SELF'], '_SELF');
         $message = do_lang('NEWSLETTER_SIGNUP_TEXT', comcode_escape($url), comcode_escape($password), [$forename, $surname, $email, get_site_name(), $newsletter_url->evaluate()]);
 
         require_code('mail');
