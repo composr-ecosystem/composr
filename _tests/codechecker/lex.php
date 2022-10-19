@@ -544,7 +544,7 @@ function lex($text = null)
                             log_warning('Missing surrounding spacing (for ' . $token_found . ') against coding standards', $i, true);
                         }
                         if (($i_current > 0) && (($TEXT[$i_current - 1] != ' ') || (($TEXT[$i] != ' ') && ($TEXT[$i] != "\n") && ($TEXT[$i] != "\r"))) && (in_array($token_found, ['IS_EQUAL', 'IS_GREATER', 'IS_SMALLER', 'IS_GREATER_OR_EQUAL', 'IS_SMALLER_OR_EQUAL', 'IS_IDENTICAL', 'IS_NOT_EQUAL', 'IS_NOT_IDENTICAL', 'CONCAT_EQUAL', 'DIV_EQUAL', 'MINUS_EQUAL', 'MUL_EQUAL', 'PLUS_EQUAL', 'BOR_EQUAL', 'EQUAL', 'BW_XOR', 'BW_OR', 'SL', 'SR', 'CONC', 'ADD', 'SUBTRACT', 'MULTIPLY', 'DIVIDE', 'REMAINDER']))) {
-                            if ($token_found != 'SUBTRACT' || is_alphanumeric($TEXT[$i_current - 1])) { // As could be minus sign
+                            if ($token_found != 'SUBTRACT' || in_array($TEXT[$i_current - 1], [']', ')', '}']) || is_alphanumeric($TEXT[$i_current - 1])) { // As could be minus sign
                                 if (count($tokens) >= 3 && $tokens[count($tokens) - 3][0] != 'DECLARE') { // As declare has no spaces
                                     log_warning('Missing surrounding spacing (for ' . $token_found . ') against coding standards', $i, true);
                                 }
