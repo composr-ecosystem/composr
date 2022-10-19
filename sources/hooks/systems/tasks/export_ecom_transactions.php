@@ -26,14 +26,17 @@ class Hook_task_export_ecom_transactions
     /**
      * Run the task hook.
      *
-     * @param  TIME $start_date Date from
-     * @param  TIME $end_date Date to
-     * @param  string $transaction_status Transaction status filter (blank: no filter)
-     * @param  string $type_code Product filter (blank: no filter)
+     * @param  ID_TEXT $filter_username Filter transactions by username (blank: do not filter)
+     * @param  ID_TEXT $filter_txn_id Filter by transaction ID (blank: do not filter)
+     * @param  SHORT_TEXT $filter_purchase_id Filter by product-specific ID (blank: do not filter)
+     * @param  LONG_TEXT $_filter_status Filter by comma-delimited transaction statuses (blank: do not filter)
+     * @param  LONG_TEXT $_filter_type_code Filter by comma-delimited product type codes (blank: do not filter)
+     * @param  ?TIME $filter_start Filter out all transactions before the given time (null: do not filter)
+     * @param  ?TIME $filter_end Filter out all transactions after the given time (null: do not filter)
      * @param  ?string $file_type The file type to export with (null: default)
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
-    public function run(int $start_date, int $end_date, string $transaction_status, string $type_code, ?string $file_type = null) : ?array
+    public function run(string $filter_username = '', string $filter_txn_id = '', string $filter_purchase_id = '', string $_filter_status = '', string $_filter_type_code = '', ?int $filter_start = null, ?int $filter_end = null, ?string $file_type = null) : ?array
     {
         if (!addon_installed('ecommerce')) {
             return null;
@@ -41,19 +44,62 @@ class Hook_task_export_ecom_transactions
 
         require_code('ecommerce');
 
-        $where = 't_time BETWEEN ' . strval($start_date) . ' AND ' . strval($end_date);
-        if ($transaction_status != '') {
-            $where .= ' AND ' . db_string_equal_to('t_status', $transaction_status);
+        // Build WHERE query and filename
+        $where = '1=1';
+        $end_filename = '';
+        $filter_status = explode(',', $_filter_status);
+        $filter_type_code = explode(',', $_filter_type_code);
+        if ($filter_username != '') {
+            $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($filter_username);
+            if ($member_id !== null) {
+                $where .= ' AND t_member_id=' . strval($member_id);
+                $end_filename .= '_' . $filter_username;
+            }
         }
-        if ($type_code != '') {
-            $where .= ' AND ' . db_string_equal_to('t_type_code', $type_code);
+        if ($filter_txn_id != '') {
+            $end_filename .= '_' . $filter_txn_id;
+            $where .= ' AND (' . db_string_equal_to('id', $filter_txn_id) . ' OR ' . db_string_equal_to('t_parent_txn_id', $filter_txn_id) . ')';
+        }
+        if ($filter_purchase_id != '') {
+            $end_filename .= '_' . $filter_purchase_id;
+            $where .= ' AND ' . db_string_equal_to('t_purchase_id', $filter_purchase_id);
+        }
+        if ($_filter_status != '') {
+            $end_filename .= '_' . $_filter_status;
+            $where .= ' AND (';
+            foreach ($filter_status as $key => $status) {
+                if ($key > 0) {
+                    $where .= ' OR ';
+                }
+                $where .= db_string_equal_to('t_status', $status);
+            }
+            $where .= ')';
+        }
+        if ($_filter_type_code != '') {
+            $end_filename .= '_' . $_filter_type_code;
+            $where .= ' AND (';
+            foreach ($filter_type_code as $key => $product) {
+                if ($key > 0) {
+                    $where .= ' OR ';
+                }
+                $where .= db_string_equal_to('t_type_code', $product);
+            }
+            $where .= ')';
+        }
+        if ($filter_start !== null) {
+            $end_filename .= '_s' . strval($filter_start);
+            $where .= ' AND t_time>=' . strval($filter_start);
+        }
+        if ($filter_end !== null) {
+            $end_filename .= '_e' . strval($filter_end);
+            $where .= ' AND t_time<=' . strval($filter_end);
         }
 
         require_code('files_spreadsheets_write');
         if ($file_type === null) {
             $file_type = spreadsheet_write_default();
         }
-        $filename = 'transactions_' . (($transaction_status == '') ? '' : ($transaction_status . '__')) . (($type_code == '') ? '' : ($type_code . '__')) . date('Y-m-d', $start_date) . '--' . date('Y-m-d', $end_date) . '.' . $file_type;
+        $filename = 'transactions' . $end_filename . '.' . $file_type;
         $outfile_path = null;
         $sheet_writer = spreadsheet_open_write($outfile_path, $filename);
 
@@ -62,10 +108,10 @@ class Hook_task_export_ecom_transactions
 
         $query = 'FROM ' . get_table_prefix() . 'ecom_transactions t' . $GLOBALS['SITE_DB']->singular_join('ecom_trans_addresses', 'a', 't.id=a.a_txn_id', 'id', 'MIN', 'LEFT JOIN') . ' WHERE ' . $where;
 
-        $max_rows = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) ' . $query . ' ORDER BY t_time');
+        $max_rows = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) ' . $query);
 
         do {
-            $rows = $GLOBALS['SITE_DB']->query('SELECT t.*,t.id AS t_id,a.* ' . $query, $max, $start);
+            $rows = $GLOBALS['SITE_DB']->query('SELECT t.*,t.id AS t_id,a.* ' . $query . ' ORDER BY t_time', $max, $start);
 
             foreach ($rows as $i => $_transaction) {
                 task_log($this, 'Processing transaction row', $i, $max_rows);
@@ -79,33 +125,11 @@ class Hook_task_export_ecom_transactions
 
                 $transaction = [];
 
+                $transaction[do_lang('DATE')] = get_timezoned_date_time($_transaction['t_time'], false);
+
                 $transaction[do_lang('TRANSACTION')] = $_transaction['t_id'];
 
                 $transaction[do_lang('PARENT')] = $_transaction['t_parent_txn_id'];
-
-                $transaction[do_lang('PURCHASE_ID')] = $_transaction['t_purchase_id'];
-
-                $transaction[do_lang('DATE')] = get_timezoned_date_time($_transaction['t_time']);
-
-                $transaction[do_lang('CURRENCY')] = $_transaction['t_currency'];
-
-                $transaction[do_lang('AMOUNT')] = float_format($_transaction['t_amount']);
-
-                $transaction[do_lang(get_option('tax_system')) . ' (' . do_lang('COUNT_TOTAL') . ')'] = float_format($_transaction['t_tax']);
-
-                $transaction[do_lang(get_option('tax_system')) . ' (' . do_lang('DETAILS') . ')'] = $_transaction['t_tax_derivation'];
-
-                $transaction[do_lang('PRODUCT')] = $item_name;
-
-                $transaction[do_lang('STATUS')] = get_transaction_status_string($_transaction['t_status']);
-
-                $transaction[do_lang('REASON')] = trim($_transaction['t_reason'] . '; ' . $_transaction['t_pending_reason'], '; ');
-
-                $transaction[do_lang('NOTES')] = $_transaction['t_memo'];
-
-                $transaction[do_lang('PAYMENT_GATEWAY')] = $_transaction['t_payment_gateway'];
-
-                $transaction[do_lang('OTHER_DETAILS')] = $_transaction['t_invoicing_breakdown'];
 
                 $member_id = null;
                 if ($product_object !== null) {
@@ -117,6 +141,28 @@ class Hook_task_export_ecom_transactions
                     $username = do_lang('UNKNOWN');
                 }
                 $transaction[do_lang('MEMBER')] = $username;
+
+                $transaction[do_lang('PRODUCT')] = $item_name;
+
+                $transaction[do_lang('PURCHASE_ID')] = $_transaction['t_purchase_id'];
+
+                $transaction[do_lang('CURRENCY')] = $_transaction['t_currency'];
+
+                $transaction[do_lang('AMOUNT')] = float_format($_transaction['t_amount']);
+
+                $transaction[do_lang(get_option('tax_system')) . ' (' . do_lang('COUNT_TOTAL') . ')'] = float_format($_transaction['t_tax']);
+
+                $transaction[do_lang(get_option('tax_system')) . ' (' . do_lang('DETAILS') . ')'] = $_transaction['t_tax_derivation'];
+
+                $transaction[do_lang('STATUS')] = get_transaction_status_string($_transaction['t_status']);
+
+                $transaction[do_lang('REASON')] = trim($_transaction['t_reason'] . '; ' . $_transaction['t_pending_reason'], '; ');
+
+                $transaction[do_lang('NOTES')] = $_transaction['t_memo'];
+
+                $transaction[do_lang('PAYMENT_GATEWAY')] = $_transaction['t_payment_gateway'];
+
+                $transaction[do_lang('OTHER_DETAILS')] = $_transaction['t_invoicing_breakdown'];
 
                 // Put address together
                 $address = [];

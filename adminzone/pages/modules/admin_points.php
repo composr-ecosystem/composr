@@ -404,8 +404,10 @@ class Module_admin_points
 
         // Export button
         $form = new Tempcode();
-        $export_url = build_url(['page' => '_SELF', 'type' => 'export'], get_module_zone('admin_points'));
-        $form->attach(do_template('BUTTON_SCREEN', ['_GUID' => '29a25bc2a39049dab57ff6b1eeb1a413', 'IMMEDIATE' => false, 'URL' => $export_url, 'TITLE' => do_lang_tempcode('EXPORT'), 'IMG' => 'admin/export_spreadsheet', 'HIDDEN' => new Tempcode()]));
+        if ($max_rows > 0) {
+            $export_url = build_url(['page' => '_SELF', 'type' => 'export'], get_module_zone('admin_points'));
+            $form->attach(do_template('BUTTON_SCREEN', ['_GUID' => '29a25bc2a39049dab57ff6b1eeb1a413', 'IMMEDIATE' => false, 'URL' => $export_url, 'TITLE' => do_lang_tempcode('EXPORT'), 'IMG' => 'admin/export_spreadsheet', 'HIDDEN' => new Tempcode()]));
+        }
 
         // Start building fields for the filter box
         push_field_encapsulation(FIELD_ENCAPSULATION_RAW);
@@ -479,6 +481,7 @@ class Module_admin_points
             'FILTERS_ROW_A' => $filters_row_a,
             'FILTERS_ROW_B' => $filters_row_b,
             'URL' => $url,
+            'FILTERS_HIDDEN' => new Tempcode(),
         ]);
 
         pop_field_encapsulation();

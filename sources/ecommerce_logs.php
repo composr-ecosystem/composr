@@ -30,14 +30,14 @@ This file only contains the code for the sales log and code for viewing an indiv
 /**
  * The UI to view sales logs.
  *
- * @param  ?MEMBER $filter_member_id Member to filter by (null: none)
+ * @param  array $filters List of filters to apply (member_id, txn_id, type_code, start, end)
  * @param  boolean $show_username Whether to show the username column
  * @param  boolean $show_delete Whether to show the deletion column
  * @param  integer $max_default Default maximum number of records to show
  * @param  boolean $empty_ok Whether empty results are okay (instead of exiting with a no entries message)
- * @return ?array A pair: The sales table, pagination (null: none)
+ * @return ?array A tuple: The sales table, pagination, and database rows (null: none)
  */
-function build_sales_table(?int $filter_member_id, bool $show_username = false, bool $show_delete = false, int $max_default = 20, bool $empty_ok = false) : ?array
+function build_sales_table(array $filters = [], bool $show_username = false, bool $show_delete = false, int $max_default = 20, bool $empty_ok = false) : ?array
 {
     require_code('templates_map_table');
     require_code('templates_results_table');
@@ -49,6 +49,7 @@ function build_sales_table(?int $filter_member_id, bool $show_username = false, 
     $start = get_param_integer('start_ecommerce_logs', 0);
 
     $header_row = [];
+    $header_row[] = do_lang_tempcode('DATE_TIME');
     $header_row[] = do_lang_tempcode('TRANSACTION');
     if ($show_username) {
         $header_row[] = do_lang_tempcode('USERNAME');
@@ -56,53 +57,48 @@ function build_sales_table(?int $filter_member_id, bool $show_username = false, 
     $header_row[] = do_lang_tempcode('PRODUCT');
     $header_row[] = do_lang_tempcode('DETAILS');
     $header_row[] = do_lang_tempcode('OTHER_DETAILS');
-    $header_row[] = do_lang_tempcode('DATE_TIME');
     if ($show_delete) {
         $header_row[] = do_lang_tempcode('ACTIONS');
     }
     $_header_row = columned_table_header_row($header_row);
 
     $where = [];
-    if ($filter_member_id !== null) {
-        $where['member_id'] = $filter_member_id;
+    $end = '';
+    if (array_key_exists('member_id', $filters)) {
+        $where['member_id'] = $filters['member_id'];
+    }
+    if (array_key_exists('txn_id', $filters)) {
+        $end .= ' AND (' . db_string_equal_to('t_id', $filters['txn_id']) . ' OR ' . db_string_equal_to('t_parent_txn_id', $filters['txn_id']) . ')';
+    }
+    if (array_key_exists('type_code', $filters)) {
+        $end .= ' AND (';
+        $filter_type_code = explode(',', $filters['type_code']);
+        foreach ($filter_type_code as $key => $product) {
+            if ($key > 0) {
+                $end .= ' OR ';
+            }
+            $end .= db_string_equal_to('t_type_code', $product);
+        }
+        $end .= ')';
+    }
+    if (array_key_exists('start', $filters)) {
+        $end .= ' AND date_and_time>=' . strval($filters['start']);
+    }
+    if (array_key_exists('end', $filters)) {
+        $end .= ' AND date_and_time<=' . strval($filters['end']);
     }
 
-    $rows = $GLOBALS['SITE_DB']->query_select('ecom_sales s LEFT JOIN ' . get_table_prefix() . 'ecom_transactions t ON t.id=s.txn_id', ['*', 's.id AS s_id', 't.id AS t_id'], $where, 'ORDER BY date_and_time DESC', $max, $start);
-    $max_rows = $GLOBALS['SITE_DB']->query_select_value('ecom_sales', 'COUNT(*)', $where);
-
+    $rows = $GLOBALS['SITE_DB']->query_select('ecom_sales s LEFT JOIN ' . get_table_prefix() . 'ecom_transactions t ON t.id=s.txn_id', ['*', 's.id AS s_id', 't.id AS t_id'], $where, $end . 'ORDER BY date_and_time DESC', $max, $start);
+    $max_rows = $GLOBALS['SITE_DB']->query_select_value('ecom_sales s LEFT JOIN ' . get_table_prefix() . 'ecom_transactions t ON t.id=s.txn_id', 'COUNT(*)', $where, $end);
     $sales_rows = [];
     foreach ($rows as $row) {
-        $transaction_row = get_transaction_row($row['txn_id']);
-
-        $transaction_linker = build_transaction_linker($row['txn_id'], $transaction_row['t_status'] != 'Completed', $transaction_row);
+        $transaction_row = get_transaction_row($row['txn_id'], true);
 
         if ($show_username) {
             $member_link = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($row['member_id']);
         }
 
-        list($details) = find_product_details($transaction_row['t_type_code']);
-        if ($details !== null) {
-            $item_name = $details['item_name'];
-        } else {
-            $item_name = $transaction_row['t_type_code'];
-        }
-
-        $product_details_url = get_product_details_url($transaction_row['t_type_code'], true, $filter_member_id);
-        $item_link = hyperlink($product_details_url, $item_name, false, true);
-
-        if (strpos($item_name, $row['details']) === false) {
-            $details_1 = $row['details'];
-            if (strpos($item_name, $row['details2']) === false) {
-                $details_2 = $row['details2'];
-            } else {
-                $details_2 = '';
-            }
-        } else {
-            $details_1 = $row['details2'];
-            $details_2 = '';
-        }
-
-        $date = get_timezoned_date_time($row['date_and_time']);
+        $date = get_timezoned_date_time($row['date_and_time'], false);
 
         if ($show_delete) {
             $url = build_url(['page' => 'admin_ecommerce_logs', 'type' => 'delete_sales_log_entry', 'id' => $row['s_id']], get_module_zone('admin_ecommerce_logs'));
@@ -118,6 +114,48 @@ function build_sales_table(?int $filter_member_id, bool $show_username = false, 
         }
 
         $sales_row = [];
+        if ($transaction_row === null) { // Fill in what we can if transaction is missing
+            $sales_row = [];
+            $sales_row[] = $date;
+            $sales_row[] = protect_from_escaping($row['txn_id']);
+            if ($show_username) {
+                $sales_row[] = do_lang('UNKNOWN');
+            }
+            $sales_row[] = do_lang('UNKNOWN');
+            $sales_row[] = do_lang('UNKNOWN');
+            $sales_row[] = do_lang('UNKNOWN');
+            if ($show_delete) {
+                $sales_row[] = $actions;
+            }
+            $sales_rows[] = $sales_row;
+            continue;
+        }
+
+        $transaction_linker = build_transaction_linker($row['txn_id'], $transaction_row['t_status'] != 'Completed', $transaction_row);
+
+        list($details) = find_product_details($transaction_row['t_type_code']);
+        if ($details !== null) {
+            $item_name = $details['item_name'];
+        } else {
+            $item_name = $transaction_row['t_type_code'];
+        }
+
+        $product_details_url = get_product_details_url($transaction_row['t_type_code'], true, (array_key_exists('member_id', $filters) ? $filters['member_id'] : null));
+        $item_link = hyperlink($product_details_url, $item_name, false, true);
+
+        if (strpos($item_name, $row['details']) === false) {
+            $details_1 = $row['details'];
+            if (strpos($item_name, $row['details2']) === false) {
+                $details_2 = $row['details2'];
+            } else {
+                $details_2 = '';
+            }
+        } else {
+            $details_1 = $row['details2'];
+            $details_2 = '';
+        }
+
+        $sales_row[] = $date;
         $sales_row[] = protect_from_escaping($transaction_linker->evaluate());
         if ($show_username) {
             $sales_row[] = $member_link;
@@ -125,7 +163,6 @@ function build_sales_table(?int $filter_member_id, bool $show_username = false, 
         $sales_row[] = $item_link;
         $sales_row[] = $details_1;
         $sales_row[] = $details_2;
-        $sales_row[] = $date;
         if ($show_delete) {
             $sales_row[] = $actions;
         }
@@ -151,7 +188,7 @@ function build_sales_table(?int $filter_member_id, bool $show_username = false, 
     require_code('templates_pagination');
     $pagination = pagination(do_lang_tempcode('ECOM_PRODUCTS_MANAGE_SALES'), $start, 'start_ecommerce_logs', $max, 'max_ecommerce_logs', $max_rows, false, null, null, 'tab--ecommerce-logs');
 
-    return [$sales_table, $pagination];
+    return [$sales_table, $pagination, $rows];
 }
 
 /**

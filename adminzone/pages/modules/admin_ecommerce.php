@@ -359,7 +359,7 @@ class Module_admin_ecommerce extends Standard_crud_module
         }
 
         $delete_fields = null;
-        if ($GLOBALS['SITE_DB']->query_select_value('ecom_subscriptions', 'COUNT(*)', ['s_type_code' => 'USERGROUP' . strval($id)]) > 0) {
+        if ($GLOBALS['SITE_DB']->query_select_value('ecom_subscriptions', 'COUNT(*)', ['s_type_code' => 'USERGROUP_' . strval($id)]) > 0) {
             $delete_fields = new Tempcode();
             $delete_fields->attach(form_input_tick(do_lang_tempcode('DELETE'), do_lang_tempcode('DESCRIPTION_DELETE_USERGROUP_SUB_DANGER'), 'delete', false));
         }

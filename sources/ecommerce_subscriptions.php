@@ -71,7 +71,7 @@ function find_member_subscriptions(int $member_id, bool $usergroup_subscriptions
         }
         foreach ($_subscriptions as $sub) {
             // Load hook/etc details
-            if (substr($sub['s_type_code'], 0, 9) == 'USERGROUP') {
+            if (substr($sub['s_type_code'], 0, 10) == 'USERGROUP_') {
                 $usergroup_subscription_id = intval(substr($sub['s_type_code'], 9));
                 static $usergroup_subscription_rows = null;
                 if ($usergroup_subscription_rows === null) {

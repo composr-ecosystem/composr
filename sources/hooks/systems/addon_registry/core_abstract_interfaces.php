@@ -179,6 +179,7 @@ class Hook_addon_registry_core_abstract_interfaces
             'themes/default/templates/SIMPLE_PREVIEW_BOX.tpl',
             'themes/default/templates/RESULTS_TABLE_SCREEN.tpl',
             'themes/default/templates/RESULTS_TABLE_FILTER_SCREEN.tpl',
+            'themes/default/templates/FILTER_BOX.tpl',
             'sources/templates_tooltip.php',
             'sources/templates_redirect_screen.php',
             'sources/templates_confirm_screen.php',
@@ -217,6 +218,7 @@ class Hook_addon_registry_core_abstract_interfaces
             'templates/CONFIRM_SCREEN.tpl' => 'confirm_screen',
             'templates/RESULTS_TABLE_SCREEN.tpl' => 'result_table_screen',
             'templates/RESULTS_TABLE_FILTER_SCREEN.tpl' => 'result_table_filter_screen',
+            'templates/FILTER_BOX.tpl' => 'result_table_filter_screen',
             'templates/COLUMNED_TABLE_ACTION.tpl' => 'full_table_screen',
             'templates/COLUMNED_TABLE.tpl' => 'full_table_screen',
             'templates/INDEX_SCREEN_ENTRY.tpl' => 'index_screen',
@@ -1169,6 +1171,7 @@ class Hook_addon_registry_core_abstract_interfaces
             'FORM' => placeholder_button(),
             'FILTERS_ROW_A' => $filters_row_a,
             'FILTERS_ROW_B' => $filters_row_b,
+            'FILTERS_HIDDEN' => new Tempcode(),
             'URL' => placeholder_url(),
         ]), null, '', true);
     }

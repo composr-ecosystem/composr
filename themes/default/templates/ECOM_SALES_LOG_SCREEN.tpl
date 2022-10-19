@@ -5,6 +5,8 @@
 </p>
 
 <div class="clearfix">
+	{+START,INCLUDE,FILTER_BOX}{+END}
+
 	{CONTENT}
 
 	{+START,IF_NON_EMPTY,{PAGINATION}}

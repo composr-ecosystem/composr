@@ -67,10 +67,10 @@ class Hook_cron_subscription_mails
         foreach ($mails as $mail) {
             $offset = $mail['m_ref_point_offset'] * 60 * 60; // Convert from hours to seconds
             foreach ($subscribers as $subscriber => $subs) {
-                if (isset($subs['USERGROUP' . strval($mail['m_usergroup_sub_id'])])) {
+                if (isset($subs['USERGROUP_' . strval($mail['m_usergroup_sub_id'])])) {
                     $send = false;
 
-                    $sub = $subs['USERGROUP' . strval($mail['m_usergroup_sub_id'])];
+                    $sub = $subs['USERGROUP_' . strval($mail['m_usergroup_sub_id'])];
                     switch ($mail['m_ref_point']) {
                         case 'start':
                             $send = ((time() - $sub['start_time'] >= $offset) && ($last_run - $sub['start_time'] < $offset));

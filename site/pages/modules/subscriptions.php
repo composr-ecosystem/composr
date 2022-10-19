@@ -122,7 +122,7 @@ class Module_subscriptions
             $GLOBALS['SITE_DB']->add_table_field('subscriptions', 's_length_units', 'SHORT_TEXT', 'm');
             $subscriptions = $GLOBALS['SITE_DB']->query_select('subscriptions', ['*']);
             foreach ($subscriptions as $sub) {
-                if (substr($sub['s_type_code'], 0, 9) != 'USERGROUP') {
+                if (substr($sub['s_type_code'], 0, 10) != 'USERGROUP_') {
                     continue;
                 }
 

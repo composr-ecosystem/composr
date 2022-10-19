@@ -581,11 +581,11 @@
     };
 
     $cms.templates.tooltip = function (params, el) {
-        var textLarge = $cms.filter.nl(params.textLarge);
+        var tooltipText = $cms.filter.nl(params.tooltip);
 
         $dom.on(el, 'mouseover', function (e) {
             var win = $cms.getMainCmsWindow(true);
-            win.$cms.ui.activateTooltip(el, e, textLarge, '40%', null, null, null, null, false, false, win);
+            win.$cms.ui.activateTooltip(el, e, tooltipText, '40%', null, null, null, null, false, false, win);
         });
     };
 

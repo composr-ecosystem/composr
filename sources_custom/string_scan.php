@@ -8371,6 +8371,9 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         FILTER_STATE_CANCELLED
         FILTER_STATE_NEW
         FILTER_STATE_PENDING
+        FILTER_STATE_COMPLETED
+        FILTER_STATE_SMODIFIED
+        PARENT_TRANSACTION
         MANUAL_SUBSCRIPTIONS
     ')));
 
