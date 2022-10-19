@@ -249,13 +249,13 @@ class Module_admin_lookup
             $submitter_ban_link = null;
             if (addon_installed('securitylogging')) {
                 if (((get_forum_type() == 'cns') && (!is_guest($id))) && ($id != get_member())) {
-                    $member_ban_link = do_template('ACTIONLOGS_TOGGLE_LINK', array('_GUID' => '840c361ab217959f8b85141497e6e6a6', 'URL' => build_url(array('page' => 'admin_ip_ban', 'type' => 'toggle_member_ban', 'id' => $id, 'redirect' => get_self_url(true)), get_module_zone('admin_actionlog'))));
+                    $member_ban_link = do_template('ACTIONLOGS_TOGGLE_LINK', array('_GUID' => '840c361ab217959f8b85141497e6e6a6', 'URL' => build_url(array('page' => 'admin_ip_ban', 'type' => 'toggle_member_ban', 'id' => $id, 'redirect' => get_self_url(true)), get_module_zone('admin_ip_ban'))));
                 }
                 if (($ip != '') && ($ip != get_ip_address()) && ($ip != cms_srv('SERVER_ADDR'))) {
-                    $ip_ban_link = do_template('ACTIONLOGS_TOGGLE_LINK', array('_GUID' => '76979d80cdd7d3e664c9a4ec04419bc6', 'URL' => build_url(array('page' => 'admin_ip_ban', 'type' => 'toggle_ip_ban', 'id' => $ip), get_module_zone('admin_actionlog'))));
+                    $ip_ban_link = do_template('ACTIONLOGS_TOGGLE_LINK', array('_GUID' => '76979d80cdd7d3e664c9a4ec04419bc6', 'URL' => build_url(array('page' => 'admin_ip_ban', 'type' => 'toggle_ip_ban', 'id' => $ip), get_module_zone('admin_ip_ban'))));
                 }
                 if ((!is_guest($id)) && ($id != get_member())) {
-                    $submitter_ban_link = do_template('ACTIONLOGS_TOGGLE_LINK', array('_GUID' => '03834262af908bf78c4eef69e78c8cff', 'URL' => build_url(array('page' => 'admin_ip_ban', 'type' => 'toggle_submitter_ban', 'id' => $id, 'redirect' => get_self_url(true)), get_module_zone('admin_actionlog'))));
+                    $submitter_ban_link = do_template('ACTIONLOGS_TOGGLE_LINK', array('_GUID' => '03834262af908bf78c4eef69e78c8cff', 'URL' => build_url(array('page' => 'admin_ip_ban', 'type' => 'toggle_submitter_ban', 'id' => $id, 'redirect' => get_self_url(true)), get_module_zone('admin_ip_ban'))));
                 }
             }
 
