@@ -618,7 +618,6 @@ Values are like hidden configuration options. They are either hidden because the
   - [tt]disable_base_check[/tt] -- set this to '1' if you do not want Composr to empty caches if the base URL gets changed (this is if the base URL is not defined, and someone accesses from something different)
   - [tt]pagination_when_not_needed[/tt] -- set this to '1' if you want the pagination wrapper template to load even if there is no pagination (useful for collecting result metadata via Tempcode)
   - [tt]catalogue_seo_source_map__<catalogue-name>[/tt] -- a comma-separated list of field IDs to use for SEO keyword generation (if not set, uses all fields). If all keywords in the field should be used, put an exclamation mark after the field ID
-  - [tt]disable_password_change_notifications_for_staff[/tt] -- set this to '1' if you want staff password edits to not result in notifications to users
   - [tt]filtercode_protected_fields[/tt] -- a comma-separated list of fields Filtercode cannot work on (above the ones hard-coded as forbidden)
   - [tt]memory_limit[/tt] -- set this to a memory limit to override Composr's built-in one (e.g. "128M"). This will make memory bugs on your server more dangerous, so use at your own risk (a memory usage problem can take down a whole server) -- although memory bugs are unlikely given that Composr users report if they ever see this error
   - [tt]canonical_keep_params[/tt] -- set this to a comma-separated list of keep_ parameters that should be allowed to propagate within search engines

@@ -8354,6 +8354,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_points_support_credits
         DESCRIPTION_LEADER_BOARD_CALCULATE_VOTING_POWER
         LEADER_BOARD_CALCULATE_VOTING_POWER
+<<<<<<< HEAD
         CONFIG_GROUP_DESCRIP_POINTS_FOSS_GROUP
         CONFIG_OPTION_points_foss
         CONFIG_OPTION_points_foss_http_header
@@ -8369,6 +8370,23 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DB_META_CORRUPT_MISSING
         MISSING_DB_PARAMETERS
         NO_ROOT_DB_WITHOUT_GIT
+=======
+        STAFF_SECURITY_ASPECT_CHANGED_BODY
+        STAFF_SECURITY_ASPECT_CHANGED_SUBJECT
+        ALREADY_VALIDATED
+        VALIDATE_BANNER
+        VALIDATE_CALENDAR_EVENT
+        VALIDATE_CATALOGUE_ENTRY
+        VALIDATE_DOWNLOAD
+        VALIDATE_IMAGE
+        VALIDATE_MEMBER
+        VALIDATE_NEWS
+        VALIDATE_QUIZ
+        VALIDATE_VIDEO
+        EDIT_MEMBER_PASSWORD
+        SENSITIVE_CHANGE_ALERT
+        DESCRIPTION_SENSITIVE_CHANGE_ALERT
+>>>>>>> feature__quick_issues
     ')));
 
     $non_admin_files = [
@@ -9407,6 +9425,9 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         EDITING_TOPIC_NOT_POST
         EDIT_LINK
         EDIT_MEMBER_PROFILE
+        EDIT_MEMBER_USERNAME
+        EDIT_MEMBER_EMAIL
+        EDIT_MEMBER_PHONE_NUMBER
         EDIT_MENU
         EDIT_OWN_POST
         EDIT_OWN_TOPIC
@@ -10145,7 +10166,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NOTIFICATION_TYPE_cns_member_joined_group
         NOTIFICATION_TYPE_cns_new_member
         NOTIFICATION_TYPE_cns_new_pt
-        NOTIFICATION_TYPE_cns_login_changed
         NOTIFICATION_TYPE_cns_topic
         NOTIFICATION_TYPE_cns_topic_invite
         NOTIFICATION_TYPE_comment_posted
@@ -10289,9 +10309,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PASSWORD
         PASSWORD_ALREADY_RESET
         RESET_CODE_EXPIRED
-        PASSWORD_CHANGED_MAIL_BODY
-        PASSWORD_CHANGED_MAIL_BODY_2
-        PASSWORD_CHANGED_MAIL_SUBJECT
         PASSWORD_DESIRED
         PASSWORD_EXPIRED
         PASSWORD_MISMATCH
@@ -10935,8 +10952,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         USERNAME_ALREADY_EXISTS
         USERNAME_BAD_SUBSTRING
         USERNAME_BAD_SYMBOLS
-        USERNAME_CHANGED_MAIL
-        USERNAME_CHANGED_MAIL_SUBJECT
         USERNAME_NUMERIC
         USERNAME_PASSWORD_WHITESPACE
         USERNAME_TOO_LONG
@@ -11734,7 +11749,25 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         POLL_RSS_VOTE_TITLE
         POLL_RSS_VOTE_TITLE_REVOKED
         TOPIC_POLL_VOTES
+<<<<<<< HEAD
         DEFAULT_points_foss_reason
+=======
+        SECURITY_ASPECT_CHANGED_BODY
+        SECURITY_ASPECT_CHANGED_BODY_2
+        SECURITY_ASPECT_CHANGED_SUBJECT
+        SECURITY_ASPECT_CHANGED__EMAIL_ADDRESS
+        SECURITY_ASPECT_CHANGED__PASSWORD
+        SECURITY_ASPECT_CHANGED__PHONE_NUMBER
+        SECURITY_ASPECT_CHANGED__USERNAME
+        EMAIL_ASSOCIATED_SUBJECT
+        EMAIL_ASSOCIATED_BODY
+        ACCOUNT_DELETED_BODY
+        ACCOUNT_DELETED_SUBJECT
+        PER_GALLERY_SORT_galleries_sort_order
+        PER_GALLERY_SORT_gallery_media_default_sort_order
+        YOUR_MESSAGE_WAS_SENT_TO_BODY
+        YOUR_MESSAGE_WAS_SENT_TO_SUBJECT
+>>>>>>> feature__quick_issues
     ')));
 
     if ($GLOBALS['DEV_MODE']) {

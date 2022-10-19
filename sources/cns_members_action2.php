@@ -752,11 +752,15 @@ function cns_get_member_fields_settings(bool $mini_mode = true, string $special_
 
         // Special admin options
         if (has_privilege(get_member(), 'member_maintenance')) {
+            $_validated = get_param_integer('validated', 0);
             if ($validated == 0) {
-                $validated = get_param_integer('validated', 0);
-                if (($validated == 1) && (addon_installed('unvalidated'))) {
+                if (($_validated == 1) && (addon_installed('unvalidated'))) {
+                    $validated = 1;
                     attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'));
                 }
+            } elseif (($validated == 1) && ($_validated == 1) && ($member_id !== null)) {
+                $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_MEMBER', 'param_a' => strval($member_id)]);
+                attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'notice');
             }
             if (get_option_with_overrides('enable_highlight_name', $adjusted_config_options) == '1') {
                 $fields->attach(form_input_tick(do_lang_tempcode('HIGHLIGHTED_NAME'), do_lang_tempcode(addon_installed('ecommerce') ? 'DESCRIPTION_HIGHLIGHTED_NAME_P' : 'DESCRIPTION_HIGHLIGHTED_NAME'), 'highlighted_name', $highlighted_name == 1));
@@ -778,6 +782,9 @@ function cns_get_member_fields_settings(bool $mini_mode = true, string $special_
                     }
                     $fields->attach(form_input_list(do_lang_tempcode('BANNED'), do_lang_tempcode('DESCRIPTION_MEMBER_BANNED'), 'is_perm_banned', $reasoned_bans_list, null, false, false));
                 }
+
+                $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '03452238c372edd0b11c11a05feb6267', 'TITLE' => do_lang_tempcode('ACTIONS')]));
+                $fields->attach(form_input_tick(do_lang_tempcode('SENSITIVE_CHANGE_ALERT'), do_lang_tempcode('DESCRIPTION_SENSITIVE_CHANGE_ALERT'), 'sensitive_change_alert', true));
             }
         }
 
@@ -980,19 +987,24 @@ function _cpfs_internal_use_only() : array
  * @param  ?ID_TEXT $password_compatibility_scheme Password compatibility scheme (null: don't change)
  * @param  ?SHORT_TEXT $salt Password salt (null: don't change)
  * @param  ?TIME $join_time When the member joined (null: don't change)
+ * @param  ?boolean $sensitive_change_alert Whether to send an alert to the member that their login information has changed, if applicable (null: use the value of $check_correctness)
  */
-function cns_edit_member(int $member_id, ?string $username = null, ?string $password = null, ?string $email_address = null, ?int $primary_group = null, ?int $dob_day = null, ?int $dob_month = null, ?int $dob_year = null, ?array $custom_fields = null, ?string $timezone = null, ?string $language = null, ?string $theme = null, ?string $title = null, ?string $photo_url = null, ?string $avatar_url = null, ?string $signature = null, ?int $preview_posts = null, ?int $reveal_age = null, ?int $views_signatures = null, ?int $auto_monitor_contrib_content = null, ?int $smart_topic_notification = null, ?int $mailing_list_style = null, ?int $auto_mark_read = null, ?int $sound_enabled = null, ?int $allow_emails = null, ?int $allow_emails_from_staff = null, ?int $highlighted_name = null, ?string $pt_allow = '*', ?string $pt_rules_text = '', ?int $validated = null, ?int $on_probation_until = null, ?string $is_perm_banned = null, bool $check_correctness = true, ?string $password_compatibility_scheme = null, ?string $salt = null, ?int $join_time = null)
+function cns_edit_member(int $member_id, ?string $username = null, ?string $password = null, ?string $email_address = null, ?int $primary_group = null, ?int $dob_day = null, ?int $dob_month = null, ?int $dob_year = null, ?array $custom_fields = null, ?string $timezone = null, ?string $language = null, ?string $theme = null, ?string $title = null, ?string $photo_url = null, ?string $avatar_url = null, ?string $signature = null, ?int $preview_posts = null, ?int $reveal_age = null, ?int $views_signatures = null, ?int $auto_monitor_contrib_content = null, ?int $smart_topic_notification = null, ?int $mailing_list_style = null, ?int $auto_mark_read = null, ?int $sound_enabled = null, ?int $allow_emails = null, ?int $allow_emails_from_staff = null, ?int $highlighted_name = null, ?string $pt_allow = '*', ?string $pt_rules_text = '', ?int $validated = null, ?int $on_probation_until = null, ?string $is_perm_banned = null, bool $check_correctness = true, ?string $password_compatibility_scheme = null, ?string $salt = null, ?int $join_time = null, ?bool $sensitive_change_alert = null)
 {
+    if ($sensitive_change_alert === null) {
+        $sensitive_change_alert = $check_correctness;
+    }
+
     require_code('type_sanitisation');
     require_code('cns_members_action');
 
     $update = [];
 
+    $old_email_address = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_email_address');
+    $old_username = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_username');
+
+    // Check for invalid or used e-mails
     if ($check_correctness) {
-        $old_email_address = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_email_address');
-
-        $email_address_required = member_field_is_required($member_id, 'email_address');
-
         if ((!cms_empty_safe($email_address)) && ($email_address != STRING_MAGIC_NULL) && (!is_valid_email_address($email_address))) {
             warn_exit(do_lang_tempcode('_INVALID_EMAIL_ADDRESS', escape_html($email_address)));
         }
@@ -1005,13 +1017,12 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
         }
     }
 
-    if ($username !== null) {
-        if ($check_correctness) {
-            cns_check_name_valid($username, $member_id, $password, $email_address, ($dob_year === null) ? null : mktime(12, 0, 0, $dob_month, $dob_day, $dob_year));
+    // Check for valid username
+    if ($username !== null && $check_correctness) {
+        cns_check_name_valid($username, $member_id, $password, $email_address, ($dob_year === null) ? null : mktime(12, 0, 0, $dob_month, $dob_day, $dob_year));
 
-            require_code('urls2');
-            suggest_new_idmoniker_for('members', 'view', strval($member_id), '', $username);
-        }
+        require_code('urls2');
+        suggest_new_idmoniker_for('members', 'view', strval($member_id), '', $username);
     }
 
     if ($password !== null) { // Password change
@@ -1022,6 +1033,7 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
             $salt = '';
         }
 
+        // Get or generate a password salt if necessary
         if (($salt !== null) || ($password_compatibility_scheme !== null)) {
             if ($salt !== null) {
                 $update['m_pass_salt'] = $salt;
@@ -1039,6 +1051,7 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
             $update['m_password_compat_scheme'] = '';
         }
 
+        // Set when the password must be changed, if applicable
         $password_change_days = get_option('password_change_days');
         if (intval($password_change_days) > 0) {
             if ($password_compatibility_scheme == '') {
@@ -1055,7 +1068,7 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
     if ($custom_fields !== null) {
         // Check constraints
         $_all_fields = cns_get_all_custom_fields_match($GLOBALS['CNS_DRIVER']->get_members_groups($member_id));
-        $all_fields = [];
+        $all_fields = []; // TODO: Bug; not getting set with anything
         $fields_to_skip = _cpfs_internal_use_only();
         foreach ($_all_fields as $field) {
             $field_id = $field['id'];
@@ -1069,6 +1082,12 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
             }
         }
 
+        $phone_number_field = find_cms_cpf_field_id('cms_mobile_phone_number');
+        if ($phone_number_field !== null) {
+            $phone_number = null;
+            $old_phone_number = get_cms_cpf('mobile_phone_number', $member_id);
+        }
+
         // Set Custom Profile Field values
         $all_fields_types = collapse_2d_complexity('id', 'cf_type', $all_fields);
         foreach ($custom_fields as $field_id => $value) {
@@ -1078,6 +1097,14 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
 
             if (in_array($field_id, $fields_to_skip)) {
                 continue; // Trying to set a field we're not allowed to (internal field)
+            }
+
+            if ($field_id === $phone_number_field) {
+                // Log phone number changes
+                if ($value != $old_phone_number) {
+                    log_it('EDIT_MEMBER_PHONE_NUMBER', strval($member_id), $old_phone_number);
+                }
+                $phone_number = $value;
             }
 
             $change = cns_set_custom_field($member_id, $field_id, $value, $all_fields_types[$field_id], true);
@@ -1091,10 +1118,10 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
     }
 
     $old_primary_group = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_primary_group');
-
     $_pt_rules_text = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_pt_rules_text');
     $_signature = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_signature');
 
+    // Begin populating what needs updated
     if ($email_address !== null) {
         $update['m_email_address'] = $email_address;
     }
@@ -1181,7 +1208,6 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
         $update['m_join_time'] = $join_time;
     }
 
-    $old_username = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_username');
     if (($username !== null) && ($old_username !== null) && ($username != $old_username) && ((!$check_correctness) || (has_actual_page_access(get_member(), 'admin_cns_members')) || (has_privilege($member_id, 'rename_self')))) { // Username change
         $update['m_username'] = $username;
 
@@ -1198,41 +1224,21 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
             }
         }
 
-        require_code('notifications');
-
-        $subject = do_lang('USERNAME_CHANGED_MAIL_SUBJECT', $username, $old_username, null, get_lang($member_id));
-        $mail = do_notification_lang('USERNAME_CHANGED_MAIL', comcode_escape(get_site_name()), comcode_escape($username), comcode_escape($old_username), get_lang($member_id));
-        dispatch_notification('cns_login_changed', null, $subject, $mail, [$member_id]);
-
-        $subject = do_lang('STAFF_USERNAME_CHANGED_MAIL_SUBJECT', $username, $old_username, null, get_site_default_lang());
-        $mail = do_notification_lang('STAFF_USERNAME_CHANGED_MAIL', comcode_escape(get_site_name()), comcode_escape($username), comcode_escape($old_username), get_site_default_lang());
-        dispatch_notification('cns_profile_high_impact_edit', null, $subject, $mail, null, get_member(), ['use_real_from' => true]);
-
+        // Update author profile
         if (addon_installed('news')) {
             $GLOBALS['SITE_DB']->query_update('news', ['author' => $username], ['author' => $old_username]);
         }
 
         update_member_username_caching($member_id, $username);
+
+        log_it('EDIT_MEMBER_USERNAME', strval($member_id), $old_username);
     }
     if ($password !== null) { // Password change
         // Security, clear out sessions from other people on this user - just in case the reset is due to suspicious activity
         $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'sessions WHERE member_id=' . strval($member_id) . ' AND ' . db_string_not_equal_to('the_session', get_session_id()));
 
-        if ($check_correctness) {
-            if (($member_id == get_member()) || (get_value('disable_password_change_notifications_for_staff') !== '1')) {
-                if (get_page_name() != 'admin_cns_members') {
-                    require_code('notifications');
-
-                    $part_b = '';
-                    if (!has_actual_page_access(get_member(), 'admin_cns_members')) {
-                        $part_b = do_lang('PASSWORD_CHANGED_MAIL_BODY_2', get_ip_address());
-                    }
-                    $mail = do_notification_lang('PASSWORD_CHANGED_MAIL_BODY', get_site_name(), $part_b, null, get_lang($member_id));
-
-                    dispatch_notification('cns_login_changed', null, do_lang('PASSWORD_CHANGED_MAIL_SUBJECT', null, null, null, get_lang($member_id)), $mail, [$member_id], null, ['priority' => 2]);
-                }
-            }
-        }
+        // Log the change
+        log_it('EDIT_MEMBER_PASSWORD', strval($member_id));
     }
     if ($validated !== null) {
         $update['m_validated_email_confirm_code'] = '';
@@ -1269,21 +1275,89 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
         log_it('EDIT_MEMBER_PROFILE', strval($member_id), $username);
     }
 
+    // Send out an account validated e-mail if the member is being marked valid, and also log it
     $old_validated = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_validated');
     if (($old_validated == 0) && ($validated == 1)) {
         require_code('mail');
         $_login_url = build_url(['page' => 'login'], get_module_zone('login'), [], false, false, true);
         $login_url = $_login_url->evaluate();
-        $_username = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_username');
+
         // NB: Same mail also sent in settings.php (quick-validate feature)
         $vm_subject = do_lang('VALIDATED_MEMBER_SUBJECT', get_site_name(), null, get_lang($member_id));
-        $vm_body = do_lang('MEMBER_VALIDATED', get_site_name(), $_username, $login_url, get_lang($member_id));
-        dispatch_mail($vm_subject, $vm_body, [$email_address], $username, '', '', ['require_recipient_valid_since' => $join_time]);
+        $vm_body = do_lang('MEMBER_VALIDATED', get_site_name(), $old_username, $login_url, get_lang($member_id));
+
+        // Necessary to use dispatch_email in case the member was locked out of their account
+        dispatch_mail($vm_subject, $vm_body, [$email_address], $old_username, '', '', ['require_recipient_valid_since' => $join_time]);
+
+        $current_username = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
+        log_it('VALIDATE_MEMBER', strval($member_id), $current_username);
     }
 
-    $old_email_address = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_email_address');
+    // Update invites, and log, when e-mail is changed
     if ($old_email_address != $email_address) {
         $GLOBALS['FORUM_DB']->query_update('f_invites', ['i_email_address' => $old_email_address], ['i_email_address' => $email_address]);
+        log_it('EDIT_MEMBER_EMAIL', strval($member_id), $old_email_address);
+    }
+
+    // E-mail and notify to inform of sensitive changes (username, password, e-mail, or phone number)
+    $username_changed = ($username !== null) && ($username !== $old_username);
+    $email_address_changed = ($email_address !== null) && ($email_address !== $old_email_address);
+    $password_changed = ($password !== null);
+    $phone_number_changed = ($custom_fields !== null) && ($phone_number_field !== null) && ($phone_number !== null) && ($old_phone_number !== $phone_number);
+    if (($username_changed || $email_address_changed || $password_changed || $phone_number_changed)) {
+        $current_username = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
+
+        $_sensitive_changes = [];
+        if ($username_changed) {
+            $_sensitive_changes[] = do_lang('SECURITY_ASPECT_CHANGED__USERNAME', comcode_escape($old_username), comcode_escape($username));
+        }
+        if ($email_address_changed) {
+            require_code('crypt');
+
+            // New e-mail should be masked in case the member's original e-mail account is compromised so hackers do not target / spam their new address
+            $masked_email_address = mask_email_address($email_address);
+            $_sensitive_changes[] = do_lang('SECURITY_ASPECT_CHANGED__EMAIL_ADDRESS', comcode_escape($old_email_address), comcode_escape($masked_email_address));
+        }
+        if ($password_changed) {
+            $_sensitive_changes[] = do_lang('SECURITY_ASPECT_CHANGED__PASSWORD');
+        }
+        if ($phone_number_changed) {
+            require_code('crypt');
+
+            // Mask old and new phone number so hackers of compromised accounts cannot spam members' phones
+            $masked_old_phone_number = mask_phone_number($old_phone_number);
+            $masked_phone_number = mask_phone_number($phone_number);
+            $_sensitive_changes[] = do_lang('SECURITY_ASPECT_CHANGED__PHONE_NUMBER', comcode_escape($masked_old_phone_number), comcode_escape($masked_phone_number));
+        }
+        $sensitive_changes = implode("\n", $_sensitive_changes);
+
+        $part_b = '';
+        if (!has_actual_page_access(get_member(), 'admin_cns_members')) { // If change not by an admin
+            $part_b = do_lang('SECURITY_ASPECT_CHANGED_BODY_2', get_ip_address());
+        }
+
+        // Notify member e-mail addresses if specified
+        if ((($old_email_address != '') || ($email_address !== null)) && ($sensitive_change_alert)) {
+            require_code('mail');
+
+            if ($old_email_address != '') { // E-mail of security aspects that were changed to the e-mail on file (old)
+                $cm_subject = do_lang('SECURITY_ASPECT_CHANGED_SUBJECT', comcode_escape($old_username), comcode_escape($current_username), [get_site_name()]);
+                $cm_body = do_lang('SECURITY_ASPECT_CHANGED_BODY', comcode_escape($old_username), comcode_escape($current_username), [get_site_name(), $sensitive_changes, $part_b]);
+                dispatch_mail($cm_subject, $cm_body, [$old_email_address], $old_username, '', '', ['require_recipient_valid_since' => $join_time]);
+            }
+            if (($email_address !== null) && ($email_address != $old_email_address)) { // When a new e-mail is specified, also e-mail the new address a vague message about their e-mail being associated with an account
+                $cm_subject = do_lang('EMAIL_ASSOCIATED_SUBJECT', comcode_escape($old_username), comcode_escape($current_username), [get_site_name()]);
+                $cm_body = do_lang('EMAIL_ASSOCIATED_BODY', comcode_escape($old_username), comcode_escape($current_username), [get_site_name(), comcode_escape($email_address)]);
+                dispatch_mail($cm_subject, $cm_body, [$email_address], $old_username, '', '', ['require_recipient_valid_since' => $join_time]);
+            }
+        }
+
+        // Notify staff
+        require_code('notifications');
+
+        $subject = do_lang('STAFF_SECURITY_ASPECT_CHANGED_SUBJECT', comcode_escape($old_username), comcode_escape($current_username), [get_site_name()], get_site_default_lang());
+        $mail = do_notification_lang('STAFF_SECURITY_ASPECT_CHANGED_BODY', comcode_escape($old_username), comcode_escape($current_username), [comcode_escape(get_site_name()), comcode_escape($sensitive_changes), comcode_escape($part_b)], get_site_default_lang());
+        dispatch_notification('cns_profile_high_impact_edit', null, $subject, $mail, null, get_member(), ['use_real_from' => true]);
     }
 
     delete_value('cns_newest_member_id');
@@ -1327,6 +1401,8 @@ function cns_delete_member(int $member_id)
 
     $username = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_username');
     $signature = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_signature');
+    $email_address = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_email_address');
+
     require_code('attachments2');
     require_code('attachments3');
     delete_lang_comcode_attachments($signature, 'signature', strval($member_id), $GLOBALS['FORUM_DB']);
@@ -1385,6 +1461,21 @@ function cns_delete_member(int $member_id)
     delete_value('cns_newest_member_username');
 
     log_it('DELETE_MEMBER', strval($member_id), $username);
+
+    // E-mail the member to inform them their account was deleted
+    if ($email_address != '') {
+        $current_username = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
+
+        $part_b = '';
+        if (!has_actual_page_access(get_member(), 'admin_cns_members')) { // If change not by an admin
+            $part_b = do_lang('SECURITY_ASPECT_CHANGED_BODY_2', get_ip_address());
+        }
+
+        require_code('mail');
+        $dm_subject = do_lang('ACCOUNT_DELETED_SUBJECT', comcode_escape($username), comcode_escape($current_username), [get_site_name()]);
+        $dm_body = do_lang('ACCOUNT_DELETED_BODY', comcode_escape($username), comcode_escape($current_username), [get_site_name(), comcode_escape($email_address), $part_b]);
+        dispatch_mail($dm_subject, $dm_body, [$email_address], $username, '', '');
+    }
 
     if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
         require_code('resource_fs');

@@ -306,11 +306,15 @@ class Module_cms_quiz extends Standard_crud_module
         $fields->attach(form_input_huge(do_lang_tempcode('QUESTIONS'), do_lang_tempcode('IMPORT_QUESTIONS_TEXT'), 'text', $text, true, null, 20, '', true));
         $fields->attach(form_input_text_comcode(do_lang_tempcode('QUIZ_START_TEXT'), do_lang_tempcode('DESCRIPTION_QUIZ_START_TEXT'), 'start_text', $start_text, false));
         $fields->attach(form_input_text_comcode(do_lang_tempcode('QUIZ_END_TEXT'), do_lang_tempcode('DESCRIPTION_QUIZ_END_TEXT'), 'end_text', $end_text, false));
+        $_validated = get_param_integer('validated', 0);
         if ($validated == 0) {
-            $validated = get_param_integer('validated', 0);
-            if (($validated == 1) && (addon_installed('unvalidated'))) {
+            if (($_validated == 1) && (addon_installed('unvalidated'))) {
+                $validated = 1;
                 attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'));
             }
+        } elseif (($validated == 1) && ($_validated == 1) && ($id !== null)) {
+            $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_QUIZ', 'param_a' => strval($id)]);
+            attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'notice');
         }
         if (addon_installed('unvalidated')) {
             $fields->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode('DESCRIPTION_VALIDATED_SIMPLE'), 'validated', $validated == 1));

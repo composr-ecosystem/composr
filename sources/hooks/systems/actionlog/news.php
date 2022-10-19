@@ -92,6 +92,17 @@ class Hook_actionlog_news extends Hook_actionlog
                     'ADD_NEWS' => '_SEARCH:cms_news:add:cat={CAT,OPTIONAL}',
                 ],
             ],
+            'VALIDATE_NEWS' => [
+                'flags' => ACTIONLOG_FLAGS_NONE,
+                'cma_hook' => 'news',
+                'identifier_index' => 0,
+                'written_context_index' => 1,
+                'followup_page_links' => [
+                    'VIEW' => '_SEARCH:news:view:{ID}',
+                    'EDIT_THIS_NEWS' => '_SEARCH:cms_news:_edit:{ID}',
+                    'ADD_NEWS' => '_SEARCH:cms_news:add:cat={CAT,OPTIONAL}',
+                ],
+            ],
             'DELETE_NEWS' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'news',

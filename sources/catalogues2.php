@@ -1269,6 +1269,8 @@ function actual_edit_catalogue_entry(int $id, int $category_id, int $validated, 
     $just_validated = (!$was_validated) && ($validated == 1);
     if ($just_validated) {
         send_content_validated_notification('catalogue_entry', strval($id));
+        $username = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
+        log_it('VALIDATE_CATALOGUE_ENTRY', strval($id), $username);
     }
 
     $update_map = [

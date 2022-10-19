@@ -208,3 +208,69 @@ function obfuscate_email_address(string $email) : string
 
     return obfuscate_entities($email);
 }
+
+/**
+ * Replace most characters in an e-mail with asterisks.
+ * This will replace all characters except the first and last before the @, the top-level domain, and the first and last character after @ before the top-level domain.
+ *
+ * @param  SHORT_TEXT $email_address The e-mail address to mask
+ * @return SHORT_TEXT The masked e-mail address
+ */
+function mask_email_address(string $email_address) : string
+{
+    // Get our e-mail parts
+    $email_parts = explode('@', $email_address);
+    if (!array_key_exists(1, $email_parts)) { // E-mail does not have an @ symbol; this is invalid.
+        return $email_address;
+    }
+    $_domain_parts = explode('.', $email_parts[1]);
+    if (!array_key_exists(1, $_domain_parts)) { // E-mail domain does not have a top-level (.*); this is invalid.
+        return $email_address;
+    }
+
+    // Email domains might have multiple sub-domains. We only want to expose the top domain; mask everything else.
+    $domain_top = $_domain_parts[count($_domain_parts) - 1];
+    $domain_sub = '';
+    foreach ($_domain_parts as $i => $part) {
+        if ($i > 0) {
+            $domain_sub .= '.';
+        }
+        $domain_sub .= $part;
+    }
+
+    // Do the actual masking
+    $email_name = substr($email_parts[0], 0, 1) . str_repeat('*', (strlen($email_parts[0]) - 2)) . substr($email_parts[0], -1);
+    $email_domain = substr($domain_sub, 0, 1) . str_repeat('*', (strlen($domain_sub) - 2)) . substr($domain_sub, -1);
+
+    return $email_name . '@' . $email_domain . '.' . $domain_top;
+}
+
+/**
+ * Replace most characters in a phone number with asterisks.
+ * Since phone numbers can be saved in a wide variety of formats depending on the country, it can be difficult to mask phone numbers. Therefore, This function will mask (replace with asterisks) all numbers except the last 3 digits.
+ *
+ * @param  SHORT_TEXT $phone_number The phone number to mask
+ * @return SHORT_TEXT The masked phone number
+ */
+function mask_phone_number(string $phone_number) : string
+{
+    $number_parts = str_split($phone_number);
+    $ret = '';
+    $exposed_numbers = 0;
+
+    // Go backwards since we're exposing the last 3 digits and any non-numeric character
+    for ($i = (count($number_parts) - 1); $i >= 0; $i--) {
+        if (is_numeric($number_parts[$i])) {
+            if ($exposed_numbers < 3) {
+                $ret = $number_parts[$i] . $ret;
+                $exposed_numbers++;
+            } else {
+                $ret = '*' . $ret;
+            }
+        } else { // Do not mask non-numeric characters
+            $ret = $number_parts[$i] . $ret;
+        }
+    }
+
+    return $ret;
+}

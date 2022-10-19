@@ -77,10 +77,6 @@ class Hook_notification_cns extends Hook_Notification
      */
     public function allowed_settings(string $notification_code) : int
     {
-        if ($notification_code == 'cns_login_changed') {
-            // Internal methods (web notification & PT) are pointless since this is a change in login credentials
-            return A__ALL & ~A_INSTANT_PT & ~A_WEB_NOTIFICATION;
-        }
         return A__ALL;
     }
 
@@ -95,9 +91,6 @@ class Hook_notification_cns extends Hook_Notification
     {
         if ($notification_code == 'cns_birthday') {
             return A_NA;
-        }
-        if ($notification_code == 'cns_login_changed') {
-            return A__ALL & ~A_INSTANT_PT & ~A_WEB_NOTIFICATION;
         }
         if ($notification_code == 'cns_member_joined_group') {
             return A_NA;
@@ -126,7 +119,6 @@ class Hook_notification_cns extends Hook_Notification
         }
         $list['cns_group_join_request'] = [do_lang('USERGROUPS'), do_lang('cns:NOTIFICATION_TYPE_cns_group_join_request')];
         $list['cns_group_status'] = [do_lang('USERGROUPS'), do_lang('cns:NOTIFICATION_TYPE_cns_group_status')];
-        $list['cns_login_changed'] = [do_lang('MEMBERS'), do_lang('cns:NOTIFICATION_TYPE_cns_login_changed')];
         $list['cns_member_joined_group'] = [do_lang('USERGROUPS'), do_lang('cns:NOTIFICATION_TYPE_cns_member_joined_group')];
         $list['cns_new_member'] = [do_lang('MEMBERS'), do_lang('cns:NOTIFICATION_TYPE_cns_new_member')];
         return $list;

@@ -787,7 +787,7 @@ function handle_abstract_sorting(string $sort, array $info, ?array $allowed_sort
             $allowed_sorts[] = 'prominence';
         }
 
-        if ((isset($info['title_field'])) && (!is_array($info)) && (strpos($info['title_field'], ':') === false)) {
+        if ((isset($info['title_field'])) && (!is_array($info['title_field'])) && (strpos($info['title_field'], ':') === false)) {
             $allowed_sorts[] = 'title';
         }
 

@@ -203,11 +203,15 @@ function get_banner_form_fields(bool $simplified = false, string $name = '', str
     }
 
     if (has_privilege(get_member(), 'bypass_validation_midrange_content', 'cms_banners')) {
+        $_validated = get_param_integer('validated', 0);
         if ($validated == 0) {
-            $validated = get_param_integer('validated', 0);
-            if (($validated == 1) && (addon_installed('unvalidated'))) {
+            if (($_validated == 1) && (addon_installed('unvalidated'))) {
+                $validated = 1;
                 attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'));
             }
+        } elseif (($validated == 1) && ($_validated == 1) && ($name !== null)) {
+            $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_DOWNLOAD', 'param_a' => $name]);
+            attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'notice');
         }
         if (addon_installed('unvalidated')) {
             $fields->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'banner'), 'validated', $validated == 1));
@@ -554,6 +558,8 @@ function edit_banner(string $old_name, string $name, string $imgurl, string $tit
     $just_validated = (!content_validated('banner', $name)) && ($validated == 1);
     if ($just_validated) {
         send_content_validated_notification('banner', $name);
+        $username = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
+        log_it('VALIDATE_BANNER', strval($name), $username);
     }
 
     $update_map = [

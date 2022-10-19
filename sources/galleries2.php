@@ -951,6 +951,8 @@ function edit_image(int $id, string $title, string $cat, string $description, st
     $just_validated = (!content_validated('image', strval($id))) && ($validated == 1);
     if ($just_validated) {
         send_content_validated_notification('image', strval($id));
+        $username = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
+        log_it('VALIDATE_IMAGE', strval($id), $username);
     }
 
     $update_map = [
@@ -1264,6 +1266,8 @@ function edit_video(int $id, string $title, string $cat, string $description, st
     $just_validated = (!content_validated('video', strval($id))) && ($validated == 1);
     if ($just_validated) {
         send_content_validated_notification('video', strval($id));
+        $username = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
+        log_it('VALIDATE_VIDEO', strval($id), $username);
     }
 
     $update_map = [
@@ -1493,6 +1497,8 @@ function _watermark_corner($source, string $watermark_url, int $x, int $y)
  * @param  URLPATH $watermark_top_right Watermark (blank: none)
  * @param  URLPATH $watermark_bottom_left Watermark (blank: none)
  * @param  URLPATH $watermark_bottom_right Watermark (blank: none)
+ * @param  SHORT_TEXT $gallery_sort The sub-gallery sort order (blank: site default)
+ * @param  SHORT_TEXT $media_sort The sort order of media in the gallery (blank: site default)
  * @param  BINARY $allow_rating Whether rating are allowed
  * @param  SHORT_INTEGER $allow_comments Whether comments are allowed
  * @param  boolean $skip_exists_check Whether to skip the check for whether the gallery exists (useful for importers)
@@ -1503,7 +1509,7 @@ function _watermark_corner($source, string $watermark_url, int $x, int $y)
  * @param  boolean $uniqify Whether to force the name as unique, if there's a conflict
  * @return ID_TEXT The name
  */
-function add_gallery(string $name, string $fullname, string $description, string $notes, string $parent_id, int $accept_images = 1, int $accept_videos = 1, int $is_member_synched = 0, ?string $layout_mode = null, string $rep_image = '', string $watermark_top_left = '', string $watermark_top_right = '', string $watermark_bottom_left = '', string $watermark_bottom_right = '', int $allow_rating = 1, int $allow_comments = 1, bool $skip_exists_check = false, ?int $add_date = null, ?int $g_owner = null, ?string $meta_keywords = '', ?string $meta_description = '', bool $uniqify = false) : string
+function add_gallery(string $name, string $fullname, string $description, string $notes, string $parent_id, int $accept_images = 1, int $accept_videos = 1, int $is_member_synched = 0, ?string $layout_mode = null, string $rep_image = '', string $watermark_top_left = '', string $watermark_top_right = '', string $watermark_bottom_left = '', string $watermark_bottom_right = '', string $gallery_sort = '', string $media_sort = '', int $allow_rating = 1, int $allow_comments = 1, bool $skip_exists_check = false, ?int $add_date = null, ?int $g_owner = null, ?string $meta_keywords = '', ?string $meta_description = '', bool $uniqify = false) : string
 {
     require_code('galleries');
 
@@ -1549,6 +1555,8 @@ function add_gallery(string $name, string $fullname, string $description, string
         'allow_comments' => $allow_comments,
         'g_owner' => $g_owner,
         'gallery_views' => 0,
+        'gallery_sort' => $gallery_sort,
+        'media_sort' => $media_sort,
     ];
     $map += insert_lang_comcode('the_description', $description, 2);
     $map += insert_lang_comcode('fullname', $fullname, 1);
@@ -1606,6 +1614,8 @@ function add_gallery(string $name, string $fullname, string $description, string
  * @param  ?URLPATH $watermark_top_right Watermark (null: none)
  * @param  ?URLPATH $watermark_bottom_left Watermark (null: none)
  * @param  ?URLPATH $watermark_bottom_right Watermark (null: none)
+ * @param  ?SHORT_TEXT $gallery_sort The sort order for sub-galleries (null: do not edit)
+ * @param  ?SHORT_TEXT $media_sort The sort order for media within the gallery (null: do not edit)
  * @param  ?SHORT_TEXT $meta_keywords Meta keywords for this resource (null: do not edit)
  * @param  ?LONG_TEXT $meta_description Meta description for this resource (null: do not edit)
  * @param  BINARY $allow_rating Whether rating are allowed
@@ -1616,7 +1626,7 @@ function add_gallery(string $name, string $fullname, string $description, string
  * @param  boolean $uniqify Whether to force the name as unique, if there's a conflict
  * @return ID_TEXT The name
  */
-function edit_gallery(string $old_name, string $name, string $fullname, string $description, string $notes, ?string $parent_id = null, int $accept_images = 1, int $accept_videos = 1, int $is_member_synched = 0, ?string $layout_mode = null, ?string $rep_image = null, ?string $watermark_top_left = null, ?string $watermark_top_right = null, ?string $watermark_bottom_left = null, ?string $watermark_bottom_right = null, ?string $meta_keywords = null, ?string $meta_description = null, int $allow_rating = 1, int $allow_comments = 1, ?int $g_owner = null, ?int $add_time = null, bool $null_is_literal = false, bool $uniqify = false) : string
+function edit_gallery(string $old_name, string $name, string $fullname, string $description, string $notes, ?string $parent_id = null, int $accept_images = 1, int $accept_videos = 1, int $is_member_synched = 0, ?string $layout_mode = null, ?string $rep_image = null, ?string $watermark_top_left = null, ?string $watermark_top_right = null, ?string $watermark_bottom_left = null, ?string $watermark_bottom_right = null, ?string $gallery_sort = null, ?string $media_sort = null, ?string $meta_keywords = null, ?string $meta_description = null, int $allow_rating = 1, int $allow_comments = 1, ?int $g_owner = null, ?int $add_time = null, bool $null_is_literal = false, bool $uniqify = false) : string
 {
     $rows = $GLOBALS['SITE_DB']->query_select('galleries', ['*'], ['name' => $name], '', 1);
     if (!array_key_exists(0, $rows)) {
@@ -1733,6 +1743,13 @@ function edit_gallery(string $old_name, string $name, string $fullname, string $
     }
     if ($g_owner !== null) {
         $update_map['g_owner'] = $g_owner;
+    }
+
+    if ($gallery_sort !== null) {
+        $update_map['gallery_sort'] = $gallery_sort;
+    }
+    if ($media_sort !== null) {
+        $update_map['media_sort'] = $media_sort;
     }
 
     $GLOBALS['SITE_DB']->query_update('galleries', $update_map, ['name' => $old_name], '', 1);

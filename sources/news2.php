@@ -495,6 +495,8 @@ function edit_news(int $id, string $title, string $news, string $author, int $va
     $just_validated = (!content_validated('news', strval($id))) && ($validated == 1);
     if ($just_validated) {
         send_content_validated_notification('news', strval($id));
+        $username = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
+        log_it('VALIDATE_NEWS', strval($id), $username);
     }
 
     $update_map = [
