@@ -1124,7 +1124,7 @@ function guid_scan($path)
         'errors_missing' => $GUID_ERRORS_MISSING,
         'errors_duplicate' => $GUID_ERRORS_DUPLICATE,
         'new_contents' => $out,
-        'changes' => !empty($GUID_ERRORS),
+        'changes' => !empty($GUID_ERRORS_MISSING) || !empty($GUID_ERRORS_DUPLICATE),
     ];
 }
 

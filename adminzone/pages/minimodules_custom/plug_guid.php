@@ -82,5 +82,6 @@ echo 'Finished!';
 
 // Re-save if we were not limiting scanning to a particular file
 if ($limit_file == '') {
+    global $GUID_LANDSCAPE;
     cms_file_put_contents_safe(get_file_base() . '/data/guids.bin', serialize($GUID_LANDSCAPE), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
 }
