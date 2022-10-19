@@ -66,7 +66,10 @@ foreach ($files as $filename) {
 
     $TO_USE = $COMPOSR_PATH . '/' . $filename;
 
-    if ($filename == 'sources/minikernel.php') {
+    if (in_array($filename, [
+        'install.php',
+        'sources/minikernel.php',
+    ])) {
         continue;
     }
     //echo 'SIGNATURES-DOING ' . $_filename . cnl();
