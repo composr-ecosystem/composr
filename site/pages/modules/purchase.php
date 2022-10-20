@@ -655,6 +655,10 @@ class Module_purchase
                     $num_products_in_category = 0;
                     $num_products_in_category_available = 0;
                     foreach ($_products as $_type_code => $_details) {
+                        if (!is_string($_type_code)) {
+                            $_type_code = strval($_type_code);
+                        }
+
                         if (preg_replace('#^Hook_ecommerce_#', '', get_class($_details['product_object'])) == $this_category) {
                             if ($_details['price'] !== null) {
                                 $supports_money = true;

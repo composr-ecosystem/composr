@@ -1646,7 +1646,7 @@ function handle_confirmed_transaction(?string $trans_expecting_id, ?string $txn_
                 return null;
             }
             // TODO: Bug: Type errors (passing in numbers; $tax and $expected_tax could be null)
-            fatal_ipn_exit(do_lang('PURCHASE_WRONG_PRICE', $item_name, $amount + $tax, $expected_amount + $expected_tax));
+            fatal_ipn_exit(do_lang('PURCHASE_WRONG_PRICE', $item_name, float_format($amount + $tax, 2), float_format($expected_amount + $expected_tax)));
         }
 
         if (($currency != $expected_currency) && ($expected_amount + $expected_tax != 0.00)) {
