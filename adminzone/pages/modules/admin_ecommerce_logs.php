@@ -809,6 +809,7 @@ class Module_admin_ecommerce_logs
         require_code('form_templates');
         require_code('templates_results_table');
         require_code('templates_tooltip');
+        require_code('templates_map_table');
 
         $result_entries = new Tempcode();
         $header_row = results_header_row([
@@ -838,7 +839,7 @@ class Module_admin_ecommerce_logs
 
             list($details, $product_object) = find_product_details($transaction_row['t_type_code']);
             if ($details !== null) {
-                $item_name = $details['item_name'];
+                $item_name = make_string_tempcode(escape_html($details['item_name']));
             } else {
                 $item_name = do_lang_tempcode('UNKNOWN_EM');
             }
@@ -859,20 +860,33 @@ class Module_admin_ecommerce_logs
             $tax_invoice_url = build_url(['page' => '_SELF', 'type' => 'tax_invoice', 'id' => $transaction_row['id'], 'wide_high' => 1], '_SELF');
             $tax_linker = hyperlink($tax_invoice_url, $tax, false, false, '', null, null, null, '_top');
 
-            $transaction_tooltip = do_template('TRANSACTION_TOOLTIP', [
-                'TXN_ID' => $transaction_row['id'],
-                'PARENT_ID' => $transaction_row['t_parent_txn_id'],
-                'REASON' => $transaction_row['t_reason'],
-                'PENDING_REASON' => $transaction_row['t_pending_reason'],
-                'MEMO' => $transaction_row['t_memo'],
-            ]);
+            $transaction_tooltip_map = [];
+            if ($transaction_row['t_parent_txn_id'] != '') {
+                $transaction_tooltip_map['PARENT_TRANSACTION'] = $transaction_row['t_parent_txn_id'];
+            }
+            if ($transaction_row['t_reason'] != '') {
+                $transaction_tooltip_map['REASON'] = $transaction_row['t_reason'];
+            }
+            if ($transaction_row['t_pending_reason'] != '') {
+                $transaction_tooltip_map['REASON_FOR_PENDING'] = $transaction_row['t_pending_reason'];
+            }
+            if ($transaction_row['t_memo'] != '') {
+                $transaction_tooltip_map['NOTES'] = $transaction_row['t_memo'];
+            }
+            $_transaction_fields = new Tempcode();
+            foreach ($transaction_tooltip_map as $key => $val) {
+                if ($val != '') {
+                    $_transaction_fields->attach(map_table_field(do_lang_tempcode($key), $val));
+                }
+            }
+            $transaction_table = do_template('MAP_TABLE', ['FIELDS' => $_transaction_fields]);
 
             $result_entries->attach(results_entry([
                 escape_html($date),
-                $transaction_tooltip,
+                ((count($transaction_tooltip_map) > 0) ? tooltip($transaction_row['id'], $transaction_table) : $transaction_row['id']),
                 $customer_link,
                 $member_link,
-                tooltip(escape_html($item_name), escape_html($transaction_row['t_type_code'])),
+                tooltip($item_name, escape_html($transaction_row['t_type_code'])),
                 escape_html($transaction_row['t_purchase_id']),
                 ecommerce_get_currency_symbol($transaction_row['t_currency']) . escape_html(float_format($transaction_row['t_amount'])),
                 $tax_linker,
@@ -1275,7 +1289,7 @@ class Module_admin_ecommerce_logs
             if ($member_id !== null) {
                 $where['s_member_id'] = $member_id;
             } else {
-                warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($filter_username)));
+                warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', $filter_username));
             }
         }
         if ($_filter_state != '') {

@@ -404,7 +404,6 @@ class Hook_addon_registry_ecommerce
             'templates/ECOM_SALES_LOG_SCREEN.tpl' => 'administrative__ecom_sales_log_screen',
             'templates/ECOM_PRODUCTS_PRICES_FORM_WRAP.tpl' => 'administrative__ecom_products_price_screen',
             'templates/ECOM_PRODUCT_PRICE_SCREEN.tpl' => 'administrative__ecom_products_price_screen',
-            'templates/TRANSACTION_TOOLTIP.tpl' => 'transaction_tooltip',
             'templates/CNS_MEMBER_PROFILE_ECOMMERCE_LOGS.tpl' => 'administrative__cns_member_profile_ecommerce_logs_screen',
             'text/ECOM_PRODUCT_FORWARDER_MAIL.txt' => 'ecom_product_forwarder_mail',
             'text/ECOM_PRODUCT_POP3_MAIL.txt' => 'ecom_product_pop3_mail',
@@ -1636,24 +1635,6 @@ class Hook_addon_registry_ecommerce
             'TOTAL_TAX' => placeholder_number(),
             'TOTAL_AMOUNT' => placeholder_number(),
             'PURCHASE_ID' => placeholder_codename(),
-        ]), null, '', true);
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return Tempcode Preview
-     */
-    public function tpl_preview__transaction_tooltip() : object
-    {
-        return lorem_globalise(do_lorem_template('TRANSACTION_TOOLTIP', [
-            'TXN_ID' => placeholder_number(),
-            'PARENT_ID' => placeholder_number(),
-            'REASON' => lorem_sentence(),
-            'PENDING_REASON' => lorem_sentence(),
-            'MEMO' => lorem_sentence(),
         ]), null, '', true);
     }
 }

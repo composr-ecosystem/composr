@@ -868,7 +868,7 @@ We have summarised the PCI compliance rules below in a way streamlined toward Co
  8_key="Shopping cart"                 8_value="System for collecting and paying for one of more items from a shopping catalogue; typically these will be physical items that are shipped together"
  9_key="Purchasing module"             9_value="The [tt]purchase[/tt] module where one-off purchases are made"
  10_key="Transaction"                  10_value="A low-level record that an action took place (e.g. purchase, payment, or subscription change) in the eCommerce system"
- 11_key="Sale"									11_value="The act of something in the store being sold / purchased"
+ 11_key="Sale"                         11_value="The act of something in the store being sold / purchased"
  12_key="Subscription"                 12_value="Something purchased that has recurring payments for as long as the subscription is open"
  13_key="Invoice"                      13_value="An invoice created for a website member to pay"
  14_key="Unit price"                   14_value="The price of an item (gross, i.e. pre-tax), before quantity multiplication is applied"
@@ -885,7 +885,9 @@ We have summarised the PCI compliance rules below in a way streamlined toward Co
  25_key="Tax derivation"               25_value="The Composr term for tracking what exact taxes are levied for a transaction"
  26_key="EU digital goods taxation"    26_value="A tax system in Europe that applies to digital sales, taxes are paid to the buyer's home country using that country's own tax rate"
  27_key="Tax invoice"                  27_value="A formal (legally-compliant) invoice showing exactly what was paid for a transaction, broken down by line-item, with individual taxation rates shown for each line-item"
- 28_key="TaxCloud"                     28_value="A third-party web service for handling the complexities of USA taxation"
+ 28_key="Customer"                     28_value="The member who purchased the product"
+ 29_key="Related member"               29_value="The member to whom a product applies (e.g. for a usergroup subscription, the member who was subscribed to the usergroup)"
+ 30_key="TaxCloud"                     30_value="A third-party web service for handling the complexities of USA taxation"
 ]Concepts[/concepts]
 
 [title="2"]See also[/title]

@@ -376,7 +376,7 @@ class Hook_ecommerce_usergroup
     {
         $db = $GLOBALS[(get_forum_type() == 'cns') ? 'FORUM_DB' : 'SITE_DB'];
 
-        $usergroup_subscription_id = intval(substr($type_code, 10));
+        $usergroup_subscription_id = intval(substr($type_code, 9));
         $rows = $db->query_select('f_usergroup_subs', ['*'], ['id' => $usergroup_subscription_id], '', 1);
         if (array_key_exists(0, $rows)) {
             $myrow = $rows[0];
