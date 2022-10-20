@@ -184,9 +184,6 @@ class Hook_addon_registry_ecommerce
             'themes/default/templates/ECOM_PURCHASE_STAGE_TRANSACT.tpl',
             'themes/default/templates/ECOM_PURCHASE_STAGE_PAY.tpl',
             'themes/default/templates/ECOM_TRANSACTION_LOGS_MANUAL_TRIGGER.tpl',
-            'themes/default/templates/ECOM_TRANSACTION_LOGS_SCREEN.tpl',
-            'themes/default/templates/ECOM_VIEW_MANUAL_SUBSCRIPTIONS_LINE.tpl',
-            'themes/default/templates/ECOM_VIEW_MANUAL_SUBSCRIPTIONS_SCREEN.tpl',
             'themes/default/templates/ECOM_MEMBER_SUBSCRIPTION_STATUS.tpl',
             'themes/default/templates/CNS_MEMBER_PROFILE_ECOMMERCE_LOGS.tpl',
             'themes/default/templates/CURRENCY.tpl',
@@ -322,6 +319,8 @@ class Hook_addon_registry_ecommerce
             'sources/hooks/systems/config/download_cat_buy_max_emailed_count.php',
             'uploads/ecommerce/.htaccess',
             'uploads/ecommerce/index.html',
+            'sources/hooks/systems/tasks/export_ecom_sales.php',
+            'sources/hooks/systems/tasks/export_ecom_subscriptions.php',
 
             'themes/default/templates/ECOM_TRANSACTION_BUTTON_VIA_PAYPAL.tpl',
             'themes/default/templates/ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_PAYPAL.tpl',
@@ -370,7 +369,6 @@ class Hook_addon_registry_ecommerce
             'templates/CURRENCY.tpl' => 'currency',
             'templates/ECOM_OUTSTANDING_INVOICES_SCREEN.tpl' => 'administrative__ecom_outstanding_invoices_screen',
             'templates/ECOM_TRANSACTION_LOGS_MANUAL_TRIGGER.tpl' => 'ecom_subscriptions_screen',
-            'templates/ECOM_TRANSACTION_LOGS_SCREEN.tpl' => 'administrative__ecom_transaction_logs_screen',
             'templates/ECOM_CASH_FLOW_SCREEN.tpl' => 'administrative__ecom_cash_flow_screen',
             'templates/ECOM_TAX_INVOICE.tpl' => 'ecom_tax_invoice_screen',
             'templates/ECOM_PURCHASE_SCREEN.tpl' => 'purchase_screen',
@@ -402,8 +400,6 @@ class Hook_addon_registry_ecommerce
             'templates/ECOM_PURCHASE_STAGE_FINISH.tpl' => 'purchase_stage_finish',
             'templates/ECOM_INVOICES_SCREEN.tpl' => 'ecom_invoices_screen',
             'templates/ECOM_SUBSCRIPTIONS_SCREEN.tpl' => 'ecom_subscriptions_screen',
-            'templates/ECOM_VIEW_MANUAL_SUBSCRIPTIONS_LINE.tpl' => 'ecom_view_manual_transactions_screen',
-            'templates/ECOM_VIEW_MANUAL_SUBSCRIPTIONS_SCREEN.tpl' => 'ecom_view_manual_transactions_screen',
             'templates/ECOM_MEMBER_SUBSCRIPTION_STATUS.tpl' => 'member_subscription_status_screen',
             'templates/ECOM_SALES_LOG_SCREEN.tpl' => 'administrative__ecom_sales_log_screen',
             'templates/ECOM_PRODUCTS_PRICES_FORM_WRAP.tpl' => 'administrative__ecom_products_price_screen',
@@ -1326,30 +1322,6 @@ class Hook_addon_registry_ecommerce
      *
      * @return Tempcode Preview
      */
-    public function tpl_preview__ecom_view_manual_transactions_screen() : object
-    {
-        $lines = do_lorem_template('ECOM_VIEW_MANUAL_SUBSCRIPTIONS_LINE', [
-            'ID' => placeholder_numeric_id(),
-            'SUBSCRIPTION' => lorem_title(),
-            'ROWSPAN' => '1',
-            'MEMBER' => placeholder_link(),
-            'EXPIRY' => lorem_title(),
-            'CANCEL_URL' => placeholder_url(),
-        ]);
-
-        return lorem_globalise(do_lorem_template('ECOM_VIEW_MANUAL_SUBSCRIPTIONS_SCREEN', [
-            'TITLE' => lorem_title(),
-            'CONTENT' => $lines,
-        ]), null, '', true);
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return Tempcode Preview
-     */
     public function tpl_preview__administrative__ecom_sales_log_screen() : object
     {
         $cells = new Tempcode();
@@ -1370,10 +1342,68 @@ class Hook_addon_registry_ecommerce
 
         $content = do_lorem_template('COLUMNED_TABLE', ['HEADER_ROW' => $header_row, 'ROWS' => $out, 'NONRESPONSIVE' => false]);
 
+        require_code('form_templates');
+
+        push_field_encapsulation(FIELD_ENCAPSULATION_RAW);
+
+        $filters_row_a = [
+            [
+                'PARAM' => 'placeholder_a',
+                'LABEL' => lorem_word(),
+                'FIELD' => do_lorem_template('FORM_SCREEN_INPUT_LINE', [
+                    '_GUID' => '02789c9af25cbc971e86bfcc0ad322d5',
+                    'PLACEHOLDER' => null,
+                    'MAXLENGTH' => strval(16),
+                    'TABINDEX' => strval(-1),
+                    'REQUIRED' => false,
+                    'NAME' => 'placeholder_a',
+                    'DEFAULT' => '',
+                    'TYPE' => 'text',
+                    'PATTERN' => null,
+                    'SIZE' => strval(16),
+                    'AUTOCOMPLETE' => false,
+                ]),
+            ],
+        ];
+        $filters_row_b = [
+            [
+                'PARAM' => 'placeholder_b',
+                'LABEL' => lorem_word(),
+                'FIELD' => do_lorem_template('FORM_SCREEN_INPUT_DATE', [
+                    '_GUID' => '5ace58dd0f540f70fb3bd440fb02a430',
+                    'REQUIRED' => false,
+                    'TABINDEX' => strval(-1),
+                    'NAME' => 'placeholder_b',
+                    'TYPE' => 'datetime',
+
+                    'YEAR' => '',
+                    'MONTH' => '',
+                    'DAY' => '',
+                    'HOUR' => '',
+                    'MINUTE' => '',
+
+                    'MIN_DATE_DAY' => '',
+                    'MIN_DATE_MONTH' => '',
+                    'MIN_DATE_YEAR' => '',
+                    'MAX_DATE_DAY' => '',
+                    'MAX_DATE_MONTH' => '',
+                    'MAX_DATE_YEAR' => '',
+
+                    'AUTOCOMPLETE' => false,
+                    'READ_ONLY' => strval(0)
+                ]),
+            ],
+        ];
+
+        pop_field_encapsulation();
+
         return lorem_globalise(do_lorem_template('ECOM_SALES_LOG_SCREEN', [
             'TITLE' => lorem_title(),
             'CONTENT' => $content,
             'PAGINATION' => placeholder_pagination(),
+            'FILTERS_ROW_A' => $filters_row_a,
+            'FILTERS_ROW_B' => $filters_row_b,
+            'URL' => placeholder_url(),
         ]), null, '', true);
     }
 
@@ -1389,24 +1419,6 @@ class Hook_addon_registry_ecommerce
         return lorem_globalise(do_lorem_template('CNS_MEMBER_PROFILE_ECOMMERCE_LOGS', [
             'CONTENT' => lorem_chunk_html(),
             'PAGINATION' => placeholder_pagination(),
-        ]), null, '', true);
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return Tempcode Preview
-     */
-    public function tpl_preview__administrative__ecom_transaction_logs_screen() : object
-    {
-        return lorem_globalise(do_lorem_template('ECOM_TRANSACTION_LOGS_SCREEN', [
-            'TITLE' => lorem_title(),
-            'PRODUCTS' => placeholder_options(),
-            'PURCHASE_ID' => placeholder_codename(),
-            'URL' => placeholder_url(),
-            'RESULTS_TABLE' => placeholder_table(),
         ]), null, '', true);
     }
 

@@ -6092,7 +6092,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         MANUAL_GALLERY_PARENT
         MANUAL_META
         MANUAL_PRIVACY
-        MANUAL_SUBSCRIPTIONS
+        VIEW_SUBSCRIPTIONS
         MANUAL_SUBSCRIPTION_EXPIRY_NOTICE
         MANUAL_SUBSCRIPTION_NOTIFICATION_MAIL
         MANUAL_SUBSCRIPTION_NOTIFICATION_MAIL_SUBJECT
@@ -8384,6 +8384,17 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         EDIT_MEMBER_PASSWORD
         SENSITIVE_CHANGE_ALERT
         DESCRIPTION_SENSITIVE_CHANGE_ALERT
+        EXPORT_SUBSCRIPTIONS
+        FILTER_STATE_ACTIVE
+        FILTER_STATE_CANCELLED
+        FILTER_STATE_NEW
+        FILTER_STATE_PENDING
+        FILTER_STATE_COMPLETED
+        FILTER_STATE_SMODIFIED
+        PARENT_TRANSACTION
+        MANUAL_SUBSCRIPTIONS
+        REASON_FOR_PENDING
+        RELATED_MEMBER
     ')));
 
     $non_admin_files = [

@@ -328,7 +328,7 @@ class Module_admin_points
             $map[] = do_lang_tempcode('GIFT_POINTS');
         }
         $map = array_merge($map, [do_lang_tempcode('POINTS'), do_lang_tempcode('SENDER'), do_lang_tempcode('RECIPIENT'), do_lang_tempcode('REASON'), do_lang_tempcode('STATUS'), do_lang_tempcode('ACTIONS')]);
-        $header_row = results_header_row($map, $sortables, 'sort', $sortable . ' ' . $sort_order);
+        $header_row = results_header_row($map, $sortables, 'ledger_sort', $sortable . ' ' . $sort_order);
         foreach ($rows as $myrow) {
             $date = get_timezoned_date_time($myrow['date_and_time'], false);
             $reason = get_translated_tempcode('points_ledger', $myrow, 'reason');
@@ -404,8 +404,10 @@ class Module_admin_points
 
         // Export button
         $form = new Tempcode();
-        $export_url = build_url(['page' => '_SELF', 'type' => 'export'], '_SELF');
-        $form->attach(do_template('BUTTON_SCREEN', ['_GUID' => '29a25bc2a39049dab57ff6b1eeb1a413', 'IMMEDIATE' => false, 'URL' => $export_url, 'TITLE' => do_lang_tempcode('EXPORT'), 'IMG' => 'admin/export_spreadsheet', 'HIDDEN' => new Tempcode()]));
+        if ($max_rows > 0) {
+            $export_url = build_url(['page' => '_SELF', 'type' => 'export'], '_SELF');
+            $form->attach(do_template('BUTTON_SCREEN', ['_GUID' => '29a25bc2a39049dab57ff6b1eeb1a413', 'IMMEDIATE' => false, 'URL' => $export_url, 'TITLE' => do_lang_tempcode('EXPORT'), 'IMG' => 'admin/export_spreadsheet', 'HIDDEN' => new Tempcode()]));
+        }
 
         // Start building fields for the filter box
         push_field_encapsulation(FIELD_ENCAPSULATION_RAW);
@@ -470,15 +472,14 @@ class Module_admin_points
 
         $url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
 
-        $tpl = do_template('ADMIN_POINTS_LEDGER_SCREEN', [
-            '_GUID' => 'bd66789c028148928b87d04e6dc51fc8',
-            'BLOCK_ID' => 'ledger',
+        $tpl = do_template('RESULTS_TABLE_SCREEN', [
             'TITLE' => $this->title,
             'RESULTS_TABLE' => $results_table,
             'FORM' => $form,
             'FILTERS_ROW_A' => $filters_row_a,
             'FILTERS_ROW_B' => $filters_row_b,
             'URL' => $url,
+            'FILTERS_HIDDEN' => new Tempcode(),
         ]);
 
         pop_field_encapsulation();

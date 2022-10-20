@@ -63,7 +63,7 @@ class Hook_profiles_tabs_ecommerce_logs
         $pagination = new Tempcode();
 
         require_code('ecommerce_logs');
-        $tmp = build_sales_table($member_id_viewing, false, false, 20, true);
+        $tmp = build_sales_table(['member_id' => $member_id_viewing], false, false, 20, true);
 
         if ($tmp !== null) {
             $sales_table = $tmp[0];
