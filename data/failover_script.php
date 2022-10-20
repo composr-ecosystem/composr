@@ -303,7 +303,7 @@ function set_failover_mode(string $new_mode)
 
             if ($SITE_INFO['failover_apache_rewritemap_file'] == '-') {
                 $new_code .= 'RewriteCond %{QUERY_STRING} !keep_failover [NC]' . "\n";
-                $new_code .= 'RewriteRule ^/?(.*) sources/static_cache.php [L,QSA]' . "\n";
+                $new_code .= 'RewriteRule ^/?(.*) data/static_cache.php [L,QSA]' . "\n";
             } else {
                 // The set of browsers
                 $browsers = [

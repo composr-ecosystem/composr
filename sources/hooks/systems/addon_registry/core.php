@@ -569,6 +569,7 @@ class Hook_addon_registry_core
             'sources/hooks/systems/symbols/CONTENT_COUNT.php',
             'sources/hooks/systems/symbols/FILE_EXISTS.php',
             'sources/antispam.php',
+            'data/static_cache.php',
             'sources/static_cache.php',
             'sources/hooks/systems/notifications/error_occurred.php',
             'sources/hooks/systems/notifications/core_staff.php',

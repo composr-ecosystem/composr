@@ -30,7 +30,7 @@ AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javasc
 </IfModule>
 </IfModule>
 
-# We do not want for TAR files, due to IE bug http://blogs.msdn.com/b/wndp/archive/2006/08/21/content-encoding-not-equal-content-type.aspx (IE won't decompress again as it thinks it's a mistake)
+# We do not want for TAR files, due to IE bug http://blogs.msdn.com/b/wndp/archive/2006/08/21/content-encoding-not-equal-content-type.aspx (IE won't decompress again as it thinks it's a mistake) LEGACY
 <IfModule mod_setenvif.c>
 SetEnvIfNoCase Request_URI \.tar$ no-gzip dont-vary
 </IfModule>
@@ -100,9 +100,6 @@ RewriteRule ^/?(themes/default/images/cns_emoticons/.*\.gif)$ $1.png [L,QSA]
 RewriteCond %{HTTP_USER_AGENT} (Chrom|Firefox|Safari)
 RewriteCond %{REQUEST_FILENAME}.png -f
 RewriteRule ^/?(themes/default/images/loading\.gif)$ themes/default/images/loading.gif.png [L,QSA]
-
-# crossdomain.xml is actually Composr-driven
-RewriteRule ^/?crossdomain\.xml data/crossdomain.php
 
 # WebDAV implementation (requires the non-bundled WebDAV addon)
 RewriteRule ^/?webdav(/.*|$) data_custom/webdav.php

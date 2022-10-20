@@ -26,7 +26,7 @@ function parse($_tokens = null)
     $structure = _parse_php($TOKENS);
     $structure['ok_extra_functions'] = $OK_EXTRA_FUNCTIONS;
     global $FILENAME;
-    if ((!empty($structure['main'])) && (substr($FILENAME, 0, 7) == 'sources') && ($FILENAME != 'sources/global.php') && ($FILENAME != 'sources/static_cache.php') && ($FILENAME != 'sources/critical_errors.php') && ((count($structure['main']) > 1) || (($structure['main'][0][0] != 'RETURN') && (($structure['main'][0][0] != 'CALL_DIRECT') || ($structure['main'][0][1] != 'require_code'))))) {
+    if ((!empty($structure['main'])) && (substr($FILENAME, 0, 7) == 'sources') && ($FILENAME != 'sources/global.php') && ($FILENAME != 'data/static_cache.php') && ($FILENAME != 'sources/critical_errors.php') && ((count($structure['main']) > 1) || (($structure['main'][0][0] != 'RETURN') && (($structure['main'][0][0] != 'CALL_DIRECT') || ($structure['main'][0][1] != 'require_code'))))) {
         if (!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) {
             log_warning('Sources files should not contain loose code');
         }

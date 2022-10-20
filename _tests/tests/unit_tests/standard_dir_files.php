@@ -67,7 +67,7 @@ class standard_dir_files_test_set extends cms_test_case
             if ($path == '.htaccess') { // Root file
                 continue;
             }
-            if (preg_match('#^(tracker|exports/backups|exports/static|exports/builds|uploads/website_specific/compo.sr/demonstratr/servers)/#', $path) != 0) {
+            if (preg_match('#^(data/ckeditor|_tests/simpletest|tracker|exports/backups|exports/static|exports/builds|uploads/website_specific/compo.sr/demonstratr/servers)/#', $path) != 0) { // Third party files
                 continue;
             }
             if (preg_match('#^themes/(_unnamed_)/#', $path) != 0) {
@@ -91,21 +91,15 @@ class standard_dir_files_test_set extends cms_test_case
         }*/
 
         $valid_hashes = [
-            '296a0f42479e015438791d0b21e22a07' => true, // Many
-            '8fbbec6b8fd8a4999a5b07f5ddcf5ea8' => true, // */pages/modules*/.htaccess
-            '3184b8b93e2d9b02dea0c4ec3133ee9c' => true, // */pages/html/EN/.htaccess
-            '8a7c42d7083b00b153df228e1700c60a' => true, // */pages/html_custom/EN/.htaccess
-            '61e312cb9d1db877826e8aa77c282b2a' => true, // _tests/simpletest/test/site/.htaccess
-            'f30780cfeab05516183f1b42e174b700' => true, // _tests/simpletest/test/site/protected/.htaccess
-            'de9b5b7778090cf4376839b6aebb9f45' => true, // adminzone/.htaccess
-            '205c253d00d3eac70ce61ba26612b27f' => true, // data*/images/.htaccess, uploads/.htaccess
-            '8a55e7d3c6651736659f3bc5959c16dd' => true, // data_custom/.htaccess
-            '362eb392e7da973c77733262cf1d0e90' => true, // sources/.htaccess
-            'bb091e894176e79224ddf66e45558e53' => true, // themes/*/images*/.htaccess
-            '5b7e3044b5aac9ba5955612da8b21e29' => true, // themes/*/templates_cached/.htaccess
-            'af733954322951529e9b3b9c52362352' => true, // uploads/*/.htaccess
-            '351535838b282a00a8ceb36fb37b72a1' => true, // uploads/incoming/.htaccess
-            '35524c96fbfc2361a6dff117f3a19bc8' => true, // uploads/website_specific/compo.sr/.htaccess
+            '35524c96fbfc2361a6dff117f3a19bc8' => true, // uploads/website_specific/compo.sr/.htaccess (Deny access to some important files on the compo.sr site)
+            '8fbbec6b8fd8a4999a5b07f5ddcf5ea8' => true, // */pages/modules*/.htaccess (Allows access to module URLs, and then the recommended.htaccess rules will rewrite to correct URL - useful for IDE integration)
+            '3184b8b93e2d9b02dea0c4ec3133ee9c' => true, // Many, */pages/html*/EN/.htaccess, */pages/comcode*/EN/.htaccess (Completely block all HTTP requests)
+            'de9b5b7778090cf4376839b6aebb9f45' => true, // adminzone/.htaccess (Better help for ModRewrite)
+            '205c253d00d3eac70ce61ba26612b27f' => true, // data*/images/.htaccess, uploads/.htaccess (Long-life cache settings for non-changing files (images))
+            '8a55e7d3c6651736659f3bc5959c16dd' => true, // data_custom/.htaccess (Block specific patterns of log and config files)
+            'bb091e894176e79224ddf66e45558e53' => true, // themes/*/images*/.htaccess (Disable any kind of server-side CGI/scripting via blocking handlers; Disable JavaScript etc via HTTP headers; Long-life cache settings for non-changing files (images))
+            '5b7e3044b5aac9ba5955612da8b21e29' => true, // themes/*/templates_cached/.htaccess (Disable any kind of server-side CGI/scripting via blocking handlers; Long-life cache settings for non-changing files (CSS/JS); Serve pre-compressed CSS/JS files if they exist and the client accepts Gzip or Brotli)
+            'af733954322951529e9b3b9c52362352' => true, // uploads/*/.htaccess (Disable any kind of server-side CGI/scripting via blocking handlers; Disable JavaScript etc via HTTP headers)
         ];
         foreach ($types as $hash => $file_paths) {
             $this->assertTrue(array_key_exists($hash, $valid_hashes), 'Invalid .htaccess file: ' . serialize($file_paths) . ' with hash of ' . $hash);

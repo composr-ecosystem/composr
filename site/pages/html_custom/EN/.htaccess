@@ -1,9 +1,1 @@
-<FilesMatch !"\.(htm|html)$">
 require all denied
-</FilesMatch>
-
-<IfModule mod_headers.c>
-Header set X-Content-Type-Options "nosniff"
-Header set Content-Security-Policy "default-src 'none'"
-Header set X-XSS-Protection "1"
-</IfModule>

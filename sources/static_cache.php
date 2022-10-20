@@ -18,33 +18,6 @@
  * @package    core
  */
 
-/*
-This file is designed to be able to work as standalone, should you want to hook rewrite rules directly into it.
-This allows static cache to run even when Composr is itself not booting at all.
-*/
-
-if (!isset($GLOBALS['FILE_BASE'])) {
-    // Fixup SCRIPT_FILENAME potentially being missing
-    $_SERVER['SCRIPT_FILENAME'] = __FILE__;
-
-    // Find Composr base directory, and chdir into it
-    global $FILE_BASE;
-    $FILE_BASE = (strpos(__FILE__, './') === false) ? __FILE__ : realpath(__FILE__);
-    $FILE_BASE = dirname($FILE_BASE, 2);
-
-    chdir($FILE_BASE);
-
-    require($FILE_BASE . '/_config.php');
-
-    if (!defined('STATIC_CACHE__FAST_SPIDER')) {
-        define('STATIC_CACHE__FAST_SPIDER', 1);
-        define('STATIC_CACHE__GUEST', 2);
-        define('STATIC_CACHE__FAILOVER_MODE', 4);
-    }
-
-    static_cache(STATIC_CACHE__FAILOVER_MODE);
-}
-
 /**
  * Get a well formed URL equivalent to the current URL. Reads direct from the environment and does no clever mapping at all. This function should rarely be used.
  *
