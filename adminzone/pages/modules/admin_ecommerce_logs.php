@@ -1289,7 +1289,7 @@ class Module_admin_ecommerce_logs
             if ($member_id !== null) {
                 $where['s_member_id'] = $member_id;
             } else {
-                warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', $filter_username));
+                warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($filter_username)));
             }
         }
         if ($_filter_state != '') {
