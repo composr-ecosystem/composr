@@ -8354,7 +8354,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_points_support_credits
         DESCRIPTION_LEADER_BOARD_CALCULATE_VOTING_POWER
         LEADER_BOARD_CALCULATE_VOTING_POWER
-<<<<<<< HEAD
         CONFIG_GROUP_DESCRIP_POINTS_FOSS_GROUP
         CONFIG_OPTION_points_foss
         CONFIG_OPTION_points_foss_http_header
@@ -8370,7 +8369,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DB_META_CORRUPT_MISSING
         MISSING_DB_PARAMETERS
         NO_ROOT_DB_WITHOUT_GIT
-=======
         STAFF_SECURITY_ASPECT_CHANGED_BODY
         STAFF_SECURITY_ASPECT_CHANGED_SUBJECT
         ALREADY_VALIDATED
@@ -8386,7 +8384,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         EDIT_MEMBER_PASSWORD
         SENSITIVE_CHANGE_ALERT
         DESCRIPTION_SENSITIVE_CHANGE_ALERT
->>>>>>> feature__quick_issues
     ')));
 
     $non_admin_files = [
@@ -11749,9 +11746,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         POLL_RSS_VOTE_TITLE
         POLL_RSS_VOTE_TITLE_REVOKED
         TOPIC_POLL_VOTES
-<<<<<<< HEAD
         DEFAULT_points_foss_reason
-=======
         SECURITY_ASPECT_CHANGED_BODY
         SECURITY_ASPECT_CHANGED_BODY_2
         SECURITY_ASPECT_CHANGED_SUBJECT
@@ -11767,7 +11762,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PER_GALLERY_SORT_gallery_media_default_sort_order
         YOUR_MESSAGE_WAS_SENT_TO_BODY
         YOUR_MESSAGE_WAS_SENT_TO_SUBJECT
->>>>>>> feature__quick_issues
     ')));
 
     if ($GLOBALS['DEV_MODE']) {
