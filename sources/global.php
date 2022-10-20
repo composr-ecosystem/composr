@@ -69,7 +69,7 @@ function require_code(string $codename, bool $light_exit = false, ?bool $has_cus
     $path_orig = $FILE_BASE . '/' . ($shorthand ? ('sources/' . $codename . '.php') : $non_custom_codename);
 
     $has_orig = null;
-    if (isset($GLOBALS['PERSISTENT_CACHE'])) {
+    if (isset($GLOBALS['PERSISTENT_CACHE']) && !in_safe_mode()) {
         global $CODE_OVERRIDES;
         if (!isset($CODE_OVERRIDES)) {
             $CODE_OVERRIDES = persistent_cache_get('CODE_OVERRIDES');

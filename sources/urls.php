@@ -1165,7 +1165,7 @@ function load_moniker_hooks()
 
     global $CONTENT_OBS;
     if ($CONTENT_OBS === null) {
-        $CONTENT_OBS = function_exists('persistent_cache_get') ? persistent_cache_get('CONTENT_OBS') : null;
+        $CONTENT_OBS = (function_exists('persistent_cache_get') && !in_safe_mode()) ? persistent_cache_get('CONTENT_OBS') : null;
         if ($CONTENT_OBS !== null) {
             foreach ($CONTENT_OBS as $ob_info) {
                 if (($ob_info['title_field'] !== null) && ((is_array($ob_info['title_field'])) || (strpos($ob_info['title_field'], 'CALL:') !== false))) {

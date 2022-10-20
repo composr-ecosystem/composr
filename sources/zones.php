@@ -89,7 +89,7 @@ function init__zones()
     $MODULE_INSTALLED_CACHE = [];
 
     global $HOOKS_CACHE;
-    $HOOKS_CACHE = function_exists('persistent_cache_get') ? persistent_cache_get('HOOKS') : [];
+    $HOOKS_CACHE = (function_exists('persistent_cache_get') && !in_safe_mode()) ? persistent_cache_get('HOOKS') : [];
     if ($HOOKS_CACHE === null) {
         $HOOKS_CACHE = [];
     }
@@ -101,7 +101,7 @@ function init__zones()
     }
 
     global $BLOCKS_AT_CACHE;
-    $BLOCKS_AT_CACHE = function_exists('persistent_cache_get') ? persistent_cache_get('BLOCKS_AT') : [];
+    $BLOCKS_AT_CACHE = (function_exists('persistent_cache_get') && !in_safe_mode()) ? persistent_cache_get('BLOCKS_AT') : [];
     if ($BLOCKS_AT_CACHE === null) {
         $BLOCKS_AT_CACHE = [];
     }
