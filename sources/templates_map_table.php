@@ -57,8 +57,8 @@ function map_table_screen(object $title, array $fields, ?object $text = null, ?o
 /**
  * Get the Tempcode for a map field.
  *
- * @param  mixed $name The field title (Tempcode or string). Assumed unescaped.
- * @param  mixed $value The field value (Tempcode or string). Assumed unescaped.
+ * @param  mixed $name The field title, provided in plain-text format or as HTML via do_lang_tempcode/protect_from_escaping
+ * @param  mixed $value The field value , provided in plain-text format or as HTML via do_lang_tempcode/protect_from_escaping
  * @param  boolean $raw Whether the field should not be escaped
  * @param  string $abbr Field abbreviation (blank: none)
  * @return Tempcode The generated map field

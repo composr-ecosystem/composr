@@ -335,7 +335,7 @@ function get_attachments(string $posting_field_name, bool $true_attachment_ui = 
 /**
  * Creates a posting form, with attachment support.
  *
- * @param  mixed $submit_name The title of the form submission button
+ * @param  mixed $submit_name The title of the form submission button, provided in plain-text format (string or Tempcode)
  * @param  ID_TEXT $submit_icon The submit icon CSS class
  * @param  LONG_TEXT $post The default post to put in
  * @param  mixed $post_url Where the form is sent (URLPATH or Tempcode)
@@ -352,7 +352,7 @@ function get_attachments(string $posting_field_name, bool $true_attachment_ui = 
  * @param  boolean $support_wysiwyg Whether to support WYSIWYG mode
  * @param  boolean $support_autosave Whether to support auto-save
  * @param  boolean $specialisation2_hidden Whether to hide trailing extra fields
- * @param  mixed $description A description for this input field
+ * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  ?Tempcode $cancel_url Cancel URL for cancelling auto-save (null: no cancel button)
  * @return Tempcode The posting form
  */
@@ -599,8 +599,8 @@ function get_field_restrict_property(string $property, string $field, ?string $p
 /**
  * Get the Tempcode for a codename input line.
  *
- * @param  mixed $pretty_name A human intelligible name for this input field
- * @param  mixed $description A description for this input field
+ * @param  mixed $pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode)
+ * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  ID_TEXT $name The name which this input field is for
  * @param  ?string $default The default value for this input field (null: blank)
  * @param  boolean $required Whether this is a required input field
@@ -646,8 +646,8 @@ function form_input_codename($pretty_name, $description, string $name, ?string $
 /**
  * Get the Tempcode for a text input line (an <input type="text" ... />).
  *
- * @param  mixed $pretty_name A human intelligible name for this input field
- * @param  mixed $description A description for this input field
+ * @param  mixed $pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode)
+ * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  ID_TEXT $name The name which this input field is for
  * @param  ?string $default The default value for this input field (null: blank)
  * @param  boolean $required Whether this is a required input field
@@ -703,8 +703,8 @@ function form_input_line($pretty_name, $description, string $name, ?string $defa
 /**
  * Get the Tempcode for a URL.
  *
- * @param  mixed $pretty_name A human intelligible name for this input field
- * @param  mixed $description A description for this input field
+ * @param  mixed $pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode)
+ * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  ID_TEXT $name The name which this input field is for
  * @param  ?string $default The default value for this input field (null: blank)
  * @param  boolean $required Whether this is a required input field
@@ -744,8 +744,8 @@ function form_input_url($pretty_name, $description, string $name, ?string $defau
 /**
  * Get the Tempcode for a username input line.
  *
- * @param  mixed $pretty_name A human intelligible name for this input field
- * @param  mixed $description A description for this input field
+ * @param  mixed $pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode)
+ * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  ID_TEXT $name The name which this input field is for
  * @param  ?string $default The default value for this input field (null: blank)
  * @param  boolean $required Whether this is a required input field
@@ -785,8 +785,8 @@ function form_input_username($pretty_name, $description, string $name, ?string $
 /**
  * Get the Tempcode for a author/username input line.
  *
- * @param  mixed $pretty_name A human intelligible name for this input field
- * @param  mixed $description A description for this input field
+ * @param  mixed $pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode)
+ * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  ID_TEXT $name The name which this input field is for
  * @param  ?string $default The default value for this input field (null: blank)
  * @param  boolean $required Whether this is a required input field
@@ -842,8 +842,8 @@ function form_input_author($pretty_name, $description, string $name, ?string $de
 /**
  * Get the Tempcode for a e-mail-address input line.
  *
- * @param  mixed $pretty_name A human intelligible name for this input field
- * @param  mixed $description A description for this input field
+ * @param  mixed $pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode)
+ * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  ID_TEXT $name The name which this input field is for
  * @param  ?string $default The default value for this input field (null: blank)
  * @param  boolean $required Whether this is a required input field
@@ -879,8 +879,8 @@ function form_input_email($pretty_name, $description, string $name, ?string $def
 /**
  * Get the Tempcode for a colour input.
  *
- * @param  mixed $pretty_name A human intelligible name for this input field
- * @param  mixed $description A description for this input field
+ * @param  mixed $pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode)
+ * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  ID_TEXT $name The name which this input field is for
  * @param  ?string $default The default value for this input field (null: blank)
  * @param  boolean $required Whether this is a required input field
@@ -919,8 +919,8 @@ function form_input_colour($pretty_name, $description, string $name, ?string $de
 /**
  * Get the Tempcode for a page-link input.
  *
- * @param  mixed $pretty_name A human intelligible name for this input field
- * @param  mixed $description A description for this input field
+ * @param  mixed $pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode)
+ * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  ID_TEXT $name The name which this input field is for
  * @param  ?string $default The default value for this input field (null: blank)
  * @param  boolean $required Whether this is a required input field
@@ -951,8 +951,8 @@ function form_input_page_link($pretty_name, $description, string $name, ?string 
 /**
  * Get the Tempcode for a Comcode-enabled text input line.
  *
- * @param  mixed $pretty_name A human intelligible name for this input field
- * @param  mixed $description A description for this input field
+ * @param  mixed $pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode)
+ * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  ID_TEXT $name The name which this input field is for
  * @param  ?string $default The default value for this input field (null: blank)
  * @param  boolean $required Whether this is a required input field
@@ -992,8 +992,8 @@ function form_input_line_comcode($pretty_name, $description, string $name, ?stri
 /**
  * Get the Tempcode for a DHTML input field that takes multiple lines. A new line is added when the prior one isn't blank.
  *
- * @param  mixed $pretty_name A human intelligible name for this input field
- * @param  mixed $description A description for this input field
+ * @param  mixed $pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode)
+ * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  ID_TEXT $name The base parameter name which this input field is for (as this takes multiple parameters, they are named <name><x>). This name must end with '_'.
  * @param  array $_default_array An array or map of lines to use as default (at least this many lines, filled by this array, will be presented by default) (map format: [name=>string, readonly=>boolean])
  * @param  integer $num_required The minimum number of inputs allowed
@@ -1075,8 +1075,8 @@ function form_input_line_multi($pretty_name, $description, string $name, array $
 /**
  * Get the Tempcode for a DHTML input field that takes multiple textareas. A new textarea is added when the prior one isn't blank.
  *
- * @param  mixed $pretty_name A human intelligible name for this input field
- * @param  mixed $description A description for this input field
+ * @param  mixed $pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode)
+ * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  ID_TEXT $name The base parameter name which this input field is for (as this takes multiple parameters, they are named <name><x>). This name must end with '_'.
  * @param  array $default_array An array of texts to use as default (at least this many textareas, filled by this array, will be presented by default)
  * @param  integer $num_required The minimum number of textareas allowed
@@ -1134,8 +1134,8 @@ function form_input_text_multi($pretty_name, $description, string $name, array $
 /**
  * Get the Tempcode for a multi-username input widget.
  *
- * @param  mixed $pretty_name A human intelligible name for this input field
- * @param  mixed $description A description for this input field
+ * @param  mixed $pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode)
+ * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  ID_TEXT $name The base parameter name which this input field is for (as this takes multiple parameters, they are named <name><x>). This name must end with '_'.
  * @param  array $default_array An array of lines to use as default (at least this many lines, filled by this array, will be presented by default)
  * @param  integer $num_required The minimum number of inputs allowed
@@ -1189,8 +1189,8 @@ function form_input_username_multi($pretty_name, $description, string $name, arr
 /**
  * Get the Tempcode for a text input (textarea).
  *
- * @param  mixed $pretty_name A human intelligible name for this input field
- * @param  mixed $description A description for this input field
+ * @param  mixed $pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode)
+ * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  ID_TEXT $name The name which this input field is for
  * @param  string $default The default value for this input field
  * @param  boolean $required Whether this is a required input field
@@ -1232,14 +1232,14 @@ function form_input_text($pretty_name, $description, string $name, string $defau
 /**
  * Get the Tempcode for a Comcode-enabled text input (textarea).
  *
- * @param  mixed $pretty_name A human intelligible name for this input field
- * @param  mixed $description A description for this input field
+ * @param  mixed $pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode)
+ * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  ID_TEXT $name The name which this input field is for
  * @param  string $default The default value for this input field
  * @param  boolean $required Whether this is a required input field
  * @param  ?integer $tabindex The tab index of the field (null: not specified)
  * @param  boolean $force_non_wysiwyg Force non-WYSIWYG and non default-Comcode parsing
- * @param  mixed $description_side A secondary side description for this input field
+ * @param  mixed $description_side A secondary side description for this input field, provided in HTML format (string or Tempcode)
  * @param  ?Tempcode $default_parsed The parsed Comcode. (null: calculate)
  * @param  boolean $scrolls Whether the field scrolls
  * @param  ?integer $rows Number of rows for text input (null: default)
@@ -1305,14 +1305,14 @@ function form_input_text_comcode($pretty_name, $description, string $name, strin
  * Get the Tempcode for a huge Comcode-enabled text input (textarea). These need extra space to fit.
  * This function is also used as an automatic replacement for form_input_text_comcode if WYSIWYG is available (as WYSIWYG needs more space too).
  *
- * @param  mixed $pretty_name A human intelligible name for this input field
- * @param  mixed $description A description for this input field
+ * @param  mixed $pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode)
+ * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  ID_TEXT $name The name which this input field is for
  * @param  string $default The default value for this input field
  * @param  boolean $required Whether this is a required input field
  * @param  ?integer $tabindex The tab index of the field (null: not specified)
  * @param  integer $rows The number of rows to use
- * @param  mixed $description_side A secondary side description for this input field
+ * @param  mixed $description_side A secondary side description for this input field, provided in HTML format (string or Tempcode)
  * @param  ?Tempcode $default_parsed The parsed Comcode. (null: calculate)
  * @param  boolean $scrolls Whether the field scrolls
  * @param  boolean $force_non_wysiwyg Force non-WYSIWYG and non default-Comcode parsing
@@ -1374,14 +1374,14 @@ function form_input_huge_comcode($pretty_name, $description, string $name, strin
 /**
  * Get the Tempcode for a huge text input (textarea).
  *
- * @param  mixed $pretty_name A human intelligible name for this input field
- * @param  mixed $description A description for this input field
+ * @param  mixed $pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode)
+ * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  ID_TEXT $name The name which this input field is for
  * @param  string $default The default value for this input field
  * @param  boolean $required Whether this is a required input field
  * @param  ?integer $tabindex The tab index of the field (null: not specified)
  * @param  integer $rows The number of rows to use
- * @param  mixed $description_side A secondary side description for this input field
+ * @param  mixed $description_side A secondary side description for this input field, provided in HTML format (string or Tempcode)
  * @param  boolean $scrolls Whether the field scrolls
  * @param  ~?mixed $autocomplete The autocomplete field name. (false: explicitly disable autocomplete) (null: no autocomplete attribute unless there's a default for this $name)
  * @return Tempcode The input field
@@ -1420,8 +1420,8 @@ function form_input_huge($pretty_name, $description, string $name, string $defau
 /**
  * Get the Tempcode for a password input.
  *
- * @param  mixed $pretty_name A human intelligible name for this input field
- * @param  mixed $description A description for this input field
+ * @param  mixed $pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode)
+ * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  ID_TEXT $name The name which this input field is for
  * @param  boolean $required Whether this is a required input field
  * @param  ?integer $tabindex The tab index of the field (null: not specified)
@@ -1454,8 +1454,8 @@ function form_input_password($pretty_name, $description, string $name, bool $req
 /**
  * Get the Tempcode for a checkbox input.
  *
- * @param  mixed $pretty_name A human intelligible name for this input field
- * @param  mixed $description A description for this input field
+ * @param  mixed $pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode)
+ * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  ID_TEXT $name The name which this input field is for
  * @param  boolean $ticked Whether this is ticked (checked) by default
  * @param  ?integer $tabindex The tab index of the field (null: not specified)
@@ -1486,9 +1486,9 @@ function form_input_tick($pretty_name, $description, string $name, bool $ticked,
  * Get the Tempcode for a bank of tick (check) boxes.
  *
  * @param  array $options A list of tuples: (prettyname, name, value, description, disabled)
- * @param  mixed $description A description for this input field
+ * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  ?integer $_tabindex The tab index of the field (null: not specified)
- * @param  mixed $_pretty_name A human intelligible name for this input field (blank: use default)
+ * @param  mixed $_pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode) (blank: use default)
  * @param  boolean $simple_style Whether to place each tick (check) on a new line
  * @param  ?ID_TEXT $custom_name Name for custom value to be entered to (null: no custom value allowed)
  * @param  ?mixed $custom_value Value for custom value, string (accept single value) or array (accept multiple values) (null: no custom value known)
@@ -1552,8 +1552,8 @@ function form_input_various_ticks(array $options, $description, ?int $_tabindex 
  * Get the Tempcode for a multi-set upload, allowing selection from multiple different sources.
  * Mainly for images, used with post_param_image or post_param_multi_source_upload.
  *
- * @param  mixed $set_title A human intelligible name for this input field
- * @param  mixed $set_description A description for this input field
+ * @param  mixed $set_title A human intelligible name for this input field, provided in plain-text format (string or Tempcode) or as HTML via do_lang_tempcode/protect_from_escaping
+ * @param  mixed $set_description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  Tempcode $hidden A reference to where we're putting hidden fields
  * @param  ID_TEXT $set_name The name which this input field is for (actually, this is a prefix put in front of different input types)
  * @param  ?ID_TEXT $theme_image_type The directory of theme images to provide selection from (null: do not support theme images)
@@ -1727,8 +1727,8 @@ function make_previewable_url_absolute(?string $url) : array
 /**
  * Get the Tempcode for a file upload input.
  *
- * @param  mixed $pretty_name A human intelligible name for this input field
- * @param  mixed $description A description for this input field
+ * @param  mixed $pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode)
+ * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  ID_TEXT $name The name which this input field is for
  * @param  boolean $required Whether this is a required input field. Set this to false if you are using this field on an edit form and already have an uploaded file -- therefore you'd know no new file would mean not to replace the existing file
  * @param  ?string $default The default value for the field (null: none) (blank: none). Should only be passed if $required is false, because it creates a delete button for the existing file, implying that leaving it with no file is valid
@@ -1774,8 +1774,8 @@ function form_input_upload($pretty_name, $description, string $name, bool $requi
 /**
  * Get the Tempcode for a multiple file upload input.
  *
- * @param  mixed $pretty_name A human intelligible name for this input field
- * @param  mixed $description A description for this input field
+ * @param  mixed $pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode)
+ * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  string $name The base name which this input field is for
  * @param  boolean $required Whether this is a required input field
  * @param  ?integer $tabindex The tab index of the field (null: not specified)
@@ -1821,8 +1821,8 @@ function form_input_upload_multi($pretty_name, $description, string $name, bool 
 /**
  * Get the Tempcode for a listbox.
  *
- * @param  mixed $pretty_name A human intelligible name for this input field
- * @param  mixed $description A description for this input field
+ * @param  mixed $pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode)
+ * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  ID_TEXT $name The name which this input field is for
  * @param  Tempcode $content The list entries for our list; you compose these via attaching together form_input_list_entry calls
  * @param  ?integer $tabindex The tab index of the field (null: not specified)
@@ -1862,8 +1862,8 @@ function form_input_list($pretty_name, $description, string $name, object $conte
 /**
  * Get the Tempcode for a huge listbox.
  *
- * @param  mixed $pretty_name A human intelligible name for this input field
- * @param  mixed $description A description for this input field
+ * @param  mixed $pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode)
+ * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  ID_TEXT $name The name which this input field is for
  * @param  Tempcode $content The list entries for our list; you compose these via attaching together form_input_list_entry calls
  * @param  ?integer $tabindex The tab index of the field (null: not specified)
@@ -1902,8 +1902,8 @@ function form_input_huge_list($pretty_name, $description, string $name, object $
 /**
  * Get the Tempcode for a listbox with multiple selections.
  *
- * @param  mixed $pretty_name A human intelligible name for this input field
- * @param  mixed $description A description for this input field
+ * @param  mixed $pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode)
+ * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  ID_TEXT $name The name which this input field is for
  * @param  Tempcode $content The list entries for our list; you compose these via attaching together form_input_list_entry calls
  * @param  ?integer $tabindex The tab index of the field (null: not specified)
@@ -1938,8 +1938,8 @@ function form_input_multi_list($pretty_name, $description, string $name, object 
 /**
  * Get the Tempcode for a combo-box (listbox with free text input). Works best if HTML5 is available.
  *
- * @param  mixed $pretty_name A human intelligible name for this input field
- * @param  mixed $description A description for this input field
+ * @param  mixed $pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode)
+ * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  ID_TEXT $name The name which this input field is for
  * @param  string $default Current selection
  * @param  Tempcode $options The list entries for our list; you compose these via attaching together form_input_list_entry calls
@@ -1970,8 +1970,8 @@ function form_input_combo($pretty_name, $description, string $name, string $defa
 /**
  * Get the Tempcode for an AJAX-powered tree listbox.
  *
- * @param  mixed $pretty_name A human intelligible name for this input field
- * @param  mixed $description A description for this input field
+ * @param  mixed $pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode)
+ * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  ID_TEXT $name The name which this input field is for
  * @param  ?ID_TEXT $root_id The ID to do under (null: root)
  * @param  string $hook The ajax tree-list hook that drives our data
@@ -2051,8 +2051,8 @@ function form_input_tree_list($pretty_name, $description, string $name, ?string 
 /**
  * Get the Tempcode for a complex input that chooses partials from a list ('all', 'all-except-these', or 'these').
  *
- * @param  mixed $pretty_name A human intelligible name for this input field
- * @param  mixed $description A description for this input field
+ * @param  mixed $pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode)
+ * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  string $base The base name which this input field is for
  * @param  Tempcode $list A list accumulation to select against
  * @param  string $type The current type of partial selection
@@ -2077,8 +2077,8 @@ function form_input_all_and_not($pretty_name, $description, string $base, object
 /**
  * Get the Tempcode for a radio group.
  *
- * @param  mixed $pretty_name A human intelligible name for this input field
- * @param  mixed $description A description for this input field
+ * @param  mixed $pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode)
+ * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  ID_TEXT $name The name which this input field is for
  * @param  Tempcode $content The radio buttons for our radio group; you compose these via attaching together form_input_radio_entry calls
  * @param  boolean $required Whether a radio selection is required
@@ -2102,9 +2102,9 @@ function form_input_radio($pretty_name, $description, string $name, object $cont
  * @param  string $name The name of the radio button group this will be put in (i.e. the name the value presented here will be possibly matched against)
  * @param  string $value The value for this entry
  * @param  boolean $selected Whether this entry is selected by default or not
- * @param  mixed $text The text associated with this choice (blank: just use value for text)
+ * @param  mixed $text The text associated with this choice, provided in HTML format (string or Tempcode) (blank: just use value for text)
  * @param  ?integer $tabindex The tab index of the field (null: not specified)
- * @param  mixed $description An additional long description (blank: no description)
+ * @param  mixed $description An additional long description, provided in HTML format (string or Tempcode) (blank: no description)
  * @param  boolean $disabled Whether this radio button is disabled and cannot be selected
  * @return Tempcode The input field
  */
@@ -2133,8 +2133,8 @@ function form_input_radio_entry(string $name, string $value, bool $selected = fa
 /**
  * Get the Tempcode to choose a picture from the given list of images in the theme image system, with sub-categorisation.
  *
- * @param  mixed $pretty_name A human intelligible name for this input field
- * @param  mixed $description A description for this input field
+ * @param  mixed $pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode)
+ * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  ID_TEXT $name The name which this input field is for
  * @param  array $ids A list of image IDs (codes) we can choose from, probably found via get_all_image_ids_type
  * @param  ?URLPATH $selected_url The currently selected entry in our picture choosing, by URL (null: none)
@@ -2332,8 +2332,8 @@ function form_input_theme_image($pretty_name, $description, string $name, array 
 /**
  * Get the Tempcode for a date input, or if the system scheduler is not running return blank.
  *
- * @param  mixed $pretty_name A human intelligible name for this input field
- * @param  mixed $description A description for this input field
+ * @param  mixed $pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode)
+ * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  ID_TEXT $name The parameter name for this input field
  * @param  boolean $required Whether this is a required field
  * @param  boolean $null_default Whether this field is empty by default
@@ -2355,8 +2355,8 @@ function form_input_date__cron($pretty_name, $description, string $name, bool $r
 /**
  * Get the Tempcode for a date input. Use post_param_date to read the result.
  *
- * @param  mixed $pretty_name A human intelligible name for this input field
- * @param  mixed $description A description for this input field
+ * @param  mixed $pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode)
+ * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  ID_TEXT $name The parameter name for this input field
  * @param  boolean $required Whether this is not a required field
  * @param  boolean $null_default Whether this field is empty by default
@@ -2507,8 +2507,8 @@ function _form_input_date(string $name, bool $required, bool $null_default, bool
 /**
  * Get the Tempcode for a date component input.
  *
- * @param  mixed $pretty_name A human intelligible name for this input field
- * @param  mixed $description A description for this input field
+ * @param  mixed $pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode)
+ * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  ID_TEXT $name The name which this input field is for
  * @param  boolean $want_year Gather year
  * @param  boolean $want_month Gather month
@@ -2554,8 +2554,8 @@ function form_input_date_components($pretty_name, $description, string $name, bo
 /**
  * Get the Tempcode for an integer-only input.
  *
- * @param  mixed $pretty_name A human intelligible name for this input field
- * @param  mixed $description A description for this input field
+ * @param  mixed $pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode)
+ * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  ID_TEXT $name The name which this input field is for
  * @param  ?integer $default The default value for this input field (null: no default)
  * @param  boolean $required Whether this is a required input field
@@ -2594,8 +2594,8 @@ function form_input_integer($pretty_name, $description, string $name, ?int $defa
 /**
  * Get the Tempcode for an width/height input.
  *
- * @param  mixed $pretty_name A human intelligible name for this input field
- * @param  mixed $description A description for this input field
+ * @param  mixed $pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode)
+ * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  ID_TEXT $name_width The name which this input field is for: width part
  * @param  ID_TEXT $name_height The name which this input field is for: height part
  * @param  ?integer $default_width The default value for this input field: width part (null: no default)
@@ -2629,8 +2629,8 @@ function form_input_dimensions($pretty_name, $description, string $name_width, s
 /**
  * Get the Tempcode for a float-only input.
  *
- * @param  mixed $pretty_name A human intelligible name for this input field
- * @param  mixed $description A description for this input field
+ * @param  mixed $pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode)
+ * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  ID_TEXT $name The name which this input field is for
  * @param  ?float $default The default value for this input field (null: no default)
  * @param  boolean $required Whether this is a required input field
@@ -2679,8 +2679,8 @@ function alternate_fields_set__start(string $set_name) : object
  * Show a field set that has just been finished off.
  *
  * @param  ID_TEXT $set_name The codename for this field set (blank: just collect raw fields, no actual field set)
- * @param  mixed $pretty_name The human-readable name for this field set
- * @param  mixed $description The human-readable description for this field set
+ * @param  mixed $pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode)
+ * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  Tempcode $fields The field set Tempcode
  * @param  boolean $required Whether it is required that this field set be filled in
  * @param  ?URLPATH $existing_image_preview_url Image URL to show, of the existing selection for this field (null: N/A) (blank: N/A)
@@ -2740,7 +2740,7 @@ function single_field__end()
 /**
  * Used to create a null option for field sets.
  *
- * @param  mixed $pretty_name The human-readable name for this field
+ * @param  mixed $pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode)
  * @param  ?integer $tabindex The tab index (null: none specified)
  * @return Tempcode The field
  */
@@ -2753,15 +2753,15 @@ function form_input_na($pretty_name, ?int $tabindex = null) : object
  * Helper function to show an input field.
  *
  * @param  ID_TEXT $name The codename for this field (blank: N/A)
- * @param  mixed $pretty_name The human-readable name for this field
- * @param  mixed $description The human-readable description for this field
+ * @param  mixed $pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode)
+ * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  Tempcode $input The actual raw input field
  * @param  boolean $required Whether it is required that this field be filled in
  * @param  boolean $comcode Whether this field may contain Comcode
  * @param  ?integer $tabindex The tab index (null: none specified)
  * @param  boolean $w Whether it is a textarea field
  * @param  boolean $skip_label Whether to skip displaying a label for the field
- * @param  mixed $description_side A secondary side description for this input field
+ * @param  mixed $description_side A secondary side description for this input field, provided in HTML format (string or Tempcode)
  * @param  ?string $pattern_error Custom regex pattern validation error (null: none)
  * @return Tempcode The field
  *
@@ -2799,7 +2799,7 @@ function _form_input(string $name, $pretty_name, $description, object $input, bo
 
     // Return raw input field if field encapsulation is set to raw
     if (peek_field_encapsulation() == FIELD_ENCAPSULATION_RAW) {
-        return make_string_tempcode($input->evaluate()); // XHTMLXHTML
+        return make_string_tempcode($input->evaluate());
     }
 
     // Add prefixes and suffixes to input
@@ -2856,7 +2856,7 @@ function _form_input(string $name, $pretty_name, $description, object $input, bo
         'COMCODE' => $_comcode,
         'PATTERN_ERROR' => $pattern_error,
     ]);
-    $tpl = make_string_tempcode($tpl->evaluate()); // XHTMLXHTML
+    $tpl = make_string_tempcode($tpl->evaluate());
     return $tpl;
 }
 

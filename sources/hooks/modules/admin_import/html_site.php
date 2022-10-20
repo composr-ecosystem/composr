@@ -503,7 +503,7 @@ class Hook_import_html_site
      * Filter HTML that has been read, to make it more compatible with Composr.
      *
      * @param  string $file_contents The HTML
-     * @param  BINARY $fix_html Whether to fix XHTML errors
+     * @param  BINARY $fix_html Whether to fix HTML errors
      * @param  PATH $base_url The base URL of the old site
      * @param  array $files A list of all files on the site
      * @param  PATH $file_base The base directory we are importing from

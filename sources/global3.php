@@ -547,7 +547,7 @@ function intelligent_write_error(string $path)
  * Discern the cause of a file-write error, and return an appropriate error message.
  *
  * @param  PATH $path File path that could not be written
- * @return mixed Message (Tempcode or string)
+ * @return mixed Message (string or Tempcode)
  */
 function intelligent_write_error_inline(string $path)
 {
@@ -804,11 +804,11 @@ function globalise(object $middle, $message = null, string $type = '', bool $inc
 }
 
 /**
- * Attach some XHTML to the screen footer.
+ * Attach some HTML to the screen footer.
  *
  * @sets_output_state
  *
- * @param  mixed $data XHTML to attach (Tempcode or string)
+ * @param  mixed $data HTML to attach, provided in HTML format (string or Tempcode)
  */
 function attach_to_screen_footer($data)
 {
@@ -2794,7 +2794,7 @@ function is_our_server(?string $ip_or_hostname = null) : bool
  * Exit with debug data, only for a specific IP address.
  *
  * @param  IP $ip IP address of tester
- * @param  mixed $data Data to display
+ * @param  mixed $data Data to display (no HTML escaping is done in this function)
  */
 function me_debug(string $ip, $data)
 {
@@ -3217,9 +3217,10 @@ function get_num_users_peak() : int
 
 /**
  * Escape certain special characters in the provided string, so that it can be embedded as text within HTML.
+ * Tempcode may be passed in, but will just be immediately returned without escaping.
  *
  * @param  mixed $string The input string
- * @return mixed The escaped string
+ * @return mixed The escaped string (or original string if it was Tempcode)
  */
 function escape_html($string)
 {
@@ -4593,7 +4594,7 @@ function is_maintained(string $code) : bool
  * Tack on a message to some text if a feature is not maintained.
  *
  * @param  ID_TEXT $code Feature
- * @param  mixed $text Text to show (string or Tempcode)
+ * @param  mixed $text Text to show, provided in HTML format (string or Tempcode)
  * @return Tempcode Text
  */
 function is_maintained_description(string $code, $text) : object

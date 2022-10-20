@@ -794,7 +794,7 @@ function wiki_derive_chain(int $id, ?int $root = null) : string
 }
 
 /**
- * Get a nice formatted XHTML list of all the children beneath the specified Wiki+ page. This function is recursive.
+ * Get a nice formatted HTML list of all the children beneath the specified Wiki+ page. This function is recursive.
  *
  * @param  ?AUTO_LINK $select The Wiki+ page to select by default (null: none)
  * @param  ?AUTO_LINK $id The Wiki+ page to look beneath (null: the root)
@@ -842,7 +842,7 @@ function create_selection_list_wiki_page_tree(?int $select = null, ?int $id = nu
 }
 
 /**
- * Helper function. Get a nice formatted XHTML list of all the children beneath the specified Wiki+ page. This function is recursive.
+ * Helper function. Get a nice formatted HTML list of all the children beneath the specified Wiki+ page. This function is recursive.
  *
  * @param  array $wiki_seen A list of pages we've already seen (we don't repeat them in multiple list positions)
  * @param  ?AUTO_LINK $select The Wiki+ page to select by default (null: none)

@@ -527,7 +527,7 @@ function script_script()
 }
 
 /**
- * AJAX script for dynamic inclusion of XHTML snippets.
+ * AJAX script for dynamic inclusion of HTML snippets.
  *
  * @ignore
  */

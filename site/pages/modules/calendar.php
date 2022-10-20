@@ -929,12 +929,12 @@ class Module_calendar
                 if (!array_key_exists($i, $stream)) {
                     $class = 'free-time-hourly';
                     $text = '&nbsp;';
-                    $entry = static_evaluate_tempcode(do_template('CALENDAR_DAY_ENTRY_FREE', ['_GUID' => '0091fbb877164ac797cb88b4571b5d35', 'CLASS' => $class, 'TEXT' => $text])); /*XHTMLXHTML*/
+                    $entry = static_evaluate_tempcode(do_template('CALENDAR_DAY_ENTRY_FREE', ['_GUID' => '0091fbb877164ac797cb88b4571b5d35', 'CLASS' => $class, 'TEXT' => $text]));
                 } else {
                     if ($stream[$i]['TPL'] != '-1') {
                         $down = $stream[$i]['DOWN'];
                         $priority = $stream[$i]['PRIORITY'];
-                        $entry = static_evaluate_tempcode(do_template($stream[$i]['TPL'], $stream[$i])); /*XHTMLXHTML*/
+                        $entry = static_evaluate_tempcode(do_template($stream[$i]['TPL'], $stream[$i]));
                     } else {
                         $entry = '';
                     }
@@ -952,7 +952,7 @@ class Module_calendar
                             $add_url = build_url(['page' => 'cms_calendar', 'type' => 'add', 'date' => date('Y-m-d H:i:s', $timestamp), 'e_type' => (count($and_filter) == 1) ? $and_filter[0] : null, 'private' => get_param_integer('private', null), 'member_id' => get_param_integer('member_id', null)], get_module_zone('cms_calendar'));
                         }
                     }
-                    $_streams->attach(/*XHTMLXHTML*/static_evaluate_tempcode(do_template('CALENDAR_DAY_STREAM_HOUR', ['_GUID' => '93a8fb53183a4225ec3bf7f2ea07cfc5', 'CURRENT' => date('Y-m-d H', utctime_to_usertime()) == date('Y-m-d H', $timestamp), 'ADD_URL' => $add_url, 'PRIORITY' => $priority, 'DOWN' => $down, 'ENTRY' => $entry])));
+                    $_streams->attach(static_evaluate_tempcode(do_template('CALENDAR_DAY_STREAM_HOUR', ['_GUID' => '93a8fb53183a4225ec3bf7f2ea07cfc5', 'CURRENT' => date('Y-m-d H', utctime_to_usertime()) == date('Y-m-d H', $timestamp), 'ADD_URL' => $add_url, 'PRIORITY' => $priority, 'DOWN' => $down, 'ENTRY' => $entry])));
                 }
             }
 
@@ -1492,7 +1492,7 @@ class Module_calendar
             $month_name = cms_date('F', $_period_start);
 
             $month = do_template('CALENDAR_YEAR_MONTH', ['_GUID' => '58c9f4cc04186dce6e7ea3dd8ec9269b', 'ENTRIES' => $_entries, 'MONTH_NAME' => $month_name, 'MONTH_URL' => $month_url]);
-            $months .= $month->evaluate(); // XHTMLXHTML
+            $months .= $month->evaluate();
         }
 
         // Final row of months...

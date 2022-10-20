@@ -307,7 +307,7 @@ function cms_file_put_contents_safe(string $path, string $contents, int $flags =
 /**
  * If cms_file_put_contents_safe has failed, process the error messaging.
  *
- * @param  mixed $error_message Error message (Tempcode or string)
+ * @param  mixed $error_message Error message (string or Tempcode)
  * @param  PATH $path File path
  * @param  integer $flags FILE_WRITE_* flags
  * @return boolean Success status (always false)

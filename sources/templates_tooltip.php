@@ -22,7 +22,7 @@
  * Show a tooltip by truncating some text.
  * Note we also have the generate_tooltip_by_truncation_advanced function which is much more powerful and is what drives the $TRUNCATE_* symbols.
  *
- * @param  string $text The text (plain-text, no HTML)
+ * @param  string $text The text, provided in plain-text format (string or Tempcode)
  * @param  integer $len The length to truncate at
  * @return Tempcode The tooltip (or a null-op if $text is not long enough)
  */
@@ -40,7 +40,7 @@ function generate_tooltip_by_truncation(string $text, int $len = 60) : object
 /**
  * Show a tooltip, automatic inline/block context detection.
  *
- * @param  mixed $label The text the tooltip is on (HTML string or Tempcode)
+ * @param  mixed $label What the tooltip is on, provided in HTML format (string or Tempcode)
  * @param  mixed $tooltip The tooltip (HTML string or Tempcode)
  * @return Tempcode The tooltip
  */
@@ -54,7 +54,7 @@ function tooltip($label, $tooltip) : object
 /**
  * Show a tooltip on an inline element.
  *
- * @param  mixed $label The text the tooltip is on (HTML string or Tempcode)
+ * @param  mixed $label What the tooltip is on, provided in HTML format (string or Tempcode)
  * @param  mixed $tooltip The tooltip (HTML string or Tempcode)
  * @return Tempcode The tooltip
  */
@@ -66,7 +66,7 @@ function inline_tooltip($label, $tooltip) : object
 /**
  * Show a tooltip on a block element.
  *
- * @param  mixed $label The text the tooltip is on (HTML string or Tempcode)
+ * @param  mixed $label What the tooltip is on, provided in HTML format (string or Tempcode)
  * @param  mixed $tooltip The tooltip (HTML string or Tempcode)
  * @return Tempcode The tooltip
  */

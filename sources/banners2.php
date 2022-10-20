@@ -98,7 +98,7 @@ function render_banner_box(array $row, string $zone = '_SEARCH', bool $give_cont
 }
 
 /**
- * Get a nice, formatted XHTML list to select a banner type.
+ * Get a nice, formatted HTML list to select a banner type.
  *
  * @param  ?mixed $it The currently selected banner type (null: none selected)
  * @return Tempcode The list of banner types

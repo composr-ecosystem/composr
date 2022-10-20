@@ -89,8 +89,8 @@ function _search_graph_color_pool(int $i, array $color_pool) : string
  * 1 measure of scattered data across two uneven dimensions.
  *
  * @param  array $datapoints Data-points to render
- * @param  mixed $x_axis_label X-axis label (string or Tempcode)
- * @param  mixed $y_axis_label Y-axis label (string or Tempcode)
+ * @param  mixed $x_axis_label X-axis label, provided in plain-text format (string or Tempcode)
+ * @param  mixed $y_axis_label Y-axis label, provided in plain-text format (string or Tempcode)
  * @param  array $options Map of additional fiddly options
  * @param  ?string $color Colour for plotting (null: get from default colour pool)
  * @param  ?string $width Width (null: responsive)
@@ -183,8 +183,8 @@ function graph_scatter_diagram(array $datapoints, $x_axis_label = '', $y_axis_la
  *
  * @param  array $datasets Data-sets to render
  * @param  ?array $x_labels Labels for X-axis (null: numeric sequence for each data point, based on first set of data points)
- * @param  mixed $x_axis_label X-axis label (string or Tempcode)
- * @param  mixed $y_axis_label Y-axis label (string or Tempcode)
+ * @param  mixed $x_axis_label X-axis label, provided in plain-text format (string or Tempcode)
+ * @param  mixed $y_axis_label Y-axis label, provided in plain-text format (string or Tempcode)
  * @param  array $options Map of additional fiddly options
  * @param  ?array $color_pool Colour pool to use (null: default colour pool)
  * @param  ?string $width Width (null: responsive)
@@ -344,8 +344,8 @@ function graph_pie_chart(array $datapoints, array $options = [], ?array $color_p
  * 1 measure across one large even dimension (x) and one uneven dimension (y).
  *
  * @param  array $datapoints Data-points to render
- * @param  mixed $x_axis_label X-axis label (string or Tempcode)
- * @param  mixed $y_axis_label Y-axis label (string or Tempcode)
+ * @param  mixed $x_axis_label X-axis label, provided in plain-text format (string or Tempcode)
+ * @param  mixed $y_axis_label Y-axis label, provided in plain-text format (string or Tempcode)
  * @param  array $options Map of additional fiddly options
  * @param  ?array $color_pool Colour pool to use (null: default colour pool)
  * @param  ?string $width Width (null: responsive)
@@ -429,8 +429,8 @@ function graph_bar_chart(array $datapoints, $x_axis_label = '', $y_axis_label = 
  *
  * @param  array $datasets Data-sets to render
  * @param  array $labels List of labels for datasets
- * @param  mixed $x_axis_label X-axis label (string or Tempcode)
- * @param  mixed $y_axis_label Y-axis label (string or Tempcode)
+ * @param  mixed $x_axis_label X-axis label, provided in plain-text format (string or Tempcode)
+ * @param  mixed $y_axis_label Y-axis label, provided in plain-text format (string or Tempcode)
  * @param  array $options Map of additional fiddly options
  * @param  ?array $color_pool Colour pool to use (null: default colour pool)
  * @param  ?string $width Width (null: responsive)
@@ -527,9 +527,9 @@ function graph_stacked_bar_chart(array $datasets, array $labels, $x_axis_label =
  * Many multiple measures across one large even dimension (x) and one uneven dimension (y).
  *
  * @param  array $datasets Data-sets to render
- * @param  mixed $x_axis_label X-axis label (string or Tempcode)
- * @param  mixed $y_axis_label Y-axis label (string or Tempcode)
- * @param  mixed $z_axis_label Z-axis label (string or Tempcode)
+ * @param  mixed $x_axis_label X-axis label, provided in plain-text format (string or Tempcode)
+ * @param  mixed $y_axis_label Y-axis label, provided in plain-text format (string or Tempcode)
+ * @param  mixed $z_axis_label Z-axis label, provided in plain-text format (string or Tempcode)
  * @param  string $title Title
  * @param  array $options Map of additional fiddly options
  * @param  ?array $color_pool Colour pool to use (null: default colour pool)

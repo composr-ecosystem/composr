@@ -28,7 +28,7 @@
 class Hook_snippet_member_tooltip
 {
     /**
-     * Standard modular run function for snippet hooks. Generates XHTML to insert into a page using AJAX.
+     * Standard modular run function for snippet hooks. Generates HTML to insert into a page using AJAX.
      *
      * @return Tempcode The snippet
      */

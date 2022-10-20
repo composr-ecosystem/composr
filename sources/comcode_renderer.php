@@ -40,11 +40,11 @@ function init__comcode_renderer()
 }
 
 /**
- * Get the text with all the emoticon codes replaced with the correct XHTML. Emoticons are determined by your forum system.
+ * Get the text with all the emoticon codes replaced with the correct HTML. Emoticons are determined by your forum system.
  * This is not used in the normal Comcode chain - it's for non-Comcode things that require emoticons (actually in reality it is used in the Comcode chain if the optimiser sees that a full parse is not needed).
  *
- * @param  string $text The text to add emoticons to (assumption: that this is XHTML)
- * @return string The XHTML with the image-substitution of emoticons
+ * @param  string $text The text to add emoticons to (assumption: that this is HTML)
+ * @return string The HTML with the image-substitution of emoticons
  *
  * @ignore
  */

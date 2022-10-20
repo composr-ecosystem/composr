@@ -113,7 +113,7 @@ function member_get_spreadsheet_headings() : array
 }
 
 /**
- * Get a nice, formatted, XHTML list of all the timezones.
+ * Get a nice, formatted, HTML list of all the timezones.
  *
  * @param  ?string $timezone Current timezone to select (null: server default)
  * @return Tempcode List of timezones

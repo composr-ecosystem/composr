@@ -25,7 +25,7 @@ Results table = Built on top of columned table, with inbuilt integration of Comp
 /**
  * Get the Tempcode for a results table.
  *
- * @param  mixed $text_id Some text/word describing what is being browsed (Tempcode or string)
+ * @param  mixed $text_id Some text/word describing what is being browsed (string or Tempcode)
  * @param  integer $start The result number our table starts at (x of n)
  * @param  ID_TEXT $start_name The parameter name used to store our position in the results (usually, 'start')
  * @param  integer $max The total number of results to show per-page
@@ -230,8 +230,8 @@ function results_footer_row(array $values, string $guid = 'e5df01c02d364a45b3cc5
 /**
  * Get the Tempcode for a results entry (a row). You would gather together the outputs of several of these functions, then put them in as the $fields in a results_table function call.
  *
- * @param  array $values The array of values that make up this entry (of Tempcode or string, or mixture)
- * @param  boolean $auto_escape Whether to automatically escape each entry so that it cannot contain HTML
+ * @param  array $values The array of values that make up this entry (of string or Tempcode, or mixture)
+ * @param  boolean $auto_escape Whether to automatically escape each plain-text entry so that it cannot contain HTML
  * @param  ?string $tpl_set The template set to use (null: default)
  * @param  string $guid GUID to pass to template
  * @return Tempcode The generated entry

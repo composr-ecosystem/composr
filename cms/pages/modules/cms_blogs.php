@@ -377,7 +377,7 @@ class Module_cms_blogs extends Standard_crud_module
             }
         }
 
-        return [$fields, $hidden, null, null, null, null, make_string_tempcode($fields2->evaluate())/*XHTMLXHTML*/];
+        return [$fields, $hidden, null, null, null, null, make_string_tempcode($fields2->evaluate())];
     }
 
     /**

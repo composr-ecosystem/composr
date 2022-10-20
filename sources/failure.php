@@ -320,7 +320,7 @@ function _composr_error_handler(string $type, int $errno, string $errstr, string
  * Get the Tempcode for a warn page.
  *
  * @param  Tempcode $title The title of the warn page
- * @param  mixed $text The text to put on the warn page (either Tempcode or string)
+ * @param  mixed $text The text to put on the warn page, provided in plain-text format or HTML Tempcode
  * @param  boolean $provide_back Whether to provide a back button
  * @param  boolean $support_match_key_messages Whether match key messages / redirects should be supported
  * @return Tempcode The warn page
@@ -374,7 +374,7 @@ function _sanitise_error_msg(string $text) : string
 /**
  * Do a terminal execution on a defined page type.
  *
- * @param  mixed $text The error message (string or Tempcode)
+ * @param  mixed $text The error message, provided in plain-text format or as HTML via do_lang_tempcode/protect_from_escaping
  * @param  ID_TEXT $template Name of the terminal page template
  * @set INFORM_SCREEN WARN_SCREEN FATAL_SCREEN
  * @param  ?boolean $support_match_key_messages Whether match key messages / redirects should be supported (null: detect)

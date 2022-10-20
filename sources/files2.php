@@ -91,7 +91,7 @@ function _intelligent_write_error(string $path)
  * Discern the cause of a file-write error, and return an appropriate error message.
  *
  * @param  PATH $path File path that could not be written
- * @return mixed Message (Tempcode or string)
+ * @return mixed Message (string or Tempcode)
  *
  * @ignore
  */

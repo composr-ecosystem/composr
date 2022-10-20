@@ -839,7 +839,7 @@ class Module_admin_setupwizard
 
         foreach (['HOME' => $main_blocks, 'GENERAL' => $either_blocks, 'PANELS' => $side_blocks] as $block_section_header => $block_set) {
             $tmp = do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'dfc20251e4f6b37ec1e046d0903250aa', 'TITLE' => do_lang_tempcode($block_section_header)]);
-            $fields .= $tmp->evaluate(); /*XHTMLXHTML*/
+            $fields .= $tmp->evaluate();
 
             ksort($block_set);
 
@@ -875,7 +875,7 @@ class Module_admin_setupwizard
                     $main_list->attach(form_input_list_entry('PANEL_RIGHT', $position === BLOCK_POSITION_PANEL, do_lang_tempcode('BLOCK_CONFIGURATION__PANEL_RIGHT')));
                 }
                 $tmp = form_input_list($block_nice, $description, 'block_SITE_' . $block, $main_list);
-                $fields .= $tmp->evaluate(); /*XHTMLXHTML*/
+                $fields .= $tmp->evaluate();
             }
         }
 

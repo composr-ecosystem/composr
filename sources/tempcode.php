@@ -48,7 +48,7 @@ function init__tempcode()
         define('NO_OUTPUT', 17); // Process but do not output
 
         define('TC_SYMBOL', 0);
-        define('TC_KNOWN', 1); // Either Tempcode or string
+        define('TC_KNOWN', 1); // Either string or Tempcode
         define('TC_LANGUAGE_REFERENCE', 2);
         define('TC_PARAMETER', 3); // A late parameter for a compiled template
         define('TC_DIRECTIVE', 4);
@@ -333,7 +333,7 @@ function symbol_tempcode(string $symbol, array $parameters = [], array $escape =
  * This will create a new Tempcode object that is containing a single specified directive.
  *
  * @param  ID_TEXT $directive The ID of the directive to use
- * @param  mixed $content The contents (Tempcode or string)
+ * @param  mixed $content The contents (string or Tempcode); no special escaping is performed for you
  * @param  array $parameters Directive parameters
  * @return Tempcode A directive Tempcode object
  */
@@ -605,8 +605,8 @@ function make_string_tempcode(string $string) : object
 /**
  * Escape certain special characters in the provided string/Tempcode, so that it can be embedded as text within HTML.
  *
- * @param  mixed $data String
- * @return Tempcode Tempcode
+ * @param  mixed $data Plain-text string
+ * @return Tempcode HTML string
  */
 function escape_html_tempcode($data) : object
 {
@@ -729,9 +729,9 @@ function apply_tempcode_escaping_inline(array $escaped, string $value) : string
  * See do_lang for more documentation.
  *
  * @param  ID_TEXT $lang_string The codename of the language string to use
- * @param  ?mixed $parameter1 The first parameter [string or Tempcode] (replaces {1}) (null: none)
- * @param  ?mixed $parameter2 The second parameter [string or Tempcode] (replaces {2}) (null: none)
- * @param  ?mixed $parameter3 The third parameter (replaces {3}). May be an array of [of string or Tempcode], to allow any number of additional args (null: none)
+ * @param  ?mixed $parameter1 The first parameter [string or Tempcode, make sure escaped] (replaces {1}) (null: none)
+ * @param  ?mixed $parameter2 The second parameter [string or Tempcode, make sure escaped] (replaces {2}) (null: none)
+ * @param  ?mixed $parameter3 The third parameter (replaces {3}). May be an array of [of string or Tempcode, make sure escaped], to allow any number of additional args (null: none)
  * @return Tempcode A language Tempcode object
  */
 function do_lang_tempcode(string $lang_string, $parameter1 = null, $parameter2 = null, $parameter3 = null) : object
@@ -1828,7 +1828,7 @@ class Tempcode
     /**
      * Attach the specified Tempcode to the right of the current Tempcode object.
      *
-     * @param  mixed $attach The Tempcode/string to attach
+     * @param  mixed $attach The Tempcode/string to attach; no special escaping is performed for you
      * @param  boolean $enable_child_merge If we've already merged the children from what we're attaching into the child tree (at bind stage) then pass as false
      */
     public function attach($attach, bool $enable_child_merge = true)
@@ -2765,7 +2765,7 @@ function tempcode_error(object $e, string $code)
 /**
  * Reduce down a template parameter to a maximum reasonable length, to avoid too much data being stuck in Tempcode trees.
  *
- * @param  Tempcode $text Text (in HTML)
+ * @param  Tempcode $text Text, provided in HTML format
  * @param  integer $max_length Maximum length
  * @return Tempcode Reduced length version of $text if required
  */

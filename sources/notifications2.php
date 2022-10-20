@@ -242,7 +242,7 @@ function notifications_ui(int $member_id_of) : object
         'SHOW_PRIVILEGES' => false,
     ]);
 
-    $ret = make_string_tempcode($ret->evaluate()); // XHTMLXHTML
+    $ret = make_string_tempcode($ret->evaluate());
 
     return $ret;
 }

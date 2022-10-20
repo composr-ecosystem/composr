@@ -24,7 +24,7 @@
 class Hook_snippet_exists_email
 {
     /**
-     * Run function for snippet hooks. Generates XHTML to insert into a page using AJAX.
+     * Run function for snippet hooks. Generates HTML to insert into a page using AJAX.
      *
      * @return Tempcode The snippet
      */

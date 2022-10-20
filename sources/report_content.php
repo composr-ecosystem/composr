@@ -256,7 +256,7 @@ function report_content_form_fields(object &$hidden) : object
 /**
  * Get standard text for a report form.
  *
- * @param  Tempcode $text Append the text here
+ * @param  Tempcode $text Append the text here, provided in HTML format
  * @param  ID_TEXT $ticket_id Ticket ID
  */
 function report_content_append_text(object &$text, string $ticket_id)

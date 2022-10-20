@@ -195,7 +195,7 @@ class Module_admin_lang
      * @param  Tempcode $title The title to show when choosing a language
      * @param  boolean $choose_lang_file Whether to also choose a language file
      * @param  boolean $add_lang Whether the user may add a language
-     * @param  mixed $text Text message to show (Tempcode or string)
+     * @param  mixed $text Text message to show, provided in HTML format (string or Tempcode)
      * @param  boolean $provide_na Whether to provide an N/A choice
      * @param  ID_TEXT $param_name The name of the parameter for specifying language
      * @return Tempcode The UI
@@ -501,7 +501,7 @@ class Module_admin_lang
                 'PRIORITY' => $priority,
                 'LAST' => !isset($to_translate[$i + 1]),
             ]);
-            $lines .= $line->evaluate(); /*XHTMLXHTML*/
+            $lines .= $line->evaluate();
 
             $last_level = $it['importance_level'];
         }

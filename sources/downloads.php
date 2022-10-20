@@ -286,7 +286,7 @@ function render_download_category_box(array $row, string $zone = '_SEARCH', bool
 }
 
 /**
- * Get a nice, formatted XHTML list of downloads, in download tree structure.
+ * Get a nice, formatted HTML list of downloads, in download tree structure.
  *
  * @param  ?AUTO_LINK $it The currently selected entry (null: none selected)
  * @param  ?AUTO_LINK $submitter Only show entries submitted by this member (null: no filter)
@@ -417,7 +417,7 @@ function get_downloads_tree(?int $submitter = null, ?int $category_id = null, ?s
 }
 
 /**
- * Get a nice, formatted XHTML list extending from the root, and showing all subcategories, and their subcategories (ad infinitum).
+ * Get a nice, formatted HTML list extending from the root, and showing all subcategories, and their subcategories (ad infinitum).
  * The tree bit is because each entry in the list is shown to include the path through the tree that gets to it.
  *
  * @param  ?AUTO_LINK $it The currently selected category (null: none selected)
@@ -539,7 +539,7 @@ function get_download_category_tree(?int $category_id = null, ?string $breadcrum
 }
 
 /**
- * Get a nice, formatted XHTML list to select a download licence.
+ * Get a nice, formatted HTML list to select a download licence.
  *
  * @param  ?AUTO_LINK $it The currently selected licence (null: none selected)
  * @param  boolean $allow_na Whether to allow an N/A selection
@@ -559,7 +559,7 @@ function create_selection_list_download_licences(?int $it = null, bool $allow_na
 }
 
 /**
- * Get a formatted XHTML string of the route back to the specified root, from the specified download category.
+ * Get a formatted HTML string of the route back to the specified root, from the specified download category.
  *
  * @param  AUTO_LINK $category_id The category we are finding for
  * @param  ?AUTO_LINK $root The root of the tree (null: the true root)

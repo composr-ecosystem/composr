@@ -160,17 +160,17 @@ function get_screen_title($title, bool $dereference_lang = true, array $params =
  * Get the Tempcode for a hyperlink.
  *
  * @param  mixed $url The URL to put in the hyperlink (URLPATH or Tempcode)
- * @param  mixed $caption The hyperlinks caption (either Tempcode or string)
+ * @param  mixed $caption The hyperlinks caption, format depends on $auto_escape (string or Tempcode)
  * @param  boolean $external Whether the link is an external one (by default, the external template makes it open in a new window)
- * @param  boolean $escape Whether to escape the hyperlink caption (only applies if it is not passed as Tempcode)
- * @param  mixed $title Link title (either Tempcode or string) (blank: none)
+ * @param  boolean $auto_escape Whether to automatically escape if $caption is plain-text entry so that it cannot contain HTML
+ * @param  mixed $title Link title (string or Tempcode) (blank: none)
  * @param  ?string $accesskey The access key to use (null: none)
  * @param  ?Tempcode $post_data Data to post (null: an ordinary link)
  * @param  ?string $rel Rel (link type) (null: no special type)
  * @param  ?ID_TEXT $overlay Open in overlay with the default link/form target being as follows (e.g. _top or _self) (null: an ordinary link)
  * @return Tempcode The generated hyperlink
  */
-function hyperlink($url, $caption, bool $external, bool $escape, $title = '', ?string $accesskey = null, ?object $post_data = null, ?string $rel = null, ?string $overlay = null) : object
+function hyperlink($url, $caption, bool $external, bool $auto_escape, $title = '', ?string $accesskey = null, ?object $post_data = null, ?string $rel = null, ?string $overlay = null) : object
 {
     if (((is_object($caption)) && ($caption->is_empty())) || ((!is_object($caption)) && ($caption == ''))) {
         $caption = do_lang_tempcode('NA');
@@ -181,13 +181,13 @@ function hyperlink($url, $caption, bool $external, bool $escape, $title = '', ?s
     } else {
         $tpl = 'HYPERLINK';
     }
-    return do_template($tpl, ['OVERLAY' => $overlay, 'REL' => $rel, 'POST_DATA' => $post_data, 'ACCESSKEY' => $accesskey, 'NEW_WINDOW' => $external, 'TITLE' => $title, 'URL' => $url, 'CAPTION' => $escape ? escape_html($caption) : $caption]);
+    return do_template($tpl, ['OVERLAY' => $overlay, 'REL' => $rel, 'POST_DATA' => $post_data, 'ACCESSKEY' => $accesskey, 'NEW_WINDOW' => $external, 'TITLE' => $title, 'URL' => $url, 'CAPTION' => $auto_escape ? escape_html($caption) : $caption]);
 }
 
 /**
  * Get the Tempcode for a div. Similar to paragraph, but may contain more formatting (such as <br />'s).
  *
- * @param  Tempcode $tempcode The Tempcode to put into a div
+ * @param  Tempcode $tempcode The Tempcode to put into a div, provided in HTML format (string or Tempcode)
  * @param  string $guid GUID for call
  * @param  ?string $class CSS classname (null: none)
  * @return Tempcode The generated div with contents
@@ -200,7 +200,7 @@ function div(object $tempcode, string $guid = '', ?string $class = null) : objec
 /**
  * Get the Tempcode for a span.
  *
- * @param  Tempcode $tempcode The Tempcode to put into a span
+ * @param  Tempcode $tempcode The Tempcode to put into a span, provided in HTML format (string or Tempcode)
  * @param  string $guid GUID for call
  * @param  ?string $class CSS classname (null: none)
  * @return Tempcode The generated span with contents
@@ -213,7 +213,7 @@ function span(object $tempcode, string $guid = '', ?string $class = null) : obje
 /**
  * Get the Tempcode for a paragraph. This function should only be used with escaped text strings that need to be put into a paragraph, not with sections of HTML. Remember, paragraphs are literally that, and should only be used with templates that don't assume that they are going to put the given parameters into paragraphs themselves.
  *
- * @param  mixed $text The text to put into the paragraph (string or Tempcode)
+ * @param  mixed $text The text to put into the paragraph, provided in HTML format (string or Tempcode)
  * @param  string $guid GUID for call
  * @param  ?string $class CSS classname (null: none)
  * @return Tempcode The generated paragraph
@@ -227,7 +227,7 @@ function paragraph($text, string $guid = '', ?string $class = null) : object
  * Get the Tempcode for an info page.
  *
  * @param  Tempcode $title The title of the info page
- * @param  mixed $text The text to put on the info page (string, or language-Tempcode)
+ * @param  mixed $text The text to put on the info page, provided in plain-text format or as HTML via do_lang_tempcode/protect_from_escaping
  * @param  boolean $support_match_key_messages Whether match key messages / redirects should be supported
  * @param  ?Tempcode $back_url URL to have back button to (null: none)
  * @param  ?Tempcode $fields Fields to carry with on back button (null: none)
@@ -249,7 +249,7 @@ function inform_screen(object $title, $text, bool $support_match_key_messages = 
  * Get the Tempcode for a warn page.
  *
  * @param  Tempcode $title The title of the warn page
- * @param  mixed $text The text to put on the warn page (either Tempcode or string)
+ * @param  mixed $text The text to put on the warn page, provided in plain-text format or as HTML via do_lang_tempcode/protect_from_escaping
  * @param  boolean $provide_back Whether to provide a back button
  * @param  boolean $support_match_key_messages Whether match key messages / redirects should be supported
  * @return Tempcode The warn page
@@ -264,7 +264,7 @@ function warn_screen(object $title, $text, bool $provide_back = true, bool $supp
  * Get the Tempcode for a hidden form element.
  *
  * @param  ID_TEXT $name The name which this input field is for
- * @param  mixed $value The value for this input field (string or Tempcode)
+ * @param  mixed $value The value for this input field, provided in plain-text format (string or Tempcode)
  * @return Tempcode The input field
  */
 function form_input_hidden(string $name, $value) : object
@@ -296,7 +296,7 @@ function form_input_list_group($title, object $entries) : object
  *
  * @param  string $value The value for this entry
  * @param  boolean $selected Whether this entry is selected by default or not (Note: if nothing else is selected and this is the first, it will be selected by default anyway)
- * @param  mixed $text The text associated with this choice (blank: just use name for text)
+ * @param  mixed $text The text associated with this choice, provided in plain-text format or as HTML via do_lang_tempcode/protect_from_escaping (blank: just use name for text)
  * @param  boolean $red Whether this entry will be put as red (marking it as important somehow)
  * @param  boolean $disabled Whether this list entry is disabled (like a header in a list)
  * @param  string $title The tooltip
@@ -328,7 +328,7 @@ function form_input_list_entry(string $value, bool $selected = false, $text = ''
 /**
  * Display some raw text so that it is repeated as raw visually in HTML.
  *
- * @param  mixed $in Input
+ * @param  mixed $in Input, provided in plain-text format or as HTML via do_lang_tempcode/protect_from_escaping
  * @param  boolean $using_textarea Whether to show using a textarea (more reliable to use clipboard to get from)
  * @return Tempcode Output
  */
@@ -367,7 +367,7 @@ function redirect_screen(?object $title, $url, $text = null, bool $intermediary_
  * Advanced truncation/tooltip generator.
  * Note we also have the generate_tooltip_by_truncation function, which is good for simple plain-text tooltips.
  *
- * @param  mixed $label Label to truncate, string or Tempcode
+ * @param  mixed $label Label to truncate (string or Tempcode)
  * @param  string $type The type of truncation to do
  * @set left right spread
  * @param  integer $len The length to truncate at

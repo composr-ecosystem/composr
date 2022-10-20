@@ -19,7 +19,7 @@
  */
 
 /**
- * Takes some Comcode, and return an XHTML menu created from it.
+ * Takes some Comcode, and return an HTML menu created from it.
  *
  * @param  LONG_TEXT $comcode The contents of the Comcode menu tag
  * @param  SHORT_TEXT $menu An identifier for this menu (will be used as a unique ID by menu javascript code)

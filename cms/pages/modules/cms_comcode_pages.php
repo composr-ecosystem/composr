@@ -785,7 +785,7 @@ class Module_cms_comcode_pages
             }
             $display_map[] = protect_from_escaping($actions);
 
-            $table_rows->attach(/*XHTMLXHTML*/static_evaluate_tempcode(results_entry($display_map, true)));
+            $table_rows->attach(static_evaluate_tempcode(results_entry($display_map, true)));
 
             $i++;
         }

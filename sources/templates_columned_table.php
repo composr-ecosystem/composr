@@ -41,15 +41,15 @@ function columned_table_header_row(array $values) : object
 /**
  * Get the Tempcode for a table row.
  *
- * @param  array $values The array of values that make up this row
- * @param  boolean $escape Whether to add escaping
+ * @param  array $values The array of values that make up this row (each is a plain-text string or HTML Tempcode)
+ * @param  boolean $auto_escape Whether to automatically escape each plain-text entry so that it cannot contain HTML
  * @return Tempcode The generated row
  */
-function columned_table_row(array $values, bool $escape) : object
+function columned_table_row(array $values, bool $auto_escape) : object
 {
     $cells = new Tempcode();
     foreach ($values as $value) {
-        if (($escape) && (!is_object($value))) {
+        if (($auto_escape) && (!is_object($value))) {
             $value = make_string_tempcode(escape_html(is_object($value) ? $value->evaluate() : $value));
         }
 

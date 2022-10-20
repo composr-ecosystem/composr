@@ -1158,7 +1158,7 @@ abstract class DatabaseDriver
     /**
      * Exit with an error message. If the user doesn't have permissions to view queries it shows a generic message.
      *
-     * @param  mixed $message Message to show (Tempcode or string)
+     * @param  mixed $message Message to show, provided in plain-text format or HTML Tempcode
      * @exits
      */
     public function failed_query_exit($message)
@@ -1170,7 +1170,7 @@ abstract class DatabaseDriver
     /**
      * Attach a non-fatal error message. If the user doesn't have permissions to view queries it shows a generic message.
      *
-     * @param  mixed $message Message to show (Tempcode or string)
+     * @param  mixed $message Message to show, provided in plain-text format or HTML Tempcode
      */
     public function failed_query_message($message)
     {
@@ -1196,7 +1196,7 @@ abstract class DatabaseDriver
      * Substitute an alternative error message if the user doesn't have permissions to view queries it shows a generic message.
      * Additionally, log the original error.
      *
-     * @param  mixed $message Original message (Tempcode or string)
+     * @param  mixed $message Original message, provided in plain-text format or HTML Tempcode
      */
     protected function substitute_query_message(&$message)
     {

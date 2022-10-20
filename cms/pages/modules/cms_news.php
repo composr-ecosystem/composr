@@ -499,7 +499,7 @@ class Module_cms_news extends Standard_crud_module
             $fields2->attach(content_review_get_fields('news', ($id === null) ? null : strval($id)));
         }
 
-        return [$fields, $hidden, null, null, null, null, make_string_tempcode($fields2->evaluate())/*XHTMLXHTML*/, $posting_form_tabindex];
+        return [$fields, $hidden, null, null, null, null, make_string_tempcode($fields2->evaluate()), $posting_form_tabindex];
     }
 
     /**

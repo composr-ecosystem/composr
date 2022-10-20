@@ -122,7 +122,7 @@ function get_self_url_easy(bool $script_name_if_cli = false) : string
  * @param  array $extra_params A map of extra parameters for the URL
  * @param  boolean $posted_too Whether to also keep POSTed data, in the GET request (useful if either_param_string is used to get the data instead of post_param_string - of course the POST data must be of the not--persistent-state-changing variety)
  * @param  boolean $avoid_remap Whether to avoid URL Schemes (sometimes essential so we can assume the standard URL parameter addition scheme in templates)
- * @return mixed The URL (Tempcode or string)
+ * @return mixed The URL (string or Tempcode)
  */
 function get_self_url(bool $evaluate = false, bool $root_if_posted = false, array $extra_params = [], bool $posted_too = false, bool $avoid_remap = false)
 {

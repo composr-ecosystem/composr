@@ -547,7 +547,7 @@ function create_selection_list_zones(?string $sel = null, array $no_go = [], ?ar
 }
 
 /**
- * Get a nice, formatted XHTML list of page templates.
+ * Get a nice, formatted HTML list of page templates.
  *
  * @param  ?ID_TEXT $it The currently selected entry (null: none selected)
  * @return Tempcode The list of page templates

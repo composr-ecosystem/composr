@@ -127,7 +127,7 @@ class Hook_fields_theme_image
      * @param  ?ID_TEXT $url_field Name of the URL field in the table (null: N/A)
      * @param  ?MEMBER $submitter Submitter (null: current member)
      * @param  ?mixed $ev_pure The 'pure' form of the raw value, meaning Comcode is not pre-parsed and string conversion has not been performed (null: unknown)
-     * @return mixed Rendered field (Tempcode or string)
+     * @return mixed Rendered field (string or Tempcode)
      */
     public function render_field_value(array &$field, $ev, int $i, ?array $only_fields, ?string $table = null, ?int $id = null, ?string $id_field = null, ?string $field_id_field = null, ?string $url_field = null, ?int $submitter = null, $ev_pure = null)
     {

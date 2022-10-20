@@ -113,7 +113,7 @@ function init__site()
  *
  * @sets_output_state
  *
- * @param  mixed $data JavaScript to attach (Tempcode or string)
+ * @param  mixed $data JavaScript to attach (string or Tempcode)
  */
 function attach_to_javascript($data)
 {
@@ -125,11 +125,11 @@ function attach_to_javascript($data)
 }
 
 /**
- * Attach some XHTML to the screen header.
+ * Attach some HTML to the screen header.
  *
  * @sets_output_state
  *
- * @param  mixed $data XHTML to attach (Tempcode or string)
+ * @param  mixed $data HTML to attach, provided in HTML format (string or Tempcode)
  */
 function attach_to_screen_header($data)
 {
@@ -174,8 +174,8 @@ function inform_non_canonical_parameter(string $param, bool $block_page_from_sta
  *
  * @sets_output_state
  *
- * @param  mixed $message The type of special message
- * @param  ID_TEXT $type The template to use
+ * @param  mixed $message The message to show, provided in plain-text format or HTML Tempcode
+ * @param  ID_TEXT $type The 'template' to use
  * @set inform notice warn
  * @param  boolean $put_in_helper_panel Whether to put into the helper panel instead of the normal header area
  * @param  boolean $log_error Whether to log the error
@@ -454,7 +454,7 @@ function breadcrumb_set_parents(array $parents)
  *
  * @sets_output_state
  *
- * @param  mixed $title The title (Tempcode or string)
+ * @param  mixed $title The title, provided in plain-text format or HTML Tempcode
  */
 function breadcrumb_set_self($title)
 {
@@ -1191,7 +1191,7 @@ function do_site()
 /**
  * Do any static cache saving that we want to do.
  *
- * @param  mixed $out Output to cache (Tempcode or string)
+ * @param  mixed $out Output to cache (string or Tempcode)
  * @param  string $mime_type Mime type to use
  * @return boolean Whether saving could have happened
  */

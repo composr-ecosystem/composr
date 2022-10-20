@@ -496,7 +496,7 @@ function find_country_name_from_iso(?string $iso) : ?string
 }
 
 /**
- * Get a nice, formatted XHTML list of countries.
+ * Get a nice, formatted HTML list of countries.
  *
  * @param  array $selected_countries The currently selected countries
  * @return Tempcode The list of countries
@@ -517,7 +517,7 @@ function create_country_selection_list(array $selected_countries = []) : object
 }
 
 /**
- * Get a nice, formatted XHTML list of regions.
+ * Get a nice, formatted HTML list of regions.
  *
  * @param  array $selected_regions The currently selected regions
  * @return Tempcode The list of regions
@@ -528,7 +528,7 @@ function create_region_selection_list(array $selected_regions = []) : object
 }
 
 /**
- * Get a nice, formatted XHTML list of USA states.
+ * Get a nice, formatted HTML list of USA states.
  *
  * @param  array $selected_states The currently selected states
  * @return Tempcode The list of states

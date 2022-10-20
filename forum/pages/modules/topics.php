@@ -321,7 +321,7 @@ class Module_topics
      *
      * @param  ID_TEXT $_title The language string codename for the title to use in the page
      * @param  AUTO_LINK $topic_id The ID of the topic to redirect to
-     * @param  ?mixed $lang What to output (Tempcode or string) (null: default)
+     * @param  ?mixed $lang What to output (string or Tempcode) (null: default)
      * @param  ?AUTO_LINK $post_id The ID of the post to redirect to (null: redirect to topic instead)
      * @return Tempcode The UI
      */
@@ -349,7 +349,7 @@ class Module_topics
      *
      * @param  ID_TEXT $_title The language string codename for the title to use in the page
      * @param  ?AUTO_LINK $forum_id The ID of the forum to redirect to (null: PTs)
-     * @param  ?mixed $lang What to output (Tempcode or string) (null: default)
+     * @param  ?mixed $lang What to output (string or Tempcode) (null: default)
      * @return Tempcode The UI
      */
     public function redirect_to_forum(string $_title, ?int $forum_id, $lang = null) : object

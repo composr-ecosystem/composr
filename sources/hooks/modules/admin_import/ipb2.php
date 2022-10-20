@@ -407,7 +407,7 @@ class Hook_import_ipb2
     }
 
     /**
-     * Fix non-XHTML parts of IPB posts.
+     * Fix non-HTML parts of IPB posts.
      *
      * @param  LONG_TEXT $post IPB post
      * @return LONG_TEXT The cleaned post

@@ -159,7 +159,7 @@ function build_sales_table(?int $filter_member_id, bool $show_username = false, 
  *
  * @param  Tempcode $title The screen title
  * @param  AUTO_LINK $id The order ID
- * @param  Tempcode $text Text to include on the order
+ * @param  Tempcode $text Text to include on the order, provided in plain-text format or as HTML via do_lang_tempcode/protect_from_escaping
  * @param  boolean $show_order_actions Whether to show order actions
  * @return Tempcode The order details
  */

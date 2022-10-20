@@ -183,7 +183,7 @@ function convert_template_tree_metadata_to_screen_tree(array $metadata) : ?array
  * Prepare template tree metadata.
  *
  * @param  integer $type Tree node type (a TEMPLATE_TREE_NODE__* constant)
- * @param  mixed $identifier Identifier (Tempcode or string)
+ * @param  mixed $identifier Identifier (string or Tempcode)
  * @param  mixed $children Child nodes (array) or Tempcode node to get children from (Tempcode)
  * @return array Metadata structure
  */

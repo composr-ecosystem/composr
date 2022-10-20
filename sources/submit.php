@@ -115,7 +115,7 @@ function send_validation_request(string $type, string $table, bool $non_integer_
 }
 
 /**
- * Credit points to a member for submitting something, then returns the XHTML page to say so.
+ * Credit points to a member for submitting something, then returns the HTML page to say so.
  *
  * @param  ID_TEXT $type One of this type has been submitted. By convention it is the language string codename of what was done, e.g. ADD_DOWNLOAD
  * @param  ID_TEXT $content_type The content type submitted

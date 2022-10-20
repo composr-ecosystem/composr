@@ -589,7 +589,7 @@ function only_member_galleries_of_id(string $cat, ?int $member_id, int $child_co
 }
 
 /**
- * Get a nice, formatted, XHTML list of the galleries, extending deeper from the given gallery, showing all sub(sub...)galleries.
+ * Get a nice, formatted, HTML list of the galleries, extending deeper from the given gallery, showing all sub(sub...)galleries.
  *
  * @param  ?ID_TEXT $it The gallery to select by default (null: no specific default)
  * @param  ?string $filter A function name to filter galleries with (null: no filter)
@@ -993,7 +993,7 @@ function gallery_breadcrumbs(string $gallery, ?string $root = 'root', bool $incl
 }
 
 /**
- * Get a nice, formatted XHTML list of gallery entries, in gallery tree structure.
+ * Get a nice, formatted HTML list of gallery entries, in gallery tree structure.
  *
  * @param  ID_TEXT $table The table we are working with
  * @set images videos

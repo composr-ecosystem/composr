@@ -240,7 +240,7 @@ function create_selection_list_confluence($selected_page_id = null, $under = nul
 }
 
 /**
- * Get a formatted XHTML string of the route back to the specified root, from the specified category.
+ * Get a formatted HTML string of the route back to the specified root, from the specified category.
  *
  * @param  AUTO_LINK $page_id The page we are finding for
  * @param  boolean $no_link_for_me_sir Whether to include category links at this level (the recursed levels will always contain links - the top level is optional, hence this parameter)

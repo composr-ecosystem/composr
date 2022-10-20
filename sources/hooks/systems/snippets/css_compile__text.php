@@ -24,7 +24,7 @@
 class Hook_snippet_css_compile__text
 {
     /**
-     * Run function for snippet hooks. Generates XHTML to insert into a page using AJAX.
+     * Run function for snippet hooks. Generates HTML to insert into a page using AJAX.
      *
      * @return Tempcode The snippet
      */

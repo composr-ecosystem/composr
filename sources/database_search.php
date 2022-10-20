@@ -2808,7 +2808,7 @@ function generate_text_summary(string $_temp_summary, array $words_searched, ?in
 
     $_temp_summary_lower = cms_mb_strtolower($_temp_summary);
 
-    // Add in some highlighting direct to XHTML
+    // Add in some highlighting direct to HTML
     $all_occurrences = [];
     foreach ($words_searched as $content_bit) {
         if ($content_bit == '') {

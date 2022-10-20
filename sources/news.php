@@ -242,7 +242,7 @@ function render_news_category_box(array $row, string $zone = '_SEARCH', bool $gi
 }
 
 /**
- * Get a nice formatted XHTML list of news categories.
+ * Get a nice formatted HTML list of news categories.
  *
  * @param  ?mixed $it The selected news category. Array or AUTO_LINK (null: personal)
  * @param  boolean $show_all_personal_categories Whether to add all personal categories into the list (for things like the adminzone, where all categories must be shown, regardless of permissions)
@@ -365,7 +365,7 @@ function create_selection_list_news_categories($it = null, bool $show_all_person
 }
 
 /**
- * Get a nice formatted XHTML list of news.
+ * Get a nice formatted HTML list of news.
  *
  * @param  ?AUTO_LINK $it The selected news entry (null: none)
  * @param  ?MEMBER $only_owned Limit news to those submitted by this member (null: show all)

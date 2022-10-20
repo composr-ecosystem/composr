@@ -524,7 +524,7 @@ function render_catalogue_category_entry_buildup(?int $category_id, string $cata
                         $tab_entry_map['VIEW_URL'] = '';
                     }
 
-                    $entry_buildup->attach(/*XHTMLXHTML*/static_evaluate_tempcode(do_template('CATALOGUE_' . $tpl_set . '_TABULAR_ENTRY_WRAP', $tab_entry_map, null, false, 'CATALOGUE_DEFAULT_TABULAR_ENTRY_WRAP')));
+                    $entry_buildup->attach(static_evaluate_tempcode(do_template('CATALOGUE_' . $tpl_set . '_TABULAR_ENTRY_WRAP', $tab_entry_map, null, false, 'CATALOGUE_DEFAULT_TABULAR_ENTRY_WRAP')));
                 }
                 if ($i >= $start + $max) {
                     break;
@@ -1380,7 +1380,7 @@ function _get_catalogue_entry_field(int $field_id, $entry_id, string $type = 'sh
 }
 
 /**
- * Get a nice, formatted, XHTML list of all the catalogues.
+ * Get a nice, formatted, HTML list of all the catalogues.
  *
  * @param  ?ID_TEXT $it The name of the currently selected catalogue (null: none selected)
  * @param  boolean $prefer_ones_with_entries If there are too many to list prefer to get ones with entries rather than just the newest
@@ -1441,7 +1441,7 @@ function create_selection_list_catalogues(?string $it = null, bool $prefer_ones_
 }
 
 /**
- * Get a nice, formatted XHTML list extending from the root, and showing all subcategories, and their subcategories (ad infinitum).
+ * Get a nice, formatted HTML list extending from the root, and showing all subcategories, and their subcategories (ad infinitum).
  *
  * @param  ID_TEXT $catalogue_name The catalogue name
  * @param  ?AUTO_LINK $it The currently selected entry (null: none)
@@ -1582,7 +1582,7 @@ function get_catalogue_category_tree(string $catalogue_name, ?int $category_id, 
 }
 
 /**
- * Get a nice, formatted XHTML list of entries, in catalogue category tree structure.
+ * Get a nice, formatted HTML list of entries, in catalogue category tree structure.
  *
  * @param  ID_TEXT $catalogue_name The catalogue name
  * @param  ?AUTO_LINK $it The currently selected entry (null: none selected)
@@ -1735,7 +1735,7 @@ function get_catalogue_entries_tree(string $catalogue_name, ?int $submitter = nu
 }
 
 /**
- * Get a formatted XHTML string of the route back to the specified root, from the specified catalogue category.
+ * Get a formatted HTML string of the route back to the specified root, from the specified catalogue category.
  *
  * @param  AUTO_LINK $category_id The category we are finding for
  * @param  ?AUTO_LINK $root The root of the tree (null: the true root)

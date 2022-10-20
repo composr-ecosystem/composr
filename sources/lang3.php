@@ -209,7 +209,7 @@ function _find_all_langs(bool $even_empty_langs = false) : array
 }
 
 /**
- * Get a nice formatted XHTML listed language selector.
+ * Get a nice formatted HTML listed language selector.
  *
  * @param  ?LANGUAGE_NAME $select_lang The language to have selected by default (null: uses the current language)
  * @param  boolean $show_unset Whether to show languages that have no language details currently defined for them

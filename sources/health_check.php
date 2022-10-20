@@ -50,7 +50,7 @@ function init__health_check()
 }
 
 /**
- * Get a nice, formatted XHTML list to select Health Check sections.
+ * Get a nice, formatted HTML list to select Health Check sections.
  *
  * @param  array $default List of sections to select by default
  * @return Tempcode The list of sections

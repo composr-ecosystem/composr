@@ -18,7 +18,7 @@ Note that regions are an amorphous concept. They should not be used for strict a
 */
 
 /**
- * Get a nice, formatted XHTML list of regions.
+ * Get a nice, formatted HTML list of regions.
  *
  * @param  array $regions The currently selected regions
  * @return Tempcode The list of regions

@@ -94,7 +94,7 @@ function has_simplified_donext() : bool
  * Get the Tempcode for a do next manager. A do next manager is a series of linked icons that are presented after performing an action. Modules that do not use do-next pages, usually use REFRESH_PAGE's.
  *
  * @param  ?Tempcode $title The title of what we just did (should have been passed through get_screen_title already) (null: don't do full page)
- * @param  Tempcode $text The 'text' (actually, a full XHTML lump) to show on the page
+ * @param  Tempcode $text The 'text' (actually, a full HTML lump) to show on the page, provided in HTML format
  * @param  array $main An array of entry types, with each array entry being -- an array consisting of the type codename and a URL array as per following parameters
  * @param  ?string $main_title The title to use for the main links (null: none)
  * @param  ?array $url_add_one The URL used to 'add-one' (null: impossible) (format: array of page, param, zone[, custom label])

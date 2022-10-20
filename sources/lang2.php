@@ -382,7 +382,7 @@ function find_lang_content_names(array $lang_ids) : array
 }
 
 /**
- * Get a nice formatted XHTML listed language file selector for the given language.
+ * Get a nice formatted HTML listed language file selector for the given language.
  *
  * @param  ?LANGUAGE_NAME $lang The language (null: uses the current language)
  * @return Tempcode The language file selector
