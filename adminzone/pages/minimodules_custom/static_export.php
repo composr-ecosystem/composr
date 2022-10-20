@@ -142,7 +142,7 @@ $data .= 'ErrorDocument 404 /sitemap.htm' . "\n\n";
 $data .= 'RewriteEngine on' . "\n";
 $data .= "\n";
 $data .= "\n";
-$data .= 'RewriteRule ^$ start.htm [R,L]' . "\n";
+$data .= 'RewriteRule ^/?$ start.htm [R,L]' . "\n";
 $data .= "\n";
 $data .= "\n";
 $directory = $STATIC_EXPORT_TAR['directory'];
@@ -158,7 +158,7 @@ foreach ($directory as $entry) {
     }
     $done_non_spec[$dir_name] = 1;
     if (($dir_name != '') && (basename($entry['path']) == 'browse.htm')) {
-        $data .= 'RewriteRule ^' . $dir_name . '\.htm(.*) ' . $dir_name . '/browse.htm$1 [R,L]' . "\n";
+        $data .= 'RewriteRule ^/?' . $dir_name . '\.htm(.*) ' . $dir_name . '/browse.htm$1 [R,L]' . "\n";
 
         // If .htaccess not supported let it redirect via simple stub file instead
         if (get_param_integer('save__redirects', 1) == 1) {
@@ -176,7 +176,7 @@ if (count($langs) != 1) {
     foreach (array_keys($langs) as $lang) {
         $data .= 'RewriteRule ' . $lang . ' - [L]' . "\n"; // This stops it looping; [L] ends an iteration for a directory level but doesn't stop inter-level recursions
         $data .= 'RewriteCond %{QUERY_STRING} keep_lang=' . $lang . "\n";
-        $data .= 'RewriteRule (^.*\.htm.*$) ' . $lang . '/$1 [L]' . "\n";
+        $data .= 'RewriteRule ^/?(.*\.htm.*$) ' . $lang . '/$1 [L]' . "\n";
 
         $data .= "\n";
     }
@@ -185,7 +185,7 @@ if (count($langs) != 1) {
     if (get_option('detect_lang_browser') == '1') {
         foreach (array_keys($langs) as $lang) {
             $data .= 'RewriteCond %{HTTP:Accept-Language} (^' . cms_strtolower_ascii($lang) . ') [NC]' . "\n";
-            $data .= 'RewriteRule (^.*\.htm.*$) ' . $lang . '/$1 [L]' . "\n";
+            $data .= 'RewriteRule ^/?(.*\.htm.*$) ' . $lang . '/$1 [L]' . "\n";
 
             $data .= "\n";
         }
@@ -193,7 +193,7 @@ if (count($langs) != 1) {
 
     // And default to English
     $data .= "\n";
-    $data .= 'RewriteRule (^.*\.htm.*$) EN/$1 [L]' . "\n";
+    $data .= 'RewriteRule ^/?(.*\.htm.*$) EN/$1 [L]' . "\n";
 
     $data .= "\n";
 }

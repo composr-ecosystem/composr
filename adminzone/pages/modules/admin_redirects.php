@@ -440,6 +440,9 @@ class Module_admin_redirects
             if (substr($_from, 0, 1) == '^') {
                 $_from = substr($_from, 1);
             }
+            if (substr($_from, 0, 2) == '/?') {
+                $_from = substr($_from, 2);
+            }
             if (substr($_from, -3) == '.*$') {
                 $type = 'prefix';
                 $_from = substr($_from, 0, strlen($_from) - 3);
@@ -614,7 +617,7 @@ class Module_admin_redirects
 
             $qs_parts = explode('?', $from, 2);
 
-            $_from = '^';
+            $_from = '^/?';
             $_from .= preg_quote($qs_parts[0]);
             switch ($type) {
                 case 'full':

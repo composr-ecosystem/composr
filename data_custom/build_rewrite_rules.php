@@ -54,7 +54,7 @@ $rewrite_rules = [
     [
         'Redirect away from modules called directly by URL. Helpful as it allows you to "run" a module file in a debugger and still see it running.',
         [
-            ['^([^=]*)pages/(modules|modules_custom)/([^/]*)\.php$', '$1index.php\?page=$3', ['L', 'QSA', 'R'], true],
+            ['^/?([^=]*)pages/(modules|modules_custom)/([^/]*)\.php$', '$1index.php\?page=$3', ['L', 'QSA', 'R'], true],
         ],
     ],
 
@@ -63,38 +63,38 @@ $rewrite_rules = [
     [
         'PG STYLE: These have a specially reduced form (no need to make it too explicit that these are Wiki+). We shouldn\'t shorten them too much, or the actual zone or base URL might conflict',
         [
-            ['^([^=]*)pg/s/([^\&\?]*)/index\.php$', '$1index.php\?page=wiki&id=$2', ['L', 'QSA'], true],
+            ['^/?([^=]*)pg/s/([^\&\?]*)/index\.php$', '$1index.php\?page=wiki&id=$2', ['L', 'QSA'], true],
         ],
     ],
 
     [
         'PG STYLE: These are standard patterns',
         [
-            ['^([^=]*)pg/([^/\&\?]*)/([^/\&\?]*)/([^\&\?]*)/index\.php(.*)$', '$1index.php\?page=$2&type=$3&id=$4$5', ['L', 'QSA'], true],
-            ['^([^=]*)pg/([^/\&\?]*)/([^/\&\?]*)/index\.php(.*)$', '$1index.php\?page=$2&type=$3$4', ['L', 'QSA'], true],
-            ['^([^=]*)pg/([^/\&\?]*)/index\.php(.*)$', '$1index.php\?page=$2$3', ['L', 'QSA'], true],
-            ['^([^=]*)pg/index\.php(.*)$', '$1index.php\?page=$2', ['L', 'QSA'], true],
+            ['^/?([^=]*)pg/([^/\&\?]*)/([^/\&\?]*)/([^\&\?]*)/index\.php(.*)$', '$1index.php\?page=$2&type=$3&id=$4$5', ['L', 'QSA'], true],
+            ['^/?([^=]*)pg/([^/\&\?]*)/([^/\&\?]*)/index\.php(.*)$', '$1index.php\?page=$2&type=$3$4', ['L', 'QSA'], true],
+            ['^/?([^=]*)pg/([^/\&\?]*)/index\.php(.*)$', '$1index.php\?page=$2$3', ['L', 'QSA'], true],
+            ['^/?([^=]*)pg/index\.php(.*)$', '$1index.php\?page=$2', ['L', 'QSA'], true],
         ],
     ],
 
     [
         'PG STYLE: Now the same as the above sets, but without any additional parameters (and thus no index.php)',
         [
-            ['^([^=]*)pg/s/([^\&\?]*)$', '$1index.php\?page=wiki&id=$2', ['L', 'QSA'], true],
-            ['^([^=]*)pg/([^/\&\?]*)/([^/\&\?]*)/([^\&\?]*)/$', '$1index.php\?page=$2&type=$3&id=$4', ['L', 'QSA'], true],
-            ['^([^=]*)pg/([^/\&\?]*)/([^/\&\?]*)/([^\&\?]*)$', '$1index.php\?page=$2&type=$3&id=$4', ['L', 'QSA'], true],
-            ['^([^=]*)pg/([^/\&\?]*)/([^/\&\?]*)$', '$1index.php\?page=$2&type=$3', ['L', 'QSA'], true],
-            ['^([^=]*)pg/([^/\&\?]*)$', '$1index.php\?page=$2', ['L', 'QSA'], true],
+            ['^/?([^=]*)pg/s/([^\&\?]*)$', '$1index.php\?page=wiki&id=$2', ['L', 'QSA'], true],
+            ['^/?([^=]*)pg/([^/\&\?]*)/([^/\&\?]*)/([^\&\?]*)/$', '$1index.php\?page=$2&type=$3&id=$4', ['L', 'QSA'], true],
+            ['^/?([^=]*)pg/([^/\&\?]*)/([^/\&\?]*)/([^\&\?]*)$', '$1index.php\?page=$2&type=$3&id=$4', ['L', 'QSA'], true],
+            ['^/?([^=]*)pg/([^/\&\?]*)/([^/\&\?]*)$', '$1index.php\?page=$2&type=$3', ['L', 'QSA'], true],
+            ['^/?([^=]*)pg/([^/\&\?]*)$', '$1index.php\?page=$2', ['L', 'QSA'], true],
         ],
     ],
 
     [
         'PG STYLE: And these for those nasty situations where index.php was missing and we couldn\'t do anything about it (usually due to keep_session creeping into a semi-cached URL)',
         [
-            ['^([^=]*)pg/s/([^\&\?\.]*)&(.*)$', '$1index.php\?$3&page=wiki&id=$2', ['L', 'QSA'], true],
-            ['^([^=]*)pg/([^/\&\?\.]*)/([^/\&\?\.]*)/([^/\&\?\.]*)&(.*)$', '$1index.php\?$5&page=$2&type=$3&id=$4', ['L', 'QSA'], true],
-            ['^([^=]*)pg/([^/\&\?\.]*)/([^/\&\?\.]*)&(.*)$', '$1index.php\?$4&page=$2&type=$3', ['L', 'QSA'], true],
-            ['^([^=]*)pg/([^/\&\?\.]*)&(.*)$', '$1index.php\?$3&page=$2', ['L', 'QSA'], true],
+            ['^/?([^=]*)pg/s/([^\&\?\.]*)&(.*)$', '$1index.php\?$3&page=wiki&id=$2', ['L', 'QSA'], true],
+            ['^/?([^=]*)pg/([^/\&\?\.]*)/([^/\&\?\.]*)/([^/\&\?\.]*)&(.*)$', '$1index.php\?$5&page=$2&type=$3&id=$4', ['L', 'QSA'], true],
+            ['^/?([^=]*)pg/([^/\&\?\.]*)/([^/\&\?\.]*)&(.*)$', '$1index.php\?$4&page=$2&type=$3', ['L', 'QSA'], true],
+            ['^/?([^=]*)pg/([^/\&\?\.]*)&(.*)$', '$1index.php\?$3&page=$2', ['L', 'QSA'], true],
         ],
     ],
 
@@ -103,20 +103,20 @@ $rewrite_rules = [
     [
         'HTM STYLE: These have a specially reduced form (no need to make it too explicit that these are Wiki+). We shouldn\'t shorten them too much, or the actual zone or base URL might conflict',
         [
-            ['^(' . $zone_list . ')/s/([^\&\?]*)\.htm$', '$1/index.php\?page=wiki&id=$2', ['L', 'QSA'], true],
-            ['^s/([^\&\?]*)\.htm$', 'index\.php\?page=wiki&id=$1', ['L', 'QSA'], true],
+            ['^/?(' . $zone_list . ')/s/([^\&\?]*)\.htm$', '$1/index.php\?page=wiki&id=$2', ['L', 'QSA'], true],
+            ['^/?s/([^\&\?]*)\.htm$', 'index\.php\?page=wiki&id=$1', ['L', 'QSA'], true],
         ],
     ],
 
     [
         'HTM STYLE: These are standard patterns',
         [
-            ['^(' . $zone_list . ')/([^/\&\?]+)/([^/\&\?]*)/([^\&\?]*)\.htm$', '$1/index.php\?page=$2&type=$3&id=$4', ['L', 'QSA'], true],
-            ['^(' . $zone_list . ')/([^/\&\?]+)/([^/\&\?]*)\.htm$', '$1/index.php\?page=$2&type=$3', ['L', 'QSA'], true],
-            ['^(' . $zone_list . ')/([^/\&\?]+)\.htm$', '$1/index.php\?page=$2', ['L', 'QSA'], true],
-            ['^([^/\&\?]+)/([^/\&\?]*)/([^\&\?]*)\.htm$', 'index.php\?page=$1&type=$2&id=$3', ['L', 'QSA'], true],
-            ['^([^/\&\?]+)/([^/\&\?]*)\.htm$', 'index.php\?page=$1&type=$2', ['L', 'QSA'], true],
-            ['^([^/\&\?]+)\.htm$', 'index.php\?page=$1', ['L', 'QSA'], true],
+            ['^/?(' . $zone_list . ')/([^/\&\?]+)/([^/\&\?]*)/([^\&\?]*)\.htm$', '$1/index.php\?page=$2&type=$3&id=$4', ['L', 'QSA'], true],
+            ['^/?(' . $zone_list . ')/([^/\&\?]+)/([^/\&\?]*)\.htm$', '$1/index.php\?page=$2&type=$3', ['L', 'QSA'], true],
+            ['^/?(' . $zone_list . ')/([^/\&\?]+)\.htm$', '$1/index.php\?page=$2', ['L', 'QSA'], true],
+            ['^/?([^/\&\?]+)/([^/\&\?]*)/([^\&\?]*)\.htm$', 'index.php\?page=$1&type=$2&id=$3', ['L', 'QSA'], true],
+            ['^/?([^/\&\?]+)/([^/\&\?]*)\.htm$', 'index.php\?page=$1&type=$2', ['L', 'QSA'], true],
+            ['^/?([^/\&\?]+)\.htm$', 'index.php\?page=$1', ['L', 'QSA'], true],
         ],
     ],
 
@@ -125,20 +125,20 @@ $rewrite_rules = [
     [
         'SIMPLE STYLE: These have a specially reduced form (no need to make it too explicit that these are Wiki+). We shouldn\'t shorten them too much, or the actual zone or base URL might conflict',
         [
-            ['^(' . $zone_list . ')/s/([^\&\?]*)$', '$1/index.php\?page=wiki&id=$2', ['L', 'QSA'], false],
-            ['^s/([^\&\?]*)$', 'index\.php\?page=wiki&id=$1', ['L', 'QSA'], false],
+            ['^/?(' . $zone_list . ')/s/([^\&\?]*)$', '$1/index.php\?page=wiki&id=$2', ['L', 'QSA'], false],
+            ['^/?s/([^\&\?]*)$', 'index\.php\?page=wiki&id=$1', ['L', 'QSA'], false],
         ],
     ],
 
     [
         'SIMPLE STYLE: These are standard patterns',
         [
-            ['^(' . $zone_list . ')/([^/\&\?]+)/([^/\&\?]*)/([^\&\?]*)$', '$1/index.php\?page=$2&type=$3&id=$4', ['L', 'QSA'], false],
-            ['^(' . $zone_list . ')/([^/\&\?]+)/([^/\&\?]*)$', '$1/index.php\?page=$2&type=$3', ['L', 'QSA'], false],
-            ['^(' . $zone_list . ')/([^/\&\?]+)$', '$1/index.php\?page=$2', ['L', 'QSA'], false],
-            ['^([^/\&\?]+)/([^/\&\?]*)/([^\&\?]*)$', 'index.php\?page=$1&type=$2&id=$3', ['L', 'QSA'], false],
-            ['^([^/\&\?]+)/([^/\&\?]*)$', 'index.php\?page=$1&type=$2', ['L', 'QSA'], false],
-            ['^([^/\&\?]+)$', 'index.php\?page=$1', ['L', 'QSA'], false],
+            ['^/?(' . $zone_list . ')/([^/\&\?]+)/([^/\&\?]*)/([^\&\?]*)$', '$1/index.php\?page=$2&type=$3&id=$4', ['L', 'QSA'], false],
+            ['^/?(' . $zone_list . ')/([^/\&\?]+)/([^/\&\?]*)$', '$1/index.php\?page=$2&type=$3', ['L', 'QSA'], false],
+            ['^/?(' . $zone_list . ')/([^/\&\?]+)$', '$1/index.php\?page=$2', ['L', 'QSA'], false],
+            ['^/?([^/\&\?]+)/([^/\&\?]*)/([^\&\?]*)$', 'index.php\?page=$1&type=$2&id=$3', ['L', 'QSA'], false],
+            ['^/?([^/\&\?]+)/([^/\&\?]*)$', 'index.php\?page=$1&type=$2', ['L', 'QSA'], false],
+            ['^/?([^/\&\?]+)$', 'index.php\?page=$1', ['L', 'QSA'], false],
         ],
     ],
 ];
@@ -193,21 +193,21 @@ function write_to($file_path, $type, $match_start, $match_end, $indent_level, $r
             RewriteCond $1 -f [OR]
             RewriteCond $1 -l [OR]
             RewriteCond $1 -d
-            RewriteRule ^(.*) - [L]
+            RewriteRule ^/?(.*) - [L]
             ';
 
             if ($type == 'ApacheRecommended') {
                 $rules_txt .= '
                 # crossdomain.xml is actually Composr-driven
-                RewriteRule ^crossdomain\.xml data/crossdomain.php
+                RewriteRule ^/?crossdomain\.xml data/crossdomain.php
                 ';
             }
 
             $rules_txt .= '
             # WebDAV implementation (requires the non-bundled WebDAV addon)
-            RewriteRule ^webdav(/.*|$) data_custom/webdav.php
+            RewriteRule ^/?webdav(/.*|$) data_custom/webdav.php
             RewriteCond %{HTTP_HOST} ^webdav\..*
-            RewriteRule ^(.*)$ data_custom/webdav.php
+            RewriteRule ^/?(.*)$ data_custom/webdav.php
 
             #FAILOVER STARTS
             ### LEAVE THIS ALONE, AUTOMATICALLY MAINTAINED ###
@@ -301,8 +301,8 @@ function write_to($file_path, $type, $match_start, $match_end, $indent_level, $r
                 foreach ($rewrite_rule_set as $y => $rewrite_rule) {
                     list($rule, $to, $flags, $enabled) = $rewrite_rule;
 
-                    if (substr($rule, 0, 1) == '^') {
-                        $rule = substr($rule, 1);
+                    if (substr($rule, 0, 3) == '^/?') {
+                        $rule = substr($rule, 3);
                     }
                     if (substr($rule, -1) == '$') {
                         $rule = substr($rule, 0, strlen($rule) - 1);
