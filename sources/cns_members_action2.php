@@ -1066,21 +1066,20 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
     $changes = [];
 
     if ($custom_fields !== null) {
-        // Check constraints
-        $_all_fields = cns_get_all_custom_fields_match($GLOBALS['CNS_DRIVER']->get_members_groups($member_id));
-        $all_fields = []; // TODO: Bug; not getting set with anything
-        $fields_to_skip = _cpfs_internal_use_only();
-        foreach ($_all_fields as $field) {
-            $field_id = $field['id'];
+        $groups = $GLOBALS['CNS_DRIVER']->get_members_groups($member_id);
+        $all_fields = cns_get_all_custom_fields_match(
+            $groups, // groups
+            (($member_id == get_member()) || (has_privilege(get_member(), 'view_any_profile_field'))) ? null : 1, // public view
+            null, // owner view
+            (($member_id != get_member()) || (has_privilege(get_member(), 'view_any_profile_field'))) ? null : 1, // owner set
+            null, // required
+            null, // show in posts
+            null, // show in post previews
+            null, // special start
+            null, // show on join form
+        );
 
-            if (array_key_exists($field_id, $custom_fields)) {
-                if ($check_correctness) {
-                    if (($field['cf_owner_set'] == 0) && ($member_id == get_member()) && (!has_privilege(get_member(), 'view_any_profile_field'))) {
-                        access_denied('I_ERROR');
-                    }
-                }
-            }
-        }
+        $fields_to_skip = _cpfs_internal_use_only();
 
         $phone_number_field = find_cms_cpf_field_id('cms_mobile_phone_number');
         if ($phone_number_field !== null) {
