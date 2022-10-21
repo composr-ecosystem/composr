@@ -7764,6 +7764,10 @@ span:not(:empty)+#lightbox-position-in-set::before, span:not(:empty)+#lightbox-f
 	margin-top: 0.6em;
 }
 
+.box-filter-inputs .search-button + .search-button {
+	margin-left: 0.5em;
+}
+
 .box-filter-inputs .search-option, .box-filter-inputs .search-button {
 	/* Force a neat float alignment */
 	min-height: 2.7em;
@@ -7776,10 +7780,25 @@ span:not(:empty)+#lightbox-position-in-set::before, span:not(:empty)+#lightbox-f
 	padding: 0.5em;
 }
 
-.box-filter-inputs .filter-input {
-	margin-right: 1.5em;
-}
+/*{+START,CSS_MODE,desktop}*/
+	.box-filter-inputs .filter-input + .filter-input {
+		margin-left: 1.5em;
+	}
+/*{+END}*/
 
+/*{+START,CSS_MODE,mobile}*/
+	.box-filter-inputs .filter-input {
+		width: 100%;
+	}
+
+	.box-filter-inputs .filter-input + .filter-input {
+		margin-top: 1em;
+	}
+/*{+END}*/
+
+.box-filter-inputs .filter-input div, .box-filter-inputs .filter-input .form-control-wide {
+	display: inline-block;
+}
 
 /*
 =========================

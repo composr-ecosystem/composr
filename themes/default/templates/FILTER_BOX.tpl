@@ -34,11 +34,11 @@
 			{+END}{+END}
 
 			<div class="filter-inputs">
-				<div class="search-button filter-input">
+				<div class="search-button">
 					<button data-disable-on-click="1" accesskey="u" class="btn btn-primary btn-scri buttons--filter" type="submit">{+START,INCLUDE,ICON}NAME=buttons/filter{+END} {!FILTER}</button>
 				</div>
 				<div class="search-button">
-						<button data-cms-href="{URL*}" class="btn btn-primary btn-scri buttons--clear" type="button">{+START,INCLUDE,ICON}NAME=buttons/clear{+END} {!RESET_FILTER}</button>
+					<button data-cms-href="{URL*}" class="btn btn-primary btn-scri buttons--clear" type="button">{+START,INCLUDE,ICON}NAME=buttons/clear{+END} {!RESET_FILTER}</button>
 				</div>
 			</div>
 		</form>
