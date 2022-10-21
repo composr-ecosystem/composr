@@ -51,6 +51,9 @@ class Hook_profiles_tabs_points
     {
         require_lang('points');
 
+        require_code('site');
+        inject_feed_url('?mode=points&select=' . strval($member_id_of), do_lang('POINTS'));
+
         $title = do_lang_tempcode('POINTS');
 
         $order = 40;
