@@ -29,6 +29,7 @@ class timezones_test_set extends cms_test_case
         $quick = (get_param_integer('quick', 0) == 1);
 
         // Cluster tzinfo zones
+        $all_cities = [];
         $equivalencies = [];
         foreach ($timezones as $timezone) {
             if ($timezone == 'UTC') {
@@ -52,6 +53,8 @@ class timezones_test_set extends cms_test_case
                 $equivalencies[$_offsets] = [];
             }
             $equivalencies[$_offsets][] = $timezone;
+
+            $all_cities[] = $this->tz_to_city($timezone);
         }
 
         // Check tzinfo zones against Composr zones
@@ -103,10 +106,61 @@ class timezones_test_set extends cms_test_case
                 $this->assertTrue((($last_offset === null) || ($last_offset <= $offset)), $title . ' is out of order');
                 $last_offset = $offset;
 
-                $parts = explode(', ', $title);
+                $parts = explode(', ', preg_replace('#^\(UTC[+-]\d\d:\d\d\) #', '', $title));
                 $parts_sorted = $parts;
                 sort($parts);
                 $this->assertTrue($parts == $parts_sorted, $title . ' does not have components in alphabetical order');
+                foreach ($parts_sorted as $part) {
+                    $part_stripped = str_replace('St. ', 'St ', preg_replace('#( \(.*\)| Islands| Island)#', '', $part));
+
+                    // Exceptions - these have good reasons to be on our list even though they are not in tzinfo (capital cities, important known timezones for large areas, islands)
+                    $exceptions = [
+                        'Samoa',
+                        'Hawaii-Aleutian',
+                        'Hawaii',
+                        'Pacific Time',
+                        'Mountain Time',
+                        'Guadalajara',
+                        'Central America',
+                        'Saskatchewan',
+                        'Central Time',
+                        'Quito',
+                        'Eastern Time',
+                        'Montreal',
+                        'Georgetown',
+                        'Port of Spain',
+                        'Atlantic Time',
+                        'Newfoundland',
+                        'Greenland',
+                        'St Pierre',
+                        'Brasilia',
+                        'Mid-Atlantic',
+                        'Belfast',
+                        'Edinburgh',
+                        'Bern',
+                        'Dar es Salaam',
+                        'Abu Dhabi',
+                        'Port Louis',
+                        'Islamabad',
+                        'Chennai',
+                        'Mumbai',
+                        'New Delhi',
+                        'Sri Jayawardenepura Kotte',
+                        'Astana',
+                        'Hanoi',
+                        'Beijing',
+                        'Canberra',
+                        'New Caledonia',
+                        'Solomon',
+                        'Marshall',
+                        'Wellington',
+                        'Johnston',
+                    ];
+
+                    if (!in_array($part_stripped, $exceptions)) {
+                        $this->assertTrue(in_array($part_stripped, $all_cities), 'Could not find city in tzinfo: ' . $part_stripped);
+                    }
+                }
 
                 $new = '(UTC';
                 $new .= ($offset < 0.0) ? '-' : '+';
@@ -134,6 +188,6 @@ class timezones_test_set extends cms_test_case
 
     protected function found_city_in_composr_title($city, $title)
     {
-        return (preg_match('#(\) |, )' . preg_quote($city, '#') . '( \(| Island|,|$)#i', str_replace('St. ', 'St ', $title)) != 0);
+        return (preg_match('#(\) |, )' . preg_quote($city, '#') . '( \(| Islands| Island|,|$)#i', str_replace('St. ', 'St ', $title)) != 0);
     }
 }
