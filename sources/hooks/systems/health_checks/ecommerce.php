@@ -50,9 +50,7 @@ class Hook_health_check_ecommerce extends Hook_Health_Check
                 $this->process_checks_section('testShippoConnection', 'Shippo', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
             }
 
-            if (($show_unusable_categories) || (get_option('taxcloud_api_key') != '') || (get_option('taxcloud_api_id') != '')) {
-                $this->process_checks_section('testTaxCloudConnection', 'TaxCloud', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
-            }
+            $this->process_checks_section('testTaxServiceConnections', 'TaxHooks', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         }
 
         return [$this->category_label, $this->results];
@@ -152,7 +150,7 @@ class Hook_health_check_ecommerce extends Hook_Health_Check
      * @param  ?array $urls_or_page_links List of URLs and/or page-links to operate on, if applicable (null: those configured)
      * @param  ?array $comcode_segments Map of field names to Comcode segments to operate on, if applicable (null: N/A)
      */
-    public function testTaxCloudConnection(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
+    public function testTaxServiceConnections(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if ($check_context == CHECK_CONTEXT__INSTALL) {
             return;
@@ -161,28 +159,12 @@ class Hook_health_check_ecommerce extends Hook_Health_Check
             return;
         }
 
-        $url = 'https://api.taxcloud.com/1.0/TaxCloud/Ping';
-
-        $request = [
-            'apiLoginID' => get_option('taxcloud_api_id'),
-            'apiKey' => get_option('taxcloud_api_key'),
-        ];
-        $_request = json_encode($request);
-        require_code('character_sets');
-        $_request = convert_to_internal_encoding($_request, get_charset(), 'utf-8');
-
-        $_response = cms_http_request($url, ['convert_to_internal_encoding' => true, 'post_params' => $_request, 'timeout' => 20.0, 'raw_content_type' => 'application/json', 'ignore_http_status' => true]);
-        $response = @json_decode($_response->data, true);
-
-        if (is_array($response)) {
-            if ($response['ResponseType'] != 3) {
-                $errormsg = $response['Messages'][0]['Message'];
-                $this->assertTrue(false, 'TaxCloud: ' . $errormsg);
-            } else {
-                $this->assertTrue((is_array($response)) && ($response['ResponseType'] == 3), 'Could not perform TaxCloud ping request');
+        $hooks = find_all_hook_obs('systems', 'ecommerce_tax', 'Hook_ecommerce_tax_');
+        foreach ($hooks as $ob) {
+            if (method_exists($ob, 'health_check')) {
+                $results = $ob->health_check();
+                $this->assertTrue($results[0], $results[1]);
             }
-        } else {
-            $this->assertTrue(false, 'TaxCloud: ' . $_response->message);
         }
     }
 }

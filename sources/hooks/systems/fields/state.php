@@ -93,7 +93,7 @@ class Hook_fields_state
             return '';
         }
 
-        if (get_option('business_country') == 'US') { // TaxCloud needs exact states, and Americans are a bit pampered, so show an explicit list
+        if (get_option('business_country') == 'US') { // Some tax services may need exact states, and Americans are a bit pampered, so show an explicit list
             require_code('locations');
 
             global $USA_STATE_LIST;
@@ -129,7 +129,7 @@ class Hook_fields_state
         $autocomplete = ($new && !empty($field['cf_autofill_type'])) ? (($field['cf_autofill_hint'] ? ($field['cf_autofill_hint'] . ' ') : '') . $field['cf_autofill_type']) : null;
 
         $definitely_usa = (get_option('cpf_enable_country') == '0') && (get_option('business_country') == 'US');
-        if (get_option('business_country') == 'US') { // TaxCloud needs exact states, and Americans are a bit pampered, so show an explicit list
+        if (get_option('business_country') == 'US') { // Some tax services need exact states, and Americans are a bit pampered, so show an explicit list
             require_code('locations');
             $state_list = new Tempcode();
             $state_list->attach(form_input_list_entry('', '' == $actual_value, do_lang_tempcode('NA_EM')));

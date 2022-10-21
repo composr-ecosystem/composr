@@ -349,21 +349,13 @@ function derive_cart_amounts(array $shopping_cart_rows, string $field_name_prefi
         $total_price += $details['price'] * $quantity;
     }
 
-    // Split into TaxCloud and non-TaxCloud
-    $taxcloud_items = [];
-    $non_taxcloud_items = [];
+    require_code('ecommerce');
+
+    $items = [];
     foreach ($shopping_cart_rows as $i => $item) {
         $type_code = $item[$field_name_prefix . 'type_code'];
         list($details) = find_product_details($type_code);
-
-        $tax_code = $details['tax_code'];
-
-        $usa_tic = (preg_match('#^TIC:#', $tax_code) != 0);
-        if ($usa_tic) {
-            $taxcloud_items[$i] = [$item, $details];
-        } else {
-            $non_taxcloud_items[$i] = [$item, $details];
-        }
+        $items[$i] = [$item, $details];
     }
 
     // Taxes will be put in here
@@ -377,13 +369,13 @@ function derive_cart_amounts(array $shopping_cart_rows, string $field_name_prefi
     $total_shipping_tax_derivation = [];
     $total_shipping_tax = 0.0;
 
-    // Do TaxCloud call
-    if (!empty($taxcloud_items)) {
-        $do_shipping_in_tax_cloud = (empty($non_taxcloud_items));
+    // Calculate taxes
+    if (!empty($items)) {
+        $do_shipping = (empty($items));
 
-        $shipping_tax_details = get_tax_using_tax_codes($taxcloud_items, $field_name_prefix, $do_shipping_in_tax_cloud ? $total_shipping_cost : 0.00/*don't incorporate as we have our own calculation anyway*/);
+        $shipping_tax_details = get_tax_using_tax_codes($items, $field_name_prefix, $do_shipping ? $total_shipping_cost : 0.00/*don't incorporate as we have our own calculation anyway*/);
 
-        foreach ($taxcloud_items as $i => $parts) {
+        foreach ($items as $i => $parts) {
             list($item, $details, $tax_derivation, $tax, $tax_tracking) = $parts;
 
             $shopping_cart_rows_taxes[$i] = [$tax_derivation, $tax, $tax_tracking];
@@ -400,39 +392,9 @@ function derive_cart_amounts(array $shopping_cart_rows, string $field_name_prefi
 
         $total_tax_tracking = $tax_tracking; // Any one of them, they'll all be the same
 
-        if ($do_shipping_in_tax_cloud) {
+        if ($do_shipping) {
             list($total_shipping_tax_derivation, $total_shipping_tax, $total_shipping_tax_tracking) = $shipping_tax_details;
         }
-    }
-
-    // Work out taxes for non-TaxCloud
-    if (!empty($non_taxcloud_items)) {
-        foreach ($non_taxcloud_items as $i => $parts) {
-            list($item, $details) = $parts;
-
-            $price = $details['price'];
-            $tax_code = $details['tax_code'];
-
-            $quantity = $item[$field_name_prefix . 'quantity'];
-
-            list($tax_derivation, $tax, $tax_tracking, $shipping_tax) = calculate_tax_due($item, $tax_code, $price, 0.0, null, $quantity);
-            unset($shipping_tax); // Meaningless
-
-            $shopping_cart_rows_taxes[$i] = [$tax_derivation, $tax, $tax_tracking];
-
-            $total_tax += $tax;
-
-            foreach ($tax_derivation as $tax_category => $tax_category_amount) {
-                if (!array_key_exists($tax_category, $total_tax_derivation)) {
-                    $total_tax_derivation[$tax_category] = 0.00;
-                }
-                $total_tax_derivation[$tax_category] += $tax_category_amount;
-            }
-        }
-
-        // We always calculate shipping manually when doing any non-TaxCloud products, as it's more tuned
-        list($total_shipping_tax_derivation, $total_shipping_tax, $total_shipping_tax_tracking, $total_shipping_tax) = calculate_tax_due(null, '0.00', 0.00, $total_shipping_cost);
-        $total_tax += $total_shipping_tax;
     }
 
     // Integrate shipping tax derivation into main derivation

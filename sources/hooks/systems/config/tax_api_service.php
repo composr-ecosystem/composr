@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_taxcloud_api_id
+class Hook_config_tax_api_service
 {
     /**
      * Gets the details relating to the config option.
@@ -30,15 +30,17 @@ class Hook_config_taxcloud_api_id
      */
     public function get_details() : ?array
     {
+        $tax_hooks = find_all_hooks('systems', 'ecommerce_tax');
         return [
-            'human_name' => 'TAXCLOUD_API_ID',
-            'type' => 'line',
+            'human_name' => 'TAX_API_SERVICE',
+            'type' => 'list',
             'category' => 'ECOMMERCE',
-            'group' => 'TAX_TAXCLOUD',
-            'explanation' => 'CONFIG_OPTION_taxcloud_api_id',
+            'group' => 'TAX',
+            'explanation' => 'CONFIG_OPTION_tax_api_service',
             'shared_hosting_restricted' => '0',
-            'list_options' => '',
-            'required' => false,
+            'list_options' => implode('|', array_keys($tax_hooks)),
+            'order_in_category_group' => 6,
+            'required' => true,
             'public' => false,
             'addon' => 'ecommerce',
         ];
@@ -55,6 +57,6 @@ class Hook_config_taxcloud_api_id
             return null;
         }
 
-        return '';
+        return 'composr';
     }
 }
