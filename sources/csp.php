@@ -248,6 +248,8 @@ function load_csp(?array $options = null, ?int $enable_more_open_html_for = null
     // font-src (unlimited)
     $_sources_list = [];
     $_sources_list[] = '*';
+    $_sources_list[] = 'data:';
+    $_sources_list[] = 'blob:';
     $clauses[] = 'font-src ' . implode(' ', $_sources_list);
 
     // object-src (unlimited)
@@ -265,6 +267,8 @@ function load_csp(?array $options = null, ?int $enable_more_open_html_for = null
     // media-src (unlimited)
     $_sources_list = [];
     $_sources_list[] = '*';
+    $_sources_list[] = 'data:';
+    $_sources_list[] = 'blob:';
     $clauses[] = 'media-src ' . implode(' ', $_sources_list);
 
     // manifest-src (disabled)
