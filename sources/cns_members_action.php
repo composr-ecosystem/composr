@@ -406,7 +406,7 @@ function cns_make_member(string $username, string $password, string $email_addre
     }
 
     $password_change_days = get_option('password_change_days');
-    if ($password_change_days === null) { // Issue when installing, option will not be set
+    if ($password_change_days == '') { // Issue when installing, option will not be set
         $password_change_days = '0';
     }
     if (intval($password_change_days) > 0) {

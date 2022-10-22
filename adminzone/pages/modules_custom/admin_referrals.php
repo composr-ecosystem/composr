@@ -50,6 +50,10 @@ class Module_admin_referrals
             return null;
         }
 
+        if (get_forum_type() != 'cns') {
+            return null;
+        }
+
         return [
             'browse' => ['REFERRALS', 'spare/referrals'],
         ];

@@ -89,6 +89,9 @@ class Hook_sitemap_entry_point extends Hook_sitemap_base
                 ]);
                 if ($functions[0] !== null) {
                     $entry_points = is_array($functions[0]) ? call_user_func_array($functions[0][0], $functions[0][1]) : eval($functions[0]);
+                    if ($entry_points === null) {
+                        $entry_points = [];
+                    }
 
                     if (($entry_points !== null) && (!$search_mode)) {
                         if (isset($entry_points['browse'])) {
@@ -112,7 +115,7 @@ class Hook_sitemap_entry_point extends Hook_sitemap_base
      * Find details of a position in the Sitemap.
      *
      * @param  ID_TEXT $page_link The page-link we are finding
-     * @param  ?string $callback Callback function to send discovered page-links to (null: return)
+     * @param  ?mixed $callback Callback function to send discovered page-links to (null: return)
      * @param  ?array $valid_node_types List of node types we will return/recurse-through (null: no limit)
      * @param  ?integer $child_cutoff Maximum number of children before we cut off all children (null: no limit)
      * @param  ?integer $max_recurse_depth How deep to go from the Sitemap root (null: no limit)
@@ -124,7 +127,7 @@ class Hook_sitemap_entry_point extends Hook_sitemap_base
      * @param  boolean $return_anyway Whether to return the structure even if there was a callback. Do not pass this setting through via recursion due to memory concerns, it is used only to gather information to detect and prevent parent/child duplication of default entry points.
      * @return ?array Node structure (null: working via callback / error)
      */
-    public function get_node(string $page_link, ?string $callback = null, ?array $valid_node_types = null, ?int $child_cutoff = null, ?int $max_recurse_depth = null, int $recurse_level = 0, int $options = 0, string $zone = '_SEARCH', int $meta_gather = 0, ?array $row = null, bool $return_anyway = false) : ?array
+    public function get_node(string $page_link, $callback = null, ?array $valid_node_types = null, ?int $child_cutoff = null, ?int $max_recurse_depth = null, int $recurse_level = 0, int $options = 0, string $zone = '_SEARCH', int $meta_gather = 0, ?array $row = null, bool $return_anyway = false) : ?array
     {
         $matches = [];
         preg_match('#^([^:]*):([^:]*)(:([^:]*)(:.*|$))?#', $page_link, $matches);

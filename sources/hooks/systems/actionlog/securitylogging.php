@@ -120,7 +120,7 @@ class Hook_actionlog_securitylogging extends Hook_actionlog
                 'identifier_index' => 0,
                 'written_context_index' => 1,
                 'followup_page_links' => [
-                    'VIEW_PROFILE' => '_SEARCH:members:view:{0}',
+                    'VIEW_PROFILE' => ['FORUM_DRIVER__PROFILE_URL', '{0}'],
                     'INVESTIGATE_USER' => '_SEARCH:admin_lookup:results:param={0}',
                 ],
             ],

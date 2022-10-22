@@ -29,6 +29,10 @@ class Hook_actionlog_composr_homesite_support_credits extends Hook_actionlog
             return [];
         }
 
+        if (get_forum_type() != 'cns') {
+            return [];
+        }
+
         require_lang('customers');
 
         return [

@@ -1248,11 +1248,11 @@ class Forum_driver_cns extends Forum_driver_base
      */
     public function get_post_count(int $member) : int
     {
-        $ret = $this->get_member_row_field($member, 'm_cache_num_posts');
-        if ($ret === null) {
-            $ret = 0;
+        $c = $this->get_member_row_field($member, 'm_cache_num_posts');
+        if ($c === null) {
+            $c = 0;
         }
-        return $ret;
+        return $c;
     }
 
     /**

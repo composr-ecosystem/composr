@@ -117,7 +117,7 @@ class Module_leader_board
         // If id not provided, display selection UI for choosing a leader-board
         if ($id === null) {
             $tpl_li = new Tempcode();
-            $sets = $GLOBALS['FORUM_DB']->query_select('leader_boards', ['*'], [], '');
+            $sets = $GLOBALS['SITE_DB']->query_select('leader_boards', ['*'], [], '');
             foreach ($sets as $set) {
                 $_url = build_url(['page' => '_SELF', 'type' => 'browse', 'id' => $set['id'], 'all' => $all, 'lb_date_and_time' => $date], '_SELF');
                 $tpl = do_template('INDEX_SCREEN_FANCIER_ENTRY', [
@@ -135,7 +135,7 @@ class Module_leader_board
         }
 
         // Get leader-board
-        $boards = $GLOBALS['FORUM_DB']->query_select('leader_boards', ['*'], ['id' => $id], '', 1);
+        $boards = $GLOBALS['SITE_DB']->query_select('leader_boards', ['*'], ['id' => $id], '', 1);
         if (empty($boards)) {
             warn_exit(do_lang_tempcode('NO_ENTRIES'));
         }
@@ -227,10 +227,10 @@ class Module_leader_board
                     'PROFILE_URL' => $profile_url,
                     '_POINTS' => strval($row['lb_points']),
                     'POINTS' => integer_format($row['lb_points']),
-                    '_VOTING_POWER' => (($voting_power !== null) ? float_to_raw_string($voting_power, 10) : null),
-                    'VOTING_POWER' => (($voting_power !== null) ? float_format($voting_power, 3) : null),
-                    '_VOTING_CONTROL' => (($voting_control !== null) ? float_to_raw_string($voting_control, 10) : null),
-                    'VOTING_CONTROL' => (($voting_control !== null) ? float_format($voting_control, 3) : null),
+                    '_VOTING_POWER' => (($voting_power !== null) ? float_to_raw_string($voting_power, 10) : ''),
+                    'VOTING_POWER' => (($voting_power !== null) ? float_format($voting_power, 3) : ''),
+                    '_VOTING_CONTROL' => (($voting_control !== null) ? float_to_raw_string($voting_control, 10) : ''),
+                    'VOTING_CONTROL' => (($voting_control !== null) ? float_format($voting_control, 3) : ''),
                     'USERNAME' => $username,
                     'ID' => strval($row['lb_member']),
                     'HAS_RANK_IMAGES' => $has_rank_images,

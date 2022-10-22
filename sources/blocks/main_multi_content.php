@@ -152,7 +152,7 @@ PHP;
         $sort = empty($map['sort']) ? 'prominence' : $map['sort']; // recent|top|views|random|title or some manually typed sort order
         $select = isset($map['select']) ? $map['select'] : '';
         $select_b = isset($map['select_b']) ? $map['select_b'] : '';
-        if ($select_b == '*') {
+        if ($select == '*' || $select == '>' || $select_b == '*' || $select_b == '>') {
             return do_template('RED_ALERT', ['_GUID' => 'nktad4b52ustiuhzvqzin9htz4g26vow', 'TEXT' => do_lang_tempcode('INTERNAL_ERROR')]); // Indicates some kind of referencing error, probably caused by Tempcode pre-processing - skip execution
         }
         $filter = isset($map['filter']) ? $map['filter'] : '';
@@ -192,7 +192,7 @@ PHP;
             $content_types = [];
             foreach ($_content_types as $_content_type => $object) {
                 $info = $object->info();
-                if (($info !== null) && (!$render_mode_requires_image) || ($info['image_field'] !== null)) {
+                if (($info !== null) && ((!$render_mode_requires_image) || ($info['image_field'] !== null))) {
                     $content_types[] = $_content_type;
                 }
             }

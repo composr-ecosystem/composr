@@ -234,6 +234,9 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
         $submit_points = $this->_default_property_int($properties, 'submit_points');
         $ecommerce = $this->_default_property_int($properties, 'ecommerce');
         $categories_sort_order = $this->_default_property_str($properties, 'categories_sort_order');
+        if ($categories_sort_order == '') {
+            $categories_sort_order = 'title ASC';
+        }
         $send_view_reports = $this->_default_property_str($properties, 'send_view_reports');
         $default_review_freq = $this->_default_property_int_null($properties, 'default_review_freq');
         $add_time = $this->_default_property_time($properties, 'add_date');

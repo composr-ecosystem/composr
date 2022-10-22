@@ -1232,7 +1232,9 @@
             callbackError = callback;
         }
 
-        if ((typeof post === 'string') && (!post.startsWith('csrf_token=') && !post.includes('&csrf_token=') && !$cms.runningScript('install'))) {
+        var IN_MINIKERNEL_VERSION = document.documentElement.classList.contains('in-minikernel-version');
+
+        if ((typeof post === 'string') && (!post.startsWith('csrf_token=') && !post.includes('&csrf_token=') && !IN_MINIKERNEL_VERSION)) {
             return $cms.getCsrfToken().then(function (text) {
                 post += '&csrf_token=' + encodeURIComponent(text);
                 return initiateRequestPromise();

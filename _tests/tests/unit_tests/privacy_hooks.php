@@ -164,7 +164,7 @@ class privacy_hooks_test_set extends cms_test_case
                 $exceptions = [
                     'news_rss_cloud',
                 ];
-                if (!in_array($table, $exceptions)) {
+                if ((!in_array($table, $exceptions)) && ((get_forum_type() == 'cns') || (substr($table, 0, 2) != 'f_') && ($table != 'content_privacy__members'))) {
                     $this->assertTrue($total_fields == 0, 'Should be defined in a privacy hook: ' . $table);
                 }
             }

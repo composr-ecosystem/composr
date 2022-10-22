@@ -188,9 +188,9 @@ ACTUAL FILESYSTEM INTERACTION IS DONE VIA A RESOURCE-FS OBJECT (fetch that via t
  * @param  ?LONG_TEXT $label The (new) label (null: lookup for specified resource)
  * @param  ?ID_TEXT $new_guid GUID to forcibly assign (null: don't force)
  * @param  boolean $definitely_new If we know this is new, i.e. has no existing moniker
- * @return array A triple: The moniker (may be new, or the prior one if the moniker did not need to change), the GUID, the label
+ * @return ?array A triple: The moniker (may be new, or the prior one if the moniker did not need to change), the GUID, the label (null: cannot)
  */
-function generate_resource_fs_moniker(string $resource_type, string $resource_id, ?string $label = null, ?string $new_guid = null, bool $definitely_new = false) : array
+function generate_resource_fs_moniker(string $resource_type, string $resource_id, ?string $label = null, ?string $new_guid = null, bool $definitely_new = false) : ?array
 {
     static $cache = [];
     if ($new_guid === null) {
@@ -204,6 +204,9 @@ function generate_resource_fs_moniker(string $resource_type, string $resource_id
         fatal_exit('Cannot load content object for ' . $resource_type);
     }
     $resource_info = $resource_object->info();
+    if ($resource_info === null) {
+        return null;
+    }
     $resource_fs_hook = $resource_info['commandr_filesystem_hook'];
 
     if ($label === null) {
@@ -303,7 +306,11 @@ function expunge_resource_fs_moniker(string $resource_type, string $resource_id)
  */
 function find_guid_via_id(string $resource_type, string $resource_id) : ?string
 {
-    list(, $guid) = generate_resource_fs_moniker($resource_type, $resource_id);
+    $ret = generate_resource_fs_moniker($resource_type, $resource_id);
+    if ($ret === null) {
+        return null;
+    }
+    list(, $guid) = $ret;
     return $guid;
 }
 
@@ -345,7 +352,11 @@ function find_commandr_fs_filename_via_id(string $resource_type, string $resourc
  */
 function find_moniker_via_id(string $resource_type, string $resource_id) : ?string
 {
-    list($moniker) = generate_resource_fs_moniker($resource_type, $resource_id);
+    $ret = generate_resource_fs_moniker($resource_type, $resource_id);
+    if ($ret === null) {
+        return null;
+    }
+    list($moniker) = $ret;
     return $moniker;
 }
 
@@ -358,7 +369,11 @@ function find_moniker_via_id(string $resource_type, string $resource_id) : ?stri
  */
 function find_label_via_id(string $resource_type, string $resource_id) : ?string
 {
-    list(, , $label) = generate_resource_fs_moniker($resource_type, $resource_id);
+    $ret = generate_resource_fs_moniker($resource_type, $resource_id);
+    if ($ret === null) {
+        return null;
+    }
+    list(, , $label) = $ret;
     return $label;
 }
 
@@ -994,7 +1009,11 @@ function remap_resource_id_as_portable(string $resource_type, $resource_id)
         $resource_id = strval($resource_id);
     }
 
-    list($moniker, $guid, $label) = generate_resource_fs_moniker($resource_type, $resource_id);
+    $ret = generate_resource_fs_moniker($resource_type, $resource_id);
+    if ($ret === null) {
+        return null;
+    }
+    list($moniker, $guid, $label) = $ret;
 
     $resource_fs_ob = get_resource_commandr_fs_object($resource_type);
     if ($resource_fs_ob === null) {

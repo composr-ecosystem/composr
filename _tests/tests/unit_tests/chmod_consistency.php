@@ -76,7 +76,7 @@ class chmod_consistency_test_set extends cms_test_case
                     $path = get_file_base() . '/' . $item;
 
                     $exists = (strpos($path, '*') !== false) || (file_exists($path));
-                    $this->assertTrue($exists, 'Chmod item does not exist: ' . $item);
+                    $this->assertTrue($exists || $item == 'data_custom/errorlog.php', 'Chmod item does not exist: ' . $item);
 
                     if ($exists) {
                         if (count($place_parts) == 6) {

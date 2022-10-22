@@ -160,13 +160,13 @@ class Module_points
         if (($upgrade_from !== null) && ($upgrade_from < 9)) { // LEGACY
             $GLOBALS['SITE_DB']->rename_table('gifts', 'points_ledger');
 
-            $GLOBALS['FORUM_DB']->add_table_field('points_ledger', 'amount_points', 'INTEGER');
-            $GLOBALS['FORUM_DB']->add_table_field('points_ledger', 'linked_to', '?AUTO_LINK');
-            $GLOBALS['FORUM_DB']->add_table_field('points_ledger', 'status', 'ID_TEXT');
-            $GLOBALS['FORUM_DB']->add_table_field('points_ledger', 'locked', 'BINARY');
-            $GLOBALS['FORUM_DB']->add_table_field('points_ledger', 't_type', 'ID_TEXT');
-            $GLOBALS['FORUM_DB']->add_table_field('points_ledger', 't_subtype', 'ID_TEXT');
-            $GLOBALS['FORUM_DB']->add_table_field('points_ledger', 't_type_id', 'ID_TEXT');
+            $GLOBALS['SITE_DB']->add_table_field('points_ledger', 'amount_points', 'INTEGER');
+            $GLOBALS['SITE_DB']->add_table_field('points_ledger', 'linked_to', '?AUTO_LINK');
+            $GLOBALS['SITE_DB']->add_table_field('points_ledger', 'status', 'ID_TEXT');
+            $GLOBALS['SITE_DB']->add_table_field('points_ledger', 'locked', 'BINARY');
+            $GLOBALS['SITE_DB']->add_table_field('points_ledger', 't_type', 'ID_TEXT');
+            $GLOBALS['SITE_DB']->add_table_field('points_ledger', 't_subtype', 'ID_TEXT');
+            $GLOBALS['SITE_DB']->add_table_field('points_ledger', 't_type_id', 'ID_TEXT');
 
             $GLOBALS['SITE_DB']->alter_table_field('points_ledger', 'amount', 'INTEGER', 'amount_gift_points');
             $GLOBALS['SITE_DB']->alter_table_field('points_ledger', 'gift_from', 'MEMBER', 'sender_id');
@@ -181,15 +181,15 @@ class Module_points
             $GLOBALS['SITE_DB']->create_index('points_ledger', 't_search_no_subtype', ['t_type', 't_type_id']); // We can also search t_type & t_type_id, but this requires a separate index
 
             // Add legacy explanation and default values for all the gift records
-            $GLOBALS['FORUM_DB']->query_update('points_ledger', ['amount_points' => 0, 'status' => LEDGER_STATUS_NORMAL, 'locked' => 0, 't_type' => 'legacy', 't_type_id' => 'gifts'], []);
+            $GLOBALS['SITE_DB']->query_update('points_ledger', ['amount_points' => 0, 'status' => LEDGER_STATUS_NORMAL, 'locked' => 0, 't_type' => 'legacy', 't_type_id' => 'gifts'], []);
 
             // Never allow negative points in our new ledger; update to the absolute value, swap sender and recipient, and mark as refund.
-            $GLOBALS['FORUM_DB']->query('UPDATE ' . get_table_prefix() . 'points_ledger SET amount_gift_points=' . db_function('ABS', ['amount_gift_points']) . ', sender_id=recipient_id, recipient_id=sender_id, status=refund WHERE amount_gift_points<0');
+            $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'points_ledger SET amount_gift_points=' . db_function('ABS', ['amount_gift_points']) . ', sender_id=recipient_id, recipient_id=sender_id, status=refund WHERE amount_gift_points<0');
 
             // Migrate all charge-log entries to points_ledger, and delete the chargelog table
             $start = 0;
             do {
-                $chargelogs = $GLOBALS['FORUM_DB']->query_select('chargelog', ['*'], [], '', 500, $start);
+                $chargelogs = $GLOBALS['SITE_DB']->query_select('chargelog', ['*'], [], '', 500, $start);
                 foreach ($chargelogs as $i => $chargelog) {
                     if ($chargelog['amount'] < 0) { // For negative amounts, it is a credit; reverse sender and recipient (we do absolute value in the query_insert)
                         $sender_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
@@ -200,7 +200,7 @@ class Module_points
                         $sender_id = $chargelog['member_id'];
                         $status = LEDGER_STATUS_NORMAL;
                     }
-                    $GLOBALS['FORUM_DB']->query_insert('points_ledger', [
+                    $GLOBALS['SITE_DB']->query_insert('points_ledger', [
                         'date_and_time' => $chargelog['date_and_time'],
                         'amount_gift_points' => 0,
                         'amount_points' => abs($chargelog['amount']),
@@ -229,7 +229,7 @@ class Module_points
             rename_privilege('trace_anonymous_gifts', 'trace_anonymous_points_transactions');
 
             // Delete the points_gained_given field but not before checking if we need to add a legacy record to the ledger.
-            $rows = $GLOBALS['FORUM_DB']->query_select('points_ledger', ['SUM(amount_points) AS points', 'SUM(amount_gift_points) AS gift_points', 'recipient_id'], [], ' AND recipient_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' GROUP BY recipient_id');
+            $rows = $GLOBALS['SITE_DB']->query_select('points_ledger', ['SUM(amount_points) AS points', 'SUM(amount_gift_points) AS gift_points', 'recipient_id'], [], ' AND recipient_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' GROUP BY recipient_id');
             foreach ($rows as $row) {
                 $fields = $GLOBALS['FORUM_DRIVER']->get_custom_fields($row['recipient_id']);
                 $amount = ($row['points'] + $row['gift_points']);
@@ -250,13 +250,13 @@ class Module_points
                         'locked' => 0,
                     ];
                     $map += insert_lang_comcode('reason', 'Upgrader: Fixing Points-Gained-Given discrepancy', 4);
-                    $GLOBALS['FORUM_DB']->query_insert('points_ledger', $map);
+                    $GLOBALS['SITE_DB']->query_insert('points_ledger', $map);
                 }
             }
             $GLOBALS['FORUM_DRIVER']->install_delete_custom_field('points_gained_given');
 
             // Delete the points_used and gift_points_used fields but not before checking if we need to add a legacy record to the ledger.
-            $rows = $GLOBALS['FORUM_DB']->query_select('points_ledger', ['SUM(amount_points) AS points', 'SUM(amount_gift_points) AS gift_points', 'sender_id'], [], ' AND sender_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' GROUP BY sender_id');
+            $rows = $GLOBALS['SITE_DB']->query_select('points_ledger', ['SUM(amount_points) AS points', 'SUM(amount_gift_points) AS gift_points', 'sender_id'], [], ' AND sender_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' GROUP BY sender_id');
             foreach ($rows as $row) {
                 $fields = $GLOBALS['FORUM_DRIVER']->get_custom_fields($row['sender_id']);
                 if ($row['points'] !== $fields['points_used']) {
@@ -276,7 +276,7 @@ class Module_points
                         'locked' => 0,
                     ];
                     $map += insert_lang_comcode('reason', 'Upgrader: Fixing Points-Used discrepancy', 4);
-                    $GLOBALS['FORUM_DB']->query_insert('points_ledger', $map);
+                    $GLOBALS['SITE_DB']->query_insert('points_ledger', $map);
                 }
                 if ($row['gift_points_used'] !== $fields['gift_points']) {
                     $difference = ($fields['gift_points_used'] - $row['gift_points']);
@@ -295,7 +295,7 @@ class Module_points
                         'locked' => 0,
                     ];
                     $map += insert_lang_comcode('reason', 'Upgrader: Fixing Gift-Points-Used discrepancy', 4);
-                    $GLOBALS['FORUM_DB']->query_insert('points_ledger', $map);
+                    $GLOBALS['SITE_DB']->query_insert('points_ledger', $map);
                 }
             }
             $GLOBALS['FORUM_DRIVER']->install_delete_custom_field('points_used');
@@ -341,7 +341,7 @@ class Module_points
                                 $map['status'] = LEDGER_STATUS_REFUND; // Refunding earned points back to the system
                             }
                             $map += insert_lang_comcode('reason', 'Upgrader: Importing legacy ' . $title . ' as a ledger item', 4);
-                            $GLOBALS['FORUM_DB']->query_insert('points_ledger', $map);
+                            $GLOBALS['SITE_DB']->query_insert('points_ledger', $map);
                         }
                     }
                 }

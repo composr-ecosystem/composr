@@ -109,7 +109,15 @@ class CMS_Topic
             return new Tempcode();
         }
 
+        $forum_id = $GLOBALS['FORUM_DRIVER']->forum_id_from_name($forum_name);
+        if ($forum_id === null) {
+            return new Tempcode(); // Could not even find forum
+        }
+
         $topic_id = $GLOBALS['FORUM_DRIVER']->find_topic_id_for_topic_identifier($forum_name, $content_type . '_' . $content_id, do_lang('COMMENT'));
+        if ($topic_id === null) {
+            return new Tempcode(); // Could not even find topic
+        }
 
         // Settings we need
         $max_thread_depth = get_param_integer('max_thread_depth', intval(get_option('max_thread_depth')));
@@ -150,8 +158,6 @@ class CMS_Topic
             } else {
                 $all_individual_review_ratings = [];
             }
-
-            $forum_id = $GLOBALS['FORUM_DRIVER']->forum_id_from_name($forum_name);
 
             $topic_info = null;
             if (get_forum_type() == 'cns') {

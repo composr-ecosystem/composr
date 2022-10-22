@@ -15,18 +15,24 @@
 	<hr class="spaced-rule" />
 {+END}
 
-{$SET,subcategories,{$BLOCK,block=main_multi_content,render_mode=boxes,param=catalogue_category,pinned=,select={ID}>,zone={$ZONE},sort={CC_SORT},max={$CONFIG_OPTION,catalogue_subcats_per_page},no_links=1,pagination=1,give_context=0,include_breadcrumbs=0,attach_to_url_filter=1,render_if_empty=0,guid=module}}
-{+START,IF_NON_EMPTY,{$GET,subcategories}}
-	<div class="box box---catalogue-category-screen"><div class="box-inner compacted-subbox-stream">
-		<h2>{!SUBCATEGORIES_HERE}</h2>
+{+START,IF_NON_PASSED,ENTRIES}
+	{$SET,subcategories,{$BLOCK,block=main_multi_content,render_mode=boxes,param=catalogue_category,pinned=,select={ID}>,zone={$ZONE},sort={CC_SORT},max={$CONFIG_OPTION,catalogue_subcats_per_page},no_links=1,pagination=1,give_context=0,include_breadcrumbs=0,attach_to_url_filter=1,render_if_empty=0,guid=module}}
+	{+START,IF_NON_EMPTY,{$GET,subcategories}}
+		<div class="box box---catalogue-category-screen"><div class="box-inner compacted-subbox-stream">
+			<h2>{!SUBCATEGORIES_HERE}</h2>
 
-		<div>
-			{$GET,subcategories}
-		</div>
-	</div></div>
+			<div>
+				{$GET,subcategories}
+			</div>
+		</div></div>
+	{+END}
+
+	{$BLOCK,block=main_cc_embed,param={ID},select={CAT_SELECT},zone={$ZONE},max={$CONFIG_OPTION,catalogue_entries_per_page},pagination=1,sorting=1,filter={FILTER},block_id=module}
 {+END}
 
-{$BLOCK,block=main_cc_embed,param={ID},select={CAT_SELECT},zone={$ZONE},max={$CONFIG_OPTION,catalogue_entries_per_page},pagination=1,sorting=1,filter={FILTER},block_id=module}
+{+START,IF_PASSED,ENTRIES}
+	{ENTRIES}
+{+END}
 
 {$REVIEW_STATUS,catalogue_category,{ID}}
 

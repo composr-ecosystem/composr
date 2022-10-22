@@ -58,7 +58,6 @@ class forum_polls_test_set extends cms_test_case
     public function testVotingPowerEquation()
     {
         if (get_forum_type() != 'cns') {
-            $this->assertTrue(false, 'Voting Power tests only work with Conversr');
             return;
         }
 
@@ -109,6 +108,10 @@ class forum_polls_test_set extends cms_test_case
 
     public function tearDown()
     {
+        if (get_forum_type() != 'cns') {
+            return;
+        }
+
         cns_delete_poll($this->poll_id, 'Simple');
         cns_delete_topic($this->topic_id);
 

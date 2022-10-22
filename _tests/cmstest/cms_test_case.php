@@ -275,6 +275,16 @@ class cms_test_case extends WebTestCase
 
     protected function get_canonical_username($username)
     {
+        if (get_forum_type() != 'cns') {
+            // Dodgy, but may be enough to make it work...
+
+            if ($username == 'test') {
+                return $GLOBALS['FORUM_DRIVER']->get_username($GLOBALS['FORUM_DRIVER']->get_guest_id());
+            }
+
+            return $GLOBALS['FORUM_DRIVER']->get_username($GLOBALS['FORUM_DRIVER']->get_guest_id() + 1);
+        }
+
         if ($GLOBALS['FORUM_DRIVER']->get_member_from_username($username) === null) {
             if ($username == 'admin') {
                 $username = $GLOBALS['FORUM_DB']->query_select_value('f_members', 'm_username', ['m_primary_group' => db_get_first_id() + 1]);

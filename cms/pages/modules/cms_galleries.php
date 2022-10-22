@@ -1914,6 +1914,7 @@ class Module_cms_galleries_cat extends Standard_crud_module
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '94d1f77eb9fdca010cb9d1eac5d19b9b', 'SECTION_HIDDEN' => ($rep_image == '') && ($is_member_synched == 0), 'TITLE' => do_lang_tempcode('ADVANCED')]));
 
         // Per-gallery sort order (uses site config hooks)
+        require_code('config2');
         require_code('hooks/systems/config/galleries_sort_order');
         $ob = object_factory('Hook_config_galleries_sort_order');
         $details = $ob->get_details();
@@ -1922,6 +1923,7 @@ class Module_cms_galleries_cat extends Standard_crud_module
             $fields->attach(build_config_inputter('galleries_sort_order', $details, $gallery_sort, true, false));
         }
 
+        require_code('config2');
         require_code('hooks/systems/config/gallery_media_default_sort_order');
         $ob = object_factory('Hook_config_gallery_media_default_sort_order');
         $details = $ob->get_details();

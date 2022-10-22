@@ -35,7 +35,7 @@ class Hook_commandr_fs_leader_board extends Resource_fs_base
      */
     public function get_resources_count(string $resource_type) : int
     {
-        return $GLOBALS['FORUM_DB']->query_select_value('leader_boards', 'COUNT(*)');
+        return $GLOBALS['SITE_DB']->query_select_value('leader_boards', 'COUNT(*)');
     }
 
     /**
@@ -47,7 +47,7 @@ class Hook_commandr_fs_leader_board extends Resource_fs_base
      */
     public function find_resource_by_label(string $resource_type, string $label) : array
     {
-        $_ret = $GLOBALS['FORUM_DB']->query_select('leader_boards', ['id'], ['lb_title' => $label], 'ORDER BY id');
+        $_ret = $GLOBALS['SITE_DB']->query_select('leader_boards', ['id'], ['lb_title' => $label], 'ORDER BY id');
         $ret = [];
         foreach ($_ret as $r) {
             $ret[] = strval($r['id']);
@@ -131,7 +131,7 @@ class Hook_commandr_fs_leader_board extends Resource_fs_base
     {
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
 
-        $rows = $GLOBALS['FORUM_DB']->query_select('leader_boards', ['*'], ['id' => intval($resource_id)], '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('leader_boards', ['*'], ['id' => intval($resource_id)], '', 1);
         if (!array_key_exists(0, $rows)) {
             return false;
         }

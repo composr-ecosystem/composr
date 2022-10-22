@@ -28,6 +28,11 @@ class __leader_board_test_set extends cms_test_case
     {
         parent::setUp();
 
+        if (get_forum_type() != 'cns') {
+            $this->assertTrue(false, 'Test only works with Conversr');
+            return;
+        }
+
         if (!addon_installed('points') || !addon_installed('leader_board')) {
             $this->assertTrue(false, 'Test only works with both the points and leader_board addons.');
             return;
@@ -53,6 +58,10 @@ class __leader_board_test_set extends cms_test_case
     }
 
     public function testLeaderBoardRanks() {
+        if (get_forum_type() != 'cns') {
+            return;
+        }
+
         if (($this->only !== null) && ($this->only !== 'testLeaderBoardRanks')) {
             return;
         }
@@ -106,6 +115,10 @@ class __leader_board_test_set extends cms_test_case
 
     public function testLeaderBoardFrequencyRolling()
     {
+        if (get_forum_type() != 'cns') {
+            return;
+        }
+
         if (($this->only !== null) && ($this->only !== 'testLeaderBoardFrequencyRolling')) {
             return;
         }
@@ -198,6 +211,10 @@ class __leader_board_test_set extends cms_test_case
 
     public function testLeaderBoardFrequencyNonRolling()
     {
+        if (get_forum_type() != 'cns') {
+            return;
+        }
+
         if (($this->only !== null) && ($this->only !== 'testLeaderBoardFrequencyNonRolling')) {
             return;
         }
@@ -320,6 +337,10 @@ class __leader_board_test_set extends cms_test_case
 
     public function testLeaderBoardOneMember()
     {
+        if (get_forum_type() != 'cns') {
+            return;
+        }
+
         if (($this->only !== null) && ($this->only !== 'testLeaderBoardOneMember')) {
             return;
         }
@@ -352,6 +373,10 @@ class __leader_board_test_set extends cms_test_case
 
     public function testLeaderBoardIncludeStaff()
     {
+        if (get_forum_type() != 'cns') {
+            return;
+        }
+
         if (($this->only !== null) && ($this->only !== 'testLeaderBoardIncludeStaff')) {
             return;
         }
@@ -399,6 +424,10 @@ class __leader_board_test_set extends cms_test_case
 
     public function testLeaderBoardUsergroup()
     {
+        if (get_forum_type() != 'cns') {
+            return;
+        }
+
         if (($this->only !== null) && ($this->only !== 'testLeaderBoardUsergroup')) {
             return;
         }
@@ -478,6 +507,10 @@ class __leader_board_test_set extends cms_test_case
 
     public function testLeaderBoardHoldersEarners()
     {
+        if (get_forum_type() != 'cns') {
+            return;
+        }
+
         if (($this->only !== null) && ($this->only !== 'testLeaderBoardHoldersEarners')) {
             return;
         }
@@ -566,12 +599,16 @@ class __leader_board_test_set extends cms_test_case
         $data = points_transaction_reverse($transfer, false);
 
         // Do not keep unit tests in the ledger
-        $GLOBALS['FORUM_DB']->query_delete('points_ledger', ['id' => $transfer], '', 1);
-        $GLOBALS['FORUM_DB']->query_delete('points_ledger', ['id' => $data[0]], '', 1);
+        $GLOBALS['SITE_DB']->query_delete('points_ledger', ['id' => $transfer], '', 1);
+        $GLOBALS['SITE_DB']->query_delete('points_ledger', ['id' => $data[0]], '', 1);
     }
 
     public function tearDown()
     {
+        if (get_forum_type() != 'cns') {
+            return;
+        }
+
         if (!addon_installed('points') || !addon_installed('leader_board')) {
             return;
         }

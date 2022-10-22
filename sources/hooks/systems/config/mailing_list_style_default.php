@@ -55,6 +55,10 @@ class Hook_config_mailing_list_style_default
             return null;
         }
 
+        if (get_forum_type() != 'cns') {
+            return null;
+        }
+
         require_code('cns_forums2');
         $test = cns_has_mailing_list_style();
         if ($test[0] == 0) {

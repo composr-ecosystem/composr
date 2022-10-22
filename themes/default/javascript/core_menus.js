@@ -387,6 +387,8 @@
             structure = arrVal(structure);
             theLevel = Number(theLevel) || 0;
 
+            var allExpanded = ($cms.pageUrl().searchParams.get('keep_expand_sitemap') === '1');
+
             if (theLevel === 0) {
                 $dom.empty(targetEl);
                 var ul = document.createElement('ul');
@@ -448,16 +450,18 @@
                         }
                     });
 
-                    /*{$SET,contract_icon,{+START,INCLUDE,ICON}NAME=trays/contract{+END}}*/
-                    /*{$SET,expand_icon,{+START,INCLUDE,ICON}NAME=trays/expand{+END}}*/
-                    if (theLevel < 2) { // High-levels start expanded
-                        $dom.append(expand, '{$GET;^,contract_icon}');
-                    } else {
-                        $dom.hide(ul);
-                        $dom.append(expand, '{$GET;^,expand_icon}');
-                    }
+                    if (!allExpanded) {
+                        /*{$SET,contract_icon,{+START,INCLUDE,ICON}NAME=trays/contract{+END}}*/
+                        /*{$SET,expand_icon,{+START,INCLUDE,ICON}NAME=trays/expand{+END}}*/
+                        if (theLevel < 2) { // High-levels start expanded
+                            $dom.append(expand, '{$GET;^,contract_icon}');
+                        } else {
+                            $dom.hide(ul);
+                            $dom.append(expand, '{$GET;^,expand_icon}');
+                        }
 
-                    $dom.append(span, expand);
+                        $dom.append(span, expand);
+                    }
 
                     // Show children...
                     $dom.append(li, ul);
