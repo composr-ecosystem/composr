@@ -579,7 +579,7 @@ function _url_to_page_link(string $url, bool $abs_only = false, bool $perfect_on
     }
 
     // Hash bit?
-    if (array_key_exists('fragment', $parsed_url)) {
+    if ((array_key_exists('fragment', $parsed_url)) && ($parsed_url['fragment'] != '')) {
         $page_link .= '#' . $parsed_url['fragment'];
     }
 

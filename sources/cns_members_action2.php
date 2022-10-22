@@ -1076,7 +1076,7 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
             null, // show in posts
             null, // show in post previews
             null, // special start
-            null, // show on join form
+            null // show on join form
         );
 
         $fields_to_skip = _cpfs_internal_use_only();

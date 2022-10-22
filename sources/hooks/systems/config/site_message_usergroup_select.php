@@ -30,7 +30,7 @@ class Hook_config_site_message_usergroup_select
      */
     public function get_details() : ?array
     {
-        if (isset($GLOBALS['FORUM_DRIVER'])) {
+        if ((isset($GLOBALS['FORUM_DRIVER'])) && (!$GLOBALS['IN_MINIKERNEL_VERSION'])) {
             $guest_groups = $GLOBALS['FORUM_DRIVER']->get_members_groups($GLOBALS['FORUM_DRIVER']->get_guest_id());
             $guest_group_id = $guest_groups[0];
         } else {

@@ -168,7 +168,7 @@ class basic_code_formatting_test_set extends cms_test_case
             $exceptions = array_merge(list_untouchable_third_party_directories(), [
                 'comcode_custom/(?!EN)\w+',
                 'lang_custom/(?!EN)\w+',
-                'text_custom/(?!EN)\w+',
+                'text_custom/\w+',
             ]);
             if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $path) != 0) {
                 continue;
@@ -223,6 +223,7 @@ class basic_code_formatting_test_set extends cms_test_case
 
             // Exceptions
             $exceptions = array_merge(list_untouchable_third_party_directories(), [
+                'text_custom/\w+',
             ]);
             if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $path) != 0) {
                 continue;

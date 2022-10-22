@@ -1015,7 +1015,7 @@ class Hook_import_cms_merge
 
                     't_type' => $row['t_type'],
                     't_subtype' => $row['t_subtype'],
-                    't_type_id' => '', // FUDGE: Currently blanking theis because it may refer to an improperly mapped content ID
+                    't_type_id' => '', // FUDGE: Currently blanking this because it may refer to an improperly mapped content ID
 
                     'status' => $row['status']
                 ];

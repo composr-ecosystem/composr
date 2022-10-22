@@ -222,7 +222,7 @@ If you are going to go down the SEO route, make sure that you have someone who w
  - [url="Sitemaps specification"]http://www.sitemaps.org/[/url]
  - Webmaster tools:
   - [url="Google webmaster tools"]https://www.google.com/webmasters/tools/home[/url]
-  - [url="Bing webmaster tools"]https://www.bing.com/toolbox/webmaster/[/url]
+  - [url="Bing webmaster tools"]https://www.bing.com/webmasters/about/[/url]
   - [url="Yandex webmaster tools"]https://webmaster.yandex.com/welcome/[/url]
  - [url="Comparison of SEO tools"]https://www.werockyourweb.com/spyfu-vs-semrush-vs-moz-vs-raven-vs-majestic/[/url]
  - SEO tools:
@@ -230,7 +230,7 @@ If you are going to go down the SEO route, make sure that you have someone who w
   - [url="SEMrush"]https://www.semrush.com/[/url]
   - [url="Ahref"]https://ahrefs.com/[/url]
   - [url="The Hoth"]https://www.thehoth.com/[/url]
-  - [url="SERPs"]https://www.authoritylabs.com/resources/[/url]
+  - [url="SERPs"]https://www.authoritylabs.com/ranking-tool/[/url]
   - [url="Social sharing stats"]http://www.sharedcount.com/[/url]
   - [url="Facebook Insights"]https://www.facebook.com/business/news/audience-insights[/url]
   - [url="SEO Site Checkup"]https://seositecheckup.com/[/url]

@@ -1395,7 +1395,7 @@ class Module_admin_ecommerce_logs
             $products->attach(form_input_list_entry($p['value'], (($_filter_type_code != '') && (in_array($p['value'], $filter_type_code))), $p['caption']));
         }
 
-        // Fallback for manual transactions tick to ensure it is 0 when we want it to be 0
+        // Fallback for manual transactions tick (check) to ensure it is 0 when we want it to be 0
         $filters_hidden = new Tempcode();
         $filters_hidden->attach(form_input_hidden('filter_manual', '0'));
 

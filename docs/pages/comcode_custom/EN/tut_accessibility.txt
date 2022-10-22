@@ -1116,12 +1116,11 @@ You will find a number of options in Admin Zone > Setup > Configuration > Access
 [title="2"]See also[/title]
 
  - [page="_SEARCH:tut_website_health"]Website Health[/page]
- - http://spyrestudios.com/website-accessibility-tools/
  - https://achecker.achecks.ca/checker/index.php
  - [page="_SEARCH:atag"]Authoring Tool Accessibility Guidelines 2.0 - Composr version 10.0 compliance[/page]
  - [url="WAI specification"]http://www.w3.org/TR/WAI-WEBCONTENT/[/url]
  - [url="Popular accessibility validator"]http://wave.webaim.org/[/url]
  - [page="_SEARCH:tut_markup"]Guide to web technologies (including HTML, CSS, and JavaScript)[/page]
- - http://www.bbc.co.uk/gel/guidelines/how-to-design-for-accessibility
+ - https://www.bbc.co.uk/gel/features/how-to-design-for-accessibility
 
 {$SET,tutorial_tags,Web standards & Accessibility,core_webstandards,Design & Themeing,regular}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,We discuss how to ensure your website remains accessible to people with disabilities (Composr meets WCAG out-of-the-box).}[block]main_tutorial_rating[/block]

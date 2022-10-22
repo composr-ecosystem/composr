@@ -5341,8 +5341,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         EXPORT_ORDER_LIST_TEXT
         EXPORT_TRANSACTIONS
         ORDER_STATUS_FILTER_DESCRIPTION
-        TRANSACTION_STATUS_FILTER_DESCRIPTION
-        EXPORT_TRANSACTIONS_TEXT
         EXPORT_POINTS_OVERVIEW
         EXPORT_QUIZ
         EXPORT_QUIZ_TEXT
@@ -7318,8 +7316,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         STAFF_CHECKLIST_MAIL_SUBJECT
         STAFF_LINKS
         STAFF_NEW_TICKET_AS
-        STAFF_USERNAME_CHANGED_MAIL
-        STAFF_USERNAME_CHANGED_MAIL_SUBJECT
         START_PROBATION
         STAR_ALREADY_DEFINED
         DISPOSABLE_VALUES_CACHE
@@ -8126,7 +8122,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         _ADDON_WARNING_MISSING_DEPENDENCIES
         _ADDON_WARNING_PRESENT_DEPENDENCIES
         _BLOCKS
-        _CANCEL_MANUAL_SUBSCRIPTION
         _CHOOSE_EDIT_LIST_EXTRA
         _CHOOSE_EDIT_TABLE_EXTRA
         _COMCODE_HELPER
@@ -8332,7 +8327,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         UNCONVENTIONAL_MEMBER_ADDED_TO_GROUP
         GROUP_REQUEST_JOIN_L
         GROUP_REQUEST_PROMOTION_L
-        REQUIRES_VALIDATION
         NOTIFICATION_TYPE_needs_validation
         NOTIFICATION_TYPE_task_completed
         CHAT_MODERATION_REVERSE_POINTS
@@ -8349,9 +8343,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_enable_anonymous_transactions
         DESCRIPTION_VOTING_POWER_CALCULATOR
         VOTING_POWER_CALCULATOR
-        _VOTING_POWER_CALCULATOR
-        POINTS_SUPPORT_CREDITS
-        CONFIG_OPTION_points_support_credits
         DESCRIPTION_LEADER_BOARD_CALCULATE_VOTING_POWER
         LEADER_BOARD_CALCULATE_VOTING_POWER
         CONFIG_GROUP_DESCRIP_POINTS_FOSS_GROUP
@@ -8389,8 +8380,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         FILTER_STATE_CANCELLED
         FILTER_STATE_NEW
         FILTER_STATE_PENDING
-        FILTER_STATE_COMPLETED
-        FILTER_STATE_SMODIFIED
         PARENT_TRANSACTION
         MANUAL_SUBSCRIPTIONS
         REASON_FOR_PENDING

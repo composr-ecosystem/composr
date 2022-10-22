@@ -590,7 +590,7 @@ class Hook_actionlog_core extends Hook_actionlog
                     require_code('config2');
                     $url = config_option_url($identifier);
                     $bindings += [
-                        'CONFIG_URL' => ($url === null) ? build_url(['page' => ''], '') : static_evaluate_tempcode($url),
+                        'CONFIG_URL' => ($url === null) ? static_evaluate_tempcode(build_url(['page' => ''], '')) : static_evaluate_tempcode($url),
                     ];
                 }
                 break;

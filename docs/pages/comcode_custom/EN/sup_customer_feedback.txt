@@ -21,7 +21,7 @@ So you need to throw away any idea of deciding your priorities through only unso
 
 You need to look at what your model of your target customer is, and then seek out these kinds of people for usability testing. You'll be amazed what very different feedback you find from them if you work from this fresh external perspective. Watch them using the product, give them tasks to perform and see how they do. You will see them get stuck on things you never imagined.
 
-For software testing I recommend using [url="Try My UI"]http://www.trymyui.com/[/url], testing relevant people you know, and also hiring people on [url="http://www.upwork.com/"]Upwork[/url] and asking them to do record their performance of tasks on TechSmith Capture.
+For software testing I recommend using [url="Try My UI"]http://www.trymyui.com/[/url], testing relevant people you know, and also hiring people on [url="https://www.upwork.com/"]Upwork[/url] and asking them to do record their performance of tasks on TechSmith Capture.
 
 It's fairly easy to find resolutions once you know the real issues that will impact adoption.
 

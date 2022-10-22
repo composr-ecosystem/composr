@@ -247,7 +247,7 @@ class __broken_links_test_set extends cms_test_case
             return;
         }
         if (in_array($url, [
-        // These just won't check from a bot guest user
+            // These just won't check from a bot guest user
             'https://cloud.google.com/console',
             'https://www.google.com/webmasters/tools/home',
             'https://console.developers.google.com/project',
@@ -256,6 +256,11 @@ class __broken_links_test_set extends cms_test_case
             'https://compo.sr/themeing-changes.htm',
             'https://pixabay.com/',
             'https://www.patreon.com/posts/18644315',
+            'https://foundation.mozilla.org/en/insights/internet-health-report/',
+            'https://business.adobe.com/products/magento/magento-commerce.html',
+            'https://www.adobe.com/acrobat/pdf-reader.html',
+            'https://www.adobe.com/sign.html',
+            'https://www.upwork.com/',
 
             // Invalid but not actually used
             'http://qbnz.com/highlighter/',
@@ -265,9 +270,15 @@ class __broken_links_test_set extends cms_test_case
         ])) {
             return;
         }
-        if (in_array($url, [ // cURL doesn't like the SSL config
-            'https://www.davesite.com/webstation/html/',
+        if (in_array($url, [ // cURL doesn't like the SSL config / just times out connecting
             'https://www.hobo-web.co.uk/website-design-tips/',
+            'https://www.microsoft.com/en-us/download/details.aspx?id=48264',
+            'https://www.transifex.com/ocproducts/',
+            'https://www.transifex.com/organization/ocproducts/dashboard',
+            'https://www.paypal.com/us/webapps/helpcenter/helphub/article/?solutionId=FAQ2347',
+            'http://stackoverflow.com/search?q=cms',
+            'http://www.projecthoneypot.org/add_honey_pot.php',
+            'http://www.projecthoneypot.org/httpbl_configure.php',
         ])) {
             return;
         }

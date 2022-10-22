@@ -487,6 +487,10 @@ abstract class Hook_Health_Check
         }
 
         $http_result = $this->get_page_http_content($page_link);
+        if ($http_result->data === null) {
+            $this->assertTrue(false, 'The server cannot download from self-hosted page-link [tt]' . $page_link . '[/tt]');
+            return '';
+        }
         return $http_result->data;
     }
 

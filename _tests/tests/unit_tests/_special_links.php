@@ -78,7 +78,7 @@ class _special_links_test_set extends cms_test_case
         $urls = [
             'https://seositecheckup.com/' => true,
             //'https://www.google.com/webmasters/tools/home?pli=1' => false,        Only works if logged in
-            'https://www.bing.com/toolbox/webmaster/' => false,
+            'https://www.bing.com/webmasters/about/' => false,
             'https://webmaster.yandex.com/welcome/' => false,
             'https://www.thehoth.com/' => true,
             //'https://serps.com/tools/' => true,   Unreliable
@@ -86,7 +86,7 @@ class _special_links_test_set extends cms_test_case
             'https://jigsaw.w3.org/css-validator/' => true,
             'https://achecker.achecks.ca/checker/index.php' => true,
             'https://www.bing.com/webmasters/help/url-inspection-55a30305' => true,
-            'https://developers.google.com/search/docs/advanced/structured-data' => true,
+            'https://developers.google.com/search/docs/appearance/structured-data' => true,
             'https://webmaster.yandex.com/tools/microtest/' => false,
             'https://developers.facebook.com/tools/debug/' => true,
             'https://www.woorank.com/' => true,

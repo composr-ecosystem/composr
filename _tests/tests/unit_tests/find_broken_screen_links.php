@@ -24,6 +24,7 @@ class find_broken_screen_links_test_set extends cms_test_case
 {
     public function testBadlySpecified()
     {
+        require_code('files2');
         $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE, true, true, ['php']);
         $files[] = 'install.php';
         foreach ($files as $path) {
@@ -54,8 +55,10 @@ class find_broken_screen_links_test_set extends cms_test_case
                     $this->assertTrue($page != $module_name, 'Self-reference to a module can be _SELF in ' . $path);
                     $this->assertTrue($page != $module_name || $zone == '_SELF', 'Self-zone-reference to a module can be _SELF in ' . $path);
                 } else {
-                    $this->assertTrue($page != '_SELF', 'Should not use page self-references outside of a module in ' . $path);
-                    $this->assertTrue($zone != '_SELF', 'Should not use zone self-references outside of a module in ' . $path);
+                    if ($path != 'sources_custom/workflows.php') { // Exception
+                        $this->assertTrue($page != '_SELF', 'Should not use page self-references outside of a module in ' . $path);
+                        $this->assertTrue($zone != '_SELF', 'Should not use zone self-references outside of a module in ' . $path);
+                    }
                 }
 
                 if ($matches[4][$i] != '') {

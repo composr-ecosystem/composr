@@ -73,7 +73,7 @@ You should now be able to log in to Composr using your new password.
 
 If you need to 'hack' your way in to the site using your FTP access, you can place a temporary backdoor.
 
-Go to http://www.myipaddress.com/ and copy your IP address, then put it into your [tt]_config.php[/tt] file:
+Go to https://www.myipaddress.com/ and copy your IP address, then put it into your [tt]_config.php[/tt] file:
 [code="PHP"]
 $SITE_INFO['backdoor_ip'] = '12.34.56.78'; // Enable to a real IP address to force login from FTP access (if lost admin password)
 [/code]
@@ -101,7 +101,7 @@ You should then encrypt your password via changing the password within the [tt]h
 [media width="150" description="Select to browse the banned_ip table" float="right"]data_custom/images/docs/tut_disaster/disaster_ban_1.png[/media]
 If you are unfortunate enough to have somehow been banned from your own website, use phpMyAdmin to browse the [tt]banned_ip[/tt] table, and delete the row containing your IP address.
 
-If you don't know your IP address then you can find it out from http://www.myipaddress.com/.
+If you don't know your IP address then you can find it out from https://www.myipaddress.com/.
 [/surround]
 
 [title="2"]Resetting page ownerships[/title]

@@ -306,7 +306,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
         }
 
         $minimum_version = '5.5.3'; // LEGACY also maintain in tut_webhosting.txt
-        // ^ Why? We need this for proper Unicode support: https://dev.mysql.com/doc/refman/5.5/en/charset-unicode-utf8mb4.html
+        // ^ Why? We need this for proper Unicode support: https://dev.mysql.com/doc/refman/8.0/en/charset-unicode-utf8mb4.html
 
         // If you really need to fiddle it and don't care about emoji, add this to _config.php while installing (before step 5 runs):   $SITE_INFO['database_charset'] = 'utf8';
 

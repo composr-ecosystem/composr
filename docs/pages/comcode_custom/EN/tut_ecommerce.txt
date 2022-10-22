@@ -38,7 +38,7 @@ To accept website payments via credit card, or to take subscriptions, [url="you 
 
 You will need to have SSL set up for your site, as PayPal requires IPN messages to go via SSL from Sep 30, 2016, and we have already imposed this in our default code.
 
-You must [b]not[/b] lock down PayPal to [url="only accept encrypted forms"]https://developer.paypal.com/docs/paypal-payments-standard/integration-guide/encryptedwebpayments/[/url].
+You must [b]not[/b] lock down PayPal to [url="only accept encrypted forms"]https://developer.paypal.com/api/nvp-soap/paypal-payments-standard/integration-guide/encryptedwebpayments/[/url].
 
 [title="3"]Configuration[/title]
 
@@ -896,6 +896,5 @@ We have summarised the PCI compliance rules below in a way streamlined toward Co
  - [page="_SEARCH:tut_subcom"]Tools for subsites and subcommunities[/page]
  - [page="_SEARCH:tut_legal"]Legal and social responsibilities[/page]
  - [page="_SEARCH:tut_points"]Creating an economy/reward-system for members via points[/page]
- - http://offers.avalara.com/ebook/
 
 {$SET,tutorial_tags,eCommerce,Development,shopping,ecommerce,expert}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,Use the eCommerce system to sell things. Usergroup subscription and member invoicing are available out-of-the-box.}[block]main_tutorial_rating[/block]

@@ -193,9 +193,9 @@ SQL Dumps can be a bit tricky. You need to set export options to include data, a
 
 While full-text search is supported, indexing can be a bit spotty. The index builds in the background and has been seen to lag or not build at all during some testing (at least on SQL Server Express). You may disable full-text search via the hidden [tt]disable_fulltext_sqlserver[/tt] option if you want to just use boolean search instead.
 
-Ideally (not importantly) Composr would know the correct stop-word list for SQL Server so it knows whether to direct searches only for a stopword to a non-full-text search. This is controlled in the [url="SQL Server configuration"]https://docs.microsoft.com/en-us/sql/relational-databases/search/configure-and-manage-stopwords-and-stoplists-for-full-text-search[/url] (unlike MySQL, where it's hard-coded, and hence we were able to hard-code in our code also). To provide Composr an accurate full-text search word list you need to override the [tt]get_stopwords_list()[/tt] function.
+Ideally (not importantly) Composr would know the correct stop-word list for SQL Server so it knows whether to direct searches only for a stopword to a non-full-text search. This is controlled in the [url="SQL Server configuration"]https://learn.microsoft.com/en-us/sql/relational-databases/search/configure-and-manage-stopwords-and-stoplists-for-full-text-search?view=sql-server-ver16[/url] (unlike MySQL, where it's hard-coded, and hence we were able to hard-code in our code also). To provide Composr an accurate full-text search word list you need to override the [tt]get_stopwords_list()[/tt] function.
 
-You may also want to configure the [url="text language"]https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/configure-the-default-full-text-language-server-configuration-option[/url].
+You may also want to configure the [url="text language"]https://learn.microsoft.com/en-us/sql/database-engine/configure-windows/configure-the-default-full-text-language-server-configuration-option?view=sql-server-ver16[/url].
 
 [title="2"]Technical information for developers (advanced)[/title]
 

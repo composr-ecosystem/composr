@@ -1964,6 +1964,7 @@ function load_comcode_page(string $string, string $zone, string $codename, ?stri
     }
 
     if ($codename == 'sitemap') {
+        require_lang('zones');
         inject_feed_url('?mode=comcode_pages&select=' . urlencode($zone), do_lang('COMCODE_PAGES'));
     }
 

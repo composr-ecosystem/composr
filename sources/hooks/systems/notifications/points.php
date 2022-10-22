@@ -33,7 +33,7 @@ class Hook_notification_points extends Hook_Notification
     public function get_initial_setting(string $notification_code, ?string $category = null) : int
     {
         if ($notification_code == 'points_transactions') {
-            return A_DAILY_EMAIL_DIGEST & A_WEB_NOTIFICATION; // Could have a lot of them, so use an email digest to avoid annoying users
+            return A_DAILY_EMAIL_DIGEST & A_WEB_NOTIFICATION; // Could have a lot of them, so use an e-mail digest to avoid annoying users
         }
         if ($notification_code == 'point_escrows') {
             return A__ALL & ~A_INSTANT_PT;

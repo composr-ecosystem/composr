@@ -1229,10 +1229,10 @@ abstract class Mail_dispatcher_base
             } else {
                 $to_names = $to_emails;
             }
-        } else {
-            if (!is_array($to_names)) {
-                $to_names = [$to_names];
-            }
+        } elseif ($to_names === null) {
+            $to_names = [get_site_name()];
+        } elseif (!is_array($to_names)) {
+            $to_names = [$to_names];
         }
         for ($i = count($to_names); $i < count($to_emails); $i++) {
             $to_names[] = $to_names[0];

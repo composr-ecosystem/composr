@@ -4,6 +4,7 @@
 	{$INSERT_FORM_POST_SECURITY}
 
 	<input type="hidden" name="submitting" value="1" />
+	<input type="hidden" name="csrf_token_preserve" value="1" />
 
 	<div>
 		<label for="sections_to_run" class="lonely-label">{!SECTIONS}:</label>

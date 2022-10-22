@@ -493,7 +493,7 @@ If you add a line to [tt]_config.php[/tt] like the following:
 [code="PHP"]
 $SITE_INFO['backdoor_ip'] = '1.2.3.4';
 [/code]
-It will automatically log you in under the first administrator account. You can find your IP address from [url="common websites"]http://myipaddress.com[/url].
+It will automatically log you in under the first administrator account. You can find your IP address from [url="common websites"]https://www.myipaddress.com[/url].
 
 Note that if you're using localhost, you'll probably be using ipv6, so you'll need to use the ipv6 local address, [tt]::1[/tt].
 

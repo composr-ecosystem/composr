@@ -1850,6 +1850,11 @@ if (!function_exists(\'git_repos\')) {
         $config_contents .= '$SITE_INFO[\'session_cookie\'] = \'cms_session__' . md5($base_url) . "';\n";
     }
 
+    // Copy over current safe mode setting (if testing installer in safe mode)
+    if (in_safe_mode()) {
+        $config_contents .= '$SITE_INFO[\'safe_mode\'] = \'1\';' . "\n";
+    }
+
     // On the live GAE, we need to switch in different settings to the local dev server
     if (GOOGLE_APPENGINE) {
         $gae_live_code = "

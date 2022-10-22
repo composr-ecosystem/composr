@@ -99,7 +99,7 @@ class notification_classifications_test_set extends cms_test_case
             if (count($notification_codes) == 1) {
                 $notification_code = $notification_codes[0];
 
-                // Exception: programattically generated notification codes
+                // Exception: programmatically generated notification codes
                 if (strpos($notification_code, '__') !== false) {
                     continue;
                 }

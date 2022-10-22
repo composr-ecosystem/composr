@@ -3699,6 +3699,8 @@ function ecv_RUNNING_SCRIPT(string $lang, array $escaped, array $param) : string
 
     if (!@cms_empty_safe($param[0])) {
         $value = running_script($param[0]) ? '1' : '0';
+    } else {
+        $value = current_script();
     }
 
     if ($GLOBALS['XSS_DETECT']) {

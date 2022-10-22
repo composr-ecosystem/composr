@@ -12,7 +12,7 @@ This tutorial focuses on IP addresses. A member-focused view is taken in the [pa
 [box="Find your IP address" width="25em"]
 Computers often have more than one [concept]IP address[/concept] (one for each 'network interface', such as a network card or modem).
 
-If you want to find your own IP address, as Composr sees it, hold the mouse over the 'Account' icon (person icon) in the top bar to find a tooltip containing the IP address -- or use a [url="third-party IP address reporting website"]http://www.myipaddress.com[/url].
+If you want to find your own IP address, as Composr sees it, hold the mouse over the 'Account' icon (person icon) in the top bar to find a tooltip containing the IP address -- or use a [url="third-party IP address reporting website"]https://www.myipaddress.com[/url].
 [/box]
 
 [box="Finding network settings" width="25em"]

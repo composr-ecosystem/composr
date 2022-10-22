@@ -716,7 +716,7 @@ If you are managing your own server, you may want to consider:
  - [page="_SEARCH:tut_trace"]Using IP addresses to trace users[/page]
  - [page="_SEARCH:tut_antispam"]Anti-spam settings[/page]
  - [page="_SEARCH:tut_software_feedback"]Problem and feedback reports, and development policies[/page]
- - [url="https://internethealthreport.org"]The Internet Health Report[/url]
+ - [url="https://foundation.mozilla.org/en/insights/internet-health-report/"]The Internet Health Report[/url]
  - [page="_SEARCH:codebook_standards"]Code Book, part 4 (Coding Standards)[/page]
  - [page="_SEARCH:tut_website_health"]Website Health[/page]
 

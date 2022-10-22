@@ -371,7 +371,7 @@ function get_default_option(string $name) : ?string
 {
     $path = 'hooks/systems/config/' . filter_naughty_harsh($name, true);
     clearstatcache();
-    if (!is_file(get_file_base() . '/sources/' . $path . '.php') && !is_file(get_file_base() . '/sources_custom/' . $path . '.php')) {
+    if (!is_file(get_file_base() . '/sources/' . $path . '.php') && (!is_file(get_file_base() . '/sources_custom/' . $path . '.php') || in_safe_mode())) {
         return null;
     }
 

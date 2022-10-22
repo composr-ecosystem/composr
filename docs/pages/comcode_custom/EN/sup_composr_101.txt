@@ -8,24 +8,6 @@ Composr is a very comprehensive Content management system &ldquo;CMS&rdquo; That
 
 It's a fantastic CMS that allows you easily build the infrastructure for a vibrant websites including Community sites, straight forward blog based, Portfolio and gallery sites, Information/brochure sites and finally you can even create an online store or a combination of all. If that's your aim then yes Composr is the right product for you.
 
-[title="2"]Free Trial[/title]
-
-It costs you nothing to try out Composr. You can set up a 30 day demo account with Arvixe webhosting. Why? Well you have 30 days completely free Composr optimised hosting to get used to working with Composr. Any work you do is saved and should you wish to purchase hosting its one click away.
-
-[title="3"]Try out Composr with Arvixe[/title]
-
-It's very simple to set up your demo.
-
-[url="https://www.arvixe.com/ocportal_hosting" target="_blank"][media description="Composr free demo" thumb="0"]data_custom/images/docs/sup_composr_101/c39ff1c3e5a27fd34fe5ce06d6246036.png[/media][/url]
-
-[box="Note"]
-The username will be used for the name of your demo site.
-
-My username was &ldquo;ocptutor&rdquo; therefore my demo site can be found at
-
-[tt]http://ocptutor.ocportal.arvixe.com/[/tt] (UPDATE: the site is no longer live)
-[/box]
-
 [media description="Composr demo site" thumb="1"]data_custom/images/docs/sup_composr_101/8140649df759280fe2588f4fce756d89.png[/media]
 
 Obviously we have nothing to look at except the bare bones of your fledgling site. So let's log in and start building your site.

@@ -53,7 +53,7 @@ I hope this tutorial gave some insight into how to manage a project, and was use
 
  - https://balsamiq.com/products/mockups/
  - https://www.hobo-web.co.uk/website-design-tips/
- - https://www.boxuk.com/insight/blog-posts/the-ultimate-website-launch-checklist
+ - https://www.boxuk.com/insight/the-ultimate-website-launch-checklist/
  - [page="_SEARCH:sup_pricing"]Project pricing[/page]
  - [page="_SEARCH:sup_choosing_a_developer"]Choosing a software company for your project[/page]
  - [page="_SEARCH:sup_developer_relationships"]Maintaining a good agency relationship[/page]

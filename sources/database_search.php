@@ -1322,7 +1322,7 @@ function is_under_radar(string $test) : bool
  */
 function get_stopwords_list() : array
 {
-    // Hard-coded from MySQL manual (https://dev.mysql.com/doc/refman/5.5/en/fulltext-stopwords.html). No way to read it dynamically.
+    // Hard-coded from MySQL manual (https://dev.mysql.com/doc/refman/8.0/en/fulltext-stopwords.html). No way to read it dynamically.
     return [
         'a\'s' => true,
         'able' => true,

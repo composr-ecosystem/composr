@@ -441,7 +441,7 @@ function get_workflow_form(int $workflow_content_id) : object
     $workflow_fields->attach(form_input_various_ticks($send_to_boxes, do_lang_tempcode('NEXT_APPROVAL_SIDE_DESCRIPTION'), null, do_lang_tempcode('NEXT_APPROVAL'), false));
 
     // Set the URL for handling the response to this form
-    $post_url = build_url(['page' => 'admin_workflow', 'type' => 'workflow'], get_module_zone('admin_workflow'));
+    $post_url = build_url(['page' => '_SELF', 'type' => 'workflow'], '_SELF');
 
     // Set the URL to return to after the handling has taken place
     $workflow_hidden->attach(form_input_hidden('return_url', protect_url_parameter(SELF_REDIRECT)));

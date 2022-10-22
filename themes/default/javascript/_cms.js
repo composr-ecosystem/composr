@@ -1232,7 +1232,7 @@
             callbackError = callback;
         }
 
-        if ((typeof post === 'string') && (!post.startsWith('csrf_token=') && !post.includes('&csrf_token='))) {
+        if ((typeof post === 'string') && (!post.startsWith('csrf_token=') && !post.includes('&csrf_token=') && !$cms.runningScript('install'))) {
             return $cms.getCsrfToken().then(function (text) {
                 post += '&csrf_token=' + encodeURIComponent(text);
                 return initiateRequestPromise();

@@ -94,7 +94,7 @@ class standard_dir_files_test_set extends cms_test_case
             '35524c96fbfc2361a6dff117f3a19bc8' => true, // uploads/website_specific/compo.sr/.htaccess (Deny access to some important files on the compo.sr site)
             '8fbbec6b8fd8a4999a5b07f5ddcf5ea8' => true, // */pages/modules*/.htaccess (Allows access to module URLs, and then the recommended.htaccess rules will rewrite to correct URL - useful for IDE integration)
             '3184b8b93e2d9b02dea0c4ec3133ee9c' => true, // Many, */pages/html*/EN/.htaccess, */pages/comcode*/EN/.htaccess (Completely block all HTTP requests)
-            'de9b5b7778090cf4376839b6aebb9f45' => true, // adminzone/.htaccess (Better help for ModRewrite)
+            'de9b5b7778090cf4376839b6aebb9f45' => true, // adminzone/.htaccess (Better help for Mod_Rewrite)
             '205c253d00d3eac70ce61ba26612b27f' => true, // data*/images/.htaccess, uploads/.htaccess (Long-life cache settings for non-changing files (images))
             '8a55e7d3c6651736659f3bc5959c16dd' => true, // data_custom/.htaccess (Block specific patterns of log and config files)
             'bb091e894176e79224ddf66e45558e53' => true, // themes/*/images*/.htaccess (Disable any kind of server-side CGI/scripting via blocking handlers; Disable JavaScript etc via HTTP headers; Long-life cache settings for non-changing files (images))

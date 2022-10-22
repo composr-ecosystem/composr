@@ -37,12 +37,12 @@ function make_nice_timezone_name(string $in) : string
  * Get a list of timezones.
  * We merge tzinfo zones into a simpler list. It makes things nice and compact and save on memory use.
  *
- * @param  boolean $translate_for_dst Translate written timezone offsets for current DST status.
+ * @param  boolean $translate_for_dst Translate written timezone offsets for current DST status
  * @return array Timezone (map between boring-style and human-readable name). Sorted in offset order then likelihood order.
  *
  * @ignore
  */
-function _get_timezone_list($translate_for_dst = true) : array
+function _get_timezone_list(bool $translate_for_dst = true) : array
 {
     $ret = [
         'Pacific/Midway' => '(UTC-11:00) Midway Island, Niue, Pago Pago, Samoa',

@@ -99,7 +99,7 @@ class Module_points
             $GLOBALS['SITE_DB']->create_index('points_ledger', 'status', ['status']);
 
             // t_* searching indexes; t_subtype and t_type_id require t_type for context and so are not indexed independently
-            $GLOBALS['SITE_DB']->create_index('points_ledger', 't_search_subtype', ['t_type', 't_subtype', 't_type_id']); // Hierarchal structure of t_* searching: we can search t_type, t_type & t_subtype, or t_type, t_subtype, & t_type_id
+            $GLOBALS['SITE_DB']->create_index('points_ledger', 't_search_subtype', ['t_type', 't_subtype', 't_type_id']); // Hierarchical structure of t_* searching: we can search t_type, t_type & t_subtype, or t_type, t_subtype, & t_type_id
             $GLOBALS['SITE_DB']->create_index('points_ledger', 't_search_no_subtype', ['t_type', 't_type_id']); // We can also search t_type & t_type_id, but this requires a separate index
 
             add_privilege('POINTS', 'use_points', true);
@@ -177,7 +177,7 @@ class Module_points
             $GLOBALS['SITE_DB']->create_index('points_ledger', 'amount_gift_points', ['amount_gift_points']); // admin_points
 
             // t_* searching indexes; t_subtype and t_type_id require t_type for context and so are not indexed independently
-            $GLOBALS['SITE_DB']->create_index('points_ledger', 't_search_subtype', ['t_type', 't_subtype', 't_type_id']); // Hierarchal structure of t_* searching: we can search t_type, t_type & t_subtype, or t_type, t_subtype, & t_type_id
+            $GLOBALS['SITE_DB']->create_index('points_ledger', 't_search_subtype', ['t_type', 't_subtype', 't_type_id']); // Hierarchical structure of t_* searching: we can search t_type, t_type & t_subtype, or t_type, t_subtype, & t_type_id
             $GLOBALS['SITE_DB']->create_index('points_ledger', 't_search_no_subtype', ['t_type', 't_type_id']); // We can also search t_type & t_type_id, but this requires a separate index
 
             // Add legacy explanation and default values for all the gift records

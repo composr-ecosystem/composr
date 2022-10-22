@@ -99,7 +99,7 @@ Unfortunately result counts have to be an approximation. To de-duplicate the res
 The title fields, and meta keyword fields, get precedence when search results are determined. Tuning these manually for your can improve search results considerably. Additionally keywords are individually queried, rather than having to go through full sentence searching -- so you can specify things more precisely, e.g. to include hyphens (which full-text search treats like spaces).
 
 Ultimately, full-text search effectiveness resides in MySQL (or whatever database you use), not Composr. Here are some particulars for MySQL:
- - If you are using MySQL, considering turning the [url="MySQL minimum word length"]http://dev.mysql.com/doc/refman/5.6/en/server-system-variables.html#sysvar_ft_min_word_len[/url] down to 3 (the default 4).
+ - If you are using MySQL, considering turning the [url="MySQL minimum word length"]https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_ft_min_word_len[/url] down to 3 (the default 4).
  - You can also configure the [concept]stop word[/concept] list in MySQL.
  - If there is only one entry in the table, nothing will be returned, because MySQL will only return words that match fewer than 50% of the rows in a table.
 

@@ -987,7 +987,7 @@ class DatabaseRepair
         if ($_fields !== null) {
             $unique_key_fields = implode(',', _helper_get_table_key_fields($table_name));
 
-            $queries = $GLOBALS['DB_DRIVER']->create_index(get_table_prefix() . $table_name, $_index_name, $_fields, $GLOBALS['SITE_DB']->connection_write, $table_name, $unique_key_fields, $GLOBALS['SITE_DB']->get_table_prefix());
+            $queries = $GLOBALS['DB_DRIVER']->create_index__sql(get_table_prefix() . $table_name, $_index_name, $_fields, $GLOBALS['SITE_DB']->connection_write, $table_name, $unique_key_fields, $GLOBALS['SITE_DB']->get_table_prefix());
             foreach ($queries as $sql) {
                 $this->add_fixup_query($sql);
             }

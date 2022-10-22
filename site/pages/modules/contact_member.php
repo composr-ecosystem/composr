@@ -356,7 +356,7 @@ class Module_contact_member
             ]
         );
 
-        // Send standard confirmation email to current user
+        // Send standard confirmation e-mail to current user
         if (($from_email != '') && (get_option('message_received_emails') == '1')) {
             dispatch_mail(
                 do_lang('YOUR_MESSAGE_WAS_SENT_TO_SUBJECT', $subject, $to_name),
