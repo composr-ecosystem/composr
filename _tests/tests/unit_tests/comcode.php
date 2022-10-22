@@ -143,7 +143,8 @@ class comcode_test_set extends cms_test_case
             return;
         }
 
-        $actual = comcode_to_tempcode('{{admin}}');
+        $username = $this->get_canonical_username('admin');
+        $actual = comcode_to_tempcode('{{' . $username . '}}');
         $this->assertTrue(strpos($actual->evaluate(), '<a') !== false);
     }
 
