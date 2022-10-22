@@ -52,6 +52,19 @@ class env_vars_test_set extends cms_test_case
             return;
         }
 
+        // We know we cannot accurately rebuild the document root if we are running under a symlink
+        //  This is inaccurate, but will bail out if it finds a top level symlink to our install under the document root
+        $d = $_SERVER['DOCUMENT_ROOT'];
+        $dh = @opendir($d);
+        if ($dh !== false) {
+            while (($f = readdir($dh)) !== false) {
+                if ((is_link($d . '/' . $f)) && (readlink($d . '/' . $f) == get_file_base())) {
+                    return;
+                }
+            }
+            closedir($dh);
+        }
+
         $this->wipe_data(true);
         fixup_bad_php_env_vars();
         $this->assertTrue($_SERVER['DOCUMENT_ROOT'] == $this->bak['DOCUMENT_ROOT'], 'Fixed DOCUMENT_ROOT to ' . $_SERVER['DOCUMENT_ROOT'] . ', expected ' . $this->bak['DOCUMENT_ROOT']);
