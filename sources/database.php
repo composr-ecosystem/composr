@@ -2341,7 +2341,7 @@ class DatabaseConnector
     {
         if (($table !== null) && ($field !== null)) {
             $field = preg_replace('#^.*\.(.*)#', '$1', $field);
-            $indexes = $GLOBALS['FORUM_DB']->query_select('db_meta_indices', ['i_fields', 'i_name'], ['i_table' => $table]);
+            $indexes = $GLOBALS['SITE_DB']->query_select('db_meta_indices', ['i_fields', 'i_name'], ['i_table' => $table]);
             $okay = false;
             foreach ($indexes as $index) {
                 if ($index['i_name'][0] == '#') {

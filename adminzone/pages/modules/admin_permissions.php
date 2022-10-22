@@ -202,7 +202,9 @@ class Module_admin_permissions
                 $ret['match_keys'] = ['MATCH_KEYS', 'menu/adminzone/security/permissions/match_keys'];
             }
 
-            $ret['content_access'] = ['CONTENT_ACCESS', 'spare/content'];
+            if (get_forum_type() == 'cns') {
+                $ret['content_access'] = ['CONTENT_ACCESS', 'spare/content'];
+            }
         }
 
         return $ret;
@@ -347,11 +349,13 @@ class Module_admin_permissions
                 return $this->set_match_keys_access();
             }
         }
-        if ($type == 'content_access') {
-            return $this->interface_content_access();
-        }
-        if ($type == '_content_access') {
-            return $this->set_content_access();
+        if (get_forum_type() == 'cns') {
+            if ($type == 'content_access') {
+                return $this->interface_content_access();
+            }
+            if ($type == '_content_access') {
+                return $this->set_content_access();
+            }
         }
         if ($type == 'privileges') {
             return $this->interface_privileges();

@@ -379,7 +379,7 @@ abstract class Hook_sitemap_base
      * May be a single node (i.e. a category root) or multiple nodes (if there's a flat structure).
      *
      * @param  ID_TEXT $page_link The page-link we are finding
-     * @param  ?string $callback Callback function to send discovered page-links to (null: return)
+     * @param  ?mixed $callback Callback function to send discovered page-links to (null: return)
      * @param  ?array $valid_node_types List of node types we will return/recurse-through (null: no limit)
      * @param  ?integer $child_cutoff Maximum number of children before we cut off all children (null: no limit)
      * @param  ?integer $max_recurse_depth How deep to go from the Sitemap root (null: no limit)
@@ -390,7 +390,7 @@ abstract class Hook_sitemap_base
      * @param  boolean $return_anyway Whether to return the structure even if there was a callback. Do not pass this setting through via recursion due to memory concerns, it is used only to gather information to detect and prevent parent/child duplication of default entry points.
      * @return ?array List of node structures (null: working via callback)
      */
-    public function get_virtual_nodes(string $page_link, ?string $callback = null, ?array $valid_node_types = null, ?int $child_cutoff = null, ?int $max_recurse_depth = null, int $recurse_level = 0, int $options = 0, string $zone = '_SEARCH', int $meta_gather = 0, bool $return_anyway = false) : ?array
+    public function get_virtual_nodes(string $page_link, $callback = null, ?array $valid_node_types = null, ?int $child_cutoff = null, ?int $max_recurse_depth = null, int $recurse_level = 0, int $options = 0, string $zone = '_SEARCH', int $meta_gather = 0, bool $return_anyway = false) : ?array
     {
         $nodes = ($callback === null || $return_anyway) ? [] : null;
 
@@ -401,7 +401,7 @@ abstract class Hook_sitemap_base
      * Find details of a position in the Sitemap.
      *
      * @param  ID_TEXT $page_link The page-link we are finding
-     * @param  ?string $callback Callback function to send discovered page-links to (null: return)
+     * @param  ?mixed $callback Callback function to send discovered page-links to (null: return)
      * @param  ?array $valid_node_types List of node types we will return/recurse-through (null: no limit)
      * @param  ?integer $child_cutoff Maximum number of children before we cut off all children (null: no limit)
      * @param  ?integer $max_recurse_depth How deep to go from the Sitemap root (null: no limit)
@@ -413,7 +413,7 @@ abstract class Hook_sitemap_base
      * @param  boolean $return_anyway Whether to return the structure even if there was a callback. Do not pass this setting through via recursion due to memory concerns, it is used only to gather information to detect and prevent parent/child duplication of default entry points.
      * @return ?array Node structure (null: working via callback / error)
      */
-    abstract public function get_node(string $page_link, ?string $callback = null, ?array $valid_node_types = null, ?int $child_cutoff = null, ?int $max_recurse_depth = null, int $recurse_level = 0, int $options = 0, string $zone = '_SEARCH', int $meta_gather = 0, ?array $row = null, bool $return_anyway = false) : ?array;
+    abstract public function get_node(string $page_link, $callback = null, ?array $valid_node_types = null, ?int $child_cutoff = null, ?int $max_recurse_depth = null, int $recurse_level = 0, int $options = 0, string $zone = '_SEARCH', int $meta_gather = 0, ?array $row = null, bool $return_anyway = false) : ?array;
 
 
     /**
@@ -814,7 +814,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
      * Pre-fill part of the node structure, from what we know from the CMA hook.
      *
      * @param  ID_TEXT $page_link The page-link we are finding
-     * @param  ?string $callback Callback function to send discovered page-links to (null: return)
+     * @param  ?mixed $callback Callback function to send discovered page-links to (null: return)
      * @param  ?array $valid_node_types List of node types we will return/recurse-through (null: no limit)
      * @param  ?integer $child_cutoff Maximum number of children before we cut off all children (null: no limit)
      * @param  ?integer $max_recurse_depth How deep to go from the Sitemap root (null: no limit)
@@ -825,7 +825,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
      * @param  ?array $row Database row (null: lookup)
      * @return ?array A tuple: content ID, row, partial node structure (null: filtered)
      */
-    protected function _create_partial_node_structure(string $page_link, ?string $callback, ?array $valid_node_types, ?int $child_cutoff, ?int $max_recurse_depth, int $recurse_level, int $options, string $zone, int $meta_gather, ?array $row) : ?array
+    protected function _create_partial_node_structure(string $page_link, $callback, ?array $valid_node_types, ?int $child_cutoff, ?int $max_recurse_depth, int $recurse_level, int $options, string $zone, int $meta_gather, ?array $row) : ?array
     {
         if (($valid_node_types !== null) && (!in_array($this->content_type, $valid_node_types))) {
             return null;
@@ -1043,7 +1043,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
      *
      * @param  ID_TEXT $content_id The content ID
      * @param  ID_TEXT $page_link The page-link we are finding
-     * @param  ?string $callback Callback function to send discovered page-links to (null: return)
+     * @param  ?mixed $callback Callback function to send discovered page-links to (null: return)
      * @param  ?array $valid_node_types List of node types we will return/recurse-through (null: no limit)
      * @param  ?integer $child_cutoff Maximum number of children before we cut off all children (null: no limit)
      * @param  ?integer $max_recurse_depth How deep to go from the Sitemap root (null: no limit)
@@ -1057,7 +1057,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
      * @param  ?string $explicit_order_by_subcategories Order by for categories (null: alphabetical title)
      * @return ?array Child nodes (null: not retrieved yet)
      */
-    protected function _get_children_nodes(string $content_id, string $page_link, ?string $callback, ?array $valid_node_types, ?int $child_cutoff, ?int $max_recurse_depth, int $recurse_level, int $options, string $zone, int $meta_gather, ?array $row, string $extra_where_entries = '', ?string $explicit_order_by_entries = null, ?string $explicit_order_by_subcategories = null) : ?array
+    protected function _get_children_nodes(string $content_id, string $page_link, $callback, ?array $valid_node_types, ?int $child_cutoff, ?int $max_recurse_depth, int $recurse_level, int $options, string $zone, int $meta_gather, ?array $row, string $extra_where_entries = '', ?string $explicit_order_by_entries = null, ?string $explicit_order_by_subcategories = null) : ?array
     {
         if (($max_recurse_depth !== null) && ($recurse_level >= $max_recurse_depth)) {
             return null;

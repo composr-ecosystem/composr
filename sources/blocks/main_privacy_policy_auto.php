@@ -80,6 +80,9 @@ PHP;
         $hook_obs = find_all_hook_obs('systems', 'privacy', 'Hook_privacy_');
         foreach ($hook_obs as $hook => $hook_ob) {
             $info = $hook_ob->info();
+            if ($info === null) {
+                continue;
+            }
 
             foreach ($info['cookies'] as $name => $details) {
                 if ($details === null) {

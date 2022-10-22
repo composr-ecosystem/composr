@@ -34,6 +34,10 @@ class Hook_actionlog_welcome_emails extends Hook_actionlog
             return [];
         }
 
+        if (get_forum_type() != 'cns') {
+            return [];
+        }
+
         require_lang('cns_welcome_emails');
 
         return [

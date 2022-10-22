@@ -271,3 +271,9 @@ textarea.mono-textbox {
 	float: right;
 	margin-right: 0.5em;
 }
+
+/* Errors */
+
+.site-special-message-inner {
+	overflow: hidden;
+}

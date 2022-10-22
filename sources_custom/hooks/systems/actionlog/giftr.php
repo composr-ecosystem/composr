@@ -29,6 +29,10 @@ class Hook_actionlog_giftr extends Hook_actionlog
             return [];
         }
 
+        if (get_forum_type() != 'cns') {
+            return [];
+        }
+
         require_lang('giftr');
 
         return [

@@ -466,8 +466,7 @@ class Hook_actionlog_core extends Hook_actionlog
                 'identifier_index' => 0,
                 'written_context_index' => 1,
                 'followup_page_links' => [
-                    'VIEW_PROFILE' => '_SEARCH:members:view:{ID}',
-                    'MEMBERS' => '_SEARCH:admin_cns_members',
+                    'VIEW_PROFILE' => ['FORUM_DRIVER__PROFILE_URL', '{1}'],
                 ],
             ],
             'PERSONAL_DATA_PURGING' => [
@@ -476,8 +475,7 @@ class Hook_actionlog_core extends Hook_actionlog
                 'identifier_index' => 0,
                 'written_context_index' => 1,
                 'followup_page_links' => [
-                    'VIEW_PROFILE' => '_SEARCH:members:view:{ID}',
-                    'MEMBERS' => '_SEARCH:admin_cns_members',
+                    'VIEW_PROFILE' => ['FORUM_DRIVER__PROFILE_URL', '{1}'],
                 ],
             ],
         ];

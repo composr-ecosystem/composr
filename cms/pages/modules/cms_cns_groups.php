@@ -50,6 +50,10 @@ class Module_cms_cns_groups extends Standard_crud_module
             return null;
         }
 
+        if (get_forum_type() != 'cns') {
+            return null;
+        }
+
         return [
             'browse' => ['MANAGE_CLUBS', 'menu/cms/clubs'],
         ] + parent::get_entry_points();

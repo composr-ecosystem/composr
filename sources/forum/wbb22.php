@@ -787,7 +787,7 @@ class Forum_driver_wbb22 extends Forum_driver_base
     {
         $c = $this->get_member_row_field($member, 'userposts');
         if ($c === null) {
-            return 0;
+            $c = 0;
         }
         return $c;
     }
@@ -929,9 +929,9 @@ class Forum_driver_wbb22 extends Forum_driver_base
      * Get a member ID from the given member's username.
      *
      * @param  SHORT_TEXT $name The member name
-     * @return MEMBER The member ID
+     * @return ?MEMBER The member ID (null: not found)
      */
-    public function get_member_from_username(string $name) : int
+    public function get_member_from_username(string $name) : ?int
     {
         if ($name == do_lang('GUEST')) {
             return $this->get_guest_id();

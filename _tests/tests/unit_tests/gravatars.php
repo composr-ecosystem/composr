@@ -18,8 +18,22 @@
  */
 class gravatars_test_set extends cms_test_case
 {
+    public function setUp()
+    {
+        parent::setUp();
+
+        if (get_forum_type() != 'cns') {
+            $this->assertTrue(false, 'Test only works with Conversr');
+            return;
+        }
+    }
+
     public function testSimple()
     {
+        if (get_forum_type() != 'cns') {
+            return;
+        }
+
         $url = find_script('gravatar') . '?id=' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
         $result = cms_http_request($url, ['no_redirect' => true]);
         $this->assertTrue($result->message == '302');

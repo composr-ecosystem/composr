@@ -539,6 +539,10 @@ class Module_admin
                                                     continue;
                                                 }
 
+                                                if (is_object($i)) {
+                                                    continue; // Tempcode URL
+                                                }
+
                                                 if (($page == $i[2][0]) && (((!array_key_exists('type', $i[2][1])) && ($type == 'browse')) || ((array_key_exists('type', $i[2][1])) && ($type == $i[2][1]['type']))) && ($zone == $i[2][2])) {
                                                     if ($i[0] == 'cms') {
                                                         $_url = build_url(['page' => 'cms', 'type' => $i[0]], 'cms');

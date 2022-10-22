@@ -135,6 +135,7 @@ class Module_warnings extends Standard_crud_module
         }
 
         if ($type == 'undo_charge') {
+            require_lang('points');
             $this->title = get_screen_title('UNDO_CHARGE');
         }
 
@@ -1216,6 +1217,7 @@ class Module_warnings extends Standard_crud_module
         }
 
         require_code('points2');
+        require_lang('points');
         points_transaction_reverse($ledger['id']);
 
         log_it('UNDO_CHARGE', strval($id), $GLOBALS['FORUM_DRIVER']->get_username($ledger['sender_id']));

@@ -312,21 +312,28 @@ function make_zone_directory(string $zone)
         }
         afm_make_file($zone . '/index.php', cms_file_get_contents_safe(get_file_base() . '/adminzone/index.php', FILE_READ_LOCK), false);
         if (file_exists(get_file_base() . '/pages/modules/.htaccess')) {
-            $index_php = [
-                'pages/comcode/EN', 'pages/comcode_custom/EN',
-                'pages/html/EN', 'pages/html_custom/EN',
+            $htaccess = [
                 'pages/modules', 'pages/modules_custom', 'pages',
             ];
-            foreach ($index_php as $i) {
+            foreach ($htaccess as $i) {
                 afm_make_file($zone . (($zone == '') ? '' : '/') . $i . '/.htaccess', cms_file_get_contents_safe(get_file_base() . '/pages/modules/.htaccess', FILE_READ_LOCK), false);
             }
         }
-        $index_php = [
+        if (file_exists(get_file_base() . '/pages/comcode/EN/.htaccess')) {
+            $htaccess = [
+                'pages/comcode/EN', 'pages/comcode_custom/EN',
+                'pages/html/EN', 'pages/html_custom/EN',
+            ];
+            foreach ($htaccess as $i) {
+                afm_make_file($zone . (($zone == '') ? '' : '/') . $i . '/.htaccess', cms_file_get_contents_safe(get_file_base() . '/pages/comcode/EN/.htaccess', FILE_READ_LOCK), false);
+            }
+        }
+        $index_html = [
             'pages/comcode', 'pages/comcode/EN', 'pages/comcode_custom', 'pages/comcode_custom/EN',
             'pages/html', 'pages/html/EN', 'pages/html_custom', 'pages/html_custom/EN',
             'pages/modules', 'pages/modules_custom', 'pages',
         ];
-        foreach ($index_php as $i) {
+        foreach ($index_html as $i) {
             afm_make_file($zone . (($zone == '') ? '' : '/') . $i . '/index.html', '', false);
         }
     }

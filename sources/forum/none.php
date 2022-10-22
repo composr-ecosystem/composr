@@ -857,9 +857,9 @@ class Forum_driver_none extends Forum_driver_base
      * Get a member ID from the given member's username.
      *
      * @param  SHORT_TEXT $name The member name
-     * @return MEMBER The member ID
+     * @return ?MEMBER The member ID (null: not found)
      */
-    public function get_member_from_username(string $name) : int
+    public function get_member_from_username(string $name) : ?int
     {
         if ($name == $this->get_admin_username()) {
             return 1;

@@ -1012,6 +1012,9 @@ class Module_catalogues
             warn_exit(do_lang_tempcode('TOO_MANY_TO_CHOOSE_FROM'));
         }
         $sort = $catalogue['c_categories_sort_order'];
+        if ($sort == '') {
+            $sort = 'title ASC';
+        }
         list($_sort, $_dir) = explode(' ', $sort, 2);
         if ($_sort == 'title') {
             $sort = $GLOBALS['SITE_DB']->translate_field_ref('cc_title') . ' ' . $_dir;
@@ -1181,6 +1184,9 @@ class Module_catalogues
                 'DESCRIPTION' => '',
                 'ID' => '',
                 'DISPLAY_TYPE' => $display_type,
+                'CC_SORT' => '',
+                'CAT_SELECT' => '',
+                'FILTER' => '',
             ],
             null,
             false,

@@ -379,7 +379,6 @@ The documentation is primarily maintained on our website, and this archive is on
             'data_custom/images/docs/sup_composr_101/775aa299d62878afb51bf7574045f913.png',
             'data_custom/images/docs/sup_composr_101/8140649df759280fe2588f4fce756d89.png',
             'data_custom/images/docs/sup_composr_101/c310a17711df345f4af529951578767f.png',
-            'data_custom/images/docs/sup_composr_101/c39ff1c3e5a27fd34fe5ce06d6246036.png',
             'data_custom/images/docs/sup_composr_101/cf478a8d1a6e386bdcd1e5cf10aa2eb5.png',
             'data_custom/images/docs/sup_composr_custom_profile_fields_cpf/2f095dc08d39e9f1353ee849834f1c34.png',
             'data_custom/images/docs/sup_composr_custom_profile_fields_cpf/3873b15b479052840b7b95c8dd187805.png',

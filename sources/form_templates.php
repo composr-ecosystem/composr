@@ -2021,8 +2021,10 @@ function form_input_tree_list($pretty_name, $description, string $name, ?string 
         $cma_ob = get_content_object($content_type);
         if ($cma_ob !== null) {
             $cma_info = $cma_ob->info();
-            if ($cma_info['parent_category_meta_aware_type'] !== null) {
-                $content_type = $cma_info['parent_category_meta_aware_type'];
+            if ($cma_info !== null) {
+                if ($cma_info['parent_category_meta_aware_type'] !== null) {
+                    $content_type = $cma_info['parent_category_meta_aware_type'];
+                }
             }
         }
     }

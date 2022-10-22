@@ -1421,7 +1421,7 @@ class Module_cms_comcode_pages
             ($total_known_pages < 300) &&
             ($GLOBALS['SITE_DB']->query_select_value_if_there('comcode_pages c LEFT JOIN ' . get_table_prefix() . 'cached_comcode_pages a ON c.the_page=a.the_page AND c.the_zone=a.the_zone', 'c.the_page', ['a.the_page' => null]) !== null)
         ) {
-            $____pages = $GLOBALS['SITE_DB']->query_select('comcode_pages', ['the_zone', 'the_page', 'p_parent_page', 'p_validated']);
+            $____pages = $GLOBALS['SITE_DB']->query_select('comcode_pages', ['the_zone', 'the_page', 'p_parent_page', 'p_validated', 'p_include_on_sitemap']);
             $___pages = [];
             foreach ($____pages as $____page) {
                 $___pages[$____page['the_zone'] . ':' . $____page['the_page']] = $____page;
@@ -1444,12 +1444,13 @@ class Module_cms_comcode_pages
                     'p_validated' => isset($___pages[$page_link]) ? $___pages[$page_link]['p_validated'] : 1,
                     'cc_page_title' => get_comcode_page_title_from_disk($path_bits[0]),
                     'string_index' => cms_file_get_contents_safe($path_bits[0]),
+                    'p_include_on_sitemap' => _comcode_page_include_on_sitemap_default($_zone, $_page),
                 ];
             }
         } else {
             $__pages = $GLOBALS['SITE_DB']->query_select(
                 'comcode_pages a LEFT JOIN ' . get_table_prefix() . 'cached_comcode_pages b ON a.the_zone=b.the_zone AND a.the_page=b.the_page',
-                ['a.*', 'b.cc_page_title', 'b.string_index'],
+                ['a.*', 'b.cc_page_title', 'b.string_index', 'b.p_include_on_sitemap'],
                 [],
                 'ORDER BY the_zone,the_page'
             );

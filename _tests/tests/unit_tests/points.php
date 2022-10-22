@@ -222,8 +222,8 @@ class points_test_set extends cms_test_case
             $this->assertTrue(($reversed_points == $initial_points), 'Test ' . strval($test) . ': Points did not reverse as expected for reverse transaction (points balance). Expected ' . strval($initial_points) . ' but instead got ' . strval($reversed_points));
 
             // Do not keep unit tests in the ledger
-            $GLOBALS['FORUM_DB']->query_delete('points_ledger', ['id' => $this->points_transact_record], '', 1);
-            $GLOBALS['FORUM_DB']->query_delete('points_ledger', ['id' => ($is_refund) ? $id : $id[0]], '', 1);
+            $GLOBALS['SITE_DB']->query_delete('points_ledger', ['id' => $this->points_transact_record], '', 1);
+            $GLOBALS['SITE_DB']->query_delete('points_ledger', ['id' => ($is_refund) ? $id : $id[0]], '', 1);
         }
     }
 
@@ -275,8 +275,8 @@ class points_test_set extends cms_test_case
         $this->assertTrue($reversed_correct, 'Points did not reverse as expected for reverse transaction.');
 
         // Do not keep unit tests in the ledger
-        $GLOBALS['FORUM_DB']->query_delete('points_ledger', ['id' => $this->points_transact_record], '', 1);
-        $GLOBALS['FORUM_DB']->query_delete('points_ledger', ['id' => $id[0]], '', 1);
+        $GLOBALS['SITE_DB']->query_delete('points_ledger', ['id' => $this->points_transact_record], '', 1);
+        $GLOBALS['SITE_DB']->query_delete('points_ledger', ['id' => $id[0]], '', 1);
     }
 
     public function testForumPoints()
@@ -328,8 +328,8 @@ class points_test_set extends cms_test_case
 
         // Tear down
         $id = points_transaction_reverse($this->points_credit_member, null);
-        $GLOBALS['FORUM_DB']->query_delete('points_ledger', ['id' => $this->points_credit_member], '', 1);
-        $GLOBALS['FORUM_DB']->query_delete('points_ledger', ['id' => $id[0]], '', 1);
+        $GLOBALS['SITE_DB']->query_delete('points_ledger', ['id' => $this->points_credit_member], '', 1);
+        $GLOBALS['SITE_DB']->query_delete('points_ledger', ['id' => $id[0]], '', 1);
     }
 
     public function testPointsDebitMember()
@@ -356,8 +356,8 @@ class points_test_set extends cms_test_case
 
         // Tear down
         $id = points_transaction_reverse($this->points_debit_member, null);
-        $GLOBALS['FORUM_DB']->query_delete('points_ledger', ['id' => $this->points_debit_member], '', 1);
-        $GLOBALS['FORUM_DB']->query_delete('points_ledger', ['id' => $id[0]], '', 1);
+        $GLOBALS['SITE_DB']->query_delete('points_ledger', ['id' => $this->points_debit_member], '', 1);
+        $GLOBALS['SITE_DB']->query_delete('points_ledger', ['id' => $id[0]], '', 1);
     }
 
     public function testPointsEscrowWithGiftPoints()
@@ -444,15 +444,15 @@ class points_test_set extends cms_test_case
         $this->assertTrue(($reversed_points == $initial_points), 'Escrow: Points did not reverse as expected for reverse transaction (points balance). Expected ' . strval($initial_points) . ' but instead got ' . strval($reversed_points));
 
         // Do not keep unit tests in the ledger
-        $GLOBALS['FORUM_DB']->query_delete('escrow_logs', ['escrow_id' => $this->escrow]);
-        $GLOBALS['FORUM_DB']->query_delete('escrow', ['id' => $this->escrow], '', 1);
-        $GLOBALS['FORUM_DB']->query_delete('points_ledger', ['id' => $myrow['original_points_ledger_id']], '', 1);
-        $GLOBALS['FORUM_DB']->query_delete('points_ledger', ['id' => $id[0]], '', 1);
+        $GLOBALS['SITE_DB']->query_delete('escrow_logs', ['escrow_id' => $this->escrow]);
+        $GLOBALS['SITE_DB']->query_delete('escrow', ['id' => $this->escrow], '', 1);
+        $GLOBALS['SITE_DB']->query_delete('points_ledger', ['id' => $myrow['original_points_ledger_id']], '', 1);
+        $GLOBALS['SITE_DB']->query_delete('points_ledger', ['id' => $id[0]], '', 1);
         if ($id2 !== null && array_key_exists(0, $id2)) {
-            $GLOBALS['FORUM_DB']->query_delete('points_ledger', ['id' => $id2[0]], '', 1);
+            $GLOBALS['SITE_DB']->query_delete('points_ledger', ['id' => $id2[0]], '', 1);
         }
         if (($data !== null) && (array_key_exists(0, $data))) {
-            $GLOBALS['FORUM_DB']->query_delete('points_ledger', ['id' => $data[0]], '', 1);
+            $GLOBALS['SITE_DB']->query_delete('points_ledger', ['id' => $data[0]], '', 1);
         }
     }
 
@@ -466,7 +466,7 @@ class points_test_set extends cms_test_case
         $reverse1 = points_transaction_reverse($this->initial_credit_sender);
         $reverse2 = points_transaction_reverse($this->initial_credit_recipient);
         foreach ([$this->initial_credit_sender, $reverse1[0], $this->initial_credit_recipient, $reverse2[0]] as $id) {
-            $GLOBALS['FORUM_DB']->query_delete('points_ledger', ['id' => $id], '', 1);
+            $GLOBALS['SITE_DB']->query_delete('points_ledger', ['id' => $id], '', 1);
         }
 
         set_option('enable_gift_points', $this->enable_gift_points, 0);

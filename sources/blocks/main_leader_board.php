@@ -176,9 +176,9 @@ PHP;
         require_code('points');
 
         if (!array_key_exists('param', $map)) {
-            $boards = $GLOBALS['FORUM_DB']->query_select('leader_boards', ['*'], [], 'ORDER BY id', 1);
+            $boards = $GLOBALS['SITE_DB']->query_select('leader_boards', ['*'], [], 'ORDER BY id', 1);
         } else {
-            $boards = $GLOBALS['FORUM_DB']->query_select('leader_boards', ['*'], ['id' => intval($map['param'])], '', 1);
+            $boards = $GLOBALS['SITE_DB']->query_select('leader_boards', ['*'], ['id' => intval($map['param'])], '', 1);
         }
 
         if (empty($boards)) {
@@ -235,10 +235,10 @@ PHP;
                 'PROFILE_URL' => $profile_url,
                 '_POINTS' => strval($row['lb_points']),
                 'POINTS' => integer_format($row['lb_points']),
-                '_VOTING_POWER' => (($voting_power !== null) ? float_to_raw_string($voting_power, 10) : null),
-                'VOTING_POWER' => (($voting_power !== null) ? float_format($voting_power, 3) : null),
-                '_VOTING_CONTROL' => (($voting_control !== null) ? float_to_raw_string($voting_control, 10) : null),
-                'VOTING_CONTROL' => (($voting_control !== null) ? float_format($voting_control, 3) : null),
+                '_VOTING_POWER' => (($voting_power !== null) ? float_to_raw_string($voting_power, 10) : ''),
+                'VOTING_POWER' => (($voting_power !== null) ? float_format($voting_power, 3) : ''),
+                '_VOTING_CONTROL' => (($voting_control !== null) ? float_to_raw_string($voting_control, 10) : ''),
+                'VOTING_CONTROL' => (($voting_control !== null) ? float_format($voting_control, 3) : ''),
                 'USERNAME' => $username,
                 'HAS_RANK_IMAGES' => $has_rank_images,
             ]));

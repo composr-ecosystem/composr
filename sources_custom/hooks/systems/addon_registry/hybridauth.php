@@ -650,7 +650,9 @@ And also Instagram...
     {
         if ($upgrade_from === null) {
             // LEGACY: Transfer old facebook scheme to a Hybridauth provider
-            $GLOBALS['FORUM_DB']->query_update('f_members', ['m_password_compat_scheme' => 'Facebook'], ['m_password_compat_scheme' => 'facebook']);
+            if (get_forum_type() == 'cns') {
+                $GLOBALS['FORUM_DB']->query_update('f_members', ['m_password_compat_scheme' => 'Facebook'], ['m_password_compat_scheme' => 'facebook']);
+            }
 
             $GLOBALS['SITE_DB']->create_table('hybridauth_content_map', [
                 'h_content_type' => '*ID_TEXT',

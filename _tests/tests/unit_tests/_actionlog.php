@@ -181,11 +181,13 @@ class _actionlog_test_set extends cms_test_case
 
         // Check no missing handlers...
 
-        $matches = [];
-        $num_matches = preg_match_all('#log_it\(\'([^\']*)\'#', $all_code, $matches);
-        for ($i = 0; $i < $num_matches; $i++) {
-            $action = $matches[1][$i];
-            $this->assertTrue(array_key_exists($action, $handlers), 'Could not find actionlog hook handling for ' . $action);
+        if (get_forum_type() == 'cns') {
+            $matches = [];
+            $num_matches = preg_match_all('#log_it\(\'([^\']*)\'#', $all_code, $matches);
+            for ($i = 0; $i < $num_matches; $i++) {
+                $action = $matches[1][$i];
+                $this->assertTrue(array_key_exists($action, $handlers), 'Could not find actionlog hook handling for ' . $action);
+            }
         }
 
         // Check no missing log_it calls...

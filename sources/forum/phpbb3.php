@@ -1094,7 +1094,11 @@ class Forum_driver_phpbb3 extends Forum_driver_base
      */
     public function get_post_count(int $member) : int
     {
-        return $this->get_member_row_field($member, 'user_posts');
+        $c = $this->get_member_row_field($member, 'user_posts');
+        if ($c === null) {
+            $c = 0;
+        }
+        return $c;
     }
 
     /**
@@ -1309,9 +1313,9 @@ class Forum_driver_phpbb3 extends Forum_driver_base
      * Get a member ID from the given member's username.
      *
      * @param  SHORT_TEXT $name The member name
-     * @return MEMBER The member ID
+     * @return ?MEMBER The member ID (null: not found)
      */
-    public function get_member_from_username(string $name) : int
+    public function get_member_from_username(string $name) : ?int
     {
         if ($name == do_lang('GUEST')) {
             return $this->get_guest_id();
