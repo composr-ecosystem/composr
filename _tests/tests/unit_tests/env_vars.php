@@ -59,6 +59,7 @@ class env_vars_test_set extends cms_test_case
         if ($dh !== false) {
             while (($f = readdir($dh)) !== false) {
                 if ((is_link($d . '/' . $f)) && (readlink($d . '/' . $f) == get_file_base())) {
+                    closedir($dh);
                     return;
                 }
             }
