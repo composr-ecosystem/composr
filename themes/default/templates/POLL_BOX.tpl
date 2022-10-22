@@ -13,7 +13,7 @@
 		<h3>{$GET,content_box_title}</h3>
 	{+END}
 
-	<a id="poll-jump" rel="dovote"></a>
+	<a id="poll-jump-{PID*}" rel="dovote"></a>
 	{+START,IF_NON_EMPTY,{RESULT_URL}}
 	<form title="{!VOTE}" {+START,IF_NON_EMPTY,{RESULT_URL}}data-ajaxify-target="1"{+END} action="{VOTE_URL*}" method="post" class="poll-form">
 		{$INSERT_FORM_POST_SECURITY}

@@ -153,7 +153,8 @@ class _template_previews_test_set extends cms_test_case
                 continue;
             }
 
-            if (is_file(get_file_base() . '/_tests/screens_tested/' . $theme . '__' . $function . '.tmp')) {
+            $cache_path = get_file_base() . '/_tests/screens_tested/' . $theme . '__' . $function . '.tmp';
+            if ((is_file($cache_path)) && (filemtime($cache_path) > time() - 60 * 60)) {
                 continue; // To make easier to debug through
             }
 
@@ -212,6 +213,10 @@ class _template_previews_test_set extends cms_test_case
                     'templates/PERMISSIONS_CONTENT_ACCESS_LIST.tpl',
                     'templates/PERMISSIONS_CONTENT_ACCESS_TICK.tpl',
                     'templates/THEME_TEMPLATE_EDITOR_TAB_REVISIONS.tpl',
+                    'templates/FORM_SCREEN_FIELD_DESCRIPTION.tpl',
+                    'templates/FORM_SCREEN_ARE_REQUIRED.tpl',
+                    'templates/GALLERY_POPULAR.tpl',
+                    'templates/FILTER_BOX.tpl',
                 ])) {
                     continue;
                 }
@@ -285,7 +290,8 @@ class _template_previews_test_set extends cms_test_case
                 continue; // Only in admin theme, causes problem
             }
 
-            if (is_file(get_file_base() . '/_tests/screens_tested/consistency__' . $function . '.tmp')) {
+            $cache_path = get_file_base() . '/_tests/screens_tested/consistency__' . $function . '.tmp';
+            if ((is_file($cache_path)) && (filemtime($cache_path) > time() - 60 * 60)) {
                 continue; // To make easier to debug through
             }
 
@@ -376,8 +382,9 @@ class _template_previews_test_set extends cms_test_case
                 continue; // Only in admin theme, causes problem
             }
 
-            if (is_file(get_file_base() . '/_tests/screens_tested/nonemissing__' . $function . '.tmp')) {
-                continue; // To make easier to debug through
+            $cache_path = get_file_base() . '/_tests/screens_tested/nonemissing__' . $function . '.tmp';
+            if ((is_file($cache_path)) && (filemtime($cache_path) > time() - 60 * 60)) {
+               continue; // To make easier to debug through
             }
 
             $ATTACHED_MESSAGES = new Tempcode();

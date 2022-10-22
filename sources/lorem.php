@@ -976,11 +976,8 @@ function get_text_templates() : array
         'templates/META_REFRESH_LINE.tpl',
         'templates/PREVIEW_SCRIPT_CODE.tpl',
         'templates/HANDLE_CONFLICT_RESOLUTION.tpl',
-        'templates/POLL_RSS_SUMMARY.tpl',
-        'templates/FORM_SCREEN_FIELD_DESCRIPTION.tpl',
-        'templates/FORM_SCREEN_ARE_REQUIRED.tpl',
-        'templates/GALLERY_POPULAR.tpl',
         'templates/RSS_HEADER.tpl',
+        'templates/POLL_RSS_SUMMARY.tpl',
 
         // In header, and uses IDs, so can't be used except in isolation
         'templates/BLOCK_TOP_NOTIFICATIONS.tpl',

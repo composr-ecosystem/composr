@@ -1354,14 +1354,14 @@ class Hook_addon_registry_ecommerce
                     '_GUID' => '02789c9af25cbc971e86bfcc0ad322d5',
                     'PLACEHOLDER' => null,
                     'MAXLENGTH' => strval(16),
-                    'TABINDEX' => strval(-1),
+                    'TABINDEX' => placeholder_number(),
                     'REQUIRED' => false,
                     'NAME' => 'placeholder_a',
                     'DEFAULT' => '',
                     'TYPE' => 'text',
                     'PATTERN' => null,
                     'SIZE' => strval(16),
-                    'AUTOCOMPLETE' => false,
+                    'AUTOCOMPLETE' => null,
                 ]),
             ],
         ];
@@ -1372,7 +1372,7 @@ class Hook_addon_registry_ecommerce
                 'FIELD' => do_lorem_template('FORM_SCREEN_INPUT_DATE', [
                     '_GUID' => '5ace58dd0f540f70fb3bd440fb02a430',
                     'REQUIRED' => false,
-                    'TABINDEX' => strval(-1),
+                    'TABINDEX' => placeholder_number(),
                     'NAME' => 'placeholder_b',
                     'TYPE' => 'datetime',
 
@@ -1389,7 +1389,7 @@ class Hook_addon_registry_ecommerce
                     'MAX_DATE_MONTH' => '',
                     'MAX_DATE_YEAR' => '',
 
-                    'AUTOCOMPLETE' => false,
+                    'AUTOCOMPLETE' => null,
                     'READ_ONLY' => strval(0)
                 ]),
             ],
