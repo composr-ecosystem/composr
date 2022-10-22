@@ -163,6 +163,7 @@ class Hook_payment_gateway_authorize
 
     /**
      * Make a transaction (payment) button.
+     * This is for IPN-style transactions (as opposed to local transactions).
      *
      * @param  ID_TEXT $trans_expecting_id Our internal temporary transaction ID
      * @param  ID_TEXT $type_code The product codename
@@ -211,6 +212,7 @@ class Hook_payment_gateway_authorize
 
     /**
      * Make a subscription (payment) button.
+     * This is for IPN-style transactions (as opposed to local transactions).
      *
      * @param  ID_TEXT $trans_expecting_id Our internal temporary transaction ID
      * @param  ID_TEXT $type_code The product codename
@@ -479,7 +481,7 @@ class Hook_payment_gateway_authorize
     }
 
     /**
-     * Perform a transaction (local not remote).
+     * Perform a local transaction (a transaction where details are taken in locally and sent to the payment API invisibly-to-the-user).
      *
      * @param  ID_TEXT $trans_expecting_id The transaction ID we have generated for this transaction
      * @param  SHORT_TEXT $cardholder_name Cardholder name

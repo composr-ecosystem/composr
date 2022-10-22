@@ -529,6 +529,7 @@ function build_transaction_linker(string $txn_id, bool $awaiting_payment, ?array
 
 /**
  * Make a transaction (payment) button.
+ * This is for IPN-style transactions (as opposed to local transactions).
  *
  * @param  ID_TEXT $type_code The product codename
  * @param  SHORT_TEXT $item_name The human-readable product title
@@ -584,6 +585,7 @@ function make_transaction_button(string $type_code, string $item_name, string $p
 
 /**
  * Make a subscription (payment) button.
+ * This is for IPN-style transactions (as opposed to local transactions).
  *
  * @param  ID_TEXT $type_code The product codename
  * @param  SHORT_TEXT $item_name The human-readable product title
@@ -640,6 +642,7 @@ function make_subscription_button(string $type_code, string $item_name, string $
 
 /**
  * Make a subscription cancellation button.
+ * This is for IPN-style transactions (as opposed to local transactions).
  *
  * @param  ID_TEXT $purchase_id The purchase ID
  * @param  ID_TEXT $payment_gateway The payment gateway the payment will go via
@@ -1233,7 +1236,7 @@ function do_lang_cpf(string $cpf_name) : string
 }
 
 /**
- * Handle a particular local transaction as determined by the POST request.
+ * Handle a particular local transaction (a transaction where details are taken in locally and sent to the payment API invisibly-to-the-user), as determined by the POST request.
  *
  * @param  ID_TEXT $payment_gateway The payment gateway
  * @param  object $payment_gateway_object The payment gateway object

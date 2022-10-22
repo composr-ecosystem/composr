@@ -104,6 +104,7 @@ class Hook_payment_gateway_ccbill
 
     /**
      * Make a transaction (payment) button.
+     * This is for IPN-style transactions (as opposed to local transactions).
      *
      * @param  ID_TEXT $trans_expecting_id Our internal temporary transaction ID
      * @param  ID_TEXT $type_code The product codename
@@ -160,6 +161,7 @@ class Hook_payment_gateway_ccbill
 
     /**
      * Make a subscription (payment) button.
+     * This is for IPN-style transactions (as opposed to local transactions).
      *
      * @param  ID_TEXT $trans_expecting_id Our internal temporary transaction ID
      * @param  ID_TEXT $type_code The product codename
@@ -282,6 +284,7 @@ class Hook_payment_gateway_ccbill
 
     /**
      * Make a subscription cancellation button.
+     * This is for IPN-style transactions (as opposed to local transactions).
      *
      * @param  ID_TEXT $purchase_id The purchase ID
      * @return Tempcode The button

@@ -102,6 +102,7 @@ class Hook_payment_gateway_secpay
 
     /**
      * Make a transaction (payment) button.
+     * This is for IPN-style transactions (as opposed to local transactions).
      *
      * @param  ID_TEXT $trans_expecting_id Our internal temporary transaction ID
      * @param  ID_TEXT $type_code The product codename
@@ -142,6 +143,7 @@ class Hook_payment_gateway_secpay
 
     /**
      * Make a subscription (payment) button.
+     * This is for IPN-style transactions (as opposed to local transactions).
      *
      * @param  ID_TEXT $trans_expecting_id Our internal temporary transaction ID
      * @param  ID_TEXT $type_code The product codename
@@ -293,6 +295,7 @@ class Hook_payment_gateway_secpay
 
     /**
      * Make a subscription cancellation button.
+     * This is for IPN-style transactions (as opposed to local transactions).
      *
      * @param  ID_TEXT $purchase_id The purchase ID
      * @return Tempcode The button
@@ -501,7 +504,7 @@ class Hook_payment_gateway_secpay
     }
 
     /**
-     * Perform a transaction (local not remote).
+     * Perform a local transaction (a transaction where details are taken in locally and sent to the payment API invisibly-to-the-user).
      *
      * @param  ID_TEXT $trans_expecting_id Our internal temporary transaction ID
      * @param  SHORT_TEXT $cardholder_name Cardholder name

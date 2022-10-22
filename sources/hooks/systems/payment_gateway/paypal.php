@@ -79,6 +79,7 @@ class Hook_payment_gateway_paypal
 
     /**
      * Make a transaction (payment) button.
+     * This is for IPN-style transactions (as opposed to local transactions).
      *
      * @param  ID_TEXT $trans_expecting_id Our internal temporary transaction ID
      * @param  ID_TEXT $type_code The product codename
@@ -116,6 +117,7 @@ class Hook_payment_gateway_paypal
 
     /**
      * Make a transaction (payment) button for multiple shopping cart items.
+     * This is for IPN-style transactions (as opposed to local transactions).
      * Optional method, provides more detail than make_transaction_button.
      *
      * @param  ID_TEXT $trans_expecting_id Our internal temporary transaction ID
@@ -151,6 +153,7 @@ class Hook_payment_gateway_paypal
 
     /**
      * Make a subscription (payment) button.
+     * This is for IPN-style transactions (as opposed to local transactions).
      *
      * @param  ID_TEXT $trans_expecting_id Our internal temporary transaction ID
      * @param  ID_TEXT $type_code The product codename
