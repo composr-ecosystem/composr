@@ -60,6 +60,7 @@ class third_party_code_test_set extends cms_test_case
                 'themes/_unnamed_/templates_cached/EN',
                 'vendor',
                 'uploads/website_specific/test',
+                'nbproject',
             ])) {
                 continue;
             }
@@ -72,6 +73,7 @@ class third_party_code_test_set extends cms_test_case
             // Exceptions
             if (in_array($file, [
                 '_tests/codechecker/codechecker.ini',
+                'data_custom/execute_temp.php',
             ])) {
                 continue;
             }

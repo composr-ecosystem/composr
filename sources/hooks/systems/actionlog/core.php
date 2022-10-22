@@ -222,7 +222,7 @@ class Hook_actionlog_core extends Hook_actionlog
                 'identifier_index' => null,
                 'written_context_index' => null,
                 'followup_page_links' => [
-                    'TRANSLATE_CONTENT' => multi_lang_content() ? '_SEARCH:admin_lang:content' : null,
+                    'TRANSLATE_CONTENT' => (multi_lang_content() && multi_lang()) ? '_SEARCH:admin_lang:content' : null,
                 ],
             ],
             'ADD_MENU' => [
