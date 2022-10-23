@@ -13,18 +13,20 @@
 	</head>
 
 	<body id="installer-body" class="website-body">
-		<div class="installer-main">
-			<img alt="Composr" width="550" height="115" src="{$BASE_URL*}/themes/default/images/EN/logo/standalone_logo.png" />
-		</div>
+		<div class="container">
+			<div class="installer-main">
+				<img alt="Composr" width="550" height="115" src="{$BASE_URL*}/themes/default/images/EN/logo/standalone_logo.png" />
+			</div>
 
-		<div class="installer-main-inner">
-			<div class="box box---restore-html-wrap"><div class="box-inner">
-				{+START,IF_NON_PASSED_OR_FALSE,ERROR}
-					<h1>Restoring the website</h1>
-				{+END}
+			<div class="installer-main-inner">
+				<div class="box box---restore-html-wrap"><div class="box-inner">
+					{+START,IF_NON_PASSED_OR_FALSE,ERROR}
+						<h1>Restoring the website</h1>
+					{+END}
 
-				{MESSAGE}
-			</div></div>
+					{MESSAGE}
+				</div></div>
+			</div>
 		</div>
 	</body>
 </html>

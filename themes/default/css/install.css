@@ -272,6 +272,12 @@ textarea.mono-textbox {
 	margin-right: 0.5em;
 }
 
+/* Backup system */
+
+.box---restore-html-wrap {
+	overflow: hidden;
+}
+
 /* Errors */
 
 .site-special-message-inner {

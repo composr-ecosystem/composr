@@ -470,10 +470,10 @@ function demonstratr_add_site_raw($server, $codename, $email_address, $password)
     $central_conn->query('CREATE DATABASE `demonstratr_site_' . $codename . '`');
     $user = substr(md5('demonstratr_site_' . $codename), 0, 16);
     $central_conn->query('DROP USER \'' . $user . '\'@\'%\'', null, 0, true); // tcp/ip
-    $central_conn->query('CREATE USER \'' . $user . '\'@\'%\' IDENTIFIED BY \'' . db_escape_string($SITE_INFO['mysql_demonstratr_password']) . '\'');
+    $central_conn->query('CREATE USER \'' . $user . '\'@\'%\' IDENTIFIED WITH mysql_native_password BY \'' . db_escape_string($SITE_INFO['mysql_demonstratr_password']) . '\'');
     $central_conn->query('GRANT ALL PRIVILEGES ON `demonstratr_site_' . $codename . '`.* TO \'' . $user . '\'@\'%\'');
     $central_conn->query('DROP USER \'' . $user . '\'@\'localhost\'', null, 0, true); // local socket
-    $central_conn->query('CREATE USER \'' . $user . '\'@\'localhost\' IDENTIFIED BY \'' . db_escape_string($SITE_INFO['mysql_demonstratr_password']) . '\'');
+    $central_conn->query('CREATE USER \'' . $user . '\'@\'localhost\' IDENTIFIED WITH mysql_native_password BY \'' . db_escape_string($SITE_INFO['mysql_demonstratr_password']) . '\'');
     $central_conn->query('GRANT ALL PRIVILEGES ON `demonstratr_site_' . $codename . '`.* TO \'' . $user . '\'@\'localhost\'');
 
     // Import database contents

@@ -19,7 +19,8 @@
 These tests test all var hooks. Some general Resource-fs tests are in the commandr_fs test set.
 */
 
-// If a test is failing, try emptying out the alternative_ids table, and test content from content tables.
+// We do not expect this test to be very reliable. It's more of a way of testing things don't crash horribly.
+// If a test is failing you can try emptying out the alternative_ids table, and test content from content tables.
 
 /**
  * Composr test case class (unit testing).
