@@ -298,7 +298,7 @@ function render_gallery_box(array $myrow, string $root = 'root', bool $show_memb
         }
 
         require_code('images');
-        $temp = $GLOBALS['SITE_DB']->query_select('images', ['id', 'url'], ['cat' => $myrow['name'], 'validated' => 1], $privacy_where_image . ' ' . $thumb_order, 1);
+        $temp = $GLOBALS['SITE_DB']->query_select('images r' . $privacy_join_image, ['id', 'url'], ['cat' => $myrow['name'], 'validated' => 1], $privacy_where_image . ' ' . $thumb_order, 1);
         if (isset($temp[0])) {
             $rep_image_url = $temp[0]['url'];
         }
