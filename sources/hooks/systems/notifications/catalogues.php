@@ -133,7 +133,7 @@ class Hook_notification_catalogues extends Hook_Notification
      */
     public function list_members_who_have_enabled(string $notification_code, ?string $category = null, ?array $to_member_ids = null, ?int $from_member_id = null, int $start = 0, int $max = 300) : array
     {
-        if ($notification_code == 'catalogue_entry') {
+        if (substr($notification_code, 0, strlen('catalogue_entry')) == 'catalogue_entry') {
             $members = $this->_all_members_who_have_enabled($notification_code, $category, $to_member_ids, $start, $max);
             $members = $this->_all_members_who_have_enabled_with_page_access($members, 'catalogues', $notification_code, $category, $to_member_ids, $start, $max);
             $catalogue_category_id = intval($category);
@@ -144,7 +144,7 @@ class Hook_notification_catalogues extends Hook_Notification
             }
         }
 
-        if ($notification_code == 'catalogue_view_reports') {
+        if (substr($notification_code, 0, strlen('catalogue_view_reports')) == 'catalogue_view_reports') {
             $members = $this->_all_members_who_have_enabled($notification_code, $category, $to_member_ids, $start, $max);
             $members = $this->_all_members_who_have_enabled_with_page_access($members, 'cms_catalogues', $notification_code, $category, $to_member_ids, $start, $max);
         }
