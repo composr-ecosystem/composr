@@ -526,7 +526,7 @@ function render_catalogue_category_entry_buildup(?int $category_id, string $cata
 
                     $entry_buildup->attach(static_evaluate_tempcode(do_template('CATALOGUE_' . $tpl_set . '_TABULAR_ENTRY_WRAP', $tab_entry_map, null, false, 'CATALOGUE_DEFAULT_TABULAR_ENTRY_WRAP')));
                 }
-                if ($i >= $start + $max) {
+                if (($max !== null) && ($i >= $start + $max)) {
                     break;
                 }
             }
