@@ -254,7 +254,7 @@ class Module_admin_revisions
         $_revision = [
             $view_link,
             $member_link,
-            escape_html($date),
+            $date,
             $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($revision['r_original_content_owner']),
             escape_html(get_timezoned_date_time($revision['r_original_content_timestamp'])),
             $action,

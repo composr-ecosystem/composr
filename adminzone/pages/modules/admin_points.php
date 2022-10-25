@@ -384,7 +384,7 @@ class Module_admin_points
                 ]));
             }
 
-            $map = [$myrow['id'], $_date];
+            $map = [strval($myrow['id']), $_date];
             if ($has_gift_points > 0) {
                 $map[] = integer_format($myrow['amount_gift_points']);
             }

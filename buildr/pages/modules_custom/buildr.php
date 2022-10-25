@@ -487,15 +487,15 @@ class Module_buildr
                         hurt($member_id);
                     }
                     if ($pen_id == 1) {
-                        $penalty = do_lang('W_PENALTY_STOLEN');
+                        $penalty = do_lang_tempcode('W_PENALTY_STOLEN');
                         steal($member_id, -$realm - 1);
                     }
                     if ($pen_id == 2) {
-                        $penalty = do_lang('W_PENALTY_SENT_LOBBY');
+                        $penalty = do_lang_tempcode('W_PENALTY_SENT_LOBBY');
                         basic_enter_room($member_id, $realm, 0, 0);
                     }
 
-                    buildr_refresh_with_message(do_lang_tempcode('W_TROLL_YOU', escape_html($penalty)), 'warn');
+                    buildr_refresh_with_message(do_lang_tempcode('W_TROLL_YOU', $penalty), 'warn');
                 } else {
                     buildr_refresh_with_message(do_lang_tempcode('W_TROLL_THANKYOU', escape_html(integer_format($pass))));
                 }

@@ -181,7 +181,7 @@ function hyperlink($url, $caption, bool $external, bool $auto_escape, $title = '
     } else {
         $tpl = 'HYPERLINK';
     }
-    return do_template($tpl, ['OVERLAY' => $overlay, 'REL' => $rel, 'POST_DATA' => $post_data, 'ACCESSKEY' => $accesskey, 'NEW_WINDOW' => $external, 'TITLE' => $title, 'URL' => $url, 'CAPTION' => $auto_escape ? escape_html($caption) : $caption]);
+    return do_template($tpl, ['OVERLAY' => $overlay, 'REL' => $rel, 'POST_DATA' => $post_data, 'ACCESSKEY' => $accesskey, 'NEW_WINDOW' => $external, 'TITLE' => $title, 'URL' => $url, 'CAPTION' => ($auto_escape && is_string($caption)) ? escape_html($caption) : $caption]);
 }
 
 /**

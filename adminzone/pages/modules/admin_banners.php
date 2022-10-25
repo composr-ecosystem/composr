@@ -187,11 +187,11 @@ class Module_admin_banners
                 $validated .= do_lang('BUT_EXPIRED');
             }
 
-            $result = [escape_html($name), escape_html($type), escape_html($banner_type)];
+            $result = [$name, $type, escape_html($banner_type)];
             if ($has_banner_network) {
                 $result = array_merge($result, [escape_html($hits_from), escape_html($views_from)]);
             }
-            $result = array_merge($result, [escape_html($hits_to), escape_html($views_to), escape_html($click_through), escape_html(strval($display_likelihood)), $username, escape_html($date)]);
+            $result = array_merge($result, [$hits_to, $views_to, $click_through, escape_html(strval($display_likelihood)), $username, escape_html($date)]);
             if (addon_installed('unvalidated')) {
                 $result[] = escape_html($validated);
             }

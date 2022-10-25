@@ -150,7 +150,7 @@ class Hook_search_cns_members extends FieldsSearchHook
                 }
                 $combination->attach(escape_html(@$group_titles[intval($bit)]));
             }
-            $groups->attach(form_input_list_entry(strval($default_group), true, do_lang_tempcode('USERGROUP_SEARCH_COMBO', escape_html($combination))));
+            $groups->attach(form_input_list_entry(strval($default_group), true, do_lang_tempcode('USERGROUP_SEARCH_COMBO', $combination)));
         }
         $fields[] = ['NAME' => '_user_group', 'DISPLAY' => do_lang_tempcode('USERGROUP'), 'TYPE' => '_MULTI_LIST', 'SPECIAL' => $groups];
         return $fields;

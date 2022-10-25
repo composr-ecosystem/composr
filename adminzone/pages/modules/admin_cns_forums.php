@@ -582,7 +582,7 @@ class Module_admin_cns_forums extends Standard_crud_module
                         $message = do_lang_tempcode(
                             'CANNOT_DELETE_FORUM_OPTION',
                             escape_html_tempcode($edit_url),
-                            escape_html(do_lang_tempcode($details['human_name']))
+                            do_lang_tempcode($details['human_name'])
                         );
                         attach_message($message, 'notice');
                         return false;

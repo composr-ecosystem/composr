@@ -3217,18 +3217,12 @@ function get_num_users_peak() : int
 
 /**
  * Escape certain special characters in the provided string, so that it can be embedded as text within HTML.
- * Tempcode may be passed in, but will just be immediately returned without escaping.
  *
- * @param  mixed $string The input string
- * @return mixed The escaped string (or original string if it was Tempcode)
+ * @param  string $string The input string
+ * @return string The escaped string
  */
-function escape_html($string)
+function escape_html(string $string) : string
 {
-    //if ($string === '') return $string; // Optimisation, but doesn't work well
-    if (isset($string->codename)/*faster than is_object*/) {
-        return $string;
-    }
-
     /*if ($GLOBALS['XSS_DETECT']) {  Useful for debugging
         if (ocp_is_escaped($string)) {
             @var_dump(debug_backtrace());

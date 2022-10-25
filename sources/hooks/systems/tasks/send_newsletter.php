@@ -180,8 +180,8 @@ class Hook_task_send_newsletter
 
         $newsletter_manage_url = build_url(['page' => 'admin_newsletter'], get_module_zone('admin_newsletter'));
         if (!$using_drip_queue) {
-            return ['text/html', do_lang_tempcode('SENT_NEWSLETTER', escape_html($newsletter_manage_url), escape_html(integer_format($count)))];
+            return ['text/html', do_lang_tempcode('SENT_NEWSLETTER', escape_html($newsletter_manage_url->evaluate()), escape_html(integer_format($count)))];
         }
-        return ['text/html', do_lang_tempcode($auto_pause ? 'SENDING_NEWSLETTER_TO_PAUSED_QUEUE' : 'SENDING_NEWSLETTER_TO_QUEUE', escape_html($newsletter_manage_url), escape_html(integer_format($count)))];
+        return ['text/html', do_lang_tempcode($auto_pause ? 'SENDING_NEWSLETTER_TO_PAUSED_QUEUE' : 'SENDING_NEWSLETTER_TO_QUEUE', escape_html($newsletter_manage_url->evaluate()), escape_html(integer_format($count)))];
     }
 }

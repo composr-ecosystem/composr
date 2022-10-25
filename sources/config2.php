@@ -91,11 +91,11 @@ function build_config_inputter(string $name, array $details, ?string $current_va
             return $ob->field_inputter($name, $details, $title, $explanation_with_default);
 
         case 'integer':
-            $explanation_with_default = do_lang_tempcode('EXPLANATION_WITH_DEFAULT', $explanation, escape_html(($default == '') ? do_lang_tempcode('BLANK_EM') : make_string_tempcode(integer_format(intval($default)))));
+            $explanation_with_default = do_lang_tempcode('EXPLANATION_WITH_DEFAULT', $explanation, ($default == '') ? do_lang_tempcode('BLANK_EM') : make_string_tempcode(escape_html(integer_format(intval($default)))));
             return form_input_integer($title, $explanation_with_default, $name, ($current_value == '') ? null : intval($current_value), $required);
 
         case 'float':
-            $explanation_with_default = do_lang_tempcode('EXPLANATION_WITH_DEFAULT', $explanation, escape_html(($default == '') ? do_lang_tempcode('BLANK_EM') : make_string_tempcode(float_format(floatval($default)))));
+            $explanation_with_default = do_lang_tempcode('EXPLANATION_WITH_DEFAULT', $explanation, ($default == '') ? do_lang_tempcode('BLANK_EM') : make_string_tempcode(escape_html(float_format(floatval($default)))));
             return form_input_float($title, $explanation_with_default, $name, ($current_value == '') ? null : floatval($current_value), $required);
 
         case 'tax_code':

@@ -131,7 +131,7 @@ class Hook_ecommerce_banners
 
             $products['BANNER_UPGRADE_IMPORTANCE_' . strval($importance)] = automatic_discount_calculation([
                 'item_name' => do_lang('BANNER_ADD_IMPORTANCE', integer_format($importance, 0), strval($percentage)),
-                'item_description' => do_lang_tempcode('BANNER_ADD_IMPORTANCE_DESCRIPTION', escape_html(integer_format($importance)), escape_html($percentage)),
+                'item_description' => do_lang_tempcode('BANNER_ADD_IMPORTANCE_DESCRIPTION', escape_html(integer_format($importance)), escape_html(strval($percentage))),
                 'item_image_url' => find_theme_image('icons/buttons/choose'),
 
                 'type' => PRODUCT_PURCHASE,

@@ -276,7 +276,7 @@ echo '<p>Done version ' . escape_html($version_pretty) . '!</p>';
 
 echo '<ul>';
 foreach ($urls as $title => $url) {
-    echo '<li><a href="' . escape_html($url) . '">' . escape_html($title) . '</a></li>';
+    echo '<li><a href="' . escape_html($url) . '">' . $title->evaluate() . '</a></li>';
 }
 echo '</ul>';
 

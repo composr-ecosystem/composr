@@ -362,7 +362,7 @@ class Module_cms_chat
 
             $link_date = hyperlink($url, get_timezoned_date_time($myrow['date_and_time']), false, true);
 
-            $_row = [$GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($GLOBALS['FORUM_DRIVER']->get_member_from_username($username), '', false), escape_html($link_date), $message];
+            $_row = [$GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($GLOBALS['FORUM_DRIVER']->get_member_from_username($username), '', false), $link_date, $message];
 
             $deletion_tick = do_template('RESULTS_TABLE_TICK', ['_GUID' => '40c6bd03e455c98589542b704259351d', 'ID' => strval($myrow['id'])]);
             $_row[] = $deletion_tick;

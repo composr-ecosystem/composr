@@ -169,6 +169,9 @@ class Module_admin_phpinfo
                     }
                     $out .= '<tr>';
                     foreach ($query as $val) {
+                        if (!is_string($val)) {
+                            $val = strval($val);
+                        }
                         $out .= '<td>' . escape_html($val) . '</td>';
                     }
                     $out .= '</tr>';
