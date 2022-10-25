@@ -32,6 +32,12 @@ class webdav_test_set extends cms_test_case
             return;
         }
 
+        $ht = get_file_base() . '/.htaccess';
+        if ((!is_file($ht)) || (strpos(file_get_contents($ht), 'WebDAV implementation') === false)) {
+            $this->assertTrue(false, '.htaccess file not present for WebDAV');
+            return;
+        }
+
         $session_id = $this->establish_admin_callback_session();
         $guest_cookies = [get_session_cookie() => uniqid('', true)];
         $cookies = [get_session_cookie() => $session_id];
