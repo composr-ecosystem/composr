@@ -32,7 +32,9 @@ class _commandr_fs_test_set extends cms_test_case
 
     public function testVar()
     {
-        if (($this->only !== null) && ($this->only != 'testVar')) {
+        $commandr_fs_hooks = find_all_hooks('systems', 'commandr_fs');
+
+        if (($this->only !== null) && ($this->only != 'testVar') && (!array_key_exists($this->only, $commandr_fs_hooks))) {
             return;
         }
 
@@ -41,8 +43,11 @@ class _commandr_fs_test_set extends cms_test_case
         // Check top-level 'var' works
         $var_files = $ob->listing(['var']);
         $cnt = 0;
-        $commandr_fs_hooks = find_all_hooks('systems', 'commandr_fs');
         foreach ($commandr_fs_hooks as $commandr_fs_hook => $dir) {
+            if (($this->only !== null) && ($this->only != 'testVar') && ($this->only != $commandr_fs_hook)) {
+                continue;
+            }
+
             $_path = get_file_base() . '/' . $dir . '/hooks/systems/commandr_fs/' . $commandr_fs_hook . '.php';
             $c = cms_file_get_contents_safe($_path, FILE_READ_LOCK);
             if (strpos($c, ' extends Resource_fs_base') !== false) {
@@ -55,28 +60,30 @@ class _commandr_fs_test_set extends cms_test_case
                 $cnt++;
             }
         }
-        $this->assertTrue(count($var_files[0]) == $cnt, 'Not all var filesystems showing up');
+        if (($this->only === null) || ($this->only == 'testVar')) {
+            $this->assertTrue(count($var_files[0]) == $cnt, 'Not all var filesystems showing up');
 
-        // Check one of the repository-FS filesystems works
-        $files = $ob->listing(['var', 'banners']);
-        $this->assertTrue(!empty($files[0]), 'Missing banner types in file system');
-        $files = $ob->listing(['var', 'banners', 'untitled']);
-        $this->assertTrue(empty($files[0]), 'Unexpected subdirectory under banner type');
-        $this->assertTrue(!empty($files[1]), 'Missing default banners under banner type');
-        $path = ['var', 'banners', 'untitled', 'advertise_here.' . RESOURCE_FS_DEFAULT_EXTENSION];
-        $GLOBALS['SITE_DB']->query_update('banners', ['edit_date' => null]);
-        $data1 = $ob->read_file($path);
-        $ob->write_file($path, $data1);
-        $GLOBALS['SITE_DB']->query_update('banners', ['edit_date' => null]);
-        $data2 = $ob->read_file($path);
-        $this->assertTrue($data1 == $data2, 'Inconsistent banner read/write');
+            // Check one of the repository-FS filesystems works
+            $files = $ob->listing(['var', 'banners']);
+            $this->assertTrue(!empty($files[0]), 'Missing banner types in file system');
+            $files = $ob->listing(['var', 'banners', 'untitled']);
+            $this->assertTrue(empty($files[0]), 'Unexpected subdirectory under banner type');
+            $this->assertTrue(!empty($files[1]), 'Missing default banners under banner type');
+            $path = ['var', 'banners', 'untitled', 'advertise_here.' . RESOURCE_FS_DEFAULT_EXTENSION];
+            $GLOBALS['SITE_DB']->query_update('banners', ['edit_date' => null]);
+            $data1 = $ob->read_file($path);
+            $ob->write_file($path, $data1);
+            $GLOBALS['SITE_DB']->query_update('banners', ['edit_date' => null]);
+            $data2 = $ob->read_file($path);
+            $this->assertTrue($data1 == $data2, 'Inconsistent banner read/write');
 
-        // Check folder property editing works
-        $path = ['var', 'banners', 'untitled', '_folder.' . RESOURCE_FS_DEFAULT_EXTENSION];
-        $data1 = $ob->read_file($path);
-        $ob->write_file($path, $data1);
-        $data2 = $ob->read_file($path);
-        $this->assertTrue($data1 == $data2, 'Inconsistent banner type read/write');
+            // Check folder property editing works
+            $path = ['var', 'banners', 'untitled', '_folder.' . RESOURCE_FS_DEFAULT_EXTENSION];
+            $data1 = $ob->read_file($path);
+            $ob->write_file($path, $data1);
+            $data2 = $ob->read_file($path);
+            $this->assertTrue($data1 == $data2, 'Inconsistent banner type read/write');
+        }
     }
 
     public function testVarPorting()
@@ -157,13 +164,18 @@ class _commandr_fs_test_set extends cms_test_case
     // This test will test the commandr_fs_extended_config hooks are working properly, as well as the config option read/write in general.
     public function testEtcDir()
     {
-        if (($this->only !== null) && ($this->only != 'testEtcDir')) {
+        $ob = new Commandr_fs();
+        $files = $ob->listing(['etc']);
+
+        if (($this->only !== null) && ($this->only != 'testEtcDir') && (!array_key_exists('_' . $this->only . 's.cms', $files[1]))) {
             return;
         }
 
-        $ob = new Commandr_fs();
-        $files = $ob->listing(['etc']);
         foreach ($files[1] as $file) {
+            if (($this->only !== null) && ($this->only != 'testEtcDir') && ('_' . $this->only . 's.cms' != $file[0])) {
+                continue;
+            }
+
             if (strpos($file[0], '.' . RESOURCE_FS_DEFAULT_EXTENSION) !== false) {
                 $path = ['etc', $file[0]];
                 $data1 = $ob->read_file($path);

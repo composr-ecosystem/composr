@@ -724,7 +724,6 @@ function table_from_portable_rows(string $table, array $rows, array $extra_field
             // Delete old row with same key
             $db->query_delete($table, array_intersect_key($row, $keys));
         }
-
         $db->query_insert($table, $row);
     }
 
@@ -1093,12 +1092,12 @@ function remap_trans_as_portable(array $db_row, string $field, object $db)
 /**
  * Save translations for a portable resource. The inverse of remap_trans_as_portable.
  *
- * @param  array $portable_data Portable data
+ * @param  mixed $portable_data Portable data
  * @param  string $field Database field
  * @param  object $db Database connector to look up from
  * @return array Extra database row data
  */
-function remap_portable_as_trans(array $portable_data, string $field, object $db) : array
+function remap_portable_as_trans($portable_data, string $field, object $db) : array
 {
     if (!multi_lang_content()) {
         if (is_array($portable_data)) {
