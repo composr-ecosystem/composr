@@ -283,7 +283,7 @@ function metadata_get_fields(string $content_type, ?string $content_id, bool $re
             '_GUID' => 'adf2a2cda231619243763ddbd0cc9d4e',
             'SECTION_HIDDEN' => true,
             'TITLE' => do_lang_tempcode('METADATA'),
-            'HELP' => do_lang_tempcode('DESCRIPTION_METADATA', ($content_id === null) ? do_lang_tempcode('RESOURCE_NEW') : $content_id),
+            'HELP' => do_lang_tempcode('DESCRIPTION_METADATA', ($content_id === null) ? do_lang_tempcode('RESOURCE_NEW') : escape_html($content_id)),
         ]));
         $_fields->attach($fields);
         return $_fields;
@@ -675,7 +675,7 @@ function seo_get_fields(string $type, ?string $id = null, bool $show_header = tr
                 '_GUID' => '545aefd48d73cf01bdec7226dc6d93fb',
                 'SECTION_HIDDEN' => $keywords == '' && $description == '',
                 'TITLE' => do_lang_tempcode('SEO'),
-                'HELP' => (get_option('show_docs') === '0') ? null : do_lang_tempcode('TUTORIAL_ON_THIS', get_tutorial_url('tut_seo')),
+                'HELP' => (get_option('show_docs') === '0') ? null : do_lang_tempcode('TUTORIAL_ON_THIS', escape_html(get_tutorial_url('tut_seo'))),
             ]));
         }
         $fields->attach(form_input_line_multi(do_lang_tempcode('KEYWORDS'), do_lang_tempcode('DESCRIPTION_META_KEYWORDS'), 'meta_keywords[]', array_map('trim', explode(',', preg_replace('#,+#', ',', $keywords))), 0));

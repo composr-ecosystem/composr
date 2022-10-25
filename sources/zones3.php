@@ -378,8 +378,16 @@ function actual_delete_zone(string $zone, bool $force = false, bool $skip_afm = 
         cms_set_time_limit($old_limit);
 
         if (!empty($bad)) {
+            $_bad = '';
+            foreach ($bad as $b) {
+                if ($_bad != '') {
+                    $_bad .= ', ';
+                }
+                $_bad .= '<kbd>' . escape_html($b) . '</kbd>';
+            }
+
             require_lang('zones');
-            warn_exit(do_lang_tempcode('DELETE_ZONE_ERROR', '<kbd>' . implode('</kbd>, <kbd>', $bad) . '</kbd>'));
+            warn_exit(do_lang_tempcode('DELETE_ZONE_ERROR', $_bad));
         }
     }
 

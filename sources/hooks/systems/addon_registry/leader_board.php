@@ -267,7 +267,7 @@ class Hook_addon_registry_leader_board
                 ]));
             }
 
-            $about = do_lang_tempcode('LEADER_BOARD_ABOUT_earners', placeholder_number(), placeholder_date(), placeholder_date());
+            $about = do_lang_tempcode('LEADER_BOARD_ABOUT_earners', escape_html(placeholder_number()), escape_html(placeholder_date()), escape_html(placeholder_date()));
 
             $out->attach(do_lorem_template('POINTS_LEADER_BOARD_SET', [
                 '_SET_NUMBER' => placeholder_number(),

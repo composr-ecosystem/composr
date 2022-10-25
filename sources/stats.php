@@ -1104,7 +1104,7 @@ class CMSStatsTextFilter extends CMSStatsFilter
     public function ui_component(object &$hidden) : object
     {
         require_code('form_templates');
-        return form_input_line(do_lang_tempcode('_FILTER', $this->label), new Tempcode(), $this->filter_name, $this->read_value(), $this->default != '');
+        return form_input_line(do_lang_tempcode('_FILTER', $this->label/*Tempcode*/), new Tempcode(), $this->filter_name, $this->read_value(), $this->default != '');
     }
 }
 
@@ -1140,7 +1140,7 @@ class CMSStatsTickFilter extends CMSStatsFilter
         $hidden->attach(form_input_hidden($this->filter_name, '0'));
 
         require_code('form_templates');
-        return form_input_tick(do_lang_tempcode('_FILTER', $this->label), new Tempcode(), $this->filter_name, $this->read_value());
+        return form_input_tick(do_lang_tempcode('_FILTER', $this->label/*Tempcode*/), new Tempcode(), $this->filter_name, $this->read_value());
     }
 
     /**
@@ -1248,13 +1248,13 @@ class CMSStatsDateMonthRangeFilter extends CMSStatsFilter
 
         if ($this->for_kpi) {
             $_options = [
-                1 => do_lang_tempcode('MONTHS', integer_format(1)),
-                3 => do_lang_tempcode('MONTHS', integer_format(3)),
-                6 => do_lang_tempcode('MONTHS', integer_format(6)),
-                12 => do_lang_tempcode('YEARS', integer_format(1)),
-                24 => do_lang_tempcode('YEARS', integer_format(2)),
-                36 => do_lang_tempcode('YEARS', integer_format(3)),
-                60 => do_lang_tempcode('YEARS', integer_format(5)),
+                1 => do_lang_tempcode('MONTHS', escape_html(integer_format(1))),
+                3 => do_lang_tempcode('MONTHS', escape_html(integer_format(3))),
+                6 => do_lang_tempcode('MONTHS', escape_html(integer_format(6))),
+                12 => do_lang_tempcode('YEARS', escape_html(integer_format(1))),
+                24 => do_lang_tempcode('YEARS', escape_html(integer_format(2))),
+                36 => do_lang_tempcode('YEARS', escape_html(integer_format(3))),
+                60 => do_lang_tempcode('YEARS', escape_html(integer_format(5))),
             ];
 
             $options = new Tempcode();

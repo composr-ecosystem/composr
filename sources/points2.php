@@ -605,5 +605,5 @@ function points_dispatch_notification(int $id, int $sender_id, int $recipient_id
         ]
     );
     // Leave this comment: Any code overrides attaching additional information to the staff notification should go here.
-    dispatch_notification('points_transaction_staff', null, $subject->evaluate(), $message_raw->evaluate(), null, A_FROM_SYSTEM_UNPRIVILEGED);
+    dispatch_notification('points_transaction_staff', null, $subject->evaluate(get_site_default_lang()), $message_raw->evaluate(get_site_default_lang()), null, A_FROM_SYSTEM_UNPRIVILEGED);
 }

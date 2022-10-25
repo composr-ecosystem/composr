@@ -1084,7 +1084,7 @@ class Hook_import_ipb2
                         $has_attachment = true;
                     } else {
                         if ($STRICT_FILE) {
-                            warn_exit(do_lang_tempcode('MISSING_ATTACHMENT', $attachment['attach_location']));
+                            warn_exit(do_lang_tempcode('MISSING_ATTACHMENT', escape_html($attachment['attach_location'])));
                         }
                     }
                     $i++;

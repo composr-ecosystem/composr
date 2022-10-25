@@ -201,7 +201,7 @@ function generate_catalogue_category_content_type_label(array $row) : object
     }
     require_code('catalogues');
     $catalogue = load_catalogue_row($row['c_name']);
-    return do_lang_tempcode('catalogues:CATALOGUE_GENERIC_CATEGORY', get_translated_text($catalogue['c_title']));
+    return do_lang_tempcode('catalogues:CATALOGUE_GENERIC_CATEGORY', escape_html(get_translated_text($catalogue['c_title'])));
 }
 
 /**

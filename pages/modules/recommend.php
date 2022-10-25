@@ -282,7 +282,7 @@ class Module_recommend
             if ($invites > 0) {
                 require_lang('cns');
                 $invite = (empty($_POST)) ? true : (post_param_integer('invite', 0) == 1);
-                $fields->attach(form_input_tick(do_lang_tempcode('USE_INVITE'), do_lang_tempcode('USE_INVITE_DESCRIPTION', $GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? do_lang('NA_EM') : integer_format($invites)), 'invite', $invite));
+                $fields->attach(form_input_tick(do_lang_tempcode('USE_INVITE'), do_lang_tempcode('USE_INVITE_DESCRIPTION', $GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? do_lang_tempcode('NA_EM') : escape_html(integer_format($invites))), 'invite', $invite));
             }
         }
 
@@ -292,7 +292,7 @@ class Module_recommend
 
         if (get_param_string('from_url', null, INPUT_FILTER_URL_INTERNAL) !== null) {
             $submit_name = do_lang_tempcode('SEND');
-            $text = do_lang_tempcode('RECOMMEND_AUTO_TEXT', get_site_name());
+            $text = do_lang_tempcode('RECOMMEND_AUTO_TEXT', escape_html(get_site_name()));
             $need_message = true;
         } else {
             $hidden->attach(form_input_hidden('wrap_message', '1'));

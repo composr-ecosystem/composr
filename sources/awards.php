@@ -177,7 +177,7 @@ function get_award_fields($content_type, ?string $id = null) : object
     if (!$fields->is_empty()) {
         $help = paragraph(do_lang_tempcode('AWARDS_AFTER_VALIDATION'));
         if (get_option('show_docs') == '1') {
-            $help_link = do_lang_tempcode('TUTORIAL_ON_THIS', get_tutorial_url('tut_featured'));
+            $help_link = do_lang_tempcode('TUTORIAL_ON_THIS', escape_html(get_tutorial_url('tut_featured')));
             $help->attach(paragraph($help_link));
         }
         $_fields = do_template('FORM_SCREEN_FIELD_SPACER', [

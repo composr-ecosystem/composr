@@ -3399,7 +3399,7 @@ class Module_topics
                 'TOOLTIP' => do_lang_tempcode('DESCRIPTION_VOTING_POWER'),
             ]));
             $sortables['pv_cache_voting_power'] = do_lang_tempcode('VOTING_POWER');
-            $footer_fields[] = do_lang_tempcode('TOTAL_VOTING_POWER', float_format($results['total_voting_power'], 2));
+            $footer_fields[] = do_lang_tempcode('TOTAL_VOTING_POWER', escape_html(float_format($results['total_voting_power'], 2)));
         }
         if ($answer_id === null) {
             $field_titles[] = do_lang_tempcode('ANSWER');

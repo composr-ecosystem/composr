@@ -215,7 +215,7 @@ class Hook_fields_upload_multi
                 $temp = get_url($tmp_name . '_url', $tmp_name, $upload_dir, OBFUSCATE_LEAVE_SUFFIX, CMS_UPLOAD_ANYTHING);
 
                 if (($filetype_filter != '') && (!in_array(get_file_extension($temp[2]), explode(',', $filetype_filter)))) {
-                    warn_exit(do_lang_tempcode('INVALID_FILE_TYPE_GENERAL', str_replace(',', ', ', $filetype_filter)));
+                    warn_exit(do_lang_tempcode('INVALID_FILE_TYPE_GENERAL', escape_html(str_replace(',', ', ', $filetype_filter))));
                 }
 
                 $_value = $temp[0];

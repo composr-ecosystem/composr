@@ -754,7 +754,7 @@ class Module_chat
 
         $posting_name = do_lang_tempcode('CREATE_PRIVATE_CHATROOM');
         $posting_url = build_url(['page' => '_SELF', 'type' => '_private'], '_SELF');
-        $text = paragraph(do_lang_tempcode('CHAT_PRIVATE_CHATROOM_DESCRIPTION', display_time_period(60 * intval(get_option('chat_private_room_deletion_time')))));
+        $text = paragraph(do_lang_tempcode('CHAT_PRIVATE_CHATROOM_DESCRIPTION', escape_html(display_time_period(60 * intval(get_option('chat_private_room_deletion_time'))))));
         if (intval(get_option('chat_private_room_deletion_time')) == 0) {
             $text = new Tempcode();
         }

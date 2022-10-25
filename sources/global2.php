@@ -2050,7 +2050,7 @@ function get_param_string(string $name, $default = false, int $filters = INPUT_F
     if (($ret === '') && (isset($_GET['require__' . $name])) && ($default !== $ret) && ($_GET['require__' . $name] !== '0')) {
         // We didn't give some required input
         set_http_status_code(400);
-        warn_exit(do_lang_tempcode('NO_PARAMETER_SENT', $name));
+        warn_exit(do_lang_tempcode('NO_PARAMETER_SENT', escape_html($name)));
     }
 
     if ($ret === $default) {

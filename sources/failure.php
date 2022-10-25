@@ -197,7 +197,7 @@ function improperly_filled_in(string $name, ?bool $posted, array $array)
     if ((!isset($array[$name])) && (($name == 'id') || ($name == 'type')) && (!headers_sent())) {
         set_http_status_code(404);
     }
-    warn_exit(do_lang_tempcode('NO_PARAMETER_SENT', escape_html(post_param_string('label_for__' . $name, $name))));
+    warn_exit(do_lang_tempcode('NO_PARAMETER_SENT', escape_html(post_param_string('label_for__' . $name, escape_html($name)))));
 }
 
 /**

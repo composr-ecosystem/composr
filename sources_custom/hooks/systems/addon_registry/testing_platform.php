@@ -718,6 +718,7 @@ We hope other users will appreciate your efforts and give you some points to rew
             '_tests/tests/unit_tests/cma_hooks.php',
             '_tests/tests/unit_tests/cms_merge.php',
             '_tests/tests/unit_tests/comcode_code.php',
+            '_tests/tests/unit_tests/__do_lang_tempcode_escaping.php',
             '_tests/tests/unit_tests/comcode_from_html.php',
             '_tests/tests/unit_tests/comcode_pages.php',
             '_tests/tests/unit_tests/comcode.php',

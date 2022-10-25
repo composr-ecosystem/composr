@@ -267,7 +267,7 @@ function try_to_enter_room(int $member_id, int $dx, int $dy, string $given_passw
 {
     // Validate that we aren't cheating
     if (($dx > 1) || ($dx < -1) || ($dy > 1) || ($dy < -1)) {
-        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', $GLOBALS['FORUM_DRIVER']->get_username(get_member())), 'warn');
+        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', escape_html($GLOBALS['FORUM_DRIVER']->get_username(get_member()))), 'warn');
     }
 
     // Get current position of member
@@ -286,7 +286,7 @@ function try_to_enter_room(int $member_id, int $dx, int $dy, string $given_passw
         $locked = $GLOBALS['SITE_DB']->query_select_value('w_rooms', 'locked_up', ['location_realm' => $realm, 'location_x' => $x, 'location_y' => $y]);
     }
     if ($locked == 1) {
-        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', $GLOBALS['FORUM_DRIVER']->get_username(get_member())), 'warn');
+        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', escape_html($GLOBALS['FORUM_DRIVER']->get_username(get_member()))), 'warn');
     }
 
     // Does the room exist?
@@ -513,7 +513,7 @@ function findperson(string $dest_member_name)
     if ($dest_member_id === null) {
         $dest_member_id = $GLOBALS['SITE_DB']->query_value_if_there('SELECT id FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'w_realms WHERE troll_name LIKE \'' . db_encode_like($dest_member_name) . '\'');
         if ($dest_member_id === null) {
-            buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', $GLOBALS['FORUM_DRIVER']->get_username(get_member())), 'warn');
+            buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', escape_html($GLOBALS['FORUM_DRIVER']->get_username(get_member()))), 'warn');
         }
         $dest_member_id = -$dest_member_id - 1;
     }
@@ -592,7 +592,7 @@ function useitem(int $member_id, string $item_name)
 {
     // Is the item held by the user
     if (!item_held($member_id, $item_name)) {
-        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', $GLOBALS['FORUM_DRIVER']->get_username(get_member())), 'warn');
+        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', escape_html($GLOBALS['FORUM_DRIVER']->get_username(get_member()))), 'warn');
     }
 
     // Is it a healthy item?
@@ -654,7 +654,7 @@ function give(int $member_id, int $dest_member_id, string $item_name)
 {
     // Is the item held by the user
     if (!item_held($member_id, $item_name)) {
-        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', $GLOBALS['FORUM_DRIVER']->get_username(get_member())), 'warn');
+        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', escape_html($GLOBALS['FORUM_DRIVER']->get_username(get_member()))), 'warn');
     }
 
     // Check members are in same $realm, $x and $y (admins can give to anyone, anywhere)
@@ -694,7 +694,7 @@ function drop(int $member_id, string $item_name)
 {
     // Is the item held by the user
     if (!item_held($member_id, $item_name)) {
-        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', $GLOBALS['FORUM_DRIVER']->get_username(get_member())), 'warn');
+        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', escape_html($GLOBALS['FORUM_DRIVER']->get_username(get_member()))), 'warn');
     }
 
     // Load $realm, $x and $y for $member_id
@@ -717,14 +717,14 @@ function buy(int $member_id, string $item_name, int $copy_owner)
     list($realm, $x, $y) = get_loc_details($member_id);
     $price = $GLOBALS['SITE_DB']->query_select_value_if_there('w_items', 'price', ['name' => $item_name, 'location_x' => $x, 'location_y' => $y, 'location_realm' => $realm, 'copy_owner' => $copy_owner]);
     if ($price === null) {
-        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', $GLOBALS['FORUM_DRIVER']->get_username(get_member())), 'warn');
+        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', escape_html($GLOBALS['FORUM_DRIVER']->get_username(get_member()))), 'warn');
     }
 
     if ($price > points_balance($member_id)) {
         buildr_refresh_with_message(do_lang_tempcode('W_EXPENSIVE', escape_html(integer_format($price, 0))), 'warn');
     }
     if ($price == 0) {
-        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', $GLOBALS['FORUM_DRIVER']->get_username(get_member())), 'warn');
+        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', escape_html($GLOBALS['FORUM_DRIVER']->get_username(get_member()))), 'warn');
     }
 
     // Charge them
@@ -756,11 +756,11 @@ function take(int $member_id, string $item_name, int $copy_owner)
     list($realm, $x, $y) = get_loc_details($member_id);
     $price = $GLOBALS['SITE_DB']->query_select_value_if_there('w_items', 'price', ['name' => $item_name, 'copy_owner' => $copy_owner, 'location_x' => $x, 'location_y' => $y, 'location_realm' => $realm]);
     if ($price === null) {
-        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', $GLOBALS['FORUM_DRIVER']->get_username(get_member())), 'warn');
+        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', escape_html($GLOBALS['FORUM_DRIVER']->get_username(get_member()))), 'warn');
     }
 
     if ($price != 0) {
-        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', $GLOBALS['FORUM_DRIVER']->get_username(get_member())), 'warn');
+        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', escape_html($GLOBALS['FORUM_DRIVER']->get_username(get_member()))), 'warn');
     }
 
     $max_per_player = $GLOBALS['SITE_DB']->query_select_value('w_itemdef', 'max_per_player', ['name' => $item_name]);
@@ -809,7 +809,7 @@ function take_an_item_from_room(int $realm, int $x, int $y, string $item_name, i
         // Not an infinite one, so decrement the count / delete it
         $count = $GLOBALS['SITE_DB']->query_select_value('w_items', 'i_count', ['name' => $item_name, 'copy_owner' => $copy_owner, 'location_x' => $x, 'location_y' => $y, 'location_realm' => $realm]);
         if ($count == 0) {
-            fatal_exit(do_lang_tempcode('ACCESS_DENIED__I_ERROR', $GLOBALS['FORUM_DRIVER']->get_username(get_member())));
+            fatal_exit(do_lang_tempcode('ACCESS_DENIED__I_ERROR', escape_html($GLOBALS['FORUM_DRIVER']->get_username(get_member()))));
         }
         if ($count > 1) {
             $GLOBALS['SITE_DB']->query_update('w_items', ['i_count' => $count - 1], ['name' => $item_name, 'copy_owner' => $copy_owner, 'location_x' => $x, 'location_y' => $y, 'location_realm' => $realm]);
@@ -841,7 +841,7 @@ function add_item_to_room(int $realm, int $x, int $y, string $item_name, int $no
         if ($_not_infinite == 1) {
             // Not an infinite one, so increment the count
             if ($count == 0) {
-                fatal_exit(do_lang_tempcode('ACCESS_DENIED__I_ERROR', $GLOBALS['FORUM_DRIVER']->get_username(get_member())));
+                fatal_exit(do_lang_tempcode('ACCESS_DENIED__I_ERROR', escape_html($GLOBALS['FORUM_DRIVER']->get_username(get_member()))));
             }
             $GLOBALS['SITE_DB']->query_update('w_items', ['i_count' => $count + 1], ['name' => $item_name, 'copy_owner' => $copy_owner, 'location_x' => $x, 'location_y' => $y, 'location_realm' => $realm], '', 1);
         }

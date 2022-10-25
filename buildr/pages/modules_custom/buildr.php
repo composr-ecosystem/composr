@@ -655,7 +655,7 @@ class Module_buildr
 
         if ($type == 'delete-message-by-person') {
             if ((!has_privilege($member_id, 'administer_buildr')) && ($member_id != $dest_member_id)) {
-                buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', $GLOBALS['FORUM_DRIVER']->get_username(get_member())), 'warn');
+                buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', escape_html($GLOBALS['FORUM_DRIVER']->get_username(get_member()))), 'warn');
             }
             delete_message($member_id, $dest_member_id, addslashes($param));
         }
@@ -770,7 +770,7 @@ class Module_buildr
                 $tpl = do_template('W_REALM_SCREEN', [
                     '_GUID' => '7ae26fe1766aed02233e1be84772759b',
                     'PRICE' => integer_format(get_product_price_points('mud_realm'), 0),
-                    'TEXT' => paragraph(do_lang_tempcode('W_ADD_REALM_TEXT', integer_format($left, 0))),
+                    'TEXT' => paragraph(do_lang_tempcode('W_ADD_REALM_TEXT', escape_html(integer_format($left, 0)))),
                     'TITLE' => $this->title,
                     'PAGE_TYPE' => 'addrealm',
                     'QA' => $_qa,

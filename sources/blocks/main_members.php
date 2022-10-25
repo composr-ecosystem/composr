@@ -355,7 +355,7 @@ PHP;
                 '_GUID' => '8e2691c84c5ff6e4ca16305fa409f7b8',
                 'BLOCK_ID' => $block_id,
                 'HIGH' => false,
-                'TITLE' => do_lang_tempcode('RECENT', make_string_tempcode(integer_format($max)), do_lang_tempcode('MEMBERS')),
+                'TITLE' => do_lang_tempcode('RECENT', escape_html(integer_format($max)), do_lang_tempcode('MEMBERS')),
                 'MESSAGE' => do_lang_tempcode('NO_ENTRIES', 'member'),
                 'ADD_NAME' => '',
                 'SUBMIT_URL' => '',

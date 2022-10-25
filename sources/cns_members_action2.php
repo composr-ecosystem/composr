@@ -2077,7 +2077,7 @@ function cns_member_choose_avatar(string $avatar_url, ?int $member_id = null)
                         unlink(get_custom_file_base() . '/' . rawurldecode($avatar_url));
                         sync_file(get_custom_file_base() . '/' . rawurldecode($avatar_url));
                     }
-                    warn_exit(do_lang_tempcode('IMAGE_BAD_DIMENSIONS', strval($width) . 'x' . strval($height), strval($sx) . 'x' . strval($sy)));
+                    warn_exit(do_lang_tempcode('IMAGE_BAD_DIMENSIONS', escape_html(strval($width) . 'x' . strval($height)), escape_html(strval($sx) . 'x' . strval($sy))));
                 }
                 $file_path = get_custom_file_base() . '/' . rawurldecode($avatar_url);
                 $avatar_url = convert_image($file_path, $file_path, $width, $height, null, false, get_file_extension($file_path), true, true);

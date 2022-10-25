@@ -320,7 +320,7 @@ class Module_admin_redirects
                 $their_i = array_search($val, $found);
                 $i = substr($key, 10);
                 if (($their_i !== false) && (post_param_string('from_zone_' . $i) == post_param_string('from_zone_' . strval($their_i)))) {
-                    warn_exit(do_lang_tempcode('DUPLICATE_PAGE_REDIRECT', post_param_string('from_zone_' . $i) . ':' . $val));
+                    warn_exit(do_lang_tempcode('DUPLICATE_PAGE_REDIRECT', escape_html(post_param_string('from_zone_' . $i) . ':' . $val)));
                 }
                 $found[$i] = $val;
             }

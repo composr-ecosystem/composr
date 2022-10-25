@@ -727,7 +727,7 @@ class Module_admin_stats extends Standard_crud_module
             $title = $graph_details['label'];
         }
 
-        $message = do_lang_tempcode('KPI_CONFIGURING_FOR', $graph_details['label']);
+        $message = do_lang_tempcode('KPI_CONFIGURING_FOR', $graph_details['label']/*Tempcode*/);
         if ($id === null) {
             $this->add_text = $message;
         } else {

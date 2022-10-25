@@ -263,7 +263,7 @@ function escrow_points(int $sender_id, int $recipient_id, int $amount, string $r
         $subject = do_lang_tempcode('NEW_ESCROW_TRANSACTION_SUBJECT_STAFF', $reason);
         $map['INTRO'] = do_lang_tempcode('NEW_ESCROW_TRANSACTION_INTRO_STAFF', $link_comcode);
         $mail = do_notification_template('ESCROW_TRANSACTIONS_MAIL', $map, null, false, null, '.txt', 'text');
-        dispatch_notification('point_escrows_staff_passive', null, $subject->evaluate(), $mail->evaluate(), null, $sender_id);
+        dispatch_notification('point_escrows_staff_passive', null, $subject->evaluate(get_site_default_lang()), $mail->evaluate(get_site_default_lang()), null, $sender_id);
     }
 
     return $id;
@@ -409,7 +409,7 @@ function _complete_escrow(array $row, ?int $amount = null, bool $escrow_log = tr
         // Staff
         $subject = do_lang_tempcode('ESCROW_FULLY_SATISFIED_SUBJECT', $reason);
         $mail = do_notification_template('ESCROW_FULLY_SATISFIED_MAIL', $map, null, false, null, '.txt', 'text');
-        dispatch_notification('point_escrows_staff_passive', null, $subject->evaluate(), $mail->evaluate(), null, A_FROM_SYSTEM_UNPRIVILEGED);
+        dispatch_notification('point_escrows_staff_passive', null, $subject->evaluate(get_site_default_lang()), $mail->evaluate(get_site_default_lang()), null, A_FROM_SYSTEM_UNPRIVILEGED);
     }
 
     return $response;
@@ -486,7 +486,7 @@ function cancel_escrow(int $id, int $member_id, string $reason, ?array $row = nu
 
     // Staff
     $mail = do_notification_template('ESCROW_CANCELLED_MAIL', $map, null, false, null, '.txt', 'text');
-    dispatch_notification('point_escrows_staff_passive', null, $subject->evaluate(), $mail->evaluate(), null, $member_id);
+    dispatch_notification('point_escrows_staff_passive', null, $subject->evaluate(get_site_default_lang()), $mail->evaluate(get_site_default_lang()), null, $member_id);
 
     return $refund_id;
 }
@@ -535,7 +535,7 @@ function dispute_escrow(int $id, int $member_id, string $reason, ?array $row = n
         'REASON' => $reason,
     ];
     $mail = do_notification_template('ESCROW_DISPUTED_MAIL', $map, null, false, null, '.txt', 'text');
-    dispatch_notification('point_escrows_staff_active', null, $subject->evaluate(), $mail->evaluate(), null, $member_id);
+    dispatch_notification('point_escrows_staff_active', null, $subject->evaluate(get_site_default_lang()), $mail->evaluate(get_site_default_lang()), null, $member_id);
 }
 
 /**
@@ -625,7 +625,7 @@ function moderate_escrow(int $id, int $member_id, string $action, string $new_re
 
             // Staff
             $mail = do_notification_template('ESCROW_AMENDED_MAIL', $map, null, false, null, '.txt', 'text');
-            dispatch_notification('point_escrows_staff_passive', null, $subject->evaluate(), $mail->evaluate(), null, $member_id);
+            dispatch_notification('point_escrows_staff_passive', null, $subject->evaluate(get_site_default_lang()), $mail->evaluate(get_site_default_lang()), null, $member_id);
             break;
         case 'amend':
             // Log it
@@ -651,7 +651,7 @@ function moderate_escrow(int $id, int $member_id, string $action, string $new_re
 
             // Staff
             $mail = do_notification_template('ESCROW_AMENDED_MAIL', $map, null, false, null, '.txt', 'text');
-            dispatch_notification('point_escrows_staff_passive', null, $subject->evaluate(), $mail->evaluate(), null, $member_id);
+            dispatch_notification('point_escrows_staff_passive', null, $subject->evaluate(get_site_default_lang()), $mail->evaluate(get_site_default_lang()), null, $member_id);
             break;
     }
 }

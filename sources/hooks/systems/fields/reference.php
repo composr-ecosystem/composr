@@ -46,7 +46,7 @@ class Hook_fields_reference
         }
         $ret = [];
         foreach ($cats as $cat) {
-            $ret['ck_' . $cat['c_name']] = do_lang_tempcode('FIELD_TYPE_reference_x', get_translated_text($cat['c_title']));
+            $ret['ck_' . $cat['c_name']] = do_lang_tempcode('FIELD_TYPE_reference_x', escape_html(get_translated_text($cat['c_title'])));
         }
         return $ret;
     }

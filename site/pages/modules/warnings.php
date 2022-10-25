@@ -1049,9 +1049,8 @@ class Module_warnings extends Standard_crud_module
             $out->attach(results_entry($g, false));
         }
 
-        $_username = mixed();
         if ($member_id !== null) {
-            $_username = $username;
+            $_username = protect_from_escaping(escape_html($username));
             $add_warning_url = build_url(['page' => '_SELF', 'type' => 'add', 'id' => $member_id, 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF');
             $view_profile_url = $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, true);
         } else {

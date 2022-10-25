@@ -757,7 +757,7 @@ class Module_admin_themes
             'JS_FUNCTION_CALLS' => ['adminThemesEditTheme'],
             'HIDDEN' => '',
             'TITLE' => $this->title,
-            'TEXT' => do_lang_tempcode('DESCRIPTION_EDIT_THEME', $date),
+            'TEXT' => do_lang_tempcode('DESCRIPTION_EDIT_THEME', $date/*Tempcode*/),
             'URL' => $post_url,
             'FIELDS' => $fields,
             'SUBMIT_ICON' => 'admin/edit_this',

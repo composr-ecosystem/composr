@@ -319,7 +319,7 @@ function generate_catalogue_entry_content_type_label(array $row) : object
         return do_lang_tempcode('catalogues:CATALOGUE_ENTRY');
     }
     $catalogue = load_catalogue_row($row['c_name']);
-    return do_lang_tempcode('catalogues:CATALOGUE_GENERIC', get_translated_text($catalogue['c_title']));
+    return do_lang_tempcode('catalogues:CATALOGUE_GENERIC', escape_html(get_translated_text($catalogue['c_title'])));
 }
 
 /**

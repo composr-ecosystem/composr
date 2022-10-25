@@ -2257,7 +2257,7 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
                     $temp_tpl = do_template('WARNING_BOX', [
                         '_GUID' => 'af61f96b5cc6819979ce681d6f49b384',
                         'RESTRICT_VISIBILITY' => strval($source_member),
-                        'WARNING' => do_lang_tempcode('permissions:ACCESS_DENIED__REUSE_ATTACHMENT', $username),
+                        'WARNING' => do_lang_tempcode('permissions:ACCESS_DENIED__REUSE_ATTACHMENT', escape_html($username)),
                     ]);
                     break;
                 }

@@ -211,7 +211,7 @@ function find_sitemap_object(string $page_link, int $options = 0) : ?array
             $is_virtual = ($is_handled == SITEMAP_NODE_HANDLED_VIRTUALLY);
         }
         if ($hook === null) {
-            attach_message(do_lang_tempcode('_MISSING_RESOURCE', $page_link), 'warn');
+            attach_message(do_lang_tempcode('_MISSING_RESOURCE', escape_html($page_link)), 'warn');
             return null;
         }
     }

@@ -429,7 +429,7 @@ class Module_banners
                 $type = do_lang_tempcode('BANNER_PERMANENT');
                 break;
             case BANNER_CAMPAIGN:
-                $type = do_lang_tempcode('BANNER_HITS_LEFT', do_lang_tempcode('BANNER_CAMPAIGN'), make_string_tempcode(integer_format($myrow['campaign_remaining'], 0)));
+                $type = do_lang_tempcode('BANNER_HITS_LEFT', do_lang_tempcode('BANNER_CAMPAIGN'), escape_html(integer_format($myrow['campaign_remaining'], 0)));
                 break;
             case BANNER_FALLBACK:
                 $type = do_lang_tempcode('BANNER_FALLBACK');

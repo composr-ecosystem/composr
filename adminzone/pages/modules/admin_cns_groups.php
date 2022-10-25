@@ -695,7 +695,7 @@ class Module_admin_cns_groups extends Standard_crud_module
         list($group_leader, $promotion_target, $promotion_threshold, $promotion_approval) = $this->read_in_data();
         if (($group_leader !== null) && ($group_leader != INTEGER_MAGIC_NULL) && (post_param_integer('confirm', 0) == 0) && (!in_array(intval($id), $GLOBALS['FORUM_DRIVER']->get_members_groups($group_leader)))) {
             require_code('templates_confirm_screen');
-            return confirm_screen(get_screen_title('EDIT_GROUP'), paragraph(do_lang_tempcode('MAKE_MEMBER_GROUP_LEADER', post_param_string('group_leader'))), '__edit', '_edit', ['confirm' => 1]);
+            return confirm_screen(get_screen_title('EDIT_GROUP'), paragraph(do_lang_tempcode('MAKE_MEMBER_GROUP_LEADER', escape_html(post_param_string('group_leader')))), '__edit', '_edit', ['confirm' => 1]);
         }
 
         $was_club = ($GLOBALS['FORUM_DB']->query_select_value('f_groups', 'g_is_private_club', ['id' => intval($id)]) == 1);

@@ -43,7 +43,7 @@ class Hook_main_custom_gfx_text_overlay
         }
         $img_path = find_theme_image($map['img'], true, true);
         if ($img_path == '') {
-            return do_lang_tempcode('NO_SUCH_THEME_IMAGE', $map['img']);
+            return do_lang_tempcode('NO_SUCH_THEME_IMAGE', escape_html($map['img']));
         }
 
         $cache_id = 'text_overlay_' . md5(serialize($map));

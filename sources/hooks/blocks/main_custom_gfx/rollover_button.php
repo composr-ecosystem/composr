@@ -43,7 +43,7 @@ class Hook_main_custom_gfx_rollover_button
         }
         $img_path_1 = find_theme_image($map['img1'], true, true);
         if ($img_path_1 == '') {
-            return do_lang_tempcode('NO_SUCH_THEME_IMAGE', $map['img1']);
+            return do_lang_tempcode('NO_SUCH_THEME_IMAGE', escape_html($map['img1']));
         }
 
         $cache_id_1 = 'rollover1_' . md5(serialize($map));
@@ -57,7 +57,7 @@ class Hook_main_custom_gfx_rollover_button
         }
         $img_path_2 = find_theme_image($map['img2'], true, true);
         if ($img_path_2 == '') {
-            return do_lang_tempcode('NO_SUCH_THEME_IMAGE', $map['img2']);
+            return do_lang_tempcode('NO_SUCH_THEME_IMAGE', escape_html($map['img2']));
         }
 
         $cache_id_2 = 'rollover2_' . md5(serialize($map));

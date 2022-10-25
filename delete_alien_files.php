@@ -137,11 +137,11 @@ foreach (array_keys($GFILE_ARRAY) as $path) {
 }
 
 // Empty dirs
-$directories = get_directory_contents(get_file_base(), get_file_base(), null, true, false);
+$directories = get_directory_contents(get_file_base(), '', null, true, false);
 $cnt = 0;
 foreach ($directories as $directory) {
-    $_files = get_directory_contents($directory, '', null, false, true);
-    $_directories = get_directory_contents($directory, '', null, false, false);
+    $_files = get_directory_contents(get_file_base() . '/' . $directory, $directory, null, false, true);
+    $_directories = get_directory_contents(get_file_base() . '/' . $directory, $directory, null, false, false);
     if ((empty($_files)) && (empty($_directories))) {
         echo 'rmdir ' . cms_escapeshellarg($directory) . "\n";
         $cnt++;

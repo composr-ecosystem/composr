@@ -106,7 +106,7 @@ PHP;
         $object = get_content_object($award_type_row['a_content_type']);
         $info = $object->info(null, true);
         if ($info === null) {
-            return do_template('RED_ALERT', ['_GUID' => '2ynzlkmrjkdpo76e5htq9t8bwl2q6jia', 'TEXT' => do_lang_tempcode('NO_SUCH_CONTENT_TYPE', $award_type_row['a_content_type'])]);
+            return do_template('RED_ALERT', ['_GUID' => '2ynzlkmrjkdpo76e5htq9t8bwl2q6jia', 'TEXT' => do_lang_tempcode('NO_SUCH_CONTENT_TYPE', escape_html($award_type_row['a_content_type']))]);
         }
 
         // Submit URL

@@ -66,7 +66,7 @@ function add_item_wrap(int $member_id, string $name, int $price, int $not_infini
 
     // Make sure that they aren't in the brig and adding a bribable!
     if (($x == 0) && ($y == 2) && ($bribable == 1)) {
-        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', $GLOBALS['FORUM_DRIVER']->get_username(get_member())), 'warn');
+        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', escape_html($GLOBALS['FORUM_DRIVER']->get_username(get_member()))), 'warn');
     }
 
     // Charge them
@@ -137,7 +137,7 @@ function add_item_wrap_copy(int $member_id, string $name, int $price, int $not_i
     }
 
     if ((!has_privilege($member_id, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_itemdef', 'owner', ['name' => $name]) != $member_id) && ($GLOBALS['SITE_DB']->query_select_value('w_itemdef', 'replicateable', ['name' => $name]) == 0)) {
-        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', $GLOBALS['FORUM_DRIVER']->get_username(get_member())), 'warn');
+        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', escape_html($GLOBALS['FORUM_DRIVER']->get_username(get_member()))), 'warn');
     }
 
     // Make sure that they aren't in the brig and adding a bribable!
@@ -205,7 +205,7 @@ function add_room_wrap(int $member_id, int $relative, string $name, string $text
     list($realm, $x, $y) = get_loc_details($member_id);
 
     if ((!has_privilege($member_id, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_realms', 'owner', ['id' => $realm]) != $member_id) && ($GLOBALS['SITE_DB']->query_select_value('w_realms', 'r_private', ['id' => $realm]) == 1)) {
-        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', $GLOBALS['FORUM_DRIVER']->get_username(get_member())), 'warn');
+        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', escape_html($GLOBALS['FORUM_DRIVER']->get_username(get_member()))), 'warn');
     }
 
     if ($relative == 0) {
@@ -556,7 +556,7 @@ function delete_item_wrap(string $name)
 {
     $attempt_member = get_member();
     if ((!has_privilege($attempt_member, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_itemdef', 'owner', ['name' => $name]) != $attempt_member)) {
-        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', $GLOBALS['FORUM_DRIVER']->get_username(get_member())), 'warn');
+        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', escape_html($GLOBALS['FORUM_DRIVER']->get_username(get_member()))), 'warn');
     }
     //if (!has_privilege($attempt_member,'administer_buildr'))
     //{
@@ -594,7 +594,7 @@ function delete_room_wrap(int $member_id)
 
     $attempt_member = $member_id;
     if ((!has_privilege($attempt_member, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_rooms', 'owner', ['location_x' => $x, 'location_y' => $y, 'location_realm' => $realm]) != $attempt_member)) {
-        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', $GLOBALS['FORUM_DRIVER']->get_username(get_member())), 'warn');
+        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', escape_html($GLOBALS['FORUM_DRIVER']->get_username(get_member()))), 'warn');
     }
 
     if (($x == 0) && (($y == 0) || ($y == 1) || ($y == 2))) {
@@ -644,7 +644,7 @@ function delete_portal_wrap(int $member_id, int $dest_realm)
 
     $attempt_member = $member_id;
     if ((!has_privilege($attempt_member, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_portals', 'owner', ['start_location_x' => $x, 'start_location_y' => $y, 'start_location_realm' => $realm, 'end_location_realm' => $dest_realm]) != $attempt_member)) {
-        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', $GLOBALS['FORUM_DRIVER']->get_username(get_member())), 'warn');
+        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', escape_html($GLOBALS['FORUM_DRIVER']->get_username(get_member()))), 'warn');
     }
 
     $name = $GLOBALS['SITE_DB']->query_select_value('w_portals', 'name', ['start_location_x' => $x, 'start_location_y' => $y, 'start_location_realm' => $realm]);
@@ -688,7 +688,7 @@ function delete_realm_wrap(int $member_id)
     }
 
     if ((!has_privilege($attempt_member, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_realms', 'owner', ['id' => $realm]) != $attempt_member)) {
-        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', $GLOBALS['FORUM_DRIVER']->get_username(get_member())), 'warn');
+        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', escape_html($GLOBALS['FORUM_DRIVER']->get_username(get_member()))), 'warn');
     }
 
     if ($GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'w_rooms WHERE location_realm=' . strval($realm) . ' AND owner<>' . strval($attempt_member)) > 0) {
@@ -774,11 +774,11 @@ function edit_room_wrap(int $member_id, string $name, string $text, string $pass
     list($realm, $x, $y) = get_loc_details($member_id);
 
     if ((!has_privilege($member_id, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_rooms', 'owner', ['location_x' => $x, 'location_y' => $y, 'location_realm' => $realm]) != $member_id)) {
-        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', $GLOBALS['FORUM_DRIVER']->get_username(get_member())), 'warn');
+        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', escape_html($GLOBALS['FORUM_DRIVER']->get_username(get_member()))), 'warn');
     }
 
     if ((!has_privilege($member_id, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_realms', 'owner', ['id' => $new_realm]) != $member_id) && ($GLOBALS['SITE_DB']->query_select_value('w_realms', 'r_private', ['id' => $new_realm]) == 1)) {
-        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', $GLOBALS['FORUM_DRIVER']->get_username(get_member())), 'warn');
+        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', escape_html($GLOBALS['FORUM_DRIVER']->get_username(get_member()))), 'warn');
     }
 
     // Make sure the new x,y,realm is free
@@ -852,7 +852,7 @@ function edit_realm_wrap(int $member_id, string $name, string $troll_name, array
     $realm = $GLOBALS['SITE_DB']->query_select_value('w_members', 'location_realm', ['id' => $member_id]);
 
     if ((!has_privilege($member_id, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_realms', 'owner', ['id' => $realm]) != $member_id)) {
-        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', $GLOBALS['FORUM_DRIVER']->get_username(get_member())), 'warn');
+        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', escape_html($GLOBALS['FORUM_DRIVER']->get_username(get_member()))), 'warn');
     }
 
     edit_realm($realm, $name, $troll_name, $qa, $private, $new_owner);
@@ -923,7 +923,7 @@ function edit_portal_wrap(int $member_id, int $dest_realm, string $name, string 
     list($realm, $x, $y) = get_loc_details($member_id);
 
     if ((!has_privilege($member_id, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_portals', 'owner', ['start_location_x' => $x, 'start_location_y' => $y, 'start_location_realm' => $realm, 'end_location_realm' => $dest_realm]) != $member_id)) {
-        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', $GLOBALS['FORUM_DRIVER']->get_username(get_member())), 'warn');
+        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', escape_html($GLOBALS['FORUM_DRIVER']->get_username(get_member()))), 'warn');
     }
 
     if ((!has_privilege($member_id, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_realms', 'owner', ['id' => $new_realm]) != $member_id) && ($GLOBALS['SITE_DB']->query_select_value('w_realms', 'r_private', ['id' => $new_realm]) == 1)) {
@@ -979,7 +979,7 @@ function edit_item_wrap(int $member_id, string $original_name, string $name, int
     }
 
     if ((!has_privilege($member_id, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_itemdef', 'owner', ['name' => $original_name]) != $member_id)) {
-        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', $GLOBALS['FORUM_DRIVER']->get_username(get_member())), 'warn');
+        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', escape_html($GLOBALS['FORUM_DRIVER']->get_username(get_member()))), 'warn');
     }
 
     if ($healthy != 1) {
@@ -1052,7 +1052,7 @@ function edit_item_wrap_copy(int $member_id, string $name, int $price, int $not_
     }
 
     if ((!has_privilege($member_id, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_items', 'copy_owner', ['name' => $name]) != $member_id)) {
-        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', $GLOBALS['FORUM_DRIVER']->get_username(get_member())), 'warn');
+        buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', escape_html($GLOBALS['FORUM_DRIVER']->get_username(get_member()))), 'warn');
     }
 
     // Get $realm,$x,$y from $member_id

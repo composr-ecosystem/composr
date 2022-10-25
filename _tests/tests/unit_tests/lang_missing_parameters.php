@@ -28,13 +28,9 @@ class lang_missing_parameters_test_set extends cms_test_case
 
         // Can only test simple call patterns
 
-        $files = get_directory_contents(get_file_base(), get_file_base(), 0, true, true, ['php']);
+        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, ['php']);
         foreach ($files as $path) {
-            if (strpos($path, '/exports/') !== false) {
-                continue;
-            }
-
-            $c = file_get_contents($path);
+            $c = file_get_contents(get_file_base() . '/' . $path);
 
             // Regexps cannot do nesting, so strip common stuff that gets in our way
             $c = preg_replace('#\[\'\w+\'\]#', '', $c);

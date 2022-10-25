@@ -84,7 +84,7 @@ function get_quote_post_func($raw_params)
     list($quote_title, $quote_content) = $post_object->get_quote_post($post_ids);
 
     if ($quote_content == '') {
-        warn_exit(do_lang_tempcode('_MISSING_RESOURCE', $params[0], 'post'));
+        warn_exit(do_lang_tempcode('_MISSING_RESOURCE', escape_html($params[0]), 'post'));
     }
 
     $response = mobiquo_val([

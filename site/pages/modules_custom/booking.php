@@ -319,12 +319,12 @@ class Module_booking
 
             // Message if not currently active
             if ($active_from > time()) {
-                $messages[] = do_lang_tempcode('NOTE_BOOKING_IMPOSSIBLE_NOT_STARTED', get_timezoned_date($active_from, false));
+                $messages[] = do_lang_tempcode('NOTE_BOOKING_IMPOSSIBLE_NOT_STARTED', escape_html(get_timezoned_date($active_from, false)));
             }
 
             // Message if becomes inactive within next 6 months
             if (($active_to !== null) && ($active_to < SHOW_WARNINGS_UNTIL)) {
-                $messages[] = do_lang_tempcode('NOTE_BOOKING_IMPOSSIBLE_ENDED', get_timezoned_date($active_to, false));
+                $messages[] = do_lang_tempcode('NOTE_BOOKING_IMPOSSIBLE_ENDED', escape_html(get_timezoned_date($active_to, false)));
             }
 
             // Message about any black-outs within next 6 months

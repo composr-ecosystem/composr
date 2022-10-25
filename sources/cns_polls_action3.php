@@ -201,7 +201,7 @@ function cns_validate_poll(int $topic_id, ?int $poll_id, array $answers, int &$i
     if ($default_options['confined']) {
         foreach ($answers_text as $answer) {
             if (!in_array($answer, $default_options_answers)) {
-                warn_exit(do_lang_tempcode('POLL_INVALID_OPTION', $answer));
+                warn_exit(do_lang_tempcode('POLL_INVALID_OPTION', escape_html($answer)));
             }
         }
     }
@@ -313,7 +313,7 @@ function cns_validate_default_poll_options_xml(string $xml = '') : ?object
     foreach ($root_attributes as $attribute => $value) {
         // Check for invalid attributes on root tag
         if (!in_array($attribute, $allowed_root_attribute_names)) {
-            return do_lang_tempcode('POLL_XML_INVALID_ROOT_ATTRIBUTE', $attribute);
+            return do_lang_tempcode('POLL_XML_INVALID_ROOT_ATTRIBUTE', escape_html($attribute));
         }
 
         // Validate attribute values
@@ -321,28 +321,28 @@ function cns_validate_default_poll_options_xml(string $xml = '') : ?object
             // true or false
             case 'boolean':
                 if ((!is_string($value)) || (!in_array(cms_strtolower_ascii($value), ['true', 'false']))) {
-                    return do_lang_tempcode('POLL_XML_TRUE_FALSE_ONLY', $attribute);
+                    return do_lang_tempcode('POLL_XML_TRUE_FALSE_ONLY', escape_html($attribute));
                 }
                 break;
             // Any number greater than 0
             case '0<number':
                 if (!is_numeric($value) || intval($value) <= 0) {
-                    return do_lang_tempcode('POLL_XML_NUMBER_ONLY', $attribute);
+                    return do_lang_tempcode('POLL_XML_NUMBER_ONLY', escape_html($attribute));
                 }
                 break;
             // Any number greater than 0 but less than maximumSelections
             case '0<number<maximumSelections':
                 if (!is_numeric($value) || intval($value) <= 0) {
-                    return do_lang_tempcode('POLL_XML_NUMBER_ONLY', $attribute);
+                    return do_lang_tempcode('POLL_XML_NUMBER_ONLY', escape_html($attribute));
                 }
                 if (array_key_exists('maximumSelections', $root_attributes) && is_numeric($root_attributes['maximumSelections']) && intval($value) > intval($root_attributes['maximumSelections'])) {
-                    return do_lang_tempcode('POLL_XML_MINSELECTIONS_GREATERTHAN_MAXSELECTIONS', $attribute);
+                    return do_lang_tempcode('POLL_XML_MINSELECTIONS_GREATERTHAN_MAXSELECTIONS', escape_html($attribute));
                 }
                 break;
             // Any number greater than 0, or false
             case '0<numberOrFalse':
                 if ((!is_numeric($value) || intval($value) <= 0) && ((is_numeric($value)) || (cms_strtolower_ascii($value) != 'false'))) {
-                    return do_lang_tempcode('POLL_XML_NUMBER_FALSE_ONLY', $attribute);
+                    return do_lang_tempcode('POLL_XML_NUMBER_FALSE_ONLY', escape_html($attribute));
                 }
                 break;
         }
@@ -355,7 +355,7 @@ function cns_validate_default_poll_options_xml(string $xml = '') : ?object
             $minimum_options = intval($root_attributes['minimumSelections']);
         }
         if (count($this_children) < $minimum_options) {
-            return do_lang_tempcode('POLL_XML_TOO_FEW_OPTIONS', $minimum_options);
+            return do_lang_tempcode('POLL_XML_TOO_FEW_OPTIONS', escape_html(strval($minimum_options)));
         }
     }
 
@@ -367,16 +367,16 @@ function cns_validate_default_poll_options_xml(string $xml = '') : ?object
 
         // Check if any children are not an option tag
         if ($row_tag != 'option') {
-            return do_lang_tempcode('POLL_XML_INVALID_CHILD', $row_tag);
+            return do_lang_tempcode('POLL_XML_INVALID_CHILD', escape_html($row_tag));
         }
 
         // Check for attributes on children. Only mandatory is allowed, and it must be true or false.
         if (count($row_attributes) > 0) {
             foreach ($row_attributes as $attribute => $value) {
                 if ($attribute != "mandatory") {
-                    return do_lang_tempcode('POLL_XML_INVALID_ROW_ATTRIBUTE', $attribute);
+                    return do_lang_tempcode('POLL_XML_INVALID_ROW_ATTRIBUTE', escape_html($attribute));
                 } elseif (!in_array(cms_strtolower_ascii($value), ['true', 'false'])) {
-                    return do_lang_tempcode('POLL_XML_TRUE_FALSE_ONLY', $attribute);
+                    return do_lang_tempcode('POLL_XML_TRUE_FALSE_ONLY', escape_html($attribute));
                 }
             }
         }

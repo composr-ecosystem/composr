@@ -459,7 +459,7 @@ function booking_date_available(int $bookable_id, int $day, int $month, int $yea
     }
     $codes_taken_already = $GLOBALS['SITE_DB']->query_value_if_there($query, false, true);
     if ($codes_taken_already + $quantity > $codes_in_total) {
-        return do_lang_tempcode('BOOKING_IMPOSSIBLE_FULL', get_timezoned_date($asked, false));
+        return do_lang_tempcode('BOOKING_IMPOSSIBLE_FULL', escape_html(get_timezoned_date($asked, false)));
     }
 
     // Good!
