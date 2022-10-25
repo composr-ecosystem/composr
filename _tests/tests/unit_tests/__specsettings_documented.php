@@ -229,7 +229,7 @@ class __specsettings_documented_test_set extends cms_test_case
 
         $all_code = '';
 
-        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_NONBUNDLED | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, ['php', 'tpl']);
+        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_NONBUNDLED | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, ['php', 'tpl', 'js']);
         $files[] = 'install.php';
         foreach ($files as $path) {
             if ((basename($path) == 'shared_installs.php') || (strpos($path, 'sources/forum/') !== false) || (basename($path) == 'phpstub.php')) {
@@ -266,7 +266,7 @@ class __specsettings_documented_test_set extends cms_test_case
         for ($i = 0; $i < $num_matches; $i++) {
             $keep_setting = $matches[1][$i];
 
-            $have_found = (strpos($all_code, '\'' . $keep_setting . '\'') !== false) || (strpos($all_code, '{$_GET,' . $keep_setting) !== false);
+            $have_found = (strpos($all_code, '\'' . $keep_setting . '\'') !== false) || (strpos($all_code, '{$_GET,' . $keep_setting) !== false) || (strpos($all_code, 'searchParams.get(\'' . $keep_setting . '\')') !== false);
             $this->assertTrue($have_found, 'Documented keep setting not used (' . $keep_setting . ')');
         }
     }
