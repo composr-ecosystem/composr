@@ -240,6 +240,9 @@ class Hook_commandr_fs_calendar extends Resource_fs_base
 
         $type = $this->_integer_category($category);
         $recurrence = $this->_default_property_str($properties, 'recurrence');
+        if ($recurrence == '') {
+            $recurrence = 'none';
+        }
         $recurrences = $this->_default_property_int_null($properties, 'recurrences');
         $seg_recurrences = $this->_default_property_int($properties, 'seg_recurrences');
         $content = $this->_default_property_str($properties, 'description');
@@ -275,6 +278,9 @@ class Hook_commandr_fs_calendar extends Resource_fs_base
         $end_hour = $this->_default_property_int_null($properties, 'end_hour');
         $end_minute = $this->_default_property_int_null($properties, 'end_minute');
         $timezone = $this->_default_property_str($properties, 'timezone');
+        if ($timezone == '') {
+            $timezone = 'UTC';
+        }
         $do_timezone_conv = $this->_default_property_int($properties, 'do_timezone_conv');
         $validated = $this->_default_property_int_null($properties, 'validated');
         if ($validated === null) {
