@@ -1029,8 +1029,7 @@ class Module_points
         ];
         $_fields = new Tempcode();
         foreach ($fields as $key => $val) {
-            $raw = is_object($val);
-            $_fields->attach(map_table_field(do_lang_tempcode($key), $val, $raw));
+            $_fields->attach(map_table_field(do_lang_tempcode($key), $val, true));
         }
 
         return do_template('POINTS_ESCROW_SCREEN', [

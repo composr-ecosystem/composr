@@ -36,8 +36,8 @@ function init__templates()
 /**
  * Get the Tempcode for a standard box (CSS driven), with the specified content entered. Please rarely use this function; it is not good to assume people want anythings in one of these boxes... use templates instead.
  *
- * @param  Tempcode $content The content being put inside the box
- * @param  mixed $title The title of the standard box, string or Tempcode (blank: titleless standard box)
+ * @param  Tempcode $content The content being put inside the box, provided in HTML format
+ * @param  ?Tempcode $title The title of the standard box, provided in HTML format (null: titleless standard box) (blank: titleless standard box)
  * @param  ID_TEXT $type The type of the box. Refers to a template (STANDARDBOX_type)
  * @param  string $width The CSS width
  * @param  string $options '|' separated list of options (meaning dependant upon templates interpretation)
@@ -47,8 +47,12 @@ function init__templates()
  * @param  string $class CSS class to use
  * @return Tempcode The contents, put inside a standard box, according to the other parameters
  */
-function put_in_standard_box(object $content, $title = '', string $type = 'default', string $width = '', string $options = '', string $meta = '', string $links = '', string $top_links = '', string $class = '') : object
+function put_in_standard_box(object $content, ?object $title = null, string $type = 'default', string $width = '', string $options = '', string $meta = '', string $links = '', string $top_links = '', string $class = '') : object
 {
+    if ($title === null) {
+        $object = new Tempcode();
+    }
+
     if ($type == '') {
         $type = 'default';
     }
@@ -163,7 +167,7 @@ function get_screen_title($title, bool $dereference_lang = true, array $params =
  * @param  mixed $caption The hyperlinks caption, format depends on $auto_escape (string or Tempcode)
  * @param  boolean $external Whether the link is an external one (by default, the external template makes it open in a new window)
  * @param  boolean $auto_escape Whether to automatically escape if $caption is plain-text entry so that it cannot contain HTML
- * @param  mixed $title Link title (string or Tempcode) (blank: none)
+ * @param  mixed $title Link title, in plain-text format (string or Tempcode) (blank: none)
  * @param  ?string $accesskey The access key to use (null: none)
  * @param  ?Tempcode $post_data Data to post (null: an ordinary link)
  * @param  ?string $rel Rel (link type) (null: no special type)
@@ -176,12 +180,16 @@ function hyperlink($url, $caption, bool $external, bool $auto_escape, $title = '
         $caption = do_lang_tempcode('NA');
     }
 
+    if (($auto_escape) && (!is_object($caption))) {
+        $caption = escape_html($caption);
+    }
+
     if ($post_data !== null) {
         $tpl = 'HYPERLINK_BUTTON';
     } else {
         $tpl = 'HYPERLINK';
     }
-    return do_template($tpl, ['OVERLAY' => $overlay, 'REL' => $rel, 'POST_DATA' => $post_data, 'ACCESSKEY' => $accesskey, 'NEW_WINDOW' => $external, 'TITLE' => $title, 'URL' => $url, 'CAPTION' => ($auto_escape && is_string($caption)) ? escape_html($caption) : $caption]);
+    return do_template($tpl, ['OVERLAY' => $overlay, 'REL' => $rel, 'POST_DATA' => $post_data, 'ACCESSKEY' => $accesskey, 'NEW_WINDOW' => $external, 'TITLE' => $title, 'URL' => $url, 'CAPTION' => $caption]);
 }
 
 /**
@@ -227,7 +235,7 @@ function paragraph($text, string $guid = '', ?string $class = null) : object
  * Get the Tempcode for an info page.
  *
  * @param  Tempcode $title The title of the info page
- * @param  mixed $text The text to put on the info page, provided in plain-text format or as HTML via do_lang_tempcode/protect_from_escaping
+ * @param  mixed $text The text to put on the info page, provided in plain-text format or as HTML via do_lang_tempcode/protect_from_escaping (string or Tempcode)
  * @param  boolean $support_match_key_messages Whether match key messages / redirects should be supported
  * @param  ?Tempcode $back_url URL to have back button to (null: none)
  * @param  ?Tempcode $fields Fields to carry with on back button (null: none)
@@ -249,7 +257,7 @@ function inform_screen(object $title, $text, bool $support_match_key_messages = 
  * Get the Tempcode for a warn page.
  *
  * @param  Tempcode $title The title of the warn page
- * @param  mixed $text The text to put on the warn page, provided in plain-text format or as HTML via do_lang_tempcode/protect_from_escaping
+ * @param  mixed $text The text to put on the warn page, provided in plain-text format or as HTML via do_lang_tempcode/protect_from_escaping (string or Tempcode)
  * @param  boolean $provide_back Whether to provide a back button
  * @param  boolean $support_match_key_messages Whether match key messages / redirects should be supported
  * @return Tempcode The warn page
@@ -296,7 +304,7 @@ function form_input_list_group($title, object $entries) : object
  *
  * @param  string $value The value for this entry
  * @param  boolean $selected Whether this entry is selected by default or not (Note: if nothing else is selected and this is the first, it will be selected by default anyway)
- * @param  mixed $text The text associated with this choice, provided in plain-text format or as HTML via do_lang_tempcode/protect_from_escaping (blank: just use name for text)
+ * @param  mixed $text The text associated with this choice, provided in plain-text format or as HTML via do_lang_tempcode/protect_from_escaping (string or Tempcode) (blank: just use name for text)
  * @param  boolean $red Whether this entry will be put as red (marking it as important somehow)
  * @param  boolean $disabled Whether this list entry is disabled (like a header in a list)
  * @param  string $title The tooltip
@@ -328,7 +336,7 @@ function form_input_list_entry(string $value, bool $selected = false, $text = ''
 /**
  * Display some raw text so that it is repeated as raw visually in HTML.
  *
- * @param  mixed $in Input, provided in plain-text format or as HTML via do_lang_tempcode/protect_from_escaping
+ * @param  mixed $in Input, provided in plain-text format or as HTML via do_lang_tempcode/protect_from_escaping (string or Tempcode)
  * @param  boolean $using_textarea Whether to show using a textarea (more reliable to use clipboard to get from)
  * @return Tempcode Output
  */

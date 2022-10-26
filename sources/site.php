@@ -247,7 +247,7 @@ function attach_message($message, string $type = 'inform', bool $put_in_helper_p
                 $message = escape_html($message);
             }
             require_code('templates_tooltip');
-            $message = tooltip($message, $webservice_result);
+            $message = tooltip($message, $webservice_result, false);
             $message = protect_from_escaping($message);
         }
     }

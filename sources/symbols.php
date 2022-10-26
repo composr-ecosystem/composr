@@ -306,7 +306,7 @@ function ecv(string $lang, array $escaped, int $type, string $name, array $param
                 $links = isset($param[6]) ? $param[5]->evaluate() : '';
                 $top_links = isset($param[7]) ? $param[6]->evaluate() : '';
                 $class = isset($param[8]) ? $param[7]->evaluate() : '';
-                $tmp = put_in_standard_box(array_pop($param), $title, $box_type, $width, $options, $meta, $links, $top_links, $class);
+                $tmp = put_in_standard_box(array_pop($param), make_string_tempcode($title), $box_type, $width, $options, $meta, $links, $top_links, $class);
                 $value = $tmp->evaluate();
                 break;
 

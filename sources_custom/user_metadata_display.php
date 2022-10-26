@@ -101,18 +101,13 @@ function generate_recursive_map_table($metadata)
 
         if (is_integer($_val)) {
             $_val = integer_format($_val);
-        }
-        if (is_float($_val)) {
+        } elseif (is_float($_val)) {
             $_val = float_format($_val);
-        }
-        if ($_val === null) {
-            $_val = do_lang('NA');
-        }
-        if (is_bool($_val)) {
+        } elseif ($_val === null) {
+            $_val = do_lang_tempcode('NA');
+        } elseif (is_bool($_val)) {
             $_val = $_val ? do_lang('YES') : do_lang('NO');
-        }
-
-        if ((!is_object($_val)) && (strpos($_val, '://') !== false) && (looks_like_url($_val))) {
+        } elseif ((!is_object($_val)) && (strpos($_val, '://') !== false) && (looks_like_url($_val))) {
             if (($_key == $l_url) && (array_key_exists($l_title, $fields))) {
                 $caption = $fields[$l_title];
                 if ($caption == '') {
@@ -126,7 +121,7 @@ function generate_recursive_map_table($metadata)
             $_val = hyperlink($_val, $caption, true, false);
         }
 
-        $_fields->attach(map_table_field($_key, $_val, is_object($_val)));
+        $_fields->attach(map_table_field($_key, $_val, true));
     }
 
     return do_template('MAP_TABLE', [

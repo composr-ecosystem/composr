@@ -241,7 +241,7 @@ function get_max_image_size(bool $consider_php_limits = true) : int
  * Get the Tempcode for an image thumbnail.
  *
  * @param  URLPATH $url The URL to the image thumbnail
- * @param  mixed $caption The caption for the thumbnail, provided in plain-text format or as HTML via do_lang_tempcode/protect_from_escaping
+ * @param  mixed $caption The caption for the thumbnail, provided in plain-text format or as HTML via do_lang_tempcode/protect_from_escaping (string or Tempcode)
  * @param  boolean $js_tooltip Whether to use a JS tooltip. Forcibly set to true if you pass Tempcode
  * @param  boolean $is_thumbnail_already Whether already a thumbnail (if not, function will make one)
  * @param  ?integer $width Thumbnail width to use (null: default)

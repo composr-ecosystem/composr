@@ -489,7 +489,7 @@ class Module_admin_quiz
                     $answers = do_lang_tempcode('FREE_ENTRY_ANSWER');
                 }
 
-                $fields->attach(map_table_field($question, $answers, true));
+                $fields->attach(map_table_field($question, $answers, false));
             }
             $summary = do_template('MAP_TABLE', ['_GUID' => '2b0c2ba0070ba810c5e4b5b4aedcb15f', 'WIDTH' => '300', 'FIELDS' => $fields]);
         } else {

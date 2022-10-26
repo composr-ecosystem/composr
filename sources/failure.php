@@ -374,7 +374,7 @@ function _sanitise_error_msg(string $text) : string
 /**
  * Do a terminal execution on a defined page type.
  *
- * @param  mixed $text The error message, provided in plain-text format or as HTML via do_lang_tempcode/protect_from_escaping
+ * @param  mixed $text The error message, provided in plain-text format or as HTML via do_lang_tempcode/protect_from_escaping (string or Tempcode)
  * @param  ID_TEXT $template Name of the terminal page template
  * @set INFORM_SCREEN WARN_SCREEN FATAL_SCREEN
  * @param  ?boolean $support_match_key_messages Whether match key messages / redirects should be supported (null: detect)

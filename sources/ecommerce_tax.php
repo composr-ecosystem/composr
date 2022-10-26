@@ -702,7 +702,7 @@ function generate_tax_invoice(string $txn_id) : object
 /**
  * Get the Tempcode for a tax input widget.
  *
- * @param  mixed $set_title A human intelligible name for this input field, provided in plain-text format or as HTML via do_lang_tempcode/protect_from_escaping
+ * @param  mixed $set_title A human intelligible name for this input field, provided in plain-text format or as HTML via do_lang_tempcode/protect_from_escaping (string or Tempcode)
  * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  ID_TEXT $set_name The name which this input field is for
  * @param  string $default The default value for this input field

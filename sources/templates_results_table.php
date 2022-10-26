@@ -231,7 +231,7 @@ function results_footer_row(array $values, string $guid = 'e5df01c02d364a45b3cc5
  * Get the Tempcode for a results entry (a row). You would gather together the outputs of several of these functions, then put them in as the $fields in a results_table function call.
  *
  * @param  array $values The array of values that make up this entry (of string or Tempcode, or mixture)
- * @param  boolean $auto_escape Whether to automatically escape each plain-text entry so that it cannot contain HTML
+ * @param  boolean $auto_escape Whether to automatically escape each plain-text entry so that it cannot contain HTML (ignored for Tempcode values)
  * @param  ?string $tpl_set The template set to use (null: default)
  * @param  string $guid GUID to pass to template
  * @return Tempcode The generated entry

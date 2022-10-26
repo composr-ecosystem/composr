@@ -32,7 +32,7 @@ function generate_tooltip_by_truncation(string $text, int $len = 60) : object
         $truncated = escape_html(cms_mb_substr($text, 0, $len - 2)) . '&hellip;';
         $tooltip = escape_html($text);
 
-        return tooltip($truncated, $tooltip);
+        return tooltip($truncated, $tooltip, false);
     }
     return make_string_tempcode(escape_html($text));
 }
@@ -40,37 +40,54 @@ function generate_tooltip_by_truncation(string $text, int $len = 60) : object
 /**
  * Show a tooltip, automatic inline/block context detection.
  *
- * @param  mixed $label What the tooltip is on, provided in HTML format (string or Tempcode)
- * @param  mixed $tooltip The tooltip (HTML string or Tempcode)
+ * @param  mixed $label What the tooltip is on, format depends on $auto_escape (string or Tempcode)
+ * @param  mixed $tooltip The tooltip, format depends on $auto_escape (string or Tempcode)
+ * @param  boolean $auto_escape Whether to automatically escape each plain-text entry so that it cannot contain HTML (ignored for Tempcode values)
  * @return Tempcode The tooltip
  */
-function tooltip($label, $tooltip) : object
+function tooltip($label, $tooltip, bool $auto_escape) : object
 {
     $_label = is_object($label) ? $label->evaluate() : $label;
     $is_block = (strpos($_label, '<div') !== false || strpos($_label, '<p') !== false || strpos($_label, '<table') !== false);
-    return $is_block ? block_tooltip($label, $tooltip) : inline_tooltip($label, $tooltip);
+    return $is_block ? block_tooltip($label, $tooltip, $auto_escape) : inline_tooltip($label, $tooltip, $auto_escape);
 }
 
 /**
  * Show a tooltip on an inline element.
  *
- * @param  mixed $label What the tooltip is on, provided in HTML format (string or Tempcode)
- * @param  mixed $tooltip The tooltip (HTML string or Tempcode)
+ * @param  mixed $label What the tooltip is on, format depends on $auto_escape (string or Tempcode)
+ * @param  mixed $tooltip The tooltip, format depends on $auto_escape (string or Tempcode)
+ * @param  boolean $auto_escape Whether to automatically escape each plain-text entry so that it cannot contain HTML (ignored for Tempcode values)
  * @return Tempcode The tooltip
  */
-function inline_tooltip($label, $tooltip) : object
+function inline_tooltip($label, $tooltip, bool $auto_escape) : object
 {
+    if (($auto_escape) && (!is_object($label))) {
+        $label = escape_html($label);
+    }
+    if (($auto_escape) && (!is_object($tooltip))) {
+        $tooltip = escape_html($tooltip);
+    }
+
     return do_template('INLINE_TOOLTIP', ['_GUID' => '5e6bb4853dd4bc2064e999b6820a3088', 'LABEL' => $label, 'TOOLTIP' => $tooltip]);
 }
 
 /**
  * Show a tooltip on a block element.
  *
- * @param  mixed $label What the tooltip is on, provided in HTML format (string or Tempcode)
- * @param  mixed $tooltip The tooltip (HTML string or Tempcode)
+ * @param  mixed $label What the tooltip is on, format depends on $auto_escape (string or Tempcode)
+ * @param  mixed $tooltip The tooltip, format depends on $auto_escape (string or Tempcode)
+ * @param  boolean $auto_escape Whether to automatically escape each plain-text entry so that it cannot contain HTML (ignored for Tempcode values)
  * @return Tempcode The tooltip
  */
-function block_tooltip($label, $tooltip) : object
+function block_tooltip($label, $tooltip, bool $auto_escape) : object
 {
+    if (($auto_escape) && (!is_object($label))) {
+        $label = escape_html($label);
+    }
+    if (($auto_escape) && (!is_object($tooltip))) {
+        $tooltip = escape_html($tooltip);
+    }
+
     return do_template('BLOCK_TOOLTIP', ['LABEL' => $label, 'TOOLTIP' => $tooltip]);
 }

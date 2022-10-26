@@ -57,16 +57,16 @@ function map_table_screen(object $title, array $fields, ?object $text = null, ?o
 /**
  * Get the Tempcode for a map field.
  *
- * @param  mixed $name The field title, provided in plain-text format or as HTML via do_lang_tempcode/protect_from_escaping
- * @param  mixed $value The field value , provided in plain-text format or as HTML via do_lang_tempcode/protect_from_escaping
- * @param  boolean $raw Whether the field should not be escaped
+ * @param  mixed $name The field title, provided in plain-text format or as HTML via do_lang_tempcode/protect_from_escaping (string or Tempcode)
+ * @param  mixed $value The field value, format depends on $auto_escape (string or Tempcode)
+ * @param  boolean $auto_escape Whether to automatically escape each plain-text entry so that it cannot contain HTML (ignored for Tempcode values)
  * @param  string $abbr Field abbreviation (blank: none)
  * @return Tempcode The generated map field
  */
-function map_table_field($name, $value, bool $raw = false, string $abbr = '') : object // Not for use with the above, which takes the fields as a raw map
+function map_table_field($name, $value, bool $auto_escape, string $abbr = '') : object // Not for use with the above, which takes the fields as a raw map
 {
-    if ($raw) {
-        $value = protect_from_escaping($value);
+    if (($auto_escape) && (!is_object($value))) {
+        $value = escape_html($value);
     }
     return do_template('MAP_TABLE_FIELD', ['_GUID' => '7cd6e583cac2dacc99e3185419d67930', 'ABBR' => $abbr, 'NAME' => $name, 'VALUE' => $value]);
 }

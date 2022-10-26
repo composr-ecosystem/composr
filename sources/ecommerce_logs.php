@@ -160,7 +160,7 @@ function build_sales_table(array $filters = [], bool $show_username = false, boo
         if ($show_username) {
             $sales_row[] = $member_link;
         }
-        $sales_row[] = tooltip($item_link, escape_html($transaction_row['t_type_code']));
+        $sales_row[] = tooltip($item_link, $transaction_row['t_type_code'], true);
         $sales_row[] = $details_1;
         $sales_row[] = $details_2;
         if ($show_delete) {
@@ -196,7 +196,7 @@ function build_sales_table(array $filters = [], bool $show_username = false, boo
  *
  * @param  Tempcode $title The screen title
  * @param  AUTO_LINK $id The order ID
- * @param  Tempcode $text Text to include on the order, provided in plain-text format or as HTML via do_lang_tempcode/protect_from_escaping
+ * @param  Tempcode $text Text to include on the order, provided in plain-text format or as HTML via do_lang_tempcode/protect_from_escaping (string or Tempcode)
  * @param  boolean $show_order_actions Whether to show order actions
  * @return Tempcode The order details
  */

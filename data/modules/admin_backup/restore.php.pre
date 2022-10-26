@@ -213,7 +213,7 @@ finish_restorer_output($msg);
 /**
  * Show some output
  *
- * @param  string $msg The message to show. Must be in HTML format.
+ * @param  string $msg The message to show, provided in HTML format
  */
 function finish_restorer_output(string $msg)
 {

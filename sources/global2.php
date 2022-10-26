@@ -1509,7 +1509,7 @@ function running_script(string $is_this_running) : bool
 /**
  * This is a intended to output an informational exit at the same time as terminating execution.
  *
- * @param  mixed $text The error message, provided in plain-text format or as HTML via do_lang_tempcode/protect_from_escaping
+ * @param  mixed $text The error message, provided in plain-text format or as HTML via do_lang_tempcode/protect_from_escaping (string or Tempcode)
  * @param  ?boolean $support_match_key_messages Whether match key messages / redirects should be supported (null: detect)
  * @exits
  */
@@ -1522,7 +1522,7 @@ function inform_exit($text, ?bool $support_match_key_messages = null)
 /**
  * This is a less-revealing alternative to fatal_exit, that is used for user-errors/common-corruption-scenarios.
  *
- * @param  mixed $text The error message, provided in plain-text format or as HTML via do_lang_tempcode/protect_from_escaping
+ * @param  mixed $text The error message, provided in plain-text format or as HTML via do_lang_tempcode/protect_from_escaping (string or Tempcode)
  * @param  boolean $support_match_key_messages Whether match key messages / redirects should be supported
  * @param  boolean $log_error Whether to log the error
  * @param  ?integer $http_status HTTP status to set (null: none)
@@ -1544,7 +1544,7 @@ function warn_exit($text, bool $support_match_key_messages = false, bool $log_er
  * Do a fatal exit, echo the header (if possible) and an error message, followed by a debugging back-trace.
  * It also adds an entry to the error log, for reference.
  *
- * @param  mixed $text The error message, provided in plain-text format or as HTML via do_lang_tempcode/protect_from_escaping
+ * @param  mixed $text The error message, provided in plain-text format or as HTML via do_lang_tempcode/protect_from_escaping (string or Tempcode)
  * @param  boolean $log_error Whether to log the error
  * @param  integer $http_status HTTP status to set
  * @exits

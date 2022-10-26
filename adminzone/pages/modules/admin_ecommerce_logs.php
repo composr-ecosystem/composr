@@ -878,17 +878,17 @@ class Module_admin_ecommerce_logs
             $_transaction_fields = new Tempcode();
             foreach ($transaction_tooltip_map as $key => $val) {
                 if ($val != '') {
-                    $_transaction_fields->attach(map_table_field(do_lang_tempcode($key), $val));
+                    $_transaction_fields->attach(map_table_field(do_lang_tempcode($key), $val, true));
                 }
             }
             $transaction_table = do_template('MAP_TABLE', ['FIELDS' => $_transaction_fields]);
 
             $result_entries->attach(results_entry([
                 escape_html($date),
-                ((count($transaction_tooltip_map) > 0) ? tooltip($transaction_row['id'], $transaction_table) : $transaction_row['id']),
+                ((count($transaction_tooltip_map) > 0) ? tooltip($transaction_row['id'], $transaction_table, true) : $transaction_row['id']),
                 $customer_link,
                 $member_link,
-                tooltip($item_name, escape_html($transaction_row['t_type_code'])),
+                tooltip($item_name, $transaction_row['t_type_code'], true),
                 escape_html($transaction_row['t_purchase_id']),
                 ecommerce_get_currency_symbol($transaction_row['t_currency']) . escape_html(float_format($transaction_row['t_amount'])),
                 $tax_linker,
@@ -1353,7 +1353,7 @@ class Module_admin_ecommerce_logs
                 strval($subs['id']),
                 get_timezoned_date_time($subs['s_time'], false),
                 results_table_member_cell($subs['s_member_id']),
-                tooltip(escape_html($item_name), escape_html($subs['s_type_code'])),
+                tooltip($item_name, $subs['s_type_code'], true),
                 $expiry_date,
                 $cancel_url
             ];

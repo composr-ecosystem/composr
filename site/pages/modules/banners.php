@@ -452,30 +452,30 @@ class Module_banners
 
         $fields = new Tempcode();
         require_code('templates_map_table');
-        $fields->attach(map_table_field(do_lang_tempcode('TYPE'), $type));
+        $fields->attach(map_table_field(do_lang_tempcode('TYPE'), $type, true));
 
-        $fields->attach(map_table_field(do_lang_tempcode('BANNER_TYPE'), ($myrow['b_type'] == '') ? do_lang('_DEFAULT') : $myrow['b_type']));
+        $fields->attach(map_table_field(do_lang_tempcode('BANNER_TYPE'), ($myrow['b_type'] == '') ? do_lang('_DEFAULT') : $myrow['b_type'], true));
 
         $banner_types = implode(', ', collapse_1d_complexity('b_type', $GLOBALS['SITE_DB']->query_select('banners_types', ['b_type'], ['name' => $myrow['name']])));
-        $fields->attach(map_table_field(do_lang_tempcode('SECONDARY_CATEGORIES'), ($banner_types == '') ? do_lang_tempcode('NA_EM') : protect_from_escaping(escape_html($banner_types))));
+        $fields->attach(map_table_field(do_lang_tempcode('SECONDARY_CATEGORIES'), ($banner_types == '') ? do_lang_tempcode('NA_EM') : protect_from_escaping(escape_html($banner_types)), true));
 
         if (addon_installed('stats')) {
             $banners_regions = implode(', ', collapse_1d_complexity('region', $GLOBALS['SITE_DB']->query_select('content_regions', ['region'], ['content_type' => 'banner', 'content_id' => $myrow['name']])));
-            $fields->attach(map_table_field(do_lang_tempcode('FILTER_REGIONS'), ($banners_regions == '') ? do_lang_tempcode('ALL_EM') : protect_from_escaping(escape_html($banners_regions))));
+            $fields->attach(map_table_field(do_lang_tempcode('FILTER_REGIONS'), ($banners_regions == '') ? do_lang_tempcode('ALL_EM') : protect_from_escaping(escape_html($banners_regions)), true));
         }
 
-        $fields->attach(map_table_field(do_lang_tempcode('ADDED'), get_timezoned_date_time($myrow['add_date'])));
+        $fields->attach(map_table_field(do_lang_tempcode('ADDED'), get_timezoned_date_time($myrow['add_date']), true));
 
         $expiry_date = ($myrow['expiry_date'] === null) ? do_lang_tempcode('NA_EM') : protect_from_escaping(escape_html(get_timezoned_date_time($myrow['expiry_date'])));
-        $fields->attach(map_table_field(do_lang_tempcode('EXPIRY_DATE'), $expiry_date));
+        $fields->attach(map_table_field(do_lang_tempcode('EXPIRY_DATE'), $expiry_date, true));
 
         if ($has_banner_network) {
-            $fields->attach(map_table_field(do_lang_tempcode('BANNER_HITS_FROM'), escape_html(integer_format($myrow['hits_from'], 0)), false, 'hits_from'));
-            $fields->attach(map_table_field(do_lang_tempcode('BANNER_VIEWS_FROM'), escape_html(integer_format($myrow['views_from'], 0)), false, 'views_from'));
+            $fields->attach(map_table_field(do_lang_tempcode('BANNER_HITS_FROM'), integer_format($myrow['hits_from'], 0), true, 'hits_from'));
+            $fields->attach(map_table_field(do_lang_tempcode('BANNER_VIEWS_FROM'), integer_format($myrow['views_from'], 0), true, 'views_from'));
         }
-        $fields->attach(map_table_field(do_lang_tempcode('BANNER_HITS_TO'), ($myrow['site_url'] == '') ? do_lang_tempcode('CANT_TRACK') : protect_from_escaping(escape_html(integer_format($myrow['hits_to'], 0))), false, 'hits_to'));
-        $fields->attach(map_table_field(do_lang_tempcode('BANNER_VIEWS_TO'), ($myrow['site_url'] == '') ? do_lang_tempcode('CANT_TRACK') : protect_from_escaping(escape_html(integer_format($myrow['views_to'], 0))), false, 'views_to'));
-        $fields->attach(map_table_field(do_lang_tempcode('BANNER_CLICKTHROUGH'), $click_through));
+        $fields->attach(map_table_field(do_lang_tempcode('BANNER_HITS_TO'), ($myrow['site_url'] == '') ? do_lang_tempcode('CANT_TRACK') : protect_from_escaping(escape_html(integer_format($myrow['hits_to'], 0))), true, 'hits_to'));
+        $fields->attach(map_table_field(do_lang_tempcode('BANNER_VIEWS_TO'), ($myrow['site_url'] == '') ? do_lang_tempcode('CANT_TRACK') : protect_from_escaping(escape_html(integer_format($myrow['views_to'], 0))), true, 'views_to'));
+        $fields->attach(map_table_field(do_lang_tempcode('BANNER_CLICKTHROUGH'), $click_through, true));
 
         $username = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($myrow['submitter']);
         $fields->attach(map_table_field(do_lang_tempcode('SUBMITTER'), $username, true));

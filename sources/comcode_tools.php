@@ -157,7 +157,7 @@ function comcode_convert_script()
 
         $box_title = get_param_string('box_title', '', INPUT_FILTER_GET_COMPLEX);
         if (($box_title != '') && ($out != '')) {
-            $out = static_evaluate_tempcode(put_in_standard_box(make_string_tempcode($out), $box_title));
+            $out = static_evaluate_tempcode(put_in_standard_box(make_string_tempcode($out), make_string_tempcode(escape_html($box_title))));
         }
 
         prepare_backend_response();

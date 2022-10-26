@@ -1552,7 +1552,7 @@ function form_input_various_ticks(array $options, $description, ?int $_tabindex 
  * Get the Tempcode for a multi-set upload, allowing selection from multiple different sources.
  * Mainly for images, used with post_param_image or post_param_multi_source_upload.
  *
- * @param  mixed $set_title A human intelligible name for this input field, provided in plain-text format (string or Tempcode) or as HTML via do_lang_tempcode/protect_from_escaping
+ * @param  mixed $set_title A human intelligible name for this input field, provided in plain-text format or as HTML via do_lang_tempcode/protect_from_escaping (string or Tempcode)
  * @param  mixed $set_description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  Tempcode $hidden A reference to where we're putting hidden fields
  * @param  ID_TEXT $set_name The name which this input field is for (actually, this is a prefix put in front of different input types)

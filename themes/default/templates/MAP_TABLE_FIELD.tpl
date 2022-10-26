@@ -4,6 +4,6 @@
 	</th>
 
 	<td>
-		{VALUE*}
+		{VALUE}
 	</td>
 </tr>

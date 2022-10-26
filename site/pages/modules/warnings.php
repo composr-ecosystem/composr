@@ -250,12 +250,14 @@ class Module_warnings extends Standard_crud_module
         $_history_url = build_url(['page' => '_SELF', 'type' => 'history', 'id' => $member_id], '_SELF');
         $history_url = $_history_url->evaluate();
         if (((!is_guest($member_id)) || ($ip_address !== null)) && (addon_installed('securitylogging'))) {
-            $lookup_url = build_url(['page' => 'admin_lookup', 'type' => 'results', 'param' => is_guest($member_id) ? $ip_address : $member_id], get_module_zone('admin_lookup'));
+            $_lookup_url = build_url(['page' => 'admin_lookup', 'type' => 'results', 'param' => is_guest($member_id) ? $ip_address : $member_id], get_module_zone('admin_lookup'));
         } else {
-            $lookup_url = $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, true);
+            $_lookup_url = $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, true);
         }
-        if (is_object($lookup_url)) {
-            $lookup_url = $lookup_url->evaluate();
+        if (is_object($_lookup_url)) {
+            $lookup_url = $_lookup_url->evaluate();
+        } else {
+            $lookup_url = $_lookup_url;
         }
 
         $this->add_text = new Tempcode();
