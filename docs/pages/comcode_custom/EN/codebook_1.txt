@@ -1367,6 +1367,41 @@ This code would allow any user to inject malicious PHP code into the [tt]image_i
 
 On a similar note, when using user-input with the PHP [tt]preg_replace[/tt] function, always make sure that it is properly escaped, as the [tt]preg_replace[/tt] function can actually do arbitrary code execution if input is not properly escaped.
 
+[title="4"]HTML escaping in Composr[/title]
+
+We need to escape any plain-text string that ends up encapsulated within HTML to avoid "XSS injection" vulnerabilities (and potentially corrupt output too, depending on what is inside the plain-text string).
+
+There are 4 basic cases for escaping being done in Composr:
+1) Generally escaping is performed inside templates (using the asterisk escaper, [tt]*[/tt]) because generally we pass raw data to a template. This is because in principle a template should be able to do whatever it wants with the data. That may be showing it within the template output, that may be doing calculations/checks on the data, or any other undefined thing.
+2) There are cases in the API of [tt]mixed[/tt]-type parameters where escaping may or may not be done, depending on whether a string was passed (escaping is performed) or Tempcode was passed (no escaping is performed as it is assumed the output of a template and thus already in HTML format). This behaviour is clearly and consistently documented in the phpdoc ([tt]provided in plain-text format or HTML Tempcode[/tt]). This pattern happens when this is the behaviour the programmer would want in the vast majority of cases.
+3) There are cases in the API where escaping may or may not be done for you depending on if you set a function parameter to do so, combined with the above (i.e. for string parameters only). For example, the [tt]results_entry[/tt] function takes an array of [tt]$values[/tt] but a single [tt]$auto_escape[/tt] setting that will escape all string values given if enabled. This is documented in the phpdoc as [tt]format depends on $auto_escape (string or Tempcode)[/tt]. This pattern happens when it is reasonably likely the programmer may want to manually escape some values (via [tt]escape_html[/tt]) but not others depending on which of the values being passed are plain strings (i.e. need escaping) or (already) HTML rather than just based on string vs Tempcode. By convention [tt]$auto_escape[/tt] parameters are never optional so that you need to actually consider the behaviour you want.
+4) There are cases in the API where there is no escaping, leaving escaping up to the user of the API via manual use of [tt]escape_html[/tt]. This is documented in the phpdoc as [tt]provided in HTML format (string or Tempcode)[/tt]. This pattern happens when the programmer would want to be passing HTML in the vast majority of cases.
+
+[title="5"]Complexities around language strings[/title]
+
+Language strings may or may not be in HTML format. The [tt]do_lang[/tt] function is usually used for when a language string is plain text, while [tt]do_lang_tempcode[/tt] is usually used when a language string is HTML.
+
+There may be situations when a template escapes a parameter (case 1), but for some rare situation we are passing in HTML to that parameter and want to avoid escaping. Any output of [tt]do_lang_tempcode[/tt] is automatically immune from escaping for this reason. For example, imagine we have a template that is showing a value in a simple table row...
+[code="HTML"]
+<tr>
+	<th>Foo</th>
+	<td>{BAR*}</th>
+</tr>
+[/code]
+Normally we want [tt]BAR[/tt] to be auto-escaped, as it is a simple value, hence why we used the asterisk escaper. But imagine we wanted to pass a language string for [tt]<em>N/A</em>[/tt] as [tt]BAR[/tt]. We would need that to not be escaped. Hence we have a magical exception to the asterisk escaper: [tt]do_lang_tempcode[/tt] output is never escaped by it. This is handled 'magically' by the Tempcode system, which can track if something is a language string.
+
+We also have a function [tt]protect_from_escaping[/tt] that achieves the same results for cases where you need something to not be escaped which is not a language string, and under-the-hood it actually uses [tt]do_lang_tempcode[/tt] with a loop-through language string to work.
+
+This behaviour does create a need for a special consideration though: we need to ensure any plain-text parameter to [tt]do_lang_tempcode[/tt] is escaped, otherwise they will flow through as unescaped to the output.
+
+For API functions that take mixed parameters but assume plain-text, but we can conceive of a minority of use cases where HTML may be desired, this is explicitly documented in the phpdoc as [tt]provided in plain-text format or as HTML via do_lang_tempcode/protect_from_escaping (string or Tempcode)[/tt].
+
+[title="5"]XSS injection detection in ocProducts PHP[/title]
+
+ocProducts PHP can track if strings are escaped or not. Tempcode integrates with this and will complain if an unescaped string ends up in the output. This will help you avoid mistakes relating to the complexities described above.
+
+Unfortunately this cannot pick up on the case of parameters for [tt]do_lang_tempcode[/tt] not being escaped, for technical reasons.
+
 [title="4"]Kid-gloves modes[/title]
 
 It's a fact of life that novice coders don't know how to write secure code, and it's also a fact of life novice developers will be expected to write real-world production code. Composr contains many security features and abstractions to protect common types of vulnerability, however there are also additional protections included for novice developers.
