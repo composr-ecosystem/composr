@@ -51,7 +51,7 @@ class Hook_content_meta_aware_poll extends Hook_CMA
             'is_category' => false,
             'is_entry' => true,
             'category_field' => null, // For category permissions
-            'category_type' => null, // For category permissions
+            'permission_module' => null, // For category permissions
             'parent_spec__table_name' => null,
             'parent_spec__parent_name' => null,
             'parent_spec__field_name' => null,
@@ -86,8 +86,6 @@ class Hook_content_meta_aware_poll extends Hook_CMA
             'seo_type_code' => null,
 
             'feedback_type_code' => 'polls',
-
-            'permissions_type_code' => null, // null if has no permissions
 
             'search_hook' => 'polls',
             'rss_hook' => 'polls',

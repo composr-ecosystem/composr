@@ -907,13 +907,16 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
             'sitemap_refreshfreq' => 'monthly',
         ];
 
-        if ($cma_info['permissions_type_code'] !== null) {
+        if ($cma_info['permission_module'] !== null) {
+            if (is_array($cma_info['permission_module'])) {
+                $cma_info['permission_module'] = array_pop($cma_info['permission_module']);
+            }
             if (is_array($cma_info['category_field'])) {
                 $cma_info['category_field'] = array_pop($cma_info['category_field']);
             }
             $struct['permissions'][] = [
                 'type' => 'category',
-                'permission_module' => $cma_info['permissions_type_code'],
+                'permission_module' => $cma_info['permission_module'],
                 'category_name' => @strval($cma_info['is_entry'] ? $row[$cma_info['category_field']] : $content_id),
                 'page_name' => $page,
                 'is_owned_at_this_level' => true,
@@ -1093,7 +1096,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
                 $cma_entry_ob = get_content_object($entry_content_type);
                 $cma_entry_info = $cma_entry_ob->info();
 
-                if ((!$require_permission_support) || (($cma_entry_info['permissions_type_code'] !== null) && ($cma_entry_info['is_category']/*Unlikely to be true!*/) && (!$cma_entry_info['is_entry']))) {
+                if ((!$require_permission_support) || (($cma_entry_info['permission_module'] !== null) && ($cma_entry_info['is_category']/*Unlikely to be true!*/) && (!$cma_entry_info['is_entry']))) {
                     $child_hook_ob = $this->_get_sitemap_object($entry_sitetree_hook);
 
                     $children_entries = [];
@@ -1239,7 +1242,11 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
 
         $cma_info = $this->_get_cma_info();
 
-        return [$id, $cma_info['permissions_type_code']];
+        if (is_array($cma_info['permission_module'])) {
+            $cma_info['permission_module'] = array_pop($cma_info['permission_module']);
+        }
+
+        return [$id, $cma_info['permission_module']];
     }
 }
 

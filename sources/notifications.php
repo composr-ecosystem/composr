@@ -1257,7 +1257,7 @@ class Hook_Notification
      * Further filter results from _all_members_who_have_enabled.
      *
      * @param  array $to_filter Members from main query (we'll filter them)
-     * @param  ID_TEXT $category The category permission type
+     * @param  ID_TEXT $permission_module The permission module 
      * @param  ID_TEXT $only_if_enabled_on__notification_code Notification code
      * @param  ?SHORT_TEXT $only_if_enabled_on__category The category within the notification code (null: none)
      * @param  ?array $to_member_ids List of member IDs we are restricting to (null: no restriction). This effectively works as a intersection set operator against those who have enabled.
@@ -1265,12 +1265,12 @@ class Hook_Notification
      * @param  integer $max Maximum (for pagination)
      * @return array A pair: Map of members to their notification setting, and whether there may be more
      */
-    protected function _all_members_who_have_enabled_with_category_access(array $to_filter, string $category, string $only_if_enabled_on__notification_code, ?string $only_if_enabled_on__category, ?array $to_member_ids, int $start, int $max) : array
+    protected function _all_members_who_have_enabled_with_category_access(array $to_filter, string $permission_module, string $only_if_enabled_on__notification_code, ?string $only_if_enabled_on__category, ?array $to_member_ids, int $start, int $max) : array
     {
         list($_members, $possibly_has_more) = $to_filter;
         $members = [];
         foreach ($_members as $member_id => $setting) {
-            if (has_category_access($member_id, $category, $only_if_enabled_on__category)) {
+            if (has_category_access($member_id, $permission_module, $only_if_enabled_on__category)) {
                 $members[$member_id] = $setting;
             }
         }

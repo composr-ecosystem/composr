@@ -53,7 +53,7 @@ class Hook_content_meta_aware_catalogue extends Hook_CMA
             'is_category' => true,
             'is_entry' => false,
             'category_field' => 'c_name', // For category permissions
-            'category_type' => 'catalogues_catalogue', // For category permissions
+            'permission_module' => 'catalogues_catalogue', // For category permissions
             'parent_spec__table_name' => null,
             'parent_spec__parent_name' => null,
             'parent_spec__field_name' => null,
@@ -88,8 +88,6 @@ class Hook_content_meta_aware_catalogue extends Hook_CMA
             'seo_type_code' => null,
 
             'feedback_type_code' => null,
-
-            'permissions_type_code' => 'catalogues_catalogue',
 
             'search_hook' => null,
             'rss_hook' => null,

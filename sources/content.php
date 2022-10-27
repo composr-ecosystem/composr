@@ -25,10 +25,9 @@ Notes about hook info...
   - unless, parent_spec__table_name!=table, where we require a single id_field, knowing it is a join field in all tables
  - category_field may be array of two (if so, the second one is assumed the main category, while the first is assumed to be for supplemental permission checking)
  - category_field may be null
- - category_type may be array
- - category_type may be '<page>' or '<zone>' (meaning "use page/zone permissions instead")
- - category_type may be null
- - category_type may be missing
+ - permission_module may be array
+ - permission_module may be null
+ - permission_module may be missing
 
 */
 
@@ -71,7 +70,7 @@ function init__content()
  */
 function may_view_content_behind(int $member_id, string $content_type, string $content_id, string $type_has = 'content_type') : bool
 {
-    $permission_type_code = convert_composr_type_codes($type_has, $content_type, 'permissions_type_code');
+    $permission_module = convert_composr_type_codes($type_has, $content_type, 'permission_module');
 
     $module = convert_composr_type_codes($type_has, $content_type, 'module');
     if ($module == '') {
@@ -129,7 +128,30 @@ function may_view_content_behind(int $member_id, string $content_type, string $c
         }
     }
 
-    return ((has_actual_page_access($member_id, $module)) && (($permission_type_code == '') || ($category_id === null) || (has_category_access($member_id, $permission_type_code, $category_id))));
+    if (!has_actual_page_access($member_id, $module)) {
+        return false;
+    }
+
+    // Privacy
+    if (addon_installed('content_privacy')) {
+        require_code('content_privacy');
+        if (!has_privacy_access($content_type, $content_id)) {
+            return false;
+        }
+    }
+
+    if ($category_id !== null) {
+        if (is_array($permission_module)) {
+            $permission_module = array_pop($permission_module); // FUDGE: Catalogue permission checked above as special case, so we only want the catalogue category permission
+        }
+        if ($permission_module != '') {
+            if (!has_category_access($member_id, $permission_module, $category_id)) {
+                return false;
+            }
+        }
+    }
+
+    return true;
 }
 
 /**
@@ -168,13 +190,13 @@ function get_content_object(string $content_type) : ?object
  * Find a different content type code from the one had.
  *
  * @param  ID_TEXT $type_has Content type type we know
- * @set addon content_type meta_hook search_hook seo_type_code feedback_type_code permissions_type_code module table commandr_filesystem_hook rss_hook attachment_hook notification_hook sitemap_hook
+ * @set addon content_type meta_hook search_hook seo_type_code feedback_type_code permission_module module table commandr_filesystem_hook rss_hook attachment_hook notification_hook sitemap_hook
  * @param  ID_TEXT $type_id Content type ID we know
  * @param  ID_TEXT $type_wanted Desired content type
- * @set addon content_type meta_hook search_hook seo_type_code feedback_type_code permissions_type_code module table commandr_filesystem_hook rss_hook attachment_hook notification_hook sitemap_hook
- * @return ID_TEXT Corrected content type type (blank: could not find)
+ * @set addon content_type meta_hook search_hook seo_type_code feedback_type_code permission_module module table commandr_filesystem_hook rss_hook attachment_hook notification_hook sitemap_hook
+ * @return mixed Corrected content type type (blank: could not find)
  */
-function convert_composr_type_codes(string $type_has, string $type_id, string $type_wanted) : string
+function convert_composr_type_codes(string $type_has, string $type_id, string $type_wanted)
 {
     $real_type_wanted = $type_wanted;
 
@@ -205,7 +227,7 @@ function convert_composr_type_codes(string $type_has, string $type_id, string $t
  * Find content type info, for a particular content type type we know.
  *
  * @param  ID_TEXT $type_has Content type type we know
- * @set addon content_type meta_hook search_hook seo_type_code feedback_type_code permissions_type_code module table commandr_filesystem_hook rss_hook attachment_hook notification_hook sitemap_hook
+ * @set addon content_type meta_hook search_hook seo_type_code feedback_type_code permission_module module table commandr_filesystem_hook rss_hook attachment_hook notification_hook sitemap_hook
  * @param  ID_TEXT $type_id Content type ID we know
  * @return array Content type info list (blank: could not find)
  */
@@ -552,8 +574,8 @@ function content_rows_for_type(string $content_type, ?int $days, string $extra_w
     }
 
     // Permissions check
-    $category_type_access = null;
-    $category_type_select = null;
+    $permission_module_access = null;
+    $permission_module_select = null;
     if (is_array($info['category_field'])) {
         $category_field_access = $info['category_field'][0];
         $category_field_select = $info['category_field'][1];
@@ -561,17 +583,17 @@ function content_rows_for_type(string $content_type, ?int $days, string $extra_w
         $category_field_access = $info['category_field'];
         $category_field_select = $info['category_field'];
     }
-    if (array_key_exists('category_type', $info)) {
-        if (is_array($info['category_type'])) {
-            $category_type_access = $info['category_type'][0];
-            $category_type_select = $info['category_type'][1];
+    if (array_key_exists('permission_module', $info)) {
+        if (is_array($info['permission_module'])) {
+            $permission_module_access = $info['permission_module'][0];
+            $permission_module_select = $info['permission_module'][1];
         } else {
-            $category_type_access = $info['category_type'];
-            $category_type_select = $info['category_type'];
+            $permission_module_access = $info['permission_module'];
+            $permission_module_select = $info['permission_module'];
         }
     }
     // Actually for categories we check access on category ID
-    if ($info['is_category'] && $category_type_access !== null) {
+    if ($info['is_category'] && $permission_module_access !== null) {
         $category_field_access = $first_id_field;
     }
     if ((!$GLOBALS['FORUM_DRIVER']->is_super_admin($member_id)) && ($check_perms)) {
@@ -584,16 +606,16 @@ function content_rows_for_type(string $content_type, ?int $days, string $extra_w
 
         $groups = get_permission_where_clause_groups($member_id, true, 'a.');
         if ($category_field_access !== null) {
-            if ($category_type_access === '<zone>') {
+            if ($content_type == 'zone') {
                 $extra_where .= get_zone_permission_where_clause($category_field_access, $member_id, $groups);
-            } elseif ($category_type_access === '<page>') {
+            } elseif ($content_type === 'comcode_page') {
                 $extra_where .= get_page_permission_where_clause($category_field_access, $category_field_select, $member_id, $groups);
             } else {
-                $extra_where .= get_category_permission_where_clause($category_type_access, $category_field_access, $member_id, $groups);
+                $extra_where .= get_category_permission_where_clause($permission_module_access, $category_field_access, $member_id, $groups);
             }
         }
-        if (($category_field_select !== null) && ($category_field_select != $category_field_access) && ($info['category_type'] !== '<page>') && ($info['category_type'] !== '<zone>')) {
-            $extra_where .= get_category_permission_where_clause($category_type_select, $category_field_select, $member_id, $groups);
+        if (($category_field_select !== null) && ($category_field_select != $category_field_access) && ($permission_module_select !== null)) {
+            $extra_where .= get_category_permission_where_clause($permission_module_select, $category_field_select, $member_id, $groups);
         }
     }
 

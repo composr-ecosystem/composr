@@ -28,9 +28,9 @@ class Module_cms_catalogues extends Standard_crud_module
     protected $lang_type = 'CATALOGUE_ENTRY';
     protected $select_name = 'ENTRY';
     protected $permissions_require = 'mid';
-    protected $permissions_cat_require = 'catalogues_catalogue';
+    protected $permissions_module_require = 'catalogues_catalogue';
     protected $permissions_cat_name = 'catalogue_name';
-    protected $permissions_cat_require_b = 'catalogues_category';
+    protected $permissions_module_require_b = 'catalogues_category';
     protected $permissions_cat_name_b = 'category_id';
     protected $user_facing = true;
     protected $seo_type = 'catalogue_entry';
@@ -252,9 +252,9 @@ class Module_cms_catalogues extends Standard_crud_module
     public function run_start(string $type) : object
     {
         if (get_value('disable_cat_cat_perms') === '1') {
-            $this->permissions_cat_require_b = null;
+            $this->permissions_module_require_b = null;
             $this->permissions_cat_name_b = null;
-            $this->cat_crud_module->permissions_cat_require = null;
+            $this->cat_crud_module->permissions_module_require = null;
             $this->cat_crud_module->permissions_cat_name = null;
         }
 
@@ -626,7 +626,7 @@ class Module_cms_catalogues extends Standard_crud_module
             $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_CATALOGUE_ENTRY', 'param_a' => strval($id)]);
             attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'notice');
         }
-        if ((has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', null, $this->permissions_cat_require_b)) || (has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', null, $this->permissions_cat_require))) {
+        if ((has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', null, $this->permissions_module_require_b)) || (has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', null, $this->permissions_module_require))) {
             if (addon_installed('unvalidated')) {
                 if (count($field_groups) != 1) {
                     $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '17e83c2d6412bddc12ac1873f9ec6092', 'TITLE' => do_lang_tempcode('SETTINGS')]));
@@ -663,7 +663,7 @@ class Module_cms_catalogues extends Standard_crud_module
         $fields2 = new Tempcode();
         if (($id !== null) && (is_ecommerce_catalogue($catalogue_name)) && (!$this->may_delete_this(strval($id)))) {
             list($submitter) = $this->get_submitter(strval($id));
-            $delete_permission = has_delete_permission($this->permissions_require, get_member(), $submitter, ($this->privilege_page_name === null) ? get_page_name() : $this->privilege_page_name, [$this->permissions_cat_require, ($this->permissions_cat_name === null) ? null : $this->get_cat(strval($id)), $this->permissions_cat_require_b, ($this->permissions_cat_name_b === null) ? null : $this->get_cat_b(strval($id))]);
+            $delete_permission = has_delete_permission($this->permissions_require, get_member(), $submitter, ($this->privilege_page_name === null) ? get_page_name() : $this->privilege_page_name, [$this->permissions_module_require, ($this->permissions_cat_name === null) ? null : $this->get_cat(strval($id)), $this->permissions_module_require_b, ($this->permissions_cat_name_b === null) ? null : $this->get_cat_b(strval($id))]);
             if ($delete_permission) {
                 $fields2->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'f38200840366846dd7d9ed769f673657', 'TITLE' => do_lang_tempcode('ACTIONS'), 'SECTION_HIDDEN' => true]));
                 $fields2->attach(form_input_tick(do_lang_tempcode('shopping:SHOPPING_FORCE_DELETE'), do_lang_tempcode('shopping:DESCRIPTION_SHOPPING_FORCE_DELETE'), 'force_delete', false));
@@ -940,7 +940,7 @@ class Module_cms_catalogues extends Standard_crud_module
         // Purge support
         if (post_param_integer('force_delete', 0) == 1) {
             list($submitter) = $this->get_submitter(strval($id));
-            $delete_permission = has_delete_permission($this->permissions_require, get_member(), $submitter, ($this->privilege_page_name === null) ? get_page_name() : $this->privilege_page_name, [$this->permissions_cat_require, ($this->permissions_cat_name === null) ? null : $this->get_cat(strval($id)), $this->permissions_cat_require_b, ($this->permissions_cat_name_b === null) ? null : $this->get_cat_b(strval($id))]);
+            $delete_permission = has_delete_permission($this->permissions_require, get_member(), $submitter, ($this->privilege_page_name === null) ? get_page_name() : $this->privilege_page_name, [$this->permissions_module_require, ($this->permissions_cat_name === null) ? null : $this->get_cat(strval($id)), $this->permissions_module_require_b, ($this->permissions_cat_name_b === null) ? null : $this->get_cat_b(strval($id))]);
             if ($delete_permission) {
                 $start = 0;
                 do {
@@ -1249,7 +1249,7 @@ class Module_cms_catalogues_cat extends Standard_crud_module
     protected $select_name = 'NAME';
     protected $permissions_require = 'cat_mid';
     protected $permission_module = 'catalogues_category';
-    protected $permissions_cat_require = 'catalogues_catalogue';
+    protected $permissions_module_require = 'catalogues_catalogue';
     protected $permissions_cat_name = 'catalogue_name';
     protected $seo_type = 'catalogue_category';
     protected $catalogue = true;

@@ -466,7 +466,7 @@ function wiki_add_page(string $title, string $description, string $notes, int $s
     }
 
     require_code('sitemap_xml');
-    notify_sitemap_node_add('_SEARCH:wiki:browse:' . strval($page_id), null, $edit_date, ($page_id == db_get_first_id()) ? SITEMAP_IMPORTANCE_HIGH : SITEMAP_IMPORTANCE_MEDIUM, 'weekly', has_category_access($GLOBALS['FORUM_DRIVER']->get_guest_id(), 'wiki', strval($page_id)));
+    notify_sitemap_node_add('_SEARCH:wiki:browse:' . strval($page_id), null, $edit_date, ($page_id == db_get_first_id()) ? SITEMAP_IMPORTANCE_HIGH : SITEMAP_IMPORTANCE_MEDIUM, 'weekly', has_category_access($GLOBALS['FORUM_DRIVER']->get_guest_id(), 'wiki_page', strval($page_id)));
 
     return $page_id;
 }
@@ -556,7 +556,7 @@ function wiki_edit_page(int $page_id, string $title, string $description, string
     }
 
     require_code('sitemap_xml');
-    notify_sitemap_node_edit('_SEARCH:wiki:browse:' . strval($page_id), has_category_access($GLOBALS['FORUM_DRIVER']->get_guest_id(), 'wiki', strval($page_id)));
+    notify_sitemap_node_edit('_SEARCH:wiki:browse:' . strval($page_id), has_category_access($GLOBALS['FORUM_DRIVER']->get_guest_id(), 'wiki_page', strval($page_id)));
 }
 
 /**

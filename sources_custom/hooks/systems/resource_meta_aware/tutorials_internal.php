@@ -46,7 +46,7 @@ class Hook_resource_meta_aware_tutorials_internal
             'is_category' => false,
             'is_entry' => true,
             'category_field' => null, // For category permissions
-            'category_type' => null, // For category permissions
+            'permission_module' => null, // For category permissions
             'parent_spec__table_name' => null,
             'parent_spec__parent_name' => null,
             'parent_spec__field_name' => null,
@@ -81,8 +81,6 @@ class Hook_resource_meta_aware_tutorials_internal
             'seo_type_code' => null,
 
             'feedback_type_code' => null,
-
-            'permissions_type_code' => null, // null if has no permissions
 
             'search_hook' => null,
             'rss_hook' => null,

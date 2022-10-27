@@ -2085,7 +2085,7 @@ function step_5_core() : object
         'group_id' => '*INTEGER',
         'privilege' => '*ID_TEXT',
         'the_page' => '*ID_TEXT',
-        'module_the_name' => '*ID_TEXT',
+        'module_the_name' => '*ID_TEXT', // The permission module (NOT the page module which is the_page)
         'category_name' => '*ID_TEXT',
         'the_value' => 'BINARY',
     ], false, false, true);
@@ -2214,7 +2214,7 @@ function step_5_core_2() : object
     // What usergroups may view this category
     $GLOBALS['SITE_DB']->drop_table_if_exists('group_category_access');
     $GLOBALS['SITE_DB']->create_table('group_category_access', [
-        'module_the_name' => '*ID_TEXT',
+        'module_the_name' => '*ID_TEXT', // The permission module (NOT the page module)
         'category_name' => '*ID_TEXT',
         'group_id' => '*GROUP',
     ]);

@@ -1257,7 +1257,10 @@ abstract class Resource_fs_base
         }
 
         $cma_info = $this->_get_cma_info($resource_type);
-        $module = $cma_info['permissions_type_code'];
+        $permission_module = $cma_info['permission_module'];
+        if (is_array($permission_module)) {
+            $permission_module = array_pop($permission_module);
+        }
 
         switch ($resource_type) {
             case 'comcode_page':
@@ -1272,8 +1275,8 @@ abstract class Resource_fs_base
                 break;
 
             default:
-                $cma_info['db']->query_delete('group_category_access', ['module_the_name' => $module, 'category_name' => $category]);
-                $cma_info['db']->query_delete('member_category_access', ['module_the_name' => $module, 'category_name' => $category]);
+                $cma_info['db']->query_delete('group_category_access', ['module_the_name' => $permission_module, 'category_name' => $category]);
+                $cma_info['db']->query_delete('member_category_access', ['module_the_name' => $permission_module, 'category_name' => $category]);
                 break;
         }
     }
@@ -1297,7 +1300,10 @@ abstract class Resource_fs_base
         }
 
         $cma_info = $this->_get_cma_info($resource_type);
-        $module = $cma_info['permissions_type_code'];
+        $permission_module = $cma_info['permission_module'];
+        if (is_array($permission_module)) {
+            $permission_module = array_pop($permission_module);
+        }
 
         $admin_groups = $GLOBALS['FORUM_DRIVER']->get_super_admin_groups();
 
@@ -1314,7 +1320,7 @@ abstract class Resource_fs_base
                     break;
 
                 default:
-                    $cma_info['db']->query_delete('group_category_access', ['module_the_name' => $module, 'category_name' => $category, 'group_id' => $group_id]);
+                    $cma_info['db']->query_delete('group_category_access', ['module_the_name' => $permission_module, 'category_name' => $category, 'group_id' => $group_id]);
                     break;
             }
         }
@@ -1337,7 +1343,7 @@ abstract class Resource_fs_base
                         break;
 
                     default:
-                        $cma_info['db']->query_insert('group_category_access', ['module_the_name' => $module, 'category_name' => $category, 'group_id' => $group_id], false, true); // Race/corruption condition
+                        $cma_info['db']->query_insert('group_category_access', ['module_the_name' => $permission_module, 'category_name' => $category, 'group_id' => $group_id], false, true); // Race/corruption condition
                         break;
                 }
             }
@@ -1363,7 +1369,10 @@ abstract class Resource_fs_base
         }
 
         $cma_info = $this->_get_cma_info($resource_type);
-        $module = $cma_info['permissions_type_code'];
+        $permission_module = $cma_info['permission_module'];
+        if (is_array($permission_module)) {
+            $permission_module = array_pop($permission_module);
+        }
 
         $admin_groups = $GLOBALS['FORUM_DRIVER']->get_super_admin_groups();
         $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, true);
@@ -1386,7 +1395,7 @@ abstract class Resource_fs_base
                 break;
 
             default:
-                $groups = $cma_info['db']->query_select('group_category_access', ['group_id'], ['module_the_name' => $module, 'category_name' => $category]);
+                $groups = $cma_info['db']->query_select('group_category_access', ['group_id'], ['module_the_name' => $permission_module, 'category_name' => $category]);
                 break;
         }
         foreach ($groups as $group) {
@@ -1414,7 +1423,10 @@ abstract class Resource_fs_base
         }
 
         $cma_info = $this->_get_cma_info($resource_type);
-        $module = $cma_info['permissions_type_code'];
+        $permission_module = $cma_info['permission_module'];
+        if (is_array($permission_module)) {
+            $permission_module = array_pop($permission_module);
+        }
 
         // Cleanup
         foreach (array_keys($members) as $member_id) {
@@ -1429,7 +1441,7 @@ abstract class Resource_fs_base
                     break;
 
                 default:
-                    $cma_info['db']->query_delete('member_category_access', ['module_the_name' => $module, 'category_name' => $category, 'member_id' => $member_id, 'active_until' => null]);
+                    $cma_info['db']->query_delete('member_category_access', ['module_the_name' => $permission_module, 'category_name' => $category, 'member_id' => $member_id, 'active_until' => null]);
                     break;
             }
         }
@@ -1448,7 +1460,7 @@ abstract class Resource_fs_base
                         break;
 
                     default:
-                        $cma_info['db']->query_insert('member_category_access', ['module_the_name' => $module, 'category_name' => $category, 'member_id' => $member_id, 'active_until' => null], false, true); // Race/corruption condition
+                        $cma_info['db']->query_insert('member_category_access', ['module_the_name' => $permission_module, 'category_name' => $category, 'member_id' => $member_id, 'active_until' => null], false, true); // Race/corruption condition
                         break;
                 }
             }
@@ -1474,7 +1486,10 @@ abstract class Resource_fs_base
         }
 
         $cma_info = $this->_get_cma_info($resource_type);
-        $module = $cma_info['permissions_type_code'];
+        $permission_module = $cma_info['permission_module'];
+        if (is_array($permission_module)) {
+            $permission_module = array_pop($permission_module);
+        }
 
         switch ($resource_type) {
             case 'comcode_page':
@@ -1487,7 +1502,7 @@ abstract class Resource_fs_base
                 break;
 
             default:
-                $members = $cma_info['db']->query_select('member_category_access', ['member_id'], ['module_the_name' => $module, 'category_name' => $category, 'active_until' => null]);
+                $members = $cma_info['db']->query_select('member_category_access', ['member_id'], ['module_the_name' => $permission_module, 'category_name' => $category, 'active_until' => null]);
                 break;
         }
         $ret = [];
@@ -1522,10 +1537,13 @@ abstract class Resource_fs_base
         }
 
         $cma_info = $this->_get_cma_info($resource_type);
-        $module = $cma_info['permissions_type_code'];
+        $permission_module = $cma_info['permission_module'];
+        if (is_array($permission_module)) {
+            $permission_module = array_pop($permission_module);
+        }
 
-        $cma_info['db']->query_delete('group_privileges', ['module_the_name' => $module, 'category_name' => $category]);
-        $cma_info['db']->query_delete('member_privileges', ['module_the_name' => $module, 'category_name' => $category]);
+        $cma_info['db']->query_delete('group_privileges', ['module_the_name' => $permission_module, 'category_name' => $category]);
+        $cma_info['db']->query_delete('member_privileges', ['module_the_name' => $permission_module, 'category_name' => $category]);
     }
 
     /**
@@ -1554,7 +1572,10 @@ abstract class Resource_fs_base
         }
 
         $cma_info = $this->_get_cma_info($resource_type);
-        $module = $cma_info['permissions_type_code'];
+        $permission_module = $cma_info['permission_module'];
+        if (is_array($permission_module)) {
+            $permission_module = array_pop($permission_module);
+        }
 
         $page = $cma_info['cms_page'];
         require_code('zones2');
@@ -1639,7 +1660,10 @@ abstract class Resource_fs_base
         }
 
         $cma_info = $this->_get_cma_info($resource_type);
-        $module = $cma_info['permissions_type_code'];
+        $permission_module = $cma_info['permission_module'];
+        if (is_array($permission_module)) {
+            $permission_module = array_pop($permission_module);
+        }
 
         $admin_groups = $GLOBALS['FORUM_DRIVER']->get_super_admin_groups();
 
@@ -1651,8 +1675,8 @@ abstract class Resource_fs_base
 
             foreach ($value as $privilege => $setting) {
                 if ($setting != '') {
-                    $cma_info['db']->query_delete('group_privileges', ['module_the_name' => $module, 'category_name' => $category, 'group_id' => $group_id, 'privilege' => $privilege, 'the_page' => '']);
-                    $cma_info['db']->query_insert('group_privileges', ['module_the_name' => $module, 'category_name' => $category, 'group_id' => $group_id, 'privilege' => $privilege, 'the_page' => '', 'the_value' => intval($setting)], false, true); // Race/corruption condition
+                    $cma_info['db']->query_delete('group_privileges', ['module_the_name' => $permission_module, 'category_name' => $category, 'group_id' => $group_id, 'privilege' => $privilege, 'the_page' => '']);
+                    $cma_info['db']->query_insert('group_privileges', ['module_the_name' => $permission_module, 'category_name' => $category, 'group_id' => $group_id, 'privilege' => $privilege, 'the_page' => '', 'the_value' => intval($setting)], false, true); // Race/corruption condition
                 }
             }
         }
@@ -1684,7 +1708,10 @@ abstract class Resource_fs_base
         }
 
         $cma_info = $this->_get_cma_info($resource_type);
-        $module = $cma_info['permissions_type_code'];
+        $permission_module = $cma_info['permission_module'];
+        if (is_array($permission_module)) {
+            $permission_module = array_pop($permission_module);
+        }
 
         $page = $cma_info['cms_page'];
         require_code('zones2');
@@ -1712,7 +1739,7 @@ abstract class Resource_fs_base
                 }
             }
         }
-        $groups = $cma_info['db']->query_select('group_privileges', ['group_id', 'privilege', 'the_value'], ['module_the_name' => $module, 'category_name' => $category, 'the_page' => '']);
+        $groups = $cma_info['db']->query_select('group_privileges', ['group_id', 'privilege', 'the_value'], ['module_the_name' => $permission_module, 'category_name' => $category, 'the_page' => '']);
         foreach ($groups as $group) {
             $ret[$group['group_id']][$group['privilege']] = strval($group['the_value']);
         }
@@ -1776,13 +1803,16 @@ abstract class Resource_fs_base
         }
 
         $cma_info = $this->_get_cma_info($resource_type);
-        $module = $cma_info['permissions_type_code'];
+        $permission_module = $cma_info['permission_module'];
+        if (is_array($permission_module)) {
+            $permission_module = array_pop($permission_module);
+        }
 
         foreach ($member_settings as $member_id => $value) {
             foreach ($value as $privilege => $setting) {
                 if ($setting != '') {
-                    $cma_info['db']->query_delete('member_privileges', ['module_the_name' => $module, 'category_name' => $category, 'member_id' => $member_id, 'privilege' => $privilege, 'the_page' => '']);
-                    $cma_info['db']->query_insert('member_privileges', ['module_the_name' => $module, 'category_name' => $category, 'member_id' => $member_id, 'privilege' => $privilege, 'the_page' => '', 'the_value' => intval($setting), 'active_until' => null], false, true); // Race/corruption condition
+                    $cma_info['db']->query_delete('member_privileges', ['module_the_name' => $permission_module, 'category_name' => $category, 'member_id' => $member_id, 'privilege' => $privilege, 'the_page' => '']);
+                    $cma_info['db']->query_insert('member_privileges', ['module_the_name' => $permission_module, 'category_name' => $category, 'member_id' => $member_id, 'privilege' => $privilege, 'the_page' => '', 'the_value' => intval($setting), 'active_until' => null], false, true); // Race/corruption condition
                 }
             }
         }
@@ -1814,9 +1844,12 @@ abstract class Resource_fs_base
         }
 
         $cma_info = $this->_get_cma_info($resource_type);
-        $module = $cma_info['permissions_type_code'];
+        $permission_module = $cma_info['permission_module'];
+        if (is_array($permission_module)) {
+            $permission_module = array_pop($permission_module);
+        }
 
-        $members = $cma_info['db']->query_select('member_privileges', ['member_id', 'privilege', 'the_value'], ['module_the_name' => $module, 'category_name' => $category, 'the_page' => '', 'active_until' => null]);
+        $members = $cma_info['db']->query_select('member_privileges', ['member_id', 'privilege', 'the_value'], ['module_the_name' => $permission_module, 'category_name' => $category, 'the_page' => '', 'active_until' => null]);
         $ret = [];
         foreach ($members as $member) {
             $ret[$member['member_id']][$member['privilege']] = strval($member['the_value']);
@@ -2086,7 +2119,7 @@ abstract class Resource_fs_base
         }
 
         // Permissions
-        if (($cma_info['permissions_type_code'] !== null) && $cma_info['is_category'] && $cma_info['category_field'] == $cma_info['id_field']) {
+        if (($cma_info['permission_module'] !== null) && $cma_info['is_category'] && $cma_info['category_field'] == $cma_info['id_field']) {
             $properties['access'] = $this->get_resource_access(null, $resource_type, $resource_id);
 
             $properties['access__members'] = $this->get_resource_access__members(null, $resource_type, $resource_id);
@@ -2286,7 +2319,7 @@ abstract class Resource_fs_base
         }
 
         // Permissions
-        if (($cma_info['permissions_type_code'] !== null) && $cma_info['is_category'] && $cma_info['category_field'] == $cma_info['id_field']) {
+        if (($cma_info['permission_module'] !== null) && $cma_info['is_category'] && $cma_info['category_field'] == $cma_info['id_field']) {
             if (isset($properties['access'])) {
                 $groups = $properties['access'];
                 $this->set_resource_access(null, $groups, $resource_type, $resource_id);

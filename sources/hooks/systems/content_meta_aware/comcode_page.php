@@ -50,8 +50,8 @@ class Hook_content_meta_aware_comcode_page extends Hook_CMA
             'parent_category_meta_aware_type' => null,
             'is_category' => false,
             'is_entry' => true,
-            'category_field' => ['the_zone', 'the_page'], // For category permissions
-            'category_type' => '<page>', // For category permissions ("<page>" means use page permissions)
+            'category_field' => ['the_zone', 'the_page'], // For category permissions (actually used for page permissions in this case)
+            'permission_module' => null, // For category permissions
             'parent_spec__table_name' => null,
             'parent_spec__parent_name' => null,
             'parent_spec__field_name' => null,
@@ -86,8 +86,6 @@ class Hook_content_meta_aware_comcode_page extends Hook_CMA
             'seo_type_code' => 'comcode_page',
 
             'feedback_type_code' => null,
-
-            'permissions_type_code' => null,
 
             'search_hook' => 'comcode_pages',
             'rss_hook' => 'comcode_pages',

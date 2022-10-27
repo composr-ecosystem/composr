@@ -52,7 +52,7 @@ class Hook_content_meta_aware_event extends Hook_CMA
             'is_category' => false,
             'is_entry' => true,
             'category_field' => 'e_type', // For category permissions
-            'category_type' => 'calendar', // For category permissions
+            'permission_module' => 'calendar', // For category permissions
             'parent_spec__table_name' => 'calendar_types',
             'parent_spec__parent_name' => null,
             'parent_spec__field_name' => 'id',
@@ -87,8 +87,6 @@ class Hook_content_meta_aware_event extends Hook_CMA
             'seo_type_code' => 'event',
 
             'feedback_type_code' => 'events',
-
-            'permissions_type_code' => 'calendar', // null if has no permissions
 
             'search_hook' => 'calendar',
             'rss_hook' => 'calendar',

@@ -44,9 +44,9 @@ abstract class Standard_crud_module
     protected $privilege_page = null; // Usually just get_page_name()
     protected $permission_module = null; // E.g. 'catalogues_catalogue' if we are CRUDing a catalogue
     protected $permissions_require = null;  // E.g. 'mid'
-    protected $permissions_cat_require = null; // E.g. 'catalogues_catalogue' if we are CRUDing a catalogue entry
+    protected $permissions_module_require = null; // E.g. 'catalogues_catalogue' if we are CRUDing a catalogue entry
     protected $permissions_cat_name = null; // E.g. 'catalogue_name' if we are CRUDing a catalogue entry
-    protected $permissions_cat_require_b = null; // E.g. 'catalogues_category' if we are CRUDing a catalogue entry
+    protected $permissions_module_require_b = null; // E.g. 'catalogues_category' if we are CRUDing a catalogue entry
     protected $permissions_cat_name_b = null; // E.g. 'cat'
     protected $add_text = '';
     protected $edit_text = '';
@@ -789,7 +789,7 @@ abstract class Standard_crud_module
      */
     public function add() : object
     {
-        if (($this->permissions_require !== null) && ($this->permissions_cat_require === null)) {
+        if (($this->permissions_require !== null) && ($this->permissions_module_require === null)) {
             check_submit_permission($this->permissions_require, $this->privilege_page_name);
         }
 
@@ -987,7 +987,7 @@ abstract class Standard_crud_module
     public function _add() : object
     {
         if ($this->permissions_require !== null) {
-            check_submit_permission($this->permissions_require, [$this->permissions_cat_require, ($this->permissions_cat_name === null) ? '' : post_param_string($this->permissions_cat_name), $this->permissions_cat_require_b, ($this->permissions_cat_name_b === null) ? '' : post_param_string($this->permissions_cat_name_b)], $this->privilege_page_name);
+            check_submit_permission($this->permissions_require, [$this->permissions_module_require, ($this->permissions_cat_name === null) ? '' : post_param_string($this->permissions_cat_name), $this->permissions_module_require_b, ($this->permissions_cat_name_b === null) ? '' : post_param_string($this->permissions_cat_name_b)], $this->privilege_page_name);
         }
 
         if (($this->second_stage_preview) && (get_param_integer('preview', 0) == 1)) {
@@ -1003,7 +1003,7 @@ abstract class Standard_crud_module
             require_code('antispam');
             inject_action_spamcheck();
             if (addon_installed('unvalidated')) {
-                if (!has_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', $this->privilege_page_name, [$this->permissions_cat_require, ($this->permissions_cat_name === null) ? '' : post_param_string($this->permissions_cat_name), $this->permissions_cat_require_b, ($this->permissions_cat_name_b === null) ? '' : post_param_string($this->permissions_cat_name_b)])) {
+                if (!has_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', $this->privilege_page_name, [$this->permissions_module_require, ($this->permissions_cat_name === null) ? '' : post_param_string($this->permissions_cat_name), $this->permissions_module_require_b, ($this->permissions_cat_name_b === null) ? '' : post_param_string($this->permissions_cat_name_b)])) {
                     $_POST['validated'] = '0';
                 }
             }
@@ -1173,7 +1173,7 @@ abstract class Standard_crud_module
      */
     public function edit() : object
     {
-        if (($this->permissions_require !== null) && ($this->permissions_cat_require === null)) {
+        if (($this->permissions_require !== null) && ($this->permissions_module_require === null)) {
             check_some_edit_permission($this->permissions_require, null, $this->privilege_page_name);
         }
 
@@ -1362,9 +1362,9 @@ abstract class Standard_crud_module
                 $submitter,
                 ($this->privilege_page_name === null) ? get_page_name() : $this->privilege_page_name,
                 [
-                    $this->permissions_cat_require,
+                    $this->permissions_module_require,
                     ($this->permissions_cat_name === null) ? null : $this->get_cat($id),
-                    $this->permissions_cat_require_b,
+                    $this->permissions_module_require_b,
                     ($this->permissions_cat_name_b === null) ? null : $this->get_cat_b($id)
                 ]
             );
@@ -1408,14 +1408,14 @@ abstract class Standard_crud_module
         list($submitter, $timestamp) = $this->get_submitter($id);
 
         if ($this->permissions_require !== null) {
-            check_edit_permission($this->permissions_require, $submitter, [$this->permissions_cat_require, ($this->permissions_cat_name === null) ? null : $this->get_cat($id), $this->permissions_cat_require_b, ($this->permissions_cat_name_b === null) ? null : $this->get_cat_b($id)], $this->privilege_page_name);
+            check_edit_permission($this->permissions_require, $submitter, [$this->permissions_module_require, ($this->permissions_cat_name === null) ? null : $this->get_cat($id), $this->permissions_module_require_b, ($this->permissions_cat_name_b === null) ? null : $this->get_cat_b($id)], $this->privilege_page_name);
         }
 
-        if (($this->permissions_cat_require !== null) && (!has_category_access(get_member(), $this->permissions_cat_require, $this->get_cat($id)))) {
+        if (($this->permissions_module_require !== null) && (!has_category_access(get_member(), $this->permissions_module_require, $this->get_cat($id)))) {
             access_denied('CATEGORY_ACCESS');
         }
 
-        if (($this->permissions_cat_require_b !== null) && (!has_category_access(get_member(), $this->permissions_cat_require_b, $this->get_cat_b($id)))) {
+        if (($this->permissions_module_require_b !== null) && (!has_category_access(get_member(), $this->permissions_module_require_b, $this->get_cat_b($id)))) {
             access_denied('CATEGORY_ACCESS');
         }
 
@@ -1674,7 +1674,7 @@ abstract class Standard_crud_module
         $delete = post_param_integer('delete', 0);
         if (($delete == 1) || ($delete == 2)) { // Delete: 1=partial,2=full,...=unknown,thus handled as an edit
             if ($this->permissions_require !== null) {
-                check_delete_permission($this->permissions_require, $submitter, [$this->permissions_cat_require, ($this->permissions_cat_name === null) ? null : $this->get_cat($id), $this->permissions_cat_require_b, ($this->permissions_cat_name_b === null) ? null : $this->get_cat_b($id)], $this->privilege_page_name);
+                check_delete_permission($this->permissions_require, $submitter, [$this->permissions_module_require, ($this->permissions_cat_name === null) ? null : $this->get_cat($id), $this->permissions_module_require_b, ($this->permissions_cat_name_b === null) ? null : $this->get_cat_b($id)], $this->privilege_page_name);
             }
 
             $test = $this->handle_confirmations($this->title);
@@ -1695,7 +1695,7 @@ abstract class Standard_crud_module
             return $this->do_next_manager($this->title, $description);
         } else { // Edit
             if ($this->permissions_require !== null) {
-                check_edit_permission($this->permissions_require, $submitter, [$this->permissions_cat_require, ($this->permissions_cat_name === null) ? null : $this->get_cat($id), $this->permissions_cat_require_b, ($this->permissions_cat_name_b === null) ? null : $this->get_cat_b($id)], $this->privilege_page_name);
+                check_edit_permission($this->permissions_require, $submitter, [$this->permissions_module_require, ($this->permissions_cat_name === null) ? null : $this->get_cat($id), $this->permissions_module_require_b, ($this->permissions_cat_name_b === null) ? null : $this->get_cat_b($id)], $this->privilege_page_name);
             }
 
             $test = $this->handle_confirmations($this->title);
@@ -1705,7 +1705,7 @@ abstract class Standard_crud_module
 
             if (($this->user_facing) && ($this->permissions_require !== null) && (addon_installed('unvalidated'))) {
                 if (array_key_exists('validated', $_POST)) {
-                    if (!has_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', $this->privilege_page_name, [$this->permissions_cat_require, ($this->permissions_cat_name === null) ? '' : post_param_string($this->permissions_cat_name), $this->permissions_cat_require_b, ($this->permissions_cat_name_b === null) ? '' : post_param_string($this->permissions_cat_name_b)])) {
+                    if (!has_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', $this->privilege_page_name, [$this->permissions_module_require, ($this->permissions_cat_name === null) ? '' : post_param_string($this->permissions_cat_name), $this->permissions_module_require_b, ($this->permissions_cat_name_b === null) ? '' : post_param_string($this->permissions_cat_name_b)])) {
                         if (!$this->edit_keep_validation) {
                             $_POST['validated'] = '0';
                         } else {
@@ -1800,7 +1800,7 @@ abstract class Standard_crud_module
 
                     if ($this->permissions_require !== null) {
                         list($submitter, $timestamp) = $this->get_submitter($id);
-                        check_delete_permission($this->permissions_require, $submitter, [$this->permissions_cat_require, ($this->permissions_cat_name === null) ? null : $this->get_cat($id), $this->permissions_cat_require_b, ($this->permissions_cat_name_b === null) ? null : $this->get_cat_b($id)], $this->privilege_page_name);
+                        check_delete_permission($this->permissions_require, $submitter, [$this->permissions_module_require, ($this->permissions_cat_name === null) ? null : $this->get_cat($id), $this->permissions_module_require_b, ($this->permissions_cat_name_b === null) ? null : $this->get_cat_b($id)], $this->privilege_page_name);
                     }
 
                     $delete[] = $id; // Don't do right away, we want to check all permissions first so that we don't do a partial action

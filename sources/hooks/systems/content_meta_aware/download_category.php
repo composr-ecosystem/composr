@@ -51,7 +51,7 @@ class Hook_content_meta_aware_download_category extends Hook_CMA
             'is_category' => true,
             'is_entry' => false,
             'category_field' => 'parent_id', // For category permissions
-            'category_type' => 'downloads', // For category permissions
+            'permission_module' => 'downloads', // For category permissions
             'parent_spec__table_name' => 'download_categories',
             'parent_spec__parent_name' => 'parent_id',
             'parent_spec__field_name' => 'id',
@@ -86,8 +86,6 @@ class Hook_content_meta_aware_download_category extends Hook_CMA
             'seo_type_code' => 'downloads_category',
 
             'feedback_type_code' => null,
-
-            'permissions_type_code' => 'downloads', // null if has no permissions
 
             'search_hook' => 'download_categories',
             'rss_hook' => null,

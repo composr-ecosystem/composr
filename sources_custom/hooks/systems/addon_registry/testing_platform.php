@@ -739,6 +739,7 @@ We hope other users will appreciate your efforts and give you some points to rew
             '_tests/tests/unit_tests/core_fields.php',
             '_tests/tests/unit_tests/_api_google_safe_browsing.php',
             '_tests/tests/unit_tests/timezones.php',
+            '_tests/tests/unit_tests/permission_modules.php',
             '_tests/tests/unit_tests/cpfs.php',
             '_tests/tests/unit_tests/cqc_adminzone.php',
             '_tests/tests/unit_tests/cqc_blocks.php',

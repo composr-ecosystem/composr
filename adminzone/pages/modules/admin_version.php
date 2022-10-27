@@ -212,7 +212,7 @@ class Module_admin_version
                 'member_id' => '*MEMBER',
                 'privilege' => '*ID_TEXT',
                 'the_page' => '*ID_TEXT',
-                'module_the_name' => '*ID_TEXT',
+                'module_the_name' => '*ID_TEXT', // The permission module (NOT the page module which is the_page)
                 'category_name' => '*ID_TEXT',
                 'the_value' => 'BINARY',
                 'active_until' => '?TIME',
@@ -236,7 +236,7 @@ class Module_admin_version
             $GLOBALS['SITE_DB']->create_index('member_page_access', 'mzamember_id', ['member_id']);
 
             $GLOBALS['SITE_DB']->create_table('member_category_access', [
-                'module_the_name' => '*ID_TEXT',
+                'module_the_name' => '*ID_TEXT', // The permission module (NOT the page module)
                 'category_name' => '*ID_TEXT',
                 'member_id' => '*MEMBER',
                 'active_until' => '?TIME',

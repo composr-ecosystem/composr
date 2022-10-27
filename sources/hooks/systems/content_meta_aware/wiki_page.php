@@ -51,7 +51,7 @@ class Hook_content_meta_aware_wiki_page extends Hook_CMA
             'is_category' => true,
             'is_entry' => false,
             'category_field' => 'id', // For category permissions
-            'category_type' => 'wiki_page', // For category permissions
+            'permission_module' => 'wiki_page', // For category permissions
             'parent_spec__table_name' => 'wiki_children',
             'parent_spec__parent_name' => 'parent_id',
             'parent_spec__field_name' => 'child_id',
@@ -86,8 +86,6 @@ class Hook_content_meta_aware_wiki_page extends Hook_CMA
             'seo_type_code' => 'wiki_page',
 
             'feedback_type_code' => null,
-
-            'permissions_type_code' => 'wiki_page',
 
             'search_hook' => 'wiki_pages',
             'rss_hook' => 'wiki',

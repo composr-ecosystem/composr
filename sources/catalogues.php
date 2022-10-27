@@ -669,7 +669,7 @@ function get_catalogue_entries(string $catalogue_name, ?int $category_id, ?int $
     $where_clause .= $privacy_where;
 
     if ((!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) && ($check_perms)) {
-        $where_clause .= get_category_permission_where_clause('catalogue_category', 'cc_id', get_member(), get_permission_where_clause_groups(get_member()), 'r');
+        $where_clause .= get_category_permission_where_clause('catalogues_catalogue', 'cc_id', get_member(), get_permission_where_clause_groups(get_member()), 'r');
     }
 
     // If we're listing what IDs to look at, work out SQL for this

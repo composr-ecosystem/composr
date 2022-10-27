@@ -50,8 +50,8 @@ class Hook_content_meta_aware_chat extends Hook_CMA
             'parent_category_meta_aware_type' => null,
             'is_category' => true,
             'is_entry' => false,
-            'category_field' => null, // For category permissions
-            'category_type' => null, // For category permissions
+            'category_field' => 'id', // For category permissions
+            'permission_module' => 'chat', // For category permissions
             'parent_spec__table_name' => null,
             'parent_spec__parent_name' => null,
             'parent_spec__field_name' => null,
@@ -86,8 +86,6 @@ class Hook_content_meta_aware_chat extends Hook_CMA
             'seo_type_code' => null,
 
             'feedback_type_code' => null,
-
-            'permissions_type_code' => 'chat', // null if has no permissions
 
             'search_hook' => null,
             'rss_hook' => null,

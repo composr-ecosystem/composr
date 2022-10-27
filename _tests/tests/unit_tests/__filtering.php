@@ -58,7 +58,7 @@ class __filtering_test_set extends cms_test_case
                         'is_category' => false,
                         'is_entry' => true,
                         'category_field' => null,
-                        'category_type' => null,
+                        'permission_module' => null,
                         'parent_spec__table_name' => null,
                         'parent_spec__parent_name' => null,
                         'parent_spec__field_name' => null,
@@ -94,8 +94,6 @@ class __filtering_test_set extends cms_test_case
                         'seo_type_code' => 'temp_test',
 
                         'feedback_type_code' => 'temp_test',
-
-                        'permissions_type_code' => null,
 
                         'search_hook' => null,
                         'rss_hook' => null,

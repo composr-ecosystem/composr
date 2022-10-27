@@ -379,7 +379,7 @@ function get_downloads_tree(?int $submitter = null, ?int $category_id = null, ?s
         if (($tar_filter) && (substr(cms_strtolower_ascii($row['original_filename']), -4) != '.tar')) {
             continue;
         }
-        if (($editable_filter) && (!has_edit_permission('mid', get_member(), $row['submitter'], 'cms_downloads', ['download_downloads', $category_id]))) {
+        if (($editable_filter) && (!has_edit_permission('mid', get_member(), $row['submitter'], 'cms_downloads', ['downloads', $category_id]))) {
             continue;
         }
         if (($shun !== null) && ($shun == $row['id'])) {

@@ -827,7 +827,7 @@ class Module_admin_permissions
         $hook_obs = find_all_hook_obs('systems', 'content_meta_aware', 'Hook_content_meta_aware_');
         foreach ($hook_obs as $hook_ob) {
             $info = $hook_ob->info();
-            if (($info !== null) && ($info['category_type'] !== null) && ($info['cms_page'] !== null) && ($info['is_category']) && (!$info['is_entry'])) {
+            if (($info !== null) && ($info['permission_module'] !== null) && ($info['cms_page'] !== null) && ($info['is_category']) && (!$info['is_entry'])) {
                 require_code('zones2');
                 $page = $info['cms_page'];
                 $zone = get_module_zone($page, 'modules', null, 'php', true, false);
@@ -902,7 +902,8 @@ class Module_admin_permissions
      */
     protected function build_content_item_tree(?array $filters, int $group_id, array $overridables, object $hook_ob, array $info, int $max) : array
     {
-        $save_id_stub = get_module_zone($info['cms_page']) . ':' . $info['permissions_type_code'] . ':';
+        $permission_module = is_array($info['permission_module']) ? $info['permission_module'][0] : $info['permission_module'];
+        $save_id_stub = get_module_zone($info['cms_page']) . ':' . $permission_module . ':';
 
         $total = $info['db']->query_select_value($info['table'], 'COUNT(*)');
         if ($total > $max) {
@@ -911,12 +912,12 @@ class Module_admin_permissions
 
         $group_category_access = collapse_2d_complexity('category_name', 'group_id', $GLOBALS['SITE_DB']->query_select('group_category_access', ['category_name', 'group_id'], [
             'group_id' => $group_id,
-            'module_the_name' => $info['permissions_type_code'],
+            'module_the_name' => $permission_module,
         ]));
         $_group_privileges = $GLOBALS['SITE_DB']->query_select('group_privileges', ['privilege', 'category_name', 'the_value'], [
             'group_id' => $group_id,
             'the_page' => '',
-            'module_the_name' => $info['permissions_type_code'],
+            'module_the_name' => $permission_module,
         ]);
 
         $select = [];
@@ -1080,22 +1081,22 @@ class Module_admin_permissions
                 }
             } elseif (preg_match('#^perm__([^:]*):([^:]*):([^:]*)__(\w+)$#', $key, $matches) != 0) {
                 // Category privilege override
-                $module = $matches[2];
+                $permission_module = $matches[2];
                 $category_name = $matches[3];
                 $privilege = $matches[4];
                 if ($val == '-1') {
-                    $GLOBALS['SITE_DB']->query_delete('group_privileges', ['module_the_name' => $module, 'category_name' => $category_name, 'the_page' => '', 'privilege' => $privilege, 'group_id' => $group_id]);
+                    $GLOBALS['SITE_DB']->query_delete('group_privileges', ['module_the_name' => $permission_module, 'category_name' => $category_name, 'the_page' => '', 'privilege' => $privilege, 'group_id' => $group_id]);
                 } else {
-                    $GLOBALS['SITE_DB']->query_insert_or_replace('group_privileges', ['the_value' => intval($val)], ['module_the_name' => $module, 'category_name' => $category_name, 'the_page' => '', 'privilege' => $privilege, 'group_id' => $group_id]);
+                    $GLOBALS['SITE_DB']->query_insert_or_replace('group_privileges', ['the_value' => intval($val)], ['module_the_name' => $permission_module, 'category_name' => $category_name, 'the_page' => '', 'privilege' => $privilege, 'group_id' => $group_id]);
                 }
             } elseif (preg_match('#^perm__([^:]*):([^:]*):([^:]*)$#', $key, $matches) != 0) {
                 // Category view access
-                $module = $matches[2];
+                $permission_module = $matches[2];
                 $category_name = $matches[3];
                 if ($val == '0') {
-                    $GLOBALS['SITE_DB']->query_delete('group_category_access', ['module_the_name' => $module, 'category_name' => $category_name, 'group_id' => $group_id]);
+                    $GLOBALS['SITE_DB']->query_delete('group_category_access', ['module_the_name' => $permission_module, 'category_name' => $category_name, 'group_id' => $group_id]);
                 } else {
-                    $GLOBALS['SITE_DB']->query_insert_or_replace('group_category_access', [], ['module_the_name' => $module, 'category_name' => $category_name, 'group_id' => $group_id]);
+                    $GLOBALS['SITE_DB']->query_insert_or_replace('group_category_access', [], ['module_the_name' => $permission_module, 'category_name' => $category_name, 'group_id' => $group_id]);
                 }
             }
         }

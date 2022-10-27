@@ -52,7 +52,7 @@ class Hook_content_meta_aware_member extends Hook_CMA
             'parent_category_meta_aware_type' => 'group',
             'is_category' => false,
             'is_entry' => true,
-            'category_type' => null, // For category permissions
+            'permission_module' => null, // For category permissions
             'parent_spec__table_name' => null,
             'parent_spec__parent_name' => null,
             'parent_spec__field_name' => null,
@@ -90,8 +90,6 @@ class Hook_content_meta_aware_member extends Hook_CMA
             'seo_type_code' => null,
 
             'feedback_type_code' => null,
-
-            'permissions_type_code' => null, // null if has no permissions
 
             'search_hook' => 'cns_members',
             'rss_hook' => 'cns_members',

@@ -53,7 +53,7 @@ class Hook_content_meta_aware_quiz extends Hook_CMA
             'is_category' => true,
             'is_entry' => true,
             'category_field' => 'q_type', // For category permissions
-            'category_type' => 'quiz', // For category permissions
+            'permission_module' => 'quiz', // For category permissions
             'parent_spec__table_name' => null,
             'parent_spec__parent_name' => null,
             'parent_spec__field_name' => null,
@@ -88,8 +88,6 @@ class Hook_content_meta_aware_quiz extends Hook_CMA
             'seo_type_code' => null,
 
             'feedback_type_code' => null,
-
-            'permissions_type_code' => 'quiz', // null if has no permissions
 
             'search_hook' => 'quiz',
             'rss_hook' => null,

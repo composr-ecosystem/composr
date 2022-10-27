@@ -51,7 +51,7 @@ class Hook_content_meta_aware_banner extends Hook_CMA
             'is_category' => false,
             'is_entry' => true,
             'category_field' => 'b_type', // For category permissions
-            'category_type' => 'banner_type', // For category permissions
+            'permission_module' => 'banners', // For category permissions
             'parent_spec__table_name' => null,
             'parent_spec__parent_name' => null,
             'parent_spec__field_name' => null,
@@ -86,8 +86,6 @@ class Hook_content_meta_aware_banner extends Hook_CMA
             'seo_type_code' => null,
 
             'feedback_type_code' => null,
-
-            'permissions_type_code' => 'banners', // null if has no permissions
 
             'search_hook' => null,
             'rss_hook' => null,

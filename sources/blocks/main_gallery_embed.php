@@ -189,7 +189,7 @@ PHP;
                     $entry_rating_details = ($row['allow_rating'] == 1) ? display_rating($view_url, get_translated_text($row['title']), 'images', strval($row['id']), 'RATING_INLINE_STATIC', $row['submitter']) : null;
 
                     $_edit_url = new Tempcode();
-                    if (has_delete_permission('mid', get_member(), $row['submitter'], 'cms_galleries', ['gallery', $row['cat']])) {
+                    if (has_delete_permission('mid', get_member(), $row['submitter'], 'cms_galleries', ['galleries', $row['cat']])) {
                         $_edit_url = build_url(['page' => 'cms_galleries', 'type' => '__edit', 'id' => $row['id'], 'redirect' => protect_url_parameter(SELF_REDIRECT_RIP)], get_module_zone('cms_galleries'));
                         if ($row['submitter'] == get_member()) {
                             $GLOBALS['DO_NOT_CACHE_THIS'] = true; // If delete was due to groups, groups is a cache key anyways
@@ -241,7 +241,7 @@ PHP;
                     $entry_rating_details = ($row['allow_rating'] == 1) ? display_rating($view_url, get_translated_text($row['title']), 'videos', strval($row['id']), 'RATING_INLINE_STATIC', $row['submitter']) : null;
 
                     $_edit_url = new Tempcode();
-                    if (has_delete_permission('mid', get_member(), $row['submitter'], 'cms_galleries', ['gallery', $row['cat']])) {
+                    if (has_delete_permission('mid', get_member(), $row['submitter'], 'cms_galleries', ['galleries', $row['cat']])) {
                         $_edit_url = build_url(['page' => 'cms_galleries', 'type' => '__edit_other', 'id' => $row['id'], 'redirect' => protect_url_parameter(SELF_REDIRECT_RIP)], get_module_zone('cms_galleries'));
                         if ($row['submitter'] == get_member()) {
                             $GLOBALS['DO_NOT_CACHE_THIS'] = true; // If delete was due to groups, groups is a cache key anyways

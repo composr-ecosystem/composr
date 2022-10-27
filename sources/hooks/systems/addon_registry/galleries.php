@@ -1345,16 +1345,16 @@ class Hook_addon_registry_galleries
         if ($GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'name', ['name' => 'lorem_1']) === null) {
             add_gallery('lorem_1', lorem_phrase(), lorem_chunk(), '', 'root', 1, 1, 0);
             require_code('permissions2');
-            set_global_category_access('gallery', 'lorem_1');
+            set_global_category_access('galleries', 'lorem_1');
         }
         if ($GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'name', ['name' => 'lorem_2']) === null) {
             add_gallery('lorem_2', lorem_phrase(), lorem_chunk(), '', 'root', 1, 1, 1, GALLERY_LAYOUT_MODE_CAROUSEL);
             require_code('permissions2');
-            set_global_category_access('gallery', 'lorem_2');
+            set_global_category_access('galleries', 'lorem_2');
 
             add_gallery('member_' . strval(get_member()) . '_lorem_2', lorem_phrase(), lorem_chunk(), '', 'lorem_2', 1, 1, 1, GALLERY_LAYOUT_MODE_CAROUSEL);
             require_code('permissions2');
-            set_global_category_access('gallery', 'lorem_2');
+            set_global_category_access('galleries', 'lorem_2');
         }
 
         add_image(lorem_phrase(), 'lorem_1', lorem_chunk(), placeholder_image_url(), 1, 1, 1, 1, '');

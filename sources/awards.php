@@ -77,22 +77,9 @@ function give_award(int $award_id, string $content_id, ?int $time = null)
             warn_exit(do_lang_tempcode('_MISSING_RESOURCE', escape_html($awards[0]['a_content_type'] . ':' . $content_id), 'award_type'));
         }
 
-        // Lots of fiddling around to work out how to check permissions for this
-        $permission_type_code = convert_composr_type_codes('content_type', $awards[0]['a_content_type'], 'permissions_type_code');
-        $module = convert_composr_type_codes('module', $awards[0]['a_content_type'], 'permissions_type_code');
-        if ($module == '') {
-            $module = $content_id;
-        }
-        $category_id = null;
-        if (isset($info['category_field'])) {
-            if (is_array($info['category_field'])) {
-                $category_id = $content[$info['category_field'][1]];
-            } else {
-                $category_id = $content[$info['category_field']];
-            }
-        }
+        // Check permissions for this
         require_code('users2');
-        if ((has_actual_page_access(get_modal_user(), 'awards')) && (has_actual_page_access(get_modal_user(), $module)) && (($permission_type_code == '') || ($category_id === null) || (has_category_access(get_modal_user(), $permission_type_code, is_integer($category_id) ? strval($category_id) : $category_id)))) {
+        if ((has_actual_page_access(get_modal_user(), 'awards')) && (may_view_content_behind(get_modal_user(), $awards[0]['a_content_type'], $content_id))) {
             $privacy_ok = true;
             if (addon_installed('content_privacy')) {
                 require_code('content_privacy');

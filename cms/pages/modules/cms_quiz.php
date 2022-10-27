@@ -28,7 +28,7 @@ class Module_cms_quiz extends Standard_crud_module
     protected $lang_type = 'QUIZ';
     protected $select_name = 'NAME';
     protected $permissions_require = 'high';
-    protected $permissions_cat_require = 'quiz';
+    protected $permissions_module_require = 'quiz';
     protected $permission_module = 'quiz';
     protected $permissions_cat_name = null;
     protected $user_facing = true;

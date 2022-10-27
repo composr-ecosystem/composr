@@ -29,7 +29,7 @@ class Module_cms_blogs extends Standard_crud_module
     protected $select_name = 'TITLE';
     protected $code_require = 'news';
     protected $permissions_require = 'mid';
-    protected $permissions_cat_require = 'news';
+    protected $permissions_module_require = 'news';
     protected $permissions_cat_name = 'main_news_category';
     protected $user_facing = true;
     protected $seo_type = 'news';
@@ -333,7 +333,7 @@ class Module_cms_blogs extends Standard_crud_module
             attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'notice');
         }
 
-        if (has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', 'cms_news', $this->permissions_cat_require)) {
+        if (has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', 'cms_news', $this->permissions_module_require)) {
             if (addon_installed('unvalidated')) {
                 $fields2->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'news'), 'validated', $validated == 1));
             }

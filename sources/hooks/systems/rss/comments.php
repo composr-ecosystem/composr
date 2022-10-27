@@ -51,30 +51,10 @@ class Hook_rss_comments
             if ($ob === null) {
                 return null;
             }
-            $info = $ob->info();
 
             // Category access
-            $permissions_field = $info['permissions_type_code'];
-            if ($permissions_field !== null) {
-                $cat = $GLOBALS['SITE_DB']->query_select_value_if_there($info['table'], $info['parent_category_field'], get_content_where_for_str_id($parts[1], $info));
-                if ($cat === null) {
-                    return null;
-                }
-                if (!has_category_access(get_member(), $permissions_field, $cat)) {
-                    return null;
-                }
-            }
-
-            // Page/Zone access
-            if ($info['view_page_link_pattern'] !== null) {
-                $view_page_link_bits = explode(':', $info['view_page_link_pattern']);
-                $zone = $view_page_link_bits[0];
-                if ($zone == '_SEARCH') {
-                    $zone = get_module_zone($view_page_link_bits[1]);
-                }
-                if (!has_actual_page_access(get_member(), $view_page_link_bits[1], $zone)) {
-                    return null;
-                }
+            if (!may_view_content_behind(get_member(), $hook, $parts[1])) {
+                return null;
             }
 
             // Privacy

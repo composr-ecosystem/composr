@@ -625,7 +625,7 @@ function sitemap_script_saving()
                 if (!isset($p['permission_module'])) {
                     fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
                 }
-                $module = $p['permission_module'];
+                $permission_module = $p['permission_module'];
                 $category = $p['category_name'];
 
                 // Insertion
@@ -634,11 +634,11 @@ function sitemap_script_saving()
                         // View access
                         $view = post_param_integer(strval($i) . 'g_view_' . strval($group), -1);
                         if ($view != -1) { // -1 means unchanged
-                            $db = $GLOBALS[((($module == 'forums') || ($module == 'topics')) && (get_forum_type() == 'cns')) ? 'FORUM_DB' : 'SITE_DB'];
+                            $db = $GLOBALS[((($permission_module == 'forums') || ($permission_module == 'topics')) && (get_forum_type() == 'cns')) ? 'FORUM_DB' : 'SITE_DB'];
 
-                            $db->query_delete('group_category_access', ['module_the_name' => $module, 'category_name' => $category, 'group_id' => $group]);
+                            $db->query_delete('group_category_access', ['module_the_name' => $permission_module, 'category_name' => $category, 'group_id' => $group]);
                             if ($view == 1) {
-                                $db->query_insert('group_category_access', ['module_the_name' => $module, 'category_name' => $category, 'group_id' => $group]);
+                                $db->query_insert('group_category_access', ['module_the_name' => $permission_module, 'category_name' => $category, 'group_id' => $group]);
                             }
 
                             $changed_view_access = true;
@@ -655,11 +655,11 @@ function sitemap_script_saving()
 
                             $val = post_param_integer(strval($i) . 'group_privileges_' . $override . '_' . strval($group), -2);
                             if ($val != -2) {
-                                $db = $GLOBALS[((($module == 'forums') || ($module == 'topics')) && (get_forum_type() == 'cns')) ? 'FORUM_DB' : 'SITE_DB'];
+                                $db = $GLOBALS[((($permission_module == 'forums') || ($permission_module == 'topics')) && (get_forum_type() == 'cns')) ? 'FORUM_DB' : 'SITE_DB'];
 
-                                $db->query_delete('group_privileges', ['privilege' => $override, 'group_id' => $group, 'module_the_name' => $module, 'category_name' => $category, 'the_page' => '']);
+                                $db->query_delete('group_privileges', ['privilege' => $override, 'group_id' => $group, 'module_the_name' => $permission_module, 'category_name' => $category, 'the_page' => '']);
                                 if ($val != -1) {
-                                    $new_settings = ['privilege' => $override, 'group_id' => $group, 'module_the_name' => $module, 'category_name' => $category, 'the_page' => '', 'the_value' => $val];
+                                    $new_settings = ['privilege' => $override, 'group_id' => $group, 'module_the_name' => $permission_module, 'category_name' => $category, 'the_page' => '', 'the_value' => $val];
                                     $db->query_insert('group_privileges', $new_settings);
                                 }
 

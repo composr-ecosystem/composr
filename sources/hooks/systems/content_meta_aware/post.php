@@ -59,7 +59,7 @@ class Hook_content_meta_aware_post extends Hook_CMA
             'is_category' => false,
             'is_entry' => true,
             'category_field' => 'p_cache_forum_id', // For category permissions
-            'category_type' => 'forums', // For category permissions
+            'permission_module' => 'forums', // For category permissions
             'parent_spec__table_name' => 'f_forums',
             'parent_spec__parent_name' => 'f_parent_forum',
             'parent_spec__field_name' => 'id',
@@ -95,8 +95,6 @@ class Hook_content_meta_aware_post extends Hook_CMA
             'seo_type_code' => null,
 
             'feedback_type_code' => 'post',
-
-            'permissions_type_code' => 'forums',
 
             'search_hook' => 'cns_posts',
             'rss_hook' => null,

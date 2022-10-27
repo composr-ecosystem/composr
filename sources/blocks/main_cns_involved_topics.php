@@ -111,7 +111,7 @@ class Block_main_cns_involved_topics
             $extra_join_sql = '';
             $where_sup = '';
             if ((!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) && ($check_perms)) {
-                $where_sup .= get_category_permission_where_clause('forum', 't_forum_id', get_member(), get_permission_where_clause_groups(get_member()), 't');
+                $where_sup .= get_category_permission_where_clause('forums', 't_forum_id', get_member(), get_permission_where_clause_groups(get_member()), 't');
             }
 
             $where = '';

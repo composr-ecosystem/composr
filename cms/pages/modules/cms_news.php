@@ -29,7 +29,7 @@ class Module_cms_news extends Standard_crud_module
     protected $select_name = 'TITLE';
     protected $code_require = 'news';
     protected $permissions_require = 'high';
-    protected $permissions_cat_require = 'news';
+    protected $permissions_module_require = 'news';
     protected $permissions_cat_name = 'main_news_category';
     protected $user_facing = true;
     protected $seo_type = 'news';
@@ -371,7 +371,7 @@ class Module_cms_news extends Standard_crud_module
                 }
 
                 if ($this->permissions_require !== null) {
-                    check_edit_permission($this->permissions_require, $submitter, [$this->permissions_cat_require, ($this->permissions_cat_name === null) ? null : $this->get_cat(strval($id))], $this->privilege_page_name);
+                    check_edit_permission($this->permissions_require, $submitter, [$this->permissions_module_require, ($this->permissions_cat_name === null) ? null : $this->get_cat(strval($id))], $this->privilege_page_name);
                 }
 
                 $ret = $this->fill_in_edit_form(strval($id));
@@ -440,7 +440,7 @@ class Module_cms_news extends Standard_crud_module
             $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_NEWS', 'param_a' => strval($id)]);
             attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'notice');
         }
-        if (has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', null, $this->permissions_cat_require)) {
+        if (has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', null, $this->permissions_module_require)) {
             if (addon_installed('unvalidated')) {
                 $fields2->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'news'), 'validated', $validated == 1));
             }

@@ -125,7 +125,7 @@ function render_attachment(string $tag, array $attributes, array $attachment_row
  * Find if the specified member has access to view the specified attachment.
  *
  * @param  MEMBER $member_id The member being checked whether to have the access
- * @param  AUTO_LINK $id The ID code for the attachment being checked
+ * @param  AUTO_LINK $id The attachment being checked
  * @param  ?object $db The database connector to use (null: site DB)
  * @return boolean Whether the member has attachment access
  */

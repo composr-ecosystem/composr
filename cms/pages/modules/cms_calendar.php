@@ -38,7 +38,7 @@ class Module_cms_calendar extends Standard_crud_module
     protected $content_type = 'event';
     protected $possibly_some_kind_of_upload = true;
     protected $menu_label = 'CALENDAR';
-    protected $permissions_cat_require = 'calendar';
+    protected $permissions_module_require = 'calendar';
     protected $permissions_cat_name = 'type';
     protected $posting_field_required = false;
 
@@ -528,7 +528,7 @@ class Module_cms_calendar extends Standard_crud_module
             $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_CALENDAR_EVENT', 'param_a' => strval($id)]);
             attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'notice');
         }
-        if (has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', null, $this->permissions_cat_require)) {
+        if (has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', null, $this->permissions_module_require)) {
             if (addon_installed('unvalidated')) {
                 $fields->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'event'), 'validated', $validated == 1));
             }

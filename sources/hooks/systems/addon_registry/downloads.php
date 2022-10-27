@@ -499,7 +499,7 @@ class Hook_addon_registry_downloads
 
         $category_id = add_download_category(lorem_phrase(), db_get_first_id(), lorem_paragraph(), '', placeholder_image_url());
         require_code('permissions2');
-        set_global_category_access('download', $category_id);
+        set_global_category_access('downloads', $category_id);
 
         $licence_id = add_download_licence(lorem_phrase(), lorem_chunk());
 

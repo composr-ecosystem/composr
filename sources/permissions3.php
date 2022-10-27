@@ -175,26 +175,26 @@ function add_privilege(string $section, string $name, bool $default = false, boo
  * @param  GROUP $group_id The usergroup having the permission set
  * @param  ID_TEXT $permission The codename of the permission
  * @param  boolean $value Whether the usergroup has the permission
- * @param  ?ID_TEXT $page The ID code for the page being checked (null: current page)
- * @param  ?ID_TEXT $category_type The category-type for the permission (null: none required)
+ * @param  ?ID_TEXT $page The page being checked (null: current page)
+ * @param  ?ID_TEXT $permission_module The permission module (null: none required)
  * @param  ?ID_TEXT $category_name The category-name/value for the permission (null: none required)
  */
-function set_privilege(int $group_id, string $permission, bool $value, ?string $page = null, ?string $category_type = null, ?string $category_name = null)
+function set_privilege(int $group_id, string $permission, bool $value, ?string $page = null, ?string $permission_module = null, ?string $category_name = null)
 {
     if ($page === null) {
         $page = '';
     }
-    if ($category_type === null) {
-        $category_type = '';
+    if ($permission_module === null) {
+        $permission_module = '';
     }
     if ($category_name === null) {
         $category_name = '';
     }
 
-    $db = $GLOBALS[((($category_type == 'forums') || ($category_type == 'topics')) && (get_forum_type() == 'cns')) ? 'FORUM_DB' : 'SITE_DB'];
+    $db = $GLOBALS[((($permission_module == 'forums') || ($permission_module == 'topics')) && (get_forum_type() == 'cns')) ? 'FORUM_DB' : 'SITE_DB'];
 
-    $db->query_delete('group_privileges', ['privilege' => $permission, 'group_id' => $group_id, 'the_page' => $page, 'module_the_name' => $category_type, 'category_name' => $category_name], '', 1);
-    $db->query_insert('group_privileges', ['privilege' => $permission, 'group_id' => $group_id, 'the_page' => $page, 'module_the_name' => $category_type, 'category_name' => $category_name, 'the_value' => $value ? 1 : 0]);
+    $db->query_delete('group_privileges', ['privilege' => $permission, 'group_id' => $group_id, 'the_page' => $page, 'module_the_name' => $permission_module, 'category_name' => $category_name], '', 1);
+    $db->query_insert('group_privileges', ['privilege' => $permission, 'group_id' => $group_id, 'the_page' => $page, 'module_the_name' => $permission_module, 'category_name' => $category_name, 'the_value' => $value ? 1 : 0]);
 
     global $PRIVILEGE_CACHE;
     $PRIVILEGE_CACHE = [];

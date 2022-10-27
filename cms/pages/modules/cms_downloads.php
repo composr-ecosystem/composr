@@ -28,7 +28,7 @@ class Module_cms_downloads extends Standard_crud_module
     protected $lang_type = 'DOWNLOAD';
     protected $select_name = 'NAME';
     protected $permissions_require = 'mid';
-    protected $permissions_cat_require = 'downloads';
+    protected $permissions_module_require = 'downloads';
     protected $permissions_cat_name = 'category_id';
     protected $user_facing = true;
     protected $seo_type = 'downloads_download';
@@ -448,7 +448,7 @@ class Module_cms_downloads extends Standard_crud_module
             $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_DOWNLOAD', 'param_a' => strval($id)]);
             attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'notice');
         }
-        if (has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', null, $this->permissions_cat_require)) {
+        if (has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', null, $this->permissions_module_require)) {
             if (addon_installed('unvalidated')) {
                 $fields->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'download'), 'validated', $validated == 1));
             }

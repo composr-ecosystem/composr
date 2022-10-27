@@ -21,10 +21,10 @@
 /**
  * Allow all usergroups to access a category.
  *
- * @param  string $module The module
+ * @param  string $permission_module The permission module
  * @param  mixed $category The category (integer or string)
  */
-function set_global_category_access(string $module, $category)
+function set_global_category_access(string $permission_module, $category)
 {
     if (is_integer($category)) {
         $category = strval($category);
@@ -33,16 +33,16 @@ function set_global_category_access(string $module, $category)
     $admin_groups = $GLOBALS['FORUM_DRIVER']->get_super_admin_groups();
     $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, true, true);
 
-    $db = $GLOBALS[((($module == 'forums') || ($module == 'topics')) && (get_forum_type() == 'cns')) ? 'FORUM_DB' : 'SITE_DB'];
+    $db = $GLOBALS[((($permission_module == 'forums') || ($permission_module == 'topics')) && (get_forum_type() == 'cns')) ? 'FORUM_DB' : 'SITE_DB'];
 
-    $db->query_delete('group_category_access', ['module_the_name' => $module, 'category_name' => $category]);
+    $db->query_delete('group_category_access', ['module_the_name' => $permission_module, 'category_name' => $category]);
 
     foreach (array_keys($groups) as $group_id) {
         if (in_array($group_id, $admin_groups)) {
             continue;
         }
 
-        $db->query_insert('group_category_access', ['module_the_name' => $module, 'category_name' => $category, 'group_id' => $group_id]);
+        $db->query_insert('group_category_access', ['module_the_name' => $permission_module, 'category_name' => $category, 'group_id' => $group_id]);
     }
 }
 
@@ -138,8 +138,8 @@ function _handle_permission_check_logging(int $member_id, string $op, array $par
  * Find if a group has a specified privilege.
  *
  * @param  GROUP $group_id The being checked whether to have the privilege
- * @param  ID_TEXT $privilege The ID code for the privilege being checked for
- * @param  ?ID_TEXT $page The ID code for the page being checked (null: current page)
+ * @param  ID_TEXT $privilege The privilege being checked for
+ * @param  ?ID_TEXT $page The page being checked (null: current page)
  * @param  ?array $cats A list of cat details to require access to (c-type-1,c-id-1,c-type-2,c-d-2,...) (null: N/A)
  * @return boolean Whether the member has the privilege
  */
@@ -204,15 +204,15 @@ function get_category_permissions_hidden_on() : object
 /**
  * Gather the permissions for the specified category as a form field input matrix.
  *
- * @param  ID_TEXT $module The ID code for the module being checked for category access
- * @param  ?ID_TEXT $category The ID code for the category being checked for access (often, a number cast to a string) (null: new category)
+ * @param  ID_TEXT $permission_module The permission module being checked for category access
+ * @param  ?ID_TEXT $category The category being checked for access (often, a number cast to a string) (null: new category)
  * @param  ?ID_TEXT $page The page this is for (null: current page)
  * @param  ?Tempcode $help Extra help to show in interface (null: none)
  * @param  boolean $new_category Whether this is a new category (don't load permissions, default to on)
  * @param  ?Tempcode $pinterface_view Label for view permissions (null: default)
  * @return Tempcode The form field matrix
  */
-function get_category_permissions_for_environment(string $module, ?string $category, ?string $page = null, ?object $help = null, bool $new_category = false, ?object $pinterface_view = null) : object
+function get_category_permissions_for_environment(string $permission_module, ?string $category, ?string $page = null, ?object $help = null, bool $new_category = false, ?object $pinterface_view = null) : object
 {
     if ($page === null) {
         $page = get_page_name();
@@ -226,7 +226,7 @@ function get_category_permissions_for_environment(string $module, ?string $categ
 
     $server_id = get_module_zone($page, 'modules', null, 'php', true, false) . ':' . $page; // $category is not of interest to us because we use this to find our inheritance settings
 
-    $db = $GLOBALS[((($module == 'forums') || ($module == 'topics')) && (get_forum_type() == 'cns')) ? 'FORUM_DB' : 'SITE_DB'];
+    $db = $GLOBALS[((($permission_module == 'forums') || ($permission_module == 'topics')) && (get_forum_type() == 'cns')) ? 'FORUM_DB' : 'SITE_DB'];
 
     $admin_groups = $GLOBALS['FORUM_DRIVER']->get_super_admin_groups();
     $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(true, true);
@@ -237,7 +237,7 @@ function get_category_permissions_for_environment(string $module, ?string $categ
         $access[$id] = $new_category ? 1 : 0;
     }
     if (!$new_category) {
-        $access_rows = $db->query_select('group_category_access', ['group_id'], ['module_the_name' => $module, 'category_name' => $category]);
+        $access_rows = $db->query_select('group_category_access', ['group_id'], ['module_the_name' => $permission_module, 'category_name' => $category]);
         foreach ($access_rows as $row) {
             $access[$row['group_id']] = 1;
         }
@@ -245,7 +245,7 @@ function get_category_permissions_for_environment(string $module, ?string $categ
 
     // Privileges
     $privileges = [];
-    $access_rows = $db->query_select('group_privileges', ['group_id', 'privilege', 'the_value'], ['module_the_name' => $module, 'category_name' => $category]);
+    $access_rows = $db->query_select('group_privileges', ['group_id', 'privilege', 'the_value'], ['module_the_name' => $permission_module, 'category_name' => $category]);
     foreach ($access_rows as $row) {
         $privileges[$row['privilege']][$row['group_id']] = strval($row['the_value']);
     }
@@ -450,11 +450,11 @@ function get_permissions_matrix(string $server_id, array $access, array $overrid
 /**
  * Assuming that permission details are POSTed, set the permissions for the specified category, in the current page.
  *
- * @param  ID_TEXT $module The ID code for the module being checked for category access
- * @param  ID_TEXT $category The ID code for the category being checked for access (often, a number cast to a string)
+ * @param  ID_TEXT $permission_module The permission module being checked for category access
+ * @param  ID_TEXT $category The category being checked for access (often, a number cast to a string)
  * @param  ?ID_TEXT $page The page this is for (null: current page)
  */
-function set_category_permissions_from_environment(string $module, string $category, ?string $page = null)
+function set_category_permissions_from_environment(string $permission_module, string $category, ?string $page = null)
 {
     if ($page === null) {
         $page = get_page_name();
@@ -465,11 +465,11 @@ function set_category_permissions_from_environment(string $module, string $categ
     $admin_groups = $GLOBALS['FORUM_DRIVER']->get_super_admin_groups();
     $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, true);
 
-    $db = $GLOBALS[((($module == 'forums') || ($module == 'topics')) && (get_forum_type() == 'cns')) ? 'FORUM_DB' : 'SITE_DB'];
+    $db = $GLOBALS[((($permission_module == 'forums') || ($permission_module == 'topics')) && (get_forum_type() == 'cns')) ? 'FORUM_DB' : 'SITE_DB'];
 
     // Based on old access settings, we may need to look at additional groups (clubs) that have permissions here
     $access = [];
-    $access_rows = $db->query_select('group_category_access', ['group_id'], ['module_the_name' => $module, 'category_name' => $category]);
+    $access_rows = $db->query_select('group_category_access', ['group_id'], ['module_the_name' => $permission_module, 'category_name' => $category]);
     foreach ($access_rows as $row) {
         $access[$row['group_id']] = 1;
     }
@@ -485,7 +485,7 @@ function set_category_permissions_from_environment(string $module, string $categ
             continue;
         }
 
-        $db->query_delete('group_category_access', ['module_the_name' => $module, 'category_name' => $category, 'group_id' => $group_id]);
+        $db->query_delete('group_category_access', ['module_the_name' => $permission_module, 'category_name' => $category, 'group_id' => $group_id]);
     }
 
     $zone = get_module_zone($page, 'modules', null, 'php', true, false);
@@ -500,7 +500,7 @@ function set_category_permissions_from_environment(string $module, string $categ
         if (is_array($cat_support)) {
             $cat_support = $cat_support[0];
         }
-        $db->query_delete('group_privileges', ['privilege' => $override, 'module_the_name' => $module, 'category_name' => $category]);
+        $db->query_delete('group_privileges', ['privilege' => $override, 'module_the_name' => $permission_module, 'category_name' => $category]);
     }
     foreach (array_keys($groups) as $group_id) {
         if (in_array($group_id, $admin_groups)) {
@@ -509,7 +509,7 @@ function set_category_permissions_from_environment(string $module, string $categ
 
         $value = post_param_integer('access_' . strval($group_id), 0);
         if ($value == 1) {
-            $db->query_insert('group_category_access', ['module_the_name' => $module, 'category_name' => $category, 'group_id' => $group_id], false, true); // Race/corruption condition
+            $db->query_insert('group_category_access', ['module_the_name' => $permission_module, 'category_name' => $category, 'group_id' => $group_id], false, true); // Race/corruption condition
         }
         foreach ($overridables as $override => $cat_support) {
             if (is_array($cat_support)) {
@@ -521,7 +521,7 @@ function set_category_permissions_from_environment(string $module, string $categ
 
             $value = post_param_integer('access_' . strval($group_id) . '_privilege_' . $override, -1);
             if ($value != -1) {
-                $db->query_insert('group_privileges', ['privilege' => $override, 'group_id' => $group_id, 'module_the_name' => $module, 'category_name' => $category, 'the_page' => '', 'the_value' => $value]);
+                $db->query_insert('group_privileges', ['privilege' => $override, 'group_id' => $group_id, 'module_the_name' => $permission_module, 'category_name' => $category, 'the_page' => '', 'the_value' => $value]);
             }
         }
     }
@@ -532,8 +532,8 @@ function set_category_permissions_from_environment(string $module, string $categ
 /**
  * Gather the permissions for the specified page as form field inputs.
  *
- * @param  ID_TEXT $zone The ID code for the zone
- * @param  ID_TEXT $page The ID code for the page
+ * @param  ID_TEXT $zone The zone
+ * @param  ID_TEXT $page The page
  * @param  ?Tempcode $help Extra help to show in interface (null: none)
  * @return Tempcode The form fields
  */
@@ -573,8 +573,8 @@ function get_page_permissions_for_environment(string $zone, string $page, ?objec
 /**
  * Assuming that permission details are POSTed, set the permissions for the specified page.
  *
- * @param  ID_TEXT $zone The ID code for the zone
- * @param  ID_TEXT $page The ID code for the page
+ * @param  ID_TEXT $zone The zone
+ * @param  ID_TEXT $page The page
  */
 function set_page_permissions_from_environment(string $zone, string $page)
 {

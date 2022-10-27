@@ -133,7 +133,7 @@ function access_denied(string $class = 'ACCESS_DENIED', string $param = '', bool
  * Find if a member has access to a specified zone.
  *
  * @param  MEMBER $member_id The member being checked whether to have the access
- * @param  ID_TEXT $zone The ID code for the zone being checked
+ * @param  ID_TEXT $zone The zone being checked
  * @return boolean Whether the member has zone access
  */
 function has_zone_access(int $member_id, string $zone) : bool
@@ -211,8 +211,8 @@ function has_zone_access(int $member_id, string $zone) : bool
  * Find if a member has access to a specified page. Zone permissions are taken into account for wherever the page is found at. Also support for category access and privileges. No support for entry-point checks, which are only carried out as an extension of page permissions when actually at a page.
  *
  * @param  ?MEMBER $member_id The member being checked whether to have the access (null: current member)
- * @param  ?ID_TEXT $page The ID code for the page being checked (null: current page)
- * @param  ?ID_TEXT $zone The ID code for the zone being checked (null: search)
+ * @param  ?ID_TEXT $page The page being checked (null: current page)
+ * @param  ?ID_TEXT $zone The zone being checked (null: search)
  * @param  ?array $cats A list of cat details to require access to (c-type-1,c-id-1,c-type-2,c-d-2,...) (null: N/A)
  * @param  ?mixed $privilege Either the ID code of a privilege, an array of alternatives that are acceptable (null: none required)
  * @return boolean Whether the member has zone and page access
@@ -281,8 +281,8 @@ function has_actual_page_access(?int $member_id = null, ?string $page = null, ?s
  * Find if a member has access to a specified page, in a specific zone. Note that page access does not imply zone access; you have access a page, but not the zone, so still couldn't see it.
  *
  * @param  MEMBER $member_id The member being checked whether to have the access
- * @param  ID_TEXT $page The ID code for the page being checked
- * @param  ID_TEXT $zone The ID code for the zone being checked
+ * @param  ID_TEXT $page The page being checked
+ * @param  ID_TEXT $zone The zone being checked
  * @param  boolean $at_now Whether we want to check we have access to the CURRENT page, using any match-key permissions
  * @return boolean Whether the member has page access
  */
@@ -418,9 +418,9 @@ function has_page_access(int $member_id, string $page, string $zone, bool $at_no
  * For efficiency reasons, load up loads of category permissions.
  *
  * @param  MEMBER $member_id The member being checked whether to have the access
- * @param  ?ID_TEXT $module The ID code for the module being checked for category access (null: all categories)
+ * @param  ?ID_TEXT $permission_module The permission module being checked for category access (null: all categories)
  */
-function load_up_all_module_category_permissions(int $member_id, ?string $module = null)
+function load_up_all_module_category_permissions(int $member_id, ?string $permission_module = null)
 {
     $groups = get_permission_where_clause_groups($member_id);
     if ($groups === null) {
@@ -429,18 +429,18 @@ function load_up_all_module_category_permissions(int $member_id, ?string $module
 
     global $CATEGORY_ACCESS_CACHE, $LOADED_ALL_CATEGORY_PERMISSIONS_FOR_CACHE;
 
-    if (isset($LOADED_ALL_CATEGORY_PERMISSIONS_FOR_CACHE[$module][$member_id])) {
+    if (isset($LOADED_ALL_CATEGORY_PERMISSIONS_FOR_CACHE[$permission_module][$member_id])) {
         return;
     }
 
-    if ($module !== null) {
-        $catclause = '(' . db_string_equal_to('module_the_name', $module) . ') AND ';
+    if ($permission_module !== null) {
+        $catclause = '(' . db_string_equal_to('module_the_name', $permission_module) . ') AND ';
         $select = 'category_name';
     } else {
         $catclause = '';
         $select = 'category_name,module_the_name';
     }
-    $db = $GLOBALS[((($module == 'forums') || ($module == 'topics')) && (get_forum_type() == 'cns')) ? 'FORUM_DB' : 'SITE_DB'];
+    $db = $GLOBALS[((($permission_module == 'forums') || ($permission_module == 'topics')) && (get_forum_type() == 'cns')) ? 'FORUM_DB' : 'SITE_DB'];
     if ($db->query_value_if_there('SELECT COUNT(*) FROM ' . $db->get_table_prefix() . 'group_category_access WHERE ' . $catclause . '(' . $groups . ')') > 1000) {
         return; // Performance issue
     }
@@ -449,12 +449,12 @@ function load_up_all_module_category_permissions(int $member_id, ?string $module
     $sql .= 'SELECT ' . $select . ' FROM ' . $db->get_table_prefix() . 'member_category_access WHERE ' . $catclause . 'member_id=' . strval($member_id) . ' AND (active_until IS NULL OR active_until>' . strval(time()) . ')';
     $perhaps = $db->query($sql, null, 0, false, true);
 
-    $LOADED_ALL_CATEGORY_PERMISSIONS_FOR_CACHE[$module][$member_id] = true;
+    $LOADED_ALL_CATEGORY_PERMISSIONS_FOR_CACHE[$permission_module][$member_id] = true;
 
     $CATEGORY_ACCESS_CACHE[$member_id] = [];
     foreach ($perhaps as $row) {
-        if ($module !== null) {
-            $for = $module . '/' . $row['category_name'];
+        if ($permission_module !== null) {
+            $for = $permission_module . '/' . $row['category_name'];
         } else {
             $for = $row['module_the_name'] . '/' . $row['category_name'];
         }
@@ -466,20 +466,20 @@ function load_up_all_module_category_permissions(int $member_id, ?string $module
  * Find if a member has access to a specified category.
  *
  * @param  MEMBER $member_id The member being checked whether to have the access
- * @param  ID_TEXT $module The ID code for the module being checked for category access
- * @param  ID_TEXT $category The ID code for the category being checked for access (often, a number cast to a string)
+ * @param  ID_TEXT $permission_module The permission module being checked for category access
+ * @param  ID_TEXT $category The category being checked for access (often, a number cast to a string)
  * @return boolean Whether the member has category access
  */
-function has_category_access(int $member_id, string $module, string $category) : bool
+function has_category_access(int $member_id, string $permission_module, string $category) : bool
 {
     if (running_script('upgrader') || running_script('install')) {
         return true;
     }
 
     global $CATEGORY_ACCESS_CACHE, $LOADED_ALL_CATEGORY_PERMISSIONS_FOR_CACHE;
-    if ((isset($CATEGORY_ACCESS_CACHE[$member_id], $CATEGORY_ACCESS_CACHE[$member_id][$module . '/' . $category]))) {
-        handle_permission_check_logging($member_id, 'has_category_access', [$module, $category], $CATEGORY_ACCESS_CACHE[$member_id][$module . '/' . $category]);
-        return $CATEGORY_ACCESS_CACHE[$member_id][$module . '/' . $category];
+    if ((isset($CATEGORY_ACCESS_CACHE[$member_id], $CATEGORY_ACCESS_CACHE[$member_id][$permission_module . '/' . $category]))) {
+        handle_permission_check_logging($member_id, 'has_category_access', [$permission_module, $category], $CATEGORY_ACCESS_CACHE[$member_id][$permission_module . '/' . $category]);
+        return $CATEGORY_ACCESS_CACHE[$member_id][$permission_module . '/' . $category];
     }
 
     // Not loaded yet, load, then re-call ourself...
@@ -489,17 +489,17 @@ function has_category_access(int $member_id, string $module, string $category) :
         return true;
     }
 
-    if (isset($LOADED_ALL_CATEGORY_PERMISSIONS_FOR_CACHE[$module][$member_id])) {
-        handle_permission_check_logging($member_id, 'has_category_access', [$module, $category], false);
+    if (isset($LOADED_ALL_CATEGORY_PERMISSIONS_FOR_CACHE[$permission_module][$member_id])) {
+        handle_permission_check_logging($member_id, 'has_category_access', [$permission_module, $category], false);
         return false; // As we know $CATEGORY_ACCESS_CACHE would have had a true entry if we did have access
     }
 
     $where = ' AND (1=0';
-    if (($module != 'forums') || (!is_on_multi_site_network())) {
+    if (($permission_module != 'forums') || (!is_on_multi_site_network())) {
         global $SMART_CACHE;
         static $run_once = false;
         if ((isset($SMART_CACHE)) && (!$run_once)) {
-            $SMART_CACHE->append('category_access_needed', $module . '/' . $category, true);
+            $SMART_CACHE->append('category_access_needed', $permission_module . '/' . $category, true);
             $all_category_access_needed = $SMART_CACHE->get('category_access_needed');
             if ($all_category_access_needed === null) {
                 $all_category_access_needed = [];
@@ -510,15 +510,15 @@ function has_category_access(int $member_id, string $module, string $category) :
     } else {
         $all_category_access_needed = [];
     }
-    $all_category_access_needed[$module . '/' . $category] = true;
+    $all_category_access_needed[$permission_module . '/' . $category] = true;
     foreach ($all_category_access_needed as $category_access_needed_parts => $_) {
-        list($module_access_needed, $category_access_needed) = explode('/', $category_access_needed_parts);
-        $where .= ' OR ' . db_string_equal_to('module_the_name', $module_access_needed) . ' AND ' . db_string_equal_to('category_name', $category_access_needed);
+        list($permission_module_access_needed, $category_access_needed) = explode('/', $category_access_needed_parts);
+        $where .= ' OR ' . db_string_equal_to('module_the_name', $permission_module_access_needed) . ' AND ' . db_string_equal_to('category_name', $category_access_needed);
     }
     $where .= ')';
     $run_once = true;
 
-    $db = $GLOBALS[((($module == 'forums') || ($module == 'topics')) && (get_forum_type() == 'cns')) ? 'FORUM_DB' : 'SITE_DB'];
+    $db = $GLOBALS[((($permission_module == 'forums') || ($permission_module == 'topics')) && (get_forum_type() == 'cns')) ? 'FORUM_DB' : 'SITE_DB'];
     $sql = 'SELECT DISTINCT category_name,module_the_name FROM ' . $db->get_table_prefix() . 'group_category_access WHERE (' . $groups . ') ' . $where;
     $sql .= ' UNION ALL ';
     $sql .= 'SELECT DISTINCT category_name,module_the_name FROM ' . $db->get_table_prefix() . 'member_category_access WHERE member_id=' . strval($member_id) . ' AND (active_until IS NULL OR active_until>' . strval(time()) . ')' . $where;
@@ -536,7 +536,7 @@ function has_category_access(int $member_id, string $module, string $category) :
         }
     }
 
-    return has_category_access($member_id, $module, $category);
+    return has_category_access($member_id, $permission_module, $category);
 }
 
 /**
@@ -586,22 +586,22 @@ function get_permission_where_clause_groups(int $member_id, bool $consider_clubs
 /**
  * Get an SQL WHERE clause for checking member access to a category.
  *
- * @param  ID_TEXT $module The ID code for the permission module being checked for
+ * @param  ID_TEXT $permission_module The permission module being checked for
  * @param  ID_TEXT $category_field The field in the main query row that holds the category
  * @param  ?MEMBER $member_id The member to check individual access for (null: none)
  * @param  string $groups SQL from get_permission_where_clause_groups
  * @param  ID_TEXT $row_alias The alias for the main query row
  * @return string SQL
  */
-function get_category_permission_where_clause(string $module, string $category_field, ?int $member_id, string $groups, string $row_alias = 'r') : string
+function get_category_permission_where_clause(string $permission_module, string $category_field, ?int $member_id, string $groups, string $row_alias = 'r') : string
 {
     $_category_field = ((empty($row_alias) || (strpos($category_field, '.') !== false)) ? '' : ($row_alias . '.')) . $category_field;
 
     $query = ' AND (';
-    $query .= 'EXISTS(SELECT * FROM ' . get_table_prefix() . 'group_category_access a WHERE ' . db_string_equal_to('a.module_the_name', $module) . ' AND ' . $_category_field . '=a.category_name AND (' . $groups . '))';
+    $query .= 'EXISTS(SELECT * FROM ' . get_table_prefix() . 'group_category_access a WHERE ' . db_string_equal_to('a.module_the_name', $permission_module) . ' AND ' . $_category_field . '=a.category_name AND (' . $groups . '))';
     if ($member_id !== null) {
         $query .= ' OR ';
-        $query .= 'EXISTS(SELECT * FROM ' . get_table_prefix() . 'member_category_access ma WHERE ' . db_string_equal_to('ma.module_the_name', $module) . ' AND ' . $_category_field . '=ma.category_name AND (ma.active_until IS NULL OR ma.active_until>' . strval(time()) . ') AND ma.member_id=' . strval($member_id) . ')';
+        $query .= 'EXISTS(SELECT * FROM ' . get_table_prefix() . 'member_category_access ma WHERE ' . db_string_equal_to('ma.module_the_name', $permission_module) . ' AND ' . $_category_field . '=ma.category_name AND (ma.active_until IS NULL OR ma.active_until>' . strval(time()) . ') AND ma.member_id=' . strval($member_id) . ')';
     }
     $query .= ')';
     return $query;
@@ -735,12 +735,12 @@ function check_privilege(string $privilege, ?array $cats = null, ?int $member_id
  * Find if a member has a specified privilege in any category.
  *
  * @param  MEMBER $member_id The member being checked whether to have the privilege
- * @param  ID_TEXT $privilege The ID code for the privilege being checked for
- * @param  ?ID_TEXT $page The ID code for the page being checked (null: current page)
- * @param  ID_TEXT $module The ID code for the permission module being checked for
+ * @param  ID_TEXT $privilege The privilege being checked for
+ * @param  ?ID_TEXT $page The page being checked (null: current page)
+ * @param  ID_TEXT $permission_module The permission module being checked for
  * @return boolean Whether the member has the privilege
  */
-function has_some_cat_privilege(int $member_id, string $privilege, ?string $page, string $module) : bool
+function has_some_cat_privilege(int $member_id, string $privilege, ?string $page, string $permission_module) : bool
 {
     $page_wide_test = has_privilege($member_id, $privilege, $page); // To make sure privileges are cached, and test if page-wide or site-wide exists
     if ($page_wide_test) {
@@ -748,8 +748,8 @@ function has_some_cat_privilege(int $member_id, string $privilege, ?string $page
     }
 
     global $PRIVILEGE_CACHE;
-    if ((array_key_exists($member_id, $PRIVILEGE_CACHE)) && (array_key_exists($privilege, $PRIVILEGE_CACHE[$member_id])) && (array_key_exists('', $PRIVILEGE_CACHE[$member_id][$privilege])) && (array_key_exists($module, $PRIVILEGE_CACHE[$member_id][$privilege]['']))) {
-        foreach ($PRIVILEGE_CACHE[$member_id][$privilege][''][$module] as $_privilege) {
+    if ((array_key_exists($member_id, $PRIVILEGE_CACHE)) && (array_key_exists($privilege, $PRIVILEGE_CACHE[$member_id])) && (array_key_exists('', $PRIVILEGE_CACHE[$member_id][$privilege])) && (array_key_exists($permission_module, $PRIVILEGE_CACHE[$member_id][$privilege]['']))) {
+        foreach ($PRIVILEGE_CACHE[$member_id][$privilege][''][$permission_module] as $_privilege) {
             if ($_privilege) {
                 return true;
             }
@@ -763,8 +763,8 @@ function has_some_cat_privilege(int $member_id, string $privilege, ?string $page
  * Find if a member has a specified privilege.
  *
  * @param  MEMBER $member_id The member being checked whether to have the privilege
- * @param  ID_TEXT $privilege The ID code for the privilege being checked for
- * @param  ?ID_TEXT $page The ID code for the page being checked (null: current page)
+ * @param  ID_TEXT $privilege The privilege being checked for
+ * @param  ?ID_TEXT $page The page being checked (null: current page)
  * @param  ?mixed $cats A list of cat details to require access to (c-type-1,c-id-1,c-type-2,c-d-2,...), or a string of the cat type if you will accept overrides in any matching cat (null: N/A)
  * @return boolean Whether the member has the privilege
  */
@@ -908,7 +908,7 @@ function has_privilege(int $member_id, string $privilege, ?string $page = null, 
  * @param  string $range The range of privilege we are checking to see if they have; these ranges are like trust levels
  * @set low mid high cat_low cat_mid cat_high
  * @param  ?array $cats A list of cat details to require access to (c-type-1,c-id-1,c-type-2,c-d-2,...) (null: N/A)
- * @param  ?ID_TEXT $page The ID code for the page being checked (null: current page)
+ * @param  ?ID_TEXT $page The page being checked (null: current page)
  */
 function check_submit_permission(string $range, ?array $cats = null, ?string $page = null)
 {
@@ -928,7 +928,7 @@ function check_submit_permission(string $range, ?array $cats = null, ?string $pa
  * @set low mid high cat_low cat_mid cat_high
  * @param  MEMBER $member_id The member being checked whether to have the access
  * @param  IP $ip The member's IP address
- * @param  ?ID_TEXT $page The ID code for the page being checked (null: current page)
+ * @param  ?ID_TEXT $page The page being checked (null: current page)
  * @param  ?array $cats A list of cat details to require access to (c-type-1,c-id-1,c-type-2,c-d-2,...) (null: N/A)
  * @return boolean Whether the member can submit in this range
  */
@@ -966,7 +966,7 @@ function has_submit_permission(string $range, int $member_id, string $ip, ?strin
  * @param  string $range The range of privilege we are checking to see if they have; these ranges are like trust levels
  * @set low mid high cat_low cat_mid cat_high
  * @param  ?array $cats A list of cat details to require access to (c-type-1,c-id-1,c-type-2,c-d-2,...) (null: N/A)
- * @param  ?ID_TEXT $page The ID code for the page being checked (null: current page)
+ * @param  ?ID_TEXT $page The page being checked (null: current page)
  */
 function check_some_edit_permission(string $range, ?array $cats = null, ?string $page = null)
 {
@@ -998,7 +998,7 @@ function check_some_edit_permission(string $range, ?array $cats = null, ?string 
  * @set low mid high cat_low cat_mid cat_high
  * @param  ?MEMBER $resource_owner The member that owns this resource (null: no-one)
  * @param  ?array $cats A list of cat details to require access to (c-type-1,c-id-1,c-type-2,c-d-2,...) (null: N/A)
- * @param  ?ID_TEXT $page The ID code for the page being checked (null: current page)
+ * @param  ?ID_TEXT $page The page being checked (null: current page)
  */
 function check_edit_permission(string $range, ?int $resource_owner, ?array $cats = null, ?string $page = null)
 {
@@ -1018,7 +1018,7 @@ function check_edit_permission(string $range, ?int $resource_owner, ?array $cats
  * @set low mid high cat_low cat_mid cat_high
  * @param  MEMBER $member_id The member being checked for access
  * @param  ?MEMBER $resource_owner The member that owns this resource (null: no-one)
- * @param  ?ID_TEXT $page The ID code for the page being checked (null: current page)
+ * @param  ?ID_TEXT $page The page being checked (null: current page)
  * @param  ?array $cats A list of cat details to require access to (c-type-1,c-id-1,c-type-2,c-d-2,...) (null: N/A)
  * @return boolean Whether the member may edit the resource
  */
@@ -1043,7 +1043,7 @@ function has_edit_permission(string $range, int $member_id, ?int $resource_owner
  * @set low mid high cat_low cat_mid cat_high
  * @param  ?MEMBER $resource_owner The member that owns this resource (null: no-one)
  * @param  ?array $cats A list of cat details to require access to (c-type-1,c-id-1,c-type-2,c-d-2,...) (null: N/A)
- * @param  ?ID_TEXT $page The ID code for the page being checked (null: current page)
+ * @param  ?ID_TEXT $page The page being checked (null: current page)
  */
 function check_delete_permission(string $range, ?int $resource_owner, ?array $cats = null, ?string $page = null)
 {
@@ -1063,7 +1063,7 @@ function check_delete_permission(string $range, ?int $resource_owner, ?array $ca
  * @set low mid high cat_low cat_mid cat_high
  * @param  MEMBER $member_id The member being checked for access
  * @param  ?MEMBER $resource_owner The member that owns this resource (null: no-one)
- * @param  ?ID_TEXT $page The ID code for the page being checked (null: current page)
+ * @param  ?ID_TEXT $page The page being checked (null: current page)
  * @param  ?array $cats A list of cat details to require access to (c-type-1,c-id-1,c-type-2,c-d-2,...) (null: N/A)
  * @return boolean Whether the member may delete the resource
  */

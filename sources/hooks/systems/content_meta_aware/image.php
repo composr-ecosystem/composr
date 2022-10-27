@@ -52,7 +52,7 @@ class Hook_content_meta_aware_image extends Hook_CMA
             'is_category' => false,
             'is_entry' => true,
             'category_field' => 'cat', // For category permissions
-            'category_type' => 'galleries', // For category permissions
+            'permission_module' => 'galleries', // For category permissions
             'parent_spec__table_name' => 'galleries',
             'parent_spec__parent_name' => 'parent_id',
             'parent_spec__field_name' => 'name',
@@ -87,8 +87,6 @@ class Hook_content_meta_aware_image extends Hook_CMA
             'seo_type_code' => 'image',
 
             'feedback_type_code' => 'images',
-
-            'permissions_type_code' => 'galleries', // null if has no permissions
 
             'search_hook' => 'images',
             'rss_hook' => 'galleries',

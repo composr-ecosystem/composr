@@ -29,7 +29,7 @@ class Module_cms_galleries extends Standard_crud_module
     protected $select_name_description = 'DESCRIPTION_IMAGE';
     protected $select_name = 'IMAGE';
     protected $permissions_require = 'mid';
-    protected $permissions_cat_require = 'galleries';
+    protected $permissions_module_require = 'galleries';
     protected $permissions_cat_name = 'cat';
     protected $user_facing = true;
     protected $seo_type = 'image';
@@ -846,7 +846,7 @@ class Module_cms_galleries extends Standard_crud_module
             attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'notice');
         }
         $validated_field = new Tempcode();
-        if (has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', null, $this->permissions_cat_require)) {
+        if (has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', null, $this->permissions_module_require)) {
             $validated_field = form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'image'), 'validated', $validated == 1);
         }
         $fields->attach($validated_field);
@@ -1257,7 +1257,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
     protected $lang_type = 'VIDEO';
     protected $select_name = 'NAME';
     protected $permissions_require = 'mid';
-    protected $permissions_cat_require = 'galleries';
+    protected $permissions_module_require = 'galleries';
     protected $permissions_cat_name = 'cat';
     protected $user_facing = true;
     protected $seo_type = 'video';
@@ -1432,7 +1432,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
             attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'notice');
         }
         $validated_field = new Tempcode();
-        if (has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', null, $this->permissions_cat_require)) {
+        if (has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', null, $this->permissions_module_require)) {
             if (addon_installed('unvalidated')) {
                 $validated_field = form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'video'), 'validated', $validated == 1);
             }

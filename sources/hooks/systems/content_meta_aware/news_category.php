@@ -50,7 +50,7 @@ class Hook_content_meta_aware_news_category extends Hook_CMA
             'parent_category_meta_aware_type' => 'news_category',
             'is_category' => true,
             'is_entry' => false,
-            'category_type' => 'news', // For category permissions
+            'permission_module' => 'news', // For category permissions
             'parent_spec__table_name' => null,
             'parent_spec__parent_name' => null,
             'parent_spec__field_name' => null,
@@ -86,8 +86,6 @@ class Hook_content_meta_aware_news_category extends Hook_CMA
             'seo_type_code' => 'news_category',
 
             'feedback_type_code' => null,
-
-            'permissions_type_code' => 'news', // null if has no permissions
 
             'search_hook' => null,
             'rss_hook' => null,

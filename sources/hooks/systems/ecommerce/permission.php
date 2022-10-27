@@ -151,8 +151,8 @@ class Hook_ecommerce_permission
         $hooks = find_all_hook_obs('systems', 'content_meta_aware', 'Hook_content_meta_aware_');
         foreach ($hooks as $ob) {
             $info = $ob->info();
-            if (($info !== null) && ($info['permissions_type_code'] !== null)) {
-                $_modules[$info['permissions_type_code']] = true;
+            if (($info !== null) && ($info['permission_module'] !== null)) {
+                $_modules[$info['permission_module']] = true;
             }
         }
         ksort($_modules);

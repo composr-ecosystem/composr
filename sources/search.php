@@ -66,12 +66,11 @@ function perform_keyword_search(?array $limit_to = null, ?string $keyword_prefix
                         $id_field = $id_field[0];
                     }
                     $category_field = $cma_info['category_field'];
-                    $category_type = $cma_info['category_type'];
-                    if (!is_array($category_field)) {
+                    $permission_module = $cma_info['permission_module'];
+                    if (($category_field !== null) && (!is_array($category_field))) {
                         $category_field = [$category_field];
-                        $category_type = [$category_type];
+                        $permission_module = [$permission_module];
                     }
-                    $permissions_type_code = $cma_info['permissions_type_code'];
 
                     if ($table !== null) {
                         $_table = $db->get_table_prefix() . $table;
@@ -82,11 +81,11 @@ function perform_keyword_search(?array $limit_to = null, ?string $keyword_prefix
                             $where .= $validated_where;
                         }
 
-                        if (($permissions_type_code !== null) && (!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()))) {
+                        if (($permission_module !== null) && (!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()))) {
                             $_perms_table = $db->get_table_prefix() . 'group_category_access';
 
                             foreach ($category_field as $i => $_category_field) {
-                                $_category_type = $category_type[$i];
+                                $_permission_module = $permission_module[$i];
 
                                 if ($_category_field == $id_field) {
                                     $_meta_for_id = 'm.meta_for_id';
@@ -94,7 +93,7 @@ function perform_keyword_search(?array $limit_to = null, ?string $keyword_prefix
                                     $category_subquery = 'SELECT ' . $_category_field . ' FROM ' . $_table . ' r WHERE m.meta_for_id=' . db_cast('r.' . $id_field, 'CHAR');
                                     $_meta_for_id = '(' . $category_subquery . ')';
                                 }
-                                $permissions_subquery = 'SELECT group_id FROM ' . $_perms_table . ' p WHERE p.category_name=' . $_meta_for_id . ' AND ' . db_string_equal_to('module_the_name', $_category_type) . ' AND ' . $g_or;
+                                $permissions_subquery = 'SELECT group_id FROM ' . $_perms_table . ' p WHERE p.category_name=' . $_meta_for_id . ' AND ' . db_string_equal_to('module_the_name', $_permission_module) . ' AND ' . $g_or;
                                 $permissions_where = ' AND (' . db_string_not_equal_to('meta_for_type', $seo_type_code) . ' OR EXISTS(' . $permissions_subquery . '))';
                                 $where .= $permissions_where;
                             }

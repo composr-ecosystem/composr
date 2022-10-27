@@ -896,7 +896,7 @@ class Module_galleries
             }
 
             $_edit_url = new Tempcode();
-            if (has_delete_permission('mid', get_member(), $row['submitter'], 'cms_galleries', ['gallery', $row['cat']])) {
+            if (has_delete_permission('mid', get_member(), $row['submitter'], 'cms_galleries', ['galleries', $row['cat']])) {
                 $_edit_url = build_url(['page' => 'cms_galleries', 'type' => ($content_type == 'image') ? '__edit' : '__edit_other', 'id' => $row['id'], 'redirect' => protect_url_parameter(SELF_REDIRECT)], get_module_zone('cms_galleries'));
             }
 
@@ -1232,7 +1232,7 @@ class Module_galleries
             }
 
             $_edit_url = new Tempcode();
-            if (has_delete_permission('mid', get_member(), $row['submitter'], 'cms_galleries', ['gallery', $row['cat']])) {
+            if (has_delete_permission('mid', get_member(), $row['submitter'], 'cms_galleries', ['galleries', $row['cat']])) {
                 $_edit_url = build_url(['page' => 'cms_galleries', 'type' => ($content_type == 'image') ? '__edit' : '__edit_other', 'id' => $row['id'], 'redirect' => protect_url_parameter(SELF_REDIRECT)], get_module_zone('cms_galleries'));
             }
 

@@ -52,8 +52,8 @@ class Hook_content_meta_aware_catalogue_category extends Hook_CMA
             'parent_category_meta_aware_type' => 'catalogue_category',
             'is_category' => true,
             'is_entry' => false,
-            'category_field' => ['cc_parent_id', 'c_name'], // For category permissions
-            'category_type' => ['catalogues_category', 'catalogues_catalogue'], // For category permissions
+            'category_field' => (get_value('disable_cat_cat_perms') === '1') ? 'c_name' : ['c_name', 'cc_parent_id'], // For category permissions
+            'permission_module' => (get_value('disable_cat_cat_perms') === '1') ? 'catalogues_catalogue' : ['catalogues_catalogue', 'catalogues_category'], // For category permissions
             'parent_spec__table_name' => 'catalogue_categories',
             'parent_spec__parent_name' => 'cc_parent_id',
             'parent_spec__field_name' => 'id',
@@ -88,8 +88,6 @@ class Hook_content_meta_aware_catalogue_category extends Hook_CMA
             'seo_type_code' => 'catalogue_category',
 
             'feedback_type_code' => null,
-
-            'permissions_type_code' => (get_value('disable_cat_cat_perms') === '1') ? null : 'catalogues_category', // null if has no permissions
 
             'search_hook' => 'catalogue_categories',
             'rss_hook' => null,
