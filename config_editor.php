@@ -88,6 +88,7 @@ function ce_do_header()
         '{!CONFIRM_REALLY;^/}' => 'REALLY?',
 
         '{PASSWORD_PROMPT;/}' => '',
+        '{!installer:CONFIRM_MASTER_PASSWORD}' => '',
     ];
     $password_check_js = str_replace(array_keys($ls_rep), array_values($ls_rep), $password_check_js);
     @print('<script>' . $password_check_js . '</script>');
@@ -427,8 +428,27 @@ function do_set()
     if ($copied_ok !== false) {
         co_sync_file($backup_path);
     }
-    $out = '';
-    $out .= "<" . "?php\n";
+    $out = "<" . "?php\nglobal \$SITE_INFO;";
+    $out .= '
+if (!function_exists(\'git_repos\')) {
+    /**
+     * Find the Git branch name. This is useful for making this config file context-adaptive (i.e. dev settings vs production settings).
+     *
+     * @return ?ID_TEXT Branch name (null: not in Git)
+     */
+    function git_repos() : ?string
+    {
+        $path = __DIR__ . \'/.git/HEAD\';
+        if (!is_file($path)) {
+            return \'\';
+            }
+        $lines = file($path);
+        $parts = explode(\'/\', $lines[0]);
+        return trim(end($parts));
+    }
+}
+
+';
     foreach ($new as $key => $val) {
         if (is_array($val)) {
             foreach ($val as $val2) {
