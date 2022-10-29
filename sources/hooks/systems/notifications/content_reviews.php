@@ -32,6 +32,9 @@ class Hook_notification_content_reviews extends Hook_notification__Staff
      */
     public function get_initial_setting(string $notification_code, ?string $category = null) : int
     {
+        if ($notification_code == 'content_reviews__own') {
+            return A__STATISTICAL;
+        }
         return A_NA;
     }
 
