@@ -147,6 +147,7 @@ class Hook_addon_registry_community_billboard
             'themes/default/templates_custom/COMMUNITY_BILLBOARD_DETAILS.tpl',
             'themes/default/templates_custom/COMMUNITY_BILLBOARD_STORE_LIST_LINE.tpl',
             'themes/default/templates_custom/ECOM_PRODUCT_COMMUNITY_BILLBOARD.tpl',
+            'themes/default/templates_custom/COMMUNITY_BILLBOARD_FOOTER.tpl',
             'adminzone/pages/modules_custom/admin_community_billboard.php',
             'lang_custom/EN/community_billboard.ini',
             'sources_custom/hooks/systems/config/system_community_billboard.php',
@@ -164,6 +165,7 @@ class Hook_addon_registry_community_billboard
             'sources_custom/hooks/systems/page_groupings/community_billboard.php',
             'themes/default/css_custom/community_billboard.css',
             'sources_custom/hooks/systems/actionlog/community_billboard.php',
+            'sources_custom/hooks/systems/contentious_overrides/community_billboard.php',
         ];
     }
 

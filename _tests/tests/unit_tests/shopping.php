@@ -171,8 +171,9 @@ class shopping_test_set extends cms_test_case
         $reason = '';
         $pending_reason = 'bar';
         $memo = 'foo';
-        $amount = 65.00 + 2.40 /* shipping */;
+        $amount = 65.00;
         $tax = 5.00;
+        $shipping = 2.40;
         $currency = get_option('currency');
         $txn_id = strval(mt_rand(1, 1000000));
         $parent_txn_id = '';
@@ -180,7 +181,7 @@ class shopping_test_set extends cms_test_case
         $payment_gateway = 'manual';
         $is_subscription = false;
 
-        handle_confirmed_transaction(null, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $amount, $tax, $currency, true, $parent_txn_id, $pending_reason, $memo, $period, get_member(), $payment_gateway, false, true);
+        handle_confirmed_transaction(null, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $amount, $tax, $shipping, $currency, true, $parent_txn_id, $pending_reason, $memo, $period, get_member(), $payment_gateway, false, true);
     }
 
     public function tearDown()

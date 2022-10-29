@@ -25,7 +25,7 @@ Cheque processing is relatively straight forward, but more infrastructure is nee
 1) By getting an agent to fully handle the transaction and relay the funds
 2) By having a merchant account with a bank, using the banks infrastructure and your bank account to manage the transaction yourself
 
-Composr, by default, allows payment via {$IS_MAINTAINED,gateway_paypal,PayPal} & {$IS_MAINTAINED,gateway_worldpay,WorldPay} & {$IS_MAINTAINED,gateway_secpay,SecPay} & {$IS_MAINTAINED,gateway_ccbill,CCBill} & {$IS_MAINTAINED,gateway_authorize,Authorize.Net}, although it could be extended to support any kind of payment gateway if extended and customised by an appropriate professional. PayPal is fully supported; others are not regularly tested and intended for developers (usage instructions are included as comments within Composr's source code for the particular payment gateway).
+Composr, by default, allows payment via {$IS_MAINTAINED,gateway_paypal,PayPal} & {$IS_MAINTAINED,gateway_ccbill,CCBill} & {$IS_MAINTAINED,gateway_authorize,Authorize.Net}, although it could be extended to support any kind of payment gateway if extended and customised by an appropriate professional. PayPal is fully supported; others are not regularly tested and intended for developers (usage instructions are included as comments within Composr's source code for the particular payment gateway).
 
 PayPal was chosen because it is without doubt the leading form of payment on the Internet, easy to setup, and flexible in that it can provide support for funding direct from bank accounts, or cheque, as well as debit and credit card processing. Lots of people do not like PayPal policies, but we have no official position on this -- development priorities simply follow funding.
 [/surround]
@@ -36,9 +36,19 @@ PayPal was chosen because it is without doubt the leading form of payment on the
 
 To accept website payments via credit card, or to take subscriptions, [url="you will need a Business Account"]https://www.paypal.com/us/webapps/helpcenter/helphub/article/?solutionId=FAQ2347[/url]. The business accounts are free, but the fees are higher.
 
-You will need to have SSL set up for your site, as PayPal requires IPN messages to go via SSL from Sep 30, 2016, and we have already imposed this in our default code.
+You will need to have SSL set up for your site, as PayPal requires Instant Payment Notification (IPN) messages to go via SSL from Sep 30, 2016, and we have already imposed this in our default code.
 
-You must [b]not[/b] lock down PayPal to [url="only accept encrypted forms"]https://developer.paypal.com/docs/paypal-payments-standard/integration-guide/encryptedwebpayments/[/url].
+You must [b]not[/b] lock down PayPal to [url="only accept encrypted forms"]https://developer.paypal.com/docs/paypal-payments-standard/integration-guide/encryptedwebpayments/[/url]. Composr does not encrypt forms.
+
+If you want to set up Payment Data Transfer (PDT), follow these instructions:
+	- Go to your PayPal's Website Payments settings, and Website Payment Preferences page.
+	- turn on &ldquo;Auto Return&rdquo;.
+	- For the return URL, specify your baseURL/index.php?page=purchase (e.g. https://www.example.com/index.php?page=purchase).
+	- Turn on &ldquo;Payment data transfer&rdquo;.
+	- Copy the data transfer identifier that appears on your screen.
+	- On your Composr website, go to Admin Zone > Setup > Configuration > eCommerce options > Payment gateway (PayPal-specific).
+	- Paste the data transfer identifier in the relevant box, and save.
+PDT may be particularly useful in a development (testing) environment where PayPal cannot reach your website via IPN (especially if you are only running on localhost).
 
 [title="3"]Configuration[/title]
 
@@ -52,7 +62,7 @@ The option requirements for PayPal are as follows:
 <table class="map-table results-table wide-table autosized-table"><tbody>
 	<tr>
 		<th>
-			Payment gateway
+			Payment gateway > Payment gateway
 		</th>
 		<td>
 			<kbd>paypal</kbd>
@@ -60,7 +70,7 @@ The option requirements for PayPal are as follows:
 	</tr>
 	<tr>
 		<th>
-			Use local payment
+			General > Use local payment
 		</th>
 		<td>
 			This must be disabled
@@ -68,7 +78,7 @@ The option requirements for PayPal are as follows:
 	</tr>
 	<tr>
 		<th>
-			Gateway password
+			Payment gateway > Gateway password
 		</th>
 		<td>
 			This should be blank
@@ -76,7 +86,7 @@ The option requirements for PayPal are as follows:
 	</tr>
 	<tr>
 		<th>
-			Gateway VPN username
+			Payment gateway > Gateway VPN username
 		</th>
 		<td>
 			This should be blank
@@ -84,7 +94,7 @@ The option requirements for PayPal are as follows:
 	</tr>
 	<tr>
 		<th>
-			Gateway VPN password
+			Payment gateway > Gateway VPN password
 		</th>
 		<td>
 			This should be blank
@@ -92,7 +102,7 @@ The option requirements for PayPal are as follows:
 	</tr>
 	<tr>
 		<th>
-			Callback password
+			Payment gateway > Callback password
 		</th>
 		<td>
 			This should be blank
@@ -100,15 +110,15 @@ The option requirements for PayPal are as follows:
 	</tr>
 	<tr>
 		<th>
-			Postal address
+			Address
 		</th>
 		<td>
-			This should be blank
+			This section should be filled in if you are collecting sales tax. If you do not have a business headquarters, use the location from which you are selling items.
 		</td>
 	</tr>
 	<tr>
 		<th>
-			Gateway username
+			Payment gateway > Gateway username
 		</th>
 		<td>
 			For PayPal it is your PayPal e-mail address, but for other gateways it probably is just be any you receive e-mail on
@@ -116,15 +126,7 @@ The option requirements for PayPal are as follows:
 	</tr>
 	<tr>
 		<th>
-			Phone number
-		</th>
-		<td>
-			This should be blank.
-		</td>
-	</tr>
-	<tr>
-		<th>
-			[Testing mode] Gateway username
+			Payment gateway (testing mode) > Gateway username
 		</th>
 		<td>
 			Your PayPal e-mail address (for the testing mode one, it's your sandbox PayPal e-mail address).
@@ -139,7 +141,7 @@ Documentation for other Payment gateways is provided in notes at the top of the 
 
 All supported payment gateways provide a test mode, which is turned on from the Admin Zone Configuration. Test mode allows you to make purchases from your website using the full eCommerce architecture of Composr and the payment gateway, except no money will actually be charged (it's a simulation mode) -- the ideal way to test your setup without risking real money.
 
-To prevent purchases being made by real people that you don't receive real money for, only members in a usergroup with the 'Access eCommerce system when in test mode' permission may purchase when test mode is enabled ("Purchasing is temporarily offline for maintenance. It should be back online within 24 hours: please try again later." will be seen by others). You have two supported testing choices:
+To prevent purchases being made by real people that you don't receive real money for, only members in a usergroup with the 'Access eCommerce system when in test mode' permission may purchase when test mode is enabled (A message will be seen by others: "Purchasing is temporarily offline for maintenance. It should be back online within 24 hours: please try again later."). You have two supported testing choices:
 1) Enable this permission for all usergroups and test the eCommerce when the website is closed (using the SU feature, see the [page="_SEARCH:tut_permissions"]Testing access and privileges[/page] tutorial, Access control and privileges section)
 2) Test the eCommerce from your own admin account
 
@@ -161,6 +163,8 @@ Composr can automatically do currency conversions for visitors (there's a config
 [title="3"]Points verses money[/title]
 
 Many of the products allow configurability over whether they are sold for money or for points, or some combination (a discount via using points). Products that support both money and points typically also allow a 50:50 purchase option too. Users don't choose which option, the system will calculate it for them -- but they are told the discount they will get.
+
+When selling products fully with points, it is assumed that tax and shipping will not be charged. As such, tax and shipping will not be included. If selling products at a discount via points, shipping will still apply via money, and tax will be adjusted according to the discounted price.
 
 Gambling is only available via points.
 Usergroup subscriptions are only available via money (as there's already a points-based rank ladder system).
@@ -356,6 +360,8 @@ For the community billboard to display, you must place the symbol code, [tt]{$CO
 [media width="150" description="A link to the payment gateway to purchase." float="right"]data_custom/images/docs/tut_ecommerce/upgrade_3.png[/media]
 [media width="150" description="The description of the usergroup subscription is shown. You'd normally put a more extensive description here, explaining why someone should upgrade." float="right"]data_custom/images/docs/tut_ecommerce/upgrade_2.png[/media]
 [media width="150" description="Link to upgrade via a usergroup subscription." float="right"]data_custom/images/docs/tut_ecommerce/upgrade.png[/media]
+Currently, subscriptions do not support shipping fees and therefore cannot be used for physical products requiring shipping.
+
 Usergroup subscriptions are implemented on top of subscriptions.
 
 Usergroup subscriptions are only available if the forum system is [concept]Conversr[/concept].
@@ -503,14 +509,16 @@ Tax calculation has been kept as simple as reasonably possible because it's impo
 
 To provide a reasonable level of support we have:
  - Architected the calculations to go through a simple common function that a programmer can override to add in additional behaviour if needed, [tt]calculate_tax_due[/tt].
- - Included support for USA taxation across state/country/city lines by integration of the excellent free [url="TaxCloud"]https://taxcloud.net/[/url] web service.
+ - Included support for international taxation by integration of the [url="TaxJar"]https://taxjar.com/[/url] web service.
+ - Included support for USA taxation across state/country/city lines by integration of the free [url="TaxCloud"]https://taxcloud.net/[/url] web service.
   - This allows support for 'nexuses'
   - This allows support for destination taxation state rules
  - Special support for EU digital goods taxation.
  - Support for custom specification of which Countries and States taxation applies within.
 
 When defining tax codes ('tax code' is the term we use) you can select with either:
-a) a USA tax code (a TIC)
+a) a TaxJar (TJ) tax code
+b) a TaxCloud (TIC) tax code
 b) EU digital goods (which auto-selects the appropriate tax based on the buyer's country)
 c) your own custom percentage rate.
 Tax codes are carried through the system until it is time to turn into an actual tax figure, which is then stored in the database along with a 'derivation' of what exact tax fees were levied. To convert a tax code to an actual tax figure we need to know the shipping/invoicing address of the buyer, as this has an enormous impact on what exact tax is charged.
@@ -521,29 +529,37 @@ Known limitations and important considerations:
  - Before a buyer's address is known taxation is calculated as if the buyer was buying from the business's own address. This is so we can provide a "best estimate" of tax as early as possible.
  - We do not mention import duty in the software, which would often be due if shipping internationally. The buyer pays this to the shipping company before they will deliver the import. This is standard practice, and it is standard to not refer to it in eCommerce tax systems as it is outside the scope, but I thought it was worth mentioning.
  - We have designed the tax system to be legally compliant with at least EU and USA rules, although we cannot guarantee this -- you must take your own responsibility for your legal compliance.
- - Sales tax rates may be changed, but they would be changed at the start of a new tax accounting period. Unless you are a USA seller using TaxCloud for all the taxes then you must be aware of this, ready to switch in new rates at midnight when the new ones apply.
+ - Sales tax rates may be changed, but they would be changed at the start of a new tax accounting period. Unless you are using a third-party tax service for all the taxes then you must be aware of this, ready to switch in new rates at midnight when the new ones apply.
  - Avoid taking and holding multiple currencies (e.g. on PayPal) unless you have a very good reason to -- it will make your accounting particularly complicated. It is better to just force the buyer's credit card to charge in your own currency.
  - You should strongly consider setting the site timezone to that where you collect tax so that if tax rates change you can more easily tell what dates the transactions happened on.
 
 [title="3"]Regional considerations[/title]
 
-[title="4"]USA users[/title]
+[title="4"]International Sales Tax[/title]
+[media width="300" framed="0" float="right"]data_custom/images/docs/tut_ecommerce/tax.png[/media]
+If you are selling products commercially, you may be required to pay sales tax depending on where your business is located and where you are serving (shipping) your products. This can get extremely complex especially in the US.
 
-[media width="300" framed="0" float="right"]data_custom/images/docs/tut_ecommerce/taxcloud.png[/media]
-Basically if you are selling products commercially must register with your state for sales tax. Services usually are not liable for sales tax.
+You can use the third-party TaxJar or TaxCloud service to assist with complex sales tax calculations and management.
 
-USA tax is extremely complex as it may be levied at the federal level, state level, county level, and city level. For most USA states the tax is charged based on where the buyer resides ("destination taxation"), not the seller ("origin taxation"). That is, unless the buyer is in a state where you don't have any operations centre (in which case no sales tax applies at all unless there's a federal tax which is rare &dagger;).
-All the taxes need to be individually tracked and paid out.
+To use the TaxJar system:
+1) Your site must have working SSL functionality (outbound)
+2) Set up an account on TaxJar
+3) Set up required details on TaxJar (shipping and billing details, business name, nexuses, etc); you will need your filing details such as your Federal Tax ID (EIN) if you plan to use TaxJar to file your taxes (not required)
+4) Set up your payment information in the TaxJar Plan & Billing tab
+5) Consider adding the "Sales Tax Policy" text to your Composr rules page
+6) Fill in the "TaxJar API key" configuration option (Admin Zone > Setup > Configuration > eCommerce options > TaxJar) on your Composr site
+7) Set all applicable Business address configuration options depending on your country
+8) Set the "Currency" configuration option on your Composr site to the currency your business uses
+9) Configure tax configuration options, and shopping catalogue items, to use the appropriate TaxJar code(s)
+Note that if your Business country is set to US, Composr will also create tax transactions for you through the TaxJar API so you can file taxes through TaxJar.
 
-As mentioned above we use the TaxCloud to handle most of the complexity.
-
-To use the TaxCloud system:
+To use the TaxCloud system (only available for US businesses):
 1) Your site must have working SSL functionality (outbound)
 2) Set up an account on TaxCloud
 3) Set up required details on the TaxCloud Profile/Websites/Contacts/Locations tabs; you will need your filing details such as your Federal Tax ID (EIN)
 4) Set up your payment information in the TaxCloud Payment Information tabs
 5) Consider adding the "Sales Tax Policy" text to your Composr rules page
-6) Fill in the "TaxCloud API key" configuration option (Admin Zone > Setup > Configuration > eCommerce options > Tax) on your Composr site
+6) Fill in the "TaxCloud API key" configuration option (Admin Zone > Setup > Configuration > eCommerce options > TaxCloud) on your Composr site
 7) Fill in the "TaxCloud API ID" configuration option on your Composr site
 8) Set the "Business country" configuration option on your Composr site to US
 9) Set the "Business state" configuration option on your Composr site to the state you operate your business from (make sure you enter a 2-character state code in upper case, not the full written state name)
@@ -551,6 +567,10 @@ To use the TaxCloud system:
 11) Set the "Currency" configuration option on your Composr site to USD
 12) Configure tax configuration options, and shopping catalogue items, to use the appropriate TIC code(s)
 Note that TaxCloud will automatically debit the tax from you and do tax forms for you in many cases -- and in any case will keep records of all the itemised sales taxes due.
+
+[title="4"]USA users[/title]
+USA tax is extremely complex as it may be levied at the federal level, state level, county level, and city level. For most USA states the tax is charged based on where the buyer resides ("destination taxation"), not the seller ("origin taxation"). That is, unless the buyer is in a state where you don't have any operations centre (in which case no sales tax applies at all unless there's a federal tax which is rare &dagger;).
+All the taxes need to be individually tracked and paid out. It is highly recommended you use a third-party tax service like TaxJar or TaxCloud for this.
 
 Known limitations at this time which could be worked around with custom code...
  - We don't support exemption certificates for buyers not needing to pay tax (e.g. some farmers in some cases)
@@ -561,7 +581,7 @@ Known limitations at this time which could be worked around with custom code...
 
 Sales tax in the EU is known as "VAT". It is technically different from a normal sales tax, but we don't need to get into that in this tutorial. There is a configuration option to make sure that the term "VAT" is used instead of the term "Sales tax".
 
-Basically if you are selling products or services commercially must register with your government's tax office for VAT.
+Basically if you are selling products or services commercially, you must register with your government's tax office for VAT.
 In the UK and some other countries there is an income threshold after which you need to register. If you don't you can't get rebate on purchases you make, but you also benefit competitively by being able to charge buyers less money. If you are selling digital goods then there is no threshold, you must collect VAT and remit it (e.g. via the "MOSS" if you are based in UK).
 
 Known limitations at this time which could be worked around with custom code...
@@ -579,7 +599,7 @@ Known limitations at this time which could be worked around with custom code...
 
 [title="3"]Tax invoices[/title]
 
-Tax invoices are automatically created and delivered to buyers. They are also available from the Admin Zone.
+Tax invoices are automatically created and delivered to buyers through notifications. They are also available from the Admin Zone.
 
 [title="4"]Line items[/title]
 
@@ -603,14 +623,14 @@ The tax derivations will be needed for tax remittance if you are subject to EU d
 
 We generally track these and they are available when you do a spreadsheet download of transactions.
 
-However, TaxCloud doesn't actually provide us broken-down data of the taxes. So if you are a USA user using TaxCloud you'll find this data on TaxCloud itself.
+However, TaxCloud and TaxJar don't actually provide us broken-down data of the taxes. So if you are using those services you'll find this data on their website itself.
 
 [title="2"]Shipping[/title]
 
 [title="3"]Handling shipping costs[/title]
 
 [media width="300" framed="0" float="right"]data_custom/images/docs/tut_ecommerce/shippo.png[/media]
-You should not enable automatic shipping cost calculation on your payment gateway as Composr handles it for you. If shipping cost calculation was enabled then buyers would be double-charged for shipping.
+You should not enable automatic shipping cost calculation on your payment gateway (e.g. PayPal) as Composr handles it for you. If shipping cost calculation was enabled, then buyers might either be double-charged for shipping or otherwise charged the wrong amount.
 
 You have 3 possible approaches for calculating shipping costs:[list="1"]
 [*] Use the inbuilt configuration options for calculating shipping cost based on weight and dimensions. This may work reasonably if shipping costs are not going to vary by distance.
@@ -638,7 +658,7 @@ Shippo is free because they make money helping you print shipping labels. We don
 
 Some Custom Profile Fields are pre-installed to allow members to set their shipping address in their regular profile settings (instead of having to define it each time when they pay on the payment gateway).
 
-There are configuration options to define whether the fields are enabled, in Admin Zone > Setup > Configuration > User/usergroup options > Special CPFs to show.
+There are configuration options to define whether the fields are enabled, in Admin Zone > Setup > Configuration > User/usergroup options > Special CPFs to show. You will especially need to do this for county and state if applicable to your demographic.
 
 Additionally by default these fields are not enabled for direct editing by users, so you would need to edit them to enable 'Owner viewable' and 'Owner settable' for each field.
 You can find and edit the fields from:
@@ -717,7 +737,7 @@ Manual transactions may also be used to input transactions that are totally exte
 
 [title="3"]Local payments[/title]
 
-Composr supports taking in payments 'locally' (i.e. not redirecting to a third-party site to take the payment). Not all the payment gateways within Composr allow local payments though, either due to the gateways not supporting it or just because it has not yet been implemented. At the time of writing the SecPay and Authorize.Net gateways support it.
+Composr supports taking in payments 'locally' (i.e. not redirecting to a third-party site to take the payment). Not all the payment gateways within Composr allow local payments though, either due to the gateways not supporting it or just because it has not yet been implemented. At the time of writing the Authorize.Net gateway supports it.
 
 Local payments should be considered with great caution because it requires a high level of PCI compliance, a very complex and expensive (increasingly so) process that carries legal liability.
 
@@ -887,7 +907,10 @@ We have summarised the PCI compliance rules below in a way streamlined toward Co
  27_key="Tax invoice"                  27_value="A formal (legally-compliant) invoice showing exactly what was paid for a transaction, broken down by line-item, with individual taxation rates shown for each line-item"
  28_key="Customer"                     28_value="The member who purchased the product"
  29_key="Related member"               29_value="The member to whom a product applies (e.g. for a usergroup subscription, the member who was subscribed to the usergroup)"
- 30_key="TaxCloud"                     30_value="A third-party web service for handling the complexities of USA taxation"
+ 30_key="TaxCloud"                     30_value="A third-party web service for handling the complexities and filing of USA taxation"
+ 31_key="TaxJar"                       31_value="A third-party web service for handling the complexities of taxation in many international countries"
+ 32_key="IPN"                          32_value="Instant Payment Notification; when a payment is completed on a third party gateway (such as PayPal), the gateway will make a web request back to your Composr website (via /data/ecommerce.php) containing information about the transaction and its payment status. IPN is set up by default in Composr. Note that IPN can only work if your site is publicly accessible; development environments (such as ones running on localhost) may be inaccessible via IPN by gateways."
+ 33_key="PDT"                          33_value="Payment Data Transfer; specific to PayPal, when a member completes payment on PayPal and is redirected by PayPal back to your Composr site, PayPal includes transaction information in the redirect so Composr can immediately confirm the transaction and its payment status (unlike IPN where Composr must wait for the gateway to send an IPN request through /data/ecommerce.php). PDT must be set up in PayPal and in Composr to use it. See Specific gateway notes > PayPal."
 ]Concepts[/concepts]
 
 [title="2"]See also[/title]

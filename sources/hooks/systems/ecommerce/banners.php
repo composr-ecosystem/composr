@@ -47,10 +47,10 @@ class Hook_ecommerce_banners
      * IMPORTANT NOTE TO PROGRAMMERS: This function may depend only on the database, and not on get_member() or any GET/POST values.
      *  Such dependencies will break IPN, which works via a Guest and no dependable environment variables. It would also break manual transactions from the Admin Zone.
      *
-     * @param  ?ID_TEXT $search Product being searched for (null: none)
+     * @param  ?ID_TEXT $search Product being searched for (passed by reference as it may be modified for special cases) (null: none)
      * @return array A map of product name to list of product details
      */
-    public function get_products(?string $search = null) : array
+    public function get_products(?string &$search = null) : array
     {
         require_lang('banners');
 
@@ -278,7 +278,7 @@ class Hook_ecommerce_banners
      * @param  boolean $from_admin Whether this is being called from the Admin Zone. If so, optionally different fields may be used, including a purchase_id field for direct purchase ID input.
      * @return array A pair: The purchase ID, a confirmation box to show (null for no specific confirmation)
      */
-    public function handle_needed_fields(string $type_code, bool $from_admin = false) : array
+    public function process_needed_fields(string $type_code, bool $from_admin = false) : array
     {
         require_lang('banners');
 
@@ -287,6 +287,7 @@ class Hook_ecommerce_banners
                 $member_id = get_member();
 
                 require_code('uploads');
+                require_code('banners');
 
                 $name = post_param_string('banner_codename', $from_admin ? '' : false);
                 if ($name == '') {

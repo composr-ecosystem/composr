@@ -59,6 +59,7 @@ function find_member_subscriptions(int $member_id, bool $usergroup_subscriptions
                     's_state' => ($sub['timeout'] < time()) ? 'cancelled' : 'active',
                     's_amount' => empty($sub_trans['t_amount']) ? float_to_raw_string(0.0) : $sub_trans['t_amount'],
                     's_tax' => $sub_trans['t_tax'],
+                    // Subscriptions do not support shipping
                     's_special' => '',
                     's_time' => $sub_trans['t_time'],
                     's_auto_fund_source' => '',

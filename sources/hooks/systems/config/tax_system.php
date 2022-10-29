@@ -56,6 +56,6 @@ class Hook_config_tax_system
             return null;
         }
 
-        return (get_option('yeehaw') == '1') ? 'TAX_SALES' : 'TAX_VAT';
+        return (geolocate_ip() == 'US' || get_option('yeehaw') == '1') ? 'TAX_SALES' : 'TAX_VAT';
     }
 }

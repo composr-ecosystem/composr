@@ -4,10 +4,20 @@
 */
 
 footer .global-community-message {
-	float: right;
 	font-size: 0.9em;
 	padding-top: 1px;
 	font-weight: bold;
 	padding-bottom: 4px;
-	text-shadow: 2px 2px 2px {$GET,standard_border};
 }
+
+/*{+START,CSS_MODE,desktop}*/
+footer .global-community-message {
+	float: right;
+}
+/*{+END}*/
+/*{+START,CSS_MODE,mobile}*/
+footer .global-community-message {
+	padding: 0.5em 0;
+	text-align: center;
+}
+/*{+END}*/

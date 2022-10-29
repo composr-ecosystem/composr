@@ -2652,7 +2652,7 @@ function form_input_float($pretty_name, $description, string $name, ?float $defa
         'TABINDEX' => strval($tabindex),
         'REQUIRED' => $_required,
         'NAME' => $name,
-        'DEFAULT' => ($default === null) ? '' : float_format($default, 10, true),
+        'DEFAULT' => ($default === null) ? '' : float_to_raw_string($default, 10, true),
     ]);
     return _form_input($name, $pretty_name, $description, $input, $required, false, $tabindex);
 }

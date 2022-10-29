@@ -28,12 +28,20 @@ function init__ecommerce_tax()
     // Initialise the tax service hook into the cache
     global $ECOMMERCE_TAX_CACHE;
     $ECOMMERCE_TAX_CACHE = [];
+
+    // Define constants
+    if (!defined('TAX_SERVICE_PRIORITY_NONE')) {
+        define('TAX_SERVICE_PRIORITY_NONE', 0);
+        define('TAX_SERVICE_PRIORITY_LOW', 1);
+        define('TAX_SERVICE_PRIORITY_NORMAL', 2);
+        define('TAX_SERVICE_PRIORITY_HIGH', 3);
+    }
 }
 
 /**
  * Load a tax service hook into cache and return it.
  *
- * @param  ID_TEXT $tax_service The name of the tax service hook to load (null: load the tax service configured with the site)
+ * @param  ?ID_TEXT $tax_service The name of the tax service hook to load (null: load the tax service configured with the site)
  * @param  boolean $fail_ok Whether a failure should not trigger an error
  * @return ?object The hook object factory (null: hook not found and $fail_ok was true)
  */
@@ -43,9 +51,6 @@ function get_tax_service_hook(?string $tax_service = null, bool $fail_ok = false
 
     if ($tax_service === null) {
         $tax_service = get_option('tax_api_service');
-        if ($tax_service == '') {
-            // TODO: Composr tax service
-        }
     }
 
     if (isset($ECOMMERCE_TAX_CACHE[$tax_service])) {
@@ -53,7 +58,7 @@ function get_tax_service_hook(?string $tax_service = null, bool $fail_ok = false
     }
 
     if (hook_exists('systems', 'ecommerce_tax', $tax_service)) {
-        $ob = get_hook_ob('systems', 'ecommerce_tax', $tax_service, 'Hook_config_ecommerce_tax_', $fail_ok);
+        $ob = get_hook_ob('systems', 'ecommerce_tax', $tax_service, 'Hook_ecommerce_tax_', $fail_ok);
         if ($ob !== null) {
             $ECOMMERCE_TAX_CACHE[$tax_service] = $ob;
         }
@@ -147,113 +152,111 @@ function calculate_tax_due(?array $details, string $tax_code, float $amount, flo
 */
 function get_tax_using_tax_codes(array &$item_details, string $field_name_prefix = '', float $shipping_cost = 0.00, ?int $member_id = null) : array
 {
+    if ($member_id === null) {
+        $member_id = get_member();
+    }
+
     $_item_details = [];
 
-    // The composr tax hook should never be removed
+    // The composr tax hook should never be removed; error if it was
     if (!hook_exists('systems', 'ecommerce_tax', 'composr')) {
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
+
+    // Set configured tax service first so shipping tax takes precedence with this service
+    $_item_details[get_option('tax_api_service')] = [];
 
     $hooks = find_all_hooks('systems', 'ecommerce_tax');
     foreach (array_keys($hooks) as $hook) {
         $_item_details[$hook] = [];
     }
-    $_item_details['_free'] = [];
+    $_item_details['_free'] = []; // Free items with no tax
 
-    $has_eu_digital_goods = false;
     $tax_tracking = [];
     $shipping_tax_derivation = [];
     $shipping_tax = 0.00;
 
-    // Categorise each item depending on the tax service to use
+    // Categorise each item depending on the tax service to use; it may be possible items come from previously selected tax services or left to internal calculation, or that an item is outside the supported scope / countries of a selected tax service.
     foreach ($item_details as $i => $parts) {
         list($item, $details) = $parts;
 
         $tax_code = $details['tax_code'];
         $amount = $details['price'];
 
-        $found_service = false;
+        // Determine which tax service to use for this item depending on which returns the highest priority
+        $service_to_use = null;
+        $service_priority = TAX_SERVICE_PRIORITY_NONE;
         foreach (array_keys($hooks) as $hook) {
             $ob = get_tax_service_hook($hook);
-            if (method_exists($ob, 'uses_this_service')) {
-                $uses_this_service = $ob->uses_this_service($parts);
-                if ($uses_this_service) {
-                    $_item_details[$hook][$i] = $parts;
-                    $found_service = true;
-                    break;
-                }
+            $_service_priority = $ob->service_priority($parts);
+            if ($_service_priority > $service_priority) {
+                $service_to_use = $hook;
+                $service_priority = $_service_priority;
             }
         }
 
-        if (!$found_service) {
+        if ($service_to_use === null) {
             if ($amount == 0.00) {
                 $_item_details['_free'][$i] = $parts;
             } else {
                 $_item_details['composr'][$i] = $parts;
-
-                if ($tax_code == 'EU') {
-                    $has_eu_digital_goods = true;
-                }
             }
-        }
-    }
-
-    // if ($has_eu_digital_goods) {
-        $shipping_email = '';
-        $shipping_phone = '';
-        $shipping_firstname = '';
-        $shipping_lastname = '';
-        $shipping_street_address = '';
-        $shipping_city = '';
-        $shipping_county = '';
-        $shipping_state = '';
-        $shipping_post_code = '';
-        $shipping_country = '';
-        $shipping_email = '';
-        $shipping_phone = '';
-        $cardholder_name = '';
-        $card_type = '';
-        $card_number = null;
-        $card_start_date_year = null;
-        $card_start_date_month = null;
-        $card_expiry_date_year = null;
-        $card_expiry_date_month = null;
-        $card_issue_number = null;
-        $card_cv2 = null;
-        $billing_street_address = '';
-        $billing_city = '';
-        $billing_county = '';
-        $billing_state = '';
-        $billing_post_code = '';
-        $billing_country = '';
-        get_default_ecommerce_fields($member_id, $shipping_email, $shipping_phone, $shipping_firstname, $shipping_lastname, $shipping_street_address, $shipping_city, $shipping_county, $shipping_state, $shipping_post_code, $shipping_country, $cardholder_name, $card_type, $card_number, $card_start_date_year, $card_start_date_month, $card_expiry_date_year, $card_expiry_date_month, $card_issue_number, $card_cv2, $billing_street_address, $billing_city, $billing_county, $billing_state, $billing_post_code, $billing_country, true);
-
-        if ($shipping_street_address == '') {
-            $street_address = $billing_street_address;
-            $city = $billing_city;
-            $county = $billing_county;
-            $state = $billing_state;
-            $post_code = $billing_post_code;
-            $country = $billing_country;
         } else {
-            $street_address = $shipping_street_address;
-            $city = $shipping_city;
-            $county = $shipping_county;
-            $state = $shipping_state;
-            $post_code = $shipping_post_code;
-            $country = $shipping_country;
+            $_item_details[$service_to_use][$i] = $parts;
         }
-    // }
-
-    // Third party tax services should take priority over Composr; put Composr at the bottom of the array
-    if (array_key_exists('composr', $_item_details)) {
-        $tmp = $_item_details['composr'];
-        unset($_item_details['composr']);
-        $_item_details['composr'] = $tmp;
     }
 
+    // Prepare shipping and billing information
+    $shipping_email = '';
+    $shipping_phone = '';
+    $shipping_firstname = '';
+    $shipping_lastname = '';
+    $shipping_street_address = '';
+    $shipping_city = '';
+    $shipping_county = '';
+    $shipping_state = '';
+    $shipping_post_code = '';
+    $shipping_country = '';
+    $shipping_email = '';
+    $shipping_phone = '';
+    $cardholder_name = '';
+    $card_type = '';
+    $card_number = null;
+    $card_start_date_year = null;
+    $card_start_date_month = null;
+    $card_expiry_date_year = null;
+    $card_expiry_date_month = null;
+    $card_issue_number = null;
+    $card_cv2 = null;
+    $billing_street_address = '';
+    $billing_city = '';
+    $billing_county = '';
+    $billing_state = '';
+    $billing_post_code = '';
+    $billing_country = '';
+    get_default_ecommerce_fields($member_id, $shipping_email, $shipping_phone, $shipping_firstname, $shipping_lastname, $shipping_street_address, $shipping_city, $shipping_county, $shipping_state, $shipping_post_code, $shipping_country, $cardholder_name, $card_type, $card_number, $card_start_date_year, $card_start_date_month, $card_expiry_date_year, $card_expiry_date_month, $card_issue_number, $card_cv2, $billing_street_address, $billing_city, $billing_county, $billing_state, $billing_post_code, $billing_country, true);
+
+    if ($shipping_street_address == '') {
+        $street_address = $billing_street_address;
+        $city = $billing_city;
+        $county = $billing_county;
+        $state = $billing_state;
+        $post_code = $billing_post_code;
+        $country = $billing_country;
+    } else {
+        $street_address = $shipping_street_address;
+        $city = $shipping_city;
+        $county = $shipping_county;
+        $state = $shipping_state;
+        $post_code = $shipping_post_code;
+        $country = $shipping_country;
+    }
+
+    // Run through the tax services' get_tax_using_tax_codes methods
     foreach ($_item_details as $hook => $products) {
-        if ($hook == '_free') continue;
+        if ($hook == '_free') {
+            continue;
+        }
 
         $ob = get_tax_service_hook($hook);
         if (method_exists($ob, 'get_tax_using_tax_codes')) {
@@ -263,14 +266,16 @@ function get_tax_using_tax_codes(array &$item_details, string $field_name_prefix
                     $_item_details['_free'][$i] = $parts;
                 }
             } else {
-                if ($tax_details[0] !== null) {
-                    $shipping_tax_derivation = $tax_details[0];
-                }
-                if ($tax_details[1] !== null) {
-                    $shipping_tax = $tax_details[1];
-                }
-                if ($tax_details[2] !== null) {
-                    $tax_tracking = $tax_details[2];
+                if (empty($shipping_tax_derivation) && ($shipping_tax == 0.0) && empty($tax_tracking)) {
+                    if ($tax_details[0] !== null) {
+                        $shipping_tax_derivation = $tax_details[0];
+                    }
+                    if ($tax_details[1] !== null) {
+                        $shipping_tax = $tax_details[1];
+                    }
+                    if ($tax_details[2] !== null) {
+                        $tax_tracking = $tax_details[2];
+                    }
                 }
 
                 foreach ($tax_details[3] as $i => $unprocessed) {
@@ -280,6 +285,7 @@ function get_tax_using_tax_codes(array &$item_details, string $field_name_prefix
         }
     }
 
+    // Now process free items
     foreach ($_item_details['_free'] as $i => $parts) {
         list($item, $details) = $parts;
 
@@ -289,6 +295,7 @@ function get_tax_using_tax_codes(array &$item_details, string $field_name_prefix
         $item_details[$i] = $_item_details['_free'][$i];
     }
 
+    // If we have no information on shipping tax, calculate it
     if (empty($shipping_tax_derivation)) {
         if ($shipping_cost != 0.00) {
             list($shipping_tax_derivation, $shipping_tax, , ) = calculate_tax_due(null, get_option('shipping_tax_code'), $amount, 0.00, $member_id); // This will force a call back into our function, but won't recurse again
@@ -304,12 +311,12 @@ function get_tax_using_tax_codes(array &$item_details, string $field_name_prefix
  * Mark an order completed, i.e. tax has been received for payment to the tax authority.
  *
  * @param  ID_TEXT $tracking_service The tax_api_service used
- * @param  ID_TEXT $tracking_id The tracking ID
+ * @param  mixed $tracking_id The tracking ID or reference data
  * @param  ID_TEXT $txn_id The transaction ID
  * @param  MEMBER $member_id The member ID
  * @param  ID_TEXT $session_id The session ID of the purchaser
  */
-function declare_completed(string $tracking_service, string $tracking_id, string $txn_id, int $member_id, string $session_id)
+function declare_completed(string $tracking_service, $tracking_id, string $txn_id, int $member_id, string $session_id)
 {
     $hook = get_tax_service_hook($tracking_service);
 
@@ -339,7 +346,7 @@ function backcalculate_tax_rate(float $amount, float $tax) : float
  * @param  ID_TEXT $type_code The product codename
  * @param  SHORT_TEXT $item_name The human-readable product title
  * @param  ID_TEXT $purchase_id The purchase ID
- * @param  REAL $price Transaction price in money
+ * @param  REAL $price Transaction price in money (excluding tax and shipping)
  * @param  REAL $tax Transaction tax in money (including shipping tax)
  * @param  REAL $shipping_cost Transaction shipping cost in money
  * @param  REAL $shipping_tax Transaction shipping tax in money
@@ -357,7 +364,7 @@ function generate_invoicing_breakdown(string $type_code, string $item_name, stri
             'item_name' => $item_name,
             'quantity' => 1,
             'unit_price' => $price,
-            'unit_tax' => $tax - $shipping_tax,
+            'tax' => $tax - $shipping_tax,
         ];
     } else {
         // A cart order...
@@ -374,35 +381,31 @@ function generate_invoicing_breakdown(string $type_code, string $item_name, stri
                 'item_name' => $_item['p_name'],
                 'quantity' => $_item['p_quantity'],
                 'unit_price' => $_item['p_price'],
-                'unit_tax' => $_item['p_tax'],
+                'tax' => $_item['p_tax'],
             ];
 
-            $total_price += $_item['p_price'];
+            $total_price += ($_item['p_price'] * $_item['p_quantity']);
             $total_tax += $_item['p_tax'];
         }
 
-        if ($shipping_cost !== null) {
-            $total_price += $shipping_cost;
-        }
-
-        if (($total_price != $price) || ($total_tax != $tax - $shipping_tax)) {
+        if (!paid_amount_matches($price, ($tax - $shipping_tax), $shipping_cost, $total_price, $total_tax, $shipping_cost)) {
             $invoicing_breakdown[] = [
                 'type_code' => '',
                 'item_name' => do_lang('PRICING_ADJUSTMENT'),
                 'quantity' => 1,
                 'unit_price' => $price - $total_price,
-                'unit_tax' => $tax - $total_tax,
+                'tax' => $tax - $total_tax,
             ];
         }
     }
 
-    if (($shipping_cost !== 0.00) || ($shipping_tax !== 0.00)) {
+    if (($shipping_cost != 0.00) || ($shipping_tax != 0.00)) {
         $invoicing_breakdown[] = [
             'type_code' => '',
             'item_name' => do_lang('SHIPPING'),
             'quantity' => 1,
             'unit_price' => $shipping_cost,
-            'unit_tax' => $shipping_tax,
+            'tax' => $shipping_tax,
         ];
     }
 
@@ -414,15 +417,16 @@ function generate_invoicing_breakdown(string $type_code, string $item_name, stri
  *
  * @param  MEMBER $member_id The member to send to
  * @param  AUTO_LINK $id The invoice ID
+ * @param  boolean $fulfilled Whether this invoice was fulfilled
  */
-function send_invoice_notification(int $member_id, int $id)
+function send_invoice_notification(int $member_id, int $id, bool $fulfilled = false)
 {
     // Send out notification
     require_code('notifications');
     $_url = build_url(['page' => 'invoices', 'type' => 'browse'], get_module_zone('invoices'), [], false, false, true);
     $url = $_url->evaluate();
-    $subject = do_lang('INVOICE_SUBJECT', strval($id), null, null, get_lang($member_id));
-    $body = do_notification_lang('INVOICE_MESSAGE', $url, get_site_name(), null, get_lang($member_id));
+    $subject = do_lang($fulfilled ? 'INVOICE_FULFILLED_SUBJECT' : 'INVOICE_SUBJECT', strval($id), null, null, get_lang($member_id));
+    $body = do_notification_lang($fulfilled ? 'INVOICE_FULFILLED_MESSAGE' : 'INVOICE_MESSAGE', $url, get_site_name(), null, get_lang($member_id));
     dispatch_notification('invoice', null, $subject, $body, [$member_id]);
 }
 
@@ -440,25 +444,21 @@ function generate_tax_invoice(string $txn_id) : object
     $transaction_row = get_transaction_row($txn_id);
 
     $address_rows = $GLOBALS['SITE_DB']->query_select('ecom_trans_addresses', ['*'], ['a_trans_expecting_id' => $txn_id], '', 1);
+
     $trans_address = '';
     if (array_key_exists(0, $address_rows)) {
         $address_row = $address_rows[0];
 
-        $lines = [
-            trim($address_row['a_firstname'] . ' ' . $address_row['a_lastname']),
-            $address_row['a_street_address'],
-            $address_row['a_city'],
-            $address_row['a_county'],
-            $address_row['a_state'],
-            $address_row['a_post_code'],
-            find_country_name_from_iso($address_row['a_country']),
+        $address_parts = [
+            'name' => $address_row['a_firstname'] . ' ' . $address_row['a_lastname'],
+            'street_address' => $address_row['a_street_address'],
+            'city' => $address_row['a_city'],
+            'county' => $address_row['a_county'],
+            'state' => $address_row['a_state'],
+            'post_code' => $address_row['a_post_code'],
+            'country' => $address_row['a_country'],
         ];
-        foreach ($lines as $line) {
-            if (trim($line) != '') {
-                $trans_address .= trim($line) . "\n";
-            }
-        }
-        $trans_address = rtrim($trans_address);
+        $trans_address = get_formatted_address($address_parts);
     }
 
     $items = ($transaction_row['t_invoicing_breakdown'] == '') ? [] : json_decode($transaction_row['t_invoicing_breakdown'], true);
@@ -467,12 +467,11 @@ function generate_tax_invoice(string $txn_id) : object
         $invoicing_breakdown[] = [
             'TYPE_CODE' => $item['type_code'],
             'ITEM_NAME' => $item['item_name'],
-            'QUANTITY' => $item['quantity'],
+            'QUANTITY' => (($item['quantity'] !== null) ? integer_format($item['quantity']) : ''),
             'UNIT_PRICE' => float_format($item['unit_price']),
             'PRICE' => float_format($item['unit_price'] * $item['quantity']),
-            'UNIT_TAX' => float_format($item['unit_tax']),
-            'TAX' => float_format($item['unit_tax'] * $item['quantity']),
-            'TAX_RATE' => float_format(backcalculate_tax_rate($item['unit_price'], $item['unit_tax']), 1, true),
+            'TAX' => float_format($item['tax']),
+            'TAX_RATE' => float_format(backcalculate_tax_rate(($item['unit_price'] * $item['quantity']), $item['tax']), 1, true),
         ];
     }
     if (empty($invoicing_breakdown)) {
@@ -488,10 +487,9 @@ function generate_tax_invoice(string $txn_id) : object
         $invoicing_breakdown[] = [
             'TYPE_CODE' => $transaction_row['t_type_code'],
             'ITEM_NAME' => $item_name,
-            'QUANTITY' => 1,
+            'QUANTITY' => integer_format(1),
             'UNIT_PRICE' => float_format($transaction_row['t_amount']),
             'PRICE' => float_format($transaction_row['t_amount']),
-            'UNIT_TAX' => float_format($transaction_row['t_tax']),
             'TAX' => float_format($transaction_row['t_tax']),
             'TAX_RATE' => float_format(backcalculate_tax_rate($transaction_row['t_amount'], $transaction_row['t_tax']), 1, true),
         ];
@@ -507,9 +505,9 @@ function generate_tax_invoice(string $txn_id) : object
         'TRANS_ADDRESS' => $trans_address,
         'ITEMS' => $invoicing_breakdown,
         'CURRENCY' => $transaction_row['t_currency'],
-        'TOTAL_PRICE' => float_format($transaction_row['t_amount']),
+        'TOTAL_PRICE' => float_format($transaction_row['t_amount'] + $transaction_row['t_shipping']),
         'TOTAL_TAX' => float_format($transaction_row['t_tax']),
-        'TOTAL_AMOUNT' => float_format($transaction_row['t_amount'] + $transaction_row['t_tax']),
+        'TOTAL_AMOUNT' => float_format($transaction_row['t_amount'] + $transaction_row['t_tax'] + $transaction_row['t_shipping']),
         'PURCHASE_ID' => $transaction_row['t_purchase_id'],
         'STATUS' => $status,
     ]);
@@ -563,15 +561,6 @@ function form_input_tax_code($set_title, $description, string $set_name, string 
         }
     }
 
-    // EU rate input...
-
-    $has_eu = ($default == 'EU');
-    if ($has_eu) {
-        $default_set = 'eu';
-    }
-    $input = form_input_hidden($set_name . '_eu', '1');
-    $field_set->attach(_form_input($set_name . '_eu', do_lang_tempcode('TAX_EU'), do_lang_tempcode('DESCRIPTION_TAX_EU'), $input, $required, false, $tabindex));
-
     // --
 
     $fields->attach(alternate_fields_set__end($set_name, $set_title, '', $field_set, $required, null, false, $default_set));
@@ -588,12 +577,12 @@ function form_input_tax_code($set_title, $description, string $set_name, string 
 function post_param_tax_code(string $name, string $default = '0%') : string
 {
     $value = post_param_string($name . '_flat', ''); // Simple flat figure
-    if ($value == '') {
+    if ($value == '') { // No simple flat figure
         $value = post_param_string($name . '_rate', ''); // Simple rate
-    } else { // simple flat figure present
+    } else { // simple flat figure post-processing
         $value = float_to_raw_string(float_unformat($value));
     }
-    if ($value == '') { // Hook-based symantic parameters
+    if ($value == '') { // No simple rate; do hook-based symantic parameters
         $hooks = find_all_hook_obs('systems', 'ecommerce_tax', 'Hook_ecommerce_tax_');
         foreach ($hooks as $ob) {
             if (method_exists($ob, 'post_param_tax_code')) {
@@ -603,12 +592,38 @@ function post_param_tax_code(string $name, string $default = '0%') : string
                 }
             }
         }
-    } else { // simple rate present
+    } else { // simple rate post-processing
         $value = float_to_raw_string(float_unformat($value)) . '%';
     }
-    if ($value == '') {
+    if ($value == '') { // No symantic parameters; use default value
         $value = $default; // Default
     }
 
     return $value;
+}
+
+/**
+ * Check the country configuration against a tax service's supported countries.
+ *
+ * @param  SHORT_TEXT $tax_service The human label of the tax service calling this function
+ * @param  array $supported_countries Array of country codes supported by the tax service
+ */
+function check_country_configuration(string $tax_service, array $supported_countries)
+{
+    $business_country = get_option('business_country');
+    $business_state = get_option('business_state');
+    $currency = get_option('currency');
+
+    if (!in_array($business_country, $supported_countries)) {
+        warn_exit(do_lang_tempcode('UNSUPPORTED_COUNTRY', $tax_service, escape_html($business_country)), false, true);
+    }
+    if ($business_country == 'US') {
+        if ($currency != 'USD') {
+            warn_exit(do_lang_tempcode('CURRENCY_NOT_USD'), false, true);
+        }
+        global $USA_STATE_LIST;
+        if (!array_key_exists($business_state, $USA_STATE_LIST)) {
+            warn_exit(do_lang_tempcode('USA_STATE_INVALID'), false, true);
+        }
+    }
 }

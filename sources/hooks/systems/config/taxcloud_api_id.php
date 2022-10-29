@@ -34,7 +34,7 @@ class Hook_config_taxcloud_api_id
             'human_name' => 'TAXCLOUD_API_ID',
             'type' => 'line',
             'category' => 'ECOMMERCE',
-            'group' => 'TAX_TAXCLOUD',
+            'group' => 'TAX_SERVICE_TAXCLOUD',
             'explanation' => 'CONFIG_OPTION_taxcloud_api_id',
             'shared_hosting_restricted' => '0',
             'list_options' => '',

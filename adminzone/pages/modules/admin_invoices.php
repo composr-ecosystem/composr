@@ -147,7 +147,7 @@ class Module_admin_invoices
      */
     public function run() : object
     {
-        $type = get_param_string('type', 'add');
+        $type = get_param_string('type', 'browse');
 
         if ($type == 'browse') {
             return $this->browse();
@@ -399,6 +399,12 @@ class Module_admin_invoices
      */
     public function fulfill() : object
     {
+        $rows = $GLOBALS['SITE_DB']->query_select('ecom_invoices', ['i_state' => 'delivered'], ['id' => get_param_integer('id')], '', 1);
+        if (array_key_exists(0, $rows)) {
+            $row = $rows[0];
+            send_invoice_notification($row['i_member_id'], $row['id'], true);
+        }
+
         $GLOBALS['SITE_DB']->query_update('ecom_invoices', ['i_state' => 'delivered'], ['id' => get_param_integer('id')], '', 1);
 
         $url = build_url(['page' => '_SELF', 'type' => 'unfulfilled'], '_SELF');

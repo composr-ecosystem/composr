@@ -301,6 +301,10 @@ class Hook_addon_registry_ecommerce
             'sources/hooks/systems/config/tax_country_regexp.php',
             'sources/hooks/systems/config/tax_state_regexp.php',
             'sources/hooks/systems/cron/topic_pin.php',
+            'sources/hooks/systems/config/enable_taxjar_address_validation.php',
+            'sources/hooks/systems/config/taxjar_api_key.php',
+            'sources/hooks/systems/config/taxjar_api_sandbox.php',
+            'sources/hooks/systems/config/paypal_data_transfer_id.php',
             'sources/hooks/systems/commandr_fs_extended_config/ecom_prods_custom.php',
             'sources/hooks/systems/commandr_fs_extended_config/ecom_prods_permissions.php',
             'sources/hooks/systems/commandr_fs_extended_config/ecom_prods_prices.php',
@@ -333,17 +337,6 @@ class Hook_addon_registry_ecommerce
             'themes/default/templates/ECOM_SUBSCRIPTION_BUTTON_VIA_PAYPAL.tpl',
             'sources/hooks/systems/payment_gateway/paypal.php',
             'sources/hooks/systems/config/primary_paypal_email.php',
-
-            'themes/default/templates/ECOM_TRANSACTION_BUTTON_VIA_SECPAY.tpl',
-            'themes/default/templates/ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_SECPAY.tpl',
-            'themes/default/templates/ECOM_SUBSCRIPTION_BUTTON_VIA_SECPAY.tpl',
-            'sources/hooks/systems/payment_gateway/secpay.php',
-
-            'themes/default/templates/ECOM_TRANSACTION_BUTTON_VIA_WORLDPAY.tpl',
-            'themes/default/templates/ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_WORLDPAY.tpl',
-            'themes/default/templates/ECOM_SUBSCRIPTION_BUTTON_VIA_WORLDPAY.tpl',
-            'sources/hooks/systems/payment_gateway/worldpay.php',
-            'themes/default/templates/ECOM_LOGOS_WORLDPAY.tpl',
 
             'themes/default/templates/ECOM_TRANSACTION_BUTTON_VIA_CCBILL.tpl',
             'themes/default/templates/ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_CCBILL.tpl',
@@ -378,18 +371,11 @@ class Hook_addon_registry_ecommerce
             'templates/ECOM_CASH_FLOW_SCREEN.tpl' => 'administrative__ecom_cash_flow_screen',
             'templates/ECOM_TAX_INVOICE.tpl' => 'ecom_tax_invoice_screen',
             'templates/ECOM_PURCHASE_SCREEN.tpl' => 'purchase_screen',
-            'templates/ECOM_LOGOS_WORLDPAY.tpl' => 'ecom_logos_worldpay',
             'templates/ECOM_LOGOS_AUTHORIZE.tpl' => 'ecom_logos_authorize',
             'templates/ECOM_PAYMENT_PROCESSOR_LINKS_AUTHORIZE.tpl' => 'ecom_payment_processor_links_authorize',
-            'templates/ECOM_TRANSACTION_BUTTON_VIA_WORLDPAY.tpl' => 'ecom_transaction_button_via_worldpay',
-            'templates/ECOM_SUBSCRIPTION_BUTTON_VIA_WORLDPAY.tpl' => 'ecom_subscription_button_via_worldpay',
-            'templates/ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_WORLDPAY.tpl' => 'ecom_subscription_cancel_button_via_worldpay',
             'templates/ECOM_TRANSACTION_BUTTON_VIA_PAYPAL.tpl' => 'ecom_transaction_button_via_paypal',
             'templates/ECOM_SUBSCRIPTION_BUTTON_VIA_PAYPAL.tpl' => 'ecom_subscription_button_via_paypal',
             'templates/ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_PAYPAL.tpl' => 'ecom_subscription_cancel_button_via_paypal',
-            'templates/ECOM_TRANSACTION_BUTTON_VIA_SECPAY.tpl' => 'ecom_transaction_button_via_secpay',
-            'templates/ECOM_SUBSCRIPTION_BUTTON_VIA_SECPAY.tpl' => 'ecom_subscription_button_via_secpay',
-            'templates/ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_SECPAY.tpl' => 'ecom_subscription_cancel_button_via_secpay',
             'templates/ECOM_TRANSACTION_BUTTON_VIA_CCBILL.tpl' => 'ecom_transaction_button_via_ccbill',
             'templates/ECOM_SUBSCRIPTION_BUTTON_VIA_CCBILL.tpl' => 'ecom_subscription_button_via_ccbill',
             'templates/ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_CCBILL.tpl' => 'ecom_subscription_cancel_button_via_ccbill',
@@ -443,23 +429,6 @@ class Hook_addon_registry_ecommerce
      *
      * @return Tempcode Preview
      */
-    public function tpl_preview__ecom_logos_worldpay() : object
-    {
-        return lorem_globalise(do_lorem_template('ECOM_LOGOS_WORLDPAY', [
-            'INST_ID' => placeholder_codename(),
-            'PD_ADDRESS' => lorem_phrase(),
-            'PD_EMAIL' => lorem_word(),
-            'PD_NUMBER' => placeholder_number(),
-        ]), null, '', true);
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return Tempcode Preview
-     */
     public function tpl_preview__ecom_logos_authorize() : object
     {
         return lorem_globalise(do_lorem_template('ECOM_LOGOS_AUTHORIZE', [
@@ -477,78 +446,6 @@ class Hook_addon_registry_ecommerce
     public function tpl_preview__ecom_payment_processor_links_authorize() : object
     {
         return lorem_globalise(do_lorem_template('ECOM_PAYMENT_PROCESSOR_LINKS_AUTHORIZE', []), null, '', true);
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return Tempcode Preview
-     */
-    public function tpl_preview__ecom_transaction_button_via_worldpay() : object
-    {
-        return lorem_globalise(do_lorem_template('ECOM_TRANSACTION_BUTTON_VIA_WORLDPAY', [
-            'TYPE_CODE' => lorem_word(),
-            'ITEM_NAME' => lorem_phrase(),
-            'PURCHASE_ID' => placeholder_codename(),
-            'TRANS_EXPECTING_ID' => placeholder_numeric_id(),
-            'DIGEST' => lorem_phrase(),
-            'TEST_MODE' => lorem_phrase(),
-            'PRICE' => placeholder_number(),
-            'TAX' => placeholder_number(),
-            'SHIPPING_COST' => placeholder_number(),
-            'AMOUNT' => placeholder_number(),
-            'CURRENCY' => 'GBP',
-            'USERNAME' => lorem_word(),
-            'FORM_URL' => placeholder_url(),
-            'EMAIL_ADDRESS' => lorem_word(),
-            'MEMBER_ADDRESS' => placeholder_array(),
-        ]), null, '', true);
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return Tempcode Preview
-     */
-    public function tpl_preview__ecom_subscription_button_via_worldpay() : object
-    {
-        return lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_BUTTON_VIA_WORLDPAY', [
-            'TYPE_CODE' => lorem_word(),
-            'ITEM_NAME' => lorem_phrase(),
-            'PURCHASE_ID' => placeholder_codename(),
-            'TRANS_EXPECTING_ID' => placeholder_numeric_id(),
-            'DIGEST' => lorem_phrase(),
-            'TEST_MODE' => true,
-            'LENGTH' => placeholder_number(),
-            'LENGTH_UNITS_2' => 'm',
-            'PRICE' => placeholder_number(),
-            'TAX' => placeholder_number(),
-            'AMOUNT' => placeholder_number(),
-            'FIRST_REPEAT' => lorem_phrase(),
-            'CURRENCY' => 'GBP',
-            'USERNAME' => lorem_word(),
-            'FORM_URL' => placeholder_url(),
-            'EMAIL_ADDRESS' => lorem_word(),
-            'MEMBER_ADDRESS' => placeholder_array(),
-        ]), null, '', true);
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return Tempcode Preview
-     */
-    public function tpl_preview__ecom_subscription_cancel_button_via_worldpay() : object
-    {
-        return lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_WORLDPAY', [
-            'PURCHASE_ID' => placeholder_codename(),
-        ]), null, '', true);
     }
 
     /**
@@ -612,77 +509,6 @@ class Hook_addon_registry_ecommerce
     public function tpl_preview__ecom_subscription_cancel_button_via_paypal() : object
     {
         return lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_PAYPAL', [
-            'PURCHASE_ID' => placeholder_codename(),
-        ]), null, '', true);
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return Tempcode Preview
-     */
-    public function tpl_preview__ecom_transaction_button_via_secpay() : object
-    {
-        return lorem_globalise(do_lorem_template('ECOM_TRANSACTION_BUTTON_VIA_SECPAY', [
-            'TYPE_CODE' => lorem_word(),
-            'ITEM_NAME' => lorem_phrase(),
-            'PURCHASE_ID' => placeholder_codename(),
-            'TRANS_EXPECTING_ID' => placeholder_numeric_id(),
-            'DIGEST' => lorem_phrase(),
-            'TEST_MODE' => true,
-            'PRICE' => placeholder_number(),
-            'TAX' => placeholder_number(),
-            'SHIPPING_COST' => placeholder_number(),
-            'AMOUNT' => placeholder_number(),
-            'CURRENCY' => 'GBP',
-            'USERNAME' => lorem_word(),
-            'FORM_URL' => placeholder_url(),
-            'MEMBER_ADDRESS' => placeholder_array(),
-        ]), null, '', true);
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return Tempcode Preview
-     */
-    public function tpl_preview__ecom_subscription_button_via_secpay() : object
-    {
-        return lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_BUTTON_VIA_SECPAY', [
-            'TYPE_CODE' => lorem_phrase(),
-            'ITEM_NAME' => lorem_phrase(),
-            'PURCHASE_ID' => placeholder_codename(),
-            'TRANS_EXPECTING_ID' => placeholder_numeric_id(),
-            'DIGEST' => lorem_phrase(),
-            'TEST_MODE' => true,
-            'FIRST_REPEAT' => lorem_phrase(),
-            'LENGTH' => placeholder_number(),
-            'LENGTH_UNITS_2' => 'm',
-            'PRICE' => placeholder_number(),
-            'TAX' => placeholder_number(),
-            'AMOUNT' => placeholder_number(),
-            'CURRENCY' => 'GBP',
-            'USERNAME' => lorem_word(),
-            'FORM_URL' => placeholder_url(),
-            'MEMBER_ADDRESS' => placeholder_array(),
-        ]), null, '', true);
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return Tempcode Preview
-     */
-    public function tpl_preview__ecom_subscription_cancel_button_via_secpay() : object
-    {
-        return lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_SECPAY', [
-            'CANCEL_URL' => placeholder_url(),
             'PURCHASE_ID' => placeholder_codename(),
         ]), null, '', true);
     }

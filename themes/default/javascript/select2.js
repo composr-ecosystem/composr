@@ -4568,7 +4568,6 @@ S2.define('select2/dropdown/attachBody',[
       css.position = 'relative';
       css.width = 'auto';
     }
-
     this.$dropdown.css(css);
   };
 

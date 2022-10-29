@@ -29,15 +29,35 @@ class Hook_ecommerce_tax_composr
     ];
 
     /**
-     * Check whether or not an item uses this tax service for its tax calculations.
+     * Get the name of this tax service.
+     *
+     * @return SHORT_TEXT The name of the tax service
+     */
+    public function get_tax_service_label() : string
+    {
+        return do_lang('TAX_SERVICE_COMPOSR');
+    }
+
+    /**
+     * Run a health check on this tax service.
+     *
+     * @return ?array Pair: Whether or not the health check passes, and a message string (null: cannot run a health check on this service)
+     */
+    public function health_check() : ?array
+    {
+        // Nothing to check for Composr
+        return null;
+    }
+
+    /**
+     * Check at which priority this tax service should be considered given a product to purchase.
      *
      * @param  array $parts The item / details pair
-     * @return boolean Whether or not the product uses this tax service for its taxes
+     * @return integer The priority for this service (see TAX_SERVICE_PRIORITY_*) (0: do not use for this set of products)
      */
-    public function uses_this_service(array $parts) : bool
+    public function service_priority(array $parts) : int
     {
-        // Composr is hard-coded to be the last tax service hook checked and is always used if a product gets to this point
-        return true;
+        return TAX_SERVICE_PRIORITY_LOW;
     }
 
     /**
@@ -65,7 +85,7 @@ class Hook_ecommerce_tax_composr
             $tax_code = $details['tax_code'];
             $amount = $details['price'];
 
-            // Europe
+            // Europe; use the VAT rates API
             if ($tax_code == 'EU') {
                 require_code('http');
                 list($__rates) = cache_and_carry('cms_http_request', [$this->urls['EUVATRates'], ['convert_to_internal_encoding' => true, 'timeout' => 20.0]]);
@@ -134,10 +154,45 @@ class Hook_ecommerce_tax_composr
     }
 
     /**
+     * Mark an order completed i.e. tax has been received for payment to the tax authority.
+     *
+     * @param  mixed $tracking_id The tracking ID or reference data
+     * @param  ID_TEXT $txn_id The transaction ID
+     * @param  MEMBER $member_id The member ID
+     * @param  ID_TEXT $session_id The session ID of the purchaser
+     */
+    public function declare_completed($tracking_id, string $txn_id, int $member_id, string $session_id)
+    {
+        // Nothing to do
+    }
+
+    /**
+     * Attach additional service-specific fields for a tax input widget.
+     *
+     * @param  Tempcode $field_set The form field template (passed by reference)
+     * @param  ID_TEXT $default_set The default set of fields to use (passed by reference)
+     * @param  mixed $set_title A human intelligible name for this input field, provided in plain-text format or as HTML via do_lang_tempcode/protect_from_escaping
+     * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
+     * @param  ID_TEXT $set_name The name which this input field is for
+     * @param  string $default The default value for this input field
+     * @param  boolean $required Whether this is a required input field
+     * @param  ?integer $tabindex The tab index of the field (null: not specified)
+     */
+    public function form_input_tax_code(object &$field_set, string &$default_set, $set_title, $description, string $set_name, string $default, bool $required, ?int $tabindex = null)
+    {
+        $has_eu = ($default == 'EU');
+        if ($has_eu) {
+            $default_set = 'eu';
+        }
+        $input = form_input_hidden($set_name . '_eu', '1');
+        $field_set->attach(_form_input($set_name . '_eu', do_lang_tempcode('TAX_EU'), do_lang_tempcode('DESCRIPTION_TAX_EU'), $input, $required, false, $tabindex));
+    }
+
+    /**
      * Read a tax value from the POST environment specific for this tax service.
      *
      * @param  string $name Variable name
-     * @return string The value
+     * @return string The value (blank: there are no POST parameters present specific for this tax service)
      */
     public function post_param_tax_code(string $name) : string
     {
@@ -145,5 +200,19 @@ class Hook_ecommerce_tax_composr
             return 'EU';
         }
         return '';
+    }
+
+    /**
+     * Render the tax code field value for this tax service.
+     *
+     * @param  ID_TEXT $tax_code The tax code of the field
+     * @return ?mixed The render text as an escaped string or Tempcode (null: the code is not applicable with this tax service)
+     */
+    public function render_field_value(string $tax_code)
+    {
+        if ($tax_code == 'EU') {
+            return do_lang_tempcode('TAX_EU');
+        }
+        return null;
     }
 }

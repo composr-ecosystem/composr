@@ -133,10 +133,6 @@ class Hook_fields_tax_code
             }
         }
 
-        if ($tax_code == 'EU') {
-            return do_lang_tempcode('TAX_EU');
-        }
-
         if (substr($tax_code, -1) == '%') {
             return escape_html(float_format(floatval(substr($tax_code, 0, strlen($tax_code) - 1)), 2, true) . '%');
         }

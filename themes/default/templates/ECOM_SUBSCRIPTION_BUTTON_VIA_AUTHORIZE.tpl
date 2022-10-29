@@ -2,7 +2,7 @@
 	<input type="hidden" name="x_fp_sequence" value="{SEQUENCE*}" />
 	<input type="hidden" name="x_fp_timestamp" value="{TIMESTAMP*}" />
 	<input type="hidden" name="x_fp_hash" value="{FINGERPRINT*}" />
-	<input type="hidden" name="x_description" value="{TRANS_EXPECTING_ID*} - {!SUBSCRIPTION_FOR,{$USERNAME*}} ({ITEM_NAME*})" />
+	<input type="hidden" name="x_description" value="{TRANS_EXPECTING_ID*} - {!SUBSCRIPTION_FOR,{$USERNAME*},{ITEM_NAME*}}" />
 	<input type="hidden" name="x_login" value="{LOGIN_ID*}" />
 	<input type="hidden" name="x_amount" value="{AMOUNT*}" />
 	<input type="hidden" name="x_tax" value="{TAX*}" />

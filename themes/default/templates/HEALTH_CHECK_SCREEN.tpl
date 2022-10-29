@@ -19,8 +19,8 @@
 		</div>
 
 		<div class="left float-separation">
-			<label for="passes">{!SHOW_PASSES}:</label>
-			<input type="checkbox" name="passes" id="passes" value="1"{+START,IF,{PASSES}} checked="checked"{+END} />
+			<label for="completions">{!SHOW_PASSES}:</label>
+			<input type="checkbox" name="completions" id="completions" value="1"{+START,IF,{COMPLETIONS}} checked="checked"{+END} />
 		</div>
 
 		<div class="left float-separation">

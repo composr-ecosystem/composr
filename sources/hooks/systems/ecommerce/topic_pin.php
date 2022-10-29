@@ -47,10 +47,10 @@ class Hook_ecommerce_topic_pin
      * IMPORTANT NOTE TO PROGRAMMERS: This function may depend only on the database, and not on get_member() or any GET/POST values.
      *  Such dependencies will break IPN, which works via a Guest and no dependable environment variables. It would also break manual transactions from the Admin Zone.
      *
-     * @param  ?ID_TEXT $search Product being searched for (null: none)
+     * @param  ?ID_TEXT $search Product being searched for (passed by reference as it may be modified for special cases) (null: none)
      * @return array A map of product name to list of product details
      */
-    public function get_products(?string $search = null) : array
+    public function get_products(?string &$search = null) : array
     {
         require_lang('cns');
 
@@ -152,7 +152,7 @@ class Hook_ecommerce_topic_pin
      * @param  boolean $from_admin Whether this is being called from the Admin Zone. If so, optionally different fields may be used, including a purchase_id field for direct purchase ID input.
      * @return array A pair: The purchase ID, a confirmation box to show (null for no specific confirmation)
      */
-    public function handle_needed_fields(string $type_code, bool $from_admin = false) : array
+    public function process_needed_fields(string $type_code, bool $from_admin = false) : array
     {
         require_lang('cns');
 
@@ -198,7 +198,7 @@ class Hook_ecommerce_topic_pin
 
         require_lang('cns');
 
-        $days = intval(preg_replace('#^TOPIC_PIN__#', '', $type_code));
+        $days = intval(preg_replace('#^TOPIC_PIN_#', '', $type_code));
 
         list($member_id, $topic_id) = json_decode($purchase_id);
 

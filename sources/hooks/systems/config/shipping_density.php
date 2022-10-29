@@ -57,7 +57,7 @@ class Hook_config_shipping_density
         }
 
         require_code('locations');
-        if (geolocate_ip() == 'US') {
+        if (geolocate_ip() == 'US' || get_option('yeehaw') == '1') {
             return '139.0'; // 139 in3/lb (https://en.wikipedia.org/wiki/Dimensional_weight)
         }
         return '5000.0'; // 5000 cm3/kg (https://en.wikipedia.org/wiki/Dimensional_weight)

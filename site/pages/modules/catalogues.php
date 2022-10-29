@@ -690,6 +690,7 @@ class Module_catalogues
     public $title;
     public $_title;
     public $catalogue_name;
+    public $catalogue_title;
     public $id;
     public $screen;
     public $catalogue;

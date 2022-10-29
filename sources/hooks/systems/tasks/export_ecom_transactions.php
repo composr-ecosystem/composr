@@ -158,6 +158,8 @@ class Hook_task_export_ecom_transactions
 
                 $transaction[do_lang(get_option('tax_system')) . ' (' . do_lang('DETAILS') . ')'] = $_transaction['t_tax_derivation'];
 
+                $transaction[do_lang('SHIPPING')] = float_format($_transaction['t_shipping']);
+
                 $transaction[do_lang('STATUS')] = get_transaction_status_string($_transaction['t_status']);
 
                 $transaction[do_lang('REASON')] = trim($_transaction['t_reason'] . '; ' . $_transaction['t_pending_reason'], '; ');

@@ -91,6 +91,7 @@ class template_no_unused_test_set extends cms_test_case
             'COMCODE_SUBTITLE',
             'COMMANDR_CNS_NOTIFICATION',
             'COMMANDR_PT_NOTIFICATION',
+            'COMMUNITY_BILLBOARD_FOOTER',
             'EMOTICON_IMG_CODE_DIR',
             'EMOTICON_IMG_CODE_THEMED',
             'FILEDUMP_FOOTER',

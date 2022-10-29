@@ -25,37 +25,29 @@ class Hook_ecommerce_tax_taxcloud
 {
     // The TaxCloud API URLs
     protected $urls = [
-        'ping' => 'https://api.taxcloud.com/1.0/TaxCloud/Ping',
-        'lookup' => 'https://api.taxcloud.com/1.0/TaxCloud/Lookup',
-        'verifyAddress' => 'https://api.taxcloud.com/1.0/TaxCloud/VerifyAddress',
-        'authorizedWithCapture' => 'https://api.taxcloud.com/1.0/TaxCloud/AuthorizedWithCapture',
-        'TIC' => 'https://taxcloud.com/tic/json/',
-        'TICText' => 'https://taxcloud.net/tic/?format=text',
+        'ping' => 'https://api.taxcloud.com/1.0/TaxCloud/Ping', // Check TaxCloud service status
+        'lookup' => 'https://api.taxcloud.com/1.0/TaxCloud/Lookup', // Perform a tax look-up (creates a transaction)
+        'verifyAddress' => 'https://api.taxcloud.com/1.0/TaxCloud/VerifyAddress', // Verify an address validity
+        'authorizedWithCapture' => 'https://api.taxcloud.com/1.0/TaxCloud/AuthorizedWithCapture', // Mark transaction as complete
+        'TIC' => 'https://taxcloud.com/tic/json/', // Look up TIC tax codes in JSON format
+        'TICText' => 'https://taxcloud.net/tic/?format=text', // Look up TIC tax codes in text format
     ];
 
     /**
-    * Check that TaxCloud is correctly configured.
-    */
-    protected function check_configured_correctly()
-    {
-        require_lang('ecommerce');
+     * Array of country codes supported by TaxCloud
+     */
+    protected $supported_countries = [ // TODO: This may change; see #3173
+        'US' // United States
+    ];
 
-        // Check for configuration errors
-        if (get_option('business_country') != 'US') { // TODO: This line may change see #3173
-            warn_exit(do_lang_tempcode('TIC__BUSINESS_COUNTRY_NOT_USA'), false, true);
-        }
-        if (get_option('business_country') == 'US') {
-            if (get_option('currency') != 'USD') {
-                warn_exit(do_lang_tempcode('TIC__CURRENCY_NOT_USD'), false, true);
-            }
-            global $USA_STATE_LIST;
-            if (!array_key_exists(get_option('business_state'), $USA_STATE_LIST)) {
-                warn_exit(do_lang_tempcode('TIC__USA_STATE_INVALID'), false, true);
-            }
-        }
-        if ((get_option('taxcloud_api_key') == '') || (get_option('taxcloud_api_id') == '')) {
-            warn_exit(do_lang_tempcode('TIC__TAXCLOUD_NOT_CONFIGURED'), false, true);
-        }
+    /**
+     * Get the name of this tax service.
+     *
+     * @return SHORT_TEXT The name of the tax service
+     */
+    public function get_tax_service_label() : string
+    {
+        return do_lang('TAX_SERVICE_TAXCLOUD');
     }
 
     /**
@@ -88,22 +80,29 @@ class Hook_ecommerce_tax_taxcloud
             } else {
                 return [(is_array($response)) && ($response['ResponseType'] == 3), 'Could not perform TaxCloud ping request'];
             }
-        } else {
-            return [false, 'TaxCloud: ' . $_response->message];
         }
+
+        return [false, 'TaxCloud: ' . $_response->message];
     }
 
     /**
-     * Check whether or not an item uses this tax service for its tax calculations.
+     * Check at which priority this tax service should be considered given a product to purchase.
      *
      * @param  array $parts The item / details pair
-     * @return boolean Whether or not the product uses this tax service for its taxes
+     * @return integer The priority for this service (see TAX_SERVICE_PRIORITY_*) (0: do not use for this set of products)
      */
-    public function uses_this_service(array $parts) : bool
+    public function service_priority(array $parts) : int
     {
-        list($item, $details) = $parts;
+        // Do not use if not configured
+        if ((get_option('taxcloud_api_key') == '') || (get_option('taxcloud_api_id') == '')) {
+            return TAX_SERVICE_PRIORITY_NONE;
+        }
 
-        return (preg_match('#^TIC:#', $details['tax_code']) != 0);
+        list($item, $details) = $parts;
+        if (preg_match('#^TIC:#', $details['tax_code']) != 0) {
+            return TAX_SERVICE_PRIORITY_HIGH;
+        }
+        return TAX_SERVICE_PRIORITY_NONE;
     }
 
     /**
@@ -123,6 +122,10 @@ class Hook_ecommerce_tax_taxcloud
     */
     public function get_tax_using_tax_codes(array &$item_details, array $products, string $field_name_prefix, float $shipping_cost, int $member_id, string $street_address, string $city, string $state, string $country, string $post_code) : ?array
     {
+        if (empty($products)) {
+            return null;
+        }
+
         $this->check_configured_correctly();
 
         if ($country == 'US') {
@@ -258,7 +261,7 @@ class Hook_ecommerce_tax_taxcloud
 
                 if (isset($products[$i])) {
                     $tax = $cart_item['TaxAmount'];
-                    $tax_derivation = ['TaxCloud' => $tax];
+                    $tax_derivation = ['taxcloud' => $tax];
 
                     $products[$i][2] = $tax_derivation;
                     $products[$i][3] = $tax;
@@ -268,29 +271,28 @@ class Hook_ecommerce_tax_taxcloud
                     // Shipping...
 
                     $shipping_tax = $cart_item['TaxAmount'];
-                    $shipping_tax_derivation = ['TaxCloud' => $shipping_tax];
+                    $shipping_tax_derivation = ['taxcloud' => $shipping_tax];
                 }
             }
 
             $tax_tracking = ['taxcloud' => $response['CartID']];
 
             return [$shipping_tax_derivation, $shipping_tax, $tax_tracking, []];
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
-     * Mark an order completed on TaxCloud, i.e. tax has been received for payment to the tax authority.
+     * Mark an order completed i.e. tax has been received for payment to the tax authority.
      *
-     * @param  ID_TEXT $tracking_id The TaxCloud tracking ID
+     * @param  mixed $tracking_id The tracking ID or reference data
      * @param  ID_TEXT $txn_id The transaction ID
      * @param  MEMBER $member_id The member ID
      * @param  ID_TEXT $session_id The session ID of the purchaser
      */
-    public function declare_completed(string $tracking_id, string $txn_id, int $member_id, string $session_id)
+    public function declare_completed($tracking_id, string $txn_id, int $member_id, string $session_id)
     {
-
         //$date = date('Y-m-d', tz_time(time(), get_site_timezone()));
         $date = date('Y-m-d'); // UTC-based according to TaxCloud support
         $request = [
@@ -340,6 +342,11 @@ class Hook_ecommerce_tax_taxcloud
      */
     public function form_input_tax_code(object &$field_set, string &$default_set, $set_title, $description, string $set_name, string $default, bool $required, ?int $tabindex = null)
     {
+        // Do not render if not enabled
+        if ((get_option('taxcloud_api_key') == '') || (get_option('taxcloud_api_id') == '')) {
+            return;
+        }
+
         require_code('form_templates');
 
         $_required = ($required) ? '-required' : '';
@@ -370,6 +377,52 @@ class Hook_ecommerce_tax_taxcloud
             ]);
             $field_set->attach(_form_input($set_name . '_tic', do_lang_tempcode('TAX_TIC'), do_lang_tempcode('DESCRIPTION_TAX_TIC'), $input, $required, false, $tabindex));
         }
+    }
+
+    /**
+     * Read a tax value from the POST environment specific for this tax service.
+     *
+     * @param  string $name Variable name
+     * @return string The value (blank: there are no POST parameters present specific for this tax service)
+     */
+    public function post_param_tax_code(string $name) : string
+    {
+        $value = post_param_string($name . '_tic', '');
+        if ($value != '') {
+            $value = 'TIC:' . $value;
+        }
+
+        return $value;
+    }
+
+    /**
+     * Render the tax code field value for this tax service.
+     *
+     * @param  ID_TEXT $tax_code The tax code of the field
+     * @return ?mixed The render text as an escaped string or Tempcode (null: the code is not applicable with this tax service)
+     */
+    public function render_field_value(string $tax_code)
+    {
+        if ((get_option('taxcloud_api_key') == '') || (get_option('taxcloud_api_id') == '')) {
+            return null;
+        }
+
+        if (preg_match('#^TIC:#', $tax_code) != 0) {
+            $current_tic = intval(substr($tax_code, 4));
+            require_code('http');
+            list($__tics) = cache_and_carry('cms_http_request', [$this->urls['TICText'], ['convert_to_internal_encoding' => true]]);
+            $_tics = explode("\n", $__tics);
+            foreach ($_tics as $tic_line) {
+                if (strpos($tic_line, '=') !== false) {
+                    list($tic, $tic_label) = explode('=', $tic_line, 2);
+                    if (intval($tic) == $current_tic) {
+                        return escape_html($tic_label);
+                    }
+                }
+            }
+            return escape_html($tax_code);
+        }
+        return null;
     }
 
     /**
@@ -417,44 +470,17 @@ class Hook_ecommerce_tax_taxcloud
     }
 
     /**
-     * Read a tax value from the POST environment specific for this tax service.
-     *
-     * @param  string $name Variable name
-     * @return string The value
-     */
-    public function post_param_tax_code(string $name) : string
+    * Check that TaxCloud is correctly configured.
+    */
+    protected function check_configured_correctly()
     {
-        $value = post_param_string($name . '_tic', '');
-        if ($value != '') {
-            $value = 'TIC:' . $value;
-        }
+        require_code('ecommerce');
 
-        return $value;
-    }
+        check_country_configuration($this->get_tax_service_label(), $this->supported_countries);
 
-    /**
-     * Render the tax code field for this tax service.
-     *
-     * @param  ID_TEXT $tax_code The tax code of the field
-     * @return ?mixed The render text as an escaped string or Tempcode (null: the field is not applicable with this tax service)
-     */
-    public function render_field_value(string $tax_code)
-    {
-        if (preg_match('#^TIC:#', $tax_code) != 0) {
-            $current_tic = intval(substr($tax_code, 4));
-            require_code('http');
-            list($__tics) = cache_and_carry('cms_http_request', [$this->urls['TICText'], ['convert_to_internal_encoding' => true]]);
-            $_tics = explode("\n", $__tics);
-            foreach ($_tics as $tic_line) {
-                if (strpos($tic_line, '=') !== false) {
-                    list($tic, $tic_label) = explode('=', $tic_line, 2);
-                    if (intval($tic) == $current_tic) {
-                        return escape_html($tic_label);
-                    }
-                }
-            }
-            return escape_html($tax_code);
+        // Check for configuration errors
+        if ((get_option('taxcloud_api_key') == '') || (get_option('taxcloud_api_id') == '')) {
+            warn_exit(do_lang_tempcode('TAXCLOUD_NOT_CONFIGURED'), false, true);
         }
-        return null;
     }
 }

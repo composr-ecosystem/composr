@@ -26,16 +26,6 @@
 
 {$BLOCK,block=main_cc_embed,param={ID},select={CAT_SELECT},zone={$ZONE},max={$CONFIG_OPTION,catalogue_entries_per_page},pagination=1,sorting=1,filter={FILTER},block_id=module}
 
-{+START,IF,{$IN_STR,{ENTRIES},<img}}
-	<p class="vertical-alignment">
-		{+START,INCLUDE,ICON}
-			NAME=help
-			ICON_SIZE=24
-		{+END}
-		<span>{!HOVER_FOR_FULL}</span>
-	</p>
-{+END}
-
 {$REVIEW_STATUS,catalogue_category,{ID}}
 
 {+START,IF,{$THEME_OPTION,show_content_tagging}}{TAGS}{+END}

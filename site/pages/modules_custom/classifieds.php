@@ -215,6 +215,7 @@ class Module_classifieds
                     'T_REASON' => $t['t_reason'],
                     'T_AMOUNT' => float_format($t['t_amount']),
                     'T_TAX' => float_format($t['t_tax']),
+                    'T_SHIPPING' => float_format($t['t_shipping']),
                     'T_CURRENCY' => $t['t_currency'],
                     'T_PARENT_TXN_ID' => $t['t_parent_txn_id'],
                     'T_TIME' => strval($t['t_time']),

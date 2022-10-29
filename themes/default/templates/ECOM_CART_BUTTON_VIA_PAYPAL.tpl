@@ -5,8 +5,9 @@
 	<input type="hidden" name="notify_url" value="{$FIND_SCRIPT*,ecommerce}?from=paypal" />
 	<input type="hidden" name="return" value="{$PAGE_LINK*,_SEARCH:purchase:finish:type_code={TYPE_CODE}:from=paypal}" />
 	<input type="hidden" name="cancel_return" value="{$PAGE_LINK*,_SEARCH:purchase:finish:type_code={TYPE_CODE*}:cancel=1:from=paypal}" />
-	<input type="hidden" name="no_shipping" value="0" />
-	<input type="hidden" name="handling" value="{SHIPPING_COST*}" />
+	<input type="hidden" name="no_shipping" value="1" />
+	<input type="hidden" name="shipping_1" value="{SHIPPING_COST*}" />
+	<input type="hidden" name="tax_cart" value="{TAX*}" />
 	<input type="hidden" name="currency_code" value="{CURRENCY*}" />
 	<input type="hidden" name="custom" value="{TRANS_EXPECTING_ID*}" />
 	<input type="hidden" name="rm" value="2" />
@@ -23,7 +24,7 @@
 	<input type="hidden" name="upload" value="1" />
 	{+START,LOOP,ITEMS}
 		<input type="hidden" name="item_name_{$ADD*,1,{_loop_key}}" value="{PRODUCT_NAME*}" />
-		<input type="hidden" name="amount_{$ADD*,1,{_loop_key}}" value="{AMOUNT*}" />
+		<input type="hidden" name="amount_{$ADD*,1,{_loop_key}}" value="{PRICE*}" />
 		<input type="hidden" name="quantity_{$ADD*,1,{_loop_key}}" value="{QUANTITY*}" />
 
 		{+START,COMMENT}

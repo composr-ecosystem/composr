@@ -37,6 +37,14 @@ class Hook_privacy_ecommerce extends Hook_privacy_base
         require_lang('ecommerce');
 
         $tax_service = get_option('tax_api_service');
+        $tax_service_label = do_lang_tempcode('UNKNOWN');
+        if (hook_exists('systems', 'ecommerce_tax', $tax_service)) {
+            $ob = get_hook_ob('systems', 'ecommerce_tax', $tax_service, 'Hook_ecommerce_tax_');
+            if ($ob !== null) {
+                $tax_service_label = $ob->get_tax_service_label();
+            }
+        }
+
 
         $payment_gateway = get_option('payment_gateway');
         if ($payment_gateway != '') {
@@ -58,11 +66,10 @@ class Hook_privacy_ecommerce extends Hook_privacy_base
                     'action' => do_lang_tempcode('PRIVACY_ACTION_shippo'),
                     'reason' => do_lang_tempcode('PRIVACY_REASON_shippo'),
                 ],
-                // The Composr service is not a third-party service; ignore
-                (($tax_service == '') && ($tax_service != 'composr')) ? null : [
+                ($tax_service != 'composr') ? null : [
                     'heading' => do_lang('INFORMATION_TRANSFER_ECOMMERCE'),
-                    'action' => do_lang_tempcode('PRIVACY_ACTION_' . $tax_service),
-                    'reason' => do_lang_tempcode('PRIVACY_REASON_' . $tax_service),
+                    'action' => do_lang_tempcode('PRIVACY_ACTION_TAX', $tax_service_label),
+                    'reason' => do_lang_tempcode('PRIVACY_REASON_TAX'),
                 ],
                 ($payment_gateway == '') ? null : [
                     'heading' => do_lang('INFORMATION_TRANSFER_ECOMMERCE'),

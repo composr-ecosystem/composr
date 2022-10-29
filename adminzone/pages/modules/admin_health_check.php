@@ -114,7 +114,7 @@ class Module_admin_health_check
         if (post_param_integer('submitting', 0) == 1) {
             $sections_to_run = isset($_POST['sections_to_run']) ? $_POST['sections_to_run'] : [];
 
-            $passes = (post_param_integer('passes', 0) == 1);
+            $passes = (post_param_integer('completions', 0) == 1); // Cannot use any "pass*" names or password managers will stick buttons on top of the tick thinking it's a login field.
             $skips = (post_param_integer('skips', 0) == 1);
             $manual_checks = (post_param_integer('manual_checks', 0) == 1);
         } else {
@@ -144,7 +144,7 @@ class Module_admin_health_check
             '_GUID' => 'cd2a0ec2477dcc6545cb0825b098cfc5',
             'TITLE' => $this->title,
             'SECTIONS' => $sections,
-            'PASSES' => $passes,
+            'COMPLETIONS' => $passes,
             'SKIPS' => $skips,
             'MANUAL_CHECKS' => $manual_checks,
             'RESULTS' => $results,

@@ -145,7 +145,7 @@ function build_sales_table(array $filters = [], bool $show_username = false, boo
 
         if (strpos($item_name, $row['details']) === false) {
             $details_1 = $row['details'];
-            if (strpos($item_name, $row['details2']) === false) {
+            if (($row['details2'] != '') && (strpos($item_name, $row['details2']) === false)) {
                 $details_2 = $row['details2'];
             } else {
                 $details_2 = '';
