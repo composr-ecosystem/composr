@@ -170,7 +170,7 @@ You may place as many independent hit counters as you like.
 
 [title="2"]Community billboard[/title]
 
-Community billboard messages are covered in the [page="_SEARCH:tut_points"]Creating an economy/reward-system for members via points[/page] tutorial.
+Community billboard messages are covered in the [page="_SEARCH:tut_ecommerce"]eCommerce[/page] tutorial. This is a non-bundled addon.
 
 [concepts
  1_key="DOTW"           1_value="[Download of the week]"

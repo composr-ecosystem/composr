@@ -341,8 +341,6 @@ The queue is accessed via the Staff Checklist on the Admin Zone dashboard. Note 
 
 Messages may be manually added in the Admin Zone (a link is on the dashboard checklist), but regular users will be purchasing them. When that happens, you are notified of the new message have been added.
 
-For the community billboard to display, you must place the symbol code, [tt]{$COMMUNITY_BILLBOARD}[/tt] into a template or page. Commonly this would be into [tt]GLOBAL_HTML_WRAP.tpl[/tt] so that it can show somewhere in the page footer.
-
 [media width="150" description="Managing community billboard messages in the queue" float="left"]data_custom/images/docs/tut_ecommerce/community_billboard_manage.png[/media]
 [media width="150" description="Adding a community billboard message from the Admin Zone" float="left"]data_custom/images/docs/tut_ecommerce/community_billboard_add.png[/media]
 [media width="150" description="Configuring the default community billboard message" float="left"]data_custom/images/docs/tut_ecommerce/default_community_billboard.png[/media]

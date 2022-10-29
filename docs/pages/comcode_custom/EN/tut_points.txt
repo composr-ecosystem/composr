@@ -314,4 +314,4 @@ This means a member's gift points balance can change when their usergroups chang
  - [page="_SEARCH:tut_ecommerce"]eCommerce[/page]
  - [page="_SEARCH:tut_forums"]Discussion forums[/page]
 
-{$SET,tutorial_tags,Fun and Games,buildr,ecommerce,community_billboard,points,leader_board,Social,novice}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,The points system allows members to earn and spend points, creating a great dynamic. Find out how it works.}[block]main_tutorial_rating[/block]
+{$SET,tutorial_tags,Fun and Games,buildr,ecommerce,points,leader_board,community_billboard,Social,novice}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,The points system allows members to earn and spend points, creating a great dynamic. Find out how it works.}[block]main_tutorial_rating[/block]
