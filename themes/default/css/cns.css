@@ -368,10 +368,6 @@ div.cns-table-footer > div > div {
 	overflow: auto;
 }
 
-.cns-rank-image img {
-	max-height: 30px;
-}
-
 .cns-post-details-date {
 	float: left;
 	padding-left: 0.5em;
