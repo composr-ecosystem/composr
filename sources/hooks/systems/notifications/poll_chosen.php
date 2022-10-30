@@ -32,7 +32,7 @@ class Hook_notification_poll_chosen extends Hook_Notification
      */
     public function get_initial_setting(string $notification_code, ?string $category = null) : int
     {
-        return A_NA;
+        return A__STATISTICAL;
     }
 
     /**

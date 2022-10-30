@@ -32,7 +32,7 @@ class Hook_notification_shopping extends Hook_notification__Staff
      */
     public function get_initial_setting(string $notification_code, ?string $category = null) : int
     {
-        return A_NA;
+        return A__STATISTICAL;
     }
 
     /**

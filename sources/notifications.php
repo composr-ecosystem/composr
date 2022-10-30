@@ -1043,7 +1043,7 @@ function delete_all_notifications_on(string $notification_code, ?string $notific
  *
  * @package core_notifications
  */
-class Hook_Notification
+abstract class Hook_Notification
 {
     /**
      * Get a list of all the notification codes this hook can handle.
@@ -1147,10 +1147,7 @@ class Hook_Notification
      * @param  ?SHORT_TEXT $category The category within the notification code (null: none)
      * @return integer Initial setting
      */
-    public function get_initial_setting(string $notification_code, ?string $category = null) : int
-    {
-        return A__STATISTICAL;
-    }
+    abstract public function get_initial_setting(string $notification_code, ?string $category = null) : int;
 
     /**
      * Find the setting that members have for a notification code if they have done some action triggering automatic setting (e.g. posted within a topic).
@@ -1257,7 +1254,7 @@ class Hook_Notification
      * Further filter results from _all_members_who_have_enabled.
      *
      * @param  array $to_filter Members from main query (we'll filter them)
-     * @param  ID_TEXT $permission_module The permission module 
+     * @param  ID_TEXT $permission_module The permission module
      * @param  ID_TEXT $only_if_enabled_on__notification_code Notification code
      * @param  ?SHORT_TEXT $only_if_enabled_on__category The category within the notification code (null: none)
      * @param  ?array $to_member_ids List of member IDs we are restricting to (null: no restriction). This effectively works as a intersection set operator against those who have enabled.
@@ -1453,7 +1450,7 @@ class Hook_Notification
  *
  * @package core_notifications
  */
-class Hook_notification__Staff extends Hook_Notification
+abstract class Hook_notification__Staff extends Hook_Notification
 {
     /**
      * Get a list of all the notification codes this hook can handle.

@@ -32,7 +32,7 @@ class Hook_notification_core_staff extends Hook_notification__Staff
      */
     public function get_initial_setting(string $notification_code, ?string $category = null) : int
     {
-        if ($notification_code == 'spam_check_block') {
+        if (($notification_code == 'spam_check_block') || ($notification_code == 'auto_ban')) {
             return A_WEEKLY_EMAIL_DIGEST;
         }
         return A_NA;

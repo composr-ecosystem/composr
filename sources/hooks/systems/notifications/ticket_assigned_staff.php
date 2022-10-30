@@ -24,6 +24,18 @@
 class Hook_notification_ticket_assigned_staff extends Hook_Notification
 {
     /**
+     * Find the initial setting that members have for a notification code (only applies to the member_could_potentially_enable members).
+     *
+     * @param  ID_TEXT $notification_code Notification code
+     * @param  ?SHORT_TEXT $category The category within the notification code (null: none)
+     * @return integer Initial setting
+     */
+    public function get_initial_setting(string $notification_code, ?string $category = null) : int
+    {
+        return A__STATISTICAL;
+    }
+
+    /**
      * Find whether a handled notification code supports categories.
      * (Content types, for example, will define notifications on specific categories, not just in general. The categories are interpreted by the hook and may be complex. E.g. it might be like a regexp match, or like FORUM:3 or TOPIC:100).
      *
