@@ -1518,7 +1518,21 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
                 $level = 1; // Stop crazy Comcode causing stack errors with the toc
             }
 
-            $uniq_id = strval(count($STRUCTURE_LIST));
+            require_code('xhtml');
+            $uniq_id = fix_id(xhtml_substr($embed->evaluate(), 0, 20, false, false, 0.2), true);
+            $conflicts = [];
+            foreach ($STRUCTURE_LIST as $struct) {
+                if (preg_match('#^' . preg_quote($uniq_id, '#') . '(_(\d+))?$#', $struct[2]) != 0) {
+                    $conflicts[$struct[2]] = true;
+                }
+            }
+            if (!empty($conflicts)) {
+                $suffix_num = 1;
+                while (isset($conflicts[$suffix_num])) {
+                    $suffix_num++;
+                }
+                $uniq_id .= '_' . strval($suffix_num);
+            }
             $STRUCTURE_LIST[] = [$level, $embed, $uniq_id];
             if ($level == 1) {
                 $template = 'SCREEN_TITLE';

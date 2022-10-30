@@ -736,6 +736,7 @@ We hope other users will appreciate your efforts and give you some points to rew
             '_tests/tests/unit_tests/_api_google_search_console.php',
             '_tests/tests/unit_tests/_copyright.php',
             '_tests/tests/unit_tests/themewizard_colours.php',
+            '_tests/tests/unit_tests/ids.php',
             '_tests/tests/unit_tests/core_fields.php',
             '_tests/tests/unit_tests/_api_google_safe_browsing.php',
             '_tests/tests/unit_tests/timezones.php',

@@ -1932,8 +1932,10 @@ function fix_id(string $param, bool $simplified = false) : string
 
     $length = strlen($param);
     $new = '';
+    $flip_case_previous = false;
     for ($i = 0; $i < $length; $i++) {
         $char = $param[$i];
+        $flip_case = true;
         switch ($char) {
             case '[':
                 $new .= $simplified ? '' : '_opensquare_';
@@ -1968,13 +1970,18 @@ function fix_id(string $param, bool $simplified = false) : string
                     break;
                 }
                 $ascii = ord($char);
-                if ((($i !== 0) && ($char === '_')) || (($ascii >= 48) && ($ascii <= 57)) || (($ascii >= 65) && ($ascii <= 90)) || (($ascii >= 97) && ($ascii <= 122))) {
-                    $new .= $char;
-                } else {
+                if (($i !== 0) && ($char === '_')) {
+                    $new .= '_';
+                } elseif ((($ascii >= 48) && ($ascii <= 57)) || (($ascii >= 65) && ($ascii <= 90)) || (($ascii >= 97) && ($ascii <= 122))) {
+                    // Alphanumeric
+                    $flip_case = false;
+                    $new .= $flip_case_previous ? cms_strtoupper_ascii($char) : $char;
+                } elseif (!$simplified) {
                     $new .= '_' . strval($ascii) . '_';
                 }
                 break;
         }
+        $flip_case_previous = $flip_case;
     }
 
     if ($simplified) {
