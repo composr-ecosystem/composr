@@ -41,7 +41,7 @@ function init__forum_stub()
  *
  * @package core
  */
-class Forum_driver_base
+abstract class Forum_driver_base
 {
     public $db;
 
