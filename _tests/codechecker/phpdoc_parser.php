@@ -79,7 +79,7 @@ foreach ($files as $filename) {
         if ($r['name'] == '__global') {
             if (($filename != 'sources/global.php') && ($filename != 'phpstub.php')) {
                 foreach (array_keys($r['functions']) as $f) {
-                    if ((isset($global[$f])) && (!in_array($f, ['do_lang', 'mixed', 'qualify_url', 'http_get_contents', 'get_forum_type', 'mailto_obfuscated', 'get_custom_file_base']))) {
+                    if ((isset($global[$f])) && (!in_array($f, ['do_lang', 'mixed', 'qualify_url', 'http_get_contents', 'get_forum_type', 'mailto_obfuscated', 'get_custom_file_base', 'git_repos']))) {
                         echo 'DUPLICATE-FUNCTION ' . $f . ' (in ' . $filename . ')' . cnl();
                     }
                 }
