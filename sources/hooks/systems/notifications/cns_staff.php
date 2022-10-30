@@ -28,10 +28,15 @@ class Hook_notification_cns_staff extends Hook_notification__Staff
      *
      * @param  ID_TEXT $notification_code Notification code
      * @param  ?SHORT_TEXT $category The category within the notification code (null: none)
+     * @param  MEMBER $member_id The member the notification would be for
      * @return integer Initial setting
      */
-    public function get_initial_setting(string $notification_code, ?string $category = null) : int
+    public function get_initial_setting(string $notification_code, ?string $category, int $member_id) : int
     {
+        if (!$this->is_first_admin($member_id)) {
+            return A_NA;
+        }
+
         if ($notification_code == 'cns_profile_high_impact_edit') {
             return A_NA;
         }

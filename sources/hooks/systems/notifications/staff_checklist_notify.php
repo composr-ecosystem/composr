@@ -28,11 +28,16 @@ class Hook_notification_staff_checklist_notify extends Hook_notification__Staff
      *
      * @param  ID_TEXT $notification_code Notification code
      * @param  ?SHORT_TEXT $category The category within the notification code (null: none)
+     * @param  MEMBER $member_id The member the notification would be for
      * @return integer Initial setting
      */
-    public function get_initial_setting(string $notification_code, ?string $category = null) : int
+    public function get_initial_setting(string $notification_code, ?string $category, int $member_id) : int
     {
-        return A_DAILY_EMAIL_DIGEST;
+        if (!$this->is_first_admin($member_id)) {
+            return A_NA;
+        }
+
+        return A__STATISTICAL;
     }
 
     /**

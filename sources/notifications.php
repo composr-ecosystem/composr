@@ -1014,7 +1014,7 @@ function notifications_setting(string $notification_code, ?string $notification_
                 return A_NA; // Can happen in template test sets, as this can be called up by a symbol
             }
             //if ($ob === null) fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
-            $test = $ob->get_initial_setting($notification_code, $notification_category);
+            $test = $ob->get_initial_setting($notification_code, $notification_category, $member_id);
         }
     }
 
@@ -1145,9 +1145,23 @@ abstract class Hook_Notification
      *
      * @param  ID_TEXT $notification_code Notification code
      * @param  ?SHORT_TEXT $category The category within the notification code (null: none)
+     * @param  MEMBER $member_id The member the notification would be for
      * @return integer Initial setting
      */
-    abstract public function get_initial_setting(string $notification_code, ?string $category = null) : int;
+    abstract public function get_initial_setting(string $notification_code, ?string $category, int $member_id) : int;
+
+    /**
+     * Find if a given member is the first administrator. Useful for not having ALL staff get all useful staff notifications by default.
+     *
+     * @param  MEMBER $member_id The member the notification would be for
+     * @return boolean Whether they are the first admin
+     */
+    protected function is_first_admin(int $member_id) : bool
+    {
+        require_code('users_active_actions');
+        $first_admin_user = get_first_admin_user();
+        return $first_admin_user == $member_id;
+    }
 
     /**
      * Find the setting that members have for a notification code if they have done some action triggering automatic setting (e.g. posted within a topic).
@@ -1318,7 +1332,12 @@ abstract class Hook_Notification
         push_db_scope_check(false);
 
         // We need to know the default, as this applies when there is no notifications_enabled row present and dictates our query algorithm
-        $initial_setting = $this->get_initial_setting($only_if_enabled_on__notification_code, $only_if_enabled_on__category);
+        $initial_setting = $this->get_initial_setting($only_if_enabled_on__notification_code, $only_if_enabled_on__category, $GLOBALS['FORUM_DRIVER']->get_guest_id());
+        require_code('users_active_actions');
+        $first_admin_user = get_first_admin_user();
+        $initial_setting_first_admin = $this->get_initial_setting($only_if_enabled_on__notification_code, $only_if_enabled_on__category, $GLOBALS['FORUM_DRIVER']->get_guest_id());
+        $has_by_default = ($initial_setting != A_NA); // Ignored if $is_locked_on
+        $has_by_default_first_admin = ($initial_setting_first_admin != A_NA); // Ignored if $is_locked_on
 
         // SQL: Notification code and category filters
         $clause_scope = ' AND ' . db_string_equal_to('l_notification_code', substr($only_if_enabled_on__notification_code, 0, 80));
@@ -1367,35 +1386,39 @@ abstract class Hook_Notification
         // Work out what query to do
         $is_cns = (get_forum_type() == 'cns');
         $is_locked_on = ($lockdown_value !== null);
-        $has_by_default = ($initial_setting != A_NA); // Ignored if $is_locked_on
         if ($is_cns) {
-            // This is the most obvious query for Conversr notification-queries
-            $standard_query = 'SELECT l_member_id,l_setting FROM ' . $db->get_table_prefix() . 'notifications_enabled l JOIN ' . $db->get_table_prefix() . 'f_members m ON m.id=l.l_member_id WHERE 1=1';
-            $standard_query .= $clause_scope . $clause_member_ids . $clause_validation_cns;
-            $standard_query .= ' AND l_setting<>' . strval(A_NA);
-
             // Now go through the actual cases
             if ($is_locked_on) {
                 // :-) We are just querying out all members so we find the member IDs
-                $query = 'SELECT m.id AS l_member_id,' . strval($lockdown_value) . ' AS l_setting FROM ' . $db->get_table_prefix() . 'f_members m WHERE 1=1';
+                $query = 'SELECT m.id AS l_member_id,' . strval($lockdown_value) . ' AS l_setting,m.id FROM ' . $db->get_table_prefix() . 'f_members m WHERE 1=1';
                 $query .= $clause_member_ids_cns_side . $clause_validation_cns . ' AND m.id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
             } else {
                 if ($has_by_default) {
                     // :-) We are just querying out all members who do NOT have a setting of OFF
                     // We do a LEFT JOIN because having no setting is fine (it'll be put to the default setting of ON for the member)
-                    $query = 'SELECT m.id AS l_member_id,l_setting FROM ' . $db->get_table_prefix() . 'f_members m LEFT JOIN ' . $db->get_table_prefix() . 'notifications_enabled l ON m.id=l.l_member_id' . $clause_scope . ' WHERE 1=1';
+                    $query = 'SELECT m.id AS l_member_id,l_setting,m.id FROM ' . $db->get_table_prefix() . 'f_members m LEFT JOIN ' . $db->get_table_prefix() . 'notifications_enabled l ON m.id=l.l_member_id' . $clause_scope . ' WHERE 1=1';
                     $query .= $clause_member_ids_cns_side . $clause_validation_cns . ' AND m.id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
                     $query .= ' AND (l_setting IS NULL OR l_setting<>' . strval(A_NA) . ')';
                 } else {
                     // :-)
-                    $query = $standard_query;
+                    // This is the most obvious query for Conversr notification-queries
+                    $standard_query = 'SELECT l_member_id,l_setting,m.id FROM ' . $db->get_table_prefix() . 'notifications_enabled l JOIN ' . $db->get_table_prefix() . 'f_members m ON m.id=l.l_member_id WHERE 1=1';
+                    $standard_query .= $clause_scope . $clause_member_ids . $clause_validation_cns;
+                    $standard_query .= ' AND (l_setting IS NOT NULL AND l_setting<>' . strval(A_NA);
+                    if ($has_by_default_first_admin) {
+                        $standard_query .= ' OR m.id=' . strval($first_admin_user);
+                    }
+                    $standard_query .= ')';
                 }
             }
         } else {
             // This is the most obvious query for non-Conversr notification-queries
-            $standard_query = 'SELECT l_member_id,l_setting FROM ' . $db->get_table_prefix() . 'notifications_enabled l WHERE 1=1';
+            $standard_query = 'SELECT l_member_id,l_setting,l_member_id AS id FROM ' . $db->get_table_prefix() . 'notifications_enabled l WHERE 1=1';
             $standard_query .= $clause_scope . $clause_member_ids;
-            $standard_query .= ' AND l_setting<>' . strval(A_NA);
+            $standard_query .= ' AND (l_setting IS NOT NULL AND l_setting<>' . strval(A_NA);
+            if ($has_by_default_first_admin) {
+                $standard_query .= ' OR l_member_id=' . strval($first_admin_user);
+            }
 
             // Now go through the actual cases
             if ($is_locked_on) {
@@ -1416,6 +1439,7 @@ abstract class Hook_Notification
         $results = $db->query($query, $max, $start);
         foreach ($results as $i => $r) {
             if ($results[$i]['l_setting'] === null) {
+                $initial_setting = $this->get_initial_setting($only_if_enabled_on__notification_code, $only_if_enabled_on__category, $r['id']);
                 $results[$i]['l_setting'] = $initial_setting;
             }
         }
@@ -1521,8 +1545,6 @@ abstract class Hook_notification__Staff extends Hook_Notification
      */
     protected function _all_staff_who_have_enabled(string $only_if_enabled_on__notification_code, ?string $only_if_enabled_on__category, ?array $to_member_ids, int $start, int $max) : array
     {
-        $initial_setting = $this->get_initial_setting($only_if_enabled_on__notification_code, $only_if_enabled_on__category);
-
         $db = (substr($only_if_enabled_on__notification_code, 0, 4) == 'cns_') ? $GLOBALS['FORUM_DB'] : $GLOBALS['SITE_DB'];
 
         $admin_groups = array_merge($GLOBALS['FORUM_DRIVER']->get_super_admin_groups(), collapse_1d_complexity('group_id', $db->query_select('group_privileges', ['group_id'], ['privilege' => 'may_enable_staff_notifications'])));

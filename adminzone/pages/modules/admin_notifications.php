@@ -243,7 +243,7 @@ class Module_admin_notifications
 
                     $tick_label = do_lang_tempcode('ENABLE_NOTIFICATIONS_' . $notification_type_codename);
                     if (($notification_type_constant == A__CHOICE) || ($notification_type_constant == A__INBUILT_DEFAULT)) {
-                        $inbuilt_default = $ob->get_initial_setting($notification_code);
+                        $inbuilt_default = $ob->get_initial_setting($notification_code, null, $GLOBALS['FORUM_DRIVER']->get_guest_id());
                         $tick_label = do_lang_tempcode('INBUILT_DEFAULT_WRAP', $tick_label, $inbuilt_default ? do_lang_tempcode('YES') : do_lang_tempcode('NO'));
                     }
 
