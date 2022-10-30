@@ -174,7 +174,7 @@ if( $f_master_bug_id > 0 ) {
 	$f_profile_id			= gpc_get_int( 'profile_id', 0 );
 	$f_handler_id			= gpc_get_int( 'handler_id', 0 );
 
-	$f_category_id			= gpc_get_int( 'category_id', 0 );
+	$f_category_id			= gpc_get_int( 'category_id', /*0 Altered by ChrisG for usability*/1 );
 	$f_reproducibility		= gpc_get_int( 'reproducibility', (int)config_get( 'default_bug_reproducibility' ) );
 	$f_eta					= gpc_get_int( 'eta', (int)config_get( 'default_bug_eta' ) );
 	$f_severity				= gpc_get_int( 'severity', (int)config_get( 'default_bug_severity' ) );
