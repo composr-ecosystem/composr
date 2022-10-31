@@ -173,7 +173,7 @@ class Module_admin_config
         if ($type == '_xml_fields') {
             $this->title = get_screen_title('FIELD_FILTERS');
 
-            breadcrumb_set_parents([['_SEARCH:admin:setup', do_lang_tempcode('SETUP')], ['_SEARCH:admin_config:xml_fields', do_lang_tempcode('FIELD_FILTERS')]]);
+            breadcrumb_set_parents([['_SEARCH:admin_config:xml_fields', do_lang_tempcode('FIELD_FILTERS')]]);
             breadcrumb_set_self(do_lang_tempcode('DONE'));
         }
 
@@ -187,7 +187,7 @@ class Module_admin_config
         if ($type == '_xml_breadcrumbs') {
             $this->title = get_screen_title('BREADCRUMB_OVERRIDES');
 
-            breadcrumb_set_parents([['_SEARCH:admin:structure', do_lang_tempcode('STRUCTURE')], ['_SEARCH:admin_config:xml_breadcrumbs', do_lang_tempcode('BREADCRUMB_OVERRIDES')]]);
+            breadcrumb_set_parents([['_SEARCH:admin_config:xml_breadcrumbs', do_lang_tempcode('BREADCRUMB_OVERRIDES')]]);
             breadcrumb_set_self(do_lang_tempcode('DONE'));
         }
 
