@@ -186,7 +186,7 @@ class Hook_ecommerce_tax_taxjar
 
             // Work out TaxJar lookup call...
 
-            $cart_items = [];
+            $taxjar_cart_items = [];
             foreach ($products as $i => $parts) {
                 list($item, $details) = $parts;
 
@@ -194,7 +194,7 @@ class Hook_ecommerce_tax_taxjar
                 $tax_code = $details['tax_code'];
                 $price = $details['price'];
 
-                $cart_items[] = [
+                $taxjar_cart_items[] = [
                     'quantity' => $quantity,
                     'unit_price' => $price,
                     'product_tax_code' => intval(substr($tax_code, strlen('TJ:'))),
@@ -218,7 +218,7 @@ class Hook_ecommerce_tax_taxjar
 
             $request = $shipping + [
                 'customer_id' => $GLOBALS['FORUM_DRIVER']->get_username($member_id, false, USERNAME_DEFAULT_BLANK),
-                'line_items' => $cart_items
+                'line_items' => $taxjar_cart_items
             ];
             $_request = json_encode($request);
             require_code('character_sets');
@@ -246,10 +246,10 @@ class Hook_ecommerce_tax_taxjar
             // Process TaxJar results...
             if (isset($response['tax']['breakdown']['line_items'])) {
                 foreach ($response['tax']['breakdown']['line_items'] as $cart_item) {
-                    $i = intval($cart_item['id']);
+                    $i = intval($cart_item['id']); // The 'id's passed through TaxJar are just array indexes for what we are doing
 
                     $tax = 0.0;
-                    if (isset($products[$i])) {
+                    if (isset($products[$i])) { // Should always be true, but we're being defensive
                         list($item, $details) = $products[$i];
 
                         if (isset($cart_item['tax_collectable'])) {
@@ -261,16 +261,21 @@ class Hook_ecommerce_tax_taxjar
                         $price = $details['price'];
                         $sku = @cms_empty_safe($details['type_special_details']['sku']) ? strval('item' . strval($i)) : $details['type_special_details']['sku'];
 
-                        $cart_items[$i] = [
-                            'id' => strval($i),
-                            'product_identifier' => $sku,
+                        // Re-build $taxjar_cart_items with original data and more
+                        $taxjar_cart_items[$i] = [
+                            // Original data (it's already in there, but we will re-set it for clarity)
                             'quantity' => $quantity,
                             'unit_price' => $price,
                             'product_tax_code' => intval(substr($tax_code, strlen('TJ:'))),
+                            'id' => strval($i),
+
+                            // For declare_completed to work we will need to be sending some result data back to TaxJar
+                            'product_identifier' => $sku,
                             'sales_tax' => $tax,
                         ];
-
                         $request['amount'] += ($price * $quantity);
+
+                        // Now extend our original $item_details structure with what we have learned...
 
                         $tax_derivation = ['taxjar' => $tax];
 
@@ -278,13 +283,14 @@ class Hook_ecommerce_tax_taxjar
                         $products[$i][3] = $tax;
 
                         // We need to make sure this matches the TaxJar transaction API requirements
-                        $products[$i][4] = ['taxjar' => $shipping + ['amount' => $shipping_cost + ($price * $quantity), 'sales_tax' => $tax, 'line_items' => [$cart_items[$i]]]];
+                        $products[$i][4] = ['taxjar' => $shipping + ['amount' => $shipping_cost + ($price * $quantity), 'sales_tax' => $tax, 'line_items' => [$taxjar_cart_items[$i]]]];
                         $item_details[$i] = $products[$i];
                     }
                 }
             }
 
             // TaxJar does not return products which are not taxable, so we have to figure out which ones were omitted and add them ourselves.
+            //  Parallels the above code.
             foreach ($products as $i => $parts) {
                 if (count($parts) >= 5) {
                     continue; // Product was already handled by TaxJar
@@ -299,16 +305,21 @@ class Hook_ecommerce_tax_taxjar
                 $price = $details['price'];
                 $sku = @cms_empty_safe($details['type_special_details']['sku']) ? strval('item' . strval($i)) : $details['type_special_details']['sku'];
 
-                $cart_items[$i] = [
-                    'id' => strval($i),
-                    'product_identifier' => $sku,
+                // Re-build $taxjar_cart_items with original data and more
+                $taxjar_cart_items[$i] = [
+                    // Original data (it's already in there, but we will re-set it for clarity)
                     'quantity' => $quantity,
                     'unit_price' => $price,
                     'product_tax_code' => intval(substr($tax_code, strlen('TJ:'))),
+                    'id' => strval($i),
+
+                    // For declare_completed to work we will need to be sending some result data back to TaxJar
+                    'product_identifier' => $sku,
                     'sales_tax' => $tax,
                 ];
-
                 $request['amount'] += ($price * $quantity);
+
+                // Now extend our original $item_details structure with what we have learned...
 
                 $tax_derivation = ['taxjar' => $tax];
 
@@ -316,13 +327,11 @@ class Hook_ecommerce_tax_taxjar
                 $products[$i][3] = $tax;
 
                 // We need to make sure this matches the TaxJar transaction API requirements
-                $products[$i][4] = ['taxjar' => $shipping + ['amount' => $shipping_cost + ($price * $quantity), 'sales_tax' => $tax, 'line_items' => [$cart_items[$i]]]];
+                $products[$i][4] = ['taxjar' => $shipping + ['amount' => $shipping_cost + ($price * $quantity), 'sales_tax' => $tax, 'line_items' => [$taxjar_cart_items[$i]]]];
                 $item_details[$i] = $products[$i];
             }
 
-            $request['line_items'] = $cart_items;
-            $request['sales_tax'] = $response['tax']['amount_to_collect'];
-
+            // Calculate the shipping tax and derivation for that (which is minimal as TaxJar does not break it down)
             $shipping_tax_derivation = [];
             $shipping_tax = 0.0;
             if (isset($response['tax']['breakdown']['shipping']['tax_collectable'])) {
@@ -330,6 +339,9 @@ class Hook_ecommerce_tax_taxjar
                 $shipping_tax_derivation = ['taxjar' => $shipping_tax];
             }
 
+            // The tax tracking for TaxJar isn't an ID reference to data stored in the TaxJar account (as there is no such thing), it's the whole request with the extra data for declare_completed added in
+            $request['line_items'] = $taxjar_cart_items;
+            $request['sales_tax'] = $response['tax']['amount_to_collect'];
             $tax_tracking = ['taxjar' => $request];
 
             return [$shipping_tax_derivation, $shipping_tax, $tax_tracking, []];
