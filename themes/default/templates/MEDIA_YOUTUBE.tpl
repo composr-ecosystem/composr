@@ -37,7 +37,15 @@
 				},
 				'onStateChange': function(newState) {
 					if (slideshow_mode) {
-						if (newState==0) player_stopped();
+						switch (newState.data) {
+							case YT.PlayerState.ENDED:
+								player_stopped();
+								break;
+
+							case YT.PlayerState.PLAYING:
+								stop_slideshow_timer();
+								break;
+						}
 					}
 				}
 			}
