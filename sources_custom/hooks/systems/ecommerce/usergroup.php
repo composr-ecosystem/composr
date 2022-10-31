@@ -31,5 +31,5 @@ function init__hooks__systems__ecommerce__usergroup($in)
             }
         ",
         $in
-    ); // TODO: May need updated
+    );
 }

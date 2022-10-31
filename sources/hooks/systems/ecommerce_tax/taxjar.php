@@ -46,7 +46,7 @@ class Hook_ecommerce_tax_taxjar
      * @see https://developers.taxjar.com/api/reference/#countries
      */
     protected $supported_countries = [
-        'US', // United States (NOTE: TaxJar only supports the US for transactions and filing, but can look-up other supported countries)
+        'US', // United States (NOTE: TaxJar only supports the US for 'transactions' and 'filing', but can look-up other supported countries)
         'CA', // Canada
         'AU', // Australia
         'AT', // Austria
@@ -352,8 +352,7 @@ class Hook_ecommerce_tax_taxjar
             return; // TaxJar only supports transactions for United States businesses, so do nothing otherwise
         }
 
-        //$date = date('Y-m-d', tz_time(time(), get_site_timezone()));
-        $date = date(DATE_ATOM);
+        $date = date(DATE_ISO8601);
         $request = $tracking_id;
         $request['transaction_id'] = $txn_id;
         $request['transaction_date'] = $date;
@@ -389,12 +388,11 @@ class Hook_ecommerce_tax_taxjar
 
         $_required = ($required) ? '-required' : '';
 
-        require_code('files2');
         $has_tj = (preg_match('#^TJ:#', $default) != 0);
         if ($has_tj) {
             $default_set = 'tj';
         }
-        require_code('http');
+
         $__tjs = $this->make_taxjar_request($this->endpoints['categories'], ['convert_to_internal_encoding' => true, 'timeout' => 20.0, 'trigger_error' => false], true, true);
         $_tjs = @json_decode($__tjs, true);
         if (isset($_tjs['categories']) && is_array($_tjs['categories'])) {

@@ -126,12 +126,12 @@ function health_check_script()
     } else {
         $sections_to_run = ($_sections_to_run == '') ? [] : explode(',', $_sections_to_run);
     }
-    $passes = (get_param_integer('passes', 0) == 1);
-    $skips = (get_param_integer('skips', 0) == 1);
-    $manual_checks = (get_param_integer('manual_checks', 0) == 1);
+    $show_passes = (get_param_integer('passes', 0) == 1);
+    $show_skips = (get_param_integer('skips', 0) == 1);
+    $show_manual_checks = (get_param_integer('manual_checks', 0) == 1);
 
     $has_fails = false;
-    $categories = run_health_check($has_fails, $sections_to_run, $passes, $skips, $manual_checks);
+    $categories = run_health_check($has_fails, $sections_to_run, $show_passes, $show_skips, $show_manual_checks);
 
     header('Content-Type: text/plain; charset=' . get_charset());
     cms_ini_set('ocproducts.xss_detect', '0');
@@ -163,9 +163,9 @@ function display_health_check_results_as_text(array $categories) : string
  *
  * @param  boolean $has_fails Whether there are fails (returned by reference)
  * @param  ?array $sections_to_run Which check sections to run (null: all)
- * @param  boolean $passes Mention passed checks
- * @param  boolean $skips Mention skipped checks
- * @param  boolean $manual_checks Mention manual checks
+ * @param  boolean $show_passes Mention passed checks
+ * @param  boolean $show_skips Mention skipped checks
+ * @param  boolean $show_manual_checks Mention manual checks
  * @param  boolean $automatic_repair Do automatic repairs where possible
  * @param  ?boolean $use_test_data_for_pass Should test data be for a pass [if test data supported] (null: no test data)
  * @param  ?array $urls_or_page_links List of URLs and/or page-links to operate on, if applicable (null: those configured)
@@ -173,7 +173,7 @@ function display_health_check_results_as_text(array $categories) : string
  * @param  ?integer $check_context The current state of the website (a CHECK_CONTEXT__* constant) (null: auto-decide)
  * @return array List of result categories with results, template-ready
  */
-function run_health_check(bool &$has_fails, ?array $sections_to_run = null, bool $passes = false, bool $skips = false, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null, ?int $check_context = null) : array
+function run_health_check(bool &$has_fails, ?array $sections_to_run = null, bool $show_passes = false, bool $show_skips = false, bool $show_manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null, ?int $check_context = null) : array
 {
     cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
@@ -201,7 +201,7 @@ function run_health_check(bool &$has_fails, ?array $sections_to_run = null, bool
 
     $hook_obs = find_all_hook_obs('systems', 'health_checks', 'Hook_health_check_');
     foreach ($hook_obs as $ob) {
-        list($category_label, $sections) = $ob->run($sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+        list($category_label, $sections) = $ob->run($sections_to_run, $check_context, $show_manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
 
         $_sections = [];
         foreach ($sections as $section_label => $results) {
@@ -224,21 +224,21 @@ function run_health_check(bool &$has_fails, ?array $sections_to_run = null, bool
                         break;
 
                     case HEALTH_CHECK__PASS:
-                        if ($passes) {
+                        if ($show_passes) {
                             $_results[] = $result;
                             $num_passes++;
                         }
                         break;
 
                     case HEALTH_CHECK__SKIP:
-                        if ($skips) {
+                        if ($show_skips) {
                             $_results[] = $result;
                             $num_skipped++;
                         }
                         break;
 
                     case HEALTH_CHECK__MANUAL:
-                        if ($manual_checks) {
+                        if ($show_manual_checks) {
                             $_results[] = $result;
                             $num_manual++;
                         }
@@ -306,13 +306,13 @@ abstract class Hook_Health_Check
      * @param  string $section_label The section label
      * @param  ?array $sections_to_run Which check sections to run (null: all)
      * @param  integer $check_context The current state of the website (a CHECK_CONTEXT__* constant)
-     * @param  boolean $manual_checks Mention manual checks
+     * @param  boolean $show_manual_checks Mention manual checks
      * @param  boolean $automatic_repair Do automatic repairs where possible
      * @param  ?boolean $use_test_data_for_pass Should test data be for a pass [if test data supported] (null: no test data)
      * @param  ?array $urls_or_page_links List of URLs and/or page-links to operate on, if applicable (null: those configured)
      * @param  ?array $comcode_segments Map of field names to Comcode segments to operate on, if applicable (null: N/A)
      */
-    protected function process_checks_section(string $method, string $section_label, ?array $sections_to_run, int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
+    protected function process_checks_section(string $method, string $section_label, ?array $sections_to_run, int $check_context, bool $show_manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if (($sections_to_run !== null) && (!in_array($this->category_label . ' \\ ' . $section_label, $sections_to_run)) && (!in_array($method, $sections_to_run))) {
             return;
@@ -325,7 +325,7 @@ abstract class Hook_Health_Check
             if ($HEALTH_CHECK_LOG_FILE !== null) {
                 fwrite($HEALTH_CHECK_LOG_FILE, loggable_date() . '  STARTING ' . $this->category_label . ' \\ ' . $section_label . "\n");
             }
-            call_user_func([$this, $method], $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+            call_user_func([$this, $method], $check_context, $show_manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
             if ($HEALTH_CHECK_LOG_FILE !== null) {
                 fwrite($HEALTH_CHECK_LOG_FILE, loggable_date() . '  FINISHED ' . $this->category_label . ' \\ ' . $section_label . "\n");
             }
@@ -475,9 +475,9 @@ abstract class Hook_Health_Check
      *
      * @param  string $page_link Page-link
      * @param  boolean $inner_screen_only Whether to try and restrict to just an inner Comcode screen
-     * @return string Page content
+     * @return ?string Page content (null: no content was returned)
      */
-    protected function get_page_content(string $page_link = ':', bool $inner_screen_only = false) : string
+    protected function get_page_content(string $page_link = ':', bool $inner_screen_only = false) : ?string
     {
         if ($inner_screen_only) {
             $test = $this->get_comcode_page_content($page_link);

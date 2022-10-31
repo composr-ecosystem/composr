@@ -723,7 +723,6 @@ The documentation is primarily maintained on our website, and this archive is on
             'data_custom/images/docs/tut_downloads/downloads_subcat.png',
             'data_custom/images/docs/tut_downloads/downloads_view.png',
             'data_custom/images/docs/tut_drinking/feature_rich.jpg',
-            'data_custom/images/docs/tut_ecommerce/taxcloud.png',
             'data_custom/images/docs/tut_ecommerce/shippo.png',
             'data_custom/images/docs/tut_ecommerce/ecommerce_invoice.png',
             'data_custom/images/docs/tut_ecommerce/ecommerce_layer.png',

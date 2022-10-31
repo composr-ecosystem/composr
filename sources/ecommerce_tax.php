@@ -43,7 +43,7 @@ function init__ecommerce_tax()
  *
  * @param  ?ID_TEXT $tax_service The name of the tax service hook to load (null: load the tax service configured with the site)
  * @param  boolean $fail_ok Whether a failure should not trigger an error
- * @return ?object The hook object factory (null: hook not found and $fail_ok was true)
+ * @return ?object The hook object (null: hook not found and $fail_ok was true)
  */
 function get_tax_service_hook(?string $tax_service = null, bool $fail_ok = false) : ?object
 {
@@ -142,14 +142,14 @@ function calculate_tax_due(?array $details, string $tax_code, float $price, floa
 }
 
 /**
-* Find the tax for a number of items being sold together.
-*
-* @param  array $item_details A list of pairs: shopping-cart/order style row (with at least 'quantity'), product details (with at least 'tax_code' and 'price'). This is returned by reference as a list of tuples, (tax, tax_derivation, tax_tracking) gets appended.
-* @param  string $field_name_prefix Field name prefix. Pass as blank for cart items or 'p_' for order items.
-* @param  REAL $shipping_cost The shipping cost
-* @param  ?MEMBER $member_id The member this is for (null: current member)
-* @return array A tuple: The shipping tax derivation, shipping tax due (including shipping tax), shipping tax tracking ID
-*/
+ * Find the tax for a number of items being sold together.
+ *
+ * @param  array $item_details A list of pairs: shopping-cart/order style row (with at least 'quantity'), product details (with at least 'tax_code' and 'price'). This is returned by reference as a list of tuples, (tax, tax_derivation, tax_tracking) gets appended.
+ * @param  string $field_name_prefix Field name prefix. Pass as blank for cart items or 'p_' for order items.
+ * @param  REAL $shipping_cost The shipping cost
+ * @param  ?MEMBER $member_id The member this is for (null: current member)
+ * @return array A tuple: The shipping tax derivation, shipping tax due (including shipping tax), shipping tax tracking ID
+ */
 function get_tax_using_tax_codes(array &$item_details, string $field_name_prefix = '', float $shipping_cost = 0.00, ?int $member_id = null) : array
 {
     if ($member_id === null) {
@@ -417,7 +417,7 @@ function generate_invoicing_breakdown(string $type_code, string $item_name, stri
  *
  * @param  MEMBER $member_id The member to send to
  * @param  AUTO_LINK $id The invoice ID
- * @param  boolean $fulfilled Whether this invoice was fulfilled
+ * @param  boolean $fulfilled Whether this invoice was just fulfilled
  */
 function send_invoice_notification(int $member_id, int $id, bool $fulfilled = false)
 {
@@ -553,7 +553,7 @@ function form_input_tax_code($set_title, $description, string $set_name, string 
     ]);
     $field_set->attach(_form_input($set_name . '_rate', do_lang_tempcode('TAX_RATE'), do_lang_tempcode('DESCRIPTION_TAX_RATE'), $input, $required, false, $tabindex));
 
-    // hook inputs
+    // Hook inputs
     $hooks = find_all_hook_obs('systems', 'ecommerce_tax', 'Hook_ecommerce_tax_');
     foreach ($hooks as $ob) {
         if (method_exists($ob, 'form_input_tax_code')) {

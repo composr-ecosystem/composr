@@ -1463,7 +1463,7 @@ class Hook_addon_registry_ecommerce
             'ITEMS' => $items,
             'STATUS' => lorem_phrase(),
             'CURRENCY' => 'GBP',
-            'TOTAL_PRICE' => placeholder_number(),
+            'SUBTOTAL' => placeholder_number(),
             'TOTAL_TAX' => placeholder_number(),
             'TOTAL_AMOUNT' => placeholder_number(),
             'PURCHASE_ID' => placeholder_codename(),

@@ -293,7 +293,6 @@ class Hook_ecommerce_tax_taxcloud
      */
     public function declare_completed($tracking_id, string $txn_id, int $member_id, string $session_id)
     {
-        //$date = date('Y-m-d', tz_time(time(), get_site_timezone()));
         $date = date('Y-m-d'); // UTC-based according to TaxCloud support
         $request = [
             'apiLoginID' => get_option('taxcloud_api_id'),

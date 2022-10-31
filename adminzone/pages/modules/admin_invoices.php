@@ -400,10 +400,12 @@ class Module_admin_invoices
     public function fulfill() : object
     {
         $rows = $GLOBALS['SITE_DB']->query_select('ecom_invoices', ['i_state' => 'delivered'], ['id' => get_param_integer('id')], '', 1);
-        if (array_key_exists(0, $rows)) {
-            $row = $rows[0];
-            send_invoice_notification($row['i_member_id'], $row['id'], true);
+        if (!array_key_exists(0, $rows)) {
+            warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
+
+        $row = $rows[0];
+        send_invoice_notification($row['i_member_id'], $row['id'], true);
 
         $GLOBALS['SITE_DB']->query_update('ecom_invoices', ['i_state' => 'delivered'], ['id' => get_param_integer('id')], '', 1);
 

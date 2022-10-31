@@ -45,7 +45,6 @@ class Hook_privacy_ecommerce extends Hook_privacy_base
             }
         }
 
-
         $payment_gateway = get_option('payment_gateway');
         if ($payment_gateway != '') {
             $payment_gateway_label = do_lang_tempcode('PAYMENT_GATEWAY_' . $payment_gateway);

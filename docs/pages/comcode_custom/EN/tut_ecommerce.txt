@@ -36,18 +36,18 @@ PayPal was chosen because it is without doubt the leading form of payment on the
 
 To accept website payments via credit card, or to take subscriptions, [url="you will need a Business Account"]https://www.paypal.com/us/webapps/helpcenter/helphub/article/?solutionId=FAQ2347[/url]. The business accounts are free, but the fees are higher.
 
-You will need to have SSL set up for your site, as PayPal requires Instant Payment Notification (IPN) messages to go via SSL from Sep 30, 2016, and we have already imposed this in our default code.
+You will need to have SSL set up for your site, as PayPal requires Instant Payment Notification (IPN) messages to go via SSL, and we have already imposed this in our default code.
 
 You must [b]not[/b] lock down PayPal to [url="only accept encrypted forms"]https://developer.paypal.com/docs/paypal-payments-standard/integration-guide/encryptedwebpayments/[/url]. Composr does not encrypt forms.
 
 If you want to set up Payment Data Transfer (PDT), follow these instructions:
-	- Go to your PayPal's Website Payments settings, and Website Payment Preferences page.
-	- turn on &ldquo;Auto Return&rdquo;.
-	- For the return URL, specify your baseURL/index.php?page=purchase (e.g. https://www.example.com/index.php?page=purchase).
-	- Turn on &ldquo;Payment data transfer&rdquo;.
-	- Copy the data transfer identifier that appears on your screen.
-	- On your Composr website, go to Admin Zone > Setup > Configuration > eCommerce options > Payment gateway (PayPal-specific).
-	- Paste the data transfer identifier in the relevant box, and save.
+ - Go to your PayPal's Website Payments settings, and Website Payment Preferences page.
+ - turn on &ldquo;Auto Return&rdquo;.
+ - For the return URL, specify your baseURL/index.php?page=purchase (e.g. https://www.example.com/index.php?page=purchase).
+ - Turn on &ldquo;Payment data transfer&rdquo;.
+ - Copy the data transfer identifier that appears on your screen.
+ - On your Composr website, go to Admin Zone > Setup > Configuration > eCommerce options > Payment gateway (PayPal-specific).
+ - Paste the data transfer identifier in the relevant box, and save.
 PDT may be particularly useful in a development (testing) environment where PayPal cannot reach your website via IPN (especially if you are only running on localhost).
 
 [title="3"]Configuration[/title]
@@ -509,7 +509,7 @@ Tax calculation has been kept as simple as reasonably possible because it's impo
 
 To provide a reasonable level of support we have:
  - Architected the calculations to go through tax hooks (systems/ecommerce_tax). Developers may expand on the functionality of the tax system by adding new tax hooks, say, to add support for another third party tax service.
- - Included support for international taxation by integration of the [url="TaxJar"]https://taxjar.com/[/url] web service.
+ - Included support for international taxation of many countries (though not all of them) by integration of the [url="TaxJar"]https://taxjar.com/[/url] web service.
  - Included support for USA taxation across state/country/city lines by integration of the free [url="TaxCloud"]https://taxcloud.net/[/url] web service.
   - This allows support for 'nexuses'
   - This allows support for destination taxation state rules
@@ -541,7 +541,7 @@ Known limitations and important considerations:
 [media width="300" framed="0" float="right"]data_custom/images/docs/tut_ecommerce/tax.png[/media]
 If you are selling products commercially, you may be required to pay sales tax depending on where your business is located and where you are serving (shipping) your products. This can get extremely complex especially in the US.
 
-You can use the third-party TaxJar or TaxCloud service to assist with complex sales tax calculations and management.
+You must use the third-party TaxJar or TaxCloud service to assist with complex sales tax calculations and management; the software only supports simple taxes.
 
 To use the TaxJar system:
 1) Your site must have working SSL functionality (outbound)
@@ -555,7 +555,7 @@ To use the TaxJar system:
 9) Configure tax configuration options, and shopping catalogue items, to use the appropriate TaxJar code(s)
 Note that if your Business country is set to US, Composr will also create tax transactions for you through the TaxJar API so you can file taxes through TaxJar.
 
-To use the TaxCloud system (only available for US businesses):
+To use the TaxCloud system (only available for US businesses at the time of writing):
 1) Your site must have working SSL functionality (outbound)
 2) Set up an account on TaxCloud
 3) Set up required details on the TaxCloud Profile/Websites/Contacts/Locations tabs; you will need your filing details such as your Federal Tax ID (EIN)
@@ -572,7 +572,7 @@ Note that TaxCloud will automatically debit the tax from you and do tax forms fo
 
 [title="4"]USA users[/title]
 USA tax is extremely complex as it may be levied at the federal level, state level, county level, and city level. For most USA states the tax is charged based on where the buyer resides ("destination taxation"), not the seller ("origin taxation"). That is, unless the buyer is in a state where you don't have any operations centre (in which case no sales tax applies at all unless there's a federal tax which is rare &dagger;).
-All the taxes need to be individually tracked and paid out. It is highly recommended you use a third-party tax service like TaxJar or TaxCloud for this.
+All the taxes need to be individually tracked and paid out. It is necessary to use a third-party tax service like TaxJar or TaxCloud for this.
 
 Known limitations at this time which could be worked around with custom code...
  - We don't support exemption certificates for buyers not needing to pay tax (e.g. some farmers in some cases)
@@ -911,8 +911,8 @@ We have summarised the PCI compliance rules below in a way streamlined toward Co
  29_key="Related member"               29_value="The member to whom a product applies (e.g. for a usergroup subscription, the member who was subscribed to the usergroup)"
  30_key="TaxCloud"                     30_value="A third-party web service for handling the complexities and filing of USA taxation"
  31_key="TaxJar"                       31_value="A third-party web service for handling the complexities of taxation in many international countries"
- 32_key="IPN"                          32_value="Instant Payment Notification; when a payment is completed on a third party gateway (such as PayPal), the gateway will make a web request back to your Composr website (via /data/ecommerce.php) containing information about the transaction and its payment status. IPN is set up by default in Composr. Note that IPN can only work if your site is publicly accessible; development environments (such as ones running on localhost) may be inaccessible via IPN by gateways."
- 33_key="PDT"                          33_value="Payment Data Transfer; specific to PayPal, when a member completes payment on PayPal and is redirected by PayPal back to your Composr site, PayPal includes transaction information in the redirect so Composr can immediately confirm the transaction and its payment status (unlike IPN where Composr must wait for the gateway to send an IPN request through /data/ecommerce.php). PDT must be set up in PayPal and in Composr to use it. See Specific gateway notes > PayPal."
+ 32_key="IPN"                          32_value="Instant Payment Notification; when a payment is completed on a third party gateway (such as PayPal), the gateway will make a web request back to your Composr website (via [tt]/data/ecommerce.php[/tt]) containing information about the transaction and its payment status. IPN is set up by default in Composr. Note that IPN can only work if your site is publicly accessible; development environments (such as ones running on localhost) may be inaccessible via IPN by gateways."
+ 33_key="PDT"                          33_value="Payment Data Transfer; specific to PayPal, when a member completes payment on PayPal and is redirected by PayPal back to your Composr site, PayPal includes transaction information in the redirect so Composr can immediately confirm the transaction and its payment status (unlike IPN where Composr must wait for the gateway to send an IPN request through [tt]/data/ecommerce.php[/tt]). PDT must be set up in PayPal and in Composr to use it. See Specific gateway notes > PayPal."
 ]Concepts[/concepts]
 
 [title="2"]See also[/title]

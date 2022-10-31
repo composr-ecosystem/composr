@@ -180,6 +180,7 @@ class Hook_ecommerce_tax_composr
      */
     public function form_input_tax_code(object &$field_set, string &$default_set, $set_title, $description, string $set_name, string $default, bool $required, ?int $tabindex = null)
     {
+        // Allow selection of an EU country. Otherwise, the tax is just a flat tax rate based on the tax_country_regexp/tax_state_regexp config options.
         $has_eu = ($default == 'EU');
         if ($has_eu) {
             $default_set = 'eu';

@@ -16,7 +16,7 @@
 					</th>
 
 					<th>
-						{!AMOUNT}
+						{!PRICE}
 					</th>
 
 					<th>

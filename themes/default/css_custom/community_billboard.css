@@ -11,13 +11,13 @@ footer .global-community-message {
 }
 
 /*{+START,CSS_MODE,desktop}*/
-footer .global-community-message {
-	float: right;
-}
+	footer .global-community-message {
+		float: right;
+	}
 /*{+END}*/
 /*{+START,CSS_MODE,mobile}*/
-footer .global-community-message {
-	padding: 0.5em 0;
-	text-align: center;
-}
+	footer .global-community-message {
+		padding: 0.5em 0;
+		text-align: center;
+	}
 /*{+END}*/

@@ -233,18 +233,23 @@ function update_cart(array $products_in_cart)
  * Remove particular items from the cart.
  *
  * @param  array $products_to_remove Products to remove
- * @param  ?MEMBER $member_id The member from which to remove products (null: current member or guest session)
+ * @param  ?MEMBER $member_id The member from which to remove products (null: current member if not guest, else does not filter by member)
+ * @param  ?ID_TEXT $session_id The session from which to remove products (null: current session if guest, else does not filter by session)
  */
-function remove_from_cart(array $products_to_remove, ?int $member_id = null)
+function remove_from_cart(array $products_to_remove, ?int $member_id = null, ?string $session_id = null)
 {
     foreach ($products_to_remove as $type_code) {
         $where = ['type_code' => $type_code];
         if (($member_id !== null) && (!is_guest($member_id))) {
             $where['ordered_by'] = $member_id;
+        } elseif (!is_guest()) {
+            $where['ordered_by'] = get_member();
+        }
+
+        if ($session_id !== null) {
+            $where['session_id'] = $session_id;
         } elseif (is_guest()) {
             $where['session_id'] = get_session_id();
-        } else {
-            $where['ordered_by'] = get_member();
         }
 
         $GLOBALS['SITE_DB']->query_delete('shopping_cart', $where);

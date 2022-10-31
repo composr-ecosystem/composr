@@ -424,11 +424,11 @@ class Module_shopping
             $fields = null;
             ecommerce_attach_memo_field_if_needed($fields);
 
-            // Do we have everything we need filled out? If so, proceed directly to payment. Otherwise, proceed to the UI for information.
-            if (!$has_needed_fields) {
-                $next_url = build_url(['page' => 'purchase', 'type' => 'pay', 'type_code' => 'CART_ORDER'], get_module_zone('purchase'));
-            } else {
+            // Request additional information when needed, otherwise go directly to payment
+            if ($has_needed_fields) {
                 $next_url = build_url(['page' => 'purchase', 'type' => 'details', 'type_code' => 'CART_ORDER'], get_module_zone('purchase'));
+            } else {
+                $next_url = build_url(['page' => 'purchase', 'type' => 'pay', 'type_code' => 'CART_ORDER'], get_module_zone('purchase'));
             }
         } else {
             $total_price = 0.00;
