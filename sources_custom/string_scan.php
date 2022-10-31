@@ -908,7 +908,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_payment_gateway_test_username
         CONFIG_OPTION_payment_gateway_vpn_username
         CONFIG_OPTION_payment_gateway_vpn_password
-        DESCRIPTION_INVOICE_AMOUNT
+        DESCRIPTION_INVOICE_PRICE
         DESCRIPTION_INVOICE_TAX_CODE
         RISK
         PURCHASE_ID
@@ -6319,7 +6319,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         MODULE_TRANS_NAME_cms_wiki
         MODULE_TRANS_NAME_filedump
         MODSECURITY
-        DESCRIPTION_MONEY_AMOUNT
+        DESCRIPTION_MONEY_PRICE
         MONTHLY_SPEC_TYPE
         MOST_COMMON
         MOST_DEFAULT

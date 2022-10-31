@@ -67,7 +67,7 @@ class usergroup_subscriptions_test_set extends cms_test_case
             's_type_code' => 'USERGROUP' . strval($this->usergroup_subscription_id),
             's_member_id' => $member_id,
             's_state' => 'new',
-            's_amount' => 123.00,
+            's_price' => 123.00,
             's_tax_code' => '0.00',
             's_tax_derivation' => json_encode([]),
             's_tax' => 0.00,

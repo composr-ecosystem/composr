@@ -508,13 +508,15 @@ Orders may be reviewed by the [i]buyer[/i] from their [tt]shopping[/tt] module (
 Tax calculation has been kept as simple as reasonably possible because it's impossible to create configurability to cover every scenario people will need globally. Tax rules have too many special cases.
 
 To provide a reasonable level of support we have:
- - Architected the calculations to go through a simple common function that a programmer can override to add in additional behaviour if needed, [tt]calculate_tax_due[/tt].
+ - Architected the calculations to go through tax hooks (systems/ecommerce_tax). Developers may expand on the functionality of the tax system by adding new tax hooks, say, to add support for another third party tax service.
  - Included support for international taxation by integration of the [url="TaxJar"]https://taxjar.com/[/url] web service.
  - Included support for USA taxation across state/country/city lines by integration of the free [url="TaxCloud"]https://taxcloud.net/[/url] web service.
   - This allows support for 'nexuses'
   - This allows support for destination taxation state rules
  - Special support for EU digital goods taxation.
  - Support for custom specification of which Countries and States taxation applies within.
+
+A big limitation with using the software (in-built) tax system opposed to a third party tax service is that the in-built system cannot handle different taxes for different products (tax codes).
 
 When defining tax codes ('tax code' is the term we use) you can select with either:
 a) a TaxJar (TJ) tax code

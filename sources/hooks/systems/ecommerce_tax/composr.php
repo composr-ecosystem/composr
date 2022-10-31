@@ -83,7 +83,7 @@ class Hook_ecommerce_tax_composr
 
             $quantity = $item[$field_name_prefix . 'quantity'];
             $tax_code = $details['tax_code'];
-            $amount = $details['price'];
+            $price = $details['price'];
 
             // Europe; use the VAT rates API
             if ($tax_code == 'EU') {
@@ -100,7 +100,7 @@ class Hook_ecommerce_tax_composr
                     continue;
                 }
 
-                $tax = round(($rate / 100.0) * $amount * $quantity, 2);
+                $tax = round(($rate / 100.0) * $price * $quantity, 2);
                 $tax_derivation = [$country => $tax];
             } else {
                 // Simple, with some guards...
@@ -135,7 +135,7 @@ class Hook_ecommerce_tax_composr
                 // Simple rate
                 if (substr($tax_code, -1) == '%') {
                     $rate = floatval($tax_code);
-                    $tax = round(($rate / 100.0) * $amount * $quantity, 2);
+                    $tax = round(($rate / 100.0) * $price * $quantity, 2);
                 } else {
                     // Simple flat
                     $tax = round(floatval($tax_code) * $quantity, 2);

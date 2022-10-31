@@ -152,7 +152,7 @@ class Hook_task_export_ecom_transactions
 
                 $transaction[do_lang('CURRENCY')] = $_transaction['t_currency'];
 
-                $transaction[do_lang('AMOUNT')] = float_format($_transaction['t_amount']);
+                $transaction[do_lang('PRICE')] = float_format($_transaction['t_price']);
 
                 $transaction[do_lang(get_option('tax_system')) . ' (' . do_lang('COUNT_TOTAL') . ')'] = float_format($_transaction['t_tax']);
 

@@ -96,13 +96,13 @@ function tax_multiplier(string $tax_code, float $multiplier) : string
  *
  * @param  ?array $details Map of product details (null: there's no product directly associated). Not strictly needed, only passed for customisation potential.
  * @param  ID_TEXT $tax_code The tax code. This may be different to the product default, e.g. if a discount is in place.
- * @param  REAL $amount The amount
+ * @param  REAL $price The price
  * @param  REAL $shipping_cost The shipping cost
  * @param  ?MEMBER $member_id The member this is for (null: current member)
  * @param  integer $quantity The quantity of items
  * @return array A tuple: The tax derivation, tax due (including shipping tax), tax tracking ID
  */
-function calculate_tax_due(?array $details, string $tax_code, float $amount, float $shipping_cost = 0.00, ?int $member_id = null, int $quantity = 1) : array
+function calculate_tax_due(?array $details, string $tax_code, float $price, float $shipping_cost = 0.00, ?int $member_id = null, int $quantity = 1) : array
 {
     // ADD CUSTOM CODE HERE BY OVERRIDING THIS FUNCTION
 
@@ -117,7 +117,7 @@ function calculate_tax_due(?array $details, string $tax_code, float $amount, flo
     ];
     $details = [
         'tax_code' => $tax_code,
-        'price' => $amount,
+        'price' => $price,
     ];
     $item_details[] = [$item, $details];
 
@@ -181,7 +181,7 @@ function get_tax_using_tax_codes(array &$item_details, string $field_name_prefix
         list($item, $details) = $parts;
 
         $tax_code = $details['tax_code'];
-        $amount = $details['price'];
+        $price = $details['price'];
 
         // Determine which tax service to use for this item depending on which returns the highest priority
         $service_to_use = null;
@@ -196,7 +196,7 @@ function get_tax_using_tax_codes(array &$item_details, string $field_name_prefix
         }
 
         if ($service_to_use === null) {
-            if ($amount == 0.00) {
+            if ($price == 0.00) {
                 $_item_details['_free'][$i] = $parts;
             } else {
                 $_item_details['composr'][$i] = $parts;
@@ -298,7 +298,7 @@ function get_tax_using_tax_codes(array &$item_details, string $field_name_prefix
     // If we have no information on shipping tax, calculate it
     if (empty($shipping_tax_derivation)) {
         if ($shipping_cost != 0.00) {
-            list($shipping_tax_derivation, $shipping_tax, , ) = calculate_tax_due(null, get_option('shipping_tax_code'), $amount, 0.00, $member_id); // This will force a call back into our function, but won't recurse again
+            list($shipping_tax_derivation, $shipping_tax, , ) = calculate_tax_due(null, get_option('shipping_tax_code'), $price, 0.00, $member_id); // This will force a call back into our function, but won't recurse again
         }
     }
 
@@ -488,10 +488,10 @@ function generate_tax_invoice(string $txn_id) : object
             'TYPE_CODE' => $transaction_row['t_type_code'],
             'ITEM_NAME' => $item_name,
             'QUANTITY' => integer_format(1),
-            'UNIT_PRICE' => float_format($transaction_row['t_amount']),
-            'PRICE' => float_format($transaction_row['t_amount']),
+            'UNIT_PRICE' => float_format($transaction_row['t_price']),
+            'PRICE' => float_format($transaction_row['t_price']),
             'TAX' => float_format($transaction_row['t_tax']),
-            'TAX_RATE' => float_format(backcalculate_tax_rate($transaction_row['t_amount'], $transaction_row['t_tax']), 1, true),
+            'TAX_RATE' => float_format(backcalculate_tax_rate($transaction_row['t_price'], $transaction_row['t_tax']), 1, true),
         ];
     }
 
@@ -505,9 +505,9 @@ function generate_tax_invoice(string $txn_id) : object
         'TRANS_ADDRESS' => $trans_address,
         'ITEMS' => $invoicing_breakdown,
         'CURRENCY' => $transaction_row['t_currency'],
-        'TOTAL_PRICE' => float_format($transaction_row['t_amount'] + $transaction_row['t_shipping']),
+        'SUBTOTAL' => float_format($transaction_row['t_price'] + $transaction_row['t_shipping']),
         'TOTAL_TAX' => float_format($transaction_row['t_tax']),
-        'TOTAL_AMOUNT' => float_format($transaction_row['t_amount'] + $transaction_row['t_tax'] + $transaction_row['t_shipping']),
+        'TOTAL_AMOUNT' => float_format($transaction_row['t_price'] + $transaction_row['t_tax'] + $transaction_row['t_shipping']),
         'PURCHASE_ID' => $transaction_row['t_purchase_id'],
         'STATUS' => $status,
     ]);

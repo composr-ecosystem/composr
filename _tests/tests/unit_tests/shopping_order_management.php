@@ -65,7 +65,7 @@ class shopping_order_management_test_set extends cms_test_case
             't_purchase_id' => strval($this->order_id),
             't_status' => 'Completed',
             't_reason' => '',
-            't_amount' => 10.00,
+            't_price' => 10.00,
             't_tax_derivation' => '',
             't_tax' => 1.00,
             't_tax_tracking' => '',

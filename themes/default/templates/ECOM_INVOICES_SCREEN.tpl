@@ -4,7 +4,7 @@
 	<thead>
 		<tr>
 			<th>{!NAME}</th>
-			<th>{!AMOUNT}</th>
+			<th>{!PRICE}</th>
 			<th>{$TAX_LABEL}</th>
 			<th>{!DATE_TIME}</th>
 			{+START,IF,{$DESKTOP}}
@@ -27,7 +27,7 @@
 					</p>
 				</td>
 				<td>
-					{$CURRENCY,{AMOUNT},{CURRENCY},{$?,{$CONFIG_OPTION,currency_auto},{$CURRENCY_USER},{$CURRENCY}}}
+					{$CURRENCY,{PRICE},{CURRENCY},{$?,{$CONFIG_OPTION,currency_auto},{$CURRENCY_USER},{$CURRENCY}}}
 				</td>
 				<td>
 					{$CURRENCY,{TAX},{CURRENCY},{$?,{$CONFIG_OPTION,currency_auto},{$CURRENCY_USER},{$CURRENCY}}}

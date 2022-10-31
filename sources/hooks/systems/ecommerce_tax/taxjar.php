@@ -192,11 +192,11 @@ class Hook_ecommerce_tax_taxjar
 
                 $quantity = $item[$field_name_prefix . 'quantity'];
                 $tax_code = $details['tax_code'];
-                $amount = $details['price'];
+                $price = $details['price'];
 
                 $cart_items[] = [
                     'quantity' => $quantity,
-                    'unit_price' => $amount,
+                    'unit_price' => $price,
                     'product_tax_code' => intval(substr($tax_code, strlen('TJ:'))),
                     'id' => strval($i),
                 ];
@@ -258,19 +258,19 @@ class Hook_ecommerce_tax_taxjar
 
                         $quantity = $item[$field_name_prefix . 'quantity'];
                         $tax_code = $details['tax_code'];
-                        $amount = $details['price'];
+                        $price = $details['price'];
                         $sku = @cms_empty_safe($details['type_special_details']['sku']) ? strval('item' . strval($i)) : $details['type_special_details']['sku'];
 
                         $cart_items[$i] = [
                             'id' => strval($i),
                             'product_identifier' => $sku,
                             'quantity' => $quantity,
-                            'unit_price' => $amount,
+                            'unit_price' => $price,
                             'product_tax_code' => intval(substr($tax_code, strlen('TJ:'))),
                             'sales_tax' => $tax,
                         ];
 
-                        $request['amount'] += ($amount * $quantity);
+                        $request['amount'] += ($price * $quantity);
 
                         $tax_derivation = ['taxjar' => $tax];
 
@@ -278,13 +278,13 @@ class Hook_ecommerce_tax_taxjar
                         $products[$i][3] = $tax;
 
                         // We need to make sure this matches the TaxJar transaction API requirements
-                        $products[$i][4] = ['taxjar' => $shipping + ['amount' => $shipping_cost + ($amount * $quantity), 'sales_tax' => $tax, 'line_items' => [$cart_items[$i]]]];
+                        $products[$i][4] = ['taxjar' => $shipping + ['amount' => $shipping_cost + ($price * $quantity), 'sales_tax' => $tax, 'line_items' => [$cart_items[$i]]]];
                         $item_details[$i] = $products[$i];
                     }
                 }
             }
 
-            // TaxJar sometimes does not return taxes for products which have no tax; we must account for this
+            // TaxJar does not return products which are not taxable, so we have to figure out which ones were omitted and add them ourselves.
             foreach ($products as $i => $parts) {
                 if (count($parts) >= 5) {
                     continue; // Product was already handled by TaxJar
@@ -294,25 +294,21 @@ class Hook_ecommerce_tax_taxjar
 
                 list($item, $details) = $parts;
 
-                if (isset($cart_item['tax_collectable'])) {
-                    $tax = $cart_item['tax_collectable'];
-                }
-
                 $quantity = $item[$field_name_prefix . 'quantity'];
                 $tax_code = $details['tax_code'];
-                $amount = $details['price'];
+                $price = $details['price'];
                 $sku = @cms_empty_safe($details['type_special_details']['sku']) ? strval('item' . strval($i)) : $details['type_special_details']['sku'];
 
                 $cart_items[$i] = [
                     'id' => strval($i),
                     'product_identifier' => $sku,
                     'quantity' => $quantity,
-                    'unit_price' => $amount,
+                    'unit_price' => $price,
                     'product_tax_code' => intval(substr($tax_code, strlen('TJ:'))),
                     'sales_tax' => $tax,
                 ];
 
-                $request['amount'] += ($amount * $quantity);
+                $request['amount'] += ($price * $quantity);
 
                 $tax_derivation = ['taxjar' => $tax];
 
@@ -320,7 +316,7 @@ class Hook_ecommerce_tax_taxjar
                 $products[$i][3] = $tax;
 
                 // We need to make sure this matches the TaxJar transaction API requirements
-                $products[$i][4] = ['taxjar' => $shipping + ['amount' => $shipping_cost + ($amount * $quantity), 'sales_tax' => $tax, 'line_items' => [$cart_items[$i]]]];
+                $products[$i][4] = ['taxjar' => $shipping + ['amount' => $shipping_cost + ($price * $quantity), 'sales_tax' => $tax, 'line_items' => [$cart_items[$i]]]];
                 $item_details[$i] = $products[$i];
             }
 

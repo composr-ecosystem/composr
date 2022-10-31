@@ -153,7 +153,7 @@ class Module_purchase
                 't_purchase_id' => 'ID_TEXT',
                 't_status' => 'SHORT_TEXT', // Pending|Completed|SModified|SCancelled
                 't_reason' => 'SHORT_TEXT',
-                't_amount' => 'REAL', // Does NOT include tax (unlike most 'amount' figures in Composr)
+                't_price' => 'REAL',
                 't_tax_derivation' => 'LONG_TEXT',
                 't_tax' => 'REAL',
                 't_tax_tracking' => 'LONG_TEXT',
@@ -347,6 +347,8 @@ class Module_purchase
 
             $GLOBALS['SITE_DB']->add_table_field('ecom_trans_expecting', 'e_shipping', 'REAL', 0.00);
             $GLOBALS['SITE_DB']->add_table_field('ecom_transactions', 't_shipping', 'REAL', 0.00);
+
+            $GLOBALS['SITE_DB']->alter_table_field('ecom_transactions', 't_amount', 'REAL', 't_price');
         }
 
         if (!$GLOBALS['SITE_DB']->table_exists('ecom_prods_prices')) { // LEGACY: Used to be in pointstore addon, hence the unusual install pattern. Now is just a part of purchase addon
@@ -1112,7 +1114,7 @@ class Module_purchase
                     's_type_code' => $type_code,
                     's_member_id' => get_member(),
                     's_state' => 'new',
-                    's_amount' => $price,
+                    's_price' => $price,
                     's_tax_code' => $details['tax_code'],
                     's_tax_derivation' => json_encode($tax_derivation, defined('JSON_PRESERVE_ZERO_FRACTION') ? JSON_PRESERVE_ZERO_FRACTION : 0),
                     's_tax' => $tax,
@@ -1384,7 +1386,7 @@ class Module_purchase
                 $memo = post_param_string('memo', do_lang('FREE'));
                 $currency = get_option('currency');
             }
-            $amount = 0.00;
+            $price = 0.00;
 
             $status = 'Completed';
             $reason = '';
@@ -1398,7 +1400,7 @@ class Module_purchase
                 $period = '';
             }
 
-            handle_confirmed_transaction(null, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $amount, 0.00, 0.00, $currency, true, $parent_txn_id, $pending_reason, $memo, $period, get_member(), 'manual', false, true);
+            handle_confirmed_transaction(null, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $price, 0.00, 0.00, $currency, true, $parent_txn_id, $pending_reason, $memo, $period, get_member(), 'manual', false, true);
 
             global $ECOMMERCE_SPECIAL_SUCCESS_MESSAGE;
             if ($ECOMMERCE_SPECIAL_SUCCESS_MESSAGE !== null) {

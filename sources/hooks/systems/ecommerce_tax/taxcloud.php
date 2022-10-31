@@ -173,12 +173,12 @@ class Hook_ecommerce_tax_taxcloud
 
                 $quantity = $item[$field_name_prefix . 'quantity'];
                 $tax_code = $details['tax_code'];
-                $amount = $details['price'];
+                $price = $details['price'];
                 $sku = @cms_empty_safe($details['type_special_details']['sku']) ? strval('item' . strval($i)) : $details['type_special_details']['sku'];
 
                 $cart_items[$i] = [
                     'Qty' => $quantity,
-                    'Price' => $amount,
+                    'Price' => $price,
                     'TIC' => intval(substr($tax_code, strlen('TIC:'))),
                     'ItemID' => $sku,
                     'Index' => $i,

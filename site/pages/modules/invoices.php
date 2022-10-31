@@ -73,7 +73,7 @@ class Module_invoices
                 'i_type_code' => 'ID_TEXT',
                 'i_member_id' => 'MEMBER',
                 'i_state' => 'ID_TEXT', // new|pending|paid|delivered (pending means payment has been requested)
-                'i_amount' => 'REAL', // can't always find this from i_type_code
+                'i_price' => 'REAL', // can't always find this from i_type_code
                 'i_tax_code' => 'ID_TEXT',
                 'i_tax_derivation' => 'LONG_TEXT', // Needs to be stored, as the product is dynamic and it's locked in time
                 'i_tax' => 'REAL', // Needs to be stored, as the product is dynamic and it's locked in time
@@ -85,9 +85,9 @@ class Module_invoices
             ]);
         }
 
-        if (($upgrade_from !== null) && ($upgrade_from < 3)) {
+        if (($upgrade_from !== null) && ($upgrade_from < 3)) { // LEGACY
             $GLOBALS['SITE_DB']->rename_table('invoices', 'ecom_invoices');
-            $GLOBALS['SITE_DB']->alter_table_field('ecom_invoices', 'i_amount', 'REAL');
+            $GLOBALS['SITE_DB']->alter_table_field('ecom_invoices', 'i_amount', 'REAL', 'i_price');
             $GLOBALS['SITE_DB']->add_table_field('ecom_invoices', 'i_tax_code', 'ID_TEXT', '0%');
             $GLOBALS['SITE_DB']->add_table_field('ecom_invoices', 'i_tax_derivation', 'LONG_TEXT', '');
             $GLOBALS['SITE_DB']->add_table_field('ecom_invoices', 'i_tax', 'REAL', 0.00);
@@ -219,7 +219,7 @@ class Module_invoices
                     $type_code,
                     $invoice_title,
                     strval($row['id']),
-                    $row['i_amount'],
+                    $row['i_price'],
                     ($row['i_tax_derivation'] == '') ? [] : json_decode($row['i_tax_derivation'], true),
                     $row['i_tax'],
                     ($row['i_tax_tracking'] == '') ? [] : json_decode($row['i_tax_tracking'], true),
@@ -232,7 +232,7 @@ class Module_invoices
                 'TRANSACTION_BUTTON' => $transaction_button,
                 'INVOICE_TITLE' => $invoice_title,
                 'INVOICE_ID' => strval($row['id']),
-                'AMOUNT' => float_to_raw_string($row['i_amount']),
+                'PRICE' => float_to_raw_string($row['i_price']),
                 'TAX' => float_to_raw_string($row['i_tax']),
                 'CURRENCY' => $row['i_currency'],
                 'DATE' => $date,
@@ -280,7 +280,7 @@ class Module_invoices
             $type_code,
             $invoice_title,
             strval($id),
-            $row['i_amount'],
+            $row['i_price'],
             ($row['i_tax_derivation'] == '') ? [] : json_decode($row['i_tax_derivation'], true),
             $row['i_tax'],
             ($row['i_tax_tracking'] == '') ? [] : json_decode($row['i_tax_tracking'], true),

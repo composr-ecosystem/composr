@@ -52,7 +52,7 @@
 						</th>
 
 						<td>
-							{$CURRENCY_SYMBOL,{CURRENCY}}{TOTAL*}, {PER}
+							{$CURRENCY_SYMBOL,{CURRENCY}}{PRICE*}, {PER}
 						</td>
 
 						<td>

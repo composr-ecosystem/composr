@@ -58,7 +58,7 @@
 					</th>
 
 					<td>
-						{$CURRENCY_SYMBOL,{CURRENCY}}{AMOUNT*}, {PER}
+						{$CURRENCY_SYMBOL,{CURRENCY}}{PRICE*}, {PER}
 					</td>
 
 					<td>

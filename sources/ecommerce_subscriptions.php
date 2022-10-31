@@ -57,7 +57,7 @@ function find_member_subscriptions(int $member_id, bool $usergroup_subscriptions
                     's_type_code' => $sub_trans['t_type_code'],
                     's_member_id' => $member_id,
                     's_state' => ($sub['timeout'] < time()) ? 'cancelled' : 'active',
-                    's_amount' => empty($sub_trans['t_amount']) ? float_to_raw_string(0.0) : $sub_trans['t_amount'],
+                    's_price' => empty($sub_trans['t_price']) ? float_to_raw_string(0.0) : $sub_trans['t_price'],
                     's_tax' => $sub_trans['t_tax'],
                     // Subscriptions do not support shipping
                     's_special' => '',
@@ -160,7 +160,7 @@ function find_member_subscriptions(int $member_id, bool $usergroup_subscriptions
                 'length' => $length,
                 'length_units' => $length_units,
 
-                'amount' => $sub['s_amount'],
+                'price' => $sub['s_price'],
                 'tax' => $sub['s_tax'],
                 'currency' => $sub['s_currency'],
 

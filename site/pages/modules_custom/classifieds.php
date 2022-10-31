@@ -213,7 +213,7 @@ class Module_classifieds
                     'T_PURCHASE_ID' => strval($t['t_purchase_id']),
                     'T_STATUS' => get_transaction_status_string($t['t_status']),
                     'T_REASON' => $t['t_reason'],
-                    'T_AMOUNT' => float_format($t['t_amount']),
+                    'T_PRICE' => float_format($t['t_price']),
                     'T_TAX' => float_format($t['t_tax']),
                     'T_SHIPPING' => float_format($t['t_shipping']),
                     'T_CURRENCY' => $t['t_currency'],

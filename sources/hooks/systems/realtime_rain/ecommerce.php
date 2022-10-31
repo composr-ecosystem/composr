@@ -39,7 +39,7 @@ class Hook_realtime_rain_ecommerce
         $drops = [];
 
         if (has_actual_page_access(get_member(), 'admin_ecommerce')) {
-            $rows = $GLOBALS['SITE_DB']->query('SELECT t_amount,t_type_code,t_time AS timestamp FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'ecom_transactions WHERE t_time BETWEEN ' . strval($from) . ' AND ' . strval($to));
+            $rows = $GLOBALS['SITE_DB']->query('SELECT t_price,t_type_code,t_time AS timestamp FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'ecom_transactions WHERE t_time BETWEEN ' . strval($from) . ' AND ' . strval($to));
 
             foreach ($rows as $row) {
                 require_code('ecommerce');
@@ -53,7 +53,7 @@ class Hook_realtime_rain_ecommerce
 
                 $timestamp = $row['t_timestamp'];
 
-                $ticker_text = do_lang('KA_CHING', ecommerce_get_currency_symbol($row['t_currency']), $row['t_amount'], $row['t_currency']);
+                $ticker_text = do_lang('KA_CHING', ecommerce_get_currency_symbol($row['t_currency']), $row['t_price'], $row['t_currency']);
 
                 $drops[] = rain_get_special_icons(null, $timestamp, null, $ticker_text) + [
                     'TYPE' => 'ecommerce',
