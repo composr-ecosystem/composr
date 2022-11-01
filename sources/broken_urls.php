@@ -20,8 +20,6 @@
 
 /**
  * Hook class.
- *
- * @package core_cleanup_tools
  */
 class BrokenURLScanner
 {
