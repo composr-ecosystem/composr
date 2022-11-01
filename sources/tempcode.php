@@ -1098,6 +1098,10 @@ function invisible_output_encode(string $string) : string
         }
     }
 
+    if ($GLOBALS['XSS_DETECT']) {
+        ocp_mark_as_escaped($ret);
+    }
+
     // Possible for future...
     //  http://www.fileformat.info/info/unicode/char/fffe/index.htm (Unicode Noncharacter)
     //  http://www.unicode.org/faq/private_use.html
@@ -1118,11 +1122,22 @@ function invisible_output_encode(string $string) : string
  */
 function strip_invisible_output_encoding(string $string) : string
 {
+    if ($GLOBALS['XSS_DETECT']) {
+        $is_escaped = ocp_is_escaped($string);
+    }
+
     if (get_charset() === 'utf-8') {
         $string = str_replace([chr(0xE2) . chr(0x80) . chr(0x8B), chr(0xEF) . chr(0xBB) . chr(0xBF)], ['', ''], $string);
     } else {
         $string = str_replace(['&#x200b;', '&#xfeff;'], ['', ''], $string);
     }
+
+    if ($GLOBALS['XSS_DETECT']) {
+        if ($is_escaped) {
+            ocp_mark_as_escaped($string);
+        }
+    }
+
     return $string;
 }
 
