@@ -170,13 +170,15 @@
                 form.elements['post'].value = '';
             }
 
-            $dom.trigger(form, 'submit');
+            form.submit(); // Regular submit so that event handlers do not run (would be blocked by normal submit flow handler)
         },
 
         ensureRegularEditor: function () {
             var form = this.form;
             form.action = form.submitAction;
             form.target = form.submitTarget;
+
+            // (The regular submit flow will still be happening in another event handler, so we don't need to submit here)
         },
 
         addCommentChecking: function (form, params) {

@@ -36,10 +36,10 @@
 {+END}
 
 {+START,IF,{$NOT,{$IS_GUEST}}}{+START,IF,{$NOTIFICATIONS_AVAILABLE,{$GET,NOTIFICATIONS_TYPE}}}
+	{$INC,notification_id}
 	<div class="inline" data-view="NotificationButtons" data-view-params="{+START,PARAMS_JSON,notification_id}{_*}{+END}">
 		{+START,IF_PASSED_AND_TRUE,RIGHT}<div class="clearfix"><div class="right force-margin">{+END}
 
-		{$INC,notification_id}
 		<form id="nenable-{$GET*,notification_id}" title="{!notifications:NOTIFICATIONS}"{+START,IF,{$NOTIFICATIONS_ENABLED,{NOTIFICATIONS_ID},{$GET,NOTIFICATIONS_TYPE}}} style="display: none" aria-hidden="true"{+END} data-open-as-overlay="{}" class="inline" rel="enable-notifications" method="post" action="{$PAGE_LINK*,{$GET,NOTIFICATIONS_PAGE_LINK}:redirect={$SELF_URL&*,1,0,0,wide_high=<null>}}">
 			{$INSERT_FORM_POST_SECURITY,1}
 			<button type="submit" class="btn btn-primary {$GET*,button_type} buttons--notifications-enable js-show-disable-form">{+START,INCLUDE,ICON}NAME=buttons/notifications_enable{+END} {$GET,button_label_enable}</button>
