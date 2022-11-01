@@ -793,8 +793,8 @@
             revisionId = strVal(params.revisionId);
 
         $dom.on(container, 'click', function (e) {
-            templateEditorRestoreRevision(file, revisionId);
             e.preventDefault();
+            templateEditorRestoreRevision(file, revisionId);
         });
 
         function templateEditorRestoreRevision(file, revisionId) {

@@ -56,6 +56,22 @@ class Hook_snippet_template_editor_save
             $custom_path = get_custom_file_base() . '/themes/' . $theme . '/' . $subdir . '_custom/' . $_file;
             $original_path = get_file_base() . '/themes/default/' . $subdir . '/' . $_file;
 
+            // Store revision
+            if (addon_installed('actionlog')) {
+                require_code('revisions_engine_files');
+                $revision_engine = new RevisionEngineFiles();
+                $existing_path = find_template_path($_file, $subdir, $theme);
+                if ($existing_path !== null) {
+                    $revision_engine->add_revision(
+                        dirname($custom_path),
+                        $clean_file,
+                        ltrim($suffix, '.'),
+                        cms_file_get_contents_safe($existing_path, FILE_READ_LOCK | FILE_READ_BOM),
+                        filemtime($existing_path)
+                    );
+                }
+            }
+
             if (is_file($original_path) && cms_file_get_contents_safe($original_path, FILE_READ_LOCK | FILE_READ_BOM) == $contents) {
                 // Delete
                 if (file_exists($custom_path)) {
@@ -74,22 +90,6 @@ class Hook_snippet_template_editor_save
                 if (is_file($original_path) && !is_file($custom_path . '.editfrom')) {
                     $hash = cms_file_get_contents_safe($original_path, FILE_READ_LOCK | FILE_READ_BOM);
                     cms_file_put_contents_safe($custom_path . '.editfrom', $hash, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
-                }
-            }
-
-            // Store revision
-            if (addon_installed('actionlog')) {
-                require_code('revisions_engine_files');
-                $revision_engine = new RevisionEngineFiles();
-                $existing_path = find_template_path($_file, $subdir, $theme);
-                if ($existing_path !== null) {
-                    $revision_engine->add_revision(
-                        dirname($custom_path),
-                        $clean_file,
-                        ltrim($suffix, '.'),
-                        cms_file_get_contents_safe($existing_path, FILE_READ_LOCK | FILE_READ_BOM),
-                        filemtime($existing_path)
-                    );
                 }
             }
 
