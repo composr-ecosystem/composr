@@ -364,7 +364,7 @@ class Hook_ecommerce_tax_taxjar
             return; // TaxJar only supports transactions for United States businesses, so do nothing otherwise
         }
 
-        $date = date(DATE_ISO8601);
+        $date = date(DATE_ATOM); // Do not use PHP's DATE_ISO8601, as that is not actually valid ISO-8601
         $request = $tracking_id;
         $request['transaction_id'] = $txn_id;
         $request['transaction_date'] = $date;
