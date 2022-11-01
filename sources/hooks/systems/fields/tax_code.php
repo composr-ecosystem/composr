@@ -192,4 +192,18 @@ class Hook_fields_tax_code
         $tax_code = post_param_tax_code($tmp_name, $editing ? STRING_MAGIC_NULL : '');
         return $tax_code;
     }
+
+    /**
+     * Determine what data should be used from this field in SEO.
+     *
+     * @param  string $val The value of the field
+     * @param  integer $field_id The ID of the field
+     * @param  ID_TEXT $content_type The content type using this field
+     * @param  ?ID_TEXT $content_id The ID of the content using this field (null: not using a specific piece of content, such as adding a new entry)
+     * @return mixed Either a string of the content to use in SEO, or a Tuple of [(string) content to use, (boolean) must use / high priority, (boolean) is a codename]
+     */
+    public function get_seo_source_map(string $val, int $field_id, string $content_type, ?string $content_id = null)
+    {
+        return '';
+    }
 }
