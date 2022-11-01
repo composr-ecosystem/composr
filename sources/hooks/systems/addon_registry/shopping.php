@@ -580,6 +580,7 @@ class Hook_addon_registry_shopping
             'ORDER_ID' => placeholder_numeric_id(),
             'TRANS_EXPECTING_ID' => placeholder_numeric_id(),
             'TYPE_CODE' => $items[0]['TYPE_CODE'],
+            'TAX' => placeholder_number(),
         ]), null, '', true);
     }
 

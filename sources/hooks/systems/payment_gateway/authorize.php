@@ -203,7 +203,7 @@ class Hook_payment_gateway_authorize
             'PRICE' => float_to_raw_string($price),
             'TAX' => float_to_raw_string($tax),
             'SHIPPING_COST' => float_to_raw_string($shipping_cost),
-            'AMOUNT' => float_to_raw_string($price + $tax + $shipping_cost),
+            'AMOUNT' => float_to_raw_string($price + $tax + $shipping_cost), // Authorize.net requires tax and shipping be included in the total
             'IS_TEST' => ecommerce_test_mode(),
             'CUST_ID' => strval(get_member()),
             'CURRENCY' => $currency,
@@ -393,14 +393,15 @@ class Hook_payment_gateway_authorize
             if ($silent_fail) {
                 return null;
             }
-            fatal_ipn_exit(do_lang('IPN_UNVERIFIED') . ' - ' . json_encode($_POST));
+            fatal_ipn_exit(do_lang('PDT_IPN_UNVERIFIED') . ' - ' . json_encode($_POST));
         }
 
         $this->store_shipping_address($trans_expecting_id, $txn_id);
 
         $tax = null;
+        $shipping = null;
 
-        return [$trans_expecting_id, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $amount, $tax, $currency, $parent_txn_id, $pending_reason, $memo, $period, $member_id];
+        return [$trans_expecting_id, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $amount, $tax, $shipping, $currency, $parent_txn_id, $pending_reason, $memo, $period, $member_id];
     }
 
     /**

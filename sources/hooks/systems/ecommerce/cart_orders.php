@@ -43,14 +43,19 @@ class Hook_ecommerce_cart_orders
      * IMPORTANT NOTE TO PROGRAMMERS: This function may depend only on the database, and not on get_member() or any GET/POST values.
      *  Such dependencies will break IPN, which works via a Guest and no dependable environment variables. It would also break manual transactions from the Admin Zone.
      *
-     * @param  ?ID_TEXT $search Product being searched for (null: none)
+     * @param  ?ID_TEXT $search Product being searched for (passed by reference as it may be modified for special cases) (null: none)
      * @return array A map of product name to list of product details
      */
-    public function get_products(?string $search = null) : array
+    public function get_products(?string &$search = null) : array
     {
         $products = [];
 
         require_lang('shopping');
+
+        // CART_ORDER is a semantic type used to mean a member's current shopping cart.
+        if ($search == 'CART_ORDER') {
+            $this->get_actual_cart_order($search);
+        }
 
         if ($search !== null) {
             if (preg_match('#^CART_ORDER_\d+$#', $search) == 0) {
@@ -148,7 +153,7 @@ class Hook_ecommerce_cart_orders
      * @param  boolean $from_admin Whether this is being called from the Admin Zone. If so, optionally different fields may be used, including a purchase_id field for direct purchase ID input.
      * @return array A pair: The purchase ID, a confirmation box to show (null for no specific confirmation)
      */
-    public function handle_needed_fields(string $type_code, bool $from_admin = false) : array
+    public function process_needed_fields(string $type_code, bool $from_admin = false) : array
     {
         return ['', null];
     }
@@ -166,11 +171,17 @@ class Hook_ecommerce_cart_orders
         require_code('shopping');
         require_lang('shopping');
 
+        // CART_ORDER is a special type used to mean a member's current shopping cart.
+        if ($type_code == 'CART_ORDER') {
+            $this->get_actual_cart_order($type_code);
+        }
+
         $order_id = intval(preg_replace('#^CART_ORDER_#', '', $type_code));
 
         if ($details['STATUS'] == 'Completed') {
             // Insert sale
             $member_id = $GLOBALS['SITE_DB']->query_select_value('shopping_orders', 'member_id', ['id' => $order_id]);
+            $session_id = $GLOBALS['SITE_DB']->query_select_value('shopping_orders', 'session_id', ['id' => $order_id]);
             $GLOBALS['SITE_DB']->query_insert('ecom_sales', ['date_and_time' => time(), 'member_id' => $member_id, 'details' => $details['item_name'], 'details2' => '', 'txn_id' => $details['TXN_ID']]);
 
             $ordered_items = $GLOBALS['SITE_DB']->query_select('shopping_order_details', ['*'], ['p_order_id' => $order_id], '', 1);
@@ -191,6 +202,9 @@ class Hook_ecommerce_cart_orders
                 if ($call_actualiser_from_cart) {
                     $sub_product_object->actualiser($ordered_item['p_type_code'], $ordered_item['purchase_id'], $sub_details + $details/*Copy through transaction status etc, merge in this order gives precedence to $sub_details*/);
                 }
+
+                // Remove item from member's cart (we specify member ID and session ID as this may have been called by an external IPN)
+                remove_from_cart([$ordered_item['p_type_code']], $member_id, $session_id);
             }
         }
 
@@ -260,5 +274,29 @@ class Hook_ecommerce_cart_orders
 
         // If none of product items have manual dispatch, return order dispatch as automatic.
         return 'automatic';
+    }
+
+    /**
+     * Copy a member's shopping cart into an actual cart order and modify the search string with the new ID.
+     * Call when using CART_ORDER as the type code to modify it to CART_ORDER_{ID}.
+     *
+     * @param  ID_TEXT $search 'CART_ORDER' (type code passed by reference to be modified with the CART_ORDER_{ID})
+     * @set CART_ORDER
+     */
+    protected function get_actual_cart_order(string &$search)
+    {
+        // Safeguard
+        if ($search != 'CART_ORDER') {
+            return;
+        }
+
+        if (!addon_installed('shopping')) {
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        }
+
+        // Copy cart into an order
+        require_code('shopping');
+        $order_id = copy_shopping_cart_to_order();
+        $search = 'CART_ORDER_' . strval($order_id);
     }
 }

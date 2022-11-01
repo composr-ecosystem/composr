@@ -113,9 +113,9 @@ class Module_shopping
                 'p_name' => 'SHORT_TEXT',
                 'p_sku' => 'SHORT_TEXT',
                 'p_quantity' => 'INTEGER',
-                'p_price' => 'REAL',
+                'p_price' => 'REAL', // Unit Price
                 'p_tax_code' => 'ID_TEXT',
-                'p_tax' => 'REAL', // We need this for accurate logging (we can't have it changing while looking at a past order); we use it for tax invoices
+                'p_tax' => 'REAL', // Total tax of item (accounting for quantity);  We need this for accurate logging (we can't have it changing while looking at a past order); we use it for tax invoices
                 'p_dispatch_status' => 'SHORT_TEXT',
             ]);
             $GLOBALS['SITE_DB']->create_index('shopping_order_details', 'type_code', ['p_type_code']);
@@ -378,6 +378,7 @@ class Module_shopping
         $max_rows = count($shopping_cart_rows);
 
         $type_codes = [];
+        $has_needed_fields = false;
 
         if ($max_rows > 0) {
             $shopping_cart = new Tempcode();
@@ -405,6 +406,11 @@ class Module_shopping
 
                 $type_codes[] = $item['type_code'];
 
+                // Check if we have fields that must be filled out
+                if (!$has_needed_fields) {
+                    $has_needed_fields = has_needed_fields($item['type_code']);
+                }
+
                 $this->show_cart_entry($shopping_cart, $details, $item, isset($shopping_cart_rows_taxes[$i]) ? $shopping_cart_rows_taxes[$i] : null);
             }
 
@@ -416,7 +422,12 @@ class Module_shopping
             $fields = null;
             ecommerce_attach_memo_field_if_needed($fields);
 
-            $next_url = build_url(['page' => 'purchase', 'type' => 'pay', 'type_code' => 'CART_ORDER'], get_module_zone('purchase'));
+            // Request additional information when needed, otherwise go directly to payment
+            if ($has_needed_fields) {
+                $next_url = build_url(['page' => 'purchase', 'type' => 'details', 'type_code' => 'CART_ORDER'], get_module_zone('purchase'));
+            } else {
+                $next_url = build_url(['page' => 'purchase', 'type' => 'pay', 'type_code' => 'CART_ORDER'], get_module_zone('purchase'));
+            }
         } else {
             $total_price = 0.00;
             $total_tax = 0.00;

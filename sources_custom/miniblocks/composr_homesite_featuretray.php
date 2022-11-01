@@ -167,7 +167,7 @@ $feature_tree = [
                 ['Shopping cart for running an online store'],
                 ['Extendable framework', 'Programmers can easily add new product types to sell, or payment gateways'],
                 null, // divider
-                ['Multiple payment gateways', 'Accepts payments via PayPal, or other gateways developers may add (e.g. WorldPay, or CC-Bill), and manual transactions (cash/cheque)'],
+                ['Multiple payment gateways', 'Accepts payments via PayPal, or other gateways developers may add, and manual transactions (cash/cheque)'],
                 ['Invoicing support', 'Including status tracking and online payment tracking'],
                 ['Basic accounting support', 'Input your incoming and outgoing transactions to get basic ledger, profit-and-loss, and cashflow charting'],
                 (!is_maintained('currency')) ? false : ['Currency conversions', 'Perform automatic currency conversions within your website pages'],

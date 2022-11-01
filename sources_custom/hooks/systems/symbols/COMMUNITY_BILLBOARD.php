@@ -31,6 +31,7 @@ class Hook_symbol_COMMUNITY_BILLBOARD
         }
 
         require_css('community_billboard');
+        require_lang('community_billboard');
 
         $system = (mt_rand(0, 1) == 0);
         $_community_billboard = null;
@@ -53,7 +54,8 @@ class Hook_symbol_COMMUNITY_BILLBOARD
         if ($_community_billboard === null) {
             $value = get_option('system_community_billboard');
         } else {
-            $value = do_lang('_COMMUNITY_MESSAGE', $_community_billboard);
+            // Must evaluate tempcode so do_lang returns a string, which is the required output
+            $value = do_lang('_COMMUNITY_MESSAGE', $_community_billboard->evaluate());
         }
 
         return $value;

@@ -24,6 +24,7 @@
 class Hook_payment_gateway_ccbill
 {
     // https://www.ccbill.com/cs/manuals/CCBill_Background_Post_Users_Guide.pdf
+    // https://ccbill.com/doc/dynamic-pricing-user-guide
     // Requires:
     //  you have to contact support to enable dynamic pricing and generate the encryption key for your account
     //  the "Account ID" (a number given to you) is the Composr "Gateway username" and also "Testing mode gateway username" (it's all the same installation ID)
@@ -342,14 +343,15 @@ class Hook_payment_gateway_ccbill
             if ($silent_fail) {
                 return null;
             }
-            fatal_ipn_exit(do_lang('IPN_UNVERIFIED')); // Hacker?!!!
+            fatal_ipn_exit(do_lang('PDT_IPN_UNVERIFIED')); // Hacker?!!!
         }
 
         $this->store_shipping_address($trans_expecting_id, $txn_id);
 
         $tax = null;
+        $shipping = null;
 
-        return [$trans_expecting_id, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $amount, $tax, $currency, $parent_txn_id, $pending_reason, $memo, $period, $member_id];
+        return [$trans_expecting_id, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $amount, $tax, $shipping, $currency, $parent_txn_id, $pending_reason, $memo, $period, $member_id];
     }
 
     /**

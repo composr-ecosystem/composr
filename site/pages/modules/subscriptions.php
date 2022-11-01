@@ -70,7 +70,7 @@ class Module_subscriptions
                 's_type_code' => 'ID_TEXT',
                 's_member_id' => 'MEMBER',
                 's_state' => 'ID_TEXT', // pending|new|active|cancelled (pending means payment has been requested)
-                's_amount' => 'REAL', // can't always find this from s_type_code
+                's_price' => 'REAL', // can't always find this from s_type_code
                 's_tax_code' => 'ID_TEXT',
                 's_tax_derivation' => 'LONG_TEXT', // Needs to be stored, as it's locked in time
                 's_tax' => 'REAL', // Needs to be stored, as it's locked in time
@@ -148,7 +148,7 @@ class Module_subscriptions
         if (($upgrade_from !== null) && ($upgrade_from < 6)) { // LEGACY
             $GLOBALS['SITE_DB']->rename_table('subscriptions', 'ecom_subscriptions');
 
-            $GLOBALS['SITE_DB']->alter_table_field('ecom_subscriptions', 's_amount', 'REAL');
+            $GLOBALS['SITE_DB']->alter_table_field('ecom_subscriptions', 's_amount', 'REAL', 's_price');
             $GLOBALS['SITE_DB']->alter_table_field('ecom_subscriptions', 's_via', 'ID_TEXT', 's_payment_gateway');
             $GLOBALS['SITE_DB']->add_table_field('ecom_subscriptions', 's_tax_code', 'ID_TEXT', '0%');
             $GLOBALS['SITE_DB']->add_table_field('ecom_subscriptions', 's_tax_derivation', 'LONG_TEXT', '');

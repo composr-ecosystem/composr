@@ -28,7 +28,7 @@ class Module_admin_ecommerce extends Standard_crud_module
     protected $lang_type = 'USERGROUP_SUBSCRIPTION';
     protected $select_name = 'TITLE';
     protected $select_name_description = 'DESCRIPTION_TITLE';
-    protected $menu_label = 'USERGROUP_SUBSCRIPTIONS';
+    protected $menu_label = 'ECOMMERCE';
     protected $table = 'f_usergroup_subs';
     protected $orderer = 's_title';
     protected $donext_entry_content_type = 'usergroup_subscription';
@@ -75,7 +75,7 @@ class Module_admin_ecommerce extends Standard_crud_module
         }
 
         $ret = [
-            'browse' => ['CUSTOM_PRODUCT_USERGROUP', 'menu/adminzone/audit/ecommerce/subscriptions'],
+            'browse' => ['ECOMMERCE', 'menu/adminzone/audit/ecommerce/subscriptions'],
         ];
         if (!$be_deferential) {
             $ret += [
@@ -137,10 +137,6 @@ class Module_admin_ecommerce extends Standard_crud_module
 
         if (($type == 'browse') || ($type == 'add') || ($type == '_add') || ($type == 'edit') || ($type == '_edit') || ($type == '__edit')) {
             set_helper_panel_text(comcode_lang_string('DOC_USERGROUP_SUBSCRIPTION'));
-
-            if (get_forum_type() == 'cns') {
-                breadcrumb_set_parents([['_SEARCH:admin:setup', do_lang_tempcode('SETUP')], ['_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')]]);
-            }
         }
 
         if ($type == 'prices' || $type == '_prices') {
@@ -203,7 +199,7 @@ class Module_admin_ecommerce extends Standard_crud_module
                 ((get_forum_type() != 'cns') && (get_value('unofficial_ecommerce') !== '1')) ? null : ['admin/edit', ['_SELF', ['type' => 'edit'], '_SELF'], do_lang('EDIT_USERGROUP_SUBSCRIPTION')],
                 ['menu/adminzone/setup/ecommerce_products', ['_SELF', ['type' => 'prices'], '_SELF'], do_lang('ECOM_PRODUCTS_MANAGE_INVENTORY')],
             ],
-            do_lang('CUSTOM_PRODUCT_USERGROUP')
+            do_lang('ECOMMERCE')
         );
     }
 

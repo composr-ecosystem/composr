@@ -147,7 +147,7 @@ class Module_admin_invoices
      */
     public function run() : object
     {
-        $type = get_param_string('type', 'add');
+        $type = get_param_string('type', 'browse');
 
         if ($type == 'browse') {
             return $this->browse();
@@ -221,7 +221,7 @@ class Module_admin_invoices
         $fields = new Tempcode();
         $fields->attach(form_input_list(do_lang_tempcode('PRODUCT'), '', 'type_code', $list));
         $fields->attach(form_input_username(do_lang_tempcode('USERNAME'), do_lang_tempcode('DESCRIPTION_INVOICE_FOR'), 'to', $to, true));
-        $fields->attach(form_input_float(do_lang_tempcode('AMOUNT'), do_lang_tempcode('DESCRIPTION_INVOICE_AMOUNT', escape_html(get_option('currency')), ecommerce_get_currency_symbol(get_option('currency'))), 'amount', null, false));
+        $fields->attach(form_input_float(do_lang_tempcode('PRICE'), do_lang_tempcode('DESCRIPTION_INVOICE_PRICE', escape_html(get_option('currency')), ecommerce_get_currency_symbol(get_option('currency'))), 'price', null, false));
         $fields->attach(form_input_tax_code(do_lang_tempcode(get_option('tax_system')), do_lang_tempcode('DESCRIPTION_INVOICE_TAX_CODE'), 'tax_code', '', false));
         $fields->attach(form_input_line(do_lang_tempcode('PURCHASE_ID'), do_lang_tempcode('DESCRIPTION_PURCHASE_ID_INVOICE'), 'special', '', false));
         $fields->attach(form_input_text(do_lang_tempcode('NOTE'), do_lang_tempcode('DESCRIPTION_INVOICE_NOTE'), 'note', '', false));
@@ -260,11 +260,11 @@ class Module_admin_invoices
             warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($to)), false, false, 404);
         }
 
-        $_amount = post_param_string('amount', '');
-        $amount = ($_amount == '') ? null : float_unformat($_amount);
-        if ($amount === null) {
-            $amount = $details['price'];
-            if ($amount === null) {
+        $_price = post_param_string('price', '');
+        $price = ($_price == '') ? null : float_unformat($_price);
+        if ($price === null) {
+            $price = $details['price'];
+            if ($price === null) {
                 warn_exit(do_lang_tempcode('INVOICE_REQUIRED_AMOUNT'));
             }
         }
@@ -272,13 +272,13 @@ class Module_admin_invoices
         $shipping_cost = calculate_shipping_cost($details, $details['shipping_cost'], $details['product_weight'], $details['product_length'], $details['product_width'], $details['product_height']);
 
         $tax_code = post_param_tax_code('tax_code', $details['tax_code']);
-        list($tax_derivation, $tax, $tax_tracking, $shipping_tax) = calculate_tax_due($details, $tax_code, $amount, $shipping_cost, $member_id);
+        list($tax_derivation, $tax, $tax_tracking, $shipping_tax) = calculate_tax_due($details, $tax_code, $price, $shipping_cost, $member_id);
 
         $id = $GLOBALS['SITE_DB']->query_insert('ecom_invoices', [
             'i_type_code' => $type_code,
             'i_member_id' => $member_id,
             'i_state' => 'new',
-            'i_amount' => $amount,
+            'i_price' => $price,
             'i_tax_code' => $tax_code,
             'i_tax_derivation' => json_encode($tax_derivation, defined('JSON_PRESERVE_ZERO_FRACTION') ? JSON_PRESERVE_ZERO_FRACTION : 0),
             'i_tax' => $tax,
@@ -339,7 +339,7 @@ class Module_admin_invoices
                 'USERNAME' => $username,
                 'ID' => strval($row['id']),
                 'STATE' => $row['i_state'],
-                'AMOUNT' => float_to_raw_string($row['i_amount']),
+                'AMOUNT' => float_to_raw_string($row['i_price']),
                 'TAX' => float_to_raw_string($row['i_tax']),
                 'CURRENCY' => $row['i_currency'],
                 'DATE' => $date,
@@ -399,6 +399,14 @@ class Module_admin_invoices
      */
     public function fulfill() : object
     {
+        $rows = $GLOBALS['SITE_DB']->query_select('ecom_invoices', ['i_state' => 'delivered'], ['id' => get_param_integer('id')], '', 1);
+        if (!array_key_exists(0, $rows)) {
+            warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
+        }
+
+        $row = $rows[0];
+        send_invoice_notification($row['i_member_id'], $row['id'], true);
+
         $GLOBALS['SITE_DB']->query_update('ecom_invoices', ['i_state' => 'delivered'], ['id' => get_param_integer('id')], '', 1);
 
         $url = build_url(['page' => '_SELF', 'type' => 'unfulfilled'], '_SELF');

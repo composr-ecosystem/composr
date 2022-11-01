@@ -122,26 +122,15 @@ class Hook_fields_tax_code
             return currency_convert_wrap($tax, null, CURRENCY_DISPLAY_TEMPLATED);
         }
 
-        // Render as a tax rate...
-
-        if (preg_match('#^TIC:#', $tax_code) != 0) {
-            $current_tic = intval(substr($tax_code, 4));
-            require_code('http');
-            list($__tics) = cache_and_carry('cms_http_request', ['https://taxcloud.net/tic/?format=text', ['convert_to_internal_encoding' => true]]);
-            $_tics = explode("\n", $__tics);
-            foreach ($_tics as $tic_line) {
-                if (strpos($tic_line, '=') !== false) {
-                    list($tic, $tic_label) = explode('=', $tic_line, 2);
-                    if (intval($tic) == $current_tic) {
-                        return escape_html($tic_label);
-                    }
+        // Check hooks for rendering
+        $hooks = find_all_hook_obs('systems', 'ecommerce_tax', 'Hook_ecommerce_tax_');
+        foreach ($hooks as $ob) {
+            if (method_exists($ob, 'render_field_value')) {
+                $value = $ob->render_field_value($tax_code);
+                if ($value !== null) {
+                    return $value;
                 }
             }
-            return escape_html($tax_code);
-        }
-
-        if ($tax_code == 'EU') {
-            return do_lang_tempcode('TAX_EU');
         }
 
         if (substr($tax_code, -1) == '%') {

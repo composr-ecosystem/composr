@@ -114,15 +114,15 @@ class Module_admin_health_check
         if (post_param_integer('submitting', 0) == 1) {
             $sections_to_run = isset($_POST['sections_to_run']) ? $_POST['sections_to_run'] : [];
 
-            $passes = (post_param_integer('passes', 0) == 1);
-            $skips = (post_param_integer('skips', 0) == 1);
-            $manual_checks = (post_param_integer('manual_checks', 0) == 1);
+            $show_passes = (post_param_integer('show_passes', 0) == 1); // Cannot use any "pass*" names or password managers will stick buttons on top of the tick thinking it's a login field.
+            $show_skips = (post_param_integer('show_skips', 0) == 1);
+            $show_manual_checks = (post_param_integer('show_manual_checks', 0) == 1);
         } else {
             $sections_to_run = (get_option('hc_cron_sections_to_run') == '') ? [] : explode(',', get_option('hc_cron_sections_to_run'));
 
-            $passes = true;
-            $skips = true;
-            $manual_checks = true;
+            $show_passes = true;
+            $show_skips = true;
+            $show_manual_checks = true;
         }
 
         $automatic_repair = false; // We don't want this in the UI, it's implemented for possible future use only
@@ -131,7 +131,7 @@ class Module_admin_health_check
 
         if (post_param_integer('submitting', 0) == 1) {
             $has_fails = false;
-            $categories = run_health_check($has_fails, $sections_to_run, $passes, $skips, $manual_checks, $automatic_repair);
+            $categories = run_health_check($has_fails, $sections_to_run, $show_passes, $show_skips, $show_manual_checks, $automatic_repair);
 
             $results = do_template('HEALTH_CHECK_RESULTS', ['_GUID' => 'f428b63eacc19bdd041d2b1a1d2f1155', 'CATEGORIES' => $categories]);
 
@@ -144,9 +144,9 @@ class Module_admin_health_check
             '_GUID' => 'cd2a0ec2477dcc6545cb0825b098cfc5',
             'TITLE' => $this->title,
             'SECTIONS' => $sections,
-            'PASSES' => $passes,
-            'SKIPS' => $skips,
-            'MANUAL_CHECKS' => $manual_checks,
+            'SHOW_PASSES' => $show_passes,
+            'SHOW_SKIPS' => $show_skips,
+            'SHOW_MANUAL_CHECKS' => $show_manual_checks,
             'RESULTS' => $results,
         ]);
     }

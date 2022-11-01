@@ -21,6 +21,58 @@
 // DON'T include this file directly. Include 'ecommerce' instead.
 
 /**
+ * Initialise the eCommerce tax system.
+ */
+function init__ecommerce_tax()
+{
+    // Initialise the tax service hook into the cache
+    global $ECOMMERCE_TAX_CACHE;
+    $ECOMMERCE_TAX_CACHE = [];
+
+    // Define constants
+    if (!defined('TAX_SERVICE_PRIORITY_NONE')) {
+        define('TAX_SERVICE_PRIORITY_NONE', 0);
+        define('TAX_SERVICE_PRIORITY_LOW', 1);
+        define('TAX_SERVICE_PRIORITY_NORMAL', 2);
+        define('TAX_SERVICE_PRIORITY_HIGH', 3);
+    }
+}
+
+/**
+ * Load a tax service hook into cache and return it.
+ *
+ * @param  ?ID_TEXT $tax_service The name of the tax service hook to load (null: load the tax service configured with the site)
+ * @param  boolean $fail_ok Whether a failure should not trigger an error
+ * @return ?object The hook object (null: hook not found and $fail_ok was true)
+ */
+function get_tax_service_hook(?string $tax_service = null, bool $fail_ok = false) : ?object
+{
+    global $ECOMMERCE_TAX_CACHE;
+
+    if ($tax_service === null) {
+        $tax_service = get_option('tax_api_service');
+    }
+
+    if (isset($ECOMMERCE_TAX_CACHE[$tax_service])) {
+        return $ECOMMERCE_TAX_CACHE[$tax_service];
+    }
+
+    if (hook_exists('systems', 'ecommerce_tax', $tax_service)) {
+        $ob = get_hook_ob('systems', 'ecommerce_tax', $tax_service, 'Hook_ecommerce_tax_', $fail_ok);
+        if ($ob !== null) {
+            $ECOMMERCE_TAX_CACHE[$tax_service] = $ob;
+        }
+        return $ob;
+    }
+
+    if (!$fail_ok) {
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+    }
+
+    return null;
+}
+
+/**
  * Multiply tax up or down to reflect a price being multiplied up or down.
  * This does nothing for a semantic tax code or a simple percentage.
  * For a simple flat figure it does though.
@@ -44,13 +96,13 @@ function tax_multiplier(string $tax_code, float $multiplier) : string
  *
  * @param  ?array $details Map of product details (null: there's no product directly associated). Not strictly needed, only passed for customisation potential.
  * @param  ID_TEXT $tax_code The tax code. This may be different to the product default, e.g. if a discount is in place.
- * @param  REAL $amount The amount
+ * @param  REAL $price The price
  * @param  REAL $shipping_cost The shipping cost
  * @param  ?MEMBER $member_id The member this is for (null: current member)
  * @param  integer $quantity The quantity of items
- * @return array A tuple: The tax derivation, tax due (including shipping tax), tax tracking ID (at time of writing this is just with TaxCloud), shipping tax
+ * @return array A tuple: The tax derivation, tax due (including shipping tax), tax tracking ID
  */
-function calculate_tax_due(?array $details, string $tax_code, float $amount, float $shipping_cost = 0.00, ?int $member_id = null, int $quantity = 1) : array
+function calculate_tax_due(?array $details, string $tax_code, float $price, float $shipping_cost = 0.00, ?int $member_id = null, int $quantity = 1) : array
 {
     // ADD CUSTOM CODE HERE BY OVERRIDING THIS FUNCTION
 
@@ -65,7 +117,7 @@ function calculate_tax_due(?array $details, string $tax_code, float $amount, flo
     ];
     $details = [
         'tax_code' => $tax_code,
-        'price' => $amount,
+        'price' => $price,
     ];
     $item_details[] = [$item, $details];
 
@@ -96,334 +148,157 @@ function calculate_tax_due(?array $details, string $tax_code, float $amount, flo
  * @param  string $field_name_prefix Field name prefix. Pass as blank for cart items or 'p_' for order items.
  * @param  REAL $shipping_cost The shipping cost
  * @param  ?MEMBER $member_id The member this is for (null: current member)
- * @return array A tuple: The shipping tax derivation, shipping tax due (including shipping tax), shipping tax tracking ID (at time of writing this is just with TaxCloud)
+ * @return array A tuple: The shipping tax derivation, shipping tax due (including shipping tax), shipping tax tracking ID
  */
 function get_tax_using_tax_codes(array &$item_details, string $field_name_prefix = '', float $shipping_cost = 0.00, ?int $member_id = null) : array
 {
-    // ADD CUSTOM CODE HERE BY OVERRIDING THIS FUNCTION
+    if ($member_id === null) {
+        $member_id = get_member();
+    }
 
-    $taxcloud_item_details = [];
-    $non_taxcloud_item_details = [];
-    $free_item_details = [];
-    $has_eu_digital_goods = false;
+    $_item_details = [];
+
+    // The composr tax hook should never be removed; error if it was
+    if (!hook_exists('systems', 'ecommerce_tax', 'composr')) {
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+    }
+
+    // Set configured tax service first so shipping tax takes precedence with this service
+    $_item_details[get_option('tax_api_service')] = [];
+
+    $hooks = find_all_hooks('systems', 'ecommerce_tax');
+    foreach (array_keys($hooks) as $hook) {
+        $_item_details[$hook] = [];
+    }
+    $_item_details['_free'] = []; // Free items with no tax
+
     $tax_tracking = [];
     $shipping_tax_derivation = [];
     $shipping_tax = 0.00;
+
+    // Categorise each item depending on the tax service to use; it may be possible items come from previously selected tax services or left to internal calculation, or that an item is outside the supported scope / countries of a selected tax service.
     foreach ($item_details as $i => $parts) {
         list($item, $details) = $parts;
 
         $tax_code = $details['tax_code'];
-        $amount = $details['price'];
+        $price = $details['price'];
 
-        $usa_tic = (preg_match('#^TIC:#', $tax_code) != 0);
-        if ($usa_tic) {
-            $taxcloud_item_details[$i] = $parts;
-        } elseif ($amount == 0.00) {
-            $free_item_details[$i] = $parts;
-        } else {
-            $non_taxcloud_item_details[$i] = $parts;
-
-            if ($tax_code == 'EU') {
-                $has_eu_digital_goods = true;
+        // Determine which tax service to use for this item depending on which returns the highest priority
+        $service_to_use = null;
+        $service_priority = TAX_SERVICE_PRIORITY_NONE;
+        foreach (array_keys($hooks) as $hook) {
+            $ob = get_tax_service_hook($hook);
+            $_service_priority = $ob->service_priority($parts);
+            if ($_service_priority > $service_priority) {
+                $service_to_use = $hook;
+                $service_priority = $_service_priority;
             }
         }
-    }
 
-    if (($has_eu_digital_goods) || (!empty($taxcloud_item_details))) {
-        $shipping_email = '';
-        $shipping_phone = '';
-        $shipping_firstname = '';
-        $shipping_lastname = '';
-        $shipping_street_address = '';
-        $shipping_city = '';
-        $shipping_county = '';
-        $shipping_state = '';
-        $shipping_post_code = '';
-        $shipping_country = '';
-        $shipping_email = '';
-        $shipping_phone = '';
-        $cardholder_name = '';
-        $card_type = '';
-        $card_number = null;
-        $card_start_date_year = null;
-        $card_start_date_month = null;
-        $card_expiry_date_year = null;
-        $card_expiry_date_month = null;
-        $card_issue_number = null;
-        $card_cv2 = null;
-        $billing_street_address = '';
-        $billing_city = '';
-        $billing_county = '';
-        $billing_state = '';
-        $billing_post_code = '';
-        $billing_country = '';
-        get_default_ecommerce_fields($member_id, $shipping_email, $shipping_phone, $shipping_firstname, $shipping_lastname, $shipping_street_address, $shipping_city, $shipping_county, $shipping_state, $shipping_post_code, $shipping_country, $cardholder_name, $card_type, $card_number, $card_start_date_year, $card_start_date_month, $card_expiry_date_year, $card_expiry_date_month, $card_issue_number, $card_cv2, $billing_street_address, $billing_city, $billing_county, $billing_state, $billing_post_code, $billing_country, true);
-
-        if ($shipping_street_address == '') {
-            $street_address = $billing_street_address;
-            $city = $billing_city;
-            $county = $billing_county;
-            $state = $billing_state;
-            $post_code = $billing_post_code;
-            $country = $billing_country;
-        } else {
-            $street_address = $shipping_street_address;
-            $city = $shipping_city;
-            $county = $shipping_county;
-            $state = $shipping_state;
-            $post_code = $shipping_post_code;
-            $country = $shipping_country;
-        }
-    }
-
-    if (!empty($taxcloud_item_details)) {
-        check_taxcloud_configured_correctly();
-
-        if ($country == 'US') {
-            // Cleanup address...
-
-            $url = 'https://api.taxcloud.com/1.0/TaxCloud/VerifyAddress';
-
-            list($street_address_1, $street_address_2) = split_street_address($street_address, 2);
-
-            $zip_parts = explode('-', $post_code, 2);
-            $request = [
-                'apiLoginID' => get_option('taxcloud_api_id'),
-                'apiKey' => get_option('taxcloud_api_key'),
-                'Address1' => $street_address_1,
-                'Address2' => $street_address_2,
-                'City' => $city,
-                'State' => $state,
-                'Zip5' => $zip_parts[0],
-                'Zip4' => array_key_exists(1, $zip_parts) ? $zip_parts[1] : '',
-            ];
-            $_request = json_encode($request);
-            require_code('character_sets');
-            $_request = convert_to_internal_encoding($_request, get_charset(), 'utf-8');
-
-            $_response = cms_http_request($url, ['convert_to_internal_encoding' => true, 'post_params' => $_request, 'timeout' => 20.0, 'raw_content_type' => 'application/json', 'ignore_http_status' => true]);
-            $response = @json_decode($_response->data, true);
-
-            if (!is_array($response)) {
-                $errormsg = 'TaxCloud: ' . $_response->message;
-                require_code('failure');
-                cms_error_log($errormsg, 'error_occurred_api');
+        if ($service_to_use === null) {
+            if ($price == 0.00) {
+                $_item_details['_free'][$i] = $parts;
             } else {
-                if ($response['ErrNumber'] == '0') {
-                    $street_address = trim($response['Address1'] . (isset($response['Address2']) ? ("\n" . $response['Address2']) : ''));
-                    $city = $response['City'];
-                    $state = $response['State'];
-                    $post_code = $response['Zip5'] . (($response['Zip4'] == '') ? '' : ('-' . $response['Zip4']));
-                }
-                // ^ Other error codes are not logged as it could just be user error
+                $_item_details['composr'][$i] = $parts;
             }
-
-            // Work out TaxCloud call...
-
-            $cart_items = [];
-            foreach ($taxcloud_item_details as $i => $parts) {
-                list($item, $details) = $parts;
-
-                $quantity = $item[$field_name_prefix . 'quantity'];
-                $tax_code = $details['tax_code'];
-                $amount = $details['price'];
-                $sku = @cms_empty_safe($details['type_special_details']['sku']) ? strval('item' . strval($i)) : $details['type_special_details']['sku'];
-
-                $cart_items[$i] = [
-                    'Qty' => $quantity,
-                    'Price' => $amount,
-                    'TIC' => intval(substr($tax_code, strlen('TIC:'))),
-                    'ItemID' => $sku,
-                    'Index' => $i,
-                ];
-            }
-
-            if ($shipping_cost != 0.00) {
-                $cart_items[count($taxcloud_item_details)] = [
-                    'Qty' => 1,
-                    'Price' => $shipping_cost,
-                    'TIC' => 11010,
-                    'ItemID' => 'shipping',
-                    'Index' => count($taxcloud_item_details),
-                ];
-            }
-
-            $url = 'https://api.taxcloud.com/1.0/TaxCloud/Lookup';
-
-            list($street_address_1, $street_address_2) = split_street_address($street_address, 2);
-            list($business_street_address_1, $business_street_address_2) = split_street_address(get_option('business_street_address'), 2);
-
-            $zip_parts = explode('-', $post_code, 2);
-            $business_zip_parts = explode('-', get_option('business_post_code'), 2);
-
-            $request = [
-                'apiLoginID' => get_option('taxcloud_api_id'),
-                'apiKey' => get_option('taxcloud_api_key'),
-                'customerID' => is_guest($member_id) ? ('guest-' . get_session_id()) : ('member-' . strval($member_id)),
-                'deliveredBySeller' => false,
-                'cartID' => '',
-                'destination' => [
-                    'Address1' => $street_address_1,
-                    'Address2' => $street_address_2,
-                    'City' => $city,
-                    'State' => $state,
-                    'Zip5' => $zip_parts[0],
-                    'Zip4' => array_key_exists(1, $zip_parts) ? $zip_parts[1] : '',
-                ],
-                'origin' => [
-                    'Address1' => $business_street_address_1,
-                    'Address2' => $business_street_address_2,
-                    'City' => get_option('business_city'),
-                    'State' => get_option('business_state'),
-                    'Zip5' => $business_zip_parts[0],
-                    'Zip4' => array_key_exists(1, $business_zip_parts) ? $business_zip_parts[1] : '',
-                ],
-                'cartItems' => $cart_items,
-            ];
-            $_request = json_encode($request);
-            require_code('character_sets');
-            $_request = convert_to_internal_encoding($_request, get_charset(), 'utf-8');
-
-            // Do TaxCloud call...
-
-            $_response = cms_http_request($url, ['convert_to_internal_encoding' => true, 'post_params' => $_request, 'timeout' => 20.0, 'raw_content_type' => 'application/json', 'ignore_http_status' => true]);
-            $response = @json_decode($_response->data, true);
-
-            // Error handling...
-
-            if (!is_array($response)) {
-                $errormsg = $_response->message;
-
-                require_code('failure');
-                cms_error_log('TaxCloud: ' . $errormsg);
-
-                warn_exit($errormsg);
-            }
-
-            if ($response['ResponseType'] != 3) {
-                $errormsg = $response['Messages'][0]['Message'];
-
-                require_code('failure');
-                cms_error_log('TaxCloud: ' . $errormsg);
-
-                warn_exit($errormsg);
-            }
-
-            // Process TaxCloud results...
-
-            foreach ($response['CartItemsResponse'] as $cart_item) {
-                $i = $cart_item['CartItemIndex'];
-
-                if (isset($taxcloud_item_details[$i])) {
-                    $tax = $cart_item['TaxAmount'];
-                    $tax_derivation = ['TaxCloud' => $tax];
-
-                    $taxcloud_item_details[$i][2] = $tax_derivation;
-                    $taxcloud_item_details[$i][3] = $tax;
-                    $taxcloud_item_details[$i][4] = ['taxcloud' => $response['CartID']];
-                    $item_details[$i] = $taxcloud_item_details[$i];
-                } else {
-                    // Shipping...
-
-                    $shipping_tax = $cart_item['TaxAmount'];
-                    $shipping_tax_derivation = ['TaxCloud' => $shipping_tax];
-                }
-            }
-
-            $tax_tracking = ['taxcloud' => $response['CartID']];
         } else {
-            // EXCEPTION: Not in USA
-            foreach ($taxcloud_item_details as $i => $parts) {
-                $free_item_details[$i] = $parts;
-                unset($non_taxcloud_item_details[$i]);
+            $_item_details[$service_to_use][$i] = $parts;
+        }
+    }
+
+    // Prepare shipping and billing information
+    $shipping_email = '';
+    $shipping_phone = '';
+    $shipping_firstname = '';
+    $shipping_lastname = '';
+    $shipping_street_address = '';
+    $shipping_city = '';
+    $shipping_county = '';
+    $shipping_state = '';
+    $shipping_post_code = '';
+    $shipping_country = '';
+    $shipping_email = '';
+    $shipping_phone = '';
+    $cardholder_name = '';
+    $card_type = '';
+    $card_number = null;
+    $card_start_date_year = null;
+    $card_start_date_month = null;
+    $card_expiry_date_year = null;
+    $card_expiry_date_month = null;
+    $card_issue_number = null;
+    $card_cv2 = null;
+    $billing_street_address = '';
+    $billing_city = '';
+    $billing_county = '';
+    $billing_state = '';
+    $billing_post_code = '';
+    $billing_country = '';
+    get_default_ecommerce_fields($member_id, $shipping_email, $shipping_phone, $shipping_firstname, $shipping_lastname, $shipping_street_address, $shipping_city, $shipping_county, $shipping_state, $shipping_post_code, $shipping_country, $cardholder_name, $card_type, $card_number, $card_start_date_year, $card_start_date_month, $card_expiry_date_year, $card_expiry_date_month, $card_issue_number, $card_cv2, $billing_street_address, $billing_city, $billing_county, $billing_state, $billing_post_code, $billing_country, true);
+
+    if ($shipping_street_address == '') {
+        $street_address = $billing_street_address;
+        $city = $billing_city;
+        $county = $billing_county;
+        $state = $billing_state;
+        $post_code = $billing_post_code;
+        $country = $billing_country;
+    } else {
+        $street_address = $shipping_street_address;
+        $city = $shipping_city;
+        $county = $shipping_county;
+        $state = $shipping_state;
+        $post_code = $shipping_post_code;
+        $country = $shipping_country;
+    }
+
+    // Run through the tax services' get_tax_using_tax_codes methods
+    foreach ($_item_details as $hook => $products) {
+        if ($hook == '_free') {
+            continue;
+        }
+
+        $ob = get_tax_service_hook($hook);
+        if (method_exists($ob, 'get_tax_using_tax_codes')) {
+            $tax_details = $ob->get_tax_using_tax_codes($item_details, $products, $field_name_prefix, $shipping_cost, $member_id, $street_address, $city, $state, $country, $post_code);
+            if ($tax_details === null) { // Supposed to be processed by the given tax service, but unsupported for whatever reason (e.g. country limits)
+                foreach ($products as $i => $parts) {
+                    $_item_details['_free'][$i] = $parts;
+                }
+            } else {
+                if (empty($shipping_tax_derivation) && ($shipping_tax == 0.0) && empty($tax_tracking)) {
+                    if ($tax_details[0] !== null) {
+                        $shipping_tax_derivation = $tax_details[0];
+                    }
+                    if ($tax_details[1] !== null) {
+                        $shipping_tax = $tax_details[1];
+                    }
+                    if ($tax_details[2] !== null) {
+                        $tax_tracking = $tax_details[2];
+                    }
+                }
+
+                foreach ($tax_details[3] as $i => $unprocessed) {
+                    $_item_details['_free'][$i] = $unprocessed;
+                }
             }
         }
     }
 
-    foreach ($non_taxcloud_item_details as $i => $parts) {
+    // Now process free items
+    foreach ($_item_details['_free'] as $i => $parts) {
         list($item, $details) = $parts;
 
-        $quantity = $item[$field_name_prefix . 'quantity'];
-        $tax_code = $details['tax_code'];
-        $amount = $details['price'];
-
-        // Europe
-        if ($tax_code == 'EU') {
-            require_code('http');
-            list($__rates) = cache_and_carry('cms_http_request', ['https://euvatrates.com/rates.json', ['convert_to_internal_encoding' => true, 'timeout' => 20.0]]);
-            $_rates = @json_decode($__rates, true);
-
-            if (isset($_rates['rates'][$country])) {
-                $rate = $_rates['rates'][$country]['standard_rate'];
-            } else {
-                // EXCEPTION: Not in Europe
-                $free_item_details[$i] = $parts;
-                unset($non_taxcloud_item_details[$i]);
-                continue;
-            }
-
-            $tax = round(($rate / 100.0) * $amount * $quantity, 2);
-            $tax_derivation = [$country => $tax];
-        } else {
-            // Simple, with some guards...
-
-            $tax_country_regexp = get_option('tax_country_regexp');
-            if (!empty($tax_country_regexp)) {
-                $check = @preg_match('#' . $tax_country_regexp . '#', $country);
-                if ($check === false) {
-                    warn_exit(do_lang_tempcode('INVALID_REGULAR_EXPRESSION', do_lang('TAX_COUNTRY_REGEXP'), escape_html($tax_country_regexp), cms_error_get_last()));
-                }
-                if ($check == 0) {
-                    // EXCEPTION: Country not covered
-                    $free_item_details[$i] = $parts;
-                    unset($non_taxcloud_item_details[$i]);
-                    continue;
-                }
-            }
-            $tax_state_regexp = get_option('tax_state_regexp');
-            if (!empty($tax_state_regexp)) {
-                $check = @preg_match('#' . $tax_state_regexp . '#', $state);
-                if ($check === false) {
-                    warn_exit(do_lang_tempcode('INVALID_REGULAR_EXPRESSION', do_lang('TAX_STATE_REGEXP'), escape_html($tax_country_regexp), cms_error_get_last()));
-                }
-                if ($check == 0) {
-                    // EXCEPTION: State not covered
-                    $free_item_details[$i] = $parts;
-                    unset($non_taxcloud_item_details[$i]);
-                    continue;
-                }
-            }
-
-            // Simple rate
-            if (substr($tax_code, -1) == '%') {
-                $rate = floatval($tax_code);
-                $tax = round(($rate / 100.0) * $amount * $quantity, 2);
-            } else {
-                // Simple flat
-                $tax = round(floatval($tax_code) * $quantity, 2);
-            }
-
-            $tax_derivation = ['?' => $tax];
-        }
-
-        $non_taxcloud_item_details[$i][2] = $tax_derivation;
-        $non_taxcloud_item_details[$i][3] = $tax;
-        $non_taxcloud_item_details[$i][4] = [];
-        $item_details[$i] = $non_taxcloud_item_details[$i];
+        $_item_details['_free'][$i][2] = [];
+        $_item_details['_free'][$i][3] = 0.00;
+        $_item_details['_free'][$i][4] = [];
+        $item_details[$i] = $_item_details['_free'][$i];
     }
 
-    foreach ($free_item_details as $i => $parts) {
-        list($item, $details) = $parts;
-
-        $free_item_details[$i][2] = [];
-        $free_item_details[$i][3] = 0.00;
-        $free_item_details[$i][4] = [];
-        $item_details[$i] = $free_item_details[$i];
-    }
-
-    if (empty($taxcloud_item_details)) {
+    // If we have no information on shipping tax, calculate it
+    if (empty($shipping_tax_derivation)) {
         if ($shipping_cost != 0.00) {
-            list($shipping_tax_derivation, $shipping_tax, , ) = calculate_tax_due(null, get_option('shipping_tax_code'), $amount, 0.00, $member_id); // This will force a call back into our function, but won't recurse again
+            list($shipping_tax_derivation, $shipping_tax, , ) = calculate_tax_due(null, get_option('shipping_tax_code'), $price, 0.00, $member_id); // This will force a call back into our function, but won't recurse again
         }
     }
 
@@ -433,72 +308,20 @@ function get_tax_using_tax_codes(array &$item_details, string $field_name_prefix
 }
 
 /**
- * Check that TaxCloud is correctly configured.
- */
-function check_taxcloud_configured_correctly()
-{
-    // Check for configuration errors
-    if (get_option('business_country') != 'US') { // TODO: This line may change see #3173
-        warn_exit(do_lang_tempcode('TIC__BUSINESS_COUNTRY_NOT_USA'), false, true);
-    }
-    if (get_option('business_country') == 'US') {
-        if (get_option('currency') != 'USD') {
-            warn_exit(do_lang_tempcode('TIC__CURRENCY_NOT_USD'), false, true);
-        }
-        global $USA_STATE_LIST;
-        if (!array_key_exists(get_option('business_state'), $USA_STATE_LIST)) {
-            warn_exit(do_lang_tempcode('TIC__USA_STATE_INVALID'), false, true);
-        }
-    }
-    if ((get_option('taxcloud_api_key') == '') || (get_option('taxcloud_api_id') == '')) {
-        warn_exit(do_lang_tempcode('TIC__TAXCLOUD_NOT_CONFIGURED'), false, true);
-    }
-}
-
-/**
- * Mark an order completed on TaxCloud, i.e. tax has been received for payment to the tax authority.
+ * Mark an order completed, i.e. tax has been received for payment to the tax authority.
  *
- * @param  ID_TEXT $tracking_id The TaxCloud tracking ID
+ * @param  ID_TEXT $tracking_service The tax_api_service used
+ * @param  mixed $tracking_id The tracking ID or reference data
  * @param  ID_TEXT $txn_id The transaction ID
  * @param  MEMBER $member_id The member ID
  * @param  ID_TEXT $session_id The session ID of the purchaser
  */
-function taxcloud_declare_completed(string $tracking_id, string $txn_id, int $member_id, string $session_id)
+function declare_completed(string $tracking_service, $tracking_id, string $txn_id, int $member_id, string $session_id)
 {
-    $url = 'https://api.taxcloud.com/1.0/TaxCloud/AuthorizedWithCapture';
+    $hook = get_tax_service_hook($tracking_service);
 
-    //$date = date('Y-m-d', tz_time(time(), get_site_timezone()));
-    $date = date('Y-m-d'); // UTC-based according to TaxCloud support
-    $request = [
-        'apiLoginID' => get_option('taxcloud_api_id'),
-        'apiKey' => get_option('taxcloud_api_key'),
-        'customerID' => is_guest($member_id) ? ('guest-' . $session_id) : ('member-' . strval($member_id)),
-        'cartID' => $tracking_id,
-        'orderID' => $txn_id,
-        'dateAuthorized' => $date,
-        'dateCaptured' => $date,
-    ];
-    $_request = json_encode($request);
-    require_code('character_sets');
-    $_request = convert_to_internal_encoding($_request, get_charset(), 'utf-8');
-
-    $_response = http_get_contents($url, ['convert_to_internal_encoding' => true, 'post_params' => $_request, 'timeout' => 20.0, 'raw_content_type' => 'application/json', 'ignore_http_status' => true]);
-    $response = @json_decode($_response, true);
-
-    if (!is_array($response)) {
-        trigger_error('TaxCloud: ' . $response->message, E_USER_WARNING);
-    } else {
-        if ($response['ResponseType'] != 3) {
-            $messages = [];
-            foreach ($response['Messages'] as $message) {
-                if (strpos($message['Message'], 'already') === false) {
-                    $messages[] = $message['Message'];
-                }
-            }
-            if (!empty($messages)) {
-                trigger_error(implode('; ', $messages), E_USER_WARNING);
-            }
-        }
+    if (method_exists($hook, 'declare_completed')) {
+        $hook->declare_completed($tracking_id, $txn_id, $member_id, $session_id);
     }
 }
 
@@ -523,7 +346,7 @@ function backcalculate_tax_rate(float $amount, float $tax) : float
  * @param  ID_TEXT $type_code The product codename
  * @param  SHORT_TEXT $item_name The human-readable product title
  * @param  ID_TEXT $purchase_id The purchase ID
- * @param  REAL $price Transaction price in money
+ * @param  REAL $price Transaction price in money (excluding tax and shipping)
  * @param  REAL $tax Transaction tax in money (including shipping tax)
  * @param  REAL $shipping_cost Transaction shipping cost in money
  * @param  REAL $shipping_tax Transaction shipping tax in money
@@ -541,7 +364,7 @@ function generate_invoicing_breakdown(string $type_code, string $item_name, stri
             'item_name' => $item_name,
             'quantity' => 1,
             'unit_price' => $price,
-            'unit_tax' => $tax - $shipping_tax,
+            'tax' => $tax - $shipping_tax,
         ];
     } else {
         // A cart order...
@@ -558,35 +381,31 @@ function generate_invoicing_breakdown(string $type_code, string $item_name, stri
                 'item_name' => $_item['p_name'],
                 'quantity' => $_item['p_quantity'],
                 'unit_price' => $_item['p_price'],
-                'unit_tax' => $_item['p_tax'],
+                'tax' => $_item['p_tax'],
             ];
 
-            $total_price += $_item['p_price'];
+            $total_price += ($_item['p_price'] * $_item['p_quantity']);
             $total_tax += $_item['p_tax'];
         }
 
-        if ($shipping_cost !== null) {
-            $total_price += $shipping_cost;
-        }
-
-        if (($total_price != $price) || ($total_tax != $tax - $shipping_tax)) {
+        if (!paid_amount_matches($price, ($tax - $shipping_tax), $shipping_cost, $total_price, $total_tax, $shipping_cost)) {
             $invoicing_breakdown[] = [
                 'type_code' => '',
                 'item_name' => do_lang('PRICING_ADJUSTMENT'),
                 'quantity' => 1,
                 'unit_price' => $price - $total_price,
-                'unit_tax' => $tax - $total_tax,
+                'tax' => $tax - $total_tax,
             ];
         }
     }
 
-    if (($shipping_cost !== 0.00) || ($shipping_tax !== 0.00)) {
+    if (($shipping_cost != 0.00) || ($shipping_tax != 0.00)) {
         $invoicing_breakdown[] = [
             'type_code' => '',
             'item_name' => do_lang('SHIPPING'),
             'quantity' => 1,
             'unit_price' => $shipping_cost,
-            'unit_tax' => $shipping_tax,
+            'tax' => $shipping_tax,
         ];
     }
 
@@ -598,15 +417,16 @@ function generate_invoicing_breakdown(string $type_code, string $item_name, stri
  *
  * @param  MEMBER $member_id The member to send to
  * @param  AUTO_LINK $id The invoice ID
+ * @param  boolean $fulfilled Whether this invoice was just fulfilled
  */
-function send_invoice_notification(int $member_id, int $id)
+function send_invoice_notification(int $member_id, int $id, bool $fulfilled = false)
 {
     // Send out notification
     require_code('notifications');
     $_url = build_url(['page' => 'invoices', 'type' => 'browse'], get_module_zone('invoices'), [], false, false, true);
     $url = $_url->evaluate();
-    $subject = do_lang('INVOICE_SUBJECT', strval($id), null, null, get_lang($member_id));
-    $body = do_notification_lang('INVOICE_MESSAGE', $url, get_site_name(), null, get_lang($member_id));
+    $subject = do_lang($fulfilled ? 'INVOICE_FULFILLED_SUBJECT' : 'INVOICE_SUBJECT', strval($id), null, null, get_lang($member_id));
+    $body = do_notification_lang($fulfilled ? 'INVOICE_FULFILLED_MESSAGE' : 'INVOICE_MESSAGE', $url, get_site_name(), null, get_lang($member_id));
     dispatch_notification('invoice', null, $subject, $body, [$member_id]);
 }
 
@@ -624,25 +444,21 @@ function generate_tax_invoice(string $txn_id) : object
     $transaction_row = get_transaction_row($txn_id);
 
     $address_rows = $GLOBALS['SITE_DB']->query_select('ecom_trans_addresses', ['*'], ['a_trans_expecting_id' => $txn_id], '', 1);
+
     $trans_address = '';
     if (array_key_exists(0, $address_rows)) {
         $address_row = $address_rows[0];
 
-        $lines = [
-            trim($address_row['a_firstname'] . ' ' . $address_row['a_lastname']),
-            $address_row['a_street_address'],
-            $address_row['a_city'],
-            $address_row['a_county'],
-            $address_row['a_state'],
-            $address_row['a_post_code'],
-            find_country_name_from_iso($address_row['a_country']),
+        $address_parts = [
+            'name' => $address_row['a_firstname'] . ' ' . $address_row['a_lastname'],
+            'street_address' => $address_row['a_street_address'],
+            'city' => $address_row['a_city'],
+            'county' => $address_row['a_county'],
+            'state' => $address_row['a_state'],
+            'post_code' => $address_row['a_post_code'],
+            'country' => $address_row['a_country'],
         ];
-        foreach ($lines as $line) {
-            if (trim($line) != '') {
-                $trans_address .= trim($line) . "\n";
-            }
-        }
-        $trans_address = rtrim($trans_address);
+        $trans_address = get_formatted_address($address_parts);
     }
 
     $items = ($transaction_row['t_invoicing_breakdown'] == '') ? [] : json_decode($transaction_row['t_invoicing_breakdown'], true);
@@ -651,12 +467,11 @@ function generate_tax_invoice(string $txn_id) : object
         $invoicing_breakdown[] = [
             'TYPE_CODE' => $item['type_code'],
             'ITEM_NAME' => $item['item_name'],
-            'QUANTITY' => $item['quantity'],
+            'QUANTITY' => (($item['quantity'] !== null) ? integer_format($item['quantity']) : ''),
             'UNIT_PRICE' => float_format($item['unit_price']),
             'PRICE' => float_format($item['unit_price'] * $item['quantity']),
-            'UNIT_TAX' => float_format($item['unit_tax']),
-            'TAX' => float_format($item['unit_tax'] * $item['quantity']),
-            'TAX_RATE' => float_format(backcalculate_tax_rate($item['unit_price'], $item['unit_tax']), 1, true),
+            'TAX' => float_format($item['tax']),
+            'TAX_RATE' => float_format(backcalculate_tax_rate(($item['unit_price'] * $item['quantity']), $item['tax']), 1, true),
         ];
     }
     if (empty($invoicing_breakdown)) {
@@ -672,12 +487,11 @@ function generate_tax_invoice(string $txn_id) : object
         $invoicing_breakdown[] = [
             'TYPE_CODE' => $transaction_row['t_type_code'],
             'ITEM_NAME' => $item_name,
-            'QUANTITY' => 1,
-            'UNIT_PRICE' => float_format($transaction_row['t_amount']),
-            'PRICE' => float_format($transaction_row['t_amount']),
-            'UNIT_TAX' => float_format($transaction_row['t_tax']),
+            'QUANTITY' => integer_format(1),
+            'UNIT_PRICE' => float_format($transaction_row['t_price']),
+            'PRICE' => float_format($transaction_row['t_price']),
             'TAX' => float_format($transaction_row['t_tax']),
-            'TAX_RATE' => float_format(backcalculate_tax_rate($transaction_row['t_amount'], $transaction_row['t_tax']), 1, true),
+            'TAX_RATE' => float_format(backcalculate_tax_rate($transaction_row['t_price'], $transaction_row['t_tax']), 1, true),
         ];
     }
 
@@ -691,9 +505,9 @@ function generate_tax_invoice(string $txn_id) : object
         'TRANS_ADDRESS' => $trans_address,
         'ITEMS' => $invoicing_breakdown,
         'CURRENCY' => $transaction_row['t_currency'],
-        'TOTAL_PRICE' => float_format($transaction_row['t_amount']),
+        'SUBTOTAL' => float_format($transaction_row['t_price'] + $transaction_row['t_shipping']),
         'TOTAL_TAX' => float_format($transaction_row['t_tax']),
-        'TOTAL_AMOUNT' => float_format($transaction_row['t_amount'] + $transaction_row['t_tax']),
+        'TOTAL_AMOUNT' => float_format($transaction_row['t_price'] + $transaction_row['t_tax'] + $transaction_row['t_shipping']),
         'PURCHASE_ID' => $transaction_row['t_purchase_id'],
         'STATUS' => $status,
     ]);
@@ -739,92 +553,18 @@ function form_input_tax_code($set_title, $description, string $set_name, string 
     ]);
     $field_set->attach(_form_input($set_name . '_rate', do_lang_tempcode('TAX_RATE'), do_lang_tempcode('DESCRIPTION_TAX_RATE'), $input, $required, false, $tabindex));
 
-    // TaxCloud input...
-
-    require_code('files2');
-    $has_tic = (preg_match('#^TIC:#', $default) != 0);
-    if ($has_tic) {
-        $default_set = 'tic';
+    // Hook inputs
+    $hooks = find_all_hook_obs('systems', 'ecommerce_tax', 'Hook_ecommerce_tax_');
+    foreach ($hooks as $ob) {
+        if (method_exists($ob, 'form_input_tax_code')) {
+            $ob->form_input_tax_code($field_set, $default_set, $set_title, $description, $set_name, $default, $required, $tabindex);
+        }
     }
-    require_code('http');
-    list($__tics) = cache_and_carry('cms_http_request', ['https://taxcloud.com/tic/json/', ['convert_to_internal_encoding' => true, 'timeout' => 20.0, 'trigger_error' => false]]);
-    $_tics = @json_decode($__tics, true);
-    if (is_array($_tics)) {
-        $tics = new Tempcode();
-        $tics->attach(_prepare_tics_list($_tics['tic_list'], $has_tic ? substr($default, 4) : '', 'root'));
-        $tics->attach(_prepare_tics_list($_tics['tic_list'], $has_tic ? substr($default, 4) : '', ''));
-        require_css('widget_select2');
-        require_javascript('jquery');
-        require_javascript('select2');
-        $input = do_template('FORM_SCREEN_INPUT_LIST', [
-            '_GUID' => '66e31c1b060b11caf570c36b09ac4a05',
-            'TABINDEX' => strval($tabindex),
-            'REQUIRED' => $_required,
-            'NAME' => $set_name . '_tic',
-            'CONTENT' => $tics,
-            'INLINE_LIST' => false,
-            'SIZE' => strval(5),
-        ]);
-        $field_set->attach(_form_input($set_name . '_tic', do_lang_tempcode('TAX_TIC'), do_lang_tempcode('DESCRIPTION_TAX_TIC'), $input, $required, false, $tabindex));
-    }
-
-    // EU rate input...
-
-    $has_eu = ($default == 'EU');
-    if ($has_eu) {
-        $default_set = 'eu';
-    }
-    $input = form_input_hidden($set_name . '_eu', '1');
-    $field_set->attach(_form_input($set_name . '_eu', do_lang_tempcode('TAX_EU'), do_lang_tempcode('DESCRIPTION_TAX_EU'), $input, $required, false, $tabindex));
 
     // --
 
     $fields->attach(alternate_fields_set__end($set_name, $set_title, '', $field_set, $required, null, false, $default_set));
     return $fields;
-}
-
-/**
- * Get a hierarchical TIC selection list.
- *
- * @param  array $all_tics The list of TICs
- * @param  string $default Default value
- * @param  string $parent Only get child nodes of
- * @param  string $pre Prefix for parent chain
- * @param  integer $depth Current recursion depth
- * @return Tempcode The list
- */
-function _prepare_tics_list(array $all_tics, string $default, string $parent, string $pre = '', int $depth = 0) : object
-{
-    if ($depth > 5) {
-        return new Tempcode(); // Some kind of error, likely corrupt data (which we've seen happen with TaxCloud)
-    }
-
-    $child_tics = [];
-    foreach ($all_tics as $i => $_tic) {
-        $tic = $_tic['tic'];
-        if ($tic['parent'] == $parent) {
-            $child_tics[] = $tic;
-        }
-
-        if (isset($tic['children'])) {
-            foreach ($tic['children'] as $__tic) {
-                $all_tics[] = $__tic;
-            }
-            unset($all_tics[$i]['tic']['children']);
-        }
-    }
-    sort_maps_by($child_tics, 'label', false, true);
-
-    $tics_list = new Tempcode();
-    foreach ($child_tics as $tic) {
-        $text = $pre . $tic['id'] . ': ' . $tic['title'];
-        $tics_list->attach(form_input_list_entry($tic['id'], $tic['id'] == $default, $text));
-
-        $under = _prepare_tics_list($all_tics, $default, $tic['id'], $text . ' > ', $depth + 1);
-        $tics_list->attach($under);
-    }
-
-    return $tics_list;
 }
 
 /**
@@ -837,24 +577,53 @@ function _prepare_tics_list(array $all_tics, string $default, string $parent, st
 function post_param_tax_code(string $name, string $default = '0%') : string
 {
     $value = post_param_string($name . '_flat', ''); // Simple flat figure
-    if ($value == '') {
+    if ($value == '') { // No simple flat figure
         $value = post_param_string($name . '_rate', ''); // Simple rate
-        if ($value == '') {
-            $value = post_param_string($name . '_tic', ''); // Semantic: TaxCloud
-            if ($value == '') {
-                if (substr(post_param_string($name, ''), -3) == '_eu') { // Semantic: EU rate
-                    $value = 'EU';
-                } else {
-                    $value = $default; // Default
-                }
-            } else {
-                $value = 'TIC:' . $value;
-            }
-        } else {
-            $value = float_to_raw_string(float_unformat($value)) . '%';
-        }
-    } else {
-        $value = float_to_raw_string(float_unformat($value)); // There's actually no UI option for simple flat figure, but it may be used internally
+    } else { // simple flat figure post-processing
+        $value = float_to_raw_string(float_unformat($value));
     }
+    if ($value == '') { // No simple rate; do hook-based symantic parameters
+        $hooks = find_all_hook_obs('systems', 'ecommerce_tax', 'Hook_ecommerce_tax_');
+        foreach ($hooks as $ob) {
+            if (method_exists($ob, 'post_param_tax_code')) {
+                $value = $ob->post_param_tax_code($name);
+                if ($value != '') {
+                    break;
+                }
+            }
+        }
+    } else { // simple rate post-processing
+        $value = float_to_raw_string(float_unformat($value)) . '%';
+    }
+    if ($value == '') { // No symantic parameters; use default value
+        $value = $default; // Default
+    }
+
     return $value;
+}
+
+/**
+ * Check the country configuration against a tax service's supported countries.
+ *
+ * @param  SHORT_TEXT $tax_service The human label of the tax service calling this function
+ * @param  array $supported_countries Array of country codes supported by the tax service
+ */
+function check_country_configuration(string $tax_service, array $supported_countries)
+{
+    $business_country = get_option('business_country');
+    $business_state = get_option('business_state');
+    $currency = get_option('currency');
+
+    if (!in_array($business_country, $supported_countries)) {
+        warn_exit(do_lang_tempcode('UNSUPPORTED_COUNTRY', $tax_service, escape_html($business_country)), false, true);
+    }
+    if ($business_country == 'US') {
+        if ($currency != 'USD') {
+            warn_exit(do_lang_tempcode('CURRENCY_NOT_USD'), false, true);
+        }
+        global $USA_STATE_LIST;
+        if (!array_key_exists($business_state, $USA_STATE_LIST)) {
+            warn_exit(do_lang_tempcode('USA_STATE_INVALID'), false, true);
+        }
+    }
 }

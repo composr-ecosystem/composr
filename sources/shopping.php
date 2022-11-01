@@ -233,15 +233,23 @@ function update_cart(array $products_in_cart)
  * Remove particular items from the cart.
  *
  * @param  array $products_to_remove Products to remove
+ * @param  ?MEMBER $member_id The member from which to remove products (null: current member if not guest, else does not filter by member)
+ * @param  ?ID_TEXT $session_id The session from which to remove products (null: current session if guest, else does not filter by session)
  */
-function remove_from_cart(array $products_to_remove)
+function remove_from_cart(array $products_to_remove, ?int $member_id = null, ?string $session_id = null)
 {
     foreach ($products_to_remove as $type_code) {
         $where = ['type_code' => $type_code];
-        if (is_guest()) {
-            $where['session_id'] = get_session_id();
-        } else {
+        if (($member_id !== null) && (!is_guest($member_id))) {
+            $where['ordered_by'] = $member_id;
+        } elseif (!is_guest()) {
             $where['ordered_by'] = get_member();
+        }
+
+        if ($session_id !== null) {
+            $where['session_id'] = $session_id;
+        } elseif (is_guest()) {
+            $where['session_id'] = get_session_id();
         }
 
         $GLOBALS['SITE_DB']->query_delete('shopping_cart', $where);
@@ -349,21 +357,13 @@ function derive_cart_amounts(array $shopping_cart_rows, string $field_name_prefi
         $total_price += $details['price'] * $quantity;
     }
 
-    // Split into TaxCloud and non-TaxCloud
-    $taxcloud_items = [];
-    $non_taxcloud_items = [];
+    require_code('ecommerce');
+
+    $items = [];
     foreach ($shopping_cart_rows as $i => $item) {
         $type_code = $item[$field_name_prefix . 'type_code'];
         list($details) = find_product_details($type_code);
-
-        $tax_code = $details['tax_code'];
-
-        $usa_tic = (preg_match('#^TIC:#', $tax_code) != 0);
-        if ($usa_tic) {
-            $taxcloud_items[$i] = [$item, $details];
-        } else {
-            $non_taxcloud_items[$i] = [$item, $details];
-        }
+        $items[$i] = [$item, $details];
     }
 
     // Taxes will be put in here
@@ -377,13 +377,12 @@ function derive_cart_amounts(array $shopping_cart_rows, string $field_name_prefi
     $total_shipping_tax_derivation = [];
     $total_shipping_tax = 0.0;
 
-    // Do TaxCloud call
-    if (!empty($taxcloud_items)) {
-        $do_shipping_in_tax_cloud = (empty($non_taxcloud_items));
+    // Calculate taxes
+    if (!empty($items)) {
+        $do_shipping = (empty($items));
 
-        $shipping_tax_details = get_tax_using_tax_codes($taxcloud_items, $field_name_prefix, $do_shipping_in_tax_cloud ? $total_shipping_cost : 0.00/*don't incorporate as we have our own calculation anyway*/);
-
-        foreach ($taxcloud_items as $i => $parts) {
+        $shipping_tax_details = get_tax_using_tax_codes($items, $field_name_prefix, $do_shipping ? $total_shipping_cost : 0.00/*don't incorporate as we have our own calculation anyway*/);
+        foreach ($items as $i => $parts) {
             list($item, $details, $tax_derivation, $tax, $tax_tracking) = $parts;
 
             $shopping_cart_rows_taxes[$i] = [$tax_derivation, $tax, $tax_tracking];
@@ -400,39 +399,9 @@ function derive_cart_amounts(array $shopping_cart_rows, string $field_name_prefi
 
         $total_tax_tracking = $tax_tracking; // Any one of them, they'll all be the same
 
-        if ($do_shipping_in_tax_cloud) {
+        if ($do_shipping) {
             list($total_shipping_tax_derivation, $total_shipping_tax, $total_shipping_tax_tracking) = $shipping_tax_details;
         }
-    }
-
-    // Work out taxes for non-TaxCloud
-    if (!empty($non_taxcloud_items)) {
-        foreach ($non_taxcloud_items as $i => $parts) {
-            list($item, $details) = $parts;
-
-            $price = $details['price'];
-            $tax_code = $details['tax_code'];
-
-            $quantity = $item[$field_name_prefix . 'quantity'];
-
-            list($tax_derivation, $tax, $tax_tracking, $shipping_tax) = calculate_tax_due($item, $tax_code, $price, 0.0, null, $quantity);
-            unset($shipping_tax); // Meaningless
-
-            $shopping_cart_rows_taxes[$i] = [$tax_derivation, $tax, $tax_tracking];
-
-            $total_tax += $tax;
-
-            foreach ($tax_derivation as $tax_category => $tax_category_amount) {
-                if (!array_key_exists($tax_category, $total_tax_derivation)) {
-                    $total_tax_derivation[$tax_category] = 0.00;
-                }
-                $total_tax_derivation[$tax_category] += $tax_category_amount;
-            }
-        }
-
-        // We always calculate shipping manually when doing any non-TaxCloud products, as it's more tuned
-        list($total_shipping_tax_derivation, $total_shipping_tax, $total_shipping_tax_tracking, $total_shipping_tax) = calculate_tax_due(null, '0.00', 0.00, $total_shipping_cost);
-        $total_tax += $total_shipping_tax;
     }
 
     // Integrate shipping tax derivation into main derivation
@@ -470,7 +439,7 @@ function copy_shopping_cart_to_order() : int
         'total_price' => $total_price,
         'total_tax_derivation' => json_encode($total_tax_derivation, defined('JSON_PRESERVE_ZERO_FRACTION') ? JSON_PRESERVE_ZERO_FRACTION : 0),
         'total_tax' => $total_tax,
-        'total_tax_tracking' => $total_tax_tracking,
+        'total_tax_tracking' => json_encode($total_tax_tracking, defined('JSON_PRESERVE_ZERO_FRACTION') ? JSON_PRESERVE_ZERO_FRACTION : 0),
         'total_shipping_cost' => $total_shipping_cost,
         'total_shipping_tax' => $total_shipping_tax,
         'total_product_weight' => $total_product_weight,
@@ -499,17 +468,16 @@ function copy_shopping_cart_to_order() : int
         }
 
         $call_actualiser_from_cart = !isset($details['type_special_details']['call_actualiser_from_cart']) || $details['type_special_details']['call_actualiser_from_cart'];
-        if ((method_exists($product_object, 'handle_needed_fields')) && ($call_actualiser_from_cart)) {
-            list($purchase_id) = $product_object->handle_needed_fields($type_code);
+        if ((method_exists($product_object, 'process_needed_fields')) && ($call_actualiser_from_cart)) {
+            list($purchase_id) = $product_object->process_needed_fields($type_code);
         } else {
             $purchase_id = strval(get_member());
         }
 
         if (isset($shopping_cart_rows_taxes[$i])) {
-            list($tax_derivation, $tax, $tax_tracking) = $shopping_cart_rows_taxes[$i];
+            list(, $tax) = $shopping_cart_rows_taxes[$i];
         } else {
-            list($tax_derivation, $tax, $tax_tracking, $shipping_tax) = calculate_tax_due($item, $details['tax_code'], $details['price'], 0.0, null, $item['quantity']);
-            unset($shipping_tax); // Meaningless
+            list(, $tax) = calculate_tax_due($item, $details['tax_code'], $details['price'], 0.0, null, $details['quantity']);
         }
 
         $shopping_order_details[] = [
@@ -526,14 +494,18 @@ function copy_shopping_cart_to_order() : int
     }
 
     // See if it matches an existing unpaid order...
-
-    $orders = $GLOBALS['SITE_DB']->query_select('shopping_orders', ['id'], $shopping_order);
+    $shopping_order_where = array_merge($shopping_order, []); // Actually copy the array instead of referencing it
+    unset($shopping_order_where['total_tax_derivation']);
+    unset($shopping_order_where['total_tax_tracking']);
+    $orders = $GLOBALS['SITE_DB']->query_select('shopping_orders', ['id'], $shopping_order_where);
     foreach ($orders as $order) {
         $_shopping_order_details = $GLOBALS['SITE_DB']->query_select('shopping_order_details', ['*'], ['p_order_id' => $order['id']], 'ORDER BY p_name');
         foreach ($_shopping_order_details as &$_map) {
             unset($_map['id']);
             unset($_map['p_order_id']);
         }
+        sort_maps_by($shopping_order_details, 'p_name,p_type_code');
+        sort_maps_by($_shopping_order_details, 'p_name,p_type_code');
         if ($shopping_order_details == $_shopping_order_details) {
             return $order['id'];
         }
@@ -612,10 +584,11 @@ function make_cart_payment_button(int $order_id, string $currency, int $price_po
         'e_item_name' => $item_name,
         'e_member_id' => get_member(),
         'e_session_id' => get_session_id(),
-        'e_price' => $price + $shipping_cost,
+        'e_price' => $price,
         'e_tax_derivation' => json_encode($tax_derivation, defined('JSON_PRESERVE_ZERO_FRACTION') ? JSON_PRESERVE_ZERO_FRACTION : 0),
         'e_tax' => $tax,
         'e_tax_tracking' => json_encode($tax_tracking, defined('JSON_PRESERVE_ZERO_FRACTION') ? JSON_PRESERVE_ZERO_FRACTION : 0),
+        'e_shipping' => $shipping_cost,
         'e_currency' => $currency,
         'e_price_points' => $price_points,
         'e_ip_address' => get_ip_address(),
@@ -625,6 +598,7 @@ function make_cart_payment_button(int $order_id, string $currency, int $price_po
         'e_memo' => post_param_string('memo', ''),
         'e_invoicing_breakdown' => json_encode($invoicing_breakdown, defined('JSON_PRESERVE_ZERO_FRACTION') ? JSON_PRESERVE_ZERO_FRACTION : 0),
     ]);
+    store_shipping_address($trans_expecting_id);
 
     return $payment_gateway_object->make_cart_transaction_button($trans_expecting_id, $items, $shipping_cost, $currency, $order_id);
 }

@@ -44,6 +44,7 @@ class addon_guards_test_set extends cms_test_case
         'systems/realtime_rain' => 'realtime_rain',
         'systems/referrals' => 'referrals',
         'systems/points' => 'points',
+        'systems/ecommerce_tax' => 'ecommerce',
     ];
 
     public function testAddonGuardsCohesion()

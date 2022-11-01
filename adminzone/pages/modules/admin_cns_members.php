@@ -89,7 +89,7 @@ class Module_admin_cns_members
             /*
             We'll link these from elsewhere instead
             if (addon_installed('ecommerce')) {
-                $ret['_SEARCH:admin_ecommerce:browse'] = ['CUSTOM_PRODUCT_USERGROUP', 'menu/adminzone/audit/ecommerce/ecommerce'];
+                $ret['_SEARCH:admin_ecommerce:browse'] = ['ECOMMERCE', 'menu/adminzone/audit/ecommerce/ecommerce'];
             }
             $ret['_SEARCH:admin_cns_groups:browse'] = ['USERGROUPS', 'menu/social/groups'];
             */

@@ -127,6 +127,7 @@ class Module_purchase
                 'e_tax_derivation' => 'LONG_TEXT',
                 'e_tax' => 'REAL',
                 'e_tax_tracking' => 'LONG_TEXT',
+                'e_shipping' => 'REAL',
                 'e_currency' => 'ID_TEXT',
                 'e_price_points' => 'INTEGER', // This is supplementary, not an alternative; if it is only points then no ecom_trans_expecting record will be created
                 'e_time' => 'TIME',
@@ -152,10 +153,11 @@ class Module_purchase
                 't_purchase_id' => 'ID_TEXT',
                 't_status' => 'SHORT_TEXT', // Pending|Completed|SModified|SCancelled
                 't_reason' => 'SHORT_TEXT',
-                't_amount' => 'REAL', // Does NOT include tax (unlike most 'amount' figures in Composr)
+                't_price' => 'REAL',
                 't_tax_derivation' => 'LONG_TEXT',
                 't_tax' => 'REAL',
                 't_tax_tracking' => 'LONG_TEXT',
+                't_shipping' => 'REAL',
                 't_currency' => 'ID_TEXT',
                 't_parent_txn_id' => 'ID_TEXT',
                 't_time' => '*TIME',
@@ -321,6 +323,7 @@ class Module_purchase
                         't_tax_derivation' => '',
                         't_tax' => 0.00,
                         't_tax_tracking' => '',
+                        't_shipping' => 0.00,
                         't_currency' => 'points',
                         't_parent_txn_id' => '',
                         't_time' => $sale['date_and_time'],
@@ -341,6 +344,11 @@ class Module_purchase
             if ($GLOBALS['SITE_DB']->table_exists('ecom_prods_prices')) {
                 $GLOBALS['SITE_DB']->query_update('ecom_prods_permissions', ['p_hours' => null], ['p_hours' => 40000]);
             }
+
+            $GLOBALS['SITE_DB']->add_table_field('ecom_trans_expecting', 'e_shipping', 'REAL', 0.00);
+            $GLOBALS['SITE_DB']->add_table_field('ecom_transactions', 't_shipping', 'REAL', 0.00);
+
+            $GLOBALS['SITE_DB']->alter_table_field('ecom_transactions', 't_amount', 'REAL', 't_price');
         }
 
         if (!$GLOBALS['SITE_DB']->table_exists('ecom_prods_prices')) { // LEGACY: Used to be in pointstore addon, hence the unusual install pattern. Now is just a part of purchase addon
@@ -623,6 +631,9 @@ class Module_purchase
         $categories_done = [];
 
         foreach ($_products as $type_code => $details) {
+            if (!is_string($type_code)) {
+                $type_code = strval($type_code);
+            }
             $product_object = $details['product_object'];
 
             // Category folding?
@@ -1041,17 +1052,6 @@ class Module_purchase
     {
         $type_code = get_param_string('type_code');
 
-        if ($type_code == 'CART_ORDER') {
-            if (!addon_installed('shopping')) {
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
-            }
-
-            // Copy cart into an order
-            require_code('shopping');
-            $order_id = copy_shopping_cart_to_order();
-            $type_code = 'CART_ORDER_' . strval($order_id);
-        }
-
         list($details, $product_object) = find_product_details($type_code);
 
         $payment_gateway = get_option('payment_gateway');
@@ -1065,8 +1065,8 @@ class Module_purchase
 
         $item_name = $details['item_name'];
 
-        if (method_exists($product_object, 'handle_needed_fields')) {
-            list($purchase_id, $confirmation_box) = $product_object->handle_needed_fields($type_code);
+        if (method_exists($product_object, 'process_needed_fields')) {
+            list($purchase_id, $confirmation_box) = $product_object->process_needed_fields($type_code);
         } else {
             $purchase_id = strval(get_member());
             $confirmation_box = null;
@@ -1114,7 +1114,7 @@ class Module_purchase
                     's_type_code' => $type_code,
                     's_member_id' => get_member(),
                     's_state' => 'new',
-                    's_amount' => $price,
+                    's_price' => $price,
                     's_tax_code' => $details['tax_code'],
                     's_tax_derivation' => json_encode($tax_derivation, defined('JSON_PRESERVE_ZERO_FRACTION') ? JSON_PRESERVE_ZERO_FRACTION : 0),
                     's_tax' => $tax,
@@ -1235,7 +1235,8 @@ class Module_purchase
             if ($confirmation_box === null) {
                 $_price = currency_convert_wrap($price, $currency);
                 $_tax = currency_convert_wrap($tax, $currency);
-                $confirmation_box = do_lang_tempcode('BUYING_FOR_MONEY_CONFIRMATION', escape_html($item_name), $_price, [$_tax, do_lang(get_option('tax_system'))]);
+                $_shipping = currency_convert_wrap($shipping_cost, $currency);
+                $confirmation_box = do_lang_tempcode('BUYING_FOR_MONEY_CONFIRMATION', escape_html($item_name), $_price, [$_tax, do_lang(get_option('tax_system')), $_shipping]);
             }
 
             switch ($details['type']) {
@@ -1244,7 +1245,7 @@ class Module_purchase
                         $type_code,
                         $item_name,
                         $purchase_id,
-                        $price + $shipping_cost,
+                        $price,
                         $tax_derivation,
                         $tax,
                         $tax_tracking,
@@ -1336,7 +1337,7 @@ class Module_purchase
         } elseif (perform_local_payment()) {
             $subtype = 'local_payment';
         } else {
-            $subtype = 'ipn_return';
+            $subtype = 'pdt_ipn_return';
         }
 
         $message = get_param_string('message', null);
@@ -1385,7 +1386,7 @@ class Module_purchase
                 $memo = post_param_string('memo', do_lang('FREE'));
                 $currency = get_option('currency');
             }
-            $amount = 0.00;
+            $price = 0.00;
 
             $status = 'Completed';
             $reason = '';
@@ -1398,7 +1399,8 @@ class Module_purchase
             } else {
                 $period = '';
             }
-            handle_confirmed_transaction(null, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $amount, 0.00, $currency, true, $parent_txn_id, $pending_reason, $memo, $period, get_member(), 'manual', false, true);
+
+            handle_confirmed_transaction(null, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $price, 0.00, 0.00, $currency, true, $parent_txn_id, $pending_reason, $memo, $period, get_member(), 'manual', false, true);
 
             global $ECOMMERCE_SPECIAL_SUCCESS_MESSAGE;
             if ($ECOMMERCE_SPECIAL_SUCCESS_MESSAGE !== null) {
@@ -1415,15 +1417,15 @@ class Module_purchase
 
         // We know success at this point...
 
-        if (($subtype == 'ipn_return') || ($subtype == 'local_payment')) {
+        if (($subtype == 'pdt_ipn_return') || ($subtype == 'local_payment')) {
             if (addon_installed('stats')) {
                 require_code('stats');
                 log_stats_event(do_lang('ECOMMERCE', null, null, null, get_site_default_lang()) . '-' . $type_code);
             }
         }
 
-        if (($subtype == 'ipn_return') && (has_interesting_post_fields())) { // Alternative to IPN, *if* posted fields sent here
-            handle_ipn_transaction_script(); // This is just in case the IPN doesn't arrive somehow, we still know success because the gateway sent us here on success
+        if (($subtype == 'pdt_ipn_return')) {
+            handle_pdt_ipn_transaction_script();
         }
 
         $redirect = get_param_string('redirect', null, INPUT_FILTER_URL_GENERAL);

@@ -15,23 +15,23 @@
 
 	<div class="clearfix force-margin">
 		<div class="left float-separation">
-			<label for="fails">{!SHOW_FAILS}:</label>
-			<input type="checkbox" name="fails" id="fails" value="1" checked="checked" disabled="disabled" />
+			<label for="show_fails">{!SHOW_FAILS}:</label>
+			<input type="checkbox" name="show_fails" id="show_fails" value="1" checked="checked" disabled="disabled" />
 		</div>
 
 		<div class="left float-separation">
-			<label for="passes">{!SHOW_PASSES}:</label>
-			<input type="checkbox" name="passes" id="passes" value="1"{+START,IF,{PASSES}} checked="checked"{+END} />
+			<label for="show_passes">{!SHOW_PASSES}:</label>
+			<input type="checkbox" name="show_passes" id="show_passes" value="1"{+START,IF,{SHOW_PASSES}} checked="checked"{+END} />
 		</div>
 
 		<div class="left float-separation">
-			<label for="skips">{!SHOW_SKIPS}:</label>
-			<input type="checkbox" name="skips" id="skips" value="1"{+START,IF,{SKIPS}} checked="checked"{+END} />
+			<label for="show_skips">{!SHOW_SKIPS}:</label>
+			<input type="checkbox" name="show_skips" id="show_skips" value="1"{+START,IF,{SHOW_SKIPS}} checked="checked"{+END} />
 		</div>
 
 		<div class="left float-separation">
-			<label for="manual_checks">{!SHOW_MANUAL_CHECKS}:</label>
-			<input type="checkbox" name="manual_checks" id="manual_checks" value="1"{+START,IF,{MANUAL_CHECKS}} checked="checked"{+END} />
+			<label for="show_manual_checks">{!SHOW_MANUAL_CHECKS}:</label>
+			<input type="checkbox" name="show_manual_checks" id="show_manual_checks" value="1"{+START,IF,{SHOW_MANUAL_CHECKS}} checked="checked"{+END} />
 		</div>
 	</div>
 

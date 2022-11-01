@@ -57,7 +57,7 @@ class Hook_config_shipping_distance_units
         }
 
         require_code('locations');
-        if (geolocate_ip() == 'US') {
+        if (geolocate_ip() == 'US' || get_option('yeehaw') == '1') {
             return 'In';
         }
         return 'Cm';

@@ -52,7 +52,7 @@ class Hook_config_cpf_enable_state
     public function get_default() : ?string
     {
         require_code('locations');
-        if (geolocate_ip() == 'US') {
+        if (geolocate_ip() == 'US' || get_option('yeehaw') == '1') {
             return '1';
         }
         return '0';

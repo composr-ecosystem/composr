@@ -206,6 +206,7 @@
 								</div>
 							</form>
 						{+END}{+END}{+END}
+						{$,extra_footer_left_goes_here}
 					</div>
 
 					<div class="global-footer-right">
@@ -261,6 +262,7 @@
 								{$COPYRIGHT`}
 							</div>
 						{+END}
+						{$,extra_footer_right_goes_here}
 					</div>
 				</div>
 			</footer>

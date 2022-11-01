@@ -1010,7 +1010,7 @@ class Module_cms_catalogues extends Standard_crud_module
         return
             ($GLOBALS['SITE_DB']->query_select_value_if_there('shopping_order_details', 'id', ['p_type_code' => $id]) === null)
             &&
-            ($GLOBALS['SITE_DB']->query_select_value_if_there('shopping_cart', 'product_id', ['p_type_code' => $id]) === null);
+            ($GLOBALS['SITE_DB']->query_select_value_if_there('shopping_cart', 'id', ['type_code' => $id]) === null);
     }
 
     /**

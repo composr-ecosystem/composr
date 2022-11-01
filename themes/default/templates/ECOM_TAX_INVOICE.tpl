@@ -97,7 +97,7 @@
 				<td colspan="4"></td>
 
 				<td class="total">
-					{$CURRENCY_SYMBOL,{CURRENCY}}{TOTAL_PRICE*}
+					{$CURRENCY_SYMBOL,{CURRENCY}}{SUBTOTAL*}
 				</td>
 
 				<td class="total">

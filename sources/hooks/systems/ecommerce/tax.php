@@ -29,10 +29,10 @@ class Hook_ecommerce_tax
      * IMPORTANT NOTE TO PROGRAMMERS: This function may depend only on the database, and not on get_member() or any GET/POST values.
      *  Such dependencies will break IPN, which works via a Guest and no dependable environment variables. It would also break manual transactions from the Admin Zone.
      *
-     * @param  ?ID_TEXT $search Product being searched for (null: none)
+     * @param  ?ID_TEXT $search Product being searched for (passed by reference as it may be modified for special cases) (null: none)
      * @return array A map of product name to list of product details
      */
-    public function get_products(?string $search = null) : array
+    public function get_products(?string &$search = null) : array
     {
         $products = [
             'TAX_GENERAL' => [

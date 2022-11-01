@@ -88,7 +88,7 @@ class Hook_admin_stats_transactions extends CMSStatsProvider
 
         $date_pivots = $this->get_date_pivots();
 
-        $query = 'SELECT t_time,t_type_code,t_amount FROM ' . get_table_prefix() . 'ecom_transactions WHERE ';
+        $query = 'SELECT t_time,t_type_code,t_price FROM ' . get_table_prefix() . 'ecom_transactions WHERE ';
         $query .= db_string_equal_to('t_status', 'Completed') . ' AND ';
         $query .= 't_time>=' . strval($start_time) . ' AND ';
         $query .= 't_time<=' . strval($end_time);
@@ -114,7 +114,7 @@ class Hook_admin_stats_transactions extends CMSStatsProvider
                     if (!isset($data_buckets['transaction_income'][$month][$pivot][$pivot_value][$product_name])) {
                         $data_buckets['transaction_income'][$month][$pivot][$pivot_value][$product_name] = 0;
                     }
-                    $data_buckets['transaction_income'][$month][$pivot][$pivot_value][$product_name] += $row['t_amount'];
+                    $data_buckets['transaction_income'][$month][$pivot][$pivot_value][$product_name] += $row['t_price'];
                 }
             }
 
@@ -147,7 +147,7 @@ class Hook_admin_stats_transactions extends CMSStatsProvider
             foreach ($_data as $pivot_value => $__) {
                 $pivot_value = $this->make_date_pivot_value_nice($pivot, $pivot_value);
 
-                foreach ($__ as $product_name => $amount) {
+                foreach ($__ as $product_name => $price) {
                     if ((!empty($filters[$bucket . '__product_name'])) && (!simulated_wildcard_match($filters[$bucket . '__product_name'], $product_name, true))) {
                         continue;
                     }
@@ -155,7 +155,7 @@ class Hook_admin_stats_transactions extends CMSStatsProvider
                     if (!isset($data[$pivot_value])) {
                         $data[$pivot_value] = 0;
                     }
-                    $data[$pivot_value] += $amount;
+                    $data[$pivot_value] += $price;
                 }
             }
         }

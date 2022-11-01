@@ -908,7 +908,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_payment_gateway_test_username
         CONFIG_OPTION_payment_gateway_vpn_username
         CONFIG_OPTION_payment_gateway_vpn_password
-        DESCRIPTION_INVOICE_AMOUNT
+        DESCRIPTION_INVOICE_PRICE
         DESCRIPTION_INVOICE_TAX_CODE
         RISK
         PURCHASE_ID
@@ -5898,10 +5898,10 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PAYMENT_GATEWAY_DIGEST
         IPN_EMAIL_ERROR
         PAYMENT_GATEWAY_PASSWORD
-        IPN_SOCKET_ERROR
+        PDT_IPN_SOCKET_ERROR
         IPN_SUB_PERIOD_WRONG
         IPN_SUB_RECURRING_WRONG
-        IPN_UNVERIFIED
+        PDT_IPN_UNVERIFIED
         IP_ADDRESSES
         IP_ADDRESS_NOT_VALID
         IP_ADDRESS_NOT_VALID_MAKE_UNBANNABLE
@@ -6317,7 +6317,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         MODULE_TRANS_NAME_cms_wiki
         MODULE_TRANS_NAME_filedump
         MODSECURITY
-        DESCRIPTION_MONEY_AMOUNT
+        DESCRIPTION_MONEY_PRICE
         MONTHLY_SPEC_TYPE
         MOST_COMMON
         MOST_DEFAULT
@@ -6499,10 +6499,10 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NOTIFICATION_TYPE_ticket_reply_staff
         EDIT_ECOMMERCE_CONFIG
         SELL_CATEGORY_ACCESS
-        TIC__CURRENCY_NOT_USD
-        TIC__BUSINESS_COUNTRY_NOT_USA
-        TIC__TAXCLOUD_NOT_CONFIGURED
-        TIC__USA_STATE_INVALID
+        CURRENCY_NOT_USD
+        UNSUPPORTED_COUNTRY
+        TAXCLOUD_NOT_CONFIGURED
+        USA_STATE_INVALID
         NOT_ADDON
         NOT_A_DIR
         NOT_A_FILE
@@ -6673,8 +6673,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PAYMENT_GATEWAY_TESTING_MODE
         PAYMENT_GATEWAY_manual
         PAYMENT_GATEWAY_paypal
-        PAYMENT_GATEWAY_secpay
-        PAYMENT_GATEWAY_worldpay
         PAYMENT_STATE_active
         PAYMENT_STATE_cancelled
         PAYMENT_STATE_delivered
@@ -8384,6 +8382,24 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         MANUAL_SUBSCRIPTIONS
         REASON_FOR_PENDING
         RELATED_MEMBER
+        CONFIG_GROUP_DESCRIP_TAX_SERVICE_TAXCLOUD
+        CONFIG_GROUP_DESCRIP_TAX_SERVICE_TAXJAR
+        CONFIG_OPTION_enable_taxjar_address_validation
+        CONFIG_OPTION_paypal_data_transfer_id
+        CONFIG_OPTION_tax_api_service
+        CONFIG_OPTION_taxjar_api_key
+        CONFIG_OPTION_taxjar_api_sandbox
+        ENABLE_TAXJAR_ADDRESS_VALIDATION
+        PAYPAL_DATA_TRANSFER_ID
+        TAXJAR_API_KEY
+        TAXJAR_API_SANDBOX
+        TAXJAR_NOT_CONFIGURED
+        TAX_API_SERVICE
+        TAX_SERVICE_COMPOSR
+        TAX_SERVICE_TAXCLOUD
+        TAX_SERVICE_TAXJAR
+        TAX_TJ
+        DESCRIPTION_TAX_TJ
     ')));
 
     $non_admin_files = [
@@ -11029,8 +11045,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PRIVACY_REASON_gravatar
         PRIVACY_ACTION_shippo
         PRIVACY_REASON_shippo
-        PRIVACY_ACTION_taxcloud
-        PRIVACY_REASON_taxcloud
         PRIVACY_ACTION_payments
         PRIVACY_REASON_payments
         INFORMATION_TRANSFER
@@ -11762,6 +11776,10 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PER_GALLERY_SORT_gallery_media_default_sort_order
         YOUR_MESSAGE_WAS_SENT_TO_BODY
         YOUR_MESSAGE_WAS_SENT_TO_SUBJECT
+        INVOICE_FULFILLED_MESSAGE
+        INVOICE_FULFILLED_SUBJECT
+        PRIVACY_ACTION_TAX
+        PRIVACY_REASON_TAX
     ')));
 
     if ($GLOBALS['DEV_MODE']) {

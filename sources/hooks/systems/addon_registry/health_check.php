@@ -303,9 +303,9 @@ class Hook_addon_registry_health_check
         return lorem_globalise(do_lorem_template('HEALTH_CHECK_SCREEN', [
             'TITLE' => lorem_title(),
             'SECTIONS' => placeholder_options(),
-            'PASSES' => true,
-            'SKIPS' => true,
-            'MANUAL_CHECKS' => true,
+            'SHOW_PASSES' => true,
+            'SHOW_SKIPS' => true,
+            'SHOW_MANUAL_CHECKS' => true,
             'RESULTS' => $results,
         ]), null, '', true);
     }

@@ -372,8 +372,8 @@ class Module_admin_ecommerce_logs
         // Remaining fields, customised for product chosen
         $default_purchase_id = get_param_string('id', null);
         if ($default_purchase_id === null) {
-            if (method_exists($product_object, 'handle_needed_fields')) {
-                list($default_purchase_id) = $product_object->handle_needed_fields($type_code, true);
+            if (method_exists($product_object, 'process_needed_fields')) {
+                list($default_purchase_id) = $product_object->process_needed_fields($type_code, true);
                 $hidden->attach(form_input_hidden('purchase_id', $default_purchase_id));
             } else {
                 $fields->attach(form_input_username(do_lang_tempcode('USERNAME'), do_lang('DESCRIPTION_MANUAL_PURCHASE_USERNAME'), 'purchase_id_username', $GLOBALS['FORUM_DRIVER']->get_username(get_member()), false));
@@ -388,7 +388,7 @@ class Module_admin_ecommerce_logs
         }
 
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'f4e52dff9353fb767afbe0be9808591c', 'SECTION_HIDDEN' => true, 'TITLE' => do_lang_tempcode('ADVANCED')]));
-        $fields->attach(form_input_float(do_lang_tempcode('AMOUNT'), do_lang_tempcode('DESCRIPTION_MONEY_AMOUNT', $currency, ecommerce_get_currency_symbol()), 'amount', null, ($details['price'] === null)));
+        $fields->attach(form_input_float(do_lang_tempcode('PRICE'), do_lang_tempcode('DESCRIPTION_MONEY_PRICE', $currency, ecommerce_get_currency_symbol()), 'price', null, ($details['price'] === null)));
 
         $hidden->attach(form_input_hidden('type_code', $type_code));
         $hidden->attach(form_input_hidden('csrf_token_preserve', '1'));
@@ -430,16 +430,16 @@ class Module_admin_ecommerce_logs
             }
         }
         if ($purchase_id === null) {
-            if (method_exists($product_object, 'handle_needed_fields')) {
-                list($purchase_id) = $product_object->handle_needed_fields($type_code, true);
+            if (method_exists($product_object, 'process_needed_fields')) {
+                list($purchase_id) = $product_object->process_needed_fields($type_code, true);
             } else {
                 $purchase_id = strval(get_member());
             }
         }
 
         $memo = post_param_string('memo', '');
-        $_amount = post_param_string('amount', '');
-        $amount = ($_amount == '') ? null : float_unformat($_amount);
+        $_price = post_param_string('price', '');
+        $price = ($_price == '') ? null : float_unformat($_price);
         $custom_expiry = post_param_date('cexpiry');
 
         $currency = isset($details['currency']) ? $details['currency'] : get_option('currency');
@@ -450,11 +450,11 @@ class Module_admin_ecommerce_logs
 
         $shipping_cost = calculate_shipping_cost($details, $details['shipping_cost'], $details['product_weight'], $details['product_length'], $details['product_width'], $details['product_height']);
 
-        if ($amount === null) {
+        if ($price === null) {
             if ($details['type'] == PRODUCT_INVOICE) {
-                $amount = $invoice_details[0]['i_amount'];
+                $price = $invoice_details[0]['i_price'];
             } elseif ($details['price'] !== null) {
-                $amount = $details['price'] + $shipping_cost;
+                $price = $details['price'];
             } else {
                 warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
             }
@@ -470,7 +470,7 @@ class Module_admin_ecommerce_logs
             $shipping_tax = 0.00;
         } else {
             $tax_code = $details['tax_code'];
-            list($tax_derivation, $tax, $tax_tracking, $shipping_tax) = calculate_tax_due($details, $tax_code, $amount, $shipping_cost);
+            list($tax_derivation, $tax, $tax_tracking, $shipping_tax) = calculate_tax_due($details, $tax_code, $price, $shipping_cost);
         }
 
         $status = 'Completed';
@@ -496,7 +496,7 @@ class Module_admin_ecommerce_logs
                     's_type_code' => $type_code,
                     's_member_id' => $member_id,
                     's_state' => 'new',
-                    's_amount' => $details['price'],
+                    's_price' => $details['price'],
                     's_tax_code' => $tax_code,
                     's_tax_derivation' => json_encode($tax_derivation, defined('JSON_PRESERVE_ZERO_FRACTION') ? JSON_PRESERVE_ZERO_FRACTION : 0),
                     's_tax' => $tax,
@@ -546,17 +546,18 @@ class Module_admin_ecommerce_logs
             $period = '';
         }
 
-        $invoicing_breakdown = generate_invoicing_breakdown($type_code, $item_name, $purchase_id, $amount + $tax, $tax, $shipping_cost, $shipping_tax);
+        $invoicing_breakdown = generate_invoicing_breakdown($type_code, $item_name, $purchase_id, $price, $tax, $shipping_cost, $shipping_tax);
 
         $GLOBALS['SITE_DB']->query_insert('ecom_trans_expecting', [
             'id' => $txn_id,
             'e_type_code' => $type_code,
             'e_purchase_id' => $purchase_id,
             'e_item_name' => $item_name,
-            'e_price' => $amount,
+            'e_price' => $price,
             'e_tax_derivation' => json_encode($tax_derivation, defined('JSON_PRESERVE_ZERO_FRACTION') ? JSON_PRESERVE_ZERO_FRACTION : 0),
             'e_tax' => $tax,
             'e_tax_tracking' => json_encode($tax_tracking, defined('JSON_PRESERVE_ZERO_FRACTION') ? JSON_PRESERVE_ZERO_FRACTION : 0),
+            'e_shipping' => $shipping_cost,
             'e_currency' => $currency,
             'e_price_points' => 0,
             'e_member_id' => get_member(),
@@ -570,7 +571,7 @@ class Module_admin_ecommerce_logs
         ]);
         store_shipping_address($txn_id);
 
-        handle_confirmed_transaction($txn_id, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $amount + $tax, $tax, $currency, false, $parent_txn_id, $pending_reason, $memo, $period, get_member(), 'manual', false, true);
+        handle_confirmed_transaction($txn_id, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $price, $tax, $shipping_cost, $currency, false, $parent_txn_id, $pending_reason, $memo, $period, get_member(), 'manual', false, true);
 
         $url = get_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL);
         if ($url != '') {
@@ -743,7 +744,7 @@ class Module_admin_ecommerce_logs
 
         $start = get_param_integer('start', 0);
         $max = get_param_integer('max', 50);
-        $sortables = ['t_time' => do_lang_tempcode('DATE'), 't_amount' => do_lang_tempcode('AMOUNT')];
+        $sortables = ['t_time' => do_lang_tempcode('DATE'), 't_price' => do_lang_tempcode('PRICE')];
         $test = explode(' ', get_param_string('sort', 't_time DESC', INPUT_FILTER_GET_COMPLEX), 2);
         if (count($test) == 1) {
             $test[1] = 'DESC';
@@ -821,8 +822,9 @@ class Module_admin_ecommerce_logs
             do_lang('RELATED_MEMBER'),
             do_lang('PRODUCT'),
             do_lang('PURCHASE_ID'),
-            do_lang('AMOUNT'),
+            do_lang('PRICE'),
             do_lang(get_option('tax_system')),
+            do_lang('SHIPPING'),
             do_lang('STATUS'),
         ], $sortables, 'sort', $sortable . ' ' . $sort_order);
         foreach ($rows as $transaction_row) {
@@ -890,8 +892,9 @@ class Module_admin_ecommerce_logs
                 $member_link,
                 tooltip($item_name, $transaction_row['t_type_code'], true),
                 escape_html($transaction_row['t_purchase_id']),
-                ecommerce_get_currency_symbol($transaction_row['t_currency']) . escape_html(float_format($transaction_row['t_amount'])),
+                ecommerce_get_currency_symbol($transaction_row['t_currency']) . escape_html(float_format($transaction_row['t_price'])),
                 $tax_linker,
+                ecommerce_get_currency_symbol($transaction_row['t_currency']) . escape_html(float_format($transaction_row['t_shipping'])),
                 $status,
             ], false));
         }
@@ -1097,6 +1100,7 @@ class Module_admin_ecommerce_logs
      */
     public function get_types(int $from, int $to, bool $unpaid_invoices_count = false) : array
     {
+        // TODO: May need editing for tax split from amount (add shipping?)
         $types = [
             // Calculations
             'OPENING' => ['TYPE' => do_lang_tempcode('OPENING_BALANCE'), 'AMOUNT' => 0.00, 'SPECIAL' => true],
@@ -1128,35 +1132,35 @@ class Module_admin_ecommerce_logs
         $transactions = $GLOBALS['SITE_DB']->query($sql);
         foreach ($transactions as $transaction) {
             if ($transaction['t_time'] > $from) {
-                $types['TRANS']['AMOUNT'] += get_transaction_fee($transaction['t_amount'], $transaction['t_payment_gateway']);
+                $types['TRANS']['AMOUNT'] += get_transaction_fee($transaction['t_price'], $transaction['t_payment_gateway']);
             }
 
             $type_code = $transaction['t_type_code'];
 
-            $transaction['t_amount'] = currency_convert($transaction['t_amount'], $transaction['t_currency'], get_option('currency')); // FUDGE: Not ideal because exchange rates change, but we don't normally trade multiple currencies anyway
+            $transaction['t_price'] = currency_convert($transaction['t_price'], $transaction['t_currency'], get_option('currency')); // FUDGE: Not ideal because exchange rates change, but we don't normally trade multiple currencies anyway
 
-            $types['CLOSING']['AMOUNT'] += $transaction['t_amount']/*no sales tax on this figure as it goes straight out*/;
+            $types['CLOSING']['AMOUNT'] += $transaction['t_price']/*no sales tax on this figure as it goes straight out*/;
 
             $types['TAX_SALES']['AMOUNT'] -= $transaction['t_tax'];
 
             if ($transaction['t_time'] < $from) {
-                $types['OPENING']['AMOUNT'] += $transaction['t_amount']/*no sales tax on this figure as it goes straight out*/ - get_transaction_fee($transaction['t_amount'], $transaction['t_payment_gateway']);
+                $types['OPENING']['AMOUNT'] += $transaction['t_price']/*no sales tax on this figure as it goes straight out*/ - get_transaction_fee($transaction['t_price'], $transaction['t_payment_gateway']);
                 continue;
             }
 
-            if (($transaction['t_type_code'] == 'OTHER') && ($transaction['t_amount'] < 0.00)) {
-                $types['COST']['AMOUNT'] += $transaction['t_amount'];
+            if (($transaction['t_type_code'] == 'OTHER') && ($transaction['t_price'] < 0.00)) {
+                $types['COST']['AMOUNT'] += $transaction['t_price'];
             } elseif ($transaction['t_type_code'] == 'TAX_GENERAL') {
-                $types['TAX_GENERAL']['AMOUNT'] += $transaction['t_amount'];
+                $types['TAX_GENERAL']['AMOUNT'] += $transaction['t_price'];
             } elseif ($transaction['t_type_code'] == 'INTEREST') {
-                $types[$type_code][($transaction['t_amount'] < 0.0) ? 'INTEREST_MINUS' : 'INTEREST_PLUS']['AMOUNT'] += $transaction['t_amount'];
+                $types[$type_code][($transaction['t_price'] < 0.0) ? 'INTEREST_MINUS' : 'INTEREST_PLUS']['AMOUNT'] += $transaction['t_price'];
             } elseif ($transaction['t_type_code'] == 'WAGE') {
-                $types['WAGE']['AMOUNT'] += $transaction['t_amount'];
+                $types['WAGE']['AMOUNT'] += $transaction['t_price'];
             } else {
                 if (!array_key_exists($type_code, $types)) {
                     $types[$type_code] = ['TYPE' => $type_code, 'AMOUNT' => 0.00, 'SPECIAL' => false]; // In case product no longer exists
                 }
-                $types[$type_code]['AMOUNT'] += $transaction['t_amount'];
+                $types[$type_code]['AMOUNT'] += $transaction['t_price'];
             }
         }
 
@@ -1165,16 +1169,16 @@ class Module_admin_ecommerce_logs
             foreach ($invoices as $invoice) {
                 $type_code = $invoice['i_type_code'];
 
-                $types['CLOSING']['AMOUNT'] += $invoice['i_amount'];
+                $types['CLOSING']['AMOUNT'] += $invoice['i_price'];
 
                 $types['TAX_SALES']['AMOUNT'] -= $transaction['i_tax'];
 
                 if ($invoice['i_time'] < $from) {
-                    $types['OPENING']['AMOUNT'] += $invoice['i_amount'];
+                    $types['OPENING']['AMOUNT'] += $invoice['i_price'];
                     continue;
                 }
 
-                $types[$type_code]['AMOUNT'] += $invoice['i_amount'];
+                $types[$type_code]['AMOUNT'] += $invoice['i_price'];
             }
         }
 
@@ -1273,7 +1277,7 @@ class Module_admin_ecommerce_logs
         }
 
         // Filter parameters
-        $filter_manual = get_param_integer('filter_manual', 1);
+        $filter_manual = get_param_integer('filter_manual', 0);
         $filter_username = get_param_string('filter_username', '', INPUT_FILTER_NONE);
         $_filter_state = get_param_string('filter_state', '');
         $filter_state = explode(',', $_filter_state);
@@ -1343,7 +1347,7 @@ class Module_admin_ecommerce_logs
                 $item_name = do_lang_tempcode('UNKNOWN_EM');
                 $expiry_date = do_lang_tempcode('UNKNOWN_EM');
             }
-            if (($subs['s_state'] != 'cancelled') && ($subs['s_payment_gateway'] == 'manual')) {
+            if (($subs['s_state'] != 'cancelled') && (ecommerce_test_mode() || ($subs['s_payment_gateway'] == 'manual'))) {
                 $cancel_url = hyperlink(build_url(['page' => '_SELF', 'type' => 'cancel_subscription', 'subscription_id' => $subs['id']], '_SELF'), do_lang('SUBSCRIPTION_CANCEL'), false, true);
             } else {
                 $cancel_url = new Tempcode();
@@ -1395,10 +1399,6 @@ class Module_admin_ecommerce_logs
             $products->attach(form_input_list_entry($p['value'], (($_filter_type_code != '') && (in_array($p['value'], $filter_type_code))), $p['caption']));
         }
 
-        // Fallback for manual transactions tick (check) to ensure it is 0 when we want it to be 0
-        $filters_hidden = new Tempcode();
-        $filters_hidden->attach(form_input_hidden('filter_manual', '0'));
-
         $filters_row_a = [
             [
                 'PARAM' => 'filter_manual',
@@ -1430,7 +1430,7 @@ class Module_admin_ecommerce_logs
             'TITLE' => $this->title,
             'RESULTS_TABLE' => $results_table,
             'FORM' => $form,
-            'FILTERS_HIDDEN' => $filters_hidden,
+            'FILTERS_HIDDEN' => new Tempcode(),
             'FILTERS_ROW_A' => $filters_row_a,
             'FILTERS_ROW_B' => $filters_row_b,
             'URL' => $url,
@@ -1462,7 +1462,7 @@ class Module_admin_ecommerce_logs
         $repost_id = post_param_integer('id', null);
         if (($repost_id !== null) && ($repost_id == $id)) {
             require_code('ecommerce');
-            handle_confirmed_transaction(null, strval($id), $subscription[0]['s_type_code'], '', strval($id), true, 'SCancelled', '', 0.00, 0.00, get_option('currency'), false, '', '', '', '', get_member(), 'manual', false, true); // Runs a cancel
+            handle_confirmed_transaction(null, strval($id), $subscription[0]['s_type_code'], '', strval($id), true, 'SCancelled', '', 0.00, 0.00, 0.00, get_option('currency'), false, '', '', '', '', get_member(), 'manual', false, true); // Runs a cancel
             return inform_screen($this->title, do_lang_tempcode('SUCCESS'));
         }
 

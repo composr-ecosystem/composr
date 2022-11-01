@@ -117,7 +117,7 @@ class ecommerce_custom_test_set extends cms_test_case
         $_POST = [
             'payment_status' => 'Completed',
         ] + $ipn_data;
-        handle_ipn_transaction_script(true, false);
+        handle_pdt_ipn_transaction_script(true, false);
 
         // Test was actioned
         $test = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_sales', 'member_id', ['member_id' => $member_id]);

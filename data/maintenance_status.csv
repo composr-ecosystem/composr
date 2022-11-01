@@ -53,8 +53,6 @@ project_honeypot,Project Honeypot integration,ocProducts,,Not regularly tested. 
 rbl,Remote Block List integration,ocProducts,,Not regularly tested. Could potentially break due to third-party changes.,No,
 gateway_paypal,PayPal eCommerce driver,ocProducts,,Could potentially break due to third-party changes.,No,Partly tested by usergroup_subscriptions automated test.
 gateway_ccbill,CCBill eCommerce driver,,,Not regularly tested. Could potentially break due to third-party changes.,No,
-gateway_secpay,SecPay eCommerce driver,,,Not regularly tested. Could potentially break due to third-party changes.,No,
-gateway_worldpay,WorldPay eCommerce driver,,,Not regularly tested. Could potentially break due to third-party changes.,No,
 gateway_authorize,Authorize.net eCommerce driver,,,Not regularly tested. Could potentially break due to third-party changes.,No,
 caches_apc,APC/APCu persistent cache,ocProducts,,Not regularly tested due to needing a testing platform.,No,
 caches_memcache,Memcache persistent cache,,,Not regularly tested due to needing a testing platform.,No,
@@ -108,7 +106,8 @@ geocoding_bing,Bing Geocoding (forward and reverse),ocProducts,ocProducts,Could 
 geocoding_mapquest,MapQuest Geocoding (forward and reverse),ocProducts,ocProducts,Could potentially break due to third-party changes.,No,_api_geocoding automated test.
 ip_geocoding,IP address geocoding (internal list),ocProducts,ocProducts,Could potentially break due to third-party changes.,No,Part of release process / _api_geocoding automated test.
 ssl_trust_internal,SSL certificate trust chains (internal list),ocProducts,,Could potentially break due to third-party changes.,No,Part of release process / _special_links automated test.
-taxcloud,TaxCloud integration for US sales tax,ocProducts,,Could potentially break due to third-party changes.,No,_api_ecommerce_tax automated test.
+taxjar,TaxJar integration for sales tax,ocProducts,,Could potentially break due to third-party changes.,No,_api_ecommerce_tax automated test.
+taxcloud,TaxCloud integration for US sales tax,,,Could potentially break due to third-party changes.,No,_api_ecommerce_tax automated test.
 shippo,Shippo integration for shipping calculations,ocProducts,,Could potentially break due to third-party changes.,No,ecommerce_shipping automated test.
 eu_digital_tax,Download of EU digital tax rates,ocProducts,,Could potentially break due to third-party changes.,No,_api_ecommerce_tax automated test.
 cloudflare_changes,Cloudflare optimisations (potentially-disruptive optimisations Cloudflare may try and make when proxying the site),,,Not regularly Tested.,No,
