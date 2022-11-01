@@ -192,11 +192,11 @@
                     return $util.promiseHalt();
                 }
 
-                if (form.oldAction) {
-                    form.action = form.oldAction;
+                if (form.submitAction) {
+                    form.action = form.submitAction;
                 }
-                if (form.oldTarget) {
-                    form.target = form.oldTarget;
+                if (form.submitTarget) {
+                    form.target = form.submitTarget;
                 }
                 if (!form.getAttribute('target')) {
                     form.target = '_top';
@@ -312,22 +312,17 @@
                     previewUrl.searchParams.set('keep_mobile', (window.mobileVersionForPreview ? 1 : 0));
                 }
 
-                var oldAction = form.action;
-                if (!form.oldAction) {
-                    form.oldAction = oldAction;
+                if (!form.submitAction) {
+                    form.submitAction = form.action;
+                }
+                if (!form.submitTarget) {
+                    form.submitTarget = form.target || '_top'; // not _self due to edit screen being a frame itself
                 }
 
-                if ($util.url(form.oldAction).searchParams.get('uploading') === '1') {
+                if ($util.url(form.submitAction).searchParams.get('uploading') === '1') {
                     previewUrl.searchParams.set('uploading', '1');
                 }
-
                 form.action = $util.srl(previewUrl);
-
-                var oldTarget = form.target || '_top'; // not _self due to edit screen being a frame itself
-
-                if (!form.oldTarget) {
-                    form.oldTarget = oldTarget;
-                }
 
                 form.target = 'preview-iframe';
 
@@ -345,7 +340,7 @@
                 var ret = $dom.trigger(form, 'submit', { detail: { triggeredByDoFormPreview: true } });
 
                 if (hasSeparatePreview) {
-                    var action = $util.url(form.oldAction);
+                    var action = $util.url(form.submitAction);
                     action.searchParams.set('preview', 1);
                     form.action = $util.srl(action);
                 } else {

@@ -15,7 +15,7 @@
 
 {+START,IF_NON_EMPTY,{URL}}
 	<p class="purchase-button">
-		<button id="proceed-button" class="btn btn-primary btn-scr btn-main-submit-form" accesskey="u" type="button">{+START,INCLUDE,ICON}NAME={ICON}{+END} {SUBMIT_NAME*}</button>
+		<button id="proceed-button" class="btn btn-primary btn-scr js-btn-main-submit-form" accesskey="u" type="button">{+START,INCLUDE,ICON}NAME={ICON}{+END} {SUBMIT_NAME*}</button>
 	</p>
 </form>
 {+END}

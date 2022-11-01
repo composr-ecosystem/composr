@@ -13,6 +13,9 @@
         this.form = this.$('form.js-form-comments');
         this.btnSubmit = this.$('.js-btn-save-comment');
 
+        this.form.submitAction = this.form.action;
+        this.form.submitTarget = this.form.target;
+
         $cms.requireJavascript(['jquery', 'jquery_autocomplete']).then(function () {
             window.$jqueryAutocomplete.setUpComcodeAutocomplete('post', Boolean(params.wysiwyg));
         });
@@ -21,8 +24,9 @@
             this.btnSubmit.style.display = 'none';
         }
 
+        this.addCommentChecking(this.form, this.params);
         if (params.useCaptcha && ($cms.configOption('recaptcha_site_key') === '')) {
-            this.addCaptchaChecking();
+            this.addCaptchaChecking(this.form);
         }
 
         if (params.type && params.id) {
@@ -39,8 +43,8 @@
         events: function () {
             return {
                 'click .js-btn-full-editor': 'moveToFullEditor',
+                'click .js-btn-save-comment': 'ensureRegularEditor',
                 'click .js-click-do-form-preview': 'doPostingFormPreview',
-                'click .js-btn-save-comment': 'submitFormComments',
 
                 'click .js-img-review-bar': 'reviewBarClick',
                 'mouseover .js-img-review-bar': 'reviewBarHover',
@@ -129,44 +133,6 @@
             $cms.form.doFormPreview(e, form, url, false, []);
         },
 
-        submitFormComments: function (e) {
-            var form = this.form,
-                params = this.params;
-
-            if ((params.moreUrl !== undefined) && (form.action === params.moreUrl)) {
-                return;
-            }
-
-            if (!$cms.form.checkFieldForBlankness(form.elements.post)) {
-                $dom.cancelSubmit(e);
-                return;
-            }
-
-            if (params.getName && !$cms.form.checkFieldForBlankness(form.elements['name'])) {
-                $dom.cancelSubmit(e);
-                return;
-            }
-
-            if (params.getTitle && !params.titleOptional && !$cms.form.checkFieldForBlankness(form.elements.title)) {
-                $dom.cancelSubmit(e);
-                return;
-            }
-
-            if (params.getEmail && !params.emailOptional && !$cms.form.checkFieldForBlankness(form.elements.email)) {
-                $dom.cancelSubmit(e);
-                return;
-            }
-
-            if (params.analyticEventCategory) {
-                e.preventDefault();
-                var promise = $cms.statsEventTrack(null, params.analyticEventCategory).then(function () {
-                    return true;
-                });
-
-                $dom.awaitValidationPromiseAndSubmitForm(e, promise);
-            }
-        },
-
         moveToFullEditor: function () {
             var moreUrl = this.params.moreUrl,
                 form = this.form;
@@ -196,11 +162,8 @@
             }
 
             // Reset form target
-            form.target = '_top';
-            if (form.oldAction !== undefined) {
-                form.oldAction = form.action;
-            }
             form.action = moreUrl;
+            form.target = '_top';
 
             // Handle threaded strip-on-focus
             if ((form.elements['post'].stripOnFocus !== undefined) && (form.elements['post'].value === form.elements['post'].stripOnFocus)) {
@@ -210,11 +173,53 @@
             $dom.trigger(form, 'submit');
         },
 
+        ensureRegularEditor: function () {
+            var form = this.form;
+            form.action = form.submitAction;
+            form.target = form.submitTarget;
+        },
+
+        addCommentChecking: function (form, params) {
+            if (typeof form.extraChecks == 'undefined') {
+                form.extraChecks = [];
+            }
+
+            form.extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
+                if (!$cms.form.checkFieldForBlankness(form.elements['post'])) {
+                    erroneous.valueOf = function () { return true; };
+                    firstFieldWithError = form.elements['post'];
+                }
+            });
+
+            form.extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
+                if (params.getName && !$cms.form.checkFieldForBlankness(form.elements['name'])) {
+                    erroneous.valueOf = function () { return true; };
+                    firstFieldWithError = form.elements['name'];
+                }
+            });
+
+            form.extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
+                if (params.getTitle && !params.titleOptional && !$cms.form.checkFieldForBlankness(form.elements['title'])) {
+                    erroneous.valueOf = function () { return true; };
+                    firstFieldWithError = form.elements['title'];
+                }
+            });
+
+            form.extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
+                if (params.getEmail && !params.emailOptional && !$cms.form.checkFieldForBlankness(form.elements['email'])) {
+                    erroneous.valueOf = function () { return true; };
+                    firstFieldWithError = form.elements['email'];
+                }
+            });
+        },
+
         /* Set up a feedback form to have its CAPTCHA checked upon submission using AJAX */
-        addCaptchaChecking: function () {
-            var extraChecks = [],
-                validValue;
-            extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
+        addCaptchaChecking: function (form) {
+            if (typeof form.extraChecks == 'undefined') {
+                form.extraChecks = [];
+            }
+            var validValue;
+            form.extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
                 var value = form.elements['captcha'].value;
 
                 if ((value === validValue) || (value === '')) {
@@ -238,7 +243,6 @@
                     });
                 };
             });
-            return extraChecks;
         }
     });
 
@@ -259,6 +263,10 @@
         var commentsForm = $dom.elArg('#' + commentsFormId);
 
         $dom.on(commentsForm, 'submit', function commentsAjaxListener(event) {
+            if (commentsForm.action != commentsForm.submitAction) {
+                return; // It's previewing or opening a full-reply URL
+            }
+
             if (commentsForm.lastSubmitEvent && $dom.isCancelledSubmit(commentsForm.lastSubmitEvent)) {
                 // Note we check on form.lastSubmitEvent rather than event, as commentsForm.lastSubmitEvent is actually the button click that validation ran on
                 return;
@@ -307,11 +315,10 @@
 
                 if ((xhr.responseText !== '') && (xhr.status !== 500)) {
                     // Display
-                    var oldAction = commentsForm.action;
                     $dom.replaceWith(commentsWrapper, xhr.responseText);
                     commentsWrapper = document.getElementById(commentsWrapperId); // Because $dom.replaceWith() broke the references
                     commentsForm = document.getElementById(commentsFormId);
-                    commentsForm.action = oldAction; // AJAX will have mangled URL (as was not running in a page context), this will fix it back
+                    commentsForm.action = commentsForm.submitAction; // AJAX will have mangled URL (as was not running in a page context), this will fix it back
 
                     // Scroll back to comment
                     setTimeout(function () {

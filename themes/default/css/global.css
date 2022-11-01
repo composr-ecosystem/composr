@@ -4450,7 +4450,6 @@ div .buttons-group-faded > * {
 /*{+END}*/
 
 .comments-posting-form-inner textarea {
-	color: {$GET,comfortable_input_field_text};
 	width: 100%;
 }
 

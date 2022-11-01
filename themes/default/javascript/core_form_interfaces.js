@@ -44,7 +44,7 @@
         this.cancelUrl = strVal(params.cancelUrl);
         this.analyticEventCategory = params.analyticEventCategory;
         this.form = this.el;
-        this.btnSubmit = this.$('.btn-main-submit-form');
+        this.btnSubmit = this.$('.js-btn-main-submit-form');
 
         if (typeof this.form.extraChecks == 'undefined') {
             this.form.extraChecks = [];
@@ -92,7 +92,7 @@
                 // These are connected
                 'submit': 'cancelNativeFormSubmit',
                 'click .js-click-do-form-preview': 'doStandardFormPreview',
-                'click .btn-main-submit-form': 'doComposrFormSubmitChain',
+                'click .js-btn-main-submit-form': 'doComposrFormSubmitChain',
             };
         },
 
