@@ -257,4 +257,29 @@ class Hook_fields_upload_multi
             }
         }
     }
+
+    /**
+     * Determine what data should be used from this field in SEO.
+     *
+     * @param  string $val The value of the field
+     * @param  integer $field_id The ID of the field
+     * @param  ID_TEXT $content_type The content type using this field
+     * @param  ?ID_TEXT $content_id The ID of the content using this field (null: not using a specific piece of content, such as adding a new entry)
+     * @return mixed Either a string of the content to use in SEO, or a Tuple of [(string) content to use, (boolean) must use / high priority, (boolean) is a codename]
+     */
+    public function get_seo_source_map(string $val, int $field_id, string $content_type, ?string $content_id = null)
+    {
+        // Return filenames only
+        $ret = '';
+        $items = explode("\n", $val);
+        foreach ($items as $item) {
+            $file_bits = explode('::', $item);
+            if (count($file_bits) == 1) {
+                continue;
+            }
+            $file = $file_bits[1];
+            $ret .= pathinfo($file, PATHINFO_FILENAME) . "\n";
+        }
+        return rtrim($ret);
+    }
 }

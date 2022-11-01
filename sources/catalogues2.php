@@ -1112,13 +1112,8 @@ function actual_add_catalogue_entry(int $category_id, int $validated, string $no
 
         $type = $fields[$field_id];
 
-        if ($type === 'codename') {
-            $seo_source_map[] = [$val, false, true];
-        } else {
-            $seo_source_map[] = $val;
-        }
-
         $ob = get_fields_hook($type);
+        $seo_source_map[] = $ob->get_seo_source_map($val, $field_id, 'catalogue_entry', strval($id));
         list($raw_type, , $sup_table_name) = $ob->get_field_value_row_bits($_fields[$field_id]);
 
         $smap = [
