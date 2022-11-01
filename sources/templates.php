@@ -50,7 +50,7 @@ function init__templates()
 function put_in_standard_box(object $content, ?object $title = null, string $type = 'default', string $width = '', string $options = '', string $meta = '', string $links = '', string $top_links = '', string $class = '') : object
 {
     if ($title === null) {
-        $object = new Tempcode();
+        $title = new Tempcode();
     }
 
     if ($type == '') {
