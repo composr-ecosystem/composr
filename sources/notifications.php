@@ -1402,13 +1402,13 @@ abstract class Hook_Notification
                 } else {
                     // :-)
                     // This is the most obvious query for Conversr notification-queries
-                    $standard_query = 'SELECT l_member_id,l_setting,m.id FROM ' . $db->get_table_prefix() . 'notifications_enabled l JOIN ' . $db->get_table_prefix() . 'f_members m ON m.id=l.l_member_id WHERE 1=1';
-                    $standard_query .= $clause_scope . $clause_member_ids . $clause_validation_cns;
-                    $standard_query .= ' AND (l_setting IS NOT NULL AND l_setting<>' . strval(A_NA);
+                    $query = 'SELECT l_member_id,l_setting,m.id FROM ' . $db->get_table_prefix() . 'notifications_enabled l JOIN ' . $db->get_table_prefix() . 'f_members m ON m.id=l.l_member_id WHERE 1=1';
+                    $query .= $clause_scope . $clause_member_ids . $clause_validation_cns;
+                    $query .= ' AND (l_setting IS NOT NULL AND l_setting<>' . strval(A_NA);
                     if ($has_by_default_first_admin) {
-                        $standard_query .= ' OR m.id=' . strval($first_admin_user);
+                        $query .= ' OR m.id=' . strval($first_admin_user);
                     }
-                    $standard_query .= ')';
+                    $query .= ')';
                 }
             }
         } else {
