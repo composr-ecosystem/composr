@@ -1683,7 +1683,7 @@ function get_chat_sound_tpl() : object
 /**
  * Get SQL for finding an IM conversation between certain members.
  *
- * @param array $member_ids The member IDs
+ * @param  array $member_ids The member IDs
  * @return string SQL
  */
 function sql_members_in_im_conversation(array $member_ids) : string
