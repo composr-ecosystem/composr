@@ -36,6 +36,7 @@ class Module_admin_custom_comcode extends Standard_crud_module
     protected $donext_category_content_type = null;
 
     public $js_function_calls = ['moduleAdminCustomComcode'];
+
     /**
      * Find entry-points available within this module.
      *

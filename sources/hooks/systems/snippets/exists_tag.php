@@ -34,13 +34,18 @@ class Hook_snippet_exists_tag
             return new Tempcode();
         }
 
-        $val = get_param_string('name');
+        $tag = get_param_string('name');
 
-        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('custom_comcode', 'tag_tag', ['tag_tag' => $val]);
-        if ($test === null) {
-            return new Tempcode();
+        require_code('comcode_compiler');
+
+        init_valid_comcode_tags();
+
+        global $VALID_COMCODE_TAGS;
+        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('custom_comcode', 'tag_tag', ['tag_tag' => $tag]);
+        if ((array_key_exists($tag, $VALID_COMCODE_TAGS)) || ($test !== null)) {
+            return make_string_tempcode(strip_html(do_lang('ALREADY_EXISTS', escape_html($tag))));
         }
 
-        return make_string_tempcode(strip_html(do_lang('ALREADY_EXISTS', escape_html($val))));
+        return new Tempcode();
     }
 }

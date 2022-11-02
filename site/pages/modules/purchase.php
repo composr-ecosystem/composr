@@ -571,12 +571,13 @@ class Module_purchase
      * @param  Tempcode $content To wrap
      * @param  Tempcode $title The title to use
      * @param  ?mixed $url URL (null: no next URL)
+     * @param  array $js_function_calls Array of JavaScript function calls to use
      * @param  boolean $get Whether it is a GET form
      * @param  ?Tempcode $submit_name Submit button label to use (null: default)
      * @param  string $icon CSS icon label to use
      * @return Tempcode Wrapped
      */
-    protected function _wrap(object $content, object $title, $url, bool $get = false, ?object $submit_name = null, string $icon = 'buttons/proceed') : object
+    protected function _wrap(object $content, object $title, $url = null, array $js_function_calls = [], bool $get = false, ?object $submit_name = null, string $icon = 'buttons/proceed') : object
     {
         if ($url === null) {
             $url = '';
@@ -594,6 +595,7 @@ class Module_purchase
             'CONTENT' => $content,
             'GET' => $get ? true : null,
             'URL' => $url,
+            'JS_FUNCTION_CALLS' => $js_function_calls,
             'SUBMIT_NAME' => $submit_name,
             'ICON' => $icon,
         ]);
@@ -965,7 +967,7 @@ class Module_purchase
             'URL' => $url,
             'TERMS' => $terms,
         ]);
-        return $this->_wrap($result, $this->title, null);
+        return $this->_wrap($result, $this->title);
     }
 
     /**
@@ -1023,9 +1025,8 @@ class Module_purchase
             'TYPE_CODE' => $type_code,
             'TEXT' => $text,
             'FIELDS' => $fields,
-            'JS_FUNCTION_CALLS' => $js_function_calls,
         ]);
-        return $this->_wrap($result, $this->title, $url);
+        return $this->_wrap($result, $this->title, $url, $js_function_calls);
     }
 
     /**
@@ -1307,7 +1308,7 @@ class Module_purchase
             $icon = 'buttons/proceed';
         }
 
-        return $this->_wrap($result, $this->title, $finish_url, false, $submit_name, $icon);
+        return $this->_wrap($result, $this->title, $finish_url, [], false, $submit_name, $icon);
     }
 
     /**
@@ -1353,7 +1354,7 @@ class Module_purchase
                     'MESSAGE' => $message,
                     'SUCCESS' => false,
                 ]);
-                return $this->_wrap($result, $this->title, null);
+                return $this->_wrap($result, $this->title);
             }
 
             return inform_screen($this->title, do_lang_tempcode('PRODUCT_PURCHASE_CANCEL'), true);
@@ -1447,7 +1448,7 @@ class Module_purchase
             'MESSAGE' => $message,
             'SUCCESS' => true,
         ]);
-        return $this->_wrap($result, $this->title, null);
+        return $this->_wrap($result, $this->title);
     }
 
     /**
@@ -1506,7 +1507,7 @@ class Module_purchase
                     'HIDDEN' => $hidden,
                 ]);
 
-                return $this->_wrap($join_screen, $this->title, null);
+                return $this->_wrap($join_screen, $this->title);
         }
 
         return $this->_check_can_afford($type_code);

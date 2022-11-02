@@ -779,14 +779,14 @@
         label.className = 'js-widget';
 
         $dom.on(input, 'click', function () {
-            if (this.disabled) {
+            if (input.disabled) {
                 return;
             }
 
-            deselectAltUrl(this.form);
+            deselectAltUrl(input.form);
 
             if (window.mainFormVerySimple !== undefined) {
-                $dom.trigger(this.form, 'submit');
+                input.form.submit();
             }
         });
 

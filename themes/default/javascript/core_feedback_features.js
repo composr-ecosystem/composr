@@ -190,28 +190,28 @@
                 if (!$cms.form.checkFieldForBlankness(form.elements['post'])) {
                     erroneous.valueOf = function () { return true; };
                     firstFieldWithError = form.elements['post'];
+                    return false;
                 }
-            });
 
-            form.extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
                 if (params.getName && !$cms.form.checkFieldForBlankness(form.elements['name'])) {
                     erroneous.valueOf = function () { return true; };
                     firstFieldWithError = form.elements['name'];
+                    return false;
                 }
-            });
 
-            form.extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
                 if (params.getTitle && !params.titleOptional && !$cms.form.checkFieldForBlankness(form.elements['title'])) {
                     erroneous.valueOf = function () { return true; };
                     firstFieldWithError = form.elements['title'];
+                    return false;
                 }
-            });
 
-            form.extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
                 if (params.getEmail && !params.emailOptional && !$cms.form.checkFieldForBlankness(form.elements['email'])) {
                     erroneous.valueOf = function () { return true; };
                     firstFieldWithError = form.elements['email'];
+                    return false;
                 }
+
+                return true;
             });
         },
 

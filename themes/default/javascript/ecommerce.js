@@ -36,6 +36,7 @@
             var lengthUnits = _lengthUnits.value, length = _length.value;
             if (document.getElementById('auto_recur').checked) {
                 // Limits based on https://developer.paypal.com/docs/classic/paypal-payments-standard/integration-guide/Appx_websitestandard_htmlvariables/
+                // FUDGE: Ideally would be hook based, but realistically we can probably adjust this code to the lowest common denominator
                 if ((lengthUnits === 'd') && ((length < 1) || (length > 90))) {
                     _length.value = (length < 1) ? 1 : 90;
                 }
@@ -71,12 +72,6 @@
             return true;
         });
         return extraChecks;
-    };
-
-    $cms.templates.ecomPurchaseStageDetails = function ecomPurchaseStageDetails(params) {
-        if (params.jsFunctionCalls != null) {
-            $cms.executeJsFunctionCalls(params.jsFunctionCalls);
-        }
     };
 
     $cms.templates.purchaseWizardStageTerms = function purchaseWizardStageTerms(params, container) {

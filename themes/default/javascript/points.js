@@ -20,7 +20,7 @@
                 return valid;
             });
 
-            $dom.awaitValidationPromiseAndSubmitForm(e, promise);
+            $dom.awaitValidationPromiseAndSubmitForm(e, promise, null, form);
         });
 
         $dom.on(container, 'click', '.js-click-check-send-options', function (e, el) {

@@ -20,7 +20,8 @@
             };
         },
 
-        submitMainSearch: function (e, form) {
+        submitMainSearch: function (e, button) {
+            var form = button.form;
             if ((form.elements.content == null) || $cms.form.checkFieldForBlankness(form.elements.content)) {
                 $cms.ui.disableFormButtons(form);
             } else {

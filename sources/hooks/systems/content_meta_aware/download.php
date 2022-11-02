@@ -58,6 +58,7 @@ class Hook_content_meta_aware_download extends Hook_CMA
             'category_is_string' => false,
 
             'title_field' => 'name',
+            'title_field_post' => 'download_name',
             'title_field_dereference' => true,
             'description_field' => 'the_description',
             'description_field_dereference' => true,

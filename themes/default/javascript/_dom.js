@@ -1413,8 +1413,9 @@
      * @param { Event } submitEvent
      * @param { Promise<Boolean>} validationPromise
      * @param { HTMLButtonElement } buttonToDisable
+     * @param { HTMLFormElement } form
      */
-    $dom.awaitValidationPromiseAndSubmitForm = function awaitValidationPromiseAndSubmitForm(submitEvent, validationPromise, buttonToDisable) {
+    $dom.awaitValidationPromiseAndSubmitForm = function awaitValidationPromiseAndSubmitForm(submitEvent, validationPromise, buttonToDisable, form) {
         var promises = validationPromisesByEvent.get(submitEvent);
 
         if (promises == null) {
@@ -1424,19 +1425,19 @@
 
         promises.push(validationPromise);
 
-        if (buttonToDisable != null) {
+        if (buttonToDisable) {
             buttonToDisable.disabled = true;
         }
 
         validationPromise.then(function (resolvedValue) {
             resolvedValueByPromise.set(validationPromise, resolvedValue);
-            resubmitIfValidationSuccess(submitEvent, buttonToDisable);
+            resubmitIfValidationSuccess(submitEvent, buttonToDisable, form);
         }, function () {
             $dom.cancelSubmit(submitEvent, buttonToDisable);
         });
     };
 
-    function resubmitIfValidationSuccess(submitEvent, buttonToEnable) {
+    function resubmitIfValidationSuccess(submitEvent, buttonToEnable, form) {
         if ($dom.isCancelledSubmit(submitEvent)) {
             return;
         }
@@ -1459,16 +1460,20 @@
         }
 
         // All promises resolved
-        var submitTarget = submitEvent.target;
-        if ((submitTarget.localName != 'submitTarget') && (submitTarget.localName != 'input') && (submitTarget.localName != 'button')) {
-            var newSubmitTarget = $dom.closest(submitTarget, 'input[type="submit"], button[type="submit"]');
-            if (!newSubmitTarget) {
-                newSubmitTarget = $dom.closest(submitTarget, 'form');
+        if (!form) {
+            form = submitEvent.target;
+            if ((form.localName != 'form') && (form.localName != 'input') && (form.localName != 'button')) {
+                var button = $dom.closest(form, 'input[type="submit"], button[type="submit"]');
+                if (button) {
+                    button = button.form;
+                } else {
+                    button = $dom.closest(button, 'form');
+                }
+                form = button;
             }
-            submitTarget = newSubmitTarget;
         }
 
-        $dom.trigger(submitTarget, 'submit');
+        $dom.trigger(form, 'submit');
     }
 
     /**

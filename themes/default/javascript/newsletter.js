@@ -87,7 +87,7 @@
                 return true;
             });
 
-            $dom.awaitValidationPromiseAndSubmitForm(e, promise);
+            $dom.awaitValidationPromiseAndSubmitForm(e, promise, null, form);
         });
     };
 

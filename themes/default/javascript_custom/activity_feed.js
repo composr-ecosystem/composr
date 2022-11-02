@@ -5,6 +5,7 @@
     // Assume that our activity feed needs updating to start with
     if (window.latestActivity === undefined) {
         window.latestActivity = 0;
+        window.lastId = 0;
         window.sAjaxUpdateLocking = 0;
         window.activitiesFeedGrow = true;
     }
@@ -92,6 +93,15 @@
                     // Processes data retrieved for the activities feed and updates the list
                     complete: function (jqXHR, textStatus ) {
                         view.submitBtn.disabled = false;
+
+                        var tokenField = form.elements['csrf_token'];
+                        if (tokenField) {
+                            $cms.getCsrfToken().then(function (text) {
+                                $util.log('Regenerated CSRF token');
+
+                                tokenField.value = text;
+                            });
+                        }
 
                         if ((textStatus !== 'success') || !jqXHR.responseXML) {
                             view.notificationEl.className = 'update_error';
@@ -221,9 +231,9 @@
                         window.latestActivity = parseInt(data);
 
                         // Now grab whatever updates are available (this is NOT pagination, it's checking for updates and doesn't use the block code)
-                        var url = '{$FIND_SCRIPT_NOHTTP;,activity_feed_updater}?last_id=' + lastId + '&mode=' + window.activitiesMode + '&max=' + window.activitiesFeedMax + $cms.keep(),
-                            listElements = jQuery('li', '#activities-feed'),
-                            lastId = ((listElements.attr('id') == null) ? '-1' : listElements.attr('id').replace(/^activity-/, ''));
+                        var url = '{$FIND_SCRIPT_NOHTTP;,activity_feed_updater}?last_id=' + window.lastId + '&mode=' + window.activitiesMode + '&max=' + window.activitiesFeedMax + $cms.keep(),
+                            listElements = jQuery('li', '#activities-feed');
+                        window.lastId = ((listElements.attr('id') == null) ? '-1' : listElements.attr('id').replace(/^activity-/, ''));
 
                         if ((window.activitiesMemberIds != null) && (window.activitiesMemberIds !== '')) {
                             url += '&member_ids=' + window.activitiesMemberIds;
@@ -269,7 +279,8 @@
                     var topOfList = document.getElementById('activities-holder').firstChild;
                     jQuery.each(listItems, function () {
                         var thisLi = document.createElement('li');
-                        thisLi.id = 'activity_' + jQuery(this).attr('id');
+                        thisLi.id = 'activity-' + jQuery(this).attr('id');
+                        window.lastId = jQuery(this).attr('id');
                         thisLi.className = 'activities-box box';
                         thisLi.setAttribute('toFade', 'yes');
                         topOfList.parentNode.insertBefore(thisLi, topOfList);

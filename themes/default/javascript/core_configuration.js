@@ -12,4 +12,7 @@
 
         window.aceComposrLoader('xml', 'xml');
     }
+
+    $util.inherits(XmlConfigScreen, $cms.View, /**@lends XmlConfigScreen#*/{
+    });
 }(window.$cms, window.$util, window.$dom));

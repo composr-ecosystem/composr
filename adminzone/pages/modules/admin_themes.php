@@ -1053,7 +1053,7 @@ class Module_admin_themes
             'icons', // Too many of these to show
             'icons_monochrome',
         ];
-        $ids = get_all_image_ids_type('', true, $GLOBALS['SITE_DB'], $theme, false, true/*stops new theme images being detected, as we know regen_theme_images did that (and more conservatively - it won't scan images_custom dirs for NEW codes which an unbridled get_all_image_ids_type call would)*/, $skip, true);
+        $ids = get_all_image_ids_type(get_param_string('under', ''), true, $GLOBALS['SITE_DB'], $theme, false, true/*stops new theme images being detected, as we know regen_theme_images did that (and more conservatively - it won't scan images_custom dirs for NEW codes which an unbridled get_all_image_ids_type call would)*/, $skip, true);
 
         single_field__start();
         $fields = form_input_theme_image(do_lang_tempcode('CODENAME'), '', 'id', $ids, null, null, null, false, null, $theme, $lang, true, true);

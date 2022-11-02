@@ -29,7 +29,7 @@
 					TAB=thumbnails
 				{+END}
 
-				<form title="{!ACTION}" action="{POST_URL*}">
+				<form title="{!ACTION}" action="{POST_URL*}" method="post">
 					{$INSERT_FORM_POST_SECURITY}
 
 					{+START,IF_NON_EMPTY,{THUMBNAILS}}

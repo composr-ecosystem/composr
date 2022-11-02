@@ -192,7 +192,7 @@ function load_csp(?array $options = null, ?int $enable_more_open_html_for = null
     $CSP_ENABLED = $csp_enabled;
 
     if (!$csp_enabled) {
-        @header("Content-Security-Policy: default-src *  data: 'unsafe-inline'"); // Very permissive policy
+        @header("Content-Security-Policy: default-src *  data: blob: 'unsafe-inline'"); // Very permissive policy
         return;
     }
 
