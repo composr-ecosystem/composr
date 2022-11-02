@@ -706,8 +706,8 @@ function seo_meta_set_for_explicit(string $type, string $id, string $keywords, s
         'meta_for_id' => $id,
     ];
 
-    // Description...
-
+    // Clean up the description
+    $description = trim($description);
     $description = str_replace("\n", ' ', $description);
 
     $rows = $GLOBALS['SITE_DB']->query_select('seo_meta', ['meta_description'], $map_general, '', 1);
@@ -722,7 +722,6 @@ function seo_meta_set_for_explicit(string $type, string $id, string $keywords, s
     }
 
     // Keywords...
-
     $_keywords = [];
     foreach (array_unique(explode(',', $keywords)) as $keyword) {
         $keyword = trim($keyword, " \t");

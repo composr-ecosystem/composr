@@ -1990,7 +1990,7 @@ function get_discounted_price(array $details, bool $consider_free = false, ?int 
 
     if (($consider_free) && ($details['price_points'] !== null)) {
         require_code('points');
-        if ((points_balance($member_id) >= $details['price_points']) || ($details['price'] === null/*has to be points as no monetary-price*/) || (has_privilege($member_id, 'send_points_to_self'))) {
+        if ((points_balance($member_id) >= $details['price_points']) || ($details['price'] === null/*has to be points as no monetary-price*/)) {
             return [
                 0.00,
                 '0.00',
@@ -2002,7 +2002,7 @@ function get_discounted_price(array $details, bool $consider_free = false, ?int 
 
     if (($details['discount_points__num_points'] !== null) && ($details['discount_points__price_reduction'] !== null) && ($details['price'] !== null)) {
         require_code('points');
-        if ((points_balance($member_id) >= $details['discount_points__num_points']) || (has_privilege($member_id, 'send_points_to_self'))) {
+        if ((points_balance($member_id) >= $details['discount_points__num_points'])) {
             $discounted_price = max(0.00, $details['price'] - $details['discount_points__price_reduction']);
             return [
                 $discounted_price,

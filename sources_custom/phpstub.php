@@ -2291,9 +2291,10 @@ function parse_url(string $url, int $component = -1)
  * Returns information about a file path.
  *
  * @param  PATH $path The path to parse
- * @return ~array A map of details about the path (false: error)
+ * @param  integer $flags The PATHINFO_* constant defining what to return (default: all)
+ * @return mixed A map of details about the path or a specific element if flag is not PATHINFO_ALL
  */
-function pathinfo(string $path)
+function pathinfo(string $path, int $flags = PATHINFO_ALL)
 {
     return [];
 }
