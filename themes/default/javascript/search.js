@@ -22,7 +22,7 @@
 
         submitMainSearch: function (e, button) {
             var form = button.form;
-            if ((form.elements.content == null) || $cms.form.checkFieldForBlankness(form.elements.content)) {
+            if ((form.elements['content'] == null) || $cms.form.checkFieldForBlankness(form.elements.content)) {
                 $cms.ui.disableFormButtons(form);
             } else {
                 e.preventDefault();
@@ -79,13 +79,13 @@
         var searchType = $cms.filter.nl(params.searchType);
 
         $dom.on(container, 'click', 'button', function (e, form) {
-            if (form.elements.content === undefined) {
+            if (form.elements['content'] === undefined) {
                 // Succeed (no search)
                 $cms.ui.disableFormButtons(form);
                 return;
             }
 
-            if ($cms.form.checkFieldForBlankness(form.elements.content)) {
+            if ($cms.form.checkFieldForBlankness(form.elements['content'])) {
                 // Succeed
                 $cms.ui.disableFormButtons(form);
                 return;

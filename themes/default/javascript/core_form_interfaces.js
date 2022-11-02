@@ -140,6 +140,10 @@
         },
 
         fixFormEnterKey: function (e) {
+            if (!this.btnSubmit) {
+                return;
+            }
+
             var types = ['text', 'password', 'color', 'email', 'number', 'range', 'search', 'tel', 'url'];
 
             if (!types.includes(e.target.type)) {

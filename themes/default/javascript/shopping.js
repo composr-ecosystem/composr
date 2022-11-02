@@ -39,9 +39,8 @@
         });
 
         $dom.on(container, 'click', '.js-click-btn-cart-empty', function (e, btn) {
-            if (!confirmEmpty('{!shopping:EMPTY_CONFIRM;}', emptyCaryUrl, btn.form)) {
-                e.preventDefault();
-            }
+            e.preventDefault();
+            confirmEmpty('{!shopping:EMPTY_CONFIRM;}', emptyCaryUrl, btn.form);
         });
 
         function updateCart(proIds) {
@@ -69,11 +68,10 @@
                 function (result) {
                     if (result) {
                         form.action = actionUrl;
-                        $dom.trigger(form, 'submit');
+                        form.submit();
                     }
                 }
             );
-            return false;
         }
     };
 

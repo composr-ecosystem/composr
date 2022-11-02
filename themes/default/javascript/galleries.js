@@ -958,7 +958,7 @@
 
                 $dom.html(tabElInner, xhr.responseText);
 
-                var commentsForm = tabEl.querySelector('form.js-form-comments');
+                var commentsForm = tabEl.querySelector('form.comments-form');
 
                 if (commentsForm != null) {
                     commentsForm.action = $cms.pageUrl(); // AJAX will have mangled URL (as was not running in a page context), this will fix it back.

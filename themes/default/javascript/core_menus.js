@@ -34,7 +34,7 @@
                         '{!javascript:ENTER_PAGE;^}', '', null, '{!menus:SPECIFYING_NEW_PAGE;^}'
                     ).then(function (page) {
                         if (page != null) {
-                            form.elements.url.value = zone + ':' + page;
+                            form.elements['url'].value = zone + ':' + page;
                         }
                     });
                 }
@@ -622,7 +622,7 @@
         var mfh = $dom.$('#mini-form-hider');
         $dom.slideDown(mfh);
         if (changed) {
-            $dom.fadeIn(form.elements.url);
+            $dom.fadeIn(form.elements['url']);
         }
     }
 

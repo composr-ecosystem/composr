@@ -1338,8 +1338,8 @@
                 val = ob.value;
 
             if (val !== 'view') {
-                if (form.elements.cache !== undefined) {
-                    form.elements.cache.value = (val.substring(val.length - 4, val.length) === '.css') ? '1' : '0';
+                if (form.elements['cache'] !== undefined) {
+                    form.elements['cache'].value = (val.substring(val.length - 4, val.length) === '.css') ? '1' : '0';
                 }
 
                 var windowName = 'cms_dev_tools' + Math.floor(Math.random() * 10000),

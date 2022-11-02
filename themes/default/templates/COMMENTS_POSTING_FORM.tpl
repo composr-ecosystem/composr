@@ -10,7 +10,7 @@
 
 <div data-view="CommentsPostingForm" data-view-params="{+START,PARAMS_JSON,MORE_URL,GET_EMAIL,GET_NAME,GET_TITLE,EMAIL_OPTIONAL,TITLE_OPTIONAL,WYSIWYG,CAPTCHA}{_*}{+END}">
 	{+START,IF_NON_EMPTY,{COMMENT_URL}}
-	<form role="form" title="{TITLE*}" class="comments-form js-submission-flow js-form-comments" id="comments-form" action="{COMMENT_URL*}{+START,IF_NON_EMPTY,{$GET,current_anchor}}#{$GET,current_anchor}{+END}{+START,IF_EMPTY,{$GET,current_anchor}}{+START,IF_PASSED_AND_TRUE,COMMENTS}#last-comment{+END}{+END}" method="post" enctype="multipart/form-data" data-view="SubmissionFlow" data-view-params="{+START,PARAMS_JSON,JS_FUNCTION_CALLS,JAVASCRIPT,ANALYTIC_EVENT_CATEGORY}{_*}{+END}">
+	<form role="form" title="{TITLE*}" class="comments-form js-submission-flow" id="comments-form" action="{COMMENT_URL*}{+START,IF_NON_EMPTY,{$GET,current_anchor}}#{$GET,current_anchor}{+END}{+START,IF_EMPTY,{$GET,current_anchor}}{+START,IF_PASSED_AND_TRUE,COMMENTS}#last-comment{+END}{+END}" method="post" enctype="multipart/form-data" data-view="SubmissionFlow" data-view-params="{+START,PARAMS_JSON,JS_FUNCTION_CALLS,JAVASCRIPT,ANALYTIC_EVENT_CATEGORY}{_*}{+END}">
 		{$INSERT_FORM_POST_SECURITY}
 		<input type="hidden" name="_comment_form_post" value="1" />
 	{+END}

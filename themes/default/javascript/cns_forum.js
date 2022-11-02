@@ -134,7 +134,7 @@
         extraChecks.push(function (e, form2, erroneous, alerted, firstFieldWithError) {
             var error;
 
-            var confinedElement = document.getElementById('answers-confined');
+            var confinedElement = form2.elements['answers-confined'];
             var confined; // array
             if (confinedElement) {
                 confined = JSON.parse(confinedElement.value);
@@ -409,7 +409,7 @@
 
         el.classList.add('activated-quote-button');
 
-        var post = form.elements.post;
+        var post = form.elements['post'];
 
         $dom.smoothScroll($dom.findPosY(form, true));
 

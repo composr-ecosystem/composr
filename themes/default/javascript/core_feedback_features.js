@@ -10,8 +10,8 @@
     function CommentsPostingForm(params) {
         CommentsPostingForm.base(this, 'constructor', arguments);
 
-        this.form = this.$('form.js-form-comments');
         this.btnSubmit = this.$('.js-btn-save-comment');
+        this.form = this.btnSubmit.form;
 
         this.form.submitAction = this.form.action;
         this.form.submitTarget = this.form.target;

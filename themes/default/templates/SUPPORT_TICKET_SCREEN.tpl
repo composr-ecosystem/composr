@@ -154,7 +154,7 @@
 	{$SET,COMMENT_POSTING_ROWS,20}
 
 	{+START,IF_NON_EMPTY,{COMMENT_FORM}}
-		<form title="{!PRIMARY_PAGE_FORM}" id="comments-form" action="{URL*}" method="post" enctype="multipart/form-data" itemscope="itemscope" itemtype="http://schema.org/ContactPage">
+		<form title="{!PRIMARY_PAGE_FORM}" class="comments-form js-submission-flow" id="comments-form" action="{URL*}" method="post" enctype="multipart/form-data" itemscope="itemscope" itemtype="http://schema.org/ContactPage" data-view="SubmissionFlow" data-view-params="{+START,PARAMS_JSON,JS_FUNCTION_CALLS,JAVASCRIPT,ANALYTIC_EVENT_CATEGORY}{_*}{+END}">
 			{$INSERT_FORM_POST_SECURITY}
 
 			{COMMENT_FORM}
