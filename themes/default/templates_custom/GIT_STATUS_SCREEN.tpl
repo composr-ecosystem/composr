@@ -12,7 +12,7 @@
 	<form id="git_status_form" action="{$SELF_URL*,0,0,0,type=action,include_ignored={INCLUDE_IGNORED}}" method="post">
 		{$INSERT_FORM_POST_SECURITY}
 
-		<input type="hidden" name="action" value="" />
+		<input type="hidden" name="git_action" value="" />
 
 		<h2>Local files (pending push to remote)</h2>
 

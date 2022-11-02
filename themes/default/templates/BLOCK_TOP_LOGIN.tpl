@@ -1,6 +1,6 @@
 {+START,IF,{$NOR,{$GET,login_screen},{$MATCH_KEY_MATCH,_WILD:login}}}
 	<div data-tpl="blockTopLogin">
-		<form title="{!_LOGIN}" action="{LOGIN_URL*}" method="post" class="form-inline top-login js-form-top-login" autocomplete="on">
+		<form title="{!_LOGIN}" action="{LOGIN_URL*}" method="post" class="form-inline top-login" autocomplete="on">
 			<input type="hidden" name="_active_login" value="1" />
 
 			{+START,IF,{$DESKTOP}}{+START,IF,{$NOT,{$CONFIG_OPTION,single_public_zone}}}{$,Hide login form when having single public zone to make space for navigation menu}
@@ -18,7 +18,7 @@
 						<input type="hidden" name="remember" value="1" />
 					{+END}
 
-					<button class="btn btn-primary menu--site-meta--user-actions--login" type="submit">{+START,INCLUDE,ICON}NAME=menu/site_meta/user_actions/login{+END} <span>{!_LOGIN}</span></button>
+					<button class="btn btn-primary menu--site-meta--user-actions--login js-top-login" type="submit">{+START,INCLUDE,ICON}NAME=menu/site_meta/user_actions/login{+END} <span>{!_LOGIN}</span></button>
 				</div>
 			{+END}{+END}
 

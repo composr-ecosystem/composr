@@ -72,14 +72,10 @@ function has_translation(?string $from = null, ?string $to = null, ?object &$tra
  * Get a particular translation object.
  *
  * @param  string $hook Specific hook to use
- * @return ?object Translation object (null: could not find)
+ * @return object Translation object
  */
-function get_translation_object_for_hook(string $hook) : ?object
+function get_translation_object_for_hook(string $hook) : object
 {
-    if ($hook === null) {
-        return null;
-    }
-
     require_code('hooks/systems/translation/' . $hook);
     return object_factory('Hook_translation_' . $hook);
 }
@@ -101,7 +97,7 @@ function translate_text(string $text, int $context = 0, ?string $from = null, ?s
         return '';
     }
 
-    $translation_object = get_translation_object_for_hook($hook);
+    $translation_object = ($hook === null) ? null : get_translation_object_for_hook($hook);
     if (!has_translation($from, $to, $translation_object, $errormsg)) {
         return null;
     }
@@ -155,7 +151,7 @@ function translate_text(string $text, int $context = 0, ?string $from = null, ?s
  */
 function get_translation_credit(?string $from = null, ?string $to = null, ?string $hook = null) : string
 {
-    $translation_object = get_translation_object_for_hook($hook);
+    $translation_object = ($hook === null) ? null : get_translation_object_for_hook($hook);
     if (!has_translation($from, $to, $translation_object)) {
         return '';
     }

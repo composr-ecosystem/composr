@@ -3,7 +3,7 @@
 		{+START,INCLUDE,FORM_SCREEN_ARE_REQUIRED}{+END}
 	{+END}
 
-	<form title="{!PRIMARY_PAGE_FORM}" id="posting-form" method="post" enctype="multipart/form-data" action="{URL*}" class="{+START,IF_PASSED_AND_TRUE,MODSECURITY_WORKAROUND}js-submit-modsec-workaround{+END}">
+	<form title="{!PRIMARY_PAGE_FORM}" id="posting-form" method="post" enctype="multipart/form-data" action="{URL*}" class="js-submission-flow"{+START,IF_PASSED_AND_TRUE,MODSECURITY_WORKAROUND} data-submit-modsecurity-workaround="1"{+END} data-view="SubmissionFlow" data-view-params="{+START,INCLUDE,FORM_STANDARD_START}FORM_NAME=posting-form{+END}">
 		{$INSERT_FORM_POST_SECURITY}
 
 		<div>
@@ -36,8 +36,6 @@
 			</table></div>
 
 			{+START,INCLUDE,FORM_STANDARD_END}
-				FORM_NAME=posting-form
-				SUPPORT_AUTOSAVE={SUPPORT_AUTOSAVE}
 				EXTRA_BUTTONS={$GET^,extra_buttons}
 			{+END}
 

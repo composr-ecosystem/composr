@@ -41,7 +41,7 @@
 				doingAttachmentUploads = Boolean(attachmentBrowseButton) && (attachmentBrowseButton.classList.contains('for-field-' + editor.element.$.id));
 
 			if ((typeof window.rebuildAttachmentButtonForNext === 'function') && doingAttachmentUploads) { // NB: The window.rebuildAttachmentButtonForNext type check is important, don't remove.
-				if (!attachmentBrowseButton || $dom.notDisplayed($dom.parent(attachmentBrowseButton, '#post-special-options--' + editor.element.$.id + ', #post-special-options2--' + editor.element.$.id + ', .post-special-options'))) { // If attachment button was not placed elsewhere
+				if (!attachmentBrowseButton || !$dom.isDisplayed($dom.parent(attachmentBrowseButton, '#post-special-options--' + editor.element.$.id + ', #post-special-options2--' + editor.element.$.id + ', .post-special-options'))) { // If attachment button was not placed elsewhere
 					// Attach Plupload to the Image button on the WYSIWYG editor
 					setTimeout(function () {
 						var imageButton = document.getElementById('cke_' + editor.element.$.id).querySelector('.cke_button__composr_image');

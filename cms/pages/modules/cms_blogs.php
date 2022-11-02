@@ -728,7 +728,7 @@ class Module_cms_blogs extends Standard_crud_module
 
         $hidden = form_input_hidden('lang', $lang);
 
-        $xml_post_url = build_url(['page' => '_SELF', 'type' => '_import_wordpress', 'method' => 'xml'], '_SELF');
+        $xml_post_url = build_url(['page' => '_SELF', 'type' => '_import_wordpress', 'source' => 'xml'], '_SELF');
 
         $xml_upload_form = do_template('FORM', [
             '_GUID' => 'bdcc111acf379bab6f163f2e86d20e03',
@@ -770,7 +770,7 @@ class Module_cms_blogs extends Standard_crud_module
         $hidden->attach(form_input_hidden('lang', $lang));
         handle_max_file_size($hidden);
 
-        $db_post_url = build_url(['page' => '_SELF', 'type' => '_import_wordpress', 'method' => 'db'], '_SELF');
+        $db_post_url = build_url(['page' => '_SELF', 'type' => '_import_wordpress', 'source' => 'db'], '_SELF');
 
         $db_import_form = do_template('FORM', [
             '_GUID' => 'df2b4285f538bf94055c75fb8b61be6e',
@@ -798,7 +798,7 @@ class Module_cms_blogs extends Standard_crud_module
         check_privilege('mass_import', null, null, 'cms_news');
 
         // Wordpress posts, XML file importing method
-        if ((get_param_string('method') == 'xml')) {
+        if ((get_param_string('source') == 'xml')) {
             $is_validated = post_param_integer('auto_validate', 0);
             if (!addon_installed('unvalidated')) {
                 $is_validated = 1;
@@ -841,7 +841,7 @@ class Module_cms_blogs extends Standard_crud_module
             $ret = call_user_func_array__long_task(do_lang('IMPORT_WORDPRESS'), $this->title, 'import_rss', [$is_validated, $download_images, $to_own_account, $import_blog_comments, $import_to_blog, $rss]);
 
             return $ret;
-        } elseif (get_param_string('method') == 'db') { // Importing directly from wordpress DB
+        } elseif (get_param_string('source') == 'db') { // Importing directly from wordpress DB
             $is_validated = post_param_integer('wp_auto_validate', 0);
             if (!addon_installed('unvalidated')) {
                 $is_validated = 1;

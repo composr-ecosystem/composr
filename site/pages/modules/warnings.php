@@ -1182,7 +1182,7 @@ class Module_warnings extends Standard_crud_module
         }
 
         require_code('templates_map_table');
-        return map_table_screen($this->title, $fields, null, null, true);
+        return map_table_screen($this->title, $fields, true, null, null, true);
     }
 
     /**

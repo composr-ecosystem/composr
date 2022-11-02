@@ -1497,6 +1497,7 @@ abstract class Standard_crud_module
             if ((addon_installed('points')) && ($submitter !== null)) {
                 require_code('points');
                 require_lang('points');
+                require_code('points');
                 $points_test = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'id', ['recipient_id' => $submitter, 'status' => LEDGER_STATUS_NORMAL, 't_type' => $this->content_type, 't_subtype' => 'add', 't_type_id' => (($id !== null) ? strval($id) : '')]);
                 if ($points_test !== null) {
                     $action_fields->attach(form_input_tick(do_lang_tempcode('REVERSE_TRANSACTION'), do_lang_tempcode('REVERSE_TRANSACTION_DESCRIPTION', $this->content_type), 'reverse_point_transaction', false));

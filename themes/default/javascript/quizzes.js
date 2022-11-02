@@ -28,14 +28,16 @@
             timeout = Number(params.timeout) || 0,
             quizFormLastValid;
 
-        $dom.on(container, 'submit', '.js-submit-check-form', function (submitEvent, form) {
-            if ($dom.isCancelledSubmit(submitEvent) || (quizFormLastValid && (quizFormLastValid.getTime() === $cms.form.lastChangeTime(form).getTime()))) {
+        $dom.on(container, 'click', '.js-quiz-check-form', function (e, btn) {
+            var form = btn.form;
+
+            if ($dom.isCancelledSubmit(e) || (quizFormLastValid && (quizFormLastValid.getTime() === $cms.form.lastChangeTime(form).getTime()))) {
                 return;
             }
 
-            submitEvent.preventDefault();
+            e.preventDefault();
 
-            var promise = $cms.form.checkForm(form, false).then(function (valid) {
+            var promise = $cms.form.checkForm(e, form, false, []).then(function (valid) {
                 if (valid) {
                     quizFormLastValid = $cms.form.lastChangeTime(form);
                 }
@@ -43,12 +45,12 @@
                 return valid;
             });
 
-            $dom.awaitValidationPromiseAndResubmit(submitEvent, promise);
+            $dom.awaitValidationPromiseAndSubmitForm(e, promise, null, form);
         });
 
         if (timeout > 0) {
             setTimeout(function () {
-                $dom.submit(form);
+                $dom.trigger(form, 'submit');
             }, timeout * 1000);
 
             setInterval(function () {

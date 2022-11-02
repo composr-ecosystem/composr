@@ -43,11 +43,11 @@
 
         if (rawText.length > 255) {
             // Cannot process this
-            return null;
+            return;
         }
 
         if (!$cms.magicKeypress(event) && !wasDoubleClick && (object === event.target)) {
-            return null;
+            return;
         }
 
         event.preventDefault();
@@ -151,8 +151,8 @@
 
                 // To stop it instantly re-clicking
                 var backup = controlButton.onclick;
-                controlButton.onclick = function () {
-                    return false;
+                controlButton.onclick = function (e) {
+                    e.preventDefault();
                 };
                 setTimeout(function () {
                     controlButton.onclick = backup;
@@ -164,8 +164,6 @@
             cleanupFunction();
 
             $cms.ui.alert('{!FRACTIONAL_EDIT_CANCELLED;^}', '{!FRACTIONAL_EDIT;^}');
-
-            return false;
         }
 
         function saveFunction() {
@@ -196,8 +194,6 @@
                     cleanupFunction();
                 }
             });
-
-            return false;
         }
 
         // If we activate it again, we actually treat this as a cancellation
@@ -207,8 +203,6 @@
             if ($cms.magicKeypress(event)) {
                 cleanupFunction();
             }
-
-            return false;
         };
 
         // Cancel or save actions
@@ -225,14 +219,11 @@
                             input.onblur = tmp;
                         }
                     }, '{!CONFIRM_TEXT;^}');
-                    return null;
                 }
 
                 if ($dom.keyPressed(event, 'Enter') && (this.value !== '')) { // Save
-                    return saveFunction();
+                    saveFunction();
                 }
-
-                return null;
             };
         }
         input.onblur = function () {
@@ -251,6 +242,5 @@
         if (input.select !== undefined) {
             input.select();
         }
-        return false;
     }
 }(window.$cms, window.$util, window.$dom));

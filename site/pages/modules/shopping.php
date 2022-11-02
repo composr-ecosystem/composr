@@ -262,6 +262,8 @@ class Module_shopping
 
         $type = get_param_string('type', 'browse');
 
+        require_javascript('core_form_interfaces');
+
         require_lang('shopping');
         require_lang('catalogues');
 

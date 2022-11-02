@@ -1,3 +1,5 @@
+/* This file contains DOM manipulation functionality, basic visual setting and getting, and visual niceties such as animations */
+
 (function ($cms, $util, $dom) {
     'use strict';
     /**
@@ -159,14 +161,6 @@
         }
 
         throw new TypeError('$dom.elArg(): Argument 1 must be a {' + 'Element|string}, "' + $util.typeName(elementOrSelector) + '" provided.');
-    };
-
-    /**
-     * @param obj
-     * @return {(Number|boolean)}
-     */
-    $dom.nodeType = function nodeType(obj) {
-        return $util.isObj(obj) && (typeof obj.nodeName === 'string') && (typeof obj.nodeType === 'number') && obj.nodeType;
     };
 
     /**
@@ -435,6 +429,7 @@
         return el;
     };
 
+    // LEGACY
     $dom.support = {};
     /**
      *  Web animations API support (https://developer.mozilla.org/de/docs/Web/API/Element/animate)
@@ -448,7 +443,6 @@
         search: false, tel: false, url: false, email: false, datetime: false, date: false, month: false,
         week: false, time: false, 'datetime-local': false, number: false, range: false, color: false
     };
-
     (function () {
         var type, bool, inputEl = document.createElement('input'), smile = ':)';
 
@@ -896,6 +890,7 @@
     };
 
     /**
+     * Also see $dom.contentWidth.
      * @memberof $dom
      * @param obj
      * @param value
@@ -916,6 +911,7 @@
     };
 
     /**
+     * Also see $dom.contentHeight.
      * @memberof $dom
      * @param obj
      * @param value
@@ -1288,6 +1284,7 @@
     };
 
     /**
+     * Attach an event to be called just once.
      * @memberof $dom
      * @param { Window|Document|Element|string } el
      * @param {string|object} event
@@ -1301,6 +1298,7 @@
     };
 
     /**
+     * Disable an event.
      * @memberof $dom
      * @param { Window|Document|Element|string } el
      * @param {string|object} event
@@ -1360,7 +1358,7 @@
     };
 
     /**
-     * NB: Unlike jQuery (but like Zepto.js), triggering the submit event using this doesn't actually submit the form, use $dom.submit() for that.
+     * We use this instead of native JS (createEvent or form.submit) because it's simple and consistent.
      * @memberof $dom
      * @param el
      * @param event
@@ -1382,32 +1380,10 @@
         }
     };
 
-    /**
-     * Called with 1 argument, it's similar to $dom.trigger(el, 'submit') except this also
-     * actually submits the form using el.submit(), unless default is prevented by an event handler.
-     *
-     * Called with 2 arguments, it's the same as $dom.on(el, 'submit', callback).
-     * @memberof $dom
-     * @param { string|HTMLFormElement } el
-     * @param {function} [callback]
-     */
-    $dom.submit = function submit(el, callback) {
-        el = $dom.elArg(el);
-
-        if (callback === undefined) {
-            var defaultNotPrevented = $dom.trigger(el, 'submit');
-
-            if (defaultNotPrevented) {
-                el.submit();
-            }
-            return;
-        }
-
-        $dom.on(el, 'submit', callback);
-    };
-
     var cancelledSubmitEvents = new WeakSet();
     /**
+     * Identifies a form submission will be cancelled, so we can bailout future promises or events, or reach a form.submit()/$dom.trigger(el, 'submit') after promises pass.
+     * Wraps preventDefault.
      * @param { Event } submitEvent
      * @param { HTMLButtonElement } buttonToEnable
      */
@@ -1416,7 +1392,7 @@
             submitEvent.preventDefault();
         }
 
-        cancelledSubmitEvents.add(cancelledSubmitEvents);
+        cancelledSubmitEvents.add(submitEvent);
 
         if (buttonToEnable != null) {
             buttonToEnable.disabled = false;
@@ -1437,8 +1413,9 @@
      * @param { Event } submitEvent
      * @param { Promise<Boolean>} validationPromise
      * @param { HTMLButtonElement } buttonToDisable
+     * @param { HTMLFormElement } form
      */
-    $dom.awaitValidationPromiseAndResubmit = function awaitValidationPromiseAndResubmit(submitEvent, validationPromise, buttonToDisable) {
+    $dom.awaitValidationPromiseAndSubmitForm = function awaitValidationPromiseAndSubmitForm(submitEvent, validationPromise, buttonToDisable, form) {
         var promises = validationPromisesByEvent.get(submitEvent);
 
         if (promises == null) {
@@ -1448,19 +1425,19 @@
 
         promises.push(validationPromise);
 
-        if (buttonToDisable != null) {
+        if (buttonToDisable) {
             buttonToDisable.disabled = true;
         }
 
         validationPromise.then(function (resolvedValue) {
             resolvedValueByPromise.set(validationPromise, resolvedValue);
-            resubmitIfValidationSuccess(submitEvent, buttonToDisable);
+            resubmitIfValidationSuccess(submitEvent, buttonToDisable, form);
         }, function () {
             $dom.cancelSubmit(submitEvent, buttonToDisable);
         });
     };
 
-    function resubmitIfValidationSuccess(submitEvent, buttonToEnable) {
+    function resubmitIfValidationSuccess(submitEvent, buttonToEnable, form) {
         if ($dom.isCancelledSubmit(submitEvent)) {
             return;
         }
@@ -1483,9 +1460,20 @@
         }
 
         // All promises resolved
-        var form = submitEvent.target;
+        if (!form) {
+            form = submitEvent.target;
+            if ((form.localName != 'form') && (form.localName != 'input') && (form.localName != 'button')) {
+                var button = $dom.closest(form, 'input[type="submit"], button[type="submit"]');
+                if (button) {
+                    button = button.form;
+                } else {
+                    button = $dom.closest(button, 'form');
+                }
+                form = button;
+            }
+        }
 
-        $dom.submit(form);
+        $dom.trigger(form, 'submit');
     }
 
     /**
@@ -1639,19 +1627,9 @@
         return $dom.css(el, 'display') !== 'none';
     };
 
-    /**
-     * @memberof $dom
-     * @param el
-     * @returns {boolean}
-     */
-    $dom.notDisplayed = function notDisplayed(el) {
-        el = $dom.elArg(el);
-        return $dom.css(el, 'display') === 'none';
-    };
-
     var _initial = {};
     /**
-     * Gets the 'initial' value for an element type's CSS property (only 'display' supported as of now)
+     * Gets the 'initial' value for an element type's CSS property as specified by the existing style rules (only 'display' supported as of now)
      * @memberof $dom
      * @param el
      * @param property
@@ -1685,7 +1663,7 @@
     };
 
     /* NB: Following animation code is heavily inspired from jQuery (v3.3.2), so if you're confused, you know where to look. */
-    /* Unlike jQuery, this uses the cutting edge Web Animations API */
+    /* Unlike jQuery, this uses the newer Web Animations API */
 
     // Generate parameters to create a standard animation
     function genFx( type, includeWidth ) {
@@ -1718,7 +1696,7 @@
                     el.style.display = '';
                 }
             }
-            if ((el.style.display === '') && $dom.notDisplayed(el)) {
+            if ((el.style.display === '') && !$dom.isDisplayed(el)) {
                 newValue = $dom.initial(el, 'display');
             }
         } else {
@@ -2949,7 +2927,8 @@
     };
 
     /**
-     * Returns the provided element's width excluding padding and borders
+     * Returns the provided element's width excluding padding and borders.
+     * Also see $dom.width.
      * @memberof $dom
      * @param el
      * @returns {number}
@@ -2965,7 +2944,8 @@
     };
 
     /**
-     * Returns the provided element's height excluding padding and border
+     * Returns the provided element's height excluding padding and border.
+     * Also see $dom.height.
      * @memberof $dom
      * @param el
      * @returns {number}
@@ -3110,180 +3090,4 @@
             }
         }
     };
-
-    /*
-     Faux frames and faux scrolling
-     */
-    var infiniteScrollPending = false, // Blocked due to queued HTTP request
-        infiniteScrollBlocked = false, // Blocked due to event tracking active
-        infiniteScrollMouseHeld = false;
-
-    $dom.enableInternaliseInfiniteScrolling = function enableInternaliseInfiniteScrolling(infiniteScrollCallUrl, wrapperEl) {
-        $dom.on(window, {
-            scroll: function () {
-                internaliseInfiniteScrolling(infiniteScrollCallUrl, wrapperEl)
-            },
-            touchmove: function () {
-                internaliseInfiniteScrolling(infiniteScrollCallUrl, wrapperEl)
-            },
-            keydown: function (e) {
-                if (e.key === 'End') { // 'End' key pressed, so stop the expand happening for a few seconds while the browser scrolls down
-                    infiniteScrollBlocked = true;
-                    setTimeout(function () {
-                        infiniteScrollBlocked = false;
-                    }, 3000);
-                }
-            },
-            mousedown: function () {
-                if (!infiniteScrollBlocked) {
-                    infiniteScrollBlocked = true;
-                    infiniteScrollMouseHeld = true;
-                }
-            },
-            mousemove: function () {
-                // mouseup/mousemove does not work on scrollbar, so best is to notice when mouse moves again (we know we're off-scrollbar then)
-                if (infiniteScrollMouseHeld) {
-                    infiniteScrollBlocked = false;
-                    infiniteScrollMouseHeld = false;
-                    internaliseInfiniteScrolling(infiniteScrollCallUrl, wrapperEl);
-                }
-            }
-        });
-
-        internaliseInfiniteScrolling(infiniteScrollCallUrl, wrapperEl);
-    };
-
-    /**
-     * @param urlStem
-     * @param wrapper
-     * @param recursive
-     */
-    function internaliseInfiniteScrolling(urlStem, wrapper, recursive) {
-        recursive = boolVal(recursive);
-
-        if (infiniteScrollBlocked || infiniteScrollPending) {
-            // Already waiting for a result
-            return;
-        }
-
-        var paginations = $util.toArray(wrapper.querySelectorAll('.pagination')),
-            paginationLoadMore;
-
-        if (paginations.length === 0) {
-            return;
-        }
-
-        var moreLinks = [], moreLinksFromPagination;
-
-        paginations.forEach(function (pagination) {
-            if ($dom.notDisplayed(pagination)) {
-                return;
-            }
-
-            moreLinks = $util.toArray(pagination.getElementsByTagName('a'));
-            moreLinksFromPagination = pagination;
-
-            // Remove visibility of pagination, now we've replaced with AJAX load more link
-            pagination.style.display = 'none';
-
-            // Add AJAX load more link before where the last pagination control was
-            // Remove old pagination-load-more's
-            paginationLoadMore = wrapper.querySelector('.pagination-load-more');
-            if (paginationLoadMore) {
-                paginationLoadMore.remove();
-            }
-
-            // Add in new one
-            var loadMoreLink = document.createElement('div');
-            loadMoreLink.className = 'pagination-load-more';
-            var loadMoreLinkA = loadMoreLink.appendChild(document.createElement('a'));
-            $dom.html(loadMoreLinkA, '{!LOAD_MORE;^}');
-            loadMoreLinkA.href = '#!';
-            loadMoreLinkA.onclick = (function (moreLinks) {
-                return function () {
-                    internaliseInfiniteScrollingGo(urlStem, wrapper, moreLinks);
-                };
-            }(moreLinks)); // Click link -- load
-            paginations[paginations.length - 1].parentNode.insertBefore(loadMoreLink, paginations[paginations.length - 1].nextSibling);
-        });
-
-        paginations.some(function (pagination) {
-            if (moreLinksFromPagination == null) { // Find links from an already-hidden pagination
-                moreLinks = $util.toArray(pagination.getElementsByTagName('a'));
-                if (moreLinks.length !== 0) {
-                    return true; // (break)
-                }
-            }
-        });
-
-        // Is more scrolling possible?
-        var foundRel = moreLinks.some(function (link) {
-            return link.getAttribute('rel') && link.getAttribute('rel').includes('next');
-        });
-
-        if (!foundRel) { // Ah, no more scrolling possible
-            // Remove old pagination-load-more's
-            paginationLoadMore = wrapper.querySelector('.pagination-load-more');
-            if (paginationLoadMore) {
-                paginationLoadMore.remove();
-            }
-
-            return false;
-        }
-
-        // Used for calculating if we need to scroll down
-        var wrapperPosY = $dom.findPosY(wrapper),
-            wrapperHeight = wrapper.offsetHeight,
-            wrapperBottom = wrapperPosY + wrapperHeight,
-            windowHeight = $dom.getWindowHeight(),
-            pageHeight = $dom.getWindowScrollHeight();
-
-        // Scroll down -- load
-        if (!recursive) {
-            if (((window.scrollY + windowHeight) > (wrapperBottom - (windowHeight * 2))) && ((window.scrollY + windowHeight) < (pageHeight - 30))) {
-                // ^ If within windowHeight*2 pixels of load area and not within 30 pixels of window bottom (so you can press End key)
-                internaliseInfiniteScrollingGo(urlStem, wrapper, moreLinks);
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * @param wrapper
-     */
-    function removePreviousPaginations(wrapper) {
-        $util.toArray(wrapper.getElementsByClassName('pagination')).forEach(function (pagination) {
-            $util.toArray(pagination.getElementsByTagName('a')).forEach(function (a) {
-                a.remove();
-            });
-        });
-    }
-
-    /**
-     * @param urlStem
-     * @param wrapper
-     * @param moreLinks
-     */
-    function internaliseInfiniteScrollingGo(urlStem, wrapper, moreLinks) {
-        if (infiniteScrollPending) {
-            return;
-        }
-
-        var wrapperInner = document.getElementById(wrapper.id + '-inner') || wrapper,
-            rgxStartParam = /[&?](start|[^_&]*_start|start_[^_]*)=([^&]*)/,
-            nextLink = moreLinks.find(function (link) {
-                return link.rel.includes('next') && rgxStartParam.test(link.href);
-            });
-
-        if (nextLink != null) {
-            var startParam = nextLink.href.match(rgxStartParam);
-            infiniteScrollPending = true;
-            removePreviousPaginations(wrapper);
-            $cms.callBlock(urlStem + (urlStem.includes('?') ? '&' : '?') + (startParam[1] + '=' + startParam[2]) + '&raw=1', '', wrapperInner, true).then(function () {
-                infiniteScrollPending = false;
-                internaliseInfiniteScrolling(urlStem, wrapper, true);
-            });
-        }
-    }
 }(window.$cms || (window.$cms = {}), window.$util, window.$dom));

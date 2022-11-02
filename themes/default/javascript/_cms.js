@@ -1,3 +1,5 @@
+/* This file contains Composr-specific utility functions */
+
 (function ($cms, $util, $dom) {
     'use strict';
 
@@ -921,7 +923,7 @@
     };
 
     /**
-     * Used by audio CAPTCHA.
+     * Used by audio CAPTCHA
      * @memberof $cms
      * @param ob
      * @param soundObject
@@ -952,60 +954,6 @@
     };
 
     /**
-     * Making the height of a textarea match its contents
-     * @memberof $cms
-     * @param textAreaEl
-     */
-    $cms.manageScrollHeight = function manageScrollHeight(textAreaEl) {
-        var scrollHeight = textAreaEl.scrollHeight,
-            offsetHeight = textAreaEl.offsetHeight,
-            currentHeight = parseInt($dom.css(textAreaEl, 'height')) || 0;
-
-        if ((scrollHeight > 5) && (currentHeight < scrollHeight) && (offsetHeight < scrollHeight)) {
-            $dom.css(textAreaEl, {
-                height: (scrollHeight + 2) + 'px',
-                boxSizing: 'border-box',
-                overflowY: 'auto'
-            });
-            $dom.triggerResize();
-        }
-    };
-
-    /**
-     * Change an icon to another one
-     * @param { SVGSVGElement|HTMLImageElement } iconEl
-     * @param {string} iconName
-     * @param {string} imageSrc
-     */
-    $cms.setIcon = function setIcon(iconEl, iconName, imageSrc) {
-        iconEl = $dom.elArg(iconEl);
-
-        var symbolId, use, newSrc, newClass;
-        if (iconEl.localName === 'svg') {
-            symbolId = 'icon_' + iconName.replace(/\//g, '__');
-            use = iconEl.querySelector('use');
-            use.setAttribute('xlink:href', use.getAttribute('xlink:href').replace(/#\w+$/, '#' + symbolId));
-        } else if (iconEl.localName === 'img') {
-            if ($util.url(iconEl.src).pathname.includes('/themewizard.php')) {
-                // themewizard.php script, set ?show=<image name>
-                newSrc = $util.url(iconEl.src);
-                newSrc.searchParams.set('show', 'icons/' + iconName);
-            } else {
-                newSrc = $util.srl(imageSrc);
-            }
-            iconEl.src = newSrc;
-        } else {
-            $util.fatal('$cms.setIcon(): Argument one must be of type {' + 'SVGSVGElement|HTMLImageElement}, "' + $util.typeName(iconEl) + '" provided.');
-            return;
-        }
-
-        // Replace the existing icon-* class with the new one
-        newClass = iconName.replace(/_/g, '-').replace(/\//g, '--');
-        // Using setAttribute() because the className property on <svg> elements is a "SVGAnimatedString" object rather than a string
-        iconEl.setAttribute('class', iconEl.getAttribute('class').replace(/(^| )icon-[\w-]+($| )/, ' icon-' + newClass + ' ').trim().replace(/ +/g, ' '));
-    };
-
-    /**
      * Find out whether an icon is a particular one
      * @param { SVGSVGElement|HTMLImageElement } iconEl
      * @param {string} iconName
@@ -1033,12 +981,15 @@
      * @memberof $cms
      * @param functionCallsArray
      * @param [thisRef]
+     * @returns {array}
      */
     $cms.executeJsFunctionCalls = function executeJsFunctionCalls(functionCallsArray, thisRef) {
         if (!Array.isArray(functionCallsArray)) {
             $util.fatal('$cms.executeJsFunctionCalls(): Argument 1 must be an array, "' + $util.typeName(functionCallsArray) + '" passed');
-            return;
+            return [];
         }
+
+        var extraChecks = [];
 
         functionCallsArray.forEach(function (func) {
             var funcName, args;
@@ -1056,11 +1007,16 @@
             args = func.slice(1);
 
             if (typeof $cms.functions[funcName] === 'function') {
-                $cms.functions[funcName].apply(thisRef, args);
+                var result = $cms.functions[funcName].apply(thisRef, args);
+                if (Array.isArray(result)) {
+                    extraChecks = extraChecks.concat(result);
+                }
             } else {
                 $util.fatal('$cms.executeJsFunctionCalls(): Function not found: $cms.functions.' + funcName);
             }
         });
+
+        return extraChecks;
     };
 
     /**
@@ -1122,35 +1078,6 @@
         }
 
         return count >= 2;
-    };
-
-    /**
-     * Image rollover effects
-     * @memberof $cms
-     * @param rand
-     * @param rollover
-     */
-    $cms.createRollover = function createRollover(rand, rollover) {
-        var img = rand && $dom.$id(rand);
-        if (!img) {
-            return;
-        }
-        new Image().src = rollover; // precache
-
-        $dom.on(img, 'mouseover', activate);
-        $dom.on(img, 'click mouseout', deactivate);
-
-        function activate() {
-            img.oldSrc = img.src;
-            if (img.origsrc !== undefined) {
-                img.oldSrc = img.origsrc;
-            }
-            img.src = rollover;
-        }
-
-        function deactivate() {
-            img.src = img.oldSrc;
-        }
     };
 
     /**
@@ -1315,7 +1242,7 @@
                 // HTTP error...
 
                 try {
-                    $util.fatal('$cms.doAjaxRequest(): {!PROBLEM_RETRIEVING_XML;^}\n' + xhr.status + ': ' + xhr.statusText + '.', xhr);
+                    $util.fatal('$cms.doAjaxRequest(): {!PROBLEM_AJAX;^}\n' + xhr.status + ': ' + xhr.statusText + '.', xhr);
 
                     if ((xhr.status === 0) || (xhr.status > 10000)) { // implies site down, or network down
                         if (!networkDownAlerted) {
@@ -1333,7 +1260,7 @@
                         }
                     }
                 } catch (e) {
-                    $util.fatal('$cms.doAjaxRequest(): {!PROBLEM_RETRIEVING_XML;^}', e); // This is probably clicking back
+                    $util.fatal('$cms.doAjaxRequest(): {!PROBLEM_AJAX;^}', e); // This is probably clicking back
                 }
 
                 ajaxCallback(responseXML, xhr, false);

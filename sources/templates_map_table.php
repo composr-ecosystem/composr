@@ -27,21 +27,17 @@ Map table = Table where each row represents a named field, and each record gets 
  *
  * @param  Tempcode $title The title of the map screen; should be out of get_screen_title
  * @param  array $fields An array of mappings between title and value (each mapping being a field)
+ * @param  boolean $auto_escape Whether to automatically escape each plain-text entry so that it cannot contain HTML (ignored for Tempcode values)
  * @param  ?Tempcode $text Text to show (null: none)
  * @param  ?Tempcode $buttons Buttons to show (null: none)
  * @param  boolean $responsive Use a responsive layout for the table (too much to fit in 2 columns on a small screen)
  * @return Tempcode The generated map screen
  */
-function map_table_screen(object $title, array $fields, ?object $text = null, ?object $buttons = null, bool $responsive = false) : object
+function map_table_screen(object $title, array $fields, bool $auto_escape, ?object $text = null, ?object $buttons = null, bool $responsive = false) : object
 {
     $_fields = new Tempcode();
     foreach ($fields as $key => $val) {
-        if (!is_array($val)) {
-            $raw = is_object($val);
-        } else {
-            list($val, $raw) = $val;
-        }
-        $_fields->attach(map_table_field(do_lang_tempcode($key), $val, $raw));
+        $_fields->attach(map_table_field(do_lang_tempcode($key), $val, $auto_escape));
     }
 
     return do_template('MAP_TABLE_SCREEN', [

@@ -16,7 +16,6 @@
     $util.inherits(ZoneEditorScreen, $cms.View, /**@lends ZoneEditorScreen#*/{
         events: function () {
             return {
-                'submit .js-form-ze-save': 'submit',
                 'click .js-btn-fetch-and-submit': 'fetchAndSubmit'
             };
         },
@@ -59,7 +58,7 @@
                 $cms.form.modSecurityWorkaround(btn.form);
                 return;
             }
-            $dom.submit(btn.form);
+            $dom.trigger(btn.form, 'submit');
         }
     });
 
@@ -261,29 +260,30 @@
     };
 
     $cms.functions.moduleAdminZonesAddZone = function moduleAdminZonesAddZone() {
-        var form = document.getElementById('main-form'),
-            submitBtn = form.querySelector('#submit-button'),
+        var extraChecks = [],
             validValue;
-
-        form.addEventListener('submit', function submitCheck(submitEvent) {
+        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
             var value = form.elements['zone'].value;
 
-            if ($dom.isCancelledSubmit(submitEvent) || (value === validValue)) {
+            if ((value === validValue) || (value === '')) {
                 return;
             }
 
-            var url = '{$FIND_SCRIPT_NOHTTP;^,snippet}?snippet=exists_zone&name=' + encodeURIComponent(value) + $cms.keep();
-            submitEvent.preventDefault();
+            return function () {
+                var url = '{$FIND_SCRIPT_NOHTTP;^,snippet}?snippet=exists_zone&name=' + encodeURIComponent(value) + $cms.keep();
+                return $cms.form.doAjaxFieldTest(url).then(function (valid) {
+                    if (valid) {
+                        validValue = value;
+                    }
 
-            var promise = $cms.form.doAjaxFieldTest(url).then(function (valid) {
-                if (valid) {
-                    validValue = value;
-                }
-
-                return valid;
-            });
-
-            $dom.awaitValidationPromiseAndResubmit(submitEvent, promise, submitBtn);
+                    if (!valid) {
+                        erroneous.valueOf = function () { return true; };
+                        alerted.valueOf = function () { return true; };
+                        firstFieldWithError = form.elements['zone'];
+                    }
+                });
+            };
         });
+        return extraChecks;
     };
 }(window.$cms, window.$util, window.$dom));

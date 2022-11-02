@@ -30,7 +30,7 @@
         moderatorActionSubmitForm: function (e, select) {
             if (select.selectedIndex !== 0) {
                 if ($cms.form.addFormMarkedPosts(select.form, 'mark_')) {
-                    $dom.submit(select.form);
+                    $dom.trigger(select.form, 'submit');
                 } else {
                     $cms.ui.alert('{!NOTHING_SELECTED;}');
                 }
@@ -38,19 +38,19 @@
         },
 
         maxChangeSubmitForm: function (e, select) {
-            $dom.submit(select.form);
+            $dom.trigger(select.form, 'submit');
         },
 
         orderChangeSubmitForm: function (e, select) {
-            $dom.submit(select.form);
+            $dom.trigger(select.form, 'submit');
         },
     });
 
     $cms.functions.moduleTopicsPostJavascript = function moduleTopicsPostJavascript(size, stub) {
         stub = strVal(stub);
 
-        var form = document.getElementById('post').form;
-        form.addEventListener('submit', function (submitEvent) {
+        var extraChecks = [];
+        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
             var post = form.elements['post'],
                 textValue;
 
@@ -68,8 +68,9 @@
             }
 
             if (textValue.length > size) {
-                $dom.cancelSubmit(submitEvent);
                 $cms.ui.alert('{!cns:POST_TOO_LONG;}');
+                alerted.valueOf = function () { return true; };
+                firstFieldWithError = textValue;
                 return false;
             }
 
@@ -81,7 +82,10 @@
                 }
                 post.value = pv;
             }
+
+            return true;
         });
+        return extraChecks;
     };
 
     $cms.functions.moduleTopicsPostJavascriptForceGuestNames = function moduleTopicsPostJavascriptForceGuestNames() {
@@ -126,11 +130,11 @@
         }
 
         // Adding / editing a poll
-        var form2 = document.getElementById('main-form');
-        form2.addEventListener('submit', function (submitEvent) {
+        var extraChecks = [];
+        extraChecks.push(function (e, form2, erroneous, alerted, firstFieldWithError) {
             var error;
 
-            var confinedElement = document.getElementById('answers-confined');
+            var confinedElement = form2.elements['answers-confined'];
             var confined; // array
             if (confinedElement) {
                 confined = JSON.parse(confinedElement.value);
@@ -143,23 +147,28 @@
                     // For confined polls, if a disallowed option is provided, error
                     if (typeof confined !== 'undefined' && confined.indexOf(form2.elements[i].value) === -1) {
                         error = $util.format('{!cns_polls:POLL_INVALID_OPTION;^}', [form2.elements[i].value]);
-                        $dom.cancelSubmit(submitEvent);
                         $cms.ui.alert(error);
+                        alerted.valueOf = function () { return true; };
+                        firstFieldWithError = form2.elements[i];
                         return false;
                     }
 
                     // Disallow duplicate options
                     if (entries.indexOf(form2.elements[i].value) !== -1) {
                         error = $util.format('{!cns_polls:POLL_NO_DUPLICATE_OPTIONS;^}', [form2.elements[i].value]);
-                        $dom.cancelSubmit(submitEvent);
                         $cms.ui.alert(error);
+                        alerted.valueOf = function () { return true; };
+                        firstFieldWithError = form2.elements[i];
                         return false;
                     }
 
                     entries.push(form2.elements[i].value);
                 }
             }
+
+            return true;
         });
+        return extraChecks;
     };
 
     $cms.functions.moduleAdminCnsForums = function moduleAdminCnsForums() {
@@ -221,7 +230,7 @@
         var container = this;
 
         $dom.on(container, 'change', '.js-select-change-form-submit', function (e, select) {
-            $dom.submit(select.form);
+            $dom.trigger(select.form, 'submit');
         });
     };
 
@@ -263,14 +272,14 @@
 
         $dom.on(container, 'change', '.js-topic-moderator-action-submit-form', function (e, select) {
             if (select.selectedIndex !== -1) {
-                $dom.submit(select.form);
+                $dom.trigger(select.form, 'submit');
             }
         });
 
         $dom.on(container, 'change', '.js-moderator-action-submit-form', function (e, select) {
             if (select.selectedIndex !== -1) {
                 if ($cms.form.addFormMarkedPosts(select.form, 'mark_')) {
-                    $dom.submit(select.form);
+                    $dom.trigger(select.form, 'submit');
                 } else {
                     $cms.ui.alert('{!NOTHING_SELECTED;}');
                 }
@@ -278,29 +287,28 @@
         });
 
         $dom.on(container, 'change', '.js-order-change-submit-form', function (e, select) {
-            $dom.submit(select.form);
+            $dom.trigger(select.form, 'submit');
         });
     };
 
     $cms.templates.cnsTopicPoll = function (params, container) {
-        var userIsVoting = true;
         var form = this,
             minSelections = Number(params.minimumSelections) || 0,
             maxSelections = Number(params.maximumSelections) || 0,
             error = (minSelections === maxSelections) ? $util.format('{!cns_polls:POLL_INVALID_SELECTION_COUNT_2;^}', [minSelections]) : $util.format('{!cns_polls:POLL_INVALID_SELECTION_COUNT;^}', [minSelections, maxSelections]);
 
-        $dom.on(container, 'click', '.js-change-poll-form', function (e, btn) {
-            userIsVoting = false;
+        $dom.on(container, 'click', '.js-view-poll', function (e, btn) {
             form.action = strVal(btn.dataset.formAction);
         });
 
-        $dom.on(container, 'click', '.js-revert-poll-form', function (e, btn) {
-            userIsVoting = true;
+        $dom.on(container, 'click', '.js-revoke-poll', function (e, btn) {
             form.action = strVal(btn.dataset.formAction);
         });
 
-        $dom.on(form, 'submit', function (e) {
-            if (userIsVoting && cnsCheckPoll() === false) {
+        $dom.on(container, 'click', '.js-vote-poll', function (e, btn) {
+            form.action = strVal(btn.dataset.formAction);
+
+            if (!cnsCheckPoll()) {
                 e.preventDefault();
             }
         });
@@ -319,6 +327,8 @@
             }
 
             $cms.ui.disableButton(form.elements['poll-vote-button']);
+
+            return true;
         }
     };
 
@@ -367,5 +377,70 @@
         $dom.on('#manual_topic_id', 'change', function (e, el) {
             el.form.elements['reverse_point_transaction'].disabled = (el.value != '');
         });
+    };
+
+    /**
+     * Prepare the UI to reply to a post in a topic
+     * @param isThreaded
+     * @param id
+     * @param replyingToUsername
+     * @param replyingToPost
+     * @param replyingToPostPlain
+     * @param isExplicitQuote
+     */
+    $cms.functions.topicReply = function topicReply(isThreaded, id, replyingToUsername, replyingToPost, replyingToPostPlain, isExplicitQuote) {
+        isThreaded = Boolean(isThreaded);
+        isExplicitQuote = Boolean(isExplicitQuote);
+
+        var el = this,
+            form = $dom.$('form#comments-form');
+
+        var parentIdField;
+        if (form.elements['parent_id'] === undefined) {
+            parentIdField = document.createElement('input');
+            parentIdField.type = 'hidden';
+            parentIdField.name = 'parent_id';
+            form.appendChild(parentIdField);
+        } else {
+            parentIdField = form.elements['parent_id'];
+            if (window.lastReplyTo !== undefined) {
+                window.lastReplyTo.style.opacity = 1;
+            }
+        }
+        window.lastReplyTo = el;
+        parentIdField.value = isThreaded ? id : '';
+
+        el.classList.add('activated-quote-button');
+
+        var post = form.elements['post'];
+
+        $dom.smoothScroll($dom.findPosY(form, true));
+
+        var outer = $dom.$('#comments-posting-form-outer');
+        if (outer && !$dom.isDisplayed(outer)) {
+            $cms.ui.toggleableTray(outer);
+        }
+
+        if (isThreaded) {
+            post.value = $util.format('{!QUOTED_REPLY_MESSAGE;^}', [replyingToUsername, replyingToPostPlain]);
+            post.stripOnFocus = post.value;
+            post.classList.add('field-input-non-filled');
+        } else {
+            if ((post.stripOnFocus !== undefined) && (post.value === post.stripOnFocus)) {
+                post.value = '';
+            } else if (post.value !== '') {
+                post.value += '\n\n';
+            }
+
+            post.focus();
+            post.value += '[quote="' + replyingToUsername + '"]\n' + replyingToPost + '\n[snapback]' + id + '[/snapback][/quote]\n\n';
+
+            if (!isExplicitQuote) {
+                post.defaultSubstringToStrip = post.value;
+            }
+        }
+
+        $cms.ui.manageScrollHeight(post);
+        post.scrollTop = post.scrollHeight;
     };
 }(window.$cms, window.$util, window.$dom));

@@ -4450,7 +4450,6 @@ div .buttons-group-faded > * {
 /*{+END}*/
 
 .comments-posting-form-inner textarea {
-	color: {$GET,comfortable_input_field_text};
 	width: 100%;
 }
 
@@ -4879,7 +4878,7 @@ form.associated-link::before {
 	opacity: 0.7;
 }
 /*{+START,CSS_MODE,desktop}*/
-	ul.associated-links-block-group > li:first-child::before,
+	ul.associated-links-block-group > li::before,
 	span.associated-link::before,
 	a.associated-link::before,
 	form.associated-link::before {
@@ -5956,7 +5955,7 @@ input[type="button"].btn-block {
 	width: 100%;
 }
 
-.btn img.icon {
+.btn-primary img.icon, .btn-secondary img.icon {
 	/* This makes icons white when sprite icons are disabled */
 	filter: invert(100%);
 }

@@ -99,11 +99,11 @@
                 e.parentNode.remove();
             }
 
-            $cms.setIcon(img, 'tool_buttons/realtime_rain_on', '{$IMG;,icons/tool_buttons/realtime_rain_on}');
-            return false;
+            $cms.ui.setIcon(img, 'tool_buttons/realtime_rain_on', '{$IMG;,icons/tool_buttons/realtime_rain_on}');
+            return;
         }
 
-        $cms.setIcon(img, 'tool_buttons/realtime_rain_off', '{$IMG;,icons/tool_buttons/realtime_rain_off}');
+        $cms.ui.setIcon(img, 'tool_buttons/realtime_rain_off', '{$IMG;,icons/tool_buttons/realtime_rain_off}');
 
         var tmpElement = document.getElementById('realtime-rain-img-loader');
         if (tmpElement) {

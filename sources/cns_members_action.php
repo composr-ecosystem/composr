@@ -50,6 +50,8 @@ function member_field_is_required(?int $member_id, string $field_class, $current
         return false;
     }
 
+    // E-mail is technically not required within Composr, but lost-password etc won't work without it, so we're not going to allow it to be left blank unless bypass_email_address_if_already_empty if there and it's already blank
+
     if ($editing_member === null) {
         $editing_member = get_member();
     }

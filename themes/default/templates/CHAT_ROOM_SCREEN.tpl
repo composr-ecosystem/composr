@@ -86,7 +86,7 @@
 		{!USERS_IN_CHATROOM} <span id="chat-members-update">{CHATTERS}</span>
 	</p></div>
 
-	<form title="{$STRIP_TAGS,{!CHAT_OPTIONS_DESCRIPTION}}" class="below-main-chat-window js-form-submit-check-chat-options" method="post" action="{OPTIONS_URL*}">
+	<form title="{$STRIP_TAGS,{!CHAT_OPTIONS_DESCRIPTION}}" class="below-main-chat-window" method="post" action="{OPTIONS_URL*}">
 		{$INSERT_FORM_POST_SECURITY}
 
 		<div class="box box---chat-screen-options box-prominent"><div class="box-inner">
@@ -128,7 +128,7 @@
 				</p>
 
 				<p>
-					<button class="btn btn-primary btn-scri buttons--save" data-cms-confirm-click="{!SAVE_COMPUTER_USING_COOKIE}" type="submit">{+START,INCLUDE,ICON}NAME=buttons/save{+END} <span>{$STRIP_TAGS,{!CHAT_CHANGE_OPTIONS}}</span></button>
+					<button class="btn btn-primary btn-scri buttons--save js-check-chat-options" data-cms-confirm-click="{!SAVE_COMPUTER_USING_COOKIE}" type="submit">{+START,INCLUDE,ICON}NAME=buttons/save{+END} <span>{$STRIP_TAGS,{!CHAT_CHANGE_OPTIONS}}</span></button>
 				</p>
 			</div>
 

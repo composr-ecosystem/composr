@@ -203,6 +203,8 @@ function warnings_script()
     // Show list of saved warnings
     // ---------------------------
 
+    require_javascript('cns_warnings');
+
     $content = new Tempcode();
     $rows = $GLOBALS['FORUM_DB']->query_select('f_saved_warnings', ['*'], [], 'ORDER BY s_title');
     $keep = symbol_tempcode('KEEP');

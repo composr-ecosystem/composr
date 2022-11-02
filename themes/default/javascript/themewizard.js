@@ -2,7 +2,7 @@
     'use strict';
 
     $cms.functions.adminThemeWizard = function () {
-        var form = document.getElementById('main-form');
+        var form = document.getElementById('source_theme').form;
 
         form.elements['source_theme'].addEventListener('change', function () {
             var defaultTheme = (form.elements['source_theme'].value === 'default');
@@ -23,32 +23,30 @@
         setUseOnAllState();
         form.elements['name'].addEventListener('keyup', setUseOnAllState);
 
-        var validValue;
-        form.addEventListener('submit', function submitCheck(submitEvent) {
+        var extraChecks = [],
+            validValue;
+        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
             var value = form.elements['name'].value;
 
-            if (value === validValue) {
-                return;
+            if ((value === validValue) || (value === '')) {
+                return true;
             }
 
-            submitEvent.preventDefault();
-
-            var submitBtn = form.querySelector('#submit-button');
-
-            if (value != '') {
+            return function () {
                 var url = '{$FIND_SCRIPT_NOHTTP;,snippet}?snippet=exists_theme&name=' + encodeURIComponent(value) + $cms.keep();
-                var promise = $cms.form.doAjaxFieldTest(url).then(function (valid) {
+                return $cms.form.doAjaxFieldTest(url).then(function (valid) {
                     if (valid) {
                         validValue = value;
                     }
 
-                    return valid;
+                    if (!valid) {
+                        erroneous.valueOf = function () { return true; };
+                        alerted.valueOf = function () { return true; };
+                        firstFieldWithError = form.elements['name'];
+                    }
                 });
-                $dom.awaitValidationPromiseAndResubmit(submitEvent, promise, submitBtn);
-            } else {
-                $dom.submit(form);
-            }
-
+            };
         });
+        return extraChecks;
     };
 }(window.$cms, window.$util, window.$dom));

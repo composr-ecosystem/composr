@@ -67,7 +67,7 @@ class Hook_resource_meta_aware_newsletter_subscriber extends Hook_CMA
             'alternate_icon_theme_image' => null,
 
             'view_page_link_pattern' => null,
-            'edit_page_link_pattern' => '_SEARCH:admin_newsletter:import_subscribers',
+            'edit_page_link_pattern' => null,
             'view_category_page_link_pattern' => null,
             'add_url' => ($get_extended_data && function_exists('get_member') && has_actual_page_access(get_member(), 'admin_newsletter')) ? (get_module_zone('admin_newsletter') . ':admin_newsletter:import_subscribers') : null,
             'archive_url' => null,

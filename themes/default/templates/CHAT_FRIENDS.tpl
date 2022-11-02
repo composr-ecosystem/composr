@@ -60,7 +60,7 @@
 						{+END}
 
 						{+START,IF,{CAN_IM}}
-							<a rel="friend" title="{$DISPLAYED_USERNAME*,{USERNAME}}: {!START_IM}" href="{$PAGE_LINK;*,_SEARCH:chat:enter_im={MEMBER_ID}}" class="{+START,IF,{$CONFIG_OPTION,sitewide_im}}js-click-start-friend-im{+END}" data-tp-member-id="{MEMBER_ID*}">{$DISPLAYED_USERNAME*,{USERNAME}}</a>
+							<a rel="friend" title="{$DISPLAYED_USERNAME*,{USERNAME}}: {!START_IM}" href="{$PAGE_LINK;*,_SEARCH:chat:enter_im={MEMBER_ID}}" class="js-click-start-friend-im" data-tp-member-id="{MEMBER_ID*}">{$DISPLAYED_USERNAME*,{USERNAME}}</a>
 						{+END}
 						{+START,IF,{$NOT,{CAN_IM}}}
 							{$DISPLAYED_USERNAME*,{USERNAME}}

@@ -2,8 +2,8 @@
 
 <div class="clearfix">
 	<div class="left">
-		<label for="action-{I*}">{!ACTION}:</label>
-		<select id="action-{I*}" name="action" class="form-control">
+		<label for="filedump-action-{I*}">{!ACTION}:</label>
+		<select id="filedump-action-{I*}" name="filedump_action" class="form-control">
 			{+START,IF,{$EQ,{I},1}}
 				<option value="">---</option>
 			{+END}
@@ -17,6 +17,6 @@
 			<option value="zip">{!FILEDUMP_ZIP}</option>
 		</select>
 
-		<button type="submit" class="btn btn-primary btn-sm buttons--proceed">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!PROCEED}</button>
+		<button type="submit" class="btn btn-primary btn-sm buttons--proceed js-check-filedump-selections">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!PROCEED}</button>
 	</div>
 </div>

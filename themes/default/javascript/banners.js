@@ -31,52 +31,62 @@
     };
 
     $cms.functions.moduleCmsBannersRunStartAdd = function moduleCmsBannersRunStartAdd() {
-        var form = document.getElementById('main-form');
+        var form = document.getElementById('banner_codename').form;
 
-        var validValue;
-        form.addEventListener('submit', function submitCheck(submitEvent) {
+        var extraChecks = [],
+            validValue;
+        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
             var value = form.elements['banner_codename'].value;
 
-            if ($dom.isCancelledSubmit(submitEvent) || (value === validValue)) {
-                return;
+            if ((value === validValue) || (value === '')) {
+                return true;
             }
-            var submitBtn = form.querySelector('#submit-button');
-            var url = '{$FIND_SCRIPT_NOHTTP;,snippet}?snippet=exists_banner&name=' + encodeURIComponent(value) + $cms.keep();
-            submitEvent.preventDefault();
-            var promise = $cms.form.doAjaxFieldTest(url).then(function (valid) {
-                if (valid) {
-                    validValue = value;
-                }
 
-                return valid;
-            });
+            return function () {
+                var url = '{$FIND_SCRIPT_NOHTTP;,snippet}?snippet=exists_banner&name=' + encodeURIComponent(value) + $cms.keep();
+                return $cms.form.doAjaxFieldTest(url).then(function (valid) {
+                    if (valid) {
+                        validValue = value;
+                    }
 
-            $dom.awaitValidationPromiseAndResubmit(submitEvent, promise, submitBtn);
+                    if (!valid) {
+                        erroneous.valueOf = function () { return true; };
+                        alerted.valueOf = function () { return true; };
+                        firstFieldWithError = form.elements['banner_codename'];
+                    }
+                });
+            };
         });
+        return extraChecks;
     };
 
     $cms.functions.moduleCmsBannersRunStartAddCategory = function moduleCmsBannersRunStartAddCategory() {
-        var form = document.getElementById('main-form'),
+        var form = document.getElementById('new_id').form,
             validValue;
 
-        form.addEventListener('submit', function submitCheck(submitEvent) {
+        var extraChecks = [];
+        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
             var value = form.elements['new_id'].value;
 
-            if ($dom.isCancelledSubmit(submitEvent) || (value === validValue)) {
-                return;
+            if (value === validValue) {
+                return true;
             }
 
-            var submitBtn = form.querySelector('#submit-button');
-            var url = '{$FIND_SCRIPT_NOHTTP;,snippet}?snippet=exists_banner_type&name=' + encodeURIComponent(form.elements['new_id'].value) + $cms.keep();
-            submitEvent.preventDefault();
-            var promise = $cms.form.doAjaxFieldTest(url).then(function (valid) {
-                if (valid) {
-                    validValue = value;
-                }
-                return valid;
-            });
+            return function () {
+                var url = '{$FIND_SCRIPT_NOHTTP;,snippet}?snippet=exists_banner_type&name=' + encodeURIComponent(form.elements['new_id'].value) + $cms.keep();
+                return $cms.form.doAjaxFieldTest(url).then(function (valid) {
+                    if (valid) {
+                        validValue = value;
+                    }
 
-            $dom.awaitValidationPromiseAndResubmit(submitEvent, promise, submitBtn);
+                    if (!valid) {
+                        erroneous.valueOf = function () { return true; };
+                        alerted.valueOf = function () { return true; };
+                        firstFieldWithError = form.elements['new_id'];
+                    }
+                });
+            };
         });
+        return extraChecks;
     };
 }(window.$cms, window.$util, window.$dom));

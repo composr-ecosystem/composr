@@ -8,9 +8,9 @@
 
 {$SET,GET_NAME,{$AND,{$IS_GUEST},{$CNS}}}
 
-<div data-view="CommentsPostingForm" data-view-params="{+START,PARAMS_JSON,MORE_URL,GET_EMAIL,GET_NAME,GET_TITLE,EMAIL_OPTIONAL,TITLE_OPTIONAL,WYSIWYG,CAPTCHA,ANALYTIC_EVENT_CATEGORY}{_*}{+END}">
+<div data-view="CommentsPostingForm" data-view-params="{+START,PARAMS_JSON,MORE_URL,GET_EMAIL,GET_NAME,GET_TITLE,EMAIL_OPTIONAL,TITLE_OPTIONAL,WYSIWYG,CAPTCHA}{_*}{+END}">
 	{+START,IF_NON_EMPTY,{COMMENT_URL}}
-	<form role="form" title="{TITLE*}" class="comments-form js-form-comments" id="comments-form" action="{COMMENT_URL*}{+START,IF_NON_EMPTY,{$GET,current_anchor}}#{$GET,current_anchor}{+END}{+START,IF_EMPTY,{$GET,current_anchor}}{+START,IF_PASSED_AND_TRUE,COMMENTS}#last-comment{+END}{+END}" method="post" enctype="multipart/form-data">
+	<form role="form" title="{TITLE*}" class="comments-form js-submission-flow" id="comments-form" action="{COMMENT_URL*}{+START,IF_NON_EMPTY,{$GET,current_anchor}}#{$GET,current_anchor}{+END}{+START,IF_EMPTY,{$GET,current_anchor}}{+START,IF_PASSED_AND_TRUE,COMMENTS}#last-comment{+END}{+END}" method="post" enctype="multipart/form-data" data-view="SubmissionFlow" data-view-params="{+START,PARAMS_JSON,JS_FUNCTION_CALLS,JAVASCRIPT,ANALYTIC_EVENT_CATEGORY}{_*}{+END}">
 		{$INSERT_FORM_POST_SECURITY}
 		<input type="hidden" name="_comment_form_post" value="1" />
 	{+END}
@@ -252,8 +252,8 @@
 								{+END}
 							{+END}
 
-						{$SET,has_preview_button,{$AND,{$DESKTOP},{$JS_ON},{$CONFIG_OPTION,enable_previews}}}
-						{+START,IF_PASSED,SKIP_PREVIEW}{$SET,has_preview_button,0}{+END}
+							{$SET,has_preview_button,{$AND,{$DESKTOP},{$JS_ON},{$CONFIG_OPTION,enable_previews}}}
+							{+START,IF_PASSED,SKIP_PREVIEW}{$SET,has_preview_button,0}{+END}
 
 							<div class="proceed-button {$?,{$GET,has_preview_button},contains-preview-button,contains-no-preview-button}">
 								{+START,IF,{$DESKTOP}}{+START,IF,{$GET,has_preview_button}}
@@ -270,7 +270,7 @@
 
 								{+START,SET,button_title}{+START,IF_PASSED,SUBMIT_NAME}{SUBMIT_NAME*}{+END}{+START,IF_NON_PASSED,SUBMIT_NAME}{+START,IF_NON_EMPTY,{TITLE}}{TITLE*}{+END}{+START,IF_EMPTY,{TITLE}}{!SEND}{+END}{+END}{+END}
 								{+START,SET,button_icon}{+START,IF_PASSED,SUBMIT_ICON}{SUBMIT_ICON}{+END}{+START,IF_NON_PASSED,SUBMIT_ICON}{+START,IF_NON_PASSED,MORE_URL}buttons/new_comment{+END}{+START,IF_PASSED,MORE_URL}buttons/new_reply{+END}{+END}{+END}
-								<button tabindex="8" accesskey="u" id="submit-button" class="btn btn-primary {$?,{$IS_EMPTY,{COMMENT_URL}},button-scr,button-scri} {$?,{$GET,has_preview_button},near-preview-button,not-near-preview-button} js-btn-submit-comments" type="button">{+START,INCLUDE,ICON}NAME={$GET,button_icon}{+END} {+START,IF,{$DESKTOP}}<span class="inline-desktop">{$GET,button_title}</span>{+END}<span class="inline-mobile">{$REPLACE,{!cns:REPLY},{!_REPLY},{$GET,button_title}}</span></button>
+								<button tabindex="8" accesskey="u" id="submit-button" class="btn btn-primary {$?,{$IS_EMPTY,{COMMENT_URL}},button-scr,button-scri} {$?,{$GET,has_preview_button},near-preview-button,not-near-preview-button} js-btn-save-comment js-btn-main-submit-form" type="button">{+START,INCLUDE,ICON}NAME={$GET,button_icon}{+END} {+START,IF,{$DESKTOP}}<span class="inline-desktop">{$GET,button_title}</span>{+END}<span class="inline-mobile">{$REPLACE,{!cns:REPLY},{!_REPLY},{$GET,button_title}}</span></button>
 							</div>
 						</div>
 					</div>

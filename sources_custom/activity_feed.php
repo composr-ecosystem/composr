@@ -99,6 +99,10 @@ function activity_feed_updater_script()
         $response .= '<response><success>2</success><content>NU - No feeds to select from.</content></response>';
     }
 
+    if (function_exists('ocp_mark_as_escaped')) {
+        ocp_mark_as_escaped($response);
+    }
+
     echo $response;
 
     cms_safe_exit_flow();

@@ -1,12 +1,12 @@
 {$REQUIRE_JAVASCRIPT,shopping}
 
 <div class="vertical-align" data-tpl="ecomAdminOrderActions">
-	<form title="{!ACTION}: {ORDER_TITLE*}" method="post" action="{ORDER_ACTUALISE_URL*}" data-submit-pd="1" class="js-submit-confirm-admin-order-actions">
+	<form title="{!ACTION}: {ORDER_TITLE*}" method="post" action="{ORDER_ACTUALISE_URL*}">
 		{$INSERT_FORM_POST_SECURITY}
 
-		<label class="accessibility-hidden" for="action">{!ACTION}</label>
+		<label class="accessibility-hidden" for="order_action">{!ACTION}</label>
 
-		<select name="action" id="action" class="form-control orders-actions-dropdown js-select-change-action-submit-form">
+		<select name="order_action" class="form-control orders-actions-dropdown js-select-change-action-submit-form">
 			<option value="">{!CHOOSE}&hellip;</option>
 
 			<option value="add_note">{!ADD_NOTE}</option>

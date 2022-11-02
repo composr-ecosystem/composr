@@ -105,6 +105,9 @@ class Module_admin_config
 
         require_all_lang();
 
+        require_javascript('core_configuration');
+        require_javascript('core_form_interfaces');
+
         $type = get_param_string('type', 'browse');
 
         require_lang('config');

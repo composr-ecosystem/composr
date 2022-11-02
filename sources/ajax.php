@@ -156,6 +156,7 @@ function namelike_script()
             if (count($names) > 10) {
                 $names = [];
             }
+
             cms_mb_sort($names, SORT_NATURAL | SORT_FLAG_CASE);
         }
 
@@ -184,6 +185,8 @@ function namelike_script()
                 }
             }
 
+            cms_mb_sort($names, SORT_NATURAL | SORT_FLAG_CASE);
+
             foreach ($names as $name) {
                 echo '<option value="' . xmlentities($name) . '" displayname="" />';
             }
@@ -194,6 +197,8 @@ function namelike_script()
                 $like = ($num_authors < 1000) ? db_encode_like('%' . str_replace('_', '\_', $id) . '%') : db_encode_like(str_replace('_', '\_', $id) . '%'); // performance issue
                 $rows = $GLOBALS['SITE_DB']->query('SELECT author FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'authors WHERE author LIKE \'' . $like . '\' ORDER BY author', 15);
                 $names = collapse_1d_complexity('author', $rows);
+
+                cms_mb_sort($names, SORT_NATURAL | SORT_FLAG_CASE);
 
                 foreach ($names as $name) {
                     echo '<option value="' . xmlentities($name) . '" displayname="" />';
@@ -212,14 +217,13 @@ function namelike_script()
                     }
                 }
 
+                cms_mb_sort($names, SORT_NATURAL | SORT_FLAG_CASE);
+
                 foreach ($names as $member_id => $name) {
                     echo '<option value="' . xmlentities($name) . '" displayname="' . xmlentities($GLOBALS['FORUM_DRIVER']->get_username($member_id, true)) . '" />';
                 }
             }
         }
-
-        cms_mb_sort($names, SORT_NATURAL | SORT_FLAG_CASE);
-        $names = array_unique($names);
     }
 
     echo '</result></request>';

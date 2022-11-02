@@ -1,3 +1,5 @@
+/* This file contains CMS-wide user interfaces (not visual niceties, whole UIs) */
+
 (function ($cms, $util, $dom) {
     'use strict';
     /**
@@ -16,7 +18,7 @@
 
         var icon = $dom.$(el.parentNode, '.toggleable-tray-button .icon') || $dom.$('img#e-' + el.id),
             iconAnchor = icon ? $dom.parent(icon, 'a') : null,
-            expanding = $dom.notDisplayed(el);
+            expanding = !$dom.isDisplayed(el);
 
         el.setAttribute('aria-expanded', expanding ? 'true' : 'false');
         el.classList.toggle('is-expanded', expanding);
@@ -38,13 +40,13 @@
 
         if (icon) {
             if (expanding) {
-                $cms.setIcon(icon, 'trays/contract', '{$IMG;,icons_monochrome/trays/contract}');
+                $cms.ui.setIcon(icon, 'trays/contract', '{$IMG;,icons_monochrome/trays/contract}');
                 iconAnchor.title = '{!CONTRACT;^}';
                 if (iconAnchor.cmsTooltipTitle !== undefined) {
                     iconAnchor.cmsTooltipTitle = '{!CONTRACT;^}';
                 }
             } else {
-                $cms.setIcon(icon, 'trays/expand', '{$IMG;,icons_monochrome/trays/expand}');
+                $cms.ui.setIcon(icon, 'trays/expand', '{$IMG;,icons_monochrome/trays/expand}');
                 iconAnchor.title = '{!EXPAND;^}';
                 if (iconAnchor.cmsTooltipTitle !== undefined) {
                     iconAnchor.cmsTooltipTitle = '{!EXPAND;^}';
@@ -917,13 +919,11 @@
         var uid = $util.uid(btn),
             timeout, interval;
 
-        setTimeout(function () {
-            btn.style.cursor = 'wait';
-            btn.disabled = true;
-            if (!permanent) {
-                tempDisabledButtons[uid] = true;
-            }
-        }, 20);
+        btn.style.cursor = 'wait';
+        btn.disabled = true;
+        if (!permanent) {
+            tempDisabledButtons[uid] = true;
+        }
 
         if (!permanent) {
             timeout = setTimeout(enableDisabledButton, 5000);
@@ -994,9 +994,8 @@
     $cms.ui.enableSubmitAndPreviewButtons = function enableSubmitAndPreviewButtons() {
         // [accesskey="u"] identifies submit button, [accesskey="p"] identifies preview button
         var buttons = $dom.$$('input[accesskey="u"], button[accesskey="u"], input[accesskey="p"], button[accesskey="p"]');
-
         buttons.forEach(function (btn) {
-            if (btn.disabled && !tempDisabledButtons[$util.uid(btn)]/*We do not want to interfere with other code potentially operating*/) {
+            if (btn.disabled) {
                 btn.style.cursor = '';
                 btn.disabled = false;
             }
@@ -1175,6 +1174,35 @@
     };
 
     /**
+     * Image rollover effects
+     * @memberof $cms
+     * @param rand
+     * @param rollover
+     */
+    $cms.ui.createRollover = function createRollover(rand, rollover) {
+        var img = rand && $dom.$id(rand);
+        if (!img) {
+            return;
+        }
+        new Image().src = rollover; // precache
+
+        $dom.on(img, 'mouseover', activate);
+        $dom.on(img, 'click mouseout', deactivate);
+
+        function activate() {
+            img.oldSrc = img.src;
+            if (img.origsrc !== undefined) {
+                img.oldSrc = img.origsrc;
+            }
+            img.src = rollover;
+        }
+
+        function deactivate() {
+            img.src = img.oldSrc;
+        }
+    };
+
+    /**
      * Ask a user a question: they must click a button
      * 'Cancel' should come as index 0 and Ok/default-option should come as index 1. This is so that the fallback works right.
      * @memberof $cms.ui
@@ -1289,4 +1317,234 @@
             }
         });
     };
+
+    /**
+     * Making the height of a textarea match its contents
+     * @memberof $cms
+     * @param textAreaEl
+     */
+    $cms.ui.manageScrollHeight = function manageScrollHeight(textAreaEl) {
+        var scrollHeight = textAreaEl.scrollHeight,
+            offsetHeight = textAreaEl.offsetHeight,
+            currentHeight = parseInt($dom.css(textAreaEl, 'height')) || 0;
+
+        if ((scrollHeight > 5) && (currentHeight < scrollHeight) && (offsetHeight < scrollHeight)) {
+            $dom.css(textAreaEl, {
+                height: (scrollHeight + 2) + 'px',
+                boxSizing: 'border-box',
+                overflowY: 'auto'
+            });
+            $dom.triggerResize();
+        }
+    };
+
+    /**
+     * Change an icon to another one
+     * @param { SVGSVGElement|HTMLImageElement } iconEl
+     * @param {string} iconName
+     * @param {string} imageSrc
+     */
+    $cms.ui.setIcon = function setIcon(iconEl, iconName, imageSrc) {
+        iconEl = $dom.elArg(iconEl);
+
+        var symbolId, use, newSrc, newClass;
+        if (iconEl.localName === 'svg') {
+            symbolId = 'icon_' + iconName.replace(/\//g, '__');
+            use = iconEl.querySelector('use');
+            use.setAttribute('xlink:href', use.getAttribute('xlink:href').replace(/#\w+$/, '#' + symbolId));
+        } else if (iconEl.localName === 'img') {
+            if ($util.url(iconEl.src).pathname.includes('/themewizard.php')) {
+                // themewizard.php script, set ?show=<image name>
+                newSrc = $util.url(iconEl.src);
+                newSrc.searchParams.set('show', 'icons/' + iconName);
+            } else {
+                newSrc = $util.srl(imageSrc);
+            }
+            iconEl.src = newSrc;
+        } else {
+            $util.fatal('$cms.ui.setIcon(): Argument one must be of type {' + 'SVGSVGElement|HTMLImageElement}, "' + $util.typeName(iconEl) + '" provided.');
+            return;
+        }
+
+        // Replace the existing icon-* class with the new one
+        newClass = iconName.replace(/_/g, '-').replace(/\//g, '--');
+        // Using setAttribute() because the className property on <svg> elements is a "SVGAnimatedString" object rather than a string
+        iconEl.setAttribute('class', iconEl.getAttribute('class').replace(/(^| )icon-[\w-]+($| )/, ' icon-' + newClass + ' ').trim().replace(/ +/g, ' '));
+    };
+
+    /*
+     Faux frames and faux scrolling
+     */
+    var infiniteScrollPending = false, // Blocked due to queued HTTP request
+        infiniteScrollBlocked = false, // Blocked due to event tracking active
+        infiniteScrollMouseHeld = false;
+
+    $cms.ui.enableInternaliseInfiniteScrolling = function enableInternaliseInfiniteScrolling(infiniteScrollCallUrl, wrapperEl) {
+        $dom.on(window, {
+            scroll: function () {
+                internaliseInfiniteScrolling(infiniteScrollCallUrl, wrapperEl)
+            },
+            touchmove: function () {
+                internaliseInfiniteScrolling(infiniteScrollCallUrl, wrapperEl)
+            },
+            keydown: function (e) {
+                if (e.key === 'End') { // 'End' key pressed, so stop the expand happening for a few seconds while the browser scrolls down
+                    infiniteScrollBlocked = true;
+                    setTimeout(function () {
+                        infiniteScrollBlocked = false;
+                    }, 3000);
+                }
+            },
+            mousedown: function () {
+                if (!infiniteScrollBlocked) {
+                    infiniteScrollBlocked = true;
+                    infiniteScrollMouseHeld = true;
+                }
+            },
+            mousemove: function () {
+                // mouseup/mousemove does not work on scrollbar, so best is to notice when mouse moves again (we know we're off-scrollbar then)
+                if (infiniteScrollMouseHeld) {
+                    infiniteScrollBlocked = false;
+                    infiniteScrollMouseHeld = false;
+                    internaliseInfiniteScrolling(infiniteScrollCallUrl, wrapperEl);
+                }
+            }
+        });
+
+        internaliseInfiniteScrolling(infiniteScrollCallUrl, wrapperEl);
+    };
+
+    /**
+     * @param urlStem
+     * @param wrapper
+     * @param recursive
+     */
+    function internaliseInfiniteScrolling(urlStem, wrapper, recursive) {
+        recursive = boolVal(recursive);
+
+        if (infiniteScrollBlocked || infiniteScrollPending) {
+            // Already waiting for a result
+            return;
+        }
+
+        var paginations = $util.toArray(wrapper.querySelectorAll('.pagination')),
+            paginationLoadMore;
+
+        if (paginations.length === 0) {
+            return;
+        }
+
+        var moreLinks = [], moreLinksFromPagination;
+
+        paginations.forEach(function (pagination) {
+            if (!$dom.isDisplayed(pagination)) {
+                return;
+            }
+
+            moreLinks = $util.toArray(pagination.getElementsByTagName('a'));
+            moreLinksFromPagination = pagination;
+
+            // Remove visibility of pagination, now we've replaced with AJAX load more link
+            pagination.style.display = 'none';
+
+            // Add AJAX load more link before where the last pagination control was
+            // Remove old pagination-load-more's
+            paginationLoadMore = wrapper.querySelector('.pagination-load-more');
+            if (paginationLoadMore) {
+                paginationLoadMore.remove();
+            }
+
+            // Add in new one
+            var loadMoreLink = document.createElement('div');
+            loadMoreLink.className = 'pagination-load-more';
+            var loadMoreLinkA = loadMoreLink.appendChild(document.createElement('a'));
+            $dom.html(loadMoreLinkA, '{!LOAD_MORE;^}');
+            loadMoreLinkA.href = '#!';
+            loadMoreLinkA.onclick = (function (moreLinks) {
+                return function () {
+                    internaliseInfiniteScrollingGo(urlStem, wrapper, moreLinks);
+                };
+            }(moreLinks)); // Click link -- load
+            paginations[paginations.length - 1].parentNode.insertBefore(loadMoreLink, paginations[paginations.length - 1].nextSibling);
+        });
+
+        paginations.some(function (pagination) {
+            if (moreLinksFromPagination == null) { // Find links from an already-hidden pagination
+                moreLinks = $util.toArray(pagination.getElementsByTagName('a'));
+                if (moreLinks.length !== 0) {
+                    return true; // (break)
+                }
+            }
+        });
+
+        // Is more scrolling possible?
+        var foundRel = moreLinks.some(function (link) {
+            return link.getAttribute('rel') && link.getAttribute('rel').includes('next');
+        });
+
+        if (!foundRel) { // Ah, no more scrolling possible
+            // Remove old pagination-load-more's
+            paginationLoadMore = wrapper.querySelector('.pagination-load-more');
+            if (paginationLoadMore) {
+                paginationLoadMore.remove();
+            }
+
+            return false;
+        }
+
+        // Used for calculating if we need to scroll down
+        var wrapperPosY = $dom.findPosY(wrapper),
+            wrapperHeight = wrapper.offsetHeight,
+            wrapperBottom = wrapperPosY + wrapperHeight,
+            windowHeight = $dom.getWindowHeight(),
+            pageHeight = $dom.getWindowScrollHeight();
+
+        // Scroll down -- load
+        if (!recursive) {
+            if (((window.scrollY + windowHeight) > (wrapperBottom - (windowHeight * 2))) && ((window.scrollY + windowHeight) < (pageHeight - 30))) {
+                // ^ If within windowHeight*2 pixels of load area and not within 30 pixels of window bottom (so you can press End key)
+                internaliseInfiniteScrollingGo(urlStem, wrapper, moreLinks);
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @param wrapper
+     */
+    function removePreviousPaginations(wrapper) {
+        $util.toArray(wrapper.getElementsByClassName('pagination')).forEach(function (pagination) {
+            $util.toArray(pagination.getElementsByTagName('a')).forEach(function (a) {
+                a.remove();
+            });
+        });
+    }
+
+    /**
+     * @param urlStem
+     * @param wrapper
+     * @param moreLinks
+     */
+    function internaliseInfiniteScrollingGo(urlStem, wrapper, moreLinks) {
+        if (infiniteScrollPending) {
+            return;
+        }
+
+        var wrapperInner = document.getElementById(wrapper.id + '-inner') || wrapper,
+            rgxStartParam = /[&?](start|[^_&]*_start|start_[^_]*)=([^&]*)/,
+            nextLink = moreLinks.find(function (link) {
+                return link.rel.includes('next') && rgxStartParam.test(link.href);
+            });
+
+        if (nextLink != null) {
+            var startParam = nextLink.href.match(rgxStartParam);
+            infiniteScrollPending = true;
+            removePreviousPaginations(wrapper);
+            $cms.callBlock(urlStem + (urlStem.includes('?') ? '&' : '?') + (startParam[1] + '=' + startParam[2]) + '&raw=1', '', wrapperInner, true).then(function () {
+                infiniteScrollPending = false;
+                internaliseInfiniteScrolling(urlStem, wrapper, true);
+            });
+        }
+    }
 }(window.$cms, window.$util, window.$dom));

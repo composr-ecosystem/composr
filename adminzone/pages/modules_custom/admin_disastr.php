@@ -238,8 +238,7 @@ class Module_admin_disastr extends Standard_crud_module
 
         $enabled = ($rows[0]['enabled'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO');
 
-        require_code('templates_map_table');
-        return map_table_screen($title, [
+        $fields = [
             'NAME' => $name,
             'IMAGE' => $image,
             'CURE' => $cure,
@@ -249,7 +248,10 @@ class Module_admin_disastr extends Standard_crud_module
             'SPREAD_RATE' => integer_format($spread_rate),
             'POINTS_PER_SPREAD' => integer_format($points_per_spread, 0),
             'ENABLED' => $enabled,
-        ]);
+        ];
+
+        require_code('templates_map_table');
+        return map_table_screen($title, $fields);
     }
 
     public function get_form_fields_for_add()

@@ -121,6 +121,11 @@ foreach ($_catalogues as $_catalogue) {
 
     $catalogues[$_catalogue['c_name']] = get_translated_text($_catalogue['c_title']);
 }
+foreach ($_prices as $_price) {
+    if (!isset($catalogues[$_price['c_catalogue_name']])) {
+        $catalogues[$_price['c_catalogue_name']] = $_price['c_catalogue_name'] . ' (' . do_lang('MISSING_RESOURCE') . ')';
+    }
+}
 
 $ret = do_template('CLASSIFIEDS_PRICING_SCREEN', [
     '_GUID' => '8fd97a8bc88dfdd5c8455d41d290ae56',

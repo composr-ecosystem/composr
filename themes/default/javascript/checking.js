@@ -1,4 +1,5 @@
-/* Validation code and other general code relating to forms */
+/* Validation code and other general code relating to form constraints and previews. See also core_form_interfaces.js which is always loaded if this file is. */
+
 (function ($cms, $util, $dom) {
     'use strict';
 
@@ -34,36 +35,37 @@
 
             if (errorMsgElementWrapper) {
                 var errorMsgElement = errorMsgElementWrapper.querySelector('.js-error-message');
+                if (errorMsgElement) {
+                    // Make error message visible, if there's an error
+                    $dom.toggle(errorMsgElementWrapper, (errorMsg !== ''));
 
-                // Make error message visible, if there's an error
-                $dom.toggle(errorMsgElementWrapper, (errorMsg !== ''));
+                    // Changed error message
+                    if ($dom.html(errorMsgElement) !== $cms.filter.html(errorMsg)) {
+                        $dom.empty(errorMsgElement);
+                        if (errorMsg !== '') {// If there actually an error
+                            theElement.setAttribute('aria-invalid', 'true');
 
-                // Changed error message
-                if ($dom.html(errorMsgElement) !== $cms.filter.html(errorMsg)) {
-                    $dom.empty(errorMsgElement);
-                    if (errorMsg !== '') {// If there actually an error
-                        theElement.setAttribute('aria-invalid', 'true');
-
-                        // Need to switch tab?
-                        var p = errorMsgElementWrapper.parentElement;
-                        while (p != null) {
-                            if ((errorMsg.substr(0, 5) !== '{!DISABLED_FORM_FIELD;^}'.substr(0, 5)) && (p.id.substr(0, 2) === 'g-') && (p.style.display === 'none')) {
-                                $cms.ui.selectTab('g', p.id.substr(2, p.id.length - 2), false, true);
-                                break;
+                            // Need to switch tab?
+                            var p = errorMsgElementWrapper.parentElement;
+                            while (p != null) {
+                                if ((errorMsg.substr(0, 5) !== '{!DISABLED_FORM_FIELD;^}'.substr(0, 5)) && (p.id.substr(0, 2) === 'g-') && (p.style.display === 'none')) {
+                                    $cms.ui.selectTab('g', p.id.substr(2, p.id.length - 2), false, true);
+                                    break;
+                                }
+                                p = p.parentElement;
                             }
-                            p = p.parentElement;
+
+                            // Set error message
+                            errorMsgElement.textContent += errorMsg;
+                            errorMsgElement.setAttribute('role', 'alert');
+
+                            // Fade in
+                            $dom.fadeIn(errorMsgElementWrapper);
+
+                        } else {
+                            theElement.setAttribute('aria-invalid', 'false');
+                            errorMsgElementWrapper.setAttribute('role', '');
                         }
-
-                        // Set error message
-                        errorMsgElement.textContent += errorMsg;
-                        errorMsgElement.setAttribute('role', 'alert');
-
-                        // Fade in
-                        $dom.fadeIn(errorMsgElementWrapper);
-
-                    } else {
-                        theElement.setAttribute('aria-invalid', 'false');
-                        errorMsgElementWrapper.setAttribute('role', '');
                     }
                 }
             }
@@ -96,9 +98,11 @@
 
         for (var i = 0; i < form.elements.length; i++) {
             plObj = $dom.data(form.elements[i]).pluploadObject;
-            if ((plObj != null) && (Number(plObj.total.queued)/*Number of files yet to be uploaded*/ !== 0)) {
-                uploadsComplete = false;
-                break;
+            if (plObj) {
+                if ((plObj.total.percent > 0) && (document.getElementById(plObj.settings.hidFileID).value == '-1'/*Completion handler not run yet*/)) {
+                    uploadsComplete = false;
+                    break;
+                }
             }
         }
 
@@ -125,12 +129,12 @@
                     return;
                 }
 
-                plObj.bind('FileUploaded', fileUploadedListener);
+                plObj.bind('UploadComplete', fileUploadedListener);
             });
 
             function fileUploadedListener(plObj) {
                 if (resolved) {
-                    plObj.unbind('FileUploaded', fileUploadedListener);
+                    plObj.unbind('UploadComplete', fileUploadedListener);
                     return;
                 }
 
@@ -168,25 +172,31 @@
 
     /**
      * @memberof $cms.form
+     * @param event
      * @param form
      * @param analyticEventCategory
+     * @param extraChecks
      * @returns { Promise<boolean> }
      */
-    $cms.form.doFormSubmit = function doFormSubmit(form, analyticEventCategory) {
+    $cms.form.doCheckingComposrFormSubmitChain = function doCheckingComposrFormSubmitChain(event, form, analyticEventCategory, extraChecks) {
+        form.lastSubmitEvent = event;
+
         return new Promise(function (resolveSubmitPromise) {
-            var checkFormPromise = $cms.form.checkForm(form, false);
+            var checkFormPromise = $cms.form.checkForm(event, form, false, extraChecks);
 
             checkFormPromise.then(function (valid) {
                 if (!valid) {
+                    $dom.cancelSubmit(event);
+
                     resolveSubmitPromise(false);
                     return $util.promiseHalt();
                 }
 
-                if (form.oldAction) {
-                    form.action = form.oldAction;
+                if (form.submitAction) {
+                    form.action = form.submitAction;
                 }
-                if (form.oldTarget) {
-                    form.target = form.oldTarget;
+                if (form.submitTarget) {
+                    form.target = form.submitTarget;
                 }
                 if (!form.getAttribute('target')) {
                     form.target = '_top';
@@ -232,12 +242,21 @@
                     });
                 }
 
-                var ret = $dom.trigger(form, 'submit');
+                // Call any event handlers on form.submit (we can have a preventDefault in a handler so the form will not actually submit)
+                form.submittedFormAlready = false;
+                $dom.trigger(form, 'submit');
 
-                if (ret === false) {
-                    $cms.ui.enableSubmitAndPreviewButtons();
-                    resolveSubmitPromise(false);
-                    return;
+                // Finish form submission
+                if (form.submittedFormAlready) { // We need to message pass via submittedFormAlready because the preventDefault makes $dom.trigger always return false
+                    finishFormSubmit(false);
+                } else {
+                    if (analyticEventCategory) {
+                        $cms.statsEventTrack(null, analyticEventCategory, null).then(function () {
+                            finishFormSubmit(true);
+                        });
+                    } else {
+                        finishFormSubmit(true);
+                    }
                 }
 
                 if (window.ajaxScreenDetectInterval !== undefined) {
@@ -245,15 +264,12 @@
                     delete window.ajaxScreenDetectInterval;
                 }
 
-                if (analyticEventCategory) {
-                    $cms.statsEventTrack(null, analyticEventCategory, null).then(function () {
-                        resolveSubmitPromise(true);
-                        form.submit();
-                        form.submittedAtLeastOnce = true;
-                    });
-                } else {
+                function finishFormSubmit(actuallySubmit)
+                {
                     resolveSubmitPromise(true);
-                    form.submit();
+                    if (actuallySubmit) {
+                        form.submit();
+                    }
                     form.submittedAtLeastOnce = true;
                 }
             });
@@ -262,15 +278,19 @@
 
     /**
      * @memberof $cms.form
+     * @param event
      * @param { HTMLFormElement } form
      * @param {string|URL} previewUrl
      * @param {boolean} [hasSeparatePreview]
+     * @param {array} extraChecks
      * @returns { Promise }
      */
-    $cms.form.doFormPreview = function doFormPreview(form, previewUrl, hasSeparatePreview) {
+    $cms.form.doFormPreview = function doFormPreview(event, form, previewUrl, hasSeparatePreview, extraChecks) {
         form = $dom.elArg(form);
         previewUrl = $util.url(previewUrl);
         hasSeparatePreview = Boolean(hasSeparatePreview);
+
+        form.lastSubmitEvent = event;
 
         return new Promise(function (resolvePreviewPromise) {
             if (!$dom.$('#preview-iframe')) {
@@ -278,10 +298,12 @@
                 return resolvePreviewPromise(false);
             }
 
-            var checkFormPromise = $cms.form.checkForm(form, true);
+            var checkFormPromise = $cms.form.checkForm(event, form, true, extraChecks);
 
             checkFormPromise.then(function (valid) {
                 if (!valid) {
+                    $dom.cancelSubmit(event);
+
                     resolvePreviewPromise(false);
                     return $util.promiseHalt();
                 }
@@ -290,22 +312,17 @@
                     previewUrl.searchParams.set('keep_mobile', (window.mobileVersionForPreview ? 1 : 0));
                 }
 
-                var oldAction = form.action;
-                if (!form.oldAction) {
-                    form.oldAction = oldAction;
+                if (!form.submitAction) {
+                    form.submitAction = form.action;
+                }
+                if (!form.submitTarget) {
+                    form.submitTarget = form.target || '_top'; // not _self due to edit screen being a frame itself
                 }
 
-                if ($util.url(form.oldAction).searchParams.get('uploading') === '1') {
+                if ($util.url(form.submitAction).searchParams.get('uploading') === '1') {
                     previewUrl.searchParams.set('uploading', '1');
                 }
-
                 form.action = $util.srl(previewUrl);
-
-                var oldTarget = form.target || '_top'; // not _self due to edit screen being a frame itself
-
-                if (!form.oldTarget) {
-                    form.oldTarget = oldTarget;
-                }
 
                 form.target = 'preview-iframe';
 
@@ -319,30 +336,32 @@
                 $cms.ui.alert({ notice: '{!javascript:PLEASE_WAIT_WHILE_UPLOADING;^}', single: true });
                 return $cms.form.startUploads(form);
             }).then(function () {
-                if ($dom.trigger(form, 'submit', { detail: { triggeredByDoFormPreview: true } }) === false) {
-                    $cms.ui.enableSubmitAndPreviewButtons();
-                    return resolvePreviewPromise(false);
-                }
+                // Call any event handlers on form.submit (we can have a preventDefault in a handler so the form will not actually submit)
+                var ret = $dom.trigger(form, 'submit', { detail: { triggeredByDoFormPreview: true } });
 
                 if (hasSeparatePreview) {
-                    var action = $util.url(form.oldAction);
+                    var action = $util.url(form.submitAction);
                     action.searchParams.set('preview', 1);
                     form.action = $util.srl(action);
-                    resolvePreviewPromise(true);
-                    form.submit();
-                    return;
+                } else {
+                    /* Do our loading-animation */
+                    setInterval($dom.triggerResize, 500);
+                    /* In case its running in an iframe itself */
+                    $dom.illustrateFrameLoad('preview-iframe');
+
+                    // Turn main post editing back off
+                    window.$editing.wysiwygSetReadonly('post', true);
                 }
 
-                /* Do our loading-animation */
-                setInterval($dom.triggerResize, 500);
-                /* In case its running in an iframe itself */
-                $dom.illustrateFrameLoad('preview-iframe');
+                finishFormSubmit(true);
 
-                // Turn main post editing back off
-                window.$editing.wysiwygSetReadonly('post', true);
-
-                resolvePreviewPromise(true);
-                form.submit();
+                function finishFormSubmit(actuallySubmit)
+                {
+                    resolvePreviewPromise(true);
+                    if (actuallySubmit) {
+                        form.submit();
+                    }
+                }
             });
         });
     };
@@ -439,11 +458,12 @@
 
     /**
      * @memberof $cms.form
+     * @param e
      * @param { HTMLFormElement } theForm
      * @param {boolean} [forPreview]
      * @returns { Promise<boolean> }
      */
-    $cms.form.checkForm = function checkForm(theForm, forPreview) {
+    $cms.form.checkForm = function checkForm(e, theForm, forPreview, extraChecks) {
         var deleteElement = $dom.$('#delete');
 
         // Skip checks if 'delete' checkbox is checked
@@ -452,9 +472,9 @@
         }
 
         return new Promise(function (resolveCheckFormPromise) {
-            var erroneous = false,
+            var erroneous = new Boolean(false),
                 totalFileSize = 0,
-                alerted = false,
+                alerted = new Boolean(false),
                 firstFieldWithError = null,
                 fieldElements = arrVal(theForm.elements),
                 fieldCheckPromiseCalls = [];
@@ -468,14 +488,18 @@
                             return;
                         }
 
-                        erroneous = result.erroneous || erroneous;
-                        if (!firstFieldWithError && result.erroneous) {
+                        if (result.erroneous.valueOf()) {
+                            erroneous.valueOf = function () { return true; };
+                        }
+                        if (!firstFieldWithError && result.erroneous.valueOf()) {
                             firstFieldWithError = fieldElement;
                         }
                         totalFileSize += result.totalFileSize;
-                        alerted = result.alerted || alerted;
+                        if (result.alerted.valueOf()) {
+                            alerted.valueOf = function () { return true; };
+                        }
 
-                        if (result.erroneous) {
+                        if (result.erroneous.valueOf()) {
                             if (fieldElement.type === 'radio') {
                                 for (var i = 0; i < theForm.elements.length; i++) {
                                     theForm.elements[i].onchange = function () { autoResetError(this); };
@@ -488,37 +512,50 @@
                 });
             });
 
-            $util.promiseSequence(fieldCheckPromiseCalls).then(function () {
+            extraChecks.forEach(function (extraCheck) {
+                var extraCheckResult = extraCheck(e, theForm, erroneous, alerted);
+                if (extraCheckResult === false) {
+                    erroneous.valueOf = function () { return true; };
+                } else if (typeof extraCheckResult === 'function') {
+                    fieldCheckPromiseCalls.push(function () { return extraCheckResult(); });
+                }
+            });
+
+            var fieldCheckPromises = $util.promiseSequence(fieldCheckPromiseCalls);
+
+            fieldCheckPromises.then(function () {
                 if ((totalFileSize > 0) && (theForm.elements['MAX_FILE_SIZE']) && (totalFileSize > theForm.elements['MAX_FILE_SIZE'].value)) {
-                    if (!erroneous) {
+                    if (!erroneous.valueOf()) {
                         firstFieldWithError = fieldElements[fieldElements.length - 1];
-                        erroneous = true;
+                        erroneous.valueOf = function () { return true; };
                     }
-                    if (!alerted) {
+                    if (!alerted.valueOf()) {
                         $cms.ui.alert($util.format('{!javascript:TOO_MUCH_FILE_DATA;^}', [Math.round(totalFileSize / 1024), Math.round(theForm.elements['MAX_FILE_SIZE'].value / 1024)]));
-                        alerted = true;
+                        alerted.valueOf = function () { return true; };
                     }
                 }
 
-                if (erroneous) {
-                    if (!alerted) {
+                if (erroneous.valueOf()) {
+                    if (!alerted.valueOf()) {
                         $cms.ui.alert({ notice: '{!IMPROPERLY_FILLED_IN;^}', single: true });
                     }
-                    var posy = $dom.findPosY(firstFieldWithError, true);
-                    if (posy === 0) {
-                        posy = $dom.findPosY(firstFieldWithError.parentNode, true);
-                    }
-                    if (posy !== 0) {
-                        $dom.smoothScroll(posy - 50, function () {
-                            try {
-                                firstFieldWithError.focus();
-                            } catch (e) {} // Can have exception giving focus on IE for invisible fields
-                        });
+                    if (firstFieldWithError !== null) {
+                        var posy = $dom.findPosY(firstFieldWithError, true);
+                        if (posy === 0) {
+                            posy = $dom.findPosY(firstFieldWithError.parentNode, true);
+                        }
+                        if (posy !== 0) {
+                            $dom.smoothScroll(posy - 50, function () {
+                                try {
+                                    firstFieldWithError.focus();
+                                } catch (e) {} // Can have exception giving focus on IE for invisible fields
+                            });
+                        }
                     }
                 }
 
                 // Try and workaround max_input_vars problem if lots of usergroups
-                if (!erroneous) {
+                if (!erroneous.valueOf()) {
                     var deleteE = document.getElementById('delete'),
                         isDelete = deleteE && (deleteE.type === 'checkbox') && deleteE.checked,
                         es = document.getElementsByTagName('select'), selectEl;
@@ -531,7 +568,7 @@
                     }
                 }
 
-                resolveCheckFormPromise(!erroneous);
+                resolveCheckFormPromise(!erroneous.valueOf());
             });
         });
 
@@ -539,7 +576,7 @@
             var checkResult = checkField(theElement, theForm);
 
             checkResult.then(function (result) {
-                if ((result != null) && !result.erroneous) {
+                if ((result != null) && !result.erroneous.valueOf()) {
                     $cms.form.setFieldError(theElement, '');
                 }
 
@@ -571,10 +608,10 @@
         return new Promise(function (resolveCheckFieldPromise) {
             var myValue,
                 required = false,
-                erroneous = false,
+                erroneous = new Boolean(false),
                 errorMsg = '',
                 totalFileSize = 0,
-                alerted = false;
+                alerted = new Boolean(false);
 
             // No checking for hidden elements
             if (((fieldElement.type === 'hidden') || (((fieldElement.style.display === 'none') || (fieldElement.parentNode.style.display === 'none') || (fieldElement.parentNode.parentNode.style.display === 'none') || (fieldElement.parentNode.parentNode.parentNode.style.display === 'none')) && (!$cms.form.isWysiwygField(fieldElement)))) && !fieldElement.classList.contains('hidden-but-needed')) {
@@ -604,9 +641,9 @@
                     }
                     if (!typeOk) {
                         errorMsg = $util.format('{!INVALID_FILE_TYPE;^}', [theFileType, '{$VALID_FILE_TYPES}']).replace(/<[^>]*>/g, '').replace(/&[lr][sd]quo;/g, '\'').replace(/,/g, ', ');
-                        if (!alerted) {
+                        if (!alerted.valueOf()) {
                             $cms.ui.alert(errorMsg);
-                            alerted = true;
+                            alerted.valueOf = function () { return true; };
                         }
                     }
                 }
@@ -632,7 +669,7 @@
 
                 if (plObj.settings.required && (fileNameField.value === '')) {
                     $cms.ui.alert({ notice: '{!IMPROPERLY_FILLED_IN;^}', single: true });
-                    alerted = true;
+                    alerted.valueOf = function () { return true; };
                     isBlank = true;
                 }
             }
@@ -692,11 +729,13 @@
                     errorMsg = errorMsgElement.getAttribute('data-errorRegexp');
                 }
 
-                erroneous = erroneous || (errorMsg !== '');
+                if (errorMsg !== '') {
+                    erroneous.valueOf = function () { return true; };
+                }
 
-                if (!erroneous) {
+                if (!erroneous.valueOf()) {
                     if (!fieldElement.checkValidity()) {
-                        erroneous = true;
+                        erroneous.valueOf = function () { return true; };
                         errorMsg = $util.format('{!javascript:PATTERN_NOT_MATCHED;^}', [myValue]);
                     }
                 }
@@ -830,6 +869,7 @@
     };
 
     /**
+     * Disable any special inline previewing code for the screen we are on.
      * @memberof $cms.form
      * @param context
      */

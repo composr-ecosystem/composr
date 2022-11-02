@@ -45,6 +45,9 @@ class Hook_change_detection_tickets
         }
 
         $ticket_id = get_param_string('id', null);
+        if ($ticket_id === null) {
+            return false;
+        }
 
         require_lang('tickets');
         require_code('tickets');

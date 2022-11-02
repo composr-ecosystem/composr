@@ -14,18 +14,6 @@
     }
 
     $util.inherits(CatalogueAddingScreen, $cms.View, /**@lends CatalogueAddingScreen#*/{
-        events: function () {
-            return {
-                'submit .js-form-catalogue-add': 'submit'
-            };
-        },
-
-        submit: function (e, form) {
-            if ($cms.form.isModSecurityWorkaroundEnabled() && !e.defaultPrevented) {
-                e.preventDefault();
-                $cms.form.modSecurityWorkaround(form);
-            }
-        }
     });
 
     $cms.views.CatalogueEditingScreen = CatalogueEditingScreen;
@@ -40,19 +28,7 @@
         catalogueFieldChangeWatching();
     }
 
-    $util.inherits(CatalogueEditingScreen, $cms.View, /**@lends CatalogueEditingScreen#*/{
-        events: function () {
-            return {
-                'submit .js-form-catalogue-edit': 'submit'
-            };
-        },
-
-        submit: function (e, form) {
-            if ($cms.form.isModSecurityWorkaroundEnabled() && !e.defaultPrevented) {
-                e.preventDefault();
-                $cms.form.modSecurityWorkaround(form);
-            }
-        }
+    $util.inherits(CatalogueEditingScreen, $cms.View, /**@lends CatalogueAddingScreen#*/{
     });
 
     $cms.functions.cmsCataloguesImportCatalogue = function cmsCataloguesImportCatalogue() {
@@ -79,29 +55,31 @@
     };
 
     $cms.functions.moduleCmsCataloguesRunStartAddCatalogue = function moduleCmsCataloguesRunStartAddCatalogue() {
-        var form = document.getElementById('new_field_0_name').form,
+        var extraChecks = [],
             validValue;
-
-        form.addEventListener('submit', function submitCheck(submitEvent) {
+        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
             var value = form.elements['catalogue_name'].value;
 
-            if ($dom.isCancelledSubmit(submitEvent) || (value === validValue)) {
-                return;
+            if ((value === validValue) || (value === '')) {
+                return true;
             }
 
-            var submitBtn = form.querySelector('#submit-button');
-            var url = '{$FIND_SCRIPT_NOHTTP;^,snippet}?snippet=exists_catalogue&name=' + encodeURIComponent(value) + $cms.keep();
-            submitEvent.preventDefault();
-            var promise = $cms.form.doAjaxFieldTest(url).then(function (valid) {
-                if (valid) {
-                    validValue = value;
-                }
+            return function () {
+                var url = '{$FIND_SCRIPT_NOHTTP;^,snippet}?snippet=exists_catalogue&name=' + encodeURIComponent(value) + $cms.keep();
+                return $cms.form.doAjaxFieldTest(url).then(function (valid) {
+                    if (valid) {
+                        validValue = value;
+                    }
 
-                return valid;
-            });
-
-            $dom.awaitValidationPromiseAndResubmit(submitEvent, promise, submitBtn);
+                    if (!valid) {
+                        erroneous.valueOf = function () { return true; };
+                        alerted.valueOf = function () { return true; };
+                        firstFieldWithError = form.elements['catalogue_name'];
+                    }
+                });
+            };
         });
+        return extraChecks;
     };
 
     $cms.functions.moduleCmsCataloguesCat = function moduleCmsCataloguesCat() {

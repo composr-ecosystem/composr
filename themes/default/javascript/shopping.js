@@ -30,22 +30,17 @@
     $cms.templates.ecomShoppingCartScreen = function (params) {
         var container = this,
             typeCodes = strVal(params.typeCodes),
-            emptyCaryUrl = strVal(params.emptyCartUrl);
+            emptyCartUrl = strVal(params.emptyCartUrl);
 
         $dom.on(container, 'click', '.js-click-btn-cart-update', function (e) {
-            if (updateCart(typeCodes) === false) {
+            if (!updateCart(typeCodes)) {
                 e.preventDefault();
             }
         });
 
         $dom.on(container, 'click', '.js-click-btn-cart-empty', function (e, btn) {
-            if (confirmEmpty('{!shopping:EMPTY_CONFIRM;}', emptyCaryUrl, btn.form) === false) {
-                e.preventDefault();
-            }
-        });
-
-        $dom.on(container, 'click', '.js-click-do-cart-form-submit', function (e, btn) {
-            $cms.form.doFormSubmit(btn.form);
+            e.preventDefault();
+            confirmEmpty('{!shopping:EMPTY_CONFIRM;}', emptyCartUrl, btn.form);
         });
 
         function updateCart(proIds) {
@@ -63,6 +58,8 @@
                     return false;
                 }
             }
+
+            return true;
         }
 
         function confirmEmpty(message, actionUrl, form) {
@@ -71,16 +68,15 @@
                 function (result) {
                     if (result) {
                         form.action = actionUrl;
-                        $dom.submit(form);
+                        $dom.trigger(form, 'submit');
                     }
                 }
             );
-            return false;
         }
     };
 
     $cms.templates.ecomAdminOrdersScreen = function ecomAdminOrdersScreen(params, container) {
-        $dom.on(container, 'submit', '.js-submit-scroll-to-top', function () {
+        $dom.on(container, 'click', '.js-scroll-to-top', function () {
             try {
                 scrollTo(0, 0);
             } catch (ignore) {}
@@ -90,35 +86,30 @@
     $cms.templates.ecomAdminOrderActions = function ecomAdminOrderActions(params, container) {
         $dom.on(container, 'change', '.js-select-change-action-submit-form', function (e, select) {
             if (select.selectedIndex > 0) {
-                $dom.submit(select.form);
-            }
-        });
+                var actionName = select.value,
+                    form = select.form;
 
-        $dom.on(container, 'submit', '.js-submit-confirm-admin-order-actions', function (e, form) {
-            var actionName = form.elements.action.value;
-
-            if (actionName === 'dispatch') {
-                $cms.ui.confirm(
-                    '{!shopping:DISPATCH_CONFIRMATION_MESSAGE;^}',
-                    function (result) {
-                        if (result) {
-                            $cms.ui.disableFormButtons(form);
-                            $dom.submit(form);
+                if (actionName === 'dispatch') {
+                    $cms.ui.confirm(
+                        '{!shopping:DISPATCH_CONFIRMATION_MESSAGE;^}',
+                        function (result) {
+                            if (result) {
+                                $dom.trigger(form, 'submit');
+                            }
                         }
-                    }
-                );
-            }
-
-            if (actionName === 'del_order') {
-                $cms.ui.confirm(
-                    '{!shopping:CANCEL_ORDER_CONFIRMATION_MESSAGE;^}',
-                    function (result) {
-                        if (result) {
-                            $cms.ui.disableFormButtons(form);
-                            $dom.submit(form);
+                    );
+                } else if (actionName === 'del_order') {
+                    $cms.ui.confirm(
+                        '{!shopping:CANCEL_ORDER_CONFIRMATION_MESSAGE;^}',
+                        function (result) {
+                            if (result) {
+                                $dom.trigger(form, 'submit');
+                            }
                         }
-                    }
-                );
+                    );
+                } else {
+                    $dom.trigger(form, 'submit');
+                }
             }
         });
     };
@@ -134,12 +125,4 @@
             document.getElementById('cart-update-button').classList.remove('button-faded');
         });
     };
-
-    window.checkout = checkout;
-    function checkout(formName, checkoutUrl) {
-        var form = document.getElementById(formName);
-        form.action = checkoutUrl;
-        $dom.submit(form);
-        return true;
-    }
 }(window.$cms, window.$util, window.$dom));
