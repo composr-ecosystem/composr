@@ -68,7 +68,7 @@
                 function (result) {
                     if (result) {
                         form.action = actionUrl;
-                        form.submit();
+                        $dom.trigger(form, 'submit');
                     }
                 }
             );

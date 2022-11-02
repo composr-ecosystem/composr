@@ -3,7 +3,7 @@
 <div data-tpl="ecomShoppingCartScreen" data-tpl-params="{+START,PARAMS_JSON,TYPE_CODES,EMPTY_CART_URL}{_*}{+END}">
 	{TITLE}
 
-	<form title="{!PRIMARY_PAGE_FORM}" action="{UPDATE_CART_URL*}" method="post" itemscope="itemscope" itemtype="http://schema.org/CheckoutPage" class="js-submission-flow" data-view="SubmissionFlow" data-view-params="{+START,PARAMS_JSON,JS_FUNCTION_CALLS}{_*}{+END}">
+	<form title="{!PRIMARY_PAGE_FORM}" action="{UPDATE_CART_URL*}" method="post" itemscope="itemscope" itemtype="http://schema.org/CheckoutPage">
 		{$INSERT_FORM_POST_SECURITY}
 
 		{RESULTS_TABLE}
@@ -13,7 +13,7 @@
 				<div class="buttons-group-inner">
 					{$,Put first, so it associates with the enter key}
 					{+START,IF_NON_EMPTY,{TYPE_CODES}}
-						<button id="cart-update-button" class="btn btn-secondary btn-scr buttons--cart-update button-faded js-click-btn-cart-update" type="submit" name="update" title="{!UPDATE_CART}">{+START,INCLUDE,ICON}NAME=buttons/cart_update{+END} {!_UPDATE_CART}</button>
+						<button id="cart-update-button" class="btn btn-secondary btn-scr buttons--cart-update button-faded js-click-btn-cart-update" type="submit" title="{!UPDATE_CART}">{+START,INCLUDE,ICON}NAME=buttons/cart_update{+END} {!_UPDATE_CART}</button>
 					{+END}
 
 					{+START,IF_NON_EMPTY,{EMPTY_CART_URL}}
@@ -47,7 +47,7 @@
 	{+END}
 
 	{+START,IF_NON_EMPTY,{EMPTY_CART_URL}}
-		<form title="{!PRIMARY_PAGE_FORM}" method="post" enctype="multipart/form-data" action="{NEXT_URL*}">
+		<form title="{!PRIMARY_PAGE_FORM}" method="post" enctype="multipart/form-data" action="{NEXT_URL*}" class="js-submission-flow" data-view="SubmissionFlow" data-view-params="{+START,PARAMS_JSON,JS_FUNCTION_CALLS}{_*}{+END}">
 			{$INSERT_FORM_POST_SECURITY}
 
 			{+START,IF_PASSED,FIELDS}
