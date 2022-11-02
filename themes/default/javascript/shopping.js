@@ -30,7 +30,7 @@
     $cms.templates.ecomShoppingCartScreen = function (params) {
         var container = this,
             typeCodes = strVal(params.typeCodes),
-            emptyCaryUrl = strVal(params.emptyCartUrl);
+            emptyCartUrl = strVal(params.emptyCartUrl);
 
         $dom.on(container, 'click', '.js-click-btn-cart-update', function (e) {
             if (!updateCart(typeCodes)) {
@@ -40,7 +40,7 @@
 
         $dom.on(container, 'click', '.js-click-btn-cart-empty', function (e, btn) {
             e.preventDefault();
-            confirmEmpty('{!shopping:EMPTY_CONFIRM;}', emptyCaryUrl, btn.form);
+            confirmEmpty('{!shopping:EMPTY_CONFIRM;}', emptyCartUrl, btn.form);
         });
 
         function updateCart(proIds) {
@@ -86,7 +86,8 @@
     $cms.templates.ecomAdminOrderActions = function ecomAdminOrderActions(params, container) {
         $dom.on(container, 'change', '.js-select-change-action-submit-form', function (e, select) {
             if (select.selectedIndex > 0) {
-                var actionName = select.value;
+                var actionName = select.value,
+                    form = select.form;
 
                 if (actionName === 'dispatch') {
                     $cms.ui.confirm(
@@ -107,7 +108,7 @@
                         }
                     );
                 } else {
-                    $dom.trigger(select.form, 'submit');
+                    $dom.trigger(form, 'submit');
                 }
             }
         });

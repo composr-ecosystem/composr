@@ -40,7 +40,7 @@
         });
 
         function checkFiledumpSelections(form) {
-            var action = form.elements['action'].value;
+            var action = form.elements['filedump_action'].value;
 
             if (!action) {
                 $cms.ui.alert('{!filedump:SELECT_AN_ACTION;^}');

@@ -740,7 +740,7 @@ class Module_admin_stats extends Standard_crud_module
             $hidden->attach($hidden_fields);
         }
 
-        $fields->attach(form_input_float(do_lang_tempcode('TARGET'), do_lang_tempcode('DESCRIPTION_KPI_TARGET'), 'target', $target, false));
+        $fields->attach(form_input_float(do_lang_tempcode('TARGET'), do_lang_tempcode('DESCRIPTION_KPI_TARGET'), 'target_to_reach', $target, false));
 
         $fields->attach(form_input_line(do_lang_tempcode('TITLE'), do_lang_tempcode('DESCRIPTION_TITLE'), 'title', $title, true));
 
@@ -791,7 +791,7 @@ class Module_admin_stats extends Standard_crud_module
     public function add_actualisation() : array
     {
         $graph_name = post_param_string('graph_name');
-        $_target = post_param_string('target', '');
+        $_target = post_param_string('target_to_reach', '');
         $target = ($_target == '') ? null : floatval($_target);
         $title = post_param_string('title');
         $notes = post_param_string('notes');
@@ -826,7 +826,7 @@ class Module_admin_stats extends Standard_crud_module
     public function edit_actualisation(string $id) : ?object
     {
         $graph_name = post_param_string('graph_name');
-        $_target = post_param_string('target', '');
+        $_target = post_param_string('target_to_reach', '');
         $target = ($_target == '') ? null : floatval($_target);
         $title = post_param_string('title');
         $notes = post_param_string('notes');

@@ -42,7 +42,7 @@ class Hook_rss_cns_birthdays
 
         $days = get_param_integer('days', 30);
 
-        $method = get_param_string('method', 'happened'); // happened|happening|stream_in
+        $method = get_param_string('algorithm', 'happened'); // happened|happening|stream_in
 
         if ($method == 'happening') {
             if ($cutoff < time()) {

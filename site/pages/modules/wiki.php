@@ -946,7 +946,7 @@ class Module_wiki
 
         require_code('form_templates');
 
-        $fields = form_input_tree_list(do_lang_tempcode('DESTINATION'), '', 'target', null, 'choose_wiki_page', [], true, strval($id));
+        $fields = form_input_tree_list(do_lang_tempcode('DESTINATION'), '', 'new_page', null, 'choose_wiki_page', [], true, strval($id));
 
         $hidden = form_input_hidden('source', strval($post_id));
 
@@ -971,7 +971,7 @@ class Module_wiki
     public function _move() : object
     {
         $post_id = post_param_integer('source');
-        $target = post_param_integer('target');
+        $target = post_param_integer('new_page');
         $_id = get_param_wiki_chain('id');
         $id = $_id[0];
 

@@ -106,7 +106,7 @@ The filter is driven by [page="_SEARCH:tut_selectcode"]Selectcode[/page]. This i
 
 Note also how there is a [tt]days[/tt] parameter and a [tt]max[/tt] parameter for limiting results. These work in the obvious way.
 
-Birthdays and Calendar are implemented with extra configurability. By default they will show events that have happened (i.e. news-style). However you can pass [tt]method=happening[/tt] to show events happening in the future (within the specified time window) or [tt]method=stream_in[/tt] to show events as they become known to the system (i.e. when calendar events are added or members join).
+Birthdays and Calendar are implemented with extra configurability. By default they will show events that have happened (i.e. news-style). However you can pass [tt]algorithm=happening[/tt] to show events happening in the future (within the specified time window) or [tt]algorithm=stream_in[/tt] to show events as they become known to the system (i.e. when calendar events are added or members join).
 
 Be aware that feeds may be filtered or empty depending on access permissions. Particularly, if you use a 3rd party service to process your feed it will be accessing that feed as a guest user, unless you set up HTTP authentication with a valid member's username or password.
 [/surround]

@@ -44,7 +44,7 @@ class Hook_rss_calendar
             return null;
         }
 
-        $method = get_param_string('method', 'happened'); // happened|happening|stream_in
+        $method = get_param_string('algorithm', 'happened'); // happened|happening|stream_in
 
         if ($method == 'happening') {
             if ($cutoff < time()) {

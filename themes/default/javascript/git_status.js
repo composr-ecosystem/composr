@@ -36,11 +36,11 @@
         },
 
         refreshWithIgnored: function () {
-            this.form.elements['action'].value = 'include';
+            this.form.elements['git_action'].value = 'include';
         },
 
         refreshWithoutIgnored: function () {
-            this.form.elements['action'].value = 'exclude';
+            this.form.elements['git_action'].value = 'exclude';
         },
 
         showLocalShellPaths: function () {
@@ -48,17 +48,17 @@
         },
 
         downloadLocalTar: function () {
-            this.form.elements['action'].value = 'local_tar';
+            this.form.elements['git_action'].value = 'local_tar';
         },
 
         push: function () {
-            this.form.elements['action'].value = 'push';
+            this.form.elements['git_action'].value = 'push';
         },
 
         deleteLocalChanges: function () {
             $cms.ui.confirm('Are you sure you want to delete the local changes?', function(result) {
                 if (result) {
-                    this.form.elements['action'].value = 'revert';
+                    this.form.elements['git_action'].value = 'revert';
                     $dom.trigger(this.form, 'submit');
                 }
             });
@@ -77,11 +77,11 @@
         },
 
         downloadRemoteTar: function () {
-            this.form.elements['action'].value = 'remote_tar';
+            this.form.elements['git_action'].value = 'remote_tar';
         },
 
         pull: function () {
-            this.form.elements['action'].value = 'pull';
+            this.form.elements['git_action'].value = 'pull';
         },
 
         remoteSelectAll: function () {

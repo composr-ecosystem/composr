@@ -31,8 +31,8 @@ if (($git_live_branch != '') && ($current_branch != $git_live_branch)) {
 $type = get_param_string('type', 'browse');
 if ($type == 'browse') {
     git_status__browse();
-} elseif ($type == 'action') {
-    $action = post_param_string('action');
+} elseif ($type == 'git_action') {
+    $action = post_param_string('git_action');
     switch ($action) {
         case 'local_tar':
             git_status__local_tar(); // Exits

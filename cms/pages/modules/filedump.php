@@ -192,7 +192,7 @@ class Module_filedump
         }
 
         if ($type == 'mass') {
-            $action = post_param_string('action');
+            $action = post_param_string('filedump_action');
             switch ($action) {
                 case 'edit':
                     $this->title = get_screen_title('FILEDUMP_EDIT');
@@ -1019,7 +1019,7 @@ class Module_filedump
      */
     public function do_mass() : object
     {
-        $action = post_param_string('action');
+        $action = post_param_string('filedump_action');
         switch ($action) {
             case 'zip':
                 require_code('zip');
