@@ -649,7 +649,7 @@ class Module_recommend
             }
 
             if ((may_use_invites()) && (post_param_integer('invite', 0) == 1)) {
-                send_recommendation_email($name, $email_address, $_message, true, $recommender_email_address, post_param_string('subject', null), $names_to_send[$key]);
+                send_recommendation_email($name, $email_address, $_message, true, $recommender_email_address, post_param_string('subject', null), [$names_to_send[$key]]);
 
                 $GLOBALS['FORUM_DB']->query_insert('f_invites', [
                     'i_inviter' => get_member(),
@@ -674,7 +674,7 @@ class Module_recommend
             }
 
             if (!$invite) {
-                send_recommendation_email($name, $email_address, $_message, false, $recommender_email_address, post_param_string('subject', null), $names_to_send[$key]);
+                send_recommendation_email($name, $email_address, $_message, false, $recommender_email_address, post_param_string('subject', null), [$names_to_send[$key]]);
             }
         }
 

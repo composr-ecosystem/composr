@@ -9,11 +9,11 @@
 				<label class="accessibility-hidden" for="post_{CHATROOM_ID*}">{!MESSAGE}</label>
 				<textarea class="form-control input-required im-post-field js-keypress-eat-enter js-keyup-textarea-chat-post" id="post_{CHATROOM_ID*}" name="post_{CHATROOM_ID*}" cols="30" rows="1"></textarea>
 
+				<button class="btn btn-primary btn-sm buttons--send js-click-chatroom-chat-post" type="button">{+START,INCLUDE,ICON}NAME=buttons/send{+END} <span>{!MAKE_POST_SHORT}</span></button>
+
 				{+START,IF,{$CNS}}
 					<a rel="nofollow" class="horiz-field-sep js-click-open-chat-emoticons-popup" href="#!" title="{!EMOTICONS_POPUP} {!LINK_NEW_WINDOW}">{+START,INCLUDE,ICON}NAME=editor/insert_emoticons{+END}</a>
 				{+END}
-
-				<button class="btn btn-primary btn-sm buttons--send js-click-chatroom-chat-post" type="button">{+START,INCLUDE,ICON}NAME=buttons/send{+END} <span>{!MAKE_POST_SHORT}</span></button>
 			</div>
 		{+END}
 

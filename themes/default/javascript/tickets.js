@@ -2,12 +2,16 @@
     'use strict';
 
     $cms.templates.supportTicketsScreen = function (params, container) {
-        $dom.on(container, 'submit', '.js-form-submit-scroll-to-top', function () {
-            scrollTo(0, 0);
+        $dom.on(container, 'click', '.js-scroll-to-top', function () {
+            try {
+                scrollTo(0, 0);
+            } catch (ignore) {}
         });
     };
 
     $cms.templates.supportTicketScreen = function supportTicketScreen(params, container) {
+        var form = $dom.$(container, '.comments-form');
+
         if ((params.serializedOptions != null) && (params.hash != null)) {
             window.commentsSerializedOptions = strVal(params.serializedOptions);
             window.commentsHash = strVal(params.hash);
@@ -23,9 +27,14 @@
             $cms.form.updateAjaxMemberList(input, null, false, e);
         });
 
-        $dom.on(container, 'submit', '.js-submit-check-post-and-ticket-type-id-fields', function (e, form) {
-            if (!$cms.form.checkFieldForBlankness(form.elements.post) || (form.elements['ticket_type_id'] && !$cms.form.checkFieldForBlankness(form.elements['ticket_type_id']))) {
-                e.preventDefault();
+        if (typeof form.extraChecks == 'undefined') {
+            form.extraChecks = [];
+        }
+        form.extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
+            if (form.elements['ticket_type_id'] && !$cms.form.checkFieldForBlankness(form.elements['ticket_type_id'])) {
+                erroneous.valueOf = function () { return true; };
+                firstFieldWithError = form.elements['post'];
+                return false;
             }
         });
     };

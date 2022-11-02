@@ -13,7 +13,7 @@
 		{+START,IF,{HAS_PAGINATION}}
 			<p>
 				<label for="filter">{!FILTER}:</label>
-				<input type="text" id="filter" class="form-control" name="filter" value="{FILTER*}" data-submit-on-enter="1" />
+				<input type="text" id="filter" class="form-control" name="filter" value="{FILTER*}" />
 				<button class="btn btn-primary btn-sm buttons--filter" type="submit">{+START,INCLUDE,ICON}NAME=buttons/filter{+END} <span>{!FILTER}</span></button>
 			</p>
 		{+END}

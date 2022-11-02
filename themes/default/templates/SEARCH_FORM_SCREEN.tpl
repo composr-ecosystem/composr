@@ -39,7 +39,7 @@
 		{+END}
 
 		<div id="search-form" class="toggleable-tray js-tray-content"{+START,IF_PASSED,RESULTS}{+START,IF_NON_EMPTY,{RESULTS}} style="display: none"{+END}{+END} aria-expanded="false">
-			<form title="{!PRIMARY_PAGE_FORM}" action="{$URL_FOR_GET_FORM*,{URL}}" target="_self" method="get" class="main-search-form js-form-primary-form">
+			<form title="{!PRIMARY_PAGE_FORM}" action="{$URL_FOR_GET_FORM*,{URL}}" target="_self" method="get" class="main-search-form js-search-form">
 				{$HIDDENS_FOR_GET_FORM,{URL}}
 				<input type="hidden" name="all_defaults" value="0" />
 
@@ -58,7 +58,7 @@
 							<td class="form-table-field-input" colspan="2">
 								<div class="accessibility-hidden"><label for="search-content">{!SEARCH_FOR}</label></div>
 								<div>
-									<input maxlength="255"{+START,IF,{$MOBILE}} autocorrect="off"{+END} class="search-content form-control form-control-wide js-keyup-update-ajax-search-list js-keypress-enter-submit-primary-form" type="search" size="{$?,{$MOBILE},30,48}" id="search-content" name="content" value="{+START,IF_PASSED,CONTENT}{CONTENT*}{+END}" />
+									<input maxlength="255"{+START,IF,{$MOBILE}} autocorrect="off"{+END} class="search-content form-control form-control-wide js-keyup-update-ajax-search-list" type="search" size="{$?,{$MOBILE},30,48}" id="search-content" name="content" value="{+START,IF_PASSED,CONTENT}{CONTENT*}{+END}" />
 								</div>
 
 								{+START,IF,{HAS_TEMPLATE_SEARCH}}

@@ -332,7 +332,7 @@
             var deleteField = form.elements['delete'];
 
             deleteField.value = '1';
-            form.submit();
+            $dom.trigger(form, 'submit');
         });
     };
 
@@ -440,7 +440,7 @@
             refreshTime = Number(params.refreshTime) || 0;
 
         if ((typeof params.rollover === 'string') && (params.rollover !== '')) {
-            $cms.createRollover(img.id, params.rollover);
+            $cms.ui.createRollover(img.id, params.rollover);
         }
 
         if (refreshTime > 0) {

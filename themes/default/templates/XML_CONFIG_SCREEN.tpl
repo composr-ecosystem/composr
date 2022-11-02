@@ -3,7 +3,7 @@
 <div data-view="XmlConfigScreen">
 	{TITLE}
 
-	<form title="{!PRIMARY_PAGE_FORM}" action="{POST_URL*}" method="post" class="js-form-xml-config">
+	<form title="{!PRIMARY_PAGE_FORM}" action="{POST_URL*}" method="post" data-submit-modsecurity-workaround="1">
 		{$INSERT_FORM_POST_SECURITY}
 
 		<div>

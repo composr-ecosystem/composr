@@ -59,7 +59,7 @@
             $cms.ui.confirm('Are you sure you want to delete the local changes?', function(result) {
                 if (result) {
                     this.form.elements['action'].value = 'revert';
-                    this.form.submit();
+                    $dom.trigger(this.form, 'submit');
                 }
             });
         },

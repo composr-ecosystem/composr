@@ -14,14 +14,15 @@
     $util.inherits(BlockMainSearch, $cms.View, /**@lends BlockMainSearch#*/{
         events: function () {
             return {
-                'submit form.js-form-submit-main-search': 'submitMainSearch',
+                'click .js-main-search': 'submitMainSearch',
                 'keyup .js-keyup-update-ajax-search-list-with-type': 'updateAjaxSearchListWithType',
                 'keyup .js-keyup-update-ajax-search-list': 'updateAjaxSearchList'
             };
         },
 
-        submitMainSearch: function (e, form) {
-            if ((form.elements.content == null) || $cms.form.checkFieldForBlankness(form.elements.content)) {
+        submitMainSearch: function (e, button) {
+            var form = button.form;
+            if ((form.elements['content'] == null) || $cms.form.checkFieldForBlankness(form.elements.content)) {
                 $cms.ui.disableFormButtons(form);
             } else {
                 e.preventDefault();
@@ -46,22 +47,16 @@
     function SearchFormScreen() {
         SearchFormScreen.base(this, 'constructor', arguments);
 
-        this.primaryFormEl = this.$('.js-form-primary-form');
+        this.searchFormEl = this.$('.js-search-form');
     }
 
     $util.inherits(SearchFormScreen, $cms.View, /**@lends SearchFormScreen#*/{
         events: function () {
             return {
-                'keypress .js-keypress-enter-submit-primary-form': 'submitPrimaryForm',
                 'keyup .js-keyup-update-ajax-search-list': 'updateAjaxSearchList',
                 'keyup .js-keyup-update-author-list': 'updateAuthorList',
                 'click .js-click-trigger-resize': 'triggerResize'
             };
-        },
-        submitPrimaryForm: function (e) {
-            if ($dom.keyPressed(e, 'Enter')) {
-                $dom.submit(this.primaryFormEl);
-            }
         },
         updateAjaxSearchList: function (e, input) {
             var params = this.params;
@@ -83,17 +78,20 @@
     $cms.templates.blockTopSearch = function (params, container) {
         var searchType = $cms.filter.nl(params.searchType);
 
-        $dom.on(container, 'submit', function (e, form) {
-            if (form.elements.content === undefined) {
+        $dom.on(container, 'click', 'button', function (e, form) {
+            if (form.elements['content'] === undefined) {
+                // Succeed (no search)
                 $cms.ui.disableFormButtons(form);
                 return;
             }
 
-            if ($cms.form.checkFieldForBlankness(form.elements.content)) {
+            if ($cms.form.checkFieldForBlankness(form.elements['content'])) {
+                // Succeed
                 $cms.ui.disableFormButtons(form);
                 return;
             }
 
+            // Fail
             e.preventDefault();
         });
 

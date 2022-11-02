@@ -155,7 +155,7 @@ class RevisionEngineFiles
             $_ext = get_file_extension($f);
             if (is_numeric($_ext)) {
                 $time = intval($_ext);
-                if (($revision_time !== null) && ($revision_time != filemtime($f))) {
+                if (($revision_time !== null) && ($revision_time != $time)) {
                     continue;
                 }
 

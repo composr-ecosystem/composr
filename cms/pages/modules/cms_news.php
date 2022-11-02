@@ -39,6 +39,7 @@ class Module_cms_news extends Standard_crud_module
     protected $menu_label = 'NEWS';
     protected $table = 'news';
     protected $orderer = 'title';
+    protected $supports_mass_delete = true;
 
     protected $donext_type = null;
 

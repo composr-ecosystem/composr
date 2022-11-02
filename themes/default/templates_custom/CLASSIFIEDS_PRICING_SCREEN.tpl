@@ -4,7 +4,10 @@
 	{!CLASSIFIEDS_SET_PRICES}
 </p>
 
-<form id="main-form" action="{POST_URL*}" method="post">
+<form id="main-form" action="{POST_URL*}" method="post" class="js-submission-flow" data-view="SubmissionFlow" data-view-params="{+START,INCLUDE,FORM_STANDARD_START}
+	FORM_NAME=main-form
+	SUPPORT_AUTOSAVE=1
+{+END}">
 	{$INSERT_FORM_POST_SECURITY}
 
 	<div>
@@ -47,9 +50,6 @@
 			</tbody>
 		</table></div>
 
-		{+START,INCLUDE,FORM_STANDARD_END}
-			FORM_NAME=main-form
-			SUPPORT_AUTOSAVE=1
-		{+END}
+		{+START,INCLUDE,FORM_STANDARD_END}{+END}
 	</div>
 </form>

@@ -3044,7 +3044,7 @@ class Module_topics
                 ];
             }
         }
-        $fields->attach(form_input_line_multi(do_lang_tempcode('ANSWERS'), do_lang_tempcode('_DESCRIPTION_ANSWERS'), 'answer_', $default_options, 0, null, 'line', null, null, $_default_options['confined']));
+        $fields->attach(form_input_line_multi(do_lang_tempcode('ANSWERS'), do_lang_tempcode('_DESCRIPTION_ANSWERS'), 'answer_', $default_options, 1, null, 'line', null, null, $_default_options['confined']));
         if ($_default_options['confined']) {
             $fields->attach(form_input_hidden('answers-confined', json_encode($default_options_names)));
         }

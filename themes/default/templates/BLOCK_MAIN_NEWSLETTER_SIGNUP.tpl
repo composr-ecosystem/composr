@@ -11,7 +11,7 @@
 	<section class="box box---block-main-newsletter-signup" data-tpl="blockMainNewsletterSignup" data-tpl-params="{+START,PARAMS_JSON,NID}{_*}{+END}"><div class="box-inner">
 		<h3>{!NEWSLETTER}{$?,{$NEQ,{NEWSLETTER_TITLE},{!GENERAL}},: {NEWSLETTER_TITLE*}}</h3>
 
-		<form class="js-form-newsletter-email-subscribe" title="{!NEWSLETTER}" action="{URL*}" method="post">
+		<form title="{!NEWSLETTER}" action="{URL*}" method="post">
 			{$INSERT_FORM_POST_SECURITY}
 
 			{+START,IF_NON_PASSED_OR_FALSE,BUTTON_ONLY}
@@ -30,7 +30,7 @@
 			{+END}
 
 			<p class="proceed-button">
-				<button class="btn btn-primary btn-scri" type="submit">{+START,INCLUDE,ICON}NAME=menu/site_meta/newsletters{+END} <span>{!SUBSCRIBE}</span></button>
+				<button class="btn btn-primary btn-scri js-newsletter-email-subscribe" type="submit">{+START,INCLUDE,ICON}NAME=menu/site_meta/newsletters{+END} <span>{!SUBSCRIBE}</span></button>
 			</p>
 		</form>
 	</div></section>

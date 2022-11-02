@@ -263,7 +263,7 @@
                         '    <span id="' + that.name + 'extra_' + node.getAttribute('id') + '">' + extra + '</span>' +
                         '</div>');
                     var expandButton = nodeSelf.querySelector('.ajax-tree-expand-icon');
-                    expandButton.oncontextmenu = function () { return false; };
+                    expandButton.oncontextmenu = function (e) { e.preventDefault(); };
 
                     $dom.on(expandButton, 'click', function (e) {
                         e.preventDefault();
@@ -287,7 +287,7 @@
                             that.handleTreeClick(false, expandButton);
                         }
                     };
-                    label.oncontextmenu = function () { return false; };
+                    label.oncontextmenu = function (e) { e.preventDefault(); };
                     label.firstElementChild.addEventListener('focus', function () {
                         label.style.outline = '1px dotted';
                     });
@@ -507,7 +507,7 @@
             var expandBtn = $dom.$id(this.name + 'texp-c-' + clickedId);
             var expandBtnIcon = expandBtn.querySelector('.icon');
 
-            var expanding = $dom.notDisplayed(htmlNode);
+            var expanding = !$dom.isDisplayed(htmlNode);
 
             if (expanding) {
                 xmlNode = this.getElementByIdHack(clickedId, 'c');
@@ -542,7 +542,7 @@
                 }
 
                 if (expandBtnIcon) {
-                    $cms.setIcon(expandBtnIcon, 'tree_field/collapse', '{$IMG;,icons/tree_field/collapse}');
+                    $cms.ui.setIcon(expandBtnIcon, 'tree_field/collapse', '{$IMG;,icons/tree_field/collapse}');
                 }
             } else {
                 xmlNode = this.getElementByIdHack(clickedId, 'c');
@@ -556,7 +556,7 @@
                 }
 
                 if (expandBtnIcon) {
-                    $cms.setIcon(expandBtnIcon, 'tree_field/expand', '{$IMG;,icons/tree_field/expand}');
+                    $cms.ui.setIcon(expandBtnIcon, 'tree_field/expand', '{$IMG;,icons/tree_field/expand}');
                 }
             }
 

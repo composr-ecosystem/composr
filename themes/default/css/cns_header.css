@@ -67,6 +67,10 @@ html.is-touch-enabled .cns-information-bar-outer html.is-touch-enabled .toggleab
 	vertical-align: middle;
 }
 
+.cns-guest-column-a .horizontal-links {
+	text-align: left;
+}
+
 .cns-guest-column-a .horizontal-links, .cns-guest-column-a .horizontal-links li {
 	vertical-align: top; /* This rebalances it in the alignment order due to the extra element nesting */
 }

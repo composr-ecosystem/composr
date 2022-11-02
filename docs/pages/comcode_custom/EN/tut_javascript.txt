@@ -45,7 +45,7 @@ $cms.ui.prompt('Question goes here', 'Default value', null, 'Modal title'); // S
 [title="3"]The [b]$cms.form[/b] library[/title]
 This library consists of form validation and manipulation functions.
 [code="JavaScript"]
-$cms.form.checkForm(formElement); // Returns an ES6 promise that resolves with a boolean indicating form validity.
+$cms.form.checkForm(event, formElement); // Returns an ES6 promise that resolves with a boolean indicating form validity.
 
 $cms.form.doAjaxFieldTest(checkUrl); // Returns an ES6 promise that resolves with a boolean indicating field validity.
 

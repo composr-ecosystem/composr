@@ -47,7 +47,7 @@
 
 			{+START,INCLUDE,FORM_SCREEN_ARE_REQUIRED}{+END}
 
-			<form title="{!PRIMARY_PAGE_FORM}" id="main-form" method="post" action="{URL_EDIT_FILE*}" enctype="multipart/form-data" target="_top">
+			<form title="{!PRIMARY_PAGE_FORM}" id="main-form" method="post" action="{URL_EDIT_FILE*}" enctype="multipart/form-data" target="_top" class="js-submission-flow" data-view="SubmissionFlow" data-view-params="{+START,INCLUDE,FORM_STANDARD_START}FORM_NAME=main-form{+END}">
 				{$INSERT_FORM_POST_SECURITY}
 
 				<div>
@@ -67,7 +67,6 @@
 					</table></div>
 
 					{+START,INCLUDE,FORM_STANDARD_END}
-						FORM_NAME=main-form
 						SUBMIT_ICON=admin/edit_this
 						SUBMIT_NAME={!SAVE}
 					{+END}
@@ -79,7 +78,10 @@
 		<div aria-labelledby="t-themewizard" role="tabpanel" id="g-themewizard" style="display: none">
 			<p>{!THEME_IMAGE_RECOLOUR_DESCRIPTION}</p>
 
-			<form id="themewizard-form" title="{!THEMEWIZARD}" class="float-surrounder" method="post" action="{URL_THEMEWIZARD*}" enctype="multipart/form-data" target="_top">
+			<form id="themewizard-form" title="{!THEMEWIZARD}" class="float-surrounder js-submission-flow" method="post" action="{URL_THEMEWIZARD*}" enctype="multipart/form-data" target="_top" data-view="SubmissionFlow" data-view-params="{+START,INCLUDE,FORM_STANDARD_START}
+				FORM_NAME=themewizard-form
+				PREVIEW=1
+			{+END}">
 				{$INSERT_FORM_POST_SECURITY}
 
 				<div>
@@ -99,7 +101,6 @@
 					</table></div>
 
 					{+START,INCLUDE,FORM_STANDARD_END}
-						FORM_NAME=themewizard-form
 						SUBMIT_ICON=menu/adminzone/style/themes/themewizard
 						SUBMIT_NAME={!SAVE}
 						PREVIEW=1

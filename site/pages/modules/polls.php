@@ -318,7 +318,7 @@ class Module_polls
         $date_raw = ($myrow['date_and_time'] === null) ? '' : strval($myrow['date_and_time']);
         $add_date_raw = strval($myrow['add_time']);
         $edit_date_raw = ($myrow['edit_date'] === null) ? '' : strval($myrow['edit_date']);
-        $date = get_timezoned_date_time($myrow['date_and_time']);
+        $date = ($myrow['date_and_time'] === null) ? null : get_timezoned_date_time($myrow['date_and_time']);
         $add_date = get_timezoned_date_time($myrow['add_time']);
         $edit_date = ($myrow['edit_date'] === null) ? null : get_timezoned_date_time($myrow['edit_date']);
 

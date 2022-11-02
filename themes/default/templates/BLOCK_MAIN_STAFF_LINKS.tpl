@@ -7,7 +7,7 @@
 	<section id="tray-{!EXTERNAL_LINKS|}" data-toggleable-tray="{ save: true }" class="box box---block-main-staff-links">
 		<div class="box-inner">
 			<h3 class="toggleable-tray-title js-tray-header">
-				<a title="{!EDIT}: {!EXTERNAL_LINKS}" href="#!" class="top-left-toggle js-click-staff-block-flip">{+START,INCLUDE,ICON}NAME=checklist/toggle{+END} {!EDIT}</a>
+				<a title="{!EDIT}: {!EXTERNAL_LINKS}" href="#!" class="top-left-toggle js-click-staff-block-flip">{+START,INCLUDE,ICON}NAME=checklist/toggle{+END} <span>{!EDIT}</span></a>
 
 				<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!CONTRACT}">{+START,INCLUDE,ICON}
 					NAME=trays/contract

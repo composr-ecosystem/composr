@@ -45,7 +45,7 @@
                 'click .js-btn-toggle-chat-comcode-panel': 'toggleChatPanel',
                 'click select.js-select-click-font-change': 'fontChange',
                 'change select.js-select-change-font-change': 'fontChange',
-                'submit form.js-form-submit-check-chat-options': 'checkChatOptions',
+                'click .js-check-chat-options': 'checkChatOptions',
                 'click .js-click-post-chat-message': 'postChatMessage',
                 'keypress .js-keypress-enter-post-chat': 'enterChatMessage',
                 'change .js-change-input-text-color': 'changeInputTextColor',
@@ -60,17 +60,19 @@
         fontChange: function (e, selectEl) {
             this.$('#font').value = selectEl.value;
             this.$('#post').style.fontFamily = selectEl.value;
-            $cms.manageScrollHeight(this.$('#post'));
+            $cms.ui.manageScrollHeight(this.$('#post'));
         },
 
-        checkChatOptions: function (submitEvent, form) {
-            if ($dom.isCancelledSubmit(submitEvent)) {
+        checkChatOptions: function (e, button) {
+            if ($dom.isCancelledSubmit(e)) {
                 return;
             }
 
+            var form = button.form;
+
             if (!form.elements['text_colour'].value.match(/^#[0-9A-F][0-9A-F][0-9A-F]([0-9A-F][0-9A-F][0-9A-F])?$/i)) {
                 $cms.ui.alert('{!chat:BAD_HTML_COLOUR;^}');
-                $dom.cancelSubmit(submitEvent);
+                $dom.cancelSubmit(e);
                 return;
             }
 
@@ -78,10 +80,10 @@
                 return;
             }
 
-            submitEvent.preventDefault();
+            e.preventDefault();
 
             var that = this;
-            var promise = $cms.form.checkForm(form, false).then(function (valid) {
+            var promise = $cms.form.checkForm(e, form, false, []).then(function (valid) {
                 if (valid) {
                     that.chatOptionsFormLastValid = $cms.form.lastChangeTime(form);
                 }
@@ -89,7 +91,7 @@
                 return valid;
             });
 
-            $dom.awaitValidationPromiseAndResubmit(submitEvent, promise);
+            $dom.awaitValidationPromiseAndSubmitForm(e, promise, null, form);
         },
 
         postChatMessage: function (e) {
@@ -147,10 +149,9 @@
 
         $dom.on(container, 'click', '.js-click-start-friend-im', function (e, link) {
             var memberId = strVal(link.dataset.tpMemberId);
+            e.preventDefault();
 
-            if (startIm(memberId, true) === false) {
-                e.preventDefault();
-            }
+            startIm(memberId, true);
         });
     };
 
@@ -187,7 +188,7 @@
 
         $dom.on(container, 'keyup', '.js-keyup-textarea-chat-post', function (e, textarea) {
             if (!$cms.isMobile()) {
-                $cms.manageScrollHeight(textarea);
+                $cms.ui.manageScrollHeight(textarea);
             }
 
             if ($dom.keyPressed(e, 'Enter')) {
@@ -236,7 +237,7 @@
                 $cms.ui.confirm('{!Q_SURE=;}', function (result) {
                     if (result) {
                         $cms.ui.disableButton(btn);
-                        $dom.submit(btn.form);
+                        $dom.trigger(btn.form, 'submit');
                     }
                 });
             }
@@ -246,11 +247,12 @@
             $cms.form.updateAjaxMemberList(btn, null, false, e);
         });
 
-        $dom.on(container, 'submit', '.js-form-submit-add-friend', function (e, form) {
-            $cms.loadSnippet('im_friends_rejig&member_id=' + params.memberId, 'add=' + encodeURIComponent(form.elements['friend_username'].value)).then(function (html) {
+        $dom.on(container, 'click', '.js-add-friend', function (e, btn) {
+            $cms.loadSnippet('im_friends_rejig&member_id=' + params.memberId, 'add=' + encodeURIComponent(btn.form.elements['friend_username'].value)).then(function (html) {
                 $dom.html('#friends-wrap', html);
-                form.elements['friend_username'].value = '';
+                btn.form.elements['friend_username'].value = '';
             });
+            e.preventDefault();
         });
 
         function beginImChatting() {
@@ -451,7 +453,7 @@
             window.textColour.style.color = window.textColour.value;
         }
 
-        $cms.manageScrollHeight(document.getElementById('post'));
+        $cms.ui.manageScrollHeight(document.getElementById('post'));
     }
 
     function beginChatting(roomId) {
@@ -597,14 +599,14 @@
             }, postData);
         }
 
-        return false;
+        event.preventDefault();
     }
 
     // Check for new messages
     function chatCheck(backlog, messageId, eventId) {
         if (window.currentlySendingMessage) { // We'll reschedule once our currently-in-progress message is sent
             window.topWindow.$util.inform('Skip checking for chat messages (chat timer), as a message posting is pending completion (' + new Date().getTime() + ')');
-            return null;
+            return;
         }
 
         window.topWindow.$util.inform('Checking for chat messages (chat timer) (' + new Date().getTime() + ')');
@@ -641,12 +643,9 @@
                     chatCheckResponse(null, null);
                 }
             });
-            return false;
         } else {
             window.topWindow.$util.inform('Skip checking for chat messages (chat timer), as a previous check is pending completion and not yet timed out (' + new Date().getTime() + ')');
         }
-
-        return null;
     }
     window.chatCheck = chatCheck;
 
@@ -1296,11 +1295,11 @@
         if (!$cms.browserMatches('non_concurrent')) { // Can't do on iOS due to not being able to run windows/tabs concurrently - so for iOS we only show a lobby link
             var aPopupOpen = document.createElement('a');
             aPopupOpen.href = '#!';
-            $dom.on(aPopupOpen, 'click', function () {
+            $dom.on(aPopupOpen, 'click', function (e) {
                 clickEvent();
                 document.body.removeChild(div);
                 div = null;
-                return false;
+                e.preventDefault();
             });
             $dom.html(aPopupOpen, '{!chat:OPEN_IM_POPUP;^}');
             var liPopupOpen = document.createElement('li');
@@ -1368,8 +1367,6 @@
             _startIm(people, true); // true, because an IM may exist we don't have open, so let that be recycled
         }
 
-        return false;
-
         function _startIm(people, mayRecycle) {
             var div = document.createElement('div');
             div.className = 'loading-overlay';
@@ -1386,6 +1383,7 @@
             }], 'people=' + people);
         }
 
+        return false;
     }
 
     function inviteIm(people) {

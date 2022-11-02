@@ -11,7 +11,7 @@
 			{+END}
 		</p>
 
-		<form title="{!SEND_POINTS}" method="post" class="js-submit-check-form" action="{SEND_URL*}#tab--points">
+		<form title="{!SEND_POINTS}" method="post" action="{SEND_URL*}#tab--points">
 			{$INSERT_FORM_POST_SECURITY}
 
 			<div>
@@ -30,7 +30,7 @@
 				</span>
 				<!--LAST-FIELD-->
 				<p>
-					<button id="send-points-submit" class="btn btn-primary buttons--points" type="submit">{!PROCEED_SHORT}</button>
+					<button id="send-points-submit" class="btn btn-primary buttons--points js-points-check-form" type="submit">{!PROCEED_SHORT}</button>
 					{+START,IF,{$CONFIG_OPTION,enable_anonymous_transactions}}
 						<label class="points-anon" for="send-anonymous">{!TICK_ANON}: <input type="checkbox" id="send-anonymous" name="anonymous" value="1" /></label>
 					{+END}
@@ -51,7 +51,7 @@
 			{+END}
 		</p>
 
-		<form title="{!SEND_POINTS}" method="post" class="js-submit-check-form" action="{SEND_URL*}#tab--points">
+		<form title="{!SEND_POINTS}" method="post" action="{SEND_URL*}#tab--points">
 			{$INSERT_FORM_POST_SECURITY}
 
 			<div>
@@ -79,7 +79,7 @@
 				</span>
 				<!--LAST-FIELD-->
 				<p>
-					<button id="send-points-submit" class="btn btn-primary buttons--points" type="submit">{!PROCEED_SHORT}</button>
+					<button id="send-points-submit" class="btn btn-primary buttons--points js-points-check-form" type="submit">{!PROCEED_SHORT}</button>
 					{+START,IF,{$CONFIG_OPTION,enable_anonymous_transactions}}
 						<span id="points-anon-span" style="display: none;"><label class="points-anon" for="send-anonymous">{!TICK_ANON}: <input type="checkbox" id="send-anonymous" name="anonymous" value="1" /></label></span>
 					{+END}

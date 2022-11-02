@@ -14,7 +14,7 @@
 	{+END}
 
 	{$SET,might_have_file_input,{$IN_STR,{FIELDS},"file"}}
-	<form title="{!PRIMARY_PAGE_FORM}" class="{+START,IF_PASSED_AND_TRUE,MODSECURITY_WORKAROUND}js-submit-modesecurity-workaround{+END}"{+START,IF_PASSED,TARGET} target="{TARGET*}"{+END}{+START,IF_NON_PASSED_OR_FALSE,GET} method="post" action="{URL*}"{+START,IF,{$GET,might_have_file_input}} enctype="multipart/form-data"{+END}{+END}{+START,IF_PASSED_AND_TRUE,GET} method="get" action="{$URL_FOR_GET_FORM*,{URL}}"{+END}{+START,IF_NON_PASSED,TARGET} target="_top"{+END} id="{$GET*,form_name}">
+	<form title="{!PRIMARY_PAGE_FORM}" class="js-submission-flow"{+START,IF_PASSED_AND_TRUE,MODSECURITY_WORKAROUND} data-submit-modsecurity-workaround="1"{+END}{+START,IF_PASSED,TARGET} target="{TARGET*}"{+END}{+START,IF_NON_PASSED_OR_FALSE,GET} method="post" action="{URL*}"{+START,IF,{$GET,might_have_file_input}} enctype="multipart/form-data"{+END}{+END}{+START,IF_PASSED_AND_TRUE,GET} method="get" action="{$URL_FOR_GET_FORM*,{URL}}"{+END}{+START,IF_NON_PASSED,TARGET} target="_top"{+END} id="{$GET*,form_name}" data-view="SubmissionFlow" data-view-params="{+START,INCLUDE,FORM_STANDARD_START}FORM_NAME={$GET,form_name}{+END}">
 		{+START,IF_NON_PASSED_OR_FALSE,GET}{$INSERT_FORM_POST_SECURITY}{+END}
 
 		{+START,IF_PASSED_AND_TRUE,GET}{$HIDDENS_FOR_GET_FORM,{URL}}{+END}
@@ -49,7 +49,7 @@
 			{+END}
 
 			{+START,IF_NON_EMPTY,{SUBMIT_NAME}}
-				{+START,INCLUDE,FORM_STANDARD_END}FORM_NAME={$GET,form_name}{+END}
+				{+START,INCLUDE,FORM_STANDARD_END}{+END}
 			{+END}
 		</div>
 	</form>

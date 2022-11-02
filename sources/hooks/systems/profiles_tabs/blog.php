@@ -50,6 +50,7 @@ class Hook_profiles_tabs_blog
     public function render_tab(int $member_id_of, int $member_id_viewing, bool $leave_to_ajax_if_possible = false) : array
     {
         require_lang('news');
+        require_css('news');
 
         $title = do_lang_tempcode('BLOG');
 

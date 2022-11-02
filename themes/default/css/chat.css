@@ -319,11 +319,20 @@ html.is-touch-enabled .chat-message > div {
 	border-top: 0;
 	border-bottom: 1px solid;
 	border-color: {$GET,pale_border};
-	min-height: 21px;
 	overflow: hidden;
+	margin-bottom: 0.5em;
+}
+
+.chat-lobby-convos-tabs div {
+	float: left;
+	padding: 3px 5px 0 5px;
+	border-right: 1px solid {$GET,pale_border};
+	border-top: 1px solid {$GET,pale_border};
+	text-align: center;
 }
 
 .chat-lobby-convos-tab-first {
+	border-left: 1px solid {$GET,pale_border};
 }
 
 .chat-lobby-convos-current-tab {
@@ -332,14 +341,6 @@ html.is-touch-enabled .chat-message > div {
 
 .chat-lobby-convos-tab-new-messages {
 	color: {$GET,red_highlight_text};
-}
-
-.chat-lobby-convos-tab-uptodate, .chat-lobby-convos-tab-new-messages {
-	float: left;
-	padding: 3px 5px 0 5px;
-	height: 20px;
-	border-right: 1px solid {$GET,pale_border};
-	text-align: center;
 }
 
 /*{+START,CSS_MODE,desktop}*/
@@ -360,9 +361,7 @@ html.is-touch-enabled .chat-message > div {
 }
 
 .chat-lobby-convos-area-main {
-	width: 14em;
 	overflow: hidden;
-	float: left;
 }
 
 .chat-lobby-convos-area-messages {
@@ -394,12 +393,6 @@ html.is-touch-enabled .chat-message > div {
 
 .im-post-bits .horiz-field-sep {
 	display: inline !important;
-}
-
-.im-post-bits input, .im-post-bits img {
-	vertical-align: top;
-	margin-top: 3px !important;
-	/* For some reason aligning to middle added extra space */
 }
 
 .im-post-bits span {

@@ -10,8 +10,11 @@
     function CommentsPostingForm(params) {
         CommentsPostingForm.base(this, 'constructor', arguments);
 
-        this.form = this.$('form.js-form-comments');
-        this.btnSubmit = this.$('.js-btn-submit-comments');
+        this.btnSubmit = this.$('.js-btn-save-comment');
+        this.form = this.btnSubmit.form;
+
+        this.form.submitAction = this.form.action;
+        this.form.submitTarget = this.form.target;
 
         $cms.requireJavascript(['jquery', 'jquery_autocomplete']).then(function () {
             window.$jqueryAutocomplete.setUpComcodeAutocomplete('post', Boolean(params.wysiwyg));
@@ -21,8 +24,9 @@
             this.btnSubmit.style.display = 'none';
         }
 
+        this.addCommentChecking(this.form, this.params);
         if (params.useCaptcha && ($cms.configOption('recaptcha_site_key') === '')) {
-            this.addCaptchaChecking();
+            this.addCaptchaChecking(this.form);
         }
 
         if (params.type && params.id) {
@@ -39,9 +43,8 @@
         events: function () {
             return {
                 'click .js-btn-full-editor': 'moveToFullEditor',
-                'click .js-btn-submit-comments': 'clickBtnSubmit',
+                'click .js-btn-save-comment': 'ensureRegularEditor',
                 'click .js-click-do-form-preview': 'doPostingFormPreview',
-                'submit .js-form-comments': 'submitFormComments',
 
                 'click .js-img-review-bar': 'reviewBarClick',
                 'mouseover .js-img-review-bar': 'reviewBarHover',
@@ -123,70 +126,11 @@
             }
         },
 
-        clickBtnSubmit: function (e, button) {
-            var form = button.form;
-
-            form.target = ''; // Might have been set to 'preview-iframe' by $cms.form.doFormPreview()
-
-            // if (form.oldAction !== undefined) {
-            //     form.action = form.oldAction;
-            // }
-            //
-            // if ($dom.trigger(form, 'submit') !== false) {
-            //     $cms.ui.disableButton(button);
-            //     form.submit();
-            // }
-
-            $cms.form.doFormSubmit(form);
-        },
-
         doPostingFormPreview: function (e, btn) {
             var form = btn.form,
                 url = $util.rel($cms.maintainThemeInLink($cms.getPreviewUrl() + $cms.keep()));
 
-            $cms.form.doFormPreview(form, url);
-        },
-
-        submitFormComments: function (submitEvent) {
-            var form = this.form,
-                params = this.params;
-
-            if ((params.moreUrl !== undefined) && (form.action === params.moreUrl)) {
-                return;
-            }
-
-            if ($dom.isCancelledSubmit(submitEvent)) {
-                return;
-            }
-
-            if (!$cms.form.checkFieldForBlankness(form.elements.post)) {
-                $dom.cancelSubmit(submitEvent);
-                return;
-            }
-
-            if (params.getName && !$cms.form.checkFieldForBlankness(form.elements['name'])) {
-                $dom.cancelSubmit(submitEvent);
-                return;
-            }
-
-            if (params.getTitle && !params.titleOptional && !$cms.form.checkFieldForBlankness(form.elements.title)) {
-                $dom.cancelSubmit(submitEvent);
-                return;
-            }
-
-            if (params.getEmail && !params.emailOptional && !$cms.form.checkFieldForBlankness(form.elements.email)) {
-                $dom.cancelSubmit(submitEvent);
-                return;
-            }
-
-            if (params.analyticEventCategory) {
-                submitEvent.preventDefault();
-                var promise = $cms.statsEventTrack(null, params.analyticEventCategory).then(function () {
-                    return true;
-                });
-
-                $dom.awaitValidationPromiseAndResubmit(submitEvent, promise);
-            }
+            $cms.form.doFormPreview(e, form, url, false, []);
         },
 
         moveToFullEditor: function () {
@@ -218,49 +162,195 @@
             }
 
             // Reset form target
-            form.target = '_top';
-            if (form.oldAction !== undefined) {
-                form.oldAction = form.action;
-            }
             form.action = moreUrl;
+            form.target = '_top';
 
             // Handle threaded strip-on-focus
             if ((form.elements['post'].stripOnFocus !== undefined) && (form.elements['post'].value === form.elements['post'].stripOnFocus)) {
                 form.elements['post'].value = '';
             }
 
-            $dom.submit(form);
+            form.submit(); // Regular submit so that event handlers do not run (would be blocked by normal submit flow handler)
+        },
+
+        ensureRegularEditor: function () {
+            var form = this.form;
+            form.action = form.submitAction;
+            form.target = form.submitTarget;
+
+            // (The regular submit flow will still be happening in another event handler, so we don't need to submit here)
+        },
+
+        addCommentChecking: function (form, params) {
+            if (typeof form.extraChecks == 'undefined') {
+                form.extraChecks = [];
+            }
+
+            form.extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
+                if (!$cms.form.checkFieldForBlankness(form.elements['post'])) {
+                    erroneous.valueOf = function () { return true; };
+                    firstFieldWithError = form.elements['post'];
+                    return false;
+                }
+
+                if (params.getName && !$cms.form.checkFieldForBlankness(form.elements['name'])) {
+                    erroneous.valueOf = function () { return true; };
+                    firstFieldWithError = form.elements['name'];
+                    return false;
+                }
+
+                if (params.getTitle && !params.titleOptional && !$cms.form.checkFieldForBlankness(form.elements['title'])) {
+                    erroneous.valueOf = function () { return true; };
+                    firstFieldWithError = form.elements['title'];
+                    return false;
+                }
+
+                if (params.getEmail && !params.emailOptional && !$cms.form.checkFieldForBlankness(form.elements['email'])) {
+                    erroneous.valueOf = function () { return true; };
+                    firstFieldWithError = form.elements['email'];
+                    return false;
+                }
+
+                return true;
+            });
         },
 
         /* Set up a feedback form to have its CAPTCHA checked upon submission using AJAX */
-        addCaptchaChecking: function () {
-            var form = this.form,
-                submitBtn = form.querySelector('#submit-button'),
-                validValue;
-
-            form.addEventListener('submit', function submitCheck(submitEvent) {
+        addCaptchaChecking: function (form) {
+            if (typeof form.extraChecks == 'undefined') {
+                form.extraChecks = [];
+            }
+            var validValue;
+            form.extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
                 var value = form.elements['captcha'].value;
 
-                if ($dom.isCancelledSubmit(submitEvent) || (value === validValue)) {
-                    return;
+                if ((value === validValue) || (value === '')) {
+                    return true;
                 }
 
-                var url = '{$FIND_SCRIPT_NOHTTP;,snippet}?snippet=captcha_wrong&name=' + encodeURIComponent(value) + $cms.keep();
-                submitEvent.preventDefault();
-                var promise = $cms.form.doAjaxFieldTest(url).then(function (valid) {
-                    if (valid) {
-                        validValue = value;
-                    } else {
-                        $cms.functions.refreshCaptcha(document.getElementById('captcha-readable'), document.getElementById('captcha-audio'));
-                    }
+                return function () {
+                    var url = '{$FIND_SCRIPT_NOHTTP;,snippet}?snippet=captcha_wrong&name=' + encodeURIComponent(value) + $cms.keep();
+                    return $cms.form.doAjaxFieldTest(url).then(function (valid) {
+                        if (valid) {
+                            validValue = value;
+                        } else {
+                            $cms.functions.refreshCaptcha(document.getElementById('captcha-readable'), document.getElementById('captcha-audio'));
+                        }
 
-                    return valid;
-                });
-
-                $dom.awaitValidationPromiseAndResubmit(submitEvent, promise, submitBtn);
+                        if (!valid) {
+                            erroneous.valueOf = function () { return true; };
+                            alerted.valueOf = function () { return true; };
+                            firstFieldWithError = form.elements['captcha'];
+                        }
+                    });
+                };
             });
         }
     });
+
+    $cms.templates.commentAjaxHandler = function (params) {
+        var urlStem = '{$FIND_SCRIPT_NOHTTP;,post_comment}?options=' + encodeURIComponent(params.options) + '&hash=' + encodeURIComponent(params.hash),
+            wrapperEl = document.getElementById('comments-wrapper');
+
+        replaceCommentsFormWithAjax(params.options, params.hash, 'comments-form', 'comments-wrapper');
+
+        // Infinite scrolling hides the pagination when it comes into view, and auto-loads the next link, appending below the current results
+        if (params.infiniteScroll) {
+            $cms.ui.enableInternaliseInfiniteScrolling(urlStem, wrapperEl);
+        }
+    };
+
+    /* Update a normal comments topic with AJAX replying */
+    function replaceCommentsFormWithAjax(options, hash, commentsFormId, commentsWrapperId) {
+        var commentsForm = $dom.elArg('#' + commentsFormId);
+
+        $dom.on(commentsForm, 'submit', function commentsAjaxListener(event) {
+            if (commentsForm.action != commentsForm.submitAction) {
+                return; // It's previewing or opening a full-reply URL
+            }
+
+            if (commentsForm.lastSubmitEvent && $dom.isCancelledSubmit(commentsForm.lastSubmitEvent)) {
+                // Note we check on form.lastSubmitEvent rather than event, as commentsForm.lastSubmitEvent is actually the button click that validation ran on
+                return;
+            }
+
+            // Cancel the event from running
+            event.preventDefault();
+
+            var commentsWrapper = $dom.$id(commentsWrapperId);
+            if (!commentsWrapper) { // No AJAX, as stuff missing from template
+                $dom.trigger(commentsForm, 'submit');
+                return;
+            }
+
+            var submitButton = $dom.$id('submit-button');
+            if (submitButton) {
+                $cms.ui.disableButton(submitButton);
+            }
+
+            // Note what posts are shown now
+            var knownPostBoxIds = [];
+            commentsWrapper.querySelectorAll('.box---post').forEach(function (boxEl) {
+                knownPostBoxIds.push(boxEl.id);
+            });
+
+            // Fire off AJAX request
+            var post = 'options=' + encodeURIComponent(options) + '&hash=' + encodeURIComponent(hash),
+                postElement = commentsForm.elements['post'],
+                postValue = postElement.value;
+
+            if (postElement.defaultSubstringToStrip !== undefined) {// Strip off prefix if unchanged
+                if (postValue.substring(0, postElement.defaultSubstringToStrip.length) === postElement.defaultSubstringToStrip) {
+                    postValue = postValue.substring(postElement.defaultSubstringToStrip.length, postValue.length);
+                }
+            }
+            for (var j = 0; j < commentsForm.elements.length; j++) {
+                if ((commentsForm.elements[j].name) && (commentsForm.elements[j].name !== 'post')) {
+                    post += '&' + commentsForm.elements[j].name + '=' + encodeURIComponent($cms.form.cleverFindValue(commentsForm, commentsForm.elements[j]));
+                }
+            }
+            post += '&post=' + encodeURIComponent(postValue);
+            $cms.doAjaxRequest('{$FIND_SCRIPT_NOHTTP;,post_comment}' + $cms.keep(true), null, post).then(function (xhr) {
+                if (commentsWrapper !== document.getElementById(commentsWrapperId)) {
+                    return; // No-op if comments wrapper element changed during AJAX request, e.g., slideshow loaded comments for another slide.
+                }
+
+                if ((xhr.responseText !== '') && (xhr.status !== 500)) {
+                    // Display
+                    $dom.replaceWith(commentsWrapper, xhr.responseText);
+                    commentsWrapper = document.getElementById(commentsWrapperId); // Because $dom.replaceWith() broke the references
+                    commentsForm = document.getElementById(commentsFormId);
+                    commentsForm.action = commentsForm.submitAction; // AJAX will have mangled URL (as was not running in a page context), this will fix it back
+
+                    // Scroll back to comment
+                    setTimeout(function () {
+                        $dom.smoothScroll(commentsWrapper);
+                    }, 0);
+
+                    // Force reload on back button, as otherwise comment would be missing
+                    forceReloadOnBack();
+
+                    // Collapse, so user can see what happening
+                    var outer = $dom.$('#comments-posting-form-outer');
+                    if (outer && outer.classList.contains('toggleable-tray')) {
+                        $cms.ui.toggleableTray(outer);
+                    }
+
+                    // Set fade for posts not shown before
+                    commentsWrapper.querySelectorAll('.box---post').forEach(function (boxEl) {
+                        if (!knownPostBoxIds.includes(boxEl.id)) {
+                            boxEl.style.opacity = 0;
+                            $dom.fadeTo(boxEl, null, 1);
+                        }
+                    });
+                } else { // Error: do a normal post so error can be seen
+                    $dom.trigger(commentsForm, 'submit');
+                }
+            });
+
+            commentsForm.submittedFormAlready = true;
+        });
+    }
 
     $cms.templates.ratingForm = function ratingForm(params) {
         var rating;
@@ -273,29 +363,6 @@
             rating = objVal(params.allRatingCriteria[key]);
 
             applyRatingHighlightAndAjaxCode((rating.likes === 1), rating.rating, params.contentType, params.id, rating.type, rating.rating, rating.contentUrl, rating.contentTitle, true);
-        }
-    };
-
-    $cms.templates.commentsWrapper = function (params, container) {
-        if ((params.serializedOptions !== undefined) && (params.hash !== undefined)) {
-            window.commentsSerializedOptions = params.serializedOptions;
-            window.commentsHash = params.hash;
-        }
-
-        $dom.on(container, 'change', '.js-change-select-submit-form', function (e, select) {
-            $dom.submit(select.form);
-        });
-    };
-
-    $cms.templates.commentAjaxHandler = function (params) {
-        var urlStem = '{$FIND_SCRIPT_NOHTTP;,post_comment}?options=' + encodeURIComponent(params.options) + '&hash=' + encodeURIComponent(params.hash),
-            wrapperEl = document.getElementById('comments-wrapper');
-
-        replaceCommentsFormWithAjax(params.options, params.hash, 'comments-form', 'comments-wrapper');
-
-        // Infinite scrolling hides the pagination when it comes into view, and auto-loads the next link, appending below the current results
-        if (params.infiniteScroll) {
-            $dom.enableInternaliseInfiniteScrolling(urlStem, wrapperEl);
         }
     };
 
@@ -336,101 +403,16 @@
         });
     }
 
-    /* Update a normal comments topic with AJAX replying */
-    function replaceCommentsFormWithAjax(options, hash, commentsFormId, commentsWrapperId) {
-        var commentsForm = $dom.elArg('#' + commentsFormId);
+    $cms.templates.commentsWrapper = function (params, container) {
+        if ((params.serializedOptions !== undefined) && (params.hash !== undefined)) {
+            window.commentsSerializedOptions = params.serializedOptions;
+            window.commentsHash = params.hash;
+        }
 
-        $dom.on(commentsForm, 'submit', function commentsAjaxListener(event) {
-            var defaultNotPrevented;
-
-            if (event.detail && (event.detail.triggeredByDoFormPreview || event.detail.triggeredByCommentsAjaxListener)) {
-                return;
-            }
-
-            // Cancel the event from running
-            event.preventDefault();
-
-            defaultNotPrevented = $dom.trigger(commentsForm, 'submit', { detail: { triggeredByCommentsAjaxListener: true } });
-
-            if (defaultNotPrevented === false) {
-                return false;
-            }
-
-            var commentsWrapper = $dom.$id(commentsWrapperId);
-            if (!commentsWrapper) { // No AJAX, as stuff missing from template
-                commentsForm.submit();
-                return;
-            }
-
-            var submitButton = $dom.$id('submit-button');
-            if (submitButton) {
-                $cms.ui.disableButton(submitButton);
-            }
-
-            // Note what posts are shown now
-            var knownPostBoxIds = [];
-            commentsWrapper.querySelectorAll('.box---post').forEach(function (boxEl) {
-                knownPostBoxIds.push(boxEl.id);
-            });
-
-            // Fire off AJAX request
-            var post = 'options=' + encodeURIComponent(options) + '&hash=' + encodeURIComponent(hash),
-                postElement = commentsForm.elements['post'],
-                postValue = postElement.value;
-
-            if (postElement.defaultSubstringToStrip !== undefined) {// Strip off prefix if unchanged
-                if (postValue.substring(0, postElement.defaultSubstringToStrip.length) === postElement.defaultSubstringToStrip) {
-                    postValue = postValue.substring(postElement.defaultSubstringToStrip.length, postValue.length);
-                }
-            }
-            for (var j = 0; j < commentsForm.elements.length; j++) {
-                if ((commentsForm.elements[j].name) && (commentsForm.elements[j].name !== 'post')) {
-                    post += '&' + commentsForm.elements[j].name + '=' + encodeURIComponent($cms.form.cleverFindValue(commentsForm, commentsForm.elements[j]));
-                }
-            }
-            post += '&post=' + encodeURIComponent(postValue);
-            $cms.doAjaxRequest('{$FIND_SCRIPT_NOHTTP;,post_comment}' + $cms.keep(true), null, post).then(function (xhr) {
-                if (commentsWrapper !== document.getElementById(commentsWrapperId)) {
-                    return; // No-op if comments wrapper element changed during AJAX request, e.g., slideshow loaded comments for another slide.
-                }
-
-                if ((xhr.responseText !== '') && (xhr.status !== 500)) {
-                    // Display
-                    var oldAction = commentsForm.action;
-                    $dom.replaceWith(commentsWrapper, xhr.responseText);
-                    commentsWrapper = document.getElementById(commentsWrapperId); // Because $dom.replaceWith() broke the references
-                    commentsForm = document.getElementById(commentsFormId);
-                    commentsForm.action = oldAction; // AJAX will have mangled URL (as was not running in a page context), this will fix it back
-
-                    // Scroll back to comment
-                    setTimeout(function () {
-                        $dom.smoothScroll(commentsWrapper);
-                    }, 0);
-
-                    // Force reload on back button, as otherwise comment would be missing
-                    forceReloadOnBack();
-
-                    // Collapse, so user can see what happening
-                    var outer = $dom.$('#comments-posting-form-outer');
-                    if (outer && outer.classList.contains('toggleable-tray')) {
-                        $cms.ui.toggleableTray(outer);
-                    }
-
-                    // Set fade for posts not shown before
-                    commentsWrapper.querySelectorAll('.box---post').forEach(function (boxEl) {
-                        if (!knownPostBoxIds.includes(boxEl.id)) {
-                            boxEl.style.opacity = 0;
-                            $dom.fadeTo(boxEl, null, 1);
-                        }
-                    });
-                } else { // Error: do a normal post so error can be seen
-                    commentsForm.submit();
-                }
-            });
-
-            return false;
+        $dom.on(container, 'change', '.js-change-select-submit-form', function (e, select) {
+            $dom.trigger(select.form, 'submit');
         });
-    }
+    };
 
     function applyRatingHighlightAndAjaxCode(likes, initialRating, contentType, id, type, rating, contentUrl, contentTitle, initialisationPhase, visualOnly) {
         contentType = strVal(contentType);
@@ -503,73 +485,7 @@
                 $cms.loadSnippet(snippetRequest, 'rating=' + encodeURIComponent(number)).then(function (message) {
                     $dom.replaceWith(_replaceSpot, (template === '') ? ('<strong>' + message + '</strong>') : message);
                 });
-                return false;
             });
         });
     }
-
-    /**
-     * Prepare the UI to reply to a post in a topic
-     * @param isThreaded
-     * @param id
-     * @param replyingToUsername
-     * @param replyingToPost
-     * @param replyingToPostPlain
-     * @param isExplicitQuote
-     */
-    $cms.functions.topicReply = function topicReply(isThreaded, id, replyingToUsername, replyingToPost, replyingToPostPlain, isExplicitQuote) {
-        isThreaded = Boolean(isThreaded);
-        isExplicitQuote = Boolean(isExplicitQuote);
-
-        var el = this,
-            form = $dom.$('form#comments-form');
-
-        var parentIdField;
-        if (form.elements['parent_id'] === undefined) {
-            parentIdField = document.createElement('input');
-            parentIdField.type = 'hidden';
-            parentIdField.name = 'parent_id';
-            form.appendChild(parentIdField);
-        } else {
-            parentIdField = form.elements['parent_id'];
-            if (window.lastReplyTo !== undefined) {
-                window.lastReplyTo.style.opacity = 1;
-            }
-        }
-        window.lastReplyTo = el;
-        parentIdField.value = isThreaded ? id : '';
-
-        el.classList.add('activated-quote-button');
-
-        var post = form.elements.post;
-
-        $dom.smoothScroll($dom.findPosY(form, true));
-
-        var outer = $dom.$('#comments-posting-form-outer');
-        if (outer && $dom.notDisplayed(outer)) {
-            $cms.ui.toggleableTray(outer);
-        }
-
-        if (isThreaded) {
-            post.value = $util.format('{!QUOTED_REPLY_MESSAGE;^}', [replyingToUsername, replyingToPostPlain]);
-            post.stripOnFocus = post.value;
-            post.classList.add('field-input-non-filled');
-        } else {
-            if ((post.stripOnFocus !== undefined) && (post.value === post.stripOnFocus)) {
-                post.value = '';
-            } else if (post.value !== '') {
-                post.value += '\n\n';
-            }
-
-            post.focus();
-            post.value += '[quote="' + replyingToUsername + '"]\n' + replyingToPost + '\n[snapback]' + id + '[/snapback][/quote]\n\n';
-
-            if (!isExplicitQuote) {
-                post.defaultSubstringToStrip = post.value;
-            }
-        }
-
-        $cms.manageScrollHeight(post);
-        post.scrollTop = post.scrollHeight;
-    };
 }(window.$cms, window.$util, window.$dom));

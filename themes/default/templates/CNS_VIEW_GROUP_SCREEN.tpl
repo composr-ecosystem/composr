@@ -39,13 +39,13 @@
 			<div class="box box---cns-view-group-screen"><div class="box-inner">
 				<h2>{!ADD_MEMBER_TO_GROUP}</h2>
 
-				<form title="{!ADD_MEMBER_TO_GROUP}" class="js-form-submit-add-member-to-group" action="{ADD_URL*}" method="post">
+				<form title="{!ADD_MEMBER_TO_GROUP}" action="{ADD_URL*}" method="post">
 					{$INSERT_FORM_POST_SECURITY}
 
 					<div>
 						<label for="vga-username">{!USERNAME}: </label>
 						<input {+START,IF,{$MOBILE}} autocorrect="off"{+END} maxlength="80" class="form-control js-input-add-member-username" alt="{!USERNAME}" type="text" id="vga-username" name="username" />
-						<button class="btn btn-primary btn-scri admin--add" type="submit">{+START,INCLUDE,ICON}NAME=admin/add{+END} <span>{!ADD}</span></button>
+						<button class="btn btn-primary btn-scri admin--add js-add-member-to-group" type="submit">{+START,INCLUDE,ICON}NAME=admin/add{+END} <span>{!ADD}</span></button>
 					</div>
 				</form>
 			</div></div>

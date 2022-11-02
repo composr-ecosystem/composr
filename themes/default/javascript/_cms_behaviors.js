@@ -1,3 +1,5 @@
+/* This file contains CMS-wide Behaviors */
+
 (function ($cms, $util, $dom) {
     'use strict';
 
@@ -223,19 +225,6 @@
         }
     };
 
-    // Implementation for [data-submit-pd]
-    // Prevent-default for JS-activated elements (which may have noscript fallbacks as default actions)
-    $cms.behaviors.onsubmitPreventDefault = {
-        attach: function (context) {
-            var forms = $util.once($dom.$$$(context, '[data-submit-pd]'), 'behavior.onsubmitPreventDefault');
-            forms.forEach(function (form) {
-                $dom.on(form, 'submit', function (e) {
-                    e.preventDefault();
-                });
-            });
-        }
-    };
-
     // Implementation for input[data-cms-unchecked-is-indeterminate]
     $cms.behaviors.uncheckedIsIndeterminate = {
         attach: function (context) {
@@ -277,35 +266,9 @@
         }
     };
 
-    // Implementation for [data-click-alert]
-    $cms.behaviors.onclickShowModalAlert = {
-        attach: function (context) {
-            var els = $util.once($dom.$$$(context, '[data-click-alert]'), 'behavior.onclickShowModalAlert');
-
-            els.forEach(function (el) {
-                $dom.on(el, 'click', function onclickShowModalAlert() {
-                    var options = objVal($dom.data(el, 'clickAlert'), {}, 'notice');
-                    $cms.ui.alert(options.notice);
-                });
-            });
-        }
-    };
-
-    // Implementation for [data-keypress-alert]
-    $cms.behaviors.onkeypressShowModalAlert = {
-        attach: function (context) {
-            var els = $util.once($dom.$$$(context, '[data-keypress-alert]'), 'behavior.onkeypressShowModalAlert');
-
-            els.forEach(function (el) {
-                $dom.on(el, 'keypress', function onkeypressShowModalAlert() {
-                    var options = objVal($dom.data(el, 'keypressAlert'), {}, 'notice');
-                    $cms.ui.alert(options.notice);
-                });
-            });
-        }
-    };
-
     // Implementation for [data-submit-on-enter]
+    // Text inputs on forms with a button will automatically submit on enter due to well-established browser functionality.
+    // This behavior is useful for placing on lists, or forms without an actual button.
     $cms.behaviors.submitOnEnter = {
         attach: function (context) {
             var inputs = $util.once($dom.$$$(context, '[data-submit-on-enter]'), 'behavior.submitOnEnter');
@@ -314,7 +277,13 @@
                 $dom.on(input, (input.nodeName.toLowerCase() === 'select') ? 'keyup' : 'keypress', function submitOnEnter(e) {
                     if ($dom.keyPressed(e, 'Enter')) {
                         e.preventDefault();
-                        $dom.submit(input.form);
+
+                        var submitButton = $dom.$(input.form, 'input[type="submit"], button[type="submit"]');
+                        if (submitButton) {
+                            $dom.trigger(submitButton, 'click');
+                        } else {
+                            $dom.trigger(input.form, 'submit');
+                        }
                     }
                 });
             });
@@ -368,15 +337,23 @@
                     message = strVal(el.dataset.cmsConfirmClick);
 
                 $dom.on(el, 'click', function (e) {
+                    if ($dom.isCancelledSubmit(e)) {
+                        return;
+                    }
+
                     if (_confirmedClick === uid) {
                         // Confirmed, let it through
                         return;
                     }
+
                     e.preventDefault();
+
                     $cms.ui.confirm(message, function (result) {
                         if (result) {
                             _confirmedClick = uid;
                             $dom.trigger(el, 'click');
+                        } else {
+                            $dom.cancelSubmit(e);
                         }
                     });
                 });
@@ -392,7 +369,9 @@
 
             forms.forEach(function (form) {
                 $dom.on(form, 'submit', function (e) {
-                    if ($cms.form.isModSecurityWorkaroundEnabled() && !e.defaultPrevented) {
+                    // Note this does not check if the form submission is cancelled by something else, we do not support that as we assume that any validation logic is placed on the buttons and not the form
+                    //  Submit handlers are then called on the forms and can take over actual submission if needed
+                    if ($cms.form.isModSecurityWorkaroundEnabled()) {
                         e.preventDefault();
                         $cms.form.modSecurityWorkaround(form);
                     }
@@ -415,80 +394,16 @@
         }
     };
 
-    $cms.behaviors.columnHeightBalancing = {
-        attach: function attach(context) {
-            var cols = $util.once($dom.$$$(context, '.col_balance_height'), 'behavior.columnHeightBalancing'),
-                i, max, j, height;
-
-            for (i = 0; i < cols.length; i++) {
-                max = null;
-                for (j = 0; j < cols.length; j++) {
-                    if (cols[i].className === cols[j].className) {
-                        height = cols[j].offsetHeight;
-                        if ((max === null) || (height > max)) {
-                            max = height;
-                        }
-                    }
-                    cols[i].style.height = max + 'px';
-                }
-            }
-        }
-    };
-
-    // Convert img title attributes into Composr tooltips
-    $cms.behaviors.imageTooltips = {
+    // Implementation for [data-disable-on-click]
+    // Disable button after click
+    $cms.behaviors.disableOnClick = {
         attach: function (context) {
-            if (!$cms.configOption('js_overlays')) {
-                return;
-            }
-
-            $util.once($dom.$$$(context, 'img:not([data-cms-rich-tooltip])'), 'behavior.imageTooltips').forEach(function (img) {
-                convertTooltip(img);
-            });
-        }
-    };
-
-    // Convert svg title elements into Composr tooltips
-    $cms.behaviors.svgTooltips = {
-        attach: function (context) {
-            if (!$cms.configOption('js_overlays')) {
-                return;
-            }
-
-            $util.once($dom.$$$(context, 'svg:not([data-cms-rich-tooltip])'), 'behavior.svgTooltips').forEach(function (svg) {
-                if (svg.querySelector('title')) {
-                    convertTooltip(svg);
-                }
-            });
-        }
-    };
-
-    // Implementation for [data-remove-if-js-enabled]
-    $cms.behaviors.removeIfJsEnabled = {
-        attach: function (context) {
-            var els = $dom.$$$(context, '[data-remove-if-js-enabled]');
+            var els = $util.once($dom.$$$(context, '[data-disable-on-click]'), 'behavior.disableOnClick');
 
             els.forEach(function (el) {
-                $dom.remove(el);
-            });
-        }
-    };
-
-    // Implementation for [data-js-function-calls]
-    $cms.behaviors.jsFunctionCalls = {
-        attach: function (context) {
-            var els = $util.once($dom.$$$(context, '[data-js-function-calls]'), 'behavior.jsFunctionCalls');
-
-            els.forEach(function (el) {
-                var jsFunctionCalls = $dom.data(el, 'jsFunctionCalls');
-
-                if (typeof jsFunctionCalls === 'string') {
-                    jsFunctionCalls = [jsFunctionCalls];
-                }
-
-                if (jsFunctionCalls != null) {
-                    $cms.executeJsFunctionCalls(jsFunctionCalls);
-                }
+                $dom.on(el, 'click', function () {
+                    $cms.ui.disableButton(el);
+                });
             });
         }
     };
@@ -515,6 +430,7 @@
     };
 
     // Implementation for img[data-gd-text]
+    // LEGACY
     $cms.behaviors.gdTextImages = {
         attach: function (context) {
             var els = $util.once($dom.$$$(context, 'img[data-gd-text]'), 'behavior.gdTextImages');
@@ -614,10 +530,10 @@
 
             var textareas = $util.once($dom.$$$(context, '[data-textarea-auto-height]'), 'behavior.textareaAutoHeight');
             textareas.forEach(function (textarea) {
-                $cms.manageScrollHeight(textarea);
+                $cms.ui.manageScrollHeight(textarea);
 
                 $dom.on(textarea, 'click input change keyup keydown', function manageScrollHeight() {
-                    $cms.manageScrollHeight(textarea);
+                    $cms.ui.manageScrollHeight(textarea);
                 });
             });
         }
@@ -659,7 +575,7 @@
 
             inputs.forEach(function (input) {
                 $dom.on(input, 'change', function () {
-                    $dom.submit(input.form);
+                    $dom.trigger(input.form, 'submit');
                 });
             });
         }
@@ -694,42 +610,6 @@
         }
     };
 
-    // Implementation for [data-click-ui-open]
-    $cms.behaviors.onclickUiOpen = {
-        attach: function (context) {
-            var els = $util.once($dom.$$$(context, '[data-click-ui-open]'), 'behavior.onclickUiOpen');
-            els.forEach(function (el) {
-                $dom.on(el, 'click', function () {
-                    var args = arrVal($dom.data(el, 'clickUiOpen'));
-                    $cms.ui.open($util.rel($cms.maintainThemeInLink(args[0])), args[1], args[2], args[3], args[4]);
-                });
-            });
-        }
-    };
-
-    // Implementation for [data-click-do-input]
-    $cms.behaviors.onclickDoInput = {
-        attach: function (context) {
-            var els = $util.once($dom.$$$(context, '[data-click-do-input]'), 'behavior.onclickDoInput');
-
-            els.forEach(function (el) {
-                $dom.on(el, 'click', function () {
-                    var args = arrVal($dom.data(el, 'clickDoInput')),
-                        type = strVal(args[0]),
-                        fieldName = strVal(args[1]),
-                        tag = strVal(args[2]),
-                        fnName = 'doInput' + $util.ucFirst($util.camelCase(type));
-
-                    if (typeof window[fnName] === 'function') {
-                        window[fnName](fieldName, tag);
-                    } else {
-                        $util.fatal('$cms.behaviors.onclickDoInput.attach(): Function not found "window.' + fnName + '()"');
-                    }
-                });
-            });
-        }
-    };
-
     // Implementation for [data-click-toggle-checked="<SELECTOR FOR TARGET CHECKBOX(ES)>"]
     $cms.behaviors.onclickToggleCheckboxes = {
         attach: function (context) {
@@ -743,6 +623,34 @@
                     checkboxes.forEach(function (checkbox) {
                         $dom.toggleChecked(checkbox);
                     });
+                });
+            });
+        }
+    };
+
+    // Implementation for [data-click-alert]
+    $cms.behaviors.onclickShowModalAlert = {
+        attach: function (context) {
+            var els = $util.once($dom.$$$(context, '[data-click-alert]'), 'behavior.onclickShowModalAlert');
+
+            els.forEach(function (el) {
+                $dom.on(el, 'click', function onclickShowModalAlert() {
+                    var options = objVal($dom.data(el, 'clickAlert'), {}, 'notice');
+                    $cms.ui.alert(options.notice);
+                });
+            });
+        }
+    };
+
+    // Implementation for [data-keypress-alert]
+    $cms.behaviors.onkeypressShowModalAlert = {
+        attach: function (context) {
+            var els = $util.once($dom.$$$(context, '[data-keypress-alert]'), 'behavior.onkeypressShowModalAlert');
+
+            els.forEach(function (el) {
+                $dom.on(el, 'keypress', function onkeypressShowModalAlert() {
+                    var options = objVal($dom.data(el, 'keypressAlert'), {}, 'notice');
+                    $cms.ui.alert(options.notice);
                 });
             });
         }
@@ -783,16 +691,30 @@
         }
     };
 
-    // Implementation for [data-disable-on-click]
-    // Disable button after click
-    $cms.behaviors.disableOnClick = {
+    // Convert img title attributes into Composr tooltips
+    $cms.behaviors.imageTooltips = {
         attach: function (context) {
-            var els = $util.once($dom.$$$(context, '[data-disable-on-click]'), 'behavior.disableOnClick');
+            if (!$cms.configOption('js_overlays')) {
+                return;
+            }
 
-            els.forEach(function (el) {
-                $dom.on(el, 'click', function () {
-                    $cms.ui.disableButton(el);
-                });
+            $util.once($dom.$$$(context, 'img:not([data-cms-rich-tooltip])'), 'behavior.imageTooltips').forEach(function (img) {
+                convertTooltip(img);
+            });
+        }
+    };
+
+    // Convert svg title elements into Composr tooltips
+    $cms.behaviors.svgTooltips = {
+        attach: function (context) {
+            if (!$cms.configOption('js_overlays')) {
+                return;
+            }
+
+            $util.once($dom.$$$(context, 'svg:not([data-cms-rich-tooltip])'), 'behavior.svgTooltips').forEach(function (svg) {
+                if (svg.querySelector('title')) {
+                    convertTooltip(svg);
+                }
             });
         }
     };
@@ -872,6 +794,42 @@
                         // ^ Make sure the child isn't the current event's target already, and check for excluded elements to let pass-through
                         e.preventDefault();
                         $dom.trigger(childEl, 'click');
+                    }
+                });
+            });
+        }
+    };
+
+    // Implementation for [data-click-ui-open]
+    $cms.behaviors.onclickUiOpen = {
+        attach: function (context) {
+            var els = $util.once($dom.$$$(context, '[data-click-ui-open]'), 'behavior.onclickUiOpen');
+            els.forEach(function (el) {
+                $dom.on(el, 'click', function () {
+                    var args = arrVal($dom.data(el, 'clickUiOpen'));
+                    $cms.ui.open($util.rel($cms.maintainThemeInLink(args[0])), args[1], args[2], args[3], args[4]);
+                });
+            });
+        }
+    };
+
+    // Implementation for [data-click-do-input]
+    $cms.behaviors.onclickDoInput = {
+        attach: function (context) {
+            var els = $util.once($dom.$$$(context, '[data-click-do-input]'), 'behavior.onclickDoInput');
+
+            els.forEach(function (el) {
+                $dom.on(el, 'click', function () {
+                    var args = arrVal($dom.data(el, 'clickDoInput')),
+                        type = strVal(args[0]),
+                        fieldName = strVal(args[1]),
+                        tag = strVal(args[2]),
+                        fnName = 'doInput' + $util.ucFirst($util.camelCase(type));
+
+                    if (typeof window[fnName] === 'function') {
+                        window[fnName](fieldName, tag);
+                    } else {
+                        $util.fatal('$cms.behaviors.onclickDoInput.attach(): Function not found "window.' + fnName + '()"');
                     }
                 });
             });
@@ -1243,8 +1201,8 @@
 
                 settingHeight.set(el, true);
 
-                var cs = getComputedStyle( el ),
-                    wasHidden = ( cs.display === 'none' ),
+                var cs = getComputedStyle(el),
+                    wasHidden = (cs.display === 'none'),
                     prevDisplay, prevVisibility;
 
                 if ( wasHidden ) {
@@ -1253,7 +1211,7 @@
                     prevVisibility = el.style.visibility;
 
                     // Place it so it displays as usually
-                    el.style.display = $dom.initial( el, 'display' );
+                    el.style.display = $dom.initial(el, 'display');
                     el.style.visibility = 'hidden';
                 }
 

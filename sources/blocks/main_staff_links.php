@@ -109,6 +109,7 @@ PHP;
      */
     public function run(array $map) : object
     {
+        require_css('adminzone_dashboard');
         require_lang('staff_checklist');
 
         $block_id = get_block_id($map);

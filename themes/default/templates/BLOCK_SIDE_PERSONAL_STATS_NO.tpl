@@ -2,7 +2,7 @@
 	<section class="box box---block-side-personal-stats-no" data-tpl="blockSidePersonalStatsNo"><div class="box-inner">
 		{+START,IF_NON_EMPTY,{TITLE}}<h3>{TITLE}</h3>{+END}
 
-		<form title="{!_LOGIN}" class="js-submit-check-login-username-field" action="{LOGIN_URL*}" method="post" autocomplete="on">
+		<form title="{!_LOGIN}" action="{LOGIN_URL*}" method="post" autocomplete="on">
 			<input type="hidden" name="_active_login" value="1" />
 
 			<div>
@@ -37,7 +37,7 @@
 				{+END}
 
 				<p class="proceed-button">
-					<button class="btn btn-primary btn-scri menu--site-meta--user-actions--login" type="submit">{+START,INCLUDE,ICON}NAME=menu/site_meta/user_actions/login{+END} <span>{!_LOGIN}</span></button>
+					<button class="btn btn-primary btn-scri menu--site-meta--user-actions--login js-check-login-username-field" type="submit">{+START,INCLUDE,ICON}NAME=menu/site_meta/user_actions/login{+END} <span>{!_LOGIN}</span></button>
 				</p>
 			</div>
 		</form>

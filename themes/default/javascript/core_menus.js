@@ -1,3 +1,5 @@
+/* The menu editor */
+
 (function ($cms, $util, $dom) {
     'use strict';
 
@@ -32,18 +34,11 @@
                         '{!javascript:ENTER_PAGE;^}', '', null, '{!menus:SPECIFYING_NEW_PAGE;^}'
                     ).then(function (page) {
                         if (page != null) {
-                            form.elements.url.value = zone + ':' + page;
+                            form.elements['url'].value = zone + ':' + page;
                         }
                     });
                 }
             });
-        });
-
-        $dom.on(container, 'submit', '.js-submit-modsecurity-workaround', function (e, form) {
-            if ($cms.form.isModSecurityWorkaroundEnabled() && !e.defaultPrevented) {
-                e.preventDefault();
-                $cms.form.modSecurityWorkaround(form);
-            }
         });
 
         $dom.on(container, 'change', '.js-input-change-update-selection', function (e, input) {
@@ -81,11 +76,11 @@
             if (!menuEditorWrapEl.classList.contains('docked')) {
                 menuEditorWrapEl.classList.add('docked');
                 menuEditorWrapEl.classList.remove('docked');
-                $cms.setIcon(clicked.querySelector('.icon'), 'arrow_box/arrow_box_hover', '{$IMG;^,icons/arrow_box/arrow_box_hover}');
+                $cms.ui.setIcon(clicked.querySelector('.icon'), 'arrow_box/arrow_box_hover', '{$IMG;^,icons/arrow_box/arrow_box_hover}');
             } else {
                 menuEditorWrapEl.classList.add('non-docked');
                 menuEditorWrapEl.classList.remove('docked');
-                $cms.setIcon(clicked.querySelector('.icon'), 'arrow_box/arrow_box', '{$IMG;^,icons/arrow_box/arrow_box}');
+                $cms.ui.setIcon(clicked.querySelector('.icon'), 'arrow_box/arrow_box', '{$IMG;^,icons/arrow_box/arrow_box}');
             }
 
             adjustPaneHeights();
@@ -325,7 +320,7 @@
             var insertBeforeId = 'branches-go-before-' + parentId,
                 template = $dom.$id('template').value,
                 before = $dom.$id(insertBeforeId),
-                newId = 'm_' + Math.floor(Math.random() * 10000),
+                newId = Math.floor(Math.random() * 10000),
                 template2 = template.replace(/replace_me_with_random/gi, newId),
                 highestOrderElement = $dom.$id('highest_order'),
                 newOrder = highestOrderElement.value + 1;
@@ -631,7 +626,7 @@
         var mfh = $dom.$('#mini-form-hider');
         $dom.slideDown(mfh);
         if (changed) {
-            $dom.fadeIn(form.elements.url);
+            $dom.fadeIn(form.elements['url']);
         }
     }
 

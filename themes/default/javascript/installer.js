@@ -42,7 +42,7 @@
                     window.clearInterval(timer);
                     timer = null;
                 }
-                $dom.submit(button.form);
+                $dom.trigger(button.form, 'submit');
             } else {
                 button.countdown--;
             }
@@ -182,11 +182,10 @@
             gaeBucketName.value = gaeBucketName.value.replace(/(<application>|composr)/g, gaeApp.value);
         }
 
-        var step4Form = document.getElementById('form-installer-step-4');
+        var step4Form = document.getElementById('form-installer-step-4'),
+            button = $dom.$(step4Form, 'button');
 
-        if (step4Form) {
-            step4Form.addEventListener('submit', validateSettings);
-        }
+        button.addEventListener('click', validateSettings);
 
         function validateSettings(e) {
             e.preventDefault();
@@ -236,7 +235,7 @@
             Promise.all(checkPromises).then(function (validities) {
                 if (!validities.includes(false)) {
                     // All valid!
-                    step4Form.submit();
+                    $dom.trigger(step4Form, 'submit');
                 }
             });
         }
@@ -266,8 +265,6 @@
             if (passwordPrompt !== '') {
                 window.alert(passwordPrompt);
             }
-
-            return true;
 
             function checkPassword(form, fieldName, fieldLabel) {
                 // Check matches with confirm field
@@ -308,6 +305,8 @@
 
                 return true;
             }
+
+            return true;
         }
     };
 
