@@ -1175,8 +1175,8 @@ function _resolve_catalogue_entry_field(array $field, $entry_id, ?array $only_fi
         case 'long_trans':
         case 'short_trans':
             $temp = _get_catalogue_entry_field($field['id'], $entry_id, 'short_trans', $only_field_ids, $tables_to_scan);
-            if ($temp['cv_value'] === null) {
-                $target['effective_value'] = '';
+            if (($temp['cv_value'] === null) || ($temp['cv_value'] == '')/* defensive */) {
+                $target['effective_value'] = new Tempcode();
                 $target['effective_value_pure'] = '';
             } else {
                 $just_row = db_map_restrict($temp, ['cv_value']) + ['ce_id' => is_array($entry_id) ? $entry_id['id'] : $entry_id, 'cf_id' => $field['id']];

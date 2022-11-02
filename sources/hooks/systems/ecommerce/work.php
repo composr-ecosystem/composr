@@ -77,13 +77,16 @@ class Hook_ecommerce_work
             $where['i_member_id'] = get_member();
         }
 
+        // Invoice drop-down selection
         $list = new Tempcode();
-        $rows = $GLOBALS['SITE_DB']->query_select('ecom_invoices', ['*'], $where, 'ORDER BY i_time,id DESC');
+        $rows = $GLOBALS['SITE_DB']->query_select('ecom_invoices', ['*'], $where, ' AND ' . db_string_not_equal_to('i_state', 'delivered') . ' ORDER BY i_time,id DESC');
+        if (empty($rows)) {
+            warn_exit(do_lang_tempcode('NO_INVOICES'));
+        }
         foreach ($rows as $row) {
             $username = $GLOBALS['FORUM_DRIVER']->get_username($row['i_member_id']);
             $list->attach(form_input_list_entry(strval($row['id']), false, do_lang('INVOICE_OF', strval($row['id']), $username)));
         }
-
         $fields->attach(form_input_list(do_lang_tempcode('INVOICE'), '', 'purchase_id', $list));
 
         ecommerce_attach_memo_field_if_needed($fields);

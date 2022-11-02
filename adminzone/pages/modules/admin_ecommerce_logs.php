@@ -121,12 +121,12 @@ class Module_admin_ecommerce_logs
             $this->title = get_screen_title('EXPORT_TRANSACTIONS');
         }
 
-        if ($type == 'tax_invoice') {
+        if ($type == 'receipt') {
             breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('ECOMMERCE')], ['_SELF:_SELF:logs', do_lang_tempcode('TRANSACTIONS')]]);
-            $this->title = get_screen_title('TAX_INVOICE');
+            $this->title = get_screen_title('RECEIPT');
         }
 
-        if (($type != 'logs') && ($type != 'sales') && ($type != 'tax_invoice')) {
+        if (($type != 'logs') && ($type != 'sales') && ($type != 'receipt')) {
             set_helper_panel_tutorial('tut_ecommerce');
             set_helper_panel_text(comcode_lang_string('DOC_ECOMMERCE'));
         }
@@ -216,8 +216,8 @@ class Module_admin_ecommerce_logs
         if ($type == 'export_subscriptions') {
             return $this->export_subscriptions();
         }
-        if ($type == 'tax_invoice') {
-            return $this->tax_invoice();
+        if ($type == 'receipt') {
+            return $this->receipt();
         }
         if ($type == 'cash_flow') {
             return $this->cash_flow();
@@ -387,7 +387,7 @@ class Module_admin_ecommerce_logs
             $fields->attach(form_input_date(do_lang_tempcode('EXPIRY_DATE'), do_lang_tempcode('DESCRIPTION_CUSTOM_EXPIRY_DATE'), 'cexpiry', false, false, false, null, 100));
         }
 
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'f4e52dff9353fb767afbe0be9808591c', 'SECTION_HIDDEN' => true, 'TITLE' => do_lang_tempcode('ADVANCED')]));
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'f4e52dff9353fb767afbe0be9808591c', 'SECTION_HIDDEN' => ($details['price'] !== null), 'TITLE' => do_lang_tempcode('ADVANCED')]));
         $fields->attach(form_input_float(do_lang_tempcode('PRICE'), do_lang_tempcode('DESCRIPTION_MONEY_PRICE', $currency, ecommerce_get_currency_symbol()), 'price', null, ($details['price'] === null)));
 
         $hidden->attach(form_input_hidden('type_code', $type_code));
@@ -861,8 +861,8 @@ class Module_admin_ecommerce_logs
             }
 
             $tax = ecommerce_get_currency_symbol($transaction_row['t_currency']) . escape_html(float_format($transaction_row['t_tax']));
-            $tax_invoice_url = build_url(['page' => '_SELF', 'type' => 'tax_invoice', 'id' => $transaction_row['id'], 'wide_high' => 1], '_SELF');
-            $tax_linker = hyperlink($tax_invoice_url, $tax, false, false, '', null, null, null, '_top');
+            $receipt_url = build_url(['page' => '_SELF', 'type' => 'receipt', 'id' => $transaction_row['id'], 'wide_high' => 1], '_SELF');
+            $date_linker = hyperlink($receipt_url, $date, false, false, '', null, null, null, '_top');
 
             $transaction_tooltip_map = [];
             if ($transaction_row['t_parent_txn_id'] != '') {
@@ -886,14 +886,14 @@ class Module_admin_ecommerce_logs
             $transaction_table = do_template('MAP_TABLE', ['FIELDS' => $_transaction_fields]);
 
             $result_entries->attach(results_entry([
-                escape_html($date),
+                $date_linker,
                 ((count($transaction_tooltip_map) > 0) ? tooltip($transaction_row['id'], $transaction_table, true) : $transaction_row['id']),
                 $customer_link,
                 $member_link,
                 tooltip($item_name, $transaction_row['t_type_code'], true),
                 escape_html($transaction_row['t_purchase_id']),
                 ecommerce_get_currency_symbol($transaction_row['t_currency']) . escape_html(float_format($transaction_row['t_price'])),
-                $tax_linker,
+                $tax,
                 ecommerce_get_currency_symbol($transaction_row['t_currency']) . escape_html(float_format($transaction_row['t_shipping'])),
                 $status,
             ], false));
@@ -1048,17 +1048,17 @@ class Module_admin_ecommerce_logs
     }
 
     /**
-     * Show a tax invoice for a transaction.
+     * Show a receipt for a transaction.
      *
      * @return Tempcode The result of execution
      */
-    public function tax_invoice() : object
+    public function receipt() : object
     {
         $GLOBALS['SCREEN_TEMPLATE_CALLED'] = '';
 
         $txn_id = get_param_string('id');
-        $tax_invoice = generate_tax_invoice($txn_id);
-        return $tax_invoice;
+        $receipt = display_receipt($txn_id);
+        return $receipt;
     }
 
     /**

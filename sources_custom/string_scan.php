@@ -8400,6 +8400,11 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         TAX_SERVICE_TAXJAR
         TAX_TJ
         DESCRIPTION_TAX_TJ
+        DESCRIPTION_INVOICE_DESCRIPTION
+        DESCRIPTION_PROCESSING_CODE
+        INVOICE_DESCRIPTION
+        NO_INVOICES
+        PROCESSING_CODE
     ')));
 
     $non_admin_files = [
@@ -11780,6 +11785,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         INVOICE_FULFILLED_SUBJECT
         PRIVACY_ACTION_TAX
         PRIVACY_REASON_TAX
+        RECEIPT
     ')));
 
     if ($GLOBALS['DEV_MODE']) {

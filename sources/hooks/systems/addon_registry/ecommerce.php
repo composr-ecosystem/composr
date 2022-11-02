@@ -311,7 +311,7 @@ class Hook_addon_registry_ecommerce
             'sources/hooks/blocks/main_staff_checklist/ecommerce_sales.php',
             'themes/default/templates/ECOM_PRODUCTS_PRICES_FORM_WRAP.tpl',
             'themes/default/templates/ECOM_SALES_LOG_SCREEN.tpl',
-            'themes/default/templates/ECOM_TAX_INVOICE.tpl',
+            'themes/default/templates/ECOM_INVOICE_OR_RECEIPT.tpl',
             'themes/default/templates/ECOM_PRODUCT_PRICE_SCREEN.tpl',
             'themes/default/text/ECOM_PRODUCT_QUOTA_MAIL.txt',
             'themes/default/text/ECOM_PRODUCT_FORWARDER_MAIL.txt',
@@ -369,7 +369,7 @@ class Hook_addon_registry_ecommerce
             'templates/ECOM_OUTSTANDING_INVOICES_SCREEN.tpl' => 'administrative__ecom_outstanding_invoices_screen',
             'templates/ECOM_TRANSACTION_LOGS_MANUAL_TRIGGER.tpl' => 'ecom_subscriptions_screen',
             'templates/ECOM_CASH_FLOW_SCREEN.tpl' => 'administrative__ecom_cash_flow_screen',
-            'templates/ECOM_TAX_INVOICE.tpl' => 'ecom_tax_invoice_screen',
+            'templates/ECOM_INVOICE_OR_RECEIPT.tpl' => 'ecom_tax_invoice_screen',
             'templates/ECOM_PURCHASE_SCREEN.tpl' => 'purchase_screen',
             'templates/ECOM_LOGOS_AUTHORIZE.tpl' => 'ecom_logos_authorize',
             'templates/ECOM_PAYMENT_PROCESSOR_LINKS_AUTHORIZE.tpl' => 'ecom_payment_processor_links_authorize',
@@ -1445,6 +1445,7 @@ class Hook_addon_registry_ecommerce
         $items = [];
         foreach (placeholder_array() as $k => $v) {
             $items[] = [
+                'IDENTIFIER' => placeholder_number(),
                 'TYPE_CODE' => $v,
                 'ITEM_NAME' => lorem_phrase(),
                 'QUANTITY' => placeholder_number(),
@@ -1455,7 +1456,8 @@ class Hook_addon_registry_ecommerce
             ];
         }
 
-        return lorem_globalise(do_lorem_template('ECOM_TAX_INVOICE', [
+        return lorem_globalise(do_lorem_template('ECOM_INVOICE_OR_RECEIPT', [
+            'INVOICE_ID' => placeholder_number(),
             'TXN_ID' => placeholder_number(),
             '_DATE' => placeholder_date_raw(),
             'DATE' => placeholder_date(),

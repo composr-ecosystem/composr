@@ -1825,7 +1825,7 @@ function send_transaction_mails(string $txn_id, string $item_name, bool $shipped
         $currency_symbol = ecommerce_get_currency_symbol($currency);
     }
 
-    $tax_invoice = generate_tax_invoice($txn_id);
+    $tax_invoice = display_receipt($txn_id);
 
     // Prepare for notification
     $existing = $GLOBALS['SITE_DB']->query_select('ecom_trans_addresses', ['*'], ['a_txn_id' => $txn_id], '', 1);
@@ -2201,4 +2201,145 @@ function split_street_address(string $compound_street_address, int $num_parts, b
     }
 
     return $parts;
+}
+
+/**
+ * Display a receipt.
+ *
+ * @param  ID_TEXT $txn_id Transaction ID
+ * @return Tempcode Receipt UI
+ */
+function display_receipt(string $txn_id) : object
+{
+    require_css('ecommerce');
+    require_code('locations');
+    require_code('ecommerce_tax');
+
+    $transaction_row = get_transaction_row($txn_id);
+
+    $address_rows = $GLOBALS['SITE_DB']->query_select('ecom_trans_addresses', ['*'], ['a_trans_expecting_id' => $txn_id], '', 1);
+
+    $trans_address = '';
+    if (array_key_exists(0, $address_rows)) {
+        $address_row = $address_rows[0];
+
+        $address_parts = [
+            'name' => $address_row['a_firstname'] . ' ' . $address_row['a_lastname'],
+            'street_address' => $address_row['a_street_address'],
+            'city' => $address_row['a_city'],
+            'county' => $address_row['a_county'],
+            'state' => $address_row['a_state'],
+            'post_code' => $address_row['a_post_code'],
+            'country' => $address_row['a_country'],
+        ];
+        $trans_address = get_formatted_address($address_parts);
+    }
+
+    $items = ($transaction_row['t_invoicing_breakdown'] == '') ? [] : json_decode($transaction_row['t_invoicing_breakdown'], true);
+    $invoicing_breakdown = [];
+    foreach ($items as $item) {
+        $invoicing_breakdown[] = [
+            'IDENTIFIER' => $item['type_code'],
+            'TYPE_CODE' => $item['type_code'],
+            'ITEM_NAME' => $item['item_name'],
+            'QUANTITY' => (($item['quantity'] !== null) ? integer_format($item['quantity']) : ''),
+            'UNIT_PRICE' => float_format($item['unit_price']),
+            'PRICE' => float_format($item['unit_price'] * $item['quantity']),
+            'TAX' => float_format($item['tax']),
+            'TAX_RATE' => float_format(backcalculate_tax_rate(($item['unit_price'] * $item['quantity']), $item['tax']), 1, true),
+        ];
+    }
+    if (empty($invoicing_breakdown)) {
+        // We don't have a break-down so at least find a single line-item
+
+        list($details) = find_product_details($transaction_row['t_type_code']);
+        if ($details !== null) {
+            $item_name = $details['item_name'];
+        } else {
+            $item_name = $transaction_row['t_type_code'];
+        }
+
+        $invoicing_breakdown[] = [
+            'IDENTIFIER' => $transaction_row['t_type_code'],
+            'TYPE_CODE' => $transaction_row['t_type_code'],
+            'ITEM_NAME' => $item_name,
+            'QUANTITY' => integer_format(1),
+            'UNIT_PRICE' => float_format($transaction_row['t_price']),
+            'PRICE' => float_format($transaction_row['t_price']),
+            'TAX' => float_format($transaction_row['t_tax']),
+            'TAX_RATE' => float_format(backcalculate_tax_rate($transaction_row['t_price'], $transaction_row['t_tax']), 1, true),
+        ];
+    }
+
+    $status = get_transaction_status_string($transaction_row['t_status']);
+
+    return do_template('ECOM_INVOICE_OR_RECEIPT', [
+        'INVOICE_ID' => '',
+        'TXN_ID' => $txn_id,
+        '_DATE' => strval($transaction_row['t_time']),
+        'DATE' => get_timezoned_date_time($transaction_row['t_time'], false),
+        'TRANS_ADDRESS' => $trans_address,
+        'ITEMS' => $invoicing_breakdown,
+        'CURRENCY' => $transaction_row['t_currency'],
+        'SUBTOTAL' => float_format($transaction_row['t_price'] + $transaction_row['t_shipping']),
+        'TOTAL_TAX' => float_format($transaction_row['t_tax']),
+        'TOTAL_AMOUNT' => float_format($transaction_row['t_price'] + $transaction_row['t_tax'] + $transaction_row['t_shipping']),
+        'PURCHASE_ID' => $transaction_row['t_purchase_id'],
+        'STATUS' => $status,
+    ]);
+}
+
+/**
+ * Display an invoice.
+ *
+ * @param  AUTO_LINK $id Invoice ID
+ * @return Tempcode Invoice UI
+ */
+function display_invoice(int $id) : object
+{
+    require_code('ecommerce_tax');
+
+    $rows = $GLOBALS['SITE_DB']->query_select('ecom_invoices', ['*'], ['id' => $id], '', 1);
+    if (!array_key_exists(0, $rows)) {
+        warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
+    }
+    $row = $rows[0];
+
+    $txn_id = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_transactions', 'id', ['t_purchase_id' => strval($id), 't_type_code' => $row['i_type_code'], 't_status' => 'Completed']);
+
+    list($details) = find_product_details($row['i_type_code']);
+    if ($row['i_item_name'] != '') {
+        $item_name = $row['i_item_name'];
+    } elseif ($details !== null) {
+        $item_name = $details['item_name'];
+    } else {
+        $item_name = $row['i_type_code'];
+    }
+
+    $invoicing_breakdown = [];
+    $invoicing_breakdown[] = [
+        'IDENTIFIER' => strval($row['id']),
+        'TYPE_CODE' => $row['i_type_code'],
+        'ITEM_NAME' => $item_name,
+        'QUANTITY' => integer_format(1),
+        'UNIT_PRICE' => float_format($row['i_price']),
+        'PRICE' => float_format($row['i_price']),
+        'TAX' => float_format($row['i_tax']),
+        'TAX_RATE' => float_format(backcalculate_tax_rate($row['i_price'], $row['i_tax']), 1, true),
+    ];
+
+    return do_template('ECOM_INVOICE_OR_RECEIPT', [
+        'INVOICE_ID' => strval($row['id']),
+        'TXN_ID' => (($txn_id !== null) ? $txn_id : ''),
+        '_DATE' => strval($row['i_time']),
+        'DATE' => get_timezoned_date_time($row['i_time'], false),
+        'TRANS_ADDRESS' => '',
+        'ITEMS' => $invoicing_breakdown,
+        'CURRENCY' => $row['i_currency'],
+        'SUBTOTAL' => float_format($row['i_price']),
+        'TOTAL_TAX' => float_format($row['i_tax']),
+        'TOTAL_AMOUNT' => float_format($row['i_price'] + $row['i_tax']),
+        'PURCHASE_ID' => strval($row['id']),
+        'STATUS' => $row['i_state'],
+    ]);
 }

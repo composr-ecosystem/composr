@@ -71,6 +71,7 @@ class Module_invoices
             $GLOBALS['SITE_DB']->create_table('ecom_invoices', [
                 'id' => '*AUTO',
                 'i_type_code' => 'ID_TEXT',
+                'i_item_name' => 'SHORT_TEXT', // A custom product name; blank means use the default
                 'i_member_id' => 'MEMBER',
                 'i_state' => 'ID_TEXT', // new|pending|paid|delivered (pending means payment has been requested)
                 'i_price' => 'REAL', // can't always find this from i_type_code
@@ -79,7 +80,7 @@ class Module_invoices
                 'i_tax' => 'REAL', // Needs to be stored, as the product is dynamic and it's locked in time
                 'i_tax_tracking' => 'LONG_TEXT', // Needs to be stored, as the product is dynamic and it's locked in time
                 'i_currency' => 'ID_TEXT',
-                'i_special' => 'SHORT_TEXT', // depending on i_type_code, would trigger something special such as a key upgrade
+                'i_processing_code' => 'SHORT_TEXT', // depending on i_type_code, would trigger something special in the actualiser such as a key upgrade
                 'i_time' => 'TIME',
                 'i_note' => 'LONG_TEXT',
             ]);
@@ -88,6 +89,8 @@ class Module_invoices
         if (($upgrade_from !== null) && ($upgrade_from < 3)) { // LEGACY
             $GLOBALS['SITE_DB']->rename_table('invoices', 'ecom_invoices');
             $GLOBALS['SITE_DB']->alter_table_field('ecom_invoices', 'i_amount', 'REAL', 'i_price');
+            $GLOBALS['SITE_DB']->alter_table_field('ecom_invoices', 'i_special', 'SHORT_TEXT', 'i_processing_code');
+            $GLOBALS['SITE_DB']->add_table_field('ecom_invoices', 'i_item_name', 'SHORT_TEXT', '');
             $GLOBALS['SITE_DB']->add_table_field('ecom_invoices', 'i_tax_code', 'ID_TEXT', '0%');
             $GLOBALS['SITE_DB']->add_table_field('ecom_invoices', 'i_tax_derivation', 'LONG_TEXT', '');
             $GLOBALS['SITE_DB']->add_table_field('ecom_invoices', 'i_tax', 'REAL', 0.00);
@@ -153,6 +156,10 @@ class Module_invoices
             $this->title = get_screen_title('MAKE_PAYMENT');
         }
 
+        if ($type == 'invoice') {
+            $this->title = get_screen_title('INVOICE');
+        }
+
         return null;
     }
 
@@ -182,6 +189,9 @@ class Module_invoices
         if ($type == 'pay') {
             return $this->pay();
         }
+        if ($type == 'invoice') {
+            return $this->invoice();
+        }
         return new Tempcode();
     }
 
@@ -206,7 +216,14 @@ class Module_invoices
                 continue;
             }
 
-            $invoice_title = $details['item_name'];
+            if ($row['i_item_name'] != '') {
+                $item_name = $row['i_item_name'];
+            } else {
+                $item_name = $details['item_name'];
+            }
+
+            $invoice_url = build_url(['page' => '_SELF', 'type' => 'invoice', 'id' => $row['id'], 'wide_high' => 1], '_SELF');
+            $title_linker = hyperlink($invoice_url, $item_name, false, true, '', null, null, null, '_top');
             $date = get_timezoned_date_time($row['i_time'], false);
             $payable = ($row['i_state'] == 'new');
             $fulfillable = ($row['i_state'] == 'paid');
@@ -217,7 +234,7 @@ class Module_invoices
             } else {
                 $transaction_button = make_transaction_button(
                     $type_code,
-                    $invoice_title,
+                    $item_name,
                     strval($row['id']),
                     $row['i_price'],
                     ($row['i_tax_derivation'] == '') ? [] : json_decode($row['i_tax_derivation'], true),
@@ -230,7 +247,7 @@ class Module_invoices
             }
             $invoices[] = [
                 'TRANSACTION_BUTTON' => $transaction_button,
-                'INVOICE_TITLE' => $invoice_title,
+                'INVOICE_TITLE' => $title_linker,
                 'INVOICE_ID' => strval($row['id']),
                 'PRICE' => float_to_raw_string($row['i_price']),
                 'TAX' => float_to_raw_string($row['i_tax']),
@@ -307,5 +324,21 @@ class Module_invoices
             'SUBMIT_ICON' => 'menu/rich_content/ecommerce/purchase',
             'SUBMIT_NAME' => do_lang_tempcode('MAKE_PAYMENT'),
         ]);
+    }
+
+    /**
+     * Show an invoice.
+     *
+     * @return Tempcode The result of execution
+     */
+    public function invoice() : object
+    {
+        require_css('ecommerce');
+
+        $GLOBALS['SCREEN_TEMPLATE_CALLED'] = '';
+
+        $id = get_param_integer('id');
+        $invoice = display_invoice($id);
+        return $invoice;
     }
 }

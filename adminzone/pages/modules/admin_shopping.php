@@ -180,7 +180,7 @@ class Module_admin_shopping
                 ['_SELF:_SELF:order_details:' . strval($order_id), do_lang_tempcode('CART_ORDER', strval($order_id))],
             ]);
 
-            $this->title = get_screen_title('ADD_NOTE_TITLE', true, [escape_html($order_id)]);
+            $this->title = get_screen_title('ADD_NOTE_TITLE', true, [escape_html(strval($order_id))]);
 
             breadcrumb_set_self(do_lang_tempcode('DONE'));
         }

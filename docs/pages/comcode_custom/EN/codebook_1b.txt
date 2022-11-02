@@ -799,7 +799,7 @@ For reference, the described eCommerce hooks typically have the following method
 This is a custom function for hooks to report their products' information. It is an array, where each entry has a key that is the product codename and a value that is an array that gives the attributes of one product (including the product type, the price, and the product title). See other hooks for examples. You need to implement this for the hook to be usable in any way. Once implemented you will be able to use the Composr [tt]purchase[/tt] module to see your hook's products, and select them for purchase.
 Valid product types are:
 1) [tt]PRODUCT_PURCHASE[/tt] (a one-off purchase)
-2) [tt]PRODUCT_INVOICE[/tt] (an invoice payment) -- you are very unlikely to need this one
+2) [tt]PRODUCT_INVOICE[/tt] (an invoice payment) -- you are unlikely to need this one, but you can use it to define different types of invoices (such as webhosting, consultations, etc). The product details array should contain [tt]item_name[/tt]. The [tt]price_points[/tt] value should be null (invoices do not support points) and [tt]price[/tt] should be null unless this invoice type has a standard price that will rarely deviate (such as a monthly payment).
 3) [tt]PRODUCT_SUBSCRIPTION[/tt] (a subscription payment -- the product details array should contain [tt]length[/tt] and [tt]length_units[/tt] values to define how the subscription will work). [tt]length_units[/tt] can be [tt]d[/tt], [tt]w[/tt], [tt]m[/tt] or [tt]y[/tt]. An example product details array (this would be for a subscription that recurred every 1 month): [tt]array('length' => 1, 'length_units' => 'm')[/tt]
 4) [tt]PRODUCT_OTHER[/tt] (something that is not purchased via the purchasing module, but done manually -- usually it is something the website staff are adding manually to show up on the eCommerce charts, not something actually related to the website itself) -- you are very unlikely to need this one
 5) [tt]PRODUCT_CATALOGUE[/tt] (a shopping cart product) -- you are very unlikely to need this one
@@ -837,6 +837,10 @@ Details about how notifications are sent out, and how shipping addresses are han
 Composr stores and handles all currency amounts as floats. Ideally we would work in fixed point maths, but the reason we do not is PHP cannot do fixed point maths without an extension (and a lot of extra complexity), and doing the math in cents/pence would make the code confusing.
 We are aware that even a number like [tt]0.25[/tt] cannot truly be represented in a float. However, with 2 d.p. rounding, floats are accurate to around 16 million currency units. We round to 2 d.p. whenever payments are taken or checked, and in general whenever figures are displayed. Within the normal kind of bounds of money a Composr site would likely be handling, precision errors would not create any kind of reporting, charging, or accounting, error -- except when dealing with highly inflated currencies such as Venezuelan Bolivars.
 Highly inflated currencies are a tricky case. If we moved to storing cents as integers, the maximum amount of Venezuelan Bolivars represented in a 32 bit system would be equivalent of $3633 (based on exchange rates at the time of writing) -- so, not a solution. Venezuelan Bolivars have Bs.F, which is 1000 Bolivars, so you can just work in the higher value units which become the norm in a hyper-inflated currency.
+
+[title="4"]Processing code[/title]
+
+This is specific to products of the [tt]PRODUCT_INVOICE[/tt] type. When creating an invoice, an optional &ldquo;Processing code&rdquo; field can be filled out. You can define some text or phrase that is saved in the ecom_invoices database table in the [tt]i_processing_code[/tt] column. You can then retrieve this value along with the type code when processing the invoice (e.g. in the actualiser method) to perform some automatic operations.
 
 [title="3"]Forum drivers[/title]
 
