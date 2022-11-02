@@ -840,7 +840,7 @@ Highly inflated currencies are a tricky case. If we moved to storing cents as in
 
 [title="4"]Processing code[/title]
 
-This is specific to products of the PRODUCT_INVOICE type. When creating an invoice, an optional &ldquo;Processing code&rdquo; field can be filled out. You can define some text or phrase that is saved in the ecom_invoices database table in the i_processing_code column. You can then retrieve this value along with the type code when processing the invoice (e.g. in the actualiser method) to perform some automatic operations.
+This is specific to products of the [tt]PRODUCT_INVOICE[/tt] type. When creating an invoice, an optional &ldquo;Processing code&rdquo; field can be filled out. You can define some text or phrase that is saved in the ecom_invoices database table in the [tt]i_processing_code[/tt] column. You can then retrieve this value along with the type code when processing the invoice (e.g. in the actualiser method) to perform some automatic operations.
 
 [title="3"]Forum drivers[/title]
 

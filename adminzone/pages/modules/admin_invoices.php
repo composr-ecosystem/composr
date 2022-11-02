@@ -231,8 +231,7 @@ class Module_admin_invoices
         }
         $fields = new Tempcode();
         $fields->attach(form_input_list(do_lang_tempcode('PRODUCT'), '', 'type_code', $list));
-        // Work description field (named item_name for consistency with the default item_name in the product details)
-        $fields->attach(form_input_line(do_lang('INVOICE_DESCRIPTION'), do_lang('DESCRIPTION_INVOICE_DESCRIPTION'), 'item_name', '', true));
+        $fields->attach(form_input_line(do_lang('INVOICE_DESCRIPTION'), do_lang('DESCRIPTION_INVOICE_DESCRIPTION'), 'item_name', '', true));         // Work description field (named item_name for consistency with the default item_name in the product details)
         $fields->attach(form_input_username(do_lang_tempcode('USERNAME'), do_lang_tempcode('DESCRIPTION_INVOICE_FOR'), 'to', $to, true));
         $fields->attach(form_input_float(do_lang_tempcode('PRICE'), do_lang_tempcode('DESCRIPTION_INVOICE_PRICE', escape_html(get_option('currency')), ecommerce_get_currency_symbol(get_option('currency'))), 'price', null, false));
         $fields->attach(form_input_tax_code(do_lang_tempcode(get_option('tax_system')), do_lang_tempcode('DESCRIPTION_INVOICE_TAX_CODE'), 'tax_code', '', false));
@@ -350,8 +349,8 @@ class Module_admin_invoices
             } else {
                 $invoice_title = do_lang('CUSTOM_PRODUCT_' . $row['i_type_code']);
             }
-            $receipt_url = build_url(['page' => '_SELF', 'type' => 'invoice', 'id' => $row['id'], 'wide_high' => 1], '_SELF');
-            $title_linker = hyperlink($receipt_url, $invoice_title, false, true, '', null, null, null, '_top');
+            $invoice_url = build_url(['page' => '_SELF', 'type' => 'invoice', 'id' => $row['id'], 'wide_high' => 1], '_SELF');
+            $title_linker = hyperlink($invoice_url, $invoice_title, false, true, '', null, null, null, '_top');
             $date = get_timezoned_date_time($row['i_time']);
             $username = $GLOBALS['FORUM_DRIVER']->get_username($row['i_member_id']);
             $profile_url = $GLOBALS['FORUM_DRIVER']->member_profile_url($row['i_member_id'], true);

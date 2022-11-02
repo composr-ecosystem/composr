@@ -222,8 +222,8 @@ class Module_invoices
                 $item_name = $details['item_name'];
             }
 
-            $receipt_url = build_url(['page' => '_SELF', 'type' => 'invoice', 'id' => $row['id'], 'wide_high' => 1], '_SELF');
-            $title_linker = hyperlink($receipt_url, $item_name, false, true, '', null, null, null, '_top');
+            $invoice_url = build_url(['page' => '_SELF', 'type' => 'invoice', 'id' => $row['id'], 'wide_high' => 1], '_SELF');
+            $title_linker = hyperlink($invoice_url, $item_name, false, true, '', null, null, null, '_top');
             $date = get_timezoned_date_time($row['i_time'], false);
             $payable = ($row['i_state'] == 'new');
             $fulfillable = ($row['i_state'] == 'paid');

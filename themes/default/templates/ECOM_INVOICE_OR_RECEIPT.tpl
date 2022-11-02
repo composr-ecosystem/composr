@@ -10,12 +10,12 @@
 				</td>
 
 				<td>
-				{+START,IF_NON_EMPTY,{INVOICE_ID}}
-					{!INVOICE} #: {INVOICE_ID*}<br />
-				{+END}
-				{+START,IF_NON_EMPTY,{TXN_ID}}
-					{!TRANSACTION} #: {TXN_ID*}<br />
-				{+END}
+					{+START,IF_NON_EMPTY,{INVOICE_ID}}
+						{!INVOICE} #: {INVOICE_ID*}<br />
+					{+END}
+					{+START,IF_NON_EMPTY,{TXN_ID}}
+						{!TRANSACTION} #: {TXN_ID*}<br />
+					{+END}
 					{STATUS*}: {DATE*}
 				</td>
 			</tr>
