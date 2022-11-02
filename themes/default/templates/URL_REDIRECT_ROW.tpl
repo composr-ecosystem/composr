@@ -25,7 +25,7 @@
 		{+START,IF,{$NEQ,{I},new}}
 			<a href="#!" class="js-click-confirm-container-deletion" title="{!DELETE}">{+START,INCLUDE,ICON}
 				NAME=admin/delete
-				ICON_SIZE=14
+				ICON_SIZE=18
 			{+END}</a>
 		{+END}
 	</td>

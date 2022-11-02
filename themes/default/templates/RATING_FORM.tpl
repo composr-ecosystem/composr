@@ -32,27 +32,27 @@
 						{+START,INCLUDE,ICON}
 							NAME=feedback/rating
 							ICON_ID=rating-bar-2--{$GET,identifier}
-							ICON_SIZE=14
+							ICON_SIZE=18
 						{+END}
 						{+START,INCLUDE,ICON}
 							NAME=feedback/rating
 							ICON_ID=rating-bar-4--{$GET,identifier}
-							ICON_SIZE=14
+							ICON_SIZE=18
 						{+END}
 						{+START,INCLUDE,ICON}
 							NAME=feedback/rating
 							ICON_ID=rating-bar-6--{$GET,identifier}
-							ICON_SIZE=14
+							ICON_SIZE=18
 						{+END}
 						{+START,INCLUDE,ICON}
 							NAME=feedback/rating
 							ICON_ID=rating-bar-8--{$GET,identifier}
-							ICON_SIZE=14
+							ICON_SIZE=18
 						{+END}
 						{+START,INCLUDE,ICON}
 							NAME=feedback/rating
 							ICON_ID=rating-bar-10--{$GET,identifier}
-							ICON_SIZE=14
+							ICON_SIZE=18
 						{+END}
 					{+END}
 				</div>

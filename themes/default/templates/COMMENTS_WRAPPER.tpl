@@ -20,7 +20,7 @@
 					{+START,WHILE,{$LT,{$GET,rating_loop},{$ROUND,{$DIV_FLOAT,{REVIEW_RATING},2}}}}
 						{+START,INCLUDE,ICON}
 							NAME=feedback/rating
-							ICON_SIZE=14
+							ICON_SIZE=18
 							ICON_DESCRIPTION={$ROUND*,{$DIV_FLOAT,{REVIEW_RATING},2}}
 						{+END}
 						{$INC,rating_loop}
@@ -78,7 +78,7 @@
 							{+START,WHILE,{$LT,{$GET,rating_loop},{$ROUND,{$DIV_FLOAT,{REVIEW_RATING},2}}}}
 								{+START,INCLUDE,ICON}
 									NAME=feedback/rating
-									ICON_SIZE=14
+									ICON_SIZE=18
 									ICON_DESCRIPTION={$ROUND,{$DIV_FLOAT,{REVIEW_RATING},2}}
 								{+END}
 								{$INC,rating_loop}

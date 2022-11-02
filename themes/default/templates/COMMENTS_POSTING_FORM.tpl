@@ -132,35 +132,35 @@
 													NAME=feedback/rating
 													ICON_ID=review-bar-1--{TYPE|*}--{REVIEW_TITLE|*}--{ID|*}
 													ICON_CLASS=rating-star js-img-review-bar
-													ICON_SIZE=14
+													ICON_SIZE=18
 													ICON_ATTRS=data-vw-rating="2"
 												{+END}
 												{+START,INCLUDE,ICON}
 													NAME=feedback/rating
 													ICON_ID=review-bar-2--{TYPE|*}--{REVIEW_TITLE|*}--{ID|*}
 													ICON_CLASS=rating-star js-img-review-bar
-													ICON_SIZE=14
+													ICON_SIZE=18
 													ICON_ATTRS=data-vw-rating="4"
 												{+END}
 												{+START,INCLUDE,ICON}
 													NAME=feedback/rating
 													ICON_ID=review-bar-3--{TYPE|*}--{REVIEW_TITLE|*}--{ID|*}
 													ICON_CLASS=rating-star js-img-review-bar
-													ICON_SIZE=14
+													ICON_SIZE=18
 													ICON_ATTRS=data-vw-rating="6"
 												{+END}
 												{+START,INCLUDE,ICON}
 													NAME=feedback/rating
 													ICON_ID=review-bar-4--{TYPE|*}--{REVIEW_TITLE|*}--{ID|*}
 													ICON_CLASS=rating-star js-img-review-bar
-													ICON_SIZE=14
+													ICON_SIZE=18
 													ICON_ATTRS=data-vw-rating="8"
 												{+END}
 												{+START,INCLUDE,ICON}
 													NAME=feedback/rating
 													ICON_ID=review-bar-5--{TYPE|*}--{REVIEW_TITLE|*}--{ID|*}
 													ICON_CLASS=rating-star js-img-review-bar
-													ICON_SIZE=14
+													ICON_SIZE=18
 													ICON_ATTRS=data-vw-rating="10"
 												{+END}
 

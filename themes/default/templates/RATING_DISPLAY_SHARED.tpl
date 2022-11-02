@@ -18,7 +18,7 @@
 	{+START,WHILE,{$LT,{$GET,rating_loop},{$GET,rating_stars}}}
 		{+START,INCLUDE,ICON}
 			NAME=feedback/rating
-			ICON_SIZE=14
+			ICON_SIZE=18
 			ICON_CLASS=rating-display-star
 			ICON_TITLE={$?,{$EQ,{$GET,rating_loop},0},{!HAS_RATING,{$GET,rating_stars}}}
 		{+END}
