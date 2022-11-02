@@ -1531,49 +1531,49 @@ class Module_admin_newsletter extends Standard_crud_module
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
 
-        $display_map = [];
+        $fields = [];
 
         $date = get_timezoned_date_time($rows[0]['date_and_time']);
-        $display_map['DATE_TIME'] = $date;
+        $fields['DATE_TIME'] = $date;
 
         $subject = $rows[0]['subject'];
-        $display_map['SUBJECT'] = $subject;
+        $fields['SUBJECT'] = $subject;
 
         $lang = $rows[0]['language'];
 
         $message = $rows[0]['newsletter'];
         list($html_version, $text_version) = newsletter_preview($message, $subject, $lang, $rows[0]['html_only'] == 1, null, null, null, null, null, null, $rows[0]['template']);
-        $display_map['HTML_VERSION'] = do_template('NEWSLETTER_PREVIEW', ['_GUID' => '5efb08a7867bd1cd90271568853fcbb9', 'HTML_PREVIEW' => $html_version]);
+        $fields['HTML_VERSION'] = do_template('NEWSLETTER_PREVIEW', ['_GUID' => '5efb08a7867bd1cd90271568853fcbb9', 'HTML_PREVIEW' => $html_version]);
         if ($text_version != '') {
-            $display_map['TEXT_VERSION'] = $text_version;
+            $fields['TEXT_VERSION'] = $text_version;
         }
 
         if (count(find_all_langs()) > 1) {
             $language = $rows[0]['language'];
             require_code('lang2');
             $language = lookup_language_full_name($language);
-            $display_map['LANGUAGE'] = $language;
+            $fields['LANGUAGE'] = $language;
         }
 
         $from_name = $rows[0]['from_name'];
         $from_email = $rows[0]['from_email'];
         if ($from_name != '' && $from_email != '') {
-            $display_map['FROM'] = $from_name . ' <' . $from_email . '>';
+            $fields['FROM'] = $from_name . ' <' . $from_email . '>';
         }
 
         $priority = $rows[0]['priority'];
-        $display_map['PRIORITY'] = integer_format($priority);
+        $fields['PRIORITY'] = integer_format($priority);
 
         $template = $rows[0]['template'];
         if ($template != 'MAIL' && $template != '') {
-            $display_map['NEWSLETTER_TEMPLATE'] = $template;
+            $fields['NEWSLETTER_TEMPLATE'] = $template;
         }
 
         $html_only = $rows[0]['html_only'];
-        $display_map['HTML_ONLY'] = ($html_only == 1) ? do_lang('YES') : do_lang('NO');
+        $fields['HTML_ONLY'] = ($html_only == 1) ? do_lang('YES') : do_lang('NO');
 
         $queued = $GLOBALS['SITE_DB']->query_select_value('newsletter_drip_send', 'COUNT(*)', ['d_message_id' => $id]);
-        $display_map['NUM_IN_SEND_QUEUE'] = integer_format($queued);
+        $fields['NUM_IN_SEND_QUEUE'] = integer_format($queued);
 
         $buttons = new Tempcode();
 
@@ -1599,7 +1599,7 @@ class Module_admin_newsletter extends Standard_crud_module
         $text = do_lang_tempcode('NEWSLETTER_WITH_SAMPLE_NAME');
 
         require_code('templates_map_table');
-        return map_table_screen(get_screen_title('NEWSLETTER'), $display_map, $text, $buttons, true);
+        return map_table_screen(get_screen_title('NEWSLETTER'), $fields, true, $text, $buttons, true);
     }
 
     /**

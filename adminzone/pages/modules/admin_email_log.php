@@ -357,7 +357,7 @@ class Module_admin_email_log
             $fields['ATTACHMENTS'] = $a;
         }
 
-        return map_table_screen($this->title, $fields, null, null, true);
+        return map_table_screen($this->title, $fields, true, null, null, true);
     }
 
     /**

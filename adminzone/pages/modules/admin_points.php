@@ -643,7 +643,7 @@ class Module_admin_points
             }
         }
 
-        return map_table_screen(get_screen_title('VIEW_POINT_TRANSACTION', true, [strval($id)]), [
+        $fields = [
             'IDENTIFIER' => strval($id),
             'DATE' => $date,
             'STATUS' => $status,
@@ -652,6 +652,10 @@ class Module_admin_points
             'FROM' => $_from_name,
             'TO' => $_to_name,
             'REASON' => $reason,
-        ], null, $buttons, true);
+        ];
+
+        $title = get_screen_title('VIEW_POINT_TRANSACTION', true, [strval($id)]);
+
+        return map_table_screen($title, $fields, true, null, $buttons, true);
     }
 }

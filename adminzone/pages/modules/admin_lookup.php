@@ -452,6 +452,6 @@ class Module_admin_lookup
         $fields['TIME'] = do_lang_tempcode('MILLISECONDS', escape_html(integer_format($row['milliseconds'])));
 
         require_code('templates_map_table');
-        return map_table_screen($this->title, $fields, null, null, true);
+        return map_table_screen($this->title, $fields, true, null, null, true);
     }
 }
