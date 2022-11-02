@@ -41,7 +41,7 @@ function map_table_screen(object $title, array $fields, ?object $text = null, ?o
         } else {
             list($val, $raw) = $val;
         }
-        $_fields->attach(map_table_field(do_lang_tempcode($key), $val, $raw));
+        $_fields->attach(map_table_field(do_lang_tempcode($key), $val, !$raw));
     }
 
     return do_template('MAP_TABLE_SCREEN', [

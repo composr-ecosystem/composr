@@ -3,6 +3,7 @@
 <div class="wide-table-wrap"><table class="columned-table wide-table results-table autosized-table responsive-table" itemprop="significantLinks">
 	<thead>
 		<tr>
+			<th>{!IDENTIFIER}</th>
 			<th>{!TITLE}</th>
 			<th>{!USERNAME}</th>
 			<th>{!AMOUNT}</th>
@@ -18,7 +19,10 @@
 
 			<tr class="{$GET,cycle} thick-border">
 				<td>
-					{INVOICE_TITLE*}
+					{ID*}
+				</td>
+				<td>
+					{INVOICE_TITLE}
 				</td>
 				<td>
 					<a href="{PROFILE_URL*}">{USERNAME*}</a>
@@ -33,18 +37,20 @@
 					{DATE*}
 				</td>
 				<td>
-					<a title="{!DELETE}: #{ID}" href="{$PAGE_LINK*,_SELF:_SELF:delete:{ID}:from={FROM}}">{+START,INCLUDE,ICON}
-						NAME=admin/delete
-						ICON_SIZE=14
-					{+END}</a>
-					{+START,IF,{$EQ,{STATE},paid}}
-						<a title="{!MARK_AS_FULFILLED}: #{ID}" href="{$PAGE_LINK*,_SELF:_SELF:fulfill:{ID}}">{!MARK_AS_FULFILLED}</a>
-					{+END}
+					<ul class="horizontal-links horiz-field-sep">
+						<li><a title="{!DELETE}: #{ID}" href="{$PAGE_LINK*,_SELF:_SELF:delete:{ID}:from={FROM}}">{+START,INCLUDE,ICON}
+							NAME=admin/delete
+							ICON_SIZE=18
+						{+END}</a></li>
+						{+START,IF,{$EQ,{STATE},paid}}
+							<li><a title="{!MARK_AS_FULFILLED}: #{ID}" href="{$PAGE_LINK*,_SELF:_SELF:fulfill:{ID}}">{!MARK_AS_FULFILLED}</a></li>
+						{+END}
+					</ul>
 				</td>
 			</tr>
 			{+START,IF_NON_EMPTY,{NOTE}}
 				<tr class="{$GET,cycle}">
-					<td class="responsive-table-no-prefix" colspan="6">
+					<td class="responsive-table-no-prefix" colspan="7">
 						<span class="field-name">{!NOTE}</span>: {NOTE*}
 					</td>
 				</tr>

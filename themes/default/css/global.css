@@ -5059,6 +5059,10 @@ ul.horizontal-links form {
 	font-size: 0.9em;
 }
 
+.horizontal-links form, .horizontal-links div {
+	display: inline;
+}
+
 ul.buttons-group,
 ul.associated-links-block-group {
 	margin: 0; /* Margin will go on li elements if its a list */

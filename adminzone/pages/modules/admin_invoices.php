@@ -83,11 +83,13 @@ class Module_admin_invoices
 
         require_code('form_templates'); // Needs to run high so that the anti-click-hacking header is sent
 
-        $type = get_param_string('type', 'add');
+        $type = get_param_string('type', 'browse');
 
         require_code('ecommerce');
 
-        set_helper_panel_tutorial('tut_ecommerce');
+        if ($type != 'invoice') {
+            set_helper_panel_tutorial('tut_ecommerce');
+        }
 
         if ($type == 'browse') {
             breadcrumb_set_self(do_lang_tempcode('INVOICES'));
@@ -137,6 +139,12 @@ class Module_admin_invoices
             $this->title = get_screen_title('MARK_AS_FULFILLED');
         }
 
+        if ($type == 'invoice') {
+            breadcrumb_set_self(do_lang_tempcode('INVOICES'));
+            breadcrumb_set_parents([['_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')]]);
+            $this->title = get_screen_title('INVOICE');
+        }
+
         return null;
     }
 
@@ -169,6 +177,9 @@ class Module_admin_invoices
         }
         if ($type == 'fulfill') {
             return $this->fulfill();
+        }
+        if ($type == 'invoice') {
+            return $this->invoice();
         }
         return new Tempcode();
     }
@@ -220,11 +231,15 @@ class Module_admin_invoices
         }
         $fields = new Tempcode();
         $fields->attach(form_input_list(do_lang_tempcode('PRODUCT'), '', 'type_code', $list));
+        // Work description field (named item_name for consistency with the default item_name in the product details)
+        $fields->attach(form_input_line(do_lang('INVOICE_DESCRIPTION'), do_lang('DESCRIPTION_INVOICE_DESCRIPTION'), 'item_name', '', true));
         $fields->attach(form_input_username(do_lang_tempcode('USERNAME'), do_lang_tempcode('DESCRIPTION_INVOICE_FOR'), 'to', $to, true));
         $fields->attach(form_input_float(do_lang_tempcode('PRICE'), do_lang_tempcode('DESCRIPTION_INVOICE_PRICE', escape_html(get_option('currency')), ecommerce_get_currency_symbol(get_option('currency'))), 'price', null, false));
         $fields->attach(form_input_tax_code(do_lang_tempcode(get_option('tax_system')), do_lang_tempcode('DESCRIPTION_INVOICE_TAX_CODE'), 'tax_code', '', false));
-        $fields->attach(form_input_line(do_lang_tempcode('PURCHASE_ID'), do_lang_tempcode('DESCRIPTION_PURCHASE_ID_INVOICE'), 'special', '', false));
         $fields->attach(form_input_text(do_lang_tempcode('NOTE'), do_lang_tempcode('DESCRIPTION_INVOICE_NOTE'), 'note', '', false));
+
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['SECTION_HIDDEN' => true, 'TITLE' => do_lang_tempcode('ADVANCED')]));
+        $fields->attach(form_input_line(do_lang_tempcode('PROCESSING_CODE'), do_lang_tempcode('DESCRIPTION_PROCESSING_CODE'), 'processing_code', '', false));
 
         $post_url = build_url(['page' => '_SELF', 'type' => '_add'], '_SELF');
         $submit_name = do_lang_tempcode('CREATE_INVOICE');
@@ -276,6 +291,7 @@ class Module_admin_invoices
 
         $id = $GLOBALS['SITE_DB']->query_insert('ecom_invoices', [
             'i_type_code' => $type_code,
+            'i_item_name' => post_param_string('item_name', ''),
             'i_member_id' => $member_id,
             'i_state' => 'new',
             'i_price' => $price,
@@ -284,7 +300,7 @@ class Module_admin_invoices
             'i_tax' => $tax,
             'i_tax_tracking' => json_encode($tax_tracking, defined('JSON_PRESERVE_ZERO_FRACTION') ? JSON_PRESERVE_ZERO_FRACTION : 0),
             'i_currency' => $currency,
-            'i_special' => post_param_string('special'),
+            'i_processing_code' => post_param_string('processing_code'),
             'i_time' => time(),
             'i_note' => post_param_string('note'),
         ], true);
@@ -329,12 +345,18 @@ class Module_admin_invoices
         $invoices = [];
         $rows = $GLOBALS['SITE_DB']->query_select('ecom_invoices', ['*'], ['i_state' => $db_value], 'ORDER BY i_time');
         foreach ($rows as $row) {
-            $invoice_title = do_lang('CUSTOM_PRODUCT_' . $row['i_type_code']);
+            if ($row['i_item_name'] != '') {
+                $invoice_title = $row['i_item_name'];
+            } else {
+                $invoice_title = do_lang('CUSTOM_PRODUCT_' . $row['i_type_code']);
+            }
+            $receipt_url = build_url(['page' => '_SELF', 'type' => 'invoice', 'id' => $row['id'], 'wide_high' => 1], '_SELF');
+            $title_linker = hyperlink($receipt_url, $invoice_title, false, true, '', null, null, null, '_top');
             $date = get_timezoned_date_time($row['i_time']);
             $username = $GLOBALS['FORUM_DRIVER']->get_username($row['i_member_id']);
             $profile_url = $GLOBALS['FORUM_DRIVER']->member_profile_url($row['i_member_id'], true);
             $invoices[] = [
-                'INVOICE_TITLE' => $invoice_title,
+                'INVOICE_TITLE' => $title_linker,
                 'PROFILE_URL' => $profile_url,
                 'USERNAME' => $username,
                 'ID' => strval($row['id']),
@@ -399,7 +421,7 @@ class Module_admin_invoices
      */
     public function fulfill() : object
     {
-        $rows = $GLOBALS['SITE_DB']->query_select('ecom_invoices', ['i_state' => 'delivered'], ['id' => get_param_integer('id')], '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('ecom_invoices', ['id', 'i_state', 'i_member_id'], ['id' => get_param_integer('id')], '', 1);
         if (!array_key_exists(0, $rows)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
@@ -411,5 +433,21 @@ class Module_admin_invoices
 
         $url = build_url(['page' => '_SELF', 'type' => 'unfulfilled'], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
+    }
+
+    /**
+     * Show an invoice.
+     *
+     * @return Tempcode The result of execution
+     */
+    public function invoice() : object
+    {
+        require_css('ecommerce');
+
+        $GLOBALS['SCREEN_TEMPLATE_CALLED'] = '';
+
+        $id = get_param_integer('id');
+        $invoice = display_invoice($id);
+        return $invoice;
     }
 }

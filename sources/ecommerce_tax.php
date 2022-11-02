@@ -421,96 +421,19 @@ function generate_invoicing_breakdown(string $type_code, string $item_name, stri
  */
 function send_invoice_notification(int $member_id, int $id, bool $fulfilled = false)
 {
+    require_code('ecommerce');
+    require_css('ecommerce');
+
+    // Generate the invoice
+    $invoice = display_invoice($id);
+
     // Send out notification
     require_code('notifications');
-    $_url = build_url(['page' => 'invoices', 'type' => 'browse'], get_module_zone('invoices'), [], false, false, true);
-    $url = $_url->evaluate();
     $subject = do_lang($fulfilled ? 'INVOICE_FULFILLED_SUBJECT' : 'INVOICE_SUBJECT', strval($id), null, null, get_lang($member_id));
-    $body = do_notification_lang($fulfilled ? 'INVOICE_FULFILLED_MESSAGE' : 'INVOICE_MESSAGE', $url, get_site_name(), null, get_lang($member_id));
-    dispatch_notification('invoice', null, $subject, $body, [$member_id]);
-}
-
-/**
- * Generate tax invoice.
- *
- * @param  ID_TEXT $txn_id Transaction ID
- * @return Tempcode Tax invoice
- */
-function generate_tax_invoice(string $txn_id) : object
-{
-    require_css('ecommerce');
-    require_code('locations');
-
-    $transaction_row = get_transaction_row($txn_id);
-
-    $address_rows = $GLOBALS['SITE_DB']->query_select('ecom_trans_addresses', ['*'], ['a_trans_expecting_id' => $txn_id], '', 1);
-
-    $trans_address = '';
-    if (array_key_exists(0, $address_rows)) {
-        $address_row = $address_rows[0];
-
-        $address_parts = [
-            'name' => $address_row['a_firstname'] . ' ' . $address_row['a_lastname'],
-            'street_address' => $address_row['a_street_address'],
-            'city' => $address_row['a_city'],
-            'county' => $address_row['a_county'],
-            'state' => $address_row['a_state'],
-            'post_code' => $address_row['a_post_code'],
-            'country' => $address_row['a_country'],
-        ];
-        $trans_address = get_formatted_address($address_parts);
-    }
-
-    $items = ($transaction_row['t_invoicing_breakdown'] == '') ? [] : json_decode($transaction_row['t_invoicing_breakdown'], true);
-    $invoicing_breakdown = [];
-    foreach ($items as $item) {
-        $invoicing_breakdown[] = [
-            'TYPE_CODE' => $item['type_code'],
-            'ITEM_NAME' => $item['item_name'],
-            'QUANTITY' => (($item['quantity'] !== null) ? integer_format($item['quantity']) : ''),
-            'UNIT_PRICE' => float_format($item['unit_price']),
-            'PRICE' => float_format($item['unit_price'] * $item['quantity']),
-            'TAX' => float_format($item['tax']),
-            'TAX_RATE' => float_format(backcalculate_tax_rate(($item['unit_price'] * $item['quantity']), $item['tax']), 1, true),
-        ];
-    }
-    if (empty($invoicing_breakdown)) {
-        // We don't have a break-down so at least find a single line-item
-
-        list($details) = find_product_details($transaction_row['t_type_code']);
-        if ($details !== null) {
-            $item_name = $details['item_name'];
-        } else {
-            $item_name = $transaction_row['t_type_code'];
-        }
-
-        $invoicing_breakdown[] = [
-            'TYPE_CODE' => $transaction_row['t_type_code'],
-            'ITEM_NAME' => $item_name,
-            'QUANTITY' => integer_format(1),
-            'UNIT_PRICE' => float_format($transaction_row['t_price']),
-            'PRICE' => float_format($transaction_row['t_price']),
-            'TAX' => float_format($transaction_row['t_tax']),
-            'TAX_RATE' => float_format(backcalculate_tax_rate($transaction_row['t_price'], $transaction_row['t_tax']), 1, true),
-        ];
-    }
-
-    $status = get_transaction_status_string($transaction_row['t_status']);
-
-    return do_template('ECOM_TAX_INVOICE', [
-        '_GUID' => 'a94eac0dfa0be4a37edf7156cd28cce7',
-        'TXN_ID' => $txn_id,
-        '_DATE' => strval($transaction_row['t_time']),
-        'DATE' => get_timezoned_date_time($transaction_row['t_time'], false),
-        'TRANS_ADDRESS' => $trans_address,
-        'ITEMS' => $invoicing_breakdown,
-        'CURRENCY' => $transaction_row['t_currency'],
-        'SUBTOTAL' => float_format($transaction_row['t_price'] + $transaction_row['t_shipping']),
-        'TOTAL_TAX' => float_format($transaction_row['t_tax']),
-        'TOTAL_AMOUNT' => float_format($transaction_row['t_price'] + $transaction_row['t_tax'] + $transaction_row['t_shipping']),
-        'PURCHASE_ID' => $transaction_row['t_purchase_id'],
-        'STATUS' => $status,
-    ]);
+    $body = do_notification_template($fulfilled ? 'ECOM_INVOICE_FULFILLED_MAIL' : 'ECOM_INVOICE_MAIL', [
+        'INVOICE' => escape_html_in_comcode($invoice),
+    ], get_lang($member_id), false, null, '.txt', 'text');
+    dispatch_notification('invoice', null, $subject, $body->evaluate(get_lang($member_id)), [$member_id], A_FROM_SYSTEM_PRIVILEGED);
 }
 
 /**
