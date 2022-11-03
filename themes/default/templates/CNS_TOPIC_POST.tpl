@@ -15,40 +15,42 @@
 			{FIRST_UNREAD}
 		</div>
 
-		<div class="cns-forum-box-right cns-post-details" role="note">
-			<div class="cns-post-details-date">
-				{$SET,post_date,<time datetime="{$FROM_TIMESTAMP*,Y-m-d\TH:i:s\Z,{POST_DATE_RAW}}">{POST_DATE*}</time>}
-				{+START,IF,{$DESKTOP}}<span class="inline-desktop">{!POSTED_TIME_SIMPLE,{$GET,post_date}}</span>{+END}<span class="inline-mobile">{$GET,post_date}</span>
-			</div>
-
-			{+START,IF_NON_EMPTY,{POSTER}}
-				{+START,IF_PASSED,RATING}
-					<div class="cns-post-details-rating">
-						<div class="accessibility-hidden">{!RATING}:</div>
-						{RATING}
-					</div>
-				{+END}
-
-				{+START,IF_NON_EMPTY,{UNVALIDATED}}
-					<div class="cns-post-details-unvalidated">
-						{UNVALIDATED*}
-					</div>
-				{+END}
-			{+END}
-
-			{+START,IF,{$DESKTOP}}
-				<div class="cns-post-details-grapple block-desktop">
-					{+START,IF_NON_EMPTY,{URL}}
-						{+START,IF_NON_EMPTY,{POST_ID}}
-							<a href="{URL*}" rel="nofollow">#{POST_ID*}</a>
-						{+END}
-					{+END}
-					{+START,IF,{$EQ,{ID},{TOPIC_FIRST_POST_ID},}}{+START,IF_NON_EMPTY,{TOPIC_ID}}
-						{+START,IF_NON_EMPTY,{POST_ID}}({!IN,{!FORUM_TOPIC_NUMBERED,{TOPIC_ID*}}}){+END}
-						{+START,IF_EMPTY,{POST_ID}}{!FORUM_TOPIC_NUMBERED,{TOPIC_ID*}}{+END}
-					{+END}{+END}
+		<div class="cns-forum-box-right" role="note">
+			<div class="cns-post-details">
+				<div class="cns-post-details-date">
+					{$SET,post_date,<time datetime="{$FROM_TIMESTAMP*,Y-m-d\TH:i:s\Z,{POST_DATE_RAW}}">{POST_DATE*}</time>}
+					{+START,IF,{$DESKTOP}}<span class="inline-desktop">{!POSTED_TIME_SIMPLE,{$GET,post_date}}</span>{+END}<span class="inline-mobile">{$GET,post_date}</span>
 				</div>
-			{+END}
+
+				{+START,IF_NON_EMPTY,{POSTER}}
+					{+START,IF_PASSED,RATING}
+						<div class="cns-post-details-rating">
+							<div class="accessibility-hidden">{!RATING}:</div>
+							{RATING}
+						</div>
+					{+END}
+
+					{+START,IF_NON_EMPTY,{UNVALIDATED}}
+						<div class="cns-post-details-unvalidated">
+							{UNVALIDATED*}
+						</div>
+					{+END}
+				{+END}
+
+				{+START,IF,{$DESKTOP}}
+					<div class="cns-post-details-grapple block-desktop">
+						{+START,IF_NON_EMPTY,{URL}}
+							{+START,IF_NON_EMPTY,{POST_ID}}
+								<a href="{URL*}" rel="nofollow">#{POST_ID*}</a>
+							{+END}
+						{+END}
+						{+START,IF,{$EQ,{ID},{TOPIC_FIRST_POST_ID},}}{+START,IF_NON_EMPTY,{TOPIC_ID}}
+							{+START,IF_NON_EMPTY,{POST_ID}}({!IN,{!FORUM_TOPIC_NUMBERED,{TOPIC_ID*}}}){+END}
+							{+START,IF_EMPTY,{POST_ID}}{!FORUM_TOPIC_NUMBERED,{TOPIC_ID*}}{+END}
+						{+END}{+END}
+					</div>
+				{+END}
+			</div>
 		</div>
 	</div>
 

@@ -10,9 +10,11 @@
 						{!POLL}
 					</div>
 
-					<div class="cns-forum-box-right cns-post-details">
-						<div class="cns-post-details-date">
-							<strong>{+START,FRACTIONAL_EDITABLE,{QUESTION},question,_SEARCH:topics:_edit_poll:{ID}}{QUESTION*}{+END}</strong>
+					<div class="cns-forum-box-right">
+						<div class="cns-post-details">
+							<div class="cns-post-details-date">
+								<strong>{+START,FRACTIONAL_EDITABLE,{QUESTION},question,_SEARCH:topics:_edit_poll:{ID}}{QUESTION*}{+END}</strong>
+							</div>
 						</div>
 					</div>
 				</div>

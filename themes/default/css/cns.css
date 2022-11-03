@@ -364,8 +364,10 @@ div.cns-table-footer > div > div {
 
 .cns-post-details {
 	text-align: left;
-	padding: 0.6em 0.2em !important;
-	overflow: auto;
+	padding: 0.6em 0.5em !important;
+	{$BETA_CSS_PROPERTY,display: flex;}
+	justify-content: space-between;
+	align-items: center;
 }
 
 .cns-rank-image img {
@@ -373,34 +375,9 @@ div.cns-table-footer > div > div {
 	height: auto;
 }
 
-.cns-post-details-date {
-	float: left;
-	padding-left: 0.5em;
-}
-
 .cns-post-details-rating {
-	float: left;
 	white-space: nowrap;
-}
-/*{+START,CSS_MODE,desktop}*/
-	.cns-post-details-rating {
-		padding-left: 2em;
-	}
-/*{+END}*/
-/*{+START,CSS_MODE,mobile}*/
-	.cns-post-details-rating {
-		padding-left: 0.5em;
-	}
-/*{+END}*/
-
-.cns-post-details-unvalidated {
-	float: left;
-	padding-left: 1em;
-}
-
-.cns-post-details-grapple {
-	float: right;
-	padding-right: 1em;
+	line-height: 0; /* Needed for valignment */
 }
 
 /*{+START,CSS_MODE,desktop}*/

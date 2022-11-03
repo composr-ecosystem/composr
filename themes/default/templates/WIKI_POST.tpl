@@ -2,27 +2,29 @@
 
 <div data-tpl="wikiPost" data-tpl-params="{+START,PARAMS_JSON,ID}{_*}{+END}">
 	<div>
-		<div class="cns-forum-box-left cns-forum-box-right cns-post-details" role="note">
+		<div class="cns-forum-box-left cns-forum-box-right" role="note">
 			<a id="post-{ID*}"></a>
 
-			<div class="wiki-topic-poster-name">
-				{+START,IF_NON_EMPTY,{POSTER_URL}}
-					{!CONTENT_BY,<a href="{POSTER_URL*}">{$DISPLAYED_USERNAME*,{POSTER}}</a>}
-				{+END}
-				{+START,IF_EMPTY,{POSTER_URL}}
-					{!CONTENT_BY,{POSTER*}}
-				{+END}
-			</div>
-
-			<div class="cns-post-details-date">
-				{!POSTED_TIME_SIMPLE,<time datetime="{$FROM_TIMESTAMP*,Y-m-d\TH:i:s\Z,{POST_DATE_RAW}}">{POST_DATE*}</time>}
-			</div>
-
-			{+START,IF_NON_EMPTY,{UNVALIDATED}}
-				<div class="cns-post-details-unvalidated">
-					{UNVALIDATED*}
+			<div class="cns-post-details">
+				<div class="wiki-topic-poster-name">
+					{+START,IF_NON_EMPTY,{POSTER_URL}}
+						{!CONTENT_BY,<a href="{POSTER_URL*}">{$DISPLAYED_USERNAME*,{POSTER}}</a>}
+					{+END}
+					{+START,IF_EMPTY,{POSTER_URL}}
+						{!CONTENT_BY,{POSTER*}}
+					{+END}
 				</div>
-			{+END}
+
+				<div class="cns-post-details-date">
+					{!POSTED_TIME_SIMPLE,<time datetime="{$FROM_TIMESTAMP*,Y-m-d\TH:i:s\Z,{POST_DATE_RAW}}">{POST_DATE*}</time>}
+				</div>
+
+				{+START,IF_NON_EMPTY,{UNVALIDATED}}
+					<div class="cns-post-details-unvalidated">
+						{UNVALIDATED*}
+					</div>
+				{+END}
+			</div>
 		</div>
 	</div>
 	<div>
