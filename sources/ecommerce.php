@@ -273,9 +273,9 @@ function has_needed_fields(string $type_code, bool $force_extended = false) : bo
  * @param  ID_TEXT $type_code The product codename
  * @param  boolean $force_extended Show all possible input fields
  * @param  boolean $from_admin Whether this is being called from the Admin Zone. If so, optionally different fields may be used, including a purchase_id field for direct purchase ID input.
- * @return ?array A triple: The fields (null: none), The text (null: none), The JavaScript (null: none)
+ * @return array A triple: The fields (use null for none), The text (use null for none), array of JavaScript function calls
  */
-function get_needed_fields(string $type_code, bool $force_extended = false, bool $from_admin = false) : ?array
+function get_needed_fields(string $type_code, bool $force_extended = false, bool $from_admin = false) : array
 {
     list($details, $product_object) = find_product_details($type_code);
 
@@ -285,7 +285,7 @@ function get_needed_fields(string $type_code, bool $force_extended = false, bool
 
     $fields = null;
     $text = null;
-    $js_function_calls = null;
+    $js_function_calls = [];
 
     if (method_exists($product_object, 'get_needed_fields')) {
         list($fields, $text, $js_function_calls) = $product_object->get_needed_fields($type_code, $from_admin);
@@ -508,6 +508,7 @@ function build_transaction_linker(string $txn_id, bool $awaiting_payment, ?array
             'PRICE' => float_format($transaction_row['t_price']),
             'TAX' => float_format($transaction_row['t_tax']),
             'SHIPPING' => float_format($transaction_row['t_shipping']),
+            'TRANSACTION_FEES' => float_format($transaction_row['t_transaction_fee']),
             'CURRENCY' => $transaction_row['t_currency'],
             'STATUS' => get_transaction_status_string($transaction_row['t_status']),
             'REASON' => trim($transaction_row['t_reason'] . '; ' . $transaction_row['t_pending_reason'], '; '),
@@ -1355,14 +1356,14 @@ function do_local_transaction(string $payment_gateway, object $payment_gateway_o
 
     // Process order...
 
-    list($success, $message, $message_raw, $txn_id) = $payment_gateway_object->do_local_transaction($trans_expecting_id, $cardholder_name, $card_type, $card_number, $card_start_date, $card_expiry_date, $card_issue_number, $card_cv2, $price, $currency, $billing_street_address, $billing_city, $billing_county, $billing_state, $billing_post_code, $billing_country, $shipping_firstname, $shipping_lastname, $shipping_street_address, $shipping_city, $shipping_county, $shipping_state, $shipping_post_code, $shipping_country, $shipping_email, $shipping_phone, $length, $length_units);
+    list($success, $message, $message_raw, $txn_id, $transaction_fee) = $payment_gateway_object->do_local_transaction($trans_expecting_id, $cardholder_name, $card_type, $card_number, $card_start_date, $card_expiry_date, $card_issue_number, $card_cv2, $price, $currency, $billing_street_address, $billing_city, $billing_county, $billing_state, $billing_post_code, $billing_country, $shipping_firstname, $shipping_lastname, $shipping_street_address, $shipping_city, $shipping_county, $shipping_state, $shipping_post_code, $shipping_country, $shipping_email, $shipping_phone, $length, $length_units);
 
     $GLOBALS['SITE_DB']->query_update('ecom_trans_addresses', ['a_txn_id' => $txn_id, 'a_trans_expecting_id' => ''], ['a_trans_expecting_id' => $trans_expecting_id], '', 1);
 
     if (($success) || ($length !== null)) {
         $status = (($length !== null) && (!$success)) ? 'SCancelled' : 'Completed';
         $period = ($length === null) ? '' : cms_strtolower_ascii(strval($length) . ' ' . $length_units);
-        list(, $member_id) = handle_confirmed_transaction($trans_expecting_id, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $message_raw, $price, $tax, $shipping_cost, $currency, true, '', '', $memo, $period, get_member(), $payment_gateway, false, true);
+        list(, $member_id) = handle_confirmed_transaction($trans_expecting_id, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $message_raw, $price, $tax, $shipping_cost, $transaction_fee, $currency, true, '', '', $memo, $period, get_member(), $payment_gateway, false, true);
     }
 
     // Return...
@@ -1394,8 +1395,9 @@ function handle_pdt_ipn_transaction_script(bool $silent_fail = false, bool $send
         require_code('files');
         $myfile = cms_fopen_text_write(get_custom_file_base() . '/data_custom/ecommerce.log', true, 'ab');
         fwrite($myfile, loggable_date() . "\n");
-        fwrite($myfile, serialize($_POST) . "\n");
-        fwrite($myfile, serialize($_GET) . "\n");
+        fwrite($myfile, 'handle_pdt_ipn_transaction_script' . "\n");
+        fwrite($myfile, 'POST: ' . serialize($_POST) . "\n");
+        fwrite($myfile, 'GET: ' . serialize($_GET) . "\n");
         fwrite($myfile, "\n\n");
         flock($myfile, LOCK_UN);
         fclose($myfile);
@@ -1419,9 +1421,9 @@ function handle_pdt_ipn_transaction_script(bool $silent_fail = false, bool $send
         return null;
     }
 
-    list($trans_expecting_id, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $price, $tax, $shipping_cost, $currency, $parent_txn_id, $pending_reason, $memo, $period, $member_id) = $result;
+    list($trans_expecting_id, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $price, $tax, $shipping_cost, $transaction_fee, $currency, $parent_txn_id, $pending_reason, $memo, $period, $member_id) = $result;
 
-    list($type_code, $member_id) = handle_confirmed_transaction($trans_expecting_id, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $price, $tax, $shipping_cost, $currency, true, $parent_txn_id, $pending_reason, $memo, $period, $member_id, $payment_gateway, $silent_fail, $send_notifications);
+    list($type_code, $member_id) = handle_confirmed_transaction($trans_expecting_id, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $price, $tax, $shipping_cost, $transaction_fee, $currency, true, $parent_txn_id, $pending_reason, $memo, $period, $member_id, $payment_gateway, $silent_fail, $send_notifications);
 
     if (method_exists($payment_gateway_object, 'show_payment_response')) {
         echo $payment_gateway_object->show_payment_response($type_code, $purchase_id);
@@ -1443,9 +1445,10 @@ function handle_pdt_ipn_transaction_script(bool $silent_fail = false, bool $send
  * @param  ID_TEXT $status The status this transaction is telling of
  * @set Pending Completed SModified SCancelled
  * @param  SHORT_TEXT $reason A reason for the transaction's status (blank: unknown or N/A)
- * @param  ?REAL $price Transaction price paid excluding tax and shipping (null: lookup from $trans_expecting_id - for debugging only)
+ * @param  ?REAL $price Transaction price paid excluding tax, shipping, and transaction fees (null: lookup from $trans_expecting_id - for debugging only)
  * @param  ?REAL $tax Transaction tax (null: not separated out, find the tax due and take it out of $price)
  * @param  ?REAL $shipping Transaction shipping (null: not separated out, find the shipping due and take it out of $price)
+ * @param  ?REAL $transaction_fee The transaction fee (null: we do not know; run get_transaction_fee to determine this)
  * @param  ?ID_TEXT $currency The currency (points: was done fully with points) (null: lookup from $trans_expecting_id - for debugging only)
  * @param  boolean $check_amounts Check the amounts related to this transaction; if not set no points will be charged
  * @param  ID_TEXT $parent_txn_id The ID of the parent transaction (blank: unknown or N/A)
@@ -1458,7 +1461,7 @@ function handle_pdt_ipn_transaction_script(bool $silent_fail = false, bool $send
  * @param  boolean $send_notifications Whether to send notifications. Set to false if this is not the primary payment handling (e.g. a POST redirect rather than the real IPN).
  * @return ?array ID_TEXT A pair: The product purchased, The purchasing member ID (or null) (null: error)
  */
-function handle_confirmed_transaction(?string $trans_expecting_id, ?string $txn_id = null, ?string $type_code = null, ?string $item_name = null, ?string $purchase_id = null, bool $is_subscription = false, string $status = 'Completed', string $reason = '', ?float $price = null, ?float $tax = null, ?float $shipping = null, ?string $currency = null, bool $check_amounts = true, string $parent_txn_id = '', string $pending_reason = '', string $memo = '', string $period = '', ?int $member_id_paying = null, string $payment_gateway = '', bool $silent_fail = false, bool $send_notifications = true) : ?array
+function handle_confirmed_transaction(?string $trans_expecting_id, ?string $txn_id = null, ?string $type_code = null, ?string $item_name = null, ?string $purchase_id = null, bool $is_subscription = false, string $status = 'Completed', string $reason = '', ?float $price = null, ?float $tax = null, ?float $shipping = null, ?float $transaction_fee = null, ?string $currency = null, bool $check_amounts = true, string $parent_txn_id = '', string $pending_reason = '', string $memo = '', string $period = '', ?int $member_id_paying = null, string $payment_gateway = '', bool $silent_fail = false, bool $send_notifications = true) : ?array
 {
     if ($txn_id === null) {
         $txn_id = uniqid('trans', true);
@@ -1684,6 +1687,11 @@ function handle_confirmed_transaction(?string $trans_expecting_id, ?string $txn_
     }
     $price_points = (($expected_price_points !== null) ? $expected_price_points : 0);
 
+    // Figure out the transaction fee if we do not know
+    if ($transaction_fee === null) {
+        $transaction_fee = get_transaction_fee(($price + $tax + $shipping), $payment_gateway);
+    }
+
     // Store
     $GLOBALS['SITE_DB']->query_insert('ecom_transactions', [
         'id' => $txn_id,
@@ -1698,6 +1706,7 @@ function handle_confirmed_transaction(?string $trans_expecting_id, ?string $txn_
         't_tax' => $tax,
         't_tax_tracking' => json_encode($expected_tax_tracking, defined('JSON_PRESERVE_ZERO_FRACTION') ? JSON_PRESERVE_ZERO_FRACTION : 0),
         't_shipping' => $shipping,
+        't_transaction_fee' => $transaction_fee,
         't_currency' => $currency,
         't_parent_txn_id' => $parent_txn_id,
         't_time' => $sale_timestamp,
@@ -1923,11 +1932,12 @@ function send_transaction_mails(string $txn_id, string $item_name, bool $shipped
 
 /**
  * See if the transaction is for the correct amount.
+ * We cannot check for transaction fee because we cannot reliably predict it.
  *
- * @param  REAL $price Transaction price
+ * @param  REAL $price Transaction price (this should exclude tax, shipping, and fees)
  * @param  REAL $tax Transaction tax amount
  * @param  REAL $shipping Transaction shipping amount
- * @param  REAL $expected_price Transaction price expected
+ * @param  REAL $expected_price Transaction price expected (this should exclude tax and shipping)
  * @param  REAL $expected_tax Transaction tax amount expected
  * @param  REAL $expected_shipping Transaction shipping amount expected
  * @return boolean Whether it is
@@ -2249,6 +2259,7 @@ function display_receipt(string $txn_id) : object
             'TAX_RATE' => float_format(backcalculate_tax_rate(($item['unit_price'] * $item['quantity']), $item['tax']), 1, true),
         ];
     }
+
     if (empty($invoicing_breakdown)) {
         // We don't have a break-down so at least find a single line-item
 

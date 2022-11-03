@@ -691,6 +691,7 @@ class Hook_addon_registry_ecommerce
             'SUBMIT_NAME' => lorem_phrase(),
             'ICON' => 'buttons/proceed',
             'GET' => false,
+            'JS_FUNCTION_CALLS' => [],
         ]), null, '', true);
     }
 
@@ -907,7 +908,6 @@ class Hook_addon_registry_ecommerce
             'TYPE_CODE' => lorem_word(),
             'TEXT' => lorem_sentence_html(),
             'FIELDS' => placeholder_fields(),
-            'JS_FUNCTION_CALLS' => [],
         ]), null, '', true);
     }
 

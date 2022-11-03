@@ -39,14 +39,16 @@ class Hook_payment_gateway_paypal
     }
 
     /**
-     * Find a transaction fee from a transaction amount. Regular fees aren't taken into account.
+     * Calculate the transaction fee for this payment gateway.
+     * This is only used if the payment gateway does not return the fee and transaction fee config options are not set.
      *
-     * @param  float $amount A transaction amount
+     * @param  float $amount The total transaction amount
      * @return float The fee
      */
     public function get_transaction_fee(float $amount) : float
     {
-        return round(0.39 + 0.0349 * $amount, 2);
+        // PayPal should usually return the transaction fee as mc_fee in the PDT/IPN.
+        return round(0.39 + 0.0349 * $amount, 2); // This is arbitrary; PayPal has different transaction fees for different accounts
     }
 
     /**
@@ -290,9 +292,29 @@ class Hook_payment_gateway_paypal
      */
     public function handle_pdt_transaction() : ?array
     {
+        if ((file_exists(get_custom_file_base() . '/data_custom/ecommerce.log')) && (cms_is_writable(get_custom_file_base() . '/data_custom/ecommerce.log'))) {
+            require_code('files');
+            $myfile = cms_fopen_text_write(get_custom_file_base() . '/data_custom/ecommerce.log', true, 'ab');
+            fwrite($myfile, loggable_date() . "\n");
+            fwrite($myfile, '(hooks/systems/payment_gateway/paypal)->handle_pdt_transaction: called' . "\n");
+            fwrite($myfile, "\n\n");
+            flock($myfile, LOCK_UN);
+            fclose($myfile);
+        }
+
         // Check that we have a data transfer ID specified in configuration
         $at = get_option('paypal_data_transfer_id', true);
         if (($at === null) || ($at == '')) {
+            if ((file_exists(get_custom_file_base() . '/data_custom/ecommerce.log')) && (cms_is_writable(get_custom_file_base() . '/data_custom/ecommerce.log'))) {
+                require_code('files');
+                $myfile = cms_fopen_text_write(get_custom_file_base() . '/data_custom/ecommerce.log', true, 'ab');
+                fwrite($myfile, loggable_date() . "\n");
+                fwrite($myfile, '(hooks/systems/payment_gateway/paypal)->handle_pdt_transaction' . "\n");
+                fwrite($myfile, 'SKIPPED; paypal_data_transfer_id was not set. Relying on PayPal to post back to /data/ecommerce.php via IPN.' . "\n\n");
+                flock($myfile, LOCK_UN);
+                fclose($myfile);
+            }
+
             return null; // Always silent fail; PDT is not required
         }
 
@@ -309,6 +331,18 @@ class Hook_payment_gateway_paypal
         do { // Try up to 3 times
             $url = 'https://' . (ecommerce_test_mode() ? 'www.sandbox.paypal.com' : 'www.paypal.com') . '/cgi-bin/webscr';
             $_res = http_get_contents($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => $post]);
+
+            if ((file_exists(get_custom_file_base() . '/data_custom/ecommerce.log')) && (cms_is_writable(get_custom_file_base() . '/data_custom/ecommerce.log'))) {
+                require_code('files');
+                $myfile = cms_fopen_text_write(get_custom_file_base() . '/data_custom/ecommerce.log', true, 'ab');
+                fwrite($myfile, loggable_date() . "\n");
+                fwrite($myfile, '(hooks/systems/payment_gateway/paypal)->handle_pdt_transaction: Tried to validate PDT with PayPal' . "\n");
+                fwrite($myfile, 'RES: ' . serialize($_res) . "\n");
+                fwrite($myfile, "\n\n");
+                flock($myfile, LOCK_UN);
+                fclose($myfile);
+            }
+
             $x++;
         } while (($_res === null) && ($x < 3));
 
@@ -355,6 +389,7 @@ class Hook_payment_gateway_paypal
             'period3' => ((isset($res['period3'])) ? $res['period3'] : ''),
             'txn_type' => ((isset($res['txn_type'])) ? $res['txn_type'] : null),
             'payment_status' => ((isset($res['payment_status'])) ? $res['payment_status'] : ''),
+            'mc_fee' => ((isset($res['mc_fee'])) ? $res['mc_fee'] : ''),
         ];
 
         foreach (array_keys($_POST) as $key) { // Custom product options go onto the memo
@@ -403,6 +438,16 @@ class Hook_payment_gateway_paypal
      */
     public function handle_ipn_transaction(bool $silent_fail) : ?array
     {
+        if ((file_exists(get_custom_file_base() . '/data_custom/ecommerce.log')) && (cms_is_writable(get_custom_file_base() . '/data_custom/ecommerce.log'))) {
+            require_code('files');
+            $myfile = cms_fopen_text_write(get_custom_file_base() . '/data_custom/ecommerce.log', true, 'ab');
+            fwrite($myfile, loggable_date() . "\n");
+            fwrite($myfile, '(hooks/systems/payment_gateway/paypal)->handle_ipn_transaction: Called' . "\n");
+            fwrite($myfile, "\n\n");
+            flock($myfile, LOCK_UN);
+            fclose($myfile);
+        }
+
         // Data expected / received from IPN
         $data = [
             'custom' => post_param_string('custom', ''),
@@ -419,6 +464,7 @@ class Hook_payment_gateway_paypal
             'period3' => post_param_string('period3', ''),
             'txn_type' => post_param_string('txn_type', null),
             'payment_status' => post_param_string('payment_status', ''),
+            'mc_fee' => post_param_string('mc_fee', ''),
         ];
 
         foreach (array_keys($_POST) as $key) { // Custom product options go onto the memo
@@ -473,6 +519,18 @@ class Hook_payment_gateway_paypal
             do { // Try up to 3 times
                 $url = 'https://' . (ecommerce_test_mode() ? 'www.sandbox.paypal.com' : 'www.paypal.com') . '/cgi-bin/webscr';
                 $res = http_get_contents($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => $pure_post + ['cmd' => '_notify-validate']]);
+
+                if ((file_exists(get_custom_file_base() . '/data_custom/ecommerce.log')) && (cms_is_writable(get_custom_file_base() . '/data_custom/ecommerce.log'))) {
+                    require_code('files');
+                    $myfile = cms_fopen_text_write(get_custom_file_base() . '/data_custom/ecommerce.log', true, 'ab');
+                    fwrite($myfile, loggable_date() . "\n");
+                    fwrite($myfile, '(hooks/systems/payment_gateway/paypal)->handle_ipn_transaction: Tried to validate IPN with PayPal.' . "\n");
+                    fwrite($myfile, 'RES: ' . serialize($res) . "\n");
+                    fwrite($myfile, "\n\n");
+                    flock($myfile, LOCK_UN);
+                    fclose($myfile);
+                }
+
                 $x++;
             } while (($res === null) && ($x < 3));
             if ($res === null) {
@@ -600,6 +658,12 @@ class Hook_payment_gateway_paypal
             $shipping = null;
         } else {
             $shipping = floatval($_shipping);
+        }
+        $_fee = ($data['mc_fee'] != '') ? $data['mc_fee'] : null;
+        if ($_fee == '') {
+            $transaction_fee = null;
+        } else {
+            $transaction_fee = floatval($_fee);
         }
         $currency = $data['mc_currency']; // May be blank for subscription
         $period = $data['period3'];
@@ -738,6 +802,6 @@ class Hook_payment_gateway_paypal
             $amount -= $shipping; // The sent amount includes shipping, but we want it without
         }
 
-        return [$trans_expecting_id, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $amount, $tax, $shipping, $currency, $parent_txn_id, $pending_reason, $memo, $period, $member_id];
+        return [$trans_expecting_id, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $amount, $tax, $shipping, $transaction_fee, $currency, $parent_txn_id, $pending_reason, $memo, $period, $member_id];
     }
 }

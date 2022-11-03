@@ -571,7 +571,9 @@ class Module_admin_ecommerce_logs
         ]);
         store_shipping_address($txn_id);
 
-        handle_confirmed_transaction($txn_id, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $price, $tax, $shipping_cost, $currency, false, $parent_txn_id, $pending_reason, $memo, $period, get_member(), 'manual', false, true);
+        $transaction_fee = 0.00; // Composr does not charge transaction fees ;)
+
+        handle_confirmed_transaction($txn_id, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $price, $tax, $shipping_cost, $transaction_fee, $currency, false, $parent_txn_id, $pending_reason, $memo, $period, get_member(), 'manual', false, true);
 
         $url = get_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL);
         if ($url != '') {
@@ -825,6 +827,7 @@ class Module_admin_ecommerce_logs
             do_lang('PRICE'),
             do_lang(get_option('tax_system')),
             do_lang('SHIPPING'),
+            do_lang('TRANSACTION_FEES'),
             do_lang('STATUS'),
         ], $sortables, 'sort', $sortable . ' ' . $sort_order);
         foreach ($rows as $transaction_row) {
@@ -895,6 +898,7 @@ class Module_admin_ecommerce_logs
                 ecommerce_get_currency_symbol($transaction_row['t_currency']) . escape_html(float_format($transaction_row['t_price'])),
                 $tax,
                 ecommerce_get_currency_symbol($transaction_row['t_currency']) . escape_html(float_format($transaction_row['t_shipping'])),
+                ecommerce_get_currency_symbol($transaction_row['t_currency']) . escape_html(float_format($transaction_row['t_transaction_fee'])),
                 $status,
             ], false));
         }
@@ -1132,7 +1136,7 @@ class Module_admin_ecommerce_logs
         $transactions = $GLOBALS['SITE_DB']->query($sql);
         foreach ($transactions as $transaction) {
             if ($transaction['t_time'] > $from) {
-                $types['TRANS']['AMOUNT'] += get_transaction_fee($transaction['t_price'], $transaction['t_payment_gateway']);
+                $types['TRANS']['AMOUNT'] += $transaction['t_transaction_fee'];
             }
 
             $type_code = $transaction['t_type_code'];
@@ -1144,7 +1148,7 @@ class Module_admin_ecommerce_logs
             $types['TAX_SALES']['AMOUNT'] -= $transaction['t_tax'];
 
             if ($transaction['t_time'] < $from) {
-                $types['OPENING']['AMOUNT'] += $transaction['t_price']/*no sales tax on this figure as it goes straight out*/ - get_transaction_fee($transaction['t_price'], $transaction['t_payment_gateway']);
+                $types['OPENING']['AMOUNT'] += $transaction['t_price']/*no sales tax on this figure as it goes straight out*/ - $transaction['t_transaction_fee'];
                 continue;
             }
 
@@ -1171,7 +1175,7 @@ class Module_admin_ecommerce_logs
 
                 $types['CLOSING']['AMOUNT'] += $invoice['i_price'];
 
-                $types['TAX_SALES']['AMOUNT'] -= $transaction['i_tax'];
+                $types['TAX_SALES']['AMOUNT'] -= $invoice['i_tax'];
 
                 if ($invoice['i_time'] < $from) {
                     $types['OPENING']['AMOUNT'] += $invoice['i_price'];
@@ -1462,7 +1466,7 @@ class Module_admin_ecommerce_logs
         $repost_id = post_param_integer('id', null);
         if (($repost_id !== null) && ($repost_id == $id)) {
             require_code('ecommerce');
-            handle_confirmed_transaction(null, strval($id), $subscription[0]['s_type_code'], '', strval($id), true, 'SCancelled', '', 0.00, 0.00, 0.00, get_option('currency'), false, '', '', '', '', get_member(), 'manual', false, true); // Runs a cancel
+            handle_confirmed_transaction(null, strval($id), $subscription[0]['s_type_code'], '', strval($id), true, 'SCancelled', '', 0.00, 0.00, 0.00, 0.00, get_option('currency'), false, '', '', '', '', get_member(), 'manual', false, true); // Runs a cancel
             return inform_screen($this->title, do_lang_tempcode('SUCCESS'));
         }
 
