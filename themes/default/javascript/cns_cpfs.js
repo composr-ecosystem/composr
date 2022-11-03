@@ -1,7 +1,7 @@
 (function ($cms, $util, $dom) {
     'use strict';
 
-    $cms.functions.moduleAdminCnsCustomProfileFields_createSelectionListChooseTable = function (formId) {
+    $cms.functions.moduleAdminCnsCustomProfileFields_createSelectionListChooseTable = function (formId) { // eslint-disable-line camelcase
         formId = strVal(formId);
 
         var selectElements = document.getElementById(formId).getElementsByTagName('select');

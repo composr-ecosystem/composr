@@ -851,7 +851,7 @@
                         if ($cms.form.isModSecurityWorkaroundEnabled()) {
                             post = $cms.form.modSecurityWorkaroundAjax(post);
                         }
-                        $cms.doAjaxRequest('{$FIND_SCRIPT_NOHTTP;,autosave}?type=store' + $cms.keep(), null, post).then(function (xhr) {
+                        $cms.doAjaxRequest('{$FIND_SCRIPT_NOHTTP;,autosave}?type=store' + $cms.keep(), null, post).then(function () {
                             if (document.body.style.cursor === 'wait') {
                                 document.body.style.cursor = '';
                             }
@@ -868,7 +868,7 @@
             var fieldsToDo = {}, fieldsToDoCounter = 0, biggestLengthData = '';
             var key, value;
             var fields = result.getElementsByTagName('field');
-            var element, elementName, autosave_name;
+            var element, elementName, autosaveName;
             for (var i = 0; i < fields.length; i++) {
                 key = fields[i].getAttribute('key');
                 value = fields[i].getAttribute('value');
@@ -876,8 +876,8 @@
                 element = null;
                 for (var j = 0; j < form.elements.length; j++) {
                     elementName = (form.elements[j].name === undefined) ? form.elements[0][j].name : form.elements[j].name;
-                    autosave_name = getAutosaveName(elementName);
-                    if (autosave_name === key) {
+                    autosaveName = getAutosaveName(elementName);
+                    if (autosaveName === key) {
                         element = form.elements[j];
                         break;
                     }
@@ -1153,7 +1153,10 @@
         if ((window.location.search.indexOf('type=') !== -1) || (window.location.search.indexOf('page_link') !== -1)/*editing Comcode page*/) {
             name += window.location.search.replace(/[?&]redirect=.*/, '').replace(/[?&]keep_\w+=.*/, '').replace(/[?&]cat=.*/, '');
         }
-        name = name.replace(/[\x00-\x2f\x3a-\x40\x5b-\x60\x7b-\x7f]/g, '_'); // PHP can't use dots in field names, plus web application firewalls may not like special symbols
+
+        // PHP can't use dots in field names, plus web application firewalls may not like special symbols
+        name = name.replace(/[\x00-\x2f\x3a-\x40\x5b-\x60\x7b-\x7f]/g, '_'); // eslint-disable-line no-control-regex
+
         return name;
     }
 

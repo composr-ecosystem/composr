@@ -14,7 +14,7 @@
      * @class
      * @extends $cms.View
      */
-    function PostingForm(params) {
+    function PostingForm() {
         PostingForm.base(this, 'constructor', arguments);
     }
 
@@ -46,7 +46,7 @@
         this.form = this.el;
         this.btnSubmit = this.$('.js-btn-main-submit-form');
 
-        if (typeof this.form.extraChecks == 'undefined') {
+        if (this.form.extraChecks === undefined) {
             this.form.extraChecks = [];
         }
 
@@ -115,7 +115,7 @@
         doStandardFormPreview: function (e) {
             e.preventDefault();
 
-            if (typeof this.form.extraChecks == 'undefined') {
+            if (this.form.extraChecks === undefined) {
                 this.form.extraChecks = [];
             }
             $cms.form.doFormPreview(e, this.form, window.formPreviewUrl, window.separatePreview, this.form.extraChecks);
@@ -124,7 +124,7 @@
         doComposrFormSubmitChain: function (e) {
             e.preventDefault();
 
-            if (typeof this.form.extraChecks == 'undefined') {
+            if (this.form.extraChecks === undefined) {
                 this.form.extraChecks = [];
             }
             $cms.form.doCheckingComposrFormSubmitChain(e, this.form, this.analyticEventCategory, this.form.extraChecks);
@@ -418,7 +418,7 @@
         });
     };
 
-    $cms.templates.formScreenField_input = function formScreenField_input(params) {
+    $cms.templates.formScreenField_input = function formScreenField_input(params) { // eslint-disable-line camelcase
         var el = $dom.$('#form-table-field-input--' + strVal(params.randomisedId));
         if (el) {
             $cms.form.setUpChangeMonitor(el.parentElement);
@@ -677,7 +677,7 @@
         }
 
         var select2Options = {
-            dropdownAutoWidth: window.parent == window, /*Otherwise can overflow*/
+            dropdownAutoWidth: window.parent === window, /*Otherwise can overflow*/
             formatResult: (params.images === undefined) ? formatSelectSimple : formatSelectImage
         };
 
@@ -712,13 +712,13 @@
 
     $cms.templates.formScreenInputMultiList = function formScreenInputMultiList(params, parentEl) {
         var select2Options = {
-            dropdownAutoWidth: window.parent == window, /*Otherwise can overflow*/
+            dropdownAutoWidth: window.parent === window, /*Otherwise can overflow*/
             containerCssClass: 'form-control-wide'
         };
 
         var selectEl = parentEl.querySelector('select');
 
-        if (window.jQuery && (window.jQuery.fn.select2 != null) && (selectEl.size == 5)/*only for short UIs*/) {
+        if (window.jQuery && (window.jQuery.fn.select2 !== null) && (selectEl.size === 5)/*only for short UIs*/) {
             selectEl.classList.remove('form-control');
             window.jQuery(selectEl).select2(select2Options);
         }
@@ -728,9 +728,9 @@
         });
     };
 
-    $cms.templates.formScreenInputHugeList_input = function (params, parentEl) {
+    $cms.templates.formScreenInputHugeList_input = function (params, parentEl) { // eslint-disable-line camelcase
         var select2Options = {
-            dropdownAutoWidth: window.parent == window, /*Otherwise can overflow*/
+            dropdownAutoWidth: window.parent === window, /*Otherwise can overflow*/
             containerCssClass: 'form-control-wide'
         };
 
@@ -802,7 +802,7 @@
 
     };
 
-    $cms.templates.formScreenInputHuge_input = function (params) {
+    $cms.templates.formScreenInputHuge_input = function (params) { // eslint-disable-line camelcase
         var textArea = document.getElementById(params.name),
             el = $dom.$('#form-table-field-input--' + params.randomisedId);
 

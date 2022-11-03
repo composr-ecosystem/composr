@@ -62,7 +62,7 @@
 
     $cms.functions.ecommerceEmailGetNeededFieldsPop3 = function () {
         var extraChecks = [];
-        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
+        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) { // eslint-disable-line no-unused-vars
             if (form.elements['pass1'].value !== form.elements['pass2'].value) {
                 $cms.ui.alert('{!PASSWORD_MISMATCH;}');
                 alerted.valueOf = function () { return true; };
@@ -89,7 +89,7 @@
     };
 
     $cms.templates.ecomLogosAuthorize = function ecomLogosAuthorize(params) {
-        window.ANS_customer_id = strVal(params.customerId);
+        window.ANS_customer_id = strVal(params.customerId); // eslint-disable-line camelcase
         $cms.requireJavascript('https://verify.authorize.net/anetseal/seal.js');
     };
 

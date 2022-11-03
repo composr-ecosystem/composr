@@ -40,7 +40,7 @@
         $dom.on(allDayEvent, 'click', updateForm2);
 
         var extraChecks = [];
-        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
+        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) { // eslint-disable-line no-unused-vars
             if ((form.elements['end_day'] != null) && (form.elements['end_day'].selectedIndex !== 0) || (form.elements['end'] != null) && (form.elements['end'].value !== '')) {
                 var startDate, endDate;
                 if (startDay) {

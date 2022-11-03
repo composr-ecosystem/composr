@@ -1,4 +1,4 @@
-(function ($cms, $util, $dom) {
+(function ($cms, $util) {
     'use strict';
 
     $cms.views.XmlConfigScreen = XmlConfigScreen;
@@ -15,4 +15,4 @@
 
     $util.inherits(XmlConfigScreen, $cms.View, /**@lends XmlConfigScreen#*/{
     });
-}(window.$cms, window.$util, window.$dom));
+}(window.$cms, window.$util));

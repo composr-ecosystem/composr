@@ -700,7 +700,7 @@
         },
 
         windowScrollingBlocked: function windowScrollingBlocked() {
-            return (document.documentElement.style.overflowY == 'hidden') || (document.documentElement.style.position == 'fixed');
+            return (document.documentElement.style.overflowY === 'hidden') || (document.documentElement.style.position === 'fixed');
         },
 
         keyup: function keyup(e) {
@@ -887,7 +887,7 @@
             // Save into HTML
             this.overlayEl.style.top = boxPosTop + 'px';
             this.overlayEl.style.left = boxPosLeft + 'px';
-            if (this.title == '') {
+            if (this.title === '') {
                 this.overlayEl.style.padding = this.BOX_PADDING + 'px';
             }
 
@@ -1395,7 +1395,7 @@
                     patternRgx = new RegExp(pattern);
 
                     links.forEach(function (link) {
-                        if (link.href && !link.getAttribute('href').startsWith('#') && (!link.title) && (!link.onmouseover) && (link.href.indexOf('&lang=') == -1) && !link.classList.contains('no-auto-tooltip')) {
+                        if (link.href && !link.getAttribute('href').startsWith('#') && (!link.title) && (!link.onmouseover) && (link.href.indexOf('&lang=') === -1) && !link.classList.contains('no-auto-tooltip')) {
                             var id = link.href.match(patternRgx);
                             if (id) {
                                 applyComcodeTooltip(hook, id, link);
@@ -2620,7 +2620,7 @@
             };
         },
 
-        select: function() {
+        select: function () {
             document.getElementById('with_whitespace_' + this.withWhitespaceId).select();
         }
     });

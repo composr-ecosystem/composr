@@ -1,4 +1,4 @@
-(function ($cms, $util, $dom) {
+(function ($cms) {
     'use strict';
 
     $cms.functions.adminThemeWizard = function () {
@@ -11,7 +11,7 @@
         });
 
         var setUseOnAllState = function () {
-            if (form.elements['name'].value == '') {
+            if (form.elements['name'].value === '') {
                 form.elements['use_on_all'].disabled = true;
                 form.elements['use_on_all'].checked = false;
                 form.elements['use_on_all'].indeterminate = true;
@@ -25,7 +25,7 @@
 
         var extraChecks = [],
             validValue;
-        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
+        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) { // eslint-disable-line no-unused-vars
             var value = form.elements['name'].value;
 
             if ((value === validValue) || (value === '')) {
@@ -49,4 +49,4 @@
         });
         return extraChecks;
     };
-}(window.$cms, window.$util, window.$dom));
+}(window.$cms));

@@ -10,8 +10,6 @@
 
     var minTime,
         paused,
-        bubbleGroups,
-        totalLines,
         bubbleTimer1,
         bubbleTimer2,
         currentTime,
@@ -21,8 +19,6 @@
     $cms.templates.realtimeRainOverlay = function (params, container) {
         minTime = Number(params.minTime) || 0;
         paused = false;
-        bubbleGroups = {};
-        totalLines = 0;
         bubbleTimer1 = null;
         bubbleTimer2 = null;
 
@@ -132,8 +128,7 @@
 
     // Called to start the animation
     function startRealtimeRain() {
-        var newsTicker = document.getElementById('news-ticker'),
-            loadingIcon = document.getElementById('loading-icon');
+        var loadingIcon = document.getElementById('loading-icon');
 
         if (loadingIcon) {
             loadingIcon.style.display = 'block';
@@ -354,7 +349,6 @@
         if ((newPos > maxHeight) || (!el.parentNode)) {
             if (!avoidRemove) {
                 if (el.parentNode) {
-                    totalLines -= el.querySelectorAll('.line').length;
                     el.parentNode.removeChild(el);
                 }
                 clearInterval(el.timer);
@@ -402,8 +396,6 @@
             }
         }
         $dom.html(bubblesGoHere, '');
-        bubbleGroups = [];
-        totalLines = 0;
         var icons = document.getElementById('real-time-surround').parentNode.querySelectorAll('.special-icon');
         for (var j = 0; j < icons.length; j++) {
             if (icons[j].animationTimer) {
@@ -441,11 +433,11 @@
 
         var hours = (String(dateObject.getHours()));
         var minutes = (String(dateObject.getMinutes()));
-        if (minutes.length == 1) {
+        if (minutes.length === 1) {
             minutes = '0' + minutes;
         }
         var seconds = (String(dateObject.getSeconds()));
-        if (seconds.length == 1) {
+        if (seconds.length === 1) {
             seconds= '0' + seconds;
         }
         $dom.html(realtimetime, hours + ':' + minutes + ':' + seconds);

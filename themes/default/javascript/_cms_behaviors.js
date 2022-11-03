@@ -682,7 +682,7 @@
 
                     try {
                         //arguments: el, event, tooltip, width, pic, height, bottom, delay, lightsOff, forceWidth, win, haveLinks
-                        $cms.ui.activateTooltip(el, e, el.ttitle, options.width || 'auto', null, options.height || null, false, 0, false, options.forceWidth || false, window, (options.haveLinks == undefined) ? true : options.haveLinks);
+                        $cms.ui.activateTooltip(el, e, el.ttitle, options.width || 'auto', null, options.height || null, false, 0, false, options.forceWidth || false, window, (options.haveLinks === undefined) ? true : options.haveLinks);
                     } catch (ex) {
                         //$util.fatal('$cms.behaviors.cmsRichTooltip.attach(): Exception thrown by $cms.ui.activateTooltip()', ex, 'called with args:', args);
                     }

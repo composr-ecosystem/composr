@@ -451,7 +451,7 @@
             var pageStylesheets = [];
             var linkedSheets = document.getElementsByTagName('link');
             for (var counter = 0; counter < linkedSheets.length; counter++) {
-                if (linkedSheets[counter].rel == 'stylesheet') {
+                if (linkedSheets[counter].rel === 'stylesheet') {
                     pageStylesheets.push(linkedSheets[counter].href);
                 }
             }
@@ -472,7 +472,7 @@
             element.parentNode.className += ' ' + editorSettings.skin; // Used for us to target per-skin CSS
 
             // CSS to run inside the CKEditor frame
-            var linkedSheets = document.getElementsByTagName('style');
+            linkedSheets = document.getElementsByTagName('style');
             var css = '';
             for (var counter2 = 0; counter2 < linkedSheets.length; counter2++) {
                 css += $dom.html(linkedSheets[counter2]);
@@ -495,18 +495,18 @@
                 }
             });
             if (document.getElementById('js-attachment-store--' + element.id)) {
-                window.lang_PREFER_CMS_ATTACHMENTS = '{!javascript:PREFER_CMS_ATTACHMENTS;^}';
-                window.lang_INPUTSYSTEM_RAW_IMAGE='{!javascript:INPUTSYSTEM_RAW_IMAGE;^}';
-                window.lang_INPUTSYSTEM_ATTACHMENT='{!javascript:INPUTSYSTEM_ATTACHMENT;^}';
-                window.lang_INPUTSYSTEM_MEDIA='{!javascript:INPUTSYSTEM_MEDIA;^}';
-                window.lang_IMAGE_EDITING_TYPE='{!javascript:IMAGE_EDITING_TYPE;^}';
-                window.lang_IMAGE_EDITING_QUESTION='{!javascript:IMAGE_EDITING_QUESTION;^}';
+                window.lang_PREFER_CMS_ATTACHMENTS = '{!javascript:PREFER_CMS_ATTACHMENTS;^}'; // eslint-disable-line camelcase
+                window.lang_INPUTSYSTEM_RAW_IMAGE='{!javascript:INPUTSYSTEM_RAW_IMAGE;^}'; // eslint-disable-line camelcase
+                window.lang_INPUTSYSTEM_ATTACHMENT='{!javascript:INPUTSYSTEM_ATTACHMENT;^}'; // eslint-disable-line camelcase
+                window.lang_INPUTSYSTEM_MEDIA='{!javascript:INPUTSYSTEM_MEDIA;^}'; // eslint-disable-line camelcase
+                window.lang_IMAGE_EDITING_TYPE='{!javascript:IMAGE_EDITING_TYPE;^}'; // eslint-disable-line camelcase
+                window.lang_IMAGE_EDITING_QUESTION='{!javascript:IMAGE_EDITING_QUESTION;^}'; // eslint-disable-line camelcase
             }
-            window.lang_SPELLCHECKER_ENABLED = '{!javascript:SPELLCHECKER_ENABLED;^}';
-            window.lang_SPELLCHECKER_DISABLED = '{!javascript:SPELLCHECKER_DISABLED;^}';
-            window.lang_SPELLCHECKER_TOGGLE = '{!javascript:SPELLCHECKER_TOGGLE;^}';
-            window.lang_SPELLCHECKER_LABEL = '{!javascript:SPELLCHECKER_LABEL;^}';
-            window.lang_NO_IMAGE_PASTE_SAFARI = '{!javascript:NO_IMAGE_PASTE_SAFARI;^}';
+            window.lang_SPELLCHECKER_ENABLED = '{!javascript:SPELLCHECKER_ENABLED;^}'; // eslint-disable-line camelcase
+            window.lang_SPELLCHECKER_DISABLED = '{!javascript:SPELLCHECKER_DISABLED;^}'; // eslint-disable-line camelcase
+            window.lang_SPELLCHECKER_TOGGLE = '{!javascript:SPELLCHECKER_TOGGLE;^}'; // eslint-disable-line camelcase
+            window.lang_SPELLCHECKER_LABEL = '{!javascript:SPELLCHECKER_LABEL;^}'; // eslint-disable-line camelcase
+            window.lang_NO_IMAGE_PASTE_SAFARI = '{!javascript:NO_IMAGE_PASTE_SAFARI;^}'; // eslint-disable-line camelcase
 
             // Mainly used by autosaving, but also sometimes CKEditor seems to not refresh the textarea (e.g. for one user's site when pressing delete key on an image)
             var sync = function (event) {

@@ -609,7 +609,7 @@
             $cms.doAjaxRequest(pingUrl);
 
             setInterval(function () {
-                $cms.doAjaxRequest(pingUrl, function() {}, null, 2000);
+                $cms.doAjaxRequest(pingUrl, function () {}, null, 2000);
             }, 12000);
         }
     };
@@ -650,7 +650,7 @@
             soundObject.play();
         }
 
-        var myToast = Toastify({
+        var myToast = Toastify({ // eslint-disable-line no-undef
             text: '{!CONTENT_CHANGE_DETECTED;/}',
             duration: 4000
         });

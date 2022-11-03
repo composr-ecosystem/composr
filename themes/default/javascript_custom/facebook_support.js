@@ -1,7 +1,7 @@
 (function ($cms) {
     'use strict';
 
-    $cms.templates.facebookFooter = function facebookFooter(params) {
+    $cms.templates.facebookFooter = function facebookFooter() {
         var facebookAppid = $cms.configOption('facebook_appid');
         if (facebookAppid !== '') {
             // Load the SDK Asynchronously

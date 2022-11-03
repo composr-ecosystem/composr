@@ -581,7 +581,7 @@
                         element.focus();
                     } catch (e) {}
                 } else {
-                    if (xhr.status == 200) {
+                    if (xhr.status === 200) {
                         window.topWindow.$util.inform('Successfully posted chat message (' + new Date().getTime() + ')');
                     } else {
                         $cms.ui.alert('{!chat:MESSAGE_POSTING_ERROR;^}');
@@ -636,7 +636,7 @@
                 if (responseXML != null) {
                     chatCheckResponse(responseXML, xhr, /*skipIncomingSound*/backlog);
                 } else {
-                    if ((xhr.status != 200) && (backlog)) {
+                    if ((xhr.status !== 200) && (backlog)) {
                         $cms.ui.alert('{!chat:MESSAGE_CHECKING_ERROR;^}');
                     }
 

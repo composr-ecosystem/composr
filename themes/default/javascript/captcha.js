@@ -82,11 +82,11 @@
 
                     window.grecaptcha.render(captchaEl, grecaptchaParameters, false);
 
-                    if (typeof form.extraChecks == 'undefined') {
+                    if (form.extraChecks === undefined) {
                         form.extraChecks = [];
                     }
 
-                    form.extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
+                    form.extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) { // eslint-disable-line no-unused-vars
                         if (!captchaEl.dataset.recaptchaSuccessful || (captchaEl.dataset.recaptchaSuccessful === '0')) {
                             // CAPTCHA either not run yet, or failed, so execute it (grecaptchaParameters.callback will submit the form if it passes)
                             window.grecaptcha.execute();
@@ -109,7 +109,7 @@
 
         var extraChecks = [],
             validValue;
-        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
+        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) { // eslint-disable-line no-unused-vars
             var captchaEl = form.elements['captcha'],
                 value = captchaEl.value;
 

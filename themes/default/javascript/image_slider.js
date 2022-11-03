@@ -1,6 +1,7 @@
 (function ($cms) {
     'use strict';
 
+    /* eslint-disable camelcase */
     $cms.templates.blockMainMultiContentSlider = function blockMainMultiContentSlider(params) {
         window.jQuery('#skitter-' + params.rand).skitter({
             auto_play: true,

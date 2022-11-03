@@ -3,7 +3,7 @@
 
     $cms.functions.newsletterNewsletterForm = function newsletterNewsletterForm() {
         var extraChecks = [];
-        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
+        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) { // eslint-disable-line no-unused-vars
             if ((form.elements['password_confirm']) && (form.elements['password_confirm'].value !== form.elements['password'].value)) {
                 $cms.ui.alert('{!PASSWORD_MISMATCH;^}');
                 alerted.valueOf = function () { return true; };
@@ -19,7 +19,7 @@
         var frameId = 'preview-frame',
             html = strVal(params.htmlPreview);
 
-        var show_html_preview = function() {
+        var showHTMLPreview = function () {
             var adjustedPreview = html.replace(/<!DOCTYPE[^>]*>/i, '').replace(/<html[^>]*>/i, '').replace(/<\/html>/i, '');
             var de = window.frames[frameId].document.documentElement;
             var body = de.querySelector('body');
@@ -45,10 +45,10 @@
 
         var iframe = document.getElementById(frameId);
         var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-        if (iframeDoc.readyState  == 'complete') {
-            show_html_preview();
+        if (iframeDoc.readyState === 'complete') {
+            showHTMLPreview();
         } else {
-            iframe.onload = show_html_preview;
+            iframe.onload = showHTMLPreview;
         }
 
         setInterval(function () {

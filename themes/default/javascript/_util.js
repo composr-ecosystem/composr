@@ -1077,7 +1077,7 @@
      */
     $util.inform = $util.log = function log() {
         if (window.$cms && window.$cms.isDevMode()) {
-            return console.log.apply(console, arguments);
+            return console.log.apply(console, arguments); // eslint-disable-line no-console
         }
     };
 
@@ -1085,14 +1085,14 @@
      * @memberof $util
      */
     $util.warn = function warn() {
-        return console.warn.apply(console, arguments);
+        return console.warn.apply(console, arguments); // eslint-disable-line no-console
     };
 
     /**
      * @memberof $util
      */
     $util.fatal = $util.error = function error() {
-        return console.error.apply(console, arguments);
+        return console.error.apply(console, arguments); // eslint-disable-line no-console
     };
 
     /**

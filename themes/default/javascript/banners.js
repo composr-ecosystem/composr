@@ -31,11 +31,10 @@
     };
 
     $cms.functions.moduleCmsBannersRunStartAdd = function moduleCmsBannersRunStartAdd() {
-        var form = document.getElementById('banner_codename').form;
-
         var extraChecks = [],
             validValue;
-        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
+
+        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) { // eslint-disable-line no-unused-vars
             var value = form.elements['banner_codename'].value;
 
             if ((value === validValue) || (value === '')) {
@@ -61,11 +60,10 @@
     };
 
     $cms.functions.moduleCmsBannersRunStartAddCategory = function moduleCmsBannersRunStartAddCategory() {
-        var form = document.getElementById('new_id').form,
-            validValue;
+        var validValue;
 
         var extraChecks = [];
-        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
+        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) { // eslint-disable-line no-unused-vars
             var value = form.elements['new_id'].value;
 
             if (value === validValue) {

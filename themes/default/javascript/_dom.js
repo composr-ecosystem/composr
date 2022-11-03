@@ -1462,7 +1462,7 @@
         // All promises resolved
         if (!form) {
             form = submitEvent.target;
-            if ((form.localName != 'form') && (form.localName != 'input') && (form.localName != 'button')) {
+            if ((form.localName !== 'form') && (form.localName !== 'input') && (form.localName !== 'button')) {
                 var button = $dom.closest(form, 'input[type="submit"], button[type="submit"]');
                 if (button) {
                     button = button.form;
@@ -2433,7 +2433,7 @@
 
         var direction = (destY > currentScrollY) ? 1 : -1;
 
-        if (((direction == 1) && (currentScrollY >= destY)) || ((direction == -1) && (currentScrollY <= destY))) {
+        if (((direction === 1) && (currentScrollY >= destY)) || ((direction === -1) && (currentScrollY <= destY))) {
             // Termination step: SUCCESS!
 
             //$util.log('Terminated smooth scroll due to reaching target of ' + destY + ' (currently at ' + currentScrollY + ')');
@@ -2453,7 +2453,7 @@
 
         var scrollPixels = direction * scrollJumpAmount;
         var targetScrollY = currentScrollY + scrollPixels;
-        if (((direction == 1) && (targetScrollY > destY)) || ((direction == -1) && (targetScrollY < destY))) {
+        if (((direction === 1) && (targetScrollY > destY)) || ((direction === -1) && (targetScrollY < destY))) {
             targetScrollY = destY;
         }
 

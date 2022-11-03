@@ -50,7 +50,7 @@
         stub = strVal(stub);
 
         var extraChecks = [];
-        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
+        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) { // eslint-disable-line no-unused-vars
             var post = form.elements['post'],
                 textValue;
 
@@ -116,7 +116,7 @@
             var copyingExistingPoll = existing.selectedIndex !== 0; // If copying from an existing poll, we disable all the poll related fields
             for (var i = 0; i < form.elements.length; i++) {
                 var fieldName = form.elements[i].name;
-                var isPollField = ['question', 'is_open', 'requires_reply', 'may_unblind_own_poll', 'is_private', 'minimum_selections', 'maximum_selections', 'closing_time'].includes(fieldName) || form.elements[i].name.substr(0, 7) == 'answer_';
+                var isPollField = ['question', 'is_open', 'requires_reply', 'may_unblind_own_poll', 'is_private', 'minimum_selections', 'maximum_selections', 'closing_time'].includes(fieldName) || form.elements[i].name.substr(0, 7) === 'answer_';
                 var isRequiredPollField = ['question', 'answer_0'].includes(fieldName);
                 if (isPollField) {
                     $cms.form.setRequired(form.elements[i].name, !copyingExistingPoll && isRequiredPollField);
@@ -131,7 +131,7 @@
 
         // Adding / editing a poll
         var extraChecks = [];
-        extraChecks.push(function (e, form2, erroneous, alerted, firstFieldWithError) {
+        extraChecks.push(function (e, form2, erroneous, alerted, firstFieldWithError) { // eslint-disable-line no-unused-vars
             var error;
 
             var confinedElement = form2.elements['answers-confined'];
@@ -371,11 +371,11 @@
 
     $cms.functions.topicDeleteScreen = function topicDeleteScreen() {
         $dom.on('#select_topic_id', 'change', function (e, el) {
-            el.form.elements['reverse_point_transaction'].disabled = (el.value != '');
+            el.form.elements['reverse_point_transaction'].disabled = (el.value !== '');
         });
 
         $dom.on('#manual_topic_id', 'change', function (e, el) {
-            el.form.elements['reverse_point_transaction'].disabled = (el.value != '');
+            el.form.elements['reverse_point_transaction'].disabled = (el.value !== '');
         });
     };
 

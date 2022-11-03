@@ -23,7 +23,7 @@
 
         var options = {
             callback: googleMapUsersInitialize,
-            other_params: ($cms.configOption('google_apis_api_key') !== '') ? 'key=' + $cms.configOption('google_apis_api_key') : ''
+            other_params: ($cms.configOption('google_apis_api_key') !== '') ? 'key=' + $cms.configOption('google_apis_api_key') : '' // eslint-disable-line camelcase
         };
 
         if (region !== '') {

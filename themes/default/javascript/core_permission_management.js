@@ -417,7 +417,7 @@
                 setRequest = $cms.form.modSecurityWorkaroundAjax(setRequest);
             }
             $cms.doAjaxRequest('{$FIND_SCRIPT_NOHTTP;,sitemap}?set_perms=1' + $cms.keep(), null, setRequest).then(function (xhr) {
-                if (xhr.status != 500) {
+                if (xhr.status !== 500) {
                     $cms.ui.alert('{!permissions:PERMISSIONS_TREE_EDITOR_SAVED;^}');
                 } else {
                     $cms.ui.alert('{!INTERNAL_ERROR;^}');

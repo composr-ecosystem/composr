@@ -982,7 +982,7 @@
     $cms.functions.moduleCmsGalleriesRunStartAddCategory = function moduleCmsGalleriesRunStartAddCategory() {
         var validValue,
             extraChecks = [];
-        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
+        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) { // eslint-disable-line no-unused-vars
             var value = form.elements['gallery_name'].value;
             if ((value === validValue) || (value === '')) {
                 return true;

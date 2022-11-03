@@ -135,7 +135,7 @@
         fromUrl = Boolean(fromUrl);
         automated = Boolean(automated);
 
-        if ((!fromUrl) && (window.location.hash != '#tab--' + tab)) {
+        if ((!fromUrl) && (window.location.hash !== '#tab--' + tab)) {
             // For URL purposes, we will change URL to point to tab,
             // HOWEVER, we do not want to cause a scroll so we will be careful just in case this hash exists as an ID in the HTML.
             // findUrlTab will navigate us near the scroll position of the real anchor (<id>-<tab>) and expand the tab for it first.
@@ -222,7 +222,7 @@
             if (tabMarker) { // If the hash exists as a tab (even if it's a subtab)
                 $cms.ui.selectTab('g', tab, true);
 
-                if ((window.scrollY < 20) && (tab.indexOf('--') == -1)) {
+                if ((window.scrollY < 20) && (tab.indexOf('--') === -1)) {
                     window.scrollTo(0, $dom.findPosY(tabMarker) - 40);
                 }
             } else if ((tab.indexOf('--') !== -1) && ($dom.$id('g-' + tab.substr(0, tab.indexOf('--'))))) { // If the prefix of the hash exists as a tab
@@ -313,7 +313,7 @@
                 $cms.ui.repositionTooltip(el, event, bottom, false, null, forceWidth, win);
             });
         } else {
-            window.setTimeout(function() { // Stop mobile calling handler twice in some situations
+            window.setTimeout(function () { // Stop mobile calling handler twice in some situations
                 $dom.on(window, 'click.cmsTooltip' + $util.uid(el), function (e) {
                     var tooltipEl = document.getElementById(el.tooltipId);
 
@@ -573,7 +573,7 @@
         var ret = false;
         $dom.$$('.tooltip').forEach(function (el) {
             if (el.id === tooltipBeingOpened) {
-                ret = (el.style.display != 'none');
+                ret = (el.style.display !== 'none');
             } else {
                 $cms.ui.deactivateTooltip(el.ac, el);
             }
