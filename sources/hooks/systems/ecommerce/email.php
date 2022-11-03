@@ -406,9 +406,9 @@ class Hook_ecommerce_email
      *
      * @param  ID_TEXT $type_code The product codename
      * @param  boolean $from_admin Whether this is being called from the Admin Zone. If so, optionally different fields may be used, including a purchase_id field for direct purchase ID input.
-     * @return ?array A triple: The fields (null: none), The text (null: none), The JavaScript (null: none)
+     * @return array A triple: The fields (use null for none), The text (use null for none), array of JavaScript function calls
      */
-    public function get_needed_fields(string $type_code, bool $from_admin = false) : ?array
+    public function get_needed_fields(string $type_code, bool $from_admin = false) : array
     {
         $fields = new Tempcode();
         $js_function_calls = [];
@@ -429,7 +429,7 @@ class Hook_ecommerce_email
 
             case 'QUOTA':
                 $fields = null;
-                $js_function_calls = null;
+                $js_function_calls = [];
 
                 $text = do_lang_tempcode('QUOTA_INCREASE');
 
@@ -442,7 +442,7 @@ class Hook_ecommerce_email
 
                 $text = do_lang_tempcode('EMAIL_CONTACT_MESSAGE');
 
-                $js_function_calls = null;
+                $js_function_calls = [];
 
                 break;
         }

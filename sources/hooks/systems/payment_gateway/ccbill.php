@@ -72,9 +72,10 @@ class Hook_payment_gateway_ccbill
     }
 
     /**
-     * Find a transaction fee from a transaction amount. Regular fees aren't taken into account.
+     * Calculate the transaction fee for this payment gateway.
+     * This is only used if the payment gateway does not return the fee and transaction fee config options are not set.
      *
-     * @param  float $amount A transaction amount
+     * @param  float $amount The total transaction amount
      * @return float The fee
      */
     public function get_transaction_fee(float $amount) : float
@@ -351,7 +352,9 @@ class Hook_payment_gateway_ccbill
         $tax = null;
         $shipping = null;
 
-        return [$trans_expecting_id, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $amount, $tax, $shipping, $currency, $parent_txn_id, $pending_reason, $memo, $period, $member_id];
+        $transaction_fee = null; // TODO: figure out the transaction fee
+
+        return [$trans_expecting_id, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $amount, $tax, $shipping, $transaction_fee, $currency, $parent_txn_id, $pending_reason, $memo, $period, $member_id];
     }
 
     /**

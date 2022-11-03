@@ -711,7 +711,7 @@ Composr can generate the following charts over a custom specified period:
 
 [box="Not for formal accounting purposes"]
 [media float="right" thumb="0" framed="0"]data_custom/images/docs/dont.png[/media]
-The developers do not accept any responsibility for the financial accounts of users of the Composr eCommerce system. Accountancy features are provided as an aid only and are not guaranteed to perform to match any legislative, tax, or accountancy conventions.
+The developers do not accept any responsibility for the financial accounts of users of the Composr eCommerce system. Accountancy features are provided as an aid only and are not guaranteed to perform to match any legislative, tax, or accountancy conventions. Furthermore, the eCommerce system was only designed to handle transactions going through the website and not ones that take place elsewhere (e.g. refunds, direct payments).
 [/box]
 [/surround][title="3"]Logs[/title]
 

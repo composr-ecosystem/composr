@@ -140,11 +140,11 @@ class Hook_ecommerce_gambling
      *
      * @param  ID_TEXT $type_code The product codename
      * @param  boolean $from_admin Whether this is being called from the Admin Zone. If so, optionally different fields may be used, including a purchase_id field for direct purchase ID input.
-     * @return ?array A triple: The fields (null: none), The text (null: none), The JavaScript (null: none)
+     * @return array A triple: The fields (use null for none), The text (use null for none), array of JavaScript function calls
      */
-    public function get_needed_fields(string $type_code, bool $from_admin = false) : ?array
+    public function get_needed_fields(string $type_code, bool $from_admin = false) : array
     {
-        return null;
+        return [null, null, []];
     }
 
     /**

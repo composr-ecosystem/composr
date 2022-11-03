@@ -158,6 +158,7 @@ class Module_purchase
                 't_tax' => 'REAL',
                 't_tax_tracking' => 'LONG_TEXT',
                 't_shipping' => 'REAL',
+                't_transaction_fee' => 'REAL',
                 't_currency' => 'ID_TEXT',
                 't_parent_txn_id' => 'ID_TEXT',
                 't_time' => '*TIME',
@@ -324,6 +325,7 @@ class Module_purchase
                         't_tax' => 0.00,
                         't_tax_tracking' => '',
                         't_shipping' => 0.00,
+                        't_transaction_fee' => 0.00,
                         't_currency' => 'points',
                         't_parent_txn_id' => '',
                         't_time' => $sale['date_and_time'],
@@ -347,6 +349,7 @@ class Module_purchase
 
             $GLOBALS['SITE_DB']->add_table_field('ecom_trans_expecting', 'e_shipping', 'REAL', 0.00);
             $GLOBALS['SITE_DB']->add_table_field('ecom_transactions', 't_shipping', 'REAL', 0.00);
+            $GLOBALS['SITE_DB']->add_table_field('ecom_transactions', 't_transaction_fee', 'REAL', 0.00);
 
             $GLOBALS['SITE_DB']->alter_table_field('ecom_transactions', 't_amount', 'REAL', 't_price');
         }
@@ -840,7 +843,7 @@ class Module_purchase
             'POINTS_INVOLVED' => $points_involved,
             'MONEY_INVOLVED' => $money_involved,
         ]);
-        return $this->_wrap($result, $this->title, null, true);
+        return $this->_wrap($result, $this->title, null, [], true);
     }
 
     /**
@@ -1401,7 +1404,7 @@ class Module_purchase
                 $period = '';
             }
 
-            handle_confirmed_transaction(null, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $price, 0.00, 0.00, $currency, true, $parent_txn_id, $pending_reason, $memo, $period, get_member(), 'manual', false, true);
+            handle_confirmed_transaction(null, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $price, 0.00, 0.00, 0.00, $currency, true, $parent_txn_id, $pending_reason, $memo, $period, get_member(), 'manual', false, true);
 
             global $ECOMMERCE_SPECIAL_SUCCESS_MESSAGE;
             if ($ECOMMERCE_SPECIAL_SUCCESS_MESSAGE !== null) {

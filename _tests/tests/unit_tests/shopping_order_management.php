@@ -70,6 +70,7 @@ class shopping_order_management_test_set extends cms_test_case
             't_tax' => 1.00,
             't_tax_tracking' => '',
             't_shipping' => 2.00,
+            't_transaction_fee' => 0.25,
             't_currency' => 'GBP',
             't_parent_txn_id' => '',
             't_time' => time(),
