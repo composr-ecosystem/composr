@@ -43,12 +43,13 @@ class Hook_payment_gateway_paypal
      * This is only used if the payment gateway does not return the fee and transaction fee config options are not set.
      *
      * @param  float $amount The total transaction amount
+     * @param  ID_TEXT $type_code The transaction type code
      * @return float The fee
      */
-    public function get_transaction_fee(float $amount) : float
+    public function get_transaction_fee(float $amount, string $type_code) : float
     {
-        // PayPal should usually return the transaction fee as mc_fee in the PDT/IPN.
-        return round(0.39 + 0.0349 * $amount, 2); // This is arbitrary; PayPal has different transaction fees for different accounts
+        // PayPal usually returns the fee via mc_fee. You should probably use the correct fees according to your PayPal use by defining them in the transaction fee configuration
+        return round(0.39 + 0.0349 * $amount, 2);
     }
 
     /**

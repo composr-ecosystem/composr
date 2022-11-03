@@ -382,12 +382,19 @@ function ecommerce_get_currency_symbol(?string $currency = null) : string
 /**
  * Find a transaction fee from a transaction amount. Regular fees aren't taken into account.
  *
- * @param  REAL $amount A transaction amount
+ * @param  REAL $amount A total transaction amount
+ * @param  ID_TEXT $type_code A transaction type code
  * @param  ID_TEXT $payment_gateway The payment gateway the payment went via
  * @return REAL The fee
  */
-function get_transaction_fee(float $amount, string $payment_gateway) : float
+function get_transaction_fee(float $amount, string $type_code, string $payment_gateway) : float
 {
+    // No transaction fee for manual nor point transactions
+    if (in_array($payment_gateway, ['', 'manual', 'points'])) {
+        return 0.00;
+    }
+
+    // Configuration takes priority if set
     if (get_option('transaction_flat_fee') . get_option('transaction_percentage_fee') != '') {
         $fee = 0.00;
         if (get_option('transaction_flat_fee') != '') {
@@ -399,15 +406,12 @@ function get_transaction_fee(float $amount, string $payment_gateway) : float
         return round($fee, 2);
     }
 
-    if (in_array($payment_gateway, ['', 'manual', 'points'])) {
-        return 0.00;
-    }
-
+    // Fall back to payment gateway hooks
     if ((file_exists(get_file_base() . '/sources/hooks/systems/payment_gateway/' . $payment_gateway . '.php')) || (file_exists(get_file_base() . '/sources_custom/hooks/systems/payment_gateway/' . $payment_gateway . '.php'))) {
         require_code('hooks/systems/payment_gateway/' . filter_naughty_harsh($payment_gateway));
         $payment_gateway_object = object_factory('Hook_payment_gateway_' . filter_naughty_harsh($payment_gateway));
         if (method_exists($payment_gateway_object, 'get_transaction_fee')) {
-            return $payment_gateway_object->get_transaction_fee($amount);
+            return $payment_gateway_object->get_transaction_fee($amount, $type_code);
         }
     }
 
@@ -1689,7 +1693,7 @@ function handle_confirmed_transaction(?string $trans_expecting_id, ?string $txn_
 
     // Figure out the transaction fee if we do not know
     if ($transaction_fee === null) {
-        $transaction_fee = get_transaction_fee(($price + $tax + $shipping), $payment_gateway);
+        $transaction_fee = get_transaction_fee(($price + $tax + $shipping), $type_code, $payment_gateway);
     }
 
     // Store
