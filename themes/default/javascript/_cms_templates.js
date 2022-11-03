@@ -311,7 +311,7 @@
     $cms.templates.blockTopLanguage = function () {};
 
     $cms.templates.blockSidePersonalStatsNo = function blockSidePersonalStatsNo(params, container) {
-        $dom.on(container, 'click', '.js-check-login-username-field', function (e, btn) {
+        $dom.on(container, 'click', '.js-check-login-username-field-block', function (e, btn) {
             var form = btn.form;
 
             if ($cms.form.checkFieldForBlankness(form.elements['username'])) {

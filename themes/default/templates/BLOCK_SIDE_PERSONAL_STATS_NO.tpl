@@ -37,7 +37,7 @@
 				{+END}
 
 				<p class="proceed-button">
-					<button class="btn btn-primary btn-scri menu--site-meta--user-actions--login js-check-login-username-field" type="submit">{+START,INCLUDE,ICON}NAME=menu/site_meta/user_actions/login{+END} <span>{!_LOGIN}</span></button>
+					<button class="btn btn-primary btn-scri menu--site-meta--user-actions--login js-check-login-username-field-block" type="submit">{+START,INCLUDE,ICON}NAME=menu/site_meta/user_actions/login{+END} <span>{!_LOGIN}</span></button>
 				</p>
 			</div>
 		</form>

@@ -920,7 +920,9 @@
             timeout, interval;
 
         btn.style.cursor = 'wait';
-        btn.disabled = true;
+        window.setTimeout(function () {
+            btn.disabled = true; // Has to be in a timeout else on Chrome it blocks form submissions
+        }, 0);
         if (!permanent) {
             tempDisabledButtons[uid] = true;
         }
