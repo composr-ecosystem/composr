@@ -22,8 +22,7 @@
                 }
             }
             var ret;
-            // eslint-disable-next-line no-eval
-            eval('ret = ' + equation);
+            eval('ret = ' + equation); // eslint-disable-line no-eval
             return Math.round(ret);
         }
     };

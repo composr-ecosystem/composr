@@ -809,12 +809,12 @@
                 if (!messageContainerGlobal) {
                     currentRoomId = -1; // We'll be gathering for all rooms we're in now, because this messaging is coming through the top-level window
                 }
-            } else if (xmlEl.nodeName.toLowerCase() === 'chat_members_update') { // UPDATE MEMBERS LIST IN ROOM
+            } else if (xmlEl.nodeName.toLowerCase() === 'chat_members_update') { /* eslint-disable-line no-restricted-properties */ // UPDATE MEMBERS LIST IN ROOM
                 var membersElement = document.getElementById('chat-members-update');
                 if (membersElement) {
                     $dom.html(membersElement, xmlEl.textContent);
                 }
-            } else if ((xmlEl.nodeName.toLowerCase() === 'chat_event') && (window.imParticipantTemplate !== undefined)) { // Some kind of transitory event
+            } else if ((xmlEl.nodeName.toLowerCase() === 'chat_event') && (window.imParticipantTemplate !== undefined)) { /* eslint-disable-line no-restricted-properties */ // Some kind of transitory event
                 eventType = xmlEl.getAttribute('event_type');
                 roomId = xmlEl.getAttribute('room_id');
                 memberId = xmlEl.getAttribute('member_id');
@@ -981,7 +981,7 @@
                         }
                         break;
                 }
-            } else if ((xmlEl.nodeName.toLowerCase() === 'chat_invite') && (window.imParticipantTemplate !== undefined)) { // INVITES
+            } else if ((xmlEl.nodeName.toLowerCase() === 'chat_invite') && (window.imParticipantTemplate !== undefined)) { /* eslint-disable-line no-restricted-properties */ // INVITES
                 roomId = xmlEl.textContent;
 
                 if ((!document.getElementById('room-' + roomId)) && ((window.openedPopups['room_' + roomId] === undefined) || (window.openedPopups['room_' + roomId].isShutdown))) {
@@ -1002,7 +1002,7 @@
                     flashableAlert = true;
                 }
 
-            } else if (xmlEl.nodeName.toLowerCase() === 'chat_tracking') { // TRACKING
+            } else if (xmlEl.nodeName.toLowerCase() === 'chat_tracking') { /* eslint-disable-line no-restricted-properties */ // TRACKING
                 window.topWindow.lastMessageId = xmlEl.getAttribute('last_msg');
                 window.topWindow.lastEventId = xmlEl.getAttribute('last_event');
             }

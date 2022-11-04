@@ -274,7 +274,7 @@
             var inputs = $util.once($dom.$$$(context, '[data-submit-on-enter]'), 'behavior.submitOnEnter');
 
             inputs.forEach(function (input) {
-                $dom.on(input, (input.nodeName.toLowerCase() === 'select') ? 'keyup' : 'keypress', function submitOnEnter(e) {
+                $dom.on(input, (input.localName === 'select') ? 'keyup' : 'keypress', function submitOnEnter(e) {
                     if ($dom.keyPressed(e, 'Enter')) {
                         e.preventDefault();
 
@@ -470,7 +470,7 @@
                     setTimeout(function () {
                         var width = spanProxy.offsetWidth + 15;
                         spanProxy.parentNode.removeChild(spanProxy);
-                        if (el.parentNode.nodeName === 'TH' || el.parentNode.nodeName === 'TD') {
+                        if (el.parentNode.localName === 'th' || el.parentNode.localName === 'td') {
                             el.parentNode.style.height = width + 'px';
                         } else {
                             el.parentNode.style.minHeight = width + 'px';
@@ -1696,7 +1696,7 @@
             if (typeof config === 'number') {
                 instance.to(config);
             } else if (typeof action === 'string') {
-                if (typeof instance[action] === 'undefined') {
+                if (instance[action] === undefined) {
                     throw new TypeError('No method named "' + action + '"');
                 }
                 instance[action]();

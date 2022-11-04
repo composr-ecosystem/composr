@@ -1555,12 +1555,9 @@
                 msg = strVal(msg);
 
                 if (
-                    (msg.includes('AJAX_REQUESTS is not defined')) || // Intermittent during page out-clicks
-
-                    // LEGACY
-
                     // Internet Explorer false positives
-                    (((msg.includes("'null' is not an object")) || (msg.includes("'undefined' is not a function"))) && ((file === undefined) || (file === 'undefined'))) || // Weird errors coming from outside
+                    // LEGACY
+                    (((msg.includes("'null' is not an object")) || (msg.includes("'undefined' is not a function"))) && ((file === undefined) || (file === undefined))) || // Weird errors coming from outside
                     (((code === 0) || (code === '0')) && (msg.includes('Script error.'))) || // Too generic, can be caused by user's connection error
 
                     // Firefox false positives

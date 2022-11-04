@@ -75,6 +75,7 @@
         function findTextNodes(e) {
             var found = [];
             for (var i = 0; i < e.childNodes.length; i++) {
+                // eslint-disable-next-line no-restricted-properties
                 if (e.childNodes[i].nodeName === '#text') {
                     found.push(e.childNodes[i]);
                 }

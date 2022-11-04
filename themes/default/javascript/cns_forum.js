@@ -147,7 +147,7 @@
                 }
                 if (form2.elements[i].value !== '') {
                     // For confined polls, if a disallowed option is provided, error
-                    if (typeof confined !== 'undefined' && confined.indexOf(form2.elements[i].value) === -1) {
+                    if (confined !== undefined && confined.indexOf(form2.elements[i].value) === -1) {
                         error = $util.format('{!cns_polls:POLL_INVALID_OPTION;^}', [form2.elements[i].value]);
                         $cms.ui.alert(error);
                         alerted.valueOf = function () { return true; };

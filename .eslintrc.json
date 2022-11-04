@@ -23,6 +23,8 @@
         "no-loop-func": ["error"],
         "no-return-assign": ["error"],
         "no-useless-return": ["error"],
+        "valid-typeof": ["error"],
+        "no-debugger": ["error"],
 
         /*
         Not available on dev machine version of eslint
@@ -58,7 +60,16 @@
         }],
 
         /* Other */
-        "id-denylist": ["method", "action", "target"]
+        "no-restricted-properties": [2, {
+            "property": "nodeName"
+        }],
+        "id-denylist": ["method", "action", "target"],
+        "no-restricted-syntax": [
+            "error",
+
+            /* We do not want to refer to undefined using typeof */
+            "Literal[value=/^undefined$/]"
+        ]
     },
     "env": {
         "browser": true

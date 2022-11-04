@@ -1751,6 +1751,7 @@
 
             // NB: is_chosen may only be null if is_locked is false
             function __standardAlternateFieldUpdateEditability(field, chosenField, isLocked, isChosen, somethingRequired) {
+                // eslint-disable-next-line no-restricted-properties
                 if ((!field) || (field.nodeName !== undefined)) {
                     ___standardAlternateFieldUpdateEditability(field, chosenField, isLocked, isChosen, somethingRequired);
                 } else { // List of fields (e.g. radio list, or just because standardAlternateFieldsWithin was used)
@@ -1853,6 +1854,7 @@
             }
 
             function _standardAlternateFieldCreateListeners(field, refreshFunction) {
+                // eslint-disable-next-line no-restricted-properties
                 if ((!field) || (field.nodeName !== undefined)) {
                     __standardAlternateFieldCreateListeners(field, refreshFunction);
                 } else {

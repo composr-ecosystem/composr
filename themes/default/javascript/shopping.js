@@ -9,7 +9,7 @@
             if (billing && shipping) {
                 billing.onchange = (function (billing, shipping) {
                     return function () {
-                        if (billing.nodeName.toLowerCase() === 'select') {
+                        if (billing.localName === 'select') {
                             if ((shipping.selectedIndex === 0) && (billing.selectedIndex !== 0)) {
                                 shipping.selectedIndex = billing.selectedIndex;
                                 if (window.jQuery && (window.jQuery.fn.select2 !== undefined)) {

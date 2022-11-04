@@ -649,7 +649,7 @@
 
             comcode.onmouseover = function (event) { // Shows preview
                 var tagText = '';
-                if (this.nodeName.toLowerCase() === 'input') {
+                if (this.localName === 'input') {
                     tagText = this.origTitle;
                 } else {
                     tagText = $dom.html(this);
@@ -895,7 +895,7 @@
                 } else {
                     // Ideally we use insertElement, as insertHtml may break up the parent tag (we want it to nest nicely)
                     var elementForInserting = window.CKEDITOR.dom.element.createFromHtml(insert);
-                    if (typeof elementForInserting.getName === 'undefined') {
+                    if (elementForInserting.getName === undefined) {
                         editor.insertHtml(insert);
                     } else {
                         editor.insertElement(elementForInserting);
@@ -971,7 +971,7 @@
      * @return {string}
      */
     function getTextareaSelectedText(element) {
-        if (typeof element.selectionEnd !== 'undefined') {
+        if (element.selectionEnd !== undefined) {
             var from = element.selectionStart,
                 to = element.selectionEnd;
 

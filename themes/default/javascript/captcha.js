@@ -27,7 +27,7 @@
 
     $cms.functions.initialiseAudioLink = function initialiseAudioLink(container, audioCaptchaElement) {
         if (audioCaptchaElement) {
-            soundObject = (typeof window.Audio !== 'undefined') ? new Audio(audioCaptchaElement.href) : null;
+            soundObject = (window.Audio !== undefined) ? new Audio(audioCaptchaElement.href) : null;
 
             $dom.on(container, 'click', '.js-click-play-self-audio-link', function (e, link) {
                 e.preventDefault();

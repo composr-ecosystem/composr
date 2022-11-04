@@ -99,7 +99,7 @@
 
         selectAllGitFiles: function (stub, select) {
             for (var i = 0; i < this.form.elements.length; i++) {
-                if ((this.form.elements[i].nodeName.toLowerCase() === 'input') && (this.form.elements[i].name.substring(0, stub.length) === stub) && (!this.form.elements[i].disabled)) {
+                if ((this.form.elements[i].localName === 'input') && (this.form.elements[i].name.substring(0, stub.length) === stub) && (!this.form.elements[i].disabled)) {
                     this.form.elements[i].checked = select;
                 }
             }
@@ -123,7 +123,7 @@
 
         _refreshFileSelection: function (stub) {
             for (var i = 0; i < this.form.elements.length; i++) {
-                if ((this.form.elements[i].nodeName.toLowerCase() === 'input') && (this.form.elements[i].name.substring(0, stub.length) === stub) && (this.form.elements[i].checked) && (!this.form.elements[i].disabled)) {
+                if ((this.form.elements[i].localName === 'input') && (this.form.elements[i].name.substring(0, stub.length) === stub) && (this.form.elements[i].checked) && (!this.form.elements[i].disabled)) {
                     return true;
                 }
             }
@@ -135,7 +135,7 @@
             var notice = '';
 
             for (var i = 0; i < this.form.elements.length; i++) {
-                if ((this.form.elements[i].nodeName.toLowerCase() === 'input') && (this.form.elements[i].name.substring(0, stub.length) === stub) && (this.form.elements[i].checked) && (!this.form.elements[i].disabled)) {
+                if ((this.form.elements[i].localName === 'input') && (this.form.elements[i].name.substring(0, stub.length) === stub) && (this.form.elements[i].checked) && (!this.form.elements[i].disabled)) {
                     if (notice !== '') {
                         notice += ' \\\n';
                     }

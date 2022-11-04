@@ -387,6 +387,7 @@
             if (ranges[0] !== undefined) {
                 var comcodeElement = ranges[0].startContainer.$;
                 do {
+                    // eslint-disable-next-line no-restricted-properties
                     var matches = comcodeElement.nodeName.toLowerCase().match(/^comcode-(\w+)/);
                     if (matches !== null) {
                         if (tag == null) {
@@ -949,12 +950,13 @@
         }
 
         function cleverSetValue(form, element, value) {
+            // eslint-disable-next-line no-restricted-properties
             if ((element.length !== undefined) && (element.nodeName === undefined)) {
                 // Radio button
                 element = element[0];
             }
 
-            switch (element.nodeName.toLowerCase()) {
+            switch (element.localName) {
                 case 'textarea':
                     $editing.setTextbox(element, value, value);
                     break;
@@ -1006,6 +1008,7 @@
         }
 
         function fieldSupportsAutosave(element) {
+            // eslint-disable-next-line no-restricted-properties
             if ((element.length !== undefined) && (element.nodeName === undefined)) {
                 // Radio button
                 element = element[0];
@@ -1122,12 +1125,13 @@
         return [autosaveName, value];
 
         function isTypedInput(element) {
+            // eslint-disable-next-line no-restricted-properties
             if ((element.length !== undefined) && (element.nodeName === undefined)) {
                 // Radio button
                 element = element[0];
             }
 
-            switch (element.nodeName.toLowerCase()) {
+            switch (element.localName) {
                 case 'textarea':
                     return true;
                 case 'input':

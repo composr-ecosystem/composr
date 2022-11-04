@@ -376,7 +376,7 @@
      * @returns {boolean|number}
      */
     $util.nodeType = function nodeType(obj) {
-        return $util.isObj(obj) && (typeof obj.nodeName === 'string') && (typeof obj.nodeType === 'number') && obj.nodeType;
+        return $util.isObj(obj) && (typeof obj.nodeName === 'string') && (typeof obj.nodeType === 'number') && obj.nodeType; // eslint-disable-line no-restricted-properties
     };
 
     var ELEMENT_NODE = 1,
