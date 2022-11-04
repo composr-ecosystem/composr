@@ -3,13 +3,6 @@
 // Based on http://welcome.totheinter.net/columnizer-jquery-plugin/
 //  But with fixes and better flexibility, and pure CSS-based activation
 
-$dom.load.then(function () {
-    if (window.jQuery) {
-        jQuery('.column-wrapper').columnize({columns: 3});
-        jQuery('.column-wrapper-2').columnize({columns: 2});
-    }
-});
-
 // version 1.6.2
 // http://welcome.totheinter.net/columnizer-jquery-plugin/
 // created by: Adam Wulf @adamwulf, adam.wulf@gmail.com
@@ -988,5 +981,12 @@ $.fn.renumberByJS=function($searchTag, $colno, $targetId, $targetClass ) {
 	}
 	return 0;
 };
+
+$dom.load.then(function () {
+    if (window.jQuery) {
+        jQuery('.column-wrapper').columnize({columns: 3});
+        jQuery('.column-wrapper-2').columnize({columns: 2});
+    }
+});
 
 })(jQuery);
