@@ -730,7 +730,7 @@
                         return;
                     }
 
-                    $cms.ui.prompt('{!themes:INPUT_TEMPLATE_NAME;^}', 'example', null , '{!themes:ADD_TEMPLATE;^}').then(function (file) {
+                    $cms.ui.prompt('{!themes:INPUT_TEMPLATE_NAME;^}', 'example', null, '{!themes:ADD_TEMPLATE;^}').then(function (file) {
                         if (file !== null) {
                             file = file.replace(/\..*$/, '');
                             switch (subdir) {

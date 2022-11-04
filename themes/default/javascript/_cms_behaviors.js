@@ -1153,7 +1153,7 @@
         attach: function (context) {
             var els = $util.once($dom.$$$(context, '[data-calc-height]'), 'behavior.calcHeight');
 
-            els.forEach( function (el) {
+            els.forEach(function (el) {
                 setHeight(el);
 
                 // var mo = new MutationObserver(function () {
@@ -1162,7 +1162,7 @@
                 //     mo.observe(el, { characterData: true, childList: true, subtree: true });
                 // });
                 //
-                // mo.observe( el, { characterData: true, childList: true, subtree: true });
+                // mo.observe(el, { characterData: true, childList: true, subtree: true });
 
                 if (window.ResizeObserver) {
                     var initialObserve = true;
@@ -1185,16 +1185,16 @@
             if (initialCalcHeight) {
                 initialCalcHeight = false;
 
-                window.addEventListener( 'resize', function () {
+                window.addEventListener('resize', function () {
                     document.querySelectorAll('[data-calc-height]').forEach(setHeight);
                 });
 
-                window.addEventListener( 'orientationchange', function () {
+                window.addEventListener('orientationchange', function () {
                     document.querySelectorAll('[data-calc-height]').forEach(setHeight);
                 });
             }
 
-            function setHeight( el ) {
+            function setHeight(el) {
                 if (settingHeight.get(el)) {
                     return; // Prevent infinite loop
                 }
@@ -1205,7 +1205,7 @@
                     wasHidden = (cs.display === 'none'),
                     prevDisplay, prevVisibility;
 
-                if ( wasHidden ) {
+                if (wasHidden) {
                     // Get the element position to restore it later
                     prevDisplay = el.style.display;
                     prevVisibility = el.style.visibility;
@@ -1216,11 +1216,11 @@
                 }
 
 
-                el.style.setProperty( 'height', 'auto', 'important' );
+                el.style.setProperty('height', 'auto', 'important');
                 el.offsetHeight; // Redraw
                 el.style.height = cs.height;
 
-                if ( wasHidden ) {
+                if (wasHidden) {
                     el.style.display = prevDisplay;
                     el.style.visibility = prevVisibility;
                 }

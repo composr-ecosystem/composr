@@ -91,7 +91,7 @@
                     cache: false,
                     timeout: 5000,
                     // Processes data retrieved for the activities feed and updates the list
-                    complete: function (jqXHR, textStatus ) {
+                    complete: function (jqXHR, textStatus) {
                         view.submitBtn.disabled = false;
 
                         var tokenField = form.elements['csrf_token'];

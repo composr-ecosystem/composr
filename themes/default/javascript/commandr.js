@@ -241,7 +241,7 @@
                 window.disableTimeout = null;
             }
         }, 5000);
-        if ((command.indexOf("\n") === -1) && ((window.previousCommands.length === 0) || (window.previousCommands[window.previousCommands.length-1] !== command))) {
+        if ((command.indexOf("\n") === -1) && ((window.previousCommands.length === 0) || (window.previousCommands[window.previousCommands.length - 1] !== command))) {
             window.previousCommands.push(command);
         }
     }

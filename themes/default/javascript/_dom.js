@@ -12,11 +12,11 @@
         // FF meanwhile throws on frame elements through "defaultView.getComputedStyle"
         var view = el.ownerDocument.defaultView;
 
-        if ( !view || !view.opener ) {
+        if (!view || !view.opener) {
             view = window;
         }
 
-        return view.getComputedStyle( el );
+        return view.getComputedStyle(el);
     }
 
     var rgxIdSelector = /^#[\w-]+$/,
@@ -1666,7 +1666,7 @@
     /* Unlike jQuery, this uses the newer Web Animations API */
 
     // Generate parameters to create a standard animation
-    function genFx( type, includeWidth ) {
+    function genFx(type, includeWidth) {
         var attrs = { height: type };
 
         attrs.marginTop = attrs.marginBottom = attrs.paddingTop = attrs.paddingBottom = type;
@@ -1679,7 +1679,7 @@
         return attrs;
     }
 
-    function showHide( el, show ) {
+    function showHide(el, show) {
         var priv, display, newValue;
 
         priv = privateData(el);
@@ -1720,7 +1720,7 @@
             // Otherwise, check computed style
             // Support: Firefox <=43 - 45
             // Disconnected elements can have computed display: none, so first confirm that elem is in the document.
-            el.ownerDocument && el.ownerDocument.contains(el) && $dom.css( el, "display" ) === "none";
+            el.ownerDocument && el.ownerDocument.contains(el) && $dom.css(el, "display") === "none";
     }
 
     var rfxtypes = /^(?:toggle|show|hide)$/;
@@ -1755,11 +1755,11 @@
 
                     delete props[prop];
                     toggle = toggle || value === "toggle";
-                    if (value === ( hidden ? "hide" : "show") ) {
+                    if (value === (hidden ? "hide" : "show")) {
 
                         // Pretend to be hidden if this is a "show" and
                         // there is still data from a stopped show/hide
-                        if ( value === "show" && priv.fxshow && priv.fxshow[ prop ] !== undefined ) {
+                        if (value === "show" && priv.fxshow && priv.fxshow[ prop ] !== undefined) {
                             hidden = true;
 
                             // Ignore all other no-op show/hide data
@@ -1771,8 +1771,8 @@
                 }
 
                 // Bail out if this is a no-op like .hide().hide()
-                hasProps = $util.hasEnumerable( props );
-                if ( !hasProps && !$util.hasEnumerable( orig ) ) {
+                hasProps = $util.hasEnumerable(props);
+                if (!hasProps && !$util.hasEnumerable(orig)) {
                     return;
                 }
 
@@ -1784,29 +1784,29 @@
                     origOverflow = [el.style.overflow, el.style.overflowX, el.style.overflowY];
                     // Identify a display type, preferring old show/hide data over the CSS cascade
                     restoreDisplay = priv.fxshow && priv.fxshow.display;
-                    if ( restoreDisplay == null ) {
+                    if (restoreDisplay == null) {
                         restoreDisplay = priv.display;
                     }
-                    display = $dom.css( el, "display" );
-                    if ( display === "none" ) {
-                        if ( restoreDisplay ) {
+                    display = $dom.css(el, "display");
+                    if (display === "none") {
+                        if (restoreDisplay) {
                             display = restoreDisplay;
                         } else {
                             // Get nonempty value(s) by temporarily forcing visibility
                             showHide(el, true);
                             restoreDisplay = el.style.display || restoreDisplay;
-                            display = $dom.css( el, "display" );
+                            display = $dom.css(el, "display");
                             showHide(el, false);
                         }
                     }
 
                     // Animate inline elements as inline-block
-                    if ( display === "inline" || display === "inline-block" && restoreDisplay != null ) {
-                        if ( $dom.css( el, "float" ) === "none" ) {
+                    if (display === "inline" || display === "inline-block" && restoreDisplay != null) {
+                        if ($dom.css(el, "float") === "none") {
 
                             // Restore the original display value at the end of pure show/hide animations
-                            if ( !hasProps ) {
-                                if ( restoreDisplay == null ) {
+                            if (!hasProps) {
+                                if (restoreDisplay == null) {
                                     display = el.style.display;
                                     restoreDisplay = display === "none" ? "" : display;
                                 }
@@ -1826,9 +1826,9 @@
                 }
 
                 // General show/hide setup for this element animation
-                if ( !hasProps ) {
-                    if ( priv.fxshow ) {
-                        if ( "hidden" in priv.fxshow ) {
+                if (!hasProps) {
+                    if (priv.fxshow) {
+                        if ("hidden" in priv.fxshow) {
                             hidden = priv.fxshow.hidden;
                         }
                     } else {
@@ -1836,20 +1836,20 @@
                     }
 
                     // Store hidden/visible for toggle so `.stop().toggle()` "reverses"
-                    if ( toggle ) {
+                    if (toggle) {
                         priv.fxshow.hidden = !hidden;
                     }
 
                     // Show elements before animating them
-                    if ( hidden ) {
-                        showHide( el, true );
+                    if (hidden) {
+                        showHide(el, true);
                     }
 
                     // eslint-disable-next-line no-loop-func
                     onDone.push(function () {
                         // The final step of a "hide" animation is actually hiding the element
-                        if ( !hidden ) {
-                            showHide( el );
+                        if (!hidden) {
+                            showHide(el);
                         }
 
                         priv.fxshow = null;

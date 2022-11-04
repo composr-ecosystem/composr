@@ -438,7 +438,7 @@
         }
         var seconds = (String(dateObject.getSeconds()));
         if (seconds.length === 1) {
-            seconds= '0' + seconds;
+            seconds = '0' + seconds;
         }
         $dom.html(realtimetime, hours + ':' + minutes + ':' + seconds);
     }

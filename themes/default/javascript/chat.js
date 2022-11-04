@@ -992,7 +992,7 @@
 
                     if ((!byYou) && (!window.instantGo) && (!document.getElementById('chat-lobby-convos-tabs'))) {
                         createOverlayEvent(skipIncomingSound, xmlEl.getAttribute('inviter'), '{!chat:IM_INFO_CHAT_WITH;^}'.replace('{' + '1}', roomName), function () {
-                            window.lastMessageId = -1 /*Ensure messages re-processed*/;
+                            window.lastMessageId = -1; // Ensure messages re-processed
                             detectedConversation(roomId, roomName, participants);
                             return false;
                         }, avatarUrl, roomId);

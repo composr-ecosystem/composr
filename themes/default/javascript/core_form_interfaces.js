@@ -854,8 +854,8 @@
             initDragDrop = Boolean(params.initDragDrop),
             postEl = $dom.$('#' + name),
             // Container elements:
-            labelRow = $dom.$('#field-' + id +'-label'),
-            inputRow = $dom.$('#field-' + id +'-input');
+            labelRow = $dom.$('#field-' + id + '-label'),
+            inputRow = $dom.$('#field-' + id + '-input');
 
         if (params.class.includes('wysiwyg')) {
             if (window.$editing && window.$editing.wysiwygOn()) {

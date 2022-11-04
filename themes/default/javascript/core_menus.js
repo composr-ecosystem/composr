@@ -86,7 +86,7 @@
             adjustPaneHeights();
         }
 
-        var footers=document.getElementsByTagName('footer');
+        var footers = document.getElementsByTagName('footer');
         for (var i = 0; i < footers.length; i++) {
             footers[i].parentNode.removeChild(footers[i]);
         }
@@ -534,7 +534,7 @@
             form.action = form.originalURL;
         }
 
-        form.target='_self';
+        form.target = '_self';
     }
 
     function adjustPaneHeights() {

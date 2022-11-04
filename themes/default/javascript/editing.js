@@ -496,11 +496,11 @@
             });
             if (document.getElementById('js-attachment-store--' + element.id)) {
                 window.lang_PREFER_CMS_ATTACHMENTS = '{!javascript:PREFER_CMS_ATTACHMENTS;^}'; // eslint-disable-line camelcase
-                window.lang_INPUTSYSTEM_RAW_IMAGE='{!javascript:INPUTSYSTEM_RAW_IMAGE;^}'; // eslint-disable-line camelcase
-                window.lang_INPUTSYSTEM_ATTACHMENT='{!javascript:INPUTSYSTEM_ATTACHMENT;^}'; // eslint-disable-line camelcase
-                window.lang_INPUTSYSTEM_MEDIA='{!javascript:INPUTSYSTEM_MEDIA;^}'; // eslint-disable-line camelcase
-                window.lang_IMAGE_EDITING_TYPE='{!javascript:IMAGE_EDITING_TYPE;^}'; // eslint-disable-line camelcase
-                window.lang_IMAGE_EDITING_QUESTION='{!javascript:IMAGE_EDITING_QUESTION;^}'; // eslint-disable-line camelcase
+                window.lang_INPUTSYSTEM_RAW_IMAGE = '{!javascript:INPUTSYSTEM_RAW_IMAGE;^}'; // eslint-disable-line camelcase
+                window.lang_INPUTSYSTEM_ATTACHMENT = '{!javascript:INPUTSYSTEM_ATTACHMENT;^}'; // eslint-disable-line camelcase
+                window.lang_INPUTSYSTEM_MEDIA = '{!javascript:INPUTSYSTEM_MEDIA;^}'; // eslint-disable-line camelcase
+                window.lang_IMAGE_EDITING_TYPE = '{!javascript:IMAGE_EDITING_TYPE;^}'; // eslint-disable-line camelcase
+                window.lang_IMAGE_EDITING_QUESTION = '{!javascript:IMAGE_EDITING_QUESTION;^}'; // eslint-disable-line camelcase
             }
             window.lang_SPELLCHECKER_ENABLED = '{!javascript:SPELLCHECKER_ENABLED;^}'; // eslint-disable-line camelcase
             window.lang_SPELLCHECKER_DISABLED = '{!javascript:SPELLCHECKER_DISABLED;^}'; // eslint-disable-line camelcase
@@ -516,7 +516,7 @@
                 }
             };
             editor.on('change', sync);
-            editor.on('blur',sync); // 'change' can be buggy, e.g. when pasting, or deleting full editor contents
+            editor.on('blur', sync); // 'change' can be buggy, e.g. when pasting, or deleting full editor contents
             editor.on('mode', function () {
                 var ta = editor.container.$.querySelector('textarea');
                 if (ta != null) {

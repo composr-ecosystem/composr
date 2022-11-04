@@ -75,7 +75,7 @@
         if (cns) {
             useMultiDbLocker();
 
-            for (var i=0; i < form.elements['forum'].length; i++) {
+            for (var i = 0; i < form.elements['forum'].length; i++) {
                 form.elements['forum'][i].onclick = useMultiDbLocker;
             }
         }

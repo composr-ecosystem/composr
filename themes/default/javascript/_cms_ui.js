@@ -321,7 +321,7 @@
                         $cms.ui.deactivateTooltip(el);
                     }
                 });
-            },500);
+            }, 500);
         }
 
         el.isOver = true;
