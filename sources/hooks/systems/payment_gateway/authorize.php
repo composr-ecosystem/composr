@@ -56,7 +56,7 @@ class Hook_payment_gateway_authorize
      */
     public function get_transaction_fee(float $amount, string $type_code) : float
     {
-        // Note: Authorize.net charges an additional $25 monthly gateway fee not covered in this calculation.
+        // Note: Authorize.net charges an additional $25 monthly gateway fee which is not covered in Composr.
         return 0.3 + 0.029 * $amount; // All-in-one plan transaction fee is used as the fallback
     }
 
@@ -67,7 +67,7 @@ class Hook_payment_gateway_authorize
      */
     protected function _get_access_details() : array
     {
-        return [get_ecom_option('payment_gateway_username'), get_ecom_option('payment_gateway_password'), get_ecom_option('payment_gateway_callback_password')];
+        return [ecommerce_get_option('payment_gateway_username'), ecommerce_get_option('payment_gateway_password'), ecommerce_get_option('payment_gateway_callback_password')];
     }
 
     /**
@@ -129,7 +129,7 @@ class Hook_payment_gateway_authorize
      */
     public function get_logos() : object
     {
-        $customer_id = get_ecom_option('payment_gateway_vpn_username');
+        $customer_id = ecommerce_get_option('payment_gateway_vpn_username');
         if ($customer_id == '') {
             $customer_id = new Tempcode();
         }
