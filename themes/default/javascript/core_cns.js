@@ -48,17 +48,7 @@
         });
     };
 
-    $cms.templates.joinForm = function (params, container) {
-        var skippable = strVal(params.skippable);
-
-        joinForm(params);
-
-        $dom.on(container, 'click', '.js-click-btn-skip-step', function () {
-            $dom.$('#' + skippable).value = '1';
-        });
-    };
-
-    function joinForm(params) {
+    $cms.templates.joinForm = function (params) {
         var form = document.getElementById('username').form;
 
         form.elements['username'].onchange = function () {
@@ -196,7 +186,7 @@
                 return Promise.all(checkPromises);
             };
         });
-    }
+    };
 
     $cms.templates.blockMainJoinDone = function blockMainJoinDone(params, container) {
         $dom.on(container, 'click', '.js-stats-event-track-dl-whitepaper', function (e, btn) {

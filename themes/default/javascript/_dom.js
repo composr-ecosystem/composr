@@ -1220,6 +1220,8 @@
     // $dom.findHandlers = findHandlers;
 
     /**
+     * Wraps the regular W3C addEventListener, with the ability to mass-add multiple handlers at once, track handlers, and have single handlers.
+     * Using W3C addEventListener is okay too.
      * @memberof $dom
      * @param el { Window|Document|Element|string }
      * @param event {string|object}

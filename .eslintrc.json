@@ -20,7 +20,6 @@
         "no-array-constructor": ["error"],
         "no-eval": ["error"],
         "no-implied-eval": ["error"],
-        //TODO"no-invalid-this": ["error"],
         "no-loop-func": ["error"],
         "no-return-assign": ["error"],
         "no-useless-return": ["error"],

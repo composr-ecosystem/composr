@@ -391,8 +391,9 @@
     $cms.templates.form = function (params, container) {
         var skippable = strVal(params.skippable);
 
-        $dom.on(container, 'click', '.js-click-btn-skip-step', function () {
+        $dom.on(container, 'click', '.js-btn-skip-step', function (e, el) {
             $dom.$('#' + skippable).value = '1';
+            el.form.submit();
         });
     };
 
@@ -413,8 +414,9 @@
             });
         }
 
-        $dom.on(container, 'click', '.js-btn-skip-step', function () {
+        $dom.on(container, 'click', '.js-btn-skip-step', function (e, el) {
             $dom.$('#' + params.skippable).value = '1';
+            el.form.submit();
         });
     };
 

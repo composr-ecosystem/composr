@@ -23,7 +23,7 @@
 			<div class="skip-step-button-wrap">
 				<input type="hidden" id="{SKIPPABLE*}" name="{SKIPPABLE*}" value="0" />
 				<div>
-					<button data-disable-on-click="1" tabindex="151" class="btn btn-primary btn-scri buttons--skip js-click-btn-skip-step" type="submit">{+START,INCLUDE,ICON}NAME=buttons/skip{+END} {!SKIP}</button>
+					<button data-disable-on-click="1" tabindex="151" class="btn btn-primary btn-scri buttons--skip js-btn-skip-step" type="submit">{+START,INCLUDE,ICON}NAME=buttons/skip{+END} {!SKIP}</button>
 				</div>
 			</div>
 		{+END}
