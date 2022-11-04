@@ -459,7 +459,7 @@
         }).then(function (va) {
             if (va) {
                 add.push(va);
-                return doInputList(fieldName, add)
+                return doInputList(fieldName, add);
             }
 
             if (add.length === 0) {
@@ -477,9 +477,9 @@
             add.forEach(function (entryName) {
                 promiseCalls.push(function () {
                     if (post.value.includes('[semihtml')) {
-                        return $editing.insertTextbox(post, '[*]' + entryName + '\n')
+                        return $editing.insertTextbox(post, '[*]' + entryName + '\n');
                     } else {
-                        return $editing.insertTextbox(post, ' - ' + entryName + '\n')
+                        return $editing.insertTextbox(post, ' - ' + entryName + '\n');
                     }
                 });
             });
@@ -918,7 +918,9 @@
             $cms.ui.confirm('{!javascript:RESTORE_SAVED_FORM_DATA;^}\n\n' + biggestLengthData, null, '{!javascript:AUTO_SAVING;^}').then(function (result) {
                 if (result) {
                     for (var key in fieldsToDo) {
-                        if (typeof fieldsToDo[key] !== 'string') continue;
+                        if (typeof fieldsToDo[key] !== 'string') {
+                            continue;
+                        }
 
                         if (form.elements[key] !== undefined) {
                             //$util.inform('Restoring ' + key);
@@ -932,7 +934,9 @@
 
                     if (window.localStorage !== undefined) {
                         for (var key2 in fieldsToDo) {
-                            if (typeof fieldsToDo[key2] !== 'string') continue;
+                            if (typeof fieldsToDo[key2] !== 'string') {
+                                continue;
+                            }
 
                             autosaveName = getAutosaveName(key2);
                             if (localStorage[autosaveName] !== undefined) {
@@ -1080,7 +1084,9 @@
 
         var thisDate = new Date();
         if (!force) {
-            if ((thisDate.getTime() - window.lastAutosave.getTime()) < 20 * 1000) return null; // Only save every 20 seconds
+            if ((thisDate.getTime() - window.lastAutosave.getTime()) < 20 * 1000) {
+                return null; // Only save every 20 seconds
+            }
         }
 
         if (element === undefined) {

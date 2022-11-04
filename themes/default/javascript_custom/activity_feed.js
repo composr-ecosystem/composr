@@ -288,7 +288,9 @@
                     });
 
                     var noMessages = document.getElementById('activity_-1');
-                    if (noMessages) noMessages.style.display = 'none';
+                    if (noMessages) {
+                        noMessages.style.display = 'none';
+                    }
 
                     listElements = jQuery('li', '#activities-feed'); // Refresh, so as to include the new activity nodes
 

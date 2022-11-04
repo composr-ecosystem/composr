@@ -10,7 +10,9 @@
     function recalculatePrice(form) {
         var post = '', value, type;
         for (var i = 0; i < form.elements.length; i++) {
-            if (!form.elements[i].name) continue;
+            if (!form.elements[i].name) {
+                continue;
+            }
             value = '';
             type = form.elements[i].localName;
             if (type === 'input') {

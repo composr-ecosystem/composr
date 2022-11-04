@@ -284,7 +284,7 @@
                 }
 
                 for (var x = 0; x < num; x++) {
-                    setTimeout(function () {
+                    setTimeout(function () { // eslint-disable-line no-loop-func
                         if (!clonedMessage.parentNode) {
                             return; // Bubble has gone for whatever reason
                         }

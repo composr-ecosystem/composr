@@ -142,7 +142,9 @@
 
             var entries = [];
             for (var i = 0; i < form2.elements.length; i++) {
-                if (!form2.elements[i].name.startsWith('answer_')) continue;
+                if (!form2.elements[i].name.startsWith('answer_')) {
+                    continue;
+                }
                 if (form2.elements[i].value !== '') {
                     // For confined polls, if a disallowed option is provided, error
                     if (typeof confined !== 'undefined' && confined.indexOf(form2.elements[i].value) === -1) {
@@ -223,7 +225,7 @@
                 addPollCheckbox.form.elements['csrf_token_preserve'].value = '0';
                 addPollCheckbox.form.action = newTopicFormOrigAction;
             }
-        })
+        });
     };
 
     $cms.templates.cnsVirtualForumFiltering = function cnsVirtualForumFiltering() {

@@ -193,7 +193,7 @@
                         // If you can't see the child try to scroll parent
                         if (!isViewable) {
                             // Scroll by offset relative to parent
-                            subtabHeaders.scrollLeft = (tabSelectElRect.left + subtabHeaders.scrollLeft) - subtabHeadersRect.left
+                            subtabHeaders.scrollLeft = (tabSelectElRect.left + subtabHeaders.scrollLeft) - subtabHeadersRect.left;
                         }
 
                     }
@@ -621,7 +621,7 @@
 
         return new Promise(function (resolveConfirm) {
             if (!$cms.configOption('js_overlays')) {
-                var bool = window.confirm(question);
+                var bool = window.confirm(question); // eslint-disable-line no-alert
                 if (callback != null) {
                     callback(bool);
                 }
@@ -688,7 +688,7 @@
         currentAlertTitle = title;
         currentAlertPromise = new Promise(function (resolveAlert) {
             if (!$cms.configOption('js_overlays')) {
-                window.alert(notice);
+                window.alert(notice); // eslint-disable-line no-alert
                 currentAlertNotice = null;
                 currentAlertTitle = null;
                 currentAlertPromise = null;
@@ -733,7 +733,7 @@
 
         return new Promise(function (resolvePrompt) {
             if (!$cms.configOption('js_overlays')) {
-                var value = window.prompt(question, defaultValue);
+                var value = window.prompt(question, defaultValue); // eslint-disable-line no-alert
                 if (callback != null) {
                     callback(value);
                 }
@@ -1384,10 +1384,10 @@
     $cms.ui.enableInternaliseInfiniteScrolling = function enableInternaliseInfiniteScrolling(infiniteScrollCallUrl, wrapperEl) {
         $dom.on(window, {
             scroll: function () {
-                internaliseInfiniteScrolling(infiniteScrollCallUrl, wrapperEl)
+                internaliseInfiniteScrolling(infiniteScrollCallUrl, wrapperEl);
             },
             touchmove: function () {
-                internaliseInfiniteScrolling(infiniteScrollCallUrl, wrapperEl)
+                internaliseInfiniteScrolling(infiniteScrollCallUrl, wrapperEl);
             },
             keydown: function (e) {
                 if (e.key === 'End') { // 'End' key pressed, so stop the expand happening for a few seconds while the browser scrolls down

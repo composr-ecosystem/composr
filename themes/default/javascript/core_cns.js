@@ -194,7 +194,7 @@
                 }
 
                 return Promise.all(checkPromises);
-            }
+            };
         });
     }
 

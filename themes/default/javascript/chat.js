@@ -921,7 +921,9 @@
 
                         var doc4 = document;
                         if ((window.openedPopups['room_' + roomId] !== undefined) && (!window.openedPopups['room_' + roomId].isShutdown)) {
-                            if (!window.openedPopups['room_' + roomId].document) break;
+                            if (!window.openedPopups['room_' + roomId].document) {
+                                break;
+                            }
                             doc4 = window.openedPopups['room_' + roomId].document;
                         }
                         tmpElement = doc4.getElementById('participant-online--' + roomId + '--' + memberId);

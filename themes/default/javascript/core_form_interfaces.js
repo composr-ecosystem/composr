@@ -269,7 +269,7 @@
                         selectsTo[x].selectedIndex = selectsFrom[x].selectedIndex;
                         selectsTo[x].disabled = selectsFrom[x].disabled;
                     }
-                }
+                };
             }
         }
     });
@@ -548,7 +548,7 @@
 
         $dom.on(container, 'click', '.js-click-permissions-toggle', function (e, clicked) {
             var cell = $dom.closest(clicked, 'th, td');
-            permissionsToggle(cell)
+            permissionsToggle(cell);
         });
 
         function permissionsToggle(cell) {
@@ -1184,7 +1184,7 @@
                                 }
                             });
                         }
-                    }
+                    };
                 }
             }
         }
@@ -1427,7 +1427,7 @@
         var element = document.getElementById(select + '-presets');
 
         if (!element) {
-            element = document.getElementById(select.replaceAll('-', '_') + '_presets')
+            element = document.getElementById(select.replaceAll('-', '_') + '_presets');
         }
 
         if (element.options[0].id !== select + '-custom-option') {

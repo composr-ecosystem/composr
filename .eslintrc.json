@@ -14,6 +14,16 @@
         "func-name-matching": ["error"],
         "no-caller": ["error"],
         "no-self-compare": ["error"],
+        "semi": ["error"],
+        "curly": ["error"],
+        "no-alert": ["error"],
+        "no-array-constructor": ["error"],
+        "no-eval": ["error"],
+        "no-implied-eval": ["error"],
+        //TODO"no-invalid-this": ["error"],
+        "no-loop-func": ["error"],
+        "no-return-assign": ["error"],
+        "no-useless-return": ["error"],
 
         /*
         Not available on dev machine version of eslint
@@ -37,7 +47,10 @@
             "anonymous": "always",
             "named": "never",
             "asyncArrow": "always"
-        }]
+        }],
+
+        /* Other */
+        "id-denylist": ["method", "action", "target"]
     },
     "env": {
         "browser": true

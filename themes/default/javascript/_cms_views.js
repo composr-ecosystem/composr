@@ -1394,7 +1394,7 @@
                     hook = urlPatterns[pattern];
                     patternRgx = new RegExp(pattern);
 
-                    links.forEach(function (link) {
+                    links.forEach(function (link) { // eslint-disable-line no-loop-func
                         if (link.href && !link.getAttribute('href').startsWith('#') && (!link.title) && (!link.onmouseover) && (link.href.indexOf('&lang=') === -1) && !link.classList.contains('no-auto-tooltip')) {
                             var id = link.href.match(patternRgx);
                             if (id) {
@@ -2082,7 +2082,7 @@
                 this.el.classList.add('is-expanded');
             }
 
-            this.maybeMakeMenuItemsScrollable()
+            this.maybeMakeMenuItemsScrollable();
         },
 
         toggleSubMenu: function (e, target) {

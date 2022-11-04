@@ -12,14 +12,14 @@
             return gaLoadPromise;
         }
 
-        return gaLoadPromise = new Promise(function (resolve) {
+        gaLoadPromise = new Promise(function (resolve) {
             window.gapi || (window.gapi = {});
 
             if (!window.gapi.analytics) {
                 window.gapi.analytics = {
                     q: [],
                     ready: function (cb) {
-                        this.q.push(cb)
+                        this.q.push(cb);
                     }
                 };
             }
@@ -30,6 +30,7 @@
                 window.gapi.load('analytics');
             });
         });
+        return gaLoadPromise;
     };
 
     $cms.templates.googleAnalyticsTabs = function (params, container) {
