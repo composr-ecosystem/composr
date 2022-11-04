@@ -274,7 +274,7 @@
             var inputs = $util.once($dom.$$$(context, '[data-submit-on-enter]'), 'behavior.submitOnEnter');
 
             inputs.forEach(function (input) {
-                $dom.on(input, (input.nodeName.toLowerCase() === 'select') ? 'keyup' : 'keypress', function submitOnEnter(e) {
+                $dom.on(input, (input.localName === 'select') ? 'keyup' : 'keypress', function submitOnEnter(e) {
                     if ($dom.keyPressed(e, 'Enter')) {
                         e.preventDefault();
 
@@ -470,7 +470,7 @@
                     setTimeout(function () {
                         var width = spanProxy.offsetWidth + 15;
                         spanProxy.parentNode.removeChild(spanProxy);
-                        if (el.parentNode.nodeName === 'TH' || el.parentNode.nodeName === 'TD') {
+                        if (el.parentNode.localName === 'th' || el.parentNode.localName === 'td') {
                             el.parentNode.style.height = width + 'px';
                         } else {
                             el.parentNode.style.minHeight = width + 'px';
@@ -682,7 +682,7 @@
 
                     try {
                         //arguments: el, event, tooltip, width, pic, height, bottom, delay, lightsOff, forceWidth, win, haveLinks
-                        $cms.ui.activateTooltip(el, e, el.ttitle, options.width || 'auto', null, options.height || null, false, 0, false, options.forceWidth || false, window, (options.haveLinks == undefined) ? true : options.haveLinks);
+                        $cms.ui.activateTooltip(el, e, el.ttitle, options.width || 'auto', null, options.height || null, false, 0, false, options.forceWidth || false, window, (options.haveLinks === undefined) ? true : options.haveLinks);
                     } catch (ex) {
                         //$util.fatal('$cms.behaviors.cmsRichTooltip.attach(): Exception thrown by $cms.ui.activateTooltip()', ex, 'called with args:', args);
                     }
@@ -1153,7 +1153,7 @@
         attach: function (context) {
             var els = $util.once($dom.$$$(context, '[data-calc-height]'), 'behavior.calcHeight');
 
-            els.forEach( function (el) {
+            els.forEach(function (el) {
                 setHeight(el);
 
                 // var mo = new MutationObserver(function () {
@@ -1162,7 +1162,7 @@
                 //     mo.observe(el, { characterData: true, childList: true, subtree: true });
                 // });
                 //
-                // mo.observe( el, { characterData: true, childList: true, subtree: true });
+                // mo.observe(el, { characterData: true, childList: true, subtree: true });
 
                 if (window.ResizeObserver) {
                     var initialObserve = true;
@@ -1185,16 +1185,16 @@
             if (initialCalcHeight) {
                 initialCalcHeight = false;
 
-                window.addEventListener( 'resize', function () {
+                window.addEventListener('resize', function () {
                     document.querySelectorAll('[data-calc-height]').forEach(setHeight);
                 });
 
-                window.addEventListener( 'orientationchange', function () {
+                window.addEventListener('orientationchange', function () {
                     document.querySelectorAll('[data-calc-height]').forEach(setHeight);
                 });
             }
 
-            function setHeight( el ) {
+            function setHeight(el) {
                 if (settingHeight.get(el)) {
                     return; // Prevent infinite loop
                 }
@@ -1205,7 +1205,7 @@
                     wasHidden = (cs.display === 'none'),
                     prevDisplay, prevVisibility;
 
-                if ( wasHidden ) {
+                if (wasHidden) {
                     // Get the element position to restore it later
                     prevDisplay = el.style.display;
                     prevVisibility = el.style.visibility;
@@ -1216,11 +1216,11 @@
                 }
 
 
-                el.style.setProperty( 'height', 'auto', 'important' );
+                el.style.setProperty('height', 'auto', 'important');
                 el.offsetHeight; // Redraw
                 el.style.height = cs.height;
 
-                if ( wasHidden ) {
+                if (wasHidden) {
                     el.style.display = prevDisplay;
                     el.style.visibility = prevVisibility;
                 }
@@ -1696,7 +1696,7 @@
             if (typeof config === 'number') {
                 instance.to(config);
             } else if (typeof action === 'string') {
-                if (typeof instance[action] === 'undefined') {
+                if (instance[action] === undefined) {
                     throw new TypeError('No method named "' + action + '"');
                 }
                 instance[action]();

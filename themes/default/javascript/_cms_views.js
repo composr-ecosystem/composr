@@ -700,7 +700,7 @@
         },
 
         windowScrollingBlocked: function windowScrollingBlocked() {
-            return (document.documentElement.style.overflowY == 'hidden') || (document.documentElement.style.position == 'fixed');
+            return (document.documentElement.style.overflowY === 'hidden') || (document.documentElement.style.position === 'fixed');
         },
 
         keyup: function keyup(e) {
@@ -887,7 +887,7 @@
             // Save into HTML
             this.overlayEl.style.top = boxPosTop + 'px';
             this.overlayEl.style.left = boxPosLeft + 'px';
-            if (this.title == '') {
+            if (this.title === '') {
                 this.overlayEl.style.padding = this.BOX_PADDING + 'px';
             }
 
@@ -1394,8 +1394,8 @@
                     hook = urlPatterns[pattern];
                     patternRgx = new RegExp(pattern);
 
-                    links.forEach(function (link) {
-                        if (link.href && !link.getAttribute('href').startsWith('#') && (!link.title) && (!link.onmouseover) && (link.href.indexOf('&lang=') == -1) && !link.classList.contains('no-auto-tooltip')) {
+                    links.forEach(function (link) { // eslint-disable-line no-loop-func
+                        if (link.href && !link.getAttribute('href').startsWith('#') && (!link.title) && (!link.onmouseover) && (link.href.indexOf('&lang=') === -1) && !link.classList.contains('no-auto-tooltip')) {
                             var id = link.href.match(patternRgx);
                             if (id) {
                                 applyComcodeTooltip(hook, id, link);
@@ -1555,12 +1555,9 @@
                 msg = strVal(msg);
 
                 if (
-                    (msg.includes('AJAX_REQUESTS is not defined')) || // Intermittent during page out-clicks
-
-                    // LEGACY
-
                     // Internet Explorer false positives
-                    (((msg.includes("'null' is not an object")) || (msg.includes("'undefined' is not a function"))) && ((file === undefined) || (file === 'undefined'))) || // Weird errors coming from outside
+                    // LEGACY
+                    (((msg.includes("'null' is not an object")) || (msg.includes("'undefined' is not a function"))) && ((file === undefined) || (file === undefined))) || // Weird errors coming from outside
                     (((code === 0) || (code === '0')) && (msg.includes('Script error.'))) || // Too generic, can be caused by user's connection error
 
                     // Firefox false positives
@@ -2082,7 +2079,7 @@
                 this.el.classList.add('is-expanded');
             }
 
-            this.maybeMakeMenuItemsScrollable()
+            this.maybeMakeMenuItemsScrollable();
         },
 
         toggleSubMenu: function (e, target) {
@@ -2620,7 +2617,7 @@
             };
         },
 
-        select: function() {
+        select: function () {
             document.getElementById('with_whitespace_' + this.withWhitespaceId).select();
         }
     });

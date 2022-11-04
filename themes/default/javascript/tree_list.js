@@ -434,6 +434,7 @@
                                 var xmlNode = that.getElementByIdHack(nodeSelf.querySelector('input').id.substr(7 + that.name.length));
                                 var targetXmlNode = that.getElementByIdHack(nodeSelf.lastHit.id.substr(12 + that.name.length));
 
+                                // eslint-disable-next-line no-restricted-properties
                                 if ((nodeSelf.lastHit.childNodes.length === 1) && (nodeSelf.lastHit.childNodes[0].nodeName === '#text')) {
                                     $dom.empty(nodeSelf.lastHit);
                                     that.renderTree(targetXmlNode, nodeSelf.lastHit);

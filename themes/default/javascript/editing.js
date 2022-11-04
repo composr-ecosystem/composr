@@ -406,7 +406,7 @@
                     }, 1000);
 
                     resolvePromise();
-                })
+                });
             });
         }
 
@@ -451,7 +451,7 @@
             var pageStylesheets = [];
             var linkedSheets = document.getElementsByTagName('link');
             for (var counter = 0; counter < linkedSheets.length; counter++) {
-                if (linkedSheets[counter].rel == 'stylesheet') {
+                if (linkedSheets[counter].rel === 'stylesheet') {
                     pageStylesheets.push(linkedSheets[counter].href);
                 }
             }
@@ -472,7 +472,7 @@
             element.parentNode.className += ' ' + editorSettings.skin; // Used for us to target per-skin CSS
 
             // CSS to run inside the CKEditor frame
-            var linkedSheets = document.getElementsByTagName('style');
+            linkedSheets = document.getElementsByTagName('style');
             var css = '';
             for (var counter2 = 0; counter2 < linkedSheets.length; counter2++) {
                 css += $dom.html(linkedSheets[counter2]);
@@ -495,18 +495,18 @@
                 }
             });
             if (document.getElementById('js-attachment-store--' + element.id)) {
-                window.lang_PREFER_CMS_ATTACHMENTS = '{!javascript:PREFER_CMS_ATTACHMENTS;^}';
-                window.lang_INPUTSYSTEM_RAW_IMAGE='{!javascript:INPUTSYSTEM_RAW_IMAGE;^}';
-                window.lang_INPUTSYSTEM_ATTACHMENT='{!javascript:INPUTSYSTEM_ATTACHMENT;^}';
-                window.lang_INPUTSYSTEM_MEDIA='{!javascript:INPUTSYSTEM_MEDIA;^}';
-                window.lang_IMAGE_EDITING_TYPE='{!javascript:IMAGE_EDITING_TYPE;^}';
-                window.lang_IMAGE_EDITING_QUESTION='{!javascript:IMAGE_EDITING_QUESTION;^}';
+                window.lang_PREFER_CMS_ATTACHMENTS = '{!javascript:PREFER_CMS_ATTACHMENTS;^}'; // eslint-disable-line camelcase
+                window.lang_INPUTSYSTEM_RAW_IMAGE = '{!javascript:INPUTSYSTEM_RAW_IMAGE;^}'; // eslint-disable-line camelcase
+                window.lang_INPUTSYSTEM_ATTACHMENT = '{!javascript:INPUTSYSTEM_ATTACHMENT;^}'; // eslint-disable-line camelcase
+                window.lang_INPUTSYSTEM_MEDIA = '{!javascript:INPUTSYSTEM_MEDIA;^}'; // eslint-disable-line camelcase
+                window.lang_IMAGE_EDITING_TYPE = '{!javascript:IMAGE_EDITING_TYPE;^}'; // eslint-disable-line camelcase
+                window.lang_IMAGE_EDITING_QUESTION = '{!javascript:IMAGE_EDITING_QUESTION;^}'; // eslint-disable-line camelcase
             }
-            window.lang_SPELLCHECKER_ENABLED = '{!javascript:SPELLCHECKER_ENABLED;^}';
-            window.lang_SPELLCHECKER_DISABLED = '{!javascript:SPELLCHECKER_DISABLED;^}';
-            window.lang_SPELLCHECKER_TOGGLE = '{!javascript:SPELLCHECKER_TOGGLE;^}';
-            window.lang_SPELLCHECKER_LABEL = '{!javascript:SPELLCHECKER_LABEL;^}';
-            window.lang_NO_IMAGE_PASTE_SAFARI = '{!javascript:NO_IMAGE_PASTE_SAFARI;^}';
+            window.lang_SPELLCHECKER_ENABLED = '{!javascript:SPELLCHECKER_ENABLED;^}'; // eslint-disable-line camelcase
+            window.lang_SPELLCHECKER_DISABLED = '{!javascript:SPELLCHECKER_DISABLED;^}'; // eslint-disable-line camelcase
+            window.lang_SPELLCHECKER_TOGGLE = '{!javascript:SPELLCHECKER_TOGGLE;^}'; // eslint-disable-line camelcase
+            window.lang_SPELLCHECKER_LABEL = '{!javascript:SPELLCHECKER_LABEL;^}'; // eslint-disable-line camelcase
+            window.lang_NO_IMAGE_PASTE_SAFARI = '{!javascript:NO_IMAGE_PASTE_SAFARI;^}'; // eslint-disable-line camelcase
 
             // Mainly used by autosaving, but also sometimes CKEditor seems to not refresh the textarea (e.g. for one user's site when pressing delete key on an image)
             var sync = function (event) {
@@ -516,7 +516,7 @@
                 }
             };
             editor.on('change', sync);
-            editor.on('blur',sync); // 'change' can be buggy, e.g. when pasting, or deleting full editor contents
+            editor.on('blur', sync); // 'change' can be buggy, e.g. when pasting, or deleting full editor contents
             editor.on('mode', function () {
                 var ta = editor.container.$.querySelector('textarea');
                 if (ta != null) {
@@ -649,7 +649,7 @@
 
             comcode.onmouseover = function (event) { // Shows preview
                 var tagText = '';
-                if (this.nodeName.toLowerCase() === 'input') {
+                if (this.localName === 'input') {
                     tagText = this.origTitle;
                 } else {
                     tagText = $dom.html(this);
@@ -895,7 +895,7 @@
                 } else {
                     // Ideally we use insertElement, as insertHtml may break up the parent tag (we want it to nest nicely)
                     var elementForInserting = window.CKEDITOR.dom.element.createFromHtml(insert);
-                    if (typeof elementForInserting.getName === 'undefined') {
+                    if (elementForInserting.getName === undefined) {
                         editor.insertHtml(insert);
                     } else {
                         editor.insertElement(elementForInserting);
@@ -971,7 +971,7 @@
      * @return {string}
      */
     function getTextareaSelectedText(element) {
-        if (typeof element.selectionEnd !== 'undefined') {
+        if (element.selectionEnd !== undefined) {
             var from = element.selectionStart,
                 to = element.selectionEnd;
 

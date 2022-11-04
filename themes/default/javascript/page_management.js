@@ -1,8 +1,8 @@
 (function ($cms, $util, $dom) {
     'use strict';
 
-    var $ADDON_INSTALLED_code_editor = boolVal('{$ADDON_INSTALLED,code_editor}'),
-        $ADDON_INSTALLED_stats = boolVal('{$ADDON_INSTALLED,stats}');
+    var $ADDON_INSTALLED_code_editor = boolVal('{$ADDON_INSTALLED,code_editor}'), // eslint-disable-line camelcase
+        $ADDON_INSTALLED_stats = boolVal('{$ADDON_INSTALLED,stats}'); // eslint-disable-line camelcase
 
     $cms.templates.sitemapEditorScreen = function sitemapEditorScreen(params, container) {
         var editZoneUrl = params.editZoneUrl,
@@ -69,7 +69,7 @@
                 case 'minimodule':
                 case 'minimodule_custom':
                     path = pageLinkBits[0] + ((pageLinkBits[0] === '') ? '' : '/') + 'pages/' + type + '/' + pageLinkBits[1] + '.php';
-                    if ($ADDON_INSTALLED_code_editor && !$cms.configOption('single_public_zone')) {
+                    if ($ADDON_INSTALLED_code_editor && !$cms.configOption('single_public_zone')) { // eslint-disable-line camelcase
                         actionBuildup += actionsTplItem.replace(/\[1\]/, '{!EDIT;^}').replace(/\[2\]/, '{$BASE_URL;,0}/code_editor.php?path=' + encodeURIComponent(path));
                     }
                     switch (type) {
@@ -111,7 +111,7 @@
             // Pages
             if (['modules', 'modules_custom', 'comcode', 'comcode_custom', 'html', 'html_custom'].includes(fullType)) {
                 actionBuildup += actionsTplItem.replace(/\[1\]/, '{!DELETE;^}').replace(/\[2\]/, deleteUrl.replace(/%5B1%5D/, pageLinkBits[0]).replace(/\[2\]/, pageLinkBits[1]));
-                if ($ADDON_INSTALLED_stats && statsUrl) {
+                if ($ADDON_INSTALLED_stats && statsUrl) { // eslint-disable-line camelcase
                     actionBuildup += actionsTplItem.replace(/\[1\]/, '{!stats:MODULE_TRANS_NAME_admin_stats;^}').replace(/\[2\]/, statsUrl.replace(/%21/, path));
                 }
             }

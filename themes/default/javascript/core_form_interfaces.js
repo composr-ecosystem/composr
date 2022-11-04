@@ -14,7 +14,7 @@
      * @class
      * @extends $cms.View
      */
-    function PostingForm(params) {
+    function PostingForm() {
         PostingForm.base(this, 'constructor', arguments);
     }
 
@@ -46,7 +46,7 @@
         this.form = this.el;
         this.btnSubmit = this.$('.js-btn-main-submit-form');
 
-        if (typeof this.form.extraChecks == 'undefined') {
+        if (this.form.extraChecks === undefined) {
             this.form.extraChecks = [];
         }
 
@@ -115,7 +115,7 @@
         doStandardFormPreview: function (e) {
             e.preventDefault();
 
-            if (typeof this.form.extraChecks == 'undefined') {
+            if (this.form.extraChecks === undefined) {
                 this.form.extraChecks = [];
             }
             $cms.form.doFormPreview(e, this.form, window.formPreviewUrl, window.separatePreview, this.form.extraChecks);
@@ -124,7 +124,7 @@
         doComposrFormSubmitChain: function (e) {
             e.preventDefault();
 
-            if (typeof this.form.extraChecks == 'undefined') {
+            if (this.form.extraChecks === undefined) {
                 this.form.extraChecks = [];
             }
             $cms.form.doCheckingComposrFormSubmitChain(e, this.form, this.analyticEventCategory, this.form.extraChecks);
@@ -269,7 +269,7 @@
                         selectsTo[x].selectedIndex = selectsFrom[x].selectedIndex;
                         selectsTo[x].disabled = selectsFrom[x].disabled;
                     }
-                }
+                };
             }
         }
     });
@@ -391,8 +391,9 @@
     $cms.templates.form = function (params, container) {
         var skippable = strVal(params.skippable);
 
-        $dom.on(container, 'click', '.js-click-btn-skip-step', function () {
+        $dom.on(container, 'click', '.js-btn-skip-step', function (e, el) {
             $dom.$('#' + skippable).value = '1';
+            el.form.submit();
         });
     };
 
@@ -413,12 +414,13 @@
             });
         }
 
-        $dom.on(container, 'click', '.js-btn-skip-step', function () {
+        $dom.on(container, 'click', '.js-btn-skip-step', function (e, el) {
             $dom.$('#' + params.skippable).value = '1';
+            el.form.submit();
         });
     };
 
-    $cms.templates.formScreenField_input = function formScreenField_input(params) {
+    $cms.templates.formScreenField_input = function formScreenField_input(params) { // eslint-disable-line camelcase
         var el = $dom.$('#form-table-field-input--' + strVal(params.randomisedId));
         if (el) {
             $cms.form.setUpChangeMonitor(el.parentElement);
@@ -548,7 +550,7 @@
 
         $dom.on(container, 'click', '.js-click-permissions-toggle', function (e, clicked) {
             var cell = $dom.closest(clicked, 'th, td');
-            permissionsToggle(cell)
+            permissionsToggle(cell);
         });
 
         function permissionsToggle(cell) {
@@ -677,7 +679,7 @@
         }
 
         var select2Options = {
-            dropdownAutoWidth: window.parent == window, /*Otherwise can overflow*/
+            dropdownAutoWidth: window.parent === window, /*Otherwise can overflow*/
             formatResult: (params.images === undefined) ? formatSelectSimple : formatSelectImage
         };
 
@@ -712,13 +714,13 @@
 
     $cms.templates.formScreenInputMultiList = function formScreenInputMultiList(params, parentEl) {
         var select2Options = {
-            dropdownAutoWidth: window.parent == window, /*Otherwise can overflow*/
+            dropdownAutoWidth: window.parent === window, /*Otherwise can overflow*/
             containerCssClass: 'form-control-wide'
         };
 
         var selectEl = parentEl.querySelector('select');
 
-        if (window.jQuery && (window.jQuery.fn.select2 != null) && (selectEl.size == 5)/*only for short UIs*/) {
+        if (window.jQuery && (window.jQuery.fn.select2 !== null) && (selectEl.size === 5)/*only for short UIs*/) {
             selectEl.classList.remove('form-control');
             window.jQuery(selectEl).select2(select2Options);
         }
@@ -728,9 +730,9 @@
         });
     };
 
-    $cms.templates.formScreenInputHugeList_input = function (params, parentEl) {
+    $cms.templates.formScreenInputHugeList_input = function (params, parentEl) { // eslint-disable-line camelcase
         var select2Options = {
-            dropdownAutoWidth: window.parent == window, /*Otherwise can overflow*/
+            dropdownAutoWidth: window.parent === window, /*Otherwise can overflow*/
             containerCssClass: 'form-control-wide'
         };
 
@@ -802,7 +804,7 @@
 
     };
 
-    $cms.templates.formScreenInputHuge_input = function (params) {
+    $cms.templates.formScreenInputHuge_input = function (params) { // eslint-disable-line camelcase
         var textArea = document.getElementById(params.name),
             el = $dom.$('#form-table-field-input--' + params.randomisedId);
 
@@ -854,8 +856,8 @@
             initDragDrop = Boolean(params.initDragDrop),
             postEl = $dom.$('#' + name),
             // Container elements:
-            labelRow = $dom.$('#field-' + id +'-label'),
-            inputRow = $dom.$('#field-' + id +'-input');
+            labelRow = $dom.$('#field-' + id + '-label'),
+            inputRow = $dom.$('#field-' + id + '-input');
 
         if (params.class.includes('wysiwyg')) {
             if (window.$editing && window.$editing.wysiwygOn()) {
@@ -1184,7 +1186,7 @@
                                 }
                             });
                         }
-                    }
+                    };
                 }
             }
         }
@@ -1427,7 +1429,7 @@
         var element = document.getElementById(select + '-presets');
 
         if (!element) {
-            element = document.getElementById(select.replaceAll('-', '_') + '_presets')
+            element = document.getElementById(select.replaceAll('-', '_') + '_presets');
         }
 
         if (element.options[0].id !== select + '-custom-option') {
@@ -1749,6 +1751,7 @@
 
             // NB: is_chosen may only be null if is_locked is false
             function __standardAlternateFieldUpdateEditability(field, chosenField, isLocked, isChosen, somethingRequired) {
+                // eslint-disable-next-line no-restricted-properties
                 if ((!field) || (field.nodeName !== undefined)) {
                     ___standardAlternateFieldUpdateEditability(field, chosenField, isLocked, isChosen, somethingRequired);
                 } else { // List of fields (e.g. radio list, or just because standardAlternateFieldsWithin was used)
@@ -1851,6 +1854,7 @@
             }
 
             function _standardAlternateFieldCreateListeners(field, refreshFunction) {
+                // eslint-disable-next-line no-restricted-properties
                 if ((!field) || (field.nodeName !== undefined)) {
                     __standardAlternateFieldCreateListeners(field, refreshFunction);
                 } else {

@@ -387,6 +387,7 @@
             if (ranges[0] !== undefined) {
                 var comcodeElement = ranges[0].startContainer.$;
                 do {
+                    // eslint-disable-next-line no-restricted-properties
                     var matches = comcodeElement.nodeName.toLowerCase().match(/^comcode-(\w+)/);
                     if (matches !== null) {
                         if (tag == null) {
@@ -459,7 +460,7 @@
         }).then(function (va) {
             if (va) {
                 add.push(va);
-                return doInputList(fieldName, add)
+                return doInputList(fieldName, add);
             }
 
             if (add.length === 0) {
@@ -477,9 +478,9 @@
             add.forEach(function (entryName) {
                 promiseCalls.push(function () {
                     if (post.value.includes('[semihtml')) {
-                        return $editing.insertTextbox(post, '[*]' + entryName + '\n')
+                        return $editing.insertTextbox(post, '[*]' + entryName + '\n');
                     } else {
-                        return $editing.insertTextbox(post, ' - ' + entryName + '\n')
+                        return $editing.insertTextbox(post, ' - ' + entryName + '\n');
                     }
                 });
             });
@@ -851,7 +852,7 @@
                         if ($cms.form.isModSecurityWorkaroundEnabled()) {
                             post = $cms.form.modSecurityWorkaroundAjax(post);
                         }
-                        $cms.doAjaxRequest('{$FIND_SCRIPT_NOHTTP;,autosave}?type=store' + $cms.keep(), null, post).then(function (xhr) {
+                        $cms.doAjaxRequest('{$FIND_SCRIPT_NOHTTP;,autosave}?type=store' + $cms.keep(), null, post).then(function () {
                             if (document.body.style.cursor === 'wait') {
                                 document.body.style.cursor = '';
                             }
@@ -868,7 +869,7 @@
             var fieldsToDo = {}, fieldsToDoCounter = 0, biggestLengthData = '';
             var key, value;
             var fields = result.getElementsByTagName('field');
-            var element, elementName, autosave_name;
+            var element, elementName, autosaveName;
             for (var i = 0; i < fields.length; i++) {
                 key = fields[i].getAttribute('key');
                 value = fields[i].getAttribute('value');
@@ -876,8 +877,8 @@
                 element = null;
                 for (var j = 0; j < form.elements.length; j++) {
                     elementName = (form.elements[j].name === undefined) ? form.elements[0][j].name : form.elements[j].name;
-                    autosave_name = getAutosaveName(elementName);
-                    if (autosave_name === key) {
+                    autosaveName = getAutosaveName(elementName);
+                    if (autosaveName === key) {
                         element = form.elements[j];
                         break;
                     }
@@ -918,7 +919,9 @@
             $cms.ui.confirm('{!javascript:RESTORE_SAVED_FORM_DATA;^}\n\n' + biggestLengthData, null, '{!javascript:AUTO_SAVING;^}').then(function (result) {
                 if (result) {
                     for (var key in fieldsToDo) {
-                        if (typeof fieldsToDo[key] !== 'string') continue;
+                        if (typeof fieldsToDo[key] !== 'string') {
+                            continue;
+                        }
 
                         if (form.elements[key] !== undefined) {
                             //$util.inform('Restoring ' + key);
@@ -932,7 +935,9 @@
 
                     if (window.localStorage !== undefined) {
                         for (var key2 in fieldsToDo) {
-                            if (typeof fieldsToDo[key2] !== 'string') continue;
+                            if (typeof fieldsToDo[key2] !== 'string') {
+                                continue;
+                            }
 
                             autosaveName = getAutosaveName(key2);
                             if (localStorage[autosaveName] !== undefined) {
@@ -945,12 +950,13 @@
         }
 
         function cleverSetValue(form, element, value) {
+            // eslint-disable-next-line no-restricted-properties
             if ((element.length !== undefined) && (element.nodeName === undefined)) {
                 // Radio button
                 element = element[0];
             }
 
-            switch (element.nodeName.toLowerCase()) {
+            switch (element.localName) {
                 case 'textarea':
                     $editing.setTextbox(element, value, value);
                     break;
@@ -1002,6 +1008,7 @@
         }
 
         function fieldSupportsAutosave(element) {
+            // eslint-disable-next-line no-restricted-properties
             if ((element.length !== undefined) && (element.nodeName === undefined)) {
                 // Radio button
                 element = element[0];
@@ -1080,7 +1087,9 @@
 
         var thisDate = new Date();
         if (!force) {
-            if ((thisDate.getTime() - window.lastAutosave.getTime()) < 20 * 1000) return null; // Only save every 20 seconds
+            if ((thisDate.getTime() - window.lastAutosave.getTime()) < 20 * 1000) {
+                return null; // Only save every 20 seconds
+            }
         }
 
         if (element === undefined) {
@@ -1116,12 +1125,13 @@
         return [autosaveName, value];
 
         function isTypedInput(element) {
+            // eslint-disable-next-line no-restricted-properties
             if ((element.length !== undefined) && (element.nodeName === undefined)) {
                 // Radio button
                 element = element[0];
             }
 
-            switch (element.nodeName.toLowerCase()) {
+            switch (element.localName) {
                 case 'textarea':
                     return true;
                 case 'input':
@@ -1153,7 +1163,10 @@
         if ((window.location.search.indexOf('type=') !== -1) || (window.location.search.indexOf('page_link') !== -1)/*editing Comcode page*/) {
             name += window.location.search.replace(/[?&]redirect=.*/, '').replace(/[?&]keep_\w+=.*/, '').replace(/[?&]cat=.*/, '');
         }
-        name = name.replace(/[\x00-\x2f\x3a-\x40\x5b-\x60\x7b-\x7f]/g, '_'); // PHP can't use dots in field names, plus web application firewalls may not like special symbols
+
+        // PHP can't use dots in field names, plus web application firewalls may not like special symbols
+        name = name.replace(/[\x00-\x2f\x3a-\x40\x5b-\x60\x7b-\x7f]/g, '_'); // eslint-disable-line no-control-regex
+
         return name;
     }
 

@@ -9,7 +9,7 @@
             if (billing && shipping) {
                 billing.onchange = (function (billing, shipping) {
                     return function () {
-                        if (billing.nodeName.toLowerCase() === 'select') {
+                        if (billing.localName === 'select') {
                             if ((shipping.selectedIndex === 0) && (billing.selectedIndex !== 0)) {
                                 shipping.selectedIndex = billing.selectedIndex;
                                 if (window.jQuery && (window.jQuery.fn.select2 !== undefined)) {
@@ -62,7 +62,7 @@
 
     $cms.functions.ecommerceEmailGetNeededFieldsPop3 = function () {
         var extraChecks = [];
-        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
+        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) { // eslint-disable-line no-unused-vars
             if (form.elements['pass1'].value !== form.elements['pass2'].value) {
                 $cms.ui.alert('{!PASSWORD_MISMATCH;}');
                 alerted.valueOf = function () { return true; };
@@ -89,7 +89,7 @@
     };
 
     $cms.templates.ecomLogosAuthorize = function ecomLogosAuthorize(params) {
-        window.ANS_customer_id = strVal(params.customerId);
+        window.ANS_customer_id = strVal(params.customerId); // eslint-disable-line camelcase
         $cms.requireJavascript('https://verify.authorize.net/anetseal/seal.js');
     };
 

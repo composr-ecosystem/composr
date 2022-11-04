@@ -182,11 +182,11 @@
         },
 
         addCommentChecking: function (form, params) {
-            if (typeof form.extraChecks == 'undefined') {
+            if (form.extraChecks === undefined) {
                 form.extraChecks = [];
             }
 
-            form.extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
+            form.extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) { // eslint-disable-line no-unused-vars
                 if (!$cms.form.checkFieldForBlankness(form.elements['post'])) {
                     erroneous.valueOf = function () { return true; };
                     firstFieldWithError = form.elements['post'];
@@ -217,11 +217,11 @@
 
         /* Set up a feedback form to have its CAPTCHA checked upon submission using AJAX */
         addCaptchaChecking: function (form) {
-            if (typeof form.extraChecks == 'undefined') {
+            if (form.extraChecks === undefined) {
                 form.extraChecks = [];
             }
             var validValue;
-            form.extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
+            form.extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) { // eslint-disable-line no-unused-vars
                 var value = form.elements['captcha'].value;
 
                 if ((value === validValue) || (value === '')) {
@@ -265,7 +265,7 @@
         var commentsForm = $dom.elArg('#' + commentsFormId);
 
         $dom.on(commentsForm, 'submit', function commentsAjaxListener(event) {
-            if (commentsForm.action != commentsForm.submitAction) {
+            if (commentsForm.action !== commentsForm.submitAction) {
                 return; // It's previewing or opening a full-reply URL
             }
 

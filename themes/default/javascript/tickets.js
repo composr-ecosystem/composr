@@ -27,10 +27,10 @@
             $cms.form.updateAjaxMemberList(input, null, false, e);
         });
 
-        if (typeof form.extraChecks == 'undefined') {
+        if (form.extraChecks === undefined) {
             form.extraChecks = [];
         }
-        form.extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
+        form.extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) { // eslint-disable-line no-unused-vars
             if (form.elements['ticket_type_id'] && !$cms.form.checkFieldForBlankness(form.elements['ticket_type_id'])) {
                 erroneous.valueOf = function () { return true; };
                 firstFieldWithError = form.elements['post'];

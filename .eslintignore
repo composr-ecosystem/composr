@@ -26,6 +26,7 @@
 /themes/default/javascript/masonry.js
 /themes/default/javascript/mediaelement-and-player.js
 /themes/default/javascript/modernizr.js
+/themes/default/javascript/password_checks.js
 /themes/default/javascript/plupload.js
 /themes/default/javascript/_polyfill_fetch.js
 /themes/default/javascript/_polyfill_general.js
@@ -36,7 +37,7 @@
 /themes/default/javascript/skitter.js
 /themes/default/javascript/skitter.js
 /themes/default/javascript/sound.js
-/themes/default/javascript/theme_colours.js
+/themes/default/javascript/toastify.js
 /themes/default/javascript/widget_color.js
 /themes/default/javascript/widget_date.js
 /themes/default/javascript/_wysiwyg_settings.js

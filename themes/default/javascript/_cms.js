@@ -877,7 +877,7 @@
     $cms.statsEventTrack = function statsEventTrack(el, category, action, label, e, nativeTracking) {
         nativeTracking = nativeTracking || false;
         var useGA = $cms.configOption('google_analytics') && !$cms.isStaff() && !$cms.isAdmin(),
-            $ADDON_INSTALLED_stats = boolVal('{$ADDON_INSTALLED,stats}'),
+            $ADDON_INSTALLED_stats = boolVal('{$ADDON_INSTALLED,stats}'), // eslint-disable-line camelcase
             promises = [];
 
         if (useGA) {
@@ -910,10 +910,10 @@
             }));
         }
 
-        if ((nativeTracking) && ($ADDON_INSTALLED_stats)) {
+        if ((nativeTracking) && ($ADDON_INSTALLED_stats)) { // eslint-disable-line camelcase
             var snippet = 'stats_event&event=' + encodeURIComponent(category);
             var cmsParam = strVal(action) || (el ? el.href : '');
-            if (cmsParam != '') {
+            if (cmsParam !== '') {
                 snippet += '-' + encodeURIComponent(cmsParam);
             }
             promises.push($cms.loadSnippet(snippet));
@@ -1107,7 +1107,7 @@
             case 'android':
                 return browser.includes('android');
             case 'wysiwyg':
-                return $cms.configOption('wysiwyg') != '0';
+                return $cms.configOption('wysiwyg') !== '0';
             case 'windows':
                 return os.includes('windows') || os.includes('win32');
             case 'mac':
@@ -1196,7 +1196,7 @@
                     }
                     if ((boolVal('{$VALUE_OPTION;,http2_post_fix}')) && (!synchronous)) {
                         var imgTmp = new Image();
-                        imgTmp.onload = function() {
+                        imgTmp.onload = function () {
                             xhr.send(post);
                         };
                         imgTmp.src = $cms.getBaseUrl() + '/themes/default/images/blank.gif?rand=' + Math.random();

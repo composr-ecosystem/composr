@@ -5,7 +5,7 @@
         size = strVal(size);
 
         var extraChecks = [];
-        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
+        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) { // eslint-disable-line no-unused-vars
             var post = form.elements['signature'];
 
             if ((!post.value) && (post[1])) {

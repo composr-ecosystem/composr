@@ -135,7 +135,7 @@
         fromUrl = Boolean(fromUrl);
         automated = Boolean(automated);
 
-        if ((!fromUrl) && (window.location.hash != '#tab--' + tab)) {
+        if ((!fromUrl) && (window.location.hash !== '#tab--' + tab)) {
             // For URL purposes, we will change URL to point to tab,
             // HOWEVER, we do not want to cause a scroll so we will be careful just in case this hash exists as an ID in the HTML.
             // findUrlTab will navigate us near the scroll position of the real anchor (<id>-<tab>) and expand the tab for it first.
@@ -193,7 +193,7 @@
                         // If you can't see the child try to scroll parent
                         if (!isViewable) {
                             // Scroll by offset relative to parent
-                            subtabHeaders.scrollLeft = (tabSelectElRect.left + subtabHeaders.scrollLeft) - subtabHeadersRect.left
+                            subtabHeaders.scrollLeft = (tabSelectElRect.left + subtabHeaders.scrollLeft) - subtabHeadersRect.left;
                         }
 
                     }
@@ -222,7 +222,7 @@
             if (tabMarker) { // If the hash exists as a tab (even if it's a subtab)
                 $cms.ui.selectTab('g', tab, true);
 
-                if ((window.scrollY < 20) && (tab.indexOf('--') == -1)) {
+                if ((window.scrollY < 20) && (tab.indexOf('--') === -1)) {
                     window.scrollTo(0, $dom.findPosY(tabMarker) - 40);
                 }
             } else if ((tab.indexOf('--') !== -1) && ($dom.$id('g-' + tab.substr(0, tab.indexOf('--'))))) { // If the prefix of the hash exists as a tab
@@ -313,7 +313,7 @@
                 $cms.ui.repositionTooltip(el, event, bottom, false, null, forceWidth, win);
             });
         } else {
-            window.setTimeout(function() { // Stop mobile calling handler twice in some situations
+            window.setTimeout(function () { // Stop mobile calling handler twice in some situations
                 $dom.on(window, 'click.cmsTooltip' + $util.uid(el), function (e) {
                     var tooltipEl = document.getElementById(el.tooltipId);
 
@@ -321,7 +321,7 @@
                         $cms.ui.deactivateTooltip(el);
                     }
                 });
-            },500);
+            }, 500);
         }
 
         el.isOver = true;
@@ -573,7 +573,7 @@
         var ret = false;
         $dom.$$('.tooltip').forEach(function (el) {
             if (el.id === tooltipBeingOpened) {
-                ret = (el.style.display != 'none');
+                ret = (el.style.display !== 'none');
             } else {
                 $cms.ui.deactivateTooltip(el.ac, el);
             }
@@ -621,7 +621,7 @@
 
         return new Promise(function (resolveConfirm) {
             if (!$cms.configOption('js_overlays')) {
-                var bool = window.confirm(question);
+                var bool = window.confirm(question); // eslint-disable-line no-alert
                 if (callback != null) {
                     callback(bool);
                 }
@@ -688,7 +688,7 @@
         currentAlertTitle = title;
         currentAlertPromise = new Promise(function (resolveAlert) {
             if (!$cms.configOption('js_overlays')) {
-                window.alert(notice);
+                window.alert(notice); // eslint-disable-line no-alert
                 currentAlertNotice = null;
                 currentAlertTitle = null;
                 currentAlertPromise = null;
@@ -733,7 +733,7 @@
 
         return new Promise(function (resolvePrompt) {
             if (!$cms.configOption('js_overlays')) {
-                var value = window.prompt(question, defaultValue);
+                var value = window.prompt(question, defaultValue); // eslint-disable-line no-alert
                 if (callback != null) {
                     callback(value);
                 }
@@ -920,7 +920,9 @@
             timeout, interval;
 
         btn.style.cursor = 'wait';
-        btn.disabled = true;
+        window.setTimeout(function () {
+            btn.disabled = true; // Has to be in a timeout else on Chrome it blocks form submissions
+        }, 0);
         if (!permanent) {
             tempDisabledButtons[uid] = true;
         }
@@ -1382,10 +1384,10 @@
     $cms.ui.enableInternaliseInfiniteScrolling = function enableInternaliseInfiniteScrolling(infiniteScrollCallUrl, wrapperEl) {
         $dom.on(window, {
             scroll: function () {
-                internaliseInfiniteScrolling(infiniteScrollCallUrl, wrapperEl)
+                internaliseInfiniteScrolling(infiniteScrollCallUrl, wrapperEl);
             },
             touchmove: function () {
-                internaliseInfiniteScrolling(infiniteScrollCallUrl, wrapperEl)
+                internaliseInfiniteScrolling(infiniteScrollCallUrl, wrapperEl);
             },
             keydown: function (e) {
                 if (e.key === 'End') { // 'End' key pressed, so stop the expand happening for a few seconds while the browser scrolls down

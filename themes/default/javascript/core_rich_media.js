@@ -627,7 +627,7 @@
         ComcodeBigTabsController.base(this, 'constructor', arguments);
 
         var passId = this.passId = $cms.filter.id(params.passId),
-            id = this.id = passId + ((typeof params.bigTabSets === 'undefined') ? '' : ('_' + params.bigTabSets)),
+            id = this.id = passId + ((params.bigTabSets === undefined) ? '' : ('_' + params.bigTabSets)),
             sections = this.sections = params.tabs.map($cms.filter.id),
             switchTime = this.switchTime = params.switchTime;
 

@@ -86,7 +86,7 @@
             adjustPaneHeights();
         }
 
-        var footers=document.getElementsByTagName('footer');
+        var footers = document.getElementsByTagName('footer');
         for (var i = 0; i < footers.length; i++) {
             footers[i].parentNode.removeChild(footers[i]);
         }
@@ -512,7 +512,7 @@
 
         $cms.ui.disableButton(button);
 
-        if (typeof form.originalURL === 'undefined') {
+        if (form.originalURL === undefined) {
             form.originalURL = form.action;
         }
 
@@ -530,11 +530,11 @@
 
         $cms.ui.disableButton(button);
 
-        if (typeof form.originalURL !== 'undefined') {
+        if (form.originalURL !== undefined) {
             form.action = form.originalURL;
         }
 
-        form.target='_self';
+        form.target = '_self';
     }
 
     function adjustPaneHeights() {

@@ -99,7 +99,7 @@
         for (var i = 0; i < form.elements.length; i++) {
             plObj = $dom.data(form.elements[i]).pluploadObject;
             if (plObj) {
-                if ((plObj.total.percent > 0) && (document.getElementById(plObj.settings.hidFileID).value == '-1'/*Completion handler not run yet*/)) {
+                if ((plObj.total.percent > 0) && (document.getElementById(plObj.settings.hidFileID).value === '-1'/*Completion handler not run yet*/)) {
                     uploadsComplete = false;
                     break;
                 }
@@ -223,7 +223,7 @@
                         if (
                             (form.submittedAtLeastOnce/*Maybe form submitted to something that generated a download or maybe back button was used*/) ||
                             (hoursSincePageLoad >= expireNew) ||
-                            ((expireFresh != 0) && (hoursSincePageLoad >= expireFresh))) {
+                            ((expireFresh !== 0) && (hoursSincePageLoad >= expireFresh))) {
                             return $cms.getCsrfToken().then(function (text) {
                                 $util.log('Regenerated CSRF token');
 
@@ -337,7 +337,7 @@
                 return $cms.form.startUploads(form);
             }).then(function () {
                 // Call any event handlers on form.submit (we can have a preventDefault in a handler so the form will not actually submit)
-                var ret = $dom.trigger(form, 'submit', { detail: { triggeredByDoFormPreview: true } });
+                $dom.trigger(form, 'submit', { detail: { triggeredByDoFormPreview: true } });
 
                 if (hasSeparatePreview) {
                     var action = $util.url(form.submitAction);

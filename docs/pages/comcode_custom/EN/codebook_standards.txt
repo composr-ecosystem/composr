@@ -2006,7 +2006,7 @@ Use [tt]BETA_CSS_PROPERTY[/tt] instead of vendor prefixing
 
 [title="4"]JavaScript[/title]
 
-We broadly follow the same kind of conventions other JavaScript developers do, but with a focus on modern ways of doing things wherever possible.
+We broadly follow the same kind of conventions other JavaScript developers do, but with a focus on reasonably modern ways of doing things wherever possible.
 JavaScript has been historically a very clunky language with a messy history of new innovations that get constantly recycled as the basic platform moves forward or developers fight over approaches. We've designed a framework that moves beyond all this as much as possible. Our framework is broadly post-jQuery (although we do have jQuery bundled for third-party code) and post-preprocessor (because JavaScript is more powerful on its own than it was in the past) and polyfill-charged.
 
 You do not need to:
@@ -2022,18 +2022,11 @@ You do not need to:
 ! Notes
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
-Use reliable JavaScript
-| Compatibility with user computers, Standards compliance
+Stability checks defined for ESLint
+| Code quality
 | Product development only
-| Automated test ([tt]template_previews.php[/tt])
-| Only use standards-compliant JavaScript that works across all supported browsers.
-|-
-| [size="0.8"]{$INC,cs_count,1})[/size]
-[color="red"]Follow framework standards[/color]
-| Consistency
-| Composr development +
-| Manually
-| The JavaScript framework defines a way of writing objects, hooking in functionality (via data attributes, views, and behaviors), naming variables, querying the DOM tree, and lots of other helper methods -- follow the existing standard of the code.
+| ESLint
+| The [tt].eslintrc.json[/tt] file defines various checks for code quality. As ESLint documents all their rules and the reasoning for them, we won't document them again here.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Code formatting[/color]
@@ -2043,11 +2036,11 @@ Use reliable JavaScript
 | Generally code is formatted to ESLint-preferred standards, with spaces around operators, camelCase for identifiers rather than underscores, and we place function opening braces on the same line as the function declaration. For functions assigned to a variable we put a space between the function keyword and opening parenthesis ([tt]function (foo)[/tt]). Rather than us prescribing all the rules we bundle an ESLint configuration.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
-[color="red"]Use of classes[/color]
-| Technical debt
-| Product development only
+[color="red"]Follow framework standards[/color]
+| Consistency
+| Composr development +
 | Manually
-| Generally JavaScript files should define at least one class (using the weird but de facto closure and construction mechanism). Class constructors should start with an upper case letter.
+| The JavaScript framework defines a way of writing objects, hooking in functionality (via data attributes, views, and behaviors), naming variables, querying the DOM tree, and lots of other helper methods -- follow the existing standard of the code.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Use polyfills[/color]
@@ -2075,14 +2068,7 @@ Fix any strict warnings
 | Standards compliance, future proofing
 | Product development only
 | JavaScript files should have [tt]use strict;[/tt] in, automated test ([tt]js_strict_mode.php[/tt])
-| Ideally don't check things are defined just using a raw [tt]if[/tt] because it's not very clear. However, it is acceptable to do an [tt]if[/tt] that considers [tt]undefined[/tt]/[tt]null[/tt]/[tt]false[/tt] [i]values[/i] to be the same thing (a missing function parameter will be an [tt]undefined[/tt] [i]value[/i] on an actual variable). For referencing variables that don't just hold an [tt]undefined[/tt] value but really are undefined, do check them like [tt]object.foo == undefined[/tt] or [tt]object.foo === undefined[/tt] (if null shouldn't count). It is important to include the object (which may be [tt]window[/tt]), otherwise the strict mode will complain.
-|-
-| [size="0.8"]{$INC,cs_count,1})[/size]
-[color="red"]Don't use the browser [tt]window.alert[/tt] / [tt]window.prompt[/tt] / [tt]window.confirm[/tt] / [tt]window.showModalDialog[/tt] UIs -- use Composr's [tt]fauxmodal_*[/tt] APIs[/color]
-| Usability
-| Composr development +
-| Manually (although if you try and call from the global scope the [tt]web_resources.php[/tt] test will complain)
-| Better styling, no issues with pop-up blockers, no issues on full-screen UIs and tablets with poor window management.
+| Our ESLint rules enforce some type strictness, with the exception that comparison to [tt]null[/tt] is weak and will intentionally also match [tt]undefined[/tt].
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Don't rely on [tt]window.focus[/tt] / [tt]window.print[/tt] / [tt]window.scrollTo[/tt] / [tt]window.scrollBy[/tt] / [tt]window.resizeTo[/tt] / [tt]window.resizeBy[/tt] / [tt]window.moveTo[/tt] / [tt]window.moveBy[/tt] existing[/color]
@@ -2099,18 +2085,18 @@ Fix any strict warnings
 | A minor point, but if we capitalise our technology names incorrectly we look less professional. While JavaScript is standardised as ECMAScript, we all still call it JavaScript in practice.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
-[color="red"]Name DOM nodes variables as [tt]el[/tt] as appropriate[/color]
+[color="red"]Name DOM nodes variables as [tt]el[/tt] and events as [tt]e[/tt][/color]
 | Consistency
 | Product development only
 | Manually
-| It is very common for JavaScript code to be manipulating a single DOM node. If we consistently call this [tt]el[/tt] then the code is easier to scan over.
+| To avoid confusion don't do it the other way around.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Use standard system for reading function parameters[/color]
 | Consistency
 | Product development only
 | Manually
-| JavaScript has no feature for default function parameters (they automatically default to [tt]undefined[/tt]). It also has no simple casting system. We therefore have implemented a standardised way of doing this within the library.
+| The version of JavaScript we currently code for has no feature for default function parameters (they automatically default to [tt]undefined[/tt]). It also has no simple casting system. We therefore have implemented a standardised way of doing this within the library.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 Reference language strings in a safe way
@@ -2120,18 +2106,11 @@ Reference language strings in a safe way
 | Any language strings that are not in either [tt]global.ini[/tt] or [tt]critical_error.ini[/tt] must be referenced using the full [tt]{!file:CODENAME}[/tt] syntax. This is because we cannot assume what language files have already been explicitly loaded before any individual JavaScript file is evaluated.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
-Do not reference global variables directly
+Be careful with global functions and variables
 | Stability
 | Composr development +
 | Automated test ([tt]web_resources.php[/tt])
-| Reference global variables and functions that are defined outside any particular [tt].js[/tt] file by explicitly prefixing them with [tt]window.[/tt]. This allows the JavaScript code scanner to detect undeclared variables because there's no longer an ambiguity.
-|-
-| [size="0.8"]{$INC,cs_count,1})[/size]
-Do not omit semicolons
-| Stability
-| Product development only
-| Automated test ([tt]web_resources.php[/tt])
-| JavaScript allows semicolons to be omitted in certain cases, but we do not because of the potential for error.
+| Generally do not use globals, but if you must then reference global variables and functions that are defined outside any particular [tt].js[/tt] file by explicitly prefixing them with [tt]window.[/tt]. This allows JavaScript code scanners to detect undeclared variables because there's no longer an ambiguity.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Use [tt]href="#!"[/tt] for JS-controlled links[/color]

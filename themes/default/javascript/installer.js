@@ -1,6 +1,8 @@
 (function ($cms, $util, $dom) {
     'use strict';
 
+    /* eslint-disable no-alert */
+
     $cms.templates.installerStepLog = function installerStepLog() {
         /* Code to auto-submit the form after 5 seconds, but only if there were no errors */
         if (document.querySelector('.installer-warning')) {
@@ -73,7 +75,7 @@
         if (cns) {
             useMultiDbLocker();
 
-            for (var i=0; i < form.elements['forum'].length; i++) {
+            for (var i = 0; i < form.elements['forum'].length; i++) {
                 form.elements['forum'][i].onclick = useMultiDbLocker;
             }
         }

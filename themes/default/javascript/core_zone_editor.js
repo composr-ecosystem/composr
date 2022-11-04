@@ -21,15 +21,13 @@
         },
 
         fetchAndSubmit: function (e, btn) {
-            var params = this.params;
-
             // Lock in WYSIWYG data
             var places = ['panel_left', 'panel_right', 'panel_top', 'panel_bottom', '{$DEFAULT_ZONE_PAGE_NAME;}'];
-            for (var i = 0; i < places.length; i++) {
-                if (window.CKEDITOR && CKEDITOR.instances['edit_' + places[i] + '_textarea']) {
-                    CKEDITOR.instances['edit_' + places[i] + '_textarea'].updateElement();
+            for (var placeI = 0; placeI < places.length; placeI++) {
+                if (window.CKEDITOR && window.CKEDITOR.instances['edit_' + places[placeI] + '_textarea']) {
+                    window.CKEDITOR.instances['edit_' + places[placeI] + '_textarea'].updateElement();
                 }
-                setEditedPanel(places[i]);
+                setEditedPanel(places[placeI]);
             }
 
             // Lock in other field data
@@ -170,7 +168,7 @@
             }
         },
 
-        submitFromComcodePanelForm: function (e, form) {
+        submitFromComcodePanelForm: function (e) {
             // We don't want this, just cancel form submission
             e.preventDefault();
         },
@@ -262,7 +260,7 @@
     $cms.functions.moduleAdminZonesAddZone = function moduleAdminZonesAddZone() {
         var extraChecks = [],
             validValue;
-        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
+        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) { // eslint-disable-line no-unused-vars
             var value = form.elements['zone'].value;
 
             if ((value === validValue) || (value === '')) {

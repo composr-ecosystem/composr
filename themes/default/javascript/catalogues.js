@@ -7,7 +7,7 @@
      * @class
      * @extends $cms.View
      */
-    function CatalogueAddingScreen(params) {
+    function CatalogueAddingScreen() {
         CatalogueAddingScreen.base(this, 'constructor', arguments);
 
         catalogueFieldChangeWatching();
@@ -57,7 +57,7 @@
     $cms.functions.moduleCmsCataloguesRunStartAddCatalogue = function moduleCmsCataloguesRunStartAddCatalogue() {
         var extraChecks = [],
             validValue;
-        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
+        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) { // eslint-disable-line no-unused-vars
             var value = form.elements['catalogue_name'].value;
 
             if ((value === validValue) || (value === '')) {

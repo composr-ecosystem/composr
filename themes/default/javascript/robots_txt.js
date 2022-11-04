@@ -1,4 +1,4 @@
-(function ($cms, $util, $dom) {
+(function ($cms, $util) {
     'use strict';
 
     $cms.views.RobotsTxtScreen = RobotsTxtScreen;
@@ -24,4 +24,4 @@
             selectEl.select();
         }
     });
-}(window.$cms, window.$util, window.$dom));
+}(window.$cms, window.$util));

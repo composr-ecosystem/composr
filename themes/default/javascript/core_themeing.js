@@ -521,7 +521,7 @@
         });
         var extraChecks = [],
             validValue;
-        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
+        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) { // eslint-disable-line no-unused-vars
             var value = form.elements['theme'].value;
 
             if ((value === validValue) || (value === '')) {
@@ -730,7 +730,7 @@
                         return;
                     }
 
-                    $cms.ui.prompt('{!themes:INPUT_TEMPLATE_NAME;^}', 'example', null , '{!themes:ADD_TEMPLATE;^}').then(function (file) {
+                    $cms.ui.prompt('{!themes:INPUT_TEMPLATE_NAME;^}', 'example', null, '{!themes:ADD_TEMPLATE;^}').then(function (file) {
                         if (file !== null) {
                             file = file.replace(/\..*$/, '');
                             switch (subdir) {

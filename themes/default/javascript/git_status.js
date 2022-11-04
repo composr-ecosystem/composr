@@ -7,7 +7,7 @@
      * @class $cms.views.GitStatus
      * @extends $cms.View
      */
-    function GitStatus(params) {
+    function GitStatus() {
         GitStatus.base(this, 'constructor', arguments);
 
         this.form = this.$('#git_status_form');
@@ -56,7 +56,7 @@
         },
 
         deleteLocalChanges: function () {
-            $cms.ui.confirm('Are you sure you want to delete the local changes?', function(result) {
+            $cms.ui.confirm('Are you sure you want to delete the local changes?', function (result) {
                 if (result) {
                     this.form.elements['git_action'].value = 'revert';
                     $dom.trigger(this.form, 'submit');
@@ -99,7 +99,7 @@
 
         selectAllGitFiles: function (stub, select) {
             for (var i = 0; i < this.form.elements.length; i++) {
-                if ((this.form.elements[i].nodeName.toLowerCase() == 'input') && (this.form.elements[i].name.substring(0, stub.length) == stub) && (!this.form.elements[i].disabled)) {
+                if ((this.form.elements[i].localName === 'input') && (this.form.elements[i].name.substring(0, stub.length) === stub) && (!this.form.elements[i].disabled)) {
                     this.form.elements[i].checked = select;
                 }
             }
@@ -112,7 +112,7 @@
 
             hasSelection = this._refreshFileSelection('local_select_');
             document.getElementById('button_local_tar').disabled = !hasSelection;
-            document.getElementById('button_push').disabled = !has_selection;
+            document.getElementById('button_push').disabled = !hasSelection;
             document.getElementById('button_local_shell_paths').disabled = !hasSelection;
             document.getElementById('button_revert').disabled = !hasSelection;
 
@@ -123,7 +123,7 @@
 
         _refreshFileSelection: function (stub) {
             for (var i = 0; i < this.form.elements.length; i++) {
-                if ((this.form.elements[i].nodeName.toLowerCase() == 'input') && (this.form.elements[i].name.substring(0, stub.length) == stub) && (this.form.elements[i].checked) && (!this.form.elements[i].disabled)) {
+                if ((this.form.elements[i].localName === 'input') && (this.form.elements[i].name.substring(0, stub.length) === stub) && (this.form.elements[i].checked) && (!this.form.elements[i].disabled)) {
                     return true;
                 }
             }
@@ -131,12 +131,12 @@
             return false;
         },
 
-        showShellPaths: function (stub, paths) {
+        showShellPaths: function (stub) {
             var notice = '';
 
             for (var i = 0; i < this.form.elements.length; i++) {
-                if ((this.form.elements[i].nodeName.toLowerCase() == 'input') && (this.form.elements[i].name.substring(0, stub.length) == stub) && (this.form.elements[i].checked) && (!this.form.elements[i].disabled)) {
-                    if (notice != '') {
+                if ((this.form.elements[i].localName === 'input') && (this.form.elements[i].name.substring(0, stub.length) === stub) && (this.form.elements[i].checked) && (!this.form.elements[i].disabled)) {
+                    if (notice !== '') {
                         notice += ' \\\n';
                     }
                     notice += this.form.elements[i].value;

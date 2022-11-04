@@ -68,7 +68,7 @@
         val = Number(val);
 
         if ((val === Infinity) || (val === -Infinity)) {
-            throw new TypeError('numVal(): Number over/underflow detected!')
+            throw new TypeError('numVal(): Number over/underflow detected!');
         }
 
         return val ? val : 0;
@@ -376,7 +376,7 @@
      * @returns {boolean|number}
      */
     $util.nodeType = function nodeType(obj) {
-        return $util.isObj(obj) && (typeof obj.nodeName === 'string') && (typeof obj.nodeType === 'number') && obj.nodeType;
+        return $util.isObj(obj) && (typeof obj.nodeName === 'string') && (typeof obj.nodeType === 'number') && obj.nodeType; // eslint-disable-line no-restricted-properties
     };
 
     var ELEMENT_NODE = 1,
@@ -1077,7 +1077,7 @@
      */
     $util.inform = $util.log = function log() {
         if (window.$cms && window.$cms.isDevMode()) {
-            return console.log.apply(console, arguments);
+            return console.log.apply(console, arguments); // eslint-disable-line no-console
         }
     };
 
@@ -1085,14 +1085,14 @@
      * @memberof $util
      */
     $util.warn = function warn() {
-        return console.warn.apply(console, arguments);
+        return console.warn.apply(console, arguments); // eslint-disable-line no-console
     };
 
     /**
      * @memberof $util
      */
     $util.fatal = $util.error = function error() {
-        return console.error.apply(console, arguments);
+        return console.error.apply(console, arguments); // eslint-disable-line no-console
     };
 
     /**

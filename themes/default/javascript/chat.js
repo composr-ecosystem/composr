@@ -581,7 +581,7 @@
                         element.focus();
                     } catch (e) {}
                 } else {
-                    if (xhr.status == 200) {
+                    if (xhr.status === 200) {
                         window.topWindow.$util.inform('Successfully posted chat message (' + new Date().getTime() + ')');
                     } else {
                         $cms.ui.alert('{!chat:MESSAGE_POSTING_ERROR;^}');
@@ -636,7 +636,7 @@
                 if (responseXML != null) {
                     chatCheckResponse(responseXML, xhr, /*skipIncomingSound*/backlog);
                 } else {
-                    if ((xhr.status != 200) && (backlog)) {
+                    if ((xhr.status !== 200) && (backlog)) {
                         $cms.ui.alert('{!chat:MESSAGE_CHECKING_ERROR;^}');
                     }
 
@@ -809,12 +809,12 @@
                 if (!messageContainerGlobal) {
                     currentRoomId = -1; // We'll be gathering for all rooms we're in now, because this messaging is coming through the top-level window
                 }
-            } else if (xmlEl.nodeName.toLowerCase() === 'chat_members_update') { // UPDATE MEMBERS LIST IN ROOM
+            } else if (xmlEl.nodeName.toLowerCase() === 'chat_members_update') { /* eslint-disable-line no-restricted-properties */ // UPDATE MEMBERS LIST IN ROOM
                 var membersElement = document.getElementById('chat-members-update');
                 if (membersElement) {
                     $dom.html(membersElement, xmlEl.textContent);
                 }
-            } else if ((xmlEl.nodeName.toLowerCase() === 'chat_event') && (window.imParticipantTemplate !== undefined)) { // Some kind of transitory event
+            } else if ((xmlEl.nodeName.toLowerCase() === 'chat_event') && (window.imParticipantTemplate !== undefined)) { /* eslint-disable-line no-restricted-properties */ // Some kind of transitory event
                 eventType = xmlEl.getAttribute('event_type');
                 roomId = xmlEl.getAttribute('room_id');
                 memberId = xmlEl.getAttribute('member_id');
@@ -921,7 +921,9 @@
 
                         var doc4 = document;
                         if ((window.openedPopups['room_' + roomId] !== undefined) && (!window.openedPopups['room_' + roomId].isShutdown)) {
-                            if (!window.openedPopups['room_' + roomId].document) break;
+                            if (!window.openedPopups['room_' + roomId].document) {
+                                break;
+                            }
                             doc4 = window.openedPopups['room_' + roomId].document;
                         }
                         tmpElement = doc4.getElementById('participant-online--' + roomId + '--' + memberId);
@@ -979,7 +981,7 @@
                         }
                         break;
                 }
-            } else if ((xmlEl.nodeName.toLowerCase() === 'chat_invite') && (window.imParticipantTemplate !== undefined)) { // INVITES
+            } else if ((xmlEl.nodeName.toLowerCase() === 'chat_invite') && (window.imParticipantTemplate !== undefined)) { /* eslint-disable-line no-restricted-properties */ // INVITES
                 roomId = xmlEl.textContent;
 
                 if ((!document.getElementById('room-' + roomId)) && ((window.openedPopups['room_' + roomId] === undefined) || (window.openedPopups['room_' + roomId].isShutdown))) {
@@ -990,7 +992,7 @@
 
                     if ((!byYou) && (!window.instantGo) && (!document.getElementById('chat-lobby-convos-tabs'))) {
                         createOverlayEvent(skipIncomingSound, xmlEl.getAttribute('inviter'), '{!chat:IM_INFO_CHAT_WITH;^}'.replace('{' + '1}', roomName), function () {
-                            window.lastMessageId = -1 /*Ensure messages re-processed*/;
+                            window.lastMessageId = -1; // Ensure messages re-processed
                             detectedConversation(roomId, roomName, participants);
                             return false;
                         }, avatarUrl, roomId);
@@ -1000,7 +1002,7 @@
                     flashableAlert = true;
                 }
 
-            } else if (xmlEl.nodeName.toLowerCase() === 'chat_tracking') { // TRACKING
+            } else if (xmlEl.nodeName.toLowerCase() === 'chat_tracking') { /* eslint-disable-line no-restricted-properties */ // TRACKING
                 window.topWindow.lastMessageId = xmlEl.getAttribute('last_msg');
                 window.topWindow.lastEventId = xmlEl.getAttribute('last_event');
             }

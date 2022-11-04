@@ -91,7 +91,7 @@
                     cache: false,
                     timeout: 5000,
                     // Processes data retrieved for the activities feed and updates the list
-                    complete: function (jqXHR, textStatus ) {
+                    complete: function (jqXHR, textStatus) {
                         view.submitBtn.disabled = false;
 
                         var tokenField = form.elements['csrf_token'];
@@ -288,7 +288,9 @@
                     });
 
                     var noMessages = document.getElementById('activity_-1');
-                    if (noMessages) noMessages.style.display = 'none';
+                    if (noMessages) {
+                        noMessages.style.display = 'none';
+                    }
 
                     listElements = jQuery('li', '#activities-feed'); // Refresh, so as to include the new activity nodes
 

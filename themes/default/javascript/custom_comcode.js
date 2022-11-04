@@ -1,4 +1,4 @@
-(function ($cms, $util, $dom) {
+(function ($cms) {
     'use strict';
 
     $cms.functions.gfxRolloverButton = function gfxRolloverButton(combId, url) {
@@ -42,7 +42,7 @@
     $cms.functions.moduleAdminCustomComcodeRunStart = function moduleAdminCustomComcodeRunStart() {
         var extraChecks = [],
             validValue;
-        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) {
+        extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) { // eslint-disable-line no-unused-vars
             var value = form.elements['tag'].value;
 
             if ((value === validValue) || (value === '')) {
@@ -66,4 +66,4 @@
         });
         return extraChecks;
     };
-}(window.$cms, window.$util, window.$dom));
+}(window.$cms));
