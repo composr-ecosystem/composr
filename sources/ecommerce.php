@@ -2358,3 +2358,58 @@ function display_invoice(int $id) : object
         'STATUS' => $row['i_state'],
     ]);
 }
+
+/**
+ * Get either the live or the testing value of an eCommerce config option.
+ * This wraps get_option.
+ *
+ * @param  ID_TEXT $config_option The name of the configuration option
+ * @param  boolean $missing_ok Whether to accept a missing option (and return null)
+ * @param  ?boolean $return_testing Return the testing value instead of the live value (null: returns testing value if ecommerce_test_mode(), else returns live value)
+ * @return ?string The configuration value (null: configuration not found and $missing_ok set to true)
+ */
+function get_ecom_option(string $config_option, bool $missing_ok = false, ?bool $return_testing = null) : ?string
+{
+    $config_value = get_option($config_option, $missing_ok);
+    if (($config_value === null) || ($config_value == '')) {
+        return $config_value;
+    }
+
+    if ($return_testing === null) {
+        $return_testing = ecommerce_test_mode();
+    }
+
+    // Determine our live and testing values
+    $matches = [];
+    if (preg_match('#^(live|testing)=(.*?)(,(live|testing)=(.*?))?$#', $config_value, $matches) != 0) {
+        if (count($matches) >= 6) { // We have two or more parameters specified
+            switch ($matches[1]) {
+                case 'live':
+                    $live_value = $matches[2];
+                    break;
+
+                case 'testing':
+                    $testing_value = $matches[2];
+                    break;
+            }
+            switch ($matches[4]) {
+                case 'live':
+                    $live_value = $matches[5];
+                    break;
+
+                case 'testing':
+                    $testing_value = $matches[5];
+                    break;
+            }
+        } elseif (count($matches) >= 3) { // We have only one parameter; use its value for both live and testing
+            $live_value = $matches[2];
+            $testing_value = $matches[2];
+        }
+    } else { // No parameters; use the literal string for both live and testing
+        $live_value = $config_value;
+        $testing_value = $config_value;
+    }
+
+    // Return either the live or the testing value depending on what we want
+    return $return_testing ? trim($testing_value) : trim($live_value);
+}

@@ -236,7 +236,6 @@ class Module_purchase
             }
 
             rename_config_option('ipn', 'payment_gateway_username');
-            rename_config_option('ipn_test', 'payment_gateway_test_username');
             rename_config_option('ipn_password', 'payment_gateway_password');
             rename_config_option('ipn_digest', 'payment_gateway_digest');
             rename_config_option('vpn_username', 'payment_gateway_vpn_username');

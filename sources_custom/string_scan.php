@@ -905,7 +905,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_payment_gateway_username
         CONFIG_OPTION_payment_gateway_digest
         CONFIG_OPTION_payment_gateway_password
-        CONFIG_OPTION_payment_gateway_test_username
         CONFIG_OPTION_payment_gateway_vpn_username
         CONFIG_OPTION_payment_gateway_vpn_password
         DESCRIPTION_INVOICE_PRICE
@@ -5893,7 +5892,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         INVITES_PER_DAY
         INVOICES
         PAYMENT_GATEWAY_USERNAME
-        PAYMENT_GATEWAY_TEST_USERNAME
         IPN_BAD_TRIAL
         PAYMENT_GATEWAY_DIGEST
         IPN_EMAIL_ERROR
@@ -6670,7 +6668,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PASSWORD_HASH
         PASSWORD_RESET_PROCESS
         PATH_HACK
-        PAYMENT_GATEWAY_TESTING_MODE
         PAYMENT_GATEWAY_manual
         PAYMENT_GATEWAY_paypal
         PAYMENT_STATE_active

@@ -32,7 +32,7 @@ class Hook_config_payment_gateway_callback_password
     {
         return [
             'human_name' => 'PAYMENT_GATEWAY_CALLBACK_PASSWORD',
-            'type' => 'line',
+            'type' => 'text',
             'category' => 'ECOMMERCE',
             'group' => 'PAYMENT_GATEWAY',
             'explanation' => 'CONFIG_OPTION_payment_gateway_callback_password',

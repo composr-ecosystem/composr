@@ -24,11 +24,11 @@
 class Hook_payment_gateway_authorize
 {
     // Requires:
-    //  the live login is the Composr Composr "Gateway username" option
-    //  the testing login is the Composr "Testing mode gateway username" option
-    //  the MD5 hash value is the Composr "Callback password" option; it may be blank ; if they are different for the live and testing logins then separate them with ";"
-    //  the transaction key is the Composr "Gateway password" option; it may be blank ; if they are different for the live and testing logins then separate them with ";"
-    //  the customer ID is the Composr "Gateway VPN username" option
+    //  the live API login ID is the Composr "Gateway username" option
+    //  the testing API login ID is the Composr "Testing mode gateway username" option
+    //  the signature key is the Composr "Callback password" option; it may be blank ; if they are different for the live and testing logins then separate them with ";"
+    //  the API transaction key is the Composr "Gateway password" option; it may be blank ; if they are different for the live and testing logins then separate them with ";"
+    //  the customer ID (Verified Merchant Seal) is the Composr "Gateway VPN username" option ; not applicable for a testing account
     // The subscription button isn't great. The merchant needs to manually go into the Authorize.Net backend and configure the subscription details for the transaction. That's an API limitation. Probably best to use PayPal to be honest, or go through a full PCI compliance and do local payments (which works well).
 
     protected $api_parameters = null;
@@ -51,32 +51,23 @@ class Hook_payment_gateway_authorize
      * This is only used if the payment gateway does not return the fee and transaction fee config options are not set.
      *
      * @param  float $amount The total transaction amount
+     * @param  ID_TEXT $type_code The transaction type code
      * @return float The fee
      */
-    public function get_transaction_fee(float $amount) : float
+    public function get_transaction_fee(float $amount, string $type_code) : float
     {
-        return 0.3 + 0.029 * $amount;
+        // Note: Authorize.net charges an additional $25 monthly gateway fee not covered in this calculation.
+        return 0.3 + 0.029 * $amount; // All-in-one plan transaction fee is used as the fallback
     }
 
     /**
      * Get authorize access detail.
      *
-     * @return array A pair: login username, transaction key, MD5 hash key, MD5 hash value
+     * @return array A pair: login username, transaction key, signature key
      */
     protected function _get_access_details() : array
     {
-        $api_login = ecommerce_test_mode() ? get_option('payment_gateway_test_username') : get_option('payment_gateway_username');
-        $gateway_password_bits = explode(';', get_option('payment_gateway_password'));
-        if (!isset($gateway_password_bits[1])) {
-            $gateway_password_bits[1] = $gateway_password_bits[0];
-        }
-        $api_transaction_key = ecommerce_test_mode() ? trim($gateway_password_bits[1]) : trim($gateway_password_bits[0]);
-        $payment_gateway_callback_password_bits = explode(';', get_option('payment_gateway_callback_password'));
-        if (!isset($payment_gateway_callback_password_bits[1])) {
-            $payment_gateway_callback_password_bits[1] = $payment_gateway_callback_password_bits[0];
-        }
-        $md5_hash_value = ecommerce_test_mode() ? trim($payment_gateway_callback_password_bits[1]) : trim($payment_gateway_callback_password_bits[0]);
-        return [$api_login, $api_transaction_key, $md5_hash_value];
+        return [get_ecom_option('payment_gateway_username'), get_ecom_option('payment_gateway_password'), get_ecom_option('payment_gateway_callback_password')];
     }
 
     /**
@@ -138,7 +129,11 @@ class Hook_payment_gateway_authorize
      */
     public function get_logos() : object
     {
-        return do_template('ECOM_LOGOS_AUTHORIZE', ['_GUID' => '5b3254b330b3b1719d66d2b754c7a8c8', 'CUSTOMER_ID' => get_option('payment_gateway_vpn_username')]);
+        $customer_id = get_ecom_option('payment_gateway_vpn_username');
+        if ($customer_id == '') {
+            $customer_id = new Tempcode();
+        }
+        return do_template('ECOM_LOGOS_AUTHORIZE', ['_GUID' => '5b3254b330b3b1719d66d2b754c7a8c8', 'CUSTOMER_ID' => $customer_id]);
     }
 
     /**

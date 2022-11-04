@@ -59,7 +59,7 @@ class Hook_payment_gateway_paypal
      */
     protected function _get_payment_address() : string
     {
-        return ecommerce_test_mode() ? get_option('payment_gateway_test_username') : get_option('payment_gateway_username');
+        return get_ecom_option('payment_gateway_username');
     }
 
     /**
@@ -304,7 +304,7 @@ class Hook_payment_gateway_paypal
         }
 
         // Check that we have a data transfer ID specified in configuration
-        $at = get_option('paypal_data_transfer_id', true);
+        $at = get_ecom_option('paypal_data_transfer_id', true);
         if (($at === null) || ($at == '')) {
             if ((file_exists(get_custom_file_base() . '/data_custom/ecommerce.log')) && (cms_is_writable(get_custom_file_base() . '/data_custom/ecommerce.log'))) {
                 require_code('files');
@@ -553,7 +553,7 @@ class Hook_payment_gateway_paypal
         if ($receiver_email === null) {
             $receiver_email = post_param_string('business');
         }
-        $primary_paypal_email = get_option('primary_paypal_email');
+        $primary_paypal_email = get_ecom_option('primary_paypal_email');
         if ($primary_paypal_email == '') {
             $primary_paypal_email = $this->_get_payment_address();
         }

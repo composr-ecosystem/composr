@@ -158,7 +158,6 @@ class Hook_addon_registry_ecommerce
             'sources/hooks/systems/config/payment_gateway_username.php',
             'sources/hooks/systems/config/payment_gateway_digest.php',
             'sources/hooks/systems/config/payment_gateway_password.php',
-            'sources/hooks/systems/config/payment_gateway_test_username.php',
             'sources/hooks/systems/config/payment_gateway.php',
             'sources/hooks/systems/config/pd_email.php',
             'sources/hooks/systems/config/pd_number.php',

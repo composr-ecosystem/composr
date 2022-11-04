@@ -34,7 +34,7 @@ class Hook_config_ecommerce_test_mode
             'human_name' => 'ECOMMERCE_TEST_MODE',
             'type' => 'tick',
             'category' => 'ECOMMERCE',
-            'group' => 'PAYMENT_GATEWAY_TESTING_MODE',
+            'group' => 'PAYMENT_GATEWAY',
             'explanation' => 'CONFIG_OPTION_ecommerce_test_mode',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
