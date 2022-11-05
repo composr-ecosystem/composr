@@ -1484,7 +1484,6 @@ class Hook_addon_registry_core
             'data/soundmanager/index.html',
             'data/sounds/index.html',
             'data_custom/execute_temp.php',
-            'data_custom/functions.bin',
             'data_custom/index.html',
             'data_custom/modules/index.html',
             'cms/index.php',

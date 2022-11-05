@@ -85,7 +85,7 @@ The remainder of this section details Composr's requirements. If you have troubl
 [title="3"]General[/title]
 
 We require:
- - At least 50MB of disk space (plus your needs for space for downloads, images, etc).
+ - At least 180MB of disk space (plus your needs for space for downloads, images, etc).
  - No maximum file size limit under 25MB (some free webhosts will impose such a limit).
  - No file type safelists (some free webhosts will impose such a limit -- which explains why [tt]data.cms[/tt] might disappear when you try to upload it).
  - Certain file permissions are required as described in the [page="_SEARCH:tut_install_permissions"]File permissions[/page] tutorial.

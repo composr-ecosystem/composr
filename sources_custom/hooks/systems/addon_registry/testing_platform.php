@@ -181,6 +181,7 @@ We hope other users will appreciate your efforts and give you some points to rew
             'sources_custom/phpdoc.php',
             'sources_custom/phpstub.php',
             'sources_custom/continuous_integration.php',
+            'data_custom/functions.bin',
 
             '_tests/simpletest/.phan/.htaccess',
             '_tests/simpletest/.phan/index.html',
@@ -810,6 +811,7 @@ We hope other users will appreciate your efforts and give you some points to rew
             '_tests/tests/unit_tests/google_appengine.php',
             '_tests/tests/unit_tests/___health_check.php',
             '_tests/tests/unit_tests/.htaccess',
+            '_tests/tests/unit_tests/disk_usage_spec.php',
             '_tests/tests/unit_tests/httpauth.php',
             '_tests/tests/unit_tests/http_obscure_cases.php',
             '_tests/tests/unit_tests/_api_twitter.php',

@@ -351,7 +351,6 @@ function step_1() : object
 
                 // Volatile files (see also list in make_release.php)
                 $skipped_files_may_be_changed_or_missing = array_flip([
-                    'data_custom/functions.bin',
                     'data/files_previous.bin',
                 ]);
                 $skipped_files_may_be_changed = array_flip([
