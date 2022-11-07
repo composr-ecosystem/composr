@@ -179,13 +179,15 @@ class Hook_fields_integer
             return $this->get_field_auto_increment($id, $field['cf_default']);
         }
         $ret = post_param_string($tmp_name, $editing ? STRING_MAGIC_NULL : '');
-        if (is_numeric($ret)) { // TODO: #3046 in tracker
+        if (preg_match('#^\d+$#', $ret) != 0) { // TODO: #3046 in tracker
             $test = intval($ret);
             if ($test > 2147483647) {
                 $ret = '2147483647';
             } elseif ($test < -2147483648) {
                 $ret = '-2147483648';
             }
+        } else {
+            $ret = '';
         }
         return $ret;
     }

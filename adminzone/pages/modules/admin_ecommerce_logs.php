@@ -1136,19 +1136,19 @@ class Module_admin_ecommerce_logs
         $transactions = $GLOBALS['SITE_DB']->query($sql);
         foreach ($transactions as $transaction) {
             if ($transaction['t_time'] > $from) {
-                $types['TRANS']['AMOUNT'] += $transaction['t_transaction_fee'];
+                $types['TRANS']['AMOUNT'] += $transaction['t_price'];
             }
 
             $type_code = $transaction['t_type_code'];
 
             $transaction['t_price'] = currency_convert($transaction['t_price'], $transaction['t_currency'], get_option('currency')); // FUDGE: Not ideal because exchange rates change, but we don't normally trade multiple currencies anyway
 
-            $types['CLOSING']['AMOUNT'] += $transaction['t_price']/*no sales tax on this figure as it goes straight out*/;
+            $types['CLOSING']['AMOUNT'] += $transaction['t_price'];
 
             $types['TAX_SALES']['AMOUNT'] -= $transaction['t_tax'];
 
             if ($transaction['t_time'] < $from) {
-                $types['OPENING']['AMOUNT'] += $transaction['t_price']/*no sales tax on this figure as it goes straight out*/ - $transaction['t_transaction_fee'];
+                $types['OPENING']['AMOUNT'] += $transaction['t_price'];
                 continue;
             }
 

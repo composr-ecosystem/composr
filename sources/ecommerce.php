@@ -310,7 +310,6 @@ function get_needed_fields(string $type_code, bool $force_extended = false, bool
     $card_start_date_month = null;
     $card_expiry_date_year = null;
     $card_expiry_date_month = null;
-    $card_issue_number = null;
     $card_cv2 = null;
     $billing_street_address = '';
     $billing_city = '';
@@ -318,7 +317,7 @@ function get_needed_fields(string $type_code, bool $force_extended = false, bool
     $billing_state = '';
     $billing_post_code = '';
     $billing_country = '';
-    get_default_ecommerce_fields(null, $shipping_email, $shipping_phone, $shipping_firstname, $shipping_lastname, $shipping_street_address, $shipping_city, $shipping_county, $shipping_state, $shipping_post_code, $shipping_country, $cardholder_name, $card_type, $card_number, $card_start_date_year, $card_start_date_month, $card_expiry_date_year, $card_expiry_date_month, $card_issue_number, $card_cv2, $billing_street_address, $billing_city, $billing_county, $billing_state, $billing_post_code, $billing_country, false, false);
+    get_default_ecommerce_fields(null, $shipping_email, $shipping_phone, $shipping_firstname, $shipping_lastname, $shipping_street_address, $shipping_city, $shipping_county, $shipping_state, $shipping_post_code, $shipping_country, $cardholder_name, $card_type, $card_number, $card_start_date_year, $card_start_date_month, $card_expiry_date_year, $card_expiry_date_month, $card_cv2, $billing_street_address, $billing_city, $billing_county, $billing_state, $billing_post_code, $billing_country, false, false);
 
     $require_all_details = ($details['needs_shipping_address']) || (get_option('tax_detailed') == '1');
     if (($require_all_details) || ($force_extended)) {
@@ -385,9 +384,10 @@ function ecommerce_get_currency_symbol(?string $currency = null) : string
  * @param  REAL $amount A total transaction amount
  * @param  ID_TEXT $type_code A transaction type code
  * @param  ID_TEXT $payment_gateway The payment gateway the payment went via
+ * @param  boolean $fail_ok Return 0.00 if an error occurred instead of exiting
  * @return REAL The fee
  */
-function get_transaction_fee(float $amount, string $type_code, string $payment_gateway) : float
+function get_transaction_fee(float $amount, string $type_code, string $payment_gateway, bool $fail_ok = false) : float
 {
     // No transaction fee for manual nor point transactions
     if (in_array($payment_gateway, ['', 'manual', 'points'])) {
@@ -407,12 +407,9 @@ function get_transaction_fee(float $amount, string $type_code, string $payment_g
     }
 
     // Fall back to payment gateway hooks
-    if ((file_exists(get_file_base() . '/sources/hooks/systems/payment_gateway/' . $payment_gateway . '.php')) || (file_exists(get_file_base() . '/sources_custom/hooks/systems/payment_gateway/' . $payment_gateway . '.php'))) {
-        require_code('hooks/systems/payment_gateway/' . filter_naughty_harsh($payment_gateway));
-        $payment_gateway_object = object_factory('Hook_payment_gateway_' . filter_naughty_harsh($payment_gateway));
-        if (method_exists($payment_gateway_object, 'get_transaction_fee')) {
-            return $payment_gateway_object->get_transaction_fee($amount, $type_code);
-        }
+    $payment_gateway_object = get_hook_ob('systems', 'payment_gateway', $payment_gateway, 'Hook_payment_gateway_', $fail_ok);
+    if (($payment_gateway_object !== null) && (method_exists($payment_gateway_object, 'get_transaction_fee'))) {
+        return $payment_gateway_object->get_transaction_fee($amount, $type_code);
     }
 
     return 0.00;
@@ -851,7 +848,6 @@ function get_transaction_form_fields(string $type_code, string $item_name, strin
     $card_start_date_month = null;
     $card_expiry_date_year = null;
     $card_expiry_date_month = null;
-    $card_issue_number = null;
     $card_cv2 = null;
     $billing_street_address = '';
     $billing_city = '';
@@ -859,7 +855,7 @@ function get_transaction_form_fields(string $type_code, string $item_name, strin
     $billing_state = '';
     $billing_post_code = '';
     $billing_country = '';
-    get_default_ecommerce_fields(null, $shipping_email, $shipping_phone, $shipping_firstname, $shipping_lastname, $shipping_street_address, $shipping_city, $shipping_county, $shipping_state, $shipping_post_code, $shipping_country, $cardholder_name, $card_type, $card_number, $card_start_date_year, $card_start_date_month, $card_expiry_date_year, $card_expiry_date_month, $card_issue_number, $card_cv2, $billing_street_address, $billing_city, $billing_county, $billing_state, $billing_post_code, $billing_country, false, false);
+    get_default_ecommerce_fields(null, $shipping_email, $shipping_phone, $shipping_firstname, $shipping_lastname, $shipping_street_address, $shipping_city, $shipping_county, $shipping_state, $shipping_post_code, $shipping_country, $cardholder_name, $card_type, $card_number, $card_start_date_year, $card_start_date_month, $card_expiry_date_year, $card_expiry_date_month, $card_cv2, $billing_street_address, $billing_city, $billing_county, $billing_state, $billing_post_code, $billing_country, false, false);
 
     // Card fields...
 
@@ -869,11 +865,10 @@ function get_transaction_form_fields(string $type_code, string $item_name, strin
     if (method_exists($payment_gateway_object, 'create_selection_list_card_types')) {
         $fields->attach(form_input_list(do_lang_cpf('payment_card_type'), '', 'payment_card_type', $payment_gateway_object->create_selection_list_card_types($card_type)));
     }
-    $fields->attach(form_input_integer(do_lang_cpf('payment_card_number'), do_lang_tempcode('DESCRIPTION_CARD_NUMBER'), 'payment_card_number', $card_number, true, null, 16));
+    $fields->attach(form_input_line(do_lang_cpf('payment_card_number'), do_lang_tempcode('DESCRIPTION_CARD_NUMBER'), 'payment_card_number', $card_number, true, null, 19, 'text', null, '^\d{13,19}$', do_lang('INVALID_CC_NUMBER')));
     $fields->attach(form_input_date_components(do_lang_cpf('payment_card_start_date'), do_lang_tempcode('DESCRIPTION_CARD_START_DATE'), 'payment_card_start_date', true, true, false, intval(date('Y')) - 16, intval(date('Y')), $card_start_date_year, $card_start_date_month, null, false));
     $fields->attach(form_input_date_components(do_lang_cpf('payment_card_expiry_date'), do_lang_tempcode('DESCRIPTION_CARD_EXPIRY_DATE'), 'payment_card_expiry_date', true, true, false, intval(date('Y')), intval(date('Y')) + 16, $card_expiry_date_year, $card_expiry_date_month, null, true));
-    $fields->attach(form_input_integer(do_lang_cpf('payment_card_issue_number'), do_lang_tempcode('DESCRIPTION_CARD_ISSUE_NUMBER'), 'payment_card_issue_number', $card_issue_number, false));
-    $fields->attach(form_input_integer(do_lang_tempcode('CARD_CV2'), do_lang_tempcode('DESCRIPTION_CARD_CV2'), 'payment_card_cv2', $card_cv2, true, null, 4));
+    $fields->attach(form_input_line(do_lang_tempcode('CARD_CV2'), do_lang_tempcode('DESCRIPTION_CARD_CV2'), 'payment_card_cv2', $card_cv2, true, null, 4));
 
     if ((!is_guest()) && (get_forum_type() == 'cns') && (get_option('store_credit_card_numbers') == '1')) {
         $fields->attach(form_input_tick(do_lang_tempcode('SAVE_TO_ACCOUNT'), '', 'payment_save_to_account', get_cms_cpf('payment_cardholder_name') == ''));
@@ -988,13 +983,12 @@ function get_address_fields(string $prefix, string $street_address, string $city
  * @param  string $shipping_country Shipping country (blank: unknown)
  * @param  string $cardholder_name Cardholder name (blank: unknown)
  * @param  string $card_type Card type (blank: unknown)
- * @param  ?integer $card_number Card number (null: unknown)
+ * @param  ?string $card_number Card number (null: unknown)
  * @param  ?integer $card_start_date_year Card start year (null: unknown)
  * @param  ?integer $card_start_date_month Card start month (null: unknown)
  * @param  ?integer $card_expiry_date_year Card expiry year (null: unknown)
  * @param  ?integer $card_expiry_date_month Card expiry month (null: unknown)
- * @param  ?integer $card_issue_number Card issue number (null: unknown)
- * @param  ?integer $card_cv2 Card CV2 number (null: unknown)
+ * @param  ?string $card_cv2 Card CV2 number (null: unknown)
  * @param  string $billing_street_address Billing street address (blank: unknown)
  * @param  string $billing_city Billing city (blank: unknown)
  * @param  string $billing_county Billing county (blank: unknown)
@@ -1004,7 +998,7 @@ function get_address_fields(string $prefix, string $street_address, string $city
  * @param  boolean $default_to_store Default to the store address if we don't know the shipping address. Useful for a default tax calculation.
  * @param  boolean $do_checking Check for accuracy of data. If $default_to_store is false, you probably want to set this to false also, as data may not be set properly.
  */
-function get_default_ecommerce_fields(?int $member_id = null, string &$shipping_email = '', string &$shipping_phone = '', string &$shipping_firstname = '', string &$shipping_lastname = '', string &$shipping_street_address = '', string &$shipping_city = '', string &$shipping_county = '', string &$shipping_state = '', string &$shipping_post_code = '', string &$shipping_country = '', string &$cardholder_name = '', string &$card_type = '', ?int &$card_number = null, ?int &$card_start_date_year = null, ?int &$card_start_date_month = null, ?int &$card_expiry_date_year = null, ?int &$card_expiry_date_month = null, ?int &$card_issue_number = null, ?int &$card_cv2 = null, string &$billing_street_address = '', string &$billing_city = '', string &$billing_county = '', string &$billing_state = '', string &$billing_post_code = '', string &$billing_country = '', bool $default_to_store = false, bool $do_checking = true)
+function get_default_ecommerce_fields(?int $member_id = null, string &$shipping_email = '', string &$shipping_phone = '', string &$shipping_firstname = '', string &$shipping_lastname = '', string &$shipping_street_address = '', string &$shipping_city = '', string &$shipping_county = '', string &$shipping_state = '', string &$shipping_post_code = '', string &$shipping_country = '', string &$cardholder_name = '', string &$card_type = '', ?string &$card_number = null, ?int &$card_start_date_year = null, ?int &$card_start_date_month = null, ?int &$card_expiry_date_year = null, ?int &$card_expiry_date_month = null, ?string &$card_cv2 = null, string &$billing_street_address = '', string &$billing_city = '', string &$billing_county = '', string &$billing_state = '', string &$billing_post_code = '', string &$billing_country = '', bool $default_to_store = false, bool $do_checking = true)
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -1015,13 +1009,12 @@ function get_default_ecommerce_fields(?int $member_id = null, string &$shipping_
     if (ecommerce_test_mode()) {
         $cardholder_name = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
         $card_type = 'Visa';
-        $card_number = 4444333322221111;
+        $card_number = '4444333322221111';
         $card_start_date_year = intval(date('Y', utctime_to_usertime(time() - 60 * 60 * 24 * 365)));
         $card_start_date_month = intval(date('m', utctime_to_usertime(time() - 60 * 60 * 24 * 365)));
         $card_expiry_date_year = intval(date('Y', utctime_to_usertime(time() + 60 * 60 * 24 * 365)));
         $card_expiry_date_month = intval(date('m', utctime_to_usertime(time() + 60 * 60 * 24 * 365)));
-        $card_issue_number = 1;
-        $card_cv2 = 123;
+        $card_cv2 = '012';
 
         $shipping_firstname = 'John';
         $shipping_lastname = 'Doe';
@@ -1050,7 +1043,7 @@ function get_default_ecommerce_fields(?int $member_id = null, string &$shipping_
         $card_type = empty($_card_type) ? '' : $_card_type;
 
         $_card_number = get_cms_cpf('payment_card_number');
-        $card_number = empty($_card_number) ? null : intval($_card_number);
+        $card_number = empty($_card_number) ? null : $_card_number;
 
         $_card_start_date = get_cms_cpf('payment_card_start_date');
         list($_card_start_date_month, $_card_start_date_year) = empty($_card_start_date) ? ['', ''] : explode('/', $_card_start_date);
@@ -1062,10 +1055,7 @@ function get_default_ecommerce_fields(?int $member_id = null, string &$shipping_
         $card_expiry_date_year = ($_card_expiry_date_year == '' || $_card_expiry_date_year == 'yy') ? null : intval($_card_expiry_date_year);
         $card_expiry_date_month = ($_card_expiry_date_month == '' || $_card_expiry_date_month == 'mm') ? null : intval($_card_expiry_date_month);
 
-        $_card_issue_number = get_cms_cpf('payment_card_issue_number');
-        $card_issue_number = empty($_card_issue_number) ? null : intval($_card_issue_number);
-
-        $card_cv2 = null;
+        $card_cv2 = null; // CV2 should never be stored anywhere or it defeats its purpose
 
         $shipping_firstname = get_cms_cpf('firstname');
         $shipping_lastname = get_cms_cpf('lastname');
@@ -1106,16 +1096,14 @@ function get_default_ecommerce_fields(?int $member_id = null, string &$shipping_
     $shipping_state = post_param_string('shipping_state', $shipping_state);
     $shipping_post_code = post_param_string('shipping_postalcode', $shipping_post_code);
     $shipping_country = post_param_string('shipping_country', $shipping_country);
-    $cardholder_name = post_param_string('cardholder_name', $cardholder_name);
-    $card_type = post_param_string('card_type', $card_type);
-    $_card_number = post_param_string('card_number', ($card_number === null) ? '' : strval($card_number), INPUT_FILTER_POST_IDENTIFIER);
-    $card_number = ($_card_number == '') ? null : str_replace(['-', ' '], ['', ''], $_card_number);
-    $card_start_date_year = post_param_integer('card_start_date_year', $card_start_date_year);
-    $card_start_date_month = post_param_integer('card_start_date_month', $card_start_date_month);
-    $card_expiry_date_year = post_param_integer('card_expiry_date_year', $card_expiry_date_year);
-    $card_expiry_date_month = post_param_integer('card_expiry_date_month', $card_expiry_date_month);
-    $card_issue_number = post_param_integer('card_issue_number', $card_issue_number);
-    $card_cv2 = post_param_integer('card_cv2', $card_cv2);
+    $cardholder_name = post_param_string('payment_cardholder_name', $cardholder_name);
+    $card_type = post_param_string('payment_card_type', $card_type);
+    $card_number = post_param_string('payment_card_number', ($card_number === null) ? '' : $card_number, INPUT_FILTER_POST_IDENTIFIER);
+    $card_start_date_year = post_param_integer('payment_card_start_date_year', $card_start_date_year);
+    $card_start_date_month = post_param_integer('payment_card_start_date_month', $card_start_date_month);
+    $card_expiry_date_year = post_param_integer('payment_card_expiry_date_year', $card_expiry_date_year);
+    $card_expiry_date_month = post_param_integer('payment_card_expiry_date_month', $card_expiry_date_month);
+    $card_cv2 = post_param_string('payment_card_cv2', $card_cv2);
     $billing_street_address = post_param_string('billing_address1', $billing_street_address);
     $billing_city = post_param_string('billing_city', $billing_city);
     $billing_county = post_param_string('billing_county', $billing_county);
@@ -1195,6 +1183,14 @@ function get_default_ecommerce_fields(?int $member_id = null, string &$shipping_
     }
     if (($shipping_country == 'US') && (preg_match('#^[0-9]{5}(-[0-9]{4})?$#', $shipping_post_code) == 0)) {
         warn_exit(do_lang_tempcode('INVALID_ZIP_FOR_USA', escape_html($shipping_post_code)));
+    }
+
+    // Credit cards are generally 15 or 16 digits, but they can be between 13 and 19 digits. We do not do advanced validation as companies may change their patterns.
+    if (($card_number != '') && (preg_match('#^\d{13,19}$#', $card_number) == 0)) {
+        warn_exit(do_lang_tempcode('INVALID_CC_NUMBER'));
+    }
+    if (($card_cv2 != '') && (preg_match('#^\d{3,4}$#', $card_cv2) == 0)) {
+        warn_exit(do_lang_tempcode('INVALID_CV2_NUMBER'));
     }
 }
 
@@ -1294,7 +1290,6 @@ function do_local_transaction(string $payment_gateway, object $payment_gateway_o
     $card_start_date_month = null;
     $card_expiry_date_year = null;
     $card_expiry_date_month = null;
-    $card_issue_number = null;
     $card_cv2 = null;
     $billing_street_address = '';
     $billing_city = '';
@@ -1302,7 +1297,7 @@ function do_local_transaction(string $payment_gateway, object $payment_gateway_o
     $billing_state = '';
     $billing_post_code = '';
     $billing_country = '';
-    get_default_ecommerce_fields(null, $shipping_email, $shipping_phone, $shipping_firstname, $shipping_lastname, $shipping_street_address, $shipping_city, $shipping_county, $shipping_state, $shipping_post_code, $shipping_country, $cardholder_name, $card_type, $card_number, $card_start_date_year, $card_start_date_month, $card_expiry_date_year, $card_expiry_date_month, $card_issue_number, $card_cv2, $billing_street_address, $billing_city, $billing_county, $billing_state, $billing_post_code, $billing_country);
+    get_default_ecommerce_fields(null, $shipping_email, $shipping_phone, $shipping_firstname, $shipping_lastname, $shipping_street_address, $shipping_city, $shipping_county, $shipping_state, $shipping_post_code, $shipping_country, $cardholder_name, $card_type, $card_number, $card_start_date_year, $card_start_date_month, $card_expiry_date_year, $card_expiry_date_month, $card_cv2, $billing_street_address, $billing_city, $billing_county, $billing_state, $billing_post_code, $billing_country);
 
     $card_start_date = ($card_start_date_year === null || $card_start_date_month === null) ? '' : (strval($card_start_date_year) . '/' . strval($card_start_date_month));
     $card_expiry_date = ($card_expiry_date_year === null || $card_expiry_date_month === null) ? '' : (strval($card_expiry_date_year) . '/' . strval($card_expiry_date_month));
@@ -1321,7 +1316,6 @@ function do_local_transaction(string $payment_gateway, object $payment_gateway_o
         //$changes += cns_set_custom_field(get_member(), find_cms_cpf_field_id('cms_payment_card_number'), $card_number, null, true);   PCI rules mean we can't save this without encrypting it and obfuscating when displayed; too onerous to force encryption keys that aren't backed up, so let's save everything but this
         $changes += cns_set_custom_field(get_member(), find_cms_cpf_field_id('cms_payment_card_start_date'), $card_start_date, null, true);
         $changes += cns_set_custom_field(get_member(), find_cms_cpf_field_id('cms_payment_card_expiry_date'), $card_expiry_date, null, true);
-        $changes += cns_set_custom_field(get_member(), find_cms_cpf_field_id('cms_payment_card_issue_number'), $card_issue_number, null, true);
         if (!empty($changes)) {
             $GLOBALS['FORUM_DB']->query_update('f_member_custom_fields', $changes, ['mf_member_id' => get_member()], '', 1);
         }
@@ -1360,7 +1354,7 @@ function do_local_transaction(string $payment_gateway, object $payment_gateway_o
 
     // Process order...
 
-    list($success, $message, $message_raw, $txn_id, $transaction_fee) = $payment_gateway_object->do_local_transaction($trans_expecting_id, $cardholder_name, $card_type, $card_number, $card_start_date, $card_expiry_date, $card_issue_number, $card_cv2, $price, $currency, $billing_street_address, $billing_city, $billing_county, $billing_state, $billing_post_code, $billing_country, $shipping_firstname, $shipping_lastname, $shipping_street_address, $shipping_city, $shipping_county, $shipping_state, $shipping_post_code, $shipping_country, $shipping_email, $shipping_phone, $length, $length_units);
+    list($success, $message, $message_raw, $txn_id, $transaction_fee) = $payment_gateway_object->do_local_transaction($trans_expecting_id, $cardholder_name, $card_type, $card_number, $card_start_date, $card_expiry_date, $card_cv2, $price, $currency, $billing_street_address, $billing_city, $billing_county, $billing_state, $billing_post_code, $billing_country, $shipping_firstname, $shipping_lastname, $shipping_street_address, $shipping_city, $shipping_county, $shipping_state, $shipping_post_code, $shipping_country, $shipping_email, $shipping_phone, $length, $length_units);
 
     $GLOBALS['SITE_DB']->query_update('ecom_trans_addresses', ['a_txn_id' => $txn_id, 'a_trans_expecting_id' => ''], ['a_trans_expecting_id' => $trans_expecting_id], '', 1);
 

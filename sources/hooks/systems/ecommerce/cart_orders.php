@@ -184,7 +184,7 @@ class Hook_ecommerce_cart_orders
             $session_id = $GLOBALS['SITE_DB']->query_select_value('shopping_orders', 'session_id', ['id' => $order_id]);
             $GLOBALS['SITE_DB']->query_insert('ecom_sales', ['date_and_time' => time(), 'member_id' => $member_id, 'details' => $details['item_name'], 'details2' => '', 'txn_id' => $details['TXN_ID']]);
 
-            $ordered_items = $GLOBALS['SITE_DB']->query_select('shopping_order_details', ['*'], ['p_order_id' => $order_id], '', 1);
+            $ordered_items = $GLOBALS['SITE_DB']->query_select('shopping_order_details', ['*'], ['p_order_id' => $order_id]);
             foreach ($ordered_items as $ordered_item) {
                 list($sub_details, $sub_product_object) = find_product_details($ordered_item['p_type_code']);
 
@@ -197,14 +197,14 @@ class Hook_ecommerce_cart_orders
                     $sub_product_object->reduce_stock(intval($ordered_item['p_type_code']), $ordered_item['p_quantity']);
                 }
 
+                // Remove item from member's cart (we specify member ID and session ID as this may have been called by an external IPN)
+                remove_from_cart([$ordered_item['p_type_code']], $member_id, $session_id);
+
                 // Call actualiser
                 $call_actualiser_from_cart = !isset($sub_details['type_special_details']['call_actualiser_from_cart']) || $sub_details['type_special_details']['call_actualiser_from_cart'];
                 if ($call_actualiser_from_cart) {
                     $sub_product_object->actualiser($ordered_item['p_type_code'], $ordered_item['purchase_id'], $sub_details + $details/*Copy through transaction status etc, merge in this order gives precedence to $sub_details*/);
                 }
-
-                // Remove item from member's cart (we specify member ID and session ID as this may have been called by an external IPN)
-                remove_from_cart([$ordered_item['p_type_code']], $member_id, $session_id);
             }
         }
 

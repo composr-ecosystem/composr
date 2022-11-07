@@ -105,7 +105,7 @@ We require:
 [title="3"]Web Server[/title]
 
 We require:
- - A web server running Apache (the common Linux web server), {$IS_MAINTAINED,platform_litespeed,LiteSpeed} [an Apache drop-in replacement], or {$IS_MAINTAINED,platform_iis,IIS7+} [the Microsoft web server]. It is very unlikely you will find a webhost that provides something else. Other servers might work but are not supported (additional guidance is provided in this tutorial);
+ - A web server running Apache (the common Linux web server), {$IS_MAINTAINED,platform_litespeed,LiteSpeed} [an Apache drop-in replacement], or {$IS_MAINTAINED,platform_iis,IIS7+} [the Microsoft web server]. It is very unlikely you will find a webhost that provides something else. Other servers might work but are not supported (additional guidance is provided in this tutorial). It is possible to use a reverse proxy, such as Nginx, along with a web server such as Apache. However, we do not have special support reverse proxies. It will be up to the webhost to ensure the proxy is configured properly. Be aware that static caching on the proxy could interfere with the software.
  - The CGI timeout on the server must not be lower than 60 seconds (which is the default on Apache).
  - That the web server is not overloaded with too many users, or has very poor performance.
  - Either a suEXEC-style web server (strongly recommended) &dagger;, or a working FTP connection from PHP back to the hosting (so the server has to be running FTP, and PHP has to be running the PHP [tt]ftp[/tt] extension).
@@ -122,6 +122,10 @@ If running IIS:
  - You may not have disabled default Feature Delegation for anything the bundled [tt]web.config[/tt] file changes (unless you manually change your main IIS configuration and edit the [tt]web.config[/tt] as required to match)
  - You must have the URL Rewrite module installed. This is not just needed for URL Schemes and URL Redirects, but also for basic security.
  - It is possible you may need to configure IIS for additional mime-types, depending on what you are trying to do. Unlike Apache, IIS will not (by default) serve file types it is not configured to know a mime-type for.
+
+If running Nginx:
+ - You should be using Nginx as a proxy to a web server mentioned above, such as Apache. Nginx does not support the directives offered by Apache or IIS, and it also does not support reading in htaccess or web.config files. Therefore, rewrite rules and access control for certain directories will not work when using Nginx as a standalone web server.
+ - Ensure Nginx is not caching static resources. This could cause problems with the Composr software.
 
 &dagger; By suEXEC-style web server we mean either:
 [list="a"]
@@ -204,13 +208,15 @@ If transliteration of non-European languages is desired (for quality URL moniker
 
 If PDF download indexing is required, [tt]pdftohtml[/tt] ([tt]poppler-utils[/tt]) is required.
 
+If using the eCommerce system with the Authorize.net payment gateway, then it is recommended, though not required, to have PHP [tt]hash_hmac[/tt] support. This allows the Composr software to compare hashes with Authorize.net as added security to prevent fraudulent requests.
+
 [title="2"]Further recommendations[/title]
 
 [media float="right" thumb="0" framed="0"]data_custom/images/docs/tip.png[/media]
 Composr recommends:
  - PHP versions:
   - PHP 7 is better than PHP 5.6 due to very significant performance and security improvements.
-  - Don't accept EOL ("end-of-life"). If a webhost or Linux distribution has a PHP version that is EOL, it is not just out-dated, but also insecure do (at the time of writing, anything less than PHP 5.6 is unsupported by the PHP developers).
+  - Don't accept EOL ("end-of-life"). If a webhost or Linux distribution has a PHP version that is EOL, it is not just out-dated, but also insecure (at the time of writing, anything less than PHP 5.6 is unsupported by the PHP developers).
   - Make sure your PHP version is updated with security fixes, even if you haven't updated to the latest major version.[media width="480" thumb="1" framed="1" description="Easy-reference summary of the key hosting recommendations." float="right"]data_custom/images/docs/tut_webhosting/image.png[/media]
  - A PHP opcode cache: Zend OpCache (bundled by default), APC (available for PHP 5.6 or lower only), APCu, XCache, Nusphere PhpExpress, or Wincache.
  - A PHP environment with [tt]open_basedir[/tt] enabled.
@@ -220,7 +226,7 @@ Composr recommends:
 [title="2"]Web server compatibility[/title]
 
 Composr is only tested on, and optimised for, Apache and IIS.
-However in principle it should work on any web server software.
+However in principle it should work on most web server software. It should also work with a reverse proxy, such as Nginx, provided it is configured correctly and not using static caching. Note that Composr will not work when using Nginx as a standalone web server.
 
 There are a few notes to give, although the only one of likely major significance is the URL Schemes one..
 

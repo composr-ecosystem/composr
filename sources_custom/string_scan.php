@@ -10734,7 +10734,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SPECIAL_CPF__cms_mobile_phone_number
         SPECIAL_CPF__cms_mobile_phone_number_DESCRIPTION
         SPECIAL_CPF__cms_payment_card_expiry_date
-        SPECIAL_CPF__cms_payment_card_issue_number
         SPECIAL_CPF__cms_payment_card_number
         SPECIAL_CPF__cms_payment_card_start_date
         SPECIAL_CPF__cms_payment_cardholder_name

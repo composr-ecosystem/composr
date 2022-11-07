@@ -138,7 +138,6 @@ function calculate_shipping_cost(?array $details, ?float $shipping_cost, ?float 
     $card_start_date_month = null;
     $card_expiry_date_year = null;
     $card_expiry_date_month = null;
-    $card_issue_number = null;
     $card_cv2 = null;
     $billing_street_address = '';
     $billing_city = '';
@@ -146,7 +145,7 @@ function calculate_shipping_cost(?array $details, ?float $shipping_cost, ?float 
     $billing_state = '';
     $billing_post_code = '';
     $billing_country = '';
-    get_default_ecommerce_fields($member_id, $shipping_email, $shipping_phone, $shipping_firstname, $shipping_lastname, $shipping_street_address, $shipping_city, $shipping_county, $shipping_state, $shipping_post_code, $shipping_country, $cardholder_name, $card_type, $card_number, $card_start_date_year, $card_start_date_month, $card_expiry_date_year, $card_expiry_date_month, $card_issue_number, $card_cv2, $billing_street_address, $billing_city, $billing_county, $billing_state, $billing_post_code, $billing_country, true);
+    get_default_ecommerce_fields($member_id, $shipping_email, $shipping_phone, $shipping_firstname, $shipping_lastname, $shipping_street_address, $shipping_city, $shipping_county, $shipping_state, $shipping_post_code, $shipping_country, $cardholder_name, $card_type, $card_number, $card_start_date_year, $card_start_date_month, $card_expiry_date_year, $card_expiry_date_month, $card_cv2, $billing_street_address, $billing_city, $billing_county, $billing_state, $billing_post_code, $billing_country, true);
 
     if ($shipping_street_address == '') {
         $street_address = $billing_street_address;
