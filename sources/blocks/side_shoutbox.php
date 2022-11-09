@@ -178,7 +178,7 @@ PHP;
             'URL' => $url,
             'CHATROOM_ID' => strval($room_id),
             'NUM_MESSAGES' => strval($num_messages),
-            'BLOCK_PARAMS' => block_params_arr_to_str($map),
+            'BLOCK_PARAMS' => comma_list_arr_to_str($map),
         ]);
     }
 }

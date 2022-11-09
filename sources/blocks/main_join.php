@@ -149,7 +149,7 @@ class Block_main_join
             '_GUID' => $guid,
             'FORM' => $form,
             'HAS_EMAIL_TO_SEND' => $this->has_email_to_send($map),
-            'BLOCK_PARAMS' => block_params_arr_to_str($map),
+            'BLOCK_PARAMS' => comma_list_arr_to_str($map),
         ]);
     }
 

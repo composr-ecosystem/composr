@@ -272,23 +272,11 @@ function do_search_block(array $map) : array
     }
     $url = build_url($map2, $zone, [], false, true);
 
-    $extra = [];
-    foreach (explode(',', $_extra) as $_bits) {
-        $bits = explode('=', $_bits, 2);
-        if (count($bits) == 2) {
-            $extra[$bits[0]] = $bits[1];
-        }
-    }
+    $extra = comma_list_str_to_arr($_extra);
 
     $input_fields = ['content' => do_lang('SEARCH_TITLE')];
     if (array_key_exists('input_fields', $map)) {
-        $input_fields = [];
-        foreach (explode(',', $map['input_fields']) as $_bits) {
-            $bits = explode('=', $_bits, 2);
-            if (count($bits) == 2) {
-                $input_fields[$bits[0]] = $bits[1];
-            }
-        }
+        $input_fields = comma_list_str_to_arr($map['input_fields']);
     }
 
     $search_types = [];

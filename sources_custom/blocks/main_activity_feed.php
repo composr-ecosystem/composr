@@ -204,7 +204,7 @@ PHP;
         return do_template('BLOCK_MAIN_ACTIVITY_FEED', [
             '_GUID' => 'b4de219116e1b8107553ee588717e2c9',
             'BLOCK_ID' => $block_id,
-            'BLOCK_PARAMS' => block_params_arr_to_str(['block_id' => $block_id] + $map),
+            'BLOCK_PARAMS' => comma_list_arr_to_str(['block_id' => $block_id] + $map),
             'MODE' => $mode,
             'MEMBER_IDS' => implode(',', array_map('strval', $member_ids)),
             'CONTENT' => $content,

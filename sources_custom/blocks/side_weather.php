@@ -182,7 +182,7 @@ PHP;
             '_GUID' => '8b46b3437fbe05e587b11dd3347fa195',
 
             'BLOCK_ID' => $block_id,
-            'BLOCK_PARAMS' => block_params_arr_to_str(['block_id' => $block_id] + $map),
+            'BLOCK_PARAMS' => comma_list_arr_to_str(['block_id' => $block_id] + $map),
 
             'LOCATION_SEARCH' => $location_search,
             'UNITS' => $units,

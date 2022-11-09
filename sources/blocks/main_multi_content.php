@@ -461,7 +461,7 @@ PHP;
         return do_template('BLOCK_MAIN_MULTI_CONTENT_' . cms_strtoupper_ascii($render_mode), [
             '_GUID' => ($guid != '') ? $guid : '9035934bc9b25f57eb8d23bf100b5796',
             'BLOCK_ID' => $block_id,
-            'BLOCK_PARAMS' => block_params_arr_to_str(['block_id' => $block_id] + $map),
+            'BLOCK_PARAMS' => comma_list_arr_to_str(['block_id' => $block_id] + $map),
             'TYPE' => $content_type_label,
             'TITLE' => $title,
             'CONTENT' => $content,

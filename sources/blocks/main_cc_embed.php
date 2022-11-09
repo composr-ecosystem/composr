@@ -210,7 +210,7 @@ PHP;
         // Render
         return do_template('CATALOGUE_' . $tpl_set . '_CATEGORY_EMBED', [
             '_GUID' => 'dfdsfdsfsd3ffsdfsd',
-            'BLOCK_PARAMS' => block_params_arr_to_str(['block_id' => $block_id] + $map),
+            'BLOCK_PARAMS' => comma_list_arr_to_str(['block_id' => $block_id] + $map),
             'DISPLAY_TYPE' => $display_type_str,
             'ROOT' => ($root === null) ? '' : strval($root),
             'CATALOGUE' => $catalogue_name,

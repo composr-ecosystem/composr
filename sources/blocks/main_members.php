@@ -187,7 +187,7 @@ PHP;
             }
         }
         foreach ([$filters_row_a, $filters_row_b] as $filters_row) {
-            foreach (array_keys(block_params_str_to_arr($filters_row)) as $filter_term) {
+            foreach (array_keys(comma_list_str_to_arr($filters_row)) as $filter_term) {
                 if ($filter_term != '') {
                     if ($filter_term == 'usergroup') {
                         $usergroup = either_param_string('filter_' . $block_id . '_' . $filter_term, $usergroup);

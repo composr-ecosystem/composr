@@ -135,7 +135,7 @@ class Block_main_staff_tips
         return do_template('BLOCK_MAIN_STAFF_TIPS', [
             '_GUID' => 'c2cffc480b7bd9beef7f78a8ee7b7359',
             'BLOCK_ID' => $block_id,
-            'BLOCK_PARAMS' => block_params_arr_to_str($map),
+            'BLOCK_PARAMS' => comma_list_arr_to_str($map),
             'TIP' => $tip,
             'TIP_CODE' => $tip_code,
             'LEVEL' => integer_format($level),

@@ -179,7 +179,7 @@ class Block_main_cns_involved_topics
         return do_template('BLOCK_MAIN_CNS_INVOLVED_TOPICS', [
             '_GUID' => '3f1025f5d3391d43afbdfa292721aa09',
             'BLOCK_ID' => $block_id,
-            'BLOCK_PARAMS' => block_params_arr_to_str(['block_id' => $block_id] + $map),
+            'BLOCK_PARAMS' => comma_list_arr_to_str(['block_id' => $block_id] + $map),
             'TOPICS' => $topics,
 
             'START' => strval($start),

@@ -783,6 +783,7 @@ We hope other users will appreciate your efforts and give you some points to rew
             '_tests/tests/unit_tests/ecommerce_custom.php',
             '_tests/tests/unit_tests/ecommerce_shipping.php',
             '_tests/tests/unit_tests/_api_ecommerce_tax.php',
+            '_tests/tests/unit_tests/comma_lists.php',
             '_tests/tests/unit_tests/emoticons.php',
             '_tests/tests/unit_tests/env_vars.php',
             '_tests/tests/unit_tests/__extra_logging.php',

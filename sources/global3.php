@@ -5152,3 +5152,173 @@ function cms_setcookie(string $name, string $value, bool $session = false, bool 
 
     return $output;
 }
+
+/**
+ * Convert a parameter set from a an array (for PHP code) to a string (for templates).
+ *
+ * @param  array $map The parameters / acceptable parameter pattern
+ * @return string The parameters / acceptable parameter pattern, as template safe parameter
+ */
+function comma_list_arr_to_str(array $map) : string
+{
+    ksort($map);
+
+    $str = '';
+
+    foreach ($map as $key => $val) {
+        if ($str != '') {
+            $str .= ',';
+        }
+        if ((is_integer($key)) && (strpos($val, '=') !== false)) { // {$BLOCK} style, i.e. a list not a map
+            $str .= str_replace('=', '\=', str_replace(',', '\,', str_replace('\\', '\\\\', $val)));
+        } else {
+            if (!is_string($key)) {
+                $key = strval($key);
+            }
+            $str .= $key . '=' . str_replace('=', '\=', str_replace(',', '\,', str_replace('\\', '\\\\', $val)));
+        }
+    }
+
+    return $str;
+}
+
+/**
+ * Convert a parameter set from a string (for templates) to an array (for PHP code).
+ *
+ * @param  string $str The parameters / acceptable parameter pattern, as template safe parameter
+ * @param  boolean $block_symbol_style Whether to leave in block symbol style (i.e. like {$BLOCK} would take, a list not a map)
+ * @return array The parameters / acceptable parameter pattern
+ */
+function comma_list_str_to_arr(string $str, bool $block_symbol_style = false) : array
+{
+    if ($str == '') {
+        return [];
+    }
+
+    if (($GLOBALS['XSS_DETECT']) && (ocp_is_escaped($str))) {
+        $ocp_is_escaped = true;
+    } else {
+        $ocp_is_escaped = false;
+    }
+
+    $map = [];
+    $len = strlen($str);
+    if ($block_symbol_style) {
+        // Get the parts without splitting keys and values, leave escaping as-is
+        $escaped = false;
+        $in_key = true;
+        $key = '';
+        $val = '';
+        for ($i = 0; $i < $len; $i++) {
+            $c = $str[$i];
+            if ($in_key) {
+                if ($c == ',') {
+                    if ($ocp_is_escaped) {
+                        ocp_mark_as_escaped($key);
+                    }
+                    $map[] = $key;
+                    continue;
+                } elseif ($c == '=') {
+                    $in_key = false;
+                } else {
+                    $key .= $c;
+                }
+            } else {
+                if ($escaped) {
+                    $escaped = false;
+                    $val .= '\\' . $c;
+                } else {
+                    if ($c == '\\') {
+                        $escaped = true;
+                    } elseif ($c == ',') {
+                        $in_key = true;
+                        if ($ocp_is_escaped) {
+                            ocp_mark_as_escaped($key);
+                            ocp_mark_as_escaped($val);
+                        }
+                        $map[] = $key . '=' . $val;
+                        $key = '';
+                        $val = '';
+                    } else {
+                        $val .= $c;
+                    }
+                }
+            }
+        }
+        if ($in_key) {
+            if ($ocp_is_escaped) {
+                ocp_mark_as_escaped($key);
+            }
+            $map[] = $key;
+        } else {
+            if ($ocp_is_escaped) {
+                ocp_mark_as_escaped($key);
+                ocp_mark_as_escaped($val);
+            }
+            $map[] = $key . '=' . $val;
+        }
+    } else {
+        $escaped = false;
+        $in_key = true;
+        $key = '';
+        $val = '';
+        for ($i = 0; $i < $len; $i++) {
+            $c = $str[$i];
+            if ($in_key) {
+                if ($c == ',') {
+                    if ($ocp_is_escaped) {
+                        ocp_mark_as_escaped($key);
+                    }
+                    $map[] = $key;
+                    continue;
+                } elseif ($c == '=') {
+                    $in_key = false;
+                } else {
+                    $key .= $c;
+                }
+            } else {
+                if ($escaped) {
+                    $escaped = false;
+                    $val .= $c;
+                } else {
+                    if ($c == '\\') {
+                        $escaped = true;
+                    } elseif ($c == ',') {
+                        $in_key = true;
+                        if ($ocp_is_escaped) {
+                            ocp_mark_as_escaped($key);
+                            ocp_mark_as_escaped($val);
+                        }
+                        if ($key == '' && isset($map[$key])) {
+                            $map[] = $val;
+                        } else {
+                            $map[$key] = $val;
+                        }
+                        $key = '';
+                        $val = '';
+                    } else {
+                        $val .= $c;
+                    }
+                }
+            }
+        }
+        if ($in_key) {
+            if ($ocp_is_escaped) {
+                ocp_mark_as_escaped($key);
+            }
+            $map[] = $key;
+        } else {
+            if ($ocp_is_escaped) {
+                ocp_mark_as_escaped($key);
+                ocp_mark_as_escaped($val);
+            }
+            if ($key == '' && isset($map[$key])) {
+                $map[] = $val;
+            } else {
+                $map[$key] = $val;
+            }
+        }
+    }
+
+    return $map;
+}

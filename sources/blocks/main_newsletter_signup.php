@@ -100,7 +100,7 @@ PHP;
                 $msg = do_template('INLINE_WIP_MESSAGE', ['_GUID' => '9ce849d0d2dc879acba609b907317c74', 'MESSAGE' => do_lang_tempcode('INVALID_EMAIL_ADDRESS')]);
                 return do_template('BLOCK_MAIN_NEWSLETTER_SIGNUP', [
                     '_GUID' => '3759e07077d74e6537cab04c897e76d2',
-                    'BLOCK_PARAMS' => block_params_arr_to_str($map),
+                    'BLOCK_PARAMS' => comma_list_arr_to_str($map),
                     'BLOCK_ID' => $block_id,
                     'NEWSLETTER_TITLE' => $newsletter_title,
                     'NID' => strval($newsletter_id),
@@ -147,7 +147,7 @@ PHP;
 
             return do_template('BLOCK_MAIN_NEWSLETTER_SIGNUP_DONE', [
                 '_GUID' => '9953c83685df4970de8f23fcd5dd15bb',
-                'BLOCK_PARAMS' => block_params_arr_to_str($map),
+                'BLOCK_PARAMS' => comma_list_arr_to_str($map),
                 'BLOCK_ID' => $block_id,
                 'NEWSLETTER_TITLE' => $newsletter_title,
                 'NID' => strval($newsletter_id),
@@ -166,7 +166,7 @@ PHP;
 
         return do_template('BLOCK_MAIN_NEWSLETTER_SIGNUP', [
             '_GUID' => 'c0e6f9cdab3d624bf3d27b745e3de38f',
-            'BLOCK_PARAMS' => block_params_arr_to_str($map),
+            'BLOCK_PARAMS' => comma_list_arr_to_str($map),
             'BLOCK_ID' => $block_id,
             'NEWSLETTER_TITLE' => $newsletter_title,
             'NID' => strval($newsletter_id),

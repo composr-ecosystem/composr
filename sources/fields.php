@@ -272,26 +272,61 @@ function option_value_from_field_array(array $field, string $name, string $defau
 
 /**
  * Parse a field options string into a setting map.
+ * Based on the code from comma_list_str_to_arr, with some modifications.
  *
- * @param  string $__options Options string
+ * @param  string $str Options string
  * @return array The setting map
  */
-function parse_field_options(string $__options) : array
+function parse_field_options(string $str) : array
 {
-    $_options = ($__options == '') ? [] : explode(',', $__options);
-    $options = [];
-    foreach ($_options as $option) {
-        if (trim($option) == '') {
-            continue;
-        }
-
-        $parts = explode('=', trim($option), 2);
-        if (!isset($parts[1])) {
-            $parts[1] = 'on';
-        }
-        $options[$parts[0]] = $parts[1];
+    if ($str == '') {
+        return [];
     }
-    return $options;
+
+    $map = [];
+    $len = strlen($str);
+    $escaped = false;
+    $in_key = true;
+    $key = '';
+    $val = '';
+    for ($i = 0; $i < $len; $i++) {
+        $c = $str[$i];
+        if ($in_key) {
+            if ($c == ',') {
+                $map[$key] = 'on';
+                continue;
+            } elseif ($c == '=') {
+                $in_key = false;
+            } else {
+                $key .= $c;
+            }
+        } else {
+            if ($escaped) {
+                $escaped = false;
+                $val .= $c;
+            } else {
+                if ($c == '\\') {
+                    $escaped = true;
+                } elseif ($c == ',') {
+                    $in_key = true;
+                    $map[$key] = $val;
+                    $key = '';
+                    $val = '';
+                } else {
+                    $val .= $c;
+                }
+            }
+        }
+    }
+    if ($in_key) {
+        $map[$key] = 'on';
+    } else {
+        $map[$key] = $val;
+    }
+
+    ksort($map);
+
+    return $map;
 }
 
 /**

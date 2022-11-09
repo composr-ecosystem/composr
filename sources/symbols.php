@@ -1060,19 +1060,7 @@ function ecv_LOOP(string &$value, string $lang, array $escaped, array $param)
     if (isset($param[0])) {
         $array_key = $param[0]->evaluate();
         if ((is_numeric($array_key)) || (strpos($array_key, ',') !== false) || (strpos($array_key, '=') !== false)) {
-            $array = [];
-            foreach (explode(',', $array_key) as $x) {
-                if (strpos($x, '=') !== false) {
-                    list($key, $val) = explode('=', $x, 2);
-                    if ($key === '' && isset($array[$key])) {
-                        $array[] = $val; // Empty keys: which are done to allow "="s in strings by putting in an empty key OR to force list mode
-                    } else {
-                        $array[$key] = $val;
-                    }
-                } else {
-                    $array[] = $x;
-                }
-            }
+            $array = comma_list_str_to_arr($array_key);
         } else {
             if (!array_key_exists($param[0]->evaluate(), $param['vars'])) {
                 trigger_error(do_lang('MISSING_TEMPLATE_PARAMETER', $param[0]->evaluate(), '???'), E_USER_NOTICE);
@@ -1962,13 +1950,13 @@ function ecv_FACILITATE_AJAX_BLOCK_CALL(string $lang, array $escaped, array $par
 
     if (!empty($param[0])) {
         require_code('blocks');
-        $map = block_params_str_to_arr($param[0]);
+        $map = comma_list_str_to_arr($param[0]);
         $_block_constraints = block_params_to_block_signature($map);
         if (isset($param[1])) {
-            $_block_constraints = array_merge($_block_constraints, block_params_str_to_arr($param[1]));
+            $_block_constraints = array_merge($_block_constraints, comma_list_str_to_arr($param[1]));
             ksort($_block_constraints);
         }
-        $block_constraints = block_params_arr_to_str($_block_constraints);
+        $block_constraints = comma_list_arr_to_str($_block_constraints);
 
         // Store permissions
         $pass = false;
@@ -2192,7 +2180,7 @@ function ecv_COMMA_LIST_GET(string $lang, array $escaped, array $param) : string
 
     if (isset($param[1])) {
         require_code('blocks');
-        $values = block_params_str_to_arr($param[0], !empty($param[2]));
+        $values = comma_list_str_to_arr($param[0], !empty($param[2]));
         $value = isset($values[$param[1]]) ? $values[$param[1]] : '';
     }
 
@@ -3760,7 +3748,7 @@ function ecv_BLOCK(string $lang, array $escaped, array $param) : string
         }
 
         if ((count($param) == 1) && (strpos($param[0], ',') !== false)) { // NB: This code is also in Tempcode.php
-            $param_2 = block_params_str_to_arr($param[0], true);
+            $param_2 = comma_list_str_to_arr($param[0], true);
         } else {
             $param_2 = $param;
         }
@@ -3770,7 +3758,7 @@ function ecv_BLOCK(string $lang, array $escaped, array $param) : string
         }
 
         if (in_array('defer=1', $param_2)) {
-            $value = static_evaluate_tempcode(do_template('JS_BLOCK', ['_GUID' => '2334719e23b2773ad04fe0fcbdce684d', 'BLOCK_PARAMS' => block_params_arr_to_str($param_2)]));
+            $value = static_evaluate_tempcode(do_template('JS_BLOCK', ['_GUID' => '2334719e23b2773ad04fe0fcbdce684d', 'BLOCK_PARAMS' => comma_list_arr_to_str($param_2)]));
         } else {
             global $BLOCKS_CACHE;
             if (isset($BLOCKS_CACHE[serialize($param_2)])) { // Will always be set

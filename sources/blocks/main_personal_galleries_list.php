@@ -130,7 +130,7 @@ class Block_main_personal_galleries_list
         return do_template('BLOCK_MAIN_PERSONAL_GALLERIES_LIST', [
             '_GUID' => '90b11d3c01ff551be42a0472d27dd207',
             'BLOCK_ID' => $block_id,
-            'BLOCK_PARAMS' => block_params_arr_to_str(['block_id' => $block_id] + $map),
+            'BLOCK_PARAMS' => comma_list_arr_to_str(['block_id' => $block_id] + $map),
             'GALLERIES' => $galleries,
             'PAGINATION' => $pagination,
             'MEMBER_ID' => strval($member_id),

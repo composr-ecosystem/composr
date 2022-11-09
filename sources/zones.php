@@ -1408,60 +1408,6 @@ function get_block_ajax_submit_map(array $map) : string
 }
 
 /**
- * Convert a parameter set from a an array (for PHP code) to a string (for templates).
- *
- * @param  array $map The parameters / acceptable parameter pattern
- * @return string The parameters / acceptable parameter pattern, as template safe parameter
- */
-function block_params_arr_to_str(array $map) : string
-{
-    ksort($map);
-
-    $_map = '';
-
-    foreach ($map as $key => $val) {
-        if ($_map != '') {
-            $_map .= ',';
-        }
-        if ((is_integer($key)) && (strpos($val, '=') !== false)) { // {$BLOCK} style, i.e. a list not a map
-            $_map .= str_replace(',', '\,', $val);
-        } else {
-            $_map .= $key . '=' . str_replace(',', '\,', $val);
-        }
-    }
-
-    return $_map;
-}
-
-/**
- * Convert a parameter set from a string (for templates) to an array (for PHP code).
- *
- * @param  string $_map The parameters / acceptable parameter pattern, as template safe parameter
- * @param  boolean $block_symbol_style Whether to leave in block symbol style (i.e. like {$BLOCK} would take, a list not a map)
- * @return array The parameters / acceptable parameter pattern
- */
-function block_params_str_to_arr(string $_map, bool $block_symbol_style = false) : array
-{
-    $map = [];
-    $param = preg_split('#((?<!\\\\)|(?<=\\\\\\\\)|(?<=^)),#', $_map);
-    foreach ($param as $x) {
-        if ($block_symbol_style) {
-            $map[] = $x;
-        } else {
-            $result = explode('=', $x, 2);
-            if (isset($result[1])) {
-                list($a, $b) = $result;
-                $map[$a] = str_replace('\,', ',', $b);
-            }
-        }
-    }
-
-    ksort($map);
-
-    return $map;
-}
-
-/**
  * Get the block object for a given block codename.
  *
  * @param  ID_TEXT $codename The block name

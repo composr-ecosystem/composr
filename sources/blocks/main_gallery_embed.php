@@ -343,7 +343,7 @@ PHP;
         return do_template('BLOCK_MAIN_GALLERY_EMBED', [
             '_GUID' => 'b7b969c8fe8c398dd6e3af7ee06717ea',
             'BLOCK_ID' => $block_id,
-            'BLOCK_PARAMS' => block_params_arr_to_str(['block_id' => $block_id] + $map),
+            'BLOCK_PARAMS' => comma_list_arr_to_str(['block_id' => $block_id] + $map),
             'SLIDESHOW_URL' => $slideshow_url,
             'SORTING' => $sorting,
             'PAGINATION' => $pagination,

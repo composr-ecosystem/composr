@@ -467,7 +467,7 @@ PHP;
         return do_template($tpl, [
             '_GUID' => '01f5fbd2b0c7c8f249023ecb4254366e',
             'BLOCK_ID' => $block_id,
-            'BLOCK_PARAMS' => block_params_arr_to_str(['block_id' => $block_id] + $map),
+            'BLOCK_PARAMS' => comma_list_arr_to_str(['block_id' => $block_id] + $map),
             'BLOG' => $blogs === 1,
             'TITLE' => $_title,
             'SLIDER' => $slider,

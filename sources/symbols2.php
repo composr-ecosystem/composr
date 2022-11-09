@@ -402,7 +402,7 @@ function ecv2_COMMA_LIST_FROM_BREADCRUMBS(string $lang, array $escaped, array $p
 
     if (isset($param[0])) {
         $separator = do_template('BREADCRUMB_SEPARATOR', ['_GUID' => 'y28e21cdbc38a3037d083f619bb311ae',]);
-        $value = '=' . str_replace($separator->evaluate(), ',=', str_replace(',', '&#44;', $param[0]));
+        $value = '=' . str_replace($separator->evaluate(), ',=', str_replace(',', '\,', $param[0]));
         if ((!isset($param[1])) || ($param[1] == '0')) {
             $value = strip_tags($value);
         } else {
@@ -438,7 +438,14 @@ function ecv2_COMMA_LIST_NICIFY(string $lang, array $escaped, array $param) : st
     }
 
     if (isset($param[0])) {
-        $value = html_entity_decode(str_replace(',', ', ', preg_replace('#[^,=]*=#', '', $param[0])), ENT_QUOTES);
+        $map = comma_list_str_to_arr($param[0]);
+        $value = '';
+        foreach ($map as $val) {
+            if ($value != '') {
+                $value .= ', ';
+            }
+            $value .= html_entity_decode($val, ENT_QUOTES);
+        }
     }
 
     if (!empty($escaped)) {
@@ -465,7 +472,9 @@ function ecv2_COMMA_LIST_POP(string $lang, array $escaped, array $param) : strin
     }
 
     if (isset($param[0])) {
-        $value = preg_replace('#(^|,)[^,]+$#', '', $param[0]);
+        $map = comma_list_str_to_arr($param[0]);
+        array_pop($map);
+        $value = comma_list_arr_to_str($map);
         if (($GLOBALS['XSS_DETECT']) && (ocp_is_escaped($param[0]))) {
             ocp_mark_as_escaped($value);
         }
@@ -495,67 +504,12 @@ function ecv2_COMMA_LIST_PUSH(string $lang, array $escaped, array $param) : stri
     }
 
     if (isset($param[1])) {
-        $value = $param[0] . ',' . str_replace(',', '&#44;', $param[1]);
+        $map = comma_list_str_to_arr($param[0]);
+        array_push($map, $param[1]);
+        $value = comma_list_arr_to_str($map);
         if (($GLOBALS['XSS_DETECT']) && (ocp_is_escaped($param[0]))) {
             ocp_mark_as_escaped($value);
         }
-    }
-
-    if (!empty($escaped)) {
-        apply_tempcode_escaping($escaped, $value);
-    }
-    return $value;
-}
-
-/**
- * Evaluate a particular Tempcode symbol.
- *
- * @ignore
- *
- * @param  LANGUAGE_NAME $lang The language to evaluate this symbol in (some symbols refer to language elements)
- * @param  array $escaped Array of escaping operations
- * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
- * @return string The result
- */
-function ecv2_COMMA_LIST_REVERSE(string $lang, array $escaped, array $param) : string
-{
-    $value = '';
-    if ($GLOBALS['XSS_DETECT']) {
-        ocp_mark_as_escaped($value);
-    }
-
-    if (isset($param[0])) {
-        $value = implode(',', array_reverse(explode(',', $param[0])));
-    }
-
-    if (!empty($escaped)) {
-        apply_tempcode_escaping($escaped, $value);
-    }
-    return $value;
-}
-
-/**
- * Evaluate a particular Tempcode symbol.
- *
- * @ignore
- *
- * @param  LANGUAGE_NAME $lang The language to evaluate this symbol in (some symbols refer to language elements)
- * @param  array $escaped Array of escaping operations
- * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
- * @return string The result
- */
-function ecv2_COMMA_LIST_SET(string $lang, array $escaped, array $param) : string
-{
-    $value = '';
-    if ($GLOBALS['XSS_DETECT']) {
-        ocp_mark_as_escaped($value);
-    }
-
-    if (isset($param[2])) {
-        require_code('blocks');
-        $values = block_params_str_to_arr($param[0]);
-        $values[$param[1]] = $param[2];
-        $value = block_params_arr_to_str($values);
     }
 
     if (!empty($escaped)) {
@@ -582,7 +536,9 @@ function ecv2_COMMA_LIST_SHIFT(string $lang, array $escaped, array $param) : str
     }
 
     if (isset($param[0])) {
-        $value = preg_replace('#^[^,]+(,|$)#', '', $param[0]);
+        $map = comma_list_str_to_arr($param[0]);
+        array_shift($map);
+        $value = comma_list_arr_to_str($map);
         if (($GLOBALS['XSS_DETECT']) && (ocp_is_escaped($param[0]))) {
             ocp_mark_as_escaped($value);
         }
@@ -612,10 +568,71 @@ function ecv2_COMMA_LIST_UNSHIFT(string $lang, array $escaped, array $param) : s
     }
 
     if (isset($param[1])) {
-        $value = str_replace(',', '&#44;', $param[1]) . ',' . $param[0];
+        $map = comma_list_str_to_arr($param[0]);
+        array_unshift($map, $param[1]);
+        $value = comma_list_arr_to_str($map);
         if (($GLOBALS['XSS_DETECT']) && (ocp_is_escaped($param[0]))) {
             ocp_mark_as_escaped($value);
         }
+    }
+
+    if (!empty($escaped)) {
+        apply_tempcode_escaping($escaped, $value);
+    }
+    return $value;
+}
+
+/**
+ * Evaluate a particular Tempcode symbol.
+ *
+ * @ignore
+ *
+ * @param  LANGUAGE_NAME $lang The language to evaluate this symbol in (some symbols refer to language elements)
+ * @param  array $escaped Array of escaping operations
+ * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
+ * @return string The result
+ */
+function ecv2_COMMA_LIST_REVERSE(string $lang, array $escaped, array $param) : string
+{
+    $value = '';
+    if ($GLOBALS['XSS_DETECT']) {
+        ocp_mark_as_escaped($value);
+    }
+
+    if (isset($param[0])) {
+        $map = comma_list_str_to_arr($param[0]);
+        $map = array_reverse($map);
+        $value = comma_list_arr_to_str($map);
+    }
+
+    if (!empty($escaped)) {
+        apply_tempcode_escaping($escaped, $value);
+    }
+    return $value;
+}
+
+/**
+ * Evaluate a particular Tempcode symbol.
+ *
+ * @ignore
+ *
+ * @param  LANGUAGE_NAME $lang The language to evaluate this symbol in (some symbols refer to language elements)
+ * @param  array $escaped Array of escaping operations
+ * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
+ * @return string The result
+ */
+function ecv2_COMMA_LIST_SET(string $lang, array $escaped, array $param) : string
+{
+    $value = '';
+    if ($GLOBALS['XSS_DETECT']) {
+        ocp_mark_as_escaped($value);
+    }
+
+    if (isset($param[2])) {
+        require_code('blocks');
+        $values = comma_list_str_to_arr($param[0]);
+        $values[$param[1]] = $param[2];
+        $value = comma_list_arr_to_str($values);
     }
 
     if (!empty($escaped)) {

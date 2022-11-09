@@ -342,7 +342,7 @@ PHP;
         return do_template('BLOCK_MAIN_GALLERY_MOSAIC', [
             '_GUID' => '87187ebeb42d4c029b74d7cf773c49bd',
             'BLOCK_ID' => $block_id,
-            'BLOCK_PARAMS' => block_params_arr_to_str(['block_id' => $block_id] + $map),
+            'BLOCK_PARAMS' => comma_list_arr_to_str(['block_id' => $block_id] + $map),
             'SLIDESHOW_URL' => $slideshow_url,
             'SORTING' => $sorting,
             'PAGINATION' => $pagination,

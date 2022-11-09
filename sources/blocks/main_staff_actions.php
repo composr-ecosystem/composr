@@ -266,7 +266,7 @@ PHP;
         return do_template('BLOCK_MAIN_STAFF_ACTIONS', [
             '_GUID' => '16a5b384015504a6a57fc4ddedbe91a7',
             'BLOCK_ID' => $block_id,
-            'BLOCK_PARAMS' => block_params_arr_to_str($map),
+            'BLOCK_PARAMS' => comma_list_arr_to_str($map),
             'CONTENT' => $content,
             'FILTER_BY_MEMBER' => $filter_by_member,
             'INCLUDE_DUPLICATES' => $include_duplicates,

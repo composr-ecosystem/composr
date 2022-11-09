@@ -399,26 +399,7 @@ function closure_loop(array $param, array $args, callable $main_function) : stri
     if (isset($param[0])) {
         $array_key = $param[0];
         if ((is_numeric($array_key)) || (strpos($array_key, ',') !== false) || (strpos($array_key, '=') !== false)) {
-            $array = [];
-            foreach (explode(',', $array_key) as $x) {
-                if (strpos($x, '=') !== false) {
-                    list($key, $val) = explode('=', $x, 2);
-                    if (($GLOBALS['XSS_DETECT']) && (ocp_is_escaped($x))) {
-                        ocp_mark_as_escaped($key);
-                        ocp_mark_as_escaped($val);
-                    }
-                    if ($key === '' && isset($array[$key])) {
-                        $array[] = $val; // Empty keys: which are done to allow "="s in strings by putting in an empty key OR to force list mode
-                    } else {
-                        $array[$key] = $val;
-                    }
-                } else {
-                    if (($GLOBALS['XSS_DETECT']) && (ocp_is_escaped($x))) {
-                        ocp_mark_as_escaped($x);
-                    }
-                    $array[] = $x;
-                }
-            }
+            $array = comma_list_str_to_arr($array_key);
         } else {
             $array = isset($param['vars'][$array_key]) ? $param['vars'][$array_key] : [];
         }
@@ -1349,7 +1330,7 @@ function handle_symbol_preprocessing(array $seq_part, array &$children, string $
             }
 
             if ((count($param) === 1) && (strpos($param[0], ',') !== false)) { // NB: This code is also in symbols.php
-                $param = block_params_str_to_arr($param[0], true);
+                $param = comma_list_str_to_arr($param[0], true);
             }
 
             foreach ($param as &$_param) {
