@@ -1975,7 +1975,7 @@ function fix_id(string $param, bool $simplified = false) : string
                 } elseif ((($ascii >= 48) && ($ascii <= 57)) || (($ascii >= 65) && ($ascii <= 90)) || (($ascii >= 97) && ($ascii <= 122))) {
                     // Alphanumeric
                     $flip_case = false;
-                    $new .= $flip_case_previous ? cms_strtoupper_ascii($char) : $char;
+                    $new .= ($flip_case_previous && $simplified) ? cms_strtoupper_ascii($char) : $char;
                 } elseif (!$simplified) {
                     $new .= '_' . strval($ascii) . '_';
                 }
