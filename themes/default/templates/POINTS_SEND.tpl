@@ -35,7 +35,7 @@
 						<label class="points-anon" for="send-anonymous">{!TICK_ANON}: <input type="checkbox" id="send-anonymous" name="anonymous" value="1" /></label>
 					{+END}
 				</p>
-		</div>
+			</div>
 		</form>
 	{+END}
 

@@ -4965,6 +4965,29 @@ function get_object_vars(object $object)
     return [];
 }
 
+/**
+ * Check whether a given string has been marked as escaped.
+ * This function only exists in the dev version of PHP provided by ocProducts in use for XSS detection.
+ *
+ * @param  string $in The string to check for escaping
+ * @return boolean Whether the string has been escaped by OCP's PHP-dev
+ */
+function ocp_is_escaped($in) : bool
+{
+    return false;
+}
+
+/**
+ * Mark a string as having been escaped (for use with ocp_is_escaped).
+ * This function only exists in the dev version of PHP provided by ocProducts in use for XSS detection.
+ *
+ * @param  string $in The string to mark as escaped
+ */
+function ocp_mark_as_escaped($in)
+{
+    return;
+}
+
 /*
 
 Various things are disabled for various reasons. You may use them, if you use php_function_allowed

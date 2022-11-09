@@ -3,6 +3,18 @@
 
     var sendPointsFormLastValid;
     $cms.templates.pointsSend = function pointsSend(params, container) {
+        var processAdditionalFields = function(e, el) {
+            var anonymous = document.getElementById('points-anon-span');
+            if (anonymous === null) {
+                return;
+            }
+            if (el.value === "send") {
+                anonymous.style.display = "";
+            } else {
+                anonymous.style.display = "none";
+            }
+        }
+        
         $dom.on(container, 'click', '.js-points-check-form', function (e, btn) {
             var form = btn.form;
 
@@ -24,27 +36,20 @@
         });
 
         $dom.on(container, 'click', '.js-click-check-send-options', function (e, el) {
-            var anonymous = document.getElementById('points-anon-span');
-            if (anonymous === null) {
-                return;
-            }
-            if (el.value === "send") {
-                anonymous.style.display = "";
-            } else {
-                anonymous.style.display = "none";
-            }
+            processAdditionalFields(e, el);
         });
 
         $dom.on(container, 'change', '.js-change-check-send-options', function (e, el) {
-            var anonymous = document.getElementById('points-anon-span');
-            if (anonymous === null) {
-                return;
-            }
-            if (el.value === "send") {
-                anonymous.style.display = "";
-            } else {
-                anonymous.style.display = "none";
-            }
+            processAdditionalFields(e, el);
         });
+
+        // Immediately show anonymous field if the trans_type field does not exist (e.g. normal members)
+        var transType = document.getElementById('trans_type');
+        if (transType === null) {
+            var anonymous = document.getElementById('points-anon-span');
+            if (anonymous !== null) {
+                anonymous.style.display = "";
+            }
+        }
     };
 }(window.$cms, window.$util, window.$dom));
