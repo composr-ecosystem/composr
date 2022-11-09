@@ -491,14 +491,42 @@ function rgb_to_hsl(int $red, int $green, int $blue) : array
 }
 
 /**
- * Coverts a hue to color.
+ * Converts an HSL color value to RGB. Conversion formula adapted from http://en.wikipedia.org/wiki/HSL_color_space.
+ * Inspired by https://stackoverflow.com/a/9493060/362006 .
+ * Assumes h, s, and l are contained in the set [0, 1] and returns r, g, and b in the set [0, 255].
  *
- * @param  float $p (0.0-1.0)
- * @param  float $q (0.0-1.0)
- * @param  float $t (0.0-1.0)
+ * @param  float $hue Hue (0.0-1.0)
+ * @param  float $sat Saturation (0.0-1.0)
+ * @param  float $lht Lightness (0.0-1.0)
+ * @return array Triplet of components: R, G, B (0-255)
+ */
+function hsl_to_rgb(float $hue, float $sat, float $lht) : array
+{
+    if ($sat == 0.0) {
+        // achromatic
+        $r = $lht;
+        $g = $lht;
+        $b = $lht;
+    } else {
+        $q = ($lht < 0.5) ? ($lht * (1 + $sat)) : ($lht + $sat - $lht * $sat);
+        $p = 2.0 * $lht - $q;
+        $r = _hue_to_rgb($p, $q, $hue + (1 / 3));
+        $g = _hue_to_rgb($p, $q, $hue);
+        $b = _hue_to_rgb($p, $q, $hue - (1 / 3));
+    }
+
+    return [intval(round($r * 255)), intval(round($g * 255)), intval(round($b * 255))];
+}
+
+/**
+ * Converts a hue to color.
+ *
+ * @param  float $p p value (0.0-1.0)
+ * @param  float $q q value (0.0-1.0)
+ * @param  float $t t value (0.0-1.0)
  * @return float
  */
-function hue_to_rgb(float $p, float $q, float $t) : float
+function _hue_to_rgb(float $p, float $q, float $t) : float
 {
     if ($t < 0.0) {
         $t += 1;
@@ -521,33 +549,4 @@ function hue_to_rgb(float $p, float $q, float $t) : float
     }
 
     return floatval($p);
-}
-
-
-/**
- * Converts an HSL color value to RGB. Conversion formula adapted from http://en.wikipedia.org/wiki/HSL_color_space.
- * Inspired by https://stackoverflow.com/a/9493060/362006 .
- * Assumes h, s, and l are contained in the set [0, 1] and returns r, g, and b in the set [0, 255].
- *
- * @param  float $hue (0.0-1.0)
- * @param  float $sat (0.0-1.0)
- * @param  float $lht (0.0-1.0)
- * @return array Triplet of components: R, G, B (0-255)
- */
-function hsl_to_rgb(float $hue, float $sat, float $lht) : array
-{
-    if ($sat == 0.0) {
-        // achromatic
-        $r = $lht;
-        $g = $lht;
-        $b = $lht;
-    } else {
-        $q = ($lht < 0.5) ? ($lht * (1 + $sat)) : ($lht + $sat - $lht * $sat);
-        $p = 2.0 * $lht - $q;
-        $r = hue_to_rgb($p, $q, $hue + (1 / 3));
-        $g = hue_to_rgb($p, $q, $hue);
-        $b = hue_to_rgb($p, $q, $hue - (1 / 3));
-    }
-
-    return [intval(round($r * 255)), intval(round($g * 255)), intval(round($b * 255))];
 }

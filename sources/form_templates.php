@@ -1460,7 +1460,7 @@ function form_input_password($pretty_name, $description, string $name, bool $req
  * @param  boolean $ticked Whether this is ticked (checked) by default
  * @param  ?integer $tabindex The tab index of the field (null: not specified)
  * @param  ID_TEXT $value The value the checkbox passes when ticked (checked)
- * @param  boolean $read_only Whether this box should be disabled
+ * @param  boolean $read_only Whether this box should be read only
  * @param  boolean $disabled Whether this box should be disabled
  * @return Tempcode The input field
  */

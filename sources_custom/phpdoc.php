@@ -353,7 +353,7 @@ function get_php_file_api(string $filename, bool $include_code = false, bool $pe
 
             // Do some checks
             $found_a_default = false;
-            foreach ($parameters as $parameter) {
+            foreach ($parameters as $parameter_i => $parameter) {
                 // Type check
                 if (array_key_exists('default', $parameter)) {
                     $found_a_default = true;
@@ -377,6 +377,16 @@ function get_php_file_api(string $filename, bool $include_code = false, bool $pe
                 } else {
                     if ($parameter['name'] != $parameter['phpdoc_name']) {
                         attach_message('Parameter naming mismatch, ' . $parameter['name'] . ' vs ' . $parameter['phpdoc_name'] . ' for a parameter in ' . $function_name, 'warn');
+                    }
+                }
+
+                foreach ($parameters as $parameter_j => $_parameter) {
+                    if (($parameter_j > $parameter_i) && ($parameter['description'] == $_parameter['description'])) {
+                        if (preg_replace('#_.+$#', '', $parameter['name']) != preg_replace('#_.+$#', '', $_parameter['name'])) { // Check not sharing a prefix
+                            attach_message('Duplicated parameter description in ' . $function_name . ' (' . $parameter['name'] . ' vs ' . $_parameter['name'] . ')', 'warn');
+                            $found_a_duplication = true;
+                            break;
+                        }
                     }
                 }
 

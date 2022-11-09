@@ -116,8 +116,8 @@ function report_content_form(object $title, string $content_type, string $conten
  * @param  Tempcode $title Screen title
  * @param  AUTO_LINK $post_id The post ID
  * @param  array $js_function_calls JavaScript code to include
- * @param  ?array $topic_info The topic row (returned by reference) (null: )
- * @param  ?array $post_info The topic row (returned by reference) (null: )
+ * @param  ?array $topic_info The topic row (returned by reference) (null: initial input)
+ * @param  ?array $post_info The post row (returned by reference) (null: initial input)
  * @return Tempcode The UI
  */
 function report_post_form(object $title, int $post_id, array $js_function_calls, ?array &$topic_info = null, ?array &$post_info = null) : object
