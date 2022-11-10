@@ -2165,7 +2165,7 @@ a.fancy-user-link:visited,
 a.fancy-user-link:hover {
 	font-size: 1em;
 	font-weight: bold;
-	border: 1px solid {$GET,point_of_interest_border};
+	border: 1px dotted {$GET,point_of_interest_border};
 	border-left: 0;
 	border-right: 0;
 	display: block;
@@ -2180,7 +2180,7 @@ a.fancy-user-link:hover {
 	display: inline-block;
 }
 a.fancy-user-link:hover {
-	border-color: {$GET,dark_border};
+	border-style: solid;
 	background-color: {$GET,area_faded_background};
 }
 

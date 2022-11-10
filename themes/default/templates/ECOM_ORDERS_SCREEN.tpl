@@ -33,7 +33,7 @@
 					</p>
 				</td>
 				<td>
-					{$CURRENCY_SYMBOL,{CURRENCY}}{TOTAL_PRICE*}
+					{TOTAL_PRICE}
 				</td>
 				<td>
 					{$CURRENCY_SYMBOL,{CURRENCY}}{TOTAL_TAX*}

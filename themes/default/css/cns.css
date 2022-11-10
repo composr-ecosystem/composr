@@ -897,6 +897,26 @@ hr.cns-sig-barrier {
 	}
 /*{+END}*/
 
+.cns-highlighted-name {
+	animation: cns-highlighted-name-pulsate 2s ease-out;
+	animation-iteration-count: infinite;
+	color: {$GET,area_link};
+	background-color: {$GET,area_background};
+	display: block;
+}
+
+@keyframes cns-highlighted-name-pulsate {
+	0% {
+		 color: {$GET,area_link};
+	}
+	50% {
+		 color: {$GET,a.hover};
+	}
+	100% {
+		 color: {$GET,area_link};
+	}
+}
+
 /*
 =========================
 =side_cns_private_topics=

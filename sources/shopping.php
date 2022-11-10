@@ -572,10 +572,6 @@ function make_cart_payment_button(int $order_id, string $currency, int $price_po
     require_code('hooks/systems/payment_gateway/' . filter_naughty_harsh($payment_gateway));
     $payment_gateway_object = object_factory('Hook_payment_gateway_' . filter_naughty_harsh($payment_gateway));
 
-    if (!method_exists($payment_gateway_object, 'make_cart_transaction_button')) {
-        return $payment_gateway_object->make_transaction_button($type_code, $item_name, strval($order_id), $price, $tax, $shipping_cost, $currency, $price_points);
-    }
-
     $trans_expecting_id = $payment_gateway_object->generate_trans_id();
     $GLOBALS['SITE_DB']->query_insert('ecom_trans_expecting', [
         'id' => $trans_expecting_id,
@@ -599,6 +595,10 @@ function make_cart_payment_button(int $order_id, string $currency, int $price_po
         'e_invoicing_breakdown' => json_encode($invoicing_breakdown, defined('JSON_PRESERVE_ZERO_FRACTION') ? JSON_PRESERVE_ZERO_FRACTION : 0),
     ]);
     store_shipping_address($trans_expecting_id);
+
+    if (!method_exists($payment_gateway_object, 'make_cart_transaction_button')) {
+        return $payment_gateway_object->make_transaction_button($trans_expecting_id, $type_code, $item_name, strval($order_id), $price, $tax, $shipping_cost, $currency, $price_points);
+    }
 
     return $payment_gateway_object->make_cart_transaction_button($trans_expecting_id, $items, $shipping_cost, $currency, $order_id);
 }
@@ -740,9 +740,10 @@ function get_ordered_product_list_string(int $order_id) : string
 {
     $product_list = [];
 
+    $currency = $GLOBALS['SITE_DB']->query_select_value_if_there('shopping_orders', 'order_currency', ['id' => $order_id]);
     $ordered_items = $GLOBALS['SITE_DB']->query_select('shopping_order_details', ['*'], ['p_order_id' => $order_id], 'ORDER BY p_name');
     foreach ($ordered_items as $ordered_item) {
-        $product_list[] = $ordered_item['p_name'] . ' x ' . integer_format($ordered_item['p_quantity']) . ' @ ' . do_lang('PRICE') . '=' . float_format($ordered_item['p_price']);
+        $product_list[] = $ordered_item['p_name'] . ' x ' . integer_format($ordered_item['p_quantity']) . ' @ ' . do_lang('PRICE') . ' = ' . ecommerce_get_currency_symbol($currency) . float_format($ordered_item['p_price']);
     }
 
     return implode("\n", $product_list);

@@ -20,24 +20,24 @@
 
 /*
 We have:
- - Sales log (high-level log of sales, links to other logs; there's a version in the Admin Zone and also for members)
- - Order log (for shopping cart orders only; there's a version in the Admin Zone and also for members)
+ - Sales (high-level log of sales, links to other logs; there's a version in the Admin Zone and also for members)
+ - Orders (for shopping cart orders only; there's a version in the Admin Zone and also for members)
  - Transactions log (raw log, in Admin Zone only)
 
-This file only contains the code for the sales log and code for viewing an individual order, the other code is not re-used so is coded directly into modules.
+This file only contains the code for the sales and code for viewing an individual order, the other code is not re-used so is coded directly into modules.
 */
 
 /**
- * The UI to view sales logs.
+ * The UI to view sales.
  *
  * @param  array $filters List of filters to apply (member_id, txn_id, type_code, start, end)
  * @param  boolean $show_username Whether to show the username (customer) column
- * @param  boolean $show_delete Whether to show the deletion column
+ * @param  boolean $is_admin Whether the membwer viewing this table is an admin (activates Admin Zone links and the delete column)
  * @param  integer $max_default Default maximum number of records to show
  * @param  boolean $empty_ok Whether empty results are okay (instead of exiting with a no entries message)
  * @return ?array A tuple: The sales table, pagination, and database rows (null: none)
  */
-function build_sales_table(array $filters = [], bool $show_username = false, bool $show_delete = false, int $max_default = 20, bool $empty_ok = false) : ?array
+function build_sales_table(array $filters = [], bool $show_username = false, bool $is_admin = false, int $max_default = 20, bool $empty_ok = false) : ?array
 {
     require_code('templates_map_table');
     require_code('templates_results_table');
@@ -57,7 +57,7 @@ function build_sales_table(array $filters = [], bool $show_username = false, boo
     $header_row[] = do_lang_tempcode('PRODUCT');
     $header_row[] = do_lang_tempcode('DETAILS');
     $header_row[] = do_lang_tempcode('OTHER_DETAILS');
-    if ($show_delete) {
+    if ($is_admin) {
         $header_row[] = do_lang_tempcode('ACTIONS');
     }
     $_header_row = columned_table_header_row($header_row);
@@ -100,8 +100,8 @@ function build_sales_table(array $filters = [], bool $show_username = false, boo
 
         $date = get_timezoned_date_time($row['date_and_time'], false);
 
-        if ($show_delete) {
-            $url = build_url(['page' => 'admin_ecommerce_logs', 'type' => 'delete_sales_log_entry', 'id' => $row['s_id']], get_module_zone('admin_ecommerce_logs'));
+        if ($is_admin) {
+            $url = build_url(['page' => 'admin_ecommerce_logs', 'type' => 'delete_sales_entry', 'id' => $row['s_id']], get_module_zone('admin_ecommerce_logs'));
             $actions = do_template('COLUMNED_TABLE_ACTION', [
                 '_GUID' => '12e3ea365f1a1ed2e7800293f3203283',
                 'NAME' => '#' . strval($row['s_id']),
@@ -124,7 +124,7 @@ function build_sales_table(array $filters = [], bool $show_username = false, boo
             $sales_row[] = do_lang_tempcode('UNKNOWN_EM');
             $sales_row[] = do_lang_tempcode('UNKNOWN_EM');
             $sales_row[] = do_lang_tempcode('UNKNOWN_EM');
-            if ($show_delete) {
+            if ($is_admin) {
                 $sales_row[] = $actions;
             }
             $sales_rows[] = $sales_row;
@@ -140,9 +140,13 @@ function build_sales_table(array $filters = [], bool $show_username = false, boo
             $item_name = $transaction_row['t_type_code'];
         }
 
-        $product_details_url = get_product_details_url($transaction_row['t_type_code'], true, (array_key_exists('member_id', $filters) ? $filters['member_id'] : null));
-        $item_link = hyperlink($product_details_url, $item_name, false, true);
-
+        $product_linker = ecom_details_url($transaction_row['t_type_code'], $transaction_row['t_purchase_id'], array_key_exists('member_id', $filters) ? $filters['member_id'] : null);
+        if ($product_linker !== null) {
+            $item_link = hyperlink($product_linker, $item_name, false, true);
+        } else {
+            $item_link = new Tempcode();
+            $item_link->attach(escape_html($item_name));
+        }
         if (strpos($item_name, $row['details']) === false) {
             $details_1 = $row['details'];
             if (($row['details2'] != '') && (strpos($item_name, $row['details2']) === false)) {
@@ -163,7 +167,7 @@ function build_sales_table(array $filters = [], bool $show_username = false, boo
         $sales_row[] = tooltip($item_link, $transaction_row['t_type_code'], true);
         $sales_row[] = $details_1;
         $sales_row[] = $details_2;
-        if ($show_delete) {
+        if ($is_admin) {
             $sales_row[] = $actions;
         }
 
@@ -217,7 +221,10 @@ function build_order_details(object $title, int $id, object $text, bool $show_or
     }
     $order_row = $order_rows[0];
 
-    $transaction_linker = build_transaction_linker($order_row['txn_id'], $order_row['order_status'] == 'ORDER_STATUS_awaiting_payment');
+    $transaction_linker = build_transaction_linker($order_row['txn_id'], $order_row['order_status'] == 'ORDER_STATUS_awaiting_payment', null, true);
+    if ($transaction_linker === null) {
+        $transaction_linker = do_lang_tempcode('UNKNOWN_EM');
+    }
 
     $ordered_by_member_id = $order_row['member_id'];
     $ordered_by_username = $GLOBALS['FORUM_DRIVER']->get_username($order_row['member_id']);
@@ -300,8 +307,8 @@ function build_order_details(object $title, int $id, object $text, bool $show_or
             ($product_row['p_sku'] == '') ? do_lang_tempcode('NA_EM') : make_string_tempcode(escape_html($product_row['p_sku'])),
             $product,
             escape_html($product_row['p_purchase_id']),
-            ecommerce_get_currency_symbol() . escape_html(float_format($product_row['p_price'])),
-            ecommerce_get_currency_symbol() . escape_html(float_format($product_row['p_tax'])),
+            ecommerce_get_currency_symbol($order_row['order_currency']) . escape_html(float_format($product_row['p_price'])),
+            ecommerce_get_currency_symbol($order_row['order_currency']) . escape_html(float_format($product_row['p_tax'])),
             escape_html(integer_format($product_row['p_quantity'])),
             do_lang($product_row['p_dispatch_status']),
         ], false, null));

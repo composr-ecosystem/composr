@@ -465,6 +465,21 @@ class Module_purchase
                 $this->title = get_screen_title('PURCHASING_TITLE', true, [do_lang_tempcode('ECOM_PURCHASE_STAGE_category'), '2', '6']);
             }
         }
+        if ($type == 'receipt') {
+            breadcrumb_set_self(do_lang_tempcode('RECEIPT'));
+        }
+        if ($type == 'sales') {
+            $member_id = get_param_integer('id', get_member());
+            $member_username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
+
+            if (get_forum_type() == 'cns') {
+                $breadcrumbs = [['_SEARCH:members', do_lang_tempcode('MEMBERS')], ['_SEARCH:members:view:' . strval($member_id), escape_html($member_username)]];
+                breadcrumb_set_parents($breadcrumbs);
+            }
+
+            breadcrumb_set_self(do_lang_tempcode('PURCHASES'));
+            $this->title = get_screen_title('PURCHASES');
+        }
         if ($type == 'message') {
             breadcrumb_set_self(do_lang_tempcode('ECOM_PURCHASE_STAGE_message'));
         }
@@ -485,7 +500,7 @@ class Module_purchase
             }
         }
 
-        if ($type != 'browse') {
+        if (($type != 'browse') && ($type != 'receipt') && ($type != 'sales')) {
             $type_code = get_param_string('type_code', null);
             if ($type_code !== null) {
                 $breadcrumbs = [];
@@ -554,6 +569,9 @@ class Module_purchase
         // Normal processing
         if ($type == 'browse') {
             return $this->choose();
+        }
+        if ($type == 'sales') {
+            return $this->sales();
         }
         if ($type == 'message') {
             return $this->message();
@@ -1454,6 +1472,38 @@ class Module_purchase
             'SUCCESS' => true,
         ]);
         return $this->_wrap($result, $this->title, null);
+    }
+
+    /**
+     * UI for a member's sales.
+     *
+     * @return Tempcode the UI
+     */
+    public function sales() : object
+    {
+        require_code('ecommerce_logs');
+        require_lang('ecommerce');
+
+        $sales_table = new Tempcode();
+        $pagination = new Tempcode();
+
+        $member_id_of = get_param_integer('id', get_member());
+        $filter_txn_id = get_param_integer('filter_txn_id', null);
+
+        $filters = ['member_id' => $member_id_of];
+        if ($filter_txn_id !== null) {
+            $filters['txn_id'] = $filter_txn_id;
+        }
+        $tmp = build_sales_table($filters, ($member_id_of != get_member()), has_actual_page_access(get_member(), 'admin_ecommerce_logs'), 50, false);
+
+        if ($tmp !== null) {
+            $sales_table = $tmp[0];
+            $pagination = $tmp[1];
+        }
+
+        $screen = do_template('CNS_MEMBER_PROFILE_ECOMMERCE_LOGS', ['_GUID' => 'e490d230b9521415616be0c610434d93', 'CONTENT' => $sales_table, 'PAGINATION' => $pagination]);
+
+        return $this->_wrap($screen, $this->title, null);
     }
 
     /**

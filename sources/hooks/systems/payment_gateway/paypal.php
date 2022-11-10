@@ -293,7 +293,7 @@ class Hook_payment_gateway_paypal
         // Check that we have a data transfer ID specified in configuration
         $at = get_option('paypal_data_transfer_id', true);
         if (($at === null) || ($at == '')) {
-            return null; // Always silent fail; PDT is not required
+            return null; // Silent fail and rely on IPN instead
         }
 
         // Post back to PayPal system to validate and get additional transaction details

@@ -150,6 +150,16 @@ class Module_invoices
 
         if ($type == 'browse') {
             $this->title = get_screen_title('MY_INVOICES');
+
+            $member_id = get_member();
+            if (has_privilege(get_member(), 'assume_any_member')) {
+                $member_id = get_param_integer('id', $member_id);
+            }
+
+            if (get_forum_type() == 'cns') {
+                $breadcrumbs = [['_SEARCH:members', do_lang_tempcode('MEMBERS')], ['_SEARCH:members:view:' . strval($member_id), escape_html($GLOBALS['FORUM_DRIVER']->get_username($member_id))]];
+                breadcrumb_set_parents($breadcrumbs);
+            }
         }
 
         if ($type == 'pay') {
@@ -207,8 +217,15 @@ class Module_invoices
             $member_id = get_param_integer('id', $member_id);
         }
 
+        $where = ['i_member_id' => $member_id];
+        $filter_id = get_param_integer('filter_id', null);
+        if ($filter_id !== null) {
+            $where['id'] = $filter_id;
+            attach_message(do_lang_tempcode('INVOICES_FILTERED_BY_ID', build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF')));
+        }
+
         $invoices = [];
-        $rows = $GLOBALS['SITE_DB']->query_select('ecom_invoices', ['*'], ['i_member_id' => $member_id], 'ORDER BY i_time');
+        $rows = $GLOBALS['SITE_DB']->query_select('ecom_invoices', ['*'], $where, 'ORDER BY i_time');
         foreach ($rows as $row) {
             $type_code = $row['i_type_code'];
             list($details) = find_product_details($type_code);
@@ -223,7 +240,7 @@ class Module_invoices
             }
 
             $invoice_url = build_url(['page' => '_SELF', 'type' => 'invoice', 'id' => $row['id'], 'wide_high' => 1], '_SELF');
-            $title_linker = hyperlink($invoice_url, $item_name, false, true, '', null, null, null, '_top');
+            $title_linker = hyperlink($invoice_url, $item_name, true, true, do_lang('INVOICE'));
             $date = get_timezoned_date_time($row['i_time'], false);
             $payable = ($row['i_state'] == 'new');
             $fulfillable = ($row['i_state'] == 'paid');

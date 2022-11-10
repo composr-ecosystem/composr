@@ -61,9 +61,8 @@ class Module_admin_invoices
 
         return [
             'browse' => ['INVOICES', 'menu/adminzone/audit/ecommerce/invoices'],
-            'outstanding' => ['OUTSTANDING_INVOICES', 'menu/adminzone/audit/ecommerce/outstanding_invoices'],
-            'unfulfilled' => ['UNFULFILLED_INVOICES', 'menu/adminzone/audit/ecommerce/unfulfilled_invoices'],
             'add' => ['CREATE_INVOICE', 'menu/adminzone/audit/ecommerce/create_invoice'],
+            'view' => ['VIEW_INVOICES', 'menu/adminzone/audit/ecommerce/invoices'],
         ];
     }
 
@@ -87,13 +86,16 @@ class Module_admin_invoices
 
         require_code('ecommerce');
 
-        if ($type != 'invoice') {
-            set_helper_panel_tutorial('tut_ecommerce');
-        }
-
         if ($type == 'browse') {
             breadcrumb_set_self(do_lang_tempcode('INVOICES'));
             breadcrumb_set_parents([['_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')]]);
+        }
+
+        if ($type == 'view') {
+            breadcrumb_set_self(do_lang_tempcode('INVOICES'));
+            breadcrumb_set_parents([['_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')], ['_SELF:_SELF:browse', do_lang_tempcode('INVOICES')]]);
+
+            $this->title = get_screen_title('VIEW_INVOICES');
         }
 
         if ($type == 'add') {
@@ -109,20 +111,8 @@ class Module_admin_invoices
             $this->title = get_screen_title('CREATE_INVOICE');
         }
 
-        if ($type == 'outstanding') {
-            breadcrumb_set_parents([['_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')], ['_SELF:_SELF:browse', do_lang_tempcode('INVOICES')]]);
-
-            $this->title = get_screen_title('OUTSTANDING_INVOICES');
-        }
-
-        if ($type == 'unfulfilled') {
-            breadcrumb_set_parents([['_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')], ['_SELF:_SELF:browse', do_lang_tempcode('INVOICES')]]);
-
-            $this->title = get_screen_title('UNFULFILLED_INVOICES');
-        }
-
         if ($type == 'delete') {
-            breadcrumb_set_parents([['_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')], ['_SELF:_SELF:browse', do_lang_tempcode('INVOICES')], ['_SELF:_SELF:unfulfilled', do_lang_tempcode('UNFULFILLED_INVOICES')]]);
+            breadcrumb_set_parents([['_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')], ['_SELF:_SELF:browse', do_lang_tempcode('INVOICES')], ['_SELF:_SELF:view', do_lang_tempcode('VIEW_INVOICES')]]);
             if (post_param_integer('confirmed', 0) != 1) {
                 breadcrumb_set_self(do_lang_tempcode('CONFIRM'));
             } else {
@@ -134,7 +124,7 @@ class Module_admin_invoices
 
         if ($type == 'fulfill') {
             breadcrumb_set_self(do_lang_tempcode('DONE'));
-            breadcrumb_set_parents([['_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')], ['_SELF:_SELF:browse', do_lang_tempcode('INVOICES')], ['_SELF:_SELF:unfulfilled', do_lang_tempcode('UNFULFILLED_INVOICES')]]);
+            breadcrumb_set_parents([['_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')], ['_SELF:_SELF:browse', do_lang_tempcode('INVOICES')], ['_SELF:_SELF:view', do_lang_tempcode('VIEW_INVOICES')]]);
 
             $this->title = get_screen_title('MARK_AS_FULFILLED');
         }
@@ -143,6 +133,11 @@ class Module_admin_invoices
             breadcrumb_set_self(do_lang_tempcode('INVOICES'));
             breadcrumb_set_parents([['_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')]]);
             $this->title = get_screen_title('INVOICE');
+        }
+
+        if (($type != 'browse')) {
+            set_helper_panel_tutorial('tut_ecommerce');
+            set_helper_panel_text(comcode_lang_string('DOC_ECOMMERCE'));
         }
 
         return null;
@@ -166,11 +161,8 @@ class Module_admin_invoices
         if ($type == '_add') {
             return $this->_add();
         }
-        if ($type == 'outstanding') {
-            return $this->outstanding();
-        }
-        if ($type == 'unfulfilled') {
-            return $this->unfulfilled();
+        if ($type == 'view') {
+            return $this->view();
         }
         if ($type == 'delete') {
             return $this->delete();
@@ -197,8 +189,7 @@ class Module_admin_invoices
             comcode_lang_string('DOC_ECOMMERCE'),
             [
                 ['admin/add', ['_SELF', ['type' => 'add'], '_SELF'], do_lang('CREATE_INVOICE')],
-                ['menu/adminzone/audit/ecommerce/outstanding_invoices', ['_SELF', ['type' => 'outstanding'], '_SELF'], do_lang('OUTSTANDING_INVOICES')],
-                ['menu/adminzone/audit/ecommerce/unfulfilled_invoices', ['_SELF', ['type' => 'unfulfilled'], '_SELF'], do_lang('UNFULFILLED_INVOICES')],
+                ['menu/adminzone/audit/ecommerce/invoices', ['_SELF', ['type' => 'view'], '_SELF'], do_lang('VIEW_INVOICES')],
             ],
             do_lang('INVOICES')
         );
@@ -308,76 +299,255 @@ class Module_admin_invoices
 
         send_invoice_notification($member_id, $id);
 
-        $url = build_url(['page' => '_SELF', 'type' => 'outstanding'], '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 
     /**
-     * Show outstanding invoices.
+     * View invoices.
      *
      * @return Tempcode The interface
      */
-    public function outstanding() : object
+    public function view() : object
     {
-        return $this->show_invoices('new', 'outstanding');
-    }
-
-    /**
-     * Show unfulfilled invoices.
-     *
-     * @return Tempcode The interface
-     */
-    public function unfulfilled() : object
-    {
-        return $this->show_invoices('paid', 'unfulfilled');
-    }
-
-    /**
-     * Show invoices.
-     *
-     * @param  ID_TEXT $db_value The filter for the i_state field
-     * @param  ID_TEXT $from_codename The screen type
-     * @return Tempcode The interface
-     */
-    protected function show_invoices(string $db_value, string $from_codename) : object
-    {
-        $invoices = [];
-        $rows = $GLOBALS['SITE_DB']->query_select('ecom_invoices', ['*'], ['i_state' => $db_value], 'ORDER BY i_time');
-        foreach ($rows as $row) {
-            if ($row['i_item_name'] != '') {
-                $invoice_title = $row['i_item_name'];
-            } else {
-                $invoice_title = do_lang('CUSTOM_PRODUCT_' . $row['i_type_code']);
-            }
-            $invoice_url = build_url(['page' => '_SELF', 'type' => 'invoice', 'id' => $row['id'], 'wide_high' => 1], '_SELF');
-            $title_linker = hyperlink($invoice_url, $invoice_title, false, true, '', null, null, null, '_top');
-            $date = get_timezoned_date_time($row['i_time']);
-            $username = $GLOBALS['FORUM_DRIVER']->get_username($row['i_member_id']);
-            $profile_url = $GLOBALS['FORUM_DRIVER']->member_profile_url($row['i_member_id'], true);
-            $invoices[] = [
-                'INVOICE_TITLE' => $title_linker,
-                'PROFILE_URL' => $profile_url,
-                'USERNAME' => $username,
-                'ID' => strval($row['id']),
-                'STATE' => $row['i_state'],
-                'AMOUNT' => float_to_raw_string($row['i_price']),
-                'TAX' => float_to_raw_string($row['i_tax']),
-                'CURRENCY' => $row['i_currency'],
-                'DATE' => $date,
-                'NOTE' => $row['i_note'],
-                'TYPE_CODE' => $row['i_type_code'],
-            ];
-        }
-        if (empty($invoices)) {
+        // Do not display any UI if there are no records
+        $has_records = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_invoices', 'id', []);
+        if ($has_records === null) {
             inform_exit(do_lang_tempcode('NO_ENTRIES'));
         }
 
-        return do_template('ECOM_OUTSTANDING_INVOICES_SCREEN', [
-            '_GUID' => 'fab0fa7dbcd9d6484fa1861ce170717a',
+        $start = get_param_integer('start', 0);
+        $max = get_param_integer('max', 50);
+        $sortables = ['i.i_time' => do_lang_tempcode('DATE'), 'i.i_price' => do_lang_tempcode('PRICE')];
+        $test = explode(' ', get_param_string('sort', 'i.i_time DESC', INPUT_FILTER_GET_COMPLEX), 2);
+        if (count($test) == 1) {
+            $test[1] = 'DESC';
+        }
+        list($sortable, $sort_order) = $test;
+        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
+            log_hack_attack_and_exit('ORDERBY_HACK');
+        }
+
+        $filter_id = get_param_integer('filter_id', null);
+        $_filter_type_code = get_param_string('filter_type_code', '');
+        $filter_type_code = explode(',', $_filter_type_code);
+        $_filter_state = get_param_string('filter_state', '');
+        $filter_state = explode(',', $_filter_state);
+        $filter_txn_id = get_param_string('filter_txn_id', '');
+        $filter_username = get_param_string('filter_username', '', INPUT_FILTER_NONE);
+        $filter_start = post_param_date('filter_start', true);
+        $filter_end = post_param_date('filter_end', true);
+
+        $where = '1=1';
+        if ($filter_id !== null) {
+            $where .= ' AND i.id=' . strval($filter_id);
+        }
+        if ($_filter_type_code != '') {
+            $where .= ' AND (';
+            foreach ($filter_type_code as $key => $product) {
+                if ($key > 0) {
+                    $where .= ' OR ';
+                }
+                $where .= db_string_equal_to('i.i_type_code', $product);
+            }
+            $where .= ')';
+        }
+        if ($_filter_state != '') {
+            $where .= ' AND (';
+            foreach ($filter_state as $key => $status) {
+                if ($key > 0) {
+                    $where .= ' OR ';
+                }
+                $where .= db_string_equal_to('i.i_state', $status);
+            }
+            $where .= ')';
+        }
+        if ($filter_txn_id != '') {
+            // Invoices do not have a transaction ID column and must be searched for; there could be more than one record per invoice so we cannot use JOIN / LEFT JOIN (would break pagination). Also SQL cannot return multiple columns in a SELECT subquery (transaction linker needs the whole row). We must use an EXISTS query and run a separate query on each row iteration to get the actual transaction row for the table.
+            $where .= ' AND EXISTS (SELECT t.id FROM ' . get_table_prefix() . 'ecom_transactions t WHERE t.id LIKE \'' . db_encode_like('%' . $filter_txn_id . '%') . '\' AND t.t_type_code=i.i_type_code AND t.t_purchase_id=i.id)';
+        }
+        if ($filter_username != '') {
+            $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($filter_username);
+            if ($member_id !== null) {
+                $where .= ' AND i.i_member_id=' . strval($member_id);
+            } else {
+                warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($filter_username)));
+            }
+        }
+        if ($filter_start !== null) {
+            $where .= ' AND i.i_time>=' . strval($filter_start);
+        }
+        if ($filter_end !== null) {
+            $where .= ' AND i.i_time<=' . strval($filter_end);
+        }
+
+        $max_rows = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'ecom_invoices i WHERE ' . $where);
+        $rows = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'ecom_invoices i WHERE ' . $where . ' ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
+
+        require_code('form_templates');
+        require_code('templates_results_table');
+        require_code('templates_tooltip');
+        require_code('templates_map_table');
+
+        $result_entries = new Tempcode();
+        $header_row = results_header_row([
+            do_lang('IDENTIFIER'),
+            do_lang('DATE'),
+            do_lang('PRODUCT'),
+            do_lang('MEMBER'),
+            do_lang('PRICE'),
+            do_lang(get_option('tax_system')),
+            do_lang('STATUS'),
+            do_lang('TRANSACTION'),
+            do_lang('ACTIONS'),
+        ], $sortables, 'sort', $sortable . ' ' . $sort_order);
+
+        foreach ($rows as $row) {
+            $date = get_timezoned_date_time($row['i_time']);
+
+            if ($row['i_item_name'] != '') {
+                $product_title = $row['i_item_name'];
+            } else {
+                $product_title = do_lang('CUSTOM_PRODUCT_' . $row['i_type_code']);
+            }
+            $product_tooltip = tooltip($product_title, $row['i_type_code'], true);
+
+            $customer_link = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($row['i_member_id'], '', false);
+
+            $invoice_url = build_url(['page' => '_SELF', 'type' => 'invoice', 'id' => $row['id'], 'wide_high' => 1], '_SELF');
+            $price_linker = hyperlink($invoice_url, ecommerce_get_currency_symbol($row['i_currency']) . escape_html(float_format($row['i_price'])), true, false, do_lang('INVOICE'));
+
+            $tax = ecommerce_get_currency_symbol($row['i_currency']) . escape_html(float_format($row['i_tax']));
+
+            $transaction = $GLOBALS['SITE_DB']->query_select('ecom_transactions', ['*'], ['t_type_code' => $row['i_type_code'], 't_purchase_id' => strval($row['id'])], ' ORDER BY t_time DESC', 1);
+            if (array_key_exists(0, $transaction)) {
+                $transaction_linker = build_transaction_linker($transaction[0]['id'], $row['i_state'] == 'new', $transaction[0]);
+            } else {
+                $transaction_linker = new Tempcode();
+            }
+
+            // Delete button
+            $actions = new Tempcode();
+            $delete_url = build_url(['page' => '_SELF', 'type' => 'delete', 'id' => $row['id'], 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF');
+            $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
+                'URL' => $delete_url,
+                'HIDDEN' => new Tempcode(),
+                'NAME' => '#' . strval($row['id']),
+                'ACTION_TITLE' => do_lang_tempcode('DELETE'),
+                'ICON' => 'admin/delete',
+                'GET' => true,
+            ]));
+
+            // Fulfill button
+            if ($row['i_state'] == 'paid') {
+                $fulfill_url = build_url(['page' => '_SELF', 'type' => 'fulfill', 'id' => $row['id'], 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF');
+                $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
+                    'URL' => $fulfill_url,
+                    'HIDDEN' => new Tempcode(),
+                    'NAME' => '#' . strval($row['id']),
+                    'ACTION_TITLE' => do_lang_tempcode('FULFILL'),
+                    'ICON' => 'buttons/yes',
+                    'GET' => true,
+                ]));
+            }
+
+            $result_entries->attach(results_entry([
+                escape_html(strval($row['id'])),
+                escape_html($date),
+                $product_tooltip,
+                $customer_link,
+                $price_linker,
+                $tax,
+                do_lang('PAYMENT_STATE_' . $row['i_state']),
+                $transaction_linker,
+                $actions
+            ], false));
+        }
+
+        $results_table = results_table(do_lang('INVOICES'), $start, 'start', $max, 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort');
+
+        // Start building fields for the filter box
+        push_field_encapsulation(FIELD_ENCAPSULATION_RAW);
+
+        // Product types
+        $products = new Tempcode();
+        $product_rows = $GLOBALS['SITE_DB']->query_select('ecom_invoices', ['DISTINCT i_type_code'], []);
+        $__products = [];
+        foreach ($product_rows as $p) {
+            list($details, $product_object) = find_product_details($p['i_type_code']);
+            if ($details !== null) {
+                $item_name = $details['item_name'];
+            } else {
+                $item_name = $p['i_type_code'];
+            }
+            $__products[] = ['value' => $p['i_type_code'], 'caption' => $item_name];
+        }
+        sort_maps_by($__products, 'caption');
+        foreach ($__products as $p) {
+            $products->attach(form_input_list_entry($p['value'], (($_filter_type_code != '') && (in_array($p['value'], $filter_type_code))), $p['caption']));
+        }
+
+        $i_states = new Tempcode();
+        $statuses = ['new', 'pending', 'paid', 'delivered', 'active', 'cancelled', 'smodified'];
+        foreach ($statuses as $status) {
+            $i_states->attach(form_input_list_entry($status, (($_filter_state != '') && in_array($status, $filter_state)), do_lang('PAYMENT_STATE_' . $status)));
+        }
+        $filters_row_a = [
+            [
+                'PARAM' => 'filter_id',
+                'LABEL' => do_lang_tempcode('IDENTIFIER'),
+                'FIELD' => form_input_integer(do_lang_tempcode('IDENTIFIER'), new Tempcode(), 'filter_id', $filter_id, false),
+            ],
+            [
+                'PARAM' => 'filter_type_code',
+                'LABEL' => do_lang_tempcode('PRODUCT'),
+                'FIELD' => form_input_multi_list(do_lang_tempcode('PRODUCT'), new Tempcode(), 'filter_type_code', $products),
+            ],
+            [
+                'PARAM' => 'filter_state',
+                'LABEL' => do_lang_tempcode('STATUS'),
+                'FIELD' => form_input_multi_list(do_lang_tempcode('STATUS'), new Tempcode(), 'filter_state', $i_states),
+            ],
+            [
+                'PARAM' => 'filter_txn_id',
+                'LABEL' => do_lang_tempcode('TRANSACTION'),
+                'FIELD' => form_input_line(do_lang_tempcode('TRANSACTION'), new Tempcode(), 'filter_txn_id', $filter_txn_id, false),
+            ],
+        ];
+        $filters_row_b = [
+            [
+                'PARAM' => 'filter_username',
+                'LABEL' => do_lang_tempcode('MEMBER'),
+                'FIELD' => form_input_username(do_lang_tempcode('MEMBER'), new Tempcode(), 'filter_username', $filter_username, false),
+            ],
+            [
+                'PARAM' => 'filter_start',
+                'LABEL' => do_lang_tempcode('ST_START_PERIOD'),
+                'FIELD' => form_input_date(do_lang_tempcode('ST_START_PERIOD'), do_lang_tempcode('ST_START_PERIOD_DESCRIPTION'), 'filter_start', false, ($filter_start === null), true, $filter_start),
+            ],
+            [
+                'PARAM' => 'filter_end',
+                'LABEL' => do_lang_tempcode('ST_END_PERIOD'),
+                'FIELD' => form_input_date(do_lang_tempcode('ST_END_PERIOD'), do_lang_tempcode('ST_END_PERIOD_DESCRIPTION'), 'filter_end', false,  ($filter_end === null), true, $filter_end),
+            ],
+        ];
+        $url = build_url(['page' => '_SELF', 'type' => 'view'], '_SELF');
+
+        $tpl = do_template('RESULTS_TABLE_SCREEN', [
             'TITLE' => $this->title,
-            'FROM' => $from_codename,
-            'INVOICES' => $invoices,
+            'TEXT' => '',
+            'RESULTS_TABLE' => $results_table,
+            'FORM' => new Tempcode(),
+            'FILTERS_ROW_A' => $filters_row_a,
+            'FILTERS_ROW_B' => $filters_row_b,
+            'URL' => $url,
+            'FILTERS_HIDDEN' => new Tempcode(),
         ]);
+
+        pop_field_encapsulation();
+
+        require_code('templates_internalise_screen');
+        return internalise_own_screen($tpl);
     }
 
     /**
@@ -430,7 +600,7 @@ class Module_admin_invoices
 
         $GLOBALS['SITE_DB']->query_update('ecom_invoices', ['i_state' => 'delivered'], ['id' => get_param_integer('id')], '', 1);
 
-        $url = build_url(['page' => '_SELF', 'type' => 'unfulfilled'], '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => 'view'], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 
