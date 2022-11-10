@@ -474,8 +474,8 @@ class Module_cms_galleries extends Standard_crud_module
                     $fields_2->attach(form_input_various_ticks([[do_lang_tempcode('WATERMARK'), 'ss_watermark', true, '']], '', null, do_lang_tempcode('OPTIONS')));
                 }
                 $radios = new Tempcode();
-                $radios->attach(form_input_radio_entry('action', 'add', true, do_lang_tempcode('ADD_GALLERY_SELECTION')));
-                $radios->attach(form_input_radio_entry('action', 'delete', false, do_lang_tempcode('DELETE_SELECTION')));
+                $radios->attach(form_input_radio_entry('orphan_action', 'add', true, do_lang_tempcode('ADD_GALLERY_SELECTION')));
+                $radios->attach(form_input_radio_entry('orphan_action', 'delete', false, do_lang_tempcode('DELETE_SELECTION')));
                 $fields_2->attach(form_input_radio(do_lang_tempcode('ACTION'), '', 'type', $radios, true));
                 // Feedback
                 require_code('feedback2');
@@ -598,7 +598,7 @@ class Module_cms_galleries extends Standard_crud_module
     public function _orphaned() : object
     {
         $cat = post_param_string('ss_cat');
-        $action = post_param_string('action');
+        $action = post_param_string('orphan_action');
 
         $member_id = get_member();
 

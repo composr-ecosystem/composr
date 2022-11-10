@@ -26,13 +26,6 @@
         "valid-typeof": ["error"],
         "no-debugger": ["error"],
 
-        /*
-        Not available on dev machine version of eslint
-        "no-constructor-return": ["error"],
-        "no-unreachable-loop": ["error"],
-        "no-unused-private-class-members": ["error"],
-        */
-
         /* Formatting */
         "indent": ["error", 4, { "SwitchCase": 1 }],
         "linebreak-style": ["error", "unix"],

@@ -546,7 +546,7 @@ Exclude robots appropriately
 ! Notes
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
-Use official DOM (so no [tt]document.all[/tt], or [tt]window.images[/tt])
+Use modern DOM (so no [tt]document.all[/tt], or [tt]window.images[/tt])
 | Standards compliance
 | Product development only
 | Automated test ([tt]web_resources.php[/tt])
@@ -558,6 +558,20 @@ Don't use any deprecated methods (so no [tt]escape[/tt])
 | Product development only
 | Automated test ([tt]web_resources.php[/tt])
 | Instead of escape, use [tt]encodeURIComponent[/tt].
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Choose wisely in how to force form submission[/color]
+| Framework
+| Composr development +
+| Manually
+| There are cases where you need to manually submit a form, e.g. if the user clicks a button to submit a form but your validation requires a promise to pass first. [tt]form.submit();[/tt] will submit the form without calling event handling, while [tt]$dom.trigger(form, 'submit');[/tt] will call event handling. Choose which makes sense for your situation.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Use [tt]localName[/tt] not [tt]nodeName[/tt][/color]
+| Stability
+| Composr development +
+| ESLint
+| Using [tt]nodeName[/tt] is not reliable when namespaces are involved, and may also return in upper case. [tt]localName[/tt] is much more reliable, although only works on HTML Element DOM nodes not any DOM node.
 |}
 
 [title="4"]Documentation[/title]

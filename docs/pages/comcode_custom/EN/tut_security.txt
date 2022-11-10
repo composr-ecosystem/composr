@@ -315,7 +315,12 @@ In summary, we have defence across a number of layers, and code without making p
 
 [title="3"]Content Security Policy (CSP)[/title]
 
-We provide a detailed implementation of CSP 2 in Composr. This is optional, however, because to maintain it it requires a higher degree of discipline when designing your website.
+Content Security Policy (CSP) is an added layer of security that helps to detect and mitigate certain types of attacks, including Cross Site Scripting (XSS) and data injection attacks. 
+CSP prohibits developers from using inline event handlers and inline script tags.
+
+All code bundled with Composr strictly adheres to these guidelines and thus is completely free of inline event handlers and script elements. 
+
+Adherence to CSP for custom code is optional, CSP can be enabled/disabled/tuned in the configuration. To maintain CSP adherence requires a higher degree of discipline when designing your website.
 
 CSP is built on the back of the "Trusted partner sites" configuration options. These options restrict to mitigate the following possible attack vectors...
 {|

@@ -150,7 +150,7 @@ In Composr, JavaScript libraries are automatically minified to save on bandwidth
 
 Add in JavaScript event handlers to your HTML normally as required. For example, to make a pop-up window link:
 [code="HTML"]
-<a href="{BASE_URL*}/popup.htm" onclick="window.open(this.getAttribute('href'));">Click me</a>
+<a href="{BASE_URL*}/popup.htm" onclick="window.open(this.href);">Click me</a>
 [/code]
 It's acceptable to write inline event handler code like this as long as it doesn't get too long.
 

@@ -1190,7 +1190,7 @@ class Module_points
         }
 
         $id = get_param_integer('id');
-        $action = post_param_string('action', 'edit');
+        $action = post_param_string('moderate_action', 'edit');
         $points = post_param_integer('points', 0);
         $mod_reason = post_param_string('mod_reason', null);
 
@@ -1221,10 +1221,10 @@ class Module_points
             // Cannot perform an action on an escrow that is already completed / cancelled; edit text only
             if ($row['status'] >= ESCROW_STATUS_PENDING) {
                 $entries = new Tempcode();
-                $entries->attach(form_input_radio_entry('action', 'amend', true, do_lang_tempcode('ESCROW_MODERATE_ACTION__AMEND')));
-                $entries->attach(form_input_radio_entry('action', 'complete', false, do_lang_tempcode('ESCROW_MODERATE_ACTION__COMPLETE')));
-                $entries->attach(form_input_radio_entry('action', 'cancel', false, do_lang_tempcode('ESCROW_MODERATE_ACTION__CANCEL')));
-                $fields->attach(form_input_radio(do_lang_tempcode('ACTION'), do_lang_tempcode('DESCRIPTION_ESCROW_MODERATE_ACTION'), 'action', $entries, true));
+                $entries->attach(form_input_radio_entry('moderate_action', 'amend', true, do_lang_tempcode('ESCROW_MODERATE_ACTION__AMEND')));
+                $entries->attach(form_input_radio_entry('moderate_action', 'complete', false, do_lang_tempcode('ESCROW_MODERATE_ACTION__COMPLETE')));
+                $entries->attach(form_input_radio_entry('moderate_action', 'cancel', false, do_lang_tempcode('ESCROW_MODERATE_ACTION__CANCEL')));
+                $fields->attach(form_input_radio(do_lang_tempcode('ACTION'), do_lang_tempcode('DESCRIPTION_ESCROW_MODERATE_ACTION'), 'moderate_action', $entries, true));
             }
             $fields->attach(form_input_text_comcode(do_lang_tempcode('EXPLANATION'), do_lang_tempcode('DESCRIPTION_ESCROW_MODERATE_REASON'), 'mod_reason', '', true, null, true, "", null, false, 5));
             $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', [

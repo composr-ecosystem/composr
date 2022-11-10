@@ -2153,6 +2153,34 @@ Be careful with global functions and variables
 | Composr development +
 | Manually
 | Do not use JavaScript [tt]beforeunload[/tt] and [tt]unload[/tt] events, as it will turn off the bfcache in browsers that support it (particularly Firefox).
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Do form validation on button click not form submission[/color]
+| Framework
+| Composr development +
+| Manually
+| Composr may attach handlers to form submission to change how forms are submitted (e.g. submit via AJAX, or submit with the ModSecurity workaround), while validation is reserved for placing on buttons. Pressing enter on a form field activates the button as per normal JavaScript behaviour, so this is a reliable approach. Where appropriate use the [tt]doCheckingComposrFormSubmitChain[/tt] framework to do basic validation and tie in your own validation.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Access DOM structure using normal properties[/color]
+| Consistency
+| Composr development +
+| Manually
+| The DOM binding is is well documented so you do not need to use [tt]getAttribute[/tt] in most cases to access an HTML attribute value. For example, use [tt]form.action[/tt] rather than [tt]form.getAttribute('action')[/tt]. For this to work, you must never name a form element with the same name as a DOM property (e.g. [tt]target[/tt]); the [tt]form_reserved_names[/tt] automated test will verify this.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Access form elements using elements array by name[/color]
+| Consistency
+| Composr development +
+| Manually
+| There are multiple ways to access elements of a known form object. Use [tt]form.elements['foo'][/tt] not [tt]form.foo[/tt] or [tt]form.elements[3][/tt] or [tt]form.elements.foo[/tt]. This makes your code easier to understand.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Use modern event handling[/color]
+| Consistency
+| Composr development +
+| Manually
+| Traditional event handlers only allow attaching a single event, e.g. attaching an [tt]onclick[/tt] property in the DOM. For consistency and flexibility, use [tt]addEventListener[/tt] or wrapping functions within the Composr JavaScript framework. An allowed exception is if your Javascript has complete authority over the HTML the event handler is being attached to. Further, for consistency and clarity, use [tt]e.preventDefault();[/tt] to cancel an event, rather than returning a boolean.
 |}
 
 [title="4"]Images[/title]

@@ -8,11 +8,13 @@ This tutorial guides you through using JavaScript in Composr.
 [title="2"]Libraries[/title]
 
 In order to avoid polluting the JavaScript environment with global variables and functions, Composr exports its public JavaScript API using "libraries" instead. 
-"Libraries" are plain JavaScript objects that are global and named with a dollar sign ($) prefix. Composr core consists of three main libraries: [b]$cms[/b], [b]$util[/b] and [b]$dom[/b].
+"Libraries" are plain JavaScript objects that are global and named with a dollar sign ($) prefix. Composr core consists of three main libraries: [tt]$cms[/tt], [tt]$util[/tt] and [tt]$dom[/tt].
 
-[title="3"]The [b]$cms[/b] library[/title]
-This library mainly consists of important functions specific to Composr, and some ported from PHP. It has further sub-libraries, like [b]$cms.form[/b] --- which has form validation functions.
-Following are some of the most commonly used [b]$cms[/b] functions:
+[title="3"]The [tt]$cms[/tt] library[/title]
+
+This library mainly consists of important functions specific to Composr, and some ported from PHP. It has further sub-libraries, like [tt]$cms.form[/tt] --- which has form validation functions.
+
+Sample functions:
 [code="JavaScript"]
 $cms.isGuest(); // Returns true if the user is not logged in.
 
@@ -32,8 +34,11 @@ $cms.doAjaxRequest('some/url.php').then(function (xhr) { // Returns an ES6 promi
 });
 [/code]
 
-[title="3"]The [b]$cms.ui[/b] library[/title]
-This library consists of functions you can use to open nifty modals or lightboxes and manipulate Composr UI widgets
+[title="3"]The [tt]$cms.ui[/tt] library[/title]
+
+This library consists of functions you can use to open nifty modals or lightboxes and manipulate Composr UI widgets.
+
+Sample functions:
 [code="JavaScript"]
 $cms.ui.alert('Notice goes here...!', 'Modal title'); // Shows an alert modal, returns an ES6 promise that's resolved once the modal is closed
 
@@ -42,8 +47,11 @@ $cms.ui.confirm('Question goes here', null, 'Modal title'); // Shows a confirmat
 $cms.ui.prompt('Question goes here', 'Default value', null, 'Modal title'); // Shows a prompt modal, returns an ES6 promise that's resolved with the input provided by the user.
 [/code]
 
-[title="3"]The [b]$cms.form[/b] library[/title]
+[title="3"]The [tt]$cms.form[/tt] library[/title]
+
 This library consists of form validation and manipulation functions.
+
+Sample functions:
 [code="JavaScript"]
 $cms.form.checkForm(event, formElement); // Returns an ES6 promise that resolves with a boolean indicating form validity.
 
@@ -52,13 +60,16 @@ $cms.form.doAjaxFieldTest(checkUrl); // Returns an ES6 promise that resolves wit
 $cms.form.areUploadsComplete(formElement); // Whether all on-going file uploads have completed for a form.
 [/code]
 
-[title="3"]The [b]$cms.behaviors[/b] library[/title]
+[title="3"]The [tt]$cms.behaviors[/tt] library[/title]
+
 Composr borrows the concept of behaviors from Drupal. You are encouraged to quickly learn about them before continuing with this tutorial: [url="https://www.drupal.org/docs/7/api/javascript-api/javascript-api-overview#drupal-behaviors"]Drupal.behaviors[/url].
-Please note that unlike Drupal behaviors which depend on jQuery.once plugin, we use our own $util.once() function.
+Please note that unlike Drupal behaviors which depend on the [tt]jQuery.once[/tt] plugin, we use our own [tt]$util.once()[/tt] function.
 
-[title="3"]The [b]$util[/b] library[/title]
-This library consists of utility functions. [b]$util[/b] is inspired by [url="http://underscorejs.org"]Underscore.js[/url].
+[title="3"]The [tt]$util[/tt] library[/title]
 
+This library consists of utility functions. [tt]$util[/tt] is inspired by [url="http://underscorejs.org"]Underscore.js[/url].
+
+Sample functions:
 [code="JavaScript"]
 $util.random(); // Returns a random integer between zero and a trillion.
 
@@ -68,7 +79,9 @@ $util.format('My name is {1}', ['Salman']); // "My name is Salman"
 $util.isNumeric('123'); // Returns true if the string is numeric
 [/code]
 
-Among other niceties [b]$util[/b] provides a way to declare ES6 classes while keeping backwards compatibility:
+[title="4"]Classes[/title]
+
+Among other niceties [tt]$util[/tt] provides a way to declare ES6 classes while keeping backwards compatibility:
 [code="JavaScript"]
 /* Creating a class */
 function Animal() {
@@ -87,13 +100,13 @@ class Animal {
     constructor () {
         this.speak();
     }
-	
+
     speak() {
         console.log('Not implemented yet');
     }
 }
 [/code]
-[b]$util[/b] also allows for backwards-compatible sub-classing:
+[tt]$util[/tt] also allows for backwards-compatible sub-classing:
 [code="JavaScript"]
 /* Creating a sub-class */
 function Cow() {
@@ -119,8 +132,9 @@ class Cow extends Animal {
 }
 [/code]
 
-[title="3"]The [b]$dom[/b] library[/title]
-This library consists of DOM manipulation functions. [b]$dom[/b] is inspired by jQuery, except it works on individual elements instead of collections of them.
+[title="3"]The [tt]$dom[/tt] library[/title]
+
+This library consists of DOM manipulation functions. [tt]$dom[/tt] is inspired by jQuery, except it works on individual elements instead of collections of them.
 
 [code="JavaScript"]
 $dom.ready.then(function () { // $dom.ready is an ES6 promise that's resolved when DOM is ready.
@@ -148,17 +162,14 @@ $dom.on('.parent-element', 'click', '.child-element', function () {
 });
 [/code]
 
-[title="2"]Content Security Policy (CSP)[/title]
-Content Security Policy (CSP) is an added layer of security that helps to detect and mitigate certain types of attacks, including Cross Site Scripting (XSS) and data injection attacks. 
-CSP prohibits developers from using inline event handlers and inline script tags. Composr core strictly adheres to these guidelines and thus is completely free of inline event handlers and script elements. 
-
-
 [title="2"]Templates/Views[/title]
-In order to adhere with CSP guidelines, instead of using inline event handlers or script tags, Composr keeps all code related to Tempcode templates under either template functions in the [b]$cms.templates[/b] library or as the more advanced view classes under [b]$cms.views[/b].
-To make this possible the [b]data-tpl[/b] ($cms.behaviors.initializeTemplates) and [b]data-view[/b] ($cms.behaviors.initializeViews) behaviors along with the PARAMS_JSON tempcode directive are used.
 
-[title="3"]Example for [b]data-tpl[/b]:[/title]
-Create a file named EXAMPLE.tpl under the [i]templates_custom[/i] folder with the following contents:
+In order to adhere with CSP guidelines, instead of using inline event handlers or script tags, Composr keeps all code related to Tempcode templates under either template functions in the [tt]$cms.templates[/tt] library or as the more advanced view classes under [tt]$cms.views[/tt].
+To make this possible the [tt]data-tpl[/tt] ([tt]$cms.behaviors.initializeTemplates[/tt]) and [tt]data-view[/tt] ([tt]$cms.behaviors.initializeViews[/tt]) behaviors along with the [tt]PARAMS_JSON[/tt] tempcode directive are used.
+
+[title="3"]Example for [tt]data-tpl[/t]:[/title]
+
+Create a file named [tt]EXAMPLE.tpl[/tt] under the [i]templates_custom[/i] folder with the following contents:
 [code="HTML"]
 <!-- Add a data-tpl attribute to the outer-most element naming a template function, optionally pass a parameters object using the data-tpl-params attribute -->
 <div data-tpl="example" data-tpl-params="{ message: 'Button was clicked' }">
@@ -167,6 +178,7 @@ Create a file named EXAMPLE.tpl under the [i]templates_custom[/i] folder with th
     <!-- Composr convention is to prefix all CSS classes that trigger JS functionality with 'js-' followed by the event name it's triggered on ('click' here) and the remainder describes what is being done. -->
 </div>
 [/code]
+
 The corresponding JS for the above HTML would look like:
 [code="JavaScript"]
 // The data-tpl attribute was set to "example" so we will create a function named so under the $cms.templates library.
@@ -186,7 +198,7 @@ $cms.templates.example = function (params, container) {
 Template functions suffice for most common use cases except for some templates which have lots of JS involved, where you can use OOP-based view classes instead.
 Composr View classes are heavily inspired by Backbone views, you can learn more about them here: [url="http://backbonejs.org/#View"]Backbone.View[/url].
 
-[title="3"]Example for [b]data-view[/b]:[/title]
+[title="3"]Example for [tt]data-view[/tt]:[/title]
 
 Create a file named EXAMPLE_VIEW.tpl under the [i]templates_custom[/i] folder with the following contents:
 [code="HTML"]
@@ -195,10 +207,11 @@ Create a file named EXAMPLE_VIEW.tpl under the [i]templates_custom[/i] folder wi
     <button type="button" class="js-click-show-alert-with-message">Click me!</button>
 </div>
 [/code]
+
 The corresponding JS for the above HTML would look like as follows:
 [code="JavaScript"]
 // The data-view attribute was set to "ExampleView" so we need to create a class named so under the $cms.views library.
-$cms.views.ExampleView = ExampleView; // Remember to add your view class to [b]$cms.views[/b].
+$cms.views.ExampleView = ExampleView; // Remember to add your view class to [tt]$cms.views[/tt].
 function ExampleView(params) {
     ExampleView.base(this, 'constructor', arguments); // Call the parent constructor
     

@@ -3,7 +3,7 @@
 
     var sendPointsFormLastValid;
     $cms.templates.pointsSend = function pointsSend(params, container) {
-        var processAdditionalFields = function(e, el) {
+        var processAdditionalFields = function (e, el) {
             var anonymous = document.getElementById('points-anon-span');
             if (anonymous === null) {
                 return;
@@ -13,8 +13,8 @@
             } else {
                 anonymous.style.display = "none";
             }
-        }
-        
+        };
+
         $dom.on(container, 'click', '.js-points-check-form', function (e, btn) {
             var form = btn.form;
 

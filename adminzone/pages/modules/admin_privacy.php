@@ -120,10 +120,10 @@ class Module_admin_privacy
 
         // Choose whether to download or purge (delete/anonymise)
         $radios = new Tempcode();
-        $radios->attach(form_input_radio_entry('action', 'download', true, do_lang_tempcode('DOWNLOAD')));
-        $radios->attach(form_input_radio_entry('action', 'purge', false, do_lang_tempcode('PURGE')));
-        $radios->attach(form_input_radio_entry('action', 'sql', false, 'SQL'));
-        $fields->attach(form_input_radio(do_lang_tempcode('ACTION'), '', 'action', $radios));
+        $radios->attach(form_input_radio_entry('result_action', 'download', true, do_lang_tempcode('DOWNLOAD')));
+        $radios->attach(form_input_radio_entry('result_action', 'purge', false, do_lang_tempcode('PURGE')));
+        $radios->attach(form_input_radio_entry('result_action', 'sql', false, 'SQL'));
+        $fields->attach(form_input_radio(do_lang_tempcode('ACTION'), '', 'result_action', $radios));
 
         $hidden = new Tempcode();
         $hidden->attach(form_input_hidden('csrf_token_preserve', '1'));
@@ -171,7 +171,7 @@ class Module_admin_privacy
             $member_id_username = null;
         }
 
-        $action = post_param_string('action', 'purge');
+        $action = post_param_string('result_action', 'purge');
 
         $database_records = [];
         $hook_obs = find_all_hook_obs('systems', 'privacy', 'Hook_privacy_');
@@ -298,7 +298,7 @@ class Module_admin_privacy
             }
         }
 
-        $action = post_param_string('action', 'purge');
+        $action = post_param_string('result_action', 'purge');
 
         switch ($action) {
             case 'download':

@@ -342,7 +342,7 @@ function comcode_helper_script_replace() : object
 
     $keep = symbol_tempcode('KEEP');
 
-    $action = post_param_string('action', '');
+    $action = post_param_string('comcode_action', '');
     if ($action != '') {
         switch ($action) {
             case 'add':
@@ -380,10 +380,10 @@ function comcode_helper_script_replace() : object
 
     $fields = new Tempcode();
     $radios = new Tempcode();
-    $radios->attach(form_input_radio_entry('action', 'add', false, do_lang_tempcode('COMCODE_TAG_MODIFIER_ADD', escape_html($tag))));
-    $radios->attach(form_input_radio_entry('action', 'edit', true, do_lang_tempcode('COMCODE_TAG_MODIFIER_EDIT', escape_html($tag))));
-    $radios->attach(form_input_radio_entry('action', 'delete', false, do_lang_tempcode('COMCODE_TAG_MODIFIER_DELETE', escape_html($tag))));
-    $fields->attach(form_input_radio(do_lang_tempcode('ACTION'), '', 'action', $radios, true));
+    $radios->attach(form_input_radio_entry('comcode_action', 'add', false, do_lang_tempcode('COMCODE_TAG_MODIFIER_ADD', escape_html($tag))));
+    $radios->attach(form_input_radio_entry('comcode_action', 'edit', true, do_lang_tempcode('COMCODE_TAG_MODIFIER_EDIT', escape_html($tag))));
+    $radios->attach(form_input_radio_entry('comcode_action', 'delete', false, do_lang_tempcode('COMCODE_TAG_MODIFIER_DELETE', escape_html($tag))));
+    $fields->attach(form_input_radio(do_lang_tempcode('ACTION'), '', 'comcode_action', $radios, true));
 
     $post_url = get_self_url();
 

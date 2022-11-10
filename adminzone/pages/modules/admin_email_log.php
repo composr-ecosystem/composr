@@ -472,10 +472,10 @@ class Module_admin_email_log
         $fields->attach(form_input_text_comcode(do_lang_tempcode('MESSAGE'), '', 'message', $row['m_message'], true));
 
         $radios = new Tempcode();
-        $radios->attach(form_input_radio_entry('action', 'edit', true, do_lang_tempcode('EDIT')));
-        $radios->attach(form_input_radio_entry('action', 'send', false, do_lang_tempcode('EDIT_AND_SEND')));
-        $radios->attach(form_input_radio_entry('action', 'delete', false, do_lang_tempcode('DELETE')));
-        $fields->attach(form_input_radio(do_lang_tempcode('ACTION'), '', 'action', $radios, true));
+        $radios->attach(form_input_radio_entry('edit_action', 'edit', true, do_lang_tempcode('EDIT')));
+        $radios->attach(form_input_radio_entry('edit_action', 'send', false, do_lang_tempcode('EDIT_AND_SEND')));
+        $radios->attach(form_input_radio_entry('edit_action', 'delete', false, do_lang_tempcode('DELETE')));
+        $fields->attach(form_input_radio(do_lang_tempcode('ACTION'), '', 'edit_action', $radios, true));
 
         $submit_name = do_lang_tempcode('PROCEED');
 
@@ -503,7 +503,7 @@ class Module_admin_email_log
     {
         $id = get_param_integer('id');
 
-        $action = post_param_string('action');
+        $action = post_param_string('edit_action');
 
         switch ($action) {
             case 'delete':

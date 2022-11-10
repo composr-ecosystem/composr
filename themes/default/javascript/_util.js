@@ -2,6 +2,9 @@
 
 (function ($util) {
     'use strict';
+
+    /* The *Val functions are typically used when our JavaScript code takes input from the template layer, and we want to force a particular type (or be clear to developers we want a string). */
+
     /**
      * Port of PHP's boolval() function
      * @param val
