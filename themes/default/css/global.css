@@ -1033,7 +1033,7 @@ header.is-see-through.with-white-navbar {
 	border-bottom: 1px solid transparent;
 	transition: background-color 0.15s ease-in-out, height 0.15s ease-in-out;
 }
-header.is-see-through.with-white-navbar img.icon {
+header.is-see-through.with-white-navbar .toplevel-link img.icon {
 	/* This makes icons white when sprite icons are disabled */
 	filter: invert(100%);
 }
