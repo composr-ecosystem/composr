@@ -133,7 +133,7 @@ class find_broken_screen_links_test_set extends cms_test_case
                         continue;
                     }
 
-                    $this->assertTrue(false, 'Linking error with ' . $all);
+                    $this->assertTrue(false, 'Linking error with ' . $all . ' in ' . $path);
                 }
             }
         }

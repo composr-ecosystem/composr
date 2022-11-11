@@ -483,17 +483,21 @@ function get_product_details_url(string $type_code, bool $post_purchase_access_u
  * @param  ID_TEXT $txn_id Transaction ID
  * @param  boolean $awaiting_payment If payment is still required
  * @param  ?array $transaction_row The transaction database row (null: look it up)
- * @return Tempcode The linker
+ * @param  boolean $missing_ok Whether to return null instead of throwing an error if the transaction was not found
+ * @return ?Tempcode The linker (null: Transaction not found and $missing_ok was set to true)
  */
-function build_transaction_linker(string $txn_id, bool $awaiting_payment, ?array $transaction_row = null) : object
+function build_transaction_linker(string $txn_id, bool $awaiting_payment, ?array $transaction_row = null, bool $missing_ok = false) : ?object
 {
     if (($txn_id != '') && (!$awaiting_payment)) {
         if ($transaction_row === null) {
-            $transaction_row = get_transaction_row($txn_id);
+            $transaction_row = get_transaction_row($txn_id, $missing_ok);
+        }
+        if ($transaction_row === null) {
+            return null;
         }
 
-        if (has_actual_page_access(get_member(), 'admin_ecommerce_logs')) {
-            $transaction_details_url = build_url(['page' => 'admin_ecommerce_logs', 'type' => 'logs', 'filter_type_code' => $transaction_row['t_type_code'], 'filter_txn_id' => $transaction_row['id']], get_module_zone('admin_ecommerce_logs'));
+        if (has_actual_page_access(get_member(), 'admin_ecommerce_reports')) {
+            $transaction_details_url = build_url(['page' => 'admin_ecommerce_reports', 'type' => 'logs', 'filter_type_code' => $transaction_row['t_type_code'], 'filter_txn_id' => $transaction_row['id']], get_module_zone('admin_ecommerce_reports'));
             $transaction_link = hyperlink($transaction_details_url, $txn_id, false, true);
         } else {
             $transaction_link = make_string_tempcode(escape_html($txn_id));
@@ -1202,7 +1206,7 @@ function get_default_ecommerce_fields(?int $member_id = null, string &$shipping_
 function ecommerce_attach_memo_field_if_needed(?object &$fields)
 {
     if (get_option('payment_memos') == '1') {
-        if ((perform_local_payment()) || (get_page_name() == 'admin_ecommerce_logs')) {
+        if ((perform_local_payment()) || (get_page_name() == 'admin_ecommerce_reports')) {
             $get_memo = true;
         } else {
             $payment_gateway = get_option('payment_gateway');
@@ -1834,7 +1838,7 @@ function send_transaction_mails(string $txn_id, string $item_name, bool $shipped
         $currency_symbol = ecommerce_get_currency_symbol($currency);
     }
 
-    $tax_invoice = display_receipt($txn_id);
+    $receipt = display_receipt($txn_id);
 
     // Prepare for notification
     $existing = $GLOBALS['SITE_DB']->query_select('ecom_trans_addresses', ['*'], ['a_txn_id' => $txn_id], '', 1);
@@ -1873,7 +1877,7 @@ function send_transaction_mails(string $txn_id, string $item_name, bool $shipped
         'TAX' => float_format($tax),
         'SHIPPING' => float_format($shipping),
         'CURRENCY_SYMBOL' => $currency_symbol,
-        'TAX_INVOICE' => escape_html_in_comcode($tax_invoice),
+        'RECEIPT' => escape_html_in_comcode($receipt),
         'MEMO' => $memo,
         'SHIPPED' => $shipped,
 
@@ -2217,15 +2221,23 @@ function split_street_address(string $compound_street_address, int $num_parts, b
  * Display a receipt.
  *
  * @param  ID_TEXT $txn_id Transaction ID
+ * @param  ?MEMBER $member_id_viewing The member viewing the receipt for access checking (null: Do not check access)
  * @return Tempcode Receipt UI
  */
-function display_receipt(string $txn_id) : object
+function display_receipt(string $txn_id, ?int $member_id_viewing = null) : object
 {
+    $transaction_row = get_transaction_row($txn_id);
+
+    // Members should not be allowed to view receipts of other members
+    if (($member_id_viewing !== null) && ($transaction_row['t_member_id'] != $member_id_viewing)) {
+        if (!has_privilege($member_id_viewing, 'assume_any_member')) {
+            access_denied('I_ERROR');
+        }
+    }
+
     require_css('ecommerce');
     require_code('locations');
     require_code('ecommerce_tax');
-
-    $transaction_row = get_transaction_row($txn_id);
 
     $address_rows = $GLOBALS['SITE_DB']->query_select('ecom_trans_addresses', ['*'], ['a_trans_expecting_id' => $txn_id], '', 1);
 
@@ -2353,4 +2365,78 @@ function display_invoice(int $id) : object
         'PURCHASE_ID' => strval($row['id']),
         'STATUS' => $row['i_state'],
     ]);
+}
+
+/**
+ * Generate a URL to view the details of an order / invoice / subscription.
+ *
+ * @param  ID_TEXT $type_code The product type code
+ * @param  ID_TEXT $id The ID to view (order ID for orders / catalogues, invoice ID for invoices, else transaction ID) (blank: no ID available, therefore do not link)
+ * @param  ?MEMBER $member_id The member viewing this (null: unknown)
+ * @param  ?ID_TEXT $page_link The page_link from which we are viewing (zone:page:type) (null: look it up)
+ * @return ?Tempcode The build_url Tempcode (null: no details link available)
+ */
+function ecom_details_url(string $type_code, string $id = '', ?int $member_id = null, ?string $page_link = null) : ?object
+{
+    $ret = null;
+
+    // No link if no ID was specified
+    if ($id == '') {
+        return $ret;
+    }
+
+    list($details) = find_product_details($type_code);
+    if ($details === null) {
+        return $ret; // Could not find product, so do not provide a link
+    }
+
+    if ($page_link === null) {
+        $page_link = get_zone_name() . ':' . get_page_name() . ':' . get_param_string('type', '');
+    }
+
+    if (preg_match('#^adminzone:#', $page_link) != 0) { // Admin Zone
+        switch ($details['type']) {
+            case PRODUCT_ORDERS:
+            case PRODUCT_CATALOGUE:
+                $ret = build_url(['page' => 'admin_shopping', 'type' => 'order_details', 'id' => $id], get_module_zone('admin_shopping'));
+                break;
+            case PRODUCT_INVOICE:
+                $ret = build_url(['page' => 'admin_invoices', 'type' => 'view', 'filter_id' => $id], get_module_zone('admin_invoices'));
+                break;
+            case PRODUCT_PURCHASE:
+            case PRODUCT_SUBSCRIPTION:
+                if ($page_link === get_module_zone('admin_ecommerce_reports') . ':admin_ecommerce_reports:sales') { // Do not link to itself if we are already on the sales page
+                    $ret = get_product_details_url($type_code, false, null, false);
+                } else {
+                    $ret = build_url(['page' => 'admin_ecommerce_reports', 'type' => 'sales', 'filter_txn_id' => $id], get_module_zone('admin_ecommerce_reports'));
+                }
+                break;
+            case PRODUCT_OTHER:
+                // No link for other products
+                break;
+        }
+    } else { // Not the Admin Zone
+        switch ($details['type']) {
+            case PRODUCT_ORDERS:
+            case PRODUCT_CATALOGUE:
+                $ret = build_url(['page' => 'shopping', 'type' => 'order_details', 'id' => $id], get_module_zone('shopping'));
+                break;
+            case PRODUCT_INVOICE:
+                $ret = build_url(['page' => 'invoices', 'type' => 'browse', 'filter_id' => $id], get_module_zone('invoices'));
+                break;
+            case PRODUCT_PURCHASE:
+            case PRODUCT_SUBSCRIPTION:
+                if ($page_link === get_module_zone('shopping') . ':shopping:sales') { // Do not link to itself if we are already on the sales page
+                    $ret = get_product_details_url($type_code, true, $member_id, false);
+                } else {
+                    $ret = build_url(['page' => 'purchase', 'type' => 'sales', 'filter_txn_id' => $id], get_module_zone('purchase'));
+                }
+                break;
+            case PRODUCT_OTHER:
+                // No link for other products
+                break;
+        }
+    }
+
+    return $ret;
 }

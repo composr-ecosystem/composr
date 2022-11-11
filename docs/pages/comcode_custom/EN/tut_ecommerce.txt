@@ -597,20 +597,20 @@ It only applies to certain digital sales, not shipped products. To use digital p
 Known limitations at this time which could be worked around with custom code...
  - No special consideration has been given for tax rules in any other particular jurisdiction -- instead we have tried to make it configurable
 
-[title="3"]Tax invoices[/title]
+[title="3"]Receipts[/title]
 
-Tax invoices are automatically created and delivered to buyers through notifications. They are also available from the Admin Zone.
+Receipts are automatically created and delivered to buyers through notifications. They are also available from the Admin Zone > Audit > eCommerce.
 
 [title="4"]Line items[/title]
 
-Local laws may require tax invoices that show individual line items, each with their own tax rate. For example, shipping costs may be zero-rated, services may be given a service rate, and food may be given a food rate.
+Local laws may require receipts that show individual line items, each with their own tax rate. For example, shipping costs may be zero-rated, services may be given a service rate, and food may be given a food rate.
 
 We support line items for:
  - shopping cart purchases: each individual item purchased is shown as a line item, as well as shipping costs.
  - for all eCommerce products that support a defined shipping cost we support showing this as a separate line item.
 
-We do not support inputting line items individually in the Composr invoice system (separate from tax invoices). Composr invoices are designed for simple invoices with a common tax code covering the whole value of the invoice. You may workaround the limitation in 2 ways:
-1) by manually preparing your own tax invoices, using the Composr system for tracking and payment, but not for any kind of official records. The tax code produced would be custom-calculated as the effective percentage tax rate covering the overall invoice.
+We do not support inputting line items individually in the Composr invoice system. Composr invoices are designed for simple invoices with a common tax code covering the whole value of the invoice. You may workaround the limitation in 2 ways:
+1) by manually preparing your own invoices, using the Composr system for tracking and payment, but not for any kind of official records. The tax code produced would be custom-calculated as the effective percentage tax rate covering the overall invoice.
 2) create multiple invoices, so that you don't actually require separate line items
 
 The same limitation applies to subscriptions, although this is not likely to be an issue as usually subscriptions wouldn't contain separate taxable items within them. The tax regulators would likely consider the subscription "atomic".
@@ -890,27 +890,28 @@ We have summarised the PCI compliance rules below in a way streamlined toward Co
  10_key="Transaction"                  10_value="A low-level record that an action took place (e.g. purchase, payment, or subscription change) in the eCommerce system"
  11_key="Sale"                         11_value="The act of something in the store being sold / purchased"
  12_key="Subscription"                 12_value="Something purchased that has recurring payments for as long as the subscription is open"
- 13_key="Invoice"                      13_value="An invoice created for a website member to pay"
- 14_key="Unit price"                   14_value="The price of an item (gross, i.e. pre-tax), before quantity multiplication is applied"
- 15_key="Price"                        15_value="The price of an item(s) (gross, i.e. pre-tax); this term is used roughly"
- 16_key="Amount"                       16_value="The amount being paid in a transaction; this term is used roughly and may or may not include the sales tax"
- 17_key="Grand total"                  17_value="The total cost of an order including tax and shipping costs"
- 18_key="Fee"                          18_value="A fee levied on your website for processing a transaction"
- 19_key="Origin taxation"              19_value="USA taxation where taxes are levied based on where the seller (you) resides"
- 20_key="Destination taxation"         20_value="USA taxation where taxes are levied based on where the buyer resides"
- 21_key="Sales tax"                    21_value="The system for charging tax on sales, used in the USA and other countries"
- 22_key="Use tax"                      22_value="The system for paying tax on purchases, used in the USA; buyers are meant to report purchases from other states they paid no tax on and pay those taxes"
- 23_key="VAT"                          23_value="Alternative to a sales tax system, used in the EU and some other countries around the world"
- 24_key="Tax code"                     24_value="The Composr term for identifying a particular kind of taxation to apply to a product"
- 25_key="Tax derivation"               25_value="The Composr term for tracking what exact taxes are levied for a transaction"
- 26_key="EU digital goods taxation"    26_value="A tax system in Europe that applies to digital sales, taxes are paid to the buyer's home country using that country's own tax rate"
- 27_key="Tax invoice"                  27_value="A formal (legally-compliant) invoice showing exactly what was paid for a transaction, broken down by line-item, with individual taxation rates shown for each line-item"
- 28_key="Customer"                     28_value="The member who purchased the product"
- 29_key="Related member"               29_value="The member to whom a product applies (e.g. for a usergroup subscription, the member who was subscribed to the usergroup)"
- 30_key="TaxCloud"                     30_value="A third-party web service for handling the complexities and filing of USA taxation"
- 31_key="TaxJar"                       31_value="A third-party web service for handling the complexities of taxation in many international countries"
- 32_key="IPN"                          32_value="Instant Payment Notification; when a payment is completed on a third party gateway (such as PayPal), the gateway will make a web request back to your Composr website (via [tt]/data/ecommerce.php[/tt]) containing information about the transaction and its payment status. IPN is set up by default in Composr. Note that IPN can only work if your site is publicly accessible; development environments (such as ones running on localhost) may be inaccessible via IPN by gateways."
- 33_key="PDT"                          33_value="Payment Data Transfer; specific to PayPal, when a member completes payment on PayPal and is redirected by PayPal back to your Composr site, PayPal includes transaction information in the redirect so Composr can immediately confirm the transaction and its payment status (unlike IPN where Composr must wait for the gateway to send an IPN request through [tt]/data/ecommerce.php[/tt]). PDT must be set up in PayPal and in Composr to use it. See Specific gateway notes > PayPal."
+ 13_key="Order"                        13_value="A record of one or more items purchased by a member. The order also has a status associated with it describing whether it was paid and delivered / fulfilled."
+ 14_key="Invoice"                      14_value="A record submitted in the system for the member to pay"
+ 15_key="Unit price"                   15_value="The price of an item (gross, i.e. pre-tax), before quantity multiplication is applied"
+ 16_key="Price"                        16_value="The price of an item(s) (gross, i.e. pre-tax); this term is used roughly"
+ 17_key="Amount"                       17_value="The amount being paid in a transaction; this term is used roughly and may or may not include the sales tax"
+ 18_key="Grand total"                  18_value="The total cost of an order including tax and shipping costs"
+ 19_key="Fee"                          19_value="A fee levied on your website for processing a transaction"
+ 20_key="Origin taxation"              20_value="USA taxation where taxes are levied based on where the seller (you) resides"
+ 21_key="Destination taxation"         21_value="USA taxation where taxes are levied based on where the buyer resides"
+ 22_key="Sales tax"                    22_value="The system for charging tax on sales, used in the USA and other countries"
+ 23_key="Use tax"                      23_value="The system for paying tax on purchases, used in the USA; buyers are meant to report purchases from other states they paid no tax on and pay those taxes"
+ 24_key="VAT"                          24_value="Alternative to a sales tax system, used in the EU and some other countries around the world"
+ 25_key="Tax code"                     25_value="The Composr term for identifying a particular kind of taxation to apply to a product"
+ 26_key="Tax derivation"               26_value="The Composr term for tracking what exact taxes are levied for a transaction"
+ 27_key="EU digital goods taxation"    27_value="A tax system in Europe that applies to digital sales, taxes are paid to the buyer's home country using that country's own tax rate"
+ 28_key="Receipt"                      28_value="A formal (legally-compliant) document showing exactly what was paid for a transaction, broken down by line-item, with individual taxation rates shown for each line-item"
+ 29_key="Customer"                     29_value="The member who purchased the product"
+ 30_key="Related member"               30_value="The member to whom a product applies (e.g. for a usergroup subscription, the member who was subscribed to the usergroup)"
+ 31_key="TaxCloud"                     31_value="A third-party web service for handling the complexities and filing of USA taxation"
+ 32_key="TaxJar"                       32_value="A third-party web service for handling the complexities of taxation in many international countries"
+ 33_key="IPN"                          33_value="Instant Payment Notification; when a payment is completed on a third party gateway (such as PayPal), the gateway will make a web request back to your Composr website (via [tt]/data/ecommerce.php[/tt]) containing information about the transaction and its payment status. IPN is set up by default in Composr. Note that IPN can only work if your site is publicly accessible; development environments (such as ones running on localhost) may be inaccessible via IPN by gateways."
+ 34_key="PDT"                          34_value="Payment Data Transfer; specific to PayPal, when a member completes payment on PayPal and is redirected by PayPal back to your Composr site, PayPal includes transaction information in the redirect so Composr can immediately confirm the transaction and its payment status (unlike IPN where Composr must wait for the gateway to send an IPN request through [tt]/data/ecommerce.php[/tt]). PDT must be set up in PayPal and in Composr to use it. See Specific gateway notes > PayPal."
 ]Concepts[/concepts]
 
 [title="2"]See also[/title]

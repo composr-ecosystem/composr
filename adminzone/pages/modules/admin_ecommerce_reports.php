@@ -23,7 +23,7 @@ require_code('crud_module');
 /**
  * Module page class.
  */
-class Module_admin_ecommerce_logs
+class Module_admin_ecommerce_reports
 {
     /**
      * Find details of the module.
@@ -65,8 +65,8 @@ class Module_admin_ecommerce_logs
 
         $ret = [
             'browse' => ['ECOMMERCE', 'menu/adminzone/audit/ecommerce/ecommerce'],
-            'sales' => ['ECOM_PRODUCTS_MANAGE_SALES', 'menu/adminzone/audit/ecommerce/sales_log'],
-            'logs' => ['TRANSACTIONS', 'menu/adminzone/audit/ecommerce/transactions'],
+            'sales' => ['ECOM_PRODUCTS_MANAGE_SALES', 'menu/adminzone/audit/ecommerce/sales'],
+            'logs' => ['TRANSACTION_LOGS', 'menu/adminzone/audit/ecommerce/transactions_log'],
             'trigger' => ['MANUAL_TRANSACTION', 'menu/rich_content/ecommerce/purchase'],
             'profit_loss' => ['PROFIT_LOSS', 'menu/adminzone/audit/ecommerce/profit_loss'],
             'cash_flow' => ['CASH_FLOW', 'menu/adminzone/audit/ecommerce/cash_flow'],
@@ -107,14 +107,14 @@ class Module_admin_ecommerce_logs
             $this->title = get_screen_title('ECOMMERCE');
         }
 
-        if ($type == 'sales' || $type == 'delete_sales_log_entry') {
+        if ($type == 'sales' || $type == 'delete_sales_entry') {
             breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('ECOMMERCE')]]);
             $this->title = get_screen_title('ECOM_PRODUCTS_MANAGE_SALES');
         }
 
         if ($type == 'logs') {
             breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('ECOMMERCE')]]);
-            $this->title = get_screen_title('TRANSACTIONS');
+            $this->title = get_screen_title('TRANSACTION_LOGS');
         }
 
         if ($type == 'export_transactions') {
@@ -122,7 +122,7 @@ class Module_admin_ecommerce_logs
         }
 
         if ($type == 'receipt') {
-            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('ECOMMERCE')], ['_SELF:_SELF:logs', do_lang_tempcode('TRANSACTIONS')]]);
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('ECOMMERCE')], ['_SELF:_SELF:logs', do_lang_tempcode('TRANSACTION_LOGS')]]);
             $this->title = get_screen_title('RECEIPT');
         }
 
@@ -201,8 +201,8 @@ class Module_admin_ecommerce_logs
         if ($type == 'sales') {
             return $this->sales();
         }
-        if ($type == 'delete_sales_log_entry') {
-            return $this->delete_sales_log_entry();
+        if ($type == 'delete_sales_entry') {
+            return $this->delete_sales_entry();
         }
         if ($type == 'export_sales') {
             return $this->export_sales();
@@ -254,8 +254,8 @@ class Module_admin_ecommerce_logs
             new Tempcode(),
             [
                 ['menu/rich_content/ecommerce/purchase', ['_SELF', ['type' => 'trigger'], '_SELF'], do_lang('MANUAL_TRANSACTION')],
-                ['menu/adminzone/audit/ecommerce/sales_log', ['_SELF', ['type' => 'sales'], '_SELF'], do_lang('ECOM_PRODUCTS_MANAGE_SALES')],
-                ['menu/adminzone/audit/ecommerce/transactions', ['_SELF', ['type' => 'logs'], '_SELF'], do_lang('LOGS')],
+                ['menu/adminzone/audit/ecommerce/sales', ['_SELF', ['type' => 'sales'], '_SELF'], do_lang('ECOM_PRODUCTS_MANAGE_SALES')],
+                ['menu/adminzone/audit/ecommerce/transactions_log', ['_SELF', ['type' => 'logs'], '_SELF'], do_lang('TRANSACTION_LOGS')],
                 ['menu/adminzone/audit/ecommerce/cash_flow', ['_SELF', ['type' => 'cash_flow'], '_SELF'], do_lang('CASH_FLOW')],
                 ['menu/adminzone/audit/ecommerce/profit_loss', ['_SELF', ['type' => 'profit_loss'], '_SELF'], do_lang('PROFIT_LOSS')],
                 ['menu/adminzone/audit/ecommerce/subscriptions', ['_SELF', ['type' => 'view_subscriptions'], '_SELF'], do_lang('VIEW_SUBSCRIPTIONS')],
@@ -584,13 +584,13 @@ class Module_admin_ecommerce_logs
     }
 
     /**
-     * The UI to view sales logs.
+     * The UI to view sales.
      *
      * @return Tempcode The UI
      */
     public function sales() : object
     {
-        require_code('ecommerce_logs');
+        require_code('ecommerce_reports');
         require_code('form_templates');
         require_code('templates_tooltip');
 
@@ -697,7 +697,7 @@ class Module_admin_ecommerce_logs
         }
         $sales_table->attach($form);
 
-        return do_template('ECOM_SALES_LOG_SCREEN', [
+        return do_template('ECOM_SALES_SCREEN', [
             'TITLE' => $this->title,
             'CONTENT' => $sales_table,
             'PAGINATION' => $pagination,
@@ -712,9 +712,9 @@ class Module_admin_ecommerce_logs
      *
      * @return Tempcode The UI
      */
-    public function delete_sales_log_entry() : object
+    public function delete_sales_entry() : object
     {
-        $this->_delete_sales_log_entry(get_param_integer('id'));
+        $this->_delete_sales_entry(get_param_integer('id'));
 
         // Show it worked / Refresh
         $url = build_url(['page' => '_SELF', 'type' => 'sales'], '_SELF');
@@ -722,11 +722,11 @@ class Module_admin_ecommerce_logs
     }
 
     /**
-     * Delete a sales log entry (presumably as a purchase is being reversed).
+     * Delete a sales entry (presumably as a purchase is being reversed).
      *
      * @param  integer $id The sales ID
      */
-    public function _delete_sales_log_entry(int $id)
+    public function _delete_sales_entry(int $id)
     {
         $GLOBALS['SITE_DB']->query_delete('ecom_sales', ['id' => $id], '', 1);
     }
@@ -844,11 +844,19 @@ class Module_admin_ecommerce_logs
                 $status = make_string_tempcode(escape_html(get_transaction_status_string($transaction_row['t_status'])));
             }
 
+
             list($details, $product_object) = find_product_details($transaction_row['t_type_code']);
             if ($details !== null) {
                 $item_name = make_string_tempcode(escape_html($details['item_name']));
+                $product_url = ecom_details_url($transaction_row['t_type_code'], (in_array($details['type'], [PRODUCT_SUBSCRIPTION, PRODUCT_PURCHASE, PRODUCT_OTHER]) ? $transaction_row['id'] : $transaction_row['t_purchase_id']));
+                if ($product_url !== null) {
+                    $product_link = hyperlink($product_url, tooltip($item_name, $transaction_row['t_type_code'], true), false, false);
+                } else {
+                    $product_link = tooltip($item_name, $transaction_row['t_type_code'], true);
+                }
             } else {
                 $item_name = do_lang_tempcode('UNKNOWN_EM');
+                $product_link = tooltip($item_name, $transaction_row['t_type_code'], true);
             }
 
             // Find member links, if possible
@@ -863,9 +871,10 @@ class Module_admin_ecommerce_logs
                 $member_link = do_lang_tempcode('NA_EM');
             }
 
-            $tax = ecommerce_get_currency_symbol($transaction_row['t_currency']) . escape_html(float_format($transaction_row['t_tax']));
             $receipt_url = build_url(['page' => '_SELF', 'type' => 'receipt', 'id' => $transaction_row['id'], 'wide_high' => 1], '_SELF');
-            $date_linker = hyperlink($receipt_url, $date, false, false, '', null, null, null, '_top');
+            $price_linker = hyperlink($receipt_url, ecommerce_get_currency_symbol($transaction_row['t_currency']) . escape_html(float_format($transaction_row['t_price'])), true, false, do_lang('RECEIPT'));
+
+            $tax = ecommerce_get_currency_symbol($transaction_row['t_currency']) . escape_html(float_format($transaction_row['t_tax']));
 
             $transaction_tooltip_map = [];
             if ($transaction_row['t_parent_txn_id'] != '') {
@@ -889,13 +898,13 @@ class Module_admin_ecommerce_logs
             $transaction_table = do_template('MAP_TABLE', ['FIELDS' => $_transaction_fields]);
 
             $result_entries->attach(results_entry([
-                $date_linker,
+                escape_html($date),
                 ((count($transaction_tooltip_map) > 0) ? tooltip($transaction_row['id'], $transaction_table, true) : $transaction_row['id']),
                 $customer_link,
                 $member_link,
-                tooltip($item_name, $transaction_row['t_type_code'], true),
+                $product_link,
                 escape_html($transaction_row['t_purchase_id']),
-                ecommerce_get_currency_symbol($transaction_row['t_currency']) . escape_html(float_format($transaction_row['t_price'])),
+                $price_linker,
                 $tax,
                 ecommerce_get_currency_symbol($transaction_row['t_currency']) . escape_html(float_format($transaction_row['t_shipping'])),
                 ecommerce_get_currency_symbol($transaction_row['t_currency']) . escape_html(float_format($transaction_row['t_transaction_fee'])),
@@ -903,7 +912,7 @@ class Module_admin_ecommerce_logs
             ], false));
         }
 
-        $results_table = results_table(do_lang('TRANSACTIONS'), $start, 'start', $max, 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort');
+        $results_table = results_table(do_lang('TRANSACTION_LOGS'), $start, 'start', $max, 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort');
 
         // Export button
         $form = new Tempcode();
@@ -984,6 +993,7 @@ class Module_admin_ecommerce_logs
 
         $tpl = do_template('RESULTS_TABLE_SCREEN', [
             'TITLE' => $this->title,
+            'TEXT' => do_lang_tempcode('TRANSACTION_LOGS_TEXT', build_url(['page' => '_SELF', 'type' => 'sales'], '_SELF')),
             'RESULTS_TABLE' => $results_table,
             'FORM' => $form,
             'FILTERS_ROW_A' => $filters_row_a,

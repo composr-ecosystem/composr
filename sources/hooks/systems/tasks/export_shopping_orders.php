@@ -26,13 +26,16 @@ class Hook_task_export_shopping_orders
     /**
      * Run the task hook.
      *
-     * @param  TIME $start_date Date from
-     * @param  TIME $end_date Date to
-     * @param  string $order_status Order status filter (blank: no filter)
+     * @param  ?AUTO_LINK $filter_id Filter by order ID (null: do not filter)
+     * @param  ID_TEXT $filter_username Filter by customer username (blank: do not filter)
+     * @param  ID_TEXT $filter_txn_id Filter by transaction ID (blank: do not filter)
+     * @param  SHORT_TEXT $_filter_order_status Filter by comma-delimited order statuses (blank: do not filter)
+     * @param  ?TIME $filter_start Only include orders on or after this date/time (null: do not filter)
+     * @param  ?TIME $filter_end Only include orders on or before this date/time (null: do not filter)
      * @param  ?string $file_type The file type to export with (null: default)
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
-    public function run(int $start_date, int $end_date, string $order_status, ?string $file_type = null) : ?array
+    public function run(?int $filter_id = null, string $filter_username = '', string $filter_txn_id = '', string $_filter_order_status = '', ?int $filter_start = null, ?int $filter_end = null, ?string $file_type = null) : ?array
     {
         if (!addon_installed('shopping')) {
             return null;
@@ -40,16 +43,53 @@ class Hook_task_export_shopping_orders
 
         require_code('ecommerce');
 
-        $where = 'add_date BETWEEN ' . strval($start_date) . ' AND ' . strval($end_date);
-        if ($order_status != '') {
-            $where .= ' AND ' . db_string_equal_to('order_status', $order_status);
+        $filter_order_status = explode(',', $_filter_order_status);
+
+        $where = '1=1';
+        $filename = 'orders_';
+        if ($filter_id !== null) {
+            $where .= ' AND id=' . strval($filter_id);
+            $filename = 'order_' . strval($filter_id);
+        }
+        if ($filter_username != '') {
+            $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($filter_username);
+            if ($member_id !== null) {
+                $where .= ' AND member_id=' . strval($member_id);
+                $filename .= '_' . $filter_username;
+            } else {
+                warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($filter_username)));
+            }
+        }
+        if ($filter_txn_id != '') {
+            $where .= ' AND ' . db_string_equal_to('txn_id', $filter_txn_id);
+            $filename .= '_' . $filter_txn_id;
+        }
+        if ($_filter_order_status != '') {
+            $where .= ' AND (';
+            foreach ($filter_order_status as $key => $status) {
+                if ($key > 0) {
+                    $where .= ' OR ';
+                }
+                $where .= db_string_equal_to('order_status', $status);
+            }
+            $where .= ')';
+            $filename .= '_' . $_filter_order_status;
+        }
+        if ($filter_start !== null) {
+            $where .= ' AND add_date>=' . strval($filter_start);
+            $filename .= '_' . strval($filter_start);
+        }
+        if ($filter_end !== null) {
+            $where .= ' AND add_date<=' . strval($filter_end);
+            $filename .= '_' . strval($filter_end);
         }
 
         require_code('files_spreadsheets_write');
         if ($file_type === null) {
             $file_type = spreadsheet_write_default();
         }
-        $filename = 'orders_' . (($order_status == '') ? '' : ($order_status . '__')) . date('Y-m-d', $start_date) . '--' . date('Y-m-d', $end_date) . '.' . $file_type;
+        $filename .= '.' . $file_type;
+
         $outfile_path = null;
         $sheet_writer = spreadsheet_open_write($outfile_path, $filename);
 
@@ -58,10 +98,10 @@ class Hook_task_export_shopping_orders
 
         $query = 'FROM ' . get_table_prefix() . 'shopping_orders o' . $GLOBALS['SITE_DB']->singular_join('ecom_trans_addresses', 'a', 'o.txn_id=a.a_txn_id', 'id', 'MIN', 'LEFT JOIN') . ' WHERE ' . $where;
 
-        $max_rows = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) ' . $query . ' ORDER BY add_date');
+        $max_rows = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) ' . $query);
 
         do {
-            $rows = $GLOBALS['SITE_DB']->query('SELECT o.*,o.id AS o_id,a.* ' . $query, $max, $start);
+            $rows = $GLOBALS['SITE_DB']->query('SELECT o.*,o.id AS o_id,a.* ' . $query . ' ORDER BY o.add_date', $max, $start);
 
             foreach ($rows as $i => $_order) {
                 task_log($this, 'Processing shopping order row', $i, $max_rows);
@@ -70,7 +110,7 @@ class Hook_task_export_shopping_orders
 
                 $order[do_lang('ORDER_NUMBER')] = strval($_order['o_id']);
 
-                $order[do_lang('ORDERED_DATE')] = get_timezoned_date_time($order['add_date']);
+                $order[do_lang('ORDERED_DATE')] = get_timezoned_date_time($_order['add_date']);
 
                 $order[do_lang('ORDER_STATUS')] = do_lang($_order['order_status']);
 

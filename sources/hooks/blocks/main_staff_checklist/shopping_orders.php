@@ -47,7 +47,7 @@ class Hook_checklist_shopping_orders
             $status = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_1', ['_GUID' => 'b5138b84598f5c45113fc169a44d55c7']);
         }
 
-        $url = build_url(['page' => 'admin_shopping', 'type' => 'show_orders', 'filter' => 'undispatched'], get_module_zone('admin_shopping'));
+        $url = build_url(['page' => 'admin_shopping', 'type' => 'browse', 'filter_order_status' => 'ORDER_STATUS_payment_received'], get_module_zone('admin_shopping'));
 
         $tpl = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', [
             '_GUID' => '440a79b164533416f4d086a93efba9ea',

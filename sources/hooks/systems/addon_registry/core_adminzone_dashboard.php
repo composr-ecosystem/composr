@@ -263,8 +263,8 @@ class Hook_addon_registry_core_adminzone_dashboard
 
         $url = build_url([
             'page' => 'admin_shopping',
-            'type' => 'show_orders',
-            'filter' => 'undispatched',
+            'type' => 'browse',
+            'filter_order_status' => 'ORDER_STATUS_payment_received',
         ], get_module_zone('admin_shopping'));
 
         $no_times = do_lorem_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', [

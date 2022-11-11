@@ -585,7 +585,7 @@
     };
 
     $cms.templates.tooltip = function (params, el) {
-        var tooltipText = $cms.filter.nl(params.tooltip);
+        var tooltipText = params.tooltip;
 
         $dom.on(el, 'mouseover', function (e) {
             var win = $cms.getMainCmsWindow(true);

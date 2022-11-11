@@ -45,8 +45,14 @@ class Hook_members_ecommerce
         }
         */
 
-        if ($GLOBALS['SITE_DB']->query_select_value('ecom_invoices', 'COUNT(*)', ['i_member_id' => $member_id]) != 0) {
-            $modules[] = ['views', do_lang_tempcode('MY_INVOICES'), build_url(['page' => 'invoices', 'type' => 'browse', 'id' => $member_id], get_module_zone('invoices')), 'menu/adminzone/audit/ecommerce/invoices'];
+        if ($GLOBALS['SITE_DB']->query_select_value('ecom_sales', 'COUNT(*)', ['member_id' => $member_id]) != 0) {
+            $modules[] = ['views', do_lang_tempcode('PURCHASES'), build_url(['page' => 'purchase', 'type' => 'sales', 'id' => $member_id], get_module_zone('purchase')), 'menu/adminzone/audit/ecommerce/sales'];
+        }
+
+        if (has_privilege(get_member(), 'assume_any_member') || (get_member() == $member_id)) {
+            if ($GLOBALS['SITE_DB']->query_select_value('ecom_invoices', 'COUNT(*)', ['i_member_id' => $member_id]) != 0) {
+                $modules[] = ['views', do_lang_tempcode('MY_INVOICES'), build_url(['page' => 'invoices', 'type' => 'browse', 'id' => $member_id], get_module_zone('invoices')), 'menu/adminzone/audit/ecommerce/invoices'];
+            }
         }
 
         if (has_actual_page_access(get_member(), 'admin_ecommerce', get_module_zone('admin_ecommerce'))) {

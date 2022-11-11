@@ -153,7 +153,6 @@ class Hook_addon_registry_shopping
             'themes/default/templates/ECOM_ADMIN_ORDER_ACTIONS.tpl',
             'themes/default/templates/ECOM_CART_LINK.tpl',
             'themes/default/templates/ECOM_ORDER_DETAILS_SCREEN.tpl',
-            'themes/default/templates/ECOM_ADMIN_ORDERS_SCREEN.tpl',
             'themes/default/templates/ECOM_ORDERS_SCREEN.tpl',
             'themes/default/templates/ECOM_SHIPPING_ADDRESS.tpl',
             'themes/default/templates/ECOM_CART_BUTTON_VIA_PAYPAL.tpl',
@@ -176,7 +175,6 @@ class Hook_addon_registry_shopping
     {
         return [
             'templates/ECOM_ORDERS_SCREEN.tpl' => 'ecom_orders_screen',
-            'templates/ECOM_ADMIN_ORDERS_SCREEN.tpl' => 'administrative__ecom_admin_orders_screen',
             'templates/ECOM_ORDER_DETAILS_SCREEN.tpl' => 'ecom_order_details_screen',
             'templates/ECOM_ADMIN_ORDER_ACTIONS.tpl' => 'ecom_order_details_screen',
             'templates/ECOM_SHIPPING_ADDRESS.tpl' => 'ecom_order_details_screen',
@@ -691,6 +689,7 @@ class Hook_addon_registry_shopping
      */
     public function tpl_preview__ecom_orders_screen() : object
     {
+        require_code('ecommerce');
         require_lang('ecommerce');
 
         $orders = [];
@@ -700,7 +699,7 @@ class Hook_addon_registry_shopping
                 'ID' => placeholder_numeric_id(),
                 'TXN_ID' => placeholder_codename(),
                 'TRANSACTION_LINKER' => lorem_word(),
-                'TOTAL_PRICE' => placeholder_number(),
+                'TOTAL_PRICE' => ecommerce_get_currency_symbol('GBP') . placeholder_number(), // This is usually a receipt link, so currency symbol is not included on template
                 'TOTAL_TAX' => placeholder_number(),
                 'TOTAL_SHIPPING_COST' => placeholder_number(),
                 'CURRENCY' => 'GBP',
@@ -714,27 +713,6 @@ class Hook_addon_registry_shopping
         return lorem_globalise(do_lorem_template('ECOM_ORDERS_SCREEN', [
             'TITLE' => lorem_title(),
             'ORDERS' => $orders,
-        ]), null, '', true);
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return Tempcode Preview
-     */
-    public function tpl_preview__administrative__ecom_admin_orders_screen() : object
-    {
-        require_lang('ecommerce');
-
-        return lorem_globalise(do_lorem_template('ECOM_ADMIN_ORDERS_SCREEN', [
-            'TITLE' => lorem_title(),
-            'RESULTS_TABLE' => placeholder_table(),
-            'PAGINATION' => placeholder_pagination(),
-            'SEARCH_URL' => placeholder_url(),
-            'SEARCH_VAL' => lorem_phrase(),
-            'HIDDEN' => '',
         ]), null, '', true);
     }
 

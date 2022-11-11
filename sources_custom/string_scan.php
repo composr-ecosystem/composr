@@ -1634,7 +1634,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         MODULE_TRANS_NAME_admin_banners
         MODULE_TRANS_NAME_admin_broken_urls
         MODULE_TRANS_NAME_admin_content_reviews
-        MODULE_TRANS_NAME_admin_ecommerce_logs
+        MODULE_TRANS_NAME_admin_ecommerce_reports
         MODULE_TRANS_NAME_admin_group_member_timeouts
         MODULE_TRANS_NAME_admin_health_check
         MODULE_TRANS_NAME_admin_notifications
@@ -7248,7 +7248,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SHOW_IN_POST_PREVIEWS
         SHOW_NEWEST_MEMBER
         SHOW_ON_JOIN_FORM
-        SHOW_ORDERS
         SHOW_POST_VALIDATION
         SHOW_SCREEN_ACTIONS
         SHOW_UNDISPATCHED_ORDERS
@@ -8114,7 +8113,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SEPARATE_BLOGS
         PAYMENT_RECEIVED_BODY
         PAYMENT_RECEIVED_BODY_memo
-        PAYMENT_RECEIVED_BODY_tax_invoice
+        PAYMENT_RECEIVED_BODY_invoice
         PAYMENT_RECEIVED_BODY_shipping_address
         PAYMENT_RECEIVED_SUBJECT
         _ADDON_WARNING_MISSING_DEPENDENCIES
@@ -8405,6 +8404,10 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         INVOICE_DESCRIPTION
         NO_INVOICES
         PROCESSING_CODE
+        TRANSACTION_LOGS
+        PAYMENT_RECEIVED_BODY_receipt
+        TRANSACTION_LOGS_TEXT
+        VIEW_INVOICES
     ')));
 
     $non_admin_files = [
@@ -10347,7 +10350,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PAYMENT_SENT_BODY_automatic
         PAYMENT_SENT_BODY_manual
         PAYMENT_SENT_BODY_memo
-        PAYMENT_SENT_BODY_tax_invoice
+        PAYMENT_SENT_BODY_invoice
+        PAYMENT_SENT_BODY_receipt
         PAYMENT_SENT_BODY_shipping_address
         PAYMENT_SENT_SUBJECT
         PEOPLE_NOW_FRIENDS
@@ -10725,7 +10729,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SPECIAL_CPF__cms_billing_post_code
         SPECIAL_CPF__cms_billing_state
         SPECIAL_CPF__cms_billing_street_address
-        TAX_INVOICE
         SPECIAL_CPF__cms_city
         SPECIAL_CPF__cms_country
         SPECIAL_CPF__cms_county
@@ -11786,6 +11789,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PRIVACY_ACTION_TAX
         PRIVACY_REASON_TAX
         RECEIPT
+        INVOICES_FILTERED_BY_ID
     ')));
 
     if ($GLOBALS['DEV_MODE']) {

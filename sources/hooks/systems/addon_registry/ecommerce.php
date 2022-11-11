@@ -118,10 +118,8 @@ class Hook_addon_registry_ecommerce
             'themes/default/images/icons/menu/adminzone/audit/ecommerce/cash_flow.svg',
             'themes/default/images/icons/menu/adminzone/audit/ecommerce/invoices.svg',
             'themes/default/images/icons/menu/adminzone/audit/ecommerce/profit_loss.svg',
-            'themes/default/images/icons/menu/adminzone/audit/ecommerce/transactions.svg',
+            'themes/default/images/icons/menu/adminzone/audit/ecommerce/transactions_log.svg',
             'themes/default/images/icons/menu/adminzone/audit/ecommerce/create_invoice.svg',
-            'themes/default/images/icons/menu/adminzone/audit/ecommerce/outstanding_invoices.svg',
-            'themes/default/images/icons/menu/adminzone/audit/ecommerce/unfulfilled_invoices.svg',
             'themes/default/images/icons/menu/adminzone/audit/ecommerce/index.html',
             'themes/default/images/icons/menu/rich_content/ecommerce/index.html',
             'themes/default/images/icons_monochrome/menu/adminzone/audit/ecommerce/ecommerce.svg',
@@ -130,10 +128,8 @@ class Hook_addon_registry_ecommerce
             'themes/default/images/icons_monochrome/menu/adminzone/audit/ecommerce/cash_flow.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/audit/ecommerce/invoices.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/audit/ecommerce/profit_loss.svg',
-            'themes/default/images/icons_monochrome/menu/adminzone/audit/ecommerce/transactions.svg',
+            'themes/default/images/icons_monochrome/menu/adminzone/audit/ecommerce/transactions_log.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/audit/ecommerce/create_invoice.svg',
-            'themes/default/images/icons_monochrome/menu/adminzone/audit/ecommerce/outstanding_invoices.svg',
-            'themes/default/images/icons_monochrome/menu/adminzone/audit/ecommerce/unfulfilled_invoices.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/audit/ecommerce/index.html',
             'themes/default/images/icons_monochrome/menu/rich_content/ecommerce/index.html',
             'sources/hooks/systems/config_categories/ecommerce.php',
@@ -172,7 +168,6 @@ class Hook_addon_registry_ecommerce
             'sources/hooks/modules/admin_import_types/ecommerce.php',
             'themes/default/templates/ECOM_CASH_FLOW_SCREEN.tpl',
             'themes/default/templates/ECOM_INVOICES_SCREEN.tpl',
-            'themes/default/templates/ECOM_OUTSTANDING_INVOICES_SCREEN.tpl',
             'themes/default/templates/ECOM_SUBSCRIPTIONS_SCREEN.tpl',
             'themes/default/templates/ECOM_PURCHASE_SCREEN.tpl',
             'themes/default/templates/ECOM_PURCHASE_STAGE_CHOOSE.tpl',
@@ -185,7 +180,7 @@ class Hook_addon_registry_ecommerce
             'themes/default/templates/ECOM_PURCHASE_STAGE_PAY.tpl',
             'themes/default/templates/ECOM_TRANSACTION_LOGS_MANUAL_TRIGGER.tpl',
             'themes/default/templates/ECOM_MEMBER_SUBSCRIPTION_STATUS.tpl',
-            'themes/default/templates/CNS_MEMBER_PROFILE_ECOMMERCE_LOGS.tpl',
+            'themes/default/templates/CNS_MEMBER_ECOMMERCE_REPORTS.tpl',
             'themes/default/templates/CURRENCY.tpl',
             'sources/hooks/systems/fields/tax_code.php',
             'themes/default/images/ecommerce/checkmark.svg',
@@ -193,7 +188,7 @@ class Hook_addon_registry_ecommerce
             'sources/hooks/systems/cron/manual_subscription_notification.php',
             'sources/hooks/systems/cron/subscription_mails.php',
             'adminzone/pages/modules/admin_ecommerce.php',
-            'adminzone/pages/modules/admin_ecommerce_logs.php',
+            'adminzone/pages/modules/admin_ecommerce_reports.php',
             'adminzone/pages/modules/admin_invoices.php',
             'themes/default/css/ecommerce.css',
             'sources/hooks/systems/health_checks/ecommerce.php',
@@ -207,8 +202,7 @@ class Hook_addon_registry_ecommerce
             'sources/ecommerce2.php',
             'sources/ecommerce_permission_products.php',
             'sources/ecommerce_subscriptions.php',
-            'sources/ecommerce_logs.php',
-            'sources/hooks/systems/profiles_tabs/ecommerce_logs.php',
+            'sources/ecommerce_reports.php',
             'sources/hooks/systems/config/manual_subscription_expiry_notice.php',
             'sources/hooks/systems/config/ecom_price_honour_time.php',
             'sources/hooks/modules/members/ecommerce.php',
@@ -258,9 +252,9 @@ class Hook_addon_registry_ecommerce
             'sources/hooks/systems/tasks/export_ecom_transactions.php',
             'sources/hooks/systems/config/currency_auto.php',
             'themes/default/images/icons/menu/adminzone/setup/ecommerce_products.svg',
-            'themes/default/images/icons/menu/adminzone/audit/ecommerce/sales_log.svg',
+            'themes/default/images/icons/menu/adminzone/audit/ecommerce/sales.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/setup/ecommerce_products.svg',
-            'themes/default/images/icons_monochrome/menu/adminzone/audit/ecommerce/sales_log.svg',
+            'themes/default/images/icons_monochrome/menu/adminzone/audit/ecommerce/sales.svg',
             'sources/hooks/systems/config/average_gamble_multiplier.php',
             'sources/hooks/systems/config/banner_hit_price.php',
             'sources/hooks/systems/config/banner_hit_tax_code.php',
@@ -310,7 +304,7 @@ class Hook_addon_registry_ecommerce
             'sources/hooks/systems/commandr_fs_extended_config/ecom_prods_prices.php',
             'sources/hooks/blocks/main_staff_checklist/ecommerce_sales.php',
             'themes/default/templates/ECOM_PRODUCTS_PRICES_FORM_WRAP.tpl',
-            'themes/default/templates/ECOM_SALES_LOG_SCREEN.tpl',
+            'themes/default/templates/ECOM_SALES_SCREEN.tpl',
             'themes/default/templates/ECOM_INVOICE_OR_RECEIPT.tpl',
             'themes/default/templates/ECOM_PRODUCT_PRICE_SCREEN.tpl',
             'themes/default/text/ECOM_PRODUCT_QUOTA_MAIL.txt',
@@ -366,10 +360,9 @@ class Hook_addon_registry_ecommerce
     {
         return [
             'templates/CURRENCY.tpl' => 'currency',
-            'templates/ECOM_OUTSTANDING_INVOICES_SCREEN.tpl' => 'administrative__ecom_outstanding_invoices_screen',
             'templates/ECOM_TRANSACTION_LOGS_MANUAL_TRIGGER.tpl' => 'ecom_subscriptions_screen',
             'templates/ECOM_CASH_FLOW_SCREEN.tpl' => 'administrative__ecom_cash_flow_screen',
-            'templates/ECOM_INVOICE_OR_RECEIPT.tpl' => 'ecom_tax_invoice_screen',
+            'templates/ECOM_INVOICE_OR_RECEIPT.tpl' => 'ecom_invoice_or_receipt_screen',
             'templates/ECOM_PURCHASE_SCREEN.tpl' => 'purchase_screen',
             'templates/ECOM_LOGOS_AUTHORIZE.tpl' => 'ecom_logos_authorize',
             'templates/ECOM_PAYMENT_PROCESSOR_LINKS_AUTHORIZE.tpl' => 'ecom_payment_processor_links_authorize',
@@ -393,10 +386,10 @@ class Hook_addon_registry_ecommerce
             'templates/ECOM_INVOICES_SCREEN.tpl' => 'ecom_invoices_screen',
             'templates/ECOM_SUBSCRIPTIONS_SCREEN.tpl' => 'ecom_subscriptions_screen',
             'templates/ECOM_MEMBER_SUBSCRIPTION_STATUS.tpl' => 'member_subscription_status_screen',
-            'templates/ECOM_SALES_LOG_SCREEN.tpl' => 'administrative__ecom_sales_log_screen',
+            'templates/ECOM_SALES_SCREEN.tpl' => 'administrative__ecom_sales_screen',
             'templates/ECOM_PRODUCTS_PRICES_FORM_WRAP.tpl' => 'administrative__ecom_products_price_screen',
             'templates/ECOM_PRODUCT_PRICE_SCREEN.tpl' => 'administrative__ecom_products_price_screen',
-            'templates/CNS_MEMBER_PROFILE_ECOMMERCE_LOGS.tpl' => 'administrative__cns_member_profile_ecommerce_logs_screen',
+            'templates/CNS_MEMBER_ECOMMERCE_REPORTS.tpl' => 'administrative__cns_member_profile_ecommerce_reports_screen',
             'text/ECOM_PRODUCT_FORWARDER_MAIL.txt' => 'ecom_product_forwarder_mail',
             'text/ECOM_PRODUCT_POP3_MAIL.txt' => 'ecom_product_pop3_mail',
             'text/ECOM_PRODUCT_QUOTA_MAIL.txt' => 'ecom_product_quota_mail',
@@ -1013,39 +1006,6 @@ class Hook_addon_registry_ecommerce
      *
      * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__ecom_outstanding_invoices_screen() : object
-    {
-        $invoices = [];
-        foreach (placeholder_array() as $invoice) {
-            $invoices[] = [
-                'INVOICE_TITLE' => lorem_word(),
-                'PROFILE_URL' => placeholder_url(),
-                'USERNAME' => lorem_word_2(),
-                'ID' => placeholder_numeric_id(),
-                'STATE' => lorem_phrase(),
-                'AMOUNT' => placeholder_number(),
-                'TAX' => placeholder_number(),
-                'CURRENCY' => 'GBP',
-                'DATE' => placeholder_date(),
-                'NOTE' => lorem_phrase(),
-                'TYPE_CODE' => lorem_phrase(),
-            ];
-        }
-
-        return lorem_globalise(do_lorem_template('ECOM_OUTSTANDING_INVOICES_SCREEN', [
-            'TITLE' => lorem_title(),
-            'FROM' => lorem_phrase(),
-            'INVOICES' => $invoices,
-        ]), null, '', true);
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return Tempcode Preview
-     */
     public function tpl_preview__ecom_subscriptions_screen() : object
     {
         $button = do_lorem_template('ECOM_TRANSACTION_LOGS_MANUAL_TRIGGER', [
@@ -1154,7 +1114,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__ecom_sales_log_screen() : object
+    public function tpl_preview__administrative__ecom_sales_screen() : object
     {
         $cells = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
@@ -1229,7 +1189,7 @@ class Hook_addon_registry_ecommerce
 
         pop_field_encapsulation();
 
-        return lorem_globalise(do_lorem_template('ECOM_SALES_LOG_SCREEN', [
+        return lorem_globalise(do_lorem_template('ECOM_SALES_SCREEN', [
             'TITLE' => lorem_title(),
             'CONTENT' => $content,
             'PAGINATION' => placeholder_pagination(),
@@ -1246,9 +1206,9 @@ class Hook_addon_registry_ecommerce
      *
      * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__cns_member_profile_ecommerce_logs_screen() : object
+    public function tpl_preview__administrative__cns_member_profile_ecommerce_reports_screen() : object
     {
-        return lorem_globalise(do_lorem_template('CNS_MEMBER_PROFILE_ECOMMERCE_LOGS', [
+        return lorem_globalise(do_lorem_template('CNS_MEMBER_ECOMMERCE_REPORTS', [
             'CONTENT' => lorem_chunk_html(),
             'PAGINATION' => placeholder_pagination(),
         ]), null, '', true);
@@ -1379,7 +1339,7 @@ class Hook_addon_registry_ecommerce
             'ITEM_NAME' => lorem_phrase(),
             'TAX' => placeholder_number(),
             'CURRENCY_SYMBOL' => '$',
-            'TAX_INVOICE' => lorem_chunk_html(),
+            'RECEIPT' => lorem_chunk_html(),
             'MEMO' => lorem_chunk(),
             'SHIPPED' => true,
 
@@ -1414,7 +1374,7 @@ class Hook_addon_registry_ecommerce
             'ITEM_NAME' => lorem_phrase(),
             'TAX' => placeholder_number(),
             'CURRENCY_SYMBOL' => '$',
-            'TAX_INVOICE' => lorem_chunk_html(),
+            'RECEIPT' => lorem_chunk_html(),
             'MEMO' => lorem_chunk(),
             'SHIPPED' => true,
 
@@ -1440,7 +1400,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return Tempcode Preview
      */
-    public function tpl_preview__ecom_tax_invoice_screen() : object
+    public function tpl_preview__ecom_invoice_or_receipt_screen() : object
     {
         $items = [];
         foreach (placeholder_array() as $k => $v) {

@@ -38,7 +38,7 @@
 				{+END}
 
 				{+START,IF,{$HAS_ZONE_ACCESS,adminzone}}
-					<p>{!ADMIN_EXTEND}: <a title="{!ecommerce:MANUAL_TRANSACTION} (#{ID*})" href="{$PAGE_LINK*,adminzone:admin_ecommerce_logs:trigger:{ID}:redirect={$SELF_URL&}}">{!ecommerce:MANUAL_TRANSACTION}</a></p>
+					<p>{!ADMIN_EXTEND}: <a title="{!ecommerce:MANUAL_TRANSACTION} (#{ID*})" href="{$PAGE_LINK*,adminzone:admin_ecommerce_reports:trigger:{ID}:redirect={$SELF_URL&}}">{!ecommerce:MANUAL_TRANSACTION}</a></p>
 				{+END}
 			</td>
 		</tr>

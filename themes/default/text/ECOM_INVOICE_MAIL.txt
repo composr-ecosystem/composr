@@ -1,5 +1,5 @@
 {!INVOICE_MESSAGE,{$SITE_NAME@},[page="_SEARCH:invoices:browse"]{!MY_INVOICES@}[/page]}
 
-{!PAYMENT_SENT_BODY_tax_invoice}...
+{!PAYMENT_SENT_BODY_invoice}...
 
 [html]{INVOICE}[/html]

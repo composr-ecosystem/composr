@@ -36,8 +36,8 @@ class Hook_members_customers
 
         require_lang('customers');
         return [
-            ['views', do_lang_tempcode('GIVE_CREDITS'), build_url(['page' => 'admin_ecommerce_logs', 'type' => 'trigger', 'member_id' => $member_id], get_module_zone('admin_ecommerce_logs')), 'menu/rich_content/ecommerce/purchase'],
-            ['views', do_lang_tempcode('CHARGE_CUSTOMER'), build_url(['page' => 'admin_customers', 'type' => 'charge', 'username' => $GLOBALS['FORUM_DRIVER']->get_username($member_id)], get_module_zone('admin_customers')), 'menu/adminzone/audit/ecommerce/transactions'],
+            ['views', do_lang_tempcode('GIVE_CREDITS'), build_url(['page' => 'admin_ecommerce_reports', 'type' => 'trigger', 'member_id' => $member_id], get_module_zone('admin_ecommerce_reports')), 'menu/rich_content/ecommerce/purchase'],
+            ['views', do_lang_tempcode('CHARGE_CUSTOMER'), build_url(['page' => 'admin_customers', 'type' => 'charge', 'username' => $GLOBALS['FORUM_DRIVER']->get_username($member_id)], get_module_zone('admin_customers')), 'menu/adminzone/audit/ecommerce/transactions_log'],
         ];
     }
 }

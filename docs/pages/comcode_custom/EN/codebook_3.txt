@@ -838,7 +838,7 @@ We also have some special cases coded up directly. These are often referenced be
    - [tt]aggregate_type[/tt]
   - [tt]sync[/tt]
   - [tt]type[/tt]
- - [tt]admin_ecommerce_logs[/tt]
+ - [tt]admin_ecommerce_reports[/tt]
  - [tt]add[/tt]
   - [tt]group_id[/tt]
   - [tt]trigger[/tt]

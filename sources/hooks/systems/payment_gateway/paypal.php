@@ -305,17 +305,7 @@ class Hook_payment_gateway_paypal
         // Check that we have a data transfer ID specified in configuration
         $at = get_option('paypal_data_transfer_id', true);
         if (($at === null) || ($at == '')) {
-            if ((file_exists(get_custom_file_base() . '/data_custom/ecommerce.log')) && (cms_is_writable(get_custom_file_base() . '/data_custom/ecommerce.log'))) {
-                require_code('files');
-                $myfile = cms_fopen_text_write(get_custom_file_base() . '/data_custom/ecommerce.log', true, 'ab');
-                fwrite($myfile, loggable_date() . "\n");
-                fwrite($myfile, '(hooks/systems/payment_gateway/paypal)->handle_pdt_transaction' . "\n");
-                fwrite($myfile, 'SKIPPED; paypal_data_transfer_id was not set. Relying on PayPal to post back to /data/ecommerce.php via IPN.' . "\n\n");
-                flock($myfile, LOCK_UN);
-                fclose($myfile);
-            }
-
-            return null; // Always silent fail; PDT is not required
+            return null; // Silent fail and rely on IPN instead
         }
 
         // Post back to PayPal system to validate and get additional transaction details

@@ -115,7 +115,7 @@ class Module_shopping
                 'p_quantity' => 'INTEGER',
                 'p_price' => 'REAL', // Unit Price
                 'p_tax_code' => 'ID_TEXT',
-                'p_tax' => 'REAL', // Total tax of item (accounting for quantity);  We need this for accurate logging (we can't have it changing while looking at a past order); we use it for tax invoices
+                'p_tax' => 'REAL', // Total tax of item (accounting for quantity);  We need this for accurate logging (we can't have it changing while looking at a past order); we use it for receipts
                 'p_dispatch_status' => 'SHORT_TEXT',
             ]);
             $GLOBALS['SITE_DB']->create_index('shopping_order_details', 'type_code', ['p_type_code']);
@@ -296,6 +296,9 @@ class Module_shopping
         if ($type == 'my_orders') {
             $this->title = get_screen_title('MY_ORDERS');
         }
+        if ($type == 'receipt') {
+            $this->title = get_screen_title('ecommerce:RECEIPT');
+        }
 
         if ($type == 'order_details') {
             breadcrumb_set_parents([['_SELF:_SELF:my_orders', do_lang_tempcode('MY_ORDERS')]]);
@@ -357,6 +360,9 @@ class Module_shopping
         }
         if ($type == 'order_details') {
             return $this->order_details();
+        }
+        if ($type == 'receipt') {
+            return $this->receipt();
         }
 
         return new Tempcode();
@@ -657,6 +663,14 @@ class Module_shopping
                 $order_title = do_lang('PURCHASE_ORDER', strval($row['id']));
             }
 
+            $price_linker = new Tempcode();
+            if ($row['txn_id'] != '') {
+                $receipt_url = build_url(['page' => '_SELF', 'type' => 'receipt', 'id' => $row['txn_id'], 'wide_high' => 1], '_SELF');
+                $price_linker = hyperlink($receipt_url, ecommerce_get_currency_symbol($row['order_currency']) . escape_html(float_format($row['total_price'])), true, false, do_lang('RECEIPT'));
+            } else {
+                $price_linker->attach(ecommerce_get_currency_symbol($row['order_currency']) . escape_html(float_format($row['total_price'])));
+            }
+
             $transaction_linker = build_transaction_linker($row['txn_id'], $row['order_status'] == 'ORDER_STATUS_awaiting_payment');
 
             $orders[] = [
@@ -664,7 +678,7 @@ class Module_shopping
                 'ID' => strval($row['id']),
                 'TXN_ID' => $row['txn_id'],
                 'TRANSACTION_LINKER' => $transaction_linker,
-                'TOTAL_PRICE' => float_format($row['total_price']),
+                'TOTAL_PRICE' => $price_linker,
                 'TOTAL_TAX' => float_format($row['total_tax']),
                 'TOTAL_SHIPPING_COST' => float_format($row['total_shipping_cost']),
                 'CURRENCY' => $row['order_currency'],
@@ -706,7 +720,21 @@ class Module_shopping
             }
         }
 
-        require_code('ecommerce_logs');
+        require_code('ecommerce_reports');
         return build_order_details($this->title, $id, new Tempcode());
+    }
+
+    /**
+     * Show a receipt for a transaction.
+     *
+     * @return Tempcode The result of execution
+     */
+    public function receipt() : object
+    {
+        $GLOBALS['SCREEN_TEMPLATE_CALLED'] = '';
+
+        $txn_id = get_param_string('id');
+        $receipt = display_receipt($txn_id, get_member());
+        return $receipt;
     }
 }

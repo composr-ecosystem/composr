@@ -61,12 +61,7 @@ class Module_admin_shopping
 
         $ret = [
             'browse' => ['ORDERS', 'menu/rich_content/ecommerce/orders'],
-            'show_orders' => ['SHOW_ORDERS', 'menu/rich_content/ecommerce/orders'],
         ];
-
-        if ($support_crosslinks) {
-            $ret['_SEARCH:admin_shopping:show_orders:filter=undispatched'] = ['SHOW_UNDISPATCHED_ORDERS', 'menu/adminzone/audit/ecommerce/undispatched_orders'];
-        }
 
         return $ret;
     }
@@ -98,25 +93,15 @@ class Module_admin_shopping
 
         if ($type == 'browse') {
             breadcrumb_set_self(do_lang_tempcode('ORDERS'));
-            breadcrumb_set_parents([['_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')]]);
+            breadcrumb_set_parents([['_SEARCH:admin_ecommerce_reports:browse', do_lang_tempcode('ECOMMERCE')]]);
+
+            $this->title = get_screen_title('ORDERS');
         }
 
-        if ($type == 'show_orders') {
-            breadcrumb_set_parents([['_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')], ['_SELF:_SELF:browse', do_lang_tempcode('ORDERS')]]);
-
-            $filter = get_param_string('filter', null);
-            if ($filter == 'undispatched') {
-                $this->title = get_screen_title('SHOW_UNDISPATCHED_ORDERS');
-            } else {
-                $this->title = get_screen_title('SHOW_ORDERS');
-            }
-        }
-
-        if ($type == 'order_details' || $type == 'order_export' || $type == '_order_export') {
+        if ($type == 'order_details') {
             breadcrumb_set_parents([
-                ['_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')],
+                ['_SEARCH:admin_ecommerce_reports:browse', do_lang_tempcode('ECOMMERCE')],
                 ['_SELF:_SELF:browse', do_lang_tempcode('ORDERS')],
-                ['_SELF:_SELF:show_orders', do_lang_tempcode('SHOW_ORDERS')],
             ]);
         }
 
@@ -124,12 +109,8 @@ class Module_admin_shopping
             $this->title = get_screen_title('ORDER_DETAILS');
         }
 
-        if ($type == 'export_orders' || $type == '_export_orders') {
+        if ($type == 'export_orders') {
             $this->title = get_screen_title('EXPORT_ORDER_LIST');
-        }
-
-        if ($type == '_order_export') {
-            breadcrumb_set_self(do_lang_tempcode('DONE'));
         }
 
         if ($type == 'order_act') {
@@ -137,9 +118,8 @@ class Module_admin_shopping
             $action = either_param_string('order_action');
 
             breadcrumb_set_parents([
-                ['_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')],
+                ['_SEARCH:admin_ecommerce_reports:browse', do_lang_tempcode('ECOMMERCE')],
                 ['_SELF:_SELF:browse', do_lang_tempcode('ORDERS')],
-                ['_SELF:_SELF:show_orders', do_lang_tempcode('SHOW_ORDERS')],
                 ['_SELF:_SELF:order_details:' . strval($order_id), do_lang_tempcode('CART_ORDER', strval($order_id))],
             ]);
 
@@ -174,9 +154,8 @@ class Module_admin_shopping
             $order_id = post_param_integer('order_id');
 
             breadcrumb_set_parents([
-                ['_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')],
+                ['_SEARCH:admin_ecommerce_reports:browse', do_lang_tempcode('ECOMMERCE')],
                 ['_SELF:_SELF:browse', do_lang_tempcode('ORDERS')],
-                ['_SELF:_SELF:show_orders', do_lang_tempcode('SHOW_ORDERS')],
                 ['_SELF:_SELF:order_details:' . strval($order_id), do_lang_tempcode('CART_ORDER', strval($order_id))],
             ]);
 
@@ -204,9 +183,6 @@ class Module_admin_shopping
 
         if ($type == 'browse') {
             return $this->browse();
-        }
-        if ($type == 'show_orders') {
-            return $this->show_orders();
         }
         if ($type == 'order_details') {
             return $this->order_details();
@@ -236,9 +212,6 @@ class Module_admin_shopping
         if ($type == 'export_orders') {
             return $this->export_orders();
         }
-        if ($type == '_export_orders') {
-            $this->_export_orders();
-        }
 
         return new Tempcode();
     }
@@ -250,53 +223,57 @@ class Module_admin_shopping
      */
     public function browse() : object
     {
-        require_code('templates_donext');
-        return do_next_manager(
-            get_screen_title('ORDERS'),
-            comcode_lang_string('DOC_ECOMMERCE'),
-            [
-                ['menu/rich_content/ecommerce/orders', ['_SELF', ['type' => 'show_orders'], '_SELF'], do_lang('SHOW_ORDERS')],
-                ['menu/adminzone/audit/ecommerce/undispatched_orders', ['_SELF', ['type' => 'show_orders', 'filter' => 'undispatched'], '_SELF'], do_lang('SHOW_UNDISPATCHED_ORDERS')],
-            ],
-            do_lang('ORDERS')
-        );
-    }
-
-    /**
-     * UI to show all orders.
-     *
-     * @return Tempcode The interface
-     */
-    public function show_orders() : object
-    {
-        $filter = get_param_string('filter', null);
-        $search = get_param_string('search', '', INPUT_FILTER_GET_COMPLEX);
-
-        $where = '1=1';
-
-        if ($filter == 'undispatched') {
-            $where .= ' AND ' . db_string_equal_to('order_status', 'ORDER_STATUS_payment_received');
+        // Do not display any UI if there are no records
+        $has_records = $GLOBALS['SITE_DB']->query_select_value_if_there('shopping_orders', 'id', []);
+        if ($has_records === null) {
+            inform_exit(do_lang_tempcode('NO_ENTRIES'));
         }
 
-        if (!cms_empty_safe($search)) {
-            $where .= ' AND (';
-            if (is_numeric($filter)) {
-                $where .= 'id=' . strval(intval($filter));
-            }
-            $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($search);
+        $filter_id = get_param_integer('filter_id', null);
+        $filter_username = get_param_string('filter_username', '', INPUT_FILTER_NONE);
+        $filter_txn_id = get_param_string('filter_txn_id', '');
+        $_filter_order_status = get_param_string('filter_order_status', '');
+        $filter_order_status = explode(',', $_filter_order_status);
+        $filter_start = post_param_date('filter_start', true);
+        $filter_end = post_param_date('filter_end', true);
+
+        $where = '1=1';
+        if ($filter_id !== null) {
+            $where .= ' AND id=' . strval($filter_id);
+        }
+        if ($filter_username != '') {
+            $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($filter_username);
             if ($member_id !== null) {
-                if (is_numeric($filter)) {
+                $where .= ' AND member_id=' . strval($member_id);
+            } else {
+                warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($filter_username)));
+            }
+        }
+        if ($filter_txn_id != '') {
+            $where .= ' AND ' . db_string_equal_to('txn_id', $filter_txn_id);
+        }
+        if ($_filter_order_status != '') {
+            $where .= ' AND (';
+            foreach ($filter_order_status as $key => $status) {
+                if ($key > 0) {
                     $where .= ' OR ';
                 }
-                $where .= 'member_id=' . strval($member_id);
+                $where .= db_string_equal_to('order_status', $status);
             }
             $where .= ')';
         }
+        if ($filter_start !== null) {
+            $where .= ' AND add_date>=' . strval($filter_start);
+        }
+        if ($filter_end !== null) {
+            $where .= ' AND add_date<=' . strval($filter_end);
+        }
 
         $start = get_param_integer('start', 0);
-        $max = get_param_integer('max', 10);
+        $max = get_param_integer('max', 50);
 
         require_code('templates_results_table');
+        require_code('templates_tooltip');
 
         $sortables = [
             'add_date' => do_lang_tempcode('ORDERED_DATE'),
@@ -315,25 +292,36 @@ class Module_admin_shopping
         }
 
         $header_row = results_header_row([
-            do_lang_tempcode('ECOM_ORDER'),
+            do_lang_tempcode('ORDER_NUMBER'),
+            do_lang_tempcode('ORDERED_DATE'),
+            do_lang_tempcode('STATUS'),
             do_lang_tempcode('PRICE'),
             do_lang_tempcode(get_option('tax_system')),
             do_lang_tempcode('SHIPPING_COST'),
-            do_lang_tempcode('ORDERED_DATE'),
             do_lang_tempcode('ORDERED_BY'),
             do_lang_tempcode('TRANSACTION'),
-            do_lang_tempcode('STATUS'),
             do_lang_tempcode('ACTIONS'),
         ], $sortables, 'sort', $sortable . ' ' . $sort_order);
 
         $sql = 'SELECT * FROM ' . get_table_prefix() . 'shopping_orders WHERE ' . $where . ' ORDER BY ' . db_string_equal_to('order_status', 'ORDER_STATUS_cancelled')/*cancelled always last*/ . ',' . $sortable . ' ' . $sort_order;
+        $max_rows = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'shopping_orders WHERE ' . $where);
         $rows = $GLOBALS['SITE_DB']->query($sql, $max, $start, false, true);
+
         $order_entries = new Tempcode();
         foreach ($rows as $row) {
             if ($row['purchase_through'] == 'cart') {
                 $order_title = do_lang('CART_ORDER', strval($row['id']));
             } else {
                 $order_title = do_lang('PURCHASE_ORDER', strval($row['id']));
+            }
+            $order_tooltip = tooltip($order_title, with_whitespace(get_ordered_product_list_string($row['id'])), false);
+
+            $price_linker = new Tempcode();
+            if ($row['txn_id'] != '') {
+                $receipt_url = build_url(['page' => 'admin_ecommerce_reports', 'type' => 'receipt', 'id' => $row['txn_id'], 'wide_high' => 1], '_SELF');
+                $price_linker = hyperlink($receipt_url, ecommerce_get_currency_symbol($row['order_currency']) . escape_html(float_format($row['total_price'])), true, false, do_lang('RECEIPT'));
+            } else {
+                $price_linker->attach(ecommerce_get_currency_symbol($row['order_currency']) . escape_html(float_format($row['total_price'])));
             }
 
             $order_details_url = build_url(['page' => '_SELF', 'type' => 'order_details', 'id' => $row['id']], '_SELF');
@@ -347,7 +335,10 @@ class Module_admin_shopping
                 $member_link = hyperlink($member_url, $submitted_by, false, true, do_lang('CUSTOMER'));
             }
 
-            $transaction_linker = build_transaction_linker($row['txn_id'], $row['order_status'] == 'ORDER_STATUS_awaiting_payment');
+            $transaction_linker = build_transaction_linker($row['txn_id'], $row['order_status'] == 'ORDER_STATUS_awaiting_payment', null, true);
+            if ($transaction_linker === null) {
+                $transaction_linker = new Tempcode();
+            }
 
             $order_status = do_lang_tempcode($row['order_status']);
 
@@ -360,40 +351,86 @@ class Module_admin_shopping
             ]);
 
             $order_entries->attach(results_entry([
-                escape_html($order_title),
-                ecommerce_get_currency_symbol() . escape_html(float_format($row['total_price'])),
-                ecommerce_get_currency_symbol() . escape_html(float_format($row['total_tax'])),
-                ecommerce_get_currency_symbol() . escape_html(float_format($row['total_shipping_cost'])),
+                $order_tooltip,
                 $order_date,
+                $order_status,
+                $price_linker,
+                ecommerce_get_currency_symbol($row['order_currency']) . escape_html(float_format($row['total_tax'])),
+                ecommerce_get_currency_symbol($row['order_currency']) . escape_html(float_format($row['total_shipping_cost'])),
                 $member_link,
                 $transaction_linker,
-                $order_status,
                 $actions,
             ], false));
         }
-        if ($order_entries->is_empty()) {
-            inform_exit(do_lang_tempcode('NO_ENTRIES'));
-        }
-
-        require_code('templates_pagination');
-        $max_rows = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'shopping_orders WHERE ' . $where);
-        $pagination = pagination(do_lang_tempcode('ORDERS'), $start, 'start', $max, 'max', $max_rows, true);
 
         $results_table = results_table(do_lang_tempcode('ORDERS'), 0, 'start', $max_rows, 'max', $max_rows, $header_row, $order_entries, $sortables, $sortable, $sort_order, 'sort');
 
-        $hidden = build_keep_form_fields('_SELF', true, ['filter']);
+        // Export button
+        $form = new Tempcode();
+        if (count($rows) > 0) {
+            $export_url = build_url(['page' => '_SELF', 'type' => 'export_orders'], '_SELF', [], true);
+            $form->attach(do_template('BUTTON_SCREEN', ['IMMEDIATE' => false, 'URL' => $export_url, 'TITLE' => do_lang_tempcode('EXPORT'), 'IMG' => 'admin/export_spreadsheet', 'HIDDEN' => new Tempcode()]));
+        }
 
-        $search_url = get_self_url(true);
+        // Start building fields for the filter box
+        push_field_encapsulation(FIELD_ENCAPSULATION_RAW);
 
-        $tpl = do_template('ECOM_ADMIN_ORDERS_SCREEN', [
-            '_GUID' => '08afb0204c061644ec9c562b4eba24f4',
+        $t_order_statuses = new Tempcode();
+        $statuses = ['ORDER_STATUS_awaiting_payment', 'ORDER_STATUS_payment_received', 'ORDER_STATUS_dispatched', 'ORDER_STATUS_onhold', 'ORDER_STATUS_cancelled', 'ORDER_STATUS_returned'];
+        foreach ($statuses as $status) {
+            $t_order_statuses->attach(form_input_list_entry($status, (($_filter_order_status != '') && in_array($status, $filter_order_status)), do_lang($status)));
+        }
+
+        $filters_row_a = [
+            [
+                'PARAM' => 'filter_id',
+                'LABEL' => do_lang_tempcode('ORDER_NUMBER'),
+                'FIELD' => form_input_integer(do_lang_tempcode('ORDER_NUMBER'), new Tempcode(), 'filter_id', $filter_id, false),
+            ],
+            [
+                'PARAM' => 'filter_username',
+                'LABEL' => do_lang_tempcode('ORDERED_BY'),
+                'FIELD' => form_input_username(do_lang_tempcode('ORDERED_BY'), new Tempcode(), 'filter_username', $filter_username, false),
+            ],
+            [
+                'PARAM' => 'filter_txn_id',
+                'LABEL' => do_lang_tempcode('TRANSACTION'),
+                'FIELD' => form_input_line(do_lang_tempcode('TRANSACTION'), new Tempcode(), 'filter_txn_id', $filter_txn_id, false),
+            ],
+            [
+                'PARAM' => 'filter_order_status',
+                'LABEL' => do_lang_tempcode('STATUS'),
+                'FIELD' => form_input_multi_list(do_lang_tempcode('STATUS'), new Tempcode(), 'filter_order_status', $t_order_statuses),
+            ],
+        ];
+
+        $filters_row_b = [
+            [
+                'PARAM' => 'filter_start',
+                'LABEL' => do_lang_tempcode('ST_START_PERIOD'),
+                'FIELD' => form_input_date(do_lang_tempcode('ST_START_PERIOD'), do_lang_tempcode('ST_START_PERIOD_DESCRIPTION'), 'filter_start', false, ($filter_start === null), true, $filter_start),
+            ],
+            [
+                'PARAM' => 'filter_end',
+                'LABEL' => do_lang_tempcode('ST_END_PERIOD'),
+                'FIELD' => form_input_date(do_lang_tempcode('ST_END_PERIOD'), do_lang_tempcode('ST_END_PERIOD_DESCRIPTION'), 'filter_end', false,  ($filter_end === null), true, $filter_end),
+            ],
+        ];
+
+        $url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
+
+        $tpl = do_template('RESULTS_TABLE_SCREEN', [
             'TITLE' => $this->title,
+            'TEXT' => '',
             'RESULTS_TABLE' => $results_table,
-            'PAGINATION' => $pagination,
-            'SEARCH_URL' => $search_url,
-            'SEARCH_VAL' => $search,
-            'HIDDEN' => $hidden,
+            'FORM' => $form,
+            'FILTERS_ROW_A' => $filters_row_a,
+            'FILTERS_ROW_B' => $filters_row_b,
+            'URL' => $url, // TODO
+            'FILTERS_HIDDEN' => new Tempcode(), // TODO
         ]);
+
+        pop_field_encapsulation();
 
         require_code('templates_internalise_screen');
         return internalise_own_screen($tpl);
@@ -410,7 +447,7 @@ class Module_admin_shopping
 
         $text = do_lang_tempcode('ORDER_DETAILS_TEXT');
 
-        require_code('ecommerce_logs');
+        require_code('ecommerce_reports');
         $tpl = build_order_details($this->title, $id, $text, true);
 
         require_code('templates_internalise_screen');
@@ -506,7 +543,7 @@ class Module_admin_shopping
         $this->send_dispatch_notification($id);
 
         if ($redirect === null) { // If a redirect URL is not passed, redirect to the order list
-            $_redirect = build_url(['page' => '_SELF', 'type' => 'show_orders'], '_SELF');
+            $_redirect = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
             $redirect = $_redirect->evaluate();
         }
 
@@ -589,59 +626,20 @@ class Module_admin_shopping
     }
 
     /**
-     * Method to display export order list filters.
-     *
-     * @return Tempcode The interface
-     */
-    public function export_orders() : object
-    {
-        $fields = new Tempcode();
-
-        $order_status_list = get_order_status_list();
-        $fields->attach(form_input_list(do_lang_tempcode('ORDER_STATUS'), do_lang_tempcode('ORDER_STATUS_FILTER_DESCRIPTION'), 'order_status', $order_status_list, null, false, false));
-
-        // Dates...
-
-        $start_year = intval(date('Y')) - 1;
-        $start_month = intval(date('m'));
-        $start_day = intval(date('d'));
-        $start_hour = intval(date('H'));
-        $start_minute = intval(date('i'));
-
-        $end_year = $start_year + 1;
-        $end_month = $start_month;
-        $end_day = $start_day;
-        $end_hour = $start_hour;
-        $end_minute = $start_minute;
-
-        $fields->attach(form_input_date(do_lang_tempcode('ST_START_PERIOD'), do_lang_tempcode('ST_START_PERIOD_DESCRIPTION'), 'start_date', true, false, true, [$start_minute, $start_hour, $start_month, $start_day, $start_year], -10));
-        $fields->attach(form_input_date(do_lang_tempcode('ST_END_PERIOD'), do_lang_tempcode('ST_END_PERIOD_DESCRIPTION'), 'end_date', true, false, true, [$end_minute, $end_hour, $end_month, $end_day, $end_year], -10));
-
-        return do_template('FORM_SCREEN', [
-            '_GUID' => 'e2e5097798c963f4977ba22b50ddf2f3',
-            'SKIP_WEBSTANDARDS' => true,
-            'TITLE' => $this->title,
-            'SUBMIT_ICON' => 'admin/export_spreadsheet',
-            'SUBMIT_NAME' => do_lang_tempcode('EXPORT_ORDER_LIST'),
-            'TEXT' => paragraph(do_lang_tempcode('EXPORT_ORDER_LIST_TEXT')),
-            'URL' => build_url(['page' => '_SELF', 'type' => '_export_orders'], '_SELF'),
-            'HIDDEN' => '',
-            'FIELDS' => $fields,
-        ]);
-    }
-
-    /**
      * Actualiser to build orders spreadsheet from the selected filters.
      *
      * @return Tempcode The result of execution
      */
-    public function _export_orders() : object
+    public function export_orders() : object
     {
-        $start_date = post_param_date('start_date', true);
-        $end_date = post_param_date('end_date', true);
-        $order_status = post_param_string('order_status');
+        $filter_id = get_param_integer('filter_id', null);
+        $filter_username = get_param_string('filter_username', '', INPUT_FILTER_NONE);
+        $filter_txn_id = get_param_string('filter_txn_id', '');
+        $filter_order_status = get_param_string('filter_order_status', '');
+        $filter_start = post_param_date('filter_start', true);
+        $filter_end = post_param_date('filter_end', true);
 
         require_code('tasks');
-        return call_user_func_array__long_task(do_lang('EXPORT_ORDER_LIST'), $this->title, 'export_shopping_orders', [$start_date, $end_date, $order_status]);
+        return call_user_func_array__long_task(do_lang('EXPORT_ORDER_LIST'), $this->title, 'export_shopping_orders', [$filter_id, $filter_username, $filter_txn_id, $filter_order_status, $filter_start, $filter_end]);
     }
 }
