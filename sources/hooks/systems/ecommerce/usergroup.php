@@ -202,7 +202,7 @@ class Hook_ecommerce_usergroup
             } else {
                 $default_username = '';
             }
-            $fields_inner->attach(form_input_username($pretty_name, $description, 'username', $default_username, true, true)); // This is handled as a special case in admin_ecommerce_logs.php
+            $fields_inner->attach(form_input_username($pretty_name, $description, 'username', $default_username, true, true)); // This is handled as a special case in admin_ecommerce_reports.php
 
             if (!empty($rows)) {
                 $fields->attach(alternate_fields_set__end('options', do_lang_tempcode('SUBSCRIPTION'), '', $fields_inner, true));

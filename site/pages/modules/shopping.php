@@ -718,7 +718,7 @@ class Module_shopping
             }
         }
 
-        require_code('ecommerce_logs');
+        require_code('ecommerce_reports');
         return build_order_details($this->title, $id, new Tempcode());
     }
 

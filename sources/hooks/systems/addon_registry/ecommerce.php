@@ -120,8 +120,6 @@ class Hook_addon_registry_ecommerce
             'themes/default/images/icons/menu/adminzone/audit/ecommerce/profit_loss.svg',
             'themes/default/images/icons/menu/adminzone/audit/ecommerce/transactions_log.svg',
             'themes/default/images/icons/menu/adminzone/audit/ecommerce/create_invoice.svg',
-            'themes/default/images/icons/menu/adminzone/audit/ecommerce/outstanding_invoices.svg',
-            'themes/default/images/icons/menu/adminzone/audit/ecommerce/unfulfilled_invoices.svg',
             'themes/default/images/icons/menu/adminzone/audit/ecommerce/index.html',
             'themes/default/images/icons/menu/rich_content/ecommerce/index.html',
             'themes/default/images/icons_monochrome/menu/adminzone/audit/ecommerce/ecommerce.svg',
@@ -132,8 +130,6 @@ class Hook_addon_registry_ecommerce
             'themes/default/images/icons_monochrome/menu/adminzone/audit/ecommerce/profit_loss.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/audit/ecommerce/transactions_log.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/audit/ecommerce/create_invoice.svg',
-            'themes/default/images/icons_monochrome/menu/adminzone/audit/ecommerce/outstanding_invoices.svg',
-            'themes/default/images/icons_monochrome/menu/adminzone/audit/ecommerce/unfulfilled_invoices.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/audit/ecommerce/index.html',
             'themes/default/images/icons_monochrome/menu/rich_content/ecommerce/index.html',
             'sources/hooks/systems/config_categories/ecommerce.php',
@@ -184,7 +180,7 @@ class Hook_addon_registry_ecommerce
             'themes/default/templates/ECOM_PURCHASE_STAGE_PAY.tpl',
             'themes/default/templates/ECOM_TRANSACTION_LOGS_MANUAL_TRIGGER.tpl',
             'themes/default/templates/ECOM_MEMBER_SUBSCRIPTION_STATUS.tpl',
-            'themes/default/templates/CNS_MEMBER_PROFILE_ECOMMERCE_LOGS.tpl',
+            'themes/default/templates/CNS_MEMBER_ECOMMERCE_REPORTS.tpl',
             'themes/default/templates/CURRENCY.tpl',
             'sources/hooks/systems/fields/tax_code.php',
             'themes/default/images/ecommerce/checkmark.svg',
@@ -192,7 +188,7 @@ class Hook_addon_registry_ecommerce
             'sources/hooks/systems/cron/manual_subscription_notification.php',
             'sources/hooks/systems/cron/subscription_mails.php',
             'adminzone/pages/modules/admin_ecommerce.php',
-            'adminzone/pages/modules/admin_ecommerce_logs.php',
+            'adminzone/pages/modules/admin_ecommerce_reports.php',
             'adminzone/pages/modules/admin_invoices.php',
             'themes/default/css/ecommerce.css',
             'sources/hooks/systems/health_checks/ecommerce.php',
@@ -206,7 +202,7 @@ class Hook_addon_registry_ecommerce
             'sources/ecommerce2.php',
             'sources/ecommerce_permission_products.php',
             'sources/ecommerce_subscriptions.php',
-            'sources/ecommerce_logs.php',
+            'sources/ecommerce_reports.php',
             'sources/hooks/systems/config/manual_subscription_expiry_notice.php',
             'sources/hooks/systems/config/ecom_price_honour_time.php',
             'sources/hooks/modules/members/ecommerce.php',
@@ -393,7 +389,7 @@ class Hook_addon_registry_ecommerce
             'templates/ECOM_SALES_SCREEN.tpl' => 'administrative__ecom_sales_screen',
             'templates/ECOM_PRODUCTS_PRICES_FORM_WRAP.tpl' => 'administrative__ecom_products_price_screen',
             'templates/ECOM_PRODUCT_PRICE_SCREEN.tpl' => 'administrative__ecom_products_price_screen',
-            'templates/CNS_MEMBER_PROFILE_ECOMMERCE_LOGS.tpl' => 'administrative__cns_member_profile_ecommerce_logs_screen',
+            'templates/CNS_MEMBER_ECOMMERCE_REPORTS.tpl' => 'administrative__cns_member_profile_ecommerce_reports_screen',
             'text/ECOM_PRODUCT_FORWARDER_MAIL.txt' => 'ecom_product_forwarder_mail',
             'text/ECOM_PRODUCT_POP3_MAIL.txt' => 'ecom_product_pop3_mail',
             'text/ECOM_PRODUCT_QUOTA_MAIL.txt' => 'ecom_product_quota_mail',
@@ -1210,9 +1206,9 @@ class Hook_addon_registry_ecommerce
      *
      * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__cns_member_profile_ecommerce_logs_screen() : object
+    public function tpl_preview__administrative__cns_member_profile_ecommerce_reports_screen() : object
     {
-        return lorem_globalise(do_lorem_template('CNS_MEMBER_PROFILE_ECOMMERCE_LOGS', [
+        return lorem_globalise(do_lorem_template('CNS_MEMBER_ECOMMERCE_REPORTS', [
             'CONTENT' => lorem_chunk_html(),
             'PAGINATION' => placeholder_pagination(),
         ]), null, '', true);

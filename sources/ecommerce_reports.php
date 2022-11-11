@@ -45,8 +45,8 @@ function build_sales_table(array $filters = [], bool $show_username = false, boo
     require_code('content');
     require_code('ecommerce');
 
-    $max = get_param_integer('max_ecommerce_logs', $max_default);
-    $start = get_param_integer('start_ecommerce_logs', 0);
+    $max = get_param_integer('max_ecommerce_reports', $max_default);
+    $start = get_param_integer('start_ecommerce_reports', 0);
 
     $header_row = [];
     $header_row[] = do_lang_tempcode('DATE_TIME');
@@ -101,7 +101,7 @@ function build_sales_table(array $filters = [], bool $show_username = false, boo
         $date = get_timezoned_date_time($row['date_and_time'], false);
 
         if ($is_admin) {
-            $url = build_url(['page' => 'admin_ecommerce_logs', 'type' => 'delete_sales_entry', 'id' => $row['s_id']], get_module_zone('admin_ecommerce_logs'));
+            $url = build_url(['page' => 'admin_ecommerce_reports', 'type' => 'delete_sales_entry', 'id' => $row['s_id']], get_module_zone('admin_ecommerce_reports'));
             $actions = do_template('COLUMNED_TABLE_ACTION', [
                 '_GUID' => '12e3ea365f1a1ed2e7800293f3203283',
                 'NAME' => '#' . strval($row['s_id']),
@@ -190,7 +190,7 @@ function build_sales_table(array $filters = [], bool $show_username = false, boo
     $sales_table = do_template('COLUMNED_TABLE', ['_GUID' => 'd87800ff26e9e5b8f7593fae971faa73', 'HEADER_ROW' => $_header_row, 'ROWS' => $_sales_rows, 'NONRESPONSIVE' => false]);
 
     require_code('templates_pagination');
-    $pagination = pagination(do_lang_tempcode('ECOM_PRODUCTS_MANAGE_SALES'), $start, 'start_ecommerce_logs', $max, 'max_ecommerce_logs', $max_rows, false, null, null, 'tab--ecommerce-logs');
+    $pagination = pagination(do_lang_tempcode('ECOM_PRODUCTS_MANAGE_SALES'), $start, 'start_ecommerce_reports', $max, 'max_ecommerce_reports', $max_rows, false, null, null, 'tab--ecommerce-logs');
 
     return [$sales_table, $pagination, $rows];
 }

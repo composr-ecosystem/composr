@@ -88,31 +88,31 @@ class Module_admin_invoices
 
         if ($type == 'browse') {
             breadcrumb_set_self(do_lang_tempcode('INVOICES'));
-            breadcrumb_set_parents([['_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')]]);
+            breadcrumb_set_parents([['_SEARCH:admin_ecommerce_reports:browse', do_lang_tempcode('ECOMMERCE')]]);
         }
 
         if ($type == 'view') {
             breadcrumb_set_self(do_lang_tempcode('INVOICES'));
-            breadcrumb_set_parents([['_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')], ['_SELF:_SELF:browse', do_lang_tempcode('INVOICES')]]);
+            breadcrumb_set_parents([['_SEARCH:admin_ecommerce_reports:browse', do_lang_tempcode('ECOMMERCE')], ['_SELF:_SELF:browse', do_lang_tempcode('INVOICES')]]);
 
             $this->title = get_screen_title('VIEW_INVOICES');
         }
 
         if ($type == 'add') {
-            breadcrumb_set_parents([['_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')], ['_SELF:_SELF:browse', do_lang_tempcode('INVOICES')]]);
+            breadcrumb_set_parents([['_SEARCH:admin_ecommerce_reports:browse', do_lang_tempcode('ECOMMERCE')], ['_SELF:_SELF:browse', do_lang_tempcode('INVOICES')]]);
 
             $this->title = get_screen_title('CREATE_INVOICE');
         }
 
         if ($type == '_add') {
             breadcrumb_set_self(do_lang_tempcode('DONE'));
-            breadcrumb_set_parents([['_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')], ['_SELF:_SELF:browse', do_lang_tempcode('INVOICES')], ['_SELF:_SELF:add', do_lang_tempcode('CREATE_INVOICE')]]);
+            breadcrumb_set_parents([['_SEARCH:admin_ecommerce_reports:browse', do_lang_tempcode('ECOMMERCE')], ['_SELF:_SELF:browse', do_lang_tempcode('INVOICES')], ['_SELF:_SELF:add', do_lang_tempcode('CREATE_INVOICE')]]);
 
             $this->title = get_screen_title('CREATE_INVOICE');
         }
 
         if ($type == 'delete') {
-            breadcrumb_set_parents([['_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')], ['_SELF:_SELF:browse', do_lang_tempcode('INVOICES')], ['_SELF:_SELF:view', do_lang_tempcode('VIEW_INVOICES')]]);
+            breadcrumb_set_parents([['_SEARCH:admin_ecommerce_reports:browse', do_lang_tempcode('ECOMMERCE')], ['_SELF:_SELF:browse', do_lang_tempcode('INVOICES')], ['_SELF:_SELF:view', do_lang_tempcode('VIEW_INVOICES')]]);
             if (post_param_integer('confirmed', 0) != 1) {
                 breadcrumb_set_self(do_lang_tempcode('CONFIRM'));
             } else {
@@ -124,14 +124,14 @@ class Module_admin_invoices
 
         if ($type == 'fulfill') {
             breadcrumb_set_self(do_lang_tempcode('DONE'));
-            breadcrumb_set_parents([['_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')], ['_SELF:_SELF:browse', do_lang_tempcode('INVOICES')], ['_SELF:_SELF:view', do_lang_tempcode('VIEW_INVOICES')]]);
+            breadcrumb_set_parents([['_SEARCH:admin_ecommerce_reports:browse', do_lang_tempcode('ECOMMERCE')], ['_SELF:_SELF:browse', do_lang_tempcode('INVOICES')], ['_SELF:_SELF:view', do_lang_tempcode('VIEW_INVOICES')]]);
 
             $this->title = get_screen_title('MARK_AS_FULFILLED');
         }
 
         if ($type == 'invoice') {
             breadcrumb_set_self(do_lang_tempcode('INVOICES'));
-            breadcrumb_set_parents([['_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')]]);
+            breadcrumb_set_parents([['_SEARCH:admin_ecommerce_reports:browse', do_lang_tempcode('ECOMMERCE')]]);
             $this->title = get_screen_title('INVOICE');
         }
 

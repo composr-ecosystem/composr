@@ -23,10 +23,14 @@ class shopping_order_management_test_set extends cms_test_case
     protected $order_id;
     protected $access_mapping;
     protected $admin_shopping;
+    protected $tasks_background;
 
     public function setUp()
     {
         parent::setUp();
+
+        $this->tasks_background = get_option('tasks_background');
+        set_option('tasks_background', '1', 0);
 
         require_code('ecommerce');
         require_code('autosave');
@@ -97,7 +101,7 @@ class shopping_order_management_test_set extends cms_test_case
 
     public function testShowOrders()
     {
-        $this->admin_shopping->show_orders();
+        $this->admin_shopping->browse();
     }
 
     public function testOrderDetails()
@@ -175,6 +179,8 @@ class shopping_order_management_test_set extends cms_test_case
     public function tearDown()
     {
         $GLOBALS['SITE_DB']->query_delete('shopping_orders', ['id' => $this->order_id], '', 1);
+
+        set_option('tasks_background', $this->tasks_background, 0);
 
         parent::tearDown();
     }

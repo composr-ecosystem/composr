@@ -93,14 +93,14 @@ class Module_admin_shopping
 
         if ($type == 'browse') {
             breadcrumb_set_self(do_lang_tempcode('ORDERS'));
-            breadcrumb_set_parents([['_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')]]);
+            breadcrumb_set_parents([['_SEARCH:admin_ecommerce_reports:browse', do_lang_tempcode('ECOMMERCE')]]);
 
             $this->title = get_screen_title('ORDERS');
         }
 
         if ($type == 'order_details') {
             breadcrumb_set_parents([
-                ['_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')],
+                ['_SEARCH:admin_ecommerce_reports:browse', do_lang_tempcode('ECOMMERCE')],
                 ['_SELF:_SELF:browse', do_lang_tempcode('ORDERS')],
             ]);
         }
@@ -118,7 +118,7 @@ class Module_admin_shopping
             $action = either_param_string('action');
 
             breadcrumb_set_parents([
-                ['_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')],
+                ['_SEARCH:admin_ecommerce_reports:browse', do_lang_tempcode('ECOMMERCE')],
                 ['_SELF:_SELF:browse', do_lang_tempcode('ORDERS')],
                 ['_SELF:_SELF:order_details:' . strval($order_id), do_lang_tempcode('CART_ORDER', strval($order_id))],
             ]);
@@ -154,7 +154,7 @@ class Module_admin_shopping
             $order_id = post_param_integer('order_id');
 
             breadcrumb_set_parents([
-                ['_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')],
+                ['_SEARCH:admin_ecommerce_reports:browse', do_lang_tempcode('ECOMMERCE')],
                 ['_SELF:_SELF:browse', do_lang_tempcode('ORDERS')],
                 ['_SELF:_SELF:order_details:' . strval($order_id), do_lang_tempcode('CART_ORDER', strval($order_id))],
             ]);
@@ -314,11 +314,11 @@ class Module_admin_shopping
             } else {
                 $order_title = do_lang('PURCHASE_ORDER', strval($row['id']));
             }
-            $order_tooltip = tooltip($order_title, str_replace("\n", '<br />', escape_html(get_ordered_product_list_string($row['id']))), false);
+            $order_tooltip = tooltip($order_title, with_whitespace(get_ordered_product_list_string($row['id'])), false);
 
             $price_linker = new Tempcode();
             if ($row['txn_id'] != '') {
-                $receipt_url = build_url(['page' => 'admin_ecommerce_logs', 'type' => 'receipt', 'id' => $row['txn_id'], 'wide_high' => 1], '_SELF');
+                $receipt_url = build_url(['page' => 'admin_ecommerce_reports', 'type' => 'receipt', 'id' => $row['txn_id'], 'wide_high' => 1], '_SELF');
                 $price_linker = hyperlink($receipt_url, ecommerce_get_currency_symbol($row['order_currency']) . escape_html(float_format($row['total_price'])), true, false, do_lang('RECEIPT'));
             } else {
                 $price_linker->attach(ecommerce_get_currency_symbol($row['order_currency']) . escape_html(float_format($row['total_price'])));
@@ -447,7 +447,7 @@ class Module_admin_shopping
 
         $text = do_lang_tempcode('ORDER_DETAILS_TEXT');
 
-        require_code('ecommerce_logs');
+        require_code('ecommerce_reports');
         $tpl = build_order_details($this->title, $id, $text, true);
 
         require_code('templates_internalise_screen');
@@ -543,7 +543,7 @@ class Module_admin_shopping
         $this->send_dispatch_notification($id);
 
         if ($redirect === null) { // If a redirect URL is not passed, redirect to the order list
-            $_redirect = build_url(['page' => '_SELF', 'type' => 'show_orders'], '_SELF');
+            $_redirect = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
             $redirect = $_redirect->evaluate();
         }
 

@@ -1634,7 +1634,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         MODULE_TRANS_NAME_admin_banners
         MODULE_TRANS_NAME_admin_broken_urls
         MODULE_TRANS_NAME_admin_content_reviews
-        MODULE_TRANS_NAME_admin_ecommerce_logs
+        MODULE_TRANS_NAME_admin_ecommerce_reports
         MODULE_TRANS_NAME_admin_group_member_timeouts
         MODULE_TRANS_NAME_admin_health_check
         MODULE_TRANS_NAME_admin_notifications
@@ -7248,7 +7248,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SHOW_IN_POST_PREVIEWS
         SHOW_NEWEST_MEMBER
         SHOW_ON_JOIN_FORM
-        SHOW_ORDERS
         SHOW_POST_VALIDATION
         SHOW_SCREEN_ACTIONS
         SHOW_UNDISPATCHED_ORDERS

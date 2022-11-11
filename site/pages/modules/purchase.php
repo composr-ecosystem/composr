@@ -1481,7 +1481,7 @@ class Module_purchase
      */
     public function sales() : object
     {
-        require_code('ecommerce_logs');
+        require_code('ecommerce_reports');
         require_lang('ecommerce');
 
         $sales_table = new Tempcode();
@@ -1494,14 +1494,14 @@ class Module_purchase
         if ($filter_txn_id !== null) {
             $filters['txn_id'] = $filter_txn_id;
         }
-        $tmp = build_sales_table($filters, ($member_id_of != get_member()), has_actual_page_access(get_member(), 'admin_ecommerce_logs'), 50, false);
+        $tmp = build_sales_table($filters, ($member_id_of != get_member()), has_actual_page_access(get_member(), 'admin_ecommerce_reports'), 50, false);
 
         if ($tmp !== null) {
             $sales_table = $tmp[0];
             $pagination = $tmp[1];
         }
 
-        $screen = do_template('CNS_MEMBER_PROFILE_ECOMMERCE_LOGS', ['_GUID' => 'e490d230b9521415616be0c610434d93', 'CONTENT' => $sales_table, 'PAGINATION' => $pagination]);
+        $screen = do_template('CNS_MEMBER_ECOMMERCE_REPORTS', ['_GUID' => 'e490d230b9521415616be0c610434d93', 'CONTENT' => $sales_table, 'PAGINATION' => $pagination]);
 
         return $this->_wrap($screen, $this->title, null);
     }

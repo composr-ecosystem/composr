@@ -496,8 +496,8 @@ function build_transaction_linker(string $txn_id, bool $awaiting_payment, ?array
             return null;
         }
 
-        if (has_actual_page_access(get_member(), 'admin_ecommerce_logs')) {
-            $transaction_details_url = build_url(['page' => 'admin_ecommerce_logs', 'type' => 'logs', 'filter_type_code' => $transaction_row['t_type_code'], 'filter_txn_id' => $transaction_row['id']], get_module_zone('admin_ecommerce_logs'));
+        if (has_actual_page_access(get_member(), 'admin_ecommerce_reports')) {
+            $transaction_details_url = build_url(['page' => 'admin_ecommerce_reports', 'type' => 'logs', 'filter_type_code' => $transaction_row['t_type_code'], 'filter_txn_id' => $transaction_row['id']], get_module_zone('admin_ecommerce_reports'));
             $transaction_link = hyperlink($transaction_details_url, $txn_id, false, true);
         } else {
             $transaction_link = make_string_tempcode(escape_html($txn_id));
@@ -1205,7 +1205,7 @@ function get_default_ecommerce_fields(?int $member_id = null, string &$shipping_
 function ecommerce_attach_memo_field_if_needed(?object &$fields)
 {
     if (get_option('payment_memos') == '1') {
-        if ((perform_local_payment()) || (get_page_name() == 'admin_ecommerce_logs')) {
+        if ((perform_local_payment()) || (get_page_name() == 'admin_ecommerce_reports')) {
             $get_memo = true;
         } else {
             $payment_gateway = get_option('payment_gateway');
@@ -2394,10 +2394,10 @@ function ecom_details_url(string $type_code, string $id = '', ?int $member_id = 
                 break;
             case PRODUCT_PURCHASE:
             case PRODUCT_SUBSCRIPTION:
-                if ($page_link === get_module_zone('admin_ecommerce_logs') . ':admin_ecommerce_logs:sales') { // Do not link to itself if we are already on the sales page
+                if ($page_link === get_module_zone('admin_ecommerce_reports') . ':admin_ecommerce_reports:sales') { // Do not link to itself if we are already on the sales page
                     $ret = get_product_details_url($type_code, false, null, false);
                 } else {
-                    $ret = build_url(['page' => 'admin_ecommerce_logs', 'type' => 'sales', 'filter_txn_id' => $id], get_module_zone('admin_ecommerce_logs'));
+                    $ret = build_url(['page' => 'admin_ecommerce_reports', 'type' => 'sales', 'filter_txn_id' => $id], get_module_zone('admin_ecommerce_reports'));
                 }
                 break;
             case PRODUCT_OTHER:

@@ -23,7 +23,7 @@ require_code('crud_module');
 /**
  * Module page class.
  */
-class Module_admin_ecommerce_logs
+class Module_admin_ecommerce_reports
 {
     /**
      * Find details of the module.
@@ -588,7 +588,7 @@ class Module_admin_ecommerce_logs
      */
     public function sales() : object
     {
-        require_code('ecommerce_logs');
+        require_code('ecommerce_reports');
         require_code('form_templates');
         require_code('templates_tooltip');
 
