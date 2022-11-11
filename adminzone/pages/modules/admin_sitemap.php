@@ -204,7 +204,7 @@ class Module_admin_sitemap
         }
 
         $url = build_url(['page' => '_SELF', 'type' => '_delete'], '_SELF');
-        $text = do_lang_tempcode('CONFIRM_DELETE', escape_html($file));
+        $text = do_lang_tempcode('CONFIRM_DELETE', $file);
 
         $hidden->attach(form_input_hidden('zone', $zone));
 
