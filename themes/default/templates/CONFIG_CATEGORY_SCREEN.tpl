@@ -19,7 +19,7 @@
 
 <h2>{!OPTION_GROUPS}</h2>
 
-<form title="{!PRIMARY_PAGE_FORM}" class="js-submission-flow" data-submit-modsecurity-workaround="1" action="{URL*}" method="post" data-view="SubmissionFlow" data-view-params="{+START,INCLUDE,FORM_STANDARD_START}{+END}">
+<form title="{!PRIMARY_PAGE_FORM}" data-submit-modsecurity-workaround="1" action="{URL*}" method="post" data-view="SubmissionFlow" data-view-params="{+START,INCLUDE,FORM_STANDARD_START}{+END}">
 	{$INSERT_FORM_POST_SECURITY}
 
 	<div>

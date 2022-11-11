@@ -2,7 +2,7 @@
 
 <section id="tray-{!CHECK_LIST|}" class="box box---block-main-staff-checklist" data-toggleable-tray="{ save: true }" data-tpl="blockMainStaffChecklist">
 	<div class="box-inner">
-		<h3 class="toggleable-tray-title js-tray-header">
+		<h3 class="toggleable-tray-title">
 			<a href="#!" id="checklist-show-all-link" class="top-left-toggle js-click-disable-task-hiding" title="{!SHOW_ALL}: {!CHECK_LIST}">{+START,INCLUDE,ICON}NAME=checklist/toggle{+END} <span>{!SHOW_ALL}</span></a>
 			<a href="#!" id="checklist-hide-done-link" class="top-left-toggle js-click-enable-task-hiding">{+START,INCLUDE,ICON}NAME=checklist/toggle{+END} <span>{!HIDE_DONE}</span></a>
 

@@ -9,7 +9,7 @@
 
 	{+START,IF,{$NOT,{$IS_GUEST}}}
 		<div class="box box---support-tickets-screen"><div class="box-inner vertical-alignment">
-			<form title="{!FILTER}" class="clearfix js-form-submit-scroll-to-top" id="ticket-type-form" action="{$URL_FOR_GET_FORM*,{$SELF_URL,0,1}}" method="get">
+			<form title="{!FILTER}" class="clearfix" id="ticket-type-form" action="{$URL_FOR_GET_FORM*,{$SELF_URL,0,1}}" method="get">
 				{$HIDDENS_FOR_GET_FORM,{$SELF_URL},ticket_type_id,open}
 
 				<div class="clearfix ticket-filters">

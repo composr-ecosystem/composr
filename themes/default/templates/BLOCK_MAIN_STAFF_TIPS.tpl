@@ -2,7 +2,7 @@
 <div class="box-wrapper" data-ajaxify="{ callUrl: '{$FACILITATE_AJAX_BLOCK_CALL;*,{BLOCK_PARAMS}}', callParamsFromTarget: ['^staff_tips_dismiss$', '^rand$'] }">
 	<section id="tray-{!TIPS|}" class="box box---block-main-staff-tips" data-toggleable-tray="{ save: true }">
 		<div class="box-inner">
-			<h3 class="toggleable-tray-title js-tray-header">
+			<h3 class="toggleable-tray-title">
 				<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!CONTRACT}">{+START,INCLUDE,ICON}
 					NAME=trays/contract
 					ICON_SIZE=24

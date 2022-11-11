@@ -47,7 +47,7 @@
 
 			{+START,INCLUDE,FORM_SCREEN_ARE_REQUIRED}{+END}
 
-			<form title="{!PRIMARY_PAGE_FORM}" id="main-form" method="post" action="{URL_EDIT_FILE*}" enctype="multipart/form-data" target="_top" class="js-submission-flow" data-view="SubmissionFlow" data-view-params="{+START,INCLUDE,FORM_STANDARD_START}FORM_NAME=main-form{+END}">
+			<form title="{!PRIMARY_PAGE_FORM}" id="main-form" method="post" action="{URL_EDIT_FILE*}" enctype="multipart/form-data" target="_top" data-view="SubmissionFlow" data-view-params="{+START,INCLUDE,FORM_STANDARD_START}FORM_NAME=main-form{+END}">
 				{$INSERT_FORM_POST_SECURITY}
 
 				<div>
@@ -78,7 +78,7 @@
 		<div aria-labelledby="t-themewizard" role="tabpanel" id="g-themewizard" style="display: none">
 			<p>{!THEME_IMAGE_RECOLOUR_DESCRIPTION}</p>
 
-			<form id="themewizard-form" title="{!THEMEWIZARD}" class="float-surrounder js-submission-flow" method="post" action="{URL_THEMEWIZARD*}" enctype="multipart/form-data" target="_top" data-view="SubmissionFlow" data-view-params="{+START,INCLUDE,FORM_STANDARD_START}
+			<form id="themewizard-form" title="{!THEMEWIZARD}" class="float-surrounder" method="post" action="{URL_THEMEWIZARD*}" enctype="multipart/form-data" target="_top" data-view="SubmissionFlow" data-view-params="{+START,INCLUDE,FORM_STANDARD_START}
 				FORM_NAME=themewizard-form
 				PREVIEW=1
 			{+END}">

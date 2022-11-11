@@ -148,11 +148,14 @@ class css_file_test_set extends cms_test_case
                         }
 
                         $c = cms_file_get_contents_safe($dir . '/' . $e, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
-                        $matches = [];
-                        $found = preg_match_all('#\.([a-z][\w\-]*)[ ,:]#i', $c, $matches);
-                        for ($i = 0; $i < $found; $i++) {
-                            if ($matches[1][$i] != 'txt') {
-                                $out[] = $matches[1][$i];
+
+                        $matches_selector_lines = [];
+                        $num_selector_lines = preg_match_all('#.*(\{|,\s*)#', $c, $matches_selector_lines);
+                        for ($i = 0; $i < $num_selector_lines; $i++) {
+                            $matches = [];
+                            $found = preg_match_all('#\.([a-z][\w\-]*)[ ,:.]#i', $matches_selector_lines[0][$i], $matches);
+                            for ($j = 0; $j < $found; $j++) {
+                                $classes[] = $matches[1][$j];
                             }
                         }
                     }
@@ -366,6 +369,9 @@ class css_file_test_set extends cms_test_case
         }
 
         $exceptions = [
+            'big-tab-first',
+            'download-box-description',
+            'modern-tab-body',
             'cart-table',
             'date-calendar-dialog',
             'trad-box-model',

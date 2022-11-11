@@ -154,7 +154,6 @@ Note that this addon only affects galleries at the moment, and it requires the "
             'site/pages/modules_custom/galleries.php',
             'adminzone/pages/modules_custom/admin_unvalidated.php',
             'themes/default/templates_custom/WORKFLOW_BOX.tpl',
-            'themes/default/javascript_custom/workflows.js',
             'sources_custom/hooks/systems/actionlog/workflows.php',
         ];
     }

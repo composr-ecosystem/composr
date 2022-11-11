@@ -65,7 +65,6 @@
                 'click .js-btn-save-content': 'saveContent',
                 'click .js-btn-live-preview': 'livePreview',
                 'click .js-btn-screen-preview': 'screenPreview',
-                'click .js-a-editarea-search': 'editareaSearch',
                 'click .js-a-insert-guid': 'insertGuid',
                 'click .js-a-tpl-editor-add-tab': 'addEditorTab',
                 'click .js-btn-equation-helper': 'cssEquationHelper'
@@ -121,12 +120,6 @@
             if (!templateEditorPreview(opts.fileId, opts.screenPreviewUrl, target)) {
                 e.preventDefault();
             }
-        },
-
-        editareaSearch: function (e, target) {
-            var regexp = target.dataset.eaSearch;
-
-            window.editareaDoSearch('e_' + this.params.fileId, regexp);
         },
 
         insertGuid: function (e, target) {

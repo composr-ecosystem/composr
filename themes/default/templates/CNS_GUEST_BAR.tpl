@@ -2,7 +2,7 @@
 
 <section id="tray-{!MEMBER|}" data-tpl="cnsGuestBar" data-toggleable-tray="{ save: true }" class="box box--cns-guest-bar cns-information-bar-outer">
 	<div class="box-inner">
-		<h2 class="toggleable-tray-title js-tray-header">
+		<h2 class="toggleable-tray-title">
 			<a class="toggleable-tray-button js-tray-onclick-toggle-tray inline-desktop" href="#!" title="{!CONTRACT}">{+START,INCLUDE,ICON}
 				NAME=trays/contract
 				ICON_SIZE=24

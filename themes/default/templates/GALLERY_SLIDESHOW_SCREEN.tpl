@@ -46,11 +46,11 @@
 		<button type="button" class="btn btn-secondary btn-exit-slideshow" style="display: none;">{+START,INCLUDE,ICON}NAME=buttons/cancel{+END}</button>
 
 		<div class="slideshow-menu-middle">
-			<button type="button" class="btn btn-primary btn-toggle-play" data-cms-tooltip="{!PLAY_OR_PAUSE}">{+START,INCLUDE,ICON}NAME=content_types/multimedia{+END}</button>
-			<button type="button" class="btn btn-secondary btn-toggle-details" data-cms-tooltip="{!SHOW_OR_HIDE_CAPTIONS}">{+START,INCLUDE,ICON}NAME=menu/pages/about_us{+END}</button>
-			<button type="button" class="btn btn-secondary btn-toggle-fullscreen" data-cms-tooltip="{!TOGGLE_FULLSCREEN}">{+START,INCLUDE,ICON}NAME=buttons/full_size{+END}</button>
-			<button type="button" class="desktop-only btn btn-secondary btn-toggle-tab btn-toggle-comments" data-cms-tooltip="{!SHOW_OR_HIDE_COMMENTS}" data-vw-tab="comments">{+START,INCLUDE,ICON}NAME=feedback/comment{+END}</button>
-			<button type="button" class="desktop-only btn btn-secondary btn-toggle-tab btn-toggle-settings" data-cms-tooltip="{!SHOW_OR_HIDE_SETTINGS}" data-vw-tab="settings">{+START,INCLUDE,ICON}NAME=buttons/settings{+END}</button>
+			<button type="button" class="btn btn-primary js-btn-toggle-play" data-cms-tooltip="{!PLAY_OR_PAUSE}">{+START,INCLUDE,ICON}NAME=content_types/multimedia{+END}</button>
+			<button type="button" class="btn btn-secondary js-btn-toggle-details" data-cms-tooltip="{!SHOW_OR_HIDE_CAPTIONS}">{+START,INCLUDE,ICON}NAME=menu/pages/about_us{+END}</button>
+			<button type="button" class="btn btn-secondary js-btn-toggle-fullscreen" data-cms-tooltip="{!TOGGLE_FULLSCREEN}">{+START,INCLUDE,ICON}NAME=buttons/full_size{+END}</button>
+			<button type="button" class="desktop-only btn btn-secondary js-btn-toggle-tab" data-cms-tooltip="{!SHOW_OR_HIDE_COMMENTS}" data-vw-tab="comments">{+START,INCLUDE,ICON}NAME=feedback/comment{+END}</button>
+			<button type="button" class="desktop-only btn btn-secondary js-btn-toggle-tab" data-cms-tooltip="{!SHOW_OR_HIDE_SETTINGS}" data-vw-tab="settings">{+START,INCLUDE,ICON}NAME=buttons/settings{+END}</button>
 		</div>
 	</div>
 
@@ -80,7 +80,7 @@
 			<div class="setting">
 				<label for="select-slide-transition-effect">
 					<span class="setting-label">{!SLIDE_TRANSITION_EFFECT}</span>
-					<select name="slide_transition_effect" id="select-slide-transition-effect" class="form-control select-slide-transition-effect">
+					<select name="slide_transition_effect" id="select-slide-transition-effect" class="form-control js-select-slide-transition-effect">
 						<option value="slide" selected="selected">{!SLIDE}</option>
 						<option value="fade">{!FADE}</option>
 					</select>
@@ -90,14 +90,14 @@
 			<div class="setting">
 				<label for="checkbox-stretch-small-media">
 					<span class="setting-label">{!STRETCH_SMALL_MEDIA}</span>
-					<input type="checkbox" name="stretch_small_media" id="checkbox-stretch-small-media" class="big-checkbox checkbox-stretch-small-media" checked="checked" />
+					<input type="checkbox" name="stretch_small_media" id="checkbox-stretch-small-media" class="big-checkbox js-checkbox-stretch-small-media" checked="checked" />
 				</label>
 			</div>
 
 			<div class="setting">
 				<label for="select-background-color">
 					<span class="setting-label">{!BACKGROUND_COLOR}</span>
-					<select name="background_color" id="select-background-color" class="form-control select-background-color">
+					<select name="background_color" id="select-background-color" class="form-control js-select-background-color">
 						<option value="dark" selected="selected">{!DARK}</option>
 						<option value="light">{!LIGHT}</option>
 					</select>

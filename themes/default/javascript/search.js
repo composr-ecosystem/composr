@@ -54,8 +54,7 @@
         events: function () {
             return {
                 'keyup .js-keyup-update-ajax-search-list': 'updateAjaxSearchList',
-                'keyup .js-keyup-update-author-list': 'updateAuthorList',
-                'click .js-click-trigger-resize': 'triggerResize'
+                'keyup .js-keyup-update-author-list': 'updateAuthorList'
             };
         },
         updateAjaxSearchList: function (e, input) {
@@ -70,9 +69,6 @@
         updateAuthorList: function (e, target) {
             $cms.form.updateAjaxMemberList(target, 'author', false, e);
         },
-        triggerResize: function () {
-            $dom.triggerResize();
-        }
     });
 
     $cms.templates.blockTopSearch = function (params, container) {

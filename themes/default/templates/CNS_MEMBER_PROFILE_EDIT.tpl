@@ -9,7 +9,7 @@
 {$REQUIRE_JAVASCRIPT,core_cns}
 {$REQUIRE_JAVASCRIPT,checking}
 
-<form data-tpl="cnsMemberProfileEdit" data-tpl-params="{+START,PARAMS_JSON,TABS}{_*}{+END}" class="cns-member-profile-edit form-table " title="{!PRIMARY_PAGE_FORM}" method="post" action="{URL*}" enctype="multipart/form-data" id="main-form" class="js-submission-flow" data-view="SubmissionFlow" data-view-params="{+START,INCLUDE,FORM_STANDARD_START}
+<form data-tpl="cnsMemberProfileEdit" data-tpl-params="{+START,PARAMS_JSON,TABS}{_*}{+END}" class="cns-member-profile-edit form-table " title="{!PRIMARY_PAGE_FORM}" method="post" action="{URL*}" enctype="multipart/form-data" id="main-form" data-view="SubmissionFlow" data-view-params="{+START,INCLUDE,FORM_STANDARD_START}
 	FORM_NAME=main-form
 	SUPPORT_AUTOSAVE=1
 {+END}">

@@ -1370,7 +1370,7 @@
             var loc = window.location.href;
 
             // Theme image editing hovers
-            var els = $dom.$$('*:not(.no-theme-img-click)'), i, el, isImage;
+            var els = $dom.$$('*:not(.js-no-theme-img-click)'), i, el, isImage;
             for (i = 0; i < els.length; i++) {
                 el = els[i];
                 isImage = (el.localName === 'img') || ((el.localName === 'input') && (el.type === 'image')) || $dom.css(el, 'background-image').includes('url');
@@ -2295,22 +2295,6 @@
             }
         }
     });
-
-    // For admin/templates/MENU_mobile.tpl
-    /**
-     * @param params
-     */
-    $cms.templates.menuMobile = function menuMobile(params) {
-        var menuId = strVal(params.menuId);
-        $dom.on(document.body, 'click', '.js-click-toggle-' + menuId + '-content', function (e) {
-            var branch = document.getElementById(menuId);
-
-            if (branch) {
-                $dom.toggle(branch.parentElement);
-                e.preventDefault();
-            }
-        });
-    };
 
     $cms.views.SelectMenu = SelectMenu;
     /**

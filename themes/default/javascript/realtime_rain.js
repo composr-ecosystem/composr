@@ -69,7 +69,7 @@
             timeWindow = timeWindow / 1.2;
         });
 
-        $dom.on(container, 'click', '.js-click-rain-slow-up', function () {
+        $dom.on(container, 'click', '.js-click-rain-speed-up', function () {
             timeWindow = timeWindow * 1.2;
         });
     };

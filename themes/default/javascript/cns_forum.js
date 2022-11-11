@@ -257,21 +257,6 @@
             window.commentsHash = params.hash;
         }
 
-        $dom.on(container, 'click', '.js-click-check-marked-form-and-submit', function (e, clicked) {
-            if (!$cms.form.addFormMarkedPosts(markedPostActionsForm, 'mark_')) {
-                $cms.ui.alert('{!NOTHING_SELECTED;}');
-                e.preventDefault();
-                return;
-            }
-
-            if (document.getElementById('mpa-type').selectedIndex === -1) {
-                e.preventDefault();
-                return;
-            }
-
-            $cms.ui.disableButton(clicked);
-        });
-
         $dom.on(container, 'change', '.js-topic-moderator-action-submit-form', function (e, select) {
             if (select.selectedIndex !== -1) {
                 $dom.trigger(select.form, 'submit');
@@ -332,24 +317,6 @@
 
             return true;
         }
-    };
-
-    $cms.templates.cnsNotification = function (params) {
-        var container = this,
-            ignoreUrl = params.ignoreUrl2;
-
-        $dom.on(container, 'click', '.js-click-ignore-notification', function () {
-            var el = this;
-            $cms.doAjaxRequest(ignoreUrl, [function () {
-                var o = el.parentNode.parentNode.parentNode.parentNode;
-                o.parentNode.removeChild(o);
-
-                var nots = document.querySelector('.cns-member-column-pts');
-                if (nots && !document.querySelector('.cns-notification')) {
-                    nots.parentNode.removeChild(nots);
-                }
-            }]);
-        });
     };
 
     $cms.templates.cnsTopicPost = function cnsTopicPost(params, container) {

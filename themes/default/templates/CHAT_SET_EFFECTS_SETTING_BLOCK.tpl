@@ -2,7 +2,7 @@
 
 <div data-tpl="chatSetEffectsSettingBlock" data-tpl-params="{+START,PARAMS_JSON,EFFECTS}{_*}{+END}"{+START,IF_PASSED,MEMBER_ID} data-toggleable-tray="{}"{+END}>
 	{+START,IF_PASSED,USERNAME}{+START,IF_PASSED,MEMBER_ID}
-		<div class="toggleable-tray-title js-tray-header">
+		<div class="toggleable-tray-title">
 			{!OVERRIDES_FOR_FRIEND,{USERNAME*}}
 			<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{$?,{HAS_SOME},{!CONTRACT},{!EXPAND}}">{+START,INCLUDE,ICON}
 				NAME=trays/{$?,{HAS_SOME},contract,expand}

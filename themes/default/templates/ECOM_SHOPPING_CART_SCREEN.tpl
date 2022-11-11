@@ -47,7 +47,7 @@
 	{+END}
 
 	{+START,IF_NON_EMPTY,{EMPTY_CART_URL}}
-		<form title="{!PRIMARY_PAGE_FORM}" method="post" enctype="multipart/form-data" action="{NEXT_URL*}" class="js-submission-flow" data-view="SubmissionFlow" data-view-params="{+START,PARAMS_JSON,JS_FUNCTION_CALLS}{_*}{+END}">
+		<form title="{!PRIMARY_PAGE_FORM}" method="post" enctype="multipart/form-data" action="{NEXT_URL*}" data-view="SubmissionFlow" data-view-params="{+START,PARAMS_JSON,JS_FUNCTION_CALLS}{_*}{+END}">
 			{$INSERT_FORM_POST_SECURITY}
 
 			{+START,IF_PASSED,FIELDS}

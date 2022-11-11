@@ -45,10 +45,6 @@
             $cms.statsEventTrack(null, 'social__twitter', null, null, null, true);
         });
 
-        $dom.on(container, 'click', '.js-click-add-to-digg', function () {
-            $cms.statsEventTrack(null, 'social__digg', null, null, null, true);
-        });
-
         $dom.on(container, 'click', '.js-click-add-to-linkedin', function () {
             $cms.statsEventTrack(null, 'social__linkedin', null, null, null, true);
         });
@@ -687,7 +683,7 @@
         var hidden;
         if (massDeleteForm.elements[key] === undefined) {
             hidden = document.createElement('input');
-            hidden.className = 'key-to-delete';
+            hidden.className = 'js-key-to-delete';
             hidden.type = 'hidden';
             hidden.name = key;
             massDeleteForm.appendChild(hidden);
@@ -696,7 +692,7 @@
         }
         hidden.value = checked ? '1' : '0';
 
-        var hasKeysToDelete = checked || Boolean(massDeleteForm.querySelector('input[value="1"].key-to-delete'));
+        var hasKeysToDelete = checked || Boolean(massDeleteForm.querySelector('input[value="1"].js-key-to-delete'));
 
         if (hasKeysToDelete) {
             $dom.fadeIn(massDeleteForm);

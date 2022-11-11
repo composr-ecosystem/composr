@@ -12,10 +12,4 @@
             $cms.form.updateAjaxMemberList(input, null, false, e);
         });
     };
-
-    $cms.templates.revisionsDiffIcon = function revisionsDiffIcon(params, container) {
-        $dom.on(container, 'mousemove', function (e) {
-            $cms.ui.repositionTooltip(container, e, true);
-        });
-    };
 }(window.$cms, window.$util, window.$dom));

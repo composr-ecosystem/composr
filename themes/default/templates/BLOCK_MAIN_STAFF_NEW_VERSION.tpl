@@ -1,6 +1,6 @@
 <section id="tray-{!VERSION_ABOUT|,{VERSION}}" data-toggleable-tray="{ save: true }" class="box box---block-main-staff-new-version">
 	<div class="box-inner">
-		<h3 class="toggleable-tray-title js-tray-header">
+		<h3 class="toggleable-tray-title">
 			<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!CONTRACT}">{+START,INCLUDE,ICON}
 				NAME=trays/contract
 				ICON_SIZE=24

@@ -2,7 +2,7 @@
 	<div class="box-inner">
 		{+START,IF_NON_EMPTY,{TITLE}}
 			{+START,IF_IN_ARRAY,OPTIONS,tray_open,tray_closed}
-				<h3 class="toggleable-tray-title js-tray-header">
+				<h3 class="toggleable-tray-title">
 					{+START,IF_IN_ARRAY,OPTIONS,tray_open}
 						<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!CONTRACT}">{+START,INCLUDE,ICON}
 							NAME=trays/contract

@@ -34,7 +34,7 @@
 			{+END}
 			{+START,IF_NON_EMPTY,{ACTIONS_contact}{$GET,messenger_fields}}
 				<div data-toggleable-tray="{}">
-					<h2 class="js-tray-header">
+					<h2 class="toggleable-tray-unstyled">
 						<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!CONTRACT}">{+START,INCLUDE,ICON}
 							NAME=trays/contract
 							ICON_SIZE=20
@@ -53,7 +53,7 @@
 
 			{+START,IF_NON_EMPTY,{ACTIONS_content}}
 				<div data-toggleable-tray="{}">
-					<h2 class="js-tray-header">
+					<h2 class="toggleable-tray-unstyled">
 						<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!EXPAND}">{+START,INCLUDE,ICON}
 							NAME=trays/expand
 							ICON_SIZE=20
@@ -71,7 +71,7 @@
 
 			{+START,IF_NON_EMPTY,{ACTIONS_views}{ACTIONS_profile}}
 				<div data-toggleable-tray="{}">
-					<h2 class="js-tray-header">
+					<h2 class="toggleable-tray-unstyled">
 						<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!EXPAND}">{+START,INCLUDE,ICON}
 							NAME=trays/expand
 							ICON_SIZE=20
@@ -90,7 +90,7 @@
 
 			{+START,IF_NON_EMPTY,{ACTIONS_audit}}
 				<div data-toggleable-tray="{}">
-					<h2 class="js-tray-header">
+					<h2 class="toggleable-tray-unstyled">
 						<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!EXPAND}">{+START,INCLUDE,ICON}
 							NAME=trays/expand
 							ICON_SIZE=20

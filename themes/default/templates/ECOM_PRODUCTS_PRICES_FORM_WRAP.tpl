@@ -2,7 +2,7 @@
 
 <div class="box box--ecom-products-prices-form-wrap" data-toggleable-tray="{}">
 	<div class="box-inner">
-		<h4 class="toggleable-tray-title js-tray-header">
+		<h4 class="toggleable-tray-title">
 			<a class="toggleable-tray-button js-tray-onclick-toggle-tray" title="{!SETTINGS}: {!EXPAND}" href="#!">{+START,INCLUDE,ICON}
 				NAME=trays/expand
 				ICON_SIZE=24

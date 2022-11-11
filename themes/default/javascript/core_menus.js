@@ -70,7 +70,6 @@
         });
 
         $dom.on(container, 'click', '.js-click-toggle-docked-field-editing', toggleDockedFieldEditing);
-        $dom.on(container, 'keypress', '.js-img-keypress-toggle-docked-field-editing', toggleDockedFieldEditing);
 
         function toggleDockedFieldEditing(e, clicked) {
             if (!menuEditorWrapEl.classList.contains('docked')) {

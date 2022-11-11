@@ -247,7 +247,7 @@
 
 		<div class="box box---w-main-screen" data-toggleable-tray="{}">
 			<div class="box-inner">
-				<h2 class="toggleable-tray-title js-tray-header">
+				<h2 class="toggleable-tray-title">
 					<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!">{!W_ENVIRONMENT_ACTIONS}</a>
 					<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!EXPAND}">{+START,INCLUDE,ICON}
 						NAME=trays/expand
@@ -545,7 +545,7 @@
 		{+START,IF,{MAY_DO_STUFF}}
 			<div class="box box---w-main-screen" data-toggleable-tray="{}">
 				<div class="box-inner">
-					<h2 class="toggleable-tray-title js-tray-header">
+					<h2 class="toggleable-tray-title">
 						<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!">{!W_ENVIRONMENT_ADDITIONS}</a>
 						<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!EXPAND}">{+START,INCLUDE,ICON}
 							NAME=trays/expand
@@ -580,7 +580,7 @@
 
 		<div class="box box---w-main-screen" data-toggleable-tray="{}">
 			<div class="box-inner">
-				<h2 class="toggleable-tray-title js-tray-header">
+				<h2 class="toggleable-tray-title">
 					<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!">{!W_ENVIRONMENT_MODIFICATIONS}</a>
 					<a class="js-click-set-hidemod-cookie toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!EXPAND}">{+START,INCLUDE,ICON}
 						NAME=trays/expand

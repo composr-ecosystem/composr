@@ -1,6 +1,6 @@
 {+START,IF_NON_EMPTY,{CATEGORY_NAME}}
 	<div data-toggleable-tray="{}">
-		<h3 class="js-tray-header">
+		<h3 class="toggleable-tray-unstyled">
 			<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!EXPAND}">{+START,INCLUDE,ICON}
 				NAME=trays/expand
 				ICON_SIZE=20

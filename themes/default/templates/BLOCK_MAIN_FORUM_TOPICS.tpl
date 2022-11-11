@@ -1,6 +1,6 @@
 <section id="tray-{TITLE|}" data-toggleable-tray="{ save: true }" class="box box---block-main-forum-topics">
 	<div class="box-inner">
-		<h3 class="toggleable-tray-title js-tray-header">
+		<h3 class="toggleable-tray-title">
 			<a class="toggleable-tray-button" data-click-tray-toggle="#tray-{TITLE|}" href="#!" title="{!CONTRACT}">{+START,INCLUDE,ICON}
 				NAME=trays/contract
 				ICON_SIZE=24

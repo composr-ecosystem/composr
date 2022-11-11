@@ -1,5 +1,5 @@
 <div class="cns-forum-grouping" data-toggleable-tray="{}">
-	<h3 class="cns-forum-grouping-heading js-tray-header">
+	<h3 class="cns-forum-grouping-heading">
 		<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!">{GROUPING_TITLE*}</a>
 		{+START,IF,{$HAS_ACTUAL_PAGE_ACCESS,admin_cns_forum_groupings}}<span class="associated-details">(<a title="{!EDIT} {GROUPING_TITLE*}" href="{$PAGE_LINK*,_SEARCH:admin_cns_forum_groupings:_edit:{GROUPING_ID}}">{!EDIT}</a>)</span>{+END}
 

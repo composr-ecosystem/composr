@@ -27,7 +27,7 @@
 	<div class="box-inner">
 	{+END}
 		{+START,IF_PASSED,RESULTS}
-			<h2 class="toggleable-tray-title js-tray-header">
+			<h2 class="toggleable-tray-title">
 				<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!">{!SETTINGS}</a>
 				{+START,IF_NON_EMPTY,{RESULTS}}
 					<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!SHOW_SEARCH_FORM}">{+START,INCLUDE,ICON}

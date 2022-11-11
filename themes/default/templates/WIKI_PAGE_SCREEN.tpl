@@ -61,7 +61,7 @@
 		{+START,IF,{$OR,{$IS_NON_EMPTY,{POSTS}},{SHOW_POSTS}}}
 			{+START,IF,{$NOT,{SHOW_POSTS}}}
 				<div data-toggleable-tray="{}">
-					<p class="toggleable-tray-title js-tray-header">
+					<p class="toggleable-tray-title">
 						<a class="toggleable-tray-button js-tray-onclick-toggle-tray" title="{!DISCUSSION}: {!EXPAND}/{!CONTRACT}" href="#!">{+START,INCLUDE,ICON}
 							NAME=trays/expand
 							ICON_SIZE=20

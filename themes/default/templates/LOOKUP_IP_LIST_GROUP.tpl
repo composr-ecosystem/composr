@@ -1,7 +1,7 @@
 {$SET,rndx,{$RAND}}
 
 <li class="clearfix" data-toggleable-tray="{}">
-	<div class="js-tray-header">
+	<div class="toggleable-tray-unstyled">
 		<label for="banned_{$GET*,rndx}">
 			<kbd>{MASK*}</kbd>
 			{+START,IF,{$ADDON_INSTALLED,securitylogging}}

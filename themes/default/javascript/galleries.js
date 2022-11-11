@@ -279,18 +279,18 @@
         events: function () {
             return {
                 'click .btn-exit-slideshow' : 'exitSlideshow',
-                'click .btn-toggle-play': 'togglePlaying',
-                'click .btn-toggle-details': 'toggleDetails',
-                'click .btn-toggle-fullscreen': 'toggleFullscreen',
-                'click .btn-toggle-tab': 'toggleTab',
+                'click .js-btn-toggle-play': 'togglePlaying',
+                'click .js-btn-toggle-details': 'toggleDetails',
+                'click .js-btn-toggle-fullscreen': 'toggleFullscreen',
+                'click .js-btn-toggle-tab': 'toggleTab',
                 'click .slideshow-carousel-entry': 'carouselEntryClick',
                 'click .btn-slider-control-prev': 'sliderPrevClick',
                 'click .btn-slider-control-next': 'sliderNextClick',
 
                 'change .input-slide-duration': 'updateSlideDuration',
-                'change .select-slide-transition-effect': 'updateSlideTransitionEffect',
-                'change .checkbox-stretch-small-media': 'updateStretchSmallMedia',
-                'change .select-background-color': 'updateBackgroundColor',
+                'change .js-select-slide-transition-effect': 'updateSlideTransitionEffect',
+                'change .js-checkbox-stretch-small-media': 'updateStretchSmallMedia',
+                'change .js-select-background-color': 'updateBackgroundColor',
             };
         },
 
@@ -353,7 +353,7 @@
 
             if (!Element.prototype.requestFullscreen || !document.exitFullscreen) {
                 // Full screen API not available, hide button
-                $dom.hide(this.$('.btn-toggle-fullscreen'));
+                $dom.hide(this.$('.js-btn-toggle-fullscreen'));
             }
         },
 
@@ -433,8 +433,8 @@
                 playCounter = ++this._playCounter; // Needed to check for plays being aborted during async actions
 
             this.el.classList.add('is-playing');
-            this.$('.btn-toggle-play').classList.add('is-active');
-            $cms.ui.setIcon(this.$('.btn-toggle-play .icon'), 'buttons/pause');
+            this.$('.js-btn-toggle-play').classList.add('is-active');
+            $cms.ui.setIcon(this.$('.js-btn-toggle-play .icon'), 'buttons/pause');
 
             if (this.isCurrentSlideImage()) {
                 this._slideDelayStartedAt = Date.now();
@@ -518,8 +518,8 @@
             this._slideDelayStartedAt = null;
 
             this.el.classList.remove('is-playing');
-            this.$('.btn-toggle-play').classList.remove('is-active');
-            $cms.ui.setIcon(this.$('.btn-toggle-play .icon'), 'content_types/multimedia');
+            this.$('.js-btn-toggle-play').classList.remove('is-active');
+            $cms.ui.setIcon(this.$('.js-btn-toggle-play .icon'), 'content_types/multimedia');
 
             this.updateStatusMessage();
 
@@ -566,11 +566,11 @@
             if (document.fullscreenElement == null) {
                 this.el.requestFullscreen();
                 this.el.classList.add('is-enabled-fullscreen');
-                $cms.ui.setIcon(this.$('.btn-toggle-fullscreen .icon'), 'buttons/shrink_size');
+                $cms.ui.setIcon(this.$('.js-btn-toggle-fullscreen .icon'), 'buttons/shrink_size');
             } else {
                 document.exitFullscreen();
                 this.el.classList.remove('is-enabled-fullscreen');
-                $cms.ui.setIcon(this.$('.btn-toggle-fullscreen .icon'), 'buttons/full_size');
+                $cms.ui.setIcon(this.$('.js-btn-toggle-fullscreen .icon'), 'buttons/full_size');
             }
         },
 
@@ -597,7 +597,7 @@
         closeActiveTab: function () {
             var tabEls = this.$$('.slideshow-tab');
 
-            this.$$('.btn-toggle-tab.is-active').forEach(function (btn) {
+            this.$$('.js-btn-toggle-tab.is-active').forEach(function (btn) {
                 btn.classList.remove('is-active');
             });
 
@@ -821,12 +821,12 @@
         },
 
         updateSlideTransitionEffect: function () {
-            this.$('.slideshow-media-box').classList.toggle('cms-slider-fade', (this.$('.select-slide-transition-effect').value === 'fade'));
+            this.$('.slideshow-media-box').classList.toggle('cms-slider-fade', (this.$('.js-select-slide-transition-effect').value === 'fade'));
         },
 
         updateStretchSmallMedia: function () {
             var wasEnabled = this.el.classList.contains('is-enabled-stretch-small'),
-                nowEnabled = this.$('.checkbox-stretch-small-media').checked;
+                nowEnabled = this.$('.js-checkbox-stretch-small-media').checked;
 
             if (wasEnabled === nowEnabled) {
                 return;
@@ -838,8 +838,8 @@
         },
 
         updateBackgroundColor: function () {
-            this.el.classList.toggle('is-bg-color-light', (this.$('.select-background-color').value === 'light'));
-            this.el.classList.toggle('is-bg-color-dark', (this.$('.select-background-color').value === 'dark'));
+            this.el.classList.toggle('is-bg-color-light', (this.$('.js-select-background-color').value === 'light'));
+            this.el.classList.toggle('is-bg-color-dark', (this.$('.js-select-background-color').value === 'dark'));
         },
 
         setupMediaWrappersSizing: function () {

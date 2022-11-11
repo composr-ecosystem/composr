@@ -10,7 +10,7 @@
 
 	{+START,SET,advanced_help}
 		<div class="ttb-left-spaced" data-toggleable-tray="{}">
-			<div class="js-tray-header">
+			<div class="toggleable-tray-unstyled">
 				<a class="toggleable-tray-button ttb-left js-tray-onclick-toggle-tray" href="#!" title="{!EXPAND}">{+START,INCLUDE,ICON}
 					NAME=trays/expand
 					ICON_SIZE=20

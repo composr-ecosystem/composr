@@ -22,7 +22,7 @@
         events: function () {
             return {
                 'click .js-click-pf-toggle-subord-fields': 'toggleSubordFields',
-                'keypress .js-keypress-pf-toggle-subord-fields': 'toggleSubordFields'
+                'keypress .js-click-pf-toggle-subord-fields': 'toggleSubordFields'
             };
         },
 

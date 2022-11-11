@@ -30,7 +30,7 @@
 
 	{+START,COMMENT}
 		<div data-toggleable-tray="{}">
-			<div class="js-tray-header">
+			<div class="toggleable-tray-unstyled">
 				<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!">{!EXPAND}</a>
 			</div>
 

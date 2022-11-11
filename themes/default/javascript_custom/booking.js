@@ -2,7 +2,7 @@
     'use strict';
 
     $cms.templates.bookingFleshOutScreen = function bookingFleshOutScreen(params, container) {
-        $dom.on(container, 'change', 'js-change-recalculate-booking-price', function (e, el) {
+        $dom.on(container, 'change', '.js-change-recalculate-booking-price', function (e, el) {
             recalculatePrice(el.form);
         });
     };

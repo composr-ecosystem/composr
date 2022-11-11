@@ -3,7 +3,7 @@
 {+START,IF,{$NEQ,{$COMMA_LIST_GET,{BLOCK_PARAMS},raw},1}}
 <section id="tray-actionlog" data-toggleable-tray="{ save: true }" data-tpl="blockMainStaffActions" class="box box---block-main-staff-actions">
 	<div class="box-inner">
-		<h3 class="toggleable-tray-title js-tray-header">
+		<h3 class="toggleable-tray-title">
 			<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!CONTRACT}">{+START,INCLUDE,ICON}
 				NAME=trays/contract
 				ICON_SIZE=24

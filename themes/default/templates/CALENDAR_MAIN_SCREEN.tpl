@@ -65,7 +65,7 @@
 
 <div class="box box---calendar-main-screen-interests" data-toggleable-tray="{}">
 	<div class="box-inner">
-		<h2 class="toggleable-tray-title js-tray-header">
+		<h2 class="toggleable-tray-title">
 			<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!EXPAND}">{+START,INCLUDE,ICON}
 				NAME=trays/expand
 				ICON_SIZE=24
@@ -120,7 +120,7 @@
 {+START,IF,{$ADDON_INSTALLED,syndication_blocks}}
 	<div class="box box---calendar-main-screen-feeds-to-overlay" data-toggleable-tray="{}">
 		<div class="box-inner">
-			<h2 class="toggleable-tray-title js-tray-header">
+			<h2 class="toggleable-tray-title">
 				<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!EXPAND}">{+START,INCLUDE,ICON}
 					NAME=trays/expand
 					ICON_SIZE=24

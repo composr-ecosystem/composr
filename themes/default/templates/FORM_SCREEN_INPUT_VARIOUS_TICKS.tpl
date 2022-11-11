@@ -2,7 +2,7 @@
 
 <div data-toggleable-tray="{}" data-tpl="formScreenInputVariousTicks" data-tpl-params="{+START,PARAMS_JSON,CUSTOM_NAME,CUSTOM_ACCEPT_MULTIPLE}{_*}{+END}">
 	{+START,IF_PASSED,EXPANDED}
-		<h3 class="toggleable-tray-title js-tray-header">
+		<h3 class="toggleable-tray-title">
 			<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{$?,{EXPANDED},{!CONTRACT},{!EXPAND}}">{+START,INCLUDE,ICON}
 				NAME=trays/{$?,{EXPANDED},contract,expand}
 				ICON_SIZE=20

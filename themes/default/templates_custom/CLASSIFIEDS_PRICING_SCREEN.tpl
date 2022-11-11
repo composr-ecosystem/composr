@@ -4,7 +4,7 @@
 	{!CLASSIFIEDS_SET_PRICES}
 </p>
 
-<form id="main-form" action="{POST_URL*}" method="post" class="js-submission-flow" data-view="SubmissionFlow" data-view-params="{+START,INCLUDE,FORM_STANDARD_START}
+<form id="main-form" action="{POST_URL*}" method="post" data-view="SubmissionFlow" data-view-params="{+START,INCLUDE,FORM_STANDARD_START}
 	FORM_NAME=main-form
 	SUPPORT_AUTOSAVE=1
 {+END}">

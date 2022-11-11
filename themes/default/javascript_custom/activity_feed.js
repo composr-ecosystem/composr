@@ -36,7 +36,7 @@
                 'keyup textarea.js-textarea-activity-status': 'textareaKeyup',
                 'keypress textarea.js-textarea-activity-status': 'textareaKeypress',
 
-                'keyup .js-textarea-keyup-manage-scroll-height': 'manageScrollHeight',
+                'keyup .js-textarea-activity-status': 'manageScrollHeight',
 
                 'submit form.js-form-status-updates': 'submitForm'
             };
