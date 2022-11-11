@@ -124,7 +124,7 @@ class Block_main_gallery_embed
 
         // Sorting
         $sort = array_key_exists('sort', $map) ? $map['sort'] : 'add_date DESC';
-        if (($sort != 'fixed_random ASC') && ($sort != 'average_rating DESC') && ($sort != 'average_rating ASC') && ($sort != 'compound_rating DESC') && ($sort != 'compound_rating ASC') && ($sort != 'add_date DESC') && ($sort != 'add_date ASC') && ($sort != 'edit_date DESC') && ($sort != 'edit_date ASC') && ($sort != 'url DESC') && ($sort != 'url ASC')) {
+        if (($sort != 'title ASC') && ($sort != 'title DESC') && ($sort != 'fixed_random ASC') && ($sort != 'average_rating DESC') && ($sort != 'average_rating ASC') && ($sort != 'compound_rating DESC') && ($sort != 'compound_rating ASC') && ($sort != 'add_date DESC') && ($sort != 'add_date ASC') && ($sort != 'edit_date DESC') && ($sort != 'edit_date ASC') && ($sort != 'url DESC') && ($sort != 'url ASC')) {
             $sort = 'add_date DESC';
         }
         list($_sort, $_dir) = explode(' ', $sort, 2);
