@@ -277,14 +277,12 @@ class Module_admin_svg_sprites
         $fields = new Tempcode();
 
         require_code('users2');
-        $theme = $GLOBALS['FORUM_DRIVER']->get_theme('', get_modal_user()); // Default to the theme for the Welcome zone
+        $theme = get_param_string('theme', $GLOBALS['FORUM_DRIVER']->get_theme('', get_modal_user())); // Default to the theme for the Welcome zone
         $theme_entries = create_selection_list_themes($theme, false, true);
         $fields->attach(form_input_list(do_lang_tempcode('THEME'), make_string_tempcode(''), 'theme', $theme_entries));
 
-        $fields->attach(form_input_tick(do_lang_tempcode('MONOCHROME_ICONS'), do_lang_tempcode('DESCRIPTION_MONOCHROME_ICONS'), 'monochrome', get_theme_option('use_monochrome_icons') === '1'));
-
         if ($GLOBALS['DEV_MODE']) {
-            $fields->attach(form_input_tick('Userland', 'Generate in the images_custom directory and include icons from that directory.', 'userland', true));
+            $fields->attach(form_input_tick('Userland', 'Generate in the images_custom directory and include icons from that directory.', 'userland', $theme != 'default'));
         } else {
             $hidden->attach(form_input_hidden('userland', '1'));
         }
@@ -315,16 +313,18 @@ class Module_admin_svg_sprites
         require_code('themes3');
 
         $theme = post_param_string('theme');
-        $monochrome = (post_param_integer('monochrome', 0) == 1);
         $userland = (post_param_integer('userland', 0) == 1);
 
-        list($_sprite_path, $icons_added) = generate_svg_sprite($theme, $monochrome, $userland);
+        list($sprite_path_monochrome, $icons_added_monochrome) = generate_svg_sprite($theme, true, $userland);
+        list($sprite_path_colour, $icons_added_colour) = generate_svg_sprite($theme, false, $userland);
 
         return do_template('GENERATE_SVG_SPRITE_SCREEN', [
             '_GUID' => '1318e8d111ee4715aae471976f495ccd',
             'TITLE' => $this->title,
-            'SPRITE_PATH' => $_sprite_path,
-            'ICONS_ADDED' => $icons_added,
+            'SPRITE_PATH_MONOCHROME' => $sprite_path_monochrome,
+            'ICONS_ADDED_MONOCHROME' => $icons_added_monochrome,
+            'SPRITE_PATH_COLOUR' => $sprite_path_colour,
+            'ICONS_ADDED_COLOUR' => $icons_added_colour,
         ]);
     }
 }

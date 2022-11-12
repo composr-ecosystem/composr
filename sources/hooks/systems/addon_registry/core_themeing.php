@@ -556,8 +556,11 @@ class Hook_addon_registry_core_themeing
 
         return lorem_globalise(do_lorem_template('GENERATE_SVG_SPRITE_SCREEN', [
             'TITLE' => lorem_title(),
-            'SPRITE_PATH' => 'themes/default/images/icons_sprite.svg',
-            'ICONS_ADDED' => ['admin/add'],
+            'SPRITE_PATH_MONOCHROME' => 'themes/default/images/icons_sprite.svg',
+            'ICONS_ADDED_MONOCHROME' => ['admin/add'],
+            'SPRITE_PATH_COLOUR' => 'themes/default/images/icons_sprite.svg',
+            'ICONS_ADDED_COLOUR' => ['admin/add'],
+        ]), null, '', true);
         ]), null, '', true);
     }
 }
