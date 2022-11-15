@@ -505,7 +505,7 @@ function post_param_tax_code(string $name, string $default = '0%') : string
     } else { // simple flat figure post-processing
         $value = float_to_raw_string(float_unformat($value));
     }
-    if ($value == '') { // No simple rate; do hook-based symantic parameters
+    if ($value == '') { // No simple rate; do hook-based semantic parameters
         $hooks = find_all_hook_obs('systems', 'ecommerce_tax', 'Hook_ecommerce_tax_');
         foreach ($hooks as $ob) {
             if (method_exists($ob, 'post_param_tax_code')) {
@@ -518,7 +518,7 @@ function post_param_tax_code(string $name, string $default = '0%') : string
     } else { // simple rate post-processing
         $value = float_to_raw_string(float_unformat($value)) . '%';
     }
-    if ($value == '') { // No symantic parameters; use default value
+    if ($value == '') { // No semantic parameters; use default value
         $value = $default; // Default
     }
 

@@ -46,8 +46,7 @@ class js_file_test_set extends cms_test_case
 
         foreach ($templates_defined_html as $template) {
             // Exceptions
-            if (in_array($template, [
-            ])) {
+            if (in_array($template, [])) {
                 continue;
             }
 
@@ -152,8 +151,7 @@ class js_file_test_set extends cms_test_case
 
         foreach ($views_defined_html as $view) {
             // Exceptions
-            if (in_array($view, [
-            ])) {
+            if (in_array($view, [])) {
                 continue;
             }
 
@@ -319,8 +317,7 @@ class js_file_test_set extends cms_test_case
 
         foreach ($_classes_defined_css as $class) {
             // Exceptions
-            if (in_array($class, [
-            ])) {
+            if (in_array($class, [])) {
                 continue;
             }
 
@@ -394,6 +391,7 @@ class js_file_test_set extends cms_test_case
                         $matches = [];
                         $found = preg_match_all('#class="([^"]*)"#', $c, $matches);
                         for ($i = 0; $i < $found; $i++) {
+                            $matches2 = [];
                             $class_property = preg_replace('#\{.*\}#U', '', $matches[1][$i]);
                             $num_matches2 = preg_match_all('#[\w\-]+#', $class_property, $matches2);
                             for ($j = 0; $j < $num_matches2; $j++) {

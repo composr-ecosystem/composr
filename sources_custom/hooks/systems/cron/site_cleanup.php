@@ -44,7 +44,7 @@ class Hook_cron_site_cleanup
             require_code('composr_homesite');
 
             global $SITE_INFO;
-            $num_queued = count(find_expired_sites()) + (isset($SITE_INFO['mysql_root_password']) ? 1 : 0);
+            $num_queued = count(find_expired_sites()) + (isset($SITE_INFO['mysql_root_password']) && isset($SITE_INFO['mysql_demonstratr_password']) ? 1 : 0);
         } else {
             $num_queued = null;
         }
@@ -67,10 +67,6 @@ class Hook_cron_site_cleanup
         demonstratr_delete_old_sites();
 
         // Reset main demo
-        global $SITE_INFO;
-        if (!isset($SITE_INFO['mysql_root_password'])) {
-            return;
-        }
         server__public__demo_reset();
     }
 }

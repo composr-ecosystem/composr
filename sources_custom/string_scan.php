@@ -1158,11 +1158,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_CPF_CODE
         DESCRIPTION_CPF_SECTION
         RSS
-        PGE_M
-        PGE_B
-        PGE_D
-        PGE_R
-        PGE_HASH
         BLOCK_TRANS_NAME_main_join
         BLOCK_top_search_PARAM_input_fields
         BLOCK_main_join_DESCRIPTION
@@ -4651,7 +4646,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_INVOICE_FOR
         DESCRIPTION_INVOICE_NOTE
         DESCRIPTION_INVOICE_PAGE
-        DESCRIPTION_PURCHASE_ID_INVOICE
         DESCRIPTION_IS_DEFAULT_GROUP
         DESCRIPTION_IS_MEMBER_SYNCHED_GALLERY
         DESCRIPTION_IS_PRESENTED_AT_INSTALL
@@ -5338,9 +5332,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         EXPORT_ICAL_TEXT
         EXPORT_LANGUAGE
         EXPORT_ORDER_LIST
-        EXPORT_ORDER_LIST_TEXT
         EXPORT_TRANSACTIONS
-        ORDER_STATUS_FILTER_DESCRIPTION
         EXPORT_POINTS_OVERVIEW
         EXPORT_QUIZ
         EXPORT_QUIZ_TEXT
@@ -6634,7 +6626,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ORPHANED_UPLOADS
         OTHER_MAINTENANCE
         OUTMODE
-        OUTSTANDING_INVOICES
         OUT_OF_BOUNDS_TIME
         OVERRIDE
         OVERT_WHISPER_SUGGESTION
@@ -7166,7 +7157,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SCRIPT_URL_HACK
         SCRIPT_URL_HACK_2
         SD_WARNING_BELOW
-        SEARCH_ORDERS
         SEARCH_RESULTS_PER_PAGE
         SEARCH_TUTORIALS
         SEARCH_WITH_DATE_RANGE
@@ -7250,7 +7240,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SHOW_ON_JOIN_FORM
         SHOW_POST_VALIDATION
         SHOW_SCREEN_ACTIONS
-        SHOW_UNDISPATCHED_ORDERS
         SHUFFLE_ANSWERS
         SHUFFLE_QUESTIONS
         SH_COMMAND
@@ -7791,7 +7780,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         UNBAN_SUBMITTER_DESCRIPTION
         UNBLOCK_MEMBER
         UNCLOSED_DIRECTIVE_OR_BRACE
-        UNFULFILLED_INVOICES
         UNDER_CONSTRUCTION
         UNDER_CONSTRUCTION_MARKERS
         UNDO
@@ -8113,7 +8101,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SEPARATE_BLOGS
         PAYMENT_RECEIVED_BODY
         PAYMENT_RECEIVED_BODY_memo
-        PAYMENT_RECEIVED_BODY_invoice
         PAYMENT_RECEIVED_BODY_shipping_address
         PAYMENT_RECEIVED_SUBJECT
         _ADDON_WARNING_MISSING_DEPENDENCIES
@@ -8218,7 +8205,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PASSWORDS_DO_NOT_REUSE
         PASSWORD_INSECURE
         SPAM
-        DESCRIPTION_MONOCHROME_ICONS
         DESCRIPTION_DELETE_CONTENT
         DESCRIPTION_DELETE_CONTENT_SUP_POINTS
         DESCRIPTION_DELETE_THIS
@@ -9274,7 +9260,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DELETE_TOPICS_AND_POSTS
         DELETE_TOPIC_POLL
         DELETE_TOPIC_TEXT
-        FULFILL
+        FULFIL
         DESCENDING
         DESCRIPTION
         DESCRIPTION_ADDITIONAL_ACCESS
@@ -10371,17 +10357,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PE_LACKING_POINTS
         PE_NEGATIVE_POINTS
         PE_SELF
-        PGE_X
-        PGE_A
-        PGE_C
-        PGE_COMM
-        PGE_E
-        PGE_I
-        PGE_N
-        PGE_P
-        PGE_S
-        PGE_T
-        PGE_V
         PHOTO
         PHOTO_CHANGE
         PHP_CODE
@@ -10923,7 +10898,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         TRACKBACKS
         TRACKBACK_LINK
         TRACKING
-        TRANSACTION_ID_WRITTEN
         TRANSACTION_NOT_COMPLETE
         TRANSACT_INFO
         TREE

@@ -42,6 +42,10 @@ class phpstub_accuracy_test_set extends cms_test_case
         sort($required_functions);
 
         foreach ($declared_functions as $function) {
+            // ocProducts PHP functions should not be tested for requirement as they are specific to the ocProducts PHP-dev.
+            if (preg_match('#^(ocp)_#', $function) != 0) {
+                continue;
+            }
             $this->assertTrue(in_array($function, $required_functions), 'Missing from install_env_php_lock_down.php? ' . $function);
         }
 
@@ -63,8 +67,8 @@ class phpstub_accuracy_test_set extends cms_test_case
             $defined = get_defined_functions();
             foreach ($defined['internal'] as $function) {
                 if (!in_array($function, $will_never_define)) {
-                    // Extensions
-                    if (preg_match('#^(pdo|dom|exif|token|apache|zip|xmlwriter|xml|ocp|simplexml|session|pspell|posix|mysqli|imap|hash|ftp|filter|finfo|curl|ctype|libxml)_#', $function) != 0) {
+                    // Extensions (note: ocp not excluded as it should be defined so IDEs do not complain about undefined functions)
+                    if (preg_match('#^(pdo|dom|exif|token|apache|zip|xmlwriter|xml|simplexml|session|pspell|posix|mysqli|imap|hash|ftp|filter|finfo|curl|ctype|libxml)_#', $function) != 0) {
                         continue;
                     }
                     if (preg_match('#^(bz|mb)#', $function) != 0) {

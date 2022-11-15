@@ -251,7 +251,7 @@ class Module_admin_disastr extends Standard_crud_module
         ];
 
         require_code('templates_map_table');
-        return map_table_screen($title, $fields);
+        return map_table_screen($title, $fields, true);
     }
 
     public function get_form_fields_for_add()

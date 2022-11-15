@@ -102,7 +102,6 @@
 					{+END}
 
 					{+START,IF_EMPTY,{$TRIM,{$LOAD_PANEL,right}}}
-						{$REQUIRE_CSS,helper_panel}
 						{+START,INCLUDE,GLOBAL_HELPER_PANEL}{+END}
 					{+END}
 				</div>

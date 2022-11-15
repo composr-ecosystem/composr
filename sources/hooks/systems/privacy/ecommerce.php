@@ -37,7 +37,7 @@ class Hook_privacy_ecommerce extends Hook_privacy_base
         require_lang('ecommerce');
 
         $tax_service = get_option('tax_api_service');
-        $tax_service_label = do_lang_tempcode('UNKNOWN');
+        $tax_service_label = do_lang('UNKNOWN');
         if (hook_exists('systems', 'ecommerce_tax', $tax_service)) {
             $ob = get_hook_ob('systems', 'ecommerce_tax', $tax_service, 'Hook_ecommerce_tax_');
             if ($ob !== null) {
@@ -67,7 +67,7 @@ class Hook_privacy_ecommerce extends Hook_privacy_base
                 ],
                 ($tax_service != 'composr') ? null : [
                     'heading' => do_lang('INFORMATION_TRANSFER_ECOMMERCE'),
-                    'action' => do_lang_tempcode('PRIVACY_ACTION_TAX', $tax_service_label),
+                    'action' => do_lang_tempcode('PRIVACY_ACTION_TAX', escape_html($tax_service_label)),
                     'reason' => do_lang_tempcode('PRIVACY_REASON_TAX'),
                 ],
                 ($payment_gateway == '') ? null : [

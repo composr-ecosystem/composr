@@ -872,6 +872,8 @@ class Module_tickets
 
         $staff_only = post_param_integer('staff_only', 0) == 1;
 
+        $ticket_type_details = get_ticket_type($ticket_type_id);
+
         // Run checks...
 
         if ($ticket_type_id === null) {
@@ -881,8 +883,6 @@ class Module_tickets
             check_ticket_access($ticket_id);
         } else {
             // If new ticket...
-
-            $ticket_type_details = get_ticket_type($ticket_type_id);
 
             // Spam check
             require_code('antispam');

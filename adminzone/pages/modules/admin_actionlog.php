@@ -579,6 +579,6 @@ class Module_admin_actionlog
         }
 
         require_code('templates_map_table');
-        return map_table_screen($this->title, $fields);
+        return map_table_screen($this->title, $fields, true);
     }
 }

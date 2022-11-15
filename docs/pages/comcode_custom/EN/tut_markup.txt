@@ -122,12 +122,12 @@ Composr is built on top of standard web/Internet protocols, languages and [abbr=
 			<td>You are unlikely to need any awareness of this.</td>
 		</tr>
 		<tr>
-			<td>[url="https://developers.google.com/search/reference/robots_txt"]robots.txt[/url]</td>
+			<td>[url="https://developers.google.com/search/docs/crawling-indexing/robots/robots_txt"]robots.txt[/url]</td>
 			<td>Robots exclusion standard. Google's version of the specification is the most accurate to what search engines now support. We also use the [tt]X-Robots-Tag[/tt] header.</td>
 			<td>Knowing this may be important for [abbr="Search Engine Optimisation"]SEO[/abbr].</td>
 		</tr>
 		<tr>
-			<td>[url="https://developers.google.com/search/reference/robots_meta_tag"]Robots meta tag and X-Robots-Tag HTTP header[/url]</td>
+			<td>[url="https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag"]Robots meta tag and X-Robots-Tag HTTP header[/url]</td>
 			<td>Specifying what URLs may be indexed. Google's version of the specification is the most accurate to what search engines now support.</td>
 			<td>Knowing this may be important for [abbr="Search Engine Optimisation"]SEO[/abbr].</td>
 		</tr>
@@ -160,7 +160,7 @@ Composr is built on top of standard web/Internet protocols, languages and [abbr=
 			<th colspan="3"><em>Data &amp; Feeds</em></th>
 		</tr>
 		<tr>
-			<td>[abbr="eXtensible Markup Language"][url="http://www.w3.org/TR/2008/REC-xml-20081126/"]XML[/url][/abbr] (including [abbr="Really Simple Syndication"][url="http://cyber.law.harvard.edu/rss/rss.html"]RSS[/url][/abbr], [url="https://datatracker.ietf.org/doc/html/rfc4287"]Atom[/url], [abbr="Outline Processor Markup Language"][url="http://opml.org/spec2.opml"]OPML[/url][/abbr], [abbr="Extensible Stylesheet Language Transformations"][url="http://www.w3.org/TR/xslt20/"]XSLT[/url][/abbr], [url="http://www.sitemaps.org/"]XML Sitemaps[/url] and [url="https://support.google.com/news/publisher/answer/74288?hl=en"]Google News Sitemaps[/url], and use in [abbr="Asynchronous JavaScript and XML"]AJAX[/abbr])</td>
+			<td>[abbr="eXtensible Markup Language"][url="http://www.w3.org/TR/2008/REC-xml-20081126/"]XML[/url][/abbr] (including [abbr="Really Simple Syndication"][url="http://cyber.law.harvard.edu/rss/rss.html"]RSS[/url][/abbr], [url="https://datatracker.ietf.org/doc/html/rfc4287"]Atom[/url], [abbr="Outline Processor Markup Language"][url="http://opml.org/spec2.opml"]OPML[/url][/abbr], [abbr="Extensible Stylesheet Language Transformations"][url="http://www.w3.org/TR/xslt20/"]XSLT[/url][/abbr], [url="http://www.sitemaps.org/"]XML Sitemaps[/url] and [url="https://developers.google.com/search/docs/crawling-indexing/sitemaps/news-sitemap?hl=en&visit_id=638038726780268799-4227682099&rd=2"]Google News Sitemaps[/url], and use in [abbr="Asynchronous JavaScript and XML"]AJAX[/abbr])</td>
 			<td>XML is a standard for structuring data, used for many web formats that Composr supports, as well as a few configurable parts of Composr. RSS, Atom and OPML are feed technology, to export Composr news. XSLT is a technology we use to make RSS, Atom and OPML display in a web browser.</td>
 			<td>You won't need much awareness of XML unless doing particular advanced configuration.</td>
 		</tr>

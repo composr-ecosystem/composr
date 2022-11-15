@@ -205,7 +205,7 @@ function escrow_points(int $sender_id, int $recipient_id, int $amount, string $r
 
     require_code('points2');
 
-    // Actually debit the points into escrow (use null for gift points so we prioritize escrowing gift points first, when applicable)
+    // Actually debit the points into escrow (use null for gift points so we prioritise escrowing gift points first, when applicable)
     $escrow_id = points_debit_member($sender_id, do_lang('ESCROW_REASON', $username, $reason), $amount, null, 0, $send_notifications, 0, 'points_escrow', 'add');
     if ($escrow_id === null) {
         return null;

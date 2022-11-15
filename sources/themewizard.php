@@ -281,6 +281,8 @@ function themewizard_find_theme_images_in_scope(string $source_theme, ?string $s
 function themewizard_find_css_sheets(string $source_theme, ?string $seed = null, ?bool $dark = null, bool $in_scope_only = true) : array
 {
     require_code('themes2');
+    require_code('files2');
+
     if (($seed !== null) && ($dark !== null) && ($seed == find_theme_seed($source_theme)) && ($dark == find_theme_dark($source_theme))) {
         // Nothing to do
         return [];

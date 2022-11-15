@@ -246,7 +246,7 @@ class Hook_ecommerce_tax_taxjar
             // Process TaxJar results...
             if (isset($response['tax']['breakdown']['line_items'])) {
                 foreach ($response['tax']['breakdown']['line_items'] as $cart_item) {
-                    $i = intval($cart_item['id']); // The 'id's passed through TaxJar are just array indexes for what we are doing
+                    $i = intval($cart_item['id']); // The IDs passed through TaxJar are just array indexes for what we are doing
 
                     $tax = 0.0;
                     if (isset($products[$i])) { // Should always be true, but we're being defensive

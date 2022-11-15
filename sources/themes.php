@@ -309,7 +309,10 @@ function load_theme_image_cache(object $db, int $db_place, string $true_theme, s
             break;
 
         case THEME_IMAGES_LOAD_INTENSITY__SMART_CACHE:
-            $theme_images = $db->query_select('theme_images', ['id', 'url'], ['theme' => $true_theme, 'lang' => $true_lang]);
+            $theme_images = $db->query_select('theme_images', ['id', 'url'], ['theme' => $true_theme, 'lang' => $true_lang], '', null, 0, true);
+            if ($theme_images === null) { // LEGACY. for upgrading from < v11
+                $theme_images = $db->query_select('theme_images', ['id', 'path'], ['theme' => $true_theme, 'lang' => $true_lang]);
+            }
             $THEME_IMAGES_CACHE[$db_place] = collapse_2d_complexity('id', 'url', $theme_images);
 
             $THEME_IMAGES_LOAD_INTENSITY[$db_place] = THEME_IMAGES_LOAD_INTENSITY__ALL;

@@ -213,8 +213,8 @@ class Module_admin_debrand
 
         $start_path = get_file_base() . '/adminzone/pages/comcode_custom/' . get_site_default_lang() . '/' . DEFAULT_ZONE_PAGE_NAME . '.txt';
         if (!file_exists($start_path)) {
-            $start = post_param_string('start_page');
-            cms_file_put_contents_safe($start_path, $start, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+            $dashboard = post_param_string('dashboard');
+            cms_file_put_contents_safe($start_path, $dashboard, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
         }
 
         if ($GLOBALS['CURRENT_SHARE_USER'] === null) { // Only if not a shared install

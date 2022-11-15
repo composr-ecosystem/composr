@@ -2180,7 +2180,7 @@ Be careful with global functions and variables
 | Consistency
 | Composr development +
 | Manually
-| Traditional event handlers only allow attaching a single event, e.g. attaching an [tt]onclick[/tt] property in the DOM. For consistency and flexibility, use [tt]addEventListener[/tt] or wrapping functions within the Composr JavaScript framework. An allowed exception is if your Javascript has complete authority over the HTML the event handler is being attached to. Further, for consistency and clarity, use [tt]e.preventDefault();[/tt] to cancel an event, rather than returning a boolean.
+| Traditional event handlers only allow attaching a single event, e.g. attaching an [tt]onclick[/tt] property in the DOM. For consistency and flexibility, use [tt]addEventListener[/tt] or wrapping functions within the Composr JavaScript framework. An allowed exception is if your JavaScript has complete authority over the HTML the event handler is being attached to. Further, for consistency and clarity, use [tt]e.preventDefault();[/tt] to cancel an event, rather than returning a boolean.
 |}
 
 [title="4"]Images[/title]
@@ -2400,7 +2400,7 @@ Use standardised commit messages
 | Changelogs are auto-generated from Git history for new releases.
 | Composr development
 | Manually
-| Any commit on a stable branch should fix one issue only (tip: [url="use the Git patch technique"]https://stackoverflow.com/questions/1085162/commit-only-part-of-a-file-in-git[/url] if a file contains changes that should be made across multiple commits).
+| Any commit on a stable branch should fix one issue only (tip: [url="use the Git patch technique"]https://stackoverflow.com/questions/1085162/commit-only-part-of-a-files-changes-in-git[/url] if a file contains changes that should be made across multiple commits).
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Use temporary branches and commit regularly[/color]

@@ -195,6 +195,7 @@ class template_no_unused_test_set extends cms_test_case
             'DOWNLOADS_FOLLOWUP_EMAIL',
             'DOWNLOADS_FOLLOWUP_EMAIL_DOWNLOAD_LIST',
             'EMOTICON_IMG_CODE_THEMED',
+            'FORM_STANDARD_START',
             'MAIL',
             'ECOM_PRODUCT_BANK',
             'ECOM_PRODUCT_DISASTR',

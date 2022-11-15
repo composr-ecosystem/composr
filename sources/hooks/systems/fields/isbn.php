@@ -147,6 +147,6 @@ class Hook_fields_isbn
      */
     public function get_seo_source_map(string $val, int $field_id, string $content_type, ?string $content_id = null)
     {
-        return $val; // ISBNs are unique identifiers for books, products, etc and may be important in SEO
+        return $val; // ISBN codes are unique identifiers for books, products, etc and may be important in SEO
     }
 }

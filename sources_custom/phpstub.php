@@ -4972,7 +4972,7 @@ function get_object_vars(object $object)
  * @param  string $in The string to check for escaping
  * @return boolean Whether the string has been escaped by OCP's PHP-dev
  */
-function ocp_is_escaped($in) : bool
+function ocp_is_escaped(string $in) : bool
 {
     return false;
 }
@@ -4983,7 +4983,7 @@ function ocp_is_escaped($in) : bool
  *
  * @param  string $in The string to mark as escaped
  */
-function ocp_mark_as_escaped($in)
+function ocp_mark_as_escaped(string $in)
 {
     return;
 }

@@ -21,7 +21,7 @@ class _oembed_test_set extends cms_test_case
     public function testOEmbedManualPatternsConfigOption()
     {
         $map = [
-            'https://www.youtube.com/watch?v=GwbvoH6oh8s' => 'https://www.youtube.com/oembed',
+            'https://www.youtube.com/watch?v=LDfzAA8fNKU' => 'https://www.youtube.com/oembed',
             'https://vimeo.com/channels/staffpicks/247068452' => 'http://vimeo.com/api/oembed.{format}',
             'https://www.dailymotion.com/video/x8eqst9' => 'http://www.dailymotion.com/services/oembed',
             'http://www.slideshare.net/scroisier/future-of-open-source-cms-4176880' => 'http://www.slideshare.net/api/oembed/2',

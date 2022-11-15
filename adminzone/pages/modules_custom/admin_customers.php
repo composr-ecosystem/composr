@@ -744,6 +744,9 @@ class Module_admin_customers
                 require_code('cns_members_action2');
                 $_fields = cns_get_custom_field_mappings($member_id);
                 $num_credits = $_fields['field_' . strval($cpf_id)];
+                if ($num_credits === null) {
+                    $num_credits = 0;
+                }
             }
 
             $text = paragraph(do_lang_tempcode('CUSTOMER_CURRENTLY_HAS', escape_html(integer_format($num_credits, 0))));
