@@ -13,7 +13,7 @@
 	<input type="hidden" name="x_cust_id" value="{CUST_ID*}" />
 	<input type="hidden" name="x_currency_code" value="{CURRENCY*}" />
 	<input type="hidden" name="x_relay_response" value="TRUE" />
-	<input type="hidden" name="x_relay_url" value="https://compo.sr/covefe_ipn_test.php" />
+	<input type="hidden" name="x_relay_url" value="{$PAGE_LINK*,_SEARCH:purchase:finish:type_code={TYPE_CODE}:from=authorize}" />
 	{+START,IF_NON_EMPTY,{MEMBER_ADDRESS}}
 		<input type="hidden" name="address_override" value="1" />
 		{+START,LOOP,MEMBER_ADDRESS}

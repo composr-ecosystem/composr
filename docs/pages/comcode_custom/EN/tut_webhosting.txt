@@ -105,7 +105,7 @@ We require:
 [title="3"]Web Server[/title]
 
 We require:
- - A web server running Apache (the common Linux web server), {$IS_MAINTAINED,platform_litespeed,LiteSpeed} [an Apache drop-in replacement], or {$IS_MAINTAINED,platform_iis,IIS7+} [the Microsoft web server]. It is very unlikely you will find a webhost that provides something else. Other servers might work but are not supported (additional guidance is provided in this tutorial). It is possible to use a reverse proxy, such as Nginx, along with a web server such as Apache. However, we do not have special support reverse proxies. It will be up to the webhost to ensure the proxy is configured properly. Be aware that static caching on the proxy could interfere with the software.
+ - A web server running Apache (the common Linux web server), {$IS_MAINTAINED,platform_litespeed,LiteSpeed} [an Apache drop-in replacement], or {$IS_MAINTAINED,platform_iis,IIS7+} [the Microsoft web server]. It is very unlikely you will find a webhost that provides something else. Other servers might work but are not supported (additional guidance is provided in this tutorial). It is possible to use a reverse proxy, such as Nginx, along with a web server such as Apache. However, we do not have special support for reverse proxies. It will be up to the webhost to ensure the proxy is configured properly. Be aware that static caching on the proxy could interfere with the software.
  - The CGI timeout on the server must not be lower than 60 seconds (which is the default on Apache).
  - That the web server is not overloaded with too many users, or has very poor performance.
  - Either a suEXEC-style web server (strongly recommended) &dagger;, or a working FTP connection from PHP back to the hosting (so the server has to be running FTP, and PHP has to be running the PHP [tt]ftp[/tt] extension).
@@ -115,7 +115,6 @@ If running Apache:
  - It is assumed the [tt]AccessFileName[/tt] option is set to the default [tt].htaccess[/tt].
  - If you want URL Schemes or URL Redirects, [tt]mod_rewrite[/tt] must be enabled.
  - The server configuration needs to have [tt]AllowOverride All[/tt] or at least [tt]AllowOverride Options FileInfo Limit[/tt] (because we use distributed [tt].htaccess[/tt] files containing settings to increase security).
- - If you want URL Schemes, [tt]mod_rewrite[/tt] must be enabled.
  - The following Apache modules are recommended (for maximum performance): [tt]mod_headers[/tt], [tt]mod_setenvif[/tt], [tt]mod_env[/tt], [tt]mod_deflate[/tt], [tt]mod_filter[/tt]
 
 If running IIS:
@@ -123,9 +122,15 @@ If running IIS:
  - You must have the URL Rewrite module installed. This is not just needed for URL Schemes and URL Redirects, but also for basic security.
  - It is possible you may need to configure IIS for additional mime-types, depending on what you are trying to do. Unlike Apache, IIS will not (by default) serve file types it is not configured to know a mime-type for.
 
+If running LiteSpeed:
+ - Be aware that we do not provide explicit support for LiteSpeed.
+ - LiteSpeed only supports [tt]mod_rewrite[/tt] directives from Apache [tt].htaccess[/tt] files; it does not support other directives such as [tt]AllowOverride[/tt] or [/tt]php_value[/tt] used in the files and will ignore them. Make sure you modify your PHP configuration according to the specified [tt]php_value[/tt] directives for your Composr site.
+ - You might have to modify all [tt]RewriteRule[/tt] substitutions to include a forward-slash (/) before [tt]index.php[/tt].
+
 If running Nginx:
- - You should be using Nginx as a proxy to a web server mentioned above, such as Apache. Nginx does not support the directives offered by Apache or IIS, and it also does not support reading in htaccess or web.config files. Therefore, rewrite rules and access control for certain directories will not work when using Nginx as a standalone web server.
- - Ensure Nginx is not caching static resources. This could cause problems with the Composr software.
+ - Be aware that we do not provide explicit support for Nginx.
+ - It is easier to use Nginx with the Composr software if proxying to a supported web server software mentioned above. Nginx does not support the directives or rewrite rules offered by Apache or IIS, and it also does not support reading in [tt].htaccess[/tt] or [tt]web.config[/tt] files. Therefore, rewrite rules and access control for certain directories will not work when using Nginx as a standalone web server unless you explicitly configure them.
+ - Ensure Nginx is not caching static Composr resources. This could cause problems with the Composr software.
 
 &dagger; By suEXEC-style web server we mean either:
 [list="a"]
@@ -226,7 +231,7 @@ Composr recommends:
 [title="2"]Web server compatibility[/title]
 
 Composr is only tested on, and optimised for, Apache and IIS.
-However in principle it should work on most web server software. It should also work with a reverse proxy, such as Nginx, provided it is configured correctly and not using static caching. Note that Composr will not work when using Nginx as a standalone web server.
+It might work on other web server software, such as LiteSpeed or Nginx, but it may require special configuration. We do not provide explicit support for configurations outside of Apache and IIS.
 
 There are a few notes to give, although the only one of likely major significance is the URL Schemes one..
 

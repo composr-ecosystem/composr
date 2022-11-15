@@ -56,7 +56,11 @@ The Composr software makes use of Authorize.net's Server Integrated Method (SIM)
 
 While PayPal has the Payment Data Transfer (PDT), Authorize.net has something similar called Relay Response. After a customer submits payment information on Authorize.net, while the customer is waiting for Authorize.net to respond with the status, Authorize.net will post transaction details and status back to the Composr website. If the attempt fails or errors, Authorize.net will show an error to the customer and e-mail the merchant. This contrasts from PayPal which simply re-directs the customer back to the Composr store; Authorize.net acts as an intermediary which allows them to e-mail the merchant should an issue occur between it and the Composr store.
 
-For Authorize.net to work properly, you must add a couple URLs to the list of accepted Response / Receipt URLs. Log in to your Authorize.net account, go to Account, Settings, Response / Receipt URLs, click Add URL, and put in the box [tt]BASE_URL/index.php?page=purchase&type=finish[/tt] (this is for Relay and Response). For example, if your base URL is www.example.com and you're running under HTTPS, you will put [tt]https://www.example.com/index.php?page=purchase&type=finish[/tt]. You must also add the URL [tt]BASE_URL/data/ecommerce.php[/tt] (this is for IPN).
+For Authorize.net to work properly, you must add a couple of URLs to the list of accepted Response / Receipt URLs. Log in to your Authorize.net account, go to Account, Settings, Response / Receipt URLs, click Add URL, and put in the box [tt]<base_url>/data/ecommerce.php[/tt] (this is for IPN). You must also add the appropriate URL for Relay Response, which will depend on your URL scheme setting in the Composr software:
+ - Raw PHP URL scheme: [tt]<base_url>/index.php?page=purchase&type=finish[/tt]
+ - pg URL scheme: [tt]<base_url>/pg/purchase/finish[/tt]
+ - htm URL scheme: [tt]<base_url>/purchase/finish.htm[/tt]
+ - Unadorned URL scheme: [tt]<base_url>/purchase/finish[/tt]
 
 [title="3"]Configuration[/title]
 
