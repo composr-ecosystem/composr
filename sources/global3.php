@@ -5217,6 +5217,7 @@ function comma_list_str_to_arr(string $str, bool $block_symbol_style = false) : 
                         ocp_mark_as_escaped($key);
                     }
                     $map[] = $key;
+                    $key = '';
                     continue;
                 } elseif ($c == '=') {
                     $in_key = false;
@@ -5270,6 +5271,7 @@ function comma_list_str_to_arr(string $str, bool $block_symbol_style = false) : 
                         ocp_mark_as_escaped($key);
                     }
                     $map[] = $key;
+                    $key = '';
                     continue;
                 } elseif ($c == '=') {
                     $in_key = false;
