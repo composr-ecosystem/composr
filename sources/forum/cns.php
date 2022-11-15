@@ -1595,6 +1595,7 @@ class Forum_driver_cns extends Forum_driver_base
         }
 
         $out = [];
+        $members_groups = [];
         foreach ($rows as $row) {
             if (($hide_hidden) && ($row['g_hidden'] == 1)) {
                 $members_groups = function_exists('get_member') ? $GLOBALS['CNS_DRIVER']->get_members_groups(get_member()) : [];

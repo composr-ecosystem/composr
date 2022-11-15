@@ -52,7 +52,7 @@ class ecommerce_custom_test_set extends cms_test_case
 
         set_option('payment_gateway', 'paypal');
         set_option('ecommerce_test_mode', '1');
-        set_option('payment_gateway_test_username', 'test@example.com');
+        set_option('payment_gateway_username', 'live=live@example.com,testing=test@example.com');
         set_option('currency', 'USD');
 
         if (get_forum_type() == 'cns') {

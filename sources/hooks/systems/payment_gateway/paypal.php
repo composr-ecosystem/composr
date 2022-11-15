@@ -43,12 +43,13 @@ class Hook_payment_gateway_paypal
      * This is only used if the payment gateway does not return the fee and transaction fee config options are not set.
      *
      * @param  float $amount The total transaction amount
+     * @param  ID_TEXT $type_code The transaction type code
      * @return float The fee
      */
-    public function get_transaction_fee(float $amount) : float
+    public function get_transaction_fee(float $amount, string $type_code) : float
     {
-        // PayPal should usually return the transaction fee as mc_fee in the PDT/IPN.
-        return round(0.39 + 0.0349 * $amount, 2); // This is arbitrary; PayPal has different transaction fees for different accounts
+        // PayPal usually returns the fee via mc_fee. You should probably use the correct fees according to your PayPal use by defining them in the transaction fee configuration
+        return round(0.39 + 0.0349 * $amount, 2);
     }
 
     /**
@@ -58,7 +59,7 @@ class Hook_payment_gateway_paypal
      */
     protected function _get_payment_address() : string
     {
-        return ecommerce_test_mode() ? get_option('payment_gateway_test_username') : get_option('payment_gateway_username');
+        return ecommerce_get_option('payment_gateway_username');
     }
 
     /**
@@ -225,7 +226,6 @@ class Hook_payment_gateway_paypal
         $card_start_date_month = null;
         $card_expiry_date_year = null;
         $card_expiry_date_month = null;
-        $card_issue_number = null;
         $card_cv2 = null;
         $billing_street_address = '';
         $billing_city = '';
@@ -233,7 +233,7 @@ class Hook_payment_gateway_paypal
         $billing_state = '';
         $billing_post_code = '';
         $billing_country = '';
-        get_default_ecommerce_fields(null, $shipping_email, $shipping_phone, $shipping_firstname, $shipping_lastname, $shipping_street_address, $shipping_city, $shipping_county, $shipping_state, $shipping_post_code, $shipping_country, $cardholder_name, $card_type, $card_number, $card_start_date_year, $card_start_date_month, $card_expiry_date_year, $card_expiry_date_month, $card_issue_number, $card_cv2, $billing_street_address, $billing_city, $billing_county, $billing_state, $billing_post_code, $billing_country, false, false);
+        get_default_ecommerce_fields(null, $shipping_email, $shipping_phone, $shipping_firstname, $shipping_lastname, $shipping_street_address, $shipping_city, $shipping_county, $shipping_state, $shipping_post_code, $shipping_country, $cardholder_name, $card_type, $card_number, $card_start_date_year, $card_start_date_month, $card_expiry_date_year, $card_expiry_date_month, $card_cv2, $billing_street_address, $billing_city, $billing_county, $billing_state, $billing_post_code, $billing_country, false, false);
 
         if ($shipping_street_address == '') {
             $street_address = $billing_street_address;
@@ -303,7 +303,7 @@ class Hook_payment_gateway_paypal
         }
 
         // Check that we have a data transfer ID specified in configuration
-        $at = get_option('paypal_data_transfer_id', true);
+        $at = ecommerce_get_option('paypal_data_transfer_id', true);
         if (($at === null) || ($at == '')) {
             return null; // Silent fail and rely on IPN instead
         }
@@ -542,7 +542,7 @@ class Hook_payment_gateway_paypal
         if ($receiver_email === null) {
             $receiver_email = post_param_string('business');
         }
-        $primary_paypal_email = get_option('primary_paypal_email');
+        $primary_paypal_email = ecommerce_get_option('primary_paypal_email');
         if ($primary_paypal_email == '') {
             $primary_paypal_email = $this->_get_payment_address();
         }

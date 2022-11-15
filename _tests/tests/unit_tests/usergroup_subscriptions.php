@@ -47,7 +47,7 @@ class usergroup_subscriptions_test_set extends cms_test_case
 
         set_option('payment_gateway', 'paypal');
         set_option('ecommerce_test_mode', '1');
-        set_option('payment_gateway_test_username', 'test@example.com');
+        set_option('payment_gateway_username', 'live=live@example.com,testing=test@example.com');
         set_option('currency', 'USD');
 
         $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username('test');

@@ -87,7 +87,6 @@ class Module_purchase
             'payment_card_number',
             'payment_card_start_date',
             'payment_card_expiry_date',
-            'payment_card_issue_number',
         ];
         foreach ($cpf as $_cpf) {
             $GLOBALS['FORUM_DRIVER']->install_delete_custom_field($_cpf);
@@ -142,10 +141,9 @@ class Module_purchase
             $GLOBALS['FORUM_DRIVER']->install_create_custom_field('currency', 3, /*locked=*/0, /*viewable=*/0, /*settable=*/1, /*required=*/0, '', 'list', 0, '', 'default=CURRENCY', 0, 0, '', '', '', /*autofill_type=*/'transaction-currency');
             $GLOBALS['FORUM_DRIVER']->install_create_custom_field('payment_cardholder_name', 100, /*locked=*/0, /*viewable=*/0, /*settable=*/1, /*required=*/0, '', 'short_text', 1, '', '', 0, 0, '', '', '', /*autofill_type=*/'cc-name');
             $GLOBALS['FORUM_DRIVER']->install_create_custom_field('payment_card_type', 26, /*locked=*/0, /*viewable=*/0, /*settable=*/1, /*required=*/0, '', 'list', 1, 'American Express|Delta|Diners Card|JCB|Master Card|Solo|Switch|Visa', '', 0, 0, '', '', '', /*autofill_type=*/'cc-type');
-            $GLOBALS['FORUM_DRIVER']->install_create_custom_field('payment_card_number', 20, /*locked=*/0, /*viewable=*/0, /*settable=*/1, /*required=*/0, '', 'integer', 1, '', '', 0, 0, '', '', '', /*autofill_type=*/'cc-number');
+            $GLOBALS['FORUM_DRIVER']->install_create_custom_field('payment_card_number', 19, /*locked=*/0, /*viewable=*/0, /*settable=*/1, /*required=*/0, '', 'short_text', 1, '', 'pattern=^\d{13,19}$,pattern_error=' . do_lang('INVALID_CC_NUMBER'), 0, 0, '', '', '', /*autofill_type=*/'cc-number');
             $GLOBALS['FORUM_DRIVER']->install_create_custom_field('payment_card_start_date', 5, /*locked=*/0, /*viewable=*/0, /*settable=*/1, /*required=*/0, '', 'year_month', 1, 'mm/yy');
             $GLOBALS['FORUM_DRIVER']->install_create_custom_field('payment_card_expiry_date', 5, /*locked=*/0, /*viewable=*/0, /*settable=*/1, /*required=*/0, '', 'year_month', 1, 'mm/yy', '', 0, 0, '', '', '', /*autofill_type=*/'cc-exp');
-            $GLOBALS['FORUM_DRIVER']->install_create_custom_field('payment_card_issue_number', 2, /*locked=*/0, /*viewable=*/0, /*settable=*/1, /*required=*/0, '', 'integer', 1, '');
 
             $GLOBALS['SITE_DB']->create_table('ecom_transactions', [
                 'id' => '*ID_TEXT', // Often referenced as txn_id in code
@@ -236,7 +234,6 @@ class Module_purchase
             }
 
             rename_config_option('ipn', 'payment_gateway_username');
-            rename_config_option('ipn_test', 'payment_gateway_test_username');
             rename_config_option('ipn_password', 'payment_gateway_password');
             rename_config_option('ipn_digest', 'payment_gateway_digest');
             rename_config_option('vpn_username', 'payment_gateway_vpn_username');
@@ -352,6 +349,62 @@ class Module_purchase
             $GLOBALS['SITE_DB']->add_table_field('ecom_transactions', 't_transaction_fee', 'REAL', 0.00);
 
             $GLOBALS['SITE_DB']->alter_table_field('ecom_transactions', 't_amount', 'REAL', 't_price');
+
+            $GLOBALS['FORUM_DRIVER']->install_edit_custom_field('payment_card_number', 'payment_card_number', 19, /*locked=*/0, /*viewable=*/0, /*settable=*/1, /*required=*/0, '', 'short_text', 1, '', 'pattern=^\d{13,19}$,pattern_error=' . do_lang('INVALID_CC_NUMBER'), 0, 0, '', '', '', /*autofill_type=*/'cc-number');
+            $GLOBALS['FORUM_DRIVER']->install_delete_custom_field('payment_card_issue_number'); // Obsolete as of 2010
+
+            // Calculate transaction fees for every transaction with 0 as the fee (uses either set config or the gateway's fallback)
+            if ($GLOBALS['SITE_DB']->table_exists('ecom_transactions')) {
+                require_code('ecommerce');
+                $start = 0;
+                do {
+                    $rows = $GLOBALS['SITE_DB']->query_select('ecom_transactions', ['*'], ['t_transaction_fee' => 0.00], '', 300, $start);
+
+                    foreach ($rows as $row) {
+                        $new_transaction_fee = get_transaction_fee(($row['t_price'] + $row['t_tax'] + $row['t_shipping']), $row['t_type_code'], $row['t_payment_gateway'], true);
+                        $GLOBALS['SITE_DB']->query_update('ecom_transactions', ['t_transaction_fee' => $new_transaction_fee]);
+                    }
+
+                    $start += 300;
+                } while (count($rows) > 0);
+            }
+
+            // We are no longer using semi-colon to separate live from testing values; change to our new format if applicable.
+            $username_had_format = false;
+            $config_options = [
+                'payment_gateway_username',
+                'payment_gateway_password',
+                'payment_gateway_digest',
+                'payment_gateway_vpn_username',
+                'payment_gateway_vpn_password',
+                'payment_gateway_callback_password',
+            ];
+            foreach ($config_options as $config_option) {
+                $config_value = get_option($config_option, true);
+                if (($config_value !== null) && ($config_value != '')) {
+                    $_config_bits = explode(';', $config_value);
+                    if (count($_config_bits) > 1) {
+                        if ($config_option == 'payment_gateway_username') {
+                            $username_had_format = true;
+                        }
+                        set_option($config_value, 'live=' . $_config_bits[0] . ',testing=' . $_config_bits[1]);
+                    }
+                }
+            }
+
+            // We got rid of payment_gateway_test_username; merge its value as the testing value of payment_gateway_username
+            if (!$username_had_format) {
+                $config_value = get_option('payment_gateway_username', true);
+                $test_username = get_option('payment_gateway_test_username', true);
+                if (($test_username !== null) && ($test_username != '')) {
+                    $_config_bits = explode(';', $test_username);
+                    if (count($_config_bits) > 1) {
+                        set_option('payment_gateway_username', 'live=' . $_config_bits[0] . ',testing=' . $_config_bits[1]);
+                    } elseif (($config_value !== null) && ($config_value != '')) {
+                        set_option('payment_gateway_username', 'live=' . $config_value . ',testing=' . $test_username);
+                    }
+                }
+            }
         }
 
         if (!$GLOBALS['SITE_DB']->table_exists('ecom_prods_prices')) { // LEGACY: Used to be in pointstore addon, hence the unusual install pattern. Now is just a part of purchase addon

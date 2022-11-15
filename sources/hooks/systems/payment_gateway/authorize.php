@@ -18,17 +18,18 @@
  * @package    ecommerce
  */
 
+/*EXTRA FUNCTIONS: hash_hmac*/
+
 /**
  * Hook class.
  */
 class Hook_payment_gateway_authorize
 {
     // Requires:
-    //  the live login is the Composr Composr "Gateway username" option
-    //  the testing login is the Composr "Testing mode gateway username" option
-    //  the MD5 hash value is the Composr "Callback password" option; it may be blank ; if they are different for the live and testing logins then separate them with ";"
-    //  the transaction key is the Composr "Gateway password" option; it may be blank ; if they are different for the live and testing logins then separate them with ";"
-    //  the customer ID is the Composr "Gateway VPN username" option
+    //  the API login ID is the Composr "Gateway username" option
+    //  the signature key is the Composr "Callback password" option; it may be blank ; if they are different for the live and testing logins then separate them with ";"
+    //  the API transaction key is the Composr "Gateway password" option; it may be blank ; if they are different for the live and testing logins then separate them with ";"
+    //  the customer ID (Verified Merchant Seal) is the Composr "Gateway VPN username" option ; not applicable for a testing account
     // The subscription button isn't great. The merchant needs to manually go into the Authorize.Net backend and configure the subscription details for the transaction. That's an API limitation. Probably best to use PayPal to be honest, or go through a full PCI compliance and do local payments (which works well).
 
     protected $api_parameters = null;
@@ -51,32 +52,24 @@ class Hook_payment_gateway_authorize
      * This is only used if the payment gateway does not return the fee and transaction fee config options are not set.
      *
      * @param  float $amount The total transaction amount
+     * @param  ID_TEXT $type_code The transaction type code
      * @return float The fee
      */
-    public function get_transaction_fee(float $amount) : float
+    public function get_transaction_fee(float $amount, string $type_code) : float
     {
-        return 0.3 + 0.029 * $amount;
+        // Note: Authorize.net does not tell us how much it charged for a transaction fee in the API.
+        // Note: Authorize.net charges an additional $25 monthly gateway fee which is not covered in Composr.
+        return 0.3 + 0.029 * $amount; // All-in-one plan transaction fee is used as the fallback
     }
 
     /**
      * Get authorize access detail.
      *
-     * @return array A pair: login username, transaction key, MD5 hash key, MD5 hash value
+     * @return array A pair: login username, transaction key, signature key
      */
     protected function _get_access_details() : array
     {
-        $api_login = ecommerce_test_mode() ? get_option('payment_gateway_test_username') : get_option('payment_gateway_username');
-        $gateway_password_bits = explode(';', get_option('payment_gateway_password'));
-        if (!isset($gateway_password_bits[1])) {
-            $gateway_password_bits[1] = $gateway_password_bits[0];
-        }
-        $api_transaction_key = ecommerce_test_mode() ? trim($gateway_password_bits[1]) : trim($gateway_password_bits[0]);
-        $payment_gateway_callback_password_bits = explode(';', get_option('payment_gateway_callback_password'));
-        if (!isset($payment_gateway_callback_password_bits[1])) {
-            $payment_gateway_callback_password_bits[1] = $payment_gateway_callback_password_bits[0];
-        }
-        $md5_hash_value = ecommerce_test_mode() ? trim($payment_gateway_callback_password_bits[1]) : trim($payment_gateway_callback_password_bits[0]);
-        return [$api_login, $api_transaction_key, $md5_hash_value];
+        return [ecommerce_get_option('payment_gateway_username'), ecommerce_get_option('payment_gateway_password'), ecommerce_get_option('payment_gateway_callback_password')];
     }
 
     /**
@@ -138,7 +131,11 @@ class Hook_payment_gateway_authorize
      */
     public function get_logos() : object
     {
-        return do_template('ECOM_LOGOS_AUTHORIZE', ['_GUID' => '5b3254b330b3b1719d66d2b754c7a8c8', 'CUSTOMER_ID' => get_option('payment_gateway_vpn_username')]);
+        $customer_id = ecommerce_get_option('payment_gateway_vpn_username');
+        if ($customer_id == '') {
+            $customer_id = new Tempcode();
+        }
+        return do_template('ECOM_LOGOS_AUTHORIZE', ['_GUID' => '5b3254b330b3b1719d66d2b754c7a8c8', 'CUSTOMER_ID' => $customer_id]);
     }
 
     /**
@@ -178,7 +175,7 @@ class Hook_payment_gateway_authorize
      */
     public function make_transaction_button(string $trans_expecting_id, string $type_code, string $item_name, string $purchase_id, float $price, float $tax, float $shipping_cost, string $currency) : object
     {
-        // http://www.authorize.net/content/dam/authorize/documents/SIM_guide.pdf
+        // Uses Authorize.net's SIM http://www.authorize.net/content/dam/authorize/documents/SIM_guide.pdf
 
         list($login_id, $transaction_key) = $this->_get_access_details();
 
@@ -229,7 +226,7 @@ class Hook_payment_gateway_authorize
      */
     public function make_subscription_button(string $trans_expecting_id, string $type_code, string $item_name, string $purchase_id, float $price, float $tax, string $currency, int $length, string $length_units) : object
     {
-        // http://www.authorize.net/content/dam/authorize/documents/SIM_guide.pdf (DPM not SIM, see Appendix C)
+        // Uses Authorize.net's DPM http://www.authorize.net/content/dam/authorize/documents/SIM_guide.pdf (DPM not SIM, see Appendix C)
 
         list($login_id, $transaction_key) = $this->_get_access_details();
 
@@ -291,7 +288,6 @@ class Hook_payment_gateway_authorize
         $card_start_date_month = null;
         $card_expiry_date_year = null;
         $card_expiry_date_month = null;
-        $card_issue_number = null;
         $card_cv2 = null;
         $billing_street_address = '';
         $billing_city = '';
@@ -299,7 +295,7 @@ class Hook_payment_gateway_authorize
         $billing_state = '';
         $billing_post_code = '';
         $billing_country = '';
-        get_default_ecommerce_fields(null, $shipping_email, $shipping_phone, $shipping_firstname, $shipping_lastname, $shipping_street_address, $shipping_city, $shipping_county, $shipping_state, $shipping_post_code, $shipping_country, $cardholder_name, $card_type, $card_number, $card_start_date_year, $card_start_date_month, $card_expiry_date_year, $card_expiry_date_month, $card_issue_number, $card_cv2, $billing_street_address, $billing_city, $billing_county, $billing_state, $billing_post_code, $billing_country, false, false);
+        get_default_ecommerce_fields(null, $shipping_email, $shipping_phone, $shipping_firstname, $shipping_lastname, $shipping_street_address, $shipping_city, $shipping_county, $shipping_state, $shipping_post_code, $shipping_country, $cardholder_name, $card_type, $card_number, $card_start_date_year, $card_start_date_month, $card_expiry_date_year, $card_expiry_date_month, $card_cv2, $billing_street_address, $billing_city, $billing_county, $billing_state, $billing_post_code, $billing_country, false, false);
 
         if ($shipping_street_address == '') {
             $street_address = $billing_street_address;
@@ -351,6 +347,16 @@ class Hook_payment_gateway_authorize
      */
     public function handle_ipn_transaction(bool $silent_fail) : ?array
     {
+        if ((file_exists(get_custom_file_base() . '/data_custom/ecommerce.log')) && (cms_is_writable(get_custom_file_base() . '/data_custom/ecommerce.log'))) {
+            require_code('files');
+            $myfile = cms_fopen_text_write(get_custom_file_base() . '/data_custom/ecommerce.log', true, 'ab');
+            fwrite($myfile, loggable_date() . "\n");
+            fwrite($myfile, '(hooks/systems/payment_gateway/authorize)->handle_ipn_transaction: called' . "\n");
+            fwrite($myfile, "\n\n");
+            flock($myfile, LOCK_UN);
+            fclose($myfile);
+        }
+
         $trans_expecting_id = preg_replace('# .*$#', '', post_param_string('x_description'));
         $transaction_rows = $GLOBALS['SITE_DB']->query_select('ecom_trans_expecting', ['*'], ['id' => $trans_expecting_id], '', 1);
         if (!array_key_exists(0, $transaction_rows)) {
@@ -366,7 +372,7 @@ class Hook_payment_gateway_authorize
         $item_name = $transaction_row['e_item_name'];
         $purchase_id = $transaction_row['e_purchase_id'];
 
-        list($login_id, $transaction_key, $md5_hash_value) = $this->_get_access_details();
+        list($login_id, $transaction_key, $signature_key) = $this->_get_access_details();
 
         $success = (post_param_string('x_response_code', '') == '1');
         $response_text = post_param_string('x_response_reason_text', '');
@@ -375,8 +381,14 @@ class Hook_payment_gateway_authorize
         $period = '';
         $_txn_id = post_param_string('x_trans_id');
         $reason = post_param_string('x_response_reason_code', '');
+
         $_amount = post_param_string('x_amount');
         $amount = floatval($_amount);
+        $_tax = post_param_string('x_tax');
+        $tax = floatval($_tax);
+        $_shipping = post_param_string('x_freight');
+        $shipping = floatval($_shipping);
+
         $currency = post_param_string('x_currency_code', get_option('currency'));
         $parent_txn_id = '';
         $pending_reason = '';
@@ -388,21 +400,87 @@ class Hook_payment_gateway_authorize
         }
         $txn_id = ($subscription_id != '') ? $subscription_id : $_txn_id;
 
-        // SECURITY: Check hash
-        $hash = post_param_string('x_MD5_Hash');
-        if ($hash != md5($md5_hash_value . $login_id . $_txn_id . float_to_raw_string($amount))) {
-            if ($silent_fail) {
-                return null;
+        // SECURITY: Check hash if hash_hmac is available
+        if (function_exists('hash_hmac')) {
+            $hash = post_param_string('x_SHA2_Hash');
+
+            // https://www.authorize.net/content/dam/anet-redesign/documents/SIM_guide.pdf page 73
+            $hash_order = [
+                post_param_string('x_trans_id', ''),
+                post_param_string('x_test_request', ''),
+                post_param_string('x_response_code', ''),
+                post_param_string('x_auth_code', ''),
+                post_param_string('x_cvv2_resp_code', ''),
+                post_param_string('x_cavv_response', ''),
+                post_param_string('x_avs_code', ''),
+                post_param_string('x_method', ''),
+                post_param_string('x_account_number', ''),
+                post_param_string('x_amount', ''),
+                post_param_string('x_company', ''),
+                post_param_string('x_first_name', ''),
+                post_param_string('x_last_name', ''),
+                post_param_string('x_address', ''),
+                post_param_string('x_city', ''),
+                post_param_string('x_state', ''),
+                post_param_string('x_zip', ''),
+                post_param_string('x_country', ''),
+                post_param_string('x_phone', ''),
+                post_param_string('x_fax', ''),
+                post_param_string('x_email', ''),
+                post_param_string('x_ship_to_company', ''),
+                post_param_string('x_ship_to_first_name', ''),
+                post_param_string('x_ship_to_last_name', ''),
+                post_param_string('x_ship_to_address', ''),
+                post_param_string('x_ship_to_city', ''),
+                post_param_string('x_ship_to_state', ''),
+                post_param_string('x_ship_to_zip', ''),
+                post_param_string('x_ship_to_country', ''),
+                post_param_string('x_invoice_num', ''),
+            ];
+            $hash_string = '^' . implode('^', $hash_order) . '^';
+
+            $expected_hash = strtoupper(hash_hmac('sha512', $hash_string, hex2bin($signature_key))); // Authorize.net returns their hash in upper case
+            if ($hash != $expected_hash) {
+                if ((file_exists(get_custom_file_base() . '/data_custom/ecommerce.log')) && (cms_is_writable(get_custom_file_base() . '/data_custom/ecommerce.log'))) {
+                    require_code('files');
+                    $myfile = cms_fopen_text_write(get_custom_file_base() . '/data_custom/ecommerce.log', true, 'ab');
+                    fwrite($myfile, loggable_date() . "\n");
+                    fwrite($myfile, '(hooks/systems/payment_gateway/authorize)->handle_ipn_transaction: FATAL: SHA2 hashing algorithm mismatch. Possibly a hacker?' . "\n");
+                    fwrite($myfile, 'Expected hash ' . $expected_hash . ' but instead got ' . $hash . "\n");
+                    fwrite($myfile, 'Hash string: ' . $hash_string . "\n");
+                    fwrite($myfile, "\n\n");
+                    flock($myfile, LOCK_UN);
+                    fclose($myfile);
+                }
+
+                if ($silent_fail) {
+                    return null;
+                }
+                fatal_ipn_exit(do_lang('PDT_IPN_UNVERIFIED') . ' - ' . json_encode($_POST));
             }
-            fatal_ipn_exit(do_lang('PDT_IPN_UNVERIFIED') . ' - ' . json_encode($_POST));
+        } else {
+            if ((file_exists(get_custom_file_base() . '/data_custom/ecommerce.log')) && (cms_is_writable(get_custom_file_base() . '/data_custom/ecommerce.log'))) {
+                require_code('files');
+                $myfile = cms_fopen_text_write(get_custom_file_base() . '/data_custom/ecommerce.log', true, 'ab');
+                fwrite($myfile, loggable_date() . "\n");
+                fwrite($myfile, '(hooks/systems/payment_gateway/authorize)->handle_ipn_transaction: WARN: hash_hmac not available in this PHP installation; hash checking was skipped.' . "\n");
+                fwrite($myfile, "\n\n");
+                flock($myfile, LOCK_UN);
+                fclose($myfile);
+            }
+        }
+
+        // Authorize.net always uses 0 for transaction_id in sandbox. But we need a unique ID.
+        if ($txn_id == '0') {
+            $txn_id = uniqid('', true);
         }
 
         $this->store_shipping_address($trans_expecting_id, $txn_id);
 
-        $tax = null;
-        $shipping = null;
+        $transaction_fee = null; // Authorize.net does not tell us how much it will charge for a transaction fee
 
-        $transaction_fee = null; // TODO: figure out the transaction fee
+        // Because Authorize.net returns tax and shipping in the amount (required), we must subtract it.
+        $amount -= $tax + $shipping;
 
         return [$trans_expecting_id, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $amount, $tax, $shipping, $transaction_fee, $currency, $parent_txn_id, $pending_reason, $memo, $period, $member_id];
     }
@@ -491,11 +569,10 @@ class Hook_payment_gateway_authorize
      * @param  SHORT_TEXT $cardholder_name Cardholder name
      * @param  SHORT_TEXT $card_type Card Type
      * @set "Visa" "Master Card" "Switch" "UK Maestro" "Maestro" "Solo" "Delta" "American Express" "Diners Card" "JCB"
-     * @param  integer $card_number Card number
+     * @param  SHORT_TEXT $card_number Card number
      * @param  SHORT_TEXT $card_start_date Card Start date (blank: none)
      * @param  SHORT_TEXT $card_expiry_date Card Expiry date (blank: none)
-     * @param  ?integer $card_issue_number Card Issue number (null: none)
-     * @param  integer $card_cv2 Card CV2 number (security number)
+     * @param  SHORT_TEXT $card_cv2 Card CV2 number (security number)
      * @param  float $amount Transaction amount
      * @param  ID_TEXT $currency The currency to use
      * @param  LONG_TEXT $billing_street_address Street address (billing, i.e. AVS)
@@ -519,8 +596,9 @@ class Hook_payment_gateway_authorize
      * @set d w m y
      * @return array A tuple: success (boolean), message (string), raw message (string), transaction ID (string)
      */
-    public function do_local_transaction(string $trans_expecting_id, string $cardholder_name, string $card_type, int $card_number, string $card_start_date, string $card_expiry_date, ?int $card_issue_number, int $card_cv2, float $amount, string $currency, string $billing_street_address, string $billing_city, string $billing_county, string $billing_state, string $billing_post_code, string $billing_country, string $shipping_firstname = '', string $shipping_lastname = '', string $shipping_street_address = '', string $shipping_city = '', string $shipping_county = '', string $shipping_state = '', string $shipping_post_code = '', string $shipping_country = '', string $shipping_email = '', string $shipping_phone = '', ?int $length = null, ?string $length_units = null) : array
+    public function do_local_transaction(string $trans_expecting_id, string $cardholder_name, string $card_type, string $card_number, string $card_start_date, string $card_expiry_date, string $card_cv2, float $amount, string $currency, string $billing_street_address, string $billing_city, string $billing_county, string $billing_state, string $billing_post_code, string $billing_country, string $shipping_firstname = '', string $shipping_lastname = '', string $shipping_street_address = '', string $shipping_city = '', string $shipping_county = '', string $shipping_state = '', string $shipping_post_code = '', string $shipping_country = '', string $shipping_email = '', string $shipping_phone = '', ?int $length = null, ?string $length_units = null) : array
     {
+        // Uses Authorize.net's AIM
         $result = [false, null, null, null]; // Default until re-set
 
         $cardholder_name_parts = explode(' ', $cardholder_name);
@@ -535,7 +613,7 @@ class Hook_payment_gateway_authorize
         if ($length === null) {
             // Direct transaction...
 
-            $this->_set_aim_parameters($card_type, $card_number, $card_start_date, $card_expiry_date, $card_issue_number, $card_cv2, $trans_expecting_id, $amount, $billing_firstname, $billing_lastname, $billing_street_address, $billing_city, $billing_state, $billing_post_code, $billing_country, $shipping_firstname, $shipping_lastname, $shipping_street_address, $shipping_city, $shipping_state, $shipping_post_code, $shipping_country, $shipping_email, $shipping_phone);
+            $this->_set_aim_parameters($card_type, $card_number, $card_start_date, $card_expiry_date, $card_cv2, $trans_expecting_id, $amount, $billing_firstname, $billing_lastname, $billing_street_address, $billing_city, $billing_state, $billing_post_code, $billing_country, $shipping_firstname, $shipping_lastname, $shipping_street_address, $shipping_city, $shipping_state, $shipping_post_code, $shipping_country, $shipping_email, $shipping_phone);
 
             $response_data = http_get_contents($this->url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => $this->api_parameters, 'timeout' => 12.0]);
 
@@ -589,7 +667,7 @@ class Hook_payment_gateway_authorize
 
             $start_date = date('Y-m-d');
 
-            $this->_set_arb_parameters($card_type, $card_number, $card_start_date, $card_expiry_date, $card_issue_number, $card_cv2, $start_date, $length, $length_units, $trans_expecting_id, $amount, $billing_firstname, $billing_lastname, $billing_street_address, $billing_city, $billing_state, $billing_post_code, $billing_country, $shipping_firstname, $shipping_lastname, $shipping_street_address, $shipping_city, $shipping_state, $shipping_post_code, $shipping_country, $shipping_email, $shipping_phone);
+            $this->_set_arb_parameters($card_type, $card_number, $card_start_date, $card_expiry_date, $card_cv2, $start_date, $length, $length_units, $trans_expecting_id, $amount, $billing_firstname, $billing_lastname, $billing_street_address, $billing_city, $billing_state, $billing_post_code, $billing_country, $shipping_firstname, $shipping_lastname, $shipping_street_address, $shipping_city, $shipping_state, $shipping_post_code, $shipping_country, $shipping_email, $shipping_phone);
 
             $response_data = http_get_contents($this->url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => $this->api_parameters, 'timeout' => 30.0]);
 
@@ -600,7 +678,7 @@ class Hook_payment_gateway_authorize
                 $message = $success ? do_lang_tempcode('ACCEPTED_MESSAGE', do_lang('SUCCESS')) : do_lang_tempcode('DECLINED_MESSAGE', escape_html($text));
                 $message_raw = $code;
 
-                $transaction_fee = null; // TODO: figure out the transaction fee
+                $transaction_fee = null; // Authorize.net does not tell us how much it will charge for a transaction fee
 
                 $result = [$success, $message, $message_raw, $trans_expecting_id, $transaction_fee];
             }
@@ -614,11 +692,10 @@ class Hook_payment_gateway_authorize
      *
      * @param  SHORT_TEXT $card_type Card Type
      * @set "Visa" "Master Card" "Switch" "UK Maestro" "Maestro" "Solo" "Delta" "American Express" "Diners Card" "JCB"
-     * @param  integer $card_number Card number
+     * @param  SHORT_TEXT $card_number Card number
      * @param  SHORT_TEXT $card_start_date Card Start date (blank: none)
      * @param  SHORT_TEXT $card_expiry_date Card Expiry date (blank: none)
-     * @param  ?integer $card_issue_number Card Issue number (null: none)
-     * @param  integer $card_cv2 Card CV2 number (security number)
+     * @param  SHORT_TEXT $card_cv2 Card CV2 number (security number)
      * @param  ID_TEXT $trans_expecting_id Transaction ID
      * @param  float $amount Transaction amount
      * @param  SHORT_TEXT $billing_firstname Cardholder first name
@@ -638,7 +715,7 @@ class Hook_payment_gateway_authorize
      * @param  SHORT_TEXT $shipping_email E-mail address (shipping)
      * @param  SHORT_TEXT $shipping_phone Phone number (shipping)
      */
-    protected function _set_aim_parameters(string $card_type, int $card_number, string $card_start_date, string $card_expiry_date, ?int $card_issue_number, int $card_cv2, string $trans_expecting_id, float $amount, string $billing_firstname, string $billing_lastname, string $billing_street_address, string $billing_city, string $billing_state, string $billing_post_code, string $billing_country, string $shipping_firstname, string $shipping_lastname, string $shipping_street_address, string $shipping_city, string $shipping_state, string $shipping_post_code, string $shipping_country, string $shipping_email, string $shipping_phone)
+    protected function _set_aim_parameters(string $card_type, string $card_number, string $card_start_date, string $card_expiry_date, int $card_cv2, string $trans_expecting_id, float $amount, string $billing_firstname, string $billing_lastname, string $billing_street_address, string $billing_city, string $billing_state, string $billing_post_code, string $billing_country, string $shipping_firstname, string $shipping_lastname, string $shipping_street_address, string $shipping_city, string $shipping_state, string $shipping_post_code, string $shipping_country, string $shipping_email, string $shipping_phone)
     {
         // http://www.authorize.net/content/dam/authorize/documents/AIM_guide.pdf
 
@@ -653,14 +730,14 @@ class Hook_payment_gateway_authorize
         $this->api_parameters['x_version'] = '3.1';
         $this->api_parameters['x_type'] = 'AUTH_CAPTURE';
         $this->api_parameters['x_method'] = 'CC';
-        $this->api_parameters['x_card_num'] = strval($card_number);
+        $this->api_parameters['x_card_num'] = $card_number;
         $this->api_parameters['x_exp_date'] = $card_expiry_date;
         $this->api_parameters['x_description'] = $trans_expecting_id;
         $this->api_parameters['x_delim_data'] = true;
         $this->api_parameters['x_delim_char'] = '|';
         $this->api_parameters['x_relay_response'] = false;
         $this->api_parameters['x_amount'] = float_to_raw_string($amount);
-        $this->api_parameters['x_card_code'] = strval($card_cv2);
+        $this->api_parameters['x_card_code'] = $card_cv2;
         $this->api_parameters['x_customer_ip'] = get_ip_address();
 
         if ($billing_firstname != '') {
@@ -715,11 +792,10 @@ class Hook_payment_gateway_authorize
      *
      * @param  SHORT_TEXT $card_type Card Type
      * @set "Visa" "Master Card" "Switch" "UK Maestro" "Maestro" "Solo" "Delta" "American Express" "Diners Card" "JCB"
-     * @param  integer $card_number Card number
+     * @param  SHORT_TEXT $card_number Card number
      * @param  SHORT_TEXT $card_start_date Card Start date (blank: none)
      * @param  SHORT_TEXT $card_expiry_date Card Expiry date (blank: none)
-     * @param  ?integer $card_issue_number Card Issue number (null: none)
-     * @param  integer $card_cv2 Card CV2 number (security number)
+     * @param  SHORT_TEXT $card_cv2 Card CV2 number (security number)
      * @param  SHORT_TEXT $start_date Start date
      * @param  ?integer $length The subscription length in the units. (null: not a subscription)
      * @param  ?ID_TEXT $length_units The length units. (null: not a subscription)
@@ -743,7 +819,7 @@ class Hook_payment_gateway_authorize
      * @param  SHORT_TEXT $shipping_email E-mail address (shipping)
      * @param  SHORT_TEXT $shipping_phone Phone number (shipping)
      */
-    protected function _set_arb_parameters(string $card_type, int $card_number, string $card_start_date, string $card_expiry_date, ?int $card_issue_number, int $card_cv2, string $start_date, ?int $length, ?string $length_units, string $trans_expecting_id, float $amount, string $billing_firstname, string $billing_lastname, string $billing_street_address, string $billing_city, string $billing_state, string $billing_post_code, string $billing_country, string $shipping_firstname, string $shipping_lastname, string $shipping_street_address, string $shipping_city, string $shipping_state, string $shipping_post_code, string $shipping_country, string $shipping_email, string $shipping_phone)
+    protected function _set_arb_parameters(string $card_type, string $card_number, string $card_start_date, string $card_expiry_date, string $card_cv2, string $start_date, ?int $length, ?string $length_units, string $trans_expecting_id, float $amount, string $billing_firstname, string $billing_lastname, string $billing_street_address, string $billing_city, string $billing_state, string $billing_post_code, string $billing_country, string $shipping_firstname, string $shipping_lastname, string $shipping_street_address, string $shipping_city, string $shipping_state, string $shipping_post_code, string $shipping_country, string $shipping_email, string $shipping_phone)
     {
         // http://www.authorize.net/content/dam/authorize/documents/ARB_guide.pdf
 
@@ -784,9 +860,9 @@ class Hook_payment_gateway_authorize
 
                 '<payment>' .
                     '<creditCard>' .
-                        '<cardNumber>' . strval($card_number) . '</cardNumber>' .
+                        '<cardNumber>' . $card_number . '</cardNumber>' .
                         '<expirationDate>' . $card_expiry_date . '</expirationDate>' .
-                        '<cardCode>' . strval($card_cv2) . '</cardCode>' .
+                        '<cardCode>' . $card_cv2 . '</cardCode>' .
                     '</creditCard>' .
                 '</payment>';
 

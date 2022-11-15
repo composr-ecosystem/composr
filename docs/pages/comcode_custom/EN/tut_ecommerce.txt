@@ -50,11 +50,25 @@ If you want to set up Payment Data Transfer (PDT), follow these instructions:
  - Paste the data transfer identifier in the relevant box, and save.
 PDT may be particularly useful in a development (testing) environment where PayPal cannot reach your website via IPN (especially if you are only running on localhost).
 
+[title="4"]Authorize.net[/title]
+
+The Composr software makes use of Authorize.net's Server Integrated Method (SIM) when not using local transactions, and the Advanced Integration Method (AIM) and Advanced Recurring Billing (ARB) when using local transactions.
+
+While PayPal has the Payment Data Transfer (PDT), Authorize.net has something similar called Relay Response. After a customer submits payment information on Authorize.net, while the customer is waiting for Authorize.net to respond with the status, Authorize.net will post transaction details and status back to the Composr website. If the attempt fails or errors, Authorize.net will show an error to the customer and e-mail the merchant. This contrasts from PayPal which simply re-directs the customer back to the Composr store; Authorize.net acts as an intermediary which allows them to e-mail the merchant should an issue occur between it and the Composr store.
+
+For Authorize.net to work properly, you must add a couple of URLs to the list of accepted Response / Receipt URLs. Log in to your Authorize.net account, go to Account, Settings, Response / Receipt URLs, click Add URL, and put in the box [tt]<base_url>/data/ecommerce.php[/tt] (this is for IPN). You must also add the appropriate URL for Relay Response, which will depend on your URL scheme setting in the Composr software:
+ - Raw PHP URL scheme: [tt]<base_url>/index.php?page=purchase&type=finish[/tt]
+ - pg URL scheme: [tt]<base_url>/pg/purchase/finish[/tt]
+ - htm URL scheme: [tt]<base_url>/purchase/finish.htm[/tt]
+ - Unadorned URL scheme: [tt]<base_url>/purchase/finish[/tt]
+
 [title="3"]Configuration[/title]
 
 To configure the payment gateway settings go to Admin Zone > Setup > Configuration > eCommerce options.
 
-[title="3"]Config options[/title]
+Documentation for other Payment gateways not specified below is provided in notes at the top of the [tt]sources/hooks/systems/payment_gateway/<gateway>.php[/tt] file. Payment systems tend to be a bit complex and ones other than PayPal are best set up by programmers who know the particular ways messages and security works between your site and the gateway.
+
+[title="4"]Config options - PayPal[/title]
 
 The option requirements for PayPal are as follows:
 
@@ -121,25 +135,98 @@ The option requirements for PayPal are as follows:
 			Payment gateway > Gateway username
 		</th>
 		<td>
-			For PayPal it is your PayPal e-mail address, but for other gateways it probably is just be any you receive e-mail on
-		</td>
-	</tr>
-	<tr>
-		<th>
-			Payment gateway (testing mode) > Gateway username
-		</th>
-		<td>
-			Your PayPal e-mail address (for the testing mode one, it's your sandbox PayPal e-mail address).
+			For PayPal it is your PayPal e-mail address.
 		</td>
 	</tr>
 </tbody></table>
 [/html]
 
-Documentation for other Payment gateways is provided in notes at the top of the [tt]sources/hooks/systems/payment_gateway/<gateway>.php[/tt] file. Payment systems tend to be a bit complex and ones other than PayPal are best set up by programmers who know the particular ways messages and security works between your site and the gateway.
+[title="4"]Config options - Authorize.net[/title]
+
+The option requirements for Authorize.net are below.
+
+[html]
+<table class="map-table results-table wide-table autosized-table"><tbody>
+	<tr>
+		<th>
+			Payment gateway > Payment gateway
+		</th>
+		<td>
+			<kbd>authorize</kbd>
+		</td>
+	</tr>
+	<tr>
+		<th>
+			General > Use local payment
+		</th>
+		<td>
+			Authorize.net supports local payments, so if you want to collect payment information from your site opposed to Authorize.net collecting it, tick (check) this box.
+		</td>
+	</tr>
+	<tr>
+		<th>
+			Payment gateway > Gateway username
+		</th>
+		<td>
+			Your API login ID from Authorize.net (Account => API Credentials & Keys)
+		</td>
+	</tr>
+	<tr>
+		<th>
+			Payment gateway > Gateway password
+		</th>
+		<td>
+			Your API Transaction Key from Authorize.net (Account => API Credentials & Keys => New Transaction Key)
+		</td>
+	</tr>
+	<tr>
+		<th>
+			Payment gateway > Gateway VPN username
+		</th>
+		<td>
+			Verified Merchant Seal / Customer ID from Authorize.net (not applicable for a sandbox account)
+		</td>
+	</tr>
+	<tr>
+		<th>
+			Payment gateway > Gateway VPN password
+		</th>
+		<td>
+			This should be blank
+		</td>
+	</tr>
+	<tr>
+		<th>
+			Payment gateway > Callback password
+		</th>
+		<td>
+			Your API Signature Key from Authorize.net (Account => API Credentials & Keys => New Signature Key)
+		</td>
+	</tr>
+	<tr>
+		<th>
+			Address
+		</th>
+		<td>
+			This section should be filled in if you are collecting sales tax. If you do not have a business headquarters, use the location from which you are selling items.
+		</td>
+	</tr>
+</tbody></table>
+[/html]
 
 [title="3"]Test mode[/title]
 
 All supported payment gateways provide a test mode, which is turned on from the Admin Zone Configuration. Test mode allows you to make purchases from your website using the full eCommerce architecture of Composr and the payment gateway, except no money will actually be charged (it's a simulation mode) -- the ideal way to test your setup without risking real money.
+
+You can also provide testing mode configuration options in the Payment gateway section of the eCommerce options and keep them separated from your live credentials. In any of the fields under the Payment gateway section, use the format [tt]live=LIVE_VALUE,testing=TESTING_MODE_VALUE[/tt] to separate your credentials. The live value will be used unless Testing mode is enabled, in which case the testing value will be used. If you do not use this format, or you only provide one of these values, then it will be used both in live and testing mode.
+Examples:
+ - [tt]live=foo,testing=bar[/tt] will use &ldquo;foo&rdquo; for a live store and &ldquo;bar&rdquo; for a test store.
+ - [tt]live=pity rod,foo bar,testing=[/tt] will use &ldquo;pity rod,foo bar&rdquo; for a live store and an empty string (blank) for a test store.
+ - [tt]testing=foo[/tt] will use &ldquo;foo&rdquo; for both a live and a test store.
+ - [tt]foobar[/tt] will use &ldquo;foobar&rdquo; for both a live and a test store.
+ - (nuance) [tt]live=1,live=2,testing=3[/tt] will use &ldquo;2&rdquo; for both a live and a test store; the software only looks at the first two matches, and if the key (live or testing) is the same, the second value takes priority.
+ - (nuance) [tt]Live=4,test=HELLO[/tt] will use &ldquo;Live=4,test=HELLO&rdquo; for both a live and a test store; keys and values are case sensitive, and if live or testing is misspelled or not in all lower-case, it will not be detected.
+ - (nuance) [tt]foobarlive=hello,testing=world[/tt] will use &ldquo;hello&rdquo; for a live store and &ldquo;world&rdquo; for a test store; foobar is ignored.
 
 To prevent purchases being made by real people that you don't receive real money for, only members in a usergroup with the 'Access eCommerce system when in test mode' permission may purchase when test mode is enabled (A message will be seen by others: "Purchasing is temporarily offline for maintenance. It should be back online within 24 hours: please try again later."). You have two supported testing choices:
 1) Enable this permission for all usergroups and test the eCommerce when the website is closed (using the SU feature, see the [page="_SEARCH:tut_permissions"]Testing access and privileges[/page] tutorial, Access control and privileges section)
@@ -147,6 +234,8 @@ To prevent purchases being made by real people that you don't receive real money
 
 For PayPal test mode goes through the [url="PayPal sandbox"]https://developer.paypal.com/classic-home/[/url]. Sign up on the sandbox (this is your test account for making the sale), log in, and create a test user (this is your test account for purchasing).
 Be advised that we have found the PayPal sandbox to be buggy. If your tests fail with errors like "The link you have used to enter the PayPal system is invalid. Please review the link and try again." then you may be experiencing bugs in the PayPal sandbox. By all means, please complain to PayPal about it -- we have run tests and found the sandbox fails midway through purchases on configurations that work correctly for live payments.
+
+For Authorize.net, testing mode goes through the [url="Authorize.net sandbox"]https://sandbox.authorize.net[/url]. Sign up on the [url="Authorize.net sandbox sign-up page"]https://developer.authorize.net/hello_world.html[/url].
 
 [title="2"]Monetary system[/title]
 

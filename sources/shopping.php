@@ -240,16 +240,19 @@ function remove_from_cart(array $products_to_remove, ?int $member_id = null, ?st
 {
     foreach ($products_to_remove as $type_code) {
         $where = ['type_code' => $type_code];
-        if (($member_id !== null) && (!is_guest($member_id))) {
-            $where['ordered_by'] = $member_id;
-        } elseif (!is_guest()) {
-            $where['ordered_by'] = get_member();
-        }
 
-        if ($session_id !== null) {
-            $where['session_id'] = $session_id;
-        } elseif (is_guest()) {
-            $where['session_id'] = get_session_id();
+        if (($member_id !== null) || (($session_id === null) && (!is_guest()))) {
+            if ($member_id !== null) {
+                $where['ordered_by'] = $member_id;
+            } else {
+                $where['ordered_by'] = get_member();
+            }
+        } else {
+            if ($session_id !== null) {
+                $where['session_id'] = $session_id;
+            } else {
+                $where['session_id'] = get_session_id();
+            }
         }
 
         $GLOBALS['SITE_DB']->query_delete('shopping_cart', $where);
@@ -597,7 +600,7 @@ function make_cart_payment_button(int $order_id, string $currency, int $price_po
     store_shipping_address($trans_expecting_id);
 
     if (!method_exists($payment_gateway_object, 'make_cart_transaction_button')) {
-        return $payment_gateway_object->make_transaction_button($trans_expecting_id, $type_code, $item_name, strval($order_id), $price, $tax, $shipping_cost, $currency, $price_points);
+        return $payment_gateway_object->make_transaction_button($trans_expecting_id, $type_code, $item_name, strval($order_id), $price, $tax, $shipping_cost, $currency);
     }
 
     return $payment_gateway_object->make_cart_transaction_button($trans_expecting_id, $items, $shipping_cost, $currency, $order_id);

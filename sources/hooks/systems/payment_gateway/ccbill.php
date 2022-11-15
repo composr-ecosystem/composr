@@ -23,7 +23,7 @@
  */
 class Hook_payment_gateway_ccbill
 {
-    // https://www.ccbill.com/cs/manuals/CCBill_Background_Post_Users_Guide.pdf
+    // https://ccbill.com/doc/background-post
     // https://ccbill.com/doc/dynamic-pricing-user-guide
     // Requires:
     //  you have to contact support to enable dynamic pricing and generate the encryption key for your account
@@ -76,11 +76,21 @@ class Hook_payment_gateway_ccbill
      * This is only used if the payment gateway does not return the fee and transaction fee config options are not set.
      *
      * @param  float $amount The total transaction amount
+     * @param  ID_TEXT $type_code The transaction type code
      * @return float The fee
      */
-    public function get_transaction_fee(float $amount) : float
+    public function get_transaction_fee(float $amount, string $type_code) : float
     {
-        return 0.12 * $amount; // A wild guess for now
+        // CCBill rates depend on how high of risk a website's business is. You should probably set the correct rates in the transaction fee configuration as per https://ccbill.com/doc/pricing-and-fees .
+
+        // Use low-risk rate as our default fallback; most users will probably not be making an "ocFans" website
+        $transaction_fee = 0.55 + ($amount * 0.039); // 0.55 + 3.9%
+        list($details, $product_object) = find_product_details($type_code);
+        if ($details !== null && $details['type'] == PRODUCT_SUBSCRIPTION) {
+            $transaction_fee += ($amount * 0.002); // CCBill charges an additional 2% for recurring transactions (subscriptions)
+        }
+
+        return round($transaction_fee, 2);
     }
 
     /**
@@ -90,7 +100,7 @@ class Hook_payment_gateway_ccbill
      */
     protected function get_account_id() : string
     {
-        return ecommerce_test_mode() ? get_option('payment_gateway_test_username') : get_option('payment_gateway_username');
+        return ecommerce_get_option('payment_gateway_username');
     }
 
     /**
@@ -129,15 +139,15 @@ class Hook_payment_gateway_ccbill
         $form_url = 'https://bill.ccbill.com/jpost/signup.cgi';
 
         $account_num = $this->get_account_id();
-        $subaccount_nums = explode(',', get_option('payment_gateway_vpn_username'));
+        $subaccount_nums = explode(',', ecommerce_get_option('payment_gateway_vpn_username'));
         $subaccount_num = sprintf('%04d', $subaccount_nums[0]); // First value is for simple transactions, has to be exactly 4 digits
-        $form_name = explode(',', get_option('payment_gateway_digest'));
+        $form_name = explode(',', ecommerce_get_option('payment_gateway_digest'));
         $form_name = $form_name[0]; // First value is for simple transactions
         // CCBill oddly requires us to pass this parameter for single transactions,
         // this will show up as a confusing "$X.XX for 99 days" message to customers on the CCBill form.
         // To fix this - you need to set up a "custom dynamic description" which removes that message, by contacting CCBill support.
         $form_period = '99';
-        $digest = md5(float_to_raw_string($price + $tax + $shipping_cost) . $form_period . $currency . get_option('payment_gateway_vpn_password'));
+        $digest = md5(float_to_raw_string($price + $tax + $shipping_cost) . $form_period . $currency . ecommerce_get_option('payment_gateway_vpn_password'));
 
         return do_template('ECOM_TRANSACTION_BUTTON_VIA_CCBILL', [
             '_GUID' => '24a0560541cedd4c45898f4d19e99249',
@@ -188,12 +198,12 @@ class Hook_payment_gateway_ccbill
         $form_url = 'https://bill.ccbill.com/jpost/signup.cgi';
 
         $account_num = $this->get_account_id();
-        $subaccount_nums = explode(',', get_option('payment_gateway_vpn_username'));
+        $subaccount_nums = explode(',', ecommerce_get_option('payment_gateway_vpn_username'));
         $subaccount_num = sprintf('%04d', (count($subaccount_nums) === 1) ? $subaccount_nums[0] : $subaccount_nums[1]); // Second value is for subscriptions, has to be exactly 4 digits
-        $form_name = explode(',', get_option('payment_gateway_digest'));
+        $form_name = explode(',', ecommerce_get_option('payment_gateway_digest'));
         $form_name = (count($form_name) === 1) ? $form_name[0] : $form_name[1]; // Second value is for subscriptions
         $form_period = strval($length * $this->length_unit_to_days[$length_units]);
-        $digest = md5(float_to_raw_string($price + $tax) . $form_period . float_to_raw_string($price + $tax) . $form_period . '99' . $currency . get_option('payment_gateway_vpn_password')); // formPrice.formPeriod.formRecurringPrice.formRecurringPeriod.formRebills.currencyCode.salt
+        $digest = md5(float_to_raw_string($price + $tax) . $form_period . float_to_raw_string($price + $tax) . $form_period . '99' . $currency . ecommerce_get_option('payment_gateway_vpn_password')); // formPrice.formPeriod.formRecurringPrice.formRecurringPeriod.formRebills.currencyCode.salt
 
         return do_template('ECOM_SUBSCRIPTION_BUTTON_VIA_CCBILL', [
             '_GUID' => 'f8c174f38ae06536833f1510027ba233',
@@ -244,7 +254,6 @@ class Hook_payment_gateway_ccbill
         $card_start_date_month = null;
         $card_expiry_date_year = null;
         $card_expiry_date_month = null;
-        $card_issue_number = null;
         $card_cv2 = null;
         $billing_street_address = '';
         $billing_city = '';
@@ -252,7 +261,7 @@ class Hook_payment_gateway_ccbill
         $billing_state = '';
         $billing_post_code = '';
         $billing_country = '';
-        get_default_ecommerce_fields(null, $shipping_email, $shipping_phone, $shipping_firstname, $shipping_lastname, $shipping_street_address, $shipping_city, $shipping_county, $shipping_state, $shipping_post_code, $shipping_country, $cardholder_name, $card_type, $card_number, $card_start_date_year, $card_start_date_month, $card_expiry_date_year, $card_expiry_date_month, $card_issue_number, $card_cv2, $billing_street_address, $billing_city, $billing_county, $billing_state, $billing_post_code, $billing_country, false, false);
+        get_default_ecommerce_fields(null, $shipping_email, $shipping_phone, $shipping_firstname, $shipping_lastname, $shipping_street_address, $shipping_city, $shipping_county, $shipping_state, $shipping_post_code, $shipping_country, $cardholder_name, $card_type, $card_number, $card_start_date_year, $card_start_date_month, $card_expiry_date_year, $card_expiry_date_month, $card_cv2, $billing_street_address, $billing_city, $billing_county, $billing_state, $billing_post_code, $billing_country, false, false);
 
         if ($shipping_street_address == '') {
             $street_address = $billing_street_address;
@@ -304,6 +313,16 @@ class Hook_payment_gateway_ccbill
      */
     public function handle_ipn_transaction(bool $silent_fail) : ?array
     {
+        if ((file_exists(get_custom_file_base() . '/data_custom/ecommerce.log')) && (cms_is_writable(get_custom_file_base() . '/data_custom/ecommerce.log'))) {
+            require_code('files');
+            $myfile = cms_fopen_text_write(get_custom_file_base() . '/data_custom/ecommerce.log', true, 'ab');
+            fwrite($myfile, loggable_date() . "\n");
+            fwrite($myfile, '(hooks/systems/payment_gateway/ccbill)->handle_ipn_transaction: Called' . "\n");
+            fwrite($myfile, "\n\n");
+            flock($myfile, LOCK_UN);
+            fclose($myfile);
+        }
+
         $trans_expecting_id = post_param_string('customPurchaseId');
 
         $transaction_rows = $GLOBALS['SITE_DB']->query_select('ecom_trans_expecting', ['*'], ['id' => $trans_expecting_id], '', 1);
@@ -323,8 +342,8 @@ class Hook_payment_gateway_ccbill
         $subscription_id = post_param_string('subscription_id', '');
         $denial_id = post_param_string('denialId', '');
         $response_digest = post_param_string('responseDigest');
-        $success_response_digest = md5($subscription_id . '1' . get_option('payment_gateway_vpn_password')); // responseDigest must have this value on success
-        $denial_response_digest = md5($denial_id . '0' . get_option('payment_gateway_vpn_password')); // responseDigest must have this value on failure
+        $success_response_digest = md5($subscription_id . '1' . ecommerce_get_option('payment_gateway_vpn_password')); // responseDigest must have this value on success
+        $denial_response_digest = md5($denial_id . '0' . ecommerce_get_option('payment_gateway_vpn_password')); // responseDigest must have this value on failure
         $success = ($success_response_digest === $response_digest);
         $is_subscription = (post_param_integer('customIsSubscription') == 1);
         $status = $success ? 'Completed' : 'Failed';
@@ -339,8 +358,27 @@ class Hook_payment_gateway_ccbill
         $parent_txn_id = '';
         $period = '';
 
-        // SECURITY
+        // Determine transaction fee: accounting amount is how much the merchant will actually receive, so subtract that from the transaction amount
+        $_accounting_amount = post_param_string('accountingAmount', null);
+        if (($_accounting_amount !== null) && ($_accounting_amount != '')) {
+            $transaction_fee = ($amount) - floatval($_accounting_amount);
+        } else {
+            $transaction_fee = null;
+        }
+
+        // SECURITY: Digest check
         if (($response_digest !== $success_response_digest) && ($response_digest !== $denial_response_digest)) {
+            if ((file_exists(get_custom_file_base() . '/data_custom/ecommerce.log')) && (cms_is_writable(get_custom_file_base() . '/data_custom/ecommerce.log'))) {
+                require_code('files');
+                $myfile = cms_fopen_text_write(get_custom_file_base() . '/data_custom/ecommerce.log', true, 'ab');
+                fwrite($myfile, loggable_date() . "\n");
+                fwrite($myfile, '(hooks/systems/payment_gateway/ccbill)->handle_ipn_transaction: FATAL: Response digest mismatch. Possibly a hacker?' . "\n");
+                fwrite($myfile, 'Response digest: Got ' . (($response_digest !== null) ? $response_digest : 'NULL') . ', but expected ' . $success_response_digest . ' (success) or ' . $denial_response_digest . ' (denial)' . "\n");
+                fwrite($myfile, 'IP address: ' . get_ip_address() . "\n");
+                fwrite($myfile, "\n\n");
+                flock($myfile, LOCK_UN);
+                fclose($myfile);
+            }
             if ($silent_fail) {
                 return null;
             }
@@ -351,8 +389,6 @@ class Hook_payment_gateway_ccbill
 
         $tax = null;
         $shipping = null;
-
-        $transaction_fee = null; // TODO: figure out the transaction fee
 
         return [$trans_expecting_id, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $amount, $tax, $shipping, $transaction_fee, $currency, $parent_txn_id, $pending_reason, $memo, $period, $member_id];
     }
