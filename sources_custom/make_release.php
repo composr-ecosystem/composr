@@ -183,7 +183,7 @@ function make_installers($skip_file_grab = false)
             {
                 global \$FILE_ARRAY;
                 \$name = \$FILE_ARRAY[\$i];
-                return [\$name,file_array_get(\$name]);
+                return [\$name,file_array_get(\$name)];
             }
 
             function file_array_count()

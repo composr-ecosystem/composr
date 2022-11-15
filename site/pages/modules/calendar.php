@@ -402,7 +402,7 @@ class Module_calendar
                 'identifier' => '_SEARCH:calendar:view:' . strval($id),
             ], $event, 'event', strval($id));
 
-            inject_feed_url(find_script('backend') . '?mode=calendar&select=' . urlencode(implode(',', $this->get_and_filter())), do_lang('CALENDAR'));
+            inject_feed_url(find_script('backend') . '?mode=calendar&select=' . urlencode(implode(',', array_map('strval', $this->get_and_filter()))), do_lang('CALENDAR'));
 
             // Back URL / breadcrumbs
             list(, $_first_date) = find_event_start_timestamp($event); // Will be first recurrence as we have not called adjust_event_dates_for_a_recurrence yet
@@ -526,7 +526,7 @@ class Module_calendar
      * Gets the event filter in a simple list form.
      *
      * @param  boolean $only_event_types Whether to only show event types
-     * @return array The filter
+     * @return array The filter (array of integers)
      */
     public function get_and_filter(bool $only_event_types = false) : array
     {

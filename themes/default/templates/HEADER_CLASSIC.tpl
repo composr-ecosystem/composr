@@ -24,7 +24,7 @@
 	</h1>
 
 	{$,Main menu}
-	<div class="global-navigation">
+	<div class="global-navigation" id="global-navigation">
 		<div class="container">
 			<div class="global-navigation-items">
 				{$BLOCK,block=menu,param={$CONFIG_OPTION,header_menu_call_string},type=dropdown}

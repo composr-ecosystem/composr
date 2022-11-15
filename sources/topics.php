@@ -87,12 +87,10 @@ class CMS_Topic
      *
      * @param  ID_TEXT $content_type Content type to show topic for
      * @param  ID_TEXT $content_id Content ID of content type to show topic for
-     * @param  boolean $allow_comments Whether this resource allows comments (if not, this function does nothing - but it's nice to move out this common logic into the shared function)
      * @param  boolean $invisible_if_no_comments Whether the comment box will be invisible if there are not yet any comments (and you're not staff)
      * @param  ?string $forum_name The name of the forum to use (null: default comment forum)
      * @param  ?string $post_warning The default post to use (null: standard courtesy warning)
      * @param  ?mixed $preloaded_comments The raw comment array (null: lookup). This is useful if we want to pass it through a filter
-     * @param  boolean $explicit_allow Whether to skip permission checks
      * @param  ?boolean $reverse Whether to show in reverse date order (affects default search order only) (null: read config)
      * @param  ?MEMBER $highlight_by_member Member to highlight the posts of (null: none)
      * @param  boolean $allow_reviews Whether to allow ratings along with the comment (like reviews)
@@ -100,7 +98,7 @@ class CMS_Topic
      * @param  ?Tempcode $hidden Hidden form fields for commenting form (null: none)
      * @return Tempcode The Tempcode for the comment topic
      */
-    public function render_as_comment_topic(string $content_type, string $content_id, bool $allow_comments, bool $invisible_if_no_comments, ?string $forum_name, ?string $post_warning, $preloaded_comments, bool $explicit_allow, ?bool $reverse, ?int $highlight_by_member, bool $allow_reviews, ?int $num_to_show_limit, ?object $hidden = null) : object
+    public function render_as_comment_topic(string $content_type, string $content_id, bool $invisible_if_no_comments, ?string $forum_name, ?string $post_warning, $preloaded_comments, ?bool $reverse, ?int $highlight_by_member, bool $allow_reviews, ?int $num_to_show_limit, ?object $hidden = null) : object
     {
         if ((get_forum_type() == 'cns') && (!addon_installed('cns_forum'))) {
             return new Tempcode();
@@ -115,9 +113,6 @@ class CMS_Topic
         }
 
         $topic_id = $GLOBALS['FORUM_DRIVER']->find_topic_id_for_topic_identifier($forum_name, $content_type . '_' . $content_id, do_lang('COMMENT'));
-        if ($topic_id === null) {
-            return new Tempcode(); // Could not even find topic
-        }
 
         // Settings we need
         $max_thread_depth = get_param_integer('max_thread_depth', intval(get_option('max_thread_depth')));
@@ -153,14 +148,14 @@ class CMS_Topic
             }
 
             // Load up reviews
-            if ((get_forum_type() == 'cns') && ($allow_reviews)) {
+            if ((get_forum_type() == 'cns') && ($allow_reviews) && ($topic_id !== null)) {
                 $all_individual_review_ratings = $GLOBALS['SITE_DB']->query_select('review_supplement', ['*'], ['r_topic_id' => $topic_id]);
             } else {
                 $all_individual_review_ratings = [];
             }
 
             $topic_info = null;
-            if (get_forum_type() == 'cns') {
+            if ((get_forum_type() == 'cns') && ($topic_id !== null)) {
                 $_topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['*'], ['id' => $topic_id], '', 1);
                 if (array_key_exists(0, $_topic_info)) {
                     $topic_info = $_topic_info[0];

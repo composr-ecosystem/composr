@@ -45,22 +45,24 @@
 					</td>
 				{+END}
 				<td>
-					<ul class="horizontal-links horiz-field-sep">
-						{+START,IF,{$HAS_ACTUAL_PAGE_ACCESS,admin_invoices}}
-							<li>
-								<a title="{!DELETE}: #{INVOICE_ID}" href="{$PAGE_LINK*,adminzone:admin_invoices:delete:{INVOICE_ID}}">{+START,INCLUDE,ICON}
-									NAME=admin/delete
-									ICON_SIZE=18
-								{+END}</a>
-							</li>
-							{+START,IF,{FULFILLABLE}}
-								<li><a title="{!MARK_AS_FULFILLED}: #{INVOICE_ID}" href="{$PAGE_LINK*,adminzone:admin_invoices:fulfill:{INVOICE_ID}}">{!FULFILL}</a></li>
+					{+START,IF,{$OR,{$HAS_ACTUAL_PAGE_ACCESS,admin_invoices},{PAYABLE}}}
+						<ul class="horizontal-links horiz-field-sep">
+							{+START,IF,{$HAS_ACTUAL_PAGE_ACCESS,admin_invoices}}
+								<li>
+									<a title="{!DELETE}: #{INVOICE_ID}" href="{$PAGE_LINK*,adminzone:admin_invoices:delete:{INVOICE_ID}}">{+START,INCLUDE,ICON}
+										NAME=admin/delete
+										ICON_SIZE=18
+									{+END}</a>
+								</li>
+								{+START,IF,{FULFILLABLE}}
+									<li><a title="{!MARK_AS_FULFILLED}: #{INVOICE_ID}" href="{$PAGE_LINK*,adminzone:admin_invoices:fulfil:{INVOICE_ID}}">{!FULFIL}</a></li>
+								{+END}
 							{+END}
-						{+END}
-						{+START,IF,{PAYABLE}}
-							<li>{TRANSACTION_BUTTON}</li>
-						{+END}
-					</ul>
+							{+START,IF,{PAYABLE}}
+								<li>{TRANSACTION_BUTTON}</li>
+							{+END}
+						</ul>
+					{+END}
 				</td>
 			</tr>
 			{+START,IF_NON_EMPTY,{NOTE}}

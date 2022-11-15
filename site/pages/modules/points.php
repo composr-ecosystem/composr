@@ -937,6 +937,8 @@ class Module_points
      */
     public function view_escrow() : object
     {
+        require_code('points_escrow');
+
         $member_id_viewing = get_member();
 
         // No guests allowed
@@ -1012,7 +1014,6 @@ class Module_points
                 }
         }
 
-        require_code('points_escrow');
         require_code('templates_map_table');
 
         // Modified map_table_screen since we also have escrow logs on the same page

@@ -459,7 +459,7 @@ function post_param_theme_img_code(string $type, bool $required = false, string 
             $theme_img_code = $type . '/' . uniqid('', true);
         }
 
-        $db->query_insert('theme_images', ['id' => $theme_img_code, 'theme' => 'default', 'path' => $urls[0], 'lang' => get_site_default_lang()]);
+        $db->query_insert('theme_images', ['id' => $theme_img_code, 'theme' => 'default', 'url' => $urls[0], 'lang' => get_site_default_lang()]);
 
         Self_learning_cache::erase_smart_cache();
     } else {

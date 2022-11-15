@@ -388,7 +388,7 @@ class Module_admin_ecommerce_reports
         }
 
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'f4e52dff9353fb767afbe0be9808591c', 'SECTION_HIDDEN' => ($details['price'] !== null), 'TITLE' => do_lang_tempcode('ADVANCED')]));
-        $fields->attach(form_input_float(do_lang_tempcode('PRICE'), do_lang_tempcode('DESCRIPTION_MONEY_PRICE', $currency, ecommerce_get_currency_symbol()), 'price', null, ($details['price'] === null)));
+        $fields->attach(form_input_float(do_lang_tempcode('PRICE'), do_lang_tempcode('DESCRIPTION_MONEY_PRICE', escape_html($currency), ecommerce_get_currency_symbol()), 'price', null, ($details['price'] === null)));
 
         $hidden->attach(form_input_hidden('type_code', $type_code));
         $hidden->attach(form_input_hidden('csrf_token_preserve', '1'));
@@ -993,7 +993,7 @@ class Module_admin_ecommerce_reports
 
         $tpl = do_template('RESULTS_TABLE_SCREEN', [
             'TITLE' => $this->title,
-            'TEXT' => do_lang_tempcode('TRANSACTION_LOGS_TEXT', build_url(['page' => '_SELF', 'type' => 'sales'], '_SELF')),
+            'TEXT' => do_lang_tempcode('TRANSACTION_LOGS_TEXT', escape_html(static_evaluate_tempcode(build_url(['page' => '_SELF', 'type' => 'sales'], '_SELF')))),
             'RESULTS_TABLE' => $results_table,
             'FORM' => $form,
             'FILTERS_ROW_A' => $filters_row_a,

@@ -122,7 +122,7 @@ class Module_admin_invoices
             $this->title = get_screen_title('DELETE_INVOICE');
         }
 
-        if ($type == 'fulfill') {
+        if ($type == 'fulfil') {
             breadcrumb_set_self(do_lang_tempcode('DONE'));
             breadcrumb_set_parents([['_SEARCH:admin_ecommerce_reports:browse', do_lang_tempcode('ECOMMERCE')], ['_SELF:_SELF:browse', do_lang_tempcode('INVOICES')], ['_SELF:_SELF:view', do_lang_tempcode('VIEW_INVOICES')]]);
 
@@ -167,8 +167,8 @@ class Module_admin_invoices
         if ($type == 'delete') {
             return $this->delete();
         }
-        if ($type == 'fulfill') {
-            return $this->fulfill();
+        if ($type == 'fulfil') {
+            return $this->fulfil();
         }
         if ($type == 'invoice') {
             return $this->invoice();
@@ -438,14 +438,14 @@ class Module_admin_invoices
                 'GET' => true,
             ]));
 
-            // Fulfill button
+            // Fulfil button
             if ($row['i_state'] == 'paid') {
-                $fulfill_url = build_url(['page' => '_SELF', 'type' => 'fulfill', 'id' => $row['id'], 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF');
+                $fulfil_url = build_url(['page' => '_SELF', 'type' => 'fulfil', 'id' => $row['id'], 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF');
                 $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
-                    'URL' => $fulfill_url,
+                    'URL' => $fulfil_url,
                     'HIDDEN' => new Tempcode(),
                     'NAME' => '#' . strval($row['id']),
-                    'ACTION_TITLE' => do_lang_tempcode('FULFILL'),
+                    'ACTION_TITLE' => do_lang_tempcode('FULFIL'),
                     'ICON' => 'buttons/yes',
                     'GET' => true,
                 ]));
@@ -584,11 +584,11 @@ class Module_admin_invoices
     }
 
     /**
-     * Actualiser to fulfill an invoice.
+     * Actualiser to fulfil an invoice.
      *
      * @return Tempcode The result
      */
-    public function fulfill() : object
+    public function fulfil() : object
     {
         $rows = $GLOBALS['SITE_DB']->query_select('ecom_invoices', ['id', 'i_state', 'i_member_id'], ['id' => get_param_integer('id')], '', 1);
         if (!array_key_exists(0, $rows)) {

@@ -1302,6 +1302,11 @@ function detect_happening_at(int $member_id, ?int $skip_id, array $our_times, bo
         return [];
     }
 
+    // If this event has no end specified (therefore has no length and is just a single point in time), then there is nothing to check.
+    if ($our_times[0][1] === null) {
+        return [];
+    }
+
     $conflicts = [];
     $table = 'calendar_events e';
     $where = ($skip_id === null) ? '1=1' : ('id<>' . strval($skip_id));

@@ -229,9 +229,9 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
      * @param  SHORT_TEXT $options Field options
      * @param  BINARY $include_in_main_search Whether to include in main keyword search
      * @param  BINARY $allow_template_search Whether to allow template search
-     * @param  ID_TEXT $icon Whether it is required that every member have this field filled in
-     * @param  ID_TEXT $section Whether it is required that every member have this field filled in
-     * @param  LONG_TEXT $tempcode Whether it is required that every member have this field filled in
+     * @param  ID_TEXT $icon An icon to show the CPF with on the member profiles
+     * @param  ID_TEXT $section A section to show with on the member-links part of member profiles
+     * @param  LONG_TEXT $tempcode This is Tempcode that is used for displaying the field. See the DESCRIPTION_CPF_CODE language string.
      * @param  ID_TEXT $autofill_type Autofill field name from https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofill-field
      * @param  ID_TEXT $autofill_hint Autofill hint: '' or 'shipping' or 'billing'
      * @return array A pair: The input fields, Hidden fields

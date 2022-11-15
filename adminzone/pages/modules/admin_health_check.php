@@ -114,7 +114,7 @@ class Module_admin_health_check
         if (post_param_integer('submitting', 0) == 1) {
             $sections_to_run = isset($_POST['sections_to_run']) ? $_POST['sections_to_run'] : [];
 
-            $show_passes = (post_param_integer('show_passes', 0) == 1); // Cannot use any "pass*" names or password managers will stick buttons on top of the tick thinking it's a login field.
+            $show_passes = (post_param_integer('show_passes', 0) == 1); // Cannot use any "pass*" names or password managers will stick buttons on top of the tick (check) thinking it's a login field.
             $show_skips = (post_param_integer('show_skips', 0) == 1);
             $show_manual_checks = (post_param_integer('show_manual_checks', 0) == 1);
         } else {

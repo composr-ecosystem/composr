@@ -1091,8 +1091,13 @@
                 stuckNav.realHeight = stuckNavHeight;
                 var posY = $dom.findPosY(stuckNav.parentNode, true),
                     footerHeight = document.querySelector('footer') ? document.querySelector('footer').offsetHeight : 0,
-                    panelBottom = $dom.$('#panel-bottom');
+                    panelBottom = $dom.$('#panel-bottom'),
+                    globalNavigation = $dom.$('#global-navigation');
 
+                if (globalNavigation) {
+                    posY -= globalNavigation.offsetHeight; // Subtract the top navigation bar so we start floating when we reach it opposed to the top of the page
+                    footerHeight += globalNavigation.offsetHeight; // Also add more to the footer height so the nav bar does not overlap the footer
+                }
                 if (panelBottom) {
                     footerHeight += panelBottom.offsetHeight;
                 }

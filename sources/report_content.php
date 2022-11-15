@@ -86,7 +86,7 @@ function report_content_form(object $title, string $content_type, string $conten
 
     $text = paragraph(do_lang_tempcode(
         'DESCRIPTION_REPORT_CONTENT',
-        escape_html($content_title),
+        ($content_title !== null) ? escape_html($content_title) : '',
         escape_html(integer_format(intval(get_option('reported_times')), 0)),
         ticket_allow_anonymous_posts() ? do_lang('REPORT_OR_ANONYMOUS') : ''
     ));
@@ -313,7 +313,7 @@ function report_content(string $content_type, string $content_id, string $report
         // If there is already an open ticket for this report, let's make a post inside that ticket instead of making a new ticket and report
         $_report_post = do_lang('REPORTED_CONTENT_EXTRA', $report_post);
     } else {
-        $content_member_link = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($content_member_id, $content_member, true, false);
+        $content_member_url = $GLOBALS['FORUM_DRIVER']->member_profile_url($content_member_id, false, $content_member);
 
         // Post will have extra information added around it
         $_report_post = static_evaluate_tempcode(do_template('REPORTED_CONTENT_FCOMCODE', [
@@ -323,7 +323,7 @@ function report_content(string $content_type, string $content_id, string $report
             'CONTENT_ID' => $content_id,
             'CONTENT_MEMBER' => $content_member,
             'CONTENT_MEMBER_ID' => strval($content_member_id),
-            'CONTENT_MEMBER_LINK' => $content_member_link,
+            'CONTENT_MEMBER_URL' => $content_member_url,
             'CONTENT_TITLE' => $content_title,
             'CONTENT_RENDERED' => $content_rendered,
             'REPORT_POST' => $report_post,

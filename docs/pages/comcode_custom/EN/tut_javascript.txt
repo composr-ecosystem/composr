@@ -167,7 +167,7 @@ $dom.on('.parent-element', 'click', '.child-element', function () {
 In order to adhere with CSP guidelines, instead of using inline event handlers or script tags, Composr keeps all code related to Tempcode templates under either template functions in the [tt]$cms.templates[/tt] library or as the more advanced view classes under [tt]$cms.views[/tt].
 To make this possible the [tt]data-tpl[/tt] ([tt]$cms.behaviors.initializeTemplates[/tt]) and [tt]data-view[/tt] ([tt]$cms.behaviors.initializeViews[/tt]) behaviors along with the [tt]PARAMS_JSON[/tt] tempcode directive are used.
 
-[title="3"]Example for [tt]data-tpl[/t]:[/title]
+[title="3"]Example for [tt]data-tpl[/tt]:[/title]
 
 Create a file named [tt]EXAMPLE.tpl[/tt] under the [i]templates_custom[/i] folder with the following contents:
 [code="HTML"]

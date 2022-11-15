@@ -49,7 +49,7 @@ In a sense it is a mute comparison, because shared hosting cannot scale and henc
 
 From a cost-origin point of view, shared hosting pricing benefits from its relative simplicity (no high R&D costs, relatively unskilled support personnel) and the relatively low usage the average customer has (hence subsidisation is happening) -- while cloud hosting benefits from its low-service nature and economies of scale. Both the shared hosting and cloud hosting markets are extremely competitive.
 
-You should obviously keep track of your costs. And, obviously the Composr developers cannot put any guarantee on how much things might cost. Be advised: even if there is a bug that uses run-away resources, the Composr developers cannot be held liable for those costs. Google have [url="options to put a ceiling on resource usage"]https://cloud.google.com/appengine/quotas[/url], blocking requests that go above this.
+You should obviously keep track of your costs. And, obviously the Composr developers cannot put any guarantee on how much things might cost. Be advised: even if there is a bug that uses run-away resources, the Composr developers cannot be held liable for those costs. Google have [url="options to put a ceiling on resource usage"]https://cloud.google.com/appengine/docs/standard/quotas[/url], blocking requests that go above this.
 
 [title="2"]Basic set up[/title]
 
@@ -232,7 +232,7 @@ To view the live project, go to [tt]http://<application>.appspot.com[/tt] in you
 
 [title="4"]Developers[/title]
 
-Developers may be interested in GAE's [url="Push-to-deploy"]https://cloud.google.com/appengine/docs/standard/python/getting-started/deploying-the-application[/url] system.
+Developers may be interested in GAE's [url="Push-to-deploy"]https://cloud.google.com/appengine/docs/legacy/standard/python/getting-started/deploying-the-application[/url] system.
 
 [title="3"]Notes and considerations[/title]
 
@@ -295,10 +295,10 @@ Go through this process:
 
 [title="3"]Domain name[/title]
 
-Initially you will be set up on an [tt]appspot.com[/tt] subdomain. You [url="may use your own domain"]https://cloud.google.com/appengine/docs/standard/python/mapping-custom-domains[/url]. Composr is set up to automatically detect your base URL from the access URL, so you do not need to worry about any configuration within Composr. Make sure though that you stop using the [tt]appspot.com[/tt] URL fully after switching to your custom domain name.
+Initially you will be set up on an [tt]appspot.com[/tt] subdomain. You [url="may use your own domain"]https://cloud.google.com/appengine/docs/legacy/standard/python/mapping-custom-domains[/url]. Composr is set up to automatically detect your base URL from the access URL, so you do not need to worry about any configuration within Composr. Make sure though that you stop using the [tt]appspot.com[/tt] URL fully after switching to your custom domain name.
 
 If using SSL with your own custom domain, Composr's default configuration in [tt]_config.php[/tt] will assume that you want to serve uploaded data via that domain. To do that you need to setup [tt]storage.<domainname>[/tt] as per [url="Google's documentation on setting a CNAME record"]https://cloud.google.com/storage/docs/request-endpoints[/url].
-Of course you would also need to set up [url="your own SSL certificate"]https://cloud.google.com/appengine/docs/standard/python/securing-custom-domains-with-ssl[/url].
+Of course you would also need to set up [url="your own SSL certificate"]https://cloud.google.com/appengine/docs/legacy/standard/python/securing-custom-domains-with-ssl[/url].
 
 [title="3"]Error pages[/title]
 

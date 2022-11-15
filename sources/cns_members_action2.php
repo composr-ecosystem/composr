@@ -1573,13 +1573,13 @@ function cns_unban_member(int $member_id)
  * @param  LONG_TEXT $only_group The usergroups that this field is confined to (comma-separated list)
  * @param  ID_TEXT $type The type of the field
  * @set short_text long_text short_trans long_trans integer upload picture url list tick float
- * @param  BINARY $show_on_join_form Whether it is required that every member have this field filled in
+ * @param  BINARY $show_on_join_form Whether to show this field for filling in when a member joins the site
  * @param  SHORT_TEXT $options Field options
  * @param  BINARY $include_in_main_search Whether to include in main keyword search
  * @param  BINARY $allow_template_search Whether to allow template search
- * @param  ID_TEXT $icon Whether it is required that every member have this field filled in
- * @param  ID_TEXT $section Whether it is required that every member have this field filled in
- * @param  LONG_TEXT $tempcode Whether it is required that every member have this field filled in
+ * @param  ID_TEXT $icon An icon to show the CPF with on the member profiles
+ * @param  ID_TEXT $section A section to show with on the member-links part of member profiles
+ * @param  LONG_TEXT $tempcode This is Tempcode that is used for displaying the field. See the DESCRIPTION_CPF_CODE language string.
  * @param  ID_TEXT $autofill_type Autofill field name from https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofill-field
  * @param  ID_TEXT $autofill_hint Autofill hint: '' or 'shipping' or 'billing'
  */

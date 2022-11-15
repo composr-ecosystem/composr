@@ -153,6 +153,7 @@ class css_file_test_set extends cms_test_case
                         $num_selector_lines = preg_match_all('#.*(\{|,\s*)#', $c, $matches_selector_lines);
                         for ($i = 0; $i < $num_selector_lines; $i++) {
                             $matches = [];
+                            $classes = [];
                             $found = preg_match_all('#\.([a-z][\w\-]*)[ ,:.]#i', $matches_selector_lines[0][$i], $matches);
                             for ($j = 0; $j < $found; $j++) {
                                 $classes[] = $matches[1][$j];

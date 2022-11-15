@@ -145,6 +145,8 @@ class Hook_addon_registry_cloudinary
             'sources_custom/hooks/systems/cdn_transfer/cloudinary.php',
             'sources_custom/hooks/systems/health_checks/cloudinary.php',
 
+            'sources_custom/Cloudinary/index.html',
+            'sources_custom/Cloudinary/.htaccess',
             'sources_custom/Cloudinary/src/.htaccess',
             'sources_custom/Cloudinary/src/index.html',
             'sources_custom/Cloudinary/src/Api/AlreadyExists.php',

@@ -7,7 +7,7 @@
 		<a class="btn btn-outline-primary btn-side-menu-toggler desktop-only" href="#!">{+START,INCLUDE,ICON}NAME=menus/mobile_menu{+END}</a>
 
 		{$,Main menu}
-		<div class="global-navigation js-side-menu-toggleable" {+START,IF,{$DESKTOP}}style="display: none;"{+END}>
+		<div class="global-navigation js-side-menu-toggleable" {+START,IF,{$DESKTOP}}style="display: none;"{+END} id="global-navigation">
 			{$,The main logo}
 			<h1 class="logo">
 				<a class="logo-link" target="_self" href="{$PAGE_LINK*,:}" rel="home" title="{!HOME}">{+START,TRIM}

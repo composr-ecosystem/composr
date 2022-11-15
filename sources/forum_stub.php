@@ -132,7 +132,7 @@ abstract class Forum_driver_base
      * Get a URL to a forum member's member profile.
      *
      * @param  MEMBER $id The forum member
-     * @param  boolean $tempcode_okay Whether it is okay to return the result using Tempcode (more efficient, and allows keep_* parameters to propagate which you almost certainly want!)
+     * @param  boolean $tempcode_okay Whether it is okay to return the result using Tempcode (more efficient, and allows keep_* parameters to propagate)
      * @param  ?string $username Username, passed for performance reasons (null: look it up)
      * @param  array $hints Extra parameters to pass to the forum drivers
      * @return mixed The URL
@@ -159,18 +159,25 @@ abstract class Forum_driver_base
      * @param  string $_username The username / display name (blank: look it up)
      * @param  boolean $use_displayname Whether to use the displayname rather than the username (if we have them)
      * @param  boolean $tempcode_okay Whether it is okay to return the result using Tempcode (more efficient, and allows keep_* parameters to propagate which you almost certainly want!)
-     * @return Tempcode The hyperlink
+     * @return mixed The hyperlink (Tempcode, or string if $tempcode_okay is false)
      */
-    public function member_profile_hyperlink(int $id, string $_username = '', bool $use_displayname = true, bool $tempcode_okay = false) : object
+    public function member_profile_hyperlink(int $id, string $_username = '', bool $use_displayname = true, bool $tempcode_okay = true)
     {
         if (is_guest($id)) {
-            return ($_username == '') ? make_string_tempcode($this->get_username($this->get_guest_id())) : make_string_tempcode(escape_html($_username));
+            if ($tempcode_okay) {
+                return ($_username == '') ? make_string_tempcode($this->get_username($this->get_guest_id())) : make_string_tempcode(escape_html($_username));
+            }
+            return ($_username == '') ? $this->get_username($this->get_guest_id()) : escape_html($_username);
         }
         if ($_username == '') {
             $_username = $this->get_username($id, $use_displayname);
         }
-        $url = $this->member_profile_url($id, true);
-        return hyperlink($url, $_username, false, true);
+        $url = $this->member_profile_url($id, $tempcode_okay, $_username !== '' ? $_username : null);
+        $hyperlink = hyperlink($url, $_username, false, true);
+        if (!$tempcode_okay) {
+            return $hyperlink->evaluate();
+        }
+        return $hyperlink;
     }
 
     /**

@@ -460,6 +460,10 @@ function demonstratr_add_site_raw($server, $codename, $email_address, $password)
 {
     global $SITE_INFO;
 
+    if (!isset($SITE_INFO['mysql_root_password']) || !isset($SITE_INFO['mysql_demonstratr_password'])) {
+        fatal_exit(do_lang_tempcode('composr_homesite:DEMONSTRATR_NOT_CONFIGURED'));
+    }
+
     if (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) == 'WIN') {
         fatal_exit('Windows is not supported for this operation.');
     }

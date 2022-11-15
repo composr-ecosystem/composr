@@ -145,10 +145,18 @@ class Hook_search_cns_members extends FieldsSearchHook
             $bits = explode(',', $default_group);
             $combination = new Tempcode();
             foreach ($bits as $bit) {
+                if (preg_match('#^\d+$#', $bit) == 0) {
+                    continue;
+                }
+
                 if (!$combination->is_empty()) {
                     $combination->attach(do_lang_tempcode('LIST_SEP'));
                 }
-                $combination->attach(escape_html(@$group_titles[intval($bit)]));
+                if (isset($group_titles[intval($bit)])) {
+                    $combination->attach(escape_html($group_titles[intval($bit)]));
+                } else {
+                    $combination->attach(do_lang_tempcode('UNKNOWN_EM'));
+                }
             }
             $groups->attach(form_input_list_entry(strval($default_group), true, do_lang_tempcode('USERGROUP_SEARCH_COMBO', $combination)));
         }

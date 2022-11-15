@@ -221,7 +221,7 @@ class Module_invoices
         $filter_id = get_param_integer('filter_id', null);
         if ($filter_id !== null) {
             $where['id'] = $filter_id;
-            attach_message(do_lang_tempcode('INVOICES_FILTERED_BY_ID', build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF')));
+            attach_message(do_lang_tempcode('INVOICES_FILTERED_BY_ID', escape_html(static_evaluate_tempcode(build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF')))));
         }
 
         $invoices = [];

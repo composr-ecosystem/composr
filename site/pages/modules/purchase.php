@@ -504,24 +504,27 @@ class Module_purchase
         }
 
         if (($type != 'browse') && ($type != 'receipt') && ($type != 'sales')) {
-            $type_code = get_param_string('type_code', null);
-            if ($type_code !== null) {
-                $breadcrumbs = [];
-                list(, $product_object) = find_product_details($type_code);
-                $steps = get_product_purchase_steps($product_object, $type_code, true);
-                $step_at = 0;
-                foreach ($steps as $i => $step) {
-                    if (($step[1] == $type) && (($step[1] != 'browse') || ($steps[$i + 1][1] != 'browse') || (get_param_string('category', null) === null))) {
-                        $step_at = $i;
-                        break;
+            $test = do_lang('ECOM_PURCHASE_STAGE_' . $type, null, null, null, null, false);
+            if ($test !== null) {
+                $type_code = get_param_string('type_code', null);
+                if ($type_code !== null) {
+                    $breadcrumbs = [];
+                    list(, $product_object) = find_product_details($type_code);
+                    $steps = get_product_purchase_steps($product_object, $type_code, true);
+                    $step_at = 0;
+                    foreach ($steps as $i => $step) {
+                        if (($step[1] == $type) && (($step[1] != 'browse') || ($steps[$i + 1][1] != 'browse') || (get_param_string('category', null) === null))) {
+                            $step_at = $i;
+                            break;
+                        }
+                        $breadcrumbs[] = [$step[0], $step[2]];
                     }
-                    $breadcrumbs[] = [$step[0], $step[2]];
-                }
-                breadcrumb_set_parents($breadcrumbs);
+                    breadcrumb_set_parents($breadcrumbs);
 
-                $this->title = get_screen_title('PURCHASING_TITLE', true, [do_lang_tempcode('ECOM_PURCHASE_STAGE_' . $type), escape_html(integer_format($step_at + 1)), escape_html(integer_format(count($steps)))]);
-            } else {
-                $this->title = get_screen_title('PURCHASING_TITLE', true, [do_lang_tempcode('ECOM_PURCHASE_STAGE_' . $type), '?', '6']);
+                    $this->title = get_screen_title('PURCHASING_TITLE', true, [do_lang_tempcode('ECOM_PURCHASE_STAGE_' . $type), escape_html(integer_format($step_at + 1)), escape_html(integer_format(count($steps)))]);
+                } else {
+                    $this->title = get_screen_title('PURCHASING_TITLE', true, [do_lang_tempcode('ECOM_PURCHASE_STAGE_' . $type), '?', '6']);
+                }
             }
         }
 

@@ -561,6 +561,5 @@ class Hook_addon_registry_core_themeing
             'SPRITE_PATH_COLOUR' => 'themes/default/images/icons_sprite.svg',
             'ICONS_ADDED_COLOUR' => ['admin/add'],
         ]), null, '', true);
-        ]), null, '', true);
     }
 }

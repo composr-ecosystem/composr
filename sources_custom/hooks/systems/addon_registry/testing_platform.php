@@ -660,6 +660,7 @@ We hope other users will appreciate your efforts and give you some points to rew
             '_tests/assets/text/utf-8.txt',
             '_tests/assets/xml/atom.cms',
             '_tests/assets/xml/rss.cms',
+            '_tests/assets/xml/index.html',
             '_tests/assets/pdf_sample.pdf',
             '_tests/assets/encryption/index.html',
             '_tests/assets/encryption/private.pem',

@@ -5,7 +5,7 @@
 
 	<div class="header-inner container">
 		{$,Main menu}
-		<div class="global-navigation">
+		<div class="global-navigation" id="global-navigation">
 			{$,The main logo}
 			<h1 class="logo">
 				<a class="logo-link" target="_self" href="{$PAGE_LINK*,:}" rel="home" title="{!HOME}">{+START,TRIM}

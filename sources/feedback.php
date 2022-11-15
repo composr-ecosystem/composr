@@ -742,7 +742,7 @@ function get_comments(string $content_type, bool $allow_comments, string $conten
         require_code('topics');
         $renderer = new CMS_Topic();
 
-        return $renderer->render_as_comment_topic($real_feedback_type, $content_id, $allow_comments, $invisible_if_no_comments, $forum, $post_warning, $_comments, $explicit_allow, $reverse, $highlight_by_user, $allow_reviews, $num_to_show_limit, $hidden);
+        return $renderer->render_as_comment_topic($real_feedback_type, $content_id, $invisible_if_no_comments, $forum, $post_warning, $_comments, $reverse, $highlight_by_user, $allow_reviews, $num_to_show_limit, $hidden);
     }
 
     return new Tempcode(); // No franchise to render comments

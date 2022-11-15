@@ -209,8 +209,7 @@ If PDF download indexing is required, [tt]pdftohtml[/tt] ([tt]poppler-utils[/tt]
 [media float="right" thumb="0" framed="0"]data_custom/images/docs/tip.png[/media]
 Composr recommends:
  - PHP versions:
-  - PHP 7 is better than PHP 5.6 due to very significant performance and security improvements.
-  - Don't accept EOL ("end-of-life"). If a webhost or Linux distribution has a PHP version that is EOL, it is not just out-dated, but also insecure do (at the time of writing, anything less than PHP 5.6 is unsupported by the PHP developers).
+  - Don't accept EOL ("end-of-life"). If a webhost or Linux distribution has a PHP version that is EOL, it is not just out-dated, but also insecure too (at the time of writing, anything less than PHP 7.4 is unsupported by the PHP developers).
   - Make sure your PHP version is updated with security fixes, even if you haven't updated to the latest major version.[media width="480" thumb="1" framed="1" description="Easy-reference summary of the key hosting recommendations." float="right"]data_custom/images/docs/tut_webhosting/image.png[/media]
  - A PHP opcode cache: Zend OpCache (bundled by default), APC (available for PHP 5.6 or lower only), APCu, XCache, Nusphere PhpExpress, or Wincache.
  - A PHP environment with [tt]open_basedir[/tt] enabled.

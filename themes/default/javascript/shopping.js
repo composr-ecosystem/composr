@@ -75,14 +75,6 @@
         }
     };
 
-    $cms.templates.ecomAdminOrdersScreen = function ecomAdminOrdersScreen(params, container) {
-        $dom.on(container, 'click', '.js-scroll-to-top', function () {
-            try {
-                scrollTo(0, 0);
-            } catch (ignore) {}
-        });
-    };
-
     $cms.templates.ecomAdminOrderActions = function ecomAdminOrderActions(params, container) {
         $dom.on(container, 'change', '.js-select-change-action-submit-form', function (e, select) {
             if (select.selectedIndex > 0) {

@@ -390,7 +390,11 @@
         var value = '';
         switch (element.localName) {
             case 'textarea':
-                value = window.$editing.getTextbox(element);
+                if (window.$editing !== undefined && window.$editing.wysiwygOn()) {
+                    value = window.$editing.getTextbox(element);
+                } else {
+                    value = element.value;
+                }
                 break;
             case 'select':
                 value = '';

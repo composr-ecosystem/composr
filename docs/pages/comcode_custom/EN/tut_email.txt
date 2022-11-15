@@ -166,7 +166,7 @@ Tools for testing DKIM:
  - [url="E-mail scanner and tips"]http://www.appmaildev.com/en/dkim/[/url]
 
 Technical references for debugging:
- - [url="Using opendkim to test"]https://isc.sans.edu/forums/diary/How+to+Debug+DKIM/17528/[/url]
+ - [url="Using opendkim to test"]https://isc.sans.edu/diary/How+to+Debug+DKIM/17528[/url]
  - [url="Common problems"]https://web.archive.org/web/20170707230402/https://blogs.cisco.com/security/common_errors_causing_dkim_verification_failures[/url]
  - [url="DomainKeys technical summary"]https://www.unlocktheinbox.com/resources/domainkeys/[/url]
  - [url="DKIM technical summary"]https://www.unlocktheinbox.com/resources/dkim/[/url]

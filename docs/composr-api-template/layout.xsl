@@ -186,8 +186,8 @@
                 <div id="___" class="container">
                     <noscript>
                         <div class="alert alert-warning">
-                            Javascript is disabled; several features are only available
-                            if Javascript is enabled.
+                            JavaScript is disabled; several features are only available
+                            if JavaScript is enabled.
                         </div>
                     </noscript>
 

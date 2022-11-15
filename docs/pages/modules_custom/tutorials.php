@@ -612,14 +612,11 @@ class Module_tutorials
         require_css('tutorials');
 
         $type = get_param_string('type', 'browse');
-        if ($type == 'browse') {
-            return $this->browse();
-        }
         if ($type == 'view') {
             return $this->view();
         }
 
-        return new Tempcode();
+        return $this->browse();
     }
 
     /**

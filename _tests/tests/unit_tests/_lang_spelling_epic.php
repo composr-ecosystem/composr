@@ -188,6 +188,7 @@ class _lang_spelling_epic_test_set extends cms_test_case
             'toystory',
             'turkish',
             'eslintignore',
+            'eslintrc',
             'yourbaseurl',
             'srand',
             'robotstxtscreen',
@@ -2769,6 +2770,7 @@ class _lang_spelling_epic_test_set extends cms_test_case
             'tapatalkpush',
             'taskbar',
             'taxcloud',
+            'taxjar',
             'tcp',
             'td',
             'tds',
@@ -3235,6 +3237,9 @@ class _lang_spelling_epic_test_set extends cms_test_case
             'unescaping',
             'storable',
             'determinative',
+            'valignment',
+            'submissionflow',
+            'undef',
         ];
 
         $spell_link = spellcheck_initialise('en_GB');

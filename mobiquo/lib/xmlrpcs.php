@@ -864,7 +864,7 @@ ini_set('ocproducts.type_strictness','0');
 				}
 			}
 
-			// check if client specified accepted charsets, and if we know how to fulfill
+			// check if client specified accepted charsets, and if we know how to fulfil
 			// the request
 			if ($this->response_charset_encoding == 'auto')
 			{
