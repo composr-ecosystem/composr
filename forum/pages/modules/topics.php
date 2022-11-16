@@ -1260,7 +1260,7 @@ class Module_topics
     }
 
     /**
-     * The UI to delete some topics / posts.
+     * The UI to delete some of a member's own topics / posts.
      *
      * @return Tempcode The UI
      */
@@ -1295,7 +1295,7 @@ class Module_topics
     }
 
     /**
-     * The actualiser to delete some topics / posts.
+     * The actualiser to delete some of a member's own topics / posts.
      *
      * @return Tempcode The UI
      */
@@ -1335,7 +1335,7 @@ class Module_topics
 
         // Show it worked / Refresh
         $title = get_screen_title('DELETE_TOPICS_AND_POSTS');
-        $url = build_url(['page' => 'members', 'type' => 'view'], get_module_zone('members'));
+        $url = build_url(['page' => 'members', 'type' => 'view'], get_module_zone('members'), [], false, false, false, 'tab--posts');
         return redirect_screen($title, $url, do_lang_tempcode('SUCCESS'));
     }
 
