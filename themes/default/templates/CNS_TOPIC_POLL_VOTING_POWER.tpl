@@ -1,1 +1,1 @@
-<abbr data-cms-rich-tooltip="{width: '650px'}" title="{!VOTING_POWER_DERIVATION=,{EQUATION*},{EQUATION_WITH_NUMBERS*},{VOTING_POWER*}}">{VOTING_POWER*}</abbr>
+<abbr data-cms-rich-tooltip="{width: '650px'}" title="{!VOTING_POWER_DERIVATION=,{EQUATION},{EQUATION_WITH_NUMBERS},{VOTING_POWER*}}">{VOTING_POWER*}</abbr>
