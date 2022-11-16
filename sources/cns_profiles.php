@@ -44,6 +44,9 @@ function render_profile_tabset(object $title, int $member_id_of, ?int $member_id
 
     $only_tab = get_param_string('only_tab', null);
 
+    // Load tabs
+    //  Profiles tabs are for things other users would expect to see under a member, and for account management
+    //  Other stuff, like listing a member's purchases, would be linked from the about tab via a 'members' hook
     $hooks = find_all_hooks('systems', 'profiles_tabs');
     if (isset($hooks['edit'])) { // Editing must go first, so changes reflect in the renders of the tabs
         $hooks = ['edit' => $hooks['edit']] + $hooks;
