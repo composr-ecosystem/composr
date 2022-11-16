@@ -1665,12 +1665,10 @@ function addon_installed(string $addon_name, bool $check_hookless = false, bool 
         }
     }
 
-    if (($deep_scan) && ($disabled_scan)) {
-        $ADDON_INSTALLED_CACHE[$addon_name][$check_hookless][$deep_scan][$disabled_scan] = $answer;
-        if (function_exists('persistent_cache_set')) {
-            if (!in_safe_mode()) {
-                persistent_cache_set('ADDONS_INSTALLED', $ADDON_INSTALLED_CACHE);
-            }
+    $ADDON_INSTALLED_CACHE[$addon_name][$check_hookless][$deep_scan][$disabled_scan] = $answer;
+    if (function_exists('persistent_cache_set')) {
+        if ((!$GLOBALS['IN_MINIKERNEL_VERSION']) && (!in_safe_mode())) {
+            persistent_cache_set('ADDONS_INSTALLED', $ADDON_INSTALLED_CACHE);
         }
     }
 

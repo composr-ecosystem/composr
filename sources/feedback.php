@@ -137,7 +137,7 @@ function get_details_behind_feedback_code(string $content_type, string $content_
 /**
  * Main wrapper function to embed miscellaneous feedback systems into a module output.
  *
- * @param  ID_TEXT $content_type The type (download, etc) that this feedback is for
+ * @param  ID_TEXT $content_type The type (downloads, etc) that this feedback is for
  * @param  ID_TEXT $content_id Content ID
  * @param  BINARY $allow_rating Whether rating is allowed
  * @param  integer $allow_comments Whether comments/reviews is allowed (reviews allowed=2)
@@ -257,7 +257,7 @@ function post_comment_script()
  *
  * @param  mixed $content_url The URL to where the commenting will pass back to (to put into the comment topic header) (URLPATH or Tempcode)
  * @param  ?string $content_title The title to where the commenting will pass back to (to put into the comment topic header) (null: don't know, but not first post so not important)
- * @param  ID_TEXT $content_type The type (download, etc) that this rating is for
+ * @param  ID_TEXT $content_type The type (downloads, etc) that this rating is for
  * @param  ID_TEXT $content_id The ID of the type that this rating is for
  * @param  boolean $allow_rating Whether this resource allows rating (if not, this function does nothing - but it's nice to move out this common logic into the shared function)
  * @param  ?MEMBER $submitter Content owner (null: none)
@@ -277,7 +277,7 @@ function get_rating_box($content_url, ?string $content_title, string $content_ty
  *
  * @param  mixed $content_url The URL to where the commenting will pass back to (to put into the comment topic header) (URLPATH or Tempcode)
  * @param  ?string $content_title The title to where the commenting will pass back to (to put into the comment topic header) (null: don't know, but not first post so not important)
- * @param  ID_TEXT $content_type The type (download, etc) that this rating is for
+ * @param  ID_TEXT $content_type The type (downloads, etc) that this rating is for
  * @param  ID_TEXT $content_id The ID of the type that this rating is for
  * @param  ID_TEXT $display_tpl The template to use to display the rating box
  * @param  ?MEMBER $submitter Content owner (null: none)
@@ -304,7 +304,7 @@ function display_rating($content_url, ?string $content_title, string $content_ty
  *
  * @param  mixed $content_url The URL to where the commenting will pass back to (to put into the comment topic header) (URLPATH or Tempcode)
  * @param  ?string $content_title The title to where the commenting will pass back to (to put into the comment topic header) (null: don't know, but not first post so not important)
- * @param  ID_TEXT $content_type The type (download, etc) that this rating is for
+ * @param  ID_TEXT $content_type The type (downloads, etc) that this rating is for
  * @param  ID_TEXT $content_id The ID of the type that this rating is for
  * @param  ?ID_TEXT $form_tpl The template to use to display the rating box (null: none)
  * @param  ?MEMBER $submitter Content owner (null: none)
@@ -450,7 +450,7 @@ function get_rating_simple_array($content_url, ?string $content_title, string $c
 /**
  * Find whether you have rated the specified resource before.
  *
- * @param  array $rating_for_types List of types (download, etc) that this rating is for. All need to be rated for it to return true.
+ * @param  array $rating_for_types List of feedback types (downloads, etc) that this rating is for. All need to be rated for it to return true.
  * @param  ID_TEXT $content_id The ID of the type that this rating is for
  * @param  ?array $previous_ratings A map (type to rating) of previous ratings by the user (null: not set yet); returned by reference
  * @return boolean Whether the resource has already been rated
@@ -514,7 +514,7 @@ function already_rated(array $rating_for_types, string $content_id, ?array &$pre
  * It performs full checking of inputs, and will log a hackattack if the rating is not between 1 and 10.
  *
  * @param  boolean $allow_rating Whether this resource allows rating (if not, this function does nothing - but it's nice to move out this common logic into the shared function)
- * @param  ID_TEXT $content_type The type (download, etc) that this rating is for
+ * @param  ID_TEXT $content_type The type (downloads, etc) that this rating is for
  * @param  ID_TEXT $content_id The ID of the type that this rating is for
  * @param  mixed $content_url The URL to where the commenting will pass back to (to put into the comment topic header) (URLPATH or Tempcode)
  * @param  ?string $content_title The title to where the commenting will pass back to (to put into the comment topic header) (null: don't know, but not first post so not important)
@@ -578,7 +578,7 @@ function actualise_credit_rating_points(string $content_type, string $content_id
  * @range 1 10
  * @param  ID_TEXT $page_name The page name the rating is on
  * @param  MEMBER $member_id The member doing the rating
- * @param  ID_TEXT $content_type The type (download, etc) that this rating is for
+ * @param  ID_TEXT $content_type The type (downloads, etc) that this rating is for
  * @param  ID_TEXT $type The second level type (probably blank)
  * @param  ID_TEXT $content_id The ID of the type that this rating is for
  * @param  mixed $content_url The URL to where the commenting will pass back to (to put into the comment topic header) (URLPATH or Tempcode)
@@ -715,7 +715,7 @@ function actualise_specific_rating(?int $rating, string $page_name, int $member_
 /**
  * Get the Tempcode containing all the comments posted, and the comments posting form for the specified resource.
  *
- * @param  ID_TEXT $content_type The type (download, etc) that this commenting is for
+ * @param  ID_TEXT $content_type The feedback type (downloads, etc) that this commenting is for
  * @param  boolean $allow_comments Whether this resource allows comments (if not, this function does nothing - but it's nice to move out this common logic into the shared function)
  * @param  ID_TEXT $content_id The ID of the type that this commenting is for
  * @param  boolean $invisible_if_no_comments Whether the comment box will be invisible if there are not yet any comments (and you're not staff)
@@ -767,7 +767,7 @@ function extract_topic_identifier(string $full_text) : string
  * Add comments to the specified resource.
  *
  * @param  boolean $allow_comments Whether this resource allows comments (if not, this function does nothing - but it's nice to move out this common logic into the shared function)
- * @param  ID_TEXT $content_type The type (download, etc) that this commenting is for
+ * @param  ID_TEXT $content_type The feedback type (downloads, etc) that this commenting is for
  * @param  ID_TEXT $content_id The ID of the type that this commenting is for
  * @param  mixed $content_url The URL to where the commenting will pass back to (to put into the comment topic header) (URLPATH or Tempcode)
  * @param  ?string $content_title The title to where the commenting will pass back to (to put into the comment topic header) (null: don't know, but not first post so not important)
@@ -984,7 +984,7 @@ function actualise_post_comment(bool $allow_comments, string $content_type, stri
         if ($privacy_ok) {
             // Activity
             require_code('users2');
-            if (may_view_content_behind(get_modal_user(), $real_content_type, $content_id, 'feedback_type_code')) {
+            if ((may_view_content_behind(get_modal_user(), $real_content_type, $content_id, 'feedback_type_code')) && ($real_content_type != '')) {
                 if ($submitter === null) {
                     $submitter = $GLOBALS['FORUM_DRIVER']->get_guest_id();
                 }
@@ -1024,7 +1024,7 @@ function actualise_post_comment(bool $allow_comments, string $content_type, stri
  * Update the spacer post of a comment topic, after an edit.
  *
  * @param  boolean $allow_comments Whether this resource allows comments (if not, this function does nothing - but it's nice to move out this common logic into the shared function)
- * @param  ID_TEXT $content_type The type (download, etc) that this commenting is for
+ * @param  ID_TEXT $content_type The feedback type (downloads, etc) that this commenting is for
  * @param  ID_TEXT $content_id The ID of the type that this commenting is for
  * @param  mixed $content_url The URL to where the commenting will pass back to (to put into the comment topic header) (URLPATH or Tempcode)
  * @param  ?string $content_title The title to where the commenting will pass back to (to put into the comment topic header) (null: don't know, but not first post so not important)
@@ -1087,7 +1087,7 @@ function update_spacer_post(bool $allow_comments, string $content_type, string $
 /**
  * Get the Tempcode containing all the trackbacks received, and the trackback posting form for the specified resource.
  *
- * @param  ID_TEXT $content_type The type (download, etc) that this trackback is for
+ * @param  ID_TEXT $content_type The type (downloads, etc) that this trackback is for
  * @param  ID_TEXT $content_id The ID of the type that this trackback is for
  * @param  boolean $allow_trackback Whether this resource allows trackback (if not, this function does nothing - but it's nice to move out this common logic into the shared function)
  * @param  ID_TEXT $type The type of details being fetched (currently: blank or XML)
@@ -1176,7 +1176,7 @@ function get_trackbacks(string $content_type, string $content_id, bool $allow_tr
  * Add trackbacks to the specified resource.
  *
  * @param  boolean $allow_trackbacks Whether this resource allows trackback (if not, this function does nothing - but it's nice to move out this common logic into the shared function)
- * @param  ID_TEXT $content_type The type (download, etc) that this trackback is for
+ * @param  ID_TEXT $content_type The type (downloads, etc) that this trackback is for
  * @param  ID_TEXT $content_id The ID of the type that this trackback is for
  * @return boolean Whether trackbacks are on
  */

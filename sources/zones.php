@@ -1033,7 +1033,8 @@ function find_all_hooks(string $type, string $subtype) : array
         }
     }
 
-    if ((!isset($GLOBALS['DOING_USERS_INIT'])) && ((!in_safe_mode()) || ($GLOBALS['RELATIVE_PATH'] === '_tests') && ($subtype === 'addon_registry'))) { // The !isset is because of if the user init causes a DB query to load sessions which loads DB hooks which checks for safe mode which leads to a permissions check for safe mode and thus a failed user check (as sessions not loaded yet)
+    $doing_custom_scan = (!isset($GLOBALS['DOING_USERS_INIT'])) && ((!in_safe_mode()) || ($GLOBALS['RELATIVE_PATH'] === '_tests') && ($subtype === 'addon_registry'));
+    if ($doing_custom_scan) { // The !isset is because of if the user init causes a DB query to load sessions which loads DB hooks which checks for safe mode which leads to a permissions check for safe mode and thus a failed user check (as sessions not loaded yet)
         $dir = get_file_base() . '/sources_custom/hooks/' . $type . '/' . $subtype;
         $dh = is_dir($dir) ? scandir($dir) : false;
         if ($dh !== false) {
@@ -1056,10 +1057,12 @@ function find_all_hooks(string $type, string $subtype) : array
 
     if (!isset($GLOBALS['DOING_USERS_INIT'])) {
         $HOOKS_CACHE[$type . '/' . $subtype] = $out;
-    }
 
-    if (function_exists('persistent_cache_set')) {
-        persistent_cache_set('HOOKS', $HOOKS_CACHE);
+        if (($doing_custom_scan) && (!running_script('install'))) {
+            if (function_exists('persistent_cache_set')) {
+                persistent_cache_set('HOOKS', $HOOKS_CACHE);
+            }
+        }
     }
 
     return $out;
