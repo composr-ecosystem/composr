@@ -95,18 +95,17 @@ class Module_members
         }
 
         if ($type == 'view') {
-            $username = get_param_string('id', strval(get_member()));
-            if ($username == '') {
-                $username = strval(get_member());
-            }
-            if (is_numeric($username)) {
-                $member_id_of = get_param_integer('id', get_member());
-                if (is_guest($member_id_of)) {
+            $username = get_param_string('id', '');
+            if (($username == '') || (is_numeric($username))) {
+                $member_id_of = get_param_integer('id', null);
+                if ($member_id_of === null) {
                     if (is_guest()) {
                         access_denied('NOT_AS_GUEST');
-                    } else {
-                        warn_exit(do_lang_tempcode('MEMBER_NO_EXIST'), false, false, 404);
                     }
+
+                    $member_id_of = get_member();
+                } elseif (is_guest($member_id_of)) {
+                    warn_exit(do_lang_tempcode('MEMBER_NO_EXIST'), false, false, 404);
                 }
                 $username = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id_of, 'm_username');
                 if (($username === null) || (is_guest($member_id_of))) {
@@ -119,20 +118,8 @@ class Module_members
                     warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($username)), false, false, 404);
                 }
                 if (is_guest($member_id_of)) {
-                    if (is_guest()) {
-                        access_denied('NOT_AS_GUEST');
-                    } else {
-                        warn_exit(do_lang_tempcode('MEMBER_NO_EXIST'), false, false, 404);
-                    }
+                    warn_exit(do_lang_tempcode('MEMBER_NO_EXIST'), false, false, 404);
                 }
-            }
-
-            $join_time = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id_of, 'm_join_time');
-
-            $privacy_ok = true;
-            if (addon_installed('content_privacy')) {
-                require_code('content_privacy');
-                $privacy_ok = has_privacy_access('_photo', strval($member_id_of), get_member(), '', $member_id_of);
             }
 
             $member_row = $GLOBALS['FORUM_DRIVER']->get_member_row($member_id_of);
