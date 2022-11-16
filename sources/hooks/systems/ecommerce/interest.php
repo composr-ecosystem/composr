@@ -18,6 +18,8 @@
  * @package    ecommerce
  */
 
+// This hook is for adding data for the basic Profit/Loss and Cash Flow reporting only.
+
 /**
  * Hook class.
  */

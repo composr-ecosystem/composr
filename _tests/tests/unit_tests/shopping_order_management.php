@@ -65,7 +65,7 @@ class shopping_order_management_test_set extends cms_test_case
         $GLOBALS['SITE_DB']->query_delete('ecom_transactions', ['id' => $txn_id], '', 1);
         $GLOBALS['SITE_DB']->query_insert('ecom_transactions', [
             'id' => $txn_id,
-            't_type_code' => 'cart_orders',
+            't_type_code' => 'CART_ORDER_1',
             't_purchase_id' => strval($this->order_id),
             't_status' => 'Completed',
             't_reason' => '',

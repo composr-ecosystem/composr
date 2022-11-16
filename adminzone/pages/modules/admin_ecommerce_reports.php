@@ -1114,27 +1114,49 @@ class Module_admin_ecommerce_reports
      */
     public function get_types(int $from, int $to, bool $unpaid_invoices_count = false) : array
     {
-        // TODO: May need editing for tax split from amount (add shipping?)
         $types = [
             // Calculations
             'OPENING' => ['TYPE' => do_lang_tempcode('OPENING_BALANCE'), 'AMOUNT' => 0.00, 'SPECIAL' => true],
-
-            // Ones that are positive
-            'INTEREST_PLUS' => ['TYPE' => do_lang_tempcode('M_INTEREST_PLUS'), 'AMOUNT' => 0.00, 'SPECIAL' => false],
         ];
+        $types_first = [
+            // Ones that are always positive
+            'INTEREST_PLUS' => ['TYPE' => do_lang_tempcode('M_INTEREST_PLUS'), 'AMOUNT' => 0.00, 'SPECIAL' => false],
+            'OTHER_PLUS' => ['TYPE' => do_lang_tempcode('M_OTHER_PLUS'), 'AMOUNT' => 0.00, 'SPECIAL' => false],
+        ];
+        $types += $types_first;
+        $types_last = [];
         $products = find_all_products();
+        $skip = ['OTHER', 'INTEREST']; // These are actually switched to separate positive/negative accounts
+        $go_last = ['WAGE', 'TAX_GENERAL']; // Ones that are negative (user expected to put in negative values)
         foreach ($products as $type_code => $details) {
-            $types[$type_code] = ['TYPE' => $details['item_name'], 'AMOUNT' => 0.00, 'SPECIAL' => false];
-        }
-        $types += [
-            // Ones that are negative (user expected to put in negative values)
-            'COST' => ['TYPE' => do_lang_tempcode('EXPENSES'), 'AMOUNT' => 0.00, 'SPECIAL' => false],
-            'TRANS' => ['TYPE' => do_lang_tempcode('TRANSACTION_FEES'), 'AMOUNT' => 0.00, 'SPECIAL' => false],
-            'WAGE' => ['TYPE' => do_lang_tempcode('WAGES'), 'AMOUNT' => 0.00, 'SPECIAL' => false],
-            'INTEREST_MINUS' => ['TYPE' => do_lang_tempcode('M_INTEREST_MINUS'), 'AMOUNT' => 0.00, 'SPECIAL' => false],
-            'TAX_GENERAL' => ['TYPE' => do_lang_tempcode('TAX_GENERAL'), 'AMOUNT' => 0.00, 'SPECIAL' => false],
-            'TAX_SALES' => ['TYPE' => do_lang_tempcode(get_option('tax_system')), 'AMOUNT' => 0.00, 'SPECIAL' => false],
+            $item_name = $details['item_name'];
 
+            if (is_integer($type_code)) {
+                $type_code = strval($type_code);
+            }
+
+            $this->amend_type_code($type_code, $item_name);
+
+            if ((!isset($types[$type_code])) && (!in_array($type_code, $skip))) {
+                $account = ['TYPE' => $item_name, 'AMOUNT' => 0.00, 'SPECIAL' => false];
+                if (in_array($type_code, $go_last)) {
+                    $types_last[$type_code] = $account;
+                } else {
+                    $types[$type_code] = $account;
+                }
+            }
+        }
+        $types_last += [
+            // Inversions of positive ones
+            'OTHER_MINUS' => ['TYPE' => do_lang_tempcode('M_OTHER_MINUS'), 'AMOUNT' => 0.00, 'SPECIAL' => false],
+            'INTEREST_MINUS' => ['TYPE' => do_lang_tempcode('M_INTEREST_MINUS'), 'AMOUNT' => 0.00, 'SPECIAL' => false],
+
+            // Derived
+            'FEES' => ['TYPE' => do_lang_tempcode('TRANSACTION_FEES'), 'AMOUNT' => 0.00, 'SPECIAL' => false],
+            'TAX_SALES' => ['TYPE' => do_lang_tempcode(get_option('tax_system')), 'AMOUNT' => 0.00, 'SPECIAL' => false], // This is kind of funky, as it doesn't offset against anything and should be accounted for separately. We do not actually display this in practice, we just gather it as useful data.
+        ];
+        $types += $types_last;
+        $types += [
             // Calculations
             'CLOSING' => ['TYPE' => do_lang_tempcode('CLOSING_BALANCE'), 'AMOUNT' => 0.00, 'SPECIAL' => true],
             'PROFIT' => ['TYPE' => do_lang_tempcode('NET_PROFIT'), 'AMOUNT' => 0.00, 'SPECIAL' => true],
@@ -1145,36 +1167,34 @@ class Module_admin_ecommerce_reports
         $sql = 'SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'ecom_transactions WHERE t_time<' . strval($to) . ' AND ' . db_string_equal_to('t_status', 'Completed') . ' ORDER BY t_time';
         $transactions = $GLOBALS['SITE_DB']->query($sql);
         foreach ($transactions as $transaction) {
-            if ($transaction['t_time'] > $from) {
-                $types['TRANS']['AMOUNT'] += $transaction['t_price'];
-            }
+            $types['FEES']['AMOUNT'] -= $transaction['t_transaction_fee'];
 
-            $type_code = $transaction['t_type_code'];
+            $types['TAX_SALES']['AMOUNT'] -= $transaction['t_tax']; // Funky, see prior comment for TAX_SALES
 
-            $transaction['t_price'] = currency_convert($transaction['t_price'], $transaction['t_currency'], get_option('currency')); // FUDGE: Not ideal because exchange rates change, but we don't normally trade multiple currencies anyway
+            $currency_normalised_price = currency_convert($transaction['t_price'], $transaction['t_currency'], get_option('currency')); // FUDGE: Not ideal because exchange rates change, but we don't normally trade multiple currencies anyway
+            $normalised_price = $currency_normalised_price;
 
-            $types['CLOSING']['AMOUNT'] += $transaction['t_price'];
-
-            $types['TAX_SALES']['AMOUNT'] -= $transaction['t_tax'];
-
+            // Put figures into opening/closing amounts...
+            $types['CLOSING']['AMOUNT'] += $normalised_price;
             if ($transaction['t_time'] < $from) {
-                $types['OPENING']['AMOUNT'] += $transaction['t_price'];
+                $types['OPENING']['AMOUNT'] += $normalised_price;
                 continue;
             }
 
-            if (($transaction['t_type_code'] == 'OTHER') && ($transaction['t_price'] < 0.00)) {
-                $types['COST']['AMOUNT'] += $transaction['t_price'];
-            } elseif ($transaction['t_type_code'] == 'TAX_GENERAL') {
-                $types['TAX_GENERAL']['AMOUNT'] += $transaction['t_price'];
+            // It's in the time window, store under correct account...
+
+            $type_code = $transaction['t_type_code'];
+            $this->amend_type_code($type_code, $item_name);
+
+            if (($transaction['t_type_code'] == 'OTHER') && ($normalised_price < 0.00)) {
+                $types[$type_code][($normalised_price < 0.0) ? 'OTHER_MINUS' : 'OTHER_PLUS']['AMOUNT'] += $normalised_price;
             } elseif ($transaction['t_type_code'] == 'INTEREST') {
-                $types[$type_code][($transaction['t_price'] < 0.0) ? 'INTEREST_MINUS' : 'INTEREST_PLUS']['AMOUNT'] += $transaction['t_price'];
-            } elseif ($transaction['t_type_code'] == 'WAGE') {
-                $types['WAGE']['AMOUNT'] += $transaction['t_price'];
+                $types[$type_code][($normalised_price < 0.0) ? 'INTEREST_MINUS' : 'INTEREST_PLUS']['AMOUNT'] += $normalised_price;
             } else {
                 if (!array_key_exists($type_code, $types)) {
                     $types[$type_code] = ['TYPE' => $type_code, 'AMOUNT' => 0.00, 'SPECIAL' => false]; // In case product no longer exists
                 }
-                $types[$type_code]['AMOUNT'] += $transaction['t_price'];
+                $types[$type_code]['AMOUNT'] += $normalised_price;
             }
         }
 
@@ -1183,16 +1203,31 @@ class Module_admin_ecommerce_reports
             foreach ($invoices as $invoice) {
                 $type_code = $invoice['i_type_code'];
 
+                //$types['FEES']['AMOUNT'] -= blah;   We cannot know the fee ahead of time so cannot account for it
+
+                $types['TAX_SALES']['AMOUNT'] -= $invoice['i_tax']; // Funky, see prior comment for TAX_SALES
+
                 $types['CLOSING']['AMOUNT'] += $invoice['i_price'];
-
-                $types['TAX_SALES']['AMOUNT'] -= $invoice['i_tax'];
-
                 if ($invoice['i_time'] < $from) {
                     $types['OPENING']['AMOUNT'] += $invoice['i_price'];
                     continue;
                 }
 
+                // It's in the time window, store under correct account...
+
                 $types[$type_code]['AMOUNT'] += $invoice['i_price'];
+            }
+        }
+
+        foreach ($products as $type_code => $details) {
+            if (is_integer($type_code)) {
+                $type_code = strval($type_code);
+            }
+
+            $this->amend_type_code($type_code, $item_name);
+
+            if ((!array_key_exists($type_code, $types_first)) && (!array_key_exists($type_code, $types_last)) && (isset($types[$type_code])) && ($types[$type_code]['AMOUNT'] == 0.0)) {
+                unset($types[$type_code]);
             }
         }
 
@@ -1220,6 +1255,22 @@ class Module_admin_ecommerce_reports
     }
 
     /**
+     * Alter type codes (e.g. merging) to make things more reasonable for charts.
+     *
+     * @param  string $type_code Type code
+     * @param  string $item_name Item name
+     */
+    protected function amend_type_code(string &$type_code, string &$item_name)
+    {
+        if (addon_installed('shopping')) {
+            if (preg_match('#^CART_ORDER_\d+$#', $type_code) != 0) {
+                $type_code = 'CART_ORDER';
+                $item_name = do_lang('shopping:ORDERS');
+            }
+        }
+    }
+
+    /**
      * Show a cash flow diagram.
      *
      * @return Tempcode The result of execution
@@ -1234,7 +1285,7 @@ class Module_admin_ecommerce_reports
 
         $types = $this->get_types($from, $to);
         unset($types['PROFIT']);
-        unset($types['TAX_SALES']); // Goes straight out
+        unset($types['TAX_SALES']); // Not considered an income or a cost, as should be accounted for separately
 
         return do_template('ECOM_CASH_FLOW_SCREEN', ['_GUID' => 'a042e16418417f46c24818890679f38a', 'TITLE' => $this->title, 'TYPES' => $types]);
     }
@@ -1255,7 +1306,7 @@ class Module_admin_ecommerce_reports
         $types = $this->get_types($from, $to, true);
         unset($types['OPENING']);
         unset($types['CLOSING']);
-        unset($types['TAX_SALES']); // Goes straight out
+        unset($types['TAX_SALES']); // Not considered an income or a cost, as should be accounted for separately
 
         return do_template('ECOM_CASH_FLOW_SCREEN', ['_GUID' => '255681ec95e90e36e085d14cf984b725', 'TITLE' => $this->title, 'TYPES' => $types]);
     }

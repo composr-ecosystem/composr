@@ -5315,7 +5315,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         EXISTING_THEMES
         EXPANDED_BRANCH
         EXPANDED_BY_DEFAULT
-        EXPENSES
+        M_OTHER_PLUS
+        M_OTHER_MINUS
         EXPIRY_DATE
         EXPIRY_MOVE_DAYS_HIGHER
         EXPIRY_MOVE_DAYS_LOWER
@@ -7573,7 +7574,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         TASKS_BACKGROUND
         TASK_LENGTH
         TASK_LENGTH_UNITS
-        TAX_GENERAL
         TEMPCODE_NOT_ARRAY
         TEMPCODE_PARAMETER
         TEMPCODE_TESTER
@@ -7893,7 +7893,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         VR_NEVER
         VR_QUARTERLY
         VR_WEEKLY
-        WAGES
         WARNINGS
         WARNING_SSL
         WARNING_SUEXEC
