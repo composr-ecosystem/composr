@@ -39,7 +39,7 @@ class Hook_members_classifieds
         $result = [];
 
         if (($member_id == get_member()) || (has_privilege(get_member(), 'assume_any_member'))) {
-            $result[] = ['content', do_lang('CLASSIFIED_ADVERTS'), build_url(['page' => 'classifieds', 'type' => 'adverts', 'member_id' => $member_id], get_module_zone('classifieds')), 'spare/classifieds'];
+            $result[] = ['content', do_lang('CLASSIFIED_ADVERTS'), build_url(['page' => 'classifieds', 'type' => 'browse', 'member_id' => $member_id], get_module_zone('classifieds')), 'spare/classifieds'];
         }
 
         return $result;

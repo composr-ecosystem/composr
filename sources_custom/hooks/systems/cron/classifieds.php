@@ -93,7 +93,7 @@ class Hook_cron_classifieds
                     require_lang('classifieds');
 
                     $member_id = $entry['ce_submitter'];
-                    $renew_url = build_url(['page' => 'classifieds', 'type' => 'adverts', 'id' => $member_id], get_module_zone('classifieds'));
+                    $renew_url = build_url(['page' => 'classifieds', 'type' => 'browse', 'id' => $member_id], get_module_zone('classifieds'));
 
                     require_code('catalogues');
                     $data_map = get_catalogue_entry_map($entry, null, 'CATEGORY', 'DEFAULT', null, null, [0]);

@@ -106,7 +106,7 @@ class Module_classifieds
 
         $ret = [];
         if (!$check_perms || !is_guest($member_id)) {
-            $ret['adverts'] = ['CLASSIFIED_ADVERTS', 'spare/classifieds'];
+            $ret['browse'] = ['CLASSIFIED_ADVERTS', 'spare/classifieds'];
         }
         return $ret;
     }
@@ -134,8 +134,6 @@ class Module_classifieds
             warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('ecommerce')));
         }
 
-        $type = get_param_string('type', 'adverts');
-
         require_lang('classifieds');
 
         $member_id = get_param_integer('member_id', get_member());
@@ -151,13 +149,7 @@ class Module_classifieds
      */
     public function run() : object
     {
-        $type = get_param_string('type', 'adverts');
-
-        if ($type == 'adverts') {
-            return $this->adverts();
-        }
-
-        return new Tempcode();
+        return $this->adverts();
     }
 
     /**
