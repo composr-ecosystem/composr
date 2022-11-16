@@ -111,6 +111,8 @@ class Module_purchase
      */
     public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
+        require_lang('ecommerce');
+
         if ($upgrade_from === null) {
             add_privilege('ECOMMERCE', 'access_ecommerce_in_test_mode', false);
 

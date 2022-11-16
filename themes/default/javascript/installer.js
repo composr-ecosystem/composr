@@ -237,7 +237,7 @@
             Promise.all(checkPromises).then(function (validities) {
                 if (!validities.includes(false)) {
                     // All valid!
-                    $dom.trigger(step4Form, 'submit');
+                    step4Form.submit();
                 }
             });
         }

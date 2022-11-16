@@ -1428,7 +1428,9 @@
         promises.push(validationPromise);
 
         if (buttonToDisable) {
-            buttonToDisable.disabled = true;
+            window.setTimeout(function () {
+                buttonToDisable.disabled = true; // Has to be in a timeout else on Chrome it blocks form submissions
+            }, 0);
         }
 
         validationPromise.then(function (resolvedValue) {
