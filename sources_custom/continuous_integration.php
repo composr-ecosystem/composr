@@ -69,7 +69,7 @@ function init__continuous_integration()
             // Messes with _config.php but we do not run in parallel
             /*'unit_tests/__rate_limiting',
             'unit_tests/__critical_error_display',
-            'unit_tests/__static_caching',
+            'unit_tests/___static_caching',
             'unit_tests/__extra_logging',*/
 
             // Can not run over HTTPS

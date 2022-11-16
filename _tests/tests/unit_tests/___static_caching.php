@@ -16,7 +16,7 @@
 /**
  * Composr test case class (unit testing).
  */
-class __static_caching_test_set extends cms_test_case
+class ___static_caching_test_set extends cms_test_case
 {
     public function testStaticCacheWorks()
     {

@@ -910,7 +910,7 @@ We hope other users will appreciate your efforts and give you some points to rew
             '_tests/tests/unit_tests/form_reserved_names.php',
             '_tests/tests/unit_tests/sql_compat.php',
             '_tests/tests/unit_tests/standard_dir_files.php',
-            '_tests/tests/unit_tests/__static_caching.php',
+            '_tests/tests/unit_tests/___static_caching.php',
             '_tests/tests/unit_tests/strip_tags.php',
             '_tests/tests/unit_tests/tar.php',
             '_tests/tests/unit_tests/_tasks.php',
