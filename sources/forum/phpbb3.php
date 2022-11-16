@@ -18,7 +18,7 @@
  * @package    core_forum_drivers
  */
 
-/*EXTRA FUNCTIONS: crypt*/
+/*EXTRA FUNCTIONS: crypt, password_hash*/
 
 /**
  * phpBB: Encode hash.
@@ -125,7 +125,7 @@ function _hash_crypt_private(string $password, string $setting, string &$itoa64)
         }
     }
 
-    if ((substr($setting, 0, 10) == '$argon2id$')) { // PHPBB 3.3
+    if ((substr($setting, 0, 10) == '$argon2id$') && defined('PASSWORD_ARGON2ID')/*password_hash supports PHP >=5.5 but argon2id only supports PHP >=7.3*/) {
         $hash_parts = explode('$', $setting);
         $version = 19;
         $memory_cost = PASSWORD_ARGON2_DEFAULT_MEMORY_COST;
@@ -273,7 +273,7 @@ class Forum_driver_phpbb3 extends Forum_driver_base
     public function install_create_custom_field(string $name, int $length, int $locked = 1, int $viewable = 0, int $settable = 0, int $required = 0, string $description = '', string $type = 'long_text', int $encrypted = 0, ?string $default = null, string $options = '', int $include_in_main_search = 0, int $allow_template_search = 0, string $icon = '', string $section = '', string $tempcode = '', string $autofill_type = '', string $autofill_hint = '') : bool
     {
         $db_type = $this->remap_composr_field_type_to_db_type($type);
-        $query = $this->db->driver->add_table_field__sql($this->db->get_table_prefix() . 'members', 'cms_' . $name, $db_type, '');
+        $query = $this->db->driver->add_table_field__sql($this->db->get_table_prefix() . 'users', 'cms_' . $name, $db_type, '');
         $this->db->query($query, null, 0, true); // Suppress errors in case field already exists
         return true;
     }
@@ -393,20 +393,25 @@ class Forum_driver_phpbb3 extends Forum_driver_base
             3 => 'board',
             4 => 'phpBB',
             5 => 'phpBB2',
-            6 => 'upload',
-            7 => 'uploads',
-            8 => 'phpbb',
-            9 => 'phpbb2',
-            10 => '../forums',
-            11 => '../forum',
-            12 => '../boards',
-            13 => '../board',
-            14 => '../phpBB',
-            15 => '../phpBB2',
-            16 => '../upload',
-            17 => '../uploads',
-            18 => '../phpbb',
-            19 => '../phpbb2'];
+            6 => 'phpBB3',
+            7 => 'upload',
+            8 => 'uploads',
+            9 => 'phpbb',
+            10 => 'phpbb2',
+            11 => 'phpbb3',
+            12 => '../forums',
+            13 => '../forum',
+            14 => '../boards',
+            15 => '../board',
+            16 => '../phpBB',
+            17 => '../phpBB2',
+            18 => '../phpBB3',
+            19 => '../upload',
+            20 => '../uploads',
+            21 => '../phpbb',
+            22 => '../phpbb2',
+            23 => '../phpbb3',
+        ];
     }
 
     /**
@@ -725,26 +730,19 @@ class Forum_driver_phpbb3 extends Forum_driver_base
         if ($forum_id === null) {
             warn_exit(do_lang_tempcode('MISSING_FORUM', escape_html($forum_name)), false, true);
         }
-        $test = $this->db->query_select('forums', ['*'], [], '', 1);
-        $fm = array_key_exists('hide_forum_in_cat', $test[0]);
         $topic_id = $this->find_topic_id_for_topic_identifier($forum_name, $topic_identifier);
         $ip_address = $this->_phpbb_ip($ip);
         $local_ip_address = $this->_phpbb_ip('127.0.0.1');
         $is_new = ($topic_id === null);
         if ($is_new) {
-            $map = ['forum_id' => $forum_id, 'topic_title' => $content_title . ', ' . $topic_identifier_encapsulation_prefix . ': #' . $topic_identifier, 'topic_poster' => $member, 'topic_time' => $time, 'topic_views' => 0, 'topic_replies' => 0, 'topic_replies_real' => 0, 'topic_status' => 0, 'topic_type' => 0, 'topic_first_post_id' => 0, 'topic_last_post_id' => 0, 'topic_moved_id' => 0];
-            if ($fm) {
-                $map = array_merge($map, ['answer_status' => 0, 'topic_attachment' => 0, 'topic_icon' => 0, 'rating_rank_id' => 0, 'title_compl_infos' => null, 'topic_priority' => 0]);
-            }
+            $map = ['forum_id' => $forum_id, 'topic_title' => $content_title . ', ' . $topic_identifier_encapsulation_prefix . ': #' . $topic_identifier, 'topic_poster' => $member, 'topic_time' => $time, 'topic_views' => 0, 'topic_status' => 0, 'topic_type' => 0, 'topic_first_post_id' => 0, 'topic_last_post_id' => 0, 'topic_moved_id' => 0];
             $topic_id = $this->db->query_insert('topics', $map, true);
+
             $home_link = hyperlink($content_url, $content_title, false, true);
             $map = ['topic_id' => $topic_id, 'forum_id' => $forum_id, 'poster_id' => -1, 'post_text' => do_lang('SPACER_POST', $home_link->evaluate(), '', '', get_site_default_lang()), 'post_time' => $time, 'poster_ip' => $local_ip_address, 'post_username' => $this->get_username($member), 'enable_bbcode' => 1, 'enable_smilies' => 1, 'enable_sig' => 1, 'post_edit_time' => 0, 'post_edit_count' => 0];
-            if ($fm) {
-                $map = array_merge($map, ['post_attachment' => 0, 'post_edit_user' => null, 'post_icon' => 0, 'post_bluecard' => null, 'rating_rank_id' => 0, 'user_avatar' => null, 'user_avatar_type' => 0, 'urgent_post' => 0]);
-            }
             $post_id = $this->db->query_insert('posts', $map, true);
             $this->db->query_update('topics', ['topic_first_post_id' => $post_id], ['topic_id' => $topic_id], '', 1);
-            $this->db->query('UPDATE ' . $this->db->get_table_prefix() . 'forums SET forum_topics_real=(forum_topics_real+1),forum_topics=(forum_topics+1),forum_posts=(forum_posts+1) WHERE forum_id=' . strval($forum_id), 1);
+            $this->db->query('UPDATE ' . $this->db->get_table_prefix() . 'forums SET forum_topics_approved=(forum_topics_approved+1),forum_posts_approved=(forum_posts_approved+1) WHERE forum_id=' . strval($forum_id), 1);
         }
 
         $GLOBALS['LAST_TOPIC_ID'] = $topic_id;
@@ -755,12 +753,9 @@ class Forum_driver_phpbb3 extends Forum_driver_base
         }
 
         $map = ['topic_id' => $topic_id, 'forum_id' => $forum_id, 'poster_id' => $member, 'post_text' => $post, 'post_time' => $time, 'poster_ip' => $ip_address, 'post_username' => $this->get_username($member), 'enable_bbcode' => 1, 'enable_smilies' => 1, 'enable_sig' => 1, 'post_edit_time' => 0, 'post_edit_count' => 0];
-        if ($fm) {
-            $map = array_merge($map, ['post_attachment' => 0, 'post_edit_user' => null, 'post_icon' => 0, 'post_bluecard' => null, 'rating_rank_id' => 0, 'user_avatar' => null, 'user_avatar_type' => 0, 'urgent_post' => 0]);
-        }
         $post_id = $this->db->query_insert('posts', $map, true);
-        $this->db->query('UPDATE ' . $this->db->get_table_prefix() . 'forums SET forum_posts=(forum_posts+1), forum_last_post_id=' . strval($post_id) . ' WHERE forum_id=' . strval($forum_id), 1);
-        $this->db->query('UPDATE ' . $this->db->get_table_prefix() . 'topics SET topic_replies=(topic_replies+1), topic_replies_real=(topic_replies_real+1), topic_last_post_id=' . strval($post_id) . ' WHERE topic_id=' . strval($topic_id), 1);
+        $this->db->query('UPDATE ' . $this->db->get_table_prefix() . 'forums SET forum_posts_approved=(forum_posts_approved+1), forum_last_post_id=' . strval($post_id) . ' WHERE forum_id=' . strval($forum_id), 1);
+        $this->db->query('UPDATE ' . $this->db->get_table_prefix() . 'topics SET topic_posts_approved=(topic_posts_approved+1), topic_last_post_id=' . strval($post_id) . ' WHERE topic_id=' . strval($topic_id), 1);
 
         return [$topic_id, false];
     }
@@ -939,7 +934,7 @@ class Forum_driver_phpbb3 extends Forum_driver_base
 
                 $out[$i] = [];
                 $out[$i]['id'] = $id;
-                $out[$i]['num'] = $r['topic_replies_real'] + 1;
+                $out[$i]['num'] = $r['topic_posts_approved'] + 1;
                 $out[$i]['title'] = $r['topic_title'];
                 $out[$i]['description'] = $r['topic_title'];
                 $out[$i]['firsttime'] = $r['topic_time'];
@@ -1092,7 +1087,7 @@ class Forum_driver_phpbb3 extends Forum_driver_base
      */
     public function get_member_email_allowed(int $member) : bool
     {
-        $v = $this->get_member_row_field($member, 'user_viewemail');
+        $v = $this->get_member_row_field($member, 'user_allow_viewemail');
         if ($v == 1) {
             return true;
         }
@@ -1159,8 +1154,8 @@ class Forum_driver_phpbb3 extends Forum_driver_base
      */
     public function is_banned(int $member, ?string &$reasoned_ban = null) : bool
     {
-        $banned = $this->db->query_select_value_if_there('banlist', 'ban_userid', ['ban_userid' => $member]);
-        if ($banned !== null) {
+        $reasoned_ban = $this->db->query_select_value_if_there('banlist', 'ban_give_reason', ['ban_userid' => $member]);
+        if ($reasoned_ban !== null) {
             return true;
         }
         return false;
@@ -1306,7 +1301,7 @@ class Forum_driver_phpbb3 extends Forum_driver_base
      */
     public function get_num_members() : int
     {
-        return $this->db->query_select_value('users', 'COUNT(*)') - 1;
+        return $this->db->query_select_value('users', 'COUNT(*)') - 1; // TODO: Subtract bots?
     }
 
     /**
