@@ -1033,7 +1033,7 @@ function chat_post_message(int $room_id, string $message, string $font_name, str
  * Get the people who have posted a message in the specified room within the last x minutes (defaults to five). Note that this function performs no pruning- the chat lobby will do that. It does do an activity time-range select though.
  *
  * @param  ?AUTO_LINK $room_id The room ID (null: lobby)
- * @return array A map of members in the room. User ID=>Username
+ * @return array A map of members in the room. Member ID=>List of Chatter names (may be multiple because of Guest users)
  */
 function get_chatters_in_room(?int $room_id) : array
 {
@@ -1092,7 +1092,7 @@ function get_chatters_in_room_tpl(array $users) : object
                     $colour = get_group_colour(cns_get_member_primary_group($member_id));
                     $usernames->attach(do_template('CNS_USER_MEMBER', ['_GUID' => 'ef5f13f50d242a49474337b8e979c419', 'FIRST' => $usernames->is_empty(), 'PROFILE_URL' => $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, true), 'MEMBER_ID' => strval($member_id), 'USERNAME' => $username[0], 'COLOUR' => $colour]));
                 } else {
-                    $usernames->attach($GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($member_id, $username, false));
+                    $usernames->attach($GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($member_id, $username[0], false));
                 }
             } else {
                 $self_guest_chat_name = generate_guest_chat_name(get_ip_address());
