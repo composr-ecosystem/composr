@@ -184,7 +184,7 @@ The option requirements for Authorize.net are below.
 			Payment gateway > Gateway VPN username
 		</th>
 		<td>
-			Verified Merchant Seal / Customer ID from Authorize.net (not applicable for a sandbox account)
+			Verified Merchant Seal / Customer ID from Authorize.net (not applicable for a sandbox account). Blank for no seal.
 		</td>
 	</tr>
 	<tr>
@@ -197,10 +197,10 @@ The option requirements for Authorize.net are below.
 	</tr>
 	<tr>
 		<th>
-			Payment gateway > Callback password
+			Payment gateway > Gateway digest code
 		</th>
 		<td>
-			Your API Signature Key from Authorize.net (Account => API Credentials & Keys => New Signature Key)
+			Your API Signature Key from Authorize.net (Account => API Credentials & Keys => New Signature Key). Blank for no check to be performed.
 		</td>
 	</tr>
 	<tr>

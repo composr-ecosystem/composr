@@ -69,7 +69,7 @@ class Hook_payment_gateway_authorize
      */
     protected function _get_access_details() : array
     {
-        return [ecommerce_get_option('payment_gateway_username'), ecommerce_get_option('payment_gateway_password'), ecommerce_get_option('payment_gateway_callback_password')];
+        return [ecommerce_get_option('payment_gateway_username'), ecommerce_get_option('payment_gateway_password'), ecommerce_get_option('payment_gateway_digest')];
     }
 
     /**
@@ -401,7 +401,7 @@ class Hook_payment_gateway_authorize
         $txn_id = ($subscription_id != '') ? $subscription_id : $_txn_id;
 
         // SECURITY: Check hash if hash_hmac is available
-        if (function_exists('hash_hmac')) {
+        if ((function_exists('hash_hmac')) && ($signature_key != '')) {
             $hash = post_param_string('x_SHA2_Hash');
 
             // https://www.authorize.net/content/dam/anet-redesign/documents/SIM_guide.pdf page 73
