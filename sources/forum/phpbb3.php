@@ -1114,7 +1114,7 @@ class Forum_driver_phpbb3 extends Forum_driver_base
      */
     public function get_matching_members(string $pattern, ?int $limit = null) : ?array
     {
-        $rows = $this->db->query('SELECT * FROM ' . $this->db->get_table_prefix() . 'users WHERE username LIKE \'' . db_encode_like(cms_mb_strtolower($pattern)) . '\' AND user_id<>' . strval($this->get_guest_id()) . ' ORDER BY user_lastvisit DESC', $limit);
+        $rows = $this->db->query('SELECT * FROM ' . $this->db->get_table_prefix() . 'users WHERE username_clean LIKE \'' . db_encode_like(cms_mb_strtolower($pattern)) . '\' AND user_id<>' . strval($this->get_guest_id()) . ' ORDER BY user_lastvisit DESC', $limit);
         sort_maps_by($rows, 'username');
         return $rows;
     }
