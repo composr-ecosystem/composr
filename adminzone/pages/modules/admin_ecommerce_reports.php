@@ -1167,21 +1167,21 @@ class Module_admin_ecommerce_reports
         $sql = 'SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'ecom_transactions WHERE t_time<' . strval($to) . ' AND ' . db_string_equal_to('t_status', 'Completed') . ' ORDER BY t_time';
         $transactions = $GLOBALS['SITE_DB']->query($sql);
         foreach ($transactions as $transaction) {
-            $types['FEES']['AMOUNT'] -= $transaction['t_transaction_fee'];
-
-            $types['TAX_SALES']['AMOUNT'] -= $transaction['t_tax']; // Funky, see prior comment for TAX_SALES
-
             $currency_normalised_price = currency_convert($transaction['t_price'], $transaction['t_currency'], get_option('currency')); // FUDGE: Not ideal because exchange rates change, but we don't normally trade multiple currencies anyway
             $normalised_price = $currency_normalised_price;
 
             // Put figures into opening/closing amounts...
-            $types['CLOSING']['AMOUNT'] += $normalised_price;
+            $types['CLOSING']['AMOUNT'] += $normalised_price - $transaction['t_transaction_fee'];
             if ($transaction['t_time'] < $from) {
-                $types['OPENING']['AMOUNT'] += $normalised_price;
+                $types['OPENING']['AMOUNT'] += $normalised_price - $transaction['t_transaction_fee'];
                 continue;
             }
 
             // It's in the time window, store under correct account...
+
+            $types['FEES']['AMOUNT'] -= $transaction['t_transaction_fee'];
+
+            $types['TAX_SALES']['AMOUNT'] -= $transaction['t_tax']; // Funky, see prior comment for TAX_SALES
 
             $type_code = $transaction['t_type_code'];
             $this->amend_type_code($type_code, $item_name);
