@@ -158,7 +158,7 @@
 					<ul class="liRcol">
 						<li>Burning Board 2.0 / 2.2/Lite</li>
 						<li>[abbr="Invision Board"]IPB[/abbr] 1.1-1.3 / 2.0-2.3</li>
-						<li>phpBB 2.0-3.0</li>
+						<li>phpBB 2.0-3.1</li>
 						<li>[abbr="Simple Machine Forum"]SMF[/abbr] 1.0 / 1.1 / 2.0</li>
 						<li>[abbr="vBulletin"]vB[/abbr] 2.2 / 3.0-3.7</li>
 						<li>WowBB 1.7</li>
