@@ -952,6 +952,12 @@ header h1 {
 	display: none;
 }
 
+header .top-buttons img.icon,
+header .toplevel-link img.icon {
+	/* This makes icons white when sprite icons are disabled */
+	filter: invert(100%);
+}
+
 .header-classic .logo {
 	padding: 0;
 }
@@ -1032,10 +1038,6 @@ header.is-see-through.with-white-navbar {
 	background: rgba(0, 0, 0, 0.5);
 	border-bottom: 1px solid transparent;
 	transition: background-color 0.15s ease-in-out, height 0.15s ease-in-out;
-}
-header.is-see-through.with-white-navbar .toplevel-link img.icon {
-	/* This makes icons white when sprite icons are disabled */
-	filter: invert(100%);
 }
 
 /*{+START,IF,{$NEQ,{$THEME_OPTION,header_type},side}}*/
@@ -1134,22 +1136,12 @@ html.is-scrolled .header-modern.is-sticky.with-white-navbar {
 	color: {$GET,WB};
 	background: {$GET,seed};
 }
-.header-classic.with-seed-navbar .global-navigation img.icon,
-.header-modern.with-seed-navbar img.icon {
-	/* This makes icons white when sprite icons are disabled */
-	filter: invert(100%);
-}
 
 header.with-seed-navbar .logo-link,
 header.with-seed-navbar .menu-dropdown-toggle-btn,
 header.with-seed-navbar.is-hover-interface .menu-dropdown-item-a.toplevel-link,
 header.with-seed-navbar.is-hover-interface .top-button {
 	color: {$GET,WB};
-}
-header.with-seed-navbar.is-hover-interface .menu-dropdown-item-a.toplevel-link img.icon,
-header.with-seed-navbar.is-hover-interface .top-button img.icon {
-	/* This makes icons white when sprite icons are disabled */
-	filter: invert(100%);
 }
 
 header.with-seed-navbar .menu-dropdown-item.toplevel:hover > a,
