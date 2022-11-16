@@ -114,6 +114,47 @@ class database_misc_test_set extends cms_test_case
         $this->assertTrue($result == $expected_result);
     }
 
+    public function testINSTR()
+    {
+        if (($this->only !== null) && ($this->only != 'sql')) {
+            return;
+        }
+
+        $sql = 'SELECT ' . db_function('INSTR', ['\'CORPORATE FLOOR\'', '\'OR\'']);
+        $expected_result = 2;
+        $result = $GLOBALS['SITE_DB']->query_value_if_there($sql);
+        $this->assertTrue($result == $expected_result);
+
+        $sql = 'SELECT ' . db_function('INSTR', ['\'CORPORATE FLOOR\'', '\'FOOBAR\'']);
+        $expected_result = 0; // Not found
+        $result = $GLOBALS['SITE_DB']->query_value_if_there($sql);
+        $this->assertTrue($result == $expected_result);
+    }
+
+    public function testUPPER()
+    {
+        if (($this->only !== null) && ($this->only != 'sql')) {
+            return;
+        }
+
+        $sql = 'SELECT ' . db_function('UPPER', ['\'test\'']);
+        $expected_result = 'TEST';
+        $result = $GLOBALS['SITE_DB']->query_value_if_there($sql);
+        $this->assertTrue($result == $expected_result);
+    }
+
+    public function testLOWER()
+    {
+        if (($this->only !== null) && ($this->only != 'sql')) {
+            return;
+        }
+
+        $sql = 'SELECT ' . db_function('LOWER', ['\'TEST\'']);
+        $expected_result = 'test';
+        $result = $GLOBALS['SITE_DB']->query_value_if_there($sql);
+        $this->assertTrue($result == $expected_result);
+    }
+
     public function testLENGTH()
     {
         if (($this->only !== null) && ($this->only != 'sql')) {

@@ -1239,8 +1239,10 @@ abstract class DatabaseDriver
      * Note that we are hard-coding for different database drivers in here, as it is easier to maintain the code and reference possibilities in one place.
      * Database drivers can still override this whole method if they need to.
      *
+     * Remember to add a test to the database_misc.php test.
+     *
      * @param  string $function Function name
-     * @set IFF CONCAT REPLACE SUBSTR LENGTH RAND COALESCE LEAST GREATEST MOD ABS MD5 REVERSE GROUP_CONCAT X_ORDER_BY_BOOLEAN
+     * @set IFF CONCAT UPPER LOWER REPLACE SUBSTR INSTR LENGTH RAND COALESCE LEAST GREATEST MOD ABS MD5 REVERSE GROUP_CONCAT X_ORDER_BY_BOOLEAN
      * @param  array $args List of string arguments, assumed already quoted/escaped correctly for the particular database
      * @return ?string SQL fragment (null: not supported)
      */
@@ -1276,6 +1278,16 @@ abstract class DatabaseDriver
                 }
                 break;
 
+            case 'UPPER':
+            case 'LOWER':
+                if (count($args) != 1) {
+                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                }
+                switch (get_db_type()) {
+                    // Supported on all
+                }
+                break;
+
             case 'REPLACE':
                 if (count($args) != 3) {
                     fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -1286,17 +1298,32 @@ abstract class DatabaseDriver
                 break;
 
             case 'SUBSTR':
-                if (count($args) != 3) {
+                if (count($args) != 2 && count($args) != 3) {
                     fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
-                }
-                if ($args[1] != '1') {
-                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR')); // Can only act as a 'LEFT'
                 }
                 switch (get_db_type()) {
                     case 'sqlserver':
                     case 'sqlserver_odbc':
+                        if (!isset($args[2])) {
+                            $args[1] = db_function('LENGTH', [$args[0]]); // If parameter is more than remaining characters, does not go past end of string but still works
+                        }
                         $function = 'SUBSTRING'; // http://troels.arvin.dk/db/rdbms/#functions-REPLACE
                         break;
+                }
+                break;
+
+            case 'INSTR':
+                if (count($args) != 2) {
+                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                }
+
+                switch (get_db_type()) {
+                    case 'postgres':
+                        return 'POSITION(' . $args[1] . ' IN ' . $args[0] . ')';
+
+                    case 'sqlserver':
+                    case 'sqlserver_odbc':
+                        return 'CHARINDEX(' . $args[1] . ',' . $args[0] . ')';
                 }
                 break;
 
