@@ -104,8 +104,12 @@ class Module_classifieds
             return null;
         }
 
+        if ($member_id === null) {
+            $member_id = get_member();
+        }
+
         $ret = [];
-        if (!$check_perms || !is_guest($member_id)) {
+        if ((!$check_perms || !is_guest($member_id)) && (get_forum_type() != 'cns') && ($GLOBALS['SITE_DB']->query_select_value('catalogue_entries e JOIN ' . get_table_prefix() . 'ecom_classifieds_prices c ON c.c_catalogue_name=e.c_name', 'COUNT(*)', ['ce_submitter' => $member_id]) > 0)) {
             $ret['browse'] = ['CLASSIFIED_ADVERTS', 'spare/classifieds'];
         }
         return $ret;

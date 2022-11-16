@@ -231,10 +231,14 @@ class Module_shopping
             return null;
         }
 
+        if ($member_id === null) {
+            $member_id = get_member();
+        }
+
         $ret = [
             'browse' => ['SHOPPING', 'menu/rich_content/ecommerce/shopping_cart'],
         ];
-        if (!$check_perms || !is_guest($member_id)) {
+        if ((!$check_perms || !is_guest($member_id)) && (get_forum_type() != 'cns') && ($GLOBALS['SITE_DB']->query_select_value('shopping_orders', 'COUNT(*)', ['i_member_id' => $member_id]) > 0)) {
             $ret += [
                 'my_orders' => ['MY_ORDERS', 'menu/rich_content/ecommerce/orders'],
             ];

@@ -132,6 +132,7 @@ class Hook_addon_registry_shopping
             'sources/hooks/systems/config/cart_hold_hours.php',
             'sources/hooks/systems/ecommerce/catalogue_items.php',
             'sources/hooks/systems/ecommerce/cart_orders.php',
+            'sources/hooks/modules/members/shopping.php',
             'sources/hooks/blocks/main_staff_checklist/shopping_orders.php',
             'sources/hooks/systems/tasks/export_shopping_orders.php',
             'sources/shopping.php',

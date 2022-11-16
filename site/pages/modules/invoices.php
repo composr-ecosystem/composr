@@ -122,7 +122,7 @@ class Module_invoices
             $member_id = get_member();
         }
 
-        if ((!$check_perms || !is_guest($member_id)) && ($GLOBALS['SITE_DB']->query_select_value('ecom_invoices', 'COUNT(*)', ['i_member_id' => $member_id]) > 0)) {
+        if ((!$check_perms || !is_guest($member_id)) && (get_forum_type() != 'cns') && ($GLOBALS['SITE_DB']->query_select_value('ecom_invoices', 'COUNT(*)', ['i_member_id' => $member_id]) > 0)) {
             return [
                 'browse' => ['MY_INVOICES', 'menu/adminzone/audit/ecommerce/invoices'],
             ];

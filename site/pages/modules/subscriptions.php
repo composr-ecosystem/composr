@@ -182,7 +182,11 @@ class Module_subscriptions
             return null;
         }
 
-        if ((!$check_perms || !is_guest($member_id)) && ($GLOBALS['SITE_DB']->query_select_value('ecom_subscriptions', 'COUNT(*)') > 0)) {
+        if ($member_id === null) {
+            $member_id = get_member();
+        }
+
+        if ((!$check_perms || !is_guest($member_id)) && (get_forum_type() != 'cns') && ($GLOBALS['SITE_DB']->query_select_value('ecom_subscriptions', 'COUNT(*)') > 0)) {
             return [
                 'browse' => ['MY_SUBSCRIPTIONS', 'menu/adminzone/audit/ecommerce/subscriptions'],
             ];
