@@ -125,6 +125,44 @@ function _hash_crypt_private(string $password, string $setting, string &$itoa64)
         }
     }
 
+    if ((substr($setting, 0, 10) == '$argon2id$')) { // PHPBB 3.3
+        $hash_parts = explode('$', $setting);
+        $version = 19;
+        $memory_cost = PASSWORD_ARGON2_DEFAULT_MEMORY_COST;
+        $time_cost = PASSWORD_ARGON2_DEFAULT_TIME_COST;
+        $threads = PASSWORD_ARGON2_DEFAULT_THREADS;
+        $salt = '';
+        $hash = '';
+
+        if (array_key_exists(2, $hash_parts)) { // Version
+            $version = intval(substr($hash_parts[2], 2)); // v=version
+        }
+        if (array_key_exists(3, $hash_parts)) { // Settings
+            $settings = explode(',', $hash_parts[3]);
+            foreach ($settings as $setting) {
+                if (substr($setting, 0, 2) == 'm=') {
+                    $memory_cost = intval(substr($setting, 2));
+                } elseif (substr($setting, 0, 2) == 't=') {
+                    $time_cost = intval(substr($setting, 2));
+                } elseif (substr($setting, 0, 2) == 'p=') { // Argon calls it 'parallelism factor' whereas PHP calls it 'threads'
+                    $threads = intval(substr($setting, 2));
+                }
+            }
+        }
+        if (array_key_exists(4, $hash_parts)) { // Salt
+            $salt = $hash_parts[4];
+        }
+        if (array_key_exists(5, $hash_parts)) { // Hash
+            $hash = $hash_parts[5];
+        }
+
+        $output = password_hash($password, PASSWORD_ARGON2ID, [
+            'memory_cost' => $memory_cost,
+            'time_cost' => $time_cost,
+            'threads' => $threads
+        ]);
+    }
+
     return $output;
 }
 
