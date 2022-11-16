@@ -2068,6 +2068,8 @@ class Database_Static_xml extends DatabaseDriver
             case 'X_ABS':
             case 'X_LENGTH':
             case 'X_REVERSE':
+            case 'X_UPPER':
+            case 'X_LOWER':
                 if (!$this->_parsing_expects($at, $tokens, '(', $query)) {
                     return null;
                 }
@@ -2080,6 +2082,7 @@ class Database_Static_xml extends DatabaseDriver
 
             // 2-operand
             case 'X_MOD':
+            case 'X_INSTR':
                 if (!$this->_parsing_expects($at, $tokens, '(', $query)) {
                     return null;
                 }
@@ -2699,6 +2702,28 @@ class Database_Static_xml extends DatabaseDriver
                     return null;
                 }
                 return cms_mb_substr($string, $start, $length);
+
+            case 'X_INSTR':
+                $haystack = $this->_execute_expression($expr[1], $bindings, $query, $db, $fail_ok, $full_set);
+                $needle = $this->_execute_expression($expr[2], $bindings, $query, $db, $fail_ok, $full_set);
+                if (($haystack === null) || ($needle === null)) {
+                    return null;
+                }
+                return strpos($string, $needle);
+
+            case 'X_UPPER':
+                $string = $this->_execute_expression($expr[1], $bindings, $query, $db, $fail_ok, $full_set);
+                if ($string === null) {
+                    return null;
+                }
+                return cms_mb_strtoupper($string);
+
+            case 'X_LOWER':
+                $string = $this->_execute_expression($expr[1], $bindings, $query, $db, $fail_ok, $full_set);
+                if ($string === null) {
+                    return null;
+                }
+                return cms_mb_strtolower($string);
 
             case 'X_LEAST':
                 $vals = [];

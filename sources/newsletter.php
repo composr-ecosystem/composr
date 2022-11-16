@@ -822,11 +822,14 @@ function newsletter_domain_subscriber_stats(string $key) : array
     $domains = [];
 
     if (substr($key, 0, 1) == 'g') {
-        $rows = $GLOBALS['FORUM_DB']->query_select('f_members', ['DISTINCT m_email_address AS email', 'COUNT(*) as cnt'], ['m_allow_emails' => 1, 'm_primary_group' => intval(substr($key, 1))], 'GROUP BY SUBSTRING_INDEX(m_email_address,\'@\',-1)'); // Far less PHP processing
+        $sql_expr = db_function('SUBSTR', ['m_email_address', db_function('INSTR', ['m_email_address', '\'@\''])]);
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_members', [$sql_expr . ' AS email', 'COUNT(*) as cnt'], ['m_allow_emails' => 1, 'm_primary_group' => intval(substr($key, 1))], 'GROUP BY ' . $sql_expr);
     } elseif ($key == '-1') {
-        $rows = $GLOBALS['FORUM_DB']->query_select('f_members', ['DISTINCT m_email_address AS email', 'COUNT(*) as cnt'], ['m_allow_emails' => 1], 'GROUP BY SUBSTRING_INDEX(m_email_address,\'@\',-1)'); // Far less PHP processing
+        $sql_expr = db_function('SUBSTR', ['m_email_address', db_function('INSTR', ['m_email_address', '\'@\''])]);
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_members', [$sql_expr . ' AS email', 'COUNT(*) as cnt'], ['m_allow_emails' => 1], 'GROUP BY ' . $sql_expr);
     } else {
-        $rows = $GLOBALS['SITE_DB']->query_select('newsletter_subscribe', ['DISTINCT email', 'COUNT(*) as cnt'], [], 'GROUP BY SUBSTRING_INDEX(email,\'@\',-1)'); // Far less PHP processing
+        $sql_expr = db_function('SUBSTR', ['email', db_function('INSTR', ['email', '\'@\''])]);
+        $rows = $GLOBALS['SITE_DB']->query_select('newsletter_subscribe', [$sql_expr . ' AS email', 'COUNT(*) as cnt'], [], 'GROUP BY ' . $sql_expr);
     }
     foreach ($rows as $row) {
         $email = $row['email'];
