@@ -952,6 +952,7 @@ header h1 {
 	display: none;
 }
 
+header .top-form img.icon,
 header .top-buttons img.icon,
 header .toplevel-link img.icon {
 	/* This makes icons white when sprite icons are disabled */
@@ -1157,7 +1158,7 @@ header.with-seed-navbar .top-button:hover {
 
 /*{+START,CSS_MODE,desktop}*/
 	.global-navigation .menu-dropdown {
-		margin-right: 20px;
+		margin-right: 12px;
 	}
 /*{+END}*/
 
