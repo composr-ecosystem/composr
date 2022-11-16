@@ -30,6 +30,27 @@ class lang_descriptions_test_set extends cms_test_case
         $this->lang_files = get_lang_files(fallback_lang());
     }
 
+    public function testDescriptionsLoad()
+    {
+        $descriptions = get_lang_file_section(fallback_lang(), 'global', 'descriptions');
+        $this->assertTrue(!empty($descriptions));
+    }
+
+    public function testDescriptionsMerge()
+    {
+        cms_file_put_contents_safe(get_file_base() . '/lang/' . fallback_lang() . '/footest.ini', "[descriptions]\nA=old\nB=old");
+        cms_file_put_contents_safe(get_file_base() . '/lang_custom/' . fallback_lang() . '/footest.ini', "[descriptions]\nA=new\nC=new");
+
+        $descriptions = get_lang_file_section(fallback_lang(), 'footest', 'descriptions');
+
+        $this->assertTrue($descriptions['A'] == 'new');
+        $this->assertTrue($descriptions['B'] == 'old');
+        $this->assertTrue($descriptions['C'] == 'new');
+
+        unlink(get_file_base() . '/lang/' . fallback_lang() . '/footest.ini');
+        unlink(get_file_base() . '/lang_custom/' . fallback_lang() . '/footest.ini');
+    }
+
     public function testNoMissingOrphanDescriptions()
     {
         foreach (array_keys($this->lang_files) as $file) {

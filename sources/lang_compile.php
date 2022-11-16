@@ -166,6 +166,7 @@ function require_lang_compile(string $codename, ?string $lang, ?string $type, st
 
 /**
  * Get an array of all the INI entries in the specified language for a particular section.
+ * Note that this function is not actually used for regular language file compilation to extract strings, for performance reasons.
  *
  * @param  LANGUAGE_NAME $lang The language
  * @param  ?ID_TEXT $file The language file (null: we are loading this section from all language files)
@@ -174,6 +175,8 @@ function require_lang_compile(string $codename, ?string $lang, ?string $type, st
  */
 function get_lang_file_section(string $lang, ?string $file = null, string $section = 'descriptions') : array
 {
+    require_code('lang_compile');
+
     $entries = [];
 
     if ($file === null) {
@@ -191,19 +194,25 @@ function get_lang_file_section(string $lang, ?string $file = null, string $secti
         return $entries;
     }
 
-    $a = get_custom_file_base() . '/lang_custom/' . $lang . '/' . $file . '.ini';
-    if ((get_custom_file_base() !== get_file_base()) && (!is_file($a))) {
-        $a = get_file_base() . '/lang_custom/' . $lang . '/' . $file . '.ini';
+    $override = get_custom_file_base() . '/lang_custom/' . $lang . '/' . $file . '.ini';
+    if ((get_custom_file_base() !== get_file_base()) && (!is_file($override))) {
+        $override = get_file_base() . '/lang_custom/' . $lang . '/' . $file . '.ini';
     }
 
-    $b = (is_file($a)) ? $a : (get_file_base() . '/lang/' . $lang . '/' . $file . '.ini');
+    $original = get_file_base() . '/lang/' . $lang . '/' . $file . '.ini';
 
-    if (!is_file($b)) {
-        $b = get_file_base() . '/lang/' . fallback_lang() . '/' . $file . '.ini';
+    if (!is_file($original)) {
+        $original = get_file_base() . '/lang/' . fallback_lang() . '/' . $file . '.ini';
     }
 
-    require_code('lang_compile');
-    _get_lang_file_map($b, $entries, $section, false, true, $lang);
+    if (is_file($original)) {
+        _get_lang_file_map($original, $entries, $section, false, true, $lang);
+    }
+
+    if (is_file($override)) {
+        _get_lang_file_map($override, $entries, $section, false, true, $lang);
+    }
+
     return $entries;
 }
 
