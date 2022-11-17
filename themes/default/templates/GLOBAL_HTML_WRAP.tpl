@@ -123,7 +123,7 @@
 		{+START,IF,{$SHOW_FOOTER}}
 			<footer class="footer clearfix" itemscope="itemscope" itemtype="http://schema.org/WPFooter">
 				<div class="footer-inner container">
-					<div class="global-footer-left block-desktop">
+					{+START,SET,footer_left}
 						{+START,SET,FOOTER_BUTTONS}
 							{+START,IF,{$CONFIG_OPTION,bottom_show_top_button}}
 								<li>
@@ -207,7 +207,12 @@
 							</form>
 						{+END}{+END}{+END}
 						{$,extra_footer_left_goes_here}
-					</div>
+					{+END}
+					{+START,IF_NON_EMPTY,{$TRIM,{$GET,footer_left}}}
+						<div class="global-footer-left block-desktop">
+							{$GET,footer_left}
+						</div>
+					{+END}
 
 					<div class="global-footer-right">
 						<nav class="global-minilinks">
