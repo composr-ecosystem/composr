@@ -690,6 +690,12 @@ function require_all_lang(?string $lang = null, bool $only_if_for_lang = false)
  */
 function require_all_open_lang_files(?string $lang = null)
 {
+    static $recursing = false;
+    if ($recursing) {
+        return;
+    }
+    $recursing = true;
+
     global $PAGE_CACHE_LAZY_LOAD, $LANG_REQUESTED_LANG, $LANGS_REQUESTED;
     $PAGE_CACHE_LAZY_LOAD = false;
     $LANG_REQUESTED_LANG = []; // So require_lang will do a re-load
@@ -700,6 +706,8 @@ function require_all_open_lang_files(?string $lang = null)
     // Block caching might have hidden that we loaded these
     require_lang('global', $lang, null, true);
     require_lang('critical_error', $lang, null, true);
+
+    $recursing = false;
 }
 
 /**

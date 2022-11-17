@@ -8,8 +8,9 @@
 		<meta name="GENERATOR" content="Composr" />
 		<meta name="description" content="Composr installer" />
 		<link rel="icon" href="{$BRAND_BASE_URL*}/favicon.ico" type="image/x-icon" />
-		<link {$CSP_NONCE_HTML} href="{CSS_URL*}" rel="stylesheet" />
-		<link {$CSP_NONCE_HTML} href="{CSS_URL_2*}" rel="stylesheet" />
+		<link {$CSP_NONCE_HTML} href="{RESOURCE_BASE_URL*}themes/default/css/global.css" rel="stylesheet" />
+		<link {$CSP_NONCE_HTML} href="{RESOURCE_BASE_URL*}themes/default/css/forms.css" rel="stylesheet" />
+		<link {$CSP_NONCE_HTML} href="{RESOURCE_BASE_URL*}themes/default/css/install.css" rel="stylesheet" />
 		<style {$CSP_NONCE_HTML}>
 			{CSS_NOCACHE*}
 		</style>
@@ -17,13 +18,13 @@
 
 		<meta name="robots" content="noindex, nofollow" />
 
-		{+START,INCLUDE,HTML_HEAD_POLYFILLS}{+END}
+		{+START,INCLUDE,HTML_HEAD_POLYFILLS}FROM={RESOURCE_BASE_URL}data/polyfills{+END}
 	</head>
 
 	<body id="installer-body" class="website-body" data-tpl="installerHtmlWrap" data-tpl-params="{+START,PARAMS_JSON,DEFAULT_FORUM}{_*}{+END}">
 		<div class="container">
 			<div class="installer-main">
-				<img alt="Composr" src="{LOGO_URL*}" width="550" height="115" />
+				<img alt="Composr" src="{RESOURCE_BASE_URL*}themes/default/images/EN/logo/standalone_logo.png" width="550" height="115" />
 			</div>
 
 			<div class="installer-main-inner">

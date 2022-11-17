@@ -223,7 +223,11 @@ class CMS_CSV_Reader extends CMS_Spreadsheet_Reader
             $first_line = fgets($this->handle);
             fseek($this->handle, $pos, SEEK_SET);
 
-            $this->format = (strpos($first_line, "\t") !== false) ? self::FORMAT_TSV : ((substr_count($first_line, ',') >= substr_count($first_line, ';')) ? self::FORMAT_CSV : self::FORMAT_SCSV);
+            if ($first_line === false) {
+                $this->format = self::FORMAT_CSV;
+            } else {
+                $this->format = (strpos($first_line, "\t") !== false) ? self::FORMAT_TSV : ((substr_count($first_line, ',') >= substr_count($first_line, ';')) ? self::FORMAT_CSV : self::FORMAT_SCSV);
+            }
         } else {
             $this->format = $format;
         }

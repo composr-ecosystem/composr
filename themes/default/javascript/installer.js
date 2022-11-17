@@ -97,14 +97,14 @@
         if (itm.style.display === 'none') {
             itm.style.display = 'block';
             if (img) {
-                img.src = $util.rel('install.php?type=contract');
+                img.src = $util.rel('install.php?type=themes/default/images/icons/trays/contract.svg');
                 img.alt = img.alt.replace('{!EXPAND;}', '{!CONTRACT;}');
                 img.title = img.title.replace('{!EXPAND;}', '{!CONTRACT;}');
             }
         } else {
             itm.style.display = 'none';
             if (img) {
-                img.src = $util.rel('install.php?type=expand');
+                img.src = $util.rel('install.php?type=themes/default/images/icons/trays/expand.svg');
                 img.alt = img.alt.replace('{!CONTRACT;}', '{!EXPAND;}');
                 img.title = img.title.replace('{!CONTRACT;}', '{!EXPAND;}');
             }

@@ -50,17 +50,25 @@ class __installer_test_set extends cms_test_case
 
         $builds_path = get_builds_path();
         $version_dotted = get_version_dotted();
-        $install_path = $builds_path . '/builds/' . $version_dotted . '/install.php';
+        $version_branch = get_version_branch();
+        $build_path = $builds_path . '/builds/build/' . $version_branch;
+        $installer_path = $builds_path . '/builds/' . $version_dotted . '/install.php';
 
         $url = get_custom_base_url() . '/exports/builds/' . $version_dotted . '/install.php';
 
-        if (!is_file($install_path)) {
+        if ((!is_file($installer_path)) || ($this->only == 'testQuickInstallerBuildsAndDoesNotFullyCrash')) {
             make_installers();
         }
 
-        $http_result = cms_http_request($url, ['convert_to_internal_encoding' => true, 'timeout' => 40.0]);
+        $this->assertTrue(file_exists($build_path . '/site/index.php'), 'Could not find ' . $build_path . '/site/index.php');
+        $this->assertTrue(file_exists($build_path . '/docs/LICENSE.md'));
+        $this->assertTrue(!file_exists($build_path . '/docs/index.php'));
 
-        $this->assertTrue($http_result->message == '200');
+        if (get_param_integer('build_only', 0) != 1) {
+            $http_result = cms_http_request($url, ['convert_to_internal_encoding' => true, 'timeout' => 40.0]);
+
+            $this->assertTrue($http_result->message == '200');
+        }
     }
 
     public function testDoesNotFullyCrash()

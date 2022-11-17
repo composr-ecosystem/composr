@@ -548,9 +548,6 @@ function fatal_exit($text)
     $trace = get_html_trace();
     $echo = new Tempcode();
     $echo->attach(do_template('FATAL_SCREEN', ['_GUID' => '95877d427cf4e785b2f16cc71381e7eb', 'TITLE' => $title, 'TEXT' => $text, 'TRACE' => $trace, 'MAY_SEE_TRACE' => true,]));
-    $css_url = 'install.php?type=css';
-    $css_url_2 = 'install.php?type=css_2';
-    $logo_url = 'install.php?type=logo';
     $version = strval(cms_version());
     $version .= (is_numeric(cms_version_minor()) ? '.' : ' ') . cms_version_minor();
     if (!array_key_exists('step', $_GET)) {
@@ -573,9 +570,7 @@ function fatal_exit($text)
             'CSS_NOCACHE' => $css_nocache,
             'DEFAULT_FORUM' => '',
             'PASSWORD_PROMPT' => '',
-            'CSS_URL' => $css_url,
-            'CSS_URL_2' => $css_url_2,
-            'LOGO_URL' => $logo_url,
+            'RESOURCE_BASE_URL' => 'install.php?type=',
             'STEP' => integer_format(intval($_GET['step'])),
             'CONTENT' => $echo,
             'VERSION' => $version,
@@ -786,9 +781,6 @@ function warn_exit($text)
 
     $echo = new Tempcode();
     $echo->attach(do_template('WARN_SCREEN', ['_GUID' => '723ede24462dfc4cd4485851819786bc', 'TITLE' => $title, 'TEXT' => $text, 'PROVIDE_BACK' => false]));
-    $css_url = 'install.php?type=css';
-    $css_url_2 = 'install.php?type=css_2';
-    $logo_url = 'install.php?type=logo';
     $version = strval(cms_version());
     $version .= (is_numeric(cms_version_minor()) ? '.' : ' ') . cms_version_minor();
     if (!array_key_exists('step', $_GET)) {
@@ -812,9 +804,7 @@ function warn_exit($text)
             'CSS_NOCACHE' => $css_nocache,
             'DEFAULT_FORUM' => '',
             'PASSWORD_PROMPT' => '',
-            'CSS_URL' => $css_url,
-            'CSS_URL_2' => $css_url_2,
-            'LOGO_URL' => $logo_url,
+            'RESOURCE_BASE_URL' => 'install.php?type=',
             'STEP' => integer_format(intval($_GET['step'])),
             'CONTENT' => $echo,
             'VERSION' => $version,
@@ -898,9 +888,11 @@ function get_base_url($zone_for = '')
     global $SITE_INFO;
     if (empty($SITE_INFO['base_url'])) {
         $default_base_url = (tacit_https() ? 'https://' : 'http://') . get_request_hostname();
-        $port = $_SERVER['SERVER_PORT'];
-        if ($port != (tacit_https() ? '443' : '80')) {
-            $default_base_url .= ':' . $port;
+        if (isset($_SERVER['SERVER_PORT'])) {
+            $port = $_SERVER['SERVER_PORT'];
+            if ($port != (tacit_https() ? '443' : '80')) {
+                $default_base_url .= ':' . $port;
+            }
         }
         $default_base_url .= str_replace('%2F', '/', rawurlencode(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']))));
 

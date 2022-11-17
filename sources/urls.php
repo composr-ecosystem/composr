@@ -106,9 +106,11 @@ function get_self_url_easy(bool $script_name_if_cli = false) : string
 
     $protocol = tacit_https() ? 'https' : 'http';
     $self_url = $protocol . '://' . get_request_hostname();
-    $port = $_SERVER['SERVER_PORT'];
-    if ($port != (tacit_https() ? '443' : '80')) {
-        $self_url .= ':' . $port;
+    if (isset($_SERVER['SERVER_PORT'])) {
+        $port = $_SERVER['SERVER_PORT'];
+        if ($port != (tacit_https() ? '443' : '80')) {
+            $self_url .= ':' . $port;
+        }
     }
     $self_url .= $_SERVER['REQUEST_URI'];
     return $self_url;
