@@ -54,7 +54,12 @@ function _apply_emoticons(string $text) : string
         return $text;
     }
 
-    $_emoticons = $GLOBALS['FORUM_DRIVER']->find_emoticons(); // Sorted in descending length order
+    static $emoticons = null;
+    if ($emoticons === null) {
+        $_emoticons = $GLOBALS['FORUM_DRIVER']->find_emoticons();
+        uksort($_emoticons, '_strlen_sort');
+        $emoticons = array_reverse($_emoticons);
+    }
 
     if ($GLOBALS['XSS_DETECT']) {
         $orig_escaped = ocp_is_escaped($text);

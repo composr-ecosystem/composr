@@ -262,8 +262,6 @@ class Forum_driver_none extends Forum_driver_base
             $this->EMOTICON_CACHE[$myrow['e_code']] = ['EMOTICON_IMG_CODE_THEMED', $myrow['e_theme_img_code'], $myrow['e_code']];
             $EMOTICON_LEVELS[$myrow['e_code']] = $myrow['e_relevance_level'];
         }
-        uksort($this->EMOTICON_CACHE, '_strlen_sort');
-        $this->EMOTICON_CACHE = array_reverse($this->EMOTICON_CACHE);
         return $this->EMOTICON_CACHE;
     }
 
