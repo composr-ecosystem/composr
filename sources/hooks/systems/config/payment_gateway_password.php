@@ -38,7 +38,7 @@ class Hook_config_payment_gateway_password
             'explanation' => 'CONFIG_OPTION_payment_gateway_password',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
-            'order_in_category_group' => 4,
+            'order_in_category_group' => 5,
             'required' => false,
             'public' => false,
             'addon' => 'ecommerce',

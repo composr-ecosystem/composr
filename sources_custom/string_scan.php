@@ -8390,6 +8390,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PAYMENT_RECEIVED_BODY_receipt
         TRANSACTION_LOGS_TEXT
         VIEW_INVOICES
+        CONFIG_GROUP_DESCRIP_PAYMENT_GATEWAY
+        NO_HASH_ON_SERVER
     ')));
 
     $non_admin_files = [
@@ -11759,6 +11761,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PRIVACY_REASON_TAX
         RECEIPT
         INVOICES_FILTERED_BY_ID
+        INVALID_CC_NUMBER
+        INVALID_CV2_NUMBER
     ')));
 
     if ($GLOBALS['DEV_MODE']) {

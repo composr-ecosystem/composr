@@ -132,9 +132,6 @@ class Hook_payment_gateway_authorize
     public function get_logos() : object
     {
         $customer_id = ecommerce_get_option('payment_gateway_vpn_username');
-        if ($customer_id == '') {
-            $customer_id = new Tempcode();
-        }
         return do_template('ECOM_LOGOS_AUTHORIZE', ['_GUID' => '5b3254b330b3b1719d66d2b754c7a8c8', 'CUSTOMER_ID' => $customer_id]);
     }
 
@@ -439,7 +436,7 @@ class Hook_payment_gateway_authorize
             ];
             $hash_string = '^' . implode('^', $hash_order) . '^';
 
-            $expected_hash = strtoupper(hash_hmac('sha512', $hash_string, hex2bin($signature_key))); // Authorize.net returns their hash in upper case
+            $expected_hash = cms_mb_strtoupper(hash_hmac('sha512', $hash_string, hex2bin($signature_key))); // Authorize.net returns their hash in upper case
             if ($hash != $expected_hash) {
                 if ((file_exists(get_custom_file_base() . '/data_custom/ecommerce.log')) && (cms_is_writable(get_custom_file_base() . '/data_custom/ecommerce.log'))) {
                     require_code('files');
@@ -715,7 +712,7 @@ class Hook_payment_gateway_authorize
      * @param  SHORT_TEXT $shipping_email E-mail address (shipping)
      * @param  SHORT_TEXT $shipping_phone Phone number (shipping)
      */
-    protected function _set_aim_parameters(string $card_type, string $card_number, string $card_start_date, string $card_expiry_date, int $card_cv2, string $trans_expecting_id, float $amount, string $billing_firstname, string $billing_lastname, string $billing_street_address, string $billing_city, string $billing_state, string $billing_post_code, string $billing_country, string $shipping_firstname, string $shipping_lastname, string $shipping_street_address, string $shipping_city, string $shipping_state, string $shipping_post_code, string $shipping_country, string $shipping_email, string $shipping_phone)
+    protected function _set_aim_parameters(string $card_type, string $card_number, string $card_start_date, string $card_expiry_date, string $card_cv2, string $trans_expecting_id, float $amount, string $billing_firstname, string $billing_lastname, string $billing_street_address, string $billing_city, string $billing_state, string $billing_post_code, string $billing_country, string $shipping_firstname, string $shipping_lastname, string $shipping_street_address, string $shipping_city, string $shipping_state, string $shipping_post_code, string $shipping_country, string $shipping_email, string $shipping_phone)
     {
         // http://www.authorize.net/content/dam/authorize/documents/AIM_guide.pdf
 

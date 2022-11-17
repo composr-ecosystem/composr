@@ -38,7 +38,7 @@ class Hook_config_payment_gateway_username
             'explanation' => 'CONFIG_OPTION_payment_gateway_username',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
-            'order_in_category_group' => 2,
+            'order_in_category_group' => 3,
             'required' => false,
             'public' => false,
             'addon' => 'ecommerce',

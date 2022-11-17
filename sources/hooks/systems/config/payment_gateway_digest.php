@@ -38,7 +38,7 @@ class Hook_config_payment_gateway_digest
             'explanation' => 'CONFIG_OPTION_payment_gateway_digest',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
-            'order_in_category_group' => 3,
+            'order_in_category_group' => 4,
             'required' => false,
             'public' => false,
             'addon' => 'ecommerce',

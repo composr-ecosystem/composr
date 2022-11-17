@@ -149,13 +149,17 @@ $SITE_INFO['vb_version'] = 3.5;
 [/code]
 into [tt]_config.php[/tt].
 
-[title="3"]phpBB2[/title]
+[title="3"]phpBB3[/title]
 
-phpBB2 is unlike the other supported forums when it comes to determining who is a member of staff or not. phpBB stores this as a user-level for each user, rather than encoding it in the properties of a usergroup.
+phpBB3 is unlike the other supported forums when it comes to determining who is a member of staff or not. phpBB stores this as a user-level for each user, rather than encoding it in the properties of a usergroup.
 
 Composr uses the user level to define admin membership, but in order to make staff show up on the [tt]staff[/tt] module, you will need to create a new usergroup named 'Administrators' and put all staff into it. The reason for this is that Composr uses usergroup membership to list all the staff.
 
 Because of this no-group issue, the staff filter feature is disabled for phpBB: it can't synchronise when it is turned on, and thus would lock existing staff out.
+
+[title="3"]myBB[/title]
+
+To determine which usergroups are moderators, we check for the myBB usergroup permission &ldquo;Yes, users of this group are super moderators&rdquo;.
 
 [title="3"]Invision Power Board[/title]
 

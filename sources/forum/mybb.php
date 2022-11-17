@@ -18,6 +18,19 @@
  * @package    core_forum_drivers
  */
 
+ /**
+  * Initialize with constants used in the forum driver.
+  */
+ function init__forum__mybb() {
+    if (!defined('MYBB_USERGROUP_ADMINISTRATORS')) {
+        // Define the usergroup IDs of staff in myBB
+        define('MYBB_USERGROUP_ADMINISTRATORS', 4);
+        define('MYBB_USERGROUP_SUPER_MODERATORS', 3);
+        define('MYBB_USERGROUP_MODERATORS', 6);
+        define('MYBB_USERGROUP_GUESTS', 1);
+    }
+ }
+
 /**
  * Forum driver class.
  *
@@ -125,7 +138,7 @@ class Forum_driver_mybb extends Forum_driver_base
     public function install_create_custom_field(string $name, int $length, int $locked = 1, int $viewable = 0, int $settable = 0, int $required = 0, string $description = '', string $type = 'long_text', int $encrypted = 0, ?string $default = null, string $options = '', int $include_in_main_search = 0, int $allow_template_search = 0, string $icon = '', string $section = '', string $tempcode = '', string $autofill_type = '', string $autofill_hint = '') : bool
     {
         $db_type = $this->remap_composr_field_type_to_db_type($type);
-        $query = $this->db->driver->add_table_field__sql($this->db->get_table_prefix() . 'members', 'cms_' . $name, $db_type, '');
+        $query = $this->db->driver->add_table_field__sql($this->db->get_table_prefix() . 'users', 'cms_' . $name, $db_type, '');
         $this->db->query($query, null, 0, true); // Suppress errors in case field already exists
         return true;
     }
@@ -248,6 +261,7 @@ class Forum_driver_mybb extends Forum_driver_base
     {
         require_code('comcode_compiler');
         $emoticons = $this->db->query_select('smilies', ['*'], ['showclickable' => '1']);
+        sort_maps_by($emoticons, 'disporder');
         $em = new Tempcode();
         foreach ($emoticons as $emo) {
             $code = $emo['find'];
@@ -480,31 +494,6 @@ class Forum_driver_mybb extends Forum_driver_base
     }
 
     /**
-     * Convert an IP address into phpBB hexadecimal string format.
-     *
-     * @param  IP $ip The normal IP address
-     * @return string The phpBB IP address
-     */
-    protected function _phpbb_ip(string $ip) : string
-    {
-        $ip_apart = explode('.', $ip);
-        $_ip = dechex($ip_apart[0]) . dechex($ip_apart[1]) . dechex($ip_apart[2]) . dechex($ip_apart[3]);
-        return $_ip;
-    }
-
-    /**
-     * Convert an IP address from phpBB hexadecimal string format.
-     *
-     * @param  string $ip The phpBB IP address
-     * @return IP The normal IP address
-     */
-    protected function _un_phpbb_ip(string $ip) : string
-    {
-        $_ip = strval(hexdec($ip[0] . $ip[1])) . '.' . strval(hexdec($ip[2] . $ip[3])) . '.' . strval(hexdec($ip[4] . $ip[5])) . '.' . strval(hexdec($ip[6] . $ip[7]));
-        return $_ip;
-    }
-
-    /**
      * Makes a post in the specified forum, in the specified topic according to the given specifications. If the topic doesn't exist, it is created along with a spacer-post.
      * Spacer posts exist in order to allow staff to delete the first true post in a topic. Without spacers, this would not be possible with most forum systems. They also serve to provide meta information on the topic that cannot be encoded in the title (such as a link to the content being commented upon).
      *
@@ -550,14 +539,13 @@ class Forum_driver_mybb extends Forum_driver_base
         $topic_id = $this->find_topic_id_for_topic_identifier($forum_name, $topic_identifier);
 
         $ip_address = $ip;
-        $long_ip_address = $this->_phpbb_ip($ip);
-        $local_ip_address = '127.0.0.1'; //$this->_phpbb_ip('127.0.0.1');
+        $local_ip_address = '127.0.0.1';
 
         $is_new = ($topic_id === null);
         if ($is_new) {
             $topic_id = $this->db->query_insert('threads', ['fid' => $forum_id, 'subject' => $content_title . ', ' . $topic_identifier_encapsulation_prefix . ': #' . $topic_identifier, 'username' => $username, 'uid' => $member, 'lastposter' => $username, 'lastposteruid' => $member, 'visible' => 1, 'dateline' => $time, 'lastpost' => $time], true);
             $home_link = hyperlink($content_url, $content_title, false, true);
-            $this->db->query_insert('posts', ['fid' => $forum_id, 'tid' => $topic_id, 'username' => do_lang('SYSTEM', '', '', '', get_site_default_lang()), 'uid' => $member, 'message' => do_lang('SPACER_POST', $home_link->evaluate(), '', '', get_site_default_lang()), 'subject' => '', 'dateline' => $time, 'visible' => 1, 'ipaddress' => $ip_address, 'longipaddress' => $long_ip_address]);
+            $this->db->query_insert('posts', ['fid' => $forum_id, 'tid' => $topic_id, 'username' => do_lang('SYSTEM', '', '', '', get_site_default_lang()), 'uid' => $member, 'message' => do_lang('SPACER_POST', $home_link->evaluate(), '', '', get_site_default_lang()), 'subject' => '', 'dateline' => $time, 'visible' => 1, 'ipaddress' => $ip_address]);
             $this->db->query('UPDATE ' . $this->db->get_table_prefix() . 'forums SET posts=(posts+1), threads=(threads+1) WHERE fid=' . strval($forum_id), 1);
         }
 
@@ -568,7 +556,7 @@ class Forum_driver_mybb extends Forum_driver_base
             return [$topic_id, false];
         }
 
-        $this->db->query_insert('posts', ['fid' => $forum_id, 'tid' => $topic_id, 'username' => $username, 'uid' => $member, 'message' => $post, 'subject' => $post_title, 'dateline' => $time, 'visible' => 1, 'ipaddress' => $ip_address, 'longipaddress' => $long_ip_address]);
+        $this->db->query_insert('posts', ['fid' => $forum_id, 'tid' => $topic_id, 'username' => $username, 'uid' => $member, 'message' => $post, 'subject' => $post_title, 'dateline' => $time, 'visible' => 1, 'ipaddress' => $ip_address]);
         $this->db->query('UPDATE ' . $this->db->get_table_prefix() . 'forums SET posts=(posts+1), lastpost=' . strval($time) . ', lastposter=\'' . db_escape_string($username) . '\' WHERE fid=' . strval($forum_id), 1);
         $this->db->query('UPDATE ' . $this->db->get_table_prefix() . 'threads SET lastpost=' . strval($time) . ', lastposter=\'' . db_escape_string($username) . '\', lastposteruid=' . strval($member) . ', replies=(replies+1) WHERE tid=' . strval($topic_id), 1);
 
@@ -964,18 +952,25 @@ class Forum_driver_mybb extends Forum_driver_base
     {
         $rows = $this->db->query('SELECT * FROM ' . $this->db->get_table_prefix() . 'banned WHERE uid=' . strval($member));
         if (empty($rows)) {
-            return false; // The member is never banned
-        } else {
-            $ban_till = $rows[0]['lifted']; // The user is banned till this date/time
+            return false; // The member was never banned
         }
 
-        if (empty($ban_till)) {
-            return true; // The member is permanently banned
-        } elseif ($ban_till < time()) {
-            return false; // The ban time is over
+        $ban_till = null;
+        foreach ($rows as $row) {
+            // Permanent ban; set the reason and exit immediately
+            if (empty($row['lifted'])) {
+                $reasoned_ban = $row['reason'];
+                return true;
+            }
+
+            // Check for temporary bans that are still active; we want the reason for the longest ban in the event multiple temporary bans exist
+            if ((($ban_till === null) || ($row['lifted'] > $ban_till)) && ($row['lifted'] > time())) {
+                $reasoned_ban = $row['reason'];
+                $ban_till = $row['lifted'];
+            }
         }
 
-        return true; // The member is still banned (not permanently banned)
+        return ($ban_till !== null);
     }
 
     /**
@@ -986,7 +981,7 @@ class Forum_driver_mybb extends Forum_driver_base
     public function get_emo_dir() : string
     {
         //return get_forum_base_url().'/images/smilies/';
-        return get_forum_base_url() . '/';
+        return get_forum_base_url() . '/'; // The database includes "images/smilies" in the path for locally-added smilies.
     }
 
     /**
@@ -1000,13 +995,13 @@ class Forum_driver_mybb extends Forum_driver_base
             return $this->EMOTICON_CACHE;
         }
         $rows = $this->db->query_select('smilies', ['*']);
+        sort_maps_by($rows, 'disporder');
+
         $this->EMOTICON_CACHE = [];
         foreach ($rows as $myrow) {
             $src = $this->get_emo_dir() . $myrow['image'];
             $this->EMOTICON_CACHE[$myrow['find']] = ['EMOTICON_IMG_CODE_DIR', $src, $myrow['find']];
         }
-        uksort($this->EMOTICON_CACHE, '_strlen_sort');
-        $this->EMOTICON_CACHE = array_reverse($this->EMOTICON_CACHE);
         return $this->EMOTICON_CACHE;
     }
 
@@ -1085,10 +1080,10 @@ class Forum_driver_mybb extends Forum_driver_base
     protected function _is_staff(int $member) : bool
     {
         $user_level = $this->get_member_row_field($member, 'usergroup');
-        if (in_array($user_level, [3, 4, 6])) {
+        if (in_array($user_level, [MYBB_USERGROUP_ADMINISTRATORS, MYBB_USERGROUP_SUPER_MODERATORS, MYBB_USERGROUP_MODERATORS])) {
             return true; // return all administrators + all moderators
         }
-        //if ($user_level == 4) return true; // This returns only administrators
+        //if ($user_level == MYBB_USERGROUP_ADMINISTRATORS) return true; // This returns only administrators
         return false;
     }
 
@@ -1101,7 +1096,7 @@ class Forum_driver_mybb extends Forum_driver_base
     protected function _is_super_admin(int $member) : bool
     {
         $user_level = $this->get_member_row_field($member, 'usergroup');
-        if ($user_level == 4) {
+        if ($user_level == MYBB_USERGROUP_ADMINISTRATORS) {
             return true;
         }
         return false;
@@ -1206,7 +1201,7 @@ class Forum_driver_mybb extends Forum_driver_base
      */
     protected function _get_moderator_groups() : array
     {
-        $moderator_group = $this->db->query('SELECT gid FROM ' . $this->db->get_table_prefix() . 'usergroups WHERE title LIKE \'' . db_encode_like('%Moderator%') . '\'');
+        $moderator_group = $this->db->query('SELECT gid FROM ' . $this->db->get_table_prefix() . 'usergroups WHERE issupermod=1');
 
         if ($moderator_group === null) {
             return [];
@@ -1271,6 +1266,8 @@ class Forum_driver_mybb extends Forum_driver_base
      */
     public function forum_create_cookie(int $id, ?string $name, string $password)
     {
+        // TODO: Tracker #5050
+
         global $SITE_INFO;
 
         unset($name);
@@ -1278,23 +1275,24 @@ class Forum_driver_mybb extends Forum_driver_base
 
         $row = $this->get_member_row($id);
         $loginkey = $row['loginkey']; // Used for 'mybbuser' memberid.'_'.'loginkey'
-        $loguid = $row['uid']; // Member ID
 
         // Set a User COOKIE
         $member_cookie_name = get_member_cookie();
-        cms_setcookie($member_cookie_name, $loguid . '_' . $loginkey);
+        cms_setcookie($member_cookie_name, strval($id) . '_' . $loginkey);
 
         if (substr($member_cookie_name, 0, 5) != 'cms__') {
-            $current_ip = get_ip_address();
-
-            $session_row = $this->db->query('SELECT * FROM ' . $this->db->get_table_prefix() . 'sessions WHERE ' . db_string_equal_to('ip', $current_ip), 1);
-            $session_id = (!empty($session_row[0]['sid'])) ? $session_row[0]['sid'] : '';
+            $session_id = $this->db->query_select_value_if_there('sessions', 'sid', ['uid' => $id]);
 
             if (!empty($session_id)) {
-                $this->db->query_update('sessions', ['time' => time(), 'uid' => $loguid], ['sid' => $session_id], '', 1);
+                $this->db->query_update('sessions', ['time' => time()], ['sid' => $session_id], '', 1);
             } else {
-                $session_id = md5(strval(time()));
-                $this->db->query_insert('sessions', ['sid' => $session_id, 'uid' => $id, 'time' => time(), 'ip' => $current_ip]);
+                require_code('crypt');
+                $session_id = get_secure_random_string();
+
+                $ip = get_ip_address();
+                $packed_ip = inet_pton($ip);
+                $hex_ip = 'X\'' . bin2hex($packed_ip) . '\'';
+                $this->db->query('INSERT INTO ' . $this->db->get_table_prefix() . 'sessions (sid, uid, time, ip) VALUES (\'' . db_escape_string($session_id) . '\', ' . strval($id) . ', ' . strval(time()) . ', ' . $hex_ip . ')');
             }
 
             // Now lets try and set a COOKIE of MyBB Session ID
@@ -1389,7 +1387,8 @@ class Forum_driver_mybb extends Forum_driver_base
     {
         $ip = $this->db->query_select_value_if_there('users', 'regip', ['uid' => $member]);
         if ($ip !== null) {
-            return $ip;
+            $unpacked_ip = inet_ntop($ip);
+            return $unpacked_ip;
         }
         return '';
     }
@@ -1407,6 +1406,69 @@ class Forum_driver_mybb extends Forum_driver_base
         }
 
         $rows = $this->db->query_select('users', ['*'], ['uid' => $member], '', 1);
+        if ($member == $this->get_guest_id()) { // MyBB does not have a guest account; pretend it does
+            $rows[0]['username'] = do_lang('GUEST');
+            $rows[0]['email'] = '';
+            $rows[0]['postnum'] = 0;
+            $rows[0]['threadnum'] = 0;
+            $rows[0]['avatar'] = '';
+            $rows[0]['avatartype'] = 0;
+            $rows[0]['usergroup'] = MYBB_USERGROUP_GUESTS;
+            $rows[0]['additionalgroups'] = '';
+            $rows[0]['displaygroup'] = 0;
+            $rows[0]['usertitle'] = '';
+            $rows[0]['regdate'] = website_creation_time();
+            $rows[0]['lastactive'] = time();
+            $rows[0]['lastvisit'] = time();
+            $rows[0]['lastpost'] = 0;
+            $rows[0]['allownotices'] = 0;
+            $rows[0]['hideemail'] = 1;
+            $rows[0]['subscriptionmethod'] = 0;
+            $rows[0]['invisible'] = 1;
+            $rows[0]['receivepms'] = 0;
+            $rows[0]['receivefrombuddy'] = 0;
+            $rows[0]['pmnotice'] = 0;
+            $rows[0]['pmnotify'] = 0;
+            $rows[0]['buddyrequestspm'] = 0;
+            $rows[0]['buddyrequestsauto'] = 0;
+            $rows[0]['showimages'] = 1;
+            $rows[0]['showvideos'] = 1;
+            $rows[0]['showsigs'] = 1;
+            $rows[0]['showavatars'] = 1;
+            $rows[0]['showquickreply'] = 1;
+            $rows[0]['showredirect'] = 1;
+            $rows[0]['ppp'] = 0;
+            $rows[0]['tpp'] = 0;
+            $rows[0]['daysprune'] = 0;
+            $rows[0]['timezone'] = 0;
+            $rows[0]['dst'] = 0;
+            $rows[0]['dstcorrection'] = 0;
+            $rows[0]['style'] = 0;
+            $rows[0]['away'] = 0;
+            $rows[0]['awaydate'] = 0;
+            $rows[0]['referrer'] = 0;
+            $rows[0]['referrals'] = 0;
+            $rows[0]['reputation'] = 0;
+            $rows[0]['regip'] = bin2hex(inet_pton(get_ip_address()));
+            $rows[0]['lastip'] = bin2hex(inet_pton(get_ip_address()));
+            $rows[0]['timeonline'] = 0;
+            $rows[0]['showcodebuttons'] = 1;
+            $rows[0]['totalpms'] = 0;
+            $rows[0]['unreadpms'] = 0;
+            $rows[0]['warningpoints'] = 0;
+            $rows[0]['moderateposts'] = 1;
+            $rows[0]['moderationtime'] = 0;
+            $rows[0]['suspendposting'] = 0;
+            $rows[0]['suspensiontime'] = 0;
+            $rows[0]['suspendsignature'] = 0;
+            $rows[0]['suspendsigtime'] = 0;
+            $rows[0]['coppauser'] = 0;
+            $rows[0]['classicpostbit'] = 0;
+            $rows[0]['loginattempts'] = 0;
+            $rows[0]['loginlockoutexpiry'] = 0;
+            $rows[0]['usernotes'] = '';
+            $rows[0]['sourceeditor'] = 0;
+        }
         if (!array_key_exists(0, $rows)) {
             return null;
         }

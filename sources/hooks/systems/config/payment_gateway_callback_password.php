@@ -38,7 +38,7 @@ class Hook_config_payment_gateway_callback_password
             'explanation' => 'CONFIG_OPTION_payment_gateway_callback_password',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
-            'order_in_category_group' => 7,
+            'order_in_category_group' => 8,
             'required' => false,
             'public' => false,
             'addon' => 'ecommerce',

@@ -172,7 +172,7 @@ abstract class Forum_driver_base
         if ($_username == '') {
             $_username = $this->get_username($id, $use_displayname);
         }
-        $url = $this->member_profile_url($id, $tempcode_okay, $_username !== '' ? $_username : null);
+        $url = $this->member_profile_url($id, $tempcode_okay, (($_username !== '') ? $_username : null));
         $hyperlink = hyperlink($url, $_username, false, true);
         if (!$tempcode_okay) {
             return $hyperlink->evaluate();

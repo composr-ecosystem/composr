@@ -38,7 +38,7 @@ class Hook_config_ecommerce_test_mode
             'explanation' => 'CONFIG_OPTION_ecommerce_test_mode',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
-            'order_in_category_group' => 1,
+            'order_in_category_group' => 2,
             'required' => true,
             'public' => false,
             'addon' => 'ecommerce',

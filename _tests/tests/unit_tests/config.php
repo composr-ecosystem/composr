@@ -138,6 +138,7 @@ class config_test_set extends cms_test_case
             // Exceptions
             if (in_array($hook, [
                 'optionname', // Example in Code Book
+                'payment_gateway_test_username'
             ])) {
                 continue;
             }
@@ -220,6 +221,7 @@ class config_test_set extends cms_test_case
 
                 // Not used by default, but made for addons
                 'points_per_currency_unit',
+                'payment_gateway_callback_password',
             ])) {
                 continue;
             }

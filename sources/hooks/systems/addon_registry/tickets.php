@@ -417,7 +417,7 @@ class Hook_addon_registry_tickets
             'CONTENT_TYPE' => lorem_word(),
             'CONTENT_ID' => placeholder_codename(),
             'CONTENT_MEMBER' => lorem_phrase(),
-            'CONTENT_MEMBER_LINK' => lorem_phrase(),
+            'CONTENT_MEMBER_URL' => lorem_phrase(),
             'CONTENT_MEMBER_ID' => placeholder_numeric_id(),
             'CONTENT_TITLE' => lorem_phrase(),
             'CONTENT_RENDERED' => lorem_paragraph_html(),

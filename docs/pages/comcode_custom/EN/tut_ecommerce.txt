@@ -225,7 +225,7 @@ Examples:
  - [tt]testing=foo[/tt] will use &ldquo;foo&rdquo; for both a live and a test store.
  - [tt]foobar[/tt] will use &ldquo;foobar&rdquo; for both a live and a test store.
  - (nuance) [tt]live=1,live=2,testing=3[/tt] will use &ldquo;2&rdquo; for both a live and a test store; the software only looks at the first two matches, and if the key (live or testing) is the same, the second value takes priority.
- - (nuance) [tt]Live=4,test=HELLO[/tt] will use &ldquo;Live=4,test=HELLO&rdquo; for both a live and a test store; keys and values are case sensitive, and if live or testing is misspelled or not in all lower-case, it will not be detected.
+ - (nuance) [tt]Live=4,test=HELLO[/tt] will use &ldquo;Live=4,test=HELLO&rdquo; for both a live and a test store; keys and values are case sensitive, and if live or testing is misspelled or not in all lower case, it will not be detected.
  - (nuance) [tt]foobarlive=hello,testing=world[/tt] will use &ldquo;hello&rdquo; for a live store and &ldquo;world&rdquo; for a test store; foobar is ignored.
 
 To prevent purchases being made by real people that you don't receive real money for, only members in a usergroup with the 'Access eCommerce system when in test mode' permission may purchase when test mode is enabled (A message will be seen by others: "Purchasing is temporarily offline for maintenance. It should be back online within 24 hours: please try again later."). You have two supported testing choices:
