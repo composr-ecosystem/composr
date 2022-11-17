@@ -233,6 +233,7 @@ class Hook_addon_registry_tickets
         foreach (placeholder_array() as $k => $v) {
             $types[] = [
                 'NAME' => $v,
+                'TICKET_TYPE_ID' => strval($k),
                 'SELECTED' => true,
                 'LEAD_TIME' => placeholder_number(),
             ];

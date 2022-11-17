@@ -1022,7 +1022,7 @@ class Hook_addon_registry_ecommerce
                 'PER' => lorem_word(),
                 'LENGTH' => placeholder_number(),
                 'LENGTH_UNITS' => 'm',
-                'AMOUNT' => placeholder_number(),
+                'PRICE' => placeholder_number(),
                 'TAX' => placeholder_number(),
                 'TOTAL' => placeholder_number(),
                 'CURRENCY' => 'GBP',

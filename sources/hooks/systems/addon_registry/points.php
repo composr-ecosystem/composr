@@ -307,6 +307,7 @@ class Hook_addon_registry_points
             'ESCROW_DETAILS' => placeholder_table(),
             'GIVE' => $send_template,
             'ESCROW' => $escrow_template,
+            'EXPORT_POINTS_LEDGER' => lorem_sentence_html(),
         ]);
 
         return lorem_globalise(do_lorem_template('POINTS_SCREEN', [
