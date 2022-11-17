@@ -1333,10 +1333,6 @@ function handle_symbol_preprocessing(array $seq_part, array &$children, string $
                 $param = comma_list_str_to_arr($param[0], true);
             }
 
-            foreach ($param as &$_param) {
-                $_param = preg_replace('#^\s*([^\s]+)\s*=#', '$1=', $_param);
-            }
-
             if (in_array('defer=1', $param)) {
                 // Nothing has to be done here, except preparing for AJAX
             } else {

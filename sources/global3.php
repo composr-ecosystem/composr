@@ -5183,7 +5183,8 @@ function comma_list_arr_to_str(array $map) : string
             $str .= ',';
         }
         if ((is_integer($key)) && (strpos($val, '=') !== false)) { // {$BLOCK} style, i.e. a list not a map
-            $str .= str_replace('=', '\=', str_replace(',', '\,', str_replace('\\', '\\\\', $val)));
+            list($_key, $_val) = explode('=', $val, 2);
+            $str .= $_key . '=' . str_replace('=', '\=', str_replace(',', '\,', str_replace('\\', '\\\\', $_val)));
         } else {
             if (!is_string($key)) {
                 $key = strval($key);

@@ -32,11 +32,11 @@ class comma_lists_test_set extends cms_test_case
             'a' => 'b', // Simple
             '' => 'lorem', // Blank key
             'foo' => 'foo,bar', // Comma
-            3 => 'hello=this', // Equals
+            3 => 'hello=this=that', // Equals
             4 => 'foobar', // Numeric key
             5 => '', // Totally blank
         ];
-        $str = '=lorem,a=b,foo=foo\,bar,hello\\=this,4=foobar,5=';
+        $str = '=lorem,a=b,foo=foo\,bar,hello=this\\=that,4=foobar,5=';
         $got = comma_list_arr_to_str($map);
         $this->assertTrue($got == $str, 'Got ' . $got);
     }
