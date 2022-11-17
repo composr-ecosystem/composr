@@ -54,11 +54,10 @@ function _apply_emoticons(string $text) : string
         return $text;
     }
 
-    static $emoticons = null;
-    if ($emoticons === null) {
+    static $_emoticons = null;
+    if ($_emoticons === null) {
         $_emoticons = $GLOBALS['FORUM_DRIVER']->find_emoticons();
         uksort($_emoticons, '_strlen_sort');
-        $emoticons = array_reverse($_emoticons);
     }
 
     if ($GLOBALS['XSS_DETECT']) {
