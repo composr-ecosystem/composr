@@ -157,7 +157,7 @@ function namelike_script()
                 $names = [];
             }
 
-            cms_mb_sort($names, SORT_NATURAL | SORT_FLAG_CASE);
+            cms_mb_asort($names, SORT_NATURAL | SORT_FLAG_CASE);
         }
 
         foreach ($names as $name) {
@@ -185,7 +185,7 @@ function namelike_script()
                 }
             }
 
-            cms_mb_sort($names, SORT_NATURAL | SORT_FLAG_CASE);
+            cms_mb_asort($names, SORT_NATURAL | SORT_FLAG_CASE);
 
             foreach ($names as $name) {
                 echo '<option value="' . xmlentities($name) . '" displayname="" />';
@@ -198,7 +198,7 @@ function namelike_script()
                 $rows = $GLOBALS['SITE_DB']->query('SELECT author FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'authors WHERE author LIKE \'' . $like . '\' ORDER BY author', 15);
                 $names = collapse_1d_complexity('author', $rows);
 
-                cms_mb_sort($names, SORT_NATURAL | SORT_FLAG_CASE);
+                cms_mb_asort($names, SORT_NATURAL | SORT_FLAG_CASE);
 
                 foreach ($names as $name) {
                     echo '<option value="' . xmlentities($name) . '" displayname="" />';
@@ -217,7 +217,7 @@ function namelike_script()
                     }
                 }
 
-                cms_mb_sort($names, SORT_NATURAL | SORT_FLAG_CASE);
+                cms_mb_asort($names, SORT_NATURAL | SORT_FLAG_CASE);
 
                 foreach ($names as $member_id => $name) {
                     echo '<option value="' . xmlentities($name) . '" displayname="' . xmlentities($GLOBALS['FORUM_DRIVER']->get_username($member_id, true)) . '" />';
