@@ -2494,7 +2494,7 @@ function _multi_sort(array $a, array $b) : int
             if ((is_numeric($av)) && (is_numeric($bv)) || $M_SORT_NATURAL) {
                 $ret = cms_mb_strnatcmp(@strval($av), @strval($bv));
             } else {
-                $ret = cms_mb_strcmp($av, $bv);
+                $ret = cms_mb_strcmp(@strval($av), @strval($bv));
             }
 
             if ($backwards) {
