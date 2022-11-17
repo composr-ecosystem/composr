@@ -191,6 +191,7 @@ class Hook_addon_registry_galleries
             'themes/default/templates/BLOCK_SIDE_GALLERIES_LINE_DEPTH.tpl',
             'themes/default/templates/BLOCK_MAIN_IMAGE_FADER.tpl',
             'themes/default/templates/GALLERY_IMPORT_SCREEN.tpl',
+            'lang/EN/homepage_hero_slider.ini',
             'uploads/galleries/index.html',
             'uploads/galleries_thumbs/index.html',
             'uploads/watermarks/index.html',

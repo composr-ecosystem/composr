@@ -798,6 +798,10 @@ function should_ignore_file(string $path, int $bitmask = 0) : bool
         ]);
 
         $ignore_filenames_and_dir_names = array_merge($ignore_filenames_and_dir_names, [
+            'latest_activity.bin' => 'data_custom',
+            'latest_activity.txt' => 'data_custom', // LEGACY
+            'keys.csv' => '_tests/assets',
+
             'critical_errors' => '',
 
             // Non-bundled addons inside the Git repository
@@ -821,6 +825,7 @@ function should_ignore_file(string $path, int $bitmask = 0) : bool
         $ignore_filename_and_dir_name_patterns = array_merge($ignore_filename_and_dir_name_patterns, [
             ['(?!index\.html$)(?!\.htaccess$).*', 'themes/default/images_custom'], // We don't want deep images_custom directories either
             ['(?!index\.html$)(?!\.htaccess$).*', '.*/(comcode|html)_custom/.*'], // Comcode pages
+            ['(?!index\.html$)(?!\.htaccess$).*', 'text_custom/.*'], // Text files
         ]);
     }
 

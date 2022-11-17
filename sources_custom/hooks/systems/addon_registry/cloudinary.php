@@ -147,6 +147,7 @@ class Hook_addon_registry_cloudinary
 
             'sources_custom/Cloudinary/index.html',
             'sources_custom/Cloudinary/.htaccess',
+            'sources_custom/Cloudinary/autoload.php',
             'sources_custom/Cloudinary/src/.htaccess',
             'sources_custom/Cloudinary/src/index.html',
             'sources_custom/Cloudinary/src/Api/AlreadyExists.php',

@@ -149,11 +149,9 @@ class modularisation_test_set extends cms_test_case
                     if ($m_count != 0) {
                         $unput_files[$matches[1]][] = $path;
                     }
-                } else {
-                    $m_count = 0;
                 }
 
-                $this->assertTrue($m_count == 0, 'Could not find the addon for... \'' . htmlentities($path) . '\',');
+                $this->assertTrue(false, 'Could not find the addon for... \'' . htmlentities($path) . '\',');
             }
         }
 
@@ -171,7 +169,7 @@ class modularisation_test_set extends cms_test_case
             }
         }
 
-        // List any alien files...
+        // List (by addon) any alien files that did actually have a @package...
 
         ksort($unput_files);
         foreach ($unput_files as $addon_name => $paths) {

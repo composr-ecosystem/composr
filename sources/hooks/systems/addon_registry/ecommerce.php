@@ -229,6 +229,8 @@ class Hook_addon_registry_ecommerce
             'site/pages/modules/purchase.php',
             'site/pages/modules/subscriptions.php',
             'site/pages/modules/invoices.php',
+            'themes/default/text/ECOM_INVOICE_FULFILLED_MAIL.txt',
+            'themes/default/text/ECOM_INVOICE_MAIL.txt',
             'sources/currency.php',
             'sources/hooks/systems/config/max_ip_addresses_per_subscriber.php',
             'sources/hooks/systems/cron/ip_address_sharing.php',

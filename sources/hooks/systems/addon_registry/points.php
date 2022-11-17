@@ -184,6 +184,19 @@ class Hook_addon_registry_points
             'sources/hooks/systems/config/points_foss_reason.php',
             'sources/hooks/systems/config/points_foss_ua_exclude.php',
             'sources/hooks/systems/config/points_foss.php',
+            'themes/default/text/ESCROW_FULLY_SATISFIED_MAIL.txt',
+            'themes/default/text/ESCROW_AMENDED_MAIL.txt',
+            'themes/default/text/ESCROW_DISPUTED_MAIL.txt',
+            'themes/default/text/ESCROW_CANCELLED_MAIL.txt',
+            'themes/default/text/ESCROW_TRANSACTIONS_MAIL.txt',
+            'themes/default/templates/ESCROW_TRANSACTIONS.tpl',
+            'themes/default/javascript/points_escrow.js',
+            'sources/hooks/systems/points_transact/.htaccess',
+            'sources/hooks/systems/points_transact/index.html',
+            'sources_custom/hooks/systems/points/.htaccess',
+            'sources_custom/hooks/systems/points/index.html',
+            'sources_custom/hooks/systems/points_transact/.htaccess',
+            'sources_custom/hooks/systems/points_transact/index.html',
         ];
     }
 
