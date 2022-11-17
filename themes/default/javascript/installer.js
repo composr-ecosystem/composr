@@ -44,7 +44,7 @@
                     window.clearInterval(timer);
                     timer = null;
                 }
-                $dom.trigger(button.form, 'submit');
+                button.form.submit();
             } else {
                 button.countdown--;
             }
