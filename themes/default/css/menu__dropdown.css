@@ -217,6 +217,10 @@ For example:
 		padding: 0 10px;
 	}
 
+	.menu-dropdown.is-hover-interface .menu-dropdown-item-a.toplevel-link .icon {
+		display: block; /* Needed for alignment in flexbox */
+	}
+
 	.menu-dropdown.is-hover-interface .menu-dropdown-item.toplevel.has-children > a::after {
 		font-family: sans-serif;
 		content: "\025BC"; /* Downward triangle */

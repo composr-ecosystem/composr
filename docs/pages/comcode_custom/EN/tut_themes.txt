@@ -367,6 +367,11 @@ You can add new theme images using something like FTP by saving them directly in
 
 You can delete a theme from the bottom of its edit form.
 
+[title="3"]SVG Sprites[/title]
+
+If the SVG sprites is on (under Admin Zone > Setup > Configuration > Theme options > Icons) then icons will be accessed via a compiled SVG sprite. This may improve performance by reducing the number of HTTP requests required, at the cost of a monolithic large sprite file being downloaded to users. It is not enabled by default as the tradeoff will not be worthwhile for everyone, and SVG sprites add some extra complexity.
+The sprite file comes out-of-the-box and is automatically re-compiled as addons are installed/uninstalled. You can manually recompile it from Admin Zone > Style > SVG sprites, if you have changed any of the icons manually.
+
 [title="2"]Tips[/title]
 
 [media thumb="0" framed="0" float="right"]data_custom/images/docs/tip.png[/media]
