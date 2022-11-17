@@ -992,6 +992,25 @@ function ip_cidr_check(string $ip, string $cidr) : bool
 }
 
 /**
+ * Normalise an IPv6 address.
+ *
+ * @param  IP $ip IP address
+ * @return IP Normalised address
+ *
+ * @ignore
+ */
+function _inet_pton(string $ip) : string
+{
+    $_ip = explode(':', $ip);
+    $normalised_ip = '';
+    $normalised_ip .= str_pad('', (4 * (8 - count($_ip))), '0000', STR_PAD_LEFT); // Fill out trimmed 0's on left
+    foreach ($_ip as $seg) { // Copy rest in
+        $normalised_ip .= str_pad($seg, 4, '0', STR_PAD_LEFT); // Pad out each component in full, building up $normalised_ip
+    }
+    return $normalised_ip;
+}
+
+/**
  * Do what we need, if anything, to allow exiting without any extraneous output messing up a non-HTML request.
  * It is a hard assumption that if this function returns, exit will happen via a natural flow.
  */

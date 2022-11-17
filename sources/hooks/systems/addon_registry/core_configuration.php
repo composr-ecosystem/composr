@@ -199,6 +199,8 @@ class Hook_addon_registry_core_configuration
             'sources/hooks/systems/oauth/index.html',
             'sources/hooks/systems/oauth_screen_sup/.htaccess',
             'sources/hooks/systems/oauth_screen_sup/index.html',
+            'sources_custom/hooks/systems/oauth_screen_sup/.htaccess',
+            'sources_custom/hooks/systems/oauth_screen_sup/index.html',
             'lang/EN/oauth.ini',
             'themes/default/templates/OAUTH_SCREEN.tpl',
             'sources/hooks/systems/config/font.php',

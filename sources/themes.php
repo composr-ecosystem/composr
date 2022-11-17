@@ -70,6 +70,8 @@ function find_theme_image(string $id, bool $silent_fail = false, bool $leave_loc
         }
     }
 
+    // Special case: Installer...
+
     // Special case: Theme Wizard...
 
     if ((isset($_GET['keep_theme_seed'])) && (get_param_string('keep_theme_seed', null) !== null) && (addon_installed('themewizard')) && (function_exists('has_privilege')) && (has_privilege(get_member(), 'view_profiling_modes'))) {

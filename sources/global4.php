@@ -824,11 +824,17 @@ function get_exact_usernames_and_suexec() : array
     $suexec = null;
     $username = null;
 
+    if (running_script('install')) {
+        $path_to_check = get_file_base() . '/install.php';
+    } else {
+        $path_to_check = get_file_base() . '/sources/global.php';
+    }
+
     if ((php_function_allowed('posix_getuid')) && (php_function_allowed('posix_getpwuid'))) {
         // Linux or Mac OS...
 
         $user = posix_getuid();
-        $suexec = ($user == fileowner(get_file_base() . '/sources/global.php'));
+        $suexec = ($user == fileowner($path_to_check));
         $dets = posix_getpwuid($user);
         if ($dets !== false) {
             $username = $dets['name'];
@@ -859,7 +865,7 @@ function get_exact_usernames_and_suexec() : array
         $user = @fileowner($tmp);
         @unlink($tmp);
     }
-    $suexec = ($user == fileowner(get_file_base() . '/sources/global.php'));
+    $suexec = ($user == fileowner($path_to_check));
     if ((($suexec) || (strpos(PHP_OS, 'WIN') !== false)) && (php_function_allowed('get_current_user'))) {
         $username = get_current_user(); // On Windows this returns the user PHP is running as, counter to documentation
     }

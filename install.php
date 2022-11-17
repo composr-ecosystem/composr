@@ -217,9 +217,6 @@ if (intval($_GET['step']) == 11) {
     $content = step_11();
 }
 
-$css_url = 'install.php?type=css';
-$css_url_2 = 'install.php?type=css_2';
-$logo_url = 'install.php?type=logo';
 if ($DEFAULT_FORUM === null) {
     $DEFAULT_FORUM = 'cns'; // Shouldn't happen, but who knows
 }
@@ -235,9 +232,7 @@ $out_final = do_template('INSTALLER_HTML_WRAP', [
     'CSS_NOCACHE' => $css_nocache,
     'DEFAULT_FORUM' => $DEFAULT_FORUM,
     'PASSWORD_PROMPT' => $PASSWORD_PROMPT,
-    'CSS_URL' => $css_url,
-    'CSS_URL_2' => $css_url_2,
-    'LOGO_URL' => $logo_url,
+    'RESOURCE_BASE_URL' => 'install.php?type=',
     'STEP' => integer_format(intval($_GET['step'])),
     'CONTENT' => $content,
     'VERSION' => $VERSION_BEING_INSTALLED,
@@ -539,10 +534,11 @@ function step_2() : object
     }
     global $FILE_ARRAY;
     if (@is_array($FILE_ARRAY)) {
-        $licence = unixify_line_format(handle_string_bom(file_array_get('docs/' . filter_naughty($_POST['default_lang']) . '/LICENSE.md')));
+        $licence = file_array_get('docs/' . filter_naughty($_POST['default_lang']) . '/LICENSE.md');
         if ($licence === null) {
-            $licence = unixify_line_format(handle_string_bom(file_array_get('docs/LICENSE.md')));
+            $licence = file_array_get('docs/LICENSE.md');
         }
+        $licence = unixify_line_format(handle_string_bom($licence));
     } else {
         $licence = @cms_file_get_contents_safe(get_file_base() . '/docs/' . filter_naughty($_POST['default_lang']) . '/LICENSE.md', FILE_READ_LOCK | FILE_READ_BOM);
         if ($licence === false) {
@@ -2881,43 +2877,28 @@ function handle_self_referencing_embedment()
                 exit();
                 break;
 
-            case 'logo':
+            case 'themes/default/images/EN/logo/standalone_logo.png':
                 header('Content-Type: image/png');
-                if (!file_exists(get_file_base() . '/themes/default/images/' . fallback_lang() . '/logo/standalone_logo.png')) {
-                    $out = file_array_get('themes/default/images/' . fallback_lang() . '/logo/standalone_logo.png');
-                    echo $out;
+                if (!file_exists(get_file_base() . '/' . $type)) {
+                    $output = file_array_get($type);
                 } else {
-                    print(cms_file_get_contents_safe(get_file_base() . '/themes/default/images/' . fallback_lang() . '/logo/standalone_logo.png', FILE_READ_LOCK));
-                    exit();
+                    $output = cms_file_get_contents_safe(get_file_base() . '/' . $type, FILE_READ_LOCK);
                 }
+                print($output);
                 exit();
                 break;
 
-            case 'contract':
-            case 'expand':
-                header('Content-Type: image/svg+xml');
-                if (!file_exists(get_file_base() . '/themes/default/images/icons/trays/' . $type . '.svg')) {
-                    $out = file_array_get('themes/default/images/icons/trays/' . $type . '.svg');
-                    echo $out;
-                } else {
-                    print(cms_file_get_contents_safe(get_file_base() . '/themes/default/images/icons/trays/' . $type . '.svg', FILE_READ_LOCK));
-                    exit();
-                }
-                exit();
-                break;
-
-            case 'css':
-            case 'css_2'/*Chained together so that colours are parsed initially*/:
+            case 'themes/default/css/global.css':
+            case 'themes/default/css/forms.css':
+            case 'themes/default/css/install.css':
                 header('Content-Type: text/css; charset=' . get_charset());
 
                 $output = '';
-
-                $css_files = ['_base', '_colours', 'global', 'forms'];
-                foreach ($css_files as $css_file) {
-                    if (!file_exists(get_file_base() . '/themes/default/css/' . $css_file . '.css')) {
-                        $file = unixify_line_format(handle_string_bom(file_array_get('themes/default/css/' . $css_file . '.css')));
+                foreach (['themes/default/css/_base.css', 'themes/default/css/_colours.css', $type] as $_type) {
+                    if (!file_exists(get_file_base() . '/' . $_type)) {
+                        $file = unixify_line_format(handle_string_bom(file_array_get($_type)));
                     } else {
-                        $file = cms_file_get_contents_safe(get_file_base() . '/themes/default/css/' . $css_file . '.css', FILE_READ_LOCK | FILE_READ_BOM);
+                        $file = cms_file_get_contents_safe(get_file_base() . '/' . $_type, FILE_READ_LOCK | FILE_READ_BOM);
                     }
                     $file = preg_replace('#\{\$IMG;?,([^,\}\']+)\}#', 'install.php?type=themes/default/images/${1}.svg', $file);
 
@@ -2926,38 +2907,29 @@ function handle_self_referencing_embedment()
                     $output .= $css->evaluate();
                 }
 
-                if ($type == 'css') {
-                    print($output);
-                    exit();
-                } else {
-                    header('Content-Type: text/css; charset=' . get_charset());
-                    if (!file_exists(get_file_base() . '/themes/default/css/install.css')) {
-                        $file = unixify_line_format(handle_string_bom(file_array_get('themes/default/css/install.css')));
-                    } else {
-                        $file = cms_file_get_contents_safe(get_file_base() . '/themes/default/css/install.css', FILE_READ_LOCK | FILE_READ_BOM);
-                    }
-                    $file = preg_replace('#\{\$IMG,([^,\}\']+)\}#', 'themes/default/images/${1}.svg', $file);
-
-                    require_code('tempcode_compiler');
-                    $css = template_to_tempcode($file, 0, false, '');
-                    $output = $css->evaluate();
-
-                    print($output);
-                    exit();
-                }
+                print($output);
+                exit();
                 break;
         }
 
-        if (substr($type, 0, 15) == 'themes/default/') {
+        if (substr($type, 0, 15) == 'data/polyfills/') {
+            header('Content-Type: text/javascript; charset=' . get_charset());
+            if (!file_exists(get_file_base() . '/' . $type)) {
+                $output = unixify_line_format(handle_string_bom(file_array_get($type)));
+            } else {
+                $output = cms_file_get_contents_safe(get_file_base() . '/' . $type, FILE_READ_LOCK);
+            }
+            print($output);
+            exit();
+        }
+        if (substr($type, 0, 22) == 'themes/default/images/') {
             header('Content-Type: image/svg+xml; charset=' . get_charset());
             if (!file_exists(get_file_base() . '/' . $type)) {
-                $out = handle_string_bom(file_array_get(filter_naughty($type)));
-                echo $out;
+                $output = unixify_line_format(handle_string_bom(file_array_get($type)));
             } else {
-                print(cms_file_get_contents_safe(get_file_base() . '/' . filter_naughty($type), FILE_READ_LOCK | FILE_READ_BOM));
-                exit();
+                $output = cms_file_get_contents_safe(get_file_base() . '/' . $type, FILE_READ_LOCK);
             }
-
+            print($output);
             exit();
         }
 

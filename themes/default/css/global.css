@@ -1837,7 +1837,7 @@ footer img.icon {
 		float: left;
 	}
 
-	footer .global-footer-right {
+	footer .global-footer-left + .global-footer-right {
 		float: right;
 	}
 /*{+END}*/
@@ -1919,7 +1919,10 @@ footer .invisible-ref-point {
 }
 
 /*{+START,CSS_MODE,desktop}*/
-	footer .global-copyright {
+	.global-footer-right .global-copyright {
+		text-align: center;
+	}
+	footer .global-footer-left + .global-footer-right .global-copyright {
 		text-align: right;
 	}
 /*{+END}*/

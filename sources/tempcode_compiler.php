@@ -1077,6 +1077,10 @@ function may_optimise_out_symbol(string $symbol) : bool
             return false; // May be experimenting with different base URLs, e.g. both http and https
         }
 
+        if (running_script('install')) {
+            return false;
+        }
+
         foreach (array_keys($SITE_INFO) as $key) {
             if (substr($key, 0, 13) === 'ZONE_MAPPING_') {
                 return false;

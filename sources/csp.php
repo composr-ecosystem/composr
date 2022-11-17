@@ -214,7 +214,7 @@ function load_csp(?array $options = null, ?int $enable_more_open_html_for = null
     $clauses[] = 'style-src ' . implode(' ', $_sources_list);
 
     // script-src
-    $_sources_list = _csp_extract_sources_list(2, '', !$csp_allow_dyn_js);
+    $_sources_list = $csp_allow_dyn_js ? _csp_extract_sources_list(2) : [];
     if ($csp_allow_inline_js) {
         $_sources_list[] = "'unsafe-inline'"; // Not usually configurable but may be forced
     } else {
@@ -223,7 +223,7 @@ function load_csp(?array $options = null, ?int $enable_more_open_html_for = null
     if ($csp_allow_eval_js) {
         $_sources_list[] = "'unsafe-eval'"; // Actually this is an option not a true source
     }
-    if ($csp_allow_dyn_js) {
+    if (!$csp_allow_dyn_js) {
         $_sources_list[] = "'strict-dynamic'"; // Actually this is an option not a true source
     }
     $clauses[] = 'script-src ' . implode(' ', $_sources_list);

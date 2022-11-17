@@ -139,7 +139,7 @@
 {$CSS_TEMPCODE}
 
 {$,Load polyfills}
-{+START,INCLUDE,HTML_HEAD_POLYFILLS}{+END}
+{+START,INCLUDE,HTML_HEAD_POLYFILLS}FROM={$BASE_URL}/data/polyfills{+END}
 
 {$,JavaScript code (usually) from Composr page}
 {$EXTRA_HEAD}
