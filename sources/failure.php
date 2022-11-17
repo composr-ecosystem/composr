@@ -562,25 +562,6 @@ function _generic_exit($text, string $template, ?bool $support_match_key_message
 }
 
 /**
- * Normalise an IPv6 address.
- *
- * @param  IP $ip IP address
- * @return IP Normalised address
- *
- * @ignore
- */
-function _inet_pton(string $ip) : string
-{
-    $_ip = explode(':', $ip);
-    $normalised_ip = '';
-    $normalised_ip .= str_pad('', (4 * (8 - count($_ip))), '0000', STR_PAD_LEFT); // Fill out trimmed 0's on left
-    foreach ($_ip as $seg) { // Copy rest in
-        $normalised_ip .= str_pad($seg, 4, '0', STR_PAD_LEFT); // Pad out each component in full, building up $normalised_ip
-    }
-    return $normalised_ip;
-}
-
-/**
  * Find if a hackattack specifier matches.
  *
  * @param  array $specifier The hackattack specifier
