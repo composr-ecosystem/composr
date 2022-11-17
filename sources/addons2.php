@@ -1320,7 +1320,7 @@ function get_addon_uninstall_writable_paths(string $addon_name) : array
 {
     $addon_info = read_addon_info($addon_name);
 
-    $writable_paths = find_addons_for_files($addon_info['files']);
+    $writable_paths = array_keys(find_addons_for_files($addon_info['files']));
 
     // Try and cleanup some empty/unneeded dirs
     do {

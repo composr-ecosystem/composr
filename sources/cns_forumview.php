@@ -702,7 +702,7 @@ function cns_render_topic(array $topic, bool $has_topic_marking, bool $pt = fals
     // Page jump
     $max = intval(get_option('forum_posts_per_page'));
     require_code('templates_result_launcher');
-    $pages = results_launcher(do_lang_tempcode('NAMED_TOPIC', escape_html($title)), 'topicview', $topic['id'], $max, $topic['num_posts'], 'view', 5, 'topic_start');
+    $pages = results_launcher(do_lang_tempcode('NAMED_TOPIC', is_object($title) ? $title : protect_from_escaping(escape_html($title))), 'topicview', $topic['id'], $max, $topic['num_posts'], 'view', 5, 'topic_start');
 
     // Tpl
     $post = $topic['first_post'];
