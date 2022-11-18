@@ -129,8 +129,8 @@ class Forum_driver_wbb22 extends Forum_driver_base
         if (!array_key_exists(0, $test)) {
             $this->db->query_insert('profilefields', ['title' => $name, 'description' =>'', 'required' => $required, 'hidden' => 1 - $viewable, 'maxlength' => $length, 'fieldsize' => $length]);
             $key = $this->db->query_select_value('profilefields', 'MAX(profilefieldid)');
-            $db_type = $this->remap_composr_field_type_to_db_type($type);
-            $query = $this->db->driver->add_table_field__sql($this->db->get_table_prefix() . 'userfields', 'field' . strval($key), $db_type, '');
+            list($db_type, $db_default) = $this->remap_composr_field_type_to_db_type($type, $default);
+            $query = $this->db->driver->add_table_field__sql($this->db->get_table_prefix() . 'userfields', 'field' . strval($key), $db_type, $db_default);
             $this->db->query($query, null, 0, true); // Suppress errors in case field already exists
 
             return true;

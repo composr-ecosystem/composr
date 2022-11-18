@@ -137,8 +137,8 @@ class Forum_driver_mybb extends Forum_driver_base
      */
     public function install_create_custom_field(string $name, int $length, int $locked = 1, int $viewable = 0, int $settable = 0, int $required = 0, string $description = '', string $type = 'long_text', int $encrypted = 0, ?string $default = null, string $options = '', int $include_in_main_search = 0, int $allow_template_search = 0, string $icon = '', string $section = '', string $tempcode = '', string $autofill_type = '', string $autofill_hint = '') : bool
     {
-        $db_type = $this->remap_composr_field_type_to_db_type($type);
-        $query = $this->db->driver->add_table_field__sql($this->db->get_table_prefix() . 'users', 'cms_' . $name, $db_type, '');
+        list($db_type, $db_default) = $this->remap_composr_field_type_to_db_type($type, $default);
+        $query = $this->db->driver->add_table_field__sql($this->db->get_table_prefix() . 'users', 'cms_' . $name, $db_type, $db_default);
         $this->db->query($query, null, 0, true); // Suppress errors in case field already exists
         return true;
     }
@@ -169,7 +169,7 @@ class Forum_driver_mybb extends Forum_driver_base
      */
     public function install_edit_custom_field(string $old_name, string $name, int $length, int $locked = 1, int $viewable = 0, int $settable = 0, int $required = 0, string $description = '', string $type = 'long_text', int $encrypted = 0, ?string $default = null, string $options = '', int $include_in_main_search = 0, int $allow_template_search = 0, string $icon = '', string $section = '', string $tempcode = '', string $autofill_type = '', string $autofill_hint = '') : bool
     {
-        $db_type = $this->remap_composr_field_type_to_db_type($type);
+        list($db_type) = $this->remap_composr_field_type_to_db_type($type, $default);
         $query = $this->db->driver->alter_table_field($this->db->get_table_prefix() . 'users', 'cms_' . $old_name, $db_type, 'cms_' . $name);
         $this->db->query($query, null, 0, true); // Suppress errors in case field already edited
         return true;

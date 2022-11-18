@@ -699,8 +699,8 @@ class Forum_driver_ipb3 extends Forum_driver_base
         $id = $this->db->query_select_value_if_there('pfields_data', 'pf_id', ['pf_title' => $name]);
         if ($id === null) {
             $id = $this->db->query_insert('pfields_data', ['pf_group_id' => 1, 'pf_input_format' => '', 'pf_topic_format' => '{title} : {content}', 'pf_content' => '', 'pf_title' => $name, 'pf_type' => 'text', 'pf_member_hide' => 1 - $viewable, 'pf_max_input' => $length, 'pf_member_edit' => $settable, 'pf_position' => 0], true);
-            $db_type = $this->remap_composr_field_type_to_db_type($type);
-            $query = $this->db->driver->add_table_field__sql($this->db->get_table_prefix() . 'pfields_content', 'field_' . strval($id), $db_type, '');
+            list($db_type, $db_default) = $this->remap_composr_field_type_to_db_type($type, $default);
+            $query = $this->db->driver->add_table_field__sql($this->db->get_table_prefix() . 'pfields_content', 'field_' . strval($id), $db_type, $db_default);
             $this->db->query($query, null, 0, true); // Suppress errors in case field already exists
         }
         return $id !== null;
