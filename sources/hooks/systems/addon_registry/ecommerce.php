@@ -332,7 +332,6 @@ class Hook_addon_registry_ecommerce
             'themes/default/templates/ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_PAYPAL.tpl',
             'themes/default/templates/ECOM_SUBSCRIPTION_BUTTON_VIA_PAYPAL.tpl',
             'sources/hooks/systems/payment_gateway/paypal.php',
-            'sources/hooks/systems/config/primary_paypal_email.php',
 
             'themes/default/templates/ECOM_TRANSACTION_BUTTON_VIA_CCBILL.tpl',
             'themes/default/templates/ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_CCBILL.tpl',

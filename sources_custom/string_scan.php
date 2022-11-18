@@ -3811,7 +3811,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_pop_url
         CONFIG_OPTION_post_read_history_days
         CONFIG_OPTION_primary_members_per_page
-        CONFIG_OPTION_primary_paypal_email
         CONFIG_OPTION_privacy_fax
         CONFIG_OPTION_privacy_postal_address
         CONFIG_OPTION_private_topics_per_page
@@ -6769,7 +6768,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PREVIEW_THEME
         PRIMARY_CORE_INSTALLED
         PRIMARY_MEMBERS_PER_PAGE
-        PRIMARY_PAYPAL_EMAIL
         PRIORITY_1
         PRIORITY_2
         PRIORITY_3

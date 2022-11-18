@@ -371,6 +371,20 @@ class Module_purchase
                 } while (count($rows) > 0);
             }
 
+            // We got rid of primary_paypal_email, so we must move its value if using the PayPal gateway
+            $gateway = get_option('payment_gateway');
+            $paypal_email = get_option('primary_paypal_email', true);
+            if (($gateway == 'paypal') && ($paypal_email !== null) && ($paypal_email != '')) {
+                $username = get_option('payment_gateway_username', true);
+                $vpn_username = get_option('payment_gateway_vpn_username', true);
+                if (($username === null) || ($username == '')) { // Merge into username if no value is set
+                    set_option('payment_gateway_username', $paypal_email, 0);
+                } elseif (($vpn_username === null) || ($vpn_username == '')) { // Merge into vpn_username if no value is set
+                    set_option('payment_gateway_vpn_username', $paypal_email, 0);
+                }
+            }
+            delete_config_option('primary_paypal_email');
+
             // We are no longer using semi-colon to separate live from testing values; change to our new format if applicable.
             $username_had_format = false;
             $config_options = [
@@ -389,7 +403,7 @@ class Module_purchase
                         if ($config_option == 'payment_gateway_username') {
                             $username_had_format = true;
                         }
-                        set_option($config_value, 'live=' . $_config_bits[0] . ',testing=' . $_config_bits[1]);
+                        set_option($config_value, 'live=' . $_config_bits[0] . ',testing=' . $_config_bits[1], 0);
                     }
                 }
             }
@@ -401,12 +415,13 @@ class Module_purchase
                 if (($test_username !== null) && ($test_username != '')) {
                     $_config_bits = explode(';', $test_username);
                     if (count($_config_bits) > 1) {
-                        set_option('payment_gateway_username', 'live=' . $_config_bits[0] . ',testing=' . $_config_bits[1]);
+                        set_option('payment_gateway_username', 'live=' . $_config_bits[0] . ',testing=' . $_config_bits[1], 0);
                     } elseif (($config_value !== null) && ($config_value != '')) {
-                        set_option('payment_gateway_username', 'live=' . $config_value . ',testing=' . $test_username);
+                        set_option('payment_gateway_username', 'live=' . $config_value . ',testing=' . $test_username, 0);
                     }
                 }
             }
+            delete_config_option('payment_gateway_test_username');
         }
 
         if (!$GLOBALS['SITE_DB']->table_exists('ecom_prods_prices')) { // LEGACY: Used to be in pointstore addon, hence the unusual install pattern. Now is just a part of purchase addon

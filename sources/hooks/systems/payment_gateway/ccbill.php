@@ -87,7 +87,7 @@ class Hook_payment_gateway_ccbill
         $transaction_fee = 0.55 + ($amount * 0.039); // 0.55 + 3.9%
         list($details, $product_object) = find_product_details($type_code);
         if ($details !== null && $details['type'] == PRODUCT_SUBSCRIPTION) {
-            $transaction_fee += ($amount * 0.002); // CCBill charges an additional 2% for recurring transactions (subscriptions)
+            $transaction_fee += ($amount * 0.02); // CCBill charges an additional 2% for recurring transactions (subscriptions)
         }
 
         return round($transaction_fee, 2);
