@@ -36,11 +36,6 @@ class Hook_cron_points_posts
             return null;
         }
 
-        $points_per_post = intval(get_option('points_posting'));
-        if ($points_per_post <= 0) {
-            return null; // Do not run if posts do not earn any points
-        }
-
         return [
             'label' => 'Credit forum post points',
             'num_queued' => null,
@@ -55,16 +50,11 @@ class Hook_cron_points_posts
      */
     public function run(?int $last_run)
     {
-        // TODO: This hook needs testing
-
         if ((!addon_installed('points')) || (get_forum_type() == 'cns')) { // Conversr awards points instantly
             return;
         }
 
         $points_per_post = intval(get_option('points_posting'));
-        if ($points_per_post <= 0) {
-            return; // Do not run if posts do not earn any points
-        }
 
         require_code('points2');
 
@@ -74,21 +64,17 @@ class Hook_cron_points_posts
             foreach ($rows as $row) {
                 $member_id = $GLOBALS['FORUM_DRIVER']->mrow_id($row);
 
-                if (is_guest($member_id)) {
-                    continue;
-                }
-
                 $_prev_count = get_value('points_post__' . strval($member_id), '0', true);
                 $cur_count = $GLOBALS['FORUM_DRIVER']->get_post_count($member_id);
                 $diff = @intval($cur_count - @intval($_prev_count));
 
-                if ($diff > 0) {
-                    points_credit_member($member_id, do_lang('COUNT_POSTSTODAY'), ($diff * $points_per_post), 0, null, 0, 'post', 'add', '');
-                    // echo 'Member ' .  strval($member_id) . ': Post count change of +' . integer_format($diff) . ' posts; credited ' . integer_format(($diff * $points_per_post)) . ' points.' . "\n";
-                } elseif ($diff < 0) {
-                    // We probably do not want to remove points for a negative change as this will make the ledger messy without context
-                    // points_debit_member($member_id, do_lang('COUNT_POSTSTODAY'), (abs($diff) * @intval($points_per_post)), 0, 0, true, 0, 'post', 'delete', '');
-                    // echo 'Member ' .  strval($member_id) . ': Post count change of -' . integer_format(abs($diff)) . ' posts; debited ' . integer_format((abs($diff) * $points_per_post)) . ' points.' . "\n";
+                if ($points_per_post > 0) {
+                    if ($diff > 0) {
+                        points_credit_member($member_id, do_lang('COUNT_POSTSTODAY'), ($diff * $points_per_post), 0, null, 0, 'post', 'add', '');
+                    } elseif ($diff < 0) {
+                        // We probably do not want to remove points for a negative change as this will make the ledger messy without context
+                        // points_debit_member($member_id, do_lang('COUNT_POSTSTODAY'), (abs($diff) * @intval($points_per_post)), 0, 0, true, 0, 'post', 'delete', '');
+                    }
                 }
 
                 set_value('points_post__' . strval($member_id), strval($cur_count), true);
