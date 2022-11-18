@@ -211,6 +211,7 @@ function attach_message($message, string $type = 'inform', bool $put_in_helper_p
             return ''; // Already shown
         }
     }
+    $ATTACHED_MESSAGES_RAW[] = [$message_eval, $type];
 
     if ($log_error) {
         require_code('urls');
@@ -262,7 +263,6 @@ function attach_message($message, string $type = 'inform', bool $put_in_helper_p
     if ($put_in_helper_panel) {
         set_helper_panel_text($message_tpl, true, false);
     } else {
-        $ATTACHED_MESSAGES_RAW[] = [$message_eval, $type];
         if ($GLOBALS['TEMPCODE_OUTPUT_STARTED']) {
             if ($LATE_ATTACHED_MESSAGES === null) {
                 $LATE_ATTACHED_MESSAGES = new Tempcode();
