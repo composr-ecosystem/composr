@@ -118,8 +118,8 @@ class Forum_driver_vb3 extends Forum_driver_base
                 $this->db->query_insert('profilefield', ['title' => $name, 'description' =>'', 'required' => $required, 'hidden' => 1 - $viewable, 'maxlength' => $length, 'size' => $length, 'editable' => $settable]);
                 $key = $this->db->query_select_value('profilefield', 'MAX(profilefieldid)');
             }
-            $db_type = $this->remap_composr_field_type_to_db_type($type);
-            $query = $this->db->driver->add_table_field__sql($this->db->get_table_prefix() . 'userfield', 'field' . strval($key), $db_type, '');
+            list($db_type, $db_default) = $this->remap_composr_field_type_to_db_type($type, $default);
+            $query = $this->db->driver->add_table_field__sql($this->db->get_table_prefix() . 'userfield', 'field' . strval($key), $db_type, $db_default);
             $this->db->query($query, null, 0, true); // Suppress errors in case field already exists
 
             return true;

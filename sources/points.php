@@ -82,6 +82,9 @@ function points_flush_runtime_cache(?int $member_id = null, ?string $property = 
             unset($POINT_INFO_CACHE[$member_id][$property]);
         }
     }
+
+    // Clear member row cache
+    $GLOBALS['FORUM_DRIVER']->MEMBER_ROWS_CACHED = [];
 }
 
 /**

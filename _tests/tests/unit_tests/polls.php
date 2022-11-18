@@ -35,7 +35,7 @@ class polls_test_set extends cms_test_case
 
     public function testPollVote()
     {
-        $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($this->get_canonical_username('admin')); // In case of low permissions
+        $member_id = $this->get_canonical_member_id('admin'); // In case of low permissions
         if ($member_id === null) {
             $member_id = get_member(); // Probably would work anyway
         }
