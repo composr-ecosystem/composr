@@ -542,15 +542,15 @@ class Hook_payment_gateway_paypal
         if ($receiver_email === null) {
             $receiver_email = post_param_string('business');
         }
-        $primary_paypal_email = ecommerce_get_option('primary_paypal_email');
-        if ($primary_paypal_email == '') {
-            $primary_paypal_email = $this->_get_payment_address();
+        $primary_email = $this->_get_payment_address();
+        if ($primary_email == '') {
+            $primary_email = ecommerce_get_option('payment_gateway_vpn_username');
         }
-        if ($receiver_email != $primary_paypal_email && $receiver_email != $this->_get_payment_address()) {
+        if ($receiver_email != $primary_email) {
             if ($silent_fail) {
                 return null;
             }
-            fatal_ipn_exit(do_lang('IPN_EMAIL_ERROR', $receiver_email, $primary_paypal_email));
+            fatal_ipn_exit(do_lang('IPN_EMAIL_ERROR', $receiver_email, $primary_email));
         }
 
         return $this->handle_transaction($data);
