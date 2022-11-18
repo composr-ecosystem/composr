@@ -74,8 +74,8 @@ It is common to deny most usergroups any kind of access to certain forums, such 
 The view access check box only gives view access to a forum (not posting access, etc). Likewise, if a forum view access box is unchecked for any particular usergroup that only means there is no view access to the forum for the particular usergroup. Un-checking the forum view access check box does not stop or take away any other permissions -- it simply takes away view access for a particular usergroup.
 
 Members have the 'best' permissions when all their usergroups' permissions are considered.
-For example: Let's imagine a member is in 3 usergroups, A, B, and C, and usergroup C has the privilege to post in the forum but usergroups A and B do not. That member will be assigned posting access, because the necessary privilege can be found within his/her usergroups.
-This is calculated on a permission-by-permission basis. If one of their usergroups grants them certain privileges, and another grants them other privileges, he/she gets the combined set of privileges.
+For example: Let's imagine a member is in 3 usergroups, A, B, and C, and usergroup C has the privilege to post in the forum but usergroups A and B do not. That member will be assigned posting access, because the necessary privilege can be found within their usergroups.
+This is calculated on a permission-by-permission basis. If one of their usergroups grants them certain privileges, and another grants them other privileges, they get the combined set of privileges.
 If one usergroup grants view access but not posting privilege, and one usergroup grants posting privilege but not view access, a member in those usergroups gets both.
 
 There is one exception to the above rules: negative privileges overridden against particular forums take precedence over global privileges. For example, if usergroup X is granted the global privilege necessary for posting ("Submit low-impact (medium visibility) content"), but usergroup Y is explicitly denied posting on one particular forum, then a member in those usergroups would not be assigned posting privilege for that particular forum. Overrides always take precedence.

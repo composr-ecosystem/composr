@@ -22,7 +22,7 @@ The checkbox is not ticked (checked) by default. If I choose to have more sub-fo
 
 [title="2"]Introduction question[/title]
 
-An interesting setting and I can see a use for it. I may not have time to respond to all posts in the suggestions forum so rather than have members post and be possibly ignored through lack of time, I could add an introductory question that states this and get the member to agree that he/she understands this.
+An interesting setting and I can see a use for it. I may not have time to respond to all posts in the suggestions forum so rather than have members post and be possibly ignored through lack of time, I could add an introductory question that states this and get the member to agree that they understand this.
 
 Type in your text and ask your user to accept the conditions. In my case I ask the user to type YES to proceed. When a user first visits this part of the forum, they will have to type in [tt]YES[/tt].
 

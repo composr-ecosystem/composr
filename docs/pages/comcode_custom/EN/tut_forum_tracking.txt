@@ -64,7 +64,7 @@ This function is not available for individual topics, as to reach the button, yo
 [media width="150" description="The button to get notifications for a forum/topic" float="right"]data_custom/images/docs/tut_forum_tracking/forum_tracking_monitor_button.png[/media]
 [page="_SEARCH:tut_notifications"]Notifications[/page] allow you to mark topics for notification (duh): when a new reply is posted, you will be notified of its presence. You can receive notifications in numerous ways, but the most common is by e-mail.
 
-There is an automatic notifications option that each member may set in his/her account (i.e. for automatically enabling topics the member posts in for notifications).
+There is an automatic notifications option that each member may set in their account (i.e. for automatically enabling topics the member posts in for notifications).
 
 As well as automatic notifications, you can enable notifications for topics manually, by clicking the "monitor" button in the topic view.
 After enabling notifications topics and forums, you can easily disable it again because the button changes to an "unmonitor" button.

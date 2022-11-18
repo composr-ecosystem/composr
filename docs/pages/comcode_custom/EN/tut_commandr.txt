@@ -136,7 +136,7 @@ This example opens up the "Add download" form.
 [title="3"]Looking up members[/title]
 
 [media width="150" description="[tt]whois[/tt] command" float="right"]data_custom/images/docs/tut_commandr/whois.png[/media]
-The [tt]whois[/tt] command can be used to quickly find out a member's details such as his/her member ID, Username and IP address.
+The [tt]whois[/tt] command can be used to quickly find out a member's details such as their member ID, Username and IP address.
 This command takes either a username, a member ID, an IP address, or an e-mail address, as the identifying information.
 
 For example:
@@ -147,7 +147,7 @@ This example looks up member ID #2.
 
 [title="3"]Banning members[/title]
 
-You can use the [tt]ban_member[/tt] command to ban a specific member using his/her username or ID.
+You can use the [tt]ban_member[/tt] command to ban a specific member using their username or ID.
 
 For example:
 [code="Commandr"]
@@ -171,7 +171,7 @@ This example anonymously gives 7334 points anonymously to a user named "Nice Use
 
 [title="3"]Changing passwords[/title]
 
-The [tt]passwd[/tt] command works pretty much like the native Linux command of the same name. It will help you change the password of a member using his/her username or Member ID.
+The [tt]passwd[/tt] command works pretty much like the native Linux command of the same name. It will help you change the password of a member using their username or Member ID.
 
 For example:
 [code="Commandr"]

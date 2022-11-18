@@ -116,7 +116,7 @@ class Hook_upon_query_insults
 
                             $rows = $GLOBALS['SITE_DB']->query('SELECT g.id FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'points_ledger g WHERE ' . $GLOBALS['SITE_DB']->translate_field_ref('reason') . ' LIKE \'' . db_encode_like('%' . $insult . '%') . '\' AND g.recipient_id=' . strval($poster_id), 1, 0, false, false, ['reason' => 'SHORT_TRANS']);
 
-                            // If the member doesn't get reward yet, give him/her his award
+                            // If the member hasn't got their reward yet, give it to them
                             if (!isset($rows[0]['id']) && (intval($insult_points) > 0)) {
                                 points_credit_member($poster_id, do_lang('SUCCESSFULLY_SUGGESTED_COMEBACK') . ' (' . $insult . ')', intval($insult_points), 0, null);
 

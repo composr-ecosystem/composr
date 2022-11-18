@@ -234,6 +234,17 @@ class lang_spelling_test_set extends cms_test_case
             }
         }
 
+        // Our preferred progressive language
+        if (stripos($string, 'he/she') !== false) {
+            $ob->assertTrue(false, 'The phrase \'he/she\' was used in ' . $path . '. This should be changed to \'they\' (and the surrounding grammar may need tweaking).');
+        }
+        if (stripos($string, 'his/her') !== false) {
+            $ob->assertTrue(false, 'The phrase \'his/her\' was used in ' . $path . '. This should be changed to \'their\' (and the surrounding grammar may need tweaking).');
+        }
+        if (stripos($string, 'him/her') !== false) {
+            $ob->assertTrue(false, 'The phrase \'him/her\' was used in ' . $path . '. This should be changed to \'them\' (and the surrounding grammar may need tweaking).');
+        }
+
         // No space or hyphen wanted (we want our canonical way)
         if (
             (stripos($string, 'set-up') !== false) &&
@@ -379,7 +390,7 @@ class lang_spelling_test_set extends cms_test_case
             $ob->assertTrue(false, 'Use dashes for end-of-life, ' . $path . '.');
         }
 
-        // Weird British english
+        // Weird British English
         if (stripos($string, 'amongst') !== false) {
             $ob->assertTrue(false, 'The word \'amongst\' was used in ' . $path . '. This should be changed to \'among\'.');
         }

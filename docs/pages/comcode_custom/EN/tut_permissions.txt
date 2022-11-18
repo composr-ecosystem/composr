@@ -151,7 +151,7 @@ The 'SU' feature allows an administrator to quickly and easily assume the identi
 To use 'SU', simply enter the username of the member whose identity you would like to assume into the 'SU' box (in the footer), and press the enter/return key. A new window will open, presenting the same screen as seen by the specified user.
 This works on the default theme. Custom themes may not have this in the theme footer. In that case you  can access it by putting [tt]&keep_su=<username>[/tt]/[tt]?keep_su=<username>[/tt] onto the end of the URL as appropriate (e.g. [tt]http://yourbaseurl/index.php?keep_su=test[/tt] to masquerade as the test user looking at your front page).
 
-You can navigate around as the user, experiencing the site through his/her eyes (so to speak), as all the permissions are as they are for this normal user. This can easily and effectively be used to test out permissions changes to make sure they are as required.
+You can navigate around as the user, experiencing the site through their eyes (so to speak), as all the permissions are as they are for this normal user. This can easily and effectively be used to test out permissions changes to make sure they are as required.
 
 You can use [tt]Guest[/tt] as a username to act as if you are not logged in.
 
