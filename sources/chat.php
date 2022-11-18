@@ -276,7 +276,7 @@ function member_befriended(int $member_id, ?int $member_id_current = null) : boo
         return false;
     }
 
-    static $cache = [];
+    static $cache = null;
     if ($cache === null) {
         $_cache = collapse_1d_complexity('member_liked', $GLOBALS['SITE_DB']->query_select('chat_friends', ['member_liked'], ['member_likes' => $member_id_current], '', 100));
         $cache = array_fill_keys($_cache, true);
