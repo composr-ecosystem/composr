@@ -68,12 +68,15 @@ function blocking_remove(int $blocker, int $blocked)
  * @param  MEMBER $liked The member being befriended
  * @param  ?TIME $time The logged time of the friendship (null: now)
  * @param  boolean $send_notification Whether to send a notification suggesting to do an opposite-way friendship
+ * @return boolean Whether a mutual-add link was sent
  */
-function friend_add(int $likes, int $liked, ?int $time = null, bool $send_notification = true)
+function friend_add(int $likes, int $liked, ?int $time = null, bool $send_notification = true) : bool
 {
     if ($time === null) {
         $time = time();
     }
+
+    $two_way = member_befriended($likes, $liked);
 
     $GLOBALS['SITE_DB']->query_delete('chat_friends', [
         'member_likes' => $likes,
@@ -86,31 +89,55 @@ function friend_add(int $likes, int $liked, ?int $time = null, bool $send_notifi
         'date_and_time' => $time,
     ]);
 
-    // Send a notification
-    require_code('chat');
-    if (member_befriended($likes, $liked)) {
-        require_lang('chat');
+    // Log the action
+    log_it('MAKE_FRIEND', strval($likes), strval($liked));
 
+    delete_cache_entry('main_friends_list');
+
+    // Send activities/notification
+    require_code('chat');
+    require_lang('chat');
+    if ($send_notification) {
         require_code('notifications');
         $to_username = $GLOBALS['FORUM_DRIVER']->get_username($liked);
         $from_username = $GLOBALS['FORUM_DRIVER']->get_username($likes);
         $to_displayname = $GLOBALS['FORUM_DRIVER']->get_username($liked, true);
         $from_displayname = $GLOBALS['FORUM_DRIVER']->get_username($likes, true);
-        $subject_line = do_lang('YOURE_MY_FRIEND_SUBJECT', $from_username, get_site_name(), null, get_lang($liked));
-        $befriend_url = build_url(['page' => 'chat', 'type' => 'friend_add', 'member_id' => $likes], get_module_zone('chat'), [], false, false, true);
-        $message_raw = do_notification_lang('YOURE_MY_FRIEND_BODY', comcode_escape($to_username), comcode_escape(get_site_name()), [$befriend_url->evaluate(), comcode_escape($from_username), comcode_escape($to_displayname), comcode_escape($from_displayname)], get_lang($liked));
+    }
+    if ($two_way) {
+        // 2-way...
+
+        // Create activities
+        require_code('syndication');
+        syndicate_described_activity('chat:PEOPLE_NOW_FRIENDS', $to_displayname, '', '', '_SEARCH:members:view:' . strval($liked), '_SEARCH:members:view:' . strval($likes), '', 'chat', 1, $likes);
+        syndicate_described_activity('chat:PEOPLE_NOW_FRIENDS', $to_displayname, '', '', '_SEARCH:members:view:' . strval($liked), '_SEARCH:members:view:' . strval($likes), '', 'chat', 1, $liked);
+
+        // Send notification
         if ($send_notification) {
+            $subject_line = do_lang('FRIENDSHIP_FINISH_SUBJECT', $from_username, get_site_name(), null, get_lang($liked));
+            $remove_friend_url = build_url(['page' => 'chat', 'type' => 'friend_remove', 'member_id' => $likes], get_module_zone('chat'), [], false, false, true);
+            $message_raw = do_notification_lang('FRIENDSHIP_FINISH_BODY', comcode_escape($to_username), comcode_escape(get_site_name()), [$remove_friend_url->evaluate(), comcode_escape($from_username), comcode_escape($to_displayname), comcode_escape($from_displayname)], get_lang($liked));
+
             dispatch_notification('new_friend', null, $subject_line, $message_raw, [$liked], $likes);
         }
 
-        // Log the action
-        log_it('MAKE_FRIEND', strval($likes), strval($liked));
-        require_code('syndication');
-        syndicate_described_activity('chat:PEOPLE_NOW_FRIENDS', $to_displayname, '', '', '_SEARCH:members:view:' . strval($liked), '_SEARCH:members:view:' . strval($likes), '', 'chat', 1, $likes);
-        //syndicate_described_activity('chat:PEOPLE_NOW_FRIENDS', $to_displayname, '', '', '_SEARCH:members:view:' . strval($liked), '_SEARCH:members:view:' . strval($likes), '', 'chat', 1, $liked); Should only show if the user also does this
+        $sent_mutual_add = false;
+    } else {
+        // 1-way, so invite the other member...
 
-        delete_cache_entry('main_friends_list');
+        // Send notification
+        if ($send_notification) {
+            $subject_line = do_lang('FRIENDSHIP_START_SUBJECT', $from_username, get_site_name(), null, get_lang($liked));
+            $befriend_url = build_url(['page' => 'chat', 'type' => 'friend_add', 'member_id' => $likes], get_module_zone('chat'), [], false, false, true);
+            $message_raw = do_notification_lang('FRIENDSHIP_START_BODY', comcode_escape($to_username), comcode_escape(get_site_name()), [$befriend_url->evaluate(), comcode_escape($from_username), comcode_escape($to_displayname), comcode_escape($from_displayname)], get_lang($liked));
+
+            $sent_mutual_add = (dispatch_notification('new_friend', null, $subject_line, $message_raw, [$liked], $likes, ['send_immediately' => true]) != 0);
+        } else {
+            $sent_mutual_add = false;
+        }
     }
+
+    return $sent_mutual_add;
 }
 
 /**

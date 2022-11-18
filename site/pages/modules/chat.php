@@ -1039,13 +1039,15 @@ class Module_chat
         }
 
         require_code('chat2');
-        friend_add(get_member(), $member_id);
+        $sent_mutual_add = friend_add(get_member(), $member_id);
+
+        $message = do_lang_tempcode($sent_mutual_add ? 'ADDED_AS_FRIEND_AND_MUTUAL_INVITE_SENT' : 'ADDED_AS_FRIEND', escape_html($username));
 
         $url = get_param_string('redirect', null, INPUT_FILTER_URL_INTERNAL);
         if ($url === null) {
-            return inform_screen($this->title, do_lang_tempcode('NOW_ADDED_AS_FRIEND', escape_html($username)));
+            return inform_screen($this->title, $message);
         }
-        return redirect_screen($this->title, $url, do_lang_tempcode('NOW_ADDED_AS_FRIEND', escape_html($username)));
+        return redirect_screen($this->title, $url, $message);
     }
 
     /**

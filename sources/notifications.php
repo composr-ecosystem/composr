@@ -138,8 +138,9 @@ function do_notification_template(string $codename, ?array $parameters = null, ?
  * @param  ?array $to_member_ids List of enabled members to limit sending to (null: everyone); ignores the member defined in $from_member_id
  * @param  ?integer $from_member_id The member ID doing the sending. Either a MEMBER or a negative number (e.g. A_FROM_SYSTEM_UNPRIVILEGED) (null: current member); this member will be excluded from receiving the notification
  * @param  array $advanced_parameters A map of additional parameters. See comments within this function implementation to know what can be sent.
+ * @return ?integer The number of notifications delivered (null: unknown, as to be sent in the background)
  */
-function dispatch_notification(string $notification_code, ?string $code_category, string $subject, string $message, ?array $to_member_ids = null, ?int $from_member_id = null, array $advanced_parameters = [])
+function dispatch_notification(string $notification_code, ?string $code_category, string $subject, string $message, ?array $to_member_ids = null, ?int $from_member_id = null, array $advanced_parameters = []) : ?int
 {
     $priority = isset($advanced_parameters['priority']) ? $advanced_parameters['priority'] : 3; // The message priority (1=urgent, 3=normal, 5=low)
     $create_ticket = isset($advanced_parameters['create_ticket']) ? $advanced_parameters['create_ticket'] : false; // Whether to create a topic for discussion (ignored if the tickets addon not installed)
@@ -160,20 +161,20 @@ function dispatch_notification(string $notification_code, ?string $code_category
         require_code('files2');
         clean_temporary_mail_attachments($attachments);
 
-        return;
+        return 0;
     }
 
     if (!isset($GLOBALS['FORUM_DRIVER'])) {
         require_code('files2');
         clean_temporary_mail_attachments($attachments);
 
-        return; // We're not in a position to send a notification
+        return 0; // We're not in a position to send a notification
     }
     if ((function_exists('get_member')) && ($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) && (get_param_integer('keep_notifications', 1) == 0)) {
         require_code('files2');
         clean_temporary_mail_attachments($attachments);
 
-        return;
+        return 0;
     }
 
     if (strpos($notification_code, ':') !== false) {
@@ -192,7 +193,7 @@ function dispatch_notification(string $notification_code, ?string $code_category
         require_code('files2');
         clean_temporary_mail_attachments($attachments);
 
-        return;
+        return 0;
     }
 
     $dispatcher = new Notification_dispatcher($notification_code, $code_category, $subject, $message, $to_member_ids, $from_member_id, $notification_hook);
@@ -210,8 +211,10 @@ function dispatch_notification(string $notification_code, ?string $code_category
     $dispatcher->extra = $extra;
 
     if ((get_param_integer('keep_debug_notifications', 0) == 1) || ($send_immediately) || (running_script('cron_bridge'))) {
-        $dispatcher->dispatch();
+        $num_delivered = $dispatcher->dispatch();
     } else {
+        $num_delivered = null;
+
         require_code('tasks');
         global $CSSS;
         call_user_func_array__long_task(do_lang('_SEND_NOTIFICATION'), get_screen_title('_SEND_NOTIFICATION', true, [], null, [], false), 'dispatch_notification', [$dispatcher, array_keys($CSSS)], true, false, false);
@@ -219,6 +222,8 @@ function dispatch_notification(string $notification_code, ?string $code_category
 
     global $LAST_NOTIFICATION_LANG_CALL;
     $LAST_NOTIFICATION_LANG_CALL = null;
+
+    return $num_delivered;
 }
 
 /**
@@ -313,14 +318,16 @@ class Notification_dispatcher
 
     /**
      * Send out a notification to members enabled.
+     *
+     * @return integer The number of notifications delivered
      */
-    public function dispatch()
+    public function dispatch() : int
     {
         if (get_mass_import_mode()) {
             require_code('files2');
             clean_temporary_mail_attachments($this->attachments);
 
-            return;
+            return 0;
         }
 
         cms_profile_start_for('Notification_dispatcher');
@@ -346,7 +353,7 @@ class Notification_dispatcher
 
             cms_profile_end_for('Notification_dispatcher', $subject);
 
-            return;
+            return 0;
         }
 
         require_lang('notifications');
@@ -410,6 +417,8 @@ class Notification_dispatcher
             $ob->handle_mailing_list = true;
         }
 
+        $num_delivered = 0;
+
         $start = 0;
         $max = 300;
         do {
@@ -430,7 +439,9 @@ class Notification_dispatcher
                 }
 
                 if (($to_member_id !== $this->from_member_id) || ($testing)) {
-                    $no_cc = $this->dispatch_notification_to_member($to_member_id, $setting, $this->notification_code, $this->code_category, $subject, $message, $this->from_member_id, $this->priority, $no_cc, $this->attachments, $this->use_real_from);
+                    if ($this->dispatch_notification_to_member($to_member_id, $setting, $this->notification_code, $this->code_category, $subject, $message, $this->from_member_id, $this->priority, $no_cc, $this->attachments, $this->use_real_from)) {
+                        $num_delivered++;
+                    }
                 }
             }
 
@@ -450,6 +461,8 @@ class Notification_dispatcher
         clean_temporary_mail_attachments($this->attachments);
 
         cms_profile_end_for('Notification_dispatcher', $subject);
+
+        return $num_delivered;
     }
 
     /**
@@ -464,15 +477,17 @@ class Notification_dispatcher
      * @param  integer $from_member_id The member ID doing the sending. Either a MEMBER or a negative number (e.g. A_FROM_SYSTEM_UNPRIVILEGED)
      * @param  integer $priority The message priority (1=urgent, 3=normal, 5=low)
      * @range  1 5
-     * @param  boolean $no_cc Whether to NOT CC to the CC address
+     * @param  boolean $no_cc Whether to NOT CC to the CC address (may be set to true and returned by reference once a single e-mail has been sent)
      * @param  array $attachments A list of attachments (each attachment being a map, path=>filename)
      * @param  boolean $use_real_from Whether we will make a "reply to" direct -- we only do this if we're allowed to disclose e-mail addresses for this particular notification type (i.e. if it's a direct contact)
-     * @return boolean New $no_cc setting
+     * @return boolean Whether a notification was sent
      *
      * @ignore
      */
-    private function dispatch_notification_to_member(int $to_member_id, int $setting, string $notification_code, ?string $code_category, string $subject, string $message, int $from_member_id, int $priority, bool $no_cc, array $attachments, bool $use_real_from) : bool
+    private function dispatch_notification_to_member(int $to_member_id, int $setting, string $notification_code, ?string $code_category, string $subject, string $message, int $from_member_id, int $priority, bool &$no_cc, array $attachments, bool $use_real_from) : bool
     {
+        $sent_somewhere = false;
+
         // Fish out some general details of the sender
         $to_name = $GLOBALS['FORUM_DRIVER']->get_username($to_member_id, true);
         $from_email = '';
@@ -516,6 +531,8 @@ class Notification_dispatcher
                 if ($successes == 0) { // Could not send
                     $setting = $setting | A_INSTANT_EMAIL; // Make sure it also goes to e-mail then
                     $message_to_send = do_lang('sms:INSTEAD_OF_SMS', $message);
+                } else {
+                    $sent_somewhere = true;
                 }
             }
         }
@@ -547,6 +564,8 @@ class Notification_dispatcher
 
                     $needs_manual_cc = false;
                     $no_cc = true; // Don't CC again
+
+                    $sent_somewhere = true;
                 }
             }
         }
@@ -601,6 +620,8 @@ class Notification_dispatcher
                 ], false, true/*If we've not set up first digest time, make it the digest period from now; if we have then silent error is suppressed*/);
 
                 delete_cache_entry('_get_notifications', null, $to_member_id);
+
+                $sent_somewhere = true;
             }
         }
 
@@ -617,12 +638,16 @@ class Notification_dispatcher
                 // NB: These are posted by Guest (system) although the display name is set to the member triggering. This is intentional to stop said member getting unexpected replies.
                 $topic_id = cns_make_topic(null, '', 'icons/cns_topic_modifiers/announcement', 1, 1, 0, 0, $from_member_id_shown, $to_member_id, false, 0, null, '');
                 cns_make_post($topic_id, $wrapped_subject, $wrapped_message, 0, true, 1, 0, ($from_member_id < 0) ? do_lang('SYSTEM') : $from_name, null, null, $from_member_id_shown, null, null, null, false, true, null, true, $wrapped_subject, null, true, true, true, ($from_member_id == A_FROM_SYSTEM_PRIVILEGED));
+
+                $sent_somewhere = true;
             }
         }
 
         global $HOOKS_NOTIFICATION_TYPES_EXTENDED;
         foreach ($HOOKS_NOTIFICATION_TYPES_EXTENDED as $hook => $ob) {
-            $ob->dispatch_notification_to_member($to_member_id, $setting, $notification_code, $code_category, $subject, $message, $from_member_id, $priority, $no_cc, $attachments, $use_real_from);
+            if ($ob->dispatch_notification_to_member($to_member_id, $setting, $notification_code, $code_category, $subject, $message, $from_member_id, $priority, $no_cc, $attachments, $use_real_from)) {
+                $sent_somewhere = true;
+            }
         }
 
         // Send to staff CC address regardless
@@ -649,7 +674,7 @@ class Notification_dispatcher
             }
         }
 
-        return $no_cc;
+        return $sent_somewhere;
     }
 }
 

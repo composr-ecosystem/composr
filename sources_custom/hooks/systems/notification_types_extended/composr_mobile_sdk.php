@@ -148,12 +148,12 @@ class Hook_notification_types_extended_composr_mobile_sdk
      * @param  integer $from_member_id The member ID doing the sending. Either a MEMBER or a negative number (e.g. A_FROM_SYSTEM_UNPRIVILEGED)
      * @param  integer $priority The message priority (1=urgent, 3=normal, 5=low)
      * @range  1 5
-     * @param  boolean $no_cc Whether to NOT CC to the CC address
+     * @param  boolean $no_cc Whether to NOT CC to the CC address (may be set to true and returned by reference once a single e-mail has been sent)
      * @param  array $attachments A list of attachments (each attachment being a map, path=>filename)
      * @param  boolean $use_real_from Whether we will make a "reply to" direct -- we only do this if we're allowed to disclose e-mail addresses for this particular notification type (i.e. if it's a direct contact)
-     * @return boolean New $no_cc setting
+     * @return boolean Whether a notification was sent
      */
-    public function dispatch_notification_to_member(int $to_member_id, int $setting, string $notification_code, ?string $code_category, string $subject, string $message, int $from_member_id, int $priority, bool $no_cc, array $attachments, bool $use_real_from) : bool
+    public function dispatch_notification_to_member(int $to_member_id, int $setting, string $notification_code, ?string $code_category, string $subject, string $message, int $from_member_id, int $priority, bool &$no_cc, array $attachments, bool $use_real_from) : bool
     {
         if (get_option('enable_notifications_instant_ios') === '1') {
             if (_notification_setting_available(A_INSTANT_IOS, $to_member_id)) {

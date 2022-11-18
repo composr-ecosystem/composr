@@ -272,23 +272,36 @@ function member_befriended(int $member_id, ?int $member_id_current = null) : boo
     if ($member_id == $member_id_current) {
         return false;
     }
-    if (is_guest()) {
+    if (is_guest($member_id_current)) {
         return false;
     }
 
-    static $cache = null;
-    if ($cache === null) {
-        $_cache = collapse_1d_complexity('member_liked', $GLOBALS['SITE_DB']->query_select('chat_friends', ['member_liked'], ['member_likes' => $member_id_current], '', 100));
-        $cache = array_fill_keys($_cache, true);
+    // Efficient bulk loading...
+
+    static $cache_bulk = [];
+    if (!isset($cache_bulk[$member_id_current])) {
+        $_cache_bulk = collapse_1d_complexity('member_liked', $GLOBALS['SITE_DB']->query_select('chat_friends', ['member_liked'], ['member_likes' => $member_id_current], '', 100));
+        if (count($_cache_bulk) >= 100) { // Ah, too much to preload
+            $cache_bulk[$member_id_current] = false;
+        } else {
+            $cache_bulk[$member_id_current] = array_flip($_cache_bulk);
+        }
     }
-    if (isset($cache[$member_id])) {
-        return $cache[$member_id];
+    if ($cache_bulk[$member_id_current] !== false) {
+        return isset($cache_bulk[$member_id_current][$member_id]);
     }
-    if (count($cache) >= 100) { // Ah, too much to preload
-        $cache[$member_id] = ($GLOBALS['SITE_DB']->query_select_value_if_there('chat_friends', 'member_liked', ['member_liked' => $member_id, 'member_likes' => $member_id_current]) !== null);
-        return $cache[$member_id];
+
+    // Individual query algorithm...
+
+    static $cache_individual = [];
+    if (isset($cache_individual[$member_id_current][$member_id])) {
+        return $cache_individual[$member_id_current][$member_id];
     }
-    return false;
+    if (!isset($cache_individual[$member_id_current])) {
+        $cache_individual[$member_id_current] = [];
+    }
+    $cache_individual[$member_id_current][$member_id] = ($GLOBALS['SITE_DB']->query_select_value_if_there('chat_friends', 'member_liked', ['member_liked' => $member_id, 'member_likes' => $member_id_current]) !== null);
+    return $cache_individual[$member_id_current][$member_id];
 }
 
 /**
