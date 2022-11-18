@@ -121,6 +121,9 @@ class Hook_profiles_tabs_edit_photo
             'PHOTO' => $GLOBALS['FORUM_DRIVER']->get_member_photo_url($member_id_of),
         ]);
 
+        require_javascript('core_cns');
+        $js_function_calls = ['hookProfilesTabsEditPhotoRenderTab'];
+
         if ($memory_debugging) {
             require_code('files');
             $usage_after = memory_get_usage();

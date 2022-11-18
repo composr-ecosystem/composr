@@ -2126,7 +2126,7 @@ function cns_member_choose_photo(string $param_name, string $upload_name, ?int $
 
     if (((!array_key_exists($upload_name, $_FILES)) || ((!is_plupload()) && (!is_uploaded_file($_FILES[$upload_name]['tmp_name']))))) {
         $old = $GLOBALS['FORUM_DB']->query_select_value('f_members', 'm_photo_url', ['id' => $member_id]);
-        $x = post_param_string($param_name, '');
+        $x = post_param_string($param_name, '', INPUT_FILTER_URL_GENERAL);
         if (($x != '') && (url_is_local($x))) {
             if (!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) {
                 if ($old != $x) {
@@ -2178,7 +2178,7 @@ function cns_member_choose_photo_concrete(string $url, ?int $member_id = null)
 
     require_code('notifications');
     $subject = do_lang('CHOOSE_PHOTO_SUBJECT', $GLOBALS['FORUM_DRIVER']->get_username($member_id, true), $GLOBALS['FORUM_DRIVER']->get_username($member_id), null, get_lang($member_id));
-    $body = do_notification_lang('CHOOSE_PHOTO_BODY', $url, [$GLOBALS['FORUM_DRIVER']->get_username($member_id), $GLOBALS['FORUM_DRIVER']->get_username($member_id, true)], get_lang($member_id));
+    $body = do_notification_lang('CHOOSE_PHOTO_BODY', $url, $GLOBALS['FORUM_DRIVER']->get_username($member_id), [$GLOBALS['FORUM_DRIVER']->get_username($member_id, true)], get_lang($member_id));
     dispatch_notification('cns_profile_high_impact_edit', null, $subject, $body, null, get_member(), ['use_real_from' => true]);
 
     // If Avatars addon not installed, use photo for it

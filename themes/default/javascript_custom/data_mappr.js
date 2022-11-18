@@ -11,7 +11,9 @@
 
         $cms.requireJavascript('https://www.google.com/jsapi').then(function () {
             setTimeout(function () {
-                window.google.load('maps', '3', { callback: googleMapUsersInitialize, other_params: (($cms.configOption('google_apis_api_key') !== '') ? 'key=' + $cms.configOption('google_apis_api_key') : '') }); // eslint-disable-line camelcase
+                if (window.google) {
+                    window.google.load('maps', '3', { callback: googleMapUsersInitialize, other_params: (($cms.configOption('google_apis_api_key') !== '') ? 'key=' + $cms.configOption('google_apis_api_key') : '') }); // eslint-disable-line camelcase
+                }
             }, 0);
         });
 

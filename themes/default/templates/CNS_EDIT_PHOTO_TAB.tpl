@@ -14,14 +14,10 @@
 		{TEXT}
 
 		{+START,IF_NON_EMPTY,{PHOTO}}
-			<form title="{$WCASE,{!DELETE_PHOTO}}" action="{$MEMBER_PROFILE_URL*,{MEMBER_ID}}#tab--edit--photo" method="post" class="inline">
-				{$INSERT_FORM_POST_SECURITY}
-
-				<p>
-					<input type="hidden" name="delete_photo" value="1" />
-					{!YOU_CAN_DELETE_PHOTO,<button class="button-hyperlink" type="submit">{!DELETE_PHOTO}</button>}
-				</p>
-			</form>
+			<p>
+				<input type="hidden" name="delete_photo" value="0" />
+				{!YOU_CAN_DELETE_PHOTO,<button class="js-delete-photo button-hyperlink" type="button">{!DELETE_PHOTO}</button>}
+			</p>
 		{+END}
 	</div>
 </div>

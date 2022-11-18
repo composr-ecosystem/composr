@@ -127,6 +127,10 @@ function has_privacy_access(string $content_type, string $content_id, ?int $view
         $viewing_member_id = get_member();
     }
 
+    if ($submitter === $viewing_member_id) {
+        return true;
+    }
+
     list($privacy_join, $privacy_where, $privacy_table, $privacy_table_where) = get_privacy_where_clause($content_type, 'e', $viewing_member_id, $additional_or, $submitter);
 
     require_code('content');

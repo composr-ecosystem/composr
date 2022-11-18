@@ -64,7 +64,6 @@ function check_input_field_string(string $name, string &$val, ?bool $posted, int
 
         $val = trim($val);
     }
-
     if (($filters & INPUT_FILTER_URL_RECODING) != 0) {
         // We should use compliant encoding
         require_code('urls_simplifier');

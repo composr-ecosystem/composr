@@ -239,7 +239,11 @@ function mask_email_address(string $email_address) : string
     }
 
     // Do the actual masking
-    $email_name = substr($email_parts[0], 0, 1) . str_repeat('*', (strlen($email_parts[0]) - 2)) . substr($email_parts[0], -1);
+    $email_name = substr($email_parts[0], 0, 1);
+    if (strlen($email_parts[0]) > 2) {
+        $email_name .= str_repeat('*', (strlen($email_parts[0]) - 2));
+    }
+    $email_name .= substr($email_parts[0], -1);
     $email_domain = substr($domain_sub, 0, 1) . str_repeat('*', (strlen($domain_sub) - 2)) . substr($domain_sub, -1);
 
     return $email_name . '@' . $email_domain . '.' . $domain_top;
