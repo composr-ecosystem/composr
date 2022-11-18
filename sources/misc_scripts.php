@@ -23,16 +23,22 @@
 /**
  * Script to access a gravatar, while protecting the user's privacy.
  *
+ * @param  boolean $from_driver Whether this script was called from a forum driver
  * @ignore
  */
-function gravatar_script()
+function gravatar_script(bool $from_driver = false)
 {
     header('X-Robots-Tag: noindex');
 
     $id = get_param_integer('id');
 
     $email_address = $GLOBALS['FORUM_DRIVER']->get_member_email_address($id);
-    $avatar_url = $GLOBALS['FORUM_DRIVER']->get_member_avatar_url($id, false);
+
+    if ($from_driver) {
+        $avatar_url = ''; // Prevent recursive get_member_avatar_url calls from forum drivers by initialising to blank
+    } else {
+        $avatar_url = $GLOBALS['FORUM_DRIVER']->get_member_avatar_url($id, false);
+    }
 
     $is_error = true; // We'll only set to false once everything is good
 

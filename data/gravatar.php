@@ -53,4 +53,4 @@ if (!is_file($FILE_BASE . '/sources/global.php')) {
 require($FILE_BASE . '/sources/global.php');
 
 require_code('misc_scripts');
-gravatar_script();
+gravatar_script(get_param_integer('from_driver', 0) == 1);

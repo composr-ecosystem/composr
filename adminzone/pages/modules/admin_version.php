@@ -196,7 +196,7 @@ class Module_admin_version
                 'the_member' => 'MEMBER',
             ]);
 
-            $GLOBALS['SITE_DB']->create_table('values_elective', [
+            $GLOBALS['SITE_DB']->create_table('values_elective', [ // This table could contain many rows / values
                 'the_name' => '*ID_TEXT',
                 'the_value' => 'LONG_TEXT',
                 'date_and_time' => 'TIME',
