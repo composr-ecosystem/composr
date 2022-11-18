@@ -123,6 +123,7 @@ function init__zones()
     array_push($DECLARATIONS_STACK, $DECLARATIONS_STATE);
 
     if (get_value('trusted_sites_1') === null) {
+        require_code('caches3');
         regenerate_trusted_sites_cache();
     }
 }
