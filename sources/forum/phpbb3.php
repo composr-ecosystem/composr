@@ -579,20 +579,21 @@ class Forum_driver_phpbb3 extends Forum_driver_base
      */
     protected function _get_member_avatar_url(int $member) : string
     {
-        $options = $this->db->query('SELECT * FROM ' . $this->db->get_table_prefix() . 'config WHERE ' . db_string_equal_to('config_name', 'avatar_path') . ' OR ' . db_string_equal_to('config_name', 'avatar_gallery_path'));
-        $avatar_path = $options[0]['config_value'];
-        $avatar_gallery_path = $options[1]['config_value'];
+        $avatar_gallery_path = $this->db->query_select_value('config', 'config_value', ['config_name' => 'avatar_gallery_path']);
 
         $type = $this->get_member_row_field($member, 'user_avatar_type');
+
         $filename = $this->get_member_row_field($member, 'user_avatar');
 
         switch ($type) {
-            case 1: // Upload
-                return get_forum_base_url() . '/' . $avatar_path . '/' . $filename;
-            case 2: // Remote
+            case 'avatar.driver.upload':
+                return get_forum_base_url() . '/download/file.php?avatar=' . $filename;
+            case 'avatar.driver.remote':
                 return $filename;
-            case 3: // Gallery
+            case 'avatar.driver.local':
                 return get_forum_base_url() . '/' . $avatar_gallery_path . '/' . $filename;
+            case 'avatar.driver.gravatar':
+                return find_script('gravatar') . '?id=' . strval($member) . '&from_driver=1';
         }
         return '';
     }

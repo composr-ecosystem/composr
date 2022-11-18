@@ -507,9 +507,9 @@ class Hook_import_phpbb3
     {
         global $STRICT_FILE;
 
-        $options = $db->query('SELECT * FROM ' . $table_prefix . 'config WHERE ' . db_string_equal_to('config_name', 'avatar_path') . ' OR ' . db_string_equal_to('config_name', 'avatar_gallery_path'));
-        $avatar_path = $options[0]['config_value'];
-        $avatar_gallery_path = $options[1]['config_value'];
+        $avatar_path = $db->query_select_value('config', 'config_value', ['config_name' => 'avatar_path']);
+        $avatar_gallery_path = $db->query_select_value('config', 'config_value', ['config_name' => 'avatar_gallery_path']);
+        $avatar_salt = $db->query_select_value('config', 'config_value', ['config_name' => 'avatar_salt']);
 
         $row_start = 0;
         $rows = [];
@@ -525,24 +525,29 @@ class Hook_import_phpbb3
 
                 $avatar_url = '';
                 switch ($row['user_avatar_type']) {
-                    case 0:
-                        break;
-                    case 1: // Upload
-                        $filename = $row['user_avatar'];
-                        if ((file_exists(get_custom_file_base() . '/uploads/cns_avatars/' . $filename)) || (@rename($file_base . '/' . $avatar_path . '/' . $filename, get_custom_file_base() . '/uploads/cns_avatars/' . $filename))) {
-                            $avatar_url = 'uploads/cns_avatars/' . $filename;
+                    case 'avatar.driver.upload': // Upload
+                        $__filename = $row['user_avatar'];
+
+                        // phpBB3 magic
+                        $ext = substr(strrchr($__filename, '.'), 1); // Get the file extension
+                        $_filename = explode('_', $__filename); // DB filename is separated between memberID (or g[groupID])_timestamp
+                        $filename = $_filename[0]; // We only want the memberID
+                        $full_filename = $avatar_salt . '_' . $filename . '.' . $ext; // Actual filename is salt_memberID (or g[groupID]).ext
+
+                        if ((file_exists(get_custom_file_base() . '/uploads/cns_avatars/' . $full_filename)) || (@rename($file_base . '/' . $avatar_path . '/' . $full_filename, get_custom_file_base() . '/uploads/cns_avatars/' . $full_filename))) {
+                            $avatar_url = 'uploads/cns_avatars/' . $full_filename;
                             sync_file(get_custom_file_base() . '/' . $avatar_url);
                         } else {
                             if ($STRICT_FILE) {
-                                warn_exit(do_lang_tempcode('MISSING_AVATAR', escape_html($filename)));
+                                warn_exit(do_lang_tempcode('MISSING_AVATAR', escape_html($full_filename)));
                             }
                             $avatar_url = '';
                         }
                         break;
-                    case 2: // Remote
+                    case 'avatar.driver.remote': // Remote
                         $avatar_url = $row['user_avatar'];
                         break;
-                    case 3: // Gallery
+                    case 'avatar.driver.local': // Gallery
                         $filename = $row['user_avatar'];
                         if ((file_exists(get_custom_file_base() . '/uploads/cns_avatars/' . $filename)) || (@rename($file_base . '/' . $avatar_gallery_path . '/' . $filename, get_custom_file_base() . '/uploads/cns_avatars/' . $filename))) {
                             $avatar_url = 'uploads/cns_avatars/' . substr($filename, strrpos($filename, '/'));
