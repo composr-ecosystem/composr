@@ -223,9 +223,11 @@ function get_trusted_sites(int $level, bool $include_self = true) : array
         $option = '';
         if ($level >= 1) {
             $option .= get_option('trusted_sites_1') . "\n";
+            $option .= get_value('trusted_sites_1', '') . "\n"; // Built from hooks
         }
         if ($level >= 2) {
             $option .= get_option('trusted_sites_2') . "\n";
+            $option .= get_value('trusted_sites_2', '') . "\n"; // Built from hooks
         }
 
         $trusted_sites = [];

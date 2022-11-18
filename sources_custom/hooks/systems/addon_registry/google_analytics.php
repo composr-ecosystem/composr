@@ -161,6 +161,7 @@ You can always see all metrics from Admin Zone > Audit > Site statistics > Googl
             'themes/default/templates_custom/GOOGLE_TIME_PERIODS.tpl',
             'themes/default/javascript_custom/google_analytics.js',
             'sources_custom/hooks/systems/config/ga_property_view_id.php',
+            'sources_custom/hooks/systems/trusted_sites/google_analytics.php',
         ];
     }
 }

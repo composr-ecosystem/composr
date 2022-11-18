@@ -121,6 +121,10 @@ function init__zones()
     ];
     $DECLARATIONS_STATE = $DECLARATIONS_STATE_DEFAULT;
     array_push($DECLARATIONS_STACK, $DECLARATIONS_STATE);
+
+    if (get_value('trusted_sites_1') === null) {
+        regenerate_trusted_sites_cache();
+    }
 }
 
 /**

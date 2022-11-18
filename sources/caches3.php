@@ -150,6 +150,24 @@ function erase_block_cache(bool $erase_cache_signatures_too = false, ?string $th
 }
 
 /**
+ * Regenerate the trusted sites caching.
+ */
+function regenerate_trusted_sites_cache()
+{
+    $hook_obs = find_all_hook_obs('systems', 'trusted_sites', 'Hook_trusted_sites_');
+    $_ts1 = [];
+    $_ts2 = [];
+    foreach ($hook_obs as $hook => $ob) {
+        $ob->find_trusted_sites_1($_ts1);
+        $ob->find_trusted_sites_2($_ts2);
+    }
+    $ts1 = implode("\n", array_unique($_ts1));
+    $ts2 = implode("\n", array_unique($_ts2));
+    set_value('trusted_sites_1', $ts1);
+    set_value('trusted_sites_2', $ts2);
+}
+
+/**
  * Erase the Comcode cache. Warning: This can take a long time on large sites, so is best to avoid.
  */
 function erase_comcode_cache()

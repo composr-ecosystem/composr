@@ -165,6 +165,7 @@ class Hook_addon_registry_ecommerce
             'sources/hooks/systems/realtime_rain/ecommerce.php',
             'sources/hooks/systems/addon_registry/ecommerce.php',
             'sources/hooks/modules/admin_import_types/ecommerce.php',
+            'sources/hooks/systems/trusted_sites/ecommerce.php',
             'themes/default/templates/ECOM_CASH_FLOW_SCREEN.tpl',
             'themes/default/templates/ECOM_INVOICES_SCREEN.tpl',
             'themes/default/templates/ECOM_SUBSCRIPTIONS_SCREEN.tpl',

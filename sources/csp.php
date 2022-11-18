@@ -201,20 +201,23 @@ function load_csp(?array $options = null, ?int $enable_more_open_html_for = null
     $clauses = [];
 
     $master_sources_list = _csp_extract_sources_list(2);
+    $ancestors_seources_list = _csp_extract_sources_list(2, $csp_allowed_iframe_descendants);
 
     // default-src
     $_sources_list = $master_sources_list;
-    $clauses[] = 'default-src ' . implode(' ', $_sources_list) . ' data:';
+    $_sources_list[] = 'data:';
+    $_sources_list[] = 'blob:';
+    $clauses[] = 'default-src ' . implode(' ', $_sources_list);
 
-    // style-src
+    // style-src (special rules)
     $_sources_list = $master_sources_list;
     $_sources_list[] = "*"; // Allow external stylesheets
     $_sources_list[] = "'unsafe-inline'"; // It's not feasible for us to remove all inline CSS
     //$_sources_list[] = "'nonce-{$CSP_NONCE}'"; Incompatible with unsafe-inline
     $clauses[] = 'style-src ' . implode(' ', $_sources_list);
 
-    // script-src
-    $_sources_list = $csp_allow_dyn_js ? _csp_extract_sources_list(2) : [];
+    // script-src (special rules)
+    $_sources_list = $csp_allow_dyn_js ? $master_sources_list : [];
     if ($csp_allow_inline_js) {
         $_sources_list[] = "'unsafe-inline'"; // Not usually configurable but may be forced
     } else {
@@ -228,8 +231,8 @@ function load_csp(?array $options = null, ?int $enable_more_open_html_for = null
     }
     $clauses[] = 'script-src ' . implode(' ', $_sources_list);
 
-    // frame-src
-    $_sources_list = _csp_extract_sources_list(2, $csp_allowed_iframe_descendants);
+    // frame-src (special rules)
+    $_sources_list = $ancestors_seources_list;
     if ($_sources_list === null) {
         $_sources_list = [];
         $_sources_list[] = '*';
@@ -237,34 +240,38 @@ function load_csp(?array $options = null, ?int $enable_more_open_html_for = null
     $_sources_list[] = "'nonce-{$CSP_NONCE}'"; // In case W3C start supporting it for iframe elements
     $clauses[] = 'frame-src ' . implode(' ', $_sources_list);
 
+    /* Same as default-src
     // worker-src
     $_sources_list = $master_sources_list;
     $clauses[] = 'worker-src ' . implode(' ', $_sources_list);
+    */
 
+    /* Same as default-src
     // connect-src
     $_sources_list = $master_sources_list;
     $clauses[] = 'connect-src ' . implode(' ', $_sources_list);
+    */
 
-    // font-src (unlimited)
+    // font-src (unlimited with data/blob)
     $_sources_list = [];
     $_sources_list[] = '*';
     $_sources_list[] = 'data:';
     $_sources_list[] = 'blob:';
     $clauses[] = 'font-src ' . implode(' ', $_sources_list);
 
-    // object-src (unlimited)
+    // object-src (unlimited or none)
     $_sources_list = [];
     $_sources_list[] = $csp_allow_plugins ? '*' : "'none'";
     $clauses[] = 'object-src ' . implode(' ', $_sources_list);
 
-    // img-src (unlimited)
+    // img-src (unlimited with data/blob)
     $_sources_list = [];
     $_sources_list[] = '*';
     $_sources_list[] = 'data:';
     $_sources_list[] = 'blob:';
     $clauses[] = 'img-src ' . implode(' ', $_sources_list);
 
-    // media-src (unlimited)
+    // media-src (unlimited with data/blob)
     $_sources_list = [];
     $_sources_list[] = '*';
     $_sources_list[] = 'data:';
@@ -286,7 +293,7 @@ function load_csp(?array $options = null, ?int $enable_more_open_html_for = null
     $clauses[] = 'form-action ' . implode(' ', $_sources_list);
 
     // frame-ancestors
-    $_sources_list = _csp_extract_sources_list(2, $csp_allowed_iframe_ancestors);
+    $_sources_list = $ancestors_seources_list;
     if ($_sources_list === null) {
         $_sources_list = [];
         $_sources_list[] = '*';
@@ -338,7 +345,7 @@ function load_csp(?array $options = null, ?int $enable_more_open_html_for = null
  *
  * @param  integer $level Trusted sites level
  * @set 1 2
- * @param  string $sources_csp Comma-separated list of valid CSP 'sources' (blank: just trusted sites)
+ * @param  string $sources_csp Comma-separated list of additional valid CSP 'sources' (blank: just trusted sites)
  * @param  boolean $include_self Include a self reference
  * @return ?array CSP sources (null: allow all, only possible when $sources_csp is passed) (empty: disallow all except local)
  */
@@ -358,7 +365,7 @@ function _csp_extract_sources_list(int $level, string $sources_csp = '', bool $i
     }
 
     require_code('input_filter');
-    $_trusted_sites = get_trusted_sites($level, $include_self);
+    $_trusted_sites = get_trusted_sites($level, false);
     if (!empty($_trusted_sites)) {
         foreach ($_trusted_sites as $partner) {
             $sources_list[] = $partner;
@@ -373,7 +380,7 @@ function _csp_extract_sources_list(int $level, string $sources_csp = '', bool $i
         }
     }
 
-    return $sources_list;
+    return array_unique($sources_list);
 }
 
 /**

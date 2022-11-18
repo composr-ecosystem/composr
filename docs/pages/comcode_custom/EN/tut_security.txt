@@ -322,7 +322,7 @@ All code bundled with Composr strictly adheres to these guidelines and thus is c
 
 Adherence to CSP for custom code is optional, CSP can be enabled/disabled/tuned in the configuration. To maintain CSP adherence requires a higher degree of discipline when designing your website.
 
-CSP is built on the back of the "Trusted partner sites" configuration options. These options restrict to mitigate the following possible attack vectors...
+CSP is built on the back of the "Trusted partner sites" configuration options, as well as hooks that inject new trusted sites based on the need of addon functionality. We apply restrictions to mitigate the following possible attack vectors...
 {|
 ! Inbound or Outbound
 ! Vector/trust

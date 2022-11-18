@@ -793,6 +793,7 @@ class Module_admin_addons
         erase_block_cache(true);
         //persistent_cache_delete('OPTIONS');  Done by set_option
         erase_persistent_cache();
+        regenerate_trusted_sites_cache();
         erase_cached_templates(false, null, TEMPLATE_DECACHE_WITH_ADDON);
 
         // Show it worked / Refresh
@@ -1010,6 +1011,7 @@ class Module_admin_addons
         erase_block_cache(true);
         //persistent_cache_delete('OPTIONS');  Done by set_option
         erase_persistent_cache();
+        regenerate_trusted_sites_cache();
         erase_cached_templates(false, null, TEMPLATE_DECACHE_WITH_ADDON);
 
         // Show it worked / Refresh
