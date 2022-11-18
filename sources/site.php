@@ -31,6 +31,13 @@ function init__site()
     global $REDIRECTED_TO_CACHE;
     $REDIRECTED_TO_CACHE = null;
 
+    global $ATTACHED_MESSAGES, $ATTACHED_MESSAGES_RAW;
+    if (!isset($ATTACHED_MESSAGES_RAW)) {
+        // In case _load_blank_output_state has not been called yet
+        $ATTACHED_MESSAGES = null;
+        $ATTACHED_MESSAGES_RAW = [];
+    }
+
     // Get ready for breadcrumbs
     require_code('config');
     $bcl = get_option('breadcrumb_crop_length');
@@ -98,9 +105,6 @@ function init__site()
 
     global $PT_PAIR_CACHE_CP;
     $PT_PAIR_CACHE_CP = [];
-
-    global $ATTACH_MESSAGE_CALLED;
-    $ATTACH_MESSAGE_CALLED = 0;
 
     global $COMCODE_PAGE_RUNTIME_CACHE;
     $COMCODE_PAGE_RUNTIME_CACHE = [];
@@ -183,7 +187,9 @@ function inform_non_canonical_parameter(string $param, bool $block_page_from_sta
  */
 function attach_message($message, string $type = 'inform', bool $put_in_helper_panel = false, bool $log_error = false) : string
 {
-    if ((is_object($message) ? $message->evaluate() : $message) == '') {
+    $message_eval = (is_object($message) ? $message->evaluate() : $message);
+
+    if ($message_eval == '') {
         return ''; // Empty message
     }
 
@@ -191,33 +197,24 @@ function attach_message($message, string $type = 'inform', bool $put_in_helper_p
         return ''; // Suppressing errors
     }
 
-    static $am_looping = false;
-    if ($am_looping) {
+    static $am_looping = 0;
+    if ($am_looping > 2) {
         return ''; // Was a lang lookup error and got in an infinite loop of attaching errors about missing lang errors (because each iteration causes a reevaluation of past messages)
     }
-    $am_looping = true;
+    $am_looping++;
 
-    global $ATTACH_MESSAGE_CALLED, $ATTACHED_MESSAGES, $ATTACHED_MESSAGES_RAW, $LATE_ATTACHED_MESSAGES;
-
-    if (!isset($ATTACH_MESSAGE_CALLED)) {
-        return ''; // Still starting up
-    }
+    global $ATTACHED_MESSAGES, $ATTACHED_MESSAGES_RAW, $LATE_ATTACHED_MESSAGES;
 
     foreach ($ATTACHED_MESSAGES_RAW as $last) {
-        if ([strip_tags(is_object($last[0]) ? $last[0]->evaluate() : $last[0]), $last[1]] == [strip_tags(is_object($message) ? $message->evaluate() : $message), $type]) {
-            $am_looping = false;
+        if ([strip_tags($last[0]), $last[1]] == [strip_tags($message_eval), $type]) {
+            $am_looping--;
             return ''; // Already shown
         }
     }
 
-    $ATTACH_MESSAGE_CALLED++;
-    if ($ATTACH_MESSAGE_CALLED > 5) {
-        critical_error('EMERGENCY', is_object($message) ? $message->evaluate() : escape_html($message));
-    }
-
     if ($log_error) {
         require_code('urls');
-        $php_error_label = (is_object($message) ? $message->evaluate() : $message) . ' @ ' . get_self_url_easy();
+        $php_error_label = $message_eval . ' @ ' . get_self_url_easy();
         $may_log_error = ((!running_script('cron_bridge')) || (@filemtime(get_custom_file_base() . '/data_custom/errorlog.php') < time() - 60 * 5));
 
         if ($may_log_error) {
@@ -230,11 +227,11 @@ function attach_message($message, string $type = 'inform', bool $put_in_helper_p
 
             require_code('failure');
             $trace = get_html_trace();
-            relay_error_notification((is_object($message) ? $message->evaluate() : $message) . '[html]' . $trace->evaluate() . '[/html]');
+            relay_error_notification($message_eval . '[html]' . $trace->evaluate() . '[/html]');
         }
     }
 
-    if (($type == 'warn') && (strlen(is_object($message) ? $message->evaluate() : $message) < 130)) {
+    if (($type == 'warn') && (strlen($message_eval) < 130)) {
         require_code('failure');
 
         $webservice_result = get_webservice_result($message);
@@ -265,7 +262,7 @@ function attach_message($message, string $type = 'inform', bool $put_in_helper_p
     if ($put_in_helper_panel) {
         set_helper_panel_text($message_tpl, true, false);
     } else {
-        $ATTACHED_MESSAGES_RAW[] = [$message, $type];
+        $ATTACHED_MESSAGES_RAW[] = [$message_eval, $type];
         if ($GLOBALS['TEMPCODE_OUTPUT_STARTED']) {
             if ($LATE_ATTACHED_MESSAGES === null) {
                 $LATE_ATTACHED_MESSAGES = new Tempcode();
@@ -279,8 +276,6 @@ function attach_message($message, string $type = 'inform', bool $put_in_helper_p
         }
     }
 
-    $ATTACH_MESSAGE_CALLED--;
-
     if ($GLOBALS['REFRESH_URL'][0] != '') {
         $GLOBALS['SITE_DB']->query_insert('messages_to_render', [
             'r_session_id' => get_session_id(),
@@ -290,7 +285,7 @@ function attach_message($message, string $type = 'inform', bool $put_in_helper_p
         ]);
     }
 
-    $am_looping = false;
+    $am_looping--;
     return '';
 }
 

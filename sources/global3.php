@@ -109,7 +109,7 @@ function init__global3()
         'TEMPCODE_SETGET',
         'COMCODE_PARSE_TITLE',
     ];
-    _load_blank_output_state();
+    _load_blank_output_state(false, false, true);
 
     global $MASS_IMPORT_HAPPENING;
     $MASS_IMPORT_HAPPENING = false;
@@ -562,10 +562,11 @@ function intelligent_write_error_inline(string $path)
  *
  * @param  boolean $just_tempcode Whether to only restore the Tempcode execution part of the state
  * @param  boolean $true_blank Whether to go for a completely blank state (no defaults!), not just a default fresh state
+ * @param  boolean $initial Whether this is an initial state, and we can leave anything that is already set as set (handled on case-by-case basis)
  *
  * @ignore
  */
-function _load_blank_output_state(bool $just_tempcode = false, bool $true_blank = false)
+function _load_blank_output_state(bool $just_tempcode = false, bool $true_blank = false, bool $initial = false)
 {
     /*
     Now lots of stuff all relating to output state (unless commented, these GLOBALs should not be written to directly, we have API calls for it)
@@ -585,14 +586,18 @@ function _load_blank_output_state(bool $just_tempcode = false, bool $true_blank 
         $METADATA = [];
 
         global $ATTACHED_MESSAGES, $ATTACHED_MESSAGES_RAW, $LATE_ATTACHED_MESSAGES;
-        $ATTACHED_MESSAGES = null;
-        /** Raw data of attached messages.
-         *
-         * @sets_output_state
-         *
-         * @global ?array $ATTACHED_MESSAGES_RAW
-         */
-        $ATTACHED_MESSAGES_RAW = [];
+        if (!$initial || !isset($ATTACHED_MESSAGES)) {
+            $ATTACHED_MESSAGES = null;
+        }
+        if (!$initial || !isset($ATTACHED_MESSAGES_RAW)) {
+            /** Raw data of attached messages.
+             *
+             * @sets_output_state
+             *
+             * @global ?array $ATTACHED_MESSAGES_RAW
+             */
+            $ATTACHED_MESSAGES_RAW = [];
+        }
         $LATE_ATTACHED_MESSAGES = null;
 
         global $SEO_KEYWORDS, $SEO_DESCRIPTION, $SHORT_TITLE;

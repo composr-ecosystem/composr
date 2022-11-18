@@ -146,6 +146,9 @@ function restricted_manually_enabled_backdoor() : int
                 create_session($ret, 1, false, $create_cookie);
                 return $ret;
             }
+        } else {
+            require_code('site');
+            attach_message(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($ks)), 'warn');
         }
     }
 
