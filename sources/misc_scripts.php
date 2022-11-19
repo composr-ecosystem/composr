@@ -446,7 +446,9 @@ function cron_bridge_script(string $caller)
 
     do {
         // Logging of timings
-        set_value('last_cron', strval(time()));
+        if ($limit_hooks === null) {
+            set_value('last_cron', strval(time()));
+        }
         set_value('last_cron_started', strval(time()), true);
 
         // Call the hooks which do the real work
