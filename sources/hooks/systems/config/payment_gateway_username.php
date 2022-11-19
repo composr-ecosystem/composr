@@ -57,7 +57,7 @@ class Hook_config_payment_gateway_username
             return null;
         }
 
-        return ''; // We used to default the option, but this will turn on the CSP stuff for PayPal immediately and bloat up our headers even if PayPal not used, so now require explicit configuration -- and besides, not all payment gateways take an email like this
+        return ''; // We used to default the option, but this will turn on the CSP stuff for PayPal immediately and bloat up our headers even if PayPal not used, so now require explicit configuration -- and besides, not all payment gateways take an e-mail like this
         //return get_option('staff_address');
     }
 }

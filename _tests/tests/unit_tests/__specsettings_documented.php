@@ -89,7 +89,7 @@ class __specsettings_documented_test_set extends cms_test_case
 
         $all_code = '';
 
-        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, ['php']);
+        $files = get_directory_contents(get_file_base(), '', IGNORE_ALIEN | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, ['php']);
         foreach ($files as $path) {
             if (basename($path) == 'shared_installs.php') {
                 continue;
@@ -172,7 +172,7 @@ class __specsettings_documented_test_set extends cms_test_case
 
         $all_code = '';
 
-        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_NONBUNDLED | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, ['php', 'tpl', 'js']);
+        $files = get_directory_contents(get_file_base(), '', IGNORE_ALIEN | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_NONBUNDLED | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, ['php', 'tpl', 'js']);
         $files[] = 'install.php';
         foreach ($files as $path) {
             if (($path == 'sources/upgrade.php') || ($path == 'sources/shared_installs.php') || ($path == 'sources_custom/phpstub.php')) {
@@ -192,7 +192,35 @@ class __specsettings_documented_test_set extends cms_test_case
             $num_matches = preg_match_all($regexp, $all_code, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
                 $var = $matches[1][$i];
-                if ((!file_exists(get_file_base() . '/sources/hooks/systems/disposable_values/' . $var . '.php')) && (/*LEGACY*/$var != 'ocf_version') && ($var != 'user_peak') && ($var != 'user_peak_week') && (substr($var, 0, 5) != 'last_') && (substr($var, 0, 4) != 'ftp_') && ($var != 'uses_ftp') && ($var != 'commandr_watched_chatroom') && (substr($var, 0, 8) != 'delurk__') && (substr($var, 0, 7) != 'backup_') && ($var != 'version') && ($var != 'cns_version') && ($var != 'newsletter_whatsnew') && ($var != 'newsletter_send_time') && ($var != 'site_salt') && ($var != 'sitemap_building_in_progress') && ($var != 'setupwizard_completed') && ($var != 'oracle_index_cleanup_last_time') && ($var != 'timezone') && ($var != 'users_online') && ($var != 'ran_once')) {// Quite a few are set in code
+
+                // Exceptions
+                if (in_array($var, [
+                    /*LEGACY*/'ocf_version',
+                    'user_peak',
+                    'uses_ftp',
+                    'version',
+                    'cns_version',
+                    'newsletter_whatsnew',
+                    'newsletter_send_time',
+                    'site_salt',
+                    'sitemap_building_in_progress',
+                    'setupwizard_completed',
+                    'oracle_index_cleanup_last_time',
+                    'timezone',
+                    'users_online',
+                    'user_peak_week',
+                    'ran_once',
+                    'commandr_watched_chatroom',
+                    'trusted_sites_1',
+                    'trusted_sites_2',
+                ])) {
+                    continue;
+                }
+                if ((substr($var, 0, 5) == 'last_') || (substr($var, 0, 4) == 'ftp_') || (substr($var, 0, 8) == 'delurk__') || (substr($var, 0, 7) == 'backup_')) {
+                    continue;
+                }
+
+                if (!file_exists(get_file_base() . '/sources/hooks/systems/disposable_values/' . $var . '.php')) {// Quite a few are set in code
                     $found[$var] = true;
                 }
             }
@@ -229,7 +257,7 @@ class __specsettings_documented_test_set extends cms_test_case
 
         $all_code = '';
 
-        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_NONBUNDLED | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, ['php', 'tpl', 'js']);
+        $files = get_directory_contents(get_file_base(), '', IGNORE_ALIEN | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_NONBUNDLED | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, ['php', 'tpl', 'js']);
         $files[] = 'install.php';
         foreach ($files as $path) {
             if ((basename($path) == 'shared_installs.php') || (strpos($path, 'sources/forum/') !== false) || (basename($path) == 'phpstub.php')) {

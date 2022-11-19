@@ -24,7 +24,7 @@ class sql_compat_test_set extends cms_test_case
 
         cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
-        $files = get_directory_contents(get_file_base(), '', IGNORE_ACCESS_CONTROLLERS | IGNORE_UNSHIPPED_VOLATILE | IGNORE_SHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_REBUILDABLE_OR_TEMP_FILES_FOR_BACKUP, true, true, ['php']);
+        $files = get_directory_contents(get_file_base(), '', IGNORE_ALIEN | IGNORE_ACCESS_CONTROLLERS | IGNORE_UNSHIPPED_VOLATILE | IGNORE_SHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_REBUILDABLE_OR_TEMP_FILES_FOR_BACKUP, true, true, ['php']);
         foreach ($files as $path) {
             if ($path == '_tests/tests/unit_tests/xml_db.php') {
                 continue;

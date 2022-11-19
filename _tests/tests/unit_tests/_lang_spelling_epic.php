@@ -38,9 +38,14 @@ class _lang_spelling_epic_test_set extends cms_test_case
         // Many of these aren't real words, but they appear for good reasons so we safelist them
         $okay_words = [
             preg_replace('#\..*$#', '', get_domain()),
+            'aaa',
             'escrowing',
             'escrowed',
             'escrowing',
+            'flexform',
+            'ipns',
+            'pdts',
+            'prioritising',
             'adddefaultcharset',
             'deserialised',
             'chargelog',
@@ -3298,7 +3303,7 @@ class _lang_spelling_epic_test_set extends cms_test_case
         ];
         foreach ($paths as $_path => $_ext) {
             $recurse = ($_path != '');
-            $files = get_directory_contents(get_file_base() . '/' . $_path, $_path, IGNORE_SHIPPED_VOLATILE | IGNORE_CUSTOM_DIRS | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, $recurse, true, [$_ext]);
+            $files = get_directory_contents(get_file_base() . '/' . $_path, $_path, IGNORE_ALIEN | IGNORE_SHIPPED_VOLATILE | IGNORE_CUSTOM_DIRS | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, $recurse, true, [$_ext]);
 
             foreach ($files as $path) {
                 // Exceptions

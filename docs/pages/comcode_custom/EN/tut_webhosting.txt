@@ -124,7 +124,7 @@ If running IIS:
 
 If running LiteSpeed:
  - Be aware that we do not provide explicit support for LiteSpeed.
- - LiteSpeed only supports [tt]mod_rewrite[/tt] directives from Apache [tt].htaccess[/tt] files; it does not support other directives such as [tt]AllowOverride[/tt] or [/tt]php_value[/tt] used in the files and will ignore them. Make sure you modify your PHP configuration according to the specified [tt]php_value[/tt] directives for your Composr site.
+ - LiteSpeed only supports [tt]mod_rewrite[/tt] directives from Apache [tt].htaccess[/tt] files; it does not support other directives such as [tt]AllowOverride[/tt] or [tt]php_value[/tt] used in the files and will ignore them. Make sure you modify your PHP configuration according to the specified [tt]php_value[/tt] directives for your Composr site.
  - You might have to modify all [tt]RewriteRule[/tt] substitutions to include a forward-slash (/) before [tt]index.php[/tt].
 
 If running Nginx:

@@ -25,7 +25,7 @@ class guids_test_set extends cms_test_case
         guid_scan_init();
 
         require_code('files2');
-        $files = get_directory_contents(get_file_base(), '', 0, true, true, ['php']);
+        $files = get_directory_contents(get_file_base(), '', IGNORE_ALIEN, true, true, ['php']);
         foreach ($files as $i => $path) {
             $scan = guid_scan($path);
             if ($scan === null) {

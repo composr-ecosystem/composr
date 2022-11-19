@@ -306,6 +306,7 @@ class js_file_test_set extends cms_test_case
             if (in_array($class, [
                 'js-comcode-button-',
                 'js-click-confirm-warning',
+                'js-delete-photo',
             ])) {
                 continue;
             }

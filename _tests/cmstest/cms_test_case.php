@@ -273,7 +273,8 @@ class cms_test_case extends WebTestCase
         }
     }
 
-    protected function get_canonical_member_id($username) {
+    protected function get_canonical_member_id($username)
+    {
         return $GLOBALS['FORUM_DRIVER']->get_member_from_username($this->get_canonical_username($username));
     }
 

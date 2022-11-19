@@ -18,6 +18,11 @@
  */
 class config_test_set extends cms_test_case
 {
+    public function setUp()
+    {
+        disable_php_memory_limit();
+    }
+
     public function testSaneDefaults()
     {
         if (($this->only !== null) && ($this->only != 'testSaneDefaults')) {
@@ -85,7 +90,7 @@ class config_test_set extends cms_test_case
         $hooks = find_all_hooks('systems', 'config');
         ksort($hooks);
 
-        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, ['php', 'tpl', 'txt', 'css', 'js', 'xml']);
+        $files = get_directory_contents(get_file_base(), '', IGNORE_ALIEN | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, ['php', 'tpl', 'txt', 'css', 'js', 'xml']);
         $files[] = 'install.php';
 
         foreach ($files as $path) {
@@ -240,7 +245,7 @@ class config_test_set extends cms_test_case
         }
 
         require_code('files2');
-        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, ['js']);
+        $files = get_directory_contents(get_file_base(), '', IGNORE_ALIEN | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, ['js']);
         $found = [];
         foreach ($files as $path) {
             if ((in_safe_mode()) && (should_ignore_file($path, IGNORE_NONBUNDLED))) {
@@ -339,7 +344,7 @@ class config_test_set extends cms_test_case
             $this->assertTrue($details['addon'] != 'core', 'Don\'t put config options in core, put them in core_configuration - ' . $hook);
         }
 
-        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES);
+        $files = get_directory_contents(get_file_base(), '', IGNORE_ALIEN | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES);
         $files[] = 'install.php';
         foreach ($files as $path) {
             // Exceptions

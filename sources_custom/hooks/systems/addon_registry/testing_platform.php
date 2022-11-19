@@ -857,7 +857,7 @@ We hope other users will appreciate your efforts and give you some points to rew
             '_tests/tests/unit_tests/lang_tokeniser.php',
             '_tests/tests/unit_tests/missing_block_params.php',
             '_tests/tests/unit_tests/missing_colour_equations.php',
-            '_tests/tests/unit_tests/modularisation.php',
+            '_tests/tests/unit_tests/aaa_modularisation.php',
             '_tests/tests/unit_tests/module_names_defined.php',
             '_tests/tests/unit_tests/multi_moderations.php',
             '_tests/tests/unit_tests/news_categories.php',

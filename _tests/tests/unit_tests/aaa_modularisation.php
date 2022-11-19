@@ -13,10 +13,12 @@
  * @package    testing_platform
  */
 
+// "aaa" as we want it to run first, else files not correctly modularised won't be tested
+
 /**
  * Composr test case class (unit testing).
  */
-class modularisation_test_set extends cms_test_case
+class aaa_modularisation_test_set extends cms_test_case
 {
     public function setUp()
     {
@@ -111,7 +113,16 @@ class modularisation_test_set extends cms_test_case
         $ignore = IGNORE_CUSTOM_DIR_FLOATING_CONTENTS | IGNORE_UPLOADS | IGNORE_FLOATING | IGNORE_CUSTOM_ZONES | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_LANGS | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_REVISION_FILES;
         //$ignore = IGNORE_FLOATING | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_LANGS | IGNORE_UNSHIPPED_VOLATILE; Uncomment for more careful testing
         $files = get_directory_contents(get_file_base(), '', $ignore);
+        $forum_drivers = get_directory_contents(get_file_base() . '/sources/forum', '', 0, false, true, ['php']);
+        foreach ($forum_drivers as &$forum_driver) {
+            $forum_driver = basename($forum_driver, '.php');
+        }
         foreach ($files as $path) {
+            // Exceptions
+            if (preg_match('#^(' . implode('|', $forum_drivers) . ')/#i', $path) != 0) {
+                continue;
+            }
+
             $found = false;
             foreach ($addon_data as $addon_name => $addon_files) {
                 foreach ($addon_files as $fileindex => $_path) {

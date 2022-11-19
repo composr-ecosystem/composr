@@ -18,6 +18,11 @@
  */
 class privilege_existence_test_set extends cms_test_case
 {
+    public function setUp()
+    {
+        disable_php_memory_limit();
+    }
+
     public function testCode()
     {
         require_code('files2');
@@ -36,7 +41,7 @@ class privilege_existence_test_set extends cms_test_case
 
         cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
-        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES);
+        $files = get_directory_contents(get_file_base(), '', IGNORE_ALIEN | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES);
         $files[] = 'install.php';
         foreach ($files as $path) {
             $file_type = get_file_extension($path);

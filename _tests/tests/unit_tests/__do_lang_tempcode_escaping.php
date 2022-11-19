@@ -44,7 +44,7 @@ class __do_lang_tempcode_escaping_test_set extends cms_test_case
         ];
 
         require_code('files2');
-        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, ['php']);
+        $files = get_directory_contents(get_file_base(), '', IGNORE_ALIEN | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, ['php']);
         foreach ($files as $path) {
             $c = file_get_contents(get_file_base() . '/' . $path);
 
@@ -190,6 +190,9 @@ class __do_lang_tempcode_escaping_test_set extends cms_test_case
                         '91a47a9198424f9d17fd08e3f50b7be1',
                         '0d29d34745ae40f3c7a6e79450e34ca3',
                         '25c4ea17263af0a430720358b539a30c',
+                        '0342c6726847e093b648327c4e9eacaa',
+                        '2fac1e74cebabdf920e66f107c84e24f',
+                        '44a7c4f5179a0f92fc57f36e6b427f9d',
                     ])) {
                         continue;
                     }

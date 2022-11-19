@@ -142,7 +142,7 @@ class file_type_safelisting_test_set extends cms_test_case
         cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
         require_code('files2');
-        $php_files = get_directory_contents(get_file_base(), '', IGNORE_NONBUNDLED | IGNORE_UNSHIPPED_VOLATILE | IGNORE_SHIPPED_VOLATILE | IGNORE_REBUILDABLE_OR_TEMP_FILES_FOR_BACKUP, true, true, ['php']);
+        $php_files = get_directory_contents(get_file_base(), '', IGNORE_ALIEN | IGNORE_NONBUNDLED | IGNORE_UNSHIPPED_VOLATILE | IGNORE_SHIPPED_VOLATILE | IGNORE_REBUILDABLE_OR_TEMP_FILES_FOR_BACKUP, true, true, ['php']);
         $exts = [];
         foreach ($php_files as $path) {
             $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK);

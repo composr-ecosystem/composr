@@ -26,7 +26,7 @@ class clean_reinstall_test_set extends cms_test_case
 
         cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
-        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, ['php']);
+        $files = get_directory_contents(get_file_base(), '', IGNORE_ALIEN | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, ['php']);
         $files[] = 'install.php';
         foreach ($files as $i => $path) {
             $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);

@@ -45,6 +45,7 @@ function init__files()
         define('IGNORE_CUSTOM_DIRS', 4096); // Any *_custom directory, except for the default index.html/.htaccess files (access controller files) in them
         define('IGNORE_CUSTOM_DIR_FLOATING_CONTENTS', 8192); // Any *_custom directory which represents user-data we should ignore within a dev machine [very conservative compared to IGNORE_CUSTOM_DIRS, only Comcode pages and theme images], except for the default index.html/.htaccess files (access controller files) in them
         define('IGNORE_UPLOADS', 16384); // The uploads directory, except for the default index.html/.htaccess files (access controller files) in them
+        define('IGNORE_ALIEN', 32768); // Similar to IGNORE_FLOATING except finds anything not defined in an addon (bundled or non-bundled). Used a lot in the automated tests. Note that this will make automated tests not work if you haven't yet put new files into an addon_registry hook.
 
         define('FILE_WRITE_FAILURE_SILENT', 1);
         define('FILE_WRITE_FAILURE_SOFT', 2);
@@ -731,9 +732,9 @@ function should_ignore_file(string $path, int $bitmask = 0) : bool
     }
 
     if (($bitmask & IGNORE_NONBUNDLED) != 0) {
-        static $addon_files = null;
-        if ($addon_files === null) {
-            $addon_files = [];
+        static $addon_files_nonbundled = null;
+        if ($addon_files_nonbundled === null) {
+            $addon_files_nonbundled = [];
             $hooks = find_all_hooks('systems', 'addon_registry');
             if (!defined('DEFAULT_ZONE_PAGE_NAME')) {
                 define('DEFAULT_ZONE_PAGE_NAME', 'home');
@@ -744,20 +745,44 @@ function should_ignore_file(string $path, int $bitmask = 0) : bool
                         require_code('addons');
                         $hook_path = get_file_base() . '/sources_custom/hooks/systems/addon_registry/' . filter_naughty_harsh($hook) . '.php';
                         $addon_info = read_addon_info($hook, false, null, null, $hook_path);
-                        $addon_files = array_merge($addon_files, array_map('cms_strtolower_ascii', $addon_info['files']));
+                        $addon_files_nonbundled = array_merge($addon_files_nonbundled, array_map('cms_strtolower_ascii', $addon_info['files']));
                     } else { // Running from outside Composr
                         require_code('hooks/systems/addon_registry/' . filter_naughty_harsh($hook));
-                        $ob = object_factory('Hook_addon_registry_' . filter_naughty_harsh($hook));
-                        $addon_files = array_merge($addon_files, array_map(function_exists('cms_strtolower_ascii') ? 'cms_strtolower_ascii' : 'strtolower', $ob->get_file_list()));
+                        $hook_ob = object_factory('Hook_addon_registry_' . filter_naughty_harsh($hook));
+                        $addon_files_nonbundled = array_merge($addon_files_nonbundled, array_map(function_exists('cms_strtolower_ascii') ? 'cms_strtolower_ascii' : 'strtolower', $hook_ob->get_file_list()));
                     }
                 }
             }
-            $addon_files = array_flip($addon_files);
+            $addon_files_nonbundled = array_flip($addon_files_nonbundled);
         }
-        if ((isset($addon_files[$path])) || (isset($addon_files[function_exists('cms_strtolower_ascii') ? cms_strtolower_ascii($path) : strtolower($path)]))) {
+        if ((isset($addon_files_nonbundled[$path])) || (isset($addon_files_nonbundled[function_exists('cms_strtolower_ascii') ? cms_strtolower_ascii($path) : strtolower($path)]))) {
             return true;
         }
         // Note that we have no support for identifying directories related to addons, only files inside. Code using this function should detect directories with no usable files in as relating to addons.
+    }
+
+    if (($bitmask & IGNORE_ALIEN) != 0) {
+        if (is_file(get_file_base() . '/' . $path)) {
+            static $addon_files = null;
+            if ($addon_files === null) {
+                $addon_files = [];
+                $hook_obs = find_all_hook_obs('systems', 'addon_registry', 'Hook_addon_registry_');
+                if (!defined('DEFAULT_ZONE_PAGE_NAME')) {
+                    define('DEFAULT_ZONE_PAGE_NAME', 'home');
+                }
+                foreach ($hook_obs as $hook => $hook_ob) {
+                    if (function_exists('extract_module_functions')) {
+                        $addon_files = array_merge($addon_files, array_map('cms_strtolower_ascii', $hook_ob->get_file_list()));
+                    } else { // Running from outside Composr
+                        $addon_files = array_merge($addon_files, array_map(function_exists('cms_strtolower_ascii') ? 'cms_strtolower_ascii' : 'strtolower', $hook_ob->get_file_list()));
+                    }
+                }
+                $addon_files = array_flip($addon_files);
+            }
+            if ((!isset($addon_files[$path])) && (!isset($addon_files[function_exists('cms_strtolower_ascii') ? cms_strtolower_ascii($path) : strtolower($path)]))) {
+                return true;
+            }
+        }
     }
 
     if (($bitmask & IGNORE_FLOATING) != 0) {

@@ -69,7 +69,7 @@ class Module_admin_svg_sprites
      */
     public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
-        if (get_option('sprite_icons') == '0') {
+        if (get_theme_option('sprite_icons') == '0') {
             return [];
         }
 

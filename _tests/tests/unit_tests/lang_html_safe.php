@@ -143,7 +143,7 @@ class lang_html_safe_test_set extends cms_test_case
         if (($dh = opendir($dir)) !== false) {
             while (($file = readdir($dh)) !== false) {
                 $path = (($dir_stub == '') ? '' : ($dir_stub . '/')) . $file;
-                if ((should_ignore_file($path, IGNORE_FLOATING | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_CUSTOM_DIRS | IGNORE_CUSTOM_THEMES)) && ($path != 'install.php')) {
+                if ((should_ignore_file($path, IGNORE_ALIEN | IGNORE_FLOATING | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_CUSTOM_DIRS | IGNORE_CUSTOM_THEMES)) && ($path != 'install.php')) {
                     continue;
                 }
 

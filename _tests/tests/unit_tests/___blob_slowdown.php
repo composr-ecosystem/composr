@@ -94,7 +94,7 @@ class ___blob_slowdown_test_set extends cms_test_case
         require_code('third_party_code');
         require_code('files2');
 
-        $files = get_directory_contents(get_file_base(), '', IGNORE_FLOATING | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE, true, true, ['php']);
+        $files = get_directory_contents(get_file_base(), '', IGNORE_ALIEN | IGNORE_FLOATING | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE, true, true, ['php']);
         foreach ($files as $path) {
             // Exceptions
             $exceptions = array_merge(list_untouchable_third_party_directories(), [

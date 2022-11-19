@@ -24,7 +24,7 @@ class git_conflicts_test_set extends cms_test_case
 
         require_code('files2');
 
-        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, ['php', 'tpl', 'css', 'js', 'xml', 'txt', 'sh']);
+        $files = get_directory_contents(get_file_base(), '', IGNORE_ALIEN | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, ['php', 'tpl', 'css', 'js', 'xml', 'txt', 'sh']);
         $files[] = 'install.php';
         foreach ($files as $path) {
             // Exceptions

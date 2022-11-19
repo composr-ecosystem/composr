@@ -170,7 +170,7 @@ class _actionlog_test_set extends cms_test_case
 
         require_code('files');
         require_code('files2');
-        $files = get_directory_contents(get_file_base());
+        $files = get_directory_contents(get_file_base(), '', IGNORE_ALIEN);
         $all_code = '';
         foreach ($files as $f) {
             if (substr($f, -4) == '.php') {

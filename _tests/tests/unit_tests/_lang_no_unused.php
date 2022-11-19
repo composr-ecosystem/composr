@@ -35,7 +35,7 @@ class _lang_no_unused_test_set extends cms_test_case
 
         $all_php_files = [];
         $all_template_files = [];
-        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, ['php']);
+        $files = get_directory_contents(get_file_base(), '', IGNORE_ALIEN | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, ['php']);
         $files[] = 'install.php';
         foreach ($files as $path) {
             if (preg_match('#^(' . implode('|', $exceptions_dirs) . ')/#', $path) != 0) {
@@ -47,7 +47,7 @@ class _lang_no_unused_test_set extends cms_test_case
 
             $all_php_files[] = $path;
         }
-        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, ['tpl']);
+        $files = get_directory_contents(get_file_base(), '', IGNORE_ALIEN | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, ['tpl']);
         foreach ($files as $path) {
             if (preg_match('#^(' . implode('|', $exceptions_dirs) . ')/#', $path) != 0) {
                 continue;
@@ -58,7 +58,7 @@ class _lang_no_unused_test_set extends cms_test_case
 
             $all_template_files[] = $path;
         }
-        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, ['js']);
+        $files = get_directory_contents(get_file_base(), '', IGNORE_ALIEN | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, ['js']);
         foreach ($files as $path) {
             if (preg_match('#^(' . implode('|', $exceptions_dirs) . ')/#', $path) != 0) {
                 continue;
@@ -72,7 +72,7 @@ class _lang_no_unused_test_set extends cms_test_case
                 $all_template_files[] = $path;
             }
         }
-        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, ['txt']);
+        $files = get_directory_contents(get_file_base(), '', IGNORE_ALIEN | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, ['txt']);
         foreach ($files as $path) {
             if (preg_match('#^(' . implode('|', $exceptions_dirs) . ')/#', $path) != 0) {
                 continue;
@@ -83,7 +83,7 @@ class _lang_no_unused_test_set extends cms_test_case
 
             $all_template_files[] = $path;
         }
-        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, ['xml']);
+        $files = get_directory_contents(get_file_base(), '', IGNORE_ALIEN | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, ['xml']);
         foreach ($files as $path) {
             if (preg_match('#^(' . implode('|', $exceptions_dirs) . ')/#', $path) != 0) {
                 continue;

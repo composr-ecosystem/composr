@@ -32,7 +32,7 @@ class comcode_pages_test_set extends cms_test_case
         set_throw_errors(true);
 
         if ($this->only === null) {
-            $files = get_directory_contents(get_file_base(), '', 0, true, true, ['txt']);
+            $files = get_directory_contents(get_file_base(), '', IGNORE_ALIEN, true, true, ['txt']);
         } else {
             $files = ['docs/pages/comcode_custom/EN/' . $this->only . '.txt'];
         }

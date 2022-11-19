@@ -33,7 +33,7 @@ class standard_dir_files_test_set extends cms_test_case
         $max_version = 8;
 
         require_code('files2');
-        $files = get_directory_contents(get_file_base(), '', 0, true, true, ['htaccess']);
+        $files = get_directory_contents(get_file_base(), '', IGNORE_ALIEN, true, true, ['htaccess']);
         sort($files);
         $types = [];
         foreach ($files as $path) {
@@ -59,7 +59,7 @@ class standard_dir_files_test_set extends cms_test_case
     public function testHtaccessConsistency()
     {
         require_code('files2');
-        $files = get_directory_contents(get_file_base(), '', 0, true, true, ['htaccess']);
+        $files = get_directory_contents(get_file_base(), '', IGNORE_ALIEN, true, true, ['htaccess']);
         sort($files);
         $types = [];
         foreach ($files as $path) {
@@ -124,7 +124,7 @@ class standard_dir_files_test_set extends cms_test_case
         $dh = opendir($dir);
         if ($dh !== false) {
             while (($file = readdir($dh)) !== false) {
-                if (should_ignore_file((($dir_stub == '') ? '' : ($dir_stub . '/')) . $file, IGNORE_FLOATING | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_LANGS)) {
+                if (should_ignore_file((($dir_stub == '') ? '' : ($dir_stub . '/')) . $file, IGNORE_ALIEN | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_LANGS)) {
                     continue;
                 }
 
@@ -146,16 +146,8 @@ class standard_dir_files_test_set extends cms_test_case
 
         if ($contents_count > 0) {
             if (
-                // LEGACY
-                ($dir_stub != 'uploads/iotds_addon') &&
-                ($dir_stub != 'uploads/iotds_addon_thumbs') &&
-                ($dir_stub != 'uploads/cns_photos_thumbs') &&
-
                 (preg_match('#^data/ckeditor(/|$)#', $dir_stub) == 0) && // We do not bother for CKEditor, it is none interesting and they do not ship these files themselves - and we want upgrading to be easy
-                (preg_match('#^uploads/website_specific/test(/|$)#', $dir_stub) == 0) && // LEGACY: Not from v10 test XML DB
-                (preg_match('#^caches/guest_pages(/|$)#', $dir_stub) == 0) && // LEGACY: Not from v10 static cache dir
-                (preg_match('#^_tests/codechecker(/|$)#', $dir_stub) == 0) && // Not in codechecker (we need to call CQC)
-                (preg_match('#^uploads/filedump/xxx(/|$)#', $dir_stub) == 0) // Created for a test
+                (preg_match('#^_tests/codechecker(/|$)#', $dir_stub) == 0) // Not in codechecker (we need to call CQC)
             ) {
                 if (
                     (!file_exists($dir . '/index.php')) // Not in a zone (needs to run as default)
@@ -174,7 +166,6 @@ class standard_dir_files_test_set extends cms_test_case
             }
 
             if (
-                (preg_match('#^caches/guest_pages(/|$)#', $dir_stub) == 0) && // LEGACY: Not from v10 static cache dir
                 (preg_match('#^_tests/assets(/|$)#', $dir_stub) == 0) && // Needs to be web-executable
                 (!file_exists($dir . '/index.php')) && // Not in a zone (needs to run)
                 (!file_exists($dir . '/html_custom')) && // Not in an HTML directory (want to be able to call by hand)

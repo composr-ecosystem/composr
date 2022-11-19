@@ -6437,17 +6437,17 @@ function ecv_THEME_OPTION(string $lang, array $escaped, array $param) : string
  */
 function ecv_ECOMMERCE_OPTION(string $lang, array $escaped, array $param) : string
 {
-    require_code('ecommerce');
-
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
         ocp_mark_as_escaped($value);
     }
 
-    if (!empty($param[0])) {
+    if ((!empty($param[0])) && (addon_installed('ecommerce'))) {
         if ($GLOBALS['IN_MINIKERNEL_VERSION']) { // Installer, likely executing global.js. We need a saner default for JavaScript
             $value = '0';
         } else {
+            require_code('ecommerce');
+
             $value = get_ecommerce_option($param[0], !empty($param[1]));
             if ($value === null) {
                 $value = '';

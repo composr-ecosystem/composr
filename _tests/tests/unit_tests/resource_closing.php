@@ -31,7 +31,7 @@ class resource_closing_test_set extends cms_test_case
         require_code('files2');
         require_code('third_party_code');
 
-        $this->files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, ['php']);
+        $this->files = get_directory_contents(get_file_base(), '', IGNORE_ALIEN | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, ['php']);
         $this->files[] = 'install.php';
 
         foreach ($this->files as $i => $path) {

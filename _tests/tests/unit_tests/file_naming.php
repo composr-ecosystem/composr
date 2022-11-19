@@ -27,7 +27,7 @@ class file_naming_test_set extends cms_test_case
             '/-logo.png',
         ];
 
-        $files = get_directory_contents(get_file_base(), '', IGNORE_FLOATING | IGNORE_REVISION_FILES | IGNORE_EDITFROM_FILES | IGNORE_CUSTOM_THEMES | IGNORE_UPLOADS | IGNORE_CUSTOM_DIR_FLOATING_CONTENTS);
+        $files = get_directory_contents(get_file_base(), '', IGNORE_ALIEN | IGNORE_FLOATING | IGNORE_REVISION_FILES | IGNORE_EDITFROM_FILES | IGNORE_CUSTOM_THEMES | IGNORE_UPLOADS | IGNORE_CUSTOM_DIR_FLOATING_CONTENTS);
         foreach ($files as $path) {
             // Exceptions
             $exceptions = array_merge(list_untouchable_third_party_directories(), [
