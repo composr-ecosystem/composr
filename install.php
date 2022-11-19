@@ -1052,29 +1052,24 @@ function step_4() : object
     }*/
 
     $title = do_lang_tempcode((($forum_type == 'cns' || $forum_type == 'none') && $use_msn == 0) ? 'DATABASE_SETTINGS' : 'COMPOSR_SETTINGS');
-    if (($use_msn == 0) && ($forum_type != 'cns')) { // Merge into one set of options
-        $forum_options->attach($options);
-        $sections->attach(do_template('INSTALLER_STEP_4_SECTION', ['_GUID' => '48a122b54d68d9893533ece7237ea5e0', 'HIDDEN' => $hidden, 'TITLE' => $title, 'TEXT' => $forum_text, 'OPTIONS' => $forum_options]));
-    } else {
-        if (GOOGLE_APPENGINE) {
-            $title = do_lang_tempcode('DEV_DATABASE_SETTINGS');
-            $text = do_lang_tempcode('DEV_DATABASE_SETTINGS_HELP');
-            $sections->attach(do_template('INSTALLER_STEP_4_SECTION', ['HIDDEN' => $hidden, 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options]));
+    if (GOOGLE_APPENGINE) {
+        $title = do_lang_tempcode('DEV_DATABASE_SETTINGS');
+        $text = do_lang_tempcode('DEV_DATABASE_SETTINGS_HELP');
+        $sections->attach(do_template('INSTALLER_STEP_4_SECTION', ['HIDDEN' => $hidden, 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options]));
 
-            $title = do_lang_tempcode('LIVE_DATABASE_SETTINGS');
-            $text = do_lang_tempcode('LIVE_DATABASE_SETTINGS_HELP');
-            $options = new Tempcode();
-            $options->attach(make_option(do_lang_tempcode('DATABASE_HOST'), new Tempcode(), 'gae_live_db_site_host', ':/cloudsql/<application>:<application>', false, true));
-            $options->attach(make_option(do_lang_tempcode('DATABASE_NAME'), new Tempcode(), 'gae_live_db_site', '<application>', false, true));
-            $options->attach(make_option(do_lang_tempcode('DATABASE_USERNAME'), new Tempcode(), 'gae_live_db_site_user', 'root', false, true));
-            $options->attach(make_option(do_lang_tempcode('DATABASE_PASSWORD'), new Tempcode(), 'gae_live_db_site_password', '', true));
-            $sections->attach(do_template('INSTALLER_STEP_4_SECTION', ['HIDDEN' => '', 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options]));
-        } else {
-            if (!$forum_options->is_empty()) {
-                $sections->attach(do_template('INSTALLER_STEP_4_SECTION', ['_GUID' => '232b69a995f384275c1cd9269a42c3b8', 'HIDDEN' => '', 'TITLE' => $forum_title, 'TEXT' => $forum_text, 'OPTIONS' => $forum_options]));
-            }
-            $sections->attach(do_template('INSTALLER_STEP_4_SECTION', ['_GUID' => '15e0f275f78414b6c4fe7775a1cacb23', 'HIDDEN' => $hidden, 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options]));
+        $title = do_lang_tempcode('LIVE_DATABASE_SETTINGS');
+        $text = do_lang_tempcode('LIVE_DATABASE_SETTINGS_HELP');
+        $options = new Tempcode();
+        $options->attach(make_option(do_lang_tempcode('DATABASE_HOST'), new Tempcode(), 'gae_live_db_site_host', ':/cloudsql/<application>:<application>', false, true));
+        $options->attach(make_option(do_lang_tempcode('DATABASE_NAME'), new Tempcode(), 'gae_live_db_site', '<application>', false, true));
+        $options->attach(make_option(do_lang_tempcode('DATABASE_USERNAME'), new Tempcode(), 'gae_live_db_site_user', 'root', false, true));
+        $options->attach(make_option(do_lang_tempcode('DATABASE_PASSWORD'), new Tempcode(), 'gae_live_db_site_password', '', true));
+        $sections->attach(do_template('INSTALLER_STEP_4_SECTION', ['HIDDEN' => '', 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options]));
+    } else {
+        if (!$forum_options->is_empty()) {
+            $sections->attach(do_template('INSTALLER_STEP_4_SECTION', ['_GUID' => '232b69a995f384275c1cd9269a42c3b8', 'HIDDEN' => '', 'TITLE' => $forum_title, 'TEXT' => $forum_text, 'OPTIONS' => $forum_options]));
         }
+        $sections->attach(do_template('INSTALLER_STEP_4_SECTION', ['_GUID' => '15e0f275f78414b6c4fe7775a1cacb23', 'HIDDEN' => $hidden, 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options]));
     }
 
     // Advanced settings...
