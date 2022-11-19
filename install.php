@@ -151,7 +151,7 @@ handle_self_referencing_embedment();
 
 // Requirements check
 if (version_compare(PHP_VERSION, '7.2', '<')) {
-    exit(do_lang('PHP_TOO_OLD'));
+    exit(do_lang('PHP_TOO_OLD', '7.2'));
 }
 
 // Set up some globals

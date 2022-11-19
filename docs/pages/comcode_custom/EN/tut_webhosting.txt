@@ -143,7 +143,9 @@ If running Nginx:
 PHP is software which provides the environment that Composr is written for.
 
 We require:
- - A minimum of PHP version 7.2 (but really we strongly discourage hosting anything that is [url="not officially supported by the PHP developers"]https://www.php.net/supported-versions.php[/url]).
+ - A minimum of PHP version 7.2, however:
+  - We strongly discourage hosting anything that is [url="not officially supported by the PHP developers"]https://www.php.net/supported-versions.php[/url].
+  - Forum drivers may require a newer version of PHP if the forum software itself does.
  - A maximum of PHP 8.0 (this is what we have tested up to, although newer versions usually do work or are quickly fixed to work).
  - The following PHP extensions:
   - GD2 ([tt]gd[/tt]), including PNG and JPEG support (GD is used by PHP for image generation, e.g. to generate thumbnails).

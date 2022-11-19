@@ -174,6 +174,17 @@ function _hash_crypt_private(string $password, string $setting, string &$itoa64)
 class Forum_driver_phpbb3 extends Forum_driver_base
 {
     /**
+     * Constructor.
+     */
+    function __construct()
+    {
+        $version_required = '7.3';
+        if (version_compare(PHP_VERSION, $version_required, '<')) {
+            warn_exit(do_lang('PHP_TOO_OLD', $version_required));
+        }
+    }
+
+    /**
      * Check the connected DB is valid for this forum driver.
      *
      * @return boolean Whether it is valid
