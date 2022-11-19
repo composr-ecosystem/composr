@@ -394,7 +394,7 @@ class Module_admin_import
             $fields->attach(form_input_password(do_lang_tempcode('installer:DATABASE_PASSWORD'), do_lang_tempcode('_FROM_IMPORTING_SYSTEM'), 'db_password', false)); // Not required as there may be a blank password
             $fields->attach(form_input_line(do_lang_tempcode('TABLE_PREFIX'), do_lang_tempcode('_FROM_IMPORTING_SYSTEM'), 'db_table_prefix', $db_table_prefix, false));
         }
-        $fields->attach(form_input_line(do_lang_tempcode('FILE_BASE'), do_lang_tempcode('FROM_IMPORTING_SYSTEM'), 'old_base_dir', $old_base_dir, true)); // This guides where probing will happen from
+        $fields->attach(form_input_line(do_lang_tempcode('FILE_BASE'), do_lang_tempcode('FROM_IMPORTING_SYSTEM', escape_html($info['product'])), 'old_base_dir', $old_base_dir, true)); // This guides where probing will happen from
         $fields->attach(form_input_integer(do_lang_tempcode('REFRESH_TIME'), do_lang_tempcode('DESCRIPTION_REFRESH_TIME'), 'refresh_time', ($refresh_time == 0) ? null : $refresh_time, false));
         if (method_exists($object, 'get_extra_fields')) {
             $fields->attach($object->get_extra_fields());
