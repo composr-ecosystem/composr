@@ -41,7 +41,7 @@ class Block_main_cns_involved_topics
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = ['member_id', 'max', 'start', 'check'];
+        $info['parameters'] = ['member_id', 'max', 'start', 'private_topics', 'check'];
         return $info;
     }
 
@@ -65,7 +65,7 @@ class Block_main_cns_involved_topics
         $block_id = get_block_id($map);
 
         $check_perms = array_key_exists('check', $map) ? ($map['check'] == '1') : true;
-
+        $private_topics = array_key_exists('private_topics', $map) ? ($map['private_topics'] == '1') : false;
         $member_id_of = array_key_exists('member_id', $map) ? intval($map['member_id']) : get_member();
         $max = get_param_integer($block_id . '_max', array_key_exists('max', $map) ? intval($map['max']) : 10);
         $start = get_param_integer($block_id . '_start', array_key_exists('start', $map) ? intval($map['start']) : 0);
@@ -94,10 +94,19 @@ class Block_main_cns_involved_topics
             $where_more .= ' AND p_cache_forum_id<>' . strval($forum2);
         }
         */
-        $rows = $GLOBALS['FORUM_DB']->query('SELECT DISTINCT p_topic_id,p_time FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_poster=' . strval($member_id_of) . $where_more . ' ORDER BY p_time DESC', $max, $start, false, true);
+        $sql = 'SELECT DISTINCT p_topic_id,p_time FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_poster=' . strval($member_id_of) . $where_more;
+        if (!$private_topics) {
+            $sql .= ' AND p_cache_forum_id IS NOT NULL';
+        }
+        $sql .= ' ORDER BY p_time DESC';
+        $rows = $GLOBALS['FORUM_DB']->query($sql, $max, $start, false, true);
         if (!empty($rows)) {
             if (get_bot_type() === null) {
-                $max_rows = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(DISTINCT p_topic_id) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_poster=' . strval($member_id_of) . $where_more, false, true);
+                $sql_max_rows = 'SELECT COUNT(DISTINCT p_topic_id) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_poster=' . strval($member_id_of) . $where_more;
+                if (!$private_topics) {
+                    $sql_max_rows .= ' AND p_cache_forum_id IS NOT NULL';
+                }
+                $max_rows = $GLOBALS['FORUM_DB']->query_value_if_there($sql_max_rows, false, true);
             } else {
                 $max_rows = count($rows); // We don't want bots hogging resources on somewhere they don't need to dig into
             }
