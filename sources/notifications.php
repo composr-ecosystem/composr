@@ -683,12 +683,17 @@ class Notification_dispatcher
  *
  * @param  integer $setting The notification setting
  * @param  ?MEMBER $member_id Member to check for (null: just check globally)
+ * @param  ?integer $allowed_setting Limit to a particular $allowed_setting (restriction from a particular notification code) (null: none)
  * @return boolean Whether it is available
  *
  * @ignore
  */
-function _notification_setting_available(int $setting, ?int $member_id = null) : bool
+function _notification_setting_available(int $setting, ?int $member_id = null, int $allowed_setting = null) : bool
 {
+    if (($allowed_setting !== null) && (($allowed_setting & $setting) == 0)) {
+        return false;
+    }
+
     static $nsa_cache = [];
     if (isset($nsa_cache[$setting][$member_id])) {
         return $nsa_cache[$setting][$member_id];
@@ -769,85 +774,70 @@ function _notification_setting_available(int $setting, ?int $member_id = null) :
  */
 function _find_member_statistical_notification_type(int $to_member_id, string $notification_code) : int
 {
-    global $HOOKS_NOTIFICATION_TYPES_EXTENDED;
+    $ob = _get_notification_ob_for_code($notification_code);
+    $allowed_setting = $ob->allowed_settings($notification_code);
 
     // Pre-sweep incase a hook really really wants a particular notification code
+    global $HOOKS_NOTIFICATION_TYPES_EXTENDED;
     foreach ($HOOKS_NOTIFICATION_TYPES_EXTENDED as $hook => $ob) {
         if (method_exists($ob, '_find_member_statistical_notification_type')) {
             $setting = $ob->_find_member_statistical_notification_type($to_member_id, $notification_code, true);
             if ($setting !== null) {
-                $setting |= A_WEB_NOTIFICATION;
+                if (_notification_setting_available(A_WEB_NOTIFICATION, $to_member_id, $allowed_setting)) {
+                    $setting |= A_WEB_NOTIFICATION;
+                }
                 return $setting;
             }
         }
     }
 
+    // Check cache
     static $cache = [];
     if (isset($cache[$to_member_id])) {
         return $cache[$to_member_id];
     }
 
+    // Compute...
+
     $setting = null;
 
+    // Search for what can be done to find true statistical result
     $notifications_enabled = $GLOBALS['SITE_DB']->query_select('notifications_enabled', ['l_setting'], ['l_member_id' => $to_member_id, 'l_notification_code' => $notification_code], '', 100/*within reason*/);
     if (empty($notifications_enabled)) {
         $notifications_enabled = $GLOBALS['SITE_DB']->query_select('notifications_enabled', ['l_setting'], ['l_member_id' => $to_member_id, 'l_code_category' => ''], '', 100/*within reason*/);
     }
-
-    // If no notifications so far, we look for defaults
-    if (empty($notifications_enabled)) {
-        foreach ($HOOKS_NOTIFICATION_TYPES_EXTENDED as $hook => $ob) {
-            if (method_exists($ob, '_find_member_statistical_notification_type')) {
-                $setting = $ob->_find_member_statistical_notification_type($to_member_id, $notification_code, false);
-                if ($setting !== null) {
-                    break;
-                }
-            }
-        }
-
-        if ($setting === null) {
-            if (_notification_setting_available(A_INSTANT_EMAIL, $to_member_id)) { // Default to e-mail
-                $setting = A_INSTANT_EMAIL;
-            }
-        }
-    }
-
-    // Search for what can be done to find true statistical result
-    if ($setting === null) {
+    if (!empty($notifications_enabled)) {
         $possible_settings = [];
         $best_settings = [];
         global $ALL_NOTIFICATION_TYPES;
         foreach ($ALL_NOTIFICATION_TYPES as $possible_setting) {
-            if (_notification_setting_available($possible_setting, $to_member_id)) {
+            if (_notification_setting_available($possible_setting, $to_member_id, $allowed_setting)) {
                 $possible_settings[] = $possible_setting;
             }
         }
         foreach ($notifications_enabled as $ml) {
-            if ($ml['l_setting'] >= 0) {
-                // Compound setting as possibility
+            foreach ($possible_settings as $possible_setting) {
                 if (($ml['l_setting'] & $possible_setting) != 0) {
-                    if (!isset($best_settings[$ml['l_setting']])) {
-                        $best_settings[$ml['l_setting']] = 0;
+                    if (!isset($best_settings[$possible_setting])) {
+                        $best_settings[$possible_setting] = 0;
                     }
-                    $best_settings[$ml['l_setting']]++;
-                }
-
-                // Individual settings as possibilities
-                foreach ($possible_settings as $possible_setting) {
-                    if (($ml['l_setting'] & $possible_setting) != 0) {
-                        if (!isset($best_settings[$possible_setting])) {
-                            $best_settings[$possible_setting] = 0;
-                        }
-                        $best_settings[$possible_setting]++;
-                    }
+                    $best_settings[$possible_setting]++;
                 }
             }
         }
-        arsort($possible_settings);
-        reset($possible_settings);
-        $setting = key($possible_settings);
-        if ($setting === null) {
-            $setting = _notification_setting_available(A_INSTANT_EMAIL, $to_member_id) ? A_INSTANT_EMAIL : A_WEB_NOTIFICATION; // Nothing available, so save as an e-mail notification even though it cannot be received
+        arsort($best_settings);
+        reset($best_settings);
+        $setting = key($best_settings);
+    }
+
+    // Desperate
+    if ($setting === null) {
+        $setting = 0;
+        if (_notification_setting_available(A_INSTANT_EMAIL, $to_member_id, $allowed_setting)) {
+            $setting |= A_INSTANT_EMAIL;
+        }
+        if (_notification_setting_available(A_WEB_NOTIFICATION, $to_member_id, $allowed_setting)) {
+            $setting |= A_WEB_NOTIFICATION;
         }
     }
 

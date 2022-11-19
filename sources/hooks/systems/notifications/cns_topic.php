@@ -153,18 +153,6 @@ class Hook_notification_cns_topic extends Hook_Notification
     }
 
     /**
-     * Find the setting that members have for a notification code if they have done some action triggering automatic setting (e.g. posted within a topic).
-     *
-     * @param  ID_TEXT $notification_code Notification code
-     * @param  ?SHORT_TEXT $category The category within the notification code (null: none)
-     * @return integer Automatic setting
-     */
-    public function get_default_auto_setting(string $notification_code, ?string $category = null) : int
-    {
-        return A__STATISTICAL;
-    }
-
-    /**
      * Get a list of all the notification codes this hook can handle.
      * (Addons can define hooks that handle whole sets of codes, so hooks are written so they can take wide authority).
      *
