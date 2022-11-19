@@ -262,10 +262,13 @@ class Module_admin_import
 
         $post_url = build_url(['page' => '_SELF', 'type' => 'session'], '_SELF');
 
+        $hidden = new Tempcode();
+        $hidden->attach(form_input_hidden('csrf_token_preserve', '1'));
+
         return do_template('FORM_SCREEN', [
             '_GUID' => '02416e5e9d6cb64248adeb9d2e6f2402',
             'GET' => true,
-            'HIDDEN' => '',
+            'HIDDEN' => $hidden,
             'SKIP_WEBSTANDARDS' => true,
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => do_lang_tempcode('PROCEED'),
@@ -318,10 +321,14 @@ class Module_admin_import
 
         $post_url = build_url(['page' => '_SELF', 'type' => 'session2', 'importer' => get_param_string('importer')], '_SELF');
 
+        $hidden = new Tempcode();
+        $hidden->attach(form_input_hidden('csrf_token_preserve', '1'));
+        $hidden->attach(form_input_hidden('importer', get_param_string('importer')));
+
         return do_template('FORM_SCREEN', [
             '_GUID' => 'f474980f7263f2def2ff75e7ee40be33',
             'SKIP_WEBSTANDARDS' => true,
-            'HIDDEN' => form_input_hidden('importer', get_param_string('importer')),
+            'HIDDEN' => $hidden,
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => do_lang_tempcode('CHOOSE'),
             'TITLE' => $this->title,
@@ -403,6 +410,9 @@ class Module_admin_import
         $url = build_url(['page' => '_SELF', 'type' => 'hook', 'session' => $session, 'importer' => $importer], '_SELF');
         $message = array_key_exists('message', $info) ? $info['message'] : '';
 
+        $hidden = new Tempcode();
+        $hidden->attach(form_input_hidden('csrf_token_preserve', '1'));
+
         return do_template('FORM_SCREEN', [
             '_GUID' => '15f2c855acf0d365a2e6329bec692dc8',
             'MODSECURITY_WORKAROUND' => true,
@@ -410,7 +420,7 @@ class Module_admin_import
             'TITLE' => $this->title,
             'FIELDS' => $fields,
             'URL' => $url,
-            'HIDDEN' => '',
+            'HIDDEN' => $hidden,
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => do_lang_tempcode('PROCEED'),
         ]);
@@ -576,6 +586,7 @@ class Module_admin_import
         $hidden->attach(build_keep_post_fields($skip_hidden));
         $hidden->attach(build_keep_form_fields('', true, ['type', 'label_for__old_base_dir', 'require__old_base_dir', 'label_for__refresh_time', 'require__refresh_time']));
         $hidden->attach(form_input_hidden('db_password', $db_password));
+        $hidden->attach(form_input_hidden('csrf_token_preserve', '1'));
 
         return do_template('IMPORT_ACTION_SCREEN', [
             '_GUID' => 'a3a69637e541923ad76e9e7e6ec7e1af',
