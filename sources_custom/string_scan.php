@@ -901,7 +901,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_credit_card_cleanup_days
         STORE_CREDIT_CARD_NUMBERS
         CONFIG_OPTION_store_credit_card_numbers
-        CONFIG_OPTION_payment_gateway_callback_password
         CONFIG_OPTION_payment_gateway_username
         CONFIG_OPTION_payment_gateway_digest
         CONFIG_OPTION_payment_gateway_password
@@ -2576,7 +2575,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CALCULATE
         CALCULATED_SIZE
         CALCULATE_SIZE
-        PAYMENT_GATEWAY_CALLBACK_PASSWORD
         CALL_HOME
         CANCEL
         CANCELLED
@@ -8364,12 +8362,12 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_GROUP_DESCRIP_TAX_SERVICE_TAXCLOUD
         CONFIG_GROUP_DESCRIP_TAX_SERVICE_TAXJAR
         CONFIG_OPTION_enable_taxjar_address_validation
-        CONFIG_OPTION_paypal_data_transfer_id
         CONFIG_OPTION_tax_api_service
         CONFIG_OPTION_taxjar_api_key
         CONFIG_OPTION_taxjar_api_sandbox
+        CONFIG_OPTION_payment_gateway_special_identifier
+        PAYMENT_GATEWAY_SPECIAL_IDENTIFIER
         ENABLE_TAXJAR_ADDRESS_VALIDATION
-        PAYPAL_DATA_TRANSFER_ID
         TAXJAR_API_KEY
         TAXJAR_API_SANDBOX
         TAXJAR_NOT_CONFIGURED

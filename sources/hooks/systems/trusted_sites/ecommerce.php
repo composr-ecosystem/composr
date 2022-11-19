@@ -43,14 +43,16 @@ class Hook_trusted_sites_ecommerce
             return;
         }
 
-        if ((get_option('payment_gateway') == 'paypal') && (get_option('payment_gateway_username') != '')) {
+        require_code('ecommerce');
+
+        if ((get_option('payment_gateway') == 'paypal') && (get_ecommerce_option('payment_gateway_username') != '')) {
             $sites[] = 'paypal.com';
             $sites[] = 'ipnpb.paypal.com';
             $sites[] = 'sandbox.paypal.com';
             $sites[] = 'ipnpb.sandbox.paypal.com';
         }
 
-        if ((get_option('payment_gateway') == 'authorize') && (get_option('payment_gateway_username') != '')) {
+        if ((get_option('payment_gateway') == 'authorize') && (get_ecommerce_option('payment_gateway_username') != '')) {
             $sites[] = 'authorize.net';
             $sites[] = 'test.authorize.net';
         }

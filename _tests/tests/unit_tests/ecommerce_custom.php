@@ -56,9 +56,9 @@ class ecommerce_custom_test_set extends cms_test_case
         set_option('currency', 'USD');
 
         if (get_forum_type() == 'cns') {
-            $test_username = 'test';
+            $test_username = $this->get_canonical_username('test');
         } else {
-            $test_username = 'admin';
+            $test_username = $this->get_canonical_username('admin');
         }
 
         $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($test_username);

@@ -688,7 +688,7 @@ class Notification_dispatcher
  *
  * @ignore
  */
-function _notification_setting_available(int $setting, ?int $member_id = null, int $allowed_setting = null) : bool
+function _notification_setting_available(int $setting, ?int $member_id = null, ?int $allowed_setting = null) : bool
 {
     if (($allowed_setting !== null) && (($allowed_setting & $setting) == 0)) {
         return false;

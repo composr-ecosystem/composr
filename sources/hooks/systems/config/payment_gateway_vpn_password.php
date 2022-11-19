@@ -38,9 +38,10 @@ class Hook_config_payment_gateway_vpn_password
             'explanation' => 'CONFIG_OPTION_payment_gateway_vpn_password',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
-            'order_in_category_group' => 7,
+            'order_in_category_group' => 6,
             'required' => false,
             'public' => false,
+            'ecommerce' => true,
             'addon' => 'ecommerce',
         ];
     }

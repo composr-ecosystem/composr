@@ -69,7 +69,7 @@ class Hook_payment_gateway_authorize
      */
     protected function _get_access_details() : array
     {
-        return [ecommerce_get_option('payment_gateway_username'), ecommerce_get_option('payment_gateway_password'), ecommerce_get_option('payment_gateway_digest')];
+        return [get_ecommerce_option('payment_gateway_username'), get_ecommerce_option('payment_gateway_password'), get_ecommerce_option('payment_gateway_digest')];
     }
 
     /**
@@ -131,7 +131,7 @@ class Hook_payment_gateway_authorize
      */
     public function get_logos() : object
     {
-        $customer_id = ecommerce_get_option('payment_gateway_vpn_username');
+        $customer_id = get_ecommerce_option('payment_gateway_vpn_username');
         return do_template('ECOM_LOGOS_AUTHORIZE', ['_GUID' => '5b3254b330b3b1719d66d2b754c7a8c8', 'CUSTOMER_ID' => $customer_id]);
     }
 

@@ -1262,6 +1262,10 @@ where:
 			<td>{$VALUE_OPTION,optionname}</td>
 			<td>Get the value of a hidden option/value</td>
 		</tr>
+		<tr style="background: #DDFFDD">
+			<td>{$ECOMMERCE_OPTION,optionname}</td>
+			<td>Get the value of a config option from the eCommerce system that supports having a separate value for live and testing stores</td>
+		</tr>
 		<tr style="background: #FFDDDD">
 			<td>{$BRAND_NAME}</td>
 			<td>The brand name, defaults to Composr</td>

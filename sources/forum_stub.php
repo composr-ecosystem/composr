@@ -62,6 +62,7 @@ abstract class Forum_driver_base
      * The Conversr implementation actually uses Conversr CPFs which fully supports the actual Composr field type system.
      *
      * @param  string $type The Composr field type
+     * @param  ?mixed $default The default value for this field (null: use a default based on the field type)
      * @return array Pair: The Composr database field type, and the default value
      */
     protected function remap_composr_field_type_to_db_type(string $type, $default = null) : array

@@ -59,7 +59,7 @@ class Hook_payment_gateway_paypal
      */
     protected function _get_payment_address() : string
     {
-        return ecommerce_get_option('payment_gateway_username');
+        return get_ecommerce_option('payment_gateway_username');
     }
 
     /**
@@ -303,7 +303,7 @@ class Hook_payment_gateway_paypal
         }
 
         // Check that we have a data transfer ID specified in configuration
-        $at = ecommerce_get_option('paypal_data_transfer_id', true);
+        $at = get_ecommerce_option('payment_gateway_digest', true);
         if (($at === null) || ($at == '')) {
             return null; // Silent fail and rely on IPN instead
         }
@@ -543,10 +543,9 @@ class Hook_payment_gateway_paypal
             $receiver_email = post_param_string('business');
         }
         $primary_email = $this->_get_payment_address();
-        if ($primary_email == '') {
-            $primary_email = ecommerce_get_option('payment_gateway_vpn_username');
-        }
-        if ($receiver_email != $primary_email) {
+        $secondary_emails = explode(',', get_ecommerce_option('payment_gateway_vpn_username'));
+
+        if (($receiver_email != $primary_email) && !in_array($receiver_email, $secondary_emails)) {
             if ($silent_fail) {
                 return null;
             }

@@ -27,10 +27,10 @@ class Hook_payment_gateway_ccbill
     // https://ccbill.com/doc/dynamic-pricing-user-guide
     // Requires:
     //  you have to contact support to enable dynamic pricing and generate the encryption key for your account
-    //  the "Account ID" (a number given to you) is the Composr "Gateway username" and also "Testing mode gateway username" (it's all the same installation ID)
-    //  the "Subaccount ID" is the Composr "Gateway VPN username". You can optionally enter two subaccount IDs separated by a comma, the first one will be used for single transactions and the second for recurring transactions.
-    //  your encryption key is the Composr "Gateway VPN password".
-    //  create a form with dynamic pricing from the form admin and enter its code name as the "Gateway digest code". You can optionally enter two values separated by a comma; the first one will be used for simple transactions and the second for subscriptions.
+    //  the "Account ID" (a 6-digit number given to you) is the Composr "Gateway username"
+    //  the two 4-digit "Subaccount IDs" are the Composr "Gateway VPN username" (comma-delimited with single transactions first, recurring transactions second).
+    //  your Salt key is the Composr "Gateway digest code".
+    //  your Flexform ID is the "Gateway digest code". You can optionally enter two values separated by a comma; the first one will be used for simple transactions and the second for recurring transactions.
 
     protected $length_unit_to_days = [
         'd' => 1,
@@ -100,7 +100,37 @@ class Hook_payment_gateway_ccbill
      */
     protected function get_account_id() : string
     {
-        return ecommerce_get_option('payment_gateway_username');
+        return get_ecommerce_option('payment_gateway_username');
+    }
+
+    /**
+     * Get the CCBill sub-account ID.
+     *
+     * @param  boolean $recurring Whether to get the sub account for recurring transactions
+     * @return string The answer
+     */
+    protected function get_sub_account_id(bool $recurring = false) : string
+    {
+        $accounts = explode(',', get_ecommerce_option('payment_gateway_vpn_username'));
+        if ($recurring && array_key_exists(1, $accounts)) {
+            return $accounts[1];
+        }
+        return $accounts[0];
+    }
+
+    /**
+     * Get the CCBill Flexform ID.
+     *
+     * @param  boolean $recurring Whether to get the Flexform for recurring transactions
+     * @return string The answer
+     */
+    protected function get_flexform_id(bool $recurring = false) : string
+    {
+        $flexforms = explode(',', get_ecommerce_option('payment_gateway_special_identifier'));
+        if ($recurring && array_key_exists(1, $flexforms)) {
+            return $flexforms[1];
+        }
+        return $flexforms[0];
     }
 
     /**
@@ -136,18 +166,16 @@ class Hook_payment_gateway_ccbill
         $currency = strval($this->currency_alphabetic_to_numeric_code[$currency]);
 
         $payment_address = $this->get_account_id();
-        $form_url = 'https://bill.ccbill.com/jpost/signup.cgi';
-
+        $form_url = 'https://api.ccbill.com/wap-frontflex/flexforms/' . $this->get_flexform_id();
         $account_num = $this->get_account_id();
-        $subaccount_nums = explode(',', ecommerce_get_option('payment_gateway_vpn_username'));
-        $subaccount_num = sprintf('%04d', $subaccount_nums[0]); // First value is for simple transactions, has to be exactly 4 digits
-        $form_name = explode(',', ecommerce_get_option('payment_gateway_digest'));
-        $form_name = $form_name[0]; // First value is for simple transactions
+        $subaccount_num = $this->get_sub_account_id();
+        $form_name = $this->get_flexform_id();
+
         // CCBill oddly requires us to pass this parameter for single transactions,
         // this will show up as a confusing "$X.XX for 99 days" message to customers on the CCBill form.
         // To fix this - you need to set up a "custom dynamic description" which removes that message, by contacting CCBill support.
         $form_period = '99';
-        $digest = md5(float_to_raw_string($price + $tax + $shipping_cost) . $form_period . $currency . ecommerce_get_option('payment_gateway_vpn_password'));
+        $digest = md5(float_to_raw_string($price + $tax + $shipping_cost) . $form_period . $currency . get_ecommerce_option('payment_gateway_digest'));
 
         return do_template('ECOM_TRANSACTION_BUTTON_VIA_CCBILL', [
             '_GUID' => '24a0560541cedd4c45898f4d19e99249',
@@ -195,15 +223,13 @@ class Hook_payment_gateway_ccbill
         $currency = strval($this->currency_alphabetic_to_numeric_code[$currency]);
 
         $payment_address = $this->get_account_id();
-        $form_url = 'https://bill.ccbill.com/jpost/signup.cgi';
-
+        $form_url = 'https://api.ccbill.com/wap-frontflex/flexforms/' . $this->get_flexform_id(true);
         $account_num = $this->get_account_id();
-        $subaccount_nums = explode(',', ecommerce_get_option('payment_gateway_vpn_username'));
-        $subaccount_num = sprintf('%04d', (count($subaccount_nums) === 1) ? $subaccount_nums[0] : $subaccount_nums[1]); // Second value is for subscriptions, has to be exactly 4 digits
-        $form_name = explode(',', ecommerce_get_option('payment_gateway_digest'));
-        $form_name = (count($form_name) === 1) ? $form_name[0] : $form_name[1]; // Second value is for subscriptions
+        $subaccount_num = $this->get_sub_account_id(true);
+        $form_name = $this->get_flexform_id(true);
+
         $form_period = strval($length * $this->length_unit_to_days[$length_units]);
-        $digest = md5(float_to_raw_string($price + $tax) . $form_period . float_to_raw_string($price + $tax) . $form_period . '99' . $currency . ecommerce_get_option('payment_gateway_vpn_password')); // formPrice.formPeriod.formRecurringPrice.formRecurringPeriod.formRebills.currencyCode.salt
+        $digest = md5(float_to_raw_string($price + $tax) . $form_period . float_to_raw_string($price + $tax) . $form_period . '99' . $currency . get_ecommerce_option('payment_gateway_digest')); // formPrice.formPeriod.formRecurringPrice.formRecurringPeriod.formRebills.currencyCode.salt
 
         return do_template('ECOM_SUBSCRIPTION_BUTTON_VIA_CCBILL', [
             '_GUID' => 'f8c174f38ae06536833f1510027ba233',
@@ -342,8 +368,8 @@ class Hook_payment_gateway_ccbill
         $subscription_id = post_param_string('subscription_id', '');
         $denial_id = post_param_string('denialId', '');
         $response_digest = post_param_string('responseDigest');
-        $success_response_digest = md5($subscription_id . '1' . ecommerce_get_option('payment_gateway_vpn_password')); // responseDigest must have this value on success
-        $denial_response_digest = md5($denial_id . '0' . ecommerce_get_option('payment_gateway_vpn_password')); // responseDigest must have this value on failure
+        $success_response_digest = md5($subscription_id . '1' . get_ecommerce_option('payment_gateway_digest')); // responseDigest must have this value on success
+        $denial_response_digest = md5($denial_id . '0' . get_ecommerce_option('payment_gateway_digest')); // responseDigest must have this value on failure
         $success = ($success_response_digest === $response_digest);
         $is_subscription = (post_param_integer('customIsSubscription') == 1);
         $status = $success ? 'Completed' : 'Failed';

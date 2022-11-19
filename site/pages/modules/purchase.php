@@ -393,7 +393,7 @@ class Module_purchase
                 'payment_gateway_digest',
                 'payment_gateway_vpn_username',
                 'payment_gateway_vpn_password',
-                'payment_gateway_callback_password',
+                'payment_gateway_special_identifier',
             ];
             foreach ($config_options as $config_option) {
                 $config_value = get_option($config_option, true);

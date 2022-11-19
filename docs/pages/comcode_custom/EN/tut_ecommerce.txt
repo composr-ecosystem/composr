@@ -76,6 +76,22 @@ The option requirements for PayPal are as follows:
 <table class="map-table results-table wide-table autosized-table"><tbody>
 	<tr>
 		<th>
+			Address
+		</th>
+		<td>
+			This section should be filled in if you are collecting sales tax. If you do not have a business headquarters, use the location from which you are selling items.
+		</td>
+	</tr>
+	<tr>
+		<th>
+			General > Use local payment
+		</th>
+		<td>
+			This must be disabled; PayPal does not support it
+		</td>
+	</tr>
+	<tr>
+		<th>
 			Payment gateway > Payment gateway
 		</th>
 		<td>
@@ -84,10 +100,10 @@ The option requirements for PayPal are as follows:
 	</tr>
 	<tr>
 		<th>
-			General > Use local payment
+			Payment gateway > Gateway username
 		</th>
 		<td>
-			This must be disabled
+			This is your primary PayPal e-mail address which you will be accepting payments
 		</td>
 	</tr>
 	<tr>
@@ -103,7 +119,7 @@ The option requirements for PayPal are as follows:
 			Payment gateway > Gateway VPN username
 		</th>
 		<td>
-			This should be blank
+			Any number of additional comma-delimited e-mail addresses which are allowed to be used in an IPN/PDT return from PayPal
 		</td>
 	</tr>
 	<tr>
@@ -116,26 +132,18 @@ The option requirements for PayPal are as follows:
 	</tr>
 	<tr>
 		<th>
-			Payment gateway > Callback password
+			Payment gateway > Digest code
+		</th>
+		<td>
+			If using Payment Data Transfer (PDT), this should be your Data Transfer ID
+		</td>
+	</tr>
+	<tr>
+		<th>
+			Payment gateway > Special identifier
 		</th>
 		<td>
 			This should be blank
-		</td>
-	</tr>
-	<tr>
-		<th>
-			Address
-		</th>
-		<td>
-			This section should be filled in if you are collecting sales tax. If you do not have a business headquarters, use the location from which you are selling items.
-		</td>
-	</tr>
-	<tr>
-		<th>
-			Payment gateway > Gateway username
-		</th>
-		<td>
-			For PayPal it is your PayPal e-mail address.
 		</td>
 	</tr>
 </tbody></table>
@@ -149,10 +157,10 @@ The option requirements for Authorize.net are below.
 <table class="map-table results-table wide-table autosized-table"><tbody>
 	<tr>
 		<th>
-			Payment gateway > Payment gateway
+			Address
 		</th>
 		<td>
-			<kbd>authorize</kbd>
+			This section should be filled in if you are collecting sales tax. If you do not have a business headquarters, use the location from which you are selling items.
 		</td>
 	</tr>
 	<tr>
@@ -161,6 +169,14 @@ The option requirements for Authorize.net are below.
 		</th>
 		<td>
 			Authorize.net supports local payments, so if you want to collect payment information from your site opposed to Authorize.net collecting it, tick (check) this box.
+		</td>
+	</tr>
+	<tr>
+		<th>
+			Payment gateway > Payment gateway
+		</th>
+		<td>
+			<kbd>authorize</kbd>
 		</td>
 	</tr>
 	<tr>
@@ -184,7 +200,7 @@ The option requirements for Authorize.net are below.
 			Payment gateway > Gateway VPN username
 		</th>
 		<td>
-			Verified Merchant Seal / Customer ID from Authorize.net (not applicable for a sandbox account). Blank for no seal.
+			Your Verified Merchant Seal / Customer ID from Authorize.net (not applicable for a sandbox account)
 		</td>
 	</tr>
 	<tr>
@@ -197,7 +213,7 @@ The option requirements for Authorize.net are below.
 	</tr>
 	<tr>
 		<th>
-			Payment gateway > Gateway digest code
+			Payment gateway > Digest code
 		</th>
 		<td>
 			Your API Signature Key from Authorize.net (Account => API Credentials & Keys => New Signature Key). Blank for no check to be performed.
@@ -205,10 +221,91 @@ The option requirements for Authorize.net are below.
 	</tr>
 	<tr>
 		<th>
+			Payment gateway > Special identifier
+		</th>
+		<td>
+			This should be blank
+		</td>
+	</tr>
+</tbody></table>
+[/html]
+
+[title="4"]Config options - ccBill[/title]
+
+The option requirements for ccBill are below.
+
+[html]
+<table class="map-table results-table wide-table autosized-table"><tbody>
+	<tr>
+		<th>
 			Address
 		</th>
 		<td>
 			This section should be filled in if you are collecting sales tax. If you do not have a business headquarters, use the location from which you are selling items.
+		</td>
+	</tr>
+	<tr>
+		<th>
+			General > Use local payment
+		</th>
+		<td>
+			This must be disabled; ccBill does not support local transactions.
+		</td>
+	</tr>
+	<tr>
+		<th>
+			Payment gateway > Payment gateway
+		</th>
+		<td>
+			<kbd>ccbill</kbd>
+		</td>
+	</tr>
+	<tr>
+		<th>
+			Payment gateway > Gateway username
+		</th>
+		<td>
+			Your 6-digit account number
+		</td>
+	</tr>
+	<tr>
+		<th>
+			Payment gateway > Gateway password
+		</th>
+		<td>
+			Your API Transaction Key from Authorize.net (Account => API Credentials & Keys => New Transaction Key)
+		</td>
+	</tr>
+	<tr>
+		<th>
+			Payment gateway > Gateway VPN username
+		</th>
+		<td>
+			Your two 4-digit sub-account numbers separated by a comma: non-recurring transactions,recurring transactions (e.g. [tt]0002,0001[/tt])
+		</td>
+	</tr>
+	<tr>
+		<th>
+			Payment gateway > Gateway VPN password
+		</th>
+		<td>
+			This should be blank
+		</td>
+	</tr>
+	<tr>
+		<th>
+			Payment gateway > Digest code
+		</th>
+		<td>
+			This is your Salt Key
+		</td>
+	</tr>
+	<tr>
+		<th>
+			Payment gateway > Special identifier
+		</th>
+		<td>
+			This is the Flexform ID; you can provide two Flexform IDs separated by a comma, the first for single transactions and the second for recurring transactions
 		</td>
 	</tr>
 </tbody></table>

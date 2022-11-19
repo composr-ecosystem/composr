@@ -98,7 +98,7 @@ class config_test_set extends cms_test_case
             $file_type = get_file_extension($path);
 
             if ($file_type == 'php') {
-                $num_matches = preg_match_all('#get_(theme_option|option|option_with_overrides)\(\'([^\']+)\'[\),]#', $c, $matches);
+                $num_matches = preg_match_all('#get_(ecommerce_option|theme_option|option|option_with_overrides)\(\'([^\']+)\'[\),]#', $c, $matches);
                 for ($i = 0; $i < $num_matches; $i++) {
                     $hook = $matches[2][$i];
 
@@ -109,7 +109,7 @@ class config_test_set extends cms_test_case
             }
 
             if ($file_type == 'tpl' || $file_type == 'txt' || $file_type == 'css' || $file_type == 'js' || $file_type == 'xml') {
-                $num_matches = preg_match_all('#\{\$(CONFIG|THEME)_OPTION[^\w,\{\}]*,(\w+)[\},]#', $c, $matches);
+                $num_matches = preg_match_all('#\{\$(CONFIG|THEME|ECOMMERCE)_OPTION[^\w,\{\}]*,(\w+)[\},]#', $c, $matches);
                 for ($i = 0; $i < $num_matches; $i++) {
                     $hook = $matches[2][$i];
 
@@ -138,7 +138,10 @@ class config_test_set extends cms_test_case
             // Exceptions
             if (in_array($hook, [
                 'optionname', // Example in Code Book
-                'payment_gateway_test_username'
+
+                // Removed config options that still exist in upgrade code for migration purposes
+                'primary_paypal_email',
+                'payment_gateway_test_username',
             ])) {
                 continue;
             }
@@ -221,7 +224,7 @@ class config_test_set extends cms_test_case
 
                 // Not used by default, but made for addons
                 'points_per_currency_unit',
-                'payment_gateway_callback_password',
+                'payment_gateway_vpn_password',
             ])) {
                 continue;
             }
@@ -293,6 +296,7 @@ class config_test_set extends cms_test_case
         ];
         $settings_optional = [
             'theme_override' => 'boolean',
+            'ecommerce' => 'boolean',
             'order_in_category_group' => 'integer',
             'maintenance_code' => 'string',
             'explanation_param_a' => 'string',
@@ -338,17 +342,22 @@ class config_test_set extends cms_test_case
         $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES);
         $files[] = 'install.php';
         foreach ($files as $path) {
+            // Exceptions
+            if ((strpos($path, 'modules/purchase.php') !== false)) { // Contains eCommerce config option upgrade code which must use get_option
+                continue;
+            }
+
             $file_type = get_file_extension($path);
 
             if ($file_type == 'php' || $file_type == 'tpl' || $file_type == 'txt' || $file_type == 'css' || $file_type == 'js') {
                 $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
 
                 if ($file_type == 'php') {
-                    if ((strpos($c, 'get_option') === false) && (strpos($c, 'get_theme_option') === false)) {
+                    if ((strpos($c, 'get_option') === false) && (strpos($c, 'get_theme_option') === false) && (strpos($c, 'get_ecommerce_option') === false)) {
                         continue;
                     }
                 } elseif ($file_type == 'tpl' || $file_type == 'txt' || $file_type == 'css' || $file_type == 'js') {
-                    if ((strpos($c, 'CONFIG_OPTION') === false) && (strpos($c, 'THEME_OPTION') === false)) {
+                    if ((strpos($c, 'CONFIG_OPTION') === false) && (strpos($c, 'THEME_OPTION') === false) && (strpos($c, 'ECOMMERCE_OPTION') === false)) {
                         continue;
                     }
                 }
@@ -366,15 +375,27 @@ class config_test_set extends cms_test_case
 
                     if ($file_type == 'php') {
                         if (!empty($details['theme_override'])) {
-                            $this->assertTrue((strpos($c, 'get_option(\'' . $hook . '\'') === false), $hook . ' must be accessed as a theme option (.php): ' . $path);
+                            $this->assertTrue((strpos($c, 'get_option(\'' . $hook . '\'') === false) && (strpos($c, 'get_ecommerce_option(\'' . $hook . '\'') === false), $hook . ' must be accessed as a theme option (.php): ' . $path);
                         } else {
                             $this->assertTrue((strpos($c, 'get_theme_option(\'' . $hook . '\'') === false) || ($hook == 'description'), $hook . ' must not be accessed as a theme option (.php): ' . $path);
                         }
+
+                        if (!empty($details['ecommerce'])) {
+                            $this->assertTrue((strpos($c, 'get_option(\'' . $hook . '\'') === false) && (strpos($c, 'get_theme_option(\'' . $hook . '\'') === false), $hook . ' must be accessed as an eCommerce option (.php): ' . $path);
+                        } else {
+                            $this->assertTrue((strpos($c, 'get_ecommerce_option(\'' . $hook . '\'') === false), $hook . ' must not be accessed as an eCommerce option (.php): ' . $path);
+                        }
                     } elseif ($file_type == 'tpl' || $file_type == 'txt' || $file_type == 'css' || $file_type == 'js') {
                         if (!empty($details['theme_override'])) {
-                            $this->assertTrue((preg_match('#\{\$CONFIG_OPTION[^\w,\{\}]*,' . $hook . '\}#', $c) == 0), $hook . ' must be accessed as a theme option: ' . $path);
+                            $this->assertTrue((preg_match('#\{\$CONFIG_OPTION[^\w,\{\}]*,' . $hook . '\}#', $c) == 0) && (preg_match('#\{\$ECOMMERCE_OPTION[^\w,\{\}]*,' . $hook . '\}#', $c) == 0), $hook . ' must be accessed as a theme option: ' . $path);
                         } else {
                             $this->assertTrue((preg_match('#\{\$THEME_OPTION[^\w,\{\}]*,' . $hook . '\}#', $c) == 0) || ($hook == 'description'), $hook . ' must not be accessed as a theme option: ' . $path);
+                        }
+
+                        if (!empty($details['ecommerce'])) {
+                            $this->assertTrue((preg_match('#\{\$CONFIG_OPTION[^\w,\{\}]*,' . $hook . '\}#', $c) == 0) && (preg_match('#\{\$THEME_OPTION[^\w,\{\}]*,' . $hook . '\}#', $c) == 0), $hook . ' must be accessed as an eCommerce option: ' . $path);
+                        } else {
+                            $this->assertTrue((preg_match('#\{\$ECOMMERCE_OPTION[^\w,\{\}]*,' . $hook . '\}#', $c) == 0), $hook . ' must not be accessed as an eCommerce option: ' . $path);
                         }
                     }
                 }

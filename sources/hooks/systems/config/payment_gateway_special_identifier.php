@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_paypal_data_transfer_id
+class Hook_config_payment_gateway_special_identifier
 {
     /**
      * Gets the details relating to the config option.
@@ -31,16 +31,17 @@ class Hook_config_paypal_data_transfer_id
     public function get_details() : ?array
     {
         return [
-            'human_name' => 'PAYPAL_DATA_TRANSFER_ID',
-            'type' => 'line',
+            'human_name' => 'PAYMENT_GATEWAY_SPECIAL_IDENTIFIER',
+            'type' => 'text',
             'category' => 'ECOMMERCE',
-            'group' => 'PAYPAL',
-            'explanation' => 'CONFIG_OPTION_paypal_data_transfer_id',
-            'explanation_param_a' => escape_html(get_tutorial_url('tut_ecommerce')),
+            'group' => 'PAYMENT_GATEWAY',
+            'explanation' => 'CONFIG_OPTION_payment_gateway_special_identifier',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
+            'order_in_category_group' => 8,
             'required' => false,
             'public' => false,
+            'ecommerce' => true,
             'addon' => 'ecommerce',
         ];
     }

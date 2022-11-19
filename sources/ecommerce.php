@@ -2448,7 +2448,7 @@ function ecom_details_url(string $type_code, string $id = '', ?int $member_id = 
  * @param  ?boolean $return_testing Return the testing value instead of the live value (null: returns testing value if ecommerce_test_mode(), else returns live value)
  * @return ?string The configuration value (null: configuration not found and $missing_ok set to true)
  */
-function ecommerce_get_option(string $config_option, bool $missing_ok = false, ?bool $return_testing = null) : ?string
+function get_ecommerce_option(string $config_option, bool $missing_ok = false, ?bool $return_testing = null) : ?string
 {
     $config_value = get_option($config_option, $missing_ok);
     if (($config_value === null) || ($config_value == '')) {
