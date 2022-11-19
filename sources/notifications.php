@@ -1429,7 +1429,7 @@ abstract class Hook_Notification
                     // This is the most obvious query for Conversr notification-queries
                     $query = 'SELECT l_member_id,l_setting,m.id FROM ' . $db->get_table_prefix() . 'notifications_enabled l JOIN ' . $db->get_table_prefix() . 'f_members m ON m.id=l.l_member_id WHERE 1=1';
                     $query .= $clause_scope . $clause_member_ids . $clause_validation_cns;
-                    $query .= ' AND (l_setting IS NOT NULL AND l_setting<>' . strval(A_NA) . ')';
+                    $query .= ' AND (l_setting IS NOT NULL AND l_setting<>' . strval(A_NA);
                     if ($has_by_default_first_admin) {
                         $query .= ' OR m.id=' . strval($first_admin_user);
                     }
@@ -1440,10 +1440,11 @@ abstract class Hook_Notification
             // This is the most obvious query for non-Conversr notification-queries
             $standard_query = 'SELECT l_member_id,l_setting,l_member_id AS id FROM ' . $db->get_table_prefix() . 'notifications_enabled l WHERE 1=1';
             $standard_query .= $clause_scope . $clause_member_ids;
-            $standard_query .= ' AND (l_setting IS NOT NULL AND l_setting<>' . strval(A_NA) . ')';
+            $standard_query .= ' AND (l_setting IS NOT NULL AND l_setting<>' . strval(A_NA);
             if ($has_by_default_first_admin) {
                 $standard_query .= ' OR l_member_id=' . strval($first_admin_user);
             }
+            $standard_query .= ')';
 
             // Now go through the actual cases
             if ($is_locked_on) {

@@ -2871,43 +2871,30 @@ function handle_self_referencing_embedment()
                 $db->ensure_connected();
                 exit();
                 break;
-
-            case 'themes/default/images/EN/logo/standalone_logo.png':
-                header('Content-Type: image/png');
-                if (!file_exists(get_file_base() . '/' . $type)) {
-                    $output = file_array_get($type);
-                } else {
-                    $output = cms_file_get_contents_safe(get_file_base() . '/' . $type, FILE_READ_LOCK);
-                }
-                print($output);
-                exit();
-                break;
-
-            case 'themes/default/css/global.css':
-            case 'themes/default/css/forms.css':
-            case 'themes/default/css/install.css':
-                header('Content-Type: text/css; charset=' . get_charset());
-
-                $output = '';
-                foreach (['themes/default/css/_base.css', 'themes/default/css/_colours.css', $type] as $_type) {
-                    if (!file_exists(get_file_base() . '/' . $_type)) {
-                        $file = unixify_line_format(handle_string_bom(file_array_get($_type)));
-                    } else {
-                        $file = cms_file_get_contents_safe(get_file_base() . '/' . $_type, FILE_READ_LOCK | FILE_READ_BOM);
-                    }
-                    $file = preg_replace('#\{\$IMG;?,([^,\}\']+)\}#', 'install.php?type=themes/default/images/${1}.svg', $file);
-
-                    require_code('tempcode_compiler');
-                    $css = template_to_tempcode($file, 0, false, '');
-                    $output .= $css->evaluate();
-                }
-
-                print($output);
-                exit();
-                break;
         }
 
-        if (substr($type, 0, 15) == 'data/polyfills/') {
+        if (preg_match('#^themes/default/css/#', $type) != 0) {
+            header('Content-Type: text/css; charset=' . get_charset());
+
+            $output = '';
+            foreach (['themes/default/css/_base.css', 'themes/default/css/_colours.css', $type] as $_type) {
+                if (!file_exists(get_file_base() . '/' . $_type)) {
+                    $file = unixify_line_format(handle_string_bom(file_array_get($_type)));
+                } else {
+                    $file = cms_file_get_contents_safe(get_file_base() . '/' . $_type, FILE_READ_LOCK | FILE_READ_BOM);
+                }
+                $file = preg_replace('#\{\$IMG;?,([^,\}\']+)\}#', 'install.php?type=themes/default/images/${1}.svg', $file);
+
+                require_code('tempcode_compiler');
+                $css = template_to_tempcode($file, 0, false, '');
+                $output .= $css->evaluate();
+            }
+
+            print($output);
+            exit();
+        }
+
+        if (preg_match('#^data/polyfills/#', $type) != 0) {
             header('Content-Type: text/javascript; charset=' . get_charset());
             if (!file_exists(get_file_base() . '/' . $type)) {
                 $output = unixify_line_format(handle_string_bom(file_array_get($type)));
@@ -2917,7 +2904,19 @@ function handle_self_referencing_embedment()
             print($output);
             exit();
         }
-        if (substr($type, 0, 22) == 'themes/default/images/') {
+
+        if (preg_match('#^themes/default/images/.*\.png$#', $type) != 0) {
+            header('Content-Type: image/png');
+            if (!file_exists(get_file_base() . '/' . $type)) {
+                $output = unixify_line_format(handle_string_bom(file_array_get($type)));
+            } else {
+                $output = cms_file_get_contents_safe(get_file_base() . '/' . $type, FILE_READ_LOCK);
+            }
+            print($output);
+            exit();
+        }
+
+        if (preg_match('#^themes/default/images/.*\.svg$#', $type) != 0) {
             header('Content-Type: image/svg+xml; charset=' . get_charset());
             if (!file_exists(get_file_base() . '/' . $type)) {
                 $output = unixify_line_format(handle_string_bom(file_array_get($type)));

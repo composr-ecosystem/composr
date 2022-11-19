@@ -344,7 +344,18 @@
                         }
                     });
                 } else { // Error: do a normal post so error can be seen
-                    $dom.trigger(commentsForm, 'submit');
+                    var tokenField = commentsForm.elements['csrf_token'];
+                    if (tokenField) {
+                        return $cms.getCsrfToken().then(function (text) {
+                            $util.log('Regenerated CSRF token');
+
+                            tokenField.value = text;
+
+                            commentsForm.submit();
+                        });
+                    } else {
+                        commentsForm.submit();
+                    }
                 }
             });
 
