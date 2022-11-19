@@ -165,14 +165,12 @@ class Hook_content_meta_aware_member extends Hook_CMA
 function generate_member_entry_image_url(array $row) : string
 {
     if (!has_privilege(get_member(), 'view_member_photos')) {
-        if (addon_installed('cns_member_avatars')) {
-            $field = 'm_avatar_url';
-        } else {
+        if (!addon_installed('cns_member_avatars')) {
             return '';
         }
-    } else {
-        $field = 'm_photo_url';
+        $field = 'm_avatar_url';
+        return $GLOBALS['FORUM_DRIVER']->get_member_avatar_url($row['id']);
     }
 
-    return $row[$field];
+    return $GLOBALS['FORUM_DRIVER']->get_member_photo_url($row['id']);
 }
