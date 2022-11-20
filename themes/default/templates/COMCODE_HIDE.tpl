@@ -8,7 +8,7 @@
 			<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!">{TEXT}</a>
 		</h4>
 
-		<div class="toggleable-tray js-tray-content" style="display: none" aria-expanded="false">
+		<div class="toggleable-tray js-tray-content" style="display: none">
 			{CONTENT}
 		</div>
 	</div>

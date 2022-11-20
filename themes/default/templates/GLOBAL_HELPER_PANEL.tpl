@@ -8,7 +8,7 @@
 		<h2>{!HELP_OR_ADVICE}</h2>
 	</div>
 
-	<div id="helper-panel-contents"{+START,IF,{$HIDE_HELP_PANEL}} style="display: none" aria-expanded="false"{+END} class="js-helper-panel-contents">
+	<div id="helper-panel-contents"{+START,IF,{$HIDE_HELP_PANEL}} style="display: none"{+END} class="js-helper-panel-contents">
 		{+START,IF,{$DESKTOP}}
 			<div class="block-desktop">
 				<h2>{!HELP_OR_ADVICE}</h2>

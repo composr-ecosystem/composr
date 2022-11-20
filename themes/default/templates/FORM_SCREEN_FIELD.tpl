@@ -49,7 +49,7 @@
 				NAME=status/warn
 				ICON_SIZE=24
 			{+END}
-			<span class="js-error-message"></span>
+			<span id="error-{$GET,unique_field_id}-msg" class="js-error-message"></span>
 		</div>
 
 		{+START,IF_NON_EMPTY,{NAME}}

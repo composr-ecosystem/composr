@@ -15,7 +15,7 @@
 			{+END}</a>
 			<a class="non-link js-tray-onclick-toggle-tray" href="#!">{!CSS_EDITING_TOOLS}</a>
 		</h3>
-		<div class="toggleable-tray js-tray-content" style="display: none" id="c-{FILE_ID*}" aria-expanded="false">
+		<div class="toggleable-tray js-tray-content" style="display: none" id="c-{FILE_ID*}">
 			<div class="css-editor-rhs-column"><section class="box"><div class="box-inner">
 				<h3>{!COMMON_CSS_PROPERTIES}:</h3>
 
@@ -27,7 +27,7 @@
 						{+END}</a>
 						<a class="toggleable-tray-button js-tray-onclick-toggle-accordion" href="#!">Background Properties</a>
 					</h4>
-					<div class="toggleable-tray accordion-trayitem-body js-tray-accordion-item-body" style="display: none" aria-expanded="false">
+					<div class="toggleable-tray accordion-trayitem-body js-tray-accordion-item-body" style="display: none">
 						<table class="columned-table results-table" width="100%">
 							<tbody><tr>
 								<th width="28%">Property</th>
@@ -71,7 +71,7 @@
 						{+END}</a>
 						<a class="toggleable-tray-button js-tray-onclick-toggle-accordion" href="#!">Border Properties</a>
 					</h4>
-					<div class="toggleable-tray accordion-trayitem-body js-tray-accordion-item-body" style="display: none" aria-expanded="false">
+					<div class="toggleable-tray accordion-trayitem-body js-tray-accordion-item-body" style="display: none">
 						<table class="columned-table results-table" width="100%">
 							<tbody><tr>
 								<th width="28%">Property</th>
@@ -130,7 +130,7 @@
 						{+END}</a>
 						<a class="toggleable-tray-button js-tray-onclick-toggle-accordion" href="#!">Dimension Properties</a>
 					</h4>
-					<div class="toggleable-tray accordion-trayitem-body js-tray-accordion-item-body" style="display: none" aria-expanded="false">
+					<div class="toggleable-tray accordion-trayitem-body js-tray-accordion-item-body" style="display: none">
 						<table class="columned-table results-table" width="100%">
 							<tbody><tr>
 								<th width="28%">Property</th>
@@ -179,7 +179,7 @@
 						{+END}</a>
 						<a class="toggleable-tray-button js-tray-onclick-toggle-accordion" href="#!">List Properties</a>
 					</h4>
-					<div class="toggleable-tray accordion-trayitem-body js-tray-accordion-item-body" style="display: none" aria-expanded="false">
+					<div class="toggleable-tray accordion-trayitem-body js-tray-accordion-item-body" style="display: none">
 						<table class="columned-table results-table" width="100%">
 							<tbody><tr>
 								<th width="28%">Property</th>
@@ -208,7 +208,7 @@
 						{+END}</a>
 						<a class="toggleable-tray-button js-tray-onclick-toggle-accordion">Margin/Padding Properties</a>
 					</h4>
-					<div class="toggleable-tray accordion-trayitem-body js-tray-accordion-item-body" style="display: none" aria-expanded="false">
+					<div class="toggleable-tray accordion-trayitem-body js-tray-accordion-item-body" style="display: none">
 						<table class="columned-table results-table" width="100%">
 							<tbody><tr>
 								<th width="28%">Property</th>
@@ -277,7 +277,7 @@
 						{+END}</a>
 						<a class="toggleable-tray-button js-tray-onclick-toggle-accordion" href="#!">Positioning Properties</a>
 					</h4>
-					<div class="toggleable-tray accordion-trayitem-body js-tray-accordion-item-body" style="display: none" aria-expanded="false">
+					<div class="toggleable-tray accordion-trayitem-body js-tray-accordion-item-body" style="display: none">
 						<table class="columned-table results-table" width="100%">
 							<tbody><tr>
 								<th width="28%">Property</th>
@@ -351,7 +351,7 @@
 						{+END}</a>
 						<a class="toggleable-tray-button js-tray-onclick-toggle-accordion" href="#!">Text/Font Properties</a>
 					</h4>
-					<div class="toggleable-tray accordion-trayitem-body js-tray-accordion-item-body" style="display: none" aria-expanded="false">
+					<div class="toggleable-tray accordion-trayitem-body js-tray-accordion-item-body" style="display: none">
 						<table class="columned-table results-table" width="100%">
 							<tbody><tr>
 								<th width="28%">Property</th>
@@ -443,7 +443,7 @@
 			{+END}</a>
 			<a class="non-link js-tray-onclick-toggle-tray" href="#!">{!SYMBOLS_AND_DIRECTIVES}</a>
 		</h3>
-		<div class="toggleable-tray js-tray-content" style="display: none" id="b-{FILE_ID*}" aria-expanded="false">
+		<div class="toggleable-tray js-tray-content" style="display: none" id="b-{FILE_ID*}">
 			{PARAMETERS}
 			{DIRECTIVES}
 			{MISC_SYMBOLS}
@@ -500,7 +500,7 @@
 			{+END}</a>
 			<a class="non-link js-tray-onclick-toggle-tray" href="#!">{!TEMPLATE_GUIDS}</a>
 		</h3>
-		<div class="toggleable-tray js-tray-content" style="display: none" aria-expanded="false">
+		<div class="toggleable-tray js-tray-content" style="display: none">
 			<div class="wide-table-wrap"><table class="columned-table autosized-table revision_box results-table wide-table">
 				<thead>
 					<tr>
@@ -545,7 +545,7 @@
 			{+END}</a>
 			<a class="non-link js-tray-onclick-toggle-tray" href="#!">{!RELATED_TEMPLATES}</a>
 		</h3>
-		<div class="toggleable-tray js-tray-content" style="display: none" aria-expanded="false">
+		<div class="toggleable-tray js-tray-content" style="display: none">
 			<ul>
 				{+START,LOOP,RELATED}
 					<li>

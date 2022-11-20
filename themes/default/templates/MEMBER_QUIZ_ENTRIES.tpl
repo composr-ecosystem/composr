@@ -8,7 +8,7 @@
 			<span class="js-tray-onclick-toggle-tray">{!TEST_RESULTS}</span>
 		</h2>
 
-		<div class="toggleable-tray js-tray-content" style="display: none" aria-expanded="false">
+		<div class="toggleable-tray js-tray-content" style="display: none">
 			{+START,LOOP,CATEGORIES}
 				{$,If more than one category of quiz entered then show headers}
 				{+START,IF,{$OR,{$GET,want_sections},{$NEQ,{CATEGORIES},1}}}

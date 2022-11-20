@@ -309,7 +309,7 @@
 
                     // Do any children
                     newHtml = document.createElement('div');
-                    newHtml.role = 'treeitem';
+                    newHtml.setAttribute('role', 'treeitem');
                     newHtml.id = that.name + 'tree-list-c-' + node.getAttribute('id');
                     newHtml.style.display = ((!initiallyExpanded) || (node.getAttribute('has_children') !== 'true')) ? 'none' : 'block';
                     newHtml.style.paddingLeft = '15px';

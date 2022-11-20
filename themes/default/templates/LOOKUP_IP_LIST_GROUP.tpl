@@ -15,7 +15,7 @@
 		{+END}</a>
 	</div>
 
-	<div class="toggleable-tray js-tray-content" style="display: {$?,{OPEN_DEFAULT},block,none}"{+START,IF,{$NOT,{OPEN_DEFAULT}}} aria-expanded="false"{+END}>
+	<div class="toggleable-tray js-tray-content" style="display: {$?,{OPEN_DEFAULT},block,none}">
 		<ul>
 			{GROUP}
 		</ul>

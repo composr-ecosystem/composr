@@ -100,7 +100,7 @@
 						<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!">{!DELETE_MENU}</a>
 					</h2>
 
-					<div class="toggleable-tray js-tray-content" id="delete-menu" style="display: none" aria-expanded="false">
+					<div class="toggleable-tray js-tray-content" id="delete-menu" style="display: none">
 						<p>{!ABOUT_DELETE_MENU}</p>
 
 						<form title="{!DELETE}" action="{DELETE_URL*}" method="post">

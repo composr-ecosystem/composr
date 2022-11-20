@@ -9,7 +9,7 @@
 			{+END}</a>
 			<a class="toggleable-tray-button js-tray-onclick-toggle-tray" title="{!SETTINGS}: {!EXPAND}" href="#!">{!SETTINGS}</a>
 		</h4>
-		<div class="toggleable-tray js-tray-content" style="display: none" aria-expanded="false">
+		<div class="toggleable-tray js-tray-content" style="display: none">
 			{FORM}
 		</div>
 	</div>

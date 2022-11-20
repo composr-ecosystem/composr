@@ -449,8 +449,10 @@
             this.topWindow.document.body.appendChild(this.el);
 
             this.overlayEl = this.el.appendChild($dom.create('div', { // The main overlay
-                'className': 'box overlay cms-modal-overlay',
-                'role': 'dialog'
+                'className': 'box overlay cms-modal-overlay'
+            }, {
+                'role': ['lightbox', 'iframe'].includes(this.type) ? 'dialog' : 'alertdialog',
+                'aria-modal': 'true'
             }));
 
             this.containerEl = this.overlayEl.appendChild($dom.create('div', {
@@ -1620,7 +1622,6 @@
             if (show) {
                 panelRight.classList.remove('helper-panel-hidden');
                 panelRight.classList.add('helper-panel-visible');
-                helperPanelContents.setAttribute('aria-expanded', 'true');
                 $dom.fadeIn(helperPanelContents);
 
                 if ($cms.readCookie('hide_helper_panel') === '1') {
@@ -1644,7 +1645,6 @@
             function _hideHelperPanel(panelRight, helperPanelContents, helperPanelToggle) {
                 panelRight.classList.remove('helper-panel-visible');
                 panelRight.classList.add('helper-panel-hidden');
-                helperPanelContents.setAttribute('aria-expanded', 'false');
                 helperPanelContents.style.display = 'none';
                 $cms.setCookie('hide_helper_panel', '1', 100);
                 helperPanelToggle.title = '{!HELP_OR_ADVICE}: {!SHOW}';

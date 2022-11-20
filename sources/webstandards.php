@@ -998,6 +998,7 @@ function init__webstandards()
         'aria-describedby' => $enforce_id,
         'aria-disabled' => '(true|false)',
         'aria-dropeffect' => '(copy|move|link|execute|popup|none)',
+        'aria-errormessage' => '.*',
         'aria-expanded' => '(true|false)',
         'aria-flowto' => $enforce_id,
         'aria-grabbed' => '(true|false)',

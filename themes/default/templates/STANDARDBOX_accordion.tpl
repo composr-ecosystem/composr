@@ -24,7 +24,7 @@
 				<a class="toggleable-tray-button js-tray-onclick-toggle-accordion" href="#!">{TITLE}</a>
 			</h3>
 		{+END}
-		<div class="toggleable-tray"{+START,IF_NOT_IN_ARRAY,OPTIONS,tray_open} style="display: none" aria-expanded="false"{+END}>
+		<div class="toggleable-tray"{+START,IF_NOT_IN_ARRAY,OPTIONS,tray_open} style="display: none"{+END}>
 			{+START,IF_NON_EMPTY,{META}}
 				<div class="meta-details" role="note">
 					<dl class="meta-details-list">

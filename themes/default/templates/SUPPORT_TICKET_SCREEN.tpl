@@ -66,7 +66,7 @@
 						<span class="field-name"><label for="ticket_type_id">{!TICKET_TYPE}:</label></span>
 					</th>
 					<td>
-						<select id="ticket_type_id" name="ticket_type_id" class="input-list-required form-control form-control-wide">
+						<select aria-errormessage="error-ticket-type-id-msg" id="ticket_type_id" name="ticket_type_id" class="input-list-required form-control form-control-wide">
 							<option value="">---</option>
 							{+START,LOOP,TYPES}
 								<option value="{TICKET_TYPE_ID*}"{+START,IF,{SELECTED}} selected="selected"{+END}>{NAME*}</option>{$,You can also use {LEAD_TIME} to get the ticket type's lead time}
@@ -77,7 +77,7 @@
 								NAME=status/warn
 								ICON_SIZE=24
 							{+END}
-							<span class="js-error-message"></span>
+							<span id="error-ticket-type-id-msg" class="js-error-message"></span>
 						</div>
 					</td>
 				</tr>

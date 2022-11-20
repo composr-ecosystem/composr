@@ -7,7 +7,7 @@
 		<span class="js-tray-onclick-toggle-tray">{!MODULE_TRANS_NAME_subscriptions}</span>
 	</h2>
 
-	<div class="toggleable-tray js-tray-content" style="display: block" aria-expanded="true">
+	<div class="toggleable-tray js-tray-content" style="display: block">
 		<div class="wide-table-wrap"><table class="columned-table wide-table results-table autosized-table responsive-table" itemprop="significantLinks">
 			<thead>
 				<tr>

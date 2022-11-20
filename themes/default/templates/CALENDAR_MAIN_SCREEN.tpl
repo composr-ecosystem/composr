@@ -73,7 +73,7 @@
 			<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!">{!INTERESTS}</a>
 		</h2>
 
-		<div class="toggleable-tray js-tray-content" style="display: none" aria-expanded="false">
+		<div class="toggleable-tray js-tray-content" style="display: none">
 			<div class="clearfix">
 				{+START,IF_NON_EMPTY,{EVENT_TYPES_1}}
 					<div class="right event-interest-box"><section class="box"><div class="box-inner">
@@ -128,7 +128,7 @@
 				<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!">{!FEEDS_TO_OVERLAY}</a>
 			</h2>
 
-			<div class="toggleable-tray js-tray-content" style="display: none" aria-expanded="false">
+			<div class="toggleable-tray js-tray-content" style="display: none">
 				{RSS_FORM}
 			</div>
 		</div>

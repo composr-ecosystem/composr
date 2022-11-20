@@ -255,7 +255,7 @@
 					{+END}</a>
 				</h2>
 
-				<div class="toggleable-tray js-tray-content" style="{HIDE_ACTIONS*}"{+START,IF,{HIDE_ACTIONS}} aria-expanded="false"{+END}>
+				<div class="toggleable-tray js-tray-content" style="{HIDE_ACTIONS*}">
 					<form method="post" class="inline" action="{$PAGE_LINK*,_SELF:_SELF}">
 						{$INSERT_FORM_POST_SECURITY}
 
@@ -553,7 +553,7 @@
 						{+END}</a>
 					</h2>
 
-					<div class="toggleable-tray js-tray-content" style="{HIDE_ADDITIONS*}"{+START,IF,{HIDE_ADDITIONS}} aria-expanded="false"{+END}>
+					<div class="toggleable-tray js-tray-content" style="{HIDE_ADDITIONS*}">
 						<div class="clearfix buildr-icons-wrap">
 							<div class="buildr-icon" style="width: {$?,{MAY_ADD_PORTAL},20%,25%};">
 								<a href="{$PAGE_LINK*,_SELF:_SELF:addrealm}"><img alt="{!W_ADD_REALM}" width="68" height="68" src="{$IMG*,buildr/realms}" /></a><br /><a href="{$PAGE_LINK*,_SELF:_SELF:addrealm}">{!W_ADD_REALM}</a>
@@ -588,7 +588,7 @@
 					{+END}</a>
 				</h2>
 
-				<div class="toggleable-tray js-tray-content" style="{HIDE_MODIFICATIONS*}"{+START,IF,{HIDE_MODIFICATIONS}} aria-expanded="false"{+END}>
+				<div class="toggleable-tray js-tray-content" style="{HIDE_MODIFICATIONS*}">
 					{+START,IF_NON_EMPTY,{ITEMS_OWNED}}
 						<form method="post" action="{$PAGE_LINK*,_SELF:_SELF}"><div>
 							{$INSERT_FORM_POST_SECURITY}

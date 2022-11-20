@@ -34,7 +34,7 @@
 				<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!">{!EXPAND}</a>
 			</div>
 
-			<div class="toggleable-tray-pulldown-spacer toggleable-tray js-tray-content" style="display: none" aria-expanded="false">
+			<div class="toggleable-tray-pulldown-spacer toggleable-tray js-tray-content" style="display: none">
 				{NEWS_FULL}
 			</div>
 		</div>

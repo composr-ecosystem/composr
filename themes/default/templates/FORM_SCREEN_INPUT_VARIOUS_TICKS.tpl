@@ -9,7 +9,7 @@
 			{+END}</a>
 			<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!">{SECTION_TITLE*}</a>
 		</h3>
-		<div class="toggleable-tray js-tray-content" style="display: {$?,{EXPANDED},block,none}"{+START,IF,{$NOT,{EXPANDED}}} aria-expanded="false"{+END}>
+		<div class="toggleable-tray js-tray-content" style="display: {$?,{EXPANDED},block,none}">
 			<div>
 	{+END}
 			{+START,IF,{$NOT,{SIMPLE_STYLE}}}

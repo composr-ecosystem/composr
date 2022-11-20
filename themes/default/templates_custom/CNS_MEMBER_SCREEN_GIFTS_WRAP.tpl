@@ -9,7 +9,7 @@
 
 	{$REQUIRE_CSS,gifts}
 
-	<div class="toggleable-tray js-tray-content" style="display: none" aria-expanded="false">
+	<div class="toggleable-tray js-tray-content" style="display: none">
 		{+START,LOOP,GIFTS}
 			<div class="box box---cns-member-screen-gifts-wrap"><div class="box-inner">
 				<div class="clearfix">

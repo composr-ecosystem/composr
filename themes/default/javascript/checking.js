@@ -42,7 +42,7 @@
                     // Changed error message
                     if ($dom.html(errorMsgElement) !== $cms.filter.html(errorMsg)) {
                         $dom.empty(errorMsgElement);
-                        if (errorMsg !== '') {// If there actually an error
+                        if (errorMsg !== '') { // If there actually an error
                             theElement.setAttribute('aria-invalid', 'true');
 
                             // Need to switch tab?
@@ -56,6 +56,7 @@
                             }
 
                             // Set error message
+                            theElement.setAttribute('aria-errormessage', errorMsgElement.id);
                             errorMsgElement.textContent += errorMsg;
                             errorMsgElement.setAttribute('role', 'alert');
 

@@ -847,6 +847,8 @@
             var els = $util.once($dom.$$$(context, '[data-open-as-overlay]'), 'behavior.openAsOverlay');
 
             els.forEach(function (el) {
+                el.setAttribute('aria-haspopup', 'dialog');
+
                 $dom.on(el, 'click', function (e) {
                     var options, url = (el.href === undefined) ? el.action : el.href;
 
@@ -877,6 +879,8 @@
 
             els.forEach(function (el) {
                 $dom.on(el, 'click', function (e) {
+                    el.setAttribute('aria-haspopup', 'dialog');
+
                     e.preventDefault();
 
                     if (el.querySelector('img, video')) {

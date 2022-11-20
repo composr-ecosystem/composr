@@ -29,7 +29,7 @@
 		<div class="toggleable-tray js-tray-content">
 		{+END}
 		{+START,IF_IN_ARRAY,OPTIONS,tray_closed}
-		<div class="toggleable-tray js-tray-content" style="display: none" aria-expanded="false">
+		<div class="toggleable-tray js-tray-content" style="display: none">
 		{+END}
 		{+START,IF_NOT_IN_ARRAY,OPTIONS,tray_open,tray_closed}
 		<div class="js-tray-content">

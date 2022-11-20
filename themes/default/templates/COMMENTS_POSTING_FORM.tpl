@@ -45,7 +45,7 @@
 						{+END}
 					</h3>
 				{+END}
-				<div class="comments-posting-form-outer {+START,IF_PASSED,EXPAND_TYPE} toggleable-tray js-tray-content{+END}"{+START,IF_PASSED,EXPAND_TYPE} aria-expanded="false"{+END} id="comments-posting-form-outer" style="display: {DISPLAY*}">
+				<div class="comments-posting-form-outer {+START,IF_PASSED,EXPAND_TYPE} toggleable-tray js-tray-content{+END}" id="comments-posting-form-outer" style="display: {DISPLAY*}">
 					<div class="comments-posting-form-inner">
 						<div class="wide-table-wrap"><table class="map-table wide-table">
 							{+START,IF,{$DESKTOP}}
@@ -83,7 +83,7 @@
 
 										<td>
 											<div>
-												<input id="email" name="email" value="{$MEMBER_EMAIL*}" type="text" tabindex="2" maxlength="255" class="form-control form-control-wide{+START,IF,{$NOT,{EMAIL_OPTIONAL}}} input-text-required{+END}" />
+												<input aria-errormessage="error-email-msg" id="email" name="email" value="{$MEMBER_EMAIL*}" type="text" tabindex="2" maxlength="255" class="form-control form-control-wide{+START,IF,{$NOT,{EMAIL_OPTIONAL}}} input-text-required{+END}" />
 											</div>
 
 											<div id="error-email" style="display: none" class="input-error-here">
@@ -91,7 +91,7 @@
 													NAME=status/warn
 													ICON_SIZE=24
 												{+END}
-												<span class="js-error-message"></span>
+												<span id="error-email-msg" class="js-error-message"></span>
 											</div>
 										</td>
 									</tr>
@@ -106,7 +106,7 @@
 
 										<td>
 											<div>
-												<input id="title" name="title" value="{DEFAULT_TITLE*}" type="text" tabindex="3" maxlength="255" class="form-control form-control-wide" />
+												<input aria-errormessage="error-title-msg" id="title" name="title" value="{DEFAULT_TITLE*}" type="text" tabindex="3" maxlength="255" class="form-control form-control-wide" />
 											</div>
 
 											<div id="error-title" style="display: none" class="input-error-here">
@@ -114,7 +114,7 @@
 													NAME=status/warn
 													ICON_SIZE=24
 												{+END}
-												<span class="js-error-message"></span>
+												<span id="error-title-msg" class="js-error-message"></span>
 											</div>
 										</td>
 									</tr>
@@ -217,7 +217,7 @@
 
 									<td>
 										<div>
-											<textarea name="post" id="post" data-textarea-auto-height="" tabindex="6" accesskey="x" class="{$?,{TRUE_ATTACHMENT_UI},true-attachment-ui,faux-attachment-ui} form-control form-control-wide js-focus-textarea-post" cols="42" rows="{$?,{$IS_NON_EMPTY,{$GET,COMMENT_POSTING_ROWS}},{$GET,COMMENT_POSTING_ROWS},11}">{POST_WARNING*}{+START,IF_PASSED,DEFAULT_POST}{DEFAULT_POST*}{+END}</textarea>
+											<textarea aria-errormessage="error-post-msg" name="post" id="post" data-textarea-auto-height="" tabindex="6" accesskey="x" class="{$?,{TRUE_ATTACHMENT_UI},true-attachment-ui,faux-attachment-ui} form-control form-control-wide js-focus-textarea-post" cols="42" rows="{$?,{$IS_NON_EMPTY,{$GET,COMMENT_POSTING_ROWS}},{$GET,COMMENT_POSTING_ROWS},11}">{POST_WARNING*}{+START,IF_PASSED,DEFAULT_POST}{DEFAULT_POST*}{+END}</textarea>
 											<input type="hidden" name="comcode__post" value="1" />
 										</div>
 
@@ -226,7 +226,7 @@
 												NAME=status/warn
 												ICON_SIZE=24
 											{+END}
-											<span class="js-error-message"></span>
+											<span id="error-post-msg" class="js-error-message"></span>
 										</div>
 
 										{+START,IF_PASSED,ATTACHMENTS}

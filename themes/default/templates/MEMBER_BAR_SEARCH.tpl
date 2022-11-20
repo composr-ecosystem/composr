@@ -2,7 +2,7 @@
 {+START,IF,{$EQ,{$PAGE},forumview}}
 	{+START,IF,{$EQ,{$_GET,type},pt}}
 		<div class="cns-search-box">
-			<form title="{!SEARCH}" action="{$URL_FOR_GET_FORM*,{$PAGE_LINK,_SEARCH:search:results:cns_own_pt,1}}" method="get">
+			<form title="{!SEARCH}" action="{$URL_FOR_GET_FORM*,{$PAGE_LINK,_SEARCH:search:results:cns_own_pt,1}}" method="get" role="search" aria-label="{!_SEARCH_PRIVATE_TOPICS}">
 				{$HIDDENS_FOR_GET_FORM,{$PAGE_LINK,_SEARCH:search:results:cns_own_pt,1}}
 
 				<div class="vertical-alignment">
@@ -16,7 +16,7 @@
 	{+END}
 	{+START,IF,{$NEQ,{$_GET,type},pt}}
 		<div class="cns-search-box">
-			<form title="{!SEARCH}" action="{$URL_FOR_GET_FORM*,{$PAGE_LINK,_SEARCH:search:results:cns_posts:search_under={$_GET,id},1}}" method="get">
+			<form title="{!SEARCH}" action="{$URL_FOR_GET_FORM*,{$PAGE_LINK,_SEARCH:search:results:cns_posts:search_under={$_GET,id},1}}" method="get" role="search" aria-label="{!SEARCH_FORUM_POSTS}">
 				{$HIDDENS_FOR_GET_FORM,{$PAGE_LINK,_SEARCH:search:results:cns_posts:search_under_children={$_GET,id},1}}
 
 				<div class="vertical-alignment">
@@ -33,7 +33,7 @@
 {$,Topic search}
 {+START,IF,{$EQ,{$PAGE},topicview}}
 	<div class="cns-search-box">
-		<form title="{!SEARCH}" action="{$URL_FOR_GET_FORM*,{$PAGE_LINK,_SEARCH:search:results:cns_within_topic:search_under={$_GET,id}}}" method="get">
+		<form title="{!SEARCH}" action="{$URL_FOR_GET_FORM*,{$PAGE_LINK,_SEARCH:search:results:cns_within_topic:search_under={$_GET,id}}}" method="get" role="search" aria-label="{!SEARCH_POSTS_WITHIN_TOPIC}">
 			{$HIDDENS_FOR_GET_FORM,{$PAGE_LINK,_SEARCH:search:results:cns_within_topic:search_under={$_GET,id}}}
 
 			<div class="vertical-alignment">
@@ -49,7 +49,7 @@
 {$,General search}
 {+START,IF,{$NEQ,{$PAGE},forumview,topicview}}
 	<div class="cns-search-box">
-		<form title="{!SEARCH}" action="{$URL_FOR_GET_FORM*,{$PAGE_LINK,_SEARCH:search:results}}" method="get">
+		<form title="{!SEARCH}" action="{$URL_FOR_GET_FORM*,{$PAGE_LINK,_SEARCH:search:results}}" method="get" role="search">
 			{$HIDDENS_FOR_GET_FORM,{$PAGE_LINK,_SEARCH:search:results}}
 
 			<div class="vertical-alignment">

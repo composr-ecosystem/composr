@@ -1,4 +1,4 @@
-<div class="comcode-concepts">
+<div class="comcode-concepts" role="complementary" aria-label="{$STRIP_TAGS,{TITLE}}">
 	<div class="box box---comcode-concepts"><div class="box-inner">
 		{+START,IF_NON_EMPTY,{TITLE}}
 			<h2>{TITLE}</h2>

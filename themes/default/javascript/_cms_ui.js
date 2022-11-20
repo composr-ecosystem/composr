@@ -20,7 +20,6 @@
             iconAnchor = icon ? $dom.parent(icon, 'a') : null,
             expanding = !$dom.isDisplayed(el);
 
-        el.setAttribute('aria-expanded', expanding ? 'true' : 'false');
         el.classList.toggle('is-expanded', expanding);
         el.classList.toggle('is-collapsed', !expanding);
 
@@ -345,7 +344,7 @@
             }, 0);
         } else {
             tooltipEl = document.createElement('div');
-            tooltipEl.role = 'tooltip';
+            tooltipEl.setAttribute('role', 'tooltip');
             tooltipEl.style.display = 'none';
             var rtPos = tooltip.indexOf('results-table');
             tooltipEl.className = 'tooltip ' + ((rtPos === -1 || rtPos > 100) ? 'tooltip-ownlayout' : 'tooltip-nolayout') + ' boxless-space' + (haveLinks ? ' have-links' : '');

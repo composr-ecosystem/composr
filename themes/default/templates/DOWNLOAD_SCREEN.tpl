@@ -25,7 +25,7 @@
 							<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!">{!I_AGREE}</a>
 						</div>
 
-						<div class="toggleable-tray js-tray-content" style="display: none" aria-expanded="false">
+						<div class="toggleable-tray js-tray-content" style="display: none">
 						{+END}
 							<div class="download-now" itemprop="significantLinks">
 								{+START,INCLUDE,ICON}

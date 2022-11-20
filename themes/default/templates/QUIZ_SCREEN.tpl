@@ -27,7 +27,7 @@
 	{+START,IF_NON_EMPTY,{$GET,bound_catalogue_entry}}{$CATALOGUE_ENTRY_ALL_FIELD_VALUES,{$GET,bound_catalogue_entry}}{+END}
 
 	{+START,IF_NON_EMPTY,{TIMEOUT}}
-		<p class="quiz-timer">
+		<p class="quiz-timer" role="timer" aria-live="off">
 			{!TIME_REMAINING,<strong><span id="quiz-timer" style="display: none">{TIMEOUT*}</span><span id="quiz-timer-minutes-and-seconds"></span></strong>}
 		</p>
 	{+END}
