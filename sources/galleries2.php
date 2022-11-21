@@ -458,7 +458,7 @@ function video_get_default_metadata(string $url = '', string $thumb_url = '', ?s
             $meta_details = get_webpage_meta_details($url);
             require_code('hooks/systems/media_rendering/oembed');
             $oembed_ob = object_factory('Hook_media_rendering_oembed');
-            if ($oembed_ob->recognises_mime_type($meta_details['t_mime_type'], $meta_details) || $oembed_ob->recognises_url($url)) {
+            if ((!empty($meta_details['t_mime_type'])) && ($oembed_ob->recognises_mime_type($meta_details['t_mime_type'], $meta_details)) || $oembed_ob->recognises_url($url)) {
                 $oembed = $oembed_ob->get_oembed_data_result($url, ['width' => get_option('video_width_setting'), 'height' => get_option('video_height_setting')]);
                 if (isset($oembed['width'])) {
                     if ($video_width === null) {

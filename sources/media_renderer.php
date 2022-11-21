@@ -134,7 +134,7 @@ function find_media_renderers(string $url, array $attributes, bool $as_admin, ?i
         //}
         //$mime_type = get_mime_type($matches[1], $as_admin);
         $mime_type = get_mime_type(get_file_extension($url), $as_admin);
-        if ($mime_type != 'application/octet-stream') {
+        if ((!empty($mime_type)) && ($mime_type != 'application/octet-stream')) {
             foreach ($hooks as $hook) {
                 if ((method_exists($obs[$hook], 'recognises_mime_type')) && (($acceptable_media & $obs[$hook]->get_media_type()) != 0)) {
                     $result = $obs[$hook]->recognises_mime_type($mime_type);
@@ -180,7 +180,7 @@ function find_media_renderers(string $url, array $attributes, bool $as_admin, ?i
             }
         }
     }
-    if ($mime_type != '') {
+    if ((!empty($mime_type)) && ($mime_type != 'application/octet-stream')) {
         foreach ($hooks as $hook) {
             if ((method_exists($obs[$hook], 'recognises_mime_type')) && (($acceptable_media & $obs[$hook]->get_media_type()) != 0)) {
                 $result = $obs[$hook]->recognises_mime_type($mime_type, $meta_details);
