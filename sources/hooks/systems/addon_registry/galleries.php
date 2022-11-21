@@ -1425,11 +1425,11 @@ class Hook_addon_registry_galleries
                     if ((is_file(get_file_base() . '/lang/' . $lang . '/critical_error.ini')) || (is_file(get_file_base() . '/lang_custom/' . $lang . '/critical_error.ini'))) { // Make sure it's a reasonable looking pack, not just a stub
                         $slide_contents = trim('
 {+START,INCLUDE,GALLERY_HOMEPAGE_HERO_SLIDE}
-    HEADLINE=' . do_lang('DEFAULT_SLIDE' . strval($i + 1) . '_HEADLINE', null, null, null, $lang) . '
-    SUBLINE=' . do_lang('DEFAULT_SLIDE' . strval($i + 1) . '_SUBLINE', null, null, null, $lang) . '
-    TEXT=' . do_lang('DEFAULT_SLIDE' . strval($i + 1) . '_TEXT', null, null, null, $lang) . '
-    LINK1_TEXT=' . do_lang('DEFAULT_LINK1_TEXT', null, null, null, $lang) . '
-    LINK2_TEXT=' . do_lang('DEFAULT_LINK2_TEXT', null, null, null, $lang) . '
+HEADLINE=' . do_lang('DEFAULT_SLIDE' . strval($i + 1) . '_HEADLINE', null, null, null, $lang) . '
+SUBLINE=' . do_lang('DEFAULT_SLIDE' . strval($i + 1) . '_SUBLINE', null, null, null, $lang) . '
+TEXT=' . do_lang('DEFAULT_SLIDE' . strval($i + 1) . '_TEXT', null, null, null, $lang) . '
+LINK1_TEXT=' . do_lang('DEFAULT_LINK1_TEXT', null, null, null, $lang) . '
+LINK2_TEXT=' . do_lang('DEFAULT_LINK2_TEXT', null, null, null, $lang) . '
 {+END}
                         ');
 
