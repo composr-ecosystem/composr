@@ -910,6 +910,7 @@ class Module_admin_themes
         cms_file_put_contents_safe($path, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
 
         // Empty caching
+        require_code('caches3');
         erase_persistent_cache();
         erase_cached_templates();
     }
