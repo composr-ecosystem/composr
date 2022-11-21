@@ -107,6 +107,10 @@ class CMS_Topic
             return new Tempcode();
         }
 
+        if ($forum_name === null) {
+            $forum_name = get_option('comments_forum_name');
+        }
+
         $forum_id = $GLOBALS['FORUM_DRIVER']->forum_id_from_name($forum_name);
         if ($forum_id === null) {
             return new Tempcode(); // Could not even find forum

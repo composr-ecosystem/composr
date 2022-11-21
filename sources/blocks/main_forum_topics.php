@@ -202,12 +202,11 @@ PHP;
                 if (($forum_names_map !== null) && (!array_key_exists($topic['forum_id'], $forum_names_map))) {
                     continue; // Maybe Private Topic, slipped in via reference to a missing forum
                 }
-                $forum_name = ($forum_names_map === null) ? null : $forum_names_map[$topic['forum_id']];
 
                 $_topics[] = [
                     'POST' => $topic['firstpost'],
                     'FORUM_ID' => ($forum_names_map === null) ? null : strval($topic['forum_id']),
-                    'FORUM_NAME' => $forum_name,
+                    'FORUM_NAME' => ($forum_names_map === null) ? null : $forum_names_map[$topic['forum_id']],
                     'TOPIC_URL' => $topic_url,
                     'TOPIC_URL_UNREAD' => $topic_url_unread,
                     'TITLE' => $title,

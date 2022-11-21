@@ -595,7 +595,7 @@ function send_pt_notification(int $post_id, string $subject, int $topic_id, int 
 
     require_code('notifications');
     $msubject = do_lang('NEW_PRIVATE_TOPIC_SUBJECT', $subject, null, null, get_lang($to_id));
-    $mmessage = do_notification_lang('NEW_PRIVATE_TOPIC_MESSAGE', comcode_escape($GLOBALS['FORUM_DRIVER']->get_username($from_id, true)), comcode_escape($subject), [comcode_escape($GLOBALS['FORUM_DRIVER']->topic_url($topic_id)), $post_comcode, strval($from_id)], get_lang($to_id));
+    $mmessage = do_notification_lang('NEW_PRIVATE_TOPIC_MESSAGE', comcode_escape($GLOBALS['FORUM_DRIVER']->get_username($from_id, true)), comcode_escape($subject), [comcode_escape($GLOBALS['FORUM_DRIVER']->topic_url($topic_id, '')), $post_comcode, strval($from_id)], get_lang($to_id));
     dispatch_notification('cns_new_pt', null, $msubject, $mmessage, [$to_id], $from_id, ['priority' => $emphasised ? 1 : 3]);
 
     if ($mark_unread) {
