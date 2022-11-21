@@ -70,7 +70,7 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
                 'i_ngram',
                 'i_ac',
                 'i_add_time',
-                'i_c_name',
+                //Disabled in v10 due to index key limit 'i_c_name',
                 'i_category_id',
                 'i_submitter',
                 'i_occurrence_rate', // For sorting
