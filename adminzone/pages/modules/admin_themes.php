@@ -911,6 +911,7 @@ class Module_admin_themes
 
         // Empty caching
         erase_persistent_cache();
+        erase_cached_templates();
     }
 
     /**
