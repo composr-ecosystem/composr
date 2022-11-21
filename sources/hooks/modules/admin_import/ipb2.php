@@ -1307,13 +1307,15 @@ class Hook_import_ipb2
      */
     public function import_wordfilter(object $db, string $table_prefix, string $file_base)
     {
+        require_code('wordfilter');
+
         $rows = $db->query_select('badwords', ['*']);
         $done = [];
         foreach ($rows as $row) {
             if (isset($done[$row['type']])) {
                 continue;
             }
-            add_wordfilter_word($row['type'], $row['swop'], $row['m_exact']);
+            add_wordfilter_word($row['type'], $row['swop'], $row['m_exact'] == 1 ? WORDFILTER_MATCH_TYPE_FULL : WORDFILTER_MATCH_TYPE_SUBSTRING);
             $done[$row['type']] = true;
         }
     }

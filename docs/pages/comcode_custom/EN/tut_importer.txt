@@ -12,8 +12,8 @@ Admin Zone > Tools > Import
 
 At the time of writing, the following software importers are available:
  - {$IS_MAINTAINED,import_ipb,Invision Board 2.0.x}
- - {$IS_MAINTAINED,import_mybb,MyBB 1.4.x}
- - {$IS_MAINTAINED,import_phpbb,phpBB 3.0.x}
+ - {$IS_MAINTAINED,import_mybb,MyBB 1.8.x}
+ - {$IS_MAINTAINED,import_phpbb,phpBB 3.3.x}
  - {$IS_MAINTAINED,import_smf,Simple Machine Forum 2.0.x}
  - {$IS_MAINTAINED,import_vb,vBulletin 3.0.x / 3.5.x}
  - {$IS_MAINTAINED,import_wordpress,Wordpress}
@@ -47,6 +47,8 @@ Importers may use a lot of memory in order to transfer large amounts of data, so
 When you have chosen a product to import from, Composr will ask you for some details. Importers work by connecting to the database of the product being imported. In addition, some require the presence of a configuration file for the product at an accessible path on your server, and will auto-detect database settings from this file. It is recommended that you leave your old site installed and running, although perhaps at a moved location, so that the importer can find all the associated files that it may want to import.
 
 It is [b]strongly recommended[/b] that you backup your site files and database before running an importer, in case the importer fails in some way (perhaps an incomplete, or unsatisfactory import, or duplication of data by a poorly written third-party importer).
+
+We also recommend that if you are importing data that could contain HTML or XML tags, such as forum posts, the &ldquo;Subject to a more liberal HTML filter&rdquo; privilege be turned on for all users. Otherwise imported HTML may not be legible once subjected to Composr's own particular HTML inclusion-list rules.
 
 The importer system is designed to be robust, and is programmed as 're-entrant' code; this means that if installation is halted, via failure, timeout, or cancellation, it can continue from where it left off. This is of particular use if there is an incompatibility between your data and the importer that a programmer needs to fix (such a situation may not be very unlikely due to the wide variation in data for any single product across different versions and deployments). Hopefully an import will go completely smoothly, but it is inherently a complex process.
 
@@ -102,8 +104,8 @@ Compatibility notes in general:
 [title="3"]phpBB[/title]
 
 Compatibility notes:
- - phpBB does not support attachments by default, but there is an attachment importer. Only use this if you have the popular attachments mod installed and running. Attachments are moved to the Composr attachment upload directory.
  - phpBB uses a very strange usergroup configuration, so it is necessary to check your usergroups, permissions and usergroup membership after import. Forum permissions will not import properly.
+ - phpBB uses their own HTML entities / tags in post and poll content. Check your forum posts and topic polls to ensure they are rendering correctly after import. You may need to make some manual edits.
 
 [title="3"]vBulletin[/title]
 
