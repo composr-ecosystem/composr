@@ -204,9 +204,9 @@ See the [page="_SEARCH:tut_postgresql"]Using PostgreSQL with Composr[/page] tuto
 
 [title="3"]Blank pages[/title]
 
-If you find you are getting a blank page it is likely because you either have exceeded the PHP memory limit, or a PHP parse error has happened.
+If you find you are getting a blank page it is likely because you either have exceeded the PHP memory limit, or some kind of fatal error Composr/PHP cannot display.
 
-You can often find out what the error was by putting [tt]&keep_show_parse_errors=1[/tt] into the URL. This will make Composr run slower and it might introduce some weirdness, but it often will also reveal the errors. Additionally, enabling the PHP [tt]display_errors[/tt] and [tt]display_startup_errors[/tt] in your main [tt]php.ini[/tt] is a good idea (for a development server only).
+Enabling the PHP [tt]display_errors[/tt] and [tt]display_startup_errors[/tt] in your main [tt]php.ini[/tt] is a good idea (for a development server only) as it will allow you to errors that happen before Composr has started up.
 
 Sometimes this advice will not help: if there is an "@" (error suppression operator) somewhere above the function call chain for where a fatal error happened then this will make fatal errors result in a silent blank screen. Composr cannot detect them. You should use "@" sparingly anyway.
 
@@ -727,7 +727,6 @@ The 'keep' parameters available are:
  - [tt]keep_fatalistic[/tt] -- set this to '1' if terminal warning errors should be handled as terminal fatal errors (which include stack traces), and '2' if you want to show extra detail (which may be risky, it could use a lot of server RAM); useful for debugging the origin of an error message
  - [tt]keep_firephp[/tt] -- set this to '1' to dump permissions checks that occurred to [url="FirePHP"]http://www.firephp.org/[/url]. It only works for authenticated administrators, but if the administrator is using [tt]keep_su[/tt] to masquerade as another user it will work (which is particularly useful for debugging permissions problems).
  - [tt]keep_firephp_queries[/tt] -- set this to '1' to dump queries that occurred to [url="FirePHP"]http://www.firephp.org/[/url]. It only works for authenticated administrators, but if the administrator is using [tt]keep_su[/tt] to masquerade as another user it will work. [tt]keep_firephp[/tt] must also be set.
- - [tt]keep_show_parse_errors[/tt] -- set this to '1' if you think you have a corrupt PHP file but you can't tell which as your PHP display errors option isn't on (and hence just get blank screens). This will allow Composr to generate stack traces for most corrupt files it tries to include. Note another cause of blank screens can be the PHP memory limit being exceeded.
  - [tt]keep_send_immediately[/tt] -- set this to '1' if you want to debug newsletter code, and not have newsletters sent in the background
  - [tt]keep_su_online[/tt] -- set this to '1' if you want the user [tt]keep_su[/tt] is used with to also show as online, and for their last online/submit statuses to be updated
  - [tt]keep_su_strict[/tt] -- set this to '1' if to strictly masquerade as another user rather than to allow a few exceptions like the display of stack traces

@@ -211,26 +211,14 @@ function require_code(string $codename, bool $light_exit = false, ?bool $has_cus
             } else {
                 // Note we load the original and then the override. This is so function_exists can be used in the overrides (as we can't support the re-definition) OR in the case of Mx_ class derivation, so that the base class is loaded first.
 
-                if ((isset($_GET['keep_show_parse_errors'])) && ($_GET['keep_show_parse_errors'] == '1')) {
-                    call_included_code($path_orig, $codename, $light_exit, clean_php_file_for_eval(file_get_contents($path_orig), $path_orig));
-                } else {
-                    call_included_code($path_orig, $codename, $light_exit);
-                }
+                call_included_code($path_orig, $codename, $light_exit);
 
-                if ((isset($_GET['keep_show_parse_errors'])) && ($_GET['keep_show_parse_errors'] == '1')) {
-                    call_included_code($path_custom, $codename, $light_exit, clean_php_file_for_eval(file_get_contents($path_custom), $path_custom));
-                } else {
-                    call_included_code($path_custom, $codename, $light_exit);
-                }
+                call_included_code($path_custom, $codename, $light_exit);
             }
         } else {
             // Have a custom but no original...
 
-            if ((isset($_GET['keep_show_parse_errors'])) && ($_GET['keep_show_parse_errors'] == '1')) {
-                call_included_code($path_custom, $codename, $light_exit, clean_php_file_for_eval(file_get_contents($path_custom), $path_custom));
-            } else {
-                call_included_code($path_custom, $codename, $light_exit);
-            }
+            call_included_code($path_custom, $codename, $light_exit);
         }
 
         if ((isset($_GET['keep_show_loading_code'])) && ($_GET['keep_show_loading_code'] === '1')) {
@@ -250,11 +238,7 @@ function require_code(string $codename, bool $light_exit = false, ?bool $has_cus
     } else {
         // Have an original and no custom (no override)...
 
-        if ((isset($_GET['keep_show_parse_errors'])) && ($_GET['keep_show_parse_errors'] == '1')) {
-            call_included_code($path_orig, $codename, $light_exit, clean_php_file_for_eval(file_get_contents($path_orig), $path_orig));
-        } else {
-            call_included_code($path_orig, $codename, $light_exit);
-        }
+        call_included_code($path_orig, $codename, $light_exit);
 
         // Optional process tracking (has to run before init function called)
         if ((isset($_GET['keep_show_loading_code'])) && ($_GET['keep_show_loading_code'] === '1')) {

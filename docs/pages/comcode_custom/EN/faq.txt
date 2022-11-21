@@ -234,7 +234,6 @@ If you are not successful in raising the memory limit you will need to contact t
 [title="4"]Corrupt PHP files[/title]
 
 It could be a problem with a corrupt PHP file. You can use the 'Integrity checker' option within the upgrader to find a list of all corrupt files. You can access the upgrader by calling up the [tt]http://yourwebsite/upgrader.php[/tt] URL on your site.
-Alternatively append [tt]&keep_show_parse_errors=1[/tt] to the URL (or [tt]?keep_show_parse_errors=1[/tt] if the URL you are adding to it doesn't have any parameters on yet). This will allow you to identify the offending PHP file.
 
 Once you have identified which files are corrupt you need to re-upload them. Download the manual installer from the [page="site:downloads"]Composr website[/page] that corresponds to your version, and then upload the files using an [abbr="File Transfer Protocol"]FTP[/abbr] client (or by some other means if you prefer).
 
