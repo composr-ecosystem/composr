@@ -68,7 +68,7 @@ function init__galleries2($code)
         "log_it('EDIT_IMAGE', strval(\$id), \$title);",
         "
         require_code('workflows');
-        handle_position_in_workflow_edit(\$validated, 'image', \$id, 'gallery', \$cat, \$title);
+        handle_position_in_workflow_edit(\$validated, 'image', strval(\$id), 'gallery', \$cat, \$title);
 
         <ditto>
         ",
@@ -80,7 +80,7 @@ function init__galleries2($code)
         "log_it('EDIT_VIDEO', strval(\$id), \$title);",
         "
         require_code('workflows');
-        handle_position_in_workflow_edit(\$validated, 'video', \$id, 'gallery', \$cat, \$title);
+        handle_position_in_workflow_edit(\$validated, 'video', strval(\$id), 'gallery', \$cat, \$title);
 
         <ditto>
         ",
