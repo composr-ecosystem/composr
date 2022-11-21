@@ -1226,19 +1226,22 @@ function step_5() : object
         }
     }
 
-    global $SITE_INFO;
+    $forum_type = post_param_string('forum_type');
 
     // If this exists, we may as well try and read it - may have some special flags in here during installation that we want to propagate
+    global $SITE_INFO;
     @include(get_file_base() . '/_config.php');
     foreach ($SITE_INFO as $key => $val) {
-        if (!isset($_POST[$key])) {
-            // Ignore reading in forum_base_url
-            if ($key == 'forum_base_url') {
-                continue;
-            }
-
-            $_POST[$key] = $val;
+        if (isset($_POST[$key])) {
+            continue;
         }
+
+        // Ignore reading in forum_base_url
+        if (($forum_type == 'cns') && ($use_msn == 0) && ($key == 'forum_base_url')) {
+            continue;
+        }
+
+        $_POST[$key] = $val;
     }
 
     // Read in a temporary SITE_INFO, but only so this step has something to run with (the _config.php write doesn't use this data)
@@ -1294,7 +1297,7 @@ function step_5() : object
                 'MESSAGE' => do_lang_tempcode('WARNING_DB_OVERWRITE', escape_html(get_tutorial_url('tut_upgrade'))),
                 'LANG' => $INSTALL_LANG,
                 'DB_TYPE' => post_param_string('db_type'),
-                'FORUM_TYPE' => post_param_string('forum_type'),
+                'FORUM_TYPE' => $forum_type,
                 'BOARD_PATH' => post_param_string('board_path', false, INPUT_FILTER_POST_IDENTIFIER),
                 'SECTIONS' => $sections,
                 'MAX' => null,
