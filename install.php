@@ -2908,7 +2908,7 @@ function handle_self_referencing_embedment()
         if (preg_match('#^themes/default/images/.*\.png$#', $type) != 0) {
             header('Content-Type: image/png');
             if (!file_exists(get_file_base() . '/' . $type)) {
-                $output = unixify_line_format(handle_string_bom(file_array_get($type)));
+                $output = handle_string_bom(file_array_get($type));
             } else {
                 $output = cms_file_get_contents_safe(get_file_base() . '/' . $type, FILE_READ_LOCK);
             }
