@@ -723,12 +723,15 @@ Always test a new importer and keep backups before actually running it on your d
 [title="5"]Implementation structure[/title]
 
 Importers are implemented using the Composr 'hook' system, meaning that a new importer may be added by just copying the importer-file into the [tt]sources_custom/hooks/modules/admin_import[/tt] directory. At the time of writing, the following importers are available:
- - phpNuke 6.5 (with possibly other versions and forked-products partially compatible)
- - phpBB 2
- - vBulletin 3
- - Invision Board 1.3.x
- - Invision Board 2.0.x
- - Merge from another copy of the latest version of Composr
+ - {$IS_MAINTAINED,import_ipb,Invision Board 2.0.x}
+ - {$IS_MAINTAINED,import_mybb,MyBB 1.8.x}
+ - {$IS_MAINTAINED,import_phpbb,phpBB 3.3.x}
+ - {$IS_MAINTAINED,import_smf,Simple Machine Forum 2.0.x}
+ - {$IS_MAINTAINED,import_vb,vBulletin 3.0.x / 3.5.x}
+ - {$IS_MAINTAINED,import_wordpress,Wordpress}
+And the following special ones:
+ - {$IS_MAINTAINED,import_html_site,HTML website importer}
+ - {$IS_MAINTAINED,import_cms_merge,Merge from another copy of the latest version of Composr}
 
 The importer-file consists of an object that defines:
  - a [tt]probe_db_access[/tt] function that tries to auto-detect database connection details from the given installation directory of the software being imported

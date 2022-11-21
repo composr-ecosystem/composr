@@ -289,7 +289,7 @@ function cns_vote_in_poll(int $poll_id, array $votes, ?int $member_id = null, ?a
     if ($rows[0]['po_is_private'] == 0 && $rows[0]['po_view_member_votes'] == 1) {
         $poll_title = $rows[0]['po_question'];
         $topic_title = $topic_info[0]['t_cache_first_title'];
-        $topic_url = $GLOBALS['FORUM_DRIVER']->topic_url($topic_id);
+        $topic_url = $GLOBALS['FORUM_DRIVER']->topic_url($topic_id, '');
         $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
         $subject = do_lang('POLL_VOTE_MAIL_SUBJECT', $username, $answer, [$poll_title, $topic_title, $topic_url], get_lang($member_id));
         $mail = do_lang('POLL_VOTE_MAIL_BODY', $username, $answer, [$poll_title, $topic_title, $topic_url], get_lang($member_id));

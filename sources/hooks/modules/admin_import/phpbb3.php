@@ -35,13 +35,16 @@ function init__hooks__modules__admin_import__phpbb3()
     $OLD_BASE_URL = null;
 
     // Profile Field Types
-    if (!defined('FIELD_INT')) {
-        define('FIELD_INT', 1);
-        define('FIELD_STRING', 2);
-        define('FIELD_TEXT', 3);
-        define('FIELD_BOOL', 4);
-        define('FIELD_DROPDOWN', 5);
-        define('FIELD_DATE', 6);
+    if (!defined('PHPB_FIELD_BASE')) {
+        define('PHPBB_FIELD_BASE', 'profilefields.type.base');
+        define('PHPBB_FIELD_INT', 'profilefields.type.integer');
+        define('PHPBB_FIELD_STRING', 'profilefields.type.string');
+        define('PHPBB_FIELD_STRING_COMMON', 'profilefields.type.string.common');
+        define('PHPBB_FIELD_URL', 'profilefields.type.url');
+        define('PHPBB_FIELD_TEXT', 'profilefields.type.text');
+        define('PHPBB_FIELD_BOOL', 'profilefields.type.bool');
+        define('PHPBB_FIELD_DROPDOWN', 'profilefields.type.dropdown');
+        define('PHPBB_FIELD_DATE', 'profilefields.type.date');
     }
 }
 
@@ -59,7 +62,7 @@ class Hook_import_phpbb3
     {
         $info = [];
         $info['supports_advanced_import'] = false;
-        $info['product'] = 'phpBB 3.0.x';
+        $info['product'] = 'phpBB 3.3.x';
         $info['prefix'] = 'phpbb_';
         $info['import'] = [
             'custom_comcode',
@@ -593,26 +596,10 @@ class Hook_import_phpbb3
                 continue;
             }
 
-            add_ip_ban($this->_un_phpbb_ip($row['ban_ip']));
+            add_ip_ban($row['ban_ip']);
 
             import_id_remap_put('ip_ban', strval($row['ban_id']), 0);
         }
-    }
-
-    /**
-     * Convert an IP address from phpBB hexadecimal string format.
-     *
-     * @param  string $ip The phpBB IP address
-     * @return IP The normal IP address
-     */
-    protected function _un_phpbb_ip(string $ip) : string
-    {
-        if (strlen($ip) < 8) {
-            return '127.0.0.1';
-        }
-
-        $_ip = strval(hexdec($ip[0] . $ip[1])) . '.' . strval(hexdec($ip[2] . $ip[3])) . '.' . strval(hexdec($ip[4] . $ip[5])) . '.' . strval(hexdec($ip[6] . $ip[7]));
-        return $_ip;
     }
 
     /**
@@ -911,7 +898,9 @@ class Hook_import_phpbb3
                     $row['post_username'] = $GLOBALS['CNS_DRIVER']->get_username($member_id);
                 }
 
-                $id_new = cns_make_post($topic_id, $title, $post, 0, $first_post, $row['post_visibility'], 0, $row['post_username'], $this->_un_phpbb_ip($row['poster_ip']), $row['post_time'], $member_id, null, $last_edit_time, $last_edit_by, false, false, $forum_id, false);
+                $post = $this->_filter_phpbb($post, true);
+
+                $id_new = cns_make_post($topic_id, $title, $post, 0, $first_post, $row['post_visibility'], 0, $row['post_username'], $row['poster_ip'], $row['post_time'], $member_id, null, $last_edit_time, $last_edit_by, false, false, $forum_id, false);
 
                 foreach ($attach_id as $i => $_attach_id) {
                     if ($_attach_id !== null) {
@@ -1051,7 +1040,7 @@ class Hook_import_phpbb3
             $rows2 = $db->query_select('poll_options', ['*'], ['topic_id' => $row['topic_id']], 'ORDER BY poll_option_id');
             $answers = [];
             foreach ($rows2 as $answer) {
-                $answers[] = $answer['poll_option_text'];
+                $answers[] = $this->_filter_phpbb($answer['poll_option_text']);
             }
             $maximum = 1;
 
@@ -1060,7 +1049,7 @@ class Hook_import_phpbb3
                 $row2['vote_user_id'] = import_id_remap_get('member', strval($row2['vote_user_id']), true);
             }
 
-            $id_new = cns_make_poll($topic_id, $row['poll_option_text'], 0, $is_open ? 1 : 0, 1, $maximum, 0, $answers, 0, 0, 1, 0, false);
+            $id_new = cns_make_poll($topic_id, $this->_filter_phpbb($row['poll_title']), 0, $is_open ? 1 : 0, 1, $maximum, 0, $answers, 0, 0, 1, 0, false);
 
             $answers = collapse_1d_complexity('id', $GLOBALS['FORUM_DB']->query_select('f_poll_answers', ['id'], ['pa_poll_id' => $id_new])); // Effectively, a remapping from IPB vote number to Composr vote number
 
@@ -1168,6 +1157,7 @@ class Hook_import_phpbb3
                 $last_edit_time = $_postdetails['message_edit_time'];
                 $last_edit_by = ($_postdetails['message_edit_user'] == 0) ? null : import_id_remap_get('member', strval($_postdetails['message_edit_user']), true);
 
+                $post = $this->_filter_phpbb($post, true);
                 $post_id = cns_make_post($topic_id, $title, $post, 0, $first_post, $validated, 0, $poster_name_if_guest, $ip_address, $time, $poster, null, $last_edit_time, $last_edit_by, false, false, null, false);
 
                 foreach ($attach_id as $i => $_attach_id) {
@@ -1358,22 +1348,21 @@ class Hook_import_phpbb3
             $id_new = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_custom_fields', 'id', [$GLOBALS['FORUM_DB']->translate_field_ref('cf_name') => $name]);
             if ($id_new === null) {
                 $default = $row['field_default_value'];
-
                 $type = 'short_text';
                 switch ($row['field_type']) {
-                    case FIELD_INT:
+                    case PHPBB_FIELD_INT:
                         $type = 'integer';
                         break;
 
-                    case FIELD_TEXT:
+                    case PHPBB_FIELD_TEXT:
                         $type = 'long_text';
                         break;
 
-                    case FIELD_BOOL:
+                    case PHPBB_FIELD_BOOL:
                         $type = 'tick';
                         break;
 
-                    case FIELD_DROPDOWN:
+                    case PHPBB_FIELD_DROPDOWN:
                         $type = 'list';
 
                         $values = collapse_1d_complexity('lang_default_value', $db->query_select('profile_lang', ['lang_default_value'], ['field_id' => $row['field_id']]));
@@ -1388,9 +1377,20 @@ class Hook_import_phpbb3
                         }
                         $default = $_default;
                         break;
-                    /*case FIELD_DATE: Unsupported
+                    /*case PHPBB_FIELD_DATE: Unsupported
                                         $type = 'integer';
                                         break;*/
+                    case PHPBB_FIELD_URL:
+                        $type = 'url';
+                        break;
+
+                    case PHPBB_FIELD_STRING:
+                    case PHPBB_FIELD_STRING_COMMON:
+                        $type = 'short_text';
+                        break;
+
+                    default:
+                        $type = 'short_text';
                 }
 
                 $id_new = cns_make_custom_field($name, 0, ($row['lang_explain'] === null) ? '' : $row['lang_explain'], $default, 1 - $row['field_hide'], 1 - $row['field_no_view'], 1 - $row['field_no_view'], 0, $type, $row['field_show_on_reg'], 0, 0, $row['field_order']);
@@ -1489,5 +1489,25 @@ class Hook_import_phpbb3
             require_code('report_content');
             report_post($post_id, $row['report_text'], 0, ($row['report_closed'] == 1) ? 0 : 1, $row['report_time'], $user_id);
         }
+    }
+
+    /**
+     * Clean up phpBB syntax and wrap text into semihtml.
+     *
+     * @param  string $text The text to filter
+     * @param  boolean $semihtml Whether to encapsulate the text in a semihtml Comcode tag if one does not already exist
+     * @return string The filtered text
+     */
+    protected function _filter_phpbb(string $text, bool $semihtml = false) : string
+    {
+        $out = '';
+        $parsed_text = cms_strip_tags($text, '<t>,<r>,<e>,<ATTACHMENT>,<s>,<attachment>', false);
+        if (($semihtml) && (strpos($text, '[semihtml]') === false) && (strpos($text, '[html]') === false)) {
+            $out = '[semihtml]' . $parsed_text . '[/semihtml]';
+        } else {
+            $out = $parsed_text;
+        }
+
+        return $out;
     }
 }

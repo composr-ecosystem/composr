@@ -426,8 +426,8 @@ class Module_admin_shopping
             'FORM' => $form,
             'FILTERS_ROW_A' => $filters_row_a,
             'FILTERS_ROW_B' => $filters_row_b,
-            'URL' => $url, // TODO
-            'FILTERS_HIDDEN' => new Tempcode(), // TODO
+            'URL' => $url,
+            'FILTERS_HIDDEN' => new Tempcode(),
         ]);
 
         pop_field_encapsulation();

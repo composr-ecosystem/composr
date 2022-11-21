@@ -1232,6 +1232,11 @@ function step_5() : object
     @include(get_file_base() . '/_config.php');
     foreach ($SITE_INFO as $key => $val) {
         if (!isset($_POST[$key])) {
+            // Ignore reading in forum_base_url
+            if ($key == 'forum_base_url') {
+                continue;
+            }
+
             $_POST[$key] = $val;
         }
     }

@@ -1803,7 +1803,7 @@ class DatabaseConnector
                 (strpos($table, ' ') === false) &&
                 (strpos($end, 'GROUP BY ') === false/*Can only SELECT what is also in GROUP BY*/) &&
                 ((isset($GLOBALS['SITE_DB'])) &&
-                ($this->table_prefix === $GLOBALS['SITE_DB']->table_prefix) || (get_forum_type() === 'cns'))
+                ($this->connection_unique_identifier === $GLOBALS['SITE_DB']->connection_unique_identifier) || (get_forum_type() === 'cns') && ($this->connection_unique_identifier == $GLOBALS['CNS_DRIVER']->db->connection_unique_identifier))
             ) {
                 global $TABLE_LANG_FIELDS_CACHE;
                 $lang_fields_provisional = isset($TABLE_LANG_FIELDS_CACHE[$table]) ? $TABLE_LANG_FIELDS_CACHE[$table] : [];
@@ -1904,6 +1904,7 @@ class DatabaseConnector
         $len = strlen($query);
         $current_parameter = null;
         $query_new = '';
+        $in_quotes_start = false;
         for ($i = 0; $i < $len; $i++) {
             $c = $query[$i];
             if ($current_parameter === null) {

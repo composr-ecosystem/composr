@@ -132,13 +132,18 @@ function import_id_remap_put(string $type, string $id_old, int $id_new)
  *
  * @param  SHORT_TEXT $word Word to add to the word-filter
  * @param  SHORT_TEXT $replacement Replacement (blank: block entirely)
- * @param  BINARY $substr Whether to perform a substring match
+ * @param  ID_TEXT $match_type The WORDFILTER_MATCH_TYPE_* to use (null: default to WORDFILTER_MATCH_TYPE_FULL)
  */
-function add_wordfilter_word(string $word, string $replacement = '', int $substr = 0)
+function add_wordfilter_word(string $word, string $replacement = '', ?string $match_type = null)
 {
+    require_code('wordfilter');
+
+    if ($match_type === null) {
+        $match_type = WORDFILTER_MATCH_TYPE_FULL;
+    }
     $test = $GLOBALS['SITE_DB']->query_select_value_if_there('wordfilter', 'word', ['word' => $word]);
     if ($test === null) {
-        $GLOBALS['SITE_DB']->query_insert('wordfilter', ['word' => $word, 'w_replacement' => $replacement, 'w_substr' => $substr]);
+        $GLOBALS['SITE_DB']->query_insert('wordfilter', ['word' => $word, 'w_replacement' => $replacement, 'w_match_type' => $match_type]);
     }
 }
 

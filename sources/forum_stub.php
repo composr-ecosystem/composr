@@ -629,4 +629,15 @@ abstract class Forum_driver_base
     {
         return md5($password);
     }
+
+    /**
+     * Clean up forum-specific syntax for use in the software.
+     *
+     * @param  string $text The text to filter
+     * @return string The filtered text
+     */
+    public function filter_forum_text(string $text) : string
+    {
+        return $text;
+    }
 }

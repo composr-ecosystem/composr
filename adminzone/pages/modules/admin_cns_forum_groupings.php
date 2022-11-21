@@ -185,6 +185,7 @@ class Module_admin_cns_forum_groupings extends Standard_crud_module
         $header_row = results_header_row([
             do_lang_tempcode('TITLE'),
             do_lang_tempcode('EXPANDED_BY_DEFAULT'),
+            do_lang_tempcode('ORDER'),
             do_lang_tempcode('ACTIONS'),
         ], $sortables, 'sort', $sortable . ' ' . $sort_order);
 

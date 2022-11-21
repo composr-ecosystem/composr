@@ -1640,7 +1640,6 @@ class Hook_import_cms_merge
                 $submitter = $GLOBALS['FORUM_DRIVER']->get_guest_id();
             }
 
-            $titlemap[$id] = $title;
             $map = [
                 'edit_date' => $row['edit_date'],
                 'submitter' => $submitter,
@@ -1918,7 +1917,7 @@ class Hook_import_cms_merge
         }
         $this->_fix_comcode_ownership($rows);
         foreach ($rows as $row) {
-            add_wordfilter_word($row['word'], $row['w_replacement'], $row['w_substr']);
+            add_wordfilter_word($row['word'], $row['w_replacement'], $row['w_match_type']);
         }
     }
 

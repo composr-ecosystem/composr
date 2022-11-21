@@ -588,22 +588,6 @@ class Hook_import_mybb
     }
 
     /**
-     * Convert an IP address from phpBB hexadecimal string format.
-     *
-     * @param  string $ip The phpBB IP address
-     * @return IP The normal IP address
-     */
-    protected function _un_phpbb_ip(string $ip) : string
-    {
-        if (strlen($ip) < 8) {
-            return '127.0.0.1';
-        }
-
-        $_ip = strval(hexdec($ip[0] . $ip[1])) . '.' . strval(hexdec($ip[2] . $ip[3])) . '.' . strval(hexdec($ip[4] . $ip[5])) . '.' . strval(hexdec($ip[6] . $ip[7]));
-        return $_ip;
-    }
-
-    /**
      * Standard import function.
      *
      * @param  object $db The database connector to import from

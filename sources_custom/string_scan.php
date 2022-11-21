@@ -6665,7 +6665,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PAYMENT_STATE_new
         PAYMENT_STATE_paid
         PAYMENT_STATE_pending
-        PAYPAL
         PERFORM_MULTI_MODERATION
         PERIODIC_BIWEEKLY_ON
         PERIODIC_CREATE
@@ -9274,7 +9273,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_CARDHOLDER_NAME
         DESCRIPTION_CARD_CV2
         DESCRIPTION_CARD_EXPIRY_DATE
-        DESCRIPTION_CARD_ISSUE_NUMBER
         DESCRIPTION_CARD_NUMBER
         DESCRIPTION_CARD_START_DATE
         DESCRIPTION_CASCADING
