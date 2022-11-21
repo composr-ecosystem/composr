@@ -144,7 +144,7 @@ class config_test_set extends cms_test_case
             if (in_array($hook, [
                 'optionname', // Example in Code Book
 
-                // Removed config options that still exist in upgrade code for migration purposes
+                // LEGACY Removed config options that still exist in upgrade code for migration purposes
                 'primary_paypal_email',
                 'payment_gateway_test_username',
             ])) {

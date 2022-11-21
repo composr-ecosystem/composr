@@ -1311,7 +1311,7 @@ class Forum_driver_phpbb3 extends Forum_driver_base
      */
     public function get_num_members() : int
     {
-        return $this->db->query_select_value('users', 'COUNT(*)') - 1; // TODO: #5063 on the tracker
+        return $this->db->query_select_value('users', 'COUNT(*)') - 1; // IDEA: #5063 on the tracker
     }
 
     /**
