@@ -674,38 +674,6 @@ class Forum_driver_phpbb3 extends Forum_driver_base
     }
 
     /**
-     * Convert an IP address into phpBB hexadecimal string format.
-     *
-     * @param  IP $ip The normal IP address
-     * @return string The phpBB IP address
-     */
-    protected function _phpbb_ip(string $ip) : string
-    {
-        $ip_apart = explode('.', $ip);
-        $_ip = dechex(intval($ip_apart[0])) . dechex(intval($ip_apart[1])) . dechex(intval($ip_apart[2])) . dechex(intval($ip_apart[3]));
-        return $_ip;
-    }
-
-    /**
-     * Convert an IP address from phpBB hexadecimal string format.
-     *
-     * @param  string $ip The phpBB IP address
-     * @return IP The normal IP address
-     */
-    protected function _un_phpbb_ip(string $ip) : string
-    {
-        if (strpos($ip, '.') === false) {
-            return $ip;
-        }
-        if (strpos($ip, ':') === false) {
-            return $ip;
-        }
-
-        $_ip = strval(hexdec($ip[0] . $ip[1])) . '.' . strval(hexdec($ip[2] . $ip[3])) . '.' . strval(hexdec($ip[4] . $ip[5])) . '.' . strval(hexdec($ip[6] . $ip[7]));
-        return $_ip;
-    }
-
-    /**
      * Makes a post in the specified forum, in the specified topic according to the given specifications. If the topic doesn't exist, it is created along with a spacer-post.
      * Spacer posts exist in order to allow staff to delete the first true post in a topic. Without spacers, this would not be possible with most forum systems. They also serve to provide meta information on the topic that cannot be encoded in the title (such as a link to the content being commented upon).
      *
@@ -743,15 +711,14 @@ class Forum_driver_phpbb3 extends Forum_driver_base
             warn_exit(do_lang_tempcode('MISSING_FORUM', escape_html($forum_name)), false, true);
         }
         $topic_id = $this->find_topic_id_for_topic_identifier($forum_name, $topic_identifier);
-        $ip_address = $this->_phpbb_ip($ip);
-        $local_ip_address = $this->_phpbb_ip('127.0.0.1');
+        $local_ip = '127.0.0.1';
         $is_new = ($topic_id === null);
         if ($is_new) {
             $map = ['forum_id' => $forum_id, 'topic_title' => $content_title . ', ' . $topic_identifier_encapsulation_prefix . ': #' . $topic_identifier, 'topic_poster' => $member, 'topic_time' => $time, 'topic_views' => 0, 'topic_status' => 0, 'topic_type' => 0, 'topic_first_post_id' => 0, 'topic_last_post_id' => 0, 'topic_moved_id' => 0];
             $topic_id = $this->db->query_insert('topics', $map, true);
 
             $home_link = hyperlink($content_url, $content_title, false, true);
-            $map = ['topic_id' => $topic_id, 'forum_id' => $forum_id, 'poster_id' => -1, 'post_text' => do_lang('SPACER_POST', $home_link->evaluate(), '', '', get_site_default_lang()), 'post_time' => $time, 'poster_ip' => $local_ip_address, 'post_username' => $this->get_username($member), 'enable_bbcode' => 1, 'enable_smilies' => 1, 'enable_sig' => 1, 'post_edit_time' => 0, 'post_edit_count' => 0];
+            $map = ['topic_id' => $topic_id, 'forum_id' => $forum_id, 'poster_id' => -1, 'post_text' => do_lang('SPACER_POST', $home_link->evaluate(), '', '', get_site_default_lang()), 'post_time' => $time, 'poster_ip' => $local_ip, 'post_username' => $this->get_username($member), 'enable_bbcode' => 1, 'enable_smilies' => 1, 'enable_sig' => 1, 'post_edit_time' => 0, 'post_edit_count' => 0];
             $post_id = $this->db->query_insert('posts', $map, true);
             $this->db->query_update('topics', ['topic_first_post_id' => $post_id], ['topic_id' => $topic_id], '', 1);
             $this->db->query('UPDATE ' . $this->db->get_table_prefix() . 'forums SET forum_topics_approved=(forum_topics_approved+1),forum_posts_approved=(forum_posts_approved+1) WHERE forum_id=' . strval($forum_id), 1);
@@ -764,7 +731,7 @@ class Forum_driver_phpbb3 extends Forum_driver_base
             return [$topic_id, false];
         }
 
-        $map = ['topic_id' => $topic_id, 'forum_id' => $forum_id, 'poster_id' => $member, 'post_text' => $post, 'post_time' => $time, 'poster_ip' => $ip_address, 'post_username' => $this->get_username($member), 'enable_bbcode' => 1, 'enable_smilies' => 1, 'enable_sig' => 1, 'post_edit_time' => 0, 'post_edit_count' => 0];
+        $map = ['topic_id' => $topic_id, 'forum_id' => $forum_id, 'poster_id' => $member, 'post_text' => $post, 'post_time' => $time, 'poster_ip' => $ip, 'post_username' => $this->get_username($member), 'enable_bbcode' => 1, 'enable_smilies' => 1, 'enable_sig' => 1, 'post_edit_time' => 0, 'post_edit_count' => 0];
         $post_id = $this->db->query_insert('posts', $map, true);
         $this->db->query('UPDATE ' . $this->db->get_table_prefix() . 'forums SET forum_posts_approved=(forum_posts_approved+1), forum_last_post_id=' . strval($post_id) . ' WHERE forum_id=' . strval($forum_id), 1);
         $this->db->query('UPDATE ' . $this->db->get_table_prefix() . 'topics SET topic_posts_approved=(topic_posts_approved+1), topic_last_post_id=' . strval($post_id) . ' WHERE topic_id=' . strval($topic_id), 1);
@@ -946,7 +913,7 @@ class Forum_driver_phpbb3 extends Forum_driver_base
 
                 $out[$i] = [];
                 $out[$i]['id'] = $id;
-                $out[$i]['num'] = $r['topic_posts_approved'] + 1;
+                $out[$i]['num'] = $r['topic_posts_approved'];
                 $out[$i]['title'] = $r['topic_title'];
                 $out[$i]['description'] = $r['topic_title'];
                 $out[$i]['firsttime'] = $r['topic_time'];
@@ -994,6 +961,7 @@ class Forum_driver_phpbb3 extends Forum_driver_base
         }
         $text = preg_replace('#<!-- s([^\s]*) --><img src="\{SMILIES_PATH\}/[^"]*" alt="([^\s]*)" title="[^"]*" /><!-- s([^\s]*) -->#U', '${1}', $text);
         $text = preg_replace('#\[(/?\w+):[^\]]*\]#', '[${1}]', $text);
+        $text = $this->filter_forum_text($text, true);
         return html_entity_decode($text, ENT_QUOTES);
     }
 
@@ -1064,8 +1032,7 @@ class Forum_driver_phpbb3 extends Forum_driver_base
      */
     public function probe_ip(string $ip) : array
     {
-        $_ip = $this->_phpbb_ip($ip);
-        return $this->db->query_select('posts', ['DISTINCT poster_id AS id'], ['poster_ip' => $_ip]);
+        return $this->db->query_select('posts', ['DISTINCT poster_id AS id'], ['poster_ip' => $ip]);
     }
 
     /**
@@ -1594,7 +1561,7 @@ class Forum_driver_phpbb3 extends Forum_driver_base
     {
         $ip = $this->db->query_select_value_if_there('posts', 'poster_ip', ['poster_id' => $member]);
         if ($ip !== null) {
-            return $this->_un_phpbb_ip($ip);
+            return $ip;
         }
         return '';
     }
@@ -1630,5 +1597,25 @@ class Forum_driver_phpbb3 extends Forum_driver_base
     {
         $row = $this->get_member_row($member);
         return ($row === null) ? null : $row[$field];
+    }
+
+    /**
+     * Clean up forum-specific syntax for use in the software.
+     *
+     * @param  string $text The text to filter
+     * @param  boolean $semihtml Whether to encapsulate the text in a semihtml Comcode tag if one does not already exist
+     * @return string The filtered text
+     */
+    public function filter_forum_text(string $text, bool $semihtml = false) : string
+    {
+        $out = '';
+        $parsed_text = cms_strip_tags($text, '<t>,<r>,<e>,<ATTACHMENT>,<s>,<attachment>', false);
+        if (($semihtml) && (strpos($text, '[semihtml]') === false) && (strpos($text, '[html]') === false)) {
+            $out = '[semihtml]' . $parsed_text . '[/semihtml]';
+        } else {
+            $out = $parsed_text;
+        }
+
+        return $out;
     }
 }
