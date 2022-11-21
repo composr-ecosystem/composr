@@ -845,9 +845,7 @@ input.input-username::-webkit-calendar-picker-indicator {
 			width: 980px;
 			position: relative;
 			margin: 15px auto 15px auto;
-			/*{+START,IF,{$THEME_OPTION,borders}}*/
-				border: 1px solid {$GET,fixed_width_border};
-			/*{+END}*/
+			border: 1px solid {$?,{$THEME_OPTION,borders},{$GET,fixed_width_border},transparent};
 			/*{+START,IF,{$THEME_OPTION,box_shadows}}*/
 				box-shadow: 0 0 20px {$GET,standard_border};
 			/*{+END}*/
@@ -1045,9 +1043,7 @@ header.is-see-through.with-white-navbar {
 	header:not(.is-see-through).with-white-navbar {
 		color: {$GET,a.link};
 		background-color: {$GET,WB};
-		/*{+START,IF,{$THEME_OPTION,borders}}*/
-			border-bottom: 1px solid {$GET,standard_border};
-		/*{+END}*/
+		border-bottom: 1px solid {$?,{$THEME_OPTION,borders},{$GET,standard_border},transparent};
 	}
 /*{+END}*/
 
@@ -1615,9 +1611,7 @@ body#main-website #main-website-inner, html > body div.global-middle-faux {
 	color: {$GET,panel_bottom_text};
 	background-color: {$GET,panel_bottom_background};
 	overflow: hidden;
-	/*{+START,IF,{$THEME_OPTION,borders}}*/
-		border-top: 5px solid {$GET,seed};
-	/*{+END}*/
+	border-top: 5px solid {$?,{$THEME_OPTION,borders},{$GET,seed},transparent};
 }
 
 #panel-bottom .box {
@@ -2350,9 +2344,7 @@ p.red-alert,
 
 div.red-alert,
 p.red-alert {
-	/*{+START,IF,{$THEME_OPTION,borders}}*/
-		border: 1px solid {$GET,light_error_border};
-	/*{+END}*/
+	border: 1px solid {$?,{$THEME_OPTION,borders},{$GET,light_error_border},transparent};
 	background-color: {$GET,light_error_background};
 	overflow: hidden;
 	{$BETA_CSS_PROPERTY,display: flex;}
@@ -2365,9 +2357,7 @@ p.red-alert {
 }
 
 .inline-wip-message {
-	/*{+START,IF,{$THEME_OPTION,borders}}*/
-		border: 1px solid {$GET,dark_border};
-	/*{+END}*/
+	border: 1px solid {$?,{$THEME_OPTION,borders},{$GET,dark_border},transparent};
 	color: {$GET,slightly_seeded_text};
 	padding-left: 38px;
 }
@@ -2518,9 +2508,7 @@ th.metadata-title {
 /* Boxes, which most blocks use to wrap their output */
 
 .box {
-	/*{+START,IF,{$THEME_OPTION,borders}}*/
-		border: 1px solid {$GET,standard_border};
-	/*{+END}*/
+		border: 1px solid {$?,{$THEME_OPTION,borders},{$GET,standard_border},transparent};
 	/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
 		border-radius: {$GET,border_radius};
 	/*{+END}*/
@@ -2559,9 +2547,7 @@ td > .comcode-quote:first-child, .fake-td > .comcode-quote:first-child, .fake-td
 	background-color: {$GET,area_5_background};
 }
 .box.nested {
-	/*{+START,IF,{$THEME_OPTION,borders}}*/
-		border: 1px solid {$GET,pale_border};
-	/*{+END}*/
+	border: 1px solid {$?,{$THEME_OPTION,borders},{$GET,pale_border},transparent};
 }
 .global-side-panel .box-inner > h1,
 .global-side-panel .box-inner > h2,
@@ -2615,9 +2601,7 @@ td > .comcode-quote:first-child, .fake-td > .comcode-quote:first-child, .fake-td
 	/* .box-inner set us in the wrong position, so fiddle around a bit to move us back to be flush */
 	margin: -10px -15px 10px -15px;
 	padding: 0.5em 0.8em 0.5em 0.3em;
-	/*{+START,IF,{$THEME_OPTION,borders}}*/
-		border-bottom: 1px solid {$GET,standard_border};
-	/*{+END}*/
+	border-bottom: 1px solid {$?,{$THEME_OPTION,borders},{$GET,standard_border},transparent};
 }
 
 .box-inner > h1 + *,
@@ -2689,9 +2673,7 @@ a.toggleable-tray-button { /* Override above for toggleable-tray-button */
 
 /* If we want a box to stand out less, give it 'pale-box' */
 .pale-box.box, .pale-box .box {
-	/*{+START,IF,{$THEME_OPTION,borders}}*/
-		border: 1px solid {$GET,pale_border};
-	/*{+END}*/
+	border: 1px solid {$?,{$THEME_OPTION,borders},{$GET,pale_border},transparent};
 }
 
 .box.pale-box h2,
@@ -2701,9 +2683,7 @@ a.toggleable-tray-button { /* Override above for toggleable-tray-button */
 	background-color: {$GET,point_of_interest_background} !important;
 	background-image: none;
 	color: {$GET,area_key_text};
-	/*{+START,IF,{$THEME_OPTION,borders}}*/
-		border-bottom: 1px solid {$GET,pale_border};
-	/*{+END}*/
+	border-bottom: 1px solid {$?,{$THEME_OPTION,borders},{$GET,pale_border},transparent};
 }
 
 /* If you want to mark a region as box-less, wrap a div with class 'boxless-space' around it -- it'll invoke a very different kind of modern styling */
@@ -2759,9 +2739,7 @@ a.toggleable-tray-button { /* Override above for toggleable-tray-button */
 .boxless-space .box + .fp-col-blocks-wrap,
 .boxless-space .fp-col-blocks-wrap + .box-wrapper,
 .boxless-space .fp-col-blocks-wrap + .box {
-	/*{+START,IF,{$THEME_OPTION,borders}}*/
-		border-top: 2px solid {$GET,standard_border} !important;
-	/*{+END}*/
+	border-top: 2px solid {$?,{$THEME_OPTION,borders},{$GET,standard_border},transparent} !important;
 	margin-top: 1.5em;
 	padding-top: 0.5em;
 }
@@ -2780,9 +2758,7 @@ a.toggleable-tray-button { /* Override above for toggleable-tray-button */
 	width: 60%;
 	display: block;
 	margin: 0 auto;
-	/*{+START,IF,{$THEME_OPTION,borders}}*/
-		border-top: 1px solid {$GET,pale_border} !important;
-	/*{+END}*/
+	border-top: 1px solid {$?,{$THEME_OPTION,borders},{$GET,pale_border},transparent} !important;
 	padding-top: 0.4em;
 }
 
@@ -2791,9 +2767,7 @@ a.toggleable-tray-button { /* Override above for toggleable-tray-button */
 	width: 60%;
 	display: block;
 	margin: 0 auto 2em auto;
-	/*{+START,IF,{$THEME_OPTION,borders}}*/
-		border-top: 1px solid {$GET,pale_border} !important;
-	/*{+END}*/
+	border-top: 1px solid {$?,{$THEME_OPTION,borders},{$GET,pale_border},transparent} !important;
 }
 
 .comments-wrapper .boxless-space .box + .box.highlighted-post::before {
@@ -2839,16 +2813,12 @@ a.toggleable-tray-button { /* Override above for toggleable-tray-button */
 .box---message,
 .box---login-screen,
 .box---inform-screen {
-	/*{+START,IF,{$THEME_OPTION,borders}}*/
-		border: 1px solid {$GET,pale_border};
-	/*{+END}*/
+	border: 1px solid {$?,{$THEME_OPTION,borders},{$GET,pale_border},transparent};
 	background-color: {$GET,area_background};
 }
 
 .box---message-warn {
-	/*{+START,IF,{$THEME_OPTION,borders}}*/
-		border: 1px solid {$GET,light_error_border};
-	/*{+END}*/
+	border: 1px solid {$?,{$THEME_OPTION,borders},{$GET,light_error_border},transparent};
 	background-color: {$GET,light_error_background};
 }
 
@@ -2962,9 +2932,7 @@ h3 .toggleable-tray-button .icon {
 .meta-details {
 	font-size: 0.9em;
 	color: {$GET,area_text};
-	/*{+START,IF,{$THEME_OPTION,borders}}*/
-		border-bottom: 1px dotted {$GET,pale_border};
-	/*{+END}*/
+	border-bottom: 1px {$?,{$THEME_OPTION,borders},dotted {$GET,pale_border},solid transparent};
 	max-width: 100%;
 	padding-left: 0.5em;
 	padding-bottom: 0.5em;
@@ -3932,9 +3900,7 @@ div.zebra-0+div.zebra-1, div.zebra-1+div.zebra-0 {
 	margin: 1em 5px;
 }
 .compacted-subbox-stream .box {
-	/*{+START,IF,{$THEME_OPTION,borders}}*/
-		border-top: 1px dotted {$GET,standard_border} !important;
-	/*{+END}*/
+	border-top: 1px {$?,{$THEME_OPTION,borders},dotted {$GET,standard_border},solid transparent};
 	border-left: 0;
 	border-right: 0;
 	border-bottom: 0;
@@ -3953,9 +3919,7 @@ div.zebra-0+div.zebra-1, div.zebra-1+div.zebra-0 {
 	max-width: 150px;
 }
 .compacted-subbox-stream .box+.compacted-subbox-stream .box {
-	/*{+START,IF,{$THEME_OPTION,borders}}*/
-		border-top: 1px solid {$GET,standard_border};
-	/*{+END}*/
+	border-top: 1px solid {$?,{$THEME_OPTION,borders},{$GET,standard_border},transparent};
 }
 .compacted-subbox-stream .box a {
 	font-size: 1.1em;
@@ -4365,17 +4329,13 @@ div .buttons-group-faded > * {
 	background-color: {$GET,point_of_interest_background} !important;
 	padding: 1em !important;
 	margin-top: 1em;
-	/*{+START,IF,{$THEME_OPTION,borders}}*/
-		border: 1px solid {$GET,pale_border} !important;
-	/*{+END}*/
+	border: 1px solid {$?,{$THEME_OPTION,borders},{$GET,pale_border},transparent} !important;
 	/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
 		border-radius: {$GET,border_radius};
 	/*{+END}*/
 }
 .comments-wrapper .boxless-space .comment-wrapper .highlighted-post.box {
-	/*{+START,IF,{$THEME_OPTION,borders}}*/
-		border-top: 1px solid {$GET,pale_border} !important; /* Needs to be more explicit as boxless-space rules will remove borders */
-	/*{+END}*/
+	border-top: 1px solid {$?,{$THEME_OPTION,borders},{$GET,pale_border},transparent} !important; /* Needs to be more explicit as boxless-space rules will remove borders */
 }
 
 .reviews-average {
@@ -6650,9 +6610,7 @@ td > .comcode-code-wrap > .comcode-quote, td > .comcode-code-wrap > .comcode-cod
 
 .comcode-quote-inner,
 .comcode-code-inner {
-	/*{+START,IF,{$THEME_OPTION,borders}}*/
-		border: 1px solid {$GET,code_border};
-	/*{+END}*/
+	border: 1px solid {$?,{$THEME_OPTION,borders},{$GET,code_border},transparent};
 	/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
 		border-bottom-left-radius: {$GET,border_radius};
 		border-bottom-right-radius: {$GET,border_radius};
@@ -6874,9 +6832,7 @@ body div.comcode-table-of-contents > div.box-inner > ol > li {
 }
 /*{+START,CSS_MODE,desktop}*/
 	.attachment {
-		/*{+START,IF,{$THEME_OPTION,borders}}*/
-			border: 1px solid {$GET,standard_border};
-		/*{+END}*/
+		border: 1px solid {$?,{$THEME_OPTION,borders},{$GET,standard_border},transparent};
 		padding: 0.5em !important;
 	}
 /*{+END}*/
@@ -6923,9 +6879,7 @@ a[rel="lightbox"] {
 }
 
 .attachment figcaption {
-	/*{+START,IF,{$THEME_OPTION,borders}}*/
-		border: 1px solid {$GET,standard_border};
-	/*{+END}*/
+	border: 1px solid {$?,{$THEME_OPTION,borders},{$GET,standard_border},transparent};
 	padding: 0.15em 0.3em;
 	font-style: italic;
 	margin-bottom: 0.5em;
@@ -6959,9 +6913,7 @@ a[rel="lightbox"] {
 	margin: 1em 0;
 	{$BETA_CSS_PROPERTY,display: flex;}
 	flex-wrap: wrap;
-	/*{+START,IF,{$THEME_OPTION,borders}}*/
-		border: 1px solid {$GET,standard_border};
-	/*{+END}*/
+	border: 1px solid {$?,{$THEME_OPTION,borders},{$GET,standard_border},transparent};
 	background-color: {$GET,area_background};
 	/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
 		border-radius: {$GET,border_radius};
