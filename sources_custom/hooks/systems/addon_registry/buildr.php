@@ -129,7 +129,7 @@ Buildr is a full zone addon for Composr.';
                 'points',
                 'ecommerce',
                 'chat',
-                'all_icons',
+                //'core_all_icons',
             ],
             'recommends' => [],
             'conflicts_with' => [],

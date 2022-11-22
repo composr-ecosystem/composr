@@ -121,7 +121,7 @@ To configure the diseases go to Admin Zone > Setup > Manage Diseases.';
                 'System scheduler',
                 'Conversr',
                 'points',
-                'all_icons',
+                //'core_all_icons',
             ],
             'recommends' => [],
             'conflicts_with' => [],

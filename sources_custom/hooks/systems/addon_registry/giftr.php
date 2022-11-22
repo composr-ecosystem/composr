@@ -129,7 +129,7 @@ When creating new gifts please only use images which are free to use, we suggest
                 'Conversr',
                 'points',
                 'ecommerce',
-                'all_icons',
+                //'core_all_icons',
             ],
             'recommends' => [],
             'conflicts_with' => [],

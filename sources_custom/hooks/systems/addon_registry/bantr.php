@@ -115,7 +115,7 @@ The insulted member has to try and make the right reply, if they succeed then th
                 'System scheduler',
                 'Conversr',
                 'points',
-                'all_icons',
+                //'core_all_icons',
             ],
             'recommends' => [],
             'conflicts_with' => [],

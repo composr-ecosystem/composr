@@ -59,7 +59,7 @@ class aaa_modularisation_test_set extends cms_test_case
 
         $seen = [];
         foreach ($addon_data as $addon_name => $d) {
-            if ($addon_name == 'all_icons') {
+            if ($addon_name == 'core_all_icons') {
                 continue;
             }
 
@@ -68,7 +68,7 @@ class aaa_modularisation_test_set extends cms_test_case
                 $seen[$path] = true;
 
                 if (preg_match('#^themes/default/images/(icons|icons_monochrome)/#', $path) != 0) {
-                    $this->assertTrue(in_array($path, $addon_data['all_icons']), 'All icons must be in all_icons addon: ' . $path);
+                    $this->assertTrue(in_array($path, $addon_data['core_all_icons']), 'All icons must be in all_icons addon: ' . $path);
 
                     $matches = [];
                     if (preg_match('#^themes/default/images/icons/(.*)$#', $path, $matches) != 0) {
@@ -81,9 +81,9 @@ class aaa_modularisation_test_set extends cms_test_case
             }
         }
 
-        // Check all_icons files also in other addons
-        foreach ($addon_data['all_icons'] as $path) {
-            if ($path == 'sources/hooks/systems/addon_registry/all_icons.php') {
+        // Check core_all_icons files also in other addons
+        foreach ($addon_data['core_all_icons'] as $path) {
+            if ($path == 'sources/hooks/systems/addon_registry/core_all_icons.php') {
                 continue;
             }
             if (preg_match('#^themes/default/images/(icons|icons_monochrome)/spare/#', $path) != 0) {
@@ -93,7 +93,7 @@ class aaa_modularisation_test_set extends cms_test_case
             $ok = false;
 
             foreach ($addon_data as $addon_name => $d) {
-                if ($addon_name == 'all_icons') {
+                if ($addon_name == 'core_all_icons') {
                     continue;
                 }
 
@@ -103,7 +103,7 @@ class aaa_modularisation_test_set extends cms_test_case
                 }
             }
 
-            $this->assertTrue($ok, 'Files in all_icons generally must also be distributed in exactly one other addon [the owner addon of that icon]]: ' . $path);
+            $this->assertTrue($ok, 'Files in core_all_icons generally must also be distributed in exactly one other addon [the owner addon of that icon]]: ' . $path);
         }
 
         // Check declared packages in files against the addon they're supposed to be within, and for files not including in any addon...

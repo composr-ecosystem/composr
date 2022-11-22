@@ -116,7 +116,7 @@ The documentation is primarily maintained on our website, and this archive is on
     {
         return [
             'requires' => [
-                'all_icons',
+                //'core_all_icons',
             ],
             'recommends' => [
                 'composr_homesite',

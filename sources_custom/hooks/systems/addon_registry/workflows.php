@@ -114,7 +114,7 @@ Note that this addon only affects galleries at the moment, and it requires the "
             'requires' => [
                 'unvalidated',
                 'galleries',
-                'all_icons',
+                //'core_all_icons',
             ],
             'recommends' => [],
             'conflicts_with' => [],

@@ -114,7 +114,7 @@ class Hook_addon_registry_composr_homesite_support_credits
                 'ecommerce',
                 'points',
                 'Conversr',
-                'all_icons',
+                //'core_all_icons',
             ],
             'recommends' => [
                 'stats',

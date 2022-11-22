@@ -112,7 +112,7 @@ You may wish to deny access to the usergroup and member directories when using t
             'requires' => [
                 'calendar',
                 'ecommerce',
-                'all_icons',
+                //'core_all_icons',
             ],
             'recommends' => [],
             'conflicts_with' => [],

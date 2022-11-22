@@ -15,13 +15,13 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    all_icons
+ * @package    core_all_icons
  */
 
 /**
  * Hook class.
  */
-class Hook_addon_registry_all_icons
+class Hook_addon_registry_core_all_icons
 {
     /**
      * Get a list of file permissions to set.
@@ -108,7 +108,7 @@ class Hook_addon_registry_all_icons
     public function get_file_list() : array
     {
         return [
-            'sources/hooks/systems/addon_registry/all_icons.php',
+            'sources/hooks/systems/addon_registry/core_all_icons.php',
             'themes/default/images/icons_sprite.svg',
             'themes/default/images/icons/spare/activity.svg',
             'themes/default/images/icons/spare/administration.svg',

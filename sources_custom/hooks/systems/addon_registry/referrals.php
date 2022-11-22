@@ -117,7 +117,7 @@ Allows people to specify who referred them when they join your site or other con
         return [
             'requires' => [
                 'Conversr',
-                'all_icons',
+                //'core_all_icons',
                 'stats',
             ],
             'recommends' => [],

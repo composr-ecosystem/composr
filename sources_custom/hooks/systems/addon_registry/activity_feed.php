@@ -124,7 +124,7 @@ The blocks provided are [tt]main_activity_feed[/tt] and the status entry box is 
     {
         return [
             'requires' => [
-                'all_icons',
+                //'core_all_icons',
             ],
             'recommends' => [
                 'hybridauth',

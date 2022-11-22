@@ -117,7 +117,7 @@ This addon does not contain the compo.sr install code and the overall site and t
     {
         return [
             'requires' => [
-                'all_icons',
+                //'core_all_icons',
             ],
             'recommends' => [
                 'downloads',

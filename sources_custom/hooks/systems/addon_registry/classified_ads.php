@@ -132,7 +132,7 @@ This addon does not itself handle the transaction to purchase what is being adve
             'requires' => [
                 'catalogues',
                 'ecommerce',
-                'all_icons',
+                //'core_all_icons',
             ],
             'recommends' => [],
             'conflicts_with' => [],
