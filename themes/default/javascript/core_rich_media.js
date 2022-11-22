@@ -731,6 +731,7 @@
                 width: params.width,
                 height: params.height,
                 videoId: params.remoteId,
+                host: 'https://www.youtube-nocookie.com',
                 events: {
                     onReady: function () {
                         if (embeddedMediaData != null) {
