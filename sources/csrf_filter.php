@@ -122,6 +122,12 @@ function check_csrf_token(?string $token)
             warn_exit(do_lang_tempcode('EVIL_POSTED_FORM_EXPIRED_TOKEN_HACK'));
         }
 
+        if (isset($_POST['_data'])) {
+            // FUDGE: We do this instead of in the proper place (in module code that turned the workaround on) because the module code has not had a chance to run yet
+            require_code('input_filter_2');
+            modsecurity_workaround_enable();
+        }
+
         if (either_param_integer('csrf_token_preserve', 0) == 0) {
             $GLOBALS['SITE_DB']->query_update('post_tokens', ['usage_tally' => $token_row['usage_tally'] + 1], ['token' => $token], '', 1);
         }
