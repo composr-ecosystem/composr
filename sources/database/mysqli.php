@@ -182,7 +182,7 @@ class Database_Static_mysqli extends Database_super_mysql
             $ins = mysqli_insert_id($db_link);
             if ($ins === 0) {
                 $table = substr($query, 12, strpos($query, ' ', 12) - 12);
-                $rows = $this->query('SELECT MAX(id) AS x FROM ' . $table, $db_link, 1, 0, false, false);
+                $rows = $this->query('SELECT MAX(id) AS x FROM ' . $table, $connection, 1, 0, false, false);
                 return $rows[0]['x'];
             }
             return $ins;

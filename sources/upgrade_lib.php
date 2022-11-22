@@ -34,6 +34,7 @@ function init__upgrade_lib()
 function clear_caches_1() // These have to happen early - to prevent things that could kill the update process
 {
     require_code('caches3');
+    erase_theme_images_cache();
     erase_cached_templates();
     erase_cached_language();
     delete_value('cdn');

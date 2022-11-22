@@ -1306,9 +1306,9 @@ abstract class Mail_dispatcher_base
      * @param  array $to_names The recipient names [array of strings]
      * @param  EMAIL $from_email The from address (blank: site staff address)
      * @param  string $from_name The from name (blank: site name)
-     * @return AUTO_LINK The queue ID
+     * @return ?AUTO_LINK The queue ID (null: could not log)
      */
-    protected function log_message(bool $queued, string $subject_line, string $message_raw, array $to_emails, array $to_names, string $from_email, string $from_name) : int
+    protected function log_message(bool $queued, string $subject_line, string $message_raw, array $to_emails, array $to_names, string $from_email, string $from_name) : ?int
     {
         if (mt_rand(0, 100) == 1) {
             cms_register_shutdown_function_safe(function () {

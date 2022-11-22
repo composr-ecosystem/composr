@@ -135,14 +135,13 @@ $next_offset_url = '';
 if ($file_offset + $per_cycle < count($todo)) {
     $next_offset_url = 'upgrader2.php?';
     foreach ($_GET as $key => $val) {
-        if ($key != 'file_offset') {
+        if ($key != 'file_offset' && $key != 'scroll_time' && $key != 'scroll_pos') {
             $next_offset_url .= urlencode($key) . '=' . urlencode($val) . '&';
         }
     }
     $next_offset_url .= 'file_offset=' . urlencode(strval($file_offset + $per_cycle));
-    $next_offset_url .= '#progress';
 }
-up2_do_header($next_offset_url);
+up2_do_header();
 echo '<ol>';
 foreach ($todo as $i => $target_file) {
     echo '<li>';
@@ -162,22 +161,41 @@ if ($next_offset_url == '') {
 } else {
     echo '<p><img alt="" src="../themes/default/images/loading.gif" /></p>';
 }
+$scroll_time = isset($_GET['scroll_time']) ? intval($_GET['scroll_time']) : 0;
+$scroll_pos = isset($_GET['scroll_pos']) ? intval($_GET['scroll_pos']) : 0;
 echo '<script>
+    var scrollTime = ' . strval($scroll_time) . ', scrollPos = ' . strval($scroll_pos) . ';
+    window.onload = function() {
+        if (scrollTime < new Date().valueOf() - 10000) {
+            scrollPos = document.getElementById("file_' . strval(min(count($todo) - 1, $file_offset + $per_cycle)) . '").offsetTop - 50;
+        }
+        window.scrollTo(0, scrollPos);
+        window.setTimeout(function() {
+            window.onscroll = function() {
+                scrollTime = new Date().valueOf();
+                scrollPos = window.scrollY;
+            };
+        }, 10);
+    };
+';
+if ($next_offset_url != '') {
+    echo '
     window.setTimeout(function() {
-        window.scrollTo(0, document.getElementById("file_' . strval(min(count($todo) - 1, $file_offset + $per_cycle)) . '").offsetTop - 50);
-    },200);
+        window.location.href = \'' . $next_offset_url . '&scroll_time=\' + scrollTime + \'&scroll_pos=\' + scrollPos + \'#progress\';
+    }, 3000);
+    ';
+}
+echo '
 </script>';
 if ($next_offset_url != '') {
-    echo '<hr /><p>Continuing in 3 seconds. If you have meta-refresh disabled, <a href="' . htmlentities($next_offset_url) . '">force continue</a>.</p>';
+    echo '<hr /><p>Continuing in 3 seconds. If the JavaScript refresh is not working, <a href="' . htmlentities($next_offset_url) . '">force continue</a>.</p>';
 }
 up2_do_footer();
 
 /**
  * Output the upgrader page header.
- *
- * @param  URLPATH $refresh_url URL to go to next (blank: done)
  */
-function up2_do_header(string $refresh_url = '')
+function up2_do_header()
 {
     $_refresh_url = htmlentities($refresh_url);
     echo <<<END
@@ -186,13 +204,7 @@ function up2_do_header(string $refresh_url = '')
 <head>
     <title>Extracting files</title>
     <link rel="icon" href="https://compo.sr/favicon.ico" type="image/x-icon" />
-    <link rel="stylesheet" href="data/sheet.php?sheet=global" />
 END;
-    if ($refresh_url != '') {
-        echo <<<END
-    <meta http-equiv="refresh" content="3;url={$_refresh_url}" />
-END;
-    }
     echo <<<END
     <style>
 END;

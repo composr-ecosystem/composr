@@ -558,18 +558,26 @@ function erase_theme_images_cache()
 {
     push_query_limiting(false);
 
-    $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'theme_images WHERE url LIKE \'themes/%/images/%\'');
+    $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'theme_images WHERE url LIKE \'themes/%/images/%\'', null, 0, true/*LEGACY*/);
 
     Self_learning_cache::erase_smart_cache();
 
     require_code('themes2');
     $all_themes = find_all_themes();
 
-    $_paths = $GLOBALS['SITE_DB']->query_select('theme_images', ['theme', 'id', 'lang', 'url']);
+    $_paths = $GLOBALS['SITE_DB']->query_select('theme_images', ['theme', 'id', 'lang', 'url'], [], '', null, 0, true/*LEGACY*/);
+    if ($_paths === null) { // LEGACY: Old field name
+        $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'theme_images WHERE path LIKE \'themes/%/images/%\'');
+
+        $_paths = $GLOBALS['SITE_DB']->query_select('theme_images', ['theme', 'id', 'lang', 'path']);
+        $legacy = true;
+    } else {
+        $legacy = false;
+    }
     $paths = [];
     foreach ($_paths as $image_details) {
         $image_details_key = ['theme' => $image_details['theme'], 'id' => $image_details['id'], 'lang' => $image_details['lang']];
-        $paths[serialize($image_details_key)] = $image_details['url'];
+        $paths[serialize($image_details_key)] = $image_details[$legacy ? 'path' : 'url'];
     }
 
     foreach ($paths as $_image_details_key => $path) {
@@ -591,7 +599,7 @@ function erase_theme_images_cache()
                         if ($theme != 'default') {
                             $insert_key_map = ['theme' => $theme, 'id' => $image_details_key['id'], 'lang' => $image_details_key['lang']];
                             if (!isset($paths[serialize($insert_key_map)])) {
-                                $insert_map = $insert_key_map + ['url' => $path];
+                                $insert_map = $insert_key_map + [$legacy ? 'path' : 'url' => $path];
                                 $GLOBALS['SITE_DB']->query_insert('theme_images', $insert_map, false, true/*In case of race conditions or case sensitivity problems*/);
                             }
                         }

@@ -655,7 +655,19 @@ function _log_it(string $type, ?string $a = null, ?string $b = null, ?int $relat
             'member_id' => get_member(),
             'warning_id' => $related_warning_id,
             'ip' => $ip,
-        ], true);
+        ], true, true/*LEGACY*/);
+
+        // LEGACY
+        if ($log_id === null) {
+            $log_id = $GLOBALS['SITE_DB']->query_insert('actionlogs', [
+                'the_type' => $type,
+                'param_a' => ($a === null) ? '' : cms_mb_substr($a, 0, 80),
+                'param_b' => ($b === null) ? '' : cms_mb_substr($b, 0, 80),
+                'date_and_time' => time(),
+                'member_id' => get_member(),
+                'ip' => $ip,
+            ], true);
+        }
     }
 
     // Tidy up auto-save
