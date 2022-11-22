@@ -1169,10 +1169,9 @@ class Module_admin_ecommerce_reports
         $sql = 'SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'ecom_transactions WHERE t_time<' . strval($to) . ' AND ' . db_string_equal_to('t_status', 'Completed') . ' ORDER BY t_time';
         $transactions = $GLOBALS['SITE_DB']->query($sql);
         foreach ($transactions as $transaction) {
-            $currency_normalised_price = currency_convert($transaction['t_price'], $transaction['t_currency'], get_option('currency')); // FUDGE: Not ideal because exchange rates change, but we don't normally trade multiple currencies anyway
+            $normalised_price = currency_convert($transaction['t_price'], $transaction['t_currency'], get_option('currency')); // FUDGE: Not ideal because exchange rates change, but we don't normally trade multiple currencies anyway
             $normalised_transaction_fee = currency_convert($transaction['t_transaction_fee'], $transaction['t_currency'], get_option('currency')); // FUDGE: Not ideal because exchange rates change, but we don't normally trade multiple currencies anyway
             $normalised_tax = currency_convert($transaction['t_tax'], $transaction['t_currency'], get_option('currency')); // FUDGE: Not ideal because exchange rates change, but we don't normally trade multiple currencies anyway
-            $normalised_price = $currency_normalised_price;
 
             // Put figures into opening/closing amounts...
             $types['CLOSING']['AMOUNT'] += $normalised_price - $normalised_transaction_fee;
