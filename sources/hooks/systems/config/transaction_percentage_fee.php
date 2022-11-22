@@ -38,7 +38,7 @@ class Hook_config_transaction_percentage_fee
             'explanation' => 'CONFIG_OPTION_transaction_percentage_fee',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
-            'required' => true,
+            'required' => false,
             'public' => false,
             'addon' => 'ecommerce',
         ];
@@ -55,6 +55,6 @@ class Hook_config_transaction_percentage_fee
             return null;
         }
 
-        return '0.00';
+        return '';
     }
 }
