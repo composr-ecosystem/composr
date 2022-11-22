@@ -974,6 +974,10 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BLOCK_side_news_categories_PARAM_check
         BLOCK_side_news_categories_PARAM_check_TITLE
         CACHE_CATALOGUES
+        TRUSTED_SITES_CACHE
+        DESCRIPTION_TRUSTED_SITES_CACHE
+        STATIC_CACHE
+        DESCRIPTION_STATIC_CACHE
         CHECKLIST_HEALTH_CHECK
         CLEAR_LOG
         REVERSE_DNS_AND_WHOIS

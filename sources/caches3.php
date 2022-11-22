@@ -129,8 +129,9 @@ function composr_cleanup(?array $cleanup_tools = null) : object
  *
  * @param  boolean $erase_cache_signatures_too Erase cache signatures too
  * @param  ?ID_TEXT $theme Only erase caching for this theme (null: all themes)
+ * @param  boolean $persistent_caching_too Erase persistent caching too (recommended in most cases)
  */
-function erase_block_cache(bool $erase_cache_signatures_too = false, ?string $theme = null)
+function erase_block_cache(bool $erase_cache_signatures_too = false, ?string $theme = null, $persistent_caching_too = true)
 {
     cms_profile_start_for('erase_tempcode_cache');
 
@@ -144,7 +145,9 @@ function erase_block_cache(bool $erase_cache_signatures_too = false, ?string $th
     }
     $GLOBALS['SITE_DB']->query_delete('cache', $where_map);
 
-    erase_persistent_cache(); // Block caching may be directly in here
+    if ($persistent_caching_too) {
+        erase_persistent_cache(); // Block caching may be directly in here
+    }
 
     cms_profile_end_for('erase_tempcode_cache');
 }

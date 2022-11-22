@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_cleanup_blocks
+class Hook_cleanup_static
 {
     /**
      * Find details about this cleanup hook.
@@ -31,8 +31,8 @@ class Hook_cleanup_blocks
     public function info() : ?array
     {
         $info = [];
-        $info['title'] = do_lang_tempcode('BLOCK_CACHE');
-        $info['description'] = do_lang_tempcode('DESCRIPTION_BLOCKS_CACHE');
+        $info['title'] = do_lang_tempcode('STATIC_CACHE');
+        $info['description'] = do_lang_tempcode('DESCRIPTION_STATIC_CACHE');
         $info['type'] = 'cache';
 
         return $info;
@@ -45,7 +45,7 @@ class Hook_cleanup_blocks
      */
     public function run() : object
     {
-        erase_block_cache(true, null, false);
+        erase_static_cache();
 
         return new Tempcode();
     }

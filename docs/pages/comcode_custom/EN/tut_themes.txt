@@ -294,7 +294,7 @@ All the following file extensions are recognised, in precedence order:
  - [tt]svg[/tt]
 Don't have multiple files with the same base name but different file extensions as only the highest-precedence one will ever be used.
 
-Once the correct URL has been detected, the database table is updated. This is basically a cache and can be cleared out from Admin Zone > Tools > Website Cleanup Tools.
+Once the correct URL has been detected, the database table is updated. This is basically a cache and can be cleared out from Admin Zone > Tools > Cleanup Tools.
 
 [title="3"]Editing theme images[/title]
 
@@ -309,9 +309,9 @@ On the edit theme image screen, you are shown the current version of this image 
 [box="Manually"]
 [media thumb="0" framed="0" float="right"]data_custom/images/docs/tip.png[/media]
 If you prefer to edit files directly using something like FTP you may do this too.
-However, if the theme image is currently only in the default theme you'll need to copy it to your theme's [tt]images_custom[/tt] folder first, then edit the theme image cache from Admin Zone > Tools > Website Cleanup Tools.
+However, if the theme image is currently only in the default theme you'll need to copy it to your theme's [tt]images_custom[/tt] folder first, then edit the theme image cache from Admin Zone > Tools > Cleanup Tools.
 
-If you delete a file with one extension then add a file with the same theme image codename but another extension, the theme image cache will also need clearing from Admin Zone > Tools > Website Cleanup Tools.
+If you delete a file with one extension then add a file with the same theme image codename but another extension, the theme image cache will also need clearing from Admin Zone > Tools > Cleanup Tools.
 [/box]
 
 [title="3"]Deleting theme images[/title]
