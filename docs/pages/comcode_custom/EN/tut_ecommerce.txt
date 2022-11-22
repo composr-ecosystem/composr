@@ -338,13 +338,13 @@ For Authorize.net, testing mode goes through the [url="Authorize.net sandbox"]ht
 
 [title="3"]Currencies[/title]
 
-The currency the website works in is defined in the configuration. If you use PayPal you need to make sure your account can accept this currency and is not set up to allow people to choose which currency to pay in (as it stops Composr being able to verify the payment if they use this feature).
+The currency the website works in is defined in the configuration (Admin Zone > Setup > Configuration > eCommerce options > Currency). You need to make sure your account with the configured payment gateway can accept this currency and is not set up to allow people to choose which currency to pay in (as it stops Composr being able to verify the payment if they use this feature). If using a third-party sales tax service such as TaxJar or TaxCloud, you also need to make sure the chosen service can accept this currency.
 
-Composr can process transactions in any currency, but basically is only configured with a single currency. There are 2 reasons for this:
+Composr can process transactions in any one currency, but it cannot process transactions across multiple currencies. There are 2 main reasons for this:
 1) So custom eCommerce products can be written to transact in any currency required
-2) So active invoices, active subscriptions, pending payments, and logged payments, all continue to be accurate if the main configured currency is changed
+2) So active invoices, active subscriptions, pending payments, logged payments, and cash flow reports (transaction fees and tax) all continue to be accurate if the main configured currency is changed
 
-Composr can automatically do currency conversions for visitors (there's a configuration option to control this).
+Composr can automatically do currency conversions for visitors using an API key for &ldquo;The Free Currency Converter API&rdquo; (this can be configured in the Admin Zone > Setup > Configuration > eCommerce options > Currency).
 
 [title="3"]Points verses money[/title]
 

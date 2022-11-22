@@ -30,7 +30,7 @@ class Hook_payment_gateway_ccbill
     //  the "Account ID" (a 6-digit number given to you) is the Composr "Gateway username"
     //  the two 4-digit "Subaccount IDs" are the Composr "Gateway VPN username" (comma-delimited with single transactions first, recurring transactions second).
     //  your Salt key is the Composr "Gateway digest code".
-    //  your Flexform ID is the "Gateway digest code". You can optionally enter two values separated by a comma; the first one will be used for simple transactions and the second for recurring transactions.
+    //  your Flexform ID is the "Special identifier". You can optionally enter two values separated by a comma; the first one will be used for simple transactions and the second for recurring transactions.
 
     protected $length_unit_to_days = [
         'd' => 1,
@@ -72,7 +72,7 @@ class Hook_payment_gateway_ccbill
     }
 
     /**
-     * Calculate the transaction fee for this payment gateway.
+     * Calculate the transaction fee for this payment gateway in the currency of the store.
      * This is only used if the payment gateway does not return the fee and transaction fee config options are not set.
      *
      * @param  float $amount The total transaction amount
@@ -82,12 +82,20 @@ class Hook_payment_gateway_ccbill
     public function get_transaction_fee(float $amount, string $type_code) : float
     {
         // CCBill rates depend on how high of risk a website's business is. You should probably set the correct rates in the transaction fee configuration as per https://ccbill.com/doc/pricing-and-fees .
-
         // Use low-risk rate as our default fallback; most users will probably not be making an "ocFans" website
-        $transaction_fee = 0.55 + ($amount * 0.039); // 0.55 + 3.9%
+        $usd_flat_fee = 0.55; // $0.55 USD flat fee
+        $percentage_fee = 0.039; // 3.9%
+        $percentage_subscription_fee = 0.02; // Additional 2% fee for recurring transactions
+
+        require_code('currency');
+        $flat_fee = currency_convert($usd_flat_fee, 'USD', get_option('currency'));
+
+        $transaction_fee = ($percentage_fee * $amount) + $flat_fee;
+
+        // CCBill charges an additional 2% for recurring transactions (subscriptions)
         list($details, $product_object) = find_product_details($type_code);
         if ($details !== null && $details['type'] == PRODUCT_SUBSCRIPTION) {
-            $transaction_fee += ($amount * 0.02); // CCBill charges an additional 2% for recurring transactions (subscriptions)
+            $transaction_fee += ($amount * $percentage_subscription_fee);
         }
 
         return round($transaction_fee, 2);

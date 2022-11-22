@@ -48,7 +48,7 @@ class Hook_payment_gateway_authorize
     }
 
     /**
-     * Calculate the transaction fee for this payment gateway.
+     * Calculate the transaction fee for this payment gateway in the currency of the store.
      * This is only used if the payment gateway does not return the fee and transaction fee config options are not set.
      *
      * @param  float $amount The total transaction amount
@@ -57,9 +57,15 @@ class Hook_payment_gateway_authorize
      */
     public function get_transaction_fee(float $amount, string $type_code) : float
     {
-        // Note: Authorize.net does not tell us how much it charged for a transaction fee in the API.
+        // Note: Authorize.net does not tell us how much it charged for a transaction fee in the API. We assume all-in-one plan as a fallback.
         // Note: Authorize.net charges an additional $25 monthly gateway fee which is not covered in Composr.
-        return 0.3 + 0.029 * $amount; // All-in-one plan transaction fee is used as the fallback
+        $usd_flat_fee = 0.3; // Flat fee: $0.30 USD
+        $percentage_fee = 0.029; // Percent fee: 2.9%
+
+        require_code('currency');
+        $flat_fee = currency_convert($usd_flat_fee, 'USD', get_option('currency'));
+
+        return round((($percentage_fee * $amount) + $flat_fee), 2);
     }
 
     /**

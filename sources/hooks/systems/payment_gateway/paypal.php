@@ -39,7 +39,7 @@ class Hook_payment_gateway_paypal
     }
 
     /**
-     * Calculate the transaction fee for this payment gateway.
+     * Calculate the transaction fee for this payment gateway in the currency of the store.
      * This is only used if the payment gateway does not return the fee and transaction fee config options are not set.
      *
      * @param  float $amount The total transaction amount
@@ -48,8 +48,14 @@ class Hook_payment_gateway_paypal
      */
     public function get_transaction_fee(float $amount, string $type_code) : float
     {
-        // PayPal usually returns the fee via mc_fee. You should probably use the correct fees according to your PayPal use by defining them in the transaction fee configuration
-        return round(0.39 + 0.0349 * $amount, 2);
+        // PayPal usually returns the fee via mc_fee. You should probably use the correct fees according to your PayPal use by defining them in the transaction fee configuration.
+        $usd_flat_fee = 0.39; // $0.39 USD flat fee
+        $percentage_fee = 0.0349; // 3.49% percentage fee
+
+        require_code('currency');
+        $flat_fee = currency_convert($usd_flat_fee, 'USD', get_option('currency'));
+
+        return round((($percentage_fee * $amount) + $flat_fee), 2);
     }
 
     /**

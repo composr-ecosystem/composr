@@ -1114,6 +1114,8 @@ class Module_admin_ecommerce_reports
      */
     public function get_types(int $from, int $to, bool $unpaid_invoices_count = false) : array
     {
+        require_code('currency');
+
         $types = [
             // Calculations
             'OPENING' => ['TYPE' => do_lang_tempcode('OPENING_BALANCE'), 'AMOUNT' => 0.00, 'SPECIAL' => true],
@@ -1168,20 +1170,22 @@ class Module_admin_ecommerce_reports
         $transactions = $GLOBALS['SITE_DB']->query($sql);
         foreach ($transactions as $transaction) {
             $currency_normalised_price = currency_convert($transaction['t_price'], $transaction['t_currency'], get_option('currency')); // FUDGE: Not ideal because exchange rates change, but we don't normally trade multiple currencies anyway
+            $normalised_transaction_fee = currency_convert($transaction['t_transaction_fee'], $transaction['t_currency'], get_option('currency')); // FUDGE: Not ideal because exchange rates change, but we don't normally trade multiple currencies anyway
+            $normalised_tax = currency_convert($transaction['t_tax'], $transaction['t_currency'], get_option('currency')); // FUDGE: Not ideal because exchange rates change, but we don't normally trade multiple currencies anyway
             $normalised_price = $currency_normalised_price;
 
             // Put figures into opening/closing amounts...
-            $types['CLOSING']['AMOUNT'] += $normalised_price - $transaction['t_transaction_fee'];
+            $types['CLOSING']['AMOUNT'] += $normalised_price - $normalised_transaction_fee;
             if ($transaction['t_time'] < $from) {
-                $types['OPENING']['AMOUNT'] += $normalised_price - $transaction['t_transaction_fee'];
+                $types['OPENING']['AMOUNT'] += $normalised_price - $normalised_transaction_fee;
                 continue;
             }
 
             // It's in the time window, store under correct account...
 
-            $types['FEES']['AMOUNT'] -= $transaction['t_transaction_fee'];
+            $types['FEES']['AMOUNT'] -= $normalised_transaction_fee;
 
-            $types['TAX_SALES']['AMOUNT'] -= $transaction['t_tax']; // Funky, see prior comment for TAX_SALES
+            $types['TAX_SALES']['AMOUNT'] -= $normalised_tax; // Funky, see prior comment for TAX_SALES
 
             $type_code = $transaction['t_type_code'];
             $this->amend_type_code($type_code, $item_name);
