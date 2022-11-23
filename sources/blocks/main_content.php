@@ -209,7 +209,7 @@ PHP;
                 'BLOCK_ID' => $block_id,
                 'HIGH' => true,
                 'TITLE' => $title,
-                'MESSAGE' => do_lang_tempcode('MISSING_RESOURCE', escape_html($content_type)),
+                'MESSAGE' => do_lang_tempcode('MISSING_RESOURCE', $content_type),
                 'ADD_NAME' => $object->content_language_string('ADD'),
                 'SUBMIT_URL' => $submit_url,
             ]);

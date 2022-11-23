@@ -443,7 +443,7 @@ class Module_galleries
             // Pic up some info
             $rows = $GLOBALS['SITE_DB']->query_select($type . 's', ['*'], ['id' => $id], '', 1);
             if (!array_key_exists(0, $rows)) {
-                return warn_screen(get_screen_title('ERROR_OCCURRED'), do_lang_tempcode('MISSING_RESOURCE', escape_html($type)));
+                return warn_screen(get_screen_title('ERROR_OCCURRED'), do_lang_tempcode('MISSING_RESOURCE', $type));
             }
             $myrow = $rows[0];
             $cat = $myrow['cat'];
@@ -625,7 +625,7 @@ class Module_galleries
 
         // Sorting
         list($url_sort, $dir) = $this->get_sort_order();
-        $_selectors = $this->get_sort_selectors();
+        $_selectors = gallery_media_get_sort_selectors();
         $selectors = new Tempcode();
         foreach ($_selectors as $selector_value => $selector_name) {
             $selected = ($url_sort . ' ' . $dir == $selector_value);
@@ -698,8 +698,8 @@ class Module_galleries
         list($url_sort, $dir) = $this->get_sort_order();
 
         if ($probe_type == 'first') {
-            $extra_where = ' AND ' . db_string_equal_to('cat', $cat);
-            list($rows) = content_rows_for_multi_type(['image', 'video'], $days, $extra_where, '', $url_sort . ' ' . $dir, 0, 1, ['image' => $image_select, 'video' => $video_select], '', '', true, [], $this->get_allowed_sorts());
+            $extra_where = ' AND ' . $this->generate_gallery_contents_selectcode($cat);
+            list($rows) = content_rows_for_multi_type(['image', 'video'], $days, $extra_where, '', $url_sort . ' ' . $dir, 0, 1, ['image' => $image_select, 'video' => $video_select], '', '', true, [], gallery_media_get_allowed_sorts());
             if (array_key_exists(0, $rows)) {
                 $row = $rows[0];
                 $probe_type = $rows[0]['content_type'];
@@ -750,7 +750,7 @@ class Module_galleries
                 $thumb_url = $row['thumb_url'];
                 $url = $row['url'];
                 $video_player = show_gallery_video_media($url, $thumb_url, $row['video_width'], $row['video_height'], $row['video_length'], $row['submitter'], $closed_captions_url);
-                $view_url = build_url(['page' => '_SELF', 'type' => 'video', 'id' => $row['id'], 'days' => (get_param_string('days', '') == '') ? null : get_param_string('days'), 'sort' => ($url_sort . ' ' . $dir == 'add_date DESC') ? null : ($url_sort . ' ' . $dir), 'select' => ($image_select == '*') ? null : $image_select, 'video_select' => ($video_select == '*') ? null : $video_select], '_SELF');
+                $view_url = build_url(['page' => '_SELF', 'type' => 'video', 'id' => $row['id'], 'days' => (get_param_string('days', '') == '') ? null : get_param_string('days'), 'sort' => ($url_sort . ' ' . $dir == get_option('gallery_media_default_sort_order')) ? null : ($url_sort . ' ' . $dir), 'select' => ($image_select == '*') ? null : $image_select, 'video_select' => ($video_select == '*') ? null : $video_select], '_SELF');
 
                 // Some extra variables relating to the currently selected entry
                 $entry_title = get_translated_text($row['title']);
@@ -822,7 +822,7 @@ class Module_galleries
                     $file_size = '';
                 }
 
-                $view_url = build_url(['page' => '_SELF', 'type' => 'image', 'id' => $row['id'], 'days' => (get_param_string('days', '') == '') ? null : get_param_string('days'), 'sort' => ($url_sort . ' ' . $dir == 'add_date DESC') ? null : ($url_sort . ' ' . $dir), 'select' => ($image_select == '*') ? null : $image_select, 'video_select' => ($video_select == '*') ? null : $video_select], '_SELF');
+                $view_url = build_url(['page' => '_SELF', 'type' => 'image', 'id' => $row['id'], 'days' => (get_param_string('days', '') == '') ? null : get_param_string('days'), 'sort' => ($url_sort . ' ' . $dir == get_option('gallery_media_default_sort_order')) ? null : ($url_sort . ' ' . $dir), 'select' => ($image_select == '*') ? null : $image_select, 'video_select' => ($video_select == '*') ? null : $video_select], '_SELF');
 
                 // Some extra variables relatin to the currently selected entry
                 $entry_title = get_translated_text($row['title']);
@@ -864,9 +864,9 @@ class Module_galleries
 
         // Show media
         $entries = new Tempcode();
-        $extra_where = ' AND ' . db_string_equal_to('cat', $cat);
+        $extra_where = ' AND ' . $this->generate_gallery_contents_selectcode($cat);
         $max = intval(get_option('gallery_entries_carousel_per_page'));
-        list($rows) = content_rows_for_multi_type(['image', 'video'], $days, $extra_where, '', $url_sort . ' ' . $dir, 0, $max + 1, ['image' => $image_select, 'video' => $video_select], '', '', true, [], $this->get_allowed_sorts());
+        list($rows) = content_rows_for_multi_type(['image', 'video'], $days, $extra_where, '', $url_sort . ' ' . $dir, 0, $max + 1, ['image' => $image_select, 'video' => $video_select], '', '', true, [], gallery_media_get_allowed_sorts());
         foreach ($rows as $row) {
             $content_type = $row['content_type'];
             $table = $content_type . 's';
@@ -881,8 +881,8 @@ class Module_galleries
             $entry_title = get_translated_text($row['title']);
             $entry_description = get_translated_tempcode($table, $just_row, 'the_description');
 
-            $probe_url = build_url(['page' => '_SELF', 'type' => 'browse', 'id' => $cat, 'layout_mode' => get_param_string('layout_mode', null), 'probe_type' => $content_type, 'probe_id' => $row['id'], 'days' => (get_param_string('days', '') == '') ? null : get_param_string('days'), 'sort' => ($url_sort . ' ' . $dir == 'add_date DESC') ? null : ($url_sort . ' ' . $dir), 'select' => ($image_select == '*') ? null : $image_select, 'video_select' => ($video_select == '*') ? null : $video_select], '_SELF');
-            $view_url_2 = build_url(['page' => '_SELF', 'type' => $content_type, 'id' => $row['id'], 'days' => (get_param_string('days', '') == '') ? null : get_param_string('days'), 'sort' => ($url_sort . ' ' . $dir == 'add_date DESC') ? null : ($url_sort . ' ' . $dir), 'select' => ($image_select == '*') ? null : $image_select, 'video_select' => ($video_select == '*') ? null : $video_select], '_SELF');
+            $probe_url = build_url(['page' => '_SELF', 'type' => 'browse', 'id' => $cat, 'layout_mode' => get_param_string('layout_mode', null), 'probe_type' => $content_type, 'probe_id' => $row['id'], 'days' => (get_param_string('days', '') == '') ? null : get_param_string('days'), 'sort' => ($url_sort . ' ' . $dir == get_option('gallery_media_default_sort_order')) ? null : ($url_sort . ' ' . $dir), 'select' => ($image_select == '*') ? null : $image_select, 'video_select' => ($video_select == '*') ? null : $video_select], '_SELF');
+            $view_url_2 = build_url(['page' => '_SELF', 'type' => $content_type, 'id' => $row['id'], 'days' => (get_param_string('days', '') == '') ? null : get_param_string('days'), 'sort' => ($url_sort . ' ' . $dir == get_option('gallery_media_default_sort_order')) ? null : ($url_sort . ' ' . $dir), 'select' => ($image_select == '*') ? null : $image_select, 'video_select' => ($video_select == '*') ? null : $video_select], '_SELF');
             if ($content_type == 'image') {
                 $image_url = $row['url'];
             } else {
@@ -937,7 +937,7 @@ class Module_galleries
         }
 
         // Navigation
-        list(, , , $first_entry_id, , , $first_type) = $this->build_set_navigation(db_string_equal_to('cat', $cat), '', '', $probe_id, $root, $probe_type, get_param_integer('wide_high', 0), $start, $max, $cat, $url_sort, $dir, $image_select, $video_select, $days);
+        list(, , , $first_entry_id, , , $first_type) = $this->build_set_navigation($this->generate_gallery_contents_selectcode($cat), '', '', $probe_id, $root, $probe_type, get_param_integer('wide_high', 0), $start, $max, $cat, $url_sort, $dir, $image_select, $video_select, $days);
 
         // Render
         return do_template('GALLERY_CAROUSEL_MODE_SCREEN', [
@@ -1135,6 +1135,7 @@ class Module_galleries
     public function start_slideshow() : object
     {
         $cat = $this->cat;
+        $query_cat = get_param_string('cat', $cat);
         $true_category_name = $this->category_name;
 
         $days = get_param_integer('days', null);
@@ -1146,15 +1147,20 @@ class Module_galleries
 
         list($url_sort, $dir) = $this->get_sort_order();
 
-        $slideshow_id = substr(md5(serialize([$cat, $url_sort, $dir, $days, $image_select, $video_select, $probe_type, $probe_id])), 0, 6);
+        $slideshow_id = substr(md5(serialize([$query_cat, $url_sort, $dir, $days, $image_select, $video_select, $probe_type, $probe_id])), 0, 6);
 
-        $extra_where = ' AND ' . db_string_equal_to('cat', $cat);
+        $extra_where = ' AND ' . $this->generate_gallery_contents_selectcode($query_cat);
         $max = intval(get_option('gallery_entries_carousel_per_page'));
-        list($rows, $total_items) = content_rows_for_multi_type(['image', 'video'], $days, $extra_where, '', $url_sort . ' ' . $dir, 0, null, ['image' => $image_select, 'video' => $video_select], '', '', true, [], $this->get_allowed_sorts());
+        list($rows, $total_items) = content_rows_for_multi_type(['image', 'video'], $days, $extra_where, '', $url_sort . ' ' . $dir, 0, null, ['image' => $image_select, 'video' => $video_select], '', '', true, [], gallery_media_get_allowed_sorts());
+
+        if (empty($rows)) {
+            warn_exit(do_lang_tempcode('MISSING_RESOURCE', $probe_type));
+        }
 
         $current_index = 0;
         $current_url = null;
         $current_video = null;
+        $current_type = null;
         $current_comment_details = new Tempcode();
 
         $carousel_entries = new Tempcode();
@@ -1177,8 +1183,8 @@ class Module_galleries
             $entry_title = get_translated_text($row['title']);
             $entry_description = get_translated_tempcode($table, $just_row, 'the_description');
 
-            $probe_url = build_url(['page' => '_SELF', 'type' => 'browse', 'id' => $cat, 'layout_mode' => get_param_string('layout_mode', null), 'probe_type' => $content_type, 'probe_id' => $row['id'], 'days' => (get_param_string('days', '') == '') ? null : get_param_string('days'), 'sort' => ($url_sort . ' ' . $dir == 'add_date DESC') ? null : ($url_sort . ' ' . $dir), 'select' => ($image_select == '*') ? null : $image_select, 'video_select' => ($video_select == '*') ? null : $video_select], '_SELF');
-            $view_url_2 = build_url(['page' => '_SELF', 'type' => $content_type, 'id' => $row['id'], 'days' => (get_param_string('days', '') == '') ? null : get_param_string('days'), 'sort' => ($url_sort . ' ' . $dir == 'add_date DESC') ? null : ($url_sort . ' ' . $dir), 'select' => ($image_select == '*') ? null : $image_select, 'video_select' => ($video_select == '*') ? null : $video_select], '_SELF');
+            $probe_url = build_url(['page' => '_SELF', 'type' => 'browse', 'id' => $cat, 'layout_mode' => get_param_string('layout_mode', null), 'probe_type' => $content_type, 'probe_id' => $row['id'], 'days' => (get_param_string('days', '') == '') ? null : get_param_string('days'), 'sort' => ($url_sort . ' ' . $dir == get_option('gallery_media_default_sort_order')) ? null : ($url_sort . ' ' . $dir), 'select' => ($image_select == '*') ? null : $image_select, 'video_select' => ($video_select == '*') ? null : $video_select], '_SELF');
+            $view_url_2 = build_url(['page' => '_SELF', 'type' => $content_type, 'id' => $row['id'], 'days' => (get_param_string('days', '') == '') ? null : get_param_string('days'), 'sort' => ($url_sort . ' ' . $dir == get_option('gallery_media_default_sort_order')) ? null : ($url_sort . ' ' . $dir), 'select' => ($image_select == '*') ? null : $image_select, 'video_select' => ($video_select == '*') ? null : $video_select], '_SELF');
 
             $full_url = $row['url'];
             if (url_is_local($full_url)) {
@@ -1362,7 +1368,7 @@ class Module_galleries
         $add_date = get_timezoned_date_time($myrow['add_date']);
         $edit_date = ($myrow['edit_date'] === null) ? '' : get_timezoned_date_time($myrow['edit_date']);
 
-        $extra_where = ' AND ' . db_string_equal_to('cat', $cat);
+        $extra_where = ' AND ' . $this->generate_gallery_contents_selectcode($cat);
         list($n, $x, $nav) = $this->build_set_navigation($extra_where, '', $category_name, $id, $root, 'image', get_param_integer('wide_high', 0), get_param_integer('module_start', 0), get_param_integer('module_max', get_default_gallery_max()), $cat, $url_sort, $dir, $image_select, $video_select, $days);
 
         $member_id = get_member_id_from_gallery_name($cat, null, true);
@@ -1377,7 +1383,6 @@ class Module_galleries
             'MEDIA_TYPE' => 'image',
             'E_TITLE' => get_translated_text($myrow['title']),
             'CAT' => $cat,
-            'SLIDESHOW' => (get_param_integer('slideshow', 0) == 1),
             'TRUE_GALLERY_TITLE' => $true_category_name,
             'GALLERY_TITLE' => $category_name,
             'MEMBER_ID' => ($member_id === null) ? '' : strval($member_id),
@@ -1492,7 +1497,7 @@ class Module_galleries
         // Video HTML
         $video = show_gallery_video_media($url, $image_url, $myrow['video_width'], $myrow['video_height'], $myrow['video_length'], $myrow['submitter'], $myrow['closed_captions_url']);
 
-        $extra_where = ' AND ' . db_string_equal_to('cat', $cat);
+        $extra_where = ' AND ' . $this->generate_gallery_contents_selectcode($cat);
         list($n, $x, $nav) = $this->build_set_navigation($extra_where, '', $category_name, $id, $root, 'video', get_param_integer('wide_high', 0), get_param_integer('module_start', 0), get_param_integer('module_max', get_default_gallery_max()), $cat, $url_sort, $dir, $image_select, $video_select, $days);
 
         $member_id = get_member_id_from_gallery_name($cat, null, true);
@@ -1509,7 +1514,6 @@ class Module_galleries
             'MEDIA_TYPE' => 'video',
             'E_TITLE' => get_translated_text($myrow['title']),
             'CAT' => $cat,
-            'SLIDESHOW' => (get_param_integer('slideshow', 0) == 1),
             'TRUE_GALLERY_TITLE' => $true_category_name,
             'GALLERY_TITLE' => $category_name,
             'MEMBER_ID' => ($member_id === null) ? '' : strval($member_id),
@@ -1567,7 +1571,7 @@ class Module_galleries
     public function build_set_navigation(string $extra_where, string $join, string $category_name, ?int $current_id, string $root, ?string $current_type, int $wide_high, int $start, int $max, string $cat, string $url_sort, string $dir, string $image_select, string $video_select, ?int $days) : array
     {
         $max = 500;
-        list(, $max_rows) = content_rows_for_multi_type(['image', 'video'], $days, $extra_where, '', $url_sort . ' ' . $dir, 0, 0, ['image' => $image_select, 'video' => $video_select], '', '', true, [], $this->get_allowed_sorts());
+        list(, $max_rows) = content_rows_for_multi_type(['image', 'video'], $days, $extra_where, '', $url_sort . ' ' . $dir, 0, 0, ['image' => $image_select, 'video' => $video_select], '', '', true, [], gallery_media_get_allowed_sorts());
 
         // These will hopefully be replaced with proper values
         $position = 1;
@@ -1579,7 +1583,7 @@ class Module_galleries
         $first_type = $current_type;
 
         if ($max_rows < $max) { // Not too many to navigate through
-            list($rows, $max_rows) = content_rows_for_multi_type(['image', 'video'], $days, $extra_where, '', $url_sort . ' ' . $dir, 0, null, ['image' => $image_select, 'video' => $video_select], '', '', true, [], $this->get_allowed_sorts());
+            list($rows, $max_rows) = content_rows_for_multi_type(['image', 'video'], $days, $extra_where, '', $url_sort . ' ' . $dir, 0, null, ['image' => $image_select, 'video' => $video_select], '', '', true, [], gallery_media_get_allowed_sorts());
 
             list($url_sort, $dir) = $this->get_sort_order();
 
@@ -1717,7 +1721,7 @@ class Module_galleries
         }
 
         // Link to show more. Preserve info about where we were
-        $slideshow_url = build_url(['page' => '_SELF', 'type' => $current_type, 'wide_high' => 1, 'id' => $current_id, 'slideshow' => 1, 'days' => $days, 'sort' => ($url_sort . ' ' . $dir == get_option('gallery_media_default_sort_order')) ? null : ($url_sort . ' ' . $dir), 'select' => ($image_select == '*') ? null : $image_select, 'video_select' => ($video_select == '*') ? null : $video_select] + propagate_filtercode(), '_SELF', [], true);
+        $slideshow_url = build_url(['page' => '_SELF', 'type' => $current_type, 'wide_high' => 1, 'id' => $current_id, 'cat' => $cat, 'slideshow' => 1, 'days' => $days, 'sort' => ($url_sort . ' ' . $dir == get_option('gallery_media_default_sort_order')) ? null : ($url_sort . ' ' . $dir), 'select' => ($image_select == '*') ? null : $image_select, 'video_select' => ($video_select == '*') ? null : $video_select] + propagate_filtercode(), '_SELF', [], true);
         $more_url = ($cat === null) ? null : build_url(['page' => '_SELF', 'type' => 'browse', 'id' => $cat, 'module_start' => ($start == 0) ? null : $start, 'module_max' => ($max == get_default_gallery_max()) ? null : $max, 'days' => $days, 'sort' => ($url_sort . ' ' . $dir == get_option('gallery_media_default_sort_order')) ? null : ($url_sort . ' ' . $dir), 'select' => ($image_select == '*') ? null : $image_select, 'video_select' => ($video_select == '*') ? null : $video_select] + propagate_filtercode(), '_SELF');
 
         // Only one entry?
@@ -1753,49 +1757,28 @@ class Module_galleries
     protected function get_sort_order() : array
     {
         if (isset($this->myrow) && array_key_exists('media_sort', $this->myrow) && ($this->myrow['media_sort'] != '')) {
-            return read_abstract_sorting_params($this->myrow['media_sort'], $this->get_allowed_sorts());
+            return read_abstract_sorting_params($this->myrow['media_sort'], gallery_media_get_allowed_sorts());
         }
 
         $sort = get_param_string('sort', get_option('gallery_media_default_sort_order'), INPUT_FILTER_GET_COMPLEX);
-        return read_abstract_sorting_params($sort, $this->get_allowed_sorts());
+        return read_abstract_sorting_params($sort, gallery_media_get_allowed_sorts());
     }
 
     /**
-     * Get a mapping of the sort selectors that are supported for media.
+     * Generate the Selectcode needed to get the contents of a gallery, with support for the galleries_subcat_narrowin option.
      *
-     * @return array A map between sort selector and language string
+     * @param  string $cat Gallery
+     * @return string Selectcode
      */
-    protected function get_sort_selectors() : array
+    protected function generate_gallery_contents_selectcode(string $cat) : string
     {
-        $_selectors = [
-            'recent ASC' => 'OLDEST_FIRST',
-            'recent DESC' => 'NEWEST_FIRST',
-            'title ASC' => 'TITLE',
-            'url ASC' => 'FILENAME',
-            'fixed_random ASC' => 'RANDOM',
-        ];
-        if (get_option('is_on_rating') == '1') {
-            $_selectors = array_merge($_selectors, [
-                'average_rating DESC' => 'RATING',
-                'compound_rating DESC' => 'POPULARITY',
-            ]);
+        if (get_option('galleries_subcat_narrowin') == '1') {
+            $cat_select = $cat . '*';
+        } else {
+            $cat_select = $cat . '#';
         }
-        return $_selectors;
-    }
 
-    /**
-     * Get a list of the sorting supported for media.
-     *
-     * @return array A list of allowed sorts
-     */
-    protected function get_allowed_sorts() : array
-    {
-        $allowed_sorts = [];
-        $_selectors = $this->get_sort_selectors();
-        foreach (array_keys($_selectors) as $selector) {
-            list($sort, ) = explode(' ', $selector, 2);
-            $allowed_sorts[$sort] = true;
-        }
-        return array_keys($allowed_sorts);
+        require_code('selectcode');
+        return selectcode_to_sqlfragment($cat_select, 'cat', 'galleries', 'parent_id', 'cat', 'name', false, false);
     }
 }

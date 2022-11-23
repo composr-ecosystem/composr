@@ -87,7 +87,7 @@ function _ensure_thumbnail(string $full_url, string $thumb_url, string $thumb_di
  * @set start end both start_if_vertical start_if_horizontal end_if_vertical end_if_horizontal
  * @param  ?string $background Background colour to use for padding, RGB/RGBA style and the "#" may be omitted -- or 'none' (null: choose the average colour in the image)
  * @param  boolean $only_make_smaller Only ever make the output smaller than the source image, no blowing small images up. Parameter is ignored for crop and pad.
- * @return URLPATH Generated thumbnail
+ * @return URLPATH Generated thumbnail URL
  *
  * @ignore
  */
@@ -698,7 +698,7 @@ function _image_path_to_url(string $to_path) : string
     }
 
     $to_url = str_replace('%2F', '/', rawurlencode(substr($to_path, strlen($file_base) + 1)));
-    return $to_url;
+    return get_custom_base_url() . '/' . $to_url;
 }
 
 /**

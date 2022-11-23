@@ -528,7 +528,7 @@ function content_rows_for_multi_type(array $content_types, ?int $days = null, $e
  * @param  ?integer $days Day limit for recency (null: no limit)
  * @param  string $extra_where Extra WHERE SQL
  * @param  string $extra_join Extra JOIN SQL
- * @param  string $sort URL-style sort parameter
+ * @param  string $_url_sort URL-style sort parameter
  * @param  integer $start Start offset
  * @param  ?integer $max Maximum results to return; pinned rows do not count towards it (null: no limit)
  * @param  string $select Selectcode
@@ -541,7 +541,7 @@ function content_rows_for_multi_type(array $content_types, ?int $days = null, $e
  * @param  ?array $info Info map for content type (null: look up)
  * @return array A tuple: Rows, Max count, Pinned rows
  */
-function content_rows_for_type(string $content_type, ?int $days, string $extra_where, string $extra_join, string $sort, int $start, ?int $max, string $select = '', string $select_b = '', string $filter = '', bool $check_perms = true, ?array $pinned = [], ?array $allowed_sorts = null, ?int $member_id = null, ?array $info = null) : array
+function content_rows_for_type(string $content_type, ?int $days, string $extra_where, string $extra_join, string $_url_sort, int $start, ?int $max, string $select = '', string $select_b = '', string $filter = '', bool $check_perms = true, ?array $pinned = [], ?array $allowed_sorts = null, ?int $member_id = null, ?array $info = null) : array
 {
     require_code('content');
 
@@ -550,7 +550,7 @@ function content_rows_for_type(string $content_type, ?int $days, string $extra_w
     }
 
     // Fix invalid parameters
-    if ($max < 1) {
+    if (($max !== null) && ($max < 1)) {
         $max = 1;
     }
 
@@ -569,7 +569,7 @@ function content_rows_for_type(string $content_type, ?int $days, string $extra_w
         $extra_where .= ' AND ' . $info['extra_where_sql'];
     }
 
-    if (($sort == 'prominence') && (($info['default_prominence_flags'] & PROMINENCE_FLAG_ACTIVE_ONLY) != 0)) {
+    if (($_url_sort == 'prominence') && (($info['default_prominence_flags'] & PROMINENCE_FLAG_ACTIVE_ONLY) != 0)) {
         $extra_where .= ' AND ' . $info['active_only_extra_where_sql'];
     }
 
@@ -731,15 +731,15 @@ function content_rows_for_type(string $content_type, ?int $days, string $extra_w
         $lang_fields['r.' . $lang_field] = $lang_field_type;
     }
     $query = ' FROM ' . get_table_prefix() . $info['table'] . ' r' . $extra_join . ' WHERE 1=1' . $extra_where;
-    list($sql_sort, $dir, $url_sort) = handle_abstract_sorting($sort, $info);
+    list($sql_sort, $dir, $url_sort) = handle_abstract_sorting($_url_sort, $info);
 
     // Run queries
     $max_rows = $info['db']->query_value_if_there('SELECT COUNT(DISTINCT r.' . $first_id_field . ') ' . $query, false, true);
-    if ($max == 0) {
+    if ($max === 0) {
         $rows = []; // Optimisation
     } else {
         $full_query = 'SELECT DISTINCT r.*';
-        if ($sort != 'random') {
+        if ($_url_sort != 'random') {
             $full_query .= ',' . $sql_sort . ' AS sort_order';
         }
         $full_query .= $query . ' ORDER BY ' . $sql_sort;
@@ -783,13 +783,13 @@ function build_selectcode_select_for_content_type(string $select, array $info, ?
 /**
  * Remap a simple URL-style sort string with something SQL-compatible. Recognising rating sort order only, but does also support breaking the string down.
  *
- * @param  string $sort The URL sort string
+ * @param  string $url_sort The URL sort string
  * @param  array $info Map of details of our content type
  * @param  ?array $allowed_sorts List of allowed sort types (null: default set)
  * @param  boolean $strict_error Provide a hack-attack error on invalid input
  * @return array A tuple: The SQL-style sort order, The sort direction, The URL-style sort order
  */
-function handle_abstract_sorting(string $sort, array $info, ?array $allowed_sorts = null, bool $strict_error = true) : array
+function handle_abstract_sorting(string $url_sort, array $info, ?array $allowed_sorts = null, bool $strict_error = true) : array
 {
     $feedback_type = isset($info['feedback_type_code']) ? $info['feedback_type_code'] : null;
     $first_id_field = is_array($info['id_field']) ? $info['id_field'][0] : $info['id_field'];
@@ -830,7 +830,7 @@ function handle_abstract_sorting(string $sort, array $info, ?array $allowed_sort
         }
     }
 
-    list($url_sort, $dir) = read_abstract_sorting_params($sort, $allowed_sorts, $strict_error);
+    list($url_sort, $dir) = read_abstract_sorting_params($url_sort, $allowed_sorts, $strict_error);
 
     if ($url_sort == 'recent') {
         $sql_sort = 'r.' . $info['add_time_field'];
@@ -873,12 +873,12 @@ function handle_abstract_sorting(string $sort, array $info, ?array $allowed_sort
 /**
  * Clean up and verify URL sort parameters.
  *
- * @param  string $sort The URL sort string
+ * @param  string $_url_sort The URL sort string
  * @param  ?array $allowed_sorts List of allowed sort types (null: don't check)
  * @param  boolean $strict_error Provide a hack-attack error on invalid input
  * @return array A pair: The URL-style sort order, The URL-style sort direction
  */
-function read_abstract_sorting_params(string $sort, ?array $allowed_sorts, bool $strict_error = true) : array
+function read_abstract_sorting_params(string $_url_sort, ?array $allowed_sorts, bool $strict_error = true) : array
 {
     $banal_default_sorts = [
         'natural',
@@ -892,7 +892,7 @@ function read_abstract_sorting_params(string $sort, ?array $allowed_sorts, bool 
         'compound_rating',
     ];
 
-    $parts = explode(' ', $sort, 2);
+    $parts = explode(' ', $_url_sort, 2);
     if (count($parts) == 1) {
         $parts[] = 'DESC';
     }

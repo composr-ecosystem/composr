@@ -132,7 +132,7 @@ function import_id_remap_put(string $type, string $id_old, int $id_new)
  *
  * @param  SHORT_TEXT $word Word to add to the word-filter
  * @param  SHORT_TEXT $replacement Replacement (blank: block entirely)
- * @param  ID_TEXT $match_type The WORDFILTER_MATCH_TYPE_* to use (null: default to WORDFILTER_MATCH_TYPE_FULL)
+ * @param  ?ID_TEXT $match_type The WORDFILTER_MATCH_TYPE_* to use (null: default to WORDFILTER_MATCH_TYPE_FULL)
  */
 function add_wordfilter_word(string $word, string $replacement = '', ?string $match_type = null)
 {

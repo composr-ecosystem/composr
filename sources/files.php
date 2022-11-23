@@ -762,26 +762,24 @@ function should_ignore_file(string $path, int $bitmask = 0) : bool
     }
 
     if (($bitmask & IGNORE_ALIEN) != 0) {
-        if (is_file(get_file_base() . '/' . $path)) {
-            static $addon_files = null;
-            if ($addon_files === null) {
-                $addon_files = [];
-                $hook_obs = find_all_hook_obs('systems', 'addon_registry', 'Hook_addon_registry_');
-                if (!defined('DEFAULT_ZONE_PAGE_NAME')) {
-                    define('DEFAULT_ZONE_PAGE_NAME', 'home');
-                }
-                foreach ($hook_obs as $hook => $hook_ob) {
-                    if (function_exists('extract_module_functions')) {
-                        $addon_files = array_merge($addon_files, array_map('cms_strtolower_ascii', $hook_ob->get_file_list()));
-                    } else { // Running from outside Composr
-                        $addon_files = array_merge($addon_files, array_map(function_exists('cms_strtolower_ascii') ? 'cms_strtolower_ascii' : 'strtolower', $hook_ob->get_file_list()));
-                    }
-                }
-                $addon_files = array_flip($addon_files);
+        static $addon_files = null;
+        if ($addon_files === null) {
+            $addon_files = [];
+            $hook_obs = find_all_hook_obs('systems', 'addon_registry', 'Hook_addon_registry_');
+            if (!defined('DEFAULT_ZONE_PAGE_NAME')) {
+                define('DEFAULT_ZONE_PAGE_NAME', 'home');
             }
-            if ((!isset($addon_files[$path])) && (!isset($addon_files[function_exists('cms_strtolower_ascii') ? cms_strtolower_ascii($path) : strtolower($path)]))) {
-                return true;
+            foreach ($hook_obs as $hook => $hook_ob) {
+                if (function_exists('extract_module_functions')) {
+                    $addon_files = array_merge($addon_files, array_map('cms_strtolower_ascii', $hook_ob->get_file_list()));
+                } else { // Running from outside Composr
+                    $addon_files = array_merge($addon_files, array_map(function_exists('cms_strtolower_ascii') ? 'cms_strtolower_ascii' : 'strtolower', $hook_ob->get_file_list()));
+                }
             }
+            $addon_files = array_flip($addon_files);
+        }
+        if ((!isset($addon_files[$path])) && (!isset($addon_files[function_exists('cms_strtolower_ascii') ? cms_strtolower_ascii($path) : strtolower($path)])) && (is_file(get_file_base() . '/' . $path))) {
+            return true;
         }
     }
 

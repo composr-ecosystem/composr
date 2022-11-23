@@ -131,7 +131,7 @@ function composr_cleanup(?array $cleanup_tools = null) : object
  * @param  ?ID_TEXT $theme Only erase caching for this theme (null: all themes)
  * @param  boolean $persistent_caching_too Erase persistent caching too (recommended in most cases)
  */
-function erase_block_cache(bool $erase_cache_signatures_too = false, ?string $theme = null, $persistent_caching_too = true)
+function erase_block_cache(bool $erase_cache_signatures_too = false, ?string $theme = null, bool $persistent_caching_too = true)
 {
     cms_profile_start_for('erase_tempcode_cache');
 

@@ -1080,7 +1080,6 @@ class Hook_addon_registry_galleries
             'CAT' => placeholder_codename(),
             'MEDIA_TYPE' => 'video',
             'ID' => placeholder_numeric_id(),
-            'SLIDESHOW' => false,
             'TRUE_GALLERY_TITLE' => lorem_phrase(),
             'E_TITLE' => lorem_phrase(),
             'GALLERY_TITLE' => lorem_phrase(),

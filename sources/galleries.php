@@ -322,12 +322,15 @@ function render_gallery_box(array $myrow, string $root = 'root', bool $show_memb
     // Build a slideshow URL if possible
     $slideshow_url = null;
 
-    $sort = 'add_date DESC';
+    require_code('content');
+    $object = get_content_object('image');
+    $info = $object->info();
+    list($sql_sort, $dir, $url_sort) = handle_abstract_sorting('recent DESC', $info, gallery_media_get_allowed_sorts());
 
-    $first_image = $GLOBALS['SITE_DB']->query_select('images', ['id', 'add_date'], ['cat' => $myrow['name'], 'validated' => 1], 'ORDER BY ' . $sort, 1);
+    $first_image = $GLOBALS['SITE_DB']->query_select('images r', ['id', 'add_date'], ['cat' => $myrow['name'], 'validated' => 1], 'ORDER BY ' . $sql_sort, 1);
     $first_image = isset($first_image[0]) ? $first_image[0] : null;
 
-    $first_video = $GLOBALS['SITE_DB']->query_select('videos', ['id', 'add_date'], ['cat' => $myrow['name'], 'validated' => 1], 'ORDER BY ' . $sort, 1);
+    $first_video = $GLOBALS['SITE_DB']->query_select('videos r', ['id', 'add_date'], ['cat' => $myrow['name'], 'validated' => 1], 'ORDER BY ' . $sql_sort, 1);
     $first_video = isset($first_video[0]) ? $first_video[0] : null;
 
     if (isset($first_image) || isset($first_video)) {
@@ -342,7 +345,7 @@ function render_gallery_box(array $myrow, string $root = 'root', bool $show_memb
             $first_id = ($first_image['add_date'] > $first_video['add_date']) ? $first_image['id'] : $first_video['id'];
         }
 
-        $slideshow_url = build_url(['page' => '_SELF', 'type' => $first_type, 'id' => $first_id, 'wide_high' => 1, 'sort' => ($sort === get_option('gallery_media_default_sort_order')) ? null : $sort, 'slideshow' => 1], '_SELF', [], true);
+        $slideshow_url = build_url(['page' => '_SELF', 'type' => $first_type, 'id' => $first_id, 'cat' => $myrow['name'], 'wide_high' => 1, 'sort' => ($url_sort . ' ' . $dir === get_option('gallery_media_default_sort_order')) ? null : ($url_sort . ' ' . $dir), 'slideshow' => 1], '_SELF', [], true);
     }
 
     // Render
@@ -367,6 +370,45 @@ function render_gallery_box(array $myrow, string $root = 'root', bool $show_memb
         'VIEWS' => strval($myrow['gallery_views']),
         'SLIDESHOW_URL' => $slideshow_url,
     ]);
+}
+
+/**
+ * Get a mapping of the sort selectors that are supported for media.
+ *
+ * @return array A map between sort selector and language string
+ */
+function gallery_media_get_sort_selectors() : array
+{
+    $_selectors = [
+        'recent ASC' => 'OLDEST_FIRST',
+        'recent DESC' => 'NEWEST_FIRST',
+        'title ASC' => 'TITLE',
+        'url ASC' => 'FILENAME',
+        'fixed_random ASC' => 'RANDOM',
+    ];
+    if (get_option('is_on_rating') == '1') {
+        $_selectors = array_merge($_selectors, [
+            'average_rating DESC' => 'RATING',
+            'compound_rating DESC' => 'POPULARITY',
+        ]);
+    }
+    return $_selectors;
+}
+
+/**
+ * Get a list of the sorting supported for media.
+ *
+ * @return array A list of allowed sorts
+ */
+function gallery_media_get_allowed_sorts() : array
+{
+    $allowed_sorts = [];
+    $_selectors = gallery_media_get_sort_selectors();
+    foreach (array_keys($_selectors) as $selector) {
+        list($sort, ) = explode(' ', $selector, 2);
+        $allowed_sorts[$sort] = true;
+    }
+    return array_keys($allowed_sorts);
 }
 
 /**
