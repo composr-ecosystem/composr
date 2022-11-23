@@ -8391,6 +8391,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         VIEW_INVOICES
         CONFIG_GROUP_DESCRIP_PAYMENT_GATEWAY
         NO_HASH_ON_SERVER
+        BLOCK_main_cns_involved_topics_PARAM_private_topics_TITLE
+        BLOCK_main_cns_involved_topics_PARAM_private_topics
     ')));
 
     $non_admin_files = [

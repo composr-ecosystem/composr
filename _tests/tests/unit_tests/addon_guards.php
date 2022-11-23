@@ -61,6 +61,9 @@ class addon_guards_test_set extends cms_test_case
             '(sources|sources_custom)/hooks/systems/disposable_values/\w+\.php',
             '(sources|sources_custom)/hooks/systems/non_active_urls/\w+\.php',
             '(sources|sources_custom)/hooks/systems/points/\w+\.php',
+
+            // Not an actual PHP script
+            'data_custom/errorlog.php',
         ];
 
         $hooks_files = get_directory_contents(get_file_base() . '/sources/hooks', 'sources/hooks', null, true, true, ['php']);
@@ -137,6 +140,9 @@ class addon_guards_test_set extends cms_test_case
 
             foreach ($files as $path) {
                 if ($path == 'data_custom/execute_temp.php') {
+                    continue;
+                }
+                if ($path == 'data_custom/errorlog.php') {
                     continue;
                 }
 

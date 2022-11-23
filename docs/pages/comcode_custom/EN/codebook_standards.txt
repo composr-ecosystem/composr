@@ -687,7 +687,7 @@ Use the correct redirection APIs
 All files must be associated with an addon
 | Modularity
 | Product development only
-| Automated test ([tt]modularisation.php[/tt])
+| Automated test ([tt]aaa_modularisation.php[/tt])
 | Every file intended to be distributed with Composr must be registered in one addon, installation / uninstallation / integrity-scans. To do this list it in the obvious position within one of the [tt]sources/hooks/systems/addon_registry[/tt] files. If it is a PHP file it should have a matching [tt]@package[/tt] line at the top of the file.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -2224,8 +2224,8 @@ Be careful with global functions and variables
 [color="red"]Icons are multi-purpose[/color]
 | Themeing
 | Product development only
-| Automated test ([tt]modularisation[/tt])
-| You will likely create new icons for very specific purposes. However, icons (especially SVG icons) are also an excellent resource for webmasters to use in their designs (regardless of what addons they've installed). For this reason every icon must be packaged both for the specific addon it is associated with, and the general purpose [tt]all_icons[/tt] addon.
+| Automated test ([tt]aaa_modularisation[/tt])
+| You will likely create new icons for very specific purposes. However, icons (especially SVG icons) are also an excellent resource for webmasters to use in their designs (regardless of what addons they've installed). For this reason every icon must be packaged both for the specific addon it is associated with, and the general purpose [tt]core_all_icons[/tt] addon.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 Compress images and strip gamma from PNG files
