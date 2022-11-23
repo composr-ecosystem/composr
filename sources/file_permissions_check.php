@@ -18,7 +18,7 @@
  * @package    core
  */
 
-/*EXTRA FUNCTIONS: shell_exec|escapeshellarg|posix_.*|fileowner|get_current_user*/
+/*EXTRA FUNCTIONS: shell_exec|escapeshellarg|posix_.*|fileowner|filegroup|get_current_user*/
 
 // Everything in this file can run without Composr having bootstrapped, although it will run better if it has
 
@@ -575,7 +575,7 @@ class CMSPermissionsScannerLinux extends CMSPermissionsScanner
     protected function process_lsattr(string $path, bool $directory_contents = false) : array
     {
         $lsattr = [];
-        if ($this->has_lsattr) {
+        if (($this->has_lsattr) && ($this->php_function_allowed('shell_exec'))) {
             $cmd = 'lsattr';
             if (!$directory_contents) {
                 $cmd .= ' -d';
@@ -795,16 +795,34 @@ class CMSPermissionsScannerLinux extends CMSPermissionsScanner
         } else {
             // nobody style...
 
+            $file_group = @filegroup($path);
+            $web_user_groups = $this->posix_getgroups($this->web_user);
+            $file_owner_groups = $this->posix_getgroups($file_owner);
+            $group_based = $web_user_groups !== null && $file_owner_groups !== null && in_array($file_group, $web_user_groups) && in_array($this->web_user, $file_owner_groups);
+
             if ($is_directory) {
                 $perms_desired |= self::BITMASK_PERMISSIONS_OWNER_EXECUTE;
                 $perms_desired |= self::BITMASK_PERMISSIONS_OWNER_READ;
                 $perms_desired |= self::BITMASK_PERMISSIONS_OWNER_WRITE;
 
-                $perms_needed |= self::BITMASK_PERMISSIONS_OTHER_EXECUTE;
-                $perms_needed |= self::BITMASK_PERMISSIONS_OTHER_READ;
+                if ($group_based) {
+                    $perms_needed |= self::BITMASK_PERMISSIONS_GROUP_EXECUTE;
+                } else {
+                    $perms_needed |= self::BITMASK_PERMISSIONS_OTHER_EXECUTE;
+                }
+                if ($group_based) {
+                    $perms_needed |= self::BITMASK_PERMISSIONS_GROUP_READ;
+                } else {
+                    $perms_needed |= self::BITMASK_PERMISSIONS_OTHER_READ;
+                }
                 if (($on_chmod_list) || (!$this->has_ftp_loopback_for_write)) {
                     $perms_dangerous |= self::BITMASK_PERMISSIONS_STICKY;
-                    $perms_needed |= self::BITMASK_PERMISSIONS_OTHER_WRITE;
+                    if ($group_based) {
+                        $perms_needed |= self::BITMASK_PERMISSIONS_GROUP_WRITE;
+                        $perms_dangerous |= self::BITMASK_PERMISSIONS_OTHER_WRITE;
+                    } else {
+                        $perms_needed |= self::BITMASK_PERMISSIONS_OTHER_WRITE;
+                    }
                 } else {
                     $perms_irrelevant |= self::BITMASK_PERMISSIONS_STICKY;
                     $perms_avoided |= self::BITMASK_PERMISSIONS_OTHER_WRITE;
@@ -822,11 +840,21 @@ class CMSPermissionsScannerLinux extends CMSPermissionsScanner
                     $perms_desired |= self::BITMASK_PERMISSIONS_OTHER_EXECUTE;
                 } else {
                     $perms_avoided |= self::BITMASK_PERMISSIONS_OTHER_EXECUTE;
+                    $perms_avoided |= self::BITMASK_PERMISSIONS_GROUP_EXECUTE;
                 }
-                $perms_needed |= self::BITMASK_PERMISSIONS_OTHER_READ;
+                if ($group_based) {
+                    $perms_needed |= self::BITMASK_PERMISSIONS_GROUP_READ;
+                } else {
+                    $perms_needed |= self::BITMASK_PERMISSIONS_OTHER_READ;
+                }
                 if (($on_chmod_list) || (!$this->has_ftp_loopback_for_write)) {
                     $perms_dangerous |= self::BITMASK_PERMISSIONS_STICKY;
-                    $perms_needed |= self::BITMASK_PERMISSIONS_OTHER_WRITE;
+                    if ($group_based) {
+                        $perms_needed |= self::BITMASK_PERMISSIONS_GROUP_WRITE;
+                        $perms_dangerous |= self::BITMASK_PERMISSIONS_OTHER_WRITE;
+                    } else {
+                        $perms_needed |= self::BITMASK_PERMISSIONS_OTHER_WRITE;
+                    }
                 } else {
                     $perms_irrelevant |= self::BITMASK_PERMISSIONS_STICKY;
                     $perms_avoided |= self::BITMASK_PERMISSIONS_OTHER_WRITE;
@@ -936,6 +964,31 @@ class CMSPermissionsScannerLinux extends CMSPermissionsScanner
         }
 
         return [$messages, $commands];
+    }
+
+    /**
+     * Find groups for a user.
+     *
+     * @param  integer $user_id The user ID
+     * @return ~array A list of group IDs (false: error)
+     */
+    protected function posix_getgroups(int $user_id)
+    {
+        static $cache = [];
+        if (isset($cache[$user_id])) {
+            return $cache[$user_id];
+        }
+        if ($this->php_function_allowed('shell_exec')) {
+            $ret = @shell_exec('id -G ' . strval($user_id));
+        } else {
+            $ret = false;
+        }
+        if ($ret === false) {
+            $cache[$user_id] = false;
+        } else {
+            $cache[$user_id] = array_map('intval', explode(' ', $ret));
+        }
+        return $cache[$user_id];
     }
 
     /**
@@ -1168,7 +1221,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
             $su = new COM('ADsSecurityUtility');
             $security_info = $su->GetSecurityDescriptor($path, 1, 1);
             $this->key_users[] = preg_replace('#^.*\\\#', '', $security_info->owner);
-        } else {
+        } elseif ($this->php_function_allowed('shell_exec')) {
             $text = shell_exec('dir /a /q ' . escapeshellarg($path));
             $matches = [];
             // FUDGE: We have to parse knowing the character offsets, as there's no other way to parse (date formats may vary, usernames often have spaces and numbers)
@@ -1177,6 +1230,8 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
             } else {
                 $this->key_users[] = 'Creator Owner'; // Fallback for when we do not know
             }
+        } else {
+            $this->key_users[] = 'Creator Owner'; // Fallback for when we do not know
         }
 
         $this->key_users = array_unique($this->key_users);
@@ -1220,7 +1275,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
         $messages = [];
         $commands = [];
 
-        if ($this->filtered($rel_path)) {
+        if (($this->filtered($rel_path)) || (!$this->php_function_allowed('shell_exec'))) {
             return [$messages, $commands];
         }
 

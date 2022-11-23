@@ -148,9 +148,9 @@ At the time of writing the list of check sections is:
  - Server performance \ Server uptime
  - Software integrity \ Addon upgrade completion
  - Software integrity \ Database corruption (slow)
- - Software integrity \ Database integrity
- - Software integrity \ File integrity (slow)
- - Software integrity \ File permissions integrity
+ - Software integrity \ Database
+ - Software integrity \ Files (slow)
+ - Software integrity \ File permissions
  - Software integrity \ Upgrade completion
  - SSL \ Insecure embedding
  - SSL \ Insecure linking

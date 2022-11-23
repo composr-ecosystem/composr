@@ -40,12 +40,12 @@ class Hook_health_check_integrity extends Hook_Health_Check
      */
     public function run(?array $sections_to_run, int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null, bool $show_unusable_categories = false) : array
     {
-        $this->process_checks_section('testFileIntegrity', 'File integrity (slow)', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
-        $this->process_checks_section('testDatabaseIntegrity', 'Database integrity', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+        $this->process_checks_section('testFileIntegrity', 'Files (slow)', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+        $this->process_checks_section('testDatabaseIntegrity', 'Database', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testDatabaseCorruption', 'Database corruption (slow)', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testUpgradeCompletion', 'Upgrade completion', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testAddonUpgradeCompletion', 'Addon upgrade completion', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
-        $this->process_checks_section('testChmod', 'File permissions integrity', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+        $this->process_checks_section('testChmod', 'File permissions', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
 
         return [$this->category_label, $this->results];
     }
@@ -235,7 +235,14 @@ class Hook_health_check_integrity extends Hook_Health_Check
         }
 
         require_code('file_permissions_check');
-        list($messages) = scan_permissions(false, false, null, null, ($check_context == CHECK_CONTEXT__INSTALL) ? CMSPermissionsScanner::RESULT_TYPE_ERROR_MISSING : CMSPermissionsScanner::RESULT_TYPE_SUGGESTION_EXCESSIVE);
+        if ($check_context == CHECK_CONTEXT__INSTALL) {
+            $minimum_level = CMSPermissionsScanner::RESULT_TYPE_ERROR_MISSING;
+        } elseif ($manual_checks) {
+            $minimum_level = CMSPermissionsScanner::RESULT_TYPE_SUGGESTION_EXCESSIVE;
+        } else {
+            $minimum_level = CMSPermissionsScanner::RESULT_TYPE_ERROR_EXCESSIVE;
+        }
+        list($messages) = scan_permissions(false, false, null, null, $minimum_level);
 
         $this->assertTrue(empty($messages), implode("\n", $messages));
     }
