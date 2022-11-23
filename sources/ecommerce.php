@@ -1365,7 +1365,7 @@ function do_local_transaction(string $payment_gateway, object $payment_gateway_o
     if (($success) || ($length !== null)) {
         $status = (($length !== null) && (!$success)) ? 'SCancelled' : 'Completed';
         $period = ($length === null) ? '' : cms_strtolower_ascii(strval($length) . ' ' . $length_units);
-        list(, $member_id) = handle_confirmed_transaction($trans_expecting_id, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $message_raw, $price, $tax, $shipping_cost, $transaction_fee, $currency, true, '', '', $memo, $period, get_member(), $payment_gateway, false, true);
+        handle_confirmed_transaction($trans_expecting_id, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $message_raw, $price, $tax, $shipping_cost, $transaction_fee, $currency, true, '', '', $memo, $period, get_member(), $payment_gateway, false, true);
     }
 
     // Return...
@@ -1420,6 +1420,15 @@ function handle_pdt_ipn_transaction_script(bool $silent_fail = false, bool $send
     }
 
     if ($result === null) {
+        if ((file_exists(get_custom_file_base() . '/data_custom/ecommerce.log')) && (cms_is_writable(get_custom_file_base() . '/data_custom/ecommerce.log'))) {
+            require_code('files');
+            $myfile = cms_fopen_text_write(get_custom_file_base() . '/data_custom/ecommerce.log', true, 'ab');
+            fwrite($myfile, loggable_date() . "\n");
+            fwrite($myfile, 'handle_pdt_ipn_transaction_script: WARN: Did not handle this transaction' . "\n");
+            fwrite($myfile, "\n\n");
+            flock($myfile, LOCK_UN);
+            fclose($myfile);
+        }
         return null;
     }
 
@@ -1427,7 +1436,7 @@ function handle_pdt_ipn_transaction_script(bool $silent_fail = false, bool $send
 
     list($type_code, $member_id) = handle_confirmed_transaction($trans_expecting_id, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $price, $tax, $shipping_cost, $transaction_fee, $currency, true, $parent_txn_id, $pending_reason, $memo, $period, $member_id, $payment_gateway, $silent_fail, $send_notifications);
 
-    if (method_exists($payment_gateway_object, 'show_payment_response')) {
+    if (($type_code !== null) && method_exists($payment_gateway_object, 'show_payment_response')) {
         echo $payment_gateway_object->show_payment_response($type_code, $purchase_id);
     }
 
@@ -1459,14 +1468,18 @@ function handle_pdt_ipn_transaction_script(bool $silent_fail = false, bool $send
  * @param  string $period The subscription period (blank: N/A or unknown because trust is checked on the gateway's code)
  * @param  ?MEMBER $member_id_paying The member ID of who is doing the transaction (null: unknown)
  * @param  ID_TEXT $payment_gateway The payment gateway (manual: was a manual transaction, not through a real gateway)
- * @param  boolean $silent_fail Return null on failure rather than showing any error message. Used when not sure a valid & finalised transaction is in the POST environment, but you want to try just in case (e.g. on a redirect back from the gateway).
+ * @param  boolean $silent_fail Always return null on failure rather than showing any error message. Used when not sure a valid & finalised transaction is in the POST environment, but you want to try just in case (e.g. on a redirect back from the gateway).
  * @param  boolean $send_notifications Whether to send notifications. Set to false if this is not the primary payment handling (e.g. a POST redirect rather than the real IPN).
- * @return ?array ID_TEXT A pair: The product purchased, The purchasing member ID (or null) (null: error)
+ * @return ?array ID_TEXT A pair: The product purchased, The purchasing member ID (or null) (null: silent error)
  */
 function handle_confirmed_transaction(?string $trans_expecting_id, ?string $txn_id = null, ?string $type_code = null, ?string $item_name = null, ?string $purchase_id = null, bool $is_subscription = false, string $status = 'Completed', string $reason = '', ?float $price = null, ?float $tax = null, ?float $shipping = null, ?float $transaction_fee = null, ?string $currency = null, bool $check_amounts = true, string $parent_txn_id = '', string $pending_reason = '', string $memo = '', string $period = '', ?int $member_id_paying = null, string $payment_gateway = '', bool $silent_fail = false, bool $send_notifications = true) : ?array
 {
     if ($txn_id === null) {
         $txn_id = uniqid('trans', true);
+        $t_status = null;
+    } else {
+        // Grab the t_status of the $txn_id, mainly used for determining when the transaction was already processed.
+        $t_status = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_transactions', 't_status', ['id' => $txn_id]);
     }
 
     if ($payment_gateway == '') {
@@ -1683,7 +1696,7 @@ function handle_confirmed_transaction(?string $trans_expecting_id, ?string $txn_
     }
 
     // Charge points if required
-    if (($status == 'Completed') && ($check_amounts) && ($expected_price_points !== null) && ($expected_price_points != 0)) {
+    if (($t_status === null) && ($status == 'Completed') && ($check_amounts) && ($expected_price_points !== null) && ($expected_price_points != 0)) {
         require_code('points2');
         points_debit_member($member_id_paying, do_lang(($expected_amount == 0.00) ? 'FREE_ECOMMERCE_PRODUCT' : 'DISCOUNTED_ECOMMERCE_PRODUCT', $item_name), $expected_price_points, 0, 0, false, 0, 'ecommerce', 'purchase', strval($txn_id));
     }
@@ -1694,110 +1707,112 @@ function handle_confirmed_transaction(?string $trans_expecting_id, ?string $txn_
         $transaction_fee = get_transaction_fee(($price + $tax + $shipping), $type_code, $payment_gateway);
     }
 
-    // Store
-    $GLOBALS['SITE_DB']->query_insert('ecom_transactions', [
-        'id' => $txn_id,
-        't_memo' => $memo,
-        't_type_code' => $type_code,
-        't_purchase_id' => $purchase_id,
-        't_status' => $status,
-        't_pending_reason' => $pending_reason,
-        't_reason' => $reason,
-        't_price' => $price,
-        't_tax_derivation' => json_encode($expected_tax_derivation, defined('JSON_PRESERVE_ZERO_FRACTION') ? JSON_PRESERVE_ZERO_FRACTION : 0),
-        't_tax' => $tax,
-        't_tax_tracking' => json_encode($expected_tax_tracking, defined('JSON_PRESERVE_ZERO_FRACTION') ? JSON_PRESERVE_ZERO_FRACTION : 0),
-        't_shipping' => $shipping,
-        't_transaction_fee' => $transaction_fee,
-        't_currency' => $currency,
-        't_parent_txn_id' => $parent_txn_id,
-        't_time' => $sale_timestamp,
-        't_payment_gateway' => $payment_gateway,
-        't_invoicing_breakdown' => $invoicing_breakdown,
-        't_member_id' => $member_id_paying,
-        't_session_id' => $session_id,
-    ]);
+    if ($t_status === null) {
+        // Store
+        $GLOBALS['SITE_DB']->query_insert('ecom_transactions', [
+            'id' => $txn_id,
+            't_memo' => $memo,
+            't_type_code' => $type_code,
+            't_purchase_id' => $purchase_id,
+            't_status' => $status,
+            't_pending_reason' => $pending_reason,
+            't_reason' => $reason,
+            't_price' => $price,
+            't_tax_derivation' => json_encode($expected_tax_derivation, defined('JSON_PRESERVE_ZERO_FRACTION') ? JSON_PRESERVE_ZERO_FRACTION : 0),
+            't_tax' => $tax,
+            't_tax_tracking' => json_encode($expected_tax_tracking, defined('JSON_PRESERVE_ZERO_FRACTION') ? JSON_PRESERVE_ZERO_FRACTION : 0),
+            't_shipping' => $shipping,
+            't_transaction_fee' => $transaction_fee,
+            't_currency' => $currency,
+            't_parent_txn_id' => $parent_txn_id,
+            't_time' => $sale_timestamp,
+            't_payment_gateway' => $payment_gateway,
+            't_invoicing_breakdown' => $invoicing_breakdown,
+            't_member_id' => $member_id_paying,
+            't_session_id' => $session_id,
+        ]);
 
-    // Mark tax collected with external services as required
-    foreach ($expected_tax_tracking as $tracking_service => $tracking_id) {
-        declare_completed($tracking_service, $tracking_id, $txn_id, $member_id_paying, $session_id);
-    }
+        // Mark tax collected with external services as required
+        foreach ($expected_tax_tracking as $tracking_service => $tracking_id) {
+            declare_completed($tracking_service, $tracking_id, $txn_id, $member_id_paying, $session_id);
+        }
 
-    // Add in extra details to $found, so actualisers can track things better
-    $found['TXN_ID'] = $txn_id;
-    $found['STATUS'] = $status;
+        // Add in extra details to $found, so actualisers can track things better
+        $found['TXN_ID'] = $txn_id;
+        $found['STATUS'] = $status;
 
-    // Pending: We do some book-keeping then stop
-    if ($status == 'Pending') {
-        $found['ORDER_STATUS'] = 'ORDER_STATUS_awaiting_payment';
+        // Pending: We do some book-keeping then stop
+        if ($status == 'Pending') {
+            $found['ORDER_STATUS'] = 'ORDER_STATUS_awaiting_payment';
 
-        if ($found['type'] == PRODUCT_INVOICE) { // Invoices have special support for tracking the order status
-            $GLOBALS['SITE_DB']->query_update('ecom_invoices', ['i_state' => 'pending'], ['id' => intval($purchase_id)], '', 1);
-        } elseif ($found['type'] == PRODUCT_SUBSCRIPTION) { // Subscriptions have special support for tracking the order status
-            $GLOBALS['SITE_DB']->query_update('ecom_subscriptions', ['s_state' => 'pending'], ['id' => intval($purchase_id)], '', 1);
+            if ($found['type'] == PRODUCT_INVOICE) { // Invoices have special support for tracking the order status
+                $GLOBALS['SITE_DB']->query_update('ecom_invoices', ['i_state' => 'pending'], ['id' => intval($purchase_id)], '', 1);
+            } elseif ($found['type'] == PRODUCT_SUBSCRIPTION) { // Subscriptions have special support for tracking the order status
+                $GLOBALS['SITE_DB']->query_update('ecom_subscriptions', ['s_state' => 'pending'], ['id' => intval($purchase_id)], '', 1);
+            }
+
+            // Call actualiser code
+            if (method_exists($found, 'actualiser')) {
+                $product_object->actualiser($type_code, $purchase_id, $found);
+            }
+
+            // Pending transactions stop here
+            if ($silent_fail) {
+                return null;
+            }
+
+            // Pending transactions stop here
+            fatal_ipn_exit(do_lang('TRANSACTION_NOT_COMPLETE', $type_code . ':' . strval($purchase_id), $status), true);
+        }
+
+        /*
+        At this point we know our transaction is good -- or a subscription cancellation.
+        Possible statuses: Completed|SModified|SCancelled
+        */
+
+        // Subscription: Completed (Made active)
+        if (($status == 'Completed') && ($found['type'] == PRODUCT_SUBSCRIPTION)) {
+            $GLOBALS['SITE_DB']->query_update('ecom_subscriptions', ['s_auto_fund_source' => $payment_gateway, 's_auto_fund_key' => $txn_id, 's_state' => 'active'], ['id' => intval($purchase_id)], '', 1);
+        }
+
+        // Subscription: Modified
+        if (($status == 'SModified') && ($found['type'] == PRODUCT_SUBSCRIPTION)) {
+            // No special action needed
+        }
+
+        // Subscription: Cancelled
+        if (($status == 'SCancelled') && ($found['type'] == PRODUCT_SUBSCRIPTION)) {
+            $GLOBALS['SITE_DB']->query_update('ecom_subscriptions', ['s_auto_fund_source' => $payment_gateway, 's_auto_fund_key' => $txn_id, 's_state' => 'cancelled'], ['id' => intval($purchase_id)], '', 1);
+        }
+
+        // Invoice handling
+        if (($status == 'Completed') && ($found['type'] == PRODUCT_INVOICE)) {
+            $GLOBALS['SITE_DB']->query_update('ecom_invoices', ['i_state' => 'paid'], ['id' => intval($purchase_id)], '', 1);
+        }
+
+        // Set order dispatch status
+        if ($status == 'Completed') {
+            if (!method_exists($product_object, 'get_product_dispatch_type')) { // If hook does not have dispatch method setting take dispatch method as automatic
+                $found['ORDER_STATUS'] = 'ORDER_STATUS_dispatched';
+            } elseif ($product_object->get_product_dispatch_type($purchase_id) == 'automatic') {
+                $found['ORDER_STATUS'] = 'ORDER_STATUS_dispatched';
+            } else {
+                $found['ORDER_STATUS'] = 'ORDER_STATUS_payment_received'; // Dispatch has to happen manually still
+            }
         }
 
         // Call actualiser code
-        if (method_exists($found, 'actualiser')) {
-            $product_object->actualiser($type_code, $purchase_id, $found);
-        }
-
-        // Pending transactions stop here
-        if ($silent_fail) {
-            return null;
-        }
-
-        // Pending transactions stop here
-        fatal_ipn_exit(do_lang('TRANSACTION_NOT_COMPLETE', $type_code . ':' . strval($purchase_id), $status), true);
-    }
-
-    /*
-    At this point we know our transaction is good -- or a subscription cancellation.
-    Possible statuses: Completed|SModified|SCancelled
-    */
-
-    // Subscription: Completed (Made active)
-    if (($status == 'Completed') && ($found['type'] == PRODUCT_SUBSCRIPTION)) {
-        $GLOBALS['SITE_DB']->query_update('ecom_subscriptions', ['s_auto_fund_source' => $payment_gateway, 's_auto_fund_key' => $txn_id, 's_state' => 'active'], ['id' => intval($purchase_id)], '', 1);
-    }
-
-    // Subscription: Modified
-    if (($status == 'SModified') && ($found['type'] == PRODUCT_SUBSCRIPTION)) {
-        // No special action needed
-    }
-
-    // Subscription: Cancelled
-    if (($status == 'SCancelled') && ($found['type'] == PRODUCT_SUBSCRIPTION)) {
-        $GLOBALS['SITE_DB']->query_update('ecom_subscriptions', ['s_auto_fund_source' => $payment_gateway, 's_auto_fund_key' => $txn_id, 's_state' => 'cancelled'], ['id' => intval($purchase_id)], '', 1);
-    }
-
-    // Invoice handling
-    if (($status == 'Completed') && ($found['type'] == PRODUCT_INVOICE)) {
-        $GLOBALS['SITE_DB']->query_update('ecom_invoices', ['i_state' => 'paid'], ['id' => intval($purchase_id)], '', 1);
-    }
-
-    // Set order dispatch status
-    if ($status == 'Completed') {
-        if (!method_exists($product_object, 'get_product_dispatch_type')) { // If hook does not have dispatch method setting take dispatch method as automatic
-            $found['ORDER_STATUS'] = 'ORDER_STATUS_dispatched';
-        } elseif ($product_object->get_product_dispatch_type($purchase_id) == 'automatic') {
-            $found['ORDER_STATUS'] = 'ORDER_STATUS_dispatched';
+        if (method_exists($product_object, 'actualiser')) {
+            $automatic_setup = $product_object->actualiser($type_code, $purchase_id, $found);
         } else {
-            $found['ORDER_STATUS'] = 'ORDER_STATUS_payment_received'; // Dispatch has to happen manually still
+            $automatic_setup = false;
         }
-    }
 
-    // Call actualiser code
-    if (method_exists($product_object, 'actualiser')) {
-        $automatic_setup = $product_object->actualiser($type_code, $purchase_id, $found);
-    } else {
-        $automatic_setup = false;
-    }
-
-    // Notifications
-    if ($status == 'Completed') {
-        if ($send_notifications) {
-            send_transaction_mails($txn_id, $item_name, $found['needs_shipping_address'], $automatic_setup, $member_id, $price, $tax, $shipping, $currency, $price_points, $memo);
+        // Notifications
+        if ($status == 'Completed') {
+            if ($send_notifications) {
+                send_transaction_mails($txn_id, $item_name, $found['needs_shipping_address'], $automatic_setup, $member_id, $price, $tax, $shipping, $currency, $price_points, $memo);
+            }
         }
     }
 

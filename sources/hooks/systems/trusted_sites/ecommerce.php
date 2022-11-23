@@ -54,5 +54,9 @@ class Hook_trusted_sites_ecommerce
             $sites[] = 'authorize.net';
             $sites[] = 'test.authorize.net';
         }
+
+        if ((get_option('payment_gateway') == 'ccbill') && (get_option('payment_gateway_username') != '')) {
+            $sites[] = 'api.ccbill.com';
+        }
     }
 }

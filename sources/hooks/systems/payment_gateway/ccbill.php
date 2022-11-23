@@ -27,6 +27,7 @@ class Hook_payment_gateway_ccbill
     // https://ccbill.com/doc/dynamic-pricing-user-guide
     // Requires:
     //  you have to contact support to enable dynamic pricing and generate the encryption key for your account
+    //  You must set the "Approval URL" and "Denial URL" in Sub-account basic info for BOTH sub-sccounts (see tut_ecommerce documentation)
     //  the "Account ID" (a 6-digit number given to you) is the Composr "Gateway username"
     //  the two 4-digit "Subaccount IDs" are the Composr "Gateway VPN username" (comma-delimited with single transactions first, recurring transactions second).
     //  your Salt key is the Composr "Gateway digest code".
@@ -83,6 +84,7 @@ class Hook_payment_gateway_ccbill
     {
         // CCBill rates depend on how high of risk a website's business is. You should probably set the correct rates in the transaction fee configuration as per https://ccbill.com/doc/pricing-and-fees .
         // Use low-risk rate as our default fallback; most users will probably not be making an "ocFans" website
+        // CCBill will typically return how much the merchant receives for a transaction which Composr will therefore calculate the transaction fee
         $usd_flat_fee = 0.55; // $0.55 USD flat fee
         $percentage_fee = 0.039; // 3.9%
         $percentage_subscription_fee = 0.02; // Additional 2% fee for recurring transactions
@@ -347,6 +349,11 @@ class Hook_payment_gateway_ccbill
      */
     public function handle_ipn_transaction(bool $silent_fail) : ?array
     {
+        // Do not use IPN for CCBill unless PDT is disabled
+        if (get_value('enable_ccbill_pdt', '0') == '1') {
+            return null;
+        }
+
         if ((file_exists(get_custom_file_base() . '/data_custom/ecommerce.log')) && (cms_is_writable(get_custom_file_base() . '/data_custom/ecommerce.log'))) {
             require_code('files');
             $myfile = cms_fopen_text_write(get_custom_file_base() . '/data_custom/ecommerce.log', true, 'ab');
@@ -357,8 +364,23 @@ class Hook_payment_gateway_ccbill
             fclose($myfile);
         }
 
-        $trans_expecting_id = post_param_string('customPurchaseId');
+        $event_type = get_param_string('eventType');
+        if ((file_exists(get_custom_file_base() . '/data_custom/ecommerce.log')) && (cms_is_writable(get_custom_file_base() . '/data_custom/ecommerce.log'))) {
+            require_code('files');
+            $myfile = cms_fopen_text_write(get_custom_file_base() . '/data_custom/ecommerce.log', true, 'ab');
+            fwrite($myfile, loggable_date() . "\n");
+            fwrite($myfile, '(hooks/systems/payment_gateway/ccbill)->handle_ipn_transaction: eventType is ' . $event_type . "\n");
+            fwrite($myfile, "\n\n");
+            flock($myfile, LOCK_UN);
+            fclose($myfile);
+        }
 
+        if ($event_type != 'NewSaleSuccess') {
+            return null; // Failed transaction
+        }
+
+        // Load transaction information
+        $trans_expecting_id = post_param_string('X-customPurchaseId');
         $transaction_rows = $GLOBALS['SITE_DB']->query_select('ecom_trans_expecting', ['*'], ['id' => $trans_expecting_id], '', 1);
         if (!array_key_exists(0, $transaction_rows)) {
             if ($silent_fail) {
@@ -367,62 +389,206 @@ class Hook_payment_gateway_ccbill
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
         $transaction_row = $transaction_rows[0];
-
         $member_id = $transaction_row['e_member_id'];
         $type_code = $transaction_row['e_type_code'];
         $item_name = $transaction_row['e_item_name'];
         $purchase_id = $transaction_row['e_purchase_id'];
 
-        $subscription_id = post_param_string('subscription_id', '');
-        $denial_id = post_param_string('denialId', '');
-        $response_digest = post_param_string('responseDigest');
-        $success_response_digest = md5($subscription_id . '1' . get_ecommerce_option('payment_gateway_digest')); // responseDigest must have this value on success
-        $denial_response_digest = md5($denial_id . '0' . get_ecommerce_option('payment_gateway_digest')); // responseDigest must have this value on failure
-        $success = ($success_response_digest === $response_digest);
-        $is_subscription = (post_param_integer('customIsSubscription') == 1);
-        $status = $success ? 'Completed' : 'Failed';
+        // Read in additional post parameters
+        $is_subscription = (post_param_integer('X-customIsSubscription') == 1);
+        $status = 'Completed';
         $reason = post_param_integer('reasonForDeclineCode', 0);
         $pending_reason = '';
         $memo = '';
-        $_amount = post_param_string('initialPrice');
+        $_amount = post_param_string('billedInitialPrice');
+        $_recurring = post_param_string('billedRecurringPrice');
         $amount = ($_amount == '') ? null : floatval($_amount);
-        $_currency = post_param_integer('baseCurrency', 0);
+        $_currency = post_param_integer('billedCurrencyCode', 0);
         $currency = ($_currency === 0) ? get_option('currency') : $this->currency_numeric_to_alphabetic_code[$_currency];
-        $txn_id = post_param_string('consumerUniqueId');
+        $txn_id = post_param_string('transactionId', $this->generate_trans_id());
         $parent_txn_id = '';
-        $period = '';
+        $period = post_param_string('initialPeriod', '99');
 
-        // Determine transaction fee: accounting amount is how much the merchant will actually receive, so subtract that from the transaction amount
-        $_accounting_amount = post_param_string('accountingAmount', null);
+        // SECURITY: Digest Validation
+        if (get_ecommerce_option('payment_gateway_digest') != '') {
+            $response_digest = post_param_string('dynamicPricingValidationDigest', null);
+
+            // This is supposed to work according to CCBill, but their response digest is actually the same as our form digest
+            /*
+            $subscription_id = post_param_string('subscriptionId', '');
+            $denial_id = post_param_string('denialId', '');
+            $success_response_digest = md5($subscription_id . '1' . get_ecommerce_option('payment_gateway_digest'));
+            $denial_response_digest = md5($denial_id . '0' . get_ecommerce_option('payment_gateway_digest'));
+            $success = ($success_response_digest === $response_digest);
+            if (($response_digest !== $success_response_digest) && ($response_digest !== $denial_response_digest)) {
+            */
+            if ($is_subscription) {
+                $form_digest = md5($_amount . $period . $_recurring . $period . '99' . strval($_currency) . get_ecommerce_option('payment_gateway_digest'));
+            } else {
+                $form_digest = md5($_amount . $period . strval($_currency) . get_ecommerce_option('payment_gateway_digest'));
+            }
+
+            if ($response_digest != $form_digest) {
+                if ((file_exists(get_custom_file_base() . '/data_custom/ecommerce.log')) && (cms_is_writable(get_custom_file_base() . '/data_custom/ecommerce.log'))) {
+                    require_code('files');
+                    $myfile = cms_fopen_text_write(get_custom_file_base() . '/data_custom/ecommerce.log', true, 'ab');
+                    fwrite($myfile, loggable_date() . "\n");
+                    fwrite($myfile, '(hooks/systems/payment_gateway/ccbill)->handle_ipn_transaction: FATAL: Response digest mismatch. Possibly a hacker?' . "\n");
+                    // fwrite($myfile, 'Response digest: Got ' . (($response_digest !== null) ? $response_digest : 'NULL') . ', but expected ' . $success_response_digest . ' (success) or ' . $denial_response_digest . ' (denial)' . "\n");
+                    fwrite($myfile, 'Response digest: Got ' . (($response_digest !== null) ? $response_digest : 'NULL') . ', but expected ' . $form_digest . "\n");
+                    fwrite($myfile, 'IP address: ' . get_ip_address() . "\n");
+                    fwrite($myfile, "\n\n");
+                    flock($myfile, LOCK_UN);
+                    fclose($myfile);
+                }
+                if ($silent_fail) {
+                    return null;
+                }
+                fatal_ipn_exit(do_lang('PDT_IPN_UNVERIFIED')); // Hacker?!!!
+            }
+        } else {
+            if ((file_exists(get_custom_file_base() . '/data_custom/ecommerce.log')) && (cms_is_writable(get_custom_file_base() . '/data_custom/ecommerce.log'))) {
+                require_code('files');
+                $myfile = cms_fopen_text_write(get_custom_file_base() . '/data_custom/ecommerce.log', true, 'ab');
+                fwrite($myfile, loggable_date() . "\n");
+                fwrite($myfile, '(hooks/systems/payment_gateway/ccbill)->handle_ipn_transaction: WARN: skipped digest validation because Gateway digest code was not set.' . "\n");
+                fwrite($myfile, "\n\n");
+                flock($myfile, LOCK_UN);
+                fclose($myfile);
+            }
+        }
+
+        // Determine transaction fee: accountingInitialPrice is how much the merchant will actually receive, so subtract that from the transaction amount
+        $_accounting_amount = post_param_string('accountingInitialPrice', null);
         if (($_accounting_amount !== null) && ($_accounting_amount != '')) {
             $transaction_fee = ($amount) - floatval($_accounting_amount);
         } else {
             $transaction_fee = null;
         }
 
-        // SECURITY: Digest check
-        if (($response_digest !== $success_response_digest) && ($response_digest !== $denial_response_digest)) {
+        $this->store_shipping_address($trans_expecting_id, $txn_id);
+
+        // CCBill does not return tax / shipping information; we must manually remove this from $amount using the information from the transaction
+        $tax = $transaction_row['e_tax'];
+        $shipping = $transaction_row['e_shipping'];
+        $amount -= ($tax + $shipping);
+
+        return [$trans_expecting_id, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $amount, $tax, $shipping, $transaction_fee, $currency, $parent_txn_id, $pending_reason, $memo, $period, $member_id];
+    }
+
+    /**
+     * Handle PDT's. The function may produce output, which would be returned to the Payment Gateway. The function may do transaction verification.
+     *
+     * @return ?array A long tuple of collected data. Emulates some of the key variables of the PayPal PDT response (null: no transaction, error, or PDT not configured).
+     */
+    public function handle_pdt_transaction() : ?array
+    {
+        // Do not use PDT for CCBill unless explicitly enabled; it is unreliable as we cannot check for duplicate transactions
+        if (get_value('enable_ccbill_pdt', '0') != '1') {
+            return null;
+        }
+
+        if ((file_exists(get_custom_file_base() . '/data_custom/ecommerce.log')) && (cms_is_writable(get_custom_file_base() . '/data_custom/ecommerce.log'))) {
+            require_code('files');
+            $myfile = cms_fopen_text_write(get_custom_file_base() . '/data_custom/ecommerce.log', true, 'ab');
+            fwrite($myfile, loggable_date() . "\n");
+            fwrite($myfile, '(hooks/systems/payment_gateway/ccbill)->handle_pdt_transaction: Called' . "\n");
+            fwrite($myfile, "\n\n");
+            flock($myfile, LOCK_UN);
+            fclose($myfile);
+        }
+
+        $subscription_id = get_param_string('subscriptionId', '');
+        $denial_id = get_param_string('denialId', '');
+        if ($denial_id != '') {
+            return null; // Failed transaction
+        }
+
+        // Load transaction information
+        $trans_expecting_id = get_param_string('customPurchaseId');
+        $transaction_rows = $GLOBALS['SITE_DB']->query_select('ecom_trans_expecting', ['*'], ['id' => $trans_expecting_id], '', 1);
+        if (!array_key_exists(0, $transaction_rows)) {
+            warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
+        }
+        $transaction_row = $transaction_rows[0];
+        $member_id = $transaction_row['e_member_id'];
+        $type_code = $transaction_row['e_type_code'];
+        $item_name = $transaction_row['e_item_name'];
+        $purchase_id = $transaction_row['e_purchase_id'];
+
+        // Read in additional post parameters
+        $is_subscription = (get_param_integer('customIsSubscription') == 1);
+        $status = 'Completed';
+        $reason = get_param_integer('reasonForDeclineCode', 0);
+        $pending_reason = '';
+        $memo = '';
+        $_amount = get_param_string('initialPrice');
+        $amount = ($_amount == '') ? null : floatval($_amount);
+        $_recurring = get_param_string('recurringPrice', '');
+        $_currency = get_param_integer('currencyCode', 0);
+        $currency = ($_currency === 0) ? get_option('currency') : $this->currency_numeric_to_alphabetic_code[$_currency];
+        $txn_id = $trans_expecting_id; // Workaround for duplicate ID detection since CCBill does not pass IDs in PDT
+        $parent_txn_id = '';
+        $period = get_param_string('initialPeriod', '99');
+
+        // SECURITY: Digest Validation
+        if (get_ecommerce_option('payment_gateway_digest') != '') {
+            $response_digest = get_param_string('formDigest', null);
+
+            // This is supposed to work according to CCBill, but their response digest is actually the same as our form digest
+            /*
+            $success_response_digest = md5($subscription_id . '1' . get_ecommerce_option('payment_gateway_digest'));
+            $denial_response_digest = md5($denial_id . '0' . get_ecommerce_option('payment_gateway_digest'));
+            $success = ($success_response_digest === $response_digest);
+            if (($response_digest !== $success_response_digest) && ($response_digest !== $denial_response_digest)) {
+            */
+            if ($is_subscription) {
+                $form_digest = md5($_amount . $period . $_recurring . $period . '99' . strval($_currency) . get_ecommerce_option('payment_gateway_digest'));
+            } else {
+                $form_digest = md5($_amount . $period . strval($_currency) . get_ecommerce_option('payment_gateway_digest'));
+            }
+
+            if ($response_digest != $form_digest) {
+                if ((file_exists(get_custom_file_base() . '/data_custom/ecommerce.log')) && (cms_is_writable(get_custom_file_base() . '/data_custom/ecommerce.log'))) {
+                    require_code('files');
+                    $myfile = cms_fopen_text_write(get_custom_file_base() . '/data_custom/ecommerce.log', true, 'ab');
+                    fwrite($myfile, loggable_date() . "\n");
+                    fwrite($myfile, '(hooks/systems/payment_gateway/ccbill)->handle_ipn_transaction: FATAL: Response digest mismatch. Possibly a hacker?' . "\n");
+                    // fwrite($myfile, 'Response digest: Got ' . (($response_digest !== null) ? $response_digest : 'NULL') . ', but expected ' . $success_response_digest . ' (success) or ' . $denial_response_digest . ' (denial)' . "\n");
+                    fwrite($myfile, 'Response digest: Got ' . (($response_digest !== null) ? $response_digest : 'NULL') . ', but expected ' . $form_digest . "\n");
+                    fwrite($myfile, 'IP address: ' . get_ip_address() . "\n");
+                    fwrite($myfile, "\n\n");
+                    flock($myfile, LOCK_UN);
+                    fclose($myfile);
+                }
+                fatal_ipn_exit(do_lang('PDT_IPN_UNVERIFIED')); // Hacker?!!!
+            }
+        } else {
             if ((file_exists(get_custom_file_base() . '/data_custom/ecommerce.log')) && (cms_is_writable(get_custom_file_base() . '/data_custom/ecommerce.log'))) {
                 require_code('files');
                 $myfile = cms_fopen_text_write(get_custom_file_base() . '/data_custom/ecommerce.log', true, 'ab');
                 fwrite($myfile, loggable_date() . "\n");
-                fwrite($myfile, '(hooks/systems/payment_gateway/ccbill)->handle_ipn_transaction: FATAL: Response digest mismatch. Possibly a hacker?' . "\n");
-                fwrite($myfile, 'Response digest: Got ' . (($response_digest !== null) ? $response_digest : 'NULL') . ', but expected ' . $success_response_digest . ' (success) or ' . $denial_response_digest . ' (denial)' . "\n");
-                fwrite($myfile, 'IP address: ' . get_ip_address() . "\n");
+                fwrite($myfile, '(hooks/systems/payment_gateway/ccbill)->handle_ipn_transaction: WARN: skipped digest validation because Gateway digest code was not set.' . "\n");
                 fwrite($myfile, "\n\n");
                 flock($myfile, LOCK_UN);
                 fclose($myfile);
             }
-            if ($silent_fail) {
-                return null;
-            }
-            fatal_ipn_exit(do_lang('PDT_IPN_UNVERIFIED')); // Hacker?!!!
+        }
+
+        // Determine transaction fee: accountingInitialPrice is how much the merchant will actually receive, so subtract that from the transaction amount
+        $_accounting_amount = get_param_string('accountingInitialPrice', null);
+        if (($_accounting_amount !== null) && ($_accounting_amount != '')) {
+            $transaction_fee = ($amount) - floatval($_accounting_amount);
+        } else {
+            $transaction_fee = null;
         }
 
         $this->store_shipping_address($trans_expecting_id, $txn_id);
 
-        $tax = null;
-        $shipping = null;
+        // CCBill does not return tax / shipping information; we must manually remove this from $amount using the information from the transaction
+        $tax = $transaction_row['e_tax'];
+        $shipping = $transaction_row['e_shipping'];
+        $amount -= ($tax + $shipping);
 
         return [$trans_expecting_id, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $amount, $tax, $shipping, $transaction_fee, $currency, $parent_txn_id, $pending_reason, $memo, $period, $member_id];
     }

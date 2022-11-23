@@ -1421,8 +1421,7 @@ class Module_purchase
         require_code('hooks/systems/payment_gateway/' . filter_naughty_harsh($payment_gateway));
         $payment_gateway_object = object_factory('Hook_payment_gateway_' . filter_naughty_harsh($payment_gateway));
 
-        $member_id = get_member();
-
+        // Note: Some payment gateways do not support passing in your own finish / redirect URL with a type_code parameter in the button form
         $type_code = get_param_string('type_code', null);
 
         if (get_param_integer('cancel', 0) == 1) {
@@ -1512,7 +1511,7 @@ class Module_purchase
 
         // We know success at this point...
 
-        if (($subtype == 'pdt_ipn_return') || ($subtype == 'local_payment')) {
+        if (($type_code !== null) && (($subtype == 'pdt_ipn_return') || ($subtype == 'local_payment'))) {
             if (addon_installed('stats')) {
                 require_code('stats');
                 log_stats_event(do_lang('ECOMMERCE', null, null, null, get_site_default_lang()) . '-' . $type_code);
@@ -1525,7 +1524,7 @@ class Module_purchase
 
         $redirect = get_param_string('redirect', null, INPUT_FILTER_URL_GENERAL);
 
-        if ($redirect === null) {
+        if (($type_code !== null) && ($redirect === null)) {
             list(, $product_object) = find_product_details($type_code);
             if (method_exists($product_object, 'get_finish_url')) {
                 $redirect = $product_object->get_finish_url($type_code, $message);
