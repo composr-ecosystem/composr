@@ -3300,6 +3300,10 @@ function ecv_THUMBNAIL(string $lang, array $escaped, array $param) : string
 
     $value = convert_image_plus($orig_url, $dimensions, $output_dir, $filename, $fallback_image, $algorithm, $where, $background, $only_make_smaller);
 
+    if (url_is_local($value)) {
+        $value = get_custom_base_url() . '/' . $value;
+    }
+
     if (!empty($escaped)) {
         apply_tempcode_escaping($escaped, $value);
     }

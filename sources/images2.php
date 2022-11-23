@@ -698,7 +698,7 @@ function _image_path_to_url(string $to_path) : string
     }
 
     $to_url = str_replace('%2F', '/', rawurlencode(substr($to_path, strlen($file_base) + 1)));
-    return get_custom_base_url() . '/' . $to_url;
+    return $to_url;
 }
 
 /**
