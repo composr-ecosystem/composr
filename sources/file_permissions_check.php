@@ -655,7 +655,7 @@ class CMSPermissionsScannerLinux extends CMSPermissionsScanner
         $dh = @opendir($path);
         if ($dh !== false) {
             while (($f = readdir($dh)) !== false) {
-                if (($f == '.') || ($f == '..')) {
+                if (($f == '.') || ($f == '..') || ($f == '.git')) {
                     continue;
                 }
                 if ($f == '.git') {
@@ -1201,15 +1201,16 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
 
         // Web server user
         if ($username === null) {
-            if ((!function_exists('is_cli')) || (is_cli())) {
+            $current_user = get_current_user();
+            if ((!function_exists('is_cli')) || (is_cli()) || ($current_user == 'DefaultAppPool')) {
                 if ((strpos(__FILE__, 'htdocs') !== false) || (strpos(__FILE__, 'httpdocs') !== false)) {
                     $this->key_users[] = 'SYSTEM'; // The services user which Apache will use
                 } else {
-                    $this->key_users[] = 'IUSR';
-                    $this->key_users[] = 'IIS_IUSRS'; // This is the usergroup, we'll use it also just to be safe
+                    $this->key_users[] = 'IUSR'; // This is the user; in the past it was IUSR_<machineName>
+                    $this->key_users[] = 'IIS_IUSRS'; // This is the usergroup, we'll use it also just to be safe; in the past it was IIS_WPG
                 }
             } else {
-                $this->key_users[] = preg_replace('#^.*\\\#', '', get_current_user()); // On Windows this returns the user PHP is running as, counter to documentation
+                $this->key_users[] = preg_replace('#^.*\\\#', '', $current_user); // On Windows this returns the user PHP is running as, counter to documentation
             }
         } else {
             $this->key_users[] = preg_replace('#^.*\\\#', '', $username);

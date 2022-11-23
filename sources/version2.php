@@ -227,8 +227,12 @@ function is_php_version_supported_by_phpdevs(string $v) : ?bool
         if (function_exists('set_option')) {
             $data = cache_and_carry('http_get_contents', ['https://raw.githubusercontent.com/php/web-php/master/include/branches.inc', ['convert_to_internal_encoding' => true, 'trigger_error' => false]], 60 * 60 * 24 * 7);
         } else {
-            $data = http_get_contents('https://raw.githubusercontent.com/php/web-php/master/include/branches.inc', ['convert_to_internal_encoding' => true, 'trigger_error' => false]);
+            $data = http_get_contents('https://raw.githubusercontent.com/php/web-php/master/include/branches.inc', ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 3.0]);
         }
+    }
+
+    if ($data === null) {
+        return null;
     }
 
     $matches = [];

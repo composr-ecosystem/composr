@@ -19,6 +19,11 @@
  * @package    installer
  */
 
+// Requirements check
+if (version_compare(PHP_VERSION, '7.2', '<')) {
+    exit('PHP version 7.2 or newer is required');
+}
+
 ignore_user_abort(false);
 
 $functions = ['fopen'];
@@ -148,11 +153,6 @@ require_lang('version');
 
 // If we are referencing this file in order to extract dependant url's from a pack
 handle_self_referencing_embedment();
-
-// Requirements check
-if (version_compare(PHP_VERSION, '7.2', '<')) {
-    exit(do_lang('PHP_TOO_OLD', '7.2'));
-}
 
 // Set up some globals
 $minor = cms_version_minor();

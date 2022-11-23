@@ -230,6 +230,19 @@ class Hook_health_check_integrity extends Hook_Health_Check
             return;
         }
 
+        if ($check_context == CHECK_CONTEXT__INSTALL) {
+            $sdc = get_param_integer('skip_disk_checks', null);
+            if ($sdc === 1) {
+                return;
+            }
+
+            if (strpos(PHP_OS, 'WIN') !== false) {
+                if ($sdc === null) {
+                    return; // To unreliable, so has to be explicitly enabled
+                }
+            }
+        }
+
         if (function_exists('disable_php_memory_limit')) {
             disable_php_memory_limit();
         }
