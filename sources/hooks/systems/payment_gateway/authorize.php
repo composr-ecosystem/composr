@@ -401,6 +401,10 @@ class Hook_payment_gateway_authorize
         } else {
             $status = $success ? 'Completed' : 'Failed';
         }
+        if ($status == 'Failed') {
+            return null;
+        }
+
         $txn_id = ($subscription_id != '') ? $subscription_id : $_txn_id;
 
         // SECURITY: Check hash if hash_hmac is available
