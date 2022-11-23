@@ -38,22 +38,18 @@ class Hook_symbol_CATALOGUE_ENTRY_ALL_FIELD_VALUES
         $value = '';
         if ((isset($param[0])) && (is_numeric($param[0]))) {
             $entry_id = intval($param[0]);
+            $raw_rows = !empty($param[1]);
+            $view_type = empty($param[2]) ? 'PAGE' : $param[2];
 
             global $CATALOGUE_MAPPER_SYMBOL_CACHE;
             if (!isset($CATALOGUE_MAPPER_SYMBOL_CACHE)) {
                 $CATALOGUE_MAPPER_SYMBOL_CACHE = [];
             }
-            if (isset($CATALOGUE_MAPPER_SYMBOL_CACHE[$entry_id])) {
-                $map = $CATALOGUE_MAPPER_SYMBOL_CACHE[$entry_id];
 
-                if (!empty($param[1])) {
-                    $value = $map['FIELDS']->evaluate();
-                } else {
-                    $tpl_set = $map['CATALOGUE'];
-                    $_value = do_template('CATALOGUE_' . $tpl_set . '_FIELDMAP_ENTRY_WRAP', $map + ['GIVE_CONTEXT' => false, 'ENTRY_SCREEN' => true], null, false, 'CATALOGUE_DEFAULT_FIELDMAP_ENTRY_WRAP');
-                    $value = $_value->evaluate();
-                }
+            if (isset($CATALOGUE_MAPPER_SYMBOL_CACHE[$entry_id][$view_type])) {
+                $map = $CATALOGUE_MAPPER_SYMBOL_CACHE[$entry_id][$view_type];
             } else {
+                $map = null;
                 $entry = $GLOBALS['SITE_DB']->query_select('catalogue_entries', ['*'], ['id' => $entry_id], '', 1);
                 if (isset($entry[0])) {
                     require_code('catalogues');
@@ -61,16 +57,19 @@ class Hook_symbol_CATALOGUE_ENTRY_ALL_FIELD_VALUES
                     $catalogue = load_catalogue_row($catalogue_name, true);
                     if ($catalogue !== null) {
                         $tpl_set = $catalogue_name;
-                        $map = get_catalogue_entry_map($entry[0], ['c_display_type' => C_DT_FIELDMAPS] + $catalogue, 'PAGE', $tpl_set);
-                        if (!empty($param[1])) {
-                            $value = $map['FIELDS']->evaluate();
-                        } else {
-                            $_value = do_template('CATALOGUE_' . $tpl_set . '_FIELDMAP_ENTRY_WRAP', $map + ['GIVE_CONTEXT' => false, 'ENTRY_SCREEN' => true], null, false, 'CATALOGUE_DEFAULT_FIELDMAP_ENTRY_WRAP');
-                            $value = $_value->evaluate();
-                        }
-
-                        $CATALOGUE_MAPPER_SYMBOL_CACHE[$entry_id] = $map;
+                        $map = get_catalogue_entry_map($entry[0], ['c_display_type' => C_DT_FIELDMAPS] + $catalogue, $view_type, $tpl_set);
+                        $CATALOGUE_MAPPER_SYMBOL_CACHE[$entry_id][$view_type] = $map;
                     }
+                }
+            }
+
+            if ($map !== null) {
+                if ($raw_rows) {
+                    $value = $map['FIELDS']->evaluate();
+                } else {
+                    $tpl_set = $map['CATALOGUE'];
+                    $_value = do_template('CATALOGUE_' . $tpl_set . '_FIELDMAP_ENTRY_WRAP', $map + ['GIVE_CONTEXT' => false, 'ENTRY_SCREEN' => true], null, false, 'CATALOGUE_DEFAULT_FIELDMAP_ENTRY_WRAP');
+                    $value = $_value->evaluate();
                 }
             }
         }

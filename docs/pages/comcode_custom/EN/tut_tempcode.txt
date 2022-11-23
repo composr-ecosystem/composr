@@ -1958,8 +1958,8 @@ You can store and retrieve values in Tempcode variables. These work across templ
 			<td>Get the ID of the auto-maintained catalogue entry bound to the given content entry, i.e. where the content entries custom fields are stored. This can then be used with the <kbd>CATALOGUE_ENTRY_FIELD_VALUE</kbd> symbol (above) or the <kbd>CATALOGUE_ENTRY_ALL_FIELD_VALUES</kbd> symbol (below).</td>
 		</tr>
 		<tr style="background: #FFDDDD">
-			<td>{$CATALOGUE_ENTRY_ALL_FIELD_VALUES,123}</td>
-			<td>Show a field-map view of all fields in the entry. You can also pass in a second param with the value '1' if you want raw field rows, rather than a table (useful for adding field-map data into an existing table).</td>
+			<td>{$CATALOGUE_ENTRY_ALL_FIELD_VALUES,123,0,PAGE}</td>
+			<td>Show a field-map view of all fields in the entry. You can also pass in a second param with the value '1' if you want raw field rows, rather than a table (useful for adding field-map data into an existing table). The third parameter can be <kbd>PAGE</kbd> (default), <kbd>SEARCH</kbd>, or <kbd>CATEGORY</kbd> and represents the set of fields read.</td>
 		</tr>
 	</tbody>
 </table>

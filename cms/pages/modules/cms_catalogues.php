@@ -1862,6 +1862,7 @@ class Module_cms_catalogues_alt extends Standard_crud_module
     /**
      * Get Tempcode for a catalogue field adding/editing form (many of these are put together to add/edit a single catalogue!).
      *
+     * @param  ID_TEXT $catalogue_name The catalogue being edited (blank: new and no name pre-specified)
      * @param  boolean $first_field Whether this is the first field of the entry fields
      * @param  integer $num_fields_to_show The number of fields that will be on the screen
      * @param  string $prefix The prefix the field input fields are given (e.g. new1_)
@@ -1881,7 +1882,7 @@ class Module_cms_catalogues_alt extends Standard_crud_module
      * @param  SHORT_TEXT $options Field options
      * @return array A pair: the Tempcode for the visible fields, and the Tempcode for the hidden fields
      */
-    public function get_field_fields(bool $first_field, int $num_fields_to_show, string $prefix, int $order, string $name = '', string $description = '', string $type = 'short_text', int $defines_order = 0, int $visible = 1, string $default = '', int $required = 0, int $is_sortable = 0, int $include_in_main_search = 0, int $allow_template_search = 0, int $put_in_category = 1, int $put_in_search = 1, string $options = '') : array
+    public function get_field_fields(string $catalogue_name, bool $first_field, int $num_fields_to_show, string $prefix, int $order, string $name = '', string $description = '', string $type = 'short_text', int $defines_order = 0, int $visible = 1, string $default = '', int $required = 0, int $is_sortable = 0, int $include_in_main_search = 0, int $allow_template_search = 0, int $put_in_category = 1, int $put_in_search = 1, string $options = '') : array
     {
         $fields = new Tempcode();
         $hidden = new Tempcode();
@@ -1912,11 +1913,15 @@ class Module_cms_catalogues_alt extends Standard_crud_module
         $fields->attach(form_input_list(do_lang_tempcode('ORDER'), do_lang_tempcode('DESCRIPTION_FIELD_ORDER_CLEVER', do_lang_tempcode('CATALOGUE_FIELD')), $prefix . 'order', make_string_tempcode($order_list)));
 
         // Defines order?
-        $radios = new Tempcode();
-        $radios->attach(form_input_radio_entry($prefix . 'defines_order', '0', $defines_order == 0, do_lang_tempcode('NO')));
-        $radios->attach(form_input_radio_entry($prefix . 'defines_order', '1', $defines_order == 1, do_lang_tempcode('ASCENDING')));
-        $radios->attach(form_input_radio_entry($prefix . 'defines_order', '2', $defines_order == 2, do_lang_tempcode('DESCENDING')));
-        $fields->attach(form_input_radio(do_lang_tempcode('DEFINES_ORDER'), do_lang_tempcode('DESCRIPTION_DEFINES_ORDER'), $prefix . 'defines_order', $radios));
+        if (substr($catalogue_name, 0, 1) != '_') {
+            $radios = new Tempcode();
+            $radios->attach(form_input_radio_entry($prefix . 'defines_order', '0', $defines_order == 0, do_lang_tempcode('NO')));
+            $radios->attach(form_input_radio_entry($prefix . 'defines_order', '1', $defines_order == 1, do_lang_tempcode('ASCENDING')));
+            $radios->attach(form_input_radio_entry($prefix . 'defines_order', '2', $defines_order == 2, do_lang_tempcode('DESCENDING')));
+            $fields->attach(form_input_radio(do_lang_tempcode('DEFINES_ORDER'), do_lang_tempcode('DESCRIPTION_DEFINES_ORDER'), $prefix . 'defines_order', $radios));
+        } else {
+            $hidden->attach(form_input_hidden($prefix . 'defines_order', strval($defines_order)));
+        }
 
         if ($first_field) {
             $hidden->attach(form_input_hidden($prefix . 'visible', '1'));
@@ -1926,7 +1931,11 @@ class Module_cms_catalogues_alt extends Standard_crud_module
             $fields->attach(form_input_tick(do_lang_tempcode('REQUIRED'), do_lang_tempcode('DESCRIPTION_REQUIRED'), $prefix . 'required', $required == 1));
         }
 
-        $fields->attach(form_input_tick(do_lang_tempcode('SORTABLE'), do_lang_tempcode('DESCRIPTION_SORTABLE'), $prefix . 'is_sortable', $is_sortable == 1));
+        if (substr($catalogue_name, 0, 1) != '_') {
+            $fields->attach(form_input_tick(do_lang_tempcode('SORTABLE'), do_lang_tempcode('DESCRIPTION_SORTABLE'), $prefix . 'is_sortable', $is_sortable == 1));
+        } else {
+            $hidden->attach(form_input_hidden($prefix . 'is_sortable', strval($is_sortable)));
+        }
         $fields->attach(form_input_tick(do_lang_tempcode('INCLUDE_IN_MAIN_SEARCH'), do_lang_tempcode('DESCRIPTION_INCLUDE_IN_MAIN_SEARCH'), $prefix . 'include_in_main_search', $include_in_main_search == 1));
         $fields->attach(form_input_tick(do_lang_tempcode('ALLOW_TEMPLATE_SEARCH'), do_lang_tempcode('DESCRIPTION_ALLOW_TEMPLATE_SEARCH'), $prefix . 'allow_template_search', $allow_template_search == 1));
         $fields->attach(form_input_tick(do_lang_tempcode('PUT_IN_CATEGORY'), do_lang_tempcode('DESCRIPTION_PUT_IN_CATEGORY'), $prefix . 'put_in_category', $put_in_category == 1));
@@ -1938,7 +1947,7 @@ class Module_cms_catalogues_alt extends Standard_crud_module
     /**
      * Standard crud_module edit form filler.
      *
-     * @param  ID_TEXT $catalogue_name The entry being edited
+     * @param  ID_TEXT $catalogue_name The catalogue being edited
      * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
     public function fill_in_edit_form(string $catalogue_name)
@@ -1958,7 +1967,7 @@ class Module_cms_catalogues_alt extends Standard_crud_module
     /**
      * Standard crud_module add actualiser.
      *
-     * @return array A pair: The entry added, description about usage
+     * @return array A pair: The catalogue added, description about usage
      */
     public function add_actualisation() : array
     {
@@ -2106,7 +2115,7 @@ class Module_cms_catalogues_alt extends Standard_crud_module
     /**
      * Standard crud_module edit actualiser.
      *
-     * @param  ID_TEXT $old_name The entry being edited
+     * @param  ID_TEXT $old_name The catalogue being edited
      * @return ?Tempcode Description about usage (null: none)
      */
     public function edit_actualisation(string $old_name) : ?object
@@ -2316,7 +2325,7 @@ class Module_cms_catalogues_alt extends Standard_crud_module
     /**
      * Standard crud_module delete actualiser.
      *
-     * @param  ID_TEXT $id The entry being deleted
+     * @param  ID_TEXT $id The catalogue being deleted
      */
     public function delete_actualisation(string $id)
     {

@@ -47,8 +47,8 @@ class Hook_symbol_CATALOGUE_ENTRY_FIELD_VALUE
             if (!isset($CATALOGUE_MAPPER_SYMBOL_CACHE)) {
                 $CATALOGUE_MAPPER_SYMBOL_CACHE = [];
             }
-            if (isset($CATALOGUE_MAPPER_SYMBOL_CACHE[$entry_id])) {
-                $map = $CATALOGUE_MAPPER_SYMBOL_CACHE[$entry_id];
+            if (isset($CATALOGUE_MAPPER_SYMBOL_CACHE[$entry_id]['PAGE'])) {
+                $map = $CATALOGUE_MAPPER_SYMBOL_CACHE[$entry_id]['PAGE'];
             } else {
                 require_code('catalogues');
                 $entry = $GLOBALS['SITE_DB']->query_select('catalogue_entries', ['*'], ['id' => $entry_id], '', 1);
@@ -59,7 +59,7 @@ class Hook_symbol_CATALOGUE_ENTRY_FIELD_VALUE
                         $tpl_set = $catalogue_name;
                         $map = get_catalogue_entry_map($entry[0], ['c_display_type' => C_DT_FIELDMAPS] + $catalogue, 'PAGE', $tpl_set, null, null/*Actually we'll load all so we can cache all,[$field_id]*/);
 
-                        $CATALOGUE_MAPPER_SYMBOL_CACHE[$entry_id] = $map;
+                        $CATALOGUE_MAPPER_SYMBOL_CACHE[$entry_id]['PAGE'] = $map;
                     }
                 }
             }
