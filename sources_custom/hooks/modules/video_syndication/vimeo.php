@@ -47,7 +47,7 @@ class Hook_video_syndication_vimeo
 
     public function recognises_as_remote($url)
     {
-        $is_embed = (preg_match('#^https?://vimeo\.com/(\d+)#', $url) != 0);
+        $is_embed = (preg_match('#^https?://vimeo\.com/(.*/)?(\d+)#', $url) != 0);
         if ($is_embed) {
             return true;
         }
