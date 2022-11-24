@@ -368,7 +368,7 @@ abstract class CMSPermissionsScanner
      */
     protected function message_prefix(string $prefix) : string
     {
-        if ($this->minimum_level >= self::RESULT_TYPE_ERROR_EXCESSIVE) {
+        if ($this->minimum_level >= self::RESULT_TYPE_ERROR_MISSING) {
             return '';
         }
         return $prefix . ': ';
@@ -736,7 +736,7 @@ class CMSPermissionsScannerLinux extends CMSPermissionsScanner
             }
         }
 
-        if (($this->minimum_level >= self::RESULT_TYPE_ERROR_EXCESSIVE) && (!$on_chmod_list)) {
+        if (($this->minimum_level >= self::RESULT_TYPE_ERROR_MISSING) && (!$on_chmod_list)) {
             return [$messages, $commands]; // Optimisation
         }
 
@@ -1258,6 +1258,11 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
         $this->common_users[] = 'Domain Computers';
 
         $this->common_users = array_map('cms_mb_strtolower', $this->common_users);
+
+        if ($this->minimum_level >= self::RESULT_TYPE_ERROR_MISSING) {
+            $this->key_users = array_merge($this->key_users, $this->common_users);
+            $this->common_users = [];
+        }
     }
 
     /**
@@ -1365,7 +1370,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
             }
         }
 
-        if (($this->minimum_level >= self::RESULT_TYPE_ERROR_EXCESSIVE) && (!$on_chmod_list)) {
+        if (($this->minimum_level >= self::RESULT_TYPE_ERROR_MISSING) && (!$on_chmod_list)) {
             return [$messages, $commands]; // Optimisation
         }
 
