@@ -62,6 +62,26 @@ For Authorize.net to work properly, you must add a couple of URLs to the list of
  - htm URL scheme: [tt]<base_url>/purchase/finish.htm[/tt]
  - Unadorned URL scheme: [tt]<base_url>/purchase/finish[/tt]
 
+[title="4"]CCBill[/title]
+
+CCBill has an application process for creating an account. During the application, you must set up Dynamic Pricing Flexforms with support. The Composr software makes use of CCBill's Flexforms to gather customer information. You can create a Flexform for single transactions and a separate Flexform for recurring transactions (subscriptions). Or you can use the same Flexform for both.
+
+CCBill uses URL redirects (PDT) and Webhooks (IPN) to send transaction information back to the store. Additional configuration is required in CCBill for this to work.
+
+CCBill URL redirects are unreliable as they do not provide the Composr software with all the necessary information (e.g. transaction ID and accounting price). Therefore by default, the Composr software will only process transaction responses from Webhooks (IPN) when using CCBill and will ignore responses from URL redirects (the store will only show a success message to the member). To change this behavior (especially if your site is not publicly accessible from the web), you must use Commandr to change the [tt]enable_ccbill_pdt[/tt] value to [tt]1[/tt] (and change back to [tt]0[/tt] to disable it). Note that when PDT is enabled, Webhook (IPN) responses from CCBill will be ignored. 
+
+To set up a Webhook (IPN), in CCBill, go to Account Admin > Webhooks. Use the [tt]URL ENCODED[/tt] Webhook Format. Enable the following events at the specified versions:
+ - NewSaleFailure (version 3)
+ - NewSaleSuccess (version 6)
+You must also specify the Webhook URL, which is [tt]<base_url>/data/ecommerce.php[/tt].
+
+To set up URL redirects, in CCBill, go to Account Admin > Basic. Set both the Approval URL and Denial URL to the following depending on your site's URL scheme:
+ - Raw PHP URL scheme: [tt]<base_url>/index.php?page=purchase&type=finish[/tt]
+ - pg URL scheme: [tt]<base_url>/pg/purchase/finish[/tt]
+ - htm URL scheme: [tt]<base_url>/purchase/finish.htm[/tt]
+ - Unadorned URL scheme: [tt]<base_url>/purchase/finish[/tt]
+You should probably set up URL redirects in CCBill even if you are not using it (PDT) to process transactions. That way, customers are redirected back to your store with a success message.
+
 [title="3"]Configuration[/title]
 
 To configure the payment gateway settings go to Admin Zone > Setup > Configuration > eCommerce options.
@@ -230,9 +250,9 @@ The option requirements for Authorize.net are below.
 </tbody></table>
 [/html]
 
-[title="4"]Config options - ccBill[/title]
+[title="4"]Config options - CCBill[/title]
 
-The option requirements for ccBill are below.
+The option requirements for CCBill are below.
 
 [html]
 <table class="map-table results-table wide-table autosized-table"><tbody>
@@ -249,7 +269,7 @@ The option requirements for ccBill are below.
 			General > Use local payment
 		</th>
 		<td>
-			This must be disabled; ccBill does not support local transactions.
+			This must be disabled; CCBill does not support local transactions.
 		</td>
 	</tr>
 	<tr>

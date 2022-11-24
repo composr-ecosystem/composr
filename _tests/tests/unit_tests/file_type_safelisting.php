@@ -145,6 +145,10 @@ class file_type_safelisting_test_set extends cms_test_case
         $php_files = get_directory_contents(get_file_base(), '', IGNORE_ALIEN | IGNORE_NONBUNDLED | IGNORE_UNSHIPPED_VOLATILE | IGNORE_SHIPPED_VOLATILE | IGNORE_REBUILDABLE_OR_TEMP_FILES_FOR_BACKUP, true, true, ['php']);
         $exts = [];
         foreach ($php_files as $path) {
+            if (in_array($path, ['sources/hooks/modules/admin_import/phpbb3.php'])) { // exceptions
+                continue;
+            }
+
             $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK);
             $matches = [];
             $num_matches = preg_match_all('#\.(\w{3})\'#', $c, $matches);

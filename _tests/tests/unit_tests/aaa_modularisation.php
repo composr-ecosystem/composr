@@ -68,7 +68,7 @@ class aaa_modularisation_test_set extends cms_test_case
                 $seen[$path] = true;
 
                 if (preg_match('#^themes/default/images/(icons|icons_monochrome)/#', $path) != 0) {
-                    $this->assertTrue(in_array($path, $addon_data['core_all_icons']), 'All icons must be in all_icons addon: ' . $path);
+                    $this->assertTrue(in_array($path, $addon_data['core_all_icons']), 'All icons must be in core_all_icons addon: ' . $path);
 
                     $matches = [];
                     if (preg_match('#^themes/default/images/icons/(.*)$#', $path, $matches) != 0) {

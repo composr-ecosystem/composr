@@ -1315,7 +1315,7 @@ class Hook_import_ipb2
             if (isset($done[$row['type']])) {
                 continue;
             }
-            add_wordfilter_word($row['type'], $row['swop'], $row['m_exact'] == 1 ? WORDFILTER_MATCH_TYPE_FULL : WORDFILTER_MATCH_TYPE_SUBSTRING);
+            add_wordfilter_word($row['type'], $row['swop'], (($row['m_exact'] == 1) ? WORDFILTER_MATCH_TYPE_FULL : WORDFILTER_MATCH_TYPE_SUBSTRING));
             $done[$row['type']] = true;
         }
     }

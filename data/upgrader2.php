@@ -193,11 +193,10 @@ if ($next_offset_url != '') {
 up2_do_footer();
 
 /**
- * Output the upgrader page header.
+ * Output the upgrader extract frame's page header.
  */
 function up2_do_header()
 {
-    $_refresh_url = htmlentities($refresh_url);
     echo <<<END
 <!DOCTYPE html>
 <html lang="EN">
