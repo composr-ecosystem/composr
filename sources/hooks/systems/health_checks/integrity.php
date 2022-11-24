@@ -238,7 +238,7 @@ class Hook_health_check_integrity extends Hook_Health_Check
 
             if (strpos(PHP_OS, 'WIN') !== false) {
                 if ($sdc === null) {
-                    return; // To unreliable, so has to be explicitly enabled
+                    return; // Too unreliable/slow, so has to be explicitly enabled
                 }
             }
         }
