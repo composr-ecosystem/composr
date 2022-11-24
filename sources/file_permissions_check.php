@@ -18,7 +18,7 @@
  * @package    core
  */
 
-/*EXTRA FUNCTIONS: shell_exec|escapeshellarg|posix_.*|fileowner|filegroup|get_current_user*/
+/*EXTRA FUNCTIONS: shell_exec|escapeshellarg|posix_.*|fileowner|filegroup|get_current_user|is_executable*/
 
 // Everything in this file can run without Composr having bootstrapped, although it will run better if it has
 
@@ -76,7 +76,9 @@ function scan_permissions(bool $live_output = false, bool $live_commands = false
         $has_ftp_loopback_for_write = ((function_exists('ftp_ssl_connect')) || (function_exists('ftp_connect'))) && ((!function_exists('get_value')) || (get_value('uses_ftp') !== '0'));
     }
 
-    if (strpos(PHP_OS, 'WIN') !== false) {
+    if (($minimum_level >= CMSPermissionsScanner::RESULT_TYPE_ERROR_MISSING) && (!$live_commands) && ($web_username === null)) {
+        $ob = new CMSPermissionsScannerSimplified();
+    } elseif (strpos(PHP_OS, 'WIN') !== false) {
         $ob = new CMSPermissionsScannerWindows();
     } else {
         $ob = new CMSPermissionsScannerLinux();
@@ -317,6 +319,16 @@ abstract class CMSPermissionsScanner
     // Code...
 
     /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+        $this->set_web_username();
+
+        $this->set_path_patterns();
+    }
+
+    /**
      * Find out whether a directory will be filtered out from checks.
      *
      * @param  PATH $rel_path The relative path to the base directory
@@ -379,7 +391,9 @@ abstract class CMSPermissionsScanner
      *
      * @param  ?string $username Username or User ID (null: try and auto-detect, failing that assume suEXEC-style)
      */
-    abstract public function set_web_username(?string $username = null);
+    public function set_web_username(?string $username = null)
+    {
+    }
 
     /**
      * Set paths patterns.
@@ -487,6 +501,197 @@ abstract class CMSPermissionsScanner
 }
 
 /**
+ * Check/fix permissions that just does simple cross-platform writability checks.
+ *
+ * @package cms_permissions_scanner
+ */
+class CMSPermissionsScannerSimplified extends CMSPermissionsScanner
+{
+    protected const BITMASK_PERMISSIONS_READ = 1;
+    protected const BITMASK_PERMISSIONS_WRITE = 2;
+    protected const BITMASK_PERMISSIONS_EXECUTE = 4;
+
+    /**
+     * Enumerate a directory for permission checks (actual processing is in process_node).
+     *
+     * @param  PATH $path The absolute path
+     * @param  PATH $rel_path The relative path to the base directory
+     * @param  ?string $attr A string of extended attributes from lsattr (null: look up individually, which is slower)
+     * @param  boolean $top_level Whether this is the top level of the recursion; don't set this manually
+     * @param  array $paths Paths with issues (inverse list), returned by reference
+     * @param  boolean $found_any_issue Whether any issues were found, returned by reference
+     * @return array A tuple: Messages to show, Commands to run
+     */
+    public function process_directory(string $path, string $rel_path = '', ?string $attr = null, bool $top_level = true, array &$paths = [], bool &$found_any_issue = false) : array
+    {
+        $messages = [];
+        $commands = [];
+
+        if ($this->filtered($rel_path)) {
+            return [$messages, $commands];
+        }
+
+        $_messages = $this->process_node($path, $rel_path, true, $paths, $found_any_issue);
+        $messages = array_merge($messages, $_messages[0]);
+        $commands = array_merge($commands, $_messages[1]);
+
+        $dh = @opendir($path);
+        if ($dh !== false) {
+            while (($f = readdir($dh)) !== false) {
+                if (($f == '.') || ($f == '..')) {
+                    continue;
+                }
+                if ($f == '.git') {
+                    // Funky things happen with permissions under .git
+                    continue;
+                }
+
+                $_path = $path . '/' . $f;
+                $_rel_path = $rel_path . (($rel_path == '') ? '' : '/') . $f;
+
+                if (in_array($_rel_path, $this->skip_paths)) {
+                    continue;
+                }
+
+                $is_directory = @is_dir($_path);
+
+                if ($is_directory) {
+                    $_messages = $this->process_directory($_path, $_rel_path, $attr, false, $paths, $found_any_issue);
+                    $messages = array_merge($messages, $_messages[0]);
+                    $commands = array_merge($commands, $_messages[1]);
+                } else {
+                    $_messages = $this->process_node($_path, $_rel_path, false, $paths, $found_any_issue);
+                    $messages = array_merge($messages, $_messages[0]);
+                    $commands = array_merge($commands, $_messages[1]);
+                }
+            }
+
+            closedir($dh);
+        }
+
+        return [$messages, $commands];
+    }
+
+    /**
+     * Process a file or directory for permission checks.
+     *
+     * @param  PATH $path The absolute path
+     * @param  PATH $rel_path The relative path to the file
+     * @param  boolean $is_directory Whether this is a directory
+     * @param  array $paths Paths with issues (inverse list), returned by reference
+     * @param  boolean $found_any_issue Whether any issues were found, returned by reference
+     * @return array A tuple: Messages to show, Commands to run, Paths with issues
+     */
+    protected function process_node(string $path, string $rel_path, bool $is_directory, array &$paths = [], bool &$found_any_issue = false) : array
+    {
+        // (We will assume the file owner is not something we want to change, just the permissions to work best with that owner)
+
+        $messages = [];
+        $commands = [];
+
+        $on_chmod_list = false;
+        foreach ($this->chmod_paths as $chmod_path) {
+            if (preg_match('#^' . $chmod_path . '$#', $rel_path) != 0) {
+                $on_chmod_list = true;
+            }
+        }
+
+        $fileperm_problems = 0;
+
+        if ($on_chmod_list) {
+            if (function_exists('cms_is_writable')) {
+                if (!cms_is_writable($path)) {
+                    $fileperm_problems |= self::BITMASK_PERMISSIONS_WRITE;
+                }
+            } else {
+                if (!is_writable($path)) {
+                    $fileperm_problems |= self::BITMASK_PERMISSIONS_WRITE;
+                }
+            }
+        }
+
+        if (!is_readable($path)) {
+            $fileperm_problems |= self::BITMASK_PERMISSIONS_READ;
+        }
+
+        if (($is_directory) && (function_exists('is_executable'))) {
+            if (!is_executable($path)) {
+                $fileperm_problems |= self::BITMASK_PERMISSIONS_EXECUTE;
+            }
+        }
+
+        if ($fileperm_problems != 0) {
+            list($message, $command) = $this->output_issue($path, $fileperm_problems);
+
+            $messages[] = $message;
+            if ($command !== null) {
+                $commands[] = $command;
+            }
+            $paths[$path] = true;
+            if ($this->live_output) {
+                echo $message . "\n";
+                if ($command !== null) {
+                    echo $command . "\n";
+                }
+            }
+            $found_issue = true;
+            $found_any_issue = true;
+        }
+
+        if ($this->minimum_level <= self::RESULT_TYPE_SUCCESS) {
+            if (!$found_issue) {
+                $message = $this->output_success($path);
+                $messages[] = $message;
+                if ($this->live_output) {
+                    echo $message . "\n";
+                }
+            }
+        }
+
+        return [$messages, $commands];
+    }
+
+    /**
+     * Create an issue message.
+     *
+     * @param  PATH $path The path the message is about
+     * @param  integer $perms_involved The permissions the issue is about
+     * @return array A pair: The message, A command (which may be null)
+     */
+    protected function output_issue(string $path, int $perms_involved) : array
+    {
+        $perms_involved_written = $this->convert_constants_to_written($perms_involved);
+
+        $message = $this->message_prefix('Error') . 'Set additional permissions for ' . $path . ' (' . $perms_involved_written . ')';
+
+        return [$message, null];
+    }
+
+    /**
+     * Convert bitmask of permissions to written ones.
+     *
+     * @param  integer $_perms Permissions
+     * @return string Written permissions
+     */
+    protected function convert_constants_to_written(int $_perms) : string
+    {
+        $perms = [];
+
+        if (($_perms & self::BITMASK_PERMISSIONS_EXECUTE) != 0) {
+            $perms[] = 'execute';
+        }
+        if (($_perms & self::BITMASK_PERMISSIONS_READ) != 0) {
+            $perms[] = 'read';
+        }
+        if (($_perms & self::BITMASK_PERMISSIONS_WRITE) != 0) {
+            $perms[] = 'write';
+        }
+
+        return implode(', ', $perms);
+    }
+}
+
+/**
  * Check/fix permissions on Linux/Mac OS.
  *
  * @package cms_permissions_scanner
@@ -523,9 +728,7 @@ class CMSPermissionsScannerLinux extends CMSPermissionsScanner
      */
     public function __construct()
     {
-        $this->set_web_username();
-
-        $this->set_path_patterns();
+        parent::__construct();
 
         $this->has_lsattr = false;
         if (($this->php_function_allowed('shell_exec')) && ($this->php_function_allowed('escapeshellarg'))) {
@@ -655,7 +858,7 @@ class CMSPermissionsScannerLinux extends CMSPermissionsScanner
         $dh = @opendir($path);
         if ($dh !== false) {
             while (($f = readdir($dh)) !== false) {
-                if (($f == '.') || ($f == '..') || ($f == '.git')) {
+                if (($f == '.') || ($f == '..')) {
                     continue;
                 }
                 if ($f == '.git') {
@@ -740,8 +943,13 @@ class CMSPermissionsScannerLinux extends CMSPermissionsScanner
             return [$messages, $commands]; // Optimisation
         }
 
-        $file_owner = @fileowner($path);
-        $file_perms = @fileperms($path);
+        if (function_exists('fileowner') && function_exists('fileperms')) {
+            $file_owner = @fileowner($path);
+            $file_perms = @fileperms($path);
+        } else {
+            $file_owner = false;
+            $file_perms = false;
+        }
 
         if (($file_owner === false) || ($file_perms === false)) {
             return [[], [], []]; // Likely as parent directory is missing perms, which will be flagged
@@ -1179,16 +1387,6 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
     // Code...
 
     /**
-     * Constructor.
-     */
-    public function __construct()
-    {
-        $this->set_web_username();
-
-        $this->set_path_patterns();
-    }
-
-    /**
      * Set username the web user will run as.
      *
      * @param  ?string $username Username or User ID (null: try and auto-detect, failing that assume suEXEC-style)
@@ -1201,7 +1399,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
 
         // Web server user
         if ($username === null) {
-            $current_user = get_current_user();
+            $current_user = (function_exists('get_current_user') ? get_current_user() : 'DefaultAppPool');
             if ((!function_exists('is_cli')) || (is_cli()) || ($current_user == 'DefaultAppPool')) {
                 if ((strpos(__FILE__, 'htdocs') !== false) || (strpos(__FILE__, 'httpdocs') !== false)) {
                     $this->key_users[] = 'SYSTEM'; // The services user which Apache will use

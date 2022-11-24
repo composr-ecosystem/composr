@@ -236,11 +236,11 @@ class Hook_health_check_integrity extends Hook_Health_Check
                 return;
             }
 
-            if (strpos(PHP_OS, 'WIN') !== false) {
+            /*Actually CMSPermissionsScannerSimplified will be used which is safer if (strpos(PHP_OS, 'WIN') !== false) {
                 if ($sdc === null) {
                     return; // Too unreliable/slow, so has to be explicitly enabled
                 }
-            }
+            }*/
         }
 
         if (function_exists('disable_php_memory_limit')) {
