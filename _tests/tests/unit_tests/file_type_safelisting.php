@@ -29,6 +29,8 @@ class file_type_safelisting_test_set extends cms_test_case
         $path = get_file_base() . '/sources/mime_types.php';
         $c = cms_file_get_contents_safe($path, FILE_READ_LOCK);
 
+        disable_php_memory_limit();
+
         $this->file_types = [];
         $matches = [];
         $num_matches = preg_match_all('#\'(\w{1,10})\'#', $c, $matches);
@@ -141,37 +143,79 @@ class file_type_safelisting_test_set extends cms_test_case
     {
         cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
+        $known_file_types = array_flip($this->file_types);
+
         require_code('files2');
         $php_files = get_directory_contents(get_file_base(), '', IGNORE_ALIEN | IGNORE_NONBUNDLED | IGNORE_UNSHIPPED_VOLATILE | IGNORE_SHIPPED_VOLATILE | IGNORE_REBUILDABLE_OR_TEMP_FILES_FOR_BACKUP, true, true, ['php']);
-        $exts = [];
         foreach ($php_files as $path) {
-            if (in_array($path, ['sources/hooks/modules/admin_import/phpbb3.php'])) { // exceptions
-                continue;
-            }
-
             $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK);
             $matches = [];
-            $num_matches = preg_match_all('#\.(\w{3})\'#', $c, $matches);
+            $num_matches = preg_match_all('#\w\.(\w{3})\'#', $c, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
                 $ext = $matches[1][$i];
 
+                // Exceptions
+                if (in_array($ext, [
+                    'swf',
+                    'tmp',
+                    'crt',
+
+                    // Composr types
+                    'inf',
+                    'gcd',
+                    'lcd',
+                    'tcp',
+                    'cms',
+
+                    // Common false positives from URLs
+                    'com',
+                    'net',
+                    'org',
+
+                    // LEGACY
+                    'dat',
+                ])) {
+                    continue;
+                }
+                if (in_array($path, [
+                    'sources/webstandards.php',
+                ])) {
+                    continue;
+                }
+                if (in_array($path . '/' . $ext, [
+                    'sources/hooks/modules/admin_import/phpbb3.php/url',
+                    'sources/aggregate_types.php/key',
+                    'sources/backup.php/pre',
+                    'sources/database_relations.php/cat',
+                    'sources/files.php/old',
+                    'sources/files.php/pem',
+                    'sources/files.php/pid',
+                    'sources/files.php/pwl',
+                    'sources/files.php/xxx',
+                    'sources/global.php/jit',
+                    'sources/hooks/modules/admin_import/mybb.php/gid',
+                    'sources/hooks/modules/admin_import/mybb.php/pid',
+                    'sources/hooks/modules/admin_import/mybb.php/uid',
+                    'sources/hooks/systems/addon_registry/backup.php/pre',
+                    'sources/hooks/systems/addon_registry/core.php/xap',
+                    'sources/hooks/systems/payment_gateway/authorize.php/api',
+                    'sources/hooks/systems/payment_gateway/authorize.php/dll',
+                    'sources/mail_dkim.php/tld',
+                    'sources/themes3.php/dtd',
+                    'sources/version2.php/inc',
+                ])) {
+                    continue;
+                }
                 if (preg_match('#^(\d+em|\d+)$#', $ext) != 0) {
                     continue;
                 }
-
                 if ($ext == 'dat') { // LEGACY
                     continue;
                 }
 
-                $exts[$ext] = true;
+                $this->assertTrue(isset($known_file_types[$ext]), 'Unrecognised file type, ' . $path . '/' . $ext);
             }
         }
-        $file_types = array_keys($exts);
-        sort($file_types);
-        $file_types = array_diff($file_types, ['MAD', 'MAI', 'MYD', 'MYI', 'alt', 'api', 'bat', 'cat', 'cgi', 'cms', 'com', 'crt', 'dtd', 'dir', 'dll', 'for', 'gcd', 'gid', 'git', 'inc', 'inf', 'jit', 'key', 'lcd', 'low', 'max', 'min', 'msg', 'net', 'old', 'org', 'pem', 'pid', 'pre', 'pwl', 'pws', 'rel', 'rev', 'src', 'swf', 'tcp', 'tld', 'tmp', 'uid', 'xap', 'xxx', 'XXX']); // Lots of stuff that is not needed to have any explicit handling
-
-        $diff = array_diff($file_types, $this->file_types);
-        $this->assertTrue(empty($diff), 'File types used in code unknown to mime_types.php: ' . serialize($diff));
     }
 
     public function testTrackerValidTypes()
