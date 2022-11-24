@@ -171,10 +171,19 @@ class shopping_order_management_test_set extends cms_test_case
         @header_remove();
     }
 
-    public function testOrderExportUI()
+    public function testOrderExports()
     {
-        $this->admin_shopping->export_orders();
-        @header_remove();
+        $filter_id = null;
+        $filter_username = '';
+        $filter_txn_id = '';
+        $filter_order_status = '';
+        $filter_start = null;
+        $filter_end = null;
+
+        require_code('tasks');
+        require_code('hooks/systems/tasks/export_shopping_orders');
+        $ob_import = new Hook_task_export_shopping_orders();
+        $ob_import->run($filter_id, $filter_username, $filter_txn_id, $filter_order_status, $filter_start, $filter_end);
     }
 
     public function tearDown()
