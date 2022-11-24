@@ -1454,14 +1454,14 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
 
                 if ($this->minimum_level <= $check_type_level) {
                     if ($operator == '+') {
-                        list(, $problematic_denys, $disable_inheritance, $do_reset) = $this->find_missing_file_perms($users, $acl, $perms);
+                        list(, $problematic_denys, $disable_inheritance, $do_reset, $sid) = $this->find_missing_file_perms($users, $acl, $perms);
                     } else {
-                        list($problematic_grants, $disable_inheritance, $do_reset) = $this->find_excessive_file_perms($users, $acl, $perms);
+                        list($problematic_grants, $disable_inheritance, $do_reset, $sid) = $this->find_excessive_file_perms($users, $acl, $perms);
                     }
                     if ($disable_inheritance) {
                         $will_disable_inheritance = true;
                     }
-                    if ($do_reset) {
+                    if (($do_reset) && ($sid !== null)) {
                         if ($operator == '+') {
                             if (!empty($problematic_denys)) {
                                 if (!array_key_exists($sid, $will_do_reset_for)) {
@@ -1687,7 +1687,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
      * @param  array $users Users to check for
      * @param  array $acl The ACL for the file
      * @param  integer $perms A bitmask of permissions that could be missing
-     * @return array A tuple: A list of missing permissions, A list of problematic denys, Whether we will need to disable inheritance, Whether we will need to do a full 'reset'
+     * @return array A tuple: A list of missing permissions, A list of problematic denys, Whether we will need to disable inheritance, Whether we will need to do a full 'reset', The SID we ended up using
      */
     protected function find_missing_file_perms(array $users, array $acl, int $perms) : array
     {
@@ -1695,17 +1695,18 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
         $problematic_denys = [];
         $disable_inheritance = false;
         $do_reset = false;
+        $sid_used = null;
 
         if (($perms & self::BITMASK_PERMISSIONS_READ) != 0) {
             $permissions_involved = [];
             $due_to_inheritance = false;
-            if (!$this->has_read_access($users, $acl, $permissions_involved, $due_to_inheritance, self::SCAN_CHECK_GRANTS | self::SCAN_CHECK_DENYS)) {
+            if (!$this->has_read_access($users, $acl, $permissions_involved, $due_to_inheritance, $sid_used, self::SCAN_CHECK_GRANTS | self::SCAN_CHECK_DENYS)) {
                 if ($due_to_inheritance) {
                     $disable_inheritance = true; // We will disable then re-scan
                 } elseif (!empty($permissions_involved)) {
                     $do_reset = true;
                     $problematic_denys = array_merge($problematic_denys, $permissions_involved);
-                    if (!$this->has_read_access($users, $acl, $permissions_involved, $due_to_inheritance, self::SCAN_CHECK_GRANTS)) {
+                    if (!$this->has_read_access($users, $acl, $permissions_involved, $due_to_inheritance, $sid_used, self::SCAN_CHECK_GRANTS)) {
                         $missing[] = 'R';
                     }
                 } else {
@@ -1717,13 +1718,13 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
         if (($perms & self::BITMASK_PERMISSIONS_WRITE) != 0) {
             $permissions_involved = [];
             $due_to_inheritance = false;
-            if (!$this->has_write_access($users, $acl, $permissions_involved, $due_to_inheritance, self::SCAN_CHECK_GRANTS | self::SCAN_CHECK_DENYS)) {
+            if (!$this->has_write_access($users, $acl, $permissions_involved, $due_to_inheritance, $sid_used, self::SCAN_CHECK_GRANTS | self::SCAN_CHECK_DENYS)) {
                 if ($due_to_inheritance) {
                     $disable_inheritance = true; // We will disable then re-scan
                 } elseif (!empty($permissions_involved)) {
                     $do_reset = true;
                     $problematic_denys = array_merge($problematic_denys, $permissions_involved);
-                    if (!$this->has_write_access($users, $acl, $permissions_involved, $due_to_inheritance, self::SCAN_CHECK_GRANTS)) {
+                    if (!$this->has_write_access($users, $acl, $permissions_involved, $due_to_inheritance, $sid_used, self::SCAN_CHECK_GRANTS)) {
                         $missing[] = 'W';
                     }
                 } else {
@@ -1735,13 +1736,13 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
         if (($perms & self::BITMASK_PERMISSIONS_EXECUTE) != 0) {
             $permissions_involved = [];
             $due_to_inheritance = false;
-            if (!$this->has_execute_access($siusersd, $acl, $permissions_involved, $due_to_inheritance, self::SCAN_CHECK_GRANTS | self::SCAN_CHECK_DENYS)) {
+            if (!$this->has_execute_access($users, $acl, $permissions_involved, $due_to_inheritance, $sid_used, self::SCAN_CHECK_GRANTS | self::SCAN_CHECK_DENYS)) {
                 if ($due_to_inheritance) {
                     $disable_inheritance = true; // We will disable then re-scan
                 } elseif (!empty($permissions_involved)) {
                     $do_reset = true;
                     $problematic_denys = array_merge($problematic_denys, $permissions_involved);
-                    if (!$this->has_execute_access($users, $acl, $permissions_involved, $due_to_inheritance, self::SCAN_CHECK_GRANTS)) {
+                    if (!$this->has_execute_access($users, $acl, $permissions_involved, $due_to_inheritance, $sid_used, self::SCAN_CHECK_GRANTS)) {
                         $missing[] = 'X';
                     }
                 } else {
@@ -1753,7 +1754,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
         $missing = array_unique($missing);
         $problematic_denys = array_unique($problematic_denys);
 
-        return [$missing, $problematic_denys, $disable_inheritance, $do_reset];
+        return [$missing, $problematic_denys, $disable_inheritance, $do_reset, $sid_used];
     }
 
     /**
@@ -1761,19 +1762,20 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
      *
      * @param  array $users Users to check for
      * @param  array $acl The ACL for the file
-     * @param  integer $perms A bitmask of permissions that would exceesive
-     * @return array A tuple: A list of excessive permissions, Whether we will need to disable inheritance, Whether we will need to do a full 'reset'
+     * @param  integer $perms A bitmask of permissions that would excessive
+     * @return array A tuple: A list of excessive permissions, Whether we will need to disable inheritance, Whether we will need to do a full 'reset', The SID we ended up using
      */
     protected function find_excessive_file_perms(array $users, array $acl, int $perms) : array
     {
         $excessive = [];
         $disable_inheritance = false;
         $do_reset = true;
+        $sid_used = null;
 
         if (($perms & self::BITMASK_PERMISSIONS_READ) != 0) {
             $permissions_involved = [];
             $due_to_inheritance = false;
-            if ($this->has_read_access($users, $acl, $permissions_involved, $due_to_inheritance, self::SCAN_PARTIAL_ACCESS_CHECK | self::SCAN_CHECK_GRANTS | self::SCAN_CHECK_DENYS)) {
+            if ($this->has_read_access($users, $acl, $permissions_involved, $due_to_inheritance, $sid_used, self::SCAN_PARTIAL_ACCESS_CHECK | self::SCAN_CHECK_GRANTS | self::SCAN_CHECK_DENYS)) {
                 if ($due_to_inheritance) {
                     $disable_inheritance = true; // We will disable then re-scan
                 } else {
@@ -1786,7 +1788,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
         if (($perms & self::BITMASK_PERMISSIONS_WRITE) != 0) {
             $permissions_involved = [];
             $due_to_inheritance = false;
-            if ($this->has_write_access($users, $acl, $permissions_involved, $due_to_inheritance, self::SCAN_PARTIAL_ACCESS_CHECK | self::SCAN_CHECK_GRANTS | self::SCAN_CHECK_DENYS)) {
+            if ($this->has_write_access($users, $acl, $permissions_involved, $due_to_inheritance, $sid_used, self::SCAN_PARTIAL_ACCESS_CHECK | self::SCAN_CHECK_GRANTS | self::SCAN_CHECK_DENYS)) {
                 if ($due_to_inheritance) {
                     $disable_inheritance = true; // We will disable then re-scan
                 } else {
@@ -1799,7 +1801,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
         if (($perms & self::BITMASK_PERMISSIONS_EXECUTE) != 0) {
             $permissions_involved = [];
             $due_to_inheritance = false;
-            if ($this->has_execute_access($users, $acl, $permissions_involved, $due_to_inheritance, self::SCAN_PARTIAL_ACCESS_CHECK | self::SCAN_CHECK_GRANTS | self::SCAN_CHECK_DENYS)) {
+            if ($this->has_execute_access($users, $acl, $permissions_involved, $due_to_inheritance, $sid_used, self::SCAN_PARTIAL_ACCESS_CHECK | self::SCAN_CHECK_GRANTS | self::SCAN_CHECK_DENYS)) {
                 if ($due_to_inheritance) {
                     $disable_inheritance = true; // We will disable then re-scan
                 } else {
@@ -1811,7 +1813,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
 
         $excessive = array_unique($excessive);
 
-        return [$excessive, $disable_inheritance, $do_reset];
+        return [$excessive, $disable_inheritance, $do_reset, $sid_used];
     }
 
     /**
@@ -1821,10 +1823,11 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
      * @param  array $acl The ACL for the file
      * @param  array $permissions_involved A list of permissions involved, returned by reference
      * @param  boolean $due_to_inheritance Whether the result given is due to inheritance, returned by reference
+     * @param  ?string $sid_used The SID we ended up using, returned by reference (null: none)
      * @param  integer $check_flags The flags specifying how to do our checks
      * @return boolean Whether it is
      */
-    protected function has_read_access(array $users, array $acl, array &$permissions_involved, bool &$due_to_inheritance, int $check_flags) : bool
+    protected function has_read_access(array $users, array $acl, array &$permissions_involved, bool &$due_to_inheritance, ?string &$sid_used, int $check_flags) : bool
     {
         $due_to_inheritance = false;
         $permissions_involved = [];
@@ -1845,7 +1848,8 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
                 if ($this->_has_partial_read_setting($permissions_negative, $permissions)) {
                     $due_to_inheritance = false;
                     $permissions_involved = $permissions;
-                    return false;
+                    $sid_used = $sid;
+                    continue;
                 }
             }
 
@@ -1854,6 +1858,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
                 if ($partial_access_check ? $this->_has_partial_read_setting($permissions_positive, $permissions) : $this->_has_complete_read_setting($permissions_positive, $permissions)) {
                     $due_to_inheritance = false;
                     $permissions_involved = $permissions;
+                    $sid_used = $sid;
                     return true;
                 }
             }
@@ -1863,6 +1868,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
                 if ($this->_has_partial_read_setting($permissions_negative_inherited, $permissions)) {
                     $due_to_inheritance = true;
                     $permissions_involved = $permissions;
+                    $sid_used = $sid;
                     continue;
                 }
             }
@@ -1872,6 +1878,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
                 if ($partial_access_check ? $this->_has_partial_read_setting($permissions_positive_inherited, $permissions) : $this->_has_complete_read_setting($permissions_positive_inherited, $permissions)) {
                     $due_to_inheritance = true;
                     $permissions_involved = $permissions;
+                    $sid_used = $sid;
                     return true;
                 }
             }
@@ -1931,10 +1938,11 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
      * @param  array $acl The ACL for the file
      * @param  array $permissions_involved A list of permissions involved, returned by reference
      * @param  boolean $due_to_inheritance Whether the result given is due to inheritance, returned by reference
+     * @param  ?string $sid_used The SID we ended up using, returned by reference (null: none)
      * @param  integer $check_flags The flags specifying how to do our checks
      * @return boolean Whether it is
      */
-    protected function has_write_access(array $users, array $acl, array &$permissions_involved, bool &$due_to_inheritance, int $check_flags) : bool
+    protected function has_write_access(array $users, array $acl, array &$permissions_involved, bool &$due_to_inheritance, ?string &$sid_used, int $check_flags) : bool
     {
         $due_to_inheritance = false;
         $permissions_involved = [];
@@ -1955,7 +1963,8 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
                 if ($this->_has_partial_write_setting($permissions_negative, $permissions)) {
                     $due_to_inheritance = false;
                     $permissions_involved = $permissions;
-                    return false;
+                    $sid_used = $sid;
+                    continue;
                 }
             }
 
@@ -1964,6 +1973,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
                 if ($partial_access_check ? $this->_has_partial_write_setting($permissions_positive, $permissions) : $this->_has_complete_write_setting($permissions_positive, $permissions)) {
                     $due_to_inheritance = false;
                     $permissions_involved = $permissions;
+                    $sid_used = $sid;
                     return true;
                 }
             }
@@ -1973,6 +1983,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
                 if ($this->_has_partial_write_setting($permissions_negative_inherited, $permissions)) {
                     $due_to_inheritance = true;
                     $permissions_involved = $permissions;
+                    $sid_used = $sid;
                     continue;
                 }
             }
@@ -1982,6 +1993,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
                 if ($partial_access_check ? $this->_has_partial_write_setting($permissions_positive_inherited, $permissions) : $this->_has_complete_write_setting($permissions_positive_inherited, $permissions)) {
                     $due_to_inheritance = true;
                     $permissions_involved = $permissions;
+                    $sid_used = $sid;
                     return true;
                 }
             }
@@ -2040,10 +2052,11 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
      * @param  array $acl The ACL for the file
      * @param  array $permissions_involved A list of permissions involved, returned by reference
      * @param  boolean $due_to_inheritance Whether the result given is due to inheritance, returned by reference
+     * @param  ?string $sid_used The SID we ended up using, returned by reference (null: none)
      * @param  integer $check_flags The flags specifying how to do our checks
      * @return boolean Whether it is
      */
-    protected function has_execute_access(array $users, array $acl, array &$permissions_involved, bool &$due_to_inheritance, int $check_flags) : bool
+    protected function has_execute_access(array $users, array $acl, array &$permissions_involved, bool &$due_to_inheritance, ?string &$sid_used, int $check_flags) : bool
     {
         $due_to_inheritance = false;
         $permissions_involved = [];
@@ -2064,7 +2077,8 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
                 if ($this->_has_partial_execute_setting($permissions_negative, $permissions)) {
                     $due_to_inheritance = false;
                     $permissions_involved = $permissions;
-                    return false;
+                    $sid_used = $sid;
+                    continue;
                 }
             }
 
@@ -2073,6 +2087,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
                 if ($partial_access_check ? $this->_has_partial_execute_setting($permissions_positive, $permissions) : $this->_has_complete_execute_setting($permissions_positive, $permissions)) {
                     $due_to_inheritance = false;
                     $permissions_involved = $permissions;
+                    $sid_used = $sid;
                     return true;
                 }
             }
@@ -2082,6 +2097,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
                 if ($this->_has_partial_execute_setting($permissions_negative_inherited, $permissions)) {
                     $due_to_inheritance = true;
                     $permissions_involved = $permissions;
+                    $sid_used = $sid;
                     continue;
                 }
             }
@@ -2091,6 +2107,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
                 if ($partial_access_check ? $this->_has_partial_execute_setting($permissions_positive_inherited, $permissions) : $this->_has_complete_execute_setting($permissions_positive_inherited, $permissions)) {
                     $due_to_inheritance = true;
                     $permissions_involved = $permissions;
+                    $sid_used = $sid;
                     return true;
                 }
             }
