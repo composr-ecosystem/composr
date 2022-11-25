@@ -82,9 +82,11 @@ class Hook_media_rendering_audio_microsoft extends Media_renderer_with_fallback
      * @param  array $attributes Attributes (e.g. width, height, length)
      * @param  boolean $as_admin Whether there are admin privileges, to render dangerous media types
      * @param  ?MEMBER $source_member Member to run as (null: current member)
+     * @param  ?URLPATH $url_direct_filesystem Direct URL (not via a script) (null: just use the normal URL)
+     * @param  ?string $original_filename Originally filename to display as a link caption where appropriate (null: use $url_safe)
      * @return Tempcode Rendered version
      */
-    public function render($url, $url_safe, array $attributes, bool $as_admin = false, ?int $source_member = null) : object
+    public function render($url, $url_safe, array $attributes, bool $as_admin = false, ?int $source_member = null, ?string $url_direct_filesystem = null, ?string $original_filename = null) : object
     {
         $ret = $this->fallback_render($url, $url_safe, $attributes, $as_admin, $source_member, $url);
         if ($ret !== null) {

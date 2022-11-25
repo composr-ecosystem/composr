@@ -100,9 +100,16 @@ class Hook_import_phpbb3
            'friends' => ['cns_members'],
            'reported_posts_forum' => ['cns_members', 'cns_topics', 'cns_posts'],
         ];
+
         $_cleanup_url = build_url(['page' => 'admin_cleanup'], get_module_zone('admin_cleanup'));
         $cleanup_url = $_cleanup_url->evaluate();
-        $info['message'] = (get_param_string('type', 'browse') != 'import' && get_param_string('type', 'browse') != 'hook') ? new Tempcode() : do_lang_tempcode('FORUM_CACHE_CLEAR', escape_html($cleanup_url));
+        $info['final_message'] = do_lang_tempcode('FORUM_CACHE_CLEAR', escape_html($cleanup_url));
+
+        $info['final_tasks'] = [
+            ['cns_topics_recache', do_lang('CACHE_TOPICS'), 'f_topics', 100],
+            ['cns_recache', do_lang('CACHE_FORUMS'), 'f_topics', 100],
+            ['cns_members_recache', do_lang('CACHE_MEMBERS'), 'f_members', 100],
+        ];
 
         return $info;
     }
@@ -236,8 +243,10 @@ class Hook_import_phpbb3
                 ];
                 $id_new = $GLOBALS['FORUM_DB']->query_insert('attachments', $row_copy, true);
 
-                @rename($file_base . '/files/' . $row['physical_filename'], get_custom_file_base() . '/uploads/attachments/' . $row['physical_filename']);
-                sync_file(get_custom_file_base() . '/uploads/attachments/' . $row['physical_filename']);
+                $target_path = get_custom_file_base() . '/uploads/attachments/' . $row['physical_filename'];
+                if ((file_exists($target_path)) || (@copy($file_base . '/files/' . $attachment['physical_filename'], $target_path))) {
+                    sync_file(get_custom_file_base() . '/uploads/attachments/' . $row['physical_filename']);
+                }
 
                 import_id_remap_put('attachment', strval($row['attach_id']), $id_new);
             }
@@ -391,6 +400,7 @@ class Hook_import_phpbb3
                 }
 
                 $signature = $this->fix_links($row['user_sig'], $row['user_sig_bbcode_uid'], $db, $table_prefix);
+
                 $validated = 1;
                 $reveal_age = 0;
                 if (strpos($row['user_birthday'], '-') === false) {
@@ -537,7 +547,7 @@ class Hook_import_phpbb3
                         $filename = $_filename[0]; // We only want the memberID
                         $full_filename = $avatar_salt . '_' . $filename . '.' . $ext; // Actual filename is salt_memberID (or g[groupID]).ext
 
-                        if ((file_exists(get_custom_file_base() . '/uploads/cns_avatars/' . $full_filename)) || (@rename($file_base . '/' . $avatar_path . '/' . $full_filename, get_custom_file_base() . '/uploads/cns_avatars/' . $full_filename))) {
+                        if ((file_exists(get_custom_file_base() . '/uploads/cns_avatars/' . $full_filename)) || (@copy($file_base . '/' . $avatar_path . '/' . $full_filename, get_custom_file_base() . '/uploads/cns_avatars/' . $full_filename))) {
                             $avatar_url = 'uploads/cns_avatars/' . $full_filename;
                             sync_file(get_custom_file_base() . '/' . $avatar_url);
                         } else {
@@ -552,7 +562,7 @@ class Hook_import_phpbb3
                         break;
                     case 'avatar.driver.local': // Gallery
                         $filename = $row['user_avatar'];
-                        if ((file_exists(get_custom_file_base() . '/uploads/cns_avatars/' . $filename)) || (@rename($file_base . '/' . $avatar_gallery_path . '/' . $filename, get_custom_file_base() . '/uploads/cns_avatars/' . $filename))) {
+                        if ((file_exists(get_custom_file_base() . '/uploads/cns_avatars/' . $filename)) || (@copy($file_base . '/' . $avatar_gallery_path . '/' . $filename, get_custom_file_base() . '/uploads/cns_avatars/' . $filename))) {
                             $avatar_url = 'uploads/cns_avatars/' . substr($filename, strrpos($filename, '/'));
                             sync_file(get_custom_file_base() . '/' . $avatar_url);
                         } else {
@@ -876,19 +886,10 @@ class Hook_import_phpbb3
                     $title = @html_entity_decode($row['post_subject'], ENT_QUOTES);
                 }
 
-                $post = $this->fix_links($row['post_text'], $row['bbcode_uid'], $db, $table_prefix, $row['post_id']);
-
-                $attach_id = collapse_1d_complexity('attach_id', $db->query_select('attachments', ['attach_id'], ['post_msg_id' => $row['post_id'], 'in_message' => 0]));
-                foreach ($attach_id as $i => $_attach_id) {
+                $attach_ids = collapse_1d_complexity('attach_id', $db->query_select('attachments', ['attach_id'], ['post_msg_id' => $row['post_id']], 'ORDER BY attach_id'));
+                foreach ($attach_ids as $i => $_attach_id) {
                     $_attach_id = import_id_remap_get('attachment', strval($_attach_id), true);
-                    if ($_attach_id !== null) {
-                        if ((strpos($post, '[attachment') === false) && ($row['post_attachment'] == 1)) {
-                            if ($_attach_id !== null) {
-                                $post .= "\n\n" . '[attachment]' . strval($_attach_id) . '[/attachment]';
-                            }
-                        }
-                    }
-                    $attach_id[$i] = $_attach_id;
+                    $attach_ids[$i] = $_attach_id;
                 }
 
                 $last_edit_by = null;
@@ -898,11 +899,13 @@ class Hook_import_phpbb3
                     $row['post_username'] = $GLOBALS['CNS_DRIVER']->get_username($member_id);
                 }
 
-                $post = $this->_filter_phpbb($post, true);
+                $post = $this->fix_links($row['post_text'], $row['bbcode_uid'], $db, $table_prefix, $row['post_id']);
+                require_code('forum/phpbb3');
+                $post = _phpbb3_post_text_to_comcode($post, $attach_ids);
 
                 $id_new = cns_make_post($topic_id, $title, $post, 0, $first_post, $row['post_visibility'], 0, $row['post_username'], $row['poster_ip'], $row['post_time'], $member_id, null, $last_edit_time, $last_edit_by, false, false, $forum_id, false);
 
-                foreach ($attach_id as $i => $_attach_id) {
+                foreach ($attach_ids as $i => $_attach_id) {
                     if ($_attach_id !== null) {
                         $GLOBALS['FORUM_DB']->query_insert('attachment_refs', [
                             'r_referer_type' => 'cns_post',
@@ -967,9 +970,6 @@ class Hook_import_phpbb3
     {
         $orig_post = $post;
 
-        $post = preg_replace('#<!-- [mwl] --><a class="[\w\-]+" href="([^"]*)"( onclick="window.open\(this.href\);\s*return false;")?' . '>(.*)</a><!-- [mwl] -->#U', '[url="${3}"]${1}[/url]', $post);
-        $post = preg_replace('#<!-- e --><a href="mailto:(.*)">(.*)</a><!-- e -->#U', '[email="${2}"]${1}[/email]', $post);
-
         global $OLD_BASE_URL;
         if ($OLD_BASE_URL === null) {
             $rows = $db->query('SELECT * FROM ' . $table_prefix . 'config WHERE ' . db_string_equal_to('config_name', 'server_name') . ' OR ' . db_string_equal_to('config_name', 'server_port') . ' OR ' . db_string_equal_to('config_name', 'script_path') . ' ORDER BY config_name');
@@ -987,34 +987,6 @@ class Hook_import_phpbb3
         $post = preg_replace_callback('#' . preg_quote($OLD_BASE_URL) . '/(profile\.php\?mode=viewprofile&u=)(\d*)#', [$this, '_fix_links_callback_member'], $post);
         $post = preg_replace('#:[0-9a-f]{10}#', '', $post);
 
-        $matches = [];
-        $count = preg_match_all('#\[attachment=(\d+)(:.*)?\].*\[\/attachment(:.*)?\]#Us', $post, $matches);
-        $to = null;
-        for ($i = 0; $i < $count; $i++) {
-            if ($post_id !== null) {
-                $from = $matches[1][$i];
-                $attachments = $db->query_select('attachments', ['attach_id'], ['post_msg_id' => $post_id, 'in_message' => $is_pm ? 1 : 0], 'ORDER BY attach_id');
-                $to = array_key_exists(intval($from), $attachments) ? $attachments[intval($from)]['attach_id'] : -1;
-                $to = import_id_remap_get('attachment', strval($to), true);
-            } else {
-                $to = null;
-            }
-            if ($to === null) {
-                $post = str_replace($matches[0][$i], '(attachment removed)', $post);
-            } else {
-                $post = str_replace($matches[0][$i], '[attachment]' . strval($to) . '[/attachment]', $post);
-            }
-        }
-
-        if ($uid != '') {
-            $post = str_replace(':' . $uid, '', $post);
-        }
-        $post = preg_replace('#<!-- s([^\s]*) --><img src="\{SMILIES_PATH\}/[^"]*" alt="([^\s]*)" title="[^"]*" /><!-- s([^\s]*) -->#U', '${1}', $post);
-
-        $post = preg_replace('#\[size="?(\d+)"?\]#i', '[size="${1}%"]', $post);
-
-        $post = str_replace('{', '\{', $post);
-
         return html_entity_decode($post, ENT_QUOTES);
     }
 
@@ -1027,6 +999,8 @@ class Hook_import_phpbb3
      */
     public function import_cns_polls_and_votes(object $db, string $table_prefix, string $file_base)
     {
+        require_code('forum/phpbb3');
+
         $rows = $db->query('SELECT * FROM ' . $table_prefix . 'topics t LEFT JOIN ' . $table_prefix . 'poll_options o ON t.topic_id=o.topic_id WHERE ' . db_string_not_equal_to('poll_title', ''));
         foreach ($rows as $row) {
             if (import_check_if_imported('poll', strval($row['topic_id']))) {
@@ -1040,7 +1014,7 @@ class Hook_import_phpbb3
             $rows2 = $db->query_select('poll_options', ['*'], ['topic_id' => $row['topic_id']], 'ORDER BY poll_option_id');
             $answers = [];
             foreach ($rows2 as $answer) {
-                $answers[] = $this->_filter_phpbb($answer['poll_option_text']);
+                $answers[] = _phpbb3_post_text_to_comcode($answer['poll_option_text']);
             }
             $maximum = 1;
 
@@ -1049,7 +1023,7 @@ class Hook_import_phpbb3
                 $row2['vote_user_id'] = import_id_remap_get('member', strval($row2['vote_user_id']), true);
             }
 
-            $id_new = cns_make_poll($topic_id, $this->_filter_phpbb($row['poll_title']), 0, $is_open ? 1 : 0, 1, $maximum, 0, $answers, 0, 0, 1, 0, false);
+            $id_new = cns_make_poll($topic_id, _phpbb3_post_text_to_comcode($row['poll_title']), 0, $is_open ? 1 : 0, 1, $maximum, 0, $answers, 0, 0, 1, 0, false);
 
             $answers = collapse_1d_complexity('id', $GLOBALS['FORUM_DB']->query_select('f_poll_answers', ['id'], ['pa_poll_id' => $id_new])); // Effectively, a remapping from IPB vote number to Composr vote number
 
@@ -1130,21 +1104,6 @@ class Hook_import_phpbb3
                     $title = '';
                 }
 
-                $post = $this->fix_links($_postdetails['message_text'], $row['bbcode_uid'], $db, $table_prefix, $_postdetails['msg_id'], true);
-
-                $attach_id = collapse_1d_complexity('attach_id', $db->query_select('attachments', ['attach_id'], ['post_msg_id' => $_postdetails['msg_id'], 'in_message' => 1]));
-                foreach ($attach_id as $i => $_attach_id) {
-                    $_attach_id = import_id_remap_get('attachment', strval($_attach_id), true);
-                    if ($_attach_id !== null) {
-                        if ((strpos($post, '[attachment') === false) && ($row['message_attachment'] == 1)) {
-                            if ($_attach_id !== null) {
-                                $post .= "\n\n" . '[attachment]' . strval($_attach_id) . '[/attachment]';
-                            }
-                        }
-                    }
-                    $attach_id[$i] = $_attach_id;
-                }
-
                 $validated = 1;
                 $from_id = import_id_remap_get('member', strval($_postdetails['privmsgs_from_userid']), true);
                 if ($from_id === null) {
@@ -1157,18 +1116,11 @@ class Hook_import_phpbb3
                 $last_edit_time = $_postdetails['message_edit_time'];
                 $last_edit_by = ($_postdetails['message_edit_user'] == 0) ? null : import_id_remap_get('member', strval($_postdetails['message_edit_user']), true);
 
-                $post = $this->_filter_phpbb($post, true);
-                $post_id = cns_make_post($topic_id, $title, $post, 0, $first_post, $validated, 0, $poster_name_if_guest, $ip_address, $time, $poster, null, $last_edit_time, $last_edit_by, false, false, null, false);
+                $post = $this->fix_links($_postdetails['message_text'], $row['bbcode_uid'], $db, $table_prefix, $_postdetails['msg_id'], true);
+                require_code('forum/phpbb3');
+                $post = _phpbb3_post_text_to_comcode($post);
 
-                foreach ($attach_id as $i => $_attach_id) {
-                    if ($_attach_id !== null) {
-                        $GLOBALS['FORUM_DB']->query_insert('attachment_refs', [
-                            'r_referer_type' => 'cns_post',
-                            'r_referer_id' => $post_id,
-                            'a_id' => $_attach_id,
-                        ]);
-                    }
-                }
+                $post_id = cns_make_post($topic_id, $title, $post, 0, $first_post, $validated, 0, $poster_name_if_guest, $ip_address, $time, $poster, null, $last_edit_time, $last_edit_by, false, false, null, false);
 
                 $first_post = false;
 
@@ -1489,25 +1441,5 @@ class Hook_import_phpbb3
             require_code('report_content');
             report_post($post_id, $row['report_text'], 0, ($row['report_closed'] == 1) ? 0 : 1, $row['report_time'], $user_id);
         }
-    }
-
-    /**
-     * Clean up phpBB syntax and wrap text into semihtml.
-     *
-     * @param  string $text The text to filter
-     * @param  boolean $semihtml Whether to encapsulate the text in a semihtml Comcode tag if one does not already exist
-     * @return string The filtered text
-     */
-    protected function _filter_phpbb(string $text, bool $semihtml = false) : string
-    {
-        $out = '';
-        $parsed_text = cms_strip_tags($text, '<t>,<r>,<e>,<ATTACHMENT>,<s>,<attachment>', false);
-        if (($semihtml) && (strpos($text, '[semihtml]') === false) && (strpos($text, '[html]') === false)) {
-            $out = '[semihtml]' . $parsed_text . '[/semihtml]';
-        } else {
-            $out = $parsed_text;
-        }
-
-        return $out;
     }
 }

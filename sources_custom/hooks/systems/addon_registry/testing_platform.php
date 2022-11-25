@@ -761,6 +761,7 @@ We hope other users will appreciate your efforts and give you some points to rew
             '_tests/tests/unit_tests/cqc_site.php',
             '_tests/tests/unit_tests/cqc_sources.php',
             '_tests/tests/unit_tests/cqc_welcome.php',
+            '_tests/tests/unit_tests/phpbb_post_parser.php',
             '_tests/tests/unit_tests/__critical_error_display.php',
             '_tests/tests/unit_tests/crypt.php',
             '_tests/tests/unit_tests/csrf_tags.php',

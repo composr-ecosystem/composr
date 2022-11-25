@@ -85,9 +85,16 @@ class Hook_import_mybb
            'cns_private_topics' => ['cns_members'],
            'cns_multi_moderations' => ['cns_forums', 'cns_members', 'cns_topics', 'cns_posts', 'cns_private_topics', 'cns_forum_groupings'],
         ];
+
         $_cleanup_url = build_url(['page' => 'admin_cleanup'], get_module_zone('admin_cleanup'));
         $cleanup_url = $_cleanup_url->evaluate();
-        $info['message'] = (get_param_string('type', 'browse') != 'import' && get_param_string('type', 'browse') != 'hook') ? new Tempcode() : do_lang_tempcode('FORUM_CACHE_CLEAR', escape_html($cleanup_url));
+        $info['final_message'] = do_lang_tempcode('FORUM_CACHE_CLEAR', escape_html($cleanup_url));
+
+        $info['final_tasks'] = [
+            ['cns_topics_recache', do_lang('CACHE_TOPICS'), 'f_topics', 100],
+            ['cns_recache', do_lang('CACHE_FORUMS'), 'f_topics', 100],
+            ['cns_members_recache', do_lang('CACHE_MEMBERS'), 'f_members', 100],
+        ];
 
         return $info;
     }
@@ -493,7 +500,7 @@ class Hook_import_mybb
                         $filename = $row['avatar'];
                         $filename = preg_replace('#images\/avatars\/#', '', $filename); // We need just a filename
 
-                        if ((file_exists(get_custom_file_base() . '/uploads/cns_avatars/' . $filename)) || (@rename($avatar_gallery_path . '/' . $filename, get_custom_file_base() . '/uploads/cns_avatars/' . $filename))) {
+                        if ((file_exists(get_custom_file_base() . '/uploads/cns_avatars/' . $filename)) || (@copy($avatar_gallery_path . '/' . $filename, get_custom_file_base() . '/uploads/cns_avatars/' . $filename))) {
                             $avatar_url = 'uploads/cns_avatars/' . substr($filename, strrpos($filename, '/'));
                             sync_file(get_custom_file_base() . '/' . $avatar_url);
                         } else {
@@ -517,7 +524,7 @@ class Hook_import_mybb
                     case 'upload': // Upload
                         $filename = $row['avatar'];
                         $filename = preg_replace('#\.\/uploads\/avatars\/#', '', $filename);
-                        if ((file_exists(get_custom_file_base() . '/uploads/cns_avatars/' . $filename)) || (@rename($avatar_path . '/' . $filename, get_custom_file_base() . '/uploads/cns_avatars/' . $filename))) {
+                        if ((file_exists(get_custom_file_base() . '/uploads/cns_avatars/' . $filename)) || (@copy($avatar_path . '/' . $filename, get_custom_file_base() . '/uploads/cns_avatars/' . $filename))) {
                             $avatar_url = 'uploads/cns_avatars/' . $filename;
                             sync_file(get_custom_file_base() . '/' . $avatar_url);
                         } else {

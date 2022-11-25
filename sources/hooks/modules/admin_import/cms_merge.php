@@ -150,7 +150,13 @@ class Hook_import_cms_merge
 
         $_cleanup_url = build_url(['page' => 'admin_cleanup'], get_module_zone('admin_cleanup'));
         $cleanup_url = $_cleanup_url->evaluate();
-        $info['message'] = (get_param_string('type', 'browse') != 'import' && get_param_string('type', 'browse') != 'hook') ? new Tempcode() : do_lang_tempcode('FORUM_CACHE_CLEAR', escape_html($cleanup_url));
+        $info['final_message'] = do_lang_tempcode('FORUM_CACHE_CLEAR', escape_html($cleanup_url));
+
+        $info['final_tasks'] = [
+            ['cns_topics_recache', do_lang('CACHE_TOPICS'), 'f_topics', 100],
+            ['cns_recache', do_lang('CACHE_FORUMS'), 'f_topics', 100],
+            ['cns_members_recache', do_lang('CACHE_MEMBERS'), 'f_members', 100],
+        ];
 
         return $info;
     }

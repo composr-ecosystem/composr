@@ -31,9 +31,10 @@
  * @param  ID_TEXT $image_field_name The name of the table field where thumbnails are saved
  * @param  ?integer $thumb_width The thumbnail width to use (null: default)
  * @param  boolean $only_make_smaller Whether to apply a 'never make the image bigger' rule for thumbnail creation (would affect very small images)
+ * @param  ?string $original_filename Original filename of image (null: unknown)
  * @return URLPATH The URL to the thumbnail
  */
-function _ensure_thumbnail(string $full_url, string $thumb_url, string $thumb_dir, string $table, int $id, string $image_field_name = 'thumb_url', ?int $thumb_width = null, bool $only_make_smaller = false) : string
+function _ensure_thumbnail(string $full_url, string $thumb_url, string $thumb_dir, string $table, int $id, string $image_field_name = 'thumb_url', ?int $thumb_width = null, bool $only_make_smaller = false, ?string $original_filename = null) : string
 {
     if ($thumb_width === null) {
         $thumb_width = intval(get_option('thumb_width'));
@@ -45,7 +46,13 @@ function _ensure_thumbnail(string $full_url, string $thumb_url, string $thumb_di
         $thumb_url = $full_url;
     } else {
         require_code('urls2');
-        list($thumb_path, $thumb_url) = find_unique_path('uploads/' . $thumb_dir . '_thumbs', rawurldecode(basename($full_url)), true);
+        if ($original_filename === null) {
+            $original_filename = rawurldecode(basename($full_url));
+        }
+        if (!is_image($original_filename, IMAGE_CRITERIA_GD_WRITE | IMAGE_CRITERIA_WEBSAFE)) {
+            $original_filename .= '.png';
+        }
+        list($thumb_path, $thumb_url) = find_unique_path('uploads/' . $thumb_dir . '_thumbs', $original_filename, true);
     }
 
     // Update database

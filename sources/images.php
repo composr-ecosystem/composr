@@ -315,9 +315,10 @@ function do_image_thumb(string $url, $caption = '', bool $js_tooltip = false, bo
  * @param  ID_TEXT $image_field_name The name of the table field where thumbnails are saved
  * @param  ?integer $thumb_width The thumbnail width to use (null: default)
  * @param  boolean $only_make_smaller Whether to apply a 'never make the image bigger' rule for thumbnail creation (would affect very small images)
+ * @param  ?string $original_filename Original filename of image (null: unknown)
  * @return URLPATH The URL to the thumbnail
  */
-function ensure_thumbnail(string $full_url, string $thumb_url, string $thumb_dir, string $table, int $id, string $image_field_name = 'thumb_url', ?int $thumb_width = null, bool $only_make_smaller = false) : string
+function ensure_thumbnail(string $full_url, string $thumb_url, string $thumb_dir, string $table, int $id, string $image_field_name = 'thumb_url', ?int $thumb_width = null, bool $only_make_smaller = false, ?string $original_filename = null) : string
 {
     if ($full_url == $thumb_url) {
         // Special case
@@ -366,7 +367,7 @@ function ensure_thumbnail(string $full_url, string $thumb_url, string $thumb_dir
 
     // Do a full regeneration and resave
     require_code('images2');
-    return _ensure_thumbnail($full_url, $thumb_url, $thumb_dir, $table, $id, $image_field_name, $thumb_width, $only_make_smaller);
+    return _ensure_thumbnail($full_url, $thumb_url, $thumb_dir, $table, $id, $image_field_name, $thumb_width, $only_make_smaller, $original_filename);
 }
 
 /**

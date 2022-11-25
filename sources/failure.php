@@ -387,7 +387,7 @@ function _sanitise_error_msg(string $text) : string
  */
 function _generic_exit($text, string $template, ?bool $support_match_key_messages = false, bool $log_error = false, ?int $http_status = null, ?object $title = null, ?string $image_url = null)
 {
-    if (($template != 'FATAL_SCREEN') && ((get_param_integer('keep_fatalistic', 0) != 0) || (running_script('commandr')))) {
+    if (($template == 'WARN_SCREEN') && ((get_param_integer('keep_fatalistic', 0) != 0) || (running_script('commandr')))) {
         _generic_exit($text, 'FATAL_SCREEN', false, $log_error, $http_status);
     }
 

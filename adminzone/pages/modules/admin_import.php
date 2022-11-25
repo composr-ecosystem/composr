@@ -382,7 +382,7 @@ class Module_admin_import
             $db_table_prefix = $session_row[0]['imp_db_table_prefix'];
             $refresh_time = $session_row[0]['imp_refresh_time'];
         } else {
-            $old_base_dir = get_file_base() . '/old';
+            $old_base_dir = get_param_string('keep_import_tick_all', get_file_base() . '/old');
             $db_host = 'localhost';
             $db_name = get_db_site();
             $db_user = get_db_site_user();
@@ -518,6 +518,7 @@ class Module_admin_import
         }
 
         // Build importer-specific list of input types to select from
+        $check_all = (get_param_string('keep_import_tick_all', '') != '');
         $_import_list = $info['import'];
         $_import_list_2 = [];
         foreach ($_import_list as $import) {
@@ -547,14 +548,14 @@ class Module_admin_import
             if (array_key_exists($import, $parts_done)) {
                 $import_list->attach(do_template('IMPORT_ACTION_LINE', [
                     '_GUID' => '887770aad4269b74fdf11d09f4ab4fa3',
-                    'CHECKED' => false,
+                    'CHECKED' => $check_all,
                     'DISABLED' => true,
                     'NAME' => 'import_' . $import,
                     'TEXT' => $text,
                     'ADVANCED_URL' => $info['supports_advanced_import'] ? build_url(['page' => '_SELF', 'type' => 'advanced_hook', 'session' => $session, 'content_type' => $import, 'importer' => $importer], '_SELF') : new Tempcode(),
                 ]));
             } else {
-                $checked = ($just === null) && ($first);
+                $checked = ($just === null) && ($first) || ($check_all);
                 $import_list->attach(do_template('IMPORT_ACTION_LINE', [
                     '_GUID' => 'f2215115f920200a0a1ba6bc776ad945',
                     'CHECKED' => $checked,
@@ -574,7 +575,29 @@ class Module_admin_import
             $skip_hidden[] = 'import_' . $import;
         }
 
-        $message = array_key_exists('message', $info) ? $info['message'] : '';
+        $tasks = array_key_exists('final_tasks', $info) ? $info['final_tasks'] : [];
+        if (!empty($tasks)) {
+            require_code('tasks');
+
+            $done_all = true;
+            foreach ($tasks as $task) {
+                list($task_hook, $task_label, $task_table, $task_max_row_count) = $task;
+
+                if ($GLOBALS['FORUM_DB']->query_select_value($task_table, 'COUNT(*)') <= $task_max_row_count) {
+                    call_user_func_array__long_task($task_label, null, $task_hook, [], false, true);
+                } else {
+                    $done_all = false;
+                }
+            }
+            if (!$done_all) {
+                // We only show final_message if we could not do all tasks
+                $message = array_key_exists('final_message', $info) ? $info['final_message'] : '';
+            } else {
+                $message = '';
+            }
+        } else {
+            $message = array_key_exists('final_message', $info) ? $info['final_message'] : '';
+        }
 
         if (count($parts_done) == count($_import_list_2)) {
             inform_exit(do_lang_tempcode(($message === '') ? '_IMPORT_ALL_FINISHED' : 'IMPORT_ALL_FINISHED', $message));

@@ -7255,6 +7255,8 @@ a[title="{!VIRTUAL_ROOT}"]:hover {
 
 .overlay img.lightbox-image {
 	display: block;
+	max-width: 100%;
+	height: auto;
 }
 
 .overlay .previous-button,

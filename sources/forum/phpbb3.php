@@ -167,6 +167,106 @@ function _hash_crypt_private(string $password, string $setting, string &$itoa64)
 }
 
 /**
+ * Cleanup a phpBB post to match Comcode.
+ * Handles phpBB's special post markup.
+ *
+ * @param  string $text The post
+ * @param  ?array $attach_ids List of attachment IDs (null: do not include attachments)
+ * @return string Cleaned post
+ */
+function _phpbb3_post_text_to_comcode(string $text, ?array $attach_ids = null) : string
+{
+    /*
+    <t>                                         outer tag, no nested tags
+    <r>                                         outer tag, has nested tags
+    <s>                                         start bbcode tag
+    <e>                                         end bbcode tag
+    <E>                                         emoticon
+    <ATTACHMENT filename="..." index="...">     attachment
+    */
+
+    $attach_ids_used = [];
+
+    $comcode = '';
+    $xml_tag_stack = [];
+    $len = strlen($text);
+    $matches = [];
+    $emoticons = array_keys($GLOBALS['FORUM_DRIVER']->find_emoticons());
+    for ($i = 0; $i < $len; $i++) {
+        $c = $text[$i];
+        if (($c == '<') && (preg_match('#^<(/?)(\w+)(\s[^<>]*)?' . '>#', substr($text, $i), $matches) != 0)) {
+            $upcoming_tag = $matches[2];
+            if ($matches[1] == '/') {
+                // Closing
+                if (array_peek($xml_tag_stack) == $upcoming_tag) {
+                    array_pop($xml_tag_stack);
+                }
+            } else {
+                // See if we need to remap an attachment tag
+                $matches2 = [];
+                if (($upcoming_tag == 'ATTACHMENT') && (preg_match('#^<ATTACHMENT[^<>]*><s>\[attachment=(\d+)\]</s>.*?<e>\[/attachment\]</e></ATTACHMENT>#', substr($text, $i), $matches2) != 0)) {
+                    $index = intval($matches2[1]);
+                    if (($attach_ids !== null) && (isset($attach_ids[$index]))) {
+                        $comcode .= '[attachment]' . strval($attach_ids[$index]) . '[/attachment]';
+                        $attach_ids_used[] = $attach_ids[$index];
+                    }
+                    $i += strlen($matches2[0]) - 1;
+                    continue;
+                }
+
+                array_push($xml_tag_stack, $matches[2]);
+            }
+
+            $i += strlen($matches[0]) - 1;
+        } else {
+            if (!in_array('E', $xml_tag_stack)) {
+                // See if we need to hide an emoticon, because an emoticon appears without it being marked up as one
+                foreach ($emoticons as $emoticon) {
+                    if (substr($text, $i, strlen($emoticon)) == $emoticon) {
+                        $comcode .= '[semihtml]' . $emoticon . '[/semihtml]';
+                        $i += strlen($emoticon) - 1;
+                        continue 2;
+                    }
+                }
+            }
+
+            if ($c == '[') {
+                if (substr($text, $i, 2) != '[/') {
+                    // See if we need to hide a start tag
+                    if (!in_array('s', $xml_tag_stack)) {
+                        $comcode .= '[semihtml]&#91;[/semihtml]';
+                        continue;
+                    }
+                } else {
+                    // See if we need to hide an end tag
+                    if (!in_array('e', $xml_tag_stack)) {
+                        $comcode .= '[semihtml]&#91;[/semihtml]';
+                        continue;
+                    }
+                }
+            }
+
+            $comcode .= $c;
+        }
+    }
+
+    // Append any remaining attachments
+    if ($attach_ids !== null) {
+        foreach ($attach_ids as $attach_id) {
+            if (($attach_id !== null) && (!in_array($attach_id, $attach_ids_used))) {
+                $comcode .= '[attachment]' . strval($attach_id) . '[/attachment]';
+            }
+        }
+    }
+
+    $comcode = preg_replace('#\[size="?(\d+)"?\]#i', '[size="${1}%"]', $comcode);
+
+    $comcode = str_replace('{', '\{', $comcode);
+
+    return $comcode;
+}
+
+/**
  * Forum driver class.
  *
  * @package core_forum_drivers
@@ -768,7 +868,7 @@ class Forum_driver_phpbb3 extends Forum_driver_base
                 $temp['title'] = '';
             }
             push_lax_comcode(true);
-            $temp['message'] = comcode_to_tempcode($this->_cleanup_post($myrow['bbcode_uid'], $myrow['post_text']), $myrow['poster_id']);
+            $temp['message'] = comcode_to_tempcode(_phpbb3_post_text_to_comcode($myrow['post_text']), $myrow['poster_id']);
             pop_lax_comcode();
             $temp['member'] = $myrow['poster_id'];
             $temp['date'] = $myrow['post_time'];
@@ -932,7 +1032,7 @@ class Forum_driver_phpbb3 extends Forum_driver_base
                 $out[$i]['firsttitle'] = $fp_rows[0]['post_subject'];
                 if ($show_first_posts) {
                     push_lax_comcode(true);
-                    $out[$i]['firstpost'] = comcode_to_tempcode($this->_cleanup_post($fp_rows[0]['bbcode_uid'], $fp_rows[0]['post_text']), $fp_rows[0]['poster_id']);
+                    $out[$i]['firstpost'] = comcode_to_tempcode(_phpbb3_post_text_to_comcode($fp_rows[0]['post_text']), $fp_rows[0]['poster_id']);
                     pop_lax_comcode();
                 }
 
@@ -945,24 +1045,6 @@ class Forum_driver_phpbb3 extends Forum_driver_base
             return $out;
         }
         return null;
-    }
-
-    /**
-     * Cleanup a post to match Comcode.
-     *
-     * @param  string $uid Bbcode embedded UID (which we strip)
-     * @param  string $text The post
-     * @return string Cleaned post
-     */
-    protected function _cleanup_post(string $uid, string $text) : string
-    {
-        if ($uid != '') {
-            $text = str_replace(':' . $uid, '', $text);
-        }
-        $text = preg_replace('#<!-- s([^\s]*) --><img src="\{SMILIES_PATH\}/[^"]*" alt="([^\s]*)" title="[^"]*" /><!-- s([^\s]*) -->#U', '${1}', $text);
-        $text = preg_replace('#\[(/?\w+):[^\]]*\]#', '[${1}]', $text);
-        $text = $this->filter_forum_text($text, true);
-        return html_entity_decode($text, ENT_QUOTES);
     }
 
     /**
@@ -1597,25 +1679,5 @@ class Forum_driver_phpbb3 extends Forum_driver_base
     {
         $row = $this->get_member_row($member);
         return ($row === null) ? null : $row[$field];
-    }
-
-    /**
-     * Clean up forum-specific syntax for use in the software.
-     *
-     * @param  string $text The text to filter
-     * @param  boolean $semihtml Whether to encapsulate the text in a semihtml Comcode tag if one does not already exist
-     * @return string The filtered text
-     */
-    public function filter_forum_text(string $text, bool $semihtml = false) : string
-    {
-        $out = '';
-        $parsed_text = cms_strip_tags($text, '<t>,<r>,<e>,<ATTACHMENT>,<s>,<attachment>', false);
-        if (($semihtml) && (strpos($text, '[semihtml]') === false) && (strpos($text, '[html]') === false)) {
-            $out = '[semihtml]' . $parsed_text . '[/semihtml]';
-        } else {
-            $out = $parsed_text;
-        }
-
-        return $out;
     }
 }

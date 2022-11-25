@@ -773,6 +773,7 @@ The 'keep' parameters available are:
  - [tt]keep_check_backdoor_ip_dns[/tt] -- set this to '1' to check against hostnames in the [tt]backdoor_ip[/tt] setting
  - [tt]keep_timer_display[/tt] -- set this to '1' if you want quiz timers to show in the quiz module, even to users with the bypass_quiz_timer privilege
  - [tt]keep_expand_sitemap[/tt] -- set this to '1' for all nodes of a sitemap menu to be expanded, with no expand/contract icons (useful for mass-opening all pages on the Sitemap)
+ - [tt]keep_import_tick_all[/tt] -- set this to a base directory to import and it will auto-populate that directory and make the importer pre-tick (check) all the import types, for fast import testing of smaller databases
 
 The following 'keep' parameters have interface triggers, but are also handy for manual activation:
  - [tt]keep_markers[/tt] -- set this to '1' if you want template start/end markers to be output in the page HTML source when viewed in Composr

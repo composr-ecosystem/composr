@@ -84,9 +84,10 @@ class Hook_media_rendering_image_websafe
      * @param  boolean $as_admin Whether there are admin privileges, to render dangerous media types
      * @param  ?MEMBER $source_member Member to run as (null: current member)
      * @param  ?URLPATH $url_direct_filesystem Direct URL (not via a script) (null: just use the normal URL)
+     * @param  ?string $original_filename Originally filename to display as a link caption where appropriate (null: use $url_safe)
      * @return Tempcode Rendered version
      */
-    public function render($url, $url_safe, array $attributes, bool $as_admin = false, ?int $source_member = null, ?string $url_direct_filesystem = null) : object
+    public function render($url, $url_safe, array $attributes, bool $as_admin = false, ?int $source_member = null, ?string $url_direct_filesystem = null, ?string $original_filename = null) : object
     {
         $_url = is_object($url) ? $url->evaluate() : $url;
         $_url_safe = is_object($url_safe) ? $url_safe->evaluate() : $url_safe;
@@ -122,6 +123,9 @@ class Hook_media_rendering_image_websafe
 
             $new_name = strval($thumb_box_width) . '__' . url_to_filename($_url_safe);
             require_code('images');
+            if (!is_image($new_name, IMAGE_CRITERIA_GD_WRITE | IMAGE_CRITERIA_WEBSAFE)) {
+                $new_name .= '.png';
+            }
             $file_thumb = get_custom_file_base() . '/uploads/auto_thumbs/' . $new_name;
             if (!file_exists($file_thumb)) {
                 $attributes['thumb_url'] = convert_image($url_direct_filesystem, $file_thumb, $auto_box_width ? null : $thumb_box_width, $auto_box_height ? null : $thumb_box_height, ($auto_box_width && $auto_box_height) ? $thumb_box_width : null, false);

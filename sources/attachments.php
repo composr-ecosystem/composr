@@ -47,7 +47,7 @@ function render_attachment(string $tag, array $attributes, array $attachment_row
 
     // Make sure formal thumbnail still exists / create if missing
     if (is_image($attachment_row['a_original_filename'], IMAGE_CRITERIA_WEBSAFE | IMAGE_CRITERIA_GD_READ | IMAGE_CRITERIA_GD_WRITE, has_privilege($source_member, 'comcode_dangerous'))) {
-        $attachment_row['a_thumb_url'] = ensure_thumbnail($attachment_row['a_url'], $attachment_row['a_thumb_url'], 'attachments', 'attachments', $attachment_row['id'], 'a_thumb_url', null, true);
+        $attachment_row['a_thumb_url'] = ensure_thumbnail($attachment_row['a_url'], $attachment_row['a_thumb_url'], 'attachments', 'attachments', $attachment_row['id'], 'a_thumb_url', null, true, $attachment_row['a_original_filename']);
     }
 
     // Copy in some standardised media details from what we know by other means (i.e. not coming in as Comcode-attributes)

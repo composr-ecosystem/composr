@@ -86,9 +86,16 @@ class Hook_import_vb3
            'logs' => ['cns_members', 'cns_posts'],
            'calendar' => ['cns_members'],
         ];
+
         $_cleanup_url = build_url(['page' => 'admin_cleanup'], get_module_zone('admin_cleanup'));
         $cleanup_url = $_cleanup_url->evaluate();
-        $info['message'] = (get_param_string('type', 'browse') != 'import' && get_param_string('type', 'browse') != 'hook') ? new Tempcode() : do_lang_tempcode('FORUM_CACHE_CLEAR', escape_html($cleanup_url));
+        $info['final_message'] = do_lang_tempcode('FORUM_CACHE_CLEAR', escape_html($cleanup_url));
+
+        $info['final_tasks'] = [
+            ['cns_topics_recache', do_lang('CACHE_TOPICS'), 'f_topics', 100],
+            ['cns_recache', do_lang('CACHE_FORUMS'), 'f_topics', 100],
+            ['cns_members_recache', do_lang('CACHE_MEMBERS'), 'f_members', 100],
+        ];
 
         return $info;
     }
@@ -484,7 +491,7 @@ class Hook_import_vb3
                         if (array_key_exists(0, $avatar_rows)) {
                             $avatar_row = $avatar_rows[0];
                             $relpath = rawurldecode($avatar_row['avatarpath']);
-                            if ((file_exists(get_custom_file_base() . '/uploads/cns_avatars/' . basename($relpath))) || (@rename($file_base . '/uploads/' . $setting . $relpath, get_custom_file_base() . '/uploads/cns_avatars/' . basename($relpath)))) {
+                            if ((file_exists(get_custom_file_base() . '/uploads/cns_avatars/' . basename($relpath))) || (@copy($file_base . '/uploads/' . $setting . $relpath, get_custom_file_base() . '/uploads/cns_avatars/' . basename($relpath)))) {
                                 $avatar_url = 'uploads/cns_avatars/' . basename($relpath);
                                 sync_file(get_custom_file_base() . '/' . $avatar_url);
                             }

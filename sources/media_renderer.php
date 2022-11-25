@@ -237,7 +237,7 @@ function render_media_url($url, $url_safe, array $attributes, bool $as_admin = f
     }
 
     $ob = object_factory('Hook_media_rendering_' . filter_naughty_harsh($hook));
-    $ret = $ob->render($url, $url_safe, $attributes, $as_admin, $source_member, $url_to_scan_against);
+    $ret = $ob->render($url, $url_safe, $attributes, $as_admin, $source_member, $url_to_scan_against, $original_filename);
 
     if ((array_key_exists('float', $attributes)) && ($hook != 'image_websafe')) {
         $ret = do_template('FLOATER', ['_GUID' => '26410f89305c16ae9cb17dd02a4a7999', 'FLOAT' => $attributes['float'], 'CONTENT' => $ret]);
