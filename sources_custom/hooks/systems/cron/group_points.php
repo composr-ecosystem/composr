@@ -77,7 +77,7 @@ class Hook_cron_group_points
                     do {
                         $members = $GLOBALS['FORUM_DRIVER']->member_group_query([$group_id], 100, $start);
                         foreach ($members as $member_row) {
-                            $member_id = $GLOBALS['FORUM_DRIVER']->mrow_id($member_row);
+                            $member_id = $GLOBALS['FORUM_DRIVER']->mrow_member_id($member_row);
                             points_credit_member($member_id, 'Being in the ' . $group_name . ' usergroup', $points['p_points_per_month'], 0, true, 0, 'usergroup', 'group_points', strval($group_id));
                         }
                         $start += 100;

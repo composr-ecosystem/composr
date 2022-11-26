@@ -1569,7 +1569,7 @@ abstract class Hook_notification__Staff extends Hook_Notification
         if ($to_member_ids !== null) {
             $new_rows = [];
             foreach ($rows as $row) {
-                if (in_array($GLOBALS['FORUM_DRIVER']->mrow_id($row), $to_member_ids)) {
+                if (in_array($GLOBALS['FORUM_DRIVER']->mrow_member_id($row), $to_member_ids)) {
                     $new_rows[] = $row;
                 }
             }
@@ -1577,10 +1577,10 @@ abstract class Hook_notification__Staff extends Hook_Notification
         }
         $new_rows = [];
         foreach ($rows as $row) {
-            $test = notifications_setting($only_if_enabled_on__notification_code, $only_if_enabled_on__category, $GLOBALS['FORUM_DRIVER']->mrow_id($row));
+            $test = notifications_setting($only_if_enabled_on__notification_code, $only_if_enabled_on__category, $GLOBALS['FORUM_DRIVER']->mrow_member_id($row));
 
             if ($test != A_NA) {
-                $new_rows[$GLOBALS['FORUM_DRIVER']->mrow_id($row)] = $test;
+                $new_rows[$GLOBALS['FORUM_DRIVER']->mrow_member_id($row)] = $test;
             }
         }
 

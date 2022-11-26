@@ -62,7 +62,7 @@ class Hook_cron_points_posts
         do {
             $rows = $GLOBALS['FORUM_DRIVER']->get_next_members($member_id, 100);
             foreach ($rows as $row) {
-                $member_id = $GLOBALS['FORUM_DRIVER']->mrow_id($row);
+                $member_id = $GLOBALS['FORUM_DRIVER']->mrow_member_id($row);
 
                 $_prev_count = get_value('points_post__' . strval($member_id), '0', true);
                 $cur_count = $GLOBALS['FORUM_DRIVER']->get_post_count($member_id);

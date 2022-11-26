@@ -126,7 +126,7 @@ class Module_login
 
             $username = post_param_string('username', false, INPUT_FILTER_DEFAULT_POST & ~INPUT_FILTER_TRUSTED_SITES | INPUT_FILTER_TRIMMED);
 
-            $feedback = $GLOBALS['FORUM_DRIVER']->forum_authorise_login($username, null, $GLOBALS['FORUM_DRIVER']->password_hash(post_param_string('password', false, INPUT_FILTER_PASSWORD), $username), post_param_string('password', false, INPUT_FILTER_POST_IDENTIFIER));
+            $feedback = $GLOBALS['FORUM_DRIVER']->authorise_login($username, null, $GLOBALS['FORUM_DRIVER']->password_hash(post_param_string('password', false, INPUT_FILTER_PASSWORD), $username), post_param_string('password', false, INPUT_FILTER_POST_IDENTIFIER));
             if ($feedback['id'] !== null) {
                 $this->title = get_screen_title('LOGGED_IN');
             } else {

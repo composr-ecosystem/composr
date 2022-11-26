@@ -321,12 +321,12 @@ class Forum_driver_phpbb3 extends Forum_driver_base
     /**
      * Attempt to to find the member's language from their forum profile. It converts between language-identifiers using a map (lang/map.ini).
      *
-     * @param  MEMBER $member The member who's language needs to be fetched
+     * @param  MEMBER $member_id The member who's language needs to be fetched
      * @return ?LANGUAGE_NAME The member's language (null: unknown)
      */
-    public function forum_get_lang(int $member) : ?string
+    public function get_lang(int $member_id) : ?string
     {
-        return $this->get_member_row_field($member, 'user_lang');
+        return $this->get_member_row_field($member_id, 'user_lang');
     }
 
     /**
@@ -559,35 +559,35 @@ class Forum_driver_phpbb3 extends Forum_driver_base
     /**
      * Pin a topic.
      *
-     * @param  AUTO_LINK $id The topic ID
+     * @param  AUTO_LINK $topic_id The topic ID
      * @param  boolean $pin True: pin it, False: unpin it
      */
-    public function pin_topic(int $id, bool $pin = true)
+    public function pin_topic(int $topic_id, bool $pin = true)
     {
-        $this->db->query_update('topics', ['topic_type' => $pin ? 1 : 0], ['topic_id' => $id], '', 1);
+        $this->db->query_update('topics', ['topic_type' => $pin ? 1 : 0], ['topic_id' => $topic_id], '', 1);
     }
 
     /**
      * Set a Custom Profile Field's value, if the custom field exists. Only works on specially-named (titled) fields.
      *
-     * @param  MEMBER $member The member ID
+     * @param  MEMBER $member_id The member ID
      * @param  string $field The field name (e.g. "firstname" for the CPF with a title of "cms_firstname")
      * @param  string $value The value
      */
-    public function set_custom_field(int $member, string $field, string $value)
+    public function set_custom_field(int $member_id, string $field, string $value)
     {
-        $this->db->query_update('users', ['cms_' . $field => $value], ['user_id' => $member], '', null, 0, false, true); // Errors suppressed in case field gone missing
+        $this->db->query_update('users', ['cms_' . $field => $value], ['user_id' => $member_id], '', null, 0, false, true); // Errors suppressed in case field gone missing
     }
 
     /**
      * Get Custom Profile Fields values for all 'cms_' prefixed keys.
      *
-     * @param  MEMBER $member The member ID
+     * @param  MEMBER $member_id The member ID
      * @return ?array A map of the Custom Profile Fields, key_suffix=>value (null: no fields)
      */
-    public function get_custom_fields(int $member) : ?array
+    public function get_custom_fields(int $member_id) : ?array
     {
-        $row = $this->get_member_row($member);
+        $row = $this->get_member_row($member_id);
         $out = [];
         foreach ($row as $attribute => $value) {
             if (substr($attribute, 0, 4) == 'cms_') {
@@ -598,27 +598,12 @@ class Forum_driver_phpbb3 extends Forum_driver_base
     }
 
     /**
-     * Get a member row for the member of the given name.
-     *
-     * @param  SHORT_TEXT $name The member name
-     * @return ?array The profile-row (null: not found)
-     */
-    public function get_mrow(string $name) : ?array
-    {
-        $rows = $this->db->query_select('users', ['*'], ['username_clean' => cms_mb_strtolower($name)], '', 1);
-        if (!array_key_exists(0, $rows)) {
-            return null;
-        }
-        return $rows[0];
-    }
-
-    /**
      * From a member row, get the member's primary usergroup.
      *
      * @param  array $r The profile-row
      * @return GROUP The member's primary usergroup
      */
-    public function mrow_group(array $r) : int
+    public function mrow_primary_group(array $r) : int
     {
         $id = $r['user_id'];
 
@@ -633,7 +618,7 @@ class Forum_driver_phpbb3 extends Forum_driver_base
      * @param  array $r The profile-row
      * @return MEMBER The member ID
      */
-    public function mrow_id(array $r) : int
+    public function mrow_member_id(array $r) : int
     {
         return $r['user_id'];
     }
@@ -653,7 +638,7 @@ class Forum_driver_phpbb3 extends Forum_driver_base
      * From a member row, get the member's name.
      *
      * @param  array $r The profile-row
-     * @return string The member name
+     * @return string The username
      */
     public function mrow_username(array $r) : string
     {
@@ -666,7 +651,7 @@ class Forum_driver_phpbb3 extends Forum_driver_base
      * @param  array $r The profile-row
      * @return SHORT_TEXT The member e-mail address
      */
-    public function mrow_email(array $r) : string
+    public function mrow_email_address(array $r) : string
     {
         return $r['user_email'];
     }
@@ -674,10 +659,10 @@ class Forum_driver_phpbb3 extends Forum_driver_base
     /**
      * Get a URL to the specified member's home (control panel).
      *
-     * @param  MEMBER $id The member ID
+     * @param  MEMBER $member_id The member ID
      * @return URLPATH The URL to the members home
      */
-    public function member_home_url(int $id) : string
+    public function member_home_url(int $member_id) : string
     {
         return get_forum_base_url() . '/memberlist.php?mode=editprofile';
     }
@@ -685,11 +670,11 @@ class Forum_driver_phpbb3 extends Forum_driver_base
     /**
      * Get the photo URL for the specified member ID.
      *
-     * @param  MEMBER $member The member ID
+     * @param  MEMBER $member_id The member ID
      * @param  boolean $full Get full photo
      * @return URLPATH The URL (blank: none)
      */
-    public function get_member_photo_url(int $member, bool $full = false) : string
+    public function get_member_photo_url(int $member_id, bool $full = false) : string
     {
         return '';
     }
@@ -697,16 +682,16 @@ class Forum_driver_phpbb3 extends Forum_driver_base
     /**
      * Get the avatar URL for the specified member ID.
      *
-     * @param  MEMBER $member The member ID
+     * @param  MEMBER $member_id The member ID
      * @return URLPATH The URL (blank: none)
      */
-    protected function _get_member_avatar_url(int $member) : string
+    protected function _get_member_avatar_url(int $member_id) : string
     {
         $avatar_gallery_path = $this->db->query_select_value('config', 'config_value', ['config_name' => 'avatar_gallery_path']);
 
-        $type = $this->get_member_row_field($member, 'user_avatar_type');
+        $type = $this->get_member_row_field($member_id, 'user_avatar_type');
 
-        $filename = $this->get_member_row_field($member, 'user_avatar');
+        $filename = $this->get_member_row_field($member_id, 'user_avatar');
 
         switch ($type) {
             case 'avatar.driver.upload':
@@ -716,7 +701,7 @@ class Forum_driver_phpbb3 extends Forum_driver_base
             case 'avatar.driver.local':
                 return get_forum_base_url() . '/' . $avatar_gallery_path . '/' . $filename;
             case 'avatar.driver.gravatar':
-                return find_script('gravatar') . '?id=' . strval($member) . '&from_driver=1';
+                return find_script('gravatar') . '?id=' . strval($member_id) . '&from_driver=1';
         }
         return '';
     }
@@ -724,12 +709,12 @@ class Forum_driver_phpbb3 extends Forum_driver_base
     /**
      * Get a URL to the specified member's profile.
      *
-     * @param  MEMBER $id The member ID
+     * @param  MEMBER $member_id The member ID
      * @return URLPATH The URL to the member profile
      */
-    protected function _member_profile_url(int $id) : string
+    protected function _member_profile_url(int $member_id) : string
     {
-        return get_forum_base_url() . '/memberlist.php?mode=viewprofile&u=' . strval($id);
+        return get_forum_base_url() . '/memberlist.php?mode=viewprofile&u=' . strval($member_id);
     }
 
     /**
@@ -755,23 +740,23 @@ class Forum_driver_phpbb3 extends Forum_driver_base
     /**
      * Get a URL to send a private/personal message to the given member.
      *
-     * @param  MEMBER $id The member ID
+     * @param  MEMBER $member_id The member ID
      * @return URLPATH The URL to the private/personal message page
      */
-    protected function _member_pm_url(int $id) : string
+    protected function _member_pm_url(int $member_id) : string
     {
-        return get_forum_base_url() . '/ucp.php?i=pm&mode=compose&u=' . strval($id);
+        return get_forum_base_url() . '/ucp.php?i=pm&mode=compose&u=' . strval($member_id);
     }
 
     /**
      * Get a URL to the specified forum.
      *
-     * @param  integer $id The forum ID
+     * @param  integer $forum_id The forum ID
      * @return URLPATH The URL to the specified forum
      */
-    protected function _forum_url(int $id) : string
+    protected function _forum_url(int $forum_id) : string
     {
-        return get_forum_base_url() . '/viewforum.php?f=' . strval($id);
+        return get_forum_base_url() . '/viewforum.php?f=' . strval($forum_id);
     }
 
     /**
@@ -791,7 +776,7 @@ class Forum_driver_phpbb3 extends Forum_driver_base
      *
      * @param  SHORT_TEXT $forum_name The forum name
      * @param  SHORT_TEXT $topic_identifier The topic identifier (usually <content-type>_<content-id>)
-     * @param  MEMBER $member The member ID
+     * @param  MEMBER $member_id The member ID
      * @param  LONG_TEXT $post_title The post title
      * @param  LONG_TEXT $_post The post content in Comcode format
      * @param  string $content_title The topic title; must be same as content title if this is for a comment topic
@@ -807,7 +792,7 @@ class Forum_driver_phpbb3 extends Forum_driver_base
      * @param  boolean $staff_only Whether the reply is only visible to staff
      * @return array Topic ID (may be null), and whether a hidden post has been made
      */
-    public function make_post_forum_topic(string $forum_name, string $topic_identifier, int $member, string $post_title, string $_post, string $content_title, string $topic_identifier_encapsulation_prefix, ?string $content_url = null, ?int $time = null, ?string $ip = null, ?int $validated = null, ?int $topic_validated = 1, bool $skip_post_checks = false, string $poster_name_if_guest = '', ?int $parent_id = null, bool $staff_only = false) : array
+    public function make_post_forum_topic(string $forum_name, string $topic_identifier, int $member_id, string $post_title, string $_post, string $content_title, string $topic_identifier_encapsulation_prefix, ?string $content_url = null, ?int $time = null, ?string $ip = null, ?int $validated = null, ?int $topic_validated = 1, bool $skip_post_checks = false, string $poster_name_if_guest = '', ?int $parent_id = null, bool $staff_only = false) : array
     {
         $__post = comcode_to_tempcode($_post);
         $post = $__post->evaluate();
@@ -826,11 +811,11 @@ class Forum_driver_phpbb3 extends Forum_driver_base
         $local_ip = '127.0.0.1';
         $is_new = ($topic_id === null);
         if ($is_new) {
-            $map = ['forum_id' => $forum_id, 'topic_title' => $content_title . ', ' . $topic_identifier_encapsulation_prefix . ': #' . $topic_identifier, 'topic_poster' => $member, 'topic_time' => $time, 'topic_views' => 0, 'topic_status' => 0, 'topic_type' => 0, 'topic_first_post_id' => 0, 'topic_last_post_id' => 0, 'topic_moved_id' => 0];
+            $map = ['forum_id' => $forum_id, 'topic_title' => $content_title . ', ' . $topic_identifier_encapsulation_prefix . ': #' . $topic_identifier, 'topic_poster' => $member_id, 'topic_time' => $time, 'topic_views' => 0, 'topic_status' => 0, 'topic_type' => 0, 'topic_first_post_id' => 0, 'topic_last_post_id' => 0, 'topic_moved_id' => 0];
             $topic_id = $this->db->query_insert('topics', $map, true);
 
             $home_link = hyperlink($content_url, $content_title, false, true);
-            $map = ['topic_id' => $topic_id, 'forum_id' => $forum_id, 'poster_id' => -1, 'post_text' => do_lang('SPACER_POST', $home_link->evaluate(), '', '', get_site_default_lang()), 'post_time' => $time, 'poster_ip' => $local_ip, 'post_username' => $this->get_username($member), 'enable_bbcode' => 1, 'enable_smilies' => 1, 'enable_sig' => 1, 'post_edit_time' => 0, 'post_edit_count' => 0];
+            $map = ['topic_id' => $topic_id, 'forum_id' => $forum_id, 'poster_id' => -1, 'post_text' => do_lang('SPACER_POST', $home_link->evaluate(), '', '', get_site_default_lang()), 'post_time' => $time, 'poster_ip' => $local_ip, 'post_username' => $this->get_username($member_id), 'enable_bbcode' => 1, 'enable_smilies' => 1, 'enable_sig' => 1, 'post_edit_time' => 0, 'post_edit_count' => 0];
             $post_id = $this->db->query_insert('posts', $map, true);
             $this->db->query_update('topics', ['topic_first_post_id' => $post_id], ['topic_id' => $topic_id], '', 1);
             $this->db->query('UPDATE ' . $this->db->get_table_prefix() . 'forums SET forum_topics_approved=(forum_topics_approved+1),forum_posts_approved=(forum_posts_approved+1) WHERE forum_id=' . strval($forum_id), 1);
@@ -843,7 +828,7 @@ class Forum_driver_phpbb3 extends Forum_driver_base
             return [$topic_id, false];
         }
 
-        $map = ['topic_id' => $topic_id, 'forum_id' => $forum_id, 'poster_id' => $member, 'post_text' => $post, 'post_time' => $time, 'poster_ip' => $ip, 'post_username' => $this->get_username($member), 'enable_bbcode' => 1, 'enable_smilies' => 1, 'enable_sig' => 1, 'post_edit_time' => 0, 'post_edit_count' => 0];
+        $map = ['topic_id' => $topic_id, 'forum_id' => $forum_id, 'poster_id' => $member_id, 'post_text' => $post, 'post_time' => $time, 'poster_ip' => $ip, 'post_username' => $this->get_username($member_id), 'enable_bbcode' => 1, 'enable_smilies' => 1, 'enable_sig' => 1, 'post_edit_time' => 0, 'post_edit_count' => 0];
         $post_id = $this->db->query_insert('posts', $map, true);
         $this->db->query('UPDATE ' . $this->db->get_table_prefix() . 'forums SET forum_posts_approved=(forum_posts_approved+1), forum_last_post_id=' . strval($post_id) . ' WHERE forum_id=' . strval($forum_id), 1);
         $this->db->query('UPDATE ' . $this->db->get_table_prefix() . 'topics SET topic_posts_approved=(topic_posts_approved+1), topic_last_post_id=' . strval($post_id) . ' WHERE topic_id=' . strval($topic_id), 1);
@@ -894,29 +879,29 @@ class Forum_driver_phpbb3 extends Forum_driver_base
     /**
      * Get a URL to the specified topic ID. Most forums don't require the second parameter, but some do, so it is required in the interface.
      *
-     * @param  integer $id The topic ID
+     * @param  integer $topic_id The topic ID
      * @param  string $forum The forum ID
      * @return URLPATH The URL to the topic
      */
-    public function topic_url(int $id, string $forum) : string
+    public function topic_url(int $topic_id, string $forum) : string
     {
-        return get_forum_base_url() . '/viewtopic.php?t=' . strval($id);
+        return get_forum_base_url() . '/viewtopic.php?t=' . strval($topic_id);
     }
 
     /**
      * Get a URL to the specified post ID.
      *
-     * @param  integer $id The post ID
+     * @param  integer $post_id The post ID
      * @param  ?mixed $forum The forum ID (null: private topic)
      * @return URLPATH The URL to the post
      */
-    public function post_url(int $id, $forum) : string
+    public function post_url(int $post_id, $forum) : string
     {
-        $topic_id = $this->db->query_select_value_if_there('posts', 'tid', ['pid' => $id]);
+        $topic_id = $this->db->query_select_value_if_there('posts', 'tid', ['pid' => $post_id]);
         if ($topic_id === null) {
             return '?';
         }
-        $url = get_forum_base_url() . '/viewtopic.php?t=' . strval($topic_id) . '#' . strval($id);
+        $url = get_forum_base_url() . '/viewtopic.php?t=' . strval($topic_id) . '#' . strval($post_id);
         return $url;
     }
 
@@ -992,7 +977,7 @@ class Forum_driver_phpbb3 extends Forum_driver_base
         $i = 0;
         $firsttime = [];
         $username = [];
-        $memberid = [];
+        $member_id = [];
         $datetimes = [];
         $rs = [];
         while (array_key_exists($i, $rows)) {
@@ -1009,7 +994,7 @@ class Forum_driver_phpbb3 extends Forum_driver_base
             $r2 = $post_rows[0];
 
             $username[$id] = $this->get_username($r2['poster_id']);
-            $memberid[$id] = $r2['poster_id'];
+            $member_id[$id] = $r2['poster_id'];
             $datetimes[$id] = $r2['post_time'];
             $rs[$id] = $r;
 
@@ -1032,7 +1017,7 @@ class Forum_driver_phpbb3 extends Forum_driver_base
                 $out[$i]['firstusername'] = $this->get_username($r['topic_poster']);
                 $out[$i]['lastusername'] = $username[$id];
                 $out[$i]['firstmemberid'] = $r['topic_poster'];
-                $out[$i]['lastmemberid'] = $memberid[$id];
+                $out[$i]['lastmemberid'] = $member_id[$id];
                 $out[$i]['lasttime'] = $datetime;
                 $out[$i]['closed'] = ($r['topic_status'] == 1);
 
@@ -1086,14 +1071,14 @@ class Forum_driver_phpbb3 extends Forum_driver_base
      * Get rows of members before the given one.
      * It cannot be assumed there are no gaps in member IDs, as members may be deleted.
      *
-     * @param  MEMBER $member The member ID to paginate back from
+     * @param  MEMBER $member_id The member ID to paginate back from
      * @param  integer $total Number of members to retrieve
      * @return array Member rows
      */
-    public function get_previous_members(int $member, int $total = 1) : array
+    public function get_previous_members(int $member_id, int $total = 1) : array
     {
         $sql = 'SELECT user_id FROM ' . $this->db->get_table_prefix() . 'users WHERE user_id>0';
-        $sql .= ' AND user_id<' . strval($member);
+        $sql .= ' AND user_id<' . strval($member_id);
         $sql .= ' ORDER BY user_id DESC';
         $rows = $this->db->query($sql, $total);
         return $rows;
@@ -1103,15 +1088,15 @@ class Forum_driver_phpbb3 extends Forum_driver_base
      * Get rows of members after the given one.
      * It cannot be assumed there are no gaps in member IDs, as members may be deleted.
      *
-     * @param  ?MEMBER $member The member ID to increment (null: find the very first members)
+     * @param  ?MEMBER $member_id The member ID to increment (null: find the very first members)
      * @param  integer $total Number of members to retrieve
      * @return array Member rows
      */
-    public function get_next_members(?int $member, int $total = 1) : array
+    public function get_next_members(?int $member_id, int $total = 1) : array
     {
         $sql = 'SELECT user_id FROM ' . $this->db->get_table_prefix() . 'users WHERE user_id>0';
-        if ($member !== null) {
-            $sql .= ' AND user_id>' . strval($member);
+        if ($member_id !== null) {
+            $sql .= ' AND user_id>' . strval($member_id);
         }
         $sql .= ' ORDER BY user_id DESC';
         $rows = $this->db->query($sql, $total);
@@ -1133,34 +1118,34 @@ class Forum_driver_phpbb3 extends Forum_driver_base
      * Get the name relating to the specified member ID.
      * If this returns null, then the member has been deleted. Always take potential null output into account.
      *
-     * @param  MEMBER $member The member ID
-     * @return ?SHORT_TEXT The member name (null: member deleted)
+     * @param  MEMBER $member_id The member ID
+     * @return ?SHORT_TEXT The username (null: member deleted)
      */
-    protected function _get_username(int $member) : ?string
+    protected function _get_username(int $member_id) : ?string
     {
-        return $this->get_member_row_field($member, 'username');
+        return $this->get_member_row_field($member_id, 'username');
     }
 
     /**
      * Get the e-mail address for the specified member ID.
      *
-     * @param  MEMBER $member The member ID
+     * @param  MEMBER $member_id The member ID
      * @return SHORT_TEXT The e-mail address
      */
-    protected function _get_member_email_address(int $member) : string
+    protected function _get_member_email_address(int $member_id) : string
     {
-        return $this->get_member_row_field($member, 'user_email');
+        return $this->get_member_row_field($member_id, 'user_email');
     }
 
     /**
      * Find if this member may have e-mails sent to them.
      *
-     * @param  MEMBER $member The member ID
+     * @param  MEMBER $member_id The member ID
      * @return boolean Whether the member may have e-mails sent to them
      */
-    public function get_member_email_allowed(int $member) : bool
+    public function get_member_email_allowed(int $member_id) : bool
     {
-        $v = $this->get_member_row_field($member, 'user_allow_viewemail');
+        $v = $this->get_member_row_field($member_id, 'user_allow_viewemail');
         if ($v == 1) {
             return true;
         }
@@ -1170,12 +1155,12 @@ class Forum_driver_phpbb3 extends Forum_driver_base
     /**
      * Get the timestamp of a member's join date.
      *
-     * @param  MEMBER $member The member ID
+     * @param  MEMBER $member_id The member ID
      * @return TIME The timestamp
      */
-    public function get_member_join_timestamp(int $member) : int
+    public function get_member_join_timestamp(int $member_id) : int
     {
-        return $this->get_member_row_field($member, 'user_regdate');
+        return $this->get_member_row_field($member_id, 'user_regdate');
     }
 
     /**
@@ -1195,12 +1180,12 @@ class Forum_driver_phpbb3 extends Forum_driver_base
     /**
      * Get the given member's post count.
      *
-     * @param  MEMBER $member The member ID
+     * @param  MEMBER $member_id The member ID
      * @return integer The post count
      */
-    public function get_post_count(int $member) : int
+    public function get_post_count(int $member_id) : int
     {
-        $c = $this->get_member_row_field($member, 'user_posts');
+        $c = $this->get_member_row_field($member_id, 'user_posts');
         if ($c === null) {
             $c = 0;
         }
@@ -1210,24 +1195,24 @@ class Forum_driver_phpbb3 extends Forum_driver_base
     /**
      * Get the given member's topic count.
      *
-     * @param  MEMBER $member The member ID
+     * @param  MEMBER $member_id The member ID
      * @return integer The topic count
      */
-    public function get_topic_count(int $member) : int
+    public function get_topic_count(int $member_id) : int
     {
-        return $this->db->query_select_value('topics', 'COUNT(*)', ['topic_poster' => $member]);
+        return $this->db->query_select_value('topics', 'COUNT(*)', ['topic_poster' => $member_id]);
     }
 
     /**
      * Find out if the given member ID is banned.
      *
-     * @param  MEMBER $member The member ID
+     * @param  MEMBER $member_id The member ID
      * @param  ?ID_TEXT $reasoned_ban Ban reasoning returned by reference (null: none)
      * @return boolean Whether the member is banned
      */
-    public function is_banned(int $member, ?string &$reasoned_ban = null) : bool
+    public function is_banned(int $member_id, ?string &$reasoned_ban = null) : bool
     {
-        $reasoned_ban = $this->db->query_select_value_if_there('banlist', 'ban_give_reason', ['ban_userid' => $member]);
+        $reasoned_ban = $this->db->query_select_value_if_there('banlist', 'ban_give_reason', ['ban_userid' => $member_id]);
         if ($reasoned_ban !== null) {
             return true;
         }
@@ -1288,10 +1273,10 @@ class Forum_driver_phpbb3 extends Forum_driver_base
      * The themes/map.ini file functions to provide this mapping between forum themes, and Composr themes, and has a slightly different meaning for different forum drivers. For example, some drivers map the forum themes theme directory to the Composr theme name, while others made the humanly readable name.
      *
      * @param  boolean $skip_member_specific Whether to avoid member-specific lookup (i.e. find via what forum theme is currently configured as the default)
-     * @param  ?MEMBER $member The member to find for (null: current member)
+     * @param  ?MEMBER $member_id The member to find for (null: current member)
      * @return ID_TEXT The theme
      */
-    public function _get_theme(bool $skip_member_specific = false, ?int $member = null) : string
+    public function _get_theme(bool $skip_member_specific = false, ?int $member_id = null) : string
     {
         $def = '';
 
@@ -1301,11 +1286,11 @@ class Forum_driver_phpbb3 extends Forum_driver_base
 
         // Work out
         if (!$skip_member_specific) {
-            if ($member === null) {
-                $member = get_member();
+            if ($member_id === null) {
+                $member_id = get_member();
             }
-            if ($member > 0) {
-                $skin = $this->get_member_row_field($member, 'user_style');
+            if ($member_id > 0) {
+                $skin = $this->get_member_row_field($member_id, 'user_style');
             } else {
                 $skin = 0;
             }
@@ -1336,23 +1321,23 @@ class Forum_driver_phpbb3 extends Forum_driver_base
     /**
      * Find if the specified member ID is marked as staff or not.
      *
-     * @param  MEMBER $member The member ID
+     * @param  MEMBER $member_id The member ID
      * @return boolean Whether the member is staff
      */
-    protected function _is_staff(int $member) : bool
+    protected function _is_staff(int $member_id) : bool
     {
-        return !empty(array_intersect($this->get_members_groups($member), $this->get_moderator_groups()));
+        return !empty(array_intersect($this->get_members_groups($member_id), $this->get_moderator_groups()));
     }
 
     /**
      * Find if the specified member ID is marked as a super admin or not.
      *
-     * @param  MEMBER $member The member ID
+     * @param  MEMBER $member_id The member ID
      * @return boolean Whether the member is a super admin
      */
-    protected function _is_super_admin(int $member) : bool
+    protected function _is_super_admin(int $member_id) : bool
     {
-        return !empty(array_intersect($this->get_members_groups($member), $this->get_super_admin_groups()));
+        return !empty(array_intersect($this->get_members_groups($member_id), $this->get_super_admin_groups()));
     }
 
     /**
@@ -1416,16 +1401,16 @@ class Forum_driver_phpbb3 extends Forum_driver_base
     /**
      * Get a member ID from the given member's username.
      *
-     * @param  SHORT_TEXT $name The member name
+     * @param  SHORT_TEXT $username The username
      * @return ?MEMBER The member ID (null: not found)
      */
-    public function get_member_from_username(string $name) : ?int
+    public function get_member_from_username(string $username) : ?int
     {
-        if ($name == do_lang('GUEST')) {
+        if ($username == do_lang('GUEST')) {
             return $this->get_guest_id();
         }
 
-        return $this->db->query_select_value_if_there('users', 'user_id', ['username_clean' => cms_mb_strtolower($name)]);
+        return $this->db->query_select_value_if_there('users', 'user_id', ['username_clean' => cms_mb_strtolower($username)]);
     }
 
     /**
@@ -1484,15 +1469,15 @@ class Forum_driver_phpbb3 extends Forum_driver_base
     /**
      * Get the forum usergroup relating to the specified member ID.
      *
-     * @param  MEMBER $member The member ID
+     * @param  MEMBER $member_id The member ID
      * @return array The array of forum usergroups
      */
-    protected function _get_members_groups(int $member) : array
+    protected function _get_members_groups(int $member_id) : array
     {
-        //if ($member == $this->get_guest_id()) return [1]; May not hold true
+        //if ($member_id == $this->get_guest_id()) return [1]; May not hold true
 
-        $groups = collapse_1d_complexity('group_id', $this->db->query_select('user_group', ['group_id'], ['user_pending' => 0, 'user_id' => $member]));
-        $groups[] = $this->get_member_row_field($member, 'group_id');
+        $groups = collapse_1d_complexity('group_id', $this->db->query_select('user_group', ['group_id'], ['user_pending' => 0, 'user_id' => $member_id]));
+        $groups[] = $this->get_member_row_field($member_id, 'group_id');
         if (count($groups) <= 1) {
             $all_groups = $this->get_usergroup_list();
             if ((empty($groups)) || (!array_key_exists($groups[0], $all_groups))) {
@@ -1503,36 +1488,13 @@ class Forum_driver_phpbb3 extends Forum_driver_base
     }
 
     /**
-     * The hashing algorithm of this forum driver.
-     *
-     * @param  string $password The password to hash, although the forum driver may internally call this function with another meaning to this parameter
-     * @param  string $key The string converted member-ID generally, although the forum driver may internally call this function with another meaning to this parameter
-     * @param  boolean $just_first Whether to just get the primary hashing mechanism (the meaning of this depends on the forum drivers but may mean a legacy hashing mechanism or one of two alternative mechanisms)
-     * @return string The hashed data
-     */
-    public function password_hash(string $password, string $key, bool $just_first = false) : string
-    {
-        $itoa64 = './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-        $hash = $GLOBALS['FORUM_DB']->query_select_value_if_there('users', 'user_password', ['username_clean' => cms_mb_strtolower($key)]);
-        if ($hash === null) {
-            return '';
-        }
-
-        $test = _hash_crypt_private($password, $hash, $itoa64);
-        if ($test === false) {
-            return '';
-        }
-        return $test;
-    }
-
-    /**
      * Create a member login cookie.
      *
-     * @param  MEMBER $id The member ID
-     * @param  ?SHORT_TEXT $name The username (null: lookup)
-     * @param  string $password The password
+     * @param  MEMBER $member_id The member ID
+     * @param  ?SHORT_TEXT $username The username (null: lookup)
+     * @param  string $password_raw The password
      */
-    public function forum_create_cookie(int $id, ?string $name, string $password)
+    public function create_login_cookie(int $member_id, ?string $username, string $password_raw)
     {
         $member_cookie_name = get_member_cookie();
         $colon_pos = strpos($member_cookie_name, ':');
@@ -1550,13 +1512,13 @@ class Forum_driver_phpbb3 extends Forum_driver_base
         require_code('crypt');
 
         $hash = substr(get_secure_random_string(), 0, 17);
-        $this->db->query_insert('sessions_keys', ['key_id' => md5($hash), 'user_id' => $id, 'last_ip' => ip2long(get_ip_address()), 'last_login' => time()]);
+        $this->db->query_insert('sessions_keys', ['key_id' => md5($hash), 'user_id' => $member_id, 'last_ip' => ip2long(get_ip_address()), 'last_login' => time()]);
 
         if (substr($member_cookie_name, 0, 5) != 'cms__') {
             $session_id = get_secure_random_string();
             $this->db->query_insert('sessions', [
                 'session_id' => $session_id,
-                'session_user_id' => $id,
+                'session_user_id' => $member_id,
                 'session_forum_id' => 0,
                 'session_last_visit' => time(),
                 'session_start' => time(),
@@ -1567,18 +1529,18 @@ class Forum_driver_phpbb3 extends Forum_driver_base
                 'session_page' => '',
                 'session_viewonline' => 1,
                 'session_autologin' => 1,
-                'session_admin' => $this->_is_super_admin($id),
+                'session_admin' => $this->_is_super_admin($member_id),
             ]);
         } else {
             $session_id = null;
         }
 
-        $cookie = serialize([$real_member_cookie => strval($id), $real_pass_cookie => $hash, $real_session_cookie => $session_id]);
+        $cookie = serialize([$real_member_cookie => strval($member_id), $real_pass_cookie => $hash, $real_session_cookie => $session_id]);
 
         if ($colon_pos !== false) {
             cms_setcookie($base, $cookie);
         } else {
-            cms_setcookie($real_member_cookie, strval($id));
+            cms_setcookie($real_member_cookie, strval($member_id));
             cms_setcookie($real_pass_cookie, $hash);
             if ($session_id !== null) {
                 cms_setcookie($real_session_cookie, $session_id);
@@ -1592,25 +1554,25 @@ class Forum_driver_phpbb3 extends Forum_driver_base
      * Some forums do cookie logins differently, so a Boolean is passed in to indicate whether it is a cookie login.
      *
      * @param  ?SHORT_TEXT $username The member username (null: don't use this in the authentication - but look it up using the ID if needed)
-     * @param  ?MEMBER $member The member ID (null: use $username)
+     * @param  ?MEMBER $member_id The member ID (null: use $username)
      * @param  SHORT_TEXT $password_hashed The md5-hashed password
      * @param  string $password_raw The raw password
      * @param  boolean $cookie_login Whether this is a cookie login, determines how the hashed password is treated for the value passed in
      * @return array A map of 'id' and 'error'. If 'id' is null, an error occurred and 'error' is set
      */
-    public function forum_authorise_login(?string $username, ?int $member, string $password_hashed, string $password_raw, bool $cookie_login = false) : array
+    public function authorise_login(?string $username, ?int $member_id, string $password_hashed, string $password_raw, bool $cookie_login = false) : array
     {
         $out = [];
         $out['id'] = null;
 
-        if ($member === null) {
+        if ($member_id === null) {
             $rows = $this->db->query_select('users', ['*'], ['username_clean' => cms_mb_strtolower($username)], '', 1);
             if (array_key_exists(0, $rows)) {
                 $this->MEMBER_ROWS_CACHED[$rows[0]['user_id']] = $rows[0];
             }
         } else {
             $rows = [];
-            $rows[0] = $this->get_member_row($member);
+            $rows[0] = $this->get_member_row($member_id);
         }
 
         if (!array_key_exists(0, $rows) || $rows[0] === null) { // All hands to lifeboats
@@ -1646,14 +1608,37 @@ class Forum_driver_phpbb3 extends Forum_driver_base
     }
 
     /**
+     * The hashing algorithm of this forum driver.
+     *
+     * @param  string $password_raw The password to hash, although the forum driver may internally call this function with another meaning to this parameter
+     * @param  string $key The string converted member-ID generally, although the forum driver may internally call this function with another meaning to this parameter
+     * @param  boolean $just_first Whether to just get the primary hashing mechanism (the meaning of this depends on the forum drivers but may mean a legacy hashing mechanism or one of two alternative mechanisms)
+     * @return string The hashed data
+     */
+    public function password_hash(string $password_raw, string $key, bool $just_first = false) : string
+    {
+        $itoa64 = './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+        $hash = $GLOBALS['FORUM_DB']->query_select_value_if_there('users', 'user_password', ['username_clean' => cms_mb_strtolower($key)]);
+        if ($hash === null) {
+            return '';
+        }
+
+        $test = _hash_crypt_private($password_raw, $hash, $itoa64);
+        if ($test === false) {
+            return '';
+        }
+        return $test;
+    }
+
+    /**
      * Get a first known IP address of the given member.
      *
-     * @param  MEMBER $member The member ID
+     * @param  MEMBER $member_id The member ID
      * @return IP The IP address
      */
-    public function get_member_ip(int $member) : string
+    public function get_member_ip(int $member_id) : string
     {
-        $ip = $this->db->query_select_value_if_there('posts', 'poster_ip', ['poster_id' => $member]);
+        $ip = $this->db->query_select_value_if_there('posts', 'poster_ip', ['poster_id' => $member_id]);
         if ($ip !== null) {
             return $ip;
         }
@@ -1663,33 +1648,33 @@ class Forum_driver_phpbb3 extends Forum_driver_base
     /**
      * Gets a whole member row from the database.
      *
-     * @param  MEMBER $member The member ID
+     * @param  MEMBER $member_id The member ID
      * @return ?array The member row (null: no such member)
      */
-    public function get_member_row(int $member) : ?array
+    public function get_member_row(int $member_id) : ?array
     {
-        if (array_key_exists($member, $this->MEMBER_ROWS_CACHED)) {
-            return $this->MEMBER_ROWS_CACHED[$member];
+        if (array_key_exists($member_id, $this->MEMBER_ROWS_CACHED)) {
+            return $this->MEMBER_ROWS_CACHED[$member_id];
         }
 
-        $rows = $this->db->query_select('users', ['*'], ['user_id' => $member], '', 1);
+        $rows = $this->db->query_select('users', ['*'], ['user_id' => $member_id], '', 1);
         if (!array_key_exists(0, $rows)) {
             return null;
         }
-        $this->MEMBER_ROWS_CACHED[$member] = $rows[0];
-        return $this->MEMBER_ROWS_CACHED[$member];
+        $this->MEMBER_ROWS_CACHED[$member_id] = $rows[0];
+        return $this->MEMBER_ROWS_CACHED[$member_id];
     }
 
     /**
      * Gets a named field of a member row from the database.
      *
-     * @param  MEMBER $member The member ID
+     * @param  MEMBER $member_id The member ID
      * @param  string $field The field identifier
      * @return mixed The field
      */
-    public function get_member_row_field(int $member, string $field)
+    public function get_member_row_field(int $member_id, string $field)
     {
-        $row = $this->get_member_row($member);
+        $row = $this->get_member_row($member_id);
         return ($row === null) ? null : $row[$field];
     }
 }

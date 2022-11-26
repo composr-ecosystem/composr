@@ -78,7 +78,7 @@ class Hook_cron_stealr
                 $all_members = $GLOBALS['FORUM_DRIVER']->get_top_posters(1000); // Top 1000 is how we define "lots points"
                 $members_points = [];
                 foreach ($all_members as $member) {
-                    $id = $GLOBALS['FORUM_DRIVER']->mrow_id($member);
+                    $id = $GLOBALS['FORUM_DRIVER']->mrow_member_id($member);
                     $signin_time = $member['m_last_visit_time'];
                     $members_points[$signin_time] = ['points' => points_balance($id), 'id' => $id];
                 }
@@ -107,7 +107,7 @@ class Hook_cron_stealr
                 $all_members = $GLOBALS['FORUM_DRIVER']->get_top_posters(100);
                 $members_points = [];
                 foreach ($all_members as $member) {
-                    $id = $GLOBALS['FORUM_DRIVER']->mrow_id($member);
+                    $id = $GLOBALS['FORUM_DRIVER']->mrow_member_id($member);
                     $members_points[$id] = points_balance($id);
                 }
                 arsort($members_points);

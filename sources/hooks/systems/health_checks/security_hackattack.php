@@ -81,7 +81,7 @@ class Hook_health_check_security_hackattack extends Hook_Health_Check
                 $admin_groups = $GLOBALS['FORUM_DRIVER']->get_super_admin_groups();
                 $members = $GLOBALS['FORUM_DRIVER']->member_group_query($admin_groups);
                 foreach ($members as $member) {
-                    $id = $GLOBALS['FORUM_DRIVER']->mrow_id($member);
+                    $id = $GLOBALS['FORUM_DRIVER']->mrow_member_id($member);
                     $username = $GLOBALS['FORUM_DRIVER']->mrow_username($member);
 
                     $countries = [];

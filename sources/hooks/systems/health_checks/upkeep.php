@@ -156,7 +156,7 @@ class Hook_health_check_upkeep extends Hook_Health_Check
         $admin_groups = $GLOBALS['FORUM_DRIVER']->get_super_admin_groups();
         $members = $GLOBALS['FORUM_DRIVER']->member_group_query($admin_groups);
         foreach ($members as $member) {
-            $member_id = $GLOBALS['FORUM_DRIVER']->mrow_id($member);
+            $member_id = $GLOBALS['FORUM_DRIVER']->mrow_member_id($member);
             $last_visit = $GLOBALS['FORUM_DRIVER']->mrow_lastvisit($member);
             $username = $GLOBALS['FORUM_DRIVER']->mrow_username($member);
 

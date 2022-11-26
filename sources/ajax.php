@@ -212,7 +212,7 @@ function namelike_script()
 
                     foreach ($likea as $l) {
                         if (count($names) < 15) {
-                            $names[$GLOBALS['FORUM_DRIVER']->mrow_id($l)] = $GLOBALS['FORUM_DRIVER']->mrow_username($l);
+                            $names[$GLOBALS['FORUM_DRIVER']->mrow_member_id($l)] = $GLOBALS['FORUM_DRIVER']->mrow_username($l);
                         }
                     }
                 }

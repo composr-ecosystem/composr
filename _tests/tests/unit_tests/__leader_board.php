@@ -46,8 +46,8 @@ class __leader_board_test_set extends cms_test_case
         // Award some points in case there are none
         require_code('points2');
         $members = $GLOBALS['FORUM_DRIVER']->get_next_members(null, 2);
-        $this->points_a = points_credit_member($GLOBALS['FORUM_DRIVER']->mrow_id($members[0]), 'leader-board test', 1000000, 0, null, 0, 'unit_test', '', 'leader_board', (time() - 60));
-        $this->points_b = points_credit_member($GLOBALS['FORUM_DRIVER']->mrow_id($members[1]), 'leader-board test', 100000, 0, null, 0, 'unit_test', '', 'leader_board', (time() - 60));
+        $this->points_a = points_credit_member($GLOBALS['FORUM_DRIVER']->mrow_member_id($members[0]), 'leader-board test', 1000000, 0, null, 0, 'unit_test', '', 'leader_board', (time() - 60));
+        $this->points_b = points_credit_member($GLOBALS['FORUM_DRIVER']->mrow_member_id($members[1]), 'leader-board test', 100000, 0, null, 0, 'unit_test', '', 'leader_board', (time() - 60));
         points_flush_runtime_cache();
 
         // Turn on voting power for this test
@@ -445,11 +445,11 @@ class __leader_board_test_set extends cms_test_case
                 $this->assertTrue(false, 'testLeaderBoardUsergroup(): Needs 2 members with unique primary groups to work.');
                 return;
             }
-            $group = $GLOBALS['FORUM_DRIVER']->mrow_group($members[0]);
+            $group = $GLOBALS['FORUM_DRIVER']->mrow_primary_group($members[0]);
             if (!in_array($group, $groups)) {
                 $groups[] = $group;
             }
-            $current_id = $GLOBALS['FORUM_DRIVER']->mrow_id($members[0]);
+            $current_id = $GLOBALS['FORUM_DRIVER']->mrow_member_id($members[0]);
         } while (count($groups) < 2);
 
         // Set up leader-boards
@@ -534,7 +534,7 @@ class __leader_board_test_set extends cms_test_case
 
         // Determine our test member
         $members = $GLOBALS['FORUM_DRIVER']->get_next_members(null, 1);
-        $member = $GLOBALS['FORUM_DRIVER']->mrow_id($members[0]);
+        $member = $GLOBALS['FORUM_DRIVER']->mrow_member_id($members[0]);
 
         // Determine our current points for the member
         points_flush_runtime_cache();

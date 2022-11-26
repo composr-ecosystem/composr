@@ -25,7 +25,7 @@
  *
  * @param  object $this_ref Link to the real forum driver
  * @param  ?SHORT_TEXT $username The member username (null: don't use this in the authentication - but look it up using the ID if needed)
- * @param  ?MEMBER $user_id The member ID (null: use member name)
+ * @param  ?MEMBER $user_id The member ID (null: use username)
  * @param  SHORT_TEXT $password_hashed The md5-hashed password
  * @param  string $password_raw The raw password
  * @param  boolean $cookie_login Whether this is a cookie login, determines how the hashed password is treated for the value passed in
@@ -33,7 +33,7 @@
  *
  * @ignore
  */
-function _forum_authorise_login(object $this_ref, ?string $username, ?int $user_id, string $password_hashed, string $password_raw, bool $cookie_login = false) : array
+function _authorise_login(object $this_ref, ?string $username, ?int $user_id, string $password_hashed, string $password_raw, bool $cookie_login = false) : array
 {
     require_code('cns_forum_driver_helper_auth');
 

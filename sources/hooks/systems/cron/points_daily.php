@@ -91,7 +91,7 @@ class Hook_cron_points_daily
             do {
                 $rows = $GLOBALS['FORUM_DRIVER']->get_next_members($member_id, 100);
                 foreach ($rows as $row) {
-                    $member_id = $GLOBALS['FORUM_DRIVER']->mrow_id($row);
+                    $member_id = $GLOBALS['FORUM_DRIVER']->mrow_member_id($row);
 
                     points_credit_member($member_id, do_lang('POINTS_PER_DAY'), $points_per_day, 0, null, 0, 'points', 'credit_daily');
                 }

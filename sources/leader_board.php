@@ -110,7 +110,7 @@ function calculate_leader_board(array $row, ?int $forced_time = null, ?int $forc
         do {
             $rows = $GLOBALS['FORUM_DRIVER']->get_next_members($member_id, 100);
             foreach ($rows as $mrow) {
-                $member_id = $GLOBALS['FORUM_DRIVER']->mrow_id($mrow);
+                $member_id = $GLOBALS['FORUM_DRIVER']->mrow_member_id($mrow);
 
                 if (is_guest($member_id)) {
                     continue;

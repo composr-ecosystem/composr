@@ -482,7 +482,7 @@ function try_cookie_login() : ?int
 
     if ((array_key_exists(get_member_cookie(), $_COOKIE)) && (array_key_exists(get_pass_cookie(), $_COOKIE))) {
         $store = $_COOKIE[get_member_cookie()];
-        $pass = $_COOKIE[get_pass_cookie()];
+        $password = $_COOKIE[get_pass_cookie()];
         if ($GLOBALS['FORUM_DRIVER']->is_cookie_login_name()) {
             $username = $store;
             $store = strval($GLOBALS['FORUM_DRIVER']->get_member_from_username($store));
@@ -493,11 +493,11 @@ function try_cookie_login() : ?int
         if (!is_guest($member_id)) {
             if ($GLOBALS['FORUM_DRIVER']->is_hashed()) {
                 // Test password hash
-                $login_array = $GLOBALS['FORUM_DRIVER']->forum_authorise_login(null, $member_id, $pass, $pass, true);
+                $login_array = $GLOBALS['FORUM_DRIVER']->authorise_login(null, $member_id, $password, $password, true);
                 $member_id = $login_array['id'];
             } else {
                 // Test password plain
-                $login_array = $GLOBALS['FORUM_DRIVER']->forum_authorise_login(null, $member_id, $GLOBALS['FORUM_DRIVER']->password_hash($pass, $username), $pass, true);
+                $login_array = $GLOBALS['FORUM_DRIVER']->authorise_login(null, $member_id, $GLOBALS['FORUM_DRIVER']->password_hash($password, $username), $password, true);
                 $member_id = $login_array['id'];
             }
 

@@ -168,7 +168,7 @@ function get_first_admin_user() : int
 {
     $members = $GLOBALS['FORUM_DRIVER']->member_group_query($GLOBALS['FORUM_DRIVER']->get_super_admin_groups(), 1);
     if (!empty($members)) {
-        $ret = $GLOBALS['FORUM_DRIVER']->mrow_id($members[key($members)]);
+        $ret = $GLOBALS['FORUM_DRIVER']->mrow_member_id($members[key($members)]);
     } else {
         $ret = $GLOBALS['FORUM_DRIVER']->get_guest_id() + 1;
     }
@@ -200,7 +200,7 @@ function handle_active_login(string $username)
     }
 
     $password = post_param_string('password', false, INPUT_FILTER_PASSWORD);
-    $login_array = $GLOBALS['FORUM_DRIVER']->forum_authorise_login($username, null, $GLOBALS['FORUM_DRIVER']->password_hash($password, $username), $password);
+    $login_array = $GLOBALS['FORUM_DRIVER']->authorise_login($username, null, $GLOBALS['FORUM_DRIVER']->password_hash($password, $username), $password);
     $member_id = $login_array['id'];
 
     // Run hooks, if any exist
@@ -229,8 +229,8 @@ function handle_active_login(string $username)
             $IS_A_COOKIE_LOGIN = true;
 
             // Create user cookie
-            if (method_exists($GLOBALS['FORUM_DRIVER'], 'forum_create_cookie')) {
-                $GLOBALS['FORUM_DRIVER']->forum_create_cookie($member_id, null, $password);
+            if (method_exists($GLOBALS['FORUM_DRIVER'], 'create_login_cookie')) {
+                $GLOBALS['FORUM_DRIVER']->create_login_cookie($member_id, null, $password);
             } else {
                 if ($GLOBALS['FORUM_DRIVER']->is_cookie_login_name()) {
                     $name = $GLOBALS['FORUM_DRIVER']->get_username($member_id);

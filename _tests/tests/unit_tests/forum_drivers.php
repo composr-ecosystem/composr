@@ -60,7 +60,9 @@ class forum_drivers_test_set extends cms_test_case
             foreach ($file_functions['cns'] as $function => $cns_parameters) {
                 $exceptions = [
                     // Optional
-                    'forum_create_cookie',
+                    'create_login_cookie',
+                    'password_hash',
+                    'password_verify',
 
                     // Defined with basic implementations in forum_stub.php anyway
                     'forum_layer_initialise',
@@ -68,7 +70,6 @@ class forum_drivers_test_set extends cms_test_case
                     'topic_is_threaded',
                     'get_displayname',
                     'install_delete_custom_field',
-                    'password_hash',
 
                     // Conversr-only
                     'init__forum__cns',

@@ -442,7 +442,7 @@ function get_lang_member(int $member_id) : ?string
     }
 
     // In forum?
-    $lang = $GLOBALS['FORUM_DRIVER']->forum_get_lang($member_id);
+    $lang = $GLOBALS['FORUM_DRIVER']->get_lang($member_id);
     if (!cms_empty_safe($lang)) {
         $_lang = cms_strtoupper_ascii($lang);
         if (!does_lang_exist($_lang)) {

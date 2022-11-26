@@ -30,7 +30,7 @@ class CMSMemberACL
      */
     public function authenticate_credentials_and_set_auth(string $username, string $password, bool $invisible = false) : ?int
     {
-        $feedback = $GLOBALS['FORUM_DRIVER']->forum_authorise_login($username, null, md5($password), $password);
+        $feedback = $GLOBALS['FORUM_DRIVER']->authorise_login($username, null, md5($password), $password);
 
         $id = $feedback['id'];
         if ($id !== null) {

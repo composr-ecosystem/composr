@@ -262,7 +262,7 @@ function member_personal_links_and_details(int $member_id) : array
 
     // Links to usergroups
     if (get_option('show_personal_usergroup') == '1') {
-        $group_id = $GLOBALS['FORUM_DRIVER']->mrow_group($GLOBALS['FORUM_DRIVER']->get_member_row($member_id));
+        $group_id = $GLOBALS['FORUM_DRIVER']->mrow_primary_group($GLOBALS['FORUM_DRIVER']->get_member_row($member_id));
         $usergroups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list();
         if (array_key_exists($group_id, $usergroups)) {
             if (get_forum_type() == 'cns') {

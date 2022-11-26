@@ -104,12 +104,12 @@ class Forum_driver_cns extends Forum_driver_base
     /**
      * Attempt to to find the member's language from their forum profile. It converts between language-identifiers using a map (lang/map.ini).
      *
-     * @param  MEMBER $member The member who's language needs to be fetched
+     * @param  MEMBER $member_id The member who's language needs to be fetched
      * @return ?LANGUAGE_NAME The member's language (null: unknown)
      */
-    public function forum_get_lang(int $member) : ?string
+    public function get_lang(int $member_id) : ?string
     {
-        return $this->get_member_row_field($member, 'm_language');
+        return $this->get_member_row_field($member_id, 'm_language');
     }
 
     /**
@@ -393,12 +393,12 @@ class Forum_driver_cns extends Forum_driver_base
     /**
      * Pin a topic.
      *
-     * @param  AUTO_LINK $id The topic ID
+     * @param  AUTO_LINK $topic_id The topic ID
      * @param  boolean $pin True: pin it, False: unpin it
      */
-    public function pin_topic(int $id, bool $pin = true)
+    public function pin_topic(int $topic_id, bool $pin = true)
     {
-        $this->db->query_update('f_topics', ['t_pinned' => $pin ? 1 : 0], ['id' => $id], '', 1);
+        $this->db->query_update('f_topics', ['t_pinned' => $pin ? 1 : 0], ['id' => $topic_id], '', 1);
     }
 
     /**
@@ -414,13 +414,13 @@ class Forum_driver_cns extends Forum_driver_base
     /**
      * Get a map between emoticon codes and templates representing the HTML-image-code for this emoticon. The emoticons presented of course depend on the forum involved.
      *
-     * @param  ?MEMBER $member Only emoticons the given member can see (null: don't care)
+     * @param  ?MEMBER $member_id Only emoticons the given member can see (null: don't care)
      * @return array The map
      */
-    public function find_emoticons(?int $member = null) : array
+    public function find_emoticons(?int $member_id = null) : array
     {
         require_code('cns_forum_driver_helper');
-        return _helper_apply_emoticons($this, $member);
+        return _helper_apply_emoticons($this, $member_id);
     }
 
     /**
@@ -428,18 +428,18 @@ class Forum_driver_cns extends Forum_driver_base
      * The themes/map.ini file functions to provide this mapping between forum themes, and Composr themes, and has a slightly different meaning for different forum drivers. For example, some drivers map the forum themes theme directory to the Composr theme name, while others made the humanly readable name.
      *
      * @param  boolean $skip_member_specific Whether to avoid member-specific lookup (i.e. find via what forum theme is currently configured as the default)
-     * @param  ?MEMBER $member The member to find for (null: current member)
+     * @param  ?MEMBER $member_id The member to find for (null: current member)
      * @return ID_TEXT The theme
      */
-    public function _get_theme(bool $skip_member_specific = false, ?int $member = null) : string
+    public function _get_theme(bool $skip_member_specific = false, ?int $member_id = null) : string
     {
-        if ($member === null) {
-            $member = get_member();
+        if ($member_id === null) {
+            $member_id = get_member();
         }
         $theme = '';
         if (!$skip_member_specific) {
-            if ($member != $this->get_guest_id()) {
-                $theme = $this->get_member_row_field($member, 'm_theme');
+            if ($member_id != $this->get_guest_id()) {
+                $theme = $this->get_member_row_field($member_id, 'm_theme');
             }
         }
         if (($theme == '') || ($theme == '-1')) {
@@ -457,14 +457,14 @@ class Forum_driver_cns extends Forum_driver_base
     /**
      * Set a Custom Profile Field's value, if the custom field exists. Only works on specially-named (titled) fields.
      *
-     * @param  MEMBER $member The member ID
+     * @param  MEMBER $member_id The member ID
      * @param  string $field The field name (e.g. "firstname" for the CPF with a title of "cms_firstname") (e.g. "firstname" for the CPF with a title of "cms_firstname")
      * @param  string $value The value
      */
-    public function set_custom_field(int $member, string $field, string $value)
+    public function set_custom_field(int $member_id, string $field, string $value)
     {
         // Check member exists
-        $username = $this->get_username($member, false, USERNAME_DEFAULT_NULL);
+        $username = $this->get_username($member_id, false, USERNAME_DEFAULT_NULL);
 
         require_code('cns_members_action');
         require_code('cns_members_action2');
@@ -478,24 +478,24 @@ class Forum_driver_cns extends Forum_driver_base
             }
         }
         $field_id = $field_bits[0]['id'];
-        cns_set_custom_field($member, $field_id, $value);
+        cns_set_custom_field($member_id, $field_id, $value);
     }
 
     /**
      * Get Custom Profile Fields values for all 'cms_' prefixed keys.
      *
-     * @param  MEMBER $member The member ID
+     * @param  MEMBER $member_id The member ID
      * @return ?array A map of the Custom Profile Fields, key_suffix=>value (null: no fields)
      */
-    public function get_custom_fields(int $member) : ?array
+    public function get_custom_fields(int $member_id) : ?array
     {
         // Check member exists
-        $username = $this->get_username($member, false, USERNAME_DEFAULT_NULL);
+        $username = $this->get_username($member_id, false, USERNAME_DEFAULT_NULL);
 
         require_code('cns_members');
 
         $info = cns_get_all_custom_fields_match_member(
-            $member, // member
+            $member_id, // member
             null, // public view
             null, // owner view
             null, // owner set
@@ -513,36 +513,12 @@ class Forum_driver_cns extends Forum_driver_base
     }
 
     /**
-     * Get a member row for the member of the given name.
-     *
-     * @param  SHORT_TEXT $name The member name
-     * @return ?array The profile-row (null: could not find)
-     */
-    public function get_mrow(string $name) : ?array
-    {
-        foreach ($this->MEMBER_ROWS_CACHED as $i => $row) {
-            if ($row === null) {
-                continue;
-            }
-
-            if ($row['m_username'] == $name) {
-                return $row;
-            }
-        }
-        $rows = $this->db->query_select('f_members', ['*'], ['m_username' => $name], '', 1);
-        if (!array_key_exists(0, $rows)) {
-            return null;
-        }
-        return $rows[0];
-    }
-
-    /**
      * From a member row, get the member's primary usergroup.
      *
      * @param  array $r The profile-row
      * @return GROUP The member's primary usergroup
      */
-    public function mrow_group(array $r) : int
+    public function mrow_primary_group(array $r) : int
     {
         require_code('cns_members');
         return cns_get_member_primary_group($r['id']);
@@ -554,7 +530,7 @@ class Forum_driver_cns extends Forum_driver_base
      * @param  array $r The profile-row
      * @return MEMBER The member ID
      */
-    public function mrow_id(array $r) : int
+    public function mrow_member_id(array $r) : int
     {
         return $r['id'];
     }
@@ -574,7 +550,7 @@ class Forum_driver_cns extends Forum_driver_base
      * From a member row, get the member's name.
      *
      * @param  array $r The profile-row
-     * @return string The member name
+     * @return string The username
      */
     public function mrow_username(array $r) : string
     {
@@ -587,7 +563,7 @@ class Forum_driver_cns extends Forum_driver_base
      * @param  array $r The profile-row
      * @return SHORT_TEXT The member e-mail address
      */
-    public function mrow_email(array $r) : string
+    public function mrow_email_address(array $r) : string
     {
         return $r['m_email_address'];
     }
@@ -595,13 +571,13 @@ class Forum_driver_cns extends Forum_driver_base
     /**
      * Get a URL to the specified member's home (control panel).
      *
-     * @param  MEMBER $id The member ID
+     * @param  MEMBER $member_id The member ID
      * @param  boolean $tempcode_okay Whether it is okay to return the result using Tempcode (more efficient, and allows keep_* parameters to propagate which you almost certainly want!)
      * @return mixed The URL to the members home
      */
-    public function member_home_url(int $id, bool $tempcode_okay = false)
+    public function member_home_url(int $member_id, bool $tempcode_okay = false)
     {
-        $_url = build_url(['page' => 'members', 'type' => 'view', 'id' => ($id == get_member()) ? null : $id], get_module_zone('members'), [], false, false, false, 'tab--edit');
+        $_url = build_url(['page' => 'members', 'type' => 'view', 'id' => ($member_id == get_member()) ? null : $member_id], get_module_zone('members'), [], false, false, false, 'tab--edit');
         if (($tempcode_okay) && (get_base_url() == get_forum_base_url())) {
             return $_url;
         }
@@ -615,13 +591,13 @@ class Forum_driver_cns extends Forum_driver_base
     /**
      * Get a URL to the specified member's profile.
      *
-     * @param  MEMBER $id The member ID
+     * @param  MEMBER $member_id The member ID
      * @param  boolean $tempcode_okay Whether it is okay to return the result using Tempcode (more efficient, and allows keep_* parameters to propagate which you almost certainly want!)
      * @param  ?string $username Username, passed for performance reasons (null: look it up)
      * @param  array $hints Extra parameters for the URL
      * @return mixed The URL to the member profile
      */
-    protected function _member_profile_url(int $id, bool $tempcode_okay = false, ?string $username = null, array $hints = [])
+    protected function _member_profile_url(int $member_id, bool $tempcode_okay = false, ?string $username = null, array $hints = [])
     {
         $hash = '';
         if (array_key_exists('conversr_tab', $hints)) {
@@ -630,9 +606,9 @@ class Forum_driver_cns extends Forum_driver_base
 
         if (get_option('username_profile_links') == '1') {
             if ($username === null) {
-                $username = $GLOBALS['FORUM_DRIVER']->get_username($id, false, USERNAME_DEFAULT_ID_TIDY);
+                $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id, false, USERNAME_DEFAULT_ID_TIDY);
             }
-            $map = ['page' => 'members', 'type' => 'view', 'id' => ($id == get_member() && $tempcode_okay) ? null : (($username === null) ? strval($id) : $username)];
+            $map = ['page' => 'members', 'type' => 'view', 'id' => ($member_id == get_member() && $tempcode_okay) ? null : (($username === null) ? strval($member_id) : $username)];
             if (get_page_name() == 'members') {
                 $map += propagate_filtercode();
             }
@@ -641,7 +617,7 @@ class Forum_driver_cns extends Forum_driver_base
             }
             $_url = build_url($map, get_module_zone('members'), [], false, false, !$tempcode_okay, $hash);
         } else {
-            $map = ['page' => 'members', 'type' => 'view', 'id' => ($id == get_member() && $tempcode_okay) ? null : $id];
+            $map = ['page' => 'members', 'type' => 'view', 'id' => ($member_id == get_member() && $tempcode_okay) ? null : $member_id];
             if (get_page_name() == 'members') {
                 $map += propagate_filtercode();
             }
@@ -726,13 +702,13 @@ class Forum_driver_cns extends Forum_driver_base
     /**
      * Get a URL to send a private/personal message to the given member.
      *
-     * @param  MEMBER $id The member ID
+     * @param  MEMBER $member_id The member ID
      * @param  boolean $tempcode_okay Whether it is okay to return the result using Tempcode (more efficient)
      * @return mixed The URL to the private/personal message page
      */
-    protected function _member_pm_url(int $id, bool $tempcode_okay = false)
+    protected function _member_pm_url(int $member_id, bool $tempcode_okay = false)
     {
-        $_url = build_url(['page' => 'topics', 'type' => 'new_pt', 'id' => $id], get_module_zone('topics'), [], false, false, true);
+        $_url = build_url(['page' => 'topics', 'type' => 'new_pt', 'id' => $member_id], get_module_zone('topics'), [], false, false, true);
         if (($tempcode_okay) && (get_base_url() == get_forum_base_url())) {
             return $_url;
         }
@@ -746,15 +722,15 @@ class Forum_driver_cns extends Forum_driver_base
     /**
      * Get a URL to the specified forum.
      *
-     * @param  integer $id The forum ID
+     * @param  integer $forum_id The forum ID
      * @param  boolean $tempcode_okay Whether it is okay to return the result using Tempcode (more efficient)
      * @return mixed The URL to the specified forum
      */
-    protected function _forum_url(int $id, bool $tempcode_okay = false)
+    protected function _forum_url(int $forum_id, bool $tempcode_okay = false)
     {
         $view_map = ['page' => 'forumview'];
-        if ($id != db_get_first_id()) {
-            $view_map['id'] = $id;
+        if ($forum_id != db_get_first_id()) {
+            $view_map['id'] = $forum_id;
         }
         $_url = build_url($view_map, get_module_zone('forumview'), [], false, false, !$tempcode_okay);
         if (($tempcode_okay) && (get_base_url() == get_forum_base_url())) {
@@ -854,19 +830,18 @@ class Forum_driver_cns extends Forum_driver_base
     /**
      * Get a URL to the specified topic ID. Most forums don't require the second parameter, but some do, so it is required in the interface.
      *
-     * @param  integer $id The topic ID
+     * @param  integer $topic_id The topic ID
      * @param  string $forum The forum ID
      * @param  boolean $tempcode_okay Whether it is okay to return the result using Tempcode (more efficient)
      * @return mixed The URL to the topic
      */
-    public function topic_url(int $id, string $forum = '', bool $tempcode_okay = false)
+    public function topic_url(int $topic_id, string $forum = '', bool $tempcode_okay = false)
     {
-        if ($id === null) {
+        if ($topic_id === null) {
             return ''; // Should not happen, but if it does, this is how we should handle it.
         }
 
-        unset($forum);
-        $_url = build_url(['page' => 'topicview', 'id' => $id], get_module_zone('topicview'), [], false, false, !$tempcode_okay);
+        $_url = build_url(['page' => 'topicview', 'id' => $topic_id], get_module_zone('topicview'), [], false, false, !$tempcode_okay);
         if (($tempcode_okay) && (get_base_url() == get_forum_base_url())) {
             return $_url;
         }
@@ -880,20 +855,18 @@ class Forum_driver_cns extends Forum_driver_base
     /**
      * Get a URL to the specified post ID.
      *
-     * @param  integer $id The post ID
+     * @param  integer $post_id The post ID
      * @param  ?mixed $forum The forum ID (null: private topic)
      * @param  boolean $tempcode_okay Whether it is okay to return the result using Tempcode (more efficient)
      * @return mixed The URL to the post
      */
-    public function post_url(int $id, $forum, bool $tempcode_okay = false)
+    public function post_url(int $post_id, $forum, bool $tempcode_okay = false)
     {
-        if ($id === null) {
+        if ($post_id === null) {
             return ''; // Should not happen, but if it does, this is how we should handle it.
         }
 
-        unset($forum);
-
-        $_url = build_url(['page' => 'topicview', 'type' => 'findpost', 'id' => $id], get_module_zone('topicview'), [], false, false, !$tempcode_okay, 'post_' . strval($id));
+        $_url = build_url(['page' => 'topicview', 'type' => 'findpost', 'id' => $post_id], get_module_zone('topicview'), [], false, false, !$tempcode_okay, 'post_' . strval($post_id));
         if (($tempcode_okay) && (get_base_url() == get_forum_base_url())) {
             return $_url;
         }
@@ -959,15 +932,15 @@ class Forum_driver_cns extends Forum_driver_base
      * Get rows of members before the given one.
      * It cannot be assumed there are no gaps in member IDs, as members may be deleted.
      *
-     * @param  MEMBER $member The member ID to paginate back from
+     * @param  MEMBER $member_id The member ID to paginate back from
      * @param  integer $total Number of members to retrieve
      * @return array Member rows
      */
-    public function get_previous_members(int $member, int $total = 1) : array
+    public function get_previous_members(int $member_id, int $total = 1) : array
     {
         $sql = 'SELECT * FROM ' . $this->db->get_table_prefix() . 'f_members WHERE AND id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
-        $join_time = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member, 'm_join_time');
-        $sql .= ' AND (m_join_time<' . strval($join_time) . ' OR m_join_time=' . strval($join_time) . ' AND id<' . strval($member) . ')';
+        $join_time = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_join_time');
+        $sql .= ' AND (m_join_time<' . strval($join_time) . ' OR m_join_time=' . strval($join_time) . ' AND id<' . strval($member_id) . ')';
         $sql .= ' AND ' . db_string_equal_to('m_validated_email_confirm_code', '');
         if (addon_installed('unvalidated')) {
             $sql .= ' AND m_validated=1';
@@ -981,16 +954,16 @@ class Forum_driver_cns extends Forum_driver_base
      * Get rows of members after the given one.
      * It cannot be assumed there are no gaps in member IDs, as members may be deleted.
      *
-     * @param  ?MEMBER $member The member ID to increment (null: find the very first members)
+     * @param  ?MEMBER $member_id The member ID to increment (null: find the very first members)
      * @param  integer $total Number of members to retrieve
      * @return array Member rows
      */
-    public function get_next_members(?int $member, int $total = 1) : array
+    public function get_next_members(?int $member_id, int $total = 1) : array
     {
         $sql = 'SELECT * FROM ' . $this->db->get_table_prefix() . 'f_members WHERE id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
-        if ($member !== null) {
-            $join_time = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member, 'm_join_time');
-            $sql .= ' AND (m_join_time>' . strval($join_time) . ' OR m_join_time=' . strval($join_time) . ' AND id>' . strval($member) . ')';
+        if ($member_id !== null) {
+            $join_time = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_join_time');
+            $sql .= ' AND (m_join_time>' . strval($join_time) . ' OR m_join_time=' . strval($join_time) . ' AND id>' . strval($member_id) . ')';
         }
         $sql .= ' AND ' . db_string_equal_to('m_validated_email_confirm_code', '');
         if (addon_installed('unvalidated')) {
@@ -1023,15 +996,15 @@ class Forum_driver_cns extends Forum_driver_base
      * Get the name relating to the specified member ID.
      * If this returns null, then the member has been deleted. Always take potential null output into account.
      *
-     * @param  MEMBER $member The member ID
-     * @return ?SHORT_TEXT The member name (null: member deleted)
+     * @param  MEMBER $member_id The member ID
+     * @return ?SHORT_TEXT The username (null: member deleted)
      */
-    protected function _get_username(int $member) : ?string
+    protected function _get_username(int $member_id) : ?string
     {
-        if ($member == $this->get_guest_id()) {
+        if ($member_id == $this->get_guest_id()) {
             return do_lang('GUEST');
         }
-        return $this->get_member_row_field($member, 'm_username');
+        return $this->get_member_row_field($member_id, 'm_username');
     }
 
     /**
@@ -1079,42 +1052,42 @@ class Forum_driver_cns extends Forum_driver_base
     /**
      * Get the e-mail address for the specified member ID.
      *
-     * @param  MEMBER $member The member ID
+     * @param  MEMBER $member_id The member ID
      * @return SHORT_TEXT The e-mail address
      */
-    protected function _get_member_email_address(int $member) : string
+    protected function _get_member_email_address(int $member_id) : string
     {
-        $ret = $this->get_member_row_field($member, 'm_email_address');
+        $ret = $this->get_member_row_field($member_id, 'm_email_address');
         return ($ret === null) ? '' : $ret;
     }
 
     /**
      * Get the photo URL for the specified member ID.
      *
-     * @param  MEMBER $member The member ID
+     * @param  MEMBER $member_id The member ID
      * @param  boolean $full Get full photo
      * @return URLPATH The URL (blank: none)
      */
-    public function get_member_photo_url(int $member, bool $full = false) : string
+    public function get_member_photo_url(int $member_id, bool $full = false) : string
     {
-        if ($member == db_get_first_id()) {
+        if ($member_id == db_get_first_id()) {
             return '';
         }
 
         $privacy_ok = true;
         if (addon_installed('content_privacy')) {
             require_code('content_privacy');
-            $privacy_ok = has_privacy_access('_photo', strval($member), get_member(), '', $member);
+            $privacy_ok = has_privacy_access('_photo', strval($member_id), get_member(), '', $member_id);
         }
 
         if ((!addon_installed('cns_member_photos')) || (!has_privilege(get_member(), 'view_member_photos')) || (!$privacy_ok)) {
             if (!addon_installed('cns_member_avatars')) {
                 return '';
             }
-            return $this->get_member_avatar_url($member);
+            return $this->get_member_avatar_url($member_id);
         }
 
-        $pic = $this->get_member_row_field($member, 'm_photo_url');
+        $pic = $this->get_member_row_field($member_id, 'm_photo_url');
 
         if ($pic === null) {
             $pic = '';
@@ -1128,26 +1101,26 @@ class Forum_driver_cns extends Forum_driver_base
     /**
      * Get the avatar URL for the specified member ID.
      *
-     * @param  MEMBER $member The member ID
+     * @param  MEMBER $member_id The member ID
      * @return URLPATH The URL (blank: none)
      */
-    protected function _get_member_avatar_url(int $member) : string
+    protected function _get_member_avatar_url(int $member_id) : string
     {
         if ((!addon_installed('cns_member_avatars')) && (!addon_installed('cns_member_photos'))) {
             return '';
         }
 
-        if ($member == db_get_first_id()) {
+        if ($member_id == db_get_first_id()) {
             return '';
         }
 
         /*if (!addon_installed('cns_member_avatars')) Actually when photo is chosen, avatar is set - and will have been resized right
         {
             if (!addon_installed('cns_member_photos')) return '';
-            return $this->get_member_photo_url($member);
+            return $this->get_member_photo_url($member_id);
         }*/
 
-        $avatar = $this->get_member_row_field($member, 'm_avatar_url');
+        $avatar = $this->get_member_row_field($member_id, 'm_avatar_url');
         if ($avatar === null) {
             $avatar = '';
         }
@@ -1173,15 +1146,15 @@ class Forum_driver_cns extends Forum_driver_base
     /**
      * Find if this member may have e-mails sent to them.
      *
-     * @param  MEMBER $member The member ID
+     * @param  MEMBER $member_id The member ID
      * @return boolean Whether the member may have e-mails sent to them
      */
-    public function get_member_email_allowed(int $member) : bool
+    public function get_member_email_allowed(int $member_id) : bool
     {
         if (get_option('member_email_receipt_configurability') == '0') {
             return true;
         }
-        $ret = $this->get_member_row_field($member, 'm_allow_emails');
+        $ret = $this->get_member_row_field($member_id, 'm_allow_emails');
         if ($ret === null) {
             $ret = false;
         }
@@ -1191,12 +1164,12 @@ class Forum_driver_cns extends Forum_driver_base
     /**
      * Get the timestamp of a member's join date.
      *
-     * @param  MEMBER $member The member ID
+     * @param  MEMBER $member_id The member ID
      * @return TIME The timestamp
      */
-    public function get_member_join_timestamp(int $member) : int
+    public function get_member_join_timestamp(int $member_id) : int
     {
-        $ret = $this->get_member_row_field($member, 'm_join_time');
+        $ret = $this->get_member_row_field($member_id, 'm_join_time');
         if ($ret === null) {
             $ret = time();
         }
@@ -1243,12 +1216,12 @@ class Forum_driver_cns extends Forum_driver_base
     /**
      * Get the given member's post count.
      *
-     * @param  MEMBER $member The member ID
+     * @param  MEMBER $member_id The member ID
      * @return integer The post count
      */
-    public function get_post_count(int $member) : int
+    public function get_post_count(int $member_id) : int
     {
-        $c = $this->get_member_row_field($member, 'm_cache_num_posts');
+        $c = $this->get_member_row_field($member_id, 'm_cache_num_posts');
         if ($c === null) {
             $c = 0;
         }
@@ -1258,33 +1231,33 @@ class Forum_driver_cns extends Forum_driver_base
     /**
      * Get the given member's topic count.
      *
-     * @param  MEMBER $member The member ID
+     * @param  MEMBER $member_id The member ID
      * @return integer The topic count
      */
-    public function get_topic_count(int $member) : int
+    public function get_topic_count(int $member_id) : int
     {
         static $cache = [];
-        if (isset($cache[$member])) {
-            return $cache[$member];
+        if (isset($cache[$member_id])) {
+            return $cache[$member_id];
         }
-        $ret = $this->db->query_select_value_if_there('f_topics', 'COUNT(*)', ['t_cache_first_member_id' => $member]);
+        $ret = $this->db->query_select_value_if_there('f_topics', 'COUNT(*)', ['t_cache_first_member_id' => $member_id]);
         if ($ret === null) {
             $ret = 0;
         }
-        $cache[$member] = $ret;
+        $cache[$member_id] = $ret;
         return $ret;
     }
 
     /**
      * Find out if the given member ID is banned.
      *
-     * @param  MEMBER $member The member ID
+     * @param  MEMBER $member_id The member ID
      * @param  ?ID_TEXT $reasoned_ban Ban reasoning returned by reference (null: none)
      * @return boolean Whether the member is banned
      */
-    public function is_banned(int $member, ?string &$reasoned_ban = null) : bool
+    public function is_banned(int $member_id, ?string &$reasoned_ban = null) : bool
     {
-        $is_perm_banned = $this->get_member_row_field($member, 'm_is_perm_banned');
+        $is_perm_banned = $this->get_member_row_field($member_id, 'm_is_perm_banned');
         if (($is_perm_banned == '0') || ($is_perm_banned == '1')) {
             $reasoned_ban = null;
         } else {
@@ -1296,30 +1269,30 @@ class Forum_driver_cns extends Forum_driver_base
     /**
      * Find if the specified member ID is marked as staff or not.
      *
-     * @param  MEMBER $member The member ID
+     * @param  MEMBER $member_id The member ID
      * @return boolean Whether the member is staff
      */
-    protected function _is_staff(int $member) : bool
+    protected function _is_staff(int $member_id) : bool
     {
-        if ($member == $this->get_guest_id()) {
+        if ($member_id == $this->get_guest_id()) {
             return false;
         }
-        $users_groups = $this->get_members_groups($member);
+        $users_groups = $this->get_members_groups($member_id);
         return ((cns_get_best_group_property($users_groups, 'is_super_moderator') == 1) || (cns_get_best_group_property($users_groups, 'is_super_admin') == 1));
     }
 
     /**
      * Find if the specified member ID is marked as a super admin or not.
      *
-     * @param  MEMBER $member The member ID
+     * @param  MEMBER $member_id The member ID
      * @return boolean Whether the member is a super admin
      */
-    protected function _is_super_admin(int $member) : bool
+    protected function _is_super_admin(int $member_id) : bool
     {
-        if ($member == $this->get_guest_id()) {
+        if ($member_id == $this->get_guest_id()) {
             return false;
         }
-        $users_groups = $this->get_members_groups($member);
+        $users_groups = $this->get_members_groups($member_id);
         return cns_get_best_group_property($users_groups, 'is_super_admin') == 1;
     }
 
@@ -1416,12 +1389,12 @@ class Forum_driver_cns extends Forum_driver_base
     /**
      * Get a member ID from the given member's username. If there is no match and the input is numeric, it will also try it as a member ID.
      *
-     * @param  SHORT_TEXT $name The member name
+     * @param  SHORT_TEXT $username The username
      * @return ?MEMBER The member ID (null: not found)
      */
-    public function get_member_from_username(string $name) : ?int
+    public function get_member_from_username(string $username) : ?int
     {
-        if ($name == do_lang('GUEST')) {
+        if ($username == do_lang('GUEST')) {
             return $this->get_guest_id();
         }
 
@@ -1430,14 +1403,14 @@ class Forum_driver_cns extends Forum_driver_base
                 continue;
             }
 
-            if ($row['m_username'] == $name) {
+            if ($row['m_username'] == $username) {
                 return $id;
             }
         }
-        $row = $this->db->query_select('f_members', ['*'], ['m_username' => $name], '', 1);
+        $row = $this->db->query_select('f_members', ['*'], ['m_username' => $username], '', 1);
         if (!array_key_exists(0, $row)) {
-            if ((is_numeric($name)) && ($this->get_username(intval($name), false, USERNAME_DEFAULT_NULL) !== null)) {
-                return intval($name);
+            if ((is_numeric($username)) && ($this->get_username(intval($username), false, USERNAME_DEFAULT_NULL) !== null)) {
+                return intval($username);
             }
             return null;
         }
@@ -1620,35 +1593,35 @@ class Forum_driver_cns extends Forum_driver_base
     /**
      * Get the forum usergroup relating to the specified member ID.
      *
-     * @param  MEMBER $member The member ID
+     * @param  MEMBER $member_id The member ID
      * @param  boolean $skip_secret Whether to skip looking at secret usergroups, unless we have access
      * @param  boolean $handle_probation Whether to take probation into account
      * @param  boolean $skip_cache Whether to skip the user groups cache
      * @return array The array of forum usergroups
      */
-    protected function _get_members_groups(int $member, bool $skip_secret = false, bool $handle_probation = true, bool $skip_cache = false) : array
+    protected function _get_members_groups(int $member_id, bool $skip_secret = false, bool $handle_probation = true, bool $skip_cache = false) : array
     {
         require_code('cns_groups');
-        return array_keys(cns_get_members_groups($member, $skip_secret, $handle_probation, true, $skip_cache));
+        return array_keys(cns_get_members_groups($member_id, $skip_secret, $handle_probation, true, $skip_cache));
     }
 
     /**
      * Create a member login cookie.
      *
-     * @param  MEMBER $id The member ID
-     * @param  ?SHORT_TEXT $name The username (null: lookup)
-     * @param  string $password The password
+     * @param  MEMBER $member_id The member ID
+     * @param  ?SHORT_TEXT $username The username (null: lookup)
+     * @param  string $password_raw The password
      */
-    public function forum_create_cookie(int $id, ?string $name, string $password)
+    public function create_login_cookie(int $member_id, ?string $username, string $password_raw)
     {
         // User
-        cms_setcookie(get_member_cookie(), strval($id));
+        cms_setcookie(get_member_cookie(), strval($member_id));
 
         // Password
-        $password_hashed_salted = $this->get_member_row_field($id, 'm_pass_hash_salted');
-        $password_compat_scheme = $this->get_member_row_field($id, 'm_password_compat_scheme');
+        $password_hashed_salted = $this->get_member_row_field($member_id, 'm_pass_hash_salted');
+        $password_compat_scheme = $this->get_member_row_field($member_id, 'm_password_compat_scheme');
         if ($password_compat_scheme == 'plain') {
-            $password_hashed_salted = md5($password_hashed_salted); // can't do direct representation for this, would be a plain text cookie; so in forum_authorise_login we expect it to be md5'd and compare thusly (as per non-cookie call to that function)
+            $password_hashed_salted = md5($password_hashed_salted); // can't do direct representation for this, would be a plain text cookie; so in authorise_login we expect it to be md5'd and compare thusly (as per non-cookie call to that function)
         }
         cms_setcookie(get_pass_cookie(), $password_hashed_salted);
     }
@@ -1656,12 +1629,12 @@ class Forum_driver_cns extends Forum_driver_base
     /**
      * The hashing algorithm of this forum driver.
      *
-     * @param  string $password The password to hash, although the forum driver may internally call this function with another meaning to this parameter
+     * @param  string $password_raw The password to hash, although the forum driver may internally call this function with another meaning to this parameter
      * @param  string $key The string converted member-ID generally, although the forum driver may internally call this function with another meaning to this parameter
      * @param  boolean $just_first Whether to just get the primary hashing mechanism (the meaning of this depends on the forum drivers but may mean a legacy hashing mechanism or one of two alternative mechanisms)
      * @return string The hashed data
      */
-    public function password_hash(string $password, string $key, bool $just_first = false) : string
+    public function password_hash(string $password_raw, string $key, bool $just_first = false) : string
     {
         require_code('cns_members');
 
@@ -1674,10 +1647,10 @@ class Forum_driver_cns extends Forum_driver_base
         }
 
         if ((!cns_is_ldap_member($member_id)) && ($member_id !== null)) {
-            return md5($password);
+            return md5($password_raw);
         }
 
-        return $password; //cns_ldap_hash($member_id, $password); Can't do hash checks under all systems
+        return $password_raw; //cns_ldap_hash($member_id, $password); Can't do hash checks under all systems
     }
 
     /**
@@ -1686,24 +1659,24 @@ class Forum_driver_cns extends Forum_driver_base
      * Some forums do cookie logins differently, so a Boolean is passed in to indicate whether it is a cookie login.
      *
      * @param  ?SHORT_TEXT $username The member username (null: don't use this in the authentication - but look it up using the ID if needed)
-     * @param  ?MEMBER $member The member ID (null: use $username)
+     * @param  ?MEMBER $member_id The member ID (null: use $username)
      * @param  SHORT_TEXT $password_hashed The md5-hashed password
      * @param  string $password_raw The raw password
      * @param  boolean $cookie_login Whether this is a cookie login, determines how the hashed password is treated for the value passed in
      * @return array A map of 'id' and 'error'. If 'id' is null, an error occurred and 'error' is set
      */
-    public function forum_authorise_login(?string $username, ?int $member, string $password_hashed, string $password_raw, bool $cookie_login = false) : array
+    public function authorise_login(?string $username, ?int $member_id, string $password_hashed, string $password_raw, bool $cookie_login = false) : array
     {
         require_code('cns_forum_driver_helper_auth');
-        return _forum_authorise_login($this, $username, $member, $password_hashed, $password_raw, $cookie_login);
+        return _authorise_login($this, $username, $member_id, $password_hashed, $password_raw, $cookie_login);
     }
 
     /**
      * Handle flood control for members, and update member last visiting times.
      *
-     * @param  MEMBER $id The member ID that just got detected
+     * @param  MEMBER $member_id The member ID that just got detected
      */
-    public function cns_flood_control(int $id)
+    public function cns_flood_control(int $member_id)
     {
         global $FLOOD_CONTROL_ONCE;
         if ($FLOOD_CONTROL_ONCE) {
@@ -1716,9 +1689,9 @@ class Forum_driver_cns extends Forum_driver_base
         }
 
         // Set last visit time session cookie if it doesn't exist
-        if ((!isset($_COOKIE['last_visit'])) && (!is_guest($id))) {
+        if ((!isset($_COOKIE['last_visit'])) && (!is_guest($member_id))) {
             require_code('users_active_actions');
-            $lvt = $this->get_member_row_field($id, 'm_last_visit_time');
+            $lvt = $this->get_member_row_field($member_id, 'm_last_visit_time');
             if (function_exists('cms_setcookie')) { // May be trying to check in safe mode when doing above require_code, so recurse
                 cms_setcookie('last_visit', ($lvt === null) ? strval(time()) : strval($lvt), true);
             }
@@ -1733,17 +1706,17 @@ class Forum_driver_cns extends Forum_driver_base
             $restrict = $submitting ? 'flood_control_submit_secs' : 'flood_control_access_secs';
             $restrict_setting = $submitting ? 'm_last_submit_time' : 'm_last_visit_time';
             require_code('cns_groups');
-            $restrict_answer = cns_get_best_group_property($this->get_members_groups($id), $restrict);
+            $restrict_answer = cns_get_best_group_property($this->get_members_groups($member_id), $restrict);
             if ((!$submitting) && (array_key_exists('redirect', $_GET))) {
                 $restrict_answer = 0;
             }
             if ($restrict_answer < 0) {
                 $restrict_answer = 0;
             }
-            if (($restrict_answer == 0) && (is_guest($id))) {
+            if (($restrict_answer == 0) && (is_guest($member_id))) {
                 return;
             }
-            $last = $this->get_member_row_field($id, $restrict_setting);
+            $last = $this->get_member_row_field($member_id, $restrict_setting);
             if ($last > time()) {
                 $last = time() - $restrict_answer; // Weird clock problem
             }
@@ -1794,12 +1767,12 @@ class Forum_driver_cns extends Forum_driver_base
             $wait_time = 0;
         }
 
-        $seconds_since_last_visit = time() - $this->get_member_row_field($id, 'm_last_visit_time');
+        $seconds_since_last_visit = time() - $this->get_member_row_field($member_id, 'm_last_visit_time');
         if ($seconds_since_last_visit < 0) {
             $seconds_since_last_visit = 0; // can happen if system clock changes
         }
         if ($restrict_answer != 0) {
-            if (is_guest($id)) { // bit of a hack, so that guests don't trip each others limits. Works out statistically.
+            if (is_guest($member_id)) { // bit of a hack, so that guests don't trip each others limits. Works out statistically.
                 if (get_option('session_prudence') == '0') {
                     global $SESSION_CACHE;
                     $num_guests = 0;
@@ -1818,7 +1791,7 @@ class Forum_driver_cns extends Forum_driver_base
             $_min_lastvisit_frequency = get_value('min_lastvisit_frequency');
             $min_lastvisit_frequency = ($_min_lastvisit_frequency === null) ? 0 : intval($_min_lastvisit_frequency);
             if (($submitting) || ((!$submitting) && ($seconds_since_last_visit > $wait_time/*don't want a flood control message to itself bump the last-visit time*/) && ($seconds_since_last_visit > $min_lastvisit_frequency))) {
-                $old_ip = $this->get_member_row_field($id, 'm_ip_address');
+                $old_ip = $this->get_member_row_field($member_id, 'm_ip_address');
 
                 $change_map = ['m_last_visit_time' => time()];
                 if (get_ip_address() != $old_ip) {
@@ -1833,7 +1806,7 @@ class Forum_driver_cns extends Forum_driver_base
                 if (get_page_name() != 'lost_password') {
                     if (get_db_type() != 'xml') {
                         if (!$this->db->table_is_locked('f_members')) {
-                            $this->db->query_update('f_members', $change_map, ['id' => $id], '', 1, 0, false, true); // Errors suppressed in case DB write access broken
+                            $this->db->query_update('f_members', $change_map, ['id' => $member_id], '', 1, 0, false, true); // Errors suppressed in case DB write access broken
                         }
                     }
                 }
@@ -1844,65 +1817,65 @@ class Forum_driver_cns extends Forum_driver_base
     /**
      * Get a first known IP address of the given member.
      *
-     * @param  MEMBER $member The member ID
+     * @param  MEMBER $member_id The member ID
      * @return IP The IP address
      */
-    public function get_member_ip(int $member) : string
+    public function get_member_ip(int $member_id) : string
     {
-        return $this->get_member_row_field($member, 'm_ip_address');
+        return $this->get_member_row_field($member_id, 'm_ip_address');
     }
 
     /**
      * Gets a whole member row from the database.
      *
-     * @param  MEMBER $member The member ID
+     * @param  MEMBER $member_id The member ID
      * @return ?array The member row (null: no such member)
      */
-    public function get_member_row(int $member) : ?array
+    public function get_member_row(int $member_id) : ?array
     {
-        if (array_key_exists($member, $this->MEMBER_ROWS_CACHED)) {
-            return $this->MEMBER_ROWS_CACHED[$member];
+        if (array_key_exists($member_id, $this->MEMBER_ROWS_CACHED)) {
+            return $this->MEMBER_ROWS_CACHED[$member_id];
         }
 
-        if (is_guest($member)) {
+        if (is_guest($member_id)) {
             $test = persistent_cache_get('get_member_row_guest');
             if ($test !== null) {
-                $this->MEMBER_ROWS_CACHED[$member] = $test;
+                $this->MEMBER_ROWS_CACHED[$member_id] = $test;
                 return $test;
             }
         }
 
-        $rows = $this->db->query_select('f_members m LEFT JOIN ' . $this->db->get_table_prefix() . 'f_member_custom_fields c ON c.mf_member_id=m.id', ['*'], ['id' => $member], '', 1);
+        $rows = $this->db->query_select('f_members m LEFT JOIN ' . $this->db->get_table_prefix() . 'f_member_custom_fields c ON c.mf_member_id=m.id', ['*'], ['id' => $member_id], '', 1);
         if (!array_key_exists(0, $rows)) {
-            $this->MEMBER_ROWS_CACHED[$member] = null;
+            $this->MEMBER_ROWS_CACHED[$member_id] = null;
             return null;
         }
         if ($this->db == $GLOBALS['FORUM_DB'] && !multi_lang_content()) {
             // Optimisation
             require_code('cns_members');
             global $MEMBER_CACHE_FIELD_MAPPINGS;
-            $MEMBER_CACHE_FIELD_MAPPINGS[$member] = $rows[0];
+            $MEMBER_CACHE_FIELD_MAPPINGS[$member_id] = $rows[0];
         }
 
-        $this->MEMBER_ROWS_CACHED[$member] = $rows[0];
+        $this->MEMBER_ROWS_CACHED[$member_id] = $rows[0];
 
-        if (is_guest($member)) {
-            persistent_cache_set('get_member_row_guest', $this->MEMBER_ROWS_CACHED[$member]);
+        if (is_guest($member_id)) {
+            persistent_cache_set('get_member_row_guest', $this->MEMBER_ROWS_CACHED[$member_id]);
         }
 
-        return $this->MEMBER_ROWS_CACHED[$member];
+        return $this->MEMBER_ROWS_CACHED[$member_id];
     }
 
     /**
      * Gets a named field of a member row from the database.
      *
-     * @param  MEMBER $member The member ID
+     * @param  MEMBER $member_id The member ID
      * @param  string $field The field identifier
      * @return mixed The field
      */
-    public function get_member_row_field(int $member, string $field)
+    public function get_member_row_field(int $member_id, string $field)
     {
-        $row = $this->get_member_row($member);
+        $row = $this->get_member_row($member_id);
         return ($row === null) ? null : (isset($row[$field]) ? $row[$field] : null);
     }
 }

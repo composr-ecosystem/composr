@@ -313,7 +313,7 @@ class Module_points
             do {
                 $rows = $GLOBALS['FORUM_DRIVER']->get_next_members($member_id, 100);
                 foreach ($rows as $row) {
-                    $member_id = $GLOBALS['FORUM_DRIVER']->mrow_id($row);
+                    $member_id = $GLOBALS['FORUM_DRIVER']->mrow_member_id($row);
                     $fields = $GLOBALS['FORUM_DRIVER']->get_custom_fields($member_id);
 
                     foreach ($deprecated_fields as $field => $title) {
@@ -619,7 +619,7 @@ class Module_points
 
         $results = new Tempcode();
         foreach ($rows as $myrow) {
-            $id = $GLOBALS['FORUM_DRIVER']->mrow_id($myrow);
+            $id = $GLOBALS['FORUM_DRIVER']->mrow_member_id($myrow);
             if (!is_guest($id)) {
                 $url = points_url($id);
                 $username = $GLOBALS['FORUM_DRIVER']->mrow_username($myrow);

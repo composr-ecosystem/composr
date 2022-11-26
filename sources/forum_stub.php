@@ -620,14 +620,14 @@ abstract class Forum_driver_base
     /**
      * The hashing algorithm of this forum driver.
      *
-     * @param  string $password The password to hash, although the forum driver may internally call this function with another meaning to this parameter
+     * @param  string $password_raw The password to hash, although the forum driver may internally call this function with another meaning to this parameter
      * @param  string $key The string converted member-ID generally, although the forum driver may internally call this function with another meaning to this parameter
      * @param  boolean $just_first Whether to just get the primary hashing mechanism (the meaning of this depends on the forum drivers but may mean a legacy hashing mechanism or one of two alternative mechanisms)
      * @return string The hashed data
      */
-    public function password_hash(string $password, string $key, bool $just_first = false) : string
+    public function password_hash(string $password_raw, string $key, bool $just_first = false) : string
     {
-        return md5($password);
+        return md5($password_raw);
     }
 
     /**

@@ -3354,11 +3354,11 @@ function ecv_IS_IN_GROUP(string $lang, array $escaped, array $param) : string
 
         if ($last_param == 'primary') {
             $member_row = $GLOBALS['FORUM_DRIVER']->get_member_row($member_id);
-            $real_group_list = [$GLOBALS['FORUM_DRIVER']->mrow_group($member_row)];
+            $real_group_list = [$GLOBALS['FORUM_DRIVER']->mrow_primary_group($member_row)];
         } elseif ($last_param == 'secondary') {
             $real_group_list = $GLOBALS['FORUM_DRIVER']->get_members_groups($member_id);
             $member_row = $GLOBALS['FORUM_DRIVER']->get_member_row($member_id);
-            $real_group_list = array_diff($real_group_list, [$GLOBALS['FORUM_DRIVER']->mrow_group($member_row)]);
+            $real_group_list = array_diff($real_group_list, [$GLOBALS['FORUM_DRIVER']->mrow_primary_group($member_row)]);
         } else {
             $real_group_list = $GLOBALS['FORUM_DRIVER']->get_members_groups($member_id);
         }

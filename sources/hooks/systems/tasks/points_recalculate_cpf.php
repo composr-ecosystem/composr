@@ -42,7 +42,7 @@ class Hook_task_points_recalculate_cpf
         do {
             $rows = $GLOBALS['FORUM_DRIVER']->get_next_members($member_id, 100);
             foreach ($rows as $row) {
-                $member_id = $GLOBALS['FORUM_DRIVER']->mrow_id($row);
+                $member_id = $GLOBALS['FORUM_DRIVER']->mrow_member_id($row);
 
                 if (is_guest($member_id)) {
                     continue;

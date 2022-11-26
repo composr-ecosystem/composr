@@ -61,7 +61,7 @@ class Hook_task_export_points_overview
         foreach ($members as $i => $member) {
             task_log($this, 'Exporting points log row', $i, count($members));
 
-            $member_id = $GLOBALS['FORUM_DRIVER']->mrow_id($member);
+            $member_id = $GLOBALS['FORUM_DRIVER']->mrow_member_id($member);
             $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id, false, USERNAME_DEFAULT_NULL);
             if ($username === null) {
                 $username = do_lang('UNKNOWN');

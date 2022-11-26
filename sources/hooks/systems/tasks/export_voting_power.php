@@ -57,7 +57,7 @@ class Hook_task_export_voting_power
         do {
             $rows = $GLOBALS['FORUM_DRIVER']->get_next_members($member_id, 100);
             foreach ($rows as $member) {
-                $member_id = $GLOBALS['FORUM_DRIVER']->mrow_id($member);
+                $member_id = $GLOBALS['FORUM_DRIVER']->mrow_member_id($member);
                 $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id, false, USERNAME_DEFAULT_NULL);
                 if ($username === null) {
                     $username = do_lang('UNKNOWN');
