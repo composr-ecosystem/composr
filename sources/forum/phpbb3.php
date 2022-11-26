@@ -187,47 +187,48 @@ function _phpbb3_post_text_to_comcode(string $text, ?array $attach_ids = null) :
 
     $attach_ids_used = [];
 
+    $emoticons = array_keys($GLOBALS['FORUM_DRIVER']->find_emoticons());
+    $special_first_chars = ['[' => true, '<' => true];
+    foreach ($emoticons as $emoticon) {
+        $c = $emoticon[0];
+        $special_first_chars[$c] = true;
+    }
+
     $comcode = '';
     $xml_tag_stack = [];
     $len = strlen($text);
     $matches = [];
-    $emoticons = array_keys($GLOBALS['FORUM_DRIVER']->find_emoticons());
     for ($i = 0; $i < $len; $i++) {
         $c = $text[$i];
-        if (($c == '<') && (preg_match('#^<(/?)(\w+)(\s[^<>]*)?' . '>#', substr($text, $i), $matches) != 0)) {
-            $upcoming_tag = $matches[2];
-            if ($matches[1] == '/') {
-                // Closing
-                if (array_peek($xml_tag_stack) == $upcoming_tag) {
-                    array_pop($xml_tag_stack);
-                }
-            } else {
-                // See if we need to remap an attachment tag
-                $matches2 = [];
-                if (($upcoming_tag == 'ATTACHMENT') && (preg_match('#^<ATTACHMENT[^<>]*><s>\[attachment=(\d+)\]</s>.*?<e>\[/attachment\]</e></ATTACHMENT>#', substr($text, $i), $matches2) != 0)) {
-                    $index = intval($matches2[1]);
-                    if (($attach_ids !== null) && (isset($attach_ids[$index]))) {
-                        $comcode .= '[attachment]' . strval($attach_ids[$index]) . '[/attachment]';
-                        $attach_ids_used[] = $attach_ids[$index];
-                    }
-                    $i += strlen($matches2[0]) - 1;
-                    continue;
-                }
 
-                array_push($xml_tag_stack, $matches[2]);
-            }
+        if (isset($special_first_chars[$c])) {
+            if (($c == '<') && (preg_match('#^<(/?)(\w+)(\s[^<>]*)?' . '>#', substr($text, $i), $matches) != 0)) {
+                $upcoming_tag = $matches[2];
+                if ($upcoming_tag != 't' && $upcoming_tag != 'r') {
+                    if ($matches[1] == '/') {
+                        // Closing
+                        if (array_peek($xml_tag_stack) == $upcoming_tag) {
+                            array_pop($xml_tag_stack);
+                        }
+                    } else {
+                        // See if we need to remap an attachment tag
+                        $matches2 = [];
+                        if (($upcoming_tag == 'ATTACHMENT') && (preg_match('#^<ATTACHMENT[^<>]*><s>\[attachment=(\d+)\]</s>.*?<e>\[/attachment\]</e></ATTACHMENT>#', substr($text, $i), $matches2) != 0)) {
+                            $index = intval($matches2[1]);
+                            if (($attach_ids !== null) && (isset($attach_ids[$index]))) {
+                                $comcode .= '[attachment]' . strval($attach_ids[$index]) . '[/attachment]';
+                                $attach_ids_used[] = $attach_ids[$index];
+                            }
+                            $i += strlen($matches2[0]) - 1;
+                            continue;
+                        }
 
-            $i += strlen($matches[0]) - 1;
-        } else {
-            if (!in_array('E', $xml_tag_stack)) {
-                // See if we need to hide an emoticon, because an emoticon appears without it being marked up as one
-                foreach ($emoticons as $emoticon) {
-                    if (substr($text, $i, strlen($emoticon)) == $emoticon) {
-                        $comcode .= '[semihtml]' . $emoticon . '[/semihtml]';
-                        $i += strlen($emoticon) - 1;
-                        continue 2;
+                        array_push($xml_tag_stack, $matches[2]);
                     }
                 }
+
+                $i += strlen($matches[0]) - 1;
+                continue;
             }
 
             if ($c == '[') {
@@ -246,8 +247,19 @@ function _phpbb3_post_text_to_comcode(string $text, ?array $attach_ids = null) :
                 }
             }
 
-            $comcode .= $c;
+            if (!in_array('E', $xml_tag_stack)) {
+                // See if we need to hide an emoticon, because an emoticon appears without it being marked up as one
+                foreach ($emoticons as $emoticon) {
+                    if (substr($text, $i, strlen($emoticon)) == $emoticon) {
+                        $comcode .= '[semihtml]' . $emoticon . '[/semihtml]';
+                        $i += strlen($emoticon) - 1;
+                        continue 2;
+                    }
+                }
+            }
         }
+
+        $comcode .= $c;
     }
 
     // Append any remaining attachments
