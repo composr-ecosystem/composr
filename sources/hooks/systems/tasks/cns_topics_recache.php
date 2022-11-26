@@ -98,7 +98,7 @@ class Hook_task_cns_topics_recache
                         $map = [];
                         if ($recache_poll_votes) {
                             $votes = $GLOBALS['FORUM_DB']->query_select_value('f_poll_votes', 'COUNT(*)', ['pv_answer_id' => $answer['id'], 'pv_poll_id' => $poll['id'], 'pv_revoked' => 0]);
-                            $map['pa_cache_total_votes'] = $votes;
+                            $map['pa_cache_num_votes'] = $votes;
                         }
                         if ($nullify_poll_voting_power) {
                             $map['pa_cache_voting_power'] = null;
