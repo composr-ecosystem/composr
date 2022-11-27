@@ -90,7 +90,12 @@ class Hook_endpoint_account_login
             ];
         }
 
-        $password_hashed_salted = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_pass_hash_salted');
+        $login_key = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_login_key');
+        if ($login_key == '') {
+            require_code('crypt');
+            $login_key =get_secure_random_string();
+            $GLOBALS['FORUM_DB']->query_update('f_members', ['m_login_key' => $login_key], ['id' => $member_id], '', 1);
+        }
 
         $data += [
             'memberID' => $member_id,
@@ -106,7 +111,7 @@ class Hook_endpoint_account_login
             'device_auth_member_id_cn' => get_member_cookie(),
             'device_auth_pass_hashed_cn' => get_pass_cookie(),
             'device_auth_member_id_vl' => strval($member_id),
-            'device_auth_pass_hashed_vl' => $password_hashed_salted,
+            'device_auth_pass_hashed_vl' => $login_key,
         ];
 
         return $data;
