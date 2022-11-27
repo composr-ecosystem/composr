@@ -19,21 +19,37 @@
  */
 
 /**
+ * Create a member login cookie.
+ *
+ * @param  MEMBER $member_id The member ID
+ */
+function cns_create_login_cookie(int $member_id)
+{
+    // User
+    cms_setcookie(get_member_cookie(), strval($member_id), false, true);
+
+    // Password
+    $password_hashed_salted = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_pass_hash_salted');
+    $password_compat_scheme = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_password_compat_scheme');
+    if ($password_compat_scheme == 'plain') {
+        require_code('crypt');
+        $password_hashed_salted = md5(get_site_salt() . $password_hashed_salted); // can't do direct representation for this, would be a plain text cookie; so in authorise_login we expect it to be md5'd and compare thusly (as per non-cookie call to that function)
+    }
+    cms_setcookie(get_pass_cookie(), $password_hashed_salted, false, true);
+}
+
+/**
  * Find if the given member ID and password is valid. If username is null, then the member ID is used instead.
  * All authorisation, cookies, and form-logins, are passed through this function.
- * Some forums do cookie logins differently, so a Boolean is passed in to indicate whether it is a cookie login.
  *
  * @param  object $this_ref Link to the real forum driver
- * @param  ?SHORT_TEXT $username The member username (null: don't use this in the authentication - but look it up using the ID if needed)
- * @param  ?MEMBER $user_id The member ID (null: use username)
- * @param  SHORT_TEXT $password_hashed The md5-hashed password
- * @param  string $password_raw The raw password
+ * @param  ?SHORT_TEXT $username The member username (null: use $member_id)
+ * @param  ?MEMBER $member_id The member ID (null: use $username)
+ * @param  string $password_mixed If $cookie_login is true then this is the value of the password cookie, otherwise it's the password the user tried to log in with
  * @param  boolean $cookie_login Whether this is a cookie login, determines how the hashed password is treated for the value passed in
  * @return array A map of 'id' and 'error'. If 'id' is null, an error occurred and 'error' is set
- *
- * @ignore
  */
-function _authorise_login(object $this_ref, ?string $username, ?int $user_id, string $password_hashed, string $password_raw, bool $cookie_login = false) : array
+function cns_authorise_login(object $this_ref, ?string $username, ?int $member_id, string $password_mixed, bool $cookie_login = false) : array
 {
     require_code('cns_forum_driver_helper_auth');
 
@@ -60,7 +76,7 @@ function _authorise_login(object $this_ref, ?string $username, ?int $user_id, st
 
     $skip_auth = false;
 
-    if ($user_id === null) {
+    if ($member_id === null) {
         if (get_option('one_per_email_address') == '2') {
             $rows = [];
         } else {
@@ -71,15 +87,15 @@ function _authorise_login(object $this_ref, ?string $username, ?int $user_id, st
         }
         if (array_key_exists(0, $rows)) {
             $this_ref->MEMBER_ROWS_CACHED[$rows[0]['id']] = $rows[0];
-            $user_id = $rows[0]['id'];
+            $member_id = $rows[0]['id'];
         }
     } else {
-        $rows[0] = $this_ref->get_member_row($user_id);
+        $rows[0] = $this_ref->get_member_row($member_id);
     }
 
     // LDAP to the rescue if we couldn't get a row
     global $LDAP_CONNECTION;
-    if ((!array_key_exists(0, $rows)) && ($LDAP_CONNECTION !== null) && ($user_id === null)) {
+    if ((!array_key_exists(0, $rows)) && ($LDAP_CONNECTION !== null) && ($member_id === null)) {
         // See if LDAP has it -- if so, we can add
         $test = cns_is_on_ldap($username);
         if (!$test) {
@@ -87,7 +103,7 @@ function _authorise_login(object $this_ref, ?string $username, ?int $user_id, st
             return $out;
         }
 
-        $test_auth = cns_ldap_authorise_login($username, $password_raw);
+        $test_auth = cns_ldap_authorise_login($username, $password_mixed);
         if ($test_auth['m_pass_hash_salted'] == '!!!') {
             $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
             return $out;
@@ -110,8 +126,8 @@ function _authorise_login(object $this_ref, ?string $username, ?int $user_id, st
                 exit();
             } else {
                 require_code('crypt');
-                $user_id = cns_member_external_linker($username, get_secure_random_string(), 'ldap');
-                $row = $this_ref->get_member_row($user_id);
+                $member_id = cns_member_external_linker($username, get_secure_random_string(), 'ldap');
+                $row = $this_ref->get_member_row($member_id);
             }
         }
     }
@@ -120,7 +136,7 @@ function _authorise_login(object $this_ref, ?string $username, ?int $user_id, st
         // Run hooks for other interactive login possibilities, if any exist
         $hooks = find_all_hook_obs('systems', 'login_providers_direct_auth', 'Hook_login_providers_direct_auth_');
         foreach ($hooks as $ob) {
-            $try_login = $ob->try_login($username, $user_id, $password_hashed, $password_raw, $cookie_login);
+            $try_login = $ob->try_login($username, $member_id, $password_mixed, $cookie_login);
             if ($try_login !== null) {
                 return $try_login;
             }
@@ -132,8 +148,8 @@ function _authorise_login(object $this_ref, ?string $username, ?int $user_id, st
     $row = $rows[0];
 
     // Now LDAP can kick in and get the correct hash
-    if (cns_is_ldap_member($user_id)) {
-        //$rows[0]['m_pass_hash_salted'] = cns_get_ldap_hash($user_id);
+    if (cns_is_ldap_member($member_id)) {
+        //$rows[0]['m_pass_hash_salted'] = cns_get_ldap_hash($member_id);
 
         // Doesn't exist any more? This is a special case - the 'LDAP member' exists in our DB, but not LDAP. It has been deleted from LDAP or LDAP server has jumped
         /*if ($rows[0]['m_pass_hash_salted'] === null)
@@ -142,7 +158,7 @@ function _authorise_login(object $this_ref, ?string $username, ?int $user_id, st
             return $out;
         } No longer appropriate with new authentication mode - instead we just have to give an invalid password message */
 
-        $row = array_merge($row, cns_ldap_authorise_login($username, $password_hashed));
+        $row = array_merge($row, cns_ldap_authorise_login($username, $password_mixed));
     }
 
     // Check valid user
@@ -165,76 +181,81 @@ function _authorise_login(object $this_ref, ?string $username, ?int $user_id, st
 
     // Check password
     if (!$skip_auth) {
-        // Choose a compatibility screen.
-        // Note that almost all cookie logins are the same. This is because the cookie logins use Conversr cookies, regardless of compatibility scheme.
         $password_compatibility_scheme = $row['m_password_compat_scheme'];
-        switch ($password_compatibility_scheme) {
-            case '': // Composr style salted MD5 algorithm
-            case 'temporary': // as above, but forced temporary password
-                if ($cookie_login) {
-                    if (!hash_equals($row['m_pass_hash_salted'], $password_hashed)) {
+        if ($cookie_login) {
+            switch ($password_compatibility_scheme) {
+                case 'none':
+                    require_code('crypt');
+                    if (!hash_equals(md5(get_site_salt() . $row['m_pass_hash_salted']), $password_mixed)) {
                         require_code('tempcode'); // This can be incidental even in fast AJAX scripts, if an old invalid cookie is present, so we need Tempcode for do_lang_tempcode
                         $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
                         return $out;
                     }
-                } else {
-                    require_code('crypt');
-                    if (!ratchet_hash_verify($password_raw, $row['m_pass_salt'], $row['m_pass_hash_salted'])) {
+                    break;
+
+                default:
+                    if (!hash_equals($row['m_pass_hash_salted'], $password_mixed)) {
+                        require_code('tempcode'); // This can be incidental even in fast AJAX scripts, if an old invalid cookie is present, so we need Tempcode for do_lang_tempcode
                         $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
                         return $out;
                     }
-                }
-                break;
-
-            case 'plain':
-                if (!hash_equals(md5($row['m_pass_hash_salted']), $password_hashed)) {
-                    $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
-                    return $out;
-                }
-                break;
-
-            case 'md5': // Old style plain md5     (also works if both are unhashed: used for LDAP)
-                if ((!hash_equals($row['m_pass_hash_salted'], $password_hashed)) && ($password_hashed !== '!!!')) { // The !!! bit would never be in a hash, but for plain text checks using this same code, we sometimes use '!!!' to mean 'Error'.
-                    $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
-                    return $out;
-                }
-                break;
-
-            /*
-            case 'httpauth':
-                // This is handled in get_member()
-                break;
-            */
-
-            case 'ldap':
-                if (!hash_equals($row['m_pass_hash_salted'], $password_hashed)) {
-                    $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
-                    return $out;
-                }
-                break;
-
-            default:
-                $path = get_file_base() . '/sources_custom/hooks/systems/cns_auth/' . $password_compatibility_scheme . '.php';
-                if (!file_exists($path)) {
-                    $path = get_file_base() . '/sources/hooks/systems/cns_auth/' . $password_compatibility_scheme . '.php';
-                }
-                if (!file_exists($path)) {
-                    if (function_exists('build_url')) {
-                        $reset_url = build_url(['page' => 'lost_password'], get_module_zone('lost_password'));
-                        $out['error'] = do_lang_tempcode('UNKNOWN_AUTH_SCHEME_IN_DB', escape_html($reset_url->evaluate()));
-                    } else {
-                        $out['error'] = do_lang_tempcode('UNKNOWN_AUTH_SCHEME_IN_DB', escape_html(get_base_url() . '/index.php?page=lost_password'));
+                    break;
+            }
+        } else {
+            switch ($password_compatibility_scheme) {
+                case '': // Composr style salted MD5 algorithm
+                case 'temporary': // as above, but forced temporary password
+                    require_code('crypt');
+                    if (!ratchet_hash_verify($password_mixed, $row['m_pass_salt'], $row['m_pass_hash_salted'])) {
+                        $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
+                        return $out;
                     }
-                    return $out;
-                }
-                require_code('hooks/systems/cns_auth/' . filter_naughty_harsh($password_compatibility_scheme, true));
-                $ob = object_factory('Hook_cns_auth_' . filter_naughty_harsh($password_compatibility_scheme, true));
-                $error = $ob->auth($username, $user_id, $password_hashed, $password_raw, $cookie_login, $row);
-                if ($error !== null) {
-                    $out['error'] = $error;
-                    return $out;
-                }
-                break;
+                    break;
+
+                case 'plain': // No hashing (very bad idea)
+                    if (!hash_equals($row['m_pass_hash_salted'], $password_mixed)) {
+                        $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
+                        return $out;
+                    }
+                    break;
+
+                case 'md5': // Old style plain md5 (very bad idea)
+                    if ((!hash_equals($row['m_pass_hash_salted'], md5($password_mixed))) && ($password_mixed !== '!!!')) { // The !!! bit would never be in a hash, but for plain text checks using this same code, we sometimes use '!!!' to mean 'Error'.
+                        $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
+                        return $out;
+                    }
+                    break;
+
+                /*
+                case 'httpauth':
+                    // This is handled in get_member()
+                    break;
+                */
+
+                default:
+                    // Some kind of plugin (probably for logging in to an account that was imported)
+                    $path = get_file_base() . '/sources_custom/hooks/systems/cns_auth/' . $password_compatibility_scheme . '.php';
+                    if (!file_exists($path)) {
+                        $path = get_file_base() . '/sources/hooks/systems/cns_auth/' . $password_compatibility_scheme . '.php';
+                    }
+                    if (!file_exists($path)) {
+                        if (function_exists('build_url')) {
+                            $reset_url = build_url(['page' => 'lost_password'], get_module_zone('lost_password'));
+                            $out['error'] = do_lang_tempcode('UNKNOWN_AUTH_SCHEME_IN_DB', escape_html($reset_url->evaluate()));
+                        } else {
+                            $out['error'] = do_lang_tempcode('UNKNOWN_AUTH_SCHEME_IN_DB', escape_html(get_base_url() . '/index.php?page=lost_password'));
+                        }
+                        return $out;
+                    }
+                    require_code('hooks/systems/cns_auth/' . filter_naughty_harsh($password_compatibility_scheme, true));
+                    $ob = object_factory('Hook_cns_auth_' . filter_naughty_harsh($password_compatibility_scheme, true));
+                    $error = $ob->auth($row['m_username'], $row['member_id'], $password_mixed, $cookie_login, $row);
+                    if ($error !== null) {
+                        $out['error'] = $error;
+                        return $out;
+                    }
+                    break;
+            }
         }
     }
 

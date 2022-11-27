@@ -133,7 +133,7 @@
                 show = true;
                 var label = $dom.$('#sep-forum');
                 if (label) {
-                    $dom.html(label, el.nextElementSibling.textContent);
+                    $dom.html(label, el.nextElementSibling.childNodes[0].childNodes[0].textContent);
                 }
             }
 

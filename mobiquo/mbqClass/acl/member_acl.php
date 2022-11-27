@@ -30,7 +30,7 @@ class CMSMemberACL
      */
     public function authenticate_credentials_and_set_auth(string $username, string $password, bool $invisible = false) : ?int
     {
-        $feedback = $GLOBALS['FORUM_DRIVER']->authorise_login($username, null, md5($password), $password);
+        $feedback = $GLOBALS['FORUM_DRIVER']->authorise_login($username, null, $password);
 
         $id = $feedback['id'];
         if ($id !== null) {
@@ -49,15 +49,8 @@ class CMSMemberACL
      */
     public function set_auth(int $id, bool $invisible = false)
     {
-        cms_setcookie(get_member_cookie(), strval($id));
-
-        $password_compat_scheme = $GLOBALS['FORUM_DRIVER']->get_member_row_field($id, 'm_password_compat_scheme');
-        $password_hashed_salted = $GLOBALS['FORUM_DRIVER']->get_member_row_field($id, 'm_pass_hash_salted');
-        if ($password_compat_scheme == 'plain') {
-            cms_setcookie(get_pass_cookie(), md5($password_hashed_salted), false, true);
-        } else {
-            cms_setcookie(get_pass_cookie(), $password_hashed_salted, false, true);
-        }
+        require_code('cns_forum_driver_helper_auth');
+        cns_create_login_cookie($id);
 
         if ($invisible) {
             set_invisibility();

@@ -618,19 +618,6 @@ abstract class Forum_driver_base
     }
 
     /**
-     * The hashing algorithm of this forum driver.
-     *
-     * @param  string $password_raw The password to hash, although the forum driver may internally call this function with another meaning to this parameter
-     * @param  string $key The string converted member-ID generally, although the forum driver may internally call this function with another meaning to this parameter
-     * @param  boolean $just_first Whether to just get the primary hashing mechanism (the meaning of this depends on the forum drivers but may mean a legacy hashing mechanism or one of two alternative mechanisms)
-     * @return string The hashed data
-     */
-    public function password_hash(string $password_raw, string $key, bool $just_first = false) : string
-    {
-        return md5($password_raw);
-    }
-
-    /**
      * Clean up forum-specific syntax for use in the software.
      *
      * @param  string $text The text to filter
@@ -639,5 +626,19 @@ abstract class Forum_driver_base
     public function filter_forum_text(string $text) : string
     {
         return $text;
+    }
+
+    /**
+     * Delete the login cookie, if it exists.
+     */
+    public function eat_login_cookie()
+    {
+        $member_cookie_name = get_member_cookie();
+        $pass_cookie_name = get_pass_cookie();
+
+        cms_eatcookie($member_cookie_name);
+        unset($_COOKIE[$member_cookie_name]);
+        cms_eatcookie($pass_cookie_name);
+        unset($_COOKIE[$pass_cookie_name]);
     }
 }

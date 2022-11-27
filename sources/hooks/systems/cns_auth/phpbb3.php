@@ -26,24 +26,23 @@ class Hook_cns_auth_phpbb3
     /**
      * Try and authenticate for our password compatibility scheme.
      *
-     * @param  ?SHORT_TEXT $username The member username (null: don't use this in the authentication - but look it up using the ID if needed)
-     * @param  ?MEMBER $user_id The member ID (null: use username)
-     * @param  SHORT_TEXT $password_hashed The md5-hashed password
+     * @param  SHORT_TEXT $username The member username
+     * @param  MEMBER $member_id The member ID
      * @param  string $password_raw The raw password
-     * @param  boolean $cookie_login Whether this is a cookie login
      * @param  array $row Row of Conversr account
      * @return ?Tempcode Error message (null: none)
      */
-    public function auth(?string $username, ?int $user_id, string $password_hashed, string $password_raw, bool $cookie_login, array $row) : ?object
+    public function auth(string $username, int $member_id, string $password_raw, array $row) : ?object
     {
-        if ($cookie_login) {
-            if ($row['m_pass_hash_salted'] != $password_hashed) {
+        require_code('forum/phpbb3');
+
+        if (_phpbb_uses_php_password_api($row['m_pass_hash_salted'])) {
+            if (!password_verify($password_raw, $row['m_pass_hash_salted'])) {
                 return do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
             }
         } else {
-            require_code('forum/phpbb3');
-            $itoa64 = './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-            if (_hash_crypt_private($password_raw, $row['m_pass_hash_salted'], $itoa64) != $row['m_pass_hash_salted']) {
+            $password_hashed = _phpbb_hash_crypt($password_raw, $row['m_pass_hash_salted']);
+            if (!hash_equals($password_hashed, $row['m_pass_hash_salted'])) {
                 return do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
             }
         }

@@ -184,23 +184,8 @@ function handle_active_login(string $username)
 {
     $result = [];
 
-    $member_cookie_name = get_member_cookie();
-    $colon_pos = strpos($member_cookie_name, ':');
-
-    if ($colon_pos !== false) {
-        $base = substr($member_cookie_name, 0, $colon_pos);
-        $real_member_cookie = substr($member_cookie_name, $colon_pos + 1);
-        $real_pass_cookie = substr(get_pass_cookie(), $colon_pos + 1);
-        $serialized = true;
-    } else {
-        $real_member_cookie = get_member_cookie();
-        $base = $real_member_cookie;
-        $real_pass_cookie = get_pass_cookie();
-        $serialized = false;
-    }
-
     $password = post_param_string('password', false, INPUT_FILTER_PASSWORD);
-    $login_array = $GLOBALS['FORUM_DRIVER']->authorise_login($username, null, $GLOBALS['FORUM_DRIVER']->password_hash($password, $username), $password);
+    $login_array = $GLOBALS['FORUM_DRIVER']->authorise_login($username, null, $password);
     $member_id = $login_array['id'];
 
     // Run hooks, if any exist
@@ -230,41 +215,7 @@ function handle_active_login(string $username)
 
             // Create user cookie
             if (method_exists($GLOBALS['FORUM_DRIVER'], 'create_login_cookie')) {
-                $GLOBALS['FORUM_DRIVER']->create_login_cookie($member_id, null, $password);
-            } else {
-                if ($GLOBALS['FORUM_DRIVER']->is_cookie_login_name()) {
-                    $name = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
-                    if ($serialized) {
-                        $result[$real_member_cookie] = $name;
-                    } else {
-                        cms_setcookie(get_member_cookie(), $name, false, true);
-                        $_COOKIE[get_member_cookie()] = $name;
-                    }
-                } else {
-                    if ($serialized) {
-                        $result[$real_member_cookie] = $member_id;
-                    } else {
-                        cms_setcookie(get_member_cookie(), strval($member_id), false, true);
-                        $_COOKIE[get_member_cookie()] = strval($member_id);
-                    }
-                }
-
-                // Create password cookie
-                if (!$serialized) {
-                    if ($GLOBALS['FORUM_DRIVER']->is_hashed()) {
-                        cms_setcookie(get_pass_cookie(), $GLOBALS['FORUM_DRIVER']->password_hash($password, $username), false, true);
-                    } else {
-                        cms_setcookie(get_pass_cookie(), $password, false, true);
-                    }
-                } else {
-                    if ($GLOBALS['FORUM_DRIVER']->is_hashed()) {
-                        $result[$real_pass_cookie] = $GLOBALS['FORUM_DRIVER']->password_hash($password, $username);
-                    } else {
-                        $result[$real_pass_cookie] = $password;
-                    }
-                    $_result = serialize($result);
-                    cms_setcookie($base, $_result, false, true);
-                }
+                $GLOBALS['FORUM_DRIVER']->create_login_cookie($member_id, $username, $password);
             }
         }
 
@@ -298,16 +249,7 @@ function handle_active_login(string $username)
 function handle_active_logout()
 {
     // Kill cookie
-    $member_cookie_name = get_member_cookie();
-    $colon_pos = strpos($member_cookie_name, ':');
-    if ($colon_pos !== false) {
-        $base = substr($member_cookie_name, 0, $colon_pos);
-    } else {
-        $real_member_cookie = get_member_cookie();
-        $base = $real_member_cookie;
-    }
-    cms_eatcookie($base);
-    unset($_COOKIE[$base]);
+    $GLOBALS['FORUM_DRIVER']->eat_login_cookie();
 
     // Kill session
     $session = get_session_id();

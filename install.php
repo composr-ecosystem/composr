@@ -718,13 +718,15 @@ function step_3() : object
 
     $url = prepare_installer_url('install.php?step=4');
 
+    $forum_path_default = get_file_base() . DIRECTORY_SEPARATOR . 'forums';
+
     $hidden = build_keep_post_fields();
     return do_template('INSTALLER_STEP_3', [
         '_GUID' => 'af52ecea73e9a8e2a92c12adbabbf4ab',
         'URL' => $url,
         'HIDDEN' => $hidden,
         'SIMPLE_FORUMS' => $simple_forums,
-        'FORUM_PATH_DEFAULT' => get_file_base() . DIRECTORY_SEPARATOR . 'forums',
+        'FORUM_PATH_DEFAULT' => $forum_path_default,
         'FORUMS' => $tforums,
         'DATABASES' => $tdatabase,
         'VERSION' => $default_version,
@@ -770,11 +772,12 @@ function step_4() : object
      * @global array $PROBED_FORUM_CONFIG
      */
     $PROBED_FORUM_CONFIG = [];
+    $PROBED_FORUM_CONFIG['sql_host'] = '';
     $PROBED_FORUM_CONFIG['sql_database'] = '';
     $PROBED_FORUM_CONFIG['sql_user'] = '';
     $PROBED_FORUM_CONFIG['sql_pass_exists'] = false; // We never auto-fill the password for security reasons; this gets set to true when not blank in the probe
     $board_path = post_param_string('board_path', '', INPUT_FILTER_POST_IDENTIFIER);
-    find_forum_path($board_path);
+    find_forum_path($board_path); // Probe the configuration
 
     if ((!array_key_exists('forum_base_url', $PROBED_FORUM_CONFIG)) || (!(strlen($PROBED_FORUM_CONFIG['forum_base_url']) > 0))) {
         $file_base = get_file_base();
@@ -791,19 +794,18 @@ function step_4() : object
         $PROBED_FORUM_CONFIG['forum_base_url'] = (strlen($append) < 15) ? (substr($base_url, 0, strlen($base_url) - ($i - strlen($board_path))) . ((((strlen($append) > 0) && ($append[0] == '/'))) ? '' : '/') . $append) : ($base_url . '/forums');
     }
 
-    if (array_key_exists('cookie_member_id', $PROBED_FORUM_CONFIG)) {
-        if (($forum_type != 'cns') && ($forum_type != 'none')) {
+    if (($forum_type != 'cns') && ($forum_type != 'none')) {
+        // Play safe with our defaults via prefixing; user is unlikely to get cookie domain/path settings right, and integration code could become broken if cookie-encoding scheme changes in 3rd party software
+        if (array_key_exists('cookie_member_id', $PROBED_FORUM_CONFIG)) {
             $PROBED_FORUM_CONFIG['cookie_member_id'] = 'cms__' . $PROBED_FORUM_CONFIG['cookie_member_id'];
+        } else {
+            $PROBED_FORUM_CONFIG['cookie_member_id'] = 'cms_member_id';
         }
-    } else {
-        $PROBED_FORUM_CONFIG['cookie_member_id'] = 'cms_member_id';
-    }
-    if (array_key_exists('cookie_member_hash', $PROBED_FORUM_CONFIG)) {
-        if (($forum_type != 'cns') && ($forum_type != 'none')) {
+        if (array_key_exists('cookie_member_hash', $PROBED_FORUM_CONFIG)) {
             $PROBED_FORUM_CONFIG['cookie_member_hash'] = 'cms__' . $PROBED_FORUM_CONFIG['cookie_member_hash'];
+        } else {
+            $PROBED_FORUM_CONFIG['cookie_member_hash'] = 'cms_member_hash';
         }
-    } else {
-        $PROBED_FORUM_CONFIG['cookie_member_hash'] = 'cms_member_hash';
     }
 
     $cookie_domain = '';//(($domain == 'localhost') || (strpos($domain, '.') === false)) ? '' : ('.' . $domain);
@@ -811,16 +813,19 @@ function step_4() : object
     $cookie_days = '1825';
     $use_persistent = false;
     require_code('version');
-    if (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) == 'WIN') {
-        $db_site_host = '127.0.0.1';
-    } else {
-        $db_site_host = 'localhost';
+    $db_site_host = $PROBED_FORUM_CONFIG['sql_host'];
+    if ($db_site_host == '') {
+        if (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) == 'WIN') {
+            $db_site_host = '127.0.0.1';
+        } else {
+            $db_site_host = 'localhost';
+        }
     }
     $db_site_user = $PROBED_FORUM_CONFIG['sql_user'];
     $db_password_exists = $PROBED_FORUM_CONFIG['sql_pass_exists'];
     $db_site = $PROBED_FORUM_CONFIG['sql_database'];
     $forum_base_url = $PROBED_FORUM_CONFIG['forum_base_url'];
-    $member_cookie = $PROBED_FORUM_CONFIG['cookie_member_id'];
+    $user_cookie = $PROBED_FORUM_CONFIG['cookie_member_id'];
     $pass_cookie = $PROBED_FORUM_CONFIG['cookie_member_hash'];
     $multi_lang_content = ((file_exists(get_file_base() . '/.git')/*randomise in dev mode*/) && ($db_type != 'xml')) ? mt_rand(0, 1) : 0;
     $domain = preg_replace('#:.*#', '', get_request_hostname());
@@ -883,8 +888,8 @@ function step_4() : object
         if (!empty($SITE_INFO['db_site'])) {
             $db_site = $SITE_INFO['db_site'];
         }
-        if (!empty($SITE_INFO['member_cookie'])) {
-            $member_cookie = $SITE_INFO['member_cookie'];
+        if (!empty($SITE_INFO['user_cookie'])) {
+            $user_cookie = $SITE_INFO['user_cookie'];
         }
         if (!empty($SITE_INFO['pass_cookie'])) {
             $pass_cookie = $SITE_INFO['pass_cookie'];
@@ -964,7 +969,7 @@ function step_4() : object
     $options = new Tempcode();
     $hidden = new Tempcode();
     if (!GOOGLE_APPENGINE) {
-        $options->attach(make_option(do_lang_tempcode('BASE_URL'), example('BASE_URL_TEXT'), 'base_url', $base_url, false, true));
+        $options->attach(make_option(do_lang_tempcode('BASE_URL'), example('', 'BASE_URL_TEXT'), 'base_url', $base_url, false, true));
     } else {
         $options->attach(make_option(do_lang_tempcode('GAE_APPLICATION'), do_lang_tempcode('DESCRIPTION_GAE_APPLICATION'), 'gae_application', preg_replace('#^.*~#', '', $_SERVER['APPLICATION_ID']), false, true));
         $hidden->attach(form_input_hidden('base_url', $base_url));
@@ -1043,7 +1048,7 @@ function step_4() : object
         $hidden->attach(form_input_hidden('db_site_password', ''));
     }
     if ($db_type != 'xml') {
-        $options->attach(make_option(do_lang_tempcode('TABLE_PREFIX'), example('TABLE_PREFIX_TEXT'), 'table_prefix', $table_prefix));
+        $options->attach(make_option(do_lang_tempcode('TABLE_PREFIX'), example('', 'TABLE_PREFIX_TEXT'), 'table_prefix', $table_prefix));
     } else {
         $hidden->attach(form_input_hidden('table_prefix', $table_prefix));
     }
@@ -1072,34 +1077,52 @@ function step_4() : object
         $sections->attach(do_template('INSTALLER_STEP_4_SECTION', ['_GUID' => '15e0f275f78414b6c4fe7775a1cacb23', 'HIDDEN' => $hidden, 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options]));
     }
 
-    // Advanced settings...
+    // Cookie settings...
+
+    if (!GOOGLE_APPENGINE) {
+        $visible_cookie_options = ($forum_type != 'cns' && $forum_type != 'none');
+        $title = do_lang_tempcode('COOKIE_SETTINGS');
+        $text = new Tempcode();
+        $options = new Tempcode();
+        $hidden = new Tempcode();
+        $cookie_text = do_lang_tempcode('COOKIE_TEXT');
+        if (substr($user_cookie, 0, 5) != 'cms__') {
+            $cookie_text->attach('<br />');
+            $cookie_text->attach(do_lang_tempcode('COOKIE_TEXT__CMS_PREFIX'));
+        }
+        $options->attach(make_option(do_lang_tempcode('COOKIE'), example('COOKIE_EXAMPLE', $cookie_text), 'user_cookie', $user_cookie, false, true));
+        $cookie_password_text = do_lang_tempcode('COOKIE_TEXT');
+        if (substr($pass_cookie, 0, 5) != 'cms__') {
+            $cookie_password_text->attach('<br />');
+            $cookie_password_text->attach(do_lang_tempcode('COOKIE_TEXT__CMS_PREFIX'));
+        }
+        $options->attach(make_option(do_lang_tempcode('COOKIE_PASSWORD'), example('COOKIE_PASSWORD_EXAMPLE', $cookie_password_text), 'pass_cookie', $pass_cookie, false, true));
+        $options->attach(make_option(do_lang_tempcode('COOKIE_DOMAIN'), example('COOKIE_DOMAIN_EXAMPLE', 'COOKIE_DOMAIN_TEXT'), 'cookie_domain', $cookie_domain));
+        $options->attach(make_option(do_lang_tempcode('COOKIE_PATH'), example('COOKIE_PATH_EXAMPLE', 'COOKIE_PATH_TEXT'), 'cookie_path', $cookie_path));
+        $options->attach(make_option(do_lang_tempcode('COOKIE_DAYS'), example('COOKIE_DAYS_EXAMPLE', 'COOKIE_DAYS_TEXT'), 'cookie_days', $cookie_days, false, true));
+        $cookie_options = do_template('INSTALLER_STEP_4_SECTION', ['_GUID' => '3b9ea022164801f4b60780a4a966006f', 'HIDDEN' => $hidden, 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options]);
+        if ($visible_cookie_options) {
+            $sections->attach($cookie_options);
+        }
+    }
+
+    // General advanced settings...
 
     $title = do_lang_tempcode('GENERAL');
     $text = new Tempcode();
     $options = new Tempcode();
     $hidden = new Tempcode();
     $options->attach(make_tick(do_lang_tempcode('MULTI_LANG_CONTENT'), is_maintained_description('multi_lang_content', example('', 'MULTI_LANG_CONTENT_TEXT')), 'multi_lang_content', $multi_lang_content));
-    $advanced_1 = do_template('INSTALLER_STEP_4_SECTION', ['_GUID' => 'g051465e86a7a53ec078e0d9de773993', 'HIDDEN' => $hidden, 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options]);
-
-    // Cookie settings...
-
-    if (!GOOGLE_APPENGINE) {
-        $title = do_lang_tempcode('COOKIE_SETTINGS');
-        $text = new Tempcode();
-        $options = new Tempcode();
-        $hidden = new Tempcode();
-        $options->attach(make_option(do_lang_tempcode('COOKIE'), example('COOKIE_EXAMPLE', 'COOKIE_TEXT'), 'user_cookie', $member_cookie, false, true));
-        $options->attach(make_option(do_lang_tempcode('COOKIE_PASSWORD'), example('COOKIE_PASSWORD_EXAMPLE', 'COOKIE_PASSWORD_TEXT'), 'pass_cookie', $pass_cookie, false, true));
-        $options->attach(make_option(do_lang_tempcode('COOKIE_DOMAIN'), example('COOKIE_DOMAIN_EXAMPLE', 'COOKIE_DOMAIN_TEXT'), 'cookie_domain', $cookie_domain));
-        $options->attach(make_option(do_lang_tempcode('COOKIE_PATH'), example('COOKIE_PATH_EXAMPLE', 'COOKIE_PATH_TEXT'), 'cookie_path', $cookie_path));
-        $options->attach(make_option(do_lang_tempcode('COOKIE_DAYS'), example('COOKIE_DAYS_EXAMPLE', 'COOKIE_DAYS_TEXT'), 'cookie_days', $cookie_days, false, true));
-        $advanced_2 = do_template('INSTALLER_STEP_4_SECTION', ['_GUID' => '3b9ea022164801f4b60780a4a966006f', 'HIDDEN' => $hidden, 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options]);
-    }
+    $general_advanced_options = do_template('INSTALLER_STEP_4_SECTION', ['_GUID' => 'g051465e86a7a53ec078e0d9de773993', 'HIDDEN' => $hidden, 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options]);
 
     $temp = new Tempcode();
-    $temp->attach($advanced_1);
-    $temp->attach($advanced_2);
-    $sections->attach(do_template('INSTALLER_STEP_4_SECTION_HIDE', ['_GUID' => '42eb3d44bcf8ef99987b6daa9e6530aa', 'TITLE' => $title, 'CONTENT' => $temp]));
+    if (!GOOGLE_APPENGINE) {
+        if (!$visible_cookie_options) {
+            $temp->attach($cookie_options);
+        }
+    }
+    $temp->attach($general_advanced_options);
+    $sections->attach(do_template('INSTALLER_STEP_4_SECTION_HIDE', ['_GUID' => '42eb3d44bcf8ef99987b6daa9e6530aa', 'TITLE' => do_lang('ADVANCED_BELOW'), 'CONTENT' => $temp]));
 
     // ----
 
@@ -2999,27 +3022,29 @@ function make_tick(object $nice_name, object $description, string $name, int $va
  * Get an example string for the installer UI (abstraction).
  *
  * @param  string $example The codename of the example text language string (blank: none)
- * @param  string $description The codename of the example description language string (blank: none)
+ * @param  mixed $description The codename of the example description language string or Tempcode for a description (blank: none)
  * @return Tempcode The text
  */
-function example(string $example, string $description = '') : object
+function example(string $example, $description) : object
 {
-    if ($example == '') {
-        return do_lang_tempcode($description);
+    $out = new Tempcode();
+    if ($description !== '') {
+        if (is_object($description)) {
+            $out->attach($description);
+        } else {
+            $out->attach(do_lang_tempcode($description));
+        }
     }
-    if ($description == '') {
-        return do_lang_tempcode($example);
+    if ($example != '') {
+        $out->attach('<br />');
+        $out->attach(do_lang_tempcode('FOR_EXAMPLE', do_lang_tempcode($example)));
     }
-
-    $it = new Tempcode();
-    $it->attach(do_lang_tempcode($description));
-    $it->attach('<br />');
-    $it->attach(do_lang_tempcode('FOR_EXAMPLE', do_lang_tempcode($example)));
-    return $it;
+    return $out;
 }
 
 /**
  * Using the current forum driver, find the forum path.
+ * Also probe the configuration.
  *
  * @param  string $given What the user manually gave as the forum path (may be blank)
  * @return ?URLPATH The answer (null: could not find the forum)

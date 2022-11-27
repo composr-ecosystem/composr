@@ -59,26 +59,6 @@ class Forum_driver_smf2 extends Forum_driver_base
     }
 
     /**
-     * Find if the login cookie contains the login name instead of the member ID.
-     *
-     * @return boolean Whether the login cookie contains a login name or a member ID
-     */
-    public function is_cookie_login_name() : bool
-    {
-        return false;
-    }
-
-    /**
-     * Find if login cookie is md5-hashed.
-     *
-     * @return boolean Whether the login cookie is md5-hashed
-     */
-    public function is_hashed() : bool
-    {
-        return true;
-    }
-
-    /**
      * Find the member ID of the forum guest member.
      *
      * @return MEMBER The member ID of the forum guest member
@@ -193,6 +173,7 @@ class Forum_driver_smf2 extends Forum_driver_base
     {
         global $PROBED_FORUM_CONFIG;
         if (@file_exists($path . '/Settings.php')) {
+            $db_server = '';
             $db_name = '';
             $db_user = '';
             $db_passwd = '';
@@ -200,11 +181,12 @@ class Forum_driver_smf2 extends Forum_driver_base
             $db_prefix = '';
             $cookiename = '';
             @include($path . '/Settings.php');
+            $PROBED_FORUM_CONFIG['sql_host'] = $db_server;
             $PROBED_FORUM_CONFIG['sql_database'] = $db_name;
             $PROBED_FORUM_CONFIG['sql_user'] = $db_user;
             $PROBED_FORUM_CONFIG['sql_pass_exists'] = ($db_passwd != '');
-            $PROBED_FORUM_CONFIG['board_url'] = $boardurl;
             $PROBED_FORUM_CONFIG['sql_tbl_prefix'] = $db_prefix;
+            $PROBED_FORUM_CONFIG['board_url'] = $boardurl;
             $PROBED_FORUM_CONFIG['cookie_member_id'] = $cookiename . ':0';
             $PROBED_FORUM_CONFIG['cookie_member_hash'] = $cookiename . ':1';
 
@@ -221,18 +203,21 @@ class Forum_driver_smf2 extends Forum_driver_base
     public function install_get_path_search_list() : array
     {
         return [
-            0 => 'forums',
-            1 => 'forum',
-            2 => 'boards',
-            3 => 'board',
-            4 => 'smf',
-            5 => 'SMF',
-            6 => '../forums',
-            7 => '../forum',
-            8 => '../boards',
-            9 => '../board',
-            10 => '../smf',
-            11 => '../SMF'];
+            'smf',
+            'SMF',
+            'forums',
+            'forum',
+            'boards',
+            'board',
+            '../forums/smf',
+            '../forums/SMF',
+            '../smf',
+            '../SMF',
+            '../forums',
+            '../forum',
+            '../boards',
+            '../board',
+        ];
     }
 
     /**
@@ -1143,7 +1128,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      *
      * @param  MEMBER $member_id The member ID
      * @param  ?SHORT_TEXT $username The username (null: lookup)
-     * @param  string $password_raw The password
+     * @param  string $password_raw The password (note this is sometimes not used by forum drivers, as they can also do something with what is already in the database instead)
      */
     public function create_login_cookie(int $member_id, ?string $username, string $password_raw)
     {
@@ -1161,22 +1146,51 @@ class Forum_driver_smf2 extends Forum_driver_base
 
         $data = [$member_id, $_password, (time() + intval(get_cookie_days()) * 24 * 60 * 60), 3];
 
-        cms_setcookie($stub, serialize($data));
+        cms_setcookie($stub, serialize($data), false, true);
+    }
+
+    /**
+     * Try and log in using a member cookie.
+     * Should only be called if the cookie exists.
+     *
+     * @return ?array A map of 'id' and 'error'. If 'id' is null, an error occurred and 'error' is set (null: no cookie)
+     */
+    public function authorise_cookie_login() : ?array
+    {
+        if ((!isset($_COOKIE[get_member_cookie()])) || (!isset($_COOKIE[get_pass_cookie()]))) {
+            return null;
+        }
+
+        $username = $_COOKIE[get_member_cookie()];
+        $password_hashed = $_COOKIE[get_pass_cookie()];
+
+        return $this->_authorise_login($username, null, $password_hashed, true);
+    }
+
+    /**
+     * Find if the given member ID and password is valid. If username is null, then the member ID is used instead.
+     *
+     * @param  ?SHORT_TEXT $username The member username (null: use $member_id)
+     * @param  ?MEMBER $member_id The member ID (null: use $username)
+     * @param  string $password_raw The raw password
+     * @return array A map of 'id' and 'error'. If 'id' is null, an error occurred and 'error' is set
+     */
+    public function authorise_login(?string $username, ?int $member_id, string $password_raw) : array
+    {
+        return $this->_authorise_login($username, $member_id, $password_raw, false);
     }
 
     /**
      * Find if the given member ID and password is valid. If username is null, then the member ID is used instead.
      * All authorisation, cookies, and form-logins, are passed through this function.
-     * Some forums do cookie logins differently, so a Boolean is passed in to indicate whether it is a cookie login.
      *
-     * @param  ?SHORT_TEXT $username The member username (null: don't use this in the authentication - but look it up using the ID if needed)
+     * @param  ?SHORT_TEXT $username The member username (null: use $member_id)
      * @param  ?MEMBER $member_id The member ID (null: use $username)
-     * @param  SHORT_TEXT $password_hashed The md5-hashed password
-     * @param  string $password_raw The raw password
+     * @param  string $password_mixed If $cookie_login is true then this is the value of the password cookie, otherwise it's the password the user tried to log in with
      * @param  boolean $cookie_login Whether this is a cookie login, determines how the hashed password is treated for the value passed in
      * @return array A map of 'id' and 'error'. If 'id' is null, an error occurred and 'error' is set
      */
-    public function authorise_login(?string $username, ?int $member_id, string $password_hashed, string $password_raw, bool $cookie_login = false) : array
+    protected function _authorise_login(?string $username, ?int $member_id, string $password_mixed, bool $cookie_login = false) : array
     {
         $out = [];
         $out['id'] = null;
@@ -1209,13 +1223,25 @@ class Forum_driver_smf2 extends Forum_driver_base
         $GLOBALS['SMF_NEW'] = array_key_exists('pm_ignore_list', $row);
 
         // Main authentication
+        $password_hashed = $cookie_login ? $password_mixed : $this->password_hash($password_mixed, strval($row['id_member']));
         $bits = explode('::', $password_hashed);
         if (!array_key_exists(1, $bits)) {
             $bits[1] = $bits[0];
         }
-        $test1 = ((!$GLOBALS['SMF_NEW'])) && ((($cookie_login) && (hash_equals($this->password_hash($row['passwd'], 'ys', true), $bits[0]))) || ((!$cookie_login) && (hash_equals($row['passwd'], $bits[0]))));
-        $test2 = ($GLOBALS['SMF_NEW']) && ((($cookie_login) && (hash_equals(sha1($row['passwd'] . $row['password_salt']), $bits[1]))) || ((!$cookie_login) && (hash_equals($row['passwd'], $bits[1]))));
-        if ((!$test1) && (!$test2)) {
+        if ($cookie_login) {
+            if ($GLOBALS['SMF_NEW']) {
+                $passes = hash_equals(sha1($row['passwd'] . $row['password_salt']), $bits[1]);
+            } else {
+                $passes = hash_equals($this->password_hash($row['passwd'], 'ys', true), $bits[0]);
+            }
+        } else {
+            if ($GLOBALS['SMF_NEW']) {
+                $passes = hash_equals($row['passwd'], $bits[1]);
+            } else {
+                $passes = hash_equals($row['passwd'], $bits[0]);
+            }
+        }
+        if (!$passes) {
             $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
             return $out;
         }
@@ -1230,20 +1256,20 @@ class Forum_driver_smf2 extends Forum_driver_base
     }
 
     /**
-     * The hashing algorithm of this forum driver.
+     * SMF hashing.
      *
-     * @param  string $password_raw The password to hash, although the forum driver may internally call this function with another meaning to this parameter
-     * @param  string $key The string converted member-ID generally, although the forum driver may internally call this function with another meaning to this parameter
-     * @param  boolean $just_first Whether to just get the primary hashing mechanism (the meaning of this depends on the forum drivers but may mean a legacy hashing mechanism or one of two alternative mechanisms)
+     * @param  string $password_raw The value to hash
+     * @param  string $key Special key to hash with
+     * @param  boolean $smf1_only Whether to just use original SMF hashing
      * @return string The hashed data
      */
-    public function password_hash(string $password_raw, string $key, bool $just_first = false) : string
+    protected function password_hash(string $password_raw, string $key, bool $smf1_only = false) : string
     {
         $key = cms_strtolower_ascii($key);
         $new_key = str_pad((strlen($key) <= 64) ? $key : pack('H*', md5($key)), 64, chr(0x00));
 
         $a = md5(($new_key ^ str_repeat(chr(0x5c), 64)) . pack('H*', md5(($new_key ^ str_repeat(chr(0x36), 64)) . $password_raw))); // SMF 1.0 style
-        if ($just_first) {
+        if ($smf1_only) {
             return $a;
         }
         $b = sha1($key . $password_raw); // SMF 1.1 style

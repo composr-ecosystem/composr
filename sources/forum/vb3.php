@@ -59,16 +59,6 @@ class Forum_driver_vb3 extends Forum_driver_base
     }
 
     /**
-     * Find if the login cookie contains the login name instead of the member ID.
-     *
-     * @return boolean Whether the login cookie contains a login name or a member ID
-     */
-    public function is_cookie_login_name() : bool
-    {
-        return false;
-    }
-
-    /**
      * Find the member ID of the forum guest member.
      *
      * @return MEMBER The member ID of the forum guest member
@@ -1033,16 +1023,6 @@ class Forum_driver_vb3 extends Forum_driver_base
     }
 
     /**
-     * Find if login cookie is md5-hashed.
-     *
-     * @return boolean Whether the login cookie is md5-hashed
-     */
-    public function is_hashed() : bool
-    {
-        return true;
-    }
-
-    /**
      * Get an array of attributes to take in from the installer. Almost all forums require a table prefix, which the requirement there-of is defined through this function.
      * The attributes have 4 values in an array:
      * - name, the name of the attribute for _config.php
@@ -1078,6 +1058,7 @@ class Forum_driver_vb3 extends Forum_driver_base
     {
         global $PROBED_FORUM_CONFIG;
         if (@file_exists($path . '/includes/config.php')) {
+            $servername = '';
             $dbname = null;
             $dbusername = '';
             $dbpassword = '';
@@ -1086,6 +1067,7 @@ class Forum_driver_vb3 extends Forum_driver_base
             @include($path . '/includes/config.php');
             $PROBED_FORUM_CONFIG = [];
             if ($dbname !== null) {
+                $PROBED_FORUM_CONFIG['sql_host'] = $servername;
                 $PROBED_FORUM_CONFIG['sql_database'] = $dbname;
                 $PROBED_FORUM_CONFIG['sql_user'] = $dbusername;
                 $PROBED_FORUM_CONFIG['sql_pass_exists'] = ($dbpassword != '');
@@ -1093,6 +1075,7 @@ class Forum_driver_vb3 extends Forum_driver_base
                 $PROBED_FORUM_CONFIG['cookie_member_id'] = 'bbuserid';
                 $PROBED_FORUM_CONFIG['cookie_member_hash'] = 'bbpassword';
             } elseif (array_key_exists('Database', $config)) {
+                $PROBED_FORUM_CONFIG['sql_host'] = $config['MasterServer']['servername'];
                 $PROBED_FORUM_CONFIG['sql_database'] = $config['Database']['dbname'];
                 $PROBED_FORUM_CONFIG['sql_user'] = $config['MasterServer']['username'];
                 $PROBED_FORUM_CONFIG['sql_pass_exists'] = ($config['MasterServer']['password'] != '');
@@ -1120,24 +1103,24 @@ class Forum_driver_vb3 extends Forum_driver_base
     public function install_get_path_search_list() : array
     {
         return [
-            0 => 'forums',
-            1 => 'forum',
-            2 => 'boards',
-            3 => 'board',
-            4 => 'vb',
-            5 => 'vb3',
-            6 => 'upload',
-            7 => 'uploads',
-            8 => 'vbulletin',
-            10 => '../forums',
-            11 => '../forum',
-            12 => '../boards',
-            13 => '../board',
-            14 => '../vb',
-            15 => '../vb3',
-            16 => '../upload',
-            17 => '../uploads',
-            18 => '../vbulletin'];
+            'vb',
+            'vb3',
+            'vbulletin',
+            'forums',
+            'forum',
+            'boards',
+            'board',
+            '../forums/vb',
+            '../forums/vb3',
+            '../forums/vbulletin',
+            '../vb',
+            '../vb3',
+            '../vbulletin',
+            '../forums',
+            '../forum',
+            '../boards',
+            '../board',
+        ];
     }
 
     /**
@@ -1255,33 +1238,62 @@ class Forum_driver_vb3 extends Forum_driver_base
      *
      * @param  MEMBER $member_id The member ID
      * @param  ?SHORT_TEXT $username The username (null: lookup)
-     * @param  string $password_raw The password
+     * @param  string $password_raw The password (note this is sometimes not used by forum drivers, as they can also do something with what is already in the database instead)
      */
     public function create_login_cookie(int $member_id, ?string $username, string $password_raw)
     {
         // User
-        cms_setcookie(get_member_cookie(), strval($member_id));
+        cms_setcookie(get_member_cookie(), strval($member_id), false, true);
 
         // Password
         $password_hashed = $this->get_member_row_field($member_id, 'password');
         global $SITE_INFO;
         $_password = md5($password_hashed . $SITE_INFO['vb_unique_id']);
-        cms_setcookie(get_pass_cookie(), $_password);
+        cms_setcookie(get_pass_cookie(), $_password, false, true);
+    }
+
+    /**
+     * Try and log in using a member cookie.
+     * Should only be called if the cookie exists.
+     *
+     * @return ?array A map of 'id' and 'error'. If 'id' is null, an error occurred and 'error' is set (null: no cookie)
+     */
+    public function authorise_cookie_login() : ?array
+    {
+        if ((!isset($_COOKIE[get_member_cookie()])) || (!isset($_COOKIE[get_pass_cookie()]))) {
+            return null;
+        }
+
+        $username = $_COOKIE[get_member_cookie()];
+        $password_hashed = $_COOKIE[get_pass_cookie()];
+
+        return $this->_authorise_login($username, null, $password_hashed, true);
+    }
+
+    /**
+     * Find if the given member ID and password is valid. If username is null, then the member ID is used instead.
+     *
+     * @param  ?SHORT_TEXT $username The member username (null: use $member_id)
+     * @param  ?MEMBER $member_id The member ID (null: use $username)
+     * @param  string $password_raw The raw password
+     * @return array A map of 'id' and 'error'. If 'id' is null, an error occurred and 'error' is set
+     */
+    public function authorise_login(?string $username, ?int $member_id, string $password_raw) : array
+    {
+        return $this->_authorise_login($username, $member_id, $password_raw, false);
     }
 
     /**
      * Find if the given member ID and password is valid. If username is null, then the member ID is used instead.
      * All authorisation, cookies, and form-logins, are passed through this function.
-     * Some forums do cookie logins differently, so a Boolean is passed in to indicate whether it is a cookie login.
      *
-     * @param  ?SHORT_TEXT $username The member username (null: don't use this in the authentication - but look it up using the ID if needed)
+     * @param  ?SHORT_TEXT $username The member username (null: use $member_id)
      * @param  ?MEMBER $member_id The member ID (null: use $username)
-     * @param  SHORT_TEXT $password_hashed The md5-hashed password
-     * @param  string $password_raw The raw password
+     * @param  string $password_mixed If $cookie_login is true then this is the value of the password cookie, otherwise it's the password the user tried to log in with
      * @param  boolean $cookie_login Whether this is a cookie login, determines how the hashed password is treated for the value passed in
      * @return array A map of 'id' and 'error'. If 'id' is null, an error occurred and 'error' is set
      */
-    public function authorise_login(?string $username, ?int $member_id, string $password_hashed, string $password_raw, bool $cookie_login = false) : array
+    protected function _authorise_login(?string $username, ?int $member_id, string $password_mixed, bool $cookie_login = false) : array
     {
         $out = [];
         $out['id'] = null;
@@ -1306,10 +1318,19 @@ class Forum_driver_vb3 extends Forum_driver_base
             return $out;
         }
 
-        global $SITE_INFO;
-        if (!((hash_equals(md5($row['password'] . $SITE_INFO['vb_unique_id']), $password_hashed) && ($cookie_login)) || ((!$cookie_login) && (hash_equals($row['password'], md5($password_hashed . $row['salt'])))))) {
-            $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
-            return $out;
+        if ($cookie_login) {
+            $password_hashed = $password_mixed;
+
+            global $SITE_INFO;
+            if (!hash_equals(md5($row['password'] . $SITE_INFO['vb_unique_id']), $password_hashed)) {
+                $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
+                return $out;
+            }
+        } else {
+            if (!hash_equals($row['password'], md5($password_mixed . $row['salt']))) {
+                $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
+                return $out;
+            }
         }
 
         if (substr(get_member_cookie(), 0, 5) != 'cms__') {

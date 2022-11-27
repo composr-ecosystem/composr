@@ -59,26 +59,6 @@ class Forum_driver_wbb22 extends Forum_driver_base
     }
 
     /**
-     * Find if the login cookie contains the login name instead of the member ID.
-     *
-     * @return boolean Whether the login cookie contains a login name or a member ID
-     */
-    public function is_cookie_login_name() : bool
-    {
-        return false;
-    }
-
-    /**
-     * Find if login cookie is md5-hashed.
-     *
-     * @return boolean Whether the login cookie is md5-hashed
-     */
-    public function is_hashed() : bool
-    {
-        return true;
-    }
-
-    /**
      * Find the member ID of the forum guest member.
      *
      * @return MEMBER The member ID of the forum guest member
@@ -209,18 +189,20 @@ class Forum_driver_wbb22 extends Forum_driver_base
     {
         global $PROBED_FORUM_CONFIG;
         if (@file_exists($path . '/acp/lib/config.inc.php')) {
+            $sqlhost = '';
             $sqldb = '';
             $sqluser = '';
             $sqlpassword = '';
             $n = '';
             @include($path . '/acp/lib/config.inc.php');
+            $PROBED_FORUM_CONFIG['sql_host'] = $sqlhost;
             $PROBED_FORUM_CONFIG['sql_database'] = $sqldb;
             $PROBED_FORUM_CONFIG['sql_user'] = $sqluser;
             $PROBED_FORUM_CONFIG['sql_pass_exists'] = ($sqlpassword != '');
+            $PROBED_FORUM_CONFIG['sql_tbl_prefix'] = $n;
+            $PROBED_FORUM_CONFIG['board_url'] = '';
             $PROBED_FORUM_CONFIG['cookie_member_id'] = 'wbb_userid';
             $PROBED_FORUM_CONFIG['cookie_member_hash'] = 'wbb_userpassword';
-            $PROBED_FORUM_CONFIG['board_url'] = '';
-            $PROBED_FORUM_CONFIG['sql_tbl_prefix'] = $n;
             return true;
         }
         return false;
@@ -234,26 +216,27 @@ class Forum_driver_wbb22 extends Forum_driver_base
     public function install_get_path_search_list() : array
     {
         return [
-            0 => 'forums',
-            1 => 'forum',
-            2 => 'boards',
-            3 => 'board',
-            4 => 'bb',
-            5 => 'bb2',
-            6 => 'upload',
-            7 => 'uploads',
-            8 => 'burningboard',
-            9 => 'wbb',
-            10 => '../forums',
-            11 => '../forum',
-            12 => '../boards',
-            13 => '../board',
-            14 => '../bb',
-            15 => '../bb2',
-            16 => '../upload',
-            17 => '../uploads',
-            18 => '../burningboard',
-            19 => '../wbb'];
+            'bb',
+            'bb2',
+            'burningboard',
+            'wbb',
+            'forums',
+            'forum',
+            'boards',
+            'board',
+            '../forums/bb',
+            '../forums/bb2',
+            '../forums/burningboard',
+            '../forums/wbb',
+            '../bb',
+            '../bb2',
+            '../burningboard',
+            '../wbb',
+            '../forums',
+            '../forum',
+            '../boards',
+            '../board',
+        ];
     }
 
     /**
@@ -936,18 +919,66 @@ class Forum_driver_wbb22 extends Forum_driver_base
     }
 
     /**
+     * Create a member login cookie.
+     *
+     * @param  MEMBER $member_id The member ID
+     * @param  ?SHORT_TEXT $username The username (null: lookup)
+     * @param  string $password_raw The password (note this is sometimes not used by forum drivers, as they can also do something with what is already in the database instead)
+     */
+    public function create_login_cookie(int $member_id, ?string $username, string $password_raw)
+    {
+        if ($username === null) {
+            $username = $this->get_username($member_id);
+        }
+
+        cms_setcookie(get_member_cookie(), $username, false, true);
+        $_COOKIE[get_member_cookie()] = $username;
+
+        cms_setcookie(get_pass_cookie(), md5($password_raw), false, true);
+    }
+
+    /**
+     * Try and log in using a member cookie.
+     * Should only be called if the cookie exists.
+     *
+     * @return ?array A map of 'id' and 'error'. If 'id' is null, an error occurred and 'error' is set (null: no cookie)
+     */
+    public function authorise_cookie_login() : ?array
+    {
+        if ((!isset($_COOKIE[get_member_cookie()])) || (!isset($_COOKIE[get_pass_cookie()]))) {
+            return null;
+        }
+
+        $username = $_COOKIE[get_member_cookie()];
+        $password_hashed = $_COOKIE[get_pass_cookie()];
+
+        return $this->_authorise_login($username, null, $password_hashed, true);
+    }
+
+    /**
+     * Find if the given member ID and password is valid. If username is null, then the member ID is used instead.
+     *
+     * @param  ?SHORT_TEXT $username The member username (null: use $member_id)
+     * @param  ?MEMBER $member_id The member ID (null: use $username)
+     * @param  string $password_raw The raw password
+     * @return array A map of 'id' and 'error'. If 'id' is null, an error occurred and 'error' is set
+     */
+    public function authorise_login(?string $username, ?int $member_id, string $password_raw) : array
+    {
+        return $this->_authorise_login($username, $member_id, $password_raw, false);
+    }
+
+    /**
      * Find if the given member ID and password is valid. If username is null, then the member ID is used instead.
      * All authorisation, cookies, and form-logins, are passed through this function.
-     * Some forums do cookie logins differently, so a Boolean is passed in to indicate whether it is a cookie login.
      *
-     * @param  ?SHORT_TEXT $username The member username (null: don't use this in the authentication - but look it up using the ID if needed)
+     * @param  ?SHORT_TEXT $username The member username (null: use $member_id)
      * @param  ?MEMBER $member_id The member ID (null: use $username)
-     * @param  SHORT_TEXT $password_hashed The md5-hashed password
-     * @param  string $password_raw The raw password
+     * @param  string $password_mixed If $cookie_login is true then this is the value of the password cookie, otherwise it's the password the user tried to log in with
      * @param  boolean $cookie_login Whether this is a cookie login, determines how the hashed password is treated for the value passed in
      * @return array A map of 'id' and 'error'. If 'id' is null, an error occurred and 'error' is set
      */
-    public function authorise_login(?string $username, ?int $member_id, string $password_hashed, string $password_raw, bool $cookie_login = false) : array
+    protected function _authorise_login(?string $username, ?int $member_id, string $password_mixed, bool $cookie_login = false) : array
     {
         $out = [];
         $out['id'] = null;
@@ -971,7 +1002,10 @@ class Forum_driver_wbb22 extends Forum_driver_base
             $out['error'] = (do_lang_tempcode('YOU_ARE_BANNED'));
             return $out;
         }
-        if ($row['password'] != $password_hashed) {
+
+        $password_hashed = $cookie_login ? $password_mixed : md5($password_mixed);
+
+        if (!hash_equals($row['password'], $password_hashed)) {
             $out['error'] = (do_lang_tempcode('MEMBER_BAD_PASSWORD'));
             return $out;
         }

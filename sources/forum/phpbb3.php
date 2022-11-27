@@ -21,6 +21,77 @@
 /*EXTRA FUNCTIONS: crypt*/
 
 /**
+ * Find whether a phpBB password should be checked using the PHP password API (password_hash/password_verify).
+ *
+ * @param  string $password_hash Password hash
+ * @return boolean Whether it should
+ *
+ * @ignore
+ */
+function _phpbb_uses_php_password_api(string $password_hash) : bool
+{
+    return (substr($password_hash, 0, 10) == '$argon2id$') && defined('PASSWORD_ARGON2ID')/*password_hash supports PHP >=5.5 but argon2id only supports PHP >=7.3*/;
+}
+
+/**
+ * phpBB: The crypt function/replacement.
+ *
+ * @param  string $password To encode
+ * @param  string $setting Encode settings in special format
+ * @return ~string The encoded output (false: error)
+ * @ignore
+ */
+function _phpbb_hash_crypt(string $password, string $setting)
+{
+    $itoa64 = './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+
+    $output = '*';
+
+    if (substr($setting, 0, 3) == '$H$') {
+        $count_log2 = strpos($itoa64, $setting[3]);
+
+        if ($count_log2 < 7 || $count_log2 > 30) {
+            return $output;
+        }
+
+        $count = 1 << $count_log2;
+        $salt = substr($setting, 4, 8);
+
+        if (strlen($salt) != 8) {
+            return $output;
+        }
+
+        /**
+         * We're kind of forced to use MD5 here since it's the only
+         * cryptographic primitive available in all versions of PHP
+         * currently in use.  To implement our own low-level crypto
+         * in PHP would result in much worse performance and
+         * consequently in lower iteration counts and hashes that are
+         * quicker to crack (by non-PHP code).
+         */
+        $hash = pack('H*', md5($salt . $password));
+        do {
+            $hash = pack('H*', md5($hash . $password));
+            --$count;
+        } while ($count > 0);
+
+        $output = substr($setting, 0, 12);
+        $output .= _phpbb_hash_encode64($hash, 16, $itoa64);
+    }
+
+    if ((substr($setting, 0, 3) == '$2y') || (substr($setting, 0, 3) == '$2a$')) {
+        $hash = $setting;
+        $salt = substr($hash, 0, 29);
+        $output = crypt($password, $salt);
+        if (strlen($output) < 60) {
+            return false;
+        }
+    }
+
+    return $output;
+}
+
+/**
  * phpBB: Encode hash.
  *
  * @param  string $input To encode
@@ -30,7 +101,7 @@
  *
  * @ignore
  */
-function _hash_encode64(string $input, int $count, string &$itoa64) : string
+function _phpbb_hash_encode64(string $input, int $count, string $itoa64) : string
 {
     $output = '';
     $i = 0;
@@ -66,102 +137,6 @@ function _hash_encode64(string $input, int $count, string &$itoa64) : string
 
         $output .= $itoa64[($value >> 18) & 0x3f];
     } while ($i < $count);
-
-    return $output;
-}
-
-/**
- * phpBB: The crypt function/replacement.
- * Get the rows for the top given number of posters on the forum.
- *
- * @param  string $password To encode
- * @param  string $setting Encode settings in special format
- * @param  string $itoa64 Lookup table used internally
- * @return ~string The encoded output (false: error)
- * @ignore
- */
-function _hash_crypt_private(string $password, string $setting, string &$itoa64)
-{
-    $output = '*';
-
-    if (substr($setting, 0, 3) == '$H$') {
-        $count_log2 = strpos($itoa64, $setting[3]);
-
-        if ($count_log2 < 7 || $count_log2 > 30) {
-            return $output;
-        }
-
-        $count = 1 << $count_log2;
-        $salt = substr($setting, 4, 8);
-
-        if (strlen($salt) != 8) {
-            return $output;
-        }
-
-        /**
-         * We're kind of forced to use MD5 here since it's the only
-         * cryptographic primitive available in all versions of PHP
-         * currently in use.  To implement our own low-level crypto
-         * in PHP would result in much worse performance and
-         * consequently in lower iteration counts and hashes that are
-         * quicker to crack (by non-PHP code).
-         */
-        $hash = pack('H*', md5($salt . $password));
-        do {
-            $hash = pack('H*', md5($hash . $password));
-            --$count;
-        } while ($count > 0);
-
-        $output = substr($setting, 0, 12);
-        $output .= _hash_encode64($hash, 16, $itoa64);
-    }
-
-    if ((substr($setting, 0, 3) == '$2y') || (substr($setting, 0, 3) == '$2a$')) {
-        $hash = $setting;
-        $salt = substr($hash, 0, 29);
-        $output = crypt($password, $salt);
-        if (strlen($output) < 60) {
-            return false;
-        }
-    }
-
-    if ((substr($setting, 0, 10) == '$argon2id$') && defined('PASSWORD_ARGON2ID')/*password_hash supports PHP >=5.5 but argon2id only supports PHP >=7.3*/) {
-        $hash_parts = explode('$', $setting);
-        $version = 19;
-        $memory_cost = PASSWORD_ARGON2_DEFAULT_MEMORY_COST;
-        $time_cost = PASSWORD_ARGON2_DEFAULT_TIME_COST;
-        $threads = PASSWORD_ARGON2_DEFAULT_THREADS;
-        $salt = '';
-        $hash = '';
-
-        if (array_key_exists(2, $hash_parts)) { // Version
-            $version = intval(substr($hash_parts[2], 2)); // v=version
-        }
-        if (array_key_exists(3, $hash_parts)) { // Settings
-            $settings = explode(',', $hash_parts[3]);
-            foreach ($settings as $setting) {
-                if (substr($setting, 0, 2) == 'm=') {
-                    $memory_cost = intval(substr($setting, 2));
-                } elseif (substr($setting, 0, 2) == 't=') {
-                    $time_cost = intval(substr($setting, 2));
-                } elseif (substr($setting, 0, 2) == 'p=') { // Argon calls it 'parallelism factor' whereas PHP calls it 'threads'
-                    $threads = intval(substr($setting, 2));
-                }
-            }
-        }
-        if (array_key_exists(4, $hash_parts)) { // Salt
-            $salt = $hash_parts[4];
-        }
-        if (array_key_exists(5, $hash_parts)) { // Hash
-            $hash = $hash_parts[5];
-        }
-
-        $output = password_hash($password, PASSWORD_ARGON2ID, [
-            'memory_cost' => $memory_cost,
-            'time_cost' => $time_cost,
-            'threads' => $threads
-        ]);
-    }
 
     return $output;
 }
@@ -330,26 +305,6 @@ class Forum_driver_phpbb3 extends Forum_driver_base
     }
 
     /**
-     * Find if the login cookie contains the login name instead of the member ID.
-     *
-     * @return boolean Whether the login cookie contains a login name or a member ID
-     */
-    public function is_cookie_login_name() : bool
-    {
-        return false;
-    }
-
-    /**
-     * Find if login cookie is md5-hashed.
-     *
-     * @return boolean Whether the login cookie is md5-hashed
-     */
-    public function is_hashed() : bool
-    {
-        return false;
-    }
-
-    /**
      * Find the member ID of the forum guest member.
      *
      * @return MEMBER The member ID of the forum guest member
@@ -485,18 +440,29 @@ class Forum_driver_phpbb3 extends Forum_driver_base
                 $base_url = '';
             }
 
+            $dbhost = '';
             $dbname = '';
             $dbuser = '';
             $dbpasswd = '';
             $table_prefix = '';
             @include($path . '/config.php');
+            $PROBED_FORUM_CONFIG['sql_host'] = $dbhost;
             $PROBED_FORUM_CONFIG['sql_database'] = $dbname;
             $PROBED_FORUM_CONFIG['sql_user'] = $dbuser;
             $PROBED_FORUM_CONFIG['sql_pass_exists'] = ($dbpasswd != '');
-            $PROBED_FORUM_CONFIG['board_url'] = $base_url;
             $PROBED_FORUM_CONFIG['sql_tbl_prefix'] = $table_prefix;
-            $PROBED_FORUM_CONFIG['cookie_member_id'] = 'phpbb_u';
-            $PROBED_FORUM_CONFIG['cookie_member_hash'] = 'phpbb_k';
+            $PROBED_FORUM_CONFIG['board_url'] = $base_url;
+
+            $tmp = new DatabaseConnector($dbname, $dbhost, $dbuser, $dbpasswd, $table_prefix, true);
+            $cookie_name = $tmp->query_select_value_if_there('config', 'config_value', ['config_name' => 'cookie_name'], '', true);
+            if (!empty($cookie_name)) {
+                $PROBED_FORUM_CONFIG['cookie_member_id'] = $cookie_name . '_u';
+                $PROBED_FORUM_CONFIG['cookie_member_hash'] = $cookie_name . '_k';
+            } else {
+                $PROBED_FORUM_CONFIG['cookie_member_id'] = 'phpbb_u';
+                $PROBED_FORUM_CONFIG['cookie_member_hash'] = 'phpbb_k';
+            }
+
             return true;
         }
         return false;
@@ -510,30 +476,26 @@ class Forum_driver_phpbb3 extends Forum_driver_base
     public function install_get_path_search_list() : array
     {
         return [
-            0 => 'forums',
-            1 => 'forum',
-            2 => 'boards',
-            3 => 'board',
-            4 => 'phpBB',
-            5 => 'phpBB2',
-            6 => 'phpBB3',
-            7 => 'upload',
-            8 => 'uploads',
-            9 => 'phpbb',
-            10 => 'phpbb2',
-            11 => 'phpbb3',
-            12 => '../forums',
-            13 => '../forum',
-            14 => '../boards',
-            15 => '../board',
-            16 => '../phpBB',
-            17 => '../phpBB2',
-            18 => '../phpBB3',
-            19 => '../upload',
-            20 => '../uploads',
-            21 => '../phpbb',
-            22 => '../phpbb2',
-            23 => '../phpbb3',
+            'phpBB',
+            'phpBB3',
+            'phpbb',
+            'phpbb3',
+            'forums',
+            'forum',
+            'boards',
+            'board',
+            '../forums/phpBB',
+            '../forums/phpBB3',
+            '../forums/phpbb',
+            '../forums/phpbb3',
+            '../phpBB',
+            '../phpBB3',
+            '../phpbb',
+            '../phpbb3',
+            '../forums',
+            '../forum',
+            '../boards',
+            '../board',
         ];
     }
 
@@ -1492,22 +1454,13 @@ class Forum_driver_phpbb3 extends Forum_driver_base
      *
      * @param  MEMBER $member_id The member ID
      * @param  ?SHORT_TEXT $username The username (null: lookup)
-     * @param  string $password_raw The password
+     * @param  string $password_raw The password (note this is sometimes not used by forum drivers, as they can also do something with what is already in the database instead)
      */
     public function create_login_cookie(int $member_id, ?string $username, string $password_raw)
     {
         $member_cookie_name = get_member_cookie();
-        $colon_pos = strpos($member_cookie_name, ':');
-        if ($colon_pos !== false) {
-            $base = substr($member_cookie_name, 0, $colon_pos);
-            $real_member_cookie = substr($member_cookie_name, $colon_pos + 1);
-            $real_pass_cookie = substr(get_pass_cookie(), $colon_pos + 1);
-            $real_session_cookie = 'sid';
-        } else {
-            $real_member_cookie = $member_cookie_name;
-            $real_pass_cookie = get_pass_cookie();
-            $real_session_cookie = preg_replace('#_u$#', '_sid', $real_member_cookie);
-        }
+        $pass_cookie_name = get_pass_cookie();
+        $session_cookie_name = preg_replace('#_u$#', '_sid', $member_cookie_name);
 
         require_code('crypt');
 
@@ -1529,38 +1482,83 @@ class Forum_driver_phpbb3 extends Forum_driver_base
                 'session_page' => '',
                 'session_viewonline' => 1,
                 'session_autologin' => 1,
-                'session_admin' => $this->_is_super_admin($member_id),
+                'session_admin' => $this->_is_super_admin($member_id) ? 1 : 0,
             ]);
         } else {
             $session_id = null;
         }
 
-        $cookie = serialize([$real_member_cookie => strval($member_id), $real_pass_cookie => $hash, $real_session_cookie => $session_id]);
+        $cookie = serialize([$member_cookie_name => strval($member_id), $pass_cookie_name => $hash, $session_cookie_name => $session_id]);
 
-        if ($colon_pos !== false) {
-            cms_setcookie($base, $cookie);
-        } else {
-            cms_setcookie($real_member_cookie, strval($member_id));
-            cms_setcookie($real_pass_cookie, $hash);
-            if ($session_id !== null) {
-                cms_setcookie($real_session_cookie, $session_id);
-            }
+        cms_setcookie($member_cookie_name, strval($member_id), false, true);
+        cms_setcookie($pass_cookie_name, $hash, false, true);
+        if ($session_id !== null) {
+            cms_setcookie($session_cookie_name, $session_id, false, true);
         }
+    }
+
+    /**
+     * Try and log in using a member cookie.
+     * Should only be called if the cookie exists.
+     *
+     * @return ?array A map of 'id' and 'error'. If 'id' is null, an error occurred and 'error' is set (null: no cookie)
+     */
+    public function authorise_cookie_login() : ?array
+    {
+        $member_cookie_name = get_member_cookie();
+        $pass_cookie_name = get_pass_cookie();
+
+        if ((!isset($_COOKIE[$member_cookie_name])) || (!isset($_COOKIE[$pass_cookie_name]))) {
+            return null;
+        }
+
+        $member_id = intval($_COOKIE[get_member_cookie()]);
+        $password_hashed = $_COOKIE[get_pass_cookie()];
+
+        return $this->_authorise_login(null, $member_id, $password_hashed, true);
+    }
+
+    /**
+     * Delete the login cookie, if it exists.
+     */
+    public function eat_login_cookie()
+    {
+        $member_cookie_name = get_member_cookie();
+        $pass_cookie_name = get_pass_cookie();
+        $session_cookie_name = preg_replace('#_u$#', '_sid', $member_cookie_name);
+
+        cms_eatcookie($member_cookie_name);
+        unset($_COOKIE[$member_cookie_name]);
+        cms_eatcookie($pass_cookie_name);
+        unset($_COOKIE[$pass_cookie_name]);
+        cms_eatcookie($session_cookie_name);
+        unset($_COOKIE[$session_cookie_name]);
+    }
+
+    /**
+     * Find if the given member ID and password is valid. If username is null, then the member ID is used instead.
+     *
+     * @param  ?SHORT_TEXT $username The member username (null: use $member_id)
+     * @param  ?MEMBER $member_id The member ID (null: use $username)
+     * @param  string $password_raw The raw password
+     * @return array A map of 'id' and 'error'. If 'id' is null, an error occurred and 'error' is set
+     */
+    public function authorise_login(?string $username, ?int $member_id, string $password_raw) : array
+    {
+        return $this->_authorise_login($username, $member_id, $password_raw, false);
     }
 
     /**
      * Find if the given member ID and password is valid. If username is null, then the member ID is used instead.
      * All authorisation, cookies, and form-logins, are passed through this function.
-     * Some forums do cookie logins differently, so a Boolean is passed in to indicate whether it is a cookie login.
      *
-     * @param  ?SHORT_TEXT $username The member username (null: don't use this in the authentication - but look it up using the ID if needed)
+     * @param  ?SHORT_TEXT $username The member username (null: use $member_id)
      * @param  ?MEMBER $member_id The member ID (null: use $username)
-     * @param  SHORT_TEXT $password_hashed The md5-hashed password
-     * @param  string $password_raw The raw password
+     * @param  string $password_mixed If $cookie_login is true then this is the value of the password cookie, otherwise it's the password the user tried to log in with
      * @param  boolean $cookie_login Whether this is a cookie login, determines how the hashed password is treated for the value passed in
      * @return array A map of 'id' and 'error'. If 'id' is null, an error occurred and 'error' is set
      */
-    public function authorise_login(?string $username, ?int $member_id, string $password_hashed, string $password_raw, bool $cookie_login = false) : array
+    protected function _authorise_login(?string $username, ?int $member_id, string $password_mixed, bool $cookie_login = false) : array
     {
         $out = [];
         $out['id'] = null;
@@ -1585,15 +1583,23 @@ class Forum_driver_phpbb3 extends Forum_driver_base
             return $out;
         }
         if ($cookie_login) {
-            $lookup = $this->db->query_select_value_if_there('sessions_keys', 'user_id', ['key_id' => md5($password_raw)]);
+            $lookup = $this->db->query_select_value_if_there('sessions_keys', 'user_id', ['key_id' => md5($password_mixed)]);
             if ($row['user_id'] !== $lookup) {
                 $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
                 return $out;
             }
         } else {
-            if ($row['user_password'] != $password_hashed) {
-                $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
-                return $out;
+            if (_phpbb_uses_php_password_api($row['user_password'])) {
+                if (!password_verify($password_mixed, $row['user_password'])) {
+                    $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
+                    return $out;
+                }
+            } else {
+                $password_hashed = _phpbb_hash_crypt($password_mixed, $row['user_password']);
+                if (!hash_equals($password_hashed, $row['user_password'])) {
+                    $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
+                    return $out;
+                }
             }
         }
 
@@ -1605,29 +1611,6 @@ class Forum_driver_phpbb3 extends Forum_driver_base
 
         $out['id'] = $row['user_id'];
         return $out;
-    }
-
-    /**
-     * The hashing algorithm of this forum driver.
-     *
-     * @param  string $password_raw The password to hash, although the forum driver may internally call this function with another meaning to this parameter
-     * @param  string $key The string converted member-ID generally, although the forum driver may internally call this function with another meaning to this parameter
-     * @param  boolean $just_first Whether to just get the primary hashing mechanism (the meaning of this depends on the forum drivers but may mean a legacy hashing mechanism or one of two alternative mechanisms)
-     * @return string The hashed data
-     */
-    public function password_hash(string $password_raw, string $key, bool $just_first = false) : string
-    {
-        $itoa64 = './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-        $hash = $GLOBALS['FORUM_DB']->query_select_value_if_there('users', 'user_password', ['username_clean' => cms_mb_strtolower($key)]);
-        if ($hash === null) {
-            return '';
-        }
-
-        $test = _hash_crypt_private($password_raw, $hash, $itoa64);
-        if ($test === false) {
-            return '';
-        }
-        return $test;
     }
 
     /**

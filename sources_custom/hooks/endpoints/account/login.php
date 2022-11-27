@@ -38,7 +38,7 @@ class Hook_endpoint_account_login
         $username = post_param_string('username', false, INPUT_FILTER_POST_IDENTIFIER);
         $password = post_param_string('password', false, INPUT_FILTER_POST_IDENTIFIER);
 
-        $feedback = $GLOBALS['FORUM_DRIVER']->authorise_login($username, null, $GLOBALS['FORUM_DRIVER']->password_hash($password, $username), $password);
+        $feedback = $GLOBALS['FORUM_DRIVER']->authorise_login($username, null, $password);
         $member_id = $feedback['id'];
         if ($member_id === null) {
             warn_exit($feedback['error']);
@@ -46,13 +46,8 @@ class Hook_endpoint_account_login
 
         require_code('cns_general');
 
-        cms_setcookie(get_member_cookie(), strval($member_id));
-        $password_hashed_salted = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_pass_hash_salted');
-        $password_compat_scheme = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_password_compat_scheme');
-        if ($password_compat_scheme == 'plain') { // can't do direct representation for this, would be a plain text cookie; so in authorise_login we expect it to be md5'd and compare thusly (as per non-cookie call to that function)
-            $password_hashed_salted = md5($password_hashed_salted);
-        }
-        cms_setcookie(get_pass_cookie(), $password_hashed_salted);
+        require_code('cns_forum_driver_helper_auth');
+        cns_create_login_cookie($member_id);
 
         push_query_limiting(false);
 
@@ -94,6 +89,8 @@ class Hook_endpoint_account_login
                 'name' => cns_get_group_name($group_id),
             ];
         }
+
+        $password_hashed_salted = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_pass_hash_salted');
 
         $data += [
             'memberID' => $member_id,

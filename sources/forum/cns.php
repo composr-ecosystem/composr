@@ -113,26 +113,6 @@ class Forum_driver_cns extends Forum_driver_base
     }
 
     /**
-     * Find if login cookie is md5-hashed.
-     *
-     * @return boolean Whether the login cookie is md5-hashed
-     */
-    public function is_hashed() : bool
-    {
-        return true;
-    }
-
-    /**
-     * Find if the login cookie contains the login name instead of the member ID.
-     *
-     * @return boolean Whether the login cookie contains a login name or a member ID
-     */
-    public function is_cookie_login_name() : bool
-    {
-        return false;
-    }
-
-    /**
      * Find the member ID of the forum guest member.
      *
      * @return MEMBER The member ID of the forum guest member
@@ -1610,65 +1590,59 @@ class Forum_driver_cns extends Forum_driver_base
      *
      * @param  MEMBER $member_id The member ID
      * @param  ?SHORT_TEXT $username The username (null: lookup)
-     * @param  string $password_raw The password
+     * @param  string $password_raw The password (note this is sometimes not used by forum drivers, as they can also do something with what is already in the database instead)
      */
     public function create_login_cookie(int $member_id, ?string $username, string $password_raw)
     {
-        // User
-        cms_setcookie(get_member_cookie(), strval($member_id));
-
-        // Password
-        $password_hashed_salted = $this->get_member_row_field($member_id, 'm_pass_hash_salted');
-        $password_compat_scheme = $this->get_member_row_field($member_id, 'm_password_compat_scheme');
-        if ($password_compat_scheme == 'plain') {
-            $password_hashed_salted = md5($password_hashed_salted); // can't do direct representation for this, would be a plain text cookie; so in authorise_login we expect it to be md5'd and compare thusly (as per non-cookie call to that function)
-        }
-        cms_setcookie(get_pass_cookie(), $password_hashed_salted);
+        require_code('cns_forum_driver_helper_auth');
+        cns_create_login_cookie($member_id);
     }
 
     /**
-     * The hashing algorithm of this forum driver.
+     * Try and log in using a member cookie.
+     * Should only be called if the cookie exists.
      *
-     * @param  string $password_raw The password to hash, although the forum driver may internally call this function with another meaning to this parameter
-     * @param  string $key The string converted member-ID generally, although the forum driver may internally call this function with another meaning to this parameter
-     * @param  boolean $just_first Whether to just get the primary hashing mechanism (the meaning of this depends on the forum drivers but may mean a legacy hashing mechanism or one of two alternative mechanisms)
-     * @return string The hashed data
+     * @return ?array A map of 'id' and 'error'. If 'id' is null, an error occurred and 'error' is set (null: no cookie)
      */
-    public function password_hash(string $password_raw, string $key, bool $just_first = false) : string
+    public function authorise_cookie_login() : ?array
     {
-        require_code('cns_members');
-
-        $member_id = $this->get_member_from_username($key);
-        if ((($GLOBALS['LDAP_CONNECTION'] === null) || (!cns_is_on_ldap($key))) && ($member_id === null)) {
-            $member_id = $this->db->query_select_value_if_there('f_members', 'id', ['m_email_address' => $key]);
-            if ($member_id === null) {
-                return '!'; // Invalid user logging in
-            }
+        if ((!isset($_COOKIE[get_member_cookie()])) || (!isset($_COOKIE[get_pass_cookie()]))) {
+            return null;
         }
 
-        if ((!cns_is_ldap_member($member_id)) && ($member_id !== null)) {
-            return md5($password_raw);
-        }
+        $member_id = intval($_COOKIE[get_member_cookie()]);
+        $password_hashed = $_COOKIE[get_pass_cookie()];
 
-        return $password_raw; //cns_ldap_hash($member_id, $password); Can't do hash checks under all systems
+        return $this->_authorise_login(null, $member_id, $password_hashed, true);
+    }
+
+    /**
+     * Find if the given member ID and password is valid. If username is null, then the member ID is used instead.
+     *
+     * @param  ?SHORT_TEXT $username The member username (null: use $member_id)
+     * @param  ?MEMBER $member_id The member ID (null: use $username)
+     * @param  string $password_raw The raw password
+     * @return array A map of 'id' and 'error'. If 'id' is null, an error occurred and 'error' is set
+     */
+    public function authorise_login(?string $username, ?int $member_id, string $password_raw) : array
+    {
+        return $this->_authorise_login($username, $member_id, $password_raw, false);
     }
 
     /**
      * Find if the given member ID and password is valid. If username is null, then the member ID is used instead.
      * All authorisation, cookies, and form-logins, are passed through this function.
-     * Some forums do cookie logins differently, so a Boolean is passed in to indicate whether it is a cookie login.
      *
-     * @param  ?SHORT_TEXT $username The member username (null: don't use this in the authentication - but look it up using the ID if needed)
+     * @param  ?SHORT_TEXT $username The member username (null: use $member_id)
      * @param  ?MEMBER $member_id The member ID (null: use $username)
-     * @param  SHORT_TEXT $password_hashed The md5-hashed password
-     * @param  string $password_raw The raw password
+     * @param  string $password_mixed If $cookie_login is true then this is the value of the password cookie, otherwise it's the password the user tried to log in with
      * @param  boolean $cookie_login Whether this is a cookie login, determines how the hashed password is treated for the value passed in
      * @return array A map of 'id' and 'error'. If 'id' is null, an error occurred and 'error' is set
      */
-    public function authorise_login(?string $username, ?int $member_id, string $password_hashed, string $password_raw, bool $cookie_login = false) : array
+    protected function _authorise_login(?string $username, ?int $member_id, string $password_mixed, bool $cookie_login = false) : array
     {
         require_code('cns_forum_driver_helper_auth');
-        return _authorise_login($this, $username, $member_id, $password_hashed, $password_raw, $cookie_login);
+        return cns_authorise_login($this, $username, $member_id, $password_mixed, $cookie_login);
     }
 
     /**

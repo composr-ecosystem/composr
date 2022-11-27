@@ -4070,6 +4070,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         COOKIE_PATH_TEXT
         COOKIE_SETTINGS
         COOKIE_TEXT
+        COOKIE_TEXT__CMS_PREFIX
         COPPA
         COPPA_ENABLED
         COPYRIGHT

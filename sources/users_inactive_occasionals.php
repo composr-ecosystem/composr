@@ -454,65 +454,21 @@ function try_cookie_login() : ?int
 {
     $member_id = null;
 
-    // Preprocess if this is a serialized cookie
-    $member_cookie_name = get_member_cookie();
-    $colon_pos = strpos($member_cookie_name, ':');
-    if ($colon_pos !== false) { // E.g. phpBB3, SMF2
-        $base = substr($member_cookie_name, 0, $colon_pos);
-        if ((array_key_exists($base, $_COOKIE)) && ($_COOKIE[$base] != '')) {
-            $real_member_cookie = substr($member_cookie_name, $colon_pos + 1);
-            $real_pass_cookie = substr(get_pass_cookie(), $colon_pos + 1);
+    $login_array = $GLOBALS['FORUM_DRIVER']->authorise_cookie_login();
+    if ($login_array !== null) {
+        $member_id = $login_array['id'];
 
-            $the_cookie = $_COOKIE[$base];
+        if ($member_id !== null) {
+            global $IS_A_COOKIE_LOGIN;
+            $IS_A_COOKIE_LOGIN = true;
 
-            $unserialize = @unserialize($the_cookie, ['allowed_classes' => false]);
-
-            if (is_array($unserialize)) {
-                if (array_key_exists($real_member_cookie, $unserialize)) {
-                    $the_member = $unserialize[$real_member_cookie];
-                    $_COOKIE[get_member_cookie()] = $the_member;
-                }
-                if (array_key_exists($real_pass_cookie, $unserialize)) {
-                    $the_pass = $unserialize[$real_pass_cookie];
-                    $_COOKIE[get_pass_cookie()] = $the_pass;
-                }
-            }
-        }
-    }
-
-    if ((array_key_exists(get_member_cookie(), $_COOKIE)) && (array_key_exists(get_pass_cookie(), $_COOKIE))) {
-        $store = $_COOKIE[get_member_cookie()];
-        $password = $_COOKIE[get_pass_cookie()];
-        if ($GLOBALS['FORUM_DRIVER']->is_cookie_login_name()) {
-            $username = $store;
-            $store = strval($GLOBALS['FORUM_DRIVER']->get_member_from_username($store));
+            create_session($member_id, 0, (isset($_COOKIE[get_member_cookie() . '_invisible'])) && ($_COOKIE[get_member_cookie() . '_invisible'] == '1'));
         } else {
-            $username = $GLOBALS['FORUM_DRIVER']->get_username(intval($store));
-        }
-        $member_id = intval($store);
-        if (!is_guest($member_id)) {
-            if ($GLOBALS['FORUM_DRIVER']->is_hashed()) {
-                // Test password hash
-                $login_array = $GLOBALS['FORUM_DRIVER']->authorise_login(null, $member_id, $password, $password, true);
-                $member_id = $login_array['id'];
-            } else {
-                // Test password plain
-                $login_array = $GLOBALS['FORUM_DRIVER']->authorise_login(null, $member_id, $GLOBALS['FORUM_DRIVER']->password_hash($password, $username), $password, true);
-                $member_id = $login_array['id'];
-            }
-
-            if ($member_id !== null) {
-                global $IS_A_COOKIE_LOGIN;
-                $IS_A_COOKIE_LOGIN = true;
-
-                create_session($member_id, 0, (isset($_COOKIE[get_member_cookie() . '_invisible'])) && ($_COOKIE[get_member_cookie() . '_invisible'] == '1'));
-            } else {
-                if (!empty($login_array['error'])) {
-                    $text = $login_array['error'];
-                    if ($text->evaluate() == do_lang('YOU_ARE_BANNED')) {
-                        require_code('failure');
-                        banned_exit(empty($login_array['reasoned_ban']) ? null : $login_array['reasoned_ban']);
-                    }
+            if (!empty($login_array['error'])) {
+                $text = $login_array['error'];
+                if ($text->evaluate() == do_lang('YOU_ARE_BANNED')) {
+                    require_code('failure');
+                    banned_exit(empty($login_array['reasoned_ban']) ? null : $login_array['reasoned_ban']);
                 }
             }
         }

@@ -408,8 +408,6 @@ class db_correctness_test_set extends cms_test_case
             'install_specifics',
             'install_test_load_from',
             'is_banned',
-            'is_cookie_login_name',
-            'is_hashed',
             'is_staff',
             'is_super_admin',
             'join_url',

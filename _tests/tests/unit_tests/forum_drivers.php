@@ -61,8 +61,7 @@ class forum_drivers_test_set extends cms_test_case
                 $exceptions = [
                     // Optional
                     'create_login_cookie',
-                    'password_hash',
-                    'password_verify',
+                    'authorise_cookie_login',
 
                     // Defined with basic implementations in forum_stub.php anyway
                     'forum_layer_initialise',

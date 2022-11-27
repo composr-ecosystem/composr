@@ -30,15 +30,13 @@ class Hook_cns_auth_wordpress
     /**
      * Try and authenticate for our password compatibility scheme.
      *
-     * @param  ?SHORT_TEXT $username The member username (null: don't use this in the authentication - but look it up using the ID if needed)
-     * @param  ?MEMBER $user_id The member ID (null: use username)
-     * @param  SHORT_TEXT $password_hashed The md5-hashed password
+     * @param  SHORT_TEXT $username The member username
+     * @param  MEMBER $member_id The member ID
      * @param  string $password_raw The raw password
-     * @param  boolean $cookie_login Whether this is a cookie login
      * @param  array $row Row of Conversr account
      * @return ?Tempcode Error message (null: none)
      */
-    public function auth($username, $user_id, $password_hashed, $password_raw, $cookie_login, $row)
+    public function auth(string $username, int $member_id, string $password_raw, array $row) : ?object
     {
         if (!addon_installed('import')) {
             return do_lang_tempcode('INTERNAL_ERROR');
@@ -270,6 +268,6 @@ class PasswordHash
             $hash = crypt($password, $stored_hash);
         }
 
-        return $hash == $stored_hash;
+        return hash_equals($hash, $stored_hash);
     }
 }
