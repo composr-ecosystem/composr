@@ -267,10 +267,12 @@
     };
 
     $cms.functions.hookProfilesTabsEditDeleteRenderTab = function hookProfilesTabsEditDeleteRenderTab() {
-        $dom.on('.js-delete-photo', 'click', function (event, btn) {
-            btn.form.elements['delete_photo'].value = '1';
-            btn.form.submit();
-        });
+        if ($dom.$('.js-delete-photo')) {
+            $dom.on('.js-delete-photo', 'click', function (event, btn) {
+                btn.form.elements['delete_photo'].value = '1';
+                btn.form.submit();
+            });
+        }
     }
 
     $cms.functions.hookProfilesTabsEditPhotoRenderTab = function hookProfilesTabsEditPhotoRenderTab() {
