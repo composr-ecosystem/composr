@@ -510,7 +510,7 @@ function demonstratr_add_site_raw($server, $codename, $email_address, $password)
     $salt = get_secure_random_string();
     $password_salted = ratchet_hash($password, $salt);
     push_db_scope_check(false);
-    $db_conn->query_update('f_members', ['m_email_address' => $email_address, 'm_pass_hash_salted' => $password_salted, 'm_pass_salt' => $salt, 'm_password_compat_scheme' => ''], ['m_username' => 'admin'], '', 1);
+    $db_conn->query_update('f_members', ['m_email_address' => $email_address, 'm_pass_hash_salted' => $password_salted, 'm_pass_salt' => $salt, 'm_password_compat_scheme' => '', 'm_login_key' => ''], ['m_username' => 'admin'], '', 1);
     pop_db_scope_check();
 
     // Create default file structure

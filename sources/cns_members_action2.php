@@ -1033,6 +1033,9 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
             $salt = '';
         }
 
+        // Invalidate any existing login key
+        $update['m_login_key'] = '';
+
         // Get or generate a password salt if necessary
         if (($salt !== null) || ($password_compatibility_scheme !== null)) {
             if ($salt !== null) {

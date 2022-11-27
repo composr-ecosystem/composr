@@ -409,6 +409,7 @@ function install_cns(?float $upgrade_from = null)
         $GLOBALS['FORUM_DB']->add_table_field('f_members', 'm_mailing_list_style', 'BINARY', 1);
         $GLOBALS['FORUM_DB']->add_table_field('f_members', 'm_sound_enabled', 'BINARY', 0);
         $GLOBALS['FORUM_DB']->add_table_field('f_members', 'm_password_change_code_time', '?TIME');
+        $GLOBALS['FORUM_DB']->add_table_field('f_members', 'm_login_key', 'ID_TEXT');
 
         $GLOBALS['FORUM_DB']->add_table_field('f_member_known_login_ips', 'i_time', 'TIME');
 
@@ -521,16 +522,19 @@ function install_cns(?float $upgrade_from = null)
             // Basic details
             'id' => '*AUTO',
             'm_username' => 'ID_TEXT',
-            'm_pass_hash_salted' => 'SHORT_TEXT', // Not MD5 type because it could store different things according to password_compatibility_scheme
-            'm_pass_salt' => 'SHORT_TEXT',
-            'm_password_change_code' => 'SHORT_TEXT',
-            'm_password_change_code_time' => '?TIME',
-            'm_password_compat_scheme' => 'ID_TEXT',
             'm_email_address' => 'SHORT_TEXT',
             'm_primary_group' => 'GROUP',
             'm_dob_day' => '?SHORT_INTEGER',
             'm_dob_month' => '?SHORT_INTEGER',
             'm_dob_year' => '?INTEGER',
+
+            // Login security
+            'm_pass_hash_salted' => 'SHORT_TEXT',
+            'm_pass_salt' => 'SHORT_TEXT',
+            'm_password_change_code' => 'SHORT_TEXT',
+            'm_password_change_code_time' => '?TIME',
+            'm_password_compat_scheme' => 'ID_TEXT',
+            'm_login_key' => 'ID_TEXT',
 
             // Selections
             'm_timezone_offset' => 'SHORT_TEXT',

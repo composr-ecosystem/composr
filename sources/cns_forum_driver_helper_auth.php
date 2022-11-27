@@ -29,13 +29,13 @@ function cns_create_login_cookie(int $member_id)
     cms_setcookie(get_member_cookie(), strval($member_id), false, true);
 
     // Password
-    $password_hashed_salted = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_pass_hash_salted');
-    $password_compat_scheme = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_password_compat_scheme');
-    if ($password_compat_scheme == 'plain') {
+    $login_key = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_login_key');
+    if ($login_key == '') {
         require_code('crypt');
-        $password_hashed_salted = md5(get_site_salt() . $password_hashed_salted); // can't do direct representation for this, would be a plain text cookie; so in authorise_login we expect it to be md5'd and compare thusly (as per non-cookie call to that function)
+        $login_key =get_secure_random_string();
+        $GLOBALS['FORUM_DB']->query_update('f_members', ['m_login_key' => $login_key], ['id' => $member_id], '', 1);
     }
-    cms_setcookie(get_pass_cookie(), $password_hashed_salted, false, true);
+    cms_setcookie(get_pass_cookie(), $login_key, false, true);
 }
 
 /**
@@ -194,7 +194,7 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
                     break;
 
                 default:
-                    if (!hash_equals($row['m_pass_hash_salted'], $password_mixed)) {
+                    if (($row['m_login_key'] == '') || (!hash_equals($row['m_login_key'], $password_mixed))) {
                         require_code('tempcode'); // This can be incidental even in fast AJAX scripts, if an old invalid cookie is present, so we need Tempcode for do_lang_tempcode
                         $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
                         return $out;

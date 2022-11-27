@@ -380,12 +380,13 @@ class Module_lost_password
             }
         }
 
-        // Mark temporary reset code used
+        // Mark temporary reset code used and invalidate login key
         unset($_GET['code']);
         $update_map = [
             'm_validated_email_confirm_code' => '',
             'm_password_compat_scheme' => $password_compatibility_scheme,
             'm_pass_hash_salted' => $new,
+            'm_login_key' => '',
         ];
         if (!$temporary_passwords) {
             // Mark code used if it has instant effect only - otherwise we cannot do it as the link could have been pre-clicked by a virus scanner - rely on password_reset_minutes to expire it
