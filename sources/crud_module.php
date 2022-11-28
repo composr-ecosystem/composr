@@ -1028,6 +1028,8 @@ abstract class Standard_crud_module
 
         if ($this->user_facing) {
             require_code('submit');
+
+            // Check validation
             if (($this->check_validation) && (addon_installed('unvalidated')) && (post_param_integer('validated', 0) == 0)) {
                 if ($this->send_validation_request) {
                     $edit_url = build_url(['page' => '_SELF', 'type' => $this->get_screen_type_for('_edit', $this->type_code), 'id' => $id, 'validated' => 1], '_SELF', [], false, false, true);
@@ -1036,11 +1038,15 @@ abstract class Standard_crud_module
 
                 $description->attach(paragraph(do_lang_tempcode('SUBMIT_UNVALIDATED', $this->content_type)));
             }
-            list($submitter) = $this->get_submitter($id);
-            if ($submitter === null) {
-                $submitter = get_member();
+
+            // Give submission points
+            if ($this->content_type !== null) {
+                list($submitter) = $this->get_submitter($id);
+                if ($submitter === null) {
+                    $submitter = get_member();
+                }
+                give_submit_points($this->doing, $this->content_type, strval($id), $submitter);
             }
-            give_submit_points($this->doing, $this->content_type, strval($id), $submitter);
         }
 
         if (addon_installed('awards')) {
