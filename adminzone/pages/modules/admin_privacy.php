@@ -298,20 +298,20 @@ class Module_admin_privacy
             }
         }
 
-        $action = post_param_string('result_action', 'purge');
+        $action = post_param_string('result_action', 'download'); // Defaulting to download as it's safer; don't want to unknowingly purge data
 
         switch ($action) {
             case 'download':
                 log_it('PERSONAL_DATA_DOWNLOAD', ($member_id === null) ? '' : strval($member_id), json_encode([$member_id_username, $ip_addresses, $email_address, $others]));
 
                 require_code('tasks');
-                return call_user_func_array__long_task(do_lang('PERSONAL_DATA_DOWNLOAD'), $this->title, 'privacy_download', [$table_actions, $member_id, $ip_addresses, $member_id, $email_address, $others]);
+                return call_user_func_array__long_task(do_lang('PERSONAL_DATA_DOWNLOAD'), $this->title, 'privacy_download', [$table_actions, $member_id_username, $ip_addresses, $member_id, $email_address, $others]);
 
             case 'purge':
                 log_it('PERSONAL_DATA_PURGING', ($member_id === null) ? '' : strval($member_id), json_encode([$member_id_username, $ip_addresses, $email_address, $others]));
 
                 require_code('tasks');
-                return call_user_func_array__long_task(do_lang('PERSONAL_DATA_PURGING'), $this->title, 'privacy_purge', [$table_actions, $member_id, $ip_addresses, $member_id, $email_address, $others]);
+                return call_user_func_array__long_task(do_lang('PERSONAL_DATA_PURGING'), $this->title, 'privacy_purge', [$table_actions, $member_id_username, $ip_addresses, $member_id, $email_address, $others]);
         }
 
         return new Tempcode();

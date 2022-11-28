@@ -50,6 +50,8 @@ class Hook_task_privacy_download
 
         $data = [];
 
+        push_db_scope_check(false);
+
         $hook_obs = find_all_hook_obs('systems', 'privacy', 'Hook_privacy_');
         foreach ($hook_obs as $hook_ob) {
             $details = $hook_ob->info();
@@ -68,6 +70,8 @@ class Hook_task_privacy_download
                 }
             }
         }
+
+        pop_db_scope_check();
 
         $filename = preg_replace('#[^\w]#', '_', $username) . '.json';
         $headers = [];
