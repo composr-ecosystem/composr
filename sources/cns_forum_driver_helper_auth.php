@@ -195,11 +195,9 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
 
                 default:
                     if (($row['m_login_key'] == '') || (!hash_equals($row['m_login_key'], $password_mixed))) {
-                        if (!hash_equals($row['m_pass_hash_salted'], $password_mixed)) { // LEGACY mechanism where hash is stored as cookie rather than login key
-                            require_code('tempcode'); // This can be incidental even in fast AJAX scripts, if an old invalid cookie is present, so we need Tempcode for do_lang_tempcode
-                            $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
-                            return $out;
-                        }
+                        require_code('tempcode'); // This can be incidental even in fast AJAX scripts, if an old invalid cookie is present, so we need Tempcode for do_lang_tempcode
+                        $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
+                        return $out;
                     }
                     break;
             }
