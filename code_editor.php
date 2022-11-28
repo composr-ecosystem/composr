@@ -676,3 +676,18 @@ function ce_cms_tempnam(string $prefix = '')
     }
     return $tempnam;
 }
+
+/**
+ * Get last error message.
+ *
+ * @return string Error message (blank: none)
+ */
+function cms_error_get_last()
+{
+    $error = error_get_last();
+    if ($error === null) {
+        return '';
+    }
+
+    return '[' . strval($error['type']) . '] ' . $error['message'] . ' in ' . $error['file'] . ' on line ' . strval($error['line']);
+}
