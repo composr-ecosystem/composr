@@ -1191,8 +1191,8 @@ class Module_admin_setupwizard
                 ],
                 'session_expiry_time' => [
                     'low' => '24',
-                    'medium' => '3',
-                    'high' => '1',
+                    'medium' => '1',
+                    'high' => '0.3',
                 ],
                 'password_reset_process' => [
                     'low' => 'emailed',

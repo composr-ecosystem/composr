@@ -624,14 +624,13 @@ function check_has_page_access()
     $real_zone = load_zone_data();
 
     // The most important security check
-    global $SESSION_CONFIRMED_CACHE;
     get_member(); // Make sure we've loaded our backdoor if installed
     require_code('permissions');
     global $ZONE;
     if ($ZONE['zone_require_session'] == 1) {
         set_no_clickjacking_csp();
     }
-    if (($ZONE['zone_name'] != '') && (!is_httpauth_login()) && ((get_session_id() == '') || (!$SESSION_CONFIRMED_CACHE)) && ($ZONE['zone_require_session'] == 1) && (get_page_name() != 'login') && (!is_guest())) {
+    if (($ZONE['zone_name'] != '') && ($ZONE['zone_require_session'] == 1) && (get_page_name() != 'login') && (!session_considered_confirmed())) {
         access_denied((($real_zone == 'data') || (has_zone_access(get_member(), $ZONE['zone_name']))) ? 'ZONE_ACCESS_SESSION' : 'ZONE_ACCESS', $ZONE['zone_name'], true);
     } else {
         if (($real_zone == 'data') || (has_zone_access(get_member(), $ZONE['zone_name']))) {
@@ -644,6 +643,17 @@ function check_has_page_access()
             }
         }
     }
+}
+
+/**
+ * Find whether we should consider the current user's session confirmed, for security purposes.
+ *
+ * @return boolean Whether we should
+ */
+function session_considered_confirmed() : bool
+{
+    global $SESSION_CONFIRMED_CACHE;
+    return (is_guest()) || (is_httpauth_login()) || ((get_session_id() != '') && ($SESSION_CONFIRMED_CACHE));
 }
 
 /**

@@ -212,15 +212,6 @@ function get_member(bool $quick_only = false) : int
         if (($member_row !== null) && ((!array_key_exists($base, $_COOKIE)) || (!is_guest($member_row['member_id'])))) {
             $member_id = $member_row['member_id'];
 
-            if (($member_id !== null) && ((time() - $member_row['last_activity']) > 10)) { // Performance optimisation. Pointless re-storing the last_activity if less than 3 seconds have passed!
-                if (!running_script('index')) { // For 'index' it happens in get_screen_title, as screen meta-information is used
-                    $GLOBALS['SITE_DB']->query_update('sessions', ['last_activity' => time()], ['the_session' => $session], '', 1);
-                }
-                $SESSION_CACHE[$session]['last_activity'] = time();
-                if (get_option('session_prudence') == '0' && function_exists('persistent_cache_set')) {
-                    persistent_cache_set('SESSION_CACHE', $SESSION_CACHE);
-                }
-            }
             global $SESSION_CONFIRMED_CACHE;
             $SESSION_CONFIRMED_CACHE = ($member_row['session_confirmed'] == 1);
 

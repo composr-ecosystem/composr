@@ -118,6 +118,13 @@ class Hook_profiles_tabs_edit
 
         cms_set_time_limit($old_limit);
 
+        // Session ID check, if saving
+        if ((!session_considered_confirmed()) && ((post_param_string('edit_password', '', INPUT_FILTER_PASSWORD) != '') || ($member_id_viewing != $member_id_of))) {
+            if ((!empty($_POST)) && (!empty($tabs))) {
+                access_denied('SESSION', '', true);
+            }
+        }
+
         if ($leave_to_ajax_if_possible) {
             return [$title, null, $order, 'buttons/settings'];
         }
@@ -130,14 +137,6 @@ class Hook_profiles_tabs_edit
         $js_function_calls = [];
 
         $hidden = new Tempcode();
-
-        // Session ID check, if saving
-        if ((!empty($_POST)) && (!empty($tabs))) {
-            global $SESSION_CONFIRMED_CACHE;
-            if ((!$SESSION_CONFIRMED_CACHE) && ((post_param_string('edit_password', '', INPUT_FILTER_PASSWORD) != '') || ($member_id_viewing != $member_id_of))) {
-                access_denied('SESSION', '', true);
-            }
-        }
 
         $_tabs = [];
         $tab_first = true;

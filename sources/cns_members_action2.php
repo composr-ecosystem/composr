@@ -37,7 +37,7 @@ function init__cns_members_action2()
 function member_get_spreadsheet_headings_extended() : array
 {
     // Read CPFs
-    $cpfs = list_to_map('id', $GLOBALS['FORUM_DB']->query_select('f_custom_fields', ['id', 'cf_type', 'cf_name', 'cf_order'], [], 'ORDER BY cf_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('cf_name')));
+    $cpfs = list_to_map('id', $GLOBALS['FORUM_DB']->query_select('f_custom_fields', ['*'], [], 'ORDER BY cf_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('cf_name')));
 
     // Headings
     $headings = member_get_spreadsheet_headings();
@@ -83,8 +83,12 @@ function member_get_spreadsheet_headings() : array
         'ID' => 'id',
         'Username' => 'm_username',
         'E-mail address' => 'm_email_address',
-        'Password' => 'm_pass_hash_salted/m_pass_salt/m_password_compat_scheme',
     ];
+    if (has_privilege(get_member(), 'assume_any_member')) {
+        $headings += [
+            'Password' => 'm_pass_hash_salted/m_pass_salt/m_password_compat_scheme',
+        ];
+    }
     if (addon_installed('cns_member_avatars')) {
         $headings += [
             'Avatar' => '#m_avatar_url',

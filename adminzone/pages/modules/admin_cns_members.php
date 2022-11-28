@@ -763,6 +763,8 @@ class Module_admin_cns_members
      */
     public function export_spreadsheet() : object
     {
+        check_privilege('view_any_profile_field');
+
         $hidden = new Tempcode();
         $fields = new Tempcode();
 
@@ -823,6 +825,8 @@ class Module_admin_cns_members
      */
     public function _export_spreadsheet() : object
     {
+        check_privilege('view_any_profile_field');
+
         $filter_by_allow = post_param_integer('filter_by_allow', 0);
         $fields_to_use = isset($_POST['fields_to_use']) ? $_POST['fields_to_use'] : [];
         $usergroups = isset($_POST['usergroups']) ? $_POST['usergroups'] : [];
@@ -842,6 +846,7 @@ class Module_admin_cns_members
     public function import_spreadsheet() : object
     {
         check_privilege('mass_import');
+        check_privilege('member_maintenance');
 
         $hidden = new Tempcode();
 
@@ -876,6 +881,7 @@ class Module_admin_cns_members
     public function _import_spreadsheet() : object
     {
         check_privilege('mass_import');
+        check_privilege('member_maintenance');
 
         $default_password = post_param_string('default_password', false, INPUT_FILTER_NONE);
 
@@ -894,6 +900,6 @@ class Module_admin_cns_members
         log_it('IMPORT_MEMBERS');
 
         require_code('tasks');
-        return call_user_func_array__long_task(do_lang('IMPORT_MEMBERS'), $this->title, 'import_members', [$default_password, $use_temporary_passwords, $target_path, basename($target_path), get_member()]);
+        return call_user_func_array__long_task(do_lang('IMPORT_MEMBERS'), $this->title, 'import_members', [$default_password, $use_temporary_passwords, $target_path, basename($target_path)]);
     }
 }

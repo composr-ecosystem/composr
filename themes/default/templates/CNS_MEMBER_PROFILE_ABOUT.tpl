@@ -255,7 +255,7 @@
 							</tr>
 						{+END}
 
-						{+START,IF,{$HAS_PRIVILEGE,member_maintenance}}{+START,IF_NON_EMPTY,{EMAIL_ADDRESS}}
+						{+START,IF,{$HAS_PRIVILEGE,view_any_profile_field}}{+START,IF_NON_EMPTY,{EMAIL_ADDRESS}}
 							<tr>
 								<th class="de-th">{!EMAIL_ADDRESS}:</th>
 								<td><a class="email" href="mailto:{EMAIL_ADDRESS*}">{EMAIL_ADDRESS*}</a></td>
