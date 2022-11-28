@@ -484,47 +484,27 @@ If you do then find it a big challenge to achieve your desired goals, don't appr
 
 It is an unfortunate but inevitable fact that computer software has bugs. Composr is no exception, and although the developers work to make sure every single bug gets fixed, they aren't able to make sure every past version ever released is kept bug-free. It is essential that users understand the maintenance policy, and perform upgrades as suggested.
 
-[title="3"]Flaw policy[/title]
+[title="3"]Bug policy[/title]
 
 [media width="64" thumb="0" float="right" framed="0"]themes/default/images/icons/menu/adminzone/audit.svg[/media]
-Bugs and security issues are both classified as 'flaws'. There are two classifications of flaw:
- - [b]Major[/b]. A major security or integrity issue, or a bug so significant that it cuts off major functionality.
- - [b]Minor[/b]. Any flaw that is not major.
+There are four classifications of bug:
+ - [b]Security-hole[/b]. A security issue.
+ - [b]Major[/b]. A major integrity issue, or a bug so significant that it cuts off major functionality.
+ - [b]Minor[/b]. Most bugs.
+ - [b]Trivial[/b]. Any bug that is very specific and won't affect many users.
 
-The core developers have a rolling support status for versions of Composr.
-Versions may be classified as: [b]alpha[/b], [b]beta[/b], [b]mainline[/b], [b]supported[/b], [b]eol[/b].
+The developers don't usually immediately release a new version when there is a bug. We usually put out a hotfix, then a new patch release every few months. That is for supported versions: new releases of alpha and beta versions are put out on the needs of the development process rather than the needs of active users.
 
-A [b]supported[/b] version is a previous major version where the initial release of a subsequent new major version was made only in the past 8 months. A [b]eol[/b] version is older than that. Flaws are handled for the different support statuses as follows:
- - [b]Alpha[/b]/[b]Beta[/b] version. The core developers will typically release the next new beta version with all bugs up to the major flaw fixed, but there are no guarantees. These versions are also together known as 'bleeding edge'.
- - [b]Mainline[/b] version. The core developers will release a new version with all bugs fixed.
- - [b]Supported[/b] version. The core developers will release a new version with only the major flaws fixed, as any minor bugs truly will be minor as a whole new version had been developed before they were found. Note that any installation issues or compatibility issues with new software are degraded to minor flaws when considering the [b]supported[/b] version, and hence not fixed in it.
- - [b]EOL[/b] version (end-of-life). No flaws are handled. You would need to have a commercial vendor support it for you.
-
-Please note that the developers don't usually immediately release a new version when there is a flaw. We usually put out a hotfix, then a new patch release every few months.
+Composr works off a "rolling release" development process. New major/minor versions are released when ready, and then patch releases are made for the latest version only, not older versions. It is up to webmasters to stay updated to the latest release, or apply fixes they need. There are a number of reasons for this policy, which is new as of Composr version 11:
+1) We can focus our resources on the latest versions, rather than spreading ourselves thin.
+2) Sites that are difficult to keep upgraded are usually 'forked' enough to need manual patching anyway -- applying patch releases aren't an option for many sites, so why create them?
+3) As creating modern attractive web designs becomes more challenging, we expect users to rely on the improvements we create to the default theme more than they worry about maintaining their own customisations across upgrades.
+4) We have made various smart way of defining overrides in version 11, meaning it should be possible to define overrides that are less fragile across major/minor releases of Composr.
+5) Eventually we want to get to a point where upgrades are automatic, so that everyone can always be on the latest version -- maintaining multiple versions gets in the way of this vision.
 
 Please note that if Composr is installed by a hosting-control-panel, it is very unlikely that it will be up-to-date. Thus, hosting-control-panel installs will need immediate upgrade.
 
-To see the current status of releases, see [url="Maintenance status"]https://compo.sr/maintenance-status.htm[/url].
-
-[title="4"]Example[/title]
-
-At the time of writing, let's assume the support statuses for Composr versions are:
- - 12.x.x - this is [b]beta[/b]
- - 11.x.x - this is [b]stable[/b]
- - 10.x.x - this is [b]supported[/b]
- - 9.x.x - this is [b]defunct[/b]
-
-If a major flaw was found that exists in 12.x.x, 11.x.x, 10.x.x, 9.x.x, then the developers would:
- - fix 12.x.x silently (as it is in beta)
- - release a new 11.x.x release
- - release a new 10.x.x release
- - [i]no change to 9.x.x[/i]
-
-If a minor flaw was found that exists in 12.x.x, 11.x.x, 10.x.x, 9.x.x, then the developers would:
- - fix 12.x.x silently (as it is in beta)
- - release a new 11.x.x release
- - [i]no change to 10.x.x[/i]
- - [i]no change to 9.x.x[/i]
+To see the current history of releases, see [url="Maintenance status"]https://compo.sr/maintenance-status.htm[/url].
 
 [title="3"]Security policy[/title]
 
@@ -538,9 +518,8 @@ The developers have to address both the need to responsibly inform our users of 
 Our policy is as follows:
 1) Fixes for vulnerabilities will show up as soon as they are made in Git commit logs. These logs will show the presence of the vulnerability, and inevitably will provide hints to hackers on what a security hole might be.
 2) The actual security reports will be kept permanently private on the tracker. Anyone posting a vulnerability should initially post it as private, but if not then developer(s) will make it as such as soon as they are aware and able. Anyone in the community with access to view the private issues will be expected to maintain confidence. By keeping the full details of a vulnerability temporarily private, it will in most circumstances make it more difficult for the typical hacker to learn how to exploit a vulnerability -- giving the developers and users sufficient time to respond.
-3) Within one month of the developers becoming aware of a vulnerability, they will put out a new patch release that deals with it for any 'Mainline' or 'Beta' or 'Supported' branches, along with a full description of the vulnerability and any other important information (such as manual patches for those who do not wish to fully upgrade). The release notes for the new version(s) will mention that the upgrade addresses security issue(s). Wherever possible the time period will be much shorter than a month, measured in days.
+3) Within one month of the developers becoming aware of a vulnerability, they will put out a new patch release that deals with it, along with a full description of the vulnerability and any other important information (such as manual patches for those who do not wish to fully upgrade). The release notes for the new version(s) will mention that the upgrade addresses security issue(s). Wherever possible the time period will be much shorter than a month, measured in days.
 4) The developers make no guarantee on posting information about the vulnerabilities on communication channels outside the main news section of the Composr homesite. This is to reduce the pressures on over-stretched developers for what will be a stressful period for them. It is the responsibility of Composr users to monitor this news and apply patches as appropriate. That said, the news section is automatically syndicated via Twitter, Facebook, and available as RSS. If other groups wish to syndicate security news more broadly, this is encouraged.
-5) 'Alpha' and 'EOL' branches will likely receive no official treatment from the core developers, although private companies may provide fix back-porting services to clients in a free market. For example, clients may provide a company a recurring fee to have critical issues fixed for them on their legacy or forked or bleeding-edge versions.
 
 This policy applies to any code bundled with the main Composr distribution or held within the main Git repository.
 

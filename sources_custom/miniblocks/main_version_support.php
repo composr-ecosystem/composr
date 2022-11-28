@@ -24,17 +24,10 @@ $branches = get_composr_branches();
 
 $_branches = [];
 foreach ($branches as $branch) {
-    if ($branch['eol'] === null) {
-        $_eol = '';
-    } else {
-        $_eol = get_timezoned_date($branch['eol']);
-    }
-
     $_branches[] = [
         'GIT_BRANCH' => $branch['git_branch'],
         'BRANCH' => $branch['branch'],
         'STATUS' => $branch['status'],
-        'EOL' => $_eol,
     ];
 }
 

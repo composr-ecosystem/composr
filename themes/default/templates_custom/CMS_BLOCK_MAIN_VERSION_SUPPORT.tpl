@@ -4,7 +4,6 @@
 			<th>Branch</th>
 			<th>Git branch</th>
 			<th>Status</th>
-			<th><abbr title="End of Life">EOL</abbr> date</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -13,14 +12,6 @@
 				<td>{BRANCH*}</td>
 				<td>{GIT_BRANCH*}</td>
 				<td>{STATUS*}</td>
-				<td>
-					{+START,IF_NON_EMPTY,{EOL}}
-						{EOL*}
-					{+END}
-					{+START,IF_EMPTY,{EOL}}
-						<em>Unknown</em>
-					{+END}
-				</td>
 			</tr>
 		{+END}
 	</tbody>

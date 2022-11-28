@@ -93,13 +93,3 @@ function cms_version_branch_status() : string
 {
     return VERSION_ALPHA;
 }
-
-/**
- * Find the EOL for this branch version.
- *
- * @return ?integer Timestamp of EOL (null: unknown)
- */
-function cms_version_branch_eol() : ?int
-{
-    return null;
-}

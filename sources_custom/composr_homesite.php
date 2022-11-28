@@ -245,17 +245,16 @@ function get_composr_branches()
             $version_file = shell_exec('git show ' . $git_branch . ':sources/version.php');
 
             $tempnam = cms_tempnam();
-            file_put_contents($tempnam, $version_file . "\n\necho serialize([cms_version_number(], defined('cms_version_branch_status') ? cms_version_branch_status() : 'Unknown', defined('cms_version_branch_eol') ? cms_version_branch_eol() : null));");
+            file_put_contents($tempnam, $version_file . "\n\necho serialize([cms_version_number(], defined('cms_version_branch_status') ? cms_version_branch_status() : 'Unknown'));");
             $results = @unserialize(shell_exec('php ' . $tempnam));
             unlink($tempnam);
-            if ((is_array($results)) && (count($results) == 3)) {
-                list($version_number, $status, $eol) = $results;
+            if ((is_array($results)) && (count($results) == 2)) {
+                list($version_number, $status) = $results;
 
                 $branches[str_pad(float_to_raw_string($version_number), 10, '0', STR_PAD_LEFT)] = [
                     'git_branch' => $git_branch,
                     'branch' => get_version_branch($version_number),
                     'status' => $status,
-                    'eol' => $eol,
                 ];
             }
         }
