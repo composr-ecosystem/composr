@@ -245,7 +245,8 @@ function send_lost_password_reset_code(string $password_reset_process, int $memb
  */
 function lost_password_mailed_message(string $password_reset_process, string $email) : object
 {
-    $email_masked = mask_email($email);
+    require_code('crypt');
+    $email_masked = mask_email_address($email);
     if ($password_reset_process == 'ultra') {
         $zone = get_module_zone('lost_password');
         $screen_message = do_lang_tempcode('RESET_CODE_ENTER_MANUALLY', escape_html(static_evaluate_tempcode(build_url(['page' => 'lost_password', 'type' => 'step3'], $zone))));
@@ -257,20 +258,4 @@ function lost_password_mailed_message(string $password_reset_process, string $em
         }
     }
     return $screen_message;
-}
-
-/**
- * Make an e-mail address disclosable by making most of it.
- * By default this isn't used in the RESET_CODE_MAILED language string, as any disclosure is a potential privacy leak.
- *
- * @param  EMAIL $email E-mail address (blank: none)
- * @return string Masked address
- */
-function mask_email(string $email) : string
-{
-    if ($email == '') {
-        $email = '?...@...?';
-    }
-
-    return preg_replace('#^(\w).*@.*(\w\.\w+)$#', '${1}...@...${2}', $email);
 }
