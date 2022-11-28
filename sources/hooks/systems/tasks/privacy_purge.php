@@ -38,6 +38,16 @@ class Hook_task_privacy_purge
     {
         // See also warnings.php - this code will delete/anonymise on mass for any kinds of database record, while warnings.php handles deletion of individually-identified high-level content items
 
+        // SANITY: Don't allow mass-purging of everything by accident!
+        foreach ($ip_addresses as $key => $ip) {
+            if (($ip === null) || ($ip == '')) {
+                unset($ip_addresses[$key]);
+            }
+        }
+        if (($member_id_username === null) && empty($ip_addresses) && ($member_id === null) && ($email_address == '')) {
+            warn_exit(do_lang_tempcode('PRIVACY_PURGE_NO_FILTERS_SPECIFIED'));
+        }
+
         disable_php_memory_limit();
 
         require_code('privacy');
