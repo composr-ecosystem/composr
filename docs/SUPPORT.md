@@ -21,7 +21,7 @@ If you require free support from others, bear these things in mind:
 Everyone in the community should make a reasonable good faith effort to use official channels and documented procedures, so that things are done in the open in a way that is easy for stakeholders to manage.
 
 The maintainers of Composr CMS do make a commitment (in good faith, but not legally binding) to:
-1. Respond (&dagger;) to any bug report submitted to the tracker within 30 days (bug reports, not feature requests)
+1. Respond (&dagger;) to any bug report submitted to the tracker within 30 days (bug reports, not feature suggestions)
 2. Respond (&dagger;) to any merge request on GitLab within 30 days
 3. Fix security issues within a month
 4. Operate with the principle that something that makes the project better, so long as it doesn't break key considerations, should be accepted even if it is not absolutely perfect (a project with strong foundations is better off taking in new ideas from enthusiastic people than trying to do idealistic centralised top-down planning)
@@ -33,7 +33,7 @@ The maintainers of Composr CMS do make a commitment (in good faith, but not lega
 As a community, the Composr CMS developers expect to continue developing the platform with improvements over time. Any timeline, or what particular improvements consist of, is up to these contributors and maintainers.
 The most reliable way of moving the project forward in the way you want is to contribute your own improvements or pay people to do so.
 
-## Reporting issues (including bugs and feature requests) ##
+## Reporting issues (including bugs and feature suggestions) ##
 
 We have an extensive tutorial, [Problem and feedback reports, and development policies](https://compo.sr/docs/tut-software-feedback.htm).
 Basically, issues are submitted to [the tracker](https://compo.sr/tracker).

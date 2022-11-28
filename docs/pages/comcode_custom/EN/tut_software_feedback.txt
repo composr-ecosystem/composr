@@ -14,7 +14,7 @@ We really want every tiny little issue in Composr reported. This includes everyt
 
 [quote="Chris Graham, lead developer"]Everyone who finds problems in something free has a basic responsibility to report the problems, so that the project can advance, even if they are very small or you have already found a workaround. If you don't report problems, you have to assume that nobody else will, and hence the product will not advance.[/quote]
 
-This might mean making a bug report, or making a feature request -- if something is not working as conceived, that's a bug, otherwise it's a feature request. [b]This section is about bug reports[/b]. Design/interface changes usually count as a feature request, unless something is clearly not functional in the general case.
+This might mean making a bug report, or logging a feature suggestion -- if something is not working as conceived, that's a bug, otherwise it's a feature suggestion. [b]This section is about bug reports[/b]. Design/interface changes usually count as a feature suggestion, unless something is clearly not functional in the general case.
 
 [title="3"]What to expect[/title]
 
@@ -236,16 +236,16 @@ Issues with AJAX and frames specifically can be caused by JavaScript security re
 
 In Composr it can happen if the base URL has changed. One possibility is if it is blank in the [tt]_config.php[/tt] file. If it was never set, and sometimes Composr is getting called by different variants of the base URL (typically with and without 'www.') then the cache can get a mixture, and it triggers such cross-domain errors.
 
-[title="2"]Providing feedback, or making feature requests[/title]
+[title="2"]Providing feedback, or making feature suggestions[/title]
 
 [media width="150" float="right" framed="0"]data_custom/images/docs/tut_software_feedback/482033_challenge.jpg[/media]
 Feedback is one of the most important signals for us when developing Composr. Composr users are often able to show us ideas from new angles, which play a big role in Composr's future.
 
-Most of the guidance for reporting bugs also counts for posting feature requests, so please review the advice above ("Rules to follow").
+Most of the guidance for reporting bugs also counts for posting feature suggestions, so please review the advice above ("Rules to follow").
 
 Additionally:
  - Make sure your posting is reasonably comprehensive and self-contained. For example, if you are suggesting integrating with an external system then don't ask developers to go and do further research just to see what you mean -- explain exactly what you want integrating, how, and why. Doing research ourselves can take hours, so if you ask for it you'll instead likely just find that the issue gets closed.
- - Esoteric feature requests really aren't likely to be taken seriously, as Composr must not be allowed to become bloatware. Additionally big complex features/integrations need volunteers or funding, and when we see big esoteric requests like this it looks like a request for free work. Because otherwise such an esoteric thing wouldn't be brought to the tracker, they'd just be handled as some separate personal or commercial project. So such requests are not likely to receive a good response.
+ - Esoteric feature suggestions really aren't likely to be taken seriously, as Composr must not be allowed to become bloatware. Additionally big complex features/integrations need volunteers or funding, and when we see big esoteric requests like this it looks like a request for free work. Because otherwise such an esoteric thing wouldn't be brought to the tracker, they'd just be handled as some separate personal or commercial project. So such requests are not likely to receive a good response.
 
 Unfortunately, it is often not possible for the developers to comment on whether or not any certain feature will be developed.
 
@@ -282,7 +282,7 @@ There are many reasons, but here are a few:
 8) We may feel a feature is somehow incoherent with Composr's under-the-hood architecture, so would need many subtle and complex changes to numerous interconnected subsystems, and introduce risks of new bugs or confusion about redefined Composr concepts;
 9) A feature could require skills or experience that no available developer has;
 10) For features relating to 'flexibility', developers sometimes feel that implementing yet another complex extra layer of control may be more complex to control that just customisation of the actual PHP code (which Composr supports in a neat and controlled way);
-11) Often Composr users will travel down a rabbit-hole of feature requests, as a poor substitute to having a proper budget for skilled and experienced developers working on a project. The core team is clear that non-trivial projects will always require some amount of designer and developer time, and no amount of loading Composr with features can change this, so at a certain point of complexity and specificity the advice would always just be 'hire a developer to code this directly'.
+11) Often Composr users will travel down a rabbit-hole of feature suggestions, as a poor substitute to having a proper budget for skilled and experienced developers working on a project. The core team is clear that non-trivial projects will always require some amount of designer and developer time, and no amount of loading Composr with features can change this, so at a certain point of complexity and specificity the advice would always just be 'hire a developer to code this directly'.
 
 As well as 'yes' vs 'no', there are the matters of strategy and of release management, which are not simple.
 
