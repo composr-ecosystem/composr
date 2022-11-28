@@ -418,7 +418,6 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                 break;
 
             case 'f_forums':
-                $ret = null; // We do not need to include this
                 break;
 
             case 'f_topics':
