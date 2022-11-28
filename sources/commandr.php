@@ -59,6 +59,11 @@ function commandr_script()
             warn_exit(do_lang_tempcode('SHARED_INSTALL_PROHIBIT'));
         }
 
+        // Session ID check, if saving
+        if (!session_considered_confirmed()) {
+            access_denied('SESSION', '', true);
+        }
+
         if (!has_actual_page_access(get_member(), 'admin_commandr')) {
             require_lang('permissions');
             fatal_exit(do_lang_tempcode('ACCESS_DENIED__PAGE_ACCESS', escape_html($GLOBALS['FORUM_DRIVER']->get_username(get_member()))));
