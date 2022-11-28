@@ -1241,7 +1241,8 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
     }
     if ($password !== null) { // Password change
         // Security, clear out sessions from other people on this user - just in case the reset is due to suspicious activity
-        $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'sessions WHERE member_id=' . strval($member_id) . ' AND ' . db_string_not_equal_to('the_session', get_session_id()));
+        require_code('users_active_actions');
+        delete_session_by_member_id($member_id, get_session_id());
 
         // Log the change
         log_it('EDIT_MEMBER_PASSWORD', strval($member_id));
@@ -1415,7 +1416,8 @@ function cns_delete_member(int $member_id)
     $GLOBALS['FORUM_DB']->query_delete('f_members', ['id' => $member_id], '', 1);
     $GLOBALS['FORUM_DB']->query_delete('f_group_members', ['gm_member_id' => $member_id]);
     $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_group_leader' => get_member()], ['g_group_leader' => $member_id]);
-    $GLOBALS['SITE_DB']->query_delete('sessions', ['member_id' => $member_id]);
+    require_code('users_active_actions');
+    delete_session_by_member_id($member_id);
 
     require_code('fields');
 

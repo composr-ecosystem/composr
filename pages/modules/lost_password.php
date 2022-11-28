@@ -380,7 +380,7 @@ class Module_lost_password
             }
         }
 
-        // Mark temporary reset code used and invalidate login key
+        // Mark temporary reset code used and invalidate login key and active sessions
         unset($_GET['code']);
         $update_map = [
             'm_validated_email_confirm_code' => '',
@@ -396,6 +396,8 @@ class Module_lost_password
             ];
         }
         $GLOBALS['FORUM_DB']->query_update('f_members', $update_map, ['id' => $member_id], '', 1);
+        require_code('users_active_actions');
+        delete_session_by_member_id($member_id);
 
         // Logging
         log_it('LOST_PASSWORD_FINALISE', strval($member_id), $username);

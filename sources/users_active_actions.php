@@ -321,17 +321,44 @@ function _enforce_temporary_passwords(int $member_id)
 /**
  * Delete a session.
  *
- * @param  ID_TEXT $session The new session
+ * @param  ID_TEXT $session The session to delete
  */
 function delete_session(string $session)
 {
-    require_code('users_inactive_occasionals');
-    set_session_id('');
+    if ($session == get_session_id()) {
+        require_code('users_inactive_occasionals');
+        set_session_id('');
+    }
 
     $GLOBALS['SITE_DB']->query_delete('sessions', ['the_session' => $session], '', 1);
 
     global $SESSION_CACHE;
     unset($SESSION_CACHE[$session]);
+    if (get_option('session_prudence') == '0') {
+        persistent_cache_set('SESSION_CACHE', $SESSION_CACHE);
+    }
+}
+
+/**
+ * Delete a session by member ID.
+ *
+ * @param  MEMBER $member_id The member ID whose sessions should be deleted
+ * @param  ?ID_TEXT $except_session A session to not delete (null: no filter)
+ */
+function delete_session_by_member_id(int $member_id, ?string $except_session = null)
+{
+    if ($except_session === null) {
+        $GLOBALS['SITE_DB']->query_delete('sessions', ['member_id' => $member_id]);
+    } else {
+        $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'sessions WHERE member_id=' . strval($member_id) . ' AND ' . db_string_not_equal_to('the_session', $except_session));
+    }
+
+    global $SESSION_CACHE;
+    foreach ($SESSION_CACHE as $session => $session_details) {
+        if (($session_details['member_id'] == $member_id) && ($session !== $except_session)) {
+            unset($SESSION_CACHE[$session]);
+        }
+    }
     if (get_option('session_prudence') == '0') {
         persistent_cache_set('SESSION_CACHE', $SESSION_CACHE);
     }
