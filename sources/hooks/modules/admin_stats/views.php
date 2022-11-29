@@ -260,7 +260,7 @@ class Hook_admin_stats_views extends CMSStatsProvider
                 ],
                 'pivot' => null,
             ],
-            'page_average_speed' => [
+            'page_average_speeds' => [
                 'label' => do_lang_tempcode('AVERAGE_PAGE_SPEEDS'),
                 'category' => 'server_performance',
                 'filters' => [
