@@ -1045,7 +1045,7 @@ abstract class Standard_crud_module
                 if ($submitter === null) {
                     $submitter = get_member();
                 }
-                give_submit_points($this->doing, $this->content_type, strval($id), $submitter);
+                give_submit_points($this->doing, $this->content_type, $id, $submitter);
             }
         }
 
@@ -1504,7 +1504,7 @@ abstract class Standard_crud_module
                 require_code('points');
                 require_lang('points');
                 require_code('points');
-                $points_test = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'id', ['recipient_id' => $submitter, 'status' => LEDGER_STATUS_NORMAL, 't_type' => $this->content_type, 't_subtype' => 'add', 't_type_id' => (($id !== null) ? strval($id) : '')]);
+                $points_test = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'id', ['recipient_id' => $submitter, 'status' => LEDGER_STATUS_NORMAL, 't_type' => $this->content_type, 't_subtype' => 'add', 't_type_id' => (($id !== null) ? $id : '')]);
                 if ($points_test !== null) {
                     $action_fields->attach(form_input_tick(do_lang_tempcode('REVERSE_TRANSACTION'), do_lang_tempcode('REVERSE_TRANSACTION_DESCRIPTION', $this->content_type), 'reverse_point_transaction', false));
                 }
@@ -1670,7 +1670,7 @@ abstract class Standard_crud_module
                     'status' => LEDGER_STATUS_NORMAL,
                     't_type' => $this->content_type,
                     't_subtype' => 'add',
-                    't_type_id' => (($this->non_integer_id) ? $id : strval($id)),
+                    't_type_id' => $id,
                 ]);
                 if (array_key_exists(0, $points_test)) {
                     require_code('points2');

@@ -1442,7 +1442,7 @@ class Module_cms_catalogues_cat extends Standard_crud_module
     /**
      * Standard crud_module edit form filler.
      *
-     * @param  ID_TEXT $_id The entry being edited
+     * @param  ID_TEXT $_id The category being edited
      * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
     public function fill_in_edit_form(string $_id)
@@ -1463,7 +1463,7 @@ class Module_cms_catalogues_cat extends Standard_crud_module
     /**
      * Standard crud_module delete possibility checker.
      *
-     * @param  ID_TEXT $id The entry being potentially deleted
+     * @param  ID_TEXT $id The category being potentially deleted
      * @return boolean Whether it may be deleted
      */
     public function may_delete_this(string $id) : bool
@@ -1478,7 +1478,7 @@ class Module_cms_catalogues_cat extends Standard_crud_module
     /**
      * Standard crud_module add actualiser.
      *
-     * @return array A pair: The entry added, description about usage
+     * @return array A pair: The category added, description about usage
      */
     public function add_actualisation() : array
     {
@@ -1523,13 +1523,13 @@ class Module_cms_catalogues_cat extends Standard_crud_module
         $this->donext_category_id = $category_id;
         $this->donext_catalogue_name = $catalogue_name;
 
-        return [$category_id, null];
+        return [strval($category_id), null];
     }
 
     /**
      * Standard crud_module edit actualiser.
      *
-     * @param  ID_TEXT $_id The entry being edited
+     * @param  ID_TEXT $_id The category being edited
      * @return ?Tempcode Description about usage (null: none)
      */
     public function edit_actualisation(string $_id) : ?object
@@ -1590,7 +1590,7 @@ class Module_cms_catalogues_cat extends Standard_crud_module
     /**
      * Standard crud_module delete actualiser.
      *
-     * @param  ID_TEXT $id The entry being deleted
+     * @param  ID_TEXT $id The category being deleted
      */
     public function delete_actualisation(string $id)
     {
@@ -1688,7 +1688,7 @@ class Module_cms_catalogues_alt extends Standard_crud_module
     /**
      * Standard aed_module delete possibility checker.
      *
-     * @param  ID_TEXT $id The entry being potentially deleted
+     * @param  ID_TEXT $id The catalogue being potentially deleted
      * @return boolean Whether it may be deleted
      */
     public function may_delete_this(string $id) : bool

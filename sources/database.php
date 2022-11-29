@@ -2233,7 +2233,7 @@ class DatabaseConnector
         }
         if ($UPON_QUERY_HOOKS_CACHE !== null) {
             foreach ($UPON_QUERY_HOOKS_CACHE as $ob) {
-                if (($ob !== null) && (method_exists($ob, 'run_pre'))) {
+                if (($ob !== null) && (method_exists($ob, 'run_pre')) && ($query != '')) {
                     $ob->run_pre($this, $query, $max, $start, $fail_ok, $get_insert_id);
                 }
             }
@@ -2257,7 +2257,7 @@ class DatabaseConnector
         // Run hooks, if any exist
         if ($UPON_QUERY_HOOKS_CACHE !== null) {
             foreach ($UPON_QUERY_HOOKS_CACHE as $ob) {
-                if (($ob !== null) && (method_exists($ob, 'run_post'))) {
+                if (($ob !== null) && (method_exists($ob, 'run_post')) && ($query != '')) {
                     $ob->run_post($this, $query, $max, $start, $fail_ok, $get_insert_id, $ret);
                 }
             }
