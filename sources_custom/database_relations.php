@@ -222,6 +222,7 @@ function get_innodb_table_sql($tables, $all_tables)
     $db = $GLOBALS['SITE_DB'];
     $table_prefix = $db->get_table_prefix();
 
+    require_code('database_helper');
     require_code('database/mysqli');
     $db_static = object_factory('Database_Static_mysqli', false, [$table_prefix]);
 
@@ -275,8 +276,8 @@ function get_innodb_table_sql($tables, $all_tables)
                 }
             }
         }
-
-        $queries = $db_static->create_table__sql($table_prefix . $table_name, $fields, $table_name, $db->connection_write, null);
+        $save_bytes = _helper_needs_to_save_bytes($table_name, $fields);
+        $queries = $db_static->create_table__sql($table_prefix . $table_name, $fields, $db->connection_write, $table_name, $save_bytes);
         foreach ($queries as $sql) {
             $sql = str_replace('MyISAM', 'InnoDB', $sql);
             $out .= $sql . ";\n";
