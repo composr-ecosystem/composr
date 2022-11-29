@@ -91,10 +91,10 @@ function tracked_redirect_script()
 /**
  * Gather details on all active KPIs.
  *
- * @param  ?integer $pivot_filter Filter only to this pivot (null: no filter)
+ * @param  ?ID_TEXT $pivot_filter Filter only to this pivot (null: no filter)
  * @return array List of details tuples
  */
-function gather_kpis(?int $pivot_filter = null) : array
+function gather_kpis(?string $pivot_filter = null) : array
 {
     $where = [];
     if ($pivot_filter !== null) {
@@ -1581,7 +1581,7 @@ function send_kpi_notifications()
     $kpis = [];
     foreach ($series as $pivot => $send_today) {
         if ($send_today) {
-            $_kpis = gather_kpis($pivot);
+            $_kpis = gather_kpis(strval($pivot));
             $kpis = array_merge($kpis, $_kpis);
         }
     }
