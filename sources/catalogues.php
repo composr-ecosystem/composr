@@ -1296,7 +1296,7 @@ function _get_catalogue_entry_field(int $field_id, $entry_id, string $type = 'sh
 
                 // Involves TEXT columns, which if UNIONised end up as on-disk temporary tables - terrible performance
                 //  So we force them to be queried separately
-                if ($must_be_standalone) {
+                if (($must_be_standalone) && (!empty($query))) {
                     $rows = $GLOBALS['SITE_DB']->query($query, null, 0, false, true);
                     foreach ($rows as $row) {
                         $catalogue_entry_cache[$entry_id][$row['f_id']] = $row;
