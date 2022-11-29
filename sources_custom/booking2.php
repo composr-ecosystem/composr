@@ -354,14 +354,14 @@ function get_bookable_blacked_details_from_form() : array
  * Add a bookable.
  *
  * @param  array $bookable_details Bookable details
- * @param  array $codes List of codes
+ * @param  array $_codes List of codes
  * @param  array $blacked List of black-outs
  * @param  array $supplements List of supplements
  * @param  ?TIME $add_date Add date (null: now)
  * @param  ?MEMBER $submitter Submitting user (null: current user)
  * @return AUTO_LINK Bookable ID
  */
-function add_bookable(array $bookable_details, array $codes, array $blacked = [], array $supplements = [], ?int $add_date = null, ?int $submitter = null) : int
+function add_bookable(array $bookable_details, array $_codes, array $blacked = [], array $supplements = [], ?int $add_date = null, ?int $submitter = null) : int
 {
     if ($add_date === null) {
         $add_date = time();
@@ -400,8 +400,9 @@ function add_bookable(array $bookable_details, array $codes, array $blacked = []
         ]);
     }
 
-    foreach ($codes as $i => $code) {
-        $codes[$i] = substr($code, 0, 80);
+    $codes = [];
+    foreach ($_codes as $i => $code) {
+        $codes[$i] = substr(strval($code), 0, 80);
     }
     $codes = array_unique($codes);
     foreach ($codes as $code) {

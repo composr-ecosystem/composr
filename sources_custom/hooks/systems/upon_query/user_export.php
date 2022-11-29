@@ -26,7 +26,7 @@ class Hook_upon_query_user_export
             return;
         }
 
-        if ($query[0] == 'S') {
+        if (($query == '') || ($query[0] == 'S')) {
             return;
         }
 

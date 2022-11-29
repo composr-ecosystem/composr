@@ -227,7 +227,7 @@ class Module_booking
             $this->title = get_screen_title('CREATE_BOOKING');
         }
 
-        if ($type == 'thanks') {
+        if ($type == 'done') {
             $this->title = get_screen_title('CREATE_BOOKING');
         }
 
@@ -264,7 +264,7 @@ class Module_booking
             return $this->join_or_login(); // NB: This may be skipped if user already logged in
         }
         if ($type == 'done') {
-            return $this->thanks();
+            return $this->done();
         }
 
         return new Tempcode();
@@ -451,6 +451,7 @@ class Module_booking
             'DATE_TO_YEAR' => date('Y', $date_to),
             'HIDDEN' => build_keep_post_fields(),
             'CURRENCY' => get_option('currency'),
+            'READ_ONLY' => false, // FORM_SCREEN_INPUT_DATE
         ]);
     }
 
@@ -598,7 +599,7 @@ class Module_booking
      *
      * @return Tempcode The result of execution
      */
-    public function thanks() : object
+    public function done() : object
     {
         // Finish join operation, if applicable
         if ((is_guest()) && (get_option('member_booking_only') == '1')) {

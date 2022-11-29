@@ -74,7 +74,7 @@ class Hook_admin_stats_warnings extends CMSStatsProvider
                 'label' => do_lang_tempcode('_COUNTRIES', do_lang_tempcode('WARNINGS')),
                 'category' => 'moderation',
                 'filters' => [
-                    'recorded_punishments_countries__month_range' => new CMSStatsDateMonthRangeFilter('recorded_punishments_countries__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
+                    'recorded_punishment_countries__month_range' => new CMSStatsDateMonthRangeFilter('recorded_punishment_countries__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
                 ],
                 'pivot' => null,
             ],

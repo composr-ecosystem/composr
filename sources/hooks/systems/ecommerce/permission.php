@@ -152,7 +152,13 @@ class Hook_ecommerce_permission
         foreach ($hooks as $ob) {
             $info = $ob->info();
             if (($info !== null) && ($info['permission_module'] !== null)) {
-                $_modules[$info['permission_module']] = true;
+                if (is_array($info['permission_module'])) {
+                    foreach ($info['permission_module'] as $permission_module) {
+                        $_modules[$permission_module] = true;
+                    }
+                } else {
+                    $_modules[$info['permission_module']] = true;
+                }
             }
         }
         ksort($_modules);

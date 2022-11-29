@@ -229,7 +229,7 @@ function add_booking(array $request, int $member_id) : array
 
         // Now insert into DB. Technically each day gets its own booking
         for ($i = 0; $i < $req['quantity']; $i++) {
-            $code = null;
+            $code = '';
 
             foreach ($days as $j => $_date) {
                 list($day, $month, $year) = $_date;
