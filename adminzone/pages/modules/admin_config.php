@@ -749,7 +749,7 @@ class Module_admin_config
             '_GUID' => '123f56149832d459bce72ca63a1578b9',
             'TITLE' => $this->title,
             'POST_URL' => $post_url,
-            'XML' => file_exists(get_custom_file_base() . '/data_custom/xml_config/advanced_banning.xml') ? cms_file_get_contents_safe(get_custom_file_base() . '/data_custom/xml_config/advanced_banning.xml') : cms_file_get_contents_safe(get_file_base() . '/data/xml_config/breadcrumbs.xml', FILE_READ_LOCK | FILE_READ_BOM),
+            'XML' => file_exists(get_custom_file_base() . '/data_custom/xml_config/advanced_banning.xml') ? cms_file_get_contents_safe(get_custom_file_base() . '/data_custom/xml_config/advanced_banning.xml') : cms_file_get_contents_safe(get_file_base() . '/data/xml_config/advanced_banning.xml', FILE_READ_LOCK | FILE_READ_BOM),
         ]);
     }
 
