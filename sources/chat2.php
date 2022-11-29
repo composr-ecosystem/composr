@@ -72,6 +72,8 @@ function blocking_remove(int $blocker, int $blocked)
  */
 function friend_add(int $likes, int $liked, ?int $time = null, bool $send_notification = true) : bool
 {
+    require_code('chat');
+
     if ($time === null) {
         $time = time();
     }
