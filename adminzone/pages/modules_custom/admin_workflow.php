@@ -607,7 +607,7 @@ class Module_admin_workflow extends Standard_crud_module
             return redirect_screen($this->title, $url, $description);
         }
 
-        return $this->do_next_manager($this->title, $description, $id);
+        return $this->do_next_manager($this->title, $description, $id[0]);
     }
 
     /**
