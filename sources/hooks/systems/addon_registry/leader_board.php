@@ -192,6 +192,8 @@ class Hook_addon_registry_leader_board
      */
     public function install_predefined_content(?array $content = null)
     {
+        require_code('lorem');
+
         if ((($content === null) || (in_array('weekly_10_holders', $content))) && (!has_predefined_content('leader_board', 'weekly_10_holders'))) {
             require_code('leader_board2');
             add_leader_board(lorem_phrase() . '-holders', 'holders', 10, 'week', 1, 0, [], 0);
@@ -209,6 +211,8 @@ class Hook_addon_registry_leader_board
      */
     public function uninstall_predefined_content(?array $content = null)
     {
+        require_code('lorem');
+
         if ((($content === null) || (in_array('weekly_10_holders', $content))) && (has_predefined_content('leader_board', 'weekly_10_holders'))) {
             $map = [
                 'lb_title' => lorem_phrase() . '-holders',
