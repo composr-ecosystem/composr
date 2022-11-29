@@ -171,5 +171,8 @@ function _helper_install_test_load_from(string $path) : bool
     $base_url = post_param_string('base_url', get_base_url(), INPUT_FILTER_URL_GENERAL);
     $PROBED_FORUM_CONFIG['board_url'] = $base_url . '/forum';
 
+    $PROBED_FORUM_CONFIG['cookie_member_id'] = 'cms_member_id';
+    $PROBED_FORUM_CONFIG['cookie_member_hash'] = 'cms_member_hash';
+
     return true;
 }
