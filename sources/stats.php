@@ -1581,7 +1581,7 @@ function send_kpi_notifications()
     $kpis = [];
     foreach ($series as $pivot => $send_today) {
         if ($send_today) {
-            $_kpis = gather_kpis(strval($pivot));
+            $_kpis = gather_kpis($pivot);
             $kpis = array_merge($kpis, $_kpis);
         }
     }

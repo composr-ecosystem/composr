@@ -873,7 +873,7 @@ function cns_get_post_emphasis(array $_postdetails) : object
     } elseif (array_key_exists('intended_solely_for', $_postdetails)) {
         $pp_to_displayname = $GLOBALS['FORUM_DRIVER']->get_username($_postdetails['intended_solely_for'], true);
         $pp_to_username = $GLOBALS['FORUM_DRIVER']->get_username($_postdetails['intended_solely_for']);
-        $emphasis = do_lang_tempcode('PP_TO', $pp_to_displayname, $pp_to_username);
+        $emphasis = do_lang_tempcode('PP_TO', escape_html($pp_to_displayname), escape_html($pp_to_username));
     }
     return $emphasis;
 }
