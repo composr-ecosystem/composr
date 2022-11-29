@@ -1266,7 +1266,7 @@ class Module_cms_booking_bookings extends Standard_crud_module
 
         // Delete then re-add
         $this->delete_actualisation($_id);
-        $this->new_id = $this->add_actualisation();
+        list($this->new_id) = $this->add_actualisation();
 
         return null;
     }

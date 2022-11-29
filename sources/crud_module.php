@@ -1023,7 +1023,7 @@ abstract class Standard_crud_module
         // Save custom fields
         if ($this->has_tied_catalogue()) {
             require_code('fields');
-            save_form_custom_fields($this->content_type, strval($id));
+            save_form_custom_fields($this->content_type, $id);
         }
 
         if ($this->user_facing) {
@@ -1735,7 +1735,7 @@ abstract class Standard_crud_module
             // Save custom fields
             if ($this->has_tied_catalogue()) {
                 require_code('fields');
-                save_form_custom_fields($this->content_type, strval($id), strval($orig_id));
+                save_form_custom_fields($this->content_type, $id, $orig_id);
             }
 
             if (($this->output_of_action_is_confirmation) && ($description !== null)) {
