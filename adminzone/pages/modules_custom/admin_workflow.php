@@ -598,7 +598,7 @@ class Module_admin_workflow extends Standard_crud_module
 
         // If we reach here, the form is complete so we resume the CRUD process
 
-        $id = $this->add_actualisation();
+        list($id) = $this->add_actualisation();
 
         $description = do_lang_tempcode('SUCCESS');
 
@@ -607,7 +607,7 @@ class Module_admin_workflow extends Standard_crud_module
             return redirect_screen($this->title, $url, $description);
         }
 
-        return $this->do_next_manager($this->title, $description, $id[0]);
+        return $this->do_next_manager($this->title, $description, $id);
     }
 
     /**
