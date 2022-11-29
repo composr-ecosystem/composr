@@ -283,7 +283,7 @@ PHP;
                 $view_url = $e_id;
             }
 
-            $just_event_row = db_map_restrict($event, ['id', 'e_content']);
+            $just_event_row = db_map_restrict($event, ['e_id', 'e_content']);
 
             $days[$day_start]['EVENTS'][] = [
                 'T_TITLE' => array_key_exists('t_title', $event) ? (is_string($event['t_title']) ? $event['t_title'] : get_translated_text($event['t_title'])) : 'RSS',
