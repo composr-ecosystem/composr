@@ -62,6 +62,18 @@
     $cms.functions.moduleCmsBannersRunStartAddCategory = function moduleCmsBannersRunStartAddCategory() {
         var validValue;
 
+        $dom.on('#is_textual', 'change', dimensionsForImageOnly);
+        dimensionsForImageOnly();
+
+        function dimensionsForImageOnly() {
+            var isTextual = $dom.$('#is_textual'),
+                imageWidth = $dom.$('#image_width'),
+                imageHeight = $dom.$('#image_height');
+
+            imageWidth.disabled = isTextual.checked;
+            imageHeight.disabled = isTextual.checked;
+        }
+
         var extraChecks = [];
         extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) { // eslint-disable-line no-unused-vars
             var value = form.elements['new_id'].value;

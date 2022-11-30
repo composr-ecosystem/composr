@@ -736,7 +736,7 @@ class Module_cms_banners_cat extends Standard_crud_module
             't_is_textual' => do_lang_tempcode('BANNER_IS_TEXTUAL'),
             't_image_width' => do_lang_tempcode('WIDTH'),
             't_image_height' => do_lang_tempcode('HEIGHT'),
-            't_max_file_size' => do_lang_tempcode('FILE_SIZE'),
+            't_max_file_size' => do_lang_tempcode('MAX_SIZE'),
             't_comcode_inline' => do_lang_tempcode('COMCODE_INLINE'),
         ];
         $sortables['(SELECT COUNT(*) FROM ' . get_table_prefix() . 'banners WHERE b_type=r.id)'] = do_lang_tempcode('COUNT_TOTAL');
@@ -749,7 +749,7 @@ class Module_cms_banners_cat extends Standard_crud_module
             do_lang_tempcode('BANNER_IS_TEXTUAL'),
             do_lang_tempcode('WIDTH'),
             do_lang_tempcode('HEIGHT'),
-            do_lang_tempcode('FILE_SIZE'),
+            do_lang_tempcode('MAX_SIZE'),
             do_lang_tempcode('COMCODE_INLINE'),
             do_lang_tempcode('COUNT_TOTAL'),
             do_lang_tempcode('ACTIONS'),
@@ -812,7 +812,7 @@ class Module_cms_banners_cat extends Standard_crud_module
             $fields->attach(form_input_tick(do_lang_tempcode('BANNER_IS_TEXTUAL'), do_lang_tempcode('DESCRIPTION_BANNER_IS_TEXTUAL'), 'is_textual', $is_textual == 1));
         }
         $fields->attach(form_input_dimensions(do_lang_tempcode('DIMENSIONS'), do_lang_tempcode('DESCRIPTION_BANNER_DIMENSIONS'), 'image_width', 'image_height', $image_width, $image_height, true));
-        $fields->attach(form_input_integer(do_lang_tempcode('FILE_SIZE'), do_lang_tempcode('DESCRIPTION_BANNER_FILE_SIZE'), 'max_file_size', $max_file_size, true));
+        $fields->attach(form_input_integer(do_lang_tempcode('MAX_SIZE'), do_lang_tempcode('DESCRIPTION_BANNER_FILE_SIZE'), 'max_file_size', $max_file_size, true));
         $fields->attach(form_input_tick(do_lang_tempcode('COMCODE_INLINE'), do_lang_tempcode('DESCRIPTION_COMCODE_INLINE'), 'comcode_inline', $comcode_inline == 1));
 
         $fields->attach(metadata_get_fields('banner_type', ($id === null) ? null : $id));
@@ -883,8 +883,13 @@ class Module_cms_banners_cat extends Standard_crud_module
     {
         $id = post_param_string('new_id');
         $is_textual = post_param_integer('is_textual', 0);
-        $image_width = post_param_integer('image_width');
-        $image_height = post_param_integer('image_height');
+        if ($is_textual) {
+            $image_width = 0;
+            $image_height = 0;
+        } else {
+            $image_width = post_param_integer('image_width');
+            $image_height = post_param_integer('image_height');
+        }
         $max_file_size = post_param_integer('max_file_size');
         $comcode_inline = post_param_integer('comcode_inline', 0);
 
@@ -917,8 +922,13 @@ class Module_cms_banners_cat extends Standard_crud_module
     public function edit_actualisation(string $id) : ?object
     {
         $is_textual = post_param_integer('is_textual', 0);
-        $image_width = post_param_integer('image_width');
-        $image_height = post_param_integer('image_height');
+        if ($is_textual) {
+            $image_width = 0;
+            $image_height = 0;
+        } else {
+            $image_width = post_param_integer('image_width');
+            $image_height = post_param_integer('image_height');
+        }
         $max_file_size = post_param_integer('max_file_size');
         $comcode_inline = post_param_integer('comcode_inline', 0);
         $banners_in_type_as_secondary = isset($_POST['banners_in_type_as_secondary']) ? $_POST['banners_in_type_as_secondary'] : [];

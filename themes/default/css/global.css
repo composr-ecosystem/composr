@@ -917,6 +917,9 @@ header h1 {
 	font-family: 'Arial', sans-serif;
 	background-color: {$GET,native_ui_background};
 }
+.text-banner, .tooltip-ownlayout .text-banner {
+	color: {$GET,native_ui_foreground} !important;
+}
 .text-banner a {
 	font-size: 1.3em;
 	display: block;

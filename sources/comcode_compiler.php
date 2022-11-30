@@ -1394,7 +1394,7 @@ function __comcode_to_tempcode(string $comcode, int $source_member, bool $as_adm
                                                         '_GUID' => 'a9f4793dc0c1a92cd7d08ae1b87c2308',
                                                         'URL' => (url_is_local($ad_bits['site_url']) && ($ad_bits['site_url'] != '')) ? (get_custom_base_url() . '/' . $ad_bits['site_url']) : $ad_bits['site_url'],
                                                         'TOOLTIP' => $ad_text,
-                                                        'CONTENT' => substr($comcode, $pos - 1, strlen($ad_trigger)),
+                                                        'CONTENT' => escape_html(substr($comcode, $pos - 1, strlen($ad_trigger))),
                                                     ]);
                                                     $pos += strlen($ad_trigger) - 1;
                                                     $tag_output->attach($embed_output);
