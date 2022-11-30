@@ -296,9 +296,9 @@ class Hook_addon_registry_galleries
             'sources/blocks/main_hero_slider.php',
             'themes/default/templates/BLOCK_MAIN_HERO_SLIDER.tpl',
             'data/images/homepage_hero_slider/index.html',
-            'data/images/homepage_hero_slider/bastei_bridge.webp',
-            'data/images/homepage_hero_slider/rustic.webp',
-            'data/images/homepage_hero_slider/waterfall.webp',
+            'data/images/homepage_hero_slider/bastei_bridge.jpg',
+            'data/images/homepage_hero_slider/rustic.jpg',
+            'data/images/homepage_hero_slider/waterfall.jpg',
             'themes/default/templates/GALLERY_HOMEPAGE_HERO_SLIDE.tpl',
             'sources/hooks/systems/points/video__add.php',
             'sources/hooks/systems/points/image__add.php',
@@ -1397,9 +1397,9 @@ class Hook_addon_registry_galleries
         $default_homepage_hero_slider_category = 'homepage_hero_slider';
 
         $default_homepage_hero_slides_urls = [
-            'data/images/homepage_hero_slider/bastei_bridge.webp',
-            'data/images/homepage_hero_slider/rustic.webp',
-            'data/images/homepage_hero_slider/waterfall.webp',
+            'data/images/homepage_hero_slider/bastei_bridge.jpg',
+            'data/images/homepage_hero_slider/rustic.jpg',
+            'data/images/homepage_hero_slider/waterfall.jpg',
         ];
 
         $where = [];
@@ -1463,7 +1463,7 @@ LINK2_TEXT=' . do_lang('DEFAULT_LINK2_TEXT', null, null, null, $lang) . '
                     lang_code_to_default_content('title', 'DEFAULT_SLIDE_X', false, 2, null, integer_format($i + 1)),
                     'homepage_hero_slider',
                     $slider_insert_map,
-                    'data/images/homepage_hero_slider/' . $img . '.webp',
+                    'data/images/homepage_hero_slider/' . $img . '.jpg',
                     1,
                     0,
                     0,
@@ -1492,9 +1492,9 @@ LINK2_TEXT=' . do_lang('DEFAULT_LINK2_TEXT', null, null, null, $lang) . '
 
             // Delete default slide images
             $default_homepage_hero_slides_urls = [
-                'data/images/homepage_hero_slider/bastei_bridge.webp',
-                'data/images/homepage_hero_slider/rustic.webp',
-                'data/images/homepage_hero_slider/waterfall.webp',
+                'data/images/homepage_hero_slider/bastei_bridge.jpg',
+                'data/images/homepage_hero_slider/rustic.jpg',
+                'data/images/homepage_hero_slider/waterfall.jpg',
             ];
             $where = [];
             foreach ($default_homepage_hero_slides_urls as $url) {
