@@ -37,7 +37,7 @@ class suphp_test_set extends cms_test_case
 
                 if (preg_match('#^' . str_replace('\*\*', '[^/]+', preg_quote($chmod_path, '#')) . '$#', $path) != 0) {
                     $php_files = get_directory_contents(get_file_base() . '/' . $path, '', 0, false, true, ['php']);
-                    $this->assertTrue(empty($php_files));
+                    $this->assertTrue(empty($php_files), get_file_base() . '/' . $path . ' is writable and contains PHP scripts.');
                 }
             }
         }

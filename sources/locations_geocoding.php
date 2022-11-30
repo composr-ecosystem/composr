@@ -87,7 +87,7 @@ function geocode(string $location, ?object &$errormsg = null, ?string $service =
 {
     $ob = choose_geocoding_service($service);
     if ($ob === null) {
-        $error_msg = do_lang('API_NOT_CONFIGURED', '(any geocoding)');
+        $errormsg = do_lang_tempcode('API_NOT_CONFIGURED', '(any geocoding)');
         return null;
     }
     $ret = $ob->geocode($location, $errormsg);
@@ -111,6 +111,11 @@ function geocode(string $location, ?object &$errormsg = null, ?string $service =
 function reverse_geocode(float $latitude, float $longitude, ?object &$errormsg = null, ?string $service = null) : ?array
 {
     $ob = choose_geocoding_service($service);
+    if ($ob === null) {
+        $errormsg = do_lang_tempcode('API_NOT_CONFIGURED', '(any geocoding)');
+        return null;
+    }
+
     $ret = $ob->reverse_geocode($latitude, $longitude, $errormsg);
     if ($errormsg !== null) {
         require_code('failure');

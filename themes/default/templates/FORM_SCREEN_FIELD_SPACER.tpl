@@ -13,7 +13,9 @@
 			<span class="h3 {+START,IF_NON_PASSED_OR_FALSE,FORCE_OPEN} toggleable-tray-button js-click-toggle-subord-fields js-keypress-toggle-subord-fields{+END}">{TITLE*}</span>
 
 			{+START,IF,{$EQ,{TITLE},{!ADDRESS}}}
-				<button class="btn btn-primary btn-sm buttons--search js-click-geolocate-address-fields" type="button">{+START,INCLUDE,ICON}NAME=buttons/search{+END} <span>{!locations:FIND_ME}</span></button>
+				{+START,IF,{$GEOCODE_ENABLED}}
+					<button class="btn btn-primary btn-sm buttons--search js-click-geolocate-address-fields" type="button">{+START,INCLUDE,ICON}NAME=buttons/search{+END} <span>{!locations:FIND_ME}</span></button>
+				{+END}
 			{+END}
 		{+END}
 

@@ -357,14 +357,14 @@ function open_up_ftp_connection()
     }
 
     if ((!$ssl) && (@ftp_login($conn, $_POST['ftp_username'], $_POST['ftp_password']) === false)) {
-        return 'Could connect to the FTP server but not log in. [' . cms_error_get_last() . ']';
+        return 'Could connect to the FTP server but not log in. [' . code_editor_error_get_last() . ']';
     }
 
     if (substr($_POST['ftp_folder'], -1) != '/') {
         $_POST['ftp_folder'] .= '/';
     }
     if (@ftp_chdir($conn, $_POST['ftp_folder']) === false) {
-        return 'The FTP folder given was invalid or can not otherwise be accessed. [' . cms_error_get_last() . ']';
+        return 'The FTP folder given was invalid or can not otherwise be accessed. [' . code_editor_error_get_last() . ']';
     }
     $files = @ftp_nlist($conn, '.');
     if ($files === false) { // :(. Weird bug on some systems
@@ -678,11 +678,11 @@ function ce_cms_tempnam(string $prefix = '')
 }
 
 /**
- * Get last error message.
+ * Get last error message in the code editor.
  *
  * @return string Error message (blank: none)
  */
-function cms_error_get_last()
+function code_editor_error_get_last() : string
 {
     $error = error_get_last();
     if ($error === null) {

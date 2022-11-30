@@ -244,7 +244,7 @@ class Hook_import_phpbb3
                 $id_new = $GLOBALS['FORUM_DB']->query_insert('attachments', $row_copy, true);
 
                 $target_path = get_custom_file_base() . '/uploads/attachments/' . $row['physical_filename'];
-                if ((file_exists($target_path)) || (@copy($file_base . '/files/' . $attachment['physical_filename'], $target_path))) {
+                if ((file_exists($target_path)) || (@copy($file_base . '/files/' . $row['physical_filename'], $target_path))) {
                     sync_file(get_custom_file_base() . '/uploads/attachments/' . $row['physical_filename']);
                 }
 
