@@ -598,7 +598,7 @@ class Module_admin_workflow extends Standard_crud_module
 
         // If we reach here, the form is complete so we resume the CRUD process
 
-        $id = $this->add_actualisation();
+        list($id) = $this->add_actualisation();
 
         $description = do_lang_tempcode('SUCCESS');
 

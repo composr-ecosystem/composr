@@ -134,6 +134,7 @@ $profile .= <<<END
         return [
 
 END;
+require_code('content2');
 $hooks = find_all_hooks('modules', 'admin_setupwizard');
 foreach (array_keys($hooks) as $hook) {
     $path = get_file_base() . '/sources_custom/hooks/modules/admin_setupwizard/' . filter_naughty_harsh($hook) . '.php';
