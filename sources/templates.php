@@ -277,6 +277,9 @@ function warn_screen(object $title, $text, bool $provide_back = true, bool $supp
  */
 function form_input_hidden(string $name, $value) : object
 {
+    if (is_object($value)) {
+        $value = $value->evaluate();
+    }
     return do_template('FORM_SCREEN_INPUT_HIDDEN' . ((strpos($value, "\n") !== false) ? '_2' : ''), ['_GUID' => '1b39e13d1a09573c67522e2f3b7ebf14', 'NAME' => $name, 'VALUE' => $value]);
 }
 

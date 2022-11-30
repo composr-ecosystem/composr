@@ -482,7 +482,7 @@ function workflow_update_handler() : object
     // Find out which approvals have been given
     $approvals = [];
     foreach (array_keys(get_all_approval_points($workflow_id)) as $approval_id) {
-        $approvals[$approval_id] = (post_param_integer('approval_' . strval($approval_id), 0) == 1);
+        $approvals[$approval_id] = post_param_integer('approval_' . strval($approval_id), 0);
     }
 
     ////////////////////////
@@ -662,7 +662,7 @@ function workflow_update_handler() : object
     // Make a nicely formatted list of the statuses
     $status_list = '';
     foreach ($all_approval_statuses as $point => $status) {
-        $status_list .= $approvals[$point] . ': ';
+        $status_list .= strval($approvals[$point]) . ': ';
         $status_list .= ($status == 1) ? 'approved' : 'not approved';
         $status_list .= ', ';
     }
