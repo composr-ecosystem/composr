@@ -319,7 +319,11 @@ class Module_filedump
         $db_rows = [];
         $directories = [];
         $files = [];
-        $dir_contents = get_directory_contents(get_custom_file_base() . '/uploads/filedump' . $subpath, trim($subpath, '/'), IGNORE_ACCESS_CONTROLLERS, $recurse == 1);
+        $_directories = get_directory_contents(get_custom_file_base() . '/uploads/filedump' . $subpath, trim($subpath, '/'), IGNORE_ACCESS_CONTROLLERS, $recurse == 1, false);
+        $_files = get_directory_contents(get_custom_file_base() . '/uploads/filedump' . $subpath, trim($subpath, '/'), IGNORE_ACCESS_CONTROLLERS, $recurse == 1, true);
+        $dir_contents = array_merge($_directories, $_files);
+
+        // Traverse every directory / file
         foreach ($dir_contents as $filename) {
             $_subpath = dirname($filename);
             if ($_subpath == '.') {
@@ -436,6 +440,8 @@ class Module_filedump
                     $description_2 = ($is_directory) ? do_lang_tempcode('FOLDER') : new Tempcode();
                 }
 
+                $db_row = isset($db_rows[$_subpath][$filename]) ? $db_rows[$_subpath][$filename] : null;
+
                 $choosable = (($db_row !== null) && ($db_row['the_member'] == get_member())) || (has_privilege(get_member(), 'delete_anything_filedump'));
                 if ($choosable) {
                     $something_editable = true;
@@ -462,6 +468,7 @@ class Module_filedump
 
                 if ($file['is_directory']) { // Directory
                     $url = build_url(['page' => '_SELF', 'subpath' => $_subpath . $filename, 'sort' => $sort, 'type_filter' => $type_filter, 'search' => $search, 'recurse' => $recurse], '_SELF');
+                    $listing_url = build_url(['page' => '_SELF', 'subpath' => $_subpath . $filename, 'sort' => $sort, 'type_filter' => $type_filter, 'search' => $search, 'recurse' => $recurse], '_SELF', [], false, false, false, 'tab--listing');
 
                     $is_image = false;
 
@@ -470,6 +477,7 @@ class Module_filedump
                     $embed_url = null;
                 } else { // File
                     $url = get_custom_base_url() . '/uploads/filedump' . str_replace('%2F', '/', rawurlencode($_subpath . $filename));
+                    $listing_url = $url;
 
                     if ((is_image($url, IMAGE_CRITERIA_WEBSAFE | IMAGE_CRITERIA_GD_READ, true)) || (is_image($url, IMAGE_CRITERIA_WEBSAFE | IMAGE_CRITERIA_VECTOR, true))) {
                         $is_image = true;
@@ -540,7 +548,7 @@ class Module_filedump
                 } else {
                     $size = make_string_tempcode(escape_html($file['size']));
                 }
-                $size = hyperlink($url, $size, !$file['is_directory']/*files go to new window*/, false);
+                $size = hyperlink($listing_url, $size, !$file['is_directory']/*files go to new window*/, false);
 
                 // Submitter
                 if ($file['submitter'] !== null) {
