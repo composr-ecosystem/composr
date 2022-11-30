@@ -711,7 +711,7 @@ function add_banner_type(string $id, int $is_textual, int $image_width, int $ima
  */
 function edit_banner_type(string $old_id, string $id, int $is_textual, int $image_width, int $image_height, int $max_file_size, int $comcode_inline, bool $uniqify = false) : string
 {
-    $rows = $GLOBALS['SITE_DB']->query_select('banner_types', ['id'], ['id' => $id], '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('banner_types', ['id'], ['id' => $old_id], '', 1);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'banner_type'));
     }
