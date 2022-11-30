@@ -2678,6 +2678,22 @@ function ecv2_DO_NOT_TRACK_REQUESTED(string $lang, array $escaped, array $param)
 }
 
 /**
+ * Evaluate a particular Tempcode symbol.
+ *
+ * @ignore
+ *
+ * @param  LANGUAGE_NAME $lang The language to evaluate this symbol in (some symbols refer to language elements)
+ * @param  array $escaped Array of escaping operations
+ * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
+ * @return string The result
+ */
+function ecv2_GEOCODE_ENABLED(string $lang, array $escaped, array $param) : string
+{
+    require_code('locations_geocoding');
+    return (choose_geocoding_service() === null) ? '0' : '1';
+}
+
+/**
  * Evaluate a particular Tempcode directive.
  *
  * @ignore
