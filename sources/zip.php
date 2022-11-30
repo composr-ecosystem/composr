@@ -92,7 +92,7 @@ function crc32_file(string $filename) : ?int
  * Does not require any PHP or server zip support.
  * Compression is not supported, only archiving - unless you have the PHP zip extension.
  *
- * @param  PATH $outfile_path File to spool into
+ * @param  PATH $outfile_path File to spool into; can be php://stdout given ZIP is a streamable format
  * @param  array $file_array A list of maps (data/full_path, name, time [optional]) covering everything to ZIP up
  */
 function create_zip_file(string $outfile_path, array $file_array)

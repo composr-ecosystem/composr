@@ -23,7 +23,7 @@
 /**
  * Open up a TAR archive (or tarball if the zlib extension is available and .gz is requested), and return the resource.
  *
- * @param  PATH $path The path to the TAR archive
+ * @param  PATH $path The path to the TAR archive; for a write operation can be php://stdout given TAR is a streamable format
  * @param  string $mode The mode to open the TAR archive (rb=read, wb=write)
  * @set rb wb c+b
  * @param  boolean $known_exists Whether we know the file currently exists (performance optimisation)
@@ -609,12 +609,13 @@ function tar_add_file(array &$resource, string $target_path, string $data, int $
 
     $myfile = $resource['myfile'];
 
-    //if (!$resource['already_at_end']) {   Don't trust this as reliable at the moment and seeking is not a problem
-    if ($myfile !== null) {
-        fseek($myfile, $resource['end'], SEEK_SET);
+    if (!$resource['already_at_end']) {
+        // Note that this can only work if we are not writing to stdout directly
+        if ($myfile !== null) {
+            fseek($myfile, $resource['end'], SEEK_SET);
+        }
+        $resource['already_at_end'] = true;
     }
-    $resource['already_at_end'] = true;
-    //}
     $offset = $resource['end'];
     $resource['directory'][$resource['end']] = ['path' => $target_path, 'mode' => $_mode, 'size' => $data_is_path ? filesize($data) : strlen($data)];
 
