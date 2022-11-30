@@ -31,7 +31,22 @@ class Hook_addon_registry_cns_member_avatars
      */
     public function get_chmod_array(bool $runtime = false) : array
     {
-        return [];
+        $chmod = [];
+        if ($runtime) {
+            $chmod = array_merge(
+                $chmod,
+                [
+                    'uploads/cns_avatars/*',
+                ]
+            );
+        }
+        $chmod = array_merge(
+            $chmod,
+            [
+                'uploads/cns_avatars',
+            ]
+        );
+        return $chmod;
     }
 
     /**

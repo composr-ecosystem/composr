@@ -31,7 +31,26 @@ class Hook_addon_registry_galleries
      */
     public function get_chmod_array(bool $runtime = false) : array
     {
-        return [];
+        $chmod = [];
+        if ($runtime) {
+            $chmod = array_merge(
+                $chmod,
+                [
+                    'uploads/galleries/*',
+                    'uploads/galleries_thumbs/*',
+                    'uploads/watermarks/*',
+                ]
+            );
+        }
+        $chmod = array_merge(
+            $chmod,
+            [
+                'uploads/galleries',
+                'uploads/galleries_thumbs',
+                'uploads/watermarks',
+            ]
+        );
+        return $chmod;
     }
 
     /**

@@ -31,7 +31,24 @@ class Hook_addon_registry_cns_forum
      */
     public function get_chmod_array(bool $runtime = false) : array
     {
-        return [];
+        $chmod = [];
+        if ($runtime) {
+            $chmod = array_merge(
+                $chmod,
+                [
+                    'forum/pages/comcode_custom/**/*.txt',
+                    'forum/pages/html_custom/**/*.htm',
+                ]
+            );
+        }
+        $chmod = array_merge(
+            $chmod,
+            [
+                'forum/pages/comcode_custom/**',
+                'forum/pages/html_custom/**',
+            ]
+        );
+        return $chmod;
     }
 
     /**

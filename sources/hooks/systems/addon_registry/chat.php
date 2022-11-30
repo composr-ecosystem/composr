@@ -31,7 +31,24 @@ class Hook_addon_registry_chat
      */
     public function get_chmod_array(bool $runtime = false) : array
     {
-        return [];
+        $chmod = [];
+        if ($runtime) {
+            $chmod = array_merge(
+                $chmod,
+                [
+                    'data_custom/modules/chat/*.bin',
+                    'uploads/personal_sound_effects/*',
+                ]
+            );
+        }
+        $chmod = array_merge(
+            $chmod,
+            [
+                'data_custom/modules/chat',
+                'uploads/personal_sound_effects',
+            ]
+        );
+        return $chmod;
     }
 
     /**

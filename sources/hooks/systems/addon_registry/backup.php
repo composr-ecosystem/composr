@@ -31,7 +31,22 @@ class Hook_addon_registry_backup
      */
     public function get_chmod_array(bool $runtime = false) : array
     {
-        return [];
+        $chmod = [];
+        if ($runtime) {
+            $chmod = array_merge(
+                $chmod,
+                [
+                    'data_custom/modules/admin_backup/*',
+                ]
+            );
+        }
+        $chmod = array_merge(
+            $chmod,
+            [
+                'data_custom/modules/admin_backup',
+            ]
+        );
+        return $chmod;
     }
 
     /**

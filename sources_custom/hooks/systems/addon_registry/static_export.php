@@ -26,7 +26,9 @@ class Hook_addon_registry_static_export
      */
     public function get_chmod_array(bool $runtime = false) : array
     {
-        return [];
+        return [
+            'exports/static',
+        ];
     }
 
     /**
@@ -135,6 +137,7 @@ class Hook_addon_registry_static_export
             'adminzone/pages/minimodules_custom/static_export.php',
             'sources_custom/static_export.php',
             'sources_custom/hooks/systems/page_groupings/static_export.php',
+            'exports/static/readme.txt',
         ];
     }
 }

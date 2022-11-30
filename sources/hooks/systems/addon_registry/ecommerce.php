@@ -31,7 +31,22 @@ class Hook_addon_registry_ecommerce
      */
     public function get_chmod_array(bool $runtime = false) : array
     {
-        return [];
+        $chmod = [];
+        if ($runtime) {
+            $chmod = array_merge(
+                $chmod,
+                [
+                    'uploads/ecommerce/*',
+                ]
+            );
+        }
+        $chmod = array_merge(
+            $chmod,
+            [
+                'uploads/ecommerce',
+            ]
+        );
+        return $chmod;
     }
 
     /**
