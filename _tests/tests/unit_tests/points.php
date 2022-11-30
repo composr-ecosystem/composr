@@ -63,6 +63,8 @@ class points_test_set extends cms_test_case
 
         $this->enable_gift_points = get_option('enable_gift_points');
 
+        set_option('enable_gift_points', '1', 0);
+
         $this->gift_points_sent = gift_points_sent($this->admin_user);
 
         $this->establish_admin_session();
@@ -80,8 +82,6 @@ class points_test_set extends cms_test_case
         if (!addon_installed('points')) {
             return;
         }
-
-        set_option('enable_gift_points', '1', 0);
 
         points_flush_runtime_cache();
         $this->_testSendGiftPointsAndReverse('have enough gift points', gift_points_balance($this->admin_user));
@@ -249,6 +249,7 @@ class points_test_set extends cms_test_case
 
         $points_to_send = 10;
 
+        // Disable gift points for this test
         set_option('enable_gift_points', '0', 0);
 
         points_flush_runtime_cache();
@@ -288,6 +289,9 @@ class points_test_set extends cms_test_case
         $this->assertTrue($points_correct, 'Points to spend did not increase as expected. It was at ' . strval($current_points) . ' when it should have been at ' . strval($initial_points + $points_to_send));
         $this->assertTrue($reversed_correct, 'Points did not reverse as expected for reverse transaction.');
 
+        // Re-enable gift points for the test suite
+        set_option('enable_gift_points', '1', 0);
+
         // Do not keep unit tests in the ledger
         if (!$this->disable_clean_up) {
             $GLOBALS['SITE_DB']->query_delete('points_ledger', ['id' => $this->points_transact_record], '', 1);
@@ -300,6 +304,8 @@ class points_test_set extends cms_test_case
         if (get_forum_type() != 'cns' || !addon_installed('points') || get_db_type() == 'xml') {
             return;
         }
+
+        points_flush_runtime_cache();
 
         $initial_points = points_balance($this->admin_user);
 
@@ -385,8 +391,6 @@ class points_test_set extends cms_test_case
         if (!addon_installed('points')) {
             return;
         }
-
-        set_option('enable_gift_points', '1', 0);
 
         require_code('points_escrow');
 

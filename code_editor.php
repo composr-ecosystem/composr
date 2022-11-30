@@ -678,7 +678,7 @@ function ce_cms_tempnam(string $prefix = '')
 }
 
 /**
- * Get last error message.
+ * Get last error message in the code editor.
  *
  * @return string Error message (blank: none)
  */
