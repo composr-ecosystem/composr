@@ -1136,7 +1136,7 @@ class CMS_Topic
         $join_bits = new Tempcode();
         if (is_guest()) {
             list($login_url, , $join_url) = get_login_url();
-            $join_bits = do_lang_tempcode('JOIN_OR_LOGIN', escape_html($join_url), escape_html(is_object($login_url) ? $login_url->evaluate() : $login_url));
+            $join_bits = do_lang_tempcode('JOIN_OR_LOGIN', escape_html(is_object($join_url) ? $join_url->evaluate() : $join_url), escape_html(is_object($login_url) ? $login_url->evaluate() : $login_url));
         }
 
         $reviews_rating_criteria = [];
