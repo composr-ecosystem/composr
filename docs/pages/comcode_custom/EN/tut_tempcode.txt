@@ -1530,6 +1530,10 @@ where:
 			<td>{$FILE_EXISTS,file_path}</td>
 			<td>Find if the given file path exists (should be a path relative to the base directory).</td>
 		</tr>
+		<tr style="background: #FFDDDD">
+			<td>{$GEOCODE_ENABLED}</td>
+			<td>Find whether at least one Geocoding service is set up and can be used.</td>
+		</tr>
 	</tbody>
 </table>
 [/html]
