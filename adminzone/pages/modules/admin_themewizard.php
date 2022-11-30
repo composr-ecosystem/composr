@@ -281,7 +281,7 @@ class Module_admin_themewizard
                     'name' => $subpath,
                 ];
             }
-            create_zip_file('php://stdout', $file_array);
+            create_zip_file('php://output', $file_array);
 
             actual_delete_theme('_temp_');
 

@@ -207,7 +207,7 @@ function _git_status__tar($stub, $filename)
     header('Content-Disposition: attachment; filename="' . $filename . '"');
 
     require_code('tar');
-    $myfile = tar_open('php://stdout', 'wb');
+    $myfile = tar_open('php://output', 'wb');
     foreach ($paths as $path) {
         $_path = get_git_file_base() . '/' . $path;
         if (is_file($_path)) {

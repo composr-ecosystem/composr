@@ -23,7 +23,7 @@
 /**
  * Open up a TAR archive (or tarball if the zlib extension is available and .gz is requested), and return the resource.
  *
- * @param  PATH $path The path to the TAR archive; for a write operation can be php://stdout given TAR is a streamable format
+ * @param  PATH $path The path to the TAR archive; for a write operation can be php://output given TAR is a streamable format
  * @param  string $mode The mode to open the TAR archive (rb=read, wb=write)
  * @set rb wb c+b
  * @param  boolean $known_exists Whether we know the file currently exists (performance optimisation)
@@ -36,7 +36,12 @@ function tar_open(string $path, string $mode, bool $known_exists = false, ?strin
         $real_filename = basename($path);
     }
 
-    $exists = ($known_exists ? true : file_exists($path)) && (strpos($mode, 'c+') !== false);
+    if ($path == 'php://output') {
+        $exists = false;
+    } else {
+        $exists = ($known_exists ? true : file_exists($path)) && (strpos($mode, 'c+') !== false);
+    }
+
     if ((function_exists('gzopen')) && (cms_strtolower_ascii(substr($real_filename, -3)) == '.gz')) {
         $myfile = @gzopen($path, $mode);
     } else {
@@ -61,16 +66,12 @@ function tar_open(string $path, string $mode, bool $known_exists = false, ?strin
     $resource['myfile'] = $myfile;
     $resource['real_filename'] = $real_filename;
     $resource['full'] = $path;
-    $resource['already_at_end'] = false;
     if (((!$exists) || (!(filesize($path) > 0))) && (strpos($mode, 'w') !== false)) {
-        $chunk = pack('a1024', '');
-        if ($myfile !== null) {
-            if (fwrite($myfile, $chunk) < strlen($chunk)) {
-                warn_exit(do_lang_tempcode('COULD_NOT_SAVE_FILE', escape_html($resource['full'])), false, true);
-            }
-        }
         $resource['directory'] = [];
         $resource['end'] = 0;
+        $resource['already_at_end'] = true;
+    } else {
+        $resource['already_at_end'] = false;
     }
     return $resource;
 }

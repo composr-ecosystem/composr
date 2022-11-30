@@ -92,7 +92,7 @@ function crc32_file(string $filename) : ?int
  * Does not require any PHP or server zip support.
  * Compression is not supported, only archiving - unless you have the PHP zip extension.
  *
- * @param  PATH $outfile_path File to spool into; can be php://stdout given ZIP is a streamable format
+ * @param  PATH $outfile_path File to spool into; can be php://output given ZIP is a streamable format
  * @param  array $file_array A list of maps (data/full_path, name, time [optional]) covering everything to ZIP up
  */
 function create_zip_file(string $outfile_path, array $file_array)
@@ -106,7 +106,7 @@ function create_zip_file(string $outfile_path, array $file_array)
 
     // Support compression via PHP
     if (class_exists('ZipArchive')) {
-        if ($outfile_path == 'php://stdout') {
+        if ($outfile_path == 'php://output') {
             $_outfile_path = cms_tempnam(); // ZipArchive cannot directly write to stdout
         } else {
             $_outfile_path = $outfile_path;
@@ -142,7 +142,7 @@ function create_zip_file(string $outfile_path, array $file_array)
         }
         $z->close();
 
-        if ($outfile_path == 'php://stdout') {
+        if ($outfile_path == 'php://output') {
             cms_ini_set('ocproducts.xss_detect', '0');
 
             echo file_get_contents($_outfile_path);

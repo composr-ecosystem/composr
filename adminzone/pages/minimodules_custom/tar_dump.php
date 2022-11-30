@@ -40,7 +40,7 @@ $filename = 'composr-' . get_site_name() . '.' . date('Y-m-d') . '.tar';
 header('Content-Type: application/octet-stream');
 header('Content-Disposition: attachment; filename="' . escape_header($filename, true) . '"');
 
-$tar = tar_open('php://stdout', 'wb');
+$tar = tar_open('php://output', 'wb');
 
 $max_size = get_param_integer('max_size', null);
 $subpath = get_param_string('path', '', INPUT_FILTER_GET_IDENTIFIER);

@@ -515,7 +515,7 @@ function transifex_pull_script()
         cms_ini_set('ocproducts.xss_detect', '0');
 
         require_code('tar');
-        $tar_file = tar_open('php://stdout', 'wb');
+        $tar_file = tar_open('php://output', 'wb');
     } else {
         $tar_file = null;
     }
