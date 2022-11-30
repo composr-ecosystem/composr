@@ -833,14 +833,14 @@ function calculate_category_child_count_cache(?int $cat_id, bool $recursive_upda
  * @param  ?AUTO_LINK $parent_id The ID of the parent category (null: no parent)
  * @param  SHORT_TEXT $meta_keywords Meta keywords for the category
  * @param  LONG_TEXT $meta_description Meta description for the category
- * @param  URLPATH $rep_image The representative image for the category (blank: none)
+ * @param  ?URLPATH $rep_image The representative image for the category (blank: none)
  * @param  integer $move_days_lower The number of days before expiry (lower limit)
  * @param  integer $move_days_higher The number of days before expiry (higher limit)
  * @param  ?AUTO_LINK $move_target The expiry category (null: do not expire)
  * @param  ?TIME $add_time Add time (null: do not change)
  * @param  ?ID_TEXT $c_name The catalogue name (null: do not change)
  */
-function actual_edit_catalogue_category(int $id, string $title, string $description, string $notes, ?int $parent_id, string $meta_keywords, string $meta_description, string $rep_image, int $move_days_lower, int $move_days_higher, ?int $move_target, ?int $add_time = null, ?string $c_name = null)
+function actual_edit_catalogue_category(int $id, string $title, string $description, string $notes, ?int $parent_id, string $meta_keywords, string $meta_description, ?string $rep_image, int $move_days_lower, int $move_days_higher, ?int $move_target, ?int $add_time = null, ?string $c_name = null)
 {
     $under_category_id = $parent_id;
     while (($under_category_id !== null) && ($under_category_id != INTEGER_MAGIC_NULL)) {
