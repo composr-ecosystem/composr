@@ -3189,7 +3189,9 @@ xmlrpc_encode_entitites($this->errstr, $GLOBALS['xmlrpc_internalencoding'], $cha
 		*/
 		function structeach()
 		{
-			return @each($this->me['struct']);
+			$ret = array(key($this->me['struct']), current($this->me['struct']));
+			next($this->me['struct']);
+			return $ret;
 		}
 
 		// this code looks like it is very fragile and has not been fixed

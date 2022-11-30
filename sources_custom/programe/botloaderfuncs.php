@@ -792,7 +792,7 @@ function startElement($parser, $name, $attrs)
 
         $template .="<$name";
 
-        while (list ($key, $val) = each ($attrs)) {
+        foreach ($attrs as $key => $val) {
             $template .= " $key=\"$val\" ";
         }
 
