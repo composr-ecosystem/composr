@@ -654,7 +654,7 @@ function get_sql_dump($out_file, bool $include_drops = false, bool $output_statu
         }
 
         if ($include_drops) {
-            $queries = $db_static->drop_table_if_exists($db->get_table_prefix() . $table_name, $db->connection_write);
+            $queries = $db_static->drop_table_if_exists__sql($db->get_table_prefix() . $table_name, $db->connection_write);
             foreach ($queries as $i => $sql) {
                 if ($i != 0) {
                     fwrite($out_file, "\n");
@@ -715,7 +715,7 @@ function get_sql_dump($out_file, bool $include_drops = false, bool $output_statu
             if ($_fields !== null) {
                 $unique_key_fields = implode(',', _helper_get_table_key_fields($table_name));
 
-                $queries = $db_static->create_index__sql($db->get_table_prefix() . $table_name, $index_name, $_fields, $db->connection_write, $table_name, $unique_key_fields, $db);
+                $queries = $db_static->create_index__sql($db->get_table_prefix() . $table_name, $index_name, $_fields, $db->connection_write, $table_name, $unique_key_fields, $db->get_table_prefix());
                 foreach ($queries as $sql) {
                     fwrite($out_file, $sql . ";\n");
                 }
@@ -785,10 +785,10 @@ function get_sql_dump($out_file, bool $include_drops = false, bool $output_statu
         if ($start > 0) {
             fwrite($out_file, "\n");
         }
-
-        pop_db_scope_check();
-        pop_query_limiting();
     }
+
+    pop_db_scope_check();
+    pop_query_limiting();
 
     cms_set_time_limit($old_limit);
 }

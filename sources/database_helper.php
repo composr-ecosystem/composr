@@ -32,15 +32,36 @@ function init__database_helper()
     }
 
     if (!defined('DB_MAX_KEY_SIZE')) {
-        // Limits (we also limit field names to not conflict with keywords - those defined in get_db_keywords)
-        define('DB_MAX_KEY_SIZE', 500);
+        // Limits...
+        //  We also limit field names to not conflict with keywords (those defined in get_db_keyword) and various other hard-coded restrictions).
+        //  These limits are intentionally conservative, sometimes much more than all supported databases. This is in case we hit a future more restrictive system and because we want to encourage good database design.
+
+        define('DB_MAX_IDENTIFIER_LENGTH', 44);
+
         define('DB_MAX_PRIMARY_KEY_SIZE', 251);
-        define('DB_MAX_ROW_SIZE', 8000);
-        define('DB_MAX_FIELD_IDENTIFIER_SIZE', 31);
-        define('DB_MAX_IDENTIFIER_SIZE', 32);
-        // We have to take into account that chars might take 3 bytes - but we'll assume unicode is only used on db's with higher limits
-        define('DB_MAX_KEY_SIZE_UNICODE', 1000);
-        define('DB_MAX_ROW_SIZE_UNICODE', 24000);
+        define('DB_MAX_KEY_SIZE', 1000);
+        define('DB_MAX_ROW_SIZE', 24000);
+
+        /*
+        Source...
+
+        Limitation                                     Access    MySQL (InnoDB)      MySQL (MyISAM)    PostgreSQL    Oracle    DB2    Firebird    SQLite    CUBRID    Ingres    SQL Anywhere    Informix    FileMaker
+
+        Max table name length                          64        64                  64                63            128       128    63          /         254       256       128             128         100
+        Max field identifier length                    64        64                  64                63            128       128    63          /         254       256       128             128         100
+        Max index name length                          64        64                  64                63            128       128    63          /         254       256       128             128         100
+        Max fields in table                            255       1017                /                 1600          1000      8000   /           2000      /         1024      45000           32768       99
+        Max indexes for table (excluding primary key)  32        64                  64                /             /         14900  200         /         /         125       4294967296      /           /
+        Max fields in index                            10        16                  16                32            32        120    /           2000      /         32        /               16          /
+        Max key size                                   /         3072                1000              /             /         32767  8000        /         /         /         /               797         /
+        Max key size (primary keys)                    255       3072                1000              /             /         32767  8000        /         /         /         /               797         /
+        Max key size (considering unicode)             /         3072                1000              /             /         32767  8000        /         /         /         /               797         /
+        Max row field size                             /         65535 (*2)          65535             /             /         /      65536       /         /         /         /               32767       /
+
+        *1 It is 767 in < 5.7, but that's so intolerably low when we consider Unicode that we cannot support it
+        *2 ~8000 is defined as a limit but this doesn't count VARCHARs which use most of the space
+
+        */
     }
 }
 
@@ -145,7 +166,11 @@ function _check_sizes(string $table_name, bool $primary_key, array $fields, stri
         if (preg_match('#^[\w]+$#', $name) == 0) {
             fatal_exit('Inappropriate identifier: ' . $name);
         }
-        if (strlen($name) > DB_MAX_FIELD_IDENTIFIER_SIZE) {
+        $name_len = strlen($name);
+        if (strpos($field, '_TRANS') !== false) {
+            $name_len += 13;
+        }
+        if ($name_len > DB_MAX_IDENTIFIER_LENGTH) {
             fatal_exit('Inappropriate identifier, too long: ' . $name);
         }
     }
@@ -162,13 +187,13 @@ function _check_sizes(string $table_name, bool $primary_key, array $fields, stri
             }
             fatal_exit('Fieldset (row) too long at ' . integer_format($total_size) . ' bytes [' . $id_name . ']');
         }
-        if ($key_size_unicode >= DB_MAX_KEY_SIZE_UNICODE) {
+        if ($key_size_unicode >= DB_MAX_KEY_SIZE) {
             if ($return_on_error) {
                 return false;
             }
             fatal_exit('Unicode version of key too long at ' . integer_format($key_size_unicode) . ' bytes [' . $id_name . ']'); // 252 for firebird
         }
-        if (($total_size_unicode >= DB_MAX_ROW_SIZE_UNICODE) && ($table_name != 'f_member_custom_fields')) {
+        if (($total_size_unicode >= DB_MAX_ROW_SIZE) && ($table_name != 'f_member_custom_fields')) {
             if ($return_on_error) {
                 return false;
             }
@@ -197,7 +222,7 @@ function _helper_create_table(object $this_ref, string $table_name, array $field
     if (preg_match('#^[\w]+$#', $table_name) == 0) {
         fatal_exit('Inappropriate identifier: ' . $table_name); // (the +7 is for prefix: max length of 7 chars allocated for prefix)
     }
-    if (strlen($table_name) + 7 > DB_MAX_IDENTIFIER_SIZE) {
+    if (strlen($table_name) + 7 > DB_MAX_IDENTIFIER_LENGTH) {
         fatal_exit('Inappropriate identifier, too long: ' . $table_name); // (the +7 is for prefix: max length of 7 chars allocated for prefix)
     }
 
@@ -338,7 +363,7 @@ function _helper_create_index(object $this_ref, string $table_name, string $inde
     if (preg_match('#^[\#\w]+$#', $index_name) == 0) {
         fatal_exit('Inappropriate identifier: ' . $index_name);
     }
-    if (strlen($index_name) + 7 > DB_MAX_IDENTIFIER_SIZE) {
+    if (strlen($index_name) + 7 > DB_MAX_IDENTIFIER_LENGTH) {
         fatal_exit('Inappropriate identifier, too long: ' . $index_name);
     }
 
