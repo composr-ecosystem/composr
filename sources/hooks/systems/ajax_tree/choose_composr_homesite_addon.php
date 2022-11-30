@@ -32,7 +32,7 @@ class Hook_ajax_tree_choose_composr_homesite_addon
      */
     protected function get_file(?string $id, ?string $default) : string
     {
-        $stub = (get_param_integer('localhost', 0) == 1) ? get_base_url() : 'http://compo.sr';
+        $stub = (get_param_integer('localhost', 0) == 1) ? get_base_url() : 'https://compo.sr';
         $v = 'Version ' . float_to_raw_string(cms_version_number(), 2, true);
         if ($id !== null) {
             $v = $id;

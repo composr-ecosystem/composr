@@ -216,10 +216,10 @@ Or, a more practical example...
 [menu="my_menu"]
 -Sample pages
  Example Page = http://example.com
- Composr CMS = http://compo.sr
+ Composr CMS = https://compo.sr
 +Computer companies
- Amazon = http://amazon.com
- Apple = http://apple.com
+ Amazon = https://amazon.com
+ Apple = https://apple.com
 [/menu]
 [/code]
 

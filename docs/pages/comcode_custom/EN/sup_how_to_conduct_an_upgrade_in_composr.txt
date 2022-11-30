@@ -7,7 +7,7 @@ A regular task you will need to do is upgrading your Composr website to the late
 
 The first task you will need to do is make sure you conduct a backup of your site and database in-case there is any issues. Once you have created your back up follow this process:
 [list="1"]
-[*] Find the upgrade link for your version of Composr; to find this you will need to go to http://compo.sr
+[*] Find the upgrade link for your version of Composr; to find this you will need to go to https://compo.sr
 [*] Click on the newest release link for your version of Composr.
 [*] Fill in your current version and click Generate. This will give you a URL link like this [tt]https://compo.sr/upgrades/9.0.6-9.0.7.tar[/tt].
 [*] Copy this URL into notepad (or whatever text editor your computer has) as you will need it soon.

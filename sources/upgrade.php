@@ -219,7 +219,7 @@ function post_fields_relay() : string
  */
 function upgrader_link(string $url, string $text, bool $disabled = false, string $js = '') : string
 {
-    $hidden = (strpos($url, 'http://compo.sr') !== false || strpos($url, '/index.php') !== false) ? '' : post_fields_relay();
+    $hidden = (strpos($url, 'https://compo.sr') !== false || strpos($url, '/index.php') !== false) ? '' : post_fields_relay();
     if (get_param_integer('keep_safe_mode', 0) == 1) {
         $url .= '&keep_safe_mode=1';
     }

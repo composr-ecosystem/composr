@@ -190,8 +190,8 @@
       <name>Composr</name>
       <summary>Composr CMS</summary>
       <infolinks>
-        <link class="official" href="http://compo.sr">Official Site</link>
-        <link class="support" href="http://ocportal.com/site/support.htm">Composr Support</link>
+        <link class="official" href="https://compo.sr">Official Site</link>
+        <link class="support" href="https://compo.sr/support.htm">Composr Support</link>
       </infolinks>
       <entry-points>
         <entry class="frontpage" dst="/index.php?page=login&amp;type=login" method="POST">
