@@ -41,7 +41,7 @@ if ($type == 'save') {
 <hybridauth>
     <!--
     <SomeProvider>
-        <composr-config allow-signups="true" />
+        <composr-config allow_signups="true" />
         <keys-config id="ExampleOAuthId" secret="ExampleOAuthSecret" />
     </SomeProvider>
     -->
