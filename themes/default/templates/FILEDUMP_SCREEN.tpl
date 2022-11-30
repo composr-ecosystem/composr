@@ -2,7 +2,7 @@
 
 {$SET,file_link,}
 {+START,IF_NON_EMPTY,{$_GET,filename}}
-	{$SET,file_link,{$PAGE_LINK;,_SELF:_SELF:embed:place={$_GET&,place}:file={$_GET&,filename}:wide_high=1}}
+	{$SET,file_link,{$PAGE_LINK;,_SELF:_SELF:embed:subpath={$_GET&,subpath}:file={$_GET&,filename}:wide_high=1}}
 {+END}
 
 <div data-tpl="filedumpScreen" data-tpl-params="{+START,PARAMS_JSON,file_link}{_*}{+END}">

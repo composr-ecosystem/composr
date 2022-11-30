@@ -43,7 +43,7 @@ class Hook_actionlog_filedump extends Hook_actionlog
                 'identifier_index' => null,
                 'written_context_index' => null,
                 'followup_page_links' => [
-                    'FOLDER' => '_SEARCH:filedump:place={1}',
+                    'FOLDER' => '_SEARCH:filedump:subpath={1}',
                     '_FILEDUMP' => '_SEARCH:filedump',
                 ],
             ],
@@ -53,7 +53,7 @@ class Hook_actionlog_filedump extends Hook_actionlog
                 'identifier_index' => null,
                 'written_context_index' => null,
                 'followup_page_links' => [
-                    'FOLDER' => '_SEARCH:filedump:place={1}',
+                    'FOLDER' => '_SEARCH:filedump:subpath={1}',
                     '_FILEDUMP' => '_SEARCH:filedump',
                 ],
             ],
@@ -63,7 +63,7 @@ class Hook_actionlog_filedump extends Hook_actionlog
                 'identifier_index' => null,
                 'written_context_index' => null,
                 'followup_page_links' => [
-                    'FOLDER' => '_SEARCH:filedump:place={1}',
+                    'FOLDER' => '_SEARCH:filedump:subpath={1}',
                     '_FILEDUMP' => '_SEARCH:filedump',
                 ],
             ],
@@ -73,7 +73,7 @@ class Hook_actionlog_filedump extends Hook_actionlog
                 'identifier_index' => null,
                 'written_context_index' => null,
                 'followup_page_links' => [
-                    'FOLDER' => '_SEARCH:filedump:place={DIR}',
+                    'FOLDER' => '_SEARCH:filedump:subpath={DIR}',
                     '_FILEDUMP' => '_SEARCH:filedump',
                 ],
             ],
@@ -83,7 +83,7 @@ class Hook_actionlog_filedump extends Hook_actionlog
                 'identifier_index' => null,
                 'written_context_index' => null,
                 'followup_page_links' => [
-                    'FOLDER' => '_SEARCH:filedump:place={1}',
+                    'FOLDER' => '_SEARCH:filedump:subpath={1}',
                     '_FILEDUMP' => '_SEARCH:filedump',
                 ],
             ],
