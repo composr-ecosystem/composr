@@ -11,22 +11,22 @@ l=h.getElementsByTag("tr").getItem(0);g||(g=new CKEDITOR.dom.element("thead"),g.
 b.setStyle("height",c.txtHeight):b.removeStyle("height");c.txtWidth?b.setStyle("width",c.txtWidth):b.removeStyle("width");b.getAttribute("style")||b.removeAttribute("style")}
 
 // Added for Composr
-if (c.$.className.match(/^(|results-table columned-table|results-table)$/)) {
+if (b.$.className.match(/^(|results-table columned-table|results-table)$/)) {
        switch (f) {
                case "":
-                       c.$.className = "";
+                       b.$.className = "";
                        break;
 
                case "row":
-                       c.$.className = "results-table columned-table";
+                       b.$.className = "results-table columned-table";
                        break;
 
                case "col":
-                       c.$.className = "results-table";
+                       b.$.className = "results-table";
                        break;
 
                case "both":
-                       c.$.className = "results-table columned-table";
+                       b.$.className = "results-table columned-table";
                        break;
        }
 }
