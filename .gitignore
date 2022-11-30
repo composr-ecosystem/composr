@@ -52,6 +52,7 @@ test_a
 /exports/*/*.txt
 /exports/backups/test
 /exports/builds/*/*
+/exports/static
 /imports/*/*.tar
 /mobiquo/logging.bin
 /mobiquo/include/request_helper.bin
@@ -176,4 +177,3 @@ pages/html_custom/*/*.htm
 /nbproject
 _old_backups
 /_tests/codechecker/netbeans/target/
-/phpbb

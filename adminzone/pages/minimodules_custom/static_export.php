@@ -40,29 +40,29 @@ require_code('config2');
 
 if (get_option('url_scheme') != 'HTM') {
     set_option('url_scheme', 'HTM');
-    warn_exit('A URL Scheme of "Use .htm to identify CMS pages" must be enabled before the export can happen, as this is the tidy scheme we export to. It is now enabled - just refresh the browser.');
+    warn_exit('A URL Scheme of "Use .htm to identify CMS pages" must be enabled before the export can happen, as this is the tidy scheme we export to. It is now enabled - just click the back icon and click proceed again.');
 }
 
 if (get_option('show_inline_stats') == '1') {
     set_option('show_inline_stats', '0');
-    warn_exit('Inline stats must be disabled. It is now disabled - just refresh the browser.');
+    warn_exit('Inline stats must be disabled. It is now disabled - just click the back icon and click proceed again.');
 }
 
 if (get_option('site_closed') == '1') {
     set_option('site_closed', '0');
-    warn_exit('Site must not be closed. It is now open - just refresh the browser.');
+    warn_exit('Site must not be closed. It is now open - just click the back icon and click proceed again.');
 }
 
 if ((get_option('is_on_comments') == '1') || (get_option('is_on_trackbacks') == '1') || (get_option('is_on_rating') == '1')) {
     set_option('is_on_comments', '0');
     set_option('is_on_trackbacks', '0');
     set_option('is_on_rating', '0');
-    warn_exit('Comments/trackbacks/rating must not be enabled. It is now all disabled - just refresh the browser.');
+    warn_exit('Comments/trackbacks/rating must not be enabled. It is now all disabled - just click the back icon and click proceed again.');
 }
 
 if (get_option('enable_previews') == '1') {
     set_option('enable_previews', '0');
-    warn_exit('Previews must be disabled. It is now disabled - just refresh the browser.');
+    warn_exit('Previews must be disabled. It is now disabled - just click the back icon and click proceed again.');
 }
 
 $filename = 'static-' . get_site_name() . '.' . date('Y-m-d') . '.tar';
@@ -456,7 +456,7 @@ if (get_param_integer('save__warnings', 1) == 1) {
 
 // Sitemap, if it has been built
 if (file_exists(get_custom_file_base() . '/data_custom/sitemaps/index.xml')) {
-    tar_add_folder($STATIC_EXPORT_TAR, null, 'data_custom/sitemaps');
+    tar_add_folder($STATIC_EXPORT_TAR, null, get_custom_file_base() . '/data_custom/sitemaps');
 }
 
 tar_close($STATIC_EXPORT_TAR);
@@ -473,7 +473,7 @@ if (!file_exists(get_custom_file_base() . '/exports/static')) {
     fix_permissions(get_custom_file_base() . '/exports/static');
     sync_file(get_custom_file_base() . '/exports/static');
 }
-tar_extract_to_folder($myfile, 'exports/static');
+tar_extract_to_folder($myfile, '/exports/static');
 tar_close($myfile);
 unlink($tar_path);
 
