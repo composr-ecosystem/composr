@@ -286,7 +286,8 @@ class Module_filedump
         $subpath = $this->subpath;
 
         if (!file_exists(get_custom_file_base() . '/uploads/filedump' . $subpath)) {
-            warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
+            $url = build_url(['page' => '_SELF', 'subpath' => '/'], get_module_zone('filedump'));
+            return redirect_screen($this->title, $url, do_lang_tempcode('DIRECTORY_NOT_FOUND', escape_html($subpath)));
         }
 
         $type_filter = get_param_string('type_filter', '');
