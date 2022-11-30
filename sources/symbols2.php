@@ -20,7 +20,7 @@
 
 //debug_print_backtrace();exit();
 
-// These symbols are all static evaluated during compilation, so don't need loading on each request.
+// The symbols defined in this file are not used on most page loads. They are separated out for performance.
 
 /**
  * Evaluate a particular Tempcode symbol.
