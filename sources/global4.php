@@ -361,7 +361,6 @@ function member_personal_links_and_details(int $member_id) : array
                 '_GUID' => 'ae243058f780f9528016f7854763a5fa',
                 'TARGET' => '_blank',
                 'TITLE' => do_lang_tempcode('LINK_NEW_WINDOW'),
-                'ACCESSKEY' => 'I',
                 'NAME' => do_lang_tempcode('ADMIN_ZONE'),
                 'URL' => $url,
             ]));
@@ -369,7 +368,6 @@ function member_personal_links_and_details(int $member_id) : array
             $url = build_url(['page' => '', 'keep_theme' => null], 'cms');
             $links->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINK', [
                 '_GUID' => '3f63dad2645b6c39f68dcfebe7d7a0ab',
-                'ACCESSKEY' => 'I',
                 'TARGET' => '_blank',
                 'TITLE' => do_lang_tempcode('LINK_NEW_WINDOW'),
                 'NAME' => do_lang_tempcode('CMS'),

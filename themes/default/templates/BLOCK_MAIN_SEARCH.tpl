@@ -10,7 +10,7 @@
 			{+START,IF,{$EQ,{INPUT_FIELDS},1}}
 				<div>
 					<label class="accessibility-hidden" for="main-search-content">{!SEARCH}</label>
-					<input {+START,IF,{$MOBILE}} autocorrect="off"{+END} maxlength="255" class="form-control form-control-wide js-keyup-update-ajax-search-list-with-type" type="search" id="main-search-content" name="content" />
+					<input {+START,IF,{$MOBILE}} autocorrect="off"{+END} accesskey="=" maxlength="255" class="form-control form-control-wide js-keyup-update-ajax-search-list-with-type" type="search" id="main-search-content" name="content" />
 				</div>
 			{+END}
 			{+START,IF,{$NEQ,{INPUT_FIELDS},1}}

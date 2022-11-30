@@ -58,7 +58,7 @@
 							<td class="form-table-field-input" colspan="2">
 								<div class="accessibility-hidden"><label for="search-content">{!SEARCH_FOR}</label></div>
 								<div>
-									<input maxlength="255"{+START,IF,{$MOBILE}} autocorrect="off"{+END} class="search-content form-control form-control-wide js-keyup-update-ajax-search-list" type="search" size="{$?,{$MOBILE},30,48}" id="search-content" name="content" value="{+START,IF_PASSED,CONTENT}{CONTENT*}{+END}" />
+									<input accesskey="=" maxlength="255"{+START,IF,{$MOBILE}} autocorrect="off"{+END} class="search-content form-control form-control-wide js-keyup-update-ajax-search-list" type="search" size="{$?,{$MOBILE},30,48}" id="search-content" name="content" value="{+START,IF_PASSED,CONTENT}{CONTENT*}{+END}" />
 								</div>
 
 								{+START,IF,{HAS_TEMPLATE_SEARCH}}

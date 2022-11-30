@@ -1,5 +1,5 @@
 <div class="top-button-wrapper" data-tpl="blockTopPersonalStats">
-	<a title="{$STRIP_TAGS,{!LOGGED_IN_AS,{USERNAME*}}} ({$IP_ADDRESS*}, #{MEMBER_ID*})" id="top-personal-stats-button" class="top-button js-click-toggle-button-popup" data-click-pd="1" href="{$MEMBER_PROFILE_URL*,{MEMBER_ID}}">{+START,INCLUDE,ICON}
+	<a accesskey="m" title="{$STRIP_TAGS,{!LOGGED_IN_AS,{USERNAME*}}} ({$IP_ADDRESS*}, #{MEMBER_ID*})" id="top-personal-stats-button" class="top-button js-click-toggle-button-popup" data-click-pd="1" href="{$MEMBER_PROFILE_URL*,{MEMBER_ID}}">{+START,INCLUDE,ICON}
 		NAME=content_types/member
 		ICON_SIZE=24
 	{+END}</a>

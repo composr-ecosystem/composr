@@ -4,45 +4,188 @@ These are the key shortcuts that will work on {$SITE_NAME*}.
 
 On most web browsers you can activate a key shortcut by holding down the Alt key and pressing the key code (hold down the Ctrl key on a Mac). You may need to hold down the Shift key in addition.
 
-[b][tt]C[/tt][/b] Continue to followup page
-[b][tt]G[/tt][/b] Go back to the top of the page
-[b][tt]I[/tt][/b] Admin Zone (staff only)
-[b][tt]J[/tt][/b] Previous
-[b][tt]K[/tt][/b] Another/Next
-[b][tt]L[/tt][/b] Log in/Log out
-[b][tt]M[/tt][/b] Activate the management menu (staff only)
-{+START,IF,{$ADDON_INSTALLED,commandr}}[b][tt]O[/tt][/b] Open Commandr (staff only)
-{+END}[b][tt]P[/tt][/b] Preview
-[b][tt]Q[/tt][/b] Activate edit link (staff only)
-[b][tt]R[/tt][/b] Rate
-[b][tt]S[/tt][/b] Skip navigation
-[b][tt]U[/tt][/b] Submit form
-[b][tt]W[/tt][/b] Switch user (staff only)
-[b][tt]X[/tt][/b] Go to the main posting area of a posting form
-[b][tt]Y[/tt][/b] Go to advanced screen
-[b][tt]Z[/tt][/b] Select the zone list
-[b][tt]1[/tt][/b] Home page
-[b][tt]2[/tt][/b] News archive
-[b][tt]3[/tt][/b] Site map
-[b][tt]4[/tt][/b] Search
-[b][tt]5[/tt][/b] Staff page
-[b][tt]6[/tt][/b] Help
-[b][tt]7[/tt][/b] Rules
-[b][tt]8[/tt][/b] View the website privacy policy
-[b][tt]9[/tt][/b] Feedback form
-[b][tt]0[/tt][/b] Keyboard map
-[b][tt]-[/tt][/b] Webmaster chat (staff only)
+[semihtml]
+<div class="wide-table-wrap"><table class="columned-table wide-table results-table autosized-table responsive-table">
+	<thead>
+		<tr>
+			<th>Key</th>
+			<th>Action</th>
+		</tr>
+	</thead>
+
+	<tbody>
+		<tr>
+			<th colspan="2">In-page navigation</th>
+		</tr>
+
+		<tr>
+			<td>[tt]S[/tt]</td>
+			<td>Skip navigation</td>
+		</tr>
+
+		{+START,IF,{$CONFIG_OPTION,bottom_show_top_button}}
+			<tr>
+				<td>[tt]G[/tt]</td>
+				<td>Go back to the top of the page</td>
+			</tr>
+		{+END}
+
+		<tr>
+			<th colspan="2">Site version</th>
+		</tr>
+
+		<tr>
+			<td>[tt][[/tt]</td>
+			<td>Desktop version/td>
+		</tr>
+
+		<tr>
+			<td>[tt]][/tt]</td>
+			<td>Mobile version/td>
+		</tr>
+
+		<tr>
+			<th colspan="2">User actions</th>
+		</tr>
+
+		<tr>
+			<td>[tt]L[/tt]</td>
+			<td>Log in/Log out</td>
+		</tr>
+
+		<tr>
+			<td>[tt]M[/tt]</td>
+			<td>Open member box (if logged in)</td>
+		</tr>
+
+		<tr>
+			<td>[tt]\[/tt]</td>
+			<td>Open notifications box (if logged in)</td>
+		</tr>
+
+		<tr>
+			<td>[tt];[/tt]</td>
+			<td>Open private topics box (if logged in)</td>
+		</tr>
+
+		<tr>
+			<td>[tt]W[/tt]</td>
+			<td>Switch user (staff only)</td>
+		</tr>
+
+		<tr>
+			<th colspan="2">Main navigation</th>
+		</tr>
+
+		<tr>
+			<td>[tt]=[/tt]</td>
+			<td>Search</td>
+		</tr>
+
+		<tr>
+			<td>[tt]R[/tt]</td>
+			<td>Home page</td>
+		</tr>
+
+		<tr>
+			<td>[tt]'[/tt]</td>
+			<td>Feedback form</td>
+		</tr>
+
+		{+START,IF,{$CONFIG_OPTION,bottom_show_sitemap_button}}
+			<tr>
+				<td>[tt]Z[/tt]</td>
+				<td>Site map</td>
+			</tr>
+		{+END}
+
+		<tr>
+			<td>[tt],[/tt]</td>
+			<td>Rules</td>
+		</tr>
+
+		<tr>
+			<td>[tt].[/tt]</td>
+			<td>Privacy policy</td>
+		</tr>
+
+		<tr>
+			<td>[tt]/[/tt]</td>
+			<td>Keyboard map (this page)</td>
+		</tr>
+
+		<tr>
+			<td>[tt]I[/tt]</td>
+			<td>Admin Zone (staff only)</td>
+		</tr>
+
+		<tr>
+			<th colspan="2">Specific navigation</th>
+		</tr>
+
+		<tr>
+			<td>[tt]Y[/tt]</td>
+			<td>Go to advanced version of what you are on</td>
+		</tr>
+
+		<tr>
+			<td>[tt]C[/tt]</td>
+			<td>Continue to followup page</td>
+		</tr>
+
+		<tr>
+			<td>[tt]J[/tt]</td>
+			<td>Previous</td>
+		</tr>
+
+		<tr>
+			<td>[tt]K[/tt]</td>
+			<td>Another/Next</td>
+		</tr>
+
+		<tr>
+			<th colspan="2">Tools</th>
+		</tr>
+
+		<tr>
+			<td>[tt]Q[/tt]</td>
+			<td>Activate edit link (staff only)</td>
+		</tr>
+
+		{+START,IF,{$ADDON_INSTALLED,commandr}}
+			<tr>
+				<td>[tt]O[/tt]</td>
+				<td>Open Commandr (staff only)</td>
+			</tr>
+		{+END}
+
+		<tr>
+			<td>[tt]-[/tt]</td>
+			<td>Webmaster chat (staff only)/td>
+		</tr>
+
+		<tr>
+			<th colspan="2">Forms</th>
+		</tr>
+
+		<tr>
+			<td>[tt]X[/tt]</td>
+			<td>Go to the main posting area of a posting form</td>
+		</tr>
+
+		<tr>
+			<td>[tt]U[/tt]</td>
+			<td>Submit form</td>
+		</tr>
+
+		<tr>
+			<td>[tt]P[/tt]</td>
+			<td>Preview</td>
+		</tr>
+	</tbody>
+</table></div>
+[/semihtml]
 
 [staff_note]
-The following are free for using:
-
-=
-[
-]
-\
-;
-'
-,
-.
-/
+All keys on a US keyboard that we can safely use as an accesskey are mapped above.
 [/staff_note]
