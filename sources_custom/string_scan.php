@@ -183,6 +183,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ALLOW_ADDING_COMMANDR_EVENTS
         CONFIG_OPTION_allow_adding_commandr_events
         BLANK_COMCODE_PAGE
+        BROKEN_URLS_SLOW_WITHOUT_TASK
         PASSWORD_RESET_PRIVACY
         COMPOSR_FAST_CUSTOM_INDEX
         COMPOSR_FAST_CUSTOM_INDEX_ENABLE

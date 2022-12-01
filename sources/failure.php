@@ -1305,10 +1305,10 @@ function die_html_trace(string $message)
 function put_value_in_stack_trace($value) : string
 {
     try {
-        if (($value === null) || (is_array($value) && (strlen(serialize($value)) > MAX_STACK_TRACE_VALUE_LENGTH))) {
+        if (($value === null) || (is_array($value) && (strlen(json_encode($value)) > MAX_STACK_TRACE_VALUE_LENGTH))) {
             $_value = gettype($value);
         } elseif (is_object($value) && (is_a($value, 'Tempcode'))) {
-            if (strlen(serialize($value)) > 1000) {
+            if (strlen(json_encode($value)) > 1000) {
                 $_value = 'Tempcode -> ...';
             } else {
                 $_value = $value->evaluate();
@@ -1319,7 +1319,7 @@ function put_value_in_stack_trace($value) : string
                 }
             }
         } elseif ((is_array($value)) || (is_object($value))) {
-            $_value = serialize($value);
+            $_value = json_encode($value);
         } elseif (is_string($value)) {
             $_value = '\'' . php_addslashes($value) . '\'';
         } elseif (is_float($value)) {

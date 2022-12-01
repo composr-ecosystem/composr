@@ -69,6 +69,12 @@ class Module_admin_broken_urls
 
         require_lang('cleanup');
 
+        if (get_option('tasks_background') == '0') {
+            require_code('config2');
+            $config_url = config_option_url('tasks_background');
+            attach_message(do_lang_tempcode('BROKEN_URLS_SLOW_WITHOUT_TASK', escape_html($config_url->evaluate())), 'warn');
+        }
+
         set_helper_panel_tutorial('tut_website_health');
         set_helper_panel_text(comcode_lang_string('DOC_BROKEN_URLS'));
 

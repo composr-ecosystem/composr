@@ -26,7 +26,7 @@ function do_install_to($database, $username, $password, $table_prefix, $safe_mod
     $success = _do_install_to($database, $username, $password, $table_prefix, $safe_mode, $forum_driver, $board_path, $forum_base_url, $database_forums, $username_forums, $password_forums, $extra_settings, $db_type);
 
     if ($success && $do_index_test) {
-        $url = get_base_url() . '/index.php?keep_no_query_limit=1';
+        $url = get_base_url() . '/index.php?keep_query_limit=0';
         $http_result = cms_http_request($url, ['convert_to_internal_encoding' => true, 'ignore_http_status' => true, 'trigger_error' => false, 'timeout' => ($db_type == 'xml') ? 200.0 : 30.0]);
         $data = $http_result->data;
         $success = (in_array($http_result->message, ['200', '503'/*site closed*/])) && (strpos($data, '<!--ERROR-->') === false);

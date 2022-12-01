@@ -81,7 +81,24 @@ function enumerate_hybridauth_providers($alternate_config = null)
     } else {
         $xml_contents = '<hybridauth></hybridauth>';
     }
-    $parsed = new CMS_simple_xml_reader($xml_contents);
+    require_code('failure');
+    $te = throwing_errors();
+    if (!$te) {
+        set_throw_errors(true);
+    }
+    try {
+        $parsed = new CMS_simple_xml_reader($xml_contents);
+    } catch (CMSException $e) {
+        if (running_script('index')) {
+            require_code('site');
+            attach_message('Hybridauth: ' . $e->getMessage(), 'warn');
+        }
+        return [];
+    } finally {
+        if (!$te) {
+            set_throw_errors(false);
+        }
+    }
     $config_structure = [];
     list(, , , $root_children) = $parsed->gleamed;
     foreach ($root_children as $root_child) {
