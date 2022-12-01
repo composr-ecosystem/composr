@@ -1,4 +1,5 @@
 {$REQUIRE_JAVASCRIPT,securitylogging}
+{$REQUIRE_JAVASCRIPT,core_form_interfaces}
 
 <div data-tpl="securityScreen">
 	{TITLE}
