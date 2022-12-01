@@ -21,6 +21,95 @@
  */
 
 /**
+ * Script to download a particular backup file.
+ */
+function download_backup_file_script()
+{
+    if (!has_actual_page_access(get_member(), 'admin_backup')) {
+        access_denied('I_ERROR');
+    }
+
+    $filename = get_param_string('file', INPUT_FILTER_NONE);
+    $path = get_custom_file_base() . '/exports/backups/' . filter_naughty($filename);
+
+    // Send header
+    header('Content-Type: application/octet-stream');
+    header('Content-Disposition: attachment; filename="' . escape_header($filename, true) . '"');
+
+    cms_ini_set('ocproducts.xss_detect', '0');
+
+    header('Accept-Ranges: bytes');
+
+    // Caching
+    $time = filemtime($path);
+    set_http_caching($time);
+
+    // Default to no resume
+    $from = 0;
+    $size = filesize($path);
+    $new_length = $size;
+
+    disable_output_compression(); // So ranges work, plus workaround to bugs caused by IE being 'smart' http://blogs.msdn.com/b/ieinternals/archive/2014/10/21/http-compression-optimize-file-formats-with-deflate.aspx
+
+    // They're trying to resume (so update our range)
+    $httprange = $_SERVER['HTTP_RANGE'];
+    if (strlen($httprange) > 0) {
+        $_range = explode('=', $_SERVER['HTTP_RANGE']);
+        if (count($_range) == 2) {
+            if (strpos($_range[0], '-') === false) {
+                $_range = array_reverse($_range);
+            }
+            $range = $_range[0];
+            if (substr($range, 0, 1) == '-') {
+                $range = strval($size - intval(substr($range, 1)) - 1) . $range;
+            }
+            if (substr($range, -1, 1) == '-') {
+                $range .= strval($size - 1);
+            }
+            $bits = explode('-', $range);
+            if (count($bits) == 2) {
+                list($from, $to) = array_map('intval', $bits);
+                if (($to - $from != 0) || ($from == 0)) {
+                    $new_length = $to - $from + 1;
+
+                    header('HTTP/1.1 206 Partial Content');
+                    header('Content-Range: bytes ' . $range . '/' . strval($size));
+                } else {
+                    $from = 0;
+                }
+            }
+        }
+    }
+    header('Content-Length: ' . strval($new_length));
+    cms_disable_time_limit();
+    error_reporting(0);
+    cms_ob_end_clean();
+
+    if ($_SERVER['REQUEST_METHOD'] == 'HEAD') {
+        return;
+    }
+
+    // Send actual data
+    $myfile = fopen($path, 'rb');
+    fseek($myfile, $from);
+    if ($size == $new_length) {
+        fpassthru($myfile);
+    } else {
+        $i = 0;
+        while ($i < $new_length) {
+            $content = fread($myfile, min($new_length - $i, 1048576));
+            echo $content;
+            $len = strlen($content);
+            if ($len == 0) {
+                break;
+            }
+            $i += $len;
+        }
+    }
+    @fclose($myfile);
+}
+
+/**
  * Write PHP code for the restoration of database data into file.
  *
  * @param  resource $log_file The log file to write to

@@ -263,10 +263,12 @@ class Module_admin_backup
             require_code('templates_columned_table');
             $header_row = columned_table_header_row([do_lang_tempcode('FILENAME'), do_lang_tempcode('TYPE'), do_lang_tempcode('SIZE'), do_lang_tempcode('DATE'), new Tempcode()]);
 
+            $keep = symbol_tempcode('KEEP');
+
             $rows = new Tempcode();
             foreach ($entries as $entry) {
                 $delete_url = build_url(['page' => '_SELF', 'type' => 'confirm_delete', 'file' => $entry['file']], '_SELF');
-                $url = get_custom_base_url() . '/exports/backups/' . $entry['file'];
+                $url = find_script('download_backup_file') . '?file=' . urlencode($entry['file']) . $keep->evaluate();
 
                 $actions = new Tempcode();
                 $actions->attach(do_template('COLUMNED_TABLE_ACTION', [

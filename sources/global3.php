@@ -260,7 +260,9 @@ function get_file_extension(?string $name, ?string $mime_type = null) : string
 }
 
 /**
- * Find whether we can get away with natural file access, not messing with AFMs, world-writability, etc.
+ * Find whether we are using natural file-owner-based access for PHP.
+ * Such access avoids us having to be messing with AFMs, world-writability, etc.
+ * Note that this says nothing about what user the web server is running as, just what PHP is running as (those are not always the same).
  * Always will return false on Windows due to missing Posix - but there's no such thing as chmodding files for non-owners on Windows either.
  *
  * @return boolean Whether we have this

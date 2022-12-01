@@ -150,6 +150,7 @@ class Hook_addon_registry_backup
             'sources/hooks/systems/tasks/make_backup.php',
             'themes/default/javascript/backup.js',
             'sources/hooks/systems/actionlog/backups.php',
+            'adminzone/download_backup_file.php',
         ];
     }
 
