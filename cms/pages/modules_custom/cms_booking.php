@@ -81,25 +81,25 @@ class Module_cms_booking extends Standard_crud_module
 
         if (has_privilege($member_id, 'submit_cat_highrange_content', 'cms_booking')) {
             $ret += [
-               'add_category' => ['ADD_BOOKABLE_SUPPLEMENT', 'booking/supplement'],
+               'add_other' => ['ADD_BOOKABLE_SUPPLEMENT', 'booking/supplement'],
             ];
         }
 
         if (has_privilege($member_id, 'edit_cat_highrange_content', 'cms_booking')) {
             $ret += [
-               'edit_category' => ['EDIT_BOOKABLE_SUPPLEMENT', 'booking/supplement'],
+               'edit_other' => ['EDIT_BOOKABLE_SUPPLEMENT', 'booking/supplement'],
             ];
         }
 
         if (has_privilege($member_id, 'submit_cat_highrange_content', 'cms_booking')) {
             $ret += [
-               'add_other' => ['ADD_BOOKABLE_BLACKED', 'booking/blacked'],
+               'add_category' => ['ADD_BOOKABLE_BLACKED', 'booking/blacked'],
             ];
         }
 
         if (has_privilege($member_id, 'edit_cat_highrange_content', 'cms_booking')) {
             $ret += [
-               'edit_other' => ['EDIT_BOOKABLE_BLACKED', 'booking/blacked'],
+               'edit_category' => ['EDIT_BOOKABLE_BLACKED', 'booking/blacked'],
             ];
         }
 
