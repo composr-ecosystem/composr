@@ -36,7 +36,7 @@ if (empty($files)) {
     echo '<thead><tr><th>Filename</th><th>Description</th><th>File size</th></tr></thead>';
     echo '<tbody>';
     foreach ($files as $file) {
-        $dbrows = $GLOBALS['SITE_DB']->query_select('filedump', ['the_description', 'the_member'], ['name' => $file, 'path' => '/' . $GLOBALS['FORUM_DRIVER']->get_username($member_id) . '/']);
+        $dbrows = $GLOBALS['SITE_DB']->query_select('filedump', ['the_description', 'the_member'], ['name' => $file, 'subpath' => '/' . $GLOBALS['FORUM_DRIVER']->get_username($member_id) . '/']);
         if (!array_key_exists(0, $dbrows)) {
             $description = do_lang_tempcode('NONE_EM');
         } else {

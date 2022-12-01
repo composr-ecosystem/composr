@@ -284,6 +284,26 @@ function hybridauth_handle_authenticated_account($provider, $user_profile)
     require_code('cns_members_action2');
     require_code('character_sets');
 
+    // Convert all null to empty string
+    $user_profile->identifier = $user_profile->identifier ?? '';
+    $user_profile->email = $user_profile->email ?? '';
+    $user_profile->emailVerified = $user_profile->emailVerified ?? '';
+    $user_profile->displayName = $user_profile->displayName ?? '';
+    $user_profile->firstName = $user_profile->firstName ?? '';
+    $user_profile->lastName = $user_profile->lastName ?? '';
+    $user_profile->photoURL = $user_profile->photoURL ?? '';
+    $user_profile->language = $user_profile->language ?? '';
+    $user_profile->profileURL = $user_profile->profileURL ?? '';
+    $user_profile->description = $user_profile->description ?? '';
+    $user_profile->gender = $user_profile->gender ?? '';
+    $user_profile->webSiteURL = $user_profile->webSiteURL ?? '';
+    $user_profile->phone = $user_profile->phone ?? '';
+    $user_profile->address = $user_profile->address ?? '';
+    $user_profile->city = $user_profile->city ?? '';
+    $user_profile->region = $user_profile->region ?? '';
+    $user_profile->zip = $user_profile->zip ?? '';
+    $user_profile->country = $user_profile->country ?? '';
+
     // Get basic details from Hybridauth's $user_profile...
 
     $id = $user_profile->identifier;
@@ -315,7 +335,7 @@ function hybridauth_handle_authenticated_account($provider, $user_profile)
     }
     $username = convert_to_internal_encoding($username, 'utf-8');
 
-    $photo_url = ($user_profile->photoURL === null) ? '' : $user_profile->photoURL;
+    $photo_url = $user_profile->photoURL;
 
     $language = cms_strtoupper_ascii(preg_replace('#^([^_\-]*).*$#', '\1', $user_profile->language));
     if (empty($language)) {
@@ -358,16 +378,19 @@ function hybridauth_handle_authenticated_account($provider, $user_profile)
         if (is_guest($member_row['id'])) {
             $member_row = null;
         }
+        $member_id = $member_row['id'];
     } else {
         $member_id = null;
         $member_row = null;
     }
 
-    /*if ($member_id !== null) { // Useful for debugging
+    /*
+    if ($member_id !== null) { // Useful for debugging
         require_code('cns_members_action2');
         cns_delete_member($member_id);
         $member_id = null;
-    }*/
+    }
+    */
 
     // Save the data
     if ($member_row === null) {

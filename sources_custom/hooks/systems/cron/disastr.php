@@ -98,6 +98,10 @@ class Hook_cron_disastr
                     }
                 }
 
+                if (empty($friends_healthy)) {
+                    continue; // Everyone is already sick; nothing to do
+                }
+
                 $to_infect = array_rand($friends_healthy);
 
                 if (isset($friends_healthy[$to_infect]) && ($friends_healthy[$to_infect] != 0)) {
