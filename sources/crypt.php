@@ -46,11 +46,6 @@ function ratchet_hash_verify(string $password, string $salt, string $pass_hash_s
     if (strpos($pass_hash_salted, '$') !== false) {
         return password_verify($salt . md5($password), $pass_hash_salted);
     }
-
-    // LEGACY: Old-style md5'd password
-    if ($legacy_style == PASSWORD_SALT) {
-        return hash_equals($pass_hash_salted, md5($password . $salt));
-    }
     return hash_equals($pass_hash_salted, md5($salt . md5($password)));
 }
 
