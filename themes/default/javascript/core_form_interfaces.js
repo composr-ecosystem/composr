@@ -234,13 +234,13 @@
 
             if (window.permissionCopying) { // Undo current copying
                 var priorButton = document.getElementById('copy_button_' + window.permissionCopying);
-                priorButton.classlist.remove('active_repeating');
+                priorButton.classList.remove('active_repeating');
                 priorButton.style.textDecoration = 'none';
                 window.permissionCopying = null;
             }
 
             if (oldPermissionCopying !== name) { // Starting a new copying session
-                button.classlist.add('active_repeating');
+                button.classList.add('active_repeating');
                 window.permissionCopying = name;
                 $cms.ui.alert('{!permissions:REPEAT_PERMISSION_NOTICE;^}');
                 for (var j = 0; j < trs.length; j++) {
