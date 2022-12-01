@@ -81,25 +81,25 @@ class Module_cms_booking extends Standard_crud_module
 
         if (has_privilege($member_id, 'submit_cat_highrange_content', 'cms_booking')) {
             $ret += [
-               'add_category' => ['ADD_BOOKABLE_SUPPLEMENT', 'booking/supplement'],
+               'add_other' => ['ADD_BOOKABLE_SUPPLEMENT', 'booking/supplement'],
             ];
         }
 
         if (has_privilege($member_id, 'edit_cat_highrange_content', 'cms_booking')) {
             $ret += [
-               'edit_category' => ['EDIT_BOOKABLE_SUPPLEMENT', 'booking/supplement'],
+               'edit_other' => ['EDIT_BOOKABLE_SUPPLEMENT', 'booking/supplement'],
             ];
         }
 
         if (has_privilege($member_id, 'submit_cat_highrange_content', 'cms_booking')) {
             $ret += [
-               'add_other' => ['ADD_BOOKABLE_BLACKED', 'booking/blacked'],
+               'add_category' => ['ADD_BOOKABLE_BLACKED', 'booking/blacked'],
             ];
         }
 
         if (has_privilege($member_id, 'edit_cat_highrange_content', 'cms_booking')) {
             $ret += [
-               'edit_other' => ['EDIT_BOOKABLE_BLACKED', 'booking/blacked'],
+               'edit_category' => ['EDIT_BOOKABLE_BLACKED', 'booking/blacked'],
             ];
         }
 
@@ -267,8 +267,8 @@ class Module_cms_booking extends Standard_crud_module
             $fr[] = protect_from_escaping(get_translated_tempcode('bookable', $_row, 'title'));
             $fr[] = protect_from_escaping(get_translated_tempcode('bookable', $_row, 'categorisation'));
             $fr[] = float_format($row['price']);
-            $fr[] = get_timezoned_date(mktime($row['active_from_month'], $row['active_from_day'], $row['active_from_year']), false, false, $GLOBALS['FORUM_DRIVER']->get_guest_id());
-            $fr[] = get_timezoned_date(mktime($row['active_to_month'], $row['active_to_day'], $row['active_to_year']), false, false, $GLOBALS['FORUM_DRIVER']->get_guest_id());
+            $fr[] = get_timezoned_date(mktime(0, 0, 0, $row['active_from_month'], $row['active_from_day'], $row['active_from_year']), false, false, $GLOBALS['FORUM_DRIVER']->get_guest_id());
+            $fr[] = get_timezoned_date(mktime(0, 0, 0, $row['active_to_month'], $row['active_to_day'], $row['active_to_year']), false, false, $GLOBALS['FORUM_DRIVER']->get_guest_id());
             $fr[] = ($row['enabled'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO');
             $fr[] = protect_from_escaping(hyperlink($edit_url, do_lang_tempcode('EDIT'), false, true));
 
@@ -375,7 +375,7 @@ class Module_cms_booking extends Standard_crud_module
         }
 
         $fields->attach(form_input_date(do_lang_tempcode('BOOKABLE_ACTIVE_FROM'), do_lang_tempcode('DESCRIPTION_BOOKABLE_ACTIVE_FROM'), 'active_from', true, false, false, [0, 0, $details['active_from_month'], $details['active_from_day'], $details['active_from_year']], 10, null, null, true, get_server_timezone()));
-        $fields->attach(form_input_date(do_lang_tempcode('BOOKABLE_ACTIVE_TO'), do_lang_tempcode('DESCRIPTION_BOOKABLE_ACTIVE_TO'), 'active_to', false, true, false, ($details['active_to_month'] === null) ? null : [0, 0, $details['active_to_month'], $details['active_to_day'], $details['active_to_year']], 10, null, null, true, get_server_timezone()));
+        $fields->attach(form_input_date(do_lang_tempcode('BOOKABLE_ACTIVE_TO'), do_lang_tempcode('DESCRIPTION_BOOKABLE_ACTIVE_TO'), 'active_to', false, ($details['active_to_month'] === null), false, ($details['active_to_month'] === null) ? null : [0, 0, $details['active_to_month'], $details['active_to_day'], $details['active_to_year']], 10, null, null, true, get_server_timezone()));
 
         $fields->attach(form_input_integer(do_lang_tempcode('SORT_ORDER'), do_lang_tempcode('DESCRIPTION_SORT_ORDER'), 'sort_order', $details['sort_order'], true));
 

@@ -417,7 +417,7 @@ class Module_cms_authors
         }
 
         require_code('form_templates');
-        $fields = form_input_huge_list(do_lang_tempcode('NAME'), '', 'author', $authors, null, true);
+        $fields = form_input_huge_list(do_lang_tempcode('NAME'), '', 'id', $authors, null, true);
         $post_url = build_url(['page' => '_SELF', 'type' => '_add'], '_SELF');
         $submit_name = do_lang_tempcode('SETUP');
         $define_form = do_template('FORM', [
