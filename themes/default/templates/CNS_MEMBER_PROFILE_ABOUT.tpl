@@ -179,7 +179,7 @@
 								{+END}
 
 								<tbody>
-									{$_GET,_CUSTOM_FIELDS_SECTION}
+									{$GET,_CUSTOM_FIELDS_SECTION}
 								</tbody>
 							</table>
 						</div>
