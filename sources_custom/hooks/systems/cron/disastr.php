@@ -98,7 +98,7 @@ class Hook_cron_disastr
                     }
                 }
 
-                if (count($friends_healthy) == 0) {
+                if (empty($friends_healthy)) {
                     continue; // Everyone is already sick; nothing to do
                 }
 
