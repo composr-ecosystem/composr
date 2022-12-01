@@ -781,6 +781,9 @@ function calendar_matches(int $auth_member_id, int $member_id, bool $restrict, ?
         // Overlay it
         foreach ($feed_urls_todo as $feed_url => $event_type) {
             $http_response = cms_http_request($feed_url, ['byte_limit' => 1024 * 512, 'trigger_error' => false]);
+            if ($http_response->data == null) {
+                continue;
+            }
 
             if (($http_response->download_mime_type == 'text/calendar') || ($http_response->download_mime_type == 'application/octet-stream')) {
                 require_code('calendar_ical');
