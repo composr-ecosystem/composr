@@ -304,7 +304,10 @@ function render_gallery_box(array $myrow, string $root = 'root', bool $show_memb
         }
     }
     if ($rep_image_url == '') {
-        $rep_image_url = $GLOBALS['SITE_DB']->query_select_value_if_there('videos', 'thumb_url', ['cat' => $myrow['name'], 'validated' => 1], $privacy_where_video . ' ' . $thumb_order);
+        $temp = $GLOBALS['SITE_DB']->query_select('videos r' . $privacy_join_video, ['id', 'thumb_url'], ['cat' => $myrow['name'], 'validated' => 1], $privacy_where_video . ' ' . $thumb_order, 1);
+        if (isset($temp[0])) {
+            $rep_image_url = $temp[0]['thumb_url'];
+        }
     }
     if ($rep_image_url == '') {
         $rep_image_url = find_theme_image('icons/no_image');
