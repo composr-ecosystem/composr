@@ -409,8 +409,8 @@ class Module_cms_comcode_pages
             'page' => do_lang_tempcode('PAGE'),
             'zone' => do_lang_tempcode('ZONE'),
             'page_link' => do_lang_tempcode('PAGE_LINK'),
-            'p_add_date' => do_lang_tempcode('EDITED'),
-            'p_submitter' => do_lang_tempcode('metadata:OWNER'),
+            'edit_date' => do_lang_tempcode('EDITED'),
+            'submitter' => do_lang_tempcode('metadata:OWNER'),
         ];
         if (get_value('disable_comcode_page_order') !== '1') {
             $sortables['order'] = do_lang_tempcode('ORDER');
@@ -770,10 +770,10 @@ class Module_cms_comcode_pages
                     if (array_key_exists($_lang, $translations_found)) {
                         $translation_time = $translations_found[$_lang];
                         $translation_label = do_lang_tempcode('_AGO', escape_html(display_time_period(time() - $translation_time)));
-                        $translation_tooltip = '';
+                        $translation_tooltip = get_timezoned_date($translation_time);
                     } else {
                         $translation_label = do_lang_tempcode('ADD');
-                        $translation_tooltip = get_timezoned_date($translation_time);
+                        $translation_tooltip = '';
                     }
                     $edit_link = build_url(['page' => '_SELF', 'type' => '_edit', 'page_link' => $row['page_link'], 'lang' => $_lang], '_SELF');
                     $display_map[] = hyperlink($edit_link, $translation_label, false, true, $translation_tooltip);
