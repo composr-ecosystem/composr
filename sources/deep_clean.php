@@ -158,7 +158,7 @@ function deep_clean(string $d, string $heading = '') : string
 function column_cleanup(string &$text)
 {
     $text = str_replace('<br>', '<br />', $text);
-    $temp_text = cms_strip_tags($text, '<br>');
+    $temp_text = strip_tags($text, '<br>');
     $temp_text = html_entity_decode($temp_text, ENT_QUOTES);
     $lines = explode('<br />', $temp_text);
     if (count($lines) > 5) { // Statistically significant

@@ -406,7 +406,7 @@ function ecv2_COMMA_LIST_FROM_BREADCRUMBS(string $lang, array $escaped, array $p
         if ((!isset($param[1])) || ($param[1] == '0')) {
             $value = strip_tags($value);
         } else {
-            $value = cms_strip_tags($value, '<a>');
+            $value = strip_tags($value, '<a>');
         }
         $value = trim($value);
         if (($GLOBALS['XSS_DETECT']) && (ocp_is_escaped($param[0]))) {

@@ -2534,6 +2534,24 @@ function _multi_sort(array $a, array $b) : int
 }
 
 /**
+ * Strip HTML and PHP tags from a string.
+ * Equivalent to PHP's strip_tags, except adds support for tags_as_allow being false.
+ *
+ * @param  string $str Subject
+ * @param  string $tags Comma-separated list of tags (blank: none)
+ * @param  boolean $tags_as_allow Whether tags represents a safelist (set for false to allow all by default and make $tags a blocklist)
+ * @return string Result
+ */
+function cms_strip_tags(string $str, string $tags = '', bool $tags_as_allow = true) : string
+{
+    global $STRIP_TAGS_TAGS, $STRIP_TAGS_TAGS_AS_ALLOW;
+    $STRIP_TAGS_TAGS = $tags;
+    $STRIP_TAGS_TAGS_AS_ALLOW = $tags_as_allow;
+
+    return preg_replace_callback('#</?([^\s<>]+)(\s[^<>]*)?' . '>#', '_cms_strip_tags_callback', $str);
+}
+
+/**
  * Used by cms_strip_tags to handle whether to strip a tag.
  *
  * @param  array $matches Array of matches
@@ -2549,24 +2567,6 @@ function _cms_strip_tags_callback(array $matches) : string
         return $matches[0];
     }
     return '';
-}
-
-/**
- * Strip HTML and PHP tags from a string.
- * Equivalent to PHP's strip_tags, whose $allowable_tags parameter is expected to be deprecated in PHP 7.3 (https://wiki.php.net/rfc/deprecations_php_7_3).
- *
- * @param  string $str Subject
- * @param  string $tags Comma-separated list of tags
- * @param  boolean $tags_as_allow Whether tags represents a safelist (set for false to allow all by default and make $tags a blocklist)
- * @return string Result
- */
-function cms_strip_tags(string $str, string $tags, bool $tags_as_allow = true) : string
-{
-    global $STRIP_TAGS_TAGS, $STRIP_TAGS_TAGS_AS_ALLOW;
-    $STRIP_TAGS_TAGS = $tags;
-    $STRIP_TAGS_TAGS_AS_ALLOW = $tags_as_allow;
-
-    return preg_replace_callback('#</?([^\s<>]+)(\s[^<>]*)?' . '>#', '_cms_strip_tags_callback', $str);
 }
 
 /**
@@ -4020,8 +4020,11 @@ function strip_html(string $in) : string
     $text = cms_preg_replace_safe('#\s*(<' . $_block_tags . '(\s[^<>]*)?' . '>)#i', '$1', $text);
     $text = cms_preg_replace_safe('#(</' . $_block_tags . '>)\s*#i', '$1', $text);
 
-    // Add space between block tags
-    $text = cms_preg_replace_safe('#(</' . $_block_tags . '>)(<' . $_block_tags . '(\s[^<>]*)?)#i', '$1 $3', $text);
+    // Add space before block tags
+    $text = cms_preg_replace_safe('#([^\s])(<' . $_block_tags . '>)#i', '$1 $3', $text);
+
+    // Add space after block tags
+    $text = cms_preg_replace_safe('#(</' . $_block_tags . '>)([^\s])#i', '$1 $3', $text);
 
     // Strip remaining HTML tags
     $text = strip_tags($text);

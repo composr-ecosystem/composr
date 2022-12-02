@@ -22,6 +22,11 @@ class seo_test_set extends cms_test_case
     {
         require_code('content2');
 
+        // Test HTML stripping
+        $txt = '[html]<h1>This is a title</h1><p>This is some text</p>[/html]';
+        list($keywords, $description) = _seo_meta_find_data([$txt], $txt);
+        $this->assertTrue($description == 'This is a title This is some text', 'Got: ' . $description);
+
         // Test coverage for many cases:
         //  words differing only in case
         //  Proper Nouns

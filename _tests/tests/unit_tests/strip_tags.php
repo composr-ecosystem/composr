@@ -23,14 +23,27 @@ class strip_tags_test_set extends cms_test_case
         $x = 'Hello <br /> <p>test</p><x>y</x>';
         $keep = '<x>';
         $expected = 'Hello  test<x>y</x>';
-
-        //$this->assertTrue(strip_tags($x, $keep) == $expected);    Likely to stop working in PHP 7.3+. But known to pass.
-        $this->assertTrue(cms_strip_tags($x, $keep, true) == $expected);
+        $this->assertTrue(strip_tags($x, $keep) == $expected);
+        $got = cms_strip_tags($x, $keep, true);
+        $this->assertTrue($got == $expected, 'Got ' . $got . ' but expected ' . $expected);
 
         $x = 'Hello <br /> <p>test</p><x>y</x>';
         $lose = '<x>';
         $expected = 'Hello <br /> <p>test</p>y';
+        $got = cms_strip_tags($x, $lose, false);
+        $this->assertTrue($got == $expected, 'Got ' . $got . ' but expected ' . $expected);
 
-        $this->assertTrue(cms_strip_tags($x, $lose, false) == $expected);
+        // This is annoying, but it's how strip_tags in PHP works too
+        $x = '<h1>This is a title</h1><p>This is some text</p>';
+        $expected = 'This is a titleThis is some text';
+        $this->assertTrue(strip_tags($x, $keep) == $expected);
+        $got = cms_strip_tags($x);
+        $this->assertTrue($got == $expected, 'Got ' . $got . ' but expected ' . $expected);
+
+        // ... but strip_html is smarter
+        $x = '<h1>This is a title</h1><p>This is some text</p>';
+        $expected = 'This is a title This is some text';
+        $got = strip_html($x);
+        $this->assertTrue($got == $expected, 'Got ' . $got . ' but expected ' . $expected);
     }
 }
