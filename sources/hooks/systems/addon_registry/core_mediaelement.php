@@ -103,7 +103,7 @@ class Hook_addon_registry_core_mediaelement
      */
     public function get_applicable_tutorials() : array
     {
-        return [];
+        return ['tut_fringe'];
     }
 
     /**

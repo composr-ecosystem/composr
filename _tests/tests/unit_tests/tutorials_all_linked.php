@@ -36,6 +36,20 @@ class tutorials_all_linked_test_set extends cms_test_case
         $this->tutorials = list_tutorials();
     }
 
+    public function testAllAddons()
+    {
+        $_addons = find_all_hooks('systems', 'addon_registry');
+        foreach ($_addons as $addon_name => $place) {
+            if ($place == 'sources') {
+                require_code('hooks/systems/addon_registry/' . filter_naughty_harsh($addon_name));
+                $ob = object_factory('Hook_addon_registry_' . filter_naughty_harsh($addon_name));
+
+                $tutorials = $ob->get_applicable_tutorials();
+                $this->assertTrue(!empty($tutorials), 'No tutorial defined for addon: ' . $addon_name);
+            }
+        }
+    }
+
     public function testAddonLinkage()
     {
         if (in_safe_mode()) {
