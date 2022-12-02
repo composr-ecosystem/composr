@@ -3182,7 +3182,7 @@ function test_htaccess($conn)
     $clauses = [];
 
     $clauses[] = <<<END
-# Stop any potential Content-Type sniffing vulnerabilities
+# Stop any potential content-type sniffing vulnerabilities
 <IfModule mod_headers.c>
 Header set X-Content-Type-Options "nosniff"
 </IfModule>
@@ -3200,8 +3200,10 @@ END;
     $base = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
     $clauses[] = <<<END
 
+LimitRequestBody 524288000
+
 # Set Composr to handle 404 errors. Assume Composr is in the root
-<FilesMatch "(?<!\.jpg|\.jpeg|\.gif|\.png|\.ico|\.cur|\.svg|\.css|\.js)$">
+<FilesMatch "(?<!\.jpg|\.jpeg|\.jpe|\.bmp|\.gif|\.png|\.ico|\.cur|\.svg|\.css|\.js|\.html)$">
 ErrorDocument 404 {$base}/index.php?page=404
 </FilesMatch>
 END;
@@ -3211,11 +3213,11 @@ END;
 # Compress some static resources
 <IfModule mod_deflate.c>
 <IfModule mod_filter.c>
-AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript
+AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/x-javascript
 </IfModule>
 </IfModule>
 
-# We do not want for TAR files, due to IE bug http://blogs.msdn.com/b/wndp/archive/2006/08/21/content-encoding-not-equal-Content-Type.aspx (IE won't decompress again as it thinks it's a mistake)
+# We do not want for TAR files, due to IE bug http://blogs.msdn.com/b/wndp/archive/2006/08/21/content-encoding-not-equal-content-type.aspx (IE won't decompress again as it thinks it's a mistake) LEGACY
 <IfModule mod_setenvif.c>
 SetEnvIfNoCase Request_URI \.tar$ no-gzip dont-vary
 </IfModule>
@@ -3225,6 +3227,11 @@ END;
 
 # Exotic file types we may want
 AddType text/vtt .vtt
+
+<IfModule mod_alias.c>
+# Security - block access to .git
+RedirectMatch 404 /\.git
+</IfModule>
 END;
 
     /*REWRITE RULES START*/
@@ -3243,9 +3250,16 @@ RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
 # If rewrites are directing to bogus URLs, try adding a "RewriteBase /" line, or a "RewriteBase /subdir" line if you're in a subdirectory. Requirements vary from server to server.
 
-# Rewrite .gif emoticons for browsers that support APNG (LEGACY; when possible we want to get rid of the gifs, but Edge does not yet support)
+# Rewrite .gif animations for browsers that support APNG (LEGACY; when possible we want to get rid of the gifs, but IE11 does not yet support)
 RewriteCond %{HTTP_USER_AGENT} (Chrom|Firefox|Safari)
-RewriteRule ^/?(themes/default/images/cns_emoticons/.*\.gif)$ $1.png [L,QSA]
+RewriteCond %{REQUEST_FILENAME}.png -f
+RewriteRule ^(themes/default/images/cns_emoticons/.*\.gif)$ $1.png [L,QSA]
+RewriteCond %{HTTP_USER_AGENT} (Chrom|Firefox|Safari)
+RewriteCond %{REQUEST_FILENAME}.png -f
+RewriteRule ^(themes/default/images/cns_emoticons/.*\.gif)$ $1.png [L,QSA]
+RewriteCond %{HTTP_USER_AGENT} (Chrom|Firefox|Safari)
+RewriteCond %{REQUEST_FILENAME}.png -f
+RewriteRule ^(themes/default/images/loading\.gif)$ themes/default/images/loading.gif.png [L,QSA]
 
 # Anything that would point to a real file should actually be allowed to do so. If you have a "RewriteBase /subdir" command, you may need to change to "%{DOCUMENT_ROOT}/subdir/$1".
 RewriteCond $1 ^\d+.shtml [OR]

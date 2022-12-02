@@ -309,7 +309,7 @@ class file_type_safelisting_test_set extends cms_test_case
         $this->assertTrue($file_types == $file_types_expected, 'Difference of: ' . serialize(array_diff($file_types_expected, $file_types)) . '/' . serialize(array_diff($file_types, $file_types_expected)));
     }
 
-    public function testHtaccess()
+    public function testHtaccessRealFileList()
     {
         $path = get_file_base() . '/recommended.htaccess';
         $c = cms_file_get_contents_safe($path, FILE_READ_LOCK);
@@ -353,6 +353,34 @@ class file_type_safelisting_test_set extends cms_test_case
 
             $exts = explode(',', get_option($f));
             $this->assertTrue(count($exts) == count(array_unique($exts)));
+        }
+    }
+
+    public function test404Excludes()
+    {
+        $recommended_htaccess = file_get_contents(get_file_base() . '/recommended.htaccess');
+        $htaccess_404_file_exts = [];
+        $matches = [];
+        if (preg_match('#<FilesMatch "\(\?<!(.*jpg.*)\)\$">#', $recommended_htaccess, $matches) == 0) {
+            $this->assertTrue(false, 'Could not find 404 page exception list in recommended.htaccess');
+        } else {
+            foreach (explode('|', $matches[1]) as $ext) {
+                $htaccess_404_file_exts[] = trim($ext, '\.');
+            }
+        }
+
+        $valid_images = array_map('trim', explode(',', get_option('valid_images')));
+        // Add some more just so we get expected parity
+        $valid_images[] = 'js';
+        $valid_images[] = 'css';
+        $valid_images[] = 'html';
+
+        foreach ($valid_images as $file_type) {
+            $this->assertTrue(in_array($file_type, $htaccess_404_file_exts), 'File type ' . $file_type . ' is not included in 404 rule in recommended.htaccess');
+        }
+
+        foreach ($htaccess_404_file_exts as $file_type) {
+            $this->assertTrue(in_array($file_type, $valid_images), 'File type ' . $file_type . ' is not excluded from 404 rule in recommended.htaccess');
         }
     }
 

@@ -187,7 +187,7 @@ function inform_non_canonical_parameter(string $param, bool $block_page_from_sta
  */
 function attach_message($message, string $type = 'inform', bool $put_in_helper_panel = false, bool $log_error = false) : string
 {
-    $message_eval = (is_object($message) ? $message->evaluate() : $message);
+    $message_eval = (is_object($message) ? $message->evaluate() : escape_html($message));
 
     if ($message_eval == '') {
         return ''; // Empty message
@@ -206,12 +206,12 @@ function attach_message($message, string $type = 'inform', bool $put_in_helper_p
     global $ATTACHED_MESSAGES, $ATTACHED_MESSAGES_RAW, $LATE_ATTACHED_MESSAGES;
 
     foreach ($ATTACHED_MESSAGES_RAW as $last) {
-        if ([strip_tags($last[0]), $last[1]] == [strip_tags($message_eval), $type]) {
+        if ([is_object($last[0]) ? $last[0]->evaluate() : escape_html($last[0]), $last[1]] == [$message_eval, $type]) {
             $am_looping--;
             return ''; // Already shown
         }
     }
-    $ATTACHED_MESSAGES_RAW[] = [$message_eval, $type];
+    $ATTACHED_MESSAGES_RAW[] = [$message, $type];
 
     if ($log_error) {
         require_code('urls');
@@ -228,7 +228,7 @@ function attach_message($message, string $type = 'inform', bool $put_in_helper_p
 
             require_code('failure');
             $trace = get_html_trace();
-            relay_error_notification($message_eval . '[html]' . $trace->evaluate() . '[/html]');
+            relay_error_notification('[html]' . $message_eval . $trace->evaluate() . '[/html]');
         }
     }
 
