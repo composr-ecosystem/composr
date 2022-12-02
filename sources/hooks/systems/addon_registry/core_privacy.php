@@ -132,6 +132,7 @@ class Hook_addon_registry_core_privacy
             'themes/default/images/icons/menu/pages/privacy_policy.svg',
             'themes/default/images/icons_monochrome/menu/pages/privacy_policy.svg',
             'pages/comcode/EN/privacy.txt',
+            'sources/hooks/systems/symbols/PRIVACY_POLICY_DATE.php',
             'sources/hooks/systems/config_categories/privacy.php',
             'sources/hooks/systems/config/bottom_show_privacy_link.php',
             'sources/hooks/systems/config/call_home.php',

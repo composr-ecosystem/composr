@@ -139,6 +139,15 @@ PHP;
 
         cms_mb_ksort($sections, SORT_NATURAL | SORT_FLAG_CASE);
 
+        sort_maps_by($cookies, 'NAME');
+
+        $hash = md5(serialize($sections) . serialize($cookies));
+        $previous_hash = get_value('privacy_policy_auto__hash', null, true);
+        if ($hash !== $previous_hash) {
+            set_value('privacy_policy_auto__hash', $hash, true);
+            set_value('privacy_policy_auto__time', strval(time()), true);
+        }
+
         return do_template('BLOCK_MAIN_PRIVACY_POLICY_AUTO', [
             '_GUID' => '0abf65878c508bf244836589a8cc45da',
             'SECTIONS' => $sections,
