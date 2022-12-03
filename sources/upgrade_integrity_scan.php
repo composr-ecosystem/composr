@@ -497,7 +497,11 @@ function check_outdated__handle_overrides(string $dir, string $rela, array &$man
 function check_alien(string $dir, string $rela = '', bool $raw = false, ?array $addon_files = null, ?array $old_files = null, ?array $files = null) : array
 {
     if ($addon_files === null) {
-        $addon_files = collapse_2d_complexity('filepath', 'addon_name', $GLOBALS['SITE_DB']->query_select('addons_files', ['filepath', 'addon_name']));
+        if (get_value('version') < 11) { // LEGACY
+            $addon_files = collapse_2d_complexity('filename', 'addon_name', $GLOBALS['SITE_DB']->query_select('addons_files', ['filename', 'addon_name']));
+        } else {
+            $addon_files = collapse_2d_complexity('filepath', 'addon_name', $GLOBALS['SITE_DB']->query_select('addons_files', ['filepath', 'addon_name']));
+        }
     }
     if ($old_files === null) {
         $old_files = load_integrity_manifest(true);
