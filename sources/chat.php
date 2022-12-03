@@ -1280,8 +1280,7 @@ function chat_get_room_content(?int $room_id, array $_rooms, ?int $max_messages 
             $where .= 'system_message=0';
         }
         $query .= (($where == '') ? '' : (' WHERE ' . $where)) . ' ORDER BY date_and_time DESC,id DESC';
-        global $TABLE_LANG_FIELDS_CACHE;
-        $rows = $GLOBALS['SITE_DB']->query($query, $max_messages, 0, false, false, array_key_exists('chat_messages', $TABLE_LANG_FIELDS_CACHE) ? $TABLE_LANG_FIELDS_CACHE['chat_messages'] : []);
+        $rows = $GLOBALS['SITE_DB']->query($query, $max_messages, 0, false, false, find_lang_fields('chat_messages', 'main'));
     } else {
         $where_array = ($room_id === null) ? [] : ['room_id' => $room_id];
         if (!$return_system_messages) {

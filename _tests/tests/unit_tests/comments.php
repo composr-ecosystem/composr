@@ -64,8 +64,7 @@ class comments_test_set extends cms_test_case
             $map += insert_lang_comcode('p_post', 'test_comment_desc_1', 4, $GLOBALS['FORUM_DB']);
             $this->post_id = $GLOBALS['FORUM_DB']->query_insert('f_posts', $map, true);
         }
-        global $TABLE_LANG_FIELDS_CACHE;
-        $lang_fields = $TABLE_LANG_FIELDS_CACHE['f_posts'];
+        $lang_fields = find_lang_fields('f_posts', 'p');
         $rows = $GLOBALS['FORUM_DB']->query('SELECT p_title FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts p WHERE ' . $GLOBALS['FORUM_DB']->translate_field_ref('p_post') . ' NOT LIKE \'%' . db_encode_like(do_lang('SPACER_POST_MATCHER', '', '', '', get_site_default_lang()) . '%') . '\' AND (p.id=' . strval($this->post_id) . ') ORDER BY p.id', null, 0, false, false, $lang_fields);
         $title = $rows[0]['p_title'];
         $this->assertTrue('test_comment1' == $title);

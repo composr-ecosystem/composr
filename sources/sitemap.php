@@ -1025,8 +1025,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
 
         $table = $cma_info['table'];
 
-        global $TABLE_LANG_FIELDS_CACHE;
-        $lang_fields = isset($TABLE_LANG_FIELDS_CACHE[$table]) ? $TABLE_LANG_FIELDS_CACHE[$table] : [];
+        $lang_fields = find_lang_fields($table);
         $lang_fields_filtered = [];
         foreach ($lang_fields as $field => $type) {
             $f = $field;
@@ -1186,7 +1185,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
 
             $max_rows_per_loop = ($child_cutoff === null) ? SITEMAP_MAX_ROWS_PER_LOOP : min($child_cutoff + 1, SITEMAP_MAX_ROWS_PER_LOOP);
 
-            $lang_fields = isset($GLOBALS['TABLE_LANG_FIELDS_CACHE'][$cma_info['parent_spec__table_name']]) ? $GLOBALS['TABLE_LANG_FIELDS_CACHE'][$cma_info['parent_spec__table_name']] : [];
+            $lang_fields = find_lang_fields($cma_info['parent_spec__table_name'], 'r');
 
             $start = 0;
             do {

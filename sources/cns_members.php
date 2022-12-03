@@ -184,9 +184,8 @@ function cns_get_all_custom_fields_match(?array $groups = null, ?int $public_vie
             }
         }
 
-        global $TABLE_LANG_FIELDS_CACHE;
         $sql = 'SELECT f.* FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_custom_fields f' . $where . ' ORDER BY cf_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('cf_name');
-        $_result = $GLOBALS['FORUM_DB']->query($sql, null, 0, false, true, isset($TABLE_LANG_FIELDS_CACHE['f_custom_fields']) ? $TABLE_LANG_FIELDS_CACHE['f_custom_fields'] : []);
+        $_result = $GLOBALS['FORUM_DB']->query($sql, null, 0, false, true, find_lang_fields('f_custom_fields', 'f'));
         $result = [];
         foreach ($_result as $row) {
             $row['trans_name'] = get_translated_text($row['cf_name'], $GLOBALS['FORUM_DB']);

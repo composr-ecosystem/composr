@@ -507,7 +507,8 @@ class Module_booking
                 $found = true;
 
                 $supplements = [];
-                $supplement_rows = $GLOBALS['SITE_DB']->query_select('bookable_supplement a JOIN ' . get_table_prefix() . 'bookable_supplement_for b ON a.id=b.supplement_id', ['a.id', 'a.title', 'a.supports_quantities', 'a.sort_order'], ['bookable_id' => $bookable_row['id']], 'ORDER BY sort_order');
+                $lang_fields = find_lang_fields('bookable_supplement', 'a');
+                $supplement_rows = $GLOBALS['SITE_DB']->query_select('bookable_supplement a JOIN ' . get_table_prefix() . 'bookable_supplement_for b ON a.id=b.supplement_id', ['a.id', 'a.title', 'a.supports_quantities', 'a.sort_order'], ['bookable_id' => $bookable_row['id']], 'ORDER BY sort_order', null, 0, false, $lang_fields);
                 foreach ($supplement_rows as $supplement_row) {
                     $supplements[] = [
                         'SUPPLEMENT_ID' => strval($supplement_row['id']),

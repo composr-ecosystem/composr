@@ -241,6 +241,26 @@ function reload_lang_fields(bool $full = false, ?string $only_table = null)
 }
 
 /**
+ * Find lang fields to load within a query.
+ *
+ * @param  string $table Table name
+ * @param  ?string $alias Table alias (null: none)
+ * @return array Map of fields
+ */
+function find_lang_fields(string $table, ?string $alias = null) : array
+{
+    global $TABLE_LANG_FIELDS_CACHE;
+    $lang_fields = isset($TABLE_LANG_FIELDS_CACHE[$table]) ? $TABLE_LANG_FIELDS_CACHE[$table] : [];
+    if ($alias !== null) {
+        foreach ($lang_fields as $lang_field => $lang_field_type) {
+            unset($lang_fields[$lang_field]);
+            $lang_fields[$alias . '.' . $lang_field] = $lang_field_type;
+        }
+    }
+    return $lang_fields;
+}
+
+/**
  * Get the ID of the first row in an auto-increment table (used whenever we need to reference the first).
  *
  * @return integer First ID used
@@ -1670,7 +1690,7 @@ class DatabaseConnector
      * @param  array $where_map The WHERE map [will all be ANDed together]
      * @param  string $end Something to tack onto the end
      * @param  boolean $fail_ok Whether to allow failure (outputting a message instead of exiting completely)
-     * @param  ?array $lang_fields Extra language fields to join in for cache pre-filling. You only need to send this if you are doing a JOIN and carefully craft your query so table field names won't conflict (null: auto-detect, if not a join)
+     * @param  ?array $lang_fields Extra language fields to join in for cache pre-filling / Tempcode, perhaps via the find_lang_fields function. You only need to send this if you are doing a JOIN and carefully craft your query so table field names won't conflict (null: auto-detect, if not a join)
      * @return mixed The first value of the first row returned
      */
     public function query_select_value(string $table, string $selected_value, array $where_map = [], string $end = '', bool $fail_ok = false, ?array $lang_fields = null)
@@ -1709,7 +1729,7 @@ class DatabaseConnector
      * @param  array $where_map The WHERE map [will all be ANDed together]
      * @param  string $end Something to tack onto the end
      * @param  boolean $fail_ok Whether to allow failure (outputting a message instead of exiting completely)
-     * @param  ?array $lang_fields Extra language fields to join in for cache pre-filling. You only need to send this if you are doing a JOIN and carefully craft your query so table field names won't conflict (null: auto-detect, if not a join)
+     * @param  ?array $lang_fields Extra language fields to join in for cache pre-filling / Tempcode, perhaps via the find_lang_fields function. You only need to send this if you are doing a JOIN and carefully craft your query so table field names won't conflict (null: auto-detect, if not a join)
      * @return ?mixed The first value of the first row returned (null: nothing found, or null value found)
      */
     public function query_select_value_if_there(string $table, string $select, array $where_map = [], string $end = '', bool $fail_ok = false, ?array $lang_fields = null)
@@ -1727,7 +1747,7 @@ class DatabaseConnector
      * @param  string $query The complete SQL query
      * @param  boolean $fail_ok Whether to allow failure (outputting a message instead of exiting completely)
      * @param  boolean $skip_safety_check Whether to skip the query safety check
-     * @param  ?array $lang_fields Extra language fields to join in for cache pre-filling. You only need to send this if you are doing a JOIN and carefully craft your query so table field names won't conflict (null: auto-detect, if not a join)
+     * @param  ?array $lang_fields Extra language fields to join in for cache pre-filling / Tempcode, perhaps via the find_lang_fields function. You only need to send this if you are doing a JOIN and carefully craft your query so table field names won't conflict (null: auto-detect, if not a join)
      * @return ?mixed The first value of the first row returned (null: nothing found, or null value found)
      */
     public function query_value_if_there(string $query, bool $fail_ok = false, bool $skip_safety_check = false, ?array $lang_fields = null)
@@ -1770,7 +1790,7 @@ class DatabaseConnector
      * @param  ?integer $max The maximum number of rows to select (null: get all)
      * @param  integer $start The starting row to select
      * @param  boolean $fail_ok Whether to allow failure (outputting a message instead of exiting completely)
-     * @param  ?array $lang_fields Extra language fields to join in for cache pre-filling. You only need to send this if you are doing a JOIN and carefully craft your query so table field names won't conflict (null: auto-detect, if not a join)
+     * @param  ?array $lang_fields Extra language fields to join in for cache pre-filling / Tempcode, perhaps via the find_lang_fields function. You only need to send this if you are doing a JOIN and carefully craft your query so table field names won't conflict (null: auto-detect, if not a join)
      * @return ?array The results (empty array: empty result set) (null: error)
      */
     public function query_select(string $table, array $select = ['*'], array $where_map = [], string $end = '', ?int $max = null, int $start = 0, bool $fail_ok = false, ?array $lang_fields = null) : ?array
@@ -1792,7 +1812,7 @@ class DatabaseConnector
      * @param  array $select The SELECT map
      * @param  array $where_map The WHERE map [will all be ANDed together]
      * @param  string $end Something to tack onto the end of the SQL query
-     * @param  ?array $lang_fields Extra language fields to join in for cache pre-filling. You only need to send this if you are doing a JOIN and carefully craft your query so table field names won't conflict (null: auto-detect, if not a join)
+     * @param  ?array $lang_fields Extra language fields to join in for cache pre-filling / Tempcode, perhaps via the find_lang_fields function. You only need to send this if you are doing a JOIN and carefully craft your query so table field names won't conflict (null: auto-detect, if not a join)
      */
     protected function _automatic_lang_fields(string &$table, string &$full_table, array &$select, array &$where_map, string &$end, ?array &$lang_fields)
     {
@@ -1806,7 +1826,7 @@ class DatabaseConnector
                 ($this->connection_unique_identifier === $GLOBALS['SITE_DB']->connection_unique_identifier) || (get_forum_type() === 'cns') && ($this->connection_unique_identifier == $GLOBALS['CNS_DRIVER']->db->connection_unique_identifier))
             ) {
                 global $TABLE_LANG_FIELDS_CACHE;
-                $lang_fields_provisional = isset($TABLE_LANG_FIELDS_CACHE[$table]) ? $TABLE_LANG_FIELDS_CACHE[$table] : [];
+                $lang_fields_provisional = find_lang_fields($table);
                 $lang_fields = [];
 
                 if (!empty($lang_fields_provisional)) {
@@ -1876,7 +1896,7 @@ class DatabaseConnector
      * @param  integer $start The start row to affect
      * @param  boolean $fail_ok Whether to output an error on failure
      * @param  boolean $skip_safety_check Whether to skip the query safety check
-     * @param  ?array $lang_fields Extra language fields to join in for cache pre-filling. You only need to send this if you are doing a JOIN and carefully craft your query so table field names won't conflict (null: auto-detect, if not a join)
+     * @param  ?array $lang_fields Extra language fields to join in for cache pre-filling / Tempcode, perhaps via the find_lang_fields function. You only need to send this if you are doing a JOIN and carefully craft your query so table field names won't conflict (null: auto-detect, if not a join)
      * @param  string $field_prefix All the core fields have a prefix of this on them, so when we fiddle with language lookup we need to use this (only consider this if you're setting $lang_fields)
      * @return ?mixed The results (null: no result set) (empty array: empty result set)
      */
@@ -1985,7 +2005,7 @@ class DatabaseConnector
      * @param  integer $start The start row to affect
      * @param  boolean $fail_ok Whether to output an error on failure
      * @param  boolean $skip_safety_check Whether to skip the query safety check
-     * @param  ?array $lang_fields Extra language fields to join in for cache pre-filling. You only need to send this if you are doing a JOIN and carefully craft your query so table field names won't conflict (null: none)
+     * @param  ?array $lang_fields Extra language fields to join in for cache pre-filling / Tempcode, perhaps via the find_lang_fields function. You only need to send this if you are doing a JOIN and carefully craft your query so table field names won't conflict (null: none)
      * @param  string $field_prefix All the core fields have a prefix of this on them, so when we fiddle with language lookup we need to use this (only consider this if you're setting $lang_fields)
      * @return ?mixed The results (null: no result set) (empty array: empty result set)
      */
@@ -2071,7 +2091,7 @@ class DatabaseConnector
      * @param  integer $start The start row to affect
      * @param  boolean $fail_ok Whether to output an error on failure
      * @param  boolean $get_insert_id Whether to get an insert ID
-     * @param  ?array $lang_fields Extra language fields to join in for cache pre-filling. You only need to send this if you are doing a JOIN and carefully craft your query so table field names won't conflict (null: none)
+     * @param  ?array $lang_fields Extra language fields to join in for cache pre-filling / Tempcode, perhaps via the find_lang_fields function. You only need to send this if you are doing a JOIN and carefully craft your query so table field names won't conflict (null: none)
      * @param  string $field_prefix All the core fields have a prefix of this on them, so when we fiddle with language lookup we need to use this (only consider this if you're setting $lang_fields)
      * @param  boolean $save_as_volatile Whether we are saving as a 'volatile' file extension (used in the XML DB driver, to mark things as being non-syndicated to Git)
      * @return ?mixed The results (null: no result set) (empty array: empty result set)

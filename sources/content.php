@@ -724,12 +724,7 @@ function content_rows_for_type(string $content_type, ?int $days, string $extra_w
     }
 
     // Put query together
-    global $TABLE_LANG_FIELDS_CACHE;
-    $lang_fields = isset($TABLE_LANG_FIELDS_CACHE[$info['table']]) ? $TABLE_LANG_FIELDS_CACHE[$info['table']] : [];
-    foreach ($lang_fields as $lang_field => $lang_field_type) {
-        unset($lang_fields[$lang_field]);
-        $lang_fields['r.' . $lang_field] = $lang_field_type;
-    }
+    $lang_fields = find_lang_fields($info['table'], 'r');
     $query = ' FROM ' . get_table_prefix() . $info['table'] . ' r' . $extra_join . ' WHERE 1=1' . $extra_where;
     list($sql_sort, $dir, $url_sort) = handle_abstract_sorting($_url_sort, $info);
 

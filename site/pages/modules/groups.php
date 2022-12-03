@@ -238,8 +238,7 @@ class Module_groups
         }
         $sql .= ')';
         $sql .= ' ORDER BY g_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('g_name');
-        global $TABLE_LANG_FIELDS_CACHE;
-        $lang_fields = isset($TABLE_LANG_FIELDS_CACHE['f_groups']) ? $TABLE_LANG_FIELDS_CACHE['f_groups'] : [];
+        $lang_fields = find_lang_fields('f_groups', 'g');
         $groups = $GLOBALS['FORUM_DB']->query($sql, null, 0, false, false, $lang_fields);
 
         foreach ($groups as $g_id => $row) {

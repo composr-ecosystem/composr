@@ -180,8 +180,7 @@ PHP;
             }
 
             // Get row
-            global $TABLE_LANG_FIELDS_CACHE;
-            $lang_fields = isset($TABLE_LANG_FIELDS_CACHE[$info['table']]) ? $TABLE_LANG_FIELDS_CACHE[$info['table']] : [];
+            $lang_fields = find_lang_fields($info['table'], 'r');
             foreach ($lang_fields as $lang_field => $lang_field_type) {
                 unset($lang_fields[$lang_field]);
                 $lang_fields['r.' . $lang_field] = $lang_field_type;

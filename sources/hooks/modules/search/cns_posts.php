@@ -153,8 +153,7 @@ class Hook_search_cns_posts extends FieldsSearchHook
         }
 
 
-        global $TABLE_LANG_FIELDS_CACHE;
-        $lang_fields = $TABLE_LANG_FIELDS_CACHE['f_posts'];
+        $lang_fields = find_lang_fields('f_posts', 'p');
 
         $sql = 'SELECT p.id,p.p_time,p.p_last_edit_time,p.p_poster,p.p_title,p.p_post,p.p_cache_forum_id,t_is_open,t_pinned,t_cache_first_post_id FROM ' . $db->get_table_prefix() . 'f_posts p JOIN ' . $db->get_table_prefix() . 'f_topics t ON p.p_topic_id=t.id';
         $sql .= ' WHERE p_cache_forum_id IS NOT NULL';
