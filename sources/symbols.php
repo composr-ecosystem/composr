@@ -6722,6 +6722,8 @@ function ecv_PUBLIC_CONFIG_OPTIONS_JSON(string $lang, array $escaped, array $par
                 $_value[$hook] = '0';
             } elseif (!empty($details['theme_override'])) {
                 $_value[$hook] = get_theme_option($hook);
+            } elseif (!empty($details['ecommerce'])) {
+                $_value[$hook] = get_ecommerce_option($hook);
             } else {
                 $_value[$hook] = get_option($hook);
             }
