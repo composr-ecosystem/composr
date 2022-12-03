@@ -6,8 +6,6 @@
 	<p>{!TEMPCODE_TESTER_HELP}</p>
 
 	<form title="{!PRIMARY_PAGE_FORM}" method="post" action="#!">
-		{$INSERT_FORM_POST_SECURITY}
-
 		<h2><label for="tempcode">Tempcode</label></h2>
 		<div>
 			<textarea id="tempcode" name="tempcode" cols="70" rows="17" class="form-control form-control-wide textarea-scroll"></textarea>
@@ -26,7 +24,7 @@
 		{+END}
 
 		<p class="proceed-button">
-			<button accesskey="p" class="btn btn-primary btn-scr tabs--preview js-click-btn-tempcode-tester-do-preview" type="submit">{!PREVIEW}</button>
+			<button accesskey="p" class="btn btn-primary btn-scr tabs--preview js-click-btn-tempcode-tester-do-preview" type="button">{!PREVIEW}</button>
 		</p>
 	</form>
 
