@@ -471,7 +471,7 @@ function upgrade_modules() : string
     $must_upgrade_first = [
         'admin_version' => 'adminzone',
     ];
-    if (get_value('version') < 11) { // LEGACY
+    if (intval(get_value('version', '1')) < 11) { // LEGACY
         $must_upgrade_first['catalogues'] = 'site'; // Required for any module installing new custom profile fields (e.g. points)
     }
     foreach ($must_upgrade_first as $module => $zone) {
