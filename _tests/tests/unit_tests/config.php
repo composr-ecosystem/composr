@@ -537,7 +537,7 @@ class config_test_set extends cms_test_case
         $hooks = find_all_hook_obs('systems', 'config', 'Hook_config_');
         foreach ($hooks as $hook => $ob) {
             $hash = substr(md5($hook), 0, 8);
-            $this->assertTrue(!array_key_exists($hash, $hashes), 'Config option ' . $hash . ' has the same hashed name as ' . (array_key_exists($hash, $hashes) ? $hashes[$hash] : 'Unknown') . '; one of these should be renamed to avoid conflicts on configuration edit screens.');
+            $this->assertTrue(!array_key_exists($hash, $hashes), 'Config option ' . $hook . ' has the same hashed name as ' . (array_key_exists($hash, $hashes) ? $hashes[$hash] : 'Unknown') . '; one of these should be renamed to avoid conflicts on configuration edit screens.');
             $hashes[$hash] = $hook;
         }
     }
