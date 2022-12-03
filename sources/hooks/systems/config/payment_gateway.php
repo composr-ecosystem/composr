@@ -64,17 +64,18 @@ class Hook_config_payment_gateway
      *
      * @param  ID_TEXT $name The config option name
      * @param  array $myrow The config row
+     * @param  ID_TEXT $config_field_name The form field name to use for this config
      * @param  Tempcode $human_name The field title
      * @param  Tempcode $explanation The field description
      * @return Tempcode The inputter
      */
-    public function field_inputter(string $name, array $myrow, object $human_name, object $explanation) : object
+    public function field_inputter(string $name, array $myrow, string $config_field_name, object $human_name, object $explanation) : object
     {
         $list = new Tempcode();
         $all_payment_gateways = find_all_hooks('systems', 'payment_gateway');
         foreach (array_keys($all_payment_gateways) as $payment_gateway) {
             $list->attach(form_input_list_entry($payment_gateway, $payment_gateway == get_option($name)));
         }
-        return form_input_list($human_name, $explanation, $name, $list);
+        return form_input_list($human_name, $explanation, $config_field_name, $list);
     }
 }

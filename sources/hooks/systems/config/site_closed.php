@@ -60,15 +60,16 @@ class Hook_config_site_closed
      *
      * @param  ID_TEXT $name The config option name
      * @param  array $myrow The config row
+     * @param  ID_TEXT $config_field_name The form field name to use for this config
      * @param  Tempcode $human_name The field title
      * @param  Tempcode $explanation The field description
      * @return Tempcode The inputter
      */
-    public function field_inputter(string $name, array $myrow, object $human_name, object $explanation) : object
+    public function field_inputter(string $name, array $myrow, string $config_field_name, object $human_name, object $explanation) : object
     {
         $list = '';
         $list .= static_evaluate_tempcode(form_input_radio_entry($name, '0', '0' == get_option($name), do_lang('OPEN')));
         $list .= static_evaluate_tempcode(form_input_radio_entry($name, '1', '1' == get_option($name), do_lang('CLOSED')));
-        return form_input_radio($human_name, $explanation, $name, make_string_tempcode($list), true);
+        return form_input_radio($human_name, $explanation, $config_field_name, make_string_tempcode($list), true);
     }
 }
