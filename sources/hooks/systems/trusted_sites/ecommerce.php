@@ -44,10 +44,12 @@ class Hook_trusted_sites_ecommerce
         }
 
         if ((get_option('payment_gateway') == 'paypal') && (get_option('payment_gateway_username') != '')) {
-            $sites[] = 'paypal.com';
-            $sites[] = 'ipnpb.paypal.com';
-            $sites[] = 'sandbox.paypal.com';
-            $sites[] = 'ipnpb.sandbox.paypal.com';
+            if (get_option('csp_forms') == '1') {
+                $sites[] = 'paypal.com';
+                $sites[] = 'sandbox.paypal.com';
+                $sites[] = 'ipnpb.paypal.com';
+                $sites[] = 'ipnpb.sandbox.paypal.com';
+            }
         }
 
         if ((get_option('payment_gateway') == 'authorize') && (get_option('payment_gateway_username') != '')) {
@@ -56,7 +58,9 @@ class Hook_trusted_sites_ecommerce
         }
 
         if ((get_option('payment_gateway') == 'ccbill') && (get_option('payment_gateway_username') != '')) {
-            $sites[] = 'api.ccbill.com';
+            if (get_option('csp_forms') == '1') {
+                $sites[] = 'api.ccbill.com';
+            }
         }
     }
 }

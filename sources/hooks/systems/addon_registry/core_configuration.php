@@ -125,6 +125,7 @@ class Hook_addon_registry_core_configuration
             'sources/hooks/systems/config/enable_menu_editor_buttons.php',
             'sources/hooks/systems/config/supports_wide.php',
             'sources/hooks/systems/config/csp_enabled.php',
+            'sources/hooks/systems/config/csp_on_forms.php',
             'sources/hooks/systems/config/csp_exceptions.php',
             'sources/hooks/systems/config/csp_allow_plugins.php',
             'sources/hooks/systems/config/csp_allowed_iframe_ancestors.php',

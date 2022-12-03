@@ -22,11 +22,6 @@ Embed API reference: https://developers.google.com/analytics/devguides/reporting
 Metrics and dimension reference: https://developers.google.com/analytics/devguides/reporting/core/dimsmets
 */
 
-function init__google_analytics()
-{
-    load_csp(['csp_allow_eval_js' => '1']); // Needed for its JSON implementation to work
-}
-
 function google_analytics_initialise($weak_test = false)
 {
     $property_id = get_option('ga_property_view_id');
@@ -97,6 +92,8 @@ function enumerate_google_analytics_metrics()
 
 function render_google_analytics($metric = '*', $id = null, $days = 31, $access_token = null)
 {
+    load_csp(['csp_allow_eval_js' => '1']); // Needed for its JSON implementation to work
+
     // Initialise, but only if not already done so
     if ($access_token === null) {
         $result = google_analytics_initialise();

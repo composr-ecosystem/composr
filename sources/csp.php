@@ -143,7 +143,7 @@ function load_csp(?array $options = null, ?int $enable_more_open_html_for = null
         $options = [
             'csp_enabled' => get_theme_option('csp_enabled'),
             'csp_exceptions' => get_option('csp_exceptions'),
-            'csp_allow_plugins' => get_option('csp_allow_plugins') == '1',
+            'csp_allow_plugins' => get_option('csp_allow_plugins'),
             'csp_allowed_iframe_ancestors' => get_option('csp_allowed_iframe_ancestors'),
             'csp_allowed_iframe_descendants' => get_option('csp_allowed_iframe_descendants'),
 
@@ -152,6 +152,8 @@ function load_csp(?array $options = null, ?int $enable_more_open_html_for = null
             'csp_allow_insecure_resources' => get_option('csp_allow_insecure_resources'),
 
             'csp_allow_inline_js' => '0', // Not used
+
+            'csp_on_forms' => get_option('csp_on_forms'),
         ];
     } else {
         $options = $options + $previous_state; // Merge new state with previous state
@@ -162,7 +164,7 @@ function load_csp(?array $options = null, ?int $enable_more_open_html_for = null
     $csp_enabled = ($options['csp_enabled'] != '0');
     $report_only = ($options['csp_enabled'] == '2');
     $csp_exceptions = $options['csp_exceptions'];
-    $csp_allow_plugins = $options['csp_allow_plugins'];
+    $csp_allow_plugins = ($options['csp_allow_plugins'] == '1');
     $csp_allowed_iframe_ancestors = $options['csp_allowed_iframe_ancestors'];
     $csp_allowed_iframe_descendants = $options['csp_allowed_iframe_descendants'];
 
@@ -170,6 +172,8 @@ function load_csp(?array $options = null, ?int $enable_more_open_html_for = null
     $csp_allow_eval_js = ($options['csp_allow_eval_js'] == '1');
     $csp_allow_dyn_js = ($options['csp_allow_dyn_js'] == '1');
     $csp_allow_insecure_resources = ($options['csp_allow_insecure_resources'] !== '0');
+
+    $csp_on_forms = ($options['csp_on_forms'] == '1');
 
     if ($enable_more_open_html_for !== null) {
         global $PRIVILEGE_CACHE;
@@ -289,7 +293,12 @@ function load_csp(?array $options = null, ?int $enable_more_open_html_for = null
     $clauses[] = "base-uri 'self'";
 
     // form-action
-    $_sources_list = $master_sources_list;
+    if ($csp_on_forms) {
+        $_sources_list = $master_sources_list;
+    } else {
+        $_sources_list = [];
+        $_sources_list[] = '*';
+    }
     $clauses[] = 'form-action ' . implode(' ', $_sources_list);
 
     // frame-ancestors
