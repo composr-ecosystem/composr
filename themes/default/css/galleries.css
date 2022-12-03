@@ -35,12 +35,12 @@
 	width: 80px;
 }
 
-@media (max-width: 460px) {
+/*{+START,CSS_MODE,smartphone}*/
 	.gallery-nav-prev-btn .img-thumb,
 	.gallery-nav-next-btn .img-thumb {
 		display: none;
 	}
-}
+/*{+END}*/
 
 .gallery-nav-prev-btn .img-thumb {
 	margin-left: 10px;

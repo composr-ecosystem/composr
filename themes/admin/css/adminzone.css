@@ -21,17 +21,18 @@ header {
 .logo {
 	align-self: center;
 	margin: 0 25px;
+	display: none;
 }
 
 .logo-image {
 	max-height: 100%;
 }
 
-@media (max-width: 1349px) { /* Hide admin logo on small screens to conserve space */
+/*{+START,CSS_MODE,large_desktop}*/
 	.logo {
-		display: none;
+		display: block;
 	}
-}
+/*{+END}*/
 
 .logo .logo-link {
 	font-size: 20px;
