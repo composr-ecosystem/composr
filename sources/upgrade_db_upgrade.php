@@ -467,9 +467,18 @@ function upgrade_modules() : string
     require_code('zones2');
     require_code('zones3');
 
-    $ret = upgrade_module('adminzone', 'admin_version');
-    if ($ret == 1) {
-        $out .= '<li>' . do_lang('UPGRADER_UPGRADED_MODULE', '<kbd>admin_version</kbd>') . '</li>';
+    // Define which modules must be upgraded first as other modules may depend on it
+    $must_upgrade_first = [
+        'admin_version' => 'adminzone',
+    ];
+    if (get_value('version') < 11) { // LEGACY
+        $must_upgrade_first['catalogues'] = 'site'; // Required for any module installing new custom profile fields (e.g. points)
+    }
+    foreach ($must_upgrade_first as $module => $zone) {
+        $ret = upgrade_module($zone, $module);
+        if ($ret == 1) {
+            $out .= '<li>' . do_lang('UPGRADER_UPGRADED_MODULE', '<kbd>' . $module . '</kbd>') . '</li>';
+        }
     }
 
     $zones = find_all_zones();
