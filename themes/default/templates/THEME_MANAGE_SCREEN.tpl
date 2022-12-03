@@ -89,7 +89,7 @@
 											ICON_SIZE=48
 										{+END}</a>
 									</div>
-									<div><a title="{!EDIT_THEME}: {NAME*}" href="{EDIT_URL*}">{$?,{$IS_EMPTY,{THEME_USAGE}},{!_EDIT_THEME},{!SETTINGS}}</a></div>
+									<div><a title="{!_EDIT_THEME}: {NAME*}" href="{EDIT_URL*}">{$?,{$IS_EMPTY,{THEME_USAGE}},{!EDIT_THEME},{!SETTINGS}}</a></div>
 								</div>
 
 								<div data-cms-href="{TEMPLATES_URL*}"{+START,IF,{$EQ,{NAME},default}} data-cms-confirm-click="{!EDIT_DEFAULT_THEME_WARNING}"{+END}>

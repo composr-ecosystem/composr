@@ -46,10 +46,6 @@
 	display: block;
 }
 
-.theme-manage-table a {
-	font-size: 0.9em;
-}
-
 .manage-theme-details {
 	width: 15em;
 }
@@ -70,11 +66,18 @@
 }
 
 .manage-theme-icons {
-	width: 300px;
+	width: 480px;
 }
-
 .do-theme-items > div {
-	width: 95px; /* We may have long labels here, so we don't want to let that make the table spacing weird */
+	width: 155px; /* We may have long labels here, so we don't want to let that make the table spacing weird */
+}
+@media(max-width: 1200px) {
+	.manage-theme-icons {
+		width: 255px;
+	}
+	.do-theme-items > div {
+		width: 80px; /* We may have long labels here, so we don't want to let that make the table spacing weird */
+	}
 }
 
 /* Template editor */
