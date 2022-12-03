@@ -356,6 +356,15 @@ class file_type_safelisting_test_set extends cms_test_case
         }
     }
 
+    public function testNoInvalidImageTypesPopulating()
+    {
+        require_code('images');
+        $images = $GLOBALS['SITE_DB']->query_select('images', array('url'));
+        foreach ($images as $image) {
+            $this->assertTrue(is_image($image['url'], IMAGE_CRITERIA_WEBSAFE));
+        }
+    }
+
     public function test404Excludes()
     {
         $recommended_htaccess = file_get_contents(get_file_base() . '/recommended.htaccess');
