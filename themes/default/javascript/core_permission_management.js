@@ -38,6 +38,11 @@
         },
 
         updateGroupDisplayer: function (e, select) {
+            if (!window.sitemap.treeListData) {
+                $cms.ui.alert('{!PLEASE_WAIT;}', null, true);
+                return;
+            }
+
             $dom.html('#group-name', $cms.filter.html(window.usergroupTitles[select.value]));
             var tree = document.getElementById('tree-list--root-tree-list');
             $dom.empty(tree);

@@ -82,6 +82,10 @@
 		flex-grow: 1;
 	}
 
+	.box---permissions-tree-editor-screen {
+		min-height: 15em;
+	}
+
 	.pte-help-box {
 		width: 24em;
 		margin-left: 1em;

@@ -10,7 +10,7 @@
 
 				<div class="pte-tree">
 					<div class="pte-icon-box">
-						<div class="box box---permissions-tree-editor-screen"><div class="box-inner">
+						<div class="box box---permissions-tree-editor-screen-groups"><div class="box-inner">
 							<form title="{!CHOOSE} {!USERGROUP}" action="#" method="post">
 								<img alt="" width="19" height="11" src="{$IMG*,pte_view_help}" /><strong><label for="group">{!PERMISSIONS_TREE_EDITOR_ICON_LABEL}:</label></strong>
 								<select id="group" name="group" class="form-control js-click-update-group js-change-update-group">
@@ -33,7 +33,7 @@
 		</div>
 
 		<div class="pte-help-box">
-			<div class="box box---permissions-tree-editor-screen"><div class="box-inner">
+			<div class="box box---permissions-tree-editor-screen-help"><div class="box-inner">
 				<h2>{!PERMISSIONS_TREE_EDITOR_HOW_WORK}</h2>
 
 				<p class="vertical-alignment">{!PERMISSIONS_TREE_EDITOR_ABOUT_BARRIERS,<img width="6" height="6" src="{$IMG*,led/on}" alt="" />}</p>
@@ -50,7 +50,7 @@
 	</div>
 
 	<div class="pte-set-box">
-		<div class="box box---permissions-tree-editor-screen"><div class="box-inner">
+		<div class="box box---permissions-tree-editor-screen-permissions"><div class="box-inner">
 			<h2>{!PERMISSIONS_TREE_EDITOR_PERMISSIONS_FOR_SELECTION}</h2>
 
 			<p>
