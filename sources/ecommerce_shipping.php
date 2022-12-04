@@ -90,18 +90,18 @@ function calculate_shipping_cost(?array $details, ?float $shipping_cost, ?float 
         return $shipping_cost; // This is better than estimating something from zero; a flat shipping cost that carries through
     }
 
-    // Set to zero if we still failed
-    if ($product_weight === null) {
-        $product_weight = 0.0;
+    // Set to 1 if we still failed
+    if (empty($product_weight)) {
+        $product_weight = 1.0;
     }
-    if ($product_length === null) {
-        $product_length = 0.0;
+    if (empty($product_length)) {
+        $product_length = 1.0;
     }
-    if ($product_width === null) {
-        $product_width = 0.0;
+    if (empty($product_width)) {
+        $product_width = 1.0;
     }
-    if ($product_height === null) {
-        $product_height = 0.0;
+    if (empty($product_height)) {
+        $product_height = 1.0;
     }
 
     // Do calculation if we don't have Shippo...

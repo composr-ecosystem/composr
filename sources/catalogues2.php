@@ -49,9 +49,9 @@ function create_ecommerce_catalogue(string $catalogue_name) : int
         ['ECOM_CAT_tax_code', 'ECOM_CATD_tax_code', 'tax_code', 0, 1, 0, 0, '', 'ecommerce_tag=tax_code'],
         ['ECOM_CAT_image', 'ECOM_CATD_image', 'picture', 0, 0, 1, 1, '', 'ecommerce_tag=image'],
         ['ECOM_CAT_weight', 'ECOM_CATD_weight', 'float', 0, 1, 0, 0, '', 'ecommerce_tag=weight'],
-        ['ECOM_CAT_length', 'ECOM_CATD_length', 'float', 0, 0, 0, 0, '', 'ecommerce_tag=length'],
-        ['ECOM_CAT_width', 'ECOM_CATD_width', 'float', 0, 0, 0, 0, '', 'ecommerce_tag=width'],
-        ['ECOM_CAT_height', 'ECOM_CATD_height', 'float', 0, 0, 0, 0, '', 'ecommerce_tag=height'],
+        ['ECOM_CAT_length', 'ECOM_CATD_length', 'float', 0, 1, 0, 0, '', 'ecommerce_tag=length'],
+        ['ECOM_CAT_width', 'ECOM_CATD_width', 'float', 0, 1, 0, 0, '', 'ecommerce_tag=width'],
+        ['ECOM_CAT_height', 'ECOM_CATD_height', 'float', 0, 1, 0, 0, '', 'ecommerce_tag=height'],
         ['ECOM_CAT_description', 'DESCRIPTION_DESCRIPTION', 'long_trans', 0, 0, 1, 1, '', 'ecommerce_tag=description'],
     ];
 

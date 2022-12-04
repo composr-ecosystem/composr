@@ -945,7 +945,7 @@ function get_address_fields(string $prefix, string $street_address, string $city
 
     $definitely_usa = (get_option('cpf_enable_country') == '0') && (get_option('business_country') == 'US');
     if ((get_option('cpf_enable_state') == '1') || (get_option('business_country') == 'US')) {
-        if (get_option('business_country') == 'US') { // Some tax APIs may need exact states, and Americans are a bit pampered, so show an explicit list
+        if ((get_option('business_country') == 'US') && (get_option('cpf_enable_country') == '0')) { // Some tax APIs may need exact states, and Americans are a bit pampered, so show an explicit list
             $state_list = new Tempcode();
             if (!$definitely_usa) {
                 $state_list->attach(form_input_list_entry('', '' == $state, do_lang_tempcode('NA_EM'))); // Need to provide an N/A option if different countries may be selected
