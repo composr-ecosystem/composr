@@ -30,7 +30,7 @@
         moderatorActionSubmitForm: function (e, select) {
             if (select.selectedIndex !== 0) {
                 if ($cms.form.addFormMarkedPosts(select.form, 'mark_')) {
-                    $dom.trigger(select.form, 'submit');
+                    select.form.submit();
                 } else {
                     $cms.ui.alert('{!NOTHING_SELECTED;}');
                 }
@@ -38,11 +38,11 @@
         },
 
         maxChangeSubmitForm: function (e, select) {
-            $dom.trigger(select.form, 'submit');
+            select.form.submit();
         },
 
         orderChangeSubmitForm: function (e, select) {
-            $dom.trigger(select.form, 'submit');
+            select.form.submit();
         },
     });
 
@@ -232,7 +232,7 @@
         var container = this;
 
         $dom.on(container, 'change', '.js-select-change-form-submit', function (e, select) {
-            $dom.trigger(select.form, 'submit');
+            select.form.submit();
         });
     };
 
@@ -259,14 +259,14 @@
 
         $dom.on(container, 'change', '.js-topic-moderator-action-submit-form', function (e, select) {
             if (select.selectedIndex !== -1) {
-                $dom.trigger(select.form, 'submit');
+                select.form.submit();
             }
         });
 
         $dom.on(container, 'change', '.js-moderator-action-submit-form', function (e, select) {
             if (select.selectedIndex !== -1) {
                 if ($cms.form.addFormMarkedPosts(select.form, 'mark_')) {
-                    $dom.trigger(select.form, 'submit');
+                    select.form.submit();
                 } else {
                     $cms.ui.alert('{!NOTHING_SELECTED;}');
                 }
@@ -274,7 +274,7 @@
         });
 
         $dom.on(container, 'change', '.js-order-change-submit-form', function (e, select) {
-            $dom.trigger(select.form, 'submit');
+            select.form.submit();
         });
     };
 

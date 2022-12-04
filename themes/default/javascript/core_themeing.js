@@ -474,8 +474,16 @@
                 url,
                 function (url) {
                     if (url !== null) {
-                        button.form.action = url;
-                        $dom.trigger(button.form, 'submit');
+                        var tokenField = button.form.elements['csrf_token'];
+                        if (tokenField) {
+                            return $cms.getCsrfToken().then(function (text) {
+                                tokenField.value = text;
+
+                                button.form.action = url;
+                                button.form.target = '_blank';
+                                button.form.submit();
+                            });
+                        }
                     }
                 },
                 '{!PREVIEW;^}'
@@ -484,9 +492,18 @@
             return false;
         }
 
-        button.form.action = url;
+        var tokenField = button.form.elements['csrf_token'];
+        if (tokenField) {
+            return $cms.getCsrfToken().then(function (text) {
+                tokenField.value = text;
 
-        return true;
+                button.form.action = url;
+                button.form.target = '_blank';
+                button.form.submit();
+            });
+        }
+
+        return false;
     }
 
     $cms.functions.adminThemesEditTheme = function () {

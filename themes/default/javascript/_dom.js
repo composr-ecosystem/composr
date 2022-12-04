@@ -1360,7 +1360,7 @@
     };
 
     /**
-     * We use this instead of native JS (createEvent or form.submit) because it's simple and consistent.
+     * We use this instead of native JS (createEvent) because it's simple and consistent.
      * @memberof $dom
      * @param el
      * @param event

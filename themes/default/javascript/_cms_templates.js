@@ -122,7 +122,7 @@
     $cms.templates.jsRefresh = function (params) {
         if (!window.location.hash.includes('redirected_once')) {
             window.location.hash = 'redirected_once';
-            $dom.trigger(document.getElementById(params.formName), 'submit');
+            document.getElementById(params.formName).submit();
         } else {
             window.history.go(-2); // We've used back button, don't redirect forward again
         }
