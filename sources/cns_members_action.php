@@ -577,12 +577,6 @@ function cns_make_custom_field(string $name, int $locked = 0, string $descriptio
         'cf_order' => $order,
         'cf_only_group' => $only_group,
         'cf_show_on_join_form' => $show_on_join_form,
-        'cf_allow_template_search' => $allow_template_search,
-        'cf_icon' => $icon,
-        'cf_section' => $section,
-        'cf_tempcode' => $tempcode,
-        'cf_autofill_type' => $autofill_type,
-        'cf_autofill_hint' => $autofill_hint,
     ];
 
     // LEGACY
@@ -594,7 +588,15 @@ function cns_make_custom_field(string $name, int $locked = 0, string $descriptio
         $map['cf_options'] = $options;
     }
     if (intval($_version_database) >= 11) {
-        $map['cf_include_in_main_search'] = $include_in_main_search;
+        $map += [
+            'cf_include_in_main_search' => $include_in_main_search,
+            'cf_allow_template_search' => $allow_template_search,
+            'cf_icon' => $icon,
+            'cf_section' => $section,
+            'cf_tempcode' => $tempcode,
+            'cf_autofill_type' => $autofill_type,
+            'cf_autofill_hint' => $autofill_hint,
+        ];
     }
 
     if (substr($name, 0, 4) == 'cms_') {

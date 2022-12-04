@@ -473,6 +473,7 @@ function upgrade_modules(float $from_cms_version) : string
         'admin_version' => 'adminzone',
     ];
     if ($from_cms_version < 11.0) { // LEGACY
+        $must_upgrade_first['admin_addons'] = 'adminzone'; // DB changes
         $must_upgrade_first['catalogues'] = 'site'; // Required for any module installing new custom profile fields (e.g. points)
     }
     foreach ($must_upgrade_first as $module => $zone) {
