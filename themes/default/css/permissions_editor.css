@@ -16,8 +16,11 @@
 }
 
 .privileges td {
-	text-align: right;
 	vertical-align: middle;
+}
+
+.privileges td:last-child {
+	text-align: right;
 }
 
 .permission-header-cell {
