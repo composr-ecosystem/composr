@@ -63,7 +63,7 @@ function upgrader_db_upgrade_screen() : string
         $something_done = true;
     }
 
-    $done = upgrade_modules();
+    $done = upgrade_modules($version_database_cns);
     if ($done != '') {
         $out .= do_lang('UPGRADER_UPGRADE_MODULES', $done);
         $something_done = true;
@@ -458,9 +458,10 @@ function version_specific() : bool
 /**
  * Upgrade all modules and blocks.
  *
+ * @param  float $from_cms_version From which version of the Composr software we are upgrading
  * @return string List of upgraded/installed modules/blocks
  */
-function upgrade_modules() : string
+function upgrade_modules(float $from_cms_version) : string
 {
     $out = '';
 
@@ -471,13 +472,14 @@ function upgrade_modules() : string
     $must_upgrade_first = [
         'admin_version' => 'adminzone',
     ];
-    if (intval(get_value('version', '1')) < 11) { // LEGACY
+    if ($from_cms_version < 11.0) { // LEGACY
         $must_upgrade_first['catalogues'] = 'site'; // Required for any module installing new custom profile fields (e.g. points)
     }
     foreach ($must_upgrade_first as $module => $zone) {
         $ret = upgrade_module($zone, $module);
         if ($ret == 1) {
             $out .= '<li>' . do_lang('UPGRADER_UPGRADED_MODULE', '<kbd>' . $module . '</kbd>') . '</li>';
+            echo "\n" . do_lang('UPGRADER_UPGRADED_MODULE', '<kbd>' . $module . '</kbd>'); // TODO: debug
         }
     }
 
@@ -497,9 +499,11 @@ function upgrade_modules() : string
             $ret = upgrade_module($zone, $module);
             if ($ret == 1) {
                 $out .= '<li>' . do_lang('UPGRADER_UPGRADED_MODULE', '<kbd>' . escape_html($module) . '</kbd>') . '</li>';
+                echo "\n" . do_lang('UPGRADER_UPGRADED_MODULE', '<kbd>' . $module . '</kbd>'); // TODO: debug
             } elseif ($ret == -2) {
                 if (reinstall_module($zone, $module)) {
                     $out .= '<li>' . do_lang('UPGRADER_INSTALLED_MODULE', '<kbd>' . escape_html($module) . '</kbd>') . '</li>';
+                    echo "\n" . do_lang('UPGRADER_INSTALLED_MODULE', '<kbd>' . $module . '</kbd>'); // TODO: debug
                 }
             }
         }
@@ -510,9 +514,11 @@ function upgrade_modules() : string
         $ret = upgrade_block($block);
         if ($ret == 1) {
             $out .= '<li>' . do_lang('UPGRADER_UPGRADED_BLOCK', '<kbd>' . escape_html($block) . '</kbd>') . '</li>';
+            echo "\n" . do_lang('UPGRADER_UPGRADED_MODULE', '<kbd>' . $block . '</kbd>'); // TODO: debug
         } elseif ($ret == -2) {
             if (reinstall_block($block)) {
                 $out .= '<li>' . do_lang('UPGRADER_INSTALLED_BLOCK', '<kbd>' . escape_html($block) . '</kbd>') . '</li>';
+                echo "\n" . do_lang('UPGRADER_INSTALLED_MODULE', '<kbd>' . $block . '</kbd>'); // TODO: debug
             }
         }
     }
@@ -523,10 +529,12 @@ function upgrade_modules() : string
         $ret = upgrade_addon_soft($addon_name);
         if ($ret == 1) {
             $out .= '<li>' . do_lang('UPGRADER_UPGRADED_ADDON', '<kbd>' . escape_html($addon_name) . '</kbd>') . '</li>';
+            echo "\n" . do_lang('UPGRADER_UPGRADED_ADDON', '<kbd>' . escape_html($addon_name) . '</kbd>'); // TODO: debug
         } elseif ($ret == -2) {
             reinstall_addon_soft($addon_name);
 
             $out .= '<li>' . do_lang('UPGRADER_INSTALLED_ADDON', '<kbd>' . escape_html($addon_name) . '</kbd>') . '</li>';
+            echo "\n" . do_lang('UPGRADER_INSTALLED_ADDON', '<kbd>' . escape_html($addon_name) . '</kbd>'); // TODO: debug
         }
     }
 

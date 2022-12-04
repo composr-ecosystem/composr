@@ -129,11 +129,18 @@ function automate_upgrade()
  */
 function automate_upgrade__safe()
 {
+    $_from_cms_version = get_value('version');
+    if ($_from_cms_version === null) {
+        $from_cms_version = cms_version_number();
+    } else {
+        $from_cms_version = floatval($_from_cms_version);
+    }
+
     // Database
     clear_caches_1();
     clear_caches_2();
     version_specific();
-    upgrade_modules();
+    upgrade_modules($from_cms_version);
     rebuild_zone_files();
 
     // Conversr

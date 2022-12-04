@@ -37,8 +37,15 @@ class Hook_commandr_command_database_upgrade
             return ['', do_command_help('database_upgrade', ['h'], []), '', ''];
         }
 
+        $_from_cms_version = get_value('version');
+        if ($_from_cms_version === null) {
+            $from_cms_version = cms_version_number();
+        } else {
+            $from_cms_version = floatval($_from_cms_version);
+        }
+
         require_code('upgrade_db_upgrade');
-        $result = upgrade_modules();
+        $result = upgrade_modules($from_cms_version);
         if ($result == '') {
             $result = do_lang('NO_ACTION_REQUIRED');
         }
