@@ -4,11 +4,11 @@
 
 		<p>{ABOUT*}</p>
 
-		<div class="wide-table-wrap"><table class="map-table autosized-table leader-board-table results-table wide-table">
+		<table class="map-table autosized-table leader-board-table results-table wide-table">
 			<tbody>
 				{ROWS}
 			</tbody>
-		</table></div>
+		</table>
 
 		{+START,IF,{IS_BLOCK}}
 			<ul class="horizontal-links associated-links-block-group force-margin">

@@ -5,7 +5,7 @@
 		<p>{!FOLLOWING_COOKIES}</p>
 
 		{+START,IF_NON_EMPTY,{COOKIES}}
-			<div class="wide-table-wrap"><table class="columned-table results-table wide-table responsive-table">
+			<table class="columned-table results-table wide-table responsive-table">
 				<thead>
 					<tr>
 						<th>
@@ -31,7 +31,7 @@
 						</tr>
 					{+END}
 				</tbody>
-			</table></div>
+			</table>
 		{+END}
 	{+END}
 
@@ -44,7 +44,7 @@
 	{+END}
 
 	{+START,IF_NON_EMPTY,{GENERAL}}
-		<div class="wide-table-wrap"><table class="columned-table results-table wide-table responsive-table">
+		<table class="columned-table results-table wide-table responsive-table">
 			<thead>
 				<tr>
 					<th>
@@ -70,7 +70,7 @@
 					</tr>
 				{+END}
 			</tbody>
-		</table></div>
+		</table>
 	{+END}
 {+END}
 

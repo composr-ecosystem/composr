@@ -91,7 +91,6 @@ It is possible to configure where a value for a Custom Profile Field for members
 
 In more detail:
 [html]
-<div class="wide-table-wrap">
 <table class="results-table wide-table autosized-table"><tbody>
 <tr><th colspan="4">PROFILE FIELD SETTINGS</th><td></td><th colspan="9">SHOWS IN FOLLOWING CIRCUMSTANCES</th></tr>
 <tr><th>Owner viewable</th><th>Owner settable</th><th>Publicly viewable</th><th>Required</th><td></td><th>Join</th><th>Admin add member</th><th>Edit own profile</th><th>Edit others profile</th><th>Edit others profile but has 'View any field' permission</th><th>View own profile</th><th>View others profile</th><th>View own or others profile but has 'View any field' permission</th><th>Member searchable</th></tr>
@@ -112,7 +111,6 @@ In more detail:
 <tr><td><p>Y</p></td><td><p>Y</p></td><td><p>Y</p></td><td><p>N</p></td><td>&nbsp;</td><td><p>N</p></td><td><p>Y</p></td><td><p>Y</p></td><td><p>Y</p></td><td><p>Y</p></td><td><p>Y</p></td><td><p>Y</p></td><td><p>Y</p></td><td><p>Y</p></td></tr>
 <tr><td><p>Y</p></td><td><p>Y</p></td><td><p>Y</p></td><td><p>Y</p></td><td>&nbsp;</td><td><p>Y</p></td><td><p>Y</p></td><td><p>Y</p></td><td><p>Y</p></td><td><p>Y</p></td><td><p>Y</p></td><td><p>Y</p></td><td><p>Y</p></td><td><p>Y</p></td></tr>
 </tbody></table>
-</div>
 [/html]
 
 There is also 'Privacy' sub-tab in the account settings that allows members to limit access beyond this. Members may choose to display fields:

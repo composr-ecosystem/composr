@@ -1,5 +1,5 @@
 {+START,IF_NON_EMPTY,{TAGS}}
-	<div class="wide-table-wrap"><table class="columned-table autosized-table results-table wide-table">
+	<table class="columned-table autosized-table results-table wide-table">
 		<thead>
 			<tr>
 				<th>{!TITLE}</th>
@@ -17,7 +17,7 @@
 				</tr>
 			{+END}
 		</tbody>
-	</table></div>
+	</table>
 {+END}
 {+START,IF_EMPTY,{TAGS}}
 	<p class="nothing-here">{!NONE}</p>

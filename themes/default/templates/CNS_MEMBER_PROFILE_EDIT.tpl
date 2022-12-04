@@ -53,7 +53,7 @@
 						{+END}
 
 						{+START,IF,{$NOT,{TAB_SINGLE_FIELD}}}{+START,IF_NON_EMPTY,{TAB_FIELDS}}
-							<div class="wide-table-wrap"><table class="map-table form-table wide-table">
+							<table class="map-table form-table wide-table">
 								{+START,IF,{$DESKTOP}}
 									<colgroup>
 										<col class="field-name-column-shorter" />
@@ -64,7 +64,7 @@
 								<tbody>
 									{TAB_FIELDS}
 								</tbody>
-							</table></div>
+							</table>
 						{+END}{+END}
 
 					{+START,IF,{$GT,{TABS},1}}

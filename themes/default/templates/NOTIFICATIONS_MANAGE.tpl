@@ -2,7 +2,7 @@
 	{INTRO*}
 </p>
 
-<div class="wide-table-wrap"><table class="columned-table wide-table results-table notifications-form responsive-table responsive-table-bolded-first-column">
+<table class="columned-table wide-table results-table notifications-form responsive-table responsive-table-bolded-first-column">
 	<colgroup>
 		<col class="notifications-field-name-column" />
 		{+START,IF_PASSED_AND_TRUE,SHOW_PRIVILEGES}
@@ -67,7 +67,7 @@
 			{+END}
 		{+END}
 	</tbody>
-</table></div>
+</table>
 
 {+START,IF_PASSED,AUTO_NOTIFICATION_CONTRIB_CONTENT}
 	<h2>{!cns:AUTO_NOTIFICATION_CONTRIB_CONTENT}</h2>

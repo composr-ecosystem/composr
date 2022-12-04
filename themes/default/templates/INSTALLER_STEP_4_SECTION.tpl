@@ -13,7 +13,7 @@
 				</p>
 			{+END}
 
-			<div class="wide-table-wrap"><table class="map-table form-table wide-table">
+			<table class="map-table form-table wide-table">
 				<colgroup>
 					<col class="installer-left-column" />
 					<col class="installer-right-column" />
@@ -22,7 +22,7 @@
 				<tbody>
 					{OPTIONS}
 				</tbody>
-			</table></div>
+			</table>
 		</fieldset>
 	</div></div>
 </div>

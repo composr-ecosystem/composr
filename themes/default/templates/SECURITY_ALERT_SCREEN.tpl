@@ -7,7 +7,7 @@
 
 <h2>{!DETAILS}</h2>
 
-<div class="wide-table-wrap"><table class="map-table wide-table results-table">
+<table class="map-table wide-table results-table">
 	<colgroup>
 		<col class="field-name-column" />
 		<col class="field-value-column" />
@@ -52,7 +52,7 @@
 			<td>{PERCENTAGE_SCORE*}%</td>
 		</tr>
 	</tbody>
-</table></div>
+</table>
 
 {+START,IF_NON_EMPTY,{POST}}
 	<h2>{!POST_DATA}</h2>

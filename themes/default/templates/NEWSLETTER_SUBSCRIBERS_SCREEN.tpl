@@ -1,7 +1,7 @@
 {TITLE}
 
 {+START,IF_NON_EMPTY,{SUBSCRIBERS_TABLE_ROWS}}
-	<div class="wide-table-wrap"><table class="columned-table results-table wide-table autosized-table responsive-table">
+	<table class="columned-table results-table wide-table autosized-table responsive-table">
 		<thead>
 			<tr>
 				<th>{!EMAIL_ADDRESS}</th>
@@ -13,7 +13,7 @@
 		<tbody>
 			{SUBSCRIBERS_TABLE_ROWS}
 		</tbody>
-	</table></div>
+	</table>
 
 	{+START,IF_NON_EMPTY,{PAGINATION}}
 		<div class="clearfix pagination-spacing">
@@ -30,7 +30,7 @@
 {+START,IF_NON_EMPTY,{DOMAINS}}
 	<h2>{!DOMAIN_STATISTICS,{$INTEGER_FORMAT*,{DOMAINS},0},{$INTEGER_FORMAT*,{DOMAINS},0}}</h2>
 
-	<div class="wide-table-wrap"><table class="columned-table wide-table results-table">
+	<table class="columned-table wide-table results-table">
 		<thead>
 			<tr>
 				<th>{!DOMAIN}</th>
@@ -45,5 +45,5 @@
 				</tr>
 			{+END}
 		</tbody>
-	</table></div>
+	</table>
 {+END}

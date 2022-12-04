@@ -146,24 +146,22 @@
 			<div class="buildr-in-room">
 				<h4>{!W_MEMBERS_IN_ROOM}</h4>
 
-				<div class="wide-table-wrap">
-					<table class="columned-table wide-table results-table autosized-table responsive-table">
-						<thead>
-							<tr>
-								<th>
-									{!NAME}
-								</th>
-								<th>
-									{!W_HEALTH}
-								</th>
-								<th>
-									{!W_INVENTORY}
-								</th>
-							</tr>
-						</thead>
-						{MEMBERS}
-					</table>
-				</div>
+				<table class="columned-table wide-table results-table autosized-table responsive-table">
+					<thead>
+						<tr>
+							<th>
+								{!NAME}
+							</th>
+							<th>
+								{!W_HEALTH}
+							</th>
+							<th>
+								{!W_INVENTORY}
+							</th>
+						</tr>
+					</thead>
+					{MEMBERS}
+				</table>
 			</div>
 		</div>
 

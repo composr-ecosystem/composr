@@ -102,7 +102,6 @@
                 list.style.left = ($dom.findPosX(currentListForEl)) + 'px';
                 list.style.top = ($dom.findPosY(currentListForEl) + currentListForEl.offsetHeight) + 'px';
             }
-            list.style.zIndex++;
 
             if (listContents.children.length === 0) {
                 return;

@@ -23,11 +23,11 @@
 
 			<h2>{!ORIGINAL_COMCODE}</h2>
 
-			<div class="wide-table-wrap"><table class="map-table wide-table results-table autosized-table">
+			<table class="map-table wide-table results-table autosized-table">
 				<tbody>
 					{LINES}
 				</tbody>
-			</table></div>
+			</table>
 		</div>
 	</div>
 

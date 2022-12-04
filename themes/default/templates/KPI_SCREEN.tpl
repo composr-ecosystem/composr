@@ -1,6 +1,6 @@
 {TITLE}
 
-<div class="wide-table-wrap"><table class="columned-table wide-table results-table autosized-table responsive-table">
+<table class="columned-table wide-table results-table autosized-table responsive-table">
 	<thead>
 		<tr>
 			<th>{!TITLE}</th>
@@ -37,7 +37,7 @@
 			</tr>
 		{+END}
 	</tbody>
-</table></div>
+</table>
 
 {+START,LOOP,GRAPHS}
 	{+START,INCLUDE,STATS_GRAPH}{+END}

@@ -98,7 +98,7 @@
 {+START,IF_NON_EMPTY,{$TRIM,{$GET,details}}}
 	<h2>{!DETAILS}</h2>
 
-	<div class="wide-table-wrap"><table class="map-table results-table wide-table spaced-table responsive-blocked-table">
+	<table class="map-table results-table wide-table spaced-table responsive-blocked-table">
 		<colgroup>
 			<col class="field-name-column" />
 			<col class="field-value-column" />
@@ -107,7 +107,7 @@
 		<tbody>
 			{$GET,details}
 		</tbody>
-	</table></div>
+	</table>
 {+END}
 
 <h2>{!BANNED_ADDRESSES}</h2>

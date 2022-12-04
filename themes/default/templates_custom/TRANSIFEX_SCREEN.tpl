@@ -9,7 +9,7 @@
 	Download is a little slow due to the speed of the Transifex API. Stats are cached for 10 minutes.
 </p>
 
-<div class="wide-table-wrap"><table class="columned-table wide-table results-table autosized-table responsive-table">
+<table class="columned-table wide-table results-table autosized-table responsive-table">
 	<thead>
 		<tr>
 			<th>Language</th>
@@ -44,7 +44,7 @@
 			</tr>
 		{+END}
 	</tbody>
-</table></div>
+</table>
 
 <p>
 	&dagger; 29% typically means translated fully apart from administrative strings

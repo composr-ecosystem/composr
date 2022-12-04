@@ -116,7 +116,7 @@ closedir($dh);
 // Output it all...
 
 $out = '
-<div class="wide-table-wrap"><table class="wide-table columned-table results-table autosized-table">
+<table class="wide-table columned-table results-table autosized-table">
     <thead>
         <tr>
             <th>Addon</th>
@@ -161,7 +161,7 @@ foreach ($addons as $addon_name => $addon_info) {
 }
 
 $out .= '
-</table></div>
+</table>
 ';
 
 $out .= '[title="2"]Other tutorials[/title]<p>The following tutorials do not link into any specific addon:</p><ul>';

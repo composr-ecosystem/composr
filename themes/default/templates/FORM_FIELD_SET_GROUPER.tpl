@@ -9,7 +9,7 @@
 		</h2>
 
 		<div class="toggleable-tray js-tray-content" id="{ID*}"{+START,IF_NON_PASSED_OR_FALSE,VISIBLE} style="display: none"{+END}>
-			<div class="wide-table-wrap"><table class="map-table form-table wide-table">
+			<table class="map-table form-table wide-table">
 				{+START,IF,{$DESKTOP}}
 					<colgroup>
 						<col class="field-name-column" />
@@ -20,7 +20,7 @@
 				<tbody>
 					{FIELDS}
 				</tbody>
-			</table></div>
+			</table>
 		</div>
 	</div>
 </div>

@@ -104,14 +104,14 @@ function get_forum_sort_order(string $_sort = 'first_post', bool $simplified = f
  * @param  string $sql_sup Extra SQL to append for where clause
  * @param  string $sql_sup_order_by Extra SQL to append as order clause
  * @param  string $sort Sort order
- * @param  string $keyset_clause Keyset clause
- * @param  string $keyset_field Keyset field name so that we can extract values from DB result sets
+ * @param  ?string $keyset_clause Keyset clause (null: none)
+ * @param  ?string $keyset_field Keyset field name so that we can extract values from DB result sets (null: none)
  * @param  AUTO_LINK $root Virtual root
  * @param  ?MEMBER $of_member_id The member to show private topics of (null: not showing private topics)
  * @param  Tempcode $breadcrumbs The breadcrumbs
  * @return mixed Either Tempcode (an interface that must be shown) or a pair: The main Tempcode, the forum name (string). For a PT view, it is always a tuple, never raw Tempcode (as it can go inside a tabset).
  */
-function cns_render_forumview(?int $id, ?array $forum_info, string $current_filter_cat, int $max, int $start, int $true_start, string $sql_sup, string $sql_sup_order_by, string $sort, string $keyset_clause, string $keyset_field, int $root, ?int $of_member_id, object $breadcrumbs)
+function cns_render_forumview(?int $id, ?array $forum_info, string $current_filter_cat, int $max, int $start, int $true_start, string $sql_sup, string $sql_sup_order_by, string $sort, ?string $keyset_clause, ?string $keyset_field, int $root, ?int $of_member_id, object $breadcrumbs)
 {
     require_css('cns');
 

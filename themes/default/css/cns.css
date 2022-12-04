@@ -277,7 +277,7 @@ div.cns-table-footer > div > div {
 	color: {$GET,box_title_text};
 }
 .cns-topic-post + .cns-topic-post .cns-forum-box-left,
-.cns-topic-post + .cns-topic-post .cns-post-details {
+.cns-topic-post + .cns-topic-post .cns-forum-box-right {
 	border-top-width: 15px !important;
 }
 .cns-topic .cns-forum-box-left, .cns-post-details, .cns-post-details a, .cns-post-details a:hover {

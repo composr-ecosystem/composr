@@ -17,7 +17,7 @@
 		<input type="hidden" name="param" value="{PARAM*}" />
 	{+END}
 
-	<div class="wide-table-wrap"><table class="map-table autosized-table results-table wide-table responsive-blocked-table"><tbody>
+	<table class="map-table autosized-table results-table wide-table responsive-blocked-table"><tbody>
 		<tr>
 			<th>{!NAME}</th>
 			<td><label class="accessibility-hidden" for="portal-name">{!NAME}</label><input type="text" size="20" name="portal_name" id="portal-name" class="form-control" value="{NAME*}" /></td>
@@ -67,7 +67,7 @@
 				<td>{!W_EG_MOVE_X}</td>
 			</tr>
 		{+END}{+END}{+END}
-	</tbody></table></div>
+	</tbody></table>
 
 	<p class="proceed-button">
 		<button class="btn btn-primary btn-scr buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} <span>{!PROCEED}</span></button>

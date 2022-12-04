@@ -32,7 +32,7 @@
 			{HIDDEN}
 
 			{+START,IF_NON_EMPTY,{FIELDS}}
-				<div class="wide-table-wrap"><table class="map-table form-table wide-table">
+				<table class="map-table form-table wide-table">
 					{+START,IF_NON_PASSED,NO_SIZING}
 						{+START,IF,{$DESKTOP}}
 							<colgroup>
@@ -45,7 +45,7 @@
 					<tbody>
 						{FIELDS}
 					</tbody>
-				</table></div>
+				</table>
 			{+END}
 
 			{+START,IF_NON_EMPTY,{SUBMIT_NAME}}

@@ -1,4 +1,4 @@
-<div class="wide-table-wrap"><table class="wide-table results-table spaced-table autosized-table columned-table responsive-table">
+<table class="wide-table results-table spaced-table autosized-table columned-table responsive-table">
 	<thead>
 		<tr>
 			<th>{!AVATAR}</th>
@@ -32,4 +32,4 @@
 			</tr>
 		{+END}
 	</tbody>
-</table></div>
+</table>

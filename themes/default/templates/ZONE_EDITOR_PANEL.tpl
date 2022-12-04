@@ -125,7 +125,7 @@
 			<form title="{ID*}: {!SETTINGS}" id="middle-fields" action="#">
 				{$INSERT_FORM_POST_SECURITY}
 
-				<div class="wide-table-wrap"><table class="map-table form-table wide-table">
+				<table class="map-table form-table wide-table">
 					{+START,IF,{$DESKTOP}}
 						<colgroup>
 							<col class="field-name-column" />
@@ -136,7 +136,7 @@
 					<tbody>
 						{SETTINGS}
 					</tbody>
-				</table></div>
+				</table>
 			</form>
 		</div>
 	{+END}

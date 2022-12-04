@@ -1,6 +1,6 @@
 {TITLE}
 
-<div class="wide-table-wrap"><table class="columned-table wide-table results-table autosized-table responsive-table" itemprop="significantLinks">
+<table class="columned-table wide-table results-table autosized-table responsive-table" itemprop="significantLinks">
 	<thead>
 		<tr>
 			<th>{!ECOM_ORDER}</th>
@@ -62,4 +62,4 @@
 			{+END}
 		{+END}
 	</tbody>
-</table></div>
+</table>

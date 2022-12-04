@@ -23,7 +23,7 @@
 
 	<h2>{!DETAILS}</h2>
 
-	<div class="wide-table-wrap"><table class="map-table results-table wide-table autosized-table responsive-table">
+	<table class="map-table results-table wide-table autosized-table responsive-table">
 		<tbody>
 			<tr>
 				<th>{!NAME}</th>
@@ -60,7 +60,7 @@
 				<td>{CATEGORY*}</td>
 			</tr>
 		</tbody>
-	</table></div>
+	</table>
 
 	<input type="hidden" name="file" value="{FILE*}" />
 </form>

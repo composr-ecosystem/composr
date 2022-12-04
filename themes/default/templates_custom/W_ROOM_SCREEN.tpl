@@ -12,7 +12,7 @@
 <form method="post" enctype="multipart/form-data" action="{$PAGE_LINK*,_SELF:_SELF:uploading=1}">
 	{$INSERT_FORM_POST_SECURITY}
 
-	<div class="wide-table-wrap"><table class="map-table autosized-table results-table wide-table responsive-blocked-table"><tbody>
+	<table class="map-table autosized-table results-table wide-table responsive-blocked-table"><tbody>
 		<tr>
 			<th>{!NAME}</th>
 			<td><label class="accessibility-hidden" for="room-name">{!NAME}</label><input type="text" size="20" name="room_name" id="room-name" class="form-control" value="{NAME*}" /></td>
@@ -146,7 +146,7 @@
 				<td>{!W_ROOM_POS}</td>
 			</tr>
 		{+END}
-	</tbody></table></div>
+	</tbody></table>
 
 	<input type="hidden" name="type" value="{PAGE_TYPE*}" />
 

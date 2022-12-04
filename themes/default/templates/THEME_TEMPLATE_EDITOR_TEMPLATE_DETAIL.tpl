@@ -1,4 +1,4 @@
-<div class="wide-table-wrap"><table class="map-table wide-table results-table spaced-table autosized-table">
+<table class="map-table wide-table results-table spaced-table autosized-table">
 	<tbody>
 		<tr>
 			<th>{!PATH}</th>
@@ -31,4 +31,4 @@
 			</tr>
 		{+END}
 	</tbody>
-</table></div>
+</table>

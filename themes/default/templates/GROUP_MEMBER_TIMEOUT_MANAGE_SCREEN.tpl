@@ -2,6 +2,7 @@
 	{TITLE}
 
 	{$REQUIRE_JAVASCRIPT,ajax_people_lists}
+	{$REQUIRE_JAVASCRIPT,core_form_interfaces}
 
 	{+START,INCLUDE,HANDLE_CONFLICT_RESOLUTION}{+END}
 	{+START,IF_PASSED,WARNING_DETAILS}
@@ -15,7 +16,7 @@
 	<form title="{!PRIMARY_PAGE_FORM}" method="post" action="{URL*}">
 		{$INSERT_FORM_POST_SECURITY}
 
-		<div class="wide-table-wrap"><table class="columned-table results-table wide-table autosized-table">
+		<table class="columned-table results-table wide-table autosized-table">
 			<thead>
 				<tr>
 					<th>
@@ -32,7 +33,7 @@
 			<tbody>
 				{+START,LOOP,TIMEOUTS}
 					<tr>
-						<td>
+						<td class="autocomplete-wrapper">
 							<label class="accessibility-hidden" for="gmt_username_{_loop_key*}">{!USERNAME}</label>
 							<input {+START,IF,{$MOBILE}} autocorrect="off"{+END} size="20" maxlength="255" class="form-control input-username-required js-focus-update-ajax-member-list js-keyup-update-ajax-member-list" type="text" id="gmt_username_{_loop_key*}" name="gmt_username_{_loop_key*}" value="{USERNAME*}" />
 						</td>
@@ -54,7 +55,7 @@
 				{+END}
 
 				<tr>
-					<td>
+					<td class="autocomplete-wrapper">
 						<label class="accessibility-hidden" for="gmt_username_new">{!USERNAME}</label>
 						<input {+START,IF,{$MOBILE}} autocorrect="off"{+END} size="20" maxlength="255" class="form-control input-username-required js-focus-update-ajax-member-list js-keyup-update-ajax-member-list" type="text" id="gmt_username_new" name="gmt_username_new" />
 					</td>
@@ -74,7 +75,7 @@
 					</td>
 				</tr>
 			</tbody>
-		</table></div>
+		</table>
 
 		<p class="proceed-button">
 			<button accesskey="u" data-disable-on-click="1" class="btn btn-primary btn-scr buttons--save" type="submit">{+START,INCLUDE,ICON}NAME=buttons/save{+END} {!SAVE}</button>

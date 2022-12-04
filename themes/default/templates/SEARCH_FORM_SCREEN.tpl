@@ -43,7 +43,7 @@
 				{$HIDDENS_FOR_GET_FORM,{URL}}
 				<input type="hidden" name="all_defaults" value="0" />
 
-				<div class="wide-table-wrap"><table class="map-table form-table wide-table">
+				<table class="map-table form-table wide-table">
 					{+START,IF,{$DESKTOP}}
 						<colgroup>
 							<col class="field-name-column" />
@@ -57,7 +57,7 @@
 							<th class="form-table-field-name">{!SEARCH_FOR}</th>
 							<td class="form-table-field-input" colspan="2">
 								<div class="accessibility-hidden"><label for="search-content">{!SEARCH_FOR}</label></div>
-								<div>
+								<div class="autocomplete-wrapper">
 									<input accesskey="=" maxlength="255"{+START,IF,{$MOBILE}} autocorrect="off"{+END} class="search-content form-control form-control-wide js-keyup-update-ajax-search-list" type="search" size="{$?,{$MOBILE},30,48}" id="search-content" name="content" value="{+START,IF_PASSED,CONTENT}{CONTENT*}{+END}" />
 								</div>
 
@@ -159,7 +159,7 @@
 
 						{SPECIALISATION}
 					</tbody>
-				</table></div>
+				</table>
 
 				<p class="proceed-button">
 					<button data-disable-on-click="1" accesskey="u" class="btn btn-primary btn-scr buttons--search" type="submit">{+START,INCLUDE,ICON}NAME=buttons/search{+END} {!SEARCH_TITLE}</button>

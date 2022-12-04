@@ -43,7 +43,7 @@
 			{HIDDEN}
 
 			{+START,IF_NON_EMPTY,{FIELDS}}
-				<div class="wide-table-wrap"><table class="map-table form-table wide-table scrollable-inside">
+				<table class="map-table form-table wide-table scrollable-inside">
 					{+START,IF,{$DESKTOP}}
 						<colgroup>
 							<col class="field-name-column" />
@@ -54,7 +54,7 @@
 					<tbody>
 						{FIELDS}
 					</tbody>
-				</table></div>
+				</table>
 			{+END}
 
 			{+START,INCLUDE,FORM_STANDARD_END}{+END}

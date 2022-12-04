@@ -75,11 +75,11 @@
 				<p class="nothing-here">{!NO_POSTS}</p>
 			{+END}
 			{+START,IF_NON_EMPTY,{POSTS}}
-				<div class="wide-table-wrap"><div class="map-table results-table wide-table cns-topic wiki-table">
+				<div class="map-table results-table wide-table cns-topic wiki-table">
 					<div>
 						{POSTS}
 					</div>
-				</div></div>
+				</div>
 			{+END}
 
 			{+START,IF,{$NOT,{SHOW_POSTS}}}

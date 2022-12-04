@@ -9,7 +9,7 @@
 
 	<div>
 		{+START,IF_NON_EMPTY,{$TRIM,{TREE}}}
-			<div class="wide-table"><table class="columned-table wide-table results-table notifications-form">
+			<table class="columned-table wide-table results-table notifications-form">
 				<colgroup>
 					<col class="notifications-field-name-column" />
 					{+START,LOOP,NOTIFICATION_TYPES_TITLES}
@@ -31,7 +31,7 @@
 				<tbody>
 					{TREE}
 				</tbody>
-			</table></div>
+			</table>
 
 			<p class="proceed-button">
 				<button type="submit" class="btn btn-primary btn-scr buttons--save">{+START,INCLUDE,ICON}NAME=buttons/save{+END} {!SAVE}</button>

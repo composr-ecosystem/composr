@@ -18,7 +18,7 @@
 	{HIDDEN}
 
 	<p>{!SELECT_TO_IMPORT}</p>
-	<div class="wide-table-wrap"><table class="map-table form-table wide-table import-actions">
+	<table class="map-table form-table wide-table import-actions">
 		{+START,IF,{$DESKTOP}}
 			<colgroup>
 				<col class="field-name-column" />
@@ -29,7 +29,7 @@
 		<tbody>
 			{IMPORT_LIST}
 		</tbody>
-	</table></div>
+	</table>
 
 	<p class="proceed-button">
 		<button accesskey="u" data-disable-on-click="1" class="btn btn-primary btn-scr buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!IMPORT}</button>

@@ -7,7 +7,7 @@
 		<div>
 			<input type="hidden" name="active_filter" value="{ACTIVE_FILTER*}" />
 
-			<div class="wide-table-wrap"><table class="map-table form-table wide-table">
+			<table class="map-table form-table wide-table">
 				{+START,IF,{$DESKTOP}}
 					<colgroup>
 						<col class="field-name-column" />
@@ -18,7 +18,7 @@
 				<tbody>
 					{FIELDS}
 				</tbody>
-			</table></div>
+			</table>
 
 			{+START,INCLUDE,FORM_STANDARD_END}SUBMIT_NAME={!FILTER}{+END}
 		</div>

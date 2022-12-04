@@ -46,7 +46,7 @@
 			{+START,IF,{$HAS_PRIVILEGE,support_operator}}
 				{$REQUIRE_JAVASCRIPT,ajax_people_lists}
 				<li>
-					<form title="{!ASSIGN_TO}" action="{$PAGE_LINK*,_SEARCH:tickets:assign:ticket_id={ID}}" method="post" class="inline vertical-alignment">
+					<form title="{!ASSIGN_TO}" action="{$PAGE_LINK*,_SEARCH:tickets:assign:ticket_id={ID}}" method="post" class="inline vertical-alignment autocomplete-wrapper">
 						{$INSERT_FORM_POST_SECURITY}
 
 						<label for="assign-username" class="accessibility-hidden">{!USERNAME}</label>
@@ -221,7 +221,7 @@
 		<p class="nothing-here">{!NONE}</p>
 	{+END}
 	{+START,IF_NON_EMPTY,{OTHER_TICKETS}}
-		<div class="wide-table-wrap"><table class="columned-table results-table wide-table support-tickets autosized-table responsive-table">
+		<table class="columned-table results-table wide-table support-tickets autosized-table responsive-table">
 			<thead>
 				<tr>
 					<th>
@@ -254,7 +254,7 @@
 			<tbody>
 				{OTHER_TICKETS}
 			</tbody>
-		</table></div>
+		</table>
 	{+END}
 
 	{$SET,ticket_merge_into,}

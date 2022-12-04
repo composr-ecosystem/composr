@@ -8,7 +8,7 @@
 
 		<div>
 			{+START,IF,{$EQ,{INPUT_FIELDS},1}}
-				<div>
+				<div class="autocomplete-wrapper">
 					<label class="accessibility-hidden" for="main-search-content">{!SEARCH}</label>
 					<input {+START,IF,{$MOBILE}} autocorrect="off"{+END} accesskey="=" maxlength="255" class="form-control form-control-wide js-keyup-update-ajax-search-list-with-type" type="search" id="main-search-content" name="content" />
 				</div>
@@ -16,7 +16,7 @@
 			{+START,IF,{$NEQ,{INPUT_FIELDS},1}}
 				{+START,LOOP,INPUT_FIELDS}
 					{+START,IF_EMPTY,{INPUT}}
-						<div class="search-option clearfix">
+						<div class="search-option clearfix autocomplete-wrapper">
 							<label for="search-{_loop_key*}">{LABEL*}:</label><br />
 							{+START,IF,{$EQ,{_loop_key},content}}
 								<input {+START,IF,{$MOBILE}} autocorrect="off"{+END} maxlength="255" class="form-control form-control-wide js-keyup-update-ajax-search-list" type="text" id="search-{_loop_key*}" name="content" value="{$_GET*,content}" />

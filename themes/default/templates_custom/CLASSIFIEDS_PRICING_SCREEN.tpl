@@ -11,7 +11,7 @@
 	{$INSERT_FORM_POST_SECURITY}
 
 	<div>
-		<div class="wide-table-wrap"><table class="wide-table results-table autosized-table columned-table responsive-table">
+		<table class="wide-table results-table autosized-table columned-table responsive-table">
 			<thead>
 				<tr>
 					<th>{!CATALOGUE}</th>
@@ -48,7 +48,7 @@
 					</tr>
 				{+END}
 			</tbody>
-		</table></div>
+		</table>
 
 		{+START,INCLUDE,FORM_STANDARD_END}{+END}
 	</div>

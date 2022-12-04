@@ -16,55 +16,53 @@
 	</h3>
 
 	<div class="toggleable-tray js-tray-content" id="c-{GROUPING_ID*}"{+START,IF,{$NEQ,{DISPLAY},block}} style="display: {DISPLAY*}"{+END}>
-		<div class="wide-table-wrap">
-			<table class="columned-table wide-table cns-forum-grouping" itemprop="significantLinks">
-				{+START,IF,{$DESKTOP}}
-					<colgroup>
-						<col class="cns-forum-grouping-column1 column-desktop" />
-						<col class="cns-forum-grouping-column2" />
-						<col class="cns-forum-grouping-column3 column-desktop" />
-						<col class="cns-forum-grouping-column4 column-desktop" />
-						<col class="cns-forum-grouping-column5" />
-					</colgroup>
-				{+END}
+		<table class="columned-table wide-table cns-forum-grouping" itemprop="significantLinks">
+			{+START,IF,{$DESKTOP}}
+				<colgroup>
+					<col class="cns-forum-grouping-column1 column-desktop" />
+					<col class="cns-forum-grouping-column2" />
+					<col class="cns-forum-grouping-column3 column-desktop" />
+					<col class="cns-forum-grouping-column4 column-desktop" />
+					<col class="cns-forum-grouping-column5" />
+				</colgroup>
+			{+END}
 
-				<thead>
-					<tr>
-						{+START,IF,{$DESKTOP}}
-							<th class="ocf-forum-box-left cell-desktop"></th>
-						{+END}
-						<th {+START,IF,{$MOBILE}} class="cns-forum-box-left"{+END}>
-							{!FORUM_NAME}
+			<thead>
+				<tr>
+					{+START,IF,{$DESKTOP}}
+						<th class="ocf-forum-box-left cell-desktop"></th>
+					{+END}
+					<th {+START,IF,{$MOBILE}} class="cns-forum-box-left"{+END}>
+						{!FORUM_NAME}
+					</th>
+					{+START,IF,{$DESKTOP}}
+						<th class="cns-forum-grouping-centered-header cell-desktop">
+							{!COUNT_TOPICS}
 						</th>
-						{+START,IF,{$DESKTOP}}
-							<th class="cns-forum-grouping-centered-header cell-desktop">
-								{!COUNT_TOPICS}
-							</th>
-							<th class="cns-forum-grouping-centered-header cell-desktop">
-								{!COUNT_POSTS}
-							</th>
-						{+END}
-						<th class="cns-forum-box-right">
-							{!LAST_POST}
+						<th class="cns-forum-grouping-centered-header cell-desktop">
+							{!COUNT_POSTS}
 						</th>
-					</tr>
-				</thead>
+					{+END}
+					<th class="cns-forum-box-right">
+						{!LAST_POST}
+					</th>
+				</tr>
+			</thead>
 
-				<tbody>
-					{FORUMS}
-				</tbody>
-			</table>
-			<div class="cns-table-footer"><div><div>
-				{+START,IF,{$DESKTOP}}
-					<div class="cns-column1 cns-forum-box-bleft"></div>
-				{+END}
-				<div class="cns-column1{+START,IF,{$MOBILE}} cns-forum-box-bleft{+END}"></div>
-				{+START,IF,{$DESKTOP}}
-					<div class="cns-column1 block-desktop"></div>
-					<div class="cns-column1 block-desktop"></div>
-				{+END}
-				<div class="cns-column1 cns-forum-box-bright"></div>
-			</div></div></div>
-		</div>
+			<tbody>
+				{FORUMS}
+			</tbody>
+		</table>
+		<div class="cns-table-footer"><div><div>
+			{+START,IF,{$DESKTOP}}
+				<div class="cns-column1 cns-forum-box-bleft"></div>
+			{+END}
+			<div class="cns-column1{+START,IF,{$MOBILE}} cns-forum-box-bleft{+END}"></div>
+			{+START,IF,{$DESKTOP}}
+				<div class="cns-column1 block-desktop"></div>
+				<div class="cns-column1 block-desktop"></div>
+			{+END}
+			<div class="cns-column1 cns-forum-box-bright"></div>
+		</div></div></div>
 	</div>
 </div>

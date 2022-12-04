@@ -5,7 +5,7 @@
 {+END}
 
 {+START,IF_PASSED,FIELDS}
-	<div class="wide-table-wrap"><table class="map-table form-table wide-table">
+	<table class="map-table form-table wide-table">
 		{+START,IF,{$DESKTOP}}
 			<colgroup>
 				<col class="purchase-field-name-column" />
@@ -16,5 +16,5 @@
 		<tbody>
 			{FIELDS}
 		</tbody>
-	</table></div>
+	</table>
 {+END}

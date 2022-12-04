@@ -72,7 +72,7 @@
 					<div class="menu-editor-lh-side">
 						<h2>{!EDIT_SELECTED_FIELD}</h2>
 
-						<div class="wide-table-wrap"><table class="map-table form-table wide-table">
+						<table class="map-table form-table wide-table">
 							{+START,IF,{$DESKTOP}}
 								<colgroup>
 									<col class="field-name-column" />
@@ -83,7 +83,7 @@
 							<tbody>
 								{FIELDS_TEMPLATE}
 							</tbody>
-						</table></div>
+						</table>
 					</div>
 				</div>
 

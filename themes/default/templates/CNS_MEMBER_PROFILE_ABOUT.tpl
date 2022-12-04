@@ -129,32 +129,30 @@
 		{+START,IF,{$OR,{$IS_NON_EMPTY,{$TRIM,{$GET,cpf_display}}},{$IS_NON_EMPTY,{$TRIM,{SIGNATURE}}}}}
 			<h2>{!ABOUT}</h2>
 
-			<div class="wide-table-wrap">
-				<table class="map-table wide-table cns-profile-fields cns-profile-about-section responsive-blocked-table">
-					{+START,IF,{$DESKTOP}}
-						<colgroup>
-							<col class="cns-profile-about-field-name-column" />
-							<col class="cns-profile-about-field-value-column" />
-						</colgroup>
+			<table class="map-table wide-table cns-profile-fields cns-profile-about-section responsive-blocked-table">
+				{+START,IF,{$DESKTOP}}
+					<colgroup>
+						<col class="cns-profile-about-field-name-column" />
+						<col class="cns-profile-about-field-value-column" />
+					</colgroup>
+				{+END}
+
+				<tbody>
+					{$GET,cpf_display}
+
+					{+START,IF,{$IS_NON_EMPTY,{$TRIM,{SIGNATURE}}}}
+						<tr>
+							<th class="de-th">
+								{!SIGNATURE}:
+							</th>
+
+							<td>
+								{$SMART_LINK_STRIP,{SIGNATURE},{MEMBER_ID}}
+							</td>
+						</tr>
 					{+END}
-
-					<tbody>
-						{$GET,cpf_display}
-
-						{+START,IF,{$IS_NON_EMPTY,{$TRIM,{SIGNATURE}}}}
-							<tr>
-								<th class="de-th">
-									{!SIGNATURE}:
-								</th>
-
-								<td>
-									{$SMART_LINK_STRIP,{SIGNATURE},{MEMBER_ID}}
-								</td>
-							</tr>
-						{+END}
-					</tbody>
-				</table>
-			</div>
+				</tbody>
+			</table>
 		{+END}
 
 		{+START,IF,{VIEW_PROFILES}}
@@ -169,20 +167,18 @@
 					{+START,IF_NON_EMPTY,{$TRIM,{$GET,_CUSTOM_FIELDS_SECTION}}}
 						<h2>{_loop_key*}</h2>
 
-						<div class="wide-table-wrap">
-							<table class="map-table wide-table cns-profile-fields cns-profile-about-section responsive-blocked-table">
-								{+START,IF,{$DESKTOP}}
-									<colgroup>
-										<col class="cns-profile-about-field-name-column" />
-										<col class="cns-profile-about-field-value-column" />
-									</colgroup>
-								{+END}
+						<table class="map-table wide-table cns-profile-fields cns-profile-about-section responsive-blocked-table">
+							{+START,IF,{$DESKTOP}}
+								<colgroup>
+									<col class="cns-profile-about-field-name-column" />
+									<col class="cns-profile-about-field-value-column" />
+								</colgroup>
+							{+END}
 
-								<tbody>
-									{$GET,_CUSTOM_FIELDS_SECTION}
-								</tbody>
-							</table>
-						</div>
+							<tbody>
+								{$GET,_CUSTOM_FIELDS_SECTION}
+							</tbody>
+						</table>
 					{+END}
 				{+END}
 			{+END}
@@ -193,84 +189,82 @@
 
 			<meta class="fn given-name" itemprop="name" content="{$DISPLAYED_USERNAME*,{USERNAME}}" />
 
-			<div class="wide-table-wrap">
-				<table class="map-table wide-table cns-profile-details cns-profile-about-section responsive-blocked-table">
-					{+START,IF,{$DESKTOP}}
-						<colgroup>
-							<col class="cns-profile-about-field-name-column" />
-							<col class="cns-profile-about-field-value-column" />
-						</colgroup>
+			<table class="map-table wide-table cns-profile-details cns-profile-about-section responsive-blocked-table">
+				{+START,IF,{$DESKTOP}}
+					<colgroup>
+						<col class="cns-profile-about-field-name-column" />
+						<col class="cns-profile-about-field-value-column" />
+					</colgroup>
+				{+END}
+
+				<tbody>
+					{+START,IF_NON_EMPTY,{$CONFIG_OPTION,display_name_generator}}
+						<tr>
+							<th class="de-th">{!USERNAME}:</th>
+							<td>{USERNAME*}</td>
+						</tr>
 					{+END}
 
-					<tbody>
-						{+START,IF_NON_EMPTY,{$CONFIG_OPTION,display_name_generator}}
-							<tr>
-								<th class="de-th">{!USERNAME}:</th>
-								<td>{USERNAME*}</td>
-							</tr>
-						{+END}
+					<tr>
+						<th class="de-th">{!ONLINE_NOW}:</th>
+						<td>{ONLINE_NOW*} <span class="associated-details">({$DATE_TIME*,{LAST_VISIT_TIME_RAW}})</span></td>
+					</tr>
 
+					{+START,IF_NON_EMPTY,{JOIN_DATE}}
 						<tr>
-							<th class="de-th">{!ONLINE_NOW}:</th>
-							<td>{ONLINE_NOW*} <span class="associated-details">({$DATE_TIME*,{LAST_VISIT_TIME_RAW}})</span></td>
+							<th class="de-th">{!JOIN_DATE}:</th>
+							<td>
+								<time datetime="{$FROM_TIMESTAMP*,Y-m-d\TH:i:s\Z,{JOIN_DATE_RAW}}" itemprop="datePublished">{JOIN_DATE*}</time>
+							</td>
 						</tr>
+					{+END}
 
-						{+START,IF_NON_EMPTY,{JOIN_DATE}}
-							<tr>
-								<th class="de-th">{!JOIN_DATE}:</th>
-								<td>
-									<time datetime="{$FROM_TIMESTAMP*,Y-m-d\TH:i:s\Z,{JOIN_DATE_RAW}}" itemprop="datePublished">{JOIN_DATE*}</time>
-								</td>
-							</tr>
-						{+END}
-
-						{+START,IF_PASSED,ON_PROBATION}{+START,IF_PASSED,PROBATION_GROUP}
-							<tr>
-								<th class="de-th">{!_ON_PROBATION_UNTIL,{PROBATION_GROUP*},{USERNAME*},{$DATE_AND_TIME*,1,0,0,{ON_PROBATION}}}</td>
-								<td>{!_ON_PROBATION_UNTIL,{PROBATION_GROUP*},{USERNAME*},{$DATE_AND_TIME*,1,0,0,{ON_PROBATION}}}</td>
-							</tr>
-						{+END}{+END}
-
+					{+START,IF_PASSED,ON_PROBATION}{+START,IF_PASSED,PROBATION_GROUP}
 						<tr>
-							<th class="de-th">{!TIME_FOR_THEM}:</th>
-							<td>{TIME_FOR_THEM*}</td>
+							<th class="de-th">{!_ON_PROBATION_UNTIL,{PROBATION_GROUP*},{USERNAME*},{$DATE_AND_TIME*,1,0,0,{ON_PROBATION}}}</td>
+							<td>{!_ON_PROBATION_UNTIL,{PROBATION_GROUP*},{USERNAME*},{$DATE_AND_TIME*,1,0,0,{ON_PROBATION}}}</td>
 						</tr>
+					{+END}{+END}
 
+					<tr>
+						<th class="de-th">{!TIME_FOR_THEM}:</th>
+						<td>{TIME_FOR_THEM*}</td>
+					</tr>
+
+					<tr>
+						<th class="de-th">{!TIMEZONE}:</th>
+						<td>{USERS_TIMEZONE*}</td>
+					</tr>
+
+					{+START,IF_NON_EMPTY,{BANNED}}
 						<tr>
-							<th class="de-th">{!TIMEZONE}:</th>
-							<td>{USERS_TIMEZONE*}</td>
+							<th class="de-th">{!BANNED}:</th>
+							<td>{BANNED*}</td>
 						</tr>
+					{+END}
 
-						{+START,IF_NON_EMPTY,{BANNED}}
-							<tr>
-								<th class="de-th">{!BANNED}:</th>
-								<td>{BANNED*}</td>
-							</tr>
-						{+END}
+					{+START,IF_NON_EMPTY,{DOB}}
+						<tr>
+							<th class="de-th">{DOB_LABEL*}:</th>
+							<td><span class="bday">{DOB*}</span></td>
+						</tr>
+					{+END}
 
-						{+START,IF_NON_EMPTY,{DOB}}
-							<tr>
-								<th class="de-th">{DOB_LABEL*}:</th>
-								<td><span class="bday">{DOB*}</span></td>
-							</tr>
-						{+END}
+					{+START,IF,{$HAS_PRIVILEGE,view_any_profile_field}}{+START,IF_NON_EMPTY,{EMAIL_ADDRESS}}
+						<tr>
+							<th class="de-th">{!EMAIL_ADDRESS}:</th>
+							<td><a class="email" href="mailto:{EMAIL_ADDRESS*}">{EMAIL_ADDRESS*}</a></td>
+						</tr>
+					{+END}{+END}
 
-						{+START,IF,{$HAS_PRIVILEGE,view_any_profile_field}}{+START,IF_NON_EMPTY,{EMAIL_ADDRESS}}
-							<tr>
-								<th class="de-th">{!EMAIL_ADDRESS}:</th>
-								<td><a class="email" href="mailto:{EMAIL_ADDRESS*}">{EMAIL_ADDRESS*}</a></td>
-							</tr>
-						{+END}{+END}
-
-						{+START,LOOP,EXTRA_INFO_DETAILS}
-							<tr>
-								<th class="de-th">{_loop_key*}:</th>
-								<td><span>{_loop_var*}</span></td>
-							</tr>
-						{+END}
-					</tbody>
-				</table>
-			</div>
+					{+START,LOOP,EXTRA_INFO_DETAILS}
+						<tr>
+							<th class="de-th">{_loop_key*}:</th>
+							<td><span>{_loop_var*}</span></td>
+						</tr>
+					{+END}
+				</tbody>
+			</table>
 
 			{+START,IF_NON_EMPTY,{PHOTO_URL}}
 				<h2>{!PHOTO}</h2>
@@ -289,76 +283,74 @@
 			<div class="stats-overwrap">
 				<h2>{!TRACKING}</h2>
 
-				<div class="wide-table-wrap">
-					<table class="map-table wide-table cns-profile-tracking cns-profile-about-section responsive-blocked-table">
-						{+START,IF,{$DESKTOP}}
-							<colgroup>
-								<col class="cns-profile-about-field-name-column" />
-								<col class="cns-profile-about-field-value-column" />
-							</colgroup>
+				<table class="map-table wide-table cns-profile-tracking cns-profile-about-section responsive-blocked-table">
+					{+START,IF,{$DESKTOP}}
+						<colgroup>
+							<col class="cns-profile-about-field-name-column" />
+							<col class="cns-profile-about-field-value-column" />
+						</colgroup>
+					{+END}
+
+					<tbody>
+						{+START,IF,{$ADDON_INSTALLED,cns_forum}}
+							<tr>
+								<th class="de-th">{!COUNT_POSTS}:</th>
+								<td>{COUNT_POSTS*}</td>
+							</tr>
 						{+END}
 
-						<tbody>
-							{+START,IF,{$ADDON_INSTALLED,cns_forum}}
-								<tr>
-									<th class="de-th">{!COUNT_POSTS}:</th>
-									<td>{COUNT_POSTS*}</td>
-								</tr>
-							{+END}
+						{+START,IF_NON_EMPTY,{MOST_ACTIVE_FORUM}}
+							<tr>
+								<th class="de-th">{!MOST_ACTIVE_FORUM}:</th>
+								<td>{MOST_ACTIVE_FORUM*}</td>
+							</tr>
+						{+END}
 
-							{+START,IF_NON_EMPTY,{MOST_ACTIVE_FORUM}}
-								<tr>
-									<th class="de-th">{!MOST_ACTIVE_FORUM}:</th>
-									<td>{MOST_ACTIVE_FORUM*}</td>
-								</tr>
-							{+END}
+						{+START,IF_PASSED,SUBMIT_DAYS_AGO}
+							<tr>
+								<th class="de-th">{!LAST_SUBMIT_TIME}:</th>
+								<td>{!_AGO,{!DAYS,{SUBMIT_DAYS_AGO}}}</td>
+							</tr>
+						{+END}
 
-							{+START,IF_PASSED,SUBMIT_DAYS_AGO}
+						{+START,IF,{$ADDON_INSTALLED,securitylogging}}
+						{+START,IF_PASSED,IP_ADDRESS}{+START,IF_NON_EMPTY,{IP_ADDRESS}}
 								<tr>
-									<th class="de-th">{!LAST_SUBMIT_TIME}:</th>
-									<td>{!_AGO,{!DAYS,{SUBMIT_DAYS_AGO}}}</td>
+									<th class="de-th">{!IP_ADDRESS}:</th>
+									<td>
+										{+START,IF,{$HAS_ACTUAL_PAGE_ACCESS,admin_lookup}}
+											<a href="{$PAGE_LINK*,_SEARCH:admin_lookup:results:param={IP_ADDRESS&}}">{$TRUNCATE_SPREAD,{IP_ADDRESS*},40,1,1}</a>
+										{+END}
+										{+START,IF,{$NOT,{$HAS_ACTUAL_PAGE_ACCESS,admin_lookup}}}
+											{$TRUNCATE_SPREAD,{IP_ADDRESS*},40,1,1}
+										{+END}
+									</td>
 								</tr>
-							{+END}
+							{+END}{+END}
+						{+END}
 
-							{+START,IF,{$ADDON_INSTALLED,securitylogging}}
-							{+START,IF_PASSED,IP_ADDRESS}{+START,IF_NON_EMPTY,{IP_ADDRESS}}
-									<tr>
-										<th class="de-th">{!IP_ADDRESS}:</th>
-										<td>
-											{+START,IF,{$HAS_ACTUAL_PAGE_ACCESS,admin_lookup}}
-												<a href="{$PAGE_LINK*,_SEARCH:admin_lookup:results:param={IP_ADDRESS&}}">{$TRUNCATE_SPREAD,{IP_ADDRESS*},40,1,1}</a>
-											{+END}
-											{+START,IF,{$NOT,{$HAS_ACTUAL_PAGE_ACCESS,admin_lookup}}}
-												{$TRUNCATE_SPREAD,{IP_ADDRESS*},40,1,1}
-											{+END}
-										</td>
-									</tr>
-								{+END}{+END}
-							{+END}
+						{+START,IF_PASSED,USER_AGENT}
+							<tr>
+								<th class="de-th"><abbr title="{!USER_AGENT}">{$PREG_REPLACE*, \([^\(\)]*\),,{!USER_AGENT}}</abbr>:</th>
+								<td><abbr title="{USER_AGENT*}">{$PREG_REPLACE*, \([^\(\)]*\),,{$PREG_REPLACE,\.\d+,,{$REPLACE,({OPERATING_SYSTEM}),,{USER_AGENT}}}}</abbr></td>
+							</tr>
+						{+END}
 
-							{+START,IF_PASSED,USER_AGENT}
-								<tr>
-									<th class="de-th"><abbr title="{!USER_AGENT}">{$PREG_REPLACE*, \([^\(\)]*\),,{!USER_AGENT}}</abbr>:</th>
-									<td><abbr title="{USER_AGENT*}">{$PREG_REPLACE*, \([^\(\)]*\),,{$PREG_REPLACE,\.\d+,,{$REPLACE,({OPERATING_SYSTEM}),,{USER_AGENT}}}}</abbr></td>
-								</tr>
-							{+END}
+						{+START,IF_PASSED,OPERATING_SYSTEM}
+							<tr>
+								<th class="de-th">{!USER_OS}:</th>
+								<td>{OPERATING_SYSTEM*}</td>
+							</tr>
+						{+END}
 
-							{+START,IF_PASSED,OPERATING_SYSTEM}
-								<tr>
-									<th class="de-th">{!USER_OS}:</th>
-									<td>{OPERATING_SYSTEM*}</td>
-								</tr>
-							{+END}
-
-							{+START,LOOP,EXTRA_TRACKING_DETAILS}
-								<tr>
-									<th class="de-th">{_loop_key*}:</th>
-									<td><span>{_loop_var*}</span></td>
-								</tr>
-							{+END}
-						</tbody>
-					</table>
-				</div>
+						{+START,LOOP,EXTRA_TRACKING_DETAILS}
+							<tr>
+								<th class="de-th">{_loop_key*}:</th>
+								<td><span>{_loop_var*}</span></td>
+							</tr>
+						{+END}
+					</tbody>
+				</table>
 			</div>
 		{+END}
 

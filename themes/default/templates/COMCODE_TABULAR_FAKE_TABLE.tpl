@@ -3,7 +3,7 @@
 		{SUMMARY*}
 	</p>
 {+END}
-{+START,IF,{IS_WIDE}}<div class="wide-table-wrap">{+END}<div class="fake-table{+START,IF_PASSED,CLASS} {CLASS*}{+END}{+START,IF,{IS_COLUMNED_TABLE}} columned-table responsive-table{+END}{+START,IF,{IS_WIDE}} wide-table{+END}"{+START,IF_PASSED,ID} id="{ID*}"{+END}>
+<div class="fake-table{+START,IF_PASSED,CLASS} {CLASS*}{+END}{+START,IF,{IS_COLUMNED_TABLE}} columned-table responsive-table{+END}{+START,IF,{IS_WIDE}} wide-table{+END}"{+START,IF_PASSED,ID} id="{ID*}"{+END}>
 	{+START,IF_NON_EMPTY,{COLUMN_SIZES}}
 		<div class="fake-colgroup">
 			{+START,LOOP,COLUMN_SIZES}
@@ -25,4 +25,4 @@
 		{+START,IF,{LAST_NON_HEADER_ROW}}</div>{+END}
 		{+START,IF,{IS_HEADER_ROW}}</div>{+END}
 	{+END}
-</div>{+START,IF,{IS_WIDE}}</div>{+END}
+</div>

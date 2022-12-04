@@ -1,7 +1,7 @@
 <div class="box box---community-billboard-details"><div class="box-inner">
 	<h2>{!DETAILS}</h2>
 
-	<div class="wide-table-wrap"><table class="map-table wide-table results-table">
+	<table class="map-table wide-table results-table">
 		{+START,IF,{$DESKTOP}}
 			<colgroup>
 				<col class="field-name-column" />
@@ -43,5 +43,5 @@
 				<td>{DATE*}</td>
 			</tr>
 		</tbody>
-	</table></div>
+	</table>
 </div></div>

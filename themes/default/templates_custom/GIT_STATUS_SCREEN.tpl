@@ -16,7 +16,7 @@
 
 		<h2>Local files (pending push to remote)</h2>
 
-		<div class="wide-table-wrap"><table class="columned-table wide-table results-table">
+		<table class="columned-table wide-table results-table">
 			<colgroup>
 				<col style="width: 60%" />
 				<col style="width: 40%" />
@@ -118,11 +118,11 @@
 					</td>
 				</tr>
 			</tbody>
-		</table></div>
+		</table>
 
 		<h2>Remote files</h2>
 
-		<div class="wide-table-wrap"><table class="columned-table wide-table results-table">
+		<table class="columned-table wide-table results-table">
 			<colgroup>
 				<col style="width: 60%" />
 				<col style="width: 40%" />
@@ -218,7 +218,7 @@
 					</td>
 				</tr>
 			</tbody>
-		</table></div>
+		</table>
 	</form>
 </div>
 

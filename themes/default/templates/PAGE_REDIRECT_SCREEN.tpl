@@ -11,7 +11,7 @@
 	<h2>{!EXISTING_REDIRECTS}</h2>
 
 	{+START,IF_NON_EMPTY,{EXISTING}}
-		<div class="wide-table-wrap"><table class="columned-table wide-table page-redirect-table results-table responsive-table">
+		<table class="columned-table wide-table page-redirect-table results-table responsive-table">
 			<colgroup>
 				<col class="page-redirect-table-input-column" />
 				<col class="page-redirect-table-input-column" />
@@ -45,7 +45,7 @@
 			<tbody>
 				{EXISTING}
 			</tbody>
-		</table></div>
+		</table>
 	{+END}
 	{+START,IF_EMPTY,{EXISTING}}
 		<p class="nothing-here">
@@ -55,7 +55,7 @@
 
 	<h2>{!NEW_REDIRECT}</h2>
 
-	<div class="wide-table-wrap"><table class="columned-table wide-table page-redirect-table results-table responsive-table">
+	<table class="columned-table wide-table page-redirect-table results-table responsive-table">
 		<colgroup>
 			<col class="page-redirect-table-input-column" />
 			<col class="page-redirect-table-input-column" />
@@ -89,7 +89,7 @@
 		<tbody>
 			{NEW}
 		</tbody>
-	</table></div>
+	</table>
 
 	<p class="proceed-button">
 		<button accesskey="u" data-disable-on-click="1" class="button-screen buttons--save" type="submit">{+START,INCLUDE,ICON}NAME=buttons/save{+END} {!SAVE}</button>

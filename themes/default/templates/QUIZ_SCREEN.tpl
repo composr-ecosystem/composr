@@ -43,7 +43,7 @@
 		{$INSERT_FORM_POST_SECURITY}
 
 		<div>
-			<div class="wide-table-wrap"><table class="map-table form-table wide-table">
+			<table class="map-table form-table wide-table">
 				{+START,IF,{$DESKTOP}}
 					<colgroup>
 						<col class="quiz-field-name-column" />
@@ -54,7 +54,7 @@
 				<tbody>
 					{FIELDS}
 				</tbody>
-			</table></div>
+			</table>
 
 			<p class="proceed-button">
 				<button accesskey="u" class="btn btn-primary btn-scr buttons--proceed js-quiz-check-form" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!SUBMIT}</button>

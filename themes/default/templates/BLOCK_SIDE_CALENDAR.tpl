@@ -1,5 +1,5 @@
 <div class="block-side side-calendar-wrap">
-	<div class="wide-table-wrap-internal-borders"><table class="spread-table autosized-table wide-table side-calendar calendar-year-month-table">
+	<table class="spread-table autosized-table wide-table side-calendar calendar-year-month-table">
 		<colgroup>
 			<col class="calendar-weekly-column" />
 			<col class="calendar-weekly-column" />
@@ -29,5 +29,5 @@
 		<tbody>
 			{ENTRIES}
 		</tbody>
-	</table></div>
+	</table>
 </div>

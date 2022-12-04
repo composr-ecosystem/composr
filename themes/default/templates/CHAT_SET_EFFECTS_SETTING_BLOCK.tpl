@@ -12,7 +12,7 @@
 	{+END}{+END}
 
 	<div class="toggleable-tray js-tray-content"{+START,IF_PASSED,MEMBER_ID} id="user-{MEMBER_ID*}"{+END}{+START,IF,{$NOT,{HAS_SOME}}} style="display: none"{+END}>
-		<div class="wide-table-wrap"><table class="map-table form-table wide-table scrollable-inside">
+		<table class="map-table form-table wide-table scrollable-inside">
 			{+START,IF,{$DESKTOP}}
 				<colgroup>
 					<col class="field-name-column" />
@@ -67,6 +67,6 @@
 					</tr>
 				{+END}
 			</tbody>
-		</table></div>
+		</table>
 	</div>
 </div>

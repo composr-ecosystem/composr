@@ -1,7 +1,7 @@
 <div class="cns-post-box">
-	<div class="wide-table-wrap"><div class="wide-table cns-topic">
+	<div class="wide-table cns-topic">
 		{POST}
-	</div></div>
+	</div>
 
 	{+START,IF_PASSED,BREADCRUMBS}
 		<nav class="breadcrumbs" itemprop="breadcrumb"><p>

@@ -1,5 +1,5 @@
 <p>{!SPAM_URLS}:</p>
-<div class="wide-table-wrap"><table class="columned-table wide-table results-table autosized-table responsive-table">
+<table class="columned-table wide-table results-table autosized-table responsive-table">
 	<thead>
 		<tr>
 			<th>{!DOMAIN}</th>
@@ -37,4 +37,4 @@
 			</tr>
 		{+END}
 	</tbody>
-</table></div>
+</table>

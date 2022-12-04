@@ -501,7 +501,7 @@
 			<a class="non-link js-tray-onclick-toggle-tray" href="#!">{!TEMPLATE_GUIDS}</a>
 		</h3>
 		<div class="toggleable-tray js-tray-content" style="display: none">
-			<div class="wide-table-wrap"><table class="columned-table autosized-table revision_box results-table wide-table">
+			<table class="columned-table autosized-table revision_box results-table wide-table">
 				<thead>
 					<tr>
 						<th>{!FILENAME}</th>
@@ -529,7 +529,7 @@
 						</tr>
 					{+END}
 				</tbody>
-			</table></div>
+			</table>
 		</div>
 	</div>
 {+END}

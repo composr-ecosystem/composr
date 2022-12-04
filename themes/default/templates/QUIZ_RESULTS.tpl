@@ -1,6 +1,6 @@
 {$,This is shown to the quiz member if reveal answers is on. Otherwise it is just shown to staff and the member just sees an explanation list instead.}
 
-<div class="wide-table-wrap"><table class="columned-table results-table wide-table autosized-table responsive-table">
+<table class="columned-table results-table wide-table autosized-table responsive-table">
 	<colgroup>
 		<col class="quiz-done-results-col-was-correct" />
 		<col class="quiz-done-results-col-question" />
@@ -63,4 +63,4 @@
 			{+END}{+END}
 		{+END}
 	</tbody>
-</table></div>
+</table>

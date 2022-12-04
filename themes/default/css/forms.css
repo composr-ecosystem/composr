@@ -130,7 +130,7 @@ table.form-table { /* Some people think tables for forms are bad semantics. You 
 	margin: 1em 0;
 }
 
-.toggleable-tray > .wide-table-wrap:first-child > .form-table {
+.toggleable-tray > .form-table {
 	margin-top: 0;
 }
 
@@ -310,6 +310,7 @@ th.form-table-field-name a, /* Extra specificity to take precedence over th.de-t
 	color: {$GET,slightly_seeded_text};
 	width: auto;
 	border: 1px solid {$GET,pale_border};
+	z-index: 1000;
 }
 
 .password-strength {

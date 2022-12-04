@@ -5,7 +5,7 @@ These are the key shortcuts that will work on {$SITE_NAME*}.
 On most web browsers you can activate a key shortcut by holding down the Alt key and pressing the key code (hold down the Ctrl key on a Mac). You may need to hold down the Shift key in addition.
 
 [semihtml]
-<div class="wide-table-wrap"><table class="columned-table wide-table results-table autosized-table responsive-table">
+<table class="columned-table wide-table results-table autosized-table responsive-table">
 	<thead>
 		<tr>
 			<th>Key</th>
@@ -183,7 +183,7 @@ On most web browsers you can activate a key shortcut by holding down the Alt key
 			<td>Preview</td>
 		</tr>
 	</tbody>
-</table></div>
+</table>
 [/semihtml]
 
 [staff_note]

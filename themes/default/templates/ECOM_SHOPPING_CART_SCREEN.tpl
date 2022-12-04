@@ -51,7 +51,7 @@
 			{$INSERT_FORM_POST_SECURITY}
 
 			{+START,IF_PASSED,FIELDS}
-				<div class="wide-table-wrap"><table class="map-table form-table wide-table">
+				<table class="map-table form-table wide-table">
 					{+START,IF,{$NOT,{$MOBILE}}}
 						<colgroup>
 							<col class="purchase-field-name-column" />
@@ -62,7 +62,7 @@
 					<tbody>
 						{FIELDS}
 					</tbody>
-				</table></div>
+				</table>
 			{+END}
 
 			<p class="purchase-button">

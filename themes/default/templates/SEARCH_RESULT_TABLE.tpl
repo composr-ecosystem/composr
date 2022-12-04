@@ -1,4 +1,4 @@
-<div class="wide-table-wrap"><table class="columned-table wide-table results-table autosized-table responsive-table">
+<table class="columned-table wide-table results-table autosized-table responsive-table">
 	<thead>
 		<tr>
 			{+START,LOOP,HEADERS}
@@ -16,4 +16,4 @@
 			</tr>
 		{+END}
 	</tbody>
-</table></div>
+</table>

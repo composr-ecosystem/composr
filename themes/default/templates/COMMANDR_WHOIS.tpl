@@ -1,4 +1,4 @@
-<div class="wide-table-wrap"><table class="map-table autosized-table wide-table results-table">
+<table class="map-table autosized-table wide-table results-table">
 	<tbody>
 		<tr>
 			<th>{!USERNAME}</th>
@@ -37,4 +37,4 @@
 			</td>
 		</tr>
 	</tbody>
-</table></div>
+</table>

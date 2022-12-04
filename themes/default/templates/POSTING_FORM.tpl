@@ -7,7 +7,7 @@
 		{$INSERT_FORM_POST_SECURITY}
 
 		<div>
-			<div class="wide-table-wrap"><table class="map-table form-table wide-table">
+			<table class="map-table form-table wide-table">
 				{+START,IF,{$DESKTOP}}
 					<colgroup>
 						<col class="field-name-column" />
@@ -33,7 +33,7 @@
 
 					{SPECIALISATION2}
 				</tbody>
-			</table></div>
+			</table>
 
 			{+START,INCLUDE,FORM_STANDARD_END}
 				EXTRA_BUTTONS={$GET^,extra_buttons}

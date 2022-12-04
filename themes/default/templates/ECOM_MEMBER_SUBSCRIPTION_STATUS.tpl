@@ -8,7 +8,7 @@
 	</h2>
 
 	<div class="toggleable-tray js-tray-content" style="display: block">
-		<div class="wide-table-wrap"><table class="columned-table wide-table results-table autosized-table responsive-table" itemprop="significantLinks">
+		<table class="columned-table wide-table results-table autosized-table responsive-table" itemprop="significantLinks">
 			<thead>
 				<tr>
 					<th>
@@ -71,7 +71,7 @@
 					</tr>
 				{+END}
 			</tbody>
-		</table></div>
+		</table>
 
 		<p class="associated-link suggested-link"><a title="{!MODULE_TRANS_NAME_subscriptions}" href="{$PAGE_LINK*,_SEARCH:subscriptions:browse:{MEMBER_ID}}">{!MORE}</a></p>
 	</div>

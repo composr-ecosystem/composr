@@ -3,7 +3,7 @@
 {+START,LOOP,DETAILS}
 	<h3>{BOOKABLE_TITLE*}</h3>
 
-	<div class="wide-table-wrap"><table class="wide-table results-table"><tbody>
+	<table class="wide-table results-table"><tbody>
 		<tr>
 			<th>{!QUANTITY}</th>
 			<td>{QUANTITY*}</td>
@@ -34,12 +34,12 @@
 				</td>
 			</tr>
 		{+END}
-	</tbody></table></div>
+	</tbody></table>
 {+END}
 
 <h2>{!DETAILS}</h2>
 
-<div class="wide-table-wrap"><table class="wide-table results-table"><tbody>
+<table class="wide-table results-table"><tbody>
 	<tr>
 		<th>{!_TOTAL_PRICE}</th>
 		<td>{PRICE*}</td>
@@ -69,4 +69,4 @@
 			<td>{PHONE_NUMBER*}</td>
 		</tr>
 	{+END}
-</tbody></table></div>
+</tbody></table>

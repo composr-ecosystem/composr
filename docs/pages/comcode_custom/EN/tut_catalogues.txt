@@ -256,7 +256,7 @@ For example, take the [tt]CATALOGUE_DEFAULT_FIELDMAP_ENTRY_WRAP.tpl[/tt] templat
 		<h3>{!CATALOGUE_GENERIC,{CATALOGUE_TITLE*}}</h3>
 	{+END}
 
-	<div class="wide-table-wrap"><table class="map-table wide-table results-table spaced-table">
+	<table class="map-table wide-table results-table spaced-table">
 		{+START,IF,{$DESKTOP}}
 			<colgroup>
 				<col class="catalogue-fieldmap-field-name-column" />
@@ -267,7 +267,7 @@ For example, take the [tt]CATALOGUE_DEFAULT_FIELDMAP_ENTRY_WRAP.tpl[/tt] templat
 		<tbody>
 			{FIELDS}
 		</tbody>
-	</table></div>
+	</table>
 
 	{+START,IF_PASSED,BREADCRUMBS}
 		{+START,IF_NON_EMPTY,{BREADCRUMBS}}

@@ -534,7 +534,7 @@ function upgrader_menu_screen() : string
             <p>{$l_refer_release_notes}</p>
 
             <h3>{$l_upgrade_steps}</h3>
-            <div class=\"wide-table-wrap\"><table class=\"columned-table autosized-table results-table wide-table spaced-table\">
+            <table class=\"columned-table autosized-table results-table wide-table spaced-table\">
                 <thead>
                     <tr>
                         <th>{$l_step}</th>
@@ -589,7 +589,7 @@ function upgrader_menu_screen() : string
     ";
     $out .= "
                 </tbody>
-            </table></div>
+            </table>
 
             <p>&dagger; {$l_customisations}</p>
 

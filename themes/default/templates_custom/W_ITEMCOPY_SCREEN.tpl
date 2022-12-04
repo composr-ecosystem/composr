@@ -12,7 +12,7 @@
 <form method="post" enctype="multipart/form-data" action="{$PAGE_LINK*,_SELF:_SELF:uploading=1}">
 	{$INSERT_FORM_POST_SECURITY}
 
-	<div class="wide-table-wrap"><table class="map-table autosized-table results-table wide-table responsive-blocked-table"><tbody>
+	<table class="map-table autosized-table results-table wide-table responsive-blocked-table"><tbody>
 		{+START,IF_PASSED,ITEMS}
 			<tr>
 				<th>{!NAME}</th>
@@ -67,7 +67,7 @@
 				<td>{!W_EG_OWNER}</td>
 			</tr>
 		{+END}
-	</tbody></table></div>
+	</tbody></table>
 
 	<input type="hidden" name="type" value="{PAGE_TYPE*}" />
 	{+START,IF_PASSED,ITEM}

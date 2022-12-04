@@ -1,7 +1,7 @@
 {TITLE}
 
 {+START,IF_NON_EMPTY,{ROWS}}
-	<div class="wide-table-wrap"><table class="columned-table wide-table results-table responsive-table">
+	<table class="columned-table wide-table results-table responsive-table">
 		<thead>
 			<tr>
 				<th><a href="{$PAGE_LINK*,_SELF:_SELF:sort=website_name {WEBSITE_NAME_DIR}}">{!CMS_WEBSITE_NAME}</a></th>
@@ -27,7 +27,7 @@
 				</tr>
 			{+END}
 		</tbody>
-	</table></div>
+	</table>
 {+END}
 
 {+START,IF_EMPTY,{ROWS}}

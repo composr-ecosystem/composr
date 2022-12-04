@@ -4,7 +4,7 @@
 	{!QUERIES_WITHOUT_CACHE}
 </p>
 
-<div class="wide-table-wrap-framed"><table class="columned-table wide-table results-table autosized-table">
+<table class="columned-table wide-table results-table autosized-table">
 	<thead>
 		<tr>
 			<th>
@@ -35,4 +35,4 @@
 	<tbody>
 		{QUERIES}
 	</tbody>
-</table></div>
+</table>

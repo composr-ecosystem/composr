@@ -2,7 +2,7 @@
 	{!CLASSIFIEDS_PRICING}
 </p>
 
-<div class="wide-table-wrap"><table class="columned-table wide-table results-table autosized-table spaced-table">
+<table class="columned-table wide-table results-table autosized-table spaced-table">
 	<thead>
 		<tr>
 			<th>
@@ -31,4 +31,4 @@
 			</tr>
 		{+END}
 	</tbody>
-</table></div>
+</table>

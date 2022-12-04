@@ -5,7 +5,7 @@
 	{$SET,block_call_url,{$FACILITATE_AJAX_BLOCK_CALL,{BLOCK_PARAMS}}{+START,IF_PASSED,EXTRA_GET_PARAMS}{EXTRA_GET_PARAMS}{+END}&page={$PAGE&}}
 	<div id="{$GET*,ajax_block_main_multi_content_wrapper}" class="box-wrapper" data-ajaxify="{ callUrl: '{$GET;*,block_call_url}', callParamsFromTarget: ['^[^_]*_start$', '^[^_]*_max$'], targetsSelector: '.ajax-block-wrapper-links a, .ajax-block-wrapper-links form' }">
 		{+START,IF_NON_EMPTY,{CONTENT}}
-			<div class="wide-table-wrap"><table class="cguid-{_GUID|*} raw-ajax-grow-spot columned-table wide-table results-table autosized-table responsive-table">
+			<table class="cguid-{_GUID|*} raw-ajax-grow-spot columned-table wide-table results-table autosized-table responsive-table">
 				<thead>
 					<tr>
 						{+START,LOOP,SHARED_KEYMAP_HEADINGS}
@@ -27,7 +27,7 @@
 						</tr>
 					{+END}
 				</tbody>
-			</table></div>
+			</table>
 		{+END}
 
 		{+START,INCLUDE,BLOCK_MAIN_MULTI_CONTENT__FOOTER}{+END}

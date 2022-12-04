@@ -25,49 +25,47 @@ if (get_forum_type() != 'cns') {
 
 ?>
 
-<div class="wide-table-wrap">
-    <table class="columned-table results-table wide-table">
-        <thead>
-        <tr>
-            <th>Avatar</th>
-            <th>Member</th>
-            <th>Average post length</th>
-            <th>Number of posts</th>
-        </tr>
-        </thead>
-        <tbody>
-        <?php
+<table class="columned-table results-table wide-table">
+    <thead>
+    <tr>
+        <th>Avatar</th>
+        <th>Member</th>
+        <th>Average post length</th>
+        <th>Number of posts</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php
 
-        $max = array_key_exists('max', $map) ? intval($map['max']) : 10;
+    $max = array_key_exists('max', $map) ? intval($map['max']) : 10;
 
-        $sql = 'SELECT m.id,AVG(' . db_function('LENGTH', [$GLOBALS['FORUM_DB']->translate_field_ref('p_post')]) . ') AS avg,COUNT(*) AS cnt FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members m LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts p ON p.p_poster=m.id WHERE m.id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' GROUP BY m.id ORDER BY avg DESC';
-        $members = $GLOBALS['FORUM_DB']->query($sql, $max, 0, false, false, ['p_post' => 'LONG_TRANS__COMCODE']);
+    $sql = 'SELECT m.id,AVG(' . db_function('LENGTH', [$GLOBALS['FORUM_DB']->translate_field_ref('p_post')]) . ') AS avg,COUNT(*) AS cnt FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members m LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts p ON p.p_poster=m.id WHERE m.id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' GROUP BY m.id ORDER BY avg DESC';
+    $members = $GLOBALS['FORUM_DB']->query($sql, $max, 0, false, false, ['p_post' => 'LONG_TRANS__COMCODE']);
 
-        foreach ($members as $_member) {
-            $member_id = $_member['id'];
-            $av_post_length = @intval(round($_member['avg']));
+    foreach ($members as $_member) {
+        $member_id = $_member['id'];
+        $av_post_length = @intval(round($_member['avg']));
 
-            $_avatar_url = escape_html($GLOBALS['FORUM_DRIVER']->get_member_avatar_url($member_id));
-            $url = $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, true);
-            if (is_object($url)) {
-                $url = $url->evaluate();
-            }
-            $_url = escape_html($url);
-            $_avatar = ($_avatar_url != '') ? ('<img alt="Avatar" src="' . $_avatar_url . '" />') : '';
-            $_username = escape_html($GLOBALS['FORUM_DRIVER']->get_username($member_id, true));
-            $_av_post_length = escape_html(integer_format($av_post_length));
-            $_num_posts = escape_html(integer_format($_member['cnt'], 0));
-
-            echo <<<END
-            <tr>
-                    <td>{$_avatar}</td>
-                    <td><a href="{$_url}">{$_username}</a></td>
-                    <td>{$_av_post_length} letters</td>
-                    <td>{$_num_posts} posts</td>
-            </tr>
-END;
+        $_avatar_url = escape_html($GLOBALS['FORUM_DRIVER']->get_member_avatar_url($member_id));
+        $url = $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, true);
+        if (is_object($url)) {
+            $url = $url->evaluate();
         }
-        ?>
-        </tbody>
-    </table>
-</div>
+        $_url = escape_html($url);
+        $_avatar = ($_avatar_url != '') ? ('<img alt="Avatar" src="' . $_avatar_url . '" />') : '';
+        $_username = escape_html($GLOBALS['FORUM_DRIVER']->get_username($member_id, true));
+        $_av_post_length = escape_html(integer_format($av_post_length));
+        $_num_posts = escape_html(integer_format($_member['cnt'], 0));
+
+        echo <<<END
+        <tr>
+                <td>{$_avatar}</td>
+                <td><a href="{$_url}">{$_username}</a></td>
+                <td>{$_av_post_length} letters</td>
+                <td>{$_num_posts} posts</td>
+        </tr>
+END;
+    }
+    ?>
+    </tbody>
+</table>

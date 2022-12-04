@@ -25,7 +25,7 @@
 				</div>
 
 				{$REQUIRE_JAVASCRIPT,ajax_people_lists}
-				<div class="revisions-filter-item">
+				<div class="revisions-filter-item autocomplete-wrapper">
 					<label class="lonely-label" for="username">{!USERNAME}:</label>
 					<input class="form-control js-focus-update-ajax-member-list js-keyup-update-ajax-member-list" type="text" name="username" id="username" value="{$_GET*,username}" />
 				</div>

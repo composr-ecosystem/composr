@@ -22,7 +22,7 @@
 		<div>
 			{HIDDEN}
 
-			<div class="wide-table-wrap"><table class="map-table form-table wide-table">
+			<table class="map-table form-table wide-table">
 				{+START,IF,{$DESKTOP}}
 					<colgroup>
 						<col class="field-name-column" />
@@ -33,7 +33,7 @@
 				<tbody>
 					{FIELDS}
 				</tbody>
-			</table></div>
+			</table>
 
 			{+START,IF_NON_EMPTY,{SUBMIT_NAME}}
 				{+START,INCLUDE,FORM_STANDARD_END}{+END}

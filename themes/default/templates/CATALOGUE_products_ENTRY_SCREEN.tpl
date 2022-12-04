@@ -39,20 +39,18 @@
 			</div>
 
 			{+START,IF_NON_EMPTY,{$TRIM,{FIELDS}}}
-				<div class="wide-table-wrap">
-					<table id="product-attribute-specs-table" class="map-table catalogue-fields-table wide-table results-table">
-						{+START,IF,{$DESKTOP}}
-							<colgroup>
-								<col class="catalogue-fieldmap-field-name-column" />
-								<col class="catalogue-fieldmap-field-value-column" />
-							</colgroup>
-						{+END}
+				<table id="product-attribute-specs-table" class="map-table catalogue-fields-table wide-table results-table">
+					{+START,IF,{$DESKTOP}}
+						<colgroup>
+							<col class="catalogue-fieldmap-field-name-column" />
+							<col class="catalogue-fieldmap-field-value-column" />
+						</colgroup>
+					{+END}
 
-						<tbody>
-							{FIELDS}
-						</tbody>
-					</table>
-				</div>
+					<tbody>
+						{FIELDS}
+					</tbody>
+				</table>
 			{+END}
 
 			{+START,IF_NON_EMPTY,{FIELD_1}}

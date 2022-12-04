@@ -11,7 +11,7 @@
 				{!PAGE_MATCH_KEY_ACCESS_TEXT}
 			</p>
 
-			<div class="wide-table-wrap"><table class="columned-table wide-table results-table privileges responsive-table">
+			<table class="columned-table wide-table results-table privileges responsive-table">
 				<colgroup>
 					<col class="match-key-name-column" />
 					{COLS}
@@ -28,7 +28,7 @@
 				<tbody>
 				{ROWS}
 				</tbody>
-			</table></div>
+			</table>
 
 			<h2>{!MATCH_KEY_MESSAGES}</h2>
 
@@ -36,7 +36,7 @@
 				{!PAGE_MATCH_KEY_MESSAGES_TEXT}
 			</p>
 
-			<div class="wide-table-wrap"><table class="columned-table wide-table results-table responsive-table">
+			<table class="columned-table wide-table results-table responsive-table">
 				<colgroup>
 					<col class="match-key-name-column" />
 					<col class="permission-match-key-message-column" />
@@ -57,7 +57,7 @@
 				<tbody>
 				{ROWS2}
 				</tbody>
-			</table></div>
+			</table>
 
 			<p class="proceed-button">
 				<button accesskey="u" data-disable-on-click="1" class="btn btn-primary btn-scr buttons--save js-btn-hover-toggle-disable-size-change" type="submit">{+START,INCLUDE,ICON}NAME=buttons/save{+END} {!SAVE}</button>

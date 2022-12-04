@@ -39,7 +39,7 @@ $fields = new Tempcode();
 
 asort($group_points);
 
-echo '<div class="wide-table-wrap"><table class="results-table wide-table spaced-table"><thead></thead><tbody><tr><th>Usergroup</th><th>One-off point bonus</th><th>Monthly points</th><th>' . escape_html($username) . ' in this group?</th></tr>';
+echo '<table class="results-table wide-table spaced-table"><thead></thead><tbody><tr><th>Usergroup</th><th>One-off point bonus</th><th>Monthly points</th><th>' . escape_html($username) . ' in this group?</th></tr>';
 
 $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, true, true);
 
@@ -65,4 +65,4 @@ if ($done == 0) {
     echo '<tr><td colspan="4"><p class="nothing-here">No bonuses configured yet. <a href="' . escape_html(static_evaluate_tempcode(build_url(['page' => 'group_points'], get_page_zone('group_points')))) . '">Configure bonuses here</a>.</p></td></tr>';
 }
 
-echo '</tbody></table></div>';
+echo '</tbody></table>';

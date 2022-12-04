@@ -1,4 +1,4 @@
-<div class="wide-table-wrap"><table class="map-table responsive-blocked-table wide-table results-table spaced-table autosized-table{+START,IF_PASSED_AND_TRUE,RESPONSIVE} responsive-blocked-table{+END}">
+<table class="map-table responsive-blocked-table wide-table results-table spaced-table autosized-table{+START,IF_PASSED_AND_TRUE,RESPONSIVE} responsive-blocked-table{+END}">
 	{+START,IF,{$DESKTOP}}{+START,IF,{$EQ,{$LANG},EN}}{+START,IF_PASSED,WIDTHS}
 		<colgroup>
 			{+START,LOOP,WIDTHS}
@@ -10,4 +10,4 @@
 	<tbody>
 		{FIELDS}
 	</tbody>
-</table></div>
+</table>

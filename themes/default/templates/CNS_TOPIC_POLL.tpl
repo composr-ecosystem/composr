@@ -3,7 +3,7 @@
 
 <form title="{!VOTE}" action="{VOTE_URL*}" method="post" data-tpl="cnsTopicPoll" data-tpl-params="{+START,PARAMS_JSON,MINIMUM_SELECTIONS,MAXIMUM_SELECTIONS}{_*}{+END}">
 	{$INSERT_FORM_POST_SECURITY}
-	<div class="wide-table-wrap"><div class="wide-table cns-topic autosized-table">
+	<div class="wide-table cns-topic autosized-table">
 			<div class="cns-topic-post" data-tpl="cnsTopicPost">
 				<div class="cns-topic-section cns-topic-header">
 					<div class="cns-forum-box-left cns-post-poll">
@@ -72,5 +72,5 @@
 					</div>
 				</div>
 			</div>
-	</div></div>
+	</div>
 </form>

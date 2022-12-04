@@ -28,7 +28,7 @@
 
 			<h3>{GROUP_TITLE*}</h3>
 
-			<div class="wide-table-wrap"><table class="map-table form-table wide-table">
+			<table class="map-table form-table wide-table">
 				{+START,IF,{$DESKTOP}}
 					<colgroup>
 						<col class="field-name-column" />
@@ -47,7 +47,7 @@
 
 					{GROUP}
 				</tbody>
-			</table></div>
+			</table>
 		{+END}
 	</div>
 

@@ -1,6 +1,6 @@
 {TITLE}
 
-<div class="wide-table-wrap"><table class="columned-table results-table wide-table autosized-table">
+<table class="columned-table results-table wide-table autosized-table">
 	<thead>
 		<tr>
 			<th>{!TYPE}</th>
@@ -22,4 +22,4 @@
 			</tr>
 		{+END}
 	</tbody>
-</table></div>
+</table>

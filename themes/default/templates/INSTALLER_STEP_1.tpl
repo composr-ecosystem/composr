@@ -11,7 +11,7 @@
 		{+END}
 
 		{+START,IF_NON_EMPTY,{LANGUAGES}}
-			<div class="wide-table-wrap"><table class="map-table form-table wide-table">
+			<table class="map-table form-table wide-table">
 				<colgroup>
 					<col class="installer-left-column" />
 					<col class="installer-right-column" />
@@ -28,7 +28,7 @@
 						  </td>
 					 </tr>
 				</tbody>
-		  </table></div>
+		  </table>
 		{+END}
 		{+START,IF_EMPTY,{LANGUAGES}}
 			<input type="hidden" name="default_lang" value="{$LANG*}" />

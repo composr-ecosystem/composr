@@ -48,7 +48,7 @@
 			</div>
 
 			<div class="download-stats-wrapper">
-				<div class="wide-table-wrap"><table class="map-table download-stats results-table wide-table" role="note">
+				<table class="map-table download-stats results-table wide-table" role="note">
 					{+START,IF,{$DESKTOP}}
 						<colgroup>
 							<col class="download-field-name-column" />
@@ -115,7 +115,7 @@
 							</tr>
 						{+END}
 					</tbody>
-				</table></div>
+				</table>
 			</div>
 
 			{+START,IF_NON_EMPTY,{RATING_DETAILS}}

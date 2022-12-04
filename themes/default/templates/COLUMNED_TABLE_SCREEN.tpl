@@ -16,7 +16,7 @@
 			{$SET,DEFER_RESULTS_TABLE_BROWSER,0}
 
 			{+START,IF_PASSED,FIELDS}
-				<div class="wide-table-wrap"><table class="map-table wide-table">
+				<table class="map-table wide-table">
 					{+START,IF,{$DESKTOP}}
 						<colgroup>
 							<col class="field-name-column" />
@@ -27,7 +27,7 @@
 					<tbody>
 						{FIELDS}
 					</tbody>
-				</table></div>
+				</table>
 			{+END}
 
 			{+START,IF_PASSED,HIDDEN}

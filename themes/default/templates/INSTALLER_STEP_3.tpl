@@ -46,7 +46,7 @@
 		{+START,IF,{$NOT,{$GOOGLE_APPENGINE}}}
 			<div id="forum-path" style="display: none">
 				<p>{!FORUM_PATH_TEXT}</p>
-				<div class="wide-table-wrap"><table class="map-table form-table wide-table">
+				<table class="map-table form-table wide-table">
 					<colgroup>
 						<col class="installer-input-left-column" />
 						<col class="installer-input-right-column" />
@@ -61,7 +61,7 @@
 							</td>
 						</tr>
 					</tbody>
-				</table></div>
+				</table>
 			</div>
 
 			<div class="clearfix">
@@ -71,7 +71,7 @@
 				</p>
 
 				<div id="{!ADVANCED_DATABASE_SETUP|*}" style="display: none">
-					<div class="wide-table-wrap"><table class="map-table form-table wide-table">
+					<table class="map-table form-table wide-table">
 						<colgroup>
 							<col class="installer-left-column" />
 							<col class="installer-right-column" />
@@ -94,7 +94,7 @@
 								</td>
 							</tr>
 						</tbody>
-					</table></div>
+					</table>
 				</div>
 			</div>
 		{+END}

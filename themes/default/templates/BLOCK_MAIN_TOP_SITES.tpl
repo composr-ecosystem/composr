@@ -3,7 +3,7 @@
 {+END}
 
 {+START,IF_NON_EMPTY,{BANNERS}}
-	<div class="wide-table-wrap"><table class="columned-table wide-table results-table spaced-table autosized-table responsive-table">
+	<table class="columned-table wide-table results-table spaced-table autosized-table responsive-table">
 		<thead>
 			<tr>
 				<th>
@@ -44,7 +44,7 @@
 				</tr>
 			{+END}
 		</tbody>
-	</table></div>
+	</table>
 {+END}
 
 {+START,IF_NON_EMPTY,{SUBMIT_URL}}

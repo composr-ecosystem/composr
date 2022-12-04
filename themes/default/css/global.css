@@ -3199,13 +3199,6 @@ table.scrollable-inside {
 	display: inline;
 }
 
-.wide-table-wrap {
-	overflow-x: auto;
-	overflow-y: hidden;
-	padding-right: 1px;
-	margin-bottom: 10px;
-}
-
 .wide-table {
 	width: 100%;
 	/*{+START,IF,{$EQ,{$LANG},EN}}*/
@@ -3300,10 +3293,10 @@ table.scrollable-inside {
 .lined-up-boxes .results-table {
 	margin-top: 0;
 }
-.wide-table-wrap > .results-table {
+.results-table.wide_table {
 	margin: 0; /* As overflow would cause margin doubling */
 }
-.wide-table-wrap + .wide-table-wrap > .results-table {
+.wide-table.results-table + .wide-table.results-table {
 	margin-top: 1em;
 }
 
@@ -6307,6 +6300,12 @@ NB: Form buttons are wrapped in either:
 	/*border-color: {$GET,red_highlight_text};*/
 }
 
+.autocomplete-wrapper {
+	/* This is just used to try and anchor the autocomplete widget more reliably from the get-go. Password manager extensions would sometimes do this themselves after-the-fact and cause a positioning shift. */
+	position: relative;
+	z-index: 100;
+}
+
 /*
 =========================
 ====Frame Interfaces=====
@@ -7655,10 +7654,6 @@ span:not(:empty)+#lightbox-position-in-set::before, span:not(:empty)+#lightbox-f
 
 	h1 {
 		display: none;
-	}
-
-	.wide-table-wrap {
-		overflow-y: visible !important;
 	}
 
 	.global-middle {

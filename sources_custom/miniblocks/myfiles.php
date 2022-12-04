@@ -32,7 +32,7 @@ if (empty($files)) {
     echo '<p class="nothing-here">No files have been uploaded for you yet.</p>';
 } else {
     sort($files);
-    echo '<div class="wide-table-wrap"><table class="wide-table columned-table results-table autosized-table">';
+    echo '<table class="wide-table columned-table results-table autosized-table">';
     echo '<thead><tr><th>Filename</th><th>Description</th><th>File size</th></tr></thead>';
     echo '<tbody>';
     foreach ($files as $file) {
@@ -53,5 +53,5 @@ if (empty($files)) {
         ';
     }
     echo '</tbody>';
-    echo '</table></div>';
+    echo '</table>';
 }

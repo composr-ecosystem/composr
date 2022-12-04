@@ -12,7 +12,7 @@
 <form method="post" enctype="multipart/form-data" action="{$PAGE_LINK*,_SELF:_SELF:uploading=1}">
 	{$INSERT_FORM_POST_SECURITY}
 
-	<div class="wide-table-wrap"><table class="map-table autosized-table results-table wide-table responsive-blocked-table"><tbody>
+	<table class="map-table autosized-table results-table wide-table responsive-blocked-table"><tbody>
 		<tr>
 			<th>{!NAME}</th>
 			<td><label class="accessibility-hidden" for="item-name">{!NAME}</label><input type="text" size="20" name="item_name" id="item-name" class="form-control" value="{+START,IF_PASSED,ITEM}{ITEM*}{+END}" /></td>
@@ -69,7 +69,7 @@
 			</td>
 			<td>{!W_EG_REPLICATEABLE}</td>
 		</tr>
-	</tbody></table></div>
+	</tbody></table>
 
 	<input type="hidden" name="type" value="{PAGE_TYPE*}" />
 	{+START,IF_PASSED,ITEM}

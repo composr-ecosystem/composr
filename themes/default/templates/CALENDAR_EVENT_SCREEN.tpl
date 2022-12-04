@@ -92,7 +92,7 @@
 		</div>
 
 		<div class="event-left">
-			<div class="wide-table-wrap"><table class="map-table wide-table results-table autosized-table" role="note">
+			<table class="map-table wide-table results-table autosized-table" role="note">
 				<tbody>
 					{+START,IF_NON_EMPTY,{TIME}}
 						<tr>
@@ -163,7 +163,7 @@
 						</tr>
 					{+END}
 				</tbody>
-			</table></div>
+			</table>
 		</div>
 	</div>
 

@@ -53,7 +53,7 @@
 				<div>
 					{HIDDEN_EDIT_FILE}
 
-					<div class="wide-table-wrap"><table class="map-table form-table wide-table scrollable-inside">
+					<table class="map-table form-table wide-table scrollable-inside">
 						{+START,IF,{$DESKTOP}}
 							<colgroup>
 								<col class="field-name-column" />
@@ -64,7 +64,7 @@
 						<tbody>
 							{FIELDS_EDIT_FILE}
 						</tbody>
-					</table></div>
+					</table>
 
 					{+START,INCLUDE,FORM_STANDARD_END}
 						SUBMIT_ICON=admin/edit_this
@@ -87,7 +87,7 @@
 				<div>
 					{HIDDEN_THEMEWIZARD}
 
-					<div class="wide-table-wrap"><table class="map-table form-table wide-table scrollable-inside">
+					<table class="map-table form-table wide-table scrollable-inside">
 						{+START,IF,{$DESKTOP}}
 							<colgroup>
 								<col class="field-name-column" />
@@ -98,7 +98,7 @@
 						<tbody>
 							{FIELDS_THEMEWIZARD}
 						</tbody>
-					</table></div>
+					</table>
 
 					{+START,INCLUDE,FORM_STANDARD_END}
 						SUBMIT_ICON=menu/adminzone/style/themes/themewizard

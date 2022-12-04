@@ -19,7 +19,7 @@
 				<form action="{DELETE_URL*}" method="post" title="{!QUIZ}: {!DELETE}">
 					{$INSERT_FORM_POST_SECURITY}
 				{+END}
-				<div class="wide-table-wrap"><table class="columned-table wide-table results-table autosized-table responsive-table">
+				<table class="columned-table wide-table results-table autosized-table responsive-table">
 					<thead>
 						<tr>
 							<th>
@@ -112,7 +112,7 @@
 							</tr>
 						</tfoot>
 					{+END}
-				</table></div>
+				</table>
 				{+START,IF_NON_EMPTY,{DELETE_URL}}
 				</form>
 				{+END}

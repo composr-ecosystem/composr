@@ -3,7 +3,7 @@
 <form title="{!PRIMARY_PAGE_FORM}" method="post" action="{URL*}">
 	{$INSERT_FORM_POST_SECURITY}
 
-	<div class="wide-table-wrap"><table class="form-table columned-table wide-table privileges responsive-table responsive-table-bolded-first-column">
+	<table class="form-table columned-table wide-table privileges responsive-table responsive-table-bolded-first-column">
 		<colgroup>
 			<col class="permission-field-name-column" />
 			{COLS}
@@ -20,7 +20,7 @@
 		<tbody>
 			{ROWS}
 		</tbody>
-	</table></div>
+	</table>
 
 	<p class="proceed-button">
 		<button accesskey="u" data-disable-on-click="1" class="btn btn-primary btn-scr buttons--save" type="submit">{+START,INCLUDE,ICON}NAME=buttons/save{+END} {!SAVE}</button>

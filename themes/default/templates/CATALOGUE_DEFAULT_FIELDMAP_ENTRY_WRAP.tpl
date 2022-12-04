@@ -10,7 +10,7 @@
 		<h3>{!CATALOGUE_GENERIC,{CATALOGUE_TITLE*}}</h3>
 	{+END}
 
-	<div class="wide-table-wrap"><table class="map-table wide-table results-table spaced-table responsive-blocked-table">
+	<table class="map-table wide-table results-table spaced-table responsive-blocked-table">
 		{+START,IF,{$DESKTOP}}
 			<colgroup>
 				<col class="catalogue-fieldmap-field-name-column" />
@@ -22,7 +22,7 @@
 			{$SET,just_done_title,}
 			{FIELDS}
 		</tbody>
-	</table></div>
+	</table>
 
 	{+START,IF_PASSED,BREADCRUMBS}
 		{+START,IF_NON_EMPTY,{BREADCRUMBS}}

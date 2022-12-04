@@ -24,7 +24,7 @@
 		{$INSERT_FORM_POST_SECURITY}
 
 		<div class="not-too-tall-addons">
-			<div class="wide-table-wrap"><table class="columned-table wide-table results-table autosized-table zebra responsive-table">
+			<table class="columned-table wide-table results-table autosized-table zebra responsive-table">
 				<thead>
 					<tr>
 						<th>
@@ -67,7 +67,7 @@
 						{+END}
 					{+END}
 				</tbody>
-			</table></div>
+			</table>
 		</div>
 
 		<p class="proceed-button">

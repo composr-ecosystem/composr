@@ -12,7 +12,7 @@ The list shown on the right is generated using the Comcode below.
 Numbers are used on the example list to provide a frame of reference -- your lists would have text rather than numbers.
 
 [semihtml]
-<div class="wide-table-wrap"><table class="columned-table results-table wide-table responsive-table responsive-table-separate-lines">
+<table class="columned-table results-table wide-table responsive-table responsive-table-separate-lines">
 <colgroup>
 	<col style="width: 50%" />
 	<col style="width: 50%" />
@@ -48,7 +48,7 @@ A list
  - 3[semihtml]
 </td></tr>
 </tbody>
-</table></div>
+</table>
 [/semihtml]
 [title="2"]Emoticons[/title]
 
@@ -78,7 +78,7 @@ Shortcuts are also entered just by inputting their code, e.g. [tt](c)[/tt].
 [title="2"]Code blocks[/title]
 
 [semihtml]
-<div class="wide-table-wrap"><table class="columned-table results-table wide-table responsive-table responsive-table-separate-lines">
+<table class="columned-table results-table wide-table responsive-table responsive-table-separate-lines">
 <colgroup>
 	<col style="width: 50%" />
 	<col style="width: 50%" />
@@ -107,14 +107,14 @@ function cms()
 }
 [/code][semihtml]</td></tr>
 </tbody>
-</table></div>
+</table>
 [/semihtml]
 [title="2"]Images[/title]
 
 You can put inline images into your text easily and quickly, with the [tt][img][/tt] tag. There is also a thumbnail tag [tt][thumb][/tt] which will show (and cache) a thumbnail of an image. If the tag is given a URL as a parameter as well as the main URL, then that will be used as the thumbnail.
 
 [semihtml]
-<div class="wide-table-wrap"><table class="columned-table results-table wide-table responsive-table responsive-table-separate-lines">
+<table class="columned-table results-table wide-table responsive-table responsive-table-separate-lines">
 <thead>
 	<tr>
 		<th>{!CODE}</th>
@@ -126,7 +126,7 @@ You can put inline images into your text easily and quickly, with the [tt][img][
 	<tr><td>[tt][img="Logo"]themes/default/images/no_image.png[/img][/tt]</td><td>[img="Logo"]themes/default/images/no_image.png[/img]</td></tr>
 	<tr><td>[tt][thumb="Logo"]themes/default/images/no_image.png[/thumb][/tt]</td><td>[thumb="Logo"]themes/default/images/no_image.png[/thumb]</td></tr>
 </tbody>
-</table></div>
+</table>
 [/semihtml]
 [title="2"]Security[/title]
 
@@ -137,7 +137,7 @@ JavaScript script tags, onX handlers and URLs will all be filtered/blocked. Don'
 [title="2"]Links[/title]
 
 [semihtml]
-<div class="wide-table-wrap"><table class="columned-table results-table wide-table responsive-table responsive-table-separate-lines">
+<table class="columned-table results-table wide-table responsive-table responsive-table-separate-lines">
 <colgroup>
 	<col style="width: 50%" />
 	<col style="width: 50%" />
@@ -155,7 +155,7 @@ JavaScript script tags, onX handlers and URLs will all be filtered/blocked. Don'
 	<tr><td>[tt][email="My E-Mail"]fake_address@example.com[/email][/tt]</td><td>[email="My E-Mail"]fake_address@example.com[/email]</td></tr>
 	<tr><td>[tt][page="cms:cms"]Content Management[/page][/tt]</td><td>[page="cms:cms"]Content Management[/page]</td></tr>
 </tbody>
-</table></div>
+</table>
 [/semihtml]
 [title="2"]Boxes[/title]
 
@@ -167,7 +167,7 @@ You can put things in boxes. For example:
 [title="2"]Formatting[/title]
 
 [semihtml]
-<div class="wide-table-wrap"><table class="columned-table results-table wide-table responsive-table responsive-table-separate-lines">
+<table class="columned-table results-table wide-table responsive-table responsive-table-separate-lines">
 <colgroup>
 	<col style="width: 50%" />
 	<col style="width: 50%" />
@@ -190,12 +190,12 @@ You can put things in boxes. For example:
 [/semihtml]----------------------[semihtml]
 </td></tr>
 </tbody>
-</table></div>
+</table>
 [/semihtml]
 [title="2"]Mathematical notation[/title]
 
 [semihtml]
-<div class="wide-table-wrap"><table class="columned-table results-table wide-table responsive-table responsive-table-separate-lines">
+<table class="columned-table results-table wide-table responsive-table responsive-table-separate-lines">
 <colgroup>
 	<col style="width: 50%" />
 	<col style="width: 50%" />
@@ -212,7 +212,7 @@ You can put things in boxes. For example:
 	<tr><td>[tt]a[sub]2[/sub][/tt]</td><td>a[sub]2[/sub]</td></tr>
 	<tr><td>[tt]a[sup]2[/sup][/tt]</td><td>a[sup]2[/sup]</td></tr>
 </tbody>
-</table></div>
+</table>
 [/semihtml]
 [title="2"]Attachments[/title]
 
@@ -225,7 +225,7 @@ Users may add attachments according to their quota, and re-use other people's at
 [title="2"]Advanced[/title]
 
 [semihtml]
-<div class="wide-table-wrap"><table class="columned-table results-table wide-table responsive-table responsive-table-separate-lines">
+<table class="columned-table results-table wide-table responsive-table responsive-table-separate-lines">
 <thead>
 	<tr>
 		<th>{!CODE}</th>
@@ -239,7 +239,7 @@ Users may add attachments according to their quota, and re-use other people's at
 	<tr><td>[tt][quote param="Philip"]This is an example of a quote.[/quote][/tt]</td><td>[quote param="Philip"]This is an example of a quote.[/quote]</td></tr>
 	<tr><td>[tt][staff_note]This isn't displayed (not even for staff), but is saved. Staff can view it when editing the Comcode.[/staff_note][/tt]</td><td>[staff_note]This isn't displayed (not even for staff), but is saved. Staff can view it when editing the Comcode.[/staff_note]</td></tr>
 </tbody>
-</table></div>
+</table>
 [/semihtml]
 {+START,IF,{$ADDON_INSTALLED,custom_comcode}}
 [title="2"]Custom Comcode tags[/title]

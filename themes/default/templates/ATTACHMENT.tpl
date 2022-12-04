@@ -1,5 +1,5 @@
 {+START,IF,{$NAND,{TRUE_ATTACHMENT_UI},{$BROWSER_MATCHES,simplified_attachments_ui}}}
-	<div class="wide-table-wrap" data-view="Attachment" data-view-params="{+START,PARAMS_JSON,I,POSTING_FIELD_NAME,FILTER,SYNDICATION_JSON,NO_QUOTA}{_*}{+END}">
+	<div data-view="Attachment" data-view-params="{+START,PARAMS_JSON,I,POSTING_FIELD_NAME,FILTER,SYNDICATION_JSON,NO_QUOTA}{_*}{+END}">
 		<table class="map-table form-table wide-table">
 			{+START,IF,{$DESKTOP}}
 				<colgroup>

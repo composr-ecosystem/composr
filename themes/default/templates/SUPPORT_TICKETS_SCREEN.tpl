@@ -39,7 +39,7 @@
 			{$?,{$HAS_PRIVILEGE,support_operator},<p class="nothing-here">{!NO_ENTRIES}</p>,{$PARAGRAPH,{!SUPPORT_NO_TICKETS}}}
 		{+END}
 		{+START,IF_NON_EMPTY,{LINKS}}
-			<div class="wide-table-wrap"><table class="columned-table results-table wide-table support-tickets autosized-table responsive-table">
+			<table class="columned-table results-table wide-table support-tickets autosized-table responsive-table">
 				<thead>
 					<tr>
 						<th>
@@ -67,7 +67,7 @@
 				<tbody>
 					{LINKS}
 				</tbody>
-			</table></div>
+			</table>
 		{+END}
 	{+END}
 

@@ -17,26 +17,28 @@
 <form title="{!PRIMARY_PAGE_FORM}" action="{URL*}" method="post" data-submit-modsecurity-workaround="1">
 	{$INSERT_FORM_POST_SECURITY}
 
-	<div class="wide-table-wrap really-long-table-wrap"><table class="autosized-table columned-table results-table wide-table responsive-table">
-		<thead>
-			<tr>
-				<th class="translate-line-first">
-					{!NAME}/{!DESCRIPTION}
-				</th>
-				<th>
-					{!OLD}/{!NEW}
-				</th>
-				{+START,IF_NON_EMPTY,{TRANSLATION_CREDIT}}
-					<th>
-						{!ACTIONS}
+	<div class="really-long-table-wrap">
+		<table class="autosized-table columned-table results-table wide-table responsive-table">
+			<thead>
+				<tr>
+					<th class="translate-line-first">
+						{!NAME}/{!DESCRIPTION}
 					</th>
-				{+END}
-			</tr>
-		</thead>
-		<tbody>
-			{LINES}
-		</tbody>
-	</table></div>
+					<th>
+						{!OLD}/{!NEW}
+					</th>
+					{+START,IF_NON_EMPTY,{TRANSLATION_CREDIT}}
+						<th>
+							{!ACTIONS}
+						</th>
+					{+END}
+				</tr>
+			</thead>
+			<tbody>
+				{LINES}
+			</tbody>
+		</table>
+	</div>
 
 	<p class="proceed-button">
 		<button accesskey="u" data-disable-on-click="1" class="btn btn-primary btn-scr buttons--save" type="submit">{+START,INCLUDE,ICON}NAME=buttons/save{+END} {!SAVE}</button>

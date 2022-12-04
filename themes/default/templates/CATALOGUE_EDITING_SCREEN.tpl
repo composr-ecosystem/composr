@@ -12,7 +12,7 @@
 		<div>
 			{HIDDEN}
 
-			<div class="wide-table-wrap"><table class="map-table form-table wide-table scrollable-inside">
+			<table class="map-table form-table wide-table scrollable-inside">
 				{+START,IF,{$DESKTOP}}
 					<colgroup>
 						<col class="field-name-column" />
@@ -23,7 +23,7 @@
 				<tbody>
 					{FIELDS}
 				</tbody>
-			</table></div>
+			</table>
 
 			<h2>{!FIELDS_EXISTING}</h2>
 			{FIELDS_EXISTING}

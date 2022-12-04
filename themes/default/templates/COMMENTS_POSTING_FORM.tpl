@@ -47,7 +47,7 @@
 				{+END}
 				<div class="comments-posting-form-outer {+START,IF_PASSED,EXPAND_TYPE} toggleable-tray js-tray-content{+END}" id="comments-posting-form-outer" style="display: {DISPLAY*}">
 					<div class="comments-posting-form-inner">
-						<div class="wide-table-wrap"><table class="map-table wide-table">
+						<table class="map-table wide-table">
 							{+START,IF,{$DESKTOP}}
 								<colgroup>
 									<col class="comments-field-name-column" />
@@ -243,7 +243,7 @@
 
 								{$GET,EXTRA_COMMENTS_FIELDS_2}
 							</tbody>
-						</table></div>
+						</table>
 
 						<div class="comments-posting-form-end">
 							{+START,IF_PASSED_AND_TRUE,USE_CAPTCHA}

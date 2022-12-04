@@ -12,7 +12,7 @@
 
 	<h2>{!EXISTING_THEMES}</h2>
 
-	<div class="autosized-table theme-manage-table wide-table-wrap">
+	<div class="theme-manage-table">
 		<table class="columned-table wide-table">
 			<thead>
 				<tr>
