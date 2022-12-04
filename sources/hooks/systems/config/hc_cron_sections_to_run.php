@@ -64,17 +64,18 @@ class Hook_config_hc_cron_sections_to_run
      *
      * @param  ID_TEXT $name The config option name
      * @param  array $myrow The config row
+     * @param  ID_TEXT $config_field_name The form field name to use for this config
      * @param  Tempcode $human_name The field title
      * @param  Tempcode $explanation The field description
      * @return Tempcode The inputter
      */
-    public function field_inputter(string $name, array $myrow, object $human_name, object $explanation) : object
+    public function field_inputter(string $name, array $myrow, string $config_field_name, object $human_name, object $explanation) : object
     {
         require_code('health_check');
 
         $current = (get_option($name) == '') ? [] : explode(',', get_option($name));
         $list = create_selection_list_health_check_sections($current);
 
-        return form_input_multi_list($human_name, $explanation, $name, $list, null, 15);
+        return form_input_multi_list($human_name, $explanation, $config_field_name, $list, null, 15);
     }
 }

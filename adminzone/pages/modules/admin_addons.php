@@ -116,7 +116,7 @@ class Module_admin_addons
             $GLOBALS['SITE_DB']->add_table_field('addons', 'addon_licence', 'SHORT_TEXT');
         }
 
-        if (($upgrade_from !== null) && ($upgrade_from < 4)) { // LEGACY
+        if (($upgrade_from !== null) && ($upgrade_from < 5)) { // LEGACY
             $GLOBALS['SITE_DB']->alter_table_field('addons_files', 'filename', 'SHORT_TEXT', 'filepath');
         }
     }

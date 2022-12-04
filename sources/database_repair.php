@@ -864,7 +864,8 @@ class DatabaseRepair
         $_field_type = str_replace(['*', '?'], ['', ''], $field_type);
         $db_type = $type_remap[$_field_type];
 
-        $query = $GLOBALS['SITE_DB']->driver->alter_table_field__sql(get_table_prefix() . $table_name, $field_name, $db_type, $field_type[0] == '?', $field_type == '*AUTO');
+        $is_autoincrement = ($field_type == '*AUTO');
+        $query = $GLOBALS['SITE_DB']->driver->alter_table_field__sql(get_table_prefix() . $table_name, $field_name, $db_type, $field_type[0] == '?', $is_autoincrement);
         $this->add_fixup_query($query);
     }
 

@@ -64,11 +64,12 @@ class Hook_config_currency
      *
      * @param  ID_TEXT $name The config option name
      * @param  array $myrow The config row
+     * @param  ID_TEXT $config_field_name The form field name to use for this config
      * @param  Tempcode $human_name The field title
      * @param  Tempcode $explanation The field description
      * @return Tempcode The inputter
      */
-    public function field_inputter(string $name, array $myrow, object $human_name, object $explanation) : object
+    public function field_inputter(string $name, array $myrow, string $config_field_name, object $human_name, object $explanation) : object
     {
         $list = '';
         require_code('currency');
@@ -76,6 +77,6 @@ class Hook_config_currency
         foreach ($currencies as $currency) {
             $list .= static_evaluate_tempcode(form_input_list_entry($currency, $currency == get_option($name)));
         }
-        return form_input_list($human_name, $explanation, $name, make_string_tempcode($list));
+        return form_input_list($human_name, $explanation, $config_field_name, make_string_tempcode($list));
     }
 }

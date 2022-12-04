@@ -60,11 +60,12 @@ class Hook_config_timezone
      *
      * @param  ID_TEXT $name The config option name
      * @param  array $myrow The config row
+     * @param  ID_TEXT $config_field_name The form field name to use for this config
      * @param  Tempcode $human_name The field title
      * @param  Tempcode $explanation The field description
      * @return Tempcode The inputter
      */
-    public function field_inputter(string $name, array $myrow, object $human_name, object $explanation) : object
+    public function field_inputter(string $name, array $myrow, string $config_field_name, object $human_name, object $explanation) : object
     {
         $current_value = get_option($name);
         if (is_numeric($current_value)) {
@@ -76,6 +77,6 @@ class Hook_config_timezone
         foreach (get_timezone_list() as $_timezone => $timezone_nice) {
             $list .= static_evaluate_tempcode(form_input_list_entry($_timezone, $_timezone == $current_value, $timezone_nice));
         }
-        return form_input_list($human_name, $explanation, 'timezone', make_string_tempcode($list));
+        return form_input_list($human_name, $explanation, $config_field_name, make_string_tempcode($list));
     }
 }

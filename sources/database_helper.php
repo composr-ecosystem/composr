@@ -697,7 +697,8 @@ function _helper_alter_table_field(object $this_ref, string $table_name, string 
 
             $db_type = $type_remap[$sub_type];
 
-            $queries = $this_ref->driver->alter_table_field__sql($this_ref->table_prefix . $table_name, $sub_old_name, $db_type, false, false, $sub_new_name);
+            $is_autoincrement = false;
+            $queries = $this_ref->driver->alter_table_field__sql($this_ref->table_prefix . $table_name, $sub_old_name, $db_type, false, $is_autoincrement, $sub_new_name);
             foreach ($queries as $query) {
                 $this_ref->_query($query);
             }

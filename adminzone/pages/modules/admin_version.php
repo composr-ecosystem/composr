@@ -1057,13 +1057,12 @@ class Module_admin_version
                 'last_newsletter_drip_send' => 'newsletter_drip_send',
             ];
             foreach ($elective_values_remap as $value => $cron_hook) {
-                $GLOBALS['SITE_DB']->query_insert('cron_progression', [
-                    'c_hook' => $cron_hook,
+                $GLOBALS['SITE_DB']->query_insert_or_replace('cron_progression', [
                     'c_last_run' => get_value($value, null, true),
                     'c_last_execution_secs' => null,
                     'c_last_error' => '',
                     'c_enabled' => 1,
-                ]);
+                ], ['c_hook' => $cron_hook]);
             }
 
             $values_remap = [
@@ -1079,13 +1078,12 @@ class Module_admin_version
                 'last_user_import' => 'user_import',
             ];
             foreach ($values_remap as $value => $cron_hook) {
-                $GLOBALS['SITE_DB']->query_insert('cron_progression', [
-                    'c_hook' => $cron_hook,
+                $GLOBALS['SITE_DB']->query_insert_or_replace('cron_progression', [
                     'c_last_run' => get_value($value, null),
                     'c_last_execution_secs' => null,
                     'c_last_error' => '',
                     'c_enabled' => 1,
-                ]);
+                ], ['c_hook' => $cron_hook]);
             }
 
             $GLOBALS['FORUM_DRIVER']->install_delete_custom_field('smart_topic_notification');

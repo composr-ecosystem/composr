@@ -44,7 +44,7 @@ class Hook_trusted_sites_ecommerce
         }
 
         if ((get_option('payment_gateway') == 'paypal') && (get_option('payment_gateway_username') != '')) {
-            if (get_option('csp_forms') == '1') {
+            if (get_option('csp_on_forms') == '1') {
                 $sites[] = 'paypal.com';
                 $sites[] = 'sandbox.paypal.com';
                 $sites[] = 'ipnpb.paypal.com';
@@ -58,7 +58,7 @@ class Hook_trusted_sites_ecommerce
         }
 
         if ((get_option('payment_gateway') == 'ccbill') && (get_option('payment_gateway_username') != '')) {
-            if (get_option('csp_forms') == '1') {
+            if (get_option('csp_on_forms') == '1') {
                 $sites[] = 'api.ccbill.com';
             }
         }

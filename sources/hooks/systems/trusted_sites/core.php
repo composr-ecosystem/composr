@@ -43,11 +43,11 @@ class Hook_trusted_sites_core
             $sites[] = 'fonts.googleapis.com';
         }
 
-        if ((get_option('google_apis_api_key') != '') && (get_option('google_translate_enabled') == '1') && (get_option('csp_forms') == '1')) {
+        if ((get_option('google_apis_api_key') != '') && (get_option('google_translate_enabled') == '1') && (get_option('csp_on_forms') == '1')) {
             $sites[] = 'translate.googleusercontent.com';
         }
 
-        if (get_option('csp_forms') == '1') {
+        if (get_option('csp_on_forms') == '1') {
             $sites[] = 'validator.w3.org';
         }
     }

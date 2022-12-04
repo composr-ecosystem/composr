@@ -38,6 +38,8 @@ function build_config_inputter(string $name, array $details, ?string $current_va
 
     $default = get_default_option($name);
 
+    $config_field_name = 'option_' . substr(md5($name), 0, 8);
+
     // Language strings
     if ($include_group) {
         $title = new Tempcode();
@@ -88,35 +90,35 @@ function build_config_inputter(string $name, array $details, ?string $current_va
     switch ($details['type']) {
         case 'special':
             $ob = $details['ob'];
-            return $ob->field_inputter($name, $details, $title, $explanation_with_default);
+            return $ob->field_inputter($name, $details, $config_field_name, $title, $explanation_with_default);
 
         case 'integer':
             $explanation_with_default = do_lang_tempcode('EXPLANATION_WITH_DEFAULT', $explanation, ($default == '') ? do_lang_tempcode('BLANK_EM') : make_string_tempcode(escape_html(integer_format(intval($default)))));
-            return form_input_integer($title, $explanation_with_default, $name, ($current_value == '') ? null : intval($current_value), $required);
+            return form_input_integer($title, $explanation_with_default, $config_field_name, ($current_value == '') ? null : intval($current_value), $required);
 
         case 'float':
             $explanation_with_default = do_lang_tempcode('EXPLANATION_WITH_DEFAULT', $explanation, ($default == '') ? do_lang_tempcode('BLANK_EM') : make_string_tempcode(escape_html(float_format(floatval($default)))));
-            return form_input_float($title, $explanation_with_default, $name, ($current_value == '') ? null : floatval($current_value), $required);
+            return form_input_float($title, $explanation_with_default, $config_field_name, ($current_value == '') ? null : floatval($current_value), $required);
 
         case 'tax_code':
             if (addon_installed('ecommerce')) {
                 require_code('ecommerce');
-                return form_input_tax_code($title, $explanation_with_default, $name, $current_value, $required);
+                return form_input_tax_code($title, $explanation_with_default, $config_field_name, $current_value, $required);
             }
             // no break
         case 'line':
         case 'transline':
-            return form_input_line($title, $explanation_with_default, $name, $current_value, $required, null, 100000);
+            return form_input_line($title, $explanation_with_default, $config_field_name, $current_value, $required, null, 100000);
 
         case 'text':
         case 'transtext':
-            return form_input_text($title, $explanation_with_default, $name, $current_value, $required, null, true);
+            return form_input_text($title, $explanation_with_default, $config_field_name, $current_value, $required, null, true);
 
         case 'comcodeline':
-            return form_input_line_comcode($title, $explanation_with_default, $name, $current_value, $required);
+            return form_input_line_comcode($title, $explanation_with_default, $config_field_name, $current_value, $required);
 
         case 'comcodetext':
-            return form_input_text_comcode($title, $explanation_with_default, $name, $current_value, $required, null, true);
+            return form_input_text_comcode($title, $explanation_with_default, $config_field_name, $current_value, $required, null, true);
 
         case 'list':
             $_default = make_string_tempcode(escape_html($default));
@@ -140,7 +142,7 @@ function build_config_inputter(string $name, array $details, ?string $current_va
                 $list .= static_evaluate_tempcode(form_input_list_entry($value, $_value == $value, $details_text));
             }
             $explanation_with_default = do_lang_tempcode('EXPLANATION_WITH_DEFAULT', $explanation, ($default == '') ? do_lang_tempcode('BLANK_EM') : $_default);
-            return form_input_list($title, $explanation_with_default, $name, make_string_tempcode($list), null, false, $required);
+            return form_input_list($title, $explanation_with_default, $config_field_name, make_string_tempcode($list), null, false, $required);
 
         case 'tick':
             if ($is_override) {
@@ -148,23 +150,23 @@ function build_config_inputter(string $name, array $details, ?string $current_va
                 $list .= static_evaluate_tempcode(form_input_list_entry('', $current_value == '', do_lang_tempcode('NA_EM')));
                 $list .= static_evaluate_tempcode(form_input_list_entry('0', $current_value == '0', do_lang_tempcode('NO')));
                 $list .= static_evaluate_tempcode(form_input_list_entry('1', $current_value == '1', do_lang_tempcode('YES')));
-                return form_input_list($title, $explanation, $name, make_string_tempcode($list), null, false, false);
+                return form_input_list($title, $explanation, $config_field_name, make_string_tempcode($list), null, false, false);
             }
 
             $explanation_with_default = do_lang_tempcode('EXPLANATION_WITH_DEFAULT', $explanation, escape_html(($default == '1') ? do_lang('YES') : do_lang('NO')));
-            return form_input_tick($title, $explanation_with_default, $name, $current_value == '1');
+            return form_input_tick($title, $explanation_with_default, $config_field_name, $current_value == '1');
 
         case 'username':
-            return form_input_username($title, $explanation_with_default, $name, $current_value, $required, false);
+            return form_input_username($title, $explanation_with_default, $config_field_name, $current_value, $required, false);
 
         case 'colour':
-            return form_input_colour($title, $explanation_with_default, $name, $current_value, $required);
+            return form_input_colour($title, $explanation_with_default, $config_field_name, $current_value, $required);
 
         case 'date':
-            return form_input_date($title, $explanation_with_default, $name, $required, false, false, ($current_value == '') ? null : intval($current_value), 40, intval(date('Y')) - 20, null);
+            return form_input_date($title, $explanation_with_default, $config_field_name, $required, false, false, ($current_value == '') ? null : intval($current_value), 40, intval(date('Y')) - 20, null);
 
         case 'datetime':
-            return form_input_date($title, $explanation_with_default, $name, $required, false, true, ($current_value == '') ? null : intval($current_value), 40, intval(date('Y')) - 20, null);
+            return form_input_date($title, $explanation_with_default, $config_field_name, $required, false, true, ($current_value == '') ? null : intval($current_value), 40, intval(date('Y')) - 20, null);
 
         case 'forum':
             if ((get_forum_type() == 'cns') && (addon_installed('cns_forum'))) {
@@ -182,21 +184,21 @@ function build_config_inputter(string $name, array $details, ?string $current_va
                         $current_setting = strval($_current_setting);
                     }
                 }
-                return form_input_tree_list($title, $explanation_with_default, $name, null, 'choose_forum', [], $required, $current_setting);
+                return form_input_tree_list($title, $explanation_with_default, $config_field_name, null, 'choose_forum', [], $required, $current_setting);
             }
-            return form_input_line($title, $explanation_with_default, $name, $current_value, $required);
+            return form_input_line($title, $explanation_with_default, $config_field_name, $current_value, $required);
 
         case 'country':
             require_code('locations');
             $_list = new Tempcode();
             $_list->attach(form_input_list_entry('', false, do_lang_tempcode('NA_EM')));
             $_list->attach(create_country_selection_list([$current_value]));
-            return form_input_list($title, $explanation_with_default, $name, $_list, null, false, $required);
+            return form_input_list($title, $explanation_with_default, $config_field_name, $_list, null, false, $required);
 
         case 'country_multi':
             require_code('locations');
             $list = static_evaluate_tempcode(create_country_selection_list(explode(',', $current_value)));
-            return form_input_multi_list($title, $explanation_with_default, $name, make_string_tempcode($list));
+            return form_input_multi_list($title, $explanation_with_default, $config_field_name, make_string_tempcode($list));
 
         case 'forum_grouping':
             if (get_forum_type() == 'cns') {
@@ -206,9 +208,9 @@ function build_config_inputter(string $name, array $details, ?string $current_va
                 $_list = new Tempcode();
                 $_list->attach(form_input_list_entry('', false, do_lang_tempcode('NA_EM')));
                 $_list->attach(cns_create_selection_list_forum_groupings(null, $tmp_value));
-                return form_input_list($title, $explanation_with_default, $name, $_list, null, false, $required);
+                return form_input_list($title, $explanation_with_default, $config_field_name, $_list, null, false, $required);
             }
-            return form_input_line($title, $explanation_with_default, $name, $current_value, $required);
+            return form_input_line($title, $explanation_with_default, $config_field_name, $current_value, $required);
 
         case 'usergroup':
         case 'usergroup_not_guest':
@@ -219,14 +221,14 @@ function build_config_inputter(string $name, array $details, ?string $current_va
                 $_list = new Tempcode();
                 $_list->attach(form_input_list_entry('', false, do_lang_tempcode('NA_EM')));
                 $_list->attach(cns_create_selection_list_usergroups($tmp_value, $details['type'] == 'usergroup'));
-                return form_input_list($title, $explanation_with_default, $name, $_list, null, false, $required);
+                return form_input_list($title, $explanation_with_default, $config_field_name, $_list, null, false, $required);
             }
-            return form_input_line($title, $explanation_with_default, $name, $current_value, $required);
+            return form_input_line($title, $explanation_with_default, $config_field_name, $current_value, $required);
 
         case 'theme_image':
             require_code('themes2');
             $ids = get_all_image_ids_type($details['list_options']);
-            return form_input_theme_image($title, $explanation_with_default, $name, $ids, null, $current_value, null, true);
+            return form_input_theme_image($title, $explanation_with_default, $config_field_name, $ids, null, $current_value, null, true);
     }
 
     fatal_exit('Invalid config option type: ' . $details['type'] . ' (for ' . $name . ')');
@@ -241,42 +243,44 @@ function build_config_inputter(string $name, array $details, ?string $current_va
  */
 function get_submitted_config_value(string $name, array $details) : string
 {
+    $config_field_name = 'option_' . substr(md5($name), 0, 8);
+
     // Work out new value
     if ($details['type'] == 'tax_code') {
         if (addon_installed('ecommerce')) {
             require_code('ecommerce');
-            $value = post_param_tax_code($name);
+            $value = post_param_tax_code($config_field_name);
         } else {
-            $value = post_param_string($name, '0%');
+            $value = post_param_string($config_field_name, '0%');
         }
     } elseif ($details['type'] == 'float') {
-        $_value = post_param_string($name, '');
+        $_value = post_param_string($config_field_name, '');
         $value = ($_value == '') ? '' : float_to_raw_string(float_unformat($_value));
     } elseif ($details['type'] == 'tick') {
-        $value = strval(post_param_integer($name, 0));
+        $value = strval(post_param_integer($config_field_name, 0));
     } elseif (($details['type'] == 'date') || ($details['type'] == 'datetime')) {
-        $date_value = post_param_date($name);
+        $date_value = post_param_date($config_field_name);
         $value = ($date_value === null) ? '' : strval($date_value);
     } elseif ((($details['type'] == 'forum') || ($details['type'] == '?forum')) && (get_forum_type() == 'cns')) {
-        $value = post_param_string($name, null);
+        $value = post_param_string($config_field_name, null);
         if (is_numeric($value)) {
-            $value = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_name', ['id' => post_param_integer($name)]);
+            $value = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_name', ['id' => post_param_integer($config_field_name)]);
         }
         if ($value === null) {
             $value = '';
         }
     } elseif (($details['type'] == 'forum_grouping') && (get_forum_type() == 'cns')) {
-        $value = post_param_string($name, null);
+        $value = post_param_string($config_field_name, null);
         if (is_numeric($value)) {
-            $value = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forum_groupings', 'c_title', ['id' => post_param_integer($name)]);
+            $value = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forum_groupings', 'c_title', ['id' => post_param_integer($config_field_name)]);
         }
         if ($value === null) {
             $value = '';
         }
     } elseif ((($details['type'] == 'usergroup') || ($details['type'] == 'usergroup_not_guest')) && (get_forum_type() == 'cns')) {
-        $value = post_param_string($name, null);
+        $value = post_param_string($config_field_name, null);
         if (is_numeric($value)) {
-            $_value = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'g_name', ['id' => post_param_integer($name)]);
+            $_value = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'g_name', ['id' => post_param_integer($config_field_name)]);
         } else {
             $_value = ($value === null) ? null : $value;
         }
@@ -286,7 +290,7 @@ function get_submitted_config_value(string $name, array $details) : string
             $value = get_translated_text($_value);
         }
     } else {
-        $value = post_param_string($name, '');
+        $value = post_param_string($config_field_name, '');
     }
 
     return $value;
