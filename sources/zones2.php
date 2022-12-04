@@ -397,10 +397,6 @@ function save_zone_base_url(string $zone, string $base_url)
  */
 function upgrade_module(string $zone, string $module) : int
 {
-    if (substr($module, 0, 1) >= 'f') {
-        return 0;
-    }
-
     $rows = $GLOBALS['SITE_DB']->query_select('modules', ['*'], ['module_the_name' => $module], '', 1);
     if (!array_key_exists(0, $rows)) {
         return (-2); // Not installed, so can't upgrade
