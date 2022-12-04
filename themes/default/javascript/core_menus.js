@@ -74,15 +74,15 @@
         function toggleDockedFieldEditing(e, clicked) {
             if (!menuEditorWrapEl.classList.contains('docked')) {
                 menuEditorWrapEl.classList.add('docked');
-                menuEditorWrapEl.classList.remove('docked');
+                menuEditorWrapEl.classList.remove('non-docked');
                 $cms.ui.setIcon(clicked.querySelector('.icon'), 'arrow_box/arrow_box_hover', '{$IMG;^,icons/arrow_box/arrow_box_hover}');
+                adjustPaneHeights(true);
             } else {
                 menuEditorWrapEl.classList.add('non-docked');
                 menuEditorWrapEl.classList.remove('docked');
                 $cms.ui.setIcon(clicked.querySelector('.icon'), 'arrow_box/arrow_box', '{$IMG;^,icons/arrow_box/arrow_box}');
+                adjustPaneHeights(false);
             }
-
-            adjustPaneHeights();
         }
 
         var footers = document.getElementsByTagName('footer');
@@ -90,7 +90,7 @@
             footers[i].parentNode.removeChild(footers[i]);
         }
 
-        adjustPaneHeights();
+        adjustPaneHeights(false);
         $dom.on(window, 'resize', function () {
             adjustPaneHeights();
         });
@@ -536,17 +536,20 @@
         form.target = '_self';
     }
 
-    function adjustPaneHeights() {
+    function adjustPaneHeights(docked) {
         var menuEditorWrapEl = $dom.$('.js-el-menu-editor-wrap');
-        if (!menuEditorWrapEl.classList.contains('docked')) {
-            menuEditorWrapEl.style.height = '';
-        } else {
+        if (typeof docked == 'undefined') {
+            docked = menuEditorWrapEl.classList.contains('docked');
+        }
+        if (docked) {
             var miniFormHider = document.getElementById('mini-form-hider');
             var newHeight = $dom.getWindowHeight() - $dom.findPosY(menuEditorWrapEl, true) - $dom.height(miniFormHider) - 10;
             if (newHeight < 0) {
                 newHeight = 0;
             }
-            $dom.$('.menu-editor-page-inner').style.height = newHeight + 'px';
+            menuEditorWrapEl.style.height = newHeight + 'px';
+        } else {
+            menuEditorWrapEl.style.height = '';
         }
     }
 
