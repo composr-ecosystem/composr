@@ -1,10 +1,10 @@
 (function ($cms, $util, $dom) {
     'use strict';
 
-    $cms.templates.cnsSavedWarning = function cnsSavedWarning(params) {
+    $cms.templates.cnsSavedWarning = function cnsSavedWarning(params, container) {
         var id = $cms.filter.id(params.title);
 
-        $dom.$(document.getElementById('saved-use--' + id), 'button').addEventListener('click', function (e) {
+        $dom.on(container, 'click', '.js-use-warning', function (e) {
             var win = $cms.getMainCmsWindow();
 
             var explanation = win.document.getElementById('explanation');
@@ -19,20 +19,17 @@
                 }
 
             });
-
-            e.preventDefault();
         });
 
-        document.getElementById('saved-delete--' + id).getElementsByTagName('input')[1].addEventListener('click', function (e) {
-            var form = this.form;
+        $dom.on(container, 'click', '.js-delete-warning', function (e) {
+            e.preventDefault();
 
+            var form = this.form;
             $cms.ui.confirm(params.question, function (answer) {
                 if (answer) {
-                    $dom.trigger(form, 'submit');
+                    form.submit();
                 }
             });
-
-            e.preventDefault();
         });
     };
 }(window.$cms, window.$util, window.$dom));

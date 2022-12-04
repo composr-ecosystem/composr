@@ -180,7 +180,7 @@ class Hook_addon_registry_cns_warnings
             'MESSAGE_HTML' => lorem_phrase(),
             'EXPLANATION' => lorem_phrase(),
             'TITLE' => lorem_phrase(),
-            'DELETE_LINK' => placeholder_link(),
+            'DELETE_URL' => placeholder_url(),
         ]), null, '', true);
     }
 

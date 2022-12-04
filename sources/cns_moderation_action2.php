@@ -208,16 +208,15 @@ function warnings_script()
     $content = new Tempcode();
     $rows = $GLOBALS['FORUM_DB']->query_select('f_saved_warnings', ['*'], [], 'ORDER BY s_title');
     $keep = symbol_tempcode('KEEP');
-    $url = find_script('warnings_browse') . '?type=delete' . $keep->evaluate();
+    $delete_url = find_script('warnings_browse') . '?type=delete' . $keep->evaluate();
     foreach ($rows as $myrow) {
-        $delete_link = hyperlink($url, do_lang_tempcode('DELETE'), false, false, '', null, form_input_hidden('title', $myrow['s_title']));
         $content->attach(do_template('CNS_SAVED_WARNING', [
             '_GUID' => '537a5e28bfdc3f2d2cb6c06b0a939b51',
             'MESSAGE' => $myrow['s_message'],
             'MESSAGE_HTML' => comcode_to_tempcode($myrow['s_message'], $GLOBALS['FORUM_DRIVER']->get_guest_id()),
             'EXPLANATION' => $myrow['s_explanation'],
             'TITLE' => $myrow['s_title'],
-            'DELETE_LINK' => $delete_link,
+            'DELETE_URL' => $delete_url,
         ]));
     }
     if ($content->is_empty()) {
