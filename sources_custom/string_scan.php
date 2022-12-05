@@ -11769,6 +11769,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         INVOICES_FILTERED_BY_ID
         INVALID_CC_NUMBER
         INVALID_CV2_NUMBER
+        DESCRIPTION_BANNER_SECONDARY_CATEGORIES
+        AUTHOR_HOMEPAGE
     ')));
 
     if ($GLOBALS['DEV_MODE']) {

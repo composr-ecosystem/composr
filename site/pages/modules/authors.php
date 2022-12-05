@@ -242,7 +242,7 @@ class Module_authors
         if (strlen($url) > 0) {
             $url_details = do_template('AUTHOR_SCREEN_POTENTIAL_ACTION_ENTRY', [
                 '_GUID' => '4276bac5acb0ce5839a90614438c1049',
-                'ACTION' => hyperlink($url, do_lang_tempcode('AUTHOR_HOMEPAGE'), false, false, '', null, null, 'me'),
+                'ACTION' => hyperlink($url, ((substr($url, 0, 7) == 'mailto:') ? do_lang_tempcode('AUTHOR_MAIL') : do_lang_tempcode('AUTHOR_HOMEPAGE')), false, false, '', null, null, 'me'),
             ]);
         } else {
             $url_details = new Tempcode();

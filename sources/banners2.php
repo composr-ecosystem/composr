@@ -259,7 +259,7 @@ function get_banner_form_fields(bool $simplified = false, string $name = '', str
 
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '6df9d181757c40237d9459b06075de97', 'TITLE' => do_lang_tempcode('ADVANCED'), 'SECTION_HIDDEN' => empty($b_types) && empty($regions)]));
 
-        $fields->attach(form_input_multi_list(do_lang_tempcode('SECONDARY_CATEGORIES'), '', 'b_types', create_selection_list_banner_types($b_types)));
+        $fields->attach(form_input_multi_list(do_lang_tempcode('SECONDARY_CATEGORIES'), do_lang_tempcode('DESCRIPTION_BANNER_SECONDARY_CATEGORIES'), 'b_types', create_selection_list_banner_types($b_types)));
 
         if (get_option('filter_regions') == '1') {
             require_code('locations');

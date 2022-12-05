@@ -240,7 +240,7 @@ There is an extra [tt]tenant[/tt] option that relates to the "Supported account 
 
 [title="3"]Pinterest (untested)[/title]
 
-You may wonder why Pinterest is not on the list. Pinterest is not currently accepting new apps. Hybridauth does support it.
+You may wonder why Pinterest is not on the list. Pinterest was not accepting new apps at the time of testing, although this may no longer be the case. Hybridauth does support it.
 
 [title="3"]StackExchange (suboptimal)[/title]
 
@@ -309,7 +309,7 @@ The settings are configured in the same way as member login. However, if you nee
 </hybridauth>
 [/code]
 
-After configuring XML you establish a log in from Admin Zone > Setup > Setup API access.
+After configuring XML you establish a log in from Admin Zone > Setup > Setup API access by clicking the link under &ldquo;Connected&rdquo; for the provider.
 
 Out of the box the following integrations exist, for providers supporting Hybridauth Atom API operations. At the time of writing:
  - Facebook

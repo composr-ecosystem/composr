@@ -723,7 +723,7 @@ Always test a new importer and keep backups before actually running it on your d
 [title="5"]Implementation structure[/title]
 
 Importers are implemented using the Composr 'hook' system, meaning that a new importer may be added by just copying the importer-file into the [tt]sources_custom/hooks/modules/admin_import[/tt] directory. At the time of writing, the following importers are available:
- - {$IS_MAINTAINED,import_ipb,Invision Board 2.0.x}
+ - {$IS_MAINTAINED,import_ipb,Invision Board 2.2.x}
  - {$IS_MAINTAINED,import_mybb,MyBB 1.8.x}
  - {$IS_MAINTAINED,import_phpbb,phpBB 3.3.x}
  - {$IS_MAINTAINED,import_smf,Simple Machine Forum 2.0.x}

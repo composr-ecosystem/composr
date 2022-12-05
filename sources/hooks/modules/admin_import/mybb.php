@@ -49,7 +49,7 @@ class Hook_import_mybb
     {
         $info = [];
         $info['supports_advanced_import'] = false;
-        $info['product'] = 'MyBB 1.4.x';
+        $info['product'] = 'MyBB 1.8.x';
         $info['prefix'] = 'mybb_';
         $info['import'] = [
             'config',
