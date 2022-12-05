@@ -4,9 +4,9 @@ character_sets,Character sets,,,Not regularly tested.,No,
 db_connection_pooling_with_replication,Configuration of multiple database servers (with only one taking write queries),ocProducts,,Not regularly tested,No,
 readonly_db,Stability when the database is read-only (if a webhost has locked out write access due to quota issues),ocProducts,,Not regularly tested,No,
 forum_ipb,Invision Board forum driver,,,Not regularly tested. Already out-dated. Needs ongoing maintenance.,No,Partly tested by running of full test set
-forum_mybb,MyBB forum driver,,,Not regularly tested. Already out-dated. Needs ongoing maintenance.,No,Partly tested by running of full test set
+forum_mybb,MyBB forum driver,,,Not regularly tested. May become out-dated. Needs ongoing maintenance.,No,Partly tested by running of full test set
 forum_none,No forums or members forum driver,,,Not regularly tested. Liable to break due to cross-cutting complexity.,No,Partly tested by running of full test set
-forum_phpbb,phpBB forum driver,,,Not regularly tested. Already out-dated. Needs ongoing maintenance.,No,Partly tested by running of full test set
+forum_phpbb,phpBB forum driver,,,Not regularly tested. May become out-dated. Needs ongoing maintenance.,No,Partly tested by running of full test set
 forum_smf,Simple Machine Forum forum driver,,,Not regularly tested. Already out-dated. Needs ongoing maintenance.,No,Partly tested by running of full test set
 forum_vb,vBulletin forum driver,,,Not regularly tested. Already out-dated. Needs ongoing maintenance.,No,Partly tested by running of full test set
 forum_wbb,Burning Board forum driver,,,Not regularly tested. Already out-dated. Needs ongoing maintenance.,No,Partly tested by running of full test set
