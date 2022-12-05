@@ -67,6 +67,7 @@
 						backgroundColor: function(context) {
 							return context.dataset.backgroundColor;
 						},
+						color: 'white',
 						borderRadius: 25,
 						borderWidth: 1,
 						display: function(context) {

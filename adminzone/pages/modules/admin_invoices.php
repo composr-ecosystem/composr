@@ -135,7 +135,7 @@ class Module_admin_invoices
             $this->title = get_screen_title('INVOICE');
         }
 
-        if (($type != 'browse')) {
+        if (($type != 'view') && ($type != 'invoice')) {
             set_helper_panel_tutorial('tut_ecommerce');
             set_helper_panel_text(comcode_lang_string('DOC_ECOMMERCE'));
         }
