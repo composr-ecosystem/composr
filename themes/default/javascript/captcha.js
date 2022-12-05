@@ -69,7 +69,7 @@
                             if (submitButton) {
                                 $dom.trigger(submitButton, 'click');
                             } else {
-                                $dom.trigger(form, 'submit');
+                                form.submit();
                             }
                         },
                         theme: '{$?,{$THEME_DARK},dark,light}',

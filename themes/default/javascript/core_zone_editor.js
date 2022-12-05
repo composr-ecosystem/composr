@@ -50,13 +50,18 @@
                 editFieldStore.appendChild(store);
             }
 
-            // Submit form as appropriate
-            if ($cms.form.isModSecurityWorkaroundEnabled() && !e.defaultPrevented) {
-                e.preventDefault();
-                $cms.form.modSecurityWorkaround(btn.form);
-                return;
-            }
-            $dom.trigger(btn.form, 'submit');
+            var checkFormPromise = $cms.form.checkForm(e, form, false, []);
+            checkFormPromise.then(function (valid) {
+                if (valid) {
+                    // Submit form as appropriate
+                    if ($cms.form.isModSecurityWorkaroundEnabled() && !e.defaultPrevented) {
+                        e.preventDefault();
+                        $cms.form.modSecurityWorkaround(btn.form);
+                        return;
+                    }
+                    btn.form.submit();
+                }
+            });
         }
     });
 
