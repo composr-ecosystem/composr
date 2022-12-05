@@ -133,6 +133,7 @@
 						font: {
 							weight: 'bold'
 						},
+						color: 'white',
 						formatter: Math.round
 					},
 				{+END}
