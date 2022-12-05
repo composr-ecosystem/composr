@@ -90,45 +90,45 @@ if (!function_exists('critical_error')) {
             }
         }
 
-        $error = 'Unknown critical error type: this should not happen, so please report this to ocProducts.';
+        $error = '<div>Unknown critical error type: this should not happen, so please report this to ocProducts.</div>';
 
         $may_show_footer = true;
 
         switch ($code) {
             case 'CORRUPT_OVERRIDE':
-                $error = 'An override seems to no longer be compatible, ' . htmlentities($relay) . '.';
+                $error = '<div>An override seems to no longer be compatible, ' . htmlentities($relay) . '.</div>';
                 break;
             case 'MISSING_SOURCE':
-                $error = 'A source-code (' . $relay . ') file is missing/corrupt/incompatible.';
+                $error = '<div>A source-code (' . $relay . ') file is missing/corrupt/incompatible.</div>';
                 break;
             case 'PASSON':
                 $error = $relay;
                 break;
             case 'YOU_ARE_BANNED':
-                $error = 'The member you are masquerading as has been banned. We cannot finish initialising the virtualised environment for this reason.';
+                $error = '<div>The member you are masquerading as has been banned. We cannot finish initialising the virtualised environment for this reason.</div>';
                 $may_show_footer = false;
                 break;
             case 'BANNED':
-                $error = 'The IP address you are accessing this website from (' . get_ip_address() . ') has been banished from this website. If you believe this is a mistake, contact the staff to have it resolved (typically, postmaster@' . get_domain() . ' will be able to reach them).</div>' . "\n" . '<div>If you are yourself staff, you should be able to unban yourself by editing the <kbd>banned_ip</kbd> table in a database administation tool, by removing rows that qualify against yourself. This error is raised to a critical error to reduce the chance of this IP address being able to further consume server resources.';
+                $error = '<div>The IP address you are accessing this website from (' . get_ip_address() . ') has been banished from this website. If you believe this is a mistake, contact the staff to have it resolved (typically, postmaster@' . get_domain() . ' will be able to reach them).</div>' . "\n" . '<div>If you are yourself staff, you should be able to unban yourself by editing the <kbd>banned_ip</kbd> table in a database administation tool, by removing rows that qualify against yourself. This error is raised to a critical error to reduce the chance of this IP address being able to further consume server resources.';
                 $may_show_footer = false;
                 break;
             case 'TEST':
-                $error = 'This is a test error.';
+                $error = '<div>This is a test error.</div>';
                 break;
             case 'BUSY':
-                $error = 'This is a less-critical error that has been elevated for quick dismissal due to high server load.</div>' . "\n" . '<div style="padding-left: 50px">' . $relay;
+                $error = '<div>This is a less-critical error that has been elevated for quick dismissal due to high server load.</div>' . "\n" . '<div style="padding-left: 50px">' . $relay;
                 break;
             case 'EMERGENCY':
-                $error = 'This is an error that has been elevated to critical error status because it occurred during the primary error mechanism reporting system itself (possibly due to it occurring within the standard output framework). It may be masking a secondary error that occurred before this, but was never output - if so, it is likely strongly related to this one, thus fixing this will fix the other.</div>' . "\n" . '<div style="padding-left: 50px">' . $relay;
+                $error = '<div>This is an error that has been elevated to critical error status because it occurred during the primary error mechanism reporting system itself (possibly due to it occurring within the standard output framework). It may be masking a secondary error that occurred before this, but was never output - if so, it is likely strongly related to this one, thus fixing this will fix the other.</div>' . "\n" . '<div style="padding-left: 50px">' . $relay;
                 break;
             case 'RELAY':
-                $error = 'This is a relayed critical error, which means that this less-critical error has occurred during startup, and thus halted startup.</div>' . "\n" . '<div style="padding-left: 50px">' . $relay;
+                $error = '<div>This is a relayed critical error, which means that this less-critical error has occurred during startup, and thus halted startup.</div>' . "\n" . '<div style="padding-left: 50px">' . $relay;
                 break;
             case 'FILE_DOS':
-                $error = 'This website was prompted to download a file (' . htmlentities($relay) . ') which seemingly has a never-ending chain of redirections. Because this could be a denial of service attack, execution has been terminated.';
+                $error = '<div>This website was prompted to download a file (' . htmlentities($relay) . ') which seemingly has a never-ending chain of redirections. Because this could be a denial of service attack, execution has been terminated.</div>';
                 break;
             case 'DATABASE_FAIL':
-                $error = 'The website\'s first database query (checking the page request is not from a banned IP address or reading the site configuration) has failed. This almost always means that the database is not set up correctly, which in turns means that either backend database configuration has changed (perhaps the database has been emptied), or the configuration file (_config.php) has been incorrectly altered (perhaps to point to an empty database), or you have moved servers and not updated your _config.php settings properly or placed your database. It could also mean that the <kbd>' . get_table_prefix() . 'banned_ip</kbd> table or <kbd>' . get_table_prefix() . 'config</kbd> table alone is missing or corrupt, but this is unlikely. As this is an error due to the website\'s environment being externally altered by unknown means, the website cannot continue to function or solve the problem itself.';
+                $error = '<div>The website\'s first database query (checking the page request is not from a banned IP address or reading the site configuration) has failed. This almost always means that the database is not set up correctly, which in turns means that either backend database configuration has changed (perhaps the database has been emptied), or the configuration file (_config.php) has been incorrectly altered (perhaps to point to an empty database), or you have moved servers and not updated your _config.php settings properly or placed your database. It could also mean that the <kbd>' . get_table_prefix() . 'banned_ip</kbd> table or <kbd>' . get_table_prefix() . 'config</kbd> table alone is missing or corrupt, but this is unlikely. As this is an error due to the website\'s environment being externally altered by unknown means, the website cannot continue to function or solve the problem itself.</div>';
                 break;
             case '_CONFIG.PHP_MISSING':
                 $install_url = 'install.php';
@@ -136,9 +136,9 @@ if (!function_exists('critical_error')) {
                     $install_url = '../install.php';
                 }
                 if (file_exists($install_url)) {
-                    $error = 'The top-level configuration file (<kbd>_config.php</kbd>) is missing. You probably have not yet installed, so <a href="' . $install_url . '">run the installer</a>.';
+                    $error = '<div>The top-level configuration file (<kbd>_config.php</kbd>) is missing. You probably have not yet installed, so <a href="' . $install_url . '">run the installer</a>.</div>';
                 } else {
-                    $error = 'The top-level configuration file (<kbd>_config.php</kbd>) is missing. This file is created during installation. If you have not yet installed, use an official ocProducts installation package. If somehow <kbd>_config.php</kbd> was deleted then replace <kbd>_config.php</kbd> from backup.';
+                    $error = '<div>The top-level configuration file (<kbd>_config.php</kbd>) is missing. This file is created during installation. If you have not yet installed, use an official ocProducts installation package. If somehow <kbd>_config.php</kbd> was deleted then replace <kbd>_config.php</kbd> from backup.</div>';
                 }
                 break;
             case '_CONFIG.PHP_EMPTY':
@@ -147,16 +147,16 @@ if (!function_exists('critical_error')) {
                     $install_url = '../install.php';
                 }
                 if (file_exists($install_url)) {
-                    $error = 'The top-level configuration file (<kbd>_config.php</kbd>) is empty or cannot be accessed. You probably have not yet installed, so <a href="' . $install_url . '">run the installer</a>.';
+                    $error = '<div>The top-level configuration file (<kbd>_config.php</kbd>) is empty or cannot be accessed. You probably have not yet installed, so <a href="' . $install_url . '">run the installer</a>.</div>';
                 } else {
-                    $error = 'The top-level configuration file (<kbd>_config.php</kbd>) is empty or cannot be accessed. This file is created during installation. If you have not yet installed, use an official ocProducts installation package. If somehow <kbd>_config.php</kbd> was blanked out then replace <kbd>_config.php</kbd> from backup.';
+                    $error = '<div>The top-level configuration file (<kbd>_config.php</kbd>) is empty or cannot be accessed. This file is created during installation. If you have not yet installed, use an official ocProducts installation package. If somehow <kbd>_config.php</kbd> was blanked out then replace <kbd>_config.php</kbd> from backup.</div>';
                 }
                 break;
             case '_CONFIG.PHP_CORRUPTED':
-                $error = 'The top-level configuration file (<kbd>_config.php</kbd>) appears to be corrupt. Perhaps it was incorrectly uploaded, or a typo was made. It must be valid PHP code.';
+                $error = '<div>The top-level configuration file (<kbd>_config.php</kbd>) appears to be corrupt. Perhaps it was incorrectly uploaded, or a typo was made. It must be valid PHP code.</div>';
                 break;
             case 'CRIT_LANG':
-                $error = 'The most basic critical error language file (lang/' . fallback_lang() . '/critical_error.ini) is missing. It is likely that other files are also, for whatever reason, missing from this Composr installation.';
+                $error = '<div>The most basic critical error language file (lang/' . fallback_lang() . '/critical_error.ini) is missing. It is likely that other files are also, for whatever reason, missing from this Composr installation.</div>';
                 break;
         }
 
