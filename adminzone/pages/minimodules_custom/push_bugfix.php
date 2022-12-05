@@ -333,7 +333,7 @@ END;
                 <div>
                     <label for="severity-10">
                         <input type="radio" id="severity-10" name="severity" value="10" onchange="return security_hole_radio(this);" />
-                        Feature-request
+                        Feature-suggestion
                     </label>
                     <label for="severity-20">
                         <input type="radio" id="severity-20" name="severity" value="20" onchange="return security_hole_radio(this);" checked="checked" />

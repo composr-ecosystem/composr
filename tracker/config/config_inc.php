@@ -229,7 +229,7 @@ $g_bug_update_page_fields = array(
 	//'target_version',
 	'view_state',
 );
-$g_severity_enum_string = '10:Feature-request,20:Trivial-bug,50:Minor-bug,60:Major-bug,95:Security-hole';
+$g_severity_enum_string = '10:Feature-suggestion,20:Trivial-bug,50:Minor-bug,60:Major-bug,95:Security-hole';
 
 // Integrate to Composr error log
 $g_log_destination = 'file:' . dirname(dirname(__DIR__)) . '/data_custom/errorlog.php';
