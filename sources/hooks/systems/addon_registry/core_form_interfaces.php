@@ -1735,12 +1735,11 @@ class Hook_addon_registry_core_form_interfaces
     {
         return lorem_globalise(do_lorem_template('POSTING_SCREEN', [
             'POSTING_FORM' => placeholder_form(),
-            'HIDDEN' => '',
             'TITLE' => lorem_title(),
             'TEXT' => lorem_sentence_html(),
-            'JS_FUNCTION_CALLS' => [],
-            'SUPPORT_AUTOSAVE' => false,
-            'CANCEL_URL' => placeholder_url(),
+            'PING_URL' => null,
+            'PREVIEW' => null,
+            'SEPARATE_PREVIEW' => null,
         ]), null, '', true);
     }
 
@@ -2076,6 +2075,7 @@ class Hook_addon_registry_core_form_interfaces
             'CANCEL_URL' => null,
             'MODSECURITY_WORKAROUND' => false,
             'COMCODE_PAGE_HINTS' => null,
+            'STAFF_HELP_URL' => null,
         ]), null, '', true);
     }
 

@@ -97,14 +97,15 @@ function report_content_form(object $title, string $content_type, string $conten
 
     $post_url = build_url(['page' => 'report_content', 'type' => 'actual'], get_module_zone('report_content'));
 
-    $posting_form = get_posting_form(do_lang('REPORT_CONTENT'), 'buttons/send', $report_post, $post_url, $hidden_fields, $specialisation, '', '', null, null, [], null, true, false, false);
+    $js_function_calls = ((function_exists('captcha_ajax_check_function')) && (captcha_ajax_check_function() != '')) ? [captcha_ajax_check_function()] : [];
+
+    $posting_form = get_posting_form(do_lang('REPORT_CONTENT'), 'buttons/send', $report_post, $post_url, $hidden_fields, $specialisation, '', '', null, null, $js_function_calls, null, true, false, false);
 
     url_default_parameters__disable();
 
     return do_template('POSTING_SCREEN', [
         '_GUID' => '92a0a35a7c07edd0d3f8a960710de608',
         'TITLE' => $title,
-        'JS_FUNCTION_CALLS' => ((function_exists('captcha_ajax_check_function')) && (captcha_ajax_check_function() != '')) ? [captcha_ajax_check_function()] : [],
         'TEXT' => $text,
         'POSTING_FORM' => $posting_form,
     ]);
@@ -164,7 +165,7 @@ function report_post_form(object $title, int $post_id, array $js_function_calls,
 
     $post_url = build_url(['page' => 'topics', 'type' => '_report_post'], get_module_zone('topics'));
 
-    $posting_form = get_posting_form(do_lang('REPORT_POST'), 'buttons/report', $report_post, $post_url, $hidden, $specialisation, '', '', null, null, [], null, true, false, false);
+    $posting_form = get_posting_form(do_lang('REPORT_POST'), 'buttons/report', $report_post, $post_url, $hidden, $specialisation, '', '', null, null, $js_function_calls, null, true, false, false);
 
     url_default_parameters__disable();
 
@@ -175,7 +176,6 @@ function report_post_form(object $title, int $post_id, array $js_function_calls,
     return do_template('POSTING_SCREEN', [
         '_GUID' => 'eee64757e66fed702f74fecf8d595260',
         'TITLE' => $title,
-        'JS_FUNCTION_CALLS' => $js_function_calls,
         'TEXT' => $text,
         'POSTING_FORM' => $posting_form,
     ]);

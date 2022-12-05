@@ -354,9 +354,10 @@ function get_attachments(string $posting_field_name, bool $true_attachment_ui = 
  * @param  boolean $specialisation2_hidden Whether to hide trailing extra fields
  * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
  * @param  ?Tempcode $cancel_url Cancel URL for cancelling auto-save (null: no cancel button)
+ * @param  ?mixed $staff_help_url URL staff can go to to get help (null: none)
  * @return Tempcode The posting form
  */
-function get_posting_form($submit_name, string $submit_icon, string $post, $post_url, object $hidden_fields, object $specialisation, $post_comment = null, string $extra = '', ?object $specialisation2 = null, ?object $default_parsed = null, array $js_function_calls = [], ?int $tabindex = null, bool $required = true, bool $has_preview = true, bool $support_wysiwyg = true, bool $support_autosave = true, bool $specialisation2_hidden = false, $description = '', ?object $cancel_url = null) : object
+function get_posting_form($submit_name, string $submit_icon, string $post, $post_url, object $hidden_fields, object $specialisation, $post_comment = null, string $extra = '', ?object $specialisation2 = null, ?object $default_parsed = null, array $js_function_calls = [], ?int $tabindex = null, bool $required = true, bool $has_preview = true, bool $support_wysiwyg = true, bool $support_autosave = true, bool $specialisation2_hidden = false, $description = '', ?object $cancel_url = null, $staff_help_url = null) : object
 {
     require_javascript('posting');
     require_javascript('plupload');
@@ -439,6 +440,7 @@ function get_posting_form($submit_name, string $submit_icon, string $post, $post
         'DESCRIPTION' => $description,
         'MODSECURITY_WORKAROUND' => $MODSECURITY_WORKAROUND_ENABLED,
         'COMCODE_PAGE_HINTS' => $comcode_page_hints,
+        'STAFF_HELP_URL' => $staff_help_url,
     ]);
 }
 

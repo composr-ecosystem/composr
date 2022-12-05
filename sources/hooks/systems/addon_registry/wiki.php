@@ -346,6 +346,7 @@ class Hook_addon_registry_wiki
             'MODSECURITY_WORKAROUND' => false,
             'COMCODE_PAGE_HINTS' => null,
             'DESCRIPTION' => lorem_paragraph(),
+            'STAFF_HELP_URL' => null,
         ]);
 
         return lorem_globalise(do_lorem_template('WIKI_POSTING_SCREEN', [

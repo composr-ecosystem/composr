@@ -33,17 +33,12 @@ class template_parameter_consistency_test_set extends cms_test_case
 
         $templates_with_exotic_params = [
             // Shared templates with more-exotic extra parameters we do not expect to be universally used
-            'INDEX_SCREEN_FANCIER_SCREEN',
-            'BUTTON_SCREEN_ITEM',
-            'PAGINATION_SCREEN',
             'SIMPLE_PREVIEW_BOX',
             'BLOCK_NO_ENTRIES',
-            'POSTING_SCREEN',
             'FORM_GROUPED',
             'FORM',
             'FORM_SCREEN',
             'NEWSLETTER_WHATSNEW_RESOURCE_FCOMCODE',
-            'MAP_TABLE',
 
             // Complex map buildup that we can't auto-scan
             'MEDIA_IMAGE_WEBSAFE',
@@ -174,7 +169,14 @@ class template_parameter_consistency_test_set extends cms_test_case
                 (strpos($template_c, '{+START,IF_PASSED_AND_TRUE,' . $parameter . '}') !== false);
 
             // Exceptions
-            if (($template == 'FORM_SCREEN_FIELD_SPACER') && ($parameter == 'SECTION_HIDDEN')) {
+            $exceptions = [
+                ['FORM_SCREEN_FIELD_SPACER', 'SECTION_HIDDEN'],
+                ['BUTTON_SCREEN_ITEM', 'ONCLICK_CALL_FUNCTIONS'],
+                ['BUTTON_SCREEN_ITEM', 'ONMOUSEDOWN_CALL_FUNCTIONS'],
+                ['PAGINATION_SCREEN', 'CATALOGUE'],
+                ['PAGINATION_SCREEN', 'SUBMIT_URL'],
+            ];
+            if (in_array([$template, $parameter], $exceptions)) {
                 $ok = true;
             }
 

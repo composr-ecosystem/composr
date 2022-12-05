@@ -1860,7 +1860,7 @@ class Module_topics
         }
 
         // Render form
-        $posting_form = get_posting_form(do_lang($private_topic ? 'ADD_PRIVATE_TOPIC' : 'ADD_TOPIC'), 'buttons/add_topic', $post, $post_url, $hidden_fields, $specialisation, null, '', $specialisation2, null, $js_function_calls, null, true, true, true, true, is_mobile());
+        $posting_form = get_posting_form(do_lang($private_topic ? 'ADD_PRIVATE_TOPIC' : 'ADD_TOPIC'), 'buttons/add_topic', $post, $post_url, $hidden_fields, $specialisation, null, '', $specialisation2, null, $js_function_calls, null, true, true, true, true, is_mobile(), '', null, $staff_help_url);
 
         url_default_parameters__disable();
 
@@ -1882,7 +1882,7 @@ class Module_topics
         }
         $_title = get_screen_title($title, false);
 
-        return do_template('POSTING_SCREEN', ['_GUID' => 'ba5308fe0a8f9f9a24988209423a3a16', 'STAFF_HELP_URL' => $staff_help_url, 'TEXT' => $text, 'TITLE' => $_title, 'POSTING_FORM' => $posting_form]);
+        return do_template('POSTING_SCREEN', ['_GUID' => 'ba5308fe0a8f9f9a24988209423a3a16', 'TEXT' => $text, 'TITLE' => $_title, 'POSTING_FORM' => $posting_form]);
     }
 
     /**
@@ -3600,14 +3600,14 @@ class Module_topics
             $parsed = null;
         }
         $js_function_calls = $this->_post_javascript();
-        $posting_form = get_posting_form(do_lang('SAVE'), 'admin/edit', $post, $post_url, $hidden_fields, $specialisation, null, '', $specialisation2, $parsed, $js_function_calls);
+        $staff_help_url = get_tutorial_url('tut_moderation');
+        $posting_form = get_posting_form(do_lang('SAVE'), 'admin/edit', $post, $post_url, $hidden_fields, $specialisation, null, '', $specialisation2, $parsed, $js_function_calls, null, true, true, true, true, false, '', null, $staff_help_url);
 
         list($warning_details, $ping_url) = handle_conflict_resolution();
 
         $title = get_screen_title('EDIT_POST');
         return do_template('POSTING_SCREEN', [
             '_GUID' => '347e469de58882bf77722bba6ed4aba4',
-            'STAFF_HELP_URL' => get_tutorial_url('tut_moderation'),
             'TITLE' => $title,
             'PING_URL' => $ping_url,
             'WARNING_DETAILS' => $warning_details,

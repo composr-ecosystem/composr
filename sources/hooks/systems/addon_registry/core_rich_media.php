@@ -643,6 +643,7 @@ class Hook_addon_registry_core_rich_media
             'SPECIALISATION2_HIDDEN' => null,
             'MODSECURITY_WORKAROUND' => false,
             'COMCODE_PAGE_HINTS' => null,
+            'STAFF_HELP_URL' => null,
         ]), null, '', true);
     }
 

@@ -862,7 +862,6 @@ class Module_wiki
         return do_template('POSTING_SCREEN', [
             '_GUID' => '4372327fb689ef70a9ac5d275dd454f1',
             'POSTING_FORM' => $posting_form,
-            'HIDDEN' => '',
             'TITLE' => $this->title,
             'TEXT' => do_lang_tempcode('WIKI_MERGE_TEXT'),
         ]);

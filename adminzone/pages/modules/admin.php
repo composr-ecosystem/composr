@@ -330,7 +330,6 @@ class Module_admin
             return do_template('INDEX_SCREEN_FANCIER_SCREEN', [
                 '_GUID' => '8635190f315a0c1cf1d5bad4009a7955',
                 'TITLE' => get_screen_title('ADMIN_ZONE_SEARCH_RESULTS'),
-                'EMPTY' => true,
                 'ARRAY' => true,
                 'CONTENT' => '',
                 'PRE' => '',
@@ -1360,12 +1359,10 @@ class Module_admin
         return do_template('INDEX_SCREEN_FANCIER_SCREEN', [
             '_GUID' => 'b34d4765744c359a25a0b71449eafed1',
             'TITLE' => $this->title,
-            'EMPTY' => $found_some ? null : true,
             'ARRAY' => true,
             'CONTENT' => $found_some ? $content : [],
             'PRE' => $pre,
             'POST' => $post,
-            'RAW_SEARCH_STRING' => $raw_search_string,
         ]);
     }
 }

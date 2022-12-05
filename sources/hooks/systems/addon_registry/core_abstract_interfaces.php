@@ -411,7 +411,6 @@ class Hook_addon_registry_core_abstract_interfaces
         ]));
 
         return lorem_globalise(do_lorem_template('MAP_TABLE', [
-            'WIDTH' => placeholder_number(),
             'FIELDS' => $fields,
         ]), null, '', true);
     }
@@ -700,7 +699,7 @@ class Hook_addon_registry_core_abstract_interfaces
         return lorem_globalise(do_lorem_template('PAGINATION_SCREEN', [
             'TITLE' => lorem_title(),
             'CONTENT' => lorem_phrase(),
-            'BROWSE' => placeholder_pagination(),
+            'PAGINATION' => placeholder_pagination(),
         ]), null, '', true);
     }
 

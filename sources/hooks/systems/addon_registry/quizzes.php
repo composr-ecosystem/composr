@@ -196,7 +196,6 @@ class Hook_addon_registry_quizzes
             ]));
         }
         $summary = do_lorem_template('MAP_TABLE', [
-            'WIDTH' => placeholder_number(),
             'FIELDS' => $fields,
         ]);
 

@@ -322,7 +322,6 @@ class Module_cms_wiki
         return do_template('POSTING_SCREEN', [
             '_GUID' => 'ea72f10d85ed06b618866f21da515180',
             'POSTING_FORM' => $posting_form,
-            'HIDDEN' => '',
             'TITLE' => $this->title,
             'TEXT' => paragraph(do_lang_tempcode('WIKI_EDIT_PAGE_TEXT')),
         ]);
@@ -464,7 +463,7 @@ class Module_cms_wiki
             $revisions = new Tempcode();
         }
 
-        $posting_form = get_posting_form(do_lang('SAVE'), 'admin/edit_this_category', $description, $edit_url, new Tempcode(), $fields, do_lang_tempcode('PAGE_TEXT'), '', $fields2, $_description, [], null, false);
+        $posting_form = get_posting_form(do_lang('SAVE'), 'admin/edit_this_category', $description, $edit_url, $hidden, $fields, do_lang_tempcode('PAGE_TEXT'), '', $fields2, $_description, [], null, false);
 
         list($warning_details, $ping_url) = handle_conflict_resolution();
 
@@ -474,7 +473,6 @@ class Module_cms_wiki
             'WARNING_DETAILS' => $warning_details,
             'REVISIONS' => $revisions,
             'POSTING_FORM' => $posting_form,
-            'HIDDEN' => $hidden,
             'TITLE' => $this->title,
             'TEXT' => paragraph(do_lang_tempcode('WIKI_EDIT_PAGE_TEXT')),
         ]);

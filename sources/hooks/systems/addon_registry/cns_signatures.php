@@ -227,6 +227,7 @@ class Hook_addon_registry_cns_signatures
             'MODSECURITY_WORKAROUND' => false,
             'COMCODE_PAGE_HINTS' => null,
             'SUPPORT_AUTOSAVE' => false,
+            'STAFF_HELP_URL' => null,
         ]);
 
         return lorem_globalise(do_lorem_template('CNS_EDIT_SIGNATURE_TAB', [

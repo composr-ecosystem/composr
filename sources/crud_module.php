@@ -951,9 +951,6 @@ abstract class Standard_crud_module
                 'SEPARATE_PREVIEW' => $this->second_stage_preview,
                 'TEXT' => $this->add_text,
                 'POSTING_FORM' => $posting_form->evaluate()/*Conserve memory*/,
-                'JS_FUNCTION_CALLS' => $this->js_function_calls,
-                'SUPPORT_AUTOSAVE' => true,
-                'CANCEL_URL' => $cancel_url,
             ] + $extra_tpl_params);
         }
 
@@ -1620,9 +1617,6 @@ abstract class Standard_crud_module
                 'WARNING_DETAILS' => $warning_details,
                 'TEXT' => $this->add_text,
                 'POSTING_FORM' => $posting_form->evaluate()/*Conserve memory*/,
-                'JS_FUNCTION_CALLS' => $this->js_function_calls,
-                'SUPPORT_AUTOSAVE' => true,
-                'CANCEL_URL' => $cancel_url,
             ] + $extra_tpl_params);
         }
 
