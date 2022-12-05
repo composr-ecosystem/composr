@@ -111,7 +111,7 @@ Nuances of which to be aware:
 
 [title="2"]Custom Fields[/title]
 
-You may add custom fields to forums, topics, posts (which utilise the catalogues). Note however that custom post fields will not show up on the quick reply form (which will continue to function even if there were required custom fields). You may therefore choose to disable the quick reply form, unless you actually want this behaviour (do not have them on quick reply, but force them for if that post is subsequently edited). You can remove the "Use quick reply" privilege from members to disable quick reply, although this will not disable it for administrators. If you need to also disable quick reply for administrators you would need to remove it from the [tt]CNS_TOPIC_SCREEN.tpl[/tt] template.
+You may add custom fields to forums, topics, and posts (which utilise the catalogues). Note however that custom post fields will not show up on the quick reply form (which will continue to function even if there were required custom fields). You may therefore choose to disable the quick reply form, unless you actually want this behaviour (do not have them on quick reply, but force them for if that post is subsequently edited). You can remove the "Use quick reply" privilege from members to disable quick reply, although this will not disable it for administrators. If you need to also disable quick reply for administrators you would need to remove it from the [tt]CNS_TOPIC_SCREEN.tpl[/tt] template.
 
 [title="2"]See also[/title]
 
