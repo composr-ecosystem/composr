@@ -452,7 +452,7 @@ function stats_generate_results_table(string $graph_name, array $filters = [], $
         if (($i >= $start) && ($i <= $start + $max)) {
             $_val = is_integer($val) ? integer_format($val, 0) : float_format($val, 2, true);
             $values = [
-                $key,
+                strval($key),
                 $_val,
             ];
             $results_entries->attach(results_entry($values, true));
