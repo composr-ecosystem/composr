@@ -1,4 +1,5 @@
 {$REQUIRE_JAVASCRIPT,ecommerce}
+{$REQUIRE_JAVASCRIPT,core_form_interfaces}
 
 {TITLE}
 
