@@ -2559,6 +2559,10 @@ function ecv_LOGO_URL(string $lang, array $escaped, array $param) : string
  */
 function ecv_HELPER_PANEL_TUTORIAL(string $lang, array $escaped, array $param) : string
 {
+    if (is_wide_high()) { // No helper panels on wide high screens
+        return '';
+    }
+
     if ($GLOBALS['HELPER_PANEL_TUTORIAL'] === null) {
         set_helper_panel_tutorial('');
     }
@@ -2585,6 +2589,10 @@ function ecv_HELPER_PANEL_TUTORIAL(string $lang, array $escaped, array $param) :
  */
 function ecv_HELPER_PANEL_TEXT(string $lang, array $escaped, array $param) : string
 {
+    if (is_wide_high()) { // No helper panels on wide high screens
+        return '';
+    }
+
     if ($GLOBALS['HELPER_PANEL_TEXT'] === null) {
         $GLOBALS['HELPER_PANEL_TEXT'] = '';
     }
