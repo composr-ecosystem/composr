@@ -621,7 +621,7 @@ span.validated-checkbox + input[name="validated"].input-tick {
 }
 
 .css-colour-chooser-from, .css-colour-chooser-to {
-	padding-top: 15px;
+	padding-top: 5px;
 	height: 45px;
 	font-size: 0.9em;
 	width: 50px;

@@ -78,26 +78,26 @@ class Module_admin_giftr extends Standard_crud_module
 
             $default_gifts = [];
             $default_gifts[] = ['name' => 'A Bouquet of Flowers', 'image' => 'data_custom/images/giftr/bouquet_of_flowers.gif', 'price' => 10, 'enabled' => 1];
-            $default_gifts[] = ['name' => 'A bag of Money!', 'image' => 'data_custom/images/giftr/Money_Bag_Icon.gif', 'price' => 10, 'enabled' => 1];
+            $default_gifts[] = ['name' => 'A bag of Money!', 'image' => 'data_custom/images/giftr/money_bag_icon.gif', 'price' => 10, 'enabled' => 1];
             $default_gifts[] = ['name' => 'A glass of Beer', 'image' => 'data_custom/images/giftr/glass_of_beer.gif', 'price' => 10, 'enabled' => 1];
-            $default_gifts[] = ['name' => 'A Birthday Cake, Happy Birthday!!', 'image' => 'data_custom/images/giftr/Birthday_cake.gif', 'price' => 10, 'enabled' => 1];
-            $default_gifts[] = ['name' => 'A Football', 'image' => 'data_custom/images/giftr/3Football_%28soccer%29.gif', 'price' => 10, 'enabled' => 1];
+            $default_gifts[] = ['name' => 'A Birthday Cake, Happy Birthday!!', 'image' => 'data_custom/images/giftr/birthday_cake.gif', 'price' => 10, 'enabled' => 1];
+            $default_gifts[] = ['name' => 'A Football', 'image' => 'data_custom/images/giftr/football.gif', 'price' => 10, 'enabled' => 1];
             $default_gifts[] = ['name' => 'Some Party Streamers, Lets Celebrate!!', 'image' => 'data_custom/images/giftr/ghirlande_festa.gif', 'price' => 10, 'enabled' => 1];
             $default_gifts[] = ['name' => 'A Love Heart', 'image' => 'data_custom/images/giftr/love_heart.gif', 'price' => 10, 'enabled' => 1];
             $default_gifts[] = ['name' => 'A Cocktail', 'image' => 'data_custom/images/giftr/hrum_cocktail.gif', 'price' => 10, 'enabled' => 1];
             $default_gifts[] = ['name' => 'Some Balloons', 'image' => 'data_custom/images/giftr/jean_victor_balin_balloons.gif', 'price' => 10, 'enabled' => 1];
-            $default_gifts[] = ['name' => 'A four leaf Clover, Good Luck!', 'image' => 'data_custom/images/giftr/liftarn_Four_leaf_clover.gif', 'price' => 10, 'enabled' => 1];
-            $default_gifts[] = ['name' => 'A Green hat', 'image' => 'data_custom/images/giftr/liftarn_Green_hat.gif', 'price' => 10, 'enabled' => 1];
-            $default_gifts[] = ['name' => 'A Glass of Wine', 'image' => 'data_custom/images/giftr/2Muga_Glass_of_red_wine.png', 'price' => 10, 'enabled' => 1];
-            $default_gifts[] = ['name' => 'A Valentine\'s day Kiss', 'image' => 'data_custom/images/giftr/reporter_Happy_Valentine.gif', 'price' => 10, 'enabled' => 1];
-            $default_gifts[] = ['name' => 'A Drum kit', 'image' => 'data_custom/images/giftr/Drum_Kit_3.jpg', 'price' => 10, 'enabled' => 1];
+            $default_gifts[] = ['name' => 'A four leaf Clover, Good Luck!', 'image' => 'data_custom/images/giftr/liftarn_four_leaf_clover.gif', 'price' => 10, 'enabled' => 1];
+            $default_gifts[] = ['name' => 'A Green hat', 'image' => 'data_custom/images/giftr/liftarn_green_hat.gif', 'price' => 10, 'enabled' => 1];
+            $default_gifts[] = ['name' => 'A Glass of Wine', 'image' => 'data_custom/images/giftr/muga_Glass_of_red_wine.png', 'price' => 10, 'enabled' => 1];
+            $default_gifts[] = ['name' => 'A Valentine\'s day Kiss', 'image' => 'data_custom/images/giftr/reporter_happy_valentine.gif', 'price' => 10, 'enabled' => 1];
+            $default_gifts[] = ['name' => 'A Drum kit', 'image' => 'data_custom/images/giftr/drum_kit_3.jpg', 'price' => 10, 'enabled' => 1];
             $default_gifts[] = ['name' => 'An Electric Guitar', 'image' => 'data_custom/images/giftr/electric_guitar.jpg', 'price' => 10, 'enabled' => 1];
             $default_gifts[] = ['name' => 'A Piano', 'image' => 'data_custom/images/giftr/piano.jpg', 'price' => 10, 'enabled' => 1];
             $default_gifts[] = ['name' => 'A single red Rose', 'image' => 'data_custom/images/giftr/red-rose.jpg', 'price' => 10, 'enabled' => 1];
-            $default_gifts[] = ['name' => 'Some Champagne', 'image' => 'data_custom/images/giftr/Champagne.jpg', 'price' => 10, 'enabled' => 1];
-            $default_gifts[] = ['name' => 'A Kiss', 'image' => 'data_custom/images/giftr/2a%20kiss.jpg', 'price' => 10, 'enabled' => 1];
-            $default_gifts[] = ['name' => 'A Love note', 'image' => 'data_custom/images/giftr/love%20note.jpg', 'price' => 10, 'enabled' => 1];
-            $default_gifts[] = ['name' => 'A Santa hat', 'image' => 'data_custom/images/giftr/Santa_Hat.jpg', 'price' => 10, 'enabled' => 1];
+            $default_gifts[] = ['name' => 'Some Champagne', 'image' => 'data_custom/images/giftr/champagne.jpg', 'price' => 10, 'enabled' => 1];
+            $default_gifts[] = ['name' => 'A Kiss', 'image' => 'data_custom/images/giftr/kiss.jpg', 'price' => 10, 'enabled' => 1];
+            $default_gifts[] = ['name' => 'A Love note', 'image' => 'data_custom/images/giftr/love_note.jpg', 'price' => 10, 'enabled' => 1];
+            $default_gifts[] = ['name' => 'A Santa hat', 'image' => 'data_custom/images/giftr/santa_hat.jpg', 'price' => 10, 'enabled' => 1];
             $GLOBALS['SITE_DB']->query_insert('giftr', [
                 'name' => collapse_1d_complexity('name', $default_gifts),
                 'image' => collapse_1d_complexity('image', $default_gifts),
