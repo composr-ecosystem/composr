@@ -979,7 +979,7 @@ class Hook_addon_registry_core_form_interfaces
         $fields->attach(do_lorem_template('FORM_SCREEN_FIELD_SPACER', [
             'SECTION_HIDDEN' => false,
             'TITLE' => lorem_phrase(),
-            'DESCRIPTION' => lorem_paragraph(),
+            'HELP' => lorem_paragraph(),
         ]));
         $list = new Tempcode();
         foreach (placeholder_array() as $key => $value) {

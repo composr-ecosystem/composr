@@ -682,7 +682,7 @@ class Hook_addon_registry_core_cns
         $fields->attach(do_lorem_template('FORM_SCREEN_FIELD_SPACER', [
             'TITLE' => lorem_phrase(),
             'SECTION_HIDDEN' => false,
-            'DESCRIPTION' => lorem_paragraph(),
+            'HELP' => lorem_paragraph(),
         ]));
 
         $form = do_lorem_template('FORM', [

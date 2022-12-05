@@ -42,7 +42,6 @@ class template_parameter_consistency_test_set extends cms_test_case
             'FORM_GROUPED',
             'FORM',
             'FORM_SCREEN',
-            'FORM_SCREEN_FIELD_SPACER',
             'NEWSLETTER_WHATSNEW_RESOURCE_FCOMCODE',
             'MAP_TABLE',
 
@@ -71,6 +70,10 @@ class template_parameter_consistency_test_set extends cms_test_case
                 $template = $matches[1][$i];
                 $included_templates[$template] = true;
             }
+        }
+
+        if ($this->debug) {
+            @var_dump($template_instances);
         }
 
         // Check that for each we have properly detected both a live and a preview instance
@@ -140,30 +143,10 @@ class template_parameter_consistency_test_set extends cms_test_case
                 $missing_parameters = [];
 
                 if ($this->is_preview_template_context($context)) {
-                    foreach (array_keys($all_parameters) as $parameter) {
-                        $ok = (array_key_exists($parameter, $parameters)) ||
-                            ($parameter == '_GUID') ||
-                            (in_array($template, $templates_with_exotic_params)) ||
-                            (strpos($template_c, '{+START,IF_PASSED,' . $parameter . '}') !== false) ||
-                            (strpos($template_c, '{+START,IF_PASSED_AND_TRUE,' . $parameter . '}') !== false);
-
-                        if (!$ok) {
-                            $missing_parameters[] = "'" . $parameter . "' => TODO()";
-                        }
-                    }
+                    $this->check_template_call($parameters, array_keys($all_parameters), $template, $template_c, $templates_with_exotic_params, $missing_parameters);
                 } else {
                     if ($preview_parameters !== null) {
-                        foreach (array_keys($preview_parameters) as $parameter) {
-                            $ok = (array_key_exists($parameter, $parameters)) ||
-                                ($parameter == '_GUID') ||
-                                (in_array($template, $templates_with_exotic_params)) ||
-                                (strpos($template_c, '{+START,IF_PASSED,' . $parameter . '}') !== false) ||
-                                (strpos($template_c, '{+START,IF_PASSED_AND_TRUE,' . $parameter . '}') !== false);
-
-                            if (!$ok) {
-                                $missing_parameters[] = "'" . $parameter . "' => TODO()";
-                            }
-                        }
+                        $this->check_template_call($parameters, array_keys($preview_parameters), $template, $template_c, $templates_with_exotic_params, $missing_parameters);
                     }
                 }
 
@@ -178,6 +161,26 @@ class template_parameter_consistency_test_set extends cms_test_case
 
         if ($this->debug) {
             var_dump($template_instances);
+        }
+    }
+
+    protected function check_template_call($parameters, $known_parameters, $template, $template_c, $templates_with_exotic_params, &$missing_parameters)
+    {
+       foreach ($known_parameters as $parameter) {
+            $ok = (array_key_exists($parameter, $parameters)) ||
+                ($parameter == '_GUID') ||
+                (in_array($template, $templates_with_exotic_params)) ||
+                (strpos($template_c, '{+START,IF_PASSED,' . $parameter . '}') !== false) ||
+                (strpos($template_c, '{+START,IF_PASSED_AND_TRUE,' . $parameter . '}') !== false);
+
+            // Exceptions
+            if (($template == 'FORM_SCREEN_FIELD_SPACER') && ($parameter == 'SECTION_HIDDEN')) {
+                $ok = true;
+            }
+
+            if (!$ok) {
+                $missing_parameters[] = "'" . $parameter . "' => TODO()";
+            }
         }
     }
 
