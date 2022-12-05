@@ -250,14 +250,18 @@ function placeholder_form_with_field(string $field_name) : object
         'URL' => placeholder_url(),
         'SUBMIT_ICON' => 'buttons/proceed',
         'SUBMIT_NAME' => 'proceed',
+        'SUBMIT_BUTTON_CLASS' => null,
         'JS_FUNCTION_CALLS' => [],
-        'SKIP_WEBSTANDARDS' => true,
-        'SKIP_REQUIRED' => false,
-        'GET' => false,
-        'SUPPORT_AUTOSAVE' => false,
+        'SKIP_WEBSTANDARDS' => null,
+        'SKIP_REQUIRED' => null,
+        'GET' => null,
+        'SUPPORT_AUTOSAVE' => null,
         'ANALYTIC_EVENT_CATEGORY' => null,
-        'MODSECURITY_WORKAROUND' => false,
+        'MODSECURITY_WORKAROUND' => null,
         'SECONDARY_FORM' => false,
+        'NO_SIZING' => null,
+        'PREVIEW' => null,
+        'TITLE' => null,
     ]);
 
     return $form;

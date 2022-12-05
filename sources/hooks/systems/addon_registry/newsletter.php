@@ -231,7 +231,7 @@ class Hook_addon_registry_newsletter
                 'IMAGE_URL' => placeholder_image_url(),
                 'CONTENT_TYPE' => lorem_word(),
                 'CONTENT_ID' => placeholder_codename(),
-                'CATALOGUE' => lorem_word(),
+                'CATALOGUE' => null,
             ], null, false, null, '.txt', 'text');
 
             $tmp = do_lorem_template('NEWSLETTER_WHATSNEW_SECTION_FCOMCODE', [

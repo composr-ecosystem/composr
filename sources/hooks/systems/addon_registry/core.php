@@ -2829,14 +2829,18 @@ class Hook_addon_registry_core
             'FIELDS' => $fields,
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => lorem_word(),
+            'SUBMIT_BUTTON_CLASS' => null,
             'TEXT' => '',
             'JS_FUNCTION_CALLS' => [],
-            'SKIP_REQUIRED' => false,
+            'SKIP_REQUIRED' => null,
             'SECONDARY_FORM' => false,
             'TABINDEX' => placeholder_number(),
             'SUPPORT_AUTOSAVE' => false,
             'ANALYTIC_EVENT_CATEGORY' => null,
-            'MODSECURITY_WORKAROUND' => false,
+            'MODSECURITY_WORKAROUND' => null,
+            'NO_SIZING' => null,
+            'PREVIEW' => null,
+            'TITLE' => null,
         ]), null, '', true);
     }
 

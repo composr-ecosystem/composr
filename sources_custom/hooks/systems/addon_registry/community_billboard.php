@@ -263,11 +263,18 @@ class Hook_addon_registry_community_billboard
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => lorem_word(),
             'SKIP_WEBSTANDARDS' => false,
-            'SUPPORT_AUTOSAVE' => false,
-            'JS_FUNCTION_CALLS' => [],
+            'SUPPORT_AUTOSAVE' => null,
+            'JS_FUNCTION_CALLS' => null,
             'MODSECURITY_WORKAROUND' => false,
-            'POST' => false,
             'ANALYTIC_EVENT_CATEGORY' => null,
+            'PREVIEW' => null,
+            'STAFF_HELP_URL' => null,
+            'PING_URL' => null,
+            'CANCEL_URL' => null,
+            'EXTRA_BUTTONS' => null,
+            'THEME' => null,
+            'SEPARATE_PREVIEW' => null,
+            'BACK_URL' => null,
         ]), null, '', true);
     }
 }

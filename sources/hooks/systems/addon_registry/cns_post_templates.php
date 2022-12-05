@@ -178,7 +178,7 @@ class Hook_addon_registry_cns_post_templates
         ]));
 
         return lorem_globalise(do_lorem_template('FORM_SCREEN', [
-            'SKIP_WEBSTANDARDS' => true,
+            'SKIP_WEBSTANDARDS' => null,
             'HIDDEN' => '',
             'TITLE' => lorem_title(),
             'URL' => placeholder_url(),
@@ -186,12 +186,19 @@ class Hook_addon_registry_cns_post_templates
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => lorem_phrase(),
             'TEXT' => lorem_sentence_html(),
-            'SUPPORT_AUTOSAVE' => false,
-            'JS_FUNCTION_CALLS' => [],
+            'SUPPORT_AUTOSAVE' => null,
+            'JS_FUNCTION_CALLS' => null,
             'MODSECURITY_WORKAROUND' => false,
-            'POST' => false,
             'ANALYTIC_EVENT_CATEGORY' => null,
             'GET' => false,
+            'PREVIEW' => null,
+            'STAFF_HELP_URL' => null,
+            'PING_URL' => null,
+            'CANCEL_URL' => null,
+            'EXTRA_BUTTONS' => null,
+            'THEME' => null,
+            'SEPARATE_PREVIEW' => null,
+            'BACK_URL' => null,
         ]), null, '', true);
     }
 

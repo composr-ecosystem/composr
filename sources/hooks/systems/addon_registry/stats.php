@@ -343,14 +343,18 @@ class Hook_addon_registry_stats
             'FIELDS' => $fields,
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => lorem_word(),
+            'SUBMIT_BUTTON_CLASS' => null,
             'TEXT' => lorem_sentence_html(),
             'JS_FUNCTION_CALLS' => [],
-            'SKIP_REQUIRED' => false,
+            'SKIP_REQUIRED' => null,
             'SECONDARY_FORM' => false,
             'TABINDEX' => placeholder_number(),
-            'SUPPORT_AUTOSAVE' => false,
+            'SUPPORT_AUTOSAVE' => null,
             'ANALYTIC_EVENT_CATEGORY' => null,
-            'MODSECURITY_WORKAROUND' => false,
+            'MODSECURITY_WORKAROUND' => null,
+            'NO_SIZING' => null,
+            'PREVIEW' => null,
+            'TITLE' => null,
         ]), null, '', true);
     }
 

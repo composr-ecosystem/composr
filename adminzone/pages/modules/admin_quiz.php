@@ -264,7 +264,6 @@ class Module_admin_quiz
             'SUBMIT_ICON' => 'admin/export_spreadsheet',
             'SUBMIT_NAME' => $submit_name,
             'URL' => $post_url,
-            'POST' => true,
         ]);
     }
 

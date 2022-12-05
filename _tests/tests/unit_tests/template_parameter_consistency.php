@@ -35,10 +35,6 @@ class template_parameter_consistency_test_set extends cms_test_case
             // Shared templates with more-exotic extra parameters we do not expect to be universally used
             'SIMPLE_PREVIEW_BOX',
             'BLOCK_NO_ENTRIES',
-            'FORM_GROUPED',
-            'FORM',
-            'FORM_SCREEN',
-            'NEWSLETTER_WHATSNEW_RESOURCE_FCOMCODE',
 
             // Complex map buildup that we can't auto-scan
             'MEDIA_IMAGE_WEBSAFE',

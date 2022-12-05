@@ -1239,19 +1239,22 @@ class Hook_addon_registry_core_form_interfaces
             'GET' => false,
             'SKIP_WEBSTANDARDS' => true,
             'HIDDEN' => '',
-            'TITLE' => lorem_title(),
             'URL' => placeholder_url(),
             'FIELDS' => $fields,
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => lorem_word(),
+            'SUBMIT_BUTTON_CLASS' => null,
             'TEXT' => lorem_sentence_html(),
             'JS_FUNCTION_CALLS' => [],
-            'SKIP_REQUIRED' => false,
+            'SKIP_REQUIRED' => null,
             'SECONDARY_FORM' => false,
             'TABINDEX' => placeholder_number(),
-            'SUPPORT_AUTOSAVE' => false,
+            'SUPPORT_AUTOSAVE' => null,
             'ANALYTIC_EVENT_CATEGORY' => null,
-            'MODSECURITY_WORKAROUND' => false,
+            'MODSECURITY_WORKAROUND' => null,
+            'NO_SIZING' => null,
+            'PREVIEW' => null,
+            'TITLE' => null,
         ]), null, '', true);
     }
 
@@ -1708,7 +1711,7 @@ class Hook_addon_registry_core_form_interfaces
 
         return lorem_globalise(do_lorem_template('FORM_SCREEN', [
             'GET' => false,
-            'SKIP_WEBSTANDARDS' => true,
+            'SKIP_WEBSTANDARDS' => null,
             'HIDDEN' => $hidden,
             'TITLE' => lorem_title(),
             'URL' => placeholder_url(),
@@ -1716,11 +1719,18 @@ class Hook_addon_registry_core_form_interfaces
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => lorem_word(),
             'TEXT' => lorem_sentence_html(),
-            'SUPPORT_AUTOSAVE' => false,
+            'SUPPORT_AUTOSAVE' => null,
             'JS_FUNCTION_CALLS' => [],
             'MODSECURITY_WORKAROUND' => false,
-            'POST' => false,
             'ANALYTIC_EVENT_CATEGORY' => null,
+            'PREVIEW' => null,
+            'STAFF_HELP_URL' => null,
+            'PING_URL' => null,
+            'CANCEL_URL' => null,
+            'EXTRA_BUTTONS' => null,
+            'THEME' => null,
+            'SEPARATE_PREVIEW' => null,
+            'BACK_URL' => null,
         ]), null, '', true);
     }
 
@@ -1772,8 +1782,9 @@ class Hook_addon_registry_core_form_interfaces
             'FIELD_GROUPS' => lorem_phrase(),
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => lorem_word(),
-            'SUBMIT_BUTTON_CLASS' => lorem_phrase(),
             'URL' => placeholder_url(),
+            'SUBMIT_BUTTON_CLASS' => null,
+            'SUPPORT_AUTOSAVE' => null,
         ]), null, '', true);
     }
 
@@ -1965,12 +1976,19 @@ class Hook_addon_registry_core_form_interfaces
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => lorem_word(),
             'TEXT' => lorem_sentence_html(),
-            'SKIP_WEBSTANDARDS' => false,
-            'SUPPORT_AUTOSAVE' => false,
+            'SKIP_WEBSTANDARDS' => null,
+            'SUPPORT_AUTOSAVE' => null,
             'JS_FUNCTION_CALLS' => [],
             'MODSECURITY_WORKAROUND' => false,
-            'POST' => false,
             'ANALYTIC_EVENT_CATEGORY' => null,
+            'PREVIEW' => null,
+            'STAFF_HELP_URL' => null,
+            'PING_URL' => null,
+            'CANCEL_URL' => null,
+            'EXTRA_BUTTONS' => null,
+            'THEME' => null,
+            'SEPARATE_PREVIEW' => null,
+            'BACK_URL' => null,
         ]), null, '', true);
     }
 
@@ -2154,6 +2172,8 @@ class Hook_addon_registry_core_form_interfaces
             'TEXT' => '',
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => lorem_word_2(),
+            'SUBMIT_BUTTON_CLASS' => null,
+            'SUPPORT_AUTOSAVE' => null,
         ]), null, '', true);
     }
 
@@ -2202,15 +2222,19 @@ class Hook_addon_registry_core_form_interfaces
             'TEXT' => '',
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => lorem_word_2(),
-            'JS_FUNCTION_CALLS' => [],
-            'SKIP_REQUIRED' => false,
-            'SECONDARY_FORM' => false,
-            'TABINDEX' => placeholder_number(),
-            'SUPPORT_AUTOSAVE' => false,
+            'SUBMIT_BUTTON_CLASS' => null,
+            'JS_FUNCTION_CALLS' => null,
+            'SKIP_REQUIRED' => null,
+            'SECONDARY_FORM' => null,
+            'TABINDEX' => null,
+            'SUPPORT_AUTOSAVE' => null,
             'ANALYTIC_EVENT_CATEGORY' => null,
-            'MODSECURITY_WORKAROUND' => false,
-            'SKIP_WEBSTANDARDS' => false,
-            'GET' => false,
+            'MODSECURITY_WORKAROUND' => null,
+            'SKIP_WEBSTANDARDS' => null,
+            'GET' => null,
+            'NO_SIZING' => null,
+            'PREVIEW' => null,
+            'TITLE' => null,
         ]), null, '', true);
     }
 

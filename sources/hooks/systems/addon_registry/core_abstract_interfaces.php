@@ -815,6 +815,8 @@ class Hook_addon_registry_core_abstract_interfaces
             'FIELD_GROUPS' => $field_rows,
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => lorem_word_2(),
+            'SUBMIT_BUTTON_CLASS' => null,
+            'SUPPORT_AUTOSAVE' => null,
         ]), null, '', true);
     }
 
