@@ -43,8 +43,9 @@ class Hook_startup_tapatalk
             $app_ads_enable = 0;
             $app_banner_enable = 1;
             $is_mobile_skin = is_mobile() ? 1 : 0;
+            $page = get_page_name();
 
-            process_url_monikers(true, true, get_page_name());
+            process_url_monikers(true, true, $page);
 
             $page_type = 'other';
             $start = null;
