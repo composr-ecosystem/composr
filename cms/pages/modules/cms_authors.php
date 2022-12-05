@@ -488,16 +488,17 @@ class Module_cms_authors
             if (($field['m_table'] != 'modules') && ($field['m_table'] != 'blocks') && ($field['m_table'] != 'addons')) {
                 $rows_new = $GLOBALS['SITE_DB']->query('SELECT DISTINCT ' . $field['m_name'] . ' FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . $field['m_table'] . ' WHERE ' . db_string_not_equal_to($field['m_name'], '') . ' ORDER BY ' . $field['m_name']);
                 foreach ($rows_new as $row) {
-                    $authors[] = $row[$field['m_name']];
+                    if (empty($authors[$row[$field['m_name']]])) {
+                        $authors[$row[$field['m_name']]] = ($field['m_table'] == 'authors');
+                    }
                 }
             }
         }
-        $authors = array_unique($authors);
-        cms_mb_sort($authors, SORT_NATURAL | SORT_FLAG_CASE);
+        cms_mb_ksort($authors, SORT_NATURAL | SORT_FLAG_CASE);
         $out = new Tempcode();
-        foreach ($authors as $author) {
+        foreach ($authors as $author => $is_defined) {
             $selected = ($author == $it);
-            $out->attach(form_input_list_entry($author, $selected, $author));
+            $out->attach(form_input_list_entry($author, $selected, $author . ($is_defined ? ' *' : '')));
         }
 
         return $out;
