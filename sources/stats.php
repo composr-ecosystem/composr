@@ -449,10 +449,14 @@ function stats_generate_results_table(string $graph_name, array $filters = [], $
     $results_entries = new Tempcode();
     $i = 0;
     foreach ($data as $key => $val) {
+        if (is_integer($key)) {
+            $key = strval($key);
+        }
+
         if (($i >= $start) && ($i <= $start + $max)) {
             $_val = is_integer($val) ? integer_format($val, 0) : float_format($val, 2, true);
             $values = [
-                strval($key),
+                $key,
                 $_val,
             ];
             $results_entries->attach(results_entry($values, true));
