@@ -6,7 +6,7 @@
 
 			<p class="left">
 				<label class="accessibility-hidden" for="search-filedump-{I*}">{!SEARCH}</label>
-				<input {+START,IF,{$MOBILE}} autocorrect="off"{+END} maxlength="255" size="20" type="search" id="search-filedump-{I*}" class="form-control" name="search" placeholder="{!SEARCH}" />
+				<input {+START,IF,{$MOBILE}} autocorrect="off"{+END} maxlength="255" size="20" type="search" id="search-filedump-{I*}" class="form-control" name="search" placeholder="{!SEARCH}" value="{SEARCH*}" />
 
 				<label class="recurse horiz-field-sep" for="recurse-filedump-{I*}">
 					{!INCLUDE_SUBFOLDERS}
