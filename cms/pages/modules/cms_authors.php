@@ -240,6 +240,10 @@ class Module_cms_authors
             }
         }
 
+        if (substr($url, 0, 7) == 'mailto:') {
+            $url = substr($url, 7);
+        }
+
         $post_url = build_url(['page' => '_SELF', 'type' => '__add', 'author' => $author], '_SELF');
         $submit_name = do_lang_tempcode('SAVE');
 
