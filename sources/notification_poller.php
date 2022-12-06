@@ -446,7 +446,7 @@ function pt_to_xml(array $row) : string
             message="' . escape_html(static_evaluate_tempcode($_message)) . '"
             from_username="' . escape_html($username) . '"
             from_member_id="' . escape_html(strval($member_id)) . '"
-            url="' . escape_html($url) . '"
+            url="' . escape_html(is_object($url) ? $url->evaluate() : $url) . '"
             from_avatar_url="' . escape_html($avatar_url) . '"
             date_timestamp="' . escape_html(strval($row['p_time'])) . '"
             date_written_time="' . escape_html(get_timezoned_date_time($row['p_time'])) . '"
