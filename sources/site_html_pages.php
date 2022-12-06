@@ -126,5 +126,7 @@ function load_html_page(string $string, ?string $file_base = null) : string
         }
     }
 
+    $GLOBALS['SCREEN_TEMPLATE_CALLED'] = '';
+
     return $html;
 }

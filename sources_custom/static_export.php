@@ -82,12 +82,12 @@ function _page_link_to_static(array $node)
             }
 
             $session_cookie_id = get_session_cookie();
-            $data = http_get_contents($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => [$session_cookie_id => get_secure_random_string()]]);
+            $data = http_get_contents($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]);
             if ($data === null) {
                 continue;
             }
 
-            if (get_param_integer('save__deps', 1) == 1) {
+            if (get_param_integer('save__deps_files', 1) == 1) {
                 $data = preg_replace_callback('#"([^"]*/(attachment|dload)\.php\?id=(\d+)[^"]*)"#', '_static_export_scriptrep_callback', $data);
                 $data = preg_replace_callback('#"([^"]*/(catalogue_file)\.php\?file=([^"&]+)&amp;original_filename=([^"&]+)[^"]*)"#', '_static_export_scriptrep_callback', $data);
             }
@@ -209,8 +209,11 @@ function _static_export_scriptrep_callback(array $matches) : string
         case 'dload':
             $id = intval($matches[3]);
 
-            $field = 'a_url';
             $download = $GLOBALS['SITE_DB']->query_select('download_downloads', ['id', 'url', 'original_filename'], ['id' => $id], '', 1);
+
+            if (!array_key_exists(0, $download)) {
+                return $matches[0];
+            }
 
             if (url_is_local($download[0]['url'])) {
                 $download[0]['original_filename'] = _static_export_make_ascii($download[0]['original_filename']);
@@ -218,8 +221,8 @@ function _static_export_scriptrep_callback(array $matches) : string
                 $new_url = get_base_url() . '/files/' . $download[0]['id'] . '__' . $download[0]['original_filename'];
 
                 if (get_param_integer('save__deps_files', 1) == 1) {
-                    $full_path = get_custom_file_base() . '/' . urldecode($download[0][$field]);
-                    tar_add_file($STATIC_EXPORT_TAR, 'files/' . $download[0]['id'] . '__' . $download[0]['original_filename'], $full_path, 0644, filemtime($full_path), true, true);
+                    $full_path = get_custom_file_base() . '/' . urldecode($download[0]['url']);
+                    tar_add_file($STATIC_EXPORT_TAR, 'files/' . strval($download[0]['id']) . '__' . $download[0]['original_filename'], $full_path, 0644, filemtime($full_path), true, true);
                 }
             } else {
                 $new_url = $download[0]['url'];
@@ -233,10 +236,10 @@ function _static_export_scriptrep_callback(array $matches) : string
 /**
  * Make a filename ASCII, for archive/cross-platform portability.
  *
- * @param  array $filename The filename
+ * @param  string $filename The filename
  * @return string The ASCII version
  */
-function _static_export_make_ascii(array $filename) : string
+function _static_export_make_ascii(string $filename) : string
 {
     for ($i = 0; $i < strlen($filename); $i++) {
         if ((ord($filename[$i]) < 32) || (ord($filename[$i]) > 127)) {

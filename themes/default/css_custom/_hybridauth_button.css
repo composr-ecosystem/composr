@@ -1,4 +1,6 @@
-.button--{CODENAME|} {
-	background-color: #{BACKGROUND_COLOUR*} !important;
-	color: #{TEXT_COLOUR*} !important;
-}
+{+START,IF_PASSED,CODENAME}
+	.button--{CODENAME|} {
+		background-color: #{BACKGROUND_COLOUR*} !important;
+		color: #{TEXT_COLOUR*} !important;
+	}
+{+END}

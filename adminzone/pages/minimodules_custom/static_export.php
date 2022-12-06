@@ -13,6 +13,23 @@
  * @package    static_export
  */
 
+/*
+There are hidden parameters you can use...
+ - dir (directly extract to exports/static rather than downloading to a TAR file, default=0)
+ - only_page_links (comma-separated inclusion list of page-links to export, default is to export all)
+ - save__deps_files (set to 1 to export attached files, default=1)
+ - guess_dates (set to 1 to use last page add/edit time as file date for that page, default=0)
+ - save__pages (set to 1 to save pages, default=1)
+ - save__misc_uploads (set to 1 to save uploads not covered by the deps above, default=1)
+ - save__theme_files (set to 1 to save CSS/JavaScript/theme-images, default=1)
+ - save__redirects (set to 1 to create stub pages that redirect to the browse screen type when not given in the URL, default=1)
+ - save__htaccess (set to 1 to to create a simple .htaccess rule to cover some basic redirections among other things, default=1)
+ - save__robots_txt (set to 1 to create a simple robots.txt to cover some basic things, default=1)
+ - save__mailer (set to 1 to create a PHP mailer script, default=1)
+ - save__warnings (set to 1 to create a _warnings.txt file with export warnings, default=1)
+ - save__sitemaps (set to 1 to export the XML sitemap, default=1)
+*/
+
 i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
 $error_msg = new Tempcode();
@@ -20,11 +37,20 @@ if (!addon_installed__messaged('static_export', $error_msg)) {
     return $error_msg;
 }
 
+$extract = (get_param_integer('dir', 0) == 1);
+
+$title = get_screen_title('Export static site', false);
+
 if (post_param_integer('confirm', 0) == 0) {
-    $preview = 'Export static site (TAR file)';
-    $title = get_screen_title($preview, false);
+    $preview = protect_from_escaping($extract ? 'Export to <kbd>exports/static</kbd>.' : 'Export to TAR file.');
+
     $url = get_self_url(false, false);
-    return do_template('CONFIRM_SCREEN', ['_GUID' => '517159d4bde58ca67392922f3a53c0d7', 'TITLE' => $title, 'PREVIEW' => $preview, 'FIELDS' => form_input_hidden('confirm', '1'), 'URL' => $url]);
+
+    $hidden = new Tempcode();
+    $hidden->attach(form_input_hidden('confirm', '1'));
+    $hidden->attach(form_input_hidden('csrf_token_preserve', '1'));
+
+    return do_template('CONFIRM_SCREEN', ['_GUID' => '517159d4bde58ca67392922f3a53c0d7', 'TITLE' => $title, 'PREVIEW' => $preview, 'FIELDS' => $hidden, 'URL' => $url]);
 }
 
 disable_php_memory_limit();
@@ -67,7 +93,7 @@ if (get_option('enable_previews') == '1') {
 
 $filename = 'static-' . get_site_name() . '.' . date('Y-m-d') . '.tar';
 
-if ((get_param_integer('do__headers', 1) == 1) && (get_param_integer('dir', 0) == 0)) {
+if (!$extract) {
     header('Content-Disposition: attachment; filename="' . escape_header($filename, true) . '"');
 }
 
@@ -77,7 +103,7 @@ if (get_forum_type() != 'none') {
     $STATIC_EXPORT_WARNINGS[] = 'Not on \'none\' forum driver, you may possibly still have some bundled login links etc to remove';
 }
 $tar_path = null;
-if (get_param_integer('dir', 0) == 0) {
+if (!$extract) {
     $tar_path = 'php://output';
 } else {
     $tar_path = cms_tempnam();
@@ -90,13 +116,6 @@ push_query_limiting(false);
 require_code('sitemap');
 require_code('static_export');
 if (get_param_integer('save__pages', 1) == 1) {
-    if (get_param_integer('guest_session', 1) == 1) {
-        $member_id = get_member();
-        require_code('users_inactive_occasionals');
-        create_session($GLOBALS['FORUM_DRIVER']->get_guest_id());
-        clear_permissions_runtime_cache();
-    }
-
     $callback = '_page_link_to_static';
     $meta_gather = SITEMAP_GATHER_TIMES;
     retrieve_sitemap_node(
@@ -105,48 +124,92 @@ if (get_param_integer('save__pages', 1) == 1) {
         /*$valid_node_types=*/null,
         /*$child_cutoff=*/null,
         /*$max_recurse_depth=*/null,
-        /*$options=*/SITEMAP_GEN_CHECK_PERMS,
+        /*$options=*/SITEMAP_GEN_CHECK_PERMS | SITEMAP_GEN_AS_GUEST,
         /*$zone=*/'_SEARCH',
         $meta_gather
     );
-
-    if (get_param_integer('guest_session', 1) == 1) {
-        create_session($member_id);
-        clear_permissions_runtime_cache();
-    }
 }
 
-// Other media
-if (get_param_integer('save__uploads', 1) == 1) {
-    $subpaths = [];
+$subpaths = [
+    'data/images',
+    'data/polyfills',
+];
+
+// Misc uploads
+if (get_param_integer('save__misc_uploads', 1) == 1) {
     foreach (get_directory_contents(get_custom_file_base() . '/uploads', '', IGNORE_ACCESS_CONTROLLERS, false, false) as $subpath) {
-        if (($subpath != 'downloads') && ($subpath != 'attachments') && ($subpath != 'attachments_thumbs')) {
+        if (!in_array($subpath, ['downloads', 'attachments', 'attachments_thumbs', 'incoming', 'captcha', 'website_specific'])) {
             $subpaths = array_merge($subpaths, ['uploads/' . $subpath]);
         }
     }
-    $subpaths = array_merge($subpaths, ['themes/default/templates_cached', 'themes/default/images', 'themes/default/images_custom']);
-    $theme = $GLOBALS['FORUM_DRIVER']->get_theme('');
-    if ($theme != 'default') {
-        $subpaths = array_merge($subpaths, ['themes/' . $theme . '/templates_cached', 'themes/' . $theme . '/images', 'themes/' . $theme . '/images_custom']);
-    }
-    foreach ($subpaths as $subpath) {
-        if (substr($subpath, -strlen('/templates_cached')) == '/templates_cached') {
-            foreach (get_directory_contents(get_custom_file_base() . '/' . $subpath, '', 0, false, true, ['css', 'js']) as $file) {
-                tar_add_file($STATIC_EXPORT_TAR, $subpath . '/' . $file, get_custom_file_base() . '/' . $subpath . '/' . $file, 0644, time(), true);
+}
+
+// Theme files
+if (get_param_integer('save__theme_files', 1) == 1) {
+    $themes = [];
+    $themes[] = 'default';
+    $themes[] = $GLOBALS['FORUM_DRIVER']->get_theme('');
+    $themes = array_unique($themes);
+
+    $css_files = [];
+    $js_files = [];
+    foreach ($themes as $theme) {
+        foreach (['css', 'css_custom'] as $_dir) {
+            $dir = get_file_base() . '/themes/' . $theme . '/' . $_dir;
+            $dh = opendir($dir);
+            while (($f = readdir($dh)) !== false) {
+                if (substr($f, -4) == '.css') {
+                    $css_files[substr($f, 0, strlen($f) - 4)] = true;
+                }
             }
-        } else {
-            tar_add_folder($STATIC_EXPORT_TAR, null, get_file_base(), null, $subpath);
         }
+
+        foreach (['javascript', 'javascript_custom'] as $_dir) {
+            $dir = get_file_base() . '/themes/' . $theme . '/' . $_dir;
+            $dh = opendir($dir);
+            while (($f = readdir($dh)) !== false) {
+                if (substr($f, -3) == '.js') {
+                    $js_files[substr($f, 0, strlen($f) - 3)] = true;
+                }
+            }
+        }
+    }
+
+    foreach ($themes as $theme) {
+        foreach (array_keys($css_files) as $c) {
+            css_enforce($c, $theme);
+        }
+        foreach (array_keys($js_files) as $j) {
+            javascript_enforce($j, $theme);
+        }
+
+        $subpaths = array_merge($subpaths, [
+            'themes/' . $theme . '/templates_cached',
+            'themes/' . $theme . '/images',
+            'themes/' . $theme . '/images_custom',
+        ]);
+    }
+}
+
+foreach ($subpaths as $subpath) {
+    if (substr($subpath, -strlen('/templates_cached')) == '/templates_cached') {
+        // We just want .css and .js files from templates_cached/*
+        $web_resources = get_directory_contents(get_custom_file_base() . '/' . $subpath, '', 0, true, true, ['css', 'js']);
+        foreach ($web_resources as $file) {
+            tar_add_file($STATIC_EXPORT_TAR, $subpath . '/' . $file, get_custom_file_base() . '/' . $subpath . '/' . $file, 0644, time(), true);
+        }
+    } else {
+        tar_add_folder($STATIC_EXPORT_TAR, null, get_file_base(), null, $subpath, [], null, false, IGNORE_ACCESS_CONTROLLERS);
     }
 }
 
 // .htaccess
 $data = '';
-$data .= 'ErrorDocument 404 /sitemap.htm' . "\n\n";
+$data .= "<FilesMatch \"(?<!\.jpg|\.jpeg|\.gif|\.png|\.ico|\.cur|\.svg)$\">\nErrorDocument 404 /sitemap.htm\n</FilesMatch>\n\n";
 $data .= 'RewriteEngine on' . "\n";
 $data .= "\n";
 $data .= "\n";
-$data .= 'RewriteRule ^/?$ start.htm [R,L]' . "\n";
+$data .= 'RewriteRule ^/?$ home.htm [R,L]' . "\n";
 $data .= "\n";
 $data .= "\n";
 $directory = $STATIC_EXPORT_TAR['directory'];
@@ -437,10 +500,10 @@ if (trim($post) != "") {
 ';
     if (get_param_integer('save__mailer', 1) == 1) {
         require_code('crypt');
-        $mailer_path = get_custom_file_base() . '/pages/html_custom/' . $lang . '/mailer_temp.htm';
+        $mailer_path = get_custom_file_base() . '/pages/html_custom/' . $lang . '/_mailer_temp.htm';
         cms_file_put_contents_safe($mailer_path, $mailer_script, FILE_WRITE_FIX_PERMISSIONS);
         $session_cookie_id = get_session_cookie();
-        $data = http_get_contents(static_evaluate_tempcode(build_url(['page' => 'mailer_temp', 'keep_lang' => (count($langs) != 1) ? $lang : null], '', [], false, false, true)), ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'cookies' => [$session_cookie_id => get_secure_random_string()]]);
+        $data = http_get_contents(static_evaluate_tempcode(build_url(['page' => '_mailer_temp', 'keep_lang' => (count($langs) != 1) ? $lang : null], '', [], false, false, true)), ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'cookies' => [$session_cookie_id => get_secure_random_string()]]);
         unlink($mailer_path);
         $data = preg_replace('#<title>.*</title>#', '<title>' . escape_html(get_site_name()) . '</title>', $data);
         $relative_root = (count($langs) != 1) ? '../' : '';
@@ -449,7 +512,11 @@ if (trim($post) != "") {
         $robots_data .= 'Deny /' . ((count($langs) != 1) ? ($lang . '/') : '') . 'mailer.php' . "\n";
     }
 }
-tar_add_file($STATIC_EXPORT_TAR, 'robots.txt', 'User-agent: *' . "\n" . $robots_data, 0644, time(), false);
+if (get_param_integer('save__robots_txt', 1) == 1) {
+    $robots_txt = 'User-agent: *' . "\n" . $robots_data;
+    $robots_txt .= "\n\nSitemap: /data_custom/sitemaps/index.xml\n";
+    tar_add_file($STATIC_EXPORT_TAR, 'robots.txt', $robots_txt, 0644, time(), false);
+}
 
 // Add warnings file
 if (get_param_integer('save__warnings', 1) == 1) {
@@ -461,13 +528,13 @@ if (get_param_integer('save__warnings', 1) == 1) {
 // Sitemap, if it has been built
 if (get_param_integer('save__sitemaps', 1) == 1) {
     if (file_exists(get_custom_file_base() . '/data_custom/sitemaps/index.xml')) {
-        tar_add_folder($STATIC_EXPORT_TAR, null, get_custom_file_base() . '/data_custom/sitemaps');
+        tar_add_folder($STATIC_EXPORT_TAR, null, get_custom_file_base(), null, 'data_custom/sitemaps');
     }
 }
 
 tar_close($STATIC_EXPORT_TAR);
 
-if (get_param_integer('dir', 0) == 0) {
+if (!$extract) {
     $GLOBALS['SCREEN_TEMPLATE_CALLED'] = '';
     exit();
 }
@@ -483,6 +550,6 @@ tar_extract_to_folder($myfile, '/exports/static');
 tar_close($myfile);
 unlink($tar_path);
 
-$title = get_screen_title('Exported to static', false);
 $title->evaluate_echo();
-echo do_lang('SUCCESS');
+
+echo 'Exported to <kbd>exports/static</kbd>.';
