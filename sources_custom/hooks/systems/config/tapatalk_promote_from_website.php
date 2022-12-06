@@ -30,7 +30,7 @@ class Hook_config_tapatalk_promote_from_website
             'type' => 'tick',
             'category' => 'COMPOSR_APIS',
             'group' => 'TAPATALK',
-            'explanation' => 'CONFIG_OPTION_after_edit_mark_unread',
+            'explanation' => 'CONFIG_OPTION_tapatalk_promote_from_website',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,
