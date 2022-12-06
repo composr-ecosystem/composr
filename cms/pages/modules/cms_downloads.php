@@ -491,7 +491,7 @@ class Module_cms_downloads extends Standard_crud_module
         $licences = create_selection_list_download_licences($licence);
         if (!$licences->is_empty()) {
             $licences = create_selection_list_download_licences($licence, true);
-            $fields->attach(form_input_list(do_lang_tempcode('LICENCE'), do_lang_tempcode('DESCRIPTION_DOWNLOAD_LICENCE'), 'licence', $licences));
+            $fields->attach(form_input_list(do_lang_tempcode('LICENCE'), do_lang_tempcode('DESCRIPTION_DOWNLOAD_LICENCE'), 'licence', $licences, null, false, false));
         }
 
         require_code('syndication');
