@@ -2,14 +2,6 @@
 	{$,This allows screen-reader users (e.g. blind users) to jump past the panels etc to the main content}
 	<a accesskey="s" class="accessibility-hidden" href="#maincontent">{!SKIP_NAVIGATION}</a>
 
-	{$,The banner}
-	{+START,IF,{$DESKTOP}}
-		{$SET-,BANNER,{$BANNER}} {$,This is to avoid evaluating the banner twice}
-		{+START,IF_NON_EMPTY,{$GET,BANNER}}
-			<div class="global-banner block-desktop container">{$GET,BANNER}</div>
-		{+END}
-	{+END}
-
 	{$,The main logo}
 	<h1 class="logo container">
 		<a class="logo-link" target="_self" href="{$PAGE_LINK*,:}" rel="home" title="{!HOME}" accesskey="r">{+START,TRIM}

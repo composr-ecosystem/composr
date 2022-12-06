@@ -34,6 +34,16 @@
 			{$GET,hero_slider}
 		{+END}
 
+		{$,The banner}
+		{+START,IF,{$DESKTOP}}
+			{+START,IF,{$SHOW_HEADER}}
+				{$SET-,BANNER,{$BANNER}} {$,This is to avoid evaluating the banner twice}
+				{+START,IF_NON_EMPTY,{$GET,BANNER}}
+					<div class="global-banner block-desktop container">{$GET,BANNER}</div>
+				{+END}
+			{+END}
+		{+END}
+
 		<div class="container">
 			{$,By default the top panel contains the admin menu, community menu, member bar, etc}
 			{+START,IF_NON_EMPTY,{$TRIM,{$LOAD_PANEL,top}}}
