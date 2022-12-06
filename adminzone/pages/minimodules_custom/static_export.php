@@ -40,29 +40,29 @@ require_code('config2');
 
 if (get_option('url_scheme') != 'HTM') {
     set_option('url_scheme', 'HTM');
-    warn_exit('A URL Scheme of "Use .htm to identify CMS pages" must be enabled before the export can happen, as this is the tidy scheme we export to. It is now enabled - just click the back icon and click proceed again.');
+    warn_exit(protect_from_escaping('A URL Scheme of "Use .htm to identify CMS pages" must be enabled before the export can happen, as this is the tidy scheme we export to. It is now enabled - click the back icon, refresh, and click proceed again.'));
 }
 
 if (get_option('show_inline_stats') == '1') {
     set_option('show_inline_stats', '0');
-    warn_exit('Inline stats must be disabled. It is now disabled - just click the back icon and click proceed again.');
+    warn_exit('Inline stats must be disabled. It is now disabled - click the back icon, refresh, and click proceed again.');
 }
 
 if (get_option('site_closed') == '1') {
     set_option('site_closed', '0');
-    warn_exit('Site must not be closed. It is now open - just click the back icon and click proceed again.');
+    warn_exit('Site must not be closed. It is now open - click the back icon, refresh, and click proceed again.');
 }
 
 if ((get_option('is_on_comments') == '1') || (get_option('is_on_trackbacks') == '1') || (get_option('is_on_rating') == '1')) {
     set_option('is_on_comments', '0');
     set_option('is_on_trackbacks', '0');
     set_option('is_on_rating', '0');
-    warn_exit('Comments/trackbacks/rating must not be enabled. It is now all disabled - just click the back icon and click proceed again.');
+    warn_exit('Comments/trackbacks/rating must not be enabled. It is now all disabled - click the back icon, refresh, and click proceed again.');
 }
 
 if (get_option('enable_previews') == '1') {
     set_option('enable_previews', '0');
-    warn_exit('Previews must be disabled. It is now disabled - just click the back icon and click proceed again.');
+    warn_exit('Previews must be disabled. It is now disabled - click the back icon, refresh, and click proceed again.');
 }
 
 $filename = 'static-' . get_site_name() . '.' . date('Y-m-d') . '.tar';
@@ -78,7 +78,7 @@ if (get_forum_type() != 'none') {
 }
 $tar_path = null;
 if (get_param_integer('dir', 0) == 0) {
-    $tar_path = null;
+    $tar_path = 'php://output';
 } else {
     $tar_path = cms_tempnam();
 }
@@ -90,10 +90,12 @@ push_query_limiting(false);
 require_code('sitemap');
 require_code('static_export');
 if (get_param_integer('save__pages', 1) == 1) {
-    $member_id = get_member();
-    require_code('users_inactive_occasionals');
-    create_session($GLOBALS['FORUM_DRIVER']->get_guest_id());
-    clear_permissions_runtime_cache();
+    if (get_param_integer('guest_session', 1) == 1) {
+        $member_id = get_member();
+        require_code('users_inactive_occasionals');
+        create_session($GLOBALS['FORUM_DRIVER']->get_guest_id());
+        clear_permissions_runtime_cache();
+    }
 
     $callback = '_page_link_to_static';
     $meta_gather = SITEMAP_GATHER_TIMES;
@@ -108,8 +110,10 @@ if (get_param_integer('save__pages', 1) == 1) {
         $meta_gather
     );
 
-    create_session($member_id);
-    clear_permissions_runtime_cache();
+    if (get_param_integer('guest_session', 1) == 1) {
+        create_session($member_id);
+        clear_permissions_runtime_cache();
+    }
 }
 
 // Other media
@@ -455,8 +459,10 @@ if (get_param_integer('save__warnings', 1) == 1) {
 }
 
 // Sitemap, if it has been built
-if (file_exists(get_custom_file_base() . '/data_custom/sitemaps/index.xml')) {
-    tar_add_folder($STATIC_EXPORT_TAR, null, get_custom_file_base() . '/data_custom/sitemaps');
+if (get_param_integer('save__sitemaps', 1) == 1) {
+    if (file_exists(get_custom_file_base() . '/data_custom/sitemaps/index.xml')) {
+        tar_add_folder($STATIC_EXPORT_TAR, null, get_custom_file_base() . '/data_custom/sitemaps');
+    }
 }
 
 tar_close($STATIC_EXPORT_TAR);
