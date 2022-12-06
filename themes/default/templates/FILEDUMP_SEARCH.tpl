@@ -2,7 +2,7 @@
 	{+START,IF,{$ADDON_INSTALLED,search}}
 		{$SET,search_url,{$SELF_URL}}
 		<form class="filedump-filter" role="search" title="{!SEARCH}" data-disable-buttons-on-submit="{}" action="{$URL_FOR_GET_FORM*,{$GET,search_url},search,type_filter,sort,place,recurse,file}#tab--{TAB%}" method="get">
-			{$HIDDENS_FOR_GET_FORM,{$GET,search_url},search,type_filter,sort,place,recurse,file}
+			{$HIDDENS_FOR_GET_FORM,{$GET,search_url},search,type_filter,sort,subpath,recurse,file}
 
 			<p class="left">
 				<label class="accessibility-hidden" for="search-filedump-{I*}">{!SEARCH}</label>
@@ -28,12 +28,12 @@
 
 				<label class="jump-to-filedump horiz-field-sep" for="jump-to-filedump-{I*}">
 					{!JUMP_TO_FOLDER}
-					<select id="jump-to-filedump-{I*}" name="place" class="form-control">
+					<select id="jump-to-filedump-{I*}" name="subpath" class="form-control">
 						{+START,IF_NON_EMPTY,{FILTERED_DIRECTORIES_MISSES}}
 							<optgroup label="{!FILEDUMP_FOLDER_MATCHING}">
 						{+END}
 						{+START,LOOP,FILTERED_DIRECTORIES}
-							<option {+START,IF,{$EQ,{$_GET,place,/},/{_loop_var*}{$?,{$IS_NON_EMPTY,{_loop_var}},/}}} selected="selected"{+END} value="/{_loop_var*}{$?,{$IS_NON_EMPTY,{_loop_var}},/}">/{_loop_var*}</option>
+							<option {+START,IF,{$EQ,{SUBPATH},/{_loop_var*}{$?,{$IS_NON_EMPTY,{_loop_var}},/}}} selected="selected"{+END} value="/{_loop_var*}{$?,{$IS_NON_EMPTY,{_loop_var}},/}">/{_loop_var*}</option>
 						{+END}
 						{+START,IF_NON_EMPTY,{FILTERED_DIRECTORIES_MISSES}}
 							</optgroup>
@@ -41,7 +41,7 @@
 						{+START,IF_NON_EMPTY,{FILTERED_DIRECTORIES_MISSES}}
 							<optgroup label="{!FILEDUMP_FOLDER_NON_MATCHING}">
 								{+START,LOOP,FILTERED_DIRECTORIES_MISSES}
-									<option {+START,IF,{$EQ,{$_GET,place,/},/{_loop_var*}{$?,{$IS_NON_EMPTY,{_loop_var}},/}}} selected="selected"{+END} value="/{_loop_var*}{$?,{$IS_NON_EMPTY,{_loop_var}},/}">/{_loop_var*}</option>
+									<option {+START,IF,{$EQ,{SUBPATH},/{_loop_var*}{$?,{$IS_NON_EMPTY,{_loop_var}},/}}} selected="selected"{+END} value="/{_loop_var*}{$?,{$IS_NON_EMPTY,{_loop_var}},/}">/{_loop_var*}</option>
 								{+END}
 							</optgroup>
 						{+END}
