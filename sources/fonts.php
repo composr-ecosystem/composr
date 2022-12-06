@@ -221,5 +221,8 @@ function find_font_path(string $font) : string
     if (!file_exists($file_base . '/' . $font . '.ttf')) {
         $file_base = get_file_base() . '/data/fonts/';
     }
+    if (!file_exists($file_base . '/' . $font . '.ttf')) {
+        return $file_base . 'NotoSans-Bold.ttf'; // Fallback
+    }
     return $file_base . $font . '.ttf';
 }

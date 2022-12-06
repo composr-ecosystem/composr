@@ -1,3 +1,4 @@
+{$REQUIRE_JAVASCRIPT,core_adminzone_dashboard}
 {$REQUIRE_JAVASCRIPT,checking}
 
 {+START,IF,{$NEQ,{$COMMA_LIST_GET,{BLOCK_PARAMS},raw},1}}

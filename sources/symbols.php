@@ -3773,7 +3773,7 @@ function ecv_BLOCK(string $lang, array $escaped, array $param) : string
             $_param = preg_replace('#^\s*([^\s]+)\s*=#', '$1=', $_param);
         }
 
-        if (in_array('defer=1', $param_2)) {
+        if ((in_array('defer=1', $param_2)) && (!running_script('comcode_convert'))) {
             $value = static_evaluate_tempcode(do_template('JS_BLOCK', ['_GUID' => '2334719e23b2773ad04fe0fcbdce684d', 'BLOCK_PARAMS' => comma_list_arr_to_str($param_2)]));
         } else {
             global $BLOCKS_CACHE;

@@ -1333,7 +1333,7 @@ function handle_symbol_preprocessing(array $seq_part, array &$children, string $
                 $param = comma_list_str_to_arr($param[0], true);
             }
 
-            if (in_array('defer=1', $param)) {
+            if ((in_array('defer=1', $param)) && (!running_script('comcode_convert'))) {
                 // Nothing has to be done here, except preparing for AJAX
             } else {
                 global $REQUEST_BLOCK_NEST_LEVEL;
