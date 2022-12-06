@@ -34,6 +34,12 @@
 	margin-left: 1em !important;
 }
 
+/*{+START,CSS_MODE,mobile}*/
+	.filedump-actions {
+		width: 150px;
+	}
+/*{+END}*/
+
 .filedump-thumbnails {
 	{$BETA_CSS_PROPERTY,display: flex;}
 	flex-wrap: wrap;

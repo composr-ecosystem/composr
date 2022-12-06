@@ -681,6 +681,9 @@ img.icon {
 	.block-mobile {
 		display: block !important;
 	}
+	br.block-mobile {
+		margin-top: 0.5em;
+	}
 
 	.column-desktop {
 		visibility: collapse !important;
@@ -3137,6 +3140,12 @@ hr.spaced-rule {
 .horiz-field-sep, ul.horizontal-links.horiz-field-sep {
 	padding-left: 0.8em;
 }
+/*{+START,CSS_MODE,mobile}*/
+	.horiz-field-sep.block-mobile {
+		padding-left: 0;
+		margin-top: 0.5em;
+	}
+/*{+END}*/
 .horiz-field-sep, .horiz-field-sep-rightward {
 	display: inline-block !important; /* Side-effect: stops internal wrapping */
 }

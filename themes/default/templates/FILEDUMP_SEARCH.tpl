@@ -8,14 +8,14 @@
 				<label class="accessibility-hidden" for="search-filedump-{I*}">{!SEARCH}</label>
 				<input {+START,IF,{$MOBILE}} autocorrect="off"{+END} maxlength="255" size="20" type="search" id="search-filedump-{I*}" class="form-control" name="search" placeholder="{!SEARCH}" value="{SEARCH*}" />
 
-				<label class="recurse horiz-field-sep" for="recurse-filedump-{I*}">
+				<label class="recurse horiz-field-sep block-mobile" for="recurse-filedump-{I*}">
 					{!INCLUDE_SUBFOLDERS}
 					<input {+START,IF,{$NEQ,{$_GET,recurse},0}} checked="checked"{+END} type="checkbox" name="recurse" id="recurse-filedump-{I*}" value="1" />
 				</label>
 
 				<br class="block-mobile" />
 
-				<label class="type-filter-filedump horiz-field-sep" for="type-filter-filedump-{I*}">
+				<label class="type-filter-filedump horiz-field-sep block-mobile" for="type-filter-filedump-{I*}">
 					{!SHOW}
 					<select id="type-filter-filedump-{I*}" name="type_filter" class="form-control">
 						<option {+START,IF,{$EQ,{TYPE_FILTER},}} selected="selected"{+END} value="">{!ALL}</option>
@@ -26,7 +26,7 @@
 					</select>
 				</label>
 
-				<label class="jump-to-filedump horiz-field-sep" for="jump-to-filedump-{I*}">
+				<label class="jump-to-filedump horiz-field-sep block-mobile" for="jump-to-filedump-{I*}">
 					{!JUMP_TO_FOLDER}
 					<select id="jump-to-filedump-{I*}" name="subpath" class="form-control">
 						{+START,IF_NON_EMPTY,{FILTERED_DIRECTORIES_MISSES}}
@@ -50,7 +50,7 @@
 
 				<br class="block-mobile" />
 
-				<label class="sort-filedump horiz-field-sep" for="sort-filedump-{I*}">
+				<label class="sort-filedump horiz-field-sep block-mobile" for="sort-filedump-{I*}">
 					{!SORT_BY}
 					<select id="sort-filedump-{I*}" name="sort" class="form-control">
 						<option {+START,IF,{$EQ,{SORT},time ASC}} selected="selected"{+END} value="time ASC">{!DATE_TIME},{!_ASCENDING}</option>

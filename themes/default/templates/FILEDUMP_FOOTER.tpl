@@ -3,7 +3,7 @@
 <div class="clearfix">
 	<div class="left">
 		<label for="filedump-action-{I*}">{!ACTION}:</label>
-		<select id="filedump-action-{I*}" name="filedump_action" class="form-control">
+		<select id="filedump-action-{I*}" name="filedump_action" class="form-control filedump-actions">
 			{+START,IF,{$EQ,{I},1}}
 				<option value="">---</option>
 			{+END}
