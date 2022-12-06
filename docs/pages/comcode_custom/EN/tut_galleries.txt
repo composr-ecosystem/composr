@@ -18,7 +18,7 @@ Galleries are organised in a hierarchical (tree) structure. For more information
 
 Galleries are given a name, and a title. The name should be a code-name that can easily be typed in a URL, rather than a cleanly readable name. For example, 'holiday2004' would be a good gallery name for a gallery with title, 'Holiday Pictures, 2004 (Sweden)'.
 
-Galleries may have 'representative images' (rep-images). When a user views a gallery with sub-galleries, the sub-galleries are actually shown with their rep-images, so as to make them look more attractive and give an impression of the contents. Rep-images may be chosen when adding or editing a gallery, or when adding an image to a gallery it can be chosen that that image shall also become the rep-image.
+Galleries may have 'representative images' (rep-images). When a user views a gallery with sub-galleries, the sub-galleries are actually shown with their rep-images, so as to make them look more attractive and give an impression of the contents. Rep-images may be chosen when adding or editing a gallery, or when adding an image to a gallery it can be chosen that image shall also become the rep-image.
 
 You will find icons to add/edit galleries/images/videos at:
 Admin Zone > Content > Galleries

@@ -1111,7 +1111,7 @@ These guidelines apply for admin modules...
 | Consistent UI, usability for webmasters
 | Composr development +
 | Manually
-| CMS/Admin "completion" screens should either be redirects to an appropriate location (e.g. the [tt]view[/tt] screen for what was just added/edited), do-next managers, or very rarely, message screens. Follow the conventions other modules use. If you do do a redirect, use the proper API (the [tt]redirect_screen[/tt] function) so that the 'success' messages show up on the destination screen for the redirect.
+| CMS/Admin "completion" screens should either be redirects to an appropriate location (e.g. the [tt]view[/tt] screen for what was just added/edited), do-next managers, or very rarely, message screens. Follow the conventions other modules use. If you do a redirect, use the proper API (the [tt]redirect_screen[/tt] function) so that the 'success' messages show up on the destination screen for the redirect.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Give admin modules a do-next manager for the [tt]browse[/tt] screen[/color]
@@ -2166,7 +2166,7 @@ Be careful with global functions and variables
 | Consistency
 | Composr development +
 | Manually
-| The DOM binding is is well documented so you do not need to use [tt]getAttribute[/tt] in most cases to access an HTML attribute value. For example, use [tt]form.action[/tt] rather than [tt]form.getAttribute('action')[/tt]. For this to work, you must never name a form element with the same name as a DOM property (e.g. [tt]target[/tt]); the [tt]form_reserved_names[/tt] automated test will verify this.
+| The DOM binding is well documented so you do not need to use [tt]getAttribute[/tt] in most cases to access an HTML attribute value. For example, use [tt]form.action[/tt] rather than [tt]form.getAttribute('action')[/tt]. For this to work, you must never name a form element with the same name as a DOM property (e.g. [tt]target[/tt]); the [tt]form_reserved_names[/tt] automated test will verify this.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Access form elements using elements array by name[/color]

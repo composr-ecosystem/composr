@@ -320,7 +320,7 @@ Calling [tt][CMS_Arrays array_merge:inputArray1 :inputArray2];[/tt] will return:
 [/code]
 
 [i]Description:[/i]
-[tt]sort[/tt] will sort an an array of strings or numbers. It works by reference: the passed array reference will get modified directly.
+[tt]sort[/tt] will sort an array of strings or numbers. It works by reference: the passed array reference will get modified directly.
 
 [i]Usage:[/i]
 [code="objc"]

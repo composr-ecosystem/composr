@@ -144,7 +144,7 @@ If you made the room you are currently in, or made the realm you are currently o
 
 [title="3"]The main interface: Interaction[/title]
 
-As with any other RPG based game, interaction is key to the game. You can chat with anyone currently in in the same room as you by typing a message shown in...
+As with any other RPG based game, interaction is key to the game. You can chat with anyone currently in the same room as you by typing a message shown in...
 
 [img="Sample screenshot"]{$BASE_URL}/data_custom/modules/buildr/docs/basics2.5.0.png[/img]
 
@@ -517,7 +517,7 @@ Now, let's get cracking!
 
 [title="3"]Finding a location[/title]
 
-First, click on the map link at the bottom of the screen and look for a square with 'portal spot' written inside. This means that that location can have a portal to and from that room. The Green lined square is your current position.
+First, click on the map link at the bottom of the screen and look for a square with 'portal spot' written inside. This means that the location can have a portal to and from that room. The Green lined square is your current position.
 
 [img="Sample screenshot"]{$BASE_URL}/data_custom/modules/buildr/docs/port0.0.png[/img]
 
@@ -576,7 +576,7 @@ People may make copies of certain items (additional item sources) in other rooms
 
 You can delete items as long as they are not in circulation yet. When dealing with item copies, the only way to delete it is to edit it to make it non-infinite, and then pick it up.
 
-An item is either free or or it costs a certain amount of money. When you make an item that costs something, you get 70% of the cost when someone buys it. If an item is really heavily priced, make sure it's non-infinite, so the rareness of that item can attribute to its value. Some items can be pickpocketed, but beware that the troll of the realm is watching you very closely.
+An item is either free or it costs a certain amount of money. When you make an item that costs something, you get 70% of the cost when someone buys it. If an item is really heavily priced, make sure it's non-infinite, so the rareness of that item can attribute to its value. Some items can be pickpocketed, but beware that the troll of the realm is watching you very closely.
 
 So, consider the price of the item you're making. If this item is non-infinite, meaning only one person can have it, then it would probably be very high-priced and it would probably be not very wise to make it replicable, unless you want people to get it for cheap. So the price, replicatability, and finity of the item you are making have a great deal to do with each other. Make sure they make sense, and correspond with each other.
 

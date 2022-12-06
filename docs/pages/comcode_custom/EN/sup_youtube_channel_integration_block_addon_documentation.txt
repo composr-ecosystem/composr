@@ -15,7 +15,7 @@ Getting Your YouTube API v3 Key:
 	[*] Once created, it should take you to the Project Dashboard for your newly created project. Above the left hand menu, click the [i]GoogleAPIs[/i] logo near the upper left of the page to open the API Manager.
 	[*] On the API Manager Dashboard page, click the [i]ENABLE APIS AND SERVICES[/i] link.
 	[*] On the right hand side of the page you should see a list of popular APIs. Select the [i]YouTube Data API[/i] or type [i]YouTube[/i] into the search box and select [i]YouTube Data API v3[/i].
-	[*] On the [i]YouTube Data API v3[/i] page, you should now click the the [i]Enable[/i] link to enable the YouTube Data API v3 for your project.
+	[*] On the [i]YouTube Data API v3[/i] page, you should now click the [i]Enable[/i] link to enable the YouTube Data API v3 for your project.
 	[*] On the right hand side of the page, click the [i]Credentials in APIs & Services[/i] link. 
 	[*] You should see a box on the page with a [i]Create Credentials[/i] button. Click the [i]Create Credentials[/i] button and select the [i]API Key[/i] option.
 	[*] A key will be generated and displayed in a pop-up overlay. That is your API key to use with the YouTube Channel block. 

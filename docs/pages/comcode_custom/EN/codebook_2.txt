@@ -464,7 +464,7 @@ echo number_format($count) . ' words, in ' . number_format($strings) . ' languag
 
 [title="3"]Top functions[/title]
 
-Here's a script for if you you to found out what are the most common functions used in the Composr PHP code:
+Here's a script for if you want to find out what are the most common functions used in the Composr PHP code:
 [codebox="PHP"]
 <?php /*
 

@@ -148,7 +148,7 @@ A number of Composr modules contain categories organised into a tree structure, 
  - download categories
  - catalogue categories
 
-If subcommunity categories are stored under a common sub-tree of the full category tree, then the root of the 'sub-tree' may be made into the apparent root of the full-tree, by picking it as a virtual-root. This is easy to do, and doesn't involve any kind of configuration other than finding the URL to enter the module with. To find this URL you just look for the link of the current category in the breadcrumbs on a category screen (it'll have something similar to [tt]keep_root[/tt] in it): this is a mouthful to explain, but really very simple. Once you have the URL, you may wish to add it to to the menu of your subcommunities zone.
+If subcommunity categories are stored under a common sub-tree of the full category tree, then the root of the 'sub-tree' may be made into the apparent root of the full-tree, by picking it as a virtual-root. This is easy to do, and doesn't involve any kind of configuration other than finding the URL to enter the module with. To find this URL you just look for the link of the current category in the breadcrumbs on a category screen (it'll have something similar to [tt]keep_root[/tt] in it): this is a mouthful to explain, but really very simple. Once you have the URL, you may wish to add it to the menu of your subcommunities zone.
 
 Here are some step-by-step instructions:
 1) Make sure "Virtual root links" is enabled under Admin Zone > Setup > Configuration > Feature options > Advanced

@@ -261,7 +261,7 @@ Commandr is a very effective way to automate tedious maintenance tasks. For exam
 $ids=array(1,2,3,4,5);
 foreach ($ids as $id) delete_image($id,true);
 [/code]
-(paste it all in in one go, not as separate line inputs)
+(paste it all in one go, not as separate line inputs)
 
 The code simply interfaces with the standard Composr APIs.
 

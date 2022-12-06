@@ -575,7 +575,7 @@ Values are like hidden configuration options. They are either hidden because the
   - [tt]notification_safety_testing[/tt] -- set this to '1' to enable extra checks to ensure notifications or welcome e-mails don't get misdirected/over-sent
   - [tt]memory_tracking[/tt] -- set this to the number of megabytes peak memory usage after which you want the execution URL to be silently logged to the error log (useful for debugging memory usage on a live site). The value must be an integer, with no trailing 'M'. This does not impose a memory limit, which is 64MB by default in Composr, but may be turned off within certain carefully-chosen execution contexts (usually admin tasks which are necessarily memory consuming). Requires PHP 5.2+.
   - [tt]enable_profiler[/tt] -- set this to '1' if you want to {$IS_MAINTAINED,extra_logging,enable the Composr profiler}, which will write select performance information to [tt]data_custom/profiling.(ID).log[/tt]. For your security you should ensure these files are web-accessible (we will do this by default if we can via the [tt]data_custom/.htaccess[/tt], but you should take care). The web server needs permissions to save files into [tt]data_custom/[/tt] (this is possible by default on modern suEXEC environments). Set to '2' if you want to read Linux performance data, which will then be included in the logging (takes a bit more work by the profiler, assumes Linux and sufficient permissions).
-  - [tt]monitor_slow_urls[/tt] -- set this to a number of seconds to log any requests taking at least that many seconds seconds to the error log
+  - [tt]monitor_slow_urls[/tt] -- set this to a number of seconds to log any requests taking at least that many seconds to the error log
   - [tt]permission_log_success_too[/tt] -- set this to '1' if you want the permission log file ([tt]data_custom/permission_checks.log[/tt]) to show both successful and unsuccessful permission checks. Usually it only shows fails.
   - [tt]disable_modsecurity_workaround[/tt] -- set this to '1' if you want to disable the ModSecurity workaround 
  - For system-integrators:
@@ -924,7 +924,7 @@ If you are considering overriding a file just so that you can add some new funct
 [media description="" width="200" float="right" framed="0"]data_custom/images/docs/codebook_3/2.jpg[/media]
 Composr is a great platform for web developers. A web developer can build all kinds of sites using Composr -- from simple new media sites, to social networks, to seemingly-bespoke sites such as property directories.
 
-However, if you're making a website for somebody else it is is important to bear in mind they probably do not want to learn Composr like you have.
+However, if you're making a website for somebody else it is important to bear in mind they probably do not want to learn Composr like you have.
 
 Here are some assorted hints:
  - You might want to use the debranding feature, Admin Zone > Style > Debranding

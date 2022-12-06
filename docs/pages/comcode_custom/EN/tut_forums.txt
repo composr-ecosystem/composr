@@ -122,7 +122,7 @@ Topics may have a poll attached to them (by any member) by default, so as to gau
 
 Polls have options to restrict or allow:
  - restrict viewing of poll results after voting until the option is unticked (unchecked) on the poll
- - restrict voting, such that that members must reply to the topic of the poll before they may vote in it
+ - restrict voting, such that members must reply to the topic of the poll before they may vote in it
  - allow viewing which members voted for each option instead of just the vote counts
  - allow members to revoke or change their own vote
  - restrict when voting will be closed, either manually or on a specific date

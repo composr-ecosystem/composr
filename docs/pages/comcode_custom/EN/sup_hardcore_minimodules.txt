@@ -64,7 +64,7 @@ $example_data = array(
 
 foreach ($example_data as $i => $row)
 {
-	// If first row, show show headings
+	// If first row, show headings
 	if ($i == 0)
 	{
 		foreach (array_keys($row) as $heading)

@@ -154,7 +154,7 @@ Where [tt]example[/tt] is changed for whatever type string you've used for the b
 
 [*] Change the [tt]global-banner[/tt] CSS class used in the code snippet to a new CSS class of your own choosing (or just pull it out if you don't require any special styling around your banner).
 
-[*] Place the code in any template you like (or multiple ones). Obviously you'll need to write it in in such a way as for it to fit well into the layout. This is a standard CSS/XHTML themeing issue.
+[*] Place the code in any template you like (or multiple ones). Obviously you'll need to write it in such a way as for it to fit well into the layout. This is a standard CSS/XHTML themeing issue.
 [/list]
 
 [title="2"]Selling advertising[/title]

@@ -77,7 +77,7 @@ You can also mark whole forums for notifications, by clicking the "monitor" butt
 [concepts
  1_key="Virtual forum"   1_value="A special, separate forum view that lists special types of topic, such as Private Topics."
  2_key="Notifications"   2_value="By enabling notifications, you get notifications when there is new content. Also known as subscribing or tracking in some forum systems."
- 3_key="Forum view"      3_value="The screen where you view a forum on. From it you see a list of the topics in the forum you are in any any subforums."
+ 3_key="Forum view"      3_value="The screen where you view a forum on. From it you see a list of the topics in the forum you are in any subforums."
  4_key="Topic view"      4_value="The screen where you view a topic on. From it you can read the posts in the topic."
 ]Concepts[/concepts]
 

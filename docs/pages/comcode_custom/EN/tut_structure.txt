@@ -91,7 +91,7 @@ A more complex case is for a full blown 'page-link' that can not be referred to 
 
 It is also worth understanding that page-links have a long-form and a short form syntax. For simplicity I have used the long-form syntax above. The short form syntax allows you to remove [tt]type=[/tt] and [tt]id=[/tt], so long as the parameters match the expected order. You can remove [tt]type=[/tt] from the third component, and [tt]id=[/tt] from the fourth component. So [tt]site:downloads:type=browse:id=10[/tt] will shorten to [tt]site:downloads:browse:10[/tt].
 
-If you do not want to hard-code what zone to use, you may specify either [tt]_SEARCH[/tt] or [tt]_SELF[/tt] as the zone name in the page-link. [tt]_SEARCH[/tt] will cause Composr to dynamically find the module involved, while [tt]_SELF[/tt] will use the same zone as the page-link is dynamically being interpreted in (e.g. If if it used on a menu in the site zone, [tt]_SELF[/tt] will be equivalent to [tt]site[/tt]).
+If you do not want to hard-code what zone to use, you may specify either [tt]_SEARCH[/tt] or [tt]_SELF[/tt] as the zone name in the page-link. [tt]_SEARCH[/tt] will cause Composr to dynamically find the module involved, while [tt]_SELF[/tt] will use the same zone as the page-link is dynamically being interpreted in (e.g. If it is used on a menu in the site zone, [tt]_SELF[/tt] will be equivalent to [tt]site[/tt]).
 
 If you have a URL Scheme enabled it can be hard to find out what the URL parameters to a screen are. If you go to [tt]http://yourbaseurl/index.php?keep_url_scheme=0[/tt] then all URLs shown will reveal the raw parameter values (this just happens for you, via the [tt]keep_url_scheme=0[/tt] you temporarily set in your address bar).
 

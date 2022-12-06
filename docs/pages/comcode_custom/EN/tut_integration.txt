@@ -273,7 +273,7 @@ Let's say that [tt]example.js[/tt] also contains:
 [code="JavaScript"]
 var ex_alert_image='images/alert.png';
 [/code]
-We could copy the [tt]images[/tt] directory from the JavaScript library as [tt]themes/default/images_custom/example[/tt], and then change the the code in [tt]example.js[/tt] to:
+We could copy the [tt]images[/tt] directory from the JavaScript library as [tt]themes/default/images_custom/example[/tt], and then change the code in [tt]example.js[/tt] to:
 [code="JavaScript"]
 var ex_alert_image='{$IMG;,example/alert}';
 [/code]

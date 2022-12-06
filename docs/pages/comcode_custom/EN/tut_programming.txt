@@ -404,7 +404,7 @@ PHP has many commands and functions to work with arrays, such as array_key_exist
 
 [title="2"]Object orientated programming (OOP)[/title]
 
-If you have been programming before you will probably be accustomed to what is called procedural programming (programming with functions or procedures). Object orientation is is a level of abstraction above this, that allows you to modularise your code in a way more powerful that what functions alone can do.
+If you have been programming before you will probably be accustomed to what is called procedural programming (programming with functions or procedures). Object orientation is a level of abstraction above this, that allows you to modularise your code in a way more powerful that what functions alone can do.
 
 This is because OOP links variables and functions, integrating them into a new structure called a class. A class serves as a completely new data type (as in integers, doubles, etc. etc.). So if you created a new class called [tt]fish[/tt], you could create as many fish variables as you like. These fish variables aren't really variables, they are objects (with variables and functions defined within them).
 
@@ -521,7 +521,7 @@ N/A is used to mark characters that have a special meaning.
  6_key="Code quality checker"   6_value="The ocProducts tool designed to make programming robust PHP/Composr code easier, with and end reliability that would otherwise be unreachable"
  7_key="Loop"                   7_value="A sequence of commands set to cycle until a condition is met"
  8_key="Expression"             8_value="A piece of algebra with no equals sign that would lead to a single result if computed"
- 9_key="Command"                9_value="An instruction to the computer; often an assignment or a function call (or both); there isn't really a distinct boundary to to say unambiguously whether larger constructs like 'If statements' are single commands or not: but the term is convenient"
+ 9_key="Command"                9_value="An instruction to the computer; often an assignment or a function call (or both); there isn't really a distinct boundary to say unambiguously whether larger constructs like 'If statements' are single commands or not: but the term is convenient"
  10_key="Function"              10_value="In PHP, a function is a chunk of code given a name and callable by that name; upon completion, code resumes to where the function was called. Functions may be given parameters, and may return a result (a function that returns no result would be a 'procedure' in some other languages)"
  11_key="Iteration"             11_value="Another word for 'loop', basically"
  12_key="Variable"              12_value="A named unit of memory that values are stored in"

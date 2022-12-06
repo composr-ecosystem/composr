@@ -56,7 +56,7 @@ Composr is written to the 'front controller' design pattern. The 'entry-point' s
 
 Our use of standard page/type/id parameters represents a design philosophy called "convention over configuration". Many PHP frameworks have custom designed routing flows, but we prefer to design a convention, then make our framework automatically carry that forward. It makes things simpler for everybody if basic and reasonable decisions are built into the system. This said, there is no reason you can't have your own routing schemes for your custom entry-points.
 
-We try and stick fairly close to PHPs own architecture rather than forcing an entirely different request interaction pattern. So, we use use the same system of reading GET/POST data from global state. There are cases where modularity dictates having simulated request states within the system, and we have special code for making that possible -- but we treat it as an exception rather than forcing all request interaction to go through a complex system that contradicts PHP's own design.
+We try and stick fairly close to PHPs own architecture rather than forcing an entirely different request interaction pattern. So, we use the same system of reading GET/POST data from global state. There are cases where modularity dictates having simulated request states within the system, and we have special code for making that possible -- but we treat it as an exception rather than forcing all request interaction to go through a complex system that contradicts PHP's own design.
 
 [title="4"]Configurable bootstrapping[/title]
 
@@ -196,7 +196,7 @@ $example_data = array(
 
 foreach ($example_data as $i=>$row)
 {
-	// If first row, show show headings
+	// If first row, show headings
 	if ($i == 0) {
 		foreach (array_keys($row) as $heading)
 		{
@@ -362,7 +362,7 @@ One important thing to understand at this point is that Composr supports multi-l
 
 If you store data in tables using 'SHORT/LONG_TRANS[__COMCODE]' you retrieve that data via calling the [tt]get_translated_text[/tt] function upon the database field value.
 
-There is one other reason the [tt]translate[/tt] table is used, and that is so that content may be stored efficiently in 'Comcode'. Comcode is our dynamic markup language, a superset of XHTML which defines additional dynamic features. The [tt]translate[/tt] table allows Comcode to be stored along with the parsed version of it, which is in Tempcode format. To get back back the Tempcode, which can then be mixed in with templates, use the [tt]get_translated_tempcode[/tt] function.
+There is one other reason the [tt]translate[/tt] table is used, and that is so that content may be stored efficiently in 'Comcode'. Comcode is our dynamic markup language, a superset of XHTML which defines additional dynamic features. The [tt]translate[/tt] table allows Comcode to be stored along with the parsed version of it, which is in Tempcode format. To get back the Tempcode, which can then be mixed in with templates, use the [tt]get_translated_tempcode[/tt] function.
 
 If multi-language content is not enabled all the same APIs are used, but the [tt]translate[/tt] table is bypassed. String data (and where applicable, parsed Comcode) is saved directly into the normal database tables.
 
@@ -709,7 +709,7 @@ Blocks in Composr are written almost identically to modules. They may have [tt]i
 The main five implementation differences and points of note are:
 1) The run method takes a parameter, which is a map (array) of the parameters given to the block. You cannot assume any parameter is passed, so for each you must allow a default which you can hard-code into your block code.
 2) You should define a [tt]BLOCK_blockname_DESCRIPTION[/tt] and [tt]BLOCK_blockname_USE[/tt] language string for the block, to explain what it does and what it is for.
-3) The [tt]info[/tt] method defines a [tt]parameters[/tt] entry in the array returned. This is simply a list of the parameters the block can take. It is used by the block construction tool. For each parameter listed there there should be a language string [tt]BLOCK_blockname_PARAM_parametername[/tt]. Look at how existing block parameter language strings are done to see how to lay it out -- the format is parsed by the block construction tool so it is quite strict. In particular reference the default value in your string.
+3) The [tt]info[/tt] method defines a [tt]parameters[/tt] entry in the array returned. This is simply a list of the parameters the block can take. It is used by the block construction tool. For each parameter listed there should be a language string [tt]BLOCK_blockname_PARAM_parametername[/tt]. Look at how existing block parameter language strings are done to see how to lay it out -- the format is parsed by the block construction tool so it is quite strict. In particular reference the default value in your string.
 4) You can allow the block to cache by defining a [tt]caching_environment[/tt] method. This returns an array which has a [tt]ttl[/tt] (the number of minutes the cache lasts) and a [tt]cache_on[/tt] which is a string containing PHP code that defines the signature (array) for a cached instance of the block. The PHP code can make use of [tt]$map[/tt], and must define a different array for each possible way the block could turn out (i.e. the array is a signature that distinguishes that particular appearance, based on the block's parameters and optionally other things like the viewing user's usergroup membership).
 
 Blocks should be documented, and this is done by creating specially named language strings. These strings are utilised by the Block construction assistant to allow the webmaster to add in the block in a user friendly fashion. Imagine a block called [tt]example[/tt] with parameters [tt]a[/tt] and [tt]b[/tt]. You would define language strings as follows:
@@ -882,7 +882,7 @@ This is because you place custom files in [tt]sources_custom[/tt] so that they a
 
 (*2) The Conversr [tt]members[/tt] module does member searching, but does not use the search hooks. This module's member search is separate and hard-coded. There is still a search hook for member searching for the [tt]search[/tt] module to use though.
 
-You can generally tell what the hook is used by by its file path. For example hooks in [tt]sources/hooks/modules/search[/tt] are for the [tt]search[/tt] module.
+You can generally tell what uses the hook by its file path. For example hooks in [tt]sources/hooks/modules/search[/tt] are for the [tt]search[/tt] module.
 
 [title="4"]Another example: member profiles[/title]
 
@@ -1298,7 +1298,7 @@ Parameters in URLs are separated by '&'. Keys and values and separated by '='. A
 [media description="" width="300" float="right" framed="0"]data_custom/images/docs/codebook_1/7.jpg[/media]
 Security is treated very seriously by the developers. We have implemented a number of abstractions and policies to keep Composr as secure as possible and it is crucial that developers understand security issues and our policies.
 
-Even admin-only sections should not have unintended exploitable behaviour. If a user is hosted in a restricted Composr-only environment, their software should not allow circumvention of current environment. Also, if a user exploits their way into somewhere they shouldn't be, it is best that that somewhere shouldn't allow them to exploit themselves into somewhere even worse... for example, if Composr's Admin Zone gets hacked, a user should not be able to get full PHP code execution access on a hosting account.
+Even admin-only sections should not have unintended exploitable behaviour. If a user is hosted in a restricted Composr-only environment, their software should not allow circumvention of current environment. Also, if a user exploits their way into somewhere they shouldn't be, it is best that somewhere shouldn't allow them to exploit themselves into somewhere even worse... for example, if Composr's Admin Zone gets hacked, a user should not be able to get full PHP code execution access on a hosting account.
 
 There are a number of notorious ways PHP scripts such as Composr can be attacked, including:
  - SQL injection
