@@ -142,7 +142,7 @@ class Hook_ecommerce_community_billboard
      *
      * @param  ID_TEXT $type_code The product codename
      * @param  boolean $from_admin Whether this is being called from the Admin Zone. If so, optionally different fields may be used, including a purchase_id field for direct purchase ID input.
-     * @return array A triple: The fields (use null for none), The text (use null for none), array of JavaScript function calls
+     * @return array A triple: The fields (use null for none), Hidden fields (use null for none), The text (use null for none), array of JavaScript function calls
      */
     public function get_needed_fields(string $type_code, bool $from_admin = false) : array
     {
@@ -153,7 +153,7 @@ class Hook_ecommerce_community_billboard
 
         ecommerce_attach_memo_field_if_needed($fields);
 
-        return [$fields, do_lang_tempcode('COMMUNITY_BILLBOARD_GUIDE'), []];
+        return [$fields, null, do_lang_tempcode('COMMUNITY_BILLBOARD_GUIDE'), []];
     }
 
     /**

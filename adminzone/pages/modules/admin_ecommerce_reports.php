@@ -335,17 +335,15 @@ class Module_admin_ecommerce_reports
 
         // To work out key
         if (post_param_integer('got_purchase_key_dependencies', 0) == 0) {
-            list($needed_fields, $needed_text, $js_function_calls) = get_needed_fields($type_code, true, true);
+            list($needed_fields, $needed_hidden, $needed_text, $js_function_calls) = get_needed_fields($type_code, true, true);
 
             if ($needed_fields !== null) { // Only do step if we actually have fields - create intermediary step. get_self_url ensures first product-choose step choice is propagated.
                 $submit_name = do_lang_tempcode('PROCEED');
 
                 $extra_hidden = new Tempcode();
                 $extra_hidden->attach(form_input_hidden('got_purchase_key_dependencies', '1'));
-                if (is_array($needed_fields)) {
-                    $extra_hidden->attach($needed_fields[0]);
-                }
                 $extra_hidden->attach(form_input_hidden('csrf_token_preserve', '1'));
+                $extra_hidden->attach($needed_hidden);
 
                 if ($needed_text !== null) {
                     $text = $needed_text;

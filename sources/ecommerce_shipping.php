@@ -311,17 +311,22 @@ function get_base_shipping_cost() : float
  * @param  string $shipping_post_code Postcode/Zip
  * @param  string $shipping_country Country
  * @param  boolean $require_all_details Whether to require all details to be input
- * @return Tempcode Address fields
+ * @return array A pair: Address fields, Address hidden fields
  */
-function get_shipping_address_fields(string $shipping_email, string $shipping_phone, string $shipping_firstname, string $shipping_lastname, string $shipping_street_address, string $shipping_city, string $shipping_county, string $shipping_state, string $shipping_post_code, string $shipping_country, bool $require_all_details = true) : object
+function get_shipping_address_fields(string $shipping_email, string $shipping_phone, string $shipping_firstname, string $shipping_lastname, string $shipping_street_address, string $shipping_city, string $shipping_county, string $shipping_state, string $shipping_post_code, string $shipping_country, bool $require_all_details = true) : array
 {
     $fields = new Tempcode();
+    $hidden = new Tempcode();
 
     $fields->attach(get_shipping_name_fields($shipping_firstname, $shipping_lastname, $require_all_details));
-    $fields->attach(get_address_fields('shipping_', $shipping_street_address, $shipping_city, $shipping_county, $shipping_state, $shipping_post_code, $shipping_country, $require_all_details));
+
+    list($_fields, $_hidden) = get_address_fields('shipping_', $shipping_street_address, $shipping_city, $shipping_county, $shipping_state, $shipping_post_code, $shipping_country, $require_all_details);
+    $fields->attach($_fields);
+    $hidden->attach($_hidden);
+
     $fields->attach(get_shipping_contact_fields($shipping_email, $shipping_phone, $require_all_details));
 
-    return $fields;
+    return [$fields, $hidden];
 }
 
 /**

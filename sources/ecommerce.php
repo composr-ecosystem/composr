@@ -273,7 +273,7 @@ function has_needed_fields(string $type_code, bool $force_extended = false) : bo
  * @param  ID_TEXT $type_code The product codename
  * @param  boolean $force_extended Show all possible input fields
  * @param  boolean $from_admin Whether this is being called from the Admin Zone. If so, optionally different fields may be used, including a purchase_id field for direct purchase ID input.
- * @return array A triple: The fields (use null for none), The text (use null for none), array of JavaScript function calls
+ * @return array A triple: The fields (use null for none), Hidden fields (use null for none), The text (use null for none), array of JavaScript function calls
  */
 function get_needed_fields(string $type_code, bool $force_extended = false, bool $from_admin = false) : array
 {
@@ -284,11 +284,12 @@ function get_needed_fields(string $type_code, bool $force_extended = false, bool
     }
 
     $fields = null;
+    $hidden = null;
     $text = null;
     $js_function_calls = [];
 
     if (method_exists($product_object, 'get_needed_fields')) {
-        list($fields, $text, $js_function_calls) = $product_object->get_needed_fields($type_code, $from_admin);
+        list($fields, $hidden, $text, $js_function_calls) = $product_object->get_needed_fields($type_code, $from_admin);
     }
 
     $shipping_email = '';
@@ -324,10 +325,15 @@ function get_needed_fields(string $type_code, bool $force_extended = false, bool
         if ($fields === null) {
             $fields = new Tempcode();
         }
+        if ($hidden === null) {
+            $hidden = new Tempcode();
+        }
 
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '6d9d9d785a2f776aa10fa0a8a26fc405', 'TITLE' => do_lang_tempcode($details['needs_shipping_address'] ? 'SHIPPING_ADDRESS' : 'INVOICING_ADDRESS')]));
 
-        $fields->attach(get_shipping_address_fields($shipping_email, $shipping_phone, $shipping_firstname, $shipping_lastname, $shipping_street_address, $shipping_city, $shipping_county, $shipping_state, $shipping_post_code, $shipping_country, $require_all_details));
+        list($_fields, $_hidden) = get_shipping_address_fields($shipping_email, $shipping_phone, $shipping_firstname, $shipping_lastname, $shipping_street_address, $shipping_city, $shipping_county, $shipping_state, $shipping_post_code, $shipping_country, $require_all_details);
+        $fields->attach($_fields);
+        $hidden->attach($_hidden);
 
         if ((!is_guest()) && (get_forum_type() == 'cns') && (get_option('store_credit_card_numbers') == '1')) {
             $fields->attach(form_input_tick(do_lang_tempcode('SAVE_TO_ACCOUNT'), '', 'shipping_save_to_account', get_cms_cpf('firstname') == ''));
@@ -343,7 +349,7 @@ function get_needed_fields(string $type_code, bool $force_extended = false, bool
         $fields->attach(get_shipping_contact_fields($shipping_email, $shipping_phone, $require_all_details));
     }
 
-    return [$fields, $text, $js_function_calls];
+    return [$fields, $hidden, $text, $js_function_calls];
 }
 
 /**
@@ -832,6 +838,7 @@ function get_transaction_form_fields(string $type_code, string $item_name, strin
     require_code('form_templates');
 
     $fields = new Tempcode();
+    $hidden = new Tempcode();
 
     $shipping_email = '';
     $shipping_phone = '';
@@ -883,7 +890,9 @@ function get_transaction_form_fields(string $type_code, string $item_name, strin
     if (post_param_string('billing_firstname', null) === null) {
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'e0771f0a6c479b01a4a29ae9aa7fef3a', 'TITLE' => do_lang_tempcode('BILLING_ADDRESS')]));
 
-        $fields->attach(get_address_fields('billing_', $billing_street_address, $billing_city, $billing_county, $billing_state, $billing_post_code, $billing_country));
+        list($_fields, $_hidden) = get_address_fields('billing_', $billing_street_address, $billing_city, $billing_county, $billing_state, $billing_post_code, $billing_country);
+        $fields->attach($_fields);
+        $hidden->attach($_hidden);
 
         if ((!is_guest()) && (get_forum_type() == 'cns') && (get_option('store_credit_card_numbers') == '1')) {
             $fields->attach(form_input_tick(do_lang_tempcode('SAVE_TO_ACCOUNT'), '', 'billing_save_to_account', get_cms_cpf('billing_street_address') == ''));
@@ -895,7 +904,9 @@ function get_transaction_form_fields(string $type_code, string $item_name, strin
     if (($needs_shipping_address) && (post_param_string('shipping_firstname', null) === null)) {
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '656bf860685c8f63434bca7423d5c52a', 'TITLE' => do_lang_tempcode('SHIPPING_ADDRESS')]));
 
-        $fields->attach(get_shipping_address_fields($shipping_email, $shipping_phone, $shipping_firstname, $shipping_lastname, $shipping_street_address, $shipping_city, $shipping_county, $shipping_state, $shipping_post_code, $shipping_country));
+        list($_fields, $_hidden) = get_shipping_address_fields($shipping_email, $shipping_phone, $shipping_firstname, $shipping_lastname, $shipping_street_address, $shipping_city, $shipping_county, $shipping_state, $shipping_post_code, $shipping_country);
+        $fields->attach($_fields);
+        $hidden->attach($_hidden);
 
         if ((!is_guest()) && (get_forum_type() == 'cns') && (get_option('store_credit_card_numbers') == '1')) {
             $fields->attach(form_input_tick(do_lang_tempcode('SAVE_TO_ACCOUNT'), '', 'shipping_save_to_account', get_cms_cpf('firstname') == ''));
@@ -904,7 +915,6 @@ function get_transaction_form_fields(string $type_code, string $item_name, strin
 
     // Store transaction ID in hidden field...
 
-    $hidden = new Tempcode();
     $hidden->attach(form_input_hidden('trans_id', $trans_expecting_id));
     $hidden->attach(build_keep_post_fields());
 
@@ -929,11 +939,13 @@ function get_transaction_form_fields(string $type_code, string $item_name, strin
  * @param  string $post_code Postcode/Zip
  * @param  string $country Country
  * @param  boolean $require_all_details Whether to require all details to be input
- * @return Tempcode Address fields
+ * @return array A pair: Address fields, Address hidden fields
  */
-function get_address_fields(string $prefix, string $street_address, string $city, string $county, string $state, string $post_code, string $country, bool $require_all_details = true) : object
+function get_address_fields(string $prefix, string $street_address, string $city, string $county, string $state, string $post_code, string $country, bool $require_all_details = true) : array
 {
     $fields = new Tempcode();
+
+    $hidden = new Tempcode();
 
     $fields->attach(form_input_text(do_lang_cpf('street_address'), '', $prefix . 'address1', $street_address, $require_all_details));
 
@@ -941,6 +953,8 @@ function get_address_fields(string $prefix, string $street_address, string $city
 
     if (get_option('cpf_enable_county') == '1') {
         $fields->attach(form_input_line(do_lang_cpf('county'), '', $prefix . 'county', $county, false));
+    } else {
+        $hidden->attach(form_input_hidden($prefix . 'county', ''));
     }
 
     $definitely_usa = (get_option('cpf_enable_country') == '0') && (get_option('business_country') == 'US');
@@ -955,10 +969,14 @@ function get_address_fields(string $prefix, string $street_address, string $city
         } else {
             $fields->attach(form_input_line(do_lang_cpf('state'), '', $prefix . 'state', $state, false));
         }
+    } else {
+        $hidden->attach(form_input_hidden($prefix . 'state', ''));
     }
 
     if ((get_option('cpf_enable_post_code') == '1') || (get_option('business_country') == 'US')) {
         $fields->attach(form_input_line(do_lang_cpf('post_code'), '', $prefix . 'postalcode', $post_code, $definitely_usa, null, $definitely_usa ? 10 : 12, 'text', null, $definitely_usa ? '^[0-9]{5}(-[0-9]{4})?$' : null, null, $definitely_usa ? 5 : 8));
+    } else {
+        $hidden->attach(form_input_hidden($prefix . 'postalcode', ''));
     }
 
     if (get_option('cpf_enable_country') == '1') {
@@ -966,9 +984,11 @@ function get_address_fields(string $prefix, string $street_address, string $city
         $countries->attach(form_input_list_entry('', $country == ''));
         $countries->attach(create_country_selection_list([$country]));
         $fields->attach(form_input_list(do_lang_cpf('country'), '', $prefix . 'country', $countries, null, false, $require_all_details));
+    } else {
+        $hidden->attach(form_input_hidden($prefix . 'country', ''));
     }
 
-    return $fields;
+    return [$fields, $hidden];
 }
 
 /**

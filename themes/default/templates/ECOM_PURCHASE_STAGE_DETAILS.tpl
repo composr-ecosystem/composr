@@ -4,6 +4,10 @@
 	{$PARAGRAPH,{TEXT}}
 {+END}
 
+{+START,IF_PASSED,HIDDEN}
+	{HIDDEN}
+{+END}
+
 {+START,IF_PASSED,FIELDS}
 	<table class="map-table form-table wide-table">
 		{+START,IF,{$DESKTOP}}

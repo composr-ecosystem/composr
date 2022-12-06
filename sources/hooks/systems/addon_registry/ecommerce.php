@@ -916,6 +916,7 @@ class Hook_addon_registry_ecommerce
             'TYPE_CODE' => lorem_word(),
             'TEXT' => lorem_sentence_html(),
             'FIELDS' => placeholder_fields(),
+            'HIDDEN' => '',
         ]), null, '', true);
     }
 
