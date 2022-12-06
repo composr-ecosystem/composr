@@ -1099,12 +1099,22 @@ class Module_purchase
             return $test;
         }
 
+        list($discounted_price, $discounted_tax_code, $points_for_discount) = get_discounted_price($details, true);
+        if ($discounted_price === null) {
+            $price = $details['price'];
+            if ($price === null) {
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            }
+        } else {
+            $price = $discounted_price;
+        }
+
         // Work out what next step is
         $next_purchase_step = get_next_purchase_step($product_object, $type_code, 'details');
         $url = build_url(['page' => '_SELF', 'type' => $next_purchase_step], '_SELF', ['include_message' => true], true);
 
         require_code('form_templates');
-        list($fields, $hidden, $text, $js_function_calls) = get_needed_fields($type_code);
+        list($fields, $hidden, $text, $js_function_calls) = get_needed_fields($type_code, false, false, $price == 0.0);
 
         if (get_param_integer('include_message', 0) == 1) {
             // Request to show message on the details screen (we would have been hot-linked straight to here)
