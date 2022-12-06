@@ -1019,6 +1019,7 @@ class Module_wiki
         require_code('form_templates');
 
         $specialisation = new Tempcode();
+        $specialisation2 = new Tempcode();
 
         $parsed = null;
 
@@ -1046,14 +1047,6 @@ class Module_wiki
             $message = get_translated_text($myrow['the_message']);
             $parsed = get_translated_tempcode('wiki_posts', $myrow, 'the_message');
 
-            require_code('content2');
-            $specialisation->attach(metadata_get_fields('wiki_post', strval($post_id)));
-
-            if (has_delete_permission('low', get_member(), $original_poster, 'cms_wiki', ['wiki_page', $page_id])) {
-                $specialisation->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '569be0b840914473a0928606a045f838', 'TITLE' => do_lang_tempcode('ACTIONS')]));
-                $specialisation->attach(form_input_tick(do_lang_tempcode('DELETE'), do_lang_tempcode('DESCRIPTION_DELETE'), 'delete', false));
-            }
-
             $submit_name = do_lang_tempcode('SAVE');
 
             $validated = $myrow['validated'];
@@ -1061,7 +1054,15 @@ class Module_wiki
             list($warning_details, $ping_url) = handle_conflict_resolution();
 
             if (has_privilege(get_member(), 'bypass_validation_lowrange_content', 'cms_wiki', ['wiki_page', $page_id])) {
-                $specialisation->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'wiki_post'), 'validated', $validated == 1));
+                $specialisation2->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'wiki_post'), 'validated', $validated == 1));
+            }
+
+            require_code('content2');
+            $specialisation2->attach(metadata_get_fields('wiki_post', strval($post_id)));
+
+            if (has_delete_permission('low', get_member(), $original_poster, 'cms_wiki', ['wiki_page', $page_id])) {
+                $specialisation2->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['TITLE' => do_lang_tempcode('ACTIONS')]));
+                $specialisation2->attach(form_input_tick(do_lang_tempcode('DELETE'), do_lang_tempcode('DESCRIPTION_DELETE'), 'delete', false));
             }
         } else {
             $_id = get_param_wiki_chain('id');
@@ -1081,12 +1082,14 @@ class Module_wiki
 
             list($warning_details, $ping_url) = [null, null];
 
-            require_code('content2');
-            $specialisation->attach(metadata_get_fields('wiki_post', null));
-
             if (has_privilege(get_member(), 'bypass_validation_lowrange_content', 'cms_wiki')) {
-                $specialisation->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'wiki_post'), 'validated', $validated == 1));
+                $specialisation2->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'wiki_post'), 'validated', $validated == 1));
             }
+
+            require_code('content2');
+            $specialisation2->attach(metadata_get_fields('wiki_post', null));
+
+            $specialisation2->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['TITLE' => do_lang_tempcode('ACTIONS')])); // Send notification field will be added
         }
 
         $hidden_fields = new Tempcode();
@@ -1109,7 +1112,7 @@ class Module_wiki
         }
         $radios = form_input_radio_entry('send_notification', '0', !$notify, do_lang_tempcode('NO'));
         $radios->attach(form_input_radio_entry('send_notification', '1', $notify, do_lang_tempcode('YES')));
-        $specialisation->attach(form_input_radio(do_lang_tempcode('SEND_NOTIFICATION'), do_lang_tempcode('DESCRIPTION_SEND_NOTIFICATION'), 'send_notification', $radios));
+        $specialisation2->attach(form_input_radio(do_lang_tempcode('SEND_NOTIFICATION'), do_lang_tempcode('DESCRIPTION_SEND_NOTIFICATION'), 'send_notification', $radios));
 
         if (addon_installed('captcha')) {
             require_code('captcha');
@@ -1130,7 +1133,7 @@ class Module_wiki
         // Awards?
         if (addon_installed('awards')) {
             require_code('awards');
-            $specialisation->attach(get_award_fields('wiki_post', ($post_id === null) ? null : strval($post_id)));
+            $specialisation2->attach(get_award_fields('wiki_post', ($post_id === null) ? null : strval($post_id)));
         } else {
             $awards = [];
         }
@@ -1148,7 +1151,7 @@ class Module_wiki
 
         $js_function_calls = ((function_exists('captcha_ajax_check_function')) && (captcha_ajax_check_function() != '')) ? [captcha_ajax_check_function()] : [];
 
-        $posting_form = get_posting_form($submit_name, ($mode == 'edit') ? 'admin/edit_this' : 'admin/add', $message, $post_url, $hidden_fields, new Tempcode(), null, '', $specialisation, $parsed, $js_function_calls);
+        $posting_form = get_posting_form($submit_name, ($mode == 'edit') ? 'admin/edit_this' : 'admin/add', $message, $post_url, $hidden_fields, $specialisation, null, '', $specialisation2, $parsed, $js_function_calls);
 
         if ($mode == 'post') {
             url_default_parameters__disable();
