@@ -615,18 +615,17 @@ class Module_admin_cns_forums extends Standard_crud_module
 
         $fields = $this->get_form_fields($r['id'], $r['f_name'], get_translated_text($r['f_description'], $GLOBALS['FORUM_DB']), $r['f_forum_grouping_id'], $r['f_parent_forum'], $r['f_position'], $r['f_post_count_increment'], $r['f_order_sub_alpha'], get_translated_text($r['f_intro_question'], $GLOBALS['FORUM_DB']), $r['f_intro_answer'], $r['f_redirection'], $r['f_order'], $r['f_is_threaded'], $r['f_allows_anonymous_posts'], $r['f_mail_email_address'], $r['f_mail_server_type'], $r['f_mail_server_host'], $r['f_mail_server_port'], $r['f_mail_folder'], $r['f_mail_username'], $r['f_mail_password'], $r['f_mail_nonmatch_policy'], $r['f_mail_unconfirmed_notice'], $r['f_poll_default_options_xml']);
 
-        $delete_fields = new Tempcode();
+        $action_fields = new Tempcode();
         if (intval($id) != db_get_first_id()) {
             $default_delete_forum_id = ($r['f_parent_forum'] === null) ? null : strval($r['f_parent_forum']);
             $default_delete_forum_label = ($r['f_parent_forum'] === null) ? null : $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_name', ['id' => $r['f_parent_forum']]);
-            $delete_fields->attach(form_input_tree_list(do_lang_tempcode('TARGET'), do_lang_tempcode('DESCRIPTION_TOPIC_MOVE_TARGET'), 'target_forum', null, 'choose_forum', [], true, $default_delete_forum_id, false, null, false, $default_delete_forum_label));
-            $delete_fields->attach(form_input_tick(do_lang_tempcode('DELETE_TOPICS'), do_lang_tempcode('DESCRIPTION_DELETE_TOPICS'), 'delete_topics', false));
+            $action_fields->attach(form_input_tree_list(do_lang_tempcode('TARGET'), do_lang_tempcode('DESCRIPTION_TOPIC_MOVE_TARGET'), 'target_forum', null, 'choose_forum', [], true, $default_delete_forum_id, false, null, false, $default_delete_forum_label));
+            $action_fields->attach(form_input_tick(do_lang_tempcode('DELETE_TOPICS'), do_lang_tempcode('DESCRIPTION_DELETE_TOPICS'), 'delete_topics', false));
         }
 
-        $action_fields = new Tempcode();
         $action_fields->attach(form_input_tick(do_lang_tempcode('RESET_INTRO_ACCEPTANCE'), do_lang_tempcode('DESCRIPTION_RESET_INTRO_ACCEPTANCE'), 'reset_intro_acceptance', false));
 
-        return [$fields[0], $fields[1], $delete_fields, null, false, null, $action_fields];
+        return [$fields[0], $fields[1], $action_fields];
     }
 
     /**

@@ -8097,7 +8097,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         MISC_SYMBOL__RTL
         SEPARATE_BLOGS
         PAYMENT_RECEIVED_BODY
-        PAYMENT_RECEIVED_BODY_memo
+        PAYMENT_BODY_memo
         PAYMENT_RECEIVED_BODY_shipping_address
         PAYMENT_RECEIVED_SUBJECT
         _ADDON_WARNING_MISSING_DEPENDENCIES
@@ -10337,7 +10337,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PAYMENT_SENT_BODY
         PAYMENT_SENT_BODY_automatic
         PAYMENT_SENT_BODY_manual
-        PAYMENT_SENT_BODY_memo
+        PAYMENT_BODY_memo
         PAYMENT_SENT_BODY_invoice
         PAYMENT_SENT_BODY_receipt
         PAYMENT_SENT_BODY_shipping_address
