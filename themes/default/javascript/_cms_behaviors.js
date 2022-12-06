@@ -246,26 +246,6 @@
         }
     };
 
-    // Implementation for [data-click-eval="<code to eval>"]
-    $cms.behaviors.clickEval = {
-        attach: function (context) {
-            var els = $util.once($dom.$$$(context, '[data-click-eval]'), 'behavior.clickEval');
-
-            els.forEach(function (el) {
-                $dom.on(el, 'click', function clickEval() {
-                    var code = strVal(el.dataset.clickEval);
-
-                    if (code !== '') {
-                        (function () {
-                            // eslint-disable-next-line no-eval
-                            eval(code); // eval() call
-                        }).call(el); // Set `this` context for eval
-                    }
-                });
-            });
-        }
-    };
-
     // Implementation for [data-submit-on-enter]
     // Text inputs on forms with a button will automatically submit on enter due to well-established browser functionality.
     // This behavior is useful for placing on lists, or forms without an actual button.

@@ -1,6 +1,6 @@
 {$REQUIRE_JAVASCRIPT,core_permission_management}
 
-<tr class="{$CYCLE,zebra,zebra-0,zebra-1}" data-tpl="permissionRow">
+<tr class="{$CYCLE,zebra,zebra-0,zebra-1}" data-tpl="permissionRow" data-tpl-params="{+START,PARAMS_JSON,ROW_MODERATOR_GROUP_CELL_IDS,ROW_GROUP_CELL_IDS}{_*}{+END}">
 	<th>
 		{PERMISSION*}
 		{+START,IF_PASSED,DESCRIPTION}
@@ -20,6 +20,6 @@
 	</th>
 	{CELLS}
 	<td>
-		<button title="{!SET_ALL_PERMISSIONS_ON_ROW}" class="btn btn-primary btn-sm js-click-input-toggle-value" type="button" data-click-eval="{CODE*}">{$?,{HAS},-,+}</button>
+		<button title="{!SET_ALL_PERMISSIONS_ON_ROW}" class="btn btn-primary btn-sm js-click-btn-toggle-value permission-toggle-button" type="button">{$?,{HAS},-,+}</button>
 	</td>
 </tr>

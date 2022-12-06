@@ -59,8 +59,14 @@
     });
 
     $cms.templates.permissionRow = function permissionRow(params, container) {
-        $dom.on(container, 'click', '.js-click-input-toggle-value', function (e, input) {
-            input.value = (input.value === '-') ? '+' : '-';
+        $dom.on(container, 'click', '.js-click-btn-toggle-value', function (e, btn) {
+            var add = (btn.innerHTML === '+');
+            btn.innerHTML = add ? '-' : '+'; // Toggle
+
+            for (var i = 0; i < params.rowGroupCellIds.length; i++) {
+                var groupCellId = params.rowGroupCellIds[i];
+                btn.form.elements[groupCellId].checked = add || params.rowModeratorGroupCellIds.includes(groupCellId);
+            }
         });
     };
 
@@ -73,12 +79,6 @@
             if (!textarea.form.disableSizeChange) {
                 textarea.rows = '2';
             }
-        });
-    };
-
-    $cms.templates.permissionKeysPermissionRow = function permissionKeysPermissionRow(params, container) {
-        $dom.on(container, 'click', '.js-click-btn-toggle-value', function (e, btn) {
-            btn.value = (btn.value === '-') ? '+' : '-';
         });
     };
 

@@ -27,6 +27,10 @@
 	vertical-align: middle;
 }
 
+.permission-toggle-button {
+	font-family: Courier;
+}
+
 .match-key-name-column {
 	width: 15em;
 }

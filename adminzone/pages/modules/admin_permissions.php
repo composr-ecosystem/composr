@@ -581,7 +581,8 @@ class Module_admin_permissions
         $rows = new Tempcode();
         foreach ($p_rows as $id => $page) {
             $cells = new Tempcode();
-            $code = '';
+            $row_moderator_group_cell_ids = [];
+            $row_group_cell_ids = [];
 
             $access_rows = collapse_1d_complexity('group_id', $GLOBALS['SITE_DB']->query_select('group_page_access', ['group_id'], ['page_name' => $page['page_name']]));
 
@@ -598,17 +599,21 @@ class Module_admin_permissions
                     'HUMAN' => do_lang_tempcode('RESTRICTION_CELL', /*$zone.'__'.*/escape_html($page['page_name']), escape_html($g_name)),
                     'NAME' => 'p_' . strval($id) . '__' . strval($gid),
                 ]));
-                $code .= 'form.elements[\'' . 'p_' . strval($id) . '__' . strval($gid) . '\'].checked=this.value==\'+\';';
+
+                $row_group_cell_ids[] = 'p_' . strval($id) . '__' . strval($gid);
             }
 
-            $rows->attach(do_template('PERMISSION_KEYS_PERMISSION_ROW', [
+            $tpl_map = do_template('PERMISSION_KEYS_PERMISSION_ROW', [
                 '_GUID' => 'dd692175fe246c130126ece7bd30ffb1',
                 'ALL_OFF' => empty($access_rows),
                 'KEY' => $page['page_name'],
                 'UID' => strval($id),
-                'CODE' => $code,
+                'ROW_MODERATOR_GROUP_CELL_IDS' => $row_moderator_group_cell_ids,
+                'ROW_GROUP_CELL_IDS' => $row_group_cell_ids,
                 'CELLS' => $cells,
-            ]));
+            ]);
+
+            $rows->attach($tpl_map);
         }
 
         // Match-key messages
@@ -1243,7 +1248,8 @@ class Module_admin_permissions
             list($section, $privilege_text) = $bits;
 
             $cells = '';
-            $code = '';
+            $row_moderator_group_cell_ids = [];
+            $row_group_cell_ids = [];
             $has = true;
 
             foreach ($groups as $id => $g_name) {
@@ -1264,17 +1270,24 @@ class Module_admin_permissions
 
                 $cells .= str_replace('__human__', escape_html(addslashes(do_lang('PERMISSION_CELL', $privilege_text, $g_name))), str_replace('__name__', $privilege . '__' . strval($id), $has_privilege ? $true : $false));
                 if (in_array($id, $moderator_groups)) {
-                    $code .= 'form.elements[\'' . $privilege . '__' . strval($id) . '\'].checked=true;';
-                } else {
-                    $code .= 'form.elements[\'' . $privilege . '__' . strval($id) . '\'].checked=this.value==\'+\';';
+                    $row_moderator_group_cell_ids[] = $privilege . '__' . strval($id);
                 }
+                $row_group_cell_ids[] = $privilege . '__' . strval($id);
             }
 
             if ($GLOBALS['XSS_DETECT']) {
                 ocp_mark_as_escaped($cells);
             }
 
-            $tpl_map = ['_GUID' => '075f8855f0fed36b0d0f9c61108dd3de', 'HAS' => $has, 'ABBR' => $privilege, 'PERMISSION' => $privilege_text, 'CELLS' => $cells, 'CODE' => $code];
+            $tpl_map = [
+                '_GUID' => '075f8855f0fed36b0d0f9c61108dd3de',
+                'HAS' => $has,
+                'ABBR' => $privilege,
+                'PERMISSION' => $privilege_text,
+                'CELLS' => $cells,
+                'ROW_MODERATOR_GROUP_CELL_IDS' => $row_moderator_group_cell_ids,
+                'ROW_GROUP_CELL_IDS' => $row_group_cell_ids,
+            ];
 
             // See if any modules can override this
             if (array_key_exists($privilege, $all_module_overrides)) {
