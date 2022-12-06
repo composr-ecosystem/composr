@@ -1248,10 +1248,10 @@ abstract class Hook_CMA
         if (($field === null) && ($info['support_custom_fields']) && (addon_installed('catalogues'))) {
             require_code('fields');
             require_code('hooks/systems/content_meta_aware/catalogue_entry');
-            $field = 'CALL: generate_catalogue_entry_image_url';
             $content_type = $this->get_content_type();
             $catalogue_entry_id = get_bound_content_entry($content_type, $this->get_id($row));
             if ($catalogue_entry_id !== null) {
+                $field = 'CALL: generate_catalogue_entry_image_url';
                 $row = ['id' => $catalogue_entry_id, 'c_name' => '_' . $content_type];
             }
         }
