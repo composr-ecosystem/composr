@@ -104,7 +104,7 @@
 
 			{$SET,bound_catalogue_entry,{$CATALOGUE_ENTRY_FOR,post,{ID}}}
 			{+START,IF_NON_EMPTY,{$GET,bound_catalogue_entry}}
-				{$CATALOGUE_ENTRY_ALL_FIELD_VALUES,{$GET,bound_catalogue_entry},1}
+				{$CATALOGUE_ENTRY_ALL_FIELD_VALUES,{$GET,bound_catalogue_entry}}
 			{+END}
 
 			{LAST_EDITED}

@@ -571,20 +571,22 @@ class Module_admin_cns_members
             $temp = explode(',', $_usergroups);
             $usergroups = [];
             foreach ($temp as $t) {
-                $usergroups[] = intval($t);
+                if ((is_numeric($t))) {
+                    $usergroups[] = intval($t);
+                }
             }
         }
 
         $fields = new Tempcode();
-        $fields->attach(form_input_integer(do_lang_tempcode('DELURK_MAX_POSTS'), do_lang_tempcode('DELURK_MAX_POSTS_DESCRIPTION'), 'max_posts', $max_posts, true));
+        $fields->attach(form_input_integer(do_lang_tempcode('DELURK_MAX_POSTS'), do_lang_tempcode('DELURK_MAX_POSTS_DESCRIPTION'), 'max_posts', $max_posts, false));
         if (addon_installed('points')) {
-            $fields->attach(form_input_integer(do_lang_tempcode('DELURK_MAX_POINTS'), do_lang_tempcode('DELURK_MAX_POINTS_DESCRIPTION'), 'max_points', $max_points, true));
+            $fields->attach(form_input_integer(do_lang_tempcode('DELURK_MAX_POINTS'), do_lang_tempcode('DELURK_MAX_POINTS_DESCRIPTION'), 'max_points', $max_points, false));
         } else {
-            $hidden->attach(form_input_hidden('max_points', '0'));
+            $hidden->attach(form_input_hidden('max_points', ''));
         }
-        $fields->attach(form_input_integer(do_lang_tempcode('DELURK_MAX_LOGGED_ACTIONS'), do_lang_tempcode('DELURK_MAX_LOGGED_ACTIONS_DESCRIPTION'), 'max_logged_actions', $max_logged_actions, true));
-        $fields->attach(form_input_integer(do_lang_tempcode('DELURK_MIN_DAYS_SINCE_LOGIN'), do_lang_tempcode('DELURK_MIN_DAYS_SINCE_LOGIN_DESCRIPTION'), 'min_days_since_login', $min_days_since_login, true));
-        $fields->attach(form_input_integer(do_lang_tempcode('DELURK_MIN_DAYS_SINCE_JOIN'), do_lang_tempcode('DELURK_MIN_DAYS_SINCE_JOIN_DESCRIPTION'), 'min_days_since_join', $min_days_since_join, true));
+        $fields->attach(form_input_integer(do_lang_tempcode('DELURK_MAX_LOGGED_ACTIONS'), do_lang_tempcode('DELURK_MAX_LOGGED_ACTIONS_DESCRIPTION'), 'max_logged_actions', $max_logged_actions, false));
+        $fields->attach(form_input_integer(do_lang_tempcode('DELURK_MIN_DAYS_SINCE_LOGIN'), do_lang_tempcode('DELURK_MIN_DAYS_SINCE_LOGIN_DESCRIPTION'), 'min_days_since_login', $min_days_since_login, false));
+        $fields->attach(form_input_integer(do_lang_tempcode('DELURK_MIN_DAYS_SINCE_JOIN'), do_lang_tempcode('DELURK_MIN_DAYS_SINCE_JOIN_DESCRIPTION'), 'min_days_since_join', $min_days_since_join, false));
         $fields->attach(form_input_tick(do_lang_tempcode('DELURK_NON_CONFIRMED'), do_lang_tempcode('DELURK_NON_CONFIRMED_DESCRIPTION'), 'non_confirmed', $non_confirmed));
         $groups = new Tempcode();
         $group_count = $GLOBALS['FORUM_DB']->query_select_value('f_groups', 'COUNT(*)');
@@ -632,6 +634,11 @@ class Module_admin_cns_members
      */
     public function find_lurkers(int $max_posts, int $max_points, int $max_logged_actions, int $min_days_since_login, int $min_days_since_join, bool $non_confirmed, array $usergroups) : array
     {
+        if (addon_installed('points')) {
+            require_code('points');
+        }
+
+        $out = [];
         $start = 0;
         do {
             cms_extend_time_limit(10);
@@ -640,19 +647,22 @@ class Module_admin_cns_members
 
             $sql = 'SELECT id,m_username FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE';
             $sql .= ' id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
-            $sql .= ' AND id<>' . strval(get_member()) . ' AND m_cache_num_posts<=' . strval($max_posts);
-            $sql .= ' AND m_last_visit_time<' . strval(time() - $min_days_since_login * 60 * 60 * 24);
-            $sql .= ' AND m_join_time<' . strval(time() - $min_days_since_join * 60 * 60 * 24);
+            $sql .= ' AND id<>' . strval(get_member());
+            if ($max_posts > 0) {
+                $sql .= 'AND m_cache_num_posts<=' . strval($max_posts);
+            }
+            if ($min_days_since_login > 0) {
+                $sql .= ' AND m_last_visit_time<' . strval(time() - $min_days_since_login * 60 * 60 * 24);
+            }
+            if ($min_days_since_join > 0) {
+                $sql .= ' AND m_join_time<' . strval(time() - $min_days_since_join * 60 * 60 * 24);
+            }
             if ($non_confirmed) {
                 $sql .= ' AND ' . db_string_equal_to('m_validated_email_confirm_code', '');
             }
             $rows = $GLOBALS['FORUM_DB']->query($sql, 500, $start);
-            $out = [];
-            if (addon_installed('points')) {
-                require_code('points');
-            }
             foreach ($rows as $row) {
-                if (addon_installed('points')) {
+                if (addon_installed('points') && ($max_points > 0)) {
                     if (points_lifetime($row['id']) > $max_points) {
                         continue;
                     }
@@ -664,7 +674,7 @@ class Module_admin_cns_members
                     }
                 }
                 $num_actions = $GLOBALS['SITE_DB']->query_select_value('actionlogs', 'COUNT(*)', ['member_id' => $row['id']]);
-                if ($num_actions > $max_logged_actions) {
+                if (($max_logged_actions > 0) && ($num_actions > $max_logged_actions)) {
                     continue;
                 }
 
@@ -692,16 +702,18 @@ class Module_admin_cns_members
 
         require_lang('cns_lurkers');
 
-        $max_posts = post_param_integer('max_posts');
-        $max_points = post_param_integer('max_points');
-        $max_logged_actions = post_param_integer('max_logged_actions');
-        $min_days_since_login = post_param_integer('min_days_since_login');
-        $min_days_since_join = post_param_integer('min_days_since_join');
+        $max_posts = post_param_integer('max_posts', 0);
+        $max_points = post_param_integer('max_points', 0);
+        $max_logged_actions = post_param_integer('max_logged_actions', 0);
+        $min_days_since_login = post_param_integer('min_days_since_login', 0);
+        $min_days_since_join = post_param_integer('min_days_since_join', 0);
         $non_confirmed = (post_param_integer('non_confirmed', 0) == 1);
         $usergroups = [];
         if (array_key_exists('usergroups', $_POST)) {
             foreach ($_POST['usergroups'] as $g_id) {
-                $usergroups[] = intval($g_id);
+                if ((is_numeric($g_id))) {
+                    $usergroups[] = intval($g_id);
+                }
             }
         }
 

@@ -30,13 +30,15 @@
 	<div>
 		<div class="cns-topic-post-area cns-post-main-column wiki-topic-post-area" id="pe-{ID*}">
 			{POST}
+
+			{$SET,bound_catalogue_entry,{$CATALOGUE_ENTRY_FOR,wiki_post,{ID}}}
+			{+START,IF_NON_EMPTY,{$GET,bound_catalogue_entry}}{$PARAGRAPH,{$CATALOGUE_ENTRY_ALL_FIELD_VALUES,{$GET,bound_catalogue_entry}}}{+END}
+
 			{$METADATA_IMAGE_EXTRACT,{POST}}
 
 			{$REVIEW_STATUS,wiki_post,{ID}}
 		</div>
 	</div>
-	{$SET,bound_catalogue_entry,{$CATALOGUE_ENTRY_FOR,wiki_post,{ID}}}
-	{+START,IF_NON_EMPTY,{$GET,bound_catalogue_entry}}{$CATALOGUE_ENTRY_ALL_FIELD_VALUES,{$GET,bound_catalogue_entry},1}{+END}
 	{+START,IF_NON_EMPTY,{BUTTONS}}
 		<div>
 			<div class="cns-left-post-buttons post-buttons cns-post-main-column">
