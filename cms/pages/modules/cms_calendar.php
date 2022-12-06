@@ -1229,6 +1229,23 @@ class Module_cms_calendar extends Standard_crud_module
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'event'));
         }
         $event = $rows[0];
+
+        $type = $event['e_type'];
+        $timezone = $event['e_timezone'];
+        $start_year = $event['e_start_year'];
+        $start_month = $event['e_start_month'];
+        $start_day = $event['e_start_day'];
+        $start_monthly_spec_type = $event['e_start_monthly_spec_type'];
+        $start_hour = $event['e_start_hour'];
+        $start_minute = $event['e_start_minute'];
+        $do_timezone_conv = $event['e_do_timezone_conv'];
+
+        $this->donext_type = $type;
+        $_start_hour = ($start_hour === null) ? find_timezone_start_hour_in_utc($timezone, $start_year, $start_month, $start_day, $start_monthly_spec_type) : $start_hour;
+        $_start_minute = ($start_minute === null) ? find_timezone_start_minute_in_utc($timezone, $start_year, $start_month, $start_day, $start_monthly_spec_type) : $start_minute;
+        $start_day_of_month = find_concrete_day_of_month($start_year, $start_month, $start_day, $start_monthly_spec_type, $_start_hour, $_start_minute, $timezone, $do_timezone_conv == 1);
+        $this->donext_date = strval($start_year) . '-' . strval($start_month) . '-' . strval($start_day_of_month);
+
         check_delete_permission(($event['e_member_calendar'] === null) ? 'mid' : 'low', $event['e_submitter']);
 
         delete_calendar_event($id);
