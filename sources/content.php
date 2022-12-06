@@ -1251,7 +1251,9 @@ abstract class Hook_CMA
             $field = 'CALL: generate_catalogue_entry_image_url';
             $content_type = $this->get_content_type();
             $catalogue_entry_id = get_bound_content_entry($content_type, $this->get_id($row));
-            $row = ['id' => $catalogue_entry_id, 'c_name' => '_' . $content_type];
+            if ($catalogue_entry_id !== null) {
+                $row = ['id' => $catalogue_entry_id, 'c_name' => '_' . $content_type];
+            }
         }
 
         if ($field === null) {
