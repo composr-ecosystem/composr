@@ -123,7 +123,7 @@ foreach ($_catalogues as $_catalogue) {
 }
 foreach ($_prices as $_price) {
     if (!isset($catalogues[$_price['c_catalogue_name']])) {
-        $catalogues[$_price['c_catalogue_name']] = $_price['c_catalogue_name'] . ' (' . do_lang('MISSING_RESOURCE') . ')';
+        $catalogues[$_price['c_catalogue_name']] = $_price['c_catalogue_name'] . ' (' . do_lang('MISSING_RESOURCE_SHORT') . ')';
     }
 }
 

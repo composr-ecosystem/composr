@@ -11771,6 +11771,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         INVALID_CV2_NUMBER
         DESCRIPTION_BANNER_SECONDARY_CATEGORIES
         AUTHOR_HOMEPAGE
+        MISSING_RESOURCE_SHORT
     ')));
 
     if ($GLOBALS['DEV_MODE']) {
