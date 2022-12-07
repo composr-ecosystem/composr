@@ -240,6 +240,7 @@ class Module_cms_authors
             }
         }
 
+        // If an e-mail is provided, remove the "mailto:" for cleanliness on the edit screen
         if (substr($url, 0, 7) == 'mailto:') {
             $url = substr($url, 7);
         }
