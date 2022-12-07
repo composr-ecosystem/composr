@@ -2123,10 +2123,15 @@
                 return;
             }
 
-            // if ((getActiveMenu() == null)) {
             var misHovered = $dom.parent(target, '.menu-dropdown-items');
             setActiveMenu($dom.id(misHovered), this.menuId);
-            // }
+
+            var search = $dom.$(target, 'input[type="search"]');
+            if (search) {
+                setTimeout(function() {
+                    search.focus();
+                }, 100);
+            }
 
             if (target.classList.contains('has-children')) {
                 popupMenu(target.querySelector('.menu-dropdown-items'), target.classList.contains('toplevel') ? 'below' : 'right', this.menuId);
