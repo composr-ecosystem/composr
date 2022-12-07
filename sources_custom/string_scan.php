@@ -11770,7 +11770,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         INVALID_CC_NUMBER
         INVALID_CV2_NUMBER
         DESCRIPTION_BANNER_SECONDARY_CATEGORIES
-        AUTHOR_HOMEPAGE
+        AUTHOR_MAIL
         MISSING_RESOURCE_SHORT
     ')));
 
