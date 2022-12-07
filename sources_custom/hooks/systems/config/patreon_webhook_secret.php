@@ -30,7 +30,7 @@ class Hook_config_patreon_webhook_secret
             'type' => 'line',
             'category' => 'COMPOSR_APIS',
             'group' => 'PATREON',
-            'explanation' => 'CONFIG_OPTION_webhook_secret',
+            'explanation' => 'CONFIG_OPTION_patreon_webhook_secret',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'order_in_category_group' => 3,

@@ -4298,7 +4298,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_reorganise_uploads_VALUE_1
         CONFIG_OPTION_reorganise_uploads_VALUE_2
         URL_SIMPLIFIER
-        CONFIG_OPTION_url_simplifier
+        CONFIG_OPTION_urls_simplifier
         DESCRIPTION_HTTP_CACHE
         META_TREE_REBUILD
         DESCRIPTION_META_TREE_REBUILD

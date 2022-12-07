@@ -35,7 +35,7 @@ class Hook_config_urls_simplifier
             'type' => 'tick',
             'category' => 'CONTENT_EDITING',
             'group' => 'ADVANCED',
-            'explanation' => 'CONFIG_OPTION_url_simplifier',
+            'explanation' => 'CONFIG_OPTION_urls_simplifier',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,
