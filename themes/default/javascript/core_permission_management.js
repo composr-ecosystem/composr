@@ -575,7 +575,7 @@
         var temp = permissionsImgFunc1b(node, id);
         var url = temp[0];
         var title = temp[1];
-        return '<img class="vertical-alignment perm-icon" width="29" height="17" style="width: 29px; height: 17px;" src="' + url + '" alt="' + title + '" title="' + title + '" />&nbsp;';
+        return '<img class="vertical-alignment perm-icon" width="36" height="21" style="width: 36px; height: 21px;" src="' + url + '" alt="' + title + '" title="' + title + '" />&nbsp;';
 
 
         function permissionsImgFunc1b(node, id) {
@@ -619,7 +619,7 @@
         var temp = permissionsImgFunc2b(node, id);
         var url = temp[0];
         var title = temp[1];
-        return '<img class="vertical-alignment" src="' + url + '" alt="' + title + '" title="' + title + '" />';
+        return '<img class="vertical-alignment" width="10" height="10" style="width: 10px; height: 10px;" src="' + url + '" alt="' + title + '" title="' + title + '" />';
 
         function permissionsImgFunc2b(node, id) {
             if (id === undefined) {
