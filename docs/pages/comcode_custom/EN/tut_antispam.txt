@@ -89,7 +89,7 @@ This is described in the [page="_SEARCH:tut_censor"]Dealing with annoying users[
 [title="2"]Guest posting[/title]
 
 You may simply want to deny some guest permissions, which will raise the effort spammers have to go to:
- - Guest posting posting permissions on the forum
+ - Guest posting permissions on the forum
  - The "Comment upon content" privilege (Admin Zone > Security > Privileges > Feedback)
  - The "May report posts" privilege (Admin Zone > Security > Privileges > General settings)
  - Anonymous posts: the "Anonymous posts within private topics" configuration option (Admin Zone > Setup > Configuration > Forum options > Private Topics), and the option individually on forums
@@ -102,7 +102,7 @@ You may want to also disable permission for Guests to report content.
 
 There is a developer addon, [tt]antispam_question[/tt], which checks the value of a Custom Profile Field to see if it matches a pre-defined setting. If it does not, it puts the member in the Probation usergroup only.
 
-You could then then configure your forum permissions so there is only a single forum these members see, that normal members don't. This effectively works as a shadow-ban. You can then move people out of Probation manually if you need to.
+You could then configure your forum permissions so there is only a single forum these members see, that normal members don't. This effectively works as a shadow-ban. You can then move people out of Probation manually if you need to.
 
 The developer addon hard-codes the CPF ID being checked against, and the expected value, and the ID of the usergroup to put failing members in (the default Probation usergroup). It would be fairly easy to customise with minimal coding skills, although ideally we'd add a [url="more extensive configurable feature"]https://compo.sr/tracker/view.php?id=1579[/url].
 

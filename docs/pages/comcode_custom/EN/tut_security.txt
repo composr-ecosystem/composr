@@ -394,7 +394,7 @@ XSS-protection already exists for requests and content, and very fragile attack 
 | Outbound
 | [b]Making calls to scripts via in-browser requests [AJAX mode][/b]
 
-Risk of your site being used used as an intermediary in attacks.
+Risk of your site being used as an intermediary in attacks.
 | Low
 
 XSS-protection already exists for requests and content,  and only possible if the remote server has opened the possibility up for this.
@@ -549,7 +549,7 @@ When you login to the Composr site you have a "confirmed" session. If you then c
 
 It is possible to configure zones so that they require a confirmed session to access them. This means that a user can only access the zone if they have actively chosen, in the specific web browser window that is currently being used, to login: login cookies alone cannot gain them access.
 
-This might seem like a very strange thing to enforce, but there is a very good reason: it is very easy for someone to create a malicious website that contains a form with a target of your website, such that that form directs a malicious action when you are tricked to fill it in and click 'submit'. If a barrier of a required session was not imposed, this action could go unabated with your access level direct to perform some malicious action by proxy through you. These kinds of attacks are called CSRF ("Cross-Site-Request-Forgery").
+This might seem like a very strange thing to enforce, but there is a very good reason: it is very easy for someone to create a malicious website that contains a form with a target of your website, such that the form directs a malicious action when you are tricked to fill it in and click 'submit'. If a barrier of a required session was not imposed, this action could go unabated with your access level direct to perform some malicious action by proxy through you. These kinds of attacks are called CSRF ("Cross-Site-Request-Forgery").
 
 Additionally, if someone else accesses your computer you don't necessarily want the cookie login to let them have complete website control.
 

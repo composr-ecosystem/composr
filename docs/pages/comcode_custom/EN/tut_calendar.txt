@@ -80,7 +80,7 @@ Social > Calendar on the default menus).
 [media width="150" description="Calendar interest filtering" float="right"]data_custom/images/docs/tut_calendar/calendar_interests.png[/media]
 The user interface has been very carefully designed so as to allow very quick and easy navigation between these views, allowing you to focus in and out, and move along, from where you are viewing.
 
-The less focused the view, the less detail that is shown. On the year view you not see detail on any specific event happening on a day, but you can see trends and gauge how busy the individual days are. On the month view you can see specific events, but it is less easy to see how a day is time-tabled. On the week view you can can see a full time-table, but you can only see event titles by hovering the mouse. On the day view, you can see parallel activity streams, and actual event details.
+The less focused the view, the less detail that is shown. On the year view you not see detail on any specific event happening on a day, but you can see trends and gauge how busy the individual days are. On the month view you can see specific events, but it is less easy to see how a day is time-tabled. On the week view you can see a full time-table, but you can only see event titles by hovering the mouse. On the day view, you can see parallel activity streams, and actual event details.
 
 The views support filtering of event-types via a series of check-boxes (tick-boxes).
 

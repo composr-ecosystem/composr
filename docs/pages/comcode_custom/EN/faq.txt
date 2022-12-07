@@ -303,7 +303,7 @@ The [tt]from[/tt] address (different to the 'reply address' you see when you cli
 
 [title="3"]Why is e-mail not getting sent from the server?[/title]
 
-This can be very difficult to debug, but is unlikely to be the fault of Composr. One possibility is if your server is on a spam blocklist. Another is that the outgoing e-mail server you are using is clogged or broken. Another possibility is that your website name could look like spam, or your server is not on an SPF list for the website e-mail address. If you are using the inbuilt SMTP sending functionality (if you filled it in in the configuration), please be aware that it is best to not use this unless the inbuilt PHP functionality (which is auto-configured by the webhost) is not working.
+This can be very difficult to debug, but is unlikely to be the fault of Composr. One possibility is if your server is on a spam blocklist. Another is that the outgoing e-mail server you are using is clogged or broken. Another possibility is that your website name could look like spam, or your server is not on an SPF list for the website e-mail address. If you are using the inbuilt SMTP sending functionality (if you filled it out in the configuration), please be aware that it is best to not use this unless the inbuilt PHP functionality (which is auto-configured by the webhost) is not working.
 
 [title="3"]Why do large uploads fail on IIS?[/title]
 

@@ -85,7 +85,7 @@ Do:
 
 [media thumb="0" framed="0" float="right"]data_custom/images/docs/dont.png[/media]
 Don't:
- - forget to to cache against theme where appropriate (i.e. do not assume all users will use the same theme by caching theme-tainted data without using the theme name as part of the cache identifier)
+ - forget to cache against theme where appropriate (i.e. do not assume all users will use the same theme by caching theme-tainted data without using the theme name as part of the cache identifier)
  - cache non-featured stuff that could stay in the cache forever but relatively rarely get used (even if a gallery is viewed on every page view, this is not justification to cache 100s of them: but we could cache the current poll block): memory is finite, do not waste it
  - assume the persistent cache exists (due to its non-reliability for long term storage): if something is really important to be cached, Composr should have a dependable cache to do it
 
@@ -1107,7 +1107,7 @@ Often they also define the following:
  - [tt]create_selection_list_ajax_tree[/tt], If we are using tree list control in edit page, we need to define [tt]create_selection_list_ajax_tree[/tt] function in our module. That tree list is using for selecting the editable data. We need to give the name of an [tt]systems/ajax_tree[/tt] hook file which create the data for tree list to the Composr [tt]form_input_tree_list[/tt] function. The hook file will return XML data for the tree list and the built-in Composr AJAX functions (called up by [tt]form_input_tree_list[/tt]) will receive that data and fill it in tree list. In every node expansion in the tree list another AJAX request is generated to expand the particular node's ID. The AJAX script will find the child data for that parent ID and return its child data.
  - [tt]get_submitter[/tt], If there is a complex calculation required for who submitted a resource (required for the purposes of permission checking).
  - [tt]do_next_manager[/tt], If the standard do-next results screen is too basic (e.g. if extra icons are needed).
- - [tt]browse[/tt], The function to show the screen when the module is loaded up. If we do not define this, [tt]browse[/tt] acts the same as [tt]add[/tt]. If you define a [tt]browse[/tt] method (which many CRUD modules do do) then you must call it yourself from your [tt]run_start[/tt] method. Often [tt]browse[/tt] methods are used with do-next-manager interfaces, to provide a front-end for choosing different options.
+ - [tt]browse[/tt], The function to show the screen when the module is loaded up. If we do not define this, [tt]browse[/tt] acts the same as [tt]add[/tt]. If you define a [tt]browse[/tt] method (which many CRUD modules do) then you must call it yourself from your [tt]run_start[/tt] method. Often [tt]browse[/tt] methods are used with do-next-manager interfaces, to provide a front-end for choosing different options.
 
 CRUD modules usually define the following standard properties:
  - [tt]lang_type[/tt], the stem for languages strings the module would use. E.g. if you say [tt]FOO[/tt], the [tt]ADD_FOO[/tt], [tt]EDIT_FOO[/tt], and [tt]DELETE_FOO[/tt] language strings would all need to exist.

@@ -124,7 +124,7 @@ In your HTML the icon tags look similar to:
 [concepts
  1_key="Open Graph"                1_value="Facebook's standard for supplying web-page metadata"
  2_key="Twitter Card"              2_value="Twitter's standard for supplying web-page metadata"
- 3_key="Favicon"                   3_value="The standardised small icon used for your webpage (typically the same across across the whole website)"
+ 3_key="Favicon"                   3_value="The standardised small icon used for your webpage (typically the same across the whole website)"
 ]Concepts[/concepts]
 
 [title="2"]See also[/title]

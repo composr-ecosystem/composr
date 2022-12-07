@@ -353,7 +353,7 @@ Options 3 or 4 are the most likely you will want to use.
  See docs/LICENSE.md for full licensing information.
 
  Meta Script:
-   Find files modified within the last days days
+   Find files modified within the last 'days' days
 */
 
 header('Content-Type: text/plain');

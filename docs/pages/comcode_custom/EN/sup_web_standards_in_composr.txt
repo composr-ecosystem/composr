@@ -17,7 +17,7 @@ Composr really comes into its own with its support in the Accessibility. Composr
 
 [title="2"]Data and Feeds[/title]
 
-Composr offers extensive support for a wide range of Data and feeds which are commonly used around the web and this helps ensure excellent interoperability. Data and feed standards support includes XML, RSS 2.0, Atom and iCalendar for linking your on-site calendar with other software. There are also implementations for for SQL, LDAP 3, XSL transformations and Outline Processor Markup Language (OPML).
+Composr offers extensive support for a wide range of Data and feeds which are commonly used around the web and this helps ensure excellent interoperability. Data and feed standards support includes XML, RSS 2.0, Atom and iCalendar for linking your on-site calendar with other software. There are also implementations for SQL, LDAP 3, XSL transformations and Outline Processor Markup Language (OPML).
 
 [title="2"]Metadata[/title]
 

@@ -67,7 +67,7 @@ Composr allows configuration of what forums are used to store portal-generated c
 Composr supports a sophisticated theme detection system, whereby Composr themes can be automatically detected based on a priority system:
 1) (whatever a zone might be forcibly set to)
 2) from the "forum-theme-name-to-Composr-theme" mapping of the member chosen forum-themes, if the logged in member has made a choice. In other words, if a member Bob selects a forum theme named ForumFoo, then the Composr theme would be whatever the map says that ForumFoo's Composr equivalent is (e.g. ComposrFoo)
-3) from the "forum-theme-name-to-Composr-theme" mapping of the forum-theme titled after the name of your website name. In other words, if the forum contains a theme titled "My Site" and your website happens to be called "My Site", then then Composr theme would be whatever the map says that MySite's Composr equivalent is (e.g. MySiteTheme)
+3) from the "forum-theme-name-to-Composr-theme" mapping of the forum-theme titled after the name of your website name. In other words, if the forum contains a theme titled "My Site" and your website happens to be called "My Site", then Composr theme would be whatever the map says that MySite's Composr equivalent is (e.g. MySiteTheme)
 4) the Composr [tt]default[/tt] theme
 
 This system is complicated to understand and configure, and is optional, but it is useful for some websites. If you do not wish to use this system, simply manually select which themes to use for each zone, by editing the zone.

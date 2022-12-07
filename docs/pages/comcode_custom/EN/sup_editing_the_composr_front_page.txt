@@ -10,7 +10,7 @@ That is, as long as the "Single public zone" configuration option (Admin Zone > 
 
 This page can be left as it is or can be edited but to create some of our own content, but first need to understand what the existing content is.
 
-So let's edit the page, look for the the &ldquo;Edit this page&rdquo; link near the bottom of the page (but above the footer).
+So let's edit the page, look for the &ldquo;Edit this page&rdquo; link near the bottom of the page (but above the footer).
 
 [media thumb="1" description="The link to edit the page"]data_custom/images/docs/sup_editing_the_composr_front_page/895425e4c9f62174994ae0e642752a67.png[/media]
 

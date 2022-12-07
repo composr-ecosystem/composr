@@ -333,7 +333,7 @@ You would then customise these templates as appropriate.
 
 When we talk about default catalogue template set, we are referring to the [tt]CATALOGUE_DEFAULT_*.tpl[/tt] files rather than referring to the default theme or the default versions within that theme. It is possible for custom themes to have their own versions of the default catalogue template set, and also per-catalogue versions.
 We're using the word default in different contexts, so to clarify:
- - [tt]themes/default/templates/CATALOGUE_DEFAULT_*.tpl[/tt] -- the default theme's default default template set
+ - [tt]themes/default/templates/CATALOGUE_DEFAULT_*.tpl[/tt] -- the default theme's default template set
  - [tt]themes/default/templates_custom/CATALOGUE_DEFAULT_*.tpl[/tt] -- the default theme's overridden default template set (i.e. a site's owner has decided to override it but not on a per-theme basis)
  - [tt]themes/default/templates_custom/CATALOGUE_somecatalogue_*.tpl[/tt] -- the default theme's custom template set for the [tt]somecatalogue[/tt] catalogue
  - [tt]themes/mytheme/templates_custom/CATALOGUE_DEFAULT_*.tpl[/tt] -- the [tt]mytheme[/tt] theme's overridden default template set

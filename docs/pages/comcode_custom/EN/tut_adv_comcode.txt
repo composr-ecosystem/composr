@@ -225,7 +225,7 @@ Or, a more practical example...
 
 Like the list syntax, the menu syntax specifies a tree structure, and uses indentation to do it. Things within a section, including the definition of sub-sections, are indented from the section start line itself.
 
-The [tt]-[/tt] means that a section is not expanded by default, while the [tt]+[/tt] means that a section is. Those lines without a [tt]+[/tt] or [tt]-[/tt] are lines that are actually entries on the menu, and contain the caption of the entry, followed by [tt] = [/tt], followed the the URL of the entry.
+The [tt]-[/tt] means that a section is not expanded by default, while the [tt]+[/tt] means that a section is. Those lines without a [tt]+[/tt] or [tt]-[/tt] are lines that are actually entries on the menu, and contain the caption of the entry, followed by [tt] = [/tt], followed by the URL of the entry.
 
 Menu entries are typed so that their indentation is equal to the indentation of the start of the section's title.
 i.e. one further depth of indentation from the section's [tt]+[/tt] or [tt]-[/tt].
