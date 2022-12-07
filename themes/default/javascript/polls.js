@@ -22,7 +22,7 @@
 
             $cms.ui.confirm('{!cns_polls:VOTE_FORFEIGHT;^}', function (answer) {
                 if (answer) {
-                    $dom.trigger(form, 'submit');
+                    form.submit();
                 }
             });
 

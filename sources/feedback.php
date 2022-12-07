@@ -187,6 +187,8 @@ function embed_feedback_systems(string $content_type, string $content_id, int $a
     require_code('crypt');
     $hash = ratchet_hash($serialized_options, get_site_salt()); // A little security, to ensure $serialized_options is not tampered with
 
+    $self_url_encoded = static_evaluate_tempcode(protect_url_parameter(get_self_url(true)));
+
     if (!$comment_details->is_empty()) {
         // AJAX support
         $comment_details->attach(do_template('COMMENT_AJAX_HANDLER', [
@@ -194,6 +196,7 @@ function embed_feedback_systems(string $content_type, string $content_id, int $a
             'HASH' => $hash,
             'CONTENT_TYPE' => $content_type,
             'IS_THREADED' => true,
+            'SELF_URL_ENCODED' => $self_url_encoded,
         ]));
     }
 
@@ -232,8 +235,19 @@ function post_comment_script()
         actualise_post_comment($allow_comments >= 1, $content_type, $content_id, $content_url, $content_title, $forum, true, null, false, true, false, null, null, $time);
     }
 
+    $self_url = get_param_string('self_url', null, INPUT_FILTER_URL_GENERAL);
+    if ($self_url !== null) {
+        list($zone, $attributes) = page_link_decode(url_to_page_link($self_url));
+        list($old_get, $old_zone, $old_current_script) = set_execution_context(
+            $attributes,
+            $zone
+        );
+    }
+
     // Get new comments state
     $comment_details = get_comments($content_type, $allow_comments == 1, $content_id, false, $forum, null, null, false, null, $submitter, $allow_comments == 2);
+
+    $self_url_encoded = static_evaluate_tempcode(protect_url_parameter(get_self_url(true)));
 
     if (!$comment_details->is_empty()) {
         // AJAX support
@@ -243,11 +257,21 @@ function post_comment_script()
             'HASH' => $hash,
             'CONTENT_TYPE' => $content_type,
             'IS_THREADED' => true,
+            'SELF_URL_ENCODED' => $self_url_encoded,
         ]));
     }
 
     // And output as text
     $comment_details->evaluate_echo();
+
+    if ($self_url !== null) {
+        set_execution_context(
+            $old_get,
+            $old_zone,
+            $old_current_script,
+            false
+        );
+    }
 
     cms_safe_exit_flow();
 }

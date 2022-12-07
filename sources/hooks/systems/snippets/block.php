@@ -85,6 +85,15 @@ class Hook_snippet_block
             });
         }
 
+        $self_url = get_param_string('self_url', null, INPUT_FILTER_URL_GENERAL);
+        if ($self_url !== null) {
+            list($zone, $attributes) = page_link_decode(url_to_page_link($self_url));
+            list($old_get, $old_zone, $old_current_script) = set_execution_context(
+                $attributes,
+                $zone
+            );
+        }
+
         // We need to minimise the dependency stuff that comes out, we don't need any default values
         push_output_state(false, true);
 
@@ -110,6 +119,16 @@ class Hook_snippet_block
         if (get_param_integer('no_web_resources', 0) == 0) {
             $out->attach(symbol_tempcode('JS_TEMPCODE'));
         }
+
+        if ($self_url !== null) {
+            set_execution_context(
+                $old_get,
+                $old_zone,
+                $old_current_script,
+                false
+            );
+        }
+
         return $out;
     }
 }

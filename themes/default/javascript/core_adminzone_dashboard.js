@@ -89,7 +89,7 @@
 
             ajaxFormSubmitAdminHeadless(form, blockName, map).then((function (submitForm) {
                 if (submitForm) {
-                    $dom.trigger(form, 'submit');
+                    form.submit();
                 }
             }).bind(this));
         }
@@ -124,7 +124,7 @@
 
             ajaxFormSubmitAdminHeadless(this.formEl, blockName, map).then((function (submitForm) {
                 if (submitForm) {
-                    $dom.trigger(this.formEl, 'submit');
+                    this.formEl.submit();
                 }
             }).bind(this));
         },
@@ -206,7 +206,7 @@
 
     $cms.templates.blockMainStaffActions = function (params, container) {
         $dom.on(container, 'change', '.js-onchange-submit-form', function (e, el) {
-            $dom.trigger(el.form, 'submit');
+            el.form.submit();
         });
     };
 

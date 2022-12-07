@@ -252,7 +252,7 @@
         var urlStem = '{$FIND_SCRIPT_NOHTTP;,post_comment}?options=' + encodeURIComponent(params.options) + '&hash=' + encodeURIComponent(params.hash),
             wrapperEl = document.getElementById('comments-wrapper');
 
-        replaceCommentsFormWithAjax(params.options, params.hash, 'comments-form', 'comments-wrapper');
+        replaceCommentsFormWithAjax(params.options, params.hash, 'comments-form', 'comments-wrapper', params.selfUrlEncoded);
 
         // Infinite scrolling hides the pagination when it comes into view, and auto-loads the next link, appending below the current results
         if (params.infiniteScroll) {
@@ -261,7 +261,7 @@
     };
 
     /* Update a normal comments topic with AJAX replying */
-    function replaceCommentsFormWithAjax(options, hash, commentsFormId, commentsWrapperId) {
+    function replaceCommentsFormWithAjax(options, hash, commentsFormId, commentsWrapperId, selfUrlEncoded) {
         var commentsForm = $dom.elArg('#' + commentsFormId);
 
         $dom.on(commentsForm, 'submit', function commentsAjaxListener(event) {
@@ -279,7 +279,7 @@
 
             var commentsWrapper = $dom.$id(commentsWrapperId);
             if (!commentsWrapper) { // No AJAX, as stuff missing from template
-                $dom.trigger(commentsForm, 'submit');
+                commentsForm.submit();
                 return;
             }
 
@@ -310,7 +310,7 @@
                 }
             }
             post += '&post=' + encodeURIComponent(postValue);
-            $cms.doAjaxRequest('{$FIND_SCRIPT_NOHTTP;,post_comment}' + $cms.keep(true), null, post).then(function (xhr) {
+            $cms.doAjaxRequest('{$FIND_SCRIPT_NOHTTP;,post_comment}?self_url=' + encodeURIComponent(selfUrlEncoded) + $cms.keep(), null, post).then(function (xhr) {
                 if (commentsWrapper !== document.getElementById(commentsWrapperId)) {
                     return; // No-op if comments wrapper element changed during AJAX request, e.g., slideshow loaded comments for another slide.
                 }
@@ -421,7 +421,7 @@
         }
 
         $dom.on(container, 'change', '.js-change-select-submit-form', function (e, select) {
-            $dom.trigger(select.form, 'submit');
+            select.form.submit();
         });
     };
 

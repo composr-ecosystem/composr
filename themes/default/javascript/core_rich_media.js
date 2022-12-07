@@ -331,8 +331,12 @@
             var form = btn.form;
             var deleteField = form.elements['delete'];
 
-            deleteField.value = '1';
-            $dom.trigger(form, 'submit');
+            $cms.ui.confirm('{!javascript:_ARE_YOU_SURE_DELETE;^}', function (result) {
+                if (result) {
+                    deleteField.value = '1';
+                    form.submit();
+                }
+            }, '{!CONFIRM_TEXT;^}');
         });
     };
 

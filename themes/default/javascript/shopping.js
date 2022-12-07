@@ -68,7 +68,7 @@
                 function (result) {
                     if (result) {
                         form.action = actionUrl;
-                        $dom.trigger(form, 'submit');
+                        form.submit();
                     }
                 }
             );
@@ -86,7 +86,7 @@
                         '{!shopping:DISPATCH_CONFIRMATION_MESSAGE;^}',
                         function (result) {
                             if (result) {
-                                $dom.trigger(form, 'submit');
+                                form.submit();
                             }
                         }
                     );
@@ -95,12 +95,12 @@
                         '{!shopping:CANCEL_ORDER_CONFIRMATION_MESSAGE;^}',
                         function (result) {
                             if (result) {
-                                $dom.trigger(form, 'submit');
+                                form.submit();
                             }
                         }
                     );
                 } else {
-                    $dom.trigger(form, 'submit');
+                    form.submit();
                 }
             }
         });

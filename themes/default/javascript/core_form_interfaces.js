@@ -135,7 +135,7 @@
                 window.location = this.backUrl;
             } else {
                 btn.form.action = this.backUrl;
-                $dom.trigger(btn.form, 'submit');
+                btn.form.submit();
             }
         },
 
@@ -774,7 +774,7 @@
             choosePicture('j-' + stem, img, name, event);
 
             if (window.mainFormVerySimple !== undefined) {
-                $dom.trigger(form, 'submit');
+                form.submit();
             }
         }
 
@@ -846,7 +846,7 @@
                 return;
             }
 
-            $dom.trigger(el.form, 'submit');
+            el.form.submit();
         });
     };
 
@@ -1501,7 +1501,7 @@
                 if (iframe) {
                     $dom.animateFrameLoad(iframe, 'iframe-under');
                 }
-                $dom.trigger(formCatSelector, 'submit');
+                formCatSelector.submit();
             }
         });
     }

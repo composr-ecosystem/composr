@@ -330,6 +330,7 @@ class Hook_addon_registry_core_feedback_features
             'IS_THREADED' => false,
             'HASH' => '',
             'CONTENT_TYPE' => '',
+            'SELF_URL_ENCODED' => placeholder_url(),
         ]));
 
         return lorem_globalise($ret, null, '', true);
@@ -441,6 +442,7 @@ class Hook_addon_registry_core_feedback_features
             'IS_THREADED' => false,
             'HASH' => '',
             'CONTENT_TYPE' => lorem_word(),
+            'SELF_URL_ENCODED' => placeholder_url(),
         ]));
 
         return lorem_globalise($out, null, '', true);

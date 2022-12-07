@@ -13,7 +13,7 @@
 	{+START,IF_NON_EMPTY,{DELETE_URL}}
 		{+START,SET,extra_buttons}
 			<input type="hidden" id="delete-field" name="delete" value="0" />
-			<input class="btn btn-danger btn-scr js-btn-delete-page" id="delete-button" type="button" value="{$?,{IS_TRANSLATION},{!DELETE_TRANSLATION},{!DELETE}}" />
+			<button class="btn btn-danger btn-scr js-btn-delete-page" id="delete-button" type="button">{+START,INCLUDE,ICON}NAME=admin/delete3{+END} <span>{$?,{IS_TRANSLATION},{!DELETE_TRANSLATION},{!DELETE}}</span></button>
 		{+END}
 	{+END}
 

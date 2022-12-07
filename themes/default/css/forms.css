@@ -659,17 +659,17 @@ span.validated-checkbox + input[name="validated"].input-tick {
 
 /*{+START,CSS_MODE,mobile}*/
 	.mobile.preview-box {
-		padding: 209px 36px 159px 34px;
-		width: 314px;
-		height: 360px;
+		padding: 84px 36px 104px 34px;
+		width: 381px;
+		height: 724px;
 		background: url('{$IMG;,iphone}') no-repeat;
 		background-size: 381px 724px;
 		cursor: crosshair;
 	}
 	.mobile .preview-box-inner {
 		overflow: hidden;
-		width: 314px;
-		height: 355px;
+		width: 100%;
+		height: 100%;
 	}
 /*{+END}*/
 

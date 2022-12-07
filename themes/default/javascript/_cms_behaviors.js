@@ -262,7 +262,7 @@
                         if (submitButton) {
                             $dom.trigger(submitButton, 'click');
                         } else {
-                            $dom.trigger(input.form, 'submit');
+                            input.form.submit();
                         }
                     }
                 });
@@ -555,7 +555,7 @@
 
             inputs.forEach(function (input) {
                 $dom.on(input, 'change', function () {
-                    $dom.trigger(input.form, 'submit');
+                    input.form.submit();
                 });
             });
         }

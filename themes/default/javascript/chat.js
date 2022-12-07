@@ -237,7 +237,7 @@
                 $cms.ui.confirm('{!Q_SURE=;}', function (result) {
                     if (result) {
                         $cms.ui.disableButton(btn);
-                        $dom.trigger(btn.form, 'submit');
+                        btn.form.submit();
                     }
                 });
             }

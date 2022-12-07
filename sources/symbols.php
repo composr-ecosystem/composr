@@ -1994,7 +1994,8 @@ function ecv_FACILITATE_AJAX_BLOCK_CALL(string $lang, array $escaped, array $par
         }
 
         $keep = symbol_tempcode('KEEP');
-        $value = find_script('snippet') . '?snippet=block&auth_key=' . urlencode(strval($auth_key)) . '&block_map=' . urlencode($param[0]) . $keep->evaluate();
+        $self_url_encoded = static_evaluate_tempcode(protect_url_parameter(get_self_url(true)));
+        $value = find_script('snippet') . '?snippet=block&auth_key=' . urlencode(strval($auth_key)) . '&self_url=' . urlencode($self_url_encoded) . '&block_map=' . urlencode($param[0]) . $keep->evaluate();
         if (get_param_string('utheme', null) !== null) {
             $value .= '&utheme=' . urlencode($GLOBALS['FORUM_DRIVER']->get_theme());
         }
@@ -3774,7 +3775,11 @@ function ecv_BLOCK(string $lang, array $escaped, array $param) : string
         }
 
         if ((in_array('defer=1', $param_2)) && (!running_script('comcode_convert'))) {
-            $value = static_evaluate_tempcode(do_template('JS_BLOCK', ['_GUID' => '2334719e23b2773ad04fe0fcbdce684d', 'BLOCK_PARAMS' => comma_list_arr_to_str($param_2)]));
+            $value = static_evaluate_tempcode(do_template('JS_BLOCK', [
+                '_GUID' => '2334719e23b2773ad04fe0fcbdce684d',
+                'BLOCK_PARAMS' => comma_list_arr_to_str($param_2),
+                'SELF_URL' => get_self_url(),
+            ]));
         } else {
             global $BLOCKS_CACHE;
             if (isset($BLOCKS_CACHE[serialize($param_2)])) { // Will always be set

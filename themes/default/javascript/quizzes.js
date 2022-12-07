@@ -50,7 +50,7 @@
 
         if (timeout > 0) {
             setTimeout(function () {
-                $dom.trigger(form, 'submit');
+                form.submit();
             }, timeout * 1000);
 
             setInterval(function () {

@@ -2355,6 +2355,7 @@ class Hook_addon_registry_core
     {
         return lorem_globalise(do_lorem_template('JS_BLOCK', [
             'BLOCK_PARAMS' => '',
+            'SELF_URL' => get_self_url(),
         ]), null, '', true);
     }
 

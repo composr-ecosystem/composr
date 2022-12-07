@@ -151,7 +151,7 @@
                     form.method = 'post';
                     form.action = params.actionUrl;
                     form.target = '_top';
-                    $dom.trigger(form, 'submit');
+                    form.submit();
                 }
             });
         });

@@ -1477,7 +1477,11 @@
             }
         }
 
-        $dom.trigger(form, 'submit');
+        if (form.localName == 'form') {
+            form.submit();
+        } else {
+            $dom.trigger(form, 'click');
+        }
     }
 
     /**
