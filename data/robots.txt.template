@@ -1,6 +1,6 @@
 User-agent: *
 
-# Normal things to block bot access to
+# Normal things to discourage bots from accessing
 Disallow: /cgi-bin/
 
 # Bots should never get here as raw data
@@ -28,7 +28,7 @@ Disallow: /data/external_url_proxy.php
 Sitemap: http://yourbaseurl/data_custom/sitemaps/index.xml
 Sitemap: http://yourbaseurl/data_custom/sitemaps/news_sitemap.xml
 
-# Block some Spammy bots
+# Discourage some spammy bots
 User-agent: SurdotlyBot
 Disallow: /
 User-agent: SemrushBot
@@ -54,9 +54,9 @@ Disallow: /
 User-agent: brands-bot
 Disallow: /
 
-# Busy bots not blocked by default as some sites may want them
+# Busy bots not discouraged by default as some sites may want them
 #User-agent: MJ12bot
 #Disallow: /
 
-# Set reasonable Crawl Delay to stop over-enthusiastic bots
+# Set reasonable Crawl Delay to discourage bots from being over-enthusiastic
 Crawl-Delay: 10
