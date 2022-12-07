@@ -103,7 +103,8 @@ class Module_members
                         access_denied('NOT_AS_GUEST');
                     }
 
-                    $member_id_of = get_member();
+                    // Redirect with the current member's ID in the URL
+                    return redirect_screen(null, $GLOBALS['FORUM_DRIVER']->member_profile_url(get_member()));
                 } elseif (is_guest($member_id_of)) {
                     warn_exit(do_lang_tempcode('MEMBER_NO_EXIST'), false, false, 404);
                 }
