@@ -440,6 +440,7 @@
                     el.parentNode.style.overflow = 'hidden'; // LEGACY Needed due to https://bugzilla.mozilla.org/show_bug.cgi?id=456497
                     el.parentNode.style.verticalAlign = 'top';
                     span.textContent = el.alt;
+                    span.title = el.alt;
 
                     el.parentNode.insertBefore(span, el);
                     var spanProxy = span.cloneNode(true); // So we can measure width even with hidden tabs
