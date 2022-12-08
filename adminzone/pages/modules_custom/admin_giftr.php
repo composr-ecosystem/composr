@@ -88,7 +88,7 @@ class Module_admin_giftr extends Standard_crud_module
             $default_gifts[] = ['name' => 'Some Balloons', 'image' => 'data_custom/images/giftr/jean_victor_balin_balloons.gif', 'price' => 10, 'enabled' => 1];
             $default_gifts[] = ['name' => 'A four leaf Clover, Good Luck!', 'image' => 'data_custom/images/giftr/liftarn_four_leaf_clover.gif', 'price' => 10, 'enabled' => 1];
             $default_gifts[] = ['name' => 'A Green hat', 'image' => 'data_custom/images/giftr/liftarn_green_hat.gif', 'price' => 10, 'enabled' => 1];
-            $default_gifts[] = ['name' => 'A Glass of Wine', 'image' => 'data_custom/images/giftr/muga_Glass_of_red_wine.png', 'price' => 10, 'enabled' => 1];
+            $default_gifts[] = ['name' => 'A Glass of Wine', 'image' => 'data_custom/images/giftr/muga_glass_of_red_wine.png', 'price' => 10, 'enabled' => 1];
             $default_gifts[] = ['name' => 'A Valentine\'s day Kiss', 'image' => 'data_custom/images/giftr/reporter_happy_valentine.gif', 'price' => 10, 'enabled' => 1];
             $default_gifts[] = ['name' => 'A Drum kit', 'image' => 'data_custom/images/giftr/drum_kit_3.jpg', 'price' => 10, 'enabled' => 1];
             $default_gifts[] = ['name' => 'An Electric Guitar', 'image' => 'data_custom/images/giftr/electric_guitar.jpg', 'price' => 10, 'enabled' => 1];

@@ -273,7 +273,7 @@ function has_needed_fields(string $type_code, bool $force_extended = false) : bo
  * @param  ID_TEXT $type_code The product codename
  * @param  boolean $force_extended Show all possible input fields
  * @param  boolean $from_admin Whether this is being called from the Admin Zone. If so, optionally different fields may be used, including a purchase_id field for direct purchase ID input.
- * @param  boolean $points_purchase Whether this is a points purchase.
+ * @param  boolean $points_purchase Whether this is a points purchase
  * @return array A triple: The fields (use null for none), Hidden fields (use null for none), The text (use null for none), array of JavaScript function calls
  */
 function get_needed_fields(string $type_code, bool $force_extended = false, bool $from_admin = false, bool $points_purchase = false) : array

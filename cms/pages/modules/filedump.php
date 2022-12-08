@@ -286,8 +286,8 @@ class Module_filedump
         $subpath = $this->subpath;
 
         if (!file_exists(get_custom_file_base() . '/uploads/filedump' . $subpath)) {
-            $url = build_url(['page' => '_SELF', 'subpath' => '/'], get_module_zone('filedump'));
-            return redirect_screen($this->title, $url, do_lang_tempcode('DIRECTORY_NOT_FOUND', escape_html($subpath)));
+            $_url = build_url(['page' => '_SELF', 'subpath' => '/'], get_module_zone('filedump'));
+            return redirect_screen($this->title, $_url, do_lang_tempcode('DIRECTORY_NOT_FOUND', escape_html($subpath)));
         }
 
         $type_filter = get_param_string('type_filter', '');
@@ -424,7 +424,7 @@ class Module_filedump
                 do_lang_tempcode('CHOOSE'),
             ]);
 
-            $url = mixed();
+            $url = '';
 
             $rows = new Tempcode();
             foreach ($files as $i => $file) {
@@ -468,8 +468,10 @@ class Module_filedump
                 ];
 
                 if ($file['is_directory']) { // Directory
-                    $url = build_url(['page' => '_SELF', 'subpath' => $_subpath . $filename, 'sort' => $sort, 'type_filter' => $type_filter, 'search' => $search, 'recurse' => $recurse], '_SELF');
-                    $listing_url = build_url(['page' => '_SELF', 'subpath' => $_subpath . $filename, 'sort' => $sort, 'type_filter' => $type_filter, 'search' => $search, 'recurse' => $recurse], '_SELF', [], false, false, false, 'tab--listing');
+                    $_url = build_url(['page' => '_SELF', 'subpath' => $_subpath . $filename, 'sort' => $sort, 'type_filter' => $type_filter, 'search' => $search, 'recurse' => $recurse], '_SELF');
+                    $url = $_url->evaluate();
+                    $_listing_url = build_url(['page' => '_SELF', 'subpath' => $_subpath . $filename, 'sort' => $sort, 'type_filter' => $type_filter, 'search' => $search, 'recurse' => $recurse], '_SELF', [], false, false, false, 'tab--listing');
+                    $listing_url = $_listing_url->evaluate();
 
                     $is_image = false;
 

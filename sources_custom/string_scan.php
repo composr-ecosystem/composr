@@ -8097,7 +8097,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         MISC_SYMBOL__RTL
         SEPARATE_BLOGS
         PAYMENT_RECEIVED_BODY
-        PAYMENT_BODY_memo
         PAYMENT_RECEIVED_BODY_shipping_address
         PAYMENT_RECEIVED_SUBJECT
         _ADDON_WARNING_MISSING_DEPENDENCIES
@@ -8396,6 +8395,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BLOCK_main_cns_involved_topics_PARAM_private_topics_TITLE
         BLOCK_main_cns_involved_topics_PARAM_private_topics
         PRIVACY_PURGE_NO_FILTERS_SPECIFIED
+        CSP_ON_FORMS
+        CONFIG_OPTION_csp_on_forms
     ')));
 
     $non_admin_files = [

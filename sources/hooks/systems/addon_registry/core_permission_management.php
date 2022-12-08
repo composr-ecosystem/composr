@@ -238,10 +238,11 @@ class Hook_addon_registry_core_permission_management
             }
 
             $rows->attach(do_lorem_template('PERMISSION_KEYS_PERMISSION_ROW', [
+                'ROW_MODERATOR_GROUP_CELL_IDS' => [],
+                'ROW_GROUP_CELL_IDS' => [],
                 'ALL_OFF' => false,
                 'KEY' => lorem_word(),
                 'UID' => strval($id),
-                'CODE' => '',
                 'CELLS' => $cells,
             ]));
         }

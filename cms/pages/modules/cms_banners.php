@@ -883,7 +883,7 @@ class Module_cms_banners_cat extends Standard_crud_module
     {
         $id = post_param_string('new_id');
         $is_textual = post_param_integer('is_textual', 0);
-        if ($is_textual) {
+        if ($is_textual == 1) {
             $image_width = 0;
             $image_height = 0;
         } else {
@@ -922,7 +922,7 @@ class Module_cms_banners_cat extends Standard_crud_module
     public function edit_actualisation(string $id) : ?object
     {
         $is_textual = post_param_integer('is_textual', 0);
-        if ($is_textual) {
+        if ($is_textual == 1) {
             $image_width = 0;
             $image_height = 0;
         } else {

@@ -781,7 +781,7 @@ function calendar_matches(int $auth_member_id, int $member_id, bool $restrict, ?
         // Overlay it
         foreach ($feed_urls_todo as $feed_url => $event_type) {
             $http_response = cms_http_request($feed_url, ['byte_limit' => 1024 * 512, 'trigger_error' => false]);
-            if ($http_response->data == null) {
+            if ($http_response->data === null) {
                 continue;
             }
 

@@ -833,7 +833,7 @@ function calculate_category_child_count_cache(?int $cat_id, bool $recursive_upda
  * @param  ?AUTO_LINK $parent_id The ID of the parent category (null: no parent)
  * @param  SHORT_TEXT $meta_keywords Meta keywords for the category
  * @param  LONG_TEXT $meta_description Meta description for the category
- * @param  ?URLPATH $rep_image The representative image for the category (blank: none)
+ * @param  ?URLPATH $rep_image The representative image for the category (blank: none) (null: do not change)
  * @param  integer $move_days_lower The number of days before expiry (lower limit)
  * @param  integer $move_days_higher The number of days before expiry (higher limit)
  * @param  ?AUTO_LINK $move_target The expiry category (null: do not expire)

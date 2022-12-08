@@ -2733,9 +2733,10 @@ function strcmp(string $str1, string $str2) : int
  * Strip HTML and PHP tags from a string.
  *
  * @param  string $str Subject
+ * @param  string $allowed_tags Tags that should not be stripped (blank: strip all tags)
  * @return string Result
  */
-function strip_tags(string $str) : string
+function strip_tags(string $str, string $allowed_tags = '') : string
 {
     return '';
 }
