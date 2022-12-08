@@ -49,6 +49,32 @@
     $cms.functions.moduleTopicsPostJavascript = function moduleTopicsPostJavascript(size, stub) {
         stub = strVal(stub);
 
+        var usernameField = document.getElementById('to_member_id_0');
+        if (usernameField) {
+            var checkPtUsername = function (event) {
+                var usernameField = event.target;
+                if (usernameField.value.trim() != '') {
+                    $cms.loadSnippet('pt_rules&username=' + usernameField.value.trim()).then(function (result) {
+                        if (result == '-1') {
+                            // Missing member
+                            $cms.ui.alert('{!MEMBER_NO_EXIST;^}');
+                        } else if (result == '-2') {
+                            // Permission denied
+                            $cms.ui.alert('{!cns:NO_PT_FROM_ALLOW;^}');
+                        } else if (result != '') {
+                            // Rules
+                            $cms.ui.confirm('{!cns:PT_RULES_PAGE_INTRO;^,xxx}'.replace(/xxx/, usernameField.value.trim()) + '<br /><br />' + result, function (result2) {
+                                if (!result2) {
+                                    usernameField.value = '';
+                                }
+                            }, '{!RULES;^}: {!I_AGREE;^}', true);
+                        }
+                    });
+                }
+            };
+            usernameField.onchange = checkPtUsername; // We use onchange because that can be replicated via ensureNextField
+        }
+
         var extraChecks = [];
         extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) { // eslint-disable-line no-unused-vars
             var post = form.elements['post'],

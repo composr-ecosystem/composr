@@ -11,6 +11,9 @@
 <form title="{!PRIMARY_PAGE_FORM}" action="{URL*}" method="post">
 	{$INSERT_FORM_POST_SECURITY}
 
+	<input type="hidden" name="agreed" value="1" />
+	<input type="hidden" name="csrf_token_preserve" value="1" />
+
 	<p class="proceed-button">
 		<button accesskey="u" data-disable-on-click="1" class="btn btn-primary btn-scr buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!PROCEED}</button>
 	</p>

@@ -165,6 +165,7 @@ class Hook_addon_registry_core_cns
             'sources/hooks/systems/content_meta_aware/post.php',
             'sources/hooks/modules/admin_import/emoticons.php',
             'sources/hooks/systems/snippets/member_tooltip.php',
+            'sources/hooks/systems/snippets/pt_rules.php',
             'sources/hooks/systems/snippets/exists_email.php',
             'sources/hooks/systems/snippets/profile_tab.php',
             'sources/hooks/systems/snippets/invite_missing.php',

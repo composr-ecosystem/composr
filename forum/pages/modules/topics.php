@@ -1905,12 +1905,12 @@ class Module_topics
         }
 
         if (get_option('enable_pt_restrict') == '1') {
-            $agreed = get_param_integer('agreed', 0);
+            $agreed = post_param_integer('agreed', 0);
             $member_row = $GLOBALS['FORUM_DRIVER']->get_member_row($member_id);
             $just_member_row = db_map_restrict($member_row, ['id', 'm_pt_rules_text']);
             $rules = get_translated_tempcode('f_members', $just_member_row, 'm_pt_rules_text', $GLOBALS['FORUM_DB']);
-            if (($agreed == 0) && (!$rules->is_empty())) {
-                $url = get_self_url(false, false, ['agreed' => '1']);
+            if (($agreed == 0) && (trim($rules->evaluate()) != '')) {
+                $url = get_self_url();
                 $title = get_screen_title('NEW_PRIVATE_TOPIC');
                 return do_template('CNS_MEMBER_PT_RULES_SCREEN', [
                     '_GUID' => '0c39906d4aeb728cc386cd9a79a338c7',
@@ -1924,6 +1924,8 @@ class Module_topics
         }
 
         $text = do_lang_tempcode('PRIVATE_TOPIC_DOC');
+
+        breadcrumb_set_self(do_lang_tempcode('NEW_PRIVATE_TOPIC'));
 
         return $this->new_topic(true, $member_id, '', $text);
     }
