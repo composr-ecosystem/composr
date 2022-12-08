@@ -123,7 +123,7 @@ PHP;
         } else {
             $cat = $map['param'];
         }
-        $cat_raw = trim($cat, '>*');
+        $cat_raw = trim($cat, '>*#');
         if ($cat == 'root') {
             $cat_select = db_string_equal_to('cat', $cat);
         } else {
