@@ -856,19 +856,9 @@ class getid3_lib
 	 * @return string
 	 */
 	public static function iconv_fallback_iso88591_utf8($string, $bom=false) {
-		if (function_exists('utf8_encode')) {
-			return utf8_encode($string);
-		}
-		// utf8_encode() unavailable, use getID3()'s iconv_fallback() conversions (possibly PHP is compiled without XML support)
-		$newcharstring = '';
-		if ($bom) {
-			$newcharstring .= "\xEF\xBB\xBF";
-		}
-		for ($i = 0; $i < strlen($string); $i++) {
-			$charval = ord($string[$i]);
-			$newcharstring .= self::iconv_fallback_int_utf8($charval);
-		}
-		return $newcharstring;
+		// Altered by ChrisG for PHP 8.2+ compatibility
+		require_code('character_sets');
+		return convert_to_internal_encoding($string, 'ISO-8859-1', 'utf-8');
 	}
 
 	/**
@@ -928,46 +918,9 @@ class getid3_lib
 	 * @return string
 	 */
 	public static function iconv_fallback_utf8_iso88591($string) {
-		if (function_exists('utf8_decode')) {
-			return utf8_decode($string);
-		}
-		// utf8_decode() unavailable, use getID3()'s iconv_fallback() conversions (possibly PHP is compiled without XML support)
-		$newcharstring = '';
-		$offset = 0;
-		$stringlength = strlen($string);
-		while ($offset < $stringlength) {
-			if ((ord($string[$offset]) | 0x07) == 0xF7) {
-				// 11110bbb 10bbbbbb 10bbbbbb 10bbbbbb
-				$charval = ((ord($string[($offset + 0)]) & 0x07) << 18) &
-						   ((ord($string[($offset + 1)]) & 0x3F) << 12) &
-						   ((ord($string[($offset + 2)]) & 0x3F) <<  6) &
-							(ord($string[($offset + 3)]) & 0x3F);
-				$offset += 4;
-			} elseif ((ord($string[$offset]) | 0x0F) == 0xEF) {
-				// 1110bbbb 10bbbbbb 10bbbbbb
-				$charval = ((ord($string[($offset + 0)]) & 0x0F) << 12) &
-						   ((ord($string[($offset + 1)]) & 0x3F) <<  6) &
-							(ord($string[($offset + 2)]) & 0x3F);
-				$offset += 3;
-			} elseif ((ord($string[$offset]) | 0x1F) == 0xDF) {
-				// 110bbbbb 10bbbbbb
-				$charval = ((ord($string[($offset + 0)]) & 0x1F) <<  6) &
-							(ord($string[($offset + 1)]) & 0x3F);
-				$offset += 2;
-			} elseif ((ord($string[$offset]) | 0x7F) == 0x7F) {
-				// 0bbbbbbb
-				$charval = ord($string[$offset]);
-				$offset += 1;
-			} else {
-				// error? throw some kind of warning here?
-				$charval = false;
-				$offset += 1;
-			}
-			if ($charval !== false) {
-				$newcharstring .= (($charval < 256) ? chr($charval) : '?');
-			}
-		}
-		return $newcharstring;
+		// Altered by ChrisG for PHP 8.2+ compatibility
+		require_code('character_sets');
+		return convert_to_internal_encoding($string, 'utf-8', 'ISO-8859-1');
 	}
 
 	/**

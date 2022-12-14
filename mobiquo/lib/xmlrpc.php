@@ -279,7 +279,9 @@ ini_set('ocproducts.type_strictness','0');
 				break;
 			case 'ISO-8859-1_UTF-8':
 				$escaped_data = str_replace(array('&', '"', "'", '<', '>'), array('&amp;', '&quot;', '&apos;', '&lt;', '&gt;'), $data);
-				$escaped_data = utf8_encode($escaped_data);
+				if (function_exists('utf8_encode')) {
+					$escaped_data = @utf8_encode($escaped_data);
+				}
 				break;
 			case 'ISO-8859-1_ISO-8859-1':
 			case 'US-ASCII_US-ASCII':
@@ -378,7 +380,9 @@ ini_set('ocproducts.type_strictness','0');
 				$escaped_data = str_replace(array('&', '"', "'", '<', '>'), array('&amp;', '&quot;', '&apos;', '&lt;', '&gt;'), $data);
 				/// @todo we could use real UTF8 chars here instead of xml entities... (note that utf_8 encode all allone will NOT convert them)
 				$escaped_data = str_replace($GLOBALS['xml_cp1252_Entities']['in'], $GLOBALS['xml_cp1252_Entities']['out'], $escaped_data);
-				$escaped_data = utf8_encode($escaped_data);
+				if (function_exists('utf8_encode')) {
+					$escaped_data = @utf8_encode($escaped_data);
+				}
 				break;
 			case 'CP1252_ISO-8859-1':
 				$escaped_data = str_replace(array('&', '"', "'", '<', '>'), array('&amp;', '&quot;', '&apos;', '&lt;', '&gt;'), $data);
@@ -2652,7 +2656,9 @@ xmlrpc_encode_entitites($this->errstr, $GLOBALS['xmlrpc_internalencoding'], $cha
 			//if (!is_valid_charset($resp_encoding, array('UTF-8')))
 			if (!in_array($resp_encoding, array('UTF-8', 'US-ASCII')) && !has_encoding($data)) {
 				if ($resp_encoding == 'ISO-8859-1') {
-					$data = utf8_encode($data);
+					if (function_exists('utf8_encode')) {
+						$data = @utf8_encode($data);
+					}
 				} else {
 					if (extension_loaded('mbstring')) {
 						$data = mb_convert_encoding($data, 'UTF-8', $resp_encoding);
@@ -3635,7 +3641,9 @@ xmlrpc_encode_entitites($this->errstr, $GLOBALS['xmlrpc_internalencoding'], $cha
 		//if (!is_valid_charset($val_encoding, array('UTF-8')))
 		if (!in_array($val_encoding, array('UTF-8', 'US-ASCII')) && !has_encoding($xml_val)) {
 			if ($val_encoding == 'ISO-8859-1') {
-				$xml_val = utf8_encode($xml_val);
+				if (function_exists('utf8_encode')) {
+					$xml_val = @utf8_encode($xml_val);
+				}
 			} else {
 				if (extension_loaded('mbstring')) {
 					$xml_val = mb_convert_encoding($xml_val, 'UTF-8', $val_encoding);

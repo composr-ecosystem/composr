@@ -3027,28 +3027,6 @@ function urlencode(string $str) : string
 }
 
 /**
- * Converts a string with ISO-8859-1 characters encoded with utf-8 to single-byte ISO-8859-1.
- *
- * @param  string $data Subject
- * @return string Result
- */
-function utf8_decode(string $data) : string
-{
-    return '';
-}
-
-/**
- * Encodes an ISO-8859-1 string to utf-8.
- *
- * @param  string $data Subject
- * @return string Result
- */
-function utf8_encode(string $data) : string
-{
-    return '';
-}
-
-/**
  * Wraps a string to a given number of characters using a string break character.
  *
  * @param  string $string Subject

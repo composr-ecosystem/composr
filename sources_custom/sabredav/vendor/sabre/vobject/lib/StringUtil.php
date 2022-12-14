@@ -44,7 +44,9 @@ class StringUtil
 
         switch ($encoding) {
             case 'ISO-8859-1':
-                $newStr = utf8_encode($str);
+                // Altered by ChrisG for PHP 8.2+
+                require_code('character_sets');
+                $newStr = convert_to_internal_encoding($str, $encoding, 'utf-8');
                 break;
             /* Unreachable code. Not sure yet how we can improve this
              * situation.

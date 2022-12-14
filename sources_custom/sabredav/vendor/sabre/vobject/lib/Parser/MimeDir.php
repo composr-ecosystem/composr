@@ -451,7 +451,9 @@ class MimeDir extends Parser
                 case 'utf-8':
                     break;
                 case 'iso-8859-1':
-                    $property['value'] = utf8_encode($property['value']);
+                    // Altered by ChrisG for PHP 8.2+
+                    require_code('character_sets');
+                    $property['value'] = convert_to_internal_encoding($property['value'], $charset, 'utf-8');
                     break;
                 case 'windows-1252':
                     $property['value'] = mb_convert_encoding($property['value'], 'UTF-8', $charset);

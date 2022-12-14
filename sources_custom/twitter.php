@@ -1014,7 +1014,7 @@ class Twitter
     {
         // build parameters
         $parameters['status'] = (string) $status;
-        $parameters['status'] = utf8_encode($parameters['status']);
+        //$parameters['status'] = @utf8_encode($parameters['status']); Disabled by ChrisG. Assumes utf-8 off and deprecated in PHP 8.2
         if ($inReplyToStatusId != null) {
             $parameters['in_reply_to_status_id'] = (string) $inReplyToStatusId;
         }

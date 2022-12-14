@@ -1692,17 +1692,17 @@ class FirePHP {
                     $val['GLOBALS'] = '** Recursion (GLOBALS) **';
                 }
 
-                if (!$this->is_utf8($key)) {
-                    $key = utf8_encode($key);
+                if ((!$this->is_utf8($key)) && (function_exists('utf8_encode'))) { // Altered by ChrisG for PHP 8.2+ compat
+                    $key = @utf8_encode($key);
                 }
 
                 $return[$key] = $this->encodeObject($val, 1, $arrayDepth + 1, $maxDepth + 1);
             }
         } else {
-            if ($this->is_utf8($object)) {
-                return $object;
+            if ((!$this->is_utf8($object)) && (function_exists('utf8_encode'))) { // Altered by ChrisG for PHP 8.2+ compat
+                return @utf8_encode($object);
             } else {
-                return utf8_encode($object);
+                return $object;
             }
         }
         return $return;

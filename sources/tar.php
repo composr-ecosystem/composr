@@ -138,7 +138,8 @@ function tar_get_directory(array &$resource, bool $tolerate_errors = false) : ?a
             }
 
             if ($is_windows) {
-                $path = utf8_decode($path);
+                require_code('character_sets');
+                $path = convert_to_internal_encoding($path, 'utf-8', 'ISO-8859-1');
             }
 
             $_mode = substr($header, 100, 8);
@@ -587,7 +588,8 @@ function tar_add_file(array &$resource, string $target_path, string $data, int $
     }
 
     if (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) === 'WIN') {
-        $target_path = utf8_encode($target_path);
+        require_code('character_sets');
+        $target_path = convert_to_internal_encoding($target_path, 'ISO-8859-1', 'utf-8');
     }
 
     $directory = $resource['directory'];

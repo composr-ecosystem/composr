@@ -408,7 +408,9 @@ function decodePathSegment(string $path): string
 
     switch ($encoding) {
         case 'ISO-8859-1':
-            $path = utf8_encode($path);
+            // Altered by ChrisG for PHP 8.2+
+            require_code('character_sets');
+            $path = convert_to_internal_encoding($path, $encoding, 'utf-8');
     }
 
     return $path;

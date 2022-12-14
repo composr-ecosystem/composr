@@ -954,7 +954,9 @@ ini_set('ocproducts.type_strictness','0');
 				//if (!is_valid_charset($req_encoding, array('UTF-8')))
 				if (!in_array($req_encoding, array('UTF-8', 'US-ASCII')) && !has_encoding($data)) {
 					if ($req_encoding == 'ISO-8859-1') {
-						$data = utf8_encode($data);
+						if (function_exists('utf8_encode')) {
+							$data = @utf8_encode($data);
+						}
 					} else {
 						if (extension_loaded('mbstring')) {
 							$data = mb_convert_encoding($data, 'UTF-8', $req_encoding);

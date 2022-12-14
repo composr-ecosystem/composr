@@ -80,7 +80,9 @@ class StringUtil
         $encoding = mb_detect_encoding($input, ['UTF-8', 'ISO-8859-1'], true);
 
         if ('ISO-8859-1' === $encoding) {
-            return utf8_encode($input);
+            // Altered by ChrisG for PHP 8.2+
+            require_code('character_sets');
+            return convert_to_internal_encoding($input, $encoding, 'utf-8');
         } else {
             return $input;
         }

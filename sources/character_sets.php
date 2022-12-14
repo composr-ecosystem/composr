@@ -18,7 +18,7 @@
  * @package    core
  */
 
-/*EXTRA FUNCTIONS: iconv\_.+*/
+/*EXTRA FUNCTIONS: iconv\_.+|utf8_decode|utf8_encode*/
 
 /**
  * Transliterate a string (convert it to latin script).
@@ -116,58 +116,58 @@ function _convert_request_data_encodings(bool $known_utf8 = false)
         return;
     }
 
-    if ((cms_strtolower_ascii($input_charset) == 'utf-8') && (cms_strtoupper_ascii($internal_charset) == 'ISO-8859-1')) {
+    if ((cms_strtolower_ascii($input_charset) == 'utf-8') && (cms_strtoupper_ascii($internal_charset) == 'ISO-8859-1') && (function_exists('utf8_decode'))) {
         // utf8_decode (mail extension) option. Imperfect as it needs utf-8 vs ISO-8859-1.
 
         foreach ($_GET as $key => $val) {
             if (is_string($val)) {
-                $_GET[$key] = utf8_decode($val);
+                $_GET[$key] = @utf8_decode($val);
             } elseif (is_array($val)) {
                 foreach ($val as $i => $v) {
-                    $_GET[$key][$i] = utf8_decode($v);
+                    $_GET[$key][$i] = @utf8_decode($v);
                 }
             }
         }
         foreach ($_POST as $key => $val) {
             if (is_string($val)) {
-                $_POST[$key] = utf8_decode($val);
+                $_POST[$key] = @utf8_decode($val);
             } elseif (is_array($val)) {
                 foreach ($val as $i => $v) {
-                    $_POST[$key][$i] = utf8_decode($v);
+                    $_POST[$key][$i] = @utf8_decode($v);
                 }
             }
         }
         foreach ($_FILES as $key => $val) {
-            $_FILES[$key]['name'] = utf8_decode($val['name']);
+            $_FILES[$key]['name'] = @utf8_decode($val['name']);
         }
 
         $CONVERTED_ENCODING = true;
         return;
     }
 
-    if ((cms_strtoupper_ascii($input_charset) == 'ISO-8859-1') && ($internal_charset == 'utf-8')) {
+    if ((cms_strtoupper_ascii($input_charset) == 'ISO-8859-1') && ($internal_charset == 'utf-8') && (function_exists('utf8_encode'))) {
         // utf8_encode (mail extension) option. Imperfect as it needs utf-8 vs ISO-8859-1.
 
         foreach ($_GET as $key => $val) {
             if (is_string($val)) {
-                $_GET[$key] = utf8_encode($val);
+                $_GET[$key] = @utf8_encode($val);
             } elseif (is_array($val)) {
                 foreach ($val as $i => $v) {
-                    $_GET[$key][$i] = utf8_encode($v);
+                    $_GET[$key][$i] = @utf8_encode($v);
                 }
             }
         }
         foreach ($_POST as $key => $val) {
             if (is_string($val)) {
-                $_POST[$key] = utf8_encode($val);
+                $_POST[$key] = @utf8_encode($val);
             } elseif (is_array($val)) {
                 foreach ($val as $i => $v) {
-                    $_POST[$key][$i] = utf8_encode($v);
+                    $_POST[$key][$i] = @utf8_encode($v);
                 }
             }
         }
         foreach ($_FILES as $key => $val) {
-            $_FILES[$key]['name'] = utf8_encode($val['name']);
+            $_FILES[$key]['name'] = @utf8_encode($val['name']);
         }
 
         $CONVERTED_ENCODING = true;
@@ -342,7 +342,7 @@ function convert_to_internal_encoding(?string $data, ?string $input_charset, ?st
         }
     }
 
-    if ((cms_strtolower_ascii($input_charset) == 'utf-8') && (cms_strtoupper_ascii($internal_charset) == 'ISO-8859-1')) {
+    if ((cms_strtolower_ascii($input_charset) == 'utf-8') && (cms_strtoupper_ascii($internal_charset) == 'ISO-8859-1') && (function_exists('utf8_decode'))) {
         // utf8_decode (mail extension) option. Imperfect as it needs utf-8 vs ISO-8859-1.
 
         $test = @utf8_decode($data);
@@ -351,7 +351,7 @@ function convert_to_internal_encoding(?string $data, ?string $input_charset, ?st
         }
     }
 
-    if ((cms_strtoupper_ascii($input_charset) == 'ISO-8859-1') && (cms_strtolower_ascii($internal_charset) == 'utf-8')) {
+    if ((cms_strtoupper_ascii($input_charset) == 'ISO-8859-1') && (cms_strtolower_ascii($internal_charset) == 'utf-8') && (function_exists('utf8_encode'))) {
         // utf8_encode (mail extension) option. Imperfect as it needs utf-8 vs ISO-8859-1.
 
         $test = @utf8_encode($data);
