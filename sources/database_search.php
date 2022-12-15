@@ -2607,6 +2607,9 @@ function _boolean_search_prepare(string $search_query) : array
                 $word .= '"';
             }
             $word = substr($word, 1, strlen($word) - 2);
+            if ($word === false) {
+                continue;
+            }
             if ($word == '') {
                 continue;
             }
