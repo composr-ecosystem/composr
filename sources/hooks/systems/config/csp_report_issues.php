@@ -52,6 +52,6 @@ class Hook_config_csp_report_issues
      */
     public function get_default() : ?string
     {
-        return '1';
+        return $GLOBALS['DEV_MODE'] ? '1' : '0'; // TODO: #5143
     }
 }
