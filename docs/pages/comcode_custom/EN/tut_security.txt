@@ -435,7 +435,7 @@ There is no clear risk.
 * Nonces are configurable in HTML/templates via placing [tt]{$CSP_NONCE_HTML}[/tt] in the opening tag. An XSS hacker has no way to know the nonce, so can't inject script/style requiring it. At the current time nonces are only supported in CSP by script and CSS files, but the W3C is discussing changes this.
 
 Note that the "Trusted partner sites" configuration options automatically include "www." if not specified.
-The "Allowed iframe ancestors" configuration option and "Allowed iframe descendants" configuration option allow wildcarding to allow any request (and do by default due to the low risk and commonality of frame use).
+The "Allowed iframe ancestors" configuration option and "Allowed iframe descendants" configuration option allow wildcarding to allow any request (and "Allowed iframe descendants" does by default due to the low risk and commonality of frame use).
 
 There are many settings related to CSP in the Composr security options (Admin Zone > Setup > Configuration > Security options), including:
  - Enabling/disabling

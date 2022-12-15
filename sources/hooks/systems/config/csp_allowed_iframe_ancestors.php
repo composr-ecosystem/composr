@@ -52,6 +52,6 @@ class Hook_config_csp_allowed_iframe_ancestors
      */
     public function get_default() : ?string
     {
-        return '*';
+        return '';
     }
 }
