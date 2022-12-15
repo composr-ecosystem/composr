@@ -1933,12 +1933,12 @@ class Module_topics
     /**
      * Sort out breadcrumbing for a forum/topic/additional combination.
      *
-     * @param  AUTO_LINK $forum_id The forum for breadcrumbing
+     * @param  ?AUTO_LINK $forum_id The forum for breadcrumbing (null: Private Topic)
      * @param  AUTO_LINK $topic_id The topic for breadcrumbing
      * @param  string $topic_title The topic title
      * @param  Tempcode $doing The action currently being done
      */
-    public function handle_topic_breadcrumbs(int $forum_id, int $topic_id, string $topic_title, object $doing)
+    public function handle_topic_breadcrumbs(?int $forum_id, int $topic_id, string $topic_title, object $doing)
     {
         if ($forum_id === null) {
             breadcrumb_set_parents([['_SEARCH:forumview:pt', do_lang_tempcode('PRIVATE_TOPICS')], ['_SEARCH:topicview:' . strval($topic_id), $topic_title]]);
