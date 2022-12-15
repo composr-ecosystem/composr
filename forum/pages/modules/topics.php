@@ -4483,7 +4483,10 @@ class Module_topics
         if ($_forum_id == '') {
             $forum_id = null;
         } else {
-            $forum_id = intval($_forum_id);
+            $forum_id = @intval($_forum_id);
+            if ($forum_id === null) {
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            }
         }
 
         require_code('cns_forums_action2');
