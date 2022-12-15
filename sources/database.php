@@ -2138,6 +2138,7 @@ class DatabaseConnector
             push_query_limiting(false);
 
             if (php_function_allowed('error_log')) {
+                require_code('urls');
                 @error_log('Profiling: Over ' . integer_format(DEV_MODE_QUERY_LIMIT) . ' queries @ ' . get_self_url_easy(true), 0);
             }
 
