@@ -358,7 +358,9 @@ function render_catalogue_category_entry_buildup(?int $category_id, string $cata
     // Work out the actual rendering, but only for those results in our selection scope (for performance)
     foreach ($entries as $i => $entry) {
         if (($in_db_sorting /*Only select rows were grabbed so $i is not the first entry, it is the $start entry*/) || (!$in_db_sorting /*Needs data to do manual sort*/) || ((($i >= $start) && (($max === null) || ($i < $start + $max))) && ((!is_array($select)) || ((is_array($select)) && (in_array($entry['id'], $select)))))) {
-            $entries[$i]['map'] = get_catalogue_entry_map($entry, $catalogue, $view_type, $tpl_set, $root, $fields, (($display_type == C_DT_TITLELIST) && (!$is_ecomm) && ($order_by !== null)) ? [0, intval($order_by)] : null, false, true, intval($order_by));
+            $orders_by_a_field = ($order_by !== null && is_numeric($order_by));
+            $only_fields = (($display_type == C_DT_TITLELIST) && (!$is_ecomm) && $orders_by_a_field) ? [0, intval($order_by)] : null;
+            $entries[$i]['map'] = get_catalogue_entry_map($entry, $catalogue, $view_type, $tpl_set, $root, $fields, $only_fields, false, true, $orders_by_a_field ? intval($order_by) : null);
         }
     }
 
