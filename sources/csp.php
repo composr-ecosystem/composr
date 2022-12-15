@@ -205,7 +205,7 @@ function load_csp(?array $options = null, ?int $enable_more_open_html_for = null
     $clauses = [];
 
     $master_sources_list = _csp_extract_sources_list(2);
-    $ancestors_seources_list = _csp_extract_sources_list(2, $csp_allowed_iframe_descendants);
+    $ancestors_sources_list = _csp_extract_sources_list(2, $csp_allowed_iframe_descendants);
 
     // default-src
     $_sources_list = $master_sources_list;
@@ -236,7 +236,7 @@ function load_csp(?array $options = null, ?int $enable_more_open_html_for = null
     $clauses[] = 'script-src ' . implode(' ', $_sources_list);
 
     // frame-src (special rules)
-    $_sources_list = $ancestors_seources_list;
+    $_sources_list = $ancestors_sources_list;
     if ($_sources_list === null) {
         $_sources_list = [];
         $_sources_list[] = '*';
@@ -302,7 +302,7 @@ function load_csp(?array $options = null, ?int $enable_more_open_html_for = null
     $clauses[] = 'form-action ' . implode(' ', $_sources_list);
 
     // frame-ancestors
-    $_sources_list = $ancestors_seources_list;
+    $_sources_list = $ancestors_sources_list;
     if ($_sources_list === null) {
         $_sources_list = [];
         $_sources_list[] = '*';
