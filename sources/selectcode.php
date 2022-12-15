@@ -480,6 +480,9 @@ function _selectcode_neq(string $field_name, string $var, bool $numeric) : strin
 function _selectcode_eq(string $field_name, string $var, bool $numeric) : string
 {
     if ($numeric) {
+        if (!is_numeric($var)) {
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        }
         return $field_name . '=' . strval(intval($var));
     }
     return db_string_equal_to($field_name, $var);

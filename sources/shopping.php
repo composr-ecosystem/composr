@@ -176,6 +176,10 @@ function add_to_cart(string $type_code, string $purchase_id = '', int $quantity 
 {
     list($details, $product_object) = find_product_details($type_code);
 
+    if ($product_object === null) {
+        warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
+    }
+
     if ($product_object->is_available($type_code, get_member(), 1) != ECOMMERCE_PRODUCT_AVAILABLE) {
         require_lang('shopping');
         warn_exit(do_lang_tempcode('PRODUCT_UNAVAILABLE_WARNING', escape_html($details['item_name'])));
