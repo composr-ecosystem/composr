@@ -105,7 +105,7 @@ function create_zip_file(string $outfile_path, array $file_array)
     }
 
     // Support compression via PHP
-    if (class_exists('ZipArchive')) {
+    if ((class_exists('ZipArchive')) && (!empty($file_array))) {
         if ($outfile_path == 'php://output') {
             $_outfile_path = cms_tempnam(); // ZipArchive cannot directly write to stdout
         } else {
