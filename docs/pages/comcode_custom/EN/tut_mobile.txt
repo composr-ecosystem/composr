@@ -104,7 +104,7 @@ The particular modes ([tt]mobile[/tt], [tt]desktop[/tt]) can be configured in [t
 There is a simple technique for adjusting content on mobile for cases where you do not want to, or cannot, write CSS.
 Consider this sample code:
 [code="Tempcode"]
-{+START,IF,MAKE_MOBILE}
+{+START,MAKE_MOBILE}
 	...
 {+END}
 [/code]
