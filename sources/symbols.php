@@ -7174,7 +7174,7 @@ function ecv_COLOR_LIGHTEN(string $lang, array $escaped, array $param) : string
 
         list($h, $s, $l) = rgb_to_hsl($red, $green, $blue);
 
-        $l = min(1, max(0, ($l + $lighten_by)));
+        $l = min(1.0, max(0.0, ($l + $lighten_by)));
 
         list($red, $green, $blue) = hsl_to_rgb($h, $s, $l);
 
@@ -7217,7 +7217,7 @@ function ecv_COLOR_DARKEN(string $lang, array $escaped, array $param) : string
 
         list($h, $s, $l) = rgb_to_hsl($red, $green, $blue);
 
-        $l = min(1, max(0, ($l - $darken_by)));
+        $l = min(1.0, max(0.0, ($l - $darken_by)));
 
         list($red, $green, $blue) = hsl_to_rgb($h, $s, $l);
 

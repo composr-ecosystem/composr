@@ -492,7 +492,7 @@ function rgb_to_hsl(int $red, int $green, int $blue) : array
         $hue /= 6;
     }
 
-    return [$hue, $sat, $lht];
+    return [floatval($hue), floatval($sat), floatval($lht)];
 }
 
 /**

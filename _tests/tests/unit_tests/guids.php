@@ -18,6 +18,13 @@
  */
 class guids_test_set extends cms_test_case
 {
+    public function setup()
+    {
+        parent::setup();
+
+        disable_php_memory_limit();
+    }
+
     public function testDuplicateGUIDs()
     {
         require_code('make_release');
