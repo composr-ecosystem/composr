@@ -1990,7 +1990,7 @@ function __comcode_to_tempcode(string $comcode, int $source_member, bool $as_adm
 
     cms_set_time_limit($old_limit);
 
-    if (strpos($comcode, '{$,page hint: make_mobile}') !== false) {
+    if (strpos(str_replace('[tt]{$,page hint: make_mobile}[/tt]', '', $comcode), '{$,page hint: make_mobile}') !== false) {
         return directive_tempcode('MAKE_MOBILE', $tag_output);
     }
 

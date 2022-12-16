@@ -1,7 +1,7 @@
 [title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Mobile design[/title]
 
-[media width="150" description="Mobile mode for the forum. This site is the out-of-the-box default, the panels are shown underneath the main page. On real sites with strong mobile optimisation you'd likely want to turn these off on mobile mode and move them to their own pages." float="right"]data_custom/images/docs/tut_mobile/mobile.png[/media]
-[media width="150" description="Showing the default menu type in mobile mode" float="right"]data_custom/images/docs/tut_mobile/mobile_menu.png[/media]
+[media framed="0" width="150" description="Mobile mode for the forum. This site is the out-of-the-box default, the panels are shown underneath the main page. On real sites with strong mobile optimisation you'd likely want to turn these off on mobile mode and move them to their own pages." float="right"]data_custom/images/docs/tut_mobile/mobile.png[/media]
+[media framed="0" width="150" description="Showing the default menu type in mobile mode" float="right"]data_custom/images/docs/tut_mobile/mobile_menu.png[/media]
 Composr has great support for mobile. You can design for mobile in two ways:
 1) {$IS_MAINTAINED,theme_mobile_mode,Mobile mode}
 2) Responsive Design

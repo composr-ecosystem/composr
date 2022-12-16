@@ -579,12 +579,21 @@ function ecv(string $lang, array $escaped, int $type, string $name, array $param
                 for ($i = 0; $i < $num_matches; $i++) {
                     $this_offset = $matches[$i][0][1];
 
-                    $new_value .= substr($value, $last_offset, $this_offset - $last_offset);
+                    $img_html = $matches[$i][0][0];
+                    if (($GLOBALS['XSS_DETECT']) && (ocp_is_escaped($value))) {
+                        ocp_mark_as_escaped($img_html);
+                    }
 
-                    if (strpos($matches[$i][0][0], 'srcset=') !== false || strpos($matches[$i][0][0], 'sizes=') !== false || substr($value, $this_offset - 14, 14) == '<!--picture-->') {
+                    $substr = substr($value, $last_offset, $this_offset - $last_offset);
+                    if (($GLOBALS['XSS_DETECT']) && (ocp_is_escaped($value))) {
+                        ocp_mark_as_escaped($substr);
+                    }
+                    $new_value .= $substr;
+
+                    if (strpos($img_html, 'srcset=') !== false || strpos($img_html, 'sizes=') !== false || substr($value, $this_offset - 14, 14) == '<!--picture-->') {
                         // Already responsive?
-                        $new_value .= $matches[$i][0][0];
-                        $last_offset = $this_offset + strlen($matches[$i][0][0]);
+                        $new_value .= $img_html;
+                        $last_offset = $this_offset + strlen($img_html);
                         continue;
                     }
 
@@ -592,7 +601,7 @@ function ecv(string $lang, array $escaped, int $type, string $name, array $param
 
                     // Explicitly defined alternate image?
                     $matches2 = [];
-                    if (preg_match('#\sdata-src-mobile="([^"]*)"#', $matches[$i][0][0], $matches2) != 0) {
+                    if (preg_match('#\sdata-src-mobile="([^"]*)"#', $img_html, $matches2) != 0) {
                         $mobile_url = $matches2[1];
                     }
 
@@ -621,19 +630,28 @@ function ecv(string $lang, array $escaped, int $type, string $name, array $param
 
                     if ($mobile_url === null) {
                         // No mobile version
-                        $new_value .= $matches[$i][0][0];
-                        $last_offset = $this_offset + strlen($matches[$i][0][0]);
+                        $new_value .= $img_html;
+                        $last_offset = $this_offset + strlen($img_html);
                         continue;
+                    }
+
+                    $img_start = $matches[$i][1][0];
+                    $img_src_close = $matches[$i][3][0];
+                    $img_end = $matches[$i][4][0];
+                    if (($GLOBALS['XSS_DETECT']) && (ocp_is_escaped($value))) {
+                        ocp_mark_as_escaped($img_start);
+                        ocp_mark_as_escaped($img_src_close);
+                        ocp_mark_as_escaped($img_end);
                     }
 
                     if (is_mobile()) {
                         // Simple <img> element with mobile version URL...
 
                         $new_value .= '<!--picture-->';
-                        $new_value .= $matches[$i][1][0]; // Front of img tag and start src attribute
+                        $new_value .= $img_start; // Front of img tag and start src attribute
                         $new_value .= escape_html($mobile_url); // Image URL
-                        $new_value .= $matches[$i][3][0]; // Close src attribute
-                        $new_value .= $matches[$i][4][0]; // End of img tag
+                        $new_value .= $img_src_close; // Close src attribute
+                        $new_value .= $img_end; // End of img tag
                     } else {
                         if (get_zone_name() != 'cms') {
                             // Complex <picture> element...
@@ -646,26 +664,31 @@ function ecv(string $lang, array $escaped, int $type, string $name, array $param
                             // Responsive design code for mobile
                             $new_value .= '<source media="(max-width: ' . strval($viewport_switch - 1) . 'px)" srcset="' . escape_html($mobile_url) . '" />';
 
-                            $new_value .= $matches[$i][1][0]; // Front of img tag and start src attribute
+                            $new_value .= $img_start; // Front of img tag and start src attribute
                             $new_value .= escape_html($url); // Non-responsive default image URL
-                            $new_value .= $matches[$i][3][0]; // Close src attribute
-                            $new_value .= $matches[$i][4][0]; // End of img tag
+                            $new_value .= $img_src_close; // Close src attribute
+                            $new_value .= $img_end; // End of img tag
 
                             $new_value .= '</picture>';
                         } else {
                             // Simple <img> element with mobile version URL...
 
-                            $new_value .= $matches[$i][1][0]; // Front of img tag and start src attribute
+                            $new_value .= $img_start; // Front of img tag and start src attribute
                             $new_value .= escape_html($mobile_url); // Image URL
-                            $new_value .= $matches[$i][3][0]; // Close src attribute
-                            $new_value .= $matches[$i][4][0]; // End of img tag
+                            $new_value .= $img_src_close; // Close src attribute
+                            $new_value .= $img_end; // End of img tag
                         }
                     }
 
-                    $last_offset = $this_offset + strlen($matches[$i][0][0]);
+                    $last_offset = $this_offset + strlen($img_html);
                 }
                 if ($num_matches > 0) {
-                    $new_value .= substr($value, $last_offset);
+                    $substr = substr($value, $last_offset);
+                    if (($GLOBALS['XSS_DETECT']) && (ocp_is_escaped($value))) {
+                        ocp_mark_as_escaped($substr);
+                    }
+
+                    $new_value .= $substr;
                     $new_value = preg_replace('#\sdata-src-mobile="([^"]*)"#', '', $new_value);
                     $value = $new_value;
                 }
