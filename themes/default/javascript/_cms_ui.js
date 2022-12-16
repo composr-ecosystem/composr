@@ -106,7 +106,8 @@
                 ($cms.configOption('js_overlays') ? '{!ENTER_PASSWORD_JS_2;^}' : '{!ENTER_PASSWORD_JS;^}'), '', null, '{!_LOGIN;^}', 'password'
             ).then(function (prompt) {
                 if (prompt != null) {
-                    $cms.doAjaxRequest(scriptUrl, null, 'username=' + encodeURIComponent(username) + '&password=' + encodeURIComponent(prompt)).then(function (xhr) {
+                    var post = 'username=' + encodeURIComponent(username) + '&password=' + encodeURIComponent(prompt) + '&_active_login=1';
+                    $cms.doAjaxRequest(scriptUrl, null, post).then(function (xhr) {
                         if (xhr.responseText === '') { // Blank means success, no error - so we can call callback
                             callback(true);
                         } else {
