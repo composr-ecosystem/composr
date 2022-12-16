@@ -83,10 +83,15 @@ function has_escaped_dynamic_sql(string $query) : bool
 
     $query_call_strings = ['query(', 'query_value_if_there('];
 
-    $strings = _get_quoted_substrings($query);
+    $strings = array_keys(_get_quoted_substrings($query));
     foreach ($strings as $str) {
-        if (!array_key_exists($str, $GLOBALS['DB_ESCAPE_STRING_LIST'])) { // Not explicitly escaped, so we scan the code to see if it was hard-coded in there
-            foreach (debug_backtrace() as $backtrace_depth => $backtrace) {
+        if (!is_string($str)) {
+            $str = strval($str);
+        }
+
+        if (!isset($GLOBALS['DB_ESCAPE_STRING_LIST'][$str])) { // Not explicitly escaped, so we scan the code to see if it was hard-coded in there
+            $full_trace = debug_backtrace();
+            foreach ($full_trace as $backtrace_depth => $backtrace) {
                 if ((isset($backtrace['file'])) && (file_exists($backtrace['file']))) {
                     $file = cms_file_safe($backtrace['file']);
                     $ok = false;
@@ -100,30 +105,30 @@ function has_escaped_dynamic_sql(string $query) : bool
 
                             $_strings = _get_quoted_substrings(substr($loc, $offset), true);
 
-                            if (in_array($str, $_strings)) {
+                            if (isset($_strings[$str])) {
                                 $ok = true;
-                            } else {
-                                // Oh, maybe the string was somewhere escaped in the same file at least
-                                $_strings = [];
-                                foreach ($file as $line) {
-                                    $_strings = array_merge($_strings, _get_quoted_substrings($line, true));
-                                }
-                                if (in_array($str, $_strings)) {
-                                    $ok = true;
-                                }
                             }
+                        }
+                    }
 
-                            if ($ok) {
+                    if (!$ok) {
+                        // Oh, maybe the string was somewhere escaped in the same file at least
+                        $_strings = [];
+                        foreach ($file as $line) {
+                            $_strings += _get_quoted_substrings($line, true);
+                            if (isset($_strings[$str])) {
+                                $ok = true;
                                 break 2;
                             }
                         }
                     }
-                    if ((!$ok) && ($found_query_line)) {
-                        //@var_dump($_strings);@var_dump($GLOBALS['DB_ESCAPE_STRING_LIST']);@exit($str); // Useful for debugging
-
-                        return false; // :-(.
-                    }
                 }
+            }
+
+            if ((!$ok) && ($found_query_line)) {
+                //@var_dump($_strings);@var_dump($GLOBALS['DB_ESCAPE_STRING_LIST']);@var_dump($full_trace);@var_dump($str);@var_dump($query);exit(); // Useful for debugging
+
+                return false; // :-(.
             }
         }
     }
@@ -135,7 +140,7 @@ function has_escaped_dynamic_sql(string $query) : bool
  *
  * @param  string $string The query
  * @param  boolean $recurse Whether to recurse (for double escaping)
- * @return array List of substrings
+ * @return array List of substrings (inverse map)
  *
  * @ignore
  */
@@ -143,19 +148,24 @@ function _get_quoted_substrings(string $string, bool $recurse = false) : array
 {
     $buffer = '';
     $output = [];
-    $found_start = false;
+    $found_start = null;
     $ignore = false;
     $len = strlen($string);
     for ($i = 0; $i < $len; $i++) {
-        if (!$found_start && ($string[$i] == '\'')) {
-            $found_start = true;
-            continue;
+        if ($found_start === null) {
+            if ($string[$i] == "'" || $string[$i] == '"') {
+                $found_start = $string[$i];
+                continue;
+            }
         }
-        if ($found_start) {
-            if (($ignore !== $i/*If not escaped*/) && ($string[$i] == '\'')) { // We've found a string
-                $output[] = trim($buffer, ' %');
+        if ($found_start !== null) {
+            if (($ignore !== $i/*If not escaped*/) && ($string[$i] == $found_start)) { // We've found a string
+                $output[$buffer] = true;
+                $output[trim($buffer, ' %')] = true;
+                $output[trim($buffer, '"')] = true;
+                $output[trim($buffer, "'")] = true;
                 $buffer = '';
-                $found_start = false; // We've closed our string, ready ourselves for next
+                $found_start = null; // We've closed our string, ready ourselves for next
                 continue;
             }
             if (($ignore !== $i) && ($string[$i] == '\\')) {
@@ -165,11 +175,12 @@ function _get_quoted_substrings(string $string, bool $recurse = false) : array
         }
     }
     if ($recurse) {
-        $_output = $output;
-        $output = [];
-        foreach ($_output as $str) {
-            $output[] = $str;
-            $output = array_merge($output, _get_quoted_substrings(stripcslashes($str)));
+        foreach (array_keys($output) as $str) {
+            if (!is_string($str)) {
+                $str = strval($str);
+            }
+
+            $output += _get_quoted_substrings(stripcslashes($str));
         }
     }
     return $output;

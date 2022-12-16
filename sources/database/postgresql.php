@@ -544,6 +544,11 @@ class Database_Static_postgresql extends DatabaseDriver
             $stopwords = get_stopwords_list();
         }
         if (isset($stopwords[trim(cms_mb_strtolower($content), '"')])) {
+            if (($GLOBALS['DEV_MODE']) || (!has_solemnly_declared(I_UNDERSTAND_SQL_INJECTION))) {
+                require_code('database_security_filter');
+                $GLOBALS['DB_ESCAPE_STRING_LIST'][$this->escape_string(trim($content, '"'))] = true;
+            }
+
             // This is an imperfect solution for searching for a stop-word
             // It will not cover the case where the stop-word is within the wider text. But we can't handle that case efficiently anyway
             return db_string_equal_to('?', trim($content, '"'));
@@ -552,6 +557,11 @@ class Database_Static_postgresql extends DatabaseDriver
         $postgres_fulltext_language = get_value('postgres_fulltext_language');
         if ($postgres_fulltext_language === null) {
             $postgres_fulltext_language = 'english';
+        }
+
+        if (($GLOBALS['DEV_MODE']) || (!has_solemnly_declared(I_UNDERSTAND_SQL_INJECTION))) {
+            require_code('database_security_filter');
+            $GLOBALS['DB_ESCAPE_STRING_LIST'][$this->escape_string($content)] = true;
         }
 
         return 'to_tsvector(?) @@ websearch_to_tsquery(\'pg_catalog.' . $postgres_fulltext_language . '\', \'' . $this->escape_string($content) . '\')';

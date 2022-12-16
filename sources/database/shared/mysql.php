@@ -768,6 +768,11 @@ abstract class Database_super_mysql extends DatabaseDriver
             $stopwords = get_stopwords_list();
         }
         if (isset($stopwords[trim(cms_mb_strtolower($content), '"')])) {
+            if (($GLOBALS['DEV_MODE']) || (!has_solemnly_declared(I_UNDERSTAND_SQL_INJECTION))) {
+                require_code('database_security_filter');
+                $GLOBALS['DB_ESCAPE_STRING_LIST'][$this->escape_string(trim($content))] = true;
+            }
+
             // This is an imperfect solution for searching for a stop-word
             // It will not cover the case where the stop-word is within the wider text. But we can't handle that case efficiently anyway
             return db_string_equal_to('?', trim($content, '"'));
@@ -780,6 +785,11 @@ abstract class Database_super_mysql extends DatabaseDriver
             $content = str_replace('?', '', $content);
             db_escape_string($content); // Hack to so SQL injection detector doesn't get confused
 
+            if (($GLOBALS['DEV_MODE']) || (!has_solemnly_declared(I_UNDERSTAND_SQL_INJECTION))) {
+                require_code('database_security_filter');
+                $GLOBALS['DB_ESCAPE_STRING_LIST'][$this->escape_string($content)] = true;
+            }
+
             return 'MATCH (?) AGAINST (\'' . $this->escape_string($content) . '\')';
         }
 
@@ -789,6 +799,11 @@ abstract class Database_super_mysql extends DatabaseDriver
         $content = cms_preg_replace_safe('#[\-+]($|\s)#', '$1', $content); // Parse error if on end on some servers
         $content = cms_preg_replace_safe('#(^|\s)\*#', '$1', $content); // Parse error if on start on some servers
         db_escape_string($content); // Hack to so SQL injection detector doesn't get confused
+
+        if (($GLOBALS['DEV_MODE']) || (!has_solemnly_declared(I_UNDERSTAND_SQL_INJECTION))) {
+            require_code('database_security_filter');
+            $GLOBALS['DB_ESCAPE_STRING_LIST'][$this->escape_string($content)] = true;
+        }
 
         return 'MATCH (?) AGAINST (\'' . $this->escape_string($content) . '\' IN BOOLEAN MODE)';
     }

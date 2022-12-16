@@ -508,6 +508,12 @@ abstract class Database_super_sqlserver extends DatabaseDriver
     public function full_text_assemble(string $content) : string
     {
         $content = str_replace('"', '', $content);
+
+        if (($GLOBALS['DEV_MODE']) || (!has_solemnly_declared(I_UNDERSTAND_SQL_INJECTION))) {
+            require_code('database_security_filter');
+            $GLOBALS['DB_ESCAPE_STRING_LIST'][$this->escape_string($content)] = true;
+        }
+
         return 'CONTAINS ((?),\'' . $this->escape_string($content) . '\')';
     }
 

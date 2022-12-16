@@ -2028,7 +2028,7 @@ class DatabaseConnector
                     }
 
                     if (!has_escaped_dynamic_sql($query)) {
-                        fatal_exit('Dynamic SQL has not been escaped properly');
+                        fatal_exit('Dynamic SQL has not been escaped properly in ' . $query);
                     }
                 }
             }
@@ -2417,14 +2417,7 @@ class DatabaseConnector
      */
     public function full_text_assemble(string $content) : string
     {
-        $ret = $this->driver->full_text_assemble($content);
-
-        if (($GLOBALS['DEV_MODE']) || (!has_solemnly_declared(I_UNDERSTAND_SQL_INJECTION))) {
-            require_code('database_security_filter');
-            $GLOBALS['DB_ESCAPE_STRING_LIST'][$this->driver->escape_string($content)] = true;
-        }
-
-        return $ret;
+        return $this->driver->full_text_assemble($content);
     }
 
     /**
