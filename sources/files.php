@@ -556,6 +556,7 @@ function should_ignore_file(string $path, int $bitmask = 0) : bool
         // De facto standard
         'robots.txt' => '',
         'ads.txt' => '',
+        'app-ads.txt' => '',
         'manifest.json' => '',
         'browserconfig.xml' => '',
         'favicon.ico' => '', // Not used for Composr, but default path for other scripts on server
