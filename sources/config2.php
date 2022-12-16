@@ -239,9 +239,10 @@ function build_config_inputter(string $name, array $details, ?string $current_va
  *
  * @param  string $name Option name
  * @param  array $details Option details
+ * @param  boolean $theme_wizard Whether this value was submitted on the theme wizard screen
  * @return string Value
  */
-function get_submitted_config_value(string $name, array $details) : string
+function get_submitted_config_value(string $name, array $details, bool $theme_wizard = false) : string
 {
     $config_field_name = 'option_' . substr(md5($name), 0, 8);
 
@@ -257,7 +258,8 @@ function get_submitted_config_value(string $name, array $details) : string
         $_value = post_param_string($config_field_name, '');
         $value = ($_value == '') ? '' : float_to_raw_string(float_unformat($_value));
     } elseif ($details['type'] == 'tick') {
-        $value = strval(post_param_integer($config_field_name, 0));
+        $_value = post_param_integer($config_field_name, $theme_wizard ? null : 0);
+        $value = ($_value !== null) ? strval($_value) : '';
     } elseif (($details['type'] == 'date') || ($details['type'] == 'datetime')) {
         $date_value = post_param_date($config_field_name);
         $value = ($date_value === null) ? '' : strval($date_value);

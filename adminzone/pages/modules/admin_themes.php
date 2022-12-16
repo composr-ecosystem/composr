@@ -866,14 +866,14 @@ class Module_admin_themes
         foreach ($hooks as $hook => $ob) {
             $details = $ob->get_details();
             if (!empty($details['theme_override'])) {
-                $val = get_submitted_config_value($hook, $details);
+                $val = get_submitted_config_value($hook, $details, true);
                 if ($val != '') {
                     $contents .= $hook . '=' . $val . "\n";
                 }
             }
         }
         foreach ($before as $key => $val) {
-            if (post_param_string($key, null) === null) { // Something not edited in the UI
+            if (post_param_string($key, '') == '') { // Something not edited in the UI
                 $contents .= $key . '=' . $val . "\n";
             }
             unset($before[$key]);
