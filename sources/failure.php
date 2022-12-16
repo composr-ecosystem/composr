@@ -220,7 +220,7 @@ function improperly_filled_in_post(string $name)
     }
 
     // We didn't give some required input
-    warn_exit(do_lang_tempcode('NO_PARAMETER_SENT', $name));
+    warn_exit(do_lang_tempcode('NO_PARAMETER_SENT', escape_html($name)));
 }
 
 /**
