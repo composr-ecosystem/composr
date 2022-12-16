@@ -100,7 +100,7 @@ class Module_admin_referrals
             $ini_file = cms_parse_ini_file_safe($path, true);
 
             if (!array_key_exists($scheme, $ini_file)) {
-                warn_exit(do_lang_tempcode('MISSING_REFERRAL_SCHEME'));
+                warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
             }
 
             $scheme_title = $ini_file[$scheme]['title'];

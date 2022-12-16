@@ -11773,7 +11773,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_BANNER_SECONDARY_CATEGORIES
         AUTHOR_MAIL
         MISSING_RESOURCE_SHORT
-        MISSING_REFERRAL_SCHEME
     ')));
 
     if ($GLOBALS['DEV_MODE']) {
