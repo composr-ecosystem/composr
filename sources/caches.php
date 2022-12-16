@@ -85,17 +85,17 @@ function init__caches()
     global $SMART_CACHE, $RELATIVE_PATH, $IN_SELF_ROUTING_SCRIPT;
     if ($IN_SELF_ROUTING_SCRIPT) {
         $zone = $RELATIVE_PATH;
-        $page = get_param_string('page', ''); // Not get_page_name for bootstrap order reasons
-        $screen = get_param_string('type', 'browse');
+        $page = get_param_string('page', '', INPUT_FILTER_NONE); // Not get_page_name for bootstrap order reasons
+        $screen = get_param_string('type', 'browse', INPUT_FILTER_NONE);
         $bucket_name = $zone . ':' . $page . ':' . $screen;
         if ($page != 'topicview' && $screen == 'browse') {
-            $bucket_name .= ':' . get_param_string('id', '');
+            $bucket_name .= ':' . get_param_string('id', '', INPUT_FILTER_NONE);
         }
     } else {
         $bucket_name = 'script__' . current_script();
 
         if ($RELATIVE_PATH == '_tests') {
-            $bucket_name .= '__' . get_param_string('id', '');
+            $bucket_name .= '__' . get_param_string('id', '', INPUT_FILTER_NONE);
         }
     }
     $SMART_CACHE = new Self_learning_cache($bucket_name);

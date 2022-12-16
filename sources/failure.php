@@ -620,8 +620,9 @@ function _log_hack_attack_and_exit(string $reason, string $reason_param_a = '', 
 
     // HTTP statuses...
 
-    require_code('site');
-    attach_to_screen_header('<meta name="robots" content="noindex" />'); // XHTMLXHTML
+    if (function_exists('attach_to_screen_header')) {
+        attach_to_screen_header('<meta name="robots" content="noindex" />'); // XHTMLXHTML
+    }
 
     if (!$silent_to_user) {
         require_code('global3');

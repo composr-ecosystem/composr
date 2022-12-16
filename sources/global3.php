@@ -2582,8 +2582,6 @@ function _cms_strip_tags_callback(array $matches) : string
  */
 function get_ip_address(int $amount = 4, ?string $ip = null) : string
 {
-    require_code('config');
-
     if ($ip === null) {
         $ip = $_SERVER['REMOTE_ADDR'];
     }
