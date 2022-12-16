@@ -331,7 +331,7 @@
             var form = btn.form;
             var deleteField = form.elements['delete'];
 
-            $cms.ui.confirm('{!javascript:_ARE_YOU_SURE_DELETE;^}', function (result) {
+            $cms.ui.confirm('{!_ARE_YOU_SURE_DELETE;^}', function (result) {
                 if (result) {
                     deleteField.value = '1';
                     form.submit();
