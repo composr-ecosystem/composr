@@ -2167,12 +2167,12 @@ function either_param_integer(string $name, $default = false) : ?int
     }
     if (!is_numeric($ret)) {
         require_code('failure');
-        $ret = _param_invalid($name, $ret, true);
+        $ret = _param_invalid_integer($name, $ret, true);
     }
     $reti = intval($ret);
     if (($reti > 2147483647) || ($reti < -2147483648)) { // TODO: #3046 in tracker
         require_code('failure');
-        _param_invalid($name, null, true);
+        _param_invalid_integer($name, null, true);
     }
     return $reti;
 }
@@ -2190,7 +2190,7 @@ function post_param_integer(string $name, $default = false, int $filters = INPUT
     $ret = __param($_POST, $name, ($default === false) ? $default : (($default === null) ? '' : strval($default)), true, true);
 
     if ((!$GLOBALS['BOOTSTRAPPING']) && (!$GLOBALS['MICRO_AJAX_BOOTUP'])) {
-        if (((($default === null) && ($ret === '')) ? null : intval($ret)) !== $default) {
+        if (((is_string($default)) && ($ret != strval($default))) || (!is_string($default))) {
             check_posted_field($name, $ret, $filters);
         }
 
@@ -2203,7 +2203,7 @@ function post_param_integer(string $name, $default = false, int $filters = INPUT
     }
     if (!is_numeric($ret)) {
         require_code('failure');
-        $ret = _param_invalid($name, $ret, true);
+        $ret = _param_invalid_integer($name, $ret, true);
     }
     if ($ret === '0') {
         return 0;
@@ -2215,7 +2215,7 @@ function post_param_integer(string $name, $default = false, int $filters = INPUT
     $retf = floatval($reti);
     if (($retf > 2147483647.0) || ($retf < -2147483648.0)) { // TODO: #3046 in tracker
         require_code('failure');
-        _param_invalid($name, null, true);
+        _param_invalid_integer($name, null, true);
     }
     return $reti;
 }
@@ -2239,16 +2239,16 @@ function get_param_integer(string $name, $default = false, bool $not_string_ok =
         if (substr($ret, -1) === '/') {
             $ret = substr($ret, 0, strlen($ret) - 1);
         }
-        if (!is_numeric($ret)) { // Bizarre situation (bug in IIS?)
+        if (!is_numeric($ret)) {
             $matches = [];
-            if (preg_match('#^(\d+)\#[\w]*$#', $ret, $matches) !== 0) {
+            if (preg_match('#^(\d+)\#[\w]*$#', $ret, $matches) !== 0) { // Bizarre situation (bug in IIS?)
                 $ret = $matches[1];
             } else {
                 if ($not_string_ok) {
                     return $default;
                 }
                 require_code('failure');
-                $ret = _param_invalid($name, $ret, false);
+                $ret = _param_invalid_integer($name, $ret, false);
             }
         }
     }
@@ -2262,7 +2262,7 @@ function get_param_integer(string $name, $default = false, bool $not_string_ok =
     $retf = floatval($reti);
     if (($retf > 2147483647.0) || ($retf < -2147483648.0)) { // TODO: #3046 in tracker
         require_code('failure');
-        _param_invalid($name, null, false);
+        _param_invalid_integer($name, null, false);
     }
     return $reti;
 }

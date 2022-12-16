@@ -124,7 +124,7 @@ function zip_error(int $errno, bool $mzip = false) : object
 }
 
 /**
- * Handle invalid parameter values.
+ * Handle invalid integer parameter values.
  *
  * @param  string $name The parameter deemed to have an invalid value somehow
  * @param  ?string $ret The value of the parameter deemed invalid (null: we known we can't recover)
@@ -132,7 +132,7 @@ function zip_error(int $errno, bool $mzip = false) : object
  * @return string Fixed parameter (usually the function won't return [instead will give an error], but in special cases, it can filter an invalid return)
  * @ignore
  */
-function _param_invalid(string $name, ?string $ret, bool $posted) : string
+function _param_invalid_integer(string $name, ?string $ret, bool $posted) : string
 {
     // Invalid params can happen for many reasons:
     //  [/url] getting onto the end of URLs by bad URL extractors getting URLs out of Comcode
@@ -143,11 +143,11 @@ function _param_invalid(string $name, ?string $ret, bool $posted) : string
     //  People typing the wrong URLs for many reasons
     // Therefore we can't really treat it as a hack-attack, even though that would be preferable.
 
-    static $param_invalid_looping = false;
-    if ($param_invalid_looping) {
+    static $param_invalid_looping = [];
+    if (isset($param_invalid_looping[$name])) {
         return '0'; // stop loop, e.g. with keep_fatalistic=<corruptvalue>
     }
-    $param_invalid_looping = true;
+    $param_invalid_looping[$name] = true;
 
     if ($ret !== null) {
         // Try and recover by stripping junk off...
@@ -168,6 +168,8 @@ function _param_invalid(string $name, ?string $ret, bool $posted) : string
     }
 
     warn_exit(do_lang_tempcode('javascript:NOT_INTEGER'));
+
+    unset($param_invalid_looping[$name]);
 
     return '';
 }

@@ -809,6 +809,7 @@ We hope other users will appreciate your efforts and give you some points to rew
             '_tests/tests/unit_tests/_api_geocoding.php',
             '_tests/tests/unit_tests/geshi.php',
             '_tests/tests/unit_tests/getid3.php',
+            '_tests/tests/unit_tests/params.php',
             '_tests/tests/unit_tests/path_references.php',
             '_tests/tests/unit_tests/git_conflicts.php',
             '_tests/tests/unit_tests/suphp.php',
