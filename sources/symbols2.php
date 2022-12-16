@@ -2622,21 +2622,25 @@ function ecv2_THEME_SEED(string $lang, array $escaped, array $param) : string
  */
 function ecv2_THEME_DARK(string $lang, array $escaped, array $param) : string
 {
+    global $IN_MINIKERNEL_VERSION;
+
     $value = '0';
 
     if ($GLOBALS['XSS_DETECT']) {
         ocp_mark_as_escaped($value);
     }
 
-    if (addon_installed('themewizard')) {
-        require_code('themewizard');
-        $value = find_theme_dark($GLOBALS['FORUM_DRIVER']->get_theme()) ? '1' : '0';
-    }
+    if (!$IN_MINIKERNEL_VERSION) {
+        if (addon_installed('themewizard')) {
+            require_code('themewizard');
+            $value = find_theme_dark($GLOBALS['FORUM_DRIVER']->get_theme()) ? '1' : '0';
+        }
 
-    if ((addon_installed('themewizard')) && (function_exists('has_privilege')) && (has_privilege(get_member(), 'view_profiling_modes'))) {
-        $keep_theme_dark = get_param_integer('keep_theme_dark', null);
-        if ($keep_theme_dark !== null) {
-            $value = (($keep_theme_dark == 1) ? '1' : '0');
+        if ((addon_installed('themewizard')) && (function_exists('has_privilege')) && (has_privilege(get_member(), 'view_profiling_modes'))) {
+            $keep_theme_dark = get_param_integer('keep_theme_dark', null);
+            if ($keep_theme_dark !== null) {
+                $value = (($keep_theme_dark == 1) ? '1' : '0');
+            }
         }
     }
 

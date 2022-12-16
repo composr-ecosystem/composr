@@ -969,9 +969,9 @@ header h1 {
 }
 
 /*{+START,IF,{$NOT,{$THEME_DARK}}}*/
-	html:not(.is-scrolled) header .top-form img.icon,
-	html:not(.is-scrolled) header .top-buttons img.icon,
-	html:not(.is-scrolled) header .toplevel-link img.icon {
+	header.is-see-through .top-form img.icon,
+	header.is-see-through .top-buttons img.icon,
+	header.is-see-through .toplevel-link img.icon {
 		/* This makes icons white when sprite icons are disabled */
 		filter: invert(100%);
 	}
