@@ -5944,9 +5944,9 @@ input[type="button"].btn-block {
 }
 
 .btn-primary img.icon,
-.btn-secondary img.icon, 
+.btn-secondary img.icon,
 .btn-dark img.icon,
-.btn-success img.icon,  
+.btn-success img.icon,
 .btn-danger img.icon {
 	/* This makes icons white when sprite icons are disabled */
 	filter: invert(100%);
