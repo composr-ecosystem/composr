@@ -62,6 +62,16 @@ function rss_backend_script()
         warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('syndication')));
     }
 
+    if (get_option('is_on_rss') == '0') {
+        return;
+    }
+
+    $type = filter_naughty_harsh(get_param_string('type', 'RSS2'));
+    $mode = filter_naughty_harsh(get_param_string('mode', 'opml'));
+
+    $canonical_url = find_script('backend') . '?mode=' . $mode;
+    header('Link: <' . $canonical_url . '>; rel="canonical"');
+
     // Closed site
     $site_closed = get_option('site_closed');
     if (($site_closed == '1') && (!has_privilege(get_member(), 'access_closed_site')) && (!is_our_server(get_ip_address())) && (!$GLOBALS['IS_ACTUALLY_ADMIN'])) {
@@ -70,12 +80,6 @@ function rss_backend_script()
         @exit(get_option('closed'));
     }
 
-    if (get_option('is_on_rss') == '0') {
-        return;
-    }
-
-    $type = filter_naughty_harsh(get_param_string('type', 'RSS2'));
-    $mode = filter_naughty_harsh(get_param_string('mode', 'opml'));
     require_lang('rss');
     require_code('xml');
 
