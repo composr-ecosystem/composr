@@ -14,10 +14,9 @@ See global.css for actual CSS rules.
 =========================
 */
 
-/* Used to initiate equations (although running the Theme Wizard replaces these with what the user chooses - which is how it works) */
 {$THEMEWIZARD_COLOR,#2388ef,seed,100% 2388ef}
 {$THEMEWIZARD_COLOR,#6c757d,seed_secondary,100% 6c757d}
-{$THEMEWIZARD_COLOR,#ffffff,WB,100% FFFFFF}
+{$THEMEWIZARD_COLOR,#FFFFFF,WB,100% FFFFFF}
 {$THEMEWIZARD_COLOR,#000000,BW,100% 000000}
 /*Theme seed is: 2388ef*/
 
@@ -59,8 +58,10 @@ See global.css for actual CSS rules.
 /* For standard elements */
 {$THEMEWIZARD_COLOR,#404040,body_color,75% BW + 25% WB}
 {$THEMEWIZARD_COLOR,#1b67b6,heading_text,76% seed + 24% BW}
-{$THEMEWIZARD_COLOR,#2388ef,a.link,100% seed}
-{$THEMEWIZARD_COLOR,#1e74cb,a.hover,85% a.link + 15% BW}
+{$THEMEWIZARD_COLOR,#175ba0,a.link,67% seed + 33% BW}
+{$THEMEWIZARD_COLOR,#114478,a.hover,75% a.link + 25% BW}
+{$THEMEWIZARD_COLOR,#b7d8fa,a.link_light,33% seed + 67% WB}
+{$THEMEWIZARD_COLOR,#89a2bc,a.hover_light,75% a.link_light + 25% BW}
 {$THEMEWIZARD_COLOR,#b2d6fa,th_secondary_text,35% seed + 65% WB}
 {$THEMEWIZARD_COLOR,#99c7f8,hr,60% area_background + 40% seed}
 {$THEMEWIZARD_COLOR,#1b67b6,divider_line,76% seed + 24% BW}
@@ -82,7 +83,7 @@ See global.css for actual CSS rules.
 {$THEMEWIZARD_COLOR,#f8fbfe,area_5_background,3% seed + 97% WB}
 {$THEMEWIZARD_COLOR,#6da4de,area_light_background,65% (seed val_to 80) + 35% WB}
 {$THEMEWIZARD_COLOR,#ecf5fd,area_faded_background,80% area_background + 20% WB}
-{$THEMEWIZARD_COLOR,#f2f2f2,area_zebra_background,100% area_5_background}
+{$THEMEWIZARD_COLOR,#f8fbfe,area_zebra_background,100% area_5_background}
 {$THEMEWIZARD_COLOR,#ffffff,area_hover_background,100% WB}
 {$THEMEWIZARD_COLOR,#d3e7fc,area_hover_2_background,20% seed + 80% WB}
 {$THEMEWIZARD_COLOR,#ffffff,area_current_background,100% WB}
@@ -96,9 +97,12 @@ See global.css for actual CSS rules.
 {$THEMEWIZARD_COLOR,#d3fbfc,area_highlight_left_complement_background,20% (seed hue_add -21) + 80% WB}
 {$THEMEWIZARD_COLOR,#d3d3fc,area_highlight_right_complement_background,20% (seed hue_add +21) + 80% WB}
 
+/* Buttons */
+{$THEMEWIZARD_COLOR,#175ba0,button_primary,67% seed + 33% BW}
+
 /* Text */
 {$THEMEWIZARD_COLOR,#071b30,slightly_seeded_text,20% seed + 80% BW}
-{$THEMEWIZARD_COLOR,#f9fafc,slightly_seeded_pale_text,3% seed + 97% WB}
+{$THEMEWIZARD_COLOR,#f8fbfe,slightly_seeded_pale_text,3% seed + 97% WB}
 {$THEMEWIZARD_COLOR,#384757,slightly_seeded_gray_text,20% WB + 65% BW + 15% seed}
 {$THEMEWIZARD_COLOR,#1b67b6,area_text,76% seed + 24% BW}
 {$THEMEWIZARD_COLOR,#3b5d7f,area_key_text,53% (seed sat_to 53) + 47% BW}
@@ -106,10 +110,10 @@ See global.css for actual CSS rules.
 
 /* Special colour for box titles */
 {$THEMEWIZARD_COLOR,#212529,box_title_text,100% text_dark}
-{$THEMEWIZARD_COLOR,#1e74cb,box_title_text_hover,100% a.hover}
+{$THEMEWIZARD_COLOR,#114478,box_title_text_hover,100% a.hover}
 {$THEMEWIZARD_COLOR,#ffffff,box_title_text_2,100% text_light}
 {$THEMEWIZARD_COLOR,#f2f2f2,box_title_background,100% main_2_background}
-{$THEMEWIZARD_COLOR,#5aa6f3,box_title_background_2,75% seed + 25% WB}
+{$THEMEWIZARD_COLOR,#1a66b3,box_title_background_2,75% seed + 25% BW}
 
 /* Special colour for code/quote boxes */
 {$THEMEWIZARD_COLOR,#2388ef,code_title_background,100% seed}

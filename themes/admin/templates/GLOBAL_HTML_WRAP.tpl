@@ -135,7 +135,7 @@
 	{$,This is the main site footer}
 	{+START,IF,{$SHOW_FOOTER}}
 		<footer class="clearfix" itemscope="itemscope" itemtype="http://schema.org/WPFooter">
-			<div class="footer_inner">
+			<div class="footer-inner">
 				<div class="global-footer-left block-desktop">
 					{+START,SET,FOOTER_BUTTONS}
 						{+START,IF,{$CONFIG_OPTION,bottom_show_top_button}}
