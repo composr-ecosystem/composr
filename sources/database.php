@@ -2406,6 +2406,8 @@ class DatabaseConnector
             }
         }
 
+        $this->ensure_connected();
+
         return $this->driver->has_full_text($this->connection_read);
     }
 
@@ -2417,6 +2419,8 @@ class DatabaseConnector
      */
     public function full_text_assemble(string $content) : string
     {
+        $this->ensure_connected();
+
         return $this->driver->full_text_assemble($content);
     }
 
@@ -2956,6 +2960,8 @@ class DatabaseConnector
      */
     public function get_table_count_approx(string $table, array $where = [], ?string $where_clause = null) : ?int
     {
+        $this->ensure_connected();
+
         $ret = $this->driver->get_table_count_approx($this->table_prefix . $table, $this->connection_read);
         if ($ret !== null) {
             return $ret;
@@ -3017,6 +3023,8 @@ class DatabaseConnector
      */
     public function set_query_time_limit(int $seconds)
     {
+        $this->ensure_connected();
+
         $this->driver->set_query_time_limit($seconds, $this->connection_read);
     }
 
@@ -3039,6 +3047,8 @@ class DatabaseConnector
      */
     public function get_minimum_search_length() : int
     {
+        $this->ensure_connected();
+
         return $this->driver->get_minimum_search_length($this->connection_read);
     }
 }
