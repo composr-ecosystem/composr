@@ -90,32 +90,18 @@ function has_escaped_dynamic_sql(string $query) : bool
         }
 
         if (!isset($GLOBALS['DB_ESCAPE_STRING_LIST'][$str])) { // Not explicitly escaped, so we scan the code to see if it was hard-coded in there
+            $ok = false;
+
             $full_trace = debug_backtrace();
             foreach ($full_trace as $backtrace_depth => $backtrace) {
                 if ((isset($backtrace['file'])) && (file_exists($backtrace['file']))) {
                     $file = cms_file_safe($backtrace['file']);
-                    $ok = false;
-                    $found_query_line = false;
                     foreach ($query_call_strings as $query_call_string) {
                         $loc = $file[$backtrace['line'] - 1];
                         $offset = strpos($loc, $query_call_string);
 
                         if ($offset !== false) { // First do a fast check on the line itself
-                            $found_query_line = true;
-
                             $_strings = _get_quoted_substrings(substr($loc, $offset), true);
-
-                            if (isset($_strings[$str])) {
-                                $ok = true;
-                            }
-                        }
-                    }
-
-                    if (!$ok) {
-                        // Oh, maybe the string was somewhere escaped in the same file at least
-                        $_strings = [];
-                        foreach ($file as $line) {
-                            $_strings += _get_quoted_substrings($line, true);
                             if (isset($_strings[$str])) {
                                 $ok = true;
                                 break 2;
@@ -125,7 +111,26 @@ function has_escaped_dynamic_sql(string $query) : bool
                 }
             }
 
-            if ((!$ok) && ($found_query_line)) {
+            if (!$ok) {
+                // Oh, maybe the string was somewhere escaped in the same file at least
+                $done_files = [];
+                foreach ($full_trace as $backtrace_depth => $backtrace) {
+                    if ((isset($backtrace['file'])) && (file_exists($backtrace['file'])) && (!isset($done_files[$backtrace['file']]))) {
+                        $done_files[$backtrace['file']] = true;
+
+                        $file = cms_file_safe($backtrace['file']);
+                        foreach ($file as $line) {
+                            $_strings = _get_quoted_substrings($line, true);
+                            if (isset($_strings[$str])) {
+                                $ok = true;
+                                break 2;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (!$ok) {
                 //@var_dump($_strings);@var_dump($GLOBALS['DB_ESCAPE_STRING_LIST']);@var_dump($full_trace);@var_dump($str);@var_dump($query);exit(); // Useful for debugging
 
                 return false; // :-(.
