@@ -2627,6 +2627,7 @@ function ecv2_THEME_DARK(string $lang, array $escaped, array $param) : string
     if (!empty($escaped)) {
         apply_tempcode_escaping($escaped, $value);
     }
+
     return $value;
 }
 
