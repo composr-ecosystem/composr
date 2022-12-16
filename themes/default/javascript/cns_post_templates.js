@@ -11,7 +11,7 @@
             if (resets) {
                 window.$editing.setTextbox(form.elements['post'], '');
             }
-            window.$editing.insertTextbox(form.elements['post'], ins.replace(/\\n/g, '\n'), true, $cms.filter.html(ins).replace(/\\n/g, '<br />'));
+            window.$editing.insertTextbox(form.elements['post'], ins.replace(/\\n/g, '\n'), false, $cms.filter.html(ins).replace(/\\n/g, '<br />'));
         });
     };
 }(window.$cms, window.$util, window.$dom));
