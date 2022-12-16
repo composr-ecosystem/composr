@@ -165,11 +165,11 @@ a:hover, .button-hyperlink:hover {
 }
 
 .footer-inner a, .footer-inner .button-hyperlink {
-	color: {$GET,a.link_light} !important;
+	color: {$GET,footer_link} !important;
 }
 
 .footer-inner a:hover, .footer-inner .button-hyperlink:hover {
-	color: {$GET,a.hover_light} !important;
+	color: {$GET,footer_link_hover} !important;
 }
 
 a:not([href]):not([tabindex]) {
@@ -463,7 +463,7 @@ textarea, input, code {
 	/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
 		border-radius: {$GET,border_radius};
 	/*{+END}*/
-	color: {$GET,WB};
+	color: {$GET,text_light};
 }
 
 /*{+START,CSS_MODE,mobile}*/
@@ -551,7 +551,7 @@ thead > tr > th,
 .pte-set-box .box > table > thead > tr > th {
 	background-color: {$GET,box_title_background_2};
 	border-color: {$GET,box_title_background_2} !important;
-	color: {$GET,text_light};
+	color: {$GET,WB};
 }
 
 .light-table th, .light-table .fake-th,
@@ -609,6 +609,9 @@ svg.icon {
 
 img.icon {
 	object-fit: contain; /* match the svg behavior, preserve the image's aspect-ratio */
+	/*{+START,IF,{$THEME_DARK}}*/
+		filter: invert(100%);
+	/*{+END}*/
 }
 
 /*input[type="text"],textarea {  So Comcode can be typed
@@ -766,7 +769,7 @@ html.is-mouse-only .touch-only {
 /* Cool effect to change how text selection looks; not valid CSS, but is safe */
 ::selection {
 	background-color: {$GET,area_text};
-	color: {$GET,text_light};
+	color: {$GET,WB};
 }
 
 comcode-{$REPLACE,\,,::selection \,comcode-,{$COMCODE_TAGS;,{$WYSIWYG_COMCODE__XML_BLOCK}}\,{$COMCODE_TAGS;,{$WYSIWYG_COMCODE__XML_INLINE}}}, tempcode ::selection {
@@ -965,12 +968,23 @@ header h1 {
 	display: none;
 }
 
+/*{+START,IF,{$NOT,{$THEME_DARK}}}*/
+	html:not(.is-scrolled) header .top-form img.icon,
+	html:not(.is-scrolled) header .top-buttons img.icon,
+	html:not(.is-scrolled) header .toplevel-link img.icon {
+		/* This makes icons white when sprite icons are disabled */
+		filter: invert(100%);
+	}
+/*{+END}*/
+
+/*{+START,IF,{$THEME_DARK}}*/
 header .top-form img.icon,
 header .top-buttons img.icon,
 header .toplevel-link img.icon {
 	/* This makes icons white when sprite icons are disabled */
 	filter: invert(100%);
 }
+/*{+END}*/
 
 .header-classic .logo {
 	padding: 0;
@@ -1048,7 +1062,7 @@ header.is-see-through .logo-image-white {
 }
 
 header.is-see-through.with-white-navbar {
-	color: {$GET,WB};
+	color: {$GET,text_light};
 	background: rgba(0, 0, 0, 0.5);
 	border-bottom: 1px solid transparent;
 	transition: background-color 0.15s ease-in-out, height 0.15s ease-in-out;
@@ -1128,14 +1142,14 @@ html.is-scrolled .header-modern.is-sticky {
 	header.is-see-through.with-white-navbar .logo-link,
 	header.is-see-through.with-white-navbar .menu-dropdown-item-a.toplevel-link,
 	header.is-see-through.with-white-navbar .top-button {
-		color: {$GET,WB};
+		color: {$GET,text_light};
 	}
 
 	header.is-see-through.with-white-navbar .menu-dropdown-item.toplevel:hover > a,
 	header.is-see-through.with-white-navbar .menu-dropdown-item-a.toplevel-link:hover,
 	header.is-see-through.with-white-navbar .menu-dropdown-item-a.toplevel-link:focus,
 	header.is-see-through.with-white-navbar .top-button:hover {
-		color: {$COLOR_RGBA,{$GET,WB},0.8};
+		color: {$COLOR_RGBA,{$GET,text_light},0.8};
 	}
 /*{+END}*/
 
@@ -1895,7 +1909,7 @@ footer .special-page-type-form select, footer .special-page-type-form select opt
 }
 
 footer .special-page-type-form select option {
-	color: {$GET,native_ui_foreground};
+	color: {$GET,slightly_seeded_text};
 }
 
 /*{+START,CSS_MODE,desktop}*/
@@ -3649,15 +3663,15 @@ div.zebra-0+div.zebra-1, div.zebra-1+div.zebra-0 {
 .tooltip-ownlayout {
 	padding: 0.5em;
 	border-radius: {$GET,border_radius};
-	color: {$GET,WB} !important;
+	color: {$GET,text_light} !important;
 }
 
 .tooltip-ownlayout * {
-	color: {$GET,WB} !important;
+	color: {$GET,text_light} !important;
 }
 
 .tooltip-ownlayout a {
-	color: {$GET,WB} !important;
+	color: {$GET,text_light} !important;
 	font-weight: bold;
 }
 
@@ -3669,7 +3683,7 @@ div.zebra-0+div.zebra-1, div.zebra-1+div.zebra-0 {
 .tooltip-ownlayout,
 .tooltip-nolayout th.de-th,
 .tooltip-nolayout td {
-	color: {$GET,WB};
+	color: {$GET,text_light};
 	background-color: {$GET,tooltip_background};
 }
 
@@ -5176,7 +5190,7 @@ ul.associated-links-block-group {
 	padding: 6px 12px;
 	font-size: 14px;
 	line-height: 1.5;
-	color: {$GET,text_dark};
+	color: {$GET,slightly_gray_text};
 	background-color: {$GET,WB};
 	background-clip: padding-box;
 	border: 1px solid {$GET,standard_border};
@@ -5192,7 +5206,7 @@ ul.associated-links-block-group {
 }
 
 .form-control:focus {
-	color: {$GET,text_dark};
+	color: {$GET,slightly_gray_text};
 	background-color: {$GET,WB};
 	border-color: {$COLOR_LIGHTEN,{$GET,seed},25%};
 	outline: 0;
@@ -5447,13 +5461,13 @@ fieldset:disabled a.btn {
 }
 
 .btn-primary {
-	color: {$GET,text_light};
+	color: {$GET,button_primary_text};
 	background-color: {$GET,button_primary};
 	border-color: {$GET,button_primary};
 }
 
 .btn-primary:hover {
-	color: {$GET,text_light};
+	color: {$GET,button_primary_text};
 	background-color: {$COLOR_DARKEN,{$GET,button_primary},7.5%};
 	border-color: {$COLOR_DARKEN,{$GET,button_primary},10%};
 }
@@ -5471,7 +5485,7 @@ fieldset:disabled a.btn {
 
 .btn-primary:not(:disabled):not(.disabled):active,
 .btn-primary:not(:disabled):not(.disabled).active {
-	color: {$GET,text_light};
+	color: {$GET,button_primary_text};
 	background-color: {$COLOR_DARKEN,{$GET,button_primary},10%};
 	border-color: {$COLOR_DARKEN,{$GET,button_primary},12.5%};
 }
@@ -5518,13 +5532,13 @@ fieldset:disabled a.btn {
 }
 
 .btn-success {
-	color: {$GET,WB};
+	color: {$GET,text_light};
 	background-color: {$GET,success_color};
 	border-color: {$GET,success_color};
 }
 
 .btn-success:hover {
-	color: {$GET,WB};
+	color: {$GET,text_light};
 	background-color: {$COLOR_DARKEN,{$GET,success_color},7.5%};
 	border-color: {$COLOR_DARKEN,{$GET,success_color},10%};
 }
@@ -5536,14 +5550,14 @@ fieldset:disabled a.btn {
 
 .btn-success.disabled,
 .btn-success:disabled {
-	color: {$GET,WB};
+	color: {$GET,text_light};
 	background-color: {$GET,success_color};
 	border-color: {$GET,success_color};
 }
 
 .btn-success:not(:disabled):not(.disabled):active,
 .btn-success:not(:disabled):not(.disabled).active {
-	color: {$GET,WB};
+	color: {$GET,text_light};
 	background-color: {$COLOR_DARKEN,{$GET,success_color},10%};
 	border-color: {$COLOR_DARKEN,{$GET,success_color},12.5%};
 }
@@ -5554,13 +5568,13 @@ fieldset:disabled a.btn {
 }
 
 .btn-danger {
-	color: {$GET,WB};
+	color: {$GET,text_light};
 	background-color: {$GET,danger_color};
 	border-color: {$GET,danger_color};
 }
 
 .btn-danger:hover {
-	color: {$GET,WB};
+	color: {$GET,text_light};
 	background-color: {$COLOR_DARKEN,{$GET,danger_color},7.5%};
 	border-color: {$COLOR_DARKEN,{$GET,danger_color},10%};
 }
@@ -5572,14 +5586,14 @@ fieldset:disabled a.btn {
 
 .btn-danger.disabled,
 .btn-danger:disabled {
-	color: {$GET,WB};
+	color: {$GET,text_light};
 	background-color: {$GET,danger_color};
 	border-color: {$GET,danger_color};
 }
 
 .btn-danger:not(:disabled):not(.disabled):active,
 .btn-danger:not(:disabled):not(.disabled).active {
-	color: {$GET,WB};
+	color: {$GET,text_light};
 	background-color: {$COLOR_DARKEN,{$GET,danger_color},10%};
 	border-color: {$COLOR_DARKEN,{$GET,danger_color},12.5%};
 }
@@ -5626,13 +5640,13 @@ fieldset:disabled a.btn {
 }
 
 .btn-dark {
-	color: {$GET,WB};
+	color: {$GET,text_light};
 	background-color: {$GET,dark_color};
 	border-color: {$GET,dark_color};
 }
 
 .btn-dark:hover {
-	color: {$GET,WB};
+	color: {$GET,text_light};
 	background-color: {$COLOR_DARKEN,{$GET,dark_color},7.5%};
 	border-color: {$COLOR_DARKEN,{$GET,dark_color},10%};
 }
@@ -5644,14 +5658,14 @@ fieldset:disabled a.btn {
 
 .btn-dark.disabled,
 .btn-dark:disabled {
-	color: {$GET,WB};
+	color: {$GET,text_light};
 	background-color: {$GET,dark_color};
 	border-color: {$GET,dark_color};
 }
 
 .btn-dark:not(:disabled):not(.disabled):active,
 .btn-dark:not(:disabled):not(.disabled).active {
-	color: {$GET,WB};
+	color: {$GET,text_light};
 	background-color: {$COLOR_DARKEN,{$GET,dark_color},10%};
 	border-color: {$COLOR_DARKEN,{$GET,dark_color},12.5%};
 }
@@ -5662,39 +5676,39 @@ fieldset:disabled a.btn {
 }
 
 .btn-outline-primary {
-	color: {$GET,seed};
+	color: {$GET,button_primary};
 	background-color: transparent;
 	background-image: none;
-	border-color: {$GET,seed};
+	border-color: {$GET,button_primary};
 }
 
 .btn-outline-primary:hover {
-	color: {$GET,WB};
-	background-color: {$GET,seed};
-	border-color: {$GET,seed};
+	color: {$GET,button_primary_text};
+	background-color: {$GET,button_primary};
+	border-color: {$GET,button_primary};
 }
 
 .btn-outline-primary:focus,
 .btn-outline-primary.focus {
-	box-shadow: 0 0 0 3px {$COLOR_RGBA,{$GET,seed},0.5};
+	box-shadow: 0 0 0 3px {$COLOR_RGBA,{$GET,button_primary},0.5};
 }
 
 .btn-outline-primary.disabled,
 .btn-outline-primary:disabled {
-	color: {$GET,seed};
+	color: {$GET,button_primary};
 	background-color: transparent;
 }
 
 .btn-outline-primary:not(:disabled):not(.disabled):active,
 .btn-outline-primary:not(:disabled):not(.disabled).active {
-	color: {$GET,WB};
-	background-color: {$GET,seed};
-	border-color: {$GET,seed};
+	color: {$GET,button_primary_text};
+	background-color: {$GET,button_primary};
+	border-color: {$GET,button_primary};
 }
 
 .btn-outline-primary:not(:disabled):not(.disabled):active:focus,
 .btn-outline-primary:not(:disabled):not(.disabled).active:focus {
-	box-shadow: 0 0 0 3px {$COLOR_RGBA,{$GET,seed},0.5};
+	box-shadow: 0 0 0 3px {$COLOR_RGBA,{$GET,button_primary},0.5};
 }
 
 .btn-outline-secondary {
@@ -5705,7 +5719,7 @@ fieldset:disabled a.btn {
 }
 
 .btn-outline-secondary:hover {
-	color: {$GET,WB};
+	color: {$GET,text_light};
 	background-color: {$GET,seed_secondary};
 	border-color: {$GET,seed_secondary};
 }
@@ -5723,7 +5737,7 @@ fieldset:disabled a.btn {
 
 .btn-outline-secondary:not(:disabled):not(.disabled):active,
 .btn-outline-secondary:not(:disabled):not(.disabled).active {
-	color: {$GET,WB};
+	color: {$GET,text_light};
 	background-color: {$GET,seed_secondary};
 	border-color: {$GET,seed_secondary};
 }
@@ -5741,7 +5755,7 @@ fieldset:disabled a.btn {
 }
 
 .btn-outline-success:hover {
-	color: {$GET,WB};
+	color: {$GET,text_light};
 	background-color: {$GET,success_color};
 	border-color: {$GET,success_color};
 }
@@ -5758,7 +5772,7 @@ fieldset:disabled a.btn {
 
 .btn-outline-success:not(:disabled):not(.disabled):active,
 .btn-outline-success:not(:disabled):not(.disabled).active {
-	color: {$GET,WB};
+	color: {$GET,text_light};
 	background-color: {$GET,success_color};
 	border-color: {$GET,success_color};
 }
@@ -5776,7 +5790,7 @@ fieldset:disabled a.btn {
 }
 
 .btn-outline-danger:hover {
-	color: {$GET,WB};
+	color: {$GET,text_light};
 	background-color: {$GET,danger_color};
 	border-color: {$GET,danger_color};
 }
@@ -5794,7 +5808,7 @@ fieldset:disabled a.btn {
 
 .btn-outline-danger:not(:disabled):not(.disabled):active,
 .btn-outline-danger:not(:disabled):not(.disabled).active {
-	color: {$GET,WB};
+	color: {$GET,text_light};
 	background-color: {$GET,danger_color};
 	border-color: {$GET,danger_color};
 }
@@ -5848,7 +5862,7 @@ fieldset:disabled a.btn {
 }
 
 .btn-outline-dark:hover {
-	color: {$GET,WB};
+	color: {$GET,text_light};
 	background-color: {$GET,dark_color};
 	border-color: {$GET,dark_color};
 }
@@ -5866,7 +5880,7 @@ fieldset:disabled a.btn {
 
 .btn-outline-dark:not(:disabled):not(.disabled):active,
 .btn-outline-dark:not(:disabled):not(.disabled).active {
-	color: {$GET,WB};
+	color: {$GET,text_light};
 	background-color: {$GET,dark_color};
 	border-color: {$GET,dark_color};
 }
@@ -5878,7 +5892,7 @@ fieldset:disabled a.btn {
 
 .btn-link {
 	font-weight: 400;
-	color: {$GET,seed};
+	color: {$GET,button_primary};
 	background-color: transparent;
 }
 
@@ -5929,10 +5943,20 @@ input[type="button"].btn-block {
 	width: 100%;
 }
 
-.btn-primary img.icon, .btn-secondary img.icon {
+.btn-primary img.icon,
+.btn-secondary img.icon, 
+.btn-dark img.icon,
+.btn-success img.icon,  
+.btn-danger img.icon {
 	/* This makes icons white when sprite icons are disabled */
 	filter: invert(100%);
 }
+
+/*{+START,IF,{$THEME_DARK}}*/
+	.btn-primary img.icon {
+		filter: none !important;
+	}
+/*{+END}*/
 
 .btn-flat-image {
 	appearance: none;
@@ -7568,7 +7592,7 @@ span:not(:empty)+#lightbox-position-in-set::before, span:not(:empty)+#lightbox-f
 	bottom: 20px;
 	z-index: 15;
 	text-align: center;
-	color: {$GET,WB};
+	color: {$GET,text_light};
 	font-weight: {$GET,font_weight_medium};
 	width: 100px;
 	left: 50%;
@@ -7576,7 +7600,7 @@ span:not(:empty)+#lightbox-position-in-set::before, span:not(:empty)+#lightbox-f
 }
 
 .cms-slider-scroll-button:hover {
-	color: {$GET,WB};
+	color: {$GET,text_light};
 	opacity: 0.8;
 	text-decoration: none;
 }
@@ -7624,7 +7648,7 @@ span:not(:empty)+#lightbox-position-in-set::before, span:not(:empty)+#lightbox-f
 	opacity: 0;
 	visibility: hidden;
 	transition: opacity 0.2s linear, visibility 0.2s linear;
-	color: {$GET,WB};
+	color: {$GET,text_light};
 }
 
 .cms-slider-item:hover .cms-slider-item-edit-link,
@@ -7632,7 +7656,7 @@ span:not(:empty)+#lightbox-position-in-set::before, span:not(:empty)+#lightbox-f
 .cms-slider-item-edit-link:focus {
 	opacity: 1;
 	visibility: visible;
-	color: {$GET,WB};
+	color: {$GET,text_light};
 }
 
 /*

@@ -140,6 +140,7 @@ It makes more assumptions than the traditional tabs, like all the tabs will fit 
 
 .modern-subtab-headers > div.tab-active {
 	background-color: {$GET,seed_secondary};
+	color: {$GET,text_light};
 }
 
 .modern-subtab-headers > div:last-child {
