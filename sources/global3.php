@@ -4020,7 +4020,7 @@ function strip_html(string $in) : string
     $text = cms_preg_replace_safe('#(</' . $_block_tags . '>)\s*#i', '$1', $text);
 
     // Add space before block tags
-    $text = cms_preg_replace_safe('#([^\s])(<' . $_block_tags . '>)#i', '$1 $3', $text);
+    $text = cms_preg_replace_safe('#([^\s])(<' . $_block_tags . '>)#i', '$1 $2', $text);
 
     // Add space after block tags
     $text = cms_preg_replace_safe('#(</' . $_block_tags . '>)([^\s])#i', '$1 $3', $text);
