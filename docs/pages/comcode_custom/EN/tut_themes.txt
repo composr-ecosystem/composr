@@ -32,14 +32,15 @@ Before you edit your templates, you need to know which template you're going to 
 
 An example of this is the front page in the Welcome zone. If, for example you wanted to edit the 'poll' section, you simply click the "Edit this page" link at the bottom of the page. This takes you directly to an "Edit Comcode page" screen, where you can edit any element of that page. Knowing the difference between [concept]Comcode page[/concept]s and pages that use templates is sometimes difficult. The general rule of thumb is that if there's an "edit this page" link at the bottom of the page, try it first to see if you can edit what you want. If not, you'll need to determine which template you need to edit.
 
-[title="2"]Cheating: the Theme Wizard[/title]
+[title="2"]Cheating: the {$IS_MAINTAINED,theme_wizard,Theme Wizard}[/title]
 
 [media width="150" description="The Theme Wizard" float="right"]data_custom/images/docs/tut_themes/themewizard.png[/media]
 {!themes:DOC_THEMEWIZARD}
 
 Be aware of the following small deficiencies:
+ - {$IS_MAINTAINED,dark_mode,Dark} themes tend to be less well tested.
  - Some default software emoticons are animated, and attractive animated images have to be saved to a particular background colour -- so you may wish to uninstall these animated emoticons or rework them in an image editor.
- - Extreme black/white themes will not come out of the Theme Wizard 100% perfectly, and need a small amount of tuning. Using the Theme Wizard at extreme black/white, causes contrast problems, as a result of the maths (essentially, there are fewer intermediate shades of black or white than there are shades of colour if the saturation is high enough for colour to be discernible). There's no good automatic solution to that, other than to manually go in and change some of our subtly shaded colours to hard white/black as required. The issue is worst in the few places where we're using different colours to provide contrast rather than combination dark & light.
+ - {$IS_MAINTAINED,theme_wizard_extreme_seeds,Extreme light/dark themes} will not come out of the Theme Wizard 100% perfectly, and need a small amount of tuning. Using the Theme Wizard at extreme light/dark, causes contrast problems, as a result of the maths (essentially, there are fewer intermediate shades of black or white than there are shades of colour if the saturation is high enough for colour to be discernible). There's no good automatic solution to that, other than to manually go in and change some of our subtly shaded colours to hard light/dark as required. The issue is worst in the few places where we're using different colours to provide contrast rather than contrasting dark & light directly.
 
 The Theme Wizard is available at Admin Zone > Style > Themes > Theme Wizard.
 
