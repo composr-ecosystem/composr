@@ -164,6 +164,14 @@ a:hover, .button-hyperlink:hover {
 	text-decoration: underline;
 }
 
+.footer-inner a, .footer-inner .button-hyperlink {
+	color: {$GET,a.link_light} !important;
+}
+
+.footer-inner a:hover, .footer-inner .button-hyperlink:hover {
+	color: {$GET,a.hover_light} !important;
+}
+
 a:not([href]):not([tabindex]) {
 	color: inherit;
 	text-decoration: none;
@@ -757,7 +765,7 @@ html.is-mouse-only .touch-only {
 
 /* Cool effect to change how text selection looks; not valid CSS, but is safe */
 ::selection {
-	background-color: {$GET,seed};
+	background-color: {$GET,area_text};
 	color: {$GET,text_light};
 }
 
@@ -5440,37 +5448,37 @@ fieldset:disabled a.btn {
 
 .btn-primary {
 	color: {$GET,text_light};
-	background-color: {$GET,seed};
-	border-color: {$GET,seed};
+	background-color: {$GET,button_primary};
+	border-color: {$GET,button_primary};
 }
 
 .btn-primary:hover {
 	color: {$GET,text_light};
-	background-color: {$COLOR_DARKEN,{$GET,seed},7.5%};
-	border-color: {$COLOR_DARKEN,{$GET,seed},10%};
+	background-color: {$COLOR_DARKEN,{$GET,button_primary},7.5%};
+	border-color: {$COLOR_DARKEN,{$GET,button_primary},10%};
 }
 
 .btn-primary:focus, .btn-primary.focus {
-	box-shadow: 0 0 0 3px {$COLOR_RGBA,{$GET,seed},0.5};
+	box-shadow: 0 0 0 3px {$COLOR_RGBA,{$GET,button_primary},0.5};
 }
 
 .btn-primary.disabled,
 .btn-primary:disabled {
 	color: {$GET,text_light};
-	background-color: {$GET,seed};
-	border-color: {$GET,seed};
+	background-color: {$GET,button_primary};
+	border-color: {$GET,button_primary};
 }
 
 .btn-primary:not(:disabled):not(.disabled):active,
 .btn-primary:not(:disabled):not(.disabled).active {
 	color: {$GET,text_light};
-	background-color: {$COLOR_DARKEN,{$GET,seed},10%};
-	border-color: {$COLOR_DARKEN,{$GET,seed},12.5%};
+	background-color: {$COLOR_DARKEN,{$GET,button_primary},10%};
+	border-color: {$COLOR_DARKEN,{$GET,button_primary},12.5%};
 }
 
 .btn-primary:not(:disabled):not(.disabled):active:focus,
 .btn-primary:not(:disabled):not(.disabled).active:focus {
-	box-shadow: 0 0 0 3px {$COLOR_RGBA,{$GET,seed},0.5};
+	box-shadow: 0 0 0 3px {$COLOR_RGBA,{$GET,button_primary},0.5};
 }
 
 .btn-secondary {
