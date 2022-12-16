@@ -2351,12 +2351,6 @@ function cns_predefined_custom_field_details() : array
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="http://weibo.com/{RAW*}" rel="me">{NAME*}</a>',
         ],
-        'sn_tencent_weibo' => [
-            'type' => 'codename',
-            'icon' => 'icons/links/tencent_weibo',
-            'section' => '',
-            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="http://t.qq.com/{RAW*}" rel="me">{NAME*}</a>',
-        ],
         'im_wechat' => [
             'type' => 'codename',
             'icon' => 'icons/links/wechat',

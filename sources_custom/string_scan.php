@@ -8683,7 +8683,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ADD_TO_TUMBLR
         ADD_TO_VKONTAKTE
         ADD_TO_SINA_WEIBO
-        ADD_TO_TENCENT_WEIBO
         ADD_TO_QZONE
         ADD_WIKI_PAGE_BODY
         ADD_WIKI_PAGE_SUBJECT
@@ -9210,8 +9209,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DEFAULT_CPF_sn_baidu_tieba_DESCRIPTION
         DEFAULT_CPF_sn_sina_weibo_NAME
         DEFAULT_CPF_sn_sina_weibo_DESCRIPTION
-        DEFAULT_CPF_sn_tencent_weibo_NAME
-        DEFAULT_CPF_sn_tencent_weibo_DESCRIPTION
         DEFAULT_CPF_im_line_NAME
         DEFAULT_CPF_im_line_DESCRIPTION
         DEFAULT_CPF_im_viber_NAME

@@ -65,10 +65,6 @@
             $cms.statsEventTrack(null, 'social__sina_weibo', null, null, null, true);
         });
 
-        $dom.on(container, 'click', '.js-click-add-to-tencent-weibo', function () {
-            $cms.statsEventTrack(null, 'social__tencent_weibo', null, null, null, true);
-        });
-
         $dom.on(container, 'click', '.js-click-add-to-qzone', function () {
             $cms.statsEventTrack(null, 'social__qzone', null, null, null, true);
         });
