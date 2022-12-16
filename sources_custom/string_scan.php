@@ -8397,6 +8397,16 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PRIVACY_PURGE_NO_FILTERS_SPECIFIED
         CSP_ON_FORMS
         CONFIG_OPTION_csp_on_forms
+        A_NA
+        A_INSTANT_EMAIL
+        A_DAILY_EMAIL_DIGEST
+        A_WEEKLY_EMAIL_DIGEST
+        A_MONTHLY_EMAIL_DIGEST
+        A_INSTANT_SMS
+        A_INSTANT_PT
+        A_WEB_NOTIFICATION
+        A__ALL
+        A__STATISTICAL
     ')));
 
     $non_admin_files = [
