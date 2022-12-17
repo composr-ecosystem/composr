@@ -228,6 +228,7 @@
         }
 
         return new Promise(function (resolve) {
+            /* Calls comcode_convert in order for the block to be evaluated - the block will detect a POST and do the save itself */
             $cms.doAjaxRequest($util.rel($cms.maintainThemeInLink('{$FIND_SCRIPT_NOHTTP;,comcode_convert}' + $cms.keep(true))), null, post).then(function (xhr) {
                 if (xhr.responseText && (xhr.responseText !== 'false')) {
                     var result = xhr.responseXML && xhr.responseXML.querySelector('result');
