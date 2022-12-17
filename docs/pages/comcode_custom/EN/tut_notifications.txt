@@ -74,7 +74,7 @@ Many notifications have inbuilt defaults which are set for all members until or 
 You will see the following columns:
  - Notification title (the column title is actually unlabelled, but this is what it is)
  - "Privileged / Restricted" -- this is Yes or No, and shows the general access for this notification in Composr (it is non-configurable, shown for informative purposes only)
- - "Use inbuilt default" -- this is a checkbox, defaulting to 'On'. If you uncheck it then the members will have the default settings that you choose in the interface. If it stays checked, the rest of the checkboxes have no effect. Hovering over this checkbox will also show a tooltip explaining the inbuilt default for that notification.
+ - "Use inbuilt default" -- this is a checkbox, defaulting to 'On'. If you uncheck it then the members will have the default settings that you choose in the interface. If it stays checked, the rest of the checkboxes have no effect. Hovering over this checkbox will also show a tool-tip explaining the inbuilt default for that notification.
  - (All the different ways of receiving notifications) -- the checkbox selections here determine [i]specifically[/i] which notifications will be enabled or disabled by default.
 
 [title="2"]Lock-down[/title]
@@ -93,7 +93,7 @@ Set lock-downs from Admin Zone > Setup > Notification lock-down.
 You will see the following columns:
  - Notification title (the column title is actually unlabelled, but this is what it is)
  - "Privileged / Restricted" -- this is Yes or No, and shows the general access for this notification in Composr (it is non-configurable, shown for informative purposes only)
- - "Not locked down, free choice" -- this is a checkbox, defaulting to 'On'. If you uncheck it then the members will have the settings that you choose in the interface (i.e. they can no longer choose their own settings). If it stays checked, the rest of the checkboxes have no effect. Hovering over this checkbox will also show a tooltip explaining the inbuilt default for that notification.
+ - "Not locked down, free choice" -- this is a checkbox, defaulting to 'On'. If you uncheck it then the members will have the settings that you choose in the interface (i.e. they can no longer choose their own settings). If it stays checked, the rest of the checkboxes have no effect. Hovering over this checkbox will also show a tool-tip explaining the inbuilt default for that notification.
  - "Member's typical notification type" -- specifies that a notification will be forcibly sent out in the member's average way they've set to receive notifications
  - (All the different ways of receiving notifications) -- the checkbox selections here determine [i]specifically[/i] how members will forcibly receive this notification (you will not typically use this in combination with "Member's typical notification type").
 
