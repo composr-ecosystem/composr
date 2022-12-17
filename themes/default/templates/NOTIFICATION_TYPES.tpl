@@ -8,7 +8,7 @@
 			{+END}
 
 			{+START,IF,{$NOT,{AVAILABLE}}}
-				<input title="{LABEL*}" disabled="disabled" id="notification_{SCOPE*}_{NTYPE*}" name="notification_{SCOPE*}_{NTYPE*}" type="checkbox" value="1" />
+				<input title="{LABEL*}" disabled="disabled" id="notification_{SCOPE*}_{NTYPE*}"{+START,IF,{CHECKED}} checked="checked"{+END} name="notification_{SCOPE*}_{NTYPE*}" type="checkbox" value="1" />
 			{+END}
 		</div>
 	</td>

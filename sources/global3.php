@@ -116,6 +116,7 @@ function init__global3()
 
     if (!defined('A_NA')) {
         // Notifications (defined here, as notification_poller may need them - yet we don't want to include all the notification dispatch code)
+        // If you change this, be sure to update generate_notification_type_text in notifications.php
         define('A_NA', 0x0); // Not applicable          (0 in decimal)
         //
         define('A_INSTANT_EMAIL', 0x2);         // (2 in decimal)

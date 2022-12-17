@@ -85,9 +85,7 @@ function notifications_ui(int $member_id_of) : object
     $all_notification_codes = [];
     $hooks = find_all_hooks('systems', 'notifications');
     foreach (array_keys($hooks) as $hook) {
-        if (array_key_exists($hook, $lockdown)) {
-            continue;
-        }
+        $hook_lockdown = array_key_exists($hook, $lockdown) ? $lockdown[$hook] : null;
 
         if ((substr($hook, 0, 4) == 'cns_') && (get_forum_type() != 'cns')) {
             continue;
@@ -96,9 +94,7 @@ function notifications_ui(int $member_id_of) : object
         $ob = object_factory('Hook_notification_' . filter_naughty_harsh($hook));
         $_notification_codes = $ob->list_handled_codes();
         foreach ($_notification_codes as $notification_code => $notification_details) {
-            if (array_key_exists($notification_code, $lockdown)) {
-                continue;
-            }
+            $notification_code_lockdown = array_key_exists($notification_code, $lockdown) ? $lockdown[$notification_code] : null;
 
             if ($ob->member_could_potentially_enable($notification_code, $member_id_of)) {
                 $all_notification_codes[$notification_code] = [];
@@ -118,11 +114,11 @@ function notifications_ui(int $member_id_of) : object
 
                 $notification_types = [];
                 foreach ($_notification_types as $notification_type_constant => $notification_type_codename) {
-                    $available = (($notification_type_constant & $allowed_setting) != 0);
+                    $available = (($hook_lockdown === null) && ($notification_code_lockdown === null) && (($notification_type_constant & $allowed_setting) != 0));
 
                     $all_notification_codes[$notification_code][$notification_type_constant] = $notification_type_codename;
 
-                    if ($has_interesting_post_fields) {
+                    if ($available && $has_interesting_post_fields) {
                         $checked = post_param_integer('notification_' . $notification_code . '_' . $notification_type_codename, 0);
                     } else {
                         $checked = (($notification_type_constant & $current_setting) != 0) ? 1 : 0;
@@ -160,7 +156,7 @@ function notifications_ui(int $member_id_of) : object
                     'NOTIFICATION_CODE' => $notification_code,
                     'NOTIFICATION_LABEL' => $notification_details[1],
                     'NOTIFICATION_TYPES' => $notification_types_tempcode,
-                    'SUPPORTS_CATEGORIES' => $supports_categories,
+                    'SUPPORTS_CATEGORIES' => ($supports_categories && ($hook_lockdown === null) && ($notification_code_lockdown === null)),
                 ];
             }
         }

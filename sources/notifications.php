@@ -1054,6 +1054,53 @@ function delete_all_notifications_on(string $notification_code, ?string $notific
 }
 
 /**
+ * Generate a human-readable string of notification types based on the provided bitmask.
+ *
+ * @param  integer $bitmask The notification bitmask
+ * @return string Human-readable notification description
+ */
+function generate_notification_type_text(int $bitmask)
+{
+    require_lang('notifications');
+
+    if ($bitmask == A_NA) {
+        return do_lang('ENABLE_NOTIFICATIONS_NA');
+    }
+    if ($bitmask == A__ALL) {
+        return do_lang('ENABLE_NOTIFICATIONS__ALL');
+    }
+    if ($bitmask == A__STATISTICAL) {
+        return do_lang('ENABLE_NOTIFICATIONS__STATISTICAL');
+    }
+
+    $out = [];
+
+    if (($bitmask & A_INSTANT_EMAIL) != 0) {
+        $out[] = do_lang('ENABLE_NOTIFICATIONS_INSTANT_EMAIL');
+    }
+    if (($bitmask & A_DAILY_EMAIL_DIGEST) != 0) {
+        $out[] = do_lang('ENABLE_NOTIFICATIONS_DAILY_EMAIL_DIGEST');
+    }
+    if (($bitmask & A_WEEKLY_EMAIL_DIGEST) != 0) {
+        $out[] = do_lang('ENABLE_NOTIFICATIONS_WEEKLY_EMAIL_DIGEST');
+    }
+    if (($bitmask & A_MONTHLY_EMAIL_DIGEST) != 0) {
+        $out[] = do_lang('ENABLE_NOTIFICATIONS_MONTHLY_EMAIL_DIGEST');
+    }
+    if (($bitmask & A_INSTANT_SMS) != 0) {
+        $out[] = do_lang('ENABLE_NOTIFICATIONS_INSTANT_SMS');
+    }
+    if (($bitmask & A_INSTANT_PT) != 0) {
+        $out[] = do_lang('ENABLE_NOTIFICATIONS_INSTANT_PT');
+    }
+    if (($bitmask & A_WEB_NOTIFICATION) != 0) {
+        $out[] = do_lang('ENABLE_NOTIFICATIONS_WEB_NOTIFICATION');
+    }
+
+    return implode(', ', $out);
+}
+
+/**
  * Base class for notification hooks. Provides default implementations for all methods that provide full access to everyone, and interact with enabled table.
  *
  * @package core_notifications
