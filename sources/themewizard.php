@@ -850,7 +850,7 @@ function execute_themewizard_css_colour_expression($expression, array $colours) 
         if (preg_match('#^\#[0-9A-Fa-f]{6}$#', $expression) != 0) {
             return substr($expression, 1);
         }
-        if (preg_match('#^[\+\-]?\d+$#', $expression) != 0) {
+        if (preg_match('#^[\+\-]?(?:\d+|\d*\.\d+)$#', $expression) != 0) {
             return $expression;
         }
 
@@ -880,7 +880,6 @@ function execute_themewizard_css_colour_expression($expression, array $colours) 
 
     switch ($operation) {
         /* These are percentage modifiers */
-
         case 'sat_to':
             list($h, $s, $v) = rgb_to_hsv($operand_a);
             $result = ($s == 0) ? hsv_to_rgb(floatval($h), floatval($s), floatval(fix_colour(255 * intval($operand_b) / (100.0)))) : hsv_to_rgb(floatval($h), floatval(fix_colour(255 * intval($operand_b) / (100.0))), floatval($v));
@@ -974,6 +973,12 @@ function execute_themewizard_css_colour_expression($expression, array $colours) 
             } else {
                 $result = substr($operand_a, 2) . substr($operand_a, 0, 2);
             }
+            break;
+
+        case 'contrast':
+            list($h, $s, $v) = rgb_to_hsv($operand_a);
+            $ratio = floatval($operand_b);
+            $result = rgb_from_hsv_contrast(floatval($h), floatval($s), floatval($v), $ratio);
             break;
     }
 
@@ -1126,6 +1131,93 @@ function hsv_to_rgb(float $h, float $s, float $v) : string
     return str_pad(dechex(fix_colour(intval(round($r * 255)))), 2, '0', STR_PAD_LEFT) .
            str_pad(dechex(fix_colour(intval(round($g * 255)))), 2, '0', STR_PAD_LEFT) .
            str_pad(dechex(fix_colour(intval(round($b * 255)))), 2, '0', STR_PAD_LEFT);
+}
+
+/**
+ * Calculate the luminance of a colour.
+ *
+ * @param  float $r Red
+ * @param  float $g Green
+ * @param  float $b Blue
+ * @return float The luminance of the provided colour
+ */
+function rgb_luminance(float $r, float $g, float $b) : float
+{
+    return ((0.2126 * pow(($r / 255.0), 2.2)) + (0.7152 * pow(($g / 255.0), 2.2)) + (0.0722 * pow(($r / 255.0), 2.2)));
+}
+
+/**
+ * Calculate the contrast ratio between two luminances.
+ *
+ * @param  float $a The first luminance
+ * @param  float $b The second luminance
+ * @return float The contrast ratio as return_value:1
+ */
+function contrast_ratio(float $a, float $b) : float
+{
+    if ($a > $b) {
+        return ($a + 0.05) / ($b + 0.05);
+    }
+    return ($b + 0.05) / ($a + 0.05);
+}
+
+/**
+ * Shift the value and, if necessary, saturation, of an HSV colour until the specified contrast ratio is achieved.
+ * This outputs an RGB colour.
+ *
+ * @param  float $h Hue
+ * @param  float $s Saturation
+ * @param  float $v Value
+ * @param  float $ratio The required contrast ratio of the returned RGB colour compared to the provided HSV (<= 0: maximum possible ratio by using either white or black)
+ * @return string RGB colour
+ */
+function rgb_from_hsv_contrast(float $h, float $s, float $v, float $ratio) : string
+{
+    // Convert to RGB
+    $original_colour = hsv_to_rgb($h, $s, $v);
+    $original_r = floatval(hexdec(substr($original_colour, 0, 2)));
+    $original_g = floatval(hexdec(substr($original_colour, 2, 2)));
+    $original_b = floatval(hexdec(substr($original_colour, 4, 2)));
+
+    // Calculate luminance
+    $original_luminance = rgb_luminance($original_r, $original_g, $original_b);
+
+    // If using black or white only, then return appropriately
+    if ($ratio <= 0.0) {
+        return (($original_luminance < 0.5) ? hsv_to_rgb(0.0, 0.0, 255.0) : hsv_to_rgb(0.0, 0.0, 0.0));
+    }
+
+    $v2 = $v;
+    $s2 = $s;
+
+    // Find a colour until either the ratio is satisfied or our value has been satisfied
+    do {
+        $colour = hsv_to_rgb($h, $s2, $v2);
+        $r = floatval(hexdec(substr($colour, 0, 2)));
+        $g = floatval(hexdec(substr($colour, 2, 2)));
+        $b = floatval(hexdec(substr($colour, 4, 2)));
+        $luminance = rgb_luminance($r, $g, $b);
+
+        // Modify value for our next run in case this colour does not satisfy the ratio
+        $v2 -= ($original_luminance >= 0.5) ? 1.0 : -1.0;
+
+        // If value is at our minimum or maximum, start adjusting saturation instead. If saturation is at min/max, then break from the loop.
+        if ($v2 < 0.0) {
+            $v2 = 0.0;
+            $s2 += 1.0;
+            if ($s2 > 255.0) {
+                break;
+            }
+        } elseif ($v2 > 255.0) {
+            $v2 = 255.0;
+            $s2 -= 1.0;
+            if ($s2 < 0.0) {
+                break;
+            }
+        }
+    } while ((contrast_ratio($luminance, $original_luminance) < $ratio));
+
+    return $colour;
 }
 
 /**

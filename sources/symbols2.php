@@ -2661,6 +2661,46 @@ function ecv2_THEME_DARK(string $lang, array $escaped, array $param) : string
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
+function ecv2_THEME_COLOUR_IS_BRIGHT(string $lang, array $escaped, array $param) : string
+{
+    global $IN_MINIKERNEL_VERSION;
+
+    $value = '0';
+
+    if ($GLOBALS['XSS_DETECT']) {
+        ocp_mark_as_escaped($value);
+    }
+
+    if (!$IN_MINIKERNEL_VERSION) {
+        if (addon_installed('themewizard')) {
+            require_code('themewizard');
+            $r = floatval(hexdec(substr($param[0], 1, 2)));
+            $g = floatval(hexdec(substr($param[0], 3, 2)));
+            $b = floatval(hexdec(substr($param[0], 5, 2)));
+            $_value = rgb_luminance($r, $g, $b);
+            if ($_value >= 0.5) {
+                $value = '1';
+            }
+        }
+    }
+
+    if (!empty($escaped)) {
+        apply_tempcode_escaping($escaped, $value);
+    }
+
+    return $value;
+}
+
+/**
+ * Evaluate a particular Tempcode symbol.
+ *
+ * @ignore
+ *
+ * @param  LANGUAGE_NAME $lang The language to evaluate this symbol in (some symbols refer to language elements)
+ * @param  array $escaped Array of escaping operations
+ * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
+ * @return string The result
+ */
 function ecv2_KEEP_POST(string $lang, array $escaped, array $param) : string
 {
     $value = static_evaluate_tempcode(build_keep_post_fields($param));

@@ -551,7 +551,7 @@ thead > tr > th,
 .pte-set-box .box > table > thead > tr > th {
 	background-color: {$GET,box_title_background_2};
 	border-color: {$GET,box_title_background_2} !important;
-	color: {$GET,WB};
+	color: {$GET,box_title_text_2};
 }
 
 .light-table th, .light-table .fake-th,
@@ -5603,6 +5603,42 @@ fieldset:disabled a.btn {
 	box-shadow: 0 0 0 3px {$COLOR_RGBA,{$GET,danger_color},0.5};
 }
 
+.btn-warning {
+	color: {$GET,text_dark};
+	background-color: {$GET,warning_color};
+	border-color: {$GET,warning_color};
+}
+
+.btn-warning:hover {
+	color: {$GET,text_dark};
+	background-color: {$COLOR_DARKEN,{$GET,warning_color},7.5%};
+	border-color: {$COLOR_DARKEN,{$GET,warning_color},10%};
+}
+
+.btn-warning:focus,
+.btn-warning.focus {
+	box-shadow: 0 0 0 3px {$COLOR_RGBA,{$GET,warning_color},0.5};
+}
+
+.btn-warning.disabled,
+.btn-warning:disabled {
+	color: {$GET,text_dark};
+	background-color: {$GET,warning_color};
+	border-color: {$GET,warning_color};
+}
+
+.btn-warning:not(:disabled):not(.disabled):active,
+.btn-warning:not(:disabled):not(.disabled).active {
+	color: {$GET,text_dark};
+	background-color: {$COLOR_DARKEN,{$GET,warning_color},10%};
+	border-color: {$COLOR_DARKEN,{$GET,warning_color},12.5%};
+}
+
+.btn-warning:not(:disabled):not(.disabled):active:focus,
+.btn-warning:not(:disabled):not(.disabled).active:focus {
+	box-shadow: 0 0 0 3px {$COLOR_RGBA,{$GET,warning_color},0.5};
+}
+
 .btn-light {
 	color: {$GET,text_dark};
 	background-color: {$GET,light_color};
@@ -5952,8 +5988,14 @@ input[type="button"].btn-block {
 	filter: invert(100%);
 }
 
-/*{+START,IF,{$THEME_DARK}}*/
+.btn-warning img.icon {
+	/* When the buttons are bright, we do not want their icons to be white after-all */
+	filter: none !important;
+}
+
+/*{+START,IF,{$THEME_COLOUR_IS_BRIGHT,{$GET,button_primary}}}*/
 	.btn-primary img.icon {
+		/* When the buttons are bright, we do not want their icons to be white after-all */
 		filter: none !important;
 	}
 /*{+END}*/

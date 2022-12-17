@@ -134,7 +134,7 @@ It makes more assumptions than the traditional tabs, like all the tabs will fit 
 }
 
 .modern-subtab-headers > div {
-	color: {$GET,WB};
+	color: {$GET,seed_contrast_high};
 	position: relative;
 }
 
