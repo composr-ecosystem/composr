@@ -24,7 +24,7 @@ You can receive notifications through a number of means:
  - Digest e-mail (i.e. in batches)
  - Private topics
  - {$IS_MAINTAINED,sms,SMS} (if configured, requires payment for each text message sent)
- - As web notifications
+ - Web notifications
 
 Note that private topic receipt is disabled for topic-derived notifications, in order to stop massive growth in database size.
 
@@ -67,28 +67,39 @@ If the number of categories for a notification exceeds the value of the "Safety 
 For example, if you have a large number of download categories, the Download notification will not show a full download category tree.
 Instead, only the IDs of notification categories that the user has already monitored will show. New notifications may be set via clicking Monitor buttons when browsing through content in the normal fashion.
 
+[title="2"]Defaults[/title]
+
+Many notifications have inbuilt defaults which are set for all members until or unless they change their settings or they are changed in the &ldquo;Notification lock-down&rdquo;. Site staff can change the notification defaults (Admin Zone > Setup > Notification defaults).
+
+You will see the following columns:
+ - Notification title (the column title is actually unlabelled, but this is what it is)
+ - "Privileged / Restricted" -- this is Yes or No, and shows the general access for this notification in Composr (it is non-configurable, shown for informative purposes only)
+ - "Use inbuilt default" -- this is a checkbox, defaulting to 'On'. If you uncheck it then the members will have the default settings that you choose in the interface. If it stays checked, the rest of the checkboxes have no effect. Hovering over this checkbox will also show a tooltip explaining the inbuilt default for that notification.
+ - (All the different ways of receiving notifications) -- the checkbox selections here determine [i]specifically[/i] which notifications will be enabled or disabled by default.
+
 [title="2"]Lock-down[/title]
 
 [media width="150" description="Setting notification lock-downs" float="right"]data_custom/images/docs/tut_notifications/lockdown.png[/media]
 In the Admin Zone you can define what notifications are "locked-down". You can use this to:
  - See which notifications are designed for staff only
+ - See the inbuilt defaults for each notification when you hover over a &ldquo;Not locked down, free choice&rdquo; checkbox.
  - Stop any member from receiving particular notifications
  - Force members to receive particular notifications types
 
-Locked-down notifications will not show on the user's notification configuration at all.
+Locked-down notifications will show on a member's notification settings, but the checkboxes cannot be changed. This is so members are informed which notifications they may or may not receive which they cannot change.
 
 Set lock-downs from Admin Zone > Setup > Notification lock-down.
 
 You will see the following columns:
  - Notification title (the column title is actually unlabelled, but this is what it is)
  - "Privileged / Restricted" -- this is Yes or No, and shows the general access for this notification in Composr (it is non-configurable, shown for informative purposes only)
- - "Not locked down, free choice" -- this is a checkbox, defaulting to 'On'. If you uncheck it then the members will have the settings that you choose in the interface (i.e. they can no longer choose their own settings). If it stays checked, the following checkboxes have no effect.
+ - "Not locked down, free choice" -- this is a checkbox, defaulting to 'On'. If you uncheck it then the members will have the settings that you choose in the interface (i.e. they can no longer choose their own settings). If it stays checked, the rest of the checkboxes have no effect. Hovering over this checkbox will also show a tooltip explaining the inbuilt default for that notification.
  - "Member's typical notification type" -- specifies that a notification will be forcibly sent out in the member's average way they've set to receive notifications
  - (All the different ways of receiving notifications) -- the checkbox selections here determine [i]specifically[/i] how members will forcibly receive this notification (you will not typically use this in combination with "Member's typical notification type").
 
 If no checkboxes are checked then the members will not be able to receive the notification at all. This is quite a common configuration, essentially allowing you to turn off a notification for the whole website.
 
-Note that the settings apply to all members (while respecting the notification permissions). You cannot set lock-downs against specific usergroups.
+Note that the settings apply to all members (while respecting the notification permissions). We do not support usergroup-based notification lock-downs.
 
 [title="2"]Security[/title]
 
