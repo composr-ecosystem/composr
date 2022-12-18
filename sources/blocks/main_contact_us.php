@@ -104,7 +104,7 @@ class Block_main_contact_us
                 log_stats_event(do_lang('FORM', null, null, null, get_site_default_lang()) . '-' . $type);
             }
 
-            list($subject, $body, , , $from_email, $from_name) = _form_to_email([], $subject_prefix, $subject_suffix, $body_prefix, $body_suffix);
+            list($subject, $body, , , $from_email, $from_name) = _form_to_email([], null, $subject_prefix, $subject_suffix, $body_prefix, $body_suffix);
 
             // Checking
             if ($from_email != '') {

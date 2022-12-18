@@ -199,7 +199,7 @@ function _form_to_email(array $extra_boring_fields = [], ?string $subject = null
     } else {
         foreach ($fields as $field_title => $field_val) {
             if ($field_val !== null) {
-                _append_form_to_email($body, false, $field_name, $field_title, $field_val, count($fields), $body_parts);
+                _append_form_to_email($body, false, $field_title, $field_title, $field_val, count($fields), $body_parts);
             }
         }
     }

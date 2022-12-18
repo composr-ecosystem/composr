@@ -108,7 +108,7 @@ PHP;
 
         $subject = array_key_exists('subject', $map) ? $map['subject'] : '';
         if ($subject == '') {
-            $subject = get_translated_text($GLOBALS['SITE_DB']->query_select_value('catalogues', 'c_title'));
+            $subject = get_translated_text($GLOBALS['SITE_DB']->query_select_value('catalogues', 'c_title', ['c_name' => $catalogue_name]));
         }
 
         $to_email = array_key_exists('to', $map) ? $map['to'] : '';
