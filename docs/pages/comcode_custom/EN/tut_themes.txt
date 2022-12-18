@@ -252,7 +252,7 @@ The following are examples of Theme Wizard equations that may be used:
 			<td>
 				[code="CSS"]
 					{$THEMEWIZARD_COLOR,#426aa9,seed,100% 426aa9} /* Uses 100% of #426aa9, which is #426aa9 */
-					{$THEMEWIZARD_COLOR,#800080,dark_purple,50% FF0000 + 50% 0000FF} /* Combines 50% each of red and blue, resulting dark purple */
+					{$THEMEWIZARD_COLOR,#800080,dark_purple,50% FF0000 + 50% 0000FF} /* Combines 50% each of red and blue, resulting in dark purple */
 				[/code]
 			</td>
 		</tr>
@@ -262,7 +262,7 @@ The following are examples of Theme Wizard equations that may be used:
 			<td>Combine (pivot) equations together</td>
 			<td>
 				[code="CSS"]
-					{$THEMEWIZARD_COLOR,#800080,dark_purple,50% FF0000 + 50% 0000FF} /* Combines 50% each of red and blue, resulting dark purple */
+					{$THEMEWIZARD_COLOR,#800080,dark_purple,50% FF0000 + 50% 0000FF} /* Combines 50% each of red and blue, resulting in dark purple */
 				[/code]
 			</td>
 		</tr>
@@ -381,8 +381,8 @@ The following are examples of Theme Wizard equations that may be used:
 			<td>Shifts the RGB values</td>
 			<td>
 				[code="CSS"]
-					{$THEMEWIZARD_COLOR,#0000FF,red_to_blue,100% (FF0000 shift 0)} /* Shifts the RGB values to the left (RGB -> GBR) */
-					{$THEMEWIZARD_COLOR,#00FF00,red_to_green,100% (FF0000 shift 1)} /* Shifts the RGB values to the right (RGB -> BRG) */
+					{$THEMEWIZARD_COLOR,#0000FF,red_to_blue,100% (FF0000 shift 0)} /* Shifts the RGB values to the left (RGB to GBR) */
+					{$THEMEWIZARD_COLOR,#00FF00,red_to_green,100% (FF0000 shift 1)} /* Shifts the RGB values to the right (RGB to BRG) */
 				[/code]
 			</td>
 		</tr>
