@@ -151,6 +151,7 @@ Sample spreadsheet files for all the other blocks are provided under [tt]uploads
     {
         return [
             'sources_custom/hooks/systems/addon_registry/visualisation.php',
+            'sources_custom/hooks/systems/trusted_sites/visualisation.php',
             'lang_custom/EN/sortable_tables.ini',
             'themes/default/javascript_custom/sortable_tables.js',
             'themes/default/templates_custom/SORTABLE_TABLE.tpl',
