@@ -1143,7 +1143,7 @@ function hsv_to_rgb(float $h, float $s, float $v) : string
  */
 function rgb_luminance(float $r, float $g, float $b) : float
 {
-    return ((0.2126 * pow(($r / 255.0), 2.2)) + (0.7152 * pow(($g / 255.0), 2.2)) + (0.0722 * pow(($r / 255.0), 2.2)));
+    return ((0.2126 * pow(($r / 255.0), 2.2)) + (0.7152 * pow(($g / 255.0), 2.2)) + (0.0722 * pow(($b / 255.0), 2.2)));
 }
 
 /**
@@ -1162,8 +1162,7 @@ function contrast_ratio(float $a, float $b) : float
 }
 
 /**
- * Shift the value and, if necessary, saturation, of an HSV colour until the specified contrast ratio is achieved.
- * This outputs an RGB colour.
+ * Find an RGB colour with the specified contrast ratio which contrasts the specified HSV colour.
  *
  * @param  float $h Hue
  * @param  float $s Saturation
@@ -1182,13 +1181,62 @@ function rgb_from_hsv_contrast(float $h, float $s, float $v, float $ratio) : str
     // Calculate luminance
     $original_luminance = rgb_luminance($original_r, $original_g, $original_b);
 
-    // If using black or white only, then return appropriately
+    $iterations = 0;
+    do {
+        $result = _rgb_from_hsv_contrast($h, $s, $v, $original_luminance, $ratio);
+        $iterations += 1;
+
+        // Did not get a colour which could satisfy the contrast ratio; shift colours for the next iteration / attempt.
+        if ($result === null) {
+            $colour = hsv_to_rgb($h, $s, $v);
+            $r = floatval(hexdec(substr($colour, 0, 2)));
+            $g = floatval(hexdec(substr($colour, 2, 2)));
+            $b = floatval(hexdec(substr($colour, 4, 2)));
+
+            $new_colour = str_pad(dechex(fix_colour(intval(round($b * 255)))), 2, '0', STR_PAD_LEFT) .
+            str_pad(dechex(fix_colour(intval(round($r * 255)))), 2, '0', STR_PAD_LEFT) .
+            str_pad(dechex(fix_colour(intval(round($g * 255)))), 2, '0', STR_PAD_LEFT);
+
+            list($_h, $_s, $_v) = rgb_to_hsv($new_colour);
+            $h = floatval($_h);
+            $s = floatval($_s);
+            $v = floatval($_v);
+        }
+    } while (($result === null) && ($iterations < 3));
+
+    // Still no compatible colours? Use the black / white method instead.
+    if ($result === null) {
+        return _rgb_from_hsv_contrast($h, $s, $v, $original_luminance, 0.0);
+    }
+
+    return $result;
+}
+
+/**
+ * Helper for calculating an RGB colour with the specified contrast ratio.
+ *
+ * @param  float $h Hue
+ * @param  float $s Saturation
+ * @param  float $v Value
+ * @param  float $original_luminance The luminance of the colour being contrasted
+ * @param  float $ratio The required contrast ratio of the returned RGB colour compared to the provided HSV (<= 0: use either white or black only)
+ * @return ?string RGB colour (null: could not find a colour with the provided contrast ratio)
+ *
+ * @ignore
+ */
+function _rgb_from_hsv_contrast(float $h, float $s, float $v, float $original_luminance, float $ratio) : ?string
+{
+    // If using black or white only, then return the appropriate colour to use
     if ($ratio <= 0.0) {
-        return (($original_luminance < 0.5) ? hsv_to_rgb(0.0, 0.0, 255.0) : hsv_to_rgb(0.0, 0.0, 0.0));
+        $black_contrast = contrast_ratio(0.0, $original_luminance);
+        $white_contrast = contrast_ratio(1.0, $original_luminance);
+        return ($white_contrast > $black_contrast) ? hsv_to_rgb(0.0, 0.0, 255.0) : hsv_to_rgb(0.0, 0.0, 0.0);
     }
 
     $v2 = $v;
     $s2 = $s;
+
+    $reverse = false;
 
     // Find a colour until either the ratio is satisfied or our value has been satisfied
     do {
@@ -1199,20 +1247,34 @@ function rgb_from_hsv_contrast(float $h, float $s, float $v, float $ratio) : str
         $luminance = rgb_luminance($r, $g, $b);
 
         // Modify value for our next run in case this colour does not satisfy the ratio
-        $v2 -= ($original_luminance >= 0.5) ? 1.0 : -1.0;
+        if ($reverse) {
+            $v2 += ($original_luminance >= 0.5) ? 1.0 : -1.0;
+        } else {
+            $v2 -= ($original_luminance >= 0.5) ? 1.0 : -1.0;
+        }
 
-        // If value is at our minimum or maximum, start adjusting saturation instead. If saturation is at min/max, then break from the loop.
+        // If value is at our minimum or maximum, start adjusting saturation instead. If saturation is at min/max, then reverse. If we still have nothing, then exit with null.
         if ($v2 < 0.0) {
             $v2 = 0.0;
             $s2 += 1.0;
             if ($s2 > 255.0) {
-                break;
+                if ($reverse) {
+                    return null;
+                }
+                $v2 = $v;
+                $s2 = $s;
+                $reverse = true;
             }
         } elseif ($v2 > 255.0) {
             $v2 = 255.0;
             $s2 -= 1.0;
             if ($s2 < 0.0) {
-                break;
+                if ($reverse) {
+                    return null;
+                }
+                $v2 = $v;
+                $s2 = $s;
+                $reverse = true;
             }
         }
     } while ((contrast_ratio($luminance, $original_luminance) < $ratio));

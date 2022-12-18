@@ -2678,7 +2678,11 @@ function ecv2_THEME_COLOUR_IS_BRIGHT(string $lang, array $escaped, array $param)
             $g = floatval(hexdec(substr($param[0], 3, 2)));
             $b = floatval(hexdec(substr($param[0], 5, 2)));
             $_value = rgb_luminance($r, $g, $b);
-            if ($_value >= 0.5) {
+
+            $black_contrast = contrast_ratio(0.0, $_value);
+            $white_contrast = contrast_ratio(1.0, $_value);
+
+            if ($black_contrast > $white_contrast) {
                 $value = '1';
             }
         }
