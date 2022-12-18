@@ -191,7 +191,7 @@ function render_comcode_page_box(array $row, bool $give_context = true, bool $in
 
     $breadcrumbs = null;
     if ($include_breadcrumbs) {
-        $breadcrumbs = breadcrumb_segments_to_tempcode(comcode_breadcrumbs($row['the_page'], $row['the_zone'], ($root === null) ? get_param_string('keep_page_root', null) : $root));
+        $breadcrumbs = breadcrumb_segments_to_tempcode(comcode_breadcrumbs($row['the_page'], $row['the_zone'], ($root === null) ? get_param_string('keep_page_root', '') : $root));
     }
 
     return do_template('COMCODE_PAGE_BOX', [
