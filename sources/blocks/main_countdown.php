@@ -100,7 +100,7 @@ class Block_main_countdown
             $hours = intval(floor($positive_seconds_to_go / 60.0 / 60.0));
             $positive_seconds_to_go -= $hours * 60 * 60;
         } else {
-            $years = 0;
+            $hours = 0;
         }
         if ($tailing >= 1) {
             $minutes = intval(floor($positive_seconds_to_go / 60.0));
