@@ -198,17 +198,208 @@ For example,
 
 This is all happening only when the Theme Wizard is run.
 
-There is a special case for these particular equations in [tt]global.css[/tt] only:
+There is a special case for these particular equations in [tt]_colours.css[/tt] only:
 [code="Tempcode"]
 {$THEMEWIZARD_COLOR,#94979d,seed,100% 426aa9}
 {$THEMEWIZARD_COLOR,#ffffff,WB,100% FFFFFF}
 {$THEMEWIZARD_COLOR,#000000,BW,100% 000000}
 [/code]
-The Theme Wizard actually totally replaces these equations based on the seed, and whether light or dark was specified for the theme. It is these equations that sit at the root of the Theme Wizard calculation (because they don't depend on any other equations, they are defined directly by colour). The Theme Wizard is essentially an algebra solver using colour theory (a branch of applied mathematics). It keeps working at solving the equations, using the ones from [tt]global.css[/tt] as a base, until it concludes.
+The Theme Wizard actually totally replaces these equations based on the seed, and whether light or dark was specified for the theme (WB and BW colours get swapped for a dark theme). It is these equations that sit at the root of the Theme Wizard calculation (because they don't depend on any other equations, they are defined directly by colour). The Theme Wizard is essentially an algebra solver using colour theory (a branch of applied mathematics). It keeps working at solving the equations, using the ones from [tt]_colours.css[/tt] as a base, until it concludes.
 
 When the CSS file is compiled, it works as a simple variable system. The second parameter serves as the variable name, which can then be referenced in the CSS as [tt]{$GET,name}[/tt]. It's a very straight-forward substitution system.
 
 You can if you wish just bypass the Theme Wizard equations system and directly enter your own CSS colour codes in place or in addition to what the Theme Wizard is doing. You are in no way tied into the mechanism of the Theme Wizard once you begin editing your own theme. That said, it can be useful to help you keep your colour palette consistent.
+
+The following are examples of Theme Wizard equations that may be used:
+
+[semihtml]
+	<table class="columned-table results-table wide-table autosized-table">
+		<thead>
+			<tr>
+				<th>Equation</th>
+				<th>Purpose</th>
+				<th>Examples</th>
+			</tr>
+		</thead>
+
+		<tr>
+			<td>(hexadecimal colour without the #)</td>
+			<td>You can define or combine a specific colour with other operations</td>
+			<td>
+				[code="CSS"]
+					{$THEMEWIZARD_COLOR,#426aa9,seed,100% 426aa9} /* Uses #426aa9 as the colour */
+					{$THEMEWIZARD_COLOR,#808080,gray,50% FFFFFF + 50% 000000} /* Combines white and black equally, resulting in gray */
+					{$THEMEWIZARD_COLOR,#8C8C8C,brighter_gray,90% gray + 10% FFFFFF} /* Takes 90% of the gray colour and adds 10% white to it */
+				[/code]
+			</td>
+		</tr>
+
+		<tr>
+			<td>Colour name</td>
+			<td>You can use other colours in your equation</td>
+			<td>
+				[code="CSS"]
+					{$THEMEWIZARD_COLOR,#FFFFFF,seed,100% FFFFFF} /* Uses #FFFFFF as the colour */
+					{$THEMEWIZARD_COLOR,#808080,dark_seed,50% seed + 50% 000000} /* Takes 50% seed colour and adds 50% black, making it darker */
+					{$THEMEWIZARD_COLOR,#F2F2F2,slightly_darker_seed,90% seed + 10% dark_seed} /* Takes 90% of seed and 10% of dark_seed, making for a slightly darker seed */
+				[/code]
+			</td>
+		</tr>
+
+		<tr>
+			<td>%</td>
+			<td>Define how much influence of a colour to use in the equation</td>
+			<td>
+				[code="CSS"]
+					{$THEMEWIZARD_COLOR,#426aa9,seed,100% 426aa9} /* Uses 100% of #426aa9, which is #426aa9 */
+					{$THEMEWIZARD_COLOR,#800080,dark_purple,50% FF0000 + 50% 0000FF} /* Combines 50% each of red and blue, resulting dark purple */
+				[/code]
+			</td>
+		</tr>
+
+		<tr>
+			<td>+</td>
+			<td>Combine (pivot) equations together</td>
+			<td>
+				[code="CSS"]
+					{$THEMEWIZARD_COLOR,#800080,dark_purple,50% FF0000 + 50% 0000FF} /* Combines 50% each of red and blue, resulting dark purple */
+				[/code]
+			</td>
+		</tr>
+
+		<tr>
+			<td>-</td>
+			<td>Remove (pivot) a colour</td>
+			<td>
+				[code="CSS"]
+					{$THEMEWIZARD_COLOR,#ffff80,aqua_green,100% FFFFFF - 50% 0000FF} /* Remove 50% blue from white, resulting in aqua green */
+				[/code]
+			</td>
+		</tr>
+
+		<tr>
+			<td>sat_to</td>
+			<td>Sets the saturation % of a colour</td>
+			<td>
+				[code="CSS"]
+					{$THEMEWIZARD_COLOR,#FF8080,pastel_red,100% (seed sat_to 50)} /* Sets the saturation of seed to 50% */
+					{$THEMEWIZARD_COLOR,#e3f0fd,fixed_width_background,11% (seed sat_to 100) + 89% WB} /* Uses 11% of the seed colour with 100% saturation, and adds 89% WB colour */
+				[/code]
+			</td>
+		</tr>
+
+		<tr>
+			<td>sat_add</td>
+			<td>Adjusts the saturation of a colour (using 0 - 255)</td>
+			<td>
+				[code="CSS"]
+					{$THEMEWIZARD_COLOR,#FF8080,more_sat_seed,100% (seed sat_add 128)} /* Uses seed colour with +128 (~50%) saturation */
+					{$THEMEWIZARD_COLOR,#FFFFFF,less_sat_seed,100% (seed sat_add -64)} /* Uses seed colour with saturation decreased by 64 points (~25%) */
+				[/code]
+			</td>
+		</tr>
+
+		<tr>
+			<td>sat</td>
+			<td>Adjusts the saturation of a colour (using %)</td>
+			<td>
+				[code="CSS"]
+					{$THEMEWIZARD_COLOR,#FF8080,more_sat_seed,100% (seed sat 50)} /* Uses seed colour with +50% saturation */
+					{$THEMEWIZARD_COLOR,#FFFFFF,less_sat_seed,100% (seed sat -25)} /* Uses seed colour with saturation decreased by 25% */
+				[/code]
+			</td>
+		</tr>
+
+		<tr>
+			<td>val_to</td>
+			<td>Sets the value % of a colour</td>
+			<td>
+				[code="CSS"]
+					{$THEMEWIZARD_COLOR,#808080,darker_seed,100% (seed val_to 50)} /* Sets the value of seed to 50% */
+					{$THEMEWIZARD_COLOR,#6da4de,area_light_background,65% (seed val_to 80) + 35% WB} /* Uses 65% of the seed colour with 80% value, and adds 35% WB colour */
+				[/code]
+			</td>
+		</tr>
+
+		<tr>
+			<td>val_add</td>
+			<td>Adjusts the value of a colour (using 0 - 255)</td>
+			<td>
+				[code="CSS"]
+					{$THEMEWIZARD_COLOR,#FFFFFF,lighter_seed,100% (seed val_add 128)} /* Uses seed colour with +128 (~50%) value (does nothing for a white seed) */
+					{$THEMEWIZARD_COLOR,#BFBFBF,darker_seed,100% (seed val_add -64)} /* Uses seed colour with value decreased by 64 points (~25%) */
+				[/code]
+			</td>
+		</tr>
+
+		<tr>
+			<td>val</td>
+			<td>Adjusts the value of a colour (using %)</td>
+			<td>
+				[code="CSS"]
+					{$THEMEWIZARD_COLOR,#FFFFFF,lighter_seed,100% (seed val 50)} /* Uses seed colour with +50% value (does nothing for a white seed) */
+					{$THEMEWIZARD_COLOR,#BFBFBF,darker_seed,100% (seed val -25)} /* Uses seed colour with value decreased by 25% */
+				[/code]
+			</td>
+		</tr>
+
+		<tr>
+			<td>hue_to</td>
+			<td>Sets the hue % of a colour (% of rotation on the hue colour wheel)</td>
+			<td>
+				[code="CSS"]
+					{$THEMEWIZARD_COLOR,#FFFFFF,hue_seed,100% (seed hue_to 50)} /* Sets the hue of seed to 50%, or 180 degrees */
+					{$THEMEWIZARD_COLOR,#f3e0e4,required_background,60% (area_4_background hue_to 0) + 40% area_background} /* Uses 60% of area_4_background with a hue of 0% (red), plus 40% of area_background */
+				[/code]
+			</td>
+		</tr>
+
+		<tr>
+			<td>hue_add</td>
+			<td>Adjusts the hue of a colour (using 0 - 255, not degrees!)</td>
+			<td>
+				[code="CSS"]
+					{$THEMEWIZARD_COLOR,#FFFFFF,hue_change_seed,100% (seed hue_add 128)} /* Uses seed colour with +128 (~50% / 180 degrees clockwise) hue (does nothing for a white seed) */
+					{$THEMEWIZARD_COLOR,#FFFFFF,hue_change2_seed,100% (seed hue_add -64)} /* Uses seed colour with hue decreased by 64 points (~25% / 90 degrees counter-clockwise) (does nothing for a white seed) */
+				[/code]
+			</td>
+		</tr>
+
+		<tr>
+			<td>hue</td>
+			<td>Adjusts the hue of a colour (using %)</td>
+			<td>
+				[code="CSS"]
+					{$THEMEWIZARD_COLOR,#FFFFFF,hue_change_seed,100% (seed hue 50)} /* Uses seed colour with hue rotated +50% / 180 degrees clockwise (does nothing for a white seed) */
+					{$THEMEWIZARD_COLOR,#FFFFFF,hue_change2_seed,100% (seed hue -25)} /* Uses seed colour with hue rotated by 25% / 90 degrees counter-clockwise (does nothing for a white seed) */
+				[/code]
+			</td>
+		</tr>
+
+		<tr>
+			<td>shift</td>
+			<td>Shifts the RGB values</td>
+			<td>
+				[code="CSS"]
+					{$THEMEWIZARD_COLOR,#0000FF,red_to_blue,100% (FF0000 shift 0)} /* Shifts the RGB values to the left (RGB -> GBR) */
+					{$THEMEWIZARD_COLOR,#00FF00,red_to_green,100% (FF0000 shift 1)} /* Shifts the RGB values to the right (RGB -> BRG) */
+				[/code]
+			</td>
+		</tr>
+
+		<tr>
+			<td>contrast</td>
+			<td>Finds a suitable colour with the provided contrast ratio (if it does not succeed, will use either white or black instead)</td>
+			<td>
+				[code="CSS"]
+					{$THEMEWIZARD_COLOR,#595959,contrast_seed,100% (seed contrast 7)} /* Use a colour with a contrast ratio of 7 compared to seed */
+					{$THEMEWIZARD_COLOR,#000000,contrast_seed,100% (seed contrast 0)} /* Use either black or white only, whichever contrasts the most with seed */
+				[/code]
+			</td>
+		</tr>
+
+	</table>
+[/semihtml]
 
 [title="4"]CSS prefixing[/title]
 
