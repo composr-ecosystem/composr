@@ -99,13 +99,12 @@ function friend_add(int $likes, int $liked, ?int $time = null, bool $send_notifi
     // Send activities/notification
     require_code('chat');
     require_lang('chat');
-    if ($send_notification) {
-        require_code('notifications');
-        $to_username = $GLOBALS['FORUM_DRIVER']->get_username($liked);
-        $from_username = $GLOBALS['FORUM_DRIVER']->get_username($likes);
-        $to_displayname = $GLOBALS['FORUM_DRIVER']->get_username($liked, true);
-        $from_displayname = $GLOBALS['FORUM_DRIVER']->get_username($likes, true);
-    }
+
+    $to_username = $GLOBALS['FORUM_DRIVER']->get_username($liked);
+    $from_username = $GLOBALS['FORUM_DRIVER']->get_username($likes);
+    $to_displayname = $GLOBALS['FORUM_DRIVER']->get_username($liked, true);
+    $from_displayname = $GLOBALS['FORUM_DRIVER']->get_username($likes, true);
+
     if ($two_way) {
         // 2-way...
 
@@ -116,6 +115,7 @@ function friend_add(int $likes, int $liked, ?int $time = null, bool $send_notifi
 
         // Send notification
         if ($send_notification) {
+            require_code('notifications');
             $subject_line = do_lang('FRIENDSHIP_FINISH_SUBJECT', $from_username, get_site_name(), null, get_lang($liked));
             $remove_friend_url = build_url(['page' => 'chat', 'type' => 'friend_remove', 'member_id' => $likes], get_module_zone('chat'), [], false, false, true);
             $message_raw = do_notification_lang('FRIENDSHIP_FINISH_BODY', comcode_escape($to_username), comcode_escape(get_site_name()), [$remove_friend_url->evaluate(), comcode_escape($from_username), comcode_escape($to_displayname), comcode_escape($from_displayname)], get_lang($liked));
@@ -129,6 +129,7 @@ function friend_add(int $likes, int $liked, ?int $time = null, bool $send_notifi
 
         // Send notification
         if ($send_notification) {
+            require_code('notifications');
             $subject_line = do_lang('FRIENDSHIP_START_SUBJECT', $from_username, get_site_name(), null, get_lang($liked));
             $befriend_url = build_url(['page' => 'chat', 'type' => 'friend_add', 'member_id' => $likes], get_module_zone('chat'), [], false, false, true);
             $message_raw = do_notification_lang('FRIENDSHIP_START_BODY', comcode_escape($to_username), comcode_escape(get_site_name()), [$befriend_url->evaluate(), comcode_escape($from_username), comcode_escape($to_displayname), comcode_escape($from_displayname)], get_lang($liked));
