@@ -145,7 +145,7 @@ class Hook_admin_stats_ratings extends CMSStatsProvider
                         }
 
                         foreach ($_ as $rating => $num_ratings) {
-                            $_rating = float_format(floatval($rating) / 2.0, 2, true);
+                            $_rating = round((floatval($rating) / 2.0));
                             $data[$_rating] += $num_ratings;
                         }
                     }
