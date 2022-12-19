@@ -72,6 +72,7 @@ class Block_main_rss
         }
 
         require_lang('news');
+        require_code('news');
         require_lang('rss');
         require_css('news');
         require_code('crypt');
