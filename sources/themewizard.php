@@ -1143,7 +1143,23 @@ function hsv_to_rgb(float $h, float $s, float $v) : string
  */
 function rgb_luminance(float $r, float $g, float $b) : float
 {
-    return ((0.2126 * pow(($r / 255.0), 2.2)) + (0.7152 * pow(($g / 255.0), 2.2)) + (0.0722 * pow(($b / 255.0), 2.2)));
+    // Convert each colour channel to a 0-1 floating point
+    $r /= 255.0;
+    $g /= 255.0;
+    $b /= 255.0;
+
+    // Linearize each channel
+    $r = ($r <= 0.04045) ? ($r / 12.92) : pow(($r + 0.055) / 1.055, 2.4);
+    $g = ($g <= 0.04045) ? ($g / 12.92) : pow(($g + 0.055) / 1.055, 2.4);
+    $b = ($b <= 0.04045) ? ($b / 12.92) : pow(($b + 0.055) / 1.055, 2.4);
+
+    // Apply weighted luminance
+    $r *= 0.2126;
+    $g *= 0.7152;
+    $b *= 0.0722;
+
+    // Return the sum, which will be a float between 0 and 1.
+    return $r + $g + $b;
 }
 
 /**
@@ -1167,7 +1183,7 @@ function contrast_ratio(float $a, float $b) : float
  * @param  float $h Hue
  * @param  float $s Saturation
  * @param  float $v Value
- * @param  float $ratio The required contrast ratio of the returned RGB colour compared to the provided HSV (<= 0: maximum possible ratio by using either white or black)
+ * @param  float $ratio The required contrast ratio of the returned RGB colour compared to the provided HSV
  * @return string RGB colour
  */
 function rgb_from_hsv_contrast(float $h, float $s, float $v, float $ratio) : string
@@ -1206,7 +1222,7 @@ function rgb_from_hsv_contrast(float $h, float $s, float $v, float $ratio) : str
 
     // Still no compatible colours? Use the black / white method instead.
     if ($result === null) {
-        return _rgb_from_hsv_contrast($h, $s, $v, $original_luminance, 0.0);
+        return ($original_luminance >= 0.5) ? hsv_to_rgb(0.0, 0.0, 0.0) : hsv_to_rgb(0.0, 0.0, 255.0);
     }
 
     return $result;
@@ -1219,18 +1235,16 @@ function rgb_from_hsv_contrast(float $h, float $s, float $v, float $ratio) : str
  * @param  float $s Saturation
  * @param  float $v Value
  * @param  float $original_luminance The luminance of the colour being contrasted
- * @param  float $ratio The required contrast ratio of the returned RGB colour compared to the provided HSV (<= 0: use either white or black only)
+ * @param  float $ratio The required contrast ratio of the returned RGB colour compared to the provided HSV
  * @return ?string RGB colour (null: could not find a colour with the provided contrast ratio)
  *
  * @ignore
  */
 function _rgb_from_hsv_contrast(float $h, float $s, float $v, float $original_luminance, float $ratio) : ?string
 {
-    // If using black or white only, then return the appropriate colour to use
+    // Ratio should never be 0 or lower; so use black / white as a fallback
     if ($ratio <= 0.0) {
-        $black_contrast = contrast_ratio(0.0, $original_luminance);
-        $white_contrast = contrast_ratio(1.0, $original_luminance);
-        return ($white_contrast > $black_contrast) ? hsv_to_rgb(0.0, 0.0, 255.0) : hsv_to_rgb(0.0, 0.0, 0.0);
+        return ($original_luminance >= 0.5) ? hsv_to_rgb(0.0, 0.0, 0.0) : hsv_to_rgb(0.0, 0.0, 255.0);
     }
 
     $v2 = $v;

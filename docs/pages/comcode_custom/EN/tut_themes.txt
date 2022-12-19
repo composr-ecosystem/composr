@@ -393,7 +393,7 @@ The following are examples of Theme Wizard equations that may be used:
 			<td>
 				[code="CSS"]
 					{$THEMEWIZARD_COLOR,#595959,contrast_seed,100% (seed contrast 7)} /* Use a colour with a contrast ratio of 7 compared to seed */
-					{$THEMEWIZARD_COLOR,#000000,contrast_seed,100% (seed contrast 0)} /* Use either black or white only, whichever contrasts the most with seed */
+					{$THEMEWIZARD_COLOR,#000000,contrast_seed,100% (seed contrast 0)} /* Special case: Uses either black or white, whichever has the greatest luminance difference from the provided colour (does not actually use contrast ratios) */
 				[/code]
 			</td>
 		</tr>
