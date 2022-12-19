@@ -73,7 +73,7 @@ class Module_admin_cns_members
 
         if ($support_crosslinks) {
             if (has_privilege($member_id, 'member_maintenance')) {
-                $ret['_SEARCH:members:browse'] = ['MEMBER_DIRECTORY', 'menu/adminzone/tools/users/member_edit'];
+                $ret['_SEARCH:members:browse:include_non_confirmed=include'] = ['MEMBER_DIRECTORY', 'menu/adminzone/tools/users/member_edit'];
             }
             $ret['_SEARCH:admin_cns_merge_members:browse'] = ['MERGE_MEMBERS', 'menu/adminzone/tools/users/merge_members'];
             if (addon_installed('cns_cpfs')) {
@@ -259,7 +259,7 @@ class Module_admin_cns_members
             comcode_lang_string('DOC_MEMBERS'),
             [
                 ['menu/adminzone/tools/users/member_add', ['admin_cns_members', ['type' => 'step1'], get_module_zone('admin_cns_members')], do_lang_tempcode('ADD_MEMBER'), 'DOC_ADD_MEMBER'],
-                (!has_privilege(get_member(), 'member_maintenance')) ? null : ['menu/adminzone/tools/users/member_edit', ['members', ['type' => 'browse'], get_module_zone('members'), do_lang_tempcode('SWITCH_ZONE_WARNING')], do_lang_tempcode('EDIT_MEMBER'), 'DOC_EDIT_MEMBER'],
+                (!has_privilege(get_member(), 'member_maintenance')) ? null : ['menu/adminzone/tools/users/member_edit', ['members', ['type' => 'browse', 'include_non_confirmed' => 'include'], get_module_zone('members'), do_lang_tempcode('SWITCH_ZONE_WARNING')], do_lang_tempcode('MEMBER_DIRECTORY'), 'DOC_EDIT_MEMBER'],
                 ['menu/adminzone/tools/users/merge_members', ['admin_cns_merge_members', ['type' => 'browse'], get_module_zone('admin_cns_merge_members')], do_lang_tempcode('MERGE_MEMBERS'), 'DOC_MERGE_MEMBERS'],
                 (!has_privilege(get_member(), 'mass_import')) ? null : ['menu/adminzone/tools/users/delete_lurkers', ['admin_cns_members', ['type' => 'delurk'], get_module_zone('admin_cns_members')], do_lang_tempcode('DELETE_LURKERS'), 'DOC_DELETE_LURKERS'],
                 (!has_privilege(get_member(), 'mass_import')) ? null : ['admin/import_spreadsheet', ['admin_cns_members', ['type' => 'import_spreadsheet'], get_module_zone('admin_cns_members')], do_lang_tempcode('IMPORT_MEMBERS'), 'DOC_IMPORT_MEMBERS'],
