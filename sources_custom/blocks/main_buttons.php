@@ -32,7 +32,7 @@ class Block_main_buttons
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = ['param', 'extra', 'max'];
+        $info['parameters'] = ['param', 'title', 'extra', 'max'];
         return $info;
     }
 
@@ -47,6 +47,7 @@ class Block_main_buttons
         $info['cache_on'] = <<<'PHP'
         [
             array_key_exists('param', $map) ? $map['param'] : '',
+            array_key_exists('title', $map) ? $map['title'] : '',
             array_key_exists('extra', $map) ? $map['extra'] : '',
             array_key_exists('max', $map) ? intval($map['max']) : 100,
         ]
@@ -143,12 +144,6 @@ PHP;
             $map['title'] = 'I support';
         }
         $max = array_key_exists('max', $map) ? intval($map['max']) : 100;
-        $height = (!empty($map['height'])) ? $map['height'] : '100%';
-
-        $set_height = '';
-        if ($height != '100%') {
-            $set_height = ' style="overflow: auto; width: 100%!important; height: ' . $height . '!important;" ';
-        }
 
         require_code('banners');
 
@@ -175,7 +170,6 @@ PHP;
             'TYPE' => $map['param'],
             'ASSEMBLE' => $assemble,
             'TITLE' => $map['title'],
-            'SET_HEIGHT' => $set_height,
         ]);
     }
 }

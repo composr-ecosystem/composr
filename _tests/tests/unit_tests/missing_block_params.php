@@ -18,13 +18,52 @@
  */
 class missing_block_params_test_set extends cms_test_case
 {
-    public function testMissingBlockParams()
+    public function testUnguardedBlockParams()
     {
         require_code('files2');
 
         $need = [];
 
-        $files = get_directory_contents(get_file_base() . '/sources/blocks', get_file_base() . '/sources/blocks', null, false, true, ['php']);
+        $files = [];
+        $files = array_merge($files, get_directory_contents(get_file_base() . '/sources/blocks', get_file_base() . '/sources/blocks', null, false, true, ['php']));
+        $files = array_merge($files, get_directory_contents(get_file_base() . '/sources_custom/blocks', get_file_base() . '/sources_custom/blocks', null, false, true, ['php']));
+        $files = array_merge($files, get_directory_contents(get_file_base() . '/sources/miniblocks', get_file_base() . '/sources/miniblocks', null, false, true, ['php']));
+        $files = array_merge($files, get_directory_contents(get_file_base() . '/sources_custom/miniblocks', get_file_base() . '/sources_custom/miniblocks', null, false, true, ['php']));
+        foreach ($files as $path) {
+            $c = cms_file_get_contents_safe($path);
+
+            $matches = [];
+            $count = preg_match_all('/\$map\[\'([^\']+)\'\]/', $c, $matches);
+            for ($i = 0; $i < $count; $i++) {
+                $param = $matches[1][$i];
+
+                $substrings = [
+                    'isset($map[\'' . $param . '\'])',
+                    'array_key_exists(\'' . $param . '\', $map)',
+                    'empty($map[\'' . $param . '\'])',
+                    '@cms_empty_safe($map[\'' . $param . '\'])',
+                ];
+                $has_guard = false;
+                foreach ($substrings as $substring) {
+                    if (strpos($c, $substring) !== false) {
+                        $has_guard = true;
+                    }
+                }
+
+                $this->assertTrue($has_guard, 'Unguarded param ' . $param . ' in ' . $path);
+            }
+        }
+    }
+
+    public function testUndefinedOrUndocumentedBlockParams()
+    {
+        require_code('files2');
+
+        $need = [];
+
+        $files = [];
+        $files = array_merge($files, get_directory_contents(get_file_base() . '/sources/blocks', get_file_base() . '/sources/blocks', null, false, true, ['php']));
+        $files = array_merge($files, get_directory_contents(get_file_base() . '/sources_custom/blocks', get_file_base() . '/sources_custom/blocks', null, false, true, ['php']));
         foreach ($files as $path) {
             $c = cms_file_get_contents_safe($path);
 
@@ -65,8 +104,8 @@ class missing_block_params_test_set extends cms_test_case
                 ) {
                     $pattern_1 = '#\$info\[\'cache_on\'\] = \'[^;]*\[[^;]*\\\\\'' . preg_quote($param) . '\\\\\'#';
                     $pattern_2 = '#\$info\[\'cache_on\'\] = <<<\'PHP[^;]*\[[^;]*\'' . preg_quote($param) . '\'#s';
-                    $pattern_3 = '#\$info\[\'cache_on\'\] = \'[^;]*[^;]* \$map\n#';
-                    $pattern_4 = '#\$info\[\'cache_on\'\] = <<<\'PHP[^;]*[^;]* \$map\n#s';
+                    $pattern_3 = '#\$info\[\'cache_on\'\] = \'[^;]*[^;]*\$map\n#';
+                    $pattern_4 = '#\$info\[\'cache_on\'\] = <<<\'PHP[^;]*[^;]*\$map[\n,]#s';
                     if ((preg_match($pattern_1, $c) == 0) && (preg_match($pattern_2, $c) == 0) && (preg_match($pattern_3, $c) == 0) && (preg_match($pattern_4, $c) == 0)) {
                         $this->assertTrue(false, 'Block param (apparently) not cached... ' . basename($path, '.php') . ': ' . $param);
                     }
@@ -88,7 +127,9 @@ class missing_block_params_test_set extends cms_test_case
         }
 
         foreach ($need as $i => $x) {
-            $this->assertTrue(false, 'Missing language string: ' . $x);
+            if (strpos($path, '_custom') !== false) {
+                $this->assertTrue(false, 'Missing language string: ' . $x);
+            }
         }
     }
 }

@@ -32,7 +32,9 @@ $show_data_labels = !isset($map['show_data_labels']) ? true : ($map['show_data_l
 
 $color_pool = empty($map['color_pool']) ? [] : explode(',', $map['color_pool']);
 
-$myfile = fopen(get_custom_file_base() . '/' . $map['file'], 'rb');
+$file = empty($map['file']) ? 'uploads/website_specific/graph_test/bubble_bar_chart.csv' : $map['file'];
+
+$myfile = fopen(get_custom_file_base() . '/' . $file, 'rb');
 
 $header = fgetcsv($myfile);
 

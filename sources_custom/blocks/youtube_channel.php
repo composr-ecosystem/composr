@@ -27,7 +27,7 @@ class Block_youtube_channel
         $info['hack_version'] = null;
         $info['version'] = 12;
         $info['locked'] = false;
-        $info['parameters'] = ['name', 'playlist_id', 'title', 'template_main', 'template_style', 'start_video', 'max_videos', 'description_type', 'embed_allowed', 'show_player', 'player_align', 'player_width', 'player_height', 'style', 'nothumbplayer', 'thumbnail', 'formorelead', 'formoretext', 'formoreurl'];
+        $info['parameters'] = ['name', 'playlist_id', 'title', 'template_main', 'template_style', 'start_video', 'max_videos', 'embed_player', 'description_type', 'embed_allowed', 'show_player', 'player_align', 'player_width', 'player_height', 'style', 'nothumbplayer', 'thumbnail', 'formorelead', 'formoretext', 'formoreurl'];
         return $info;
     }
 

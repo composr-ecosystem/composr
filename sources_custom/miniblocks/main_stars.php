@@ -31,6 +31,10 @@ $block_id = get_block_id($map);
 
 $stars = [];
 
+if (@cms_empty_safe($map['param'])) {
+    return do_template('RED_ALERT', ['TEXT' => do_lang_tempcode('NO_PARAMETER_SENT', 'param')]);
+}
+
 $sql = 'SELECT recipient_id,SUM(amount_gift_points+amount_points) as cnt FROM ' . get_table_prefix() . 'points_ledger g WHERE ';
 $sql .= $GLOBALS['SITE_DB']->translate_field_ref('reason') . ' LIKE \'' . db_encode_like($map['param'] . ': %') . '\' AND sender_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
 $sql .= ' GROUP BY recipient_id ORDER BY cnt DESC';

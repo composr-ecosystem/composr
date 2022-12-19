@@ -32,7 +32,7 @@ class Block_main_tutorials_carousel
         $info['hack_version'] = null;
         $info['version'] = 1;
         $info['locked'] = false;
-        $info['parameters'] = [];
+        $info['parameters'] = ['param'];
         return $info;
     }
 

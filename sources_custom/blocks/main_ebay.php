@@ -32,7 +32,7 @@ class Block_main_ebay
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = ['seller', 'query', 'max_entries', 'image_size', 'domain'];
+        $info['parameters'] = ['seller', 'query', 'max_entries', 'image_size', 'domain', 'title'];
         return $info;
     }
 

@@ -101,7 +101,7 @@ class Block_main_activity_feed
     /*public function caching_environment()
     {
         $info = [];
-        $info['cache_on'] = <<<'PHP'
+        $info['c ache_on'] = <<<'PHP'
         [
             array_key_exists('grow', $map) ? ($map['grow'] == '1') : true,
             array_key_exists('max', $map) ? intval($map['max']) : 10,

@@ -24,6 +24,14 @@ load_csp(['csp_allow_eval_js' => '1']);
 require_javascript('checking');
 require_javascript('calculatr');
 
+if (@cms_empty_safe($map['message'])) {
+    return do_template('RED_ALERT', ['TEXT' => do_lang_tempcode('NO_PARAMETER_SENT', 'message')]);
+}
+
+if (@cms_empty_safe($map['equation'])) {
+    return do_template('RED_ALERT', ['TEXT' => do_lang_tempcode('NO_PARAMETER_SENT', 'equation')]);
+}
+
 $message = $map['message'];
 $equation = $map['equation'];
 $equation = str_replace('math.', 'Math.', cms_strtolower_ascii($equation)); // Name fields come out lower case, so equation needs to be

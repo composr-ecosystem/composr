@@ -24,7 +24,7 @@ $width = empty($map['width']) ? null : $map['width'];
 $height = empty($map['height']) ? null : $map['height'];
 
 $show_data_labels = !isset($map['show_data_labels']) ? true : ($map['show_data_labels'] == '1');
-$doughnut = !isset($map['horizontal']) ? false : ($map['doughnut'] == '1');
+$doughnut = !isset($map['doughnut']) ? false : ($map['doughnut'] == '1');
 
 $color_pool = empty($map['color_pool']) ? [] : explode(',', $map['color_pool']);
 
