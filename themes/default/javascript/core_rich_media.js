@@ -1000,9 +1000,10 @@
             return;
         }
 
-        if (window.shockerPos[id] === window.shockerParts[id].length - 1) {
+        if (window.shockerPos[id] >= window.shockerParts[id].length) {
             window.shockerPos[id] = 0;
         }
+
         var eLeft = document.getElementById('comcodeshocker' + id + '-left');
         if (!eLeft) {
             return;
@@ -1019,10 +1020,10 @@
 
         window.shockerPos[id]++;
 
-        window['comcodeshocker' + id + '_left'] = [0, minColor, maxColor, time / 13, []];
+        window['comcodeshocker' + id + '-left'] = [0, minColor, maxColor, time / 13, []];
         setInterval(function () {
             window.$pulse.processWave(eLeft);
-        }, window['comcodeshocker' + id + '_left'][3]);
+        }, window['comcodeshocker' + id + '-left'][3]);
     }
 
     var _flipPageTimeouts = {};

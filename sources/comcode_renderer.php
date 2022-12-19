@@ -767,12 +767,12 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
             break;
 
         case 'overlay':
-            $x = strval(array_key_exists('x', $attributes) ? intval($attributes['x']) : 100);
-            $y = strval(array_key_exists('y', $attributes) ? intval($attributes['y']) : 100);
-            $width = strval(array_key_exists('width', $attributes) ? intval($attributes['width']) : 300);
-            $height = strval(array_key_exists('height', $attributes) ? intval($attributes['height']) : 300);
-            $timein = strval(array_key_exists('timein', $attributes) ? intval($attributes['timein']) : 0);
-            $timeout = strval(array_key_exists('timeout', $attributes) ? intval($attributes['timeout']) : -1);
+            $x = strval(array_key_exists('x', $attributes) ? @intval($attributes['x']) : 100);
+            $y = strval(array_key_exists('y', $attributes) ? @intval($attributes['y']) : 100);
+            $width = strval(array_key_exists('width', $attributes) ? @intval($attributes['width']) : 300);
+            $height = strval(array_key_exists('height', $attributes) ? @intval($attributes['height']) : 300);
+            $timein = strval(array_key_exists('timein', $attributes) ? @intval($attributes['timein']) : 0);
+            $timeout = strval(array_key_exists('timeout', $attributes) ? @intval($attributes['timeout']) : -1);
             $temp_tpl = do_template('COMCODE_OVERLAY', [
                 '_GUID' => 'dfd0f7a72cc2bf6b613b28f8165a0034',
                 'EMBED' => $embed,
@@ -867,7 +867,7 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
             break;
 
         case 'snapback':
-            $post_id = intval($embed->evaluate());
+            $post_id = @intval($embed->evaluate());
 
             $_date = null;
             if (get_forum_type() == 'cns') {
@@ -906,14 +906,14 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
             break;
 
         case 'post':
-            $post_id = intval($embed->evaluate());
+            $post_id = @intval($embed->evaluate());
             $s_title = ($attributes['param'] == '') ? do_lang_tempcode('cns:FORUM_POST_NUMBERED', escape_html(strval($post_id))) : escape_html($attributes['param']);
             $forum = array_key_exists('forum', $attributes) ? $attributes['forum'] : '';
             $temp_tpl->attach(hyperlink($GLOBALS['FORUM_DRIVER']->post_url($post_id, $forum, true), $s_title, false, false));
             break;
 
         case 'topic':
-            $topic_id = intval($embed->evaluate());
+            $topic_id = @intval($embed->evaluate());
             $s_title = ($attributes['param'] == '') ? do_lang_tempcode('cns:FORUM_TOPIC_NUMBERED', escape_html(strval($topic_id))) : escape_html($attributes['param']);
             $forum = array_key_exists('forum', $attributes) ? $attributes['forum'] : '';
             $temp_tpl->attach(hyperlink($GLOBALS['FORUM_DRIVER']->topic_url($topic_id, $forum, true), $s_title, false, false));
@@ -947,7 +947,7 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
             }
             $temp_tpl = do_template('COMCODE_BIG_TABS_CONTROLLER', [
                 '_GUID' => 'b6cc1835b688f086e34837e3c345ba0a',
-                'SWITCH_TIME' => ($attributes['switch_time'] == '' || intval($attributes['switch_time']) <= 0) ? null : strval(intval($attributes['switch_time'])),
+                'SWITCH_TIME' => ($attributes['switch_time'] == '' || @intval($attributes['switch_time']) <= 0) ? null : strval(@intval($attributes['switch_time'])),
                 'TABS' => $tabs,
                 'PASS_ID' => 'x' . $pass_id,
             ]);
@@ -1050,7 +1050,7 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
             if (substr($max_color, 0, 1) == '#') {
                 $max_color = substr($max_color, 1);
             }
-            $speed = ($attributes['param'] == '') ? 100 : intval($attributes['param']);
+            $speed = ($attributes['param'] == '') ? 100 : @intval($attributes['param']);
 
             $temp_tpl = do_template('COMCODE_PULSE', ['_GUID' => 'adsd4f9910sfd03f81b61919b74ac24c', 'CONTENT' => $embed, 'MIN_COLOR' => $min_color, 'MAX_COLOR' => $max_color, 'SPEED' => strval($speed)]);
             break;
@@ -1195,7 +1195,7 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
         case 'random':
             unset($attributes['param']);
 
-            $max = ($embed->evaluate() == '') ? intval($embed->evaluate()) : 0;
+            $max = @intval($embed->evaluate());
             foreach ($attributes as $num => $val) {
                 $_temp = comcode_to_tempcode($val, $source_member, $as_admin, null, $db, COMCODE_NORMAL, $highlight_bits, $on_behalf_of_member);
                 $attributes[$num] = $_temp->evaluate();
@@ -1222,7 +1222,7 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
                 $_parts[] = ['PART' => $_temp->evaluate()];
             }
 
-            $time = intval($embed->evaluate());
+            $time = @intval($embed->evaluate());
             if ($time == 0) {
                 $time = 4000;
             }
@@ -1253,7 +1253,7 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
                 $max_color = substr($max_color, 1);
             }
 
-            $time = intval($embed->evaluate());
+            $time = @intval($embed->evaluate());
             if ($time == 0) {
                 $time = 4000;
             }
@@ -1479,7 +1479,7 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
             }
 
             if (is_numeric($attributes['param'])) {
-                $attributes['param'] = $GLOBALS['FORUM_DRIVER']->get_username(intval($attributes['param']), true);
+                $attributes['param'] = $GLOBALS['FORUM_DRIVER']->get_username(@intval($attributes['param']), true);
             }
 
             if ($attributes['param'] != '') {
@@ -1517,7 +1517,7 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
             break;
 
         case 'title':
-            $level = ($attributes['param'] != '') ? intval($attributes['param']) : 1;
+            $level = ($attributes['param'] != '') ? @intval($attributes['param']) : 1;
             if ($level == 0) {
                 $level = 1; // Stop crazy Comcode causing stack errors with the toc
             }
@@ -1549,7 +1549,7 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
                 }
             }
 
-            $base = array_key_exists('base', $attributes) ? intval($attributes['base']) : 1;
+            $base = array_key_exists('base', $attributes) ? @intval($attributes['base']) : 1;
             if ((array_key_exists('number', $attributes)) && ($level >= $base)) {
                 $list_types = ($attributes['number'] == '') ? [] : explode(',', $attributes['number']);
                 $list_types += ['decimal', 'lower-alpha', 'lower-roman', 'upper-alpha', 'upper-roman', 'disc'];
@@ -1624,13 +1624,13 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
                 }
                 $STRUCTURE_LIST = $_structure_list;
 
-                $base = array_key_exists('base', $attributes) ? intval($attributes['base']) : 1;
+                $base = array_key_exists('base', $attributes) ? @intval($attributes['base']) : 1;
             } else {
                 require_code('comcode_compiler');
 
                 __comcode_to_tempcode($comcode, $source_member, $as_admin, null, $db, COMCODE_STRUCTURE_SWEEP, [], $on_behalf_of_member);
 
-                $base = array_key_exists('base', $attributes) ? intval($attributes['base']) : 1;
+                $base = array_key_exists('base', $attributes) ? @intval($attributes['base']) : 1;
             }
 
             $_embed = $embed->evaluate();
@@ -1688,7 +1688,7 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
             }
             $list_types = array_merge($list_types, ['decimal', 'lower-alpha', 'lower-roman', 'upper-alpha', 'upper-roman', 'disc']);
 
-            $levels_allowed = array_key_exists('levels', $attributes) ? intval($attributes['levels']) : null;
+            $levels_allowed = array_key_exists('levels', $attributes) ? @intval($attributes['levels']) : null;
 
             // Convert the list structure into a tree structure
             $past_level_stack = [];
@@ -2015,7 +2015,7 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
                 }
             }
 
-            $refresh_time = array_key_exists('refresh_time', $attributes) ? strval(intval($attributes['refresh_time'])) : '0';
+            $refresh_time = array_key_exists('refresh_time', $attributes) ? strval(@intval($attributes['refresh_time'])) : '0';
 
             $temp_tpl->attach(do_template('COMCODE_IMG', ['_GUID' => '70166d8dbb0aff064b99c0dd30ed77a8', 'WIDTH' => ($width === null) ? null : strval($width), 'HEIGHT' => ($height === null) ? null : strval($height), 'REFRESH_TIME' => $refresh_time, 'ROLLOVER' => $rollover, 'ALIGN' => $align, 'URL' => $url_full, 'TOOLTIP' => $tooltip, 'CAPTION' => $caption]));
 
