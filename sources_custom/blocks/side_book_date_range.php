@@ -17,6 +17,19 @@
 
 class Block_side_book_date_range
 {
+    public function info() : ?array
+    {
+        $info = [];
+        $info['author'] = 'Chris Graham';
+        $info['organisation'] = 'ocProducts';
+        $info['hacked_by'] = null;
+        $info['hack_version'] = null;
+        $info['version'] = 1;
+        $info['locked'] = false;
+        $info['parameters'] = [];
+        return $info;
+    }
+
     public function run()
     {
         $error_msg = new Tempcode();
@@ -31,6 +44,6 @@ class Block_side_book_date_range
             return do_template('RED_ALERT', ['_GUID' => 'zslwc37lxcpsluxrjvydbyiecdk6bq3m', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('ecommerce'))]);
         }
 
-        return new Tempcode();
+        return make_string_tempcode('Not yet implemented');
     }
 }
