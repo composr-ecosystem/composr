@@ -762,11 +762,10 @@ PHP;
     /**
      * Apply a transform to a cell value.
      *
-     * @param  string $value Value to apply transform to.
+     * @param  string $value Value to apply transform to (passed by reference).
      * @param  ID_TEXT $transform Transform type.
-     * @return string Formatted value.
      */
-    protected function apply_transform(string &$value, string $transform) : string
+    protected function apply_transform(string &$value, string $transform)
     {
         switch ($transform) {
             case 'country_names':
@@ -789,16 +788,29 @@ PHP;
 
             case 'flag':
                 $country = $value;
+
+                // First, see if the provided value is already a country code
                 $theme_image = find_theme_image('flags_large/' . strtolower($country), true);
 
-                require_code('locations');
-                $_country = find_country_name_from_iso($country);
-
                 if ($theme_image == '') {
-                    $value = protect_from_escaping(escape_html($_country));
-                } else {
-                    $value = protect_from_escaping('<span class="accessibility_hidden">' . escape_html($_country) . '</span><img width="24" src="' . escape_html($theme_image) . '" alt="" title="' . escape_html($_country) . '" />');
+                    // Not a country code, so maybe a country name?
+                    require_code('locations');
+                    $_country = find_iso_country_from_name($country);
+
+                    if ($_country === null) {
+                        return; // Not a country at all; exit.
+                    }
+
+                    $country = $_country;
+
+                    $theme_image = find_theme_image('flags_large/' . strtolower($country), true);
+                    if ($theme_image == '') { // Country, but we do not have a flag for it, so return the country code instead.
+                        $value = protect_from_escaping(escape_html($country));
+                        return;
+                    }
                 }
+
+                $value = protect_from_escaping('<span class="accessibility_hidden">' . escape_html($country) . '</span>&nbsp;<img width="24" src="' . escape_html($theme_image) . '" alt="" title="' . escape_html($country) . '" />');
                 break;
         }
     }
