@@ -207,7 +207,7 @@ div.cns-table-footer > div > div {
 */
 
 .cns-on, .cns-on td {
-	background-color: {$GET,area_current_background} !important;
+	background-color: {$GET,point_of_interest_background} !important;
 	border-color: {$GET,pale_border} !important;
 }
 
