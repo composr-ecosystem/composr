@@ -556,19 +556,19 @@ function check_captcha(?string $code_entered = null, bool $regenerate_on_error =
     }
     $passes = (cms_strtolower_ascii($code_needed) == cms_strtolower_ascii($code_entered));
     if ($regenerate_on_error) {
-        if (get_option('captcha_single_guess') == '1') {
-            if ($passes) {
-                cms_register_shutdown_function_if_available(function () {
-                    if (get_option('recaptcha_site_key') != '') {
-                        return;
-                    }
+        if ($passes) {
+            cms_register_shutdown_function_if_available(function () {
+                if (get_option('recaptcha_site_key') != '') {
+                    return;
+                }
 
-                    // Delete current CAPTCHA
-                    if (!running_script('snippet')) {
-                        $GLOBALS['SITE_DB']->query_delete('captchas', ['si_session_id' => get_session_id()]); // Only allowed to check once
-                    }
-                });
-            } else {
+                // Delete current CAPTCHA
+                if (!running_script('snippet')) {
+                    $GLOBALS['SITE_DB']->query_delete('captchas', ['si_session_id' => get_session_id()]); // Only allowed to check once
+                }
+            });
+        } else {
+            if (get_option('captcha_single_guess') == '1') {
                 generate_captcha();
             }
         }
