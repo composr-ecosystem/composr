@@ -459,7 +459,7 @@ PHP;
             'DEFAULT_SORT_COLUMN' => ($reverse_sorting ? '!' : '') . strval($default_sort_column),
             'MAX' => strval($max),
             'HEADERS' => $headers,
-            'STYLINGS_HEADER' => $stylings_header,
+            'STYLINGS' => $stylings_header,
             'CLASSES' => $classes,
             'ROWS' => $rows,
             'NUM_ROWS' => strval(count($_rows)),
