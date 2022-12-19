@@ -561,15 +561,19 @@ function create_selection_list_download_licences(?int $it = null, bool $allow_na
 /**
  * Get a formatted HTML string of the route back to the specified root, from the specified download category.
  *
- * @param  AUTO_LINK $category_id The category we are finding for
+ * @param  ?AUTO_LINK $category_id The category we are finding for (null: already ascended too far for anything to be left)
  * @param  ?AUTO_LINK $root The root of the tree (null: the true root)
  * @param  boolean $include_link Whether to include category links at this level (the recursed levels will always contain links - the top level is optional, hence this parameter)
  * @param  ?ID_TEXT $zone The zone the download module we're using is in (null: find it)
  * @param  boolean $attach_to_url_filter Whether to copy through any filter parameters in the URL, under the basis that they are associated with what this box is browsing
  * @return array The breadcrumb segments
  */
-function download_breadcrumbs(int $category_id, ?int $root = null, bool $include_link = false, ?string $zone = null, bool $attach_to_url_filter = false) : array
+function download_breadcrumbs(?int $category_id, ?int $root = null, bool $include_link = false, ?string $zone = null, bool $attach_to_url_filter = false) : array
 {
+    if ($category_id === null) {
+        return [];
+    }
+
     if ($root === null) {
         $root = db_get_first_id();
     }

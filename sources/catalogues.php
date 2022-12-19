@@ -1739,13 +1739,13 @@ function get_catalogue_entries_tree(string $catalogue_name, ?int $submitter = nu
 /**
  * Get a formatted HTML string of the route back to the specified root, from the specified catalogue category.
  *
- * @param  AUTO_LINK $category_id The category we are finding for
+ * @param  ?AUTO_LINK $category_id The category we are finding for (null: already ascended too far for anything to be left)
  * @param  ?AUTO_LINK $root The root of the tree (null: the true root)
  * @param  boolean $include_link Whether to include category links at this level (the recursed levels will always contain links - the top level is optional, hence this parameter)
  * @param  boolean $attach_to_url_filter Whether to copy through any filter parameters in the URL, under the basis that they are associated with what this box is browsing
  * @return array The breadcrumbs
  */
-function catalogue_category_breadcrumbs(int $category_id, ?int $root = null, bool $include_link = false, bool $attach_to_url_filter = false) : array
+function catalogue_category_breadcrumbs(?int $category_id, ?int $root = null, bool $include_link = false, bool $attach_to_url_filter = false) : array
 {
     if ($category_id === null) {
         return [];

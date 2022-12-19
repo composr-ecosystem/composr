@@ -181,10 +181,6 @@ PHP;
 
             // Get row
             $lang_fields = find_lang_fields($info['table'], 'r');
-            foreach ($lang_fields as $lang_field => $lang_field_type) {
-                unset($lang_fields[$lang_field]);
-                $lang_fields['r.' . $lang_field] = $lang_field_type;
-            }
             $wherea = get_content_where_for_str_id($content_id, $info, 'r');
             $rows = $info['db']->query_select($info['table'] . ' r', ['r.*'], $wherea, '', 1, 0, false, $lang_fields);
         }
