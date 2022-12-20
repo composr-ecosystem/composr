@@ -32,7 +32,7 @@ class Block_main_sortable_table
         $info['hack_version'] = null;
         $info['version'] = 1;
         $info['locked'] = false;
-        $info['parameters'] = ['param', 'default_sort_column', 'max', 'labels', 'labels_tooltip', 'columns_display', 'columns_tooltip', 'types', 'has_header_row', 'guid', 'class', 'transform', 'stylings_header', 'stylings', 'max_rows', 'ignore_value', 'classes'];
+        $info['parameters'] = ['param', 'default_sort_column', 'max', 'labels', 'labels_tooltip', 'columns_display', 'columns_tooltip', 'types', 'has_header_row', 'guid', 'class', 'stylings_header', 'stylings', 'classes', 'transform', 'max_rows', 'ignore_value'];
         return $info;
     }
 
@@ -85,6 +85,8 @@ PHP;
         $types = empty($map['types']) ? [] : $this->parse_comma_separated($map['types']);
         $types = $this->set_property_list_alignment($types, $columns_display);
 
+        $class = empty($map['class']) ? '' : $map['class'];
+
         $stylings_header = empty($map['stylings_header']) ? [] : $this->parse_comma_separated($map['stylings_header']);
         $stylings_header = $this->set_property_list_alignment($stylings_header, $columns_display);
 
@@ -102,7 +104,6 @@ PHP;
         }
 
         $guid = empty($map['guid']) ? '' : $map['guid'];
-        $class = empty($map['class']) ? '' : $map['class'];
         $ignore_value = empty($map['ignore_value']) ? '' : $map['ignore_value'];
         $max_rows = empty($map['max_rows']) ? null : intval($map['max_rows']);
 

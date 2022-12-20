@@ -257,7 +257,7 @@ function _form_to_email(array $extra_boring_fields = [], ?string $subject = null
  *
  * @param  string $body Text e-mail (altered by reference)
  * @param  boolean $is_tick Whether it is a tick (check) field
- * @param  string $field_name Field name
+ * @param  string $field_array_key Field array key
  * @param  string $field_title Field title
  * @param  string $field_val Field value
  * @param  integer $num_fields Number of fields for e-mail
@@ -265,7 +265,7 @@ function _form_to_email(array $extra_boring_fields = [], ?string $subject = null
  *
  * @ignore
  */
-function _append_form_to_email(string &$body, bool $is_tick, string $field_name, string $field_title, string $field_val, int $num_fields, array &$body_parts)
+function _append_form_to_email(string &$body, bool $is_tick, string $field_array_key, string $field_title, string $field_val, int $num_fields, array &$body_parts)
 {
     $prefix = '';
     if ($num_fields != 1) {
@@ -296,5 +296,5 @@ function _append_form_to_email(string &$body, bool $is_tick, string $field_name,
 
     $body .= "\n\n";
 
-    $body_parts[$field_name] = $cleaned_field_val;
+    $body_parts[$field_array_key] = $cleaned_field_val;
 }

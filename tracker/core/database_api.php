@@ -604,8 +604,6 @@ function db_error_msg() {
  * @todo Use/Behaviour of this function should be reviewed before 1.2.0 final
  */
 function db_error( $p_query = null ) {
-	var_dump(db_error_msg(), $p_query);
-	exit;
 	if( null !== $p_query ) {
 		error_parameters( db_error_num(), db_error_msg(), $p_query );
 	} else {

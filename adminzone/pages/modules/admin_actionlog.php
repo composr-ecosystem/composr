@@ -201,6 +201,7 @@ class Module_admin_actionlog
         $fields->attach(form_input_list(do_lang_tempcode('ACTION'), '', 'to_type', $action_type_list, null, false, false));
 
         // Filters
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['TITLE' => do_lang_tempcode('FILTER')]));
         $fields->attach(form_input_line(do_lang_tempcode('PARAMETER_A'), '', 'param_a', '', false));
         $fields->attach(form_input_line(do_lang_tempcode('PARAMETER_B'), '', 'param_b', '', false));
 
