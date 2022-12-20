@@ -134,7 +134,7 @@ The advanced banning configuration also has [tt]<hackattack>[/tt] rules, which a
 {!actionlog:DOC_ACTIONLOG}
 
 [media width="150" description="Recent actions performed" float="right"]data_custom/images/docs/tut_censor/adminzone_recent_actions.png[/media]
-This module shows the recent actions performed by you and your staff. Virtually every action that is done by your staff is logged here.
+This module shows the recent actions performed by you and your staff. Virtually every action that is done by your staff is logged here, which at the time of writing is around 300 actions.
  - [b]Username[/b] is the name of the member who performed this action
  - [b]IP Address[/b] is the [concept]IP address[/concept] of the member who performed this action.
  - [b]Date and Time[/b] is the date and time when the action occurred. You may click this date to view further details on the submission as well as do (un)banning related to it.
@@ -146,6 +146,12 @@ There are also 'sort by' and 'show per page' options at the bottom of this modul
 
 Access the action log from:
 Admin Zone > Audit > Action logs (audit trail)
+
+[title="3"]Filtering by parameters[/title]
+
+In order to search by First/Second parameter you'll need to know what they are for whatever action you are searching. There is no documentation on what they mean, but you can ascertain it by browsing past actions of the type you want to search. They are often IDs and human-readable titles.
+
+[title="3"]Notifications[/title]
 
 Staff may set up a notification so they know whenever anything is added to the action log. This will not be sent out for entries that only relate to private data accesses, however (as those are potentially very high-traffic).
 [/surround]
