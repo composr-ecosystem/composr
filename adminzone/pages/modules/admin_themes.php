@@ -851,10 +851,7 @@ class Module_admin_themes
 
         // Save theme.ini
         $ini_file = (($theme == 'default' || $theme == 'admin') ? get_file_base() : get_custom_file_base()) . '/themes/' . filter_naughty($theme) . '/theme.ini';
-        if (!file_exists($ini_file)) {
-            $ini_file = get_file_base() . '/themes/default/theme.ini';
-        }
-        $before = cms_parse_ini_file_fast($ini_file);
+        $before = file_exists($ini_file) ? cms_parse_ini_file_fast($ini_file) : [];
         $contents = '';
         $themeonly_options = ['title', 'description', 'author'];
         foreach ($themeonly_options as $themeonly_option) {
