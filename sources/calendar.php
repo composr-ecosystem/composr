@@ -743,6 +743,9 @@ function calendar_matches(int $auth_member_id, int $member_id, bool $restrict, ?
     }
     if ($filter !== null) {
         foreach ($filter as $a => $b) {
+            if (!is_numeric($a)) {
+                continue; // Skip non-numeric types; since the DB only uses numeric ones, they would be skipped anyway.
+            }
             if ($b == 0) {
                 if ($where != '') {
                     $where .= ' AND ';
