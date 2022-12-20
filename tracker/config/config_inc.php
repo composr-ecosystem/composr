@@ -110,7 +110,7 @@ $cms_developer_groups = array(22);
 $cms_manager_groups = array();
 $cms_admin_groups = array(2, 3);
 $cms_guest_id = 1;
-$cms_extra_signin_sql = ' AND field_46 IN(\'\',\'Content Management System\')';
+$cms_extra_signin_sql = ' AND field_46 IN(\'\',\'Content Management System\')'; // TODO: Customise
 
 // Branding
 $g_window_title = 'Composr CMS feature tracker'; // TODO: Customise
@@ -233,3 +233,11 @@ $g_severity_enum_string = '10:Feature-suggestion,20:Trivial-bug,50:Minor-bug,60:
 
 // Integrate to Composr error log
 $g_log_destination = 'file:' . dirname(dirname(__DIR__)) . '/data_custom/errorlog.php';
+
+// Show errors if in ocProducts PHP
+if (function_exists('ocp_mark_as_escaped')) {
+	$g_display_errors = array(
+		E_ALL               => DISPLAY_ERROR_HALT,
+	);
+	$g_show_detailed_errors = ON;
+}

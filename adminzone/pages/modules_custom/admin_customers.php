@@ -558,7 +558,7 @@ class Module_admin_customers
                     `username` varchar(191) NOT NULL DEFAULT '',
                     `realname` varchar(191) NOT NULL DEFAULT '',
                     `email` varchar(191) NOT NULL DEFAULT '',
-                    `password` varchar(64) NOT NULL DEFAULT '',
+                    `password` varchar(255) NOT NULL DEFAULT '',
                     `enabled` tinyint(4) NOT NULL DEFAULT '1',
                     `protected` tinyint(4) NOT NULL DEFAULT '0',
                     `access_level` smallint(6) NOT NULL DEFAULT '10',
