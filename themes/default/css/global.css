@@ -4522,7 +4522,7 @@ div .buttons-group-faded > * {
 		vertical-align: middle;
 	}
 
-	input#captcha {
+	input[type="text"]#captcha {
 		font-family: Courier;
 		font-size: 16px;
 		vertical-align: middle;

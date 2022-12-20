@@ -902,8 +902,10 @@
             }
         }
 
-        function alertNotInPreviewMode() {
+        function alertNotInPreviewMode(e) {
             $cms.ui.alert('{!NOT_IN_PREVIEW_MODE;^}');
+            e.stopPropagation();
+            e.preventDefault();
             return false;
         }
     };
