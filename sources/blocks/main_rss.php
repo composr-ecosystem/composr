@@ -72,7 +72,6 @@ class Block_main_rss
         }
 
         require_lang('news');
-        require_code('news');
         require_lang('rss');
         require_css('news');
         require_code('crypt');
@@ -114,7 +113,12 @@ class Block_main_rss
             return do_template('INLINE_WIP_MESSAGE', ['_GUID' => 'c2a067db18cd5f14392fa922b06967e4', 'MESSAGE' => htmlentities($error)]);
         }
 
-        $news_cats = load_news_cat_rows('nc_owner IS NULL');
+        if (addon_installed('news')) {
+            require_code('news');
+            $news_cats = load_news_cat_rows('nc_owner IS NULL');
+        } else {
+            $news_cats = [];
+        }
 
         if (!array_key_exists('title', $rss->gleamed_feed)) {
             $rss->gleamed_feed['title'] = do_lang_tempcode('RSS_STREAM');
