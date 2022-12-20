@@ -245,9 +245,14 @@ function get_composr_branches()
             $version_file = shell_exec('git show ' . $git_branch . ':sources/version.php');
 
             $tempnam = cms_tempnam();
-            file_put_contents($tempnam, $version_file . "\n\necho serialize([cms_version_number(], defined('cms_version_branch_status') ? cms_version_branch_status() : 'Unknown'));");
-            $results = @unserialize(shell_exec('php ' . $tempnam));
+            file_put_contents($tempnam, $version_file . "\n\ninit__version();\n\necho serialize([cms_version_number(), function_exists('cms_version_branch_status') ? cms_version_branch_status() : 'Unknown']);");
+            $test = shell_exec('php ' . $tempnam . ' 2>&1');
+            $results = @unserialize($test);
             unlink($tempnam);
+            if ($results === false) {
+                attach_message($test, 'warn');
+                continue;
+            }
             if ((is_array($results)) && (count($results) == 2)) {
                 list($version_number, $status) = $results;
 
