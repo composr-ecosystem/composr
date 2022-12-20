@@ -97,7 +97,7 @@ PHP;
 
         $block_id = get_block_id($map);
 
-        $gallery_name = @cms_empty_safe($map['gallery_name']) ? 'root' : $map['gallery_name'];
+        $gallery_name = @cms_empty_safe($map['gallery_name']) ? 'homepage_hero_slider' : $map['gallery_name'];
         $effect = !empty($map['effect']) ? $map['effect'] : 'slide'; // Valid values: 'fade' or 'slide'
         $fullscreen = !empty($map['fullscreen']);
         $show_indicators = !empty($map['show_indicators']);
