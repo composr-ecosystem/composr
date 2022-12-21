@@ -1002,7 +1002,7 @@ class Forum_driver_mybb extends Forum_driver_base
             if ($member_id > 0) {
                 $skin = $this->get_member_row_field($member_id, 'style');
             } else {
-                $skin = '';
+                $skin = 0;
             }
             if ($skin > 0) { // User has a custom theme
                 $_user_theme = $this->db->query_select('themes', ['*'], ['tid' => $skin], '', 1);
