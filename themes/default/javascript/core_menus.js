@@ -75,12 +75,12 @@
             if (!menuEditorWrapEl.classList.contains('docked')) {
                 menuEditorWrapEl.classList.add('docked');
                 menuEditorWrapEl.classList.remove('non-docked');
-                $cms.ui.setIcon(clicked.querySelector('.icon'), 'arrow_box/arrow_box_hover', '{$IMG;^,icons/arrow_box/arrow_box_hover}');
+                $cms.ui.setIcon(clicked.querySelector('.icon'), 'arrow_box/arrow_box_hover', '{$IMG;^,{$?,{$THEME_OPTION,use_monochrome_icons},icons_monochrome,icons}/arrow_box/arrow_box_hover}');
                 adjustPaneHeights(true);
             } else {
                 menuEditorWrapEl.classList.add('non-docked');
                 menuEditorWrapEl.classList.remove('docked');
-                $cms.ui.setIcon(clicked.querySelector('.icon'), 'arrow_box/arrow_box', '{$IMG;^,icons/arrow_box/arrow_box}');
+                $cms.ui.setIcon(clicked.querySelector('.icon'), 'arrow_box/arrow_box', '{$IMG;^,{$?,{$THEME_OPTION,use_monochrome_icons},icons_monochrome,icons}/arrow_box/arrow_box}');
                 adjustPaneHeights(false);
             }
         }

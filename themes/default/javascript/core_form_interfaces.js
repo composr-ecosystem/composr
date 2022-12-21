@@ -1583,7 +1583,7 @@
             if (iconAnchor.cmsTooltipTitle != null) {
                 iconAnchor.cmsTooltipTitle = '{!CONTRACT;^}';
             }
-            $cms.ui.setIcon(icon, 'trays/contract', '{$IMG;,icons_monochrome/trays/contract}');
+            $cms.ui.setIcon(icon, 'trays/contract', '{$IMG;,{$?,{$THEME_OPTION,use_monochrome_icons},icons_monochrome,icons}/trays/contract}');
             newDisplayState = ''; // default state from CSS
             newDisplayState2 = ''; // default state from CSS
         } else { /* Contracting now */
@@ -1591,7 +1591,7 @@
             if (iconAnchor.cmsTooltipTitle != null) {
                 iconAnchor.cmsTooltipTitle = '{!EXPAND;^}';
             }
-            $cms.ui.setIcon(icon, 'trays/expand', '{$IMG;,icons_monochrome/trays/expand}');
+            $cms.ui.setIcon(icon, 'trays/expand', '{$IMG;,{$?,{$THEME_OPTION,use_monochrome_icons},icons_monochrome,icons}/trays/expand}');
             newDisplayState = 'none';
             newDisplayState2 = 'none';
         }

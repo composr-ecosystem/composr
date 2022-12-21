@@ -95,11 +95,11 @@
                 e.parentNode.remove();
             }
 
-            $cms.ui.setIcon(img, 'tool_buttons/realtime_rain_on', '{$IMG;,icons/tool_buttons/realtime_rain_on}');
+            $cms.ui.setIcon(img, 'tool_buttons/realtime_rain_on', '{$IMG;,{$?,{$THEME_OPTION,use_monochrome_icons},icons_monochrome,icons}/tool_buttons/realtime_rain_on}');
             return;
         }
 
-        $cms.ui.setIcon(img, 'tool_buttons/realtime_rain_off', '{$IMG;,icons/tool_buttons/realtime_rain_off}');
+        $cms.ui.setIcon(img, 'tool_buttons/realtime_rain_off', '{$IMG;,{$?,{$THEME_OPTION,use_monochrome_icons},icons_monochrome,icons}/tool_buttons/realtime_rain_off}');
 
         var tmpElement = document.getElementById('realtime-rain-img-loader');
         if (tmpElement) {

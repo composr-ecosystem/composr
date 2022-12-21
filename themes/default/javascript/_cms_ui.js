@@ -39,13 +39,13 @@
 
         if (icon) {
             if (expanding) {
-                $cms.ui.setIcon(icon, 'trays/contract', '{$IMG;,icons_monochrome/trays/contract}');
+                $cms.ui.setIcon(icon, 'trays/contract', '{$IMG;,{$?,{$THEME_OPTION,use_monochrome_icons},icons_monochrome,icons}/trays/contract}');
                 iconAnchor.title = '{!CONTRACT;^}';
                 if (iconAnchor.cmsTooltipTitle !== undefined) {
                     iconAnchor.cmsTooltipTitle = '{!CONTRACT;^}';
                 }
             } else {
-                $cms.ui.setIcon(icon, 'trays/expand', '{$IMG;,icons_monochrome/trays/expand}');
+                $cms.ui.setIcon(icon, 'trays/expand', '{$IMG;,{$?,{$THEME_OPTION,use_monochrome_icons},icons_monochrome,icons}/trays/expand}');
                 iconAnchor.title = '{!EXPAND;^}';
                 if (iconAnchor.cmsTooltipTitle !== undefined) {
                     iconAnchor.cmsTooltipTitle = '{!EXPAND;^}';

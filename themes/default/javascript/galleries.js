@@ -434,7 +434,7 @@
 
             this.el.classList.add('is-playing');
             this.$('.js-btn-toggle-play').classList.add('is-active');
-            $cms.ui.setIcon(this.$('.js-btn-toggle-play .icon'), 'buttons/pause', '{$IMG;,icons_monochrome/buttons/pause}');
+            $cms.ui.setIcon(this.$('.js-btn-toggle-play .icon'), 'buttons/pause', '{$IMG;,{$?,{$THEME_OPTION,use_monochrome_icons},icons_monochrome,icons}/buttons/pause}');
 
             if (this.isCurrentSlideImage()) {
                 this._slideDelayStartedAt = Date.now();
@@ -519,7 +519,7 @@
 
             this.el.classList.remove('is-playing');
             this.$('.js-btn-toggle-play').classList.remove('is-active');
-            $cms.ui.setIcon(this.$('.js-btn-toggle-play .icon'), 'content_types/multimedia', '{$IMG;,icons_monochrome/content_types/multimedia}');
+            $cms.ui.setIcon(this.$('.js-btn-toggle-play .icon'), 'content_types/multimedia', '{$IMG;,{$?,{$THEME_OPTION,use_monochrome_icons},icons_monochrome,icons}/content_types/multimedia}');
 
             this.updateStatusMessage();
 
@@ -566,11 +566,11 @@
             if (document.fullscreenElement == null) {
                 this.el.requestFullscreen();
                 this.el.classList.add('is-enabled-fullscreen');
-                $cms.ui.setIcon(this.$('.js-btn-toggle-fullscreen .icon'), 'buttons/shrink_size', '{$IMG;,icons_monochrome/buttons/shrink_size}');
+                $cms.ui.setIcon(this.$('.js-btn-toggle-fullscreen .icon'), 'buttons/shrink_size', '{$IMG;,{$?,{$THEME_OPTION,use_monochrome_icons},icons_monochrome,icons}/buttons/shrink_size}');
             } else {
                 document.exitFullscreen();
                 this.el.classList.remove('is-enabled-fullscreen');
-                $cms.ui.setIcon(this.$('.js-btn-toggle-fullscreen .icon'), 'buttons/full_size', '{$IMG;,icons_monochrome/buttons/full_size}');
+                $cms.ui.setIcon(this.$('.js-btn-toggle-fullscreen .icon'), 'buttons/full_size', '{$IMG;,{$?,{$THEME_OPTION,use_monochrome_icons},icons_monochrome,icons}/buttons/full_size}');
             }
         },
 

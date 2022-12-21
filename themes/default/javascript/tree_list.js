@@ -543,7 +543,7 @@
                 }
 
                 if (expandBtnIcon) {
-                    $cms.ui.setIcon(expandBtnIcon, 'tree_field/collapse', '{$IMG;,icons/tree_field/collapse}');
+                    $cms.ui.setIcon(expandBtnIcon, 'tree_field/collapse', '{$IMG;,{$?,{$THEME_OPTION,use_monochrome_icons},icons_monochrome,icons}/tree_field/collapse}');
                 }
             } else {
                 xmlNode = this.getElementByIdHack(clickedId, 'c');
@@ -557,7 +557,7 @@
                 }
 
                 if (expandBtnIcon) {
-                    $cms.ui.setIcon(expandBtnIcon, 'tree_field/expand', '{$IMG;,icons/tree_field/expand}');
+                    $cms.ui.setIcon(expandBtnIcon, 'tree_field/expand', '{$IMG;,{$?,{$THEME_OPTION,use_monochrome_icons},icons_monochrome,icons}/tree_field/expand}');
                 }
             }
 

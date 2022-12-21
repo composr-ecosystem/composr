@@ -1629,7 +1629,7 @@
                 }
 
                 helperPanelToggle.title = '{!HELP_OR_ADVICE}: {!HIDE}';
-                $cms.ui.setIcon(helperPanelToggleIcon, 'helper_panel/hide', '{$IMG;,icons/helper_panel/hide}');
+                $cms.ui.setIcon(helperPanelToggleIcon, 'helper_panel/hide', '{$IMG;,{$?,{$THEME_OPTION,use_monochrome_icons},icons_monochrome,icons}/helper_panel/hide}');
             } else {
                 if ($cms.readCookie('hide_helper_panel') === '') {
                     $cms.ui.confirm('{!CLOSING_HELP_PANEL_CONFIRM;^}').then(function (answer) {
@@ -1648,7 +1648,7 @@
                 helperPanelContents.style.display = 'none';
                 $cms.setCookie('hide_helper_panel', '1', 100);
                 helperPanelToggle.title = '{!HELP_OR_ADVICE}: {!SHOW}';
-                $cms.ui.setIcon(helperPanelToggleIcon, 'helper_panel/show', '{$IMG;,icons/helper_panel/show}');
+                $cms.ui.setIcon(helperPanelToggleIcon, 'helper_panel/show', '{$IMG;,{$?,{$THEME_OPTION,use_monochrome_icons},icons_monochrome,icons}/helper_panel/show}');
             }
         }
     });
@@ -1715,7 +1715,7 @@
 
             if ($dom.isDisplayed(sideMenuEl)) {
                 this.el.classList.remove('is-side-menu-open');
-                $cms.ui.setIcon(btn.querySelector('.icon'), 'menus/mobile_menu', '{$IMG;,icons/menus/mobile_menu}');
+                $cms.ui.setIcon(btn.querySelector('.icon'), 'menus/mobile_menu', '{$IMG;,{$?,{$THEME_OPTION,use_monochrome_icons},icons_monochrome,icons}/menus/mobile_menu}');
                 promise = $dom.hide(sideMenuEl, 'normal');
 
                 if (this.getDropdownMenuView() != null) {
@@ -1723,7 +1723,7 @@
                 }
             } else {
                 this.el.classList.add('is-side-menu-open');
-                $cms.ui.setIcon(btn.querySelector('.icon'), 'admin/delete3', '{$IMG;,icons/admin/delete3}');
+                $cms.ui.setIcon(btn.querySelector('.icon'), 'admin/delete3', '{$IMG;,{$?,{$THEME_OPTION,use_monochrome_icons},icons_monochrome,icons}/admin/delete3}');
                 promise = $dom.show(sideMenuEl, 'normal');
             }
 
@@ -2037,7 +2037,7 @@
                     menuItem.classList.remove('is-expanded');
                 });
 
-                $cms.ui.setIcon(this.$('.menu-dropdown-toggle-btn .icon'), 'menus/mobile_menu', '{$IMG;,icons/menus/mobile_menu}');
+                $cms.ui.setIcon(this.$('.menu-dropdown-toggle-btn .icon'), 'menus/mobile_menu', '{$IMG;,{$?,{$THEME_OPTION,use_monochrome_icons},icons_monochrome,icons}/menus/mobile_menu}');
 
                 this.menuContentEl.style.removeProperty('display');
             }
@@ -2071,11 +2071,11 @@
             if ($dom.isDisplayed(this.menuContentEl)) {
                 $dom.slideUp(this.menuContentEl);
                 this.closeAllSubMenus(this.el);
-                $cms.ui.setIcon(this.$('.menu-dropdown-toggle-btn .icon'), 'menus/mobile_menu', '{$IMG;,icons/menus/mobile_menu}');
+                $cms.ui.setIcon(this.$('.menu-dropdown-toggle-btn .icon'), 'menus/mobile_menu', '{$IMG;,{$?,{$THEME_OPTION,use_monochrome_icons},icons_monochrome,icons}/menus/mobile_menu}');
                 this.el.classList.remove('is-expanded');
             } else {
                 $dom.slideDown(this.menuContentEl);
-                $cms.ui.setIcon(this.$('.menu-dropdown-toggle-btn .icon'), 'admin/delete3', '{$IMG;,icons/admin/delete3}');
+                $cms.ui.setIcon(this.$('.menu-dropdown-toggle-btn .icon'), 'admin/delete3', '{$IMG;,{$?,{$THEME_OPTION,use_monochrome_icons},icons_monochrome,icons}/admin/delete3}');
                 this.el.classList.add('is-expanded');
             }
 
