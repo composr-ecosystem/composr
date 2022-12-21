@@ -141,21 +141,14 @@
         // Initial events
         getMoreEvents(currentTime + 1, currentTime + timeWindow); // note the +1 is because the time window is inclusive
 
-        // Querying events regularly
-        bubbleTimer1 = setInterval(function () {
-            if (paused) {
-                return;
-            }
-
-            getMoreEvents(currentTime + 1, currentTime + timeWindow);
-        }, POLL_FREQUENCY * 1000);
-
         // Updating timeline
         bubbleTimer2 = setInterval(function () {
             if (paused) {
                 return;
             }
-            if (timeWindow + currentTime > timeNow()) {
+
+            if (currentTime + timeWindow > timeNow()) {
+                // We've fast forwarded the timer far enough to the point where we are looking into the future: reset the timings
                 timeWindow = POLL_FREQUENCY;
                 currentTime = timeNow() - POLL_FREQUENCY;
             }
@@ -164,6 +157,15 @@
             }
             currentTime += timeWindow / POLL_FREQUENCY;
         }, 1000);
+
+        // Querying events regularly
+        bubbleTimer1 = setInterval(function () {
+            if (paused) {
+                return;
+            }
+
+            getMoreEvents(currentTime + 1, currentTime + timeWindow);
+        }, POLL_FREQUENCY * 1000);
     }
 
     function getMoreEvents(from, to) {
@@ -246,7 +248,10 @@
             clonedMessage.style.zIndex = 50;
             clonedMessage.style.left = leftPos + 'px';
             bubbles.appendChild(clonedMessage);
-            clonedMessage.style.top = (-(verticalSlot + 1) * (BUBBLE_HEIGHT + BUBBLE_INDENT)) + 'px';
+            var topPos = (-(verticalSlot + 1) * (BUBBLE_HEIGHT + BUBBLE_INDENT));
+            clonedMessage.style.top = topPos + 'px';
+
+            $util.inform('Showing "' + _clonedMessage.getAttribute('class') + '" bubble at ' + leftPos + 'x' + topPos);
 
             // JS events, for pausing and changing z-index
             clonedMessage.addEventListener('mouseover', function () {
