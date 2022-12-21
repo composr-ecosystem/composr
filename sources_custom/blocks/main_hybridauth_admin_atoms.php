@@ -144,7 +144,11 @@ PHP;
         $filter->limit = $max;
         $filter->deepProbe = true;
 
-        $adapter = $hybridauth->getAdapter($provider);
+        try {
+            $adapter = $hybridauth->getAdapter($provider);
+        } catch (Exception $e) {
+            return do_template('RED_ALERT', ['TEXT' => $e->getMessage()]);
+        }
 
         if (!$adapter->isConnected()) {
             return do_template('RED_ALERT', ['TEXT' => 'Connection to ' . $provider . ' is lost.']);

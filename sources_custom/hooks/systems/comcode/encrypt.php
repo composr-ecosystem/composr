@@ -29,6 +29,9 @@ class Hook_comcode_encrypt
             return null;
         }
 
+        // You may wonder how a Comcode tag can change itself.
+        //  The _password_censor function interactively is changing submitted Comcode.
+
         return [
             'tag_title' => 'Encrypt',
             'tag_description' => 'Store the contents of the tag as encrypted in the database.',
