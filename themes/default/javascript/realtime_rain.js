@@ -139,7 +139,16 @@
         timeWindow = POLL_FREQUENCY;
 
         // Initial events
-        getMoreEvents(currentTime + 1, currentTime + timeWindow); // note the +1 is because the time window is inclusive
+        getMoreEvents(currentTime, currentTime + timeWindow - 1);
+
+        // Querying events regularly
+        bubbleTimer1 = setInterval(function () {
+            if (paused) {
+                return;
+            }
+
+            getMoreEvents(currentTime, currentTime + timeWindow - 1);
+        }, POLL_FREQUENCY * 1000 + 10 /* To make sure it runs later than the timer update interval */);
 
         // Updating timeline
         bubbleTimer2 = setInterval(function () {
@@ -157,15 +166,6 @@
             }
             currentTime += timeWindow / POLL_FREQUENCY;
         }, 1000);
-
-        // Querying events regularly
-        bubbleTimer1 = setInterval(function () {
-            if (paused) {
-                return;
-            }
-
-            getMoreEvents(currentTime + 1, currentTime + timeWindow);
-        }, POLL_FREQUENCY * 1000);
     }
 
     function getMoreEvents(from, to) {
