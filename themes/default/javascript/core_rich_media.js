@@ -482,15 +482,16 @@
     };
 
     $cms.templates.comcodeRandom = function comcodeRandom(params) {
-        var rand, part, use, comcoderandom;
+        var rand, part, num, use, comcoderandom;
 
-        rand = parseInt(Math.random() * params.max);
+        rand = Math.random() * params.max;
 
         for (var key in params.parts) {
             part = params.parts[key];
+            num = part.num;
             use = part.val;
 
-            if (key > rand) {
+            if (num > rand) {
                 break;
             }
         }
