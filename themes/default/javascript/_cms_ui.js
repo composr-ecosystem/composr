@@ -446,7 +446,7 @@
         }
 
         if (!starting) { // Real JS mousemove event, so we assume not a screen-reader and have to remove natural tooltip
-            if (el.getAttribute('title')) {
+            if ((el.getAttribute('title')) && (!el.readOnly/*Comcode input UI*/)) {
                 el.title = '';
             }
 

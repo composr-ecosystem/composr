@@ -582,7 +582,6 @@
             if (comcode.onmouseout) {
                 return;
             }
-            comcode.origTitle = comcode.title;
             comcode.onmouseout = function () {
                 $cms.ui.deactivateTooltip(this);
             };
@@ -601,11 +600,7 @@
                     if (event.clientY) {
                         eventCopy.clientY = 3000;
                     }
-
-                    if (this.origTitle != null) {
-                        $cms.ui.repositionTooltip(this, eventCopy);
-                        this.title = this.origTitle;
-                    }
+                    $cms.ui.repositionTooltip(this, eventCopy);
                 }
             };
             comcode.onmousedown = function (event) {
@@ -632,11 +627,11 @@
                     if (this.id === '') {
                         this.id = 'comcode_tag_' + Math.round(Math.random() * 10000000);
                     }
-                    var tagType = (this.origTitle ? this.origTitle : this.title).replace(/^\[/, '').replace(/[= \]](.|\n)*$/, ''),
+                    var tagType = this.title.replace(/^\[/, '').replace(/[= \]](.|\n)*$/, ''),
                         url;
 
                     if (tagType === 'block') {
-                        var blockName = (this.origTitle ? this.origTitle : this.title).replace(/\[\/block\]$/, '').replace(/^(.|\s)*\]/, '');
+                        var blockName = this.title.replace(/\[\/block\]$/, '').replace(/^(.|\s)*\]/, '');
                         url = '{$FIND_SCRIPT_NOHTTP;,block_helper}?type=step2&block=' + encodeURIComponent(blockName) + '&field_name=' + fieldName + '&parse_defaults=' + encodeURIComponent(this.title) + '&save_to_id=' + encodeURIComponent(this.id) + $cms.keep();
                         url = url + '&block_type=' + (((fieldName.indexOf('edit_panel_') === -1) && (window.location.href.indexOf(':panel_') === -1)) ? 'main' : 'side');
                         $cms.ui.open($util.rel($cms.maintainThemeInLink(url)), '', 'width=750,height=auto,status=no,resizable=yes,scrollbars=yes', null, '{!INPUTSYSTEM_CANCEL;^}');
@@ -650,7 +645,7 @@
             comcode.onmouseover = function (event) { // Shows preview
                 var tagText = '';
                 if (this.localName === 'input') {
-                    tagText = this.origTitle;
+                    tagText = this.title;
                 } else {
                     tagText = $dom.html(this);
                 }
@@ -694,7 +689,6 @@
                             if (self.renderedTooltip !== undefined) {
                                 if (self.isOver) {
                                     $cms.ui.activateTooltip(self, eventCopy, self.renderedTooltip, 'auto', null, null, false, 0);
-                                    self.title = self.origTitle;
                                 }
                             }
                         }], 'data=' + encodeURIComponent('[semihtml]' + tagText.replace(/<\/?span[^>]*>/gi, '')).substr(0, 1000).replace(new RegExp(String.fromCharCode(8203), 'g'), '') + '[/semihtml]');
