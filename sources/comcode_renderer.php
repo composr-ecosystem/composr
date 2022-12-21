@@ -1429,6 +1429,7 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
 
             $temp_tpl = directive_tempcode('BOX', $embed, [$converted_title, make_string_tempcode($type), $width, make_string_tempcode($options), make_string_tempcode($meta), make_string_tempcode($links), new Tempcode(), make_string_tempcode($class)]);
             if (isset($attributes['float'])) {
+                // We all float down here
                 $temp_tpl = do_template('FLOATER', ['_GUID' => '54e8fc9ec1e16cfc5c8824e22f1e8745', 'FLOAT' => $attributes['float'], 'CONTENT' => $temp_tpl]);
             }
             break;
