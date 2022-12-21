@@ -2481,7 +2481,7 @@
 
         var left = 0,
             top = 0,
-            outsideFixedWidth = !$dom.contains($dom.$('.global-middle'), popupEl);
+            outsideFixedWidth = ($dom.$('.global-middle') !== null) && (!$dom.contains($dom.$('.global-middle'), popupEl));
 
         // Our own position computation as we are positioning relatively, as things expand out
         if ($dom.isCss(popupEl.parentElement.parentElement, 'position', 'absolute')) {
