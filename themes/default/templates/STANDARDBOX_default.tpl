@@ -31,9 +31,6 @@
 		{+START,IF_IN_ARRAY,OPTIONS,tray_closed}
 		<div class="toggleable-tray js-tray-content" style="display: none">
 		{+END}
-		{+START,IF_NOT_IN_ARRAY,OPTIONS,tray_open,tray_closed}
-		<div class="js-tray-content">
-		{+END}
 			{+START,IF_NOT_IN_ARRAY,OPTIONS,tray_open,tray_closed}{+START,IF_NON_EMPTY,{TITLE}}
 				<h3>{TITLE}</h3>
 			{+END}{+END}
@@ -57,6 +54,8 @@
 					{+END}
 				</ul>
 			{+END}
+		{+START,IF_IN_ARRAY,OPTIONS,tray_open,tray_closed}
 		</div>
+		{+END}
 	</div>
 </div>
