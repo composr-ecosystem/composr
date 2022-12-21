@@ -1231,7 +1231,7 @@
             return;
         }
 
-        if (window.jumperPos[id] === (window.jumperParts[id].length - 1)) {
+        if (window.jumperPos[id] >= (window.jumperParts[id].length)) {
             window.jumperPos[id] = 0;
         }
         var el = document.getElementById(id);
