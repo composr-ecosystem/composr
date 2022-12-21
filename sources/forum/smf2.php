@@ -438,7 +438,7 @@ class Forum_driver_smf2 extends Forum_driver_base
     }
 
     /**
-     * Get the forum ID from a forum name.
+     * Get the forum ID from a forum name. Numeric forum names are considered to be usable as IDs.
      *
      * @param  SHORT_TEXT $forum_name The forum name
      * @return ?integer The forum ID (null: not found)
