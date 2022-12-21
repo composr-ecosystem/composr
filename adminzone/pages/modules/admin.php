@@ -538,7 +538,7 @@ class Module_admin
                                                     continue;
                                                 }
 
-                                                if (is_object($i)) {
+                                                if (is_object($i[2])) {
                                                     continue; // Tempcode URL
                                                 }
 
