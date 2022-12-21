@@ -681,12 +681,12 @@ function referrer_report_script($ret = false)
             foreach ($data_row as $key => $val) {
                 if (($key == do_lang('REFEREE')) || ($key == do_lang('TYPE_REFERRER'))) {
                     if ($val == '') {
-                        $val = do_lang('UNKNOWN');
+                        $val = do_lang_tempcode('UNKNOWN');
                     } else {
                         $val = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink(intval($val));
                     }
                 }
-                $data_row[$key] = escape_html($val);
+                $data_row[$key] = $val;
             }
             $result_entries->attach(results_entry($data_row, false));
         }

@@ -46,7 +46,7 @@ class Block_main_ebay
         $info = [];
         $info['cache_on'] = <<<'PHP'
         [
-            empty($map['title']) ? do_lang('BLOCK_EBAY_TITLE') : $map['title'],
+            empty($map['title']) ? '' : $map['title'],
             empty($map['max_entries']) ? 4 : intval($map['max_entries']),
             empty($map['image_size']) ? 80 : intval($map['image_size']),
             empty($map['domain']) ? 0 : intval(preg_replace('#=.*$#', '', $map['domain'])),
