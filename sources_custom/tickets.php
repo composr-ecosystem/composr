@@ -15,6 +15,10 @@
 
 function get_composr_support_timings_wrap($open, $topic_id, $ticket_type_name, $say_more = false)
 {
+    if (get_forum_type() != 'cns') {
+        return new Tempcode();
+    }
+
     $posts = $GLOBALS['FORUM_DB']->query_select('f_posts', ['p_poster', 'p_time'], ['p_topic_id' => $topic_id], 'ORDER BY p_time DESC,id DESC');
     $most_recent_post = null;
     foreach ($posts as $post) {
@@ -36,6 +40,10 @@ function get_composr_support_timings_wrap($open, $topic_id, $ticket_type_name, $
 
 function get_composr_support_timings($open, $member_id, $ticket_type_name, $last_time, $say_more = false)
 {
+    if (get_forum_type() != 'cns') {
+        return new Tempcode();
+    }
+
     $d = new Tempcode();
 
     if (!$open) {
