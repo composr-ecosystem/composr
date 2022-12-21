@@ -32,7 +32,7 @@ class Hook_page_groupings_community_billboard
         }
 
         return [
-            ['audit', 'menu/adminzone/audit/community_billboard', ['admin_community_billboard', ['type' => 'browse'], get_module_zone('admin_community_billboard')], do_lang_tempcode('community_billboard:COMMUNITY_BILLBOARD'), 'community_billboard:DOC_COMMUNITY_BILLBOARD'],
+            ['setup', 'menu/adminzone/audit/community_billboard', ['admin_community_billboard', ['type' => 'browse'], get_module_zone('admin_community_billboard')], do_lang_tempcode('community_billboard:COMMUNITY_BILLBOARD'), 'community_billboard:DOC_COMMUNITY_BILLBOARD'],
         ];
     }
 }

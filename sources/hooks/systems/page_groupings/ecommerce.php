@@ -38,7 +38,6 @@ class Hook_page_groupings_ecommerce
 
         $ret = [
             ['setup', 'menu/adminzone/audit/ecommerce/ecommerce', ['admin_ecommerce', [], get_module_zone('admin_ecommerce')], do_lang_tempcode('ecommerce:ECOMMERCE'), 'ecommerce:DOC_ECOMMERCE'],
-            ['setup', 'menu/adminzone/setup/ecommerce_products', ['admin_ecommerce', ['type' => 'prices'], get_module_zone('admin_ecommerce')], do_lang_tempcode('ecommerce:ECOM_PRODUCTS_MANAGE_INVENTORY'), 'ecommerce:DOC_ECOMMERCE'],
             ['audit', 'menu/adminzone/audit/ecommerce/ecommerce', ['admin_ecommerce_reports', ['type' => 'browse'], get_module_zone('admin_ecommerce_reports')], do_lang_tempcode('ecommerce:ECOMMERCE'), 'ecommerce:DOC_ECOMMERCE'],
             ['rich_content', 'menu/rich_content/ecommerce/purchase', ['purchase', [], get_module_zone('purchase')], do_lang_tempcode('ecommerce:PURCHASING')],
         ];

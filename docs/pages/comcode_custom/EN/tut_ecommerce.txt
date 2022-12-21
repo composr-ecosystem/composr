@@ -868,7 +868,7 @@ There are configuration options to define whether the fields are enabled, in Adm
 
 Additionally by default these fields are not enabled for direct editing by users, so you would need to edit them to enable 'Owner viewable' and 'Owner settable' for each field.
 You can find and edit the fields from:
-Admin Zone > Security > Members > Custom Profile Fields > Edit Custom Profile Field
+Admin Zone > Setup > Custom Profile Fields > Edit Custom Profile Field
 
 The configuration options also impact what shipping/billing address fields show, but subtly:
  - County input:

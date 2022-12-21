@@ -58,19 +58,17 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
 
         $ret = [];
 
-        if (!$be_deferential && !$support_crosslinks) {
-            $ret += [
-                'browse' => ['CUSTOM_PROFILE_FIELDS', 'menu/adminzone/tools/users/custom_profile_fields'],
-            ];
-        }
-
         $ret += [
-            'stats' => ['CUSTOM_PROFILE_FIELD_STATS', 'menu/adminzone/tools/users/custom_profile_fields'],
+            'browse' => ['CUSTOM_PROFILE_FIELDS', 'menu/adminzone/tools/users/custom_profile_fields'],
         ];
 
         if (!$be_deferential && !$support_crosslinks) {
-            $ret += parent::get_entry_points();
+            $ret += [
+                'stats' => ['CUSTOM_PROFILE_FIELD_STATS', 'menu/adminzone/tools/users/custom_profile_fields'],
+            ];
         }
+
+        $ret += parent::get_entry_points();
 
         if (has_privilege($member_id, 'mass_import')) {
             $ret += [

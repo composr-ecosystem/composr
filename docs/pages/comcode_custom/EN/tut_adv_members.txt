@@ -63,7 +63,7 @@ Side note: If you (as staff) edit the profile of another member then none of the
 [media width="150" description="Adding a Custom Profile Field" float="right"]data_custom/images/docs/tut_adv_members/adv_members_cpf.png[/media]
 {!cns:DOC_CUSTOM_PROFILE_FIELDS} A 'locked' Custom Profile Field can not be edited or deleted, as it is used by Composr's own code.
 
-You can manage Custom Profile Fields from: Admin Zone > Security > Members > Custom Profile Fields.
+You can manage Custom Profile Fields from: Admin Zone > Setup > Custom Profile Fields.
 You can delete a Custom Profile Field from the bottom of its edit form.
 
 There are a number of Custom Profile Field options that you may set that allow CPFs to function for a number of different purposes, including:

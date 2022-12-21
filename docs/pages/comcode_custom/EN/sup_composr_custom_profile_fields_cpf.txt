@@ -14,7 +14,7 @@ Lets imagine we are going to create a Composr forum for dog lovers, typical info
 [*] Dogs Gender
 [/list]
 
-Everything we do will be in Admin Zone > Security > Members > Custom Profile Fields.
+Everything we do will be in Admin Zone > Setup > Custom Profile Fields.
 
 [media thumb="0" description="Add a Custom Profile Field"]data_custom/images/docs/sup_composr_custom_profile_fields_cpf/f4de0ce6ba1cefe7152660f0846786ce.png[/media]
 
