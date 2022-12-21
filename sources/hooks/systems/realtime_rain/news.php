@@ -44,7 +44,7 @@ class Hook_realtime_rain_news
             $rows = $GLOBALS['SITE_DB']->query('SELECT title,n.id,nc_img,submitter AS member_id,date_and_time AS timestamp,news_category FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news n LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news_categories c ON c.id=n.news_category WHERE date_and_time BETWEEN ' . strval($from) . ' AND ' . strval($to));
 
             foreach ($rows as $row) {
-                if (!has_category_access(get_member(), 'news', $row['news_category'])) {
+                if (!has_category_access(get_member(), 'news', strval($row['news_category']))) {
                     continue;
                 }
 
