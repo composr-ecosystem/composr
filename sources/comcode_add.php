@@ -135,6 +135,8 @@ function _get_details_comcode_tags() : array
     if ((get_forum_type() == 'cns') && (addon_installed('custom_comcode'))) {
         $custom_tags = $GLOBALS['FORUM_DB']->query_select('custom_comcode', ['tag_title', 'tag_description', 'tag_example', 'tag_parameters', 'tag_replace', 'tag_tag', 'tag_dangerous_tag', 'tag_block_tag', 'tag_textual_tag'], ['tag_enabled' => 1]);
         foreach ($custom_tags as $tag) {
+            $tag['tag_title'] = get_translated_text($tag['tag_title']);
+            $tag['tag_description'] = get_translated_text($tag['tag_description']);
             $custom_tag_list[$tag['tag_tag']] = $tag;
             if ($tag['tag_textual_tag'] == 1) {
                 $TEXTUAL_TAGS[$tag['tag_tag']] = 1;
@@ -146,6 +148,8 @@ function _get_details_comcode_tags() : array
         if (is_on_multi_site_network()) {
             $custom_tags = $GLOBALS['SITE_DB']->query_select('custom_comcode', ['tag_title', 'tag_description', 'tag_example', 'tag_parameters', 'tag_replace', 'tag_tag', 'tag_dangerous_tag', 'tag_block_tag', 'tag_textual_tag'], ['tag_enabled' => 1]);
             foreach ($custom_tags as $tag) {
+                $tag['tag_title'] = get_translated_text($tag['tag_title']);
+                $tag['tag_description'] = get_translated_text($tag['tag_description']);
                 $custom_tag_list[$tag['tag_tag']] = $tag;
                 if ($tag['tag_textual_tag'] == 1) {
                     $TEXTUAL_TAGS[$tag['tag_tag']] = 1;

@@ -1205,7 +1205,7 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
             }
 
             $_parts = [];
-            krsort($attributes);
+            ksort($attributes);
             foreach ($attributes as $num => $val) {
                 $_parts[] = ['NUM' => strval($num), 'VAL' => $val];
             }

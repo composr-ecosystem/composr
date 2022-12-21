@@ -936,7 +936,7 @@
     function getSelectedText(element) {
         if ($cms.form.isWysiwygField(element)) {
             var editor = window.wysiwygEditors[element.id];
-            return window.getWYSISWYGSelectedHtml(editor);
+            return getWYSISWYGSelectedHtml(editor);
         }
         return getTextareaSelectedText(element);
     }
