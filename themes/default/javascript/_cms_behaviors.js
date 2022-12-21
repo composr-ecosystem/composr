@@ -700,6 +700,19 @@
         }
     };
 
+    // Convert abbr title attributes into Composr tooltips
+    $cms.behaviors.abbrTooltips = {
+        attach: function (context) {
+            if (!$cms.configOption('js_overlays')) {
+                return;
+            }
+
+            $util.once($dom.$$$(context, 'abbr:not([data-cms-rich-tooltip])'), 'behavior.abbrTooltips').forEach(function (abbr) {
+                convertTooltip(abbr);
+            });
+        }
+    };
+
     // Implementation for [data-cms-tooltip="{ ...options... }"]
     $cms.behaviors.cmsTooltip = {
         attach: function (context) {
