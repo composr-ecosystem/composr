@@ -116,7 +116,7 @@ function _get_details_comcode_tags() : array
     unset($VALID_COMCODE_TAGS['section_controller']);
     unset($VALID_COMCODE_TAGS['tab']);
     unset($VALID_COMCODE_TAGS['big_tab']);
-    unset($VALID_COMCODE_TAGS['big_tab_cntroller']);
+    unset($VALID_COMCODE_TAGS['big_tab_controller']);
     unset($VALID_COMCODE_TAGS['acronym']);
     unset($VALID_COMCODE_TAGS['block']);
     unset($VALID_COMCODE_TAGS['attachment_safe']);
@@ -481,7 +481,7 @@ function comcode_helper_script_step2() : object
     // Find tag; with some jiggery-pokery for the 'attachment_safe' tag
     $actual_tag = get_param_string('tag');
     if ((!isset($tag_list[$actual_tag])) && (!isset($custom_tag_list[$actual_tag])) && ($actual_tag != 'attachment_safe')) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        warn_exit(do_lang_tempcode('TAG_CANNOT_BE_VISUALLY_EDITED', escape_html($actual_tag)));
     }
     $tag = ($actual_tag == 'attachment_safe') ? 'attachment' : $actual_tag;
 
@@ -859,7 +859,7 @@ function _try_for_special_comcode_tag_all_params_ui(string $tag, string $actual_
                 $fields->attach(form_input_line_multi(_get_comcode_tag_param_name($actual_tag, $param), protect_from_escaping($description), $param, get_defaults_multi($defaults, $param), 2));
             } elseif ($param == 'switch_time') {
                 $description = do_lang('COMCODE_TAG_' . $tag . '_PARAM_' . $param);
-                $default = array_key_exists($param, $defaults) ? $defaults[$param] : get_param_string('default_' . $param, '6000');
+                $default = array_key_exists($param, $defaults) ? $defaults[$param] : get_param_string('default_' . $param, '0');
                 $fields->attach(form_input_integer(_get_comcode_tag_param_name($actual_tag, $param), protect_from_escaping($description), $param, intval($default), false));
             }
         }

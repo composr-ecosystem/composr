@@ -264,6 +264,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         WORDFILTER_MATCH_TYPE_full
         WORDFILTER_MATCH_TYPE_prefix
         WORDFILTER_MATCH_TYPE_substring
+        TAG_CANNOT_BE_VISUALLY_EDITED
         CURVED_BORDERS
         CONFIG_OPTION_curved_borders
         INNER_BACKGROUND

@@ -785,7 +785,7 @@
                 html = $cms.filter.html(text).replace(new RegExp('\\\\n', 'gi'), '<br />');
             }
 
-            window.wysiwygEditors[element.id].setData(html);
+            window.wysiwygEditors[element.id].document.getBody().setHtml(html);
             window.wysiwygEditors[element.id].updateElement();
 
             setTimeout(function () {
