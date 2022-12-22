@@ -53,7 +53,7 @@ function find_reported_content_ticket_type() : int
 {
     static $ticket_type_id = null;
     if ($ticket_type_id === null) {
-        $ticket_type_id = $GLOBALS['SITE_DB']->query_select_value_if_there('ticket_types t', 't.id', [$GLOBALS['SITE_DB']->translate_field_ref('ticket_type_name') => do_lang('TT_REPORTED_CONTENT')]);
+        $ticket_type_id = $GLOBALS['SITE_DB']->query_select_value_if_there('ticket_types', 'id', [$GLOBALS['SITE_DB']->translate_field_ref('ticket_type_name') => do_lang('TT_REPORTED_CONTENT')]);
         if ($ticket_type_id === null) {
             $ticket_type_id = post_param_integer('ticket_type_id', null);
         }

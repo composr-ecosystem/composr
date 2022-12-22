@@ -45,7 +45,7 @@ class Block_main_sortable_table
     {
         $info = [];
         $info['cache_on'] = <<<'PHP'
-        [$map, @filemtime(get_custom_file_base() . '/uploads/website_specific/' . filter_naughty($map['param']))]
+        [$map, empty($map['param']) ? false : @filemtime(get_custom_file_base() . '/uploads/website_specific/' . filter_naughty($map['param']))]
 PHP;
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT;
         $info['ttl'] = 60 * 60 * 24 * 365 * 5;

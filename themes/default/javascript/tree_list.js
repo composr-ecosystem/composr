@@ -330,8 +330,7 @@
                                 element.selectedTitle += node.getAttribute('title');
                             }
 
-                            $dom.changeValue(element, newVal);
-                            //element.value = newVal;
+                            $dom.value(element, newVal);
                         }
                     }
                     nodeSelf.appendChild(newHtml);
@@ -681,7 +680,6 @@
                     element.selectedTitle = '';
                 }
 
-                //element.value = newVal;
                 $dom.changeValue(element, newVal);
             }
 
