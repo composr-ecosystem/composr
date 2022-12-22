@@ -92,7 +92,7 @@ class Hook_addon_registry_comcode_flip_tag
 
 [code="Comcode"][flip="A" final_color="FF0000" speed="400"]B[/flip][/code]
 
-The above example creates a flip between text A and text B, taking 400ms. This is designed to use short messages or one word answers. If you want to change any of the standard CSS for this addon you can edit the flip.css file. Note: flip uses jQuery for the flip effect, so this example bundles jQuery and shows how it can be used.';
+The above example creates a flip between text A and text B, taking 400ms. This is designed to use short messages or one word answers. If you want to change any of the standard CSS for this addon you can edit the [tt]flip.css[/tt] file. Note: this addon serves as a good example of how to use a jQuery plugin.';
     }
 
     /**

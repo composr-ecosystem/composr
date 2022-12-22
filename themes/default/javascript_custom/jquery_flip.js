@@ -205,11 +205,13 @@
         faceElementCss.width = '100%';
       }
 
+      /* Removed by ChrisG as was breaking Chrome
       // Back face always visible on Chrome #39
       if ((window.chrome || (window.Intl && Intl.v8BreakIterator)) && 'CSS' in window) {
         //Blink Engine, add preserve-3d to self.element
         elementCss["-webkit-transform-style"] = "preserve-3d";
       }
+      */
 
 
       faces.css(faceElementCss).find('*').css({
