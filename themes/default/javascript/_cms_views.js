@@ -532,7 +532,7 @@
                     setTimeout(function () {
                         if (self.el) {
                             $dom.on(self.el, 'click', function (e) {
-                                if (!self.containerEl.contains(e.target)) {
+                                if ((self.overlayEl != e.target) && (!self.overlayEl.contains(e.target))) {
                                     // Background overlay clicked
                                     self.option('finished');
                                 }
@@ -900,6 +900,7 @@
                 var wasFixed = (this.el.style.position === 'fixed');
 
                 this.el.style.position = 'absolute';
+                this.el.style.width = '100%';
                 this.el.style.height = ((topPageHeight > (detectedBoxHeight + bottomGap + boxPosTop)) ? topPageHeight : (detectedBoxHeight + bottomGap + boxPosTop)) + 'px';
                 this.topWindow.document.body.style.overflow = '';
 

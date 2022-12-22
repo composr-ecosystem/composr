@@ -234,8 +234,6 @@ class Hook_addon_registry_core_rich_media
             'themes/default/images/icons_monochrome/carousel/index.html',
             'themes/default/images/big_tabs/index.html',
             'themes/default/images/big_tabs/controller_button_active.svg',
-            'themes/default/images/big_tabs/controller_button_top_active.svg',
-            'themes/default/images/big_tabs/controller_button_top.svg',
             'themes/default/images/big_tabs/controller_button.svg',
             'sources/hooks/systems/notifications/member_mention.php',
             'sources/member_mentions.php',

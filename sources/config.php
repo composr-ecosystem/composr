@@ -277,8 +277,6 @@ function get_theme_option(string $name, ?string $default = null, ?string $theme 
                 $_default = [
                     'big_tabs/controller_button',
                     'big_tabs/controller_button_active',
-                    'big_tabs/controller_button_top',
-                    'big_tabs/controller_button_top_active',
                     'button1',
                     'button2',
                     'cns_emoticons/none',

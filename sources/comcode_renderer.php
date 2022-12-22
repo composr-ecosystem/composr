@@ -943,7 +943,7 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
         case 'big_tab_controller':
             $tabs = explode(',', $embed->evaluate());
             if (!array_key_exists('switch_time', $attributes)) {
-                $attributes['switch_time'] = '6000';
+                $attributes['switch_time'] = '0';
             }
             $temp_tpl = do_template('COMCODE_BIG_TABS_CONTROLLER', [
                 '_GUID' => 'b6cc1835b688f086e34837e3c345ba0a',

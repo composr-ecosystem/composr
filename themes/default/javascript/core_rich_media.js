@@ -632,15 +632,13 @@
         ComcodeBigTabsController.base(this, 'constructor', arguments);
 
         var passId = this.passId = $cms.filter.id(params.passId),
-            id = this.id = passId + ((params.bigTabSets === undefined) ? '' : ('_' + params.bigTabSets)),
+            id = this.id = passId + ((params.bigTabSets === undefined) ? '' : ('-' + params.bigTabSets)),
             sections = this.sections = params.tabs.map($cms.filter.id),
             switchTime = this.switchTime = params.switchTime;
 
         /* Precache images */
         new Image().src = $util.srl('{$IMG;,big_tabs/controller_button}');
         new Image().src = $util.srl('{$IMG;,big_tabs/controller_button_active}');
-        new Image().src = $util.srl('{$IMG;,big_tabs/controller_button_top_active}');
-        new Image().src = $util.srl('{$IMG;,big_tabs/controller_button_top}');
 
         if (switchTime !== undefined) {
             flipPage(0, id, sections, switchTime);
@@ -1089,17 +1087,19 @@
             if (el) {
                 el.style.display = (i === currentPos) ? 'none' : 'inline-block';
             }
+
             el = document.getElementById(id + '-btgoto-' + sections[i]);
             if (el) {
                 el.classList.toggle('big-tab-active', (i === currentPos));
                 el.classList.toggle('big-tab-inactive', (i !== currentPos));
             }
+
             el = document.getElementById(id + '-isat-' + sections[i]);
             if (el) {
                 el.style.display = (i === currentPos) ? 'inline-block' : 'none';
             }
-            el = document.getElementById(id + '-section-' + sections[i]);
 
+            el = document.getElementById(id + '-section-' + sections[i]);
             if (el) {
                 if (el.classList.contains('comcode-big-tab')) {
                     if (i === currentPos) {
@@ -1114,16 +1114,10 @@
                         el.style.zIndex = -10;
                         el.style.top = '0';
                         el.parentNode.style.position = 'relative';
-
-                        $dom.fadeOut(el);
                     }
                     el.style.display = 'block';
                 } else {
                     el.style.display = (i === currentPos) ? 'block' : 'none';
-
-                    if (i === currentPos) {
-                        $dom.fadeIn(el);
-                    }
                 }
             }
         }
@@ -1134,7 +1128,7 @@
 
                 for (i = 0; i < sections.length; i++) {
                     el = document.getElementById(id + '-section-' + sections[i]);
-                    if ((el.style.display === 'block') && (el.style.position !== 'absolute')) {
+                    if ((el) && (el.style.display === 'block') && (el.style.position !== 'absolute')) {
                         nextPage = i + 1;
                     }
                 }

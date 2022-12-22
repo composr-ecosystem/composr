@@ -10,12 +10,11 @@
 
 .comcode-big-tab-controller a {
 	display: block;
-	height: 41px;
-	font-size: 0.92em;
+	height: 35px;
 	outline: 0;
 	font-weight: bold;
-	line-height: 40px;
-	padding-left: 16px !important;
+	line-height: 35px;
+	padding-left: 12px !important;
 	margin-bottom: 2px !important;
 	background-size: 186px 41px !important;
 }
@@ -28,23 +27,18 @@
 	background: url('{$IMG_INLINE;,big_tabs/controller_button_active}') no-repeat !important;
 }
 
-.big-tab-first.big-tab-inactive a {
-	background: url('{$IMG_INLINE;,big_tabs/controller_button_top}') no-repeat !important;
-}
-
-.big-tab-first.big-tab-active a, .big-tab-first.big-tab-inactive a:hover {
-	background: url('{$IMG_INLINE;,big_tabs/controller_button_top_active}') no-repeat !important;
+.big-tab-inactive:not(.big-tab-first), .big-tab-active:not(.big-tab-first) {
+	margin-top: 10px;
 }
 
 .comcode-big-tab {
-	padding: 1em;
 	border: 2px solid {$GET,pale_border};
 	background-color: {$GET,area_background};
 }
 /*{+START,CSS_MODE,mobile}*/
 	.comcode-big-tab {
 		float: left;
-		margin: 1em 0;
+		margin: 0;
 	}
 /*{+END}*/
 /*{+START,CSS_MODE,desktop}*/
