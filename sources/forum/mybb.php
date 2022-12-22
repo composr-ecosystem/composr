@@ -377,7 +377,7 @@ class Forum_driver_mybb extends Forum_driver_base
         $type = $this->get_member_row_field($member_id, 'avatartype');
         $filename = $this->get_member_row_field($member_id, 'avatar');
 
-        switch ($type) {
+        switch (strval($type)) {
             // Type could be: 'gallery', 'upload','remote'
             case 'gallery': // Avatar from Avatars Gallery
                 return get_forum_base_url() . '/' . $filename;
@@ -607,6 +607,9 @@ class Forum_driver_mybb extends Forum_driver_base
             $forum_id = intval($forum);
         } else {
             $forum_id = $this->forum_id_from_name($forum);
+            if ($forum_id === null) {
+                return null;
+            }
         }
 
         return $this->db->query_value_if_there('SELECT tid FROM ' . $this->db->get_table_prefix() . 'threads WHERE fid=' . strval($forum_id) . ' AND (' . db_string_equal_to('subject', $topic_identifier) . ' OR subject LIKE \'' . db_encode_like('%: #' . $topic_identifier) . '\')');
