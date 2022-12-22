@@ -506,8 +506,8 @@ class Forum_driver_smf2 extends Forum_driver_base
         $is_new = ($topic_id === null);
         if ($is_new) {
             $topic_id = $this->db->query_insert('topics', ['id_board' => $forum_id, 'id_first_msg' => mt_rand(0, mt_getrandmax()), 'id_last_msg' => mt_rand(0, mt_getrandmax()), 'id_member_started' => $member_id, 'id_member_updated' => $member_id, 'num_replies' => 2], true);
-            $home_link = hyperlink($content_url, $content_title, false, true);
-            $post_id = $this->db->query_insert('messages', ['id_topic' => $topic_id, 'id_board' => $forum_id, 'poster_time' => $time, 'id_member' => $this->get_guest_id(), 'subject' => $content_title . ', ' . $topic_identifier_encapsulation_prefix . ': #' . $topic_identifier, 'poster_name' => do_lang('SYSTEM', '', '', '', get_site_default_lang()), 'poster_email' => get_option('staff_address'), 'poster_ip' => '127.0.0.1', 'modified_name' => '', 'body' => do_lang('SPACER_POST', $home_link->evaluate(), '', '', get_site_default_lang())], true);
+            $home_link = '[url]' . $content_url . '[/url]';
+            $post_id = $this->db->query_insert('messages', ['id_topic' => $topic_id, 'id_board' => $forum_id, 'poster_time' => $time, 'id_member' => $this->get_guest_id(), 'subject' => $content_title . ', ' . $topic_identifier_encapsulation_prefix . ': #' . $topic_identifier, 'poster_name' => do_lang('SYSTEM', '', '', '', get_site_default_lang()), 'poster_email' => get_option('staff_address'), 'poster_ip' => '127.0.0.1', 'modified_name' => '', 'body' => do_lang('SPACER_POST', $home_link, '', '', get_site_default_lang())], true);
 
             $this->db->query('UPDATE ' . $this->db->get_table_prefix() . 'boards SET num_posts=(num_posts+1), num_topics=(num_topics+1) WHERE id_board=' . strval($forum_id), 1);
             $this->db->query_update('topics', ['id_first_msg' => $post_id], ['id_topic' => $topic_id], '', 1);

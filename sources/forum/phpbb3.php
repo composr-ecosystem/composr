@@ -776,8 +776,8 @@ class Forum_driver_phpbb3 extends Forum_driver_base
             $map = ['forum_id' => $forum_id, 'topic_title' => $content_title . ', ' . $topic_identifier_encapsulation_prefix . ': #' . $topic_identifier, 'topic_poster' => $member_id, 'topic_time' => $time, 'topic_views' => 0, 'topic_status' => 0, 'topic_type' => 0, 'topic_first_post_id' => 0, 'topic_last_post_id' => 0, 'topic_moved_id' => 0];
             $topic_id = $this->db->query_insert('topics', $map, true);
 
-            $home_link = hyperlink($content_url, $content_title, false, true);
-            $map = ['topic_id' => $topic_id, 'forum_id' => $forum_id, 'poster_id' => -1, 'post_text' => do_lang('SPACER_POST', $home_link->evaluate(), '', '', get_site_default_lang()), 'post_time' => $time, 'poster_ip' => $local_ip, 'post_username' => $this->get_username($member_id), 'enable_bbcode' => 1, 'enable_smilies' => 1, 'enable_sig' => 1, 'post_edit_time' => 0, 'post_edit_count' => 0];
+            $home_link = '[url]' . $content_url . '[/url]';
+            $map = ['topic_id' => $topic_id, 'forum_id' => $forum_id, 'poster_id' => -1, 'post_text' => do_lang('SPACER_POST', $home_link, '', '', get_site_default_lang()), 'post_time' => $time, 'poster_ip' => $local_ip, 'post_username' => $this->get_username($member_id), 'enable_bbcode' => 1, 'enable_smilies' => 1, 'enable_sig' => 1, 'post_edit_time' => 0, 'post_edit_count' => 0];
             $post_id = $this->db->query_insert('posts', $map, true);
             $this->db->query_update('topics', ['topic_first_post_id' => $post_id], ['topic_id' => $topic_id], '', 1);
             $this->db->query('UPDATE ' . $this->db->get_table_prefix() . 'forums SET forum_topics_approved=(forum_topics_approved+1),forum_posts_approved=(forum_posts_approved+1) WHERE forum_id=' . strval($forum_id), 1);

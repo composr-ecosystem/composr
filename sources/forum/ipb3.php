@@ -896,8 +896,8 @@ class Forum_driver_ipb3 extends Forum_driver_base
         $is_new = ($topic_id === null);
         if ($is_new) {
             $topic_id = $this->db->query_insert('topics', ['moved_to' => 0, 'pinned' => 0, 'views' => 0, 'description' => $topic_identifier_encapsulation_prefix . ': #' . $topic_identifier, 'title' => $this->ipb_escape($content_title), 'state' => 'open', 'posts' => 1, 'starter_id' => $member_id, 'start_date' => $time, 'icon_id' => 0, 'starter_name' => $this->ipb_escape($username), 'poll_state' => 0, 'last_vote' => 0, 'forum_id' => $forum_id, 'approved' => 1, 'author_mode' => 1], true);
-            $home_link = hyperlink($content_url, $content_title, false, true);
-            $this->db->query_insert('posts', ['author_id' => $member_id, 'author_name' => $this->ipb_escape($username), 'ip_address' => '127.0.0.1', 'post_date' => $time, 'icon_id' => 0, 'post' => do_lang('SPACER_POST', $home_link->evaluate(), '', '', get_site_default_lang()), 'queued' => 0, 'topic_id' => $topic_id, 'new_topic' => 1, 'post_htmlstate' => 1, 'post_title' => $post_title, 'post_key' => md5(microtime(false))]);
+            $home_link = '[url]' . $content_url . '[/url]';
+            $this->db->query_insert('posts', ['author_id' => $member_id, 'author_name' => $this->ipb_escape($username), 'ip_address' => '127.0.0.1', 'post_date' => $time, 'icon_id' => 0, 'post' => do_lang('SPACER_POST', $home_link, '', '', get_site_default_lang()), 'queued' => 0, 'topic_id' => $topic_id, 'new_topic' => 1, 'post_htmlstate' => 1, 'post_title' => $post_title, 'post_key' => md5(microtime(false))]);
             $this->db->query('UPDATE ' . $this->db->get_table_prefix() . 'forums SET topics=(topics+1) WHERE id=' . strval($forum_id), 1);
             $first_post = true;
         } else {

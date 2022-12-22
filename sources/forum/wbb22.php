@@ -471,8 +471,8 @@ class Forum_driver_wbb22 extends Forum_driver_base
         $is_new = ($topic_id === null);
         if ($is_new) {
             $topic_id = $this->db->query_insert('threads', ['topic' => $content_title . ', ' . $topic_identifier_encapsulation_prefix . ': #' . $topic_identifier, 'starttime' => $time, 'boardid' => $forum_id, 'closed' => 0, 'starter' => $username, 'starterid' => $member_id, 'lastposter' => $username, 'lastposttime' => $time, 'visible' => 1], true);
-            $home_link = hyperlink($content_url, $content_title, false, true);
-            $this->db->query_insert('posts', ['threadid' => $topic_id, 'username' => do_lang('SYSTEM', '', '', '', get_site_default_lang()), 'userid' => 0, 'posttopic' => '', 'posttime' => $time, 'message' => do_lang('SPACER_POST', $home_link->evaluate(), '', '', get_site_default_lang()), 'allowsmilies' => 1, 'ipaddress' => '127.0.0.1', 'visible' => 1]);
+            $home_link = '[url]' . $content_url . '[/url]';
+            $this->db->query_insert('posts', ['threadid' => $topic_id, 'username' => do_lang('SYSTEM', '', '', '', get_site_default_lang()), 'userid' => 0, 'posttopic' => '', 'posttime' => $time, 'message' => do_lang('SPACER_POST', $home_link, '', '', get_site_default_lang()), 'allowsmilies' => 1, 'ipaddress' => '127.0.0.1', 'visible' => 1]);
             $this->db->query('UPDATE ' . $this->db->get_table_prefix() . 'boards SET threadcount=(threadcount+1), postcount=(postcount+1) WHERE boardid=' . strval($forum_id), 1);
         }
 

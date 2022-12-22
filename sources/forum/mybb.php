@@ -505,8 +505,8 @@ class Forum_driver_mybb extends Forum_driver_base
         if ($is_new) {
             $subject = $content_title . ', ' . $topic_identifier_encapsulation_prefix . ': #' . $topic_identifier;
             $topic_id = $this->db->query_insert('threads', ['fid' => $forum_id, 'subject' => $subject, 'username' => $username, 'uid' => $member_id, 'lastposter' => $username, 'lastposteruid' => $member_id, 'visible' => 1, 'dateline' => $time, 'lastpost' => $time], true);
-            $home_link = hyperlink($content_url, $content_title, false, true);
-            $this->db->query_insert('posts', ['fid' => $forum_id, 'tid' => $topic_id, 'username' => do_lang('SYSTEM', '', '', '', get_site_default_lang()), 'uid' => $member_id, 'message' => do_lang('SPACER_POST', $home_link->evaluate(), '', '', get_site_default_lang()), 'subject' => $subject, 'dateline' => $time, 'visible' => 1, 'ipaddress' => $ip_address]);
+            $home_link = '[url]' . $content_url . '[/url]';
+            $this->db->query_insert('posts', ['fid' => $forum_id, 'tid' => $topic_id, 'username' => do_lang('SYSTEM', '', '', '', get_site_default_lang()), 'uid' => $member_id, 'message' => do_lang('SPACER_POST', $home_link, '', '', get_site_default_lang()), 'subject' => $subject, 'dateline' => $time, 'visible' => 1, 'ipaddress' => $ip_address]);
             $this->db->query('UPDATE ' . $this->db->get_table_prefix() . 'forums SET posts=(posts+1), threads=(threads+1) WHERE fid=' . strval($forum_id), 1);
         }
 
