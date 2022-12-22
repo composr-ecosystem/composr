@@ -245,6 +245,7 @@ class Hook_addon_registry_tickets
             'LINKS' => $links,
             'ADD_TICKET_URL' => placeholder_url(),
             'TYPES' => $types,
+            'OPEN' => true,
         ]), null, '', true);
     }
 

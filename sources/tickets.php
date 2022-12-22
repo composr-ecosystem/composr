@@ -277,7 +277,7 @@ function get_tickets(array $filters = [], bool $include_first_posts = false, boo
                 $_ticket_type_name = $_ticket_type_details['ticket_type_name_trans'];
             }
 
-            if ($_ticket_type_name != get_translated_text($ticket_type_name)) {
+            if ($_ticket_type_name != get_translated_text($ticket_type_name, null, get_site_default_lang())) {
                 continue;
             }
         }

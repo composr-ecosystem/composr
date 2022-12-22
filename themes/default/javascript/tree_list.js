@@ -127,8 +127,8 @@
                         tempNode = ajaxResult.childNodes[i];
                         xml.appendChild(tempNode.cloneNode(true));
                     }
-                    html = $dom.$id(this.name + 'tree-list-c-' + expandingId);
                 }
+                html = $dom.$id(this.name + 'tree-list-c-' + expandingId);
             }
 
             attributesFullFixup(xml);

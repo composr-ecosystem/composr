@@ -1,6 +1,6 @@
 {$REQUIRE_JAVASCRIPT,core_menus}
 
-<div data-tpl="pageLinkChooser" data-tpl-params="{+START,PARAMS_JSON,NAME,PAGE_TYPE}{_*}{+END}">
+<div data-tpl="pageLinkChooser" data-tpl-params="{+START,PARAMS_JSON,NAME,PAGE_TYPE,AS_FIELD}{_*}{+END}">
 	{+START,IF_NON_PASSED_OR_FALSE,AS_FIELD}
 	<form title="{!PRIMARY_PAGE_FORM}" action="{$BASE_URL*}/index.php" method="post">
 		{$INSERT_FORM_POST_SECURITY}
