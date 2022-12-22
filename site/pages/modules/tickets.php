@@ -921,7 +921,12 @@ class Module_tickets
         if ($ticket_type_id === null) {
             if (addon_installed('stats')) {
                 require_code('stats');
-                log_stats_event(do_lang('FORM', null, null, null, get_site_default_lang()) . '-' . get_translated_text($ticket_type_details['ticket_type_name'], null, get_site_default_lang()));
+                if (is_integer($ticket_type_details['ticket_type_name'])) {
+                    $ticket_type_name_default_lang = get_translated_text($ticket_type_details['ticket_type_name'], null, get_site_default_lang());
+                } else {
+                    $ticket_type_name_default_lang = $ticket_type_details['ticket_type_name'];
+                }
+                log_stats_event(do_lang('FORM', null, null, null, get_site_default_lang()) . '-' . $ticket_type_name_default_lang);
             }
         }
 
