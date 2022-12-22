@@ -673,7 +673,6 @@ class Forum_driver_mybb extends Forum_driver_base
         $max_rows = $this->db->query_value_if_there('SELECT COUNT(*) FROM ' . $this->db->get_table_prefix() . 'threads WHERE (' . $id_list . ') ' . $topic_filter);
         $i = 0;
         $firsttime = [];
-        $username = [];
         $datetimes = [];
         $rs = [];
         while (array_key_exists($i, $rows)) {
@@ -696,8 +695,6 @@ class Forum_driver_mybb extends Forum_driver_base
             }
             $r2 = $post_rows[0];
 
-            $username[$id] = $r2['username'];
-            $username[$id] = $r2['uid']; // TODO: possible bug?
             $datetimes[$id] = $r2['dateline'];
             $rs[$id] = $r;
 
@@ -1342,12 +1339,13 @@ class Forum_driver_mybb extends Forum_driver_base
             }
 
             $lookup = $this->db->query_select_value_if_there('users', 'uid', ['loginkey' => $cookie_loginkey, 'uid' => $cookie_member]);
+
             if ($row['uid'] !== $lookup) {
                 $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
                 return $out;
             }
         } else {
-            if (!hash_equals(md5(md5($row['salt']) . $password_mixed), $row['password'])) {
+            if (!hash_equals(md5(md5($row['salt']) . md5($password_mixed)), $row['password'])) {
                 $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
                 return $out;
             }
