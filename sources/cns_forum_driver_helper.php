@@ -223,7 +223,7 @@ function _helper_make_post_forum_topic(object $this_ref, string $forum_name, str
  * - firstpost, the first post (only set if $show_first_posts was true)
  *
  * @param  object $this_ref Link to the real forum driver
- * @param  mixed $name The forum name or an array of forum IDs
+ * @param  mixed $name The forum name or forum ID or an array of forum IDs (in such an array the KEYS are forum IDs, and the values ignored)
  * @param  integer $limit The limit
  * @param  integer $start The start position
  * @param  integer $max_rows The total rows (not a parameter: returns by reference)
@@ -399,7 +399,7 @@ function not_like_spacer_posts(string $field) : string
     $langs = find_all_langs();
     foreach (array_keys($langs) as $lang) {
         if ((@filesize(get_file_base() . '/lang/' . $lang . '/global.ini')) || (@filesize(get_file_base() . '/lang_custom/' . $lang . '/global.ini'))) { // Check it's a real lang and not a stub dir
-            $ret .= ' AND ' . $field . ' NOT LIKE \'%' . db_encode_like(do_lang('SPACER_POST_MATCHER', '', '', '', $lang) . '%') . '\'';
+            $ret .= ' AND ' . $field . ' NOT LIKE \'' . db_encode_like('%' . do_lang('SPACER_POST_MATCHER', '', '', '', $lang) . '%') . '\'';
         }
     }
     return $ret;

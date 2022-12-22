@@ -161,7 +161,7 @@ function delete_message(int $member_id, int $dest_member_id, string $message)
 {
     list($realm, $x, $y) = get_loc_details($member_id);
 
-    $query = 'DELETE FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'w_messages WHERE originator_id=' . strval($dest_member_id) . ' AND location_x=' . strval($x) . ' AND location_y=' . strval($y) . ' AND location_realm=' . strval($realm) . ' AND m_message LIKE \'%' . db_encode_like($message) . '%\'';
+    $query = 'DELETE FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'w_messages WHERE originator_id=' . strval($dest_member_id) . ' AND location_x=' . strval($x) . ' AND location_y=' . strval($y) . ' AND location_realm=' . strval($realm) . ' AND m_message LIKE \'' . db_encode_like('%' . $message . '%') . '\'';
     $GLOBALS['SITE_DB']->query($query);
 }
 

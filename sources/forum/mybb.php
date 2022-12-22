@@ -625,7 +625,7 @@ class Forum_driver_mybb extends Forum_driver_base
      * - firsttitle, the title of the first post
      * - firstpost, the first post (only set if $show_first_posts was true)
      *
-     * @param  mixed $name The forum name or an array of forum IDs
+     * @param  mixed $name The forum name or forum ID or an array of forum IDs (in such an array the KEYS are forum IDs, and the values ignored)
      * @param  integer $limit The limit
      * @param  integer $start The start position
      * @param  integer $max_rows The total rows (not a parameter: returns by reference)

@@ -884,7 +884,7 @@ class Forum_driver_phpbb3 extends Forum_driver_base
         if ($forum_id === null) {
             return null;
         }
-        return $this->db->query_value_if_there('SELECT topic_id FROM ' . $this->db->get_table_prefix() . 'topics WHERE forum_id=' . strval($forum_id) . ' AND (' . db_string_equal_to('topic_title', $topic_identifier) . ' OR topic_title LIKE \'%: #' . db_encode_like($topic_identifier) . '\')');
+        return $this->db->query_value_if_there('SELECT topic_id FROM ' . $this->db->get_table_prefix() . 'topics WHERE forum_id=' . strval($forum_id) . ' AND (' . db_string_equal_to('topic_title', $topic_identifier) . ' OR topic_title LIKE \'' . db_encode_like('%: #' . $topic_identifier) . '\')');
     }
 
     /**
@@ -897,7 +897,7 @@ class Forum_driver_phpbb3 extends Forum_driver_base
      * - firsttitle, the title of the first post
      * - firstpost, the first post (only set if $show_first_posts was true)
      *
-     * @param  mixed $name The forum name or an array of forum IDs
+     * @param  mixed $name The forum name or forum ID or an array of forum IDs (in such an array the KEYS are forum IDs, and the values ignored)
      * @param  integer $limit The limit
      * @param  integer $start The start position
      * @param  integer $max_rows The total rows (not a parameter: returns by reference)

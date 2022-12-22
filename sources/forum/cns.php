@@ -279,7 +279,7 @@ class Forum_driver_cns extends Forum_driver_base
      * - firsttitle, the title of the first post
      * - firstpost, the first post (only set if $show_first_posts was true)
      *
-     * @param  mixed $name The forum name or an array of forum IDs (in such an array the KEYS are forum IDs, and the values ignored)
+     * @param  mixed $name The forum name or forum ID or an array of forum IDs (in such an array the KEYS are forum IDs, and the values ignored)
      * @param  integer $limit The limit
      * @param  integer $start The start position
      * @param  integer $max_rows The total rows (not a parameter: returns by reference)
@@ -789,11 +789,11 @@ class Forum_driver_cns extends Forum_driver_base
         $query .= '(';
         $query .= db_string_equal_to('t_description', $topic_identifier);
         if ($topic_identifier_encapsulation_prefix === null) {
-            $query .= ' OR t_description LIKE \'%: #' . db_encode_like($topic_identifier) . '\'';
+            $query .= ' OR t_description LIKE \'' . db_encode_like('%: #' . $topic_identifier) . '\'';
         } else {
             $query .= ' OR ' . db_string_equal_to('t_description', $topic_identifier_encapsulation_prefix . ': #' . $topic_identifier);
         }
-        $query .= ' OR t_cache_first_title LIKE \'% (#' . db_encode_like($topic_identifier) . ')\''; // LEGACY
+        $query .= ' OR t_cache_first_title LIKE \'' . db_encode_like('% (#' . $topic_identifier . ')') . '\''; // LEGACY
         $query .= ')';
 
         $_result = $this->db->query($query, 1, 0, false, true);

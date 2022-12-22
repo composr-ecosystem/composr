@@ -119,7 +119,7 @@ function clear_cms_autosave()
         }
     }
 
-    $sql = 'DELETE FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'autosave WHERE a_time<' . strval(time() - 60 * 60 * 24) . ' OR (a_member_id=' . strval(get_member()) . ' AND (a_key LIKE \'%' . db_encode_like(get_page_name()) . '%\'))';
+    $sql = 'DELETE FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'autosave WHERE a_time<' . strval(time() - 60 * 60 * 24) . ' OR (a_member_id=' . strval(get_member()) . ' AND (a_key LIKE \'' . db_encode_like('%' . get_page_name() . '%') . '\'))';
     $GLOBALS['SITE_DB']->query($sql);
 
     $done_once = true;

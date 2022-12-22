@@ -462,7 +462,7 @@ class Forum_driver_smf2 extends Forum_driver_base
         } else {
             $forum_id = $this->forum_id_from_name($forum);
         }
-        return $this->db->query_value_if_there('SELECT t.id_topic FROM ' . $this->db->get_table_prefix() . 'topics t LEFT JOIN ' . $this->db->get_table_prefix() . 'messages p ON t.id_first_msg=p.id_msg WHERE t.id_board=' . strval($forum_id) . ' AND (' . db_string_equal_to('subject', $topic_identifier) . ' OR subject LIKE \'%: #' . db_encode_like($topic_identifier) . '\')');
+        return $this->db->query_value_if_there('SELECT t.id_topic FROM ' . $this->db->get_table_prefix() . 'topics t LEFT JOIN ' . $this->db->get_table_prefix() . 'messages p ON t.id_first_msg=p.id_msg WHERE t.id_board=' . strval($forum_id) . ' AND (' . db_string_equal_to('subject', $topic_identifier) . ' OR subject LIKE \'' . db_encode_like('%: #' . $topic_identifier) . '\')');
     }
 
     /**
@@ -613,7 +613,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * - firsttitle, the title of the first post
      * - firstpost, the first post (only set if $show_first_posts was true)
      *
-     * @param  mixed $name The forum name or an array of forum IDs
+     * @param  mixed $name The forum name or forum ID or an array of forum IDs (in such an array the KEYS are forum IDs, and the values ignored)
      * @param  integer $limit The limit
      * @param  integer $start The start position
      * @param  integer $max_rows The total rows (not a parameter: returns by reference)
