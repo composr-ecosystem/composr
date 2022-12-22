@@ -394,8 +394,8 @@ class Module_tickets
                 }
 
                 foreach ($tickets as $topic) {
-                    if (($topic['closed']) && (has_privilege(get_member(), 'support_operator')) && (count($tickets) > 3)) {
-                        continue; // Staff don't see closed tickets
+                    if ((get_param_integer('open', 0) == 1) && ($topic['closed'])) {
+                        continue; // Skip closed tickets if we only want to see open tickets
                     }
 
                     list($ticket_type_tpl) = $this->render_ticket_row($topic);

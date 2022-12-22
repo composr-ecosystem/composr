@@ -269,8 +269,19 @@ function get_tickets(array $filters = [], bool $include_first_posts = false, boo
         }
 
         // Filter by ticket type
-        if (($ticket_type_id !== null) && (strpos($fp->evaluate(), do_lang('TICKET_TYPE') . ': ' . get_translated_text($ticket_type_name)) === false)) {
-            continue;
+        if ($ticket_type_id !== null) {
+            $_ticket_id = extract_topic_identifier($topic['description']);
+            $_ticket_type_id = $GLOBALS['SITE_DB']->query_select_value_if_there('tickets', 'ticket_type', ['ticket_id' => $_ticket_id]);
+            if ($_ticket_type_id === null) {
+                $_ticket_type_name = '';
+            } else {
+                $_ticket_type_details = get_ticket_type($_ticket_type_id);
+                $_ticket_type_name = $_ticket_type_details['ticket_type_name_trans'];
+            }
+
+            if ($_ticket_type_name != get_translated_text($ticket_type_name)) {
+                continue;
+            }
         }
 
         // Passed filters
