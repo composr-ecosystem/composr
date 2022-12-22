@@ -679,9 +679,16 @@
             $cms.filter.nl(params.text) + '</span></div>'
         );
 
-        setInterval(function () {
-            tickerTick(id, params.width);
-        }, 100 / params.speed);
+        var lastTime = 0;
+        var animationFunc = function (timestamp) {
+            if (timestamp - lastTime >= 100 / params.speed) {
+                tickerTick(id, params.width);
+                lastTime = timestamp;
+            }
+
+            requestAnimationFrame(animationFunc);
+        };
+        requestAnimationFrame(animationFunc);
     };
 
     $cms.templates.comcodeJumping = function (params, container) {
