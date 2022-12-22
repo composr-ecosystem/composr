@@ -1482,7 +1482,7 @@ class Forum_driver_mybb extends Forum_driver_base
     /**
      * Custom get member function.
      *
-     * @return mixed The member or the default guest ID (0)
+     * @return MEMBER The member or the default guest ID (0)
      */
     public function get_member()
     {
@@ -1499,7 +1499,7 @@ class Forum_driver_mybb extends Forum_driver_base
             // Is the cookie info correct
             if ($cookie_loginkey == $row['loginkey']) {
                 // If it is correct then return the cookie member
-                return $cookie_member;
+                return intval($cookie_member);
             } else {
                 // Return the default guest ID, because the login key is not correct
                 return $this->get_guest_id();

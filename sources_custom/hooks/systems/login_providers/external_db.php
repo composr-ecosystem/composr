@@ -54,7 +54,7 @@ class Hook_login_provider_external_db
                 $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($record[$username_field]);
             }
             if ($member_id !== null) {
-                external_db_user_sync($record);
+                external_db_user_sync($member_id, $record);
 
                 // Return existing user
                 return $member_id;
