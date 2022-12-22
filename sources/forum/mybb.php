@@ -641,22 +641,23 @@ class Forum_driver_mybb extends Forum_driver_base
      */
     public function show_forum_topics($name, int $limit, int $start, int &$max_rows, string $filter_topic_title = '', string $filter_topic_description = '', bool $show_first_posts = false, string $date_key = 'lasttime', bool $hot = false, bool $open_only = false) : ?array
     {
-        if (is_numeric($name)) {
+        // Build forum ID query
+        if (is_numeric($name)) { // Forum ID
             $id_list = 'fid=' . strval($name);
-        } elseif (!is_array($name)) {
+        } elseif (!is_array($name)) { // Forum name
             $id = $this->forum_id_from_name($name);
             if ($id === null) {
                 return null;
             }
             $id_list = 'fid=' . strval($id);
-        } else {
+        } else { // Array of forum IDs
             $id_list = '';
             foreach (array_keys($name) as $id) {
-                if ($id_list != '') {
-                    $id_list .= ' OR ';
-                }
                 if ($id === null) {
                     continue;
+                }
+                if ($id_list != '') {
+                    $id_list .= ' OR ';
                 }
                 $id_list .= 'fid=' . strval($id);
             }
@@ -678,75 +679,46 @@ class Forum_driver_mybb extends Forum_driver_base
 
         $rows = $this->db->query('SELECT * FROM ' . $this->db->get_table_prefix() . 'threads WHERE (' . $id_list . ')' . $topic_filter . ' ORDER BY ' . (($date_key == 'lasttime') ? 'lastpost' : 'dateline') . ' DESC', $limit, $start);
         $max_rows = $this->db->query_value_if_there('SELECT COUNT(*) FROM ' . $this->db->get_table_prefix() . 'threads WHERE (' . $id_list . ')' . $topic_filter);
-        $i = 0;
-        $firsttime = [];
-        $datetimes = [];
-        $rs = [];
-        while (array_key_exists($i, $rows)) {
-            $r = $rows[$i];
 
-            $id = $r['tid'];
+        // Generate output
+        $out = [];
+        foreach ($rows as $i => $r) {
+            $out[$i] = [];
+            $out[$i]['id'] = $r['tid'];
+            $out[$i]['num'] = $r['replies'] + 1;
+            $out[$i]['title'] = $r['subject'];
+            $out[$i]['description'] = $r['subject'];
+            $out[$i]['firsttime'] = $r['dateline'];
+            $out[$i]['firstusername'] = $r['username'];
+            $out[$i]['lastusername'] = $r['lastposter'];
+            $out[$i]['firstmemberid'] = $r['uid'];
+            $out[$i]['lastmemberid'] = $r['lastposteruid'];
+            $out[$i]['lasttime'] = $r['lastpost'];
+            $out[$i]['closed'] = (($r['closed'] == '') && ($r['visible'] == 1)) ? 0 : 1;
 
-            $r['topic_time'] = $r['dateline'];
-            $r['topic_poster'] = $r['uid'];
-            $r['last_poster'] = $r['lastposteruid'];
-            $r['last_time'] = $r['lastpost'];
+            // Filter spacer posts
+            $fp_rows = $this->db->query('SELECT subject,message,uid FROM ' . $this->db->get_table_prefix() . 'posts p WHERE message NOT LIKE \'' . db_encode_like(substr(do_lang('SPACER_POST', '', '', '', get_site_default_lang()), 0, 20) . '%') . '\' AND tid=' . strval($r['tid']), 1);
 
-            $firsttime[$id] = $r['dateline'];
-
-            $post_rows = $this->db->query('SELECT * FROM ' . $this->db->get_table_prefix() . 'posts p WHERE tid=' . strval($id) . ' AND message NOT LIKE \'' . db_encode_like(substr(do_lang('SPACER_POST', '', '', '', get_site_default_lang()), 0, 20) . '%') . '\' ORDER BY dateline DESC', 1);
-
-            if (!array_key_exists(0, $post_rows)) {
-                $i++;
+            // Filter topics with no posts
+            if (!array_key_exists(0, $fp_rows)) {
+                unset($out[$i]);
                 continue;
             }
-            $r2 = $post_rows[0];
 
-            $datetimes[$id] = $r2['dateline'];
-            $rs[$id] = $r;
-
-            $i++;
-        }
-        if ($i > 0) {
-            arsort($datetimes);
-            $i = 0;
-            $out = [];
-
-            foreach ($datetimes as $id => $datetime) {
-                $r = $rs[$id];
-
-                $out[$i] = [];
-                $out[$i]['id'] = $id;
-                $out[$i]['num'] = $r['replies'] + 1;
-                $out[$i]['title'] = $r['subject'];
-                $out[$i]['description'] = $r['subject'];
-                $out[$i]['firsttime'] = $r['dateline'];
-                $out[$i]['firstusername'] = $r['username'];
-                $out[$i]['lastusername'] = $r['lastposter'];
-                $out[$i]['firstmemberid'] = $r['uid'];
-                $out[$i]['lastmemberid'] = $r['lastposteruid'];
-                $out[$i]['lasttime'] = $r['lastpost'];
-                $out[$i]['closed'] = (($r['closed'] == '') && ($r['visible'] == 1)) ? 0 : 1;
-
-                $fp_rows = $this->db->query('SELECT subject,message,uid FROM ' . $this->db->get_table_prefix() . 'posts p WHERE message NOT LIKE \'' . db_encode_like(substr(do_lang('SPACER_POST', '', '', '', get_site_default_lang()), 0, 20) . '%') . '\' AND dateline=' . strval($firsttime[$id]) . ' AND tid=' . strval($id), 1);
-
-                if (!array_key_exists(0, $fp_rows)) {
-                    unset($out[$i]);
-                    continue;
-                }
-                $out[$i]['firsttitle'] = $fp_rows[0]['subject'];
-                if ($show_first_posts) {
-                    $out[$i]['firstpost'] = $fp_rows[0]['message'];
-                }
-
-                $i++;
-                if ($i == $limit) {
-                    break;
-                }
+            // Update topic information according to first non-spacer post
+            $out[$i]['firsttitle'] = $fp_rows[0]['subject'];
+            if ($show_first_posts) {
+                $out[$i]['firstpost'] = $fp_rows[0]['message'];
             }
 
+            if ($i == $limit) {
+                break;
+            }
+        }
+        if (!empty($out)) {
             return $out;
         }
+
         return null;
     }
 
