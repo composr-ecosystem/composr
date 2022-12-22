@@ -1342,12 +1342,13 @@ class Forum_driver_mybb extends Forum_driver_base
             }
 
             $lookup = $this->db->query_select_value_if_there('users', 'uid', ['loginkey' => $cookie_loginkey, 'uid' => $cookie_member]);
+
             if ($row['uid'] !== $lookup) {
                 $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
                 return $out;
             }
         } else {
-            if (!hash_equals(md5(md5($row['salt']) . $password_mixed), $row['password'])) {
+            if (!hash_equals(md5(md5($row['salt']) . md5($password_mixed)), $row['password'])) {
                 $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
                 return $out;
             }
