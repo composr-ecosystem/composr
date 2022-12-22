@@ -543,7 +543,7 @@ class Forum_driver_vb3 extends Forum_driver_base
             $topic_filter .= ' AND title LIKE \'' . db_encode_like($filter_topic_title . ', %') . '\'';
         }
         if ($filter_topic_description != '') {
-            $topic_filter .= ' AND title LIKE \'%, ' . db_encode_like($filter_topic_title . '') . '\'';
+            $topic_filter .= ' AND title LIKE \'' . db_encode_like('%, ' . $filter_topic_description) . '\'';
         }
         if ($open_only) {
             $topic_filter .= ' AND open<>0';

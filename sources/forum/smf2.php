@@ -628,15 +628,16 @@ class Forum_driver_smf2 extends Forum_driver_base
      */
     public function show_forum_topics($name, int $limit, int $start, int &$max_rows, string $filter_topic_title = '', string $filter_topic_description = '', bool $show_first_posts = false, string $date_key = 'lasttime', bool $hot = false, bool $open_only = false) : ?array
     {
-        if (is_integer($name)) {
+        // Build forum ID query
+        if (is_integer($name)) { // Forum ID
             $id_list = 't.id_board=' . strval($name);
-        } elseif (!is_array($name)) {
+        } elseif (!is_array($name)) { // Forum name
             $id = $this->forum_id_from_name($name);
             if ($id === null) {
                 return null;
             }
             $id_list = 't.id_board=' . strval($id);
-        } else {
+        } else { // Array of forum IDs
             $id_list = '';
             foreach (array_keys($name) as $id) {
                 if ($id_list != '') {
@@ -654,7 +655,7 @@ class Forum_driver_smf2 extends Forum_driver_base
             $topic_filter .= ' AND p.subject LIKE \'' . db_encode_like($filter_topic_title . ', %') . '\'';
         }
         if ($filter_topic_description != '') {
-            $topic_filter .= ' AND p.subject LIKE \'%, ' . db_encode_like($filter_topic_title . '') . '\'';
+            $topic_filter .= ' AND p.subject LIKE \'' . db_encode_like('%, ' . $filter_topic_description) . '\'';
         }
         if ($open_only) {
             $topic_filter .= ' AND t_locked=0';
@@ -662,6 +663,8 @@ class Forum_driver_smf2 extends Forum_driver_base
 
         $rows = $this->db->query('SELECT t.num_replies, t.id_topic AS t_id_topic, t.id_member_updated AS t_id_member_updated, t.id_member_started AS t_id_member_started, t.locked AS t_locked, p.subject AS p_subject FROM ' . $this->db->get_table_prefix() . 'topics t LEFT JOIN ' . $this->db->get_table_prefix() . 'messages p ON t.id_first_msg=p.id_msg WHERE (' . $id_list . ')' . $topic_filter . ' ORDER BY ' . (($date_key == 'lasttime') ? 'id_last_msg' : 'id_first_msg') . ' DESC', $limit, $start, null, false, true);
         $max_rows = $this->db->query_value_if_there('SELECT COUNT(*) FROM ' . $this->db->get_table_prefix() . 'topics t LEFT JOIN ' . $this->db->get_table_prefix() . 'messages p ON t.ID_FIRST_MSG=p.ID_MSG WHERE (' . $id_list . ')' . $topic_filter);
+
+        // Generate output
         $out = [];
         foreach ($rows as $i => $r) {
             $out[$i] = [];
@@ -675,14 +678,20 @@ class Forum_driver_smf2 extends Forum_driver_base
             $out[$i]['title'] = $r['p_subject'];
             $out[$i]['description'] = $r['p_subject'];
 
+            // Get non-spacer posts
             $fp_rows = $this->db->query('SELECT subject,poster_time,body,id_member,id_msg FROM ' . $this->db->get_table_prefix() . 'messages WHERE body NOT LIKE \'' . db_encode_like(substr(do_lang('SPACER_POST', '', '', '', get_site_default_lang()), 0, 20) . '%') . '\' AND id_topic=' . strval($out[$i]['id']) . ' ORDER BY id_msg');
+
+            // Filter topics without a post
             if (!array_key_exists(0, $fp_rows)) {
                 unset($out[$i]);
                 continue;
             }
+
+            // Determine first and last information
             $out[$i]['firsttitle'] = $fp_rows[0]['subject'];
             $out[$i]['lasttime'] = $fp_rows[count($fp_rows) - 1]['poster_time'];
             $out[$i]['firsttime'] = $fp_rows[0]['poster_time'];
+
             if ($show_first_posts) {
                 push_lax_comcode(true);
                 $out[$i]['firstpost'] = comcode_to_tempcode(str_replace('<br />', "\n", $fp_rows[0]['body']), $fp_rows[0]['id_member']);

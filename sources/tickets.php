@@ -218,8 +218,8 @@ function get_tickets(array $filters = [], bool $include_first_posts = false, boo
 
     // Forum query
     if ($only_owner_id !== null) {
-        $restrict = strval($only_owner_id) . '\_%';
-        $restrict_description = '%' . do_lang('SUPPORT_TICKET') . ': #' . $restrict;
+        $restrict = '';
+        $restrict_description = do_lang('SUPPORT_TICKET') . ': #' . strval($only_owner_id) . '\_%';
     } else {
         $restrict = '';
         $restrict_description = '';

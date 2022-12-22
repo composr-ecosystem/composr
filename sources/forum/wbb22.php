@@ -605,7 +605,7 @@ class Forum_driver_wbb22 extends Forum_driver_base
             $topic_filter .= ' AND topic LIKE \'' . db_encode_like($filter_topic_title . ', %') . '\'';
         }
         if ($filter_topic_description != '') {
-            $topic_filter .= ' AND topic LIKE \'%, ' . db_encode_like($filter_topic_title . '') . '\'';
+            $topic_filter .= ' AND topic LIKE \'' . db_encode_like('%, ' . $filter_topic_description) . '\'';
         }
         if ($open_only) {
             $topic_filter .= ' AND closed=0';

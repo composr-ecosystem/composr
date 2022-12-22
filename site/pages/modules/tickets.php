@@ -358,6 +358,8 @@ class Module_tickets
     {
         require_code('feedback');
 
+        $open_only = (get_param_integer('open', 1) == 1);
+
         $message = new Tempcode();
         $links = new Tempcode();
         $existing_ticket_types = [];
@@ -369,13 +371,13 @@ class Module_tickets
             $tickets = [];
         } else {
             $ticket_type_id = $this->ticket_type_id;
-            $tickets = get_tickets(['ticket_type_id' => $ticket_type_id, 'only_open' => get_param_integer('open', 0) == 1]);
+            $tickets = get_tickets(['ticket_type_id' => $ticket_type_id, 'only_open' => $open_only]);
 
             // Find all ticket types used
             if ($ticket_type_id === null) {
                 $all_tickets = $tickets;
             } else {
-                $all_tickets = get_tickets(['only_open' => get_param_integer('open', 0) == 1]);
+                $all_tickets = get_tickets(['only_open' => $open_only]);
             }
             foreach ($all_tickets as $topic) {
                 $ticket_id = extract_topic_identifier($topic['description']);
@@ -394,10 +396,6 @@ class Module_tickets
                 }
 
                 foreach ($tickets as $topic) {
-                    if ((get_param_integer('open', 0) == 1) && ($topic['closed'])) {
-                        continue; // Skip closed tickets if we only want to see open tickets
-                    }
-
                     list($ticket_type_tpl) = $this->render_ticket_row($topic);
 
                     $links->attach($ticket_type_tpl);
@@ -419,6 +417,7 @@ class Module_tickets
             'LINKS' => $links,
             'ADD_TICKET_URL' => $add_ticket_url,
             'TYPES' => build_types_list($default_ticket_type_id),
+            'OPEN' => $open_only,
         ]);
 
         require_code('templates_internalise_screen');

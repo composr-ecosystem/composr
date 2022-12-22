@@ -912,15 +912,16 @@ class Forum_driver_phpbb3 extends Forum_driver_base
      */
     public function show_forum_topics($name, int $limit, int $start, int &$max_rows, string $filter_topic_title = '', string $filter_topic_description = '', bool $show_first_posts = false, string $date_key = 'lasttime', bool $hot = false, bool $open_only = false) : ?array
     {
-        if (is_integer($name)) {
+        // Build forum ID query
+        if (is_integer($name)) { // Forum ID
             $id_list = 'forum_id=' . strval($name);
-        } elseif (!is_array($name)) {
+        } elseif (!is_array($name)) { // Forum name
             $id = $this->forum_id_from_name($name);
             if ($id === null) {
                 return null;
             }
             $id_list = 'forum_id=' . strval($id);
-        } else {
+        } else { // Array of forum IDs
             $id_list = '';
             foreach (array_keys($name) as $id) {
                 if ($id_list != '') {
@@ -938,7 +939,7 @@ class Forum_driver_phpbb3 extends Forum_driver_base
             $topic_filter .= ' AND topic_title LIKE \'' . db_encode_like($filter_topic_title . ', %') . '\'';
         }
         if ($filter_topic_description != '') {
-            $topic_filter .= ' AND topic_title LIKE \'%, ' . db_encode_like($filter_topic_title . '') . '\'';
+            $topic_filter .= ' AND topic_title LIKE \'' . db_encode_like('%, ' . $filter_topic_description) . '\'';
         }
         if ($open_only) {
             $topic_filter .= ' AND topic_status<>1';
@@ -946,73 +947,50 @@ class Forum_driver_phpbb3 extends Forum_driver_base
 
         $rows = $this->db->query('SELECT * FROM ' . $this->db->get_table_prefix() . 'topics WHERE (' . $id_list . ')' . $topic_filter . ' ORDER BY ' . (($date_key == 'lasttime') ? 'topic_last_post_id' : 'topic_time') . ' DESC', $limit, $start);
         $max_rows = $this->db->query_value_if_there('SELECT COUNT(*) FROM ' . $this->db->get_table_prefix() . 'topics WHERE (' . $id_list . ')' . $topic_filter);
-        $i = 0;
-        $firsttime = [];
-        $username = [];
-        $member_id = [];
-        $datetimes = [];
-        $rs = [];
-        while (array_key_exists($i, $rows)) {
-            $r = $rows[$i];
 
-            $id = $r['topic_id'];
-            $firsttime[$id] = $r['topic_time'];
+        // Generate output
+        $out = [];
+        foreach ($rows as $i => $r) {
+            $out[$i] = [];
+            $out[$i]['id'] = $r['topic_id'];
+            $out[$i]['num'] = $r['topic_posts_approved'];
+            $out[$i]['title'] = $r['topic_title'];
+            $out[$i]['description'] = $r['topic_title'];
+            $out[$i]['firsttime'] = $r['topic_time'];
+            $out[$i]['firstusername'] = $this->get_username($r['topic_poster']);
+            $out[$i]['firstmemberid'] = $r['topic_poster'];
+            $out[$i]['closed'] = ($r['topic_status'] == 1);
 
-            $post_rows = $this->db->query('SELECT * FROM ' . $this->db->get_table_prefix() . 'posts p WHERE topic_id=' . strval($id) . ' AND post_text NOT LIKE \'' . db_encode_like(substr(do_lang('SPACER_POST', '', '', '', get_site_default_lang()), 0, 20) . '%') . '\' ORDER BY post_time DESC', 1);
-            if (!array_key_exists(0, $post_rows)) {
-                $i++;
+            // Get non-spacer posts
+            $fp_rows = $this->db->query('SELECT post_subject,post_text,bbcode_uid,poster_id,post_username,post_time FROM ' . $this->db->get_table_prefix() . 'posts p WHERE post_text NOT LIKE \'' . db_encode_like(substr(do_lang('SPACER_POST', '', '', '', get_site_default_lang()), 0, 20) . '%') . '\' AND topic_id=' . strval($id), 1);
+
+            // Filter topics without a post
+            if (!array_key_exists(0, $fp_rows)) {
+                unset($out[$i]);
                 continue;
             }
-            $r2 = $post_rows[0];
 
-            $username[$id] = $this->get_username($r2['poster_id']);
-            $member_id[$id] = $r2['poster_id'];
-            $datetimes[$id] = $r2['post_time'];
-            $rs[$id] = $r;
+            // Get first and last post information
+            $out[$i]['firsttitle'] = $fp_rows[0]['post_subject'];
+            $out[$i]['lastusername'] = $fp_rows[count($fp_rows) - 1]['post_username'];
+            $out[$i]['lastmemberid'] = $fp_rows[count($fp_rows) - 1]['poster_id'];
+            $out[$i]['lasttime'] = $fp_rows[count($fp_rows) - 1]['post_time'];
 
-            $i++;
-        }
-        if ($i > 0) {
-            arsort($datetimes);
-            $i = 0;
-            $out = [];
-
-            foreach ($datetimes as $id => $datetime) {
-                $r = $rs[$id];
-
-                $out[$i] = [];
-                $out[$i]['id'] = $id;
-                $out[$i]['num'] = $r['topic_posts_approved'];
-                $out[$i]['title'] = $r['topic_title'];
-                $out[$i]['description'] = $r['topic_title'];
-                $out[$i]['firsttime'] = $r['topic_time'];
-                $out[$i]['firstusername'] = $this->get_username($r['topic_poster']);
-                $out[$i]['lastusername'] = $username[$id];
-                $out[$i]['firstmemberid'] = $r['topic_poster'];
-                $out[$i]['lastmemberid'] = $member_id[$id];
-                $out[$i]['lasttime'] = $datetime;
-                $out[$i]['closed'] = ($r['topic_status'] == 1);
-
-                $fp_rows = $this->db->query('SELECT post_subject,post_text,bbcode_uid,poster_id FROM ' . $this->db->get_table_prefix() . 'posts p WHERE post_text NOT LIKE \'' . db_encode_like(substr(do_lang('SPACER_POST', '', '', '', get_site_default_lang()), 0, 20) . '%') . '\' AND post_time=' . strval($firsttime[$id]) . ' AND topic_id=' . strval($id), 1);
-                if (!array_key_exists(0, $fp_rows)) {
-                    unset($out[$i]);
-                    continue;
-                }
-                $out[$i]['firsttitle'] = $fp_rows[0]['post_subject'];
-                if ($show_first_posts) {
-                    push_lax_comcode(true);
-                    $out[$i]['firstpost'] = comcode_to_tempcode(_phpbb3_post_text_to_comcode($fp_rows[0]['post_text']), $fp_rows[0]['poster_id']);
-                    pop_lax_comcode();
-                }
-
-                $i++;
-                if ($i == $limit) {
-                    break;
-                }
+            // Process first post for displaying if applicable
+            if ($show_first_posts) {
+                push_lax_comcode(true);
+                $out[$i]['firstpost'] = comcode_to_tempcode(_phpbb3_post_text_to_comcode($fp_rows[0]['post_text']), $fp_rows[0]['poster_id']);
+                pop_lax_comcode();
             }
 
+            if ($i == $limit) {
+                break;
+            }
+        }
+        if (!empty($out)) {
             return $out;
         }
+
         return null;
     }
 

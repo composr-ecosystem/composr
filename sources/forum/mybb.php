@@ -671,10 +671,10 @@ class Forum_driver_mybb extends Forum_driver_base
             $topic_filter .= ' AND subject LIKE \'' . db_encode_like($filter_topic_title . ', %') . '\'';
         }
         if ($filter_topic_description != '') {
-            $topic_filter .= ' AND subject LIKE \'%, ' . db_encode_like($filter_topic_title . '') . '\'';
+            $topic_filter .= ' AND subject LIKE \'' . db_encode_like('%, ' . $filter_topic_description) . '\'';
         }
         if ($open_only) {
-            $topic_filter .= ' AND visible=1';
+            $topic_filter .= ' AND visible=1 AND ' . db_string_equal_to('closed', '');
         }
 
         $rows = $this->db->query('SELECT * FROM ' . $this->db->get_table_prefix() . 'threads WHERE (' . $id_list . ')' . $topic_filter . ' ORDER BY ' . (($date_key == 'lasttime') ? 'lastpost' : 'dateline') . ' DESC', $limit, $start);
@@ -696,7 +696,7 @@ class Forum_driver_mybb extends Forum_driver_base
             $out[$i]['lasttime'] = $r['lastpost'];
             $out[$i]['closed'] = (($r['closed'] == '') && ($r['visible'] == 1)) ? 0 : 1;
 
-            // Filter spacer posts
+            // Get non-spacer posts
             $fp_rows = $this->db->query('SELECT subject,message,uid FROM ' . $this->db->get_table_prefix() . 'posts p WHERE message NOT LIKE \'' . db_encode_like(substr(do_lang('SPACER_POST', '', '', '', get_site_default_lang()), 0, 20) . '%') . '\' AND tid=' . strval($r['tid']), 1);
 
             // Filter topics with no posts

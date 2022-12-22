@@ -25,7 +25,8 @@
 
 					<div class="inline spaced open-ticket-filter">
 						<label class="field-name" for="open">{!OPEN_TICKETS_ONLY}:</label>
-						<input type="checkbox" id="open" name="open" value="1"{+START,IF,{$_GET,open}} checked="checked"{+END} />
+						<input type="hidden" name="open" value="0" />
+						<input type="checkbox" id="open" name="open" value="1"{+START,IF,{OPEN}} checked="checked"{+END} />
 					</div>
 
 					<div class="inline spaced filter-button">
