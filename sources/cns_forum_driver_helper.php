@@ -228,12 +228,12 @@ function _helper_make_post_forum_topic(object $this_ref, string $forum_name, str
  * @param  integer $start The start position
  * @param  integer $max_rows The total rows (not a parameter: returns by reference)
  * @param  SHORT_TEXT $filter_topic_title The topic title filter
- * @param  SHORT_TEXT $filter_topic_description The topic description filter
+ * @param  SHORT_TEXT $filter_topic_description The topic description filter; may apply to the topic title if there is no separate description field with additional wildcarding to match what make_post_forum_topic is doing
  * @param  boolean $show_first_posts Whether to show the first posts
  * @param  string $date_key The date key to sort by
  * @set lasttime firsttime
  * @param  boolean $hot Whether to limit to hot topics
- * @param  boolean $open_only Open tickets only
+ * @param  boolean $open_only Open topics only
  * @return ?array The array of topics (null: error/none)
  * @ignore
  */
@@ -271,73 +271,30 @@ function _helper_show_forum_topics(object $this_ref, $name, int $limit, int $sta
     }
     $post_query_sql .= ' WHERE ' . $post_query_where;
 
+    $topic_filter = '';
     if ($hot) {
         $hot_topic_definition = intval(get_option('hot_topic_definition'));
-        $topic_filter_sup = ' AND t_cache_num_posts/((t_cache_last_time-t_cache_first_time)/60/60/24+1)>' . strval($hot_topic_definition);
-    } else {
-        $topic_filter_sup = '';
+        $topic_filter .= ' AND t_cache_num_posts/((t_cache_last_time-t_cache_first_time)/60/60/24+1)>' . strval($hot_topic_definition);
     }
-    $topic_filter_sup .= ' AND t_validated=1';
-    if (($filter_topic_title == '') && ($filter_topic_description == '')) {
-        if (($filter_topic_title == '') && ($filter_topic_description == '')) {
-            $query = 'SELECT * FROM ' . $this_ref->db->get_table_prefix() . 'f_topics t' . $this_ref->db->prefer_index('f_topics', 'unread_forums', false);
-            $query .= ' WHERE (' . $id_list . ')' . $topic_filter_sup;
-            $query_simplified = $query;
-
-            if (get_option('is_on_strong_forum_tie') == '1') { // So topics with no validated posts, or only spacer posts, are not drawn out only to then be filtered layer (meaning we don't get enough result). Done after $max_rows calculated as that would be slow with this clause
-                $query .= ' AND (t_cache_num_posts>1 OR EXISTS(' . $post_query_sql . '))';
-            }
-        } else {
-            $query = '';
-            $query_simplified = '';
-            $topic_filters = [];
-            if ($filter_topic_title != '') {
-                $topic_filters[] = 't_cache_first_title LIKE \'' . db_encode_like($filter_topic_title) . '\'';
-            }
-            if ($filter_topic_description != '') {
-                $topic_filters[] = 't_description LIKE \'' . db_encode_like($filter_topic_description) . '\'';
-            }
-            foreach ($topic_filters as $topic_filter) {
-                $query_more = '';
-                if ($query != '') {
-                    $query_more .= ' UNION ';
-                }
-                $query_more .= 'SELECT * FROM ' . $this_ref->db->get_table_prefix() . 'f_topics t' . $this_ref->db->prefer_index('f_topics', 'in_forum', false);
-                $query_more .= ' WHERE (' . $id_list . ') AND ' . $topic_filter . $topic_filter_sup;
-                $query .= $query_more;
-                $query_simplified .= $query_more;
-
-                if (get_option('is_on_strong_forum_tie') == '1') { // So topics with no validated posts, or only spacer posts, are not drawn out only to then be filtered layer (meaning we don't get enough result). Done after $max_rows calculated as that would be slow with this clause
-                    $query .= ' AND (t_cache_num_posts>1 OR EXISTS(' . $post_query_sql . '))';
-                }
-            }
-        }
-    } else {
-        $query = '';
-        $query_simplified = '';
-        $topic_filters = [];
-        if ($filter_topic_title != '') {
-            $topic_filters[] = 't_cache_first_title LIKE \'' . db_encode_like($filter_topic_title) . '\'';
-        }
-        if ($filter_topic_description != '') {
-            $topic_filters[] = 't_description LIKE \'' . db_encode_like($filter_topic_description) . '\'';
-        }
-        foreach ($topic_filters as $topic_filter) {
-            $query_more = '';
-            if ($query != '') {
-                $query_more .= ' UNION ';
-            }
-            $query_more .= 'SELECT * FROM ' . $this_ref->db->get_table_prefix() . 'f_topics t WHERE (' . $id_list . ') AND ' . $topic_filter . $topic_filter_sup;
-            $query .= $query_more;
-            $query_simplified .= $query_more;
-
-            if (get_option('is_on_strong_forum_tie') == '1') { // So topics with no validated posts, or only spacer posts, are not drawn out only to then be filtered layer (meaning we don't get enough result). Done after $max_rows calculated as that would be slow with this clause
-                $query .= ' AND (t_cache_num_posts>1 OR EXISTS(' . $post_query_sql . '))';
-            }
-        }
-    }
+    $topic_filter .= ' AND t_validated=1';
     if ($open_only) {
-        $query .= ' AND t_is_open = 1';
+        $topic_filter .= ' AND t_is_open = 1';
+    }
+    if ($filter_topic_title != '') {
+        $topic_filter .= ' AND t_cache_first_title LIKE \'' . db_encode_like($filter_topic_title) . '\'';
+    }
+    if ($filter_topic_description != '') {
+        $topic_filter .= ' AND t_description LIKE \'' . db_encode_like($filter_topic_description) . '\'';
+    }
+    $query = 'SELECT * FROM ' . $this_ref->db->get_table_prefix() . 'f_topics t';
+    if (($filter_topic_title == '') && ($filter_topic_description == '')) {
+        $query .= $this_ref->db->prefer_index('f_topics', 'unread_forums', false);
+    }
+    $query .= ' WHERE (' . $id_list . ')' . $topic_filter;
+    $query_simplified = $query;
+
+    if (get_option('is_on_strong_forum_tie') == '1') { // So topics with no validated posts, or only spacer posts, are not drawn out only to then be filtered layer (meaning we don't get enough result). Done after $max_rows calculated as that would be slow with this clause
+        $query .= ' AND (t_cache_num_posts>1 OR EXISTS(' . $post_query_sql . '))';
     }
 
     $max_rows = $this_ref->db->query_value_if_there(preg_replace('#(^| UNION )SELECT \* #', '${1}SELECT COUNT(*) ', $query_simplified), false, true);

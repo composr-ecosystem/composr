@@ -142,7 +142,7 @@ PHP;
         }
 
         $max_rows = 0;
-        $rows = $GLOBALS['FORUM_DRIVER']->show_forum_topics($forum_ids, $num_topics, 0, $max_rows, '', true, $date_key);
+        $rows = $GLOBALS['FORUM_DRIVER']->show_forum_topics($forum_ids, $num_topics, 0, $max_rows, '', '', true, $date_key);
         if ($rows === null) {
             $rows = [];
         }

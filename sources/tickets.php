@@ -252,7 +252,7 @@ function get_tickets(array $filters = [], bool $include_first_posts = false, boo
 
     // Load tickets
     $max_rows = 0;
-    $topics = $GLOBALS['FORUM_DRIVER']->show_forum_topics(array_flip($forums), 1000, 0, $max_rows, $restrict, true, 'lasttime', false, $restrict_description, $only_open);
+    $topics = $GLOBALS['FORUM_DRIVER']->show_forum_topics(array_flip($forums), 1000, 0, $max_rows, $restrict, $restrict_description, true, 'lasttime', false, $only_open);
     if ($topics === null) {
         return [];
     }

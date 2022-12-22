@@ -606,7 +606,7 @@ function update_ticket_type_lead_times()
         $tickets = $GLOBALS['SITE_DB']->query_select('tickets', ['*'], ['ticket_type' => $ticket_type['id']]);
         foreach ($tickets as $ticket) {
             $max_rows = 0;
-            $topic = $GLOBALS['FORUM_DRIVER']->show_forum_topics($ticket['forum_id'], 1, 0, $max_rows, $ticket['ticket_id'], true, 'lasttime', false, do_lang('SUPPORT_TICKET') . ': #' . $ticket['ticket_id']);
+            $topic = $GLOBALS['FORUM_DRIVER']->show_forum_topics($ticket['forum_id'], 1, 0, $max_rows, $ticket['ticket_id'], do_lang('SUPPORT_TICKET') . ': #' . $ticket['ticket_id'], true, 'lasttime', false);
             if ($topic === null) {
                 continue;
             }

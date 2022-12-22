@@ -145,7 +145,7 @@ PHP;
         }
 
         $max_rows = 0;
-        $topics = $GLOBALS['FORUM_DRIVER']->show_forum_topics($forum_ids, $limit, 0, $max_rows, '', false, $date_key);
+        $topics = $GLOBALS['FORUM_DRIVER']->show_forum_topics($forum_ids, $limit, 0, $max_rows, '', '', false, $date_key);
 
         $news = [];
         if ($topics !== null) {

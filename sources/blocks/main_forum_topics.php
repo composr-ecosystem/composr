@@ -167,7 +167,7 @@ PHP;
             $forum_names_map = null;
         }
         $max_rows = 0;
-        $topics = $GLOBALS['FORUM_DRIVER']->show_forum_topics($forum_ids, $limit, 0, $max_rows, '', true, $date_key, $hot == 1);
+        $topics = $GLOBALS['FORUM_DRIVER']->show_forum_topics($forum_ids, $limit, 0, $max_rows, '', '', true, $date_key, $hot == 1);
 
         $_topics = [];
         if ($topics !== null) {
@@ -175,7 +175,7 @@ PHP;
             $topics = array_reverse($topics, false);
 
             if ((count($topics) < $limit) && ($hot == 1)) {
-                $more_topics = $GLOBALS['FORUM_DRIVER']->show_forum_topics($forum_ids, $limit, 0, $max_rows, '', true, $date_key);
+                $more_topics = $GLOBALS['FORUM_DRIVER']->show_forum_topics($forum_ids, $limit, 0, $max_rows, '', '', true, $date_key);
                 if ($more_topics === null) {
                     $more_topics = [];
                 }

@@ -983,14 +983,15 @@ class Forum_driver_ipb3 extends Forum_driver_base
      * @param  integer $start The start position
      * @param  integer $max_rows The total rows (not a parameter: returns by reference)
      * @param  SHORT_TEXT $filter_topic_title The topic title filter
+     * @param  SHORT_TEXT $filter_topic_description The topic description filter; may apply to the topic title if there is no separate description field with additional wildcarding to match what make_post_forum_topic is doing
      * @param  boolean $show_first_posts Whether to show the first posts
      * @param  string $date_key The date key to sort by
      * @set lasttime firsttime
      * @param  boolean $hot Whether to limit to hot topics
-     * @param  SHORT_TEXT $filter_topic_description The topic description filter
+     * @param  boolean $open_only Open topics only
      * @return ?array The array of topics (null: error)
      */
-    public function show_forum_topics($name, int $limit, int $start, int &$max_rows, string $filter_topic_title = '', bool $show_first_posts = false, string $date_key = 'lasttime', bool $hot = false, string $filter_topic_description = '') : ?array
+    public function show_forum_topics($name, int $limit, int $start, int &$max_rows, string $filter_topic_title = '', string $filter_topic_description = '', bool $show_first_posts = false, string $date_key = 'lasttime', bool $hot = false, bool $open_only = false) : ?array
     {
         require_code('xhtml');
 
@@ -1024,12 +1025,19 @@ class Forum_driver_ipb3 extends Forum_driver_base
             }
         }
 
-        $topic_filter = ($filter_topic_title != '') ? ('AND title LIKE \'' . db_encode_like($this->ipb_escape($filter_topic_title)) . '\'') : '';
+        $topic_filter = '';
+        if ($filter_topic_title != '') {
+            $topic_filter .= ' AND subject LIKE \'' . db_encode_like($this->ipb_escape($filter_topic_title)) . '\'';
+        }
         if ($filter_topic_description != '') {
             $topic_filter .= ' AND description LIKE \'' . db_encode_like($this->ipb_escape($filter_topic_description)) . '\'';
         }
-        $rows = $this->db->query('SELECT * FROM ' . $this->db->get_table_prefix() . 'topics WHERE (' . $id_list . ') ' . $topic_filter . ' ORDER BY ' . (($date_key == 'lasttime') ? 'last_post' : 'start_date') . ' DESC', $limit, $start);
-        $max_rows = $this->db->query_value_if_there('SELECT COUNT(*) FROM ' . $this->db->get_table_prefix() . 'topics WHERE (' . $id_list . ') ' . $topic_filter);
+        if ($open_only) {
+            $topic_filter .= ' AND state<>\'closed\'';
+        }
+
+        $rows = $this->db->query('SELECT * FROM ' . $this->db->get_table_prefix() . 'topics WHERE (' . $id_list . ')' . $topic_filter . ' ORDER BY ' . (($date_key == 'lasttime') ? 'last_post' : 'start_date') . ' DESC', $limit, $start);
+        $max_rows = $this->db->query_value_if_there('SELECT COUNT(*) FROM ' . $this->db->get_table_prefix() . 'topics WHERE (' . $id_list . ')' . $topic_filter);
         $emoticons_set_dir = $this->get_emo_dir();
         $out = [];
         foreach ($rows as $i => $r) {
