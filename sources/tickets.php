@@ -201,7 +201,7 @@ function get_tickets(array $filters = [], bool $include_first_posts = false, boo
         return [];
     }
 
-    $only_owner_id = array_key_exists('only_owner_id', $filters) ? $filters['only_owner_id'] : get_member();
+    $only_owner_id = array_key_exists('only_owner_id', $filters) ? $filters['only_owner_id'] : null;
     if (!has_privilege(get_member(), 'view_others_tickets')) {
         $only_owner_id = get_member();
     }

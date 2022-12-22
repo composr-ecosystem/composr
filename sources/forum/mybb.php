@@ -377,7 +377,7 @@ class Forum_driver_mybb extends Forum_driver_base
         $type = $this->get_member_row_field($member_id, 'avatartype');
         $filename = $this->get_member_row_field($member_id, 'avatar');
 
-        switch ($type) {
+        switch (strval($type)) {
             // Type could be: 'gallery', 'upload','remote'
             case 'gallery': // Avatar from Avatars Gallery
                 return get_forum_base_url() . '/' . $filename;
@@ -450,7 +450,7 @@ class Forum_driver_mybb extends Forum_driver_base
      */
     public function forum_id_from_name(string $forum_name) : ?int
     {
-        return $this->db->query_select_value_if_there('forums', 'fid', ['type' => 'f', 'name' => $forum_name]); //type 'f' - forum, type 'c' - category
+        return (is_numeric($forum_name)) ? intval($forum_name) : $this->db->query_select_value_if_there('forums', 'fid', ['type' => 'f', 'name' => $forum_name]); //type 'f' - forum, type 'c' - category
     }
 
     /**
@@ -607,9 +607,12 @@ class Forum_driver_mybb extends Forum_driver_base
             $forum_id = intval($forum);
         } else {
             $forum_id = $this->forum_id_from_name($forum);
+            if ($forum_id === null) {
+                return null;
+            }
         }
 
-        return $this->db->query_value_if_there('SELECT tid FROM ' . $this->db->get_table_prefix() . 'threads WHERE fid=' . strval($forum_id) . ' AND (' . db_string_equal_to('subject', $topic_identifier) . ' OR subject LIKE \'%: #' . db_encode_like($topic_identifier) . '\')');
+        return $this->db->query_value_if_there('SELECT tid FROM ' . $this->db->get_table_prefix() . 'threads WHERE fid=' . strval($forum_id) . ' AND (' . db_string_equal_to('subject', $topic_identifier) . ' OR subject LIKE \'' . db_encode_like('%: #' . $topic_identifier) . '\')');
     }
 
     /**
@@ -636,7 +639,7 @@ class Forum_driver_mybb extends Forum_driver_base
      */
     public function show_forum_topics($name, int $limit, int $start, int &$max_rows, string $filter_topic_title = '', bool $show_first_posts = false, string $date_key = 'lasttime', bool $hot = false, string $filter_topic_description = '') : ?array
     {
-        if (is_integer($name)) {
+        if (is_numeric($name)) {
             $id_list = 'fid=' . strval($name);
         } elseif (!is_array($name)) {
             $id = $this->forum_id_from_name($name);
@@ -649,6 +652,12 @@ class Forum_driver_mybb extends Forum_driver_base
             foreach (array_keys($name) as $id) {
                 if ($id_list != '') {
                     $id_list .= ' OR ';
+                }
+                if (!is_numeric($id)) {
+                    $id = $this->forum_id_from_name($id);
+                }
+                if ($id === null) {
+                    continue;
                 }
                 $id_list .= 'fid=' . strval($id);
             }
@@ -688,7 +697,7 @@ class Forum_driver_mybb extends Forum_driver_base
             $r2 = $post_rows[0];
 
             $username[$id] = $r2['username'];
-            $username[$id] = $r2['uid'];
+            $username[$id] = $r2['uid']; // TODO: possible bug?
             $datetimes[$id] = $r2['dateline'];
             $rs[$id] = $r;
 
@@ -713,7 +722,7 @@ class Forum_driver_mybb extends Forum_driver_base
                 $out[$i]['firstmemberid'] = $r['uid'];
                 $out[$i]['lastmemberid'] = $r['lastposteruid'];
                 $out[$i]['lasttime'] = $r['lastpost'];
-                $out[$i]['closed'] = ($r['visible'] == 1);
+                $out[$i]['closed'] = ($r['visible'] == 1) ? 0 : 1;
 
                 $fp_rows = $this->db->query('SELECT subject,message,uid FROM ' . $this->db->get_table_prefix() . 'posts p WHERE message NOT LIKE \'' . db_encode_like(substr(do_lang('SPACER_POST', '', '', '', get_site_default_lang()), 0, 20) . '%') . '\' AND dateline=' . strval($firsttime[$id]) . ' AND tid=' . strval($id), 1);
 
@@ -1002,7 +1011,7 @@ class Forum_driver_mybb extends Forum_driver_base
             if ($member_id > 0) {
                 $skin = $this->get_member_row_field($member_id, 'style');
             } else {
-                $skin = '';
+                $skin = 0;
             }
             if ($skin > 0) { // User has a custom theme
                 $_user_theme = $this->db->query_select('themes', ['*'], ['tid' => $skin], '', 1);

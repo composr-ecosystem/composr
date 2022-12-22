@@ -57,12 +57,14 @@ function _apply_emoticons(string $text) : string
     static $_emoticons = null;
     if ($_emoticons === null) {
         $_emoticons = $GLOBALS['FORUM_DRIVER']->find_emoticons();
-        uksort($_emoticons, '_strlen_sort');
+        uksort($_emoticons, '_strlen_reverse_sort');
     }
 
     if ($GLOBALS['XSS_DETECT']) {
         $orig_escaped = ocp_is_escaped($text);
     }
+
+    $has_no_emoticon_characters = false;
 
     // Pre-check, optimisation
     $emoticons = [];
@@ -98,6 +100,7 @@ function _apply_emoticons(string $text) : string
                         $after = substr($text, $i + $code_len);
                         if (($before == '') && ($after == '')) {
                             $text = $_eval;
+                            $has_no_emoticon_characters = true;
                         } else {
                             $text = $before . $_eval . $after;
                         }
@@ -109,7 +112,7 @@ function _apply_emoticons(string $text) : string
             }
         }
 
-        if (($GLOBALS['XSS_DETECT']) && ($orig_escaped)) {
+        if (($GLOBALS['XSS_DETECT']) && ($has_no_emoticon_characters || $orig_escaped)) {
             ocp_mark_as_escaped($text);
         }
     }

@@ -31,7 +31,7 @@ class Hook_admin_stats_invites extends CMSStatsProvider
      */
     public function info(bool $for_kpi = false) : ?array
     {
-        if (!addon_installed('recommend')) {
+        if (!addon_installed('recommend') || (get_forum_type() != 'cns')) {
             return null;
         }
 
