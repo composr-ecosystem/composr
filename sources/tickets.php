@@ -219,7 +219,7 @@ function get_tickets(array $filters = [], bool $include_first_posts = false, boo
     // Forum query
     if ($only_owner_id !== null) {
         $restrict = strval($only_owner_id) . '\_%';
-        $restrict_description = do_lang('SUPPORT_TICKET') . ': #' . $restrict;
+        $restrict_description = '%' . do_lang('SUPPORT_TICKET') . ': #' . $restrict;
     } else {
         $restrict = '';
         $restrict_description = '';
@@ -261,8 +261,6 @@ function get_tickets(array $filters = [], bool $include_first_posts = false, boo
     $topics_copy = $topics;
     $topics = [];
     foreach ($topics_copy as $topic) {
-        $fp = $topic['firstpost'];
-
         // To stop Tempcode randomly making serialization sometimes change such that the refresh_if_changed is triggered
         if (!$include_first_posts) {
             unset($topic['firstpost']);
