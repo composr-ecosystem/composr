@@ -3,12 +3,12 @@
 {+START,IF,{IS_SPACER_POST}}
 	{+START,IF,{$NOT,{$IN_STR,{POST},<div}}}
 		<div id="box-post-{ID*}" class="box box---post"><div class="box-inner">
-			{POST}
+			{POST`}
 		</div></div>
 	{+END}
 
 	{+START,IF,{$IN_STR,{POST},<div}}
-		{POST}
+		{POST`}
 	{+END}
 {+END}
 
@@ -94,7 +94,7 @@
 				</div>
 
 				<div{+START,IF,{$GET,has_schema_reviews}} itemprop="reviewBody"{+END}>
-					{POST}
+					{POST`}
 					{$METADATA_IMAGE_EXTRACT,{POST}}
 				</div>
 
