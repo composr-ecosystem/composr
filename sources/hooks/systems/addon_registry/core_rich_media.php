@@ -798,9 +798,9 @@ class Hook_addon_registry_core_rich_media
     public function tpl_preview__comcode_if_in_group() : object
     {
         return lorem_globalise(do_lorem_template('COMCODE_IF_IN_GROUP', [
-            'TYPE' => '',
+            'TYPE' => 'primary',
             'CONTENT' => lorem_phrase(),
-            'GROUPS' => lorem_phrase(),
+            'GROUPS' => placeholder_numeric_id(),
         ]), null, '', true);
     }
 
@@ -1931,7 +1931,7 @@ class Hook_addon_registry_core_rich_media
     {
         return lorem_globalise(do_lorem_template('COMCODE_MEMBER_LINK', [
             //'DETAILS' => lorem_sentence(),
-            'MEMBER_ID' => placeholder_numeric_id(),
+            'MEMBER_ID' => placeholder_first_admin_id(),
             'USERNAME' => lorem_phrase(),
             'MEMBER_URL' => placeholder_url(),
         ]), null, '', true);

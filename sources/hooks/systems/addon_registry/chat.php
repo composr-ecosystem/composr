@@ -420,7 +420,7 @@ class Hook_addon_registry_chat
     public function tpl_preview__block_side_shoutbox() : object
     {
         $tpl = do_lorem_template('BLOCK_SIDE_SHOUTBOX_MESSAGE', [
-            'MEMBER_ID' => placeholder_numeric_id(),
+            'MEMBER_ID' => placeholder_first_admin_id(),
             'MEMBER_URL' => placeholder_url(),
             'MEMBER_LINK' => placeholder_link(),
             'MESSAGE' => lorem_phrase(),

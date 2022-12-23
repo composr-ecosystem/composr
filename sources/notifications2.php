@@ -276,8 +276,6 @@ function notifications_ui_advanced(string $notification_code, ?object $enable_me
         access_denied('NOT_AS_GUEST');
     }
 
-    $db = (substr($notification_code, 0, 4) == 'cns_') ? $GLOBALS['FORUM_DB'] : $GLOBALS['SITE_DB'];
-
     if ($enable_message === null) {
         $enable_message = do_lang_tempcode('NOW_ENABLED_NOTIFICATIONS');
     }
@@ -488,7 +486,8 @@ function _notifications_build_category_tree(array $_notification_types, string $
  */
 function copy_notifications_to_new_child(string $notification_code, string $id, string $child_id)
 {
-    $db = $GLOBALS[((substr($notification_code, 0, 4) == 'cns_') && (get_forum_type() == 'cns')) ? 'FORUM_DB' : 'SITE_DB'];
+    require_code('notifications');
+    $db = get_notification_code_db($notification_code);
 
     // Copy notifications over to new children
     $_start = 0;

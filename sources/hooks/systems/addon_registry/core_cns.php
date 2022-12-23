@@ -844,14 +844,14 @@ class Hook_addon_registry_core_cns
             'NAME' => lorem_phrase(),
             'RAW' => placeholder_ip(),
             'VALUE' => placeholder_ip(),
-            'MEMBER_ID' => placeholder_numeric_id(),
+            'MEMBER_ID' => placeholder_first_admin_id(),
         ]);
         $poster_details = do_lorem_template('CNS_GUEST_DETAILS', [
             'CUSTOM_FIELDS' => $custom_fields,
         ]);
         $box = do_lorem_template('CNS_MEMBER_BOX', [
             'GIVE_CONTEXT' => false,
-            'MEMBER_ID' => placeholder_numeric_id(),
+            'MEMBER_ID' => placeholder_first_admin_id(),
             'USERNAME' => lorem_phrase(),
             '_POSTS' => placeholder_number(),
             'POSTS' => placeholder_number(),
@@ -879,7 +879,7 @@ class Hook_addon_registry_core_cns
             'I' => '0',
             'BREAK' => false,
             'BOX' => $box,
-            'MEMBER_ID' => placeholder_numeric_id(),
+            'MEMBER_ID' => placeholder_first_admin_id(),
             'GALLERY_NAME' => '',
             'GALLERY_TITLE' => '',
         ];
@@ -1009,7 +1009,7 @@ class Hook_addon_registry_core_cns
             'ACTIONS_audit' => $actions['audit'],
             'ACTIONS_content' => $actions['content'],
             'USERNAME' => lorem_word(),
-            'MEMBER_ID' => placeholder_numeric_id(),
+            'MEMBER_ID' => placeholder_first_admin_id(),
             'SECONDARY_GROUPS' => placeholder_array(),
             'VIEW_PROFILES' => true,
             'ON_PROBATION' => placeholder_date_raw(),
@@ -1079,7 +1079,7 @@ class Hook_addon_registry_core_cns
 
         return lorem_globalise(do_lorem_template('CNS_MEMBER_PROFILE_SCREEN', [
             'TITLE' => get_screen_title('MEMBER_ACCOUNT', true, [lorem_phrase(), lorem_phrase()]),
-            'MEMBER_ID' => placeholder_numeric_id(),
+            'MEMBER_ID' => placeholder_first_admin_id(),
             'TABS' => $tabs,
         ]), null, '', true);
     }
@@ -1146,7 +1146,7 @@ class Hook_addon_registry_core_cns
         $_prospective_members = new Tempcode();
         foreach ($_primary_members as $i => $primary_member) {
             $temp = do_lorem_template('CNS_VIEW_GROUP_MEMBER', [
-                'ID' => placeholder_numeric_id(),
+                'ID' => placeholder_first_admin_id(),
                 'NAME' => $primary_member,
                 'URL' => placeholder_url(),
             ]);
@@ -1180,7 +1180,7 @@ class Hook_addon_registry_core_cns
         $temp = new Tempcode();
         foreach (placeholder_array() as $i => $v) {
             $temp = do_lorem_template('CNS_VIEW_GROUP_MEMBER_SECONDARY', [
-                'ID' => placeholder_numeric_id(),
+                'ID' => placeholder_first_admin_id(),
                 'URL' => placeholder_url(),
                 'REMOVE_URL' => placeholder_url(),
                 'NAME' => $v,
