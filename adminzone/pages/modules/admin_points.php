@@ -332,7 +332,7 @@ class Module_admin_points
         foreach ($rows as $myrow) {
             $date = get_timezoned_date_time($myrow['date_and_time'], false);
             $reason = get_translated_tempcode('points_ledger', $myrow, 'reason');
-            $_date = hyperlink(build_url(['page' => '_SELF', 'type' => 'view', 'id' => $myrow['id']], get_module_zone('admin_points')), $date, false, true);
+            $_date = hyperlink(build_url(['page' => '_SELF', 'type' => 'view', 'id' => $myrow['id']], '_SELF'), $date, false, true);
 
             if (is_guest($myrow['recipient_id'])) {
                 $to = do_lang_tempcode('USER_SYSTEM');

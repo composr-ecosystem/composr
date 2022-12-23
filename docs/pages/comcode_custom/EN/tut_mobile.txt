@@ -149,7 +149,7 @@ It is generally wise to start making things look good on smartphones, then tune 
 1) Smartphones are the most common device for casual browsing
 2) It is a better situation to have something blown up to a larger size (actually users often like this) then it is to have it not fitting on a mobile screen
 
-Composr's default theme supplies {$IS_MAINTAINED,theme_retina,high-resolution icons for hi-dpi} ("retina") displayed using either vector icons, or CSS dpi media queries and [tt]srcset[/tt] in the HTML.
+Composr's default theme supplies vector icons that will display at any size and make good use of hi-dpi screens.
 This means even if a design is blown up, the user will still benefit from higher fidelity graphics than the adjusted viewport may otherwise suggest.
 In fact, the very basis for hi-dpi displays is to operate like this -- the extra resolution is used for fidelity, not for cramming more in.
 When designs are blown up then the pixels referred to in CSS are not real pixels, they are proportional to the viewport that has been designed.

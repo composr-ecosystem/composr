@@ -24,6 +24,10 @@ class find_broken_screen_links_test_set extends cms_test_case
 {
     public function testBadlySpecified()
     {
+        if (($this->only !== null) && ($this->only != 'testBadlySpecified')) {
+            return;
+        }
+
         require_code('files2');
         $files = get_directory_contents(get_file_base(), '', IGNORE_ALIEN | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE, true, true, ['php']);
         $files[] = 'install.php';
@@ -91,6 +95,10 @@ class find_broken_screen_links_test_set extends cms_test_case
     // This test is not necessarily required to pass, but it may hint at issues; best just to make it pass anyway (it does at the time at writing) - and add exceptions as needed
     public function testScreenLinks()
     {
+        if (($this->only !== null) && ($this->only != 'testScreenLinks')) {
+            return;
+        }
+
         cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
         $found = [];

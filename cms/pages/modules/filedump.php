@@ -286,7 +286,7 @@ class Module_filedump
         $subpath = $this->subpath;
 
         if (!file_exists(get_custom_file_base() . '/uploads/filedump' . $subpath)) {
-            $_url = build_url(['page' => '_SELF', 'subpath' => '/'], get_module_zone('filedump'));
+            $_url = build_url(['page' => '_SELF', 'subpath' => '/'], '_SELF');
             return redirect_screen($this->title, $_url, do_lang_tempcode('DIRECTORY_NOT_FOUND', escape_html($subpath)));
         }
 
