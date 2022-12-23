@@ -222,7 +222,7 @@ function get_tickets(array $filters = [], bool $include_first_posts = false, boo
         $restrict_description = do_lang('SUPPORT_TICKET') . ': #' . strval($only_owner_id) . '\_%';
     } else {
         $restrict = '';
-        $restrict_description = '';
+        $restrict_description = do_lang('SUPPORT_TICKET') . ': #%';
     }
 
     // What forums to read from
