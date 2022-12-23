@@ -630,8 +630,8 @@ class Forum_driver_mybb extends Forum_driver_base
      * @param  integer $limit The limit
      * @param  integer $start The start position
      * @param  integer $max_rows The total rows (not a parameter: returns by reference)
-     * @param  SHORT_TEXT $filter_topic_title The topic title filter
-     * @param  SHORT_TEXT $filter_topic_description The topic description filter; may apply to the topic title if there is no separate description field with additional wildcarding to match what make_post_forum_topic is doing
+     * @param  SHORT_TEXT $filter_topic_title The topic title filter (blank: no filter)
+     * @param  SHORT_TEXT $filter_topic_description The topic description filter; may apply to the topic title if there is no separate description field with additional wildcarding to match what make_post_forum_topic is doing (blank: no filter)
      * @param  boolean $show_first_posts Whether to show the first posts
      * @param  string $date_key The date key to sort by
      * @set lasttime firsttime
