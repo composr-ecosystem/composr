@@ -501,7 +501,7 @@ class Module_downloads
         } else {
             $select = strval($category_id) . '#';
         }
-        $filter = either_param_string('active_filter', '');
+        $filter = either_param_string('active_filter', '', INPUT_FILTER_NONE);
 
         // Management links
         if (has_actual_page_access(null, 'cms_downloads', null, ['downloads', strval($category_id)], 'submit_midrange_content')) {

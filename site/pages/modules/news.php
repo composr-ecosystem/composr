@@ -543,7 +543,7 @@ class Module_news
 
         // Get category contents
         $inline = get_param_integer('inline', 0) == 1;
-        $filter = either_param_string('active_filter', '');
+        $filter = either_param_string('active_filter', '', INPUT_FILTER_NONE);
 
         // Management links
         if ((($blog !== 1) || (has_privilege(get_member(), 'have_personal_category', 'cms_news'))) && (has_actual_page_access(null, ($blog === 1) ? 'cms_blogs' : 'cms_news', null, null)) && (has_submit_permission(($blog === 1) ? 'mid' : 'high', get_member(), get_ip_address(), 'cms_news'))) {

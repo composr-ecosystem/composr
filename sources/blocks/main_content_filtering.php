@@ -57,7 +57,7 @@ class Block_main_content_filtering
         $types = $this->interpret_pairs_from_string($_types);
 
         if ((strpos($_types, 'linklist') !== false) || ($links != '')) { // Needs to be able to take overrides from environment if we have merge links
-            $filter = either_param_string('active_filter', array_key_exists('param', $map) ? $map['param'] : '');
+            $filter = either_param_string('active_filter', array_key_exists('param', $map) ? $map['param'] : '', INPUT_FILTER_NONE);
         } else {
             $filter = array_key_exists('param', $map) ? $map['param'] : '';
         }

@@ -244,7 +244,8 @@ function form_for_filtercode(string $filter, array $labels = [], ?string $conten
                         } elseif ($field_name == 'meta_keywords') {
                             $_extra = $db->query_select('seo_meta_keywords', ['DISTINCT meta_keyword'], [], 'ORDER BY meta_keyword');
                             foreach ($_extra as $e) {
-                                $extra[trim($e['meta_keyword'])] = trim($e['meta_keyword']);
+                                $_keyword = trim(get_translated_text($e['meta_keyword']));
+                                $extra[$_keyword] = $_keyword;
                             }
                         }
                     }
@@ -338,6 +339,9 @@ function form_for_filtercode(string $filter, array $labels = [], ?string $conten
                 }
                 $list_options->attach(form_input_list_entry('', $default_value == '', ''));
                 foreach ($days_options as $key => $val) {
+                    if (!is_string($key)) {
+                        $key = strval($key);
+                    }
                     $list_options->attach(form_input_list_entry($key, $default_value == $key, $val));
                 }
                 $form_fields->attach(form_input_list($field_label, '', 'filter_' . $field_name, $list_options, null, false, false));
@@ -346,6 +350,9 @@ function form_for_filtercode(string $filter, array $labels = [], ?string $conten
             case 'tick':
                 $list_options = new Tempcode();
                 foreach (['' => '', '0' => do_lang_tempcode('NO'), '1' => do_lang_tempcode('YES')] as $key => $val) {
+                    if (!is_string($key)) {
+                        $key = strval($key);
+                    }
                     $list_options->attach(form_input_list_entry($key, $default_value == $key, $val));
                 }
                 $form_fields->attach(form_input_list($field_label, '', 'filter_' . $field_name, $list_options, null, false, false));
@@ -364,6 +371,9 @@ function form_for_filtercode(string $filter, array $labels = [], ?string $conten
                 $list_options = new Tempcode();
                 $list_options->attach(form_input_list_entry('', $default_value == '', ''));
                 foreach ($extra as $key => $val) {
+                    if (!is_string($key)) {
+                        $key = strval($key);
+                    }
                     $list_options->attach(form_input_list_entry($key, $default_value == $key, $val));
                 }
                 $form_fields->attach(form_input_list($field_label, '', 'filter_' . $field_name, $list_options, null, false, false));
@@ -372,6 +382,9 @@ function form_for_filtercode(string $filter, array $labels = [], ?string $conten
             case 'list_multi':
                 $list_options = new Tempcode();
                 foreach ($extra as $key => $val) {
+                    if (!is_string($key)) {
+                        $key = strval($key);
+                    }
                     $list_options->attach(form_input_list_entry($key, preg_match('#(^|,)' . preg_quote($key, '#') . '(,|$)#', $default_value) != 0, $val));
                 }
                 $form_fields->attach(form_input_multi_list($field_label, '', 'filter_' . $field_name, $list_options, null, 5, false));

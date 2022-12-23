@@ -133,6 +133,7 @@ PHP;
         }
 
         if ($select_and != '') {
+            require_code('selectcode');
             $selects_and_1 = selectcode_to_sqlfragment($select_and, 'p.id', 'news_categories', null, 'p.news_category', 'id');
             $selects_and_2 = selectcode_to_sqlfragment($select_and, 'p.id', 'news_categories', null, 'd.news_entry_category', 'id');
             $q_filter .= ' AND (' . $selects_and_1 . ' OR ' . $selects_and_2 . ')';

@@ -1016,7 +1016,7 @@ class Module_galleries
         $days = get_param_integer('days', null);
         $image_select = get_param_string('select', '*', INPUT_FILTER_GET_COMPLEX);
         $video_select = get_param_string('video_select', '*', INPUT_FILTER_GET_COMPLEX);
-        $filter = either_param_string('active_filter', '');
+        $filter = either_param_string('active_filter', '', INPUT_FILTER_NONE);
 
         // Member gallery?
         $member_id = get_member_id_from_gallery_name($cat, null, true);
@@ -1088,7 +1088,7 @@ class Module_galleries
         $days = get_param_string('days', '');
         $image_select = get_param_string('select', '*', INPUT_FILTER_GET_COMPLEX);
         $video_select = get_param_string('video_select', '*', INPUT_FILTER_GET_COMPLEX);
-        $filter = either_param_string('active_filter', '');
+        $filter = either_param_string('active_filter', '', INPUT_FILTER_NONE);
 
         // Member gallery?
         $member_id = get_member_id_from_gallery_name($cat, null, true);

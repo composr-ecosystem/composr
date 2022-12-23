@@ -3941,13 +3941,13 @@ function titleify(string $boring) : string
  */
 function propagate_filtercode(string $prefix = '') : array
 {
-    $active_filter = either_param_string(($prefix == '') ? 'active_filter' : ($prefix . '_active_filter'), '');
+    $active_filter = either_param_string(($prefix == '') ? 'active_filter' : ($prefix . '_active_filter'), '', INPUT_FILTER_NONE);
     $map = [];
     if ($active_filter != '') {
         $map['active_filter'] = $active_filter;
         foreach (array_keys($_GET + $_POST) as $key) {
             if (substr($key, 0, 7) == 'filter_') {
-                $map[$key] = either_param_string($key, '');
+                $map[$key] = either_param_string($key, '', INPUT_FILTER_NONE);
             }
         }
     }

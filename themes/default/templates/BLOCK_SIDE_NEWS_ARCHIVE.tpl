@@ -19,13 +19,13 @@
 							ICON_SIZE=20
 						{+END}</a>
 
-						<span class="js-tray-onclick-toggle-accordion"><strong>{YEAR}</strong></span>:
+						<span class="js-tray-onclick-toggle-accordion"><strong>{YEAR*}</strong></span>:
 
 						<div class="toggleable-tray accordion-trayitem-body js-tray-accordion-item-body"{+START,IF,{$NOT,{$GET,is_current_year}}} style="display: none"{+END}>
 							<ul class="compact-list associated-details">
 								{+START,LOOP,TIMES}
 									<li>
-										<a href="{URL*}">{MONTH_STRING}</a>
+										<a href="{URL*}">{MONTH_STRING*}</a>
 									</li>
 								{+END}
 							</ul>

@@ -1272,7 +1272,7 @@ class Module_catalogues
         } else {
             $cat_select = strval($id) . '#';
         }
-        $filter = either_param_string('active_filter', '');
+        $filter = either_param_string('active_filter', '', INPUT_FILTER_NONE);
 
         // Render
         return do_template('CATALOGUE_' . $tpl_set . '_CATEGORY_SCREEN', [
