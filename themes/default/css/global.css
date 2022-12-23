@@ -6470,7 +6470,6 @@ a.tab, a.tab:visited, a.tab:hover {
 	text-align: center;
 	cursor: pointer;
 	line-height: 18px;
-	opacity: 0.6;
 	border-left: 1px solid {$GET,tab_border};
 	border-top: 1px solid {$GET,tab_border};
 }
@@ -6497,18 +6496,19 @@ a.tab > span {
 	}
 /*{+END}*/
 
-.tab * {
+.tab > * {
 	vertical-align: middle;
 	display: inline-block;
+	opacity: 0.6;
 }
 
-.tab.tab-active {
+.tab.tab-active > * {
 	text-shadow: 1px 0 1px {$GET,standard_border};
 	opacity: 1.0 !important;
 }
 
-.tab:hover,
-.is-touch-enabled .tab {
+.tab:hover > *,
+.is-touch-enabled .tab > * {
 	opacity: 1.0;
 }
 
@@ -6532,7 +6532,7 @@ a.tab > span {
 /*{+END}*/
 
 /*{+START,CSS_MODE,mobile}*/
-	.tab:nth-child(3n+0) {
+	.tab:nth-child(3n+0), .tab-last, a.tab:last-child {
 		border-right: 1px solid {$GET,tab_border};
 	}
 /*{+END}*/

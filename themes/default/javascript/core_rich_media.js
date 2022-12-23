@@ -383,15 +383,6 @@
         });
     };
 
-    $cms.templates.comcodeTabHead = function comcodeTabHead(params, container) {
-        var tabSets = $cms.filter.id(params.tabSets),
-            title = $cms.filter.id(params.title);
-
-        $dom.on(container, 'click', function () {
-            $cms.ui.selectTab('g', tabSets + '-' + title);
-        });
-    };
-
     $cms.templates.attachments = function attachments(params, container) {
         window.attachmentTemplate = strVal(params.attachmentTemplate);
         window.maxAttachments = Number(params.maxAttachments) || 0;
@@ -500,65 +491,6 @@
         $dom.html(comcoderandom, use);
     };
 
-    $cms.templates.comcodePulse = function (params) {
-        var id = 'pulse-wave-' + params.randIdPulse;
-
-        window[id] = [0, params.maxColor, params.minColor, params.speed, []];
-        setInterval(function () {
-            window.$pulse.processWave(document.getElementById(id));
-        }, params.speed);
-    };
-
-    $cms.templates.comcodeShocker = function (params) {
-        var id = params.randIdShocker,
-            parts = params.parts || [], part,
-            time = Number(params.time);
-
-        window.shockerParts || (window.shockerParts = {});
-        window.shockerPos || (window.shockerPos = {});
-
-        window.shockerParts[id] = [];
-        window.shockerPos[id] = 0;
-
-        for (var i = 0, len = parts.length; i < len; i++) {
-            part = parts[i];
-            window.shockerParts[id].push([part.left, part.right]);
-        }
-
-        shockerTick(id, time, params.maxColor, params.minColor);
-        setInterval(function () {
-            shockerTick(id, time, params.maxColor, params.minColor);
-        }, time);
-    };
-
-    $cms.views.ComcodeSectionController = ComcodeSectionController;
-    /**
-     * @memberof $cms.views
-     * @class $cms.views.ComcodeSectionController
-     * @extends $cms.View
-     */
-    function ComcodeSectionController(params) {
-        ComcodeSectionController.base(this, 'constructor', arguments);
-
-        this.passId = $cms.filter.id(params.passId);
-        this.sections = params.sections.map($cms.filter.id);
-
-        flipPage(0, this.passId, this.sections);
-    }
-
-    $util.inherits(ComcodeSectionController, $cms.View, /**@lends $cms.views.ComcodeSectionController#*/{
-        events: function events() {
-            return {
-                'click .js-click-flip-page': 'doFlipPage'
-            };
-        },
-
-        doFlipPage: function doFlipPage(e, clicked) {
-            var flipTo = clicked.dataset.vwFlipTo;
-            flipPage(flipTo, this.passId, this.sections);
-        }
-    });
-
     $cms.templates.emoticonClickCode = function emoticonClickCode(params, container) {
         var fieldName = strVal(params.fieldName);
 
@@ -622,6 +554,31 @@
         }
     };
 
+    $cms.templates.comcodeTabHead = function comcodeTabHead(params, container) {
+        var tabSets = $cms.filter.id(params.tabSets),
+            title = $cms.filter.id(params.title);
+
+        $dom.on(container, 'click', function () {
+            $cms.ui.selectTab('g', tabSets + '-' + title);
+        });
+    };
+
+    $cms.templates.comcodeTabBody = function (params, container) {
+        var tabSets = $cms.filter.id(params.tabSets),
+            title = $cms.filter.id(params.title);
+
+        if (params.blockCallUrl) {
+            window['load_tab__' + title] = function () {
+                $cms.callBlock(params.blockCallUrl, '', document.getElementById('g_' + title), false, null, false, null, true);
+            };
+        }
+
+        if (container.style.display == 'block') {
+            // Comcode may specify different default which is only known to COMCODE_TAB_BODY template, and needs to be handled for COMCODE_TAB_HEAD
+            $cms.ui.selectTab('g', tabSets + '-' + title, false, true);
+        }
+    };
+
     $cms.views.ComcodeBigTabsController = ComcodeBigTabsController;
     /**
      * @memberof $cms.views
@@ -658,16 +615,214 @@
         }
     });
 
+    $cms.views.ComcodeSectionController = ComcodeSectionController;
+    /**
+     * @memberof $cms.views
+     * @class $cms.views.ComcodeSectionController
+     * @extends $cms.View
+     */
+    function ComcodeSectionController(params) {
+        ComcodeSectionController.base(this, 'constructor', arguments);
 
-    $cms.templates.comcodeTabBody = function (params) {
-        var title = $cms.filter.id(params.title);
+        this.passId = $cms.filter.id(params.passId);
+        this.sections = params.sections.map($cms.filter.id);
 
-        if (params.blockCallUrl) {
-            window['load_tab__' + title] = function () {
-                $cms.callBlock(params.blockCallUrl, '', document.getElementById('g_' + title), false, null, false, null, true);
+        flipPage(0, this.passId, this.sections);
+    }
+
+    $util.inherits(ComcodeSectionController, $cms.View, /**@lends $cms.views.ComcodeSectionController#*/{
+        events: function events() {
+            return {
+                'click .js-click-flip-page': 'doFlipPage'
             };
+        },
+
+        doFlipPage: function doFlipPage(e, clicked) {
+            var flipTo = clicked.dataset.vwFlipTo;
+            flipPage(flipTo, this.passId, this.sections);
         }
+    });
+
+    var _flipPageTimeouts = {};
+    function flipPage(to, id, sections, switchTime) {
+        var i, currentPos = 0, section;
+
+        if (_flipPageTimeouts[id]) {
+            clearTimeout(_flipPageTimeouts[id]);
+            delete _flipPageTimeouts[id];
+        }
+
+        if ($util.isNumeric(to)) {
+            to = Number(to);
+
+            for (i = 0; i < sections.length; i++) {
+                section = document.getElementById(id + '-section-' + sections[i]);
+                if (section) {
+                    if ((section.style.display === 'block') && (section.style.position !== 'absolute')) {
+                        currentPos = i;
+                        break;
+                    }
+                }
+            }
+
+            currentPos += to;
+        } else {
+            for (i = 0; i < sections.length; i++) {
+                if (sections[i] === to) {
+                    currentPos = i;
+                    break;
+                }
+            }
+        }
+
+        // Previous/next updates
+        var el;
+        el = document.getElementById(id + '-has-next-yes');
+        if (el) {
+            el.style.display = (currentPos === (sections.length - 1)) ? 'none' : 'inline-block';
+        }
+        el = document.getElementById(id + '-has-next-no');
+        if (el) {
+            el.style.display = (currentPos === (sections.length - 1)) ? 'inline-block' : 'none';
+        }
+        el = document.getElementById(id + '-has-previous-yes');
+        if (el) {
+            el.style.display = (currentPos === 0) ? 'none' : 'inline-block';
+        }
+        el = document.getElementById(id + '-has-previous-no');
+        if (el) {
+            el.style.display = (currentPos === 0) ? 'inline-block' : 'none';
+        }
+
+        // We make our forthcoming one instantly visible to stop the browser possibly scrolling up if there is a tiny time interval when none are visible
+        el = document.getElementById(id + '-section-' + sections[i]);
+        if (el) {
+            el.style.display = 'block';
+        }
+
+        for (i = 0; i < sections.length; i++) {
+            el = document.getElementById(id + '-goto-' + sections[i]);
+            if (el) {
+                el.style.display = (i === currentPos) ? 'none' : 'inline-block';
+            }
+
+            el = document.getElementById(id + '-btgoto-' + sections[i]);
+            if (el) {
+                el.classList.toggle('big-tab-active', (i === currentPos));
+                el.classList.toggle('big-tab-inactive', (i !== currentPos));
+            }
+
+            el = document.getElementById(id + '-isat-' + sections[i]);
+            if (el) {
+                el.style.display = (i === currentPos) ? 'inline-block' : 'none';
+            }
+
+            el = document.getElementById(id + '-section-' + sections[i]);
+            if (el) {
+                if (el.classList.contains('comcode-big-tab')) {
+                    if (i === currentPos) {
+                        el.style.width = '';
+                        el.style.position = 'static';
+                        el.style.zIndex = 10;
+                        el.style.opacity = 1;
+                    } else {
+                        el.style.opacity = (el.style.position !== 'static') ? 0 : 1;
+                        el.style.width = (el.offsetWidth - 24) + 'px'; // 24=lhs padding+rhs padding+lhs border+rhs border
+                        el.style.position = 'absolute';
+                        el.style.zIndex = -10;
+                        el.style.top = '0';
+                        el.parentNode.style.position = 'relative';
+                    }
+                    el.style.display = 'block';
+                } else {
+                    el.style.display = (i === currentPos) ? 'block' : 'none';
+                }
+            }
+        }
+
+        if (switchTime) {
+            _flipPageTimeouts[id] = setTimeout(function () {
+                var nextPage = 0, i, el;
+
+                for (i = 0; i < sections.length; i++) {
+                    el = document.getElementById(id + '-section-' + sections[i]);
+                    if ((el) && (el.style.display === 'block') && (el.style.position !== 'absolute')) {
+                        nextPage = i + 1;
+                    }
+                }
+
+                if (nextPage === sections.length) {
+                    nextPage = 0;
+                }
+
+                flipPage(sections[nextPage], id, sections, switchTime);
+            }, switchTime);
+        }
+
+        return false;
+    }
+
+    $cms.templates.comcodePulse = function (params) {
+        var id = 'pulse-wave-' + params.randIdPulse;
+
+        window[id] = [0, params.maxColor, params.minColor, params.speed, []];
+        setInterval(function () {
+            window.$pulse.processWave(document.getElementById(id));
+        }, params.speed);
     };
+
+    $cms.templates.comcodeShocker = function (params) {
+        var id = params.randIdShocker,
+            parts = params.parts || [], part,
+            time = Number(params.time);
+
+        window.shockerParts || (window.shockerParts = {});
+        window.shockerPos || (window.shockerPos = {});
+
+        window.shockerParts[id] = [];
+        window.shockerPos[id] = 0;
+
+        for (var i = 0, len = parts.length; i < len; i++) {
+            part = parts[i];
+            window.shockerParts[id].push([part.left, part.right]);
+        }
+
+        shockerTick(id, time, params.maxColor, params.minColor);
+        setInterval(function () {
+            shockerTick(id, time, params.maxColor, params.minColor);
+        }, time);
+    };
+
+    function shockerTick(id, time, minColor, maxColor) {
+        if ((document.hidden !== undefined) && (document.hidden)) {
+            return;
+        }
+
+        if (window.shockerPos[id] >= window.shockerParts[id].length) {
+            window.shockerPos[id] = 0;
+        }
+
+        var eLeft = document.getElementById('comcodeshocker' + id + '-left');
+        if (!eLeft) {
+            return;
+        }
+        $dom.html(eLeft, window.shockerParts[id][window.shockerPos[id]][0]);
+        $dom.fadeIn(eLeft);
+
+        var eRight = document.getElementById('comcodeshocker' + id + '-right');
+        if (!eRight) {
+            return;
+        }
+        $dom.html(eRight, window.shockerParts[id][window.shockerPos[id]][1]);
+        $dom.fadeIn(eRight);
+
+        window.shockerPos[id]++;
+
+        window['comcodeshocker' + id + '-left'] = [0, minColor, maxColor, time / 13, []];
+        setInterval(function () {
+            window.$pulse.processWave(eLeft);
+        }, window['comcodeshocker' + id + '-left'][3]);
+    }
 
     $cms.templates.comcodeTicker = function (params, container) {
         window.tickPos || (window.tickPos = {});
@@ -708,6 +863,140 @@
         }, params.time);
     };
 
+    window.countdown = countdown;
+    function countdown(id, direction, tailing) {
+        var countdown = (typeof id === 'object') ? id : document.getElementById(id), i;
+        var inside = $dom.html(countdown);
+        var multiples = [];
+        if (tailing >= 4) {
+            multiples.push(365);
+        }
+        if (tailing >= 3) {
+            multiples.push(24);
+        }
+        if (tailing >= 2) {
+            multiples.push(60);
+        }
+        if (tailing >= 1) {
+            multiples.push(60);
+        }
+        multiples.push(1);
+        var us = inside.match(/\d+/g);
+        var total = 0, multiplier = 1;
+
+        while (multiples.length > us.length) {
+            us.push('0');
+        }
+
+        for (i = us.length - 1; i >= 0; i--) {
+            multiplier *= multiples[i];
+            total += parseInt(us[i]) * multiplier;
+        }
+
+        if (total > 0) {
+            total += Number(direction);
+            inside = inside.replace(/\d+/g, '!!!');
+
+            if (total === 0) {
+                countdown.classList.add('red-alert');
+            }
+
+            for (i = 0; i < us.length; i++) {
+                us[i] = Math.floor(total / multiplier);
+                total -= us[i] * multiplier;
+                multiplier /= multiples[i];
+                inside = inside.replace('!!!', us[i]);
+            }
+
+            $dom.html(countdown, inside);
+        }
+    }
+
+    window.tickPos || (window.tickPos = {});
+
+    window.tickerTick = tickerTick;
+    function tickerTick(id, width) {
+        if (document.hidden === true) {
+            return;
+        }
+
+        var el = document.getElementById(id);
+        if (!el || $dom.$('#' + id + ':hover')) {
+            return;
+        }
+
+        el.style.textIndent = window.tickPos[id] + 'px';
+        window.tickPos[id]--;
+        if (window.tickPos[id] < -1.1 * el.children[0].offsetWidth) {
+            window.tickPos[id] = width;
+        }
+    }
+
+    window.jumperPos || (window.jumperPos = []);
+    window.jumperParts || (window.jumperParts = []);
+
+    window.jumperTick = jumperTick;
+    function jumperTick(id) {
+        if (document.hidden === true) {
+            return;
+        }
+
+        if (window.jumperPos[id] >= (window.jumperParts[id].length)) {
+            window.jumperPos[id] = 0;
+        }
+        var el = document.getElementById(id);
+        if (!el) {
+            return;
+        }
+        $dom.html(el, window.jumperParts[id][window.jumperPos[id]]);
+        window.jumperPos[id]++;
+    }
+
+    window.crazyTick = crazyTick;
+    function crazyTick() {
+        if (window.currentMouseX == null) {
+            return;
+        }
+        if (window.currentMouseY == null) {
+            return;
+        }
+
+        var e, i, sWidth, biasx, biasy;
+        for (i = 0; i < window.crazyCriters.length; i++) {
+            e = document.getElementById(window.crazyCriters[i]);
+            sWidth = e.clientWidth;
+
+            biasx = window.currentMouseX - e.offsetLeft;
+            if (biasx > 0) {
+                biasx = 2;
+            } else {
+                biasx = -1;
+            }
+
+            if (Math.random() * 4 < 1) {
+                biasx = 0;
+            }
+
+            biasy = window.currentMouseY - e.offsetTop;
+            if (biasy > 0) {
+                biasy = 2;
+            } else {
+                biasy = -1;
+            }
+
+            if (Math.random() * 4 < 1) {
+                biasy = 0;
+            }
+
+            if (sWidth < 100) {
+                e.style.width = (sWidth + 1) + 'px';
+            }
+
+            e.style.left = (e.offsetLeft + (Math.random() * 2 - 1 + biasx) * 30) + 'px';
+            e.style.top = (e.offsetTop + (Math.random() * 2 - 1 + biasy) * 30) + 'px';
+            e.style.position = 'absolute';
+        }
+    }
 
     var promiseYouTubeIframeAPIReady;
     $cms.templates.mediaYouTube = function (params, container) {
@@ -1000,293 +1289,4 @@
 
         mediaElement = new MediaElementPlayer(playerId, options);
     };
-
-    function shockerTick(id, time, minColor, maxColor) {
-        if ((document.hidden !== undefined) && (document.hidden)) {
-            return;
-        }
-
-        if (window.shockerPos[id] >= window.shockerParts[id].length) {
-            window.shockerPos[id] = 0;
-        }
-
-        var eLeft = document.getElementById('comcodeshocker' + id + '-left');
-        if (!eLeft) {
-            return;
-        }
-        $dom.html(eLeft, window.shockerParts[id][window.shockerPos[id]][0]);
-        $dom.fadeIn(eLeft);
-
-        var eRight = document.getElementById('comcodeshocker' + id + '-right');
-        if (!eRight) {
-            return;
-        }
-        $dom.html(eRight, window.shockerParts[id][window.shockerPos[id]][1]);
-        $dom.fadeIn(eRight);
-
-        window.shockerPos[id]++;
-
-        window['comcodeshocker' + id + '-left'] = [0, minColor, maxColor, time / 13, []];
-        setInterval(function () {
-            window.$pulse.processWave(eLeft);
-        }, window['comcodeshocker' + id + '-left'][3]);
-    }
-
-    var _flipPageTimeouts = {};
-    function flipPage(to, id, sections, switchTime) {
-        var i, currentPos = 0, section;
-
-        if (_flipPageTimeouts[id]) {
-            clearTimeout(_flipPageTimeouts[id]);
-            delete _flipPageTimeouts[id];
-        }
-
-        if ($util.isNumeric(to)) {
-            to = Number(to);
-
-            for (i = 0; i < sections.length; i++) {
-                section = document.getElementById(id + '-section-' + sections[i]);
-                if (section) {
-                    if ((section.style.display === 'block') && (section.style.position !== 'absolute')) {
-                        currentPos = i;
-                        break;
-                    }
-                }
-            }
-
-            currentPos += to;
-        } else {
-            for (i = 0; i < sections.length; i++) {
-                if (sections[i] === to) {
-                    currentPos = i;
-                    break;
-                }
-            }
-        }
-
-        // Previous/next updates
-        var el;
-        el = document.getElementById(id + '-has-next-yes');
-        if (el) {
-            el.style.display = (currentPos === (sections.length - 1)) ? 'none' : 'inline-block';
-        }
-        el = document.getElementById(id + '-has-next-no');
-        if (el) {
-            el.style.display = (currentPos === (sections.length - 1)) ? 'inline-block' : 'none';
-        }
-        el = document.getElementById(id + '-has-previous-yes');
-        if (el) {
-            el.style.display = (currentPos === 0) ? 'none' : 'inline-block';
-        }
-        el = document.getElementById(id + '-has-previous-no');
-        if (el) {
-            el.style.display = (currentPos === 0) ? 'inline-block' : 'none';
-        }
-
-        // We make our forthcoming one instantly visible to stop the browser possibly scrolling up if there is a tiny time interval when none are visible
-        el = document.getElementById(id + '-section-' + sections[i]);
-        if (el) {
-            el.style.display = 'block';
-        }
-
-        for (i = 0; i < sections.length; i++) {
-            el = document.getElementById(id + '-goto-' + sections[i]);
-            if (el) {
-                el.style.display = (i === currentPos) ? 'none' : 'inline-block';
-            }
-
-            el = document.getElementById(id + '-btgoto-' + sections[i]);
-            if (el) {
-                el.classList.toggle('big-tab-active', (i === currentPos));
-                el.classList.toggle('big-tab-inactive', (i !== currentPos));
-            }
-
-            el = document.getElementById(id + '-isat-' + sections[i]);
-            if (el) {
-                el.style.display = (i === currentPos) ? 'inline-block' : 'none';
-            }
-
-            el = document.getElementById(id + '-section-' + sections[i]);
-            if (el) {
-                if (el.classList.contains('comcode-big-tab')) {
-                    if (i === currentPos) {
-                        el.style.width = '';
-                        el.style.position = 'static';
-                        el.style.zIndex = 10;
-                        el.style.opacity = 1;
-                    } else {
-                        el.style.opacity = (el.style.position !== 'static') ? 0 : 1;
-                        el.style.width = (el.offsetWidth - 24) + 'px'; // 24=lhs padding+rhs padding+lhs border+rhs border
-                        el.style.position = 'absolute';
-                        el.style.zIndex = -10;
-                        el.style.top = '0';
-                        el.parentNode.style.position = 'relative';
-                    }
-                    el.style.display = 'block';
-                } else {
-                    el.style.display = (i === currentPos) ? 'block' : 'none';
-                }
-            }
-        }
-
-        if (switchTime) {
-            _flipPageTimeouts[id] = setTimeout(function () {
-                var nextPage = 0, i, el;
-
-                for (i = 0; i < sections.length; i++) {
-                    el = document.getElementById(id + '-section-' + sections[i]);
-                    if ((el) && (el.style.display === 'block') && (el.style.position !== 'absolute')) {
-                        nextPage = i + 1;
-                    }
-                }
-
-                if (nextPage === sections.length) {
-                    nextPage = 0;
-                }
-
-                flipPage(sections[nextPage], id, sections, switchTime);
-            }, switchTime);
-        }
-
-        return false;
-    }
-
-    // =======
-    // COMCODE
-    // =======
-
-    window.countdown = countdown;
-    function countdown(id, direction, tailing) {
-        var countdown = (typeof id === 'object') ? id : document.getElementById(id), i;
-        var inside = $dom.html(countdown);
-        var multiples = [];
-        if (tailing >= 4) {
-            multiples.push(365);
-        }
-        if (tailing >= 3) {
-            multiples.push(24);
-        }
-        if (tailing >= 2) {
-            multiples.push(60);
-        }
-        if (tailing >= 1) {
-            multiples.push(60);
-        }
-        multiples.push(1);
-        var us = inside.match(/\d+/g);
-        var total = 0, multiplier = 1;
-
-        while (multiples.length > us.length) {
-            us.push('0');
-        }
-
-        for (i = us.length - 1; i >= 0; i--) {
-            multiplier *= multiples[i];
-            total += parseInt(us[i]) * multiplier;
-        }
-
-        if (total > 0) {
-            total += Number(direction);
-            inside = inside.replace(/\d+/g, '!!!');
-
-            if (total === 0) {
-                countdown.classList.add('red-alert');
-            }
-
-            for (i = 0; i < us.length; i++) {
-                us[i] = Math.floor(total / multiplier);
-                total -= us[i] * multiplier;
-                multiplier /= multiples[i];
-                inside = inside.replace('!!!', us[i]);
-            }
-
-            $dom.html(countdown, inside);
-        }
-    }
-
-    window.tickPos || (window.tickPos = {});
-
-    window.tickerTick = tickerTick;
-    function tickerTick(id, width) {
-        if (document.hidden === true) {
-            return;
-        }
-
-        var el = document.getElementById(id);
-        if (!el || $dom.$('#' + id + ':hover')) {
-            return;
-        }
-
-        el.style.textIndent = window.tickPos[id] + 'px';
-        window.tickPos[id]--;
-        if (window.tickPos[id] < -1.1 * el.children[0].offsetWidth) {
-            window.tickPos[id] = width;
-        }
-    }
-
-    window.jumperPos || (window.jumperPos = []);
-    window.jumperParts || (window.jumperParts = []);
-
-    window.jumperTick = jumperTick;
-    function jumperTick(id) {
-        if (document.hidden === true) {
-            return;
-        }
-
-        if (window.jumperPos[id] >= (window.jumperParts[id].length)) {
-            window.jumperPos[id] = 0;
-        }
-        var el = document.getElementById(id);
-        if (!el) {
-            return;
-        }
-        $dom.html(el, window.jumperParts[id][window.jumperPos[id]]);
-        window.jumperPos[id]++;
-    }
-
-    window.crazyTick = crazyTick;
-    function crazyTick() {
-        if (window.currentMouseX == null) {
-            return;
-        }
-        if (window.currentMouseY == null) {
-            return;
-        }
-
-        var e, i, sWidth, biasx, biasy;
-        for (i = 0; i < window.crazyCriters.length; i++) {
-            e = document.getElementById(window.crazyCriters[i]);
-            sWidth = e.clientWidth;
-
-            biasx = window.currentMouseX - e.offsetLeft;
-            if (biasx > 0) {
-                biasx = 2;
-            } else {
-                biasx = -1;
-            }
-
-            if (Math.random() * 4 < 1) {
-                biasx = 0;
-            }
-
-            biasy = window.currentMouseY - e.offsetTop;
-            if (biasy > 0) {
-                biasy = 2;
-            } else {
-                biasy = -1;
-            }
-
-            if (Math.random() * 4 < 1) {
-                biasy = 0;
-            }
-
-            if (sWidth < 100) {
-                e.style.width = (sWidth + 1) + 'px';
-            }
-
-            e.style.left = (e.offsetLeft + (Math.random() * 2 - 1 + biasx) * 30) + 'px';
-            e.style.top = (e.offsetTop + (Math.random() * 2 - 1 + biasy) * 30) + 'px';
-            e.style.position = 'absolute';
-        }
-    }
 }(window.$cms, window.$util, window.$dom));

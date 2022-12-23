@@ -166,7 +166,7 @@
 
             if (tabContentEl) {
                 if (tabs[i] === tab) {
-                    if (window['load_tab__' + tab] === undefined) {
+                    if (window['load_tab__' + tab] === undefined && !automated) {
                         $dom.fadeIn(tabContentEl);
                     } else {
                         $dom.show(tabContentEl);
