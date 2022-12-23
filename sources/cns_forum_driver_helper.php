@@ -233,11 +233,11 @@ function _helper_make_post_forum_topic(object $this_ref, string $forum_name, str
  * @param  string $date_key The date key to sort by
  * @set lasttime firsttime
  * @param  boolean $hot Whether to limit to hot topics
- * @param  boolean $open_only Open topics only
+ * @param  boolean $only_open Open topics only
  * @return ?array The array of topics (null: error/none)
  * @ignore
  */
-function _helper_show_forum_topics(object $this_ref, $name, int $limit, int $start, int &$max_rows, string $filter_topic_title, string $filter_topic_description, bool $show_first_posts, string $date_key, bool $hot, bool $open_only) : ?array
+function _helper_show_forum_topics(object $this_ref, $name, int $limit, int $start, int &$max_rows, string $filter_topic_title, string $filter_topic_description, bool $show_first_posts, string $date_key, bool $hot, bool $only_open) : ?array
 {
     if (is_integer($name)) {
         $id_list = 't_forum_id=' . strval(intval($name));
@@ -277,7 +277,7 @@ function _helper_show_forum_topics(object $this_ref, $name, int $limit, int $sta
         $topic_filter .= ' AND t_cache_num_posts/((t_cache_last_time-t_cache_first_time)/60/60/24+1)>' . strval($hot_topic_definition);
     }
     $topic_filter .= ' AND t_validated=1';
-    if ($open_only) {
+    if ($only_open) {
         $topic_filter .= ' AND t_is_open = 1';
     }
     if ($filter_topic_title != '') {

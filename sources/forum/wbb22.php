@@ -568,26 +568,27 @@ class Forum_driver_wbb22 extends Forum_driver_base
      * @param  integer $limit The limit
      * @param  integer $start The start position
      * @param  integer $max_rows The total rows (not a parameter: returns by reference)
-     * @param  SHORT_TEXT $filter_topic_title The topic title filter
-     * @param  SHORT_TEXT $filter_topic_description The topic description filter; may apply to the topic title if there is no separate description field with additional wildcarding to match what make_post_forum_topic is doing
+     * @param  SHORT_TEXT $filter_topic_title The topic title filter (blank: no filter)
+     * @param  SHORT_TEXT $filter_topic_description The topic description filter; may apply to the topic title if there is no separate description field with additional wildcarding to match what make_post_forum_topic is doing (blank: no filter)
      * @param  boolean $show_first_posts Whether to show the first posts
      * @param  string $date_key The date key to sort by
      * @set lasttime firsttime
      * @param  boolean $hot Whether to limit to hot topics
-     * @param  boolean $open_only Open topics only
+     * @param  boolean $only_open Open topics only
      * @return ?array The array of topics (null: error)
      */
-    public function show_forum_topics($name, int $limit, int $start, int &$max_rows, string $filter_topic_title = '', string $filter_topic_description = '', bool $show_first_posts = false, string $date_key = 'lasttime', bool $hot = false, bool $open_only = false) : ?array
+    public function show_forum_topics($name, int $limit, int $start, int &$max_rows, string $filter_topic_title = '', string $filter_topic_description = '', bool $show_first_posts = false, string $date_key = 'lasttime', bool $hot = false, bool $only_open = false) : ?array
     {
-        if (is_integer($name)) {
+        // Build forum ID query
+        if (is_integer($name)) { // Forum ID
             $id_list = 'boardid=' . strval($name);
-        } elseif (!is_array($name)) {
+        } elseif (!is_array($name)) { // Forum name
             $id = $this->forum_id_from_name($name);
             if ($id === null) {
                 return null;
             }
             $id_list = 'boardid=' . strval($id);
-        } else {
+        } else { // Array of forum IDs
             $id_list = '';
             foreach (array_keys($name) as $id) {
                 if ($id_list != '') {
@@ -607,12 +608,14 @@ class Forum_driver_wbb22 extends Forum_driver_base
         if ($filter_topic_description != '') {
             $topic_filter .= ' AND topic LIKE \'' . db_encode_like('%, ' . $filter_topic_description) . '\'';
         }
-        if ($open_only) {
+        if ($only_open) {
             $topic_filter .= ' AND closed=0';
         }
 
         $rows = $this->db->query('SELECT * FROM ' . $this->db->get_table_prefix() . 'threads WHERE (' . $id_list . ')' . $topic_filter . ' ORDER BY ' . (($date_key == 'lasttime') ? 'lastposttime' : 'starttime') . ' DESC', $limit, $start);
         $max_rows = $this->db->query_value_if_there('SELECT COUNT(*) FROM ' . $this->db->get_table_prefix() . 'threads WHERE (' . $id_list . ')' . $topic_filter);
+
+        // Generate output
         $out = [];
         foreach ($rows as $i => $r) {
             $out[$i] = [];
@@ -625,12 +628,20 @@ class Forum_driver_wbb22 extends Forum_driver_base
             $out[$i]['firsttime'] = $r['starttime'];
             $out[$i]['lasttime'] = $r['lastposttime'];
             $out[$i]['closed'] = ($r['closed'] == 1);
-            $fp_rows = $this->db->query('SELECT posttopic,message,userid,posttime FROM ' . $this->db->get_table_prefix() . 'posts WHERE message NOT LIKE \'' . db_encode_like(do_lang('SPACER_POST', '', '', '', get_site_default_lang()) . '%') . '\' AND threadid=' . strval($out[$i]['id']) . ' ORDER BY posttime', 1);
+
+            // Get first non-spacer post
+            $fp_rows = $this->db->query('SELECT posttopic,message,userid,posttime FROM ' . $this->db->get_table_prefix() . 'posts WHERE message NOT LIKE \'' . db_encode_like(do_lang('SPACER_POST', '', '', '', get_site_default_lang()) . '%') . '\' AND threadid=' . strval($out[$i]['id']) . ' ORDER BY posttime ASC', 1);
+
+            // Filter topics without any posts
             if (!array_key_exists(0, $fp_rows)) {
                 unset($out[$i]);
                 continue;
             }
+
+            // Correct title according to the first non-spacer post
             $out[$i]['firsttitle'] = $fp_rows[0]['posttopic'];
+
+            // Render first post if applicable
             if ($show_first_posts) {
                 push_lax_comcode(true);
                 $out[$i]['firstpost'] = comcode_to_tempcode($fp_rows[0]['message'], $fp_rows[0]['userid']);
