@@ -678,8 +678,8 @@ class Forum_driver_smf2 extends Forum_driver_base
             $out[$i]['title'] = $r['p_subject'];
             $out[$i]['description'] = $r['p_subject'];
 
-            // Get non-spacer posts
-            $fp_rows = $this->db->query('SELECT subject,poster_time,body,id_member,id_msg FROM ' . $this->db->get_table_prefix() . 'messages WHERE body NOT LIKE \'' . db_encode_like(substr(do_lang('SPACER_POST', '', '', '', get_site_default_lang()), 0, 20) . '%') . '\' AND id_topic=' . strval($out[$i]['id']) . ' ORDER BY id_msg');
+            // Get non-spacer post
+            $fp_rows = $this->db->query('SELECT subject,poster_time,body,id_member,id_msg FROM ' . $this->db->get_table_prefix() . 'messages WHERE body NOT LIKE \'' . db_encode_like(substr(do_lang('SPACER_POST', '', '', '', get_site_default_lang()), 0, 20) . '%') . '\' AND id_topic=' . strval($out[$i]['id']) . ' ORDER BY id_msg ASC', 1);
 
             // Filter topics without a post
             if (!array_key_exists(0, $fp_rows)) {
@@ -687,10 +687,13 @@ class Forum_driver_smf2 extends Forum_driver_base
                 continue;
             }
 
-            // Determine first and last information
+            // Fix title and time
             $out[$i]['firsttitle'] = $fp_rows[0]['subject'];
-            $out[$i]['lasttime'] = $fp_rows[count($fp_rows) - 1]['poster_time'];
             $out[$i]['firsttime'] = $fp_rows[0]['poster_time'];
+
+            // Get last post and adjust last time
+            $fp_rows = $this->db->query('SELECT subject,poster_time,body,id_member,id_msg FROM ' . $this->db->get_table_prefix() . 'messages WHERE body NOT LIKE \'' . db_encode_like(substr(do_lang('SPACER_POST', '', '', '', get_site_default_lang()), 0, 20) . '%') . '\' AND id_topic=' . strval($out[$i]['id']) . ' ORDER BY id_msg DESC', 1);
+            $out[$i]['lasttime'] = $fp_rows[0]['poster_time'];
 
             if ($show_first_posts) {
                 push_lax_comcode(true);

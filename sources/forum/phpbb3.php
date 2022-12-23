@@ -961,8 +961,8 @@ class Forum_driver_phpbb3 extends Forum_driver_base
             $out[$i]['firstmemberid'] = $r['topic_poster'];
             $out[$i]['closed'] = ($r['topic_status'] == 1);
 
-            // Get non-spacer posts
-            $fp_rows = $this->db->query('SELECT post_subject,post_text,bbcode_uid,poster_id,post_username,post_time FROM ' . $this->db->get_table_prefix() . 'posts p WHERE post_text NOT LIKE \'' . db_encode_like(substr(do_lang('SPACER_POST', '', '', '', get_site_default_lang()), 0, 20) . '%') . '\' AND topic_id=' . strval($id), 1);
+            // Get first non-spacer post
+            $fp_rows = $this->db->query('SELECT post_subject,post_text,bbcode_uid,poster_id,post_username,post_time FROM ' . $this->db->get_table_prefix() . 'posts p WHERE post_text NOT LIKE \'' . db_encode_like(substr(do_lang('SPACER_POST', '', '', '', get_site_default_lang()), 0, 20) . '%') . '\' AND topic_id=' . strval($id) . ' ORDER BY post_time ASC', 1);
 
             // Filter topics without a post
             if (!array_key_exists(0, $fp_rows)) {
@@ -970,11 +970,16 @@ class Forum_driver_phpbb3 extends Forum_driver_base
                 continue;
             }
 
-            // Get first and last post information
+            // Fix title based on first non-spacer post
             $out[$i]['firsttitle'] = $fp_rows[0]['post_subject'];
-            $out[$i]['lastusername'] = $fp_rows[count($fp_rows) - 1]['post_username'];
-            $out[$i]['lastmemberid'] = $fp_rows[count($fp_rows) - 1]['poster_id'];
-            $out[$i]['lasttime'] = $fp_rows[count($fp_rows) - 1]['post_time'];
+
+            // Get last non-spacer post
+            $fp_rows = $this->db->query('SELECT post_subject,post_text,bbcode_uid,poster_id,post_username,post_time FROM ' . $this->db->get_table_prefix() . 'posts p WHERE post_text NOT LIKE \'' . db_encode_like(substr(do_lang('SPACER_POST', '', '', '', get_site_default_lang()), 0, 20) . '%') . '\' AND topic_id=' . strval($id) . ' ORDER BY post_time DESC', 1);
+
+            // Determine most recent information
+            $out[$i]['lastusername'] = $fp_rows[0]['post_username'];
+            $out[$i]['lastmemberid'] = $fp_rows[0]['poster_id'];
+            $out[$i]['lasttime'] = $fp_rows[0]['post_time'];
 
             // Process first post for displaying if applicable
             if ($show_first_posts) {

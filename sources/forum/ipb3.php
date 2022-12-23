@@ -995,9 +995,10 @@ class Forum_driver_ipb3 extends Forum_driver_base
     {
         require_code('xhtml');
 
-        if (is_integer($name)) {
+        // Build forum ID query
+        if (is_integer($name)) { // Forum ID
             $id_list = 'forum_id=' . strval($name);
-        } elseif (!is_array($name)) {
+        } elseif (!is_array($name)) { // Forum name
             if (($name == '<announce>') || ($name === null)) {
                 $id_list = '(forum_id IS NULL)';
             } else {
@@ -1007,7 +1008,7 @@ class Forum_driver_ipb3 extends Forum_driver_base
                 }
                 $id_list = 'forum_id=' . strval($id);
             }
-        } else {
+        } else { // Array of forum IDs
             $id_list = '';
             $id_list_2 = '';
             foreach (array_keys($name) as $id) {
@@ -1039,6 +1040,8 @@ class Forum_driver_ipb3 extends Forum_driver_base
         $rows = $this->db->query('SELECT * FROM ' . $this->db->get_table_prefix() . 'topics WHERE (' . $id_list . ')' . $topic_filter . ' ORDER BY ' . (($date_key == 'lasttime') ? 'last_post' : 'start_date') . ' DESC', $limit, $start);
         $max_rows = $this->db->query_value_if_there('SELECT COUNT(*) FROM ' . $this->db->get_table_prefix() . 'topics WHERE (' . $id_list . ')' . $topic_filter);
         $emoticons_set_dir = $this->get_emo_dir();
+
+        // Generate output
         $out = [];
         foreach ($rows as $i => $r) {
             $out[$i] = [];
@@ -1052,12 +1055,20 @@ class Forum_driver_ipb3 extends Forum_driver_base
             $out[$i]['firsttime'] = $r['start_date'];
             $out[$i]['lasttime'] = $r['last_post'];
             $out[$i]['closed'] = ($r['state'] == 'closed');
+
+            // Get non-spacer posts
             $fp_rows = $this->db->query('SELECT * FROM ' . $this->db->get_table_prefix() . 'posts WHERE post NOT LIKE \'' . db_encode_like(do_lang('SPACER_POST', '', '', '', get_site_default_lang()) . '%') . '\' AND topic_id=' . strval($out[$i]['id']) . ' ORDER BY post_date', 1);
+
+            // Filter topics without any posts
             if (!array_key_exists(0, $fp_rows)) {
                 unset($out[$i]);
                 continue;
             }
+
+            // Determine correct title from first non-spacer post
             $out[$i]['firsttitle'] = $this->ipb_unescape($fp_rows[0]['post_title']);
+
+            // Render first post when applicable
             if ($show_first_posts) {
                 $post_id = $fp_rows[0]['pid'];
                 $post = $fp_rows[0]['post'];
