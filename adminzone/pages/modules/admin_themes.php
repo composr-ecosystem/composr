@@ -1407,6 +1407,7 @@ class Module_admin_themes
         cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
         require_code('lorem');
+        require_code('files2');
 
         $theme = get_param_string('theme');
 
