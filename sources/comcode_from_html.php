@@ -406,26 +406,27 @@ function convert_html_headers_to_titles(string $semihtml, bool $forceful) : stri
 {
     if (stripos($semihtml, '<h') !== false) {
         $array_html_preg_replace = [];
-        $array_html_preg_replace[] = ['#^\s*<h1 id="screen-title"[^<>]*>\s*<span class="inner">(.*)</span>\s*</h1>\s*<a id="[^"]*"></a>\s*$#siU', '[title="1"]${1}[/title]' . "\n"];
-        $array_html_preg_replace[] = ['#^\s*<h1 class="screen-title"[^<>]*>\s*<span class="inner">(.*)</span>\s*</h1>\s*<a id="[^"]*"></a>\s*$#siU', '[title="1"]${1}[/title]' . "\n"];
-        $array_html_preg_replace[] = ['#^\s*<h1 id="screen-title" class="screen-title">\s*<span class="inner">(.*)</span>\s*</h1>\s*<a id="[^"]*"></a>\s*$#siU', '[title="1"]${1}[/title]' . "\n"];
-        $array_html_preg_replace[] = ['#^\s*<h1 id="screen-title"[^<>]*>(.*)</h1>\s*<a id="[^"]*"></a>\s*$#siU', '[title="1"]${1}[/title]' . "\n"];
-        $array_html_preg_replace[] = ['#^\s*<h1 class="screen-title"[^<>]*>(.*)</h1>\s*<a id="[^"]*"></a>\s*$#siU', '[title="1"]${1}[/title]' . "\n"];
-        $array_html_preg_replace[] = ['#^\s*<h1 id="screen-title" class="screen-title"[^<>]*>(.*)</h1>\s*<a id="[^"]*"></a>\s*$#siU', '[title="1"]${1}[/title]' . "\n"];
-        $array_html_preg_replace[] = ['#^\s*<h1>(.*)</h1>\s*<a id="[^"]*"></a>\s*$#siU', '[title="1"]${1}[/title]' . "\n"];
+        $array_html_preg_replace[] = ['#\s*<h1 id="screen-title"[^<>]*>\s*<span class="inner">(\s*<a id="[^"]*"></a>)?\s*(.*?)\s*</span>\s*</h1>(\s*<a id="[^"]*"></a>)?\s*#si', '[title="1"]${2}[/title]' . "\n"];
+        $array_html_preg_replace[] = ['#\s*<h1 class="screen-title"[^<>]*>\s*<span class="inner">(\s*<a id="[^"]*"></a>)?\s*(.*?)\s*</span>\s*</h1>(\s*<a id="[^"]*"></a>)?\s*#si', '[title="1"]${2}[/title]' . "\n"];
+        $array_html_preg_replace[] = ['#\s*<h1 id="screen-title" class="screen-title">\s*<span class="inner">(\s*<a id="[^"]*"></a>)?\s*(.*?)\s*</span>\s*</h1>(\s*<a id="[^"]*"></a>)?\s*#si', '[title="1"]${2}[/title]' . "\n"];
+        $array_html_preg_replace[] = ['#\s*<h1 id="screen-title"[^<>]*>(\s*<a id="[^"]*"></a>)?\s*(.*?)\s*</h1>(\s*<a id="[^"]*"></a>)?\s*#si', '[title="1"]${2}[/title]' . "\n"];
+        $array_html_preg_replace[] = ['#\s*<h1 class="screen-title"[^<>]*>(\s*<a id="[^"]*"></a>)?\s*(.*?)\s*</h1>(\s*<a id="[^"]*"></a>)?\s*#si', '[title="1"]${2}[/title]' . "\n"];
+        $array_html_preg_replace[] = ['#\s*<h1 id="screen-title" class="screen-title"[^<>]*>(\s*<a id="[^"]*"></a>)?\s*(.*?)\s*</h1>(\s*<a id="[^"]*"></a>)?\s*#si', '[title="1"]${2}[/title]' . "\n"];
+        $array_html_preg_replace[] = ['#\s*<h1>(\s*<a id="[^"]*"></a>)?\s*(.*?)\s*</h1>(\s*<a id="[^"]*"></a>)?\s*#si', '[title="1"]${2}[/title]' . "\n"];
         if ($forceful) {
-            $array_html_preg_replace[] = ['#^\s*<h1[^<>]*>(.*)</h1>\s*<a id="[^"]*"></a>\s*$#siU', '[title="1"]${1}[/title]' . "\n"];
+            $array_html_preg_replace[] = ['#\s*<h1[^<>]*>(\s*<a id="[^"]*"></a>)?\s*(.*?)\s*</h1>(\s*<a id="[^"]*"></a>)?\s*#si', '[title="1"]${2}[/title]' . "\n"];
         }
-        $semihtml = array_html_preg_replace('h1', $array_html_preg_replace, $semihtml);
-        $semihtml = preg_replace('#^\s*<h1[^>]+>(.*)</h1>\s*<a id="[^"]*"></a>\s*#siU', '[title="1"]${1}[/title]' . "\n", $semihtml);
-        for ($i = 2; $i <= 4; $i++) {
-            $array_html_preg_replace = [];
-            $array_html_preg_replace[] = ['#^\s*<h' . strval($i) . '><span class="inner">(.*)</span></h' . strval($i) . '>\s*<a id="[^"]*"></a>\s*$#siU', '[title="' . strval($i) . '"]${1}[/title]' . "\n"];
-            $array_html_preg_replace[] = ['#^\s*<h' . strval($i) . '>(.*)</h' . strval($i) . '>\s*(<a id="[^"]*"></a>)?\s*$#siU', '[title="' . strval($i) . '"]${1}[/title]' . "\n"];
+        $array_html_preg_replace[] = ['#\s*<h1[^>]+>\s*(.*?)\s*</h1>(\s*<a id="[^"]*"></a>)?\s*#si', '[title="1"]${2}[/title]' . "\n"];
+        for ($i = 2; $i <= 6; $i++) {
+            $array_html_preg_replace[] = ['#\s*<h' . strval($i) . '>\s*<span class="inner">(\s*<a id="[^"]*"></a>)?\s*(.*?)\s*</span>\s*</h' . strval($i) . '>(\s*<a id="[^"]*"></a>)?\s*#si', '[title="' . strval($i) . '"]${2}[/title]' . "\n"];
+            $array_html_preg_replace[] = ['#\s*<h' . strval($i) . '>(\s*<a id="[^"]*"></a>)?\s*(.*?)\s*</h' . strval($i) . '>(\s*<a id="[^"]*"></a>)?\s*#si', '[title="' . strval($i) . '"]${2}[/title]' . "\n"];
             if ($forceful) {
-                $array_html_preg_replace[] = ['#^\s*<h' . strval($i) . '[^<>]*>(.*)</h' . strval($i) . '>\s*<a id="[^"]*"></a>\s*$#siU', '[title="' . strval($i) . '"]${1}[/title]' . "\n"];
+                $array_html_preg_replace[] = ['#\s*<h' . strval($i) . '[^<>]*>(\s*<a id="[^"]*"></a>)?\s*(.*?)\s*</h' . strval($i) . '>(\s*<a id="[^"]*"></a>)?\s*#si', '[title="' . strval($i) . '"]${2}[/title]' . "\n"];
             }
-            $semihtml = array_html_preg_replace('h' . strval($i) . '', $array_html_preg_replace, $semihtml);
+        }
+        foreach ($array_html_preg_replace as $bits) {
+            list($regexp, $replace) = $bits;
+            $semihtml = preg_replace($regexp, $replace, $semihtml);
         }
     }
     return $semihtml;

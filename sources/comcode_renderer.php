@@ -1536,7 +1536,7 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
             }
             if (!empty($conflicts)) {
                 $suffix_num = 1;
-                while (isset($conflicts[$suffix_num])) {
+                while (isset($conflicts[$uniq_id . '_' . strval($suffix_num)])) {
                     $suffix_num++;
                 }
                 $uniq_id .= '_' . strval($suffix_num);
