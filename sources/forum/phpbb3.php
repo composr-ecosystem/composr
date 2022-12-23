@@ -773,13 +773,14 @@ class Forum_driver_phpbb3 extends Forum_driver_base
         $local_ip = '127.0.0.1';
         $is_new = ($topic_id === null);
         if ($is_new) {
-            $map = ['forum_id' => $forum_id, 'topic_title' => $content_title . ', ' . $topic_identifier_encapsulation_prefix . ': #' . $topic_identifier, 'topic_poster' => $member_id, 'topic_time' => $time, 'topic_views' => 0, 'topic_status' => 0, 'topic_type' => 0, 'topic_first_post_id' => 0, 'topic_last_post_id' => 0, 'topic_moved_id' => 0];
+            $map = ['forum_id' => $forum_id, 'topic_title' => $content_title . ', ' . $topic_identifier_encapsulation_prefix . ': #' . $topic_identifier, 'topic_poster' => $member_id, 'topic_first_poster_name' => $this->get_username($member_id), 'topic_last_poster_name' => $this->get_username($member_id), 'topic_time' => $time, 'topic_last_post_time' => $time, 'topic_views' => 0, 'topic_status' => 0, 'topic_visibility' => ($validated !== null) && ($validated == 0) ? 0 : 1, 'topic_type' => 0, 'topic_first_post_id' => 0, 'topic_last_post_id' => 0, 'topic_moved_id' => 0];
             $topic_id = $this->db->query_insert('topics', $map, true);
 
             $home_link = '[url]' . $content_url . '[/url]';
-            $map = ['topic_id' => $topic_id, 'forum_id' => $forum_id, 'poster_id' => -1, 'post_text' => do_lang('SPACER_POST', $home_link, '', '', get_site_default_lang()), 'post_time' => $time, 'poster_ip' => $local_ip, 'post_username' => $this->get_username($member_id), 'enable_bbcode' => 1, 'enable_smilies' => 1, 'enable_sig' => 1, 'post_edit_time' => 0, 'post_edit_count' => 0];
+            $map = ['topic_id' => $topic_id, 'forum_id' => $forum_id, 'poster_id' => -1, 'post_text' => do_lang('SPACER_POST', $home_link, '', '', get_site_default_lang()), 'post_subject' => $content_title . ', ' . $topic_identifier_encapsulation_prefix . ': #' . $topic_identifier, 'post_time' => $time, 'poster_ip' => $local_ip, 'post_username' => do_lang('SYSTEM'), 'enable_bbcode' => 1, 'enable_smilies' => 1, 'enable_sig' => 1, 'post_edit_time' => 0, 'post_edit_count' => 0, 'post_visibility' => 1];
             $post_id = $this->db->query_insert('posts', $map, true);
             $this->db->query_update('topics', ['topic_first_post_id' => $post_id], ['topic_id' => $topic_id], '', 1);
+            $this->db->query_update('forums', ['forum_last_post_subject' => do_lang('SPACER_POST', $home_link, '', '', get_site_default_lang())], ['forum_id' => $forum_id], '', 1);
             $this->db->query('UPDATE ' . $this->db->get_table_prefix() . 'forums SET forum_topics_approved=(forum_topics_approved+1),forum_posts_approved=(forum_posts_approved+1) WHERE forum_id=' . strval($forum_id), 1);
         }
 
@@ -790,10 +791,13 @@ class Forum_driver_phpbb3 extends Forum_driver_base
             return [$topic_id, false];
         }
 
-        $map = ['topic_id' => $topic_id, 'forum_id' => $forum_id, 'poster_id' => $member_id, 'post_text' => $post, 'post_time' => $time, 'poster_ip' => $ip, 'post_username' => $this->get_username($member_id), 'enable_bbcode' => 1, 'enable_smilies' => 1, 'enable_sig' => 1, 'post_edit_time' => 0, 'post_edit_count' => 0];
+        $map = ['topic_id' => $topic_id, 'forum_id' => $forum_id, 'poster_id' => $member_id, 'post_text' => $post, 'post_time' => $time, 'poster_ip' => $ip, 'post_username' => $this->get_username($member_id), 'enable_bbcode' => 1, 'enable_smilies' => 1, 'enable_sig' => 1, 'post_edit_time' => 0, 'post_edit_count' => 0, 'post_visibility' => 1];
         $post_id = $this->db->query_insert('posts', $map, true);
         $this->db->query('UPDATE ' . $this->db->get_table_prefix() . 'forums SET forum_posts_approved=(forum_posts_approved+1), forum_last_post_id=' . strval($post_id) . ' WHERE forum_id=' . strval($forum_id), 1);
         $this->db->query('UPDATE ' . $this->db->get_table_prefix() . 'topics SET topic_posts_approved=(topic_posts_approved+1), topic_last_post_id=' . strval($post_id) . ' WHERE topic_id=' . strval($topic_id), 1);
+
+        $this->db->query_update('forums', ['forum_last_poster_id' => $member_id, 'forum_last_poster_name' => $this->get_username($member_id), 'forum_last_post_time' => $time], ['forum_id' => $forum_id], '', 1);
+        $this->db->query_update('topics', ['topic_last_poster_name' => $this->get_username($member_id), 'topic_last_post_time' => $time], ['topic_id' => $topic_id], '', 1);
 
         return [$topic_id, false];
     }
@@ -942,10 +946,10 @@ class Forum_driver_phpbb3 extends Forum_driver_base
             $topic_filter .= ' AND topic_title LIKE \'' . db_encode_like('%, ' . $filter_topic_description) . '\'';
         }
         if ($only_open) {
-            $topic_filter .= ' AND topic_status<>1';
+            $topic_filter .= ' AND topic_status<>1 AND topic_visibility=1';
         }
 
-        $rows = $this->db->query('SELECT * FROM ' . $this->db->get_table_prefix() . 'topics WHERE (' . $id_list . ')' . $topic_filter . ' ORDER BY ' . (($date_key == 'lasttime') ? 'topic_last_post_id' : 'topic_time') . ' DESC', $limit, $start);
+        $rows = $this->db->query('SELECT * FROM ' . $this->db->get_table_prefix() . 'topics WHERE (' . $id_list . ')' . $topic_filter . ' ORDER BY ' . (($date_key == 'lasttime') ? 'topic_last_post_time' : 'topic_time') . ' DESC', $limit, $start);
         $max_rows = $this->db->query_value_if_there('SELECT COUNT(*) FROM ' . $this->db->get_table_prefix() . 'topics WHERE (' . $id_list . ')' . $topic_filter);
 
         // Generate output
@@ -959,10 +963,13 @@ class Forum_driver_phpbb3 extends Forum_driver_base
             $out[$i]['firsttime'] = $r['topic_time'];
             $out[$i]['firstusername'] = $this->get_username($r['topic_poster']);
             $out[$i]['firstmemberid'] = $r['topic_poster'];
-            $out[$i]['closed'] = ($r['topic_status'] == 1);
+            $out[$i]['closed'] = (($r['topic_status'] == 1) || ($r['topic_visibility'] == 0)) ? 1 : 0;
+            $out[$i]['lastusername'] = $r['topic_last_poster_name'];
+            $out[$i]['lastmemberid'] = $r['topic_last_poster_id'];
+            $out[$i]['lasttime'] = $r['topic_last_post_time'];
 
             // Get first non-spacer post
-            $fp_rows = $this->db->query('SELECT post_subject,post_text,bbcode_uid,poster_id,post_username,post_time FROM ' . $this->db->get_table_prefix() . 'posts p WHERE post_text NOT LIKE \'' . db_encode_like(substr(do_lang('SPACER_POST', '', '', '', get_site_default_lang()), 0, 20) . '%') . '\' AND topic_id=' . strval($id) . ' ORDER BY post_time ASC', 1);
+            $fp_rows = $this->db->query('SELECT post_subject,post_text,bbcode_uid,poster_id,post_username,post_time FROM ' . $this->db->get_table_prefix() . 'posts p WHERE post_text NOT LIKE \'' . db_encode_like(substr(do_lang('SPACER_POST', '', '', '', get_site_default_lang()), 0, 20) . '%') . '\' AND topic_id=' . strval($r['topic_id']) . ' ORDER BY post_time ASC', 1);
 
             // Filter topics without a post
             if (!array_key_exists(0, $fp_rows)) {
@@ -972,14 +979,6 @@ class Forum_driver_phpbb3 extends Forum_driver_base
 
             // Fix title based on first non-spacer post
             $out[$i]['firsttitle'] = $fp_rows[0]['post_subject'];
-
-            // Get last non-spacer post
-            $fp_rows = $this->db->query('SELECT post_subject,post_text,bbcode_uid,poster_id,post_username,post_time FROM ' . $this->db->get_table_prefix() . 'posts p WHERE post_text NOT LIKE \'' . db_encode_like(substr(do_lang('SPACER_POST', '', '', '', get_site_default_lang()), 0, 20) . '%') . '\' AND topic_id=' . strval($id) . ' ORDER BY post_time DESC', 1);
-
-            // Determine most recent information
-            $out[$i]['lastusername'] = $fp_rows[0]['post_username'];
-            $out[$i]['lastmemberid'] = $fp_rows[0]['poster_id'];
-            $out[$i]['lasttime'] = $fp_rows[0]['post_time'];
 
             // Process first post for displaying if applicable
             if ($show_first_posts) {
@@ -1458,7 +1457,7 @@ class Forum_driver_phpbb3 extends Forum_driver_base
         require_code('crypt');
 
         $hash = substr(get_secure_random_string(), 0, 17);
-        $this->db->query_insert('sessions_keys', ['key_id' => md5($hash), 'user_id' => $member_id, 'last_ip' => ip2long(get_ip_address()), 'last_login' => time()]);
+        $this->db->query_insert('sessions_keys', ['key_id' => md5($hash), 'user_id' => $member_id, 'last_ip' => strval(ip2long(get_ip_address())), 'last_login' => time()]);
 
         if (substr($member_cookie_name, 0, 5) != 'cms__') {
             $session_id = get_secure_random_string();
