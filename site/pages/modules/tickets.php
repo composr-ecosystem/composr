@@ -1308,7 +1308,7 @@ class Module_tickets
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'ticket'));
         }
         foreach ($ticket_posts_all as $comment) {
-            $ticket_url = ticket_add_post($to, $ticket_type_id_to, $comment['title'], $comment['message_comcode'], isset($comment['staff_only']) && $comment['staff_only'], $comment['member'], $comment['date']);
+            $ticket_url = ticket_add_post($to, $ticket_type_id_to, $comment['title'], array_key_exists('message_comcode', $comment) ? $comment['message_comcode'] : $comment['message'], isset($comment['staff_only']) && $comment['staff_only'], $comment['member'], $comment['date']);
         }
 
         // Notification to support operator
