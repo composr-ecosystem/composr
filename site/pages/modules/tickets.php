@@ -1312,6 +1312,7 @@ class Module_tickets
         }
 
         // Notification to support operator
+        require_code('notifications');
         $subject = do_lang(
             'TICKETS_MERGED_INTO_SUBJECT',
             $from_title,
