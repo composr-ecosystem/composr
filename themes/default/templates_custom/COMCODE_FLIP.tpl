@@ -7,7 +7,7 @@
 	<div class="front">
 		{CONTENT}
 	</div>
-	<div class="back"{+START,IF_NON_EMPTY,{FINAL_COLOR}} style="background-color: #{FINAL_COLOR}"{+END}>
+	<div class="back"{+START,IF_NON_EMPTY,{FINAL_COLOR}} style="background-color: #{FINAL_COLOR*}"{+END}>
 		{$COMCODE,{PARAM},0}
 	</div>
 </div>
