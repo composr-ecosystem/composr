@@ -1,6 +1,6 @@
 {$REQUIRE_JAVASCRIPT,core_rich_media}
 
-<div data-toggleable-tray="{ accordion: true }" class="box box---standardbox-accordion accordion-trayitem js-tray-accordion-item{+START,IF_PASSED,CLASS} {CLASS*}{+END}"{+START,IF_NON_EMPTY,{WIDTH}} style="width: {WIDTH*}"{+END}>
+<div class="box box---standardbox-accordion accordion-trayitem js-tray-accordion-item{+START,IF_PASSED,CLASS} {CLASS*}{+END}"{+START,IF_NON_EMPTY,{WIDTH}} style="width: {WIDTH*}"{+END}>
 	<div class="box-inner">
 		{+START,IF_NON_EMPTY,{TITLE}}
 			<h3 class="toggleable-tray-title js-tray-onclick-toggle-accordion">
@@ -24,7 +24,8 @@
 				<a class="toggleable-tray-button js-tray-onclick-toggle-accordion" href="#!">{TITLE}</a>
 			</h3>
 		{+END}
-		<div class="toggleable-tray"{+START,IF_NOT_IN_ARRAY,OPTIONS,tray_open} style="display: none"{+END}>
+
+		<div class="toggleable-tray accordion-trayitem-body js-tray-accordion-item-body"{+START,IF_NOT_IN_ARRAY,OPTIONS,tray_open} style="display: none"{+END}>
 			{+START,IF_NON_EMPTY,{META}}
 				<div class="meta-details" role="note">
 					<dl class="meta-details-list">

@@ -118,6 +118,7 @@ class Hook_addon_registry_core_abstract_components
             'themes/default/templates/BUTTON_SCREEN_ITEM.tpl',
             'themes/default/templates/STANDARDBOX_default.tpl',
             'themes/default/templates/STANDARDBOX_accordion.tpl',
+            'themes/default/templates/STANDARDBOX_accordion_wrap.tpl',
             'themes/default/templates/HANDLE_CONFLICT_RESOLUTION.tpl',
             'themes/default/templates/FRACTIONAL_EDIT.tpl',
             'themes/default/javascript/fractional_edit.js',
@@ -158,6 +159,7 @@ class Hook_addon_registry_core_abstract_components
             'templates/BUTTON_SCREEN.tpl' => 'button_screen',
             'templates/STANDARDBOX_default.tpl' => 'standardbox_default',
             'templates/STANDARDBOX_accordion.tpl' => 'standardbox_accordion',
+            'templates/STANDARDBOX_accordion_wrap.tpl' => 'standardbox_accordion',
             'templates/HANDLE_CONFLICT_RESOLUTION.tpl' => 'administrative__handle_conflict_resolution',
             'templates/STAFF_ACTIONS.tpl' => 'staff_actions',
             'templates/GRAPH_SCATTER_DIAGRAM.tpl' => 'graph_scatter_diagram',
@@ -313,7 +315,47 @@ class Hook_addon_registry_core_abstract_components
      */
     public function tpl_preview__standardbox_accordion() : object
     {
-        return $this->_tpl_preview__standardbox('accordion');
+        $links = [];
+        foreach (placeholder_array() as $k => $v) {
+            $links[] = placeholder_link();
+        }
+
+        $meta = [];
+        foreach (placeholder_array() as $k => $v) {
+            $meta[] = [
+                'KEY' => strval($k),
+                'VALUE' => $v,
+            ];
+        }
+
+        $boxes = new Tempcode();
+        $box = do_lorem_template('STANDARDBOX_accordion', [
+            'CONTENT' => lorem_sentence(),
+            'LINKS' => $links,
+            'META' => $meta,
+            'OPTIONS' => placeholder_array(),
+            'TITLE' => lorem_phrase(),
+            'TOP_LINKS' => placeholder_link(),
+            'WIDTH' => '',
+        ]);
+        $boxes->attach($box);
+        $box = do_lorem_template('STANDARDBOX_accordion', [
+            'CONTENT' => lorem_sentence(),
+            'LINKS' => $links,
+            'META' => $meta,
+            'OPTIONS' => placeholder_array(),
+            'TITLE' => '',
+            'TOP_LINKS' => placeholder_link(),
+            'WIDTH' => '',
+        ]);
+        $boxes->attach($box);
+
+        $wrapped = do_lorem_template('STANDARDBOX_accordion_wrap', [
+            'CONTENT' => lorem_sentence(),
+            'TITLE' => '',
+        ]);
+
+        return lorem_globalise($wrapped, null, '', true);
     }
 
     /**
@@ -339,17 +381,6 @@ class Hook_addon_registry_core_abstract_components
             ];
         }
 
-        $boxes = new Tempcode();
-        $box = do_lorem_template('STANDARDBOX_' . $type, [
-            'CONTENT' => lorem_sentence(),
-            'LINKS' => $links,
-            'META' => $meta,
-            'OPTIONS' => placeholder_array(),
-            'TITLE' => lorem_phrase(),
-            'TOP_LINKS' => placeholder_link(),
-            'WIDTH' => '',
-        ]);
-        $boxes->attach($box);
         $box = do_lorem_template('STANDARDBOX_' . $type, [
             'CONTENT' => lorem_sentence(),
             'LINKS' => $links,
@@ -359,9 +390,8 @@ class Hook_addon_registry_core_abstract_components
             'TOP_LINKS' => placeholder_link(),
             'WIDTH' => '',
         ]);
-        $boxes->attach($box);
 
-        return lorem_globalise($boxes, null, '', true);
+        return lorem_globalise($box, null, '', true);
     }
 
     /**

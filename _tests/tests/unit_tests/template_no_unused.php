@@ -172,6 +172,7 @@ class template_no_unused_test_set extends cms_test_case
             'SEARCH_RESULT_CATALOGUE_ENTRIES',
             'STAFF_ACTIONS',
             'STANDARDBOX_accordion',
+            'STANDARDBOX_accordion_wrap',
             'STANDARDBOX_default',
             'WEBSTANDARDS_CHECK_ERROR',
             'WEBSTANDARDS_CHECK_SCREEN',
