@@ -845,6 +845,15 @@ function compile_template(string $data, string $template_name, string $theme, st
                             case 'PARAMS_JSON':
                                 if (!empty($directive_params)) {
                                     $current_level_data[] = 'closure_params_json([' . $directive_params . ',\'vars\'=>$parameters],[$parameters,$cl],' . "\n" . 'recall_named_function(\'' . uniqid('', true) . '\',\'$parameters,$cl\',"extract(\$parameters,EXTR_PREFIX_ALL,\'bound\'); return ' . php_addslashes($directive_internal) . ';"))';
+
+                                    if ($parameters_used !== null) {
+                                        foreach ($directive_opener_params as $directive_param) {
+                                            $eval = tempcode_compiler_eval('return ' . implode('.', $directive_param) . ';', $tpl_funcs, [], $cl);
+                                            if (is_string($eval)) {
+                                                $parameters_used[$eval] = true;
+                                            }
+                                        }
+                                    }
                                 }
                                 break;
 
