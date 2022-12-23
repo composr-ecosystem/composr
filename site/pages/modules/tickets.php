@@ -358,7 +358,7 @@ class Module_tickets
     {
         require_code('feedback');
 
-        $open_only = (get_param_integer('open', 1) == 1);
+        $only_open = (get_param_integer('open', 1) == 1);
 
         $message = new Tempcode();
         $links = new Tempcode();
@@ -371,13 +371,13 @@ class Module_tickets
             $tickets = [];
         } else {
             $ticket_type_id = $this->ticket_type_id;
-            $tickets = get_tickets(['ticket_type_id' => $ticket_type_id, 'only_open' => $open_only]);
+            $tickets = get_tickets(['ticket_type_id' => $ticket_type_id, 'only_open' => $only_open]);
 
             // Find all ticket types used
             if ($ticket_type_id === null) {
                 $all_tickets = $tickets;
             } else {
-                $all_tickets = get_tickets(['only_open' => $open_only]);
+                $all_tickets = get_tickets(['only_open' => $only_open]);
             }
             foreach ($all_tickets as $topic) {
                 $ticket_id = extract_topic_identifier($topic['description']);
@@ -417,7 +417,7 @@ class Module_tickets
             'LINKS' => $links,
             'ADD_TICKET_URL' => $add_ticket_url,
             'TYPES' => build_types_list($default_ticket_type_id),
-            'OPEN' => $open_only,
+            'OPEN' => $only_open,
         ]);
 
         require_code('templates_internalise_screen');

@@ -289,13 +289,13 @@ class Forum_driver_cns extends Forum_driver_base
      * @param  string $date_key The date key to sort by
      * @set lasttime firsttime
      * @param  boolean $hot Whether to limit to hot topics
-     * @param  boolean $open_only Open topics only
+     * @param  boolean $only_open Open topics only
      * @return ?array The array of topics (null: error/none)
      */
-    public function show_forum_topics($name, int $limit, int $start, int &$max_rows, string $filter_topic_title = '', string $filter_topic_description = '', bool $show_first_posts = false, string $date_key = 'lasttime', bool $hot = false, bool $open_only = false) : ?array
+    public function show_forum_topics($name, int $limit, int $start, int &$max_rows, string $filter_topic_title = '', string $filter_topic_description = '', bool $show_first_posts = false, string $date_key = 'lasttime', bool $hot = false, bool $only_open = false) : ?array
     {
         require_code('cns_forum_driver_helper');
-        return _helper_show_forum_topics($this, $name, $limit, $start, $max_rows, $filter_topic_title, $filter_topic_description, $show_first_posts, $date_key, $hot, $open_only);
+        return _helper_show_forum_topics($this, $name, $limit, $start, $max_rows, $filter_topic_title, $filter_topic_description, $show_first_posts, $date_key, $hot, $only_open);
     }
 
     /**

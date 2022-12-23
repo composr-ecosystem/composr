@@ -988,10 +988,10 @@ class Forum_driver_ipb3 extends Forum_driver_base
      * @param  string $date_key The date key to sort by
      * @set lasttime firsttime
      * @param  boolean $hot Whether to limit to hot topics
-     * @param  boolean $open_only Open topics only
+     * @param  boolean $only_open Open topics only
      * @return ?array The array of topics (null: error)
      */
-    public function show_forum_topics($name, int $limit, int $start, int &$max_rows, string $filter_topic_title = '', string $filter_topic_description = '', bool $show_first_posts = false, string $date_key = 'lasttime', bool $hot = false, bool $open_only = false) : ?array
+    public function show_forum_topics($name, int $limit, int $start, int &$max_rows, string $filter_topic_title = '', string $filter_topic_description = '', bool $show_first_posts = false, string $date_key = 'lasttime', bool $hot = false, bool $only_open = false) : ?array
     {
         require_code('xhtml');
 
@@ -1032,7 +1032,7 @@ class Forum_driver_ipb3 extends Forum_driver_base
         if ($filter_topic_description != '') {
             $topic_filter .= ' AND description LIKE \'' . db_encode_like($this->ipb_escape($filter_topic_description)) . '\'';
         }
-        if ($open_only) {
+        if ($only_open) {
             $topic_filter .= ' AND state<>\'closed\'';
         }
 
