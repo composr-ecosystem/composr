@@ -216,7 +216,7 @@ PHP;
         $extra_where = [];
         foreach ($content_types as $i => $content_type) {
             $object = get_content_object($content_type);
-            $info = $object->info($zone, true, ($select_b == '') ? null : $select_b);
+            $info = ($object === null) ? null : $object->info($zone, true, ($select_b == '') ? null : $select_b);
             if ($info === null) {
                 return do_template('RED_ALERT', ['TEXT' => do_lang_tempcode('NO_SUCH_CONTENT_TYPE', escape_html($content_type))]);
             }

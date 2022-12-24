@@ -181,8 +181,8 @@ class _template_previews_test_set extends cms_test_case
 
             $flag = false;
             foreach ($previews__by_screen[$function][1] as $template_2) {
-                // Ignore templates designed for indirect inclusion
                 if (in_array($template_2, [
+                    // Ignore templates designed for indirect inclusion
                     'templates/NEWSLETTER_PREVIEW.tpl',
                     'templates/GLOBAL_HELPER_PANEL.tpl',
                     'templates/HTML_HEAD.tpl',
@@ -219,6 +219,9 @@ class _template_previews_test_set extends cms_test_case
                     'templates/FORM_SCREEN_ARE_REQUIRED.tpl',
                     'templates/GALLERY_POPULAR.tpl',
                     'templates/FILTER_BOX.tpl',
+
+                    // Ignore templates that won't run outside of CNS
+                    'templates/CNS_MEMBER_DIRECTORY_SCREEN.tpl',
                 ])) {
                     continue;
                 }
