@@ -2646,7 +2646,7 @@ class Hook_addon_registry_core
         return lorem_globalise(do_lorem_template('BLOCK_MAIN_EMOTICON_CODES', [
             'BLOCK_ID' => lorem_word(),
             'EMOTICONS' => $emoticons,
-            'NUM_COLUMNS' => '2',
+            'NUM_COLUMNS' => '4',
         ]), null, '', true);
     }
 
