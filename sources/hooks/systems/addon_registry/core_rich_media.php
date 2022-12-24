@@ -1118,6 +1118,12 @@ class Hook_addon_registry_core_rich_media
         $parts[] = [
             'PART' => lorem_phrase(),
         ];
+        $parts[] = [
+            'PART' => placeholder_date(),
+        ];
+        $parts[] = [
+            'PART' => placeholder_random(),
+        ];
 
         return lorem_globalise(do_lorem_template('COMCODE_JUMPING', [
             'FULL' => lorem_phrase(),
@@ -1467,7 +1473,7 @@ class Hook_addon_registry_core_rich_media
     {
         return lorem_globalise(do_lorem_template('COMCODE_CODE_SCROLL', [
             'TITLE' => lorem_phrase(),
-            'CONTENT' => lorem_phrase(),
+            'CONTENT' => lorem_chunk(),
             'TYPE' => '',
         ]), null, '', true);
     }
@@ -1632,7 +1638,7 @@ class Hook_addon_registry_core_rich_media
         return lorem_globalise(do_lorem_template('COMCODE_CODE', [
             'STYLE' => lorem_phrase(),
             'TYPE' => lorem_phrase(),
-            'CONTENT' => lorem_phrase(),
+            'CONTENT' => lorem_chunk(),
             'TITLE' => lorem_phrase(),
         ]), null, '', true);
     }

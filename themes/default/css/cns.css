@@ -220,6 +220,10 @@ div.cns-table-footer > div > div {
 =========================
 */
 
+.cns-topic-header {
+	background-color: {$GET,area_background};
+}
+
 /* Use correct div semantics for the posts, but table-style rendering */
 .cns-topic {
 	display: table;
