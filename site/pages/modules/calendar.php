@@ -901,8 +901,12 @@ class Module_calendar
                 $description = new Tempcode();
             } else {
                 if ((!is_string($event['e_content'])) || (isset($event['e_content__text_parsed']))) {
-                    $just_event_row = db_map_restrict($event, ['id', 'e_content']);
-                    $description = get_translated_tempcode('calendar_events', $just_event_row, 'e_content');
+                    if ($event['e_type'] == db_get_first_id()) {
+                        $description = protect_from_escaping(escape_html(get_translated_text($event['e_content'])));
+                    } else {
+                        $just_event_row = db_map_restrict($event, ['id', 'e_content']);
+                        $description = get_translated_tempcode('calendar_events', $just_event_row, 'e_content');
+                    }
                 } else {
                     $description = $event['e_content'];
                 }
@@ -1549,7 +1553,15 @@ class Module_calendar
         $just_event_row = db_map_restrict($event, ['id', 'e_content']);
 
         // Misc data
-        $content = ($event['e_type'] == db_get_first_id()) ? make_string_tempcode(get_translated_text($event['e_content'])) : get_translated_tempcode('calendar_events', $just_event_row, 'e_content');
+        if (is_string($event['e_content'])) {
+            $content = protect_from_escaping($event['e_content']);
+        } else {
+            if ($event['e_type'] == db_get_first_id()) {
+                $content = with_whitespace(get_translated_text($event['e_content']), true);
+            } else {
+                $content = get_translated_tempcode('calendar_events', $just_event_row, 'e_content');
+            }
+        }
         $type = get_translated_text($event['t_title']);
         $priority = $event['e_priority'];
         $priority_lang = do_lang_tempcode('PRIORITY_' . strval($priority));

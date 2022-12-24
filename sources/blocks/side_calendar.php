@@ -285,12 +285,22 @@ PHP;
 
             $just_event_row = db_map_restrict($event, ['e_id', 'e_content']);
 
+            if (is_string($event['e_content'])) {
+                $content = protect_from_escaping($event['e_content']);
+            } else {
+                if ($event['e_type'] == db_get_first_id()) {
+                    $content = protect_from_escaping(escape_html(get_translated_text($event['e_content'])));
+                } else {
+                    $content = get_translated_tempcode('calendar_events', $just_event_row, 'e_content');
+                }
+            }
+
             $days[$day_start]['EVENTS'][] = [
                 'T_TITLE' => array_key_exists('t_title', $event) ? (is_string($event['t_title']) ? $event['t_title'] : get_translated_text($event['t_title'])) : 'RSS',
                 'E_TITLE' => is_string($event['e_title']) ? protect_from_escaping($title) : make_string_tempcode($title),
                 'VIEW_URL' => $view_url,
                 'ICON' => $icon,
-                'DESCRIPTION' => is_string($event['e_content']) ? protect_from_escaping($event['e_content']) : get_translated_tempcode('calendar_events', $just_event_row, 'e_content'),
+                'DESCRIPTION' => $content,
 
                 'TIME_WRITTEN' => ($real_from != $from) ? do_lang('EVENT_CONTINUES') : (($event['e_start_hour'] === null) ? do_lang_tempcode('ALL_DAY_EVENT') : make_string_tempcode(get_timezoned_time($real_from, true, true))),
 

@@ -24,8 +24,8 @@
 								{+END}{+END}
 							</th>
 
-							<td {+START,IF,{$EQ,{TIME_WRITTEN},{!ALL_DAY_EVENT}}} style="display: none"{+END}>
-								<time class="dtstart" datetime="{TIME_VCAL*}" itemprop="startDate">{$?,{$EQ,{TIME_WRITTEN},{!ALL_DAY_EVENT}},{TIME_VCAL*},{TIME*}}</time>
+							<td>
+								<time{+START,IF,{$EQ,{TIME_WRITTEN},{!ALL_DAY_EVENT}}} style="display: none"{+END} class="dtstart" datetime="{TIME_VCAL*}" itemprop="startDate">{$?,{$EQ,{TIME_WRITTEN},{!ALL_DAY_EVENT}},{TIME_VCAL*},{TIME*}}</time>
 							</td>
 
 							<td{+START,IF,{$EQ,{TIME_WRITTEN},{!ALL_DAY_EVENT}}} colspan="2"{+END}>

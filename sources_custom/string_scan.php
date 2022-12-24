@@ -283,6 +283,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_fixed_width_VALUE_4
         BORDERS
         CONFIG_OPTION_borders
+        DESCRIPTION_EVENT_CODE_TEXT
         AUTOFILL_HINT
         AUTOFILL_TYPE
         AUTOFILL_TYPE_DESCRIPTION_additional_name

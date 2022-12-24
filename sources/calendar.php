@@ -59,7 +59,11 @@ function render_event_box(array $row, string $zone = '_SEARCH', bool $give_conte
 
     if ($text_summary === null) {
         $just_event_row = db_map_restrict($row, ['id', 'e_content']);
-        $summary = get_translated_tempcode('calendar_events', $just_event_row, 'e_content');
+        if ($row['e_type'] == db_get_first_id()) {
+            $summary = protect_from_escaping(get_translated_text($row['e_content']));
+        } else {
+            $summary = get_translated_tempcode('calendar_events', $just_event_row, 'e_content');
+        }
     } else {
         $summary = $text_summary;
     }
@@ -526,9 +530,10 @@ function get_days_between(int $initial_start_month, int $initial_start_day, int 
  *
  * @param  ?AUTO_LINK $it The event type to select by default (null: none)
  * @param  ?TIME $updated_since Time from which content must be updated (null: no limit)
+ * @param  boolean $adding Whether this is for adding an event
  * @return Tempcode The list
  */
-function create_selection_list_event_types(?int $it = null, ?int $updated_since = null) : object
+function create_selection_list_event_types(?int $it = null, ?int $updated_since = null, bool $adding = false) : object
 {
     $type_list = new Tempcode();
     $where = '1=1';
@@ -565,7 +570,7 @@ function create_selection_list_event_types(?int $it = null, ?int $updated_since 
             $first_type = $type;
         }
     }
-    if ((addon_installed('commandr')) && (has_actual_page_access(get_member(), 'admin_commandr')) && ($first_type !== null) && ($GLOBALS['CURRENT_SHARE_USER'] === null) && (get_option('allow_adding_commandr_events') == '1')) {
+    if ((addon_installed('commandr')) && (has_actual_page_access(get_member(), 'admin_commandr')) && ($first_type !== null) && ($GLOBALS['CURRENT_SHARE_USER'] === null) && (get_option('allow_adding_commandr_events') == '1') && (($adding) || ($it == db_get_first_id()))) {
         $type_list->attach(form_input_list_entry(strval(db_get_first_id()), db_get_first_id() == $it, get_translated_text($first_type['t_title'])));
     }
 

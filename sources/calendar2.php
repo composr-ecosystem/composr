@@ -76,7 +76,9 @@ function add_calendar_event(int $type, string $recurrence, ?int $recurrences, in
 
     require_code('comcode_check');
 
-    check_comcode($content, null, false, null, true);
+    if ($type != db_get_first_id()) {
+        check_comcode($content, null, false, null, true);
+    }
 
     require_code('global4');
     prevent_double_submit('ADD_CALENDAR_EVENT', null, $title);
@@ -136,8 +138,13 @@ function add_calendar_event(int $type, string $recurrence, ?int $recurrences, in
 
     $id = $GLOBALS['SITE_DB']->query_insert('calendar_events', $map, true);
 
-    require_code('attachments2');
-    $GLOBALS['SITE_DB']->query_update('calendar_events', insert_lang_comcode_attachments('e_content', 3, $content, 'calendar', strval($id)), ['id' => $id], '', 1);
+    if ($type != db_get_first_id()) {
+        require_code('attachments2');
+        $comcode_lang_map = insert_lang_comcode_attachments('e_content', 3, $content, 'calendar', strval($id));
+    } else {
+        $comcode_lang_map = insert_lang('e_content', $content, 3);
+    }
+    $GLOBALS['SITE_DB']->query_update('calendar_events', $comcode_lang_map, ['id' => $id], '', 1);
 
     foreach ($regions as $region) {
         $GLOBALS['SITE_DB']->query_insert('content_regions', ['content_type' => 'event', 'content_id' => strval($id), 'region' => $region]);
@@ -316,7 +323,13 @@ function edit_calendar_event(int $id, ?int $type, string $recurrence, ?int $recu
     ];
     $update_map += $scheduling_map;
     $update_map += lang_remap_comcode('e_title', $myrow['e_title'], $title);
-    $update_map += update_lang_comcode_attachments('e_content', $myrow['e_content'], $content, 'calendar', strval($id), null, $myrow['e_submitter']);
+
+    if ($type != db_get_first_id()) {
+        require_code('attachments2');
+        $update_map += update_lang_comcode_attachments('e_content', $myrow['e_content'], $content, 'calendar', strval($id), null, $myrow['e_submitter']);
+    } else {
+        $update_map += lang_remap('e_content', $myrow['e_content'], $content);
+    }
 
     if ($validated !== null) {
         $update_map['validated'] = $validated;
@@ -439,7 +452,11 @@ function delete_calendar_event(int $id)
     require_code('attachments2');
     require_code('attachments3');
     if ($myrow['e_content'] !== null) {
-        delete_lang_comcode_attachments($myrow['e_content'], 'e_content', strval($id));
+        if ($myrow['e_type'] != db_get_first_id()) {
+            delete_lang_comcode_attachments($myrow['e_content'], 'e_content', strval($id));
+        } else {
+            delete_lang($myrow['e_content']);
+        }
     }
 
     delete_cache_entry('side_calendar');

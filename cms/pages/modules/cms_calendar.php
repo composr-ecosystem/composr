@@ -378,8 +378,6 @@ class Module_cms_calendar extends Standard_crud_module
     {
         list($allow_rating, $allow_comments, $allow_trackbacks) = $this->choose_feedback_fields_statistically($allow_rating, $allow_comments, $allow_trackbacks);
 
-        unset($content);
-
         if (empty($timezone)) {
             $timezone = get_users_timezone();
         }
@@ -499,12 +497,14 @@ class Module_cms_calendar extends Standard_crud_module
         // ---
 
         // Type
-        if ($type == db_get_first_id()) {
-            $this->support_wysiwyg = false;
-        }
-        $type_list = create_selection_list_event_types($type);
+        $type_list = create_selection_list_event_types($type, null, $id === null);
         if ($type_list->is_empty()) {
             warn_exit(do_lang_tempcode('NO_CATEGORIES', 'calendar_type'));
+        }
+        if ($type == db_get_first_id()) {
+            $this->support_wysiwyg = false;
+            $type_list = new Tempcode();
+            $type_list->attach(form_input_list_entry(strval(db_get_first_id()), true, do_lang('DEFAULT_CALENDAR_TYPE__system_command')));
         }
         $fields->attach(form_input_list(do_lang_tempcode('TYPE'), do_lang_tempcode('DESCRIPTION_EVENT_TYPE'), 'type', $type_list));
 
@@ -516,6 +516,14 @@ class Module_cms_calendar extends Standard_crud_module
         $priority_list->attach(form_input_list_entry('4', $priority == 4, do_lang_tempcode('PRIORITY_4')));
         $priority_list->attach(form_input_list_entry('5', $priority == 5, do_lang_tempcode('PRIORITY_5')));
         $fields->attach(form_input_list(do_lang_tempcode('PRIORITY'), '', 'priority', $priority_list));
+
+        // Content input (only for System command events - regular events are handled via the CRUD posting form mechanism)
+        if ($type == db_get_first_id()) {
+            $this->posting_form_title = null;
+            $this->posting_form_description = null;
+
+            $fields->attach(form_input_text(do_lang_tempcode('CODE'), do_lang_tempcode('DESCRIPTION_EVENT_CODE_TEXT'), 'post', $content, true));
+        }
 
         // Validation
         $_validated = get_param_integer('validated', 0);
@@ -844,13 +852,11 @@ class Module_cms_calendar extends Standard_crud_module
         }
         $myrow = $rows[0];
 
-        $parsed = get_translated_tempcode('calendar_events', $myrow, 'e_content');
-
         check_edit_permission(($myrow['e_member_calendar'] === null) ? 'mid' : 'low', $myrow['e_submitter']);
 
-        $content = get_translated_text($myrow['e_content']);
-
         $regions = collapse_1d_complexity('region', $GLOBALS['SITE_DB']->query_select('content_regions', ['region'], ['content_type' => 'event', 'content_id' => $id]));
+
+        $content = get_translated_text($myrow['e_content']);
 
         $fields = $this->get_form_fields($myrow['id'], $myrow['e_type'], $myrow['e_start_year'], $myrow['e_start_month'], $myrow['e_start_day'], $myrow['e_start_monthly_spec_type'], $myrow['e_start_hour'], $myrow['e_start_minute'], get_translated_text($myrow['e_title']), $content, $myrow['e_recurrence'], $myrow['e_recurrences'], $myrow['e_seg_recurrences'], $myrow['e_priority'], $myrow['e_end_year'], $myrow['e_end_month'], $myrow['e_end_day'], $myrow['e_end_monthly_spec_type'], $myrow['e_end_hour'], $myrow['e_end_minute'], $myrow['e_timezone'], $myrow['e_do_timezone_conv'], $myrow['e_member_calendar'], $myrow['validated'], $myrow['allow_rating'], $myrow['allow_comments'], $myrow['allow_trackbacks'], $myrow['notes'], $regions);
 
@@ -862,6 +868,14 @@ class Module_cms_calendar extends Standard_crud_module
         } else {
             $delete_fields = new Tempcode();
         }
+
+        if ($myrow['e_type'] == db_get_first_id()) {
+            $all_fields = $fields[0];
+            $all_fields->attach($fields[6]);
+            return [$all_fields, $fields[1], $delete_fields, '', true];
+        }
+
+        $parsed = get_translated_tempcode('calendar_events', $myrow, 'e_content');
 
         return [$fields[0], $fields[1], $delete_fields, '', true, $content, $fields[6], $parsed];
     }
@@ -1009,7 +1023,7 @@ class Module_cms_calendar extends Standard_crud_module
             save_privacy_form_fields('event', strval($id), $privacy_level, $additional_access);
         }
 
-        if (($validated == 1) || (!addon_installed('unvalidated'))) {
+        if (($validated == 1) || (!addon_installed('unvalidated')) && ($type != db_get_first_id())) {
             require_code('users2');
             if ((has_actual_page_access(get_modal_user(), 'calendar')) && (has_category_access(get_modal_user(), 'calendar', strval($type)))) {
                 $privacy_ok = true;
@@ -1154,7 +1168,7 @@ class Module_cms_calendar extends Standard_crud_module
             save_privacy_form_fields('event', strval($id), $privacy_level, $additional_access);
         }
 
-        if (($validated == 1) || (!addon_installed('unvalidated'))) {
+        if (($validated == 1) || (!addon_installed('unvalidated')) && ($type != db_get_first_id())) {
             require_code('users2');
             if ((has_actual_page_access(get_modal_user(), 'calendar')) && (has_category_access(get_modal_user(), 'calendar', strval($type)))) {
                 $privacy_ok = true;

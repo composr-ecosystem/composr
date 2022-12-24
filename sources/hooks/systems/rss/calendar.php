@@ -108,7 +108,11 @@ class Hook_rss_calendar
             $just_event_row = db_map_restrict($row, ['id', 'e_content']);
 
             $news_title = xmlentities(escape_html(get_translated_text($row['e_title'])));
-            $_summary = get_translated_tempcode('calendar_events', $just_event_row, 'e_content');
+            if ($row['e_type'] == db_get_first_id()) {
+                $_summary = protect_from_escaping(escape_html(get_translated_text($row['e_content'])));
+            } else {
+                $_summary = get_translated_tempcode('calendar_events', $just_event_row, 'e_content');
+            }
             $summary = xmlentities($_summary->evaluate());
             $news = '';
 

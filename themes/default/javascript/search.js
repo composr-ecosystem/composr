@@ -74,7 +74,9 @@
     $cms.templates.blockTopSearch = function (params, container) {
         var searchType = $cms.filter.nl(params.searchType);
 
-        $dom.on(container, 'click', 'button', function (e, form) {
+        $dom.on(container, 'click', 'button', function (e, btn) {
+            var form = btn.form;
+
             if (form.elements['content'] === undefined) {
                 // Succeed (no search)
                 $cms.ui.disableFormButtons(form);

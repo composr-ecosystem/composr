@@ -182,7 +182,11 @@ class Hook_search_calendar extends FieldsSearchHook
         $highlight_bits = ($SEARCH_QUERY_TERMS === null) ? [] : $SEARCH_QUERY_TERMS;
         push_lax_comcode(true);
         $summary = get_translated_text($row['e_content']);
-        $text_summary_h = comcode_to_tempcode($summary, null, false, null, null, COMCODE_NORMAL, $highlight_bits);
+        if ($row['e_type'] == db_get_first_id()) {
+            $text_summary_h = make_string_tempcode(escape_html($summary));
+        } else {
+            $text_summary_h = comcode_to_tempcode($summary, null, false, null, null, COMCODE_NORMAL, $highlight_bits);
+        }
         pop_lax_comcode();
         $text_summary = generate_text_summary($text_summary_h->evaluate(), $highlight_bits);
 
