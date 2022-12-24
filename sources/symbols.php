@@ -3494,7 +3494,7 @@ function ecv_CNS_RANK_IMAGE(string $lang, array $escaped, array $param) : string
         ocp_mark_as_escaped($value);
     }
 
-    if (addon_installed('cns_forum')) {
+    if (addon_installed('cns_forum') && (get_forum_type() == 'cns')) {
         require_code('cns_groups');
         $rank_images = new Tempcode();
         $member_id = ((isset($param[0])) && (is_numeric($param[0]))) ? intval($param[0]) : get_member();

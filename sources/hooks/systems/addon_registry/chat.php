@@ -287,6 +287,10 @@ class Hook_addon_registry_chat
      */
     public function tpl_preview__cns_member_profile_friends() : object
     {
+        if (get_forum_type() != 'cns') {
+            return do_lorem_template('RED_ALERT', ['TEXT' => do_lang_tempcode('NO_CNS')]);
+        }
+
         require_lang('cns');
         require_css('cns');
 

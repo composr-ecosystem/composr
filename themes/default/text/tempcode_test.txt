@@ -52,8 +52,8 @@
 		<td>{$CYCLE,my_cycle,1,2}</td>
 	</tr>
 	<tr>
-		<th>$FROM_TIMESTAMP,Y-m-d,33424322</th>
-		<td>{$FROM_TIMESTAMP,Y-m-d,33424322}</td>
+		<th>$FROM_TIMESTAMP*,Y-m-d,33424322</th>
+		<td>{$FROM_TIMESTAMP*,Y-m-d,33424322}</td>
 	</tr>
 	<tr>
 		<th>$IS_NON_EMPTY,</th>
