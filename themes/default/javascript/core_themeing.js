@@ -833,7 +833,7 @@
         var template = strVal(params.template);
 
         $dom.on(container, 'click', '.js-link-click-open-template-preview-window', function (e, link) {
-            window.open(link.href, 'template_preview_' + template, 'width=960,height=540,status=no,resizable=yes,scrollbars=yes');
+            window.open(link.href, 'template_preview_' + template, 'width=1280,height=720,status=no,resizable=yes,scrollbars=yes');
         });
 
         $dom.on(container, 'click', '.js-link-click-open-mobile-template-preview-window', function (e, link) {
