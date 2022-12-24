@@ -38,7 +38,7 @@
 		</tbody>
 	</table>
 
-	<table>
+	<table class="responsive-table invoice-table">
 		<thead>
 			<tr>
 				<th>
@@ -101,17 +101,17 @@
 			<tr class="total">
 				<td colspan="4"></td>
 
-				<td class="total">
+				<td class="total" data-th="{!PRICE}">
 					{$CURRENCY_SYMBOL,{CURRENCY}}{SUBTOTAL*}
 				</td>
 
-				<td class="total">
+				<td class="total" data-th="{$TAX_LABEL}">
 					{$CURRENCY_SYMBOL,{CURRENCY}}{TOTAL_TAX*}
 				</td>
 			</tr>
 
 			<tr class="total">
-				<td colspan="6">
+				<td colspan="6" data-th="">
 					{!GRAND_TOTAL}: {$CURRENCY_SYMBOL,{CURRENCY}}{TOTAL_AMOUNT*}
 				</td>
 			</tr>

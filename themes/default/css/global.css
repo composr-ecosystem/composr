@@ -3513,16 +3513,16 @@ div.zebra-0+div.zebra-1, div.zebra-1+div.zebra-0 {
 		margin-bottom: 1em;
 	}
 
-	.responsive-table > tbody > tr > th[data-th]::before,
-	.responsive-table > tbody > tr > td[data-th]::before,
-	.responsive-table > tfoot > tr > th[data-th]::before,
-	.responsive-table > tfoot > tr > td[data-th]::before,
-	.responsive-table > tr > th[data-th]::before,
-	.responsive-table > tr > td[data-th]::before,
-	.responsive-table > .fake-tbody > .fake-tr > .fake-th[data-th]::before,
-	.responsive-table > .fake-tbody > .fake-tr > .fake-td[data-th]::before,
-	.responsive-table > .fake-tr > .fake-th[data-th]::before,
-	.responsive-table > .fake-tr > .fake-td[data-th]::before {
+	.responsive-table > tbody > tr > th:not([data-th=""])::before,
+	.responsive-table > tbody > tr > td:not([data-th=""])::before,
+	.responsive-table > tfoot > tr > th:not([data-th=""])::before,
+	.responsive-table > tfoot > tr > td:not([data-th=""])::before,
+	.responsive-table > tr > th:not([data-th=""])::before,
+	.responsive-table > tr > td:not([data-th=""])::before,
+	.responsive-table > .fake-tbody > .fake-tr > .fake-th:not([data-th=""])::before,
+	.responsive-table > .fake-tbody > .fake-tr > .fake-td:not([data-th=""])::before,
+	.responsive-table > .fake-tr > .fake-th:not([data-th=""])::before,
+	.responsive-table > .fake-tr > .fake-td:not([data-th=""])::before {
 		content: attr(data-th) ":";
 		font-weight: bold;
 		width: 7em;
