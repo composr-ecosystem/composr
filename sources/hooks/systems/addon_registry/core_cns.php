@@ -801,6 +801,10 @@ class Hook_addon_registry_core_cns
      */
     public function tpl_preview__cns_member_directory_screen() : object
     {
+        if (get_forum_type() != 'cns') {
+            return do_lorem_template('RED_ALERT', ['TEXT' => do_lang_tempcode('NO_CNS')]);
+        }
+
         return lorem_globalise(do_lorem_template('CNS_MEMBER_DIRECTORY_SCREEN', [
             'TITLE' => lorem_title(),
         ]), null, '', true);

@@ -55,11 +55,17 @@
 }
 
 .pte-icon-box {
-	width: 15em;
-	position: absolute;
-	right: 1em;
-	top: 0;
+	width: 100%;
 }
+
+/*{+START,CSS_MODE,desktop}*/
+	.pte-icon-box {
+		width: 15em;
+		position: absolute;
+		right: 1em;
+		top: 0;
+	}
+/*{+END}*/
 
 .pte-icon-box form {
 	margin-bottom: 1em;

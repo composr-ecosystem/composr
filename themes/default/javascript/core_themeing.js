@@ -833,11 +833,11 @@
         var template = strVal(params.template);
 
         $dom.on(container, 'click', '.js-link-click-open-template-preview-window', function (e, link) {
-            window.open(link.href, 'template_preview_' + template, 'width=800,height=600,status=no,resizable=yes,scrollbars=yes');
+            window.open(link.href, 'template_preview_' + template, 'width=1280,height=720,status=no,resizable=yes,scrollbars=yes');
         });
 
         $dom.on(container, 'click', '.js-link-click-open-mobile-template-preview-window', function (e, link) {
-            window.open(link.href, 'template_preview_' + template, 'width=320,height=480,status=no,resizable=yes,scrollbars=yes');
+            window.open(link.href, 'template_preview_' + template, 'width=360,height=800,status=no,resizable=yes,scrollbars=yes');
         });
     };
 

@@ -797,11 +797,28 @@ class Hook_addon_registry_core_rich_media
      */
     public function tpl_preview__comcode_if_in_group() : object
     {
-        return lorem_globalise(do_lorem_template('COMCODE_IF_IN_GROUP', [
+        $groups = '';
+        $admin_groups = $GLOBALS['FORUM_DRIVER']->get_super_admin_groups();
+        foreach ($admin_groups as $i => $group) {
+            if ($i > 0) {
+                $groups .= ',';
+            }
+            $groups .= strval($group);
+        }
+
+        $tpl = do_lorem_template('COMCODE_IF_IN_GROUP', [
             'TYPE' => 'primary',
             'CONTENT' => lorem_phrase(),
-            'GROUPS' => placeholder_numeric_id(),
-        ]), null, '', true);
+            'GROUPS' => $groups,
+        ]);
+
+        $tpl->attach(do_lorem_template('COMCODE_IF_IN_GROUP', [
+            'TYPE' => 'secondary',
+            'CONTENT' => lorem_phrase(),
+            'GROUPS' => $groups,
+        ]));
+
+        return lorem_globalise($tpl, null, '', true);
     }
 
     /**
@@ -947,10 +964,22 @@ class Hook_addon_registry_core_rich_media
      */
     public function tpl_preview__comcode_align() : object
     {
-        return lorem_globalise(do_lorem_template('COMCODE_ALIGN', [
+        $tpl = do_lorem_template('COMCODE_ALIGN', [
             'ALIGN' => 'left',
             'CONTENT' => lorem_phrase(),
-        ]), null, '', true);
+        ]);
+
+        $tpl->attach(do_lorem_template('COMCODE_ALIGN', [
+            'ALIGN' => 'center',
+            'CONTENT' => lorem_phrase(),
+        ]));
+
+        $tpl->attach(do_lorem_template('COMCODE_ALIGN', [
+            'ALIGN' => 'right',
+            'CONTENT' => lorem_phrase(),
+        ]));
+
+        return lorem_globalise($tpl, null, '', true);
     }
 
     /**

@@ -287,6 +287,10 @@ class Hook_addon_registry_chat
      */
     public function tpl_preview__cns_member_profile_friends() : object
     {
+        if (get_forum_type() != 'cns') {
+            return do_lorem_template('RED_ALERT', ['TEXT' => do_lang_tempcode('NO_CNS')]);
+        }
+
         require_lang('cns');
         require_css('cns');
 
@@ -430,7 +434,7 @@ class Hook_addon_registry_chat
 
         return lorem_globalise(do_lorem_template('BLOCK_SIDE_SHOUTBOX', [
             'BLOCK_ID' => lorem_word(),
-            'CHATROOM_ID' => placeholder_numeric_id(),
+            'CHATROOM_ID' => strval(db_get_first_id()),
             'NUM_MESSAGES' => placeholder_number(),
             'LAST_MESSAGE_ID' => placeholder_numeric_id(),
             'MESSAGES' => $tpl,

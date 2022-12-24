@@ -760,10 +760,10 @@ class Hook_addon_registry_core_abstract_interfaces
             ]);
 
             $values = [
-                lorem_word(),
-                lorem_word(),
-                lorem_word(),
-                placeholder_date(),
+                protect_from_escaping(escape_html(lorem_word())),
+                protect_from_escaping(escape_html(lorem_word())),
+                protect_from_escaping(escape_html(lorem_word())),
+                protect_from_escaping(escape_html(placeholder_date())),
                 $line,
                 $select,
                 $tick,

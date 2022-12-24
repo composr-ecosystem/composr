@@ -136,27 +136,6 @@
 	padding-bottom: 40px;
 }
 
-.invoice-box table thead tr th {
-	background-color: {$GET,area_background};
-	border-bottom: 1px solid {$GET,area_2_background};
-	font-weight: bold;
-	color: {$GET,slightly_seeded_text};
-	text-align: left;
-}
-
-.invoice-box table tr.item td {
-	border-bottom: 1px solid {$GET,area_background};
-}
-
-.invoice-box table tr.item:last-child td {
-	border-bottom: none;
-}
-
-.invoice-box table tr.total td.total {
-	border-top: 2px solid {$GET,area_background};
-	font-weight: bold;
-}
-
 /*{+START,CSS_MODE,mobile}*/
 	.invoice-box table tr.top table td {
 		width: 100%;
@@ -168,5 +147,45 @@
 		width: 100%;
 		display: block;
 		text-align: center;
+	}
+/*{+END}*/
+
+.invoice-table thead tr th {
+	background-color: {$GET,area_background};
+	border-bottom: 1px solid {$GET,area_2_background};
+	font-weight: bold;
+	color: {$GET,slightly_seeded_text};
+	text-align: left;
+}
+
+.invoice-table tr.item td {
+	border-bottom: 1px solid {$GET,area_background} !important;
+}
+
+/*{+START,CSS_MODE,desktop}*/
+	.invoice-table tr.item:last-child td {
+		border-bottom: none;
+	}
+
+	.invoice-table tr.total td.total {
+		border-top: 2px solid {$GET,area_background};
+		font-weight: bold;
+	}
+/*{+END}*/
+
+/*{+START,CSS_MODE,mobile}*/
+	.invoice-table tr {
+		border: 1px solid {$GET,standard_border};
+	}
+
+	.invoice-table td {
+		border-left: 0 !important;
+		border-right: 0 !important;
+		border-bottom: 1px solid {$GET,area_background};
+	}
+
+	.invoice-table tr.item td:last-child,
+	.invoice-table td:last-child {
+		border-bottom: 0 !important;
 	}
 /*{+END}*/

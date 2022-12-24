@@ -152,7 +152,7 @@
                         for (j = 0; j < tds.length; j++) {
                             if (!tds[j].classList.contains('responsive-table-no-prefix')) {
                                 data = (thsFirstRow[j] == null) ? '' : thsFirstRow[j].textContent.replace(/^\s+/, '').replace(/\s+$/, '');
-                                if (data !== '') {
+                                if ((data !== '') && (!tds[j].hasAttribute('data-th'))) {
                                     tds[j].setAttribute('data-th', data);
                                 }
                             }
