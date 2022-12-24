@@ -8,7 +8,11 @@
             editParamName = strVal(params.editParamName),
             editType = strVal(params.editType);
 
-        if (!explicitEditingLinks) {
+        if (explicitEditingLinks) {
+            $dom.on(el, 'click', function (e) {
+                _fractionalEdit(e, el.previousElementSibling, url, editText, editParamName, null, null, editType);
+            });
+        } else {
             $dom.on(el, 'click', function (e) {
                 _fractionalEdit(e, el, url, editText, editParamName, null, null, editType);
             });
@@ -28,10 +32,6 @@
                     el.classList.remove('fractional-edit');
                     el.classList.add('fractional-edit-nonover');
                 }
-            });
-        } else {
-            $dom.on(el, 'click', function (e) {
-                _fractionalEdit(e, el.previousElementSibling.previousElementSibling, url, editText, editParamName, null, null, editType);
             });
         }
     };

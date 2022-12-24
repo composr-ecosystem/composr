@@ -19,7 +19,7 @@
 
 	{+START,IF_NON_EMPTY,{TITLE}}
 		<h3 class="gallery-grid-item-heading">
-			<a href="{VIEW_URL*}" class="subtle-link">{+START,FRACTIONAL_EDITABLE,{TITLE},title,_SEARCH:cms_galleries:__edit_other:{ID},1,1,{$HAS_EDIT_PERMISSION,mid,{SUBMITTER},{$MEMBER},cms_galleries,galleries,{CAT}}}{$TRUNCATE_LEFT,{TITLE},23,0,0}{+END}</a>
+			<a href="{VIEW_URL*}" class="subtle-link">{+START,FRACTIONAL_EDITABLE,{TITLE},title,_SEARCH:cms_galleries:__edit_other:{ID},1,0,{$HAS_EDIT_PERMISSION,mid,{SUBMITTER},{$MEMBER},cms_galleries,galleries,{CAT}}}{$TRUNCATE_LEFT,{TITLE},23,0,0}{+END}</a>
 		</h3>
 	{+END}
 

@@ -768,7 +768,7 @@ class Module_cms_catalogues extends Standard_crud_module
                     $rendered = static_evaluate_tempcode($object->render_field_value($field, $value, 0, null, 'catalogue_efv_' . $storage_type, null, 'ce_id', 'cf_id', 'cv_value', $submitter));
                     $_POST['field_' . strval($field['id']) . '__altered_rendered_output'] = $rendered;
                 } else {
-                    $value = STRING_MAGIC_NULL;
+                    continue;
                 }
             } else {
                 $value = $object->inputted_to_field_value($editing_id !== null, $field, 'uploads/catalogues', ($editing_id === null) ? null : _get_catalogue_entry_field($field['id'], $editing_id, $storage_type));
@@ -879,9 +879,13 @@ class Module_cms_catalogues extends Standard_crud_module
 
         $submitter = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'ce_submitter', ['id' => $id]);
 
-        $catalogue_name = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_categories', 'c_name', ['id' => $category_id]);
-        if ($catalogue_name === null) {
-            warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'catalogue_category'));
+        if (fractional_edit()) {
+            $catalogue_name = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entries', 'c_name', ['id' => $id]);
+        } else {
+            $catalogue_name = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_categories', 'c_name', ['id' => $category_id]);
+            if ($catalogue_name === null) {
+                warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'catalogue_category'));
+            }
         }
         $map = $this->get_set_field_map($catalogue_name, $submitter, $id);
 

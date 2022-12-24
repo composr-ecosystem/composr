@@ -1243,7 +1243,7 @@ function actual_edit_catalogue_entry(int $id, int $category_id, int $validated, 
         $edit_time = $null_is_literal ? null : time();
     }
 
-    $catalogue_name = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'c_name', ['id' => $category_id]);
+    $catalogue_name = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'c_name', ['id' => $id]);
     $catalogue_title = get_translated_text($GLOBALS['SITE_DB']->query_select_value('catalogues', 'c_title', ['c_name' => $catalogue_name]));
     $_fields = list_to_map('id', $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['id', 'cf_type'], ['c_name' => $catalogue_name]));
     $fields = collapse_2d_complexity('id', 'cf_type', $_fields);

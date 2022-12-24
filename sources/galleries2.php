@@ -57,7 +57,6 @@ function image_get_defaults__post(bool $is_edit = false, string $url = '', ?stri
         return [
             STRING_MAGIC_NULL,
             STRING_MAGIC_NULL,
-            STRING_MAGIC_NULL,
             $title,
             STRING_MAGIC_NULL,
         ];
@@ -169,15 +168,14 @@ function video_get_defaults__post(bool $is_edit = false, string $url = '', strin
         }
 
         return [
+            STRING_MAGIC_NULL,
+            STRING_MAGIC_NULL,
+            STRING_MAGIC_NULL,
+            INTEGER_MAGIC_NULL,
+            INTEGER_MAGIC_NULL,
+            INTEGER_MAGIC_NULL,
+            STRING_MAGIC_NULL,
             $title,
-            STRING_MAGIC_NULL,
-            STRING_MAGIC_NULL,
-            STRING_MAGIC_NULL,
-            STRING_INTEGER_NULL,
-            STRING_INTEGER_NULL,
-            STRING_INTEGER_NULL,
-            STRING_MAGIC_NULL,
-            STRING_MAGIC_NULL,
             STRING_MAGIC_NULL,
         ];
     }
@@ -1323,8 +1321,6 @@ function edit_video(int $id, string $title, string $cat, string $description, st
         $mail = do_notification_lang('VIDEO_NOTIFICATION_MAIL', comcode_escape(get_site_name()), comcode_escape($title), [comcode_escape($self_url->evaluate())]);
         dispatch_notification('gallery_entry', $cat, $subject, $mail, $privacy_limits);
     }
-
-    $consider_deferring = (!url_is_local($url)) || (filesize(get_custom_file_base() . '/' . rawurldecode($url)) > 1024 * 1024 * 20);
 
     reorganise_uploads__gallery_videos(['id' => $id]);
 

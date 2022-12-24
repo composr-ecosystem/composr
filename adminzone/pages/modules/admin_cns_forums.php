@@ -802,7 +802,6 @@ class Module_admin_cns_forums extends Standard_crud_module
         list($mail_email_address, $mail_server_type, $mail_server_host, $mail_server_port, $mail_folder, $mail_username, $mail_password, $mail_nonmatch_policy, $mail_unconfirmed_notice) = $this->input_and_check_mail_parameters(intval($id));
 
         $metadata = actual_metadata_get_fields('forum', $id);
-
         cns_edit_forum(
             intval($id),
             post_param_string('forum_name'),
@@ -828,7 +827,7 @@ class Module_admin_cns_forums extends Standard_crud_module
             $mail_nonmatch_policy,
             $mail_unconfirmed_notice,
             post_param_integer('reset_intro_acceptance', 0) == 1,
-            post_param_string('poll_default_options_xml')
+            post_param_string('poll_default_options_xml', STRING_MAGIC_NULL)
         );
 
         if (!fractional_edit()) {

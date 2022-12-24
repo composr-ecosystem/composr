@@ -487,7 +487,7 @@ class Module_galleries
                         make_string_tempcode('title'),
                         make_string_tempcode((($type == 'video') ? '_SEARCH:cms_galleries:__edit_other' : '_SEARCH:cms_galleries:__edit:') . strval($id)),
                         make_string_tempcode('1'),
-                        make_string_tempcode('1'),
+                        make_string_tempcode('0'),
                         make_string_tempcode(has_edit_permission('mid', get_member(), $myrow['submitter'], 'cms_galleries', ['galleries', $cat]) ? '1' : '0'),
                     ]
                 );

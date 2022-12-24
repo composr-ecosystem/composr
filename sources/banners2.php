@@ -91,8 +91,6 @@ function render_banner_box(array $row, string $zone = '_SEARCH', bool $give_cont
         'TITLE_PLAIN' => $_title,
         'SUMMARY' => $summary,
         'URL' => $url,
-        'FRACTIONAL_EDIT_FIELD_NAME' => $give_context ? null : 'name',
-        'FRACTIONAL_EDIT_FIELD_URL' => $give_context ? null : ('_SEARCH:cms_banners:__edit:' . $row['name']),
         'RESOURCE_TYPE' => 'banner',
     ]);
 }

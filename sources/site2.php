@@ -153,6 +153,10 @@ function redirect_exit($url, ?object $title = null, $text = null, bool $intermed
  */
 function assign_refresh($url, float $multiplier = 0.0)
 {
+    if (running_script('fractional_edit')) {
+        return;
+    }
+
     if ($url === '') {
         fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }

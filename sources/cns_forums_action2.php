@@ -140,9 +140,11 @@ function cns_edit_forum(int $forum_id, string $name, string $description, int $f
         $under_forum = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_parent_forum', ['id' => $under_forum]);
     }
 
-    $poll_xml_validation = cns_validate_default_poll_options_xml($poll_default_options_xml);
-    if ($poll_xml_validation !== null) {
-        warn_exit($poll_xml_validation);
+    if ($poll_default_options_xml !== STRING_MAGIC_NULL) {
+        $poll_xml_validation = cns_validate_default_poll_options_xml($poll_default_options_xml);
+        if ($poll_xml_validation !== null) {
+            warn_exit($poll_xml_validation);
+        }
     }
 
     if (($reset_intro_acceptance) && (trim(get_translated_text($forum_info[0]['f_intro_question'], $GLOBALS['FORUM_DB'])) != trim($intro_question)) && ($intro_question != STRING_MAGIC_NULL)) {

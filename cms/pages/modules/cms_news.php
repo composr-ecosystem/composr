@@ -699,7 +699,7 @@ class Module_cms_news extends Standard_crud_module
         $validated = post_param_integer('validated', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
 
         $news_article = post_param_string('post', STRING_MAGIC_NULL);
-        if (post_param_string('main_news_category') != 'personal') {
+        if (post_param_string('main_news_category', null) !== 'personal') {
             $main_news_category = post_param_integer('main_news_category', fractional_edit() ? INTEGER_MAGIC_NULL : false);
         } else {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));

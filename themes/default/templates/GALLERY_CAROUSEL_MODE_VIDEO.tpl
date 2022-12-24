@@ -4,7 +4,7 @@
 	</div>
 
 	{+START,IF_NON_EMPTY,{_TITLE}}
-		<h2 class="entry-title">{+START,FRACTIONAL_EDITABLE,{_TITLE},title,_SEARCH:cms_galleries:__edit_other:{ID},1,1,{$HAS_EDIT_PERMISSION,mid,{SUBMITTER},{$MEMBER},cms_galleries,galleries,{CAT}}}{_TITLE*}{+END}</h2>
+		<h2 class="entry-title">{+START,FRACTIONAL_EDITABLE,{_TITLE},title,_SEARCH:cms_galleries:__edit_other:{ID},1,0,{$HAS_EDIT_PERMISSION,mid,{SUBMITTER},{$MEMBER},cms_galleries,galleries,{CAT}}}{_TITLE*}{+END}</h2>
 	{+END}
 
 	{+START,IF_PASSED,DESCRIPTION}

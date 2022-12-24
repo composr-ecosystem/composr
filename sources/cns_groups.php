@@ -68,7 +68,7 @@ function render_group_box(array $row, string $zone = '_SEARCH', bool $give_conte
         'SUMMARY' => $summary,
         'ENTRY_DETAILS' => $entry_details,
         'URL' => $url,
-        'FRACTIONAL_EDIT_FIELD_NAME' => $give_context ? null : 'name',
+        'FRACTIONAL_EDIT_FIELD_NAME' => $give_context ? null : 'usergroup_name',
         'FRACTIONAL_EDIT_FIELD_URL' => $give_context ? null : ('_SEARCH:admin_cns_groups:__edit:' . strval($row['id'])),
         'RESOURCE_TYPE' => 'group',
     ]);
