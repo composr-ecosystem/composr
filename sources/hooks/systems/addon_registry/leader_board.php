@@ -250,6 +250,7 @@ class Hook_addon_registry_leader_board
      */
     public function tpl_preview__points_leader_board_screen() : object
     {
+        require_lang('cns_polls');
         require_lang('leader_board');
 
         $out = new Tempcode();

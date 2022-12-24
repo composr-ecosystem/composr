@@ -461,6 +461,8 @@ class Hook_addon_registry_cns_forum
      */
     public function tpl_preview__cns_vforum_filtering() : object
     {
+        require_lang('cns');
+
         $filtering = do_lorem_template('CNS_VFORUM_FILTERING', []);
 
         $content = do_lorem_template('CNS_FORUM', [
@@ -521,17 +523,17 @@ class Hook_addon_registry_cns_forum
             'LAST_POST_BY_USERNAME' => lorem_word(),
             'WITH_POSTER_URL' => placeholder_url(),
             'WITH_USERNAME' => lorem_word(),
-            'WITH_POSTER_ID' => placeholder_numeric_id(),
+            'WITH_POSTER_ID' => placeholder_first_admin_id(),
             'BY_POSTER_URL' => placeholder_url(),
             'BY_USERNAME' => lorem_word(),
-            'BY_POSTER_ID' => placeholder_numeric_id(),
+            'BY_POSTER_ID' => placeholder_first_admin_id(),
             'TO_POSTER_URL' => placeholder_url(),
             'TO_USERNAME' => lorem_word(),
-            'TO_POSTER_ID' => placeholder_numeric_id(),
+            'TO_POSTER_ID' => placeholder_first_admin_id(),
             '_NUM_POSTS' => placeholder_number(),
             'NUM_POSTS' => placeholder_number(),
             'HAS_READ' => false,
-            'LAST_POST_BY_POSTER_ID' => placeholder_numeric_id(),
+            'LAST_POST_BY_POSTER_ID' => placeholder_first_admin_id(),
         ]), null, '', true);
     }
 
@@ -743,17 +745,17 @@ class Hook_addon_registry_cns_forum
                 'LAST_POST_BY_USERNAME' => lorem_word(),
                 'WITH_POSTER_URL' => placeholder_url(),
                 'WITH_USERNAME' => lorem_word(),
-                'WITH_POSTER_ID' => placeholder_numeric_id(),
+                'WITH_POSTER_ID' => placeholder_first_admin_id(),
                 'BY_POSTER_URL' => placeholder_url(),
                 'BY_USERNAME' => lorem_word(),
-                'BY_POSTER_ID' => placeholder_numeric_id(),
+                'BY_POSTER_ID' => placeholder_first_admin_id(),
                 'TO_POSTER_URL' => placeholder_url(),
                 'TO_USERNAME' => lorem_word(),
-                'TO_POSTER_ID' => placeholder_numeric_id(),
+                'TO_POSTER_ID' => placeholder_first_admin_id(),
                 '_NUM_POSTS' => placeholder_number(),
                 'NUM_POSTS' => placeholder_number(),
                 'HAS_READ' => true,
-                'LAST_POST_BY_POSTER_ID' => placeholder_numeric_id(),
+                'LAST_POST_BY_POSTER_ID' => placeholder_first_admin_id(),
             ]));
         }
 

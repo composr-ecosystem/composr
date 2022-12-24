@@ -784,6 +784,17 @@ function placeholder_pagination() : object
 }
 
 /**
+ * Get suitable numeric placeholder ID for member ID.
+ *
+ * @return string Numeric place holder ID of the first admin
+ */
+function placeholder_first_admin_id() : string
+{
+    require_code('users_active_actions');
+    return strval(get_first_admin_user());
+}
+
+/**
  * Get all Comcode files.
  *
  * @return array List of Comcode files

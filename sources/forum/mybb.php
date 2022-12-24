@@ -277,6 +277,10 @@ class Forum_driver_mybb extends Forum_driver_base
     public function get_custom_fields(int $member_id) : ?array
     {
         $row = $this->get_member_row($member_id);
+        if ($row === null) {
+            return null;
+        }
+
         $out = [];
         foreach ($row as $attribute => $value) {
             if (substr($attribute, 0, 4) == 'cms_') {

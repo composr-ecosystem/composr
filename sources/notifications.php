@@ -504,8 +504,6 @@ class Notification_dispatcher
         }
         $join_time = $GLOBALS['FORUM_DRIVER']->get_member_join_timestamp($to_member_id);
 
-        $db = (substr($notification_code, 0, 4) == 'cns_') ? $GLOBALS['FORUM_DB'] : $GLOBALS['SITE_DB'];
-
         // If none-specified, we'll need to be clever now
         if ($setting == A__STATISTICAL) {
             $setting = _find_member_statistical_notification_type($to_member_id, $notification_code);
@@ -864,7 +862,7 @@ function enable_notifications(string $notification_code, ?string $notification_c
         return;
     }
 
-    $db = (substr($notification_code, 0, 4) == 'cns_') ? $GLOBALS['FORUM_DB'] : $GLOBALS['SITE_DB'];
+    $db = get_notification_code_db($notification_code);
 
     $basic_map = [
         'l_member_id' => $member_id,
@@ -924,7 +922,7 @@ function disable_notifications(string $notification_code, string $notification_c
         return;
     }
 
-    $db = (substr($notification_code, 0, 4) == 'cns_') ? $GLOBALS['FORUM_DB'] : $GLOBALS['SITE_DB'];
+    $db = get_notification_code_db($notification_code);
 
     $map = [
         'l_member_id' => $member_id,
@@ -1005,7 +1003,7 @@ function notifications_setting(string $notification_code, ?string $notification_
         return $NOTIFICATION_SETTING_CACHE[serialize($specific_where)];
     }
 
-    $db = (substr($notification_code, 0, 4) == 'cns_') ? $GLOBALS['FORUM_DB'] : $GLOBALS['SITE_DB'];
+    $db = get_notification_code_db($notification_code);
 
     $test = notification_locked_down($notification_code);
     if ($test === null) {
@@ -1045,7 +1043,7 @@ function notifications_setting(string $notification_code, ?string $notification_
  */
 function delete_all_notifications_on(string $notification_code, ?string $notification_category)
 {
-    $db = (substr($notification_code, 0, 4) == 'cns_') ? $GLOBALS['FORUM_DB'] : $GLOBALS['SITE_DB'];
+    $db = get_notification_code_db($notification_code);
 
     $db->query_delete('notifications_enabled', [
         'l_notification_code' => substr($notification_code, 0, 80),
@@ -1098,6 +1096,17 @@ function generate_notification_type_text(int $bitmask)
     }
 
     return implode(', ', $out);
+}
+
+/**
+ * Return the database driver responsible for a given notification code.
+ *
+ * @param  ID_TEXT $notification_code The notification code
+ * @return object The database driver responsible for the notification code
+ */
+function get_notification_code_db(string $notification_code) : object
+{
+    return ((substr($notification_code, 0, 4) == 'cns_') && get_forum_type() == 'cns') ? $GLOBALS['FORUM_DB'] : $GLOBALS['SITE_DB'];
 }
 
 /**
@@ -1157,7 +1166,7 @@ abstract class Hook_Notification
     {
         $page_links = [];
 
-        $db = (substr($notification_code, 0, 4) == 'cns_') ? $GLOBALS['FORUM_DB'] : $GLOBALS['SITE_DB'];
+        $db = get_notification_code_db($notification_code);
 
         $notification_category = get_param_string('id', null);
         $done_in_url = ($notification_category === null);

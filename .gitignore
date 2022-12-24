@@ -178,3 +178,4 @@ pages/html_custom/*/*.htm
 _old_backups
 /_tests/codechecker/netbeans/target/
 /mybb
+/phpBB3

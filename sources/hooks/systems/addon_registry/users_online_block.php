@@ -137,6 +137,8 @@ class Hook_addon_registry_users_online_block
      */
     public function tpl_preview__block_side_users_online() : object
     {
+        require_lang('cns');
+
         $online = [];
         foreach (placeholder_array() as $k => $v) {
             $online[] = [
