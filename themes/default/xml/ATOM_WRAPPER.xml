@@ -12,11 +12,11 @@
 		<email>{$STAFF_ADDRESS}</email>
 	</author>
 	{+START,IF_NON_EMPTY,{ABOUT}}
-		<subtitle type="html">{ABOUT}</subtitle>
+		<subtitle type="html">{ABOUT`}</subtitle>
 	{+END}
 	<generator uri="{$BRAND_BASE_URL*}/" version="{VERSION*}">{$BRAND_NAME*}</generator>
-	<rights type="html">{$REPLACE,&copy;,&#169;,{$COPYRIGHT}}</rights>
-	<logo>{LOGO_URL}</logo>
+	<rights type="html">{$REPLACE`,&copy;,&#169;,{$COPYRIGHT}}</rights>
+	<logo>{LOGO_URL*}</logo>
 	<icon>{$IMG*,favicon}</icon>
 
 	{CONTENT}
