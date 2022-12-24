@@ -434,7 +434,7 @@ class Hook_addon_registry_chat
 
         return lorem_globalise(do_lorem_template('BLOCK_SIDE_SHOUTBOX', [
             'BLOCK_ID' => lorem_word(),
-            'CHATROOM_ID' => placeholder_numeric_id(),
+            'CHATROOM_ID' => strval(db_get_first_id()),
             'NUM_MESSAGES' => placeholder_number(),
             'LAST_MESSAGE_ID' => placeholder_numeric_id(),
             'MESSAGES' => $tpl,
