@@ -456,6 +456,10 @@ function get_permissions_matrix(string $server_id, array $access, array $overrid
  */
 function set_category_permissions_from_environment(string $permission_module, string $category, ?string $page = null)
 {
+    if (fractional_edit()) {
+        return;
+    }
+
     if ($page === null) {
         $page = get_page_name();
     }

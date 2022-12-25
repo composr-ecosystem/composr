@@ -56,19 +56,29 @@
 
                     form.lastSubmitEvent = null;
 
+                    $util.inform('Google reCAPTCHA: Initialised');
+
                     grecaptchaParameters = {
                         sitekey: $cms.configOption('recaptcha_site_key'),
                         callback: function () {
                             captchaEl.dataset.recaptchaSuccessful = '1';
 
+                            $util.inform('Google reCAPTCHA: Passed');
+
                             if (form.lastSubmitEvent && $dom.isCancelledSubmit(form.lastSubmitEvent)) {
+                                $util.inform('Google reCAPTCHA: Submission cancelled due to failing validation');
+
                                 return;
                             }
 
                             var submitButton = $dom.$(form, 'input[type="submit"], button[type="submit"]');
                             if (submitButton) {
+                                $util.inform('Google reCAPTCHA: Re-clicking button');
+
                                 $dom.trigger(submitButton, 'click');
                             } else {
+                                $util.inform('Google reCAPTCHA: Re-submitting button');
+
                                 form.submit();
                             }
                         },
@@ -91,6 +101,7 @@
                             // CAPTCHA either not run yet, or failed, so execute it (grecaptchaParameters.callback will submit the form if it passes)
                             window.grecaptcha.execute();
 
+                            $util.inform('Validation flow terminated due to Google reCAPTCHA not running yet; running now');
                             alerted.valueOf = function () { return true; }; // Don't show a form-not-filled in error, as it's not that
 
                             return false;

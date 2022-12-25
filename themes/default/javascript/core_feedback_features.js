@@ -187,6 +187,8 @@
             }
 
             form.extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) { // eslint-disable-line no-unused-vars
+                $util.inform('Commenting: Running bespoke checks');
+
                 if (!$cms.form.checkFieldForBlankness(form.elements['post'])) {
                     erroneous.valueOf = function () { return true; };
                     firstFieldWithError = form.elements['post'];
@@ -210,6 +212,8 @@
                     firstFieldWithError = form.elements['email'];
                     return false;
                 }
+
+                $util.inform('Commenting: Passed bespoke checks');
 
                 return true;
             });
@@ -283,6 +287,8 @@
                 return;
             }
 
+            $util.inform('Commenting: AJAX submission initiated');
+
             var submitButton = $dom.$id('submit-button');
             if (submitButton) {
                 $cms.ui.disableButton(submitButton);
@@ -316,6 +322,8 @@
                 }
 
                 if ((xhr.responseText !== '') && (xhr.status !== 500)) {
+                    $util.inform('Commenting: AJAX submission succeeded');
+
                     // Display
                     $dom.replaceWith(commentsWrapper, xhr.responseText);
                     commentsWrapper = document.getElementById(commentsWrapperId); // Because $dom.replaceWith() broke the references
@@ -344,6 +352,8 @@
                         }
                     });
                 } else { // Error: do a normal post so error can be seen
+                    $util.inform('Commenting: AJAX submission failed');
+
                     var tokenField = commentsForm.elements['csrf_token'];
                     if (tokenField) {
                         return $cms.getCsrfToken().then(function (text) {

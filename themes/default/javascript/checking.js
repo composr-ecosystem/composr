@@ -29,6 +29,10 @@
             var name = theElement.name,
                 errorMsgElementWrapper = getErrorMsgElement(name);
 
+            if (errorMsg !== '') {
+                $util.inform('Field error on ' + name + ': ' + errorMsg);
+            }
+
             if ((errorMsg === '') && (name.includes('_hour')) || (name.includes('_minute'))) { // Do not blank out as day/month/year (which comes first) would have already done it
                 return;
             }
@@ -70,6 +74,8 @@
                     }
                 }
             }
+        } else {
+            $util.inform('Field error on ?: ' + errorMsg);
         }
 
         if ($cms.form.isWysiwygField(theElement)) {
@@ -182,16 +188,20 @@
     $cms.form.doCheckingComposrFormSubmitChain = function doCheckingComposrFormSubmitChain(event, form, analyticEventCategory, extraChecks) {
         form.lastSubmitEvent = event;
 
+        $util.inform('Running form validation');
+
         return new Promise(function (resolveSubmitPromise) {
             var checkFormPromise = $cms.form.checkForm(event, form, false, extraChecks);
 
             checkFormPromise.then(function (valid) {
                 if (!valid) {
-                    $dom.cancelSubmit(event);
+                    $util.inform('Form validation failed');
 
                     resolveSubmitPromise(false);
                     return $util.promiseHalt();
                 }
+
+                $util.inform('Form validation passed');
 
                 if (form.submitAction) {
                     form.action = form.submitAction;
@@ -234,6 +244,8 @@
                     }
                 }
             }).then(function () {
+                $util.inform('Proceeding to form submission');
+
                 if (form.method.toLowerCase() === 'get') {
                     /* Remove any stuff that is only in the form for previews if doing a GET request */
                     var previewInputs = $dom.$$(form, 'input[name^="label_for__"], input[name^="tick_on_form__"], input[name^="comcode__"], input[name^="require__"]');
@@ -494,6 +506,7 @@
                         }
 
                         if (result.erroneous.valueOf()) {
+                            $util.inform('Validation failed on a field');
                             erroneous.valueOf = function () { return true; };
                         }
                         if (!firstFieldWithError && result.erroneous.valueOf()) {
@@ -520,6 +533,7 @@
             extraChecks.forEach(function (extraCheck) {
                 var extraCheckResult = extraCheck(e, theForm, erroneous, alerted);
                 if (extraCheckResult === false) {
+                    $util.inform('Validation failed on an extra check');
                     erroneous.valueOf = function () { return true; };
                 } else if (typeof extraCheckResult === 'function') {
                     fieldCheckPromiseCalls.push(function () { return extraCheckResult(); });
@@ -532,6 +546,7 @@
                 if ((totalFileSize > 0) && (theForm.elements['MAX_FILE_SIZE']) && (totalFileSize > theForm.elements['MAX_FILE_SIZE'].value)) {
                     if (!erroneous.valueOf()) {
                         firstFieldWithError = fieldElements[fieldElements.length - 1];
+                        $util.inform('Validation failed on file size');
                         erroneous.valueOf = function () { return true; };
                     }
                     if (!alerted.valueOf()) {
@@ -735,11 +750,13 @@
                 }
 
                 if (errorMsg !== '') {
+                    $util.inform('Validation failed on a field with ' + errorMsg);
                     erroneous.valueOf = function () { return true; };
                 }
 
                 if (!erroneous.valueOf()) {
                     if (!fieldElement.checkValidity()) {
+                        $util.inform('Validation failed on a regexp');
                         erroneous.valueOf = function () { return true; };
                         errorMsg = $util.format('{!javascript:PATTERN_NOT_MATCHED;^}', [myValue]);
                     }
@@ -764,6 +781,41 @@
             return errorMsgElement;
         }
     }
+
+    /**
+     * Very simple form control flow.
+     * Shows the associated error message element if the field is blank, and an alert dialog - unless `alreadyShownMessage` is true.
+     * @memberof $cms.form
+     * @param field
+     * @param alreadyShownMessage
+     * @returns {boolean} - true if the field isn't empty, false otherwise
+     */
+    $cms.form.checkFieldForBlankness = function checkFieldForBlankness(field, alreadyShownMessage) {
+        field = $dom.domArg(field);
+        alreadyShownMessage = Boolean(alreadyShownMessage);
+
+        var value = field.value,
+            errorEl = $dom.$('#error-' + field.id);
+
+        if ((value.trim() === '') || (value === '{!POST_WARNING;^}') || (value === '{!THREADED_REPLY_NOTICE;^,{!POST_WARNING}}')) {
+            if (errorEl != null) {
+                $dom.show(errorEl);
+                $dom.html(errorEl, '{!REQUIRED_NOT_FILLED_IN;^}');
+            }
+
+            if (!alreadyShownMessage) {
+                $cms.ui.alert({ notice: '{!IMPROPERLY_FILLED_IN;^}', single: true });
+            }
+
+            return false;
+        }
+
+        if (errorEl != null) {
+            $dom.hide(errorEl);
+        }
+
+        return true;
+    };
 
     /**
      * @memberof $cms.form
@@ -946,41 +998,4 @@
         }
         return !blank;
     };
-
-
-    /**
-     * Very simple form control flow.
-     * Shows the associated error message element if the field is blank, and an alert dialog - unless `alreadyShownMessage` is true.
-     * @memberof $cms.form
-     * @param field
-     * @param alreadyShownMessage
-     * @returns {boolean} - true if the field isn't empty, false otherwise
-     */
-    $cms.form.checkFieldForBlankness = function checkFieldForBlankness(field, alreadyShownMessage) {
-        field = $dom.domArg(field);
-        alreadyShownMessage = Boolean(alreadyShownMessage);
-
-        var value = field.value,
-            errorEl = $dom.$('#error-' + field.id);
-
-        if ((value.trim() === '') || (value === '{!POST_WARNING;^}') || (value === '{!THREADED_REPLY_NOTICE;^,{!POST_WARNING}}')) {
-            if (errorEl != null) {
-                $dom.show(errorEl);
-                $dom.html(errorEl, '{!REQUIRED_NOT_FILLED_IN;^}');
-            }
-
-            if (!alreadyShownMessage) {
-                $cms.ui.alert({ notice: '{!IMPROPERLY_FILLED_IN;^}', single: true });
-            }
-
-            return false;
-        }
-
-        if (errorEl != null) {
-            $dom.hide(errorEl);
-        }
-
-        return true;
-    };
-
 }(window.$cms, window.$util, window.$dom));
