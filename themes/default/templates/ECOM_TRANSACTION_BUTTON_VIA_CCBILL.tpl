@@ -21,6 +21,6 @@
 	{+END}
 
 	<div class="purchase-button">
-		<button data-disable-on-click="1" type="submit">{!MAKE_PAYMENT}</button>
+		<button data-disable-on-click="1" type="submit" class="btn btn-primary btn-scr menu--rich-content--ecommerce--purchase" alt="CCBill Checkout">{+START,INCLUDE,ICON}NAME=menu/rich_content/ecommerce/purchase{+END} {!MAKE_PAYMENT}</button>
 	</div>
 </form>
