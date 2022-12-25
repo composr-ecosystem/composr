@@ -26,7 +26,7 @@ class _api_ecommerce_shipping_test_set extends cms_test_case
 
         require_code('ecommerce');
 
-        $this->load_key_options('shippo', '', false);
+        $this->load_key_options('shippo', false);
 
         set_option('ecommerce_test_mode', '1');
         set_option('business_street_address', '34661 Lyndon B Johnson Fwy');

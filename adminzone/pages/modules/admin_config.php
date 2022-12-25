@@ -283,6 +283,105 @@ class Module_admin_config
      */
     public function config_choose() : object
     {
+        $pre = new Tempcode();
+
+        // Import?
+        if ($GLOBALS['DEV_MODE']) {
+            $path = get_file_base() . '/_tests/assets/keys.csv';
+            if (is_file($path)) {
+                require_code('files_spreadsheets_read');
+
+                $list = new Tempcode();
+
+                $sheet_reader = spreadsheet_open_read($path);
+                $import_map = [];
+                $import_list = new Tempcode();
+                while (($row = $sheet_reader->read_row()) !== false) {
+                    $option_name = $row['Option'];
+                    $option_value = $row['Value'];
+                    $option_type = $row['Type'];
+
+                    switch ($option_type) {
+                        case 'option':
+                            if ((is_file(get_file_base() . '/sources/hooks/systems/config/' . $option_name . '.php')) || (is_file(get_file_base() . '/sources_custom/hooks/systems/config/' . $option_name . '.php'))) {
+                                require_code('hooks/systems/config/' . filter_naughty_harsh($option_name));
+                                $ob = object_factory('Hook_config_' . filter_naughty_harsh($option_name), true);
+                                if ($ob !== null) {
+                                    $details = $ob->get_details();
+
+                                    $option_title = new Tempcode();
+                                    $option_title->attach(do_lang_tempcode($details['group']));
+                                    $option_title->attach(': ');
+                                    $option_title->attach(do_lang_tempcode($details['human_name']));
+                                    $option_title->attach(' [' . $option_name . ']');
+                                    $option_title = protect_from_escaping($option_title);
+
+                                    $import_map[] = $row;
+                                    $option_selected = ((get_option($option_name) == '') || (get_option($option_name) == get_default_option($option_name))) && ($option_value != '') && ($option_value != get_default_option($option_name));
+                                    $import_list->attach(form_input_list_entry($option_type . '/' . $option_name, $option_selected, $option_title));
+                                }
+                            }
+                            break;
+
+                        case 'hidden':
+                        case 'hidden_elective':
+                            $option_title = new Tempcode();
+                            $option_title->attach($option_type);
+                            $option_title->attach(' > ');
+                            $option_title->attach($option_name);
+
+                            $import_map[] = $row;
+                            $option_selected = cms_empty_safe(get_value($option_name, null, $option_type == 'hidden_elective')) && ($option_value != '');
+                            $import_list->attach(form_input_list_entry($option_type . '/' . $option_name, $option_selected, $option_title));
+                            break;
+                    }
+                }
+                $sheet_reader->close();
+
+                if (!empty($import_map)) {
+                    // UI
+                    $fields = form_input_multi_list('Keys', '', 'import_keys', $import_list, null, 15);
+                    $form = do_template('FORM', [
+                        'TEXT' => protect_from_escaping('You are in developer mode and have a <kbd>keys.csv</kbd> file with keys that you can import into the configuration.'),
+                        'HIDDEN' => '',
+                        'FIELDS' => $fields,
+                        'SUBMIT_ICON' => 'admin/import',
+                        'SUBMIT_NAME' => do_lang_tempcode('IMPORT'),
+                        'URL' => get_self_url(),
+                        'SKIP_REQUIRED' => true,
+                    ]);
+                    $pre->attach(put_in_standard_box($form, make_string_tempcode('Development: Key import'), 'default', '', 'tray_closed'));
+
+                    // Save
+                    if (!empty($_POST['import_keys'])) {
+                        foreach ($import_map as $row) {
+                            $option_type = $row['Type'];
+                            $option_name = $row['Option'];
+                            $option_value = $row['Value'];
+
+                            if (in_array($option_type . '/' . $option_name, $_POST['import_keys'])) {
+                                switch ($option_type) {
+                                    case 'option':
+                                        set_option($option_name, $option_value);
+                                        break;
+
+                                    case 'hidden':
+                                        set_value($option_name, $option_value);
+                                        break;
+
+                                    case 'hidden_elective':
+                                        set_value($option_name, $option_value, true);
+                                        break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        $pre->attach(paragraph(do_lang_tempcode('CHOOSE_A_CONFIG_CATEGORY')));
+
         // Find all categories
         $hooks = find_all_hook_obs('systems', 'config', 'Hook_config_');
         $categories = [];
@@ -415,7 +514,7 @@ class Module_admin_config
         return do_template('INDEX_SCREEN_FANCIER_SCREEN', [
             '_GUID' => 'c8fdb2b481625d58b0b228c897fda72f',
             'TITLE' => $this->title,
-            'PRE' => paragraph(do_lang_tempcode('CHOOSE_A_CONFIG_CATEGORY')),
+            'PRE' => $pre,
             'CONTENT' => $categories_tpl,
             'POST' => '',
         ]);

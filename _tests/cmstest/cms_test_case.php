@@ -169,7 +169,7 @@ class cms_test_case extends WebTestCase
         return create_session(get_first_admin_user(), 1, false, false, $ip_address);
     }
 
-    protected function load_key_options($substring, $prefix = '', $substring_is_at_start = true)
+    protected function load_key_options($substring, $substring_is_at_start = true)
     {
         $ret = [];
 
@@ -178,6 +178,8 @@ class cms_test_case extends WebTestCase
             $this->assertTrue(false, 'Cannot proceed, we need _tests/assets/keys.csv, which is not supplied in Git for security reasons');
             exit();
         }
+
+        require_code('config2');
 
         require_code('files_spreadsheets_read');
 
@@ -188,51 +190,42 @@ class cms_test_case extends WebTestCase
             }
             $option_name = $row['Option'];
 
-            if (!isset($row['Value'])) {
-                exit('Value column missing');
-            }
-
-            if (!isset($row['Type'])) {
-                exit('Type column missing');
-            }
-
             if ($option_name[0] == '#') { // Comment
                 continue;
             }
 
+            if (!isset($row['Value'])) {
+                exit('Value column missing');
+            }
+            $option_value = $row['Value'];
+
+            if (!isset($row['Type'])) {
+                exit('Type column missing');
+            }
+            $option_type = $row['Type'];
+
             if ($substring_is_at_start) {
-                if ($prefix == '') {
-                    $does_match = (substr($option_name, 0, strlen($substring)) == $substring);
-                } else {
-                    $does_match = (substr($option_name, 0, strlen($prefix . $substring)) == $prefix . $substring);
-                }
+                $does_match = (substr($option_name, 0, strlen($substring)) == $substring);
             } else {
-                if ($prefix == '') {
-                    $does_match = (strpos($option_name, $substring) !== false);
-                } else {
-                    $does_match = (substr($option_name, 0, strlen($prefix)) == $prefix) && (strpos(substr($option_name, strlen($prefix)), $substring) !== false);
-                }
+                $does_match = (strpos($option_name, $substring) !== false);
             }
 
             if ($does_match) {
-                $option_name = substr($option_name, strlen($prefix));
-
-                switch ($row['Type']) {
+                switch ($option_type) {
                     case 'option':
-                        require_code('config2');
-                        set_option($option_name, $row['Value']);
+                        set_option($option_name, $option_value);
                         break;
 
                     case 'hidden':
-                        set_value($option_name, $row['Value']);
+                        set_value($option_name, $option_value);
                         break;
 
                     case 'hidden_elective':
-                        set_value($option_name, $row['Value'], true);
+                        set_value($option_name, $option_value, true);
                         break;
 
                     case 'return':
-                        $ret[$option_name] = $row['Value'];
+                        $ret[$option_name] = $option_value;
                         break;
                 }
             }

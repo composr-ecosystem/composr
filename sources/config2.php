@@ -19,6 +19,23 @@
  */
 
 /**
+ * Get the input name for a config option.
+ * Used to workaround problems with autocomplete.
+ *
+ * @param  string $name Option name
+ * @return string Input name
+ */
+function get_config_option_input_name(string $name) : string
+{
+    if (strpos($name, 'username') === false && strpos($name, 'pass') === false) {
+        return 'option_' . $name;
+    }
+
+    $config_field_name = 'option_' . substr(md5($name), 0, 8);
+    return $config_field_name;
+}
+
+/**
  * Build the UI for inputting a config option.
  *
  * @param  string $name Option name
@@ -38,7 +55,7 @@ function build_config_inputter(string $name, array $details, ?string $current_va
 
     $default = get_default_option($name);
 
-    $config_field_name = 'option_' . substr(md5($name), 0, 8);
+    $config_field_name = get_config_option_input_name($name);
 
     // Language strings
     if ($include_group) {
@@ -244,7 +261,7 @@ function build_config_inputter(string $name, array $details, ?string $current_va
  */
 function get_submitted_config_value(string $name, array $details, bool $theme_wizard = false) : string
 {
-    $config_field_name = 'option_' . substr(md5($name), 0, 8);
+    $config_field_name = get_config_option_input_name($name);
 
     // Work out new value
     if ($details['type'] == 'tax_code') {
@@ -288,8 +305,10 @@ function get_submitted_config_value(string $name, array $details, bool $theme_wi
         }
         if ($_value === null) {
             $value = '';
-        } else {
+        } elseif (is_integer($_value)) {
             $value = get_translated_text($_value);
+        } else {
+            $value = $_value;
         }
     } else {
         $value = post_param_string($config_field_name, '');
