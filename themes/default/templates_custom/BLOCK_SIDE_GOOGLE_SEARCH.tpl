@@ -5,7 +5,7 @@
 	{+START,IF_NON_EMPTY,{TITLE}}<h3>{TITLE*}</h3>{+END}
 
 	<div id="cse-search-form">
-		<gcse:searchbox-only resultsUrl="{$PAGE_LINK*,_SELF:{PAGE_NAME}}"></gcse:searchbox-only>
+		<div class="gcse-searchbox-only" data-resultsUrl="{$PAGE_LINK*,_SELF:{PAGE_NAME}}" data-newWindow="false" data-queryParameterName="q" data-autoSearchOnLoad="false"></div>
 	</div>
 </div>
 </section>

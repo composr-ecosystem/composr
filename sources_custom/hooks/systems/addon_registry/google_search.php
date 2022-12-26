@@ -96,7 +96,9 @@ In addition you can create your own page or put a [tt]main_google_results[/tt] b
 
 Example:
 [code=\'Comcode\'][block id="xxx"]side_google_search[/block][/code]
-The [tt]xxx[/tt] is from [tt]var cx = \'xxx\';[/tt] in the code [url="Google provides"]https://cse.google.com/cse/[/url]. We use our own customised JavaScript rather than Google\'s, but we need the ID they embed in it.
+The [tt]xxx[/tt] is what [url="Google provides"]https://cse.google.com/cse/[/url]. We use our own customised JavaScript rather than Google\'s, but we need the ID they embed in it. On the Google Look and feel settings set the layout to "Results only".
+
+You must enable the "Allow unsafe JavaScript" for this addon to work, which will lower your security. Unfortunately Google require this.
 
 Note that it is a requirement that your [tt]_google_search[/tt] page is in a zone where the side search block displays, as these two interface together once a search is initiated.';
     }
@@ -144,6 +146,7 @@ Note that it is a requirement that your [tt]_google_search[/tt] page is in a zon
     {
         return [
             'sources_custom/hooks/systems/addon_registry/google_search.php',
+            'sources_custom/hooks/systems/trusted_sites/google_search.php',
             'lang_custom/EN/google_search.ini',
             'sources_custom/blocks/side_google_search.php',
             'sources_custom/blocks/main_google_results.php',
