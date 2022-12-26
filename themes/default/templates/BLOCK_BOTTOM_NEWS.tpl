@@ -2,6 +2,7 @@
 {$REQUIRE_JAVASCRIPT,news}
 
 {$SET,bottom_news_id,{$RAND}}
+{$SET,bottom_news_width,300}
 
 {+START,SET,news_ticker_text}
 	<ol class="horizontal-ticker">
@@ -11,6 +12,6 @@
 	</ol>
 {+END}
 
-<div data-tpl="blockBottomNews" data-tpl-params="{+START,PARAMS_JSON,bottom_news_id,news_ticker_text}{_*}{+END}">
+<div data-tpl="blockBottomNews" data-tpl-params="{+START,PARAMS_JSON,bottom_news_id,news_ticker_text,bottom_news_width}{_*}{+END}">
 	<div class="ticker-wrap" role="marquee" id="ticktickticker-news{$GET%,bottom_news_id}"></div>
 </div>

@@ -827,17 +827,33 @@
     $cms.templates.comcodeTicker = function (params, container) {
         window.tickPos || (window.tickPos = {});
 
-        var id = 'ticker-' + $util.random();
+        var id = 'ticker-' + $util.random(),
+            width = params.width,
+            dynamicWidth = (width == ''),
+            speed = params.speed;
 
-        window.tickPos[id] = params.width;
-        $dom.html(container, '<div class="ticker" style="text-indent: ' + params.width + 'px; width: ' + params.width + 'px;" id="' + id + '"><span>' +
+        if (dynamicWidth) {
+            container.style.display = 'block';
+            width = $dom.width(container);
+
+            $dom.on(window, 'resize', function () {
+                window.setTimeout(function () {
+                    width = $dom.width(container);
+                    window.tickPos[id] = width;
+                    container.childNodes[0].style.width = width + 'px';
+                }, 0);
+            });
+        }
+
+        window.tickPos[id] = width;
+        $dom.html(container, '<div class="ticker" style="text-indent: ' + width + 'px; width: ' + width + 'px;" id="' + id + '"><span>' +
             $cms.filter.nl(params.text) + '</span></div>'
         );
 
         var lastTime = 0;
         var animationFunc = function (timestamp) {
-            if (timestamp - lastTime >= 100 / params.speed) {
-                tickerTick(id, params.width);
+            if (timestamp - lastTime >= 1000 / speed) {
+                tickerTick(id, width);
                 lastTime = timestamp;
             }
 

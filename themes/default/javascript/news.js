@@ -160,14 +160,37 @@
 
         var newsTickerText = $cms.filter.nl(params.newsTickerText),
             ticktickticker = $dom.$('#ticktickticker-news' + params.bottomNewsId),
-            myId = 'ticker-' + $util.random();
+            myId = 'ticker-' + $util.random(),
+            width = params.bottomNewsWidth,
+            dynamicWidth = (width == ''),
+            speed = 40;
 
-        window.tickPos[myId] = 400;
-        $dom.html(ticktickticker, '<div class="ticker" style="text-indent: 400px; width: 400px;" id="' + myId + '"><span>' + newsTickerText + '</span></div>');
+        if (dynamicWidth) {
+            ticktickticker.style.display = 'block';
+            width = $dom.width(ticktickticker);
 
-        setInterval(function () {
-            window.tickerTick(myId, 400);
-        }, 50);
+            $dom.on(window, 'resize', function () {
+                window.setTimeout(function () {
+                    width = $dom.width(ticktickticker);
+                    window.tickPos[myId] = width;
+                    ticktickticker.childNodes[0].style.width = width + 'px';
+                }, 0);
+            });
+        }
+
+        window.tickPos[myId] = width;
+        $dom.html(ticktickticker, '<div class="ticker" style="text-indent: ' + width + 'px; width: ' + width + 'px;" id="' + myId + '"><span>' + newsTickerText + '</span></div>');
+
+        var lastTime = 0;
+        var animationFunc = function (timestamp) {
+            if (timestamp - lastTime >= 1000 / speed) {
+                tickerTick(myId, width);
+                lastTime = timestamp;
+            }
+
+            requestAnimationFrame(animationFunc);
+        };
+        requestAnimationFrame(animationFunc);
     };
 
     $cms.templates.blockMainNewsSlider = function (params, container) {

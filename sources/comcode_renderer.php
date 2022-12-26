@@ -1276,7 +1276,11 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
             if (!is_numeric($width)) {
                 $width = '300';
             }
-            $fspeed = array_key_exists('speed', $attributes) ? float_to_raw_string(floatval($attributes['speed'])) : '1';
+            if ($width == '0') {
+                $width = '';
+            }
+
+            $fspeed = array_key_exists('speed', $attributes) ? float_to_raw_string(floatval($attributes['speed'])) : '40';
             $temp_tpl = do_template('COMCODE_TICKER', ['_GUID' => 'e48893cda61995261577f0556443c537', 'SPEED' => $fspeed, 'WIDTH' => $width, 'TEXT' => $embed]);
 
             break;
