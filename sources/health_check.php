@@ -211,12 +211,24 @@ function run_health_check(bool &$has_fails, ?array $sections_to_run = null, bool
             $num_manual = 0;
             $_results = [];
             foreach ($results as $_result) {
-                $result = [
-                    'RESULT' => $_result[0],
-                    'MESSAGE' => comcode_to_tempcode($_result[1], $GLOBALS['FORUM_DRIVER']->get_guest_id()),
-                ];
+                $__result = $_result[0];
 
-                switch ($result['RESULT']) {
+                if (
+                    ($__result == HEALTH_CHECK__FAIL) ||
+                    ($__result == HEALTH_CHECK__PASS && $show_passes) ||
+                    ($__result == HEALTH_CHECK__SKIP && $show_skips) ||
+                    ($__result == HEALTH_CHECK__MANUAL && $show_manual_checks) ||
+                    (!in_array($__result, [HEALTH_CHECK__FAIL, HEALTH_CHECK__PASS, HEALTH_CHECK__SKIP, HEALTH_CHECK__MANUAL]))
+                ) {
+                    $result = [
+                        'RESULT' => $__result,
+                        'MESSAGE' => comcode_to_tempcode($_result[1], $GLOBALS['FORUM_DRIVER']->get_guest_id()),
+                    ];
+                } else {
+                    $result = null; // Will not be used
+                }
+
+                switch ($__result) {
                     case HEALTH_CHECK__FAIL:
                         $has_fails = true;
                         $_results[] = $result;

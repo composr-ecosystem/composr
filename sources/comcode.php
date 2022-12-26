@@ -196,9 +196,17 @@ function apply_emoticons(string $text) : string
  */
 function comcode_to_tempcode(string $comcode, ?int $source_member = null, bool $as_admin = false, ?string $pass_id = null, ?object $db = null, int $flags = 0, array $highlight_bits = [], ?int $on_behalf_of_member = null) : object
 {
+    // We may get called many times for the same input, e.g. due to Health Checks on previewed content - so do some caching
+    static $cache = [];
+    if (isset($cache[$comcode])) {
+        return $cache[$comcode];
+    }
+
     $matches = [];
     if (preg_match('#^\{\!([A-Z_]+)\}$#', $comcode, $matches) != 0) {
-        return do_lang_tempcode($matches[1]);
+        $ret = do_lang_tempcode($matches[1]);
+        $cache[$comcode] = $ret;
+        return $ret;
     }
 
     // Optimised code path (still has to support emoticons though, as those are arbitrary)
@@ -214,9 +222,12 @@ function comcode_to_tempcode(string $comcode, ?int $source_member = null, bool $
     }
     if ((!$possible_attachments || ($GLOBALS['IN_MINIKERNEL_VERSION'])) && (preg_match('#^[\w\-\(\) \.,:;/"\!\?]*$#'/*NB: No apostrophes allowed in here, as they get changed by escape_html and can interfere then with apply_emoticons*/, $comcode) != 0) && (strpos($comcode, '  ') === false) && (strpos($comcode, '://') === false) && (strpos($comcode, '--') === false) && (get_page_name() != 'search')) {
         if (running_script('stress_test_loader')) {
-            return make_string_tempcode(escape_html($comcode));
+            $ret = make_string_tempcode(escape_html($comcode));
+        } else {
+            $ret = make_string_tempcode(apply_emoticons(escape_html($comcode)));
         }
-        return make_string_tempcode(apply_emoticons(escape_html($comcode)));
+        $cache[$comcode] = $ret;
+        return $ret;
     }
 
     // Full code path...
@@ -230,6 +241,7 @@ function comcode_to_tempcode(string $comcode, ?int $source_member = null, bool $
     if ($long) {
         cms_profile_end_for('comcode_to_tempcode/LONG', ($source_member === null) ? '' : ('owned by member #' . strval($source_member)));
     }
+    $cache[$comcode] = $ret;
     return $ret;
 }
 
