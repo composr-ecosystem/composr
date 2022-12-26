@@ -10,7 +10,7 @@
 
 	{+START,IF_NON_EMPTY,{TRACKBACKS}}
 		{+START,IF,{$HAS_ACTUAL_PAGE_ACCESS,_SEARCH:admin_trackbacks}}
-		<form title="{!TRACKBACKS}" action="{$PAGE_LINK*,_SEARCH:admin_trackbacks:delete:redirect={$SELF_URL}}" method="post">
+		<form title="{!TRACKBACKS}" action="{$PAGE_LINK*,_SEARCH:admin_trackbacks:delete:redirect={$SELF_URL&}}" method="post">
 			{$INSERT_FORM_POST_SECURITY}
 		{+END}
 		{TRACKBACKS}
