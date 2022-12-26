@@ -9,13 +9,15 @@
             longitude = strVal(params.longitude),
             longitudeInput = container.querySelector('#' + name + '_longitude');
 
-        $cms.requireJavascript('https://www.google.com/jsapi').then(function () {
-            setTimeout(function () {
-                if (window.google) {
-                    window.google.load('maps', '3', { callback: googleMapUsersInitialize, other_params: (($cms.configOption('google_apis_api_key') !== '') ? 'key=' + $cms.configOption('google_apis_api_key') : '') }); // eslint-disable-line camelcase
-                }
-            }, 0);
-        });
+        var gMapsURL = 'https://maps.googleapis.com/maps/api/js?libraries=places,visualization&v=weekly&callback=googleMapInputInitialise';
+        if ($cms.configOption('google_apis_api_key') !== '') {
+            gMapsURL += '&key=' + $cms.configOption('google_apis_api_key');
+        }
+
+        var scripts = [];
+        scripts.push(gMapsURL);
+
+        $cms.requireJavascript(scripts);
 
         $dom.on(container, 'change', '.js-change-set-place-marker', function () {
             placeMarker(latitudeInput.value, longitudeInput.value);
@@ -27,7 +29,7 @@
 
         var marker, map, lastPoint;
 
-        function googleMapUsersInitialize() {
+        window.googleMapInputInitialise = function () {
             marker = new google.maps.Marker();
 
             var center = new google.maps.LatLng(((latitude !== '') ? latitude : 0), ((longitude !== '') ? longitude : 0));
@@ -108,30 +110,27 @@
             maxLongitude = strVal(params.maxLongitude),
             region = strVal(params.region);
 
-        var scripts = ['https://www.google.com/jsapi'];
-
-        if (cluster) {
-            scripts.push('https://raw.githubusercontent.com/printercu/google-maps-utility-library-v3-read-only/master/markerclustererplus/src/markerclusterer_packed.js');
+        var gMapsURL = 'https://maps.googleapis.com/maps/api/js?libraries=places,visualization&v=weekly&callback=googleMapInitialise';
+        if ($cms.configOption('google_apis_api_key') !== '') {
+            gMapsURL += '&key=' + $cms.configOption('google_apis_api_key');
         }
-
-        var options = {
-            callback: googleMapInitialize,
-            other_params: ($cms.configOption('google_apis_api_key') !== '') ? 'key=' + $cms.configOption('google_apis_api_key') : '' // eslint-disable-line camelcase
-        };
-
         if (region !== '') {
-            options.region = region;
+            gMapsURL += '&region=' + region;
         }
+
+        var scripts = [];
+        if (cluster) {
+            scripts.push('https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js');
+        }
+        scripts.push(gMapsURL);
 
         if (window.dataMap === undefined) {
             window.dataMap = null;
         }
 
-        $cms.requireJavascript(scripts).then(function () {
-            google.load('maps', '3', options);
-        });
+        $cms.requireJavascript(scripts);
 
-        function googleMapInitialize() {
+        window.googleMapInitialise = function () {
             var bounds = new google.maps.LatLngBounds();
             var specifiedCenter = new google.maps.LatLng((latitude !== '' ? latitude : 0.0), (longitude !== '' ? longitude : 0.0));
             var gOptions = {
@@ -224,11 +223,11 @@
                         // Dynamically load entry details only when their marker is clicked
                         var content = entryContent.replace(/<colgroup>(.|\n)*<\/colgroup>/, '').replace(/&nbsp;/g, ' ');
                         if (content !== '') {
-                            infoWindow.setContent('<div class="global-middle-faux clearfix">' + content + '</div>');
+                            infoWindow.setContent('<div class="global-middle-faux clearfix" style="width: 400px; margin-right: 30px">' + content + '</div>');
                             infoWindow.open(window.dataMap, argMarker);
                         }
                     };
-                }(marker, data[i][0], data[i][4], data[i][5]))); // These are the args passed to the dynamic function above
+                }(marker, data[i][0], data[i][3], data[i][4]))); // These are the args passed to the dynamic function above
             }
 
             if (cluster) {

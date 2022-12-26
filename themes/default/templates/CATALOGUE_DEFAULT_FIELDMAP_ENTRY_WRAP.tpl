@@ -32,7 +32,7 @@
 
 	{+START,IF_NON_PASSED_OR_FALSE,ENTRY_SCREEN}
 		<div class="clearfix">
-			{+START,IF,{$NOT,{GIVE_CONTEXT}}}
+			{+START,IF,{$MATCH_KEY_MATCH,_WILD:catalogues:category}}
 				<p class="left">
 					<a rel="back_to_top" target="_self" href="#" title="{!BACK_TO_TOP}">{+START,INCLUDE,ICON}
 						NAME=tool_buttons/top

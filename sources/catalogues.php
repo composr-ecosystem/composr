@@ -1177,6 +1177,11 @@ function _resolve_catalogue_entry_field(array $field, $entry_id, ?array $only_fi
         case 'long_trans':
         case 'short_trans':
             $temp = _get_catalogue_entry_field($field['id'], $entry_id, 'short_trans', $only_field_ids, $tables_to_scan);
+
+            if ($temp === null) {
+                return;
+            }
+
             if (($temp['cv_value'] === null) || ($temp['cv_value'] == '')/* defensive */) {
                 $target['effective_value'] = new Tempcode();
                 $target['effective_value_pure'] = '';
@@ -1194,6 +1199,11 @@ function _resolve_catalogue_entry_field(array $field, $entry_id, ?array $only_fi
         case 'long_unescaped':
         case 'short_unescaped':
             $temp = _get_catalogue_entry_field($field['id'], $entry_id, $type, $only_field_ids, $tables_to_scan);
+
+            if ($temp === null) {
+                return;
+            }
+
             if ($temp['cv_value'] === null) {
                 $target['effective_value'] = '';
                 $target['effective_value_pure'] = '';
@@ -1205,6 +1215,11 @@ function _resolve_catalogue_entry_field(array $field, $entry_id, ?array $only_fi
             break;
         case 'float_unescaped':
             $temp = _get_catalogue_entry_field($field['id'], $entry_id, $type, $only_field_ids, $tables_to_scan);
+
+            if ($temp === null) {
+                return;
+            }
+
             if ($temp['cv_value'] === null) {
                 $target['effective_value'] = do_lang_tempcode('NA_EM');
                 $target['effective_value_pure'] = do_lang('NA');
@@ -1216,6 +1231,11 @@ function _resolve_catalogue_entry_field(array $field, $entry_id, ?array $only_fi
             break;
         case 'integer_unescaped':
             $temp = _get_catalogue_entry_field($field['id'], $entry_id, $type, $only_field_ids, $tables_to_scan);
+
+            if ($temp === null) {
+                return;
+            }
+
             if ($temp['cv_value'] === null) {
                 $target['effective_value'] = do_lang_tempcode('NA_EM');
                 $target['effective_value_pure'] = do_lang('NA');
@@ -1366,7 +1386,7 @@ function _get_catalogue_entry_field(int $field_id, $entry_id, string $type = 'sh
         $value = $catalogue_entry_cache[$entry_id][$field_id];
     }
 
-    if (is_string($value['cv_value'])) { // UNION will coerce types to strings, undo that
+    if (($value !== null) && (is_string($value['cv_value']))) { // UNION will coerce types to strings, undo that
         switch ($type) {
             case 'float':
                 $value['cv_value'] = ($value['cv_value'] == '') ? null : floatval($value['cv_value']);

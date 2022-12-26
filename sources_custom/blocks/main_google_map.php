@@ -225,7 +225,7 @@ PHP;
             }
 
             $has_guid = !empty($map['guid']);
-            $star_entry_int = intval($star_entry);
+            $star_entry_int = ($star_entry == '') ? null : intval($star_entry);
 
             // Make marker data JavaScript-friendly
             foreach ($entries_to_show as $i => $entry_row) {
@@ -249,10 +249,10 @@ PHP;
                         $details['_GUID'] = $map['guid'];
                     }
 
-                    $entry_content = do_template('CATALOGUE_googlemap_FIELDMAP_ENTRY_WRAP', $details + ['GIVE_CONTEXT' => false], null, false, 'CATALOGUE_DEFAULT_FIELDMAP_ENTRY_WRAP');
+                    $entry_content = do_template('CATALOGUE_' . $catalogue_name . '_FIELDMAP_ENTRY_WRAP', $details + ['GIVE_CONTEXT' => false], null, false, 'CATALOGUE_DEFAULT_FIELDMAP_ENTRY_WRAP');
                     $details['ENTRY_CONTENT'] = $entry_content;
 
-                    $details['STAR'] = (($entry_row['id'] == $star_entry_int)) ? '1' : '0';
+                    $details['STAR'] = (($entry_row['id'] === $star_entry_int)) ? '1' : '0';
                     $details['CC_ID'] = strval($entry_row['cc_id']);
                     $details['ICON'] = '';
 

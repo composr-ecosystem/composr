@@ -15,7 +15,7 @@
             username = strVal(params.username),
             usernamePrefix = strVal(params.usernamePrefix);
 
-        var gMapsURL = 'https://maps.googleapis.com/maps/api/js?libraries=places,visualization&v=weekly&callback=googleMapUsersInitialize';
+        var gMapsURL = 'https://maps.googleapis.com/maps/api/js?libraries=places,visualization&v=weekly&callback=googleMapUsersInitialise';
         if ($cms.configOption('google_apis_api_key') !== '') {
             gMapsURL += '&key=' + $cms.configOption('google_apis_api_key');
         }
@@ -31,7 +31,7 @@
 
         $cms.requireJavascript(scripts);
 
-        window.googleMapUsersInitialize = function () {
+        window.googleMapUsersInitialise = function () {
             var bounds = new google.maps.LatLngBounds();
             var center = new google.maps.LatLng((latitude !== '' ? latitude : 0.0), (longitude !== '' ? longitude : 0.0));
             var map = new google.maps.Map(document.getElementById('map-canvas'), {

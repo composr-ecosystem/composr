@@ -1,7 +1,7 @@
 {$REQUIRE_JAVASCRIPT,data_mappr}
 
 {+START,IF_NON_EMPTY,{TITLE}}
-<section class="box box---block-main-google-map inline-block"><div class="box-inner">
+<section class="box box---block-main-google-map"><div class="box-inner">
 	<h3>{TITLE*}</h3>
 {+END}
 
