@@ -413,10 +413,27 @@ class Hook_addon_registry_galleries
      */
     public function tpl_preview__cns_member_profile_galleries() : object
     {
+        $gallery = do_lorem_template('GALLERY_BOX', [
+            'GIVE_CONTEXT' => false,
+            'REP_IMAGE_URL' => placeholder_image_url(),
+            'NUM_VIDEOS' => placeholder_number(),
+            'NUM_IMAGES' => placeholder_number(),
+            'NUM_CHILDREN' => placeholder_number(),
+            'ID' => placeholder_codename(),
+            'LANG' => lorem_word(),
+            'ADD_DATE_RAW' => placeholder_date_raw(),
+            'ADD_DATE' => placeholder_date(),
+            'MEMBER_INFO' => lorem_paragraph(),
+            'URL' => placeholder_url(),
+            'TITLE' => lorem_phrase(),
+            'DESCRIPTION' => lorem_paragraph(),
+            'COMMENT_COUNT' => placeholder_number(),
+        ]);
+
         $galleries = do_lorem_template('BLOCK_MAIN_PERSONAL_GALLERIES_LIST', [
             'BLOCK_ID' => lorem_word(),
 
-            'GALLERIES' => lorem_paragraph_html(),
+            'GALLERIES' => $gallery,
             'PAGINATION' => placeholder_pagination(),
             'BLOCK_PARAMS' => '',
             'ADD_GALLERY_URL' => placeholder_url(),

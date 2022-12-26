@@ -158,9 +158,18 @@ class Hook_addon_registry_cns_warnings
      */
     public function tpl_preview__cns_member_profile_warnings() : object
     {
+        $_content = do_template('COLUMNED_TABLE_SCREEN', [
+            '_GUID' => '9dfa0fb6ea396d3b57cb447bc228a885',
+            'TITLE' => '',
+            'TEXT' => lorem_paragraph(),
+            'TABLE' => placeholder_table(),
+            'SUBMIT_ICON' => null,
+            'JS_FUNCTION_CALLS' => [],
+        ]);
+
         return lorem_globalise(do_lorem_template('CNS_MEMBER_PROFILE_WARNINGS', [
-            'MEMBER_ID' => placeholder_numeric_id(),
-            'WARNINGS' => lorem_phrase(),
+            'MEMBER_ID' => placeholder_first_admin_id(),
+            'WARNINGS' => $_content,
         ]), null, '', true);
     }
 

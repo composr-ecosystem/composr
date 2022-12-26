@@ -280,9 +280,11 @@ class Hook_addon_registry_news
     {
         require_lang('news');
 
+        $recent_blog_posts = do_block('main_news', ['select' => placeholder_numeric_id() . '*', 'blogs' => '1', 'member_based' => '1', 'zone' => '_SEARCH', 'days' => '0', 'fallback_full' => '10', 'fallback_archive' => '5', 'no_links' => '1', 'pagination' => '1']);
+
         return lorem_globalise(do_lorem_template('CNS_MEMBER_PROFILE_BLOG', [
-            'MEMBER_ID' => placeholder_numeric_id(),
-            'RECENT_BLOG_POSTS' => lorem_paragraph_html(),
+            'MEMBER_ID' => placeholder_first_admin_id(),
+            'RECENT_BLOG_POSTS' => $recent_blog_posts,
             'RSS_URL' => placeholder_url(),
             'ADD_BLOG_POST_URL' => placeholder_url(),
         ]), null, '', true);
