@@ -96,7 +96,11 @@ function xmlentities(string $string, ?string $charset = null) : string
  */
 function escape_cdata(string $string) : string
 {
-    return str_replace(']]>', ']]]]><![CDATA[>', $string);
+    $ret = str_replace(']]>', ']]]]><![CDATA[>', $string);
+    if (function_exists('ocp_mark_as_escaped')) {
+        ocp_mark_as_escaped($ret);
+    }
+    return $ret;
 }
 
 /**

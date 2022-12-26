@@ -15,25 +15,23 @@
             username = strVal(params.username),
             usernamePrefix = strVal(params.usernamePrefix);
 
-        var scripts = ['https://www.google.com/jsapi'];
-
-        if (cluster) {
-            scripts.push('https://raw.githubusercontent.com/printercu/google-maps-utility-library-v3-read-only/master/markerclustererplus/src/markerclusterer_packed.js');
+        var gMapsURL = 'https://maps.googleapis.com/maps/api/js?libraries=places,visualization&v=weekly&callback=googleMapUsersInitialize';
+        if ($cms.configOption('google_apis_api_key') !== '') {
+            gMapsURL += '&key=' + $cms.configOption('google_apis_api_key');
         }
-
-        var options = {
-            callback: googleMapUsersInitialize,
-            other_params: ($cms.configOption('google_apis_api_key') !== '') ? 'key=' + $cms.configOption('google_apis_api_key') : '' // eslint-disable-line camelcase
-        };
-
         if (region !== '') {
-            options.region = region;
+            gMapsURL += '&region=' + region;
         }
-        $cms.requireJavascript(scripts).then(function () {
-            google.load('maps', '3', options);
-        });
 
-        function googleMapUsersInitialize() {
+        var scripts = [];
+        if (cluster) {
+            scripts.push('https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js');
+        }
+        scripts.push(gMapsURL);
+
+        $cms.requireJavascript(scripts);
+
+        window.googleMapUsersInitialize = function () {
             var bounds = new google.maps.LatLngBounds();
             var center = new google.maps.LatLng((latitude !== '' ? latitude : 0.0), (longitude !== '' ? longitude : 0.0));
             var map = new google.maps.Map(document.getElementById('map-canvas'), {
@@ -47,16 +45,12 @@
             });
 
             if (latitude === '') {
-                if (google.loader.ClientLocation) {
-                    map.setCenter(new google.maps.LatLng(google.loader.ClientLocation.latitude, google.loader.ClientLocation.longitude), 15);
-                } else {
-                    if (navigator.geolocation !== undefined) {
-                        try {
-                            navigator.geolocation.getCurrentPosition(function (position) {
-                                map.setCenter(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
-                            });
-                        } catch (ignore) {}
-                    }
+                if (navigator.geolocation !== undefined) {
+                    try {
+                        navigator.geolocation.getCurrentPosition(function (position) {
+                            map.setCenter(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
+                        });
+                    } catch (ignore) {}
                 }
             }
 
@@ -133,7 +127,7 @@
             google.maps.event.addListener(marker, 'click', (function (argMarker, argMember) {
                 return function () {
                     // Dynamically load a specific members details only when their marker is clicked
-                    $cms.doAjaxRequest('data_custom/get_member_tooltip.php?member=' + argMember + $cms.keep()).then(function (xhr) {
+                    $cms.doAjaxRequest('{$FIND_SCRIPT_NOHTTP;,get_member_tooltip}?member=' + argMember + $cms.keep()).then(function (xhr) {
                         var content = xhr.responseXML && xhr.responseXML.querySelector('result').textContent;
 
                         if (content) {

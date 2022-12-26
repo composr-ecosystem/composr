@@ -144,7 +144,7 @@ PHP;
                 if ($i != 0) {
                     $query .= ' OR ';
                 }
-                $query .= 'm_primary_group=' . $bit;
+                $query .= 'm_primary_group=' . strval($bit);
             }
             $query .= ')';
         }
@@ -193,7 +193,7 @@ PHP;
             'CLUSTER' => $cluster,
             'SET_COORD_URL' => $set_coord_url,
             'REGION' => $map['region'],
-            'DATA_JSON' => $member_data_json,
+            'DATA' => $member_data_json,
             'USERNAME_PREFIX' => $map['username_prefix'],
             'WIDTH' => $map_width,
             'HEIGHT' => $map_height,

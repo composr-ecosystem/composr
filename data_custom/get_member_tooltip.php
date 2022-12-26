@@ -52,6 +52,8 @@ $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username(get_param_string
 
 prepare_backend_response();
 
+require_code('xml');
+
 echo '<' . '?xml version="1.0" encoding="' . escape_html(get_charset()) . '"?' . '>';
 echo '<request><result>';
 echo '<![CDATA[';
