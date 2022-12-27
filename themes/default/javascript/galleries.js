@@ -200,7 +200,7 @@
                 periodInMsecs *= 0.9; // A little give
             }
 
-            data['url' + index] = '{$FIND_SCRIPT_NOHTTP;,thumb}?url=' + encodeURIComponent(url) + '&box_size=' + encodeURIComponent(this.thumbBoxSize);
+            data['url' + index] = '{$FIND_SCRIPT_NOHTTP;,thumb}?url=' + encodeURIComponent(url) + '&box_size=' + encodeURIComponent(this.thumbBoxSize) + $cms.keep();
             new Image().src = data['url' + index]; // precache
             var self = this;
             setTimeout(function () {

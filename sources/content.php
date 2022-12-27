@@ -78,18 +78,18 @@ function may_view_content_behind(int $member_id, string $content_type, string $c
     }
 
     $category_id = null;
-    $content_type = convert_composr_type_codes($type_has, $content_type, 'content_type');
-    if ($content_type != '') {
-        $content_type_ob = get_content_object($content_type);
+    $real_content_type = convert_composr_type_codes($type_has, $content_type, 'content_type');
+    if ($real_content_type != '') {
+        $content_type_ob = get_content_object($real_content_type);
         $info = $content_type_ob->info();
         if (isset($info['category_field'])) {
-            list(, , , $content) = content_get_details($content_type, $content_id);
+            list(, , , $content) = content_get_details($real_content_type, $content_id);
             if ($content !== null) {
                 $category_field = $info['category_field'];
                 if (is_array($category_field)) {
                     $category_field = array_pop($category_field);
                     $category_id = is_integer($content[$category_field]) ? strval($content[$category_field]) : $content[$category_field];
-                    if ($content_type == 'catalogue_entry') {
+                    if ($real_content_type == 'catalogue_entry') {
                         $catalogue_name = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'c_name', ['id' => $category_id]);
                         if (!has_category_access($member_id, 'catalogues_catalogue', $catalogue_name)) {
                             return false;
@@ -104,7 +104,7 @@ function may_view_content_behind(int $member_id, string $content_type, string $c
 
     // FUDGE: Extra check for private topics
     $topic_id = null;
-    if (($content_type == 'post') && (get_forum_type() == 'cns')) {
+    if (($real_content_type == 'post') && (get_forum_type() == 'cns')) {
         $post_rows = $GLOBALS['FORUM_DB']->query_select('f_posts', ['p_topic_id', 'p_intended_solely_for', 'p_poster'], ['id' => intval($content_id)], '', 1);
         if (!array_key_exists(0, $post_rows)) {
             return false;
@@ -114,7 +114,7 @@ function may_view_content_behind(int $member_id, string $content_type, string $c
         }
         $topic_id = $post_rows[0]['p_topic_id'];
     }
-    if (($content_type == 'topic') && (get_forum_type() == 'cns')) {
+    if (($real_content_type == 'topic') && (get_forum_type() == 'cns')) {
         $topic_id = intval($content_id);
     }
     if ($topic_id !== null) {
@@ -135,7 +135,7 @@ function may_view_content_behind(int $member_id, string $content_type, string $c
     // Privacy
     if (addon_installed('content_privacy')) {
         require_code('content_privacy');
-        if (!has_privacy_access($content_type, $content_id)) {
+        if (!has_privacy_access($real_content_type, $content_id)) {
             return false;
         }
     }

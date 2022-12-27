@@ -707,7 +707,7 @@ function actualise_specific_rating(?int $rating, string $page_name, int $member_
             if ($privacy_ok) {
                 // Put on activity wall / whatever
                 require_code('users2');
-                if (may_view_content_behind(get_modal_user(), $real_content_type, $content_id, 'feedback_type_code')) {
+                if (may_view_content_behind(get_modal_user(), $real_content_type, $content_id)) {
                     if ($submitter === null) {
                         $submitter = $GLOBALS['FORUM_DRIVER']->get_guest_id();
                     }
@@ -1008,7 +1008,7 @@ function actualise_post_comment(bool $allow_comments, string $content_type, stri
         if ($privacy_ok) {
             // Activity
             require_code('users2');
-            if ((may_view_content_behind(get_modal_user(), $real_content_type, $content_id, 'feedback_type_code')) && ($real_content_type != '')) {
+            if ((may_view_content_behind(get_modal_user(), $real_content_type, $content_id)) && ($real_content_type != '')) {
                 if ($submitter === null) {
                     $submitter = $GLOBALS['FORUM_DRIVER']->get_guest_id();
                 }
