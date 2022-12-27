@@ -148,12 +148,14 @@
 
         var data = {},
             id = strVal(params.randFaderImage),
-            milliseconds = Number(params.mill), i;
+            milliseconds = Number(params.mill),
+            i;
 
         this.fpAnimationEl = document.getElementById('image-fader-' + id);
         this.fpAnimationFaderEl = $dom.create('img', { className: 'img-thumb', src: $util.srl('{$IMG;,blank}'), css: { position: 'absolute' }});
         this.teaseTitleEl = document.getElementById('image-fader-title-' + id);
         this.teaseScrollingTextEl = document.getElementById('image-fader-scrolling-text-' + id);
+        this.thumbBoxSize = params.thumbBoxSize;
 
         this.fpAnimationEl.parentNode.insertBefore(this.fpAnimationFaderEl, this.fpAnimationEl);
         this.fpAnimationEl.parentNode.style.position = 'relative';
@@ -189,7 +191,7 @@
                 }
             }
         },
-        initializeImage: function (data, value, index, milliseconds, total) {
+        initializeImage: function (data, url, index, milliseconds, total) {
             var periodInMsecs = 50,
                 increment = 3;
 
@@ -198,7 +200,7 @@
                 periodInMsecs *= 0.9; // A little give
             }
 
-            data['url' + index] = value;
+            data['url' + index] = '{$FIND_SCRIPT_NOHTTP;,thumb}?url=' + encodeURIComponent(url) + '&box_size=' + encodeURIComponent(this.thumbBoxSize);
             new Image().src = data['url' + index]; // precache
             var self = this;
             setTimeout(function () {

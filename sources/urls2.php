@@ -235,7 +235,7 @@ function _url_to_filename(string $url_full) : string
     foreach ($bad_chars as $bad_char) {
         $good_char = '~' . strval(ord($bad_char));
         if ($bad_char == ':') {
-            $good_char = ';'; // So page_links save nice
+            $good_char = ';'; // So page_links save nicely
         }
         $new_name = str_replace($bad_char, $good_char, $new_name);
     }

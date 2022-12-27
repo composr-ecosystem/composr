@@ -901,12 +901,23 @@ function thumb_script()
 
     require_code('images');
 
-    $new_name = url_to_filename($url_full);
+    $thumb_width = intval(get_option('thumb_width'));
+    $box_size = get_param_integer('box_size', $thumb_width);
+
+    if ($box_size == $thumb_width) {
+        $new_name = url_to_filename($url_full);
+    } else {
+        $new_name = md5($url_full . '?box_size=' . strval($box_size)) . '.jpg';
+    }
+
     $file_thumb = get_custom_file_base() . '/uploads/auto_thumbs/' . $new_name;
     if (!file_exists($file_thumb)) {
-        $url_thumb = convert_image($url_full, $file_thumb, null, null, intval(get_option('thumb_width')), false);
+        $url_thumb = convert_image($url_full, $file_thumb, null, null, $box_size, false);
     } else {
-        $url_thumb = get_custom_base_url() . '/uploads/auto_thumbs/' . rawurlencode($new_name);
+        $url_thumb = 'uploads/auto_thumbs/' . rawurlencode($new_name);
+    }
+    if (url_is_local($url_thumb)) {
+        $url_thumb = get_custom_base_url() . '/' . $url_thumb;
     }
 
     require_code('mime_types');

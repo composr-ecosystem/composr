@@ -2,25 +2,27 @@
 
 {$SET,RAND_FADER_IMAGE,{$RAND}}
 
+{$SET,thumb_box_size,300}
+
 {+START,IF,{$EQ,{BLOCK_ID},small_version}}
-	<div class="box box---block-main-image-fader" data-view="BlockMainImageFader" data-view-params="{+START,PARAMS_JSON,RAND_FADER_IMAGE,MILL,TITLES,HTML,IMAGES}{_*}{+END}" data-keep-fix="{TITLES}{HTML}{IMAGES}{MILL}">
+	<div class="box box---block-main-image-fader inline-block" data-view="BlockMainImageFader" data-view-params="{+START,PARAMS_JSON,RAND_FADER_IMAGE,MILL,TITLES,HTML,IMAGES,thumb_box_size}{_*}{+END}" data-keep-fix="{TITLES}{HTML}{IMAGES}{MILL}">
 		<div class="box-inner">
 			<h2>{!MEDIA}</h2>
 
 			<div class="img-thumb-wrap">
-				<a href="{GALLERY_URL*}"><img id="image-fader-{$GET%,RAND_FADER_IMAGE}" src="{$ENSURE_PROTOCOL_SUITABILITY*,{FIRST_URL}}" alt="" /></a>
+				<a href="{GALLERY_URL*}"><img id="image-fader-{$GET%,RAND_FADER_IMAGE}" src="{$ENSURE_PROTOCOL_SUITABILITY*,{$THUMBNAIL,{FIRST_URL},{$GET,thumb_box_size}}}" alt="" /></a>
 			</div>
 		</div>
 	</div>
 {+END}
 {+START,IF,{$NEQ,{BLOCK_ID},small_version}}
-	<div class="gallery-tease-pic-wrap" data-view="BlockMainImageFader" data-view-params="{+START,PARAMS_JSON,RAND_FADER_IMAGE,MILL,TITLES,HTML,IMAGES}{_*}{+END}" data-keep-fix="{TITLES}{HTML}{IMAGES}{MILL}">
+	<div class="gallery-tease-pic-wrap" data-view="BlockMainImageFader" data-view-params="{+START,PARAMS_JSON,RAND_FADER_IMAGE,MILL,TITLES,HTML,IMAGES,thumb_box_size}{_*}{+END}" data-keep-fix="{TITLES}{HTML}{IMAGES}{MILL}">
 		<div class="gallery-tease-pic">
 		<div class="box box---gallery-tease-pic"><div class="box-inner">
 			<div class="clearfix">
 				<div class="gallery-tease-pic-pic">
 					<div class="img-thumb-wrap">
-						<a href="{GALLERY_URL*}"><img id="image-fader-{$GET%,RAND_FADER_IMAGE}" src="{$ENSURE_PROTOCOL_SUITABILITY*,{FIRST_URL}}" alt="" /></a>
+						<a href="{GALLERY_URL*}"><img id="image-fader-{$GET%,RAND_FADER_IMAGE}" src="{$ENSURE_PROTOCOL_SUITABILITY*,{$THUMBNAIL,{FIRST_URL},{$GET,thumb_box_size}}}" alt="" /></a>
 					</div>
 				</div>
 
