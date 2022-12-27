@@ -32,28 +32,7 @@ class Block_side_amazon_affiliate_sales
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = ['associates_id', 'product_line', 'subject_keywords', 'items_number', 'region'];
-        return $info;
-    }
-
-    /**
-     * Find caching details for the block.
-     *
-     * @return ?array Map of cache details (cache_on and ttl) (null: block is disabled)
-     */
-    public function caching_environment() : ?array
-    {
-        $info = [];
-        $info['cache_on'] = <<<'PHP'
-        [
-            isset($map['associates_id']) ? $map['associates_id'] : '',
-            isset($map['product_line']) ? $map['product_line'] : '',
-            isset($map['subject_keywords']) ? $map['subject_keywords'] : '',
-            (isset($map['items_number']) && intval($map['items_number']) >= 2) ? intval($map['items_number']) : 2,
-            isset($map['region']) ? $map['region'] : 'US',
-        ]
-PHP;
-        $info['ttl'] = 60 * 5;
+        $info['parameters'] = ['associates_id', 'product_line', 'subject_keywords', 'height', 'region'];
         return $info;
     }
 
@@ -76,15 +55,21 @@ PHP;
 
         $block_id = get_block_id($map);
 
-        if (!array_key_exists('associates_id', $map)) {
-            return do_lang_tempcode('NO_PARAMETER_SENT', 'associates_id');
+        if (empty($map['associates_id'])) {
+            return do_template('RED_ALERT', ['TEXT' => do_lang_tempcode('NO_PARAMETER_SENT', 'associates_id')]);
+        }
+
+        if (empty($map['subject_keywords'])) {
+            return do_template('RED_ALERT', ['TEXT' => do_lang_tempcode('NO_PARAMETER_SENT', 'subject_keywords')]);
         }
 
         $associates_id = $map['associates_id'];
         $product_line = isset($map['product_line']) ? $map['product_line'] : '';
         $subject_keywords = isset($map['subject_keywords']) ? $map['subject_keywords'] : '';
-        $items_number = (isset($map['items_number']) && intval($map['items_number']) >= 2) ? intval($map['items_number']) : 2;
-        $region = isset($map['region']) ? $map['region'] : 'US';
+        $region = empty($map['region']) ? 'US' : $map['region'];
+        $height = empty($map['height']) ? '150' : $map['height'];
+
+        load_csp(['csp_enabled' => '0']);
 
         return do_template('BLOCK_SIDE_AMAZON_AFFILIATE_SALES', [
             '_GUID' => '5edc2fd386f1688fca8e0e6eefa5f455',
@@ -92,8 +77,8 @@ PHP;
             'ASSOCIATES_ID' => $associates_id,
             'PRODUCT_LINE' => $product_line,
             'SUBJECT_KEYWORDS' => $subject_keywords,
-            'ITEMS_NUMBER' => strval($items_number),
             'REGION' => $region,
+            'HEIGHT' => $height,
         ]);
     }
 }

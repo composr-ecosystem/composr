@@ -26,7 +26,7 @@
 
             window.gapi.analytics.ready(resolve);
 
-            $cms.requireJavascript('https://apis.google.com/js/platform.js').then(function () {
+            $cms.requireJavascript(['https://www.google.com/jsapi', 'https://apis.google.com/js/platform.js']).then(function () {
                 window.gapi.load('analytics');
             });
         });

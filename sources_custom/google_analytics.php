@@ -26,13 +26,13 @@ function google_analytics_initialise($weak_test = false)
 {
     $property_id = get_option('ga_property_view_id');
     if ($property_id == '') {
-        $msg = 'You need to set the Google Analytics <strong>View ID</strong> (this is different from the property ID which starts with <kbd>UA</kbd>).';
-        return paragraph(make_string_tempcode($msg), 'red-alert');
+        $msg = 'You need to set the Google Analytics <strong>View ID</strong> option (this is different from the property ID which starts with <kbd>UA</kbd>).';
+        return do_template('RED_ALERT', ['TEXT' => make_string_tempcode($msg)]);
     }
 
     if ((get_option('google_apis_client_id') == '') || (get_option('google_apis_client_secret') == '')) {
         $msg = 'You need to configure the Google Client ID & Client Secret in the configuration.';
-        return paragraph(make_string_tempcode($msg), 'red-alert');
+        return do_template('RED_ALERT', ['TEXT' => make_string_tempcode($msg)]);
     }
 
     require_code('oauth');
@@ -43,7 +43,7 @@ function google_analytics_initialise($weak_test = false)
             $refresh_token = get_oauth_refresh_token('google_analytics');
             if ($refresh_token === null) {
                 $msg = 'You need to configure the Google Analytics oAuth connection.';
-                return paragraph(make_string_tempcode($msg), 'red-alert');
+                return do_template('RED_ALERT', ['TEXT' => make_string_tempcode($msg)]);
             }
         }
         return $refresh_token;
@@ -54,7 +54,7 @@ function google_analytics_initialise($weak_test = false)
         $access_token = refresh_oauth2_token('google_analytics', false);
         if ($access_token === null) {
             $msg = 'You need to configure the Google Analytics oAuth connection.';
-            return paragraph(make_string_tempcode($msg), 'red-alert');
+            return do_template('RED_ALERT', ['TEXT' => make_string_tempcode($msg)]);
         }
     }
     return $access_token;

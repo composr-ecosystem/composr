@@ -13,6 +13,46 @@
  * @package    patreon
  */
 
+function get_patreon_hybridauth_adapters()
+{
+    require_code('hybridauth_admin');
+
+    $before_type_strictness = ini_get('ocproducts.type_strictness');
+    cms_ini_set('ocproducts.type_strictness', '0');
+    $before_xss_detect = ini_get('ocproducts.xss_detect');
+    cms_ini_set('ocproducts.xss_detect', '0');
+
+    list($hybridauth, , $providers) = initiate_hybridauth_admin(0, 'admin', 'Patreon');
+
+    if (!isset($providers['Patreon'])) {
+        return [];
+    }
+
+    $adapters = [];
+
+    if ($providers['Patreon']['enabled']) {
+        $adapter = $hybridauth->getAdapter('Patreon');
+        if ($adapter->isConnected()) {
+            $adapters[] = $adapter;
+        }
+    }
+
+    foreach ($providers['Patreon']['alternate_configs'] as $alternate_config) {
+        list($_hybridauth, , $_providers) = initiate_hybridauth_admin(0, $alternate_config, 'Patreon');
+        if ($_providers['Patreon']['enabled']) {
+            $adapter = $_hybridauth->getAdapter('Patreon');
+            if ($adapter->isConnected()) {
+                $adapters[] = $adapter;
+            }
+        }
+    }
+
+    cms_ini_set('ocproducts.type_strictness', $before_type_strictness);
+    cms_ini_set('ocproducts.xss_detect', $before_xss_detect);
+
+    return $adapters;
+}
+
 function get_patreon_patrons_on_minimum_level($monthly)
 {
     $patreon_patrons = [];
@@ -34,8 +74,13 @@ function get_patreon_patrons_on_minimum_level($monthly)
     return $patreon_patrons;
 }
 
-function patreon_sync($adapters)
+function patreon_sync()
 {
+    $adapters = get_patreon_hybridauth_adapters();
+    if (empty($adapters)) {
+        return;
+    }
+
     $before_type_strictness = ini_get('ocproducts.type_strictness');
     cms_ini_set('ocproducts.type_strictness', '0');
     $before_xss_detect = ini_get('ocproducts.xss_detect');

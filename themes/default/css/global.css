@@ -3424,7 +3424,7 @@ table.zebra > tbody > tr:nth-child(odd) > th,
 table.zebra > tbody > tr:nth-child(even) > td,
 .fake-table.zebra > .fake-tbody > .fake-tr:nth-child(odd) > .fake-th,
 .fake-table.zebra > .fake-tbody > .fake-tr:nth-child(even) > .fake-td {
-	background-color: {$GET,area_5_background};
+	background-color: {$GET,area_2_background};
 	color: {$GET,slightly_seeded_text};
 }
 div.zebra-0, div.zebra-1 {

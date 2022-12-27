@@ -235,7 +235,7 @@ function get_trusted_sites(int $level, bool $include_self = true) : array
             if (trim($allowed_partner) != '') {
                 $trusted_sites[] = $allowed_partner;
 
-                if (substr($allowed_partner, 0, 4) != 'www.') {
+                if ((substr($allowed_partner, 0, 4) != 'www.') && (substr_count($allowed_partner, '.') == 1)) {
                     $trusted_sites[] = 'www.' . $allowed_partner;
                 }
             }

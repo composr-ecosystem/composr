@@ -10,13 +10,13 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    facebook_support
+ * @package    twitter_support
  */
 
 /**
  * Hook class.
  */
-class Hook_trusted_sites_facebook_support
+class Hook_trusted_sites_twitter_support
 {
     /**
      * Detect what needs to be 'added' to the trusted_sites_1 option.
@@ -34,13 +34,12 @@ class Hook_trusted_sites_facebook_support
      */
     public function find_trusted_sites_2(array &$sites)
     {
-        if (!addon_installed('facebook_support')) {
+        if (!addon_installed('twitter_support')) {
             return;
         }
 
-        if (get_option('facebook_appid') != '') {
-            $sites[] = 'facebook.com';
-            $sites[] = 'connect.facebook.net';
+        if (get_option('twitter_api_key') != '') {
+            $sites[] = 'platform.twitter.com';
         }
     }
 }

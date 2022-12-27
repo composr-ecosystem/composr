@@ -41,42 +41,10 @@ class Hook_cron_patreon
             return null;
         }
 
-        require_code('hybridauth_admin');
+        require_code('patreon');
+        $adapters = get_patreon_hybridauth_adapters();
 
-        $before_type_strictness = ini_get('ocproducts.type_strictness');
-        cms_ini_set('ocproducts.type_strictness', '0');
-        $before_xss_detect = ini_get('ocproducts.xss_detect');
-        cms_ini_set('ocproducts.xss_detect', '0');
-
-        list($hybridauth, , $providers) = initiate_hybridauth_admin(0, 'admin', 'Patreon');
-
-        if (!isset($providers['Patreon'])) {
-            return null;
-        }
-
-        $this->adapters = [];
-
-        if ($providers['Patreon']['enabled']) {
-            $adapter = $hybridauth->getAdapter('Patreon');
-            if ($adapter->isConnected()) {
-                $this->adapters[] = $adapter;
-            }
-        }
-
-        foreach ($providers['Patreon']['alternate_configs'] as $alternate_config) {
-            list($_hybridauth, , $_providers) = initiate_hybridauth_admin(0, $alternate_config, 'Patreon');
-            if ($_providers['Patreon']['enabled']) {
-                $adapter = $_hybridauth->getAdapter('Patreon');
-                if ($adapter->isConnected()) {
-                    $this->adapters[] = $adapter;
-                }
-            }
-        }
-
-        cms_ini_set('ocproducts.type_strictness', $before_type_strictness);
-        cms_ini_set('ocproducts.xss_detect', $before_xss_detect);
-
-        if (empty($this->adapters)) {
+        if (empty($adapters)) {
             return null;
         }
 
@@ -95,6 +63,6 @@ class Hook_cron_patreon
     public function run(?int $last_run)
     {
         require_code('patreon');
-        patreon_sync($this->adapters);
+        patreon_sync();
     }
 }

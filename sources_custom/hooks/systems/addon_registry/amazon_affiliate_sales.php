@@ -92,7 +92,9 @@ The block can be configured by the block parameters (associates id, product line
 
 This addon allows you to create a banner link to a number of banners from your Amazon affiliate account. You will need to know your Amazon affiliate ID as well as the Amazon category (Books, Music, Software etc) and the search term you want it to display banners from.
 
-The normal Composr block construction assistant will help you set up the block on your site.';
+The normal Composr block construction assistant will help you set up the block on your site.
+
+This addon will disable CSP on the page the block is displayed on, which will lower your security. This is unfortunately necessary due to how Amazon coded their widget.';
     }
 
     /**

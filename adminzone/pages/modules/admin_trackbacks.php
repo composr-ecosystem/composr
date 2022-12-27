@@ -140,6 +140,10 @@ class Module_admin_trackbacks
      */
     public function delete_trackbacks() : object
     {
+        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+            warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN'), false, false, 400);
+        }
+
         foreach ($_POST as $key => $val) {
             if (!is_string($val)) {
                 continue;

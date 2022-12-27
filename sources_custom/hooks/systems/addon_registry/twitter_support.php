@@ -157,6 +157,7 @@ class Hook_addon_registry_twitter_support
             'sources_custom/hooks/systems/health_checks/twitter.php',
             'sources_custom/hooks/systems/hybridauth/twitter.php',
             'sources_custom/hooks/systems/oauth_screen_sup/twitter.php',
+            'sources_custom/hooks/systems/trusted_sites/twitter_support.php',
 
             'sources_custom/blocks/twitter_feed.php',
             'themes/default/templates_custom/BLOCK_TWITTER_FEED.tpl',

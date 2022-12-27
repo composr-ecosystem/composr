@@ -193,7 +193,7 @@ function stats_generate_graph(string $graph_name, array $filters = [], $pivot = 
     if (($hook_ob === null) || ($graph_details === null)) {
         list($hook_ob, $graph_details) = stats_find_graph_details($graph_name, $for_kpi);
         if ($hook_ob === null) {
-            return paragraph(do_lang_tempcode('MISSING_RESOURCE'), 'red-alert');
+            return do_template('RED_ALERT', ['TEXT' => do_lang_tempcode('MISSING_RESOURCE')]);
         }
     }
 

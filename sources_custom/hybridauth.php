@@ -73,6 +73,36 @@ function enumerate_hybridauth_providers($alternate_config = null)
         return $providers_cache[$alternate_config];
     }
 
+    $config_structure = [];
+
+    // Retrieve Hybridauth's list of providers
+    $all_available_providers = [];
+    require_code('files2');
+    $files = get_directory_contents(get_file_base() . '/sources_custom/hybridauth/Provider', '', IGNORE_ACCESS_CONTROLLERS, false, true, ['php']);
+    sort($files);
+    foreach ($files as $i => $file) {
+        $provider = basename($file, '.php');
+        $all_available_providers[] = $provider;
+    }
+
+    // Imply some data from hidden options
+    foreach ($all_available_providers as $provider) {
+        foreach (['id', 'secret', 'team-id', 'key-id', 'key-file', 'key-content'] as $setting) {
+            $test = get_value('Hybridauth:' . $provider . ':' . $setting);
+            if (!empty($test)) {
+                if (!isset($config_structure[$provider])) {
+                    $config_structure[$provider] = [
+                        'composr-config' => [],
+                        'keys-config' => [],
+                        'hybridauth-config' => [],
+                        'alternate_configs' => [],
+                    ];
+                }
+                $config_structure[$provider]['keys-config'][$setting] = $test;
+            }
+        }
+    }
+
     // Load up XML
     require_code('xml');
     $xml_path = get_custom_file_base() . '/data_custom/xml_config/hybridauth.xml';
@@ -88,19 +118,19 @@ function enumerate_hybridauth_providers($alternate_config = null)
     }
     try {
         $parsed = new CMS_simple_xml_reader($xml_contents);
+        list(, , , $root_children) = $parsed->gleamed;
     } catch (CMSException $e) {
         if (running_script('index')) {
             require_code('site');
             attach_message('Hybridauth: ' . $e->getMessage(), 'warn');
         }
-        return [];
-    } finally {
-        if (!$te) {
-            set_throw_errors(false);
-        }
+        $root_children = [];
     }
-    $config_structure = [];
-    list(, , , $root_children) = $parsed->gleamed;
+    if (!$te) {
+        set_throw_errors(false);
+    }
+
+    // Go over XML data
     foreach ($root_children as $root_child) {
         list($provider, , , $children) = $root_child;
 
@@ -159,12 +189,8 @@ function enumerate_hybridauth_providers($alternate_config = null)
         $provider_expanded_info += $hook_ob->info();
     }
 
-    // Retrieve Hybridauth's list of providers and set up a skeleton structure of info for them
-    require_code('files2');
-    $files = get_directory_contents(get_file_base() . '/sources_custom/hybridauth/Provider', '', IGNORE_ACCESS_CONTROLLERS, false, true, ['php']);
-    sort($files);
-    foreach ($files as $i => $file) {
-        $provider = basename($file, '.php');
+    // Set up a skeleton structure of info for all available Hybridauth providers
+    foreach ($all_available_providers as $i => $provider) {
         $providers[$provider] = [
             'enabled' => null,
 

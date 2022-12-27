@@ -139,7 +139,7 @@ class Module_admin_oauth
             $ob = object_factory('Hook_config_' . filter_naughty_harsh($service_info['options']['client_id']));
             $info = $ob->get_details();
 
-            $configured = (get_option($service_info['options']['client_id']) != '') && (get_option($service_info['options']['client_secret']) != '');
+            $configured = ($service_info['available']) && (get_option($service_info['options']['client_id']) != '') && (get_option($service_info['options']['client_secret']) != '');
             $config_url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => $info['category'], 'redirect' => get_self_url(true)], get_module_zone('admin_config'), [], false, false, false, 'group-' . $info['group']);
 
             if (($service_info['available']) && ($configured)) {
@@ -247,6 +247,9 @@ class Module_admin_oauth
         set_value($service_name . '_configured', '1', true);
 
         $message = do_lang_tempcode('OAUTH_SUCCESS', escape_html($service_info['label']));
+
+        require_code('caches3');
+        erase_block_cache(true, null, false);
 
         return inform_screen($this->title, $message);
     }

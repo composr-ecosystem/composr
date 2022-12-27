@@ -290,12 +290,9 @@ class Module_admin_config
             $path = get_file_base() . '/_tests/assets/keys.csv';
             if (is_file($path)) {
                 require_code('files_spreadsheets_read');
-
-                $list = new Tempcode();
-
                 $sheet_reader = spreadsheet_open_read($path);
                 $import_map = [];
-                $import_list = new Tempcode();
+                $list_options = [];
                 while (($row = $sheet_reader->read_row()) !== false) {
                     $option_name = $row['Option'];
                     $option_value = $row['Value'];
@@ -309,34 +306,41 @@ class Module_admin_config
                                 if ($ob !== null) {
                                     $details = $ob->get_details();
 
-                                    $option_title = new Tempcode();
-                                    $option_title->attach(do_lang_tempcode($details['group']));
-                                    $option_title->attach(': ');
-                                    $option_title->attach(do_lang_tempcode($details['human_name']));
-                                    $option_title->attach(' [' . $option_name . ']');
-                                    $option_title = protect_from_escaping($option_title);
+                                    $option_title = do_lang($details['group']) . ': ' . do_lang($details['human_name']) . ' [' . escape_html($option_name) . ']' . ' {' . escape_html($option_type) . '}';
 
                                     $import_map[] = $row;
                                     $option_selected = ((get_option($option_name) == '') || (get_option($option_name) == get_default_option($option_name))) && ($option_value != '') && ($option_value != get_default_option($option_name));
-                                    $import_list->attach(form_input_list_entry($option_type . '/' . $option_name, $option_selected, $option_title));
+
+                                    $list_options[$option_title] = [$option_type, $option_name, $option_selected];
                                 }
                             }
                             break;
 
                         case 'hidden':
                         case 'hidden_elective':
-                            $option_title = new Tempcode();
-                            $option_title->attach($option_type);
-                            $option_title->attach(' > ');
-                            $option_title->attach($option_name);
+                            $option_title = escape_html($option_name) . ' {' . escape_html($option_type) . '}';
 
                             $import_map[] = $row;
                             $option_selected = cms_empty_safe(get_value($option_name, null, $option_type == 'hidden_elective')) && ($option_value != '');
-                            $import_list->attach(form_input_list_entry($option_type . '/' . $option_name, $option_selected, $option_title));
+
+                            $list_options[$option_title] = [$option_type, $option_name, $option_selected];
+
+                            break;
+
+                        case 'return':
                             break;
                     }
                 }
                 $sheet_reader->close();
+
+                ksort($list_options, SORT_NATURAL | SORT_FLAG_CASE);
+
+                $import_list = new Tempcode();
+                foreach ($list_options as $option_title => $list_option_bits) {
+                    list($option_type, $option_name, $option_selected) = $list_option_bits;
+
+                    $import_list->attach(form_input_list_entry($option_type . '/' . $option_name, $option_selected, protect_from_escaping($option_title)));
+                }
 
                 if (!empty($import_map)) {
                     // UI
@@ -660,7 +664,7 @@ class Module_admin_config
         $category = get_param_string('id', 'MAIN');
 
         if ($_SERVER['REQUEST_METHOD'] != 'POST') {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR'), false, false, 400);
         }
 
         // Find all options in category

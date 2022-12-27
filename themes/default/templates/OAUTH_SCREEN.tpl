@@ -25,10 +25,12 @@
 					<td>
 						{LABEL*}
 					</td>
-					<td>
+
+					<td title="{!AVAILABLE}: {$?,{AVAILABLE},{!YES},{!NO}}">
 						{$?,{AVAILABLE},{!YES},{!NO}}
 					</td>
-					<td>
+
+					<td title="{!CONFIGURED}: {$?,{CONFIGURED},{!YES},{!NO}}">
 						{+START,IF_PASSED,CONFIG_URL}
 							<a href="{CONFIG_URL*}">{$?,{CONFIGURED},{!YES},{!NO}}</a>
 						{+END}
@@ -36,7 +38,8 @@
 							{$?,{CONFIGURED},{!YES},{!NO}}
 						{+END}
 					</td>
-					<td>
+
+					<td title="{!CONNECTED}: {$?,{CONNECTED},{!YES},{!NO}}">
 						{+START,IF_PASSED,CONNECT_URL}
 							<a href="{CONNECT_URL*}">{$?,{CONNECTED},{!YES},{!NO}}</a>
 						{+END}

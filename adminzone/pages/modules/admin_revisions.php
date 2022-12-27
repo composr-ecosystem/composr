@@ -302,7 +302,7 @@ class Module_admin_revisions
         check_privilege('delete_revisions');
 
         if ($_SERVER['REQUEST_METHOD'] != 'POST') {
-            warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN'));
+            warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN'), false, false, 400);
         }
 
         $revision_type = get_param_string('revision_type', 'database', INPUT_FILTER_GET_COMPLEX);

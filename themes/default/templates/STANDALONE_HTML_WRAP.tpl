@@ -25,5 +25,7 @@
 		{+START,IF_NON_PASSED,POPUP}
 			{$EXTRA_FOOT}
 		{+END}
+
+		{$,extra_footer_standalone_goes_here}
 	</body>
 </html>

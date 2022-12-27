@@ -2972,7 +2972,7 @@ class Module_topics
         $poll_id = $topic_info['t_poll_id'];
 
         if ($_SERVER['REQUEST_METHOD'] != 'POST') {
-            warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN'));
+            warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN'), false, false, 400);
         }
 
         $votes = [];

@@ -278,7 +278,7 @@ PHP;
                 ];
             }
         } catch (Exception $e) {
-            return paragraph($e->getMessage(), 'red-alert');
+            return do_template('RED_ALERT', ['TEXT' => $e->getMessage()]);
         }
 
         cms_ini_set('ocproducts.type_strictness', $before_type_strictness);

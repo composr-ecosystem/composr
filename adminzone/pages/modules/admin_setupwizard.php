@@ -125,7 +125,7 @@ class Module_admin_setupwizard
 
         if (($type != 'browse') && ($type != 'step11') && ($type != 'install_test_content') && ($type != 'uninstall_test_content')) {
             if ($_SERVER['REQUEST_METHOD'] != 'POST') {
-                warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN'));
+                warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN'), false, false, 400);
             }
         }
 
