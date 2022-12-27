@@ -94,7 +94,7 @@ This addon allows you to create a banner link to a number of banners from your A
 
 The normal Composr block construction assistant will help you set up the block on your site.
 
-This addon will disable CSP on the page the block is displayed on, which will lower your security. This is unfortunately necessary due to how Amazon coded their widget.';
+This addon will lower the CSP security on the page the block is displayed on. This is unfortunately necessary due to how Amazon coded their widget.';
     }
 
     /**
@@ -143,6 +143,7 @@ This addon will disable CSP on the page the block is displayed on, which will lo
             'lang_custom/EN/amazon.ini',
             'sources_custom/blocks/side_amazon_affiliate_sales.php',
             'themes/default/templates_custom/BLOCK_SIDE_AMAZON_AFFILIATE_SALES.tpl',
+            'sources_custom/hooks/systems/trusted_sites/amazon_affiliate_sales.php',
         ];
     }
 }

@@ -69,7 +69,7 @@ class Block_side_amazon_affiliate_sales
         $region = empty($map['region']) ? 'US' : $map['region'];
         $height = empty($map['height']) ? '150' : $map['height'];
 
-        load_csp(['csp_enabled' => '0']);
+        load_csp(['csp_allow_inline_js' => '1']);
 
         return do_template('BLOCK_SIDE_AMAZON_AFFILIATE_SALES', [
             '_GUID' => '5edc2fd386f1688fca8e0e6eefa5f455',
