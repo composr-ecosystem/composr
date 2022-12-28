@@ -2,12 +2,18 @@
 
 <h2>{GRAPH_LABEL*}</h2>
 
+{+START,IF_EMPTY,{GRAPH_RENDERED}{RESULTS_TABLE}}
+	<p class="nothing-here">
+		{!NO_DATA}
+	</p>
+{+END}
+
 {+START,IF_NON_EMPTY,{GRAPH_RENDERED}}
 	{GRAPH_RENDERED}
+{+END}
 
-	{+START,IF_NON_EMPTY,{GRAPH_FORM}}
-		{GRAPH_FORM}
-	{+END}
+{+START,IF_NON_EMPTY,{GRAPH_FORM}}
+	{GRAPH_FORM}
 {+END}
 
 {+START,IF_NON_EMPTY,{RESULTS_TABLE}}
@@ -31,10 +37,4 @@
 	<ul class="actions-list force-margin">
 		{$GET,graph_actions}
 	</ul>
-{+END}
-
-{+START,IF_EMPTY,{GRAPH_RENDERED}{RESULTS_TABLE}}
-	<p class="nothing-here">
-		{!NO_DATA}
-	</p>
 {+END}

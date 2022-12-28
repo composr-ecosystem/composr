@@ -691,7 +691,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         REFERRER_TYPE__EXTERNAL_MISC
         _FILTER
         __AVERAGE
-        AVERAGE_PAGE_SPEEDS
+        AVERAGE_PAGE_SPEED
+        PAGE_AVERAGE_SPEEDS
         BANNER_CLICKS
         BLOCK_main_staff_stats_graph_DESCRIPTION
         BLOCK_main_staff_stats_graph_PARAM_param

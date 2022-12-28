@@ -261,12 +261,22 @@ class Hook_admin_stats_views extends CMSStatsProvider
                 'pivot' => null,
             ],
             'page_average_speeds' => [
-                'label' => do_lang_tempcode('AVERAGE_PAGE_SPEEDS'),
+                'label' => do_lang_tempcode('PAGE_AVERAGE_SPEEDS'),
                 'category' => 'server_performance',
                 'filters' => [
                     'page_average_speeds__month_range' => new CMSStatsDateMonthRangeFilter('page_average_speeds__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
                 ],
                 'pivot' => null,
+                'support_kpis' => self::KPI_LOW_IS_GOOD,
+            ],
+            'average_page_speed' => [
+                'label' => do_lang_tempcode('AVERAGE_PAGE_SPEED'),
+                'category' => 'server_performance',
+                'filters' => [
+                    'average_page_speed__month_range' => new CMSStatsDateMonthRangeFilter('average_page_speed__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
+                    'average_page_speed__page_link' => new CMSStatsTextFilter('average_page_speed__page_link', do_lang_tempcode('PAGE_LINK')),
+                ],
+                'pivot' => new CMSStatsDatePivot('average_page_speed__pivot', $this->get_date_pivots(!$for_kpi)),
                 'support_kpis' => self::KPI_LOW_IS_GOOD,
             ],
             'requested_languages' => [
@@ -561,12 +571,14 @@ class Hook_admin_stats_views extends CMSStatsProvider
 
                 $page_speed = $row['milliseconds'];
 
+                // Build up our distribution (in the Gaussian sense) of page speeds
                 $speed_bracket = $this->find_value_bracket($this->speed_brackets, $page_speed);
                 if (!isset($data_buckets['load_times_spread'][$month][''][$speed_bracket])) {
                     $data_buckets['load_times_spread'][$month][''][$speed_bracket] = 0;
                 }
                 $data_buckets['load_times_spread'][$month][''][$speed_bracket]++;
 
+                // Build in speed of this hit to its particular page for its particular month -- gives us an idea about what are our slow and fast pages
                 if (!isset($data_buckets['page_average_speeds'][$month][''][$page_link])) {
                     $data_buckets['page_average_speeds'][$month][''][$page_link] = [0, 0];
                 }
@@ -576,6 +588,10 @@ class Hook_admin_stats_views extends CMSStatsProvider
                 foreach (array_keys($date_pivots) as $pivot) {
                     $pivot_value = $this->calculate_date_pivot_value($pivot, $timestamp);
 
+                    // Build in speed of this hit to its particular page for its particular month - but pivoted e.g. by hour of day, day of week, etc -- gives us an idea about peak times
+                    if (!isset($data_buckets['average_page_speed'][$month][$pivot][$pivot_value][$page_link])) {
+                        $data_buckets['average_page_speed'][$month][$pivot][$pivot_value][$page_link] = [0, 0];
+                    }
                     $data_buckets['average_page_speed'][$month][$pivot][$pivot_value][$page_link][0] += $page_speed;
                     $data_buckets['average_page_speed'][$month][$pivot][$pivot_value][$page_link][1]++;
                 }
@@ -1319,7 +1335,9 @@ class Hook_admin_stats_views extends CMSStatsProvider
                             $total_views += $_total_views;
                         }
 
-                        $data[$pivot_value] = floatval($total_time_spent) / floatval($total_views);
+                        if ($total_views != 0.0) {
+                            $data[$pivot_value] = floatval($total_time_spent) / floatval($total_views);
+                        }
                     }
                 }
 
@@ -1369,7 +1387,9 @@ class Hook_admin_stats_views extends CMSStatsProvider
                             }
                         }
 
-                        $data[$pivot_value] = 100.0 * floatval($total_bounces) / floatval($total_views);
+                        if ($total_views != 0.0) {
+                            $data[$pivot_value] = 100.0 * floatval($total_bounces) / floatval($total_views);
+                        }
                     }
                 }
 
@@ -1396,10 +1416,12 @@ class Hook_admin_stats_views extends CMSStatsProvider
                     foreach ($_data as $page_link => $__) {
                         list($total_compound_speed, $total_views) = $__;
 
-                        if (!isset($data[$page_link])) {
-                            $data[$page_link] = 0.0;
+                        if ($total_views != 0.0) {
+                            if (!isset($data[$page_link])) {
+                                $data[$page_link] = 0.0;
+                            }
+                            $data[$page_link] += floatval($total_compound_speed) / floatval($total_views);
                         }
-                        $data[$page_link] += floatval($total_compound_speed) / floatval($total_views);
                     }
                 }
 

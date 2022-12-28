@@ -463,6 +463,11 @@ function stats_generate_results_table(string $graph_name, array $filters = [], $
         }
         $i++;
     }
+
+    if ($results_entries->is_empty()) {
+        return new Tempcode();
+    }
+
     $results_table = results_table(
         $graph_details['label'],
         $start,
