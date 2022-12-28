@@ -837,7 +837,7 @@
         });
 
         $dom.on(container, 'click', '.js-link-click-open-mobile-template-preview-window', function (e, link) {
-            window.open(link.href, 'template_preview_' + template, 'width=360,height=800,status=no,resizable=yes,scrollbars=yes');
+            window.open(link.href, 'template_preview_' + template, 'width=320,height=568,status=no,resizable=yes,scrollbars=yes');
         });
     };
 
