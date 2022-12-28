@@ -316,6 +316,13 @@
         }
     });
 
+    $cms.templates.formScreenFieldInput = function formScreenField_input(params) {
+        var el = $dom.$('#form-table-field-input--' + strVal(params.randomisedId));
+        if (el) {
+            $cms.form.setUpChangeMonitor(el.parentElement);
+        }
+    };
+
     $cms.templates.formScreenInputPassword = function (params, container) {
         var value = strVal(params.value),
             name = strVal(params.name);
@@ -380,53 +387,6 @@
         });
     };
 
-    $cms.templates.comcodeEditor = function (params, container) {
-        var postingField = strVal(params.postingField);
-
-        $dom.on(container, 'click', '.js-click-do-input-font-posting-field', function () {
-            window.doInputFont(postingField);
-        });
-    };
-
-    $cms.templates.form = function (params, container) {
-        var skippable = strVal(params.skippable);
-
-        $dom.on(container, 'click', '.js-btn-skip-step', function (e, el) {
-            $dom.$('#' + skippable).value = '1';
-            el.form.submit();
-        });
-    };
-
-    $cms.templates.formScreen = function (params, container) {
-        tryToSimplifyIframeForm();
-
-        if (params.iframeUrl) {
-            setInterval(function () {
-                $dom.resizeFrame('iframe-under');
-            }, 1500);
-
-            $dom.on(container, 'click', '.js-checkbox-will-open-new', function (e, checkbox) {
-                var form = $dom.$(container, '#main-form');
-
-                form.action = checkbox.checked ? params.url : params.iframeUrl;
-                form.elements['opens_below'].value = checkbox.checked ? '0' : '1';
-                form.target = checkbox.checked ? '_blank' : 'iframe-under';
-            });
-        }
-
-        $dom.on(container, 'click', '.js-btn-skip-step', function (e, el) {
-            $dom.$('#' + params.skippable).value = '1';
-            el.form.submit();
-        });
-    };
-
-    $cms.templates.formScreenField_input = function formScreenField_input(params) { // eslint-disable-line camelcase
-        var el = $dom.$('#form-table-field-input--' + strVal(params.randomisedId));
-        if (el) {
-            $cms.form.setUpChangeMonitor(el.parentElement);
-        }
-    };
-
     $cms.templates.formScreenInputLine = function formScreenInputLine(params) {
         $cms.requireJavascript(['jquery', 'jquery_autocomplete']).then(function () {
             window.$jqueryAutocomplete.setUpComcodeAutocomplete(params.name, Boolean(params.wysiwyg));
@@ -449,6 +409,72 @@
             $dom.on(container, 'keyup', '.js-keyup-toggle-fallback-list', function () {
                 fallbackList.disabled = (comboInput.value !== '');
             });
+        }
+    };
+
+    $cms.templates.formScreenInputLineMulti = function (params, container) {
+        $dom.on(container, 'keypress', '.js-keypress-ensure-next-field', function (e, input) {
+            $coreFormInterfaces.ensureNextField2(e, input);
+        });
+    };
+
+    $cms.templates.formScreenInputTextMulti = function formScreenInputTextMulti(params, container) {
+        $dom.on(container, 'keypress', '.js-keypress-textarea-ensure-next-field', function (e, textarea) {
+            if (!$dom.keyPressed(e, 'Tab')) {
+                ensureNextField(textarea);
+            }
+        });
+    };
+
+    $cms.templates.formScreenInputUploadMulti = function formScreenInputUploadMulti(params, container) {
+        var nameStub = strVal(params.nameStub),
+            index = strVal(params.i);
+
+        if (params.syndicationJson != null) {
+            $cms.requireJavascript('editing').then(function () {
+                window.$editing.showUploadSyndicationOptions(nameStub, params.syndicationJson);
+            });
+        }
+
+        if (params.plupload && !$cms.isHttpauthLogin() && $cms.configOption('complex_uploader')) {
+            window.$plupload.preinitFileInput('upload_multi', nameStub + '_' + index, null, params.filter);
+        }
+
+        $dom.on(container, 'change', '.js-input-change-ensure-next-field-upload', function (e, input) {
+            if (!$dom.keyPressed(e, 'Tab')) {
+                ensureNextFieldUpload(input);
+            }
+        });
+
+        $dom.on(container, 'click', '.js-click-clear-name-stub-input', function () {
+            var input = $dom.$('#' + nameStub + '_' + index);
+            $dom.changeValue(input, '');
+        });
+
+
+        function ensureNextFieldUpload(thisField) {
+            var mid = thisField.name.lastIndexOf('_'),
+                nameStub = thisField.name.substring(0, mid + 1),
+                thisNum = thisField.name.substring(mid + 1, thisField.name.length) - 0,
+                nextNum = thisNum + 1,
+                nextField = document.getElementById('multi_' + nextNum),
+                thisId = thisField.id;
+
+            if (!nextField) {
+                nextNum = thisNum + 1;
+                thisField = document.getElementById(thisId);
+                nextField = document.createElement('input');
+                nextField.className = 'input-upload';
+                nextField.id = 'multi_' + nextNum;
+                nextField.addEventListener('change', function (event) {
+                    if (!$dom.keyPressed(event, 'Tab')) {
+                        ensureNextFieldUpload(this);
+                    }
+                });
+                nextField.type = 'file';
+                nextField.name = nameStub + nextNum;
+                thisField.parentNode.appendChild(nextField);
+            }
         }
     };
 
@@ -481,12 +507,6 @@
 
         $dom.on(container, 'keyup', '.js-keyup-update-ajax-member-list', function (e, input) {
             $cms.form.updateAjaxMemberList(input, null, false, e);
-        });
-    };
-
-    $cms.templates.formScreenInputLineMulti = function (params, container) {
-        $dom.on(container, 'keypress', '.js-keypress-ensure-next-field', function (e, input) {
-            $coreFormInterfaces.ensureNextField2(e, input);
         });
     };
 
@@ -590,47 +610,110 @@
         }
     };
 
-    $cms.templates.formScreenFieldsSetItem = function formScreenFieldsSetItem(params) {
-        var el = document.getElementById('form-table-field-input--' + params.name);
+    $cms.templates.formScreenInputDate = function formScreenInputDate(params) {
+        if (!$dom.support.inputTypes.date) {
+            window.jQuery('#' + params.name).inputDate({});
+        }
+        if (!$dom.support.inputTypes.time) {
+            window.jQuery('#' + params.name).inputTime({});
+        }
+    };
+
+    $cms.templates.formScreenInputTime = function formScreenInputTime(params) {
+        if (!$dom.support.inputTypes.time) {
+            window.jQuery('#' + params.name).inputTime({});
+        }
+    };
+
+    $cms.templates.formScreenInputText = function formScreenInputText(params) {
+        if (params.required.includes('wysiwyg')) {
+            if (window.$editing && window.$editing.wysiwygOn()) {
+                document.getElementById(params.name).readOnly = true;
+            }
+        }
+
+        if (!$cms.isMobile()) {
+            $cms.ui.manageScrollHeight(document.getElementById(params.name));
+        }
+    };
+
+    $cms.templates.formScreenInputHugeInput = function (params) {
+        var textArea = document.getElementById(params.name),
+            el = $dom.$('#form-table-field-input--' + params.randomisedId);
 
         if (el) {
             $cms.form.setUpChangeMonitor(el.parentElement);
         }
 
-        var block = document.getElementById('field_set_' + params.name),
-            radioBtn = document.getElementById('choose-' + params.name);
-        block.addEventListener('click', function (e) {
-            if ((e.target === radioBtn) || $dom.closest(e.target, 'a')) {
-                return; // Prevent infinite loop
+        if (!$cms.isMobile()) {
+            $cms.ui.manageScrollHeight(textArea);
+
+            $dom.on(textArea, 'change keyup', function () {
+                $cms.ui.manageScrollHeight(textArea);
+            });
+        }
+    };
+
+    $cms.templates.postingField = function postingField(params/* NB: multiple containers */) {
+        var id = strVal(params.id),
+            name = strVal(params.name),
+            initDragDrop = Boolean(params.initDragDrop),
+            postEl = $dom.$('#' + name),
+            // Container elements:
+            labelRow = $dom.$('#field-' + id + '-label'),
+            inputRow = $dom.$('#field-' + id + '-input');
+
+        if (params.class.includes('wysiwyg')) {
+            if (window.$editing && window.$editing.wysiwygOn()) {
+                postEl.readOnly = true; // Stop typing while it loads
+
+                setTimeout(function () {
+                    if (postEl.value === postEl.defaultValue) {
+                        postEl.readOnly = false; // Too slow, maybe WYSIWYG failed due to some network issue
+                    }
+                }, 3000);
             }
 
-            window.setTimeout(function () {
-                $dom.trigger(radioBtn, 'click');
-            }, 0);
+            if (params.wordCounter !== undefined) {
+                setupWordCounter($dom.$('#post'), $dom.$('#word-count-' + params.wordCountId));
+            }
+        }
+
+        if (!$cms.isMobile()) {
+            $cms.ui.manageScrollHeight(postEl);
+        }
+
+        $cms.requireJavascript(['jquery', 'jquery_autocomplete']).then(function () {
+            window.$jqueryAutocomplete.setUpComcodeAutocomplete(name, true);
+        });
+
+        if (initDragDrop) {
+            $cms.requireJavascript('plupload').then(function () {
+                window.$plupload.initialiseHtml5DragdropUpload('container-for-' + name, name);
+            });
+        }
+
+        $dom.on(labelRow, 'click', '.js-click-toggle-wysiwyg', function () {
+            window.$editing.toggleWysiwyg(name);
+        });
+
+        $dom.on(labelRow, 'click', '.js-link-click-open-field-emoticon-chooser-window', function (e, link) {
+            var url = $util.rel($cms.maintainThemeInLink(link.href));
+            $cms.ui.open(url, 'field_emoticon_chooser', 'width=300,height=320,status=no,resizable=yes,scrollbars=no');
+        });
+
+        $dom.on(inputRow, 'click', '.js-link-click-open-site-emoticon-chooser-window', function (e, link) {
+            var url = $util.rel($cms.maintainThemeInLink(link.href));
+            $cms.ui.open(url, 'site_emoticon_chooser', 'width=300,height=320,status=no,resizable=yes,scrollbars=no');
         });
     };
 
-    $cms.templates.formScreenFieldSpacer = function (params, container) {
-        var titleId = $cms.filter.id(params.title),
-            sectionHidden = Boolean(params.sectionHidden);
+    $cms.templates.comcodeEditor = function (params, container) {
+        var postingField = strVal(params.postingField);
 
-        if (titleId !== '') {
-            $dom.on(container, 'click', '.js-click-toggle-subord-fields', function (e, clicked) {
-                toggleSubordinateFields(clicked, 'fes-' + titleId + '-help');
-            });
-
-            $dom.on(container, 'keypress', '.js-keypress-toggle-subord-fields', function (e, pressed) {
-                toggleSubordinateFields(pressed, 'fes-' + titleId + '-help');
-            });
-
-            $dom.on(container, 'click', '.js-click-geolocate-address-fields', function () {
-                geolocateAddressFields();
-            });
-
-            if (sectionHidden) {
-                $dom.trigger('#fes-' + titleId, 'click');
-            }
-        }
+        $dom.on(container, 'click', '.js-click-do-input-font-posting-field', function () {
+            window.doInputFont(postingField);
+        });
     };
 
     $cms.templates.formScreenInputTick = function (params, el) {
@@ -730,7 +813,7 @@
         });
     };
 
-    $cms.templates.formScreenInputHugeList_input = function (params, parentEl) { // eslint-disable-line camelcase
+    $cms.templates.formScreenInputHugeListInput = function (params, parentEl) {
         var select2Options = {
             dropdownAutoWidth: window.parent === window, /*Otherwise can overflow*/
             containerCssClass: 'form-control-wide'
@@ -748,10 +831,6 @@
         if (!params.inlineList && el) {
             $cms.form.setUpChangeMonitor(el.parentElement);
         }
-    };
-
-    $cms.templates.formScreenFieldsSet = function (params) {
-        standardAlternateFieldsWithin(params.setName, Boolean(params.required), params.defaultSet);
     };
 
     $cms.templates.formScreenInputThemeImageEntry = function (params) {
@@ -804,21 +883,155 @@
 
     };
 
-    $cms.templates.formScreenInputHuge_input = function (params) { // eslint-disable-line camelcase
-        var textArea = document.getElementById(params.name),
-            el = $dom.$('#form-table-field-input--' + params.randomisedId);
+    $cms.templates.formScreenInputRadioList = function (params) {
+        if (params.name === undefined) {
+            return;
+        }
+
+        if (params.code !== undefined) {
+            choosePicture('j_' + $cms.filter.id(params.name) + '_' + $cms.filter.id(params.code), null, params.name, null);
+        }
+
+        if (params.name === 'delete') {
+            assignRadioDeletionConfirm(params.name);
+        }
+
+        function assignRadioDeletionConfirm(name) {
+            for (var i = 1; i < 3; i++) {
+                var el = document.getElementById('j_' + name + '_' + i);
+                if (el) {
+                    el.onchange = function () {
+                        if (this.checked) {
+                            $cms.ui.confirm('{!ARE_YOU_SURE_DELETE;^}').then(function (result) {
+                                var el2 = document.getElementById('j_' + name + '_0');
+                                if (el2) {
+                                    if (result) {
+                                        var form = el2.form;
+                                        form.action = form.action.replace(/([&?])redirect=[^&]*/, '$1');
+                                    } else {
+                                        el2.checked = true; // Check first radio
+                                    }
+                                }
+                            });
+                        }
+                    };
+                }
+            }
+        }
+    };
+
+    $cms.templates.formScreenInputRadioListComboEntry = function formScreenInputRadioListComboEntry(params, container) {
+        var nameId = $cms.filter.id(params.name);
+
+        toggleOtherCustomInput();
+        $dom.on(container, 'change', '.js-change-toggle-other-custom-input', function () {
+            toggleOtherCustomInput();
+        });
+
+        function toggleOtherCustomInput() {
+            $dom.$('#j-' + nameId + '-other-custom').disabled = !$dom.$('#j-' + nameId + '-other').checked;
+        }
+    };
+
+    $cms.templates.formScreenInputVariousTicks = function formScreenInputVariousTicks(params, container) {
+        var customName = strVal(params.customName);
+
+        if (customName && !params.customAcceptMultiple) {
+            var el = document.getElementById(params.customName + '_value');
+            $dom.trigger(el, 'change');
+        }
+
+        $dom.on(container, 'click', '.js-click-checkbox-toggle-value-field', function (e, checkbox) {
+            document.getElementById(customName + '_value').disabled = !checkbox.checked;
+        });
+
+        $dom.on(container, 'change', '.js-change-input-toggle-value-checkbox', function (e, input) {
+            document.getElementById(customName).checked = (input.value !== '');
+            input.disabled = (input.value === '');
+        });
+
+        $dom.on(container, 'keypress', '.js-keypress-input-ensure-next-field', function (e, input) {
+            $coreFormInterfaces.ensureNextField2(e, input);
+        });
+    };
+
+    $cms.templates.formScreen = function (params, container) {
+        tryToSimplifyIframeForm();
+
+        if (params.iframeUrl) {
+            setInterval(function () {
+                $dom.resizeFrame('iframe-under');
+            }, 1500);
+
+            $dom.on(container, 'click', '.js-checkbox-will-open-new', function (e, checkbox) {
+                var form = $dom.$(container, '#main-form');
+
+                form.action = checkbox.checked ? params.url : params.iframeUrl;
+                form.elements['opens_below'].value = checkbox.checked ? '0' : '1';
+                form.target = checkbox.checked ? '_blank' : 'iframe-under';
+            });
+        }
+
+        $dom.on(container, 'click', '.js-btn-skip-step', function (e, el) {
+            $dom.$('#' + params.skippable).value = '1';
+            el.form.submit();
+        });
+    };
+
+    $cms.templates.form = function (params, container) {
+        var skippable = strVal(params.skippable);
+
+        $dom.on(container, 'click', '.js-btn-skip-step', function (e, el) {
+            $dom.$('#' + skippable).value = '1';
+            el.form.submit();
+        });
+    };
+
+    $cms.templates.formScreenFieldSpacer = function (params, container) {
+        var titleId = $cms.filter.id(params.title),
+            sectionHidden = Boolean(params.sectionHidden);
+
+        if (titleId !== '') {
+            $dom.on(container, 'click', '.js-click-toggle-subord-fields', function (e, clicked) {
+                toggleSubordinateFields(clicked, 'fes-' + titleId + '-help');
+            });
+
+            $dom.on(container, 'keypress', '.js-keypress-toggle-subord-fields', function (e, pressed) {
+                toggleSubordinateFields(pressed, 'fes-' + titleId + '-help');
+            });
+
+            $dom.on(container, 'click', '.js-click-geolocate-address-fields', function () {
+                geolocateAddressFields();
+            });
+
+            if (sectionHidden) {
+                $dom.trigger('#fes-' + titleId, 'click');
+            }
+        }
+    };
+
+    $cms.templates.formScreenFieldsSet = function (params) {
+        standardAlternateFieldsWithin(params.setName, Boolean(params.required), params.defaultSet);
+    };
+
+    $cms.templates.formScreenFieldsSetItem = function formScreenFieldsSetItem(params) {
+        var el = document.getElementById('form-table-field-input--' + params.name);
 
         if (el) {
             $cms.form.setUpChangeMonitor(el.parentElement);
         }
 
-        if (!$cms.isMobile()) {
-            $cms.ui.manageScrollHeight(textArea);
+        var block = document.getElementById('field_set_' + params.name),
+            radioBtn = document.getElementById('choose-' + params.name);
+        block.addEventListener('click', function (e) {
+            if ((e.target === radioBtn) || $dom.closest(e.target, 'a')) {
+                return; // Prevent infinite loop
+            }
 
-            $dom.on(textArea, 'change keyup', function () {
-                $cms.ui.manageScrollHeight(textArea);
-            });
-        }
+            window.setTimeout(function () {
+                $dom.trigger(radioBtn, 'click');
+            }, 0);
+        });
     };
 
     $cms.templates.previewScript = function (params, container) {
@@ -847,60 +1060,6 @@
             }
 
             el.form.submit();
-        });
-    };
-
-    $cms.templates.postingField = function postingField(params/* NB: multiple containers */) {
-        var id = strVal(params.id),
-            name = strVal(params.name),
-            initDragDrop = Boolean(params.initDragDrop),
-            postEl = $dom.$('#' + name),
-            // Container elements:
-            labelRow = $dom.$('#field-' + id + '-label'),
-            inputRow = $dom.$('#field-' + id + '-input');
-
-        if (params.class.includes('wysiwyg')) {
-            if (window.$editing && window.$editing.wysiwygOn()) {
-                postEl.readOnly = true; // Stop typing while it loads
-
-                setTimeout(function () {
-                    if (postEl.value === postEl.defaultValue) {
-                        postEl.readOnly = false; // Too slow, maybe WYSIWYG failed due to some network issue
-                    }
-                }, 3000);
-            }
-
-            if (params.wordCounter !== undefined) {
-                setupWordCounter($dom.$('#post'), $dom.$('#word-count-' + params.wordCountId));
-            }
-        }
-
-        if (!$cms.isMobile()) {
-            $cms.ui.manageScrollHeight(postEl);
-        }
-
-        $cms.requireJavascript(['jquery', 'jquery_autocomplete']).then(function () {
-            window.$jqueryAutocomplete.setUpComcodeAutocomplete(name, true);
-        });
-
-        if (initDragDrop) {
-            $cms.requireJavascript('plupload').then(function () {
-                window.$plupload.initialiseHtml5DragdropUpload('container-for-' + name, name);
-            });
-        }
-
-        $dom.on(labelRow, 'click', '.js-click-toggle-wysiwyg', function () {
-            window.$editing.toggleWysiwyg(name);
-        });
-
-        $dom.on(labelRow, 'click', '.js-link-click-open-field-emoticon-chooser-window', function (e, link) {
-            var url = $util.rel($cms.maintainThemeInLink(link.href));
-            $cms.ui.open(url, 'field_emoticon_chooser', 'width=300,height=320,status=no,resizable=yes,scrollbars=no');
-        });
-
-        $dom.on(inputRow, 'click', '.js-link-click-open-site-emoticon-chooser-window', function (e, link) {
-            var url = $util.rel($cms.maintainThemeInLink(link.href));
-            $cms.ui.open(url, 'site_emoticon_chooser', 'width=300,height=320,status=no,resizable=yes,scrollbars=no');
         });
     };
 
@@ -1100,165 +1259,6 @@
                     }
                 });
             });
-        }
-    };
-
-    $cms.templates.formScreenInputUploadMulti = function formScreenInputUploadMulti(params, container) {
-        var nameStub = strVal(params.nameStub),
-            index = strVal(params.i);
-
-        if (params.syndicationJson != null) {
-            $cms.requireJavascript('editing').then(function () {
-                window.$editing.showUploadSyndicationOptions(nameStub, params.syndicationJson);
-            });
-        }
-
-        if (params.plupload && !$cms.isHttpauthLogin() && $cms.configOption('complex_uploader')) {
-            window.$plupload.preinitFileInput('upload_multi', nameStub + '_' + index, null, params.filter);
-        }
-
-        $dom.on(container, 'change', '.js-input-change-ensure-next-field-upload', function (e, input) {
-            if (!$dom.keyPressed(e, 'Tab')) {
-                ensureNextFieldUpload(input);
-            }
-        });
-
-        $dom.on(container, 'click', '.js-click-clear-name-stub-input', function () {
-            var input = $dom.$('#' + nameStub + '_' + index);
-            $dom.changeValue(input, '');
-        });
-
-
-        function ensureNextFieldUpload(thisField) {
-            var mid = thisField.name.lastIndexOf('_'),
-                nameStub = thisField.name.substring(0, mid + 1),
-                thisNum = thisField.name.substring(mid + 1, thisField.name.length) - 0,
-                nextNum = thisNum + 1,
-                nextField = document.getElementById('multi_' + nextNum),
-                thisId = thisField.id;
-
-            if (!nextField) {
-                nextNum = thisNum + 1;
-                thisField = document.getElementById(thisId);
-                nextField = document.createElement('input');
-                nextField.className = 'input-upload';
-                nextField.id = 'multi_' + nextNum;
-                nextField.addEventListener('change', function (event) {
-                    if (!$dom.keyPressed(event, 'Tab')) {
-                        ensureNextFieldUpload(this);
-                    }
-                });
-                nextField.type = 'file';
-                nextField.name = nameStub + nextNum;
-                thisField.parentNode.appendChild(nextField);
-            }
-        }
-    };
-
-    $cms.templates.formScreenInputRadioList = function (params) {
-        if (params.name === undefined) {
-            return;
-        }
-
-        if (params.code !== undefined) {
-            choosePicture('j_' + $cms.filter.id(params.name) + '_' + $cms.filter.id(params.code), null, params.name, null);
-        }
-
-        if (params.name === 'delete') {
-            assignRadioDeletionConfirm(params.name);
-        }
-
-        function assignRadioDeletionConfirm(name) {
-            for (var i = 1; i < 3; i++) {
-                var el = document.getElementById('j_' + name + '_' + i);
-                if (el) {
-                    el.onchange = function () {
-                        if (this.checked) {
-                            $cms.ui.confirm('{!ARE_YOU_SURE_DELETE;^}').then(function (result) {
-                                var el2 = document.getElementById('j_' + name + '_0');
-                                if (el2) {
-                                    if (result) {
-                                        var form = el2.form;
-                                        form.action = form.action.replace(/([&?])redirect=[^&]*/, '$1');
-                                    } else {
-                                        el2.checked = true; // Check first radio
-                                    }
-                                }
-                            });
-                        }
-                    };
-                }
-            }
-        }
-    };
-
-    $cms.templates.formScreenInputTextMulti = function formScreenInputTextMulti(params, container) {
-        $dom.on(container, 'keypress', '.js-keypress-textarea-ensure-next-field', function (e, textarea) {
-            if (!$dom.keyPressed(e, 'Tab')) {
-                ensureNextField(textarea);
-            }
-        });
-    };
-
-    $cms.templates.formScreenInputRadioListComboEntry = function formScreenInputRadioListComboEntry(params, container) {
-        var nameId = $cms.filter.id(params.name);
-
-        toggleOtherCustomInput();
-        $dom.on(container, 'change', '.js-change-toggle-other-custom-input', function () {
-            toggleOtherCustomInput();
-        });
-
-        function toggleOtherCustomInput() {
-            $dom.$('#j-' + nameId + '-other-custom').disabled = !$dom.$('#j-' + nameId + '-other').checked;
-        }
-    };
-
-    $cms.templates.formScreenInputVariousTicks = function formScreenInputVariousTicks(params, container) {
-        var customName = strVal(params.customName);
-
-        if (customName && !params.customAcceptMultiple) {
-            var el = document.getElementById(params.customName + '_value');
-            $dom.trigger(el, 'change');
-        }
-
-        $dom.on(container, 'click', '.js-click-checkbox-toggle-value-field', function (e, checkbox) {
-            document.getElementById(customName + '_value').disabled = !checkbox.checked;
-        });
-
-        $dom.on(container, 'change', '.js-change-input-toggle-value-checkbox', function (e, input) {
-            document.getElementById(customName).checked = (input.value !== '');
-            input.disabled = (input.value === '');
-        });
-
-        $dom.on(container, 'keypress', '.js-keypress-input-ensure-next-field', function (e, input) {
-            $coreFormInterfaces.ensureNextField2(e, input);
-        });
-    };
-
-    $cms.templates.formScreenInputText = function formScreenInputText(params) {
-        if (params.required.includes('wysiwyg')) {
-            if (window.$editing && window.$editing.wysiwygOn()) {
-                document.getElementById(params.name).readOnly = true;
-            }
-        }
-
-        if (!$cms.isMobile()) {
-            $cms.ui.manageScrollHeight(document.getElementById(params.name));
-        }
-    };
-
-    $cms.templates.formScreenInputDate = function formScreenInputDate(params) {
-        if (!$dom.support.inputTypes.date) {
-            window.jQuery('#' + params.name).inputDate({});
-        }
-        if (!$dom.support.inputTypes.time) {
-            window.jQuery('#' + params.name).inputTime({});
-        }
-    };
-
-    $cms.templates.formScreenInputTime = function formScreenInputTime(params) {
-        if (!$dom.support.inputTypes.time) {
-            window.jQuery('#' + params.name).inputTime({});
         }
     };
 
@@ -1924,7 +1924,8 @@
             thisId = thisField.id;
 
         if (!nextField) {
-            nextNum = thisNum + 1;
+            $util.log('Creating next field: ' + nameStub + nextNum);
+
             thisField = document.getElementById(thisId);
             var nextFieldWrap = document.createElement('div');
             nextFieldWrap.className = thisField.parentNode.className;
@@ -1971,5 +1972,4 @@
             thisField.parentNode.parentNode.insertBefore(nextFieldWrap, thisField.parentNode.nextSibling);
         }
     }
-
 }(window.$cms, window.$util, window.$dom));

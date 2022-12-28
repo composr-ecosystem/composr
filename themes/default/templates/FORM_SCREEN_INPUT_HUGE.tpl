@@ -14,7 +14,7 @@
 	</th>
 </tr>
 
-<tr class="field-input" data-tpl="formScreenInputHuge_input" data-tpl-params="{+START,PARAMS_JSON,unique_field_id,NAME}{_*}{+END}">
+<tr class="field-input" data-tpl="formScreenInputHugeInput" data-tpl-params="{+START,PARAMS_JSON,unique_field_id,NAME}{_*}{+END}">
 	<td id="form-table-field-input--{$GET,unique_field_id}" colspan="2" class="form-table-huge-field {+START,IF,{REQUIRED}} required{+END}">
 		<div id="container-for-{NAME*}">
 			<textarea {+START,IF_PASSED,AUTOCOMPLETE} autocomplete="{AUTOCOMPLETE*}"{+END} tabindex="{TABINDEX*}" class="input-text{_REQUIRED} form-control form-control-wide{+START,IF,{SCROLLS}} textarea-scroll{+END}" cols="70" rows="{ROWS*}" id="{NAME*}" name="{NAME*}" data-textarea-auto-height="">{DEFAULT*}</textarea>

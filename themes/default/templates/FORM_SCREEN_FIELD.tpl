@@ -26,7 +26,7 @@
 		{+END}{+END}
 	</th>
 
-	<td id="form-table-field-input--{$GET,unique_field_id}" class="form-table-field-input{+START,IF,{REQUIRED}} required{+END}" data-tpl="formScreenField_input" data-tpl-params="{+START,PARAMS_JSON,unique_field_id}{_*}{+END}">
+	<td id="form-table-field-input--{$GET,unique_field_id}" class="form-table-field-input{+START,IF,{REQUIRED}} required{+END}" data-tpl="formScreenFieldInput" data-tpl-params="{+START,PARAMS_JSON,unique_field_id}{_*}{+END}">
 		{+START,IF,{$NOT,{$_GET,overlay}}}
 			{COMCODE}
 		{+END}

@@ -1204,5 +1204,4 @@
     function fileToFileId(file) {
         return file.replace(/\//, '__').replace(/:/, '__').replace(/\./, '__');
     }
-
 }(window.$cms, window.$util, window.$dom));

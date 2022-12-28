@@ -39,5 +39,4 @@
         $cms.requireJavascript('realtime_rain');
         setTimeout(loadRealtimeRain, 200);
     }
-
 }(window.$cms, window.$util, window.$dom));

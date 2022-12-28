@@ -370,5 +370,4 @@
 
     // Fun stuff...
     window.commandrFoxyTextnodes || (window.commandrFoxyTextnodes = []);
-
 }(window.$cms, window.$util, window.$dom));

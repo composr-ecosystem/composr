@@ -303,7 +303,6 @@
             window.notificationsAlreadyPresented[id] = true;
         }
     }
-
 }(window.$cms, window.$util, window.$dom));
 
 // LEGACY

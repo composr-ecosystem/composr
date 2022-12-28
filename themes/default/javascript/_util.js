@@ -1130,5 +1130,4 @@
 
         $util.properties(SubClass.prototype, protoProps);
     };
-
 }(window.$util || (window.$util = {})));

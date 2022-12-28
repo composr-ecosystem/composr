@@ -447,5 +447,4 @@
         }
         $dom.html(realtimetime, hours + ':' + minutes + ':' + seconds);
     }
-
 }(window.$cms, window.$util, window.$dom));

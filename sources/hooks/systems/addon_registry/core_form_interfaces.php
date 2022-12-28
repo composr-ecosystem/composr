@@ -1375,16 +1375,16 @@ class Hook_addon_registry_core_form_interfaces
             $input->attach(do_lorem_template('FORM_SCREEN_INPUT_TEXT_MULTI', [
                 'PRETTY_NAME' => lorem_word(),
                 'TABINDEX' => placeholder_number(),
-                'NAME_STUB' => placeholder_random_id(),
+                'NAME_STUB' => $name,
                 'I' => strval($k),
                 'REQUIRED' => '-required',
-                'DEFAULT' => '',
+                'DEFAULT' => ($k == 0) ? lorem_phrase() : '',
             ]));
         }
         $fields->attach(do_lorem_template('FORM_SCREEN_FIELD', [
             'REQUIRED' => true,
             'SKIP_LABEL' => true,
-            'NAME' => $name,
+            'NAME' => $name . '0',
             'PRETTY_NAME' => lorem_word(),
             'DESCRIPTION' => lorem_sentence_html(),
             'DESCRIPTION_SIDE' => '',

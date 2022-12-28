@@ -689,5 +689,4 @@
 
         return true;
     }
-
 }(window.$cms, window.$util, window.$dom));
