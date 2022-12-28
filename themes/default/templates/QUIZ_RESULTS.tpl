@@ -10,7 +10,7 @@
 
 	<thead>
 		<tr>
-			<th></th>
+			<th>{!CORRECT}</th>
 			<th>{!QUESTION}</th>
 			<th>{!GIVEN_ANSWER}</th>
 			<th>{!CORRECT_ANSWER}</th>
@@ -24,14 +24,14 @@
 				<td class="quiz-answer-status">
 					{+START,IF_PASSED,WAS_CORRECT}
 						{+START,IF,{WAS_CORRECT}}
-							<span class="multilist-mark yes">&#10004;</span>
+							<span class="multilist-mark yes" title="{!YES}">&#10004;</span>
 						{+END}
 						{+START,IF,{$NOT,{WAS_CORRECT}}}
-							<span class="multilist-mark no">&#10005;</span>
+							<span class="multilist-mark no" title="{!NO}">&#10005;</span>
 						{+END}
 					{+END}
 					{+START,IF_NON_PASSED,WAS_CORRECT}
-						&ndash;
+						<span title="{!MANUALLY_MARKED}">&ndash;</span>
 					{+END}
 				</td>
 
@@ -56,8 +56,8 @@
 
 			{+START,IF_PASSED,CORRECT_EXPLANATION}{+START,IF_NON_EMPTY,{CORRECT_EXPLANATION}}
 				<tr class="{$GET,cycle}">
-					<td class="responsive-table-no-prefix" colspan="4">
-						<span class="field-name">{!EXPLANATION}:</span> {$COMCODE,{CORRECT_EXPLANATION},0}
+					<td class="responsive-table-no-prefix" colspan="4" data-th="{!EXPLANATION}">
+						<span class="field-name inline-desktop">{!EXPLANATION}:</span> {$COMCODE,{CORRECT_EXPLANATION},0}
 					</td>
 				</tr>
 			{+END}{+END}
