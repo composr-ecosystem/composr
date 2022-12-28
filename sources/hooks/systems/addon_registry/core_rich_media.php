@@ -1358,8 +1358,8 @@ class Hook_addon_registry_core_rich_media
     public function tpl_preview__comcode_hide() : object
     {
         return lorem_globalise(do_lorem_template('COMCODE_HIDE', [
-            'TEXT' => lorem_sentence_html(),
-            'CONTENT' => lorem_phrase(),
+            'CONTENT' => lorem_sentence_html(),
+            'TEXT' => lorem_phrase(),
         ]), null, '', true);
     }
 
