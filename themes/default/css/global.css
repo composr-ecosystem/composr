@@ -4151,13 +4151,14 @@ div.ajax-loading, p.ajax-loading {
 }
 
 .rating-inline, .rating-inline div, .rating-inline form {
-	display: inline;
+	{$BETA_CSS_PROPERTY,display: inline-flex;}
+	flex-wrap: wrap;
 }
 .rating-inline .rating-outer {
-	padding-left: 2em;
+	padding-right: 2em;
 }
-.rating-inline .rating-outer:first-child {
-	padding-left: 0;
+.rating-inline .rating-outer:last-child {
+	padding-right: 0;
 }
 
 .rating-inline .ajax-loading {

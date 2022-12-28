@@ -16,7 +16,7 @@
 	<form title="{!PRIMARY_PAGE_FORM}" method="post" action="{URL*}">
 		{$INSERT_FORM_POST_SECURITY}
 
-		<table class="columned-table results-table wide-table autosized-table">
+		<table class="columned-table results-table wide-table responsive-table">
 			<thead>
 				<tr>
 					<th>

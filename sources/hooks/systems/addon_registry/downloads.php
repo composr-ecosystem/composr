@@ -243,9 +243,26 @@ class Hook_addon_registry_downloads
      */
     public function tpl_preview__download_and_images_simple_box() : object
     {
+        require_lang('galleries'); // EDIT_IMAGE
+
+        $cells = new Tempcode();
+
+        foreach (placeholder_array() as $i => $v) {
+            $_content = do_lorem_template('DOWNLOAD_SCREEN_IMAGE', [
+                'ID' => strval($i),
+                'TITLE' => lorem_phrase(),
+                'EDIT_URL' => placeholder_url(),
+                'IMAGE_URL' => placeholder_url(),
+                'DESCRIPTION' => lorem_sentence(),
+            ]);
+            $cells->attach(do_lorem_template('DOWNLOAD_GALLERY_IMAGE_CELL', ['CONTENT' => $_content]));
+        }
+
+        $images = do_lorem_template('DOWNLOAD_GALLERY_ROW', ['CELLS' => $cells]);
+
         return lorem_globalise(do_lorem_template('DOWNLOAD_AND_IMAGES_SIMPLE_BOX', [
             'DESCRIPTION' => lorem_paragraph_html(),
-            'IMAGES' => lorem_phrase(),
+            'IMAGES' => $images,
         ]), null, '', true);
     }
 
