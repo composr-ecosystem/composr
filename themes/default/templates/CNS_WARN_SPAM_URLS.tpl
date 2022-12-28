@@ -15,10 +15,11 @@
 					<a rel="noopener" href="https://whois.domaintools.com/{DOMAIN*}" target="_blank" title="WHOIS {DOMAIN*} {!LINK_NEW_WINDOW}">{DOMAIN*}</a>
 				</td>
 				<td>
-					{+START,LOOP,URLS}
-						{+START,IF,{$NEQ,{I},0}}<br />{+END}
-						<a rel="noopener" href="{URL*}" target="_blank" title="{URL*} {!LINK_NEW_WINDOW}">{URL*}</a>
-					{+END}
+					<ul>
+						{+START,LOOP,URLS}
+							<li><a rel="noopener" href="{URL*}" target="_blank" title="{URL*} {!LINK_NEW_WINDOW}">{URL*}</a></li>
+						{+END}
+					</ul>
 				</td>
 				<td>
 					{+START,IF,{$ADDON_INSTALLED,securitylogging}}
