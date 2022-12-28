@@ -20,4 +20,8 @@
 	margin-right: 0;
 }
 
+.horizontal-links + .btn-hybridauth-login {
+	margin-top: 0;
+}
+
 {$HYBRIDAUTH_BUTTONS_CSS}

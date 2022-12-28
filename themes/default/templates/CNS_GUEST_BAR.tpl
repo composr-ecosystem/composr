@@ -23,24 +23,28 @@
 							<input size="15" type="text" placeholder="{!USERNAME}" id="member-bar-login-username" class="form-control" name="username" autocomplete="username" />
 							<input size="15" type="password" placeholder="{!PASSWORD}" name="password" autocomplete="current-password" id="member-bar-s-password" class="form-control" />
 
-							{+START,IF,{$EQ,{$CONFIG_OPTION,remember_me_behaviour},default_off,default_on}}
-								<label for="remember">{!REMEMBER_ME}:</label>
-								<input type="checkbox" id="remember" name="remember" value="1"{+START,IF,{$EQ,{$CONFIG_OPTION,remember_me_behaviour},default_on}} checked="checked"{+END} class="{+START,IF,{$EQ,{$CONFIG_OPTION,remember_me_behaviour},default_off}}js-click-checkbox-remember-me-confirm{+END}" />
-							{+END}
-							{+START,IF,{$EQ,{$CONFIG_OPTION,remember_me_behaviour},always_on}}
-								<input type="hidden" name="remember" value="1" />
-							{+END}
+							<span class="inline-lined-up">
+								{+START,IF,{$EQ,{$CONFIG_OPTION,remember_me_behaviour},default_off,default_on}}
+									<span class="cns-remember-me">
+										<label for="remember">{!REMEMBER_ME}</label>
+										<input type="checkbox" id="remember" name="remember" value="1"{+START,IF,{$EQ,{$CONFIG_OPTION,remember_me_behaviour},default_on}} checked="checked"{+END} class="{+START,IF,{$EQ,{$CONFIG_OPTION,remember_me_behaviour},default_off}}js-click-checkbox-remember-me-confirm{+END}" />
+									</span>
+								{+END}
+								{+START,IF,{$EQ,{$CONFIG_OPTION,remember_me_behaviour},always_on}}
+									<input type="hidden" name="remember" value="1" />
+								{+END}
 
-							<button class="btn btn-primary btn-sm btn-scri menu--site-meta--user-actions--login js-check-field-login-username" type="submit">{+START,INCLUDE,ICON}NAME=menu/site_meta/user_actions/login{+END} <span>{!_LOGIN}</span></button>
+								<button class="btn btn-primary btn-sm btn-scri menu--site-meta--user-actions--login js-check-field-login-username" type="submit">{+START,INCLUDE,ICON}NAME=menu/site_meta/user_actions/login{+END} <span>{!_LOGIN}</span></button>
+							</span>
 						</div>
 					</form>
-
-					{$GET,guest_bar_supplemental}
 
 					<ul class="horizontal-links associated-links-block-group">
 						<li><a href="{JOIN_URL*}">{!_JOIN}</a></li>
 						<li><a data-open-as-overlay="{}" rel="nofollow" href="{FULL_LOGIN_URL*}" title="{!MORE}: {!_LOGIN}">{!MORE}</a></li>
 					</ul>
+
+					{$GET,guest_bar_supplemental}
 				</div>
 				{+START,IF,{$ADDON_INSTALLED,search}}{+START,IF,{$HAS_ACTUAL_PAGE_ACCESS,search}}
 					<div class="cns-guest-column cns-guest-column-c">

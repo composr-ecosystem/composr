@@ -1518,7 +1518,7 @@ class Module_admin_themes
                     $page = strval($page);
                 }
 
-                $file = $page . '.txt';
+                $file = $page . '.txt (' . do_lang('ZONE') . ': ' . (($zone != '') ? $zone : 'welcome') . ')';
                 $screen_preview_url = build_url(['page' => $page, 'keep_theme' => $theme, 'keep_mobile' => 0], $zone);
                 $mobile_screen_preview_url = build_url(['page' => $page, 'keep_theme' => $theme, 'keep_mobile' => 1], $zone);
                 $cms_validation_url = build_url(['page' => '_SELF', 'type' => 'validate_page', 'id' => $zone . ':' . $page, 'validate' => 'cms', 'keep_theme' => $theme], '_SELF');
@@ -1552,7 +1552,7 @@ class Module_admin_themes
                     $page = strval($page);
                 }
 
-                $file = $page . '.htm';
+                $file = $page . '.htm (' . do_lang('ZONE') . ': ' . (($zone != '') ? $zone : 'welcome') . ')';
                 $screen_preview_url = build_url(['page' => $page, 'keep_theme' => $theme, 'keep_mobile' => 0], $zone);
                 $mobile_screen_preview_url = build_url(['page' => $page, 'keep_theme' => $theme, 'keep_mobile' => 1], $zone);
                 $cms_validation_url = build_url(['page' => '_SELF', 'type' => 'validate_page', 'id' => $zone . ':' . $page, 'validate' => 'cms', 'keep_theme' => $theme], '_SELF');

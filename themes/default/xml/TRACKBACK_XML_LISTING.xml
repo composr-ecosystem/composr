@@ -1,8 +1,8 @@
 <rss version="0.91">
 	<channel>
-		<title />
+		<title>{!TRACKBACKS}</title>
 		<link>{$FIND_SCRIPT*,trackback}?page={LINK_PAGE*}&amp;id={LINK_ID*}</link>
-		<description />
+		<description>{!DOC_TRACKBACKS}</description>
 		<language>{$LANG*}</language>
 		{ITEMS}
 	</channel>

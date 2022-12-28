@@ -91,10 +91,6 @@
 		</tbody>
 	</table>
 
-	<p class="proceed-button">
-		<button accesskey="u" data-disable-on-click="1" class="button-screen buttons--save" type="submit">{+START,INCLUDE,ICON}NAME=buttons/save{+END} {!SAVE}</button>
-	</p>
-
 	<hr class="spaced-rule" />
 
 	<div class="box box---redirecte-table-screen"><div class="box-inner">
@@ -108,4 +104,8 @@
 			<textarea class="form-control form-control-wide" id="m-notes" name="notes" cols="50" rows="10">{NOTES*}</textarea>
 		</div>
 	</div></div>
+
+	<p class="proceed-button">
+		<button accesskey="u" data-disable-on-click="1" class="btn btn-primary btn-scr buttons--save" type="submit">{+START,INCLUDE,ICON}NAME=buttons/save{+END} {!SAVE}</button>
+	</p>
 </form>

@@ -1518,8 +1518,7 @@ header.with-seed-navbar .top-button:hover {
 	width: 100%;
 }
 
-.breadcrumbs .sep::after,
-.associated-breadcrumbs .sep::after {
+.breadcrumb-sep::after {
 	/* Chevron */
 	border-style: solid;
 	border-width: 0.15em 0.15em 0 0;
@@ -1537,8 +1536,7 @@ header.with-seed-navbar .top-button:hover {
 	opacity: 0.7;
 }
 
-.breadcrumbs .sep:last-child::after,
-.associated-breadcrumbs .sep:last-child::after {
+.breadcrumb-sep:last-child::after {
 	display: none !important;
 }
 
@@ -4620,6 +4618,15 @@ ul.actions-list-super-compact > li {
 	list-style-type: none;
 	list-style-image: none;
 }
+
+/*{+START,CSS_MODE,mobile}*/
+	ul.actions-list > li,
+	ul.actions-list-compact > li,
+	ul.actions-list-super-compact > li {
+		float: none !important;
+	}
+/*{+END}*/
+
 ul.actions-list > li > .icon,
 ul.actions-list-compact > li > .icon,
 ul.actions-list-super-compact > li > .icon {

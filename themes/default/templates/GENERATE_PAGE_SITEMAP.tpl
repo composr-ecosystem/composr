@@ -12,7 +12,7 @@
 					{+START,LOOP,MENU_PATHS}
 						<li>
 							{+START,INCLUDE,ICON} NAME=menus/menu{+END}
-							<kbd><a href="{MENU_URL*}">{MENU*}</a></kbd> (<span class="breadcrumbs"><span>{+START,IMPLODE,</span> <span class="sep"><span class="accessibility-hidden"> &rarr;</span></span> <span>,MENU_PATH_COMPONENTS,0,1}{+END}</span></span>)
+							<kbd><a href="{MENU_URL*}">{MENU*}</a></kbd> (<span class="breadcrumbs"><span>{+START,IMPLODE,</span> <span class="breadcrumb-sep"><span class="accessibility-hidden"> &rarr;</span></span> <span>,MENU_PATH_COMPONENTS,0,1}{+END}</span></span>)
 						</li>
 					{+END}
 				</ul>
