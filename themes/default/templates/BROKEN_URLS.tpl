@@ -41,7 +41,7 @@
 								{_loop_var*}
 							{+END}
 							{+START,IF_NON_PASSED,_loop_var}
-								<em>{+START,OF,{_loop_key}}CONTENT_TYPE{+END}</em>
+								<em>{+START,OF,CONTENT_TYPE,{_loop_key}}{+END}</em>
 							{+END}
 						{+END}
 					</td>

@@ -37,7 +37,7 @@ function init__tempcode_compiler()
     }
 
     global $DIRECTIVES_NEEDING_VARS;
-    $DIRECTIVES_NEEDING_VARS = ['IF_PASSED_AND_TRUE' => true, 'IF_NON_PASSED_OR_FALSE' => true, 'PARAM_INFO' => true, 'IF_NOT_IN_ARRAY' => true, 'IF_IN_ARRAY' => true, 'IMPLODE' => true, 'COUNT' => true, 'IF_ARRAY_EMPTY' => true, 'IF_ARRAY_NON_EMPTY' => true, 'OF' => true, 'INCLUDE' => true, 'LOOP' => true, 'SET_NOPREEVAL' => true, 'PARAMS_JSON' => true];
+    $DIRECTIVES_NEEDING_VARS = ['IF_PASSED' => true, 'IF_NON_PASSED' => true, 'IF_PASSED_AND_TRUE' => true, 'IF_NON_PASSED_OR_FALSE' => true, 'PARAM_INFO' => true, 'IF_NOT_IN_ARRAY' => true, 'IF_IN_ARRAY' => true, 'IMPLODE' => true, 'COUNT' => true, 'IF_ARRAY_EMPTY' => true, 'IF_ARRAY_NON_EMPTY' => true, 'OF' => true, 'INCLUDE' => true, 'LOOP' => true, 'SET_NOPREEVAL' => true, 'PARAMS_JSON' => true];
 
     // Work out what symbols may be compiled out (look at patterns at top of caches3.php if changing this)...
 
@@ -789,6 +789,9 @@ function compile_template(string $data, string $template_name, string $theme, st
                                 if (!is_string($eval)) {
                                     $eval = '';
                                 }
+                                if ($parameters_used !== null) {
+                                    $parameters_used[$eval] = true;
+                                }
                                 $current_level_data[] = '(isset($bound_' . preg_replace('#[^\w]#', '', $eval) . ')?(' . $directive_internal . '):\'\')';
                                 break;
 
@@ -797,6 +800,9 @@ function compile_template(string $data, string $template_name, string $theme, st
                                 $eval = tempcode_compiler_eval('return ' . $first_directive_param . ';', $tpl_funcs, [], $cl);
                                 if (!is_string($eval)) {
                                     $eval = '';
+                                }
+                                if ($parameters_used !== null) {
+                                    $parameters_used[$eval] = true;
                                 }
                                 $current_level_data[] = '(!isset($bound_' . preg_replace('#[^\w]#', '', $eval) . ')?(' . $directive_internal . '):\'\')';
                                 break;
@@ -807,6 +813,9 @@ function compile_template(string $data, string $template_name, string $theme, st
                                 if (!is_string($eval)) {
                                     $eval = '';
                                 }
+                                if ($parameters_used !== null) {
+                                    $parameters_used[$eval] = true;
+                                }
                                 $current_level_data[] = '((isset($bound_' . preg_replace('#[^\w]#', '', $eval) . ') && (otp($bound_' . preg_replace('#[^\w]#', '', $eval) . ')=="1"))?(' . $directive_internal . '):\'\')';
                                 break;
 
@@ -815,6 +824,9 @@ function compile_template(string $data, string $template_name, string $theme, st
                                 $eval = tempcode_compiler_eval('return ' . $first_directive_param . ';', $tpl_funcs, [], $cl);
                                 if (!is_string($eval)) {
                                     $eval = '';
+                                }
+                                if ($parameters_used !== null) {
+                                    $parameters_used[$eval] = true;
                                 }
                                 $current_level_data[] = '((!isset($bound_' . preg_replace('#[^\w]#', '', $eval) . ') || (otp($bound_' . preg_replace('#[^\w]#', '', $eval) . ')!="1"))?(' . $directive_internal . '):\'\')';
                                 break;
@@ -924,6 +936,39 @@ function compile_template(string $data, string $template_name, string $theme, st
                                     }
                                 } else {
                                     $parameters_used = null; // We don't know what the INCLUDE directive may need
+                                }
+                                // no break
+
+                            case 'IF_IN_ARRAY':
+                            case 'IF_NOT_IN_ARRAY':
+                            case 'IF_ARRAY_EMPTY':
+                            case 'IF_ARRAY_NON_EMPTY':
+                            case 'COUNT':
+                            case 'IMPLODE':
+                            case 'OF':
+                                if ($parameters_used !== null) {
+                                    if ($directive_name == 'IF_IN_ARRAY' || $directive_name == 'NOT_IN_ARRAY' || $directive_name == 'IF_ARRAY_EMPTY' || $directive_name == 'IF_ARRAY_NON_EMPTY' || $directive_name == 'COUNT') {
+                                        $parameter = tempcode_compiler_eval('return ' . $first_directive_param . ';', $tpl_funcs, [], $cl);
+                                        if (!is_string($parameter)) {
+                                            $parameter = '';
+                                        }
+                                        $parameters_used[$parameter] = true;
+                                    }
+                                    if ($directive_name == 'IMPLODE') {
+                                        if (isset($directive_opener_params[3])) {
+                                            $parameter = tempcode_compiler_eval('return ' . implode('.', $directive_opener_params[3]) . ';', $tpl_funcs, [], $cl);
+                                            if (!is_string($parameter)) {
+                                                $parameter = '';
+                                            }
+                                            $parameters_used[$parameter] = true;
+                                        }
+                                    }
+                                    if ($directive_name == 'OF') {
+                                        $eval = tempcode_compiler_eval('return ' . $directive_internal . ';', $tpl_funcs, [], $cl);
+                                        if (is_string($eval)) {
+                                            $parameters_used[$eval] = true;
+                                        }
+                                    }
                                 }
                                 // no break
 

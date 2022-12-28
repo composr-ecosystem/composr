@@ -5,8 +5,8 @@
 		<thead>
 			<tr>
 				{+START,LOOP,HEADERS}
-					{+START,SET,style}{+START,OF,STYLINGS}{_loop_key}{+END}{+END}
-					{+START,SET,class}{+START,OF,CLASSES}{_loop_key}{+END}{+END}
+					{+START,SET,style}{+START,OF,STYLINGS,{_loop_key}}{+END}{+END}
+					{+START,SET,class}{+START,OF,CLASSES,{_loop_key}}{+END}{+END}
 					<th class="table-sortable:{SORTABLE_TYPE*}{+START,IF_NON_EMPTY,{FILTERABLE}} table-filterable{+END}{+START,IF,{SEARCHABLE}} table-searchable table-searchable-with-substrings{+END}{+START,IF_NON_EMPTY,{$GET,class}} {$GET*,class}{+END}"{+START,IF_NON_EMPTY,{$GET,style}} style="{$GET*,style}"{+END}>
 						{+START,INCLUDE,ICON}NAME=sortable_tables/sortable{+END}
 						<span>{LABEL*}</span>
