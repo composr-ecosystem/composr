@@ -1,5 +1,6 @@
 {$REQUIRE_JAVASCRIPT,core_feedback_features}
 {$REQUIRE_JAVASCRIPT,core_form_interfaces}
+{$REQUIRE_JAVASCRIPT,cns_forum}
 
 {$,Template uses auto-complete}
 {$REQUIRE_JAVASCRIPT,jquery}
