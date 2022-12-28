@@ -104,14 +104,14 @@ class Block_main_gallery_embed
         }
         if ($map['select'] != '*') {
             require_code('selectcode');
-            $where_sup .= ' AND ' . selectcode_to_sqlfragment($map['select'], 'id');
+            $where_sup .= ' AND ' . selectcode_to_sqlfragment($map['select'], 'r.id');
         }
         if (!array_key_exists('video_select', $map)) {
             $map['video_select'] = '*';
         }
         if ($map['video_select'] != '*') {
             require_code('selectcode');
-            $where_sup .= ' AND ' . selectcode_to_sqlfragment($map['video_select'], 'id');
+            $where_sup .= ' AND ' . selectcode_to_sqlfragment($map['video_select'], 'r.id');
         }
 
         // Day filtering
