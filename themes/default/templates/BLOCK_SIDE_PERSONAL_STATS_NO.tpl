@@ -6,31 +6,27 @@
 			<input type="hidden" name="_active_login" value="1" />
 
 			<div>
-				<div>
-					<div class="accessibility-hidden"><label for="ps-login-username">{$LOGIN_LABEL}</label></div>
+				<p>
+					<span class="accessibility-hidden"><label for="ps-login-username">{$LOGIN_LABEL}</label></span>
 					<input maxlength="80" class="form-control form-control-wide login-block-username" type="text" placeholder="{!USERNAME}" id="ps-login-username" name="username" autocomplete="username" />
-				</div>
-				<div>
-					<div class="accessibility-hidden"><label for="ps-password">{!PASSWORD}</label></div>
+				</p>
+				<p>
+					<span class="accessibility-hidden"><label for="ps-password">{!PASSWORD}</label></span>
 					<input maxlength="255" class="form-control form-control-wide" type="password" placeholder="{!PASSWORD}" name="password" autocomplete="current-password" id="ps-password" />
-				</div>
+				</p>
 
 				{+START,IF,{$OR,{$CONFIG_OPTION,is_on_invisibility},{$EQ,{$CONFIG_OPTION,remember_me_behaviour},default_off,default_on}}}
-					<div class="login-block-cookies">
+					<p class="login-block-cookies">
 						{+START,IF,{$EQ,{$CONFIG_OPTION,remember_me_behaviour},default_off,default_on}}
-							<div class="clearfix">
-								<label for="ps-remember">{!REMEMBER_ME}</label>
-								<input type="checkbox" id="ps-remember" name="remember" value="1"{+START,IF,{$EQ,{$CONFIG_OPTION,remember_me_behaviour},default_on}} checked="checked"{+END} class="{+START,IF,{$EQ,{$CONFIG_OPTION,remember_me_behaviour},default_off}}js-click-checkbox-remember-me-confirm{+END}" />
-							</div>
+							<label for="ps-remember">{!REMEMBER_ME}</label>
+							<input type="checkbox" id="ps-remember" name="remember" value="1"{+START,IF,{$EQ,{$CONFIG_OPTION,remember_me_behaviour},default_on}} checked="checked"{+END} class="{+START,IF,{$EQ,{$CONFIG_OPTION,remember_me_behaviour},default_off}}js-click-checkbox-remember-me-confirm{+END}" />
 						{+END}
 
 						{+START,IF,{$CONFIG_OPTION,is_on_invisibility}}
-							<div class="clearfix">
-								<label for="login_invisible">{!INVISIBLE}</label>
-								<input type="checkbox" value="1" id="login_invisible" name="login_invisible" />
-							</div>
+							<label for="login_invisible">{!INVISIBLE}</label>
+							<input type="checkbox" value="1" id="login_invisible" name="login_invisible" />
 						{+END}
-					</div>
+					</p>
 				{+END}
 				{+START,IF,{$EQ,{$CONFIG_OPTION,remember_me_behaviour},always_on}}
 					<input type="hidden" name="remember" value="1" />

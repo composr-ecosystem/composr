@@ -56,7 +56,6 @@ a.top-left-toggle .icon {
 }
 
 .checklist-task > span {
-	display: inline-block;
 	width: calc(100% - 18em);
 }
 

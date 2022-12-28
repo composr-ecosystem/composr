@@ -66,7 +66,7 @@
 						<td class="cns-column1 cell-desktop"></td>
 					{+END}
 				{+END}
-				<td class="cns-column1{+START,IF,{$OR,{$MOBILE},{$IS_EMPTY,{MODERATOR_ACTIONS}}}} cns-forum-box-bright{+END}"></td>
+				<td class="cns-column1{+START,IF,{$OR,{$MOBILE},{$IS_EMPTY,{MODERATOR_ACTIONS}}}} cns-forum-box-bright{+END} cell-desktop"></td>
 				{+START,IF,{$DESKTOP}}
 					{+START,IF_NON_EMPTY,{MODERATOR_ACTIONS}}{+START,IF,{$NOT,{$_GET,overlay}}}
 						<td class="cns-column1 cns-forum-box-bright cell-desktop"></td>

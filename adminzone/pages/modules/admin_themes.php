@@ -870,7 +870,7 @@ class Module_admin_themes
             }
         }
         foreach ($before as $key => $val) {
-            if (post_param_string($key, '') == '') { // Something not edited in the UI
+            if (strpos($contents, ($key . '=')) === false) { // Something not edited in the UI
                 $contents .= $key . '=' . $val . "\n";
             }
             unset($before[$key]);
@@ -1429,7 +1429,7 @@ class Module_admin_themes
             $template = isset($tpls[0]) ? $tpls[0] : null;
             $url_map = ['page' => '_SELF', 'type' => 'screen_preview', 'id' => $template, 'hook' => $hook, 'function' => $func, 'keep_theme' => $theme, 'keep_wide_high' => 1];
             $screen_preview_url = build_url($url_map + ['keep_mobile' => 0], '_SELF');
-            $mobile_screen_preview_url = build_url($url_map + ['keep_wide_high' => 1, 'keep_mobile' => 0], '_SELF');
+            $mobile_screen_preview_url = build_url($url_map + ['keep_wide_high' => 1, 'keep_mobile' => 1], '_SELF');
             $cms_validation_url = build_url($url_map + ['validate' => 'cms'], '_SELF');
             $w3c_validation_url = build_url($url_map + ['validate' => 'w3c'], '_SELF');
 

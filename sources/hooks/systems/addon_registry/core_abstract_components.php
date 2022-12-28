@@ -344,14 +344,14 @@ class Hook_addon_registry_core_abstract_components
             'LINKS' => $links,
             'META' => $meta,
             'OPTIONS' => placeholder_array(),
-            'TITLE' => '',
+            'TITLE' => lorem_phrase(),
             'TOP_LINKS' => placeholder_link(),
             'WIDTH' => '',
         ]);
         $boxes->attach($box);
 
         $wrapped = do_lorem_template('STANDARDBOX_accordion_wrap', [
-            'CONTENT' => lorem_sentence(),
+            'CONTENT' => $boxes,
             'TITLE' => '',
         ]);
 

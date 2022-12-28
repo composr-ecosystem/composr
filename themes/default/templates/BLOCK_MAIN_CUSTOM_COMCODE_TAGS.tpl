@@ -1,5 +1,5 @@
 {+START,IF_NON_EMPTY,{TAGS}}
-	<table class="columned-table autosized-table results-table wide-table">
+	<table class="columned-table responsive-table results-table wide-table">
 		<thead>
 			<tr>
 				<th>{!TITLE}</th>

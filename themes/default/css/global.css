@@ -664,8 +664,8 @@ img.icon {
 		width: auto !important;
 	}
 	* {
-		/*white-space: normal;*/
-		/*overflow-wrap: break-word;*/
+		white-space: normal;
+		overflow-wrap: break-word;
 	}
 
 	.desktop-only {

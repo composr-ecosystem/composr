@@ -1,4 +1,4 @@
-{$SET,num_mobile_columns,2}
+{$SET,num_mobile_columns,1}
 {+START,LOOP,{NUM_COLUMNS}\,{$GET,num_mobile_columns}}
 	{$SET,num_columns,{_loop_var}}
 	<div class="{$?,{$EQ,{_loop_key},0},block-desktop,block-mobile}">

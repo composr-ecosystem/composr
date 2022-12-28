@@ -622,7 +622,7 @@ hr.cns-sig-barrier {
 
 .cns-topic-list {
 	/*{+START,IF,{$EQ,{$LANG},EN}}*/
-		table-layout: fixed !important;
+		/*table-layout: fixed !important;*/
 	/*{+END}*/
 }
 
@@ -968,3 +968,7 @@ hr.cns-sig-barrier {
 		display: inline-block;
 	}
 /*{+END}*/
+
+.cns-tr-end {
+	background: {$GET,pale_border};
+}

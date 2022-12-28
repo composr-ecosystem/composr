@@ -995,6 +995,7 @@ function get_text_templates() : array
         'templates/POLL_RSS_SUMMARY.tpl',
         'templates/JAVASCRIPT_NEED_FULL.tpl',
         'templates/NOTIFICATION_POLLER.tpl',
+        'templates/ANCHOR.tpl',
 
         // In header, and uses IDs, so can't be used except in isolation
         'templates/BLOCK_TOP_NOTIFICATIONS.tpl',

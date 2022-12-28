@@ -706,16 +706,106 @@ class Hook_addon_registry_cns_forum
     public function tpl_preview__block_main_cns_involved_topics() : object
     {
         require_css('cns');
-
         require_lang('cns');
+
+        $topics = new Tempcode();
+
+        foreach (placeholder_array() as $i => $v) {
+            $part = new Tempcode();
+            $part->attach(do_lorem_template('RESULTS_LAUNCHER_PAGE_NUMBER_LINK', [
+                'TITLE' => lorem_phrase(),
+                'URL' => placeholder_url(),
+                'P' => strval(1)
+            ]));
+            $part->attach(do_lorem_template('RESULTS_LAUNCHER_CONTINUE', [
+                'TITLE' => lorem_phrase(),
+                'MAX' => strval(3),
+                '_NUM_PAGES' => strval(1),
+                'NUM_PAGES' => integer_format(1),
+                'URL_STUB' => placeholder_url(),
+            ]));
+            $pages = do_lorem_template('RESULTS_LAUNCHER_WRAP', ['PART' => $part]);
+
+            $marker = new Tempcode();
+            if ($i == 2) {
+                $marker = do_template('CNS_TOPIC_MARKER', ['ID' => strval($i)]);
+            }
+
+            $topic_row_links = [];
+            if ($i == 1) {
+                $topic_row_links[] = ['URL' => placeholder_url(), 'IMG' => 'unread', 'ALT' => lorem_phrase()];
+            }
+
+            $topic_row_modifiers = [];
+            if ($i != 1) {
+                $topic_row_modifiers[] = ['IMG' => 'hot', 'ALT' => lorem_phrase()];
+            }
+
+            $poster = do_lorem_template('CNS_USER_MEMBER', [
+                'FIRST' => true,
+                'PROFILE_URL' => placeholder_url(),
+                'USERNAME' => lorem_word(),
+                'MEMBER_ID' => placeholder_first_admin_id(),
+            ]);
+
+            $last_post = do_lorem_template('CNS_FORUM_TOPIC_ROW_LAST_POST', [
+                'ID' => placeholder_numeric_id(),
+                'DATE_RAW' => placeholder_date(),
+                'DATE' => placeholder_date(),
+                'POSTER' => $poster,
+                'LAST_URL' => placeholder_url(),
+            ]);
+
+            $topics->attach(do_lorem_template('CNS_FORUM_TOPIC_ROW', [
+                'BREADCRUMBS' => placeholder_breadcrumbs(),
+                'RAW_TIME' => placeholder_date(),
+                'UNREAD' => ($i == 1),
+                'ID' => strval($i),
+                'FORUM_ID' => placeholder_numeric_id(),
+                'HOVER' => placeholder_date(),
+                'PAGES' => $pages,
+                'MARKER' => $marker,
+                'TOPIC_ROW_LINKS' => $topic_row_links,
+                'TOPIC_ROW_MODIFIERS' => $topic_row_modifiers,
+                '_TOPIC_ROW_MODIFIERS' => [],
+                'POST' => lorem_paragraph_html(),
+                'EMOTICON' => new Tempcode(),
+                'DESCRIPTION' => lorem_sentence(),
+                'URL' => placeholder_url(),
+                'TITLE' => lorem_phrase(),
+                '_POSTER' => placeholder_first_admin_id(),
+                'POSTER' => $poster,
+                '_NUM_POSTS' => strval(1),
+                'NUM_POSTS' => integer_format(1, 0),
+                '_NUM_VIEWS' => strval(1),
+                'NUM_VIEWS' => integer_format(1, 0),
+                'LAST_POST' => $last_post,
+            ]));
+        }
+
+        $topics = do_lorem_template('CNS_FORUM_TOPIC_WRAPPER', [
+            'TYPE' => 'main_cns_involved_topics',
+            'SORT' => '',
+            'MAX' => '3',
+            'MAY_CHANGE_MAX' => false,
+            'BREADCRUMBS' => placeholder_breadcrumbs(),
+            'ACTION_URL' => placeholder_url(),
+            'BUTTONS' => '',
+            'STARTER_TITLE' => '',
+            'FORUM_NAME' => lorem_phrase(),
+            'TOPICS' => $topics,
+            'PAGINATION' => placeholder_pagination(),
+            'MODERATOR_ACTIONS' => new Tempcode(),
+            'ID' => null,
+        ]);
 
         return lorem_globalise(do_lorem_template('BLOCK_MAIN_CNS_INVOLVED_TOPICS', [
             'BLOCK_ID' => lorem_word(),
-            'TOPICS' => lorem_paragraph_html(),
+            'TOPICS' => $topics,
             'BLOCK_PARAMS' => '',
 
             'START' => '0',
-            'MAX' => '10',
+            'MAX' => '3',
             'START_PARAM' => 'x_start',
             'MAX_PARAM' => 'x_max',
         ]), null, '', true);
