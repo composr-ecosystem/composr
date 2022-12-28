@@ -1,1 +1,1 @@
-<span class="results-continue">(&hellip;)</span>
+<span class="results-continue inlineblock-desktop">(&hellip;)</span>
