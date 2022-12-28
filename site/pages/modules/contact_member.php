@@ -250,6 +250,17 @@ class Module_contact_member
             enforce_captcha();
         }
 
+        $subject = trim(post_param_string('subject'));
+        $message = trim(post_param_string('message'));
+
+        // Stop spam bots, who are not subject to normal JS validation and may remove hidden require field
+        if ($subject == '') {
+            warn_exit(do_lang_tempcode('NO_PARAMETER_SENT', 'subject'));
+        }
+        if ($message == '') {
+            warn_exit(do_lang_tempcode('NO_PARAMETER_SENT', 'message'));
+        }
+
         $member_id = $this->member_id;
         $to_name = $this->to_name;
 
@@ -315,7 +326,7 @@ class Module_contact_member
         if ($size_so_far > $size * 1024 * 1024) {
             warn_exit(do_lang_tempcode('EXCEEDED_ATTACHMENT_SIZE', escape_html(integer_format($size))));
         }
-        mail_wrap(do_lang('EMAIL_MEMBER_SUBJECT', get_site_name(), post_param_string('subject'), null, get_lang($member_id)), post_param_string('message'), array($email_address), $to_name, $from_email, $from_name, 3, $attachments, false, get_member(), false, false, false, 'MAIL', count($attachments) != 0, $extra_cc_addresses, $extra_bcc_addresses, $join_time);
+        mail_wrap(do_lang('EMAIL_MEMBER_SUBJECT', get_site_name(), $subject, null, get_lang($member_id)), $message, array($email_address), $to_name, $from_email, $from_name, 3, $attachments, false, get_member(), false, false, false, 'MAIL', count($attachments) != 0, $extra_cc_addresses, $extra_bcc_addresses, $join_time);
 
         log_it('EMAIL', strval($member_id), $to_name);
 
