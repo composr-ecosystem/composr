@@ -482,22 +482,26 @@ class Hook_addon_registry_calendar
                     }
                     foreach (placeholder_array(2) as $v) {
                         $entries = do_lorem_template('CALENDAR_DAY_ENTRY', [
+                            'DESCRIPTION' => lorem_paragraph_html(),
+                            'DOWN' => strval(1),
                             'ID' => placeholder_numeric_id(),
-                            'URL' => placeholder_url(),
-                            'TIME' => placeholder_date(),
                             'T_TITLE' => lorem_phrase(),
+                            'PRIORITY' => strval(1),
+                            'ICON' => 'icons/calendar/' . placeholder_img_code('icons/calendar'),
+                            'TIME' => placeholder_date(),
                             'TITLE' => lorem_phrase(),
-                            'DESCRIPTION' => lorem_phrase(),
+                            'URL' => placeholder_url(),
+                            'PRIORITY_LANG' => get_site_default_lang(),
+                            'PRIORITY_ICON' => 'icons/calendar/' . placeholder_img_code('icons/calendar'),
+                            'RECURRING' => 'none',
                             'VALIDATED' => true,
-                            'RECURRING' => false,
-                            'PRIORITY_ICON' => 'calendar/priority_1',
                         ]);
                         $_streams->attach(do_lorem_template('CALENDAR_DAY_STREAM_HOUR', [
                             'CURRENT' => false,
                             'ADD_URL' => placeholder_url(),
                             'PRIORITY' => lorem_phrase(),
                             'DOWN' => '1',
-                            'ENTRY' => $entry,
+                            'ENTRY' => $entries,
                         ]));
                     }
 
