@@ -8452,6 +8452,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DEFAULT_SLIDE3_HEADLINE
         DEFAULT_SLIDE3_SUBLINE
         DEFAULT_SLIDE3_TEXT
+        DEFAULT_LINK1_URL
+        DEFAULT_LINK2_URL
         DEFAULT_LINK1_TEXT
         DEFAULT_LINK2_TEXT
         WARNING

@@ -1164,6 +1164,8 @@ class Hook_addon_registry_galleries
             'HEADLINE' => lorem_phrase(),
             'SUBLINE' => lorem_phrase(),
             'TEXT' => lorem_chunk_html(),
+            'LINK1_URL' => placeholder_url(),
+            'LINK2_URL' => placeholder_url(),
             'LINK1_TEXT' => lorem_phrase(),
             'LINK2_TEXT' => lorem_phrase(),
         ]);
@@ -1466,7 +1468,9 @@ class Hook_addon_registry_galleries
 HEADLINE=' . do_lang('DEFAULT_SLIDE' . strval($i + 1) . '_HEADLINE', null, null, null, $lang) . '
 SUBLINE=' . do_lang('DEFAULT_SLIDE' . strval($i + 1) . '_SUBLINE', null, null, null, $lang) . '
 TEXT=' . do_lang('DEFAULT_SLIDE' . strval($i + 1) . '_TEXT', null, null, null, $lang) . '
+LINK1_URL=' . do_lang('DEFAULT_LINK1_URL', null, null, null, $lang) . '
 LINK1_TEXT=' . do_lang('DEFAULT_LINK1_TEXT', null, null, null, $lang) . '
+LINK2_URL=' . do_lang('DEFAULT_LINK2_URL', null, null, null, $lang) . '
 LINK2_TEXT=' . do_lang('DEFAULT_LINK2_TEXT', null, null, null, $lang) . '
 {+END}
                         ');
