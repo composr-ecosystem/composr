@@ -1821,11 +1821,13 @@ function ecv_METADATA(string $lang, array $escaped, array $param) : string
                     // Getting a generic...
 
                     if (isset($METADATA[$param[0]])) {
-                        $value = $METADATA[$param[0]];
+                        $_value = $METADATA[$param[0]];
 
-                        if ($value === null) {
-                            $value = '';
+                        if ($_value === null) {
+                            $_value = '';
                         }
+
+                        $value = strval($_value);
 
                         // Special case
                         if ($param[0] != 'image') {
