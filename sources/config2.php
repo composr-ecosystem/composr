@@ -27,7 +27,7 @@
  */
 function get_config_option_input_name(string $name) : string
 {
-    if (strpos($name, 'username') === false && strpos($name, 'pass') === false) {
+    if (strpos($name, 'login') === false && strpos($name, 'email') === false && strpos($name, 'user') === false && strpos($name, 'uname') === false && strpos($name, 'usr') === false && strpos($name, 'pass') === false && strpos($name, 'pwd') === false) {
         return 'option_' . $name;
     }
 

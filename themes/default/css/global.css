@@ -6395,7 +6395,6 @@ NB: Form buttons are wrapped in either:
 .autocomplete-wrapper {
 	/* This is just used to try and anchor the autocomplete widget more reliably from the get-go. Password manager extensions would sometimes do this themselves after-the-fact and cause a positioning shift. */
 	position: relative;
-	z-index: 100;
 }
 
 /*
