@@ -837,7 +837,8 @@
         });
 
         $dom.on(container, 'click', '.js-link-click-open-mobile-template-preview-window', function (e, link) {
-            window.open(link.href, 'template_preview_' + template, 'width=360,height=800,status=no,resizable=yes,scrollbars=yes');
+            var actualWidth = 320 + window.innerWidth - document.documentElement.clientWidth; // We want exactly 320 for the width to accurately test mobile, but scroll bars may shrink the actual width of the page.
+            window.open(link.href, 'template_preview_' + template, 'width=' + strVal(actualWidth) + ',height=568,status=no,resizable=yes,scrollbars=yes');
         });
     };
 

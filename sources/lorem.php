@@ -993,6 +993,8 @@ function get_text_templates() : array
         'templates/HANDLE_CONFLICT_RESOLUTION.tpl',
         'templates/RSS_HEADER.tpl',
         'templates/POLL_RSS_SUMMARY.tpl',
+        'templates/JAVASCRIPT_NEED_FULL.tpl',
+        'templates/NOTIFICATION_POLLER.tpl',
 
         // In header, and uses IDs, so can't be used except in isolation
         'templates/BLOCK_TOP_NOTIFICATIONS.tpl',
@@ -1000,6 +1002,16 @@ function get_text_templates() : array
         'templates/MENU_BRANCH_zone.tpl',
         'templates/MENU_SPACER_zone.tpl',
         'templates/MENU_zone.tpl',
+
+        // XML
+        'xml/TRACKBACK_XML_LISTING.xml',
+        'xml/ATOM_WRAPPER.xml',
+        'xml/ATOM_ENTRY.xml',
+        'xml/RSS_ENTRY_COMMENTS.xml',
+        'xml/RSS_CLOUD.xml',
+        'xml/RSS_WRAPPER.xml',
+        'xml/RSS_ENTRY.xml',
+        'xml/RSS_ABBR.xml'
     ];
     return $text_templates;
 }

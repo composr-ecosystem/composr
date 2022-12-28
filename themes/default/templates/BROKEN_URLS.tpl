@@ -1,5 +1,5 @@
 {+START,IF_NON_EMPTY,{URLS}}
-	<table class="columned-table wide-table results-table autosized-table zebra">
+	<table class="columned-table wide-table results-table responsive-table zebra">
 		<thead>
 			<tr>
 				<th>

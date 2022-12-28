@@ -832,7 +832,7 @@ class Hook_addon_registry_cns_forum
     public function tpl_preview__block_main_member_bar_guest() : object
     {
         require_css('cns');
-
+        require_css('cns_header');
         require_lang('cns');
 
         $bar = do_lorem_template('CNS_GUEST_BAR', [
@@ -875,7 +875,7 @@ class Hook_addon_registry_cns_forum
     public function tpl_preview__block_main_member_bar_member() : object
     {
         require_css('cns');
-
+        require_css('cns_header');
         require_lang('cns');
 
         $details = new Tempcode();

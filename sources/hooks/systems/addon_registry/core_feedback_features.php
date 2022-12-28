@@ -490,8 +490,14 @@ class Hook_addon_registry_core_feedback_features
      */
     public function tpl_preview__trackback_xml_listing() : object
     {
+        $trackback_rendered_xml = do_lorem_template('TRACKBACK_XML', [
+            'TITLE' => lorem_word(),
+            'LINK' => placeholder_url(),
+            'EXCERPT' => lorem_paragraph(),
+        ], null, false, null, '.xml', 'xml');
+
         $content = do_lorem_template('TRACKBACK_XML_LISTING', [
-            'ITEMS' => lorem_phrase(),
+            'ITEMS' => $trackback_rendered_xml,
             'LINK_PAGE' => lorem_word(),
             'LINK_ID' => placeholder_codename(),
         ], null, false, null, '.xml', 'xml');
