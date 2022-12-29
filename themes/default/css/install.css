@@ -167,13 +167,9 @@ textarea.mono-textbox {
 	text-align: left;
 	border: 1px solid {$GET,standard_border};
 	border-collapse: collapse;
+	width: 90%;
+	margin: 0 auto;
 }
-/*{+START,CSS_MODE,desktop}*/
-	.installer-forums {
-		width: 90%;
-		margin: 0 auto;
-	}
-/*{+END}*/
 
 .installer-forums th {
 	padding: 0;
