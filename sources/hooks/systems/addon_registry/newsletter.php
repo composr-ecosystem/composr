@@ -161,7 +161,7 @@ class Hook_addon_registry_newsletter
             'sources/hooks/systems/config/dual_format_newsletters.php',
             'sources/hooks/systems/config/mails_per_send.php',
             'sources/hooks/systems/config/minutes_between_sends.php',
-            'themes/default/templates/PERIODIC_NEWSLETTER_REMOVE.tpl',
+            'themes/default/templates/PERIODIC_NEWSLETTER_REMOVE_SCREEN.tpl',
             'sources/hooks/systems/tasks/send_newsletter.php',
             'data/incoming_bounced_email.php',
             'sources/hooks/systems/config/newsletter_auto_pause.php',
@@ -207,7 +207,7 @@ class Hook_addon_registry_newsletter
             'templates/NEWSLETTER_PREVIEW.tpl' => 'administrative__newsletter_confirm_wrap',
             'templates/BLOCK_MAIN_NEWSLETTER_SIGNUP_DONE.tpl' => 'block_main_newsletter_signup_done',
             'templates/BLOCK_MAIN_NEWSLETTER_SIGNUP.tpl' => 'block_main_newsletter_signup',
-            'templates/PERIODIC_NEWSLETTER_REMOVE.tpl' => 'periodic_newsletter_remove',
+            'templates/PERIODIC_NEWSLETTER_REMOVE_SCREEN.tpl' => 'periodic_newsletter_remove_screen',
             'templates/NEWSLETTER_STATUS_OVERVIEW.tpl' => 'newsletter_status_overview',
         ];
     }
@@ -369,9 +369,9 @@ class Hook_addon_registry_newsletter
      *
      * @return Tempcode Preview
      */
-    public function tpl_preview__periodic_newsletter_remove() : object
+    public function tpl_preview__periodic_newsletter_remove_screen() : object
     {
-        return lorem_globalise(do_lorem_template('PERIODIC_NEWSLETTER_REMOVE', [
+        return lorem_globalise(do_lorem_template('PERIODIC_NEWSLETTER_REMOVE_SCREEN', [
             'TITLE' => lorem_screen_title(),
             'URL' => placeholder_url(),
         ]), null, '', true);

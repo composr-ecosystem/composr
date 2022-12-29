@@ -388,7 +388,7 @@ class Hook_addon_registry_core_cns
             'sources/cns_join.php',
             'pages/modules/lost_password.php',
             'themes/default/templates/CNS_JOIN_FORM.tpl',
-            'themes/default/templates/CNS_DELURK_CONFIRM.tpl',
+            'themes/default/templates/CNS_DELURK_CONFIRM_SCREEN.tpl',
             'themes/default/templates/CNS_JOIN_STEP2_SCREEN.tpl',
             'lang/EN/cns_lurkers.ini',
             'sources/cns_profiles.php',
@@ -506,7 +506,7 @@ class Hook_addon_registry_core_cns
     public function tpl_previews() : array
     {
         return [
-            'templates/CNS_DELURK_CONFIRM.tpl' => 'administrative__cns_delurk_confirm',
+            'templates/CNS_DELURK_CONFIRM_SCREEN.tpl' => 'administrative__cns_delurk_confirm_screen',
             'templates/CNS_JOIN_STEP1_SCREEN.tpl' => 'cns_join_step1_screen',
             'templates/CNS_JOIN_STEP2_SCREEN.tpl' => 'cns_join_step2_screen',
             'templates/CNS_USER_MEMBER.tpl' => 'cns_user_member',
@@ -544,7 +544,7 @@ class Hook_addon_registry_core_cns
      *
      * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__cns_delurk_confirm() : object
+    public function tpl_preview__administrative__cns_delurk_confirm_screen() : object
     {
         $lurkers = [
             [
@@ -559,7 +559,7 @@ class Hook_addon_registry_core_cns
             ],
         ];
 
-        return lorem_globalise(do_lorem_template('CNS_DELURK_CONFIRM', [
+        return lorem_globalise(do_lorem_template('CNS_DELURK_CONFIRM_SCREEN', [
             'TITLE' => lorem_screen_title(),
             'LURKERS' => $lurkers,
             'URL' => placeholder_url(),
@@ -871,7 +871,7 @@ class Hook_addon_registry_core_cns
             'ONLINE' => false,
             'AVATAR_URL' => placeholder_image_url(),
             'DOB_LABEL' => do_lang('DATE_OF_BIRTH'),
-            'DOB' => lorem_screen_title(),
+            'DOB' => lorem_title(),
             '_DOB' => placeholder_date_raw(),
             '_DOB_CENSORED' => placeholder_date_raw(),
             '_NUM_WARNINGS' => placeholder_number(),

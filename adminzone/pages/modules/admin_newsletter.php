@@ -831,7 +831,7 @@ class Module_admin_newsletter extends Standard_crud_module
         if (preg_match('#^remove_existing_(\d+)$#', post_param_string('periodic_choice', ''), $matches) != 0) {
             $hidden = new Tempcode();
             $hidden->attach(form_input_hidden('periodic_choice', 'periodic_remove_confirmed_' . $matches[1]));
-            return do_template('PERIODIC_NEWSLETTER_REMOVE', [
+            return do_template('PERIODIC_NEWSLETTER_REMOVE_SCREEN', [
                 '_GUID' => '4fe61ba93e2a05ae9f987e462687d6d5',
                 'TITLE' => get_screen_title('REMOVE_PERIODIC_NEWSLETTER'),
                 'URL' => get_self_url(),

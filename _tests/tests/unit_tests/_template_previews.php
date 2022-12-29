@@ -60,29 +60,6 @@ class _template_previews_test_set extends cms_test_case
         require_code('files2');
     }
 
-    public function testNoMissingPreviews()
-    {
-        if ($this->only !== null) {
-            return;
-        }
-
-        $templates = [];
-
-        $files = get_directory_contents(get_file_base() . '/themes/default/templates', get_file_base() . '/themes/default/templates', null, false, true, ['tpl']);
-        foreach ($files as $path) {
-            $templates[] = 'templates/' . basename($path);
-        }
-
-        $all_previews = find_all_previews__by_template();
-
-        foreach ($templates as $t) {
-            $this->assertFalse((!array_key_exists($t, $all_previews)), 'Missing preview for: ' . $t);
-        }
-
-        cms_ini_set('ocproducts.type_strictness', '0');
-        cms_ini_set('ocproducts.xss_detect', '0');
-    }
-
     public function testScreenPreview()
     {
         require_code('webstandards');
@@ -101,9 +78,6 @@ class _template_previews_test_set extends cms_test_case
 
             $this->screen_preview_test_for_theme('testScreenPreview:' . $theme, $theme);
         }
-
-        cms_ini_set('ocproducts.type_strictness', '0');
-        cms_ini_set('ocproducts.xss_detect', '0');
     }
 
     protected function screen_preview_test_for_theme($called_for, $theme)
@@ -336,9 +310,6 @@ class _template_previews_test_set extends cms_test_case
 
             cms_set_time_limit($old_limit);
         }
-
-        cms_ini_set('ocproducts.type_strictness', '0');
-        cms_ini_set('ocproducts.xss_detect', '0');
     }
 
     protected function cleanup_varying_code($_out)
@@ -412,70 +383,6 @@ class _template_previews_test_set extends cms_test_case
 
             cms_set_time_limit($old_limit);
         }
-
-        cms_ini_set('ocproducts.type_strictness', '0');
-        cms_ini_set('ocproducts.xss_detect', '0');
-    }
-
-    public function testNoRedundantFunctions()
-    {
-        if ($this->only !== null) {
-            return;
-        }
-
-        $hooks = find_all_hooks('systems', 'addon_registry');
-        foreach ($hooks as $hook => $place) {
-            require_code('hooks/systems/addon_registry/' . filter_naughty_harsh($hook));
-
-            $ob = object_factory('Hook_addon_registry_' . filter_naughty_harsh($hook));
-            if (!method_exists($ob, 'tpl_previews')) {
-                continue;
-            }
-            $used = array_unique($ob->tpl_previews());
-
-            $code = cms_file_get_contents_safe(get_file_base() . '/' . $place . '/hooks/systems/addon_registry/' . $hook . '.php');
-
-            $matches = [];
-            $num_matches = preg_match_all('#function tpl_preview__(.*)\(#U', $code, $matches);
-            for ($i = 0; $i < $num_matches; $i++) {
-                // Exceptions
-                if (in_array($matches[1][$i], [
-                    'iframe',
-                    'overlay',
-                ])) {
-                    continue;
-                }
-
-                $this->assertTrue(in_array($matches[1][$i], $used), 'Non-used screen function ' . $matches[1][$i]);
-            }
-        }
-
-        cms_ini_set('ocproducts.type_strictness', '0');
-        cms_ini_set('ocproducts.xss_detect', '0');
-    }
-
-    public function testNoDoublePreviews()
-    {
-        if ($this->only !== null) {
-            return;
-        }
-
-        $all_used = [];
-
-        $hooks = find_all_hook_obs('systems', 'addon_registry', 'Hook_addon_registry_');
-        foreach ($hooks as $ob) {
-            if (!method_exists($ob, 'tpl_previews')) {
-                continue;
-            }
-            $used = array_unique($ob->tpl_previews());
-            foreach (array_keys($used) as $u) {
-                $this->assertFalse(array_key_exists($u, $all_used), 'Double defined ' . $u);
-            }
-            $all_used += $used;
-        }
-
-        cms_ini_set('ocproducts.type_strictness', '0');
-        cms_ini_set('ocproducts.xss_detect', '0');
     }
 
     protected function render_screen_preview($called_form, ?string $hook, string $function, ?string $template = null, bool &$full_screen = false) : object

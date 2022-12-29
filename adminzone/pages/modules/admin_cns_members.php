@@ -742,7 +742,7 @@ class Module_admin_cns_members
 
         $url = build_url(['page' => '_SELF', 'type' => '__delurk'], '_SELF');
 
-        return do_template('CNS_DELURK_CONFIRM', ['_GUID' => '52870b8546653782e354533602531970', 'TITLE' => $this->title, 'LURKERS' => $_lurkers, 'URL' => $url]);
+        return do_template('CNS_DELURK_CONFIRM_SCREEN', ['_GUID' => '52870b8546653782e354533602531970', 'TITLE' => $this->title, 'LURKERS' => $_lurkers, 'URL' => $url]);
     }
 
     /**

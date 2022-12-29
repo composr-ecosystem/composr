@@ -81,7 +81,7 @@
 	<ul>
 		<li><a href="{$MAILTO}{$STAFF_ADDRESS}">{!EMAIL_US}</a></li>
 		{+START,IF,{$ADDON_INSTALLED,tickets}}
-			<li><a href="{$PAGE_LINK*,_SEARCH:tickets:ticket}">{!tickets:ADD_TICKET}</a>
+			<li><a href="{$PAGE_LINK*,_SEARCH:tickets:ticket}">{!tickets:ADD_TICKET}</a></li>
 		{+END}
 		{+START,IF_NON_EMPTY,{$CONFIG_OPTION,privacy_fax}}
 			<li>{!FAX_US}: {$CONFIG_OPTION*,privacy_fax}</li>

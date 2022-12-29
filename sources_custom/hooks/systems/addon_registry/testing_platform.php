@@ -851,6 +851,7 @@ We hope other users will appreciate your efforts and give you some points to rew
             '_tests/tests/unit_tests/lang_stemmer.php',
             '_tests/tests/unit_tests/lang_string_special_validity.php',
             '_tests/tests/unit_tests/log_refs.php',
+            '_tests/tests/unit_tests/template_previews_meta.php',
             '_tests/tests/unit_tests/mail.php',
             '_tests/tests/unit_tests/maintenance_codes.php',
             '_tests/tests/unit_tests/media.php',

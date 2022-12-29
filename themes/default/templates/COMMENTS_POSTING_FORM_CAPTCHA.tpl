@@ -36,5 +36,5 @@
 {+END}
 
 {+START,IF_NON_EMPTY,{$CONFIG_OPTION,recaptcha_site_key}}
-	<div data-recaptcha-captcha data-attached-form="comments-form" id="captcha"{+START,IF_PASSED,TABINDEX} data-tabindex="{TABINDEX*}"{+END}></div>
+	<div data-recaptcha-captcha="true" data-attached-form="comments-form" id="captcha"{+START,IF_PASSED,TABINDEX} data-tabindex="{TABINDEX*}"{+END}></div>
 {+END}

@@ -1954,7 +1954,7 @@ class Hook_addon_registry_cns_forum
                 'ONLINE' => false,
                 'AVATAR_URL' => placeholder_image_url(),
                 'DOB_LABEL' => do_lang('DATE_OF_BIRTH'),
-                'DOB' => lorem_screen_title(),
+                'DOB' => lorem_title(),
                 '_DOB' => placeholder_date_raw(),
                 '_DOB_CENSORED' => placeholder_date_raw(),
                 '_NUM_WARNINGS' => placeholder_number(),
