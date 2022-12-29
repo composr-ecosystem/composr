@@ -13,10 +13,6 @@
  * @package    testing_platform
  */
 
-/*EXTRA FUNCTIONS: diff_simple_2*/
-
-// Expect ~3014 files to appear in _tests/screens_tested
-
 /**
  * Composr test case class (unit testing).
  */
