@@ -12,14 +12,11 @@
 		overflow: hidden;
 	}
 
-	.form-table {
-		border-bottom: 0 !important;
-	}
-
 	.form-table > tbody > tr > th, .form-table > thead > tr > th, .form-table > tr > th, .form-table > tbody > tr > td, .form-table > thead > tr > td, .form-table > tr > td {
 		border-top: 0;
 		border-left: 0;
 		border-right: 0;
+		border-bottom: 0 !important;
 	}
 
 	.form-table > tbody > tr > th label::after, .form-table > thead > tr > th label::after, .form-table > tr > th label::after,
