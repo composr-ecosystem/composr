@@ -1004,6 +1004,10 @@ function get_text_templates() : array
         'templates/MENU_SPACER_zone.tpl',
         'templates/MENU_zone.tpl',
 
+        // Hidden / display: none by default
+        'templates/MASS_SELECT_DELETE_FORM.tpl',
+        'templates/MASS_SELECT_MARKER.tpl',
+
         // XML
         'xml/TRACKBACK_XML_LISTING.xml',
         'xml/ATOM_WRAPPER.xml',

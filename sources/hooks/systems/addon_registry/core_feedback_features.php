@@ -670,21 +670,6 @@ class Hook_addon_registry_core_feedback_features
                 'TYPE' => lorem_word() . strval($i),
             ];
         }
-        $rating_form = do_lorem_template('RATING_FORM', [
-            'CONTENT_TYPE' => lorem_word(),
-            'ID' => placeholder_codename(),
-            'URL' => placeholder_url(),
-            'ALLOW_RATING' => true,
-            'ALL_RATING_CRITERIA' => $all_rating_criteria,
-            'HAS_RATINGS' => true,
-            'SIMPLISTIC' => false,
-            'ERROR' => '',
-            'LIKES' => true,
-            'CONTENT_URL' => placeholder_url(),
-            'CONTENT_TITLE' => lorem_phrase(),
-            'OVERALL_NUM_RATINGS' => placeholder_number(),
-            '_OVERALL_NUM_RATINGS' => placeholder_number(),
-        ]);
         return lorem_globalise(do_lorem_template('RATING_DISPLAY_SHARED', [
             'CONTENT_TYPE' => lorem_word(),
             'RATING' => '3',
@@ -695,10 +680,10 @@ class Hook_addon_registry_core_feedback_features
             'NUM_RATINGS' => placeholder_number(),
             '_OVERALL_NUM_RATINGS' => placeholder_number(),
             'OVERALL_NUM_RATINGS' => placeholder_number(),
-            'RATING_FORM' => $rating_form,
+            'RATING_FORM' => new Tempcode(),
             'TITLE' => lorem_phrase(),
             'ERROR' => '',
-            'LIKES' => false,
+            'LIKES' => true,
         ]), null, '', true);
     }
 

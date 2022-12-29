@@ -7,13 +7,6 @@
 	.filedump-screen .tab {
 		min-width: 70px;
 	}
-
-	.tab:nth-child(3n+0) {
-		border-right: 0;
-	}
-	.tab:last-child {
-		border-right: 1px solid {$GET,tab_border};
-	}
 /*{+END}*/
 
 /*{+START,CSS_MODE,mobile}*/
