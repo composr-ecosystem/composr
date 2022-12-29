@@ -199,7 +199,7 @@ class Hook_addon_registry_core_cleanup_tools
         ]);
 
         return lorem_globalise(do_lorem_template('CLEANUP_COMPLETED_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'MESSAGES' => $message,
         ]), null, '', true);
     }

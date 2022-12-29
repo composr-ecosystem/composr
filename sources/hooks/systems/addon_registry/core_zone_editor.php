@@ -176,7 +176,7 @@ class Hook_addon_registry_core_zone_editor
         return lorem_globalise(do_lorem_template('ZONE_EDITOR_SCREEN', [
             'PING_URL' => placeholder_url(),
             'WARNING_DETAILS' => '',
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'ID' => '',
             'LANG' => fallback_lang(),
             'URL' => placeholder_url(),

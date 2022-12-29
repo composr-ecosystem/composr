@@ -200,7 +200,7 @@ class Hook_addon_registry_actionlog
     public function tpl_preview__revisions_screen() : object
     {
         return lorem_globalise(do_lorem_template('REVISIONS_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'RESULTS' => lorem_phrase(),
             'INCLUDE_FILTER_FORM' => true,
             'RESOURCE_TYPES' => [lorem_phrase()],
@@ -217,7 +217,7 @@ class Hook_addon_registry_actionlog
     public function tpl_preview__administrative__diff_screen() : object
     {
         return lorem_globalise(do_lorem_template('DIFF_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'DIFF' => lorem_chunk_html(),
             'WITHOUT_WHITESPACE' => false,
             'WITHOUT_HTML_TAGS' => false,

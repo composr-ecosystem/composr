@@ -161,7 +161,7 @@ class Hook_addon_registry_authors
     public function tpl_preview__administrative__author_manage_screen() : object
     {
         return lorem_globalise(do_lorem_template('AUTHOR_MANAGE_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'DEFINE_FORM' => placeholder_form(),
             'MERGE_FORM' => placeholder_form(),
         ]), null, '', true);
@@ -218,7 +218,7 @@ class Hook_addon_registry_authors
 
         return lorem_globalise(do_lorem_template('AUTHOR_SCREEN', [
             'TAGS' => placeholder_tags(),
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'EDIT_URL' => placeholder_url(),
             'AUTHOR' => lorem_phrase(),
             'NEWS_RELEASED' => $news_released,

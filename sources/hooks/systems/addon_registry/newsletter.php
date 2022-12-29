@@ -275,7 +275,7 @@ class Hook_addon_registry_newsletter
         }
 
         return lorem_globalise(do_lorem_template('NEWSLETTER_SUBSCRIBERS_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'SUBSCRIBERS_TABLE_ROWS' => $subscribers_table_rows,
             'PAGINATION' => '',
             'DOMAINS' => placeholder_array(),
@@ -320,7 +320,7 @@ class Hook_addon_registry_newsletter
             'BACK_URL' => placeholder_url(),
             'PREVIEW' => $preview,
             'FIELDS' => new Tempcode(),
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
         ]), null, '', true);
     }
 
@@ -372,7 +372,7 @@ class Hook_addon_registry_newsletter
     public function tpl_preview__periodic_newsletter_remove() : object
     {
         return lorem_globalise(do_lorem_template('PERIODIC_NEWSLETTER_REMOVE', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'URL' => placeholder_url(),
         ]), null, '', true);
     }

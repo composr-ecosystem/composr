@@ -734,7 +734,7 @@ class Hook_addon_registry_calendar
             'PREVIOUS_URL' => placeholder_url(),
             'NEXT_URL' => placeholder_url(),
             'ADD_URL' => placeholder_url(),
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'BACK_URL' => placeholder_url(),
             'MAIN' => $main,
             'FILTER_URL' => placeholder_url(),

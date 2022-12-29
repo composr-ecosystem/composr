@@ -299,7 +299,7 @@ class Hook_addon_registry_core_primary_layout
             require_lang('awards');
             $awards = [
                 [
-                    'AWARD_TYPE' => lorem_title(),
+                    'AWARD_TYPE' => lorem_screen_title(),
                     'AWARD_TIMESTAMP' => placeholder_date(),
                 ]
             ];

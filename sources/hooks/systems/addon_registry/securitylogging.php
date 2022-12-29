@@ -170,7 +170,7 @@ class Hook_addon_registry_securitylogging
         return lorem_globalise(do_lorem_template('IP_BAN_SCREEN', [
             'PING_URL' => placeholder_url(),
             'WARNING_DETAILS' => '',
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'BANS' => placeholder_ip(),
             'UNBANNABLE' => placeholder_ip(),
             'LOCKED_BANS' => placeholder_ip(),
@@ -213,7 +213,7 @@ class Hook_addon_registry_securitylogging
     public function tpl_preview__administrative__security_screen() : object
     {
         return lorem_globalise(do_lorem_template('SECURITY_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'FAILED_LOGINS' => placeholder_table(),
             'NUM_FAILED_LOGINS' => placeholder_number(),
             'ALERTS' => lorem_phrase(),
@@ -232,7 +232,7 @@ class Hook_addon_registry_securitylogging
     public function tpl_preview__administrative__security_alert_screen() : object
     {
         return lorem_globalise(do_lorem_template('SECURITY_ALERT_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'USER_AGENT' => lorem_phrase(),
             'REFERER' => lorem_phrase(),
             'USER_OS' => lorem_phrase(),
@@ -273,7 +273,7 @@ class Hook_addon_registry_securitylogging
             'OPEN_DEFAULT' => true,
         ]);
         return lorem_globalise(do_lorem_template('LOOKUP_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'ALERTS' => lorem_phrase(),
             'STATS' => lorem_phrase(),
             'IP_LIST' => $group,

@@ -206,7 +206,7 @@ class Hook_addon_registry_cns_warnings
         require_css('cns');
 
         return lorem_globalise(do_lorem_template('CNS_WARNING_HISTORY_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'MEMBER_ID' => placeholder_numeric_id(),
             'VIEW_PROFILE_URL' => placeholder_url(),
             'ADD_WARNING_URL' => placeholder_url(),

@@ -274,7 +274,7 @@ class Hook_addon_registry_core_menus
             'URL' => placeholder_url(),
             'CHILD_BRANCH_TEMPLATE' => $child_branch_template,
             'ROOT_BRANCH' => $root_branch,
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'TOTAL_ITEMS' => placeholder_number(),
             'MENU_TYPE' => 'dropdown',
         ]), null, '', true);

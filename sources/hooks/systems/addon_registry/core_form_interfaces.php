@@ -1713,7 +1713,7 @@ class Hook_addon_registry_core_form_interfaces
             'GET' => false,
             'SKIP_WEBSTANDARDS' => null,
             'HIDDEN' => $hidden,
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'URL' => placeholder_url(),
             'FIELDS' => $fields,
             'SUBMIT_ICON' => 'buttons/proceed',
@@ -1745,7 +1745,7 @@ class Hook_addon_registry_core_form_interfaces
     {
         return lorem_globalise(do_lorem_template('POSTING_SCREEN', [
             'POSTING_FORM' => placeholder_form(),
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'TEXT' => lorem_sentence_html(),
             'PING_URL' => null,
             'PREVIEW' => null,
@@ -1970,7 +1970,7 @@ class Hook_addon_registry_core_form_interfaces
         return lorem_globalise(do_lorem_template('FORM_SCREEN', [
             'GET' => false,
             'HIDDEN' => '',
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'URL' => placeholder_url(),
             'FIELDS' => $fields,
             'SUBMIT_ICON' => 'buttons/proceed',

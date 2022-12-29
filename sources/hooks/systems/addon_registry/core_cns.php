@@ -560,7 +560,7 @@ class Hook_addon_registry_core_cns
         ];
 
         return lorem_globalise(do_lorem_template('CNS_DELURK_CONFIRM', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'LURKERS' => $lurkers,
             'URL' => placeholder_url(),
         ]), null, '', true);
@@ -582,7 +582,7 @@ class Hook_addon_registry_core_cns
         }
 
         return lorem_globalise(do_lorem_template('CNS_JOIN_STEP1_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'RULES' => lorem_chunk_html(),
             'URL' => placeholder_url(),
             'HIDDEN' => '',
@@ -709,7 +709,7 @@ class Hook_addon_registry_core_cns
         ]);
 
         return lorem_globalise(do_lorem_template('CNS_JOIN_STEP2_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'FORM' => $form,
         ]), null, '', true);
     }
@@ -806,7 +806,7 @@ class Hook_addon_registry_core_cns
         }
 
         return lorem_globalise(do_lorem_template('CNS_MEMBER_DIRECTORY_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
         ]), null, '', true);
     }
 
@@ -871,7 +871,7 @@ class Hook_addon_registry_core_cns
             'ONLINE' => false,
             'AVATAR_URL' => placeholder_image_url(),
             'DOB_LABEL' => do_lang('DATE_OF_BIRTH'),
-            'DOB' => lorem_title(),
+            'DOB' => lorem_screen_title(),
             '_DOB' => placeholder_date_raw(),
             '_DOB_CENSORED' => placeholder_date_raw(),
             '_NUM_WARNINGS' => placeholder_number(),
@@ -1110,7 +1110,7 @@ class Hook_addon_registry_core_cns
         }
 
         return lorem_globalise(do_lorem_template('CNS_USERS_ONLINE_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'ROWS' => $rows,
         ]), null, '', true);
     }
@@ -1125,7 +1125,7 @@ class Hook_addon_registry_core_cns
     public function tpl_preview__cns_group_directory_screen() : object
     {
         return lorem_globalise(do_lorem_template('CNS_GROUP_DIRECTORY_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'STAFF' => placeholder_table(),
             'OTHERS' => placeholder_table(),
             'CLUBS' => placeholder_table(),
@@ -1246,7 +1246,7 @@ class Hook_addon_registry_core_cns
             'FORUM' => '',
             'CLUB' => false,
             'EDIT_URL' => placeholder_url(),
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'LEADER' => lorem_phrase(),
             'PROMOTION_INFO' => new Tempcode(),
             'ADD_URL' => placeholder_url(),

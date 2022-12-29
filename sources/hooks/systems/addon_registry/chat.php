@@ -339,7 +339,7 @@ class Hook_addon_registry_chat
     {
         return lorem_globalise(do_lorem_template('CHAT_MODERATE_SCREEN', [
             'URL' => placeholder_url(),
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'INTRODUCTION' => lorem_phrase(),
             'CONTENT' => placeholder_table(),
             'LINKS' => placeholder_array(),
@@ -585,7 +585,7 @@ class Hook_addon_registry_chat
         ]);
 
         return lorem_globalise(do_lorem_template('CHAT_LOBBY_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'MESSAGE' => lorem_phrase(),
             'CHAT_SOUND' => $chat_sound,
             'IM_PARTICIPANT_TEMPLATE' => $im_participant_template,
@@ -693,7 +693,7 @@ class Hook_addon_registry_chat
             'OPTIONS_URL' => placeholder_url(),
             'SUBMIT_VALUE' => lorem_word(),
             'INTRODUCTION' => '',
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'LINKS' => ['admin/edit2' => placeholder_link(), 'checklist/toggle' => placeholder_link()],
             'TEXT_COLOUR_DEFAULT' => lorem_word(),
             'FONT_NAME_DEFAULT' => 'Tahoma',
@@ -739,7 +739,7 @@ class Hook_addon_registry_chat
         }
 
         return lorem_globalise(do_lorem_template('CHAT_SET_EFFECTS_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'SUBMIT_ICON' => 'buttons/save',
             'SUBMIT_NAME' => lorem_word(),
             'HIDDEN' => '',

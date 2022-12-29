@@ -182,7 +182,7 @@ class Hook_addon_registry_core_webstandards
         $display->attach(do_lorem_template('WEBSTANDARDS_SCREEN', [
             'MSG' => lorem_phrase(),
             'RETURN_URL' => placeholder_url(),
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'MESSY_URL' => placeholder_url(),
             'RET' => lorem_phrase(),
         ]));
@@ -235,7 +235,7 @@ class Hook_addon_registry_core_webstandards
         $display->attach(do_lorem_template('WEBSTANDARDS_ERROR_SCREEN', [
             'MSG' => lorem_phrase(),
             'RETURN_URL' => placeholder_url(),
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'IGNORE_URL_2' => placeholder_url(),
             'IGNORE_URL' => placeholder_url(),
             'MESSY_URL' => placeholder_url(),

@@ -268,7 +268,7 @@ class Hook_addon_registry_shopping
         $entry = do_lorem_template('CATALOGUE_DEFAULT_FIELDMAP_ENTRY_WRAP', $map);
 
         return lorem_globalise(do_lorem_template('CATALOGUE_products_ENTRY_SCREEN', $map + [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'WARNINGS' => '',
             'ENTRY' => $entry,
             'ID' => placeholder_numeric_id(),
@@ -369,7 +369,7 @@ class Hook_addon_registry_shopping
         return lorem_globalise(do_lorem_template('CATALOGUE_products_CATEGORY_SCREEN', $map + [
             'ID' => placeholder_numeric_id(),
             'ADD_DATE_RAW' => placeholder_date_raw(),
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             '_TITLE' => lorem_phrase(),
             'CATALOGUE_TITLE' => lorem_phrase(),
             'TAGS' => placeholder_tags(),
@@ -663,7 +663,7 @@ class Hook_addon_registry_shopping
         ]);
 
         return lorem_globalise(do_lorem_template('ECOM_SHOPPING_CART_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'RESULTS_TABLE' => $results_table,
             'UPDATE_CART_URL' => placeholder_url(),
             'CONTINUE_SHOPPING_URL' => placeholder_url(),
@@ -712,7 +712,7 @@ class Hook_addon_registry_shopping
             ];
         }
         return lorem_globalise(do_lorem_template('ECOM_ORDERS_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'ORDERS' => $orders,
         ]), null, '', true);
     }
@@ -763,7 +763,7 @@ class Hook_addon_registry_shopping
         ]);
 
         return lorem_globalise(do_lorem_template('ECOM_ORDER_DETAILS_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'TEXT' => lorem_sentence(),
             'RESULTS_TABLE' => placeholder_table(),
             'ORDER_NUMBER' => placeholder_number(),

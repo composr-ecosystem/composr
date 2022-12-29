@@ -230,7 +230,7 @@ class Hook_addon_registry_captcha
         return lorem_globalise(do_lorem_template('FORM_SCREEN', [
             'SKIP_WEBSTANDARDS' => null,
             'HIDDEN' => '',
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'URL' => placeholder_url(),
             'FIELDS' => $captcha,
             'SUBMIT_ICON' => 'buttons/proceed',

@@ -232,7 +232,7 @@ class Hook_addon_registry_core_addon_management
         }
 
         return lorem_globalise(do_lorem_template('ADDON_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'ADDON_STRUCTURE' => $addons,
             'MULTI_ACTION' => placeholder_url(),
             'UPDATED_ADDONS' => '',
@@ -268,7 +268,7 @@ class Hook_addon_registry_core_addon_management
         }
 
         return lorem_globalise(do_lorem_template('ADDON_MULTI_CONFIRM_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'HIDDEN' => '',
             'URL' => placeholder_url(),
             'INSTALL_FILES' => $install_files,
@@ -314,7 +314,7 @@ class Hook_addon_registry_core_addon_management
             ]));
         }
         return lorem_globalise(do_lorem_template('ADDON_INSTALL_CONFIRM_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'FILE' => lorem_phrase(),
             'URL' => placeholder_url(),
             'FILES' => $files,
@@ -340,7 +340,7 @@ class Hook_addon_registry_core_addon_management
     public function tpl_preview__administrative__addon_uninstall_confirm_screen() : object
     {
         return lorem_globalise(do_lorem_template('ADDON_UNINSTALL_CONFIRM_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'URL' => placeholder_url(),
             'NAME' => lorem_word(),
             'WARNINGS' => lorem_phrase(),
@@ -398,7 +398,7 @@ class Hook_addon_registry_core_addon_management
         }
 
         return lorem_globalise(do_lorem_template('ADDON_EXPORT_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'LANGUAGES' => $tpl_languages,
             'URL' => placeholder_url(),
             'FILES' => $frm_files,
@@ -452,7 +452,7 @@ class Hook_addon_registry_core_addon_management
         }
 
         return lorem_globalise(do_lorem_template('MODULE_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'MODULES' => $tpl_modules,
         ]), null, '', true);
     }

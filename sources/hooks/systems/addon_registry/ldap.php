@@ -188,7 +188,7 @@ class Hook_addon_registry_ldap
 
         return lorem_globalise(do_lorem_template('CNS_LDAP_SYNC_SCREEN', [
             'URL' => placeholder_url(),
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'MEMBERS_DELETE' => $members_delete,
             'GROUPS_DELETE' => $groups_delete,
             'GROUPS_ADD' => $groups_add,

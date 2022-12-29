@@ -237,7 +237,7 @@ class Hook_addon_registry_points
         }
 
         return lorem_globalise(do_lorem_template('POINTS_SEARCH_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'RESULTS' => $results,
         ]), null, '', true);
     }
@@ -311,7 +311,7 @@ class Hook_addon_registry_points
         ]);
 
         return lorem_globalise(do_lorem_template('POINTS_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'CONTENT' => $content,
         ]), null, '', true);
     }
@@ -352,7 +352,7 @@ class Hook_addon_registry_points
     public function tpl_preview__points_escrow_screen() : object
     {
         return lorem_globalise(do_lorem_template('POINTS_ESCROW_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'FIELDS' => placeholder_fields(),
             'BUTTONS' => placeholder_button(),
             'ESCROW_LOGS' => placeholder_table()

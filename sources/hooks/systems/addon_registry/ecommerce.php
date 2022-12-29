@@ -682,7 +682,7 @@ class Hook_addon_registry_ecommerce
     public function tpl_preview__purchase_screen() : object
     {
         $fields = do_lorem_template('ECOM_PURCHASE_STAGE_TRANSACT', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'TYPE_CODE' => lorem_word(),
             'PURCHASE_ID' => placeholder_codename(),
             'FIELDS' => placeholder_fields(),
@@ -693,7 +693,7 @@ class Hook_addon_registry_ecommerce
         ]);
 
         return lorem_globalise(do_lorem_template('ECOM_PURCHASE_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'CONTENT' => $fields,
             'URL' => placeholder_url(),
             'SUBMIT_NAME' => lorem_phrase(),
@@ -853,7 +853,7 @@ class Hook_addon_registry_ecommerce
         }
 
         return lorem_globalise(do_lorem_template('ECOM_PURCHASE_STAGE_CHOOSE', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'PRODUCTS' => $products,
 
             'CATEGORY' => null,
@@ -875,7 +875,7 @@ class Hook_addon_registry_ecommerce
     public function tpl_preview__purchase_stage_message() : object
     {
         return lorem_globalise(do_lorem_template('ECOM_PURCHASE_STAGE_MESSAGE', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'ITEM_NAME' => lorem_phrase(),
             'TYPE_CODE' => lorem_word(),
             'TEXT' => lorem_sentence_html(),
@@ -893,7 +893,7 @@ class Hook_addon_registry_ecommerce
     {
         require_lang('installer');
         return lorem_globalise(do_lorem_template('ECOM_PURCHASE_STAGE_TERMS', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'ITEM_NAME' => lorem_phrase(),
             'TYPE_CODE' => lorem_word(),
             'URL' => placeholder_url(),
@@ -911,7 +911,7 @@ class Hook_addon_registry_ecommerce
     public function tpl_preview__purchase_stage_details() : object
     {
         return lorem_globalise(do_lorem_template('ECOM_PURCHASE_STAGE_DETAILS', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'ITEM_NAME' => lorem_phrase(),
             'TYPE_CODE' => lorem_word(),
             'TEXT' => lorem_sentence_html(),
@@ -930,7 +930,7 @@ class Hook_addon_registry_ecommerce
     public function tpl_preview__purchase_stage_transact() : object
     {
         return lorem_globalise(do_lorem_template('ECOM_PURCHASE_STAGE_TRANSACT', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'ITEM_NAME' => lorem_phrase(),
             'TYPE_CODE' => lorem_word(),
             'PURCHASE_ID' => placeholder_codename(),
@@ -951,7 +951,7 @@ class Hook_addon_registry_ecommerce
     public function tpl_preview__purchase_stage_pay() : object
     {
         return lorem_globalise(do_lorem_template('ECOM_PURCHASE_STAGE_PAY', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'TRANSACTION_BUTTON' => placeholder_button(),
             'CURRENCY' => 'GBP',
             'ITEM_NAME' => lorem_phrase(),
@@ -975,7 +975,7 @@ class Hook_addon_registry_ecommerce
     public function tpl_preview__purchase_stage_finish() : object
     {
         return lorem_globalise(do_lorem_template('ECOM_PURCHASE_STAGE_FINISH', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'TYPE_CODE' => lorem_word(),
             'MESSAGE' => lorem_phrase(),
             'SUCCESS' => true,
@@ -1010,7 +1010,7 @@ class Hook_addon_registry_ecommerce
         }
 
         return lorem_globalise(do_lorem_template('ECOM_INVOICES_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'INVOICES' => $invoices,
         ]), null, '', true);
     }
@@ -1064,7 +1064,7 @@ class Hook_addon_registry_ecommerce
         }
 
         return lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTIONS_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'SUBSCRIPTIONS' => $subscriptions,
         ]), null, '', true);
     }
@@ -1206,7 +1206,7 @@ class Hook_addon_registry_ecommerce
         pop_field_encapsulation();
 
         return lorem_globalise(do_lorem_template('ECOM_SALES_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'CONTENT' => $content,
             'PAGINATION' => placeholder_pagination(),
             'FILTERS_ROW_A' => $filters_row_a,
@@ -1248,7 +1248,7 @@ class Hook_addon_registry_ecommerce
             ];
         }
         return lorem_globalise(do_lorem_template('ECOM_CASH_FLOW_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'TYPES' => $types,
         ]), null, '', true);
     }
@@ -1274,7 +1274,7 @@ class Hook_addon_registry_ecommerce
         return lorem_globalise(do_lorem_template('ECOM_PRODUCT_PRICE_SCREEN', [
             'PING_URL' => placeholder_url(),
             'WARNING_DETAILS' => $warning_details,
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'EDIT_FORM' => placeholder_form(),
             'ADD_FORMS' => $add_forms,
         ]), null, '', true);

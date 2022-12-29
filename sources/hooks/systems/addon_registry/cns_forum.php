@@ -492,7 +492,7 @@ class Hook_addon_registry_cns_forum
         }
 
         return lorem_globalise(do_lorem_template('CNS_FORUM_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'CONTENT' => $content,
             '_NUM_GUESTS' => placeholder_number(),
             '_NUM_MEMBERS' => placeholder_number(),
@@ -573,7 +573,7 @@ class Hook_addon_registry_cns_forum
 
         return lorem_globalise(do_lorem_template('CNS_EDIT_FORUM_SCREEN', [
             'REORDER_URL' => placeholder_url(),
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'ROOT_FORUM' => $root_forum,
         ]), null, '', true);
     }
@@ -1091,7 +1091,7 @@ class Hook_addon_registry_cns_forum
 
         return lorem_globalise(do_lorem_template('CNS_FORUM_INTRO_QUESTION_SCREEN', [
             'ANSWER' => lorem_phrase(),
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'URL' => placeholder_url(),
             'QUESTION' => lorem_phrase(),
         ]), null, '', true);
@@ -1288,7 +1288,7 @@ class Hook_addon_registry_cns_forum
         }
 
         return lorem_globalise(do_lorem_template('CNS_FORUM_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'CONTENT' => $content,
             '_NUM_GUESTS' => placeholder_number(),
             '_NUM_MEMBERS' => placeholder_number(),
@@ -1313,7 +1313,7 @@ class Hook_addon_registry_cns_forum
         require_lang('cns');
 
         return lorem_globalise(do_lorem_template('CNS_VFORUM_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'CONTENT' => lorem_phrase(),
         ]), null, '', true);
     }
@@ -1333,7 +1333,7 @@ class Hook_addon_registry_cns_forum
 
         return lorem_globalise(do_lorem_template('CNS_WHISPER_CHOICE_SCREEN', [
             'URL' => placeholder_url(),
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'USERNAME' => lorem_word(),
         ]), null, '', true);
     }
@@ -1372,7 +1372,7 @@ class Hook_addon_registry_cns_forum
         require_lang('cns');
 
         return lorem_globalise(do_lorem_template('CNS_MEMBER_PT_RULES_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'USERNAME' => lorem_word(),
             'MEMBER_ID' => placeholder_numeric_id(),
             'URL' => placeholder_url(),
@@ -1954,7 +1954,7 @@ class Hook_addon_registry_cns_forum
                 'ONLINE' => false,
                 'AVATAR_URL' => placeholder_image_url(),
                 'DOB_LABEL' => do_lang('DATE_OF_BIRTH'),
-                'DOB' => lorem_title(),
+                'DOB' => lorem_screen_title(),
                 '_DOB' => placeholder_date_raw(),
                 '_DOB_CENSORED' => placeholder_date_raw(),
                 '_NUM_WARNINGS' => placeholder_number(),
@@ -2038,7 +2038,7 @@ class Hook_addon_registry_cns_forum
         }
 
         return lorem_globalise(do_lorem_template('CNS_TOPIC_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'THREADED' => false,
             'ID' => placeholder_numeric_id(),
             '_TITLE' => lorem_phrase(),

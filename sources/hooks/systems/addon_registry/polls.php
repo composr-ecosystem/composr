@@ -400,7 +400,7 @@ class Hook_addon_registry_polls
         $poll_details = $this->_tpl_preview_poll('poll');
 
         return lorem_globalise(do_lorem_template('POLL_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'DATE_RAW' => placeholder_date_raw(),
             'ADD_DATE_RAW' => placeholder_date_raw(),
             'EDIT_DATE_RAW' => placeholder_date_raw(),
@@ -429,7 +429,7 @@ class Hook_addon_registry_polls
     public function tpl_preview__poll_archive_screen() : object
     {
         return lorem_globalise(do_lorem_template('POLL_ARCHIVE_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
         ]), null, '', true);
     }
 

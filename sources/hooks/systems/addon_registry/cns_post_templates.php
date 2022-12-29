@@ -180,7 +180,7 @@ class Hook_addon_registry_cns_post_templates
         return lorem_globalise(do_lorem_template('FORM_SCREEN', [
             'SKIP_WEBSTANDARDS' => null,
             'HIDDEN' => '',
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'URL' => placeholder_url(),
             'FIELDS' => $fields,
             'SUBMIT_ICON' => 'buttons/proceed',

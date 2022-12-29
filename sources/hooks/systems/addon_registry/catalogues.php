@@ -279,7 +279,7 @@ class Hook_addon_registry_catalogues
         return lorem_globalise(do_lorem_template('CATALOGUE_DEFAULT_CATEGORY_SCREEN', [
             'ID' => placeholder_numeric_id(),
             'ADD_DATE_RAW' => placeholder_date_raw(),
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             '_TITLE' => lorem_phrase(),
             'CATALOGUE_TITLE' => lorem_phrase(),
             'TAGS' => placeholder_tags(),
@@ -589,7 +589,7 @@ class Hook_addon_registry_catalogues
         ]);
 
         return lorem_globalise(do_lorem_template('CATALOGUE_DEFAULT_ENTRY_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'WARNINGS' => '',
             'ID' => placeholder_numeric_id(),
             'ENTRY' => $entry,
@@ -624,7 +624,7 @@ class Hook_addon_registry_catalogues
 
         return lorem_globalise(do_lorem_template('CATALOGUE_ADDING_SCREEN', [
             'HIDDEN' => '',
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'TEXT' => lorem_sentence_html(),
             'URL' => placeholder_url(),
             'FIELDS' => placeholder_fields(),
@@ -649,7 +649,7 @@ class Hook_addon_registry_catalogues
 
         return lorem_globalise(do_lorem_template('CATALOGUE_EDITING_SCREEN', [
             'HIDDEN' => '',
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'TEXT' => lorem_sentence_html(),
             'URL' => placeholder_url(),
             'FIELDS' => placeholder_fields(),

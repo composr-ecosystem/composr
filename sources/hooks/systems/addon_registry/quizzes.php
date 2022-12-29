@@ -200,7 +200,7 @@ class Hook_addon_registry_quizzes
         ]);
 
         return lorem_globalise(do_lorem_template('QUIZ_RESULTS_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'SUMMARY' => $summary,
             'RESULTS' => placeholder_table(),
         ]), null, '', true);
@@ -227,7 +227,7 @@ class Hook_addon_registry_quizzes
         }
 
         return lorem_globalise(do_lorem_template('QUIZ_RESULT_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'USERNAME' => lorem_phrase(),
             'MEMBER_URL' => placeholder_url(),
             'DATE' => placeholder_date(),
@@ -310,7 +310,7 @@ class Hook_addon_registry_quizzes
         $content_competitions->attach($link);
 
         return lorem_globalise(do_lorem_template('QUIZ_ARCHIVE_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'CONTENT_SURVEYS' => $content_surveys,
             'CONTENT_COMPETITIONS' => $content_competitions,
             'CONTENT_TESTS' => $content_tests,
@@ -337,7 +337,7 @@ class Hook_addon_registry_quizzes
             'ID' => placeholder_numeric_id(),
             'WARNING_DETAILS' => $warning_details,
             'URL' => placeholder_url(),
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'START_TEXT' => lorem_sentence_html(),
             'FIELDS' => placeholder_fields(),
             'EDIT_URL' => placeholder_url(),
@@ -464,7 +464,7 @@ class Hook_addon_registry_quizzes
         }
 
         return lorem_globalise(do_lorem_template('QUIZ_DONE_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'ENTRY_ID' => placeholder_numeric_id(),
             'QUIZ_NAME' => lorem_phrase(),
             'GIVEN_ANSWERS_ARR' => $given_answers_arr,

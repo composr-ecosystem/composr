@@ -149,7 +149,7 @@ class Hook_addon_registry_page_management
         require_lang('zones');
 
         return lorem_globalise(do_lorem_template('SITEMAP_EDITOR_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
         ]), null, '', true);
     }
 
@@ -172,7 +172,7 @@ class Hook_addon_registry_page_management
             ]));
         }
         return lorem_globalise(do_lorem_template('WEBSTANDARDS_CHECK_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'CONTENTS' => $content,
         ]), null, '', true);
     }

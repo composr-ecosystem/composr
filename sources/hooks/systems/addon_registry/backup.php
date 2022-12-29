@@ -177,7 +177,7 @@ class Hook_addon_registry_backup
     public function tpl_preview__administrative__backup_launch_screen() : object
     {
         return lorem_globalise(do_lorem_template('BACKUP_LAUNCH_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'TEXT' => lorem_sentence(),
             'RESULTS' => lorem_phrase(),
             'FORM' => placeholder_form_with_field('submit_button'),

@@ -188,7 +188,7 @@ class Hook_addon_registry_cns_cpfs
         }
 
         return lorem_globalise(do_lorem_template('CNS_CPF_STATS_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'STATS' => $lines,
         ]), null, '', true);
     }

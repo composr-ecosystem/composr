@@ -220,7 +220,7 @@ class Hook_addon_registry_core_comcode_pages
         ];
 
         return lorem_globalise(do_lorem_template('COMCODE_PAGE_MANAGE_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'TABLE' => placeholder_table(),
             'SUBMIT_NAME' => lorem_word(),
             'URL' => placeholder_url(),
@@ -329,7 +329,7 @@ class Hook_addon_registry_core_comcode_pages
         ]);
 
         return lorem_globalise(do_lorem_template('GENERATE_PAGE_SITEMAP_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'ZONES' => [lorem_phrase() => lorem_phrase()],
             'PAGE_STRUCTURE' => $page_structure,
         ]), null, '', true);

@@ -197,7 +197,7 @@ class Hook_addon_registry_wiki
             'PAGE_TITLE' => lorem_phrase(),
             'PING_URL' => placeholder_url(),
             'WARNING_DETAILS' => '',
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'FORM' => placeholder_form(),
             'WIKI_TREE' => placeholder_options(),
         ]), null, '', true);
@@ -296,7 +296,7 @@ class Hook_addon_registry_wiki
             'VIEWS' => placeholder_number(),
             'STAFF_ACCESS' => '1',
             'DESCRIPTION' => lorem_paragraph_html(),
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'CHILDREN' => $children,
             'POSTS' => $posts,
             '_NUM_POSTS' => placeholder_number(),
@@ -353,7 +353,7 @@ class Hook_addon_registry_wiki
             'PING_URL' => '',
             'WARNING_DETAILS' => '',
             'TEXT' => lorem_phrase(),
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'POSTING_FORM' => $posting_form,
         ]), null, '', true);
     }

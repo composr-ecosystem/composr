@@ -240,7 +240,7 @@ class Hook_addon_registry_tickets
         }
 
         return lorem_globalise(do_lorem_template('SUPPORT_TICKETS_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'MESSAGE' => lorem_phrase(),
             'LINKS' => $links,
             'ADD_TICKET_URL' => placeholder_url(),
@@ -335,7 +335,7 @@ class Hook_addon_registry_tickets
             'TYPES' => placeholder_array(),
             'STAFF_ONLY' => true,
             'POSTER' => lorem_phrase(),
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'COMMENTS' => $comments,
             'COMMENT_FORM' => $comment_form,
             'STAFF_DETAILS' => placeholder_url(),
@@ -361,7 +361,7 @@ class Hook_addon_registry_tickets
     public function tpl_preview__support_tickets_search_screen() : object
     {
         return lorem_globalise(do_lorem_template('SUPPORT_TICKETS_SEARCH_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'URL' => placeholder_url(),
             'POST_FIELDS' => '',
             'RESULTS' => lorem_phrase(),
@@ -378,7 +378,7 @@ class Hook_addon_registry_tickets
     public function tpl_preview__support_ticket_type_screen() : object
     {
         return lorem_globalise(do_lorem_template('SUPPORT_TICKET_TYPE_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'TPL' => placeholder_form(),
             'ADD_FORM' => placeholder_form(),
         ]), null, '', true);

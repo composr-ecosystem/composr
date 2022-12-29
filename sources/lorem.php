@@ -68,7 +68,7 @@ function lorem_phrase() : string
  *
  * @return Tempcode Place holder text
  */
-function lorem_title() : object
+function lorem_screen_title() : object
 {
     return get_screen_title('Lorem Ipsum Dolor', false);
 }

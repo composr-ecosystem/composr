@@ -178,7 +178,7 @@ class Hook_addon_registry_redirects_editor
             'NOTES' => '',
             'PING_URL' => placeholder_url(),
             'WARNING_DETAILS' => '',
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'EXISTING' => $existing,
             'NEW' => $new,
             'URL' => placeholder_url(),
@@ -216,7 +216,7 @@ class Hook_addon_registry_redirects_editor
         return lorem_globalise(do_lorem_template('URL_REDIRECT_SCREEN', [
             'PING_URL' => placeholder_url(),
             'WARNING_DETAILS' => '',
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'EXISTING' => $existing,
             'NEW' => $new,
             'URL' => placeholder_url(),

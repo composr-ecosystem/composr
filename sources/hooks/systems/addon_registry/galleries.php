@@ -540,7 +540,7 @@ class Hook_addon_registry_galleries
         ]);
 
         return lorem_globalise(do_lorem_template('GALLERY_IMPORT_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'FORM2' => placeholder_form(),
             'FORM' => $form,
         ]), null, '', true);
@@ -767,7 +767,7 @@ class Hook_addon_registry_galleries
             'RATING_DETAILS' => lorem_sentence_html(),
             'COMMENT_DETAILS' => $comment_details,
             'REP_IMAGE_URL' => placeholder_image_url(),
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'MEMBER_DETAILS' => lorem_phrase(),
             'DESCRIPTION' => lorem_paragraph_html(),
             'CURRENT_ENTRY' => $video,
@@ -880,7 +880,7 @@ class Hook_addon_registry_galleries
             'RATING_DETAILS' => lorem_sentence_html(),
             'COMMENT_DETAILS' => $comment_details,
             'REP_IMAGE_URL' => placeholder_image_url(),
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'MEMBER_DETAILS' => lorem_paragraph_html(),
             'DESCRIPTION' => lorem_paragraph_html(),
             'CURRENT_ENTRY' => $image,
@@ -1041,7 +1041,7 @@ class Hook_addon_registry_galleries
             'COMMENT_DETAILS' => $comment_details,
             'ADD_GALLERY_URL' => placeholder_url(),
             'EDIT_URL' => placeholder_url(),
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'DESCRIPTION' => lorem_paragraph_html(),
             'IMAGE_URL' => placeholder_url(),
             'VIDEO_URL' => placeholder_url(),
@@ -1124,7 +1124,7 @@ class Hook_addon_registry_galleries
             'GALLERY_TITLE' => lorem_phrase(),
             'MEMBER_ID' => placeholder_numeric_id(),
             'TAGS' => placeholder_tags(),
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'SUBMITTER' => placeholder_numeric_id(),
             'URL' => placeholder_url(),
             'MEMBER_DETAILS' => lorem_sentence_html(),
@@ -1291,7 +1291,7 @@ class Hook_addon_registry_galleries
             'COMMENT_DETAILS' => '',
             'ADD_GALLERY_URL' => placeholder_url(),
             'EDIT_URL' => placeholder_url(),
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'DESCRIPTION' => lorem_paragraph(),
             'IMAGE_URL' => placeholder_url(),
             'VIDEO_URL' => placeholder_url(),

@@ -301,7 +301,7 @@ class Hook_addon_registry_health_check
         $results = do_lorem_template('HEALTH_CHECK_RESULTS', ['CATEGORIES' => $categories]);
 
         return lorem_globalise(do_lorem_template('HEALTH_CHECK_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'SECTIONS' => placeholder_options(),
             'SHOW_PASSES' => true,
             'SHOW_SKIPS' => true,

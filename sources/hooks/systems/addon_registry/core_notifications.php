@@ -226,7 +226,7 @@ class Hook_addon_registry_core_notifications
         );
 
         return lorem_globalise(do_lorem_template('NOTIFICATION_BROWSE_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'NOTIFICATIONS' => $notifications,
             'PAGINATION' => placeholder_pagination(),
         ]), null, '', true);
@@ -242,7 +242,7 @@ class Hook_addon_registry_core_notifications
     public function tpl_preview__notification_view_screen() : object
     {
         return lorem_globalise(do_lorem_template('NOTIFICATION_VIEW_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'ID' => placeholder_numeric_id(),
             'SUBJECT' => lorem_phrase(),
             'MESSAGE' => lorem_paragraph(),
@@ -419,7 +419,7 @@ class Hook_addon_registry_core_notifications
         ]);
 
         return lorem_globalise(do_lorem_template('NOTIFICATIONS_MANAGE_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'INTERFACE' => $interface,
             'ACTION_URL' => get_self_url(),
         ]), null, '', true);
@@ -467,7 +467,7 @@ class Hook_addon_registry_core_notifications
         ];
 
         return lorem_globalise(do_lorem_template('NOTIFICATIONS_MANAGE_ADVANCED_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             '_TITLE' => lorem_phrase(),
             'COLOR' => 'FFFFFF',
             'ACTION_URL' => placeholder_url(),

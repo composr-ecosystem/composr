@@ -181,7 +181,7 @@ class Hook_addon_registry_import
         return lorem_globalise(do_lorem_template('IMPORT_ACTION_SCREEN', [
             'EXTRA' => $extra,
             'MESSAGE' => lorem_phrase(),
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'FIELDS' => lorem_phrase(),
             'HIDDEN' => '',
             'IMPORTER' => lorem_phrase(),

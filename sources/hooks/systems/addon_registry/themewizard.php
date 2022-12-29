@@ -244,7 +244,7 @@ class Hook_addon_registry_themewizard
             'BACK_URL' => placeholder_url(),
             'PREVIEW' => $preview,
             'FIELDS' => '',
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
         ]), null, '', true);
     }
 }

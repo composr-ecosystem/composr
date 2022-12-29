@@ -228,7 +228,7 @@ class Hook_addon_registry_stats
         ];
 
         return lorem_globalise(do_lorem_template('STATS_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'GRAPHS' => $graphs,
         ]), null, '', true);
     }
@@ -299,7 +299,7 @@ class Hook_addon_registry_stats
         ];
 
         return lorem_globalise(do_lorem_template('KPI_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'GRAPHS' => $graphs,
             'KPIS' => $kpis,
         ]), null, '', true);

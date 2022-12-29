@@ -254,7 +254,7 @@ class Hook_addon_registry_community_billboard
         ]);
 
         return lorem_globalise(do_lorem_template('FORM_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'TEXT' => $about_current,
             'HIDDEN' => '',
             'URL' => placeholder_url(),

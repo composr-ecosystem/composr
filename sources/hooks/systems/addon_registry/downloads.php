@@ -343,7 +343,7 @@ class Hook_addon_registry_downloads
     {
         return lorem_globalise(do_lorem_template('DOWNLOAD_CATEGORY_SCREEN', [
             'TAGS' => placeholder_tags(),
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'WARNING_DETAILS' => '',
             'SUBMIT_URL' => placeholder_url(),
             'ADD_CAT_URL' => placeholder_url(),
@@ -399,7 +399,7 @@ class Hook_addon_registry_downloads
         }
 
         return lorem_globalise(do_lorem_template('DOWNLOAD_ALL_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'SUBMIT_URL' => placeholder_url(),
             'ADD_CAT_URL' => placeholder_url(),
             'ADD_CAT_TITLE' => do_lang_tempcode('ADD_DOWNLOAD_CATEGORY'),
@@ -455,7 +455,7 @@ class Hook_addon_registry_downloads
             'DATE_RAW' => placeholder_date_raw(),
             '_NUM_DOWNLOADS' => placeholder_number(),
             'NUM_DOWNLOADS' => placeholder_number(),
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'NAME' => lorem_phrase(),
             'OUTMODE_URL' => placeholder_url(),
             'WARNING_DETAILS' => '',
@@ -489,7 +489,7 @@ class Hook_addon_registry_downloads
     public function tpl_preview__download_gateway_screen() : object
     {
         return lorem_globalise(do_lorem_template('DOWNLOAD_GATEWAY_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'NAME' => lorem_phrase(),
             'DOWNLOAD_URL' => placeholder_url(),
             'URL' => placeholder_url(),

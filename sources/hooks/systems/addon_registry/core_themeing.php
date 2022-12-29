@@ -237,7 +237,7 @@ class Hook_addon_registry_core_themeing
         }
 
         return lorem_globalise(do_lorem_template('THEME_MANAGE_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'THEMES' => $themes,
             'THEME_DEFAULT_REASON' => lorem_phrase(),
             'ZONES' => $zones,
@@ -256,7 +256,7 @@ class Hook_addon_registry_core_themeing
     {
         return lorem_globalise(do_lorem_template('THEME_IMAGE_MANAGE_SCREEN', [
             'ADD_URL' => placeholder_url(),
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'FORM' => placeholder_form(),
         ]), null, '', true);
     }
@@ -271,7 +271,7 @@ class Hook_addon_registry_core_themeing
     public function tpl_preview__administrative__theme_image_edit_screen() : object
     {
         return lorem_globalise(do_lorem_template('THEME_IMAGE_EDIT_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'WIDTH' => placeholder_number(),
             'HEIGHT' => placeholder_number(),
             'IMAGE_URL' => placeholder_image_url(),
@@ -315,7 +315,7 @@ class Hook_addon_registry_core_themeing
     public function tpl_preview__administrative__theme_template_editor_screen() : object
     {
         return lorem_globalise(do_lorem_template('THEME_TEMPLATE_EDITOR_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'FILES_TO_LOAD' => [],
             'THEME' => lorem_word(),
             'LIVE_PREVIEW_URL' => placeholder_url(),
@@ -407,7 +407,7 @@ class Hook_addon_registry_core_themeing
     public function tpl_preview__administrative__tempcode_tester_screen() : object
     {
         return lorem_globalise(do_lorem_template('TEMPCODE_TESTER_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
         ]), null, '', true);
     }
 
@@ -441,7 +441,7 @@ class Hook_addon_registry_core_themeing
         }
 
         return lorem_globalise(do_lorem_template('INDEX_SCREEN_FANCIER_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'ARRAY' => true,
             'CONTENT' => [lorem_phrase() => $lis],
             'POST' => '',
@@ -513,7 +513,7 @@ class Hook_addon_registry_core_themeing
         ]);
 
         return lorem_globalise(do_lorem_template('TEMPLATE_TREE_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'TREE' => $tree,
         ]), null, '', true);
     }
@@ -537,7 +537,7 @@ class Hook_addon_registry_core_themeing
         ]);
 
         return lorem_globalise(do_lorem_template('PREVIEW_SVG_SPRITE_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'SPRITE_PATH' => 'themes/default/images/icons_sprite.svg',
             'ICONS' => $icons,
         ]), null, '', true);
@@ -555,7 +555,7 @@ class Hook_addon_registry_core_themeing
         require_lang('themes');
 
         return lorem_globalise(do_lorem_template('GENERATE_SVG_SPRITE_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'SPRITE_PATH_MONOCHROME' => 'themes/default/images/icons_sprite.svg',
             'ICONS_ADDED_MONOCHROME' => ['admin/add'],
             'SPRITE_PATH_COLOUR' => 'themes/default/images/icons_sprite.svg',

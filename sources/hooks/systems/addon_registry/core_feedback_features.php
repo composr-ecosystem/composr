@@ -257,7 +257,7 @@ class Hook_addon_registry_core_feedback_features
         }
 
         return lorem_globalise(do_lorem_template('TRACKBACK_DELETE_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'TRACKBACKS' => $trackbacks,
             'LOTS' => lorem_phrase(),
         ]), null, '', true);

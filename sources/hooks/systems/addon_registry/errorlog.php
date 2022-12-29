@@ -151,7 +151,7 @@ class Hook_addon_registry_errorlog
         ];
 
         return lorem_globalise(do_lorem_template('ERRORLOG_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'ERRORS' => lorem_chunk_html(),
             'CLEAR_URL' => placeholder_url(),
             'LOGS' => $logs,

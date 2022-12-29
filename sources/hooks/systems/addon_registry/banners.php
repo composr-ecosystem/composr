@@ -242,7 +242,7 @@ class Hook_addon_registry_banners
     public function tpl_preview__administrative__banner_added_screen() : object
     {
         return lorem_globalise(do_lorem_template('BANNER_ADDED_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'TEXT' => lorem_sentence_html(),
             'BANNER_CODE' => lorem_phrase(),
             'STATS_URL' => placeholder_url(),
@@ -404,7 +404,7 @@ class Hook_addon_registry_banners
     public function tpl_preview__administrative__banner_view_screen() : object
     {
         return lorem_globalise(do_lorem_template('BANNER_VIEW_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'EDIT_URL' => placeholder_url(),
             'MAP_TABLE' => lorem_phrase(),
             'BANNER' => lorem_phrase(),

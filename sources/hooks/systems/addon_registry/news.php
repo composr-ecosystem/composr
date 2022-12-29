@@ -615,7 +615,7 @@ class Hook_addon_registry_news
         require_lang('news');
 
         return lorem_globalise(do_lorem_template('NEWS_WORDPRESS_IMPORT_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'XML_UPLOAD_FORM' => placeholder_form(),
             'DB_IMPORT_FORM' => placeholder_form(),
         ]), null, '', true);
@@ -633,7 +633,7 @@ class Hook_addon_registry_news
         require_lang('news');
 
         return lorem_globalise(do_lorem_template('NEWS_ARCHIVE_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'SUBMIT_URL' => placeholder_url(),
             'EDIT_CAT_URL' => placeholder_url(),
             'BLOG' => false,
@@ -695,7 +695,7 @@ class Hook_addon_registry_news
             'SUBMITTER' => placeholder_numeric_id(),
             'CATEGORY' => lorem_phrase(),
             'REP_IMAGE_URL' => placeholder_image_url(),
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             '_VIEWS' => placeholder_number(),
             'VIEWS' => placeholder_number(),
             'COMMENT_DETAILS' => $comment_details,

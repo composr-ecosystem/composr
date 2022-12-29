@@ -142,7 +142,7 @@ class Hook_addon_registry_robots_txt
     public function tpl_preview__administrative__robots_txt_screen() : object
     {
         return lorem_globalise(do_lorem_template('ROBOTS_TXT_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'POST_URL' => placeholder_url(),
             'TEXT' => lorem_chunk(),
             'DEFAULT' => lorem_chunk(),

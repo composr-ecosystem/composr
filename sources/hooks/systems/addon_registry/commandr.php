@@ -297,7 +297,7 @@ class Hook_addon_registry_commandr
         ]);
 
         return lorem_globalise(do_lorem_template('COMMANDR_MAIN_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'CONTENT' => $content,
         ]), null, '', true);
     }

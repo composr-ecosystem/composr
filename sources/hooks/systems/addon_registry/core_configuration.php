@@ -485,7 +485,7 @@ class Hook_addon_registry_core_configuration
             '_GROUPS' => placeholder_array(),
             'PING_URL' => placeholder_url(),
             'WARNING_DETAILS' => '',
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'URL' => placeholder_url(),
             'GROUPS' => $groups,
             'SUBMIT_ICON' => 'buttons/save',
@@ -505,7 +505,7 @@ class Hook_addon_registry_core_configuration
         return lorem_globalise(do_lorem_template('XML_CONFIG_SCREEN', [
             'XML' => '<test />',
             'POST_URL' => placeholder_url(),
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
         ]), null, '', true);
     }
 
@@ -535,7 +535,7 @@ class Hook_addon_registry_core_configuration
         ];
 
         return lorem_globalise(do_lorem_template('OAUTH_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'SERVICES' => $services,
         ]), null, '', true);
     }

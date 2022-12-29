@@ -489,7 +489,7 @@ class Hook_addon_registry_search
             'RESULTS' => null,
             'PAGINATION' => '',
             'HAS_FULLTEXT_SEARCH' => true,
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'AUTHOR' => lorem_phrase(),
             'SPECIALISATION' => $specialisation,
             'URL' => placeholder_url(),

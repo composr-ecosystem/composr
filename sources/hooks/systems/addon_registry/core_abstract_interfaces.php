@@ -315,7 +315,7 @@ class Hook_addon_registry_core_abstract_interfaces
     {
         return lorem_globalise(do_lorem_template('REDIRECT_SCREEN', [
             'URL' => placeholder_url(),
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'TEXT' => lorem_sentence(),
         ]), null, '', true);
     }
@@ -330,7 +330,7 @@ class Hook_addon_registry_core_abstract_interfaces
     public function tpl_preview__confirm_screen() : object
     {
         return lorem_globalise(do_lorem_template('CONFIRM_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'URL' => placeholder_url(),
             'BACK_URL' => placeholder_url(),
             'PREVIEW' => lorem_phrase(),
@@ -358,7 +358,7 @@ class Hook_addon_registry_core_abstract_interfaces
         }
 
         return lorem_globalise(do_lorem_template('INDEX_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'PRE' => lorem_phrase(),
             'POST' => lorem_phrase(),
             'CONTENT' => $entry,
@@ -387,7 +387,7 @@ class Hook_addon_registry_core_abstract_interfaces
 
         return lorem_globalise(do_lorem_template('INDEX_SCREEN_FANCIER_SCREEN', [
             'CONTENT' => $entries,
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'POST' => lorem_phrase(),
             'PRE' => lorem_phrase(),
             'ADD_URL' => placeholder_url(),
@@ -431,7 +431,7 @@ class Hook_addon_registry_core_abstract_interfaces
         ]);
 
         return lorem_globalise(do_lorem_template('MAP_TABLE_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'FIELDS' => $fields,
             'RESPONSIVE' => false,
         ]), null, '', true);
@@ -477,7 +477,7 @@ class Hook_addon_registry_core_abstract_interfaces
     public function tpl_preview__administrative__fatal_screen() : object
     {
         return lorem_globalise(do_lorem_template('FATAL_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'TEXT' => lorem_phrase(),
             'TRACE' => lorem_phrase(),
             'MAY_SEE_TRACE' => true,
@@ -539,7 +539,7 @@ class Hook_addon_registry_core_abstract_interfaces
     public function tpl_preview__missing_screen() : object
     {
         return lorem_globalise(do_lorem_template('MISSING_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'ADD_URL' => placeholder_url(),
             'PAGE' => lorem_phrase(),
             'DID_MEAN_ZONE' => lorem_word(),
@@ -560,7 +560,7 @@ class Hook_addon_registry_core_abstract_interfaces
     public function tpl_preview__inform_screen() : object
     {
         return lorem_globalise(do_lorem_template('INFORM_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'TEXT' => lorem_sentence(),
         ]), null, '', true);
     }
@@ -593,7 +593,7 @@ class Hook_addon_registry_core_abstract_interfaces
     public function tpl_preview__warn_screen() : object
     {
         return lorem_globalise(do_lorem_template('WARN_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'WEBSERVICE_RESULT' => lorem_phrase(),
             'TEXT' => lorem_sentence(),
             'PROVIDE_BACK' => placeholder_codename(),
@@ -665,7 +665,7 @@ class Hook_addon_registry_core_abstract_interfaces
         return lorem_globalise(do_lorem_template('DO_NEXT_SCREEN', [
             'INTRO' => lorem_phrase_html(),
             'QUESTION' => lorem_phrase(),
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'SECTIONS' => $sections,
         ]), null, '', true);
     }
@@ -697,7 +697,7 @@ class Hook_addon_registry_core_abstract_interfaces
     public function tpl_preview__pagination_screen() : object
     {
         return lorem_globalise(do_lorem_template('PAGINATION_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'CONTENT' => lorem_phrase(),
             'PAGINATION' => placeholder_pagination(),
         ]), null, '', true);
@@ -713,7 +713,7 @@ class Hook_addon_registry_core_abstract_interfaces
     public function tpl_preview__full_message_screen() : object
     {
         return lorem_globalise(do_lorem_template('FULL_MESSAGE_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'TEXT' => lorem_sentence(),
         ]), null, '', true);
     }
@@ -953,7 +953,7 @@ class Hook_addon_registry_core_abstract_interfaces
         pop_field_encapsulation();
 
         return lorem_globalise(do_lorem_template('RESULTS_TABLE_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'RESULTS_TABLE' => $results_table,
             'FORM' => placeholder_button(),
             'FILTERS_ROW_A' => $filters_row_a,
@@ -1092,7 +1092,7 @@ class Hook_addon_registry_core_abstract_interfaces
         pop_field_encapsulation();
 
         return lorem_globalise(do_lorem_template('RESULTS_TABLE_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'RESULTS_TABLE' => $results_table,
             'FORM' => placeholder_button(),
             'FILTERS_ROW_A' => $filters_row_a,
@@ -1143,7 +1143,7 @@ class Hook_addon_registry_core_abstract_interfaces
     public function tpl_preview__administrative__columned_table_screen() : object
     {
         return lorem_globalise(do_lorem_template('COLUMNED_TABLE_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'TABLE' => placeholder_table(),
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => lorem_word(),

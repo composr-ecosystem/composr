@@ -518,7 +518,7 @@ class Hook_addon_registry_core_rich_media
             'PING_URL' => placeholder_url(),
             'WARNING_DETAILS' => '',
             'TEXT' => lorem_sentence_html(),
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'DELETE_URL' => placeholder_url(),
             'IS_TRANSLATION' => false,
             'ZONE' => lorem_phrase(),
@@ -685,7 +685,7 @@ class Hook_addon_registry_core_rich_media
         }
 
         return lorem_globalise(do_lorem_template('COMCODE_MISTAKE_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'EDITABLE' => true,
             'FORM' => placeholder_form(),
             'LINE' => lorem_phrase(),

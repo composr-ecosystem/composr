@@ -171,7 +171,7 @@ class Hook_addon_registry_unvalidated
             'CONTENT' => lorem_phrase(),
         ]);
         return lorem_globalise(do_lorem_template('UNVALIDATED_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'SECTIONS' => $section,
             'TEXT' => lorem_paragraph_html(),
         ]), null, '', true);

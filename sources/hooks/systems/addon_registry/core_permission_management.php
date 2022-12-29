@@ -188,7 +188,7 @@ class Hook_addon_registry_core_permission_management
 
         return lorem_globalise(do_lorem_template('PERMISSIONS_TREE_EDITOR_SCREEN', [
             'USERGROUPS' => placeholder_array(),
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'INITIAL_GROUP' => lorem_phrase(),
             'COLOR' => lorem_phrase(),
             'GROUPS' => $groups,
@@ -266,7 +266,7 @@ class Hook_addon_registry_core_permission_management
         }
 
         return lorem_globalise(do_lorem_template('PERMISSION_KEYS_PERMISSIONS_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'URL' => placeholder_url(),
             'HEADER_CELLS' => $header_cells,
             'ROWS' => $rows,
@@ -330,7 +330,7 @@ class Hook_addon_registry_core_permission_management
         ]));
 
         return lorem_globalise(do_lorem_template('PERMISSION_PRIVILEGES_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'URL' => placeholder_url(),
             'HEADER_CELLS' => $header_cells,
             'ROWS' => $rows,
@@ -400,7 +400,7 @@ class Hook_addon_registry_core_permission_management
         ];
 
         return lorem_globalise(do_lorem_template('PERMISSIONS_CONTENT_ACCESS_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'ZONES' => $zones,
             'MODULES' => $modules,
             'URL' => placeholder_url(),

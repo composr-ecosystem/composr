@@ -2251,7 +2251,7 @@ class Hook_addon_registry_core
     public function tpl_preview__email_log_screen() : object
     {
         return lorem_globalise(do_lorem_template('EMAIL_LOG_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'RESULTS_TABLE' => placeholder_table(),
             'MASS_DELETE_URL' => placeholder_url(),
             'MASS_SEND_URL' => placeholder_url(),
@@ -2284,7 +2284,7 @@ class Hook_addon_registry_core
     {
         return lorem_globalise(do_lorem_template('ACTIONLOGS_SCREEN', [
             'TABLE' => placeholder_table(),
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
         ]), null, '', true);
     }
 
@@ -2303,7 +2303,7 @@ class Hook_addon_registry_core
             'EXTRA' => lorem_phrase(),
             'USERNAME' => lorem_word(),
             'JOIN_URL' => placeholder_url(),
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'LOGIN_URL' => placeholder_url(),
             'PASSION' => '',
             'TARGET' => '_top',
@@ -2321,7 +2321,7 @@ class Hook_addon_registry_core
     {
         return lorem_globalise(do_lorem_template('REDIRECT_POST_METHOD_SCREEN', [
             'REFRESH' => '',
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'TEXT' => lorem_sentence_html(),
             'URL' => placeholder_url(),
             'POST' => lorem_phrase(),
@@ -2695,7 +2695,7 @@ class Hook_addon_registry_core
         }
 
         return lorem_globalise(do_lorem_template('QUERY_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'TOTAL' => lorem_phrase(),
             'TOTAL_TIME' => placeholder_number(),
             'QUERIES' => $queries,
@@ -2904,7 +2904,7 @@ class Hook_addon_registry_core
         ];
 
         return lorem_globalise(do_lorem_template('GROUP_MEMBER_TIMEOUT_MANAGE_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'TIMEOUTS' => $timeouts,
             'GROUPS' => [placeholder_numeric_id() => lorem_word()],
             'DATE_INPUT' => lorem_phrase(),
@@ -2935,7 +2935,7 @@ class Hook_addon_registry_core
         ];
 
         return lorem_globalise(do_lorem_template('SPONSORS_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'PATREON_PATRONS' => $patreon_patrons,
             'SPONSORS' => $sponsors,
         ]), null, '', true);

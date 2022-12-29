@@ -201,7 +201,7 @@ class Hook_addon_registry_filedump
         ];
 
         return lorem_globalise(do_lorem_template('FILEDUMP_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'SUBPATH' => placeholder_codename(),
             'THUMBNAILS' => $thumbnails,
             'LISTING' => placeholder_table(),
@@ -241,7 +241,7 @@ class Hook_addon_registry_filedump
         }
 
         return lorem_globalise(do_lorem_template('FILEDUMP_EMBED_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'FORM' => placeholder_form(),
             'IMAGE_SIZES' => $image_sizes,
             'URL' => placeholder_image_url(),

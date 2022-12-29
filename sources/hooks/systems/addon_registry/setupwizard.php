@@ -191,7 +191,7 @@ class Hook_addon_registry_setupwizard
         ]);
 
         return lorem_globalise(do_lorem_template('SETUPWIZARD_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'INNER' => $inner,
             'STEP' => '2',
             'NUM_STEPS_ENUMERABLE' => '10',
@@ -217,7 +217,7 @@ class Hook_addon_registry_setupwizard
         ]);
 
         return lorem_globalise(do_lorem_template('SETUPWIZARD_SCREEN', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_screen_title(),
             'INNER' => $inner,
             'STEP' => '7',
             'NUM_STEPS_ENUMERABLE' => '10',
