@@ -1,4 +1,4 @@
-<div{+START,IF,{$NOT,{$_GET,keep_show_timings}}} data-tpl="installerStepLog"{+END}>
+<div {+START,IF,{$NOT,{$_GET,keep_show_timings}}} data-tpl="installerStepLog"{+END}>
 	<p>
 		{!INSTALL_LOG_BELOW,{CURRENT_STEP*}}:
 	</p>

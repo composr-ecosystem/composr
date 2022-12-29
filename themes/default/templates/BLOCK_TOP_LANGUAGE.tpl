@@ -6,7 +6,7 @@
 				{+START,LOOP,LANGS}
 					<div>
 						{+START,IF_NON_EMPTY,{COUNTRY_FLAG}}<a href="{$SELF_URL*,0,1,0,keep_lang={_loop_key&}}" hreflang="{$LCASE*,{_loop_key}}"><img width="24" height="20" src="{$IMG*,flags_large/{$LCASE,{COUNTRY_FLAG}}}" alt="" /></a>{+END}
-						<a{+START,IF,{$EQ,{CURRENT_LANG},{_loop_key}}} class="current" title="{!CURRENT} {!LANGUAGE}: {CURRENT_LANG_FULL_NAME*}"{+END} href="{$SELF_URL*,0,1,0,keep_lang={_loop_key&}}" hreflang="{$LCASE*,{_loop_key}}">{FULL_NAME*}</a>
+						<a {+START,IF,{$EQ,{CURRENT_LANG},{_loop_key}}} class="current" title="{!CURRENT} {!LANGUAGE}: {CURRENT_LANG_FULL_NAME*}"{+END} href="{$SELF_URL*,0,1,0,keep_lang={_loop_key&}}" hreflang="{$LCASE*,{_loop_key}}">{FULL_NAME*}</a>
 					</div>
 				{+END}
 			</div>

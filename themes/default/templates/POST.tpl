@@ -22,9 +22,9 @@
 
 				<div class="post-subline">
 					{+START,IF_EMPTY,{POSTER_URL}}{!BY_SIMPLE,{POSTER_NAME*}},{+END}
-					<span{+START,IF,{$GET,has_schema_reviews}} itemprop="author" itemscope="itemscope" itemtype="https://schema.org/Person"{+END}>
-						{+START,IF_NON_EMPTY,{POSTER_URL}}{!BY_SIMPLE,<a{+START,IF,{$GET,has_schema_reviews}} itemprop="name"{+END} class="post-poster" href="{POSTER_URL*}">{$DISPLAYED_USERNAME*,{POSTER_NAME}}</a>} {+START,INCLUDE,MEMBER_TOOLTIP}SUBMITTER={POSTER_ID}{+END}{+END}
-						{+START,IF_EMPTY,{POSTER_URL}}<span{+START,IF,{$GET,has_schema_reviews}} itemprop="name"{+END}>{!BY_SIMPLE,{POSTER_NAME*}},</span>{+END}
+					<span {+START,IF,{$GET,has_schema_reviews}} itemprop="author" itemscope="itemscope" itemtype="https://schema.org/Person"{+END}>
+						{+START,IF_NON_EMPTY,{POSTER_URL}}{!BY_SIMPLE,<a {+START,IF,{$GET,has_schema_reviews}} itemprop="name"{+END} class="post-poster" href="{POSTER_URL*}">{$DISPLAYED_USERNAME*,{POSTER_NAME}}</a>} {+START,INCLUDE,MEMBER_TOOLTIP}SUBMITTER={POSTER_ID}{+END}{+END}
+						{+START,IF_EMPTY,{POSTER_URL}}<span {+START,IF,{$GET,has_schema_reviews}} itemprop="name"{+END}>{!BY_SIMPLE,{POSTER_NAME*}},</span>{+END}
 					</span>
 
 					<span class="post-time">
@@ -93,7 +93,7 @@
 					{+END}
 				</div>
 
-				<div{+START,IF,{$GET,has_schema_reviews}} itemprop="reviewBody"{+END}>
+				<div {+START,IF,{$GET,has_schema_reviews}} itemprop="reviewBody"{+END}>
 					{POST`}
 					{$METADATA_IMAGE_EXTRACT,{POST}}
 				</div>

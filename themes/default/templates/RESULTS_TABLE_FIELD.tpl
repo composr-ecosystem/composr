@@ -20,4 +20,4 @@
 	{+START,IF,{$NOR,{$GET,add_link},{$GET,edit_link}}}{VALUE}{+END}
 {+END}
 {$,We trim so ":empty" will work in CSS, used by our responsive tables}
-<td{+START,IF_PASSED,COLSPAN} colspan="{COLSPAN*}"{+END}>{$TRIM,{$GET,cell}}</td>
+<td {+START,IF_PASSED,COLSPAN} colspan="{COLSPAN*}"{+END}>{$TRIM,{$GET,cell}}</td>

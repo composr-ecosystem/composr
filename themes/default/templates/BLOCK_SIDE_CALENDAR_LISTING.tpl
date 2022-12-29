@@ -25,10 +25,10 @@
 							</th>
 
 							<td>
-								<time{+START,IF,{$EQ,{TIME_WRITTEN},{!ALL_DAY_EVENT}}} style="display: none"{+END} class="dtstart" datetime="{TIME_VCAL*}" itemprop="startDate">{$?,{$EQ,{TIME_WRITTEN},{!ALL_DAY_EVENT}},{TIME_VCAL*},{TIME*}}</time>
+								<time {+START,IF,{$EQ,{TIME_WRITTEN},{!ALL_DAY_EVENT}}} style="display: none"{+END} class="dtstart" datetime="{TIME_VCAL*}" itemprop="startDate">{$?,{$EQ,{TIME_WRITTEN},{!ALL_DAY_EVENT}},{TIME_VCAL*},{TIME*}}</time>
 							</td>
 
-							<td{+START,IF,{$EQ,{TIME_WRITTEN},{!ALL_DAY_EVENT}}} colspan="2"{+END}>
+							<td {+START,IF,{$EQ,{TIME_WRITTEN},{!ALL_DAY_EVENT}}} colspan="2"{+END}>
 								<a href="{VIEW_URL*}" class="url" itemprop="name"><span class="summary">{E_TITLE*}</span></a>
 								{+START,IF_PASSED,TO_TIME}
 									<span {+START,IF,{$EQ,{TIME},{TO_TIME}}} style="display: none"{+END}>

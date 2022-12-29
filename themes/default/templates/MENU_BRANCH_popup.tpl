@@ -7,7 +7,7 @@
 	{+START,IF_NON_EMPTY,{IMG}}<img alt="" width="24" height="24" src="{IMG*}" />{+END}
 
 	{+START,IF_NON_EMPTY,{URL}}
-		<a{+START,INCLUDE,MENU_LINK_PROPERTIES}{+END}{+START,IF,{$GET,HAS_CHILDREN}} class="drawer js-click-unset-active-menu js-focus-pop-up-menu"{+END}>{CAPTION}</a>
+		<a {+START,INCLUDE,MENU_LINK_PROPERTIES}{+END}{+START,IF,{$GET,HAS_CHILDREN}} class="drawer js-click-unset-active-menu js-focus-pop-up-menu"{+END}>{CAPTION}</a>
 	{+END}
 	{+START,IF_EMPTY,{URL}}
 		<a class="non-link{+START,IF,{$GET,HAS_CHILDREN}} drawer js-click-unset-active-menu js-focus-pop-up-menu{+END}" href="#!">{CAPTION}</a>

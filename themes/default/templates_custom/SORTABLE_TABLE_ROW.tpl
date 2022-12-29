@@ -13,10 +13,10 @@
 	{+END}
 {+END}
 
-<tr{+START,IF_NON_EMPTY,{$TRIM,{$GET,tooltip}}} style="cursor: pointer" data-cms-tooltip="{$GET*,tooltip}"{+END}>
+<tr {+START,IF_NON_EMPTY,{$TRIM,{$GET,tooltip}}} style="cursor: pointer" data-cms-tooltip="{$GET*,tooltip}"{+END}>
 	{+START,LOOP,VALUES}
 		{+START,SET,class}{+START,OF,CLASSES,{_loop_key}}{+END}{+END}
 		{+START,SET,style}{+START,OF,STYLINGS,{_loop_key}}{+END}{+END}
-		<td{+START,IF_NON_EMPTY,{$GET,style}} style="{$GET*,style}"{+END}{+START,IF_NON_EMPTY,{$GET,class}} class="{$GET*,class}"{+END}>{_loop_var*}</td>
+		<td {+START,IF_NON_EMPTY,{$GET,style}} style="{$GET*,style}"{+END}{+START,IF_NON_EMPTY,{$GET,class}} class="{$GET*,class}"{+END}>{_loop_var*}</td>
 	{+END}
 </tr>

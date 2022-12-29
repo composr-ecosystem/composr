@@ -16,7 +16,7 @@
 							<h2>{_loop_key*}</h2>
 						{+END}
 
-						<div{+START,IF,{$EQ,(CONTENT),1}} class="not-too-tall"{+END}>
+						<div {+START,IF,{$EQ,(CONTENT),1}} class="not-too-tall"{+END}>
 							{_loop_var}
 						</div>
 					{+END}

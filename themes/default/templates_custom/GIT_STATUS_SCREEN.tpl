@@ -228,13 +228,13 @@
 	<p>
 		<label for="sort">Sort by</label>:
 		<select name="sort" id="sort">
-			<option{+START,IF,{$EQ,{SORT},path ASC}} selected="selected"{+END} value="path ASC">Path (A-Z)</option>
-			<option{+START,IF,{$EQ,{SORT},path DESC}} selected="selected"{+END} value="path DESC">Path (Z-A)</option>
-			<option{+START,IF,{$EQ,{SORT},file_size ASC}} selected="selected"{+END} value="file_size ASC">File size (small to big)</option>
-			<option{+START,IF,{$EQ,{SORT},file_size DESC}} selected="selected"{+END} value="file_size DESC">File size (big to small)</option>
-			<option{+START,IF,{$EQ,{SORT},mtime ASC}} selected="selected"{+END} value="mtime ASC">Last modified (oldest first)</option>
-			<option{+START,IF,{$EQ,{SORT},mtime DESC}} selected="selected"{+END} value="mtime DESC">Last modified (newest first)</option>
-			<option{+START,IF,{$EQ,{SORT},git_status ASC}} selected="selected"{+END} value="git_status ASC">Git status</option>
+			<option {+START,IF,{$EQ,{SORT},path ASC}} selected="selected"{+END} value="path ASC">Path (A-Z)</option>
+			<option {+START,IF,{$EQ,{SORT},path DESC}} selected="selected"{+END} value="path DESC">Path (Z-A)</option>
+			<option {+START,IF,{$EQ,{SORT},file_size ASC}} selected="selected"{+END} value="file_size ASC">File size (small to big)</option>
+			<option {+START,IF,{$EQ,{SORT},file_size DESC}} selected="selected"{+END} value="file_size DESC">File size (big to small)</option>
+			<option {+START,IF,{$EQ,{SORT},mtime ASC}} selected="selected"{+END} value="mtime ASC">Last modified (oldest first)</option>
+			<option {+START,IF,{$EQ,{SORT},mtime DESC}} selected="selected"{+END} value="mtime DESC">Last modified (newest first)</option>
+			<option {+START,IF,{$EQ,{SORT},git_status ASC}} selected="selected"{+END} value="git_status ASC">Git status</option>
 		</select>
 		<button type="submit" class="button-micro buttons--sort">{+START,INCLUDE,ICON}NAME=buttons/sort{+END} {!SORT}</button>
 	</p>

@@ -82,13 +82,13 @@
 
 				{+START,IF,{$GET,has_left_panel}}
 					<div id="panel-left" class="global-side-panel{+START,IF,{$GET,has_right_panel}} with-both-panels{+END}" role="complementary" itemscope="itemscope" itemtype="http://schema.org/WPSideBar">
-						<div{+START,IF,{$THEME_OPTION,stuck_nav}} class="stuck-nav" data-stuck-nav="data-stuck-nav"{+END}>{$LOAD_PANEL,left}</div>
+						<div {+START,IF,{$THEME_OPTION,stuck_nav}} class="stuck-nav" data-stuck-nav="data-stuck-nav"{+END}>{$LOAD_PANEL,left}</div>
 					</div>
 				{+END}
 
 				{+START,IF,{$GET,has_right_panel}}
 					<div id="panel-right" class="global-side-panel{+START,IF,{$GET,has_left_panel}} with-both-panels{+END}" role="complementary" itemscope="itemscope" itemtype="http://schema.org/WPSideBar">
-						<div{+START,IF,{$THEME_OPTION,stuck_nav}} class="stuck-nav" data-stuck-nav="data-stuck-nav"{+END}>{$LOAD_PANEL,right}</div>
+						<div {+START,IF,{$THEME_OPTION,stuck_nav}} class="stuck-nav" data-stuck-nav="data-stuck-nav"{+END}>{$LOAD_PANEL,right}</div>
 					</div>
 				{+END}
 			</div>

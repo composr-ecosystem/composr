@@ -23,7 +23,7 @@
 						{!NA_EM}
 					{+END}
 				</td>
-				<td{+START,IF,{$NOT,{HITS_TARGET}}} class="red-alert"{+END}>
+				<td {+START,IF,{$NOT,{HITS_TARGET}}} class="red-alert"{+END}>
 					{+START,IF_PASSED,TARGET}
 						{TARGET*}
 					{+END}
