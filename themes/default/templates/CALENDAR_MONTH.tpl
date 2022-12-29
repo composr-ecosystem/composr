@@ -14,7 +14,7 @@
 		<tr>
 			<th></th>
 			{+START,IF,{$SSW}}
-				<th><span>{$?,{$MOBILE},{!SUNDAY},{!SUNDAY}}</span></th>
+				<th><span>{$?,{$MOBILE},{!FC_SUNDAY},{!SUNDAY}}</span></th>
 			{+END}
 			<th><span>{$?,{$MOBILE},{!FC_MONDAY},{!MONDAY}}</span></th>
 			<th><span>{$?,{$MOBILE},{!FC_TUESDAY},{!TUESDAY}}</span></th>
