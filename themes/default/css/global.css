@@ -6428,10 +6428,7 @@ NB: Form buttons are wrapped in either:
 */
 
 .tab-surround {
-	border-left: 1px solid;
-	border-right: 1px solid;
-	border-bottom: 1px solid;
-	border-color: {$GET,tab_border};
+	border: 1px solid {$GET,tab_border};
 	border-bottom-left-radius: 10px;
 	border-bottom-right-radius: 10px;
 	padding: 0.5em;
@@ -6448,23 +6445,11 @@ NB: Form buttons are wrapped in either:
 	border-top: 0;
 	height: 35px;
 }
-/*{+START,CSS_MODE,desktop}*/
-	.tabs {
-		border-bottom: 1px solid;
-		border-color: {$GET,tab_border};
-	}
-/*{+END}*/
 
 .spaced-out-tabs.tabs {
 	overflow: hidden;
 	height: auto;
 }
-
-/*{+START,CSS_MODE,mobile}*/
-	.tabs {
-		border-bottom: 1px solid {$GET,tab_border};
-	}
-/*{+END}*/
 
 a.tab, a.tab:visited, a.tab:hover {
 	text-decoration: none;
@@ -6477,12 +6462,13 @@ a.tab, a.tab:visited, a.tab:hover {
 	text-align: center;
 	cursor: pointer;
 	line-height: 18px;
-	border-left: 1px solid {$GET,tab_border};
 	border-top: 1px solid {$GET,tab_border};
+	border-right: 1px solid {$GET,tab_border};
 }
 /*{+START,CSS_MODE,mobile}*/
 	.tab {
-		min-width: 105px; /* Allows 3 per row, neat alignment */
+		width: 100%;
+		border-left: 1px solid {$GET,tab_border};
 	}
 /*{+END}*/
 
@@ -6499,7 +6485,7 @@ a.tab > span {
 
 /*{+START,CSS_MODE,mobile}*/
 	.tab-surround .tab {
-		min-width: 99px; /* Allows 3 per row, neat alignment (for nested tabs) */
+		width: 99px; /* Allows 3 per row, neat alignment (for nested tabs) */
 	}
 /*{+END}*/
 
@@ -6529,20 +6515,8 @@ a.tab > span {
 }
 
 .tab-first, a.tab:first-child {
+	border-left: 1px solid {$GET,tab_border};
 }
-
-/*{+START,CSS_MODE,desktop}*/
-	.tab-last, a.tab:last-child, .spaced-out-tabs .tab {
-		border-right: 1px solid;
-		border-color: {$GET,tab_border};
-	}
-/*{+END}*/
-
-/*{+START,CSS_MODE,mobile}*/
-	.tab:nth-child(3n+0), .tab-last, a.tab:last-child {
-		border-right: 1px solid {$GET,tab_border};
-	}
-/*{+END}*/
 
 /*{+START,CSS_MODE,desktop}*/
 	div[role="tabpanel"] {
