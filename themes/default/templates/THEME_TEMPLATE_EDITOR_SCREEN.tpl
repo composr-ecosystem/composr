@@ -2,6 +2,7 @@
 {$REQUIRE_JAVASCRIPT,jquery_ui}
 {$REQUIRE_JAVASCRIPT,core_rich_media}
 {$REQUIRE_JAVASCRIPT,core_themeing}
+{$REQUIRE_JAVASCRIPT,core_form_interfaces}
 {$REQUIRE_JAVASCRIPT,actionlog}
 {$REQUIRE_CSS,jquery_ui}
 

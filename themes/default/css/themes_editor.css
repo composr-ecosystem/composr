@@ -99,6 +99,10 @@
 	height: 100%;
 }
 
+.template-editor-file-selector > .inner > #tree-list--root-theme_files {
+	background-color: {$GET,native_ui_background};
+}
+
 .template-editor-tabs {
 	flex-grow: 1;
 }

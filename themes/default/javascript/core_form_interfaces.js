@@ -1327,6 +1327,8 @@
      * @returns {boolean}
      */
     $cms.form.modSecurityWorkaround = function modSecurityWorkaround(form) {
+        $util.log('Using modSecurityWorkaround');
+
         var tempForm = document.createElement('form');
         tempForm.method = 'post';
 

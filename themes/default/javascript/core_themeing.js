@@ -470,22 +470,34 @@
             url += 'keep_mobile=1';
         }
 
+        var submitPreview = function () {
+            var tokenField = button.form.elements['csrf_token'];
+            if (tokenField) {
+                return $cms.getCsrfToken().then(function (text) {
+                    $util.log('Regenerated CSRF token');
+
+                    tokenField.value = text;
+
+                    button.form.action = url;
+                    button.form.target = '_blank';
+
+                    if ($cms.form.isModSecurityWorkaroundEnabled()) {
+                        $cms.form.modSecurityWorkaround(button.form);
+                        return;
+                    }
+
+                    button.form.submit();
+                });
+            }
+        };
+
         if (askForUrl) {
             $cms.ui.prompt(
                 '{!themes:URL_TO_PREVIEW_WITH;^}',
                 url,
                 function (url) {
                     if (url !== null) {
-                        var tokenField = button.form.elements['csrf_token'];
-                        if (tokenField) {
-                            return $cms.getCsrfToken().then(function (text) {
-                                tokenField.value = text;
-
-                                button.form.action = url;
-                                button.form.target = '_blank';
-                                button.form.submit();
-                            });
-                        }
+                        submitPreview();
                     }
                 },
                 '{!PREVIEW;^}'
@@ -494,18 +506,7 @@
             return false;
         }
 
-        var tokenField = button.form.elements['csrf_token'];
-        if (tokenField) {
-            return $cms.getCsrfToken().then(function (text) {
-                $util.log('Regenerated CSRF token');
-
-                tokenField.value = text;
-
-                button.form.action = url;
-                button.form.target = '_blank';
-                button.form.submit();
-            });
-        }
+        submitPreview();
 
         return false;
     }
