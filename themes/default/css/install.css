@@ -141,7 +141,6 @@ textarea.mono-textbox {
 #install-newsletter {
 	border: 1px dotted {$GET,standard_border};
 	border-radius: 5px;
-	width: 22em;
 	float: right;
 	margin-left: 15px;
 	background-color: {$GET,area_background};
