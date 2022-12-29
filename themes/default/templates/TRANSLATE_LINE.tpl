@@ -1,6 +1,6 @@
 {$REQUIRE_JAVASCRIPT,core_language_editing}
 
-<tr data-tpl="translateLine">
+<tr>
 	<th class="translate-line-first">
 		<a id="jmp-{NAME*}"></a>
 
@@ -13,7 +13,7 @@
 			{+END}</a>
 		{+END}
 	</th>
-	<td class="translate-line-second js-mouseover-enable-textarea-translate-field">
+	<td class="translate-line-second">
 		<div class="accessibility-hidden"><label for="old--trans-{NAME*}">{!OLD} {NAME*}</label></div>
 		<div>
 			<textarea disabled="disabled" readonly="readonly" class="translate-original-text form-control form-control-wide" cols="60" rows="{$ADD*,{$DIV,{$LENGTH,{OLD}},80},1}" id="old--trans-{NAME*}" name="old__{NAME*}">{OLD*}</textarea>
@@ -23,7 +23,7 @@
 
 		<div class="accessibility-hidden"><label for="trans-{NAME*}">{NAME*}</label></div>
 		<div>
-			<textarea {+START,IF,{$EQ,{OLD},{CURRENT}}} disabled="disabled"{+END} class="form-control form-control-wide translate-field js-textarea-translate-field" cols="60" rows="{+START,IF,{$EQ,{CURRENT},}}{$ADD*,{$DIV,{$LENGTH,{OLD}},80},1}{+END}{+START,IF,{$NEQ,{CURRENT},}}{$ADD,{$DIV,{$LENGTH,{CURRENT}},80},1}{+END}" id="trans-{NAME*}" name="trans_{NAME*}">{CURRENT*}</textarea>
+			<textarea class="form-control form-control-wide translate-field js-textarea-translate-field" cols="60" rows="{+START,IF,{$EQ,{CURRENT},}}{$ADD*,{$DIV,{$LENGTH,{OLD}},80},1}{+END}{+START,IF,{$NEQ,{CURRENT},}}{$ADD,{$DIV,{$LENGTH,{CURRENT}},80},1}{+END}" id="trans-{NAME*}" name="trans_{NAME*}">{CURRENT*}</textarea>
 		</div>
 	</td>
 	{+START,IF_NON_EMPTY,{ACTIONS}}

@@ -32,13 +32,6 @@
         document.body.appendChild(newScript);
     };
 
-    $cms.templates.translateLine = function (params, container) {
-        $dom.on(container, 'mouseover', '.js-mouseover-enable-textarea-translate-field', function () {
-            var textarea = $dom.$(container, '.js-textarea-translate-field');
-            textarea.disabled = false;
-        });
-    };
-
     $cms.templates.translateAction = function translateAction(params, container) {
         var name = strVal(params.name),
             old = strVal(params.old),
