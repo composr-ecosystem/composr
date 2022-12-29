@@ -1471,9 +1471,15 @@ class Hook_addon_registry_core_rich_media
      */
     public function tpl_preview__comcode_code_scroll() : object
     {
+        // We need many lines of text to demonstrate scrolling
+        $contents = lorem_phrase() . '<br />';
+        for ($i = 0; $i < 1001; $i++) {
+            $contents .= lorem_phrase() . '<br />';
+        }
+
         return lorem_globalise(do_lorem_template('COMCODE_CODE_SCROLL', [
             'TITLE' => lorem_phrase(),
-            'CONTENT' => lorem_chunk(),
+            'CONTENT' => $contents,
             'TYPE' => '',
         ]), null, '', true);
     }
