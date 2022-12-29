@@ -68,8 +68,8 @@ class Hook_config_site_closed
     public function field_inputter(string $name, array $myrow, string $config_field_name, object $human_name, object $explanation) : object
     {
         $list = '';
-        $list .= static_evaluate_tempcode(form_input_radio_entry($name, '0', '0' == get_option($name), do_lang('OPEN')));
-        $list .= static_evaluate_tempcode(form_input_radio_entry($name, '1', '1' == get_option($name), do_lang('CLOSED')));
+        $list .= static_evaluate_tempcode(form_input_radio_entry($config_field_name, '0', '0' == get_option($name), do_lang('OPEN')));
+        $list .= static_evaluate_tempcode(form_input_radio_entry($config_field_name, '1', '1' == get_option($name), do_lang('CLOSED')));
         return form_input_radio($human_name, $explanation, $config_field_name, make_string_tempcode($list), true);
     }
 }
