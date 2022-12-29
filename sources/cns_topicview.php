@@ -635,6 +635,7 @@ function cns_render_post_buttons(array $topic_info, array $_postdetails, bool $m
     $may_reply_private_post = array_key_exists('may_reply_private_post', $topic_info);
 
     require_lang('cns');
+    require_javascript('cns_forum');
     require_code('cns_members2');
 
     $buttons = new Tempcode();

@@ -621,6 +621,7 @@ hr.cns-sig-barrier {
 }
 
 .cns-topic-list {
+	/* TODO: Remove if we confirm this is the correct fix for topic lists not going full width in mobile */
 	/*{+START,IF,{$EQ,{$LANG},EN}}*/
 		/*table-layout: fixed !important;*/
 	/*{+END}*/
