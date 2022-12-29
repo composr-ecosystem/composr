@@ -414,6 +414,8 @@
         token.name = 'csrf_token';
         token.id = 'csrf_token';
         $cms.getCsrfToken().then(function (text) {
+            $util.log('Regenerated CSRF token');
+
             token.value = text;
             button.disabled = false;
         });

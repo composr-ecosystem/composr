@@ -140,6 +140,7 @@ class Hook_snippet_template_editor_load
                     'function' => $all_previews[$file][1],
                     'arg' => '',
                     'cache_blocks' => 0,
+                    'cache_comcode_pages' => 0,
                     'keep_theme' => $theme,
                     'keep_wide_high' => 1,
                     // NB: The 'template_preview_op' POST parameter will be set, which causes the live preview
@@ -188,6 +189,7 @@ class Hook_snippet_template_editor_load
                 $url_map = [
                     'page' => $page,
                     'cache_blocks' => 0,
+                    'cache_comcode_pages' => 0,
                     'keep_theme' => $theme,
                     // NB: The 'template_preview_op' POST parameter will be set, which causes the live preview
                 ];

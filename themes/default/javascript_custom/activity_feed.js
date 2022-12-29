@@ -325,6 +325,8 @@
                     var url = '{$FIND_SCRIPT_NOHTTP;,activity_feed_removal}' + $cms.keep(true);
 
                     $cms.getCsrfToken().then(function (text) {
+                        $util.log('Regenerated CSRF token');
+
                         var postVal = 'removal_id=' + id;
                         postVal += '&csrf_token=' + encodeURIComponent(text);
 

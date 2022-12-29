@@ -110,14 +110,14 @@
 
         livePreview: function (e, target) {
             var params = this.params;
-            if (!templateEditorPreview(params.fileId, params.livePreviewUrl, target, true)) {
+            if (!templateEditorPreview(e, params.fileId, params.livePreviewUrl, target, true)) {
                 e.preventDefault();
             }
         },
 
         screenPreview: function (e, target) {
             var opts = this.params;
-            if (!templateEditorPreview(opts.fileId, opts.screenPreviewUrl, target)) {
+            if (!templateEditorPreview(e, opts.fileId, opts.screenPreviewUrl, target)) {
                 e.preventDefault();
             }
         },
@@ -453,7 +453,9 @@
         }
     });
 
-    function templateEditorPreview(fileId, url, button, askForUrl) {
+    function templateEditorPreview(e, fileId, url, button, askForUrl) {
+        e.preventDefault();
+
         if (askForUrl === undefined) {
             askForUrl = false;
         }
@@ -495,6 +497,8 @@
         var tokenField = button.form.elements['csrf_token'];
         if (tokenField) {
             return $cms.getCsrfToken().then(function (text) {
+                $util.log('Regenerated CSRF token');
+
                 tokenField.value = text;
 
                 button.form.action = url;
