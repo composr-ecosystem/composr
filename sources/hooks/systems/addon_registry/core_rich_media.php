@@ -1902,7 +1902,7 @@ class Hook_addon_registry_core_rich_media
         require_code('files');
 
         return lorem_globalise(do_lorem_template('MEDIA_WEBPAGE_OEMBED_RICH', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_phrase(),
             'HTML' => lorem_paragraph_html(),
             'WIDTH' => placeholder_number(),
             'HEIGHT' => placeholder_number(),
@@ -1923,7 +1923,7 @@ class Hook_addon_registry_core_rich_media
         require_code('files');
 
         return lorem_globalise(do_lorem_template('MEDIA_WEBPAGE_OEMBED_VIDEO', [
-            'TITLE' => lorem_title(),
+            'TITLE' => lorem_phrase(),
             'HTML' => lorem_paragraph_html(),
             'WIDTH' => placeholder_number(),
             'HEIGHT' => placeholder_number(),
@@ -1944,8 +1944,8 @@ class Hook_addon_registry_core_rich_media
         require_code('files');
 
         return lorem_globalise(do_lorem_template('MEDIA_WEBPAGE_SEMANTIC', [
-            'TITLE' => lorem_title(),
-            'META_TITLE' => lorem_title(),
+            'TITLE' => lorem_phrase(),
+            'META_TITLE' => lorem_phrase(),
             'DESCRIPTION' => lorem_paragraph_html(),
             'IMAGE_URL' => placeholder_image_url(),
             'URL' => placeholder_url(),
