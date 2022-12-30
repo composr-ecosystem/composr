@@ -2,7 +2,7 @@
 
 <div data-tpl="wikiPost" data-tpl-params="{+START,PARAMS_JSON,ID}{_*}{+END}">
 	<div>
-		<div class="cns-forum-box-left cns-forum-box-right" role="note">
+		<div class="cns-forum-box-left cns-forum-box-right cns-topic-header" role="note">
 			<a id="post-{ID*}"></a>
 
 			<div class="cns-post-details">

@@ -277,7 +277,6 @@ div.cns-table-footer > div > div {
 
 .cns-topic .cns-forum-box-left,
 .cns-post-details {
-	background-color: {$GET,area_background};
 	color: {$GET,box_title_text};
 }
 .cns-topic-post + .cns-topic-post .cns-forum-box-left,
