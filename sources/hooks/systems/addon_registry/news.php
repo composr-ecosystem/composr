@@ -358,8 +358,8 @@ class Hook_addon_registry_news
             'REP_IMAGE_URL' => placeholder_image_url(),
             'AUTHOR' => lorem_phrase(),
             '_AUTHOR' => lorem_phrase(),
-            'SUBMITTER' => placeholder_numeric_id(),
-            'AVATAR' => lorem_phrase(),
+            'SUBMITTER' => placeholder_first_admin_id(),
+            'AVATAR' => placeholder_avatar(),
             'NEWS_TITLE' => lorem_phrase(),
             'NEWS_TITLE_PLAIN' => lorem_phrase(),
             'DATE' => placeholder_date(),
@@ -376,8 +376,8 @@ class Hook_addon_registry_news
             'CLOSED' => false,
             'FIRSTUSERNAME' => lorem_word(),
             'LASTUSERNAME' => lorem_word(),
-            'FIRSTMEMBERID' => placeholder_numeric_id(),
-            'LASTMEMBERID' => placeholder_numeric_id(),
+            'FIRSTMEMBERID' => placeholder_first_admin_id(),
+            'LASTMEMBERID' => placeholder_first_admin_id(),
             'DATE_RAW' => placeholder_date_raw(),
             'GIVE_CONTEXT' => false,
             'TAGS' => placeholder_tags(),
@@ -459,7 +459,7 @@ class Hook_addon_registry_news
 
             $slides->attach(do_template('BLOCK_MAIN_NEWS_SLIDER_SLIDE', [
                 'BLOCK_ID' => lorem_word(),
-                'ACTIVE' => false,
+                'ACTIVE' => ($k == 0),
                 'NEWS_ITEMS' => $news_items,
             ]));
             $slides_count++;
@@ -486,6 +486,10 @@ class Hook_addon_registry_news
                 'NEWS_TITLE_PLAIN' => lorem_phrase(),
                 'ID' => placeholder_numeric_id(),
                 'NEWS_TITLE' => lorem_phrase(),
+                'BLOG' => false,
+                'SUBMITTER' => placeholder_first_admin_id(),
+                'DATE_RAW' => placeholder_date_raw(),
+                'NEWS_TITLE_PLAIN' => lorem_phrase(),
             ]));
         }
 
@@ -494,8 +498,8 @@ class Hook_addon_registry_news
             'BLOG' => true,
             'TITLE' => lorem_phrase(),
             'SLIDER' => $slider,
-            'SUMMARY_CONTENT' => $brief_contents,
-            'BRIEF_CONTENT' => lorem_phrase(),
+            'SUMMARY_CONTENT' => $summary_contents,
+            'BRIEF_CONTENT' => $brief_contents,
             'RSS_URL' => placeholder_url(),
             'ATOM_URL' => placeholder_url(),
             'SUBMIT_URL' => placeholder_url(),

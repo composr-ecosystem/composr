@@ -16,15 +16,15 @@
 
 			<div class="raw-ajax-grow-spot main-news-grid">
 				{SUMMARY_CONTENT}
-
-				{+START,IF_NON_EMPTY,{BRIEF_CONTENT}}
-					{+START,IF_NON_EMPTY,{SUMMARY_CONTENT}}
-						<h3>{$?,{BLOG},{!BLOG_OLDER_NEWS},{!OLDER_NEWS}}</h3>
-					{+END}
-
-					{BRIEF_CONTENT}
-				{+END}
 			</div>
+
+			{+START,IF_NON_EMPTY,{BRIEF_CONTENT}}
+				{+START,IF_NON_EMPTY,{SUMMARY_CONTENT}}
+					<h3>{$?,{BLOG},{!BLOG_OLDER_NEWS},{!OLDER_NEWS}}</h3>
+				{+END}
+
+				{BRIEF_CONTENT}
+			{+END}
 
 			{+START,IF_PASSED,PAGINATION}
 				{+START,IF_NON_EMPTY,{PAGINATION}}
