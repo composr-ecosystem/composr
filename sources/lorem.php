@@ -996,6 +996,7 @@ function get_text_templates() : array
         'templates/JAVASCRIPT_NEED_FULL.tpl',
         'templates/NOTIFICATION_POLLER.tpl',
         'templates/ANCHOR.tpl',
+        'templates/CAPTCHA_LOOSE.tpl',
 
         // In header, and uses IDs, so can't be used except in isolation
         'templates/BLOCK_TOP_NOTIFICATIONS.tpl',
