@@ -3,6 +3,8 @@
  Copyright (c) ocProducts, 2004-2022
 */
 
-.import-actions th {
-	text-align: right;
-}
+/*{+START,CSS_MODE,desktop}*/
+	.import-actions th {
+		text-align: right;
+	}
+/*{+END}*/
