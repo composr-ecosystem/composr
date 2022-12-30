@@ -439,7 +439,7 @@ html.is-touch-enabled .chat-message > div {
 .chat-lobby-convos-area-bar {
 	float: right;
 	margin-left: 1em;
-	width: 8.2em;
+	width: 10em;
 	overflow: hidden;
 }
 
