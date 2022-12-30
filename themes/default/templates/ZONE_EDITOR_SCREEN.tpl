@@ -51,6 +51,6 @@
 			NAME=help
 			ICON_SIZE=24
 		{+END}
-		<span>{!MANY_PANEL_TYPES,{$PAGE_LINK*,cms:cms_comcode_pages:_edit:lang={LANG}:page_link={ID}%3Apanel_top},{$PAGE_LINK*,cms:cms_comcode_pages:_edit:lang={LANG}:page_link={ID}%3Apanel_bottom}}</span>
+		<span>{!MANY_PANEL_TYPES,{PANEL_TOP_EDIT_URL*},{PANEL_BOTTOM_EDIT_URL*}}</span>
 	</p>
 </div>

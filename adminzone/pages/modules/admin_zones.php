@@ -486,6 +486,20 @@ class Module_admin_zones
 
         list($warning_details, $ping_url) = handle_conflict_resolution($id);
 
+        // Links to edit the panels
+        $panel_top_edit_url_map = ['page' => 'cms_comcode_pages', 'type' => '_edit', 'lang' => $lang, 'page_link' => $id . ':panel_top'];
+        $test = $GLOBALS['SITE_DB']->query_select('redirects', ['r_to_zone', 'r_to_page'], ['r_from_page' => 'panel_top', 'r_from_zone' => $id], '', 1);
+        if (!empty($test)) {
+            $panel_top_edit_url_map['page_link'] = $test[0]['r_to_zone'] . ':' . $test[0]['r_to_page'];
+        }
+        $panel_top_edit_url = build_url($panel_top_edit_url_map, get_module_zone('cms_comcode_pages'));
+        $panel_bottom_edit_url_map = ['page' => 'cms_comcode_pages', 'type' => '_edit', 'lang' => $lang, 'page_link' => $id . ':panel_bottom'];
+        $test = $GLOBALS['SITE_DB']->query_select('redirects', ['r_to_zone', 'r_to_page'], ['r_from_page' => 'panel_bottom', 'r_from_zone' => $id], '', 1);
+        if (!empty($test)) {
+            $panel_bottom_edit_url_map['page_link'] = $test[0]['r_to_zone'] . ':' . $test[0]['r_to_page'];
+        }
+        $panel_bottom_edit_url = build_url($panel_bottom_edit_url_map, get_module_zone('cms_comcode_pages'));
+
         return do_template('ZONE_EDITOR_SCREEN', [
             '_GUID' => '3cb1aab6b16444484e82d22f2c8f1e9a',
             'ID' => $id,
@@ -497,6 +511,8 @@ class Module_admin_zones
             'LEFT_EDITOR' => $editor['panel_left'],
             'RIGHT_EDITOR' => $editor['panel_right'],
             'MIDDLE_EDITOR' => $editor[DEFAULT_ZONE_PAGE_NAME],
+            'PANEL_TOP_EDIT_URL' => $panel_top_edit_url,
+            'PANEL_BOTTOM_EDIT_URL' => $panel_bottom_edit_url,
         ]);
     }
 

@@ -937,7 +937,7 @@ class Module_cms_comcode_pages
             $test = $GLOBALS['SITE_DB']->query_select_value_if_there('redirects', 'r_to_zone', ['r_from_page' => $file, 'r_from_zone' => $zone]);
             if ($test !== null) {
                 $redirect_url = build_url(['page' => 'admin_redirects', 'type' => 'page'], get_module_zone('admin_redirects'));
-                attach_message(do_lang_tempcode('BLOCKING_REDIRECT_IN_PLACE', escape_html($redirect_url->evaluate())), 'notice');
+                attach_message(do_lang_tempcode('BLOCKING_REDIRECT_IN_PLACE', escape_html($redirect_url->evaluate())), 'warn');
             }
         }
 

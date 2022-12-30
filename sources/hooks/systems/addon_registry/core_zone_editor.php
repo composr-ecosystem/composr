@@ -183,6 +183,8 @@ class Hook_addon_registry_core_zone_editor
             'LEFT_EDITOR' => $editor['panel_left'],
             'RIGHT_EDITOR' => $editor['panel_right'],
             'MIDDLE_EDITOR' => $editor['panel_middle'],
+            'PANEL_TOP_EDIT_URL' => placeholder_url(),
+            'PANEL_BOTTOM_EDIT_URL' => placeholder_url(),
         ]), null, '', true);
     }
 }
