@@ -2,9 +2,15 @@
 
 {$REQUIRE_CSS,messages}
 
-<div class="site-special-message ssm-inform" role="alert"{+START,IF_PASSED,IMAGE_URL} style="background-image: url('{IMAGE_URL;*}');"{+END}>
+<div class="site-special-message ssm-inform" role="alert"{+START,IF,{$DESKTOP}}{+START,IF_PASSED,IMAGE_URL} style="background-image: url('{IMAGE_URL;*}');"{+END}{+END}>
 	<div class="site-special-message-inner">
 		<div class="box box---inform-screen"><div class="box-inner">
+			{+START,INCLUDE,ICON}
+				NAME=status/inform
+				ICON_SIZE=24
+				ICON_CLASS=global-message-icon
+			{+END}
+
 			{TEXT*}
 		</div></div>
 	</div>

@@ -11,11 +11,6 @@
 		padding: 9em 0;
 	}
 /*{+END}*/
-/*{+START,CSS_MODE,mobile}*/
-	.site-special-message {
-		padding: 3em 0;
-	}
-/*{+END}*/
 
 .site-special-message ul {
 	text-align: left;
@@ -54,9 +49,11 @@
 	}
 /*{+END}*/
 
+/*{+START,CSS_MODE,desktop}*/
 .ssm-inform {
 	background: url('{$IMG;,icons/status/inform}') right 20px no-repeat;
 }
+/*{+END}*/
 
 .page-running-contact .ssm-inform {
 	padding-top: 0 !important;
