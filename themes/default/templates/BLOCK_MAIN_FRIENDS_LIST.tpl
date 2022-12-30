@@ -6,7 +6,7 @@
 
 {+START,IF,{$NEQ,{$COMMA_LIST_GET,{BLOCK_PARAMS},raw},1}}
 	<div id="{$GET*,ajax_block_main_friends_list_wrapper}" data-tpl="blockMainFriendsList" data-ajaxify="{ callUrl: '{$FACILITATE_AJAX_BLOCK_CALL;*,{BLOCK_PARAMS}}', callParamsFromTarget: ['.*'], targetsSelector: '.ajax-block-wrapper-links a, .ajax-block-wrapper-links form' }">
-		<form data-ajaxify-target="1" class="right form-inline" role="search" title="{!FRIENDS}, {!SEARCH}" action="{$URL_FOR_GET_FORM*,{$SELF_URL}}#tab--friends" method="get">
+		<form data-ajaxify-target="1" class="right responsive form-inline" role="search" title="{!FRIENDS}, {!SEARCH}" action="{$URL_FOR_GET_FORM*,{$SELF_URL}}#tab--friends" method="get">
 			{$HIDDENS_FOR_GET_FORM,{$SELF_URL}}
 
 			<label class="accessibility-hidden" for="friends_search">{!SEARCH}</label>
