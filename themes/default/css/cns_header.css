@@ -134,13 +134,6 @@ html.is-touch-enabled .cns-information-bar-outer html.is-touch-enabled .toggleab
 	white-space: nowrap;
 }
 
-/*{+START,CSS_MODE,mobile}*/
-	.cns-member-column-d li {
-		width: calc(50% - 5px);
-		float: left;
-	}
-/*{+END}*/
-
 .cns-member-column-title {
 	font-weight: bold;
 	display: inline;

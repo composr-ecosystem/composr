@@ -248,8 +248,8 @@ class Hook_addon_registry_core_html_abstractions
             'TITLE' => lorem_phrase(),
             'CAPTION' => lorem_phrase(),
             'URL' => placeholder_url(),
-            'WIDTH' => placeholder_number(),
-            'HEIGHT' => placeholder_number(),
+            'WIDTH' => strval(400),
+            'HEIGHT' => strval(400),
             'REL' => lorem_phrase(),
         ]), null, '', true);
     }

@@ -1033,7 +1033,7 @@ class Hook_addon_registry_cns_forum
     public function tpl_preview__block_main_bottom_bar() : object
     {
         require_css('cns');
-
+        require_css('cns_footer');
         require_lang('cns');
 
         $birthdays = [];
@@ -1954,7 +1954,7 @@ class Hook_addon_registry_cns_forum
                 'ONLINE' => false,
                 'AVATAR_URL' => placeholder_image_url(),
                 'DOB_LABEL' => do_lang('DATE_OF_BIRTH'),
-                'DOB' => lorem_title(),
+                'DOB' => placeholder_date(),
                 '_DOB' => placeholder_date_raw(),
                 '_DOB_CENSORED' => placeholder_date_raw(),
                 '_NUM_WARNINGS' => placeholder_number(),

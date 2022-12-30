@@ -871,7 +871,7 @@ class Hook_addon_registry_core_cns
             'ONLINE' => false,
             'AVATAR_URL' => placeholder_image_url(),
             'DOB_LABEL' => do_lang('DATE_OF_BIRTH'),
-            'DOB' => lorem_title(),
+            'DOB' => placeholder_date(),
             '_DOB' => placeholder_date_raw(),
             '_DOB_CENSORED' => placeholder_date_raw(),
             '_NUM_WARNINGS' => placeholder_number(),

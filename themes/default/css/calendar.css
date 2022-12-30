@@ -8,7 +8,7 @@
 		min-height: 9em;
 		vertical-align: bottom;
 	}
-	.calendar-week th a, .calendar-month th a, .calendar-day th a, .calendar-week th span, .calendar-month th span, .calendar-day th span {
+	.calendar-week th.calendar-week-hour, .calendar-week th a, .calendar-month th a, .calendar-day th a, .calendar-week th span, .calendar-month th span, .calendar-day th span {
 		writing-mode: tb-rl;
 	}
 
@@ -194,9 +194,14 @@ abbr.dtstart, abbr.dtend {
 }
 
 .calendar-day-priority {
-	float: right;
 	margin-right: 0.5em;
 }
+
+/*{+START,CSS_MODE,desktop}*/
+	.calendar-day-priority {
+		float: right;
+	}
+/*{+END}*/
 
 .calendar-day-entry-title {
 	font-weight: bold;

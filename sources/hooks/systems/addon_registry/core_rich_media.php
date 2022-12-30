@@ -1405,12 +1405,29 @@ class Hook_addon_registry_core_rich_media
     public function tpl_preview__comcode_contents() : object
     {
         $lines = [];
-        foreach (placeholder_array() as $v) {
+        foreach (placeholder_array() as $i => $v) {
+            if ($i == 1) {
+                $under_lines = [];
+                foreach (placeholder_array() as $_i => $_v) {
+                    $under_lines[] = [
+                        'URL' => placeholder_url(),
+                        'LINE' => lorem_phrase(),
+                        'ID' => placeholder_codename(),
+                        'UNDER' => '',
+                    ];
+                }
+                $under_level = do_lorem_template('COMCODE_CONTENTS_LEVEL', [
+                    'TYPE' => 'disc',
+                    'LINES' => $under_lines,
+                ]);
+            } else {
+                $under_level = new Tempcode();
+            }
             $lines[] = [
                 'URL' => placeholder_url(),
                 'LINE' => lorem_phrase(),
                 'ID' => placeholder_codename(),
-                'UNDER' => '',
+                'UNDER' => $under_level,
             ];
         }
         $level = do_lorem_template('COMCODE_CONTENTS_LEVEL', [
