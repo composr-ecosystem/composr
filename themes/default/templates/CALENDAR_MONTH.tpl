@@ -1,4 +1,4 @@
-<table class="spread-table calendar-month">
+<table class="spread-table calendar-month columned-table" itemprop="significantLinks">
 	<colgroup>
 		<col class="calendar-month-column-heading" />
 		<col class="calendar-month-column-day" />

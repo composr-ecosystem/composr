@@ -541,7 +541,7 @@ th a:visited,
 .fake-th a:hover,
 .fake-th a:visited {
 	font-weight: {$GET,font_weight_medium};
-	color: {$GET,box_title_text};
+	color: {$GET,box_title_link};
 }
 
 thead > tr > th,
@@ -6485,7 +6485,7 @@ a.tab > span {
 
 /*{+START,CSS_MODE,mobile}*/
 	.tab-surround .tab {
-		width: 99px; /* Allows 3 per row, neat alignment (for nested tabs) */
+		min-width: 99px; /* Allows 3 per row, neat alignment (for nested tabs) */
 	}
 /*{+END}*/
 

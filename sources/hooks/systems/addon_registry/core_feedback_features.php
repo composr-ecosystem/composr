@@ -683,7 +683,7 @@ class Hook_addon_registry_core_feedback_features
             'RATING_FORM' => new Tempcode(),
             'TITLE' => lorem_phrase(),
             'ERROR' => '',
-            'LIKES' => true,
+            'LIKES' => false,
         ]), null, '', true);
     }
 
