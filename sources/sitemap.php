@@ -1207,7 +1207,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
                     if ($this->content_type == 'comcode_page') {
                         $child_page_link = $zone . ':' . $child_row['the_page'];
                     } else {
-                        $child_page_link = $zone . ':' . $page . ':' . $this->screen_type . ':' . ($cma_info['category_is_string'] ? $child_row[$cma_info['parent_spec__field_name']] : strval($child_row[$cma_info['parent_spec__field_name']]));
+                        $child_page_link = $zone . ':' . $page . ':' . $this->screen_type . ':' . strval($child_row[$cma_info['parent_spec__field_name']]);
                     }
                     $child_node = $this->get_node($child_page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level + 1, $options, $zone, $meta_gather, $child_row);
                     if ($child_node !== null) {
