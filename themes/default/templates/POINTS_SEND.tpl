@@ -26,7 +26,7 @@
 					<label for="send-reason">
 						{!POINTS_SEND_FOR}
 					</label>
-					<input maxlength="150" size="26" id="send-reason" class="form-control input-line-required" placeholder="({!REASON})" type="text" name="reason" value="{DEFAULT__SEND_REASON*}" />
+					<input maxlength="150" size="23" id="send-reason" class="form-control input-line-required" placeholder="({!REASON})" type="text" name="reason" value="{DEFAULT__SEND_REASON*}" />
 				</span>
 				<!--LAST-FIELD-->
 				<p>
