@@ -52,6 +52,6 @@ class Hook_config_attachment_default_width
      */
     public function get_default() : ?string
     {
-        return '560'; // NB: This is for videos (etc), not images
+        return '305'; // NB: This is for videos (etc), not images
     }
 }
