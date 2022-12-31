@@ -40,7 +40,7 @@
 	<tbody>
 		{+START,LOOP,NOTIFICATION_SECTIONS}
 			<tr class="form-table-field-spacer">
-				<th class="responsive-table-no-prefix table-heading-cell" colspan="{$SET,num_columns,{$ADD,{NOTIFICATION_TYPES_TITLES},1}}{+START,IF_PASSED_AND_TRUE,SHOW_PRIVILEGES}{$INC,num_columns}{+END}{+START,IF,{ADVANCED_COLUMN}}{$INC,num_columns}{+END}{$GET*,num_columns}">
+				<th class="js-responsive-table-no-prefix table-heading-cell" colspan="{$SET,num_columns,{$ADD,{NOTIFICATION_TYPES_TITLES},1}}{+START,IF_PASSED_AND_TRUE,SHOW_PRIVILEGES}{$INC,num_columns}{+END}{+START,IF,{ADVANCED_COLUMN}}{$INC,num_columns}{+END}{$GET*,num_columns}">
 					<span class="h2">{NOTIFICATION_SECTION*}</span>
 				</th>
 			</tr>

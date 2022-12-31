@@ -59,7 +59,7 @@
 			</tr>
 			{+START,IF_NON_EMPTY,{NOTE}}
 				<tr class="{$GET,cycle}">
-					<td class="responsive-table-no-prefix" colspan="7" data-th="{!NOTE}">
+					<td colspan="7" data-th="{!NOTE}">
 						<span class="block-desktop"><span class="field-name">{!NOTE}</span>: </span>{NOTE*}
 					</td>
 				</tr>

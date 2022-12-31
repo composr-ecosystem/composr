@@ -3511,6 +3511,26 @@ div.zebra-0+div.zebra-1, div.zebra-1+div.zebra-0 {
 		margin-bottom: 1em;
 	}
 
+	/* Add indentation / styling for responsive table th/td unless .js-responsive-table-no-prefix exists */
+	.responsive-table > tbody > tr > th:not(.js-responsive-table-no-prefix)::before,
+	.responsive-table > tbody > tr > td:not(.js-responsive-table-no-prefix)::before,
+	.responsive-table > tfoot > tr > th:not(.js-responsive-table-no-prefix)::before,
+	.responsive-table > tfoot > tr > td:not(.js-responsive-table-no-prefix)::before,
+	.responsive-table > tr > th:not(.js-responsive-table-no-prefix)::before,
+	.responsive-table > tr > td:not(.js-responsive-table-no-prefix)::before,
+	.responsive-table > .fake-tbody > .fake-tr > .fake-th:not(.js-responsive-table-no-prefix)::before,
+	.responsive-table > .fake-tbody > .fake-tr > .fake-td:not(.js-responsive-table-no-prefix)::before,
+	.responsive-table > .fake-tr > .fake-th:not(.js-responsive-table-no-prefix)::before,
+	.responsive-table > .fake-tr > .fake-td:not(.js-responsive-table-no-prefix)::before {
+		content: "";
+		font-weight: bold;
+		width: 7em;
+		overflow-wrap: normal !important;
+		display: inline-block;
+		vertical-align: top;
+	}
+
+	/* Add th/td header and colon unless data-th is blank */
 	.responsive-table > tbody > tr > th:not([data-th=""])::before,
 	.responsive-table > tbody > tr > td:not([data-th=""])::before,
 	.responsive-table > tfoot > tr > th:not([data-th=""])::before,
@@ -3522,11 +3542,6 @@ div.zebra-0+div.zebra-1, div.zebra-1+div.zebra-0 {
 	.responsive-table > .fake-tr > .fake-th:not([data-th=""])::before,
 	.responsive-table > .fake-tr > .fake-td:not([data-th=""])::before {
 		content: attr(data-th) ":";
-		font-weight: bold;
-		width: 7em;
-		overflow-wrap: normal !important;
-		display: inline-block;
-		vertical-align: top;
 	}
 
 	.responsive-table > tbody > tr > th,
