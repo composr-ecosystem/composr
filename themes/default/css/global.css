@@ -4167,12 +4167,6 @@ div.ajax-loading, p.ajax-loading {
 	{$BETA_CSS_PROPERTY,display: inline-flex;}
 	flex-wrap: wrap;
 }
-.rating-inline .rating-outer {
-	padding-right: 2em;
-}
-.rating-inline .rating-outer:last-child {
-	padding-right: 0;
-}
 
 .rating-inline .ajax-loading {
 	padding: 0;

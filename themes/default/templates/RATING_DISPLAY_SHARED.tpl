@@ -20,7 +20,7 @@
 			NAME=feedback/rating
 			ICON_SIZE=18
 			ICON_CLASS=rating-display-star
-			ICON_TITLE={$?,{$EQ,{$GET,rating_loop},0},{!HAS_RATING,{$GET,rating_stars}}}
+			ICON_TITLE={!HAS_RATING,{$GET,rating_stars}}
 		{+END}
 		{$INC,rating_loop}
 	{+END}
