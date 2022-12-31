@@ -10916,6 +10916,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         TYPE
         UNANSWERED_TOPICS
         UNASSIGNED
+        UNASSIGNED_CAN_ASSIGN
         UNCASCADE_TOPIC
         UNDECLARE_EVENT_INTEREST
         CLOSED_CAPTIONS

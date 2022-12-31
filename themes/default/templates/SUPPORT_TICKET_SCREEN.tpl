@@ -40,7 +40,7 @@
 			{+END}
 
 			{+START,IF_EMPTY,{ASSIGNED}}
-				<li><em>{!UNASSIGNED}</em></li>
+				<li><em>{!UNASSIGNED_CAN_ASSIGN}</em></li>
 			{+END}
 
 			{+START,IF,{$HAS_PRIVILEGE,support_operator}}
