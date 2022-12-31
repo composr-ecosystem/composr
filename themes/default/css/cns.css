@@ -343,6 +343,10 @@ div.cns-table-footer > div > div {
 	position: relative;
 }
 
+.cns-topic-poll-result .cns-topic-poll-relative {
+	color: {$GET,cns_polls_text} !important;
+}
+
 .cns-topic-poll-progress {
 	position: absolute;
 	top: 5%;
