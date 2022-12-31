@@ -15,7 +15,7 @@ On most web browsers you can activate a key shortcut by holding down the Alt key
 
 	<tbody>
 		<tr>
-			<th colspan="2">In-page navigation</th>
+			<th colspan="2" class="js-responsive-table-no-prefix" data-th="">In-page navigation</th>
 		</tr>
 
 		<tr>
@@ -31,21 +31,21 @@ On most web browsers you can activate a key shortcut by holding down the Alt key
 		{+END}
 
 		<tr>
-			<th colspan="2">Site version</th>
+			<th colspan="2" class="js-responsive-table-no-prefix" data-th="">Site version</th>
 		</tr>
 
 		<tr>
 			<td>[tt][[/tt]</td>
-			<td>Desktop version/td>
+			<td>Desktop version</td>
 		</tr>
 
 		<tr>
 			<td>[tt]][/tt]</td>
-			<td>Mobile version/td>
+			<td>Mobile version</td>
 		</tr>
 
 		<tr>
-			<th colspan="2">User actions</th>
+			<th colspan="2" class="js-responsive-table-no-prefix" data-th="">User actions</th>
 		</tr>
 
 		<tr>
@@ -74,7 +74,7 @@ On most web browsers you can activate a key shortcut by holding down the Alt key
 		</tr>
 
 		<tr>
-			<th colspan="2">Main navigation</th>
+			<th colspan="2" class="js-responsive-table-no-prefix" data-th="">Main navigation</th>
 		</tr>
 
 		<tr>
@@ -120,7 +120,7 @@ On most web browsers you can activate a key shortcut by holding down the Alt key
 		</tr>
 
 		<tr>
-			<th colspan="2">Specific navigation</th>
+			<th colspan="2" class="js-responsive-table-no-prefix" data-th="">Specific navigation</th>
 		</tr>
 
 		<tr>
@@ -144,7 +144,7 @@ On most web browsers you can activate a key shortcut by holding down the Alt key
 		</tr>
 
 		<tr>
-			<th colspan="2">Tools</th>
+			<th colspan="2" class="js-responsive-table-no-prefix" data-th="">Tools</th>
 		</tr>
 
 		<tr>
@@ -161,11 +161,11 @@ On most web browsers you can activate a key shortcut by holding down the Alt key
 
 		<tr>
 			<td>[tt]-[/tt]</td>
-			<td>Webmaster chat (staff only)/td>
+			<td>Webmaster chat (staff only)</td>
 		</tr>
 
 		<tr>
-			<th colspan="2">Forms</th>
+			<th colspan="2" class="js-responsive-table-no-prefix" data-th="">Forms</th>
 		</tr>
 
 		<tr>

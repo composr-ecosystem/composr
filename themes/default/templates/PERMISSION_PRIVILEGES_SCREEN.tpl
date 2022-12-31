@@ -12,7 +12,7 @@
 
 		<thead>
 			<tr>
-				<th></th>
+				<th class="js-responsive-table-no-prefix"></th>
 				{HEADER_CELLS}
 			</tr>
 		</thead>

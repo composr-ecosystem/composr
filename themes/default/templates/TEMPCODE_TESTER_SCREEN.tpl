@@ -19,7 +19,7 @@
 				<label class="accessibility-hidden" for="val_{_loop_var*}">{!TEMPCODE_VALUE} #{_loop_var*}</label>
 				<input type="text" id="key_{_loop_var*}" class="form-control" name="key_{_loop_var*}" size="10" />
 				&rarr;
-				<input type="text" id="val_{_loop_var*}" class="form-control" name="val_{_loop_var*}" size="60" />
+				<input type="text" id="val_{_loop_var*}" class="form-control" name="val_{_loop_var*}" size="26" />
 			</p>
 		{+END}
 

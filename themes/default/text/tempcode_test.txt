@@ -167,6 +167,14 @@
 		<td>{$ROUND,3.23,1}</td>
 	</tr>
 	<tr>
+		<th>$ROUND,3.29,1</th>
+		<td>{$ROUND,3.29,1}</td>
+	</tr>
+	<tr>
+		<th>$ROUND,36.66,0</th>
+		<td>{$ROUND,36.66,0}</td>
+	</tr>
+	<tr>
 		<th>$MAX,3,2</th>
 		<td>{$MAX,3,2}</td>
 	</tr>
@@ -187,8 +195,8 @@
 		<td>{$REM,3,2}</td>
 	</tr>
 	<tr>
-		<th>$DIV,3,2</th>
-		<td>{$DIV,3,2}</td>
+		<th>$DIV,7,2</th>
+		<td>{$DIV,7,2}</td>
 	</tr>
 	<tr>
 		<th>$SUBTRACT,3,2</th>

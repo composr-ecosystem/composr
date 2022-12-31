@@ -111,7 +111,7 @@
 			</tr>
 
 			<tr class="total">
-				<td colspan="6" data-th="">
+				<td class="js-responsive-table-no-prefix" colspan="6">
 					{!GRAND_TOTAL}: {$CURRENCY_SYMBOL,{CURRENCY}}{TOTAL_AMOUNT*}
 				</td>
 			</tr>
