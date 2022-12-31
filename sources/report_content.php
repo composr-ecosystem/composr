@@ -87,7 +87,7 @@ function report_content_form(object $title, string $content_type, string $conten
     $text = paragraph(do_lang_tempcode(
         'DESCRIPTION_REPORT_CONTENT',
         ($content_title !== null) ? escape_html($content_title) : '',
-        escape_html(integer_format(intval(get_option('reported_times')), 0)),
+        hyperlink(build_url(['page' => 'rules'], get_page_zone('rules')), do_lang_tempcode('RULES'), true, false),
         ticket_allow_anonymous_posts() ? do_lang('REPORT_OR_ANONYMOUS') : ''
     ));
     report_content_append_text($text, $ticket_id);
@@ -152,7 +152,7 @@ function report_post_form(object $title, int $post_id, array $js_function_calls,
     $text = paragraph(do_lang_tempcode(
         'DESCRIPTION_REPORT_POST',
         escape_html($topic_title),
-        escape_html(integer_format(intval(get_option('reported_times')), 0)),
+        hyperlink(build_url(['page' => 'rules'], get_page_zone('rules')), do_lang_tempcode('RULES'), true, false),
         ticket_allow_anonymous_posts() ? do_lang('REPORT_OR_ANONYMOUS') : ''
     ));
     report_content_append_text($text, $ticket_id);
