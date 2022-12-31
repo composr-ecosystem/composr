@@ -59,7 +59,7 @@ class Hook_content_meta_aware_catalogue_entry extends Hook_CMA
             'parent_spec__table_name' => 'catalogue_categories',
             'parent_spec__parent_name' => 'cc_parent_id',
             'parent_spec__field_name' => 'id',
-            'category_is_string' => [true, false],
+            'category_is_string' => (get_value('disable_cat_cat_perms') === '1') ? true : [true, false],
 
             'title_field' => ['id', 'c_name', 'CALL: generate_catalogue_entry_title'],
             'title_field_dereference' => false,
