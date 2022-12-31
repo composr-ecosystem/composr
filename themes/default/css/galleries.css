@@ -60,7 +60,7 @@
 }
 
 .gallery-member-details {
-	min-width: 24em;
+	min-width: 296px; /* based on the 320px width mobile standard */
 }
 
 .gallery-entry-field-name-column {
