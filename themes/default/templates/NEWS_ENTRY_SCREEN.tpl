@@ -92,18 +92,20 @@
 		</div>
 	{+END}
 
-	<div class="clearfix lined-up-boxes">
+	<div class="clearfix">
 		{+START,IF_NON_EMPTY,{TRACKBACK_DETAILS}}
 			<div class="trackbacks right">
 				{TRACKBACK_DETAILS}
 			</div>
 		{+END}
 		{+START,IF_NON_EMPTY,{RATING_DETAILS}}
-			<div class="ratings right">
+			<div class="ratings">
 				{RATING_DETAILS}
 			</div>
 		{+END}
-
+	</div>
+	
+	<div class="clearfix lined-up-boxes">
 		<aside class="box box---news-entry-screen"><nav class="box-inner">
 			<p class="lonely-label">
 				{$?,{BLOG},{!BLOG_NEWS_UNDER_THESE},{!NEWS_UNDER_THESE}}

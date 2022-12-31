@@ -4219,7 +4219,7 @@ div.ajax-loading, p.ajax-loading {
 
 /*{+START,CSS_MODE,desktop}*/
 	.trackbacks {
-		width: 14em;
+		width: auto;
 	}
 /*{+END}*/
 /*{+START,CSS_MODE,mobile}*/
