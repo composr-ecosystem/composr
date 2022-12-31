@@ -1095,7 +1095,7 @@ class Hook_addon_registry_core_rich_media
         foreach (placeholder_array(5) as $k => $v) {
             $parts[] = [
                 'NUM' => strval($k),
-                'VAL' => placeholder_number(),
+                'VAL' => $v,
             ];
         }
         return lorem_globalise(do_lorem_template('COMCODE_RANDOM', [
@@ -1143,7 +1143,7 @@ class Hook_addon_registry_core_rich_media
     {
         return lorem_globalise(do_lorem_template('COMCODE_TICKER', [
             'SPEED' => '10',
-            'WIDTH' => '400',
+            'WIDTH' => '305',
             'TEXT' => lorem_sentence_html(),
         ]), null, '', true);
     }

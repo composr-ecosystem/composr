@@ -8,9 +8,7 @@
 			<th>{!PRICE}</th>
 			<th>{$TAX_LABEL}</th>
 			<th>{!DATE_TIME}</th>
-			{+START,IF,{$DESKTOP}}
-				<th>{!STATUS}</th>
-			{+END}
+			<th>{!STATUS}</th>
 			<th>{!ACTIONS}</th>
 		</tr>
 	</thead>
@@ -25,10 +23,6 @@
 				</td>
 				<td>
 					{INVOICE_TITLE}
-
-					<p class="assocated-details block-mobile">
-						<span class="field-name">{!STATUS}:</span> {STATE*}
-					</p>
 				</td>
 				<td>
 					{$CURRENCY,{PRICE},{CURRENCY},{$?,{$CONFIG_OPTION,currency_auto},{$CURRENCY_USER},{$CURRENCY}}}
@@ -39,11 +33,9 @@
 				<td>
 					{DATE*}
 				</td>
-				{+START,IF,{$DESKTOP}}
-					<td class="cell-desktop">
-						{STATE*}
-					</td>
-				{+END}
+				<td>
+					{STATE*}
+				</td>
 				<td>
 					{+START,IF,{$OR,{$HAS_ACTUAL_PAGE_ACCESS,admin_invoices},{PAYABLE}}}
 						<ul class="horizontal-links horiz-field-sep">
@@ -67,8 +59,8 @@
 			</tr>
 			{+START,IF_NON_EMPTY,{NOTE}}
 				<tr class="{$GET,cycle}">
-					<td class="responsive-table-no-prefix" colspan="7">
-						<span class="field-name">{!NOTE}</span>: {NOTE*}
+					<td class="responsive-table-no-prefix" colspan="7" data-th="{!NOTE}">
+						<span class="block-desktop"><span class="field-name">{!NOTE}</span>: </span>{NOTE*}
 					</td>
 				</tr>
 			{+END}
