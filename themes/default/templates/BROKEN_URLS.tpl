@@ -81,10 +81,10 @@
 						<td>
 							{+START,IF_PASSED,STATUS}
 								{+START,IF,{STATUS}}
-									<span class="multilist-mark yes">&#10003;</span> {$,Checkmark entity}
+									<span class="multilist-mark yes" title="{!YES}">&#10003;</span> {$,Checkmark entity}
 								{+END}
 								{+START,IF,{$NOT,{STATUS}}}
-									<span class="multilist-mark no">&#10007;</span> {$,Cross entity}
+									<span class="multilist-mark no" title="{!NO}">&#10007;</span> {$,Cross entity}
 								{+END}
 							{+END}
 							{+START,IF_NON_PASSED,STATUS}
