@@ -2338,7 +2338,7 @@ class Hook_addon_registry_core
     public function tpl_preview__forums_embed() : object
     {
         return lorem_globalise(do_lorem_template('FORUMS_EMBED', [
-            'FORUMS' => placeholder_url(),
+            'FORUMS' => build_url(['page' => ''], ''),
         ]), null, '', true);
     }
 

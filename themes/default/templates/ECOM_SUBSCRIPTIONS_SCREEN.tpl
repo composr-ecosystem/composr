@@ -22,15 +22,13 @@
 					{!DATE}
 				</th>
 
-				{+START,IF,{$DESKTOP}}
-					<th class="cell-desktop">
-						{!PAYMENT_GATEWAY}
-					</th>
+				<th>
+					{!PAYMENT_GATEWAY}
+				</th>
 
-					<th class="cell-desktop">
-						{!RENEWAL_STATUS}
-					</th>
-				{+END}
+				<th>
+					{!RENEWAL_STATUS}
+				</th>
 
 				<th>
 					{!ACTIONS}
@@ -48,13 +46,6 @@
 						{+START,IF_NON_PASSED,USERGROUP_SUBSCRIPTION_DESCRIPTION}
 							{ITEM_NAME*}
 						{+END}
-
-						<p class="assocated-details block-mobile">
-							<span class="field-name">{!PAYMENT_GATEWAY}:</span> {PAYMENT_GATEWAY*}
-						</p>
-						<p class="assocated-details block-mobile">
-							<span class="field-name">{!STATUS}:</span> {STATE*}
-						</p>
 					</th>
 
 					<td>
@@ -72,15 +63,13 @@
 						{+END}
 					</td>
 
-					{+START,IF,{$DESKTOP}}
-						<td class="cell-desktop">
-							{PAYMENT_GATEWAY*}
-						</td>
+					<td>
+						{PAYMENT_GATEWAY*}
+					</td>
 
-						<td class="cell-desktop">
-							{STATE*}
-						</td>
-					{+END}
+					<td>
+						{STATE*}
+					</td>
 
 					<td class="subscriptions-cancel-button">
 						{+START,IF_PASSED,CANCEL_BUTTON}

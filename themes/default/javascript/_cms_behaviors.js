@@ -138,7 +138,7 @@
 
     $cms.behaviors.initializeTables = {
         attach: function attach(context) {
-            // We could have an image-gd-text being transformed into a js-actual-th, so wait until next frame to initialize tables.
+            // We could have an image-gd-text being transformed into a js-th-label-text-override, so wait until next frame to initialize tables.
             setTimeout(function() {
                 var tables = $util.once($dom.$$$(context, 'table, .fake-table'), 'behavior.initializeTables');
 
@@ -146,11 +146,11 @@
                     // Responsive table prep work
                     if (table.classList.contains('responsive-table')) {
                         var trs = $dom.$$(table, 'tr, .fake-tr'),
-                            thsFirstRow = $dom.$$(trs[0], ':scope > th, :scope > td, :scope > .fake-th, :scope > .js-actual-th, :scope > .fake-td'),
+                            thsFirstRow = $dom.$$(trs[0], ':scope > th, :scope > td, :scope > .fake-th, :scope > .js-th-label-text-override, :scope > .fake-td'),
                             i, tds, j, data;
 
                         for (i = 0; i < trs.length; i++) {
-                            tds = $dom.$$(trs[i], ':scope > th, :scope > td, :scope > .fake-th, :scope > .js-actual-th, :scope > .fake-td');
+                            tds = $dom.$$(trs[i], ':scope > th, :scope > td, :scope > .fake-th, :scope > .js-th-label-text-override, :scope > .fake-td');
                             for (j = 0; j < tds.length; j++) {
                                 if (!tds[j].classList.contains('responsive-table-no-prefix')) {
                                     data = (thsFirstRow[j] == null) ? '' : thsFirstRow[j].textContent.replace(/^\s+/, '').replace(/\s+$/, '');
@@ -427,7 +427,7 @@
                 var span = document.createElement('span');
                 if (typeof span.style.transform === 'string') {
                     if (el.parentNode.localName === 'th') {
-                        span.classList.add('js-actual-th');
+                        span.classList.add('js-th-label-text-override');
                     }
                     el.style.display = 'none';
                     $dom.css(span, {

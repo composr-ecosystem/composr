@@ -8,9 +8,7 @@
 			<th>{$TAX_LABEL}</th>
 			<th>{!SHIPPING_COST}</th>
 			<th>{!ORDERED_DATE}</th>
-			{+START,IF,{$DESKTOP}}
-				<th class="cell-desktop">{!STATUS}</th>
-			{+END}
+			<th>{!STATUS}</th>
 			<th>{!TRANSACTION}</th>
 		</tr>
 	</thead>
@@ -27,10 +25,6 @@
 					{+START,IF_EMPTY,{ORDER_DET_URL}}
 						<strong>{ORDER_TITLE*}</strong>
 					{+END}
-
-					<p class="assocated-details block-mobile">
-						<span class="field-name">{!STATUS}:</span> {STATUS*}
-					</p>
 				</td>
 				<td>
 					{TOTAL_PRICE}
@@ -44,19 +38,17 @@
 				<td>
 					{DATE*}
 				</td>
-				{+START,IF,{$DESKTOP}}
-					<td class="cell-desktop">
-						{STATUS*}
-					</td>
-				{+END}
+				<td>
+					{STATUS*}
+				</td>
 				<td>
 					{TRANSACTION_LINKER}
 				</td>
 			</tr>
 			{+START,IF_NON_EMPTY,{NOTE}}
 				<tr>
-					<td class="responsive-table-no-prefix" colspan="7">
-						{NOTE*}
+					<td class="responsive-table-no-prefix" colspan="7" data-th="{!NOTE}">
+						<span class="block-desktop"><span class="field-name">{!NOTE}</span>: </span>{NOTE*}
 					</td>
 				</tr>
 			{+END}
