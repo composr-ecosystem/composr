@@ -27,11 +27,9 @@
 						{!DATE}
 					</th>
 
-					{+START,IF,{$DESKTOP}}
-						<th class="cell-desktop">
-							{!PAYMENT_GATEWAY}
-						</th>
-					{+END}
+					<th>
+						{!PAYMENT_GATEWAY}
+					</th>
 				</tr>
 			</thead>
 
@@ -45,10 +43,6 @@
 							{+START,IF_NON_PASSED,USERGROUP_SUBSCRIPTION_DESCRIPTION}
 								{ITEM_NAME*}
 							{+END}
-
-							<p class="assocated-details block-mobile">
-								<span class="field-name">{!PAYMENT_GATEWAY}:</span> {PAYMENT_GATEWAY*}
-							</p>
 						</th>
 
 						<td>
@@ -63,11 +57,9 @@
 							{START_TIME*}
 						</td>
 
-						{+START,IF,{$DESKTOP}}
-							<td class="cell-desktop">
-								{PAYMENT_GATEWAY*}
-							</td>
-						{+END}
+						<td>
+							{PAYMENT_GATEWAY*}
+						</td>
 					</tr>
 				{+END}
 			</tbody>

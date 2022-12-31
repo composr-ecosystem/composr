@@ -76,7 +76,7 @@
 
 	<div class="clearfix lined-up-boxes">
 		{+START,IF_NON_EMPTY,{MEMBER_DETAILS}}
-			<div class="right">
+			<div class="right responsive">
 				<div class="box box---gallery-member-details"><div class="box-inner">
 					<h2>{_TITLE*}</h2>
 
@@ -85,7 +85,7 @@
 			</div>
 
 			{+START,IF_NON_EMPTY,{$GET,entries}}
-				<div class="ratings right">
+				<div class="ratings">
 					{RATING_DETAILS}
 				</div>
 			{+END}

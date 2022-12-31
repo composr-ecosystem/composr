@@ -8,7 +8,7 @@
 	{NAV}
 
 	{+START,SET,boxes}
-		<div class="box gallery-entry-info left">
+		<div class="box gallery-entry-info">
 			<div class="box-inner">
 				<ul class="horizontal-links">
 					<li>{+START,INCLUDE,ICON}NAME=menu/rich_content/calendar{+END} {!ADDED} <time datetime="{$FROM_TIMESTAMP*,Y-m-d\TH:i:s\Z,{ADD_DATE_RAW}}" itemprop="datePublished">{ADD_DATE*}</time></li>
@@ -50,7 +50,7 @@
 		</div>
 
 		{+START,IF_NON_EMPTY,{MEMBER_DETAILS}}{+START,IF_PASSED,MEMBER_ID}
-			<div class="gallery-member-details right">
+			<div class="gallery-member-details right responsive">
 				<div class="box box---gallery-entry-screen"><div class="box-inner">
 					<h2>{GALLERY_TITLE*}</h2>
 
@@ -60,7 +60,7 @@
 		{+END}{+END}
 
 		{+START,IF_NON_EMPTY,{TRACKBACK_DETAILS}}
-			<div class="trackbacks right">
+			<div class="trackbacks">
 				{TRACKBACK_DETAILS}
 			</div>
 		{+END}

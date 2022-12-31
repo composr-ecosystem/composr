@@ -1185,7 +1185,7 @@ class Hook_addon_registry_core_abstract_interfaces
         $url = find_script('frame_test') . '?keep_theme=' . urlencode($theme) . $keep->evaluate();
 
         require_code('tempcode_compiler');
-        $tpl = template_to_tempcode('<iframe width="400px" height="400px" title="{!PREVIEW}" src="' . escape_html($url) . '">{!PREVIEW}</iframe>');
+        $tpl = template_to_tempcode('<iframe width="305px" height="305px" title="{!PREVIEW}" src="' . escape_html($url) . '">{!PREVIEW}</iframe>');
 
         return lorem_globalise($tpl, null, '', true);
     }
