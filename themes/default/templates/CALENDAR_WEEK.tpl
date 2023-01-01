@@ -1,4 +1,4 @@
-<table class="spread-table calendar-week">
+<table class="spread-table calendar-week" itemprop="significantLinks">
 	<thead>
 		<tr>
 			<th></th>

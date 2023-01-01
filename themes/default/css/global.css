@@ -527,23 +527,6 @@ th, .fake-th {
 	opacity: 0.5;
 }
 
-.columned-table[itemprop="significantLinks"] tbody tr th,
-.columned-table[itemprop="significantLinks"] .fake-tbody .fake-tr .fake-th { /* itemprop is for precedence */
-	background-color: {$GET,box_title_background_2} !important;
-	color: {$GET,box_title_text_2} !important;
-	text-align: left;
-}
-
-th a,
-th a:hover,
-th a:visited,
-.fake-th a,
-.fake-th a:hover,
-.fake-th a:visited {
-	font-weight: {$GET,font_weight_medium};
-	color: {$GET,box_title_link};
-}
-
 thead > tr > th,
 .boxless-space .box > table > thead > tr > th,
 .fake-thead > .fake-tr > .fake-th,
@@ -552,6 +535,16 @@ thead > tr > th,
 	background-color: {$GET,box_title_background_2};
 	border-color: {$GET,box_title_background_2} !important;
 	color: {$GET,box_title_text_2};
+}
+
+thead > tr > th a,
+thead > tr > th a:hover,
+thead > tr > th a:visited,
+.fake-thead > .fake-tr > .fake-th a,
+.fake-thead > .fake-tr > .fake-th a:hover,
+.fake-thead > .fake-tr > .fake-th a:visited {
+	font-weight: {$GET,font_weight_medium};
+	color: {$GET,box_title_link};
 }
 
 .light-table th, .light-table .fake-th,
