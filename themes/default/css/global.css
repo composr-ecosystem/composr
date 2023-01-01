@@ -7040,6 +7040,11 @@ a[rel="lightbox"] {
 .flex-wrapper > div + div {
 	padding-left: 1em;
 }
+/*{+START,CSS_MODE,mobile}*/
+	.flex-wrapper > div {
+		width: auto !important;
+	}
+/*{+END}*/
 
 /*{+START,CSS_MODE,desktop}*/
 	.floats-wrap .float-surrounder + .float-surrounder {
@@ -7059,6 +7064,7 @@ a[rel="lightbox"] {
 	.floats-wrap .float-left, .floats-wrap .float-right {
 		margin-top: 0.5em;
 		margin-bottom: 0.5em;
+		width: auto !important;
 	}
 /*{+END}*/
 
@@ -7075,6 +7081,7 @@ a[rel="lightbox"] {
 /*{+START,CSS_MODE,mobile}*/
 	.inline-block-box + .inline-block-box {
 		margin-top: 1em;
+		width: auto !important;
 	}
 /*{+END}*/
 

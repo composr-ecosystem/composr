@@ -2,7 +2,7 @@
 
 [title sub="You are in the Admin Zone"]Admin Dashboard[/title]
 
-{| 60%:37% wide floats
+{| 60%:40% wide flex
 |
 	{+START,IF,{$CONFIG_OPTION,dashboard_checklist}}
 		[block]main_staff_checklist[/block]<br />
