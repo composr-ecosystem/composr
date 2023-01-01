@@ -567,7 +567,7 @@ function lorem_globalise(object $middle, $message = null, string $type = '', boo
         ]);
     } else {
         $out = do_lorem_template('STANDALONE_HTML_WRAP', [
-            'TITLE' => lorem_phase(),
+            'TITLE' => lorem_phrase(),
             'FRAME' => false,
             'TARGET' => '_self',
             'CONTENT' => $middle,

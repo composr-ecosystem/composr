@@ -16,20 +16,35 @@
 	margin: 0 25px;
 	font-size: 12px;
 }
+/*{+START,CSS_MODE,mobile}*/
+	.bubble-bar-chart-legend {
+		margin: 0 5px;
+	}
+/*{+END}*/
 
-.bubble-bar-chart-legend span {
-	vertical-align: middle;
+.bubble-bar-chart-legend-inner {
+	{$BETA_CSS_PROPERTY,display: inline-flex;}
+	{$BETA_CSS_PROPERTY,flex-wrap: wrap;}
+	{$BETA_CSS_PROPERTY,gap: 5px 15px;}
+}
+
+.bubble-bar-chart-legend-item-inner {
+	white-space: nowrap;
 }
 
 .bubble-bar-chart-legend .bubble-bar-chart-cell {
-	margin-right: 25px;
+	vertical-align: middle;
+}
+
+.bubble-bar-chart-sizing {
+	margin: 0 auto;
 }
 
 table.bubble-bar-chart {
-	margin: 0 auto;
 	border: 0;
 	border-collapse: collapse;
 	line-height: normal;
+	width: 100%;
 }
 
 table.bubble-bar-chart thead th {
@@ -48,6 +63,14 @@ table.bubble-bar-chart tbody th {
 	text-transform: none;
 	font-weight: normal;
 	height: 24px;
+}
+
+table.bubble-bar-chart thead th h2 {
+	font-size: 1.3em;
+}
+
+table.bubble-bar-chart thead th h3 {
+	font-size: 1.2em;
 }
 
 table.bubble-bar-chart td {
@@ -74,6 +97,12 @@ table.bubble-bar-chart th, table.bubble-bar-chart td {
 }
 
 @media all and (max-width: 770px) {
+	.bubble-bar-chart-sizing {
+		width: 100% !important;
+		height: 100% !important;
+		margin: 0;
+	}
+
 	.bubble-bar-chart-wrap .graph-heading {
 		float: left;
 	}
@@ -82,3 +111,17 @@ table.bubble-bar-chart th, table.bubble-bar-chart td {
 		padding: 0 5px 6px 5px;
 	}
 }
+
+/*{+START,CSS_MODE,mobile}*/
+	.bubble-bar-chart-wrap .graph-heading {
+		margin-bottom: 0;
+	}
+
+	.bubble-bar-chart-legend {
+		margin-bottom: 5px;
+	}
+
+	table.bubble-bar-chart td {
+		padding: 5px;/*Not using em as we turned the font size down to 0*/
+	}
+/*{+END}*/

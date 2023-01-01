@@ -5,23 +5,29 @@
 {$SET,base_opacity,0.1}
 
 <div class="bubble-bar-chart-wrap">
-	{+START,IF_NON_EMPTY,{Z_AXIS_LABEL}{TITLE}}
-		<div class="float_surrounder">
-			{+START,IF_NON_EMPTY,{Z_AXIS_LABEL}}
-				<div class="bubble-bar-chart-legend">
-					<span>{MIN*} {Z_AXIS_LABEL*}</span> <span class="bubble-bar-chart-cell" style="background-color: {COLOR*}; opacity: {$GET*,base_opacity}"></span>
-					<span>{MAX*} {Z_AXIS_LABEL*}</span> <span class="bubble-bar-chart-cell" style="background-color: {COLOR*}; opacity: 1.0"></span>
-				</div>
-			{+END}
-
-			{+START,IF_NON_EMPTY,{TITLE}}
-				<p class="graph-heading">{TITLE*}</p>
-			{+END}
-		</div>
-	{+END}
-
 	{+START,IF,{$NOT,{$MOBILE}}}
-		<div style="{+START,IF_NON_EMPTY,{WIDTH}}width: {WIDTH*};{+END}{+START,IF_NON_EMPTY,{HEIGHT}}height: {HEIGHT*};{+END}">
+		{+START,IF_NON_EMPTY,{Z_AXIS_LABEL}{TITLE}}
+			<div class="float-surrounder">
+				{+START,IF_NON_EMPTY,{Z_AXIS_LABEL}}
+					<div class="bubble-bar-chart-legend"><div class="bubble-bar-chart-legend-inner">
+						<span class="bubble-bar-chart-legend-item"><span class="bubble-bar-chart-legend-item-inner">
+							<span class="bubble-bar-chart-legend-label">{MIN*} {Z_AXIS_LABEL*}</span>
+							<span class="bubble-bar-chart-cell" style="background-color: {COLOR*}; opacity: {$GET*,base_opacity}"></span>
+						</span></span>
+						<span class="bubble-bar-chart-legend-item"><span class="bubble-bar-chart-legend-item-inner">
+							<span class="bubble-bar-chart-legend-label">{MAX*} {Z_AXIS_LABEL*}</span>
+							<span class="bubble-bar-chart-cell" style="background-color: {COLOR*}; opacity: 1.0"></span>
+						</span></span>
+					</div></div>
+				{+END}
+
+				{+START,IF_NON_EMPTY,{TITLE}}
+					<p class="graph-heading">{TITLE*}</p>
+				{+END}
+			</div>
+		{+END}
+
+		<div style="{+START,IF_NON_EMPTY,{WIDTH}}width: {WIDTH*};{+END}{+START,IF_NON_EMPTY,{HEIGHT}}height: {HEIGHT*};{+END}" class="bubble-bar-chart-sizing">
 			<table class="bubble-bar-chart">
 				<thead>
 					{+START,IF_NON_EMPTY,{X_AXIS_LABEL}}
@@ -45,7 +51,7 @@
 						<tr>
 							<th>{Y_LABEL*}</th>
 							{+START,LOOP,DATAPOINTS}
-								<td onmouseover="if (typeof window.activate_tooltip!='undefined') activate_tooltip(this,event,'{Y_LABEL*;^}, {LABEL*;^}: {VALUE*;^} {$?*,{$EQ,{VALUE},1},{$PREG_REPLACE,s$,,{Z_AXIS_LABEL}},{Z_AXIS_LABEL}}{+START,IF_NON_EMPTY,{TOOLTIP}} &ndash; {TOOLTIP*;^}{+END}');">
+								<td data-cms-tooltip="{Y_LABEL*}, {LABEL*}: {VALUE*} {$?*,{$EQ,{VALUE},1},{$PREG_REPLACE,s$,,{Z_AXIS_LABEL}},{Z_AXIS_LABEL}}{+START,IF_NON_EMPTY,{TOOLTIP}} &ndash; {TOOLTIP*}{+END}">
 									<span style="background-color: {COLOR*}; opacity: {$ADD,{$GET,base_opacity},{$MULT,{$SUBTRACT,1.0,{$GET,base_opacity}},{$DIV_FLOAT,{$SUBTRACT,{VALUE},{MIN}},{$GET,divisor}}}}" class="bubble-bar-chart-cell">
 										{+START,IF,{SHOW_DATA_LABELS}}
 											{VALUE*}
@@ -61,45 +67,63 @@
 	{+END}
 
 	{+START,IF,{$MOBILE}}
-		<div style="{+START,IF_NON_EMPTY,{WIDTH}}width: {WIDTH*};{+END}{+START,IF_NON_EMPTY,{HEIGHT}}height: {HEIGHT*};{+END}">
-			<table class="bubble-bar-chart">
-				<thead>
-					{+START,IF_NON_EMPTY,{X_AXIS_LABEL}}
-						<tr>
-							<th colspan="{LABELS*}">{X_AXIS_LABEL*}</th>
-						</tr>
-					{+END}
+		{+START,IF_NON_EMPTY,{Z_AXIS_LABEL}{TITLE}}
+			<div class="float-surrounder">
+				{+START,IF_NON_EMPTY,{TITLE}}
+					<p class="graph-heading">{TITLE*}</p>
+				{+END}
+
+				{+START,IF_NON_EMPTY,{Z_AXIS_LABEL}}
+					<div class="bubble-bar-chart-legend"><div class="bubble-bar-chart-legend-inner">
+						<span class="bubble-bar-chart-legend-item"><span class="bubble-bar-chart-legend-item-inner">
+							<span class="bubble-bar-chart-legend-label">{MIN*} {Z_AXIS_LABEL*}</span>
+							<span class="bubble-bar-chart-cell" style="background-color: {COLOR*}; opacity: {$GET*,base_opacity}"></span>
+						</span></span>
+						<span class="bubble-bar-chart-legend-item"><span class="bubble-bar-chart-legend-item-inner">
+							<span class="bubble-bar-chart-legend-label">{MAX*} {Z_AXIS_LABEL*}</span>
+							<span class="bubble-bar-chart-cell" style="background-color: {COLOR*}; opacity: 1.0"></span>
+						</span></span>
+					</div></div>
+				{+END}
+			</div>
+		{+END}
+		<table class="bubble-bar-chart">
+			<thead>
+				{+START,IF_NON_EMPTY,{X_AXIS_LABEL}}
 					<tr>
-						{+START,LOOP,LABELS}
-							<th>{_loop_var*}</th>
+						<th colspan="{LABELS*}"><h2>{X_AXIS_LABEL*}</h2></th>
+					</tr>
+				{+END}
+				<tr>
+					{+START,LOOP,LABELS}
+						<th>{_loop_var*}</th>
+					{+END}
+				</tr>
+				{+START,IF_NON_EMPTY,{Y_AXIS_LABEL}}
+					<tr>
+						<th colspan="{LABELS*}"><h3>{Y_AXIS_LABEL*}</h3></th>
+					</tr>
+				{+END}
+			</thead>
+
+			<tbody>
+				{+START,LOOP,DATASETS}
+					<tr>
+						<th colspan="{DATAPOINTS*}">{Y_LABEL*}</th>
+					</tr>
+					<tr>
+						{+START,LOOP,DATAPOINTS}
+							<td data-cms-tooltip="{Y_LABEL*}, {LABEL*}: {VALUE*} {$?*,{$EQ,{VALUE},1},{$PREG_REPLACE,s$,,{Z_AXIS_LABEL}},{Z_AXIS_LABEL}}{+START,IF_NON_EMPTY,{TOOLTIP}} &ndash; {TOOLTIP*}{+END}">
+								<span style="background-color: {COLOR*}; opacity: {$ADD,{$GET,base_opacity},{$MULT,{$SUBTRACT,1.0,{$GET,base_opacity}},{$DIV_FLOAT,{$SUBTRACT,{VALUE},{MIN}},{$GET,divisor}}}}" class="bubble-bar-chart-cell">
+									{+START,IF,{SHOW_DATA_LABELS}}
+										{VALUE*}
+									{+END}
+								</span>
+							</td>
 						{+END}
 					</tr>
-					{+START,IF_NON_EMPTY,{Y_AXIS_LABEL}}
-						<tr>
-							<th colspan="{LABELS*}"><h3>{Y_AXIS_LABEL*}</h3></th>
-						</tr>
-					{+END}
-				</thead>
-
-				<tbody>
-					{+START,LOOP,DATASETS}
-						<tr>
-							<th colspan="{DATAPOINTS*}">{Y_LABEL*}</th>
-						</tr>
-						<tr>
-							{+START,LOOP,DATAPOINTS}
-								<td onmouseover="if (typeof window.activate_tooltip!='undefined') activate_tooltip(this,event,'{Y_LABEL*;^}, {LABEL*;^}: {VALUE*;^} {$?*,{$EQ,{VALUE},1},{$PREG_REPLACE,s$,,{Z_AXIS_LABEL}},{Z_AXIS_LABEL}}{+START,IF_NON_EMPTY,{TOOLTIP}} &ndash; {TOOLTIP*;^}{+END}');">
-									<span style="background-color: {COLOR*}; opacity: {$ADD,{$GET,base_opacity},{$MULT,{$SUBTRACT,1.0,{$GET,base_opacity}},{$DIV_FLOAT,{$SUBTRACT,{VALUE},{MIN}},{$GET,divisor}}}}" class="bubble-bar-chart-cell">
-										{+START,IF,{SHOW_DATA_LABELS}}
-											{VALUE*}
-										{+END}
-									</span>
-								</td>
-							{+END}
-						</tr>
-					{+END}
-				</tbody>
-			</table>
-		</div>
+				{+END}
+			</tbody>
+		</table>
 	{+END}
 </div>

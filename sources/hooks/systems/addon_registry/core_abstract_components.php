@@ -419,12 +419,12 @@ class Hook_addon_registry_core_abstract_components
             [
                 'x' => 1,
                 'y' => 1,
-                'tooltip' => lorem_phrase(),
+                'tooltip' => lorem_sentence(),
             ],
             [
                 'x' => 3,
                 'y' => 2,
-                'tooltip' => lorem_phrase(),
+                'tooltip' => lorem_sentence(),
             ],
         ];
 
@@ -473,11 +473,11 @@ class Hook_addon_registry_core_abstract_components
                 'datapoints' => [
                     [
                         'value' => 1,
-                        'tooltip' => lorem_phrase(),
+                        'tooltip' => lorem_sentence(),
                     ],
                     [
                         'value' => 3,
-                        'tooltip' => lorem_phrase(),
+                        'tooltip' => lorem_sentence(),
                     ],
                 ],
             ],
@@ -529,12 +529,12 @@ class Hook_addon_registry_core_abstract_components
             [
                 'label' => lorem_phrase(),
                 'value' => 1,
-                'tooltip' => lorem_phrase(),
+                'tooltip' => lorem_sentence(),
             ],
             [
                 'label' => lorem_phrase(),
                 'value' => 3,
-                'tooltip' => lorem_phrase(),
+                'tooltip' => lorem_sentence(),
             ],
         ];
 
@@ -571,12 +571,12 @@ class Hook_addon_registry_core_abstract_components
             [
                 'label' => lorem_phrase(),
                 'value' => 1,
-                'tooltip' => lorem_phrase(),
+                'tooltip' => lorem_sentence(),
             ],
             [
                 'label' => lorem_phrase(),
                 'value' => 3,
-                'tooltip' => lorem_phrase(),
+                'tooltip' => lorem_sentence(),
             ],
         ];
 
@@ -618,24 +618,24 @@ class Hook_addon_registry_core_abstract_components
             [
                 'label' => lorem_phrase(),
                 'value' => 1,
-                'tooltip' => lorem_phrase(),
+                'tooltip' => lorem_sentence(),
             ],
             [
                 'label' => lorem_phrase(),
                 'value' => 3,
-                'tooltip' => lorem_phrase(),
+                'tooltip' => lorem_sentence(),
             ],
         ];
         $datapoints_b = [
             [
                 'label' => lorem_phrase(),
                 'value' => 2,
-                'tooltip' => lorem_phrase(),
+                'tooltip' => lorem_sentence(),
             ],
             [
                 'label' => lorem_phrase(),
                 'value' => 2,
-                'tooltip' => lorem_phrase(),
+                'tooltip' => lorem_sentence(),
             ],
         ];
 
@@ -705,24 +705,24 @@ class Hook_addon_registry_core_abstract_components
             [
                 'label' => lorem_phrase(),
                 'value' => 1,
-                'tooltip' => lorem_phrase(),
+                'tooltip' => lorem_sentence(),
             ],
             [
                 'label' => lorem_phrase(),
                 'value' => 3,
-                'tooltip' => lorem_phrase(),
+                'tooltip' => lorem_sentence(),
             ],
         ];
         $datapoints_b = [
             [
                 'label' => lorem_phrase(),
                 'value' => 2,
-                'tooltip' => lorem_phrase(),
+                'tooltip' => lorem_sentence(),
             ],
             [
                 'label' => lorem_phrase(),
                 'value' => 2,
-                'tooltip' => lorem_phrase(),
+                'tooltip' => lorem_sentence(),
             ],
         ];
 
@@ -754,17 +754,17 @@ class Hook_addon_registry_core_abstract_components
         ];
 
         $_labels = [
-            'A',
-            'B',
+            'Alpha',
+            'Beta',
         ];
 
         return lorem_globalise(do_lorem_template('GRAPH_BUBBLE_BAR_CHART', [
             'ID' => lorem_word(),
             'WIDTH' => '500px',
             'HEIGHT' => '500px',
-            'X_AXIS_LABEL' => lorem_phrase(),
-            'Y_AXIS_LABEL' => lorem_phrase(),
-            'Z_AXIS_LABEL' => lorem_phrase(),
+            'X_AXIS_LABEL' => 'X axis',
+            'Y_AXIS_LABEL' => 'Y axis',
+            'Z_AXIS_LABEL' => 'Z axis',
             'TITLE' => lorem_phrase(),
             'LABELS' => $_labels,
             'DATASETS' => $_datasets,

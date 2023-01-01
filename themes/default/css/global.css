@@ -3061,6 +3061,10 @@ h3 .toggleable-tray-button .icon {
 	padding-left: 4em;
 }
 
+.horizontal-links + .mini-indent {
+	margin-top: -0.3em;
+	margin-bottom: 0.5em;
+}
 /*{+START,CSS_MODE,desktop}*/
 	.mini-indent {
 		padding-left: 2em;
