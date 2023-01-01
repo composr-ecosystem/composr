@@ -212,7 +212,6 @@ class Hook_addon_registry_core_abstract_interfaces
     public function tpl_previews() : array
     {
         return [
-            'templates/AJAX_PAGINATION.tpl' => 'ajax_pagination',
             'templates/RESULTS_TABLE_TICK.tpl' => 'result_table_screen',
             'templates/REDIRECT_SCREEN.tpl' => 'redirect_screen',
             'templates/CONFIRM_SCREEN.tpl' => 'confirm_screen',
@@ -286,22 +285,6 @@ class Hook_addon_registry_core_abstract_interfaces
     public function tpl_previews_extra() : array
     {
         return ['iframe', 'overlay'];
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return Tempcode Preview
-     */
-    public function tpl_preview__ajax_pagination() : object
-    {
-        return do_lorem_template('AJAX_PAGINATION', [
-            'BLOCK_PARAMS' => '',
-            'ALLOW_INFINITE_SCROLL' => '1',
-            'WRAPPER_ID' => placeholder_codename(),
-        ]);
     }
 
     /**

@@ -320,6 +320,8 @@ class Hook_addon_registry_galleries
             'templates/GALLERY_ENTRY_WRAP.tpl' => 'gallery_entries',
             'templates/GALLERY_VIDEO.tpl' => 'gallery_entries',
             'templates/BLOCK_MAIN_GALLERY_EMBED.tpl' => 'block_main_gallery_embed',
+            'templates/MASS_SELECT_MARKER.tpl' => 'block_main_gallery_embed',
+            'templates/MASS_SELECT_DELETE_FORM.tpl' => 'block_main_gallery_embed',
             'templates/BLOCK_SIDE_GALLERIES_LINE_DEPTH.tpl' => 'block_side_galleries',
             'templates/BLOCK_SIDE_GALLERIES_LINE.tpl' => 'block_side_galleries',
             'templates/BLOCK_SIDE_GALLERIES_LINE_CONTAINER.tpl' => 'block_side_galleries',

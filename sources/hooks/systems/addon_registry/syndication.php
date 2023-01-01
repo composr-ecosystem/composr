@@ -145,7 +145,6 @@ class Hook_addon_registry_syndication
     public function tpl_previews() : array
     {
         return [
-            'templates/RSS_HEADER.tpl' => 'rss_header',
             'xml/RSS_ENTRY_COMMENTS.xml' => 'rss_wrapper',
             'xml/RSS_XSLT.xml' => 'rss_xslt',
             'xml/ATOM_XSLT.xml' => 'atom_xslt',
@@ -306,19 +305,5 @@ class Hook_addon_registry_syndication
             'ABOUT' => lorem_phrase(),
             'DATE' => placeholder_date(),
         ], null, false, null, '.xml', 'xml');
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return Tempcode Preview
-     */
-    public function tpl_preview__rss_header() : object
-    {
-        return do_lorem_template('RSS_HEADER', [
-            'FEED_URL' => placeholder_url(),
-        ]);
     }
 }

@@ -1435,7 +1435,7 @@ class Module_admin_themes
 
             if (empty($tpls)) {
                 $templates_used = '';
-                $plain_text = true;
+                $raw_code = true;
             } else {
                 $templates_used = '(';
                 foreach ($tpls as $tpl) {
@@ -1447,7 +1447,7 @@ class Module_admin_themes
                 }
                 $templates_used .= ')';
 
-                $plain_text = is_plain_text_template($tpls[0]);
+                $raw_code = is_raw_code_template($tpls[0]);
             }
 
             $tpl_x = do_template('THEME_SCREEN_PREVIEW', [
@@ -1455,8 +1455,8 @@ class Module_admin_themes
 
                 'SCREEN_PREVIEW_URL' => $screen_preview_url,
                 'MOBILE_SCREEN_PREVIEW_URL' => $mobile_screen_preview_url,
-                'CMS_VALIDATION_URL' => $plain_text ? '' : $cms_validation_url,
-                'W3C_VALIDATION_URL' => $plain_text ? '' : $w3c_validation_url,
+                'CMS_VALIDATION_URL' => $raw_code ? '' : $cms_validation_url,
+                'W3C_VALIDATION_URL' => $raw_code ? '' : $w3c_validation_url,
 
                 'COLOR' => 'green',
                 'SCREEN' => preg_replace('#^tpl_preview__#', '', $func),

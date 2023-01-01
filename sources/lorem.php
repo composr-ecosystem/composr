@@ -558,7 +558,7 @@ function lorem_globalise(object $middle, $message = null, string $type = '', boo
 
     global $LOREM_AVOID_GLOBALISE;
 
-    if (($LOREM_AVOID_GLOBALISE) || is_full_screen_template(null, $middle) || !$include_header_and_footer) {
+    if (($LOREM_AVOID_GLOBALISE) || _is_html_wrapper_template($middle) || !$include_header_and_footer) {
         return $middle;
     }
 
@@ -570,6 +570,18 @@ function lorem_globalise(object $middle, $message = null, string $type = '', boo
     $out->handle_symbol_preprocessing();
 
     return $out;
+}
+
+/**
+ * Checks if the template is an HTML wrapper template.
+ *
+ * @param  Tempcode $tempcode The instantiated template
+ * @return boolean Whether it is
+ */
+function _is_html_wrapper_template(object $tempcode) : bool
+{
+    $pos = strpos($tempcode->evaluate(), '<html');
+    return ($pos !== false) && ($pos < 400);
 }
 
 /**
@@ -943,12 +955,7 @@ function render_screen_preview(?string $hook, string $function, ?string $templat
     }
 
     // Preview metadata
-    if (($template !== null) && (is_full_screen_template($template))) {
-        $full_screen = true;
-    } else {
-        $full_screen = false;
-    }
-    if (($template !== null) && (is_plain_text_template($template))) {
+    if (($template !== null) && (is_raw_code_template($template))) {
         //@header('Content-Type: text/plain; charset=' . get_charset());     Let it show with WITH_WHITESPACE
         $text = true;
     } else {
@@ -972,13 +979,14 @@ function render_screen_preview(?string $hook, string $function, ?string $templat
 }
 
 /**
- * Get an additional list of templates that should be previewed as text.
+ * Checks if the template is to be previewed as displayed raw code.
  *
- * @return array The list of templates
+ * @param  string $temp_name Name of the template
+ * @return boolean Whether it is
  */
-function get_text_templates() : array
+function is_raw_code_template(string $temp_name) : bool
 {
-    $text_templates = [
+    return in_array($temp_name, [
         // Building blocks
         'templates/POLL_RSS_SUMMARY.tpl',
 
@@ -1011,41 +1019,5 @@ function get_text_templates() : array
         'xml/RSS_WRAPPER.xml',
         'xml/RSS_ENTRY.xml',
         'xml/RSS_ABBR.xml'
-    ];
-    return $text_templates;
-}
-
-/**
- * Checks if the template is to be previewed as a text template.
- *
- * @param  string $temp_name Name of the template
- * @return boolean Whether it is
- */
-function is_plain_text_template(string $temp_name) : bool
-{
-    return in_array($temp_name, get_text_templates());
-}
-
-/**
- * Checks if the template is a full screen template.
- *
- * @param  ?string $temp_name Name of the template (null: do not use as criteria, use other as criteria, which must itself be non-null)
- * @param  ?Tempcode $tempcode The instantiated template (null: do not use as criteria, use other as criteria, which must itself be non-null)
- * @return boolean Whether it is
- */
-function is_full_screen_template(?string $temp_name = null, ?object $tempcode = null) : bool
-{
-    if ($temp_name === null) {
-        $pos = strpos($tempcode->evaluate(), '<html');
-        return ($pos !== false) && ($pos < 400);
-    }
-
-    return (
-        $temp_name == 'templates/GLOBAL_HTML_WRAP.tpl' ||
-        $temp_name == 'templates/RESTORE_HTML_WRAP.tpl' ||
-        $temp_name == 'templates/BASIC_HTML_WRAP.tpl' ||
-        $temp_name == 'templates/STANDALONE_HTML_WRAP.tpl' ||
-        $temp_name == 'templates/MAIL.tpl' ||
-        $temp_name == 'templates/MAIL_RAW.tpl'
-    );
+    ]);
 }

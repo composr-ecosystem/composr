@@ -1639,6 +1639,7 @@ class Hook_addon_registry_core_form_interfaces
         ]));
 
         foreach ([true, false] as $simple_style) {
+            $name = placeholder_random_id();
             $input = new Tempcode();
             $options = [
                 [

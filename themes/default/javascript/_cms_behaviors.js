@@ -154,7 +154,7 @@
                             for (j = 0; j < tds.length; j++) {
                                 // We must still define a blank data-th when js-responsive-table-no-prefix exists so the CSS does not add a colon
                                 data = (tds[j].classList.contains('js-responsive-table-no-prefix') || (thsFirstRow[j] == null)) ? '' : thsFirstRow[j].textContent.replace(/^\s+/, '').replace(/\s+$/, '');
-                                
+
                                 // Always set a data-th attribute (unless it already exists) even if blank; a blank data-th tells CSS not to add a colon
                                 if (!tds[j].hasAttribute('data-th')) {
                                     tds[j].setAttribute('data-th', data);

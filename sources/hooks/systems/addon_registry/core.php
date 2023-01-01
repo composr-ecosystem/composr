@@ -1961,9 +1961,7 @@ class Hook_addon_registry_core
             'templates/REDIRECT_POST_METHOD_SCREEN.tpl' => 'redirect_post_method_screen',
             'templates/FORUMS_EMBED.tpl' => 'forums_embed',
             'templates/JS_BLOCK.tpl' => 'js_block',
-            'templates/JAVASCRIPT_NEED.tpl' => 'javascript_need',
             'templates/JAVASCRIPT_NEED_FULL.tpl' => 'javascript_need_full',
-            'templates/CSS_NEED.tpl' => 'css_need',
             'templates/CSS_NEED_FULL.tpl' => 'css_need_full',
             'templates/CSS_NEED_INLINE.tpl' => 'css_need_inline',
             'templates/PARAM_INFO.tpl' => 'param_info',
@@ -1999,8 +1997,6 @@ class Hook_addon_registry_core
             'templates/BLOCK_MAIN_MULTI_CONTENT__HEADER.tpl' => 'block_main_multi_content_boxes',
             'templates/BLOCK_MAIN_MULTI_CONTENT__FOOTER.tpl' => 'block_main_multi_content_boxes',
             'templates/MASS_SELECT_FORM_BUTTONS.tpl' => 'mass_select_form_buttons',
-            'templates/MASS_SELECT_MARKER.tpl' => 'mass_select_marker',
-            'templates/MASS_SELECT_DELETE_FORM.tpl' => 'mass_select_delete_form',
             'templates/UPLOAD_SYNDICATION_SETUP_SCREEN.tpl' => 'upload_syndication_setup_screen',
             'templates/GROUP_MEMBER_TIMEOUT_MANAGE_SCREEN.tpl' => 'group_member_timeout_manage_screen',
             'templates/SPONSORS_SCREEN.tpl' => 'sponsors_screen',
@@ -2364,40 +2360,10 @@ class Hook_addon_registry_core
      *
      * @return Tempcode Preview
      */
-    public function tpl_preview__javascript_need() : object
-    {
-        return lorem_globalise(do_lorem_template('JAVASCRIPT_NEED', [
-            'CODE' => placeholder_javascript_code(),
-            'SUFFIX' => '',
-        ]), null, '', true);
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return Tempcode Preview
-     */
     public function tpl_preview__javascript_need_full() : object
     {
         return lorem_globalise(do_lorem_template('JAVASCRIPT_NEED_FULL', [
             'URL' => placeholder_url(),
-        ]), null, '', true);
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return Tempcode Preview
-     */
-    public function tpl_preview__css_need() : object
-    {
-        return lorem_globalise(do_lorem_template('CSS_NEED', [
-            'CODE' => lorem_phrase(),
-            'SUFFIX' => '',
         ]), null, '', true);
     }
 
@@ -2597,7 +2563,7 @@ class Hook_addon_registry_core
             'FULL_LOGIN_URL' => placeholder_url(),
             'JOIN_URL' => placeholder_url(),
             'LOGIN_URL' => placeholder_url(),
-        ]), null, '', true);
+        ]), null, '', false);
     }
 
     /**
@@ -2763,33 +2729,6 @@ class Hook_addon_registry_core
                 ['A' => 'A4', 'B' => 'B4', 'C' => 'C4'],
             ],
         ], null, false, null, '.txt', 'text'), null, '', true);
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return Tempcode Preview
-     */
-    public function tpl_preview__mass_select_marker() : object
-    {
-        return lorem_globalise(do_lorem_template('MASS_SELECT_MARKER', [
-            'TYPE' => placeholder_codename(),
-            'ID' => placeholder_codename(),
-        ]), null, '', true);
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return Tempcode Preview
-     */
-    public function tpl_preview__mass_select_delete_form() : object
-    {
-        return lorem_globalise(do_lorem_template('MASS_SELECT_DELETE_FORM', []), null, '', true);
     }
 
     /**

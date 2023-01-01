@@ -360,7 +360,7 @@ class Hook_addon_registry_core_notifications
             'NOTIFICATIONS' => '',
             'PTS' => '',
             'MAX' => '5',
-        ]), null, '', true);
+        ]), null, '', false);
     }
 
     /**

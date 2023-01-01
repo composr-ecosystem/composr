@@ -104,7 +104,7 @@
 			</div>
 		{+END}
 	</div>
-	
+
 	<div class="clearfix lined-up-boxes">
 		<aside class="box box---news-entry-screen"><nav class="box-inner">
 			<p class="lonely-label">

@@ -257,7 +257,7 @@ class basic_code_formatting_test_set extends cms_test_case
                 //  Some templates need to be loaded with no terminating line, as white-space may cause an issue.
                 //  Composr accommodates for this with a special rule - a terminating line break is stripped from any one-line templates.
                 $expected_term_breaks = 1;
-                if (in_array($path, [])) {
+                if (in_array(basename($path), ['FRACTIONAL_EDIT.tpl'])) {
                     $expected_term_breaks = 0;
                 }
 
