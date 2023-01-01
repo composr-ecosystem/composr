@@ -406,7 +406,7 @@ class Hook_addon_registry_banners
         return lorem_globalise(do_lorem_template('BANNER_VIEW_SCREEN', [
             'TITLE' => lorem_screen_title(),
             'EDIT_URL' => placeholder_url(),
-            'MAP_TABLE' => lorem_phrase(),
+            'MAP_TABLE' => placeholder_table(),
             'BANNER' => lorem_phrase(),
             'NAME' => placeholder_codename(),
             'RESULTS_TABLE' => placeholder_table(),

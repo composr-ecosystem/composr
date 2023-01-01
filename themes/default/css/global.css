@@ -3249,6 +3249,10 @@ table.scrollable-inside {
 		display: block;
 	}
 
+	.map-table.responsive-blocked-table th {
+		font-weight: bold;
+	}
+
 	.results-table.responsive-blocked-table tr, .results-table.responsive-blocked-table .fake-tr {
 		margin-bottom: 0.5em;
 	}
@@ -3589,6 +3593,11 @@ div.zebra-0+div.zebra-1, div.zebra-1+div.zebra-0 {
 	.responsive-table > .fake-tbody > .fake-tr.last > .fake-td,
 	.responsive-table > .fake-tbody > .fake-tr:last-child > .fake-th {
 		border-bottom: 0;
+	}
+
+	.responsive-table td a:first-child:last-child {
+		/* Will wrap onto next line if too long to fit onto one line, important to make links neat */
+		display: inline-block;
 	}
 
 	.responsive-table .form-table-field-spacer {

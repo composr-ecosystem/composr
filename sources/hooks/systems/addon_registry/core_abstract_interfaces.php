@@ -395,6 +395,7 @@ class Hook_addon_registry_core_abstract_interfaces
 
         return lorem_globalise(do_lorem_template('MAP_TABLE', [
             'FIELDS' => $fields,
+            'RESPONSIVE' => true,
         ]), null, '', true);
     }
 
@@ -416,7 +417,7 @@ class Hook_addon_registry_core_abstract_interfaces
         return lorem_globalise(do_lorem_template('MAP_TABLE_SCREEN', [
             'TITLE' => lorem_screen_title(),
             'FIELDS' => $fields,
-            'RESPONSIVE' => false,
+            'RESPONSIVE' => true,
         ]), null, '', true);
     }
 
@@ -710,6 +711,32 @@ class Hook_addon_registry_core_abstract_interfaces
      */
     public function tpl_preview__full_table_screen() : object
     {
+        // Header...
+
+        $values = [
+            lorem_word(),
+            lorem_word_2(),
+            lorem_word(),
+            lorem_word_2(),
+            lorem_word(),
+            lorem_word(),
+            lorem_word(),
+            lorem_word()
+        ];
+        $cells = new Tempcode();
+        foreach ($values as $value) {
+            $cells->attach(do_lorem_template('COLUMNED_TABLE_HEADER_ROW_CELL', [
+                'VALUE' => $value,
+            ]));
+        }
+
+        $header_row = do_lorem_template('COLUMNED_TABLE_HEADER_ROW', [
+            'CELLS' => $cells,
+        ]);
+
+
+        // Rows...
+
         $table_rows = new Tempcode();
         foreach (placeholder_array() as $row) {
             $actions = do_lorem_template('COLUMNED_TABLE_ACTION', [
@@ -743,9 +770,25 @@ class Hook_addon_registry_core_abstract_interfaces
             ]);
 
             $values = [
-                protect_from_escaping(escape_html(lorem_word())),
-                protect_from_escaping(escape_html(lorem_word())),
-                protect_from_escaping(escape_html(lorem_word())),
+                protect_from_escaping(escape_html(lorem_sentence())),
+                protect_from_escaping(do_lorem_template('HYPERLINK', [
+                    'REL' => null,
+                    'POST_DATA' => null,
+                    'ACCESSKEY' => null,
+                    'NEW_WINDOW' => false,
+                    'TITLE' => lorem_phrase(),
+                    'URL' => placeholder_url(),
+                    'CAPTION' => escape_html(lorem_phrase()),
+                ])),
+                protect_from_escaping(do_lorem_template('HYPERLINK', [
+                    'REL' => null,
+                    'POST_DATA' => null,
+                    'ACCESSKEY' => null,
+                    'NEW_WINDOW' => false,
+                    'TITLE' => lorem_phrase(),
+                    'URL' => placeholder_url(),
+                    'CAPTION' => escape_html(lorem_sentence()),
+                ])),
                 protect_from_escaping(escape_html(placeholder_date())),
                 $line,
                 $select,
@@ -765,26 +808,7 @@ class Hook_addon_registry_core_abstract_interfaces
             $table_rows->attach($tpl);
         }
 
-        $values = [
-            lorem_word(),
-            lorem_word_2(),
-            lorem_word(),
-            lorem_word_2(),
-            lorem_word(),
-            lorem_word(),
-            lorem_word(),
-            lorem_word()
-        ];
-        $cells = new Tempcode();
-        foreach ($values as $value) {
-            $cells->attach(do_lorem_template('COLUMNED_TABLE_HEADER_ROW_CELL', [
-                'VALUE' => $value,
-            ]));
-        }
-
-        $header_row = do_lorem_template('COLUMNED_TABLE_HEADER_ROW', [
-            'CELLS' => $cells,
-        ]);
+        // ---
 
         $field_rows = do_lorem_template('COLUMNED_TABLE', [
             'HEADER_ROW' => $header_row,
