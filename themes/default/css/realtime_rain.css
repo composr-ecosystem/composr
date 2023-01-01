@@ -53,8 +53,7 @@
 	font-weight: bold;
 	font-size: 1.25em;
 	padding: 10px;
-	height: 64px;
-	margin: 0;
+	margin: 0 0 15px 0;
 	background: url('{$IMG;,realtime_rain/news/news_header}') no-repeat;
 	background-size: 100% 100% !important;
 	display: block;
@@ -85,12 +84,20 @@
 
 #timer-outer {
 	width: 100%;
-	padding: 10px 0;
 	position: absolute;
-	bottom: 10px;
 	z-index: 100;
 	color: {$GET,slightly_seeded_pale_text};
 }
+/*{+START,CSS_MODE,mobile}*/
+	#timer-outer {
+		bottom: 0;
+	}
+/*{+END}*/
+/*{+START,CSS_MODE,desktop}*/
+	#timer-outer {
+		bottom: 20px;
+	}
+/*{+END}*/
 /*{+START,CSS_MODE,desktop}*/
 	#timer-inner {
 		width: 962px;
@@ -116,6 +123,7 @@
 #timer {
 	height: 38px;
 	background: url('{$IMG;,realtime_rain/timeline/timer_bg}') no-repeat;
+	background-size: 100% 100%;
 	margin-top: 5px;
 }
 /*{+START,CSS_MODE,desktop}*/
@@ -134,6 +142,11 @@
 	float: left;
 	margin-right: 26px;
 }
+/*{+START,CSS_MODE,mobile}*/
+	#pause-but {
+		margin-right: 0;
+	}
+/*{+END}*/
 #pre-but {
 	float: left;
 }
@@ -147,7 +160,7 @@
 }
 /*{+START,CSS_MODE,mobile}*/
 	#time-line img {
-		width: 200px;
+		width: 195px;
 	}
 /*{+END}*/
 #next-but {
