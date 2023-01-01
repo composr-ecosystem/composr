@@ -1,3 +1,4 @@
+{$REQUIRE_JAVASCRIPT,core_rich_media}
 {$REQUIRE_JAVASCRIPT,jquery}
 {$REQUIRE_JAVASCRIPT,jquery_ui}
 {$REQUIRE_JAVASCRIPT,jquery_flip}
