@@ -440,9 +440,32 @@ span.validated-checkbox + input[name="validated"].input-tick {
 	vertical-align: middle;
 }
 
-.various-ticks {
-	margin: -0.5em 0 -0.5em -0.5em;
+.various-ticks, .input-other-tick {
 	white-space: nowrap;
+}
+
+.various-ticks .input-individual-tick, .input-other-tick {
+	margin: 1em 1em 1em 0; /* Designed to make it fill whole box, i.e. equalise against the th's (to the left) height */
+	float: left;
+	font-size: 0.9em;
+	vertical-align: middle;
+}
+
+.various-ticks .input-individual-tick + .input-individual-tick {
+	margin-left: 0.5em;
+}
+
+.various-ticks label input, .various-ticks label span {
+	vertical-align: middle;
+}
+
+.input-other-tick {
+	margin-top: -0.5em;
+	clear: both;
+}
+
+.various-ticks .input-individual-tick input {
+	margin-bottom: 0;
 }
 
 .syndication-options span {
@@ -454,28 +477,6 @@ span.validated-checkbox + input[name="validated"].input-tick {
 }
 .syndication-options span:last-child {
 	border-right: 0;
-}
-
-.various-ticks .input-individual-tick, .various-ticks .input-other-tick {
-	padding: 1em 1em 1em 0.5em; /* Designed to make it fill whole box, i.e. equalise against the th's (to the left) height */
-	float: left;
-	font-size: 0.9em;
-	vertical-align: middle;
-}
-
-.various-ticks label input, .various-ticks label span {
-	vertical-align: middle;
-}
-
-.various-ticks .input-individual-tick {
-}
-
-.various-ticks .input-other-tick {
-	clear: both;
-}
-
-.various-ticks .input-individual-tick input {
-	margin-bottom: 0;
 }
 
 .help-icon + div + .radio-list {

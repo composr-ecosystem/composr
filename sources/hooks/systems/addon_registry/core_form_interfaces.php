@@ -1638,71 +1638,73 @@ class Hook_addon_registry_core_form_interfaces
             'COMCODE' => '',
         ]));
 
-        $input = new Tempcode();
-        $options = [
-            [
-                'option1',
-                'opt1',
-                true,
-                '',
-            ],
-            [
-                'option2',
-                'opt2',
-                true,
-                '',
-            ],
-            [
-                'option3',
-                'opt3',
-                true,
-                '',
-            ]
-        ];
-        if (count($options[0]) != 3) {
+        foreach ([true, false] as $simple_style) {
+            $input = new Tempcode();
             $options = [
                 [
-                    $options,
-                    null,
-                    new Tempcode(),
+                    'option1',
+                    'opt1',
+                    true,
+                    '',
                 ],
+                [
+                    'option2',
+                    'opt2',
+                    true,
+                    '',
+                ],
+                [
+                    'option3',
+                    'opt3',
+                    true,
+                    '',
+                ]
             ];
-        }
-
-        foreach ($options as $_option) {
-            $out = [];
-            foreach ($_option[0] as $option) {
-                $out[] = [
-                    'DISABLED' => false,
-                    'CHECKED' => false,
-                    'TABINDEX' => placeholder_number(),
-                    'NAME' => placeholder_random_id(),
-                    'PRETTY_NAME' => lorem_word(),
-                    'DESCRIPTION' => lorem_sentence(),
+            if (count($options[0]) != 3) {
+                $options = [
+                    [
+                        $options,
+                        null,
+                        new Tempcode(),
+                    ],
                 ];
             }
 
-            $input->attach(do_lorem_template('FORM_SCREEN_INPUT_VARIOUS_TICKS', [
-                'SECTION_TITLE' => $_option[2],
-                'EXPANDED' => $_option[1],
-                'SIMPLE_STYLE' => false,
-                'SIBLINGS' => '3',
-                'CUSTOM_ACCEPT_MULTIPLE' => false,
-                'CUSTOM_NAME' => placeholder_random_id(),
-                'CUSTOM_VALUE' => '',
-                'OUT' => $out,
+            foreach ($options as $_option) {
+                $out = [];
+                foreach ($_option[0] as $option) {
+                    $out[] = [
+                        'DISABLED' => false,
+                        'CHECKED' => false,
+                        'TABINDEX' => placeholder_number(),
+                        'NAME' => placeholder_random_id(),
+                        'PRETTY_NAME' => lorem_word(),
+                        'DESCRIPTION' => lorem_sentence(),
+                    ];
+                }
+
+                $input->attach(do_lorem_template('FORM_SCREEN_INPUT_VARIOUS_TICKS', [
+                    'SECTION_TITLE' => $_option[2],
+                    'EXPANDED' => $_option[1],
+                    'SIMPLE_STYLE' => $simple_style,
+                    'SIBLINGS' => '3',
+                    'CUSTOM_ACCEPT_MULTIPLE' => false,
+                    'CUSTOM_NAME' => placeholder_random_id(),
+                    'CUSTOM_VALUE' => '',
+                    'OUT' => $out,
+                ]));
+            }
+            $fields->attach(do_lorem_template('FORM_SCREEN_FIELD', [
+                'REQUIRED' => true,
+                'SKIP_LABEL' => true,
+                'NAME' => $name,
+                'PRETTY_NAME' => lorem_word(),
+                'DESCRIPTION' => lorem_sentence_html(),
+                'DESCRIPTION_SIDE' => '',
+                'INPUT' => $input,
+                'COMCODE' => '',
             ]));
         }
-        $fields->attach(do_lorem_template('FORM_SCREEN_FIELD', [
-            'REQUIRED' => true,
-            'SKIP_LABEL' => true,
-            'NAME' => $name,
-            'PRETTY_NAME' => lorem_word(),
-            'DESCRIPTION' => lorem_sentence_html(),
-            'DESCRIPTION_SIDE' => '',
-            'INPUT' => $input,
-            'COMCODE' => '',
-        ]));
 
         $hidden->attach(do_lorem_template('FORM_SCREEN_INPUT_HIDDEN', [
             'NAME' => placeholder_random_id(),
