@@ -979,36 +979,28 @@ function render_screen_preview(?string $hook, string $function, ?string $templat
 function get_text_templates() : array
 {
     $text_templates = [
-        'templates/JS_BLOCK.tpl',
-        'templates/CSS_NEED.tpl',
+        // Building blocks
+        'templates/POLL_RSS_SUMMARY.tpl',
+
+        // Code/metadata injection, mainly for <head>
         'templates/CSS_NEED_FULL.tpl',
         'templates/CSS_NEED_INLINE.tpl',
-        'templates/WYSIWYG_LOAD.tpl',
-        'templates/JAVASCRIPT_NEED.tpl',
-        'templates/AJAX_PAGINATION.tpl',
-        'templates/TRANSLATION_LINKS.tpl',
+        'templates/JAVASCRIPT_NEED_FULL.tpl',
         'templates/JS_REFRESH.tpl',
         'templates/META_REFRESH_LINE.tpl',
+        'templates/TRANSLATION_LINKS.tpl',
+
+        // Data/structure injection
         'templates/PREVIEW_SCRIPT_CODE.tpl',
         'templates/HANDLE_CONFLICT_RESOLUTION.tpl',
-        'templates/RSS_HEADER.tpl',
-        'templates/POLL_RSS_SUMMARY.tpl',
-        'templates/JAVASCRIPT_NEED_FULL.tpl',
-        'templates/NOTIFICATION_POLLER.tpl',
-        'templates/ANCHOR.tpl',
-        'templates/CAPTCHA_LOOSE.tpl',
         'templates/CHAT_SITEWIDE_IM.tpl',
+        'templates/NOTIFICATION_POLLER.tpl',
+        'templates/CAPTCHA_LOOSE.tpl',
+        'templates/JS_BLOCK.tpl',
+        'templates/WYSIWYG_LOAD.tpl',
 
-        // In header, and uses IDs, so can't be used except in isolation
-        'templates/BLOCK_TOP_NOTIFICATIONS.tpl',
-        'templates/BLOCK_TOP_LOGIN.tpl',
-        'templates/MENU_BRANCH_zone.tpl',
-        'templates/MENU_SPACER_zone.tpl',
-        'templates/MENU_zone.tpl',
-
-        // Hidden / display: none by default
-        'templates/MASS_SELECT_DELETE_FORM.tpl',
-        'templates/MASS_SELECT_MARKER.tpl',
+        // Nothing visible to see for other reasons
+        'templates/ANCHOR.tpl',
 
         // XML
         'xml/TRACKBACK_XML_LISTING.xml',

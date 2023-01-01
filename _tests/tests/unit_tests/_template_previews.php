@@ -155,8 +155,9 @@ class _template_previews_test_set extends cms_test_case
 
             $flag = false;
             foreach ($previews__by_screen[$function][1] as $template_2) {
+                // Exceptions
                 if (in_array($template_2, [
-                    // Ignore templates designed for indirect inclusion
+                    // Designed for indirect inclusion
                     'templates/NEWSLETTER_PREVIEW.tpl',
                     'templates/GLOBAL_HELPER_PANEL.tpl',
                     'templates/HTML_HEAD.tpl',
@@ -193,8 +194,23 @@ class _template_previews_test_set extends cms_test_case
                     'templates/FORM_SCREEN_ARE_REQUIRED.tpl',
                     'templates/GALLERY_POPULAR.tpl',
                     'templates/FILTER_BOX.tpl',
+                    'templates/MASS_SELECT_DELETE_FORM.tpl',
+                    'templates/MASS_SELECT_MARKER.tpl',
+                    'templates/AJAX_PAGINATION.tpl',
 
-                    // Ignore templates that won't run outside of CNS
+                    // Used in the <head> by default
+                    'templates/CSS_NEED.tpl',
+                    'templates/JAVASCRIPT_NEED.tpl',
+                    'templates/RSS_HEADER.tpl',
+
+                    // In header, and uses IDs, so can't be used except in isolation
+                    'templates/BLOCK_TOP_NOTIFICATIONS.tpl',
+                    'templates/BLOCK_TOP_LOGIN.tpl',
+                    'templates/MENU_BRANCH_zone.tpl',
+                    'templates/MENU_SPACER_zone.tpl',
+                    'templates/MENU_zone.tpl',
+
+                    // Won't run outside of CNS, so just stop it complaining if it's not available
                     'templates/CNS_MEMBER_DIRECTORY_SCREEN.tpl',
                 ])) {
                     continue;
