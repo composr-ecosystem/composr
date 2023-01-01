@@ -510,7 +510,6 @@ function themewizard_script()
 
     switch ($type) {
         case 'css':
-        case 'css_raw':
             cms_ini_set('ocproducts.xss_detect', '0');
             require_code('tempcode_compiler');
             list($colours, $landscape) = calculate_themewizard_css_colours($seed, $dark, $source_theme, $algorithm);
@@ -523,12 +522,8 @@ function themewizard_script()
             }
             $css = generate_theme_wizard_css_sheet($show, null, $landscape, $source_theme, $algorithm, $seed);
             header('Content-Type: text/css; charset=' . get_charset());
-            if ($type == 'css') {
-                $tpl = template_to_tempcode($css);
-                $tpl->evaluate_echo();
-            } else {
-                echo $css;
-            }
+            $tpl = template_to_tempcode($css);
+            $tpl->evaluate_echo();
             break;
 
         case 'image':
@@ -1334,6 +1329,25 @@ function generate_theme_wizard_css_sheet(string $css_file, ?string $css_source_p
  */
 function themewizard_colours_to_css(string $contents, array $landscape, string $source_theme, string $algorithm, string $seed) : string
 {
+    if (running_script('themewizard')) {
+        // Pre-parse to see if there are any CSS files we need to hard-include (we can't do a full Tempcode process until the Theme Wizard colour substitutions have occurred)
+        //  If we don't do this the included file won't be updated and will be included with the non-altered THEMEWIZARD_COLOR commands at final Tempcode evaluation if running the preview script (as the raw file won't have been changed on disk)
+        $matches = [];
+        $num_matches = preg_match_all('#/\*\{\+START,INCLUDE,(\w+),\.css,css,default\}\{\+END\}\*/#', $contents, $matches);
+        for ($i = 0; $i < $num_matches; $i++) {
+            $extra_file = $matches[1][$i] . '.css';
+
+            $css_sheets = themewizard_find_css_sheets($source_theme, null, null, false) + themewizard_find_css_sheets('default', null, null, false);
+            if (isset($css_sheets[$extra_file])) {
+                $path = $css_sheets[$extra_file];
+
+                $css_include = cms_file_get_contents_safe($path, FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
+
+                $contents = str_replace($matches[0][$i], $css_include, $contents);
+            }
+        }
+    }
+
     if ($algorithm == 'hsv') {
         list($composr_h, $composr_s, $composr_v) = rgb_to_hsv(find_theme_seed($source_theme));
         list($desired_h, $desired_s, $desired_v) = rgb_to_hsv($seed);
