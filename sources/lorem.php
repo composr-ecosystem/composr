@@ -964,7 +964,7 @@ function render_screen_preview(?string $hook, string $function, ?string $templat
 
     // Show as plain text if needed
     if ($text) {
-        $out = with_whitespace($preview);
+        $out = with_whitespace($preview, false, true);
     } else {
         $out = $preview;
     }
@@ -997,6 +997,7 @@ function get_text_templates() : array
         'templates/NOTIFICATION_POLLER.tpl',
         'templates/ANCHOR.tpl',
         'templates/CAPTCHA_LOOSE.tpl',
+        'templates/CHAT_SITEWIDE_IM.tpl',
 
         // In header, and uses IDs, so can't be used except in isolation
         'templates/BLOCK_TOP_NOTIFICATIONS.tpl',

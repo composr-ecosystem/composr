@@ -5,7 +5,7 @@
 
 .raw-log {
 	overflow: scroll;
-	font-family: Courier, monospace;
+	font-family: 'Courier New', 'Courier', monospace;
 	max-height: 400px;
 	white-space: pre;
 }

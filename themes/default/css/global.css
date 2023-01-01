@@ -190,7 +190,7 @@ pre,
 code,
 kbd,
 samp {
-	font-family: "SFMono-Regular", "Menlo", "Monaco", "Consolas", "Liberation Mono", "Courier New", monospace;
+	font-family: 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
 	font-size: 1em;
 }
 
@@ -1463,7 +1463,7 @@ header.with-seed-navbar .top-button:hover {
 	background-color: {$GET,main_background};
 	font-size: 1.25em;
 	color: {$GET,slightly_seeded_text};
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; /* Choose better font for larger text */
+	font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; /* Choose better font for larger text */
 	padding: 2em 3em;
 	margin-bottom: 3em;
 	position: relative;
@@ -4524,7 +4524,7 @@ div .buttons-group-faded > * {
 	}
 
 	input[type="text"]#captcha {
-		font-family: Courier;
+		font-family: 'Courier New', 'Courier', monospace;
 		font-size: 16px;
 		vertical-align: middle;
 		margin-left: 0.5em;

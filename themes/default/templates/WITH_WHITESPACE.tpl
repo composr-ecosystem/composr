@@ -8,5 +8,10 @@
 	</div>
 {+END}
 {+START,IF,{$NOT,{USING_TEXTAREA}}}
-	<p class="whitespace-visible">{CONTENT*}</p>
+	{+START,IF,{$NOT,{USING_CODETAG}}}
+		<p class="whitespace-visible">{CONTENT*}</p>
+	{+END}
+	{+START,IF,{USING_CODETAG}}
+		<code class="whitespace-visible">{CONTENT*}</code>
+	{+END}
 {+END}

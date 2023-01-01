@@ -51,11 +51,7 @@ class Hook_preview_newsletter_whatsnew
             $cutoff_time = post_param_date('cutoff');
             $chosen_categories = newsletter_get_category_choices($cutoff_time, $lang);
 
-            $output = do_template('WITH_WHITESPACE', [
-                '_GUID' => '162abca1c073fab71f13c1de2bd5cd98',
-                'CONTENT' => $chosen_categories,
-                'USING_TEXTAREA' => false,
-            ]);
+            $output = with_whitespace($chosen_categories);
         } else {
             $cutoff_time = post_param_date('cutoff');
             $in_full = post_param_integer('in_full', 0);

@@ -361,11 +361,19 @@ class Hook_addon_registry_core_html_abstractions
         $out->attach(do_lorem_template('WITH_WHITESPACE', [
             'CONTENT' => lorem_phrase(),
             'USING_TEXTAREA' => false,
+            'USING_CODETAG' => false,
+        ]));
+
+        $out->attach(do_lorem_template('WITH_WHITESPACE', [
+            'CONTENT' => lorem_phrase(),
+            'USING_TEXTAREA' => false,
+            'USING_CODETAG' => true,
         ]));
 
         $out->attach(do_lorem_template('WITH_WHITESPACE', [
             'CONTENT' => lorem_phrase(),
             'USING_TEXTAREA' => true,
+            'USING_CODETAG' => false,
         ]));
 
         return lorem_globalise($out, null, '', true);

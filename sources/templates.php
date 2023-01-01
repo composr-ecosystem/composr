@@ -341,9 +341,10 @@ function form_input_list_entry(string $value, bool $selected = false, $text = ''
  *
  * @param  mixed $in Input, provided in plain-text format or as HTML via do_lang_tempcode/protect_from_escaping (string or Tempcode)
  * @param  boolean $using_textarea Whether to show using a textarea (more reliable to use clipboard to get from)
+ * @param  boolean $using_codetag Whether to use a code tag (for monospaced font); only use if !$using_textarea
  * @return Tempcode Output
  */
-function with_whitespace($in, bool $using_textarea = false) : object
+function with_whitespace($in, bool $using_textarea = false, bool $using_codetag = false) : object
 {
     if (is_object($in)) {
         if ($in->is_empty()) {
@@ -354,7 +355,7 @@ function with_whitespace($in, bool $using_textarea = false) : object
             return new Tempcode();
         }
     }
-    return do_template('WITH_WHITESPACE', ['_GUID' => 'be3b74901d5522d4e67ff6313ad61643', 'CONTENT' => $in, 'USING_TEXTAREA' => $using_textarea]);
+    return do_template('WITH_WHITESPACE', ['_GUID' => 'be3b74901d5522d4e67ff6313ad61643', 'CONTENT' => $in, 'USING_TEXTAREA' => $using_textarea, 'USING_CODETAG' => $using_codetag]);
 }
 
 /**

@@ -452,10 +452,37 @@ class Hook_addon_registry_chat
      */
     public function tpl_preview__chat_sitewide_im() : object
     {
+        $sound_effects = [];
+        foreach (placeholder_array() as $k => $v) {
+            $sound_effects[] = [
+                'KEY' => $v,
+                'VALUE' => lorem_word_2(),
+            ];
+        }
+        $chat_sound = do_lorem_template('CHAT_SOUND', [
+            'SOUND_EFFECTS' => $sound_effects,
+        ]);
+
+        $im_area_template = do_lorem_template('CHAT_LOBBY_IM_AREA', [
+            'MESSAGES_PHP' => find_script('messages'),
+            'CHATROOM_ID' => '__room_id__',
+        ]);
+
+        $im_participant_template = do_lorem_template('CHAT_LOBBY_IM_PARTICIPANT', [
+            'PROFILE_URL' => placeholder_url(),
+            'ID' => '__id__',
+            'CHATROOM_ID' => '__room_id__',
+            'USERNAME' => '__username__',
+            'ONLINE' => '__online__',
+            'AVATAR_URL' => '__avatar_url__',
+            'MAKE_FRIEND_URL' => placeholder_url(),
+            'BLOCK_MEMBER_URL' => placeholder_url(),
+        ]);
+
         return lorem_globalise(do_lorem_template('CHAT_SITEWIDE_IM', [
-            'IM_AREA_TEMPLATE' => lorem_phrase(),
-            'IM_PARTICIPANT_TEMPLATE' => lorem_phrase(),
-            'CHAT_SOUND' => lorem_phrase(),
+            'IM_AREA_TEMPLATE' => $im_area_template,
+            'IM_PARTICIPANT_TEMPLATE' => $im_participant_template,
+            'CHAT_SOUND' => $chat_sound,
         ]), null, '', true);
     }
 
@@ -738,6 +765,17 @@ class Hook_addon_registry_chat
             $setting_blocks->attach($block);
         }
 
+        $sound_effects = [];
+        foreach (placeholder_array() as $k => $v) {
+            $sound_effects[] = [
+                'KEY' => $v,
+                'VALUE' => lorem_word_2(),
+            ];
+        }
+        $chat_sound = do_lorem_template('CHAT_SOUND', [
+            'SOUND_EFFECTS' => $sound_effects,
+        ]);
+
         return lorem_globalise(do_lorem_template('CHAT_SET_EFFECTS_SCREEN', [
             'TITLE' => lorem_screen_title(),
             'SUBMIT_ICON' => 'buttons/save',
@@ -745,7 +783,7 @@ class Hook_addon_registry_chat
             'HIDDEN' => '',
             'POST_URL' => placeholder_url(),
             'SETTING_BLOCKS' => $setting_blocks,
-            'CHAT_SOUND' => '',
+            'CHAT_SOUND' => $chat_sound,
         ]), null, '', true);
     }
 
@@ -762,9 +800,21 @@ class Hook_addon_registry_chat
             'MESSAGES_PHP' => find_script('messages'),
             'CHATROOM_ID' => placeholder_numeric_id(),
         ]);
+
+        $sound_effects = [];
+        foreach (placeholder_array() as $k => $v) {
+            $sound_effects[] = [
+                'KEY' => $v,
+                'VALUE' => lorem_word_2(),
+            ];
+        }
+        $chat_sound = do_lorem_template('CHAT_SOUND', [
+            'SOUND_EFFECTS' => $sound_effects,
+        ]);
+
         return lorem_globalise(do_lorem_template('CHAT_SITEWIDE_IM_POPUP', [
             'CONTENT' => $im_area_template,
-            'CHAT_SOUND' => '',
+            'CHAT_SOUND' => $chat_sound,
         ]), null, '', true);
     }
 

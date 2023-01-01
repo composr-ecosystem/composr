@@ -22,7 +22,7 @@
 	margin-top: 0;
 }
 .purchase-terms {
-	font-family: Courier, monospace;
+	font-family: 'Courier New', 'Courier', monospace;
 	white-space: pre-wrap !important;
 	margin: 1em 0;
 }
@@ -102,7 +102,7 @@
 	box-shadow: 0 0 10px rgba(0, 0, 0, .15);
 	font-size: 16px;
 	line-height: 24px;
-	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
 	color: {$GET,slightly_seeded_gray_text};
 }
 
