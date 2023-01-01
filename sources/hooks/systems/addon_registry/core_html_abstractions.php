@@ -209,7 +209,7 @@ class Hook_addon_registry_core_html_abstractions
      */
     public function tpl_preview__standalone_html_wrap() : object
     {
-        return lorem_globalise(do_lorem_template('STANDALONE_HTML_WRAP', [
+        return do_lorem_template('STANDALONE_HTML_WRAP', [
             'TITLE' => lorem_phrase(),
             'CONTENT' => lorem_chunk_html(),
             'FRAME' => null,
@@ -217,7 +217,7 @@ class Hook_addon_registry_core_html_abstractions
             'TARGET' => null,
             'POPUP' => null,
             'OPENS_BELOW' => null,
-        ]), null, '', true);
+        ]);
     }
 
     /**
@@ -263,11 +263,11 @@ class Hook_addon_registry_core_html_abstractions
      */
     public function tpl_preview__basic_html_wrap() : object
     {
-        return lorem_globalise(do_lorem_template('BASIC_HTML_WRAP', [
+        return do_lorem_template('BASIC_HTML_WRAP', [
             'TITLE' => lorem_phrase(),
             'CONTENT' => lorem_chunk_html(),
             'NOINDEX' => null,
-        ]), null, '', true);
+        ]);
     }
 
     /**

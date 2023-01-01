@@ -1662,15 +1662,11 @@ class Module_admin_themes
 
         require_code('lorem');
 
-        global $LOREM_AVOID_GLOBALISE;
-        $LOREM_AVOID_GLOBALISE = true;
-
         $template = get_param_string('id', null);
         $hook = get_param_string('hook');
         $function = get_param_string('function');
 
-        $full_screen = false;
-        $preview = render_screen_preview($hook, $function, $template, $full_screen);
+        $preview = render_screen_preview($hook, $function, $template);
 
         $validate = get_param_string('validate', '');
         switch ($validate) {
@@ -1709,13 +1705,9 @@ class Module_admin_themes
                 ]);
         }
 
-        if ($full_screen) {
-            $GLOBALS['SCREEN_TEMPLATE_CALLED'] = '';
+        $GLOBALS['SCREEN_TEMPLATE_CALLED'] = '';
 
-            exit($preview->evaluate());
-        }
-
-        return $preview;
+        exit($preview->evaluate());
     }
 
     /**

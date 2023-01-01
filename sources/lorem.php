@@ -557,31 +557,26 @@ function lorem_globalise(object $middle, $message = null, string $type = '', boo
     restore_output_state(true); // Here we reset some Tempcode environmental stuff, because template compilation or preprocessing may have dirtied things
 
     global $LOREM_AVOID_GLOBALISE;
-
-    if (($LOREM_AVOID_GLOBALISE) || _is_html_wrapper_template($middle) || !$include_header_and_footer) {
+    if ($LOREM_AVOID_GLOBALISE) {
         return $middle;
     }
 
-    $out = new Tempcode();
-    $out->attach(do_lorem_template('GLOBAL_HTML_WRAP', [
-        'MIDDLE' => $middle,
-    ]));
+    if ($include_header_and_footer) {
+        $out = do_lorem_template('GLOBAL_HTML_WRAP', [
+            'MIDDLE' => $middle,
+        ]);
+    } else {
+        $out = do_lorem_template('STANDALONE_HTML_WRAP', [
+            'TITLE' => lorem_phase(),
+            'FRAME' => false,
+            'TARGET' => '_self',
+            'CONTENT' => $middle,
+        ]);
+    }
 
     $out->handle_symbol_preprocessing();
 
     return $out;
-}
-
-/**
- * Checks if the template is an HTML wrapper template.
- *
- * @param  Tempcode $tempcode The instantiated template
- * @return boolean Whether it is
- */
-function _is_html_wrapper_template(object $tempcode) : bool
-{
-    $pos = strpos($tempcode->evaluate(), '<html');
-    return ($pos !== false) && ($pos < 400);
 }
 
 /**
@@ -909,10 +904,9 @@ function find_all_previews__by_screen() : array
  * @param  ?ID_TEXT $hook The hook the preview is in (null: search)
  * @param  ID_TEXT $function The name of the screen preview
  * @param  ?ID_TEXT $template The template to be previewed (e.g. templates/DOWNLOAD_BOX.tpl) (null: do not consider template)
- * @param  boolean $full_screen Whether the template is full screen (returned by referenced)
  * @return Tempcode The previewed screen
  */
-function render_screen_preview(?string $hook, string $function, ?string $template = null, bool &$full_screen = false) : object
+function render_screen_preview(?string $hook, string $function, ?string $template = null) : object
 {
     if ($hook === null) {
         $hooks = find_all_hook_obs('systems', 'addon_registry', 'Hook_addon_registry_');
@@ -954,14 +948,6 @@ function render_screen_preview(?string $hook, string $function, ?string $templat
         }
     }
 
-    // Preview metadata
-    if (($template !== null) && (is_raw_code_template($template))) {
-        //@header('Content-Type: text/plain; charset=' . get_charset());     Let it show with WITH_WHITESPACE
-        $text = true;
-    } else {
-        $text = false;
-    }
-
     if (!method_exists($ob, $function)) {
         fatal_exit(do_lang_tempcode('MISSING_RESOURCE'));
     }
@@ -970,6 +956,7 @@ function render_screen_preview(?string $hook, string $function, ?string $templat
     $preview = call_user_func([$ob, $function]);
 
     // Show as plain text if needed
+    $text = (($template !== null) && (is_raw_code_template($template)));
     if ($text) {
         $out = with_whitespace($preview, false, true);
     } else {

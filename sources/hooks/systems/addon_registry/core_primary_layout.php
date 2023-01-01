@@ -269,9 +269,7 @@ class Hook_addon_registry_core_primary_layout
         $css = css_tempcode(true, false, $_tpl->evaluate());
         $_css = $css->evaluate();
 
-        $_tpl = make_string_tempcode(str_replace('{CSS}', $_css, $_tpl->evaluate()));
-
-        return lorem_globalise($_tpl, null, '', true);
+        return make_string_tempcode(str_replace('{CSS}', $_css, $_tpl->evaluate()));
     }
 
     /**

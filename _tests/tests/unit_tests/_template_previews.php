@@ -394,7 +394,7 @@ class _template_previews_test_set extends cms_test_case
         }
     }
 
-    protected function render_screen_preview($called_form, ?string $hook, string $function, ?string $template = null, bool &$full_screen = false) : object
+    protected function render_screen_preview($called_form, ?string $hook, string $function, ?string $template = null) : object
     {
         // Useful for debugging crashes
         global $PREVIEWS_LOG;
@@ -402,7 +402,7 @@ class _template_previews_test_set extends cms_test_case
             fwrite($PREVIEWS_LOG, date('Y-m-d H:i:s') . ' - RAM@' . clean_file_size(memory_get_usage()) . '/' . clean_file_size(php_return_bytes(ini_get('memory_limit'))) . ' - BEFORE:' . $called_form . ':' . $function . "\n");
         }
 
-        $ret = render_screen_preview($hook, $function, $template, $full_screen);
+        $ret = render_screen_preview($hook, $function, $template);
 
         // Useful for debugging crashes
         if ($PREVIEWS_LOG !== null) {

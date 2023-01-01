@@ -195,10 +195,10 @@ class Hook_addon_registry_backup
     {
         // This preview inevitably looks ugly because the install CSS can't be shown (its loaded via self-reference to a non-existent file)
 
-        return lorem_globalise(do_lorem_template('RESTORE_HTML_WRAP', [
+        return do_lorem_template('RESTORE_HTML_WRAP', [
             'MESSAGE' => lorem_sentence_html(),
             'CSS_NOCACHE' => '',
             'ERROR' => false,
-        ]), null, '', true);
+        ]);
     }
 }

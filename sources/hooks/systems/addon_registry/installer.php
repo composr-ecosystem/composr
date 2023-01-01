@@ -179,7 +179,7 @@ class Hook_addon_registry_installer
         require_lang('installer');
         require_lang('version');
 
-        return lorem_globalise(do_lorem_template('INSTALLER_HTML_WRAP', [
+        return do_lorem_template('INSTALLER_HTML_WRAP', [
             'CSS_NOCACHE' => '.nocss{}',
             'DEFAULT_FORUM' => lorem_phrase(),
             'PASSWORD_PROMPT' => lorem_phrase(),
@@ -187,7 +187,7 @@ class Hook_addon_registry_installer
             'STEP' => '1',
             'CONTENT' => lorem_paragraph_html(),
             'VERSION' => lorem_phrase(),
-        ]), null, '', true);
+        ]);
     }
 
     /**
@@ -231,7 +231,7 @@ class Hook_addon_registry_installer
             'HIDDEN' => '',
             'LANGUAGES' => $languages,
         ]);
-        return lorem_globalise(do_lorem_template('INSTALLER_HTML_WRAP', [
+        return do_lorem_template('INSTALLER_HTML_WRAP', [
             'CSS_NOCACHE' => '.nocss{}',
             'DEFAULT_FORUM' => lorem_phrase(),
             'PASSWORD_PROMPT' => lorem_phrase(),
@@ -239,7 +239,7 @@ class Hook_addon_registry_installer
             'STEP' => '1',
             'CONTENT' => $content,
             'VERSION' => lorem_phrase(),
-        ]), null, '', true);
+        ]);
     }
 
     /**
@@ -261,7 +261,7 @@ class Hook_addon_registry_installer
             'HIDDEN' => '',
             'LICENCE' => lorem_chunk(),
         ]);
-        return lorem_globalise(do_lorem_template('INSTALLER_HTML_WRAP', [
+        return do_lorem_template('INSTALLER_HTML_WRAP', [
             'CSS_NOCACHE' => '.nocss{}',
             'DEFAULT_FORUM' => lorem_phrase(),
             'PASSWORD_PROMPT' => lorem_phrase(),
@@ -269,7 +269,7 @@ class Hook_addon_registry_installer
             'STEP' => '1',
             'CONTENT' => $content,
             'VERSION' => lorem_phrase(),
-        ]), null, '', true);
+        ]);
     }
 
     /**
@@ -345,7 +345,7 @@ class Hook_addon_registry_installer
             'IS_QUICK' => false,
         ]);
 
-        return lorem_globalise(do_lorem_template('INSTALLER_HTML_WRAP', [
+        return do_lorem_template('INSTALLER_HTML_WRAP', [
             'CSS_NOCACHE' => '.nocss{}',
             'DEFAULT_FORUM' => lorem_phrase(),
             'PASSWORD_PROMPT' => lorem_phrase(),
@@ -353,7 +353,7 @@ class Hook_addon_registry_installer
             'STEP' => '1',
             'CONTENT' => $step3,
             'VERSION' => lorem_phrase(),
-        ]), null, '', true);
+        ]);
     }
 
     /**
@@ -460,7 +460,7 @@ class Hook_addon_registry_installer
             'MAX' => '1000',
             'HIDDEN' => '',
         ]);
-        return lorem_globalise(do_lorem_template('INSTALLER_HTML_WRAP', [
+        return do_lorem_template('INSTALLER_HTML_WRAP', [
             'CSS_NOCACHE' => '.nocss{}',
             'DEFAULT_FORUM' => lorem_phrase(),
             'PASSWORD_PROMPT' => lorem_phrase(),
@@ -468,7 +468,7 @@ class Hook_addon_registry_installer
             'STEP' => '1',
             'CONTENT' => $content,
             'VERSION' => lorem_phrase(),
-        ]), null, '', true);
+        ]);
     }
 
     /**
