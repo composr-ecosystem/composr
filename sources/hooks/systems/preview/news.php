@@ -64,7 +64,7 @@ class Hook_preview_news
         foreach ($map_table_map as $key => $val) {
             $map_table_fields->attach(map_table_field($key, $val, false));
         }
-        $output = do_template('MAP_TABLE', ['_GUID' => '780aeedc08a960750fa4634e26db56d5', 'FIELDS' => $map_table_fields]);
+        $output = do_template('MAP_TABLE', ['_GUID' => '780aeedc08a960750fa4634e26db56d5', 'FIELDS' => $map_table_fields, 'RESPONSIVE' => true]);
 
         return [$output, $post_comcode];
     }

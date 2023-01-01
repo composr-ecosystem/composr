@@ -128,6 +128,7 @@ function generate_recursive_map_table($metadata)
         '_GUID' => '3b39f42defa9836043e31c914f39fde2',
         'FIELDS' => $_fields,
         'WIDTHS' => ['200'],
+        'RESPONSIVE' => true,
     ]);
 }
 

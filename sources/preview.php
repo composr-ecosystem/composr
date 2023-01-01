@@ -372,7 +372,7 @@ function build_preview(bool $multi_return = false)
             foreach ($map_table_map as $key => $val) {
                 $map_table_fields->attach(map_table_field($key, $val, false));
             }
-            $output = do_template('MAP_TABLE', ['_GUID' => '3f548883b9eb37054c500d1088d9efa3', 'FIELDS' => $map_table_fields]);
+            $output = do_template('MAP_TABLE', ['_GUID' => '3f548883b9eb37054c500d1088d9efa3', 'FIELDS' => $map_table_fields, 'RESPONSIVE' => true]);
         }
     }
 

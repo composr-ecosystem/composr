@@ -197,6 +197,7 @@ class Hook_addon_registry_quizzes
         }
         $summary = do_lorem_template('MAP_TABLE', [
             'FIELDS' => $fields,
+            'RESPONSIVE' => true,
         ]);
 
         return lorem_globalise(do_lorem_template('QUIZ_RESULTS_SCREEN', [

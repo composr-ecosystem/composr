@@ -532,7 +532,7 @@ function build_transaction_linker(string $txn_id, bool $awaiting_payment, ?array
                 $_transaction_fields->attach(map_table_field(do_lang_tempcode($key), $val, true));
             }
         }
-        $map_table = do_template('MAP_TABLE', ['_GUID' => '1fd78e5f75f9f838b468fc6151a2da02', 'FIELDS' => $_transaction_fields]);
+        $map_table = do_template('MAP_TABLE', ['_GUID' => '1fd78e5f75f9f838b468fc6151a2da02', 'FIELDS' => $_transaction_fields, 'RESPONSIVE' => true]);
 
         require_code('templates_tooltip');
         return tooltip($transaction_link, $map_table, true);

@@ -490,7 +490,7 @@ class Module_admin_quiz
 
                 $fields->attach(map_table_field($question, $answers, false));
             }
-            $summary = do_template('MAP_TABLE', ['_GUID' => '2b0c2ba0070ba810c5e4b5b4aedcb15f', 'FIELDS' => $fields]);
+            $summary = do_template('MAP_TABLE', ['_GUID' => '2b0c2ba0070ba810c5e4b5b4aedcb15f', 'FIELDS' => $fields, 'RESPONSIVE' => true]);
         } else {
             $summary = new Tempcode();
         }

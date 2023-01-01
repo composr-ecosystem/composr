@@ -893,7 +893,7 @@ class Module_admin_ecommerce_reports
                     $_transaction_fields->attach(map_table_field(do_lang_tempcode($key), $val, true));
                 }
             }
-            $transaction_table = do_template('MAP_TABLE', ['FIELDS' => $_transaction_fields]);
+            $transaction_table = do_template('MAP_TABLE', ['FIELDS' => $_transaction_fields, 'RESPONSIVE' => true]);
 
             $result_entries->attach(results_entry([
                 escape_html($date),

@@ -480,7 +480,7 @@ class Module_banners
         $username = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($myrow['submitter']);
         $fields->attach(map_table_field(do_lang_tempcode('SUBMITTER'), $username, true));
 
-        $map_table = do_template('MAP_TABLE', ['_GUID' => 'eb97a46d8e9813da7081991d5beed270', 'FIELDS' => $fields]);
+        $map_table = do_template('MAP_TABLE', ['_GUID' => 'eb97a46d8e9813da7081991d5beed270', 'FIELDS' => $fields, 'RESPONSIVE' => true]);
 
         $banner = show_banner($myrow['name'], $myrow['title_text'], get_translated_tempcode('banners', $myrow, 'caption'), $myrow['direct_code'], $myrow['img_url'], $source, $myrow['site_url'], $myrow['b_type'], $myrow['submitter']);
 
