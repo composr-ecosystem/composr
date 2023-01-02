@@ -152,10 +152,12 @@
                         for (i = 0; i < trs.length; i++) {
                             tds = $dom.$$(trs[i], ':scope > th, :scope > td, :scope > .fake-th, :scope > .js-th-label-text-override, :scope > .fake-td');
                             for (j = 0; j < tds.length; j++) {
-                                // We must still define a blank data-th when js-responsive-table-no-prefix exists so the CSS does not add a colon
-                                data = (tds[j].classList.contains('js-responsive-table-no-prefix') || (thsFirstRow[j] == null)) ? '' : thsFirstRow[j].textContent.replace(/^\s+/, '').replace(/\s+$/, '');
+                                data = '';
+                                if (!tds[j].classList.contains('responsive-table-no-prefix-no-indent')/*This class specifies no indentation for a th/td label, so we must forcefully keep data-th as blank*/ && (thsFirstRow[j] != null)) {
+                                    data = thsFirstRow[j].textContent.replace(/^\s+/, '').replace(/\s+$/, '');
+                                }
 
-                                // Always set a data-th attribute (unless it already exists) even if blank; a blank data-th tells CSS not to add a colon
+                                // Always set a data-th attribute (unless it already exists) even if we set it to blank; a blank data-th tells CSS not to add a colon
                                 if (!tds[j].hasAttribute('data-th')) {
                                     tds[j].setAttribute('data-th', data);
                                 }

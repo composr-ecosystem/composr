@@ -3512,17 +3512,17 @@ div.zebra-0+div.zebra-1, div.zebra-1+div.zebra-0 {
 		margin-bottom: 1em;
 	}
 
-	/* Add indentation / styling for responsive table th/td unless .js-responsive-table-no-prefix exists */
-	.responsive-table > tbody > tr > th:not(.js-responsive-table-no-prefix)::before,
-	.responsive-table > tbody > tr > td:not(.js-responsive-table-no-prefix)::before,
-	.responsive-table > tfoot > tr > th:not(.js-responsive-table-no-prefix)::before,
-	.responsive-table > tfoot > tr > td:not(.js-responsive-table-no-prefix)::before,
-	.responsive-table > tr > th:not(.js-responsive-table-no-prefix)::before,
-	.responsive-table > tr > td:not(.js-responsive-table-no-prefix)::before,
-	.responsive-table > .fake-tbody > .fake-tr > .fake-th:not(.js-responsive-table-no-prefix)::before,
-	.responsive-table > .fake-tbody > .fake-tr > .fake-td:not(.js-responsive-table-no-prefix)::before,
-	.responsive-table > .fake-tr > .fake-th:not(.js-responsive-table-no-prefix)::before,
-	.responsive-table > .fake-tr > .fake-td:not(.js-responsive-table-no-prefix)::before {
+	/* On responsive tables, add indentation to separate the th/td labels from the values unless .responsive-table-no-prefix-no-indent exists */
+	.responsive-table > tbody > tr > th:not(.responsive-table-no-prefix-no-indent)::before,
+	.responsive-table > tbody > tr > td:not(.responsive-table-no-prefix-no-indent)::before,
+	.responsive-table > tfoot > tr > th:not(.responsive-table-no-prefix-no-indent)::before,
+	.responsive-table > tfoot > tr > td:not(.responsive-table-no-prefix-no-indent)::before,
+	.responsive-table > tr > th:not(.responsive-table-no-prefix-no-indent)::before,
+	.responsive-table > tr > td:not(.responsive-table-no-prefix-no-indent)::before,
+	.responsive-table > .fake-tbody > .fake-tr > .fake-th:not(.responsive-table-no-prefix-no-indent)::before,
+	.responsive-table > .fake-tbody > .fake-tr > .fake-td:not(.responsive-table-no-prefix-no-indent)::before,
+	.responsive-table > .fake-tr > .fake-th:not(.responsive-table-no-prefix-no-indent)::before,
+	.responsive-table > .fake-tr > .fake-td:not(.responsive-table-no-prefix-no-indent)::before {
 		content: "";
 		font-weight: bold;
 		width: 7em;
@@ -3531,7 +3531,7 @@ div.zebra-0+div.zebra-1, div.zebra-1+div.zebra-0 {
 		vertical-align: top;
 	}
 
-	/* Add th/td header and colon unless data-th is blank */
+	/* Add th/td header and colon to the left side of the indentation unless data-th is blank */
 	.responsive-table > tbody > tr > th:not([data-th=""])::before,
 	.responsive-table > tbody > tr > td:not([data-th=""])::before,
 	.responsive-table > tfoot > tr > th:not([data-th=""])::before,

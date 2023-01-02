@@ -1,7 +1,7 @@
 {$REQUIRE_JAVASCRIPT,core_permission_management}
 
 <tr class="{$CYCLE,zebra,zebra-0,zebra-1}" data-tpl="permissionRow" data-tpl-params="{+START,PARAMS_JSON,ROW_MODERATOR_GROUP_CELL_IDS,ROW_GROUP_CELL_IDS}{_*}{+END}">
-	<th class="js-responsive-table-no-prefix">
+	<th class="responsive-table-no-prefix-no-indent">
 		{PERMISSION*}
 		{+START,IF_PASSED,DESCRIPTION}
 			{+START,IF,{$DESKTOP}}

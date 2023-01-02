@@ -15,7 +15,7 @@ On most web browsers you can activate a key shortcut by holding down the Alt key
 
 	<tbody>
 		<tr>
-			<th colspan="2" class="js-responsive-table-no-prefix" data-th="">In-page navigation</th>
+			<th colspan="2" class="responsive-table-no-prefix-no-indent" data-th="">In-page navigation</th>
 		</tr>
 
 		<tr>
@@ -31,7 +31,7 @@ On most web browsers you can activate a key shortcut by holding down the Alt key
 		{+END}
 
 		<tr>
-			<th colspan="2" class="js-responsive-table-no-prefix" data-th="">Site version</th>
+			<th colspan="2" class="responsive-table-no-prefix-no-indent" data-th="">Site version</th>
 		</tr>
 
 		<tr>
@@ -45,7 +45,7 @@ On most web browsers you can activate a key shortcut by holding down the Alt key
 		</tr>
 
 		<tr>
-			<th colspan="2" class="js-responsive-table-no-prefix" data-th="">User actions</th>
+			<th colspan="2" class="responsive-table-no-prefix-no-indent" data-th="">User actions</th>
 		</tr>
 
 		<tr>
@@ -74,7 +74,7 @@ On most web browsers you can activate a key shortcut by holding down the Alt key
 		</tr>
 
 		<tr>
-			<th colspan="2" class="js-responsive-table-no-prefix" data-th="">Main navigation</th>
+			<th colspan="2" class="responsive-table-no-prefix-no-indent" data-th="">Main navigation</th>
 		</tr>
 
 		<tr>
@@ -120,7 +120,7 @@ On most web browsers you can activate a key shortcut by holding down the Alt key
 		</tr>
 
 		<tr>
-			<th colspan="2" class="js-responsive-table-no-prefix" data-th="">Specific navigation</th>
+			<th colspan="2" class="responsive-table-no-prefix-no-indent" data-th="">Specific navigation</th>
 		</tr>
 
 		<tr>
@@ -144,7 +144,7 @@ On most web browsers you can activate a key shortcut by holding down the Alt key
 		</tr>
 
 		<tr>
-			<th colspan="2" class="js-responsive-table-no-prefix" data-th="">Tools</th>
+			<th colspan="2" class="responsive-table-no-prefix-no-indent" data-th="">Tools</th>
 		</tr>
 
 		<tr>
@@ -165,7 +165,7 @@ On most web browsers you can activate a key shortcut by holding down the Alt key
 		</tr>
 
 		<tr>
-			<th colspan="2" class="js-responsive-table-no-prefix" data-th="">Forms</th>
+			<th colspan="2" class="responsive-table-no-prefix-no-indent" data-th="">Forms</th>
 		</tr>
 
 		<tr>

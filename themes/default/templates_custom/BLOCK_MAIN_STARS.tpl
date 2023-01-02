@@ -28,7 +28,7 @@
 
 		{+START,IF_EMPTY,{STARS}}
 			<tr>
-				<td class="js-responsive-table-no-prefix" colspan="3" style="font-weight: bold; padding: 10px">Nobody yet &ndash; could you be here?</td>
+				<td class="responsive-table-no-prefix-no-indent" colspan="3" style="font-weight: bold; padding: 10px">Nobody yet &ndash; could you be here?</td>
 			</tr>
 		{+END}
 	</tbody>

@@ -40,14 +40,14 @@
 	<tbody>
 		{+START,LOOP,NOTIFICATION_SECTIONS}
 			<tr class="form-table-field-spacer">
-				<th class="js-responsive-table-no-prefix table-heading-cell" colspan="{$SET,num_columns,{$ADD,{NOTIFICATION_TYPES_TITLES},1}}{+START,IF_PASSED_AND_TRUE,SHOW_PRIVILEGES}{$INC,num_columns}{+END}{+START,IF,{ADVANCED_COLUMN}}{$INC,num_columns}{+END}{$GET*,num_columns}">
+				<th class="responsive-table-no-prefix-no-indent table-heading-cell" colspan="{$SET,num_columns,{$ADD,{NOTIFICATION_TYPES_TITLES},1}}{+START,IF_PASSED_AND_TRUE,SHOW_PRIVILEGES}{$INC,num_columns}{+END}{+START,IF,{ADVANCED_COLUMN}}{$INC,num_columns}{+END}{$GET*,num_columns}">
 					<span class="h2">{NOTIFICATION_SECTION*}</span>
 				</th>
 			</tr>
 
 			{+START,LOOP,NOTIFICATION_CODES}
 				<tr class="notification-code {$CYCLE*,zebra,zebra-0,zebra-1}">
-					<th class="de-th">{NOTIFICATION_LABEL*}</th>
+					<th class="responsive-table-no-prefix-no-indent de-th">{NOTIFICATION_LABEL*}</th>
 
 					{+START,IF_PASSED,PRIVILEGED}
 						<td>{$?,{PRIVILEGED},{!YES},{!NO}}</td>

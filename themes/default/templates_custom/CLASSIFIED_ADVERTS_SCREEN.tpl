@@ -44,7 +44,7 @@
 		</tr>
 		{+START,IF_NON_EMPTY,{TRANSACTION_DETAILS}}
 			<tr class="{$GET,cycle}">
-				<td class="js-responsive-table-no-prefix" colspan="5">
+				<td class="responsive-table-no-prefix-no-indent" colspan="5">
 					{+START,LOOP,TRANSACTION_DETAILS}
 						<p class="mini-indent">
 							<span class="right">{T_STATUS*} ({$?,{$IS_EMPTY,{T_PAYMENT_GATEWAY}},{!ecommerce:MANUAL_TRANSACTION},{T_PAYMENT_GATEWAY*}})</span>

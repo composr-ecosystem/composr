@@ -111,8 +111,8 @@
 			</tr>
 
 			<tr class="total">
-				<td class="js-responsive-table-no-prefix" colspan="6">
-					{!GRAND_TOTAL}: {$CURRENCY_SYMBOL,{CURRENCY}}{TOTAL_AMOUNT*}
+				<td colspan="6" data-th="{!GRAND_TOTAL}">
+					<span class="inline-desktop">{!GRAND_TOTAL}: </span>{$CURRENCY_SYMBOL,{CURRENCY}}{TOTAL_AMOUNT*}
 				</td>
 			</tr>
 		</tfoot>
