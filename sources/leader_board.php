@@ -303,8 +303,8 @@ function _get_next_leader_board_timeframe(array $row, ?int $forced_time = null, 
             fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
 
-    // Do not generate if it is too soon AND we have at least one result set
-    if (($now < $end) && (($forced_period_start !== null) || (most_recent_leader_board($row['id']) !== null))) {
+    // Do not generate if it is too soon
+    if ($now < $end) {
         return [null, null];
     }
 
