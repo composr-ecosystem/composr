@@ -4,54 +4,58 @@
 	<div data-tpl="ratingForm" data-tpl-params="{+START,PARAMS_JSON,ERROR,ALL_RATING_CRITERIA,CONTENT_TYPE,ID}{_*}{+END}">
 		{+START,LOOP,ALL_RATING_CRITERIA}
 			{$SET-,identifier,{CONTENT_TYPE*}--{TYPE*}--{ID*}}
-			<div class="rating-inner">
-				<span class="rating-type-title">
+
+			<div class="rating-outer">
+				<div class="rating-type-title">
 					<a id="rating--{$GET,identifier}-jump"></a>
 
 					{+START,IF_NON_EMPTY,{TITLE}}<strong>{TITLE*}:</strong>{+END}
-				</span>
-				{$,Like/dislike}
-				{+START,IF,{LIKES}}
-					{+START,INCLUDE,ICON}
-						NAME=feedback/dislike
-						ICON_ID=rating-bar-1--{$GET,identifier}
-						ICON_SIZE=18
-					{+END}
-					{+START,INCLUDE,ICON}
-						NAME=feedback/like
-						ICON_ID=rating-bar-10--{$GET,identifier}
-						ICON_SIZE=18
-					{+END}
-				{+END}
+				</div>
 
-				{$,Star ratings}
-				{+START,IF,{$NOT,{LIKES}}}
-					{+START,INCLUDE,ICON}
-						NAME=feedback/rating
-						ICON_ID=rating-bar-2--{$GET,identifier}
-						ICON_SIZE=18
+				<div class="rating-inner">
+					{$,Like/dislike}
+					{+START,IF,{LIKES}}
+						{+START,INCLUDE,ICON}
+							NAME=feedback/dislike
+							ICON_ID=rating-bar-1--{$GET,identifier}
+							ICON_SIZE=18
+						{+END}
+						{+START,INCLUDE,ICON}
+							NAME=feedback/like
+							ICON_ID=rating-bar-10--{$GET,identifier}
+							ICON_SIZE=18
+						{+END}
 					{+END}
-					{+START,INCLUDE,ICON}
-						NAME=feedback/rating
-						ICON_ID=rating-bar-4--{$GET,identifier}
-						ICON_SIZE=18
+
+					{$,Star ratings}
+					{+START,IF,{$NOT,{LIKES}}}
+						{+START,INCLUDE,ICON}
+							NAME=feedback/rating
+							ICON_ID=rating-bar-2--{$GET,identifier}
+							ICON_SIZE=18
+						{+END}
+						{+START,INCLUDE,ICON}
+							NAME=feedback/rating
+							ICON_ID=rating-bar-4--{$GET,identifier}
+							ICON_SIZE=18
+						{+END}
+						{+START,INCLUDE,ICON}
+							NAME=feedback/rating
+							ICON_ID=rating-bar-6--{$GET,identifier}
+							ICON_SIZE=18
+						{+END}
+						{+START,INCLUDE,ICON}
+							NAME=feedback/rating
+							ICON_ID=rating-bar-8--{$GET,identifier}
+							ICON_SIZE=18
+						{+END}
+						{+START,INCLUDE,ICON}
+							NAME=feedback/rating
+							ICON_ID=rating-bar-10--{$GET,identifier}
+							ICON_SIZE=18
+						{+END}
 					{+END}
-					{+START,INCLUDE,ICON}
-						NAME=feedback/rating
-						ICON_ID=rating-bar-6--{$GET,identifier}
-						ICON_SIZE=18
-					{+END}
-					{+START,INCLUDE,ICON}
-						NAME=feedback/rating
-						ICON_ID=rating-bar-8--{$GET,identifier}
-						ICON_SIZE=18
-					{+END}
-					{+START,INCLUDE,ICON}
-						NAME=feedback/rating
-						ICON_ID=rating-bar-10--{$GET,identifier}
-						ICON_SIZE=18
-					{+END}
-				{+END}
+				</div>
 			</div>
 		{+END}
 	</div>
