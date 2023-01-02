@@ -127,7 +127,7 @@ class __leader_board_test_set extends cms_test_case
             return;
         }
 
-        // Set up leader-boards
+        // Test 1: Set up leader-boards
         $this->leaderboards['week_r'] = add_leader_board("Test week_r", 'holders', 10, 'week', 1, 0, [], 0);
         $this->assertTrue(is_integer($this->leaderboards['week_r']), 'Failed to create week_r leader-board');
         $this->leaderboards['month_r'] = add_leader_board("Test month_r", 'holders', 10, 'month', 1, 0, [], 0);
@@ -613,9 +613,11 @@ class __leader_board_test_set extends cms_test_case
             return;
         }
 
+        /*
         foreach ($this->leaderboards as $key => $value) {
             delete_leader_board($value);
         }
+        */
 
         // Clean up point transactions
         require_code('points2');

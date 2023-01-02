@@ -234,17 +234,13 @@ function get_leader_board(int $id, ?int $timestamp = null) : array
  */
 function _get_next_leader_board_timeframe(array $row, ?int $forced_time = null, ?int $forced_period_start = null) : array
 {
-    // Set PHP to site timezone temporarily
-    $old_timezone = @date_default_timezone_get();
-    date_default_timezone_set(get_site_timezone());
-
     // Determine the timestamp of the most recent result set. If there are no result sets, we start at the timestamp the leader-board was created.
     if ($forced_period_start !== null) {
         $recent = $forced_period_start;
     } else {
         $recent = most_recent_leader_board($row['id']);
         if ($recent === null) {
-            $recent = $row['lb_creation_date_and_time'];
+            $recent = 0; // Forces us to retroactively generate a first result set right away for new leader-boards; date will be fixed in the switch below.
         }
     }
 
@@ -254,57 +250,81 @@ function _get_next_leader_board_timeframe(array $row, ?int $forced_time = null, 
 
     $rolling = ($row['lb_rolling'] == 1);
 
+    $ssw = (get_option('ssw') == '1');
+
+    // Set PHP to site timezone temporarily
+    $old_timezone = @date_default_timezone_get();
+    date_default_timezone_set(get_site_timezone());
+
     // Calculate the expected start and end time for our result set
     switch ($row['lb_timeframe']) {
         case 'week':
-            $ssw = (get_option('ssw') == '1');
             $start = $recent;
             if ($ssw) {
                 // Do not generate leader-boards from 2 or more weeks ago; just skip to the current week
                 if (($now - $recent) >= (60 * 60 * 24 * 7 * 2)) {
-                    $start = strtotime("last sunday -1 week", $now);
+                    if ($rolling) {
+                        $start = strtotime('-1 week', (($recent > 0) ? $recent : $row['lb_creation_date_and_time']));
+                    } else {
+                        $start = strtotime('last sunday -1 week', $now);
+                    }
                 } elseif (!$rolling) {
                     $start = strtotime('sunday', $recent);
                 }
             } else {
                 // Do not generate leader-boards from 2 or more weeks ago; just skip to the current week
                 if (($now - $recent) >= (60 * 60 * 24 * 7 * 2)) {
-                    $start = strtotime("last monday -1 week", $now);
+                    if ($rolling) {
+                        $start = strtotime('-1 week', (($recent > 0) ? $recent : $row['lb_creation_date_and_time']));
+                    } else {
+                        $start = strtotime('last monday -1 week', $now);
+                    }
                 } elseif (!$rolling) {
                     $start = strtotime('monday', $recent);
                 }
             }
-            $end = strtotime("+1 week", $start);
+            $end = strtotime('+1 week', $start);
             break;
 
         case 'month':
             $start = $recent;
             // Do not generate leader-boards from 2 or more weeks ago; just skip to the current week
             if ((intval(date('Y', $now)) * 12 + intval(date('m', $now))) - (intval(date('Y', $recent)) * 12 + intval(date('m', $recent))) >= 2) {
-                $start = strtotime("first day of this month -1 month", $now);
+                if ($rolling) {
+                    $start = strtotime('-1 month', (($recent > 0) ? $recent : $row['lb_creation_date_and_time']));
+                } else {
+                    $start = strtotime('first day of this month -1 month', $now);
+                }
             } elseif (!$rolling) {
-                $start = strtotime("first day of this month", $recent);
+                $start = strtotime('first day of this month', $recent);
             }
-            $end = strtotime("+1 month", $start);
+            $end = strtotime('+1 month', $start);
             break;
 
         case 'year':
             $start = $recent;
             // Do not generate leader-boards from 2 or more years ago; just generate the most recent one
             if (intval(date('Y', $now)) - intval(date('Y', $recent)) >= 2) {
-                $start = strtotime("January 1 -1 year", $now);
+                if ($rolling) {
+                    $start = strtotime('-1 year', (($recent > 0) ? $recent : $row['lb_creation_date_and_time']));
+                } else {
+                    $start = strtotime('January 1 -1 year', $now);
+                }
             } elseif (!$rolling) {
-                $start = strtotime("January 1", $recent);
+                $start = strtotime('January 1', $recent);
             }
-            $end = strtotime("+1 year", $start);
+            $end = strtotime('+1 year', $start);
             break;
 
         default:
             fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
 
-    // Do not generate if it is too soon
-    if ($now < $end) {
+    // Re-set PHP timezone back to its previous setting
+    date_default_timezone_set($old_timezone);
+
+    // Do not generate if it is too soon unless the leader-board does not have a result set yet
+    if (($now < $end) || ($recent == 0)) {
         return [null, null];
     }
 
@@ -312,9 +332,6 @@ function _get_next_leader_board_timeframe(array $row, ?int $forced_time = null, 
     if ($row['lb_type'] == 'holders') {
         $start = 0;
     }
-
-    // Re-set PHP timezone back to its previous setting
-    date_default_timezone_set($old_timezone);
 
     return [$start, $end];
 }
