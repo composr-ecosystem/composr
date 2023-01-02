@@ -4226,7 +4226,7 @@ div.ajax-loading, p.ajax-loading {
 
 /*{+START,CSS_MODE,desktop}*/
 	.trackbacks {
-		width: auto;
+		width: 14em;
 	}
 /*{+END}*/
 /*{+START,CSS_MODE,mobile}*/
