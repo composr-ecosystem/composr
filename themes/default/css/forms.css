@@ -552,15 +552,31 @@ span.validated-checkbox + input[name="validated"].input-tick {
 
 /* Form colour chooser */
 
-.form-table .css-colour-chooser-name {
-	width: 190px;
-}
+/*{+START,CSS_MODE,desktop}*/
+	.form-table .css-colour-chooser-name {
+		width: 190px;
+	}
+/*{+END}*/
+/*{+START,CSS_MODE,mobile}*/
+	.form-table .css-colour-chooser-name {
+		margin-right: 20px;
+	}
+/*{+END}*/
 
 .css-colour-strip {
 	float: left;
-	width: 4px;
 	height: 15px;
 }
+/*{+START,CSS_MODE,desktop}*/
+	.css-colour-strip {
+		width: 4px;
+	}
+/*{+END}*/
+/*{+START,CSS_MODE,mobile}*/
+	.css-colour-strip {
+		width: 2px;
+	}
+/*{+END}*/
 
 .css-colour-chooser {
 	height: 50px;
@@ -579,7 +595,9 @@ span.validated-checkbox + input[name="validated"].input-tick {
 }
 
 .css-colour-chooser-name input {
+	font-family: 'Courier New', 'Courier', monospace;
 	color: {$GET,unfilled_input_text};
+	text-transform: uppercase;
 	margin-top: 0.5em;
 	display: block;
 }
@@ -588,7 +606,6 @@ span.validated-checkbox + input[name="validated"].input-tick {
 	float: left;
 	margin: 0 0 0 10px;
 }
-
 .field-input .css-colour-chooser-from {
 	display: none;
 }
@@ -598,36 +615,56 @@ span.validated-checkbox + input[name="validated"].input-tick {
 	margin-left: 0;
 }
 
-.css-colour-chooser-fixed {
-	width: 366px;
-	float: left;
-	margin-top: 3px; /* As the selection bars overflow a bit */
-}
-
-.field-input .css-colour-chooser-fixed {
-	width: 306px;
-}
-
 .css-colour-chooser-from, .css-colour-chooser-to {
-	padding-top: 5px;
+	padding-top: calc(22.5px - 0.9em);
 	height: 45px;
 	font-size: 0.9em;
-	width: 50px;
-	display: inline;
 	font-weight: bold;
 	text-align: center;
 	cursor: default;
+	{$BETA_CSS_PROPERTY,user-select: none;}
 }
+.css-colour-chooser-from span, .css-colour-chooser-to span {
+	color: #FFFFFF;
+	{$BETA_CSS_PROPERTY,mix-blend-mode: difference;}
+	padding: 5px;
+}
+/*{+START,CSS_MODE,desktop}*/
+	.css-colour-chooser-from, .css-colour-chooser-to {
+		width: 50px;
+	}
+/*{+END}*/
+/*{+START,CSS_MODE,mobile}*/
+	.css-colour-chooser-from, .css-colour-chooser-to {
+		width: 10px;
+	}
 
-.css-colour-chooser-colour {
-	height: 45px;
-	width: 256px;
-	display: inline;
-}
+	.css-colour-chooser-from span, .css-colour-chooser-to span {
+		display: none;
+	}
+/*{+END}*/
 
-.css-colour-chooser-colour > div {
-	overflow: hidden;
+.css-colour-chooser-widget {
+	float: left;
+	margin-top: 3px; /* As the selection bars overflow a bit */
 }
+/*{+START,CSS_MODE,desktop}*/
+	.css-colour-chooser-widget {
+		width: calc(64px * 4 + 50px + 50px); /* We actually only show 64 colours in each of RGB for performance reasons */
+	}
+	.field-input .css-colour-chooser-widget {
+		width: calc(64px * 4 + 50px); /* Because the css-colour-chooser-from is hidden */
+	}
+/*{+END}*/
+/*{+START,CSS_MODE,mobile}*/
+	.css-colour-chooser-widget {
+		width: calc(64px * 2 + 50px + 10px); /* We actually only show 64 colours in each of RGB for performance reasons */
+		margin-right: 5px;
+	}
+	.field-input .css-colour-chooser-widget {
+		width: calc(64px * 2 + 10px); /* Because the css-colour-chooser-from is hidden */
+	}
+/*{+END}*/
 
 .css-colour-chooser-context {
 	padding-top: 50px;

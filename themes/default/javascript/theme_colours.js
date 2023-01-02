@@ -45,26 +45,26 @@
             _color = '#' + color.substr(1);
         }
 
-        var type = required ? 'color' : 'text';
+        var type = required ? 'color' : 'text'; // There is no sense of a color input being empty, it defaults to black and cannot be unset once set
 
         var t = '';
         t += '<div class="css-colour-chooser">';
         t += '    <div class="css-colour-chooser-name">';
         t += '        <label class="field-name" for="' + name + '"> ' + label + '</label><br />';
-        t += '        <input ' + className + 'alt="{!COLOUR;^}" type="' + type + '" value="' + _color + '" id="' + name + '" name="' + name + '" size="6" class="js-change-update-chooser" />';
+        t += '        <input ' + className + 'alt="{!COLOUR;^}" type="' + type + '" value="' + _color + '" id="' + name + '" name="' + name + '" size="7" class="js-change-update-chooser" />';
         t += '    </div>';
-        t += '    <div class="css-colour-chooser-fixed">';
-        t += '    <div class="css-colour-chooser-from" style="background-color: ' + ((color === '') ? '#000' : color) + '" id="cc-source-' + name + '">';
-        t += '        {!themes:FROM_COLOUR^#}';
-        t += '    </div>';
-        t += '    <div class="css-colour-chooser-to" style="background-color: ' + ((color === '') ? '#000' : color) + '" id="cc-target-' + name + '">';
-        t += '        {!themes:TO_COLOUR^#}';
-        t += '    </div>';
-        t += '    <div class="css-colour-chooser-colour">';
-        t += '        <div id="cc-0-' + name + '"></div>';
-        t += '        <div id="cc-1-' + name + '"></div>';
-        t += '        <div id="cc-2-' + name + '"></div>';
-        t += '    </div>';
+        t += '    <div class="css-colour-chooser-widget">';
+        t += '        <div class="css-colour-chooser-from" style="background-color: ' + ((color === '') ? '#000' : color) + '" id="cc-source-' + name + '">';
+        t += '            <span>{!themes:FROM_COLOUR^#}</span>';
+        t += '        </div>';
+        t += '        <div class="css-colour-chooser-to" style="background-color: ' + ((color === '') ? '#000' : color) + '" id="cc-target-' + name + '">';
+        t += '            <span>{!COLOUR^#}</span>';
+        t += '        </div>';
+        t += '        <div class="css-colour-chooser-colour">';
+        t += '            <div id="cc-0-' + name + '"></div>';
+        t += '            <div id="cc-1-' + name + '"></div>';
+        t += '            <div id="cc-2-' + name + '"></div>';
+        t += '        </div>';
         t += '    </div>';
         t += '</div>';
 
@@ -82,6 +82,7 @@
             updateChooser(target.id);
         });
 
+        // LEGACY
         if (window.jQuery.fn.spectrum !== undefined) {
             var test = document.createElement('input');
             try {
@@ -133,6 +134,7 @@
             }
 
             element.style.color = 'rgb(' + (255 - rgb[0]) + ',' + (255 - rgb[1]) + ',' + (255 - rgb[2]) + ')';
+
             source.style.color = element.style.color;
 
             var c = [];
@@ -267,7 +269,6 @@
             rgb = sRgb.split(',');
             rgb[d] = i;
             element.style.backgroundColor = '#' + $util.decToHex(rgb[0]) + $util.decToHex(rgb[1]) + $util.decToHex(rgb[2]);
-            element.style.color = '#' + $util.decToHex(255 - rgb[0]) + $util.decToHex(255 - rgb[1]) + $util.decToHex(255 - rgb[2]);
 
             targ.style.backgroundColor = '#FFFFFF';
             targ.style.outline = '3px solid gray';
