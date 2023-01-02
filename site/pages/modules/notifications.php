@@ -186,7 +186,9 @@ class Module_notifications
         if ($row['d_read'] == 0) {
             $GLOBALS['SITE_DB']->query_update('digestives_tin', ['d_read' => 1], ['id' => $id], '', 1);
 
-            delete_cache_entry('_get_notifications', null, $member_id);
+            if ($row['d_to_member_id'] == get_member()) {
+                delete_cache_entry('_get_notifications', null, get_member());
+            }
         }
 
         return do_template('NOTIFICATION_VIEW_SCREEN', [

@@ -35,7 +35,7 @@
 		<a accesskey=";" title="{!cns:PRIVATE_TOPICS}" id="pts-button" class="top-button notification-button count-{NUM_UNREAD_PTS%} js-click-toggle-button-popup" data-click-pd="1" href="{$PAGE_LINK*,_SEARCH:members:view#tab--pts}">{+START,INCLUDE,ICON}
 			NAME=tool_buttons/inbox
 			ICON_SIZE=24
-		{+END}<span class="notification-button-bubble" aria-label="{!COUNT_TOTAL} {!cns:PRIVATE_TOPICS}">{NUM_UNREAD_PTS*}</span></a>
+		{+END}<span class="notification-button-bubble" id="live-pts-count" aria-label="{!COUNT_TOTAL} {!cns:PRIVATE_TOPICS}">{NUM_UNREAD_PTS*}</span></a>
 		<div class="top-button-popup" id="pts-rel" style="display: none">
 			<div class="box box-arrow box--block-top-notifications-pts"><div class="box-inner">
 				<div id="pts-spot" role="log">

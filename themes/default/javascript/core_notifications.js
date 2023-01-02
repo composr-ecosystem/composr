@@ -217,28 +217,30 @@
 
         // Show in the software directly, if possible
 
-        var spot, display, button, unread;
+        var spot, display, button, count, unread;
 
-        spot = document.getElementById('web-notifications-spot');
+        spot = $dom.$('#web-notifications-spot')
         if (spot) {
             display = responseXml.getElementsByTagName('display_web_notifications');
-            button = document.getElementById('web-notifications-button');
+            button = $dom.$('#web-notifications-button');
+            count = $dom.$('#live-notifications-count');
             if (display[0]) {
                 unread = responseXml.getElementsByTagName('unread_web_notifications');
                 $dom.html(spot, $dom.html(display[0]));
-                $dom.html(button.firstElementChild, $dom.html(unread[0]));
+                $dom.html(count, $dom.html(unread[0]));
                 button.className = button.className.replace(/count-\d+/, 'count-' + $dom.html(unread[0]));
             }
         }
 
-        spot = document.getElementById('pts-spot');
+        spot = $dom.$('#pts-spot')
         if (spot) {
             display = responseXml.getElementsByTagName('display_pts');
-            button = document.getElementById('pts-button');
+            button = $dom.$('#pts-button');
+            count = $dom.$('#live-pts-count');
             if (display[0]) {
                 unread = responseXml.getElementsByTagName('unread_pts');
                 $dom.html(spot, $dom.html(display[0]));
-                $dom.html(button.firstElementChild, $dom.html(unread[0]));
+                $dom.html(count, $dom.html(unread[0]));
                 button.className = button.className.replace(/count-\d+/, 'count-' + $dom.html(unread[0]));
             }
         }
