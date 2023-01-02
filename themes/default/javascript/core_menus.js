@@ -3,6 +3,103 @@
 (function ($cms, $util, $dom) {
     'use strict';
 
+    $cms.templates.menuSitemap = function (params, container) {
+        var menuId = strVal(params.menuSitemapId),
+            content = arrVal($dom.data(container, 'tpMenuContent'));
+
+        generateMenuSitemap($dom.$('#' + menuId), content, 0);
+
+        // ==============================
+        // DYNAMIC TREE CREATION FUNCTION
+        // ==============================
+        function generateMenuSitemap(targetEl, structure, theLevel) {
+            structure = arrVal(structure);
+            theLevel = Number(theLevel) || 0;
+
+            var allExpanded = ($cms.pageUrl().searchParams.get('keep_expand_sitemap') === '1');
+
+            if (theLevel === 0) {
+                $dom.empty(targetEl);
+                var ul = document.createElement('ul');
+                $dom.append(targetEl, ul);
+                targetEl = ul;
+            }
+
+            var node;
+            for (var i = 0; i < structure.length; i++) {
+                node = structure[i];
+                _generateMenuSitemap(targetEl, node, theLevel);
+            }
+
+            function _generateMenuSitemap(target, node, theLevel) {
+                theLevel = Number(theLevel) || 0;
+
+                var branchId = 'sitemap_menu_branch_' + $util.random(),
+                    li = $dom.create('li', {
+                        id: branchId,
+                        className: (node.current ? 'current' : 'non-current') + ' ' + (node.img ? 'has-img' : 'has-no-img'),
+                        dataset: {
+                            toggleableTray: '{}'
+                        }
+                    });
+
+                var span = $dom.create('span');
+                $dom.append(li, span);
+
+                if (node.img) {
+                    $dom.append(span, $dom.create('img', { src: node.img }));
+                    $dom.append(span, document.createTextNode(' '));
+                }
+
+                var a = $dom.create(node.url ? 'a' : 'span');
+                if (node.url) {
+                    if (node.tooltip) {
+                        a.title = node.caption + ': ' + node.tooltip;
+                    }
+                    a.href = node.url;
+                }
+
+                $dom.append(span, a);
+                $dom.html(a, node.caption);
+                $dom.append(target, li);
+
+                if (node.children && node.children.length) {
+                    var ul = $dom.create('ul', {
+                        id: 'sitemap_menu_children_' + $util.random(),
+                        className: 'toggleable-tray js-tray-content'
+                    });
+                    // Show expand icon...
+                    $dom.append(span, document.createTextNode(' '));
+
+                    var expand = $dom.create('a', {
+                        className: 'menu-sitemap-item-a toggleable-tray-button',
+                        href: '#!',
+                        dataset: {
+                            clickTrayToggle: '#' + branchId
+                        }
+                    });
+
+                    if (!allExpanded) {
+                        /*{$SET,contract_icon,{+START,INCLUDE,ICON}NAME=trays/contract{+END}}*/
+                        /*{$SET,expand_icon,{+START,INCLUDE,ICON}NAME=trays/expand{+END}}*/
+                        if (theLevel < 2) { // High-levels start expanded
+                            $dom.append(expand, '{$GET;^,contract_icon}');
+                        } else {
+                            $dom.hide(ul);
+                            $dom.append(expand, '{$GET;^,expand_icon}');
+                        }
+
+                        $dom.append(span, expand);
+                    }
+
+                    // Show children...
+                    $dom.append(li, ul);
+                    generateMenuSitemap(ul, node.children, theLevel + 1);
+                }
+            }
+        }
+    };
+
     $cms.templates.menuEditorScreen = function (params, container) {
         var menuEditorWrapEl = $dom.$(container, '.js-el-menu-editor-wrap');
 
@@ -315,7 +412,9 @@
         var parentId = strVal(params.i),
             clickableSections = Boolean(params.clickableSections);
 
-        $dom.on(container, 'click', '.js-click-add-new-menu-item', function () {
+        $dom.on(container, 'click', '.js-click-add-new-menu-item', function (e) {
+            e.stopPropagation();
+
             var insertBeforeId = 'branches-go-before-' + parentId,
                 template = $dom.$id('template').value,
                 before = $dom.$id(insertBeforeId),
@@ -368,103 +467,6 @@
         }
     }
 
-    $cms.templates.menuSitemap = function (params, container) {
-        var menuId = strVal(params.menuSitemapId),
-            content = arrVal($dom.data(container, 'tpMenuContent'));
-
-        generateMenuSitemap($dom.$('#' + menuId), content, 0);
-
-        // ==============================
-        // DYNAMIC TREE CREATION FUNCTION
-        // ==============================
-        function generateMenuSitemap(targetEl, structure, theLevel) {
-            structure = arrVal(structure);
-            theLevel = Number(theLevel) || 0;
-
-            var allExpanded = ($cms.pageUrl().searchParams.get('keep_expand_sitemap') === '1');
-
-            if (theLevel === 0) {
-                $dom.empty(targetEl);
-                var ul = document.createElement('ul');
-                $dom.append(targetEl, ul);
-                targetEl = ul;
-            }
-
-            var node;
-            for (var i = 0; i < structure.length; i++) {
-                node = structure[i];
-                _generateMenuSitemap(targetEl, node, theLevel);
-            }
-
-            function _generateMenuSitemap(target, node, theLevel) {
-                theLevel = Number(theLevel) || 0;
-
-                var branchId = 'sitemap_menu_branch_' + $util.random(),
-                    li = $dom.create('li', {
-                        id: branchId,
-                        className: (node.current ? 'current' : 'non-current') + ' ' + (node.img ? 'has-img' : 'has-no-img'),
-                        dataset: {
-                            toggleableTray: '{}'
-                        }
-                    });
-
-                var span = $dom.create('span');
-                $dom.append(li, span);
-
-                if (node.img) {
-                    $dom.append(span, $dom.create('img', { src: node.img }));
-                    $dom.append(span, document.createTextNode(' '));
-                }
-
-                var a = $dom.create(node.url ? 'a' : 'span');
-                if (node.url) {
-                    if (node.tooltip) {
-                        a.title = node.caption + ': ' + node.tooltip;
-                    }
-                    a.href = node.url;
-                }
-
-                $dom.append(span, a);
-                $dom.html(a, node.caption);
-                $dom.append(target, li);
-
-                if (node.children && node.children.length) {
-                    var ul = $dom.create('ul', {
-                        id: 'sitemap_menu_children_' + $util.random(),
-                        className: 'toggleable-tray js-tray-content'
-                    });
-                    // Show expand icon...
-                    $dom.append(span, document.createTextNode(' '));
-
-                    var expand = $dom.create('a', {
-                        className: 'menu-sitemap-item-a toggleable-tray-button',
-                        href: '#!',
-                        dataset: {
-                            clickTrayToggle: '#' + branchId
-                        }
-                    });
-
-                    if (!allExpanded) {
-                        /*{$SET,contract_icon,{+START,INCLUDE,ICON}NAME=trays/contract{+END}}*/
-                        /*{$SET,expand_icon,{+START,INCLUDE,ICON}NAME=trays/expand{+END}}*/
-                        if (theLevel < 2) { // High-levels start expanded
-                            $dom.append(expand, '{$GET;^,contract_icon}');
-                        } else {
-                            $dom.hide(ul);
-                            $dom.append(expand, '{$GET;^,expand_icon}');
-                        }
-
-                        $dom.append(span, expand);
-                    }
-
-                    // Show children...
-                    $dom.append(li, ul);
-                    generateMenuSitemap(ul, node.children, theLevel + 1);
-                }
-            }
-        }
-    };
-
     $cms.templates.pageLinkChooser = function pageLinkChooser(params, container) {
         var ajaxUrl = '{$FIND_SCRIPT_NOHTTP;,sitemap}?get_perms=0' + $cms.keep() + '&start_links=1';
 
@@ -495,11 +497,6 @@
             }
         });
     };
-
-
-    // ==============
-    // MENU FUNCTIONS
-    // ==============
 
     function doMenuPreview(e, button, menuType) {
         if (!checkMenu()) {
