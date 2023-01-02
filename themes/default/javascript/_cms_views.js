@@ -899,7 +899,7 @@
             var doScroll = false;
 
             // Absolute positioning instead of fixed positioning
-            if ($cms.isMobile() || (detectedBoxHeight > topWindowHeight) || (this.el.style.position === 'absolute'/*don't switch back to fixed*/)) {
+            if ($cms.isMobile() || (detectedBoxHeight > (topWindowHeight - 90)/*We must subtract 90 due to padding on the overlay*/) || (this.el.style.position === 'absolute'/*don't switch back to fixed*/)) {
                 var wasFixed = (this.el.style.position === 'fixed');
 
                 this.el.style.position = 'absolute';
