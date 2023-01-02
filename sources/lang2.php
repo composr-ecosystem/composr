@@ -384,10 +384,11 @@ function find_lang_content_names(array $lang_ids) : array
 /**
  * Get a nice formatted HTML listed language file selector for the given language.
  *
- * @param  ?LANGUAGE_NAME $lang The language (null: uses the current language)
+ * @param  ?LANGUAGE_NAME $lang The language (null: default to the current language)
+ * @param  ?string $default_lang_file The language file to select by default (null: none)
  * @return Tempcode The language file selector
  */
-function create_selection_list_lang_files(?string $lang = null) : object
+function create_selection_list_lang_files(?string $lang = null, ?string $default_lang_file = null) : object
 {
     $_lang_files = get_lang_files(($lang === null) ? get_site_default_lang() : $lang);
 
@@ -411,9 +412,9 @@ function create_selection_list_lang_files(?string $lang = null) : object
                 }
             }
 
-            $lang_files->attach(form_input_list_entry($lang_file, false, do_lang_tempcode('TRANSLATION_PROGRESS', escape_html($lang_file), escape_html(integer_format($num_translated)), escape_html(integer_format($num_english)))));
+            $lang_files->attach(form_input_list_entry($lang_file, $lang_file === $default_lang_file, do_lang_tempcode('TRANSLATION_PROGRESS', escape_html($lang_file), escape_html(integer_format($num_translated)), escape_html(integer_format($num_english)))));
         } else {
-            $lang_files->attach(form_input_list_entry($lang_file, false, $lang_file));
+            $lang_files->attach(form_input_list_entry($lang_file, $lang_file === $default_lang_file, $lang_file));
         }
     }
 
@@ -428,25 +429,37 @@ function create_selection_list_lang_files(?string $lang = null) : object
  */
 function lookup_language_full_name(string $code) : string
 {
-    global $LANGS_MAP_CACHE;
-
     if ($code == 'EN') {
         return 'English'; // Optimisation
     }
 
-    if ($LANGS_MAP_CACHE === null) {
-        $LANGS_MAP_CACHE = persistent_cache_get('LANGS_MAP_CACHE');
+    $langs_map = get_langs_map();
+    return isset($langs_map[$code]) ? $langs_map[$code] : $code;
+}
+
+/**
+ * Get the map between language codenames and language full names.
+ *
+ * @return array The map
+ */
+function get_langs_map() : array
+{
+    static $langs_map = null;
+
+    if ($langs_map === null) {
+        $langs_map = persistent_cache_get('LANGS_MAP_CACHE');
     }
-    if ($LANGS_MAP_CACHE === null) {
+    if ($langs_map === null) {
         require_code('files');
         $map_file_a = get_file_base() . '/lang/langs.ini';
         $map_file_b = get_custom_file_base() . '/lang_custom/langs.ini';
         if (!is_file($map_file_b)) {
             $map_file_b = $map_file_a;
         }
-        $LANGS_MAP_CACHE = cms_parse_ini_file_fast($map_file_b);
+        $langs_map = cms_parse_ini_file_fast($map_file_b);
 
-        persistent_cache_set('LANGS_MAP_CACHE', $LANGS_MAP_CACHE);
+        persistent_cache_set('LANGS_MAP_CACHE', $langs_map);
     }
-    return isset($LANGS_MAP_CACHE[$code]) ? $LANGS_MAP_CACHE[$code] : $code;
+
+    return $langs_map;
 }

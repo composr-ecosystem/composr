@@ -1,3 +1,6 @@
+{$REQUIRE_JAVASCRIPT,core_language_editing}
+{$REQUIRE_JAVASCRIPT,core_form_interfaces}
+
 {TITLE}
 
 {!TRANSLATE_CONTENT_SCREEN,{LANG_NICE_NAME*}}

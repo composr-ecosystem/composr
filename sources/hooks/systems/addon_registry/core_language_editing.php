@@ -273,6 +273,7 @@ class Hook_addon_registry_core_language_editing
             'LINES' => $lines,
             'TITLE' => lorem_screen_title(),
             'URL' => placeholder_url(),
+            'PAGINATION' => placeholder_pagination(),
         ]), null, '', true);
     }
 }

@@ -39,26 +39,11 @@ function _choose_language(object $title, bool $tip = false, bool $allow_all_sele
         return filter_naughty($lang);
     }
 
-    if (!$tip) {
-        $text = do_lang_tempcode('CHOOSE_LANG_DESCRIP');
+    if ($tip) {
+        require_code('lang2');
+        $text = do_lang_tempcode('CHOOSE_LANG_DESCRIP_ADD_TO_MAIN_LANG_FIRST', escape_html(lookup_language_full_name(get_site_default_lang())));
     } else {
-        global $LANGS_MAP_CACHE;
-        if ($LANGS_MAP_CACHE === null) {
-            require_code('files');
-            $map_a = get_file_base() . '/lang/langs.ini';
-            $map_b = get_custom_file_base() . '/lang_custom/langs.ini';
-            if (!is_file($map_b)) {
-                $map_b = $map_a;
-            }
-            $LANGS_MAP_CACHE = cms_parse_ini_file_fast($map_b);
-        }
-
-        $lang_name = get_site_default_lang();
-        if (array_key_exists($lang_name, $LANGS_MAP_CACHE)) {
-            $lang_name = $LANGS_MAP_CACHE[$lang_name];
-        }
-
-        $text = do_lang_tempcode('CHOOSE_LANG_DESCRIP_ADD_TO_MAIN_LANG_FIRST', escape_html($lang_name));
+        $text = do_lang_tempcode('CHOOSE_LANG_DESCRIP');
     }
 
     $langs = new Tempcode();
@@ -238,15 +223,15 @@ function _create_selection_list_langs(?string $select_lang = null, bool $show_un
     }
 
     if ($show_unset) {
-        global $LANGS_MAP_CACHE;
-        if ($LANGS_MAP_CACHE !== null) {
-            cms_mb_asort($LANGS_MAP_CACHE, SORT_NATURAL | SORT_FLAG_CASE);
-            foreach ($LANGS_MAP_CACHE as $lang => $full) {
-                if (!array_key_exists($lang, $_langs)) {
-                    $_full = make_string_tempcode($full);
-                    $_full->attach(do_lang_tempcode('_UNSET'));
-                    $langs->attach(form_input_list_entry($lang, false, protect_from_escaping($_full)));
-                }
+        require_code('lang2');
+        $langs_map = get_langs_map();
+
+        cms_mb_asort($langs_map, SORT_NATURAL | SORT_FLAG_CASE);
+        foreach ($langs_map as $lang => $full) {
+            if (!array_key_exists($lang, $_langs)) {
+                $_full = make_string_tempcode($full);
+                $_full->attach(do_lang_tempcode('_UNSET'));
+                $langs->attach(form_input_list_entry($lang, ($lang == $select_lang), protect_from_escaping($_full)));
             }
         }
     }

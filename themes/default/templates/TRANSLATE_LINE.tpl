@@ -1,6 +1,6 @@
 {$REQUIRE_JAVASCRIPT,core_language_editing}
 
-<tr>
+<tr data-tpl="translateLine">
 	<th class="translate-line-first">
 		<a id="jmp-{NAME*}"></a>
 

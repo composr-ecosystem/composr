@@ -424,6 +424,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_header_type_VALUE_modern
         CONFIG_OPTION_header_type_VALUE_side
         THEMEWIZARD_FILES
+        LANGUAGE_STRINGS
         LOST_PASSWORD_FINALISE
         LOST_PASSWORD_INITIALISE
         MAX_ALLOWED_PACKET_TOO_LOW

@@ -1,4 +1,5 @@
 {$REQUIRE_JAVASCRIPT,core_language_editing}
+{$REQUIRE_JAVASCRIPT,core_form_interfaces}
 
 {TITLE}
 
@@ -22,7 +23,7 @@
 			<thead>
 				<tr>
 					<th class="translate-line-first">
-						{!NAME}/{!DESCRIPTION}
+						{!CODENAME}
 					</th>
 					<th>
 						{!OLD}/{!NEW}
@@ -41,6 +42,12 @@
 	</div>
 
 	<p class="proceed-button">
-		<button accesskey="u" data-disable-on-click="1" class="btn btn-primary btn-scr buttons--save" type="submit">{+START,INCLUDE,ICON}NAME=buttons/save{+END} {!SAVE}</button>
+		<button disabled="disabled" id="translate-button" accesskey="u" data-disable-on-click="1" class="btn btn-primary btn-scr buttons--save" type="submit">{+START,INCLUDE,ICON}NAME=buttons/save{+END} {!SAVE}</button>
 	</p>
+
+	{+START,IF_NON_EMPTY,{PAGINATION}}
+		<div class="translate-pagination clearfix pagination-spacing">
+			{PAGINATION}
+		</div>
+	{+END}
 </form>

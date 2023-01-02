@@ -32,6 +32,28 @@
         document.body.appendChild(newScript);
     };
 
+    $cms.templates.translateLine = function (params, container) {
+        $dom.on(container, 'change', '.js-textarea-translate-field', function (textarea) {
+            var button = $dom.$('#translate-button'),
+                hasEdits = false;
+
+            if (textarea.value != textarea.defaultValue) {
+                hasEdits = true;
+            } else {
+                var fields = $dom.$$('.js-textarea-translate-field');
+                for (var i = 0; i < fields.length; i++) {
+                    if (fields[i].value != fields[i].defaultValue) {
+                        hasEdits = true;
+                        break;
+                    }
+                }
+            }
+
+            button.disabled = !hasEdits;
+            $dom.$('.translate-pagination').style.display = hasEdits ? 'none' : 'block';
+        });
+    };
+
     $cms.templates.translateAction = function translateAction(params, container) {
         var name = strVal(params.name),
             old = strVal(params.old),

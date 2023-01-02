@@ -121,7 +121,9 @@ class Module_admin_lang
             if ($lang_new != '') {
                 $lang = $lang_new;
             }
-            if ($lang == '') {
+            $lang_file = get_param_string('lang_file', '');
+
+            if ($lang == '' || $lang_file == '') {
                 breadcrumb_set_self(do_lang_tempcode('TRANSLATE_CODE'));
 
                 $this->title = get_screen_title('TRANSLATE_CODE');
@@ -136,7 +138,6 @@ class Module_admin_lang
                     breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('TRANSLATE_CODE')]]);
                     breadcrumb_set_self(do_lang_tempcode('FILE'));
 
-                    $lang_file = get_param_string('lang_file');
                     $this->title = get_screen_title('_TRANSLATE_CODE', true, [escape_html($lang_file), escape_html(lookup_language_full_name($lang))]);
                 }
             }
@@ -203,7 +204,7 @@ class Module_admin_lang
     public function choose_lang(object $title, bool $choose_lang_file = false, bool $add_lang = false, $text = '', bool $provide_na = true, string $param_name = 'lang') : object
     {
         $langs = new Tempcode();
-        $langs->attach(create_selection_list_langs(null, $add_lang));
+        $langs->attach(create_selection_list_langs(get_param_string('lang', null), $add_lang));
 
         $fields = new Tempcode();
 
@@ -229,8 +230,7 @@ class Module_admin_lang
             $field_set = alternate_fields_set__start($set_name);
 
             $lang_files = new Tempcode();
-            $lang_files->attach(form_input_list_entry('', false, do_lang_tempcode('NA_EM')));
-            $lang_files->attach(create_selection_list_lang_files());
+            $lang_files->attach(create_selection_list_lang_files(null, get_param_string('lang_file', null)));
             $field_set->attach(form_input_list(do_lang_tempcode('CODENAME'), do_lang_tempcode('DESCRIPTION_LANGUAGE_FILE'), 'lang_file', $lang_files, null, true));
 
             $field_set->attach(form_input_line(do_lang('SEARCH'), '', 'search', '', false));
@@ -478,7 +478,7 @@ class Module_admin_lang
             $id = $it['id'];
             $name = $names[$id];
 
-            if ($translation_credit != '') {
+            if ($has_translation) {
                 $actions = do_template('TRANSLATE_ACTION', [
                     '_GUID' => 'f625cf15c9db5e5af30fc772a7f0d5ff',
                     'LANG_FROM' => $it['language'],
@@ -569,7 +569,7 @@ class Module_admin_lang
         erase_persistent_cache();
 
         if (get_param_integer('contextual', 0) == 1) {
-            return inform_screen($this->title, do_lang_tempcode('SUCCESS'));
+            return inform_screen($this->title, do_lang_tempcode('SUCCESS_SAVE'));
         }
 
         // Show it worked / Refresh
@@ -578,7 +578,7 @@ class Module_admin_lang
             $_url = build_url(['page' => '_SELF', 'type' => 'content', 'lang' => $lang, 'start' => get_param_integer('start', null)], '_SELF');
             $url = $_url->evaluate();
         }
-        return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
+        return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS_SAVE'));
     }
 
     /**
@@ -601,7 +601,11 @@ class Module_admin_lang
             }
             $lang = $lang_new;
         }
-        if ($lang == '') {
+
+        $lang_file = get_param_string('lang_file', '');
+
+        // UI to pick a language and lang file
+        if ($lang == '' || $lang_file == '') {
             $choose_message = do_lang_tempcode(
                 'CHOOSE_EDIT_LIST_LANG_FILE',
                 escape_html(get_site_default_lang()),
@@ -615,11 +619,7 @@ class Module_admin_lang
             return $this->choose_lang($this->title, true, true, $choose_message);
         }
 
-        $base_lang = fallback_lang();
-
-        $map_a = get_file_base() . '/lang/langs.ini';
-        $map_b = get_custom_file_base() . '/lang_custom/langs.ini';
-
+        // Search feature
         $search = get_param_string('search', '', INPUT_FILTER_GET_COMPLEX);
         if ($search != '') {
             $search = trim($search, '" ');
@@ -649,12 +649,6 @@ class Module_admin_lang
                 'SUBMIT_NAME' => do_lang('TRANSLATE_CODE'),
             ]);
         }
-        $lang_file = get_param_string('lang_file');
-        if (!file_exists($map_b)) {
-            $map_b = $map_a;
-        }
-        require_code('files');
-        $map = cms_parse_ini_file_fast($map_b);
 
         // Upgrade to custom if not there yet (or maybe we are creating a new lang - same difference)
         $custom_dir = get_custom_file_base() . '/lang_custom/' . $lang;
@@ -734,20 +728,29 @@ class Module_admin_lang
 
         // Get some stuff
         $for_lang = get_lang_file_map($lang, $lang_file);
-        $for_base_lang = get_lang_file_map($base_lang, $lang_file, true);
-        $descriptions = get_lang_file_section($base_lang, $lang_file);
+        $for_base_lang = get_lang_file_map(fallback_lang(), $lang_file, true);
+        $descriptions = get_lang_file_section(fallback_lang(), $lang_file);
+
+        $max = get_param_integer('max', 30);
+        $start = get_param_integer('start', 0);
 
         // Make our translation page
         $lines = '';
         require_code('translation');
-        $has_translation = has_translation($base_lang, $lang);
+        $has_translation = has_translation(fallback_lang(), $lang);
         if ($has_translation) {
-            $translation_credit = get_translation_credit($base_lang, $lang);
+            $translation_credit = get_translation_credit(fallback_lang(), $lang);
         } else {
             $translation_credit = '';
         }
+        $i = 0;
         $actions = new Tempcode();
         foreach ($for_base_lang + $for_lang as $name => $old) {
+            if ($i < $start || $i >= $start + $max) {
+                $i++;
+                continue;
+            }
+
             if (array_key_exists($name, $for_lang)) {
                 $current = $for_lang[$name];
             } else {
@@ -759,7 +762,7 @@ class Module_admin_lang
                 $_current = str_replace('\n', "\n", $old);
             }
 
-            if ($translation_credit != '') {
+            if ($has_translation) {
                 $actions = do_template('TRANSLATE_ACTION', [
                     '_GUID' => '9e9a68cb2c1a1e23a901b84c9af2280b',
                     'LANG_FROM' => get_site_default_lang(),
@@ -778,9 +781,14 @@ class Module_admin_lang
                 'ACTIONS' => $actions,
             ]);
             $lines .= $temp->evaluate();
+
+            $i++;
         }
 
-        $url = build_url(['page' => '_SELF', 'type' => '_code', 'lang_file' => $lang_file, 'lang' => $lang], '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => '_code', 'lang_file' => $lang_file, 'lang' => $lang, 'start' => $start, 'max' => $max, 'max_rows' => $i], '_SELF');
+
+        require_code('templates_pagination');
+        $pagination = pagination(do_lang_tempcode('LANGUAGE_STRINGS'), $start, 'start', $max, 'max', $i);
 
         return do_template('TRANSLATE_SCREEN', [
             '_GUID' => 'b3429f8bd0b4eb79c33709ca43e3207c',
@@ -790,6 +798,7 @@ class Module_admin_lang
             'LINES' => $lines,
             'TITLE' => $this->title,
             'URL' => $url,
+            'PAGINATION' => $pagination,
         ]);
     }
 
@@ -800,56 +809,14 @@ class Module_admin_lang
      */
     public function set_lang_code() : object
     {
-        delete_cache_entry('side_language');
-        require_code('caches3');
-        erase_block_cache();
-
         $lang = get_param_string('lang');
         $lang_file = get_param_string('lang_file');
 
-        $for_base_lang = get_lang_file_map(fallback_lang(), $lang_file, true);
-        $for_base_lang_2 = get_lang_file_map($lang, $lang_file, false);
-        $descriptions = get_lang_file_section(fallback_lang(), $lang_file);
-        $runtime_processing = get_lang_file_section(fallback_lang(), $lang_file, 'runtime_processing');
+        $max = get_param_integer('max');
+        $start = get_param_integer('start');
+        $max_rows = get_param_integer('max_rows');
 
-        if ((empty($_POST)) && ($_SERVER['REQUEST_METHOD'] != 'POST')) {
-            warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN'));
-        }
-
-        $path = get_custom_file_base() . '/lang_custom/' . filter_naughty($lang) . '/' . filter_naughty($lang_file) . '.ini';
-        $path_backup = $path . '.' . strval(time());
-        if (file_exists($path)) {
-            @copy($path, $path_backup) or intelligent_write_error($path_backup);
-            fix_permissions($path_backup);
-            sync_file($path_backup);
-        }
-        $contents = '';
-        $contents .= "[descriptions]\n";
-        foreach ($descriptions as $key => $description) {
-            $contents .= $key . '=' . $description . "\n";
-        }
-        $contents .= "\n";
-        $contents .= "[runtime_processing]\n";
-        foreach ($runtime_processing as $key => $flag) {
-            $contents .= $key . '=' . $flag . "\n";
-        }
-        $contents .= "\n";
-        $contents .= "[strings]\n";
-        foreach (array_unique(array_merge(array_keys($for_base_lang), array_keys($for_base_lang_2))) as $key) {
-            $val = post_param_string('trans_' . $key, null);
-            if (($val === null) && (!array_key_exists($key, $for_base_lang))) {
-                $val = $for_base_lang_2[$key]; // Not in lang, but is in lang_custom, AND not set now - must copy though
-            }
-            if (($val !== null) && ((!array_key_exists($key, $for_base_lang)) || (str_replace("\n", '\n', $val) != $for_base_lang[$key]))) {
-                $contents .= $key . '=' . str_replace("\n", '\n', $val) . "\n";
-            }
-        }
-        require_code('files');
-        cms_file_put_contents_safe($path, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
-        $path_backup2 = $path . '.latest_in_cms_edit';
-        @copy($path, $path_backup2) or intelligent_write_error($path_backup2);
-        fix_permissions($path_backup2);
-        sync_file($path_backup2);
+        $this->_set_lang_code($lang_file, $lang);
 
         log_it('TRANSLATE_CODE');
 
@@ -857,10 +824,16 @@ class Module_admin_lang
         erase_cached_language();
         erase_cached_templates(false, null, TEMPLATE_DECACHE_WITH_LANG);
         persistent_cache_delete('LANGS_LIST');
+        erase_block_cache();
+        delete_cache_entry('side_language');
 
         // Show it worked / Refresh
-        $url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
-        return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
+        if ($start + $max < $max_rows) {
+            $url = build_url(['page' => '_SELF', 'type' => 'browse', 'lang' => $lang, 'lang_file' => $lang_file, 'start' => $start + $max, 'max' => ($max == 30) ? null : $max], '_SELF');
+        } else {
+            $url = build_url(['page' => '_SELF', 'type' => 'browse', 'lang' => $lang], '_SELF');
+        }
+        return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS_SAVE'));
     }
 
     /**
@@ -873,63 +846,8 @@ class Module_admin_lang
         $lang = post_param_string('lang');
 
         $lang_files = get_lang_files(fallback_lang());
-
         foreach (array_keys($lang_files) as $lang_file) {
-            $for_base_lang = get_lang_file_map(fallback_lang(), $lang_file, true);
-            $for_base_lang_2 = get_lang_file_map($lang, $lang_file, false);
-            $descriptions = get_lang_file_section(fallback_lang(), $lang_file);
-            $runtime_processing = get_lang_file_section(fallback_lang(), $lang_file, 'runtime_processing');
-
-            $out = '';
-
-            $one_changed_from_saved = false;
-
-            foreach ($for_base_lang_2 + $for_base_lang as $key => $disk_val) {
-                $val = post_param_string('trans_' . $key, str_replace('\n', "\n", array_key_exists($key, $for_base_lang_2) ? $for_base_lang_2[$key] : $disk_val));
-                $changed_from_saved = ($val != str_replace('\n', "\n", $disk_val)); // was already changed in language file
-                $not_a_default = (!array_key_exists($key, $for_base_lang)); // not in default Composr
-                $changed_from_default = !$not_a_default && ($for_base_lang[$key] != $val); // changed from default Composr
-                $no_default_file = (!file_exists(get_file_base() . '/lang/' . fallback_lang() . '/' . $lang_file . '.ini')); // whole file is not in default Composr
-                if ($changed_from_saved || $not_a_default || $changed_from_default || $no_default_file) {
-                    $out .= $key . '=' . str_replace("\n", '\n', $val) . "\n";
-                }
-                if ($changed_from_saved) {
-                    $one_changed_from_saved = true;
-                }
-            }
-
-            if ($out != '' && $one_changed_from_saved) {
-                $path = get_custom_file_base() . '/lang_custom/' . filter_naughty($lang) . '/' . filter_naughty($lang_file) . '.ini';
-                $path_backup = $path . '.' . strval(time());
-                if (file_exists($path)) {
-                    @copy($path, $path_backup) or intelligent_write_error($path_backup);
-                    fix_permissions($path_backup);
-                    sync_file($path_backup);
-                }
-                $contents = '';
-                if (!empty($descriptions)) {
-                    $contents .= "[descriptions]\n";
-                    foreach ($descriptions as $key => $description) {
-                        $contents .= $key . '=' . $description . "\n";
-                    }
-                    $contents .= "\n";
-                }
-                if (!empty($runtime_processing)) {
-                    $contents .= "[runtime_processing]\n";
-                    foreach ($runtime_processing as $key => $flag) {
-                        $contents .= $key . '=' . $flag . "\n";
-                    }
-                    $contents .= "\n";
-                }
-                $contents .= "[strings]\n";
-                $contents .= $out;
-                require_code('files');
-                cms_file_put_contents_safe($path, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
-                $path_backup2 = $path . '.latest_in_cms_edit';
-                @copy($path, $path_backup2) or intelligent_write_error($path_backup2);
-                fix_permissions($path_backup2);
-                sync_file($path_backup2);
-            }
+            $this->_set_lang_code($lang_file, $lang);
         }
 
         log_it('TRANSLATE_CODE');
@@ -938,12 +856,89 @@ class Module_admin_lang
         erase_cached_language();
         erase_cached_templates(false, null, TEMPLATE_DECACHE_WITH_LANG);
         persistent_cache_delete('LANGS_LIST');
+        erase_block_cache();
 
         // Show it worked / Refresh
         $url = post_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL);
         if ($url == '') {
-            return inform_screen($this->title, do_lang_tempcode('SUCCESS'));
+            return inform_screen($this->title, do_lang_tempcode('SUCCESS_SAVE'));
         }
-        return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
+        return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS_SAVE'));
+    }
+
+    /**
+     * Save POSTed changes to a particular language file.
+     *
+     * @param  string $lang_file The language file
+     * @param  LANGUAGE_NAME $lang The language
+     */
+    protected function _set_lang_code(string $lang_file, string $lang)
+    {
+        $for_base_lang_orig = get_lang_file_map(fallback_lang(), $lang_file, true);
+        $for_base_lang_override = get_lang_file_map($lang, $lang_file, false);
+
+        $descriptions = get_lang_file_section(fallback_lang(), $lang_file);
+        $runtime_processing = get_lang_file_section(fallback_lang(), $lang_file, 'runtime_processing');
+
+        $no_default_file = (!file_exists(get_file_base() . '/lang/' . fallback_lang() . '/' . $lang_file . '.ini')); // whole file is not in default Composr
+
+        $out = '';
+        $one_changed_from_saved = false;
+        foreach ($for_base_lang_override + $for_base_lang_orig as $key => $disk_val) {
+            $_disk_val = str_replace('\n', "\n", $disk_val);
+
+            $val = post_param_string('trans_' . $key, $_disk_val);
+
+            $changed_from_saved = ($val != $_disk_val); // was already changed in language file
+            $not_a_default = (!array_key_exists($key, $for_base_lang_orig)); // not in default Composr
+            $changed_from_default = !$not_a_default && ($for_base_lang_orig[$key] != $val); // changed from default Composr
+
+            if ($changed_from_saved || $not_a_default || $changed_from_default || $no_default_file) {
+                $out .= $key . '=' . str_replace("\n", '\n', $val) . "\n";
+            }
+
+            if ($changed_from_saved) {
+                $one_changed_from_saved = true;
+            }
+        }
+
+        if ($out != '' && $one_changed_from_saved) {
+            $path = get_custom_file_base() . '/lang_custom/' . filter_naughty($lang) . '/' . filter_naughty($lang_file) . '.ini';
+
+            // Backup
+            $path_backup = $path . '.' . strval(time());
+            if (file_exists($path)) {
+                @copy($path, $path_backup) or intelligent_write_error($path_backup);
+                fix_permissions($path_backup);
+                sync_file($path_backup);
+            }
+
+            // Generate overall output (includes metadata)
+            $contents = '';
+            if (!empty($descriptions)) {
+                $contents .= "[descriptions]\n";
+                foreach ($descriptions as $key => $description) {
+                    $contents .= $key . '=' . $description . "\n";
+                }
+                $contents .= "\n";
+            }
+            if (!empty($runtime_processing)) {
+                $contents .= "[runtime_processing]\n";
+                foreach ($runtime_processing as $key => $flag) {
+                    $contents .= $key . '=' . $flag . "\n";
+                }
+                $contents .= "\n";
+            }
+            $contents .= "[strings]\n";
+            $contents .= $out;
+
+            // Save to disk
+            require_code('files');
+            cms_file_put_contents_safe($path, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+            $path_backup2 = $path . '.latest_in_cms_edit';
+            @copy($path, $path_backup2) or intelligent_write_error($path_backup2);
+            fix_permissions($path_backup2);
+            sync_file($path_backup2);
+        }
     }
 }

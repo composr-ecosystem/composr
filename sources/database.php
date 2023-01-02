@@ -1598,7 +1598,9 @@ class DatabaseConnector
             $driver = $this->driver;
             cms_register_shutdown_function_if_available(function () use ($driver) {
                 cms_register_shutdown_function_if_available(function () use ($driver) {
-                    cms_register_shutdown_function_if_available([$driver, 'close_connections']);
+                    cms_register_shutdown_function_if_available(function () use ($driver) {
+                        cms_register_shutdown_function_if_available([$driver, 'close_connections']);
+                    });
                 });
             });
         }
