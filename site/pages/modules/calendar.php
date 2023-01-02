@@ -533,7 +533,7 @@ class Module_calendar
         $and_filter = [];
         $filter = $this->get_filter($only_event_types);
         foreach ($filter as $key => $val) {
-            if ($val == 1) {
+            if ((substr($key, 0, 4) == 'int_') && ($val == 1)) {
                 $and_filter[] = intval(substr($key, 4));
             }
         }
@@ -549,7 +549,8 @@ class Module_calendar
     {
         check_privilege('view_calendar');
 
-        $member_id = get_param_integer('member_id', get_member());
+        $_member_id = get_param_integer('member_id', null);
+        $member_id = ($_member_id === null) ? get_member() : $_member_id;
         $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id, true, USERNAME_DEFAULT_ERROR);
 
         $view = get_param_string('view', 'day');
@@ -742,7 +743,8 @@ class Module_calendar
                 'TYPE_ID' => strval($type['id']),
             ]));
         }
-        $filter_url = build_url(['page' => '_SELF', 'type' => 'browse', 'view' => $view, 'id' => $id], '_SELF', [], false, true);
+        $map = ['page' => '_SELF', 'type' => 'browse', 'view' => $view, 'id' => $id, 'private' => $private, 'member_id' => $_member_id];
+        $filter_url = build_url($map, '_SELF', [], false, true);
         $event_types_2 = new Tempcode();
         foreach ($types as $type) {
             if ($type['id'] == db_get_first_id()) {

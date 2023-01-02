@@ -95,8 +95,6 @@
 				{+START,IF_NON_EMPTY,{EVENT_TYPES_2}}
 					<div class="left event-interest-box"><section class="box"><div class="box-inner">
 						<form title="{!FILTER}" action="{$URL_FOR_GET_FORM*,{FILTER_URL}}" method="get">
-							{$INSERT_FORM_POST_SECURITY}
-
 							{$HIDDENS_FOR_GET_FORM,{FILTER_URL}}
 
 							<p><strong>{!DESCRIPTION_INTERESTS_2}</strong></p>

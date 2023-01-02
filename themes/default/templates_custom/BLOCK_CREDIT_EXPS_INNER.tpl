@@ -1,8 +1,6 @@
 {$REQUIRE_JAVASCRIPT,composr_homesite_support_credits}
 {$SET,purchase_url,{$PAGE_LINK,_SEARCH:purchase:terms:member_id={$MEMBER}}}
 <form action="{$URL_FOR_GET_FORM*,{$GET,purchase_url}}" method="get" style="margin-bottom: 0" data-tpl="blockCreditExpsInner">
-	{$INSERT_FORM_POST_SECURITY}
-
 	{$HIDDENS_FOR_GET_FORM,{$GET,purchase_url}}
 
 	<div class="selCdt">
