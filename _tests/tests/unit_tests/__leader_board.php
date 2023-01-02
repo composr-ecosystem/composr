@@ -613,11 +613,9 @@ class __leader_board_test_set extends cms_test_case
             return;
         }
 
-        /*
         foreach ($this->leaderboards as $key => $value) {
             delete_leader_board($value);
         }
-        */
 
         // Clean up point transactions
         require_code('points2');
