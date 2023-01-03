@@ -330,9 +330,9 @@ class Hook_admin_stats_events extends CMSStatsProvider
      * @param  string $bucket Data bucket we want data for
      * @param  string $pivot Pivot value
      * @param  array $filters Map of filters (including pivot if applicable)
-     * @return array Final data in standardised map format
+     * @return ?array Final data in standardised map format (null: could not generate)
      */
-    public function generate_final_data(string $bucket, string $pivot, array $filters) : array
+    public function generate_final_data(string $bucket, string $pivot, array $filters) : ?array
     {
         $data = $this->fill_data_by_date_pivots($pivot, $filters[$bucket . '__month_range'][0], $filters[$bucket . '__month_range'][1]);
 

@@ -506,6 +506,9 @@ function stats_generate_spreadsheet(string $spreadsheet_graph_name, ?string &$fi
 
     list($filters, $pivot) = _stats_get_graph_context($graph_details, $filters, $pivot);
     $graph_final_details = $hook_ob->generate_final_data($spreadsheet_graph_name, ($pivot === null) ? '' : $pivot, $filters);
+    if ($graph_final_details === null) {
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+    }
 
     $x_axis_label = $graph_final_details['x_axis_label']->evaluate();
     $y_axis_label = $graph_final_details['y_axis_label']->evaluate();
@@ -806,9 +809,9 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
      * @param  string $bucket Data bucket we want data for
      * @param  string $pivot Pivot value
      * @param  array $filters Map of filters (including pivot if applicable)
-     * @return array Final data in standardised map format
+     * @return ?array Final data in standardised map format (null: could not generate)
      */
-    abstract public function generate_final_data(string $bucket, string $pivot, array $filters) : array;
+    abstract public function generate_final_data(string $bucket, string $pivot, array $filters) : ?array;
 
 
     /**

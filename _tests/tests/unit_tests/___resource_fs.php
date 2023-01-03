@@ -22,6 +22,50 @@ These tests test all var hooks. Some general Resource-fs tests are in the comman
 // We do not expect this test to be very reliable. It's more of a way of testing things don't crash horribly.
 // If a test is failing you can try emptying out the alternative_ids table, and test content from content tables.
 
+/*
+Running individual tests...
+
+http://yourbaseurl/_tests/index?id=unit_tests/___resource_fs&only=aggregate_type_instances
+http://yourbaseurl/_tests/index?id=unit_tests/___resource_fs&only=authors
+http://yourbaseurl/_tests/index?id=unit_tests/___resource_fs&only=award_types
+http://yourbaseurl/_tests/index?id=unit_tests/___resource_fs&only=banners
+http://yourbaseurl/_tests/index?id=unit_tests/___resource_fs&only=bin
+http://yourbaseurl/_tests/index?id=unit_tests/___resource_fs&only=calendar
+http://yourbaseurl/_tests/index?id=unit_tests/___resource_fs&only=catalogues
+http://yourbaseurl/_tests/index?id=unit_tests/___resource_fs&only=chat
+http://yourbaseurl/_tests/index?id=unit_tests/___resource_fs&only=comcode_pages
+http://yourbaseurl/_tests/index?id=unit_tests/___resource_fs&only=cpfs
+http://yourbaseurl/_tests/index?id=unit_tests/___resource_fs&only=custom_comcode_tags
+http://yourbaseurl/_tests/index?id=unit_tests/___resource_fs&only=database
+http://yourbaseurl/_tests/index?id=unit_tests/___resource_fs&only=download_licences
+http://yourbaseurl/_tests/index?id=unit_tests/___resource_fs&only=downloads
+http://yourbaseurl/_tests/index?id=unit_tests/___resource_fs&only=emoticons
+http://yourbaseurl/_tests/index?id=unit_tests/___resource_fs&only=etc
+http://yourbaseurl/_tests/index?id=unit_tests/___resource_fs&only=filedump
+http://yourbaseurl/_tests/index?id=unit_tests/___resource_fs&only=forum_groupings
+http://yourbaseurl/_tests/index?id=unit_tests/___resource_fs&only=forums
+http://yourbaseurl/_tests/index?id=unit_tests/___resource_fs&only=galleries
+http://yourbaseurl/_tests/index?id=unit_tests/___resource_fs&only=groups
+http://yourbaseurl/_tests/index?id=unit_tests/___resource_fs&only=home
+http://yourbaseurl/_tests/index?id=unit_tests/___resource_fs&only=leader_board
+http://yourbaseurl/_tests/index?id=unit_tests/___resource_fs&only=members
+http://yourbaseurl/_tests/index?id=unit_tests/___resource_fs&only=menus
+http://yourbaseurl/_tests/index?id=unit_tests/___resource_fs&only=multi_moderations
+http://yourbaseurl/_tests/index?id=unit_tests/___resource_fs&only=newsletters
+http://yourbaseurl/_tests/index?id=unit_tests/___resource_fs&only=newsletter_subscribers
+http://yourbaseurl/_tests/index?id=unit_tests/___resource_fs&only=news
+http://yourbaseurl/_tests/index?id=unit_tests/___resource_fs&only=periodic_newsletters
+http://yourbaseurl/_tests/index?id=unit_tests/___resource_fs&only=polls
+http://yourbaseurl/_tests/index?id=unit_tests/___resource_fs&only=post_templates
+http://yourbaseurl/_tests/index?id=unit_tests/___resource_fs&only=quizzes
+http://yourbaseurl/_tests/index?id=unit_tests/___resource_fs&only=raw
+http://yourbaseurl/_tests/index?id=unit_tests/___resource_fs&only=root
+http://yourbaseurl/_tests/index?id=unit_tests/___resource_fs&only=ticket_types
+http://yourbaseurl/_tests/index?id=unit_tests/___resource_fs&only=usergroup_subscriptions
+http://yourbaseurl/_tests/index?id=unit_tests/___resource_fs&only=welcome_emails
+http://yourbaseurl/_tests/index?id=unit_tests/___resource_fs&only=wiki
+*/
+
 /**
  * Composr test case class (unit testing).
  */
@@ -188,7 +232,7 @@ class ___resource_fs_test_set extends cms_test_case
             if ($ob->folder_resource_type !== null) {
                 $folder_resource_type = is_array($ob->folder_resource_type) ? $ob->folder_resource_type[0] : $ob->folder_resource_type;
                 list(, $folder_resource_id) = $ob->folder_convert_filename_to_id('test-a', $folder_resource_type);
-                $this->assertTrue($folder_resource_id !== null, 'Could not folder_convert_filename_to_id');
+                $this->assertTrue($folder_resource_id !== null, 'Could not folder_convert_filename_to_id for ' . $folder_resource_type);
                 if ($folder_resource_id !== null) {
                     $test = $ob->search($folder_resource_type, $folder_resource_id, true);
                     $this->assertTrue($test !== null, 'Could not search for ' . $folder_resource_type . ' test-a');

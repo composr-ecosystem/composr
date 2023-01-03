@@ -13,7 +13,18 @@
  * @package    testing_platform
  */
 
-// php _tests/index.php ___performance
+/*
+
+Execute on the command line to prevent timeouts:
+php _tests/index.php ___performance
+
+Or call with page name prefixes like:
+https://chrisgraham.name:7455/composr-copy/_tests/index.php?id=unit_tests%2F___performance&only=admin_a
+
+Can track progress with:
+SELECT * FROM cms11_stats ORDER BY date_and_time DESC LIMIT 1;
+
+*/
 
 /**
  * Composr test case class (unit testing).
@@ -32,21 +43,11 @@ class ___performance_test_set extends cms_test_case
     protected $start_page_link = '';
     protected $inclusion_list = null;
     protected $exclusion_list = [
-        // These are non-bundled tooling screens that are irrevocably slow
-        'adminzone:string_scan',
-        'adminzone:sql_dump',
-        'adminzone:tar_dump',
-        'adminzone:admin_generate_bookmarks',
-        'adminzone:build_addons',
-        'adminzone:css_check',
-        'adminzone:doc_index_build',
-        'adminzone:plug_guid',
-        'adminzone:static_export',
-
         // Irrevocably slow for some other reason
         'adminzone:admin_addons:addon_export', // Does full file-system scan, particularly slow on a full Git clone
+        'adminzone:string_scan', // Does deep scan
     ];
-    protected $only_zone = null;
+    protected $only_zone = null; // Set this for debugging a narrower set of pages (or use &only=(page-name-prefix)
 
     public function setUp()
     {
@@ -81,11 +82,12 @@ class ___performance_test_set extends cms_test_case
             return;
         }
 
-        if ($this->only_zone !== null) {
-            list($zone) = page_link_decode($page_link);
-            if ($zone != $this->only_zone) {
-                return;
-            }
+        list($zone, $attributes) = page_link_decode($page_link);
+        if (($this->only_zone !== null) && ($zone != $this->only_zone)) {
+            return;
+        }
+        if (($this->only !== null) && (substr($attributes['page'], 0, strlen($this->only)) != $this->only)) {
+            return;
         }
 
         $url = page_link_to_url($page_link);
