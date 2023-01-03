@@ -8,31 +8,13 @@
 	{$REQUIRE_JAVASCRIPT,ajax_people_lists}
 
 	{+START,IF_NON_EMPTY,{FILTERS_ROW_A}{FILTERS_ROW_B}}
-		<div class="box advanced-member-search"><div class="box-inner">
+		<div class="box box-filter-inputs"><div class="box-inner">
 			<form title="{!SEARCH}" action="{$URL_FOR_GET_FORM*,{$SELF_URL}}" target="_self" method="get">
 				{$HIDDENS_FOR_GET_FORM,{$SELF_URL},{BLOCK_ID}_start,{BLOCK_ID}_max,{BLOCK_ID}_sort,filter_{BLOCK_ID}_*}
 
 				<div class="search-fields clearfix">
-					<div class="search-button">
-						<button data-disable-on-click="1" accesskey="u" class="btn btn-primary btn-scri buttons--filter" type="submit">{+START,INCLUDE,ICON}NAME=buttons/filter{+END} {!FILTER}</button>
-					</div>
-
-					{+START,LOOP,{FILTERS_ROW_A}}
-						{+START,INCLUDE,CNS_MEMBER_DIRECTORY_SCREEN_FILTER}
-							NAME={_loop_key}
-							LABEL={_loop_var}
-							BLOCK_ID={BLOCK_ID}
-						{+END}
-					{+END}
-				</div>
-
-				{+START,IF_NON_EMPTY,{FILTERS_ROW_B}}
-					<div class="search-fields clearfix">
-						<div class="search-button">
-							<button data-cms-href="{$PAGE_LINK*,_SELF:_SELF}" class="btn btn-primary btn-scri buttons--clear" type="button">{+START,INCLUDE,ICON}NAME=buttons/clear{+END} {!RESET_FILTER}</button>
-						</div>
-
-						{+START,LOOP,{FILTERS_ROW_B}}
+					<div class="filter-inputs">
+						{+START,LOOP,{FILTERS_ROW_A}}
 							{+START,INCLUDE,CNS_MEMBER_DIRECTORY_SCREEN_FILTER}
 								NAME={_loop_key}
 								LABEL={_loop_var}
@@ -40,7 +22,30 @@
 							{+END}
 						{+END}
 					</div>
+				</div>
+
+				{+START,IF_NON_EMPTY,{FILTERS_ROW_B}}
+					<div class="search-fields clearfix">
+						<div class="filter-inputs">
+							{+START,LOOP,{FILTERS_ROW_B}}
+								{+START,INCLUDE,CNS_MEMBER_DIRECTORY_SCREEN_FILTER}
+									NAME={_loop_key}
+									LABEL={_loop_var}
+									BLOCK_ID={BLOCK_ID}
+								{+END}
+							{+END}
+						</div>
+					</div>
 				{+END}
+
+				<div class="filter-inputs">
+					<div class="search-button">
+						<button data-disable-on-click="1" accesskey="u" class="btn btn-primary btn-scri buttons--filter" type="submit">{+START,INCLUDE,ICON}NAME=buttons/filter{+END} {!FILTER}</button>
+					</div>
+					<div class="search-button">
+						<button data-cms-href="{$PAGE_LINK*,_SELF:_SELF}" class="btn btn-primary btn-scri buttons--clear" type="button">{+START,INCLUDE,ICON}NAME=buttons/clear{+END} {!RESET_FILTER}</button>
+					</div>
+				</div>
 			</form>
 		</div></div>
 	{+END}
