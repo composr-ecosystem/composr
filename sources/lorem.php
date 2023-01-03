@@ -212,22 +212,6 @@ function placeholder_fields() : object
 }
 
 /**
- * Get fields, but composed of divs (used by forum).
- *
- * @return Tempcode Place holder text
- */
-function placeholder_fields_as_divs() : object
-{
-    require_css('forms');
-
-    $text = '<div><div>(Some field key would go here.)</div><div>(Some field value would go here.)</div></div>'; // XHTMLXHTML
-    if (function_exists('ocp_mark_as_escaped')) {
-        ocp_mark_as_escaped($text);
-    }
-    return make_string_tempcode($text);
-}
-
-/**
  * Get form with a field.
  *
  * @param  ID_TEXT $field_name The field name wanted
