@@ -952,6 +952,11 @@ function render_screen_preview(?string $hook, string $function, ?string $templat
         fatal_exit(do_lang_tempcode('MISSING_RESOURCE'));
     }
 
+    // Set the screen title as the name of the template
+    if ($template !== null) {
+        set_short_title($template);
+    }
+
     // Render preview(s)
     $preview = call_user_func([$ob, $function]);
 
