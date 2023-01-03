@@ -911,6 +911,46 @@ function placeholder_rating(string $content_type, string $template = 'RATING_BOX
 }
 
 /**
+ * Get a placeholder member box.
+ *
+ * @return Tempcode The member box
+ */
+function placeholder_member_box() : object
+{
+    $custom_fields = do_lorem_template('CNS_MEMBER_BOX_CUSTOM_FIELD', [
+        'NAME' => lorem_word(),
+        'RAW' => lorem_phrase(),
+        'VALUE' => lorem_phrase(),
+        'MEMBER_ID' => placeholder_first_admin_id(),
+    ]);
+
+    return do_lorem_template('CNS_MEMBER_BOX', [
+        'GIVE_CONTEXT' => false,
+        'MEMBER_ID' => placeholder_first_admin_id(),
+        'USERNAME' => lorem_word(),
+        '_POSTS' => placeholder_number(),
+        'POSTS' => placeholder_number(),
+        '_POINTS' => placeholder_number(),
+        'POINTS' => placeholder_number(),
+        'JOIN_DATE_RAW' => placeholder_date_raw(),
+        'JOIN_DATE' => placeholder_date(),
+        'PRIMARY_GROUP_NAME' => lorem_word(),
+        'SECONDARY_GROUPS' => [lorem_word(), lorem_word_2()],
+        'CUSTOM_FIELDS' => $custom_fields,
+        'ONLINE' => false,
+        'AVATAR_URL' => placeholder_avatar(),
+        'IP_ADDRESS' => placeholder_ip(),
+        '_NUM_WARNINGS' => placeholder_number(),
+        'NUM_WARNINGS' => placeholder_number(),
+        'GALLERIES' => placeholder_number(),
+        'DOB_LABEL' => lorem_word(),
+        'DOB' => placeholder_date(),
+        '_DOB' => placeholder_date_raw(),
+        '_DOB_CENSORED' => false,
+    ]);
+}
+
+/**
  * Get pagination.
  *
  * @return Tempcode Pagination
