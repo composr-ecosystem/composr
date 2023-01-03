@@ -571,6 +571,7 @@ function lorem_globalise(object $middle, $message = null, string $type = '', boo
             'FRAME' => false,
             'TARGET' => '_self',
             'CONTENT' => $middle,
+            'NOINDEX' => false,
         ]);
     }
 

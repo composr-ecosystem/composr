@@ -100,9 +100,9 @@ class Hook_admin_stats_google_keywords extends CMSStatsProvider
      * @param  string $bucket Data bucket we want data for
      * @param  string $pivot Pivot value
      * @param  array $filters Map of filters (including pivot if applicable)
-     * @return array Final data in standardised map format
+     * @return ?array Final data in standardised map format (null: could not generate)
      */
-    public function generate_final_data(string $bucket, string $pivot, array $filters) : array
+    public function generate_final_data(string $bucket, string $pivot, array $filters) : ?array
     {
         // https://developers.google.com/webmaster-tools/search-console-api-original/v3/searchanalytics/query
 
@@ -122,6 +122,11 @@ class Hook_admin_stats_google_keywords extends CMSStatsProvider
         }
 
         $data = [];
+
+        if (!isset($result['rows'])) {
+            attach_message('No data from Google Search Console API', 'warn', false, true);
+            return null;
+        }
 
         foreach ($result['rows'] as $row) {
             $keyword = $row['keys'][0];

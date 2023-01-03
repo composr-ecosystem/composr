@@ -300,7 +300,7 @@ html.is-touch-enabled .chat-message > div {
 }
 
 .chat-lobby-friends .form-add-friend .input-group {
-	display: inline-flex;
+	{$BETA_CSS_PROPERTY,display: inline-flex;}
 	width: auto;
 }
 

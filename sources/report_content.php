@@ -269,7 +269,7 @@ function report_content_append_text(object &$text, string $ticket_id)
     if (addon_installed('captcha')) {
         require_code('captcha');
         if (use_captcha()) {
-            $text->attach(paragraph(do_lang_tempcode('FORM_TIME_SECURITY')));
+            $text->attach(paragraph(do_lang_tempcode('captcha:FORM_TIME_SECURITY')));
         }
     }
 

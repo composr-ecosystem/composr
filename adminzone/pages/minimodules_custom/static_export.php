@@ -162,6 +162,7 @@ if (get_param_integer('save__theme_files', 1) == 1) {
                     $css_files[substr($f, 0, strlen($f) - 4)] = true;
                 }
             }
+            closedir($dh);
         }
 
         foreach (['javascript', 'javascript_custom'] as $_dir) {
@@ -172,6 +173,7 @@ if (get_param_integer('save__theme_files', 1) == 1) {
                     $js_files[substr($f, 0, strlen($f) - 3)] = true;
                 }
             }
+            closedir($dh);
         }
     }
 

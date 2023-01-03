@@ -173,7 +173,7 @@ PHP;
 
         if ($use_captcha) {
             $fields->attach(form_input_captcha($hidden));
-            $text->attach(do_lang_tempcode('FORM_TIME_SECURITY'));
+            $text->attach(do_lang_tempcode('captcha:FORM_TIME_SECURITY'));
         }
 
         $field_groups = [];

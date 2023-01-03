@@ -432,6 +432,8 @@ class Module_tickets
      */
     protected function render_ticket_row(array $topic) : array
     {
+        require_code('feedback');
+
         $ticket_id = extract_topic_identifier($topic['description']);
 
         $url = build_url(['page' => '_SELF', 'type' => 'ticket', 'id' => $ticket_id], '_SELF');

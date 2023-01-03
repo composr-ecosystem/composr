@@ -43,7 +43,7 @@ You must [b]not[/b] lock down PayPal to [url="only accept encrypted forms"]https
 If you want to set up Payment Data Transfer (PDT), follow these instructions:
  - Go to your PayPal's Website Payments settings, and Website Payment Preferences page.
  - turn on &ldquo;Auto Return&rdquo;.
- - For the return URL, specify your baseURL/index.php?page=purchase (e.g. https://www.example.com/index.php?page=purchase).
+ - For the return URL, specify your [tt]http://yourbaseurl/index.php?page=purchase[/tt].
  - Turn on &ldquo;Payment data transfer&rdquo;.
  - Copy the data transfer identifier that appears on your screen.
  - On your Composr website, go to Admin Zone > Setup > Configuration > eCommerce options > Payment gateway (PayPal-specific).
@@ -56,11 +56,11 @@ The Composr software makes use of Authorize.net's Server Integrated Method (SIM)
 
 While PayPal has the Payment Data Transfer (PDT), Authorize.net has something similar called Relay Response. After a customer submits payment information on Authorize.net, while the customer is waiting for Authorize.net to respond with the status, Authorize.net will post transaction details and status back to the Composr website. If the attempt fails or errors, Authorize.net will show an error to the customer and e-mail the merchant. This contrasts from PayPal which simply re-directs the customer back to the Composr store; Authorize.net acts as an intermediary which allows them to e-mail the merchant should an issue occur between it and the Composr store.
 
-For Authorize.net to work properly, you must add a couple of URLs to the list of accepted Response / Receipt URLs. Log in to your Authorize.net account, go to Account, Settings, Response / Receipt URLs, click Add URL, and put in the box [tt]<base_url>/data/ecommerce.php[/tt] (this is for IPN). You must also add the appropriate URL for Relay Response, which will depend on your URL scheme setting in the Composr software:
- - Raw PHP URL scheme: [tt]<base_url>/index.php?page=purchase&type=finish[/tt]
- - pg URL scheme: [tt]<base_url>/pg/purchase/finish[/tt]
- - htm URL scheme: [tt]<base_url>/purchase/finish.htm[/tt]
- - Unadorned URL scheme: [tt]<base_url>/purchase/finish[/tt]
+For Authorize.net to work properly, you must add a couple of URLs to the list of accepted Response / Receipt URLs. Log in to your Authorize.net account, go to Account, Settings, Response / Receipt URLs, click Add URL, and put in the box [tt]http://yourbaseurl/data/ecommerce.php[/tt] (this is for IPN). You must also add the appropriate URL for Relay Response, which will depend on your URL scheme setting in the Composr software:
+ - Raw PHP URL scheme: [tt]http://yourbaseurl/index.php?page=purchase&type=finish[/tt]
+ - pg URL scheme: [tt]http://yourbaseurl/pg/purchase/finish[/tt]
+ - htm URL scheme: [tt]http://yourbaseurl/purchase/finish.htm[/tt]
+ - Unadorned URL scheme: [tt]http://yourbaseurl/purchase/finish[/tt]
 
 [title="4"]CCBill[/title]
 
@@ -73,13 +73,13 @@ CCBill URL redirects are unreliable as they do not provide the Composr software 
 To set up a Webhook (IPN), in CCBill, go to Account Admin > Webhooks. Use the [tt]URL ENCODED[/tt] Webhook Format. Enable the following events at the specified versions:
  - NewSaleFailure (version 3)
  - NewSaleSuccess (version 6)
-You must also specify the Webhook URL, which is [tt]<base_url>/data/ecommerce.php[/tt].
+You must also specify the Webhook URL, which is [tt]http://yourbaseurl/data/ecommerce.php[/tt].
 
 To set up URL redirects, in CCBill, go to Account Admin > Basic. Set both the Approval URL and Denial URL to the following depending on your site's URL scheme:
- - Raw PHP URL scheme: [tt]<base_url>/index.php?page=purchase&type=finish[/tt]
- - pg URL scheme: [tt]<base_url>/pg/purchase/finish[/tt]
- - htm URL scheme: [tt]<base_url>/purchase/finish.htm[/tt]
- - Unadorned URL scheme: [tt]<base_url>/purchase/finish[/tt]
+ - Raw PHP URL scheme: [tt]http://yourbaseurl/index.php?page=purchase&type=finish[/tt]
+ - pg URL scheme: [tt]http://yourbaseurl/pg/purchase/finish[/tt]
+ - htm URL scheme: [tt]http://yourbaseurl/purchase/finish.htm[/tt]
+ - Unadorned URL scheme: [tt]http://yourbaseurl/purchase/finish[/tt]
 You should probably set up URL redirects in CCBill even if you are not using it (PDT) to process transactions. That way, customers are redirected back to your store with a success message.
 
 [title="3"]Configuration[/title]

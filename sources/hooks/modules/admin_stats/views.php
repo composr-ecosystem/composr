@@ -762,9 +762,9 @@ class Hook_admin_stats_views extends CMSStatsProvider
      * @param  string $bucket Data bucket we want data for
      * @param  string $pivot Pivot value
      * @param  array $filters Map of filters (including pivot if applicable)
-     * @return array Final data in standardised map format
+     * @return ?array Final data in standardised map format (null: could not generate)
      */
-    public function generate_final_data(string $bucket, string $pivot, array $filters) : array
+    public function generate_final_data(string $bucket, string $pivot, array $filters) : ?array
     {
         require_lang('dates');
 
@@ -1335,7 +1335,7 @@ class Hook_admin_stats_views extends CMSStatsProvider
                             $total_views += $_total_views;
                         }
 
-                        if ($total_views != 0.0) {
+                        if ($total_views != 0) {
                             $data[$pivot_value] = floatval($total_time_spent) / floatval($total_views);
                         }
                     }
@@ -1387,7 +1387,7 @@ class Hook_admin_stats_views extends CMSStatsProvider
                             }
                         }
 
-                        if ($total_views != 0.0) {
+                        if ($total_views != 0) {
                             $data[$pivot_value] = 100.0 * floatval($total_bounces) / floatval($total_views);
                         }
                     }
@@ -1416,7 +1416,7 @@ class Hook_admin_stats_views extends CMSStatsProvider
                     foreach ($_data as $page_link => $__) {
                         list($total_compound_speed, $total_views) = $__;
 
-                        if ($total_views != 0.0) {
+                        if ($total_views != 0) {
                             if (!isset($data[$page_link])) {
                                 $data[$page_link] = 0.0;
                             }

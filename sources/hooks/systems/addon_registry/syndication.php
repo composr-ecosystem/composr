@@ -114,7 +114,6 @@ class Hook_addon_registry_syndication
     {
         return [
             'sources/hooks/systems/addon_registry/syndication.php',
-            'themes/default/templates/RSS_HEADER.tpl',
             'themes/default/xml/ATOM_ENTRY.xml',
             'themes/default/xml/ATOM_WRAPPER.xml',
             'themes/default/xml/RSS_CLOUD.xml',

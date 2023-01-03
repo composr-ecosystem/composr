@@ -264,7 +264,7 @@ function init__webstandards()
         'counter-reset' => $enforce_counter_increment,
         'cursor' => '(' . $enforce_functional_url . '|(?i)auto|crosshair|default|move|text|wait|help|n-resize|e-resize|s-resize|w-resize|ne-resize|nw-resize|se-resize|sw-resize|pointer|not-allowed|no-drop|vertical-text|all-scroll|col-resize|row-resize|none|progress(?-i))',
         'direction' => '(ltr|rtl)',
-        'display' => '(none|inline|block|list-item|table|table-header-group|table-footer-group|inline-block|run-in|inline-table|table-row|table-row-group|table-column-group|table-column|table-cell|table-caption|flex|-ms-flexbox|-\w+-flex|inline-flex)',
+        'display' => '(none|inline|block|list-item|table|table-header-group|table-footer-group|inline-block|run-in|inline-table|table-row|table-row-group|table-column-group|table-column|table-cell|table-caption|flex|-ms-flexbox|-\w+-flex|inline-flex|-ms-inline-flexbox|-\w+-inline-flex)',
         'empty-cells' => 'show|hide',
         'float' => '(left|right|none)',
         'font' => '((caption|icon|menu|message-box|small-caption|status-bar|' . $enforce_font_style . '|' . $enforce_font_variant . '|' . $enforce_font_weight . '|' . $enforce_font_size . '|' . $enforce_normal_or_length . '|' . $enforce_font_list . ')( |$))+',
@@ -381,6 +381,7 @@ function init__webstandards()
         'align-items' => $enforce_flex_align,
         'align-self' => $enforce_flex_align,
         'justify-content' => $enforce_flex_align,
+        'gap' => '(' . $enforce_length . ' (' . $enforce_length . ')?)',
 
         /* Purposely left out these 'supported' CSS features due to very poor actual browser support or generally irrelevancy */
         /*
@@ -402,6 +403,7 @@ function init__webstandards()
         'text-size-adjust' => '(none|auto|\d%|\d\d%|100%)', // Relevant for mobile devices
         'writing-mode' => '(tb-rl|lr-tb)', // Not supported in IE11 but used as progressive enhancement
         'scroll-padding-top' => $enforce_length,
+        'mix-blend-mode' => '\w+',
 
         /* SVG embedded in website CSS */
         'fill' => $enforce_css_color,

@@ -24,8 +24,8 @@
 
 .bubble-bar-chart-legend-inner {
 	{$BETA_CSS_PROPERTY,display: inline-flex;}
-	{$BETA_CSS_PROPERTY,flex-wrap: wrap;}
-	{$BETA_CSS_PROPERTY,gap: 5px 15px;}
+	flex-wrap: wrap;
+	gap: 5px 15px;
 }
 
 .bubble-bar-chart-legend-item-inner {

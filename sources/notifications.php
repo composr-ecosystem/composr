@@ -1057,7 +1057,7 @@ function delete_all_notifications_on(string $notification_code, ?string $notific
  * @param  integer $bitmask The notification bitmask
  * @return string Human-readable notification description
  */
-function generate_notification_type_text(int $bitmask)
+function generate_notification_type_text(int $bitmask) : string
 {
     require_lang('notifications');
 

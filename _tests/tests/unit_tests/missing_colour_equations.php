@@ -45,7 +45,7 @@ class missing_colour_equations_test_set extends cms_test_case
             $matches = [];
             $count = preg_match_all('/^.+(\#[0-9A-Fa-f]{3,6})(.*)$/m', $c, $matches);
             for ($i = 0; $i < $count; $i++) {
-                if (strpos($matches[0][$i], '{$') === false) {
+                if (strpos($matches[0][$i], '{$') === false) { // If /*{$,hardcoded_ok}*/ is not on the line
                     $line = substr_count(substr($c, 0, strpos($c, $matches[0][$i])), "\n") + 1;
                     $this->assertTrue(false, 'Missing colour equation in ' . $path . ':' . strval($line) . ' for ' . $matches[1][$i]);
                 }

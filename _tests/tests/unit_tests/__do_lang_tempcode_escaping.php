@@ -121,6 +121,7 @@ class __do_lang_tempcode_escaping_test_set extends cms_test_case
                         '23264048db7e7e2efcc0a8e40f23163e',
                         'ecde8b3867fe651c628efaca3d6a1750',
                         '106332fadb9afd606e647a7eaff60316',
+                        '71f2e15e22f7d0aca06bd46910b00732',
                         'bac76b04d8c3e0f930513b21a55b3f92',
                         'aeb2c7e75eefb72ebb9aed0635b8c0a6',
                         'ff463d4ac3298fcf1b843951d10b57fb',

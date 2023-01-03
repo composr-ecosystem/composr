@@ -20,6 +20,7 @@ class params_test_set extends cms_test_case
 {
     public function testPostParamInteger()
     {
+        require_code('failure');
         set_throw_errors(true);
 
         $tests = [
@@ -140,6 +141,7 @@ class params_test_set extends cms_test_case
 
     public function testGetParamInteger()
     {
+        require_code('failure');
         set_throw_errors(true);
 
         $tests = [
@@ -260,6 +262,7 @@ class params_test_set extends cms_test_case
 
     public function testEitherParamInteger()
     {
+        require_code('failure');
         set_throw_errors(true);
 
         $tests = [
@@ -403,6 +406,7 @@ class params_test_set extends cms_test_case
 
     public function testPostParamString()
     {
+        require_code('failure');
         set_throw_errors(true);
 
         $tests = [
@@ -487,6 +491,7 @@ class params_test_set extends cms_test_case
 
     public function testGetParamString()
     {
+        require_code('failure');
         set_throw_errors(true);
 
         $tests = [
@@ -571,6 +576,7 @@ class params_test_set extends cms_test_case
 
     public function testEitherParamString()
     {
+        require_code('failure');
         set_throw_errors(true);
 
         $tests = [

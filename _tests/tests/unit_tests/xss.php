@@ -68,6 +68,8 @@ class xss_test_set extends cms_test_case
 
         $this->assertTrue(strpos($parsed, '<test') !== false); // So it does work, in general, not just stripping all HTML/XML tags
 
+        $comcode .= 'x'; // To bypass internal caching in comcode_to_tempcode
+
         set_privilege($guest_group_id, 'allow_html', false);
 
         $parsed = cms_strtolower_ascii(static_evaluate_tempcode(comcode_to_tempcode($comcode, $GLOBALS['FORUM_DRIVER']->get_guest_id())));

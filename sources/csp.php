@@ -118,6 +118,8 @@ function init__csp()
 
             // Not usually configurable but may be forced
             'csp_allow_inline_js' => '0',
+
+            'csp_on_forms' => '1',
         ]));
     }
 }
@@ -139,8 +141,8 @@ function load_csp(?array $options = null, ?int $enable_more_open_html_for = null
         $previous_state = unserialize(CSP_VERY_STRICT);
     }
 
-    if ($options === null) { // Full clean state from configuration
-        $options = [
+    if ($options === null) {
+        $configured_options = [ // Full clean state from configuration. Must be fully defined on CSP_VERY_STRICT too.
             'csp_enabled' => get_theme_option('csp_enabled'),
             'csp_exceptions' => get_option('csp_exceptions'),
             'csp_allow_plugins' => get_option('csp_allow_plugins'),
@@ -155,6 +157,7 @@ function load_csp(?array $options = null, ?int $enable_more_open_html_for = null
 
             'csp_on_forms' => get_option('csp_on_forms'),
         ];
+        $options = $configured_options;
     } else {
         $options = $options + $previous_state; // Merge new state with previous state
     }

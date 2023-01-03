@@ -5147,7 +5147,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         EDIT_IMAGE
         EDIT_IN_FULL_PAGE_EDITOR
         EDIT_MEDIA
-        EDIT_MEMBER
         EDIT_MENU_ITEM
         EDIT_MERGE_AUTHORS
         EDIT_MESSAGE
@@ -10693,7 +10692,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SKIP
         SKIP_NAVIGATION
         SKIP_SIGNATURE
-        SLIDESHOW
         SMALLEST_FIRST
         SMART_TOPIC_NOTIFICATION
         SMS

@@ -1671,26 +1671,14 @@ class Module_admin_themes
         $validate = get_param_string('validate', '');
         switch ($validate) {
             case 'cms':
-                if ($full_screen) {
-                    $global = $preview;
-                } else {
-                    $global = globalise($preview);
-                }
-
                 require_code('view_modes');
-                return make_string_tempcode(check_xhtml_webstandards($global->evaluate(), true, 2, true));
+                return make_string_tempcode(check_xhtml_webstandards($preview->evaluate(), true, 2, true));
 
             case 'w3c':
                 $refresh = do_template('JS_REFRESH', ['_GUID' => 'd7d2f9e7a2cc637f3cf9ac4d1cf97eca', 'FORM_NAME' => 'redir-form']);
 
-                if ($full_screen) {
-                    $global = $preview;
-                } else {
-                    $global = globalise($preview);
-                }
-
                 $post = new Tempcode();
-                $post->attach(form_input_hidden('fragment', $global->evaluate()));
+                $post->attach(form_input_hidden('fragment', $preview->evaluate()));
 
                 $url = 'https://validator.w3.org/check';
 

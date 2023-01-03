@@ -191,7 +191,7 @@ class Hook_commandr_fs_groups extends Resource_fs_base
             'is_default' => $row['g_is_default'],
             'is_super_admin' => $row['g_is_super_admin'],
             'is_super_moderator' => $row['g_is_super_moderator'],
-            'rank_title' => $row['g_title'],
+            'rank_title' => get_translated_text($row['g_title'], $GLOBALS['FORUM_DB']),
             'rank_image' => remap_urlpath_as_portable($row['g_rank_image']),
             'promotion_target' => remap_resource_id_as_portable('group', $row['g_promotion_target']),
             'promotion_threshold' => $row['g_promotion_threshold'],
