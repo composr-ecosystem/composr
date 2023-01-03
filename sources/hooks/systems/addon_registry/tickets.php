@@ -264,29 +264,6 @@ class Hook_addon_registry_tickets
 
         $comments = new Tempcode();
 
-        $comment_form = do_lorem_template('COMMENTS_POSTING_FORM', [
-            'TITLE' => lorem_phrase(),
-            'JOIN_BITS' => lorem_phrase_html(),
-            'USE_CAPTCHA' => false,
-            'GET_EMAIL' => true,
-            'EMAIL_OPTIONAL' => true,
-            'GET_TITLE' => true,
-            'TITLE_OPTIONAL' => true,
-            'DEFAULT_TITLE' => '',
-            'POST_WARNING' => '',
-            'RULES_TEXT' => '',
-            'ATTACHMENTS' => null,
-            'ATTACH_SIZE_FIELD' => null,
-            'TRUE_ATTACHMENT_UI' => false,
-            'EMOTICONS' => placeholder_emoticon_chooser(),
-            'DISPLAY' => 'block',
-            'FIRST_POST_URL' => '',
-            'FIRST_POST' => '',
-            'COMMENT_URL' => '',
-            'REVIEWS' => false,
-            'ANALYTIC_EVENT_CATEGORY' => null,
-        ]);
-
         $other_tickets = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
             $other_tickets->attach(do_lorem_template('SUPPORT_TICKET_LINK', [
@@ -337,7 +314,7 @@ class Hook_addon_registry_tickets
             'POSTER' => lorem_phrase(),
             'TITLE' => lorem_screen_title(),
             'COMMENTS' => $comments,
-            'COMMENT_FORM' => $comment_form,
+            'COMMENT_FORM' => placeholder_comments_form(false),
             'STAFF_DETAILS' => placeholder_url(),
             'URL' => placeholder_url(),
             'ADD_TICKET_URL' => placeholder_url(),
@@ -438,32 +415,9 @@ class Hook_addon_registry_tickets
     {
         require_javascript('posting');
 
-        $comment_details = do_lorem_template('COMMENTS_POSTING_FORM', [
-            'TITLE' => lorem_phrase(),
-            'JOIN_BITS' => lorem_phrase_html(),
-            'USE_CAPTCHA' => false,
-            'GET_EMAIL' => true,
-            'EMAIL_OPTIONAL' => true,
-            'GET_TITLE' => true,
-            'TITLE_OPTIONAL' => true,
-            'DEFAULT_TITLE' => '',
-            'POST_WARNING' => '',
-            'RULES_TEXT' => '',
-            'ATTACHMENTS' => null,
-            'ATTACH_SIZE_FIELD' => null,
-            'TRUE_ATTACHMENT_UI' => false,
-            'EMOTICONS' => placeholder_emoticon_chooser(),
-            'DISPLAY' => 'block',
-            'FIRST_POST_URL' => '',
-            'FIRST_POST' => '',
-            'COMMENT_URL' => placeholder_url(),
-            'REVIEWS' => false,
-            'ANALYTIC_EVENT_CATEGORY' => null,
-        ]);
-
         return lorem_globalise(do_lorem_template('BLOCK_MAIN_CONTACT_US', [
             'BLOCK_ID' => lorem_word(),
-            'COMMENT_DETAILS' => $comment_details,
+            'COMMENT_DETAILS' => placeholder_comments_form(false),
             'TYPE' => placeholder_codename(),
         ]), null, '', true);
     }

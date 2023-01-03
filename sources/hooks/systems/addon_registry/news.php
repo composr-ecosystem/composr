@@ -666,30 +666,6 @@ class Hook_addon_registry_news
 
         require_lang('news');
 
-        $comment_details = do_lorem_template('COMMENTS_POSTING_FORM', [
-            'TITLE' => lorem_phrase(),
-            'JOIN_BITS' => lorem_phrase_html(),
-            'USE_CAPTCHA' => false,
-            'GET_EMAIL' => true,
-            'EMAIL_OPTIONAL' => true,
-            'GET_TITLE' => true,
-            'TITLE_OPTIONAL' => true,
-            'DEFAULT_TITLE' => '',
-            'POST_WARNING' => '',
-            'RULES_TEXT' => '',
-            'ATTACHMENTS' => null,
-            'ATTACH_SIZE_FIELD' => null,
-            'TRUE_ATTACHMENT_UI' => false,
-            'EMOTICONS' => placeholder_emoticon_chooser(),
-            'EXPAND_TYPE' => 'expand',
-            'DISPLAY' => 'block',
-            'FIRST_POST_URL' => '',
-            'FIRST_POST' => '',
-            'COMMENT_URL' => placeholder_url(),
-            'REVIEWS' => false,
-            'ANALYTIC_EVENT_CATEGORY' => null,
-        ]);
-
         return lorem_globalise(do_lorem_template('NEWS_ENTRY_SCREEN', [
             'ID' => placeholder_numeric_id(),
             'CATEGORY_ID' => placeholder_numeric_id(),
@@ -705,7 +681,7 @@ class Hook_addon_registry_news
             'TITLE' => lorem_screen_title(),
             '_VIEWS' => placeholder_number(),
             'VIEWS' => placeholder_number(),
-            'COMMENT_DETAILS' => $comment_details,
+            'COMMENT_DETAILS' => placeholder_comments_form(false),
             'RATING_DETAILS' => lorem_sentence(),
             'TRACKBACK_DETAILS' => lorem_sentence(),
             'DATE' => placeholder_date(),

@@ -775,30 +775,6 @@ class Hook_addon_registry_calendar
             ];
         }
 
-        $comment_details = do_lorem_template('COMMENTS_POSTING_FORM', [
-            'TITLE' => lorem_phrase(),
-            'JOIN_BITS' => lorem_phrase_html(),
-            'USE_CAPTCHA' => false,
-            'GET_EMAIL' => true,
-            'EMAIL_OPTIONAL' => true,
-            'GET_TITLE' => true,
-            'TITLE_OPTIONAL' => true,
-            'DEFAULT_TITLE' => '',
-            'POST_WARNING' => '',
-            'RULES_TEXT' => '',
-            'ATTACHMENTS' => null,
-            'ATTACH_SIZE_FIELD' => null,
-            'TRUE_ATTACHMENT_UI' => false,
-            'EMOTICONS' => placeholder_emoticon_chooser(),
-            'EXPAND_TYPE' => 'expand',
-            'DISPLAY' => 'block',
-            'FIRST_POST_URL' => '',
-            'FIRST_POST' => '',
-            'COMMENT_URL' => placeholder_url(),
-            'REVIEWS' => false,
-            'ANALYTIC_EVENT_CATEGORY' => null,
-        ]);
-
         return lorem_globalise(do_lorem_template('CALENDAR_EVENT_SCREEN', [
             'TITLE' => get_screen_title('CALENDAR_EVENT_VCAL', true, [lorem_phrase()]),
 
@@ -826,7 +802,7 @@ class Hook_addon_registry_calendar
             'RATING_DETAILS' => lorem_sentence_html(),
             'TRACKBACK_DETAILS' => lorem_sentence_html(),
             'VALIDATED' => true,
-            'COMMENT_DETAILS' => $comment_details,
+            'COMMENT_DETAILS' => placeholder_comments_form(false),
 
             'DAY' => get_timezoned_date(123456789),
             'TIME' => get_timezoned_date(123456789),

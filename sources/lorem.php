@@ -684,12 +684,49 @@ function placeholder_img_code(string $type = '') : string
 /**
  * Get a placeholder diff HTML.
  *
- * @param  string $type The theme image directory to find a code under
  * @return string The diff HTML
  */
 function placeholder_diff_html() : string
 {
     return 'Lorem ipsum <del>Lorem ipsum dolor</del><ins>dolor</ins>';
+}
+
+/**
+ * Get a placeholder comments posting form.
+ * Be sure to require_javascript editing or posting where necessary.
+ *
+ * @param  boolean $reviews Whether to show reviews
+ * @param  boolean $first_post Include placeholder first post info
+ * @param  SHORT_TEXT $display The CSS display mode
+ * @param  ID_TEXT $expand_type The expansion type
+ * @set expand
+ * @return Tempcode The placeholder comment form
+ */
+function placeholder_comments_form(bool $reviews = true, bool $first_post = false, string $display = 'block', string $expand_type = 'expand') : object
+{
+    return do_lorem_template('COMMENTS_POSTING_FORM', [
+        'TITLE' => lorem_phrase(),
+        'JOIN_BITS' => lorem_phrase_html(),
+        'USE_CAPTCHA' => false,
+        'GET_EMAIL' => true,
+        'EMAIL_OPTIONAL' => true,
+        'GET_TITLE' => true,
+        'TITLE_OPTIONAL' => true,
+        'DEFAULT_TITLE' => '',
+        'POST_WARNING' => '',
+        'RULES_TEXT' => lorem_paragraph(),
+        'ATTACHMENTS' => null,
+        'ATTACH_SIZE_FIELD' => null,
+        'TRUE_ATTACHMENT_UI' => false,
+        'EMOTICONS' => placeholder_emoticon_chooser(),
+        'EXPAND_TYPE' => $expand_type,
+        'DISPLAY' => $display,
+        'FIRST_POST_URL' => $first_post ? placeholder_url() : '',
+        'FIRST_POST' => $first_post ? lorem_paragraph_html() : '',
+        'COMMENT_URL' => placeholder_url(),
+        'REVIEWS' => $reviews,
+        'ANALYTIC_EVENT_CATEGORY' => null,
+    ]);
 }
 
 /**

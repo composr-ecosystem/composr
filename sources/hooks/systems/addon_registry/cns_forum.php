@@ -1759,30 +1759,6 @@ class Hook_addon_registry_cns_forum
 
             $pagination = placeholder_pagination();
 
-            $quick_reply = do_lorem_template('COMMENTS_POSTING_FORM', [
-                'TITLE' => lorem_phrase(),
-                'JOIN_BITS' => lorem_phrase_html(),
-                'USE_CAPTCHA' => false,
-                'GET_EMAIL' => true,
-                'EMAIL_OPTIONAL' => true,
-                'GET_TITLE' => true,
-                'TITLE_OPTIONAL' => true,
-                'DEFAULT_TITLE' => '',
-                'POST_WARNING' => '',
-                'RULES_TEXT' => '',
-                'ATTACHMENTS' => null,
-                'ATTACH_SIZE_FIELD' => null,
-                'TRUE_ATTACHMENT_UI' => false,
-                'EMOTICONS' => placeholder_emoticon_chooser(),
-                'EXPAND_TYPE' => 'expand',
-                'DISPLAY' => 'block',
-                'FIRST_POST_URL' => placeholder_url(),
-                'FIRST_POST' => lorem_paragraph_html(),
-                'COMMENT_URL' => placeholder_url(),
-                'REVIEWS' => false,
-                'ANALYTIC_EVENT_CATEGORY' => null,
-            ]);
-
             $poll = new Tempcode();
 
             if (!$voted) {
@@ -2052,7 +2028,7 @@ class Hook_addon_registry_cns_forum
             'PAGINATION' => $pagination,
             'MODERATOR_ACTIONS' => placeholder_options(),
             'MARKED_POST_ACTIONS' => placeholder_options(),
-            'QUICK_REPLY' => $quick_reply,
+            'QUICK_REPLY' => placeholder_comments_form(false, true),
             'BREADCRUMBS' => placeholder_breadcrumbs(),
             'POLL' => $poll,
             'BUTTON_SCREENS' => $buttons,
