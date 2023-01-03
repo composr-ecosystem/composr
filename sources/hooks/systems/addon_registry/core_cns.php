@@ -819,7 +819,7 @@ class Hook_addon_registry_core_cns
      */
     public function tpl_preview__block_main_members() : object
     {
-        return $this->do_block_main_members_preview('BLOCK_MAIN_MEMBERS');
+        return $this->do_block_main_members_preview('BLOCK_MAIN_MEMBERS', 'listing');
     }
 
     /**
@@ -831,7 +831,7 @@ class Hook_addon_registry_core_cns
      */
     public function tpl_preview__block_main_members_complex() : object
     {
-        return $this->do_block_main_members_preview('BLOCK_MAIN_MEMBERS_COMPLEX');
+        return $this->do_block_main_members_preview('BLOCK_MAIN_MEMBERS_COMPLEX', 'boxes');
     }
 
     /**
@@ -840,9 +840,11 @@ class Hook_addon_registry_core_cns
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
      * @param  string $tpl Template
+     * @param  ID_TEXT $display_mode The display mode for the block
+     * @set listing boxes photos media avatars
      * @return Tempcode Preview
      */
-    protected function do_block_main_members_preview(string $tpl) : object
+    protected function do_block_main_members_preview(string $tpl, string $display_mode) : object
     {
         $custom_fields = do_lorem_template('CNS_MEMBER_BOX_CUSTOM_FIELD', [
             'NAME' => lorem_phrase(),
@@ -916,7 +918,7 @@ class Hook_addon_registry_core_cns
             'SORT_ORDER' => 'DESC',
             'ITEM_WIDTH' => ($per_row === null) ? '' : (float_to_raw_string(99.0/*avoid possibility of rounding issues as pixels will not divide perfectly*/ / floatval($per_row)) . '%'),
             'PER_ROW' => strval($per_row),
-            'DISPLAY_MODE' => 'avatars',
+            'DISPLAY_MODE' => $display_mode,
             'MEMBER_BOXES' => $member_boxes,
             'PAGINATION' => placeholder_pagination(),
             'RESULTS_TABLE' => placeholder_table(),
