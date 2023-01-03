@@ -118,8 +118,9 @@ class _api_ecommerce_tax_test_set extends cms_test_case
         }
 
         $this->load_key_options('taxcloud');
+        $this->load_key_options('business');
 
-        $this->run_health_check('API connections', 'TaxCloud');
+        $this->run_health_check('API connections', 'Tax Services');
     }
 
     public function testFlatTax()
@@ -129,11 +130,15 @@ class _api_ecommerce_tax_test_set extends cms_test_case
         }
 
         set_option('tax_country_regexp', '');
+        $_POST['shipping_state'] = 'WI';
+        $_POST['shipping_postalcode'] = '53534';
         $_POST['shipping_country'] = 'US';
         list($tax_derivation, $tax, $tax_tracking, $shipping_tax) = calculate_tax_due(null, float_to_raw_string(18.0), 100.00);
         $this->assertTrue($tax == 18.0);
 
         set_option('tax_country_regexp', '^(AT|BE|BG|HR|CY|CZ|DK|EE|FI|FR|DE|GR|HU|IE|IT|LV|LT|LU|MT|NL|PL|PT|RO|SK|SI|ES|SE|UK|AX)$'); // Europe only
+        $_POST['shipping_state'] = 'WI';
+        $_POST['shipping_postalcode'] = '53534';
         $_POST['shipping_country'] = 'US';
         list($tax_derivation, $tax, $tax_tracking, $shipping_tax) = calculate_tax_due(null, float_to_raw_string(18.0), 100.00);
         $this->assertTrue($tax == 0.0);

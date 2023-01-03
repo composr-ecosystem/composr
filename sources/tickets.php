@@ -196,6 +196,8 @@ function is_ticket_forum(?int $forum_id) : bool
  */
 function get_tickets(array $filters = [], bool $include_first_posts = false, bool $silent_error_handling = false) : array
 {
+    require_code('feedback');
+
     $ticket_type_id = array_key_exists('ticket_type_id', $filters) ? $filters['ticket_type_id'] : null;
     if (($ticket_type_id !== null) && (!has_category_access(get_member(), 'tickets', strval($ticket_type_id)))) {
         return [];
@@ -273,6 +275,7 @@ function get_tickets(array $filters = [], bool $include_first_posts = false, boo
             if ($_ticket_type_id === null) {
                 $_ticket_type_name = '';
             } else {
+                require_code('tickets2');
                 $_ticket_type_details = get_ticket_type($_ticket_type_id);
                 $_ticket_type_name = $_ticket_type_details['ticket_type_name_trans'];
             }

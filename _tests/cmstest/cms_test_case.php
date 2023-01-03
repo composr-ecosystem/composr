@@ -262,7 +262,7 @@ class cms_test_case extends WebTestCase
         }
 
         if (($sections_to_run !== null) && ($sections_run < count($sections_to_run))) {
-            fatal_exit('Missing Health Check; possibly something needs configuring still for it to run');
+            fatal_exit('Missing Health Check ' . $category_label . '/' . $section_label . '; possibly something needs configuring still for it to run');
         }
     }
 

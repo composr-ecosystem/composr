@@ -1260,11 +1260,6 @@ class Hook_addon_registry_core
             'data/polyfills/class_list.js',
             'data/polyfills/promise.js',
             'data/polyfills/dom_init.js',
-            'themes/default/templates/JAVASCRIPT_NEED.tpl',
-            'themes/default/templates/JAVASCRIPT_NEED_FULL.tpl',
-            'themes/default/templates/CSS_NEED.tpl',
-            'themes/default/templates/CSS_NEED_FULL.tpl',
-            'themes/default/templates/CSS_NEED_INLINE.tpl',
             'themes/default/javascript/tree_list.js',
             'themes/default/javascript/xsl_mopup.js',
             'themes/default/templates/RED_ALERT.tpl',
@@ -1961,9 +1956,6 @@ class Hook_addon_registry_core
             'templates/REDIRECT_POST_METHOD_SCREEN.tpl' => 'redirect_post_method_screen',
             'templates/FORUMS_EMBED.tpl' => 'forums_embed',
             'templates/JS_BLOCK.tpl' => 'js_block',
-            'templates/JAVASCRIPT_NEED_FULL.tpl' => 'javascript_need_full',
-            'templates/CSS_NEED_FULL.tpl' => 'css_need_full',
-            'templates/CSS_NEED_INLINE.tpl' => 'css_need_inline',
             'templates/PARAM_INFO.tpl' => 'param_info',
             'templates/BLOCK_SIDE_PERSONAL_STATS.tpl' => 'block_side_personal_stats',
             'templates/BLOCK_SIDE_PERSONAL_STATS_LINE.tpl' => 'block_side_personal_stats',
@@ -2350,48 +2342,6 @@ class Hook_addon_registry_core
         return lorem_globalise(do_lorem_template('JS_BLOCK', [
             'BLOCK_PARAMS' => '',
             'SELF_URL' => get_self_url(),
-        ]), null, '', true);
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return Tempcode Preview
-     */
-    public function tpl_preview__javascript_need_full() : object
-    {
-        return lorem_globalise(do_lorem_template('JAVASCRIPT_NEED_FULL', [
-            'URL' => placeholder_url(),
-        ]), null, '', true);
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return Tempcode Preview
-     */
-    public function tpl_preview__css_need_full() : object
-    {
-        return lorem_globalise(do_lorem_template('CSS_NEED_FULL', [
-            'URL' => placeholder_url(),
-        ]), null, '', true);
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return Tempcode Preview
-     */
-    public function tpl_preview__css_need_inline() : object
-    {
-        return lorem_globalise(do_lorem_template('CSS_NEED_INLINE', [
-            'CODE' => '',
         ]), null, '', true);
     }
 

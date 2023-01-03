@@ -24,7 +24,13 @@ class template_parameter_consistency_test_set extends cms_test_case
         cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
         $template_instances = [];
-        $included_templates = [];
+
+        $included_templates = [
+            // Used in the <head> by default
+            'CSS_NEED' => true,
+            'JAVASCRIPT_NEED' => true,
+            'RSS_HEADER' => true,
+        ];
 
         $filter = get_param_string('filter', null);
 

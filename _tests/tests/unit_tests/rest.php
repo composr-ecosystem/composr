@@ -58,9 +58,10 @@ class rest_test_set extends cms_test_case
         $this->assertTrue(is_array($_result));
         if (is_array($_result)) {
             if ($this->debug) {
+                // NB: Could fail if the 'General' news category is renamed/deleted
                 @var_dump($_result);
                 if (!$_result['success']) {
-                    exit();
+                    @exit('Failed on creating ' . $url);
                 }
             }
 
