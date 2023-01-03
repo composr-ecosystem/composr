@@ -49,7 +49,7 @@ class Hook_cron_calendar_reminders
         }
 
         return [
-            'label' => 'Send calendar reminders',
+            'label' => 'Run calendar jobs and reminders',
             'num_queued' => $num_queued,
             'minutes_between_runs' => 1,
         ];
