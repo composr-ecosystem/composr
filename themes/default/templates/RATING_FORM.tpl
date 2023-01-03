@@ -16,12 +16,12 @@
 					{$,Like/dislike}
 					{+START,IF,{LIKES}}
 						{+START,INCLUDE,ICON}
-							NAME=feedback/dislike
+							NAME=feedback/dislike2
 							ICON_ID=rating-bar-1--{$GET,identifier}
 							ICON_SIZE=18
 						{+END}
 						{+START,INCLUDE,ICON}
-							NAME=feedback/like
+							NAME=feedback/like2
 							ICON_ID=rating-bar-10--{$GET,identifier}
 							ICON_SIZE=18
 						{+END}
