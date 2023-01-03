@@ -527,7 +527,7 @@ class Hook_addon_registry_core_cns
             'templates/BLOCK_MAIN_MEMBERS_COMPLEX.tpl' => 'block_main_members_complex',
             'templates/CNS_MEMBER_DIRECTORY_SCREEN_FILTERS.tpl' => 'block_main_members',
             'templates/CNS_MEMBER_DIRECTORY_SCREEN_FILTER.tpl' => 'block_main_members',
-            'templates/CNS_MEMBER_DIRECTORY_USERNAME.tpl' => 'cns_member_directory_username',
+            'templates/CNS_MEMBER_DIRECTORY_USERNAME.tpl' => 'block_main_members',
             'templates/CNS_POST_MAP.tpl' => 'cns_post_map',
             'templates/CNS_POST_MAP_ITEM.tpl' => 'cns_post_map',
             'templates/BLOCK_MAIN_JOIN_DONE.tpl' => 'block_main_join_done',
@@ -769,26 +769,6 @@ class Hook_addon_registry_core_cns
 
         return lorem_globalise(do_lorem_template('CNS_EMOTICON_TABLE', [
             'ROWS' => $rows,
-        ]), null, '', true);
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return Tempcode Preview
-     */
-    public function tpl_preview__cns_member_directory_username() : object
-    {
-        return lorem_globalise(do_lorem_template('CNS_MEMBER_DIRECTORY_USERNAME', [
-            'ID' => placeholder_numeric_id(),
-            'USERNAME' => lorem_phrase(),
-            'URL' => placeholder_url(),
-            'AVATAR_URL' => placeholder_image_url(),
-            'PHOTO_URL' => placeholder_image_url(),
-            'VALIDATED' => true,
-            'CONFIRMED' => true,
         ]), null, '', true);
     }
 
