@@ -207,7 +207,7 @@ class Hook_addon_registry_core_feedback_features
             'templates/RATING_BOX.tpl' => 'rating',
             'templates/RATING_DISPLAY_SHARED.tpl' => 'rating_display_shared',
             'templates/RATINGS_SHOW.tpl' => 'ratings_show',
-            'templates/COMMENTS_WRAPPER.tpl' => 'comments_wrapper',
+            'templates/COMMENTS_WRAPPER.tpl' => 'comments',
             'xml/TRACKBACK_XML.xml' => 'trackback_xml_wrapper',
             'templates/TRACKBACK_WRAPPER.tpl' => 'trackback_wrapper',
             'xml/TRACKBACK_XML_LISTING.xml' => 'trackback_xml_listing',
@@ -216,8 +216,8 @@ class Hook_addon_registry_core_feedback_features
             'templates/RATING_INLINE_DYNAMIC.tpl' => 'rating_inline_dynamic',
             'templates/EMOTICON_CLICK_CODE.tpl' => 'comments',
             'templates/COMMENT_AJAX_HANDLER.tpl' => 'comments',
-            'templates/POST.tpl' => 'comments_wrapper',
-            'templates/POST_CHILD_LOAD_LINK.tpl' => 'comments_wrapper',
+            'templates/POST.tpl' => 'comments',
+            'templates/POST_CHILD_LOAD_LINK.tpl' => 'comments',
             'templates/BLOCK_MAIN_CONTACT_SIMPLE.tpl' => 'block_main_contact_simple',
         ];
     }
@@ -280,114 +280,9 @@ class Hook_addon_registry_core_feedback_features
      */
     public function tpl_preview__comments() : object
     {
-        require_lang('comcode');
-
-        require_javascript('plupload');
-        require_javascript('posting');
-        require_javascript('editing');
-
-        require_css('forms');
-
-        $ret = placeholder_comments_form();
-
-        $ret->attach(do_lorem_template('COMMENT_AJAX_HANDLER', [
-            'OPTIONS' => '',
-            'IS_THREADED' => false,
-            'HASH' => '',
-            'CONTENT_TYPE' => '',
-            'SELF_URL_ENCODED' => placeholder_url(),
-        ]));
+        $ret = placeholder_comments(placeholder_comments_form());
 
         return lorem_globalise($ret, null, '', true);
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return Tempcode Preview
-     */
-    public function tpl_preview__comments_wrapper() : object
-    {
-        require_javascript('editing');
-
-        $review_titles = [];
-        $review_titles[] = [
-            'REVIEW_TITLE' => lorem_phrase(),
-            '_NUM_REVIEW_RATINGS' => placeholder_number(),
-            'NUM_REVIEW_RATINGS' => placeholder_number(),
-            '_REVIEW_RATING' => float_to_raw_string(10.0),
-            'REVIEW_RATING' => float_format(10.0),
-        ];
-        $comments = new Tempcode();
-        foreach (placeholder_array() as $i => $comment) {
-            $map = [
-                'INDIVIDUAL_REVIEW_RATINGS' => [],
-                'REVIEW_RATING' => strval(10),
-                'HIGHLIGHT' => ($i == 1),
-                'TITLE' => lorem_phrase(),
-                'TIME_RAW' => placeholder_date_raw(),
-                'TIME' => placeholder_date(),
-                'POSTER_ID' => placeholder_numeric_id(),
-                'POSTER_URL' => placeholder_url(),
-                'POSTER_NAME' => lorem_word(),
-                'POSTER' => null,
-                'POSTER_DETAILS' => new Tempcode(),
-                'ID' => placeholder_numeric_id() . strval($i),
-                'POST' => lorem_phrase(),
-                'IS_UNREAD' => false,
-                'POST_COMCODE' => lorem_phrase(),
-                'CHILDREN' => lorem_phrase(),
-                'OTHER_IDS' => [
-                    placeholder_numeric_id(),
-                ],
-                'RATING' => new Tempcode(),
-                'EMPHASIS' => new Tempcode(),
-                'BUTTONS' => new Tempcode(),
-                'LAST_EDITED_RAW' => '',
-                'LAST_EDITED' => new Tempcode(),
-                'UNVALIDATED' => new Tempcode(),
-                'TOPIC_ID' => placeholder_numeric_id(),
-                'IS_SPACER_POST' => false,
-                'IS_THREADED' => false,
-                'NUM_TO_SHOW_LIMIT' => placeholder_number(),
-            ];
-            $comments->attach(do_lorem_template('POST', $map));
-            do_lorem_template('POST_CHILD_LOAD_LINK', $map); // INCLUDE'd in above, but test set needs to see it run direct
-        }
-
-        if (addon_installed('captcha')) {
-            require_code('captcha');
-            $use_captcha = use_captcha();
-        } else {
-            $use_captcha = false;
-        }
-
-        $out = do_lorem_template('COMMENTS_WRAPPER', [
-            'TYPE' => lorem_phrase(),
-            'ID' => placeholder_codename(),
-            'REVIEW_RATING_CRITERIA' => $review_titles,
-            'AUTHORISED_FORUM_URL' => placeholder_url(),
-            'FORM' => placeholder_comments_form(false),
-            'COMMENTS' => $comments,
-            'SORT' => 'relevance',
-            'TOTAL_POSTS' => placeholder_number(),
-            'IS_THREADED' => false,
-            'FORUM_LINK' => null,
-            'HASH' => '',
-            'SERIALIZED_OPTIONS' => '',
-        ]);
-
-        $out->attach(do_lorem_template('COMMENT_AJAX_HANDLER', [
-            'OPTIONS' => '',
-            'IS_THREADED' => false,
-            'HASH' => '',
-            'CONTENT_TYPE' => lorem_word(),
-            'SELF_URL_ENCODED' => placeholder_url(),
-        ]));
-
-        return lorem_globalise($out, null, '', true);
     }
 
     /**

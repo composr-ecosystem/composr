@@ -755,8 +755,6 @@ class Hook_addon_registry_calendar
      */
     public function tpl_preview__calendar_event_screen() : object
     {
-        require_javascript('editing');
-
         $subscriptions = [];
 
         foreach (placeholder_array() as $v) {
@@ -800,9 +798,9 @@ class Hook_addon_registry_calendar
             'CONTENT' => lorem_phrase(),
             'SUBSCRIBED' => $subscribed,
             'RATING_DETAILS' => placeholder_rating('event'),
-            'TRACKBACK_DETAILS' => lorem_sentence_html(),
+            'TRACKBACK_DETAILS' => placeholder_trackbacks_wrapper(),
             'VALIDATED' => true,
-            'COMMENT_DETAILS' => placeholder_comments_form(false),
+            'COMMENT_DETAILS' => placeholder_comments(placeholder_comments_form(false)),
 
             'DAY' => get_timezoned_date(123456789),
             'TIME' => get_timezoned_date(123456789),

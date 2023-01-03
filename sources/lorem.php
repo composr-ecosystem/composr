@@ -704,6 +704,8 @@ function placeholder_diff_html() : string
  */
 function placeholder_comments_form(bool $reviews = true, bool $first_post = false, string $display = 'block', string $expand_type = 'expand') : object
 {
+    $rules = do_lorem_template('COMMENTS_DEFAULT_TEXT', []);
+
     return do_lorem_template('COMMENTS_POSTING_FORM', [
         'TITLE' => lorem_phrase(),
         'JOIN_BITS' => lorem_phrase_html(),
@@ -714,7 +716,7 @@ function placeholder_comments_form(bool $reviews = true, bool $first_post = fals
         'TITLE_OPTIONAL' => true,
         'DEFAULT_TITLE' => '',
         'POST_WARNING' => '',
-        'RULES_TEXT' => lorem_paragraph(),
+        'RULES_TEXT' => $rules,
         'ATTACHMENTS' => null,
         'ATTACH_SIZE_FIELD' => null,
         'TRUE_ATTACHMENT_UI' => false,
@@ -727,6 +729,93 @@ function placeholder_comments_form(bool $reviews = true, bool $first_post = fals
         'REVIEWS' => $reviews,
         'ANALYTIC_EVENT_CATEGORY' => null,
     ]);
+}
+
+/**
+ * Get placeholder comments.
+ *
+ * @param  ?Tempcode $placeholder_comments_form A placeholder_comments_form to include (null: do not include a form)
+ * @return Tempcode The placeholder comments
+ */
+function placeholder_comments(?object $placeholder_comments_form = null) : object
+{
+    require_lang('comcode');
+
+    require_javascript('plupload');
+    require_javascript('posting');
+    require_javascript('editing');
+
+    require_css('forms');
+
+    $review_titles = [];
+    $review_titles[] = [
+        'REVIEW_TITLE' => lorem_phrase(),
+        '_NUM_REVIEW_RATINGS' => placeholder_number(),
+        'NUM_REVIEW_RATINGS' => placeholder_number(),
+        '_REVIEW_RATING' => float_to_raw_string(10.0),
+        'REVIEW_RATING' => float_format(10.0),
+    ];
+    $comments = new Tempcode();
+    foreach (placeholder_array() as $i => $comment) {
+        $map = [
+            'INDIVIDUAL_REVIEW_RATINGS' => [],
+            'REVIEW_RATING' => strval(10),
+            'HIGHLIGHT' => ($i == 1),
+            'TITLE' => lorem_phrase(),
+            'TIME_RAW' => placeholder_date_raw(),
+            'TIME' => placeholder_date(),
+            'POSTER_ID' => placeholder_first_admin_id(),
+            'POSTER_URL' => placeholder_url(),
+            'POSTER_NAME' => lorem_word(),
+            'POSTER' => null,
+            'POSTER_DETAILS' => new Tempcode(),
+            'ID' => placeholder_numeric_id() . strval($i),
+            'POST' => lorem_phrase(),
+            'IS_UNREAD' => false,
+            'POST_COMCODE' => lorem_phrase(),
+            'CHILDREN' => lorem_phrase(),
+            'OTHER_IDS' => [
+                placeholder_numeric_id(),
+            ],
+            'RATING' => new Tempcode(),
+            'EMPHASIS' => new Tempcode(),
+            'BUTTONS' => new Tempcode(),
+            'LAST_EDITED_RAW' => '',
+            'LAST_EDITED' => new Tempcode(),
+            'UNVALIDATED' => new Tempcode(),
+            'TOPIC_ID' => placeholder_numeric_id(),
+            'IS_SPACER_POST' => false,
+            'IS_THREADED' => false,
+            'NUM_TO_SHOW_LIMIT' => placeholder_number(),
+        ];
+        $comments->attach(do_lorem_template('POST', $map));
+        do_lorem_template('POST_CHILD_LOAD_LINK', $map); // INCLUDE'd in above, but test set needs to see it run direct
+    }
+
+    $out = do_lorem_template('COMMENTS_WRAPPER', [
+        'TYPE' => lorem_phrase(),
+        'ID' => placeholder_codename(),
+        'REVIEW_RATING_CRITERIA' => $review_titles,
+        'AUTHORISED_FORUM_URL' => placeholder_url(),
+        'FORM' => (($placeholder_comments_form !== null) ? $placeholder_comments_form : ''),
+        'COMMENTS' => $comments,
+        'SORT' => 'relevance',
+        'TOTAL_POSTS' => placeholder_number(),
+        'IS_THREADED' => false,
+        'FORUM_LINK' => null,
+        'HASH' => '',
+        'SERIALIZED_OPTIONS' => '',
+    ]);
+
+    $out->attach(do_lorem_template('COMMENT_AJAX_HANDLER', [
+        'OPTIONS' => '',
+        'IS_THREADED' => false,
+        'HASH' => '',
+        'CONTENT_TYPE' => lorem_word(),
+        'SELF_URL_ENCODED' => placeholder_url(),
+    ]));
+
+    return $out;
 }
 
 /**
@@ -754,7 +843,27 @@ function placeholder_trackbacks(int $num_trackbacks = 3) : object
 }
 
 /**
- * Get placeholder inline ratings.
+ * Get placeholder trackbacks in a wrapper.
+ *
+ * @param  integer $num_trackbacks The number of trackbacks to generate
+ * @return Tempcode The trackback wrapper
+ */
+function placeholder_trackbacks_wrapper(int $num_trackbacks = 3) : object
+{
+    require_lang('trackbacks');
+
+    $trackbacks = do_lorem_template('TRACKBACK_WRAPPER', [
+        'TRACKBACKS' => placeholder_trackbacks($num_trackbacks),
+        'TRACKBACK_FEEDBACK_TYPE' => lorem_word(),
+        'TRACKBACK_ID' => placeholder_codename(),
+        'TRACKBACK_TITLE' => lorem_phrase(),
+    ]);
+
+    return $trackbacks;
+}
+
+/**
+ * Get placeholder ratings.
  *
  * @param  ID_TEXT $content_type The content type
  * @param  ID_TEXT $template The template to use

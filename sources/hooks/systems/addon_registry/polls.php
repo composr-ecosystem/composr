@@ -358,31 +358,6 @@ class Hook_addon_registry_polls
      */
     public function tpl_preview__poll_screen() : object
     {
-        require_lang('trackbacks');
-
-        $trackback_details = do_lorem_template('TRACKBACK_WRAPPER', [
-            'TRACKBACKS' => placeholder_trackbacks(),
-            'TRACKBACK_FEEDBACK_TYPE' => placeholder_codename(),
-            'TRACKBACK_ID' => placeholder_numeric_id(),
-            'TRACKBACK_TITLE' => lorem_phrase(),
-        ]);
-
-        $comments = '';
-        $comment_details = do_lorem_template('COMMENTS_WRAPPER', [
-            'TYPE' => lorem_word(),
-            'ID' => placeholder_numeric_id(),
-            'REVIEW_RATING_CRITERIA' => [],
-            'AUTHORISED_FORUM_URL' => placeholder_url(),
-            'FORM' => placeholder_form(),
-            'COMMENTS' => $comments,
-            'SORT' => 'relevance',
-            'FORUM_LINK' => null,
-            'HASH' => '',
-            'SERIALIZED_OPTIONS' => '',
-            'TOTAL_POSTS' => placeholder_number(),
-            'IS_THREADED' => false,
-        ]);
-
         $poll_details = $this->_tpl_preview_poll('poll');
 
         return lorem_globalise(do_lorem_template('POLL_SCREEN', [
@@ -395,9 +370,9 @@ class Hook_addon_registry_polls
             'EDIT_DATE' => placeholder_date(),
             '_VIEWS' => placeholder_number(),
             'VIEWS' => placeholder_number(),
-            'TRACKBACK_DETAILS' => $trackback_details,
+            'TRACKBACK_DETAILS' => placeholder_trackbacks_wrapper(),
             'RATING_DETAILS' => placeholder_rating('polls'),
-            'COMMENT_DETAILS' => $comment_details,
+            'COMMENT_DETAILS' => placeholder_comments(placeholder_comments_form(false)),
             'EDIT_URL' => placeholder_url(),
             'POLL_DETAILS' => $poll_details,
             'SUBMITTER' => placeholder_numeric_id(),

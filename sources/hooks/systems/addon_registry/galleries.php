@@ -753,13 +753,6 @@ class Hook_addon_registry_galleries
             ]));
         }
 
-        $trackbacks = do_lorem_template('TRACKBACK_WRAPPER', [
-            'TRACKBACKS' => placeholder_trackbacks(),
-            'TRACKBACK_FEEDBACK_TYPE' => lorem_word(),
-            'TRACKBACK_ID' => placeholder_codename(),
-            'TRACKBACK_TITLE' => lorem_phrase(),
-        ]);
-
         return lorem_globalise(do_lorem_template('GALLERY_CAROUSEL_MODE_SCREEN', [
             '_TITLE' => lorem_phrase(),
             'VIEW_URL' => placeholder_url(),
@@ -771,14 +764,14 @@ class Hook_addon_registry_galleries
             'ENTRY_VIEWS' => placeholder_number(),
             'ENTRY_ADD_DATE_RAW' => placeholder_date_raw(),
             'ENTRY_EDIT_DATE_RAW' => placeholder_date_raw(),
-            'ENTRY_TRACKBACK_DETAILS' => $trackbacks,
-            'ENTRY_RATING_DETAILS' => lorem_sentence_html(),
-            'ENTRY_COMMENT_DETAILS' => lorem_sentence_html(),
+            'ENTRY_TRACKBACK_DETAILS' => placeholder_trackbacks_wrapper(),
+            'ENTRY_RATING_DETAILS' => placeholder_rating('video'),
+            'ENTRY_COMMENT_DETAILS' => placeholder_comments(placeholder_comments_form()),
             'ENTRY_EDIT_URL' => placeholder_url(),
             'WARNING_DETAILS' => '',
             'TAGS' => placeholder_tags(),
-            'RATING_DETAILS' => placeholder_rating('gallery'),
-            'COMMENT_DETAILS' => placeholder_comments_form(),
+            'RATING_DETAILS' => placeholder_rating('video'),
+            'COMMENT_DETAILS' => placeholder_comments(placeholder_comments_form()),
             'REP_IMAGE_URL' => placeholder_image_url(),
             'TITLE' => lorem_screen_title(),
             'MEMBER_DETAILS' => lorem_phrase(),
@@ -852,13 +845,6 @@ class Hook_addon_registry_galleries
             ]));
         }
 
-        $trackbacks = do_lorem_template('TRACKBACK_WRAPPER', [
-            'TRACKBACKS' => placeholder_trackbacks(),
-            'TRACKBACK_FEEDBACK_TYPE' => lorem_word(),
-            'TRACKBACK_ID' => placeholder_codename(),
-            'TRACKBACK_TITLE' => lorem_phrase(),
-        ]);
-
         return lorem_globalise(do_lorem_template('GALLERY_CAROUSEL_MODE_SCREEN', [
             '_TITLE' => lorem_phrase(),
             'VIEW_URL' => placeholder_url(),
@@ -867,14 +853,14 @@ class Hook_addon_registry_galleries
             'ENTRY_VIEWS' => placeholder_number(),
             'ENTRY_ADD_DATE_RAW' => placeholder_date_raw(),
             'ENTRY_EDIT_DATE_RAW' => placeholder_date_raw(),
-            'ENTRY_TRACKBACK_DETAILS' => $trackbacks,
-            'ENTRY_RATING_DETAILS' => lorem_sentence_html(),
-            'ENTRY_COMMENT_DETAILS' => lorem_sentence_html(),
+            'ENTRY_TRACKBACK_DETAILS' => placeholder_trackbacks_wrapper(),
+            'ENTRY_RATING_DETAILS' => placeholder_rating('video'),
+            'ENTRY_COMMENT_DETAILS' => placeholder_comments(placeholder_comments_form(false)),
             'ENTRY_EDIT_URL' => placeholder_url(),
             'WARNING_DETAILS' => '',
             'TAGS' => placeholder_tags(),
-            'RATING_DETAILS' => placeholder_rating('gallery'),
-            'COMMENT_DETAILS' => placeholder_comments_form(false),
+            'RATING_DETAILS' => placeholder_rating('video'),
+            'COMMENT_DETAILS' => placeholder_comments(placeholder_comments_form(false)),
             'REP_IMAGE_URL' => placeholder_image_url(),
             'TITLE' => lorem_screen_title(),
             'MEMBER_DETAILS' => lorem_paragraph_html(),
@@ -946,7 +932,7 @@ class Hook_addon_registry_galleries
             'CAT' => lorem_word(),
             'MEMBER_DETAILS' => lorem_sentence_html(),
             'RATING_DETAILS' => placeholder_rating('gallery'),
-            'COMMENT_DETAILS' => placeholder_comments_form(false),
+            'COMMENT_DETAILS' => placeholder_comments(placeholder_comments_form(false)),
             'ADD_GALLERY_URL' => placeholder_url(),
             'EDIT_URL' => placeholder_url(),
             'TITLE' => lorem_screen_title(),
@@ -1023,8 +1009,8 @@ class Hook_addon_registry_galleries
             'ADD_DATE' => placeholder_date(),
             'EDIT_DATE' => placeholder_date(),
             'RATING_DETAILS' => placeholder_rating('video'),
-            'TRACKBACK_DETAILS' => lorem_sentence_html(),
-            'COMMENT_DETAILS' => placeholder_comments_form(false),
+            'TRACKBACK_DETAILS' => placeholder_trackbacks_wrapper(),
+            'COMMENT_DETAILS' => placeholder_comments(placeholder_comments_form(false)),
             'EDIT_URL' => placeholder_url(),
             'IMAGE_URL' => placeholder_image_url(),
             'NAV' => $nav,
@@ -1172,7 +1158,7 @@ class Hook_addon_registry_galleries
             'CAT' => '',
             'MEMBER_DETAILS' => '',
             'RATING_DETAILS' => placeholder_rating('gallery'),
-            'COMMENT_DETAILS' => '',
+            'COMMENT_DETAILS' => placeholder_comments(placeholder_comments_form(false)),
             'ADD_GALLERY_URL' => placeholder_url(),
             'EDIT_URL' => placeholder_url(),
             'TITLE' => lorem_screen_title(),
