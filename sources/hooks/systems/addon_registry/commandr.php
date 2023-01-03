@@ -276,7 +276,6 @@ class Hook_addon_registry_commandr
         $content = do_lorem_template('COMMANDR_MAIN', [
             'COMMANDS' => lorem_phrase(),
             'SUBMIT_URL' => placeholder_url(),
-            'page' => lorem_phrase(),
             'PROMPT' => lorem_phrase(),
         ]);
 
