@@ -316,9 +316,9 @@ class Hook_addon_registry_galleries
             'templates/BLOCK_MAIN_IMAGE_FADER.tpl' => 'block_main_image_fader',
             'templates/GALLERY_IMPORT_SCREEN.tpl' => 'administrative__gallery_import_screen',
             'templates/GALLERY_POPULAR.tpl' => 'gallery_popular',
-            'templates/GALLERY_IMAGE.tpl' => 'gallery_entries',
-            'templates/GALLERY_ENTRY_WRAP.tpl' => 'gallery_entries',
-            'templates/GALLERY_VIDEO.tpl' => 'gallery_entries',
+            'templates/GALLERY_IMAGE.tpl' => 'block_main_gallery_embed',
+            'templates/GALLERY_ENTRY_WRAP.tpl' => 'block_main_gallery_embed',
+            'templates/GALLERY_VIDEO.tpl' => 'block_main_gallery_embed',
             'templates/BLOCK_MAIN_GALLERY_EMBED.tpl' => 'block_main_gallery_embed',
             'templates/MASS_SELECT_MARKER.tpl' => 'block_main_gallery_embed',
             'templates/MASS_SELECT_DELETE_FORM.tpl' => 'block_main_gallery_embed',
@@ -573,29 +573,57 @@ class Hook_addon_registry_galleries
     public function tpl_preview__block_main_gallery_embed() : object
     {
         // Create the 'GALLERY_ENTRY_WRAP' template
+        $entry = new Tempcode();
+        $map = [
+            'MEDIA_TYPE' => 'image',
+            'TITLE' => lorem_phrase(),
+            'DESCRIPTION' => lorem_paragraph_html(),
+            'ID' => placeholder_numeric_id(),
+            'FILE_SIZE' => lorem_word(),
+            'SUBMITTER' => placeholder_numeric_id(),
+            'IMAGE_URL' => placeholder_image_url(),
+            'CAT' => lorem_word(),
+            'VIEW_URL' => placeholder_url(),
+            'ADD_DATE_RAW' => placeholder_date_raw(),
+            'EDIT_DATE_RAW' => placeholder_date_raw(),
+            'ADD_DATE' => placeholder_date(),
+            'EDIT_DATE' => placeholder_date(),
+            'VIEWS' => placeholder_number(),
+            '_EDIT_URL' => placeholder_url(),
+            'COMMENT_COUNT' => true,
+        ];
+        $entry = do_lorem_template('GALLERY_IMAGE', $map);
         $entries = new Tempcode();
-        foreach (placeholder_array() as $k => $v) {
-            $map = [
-                'MEDIA_TYPE' => 'image',
-                'TITLE' => lorem_phrase(),
-                'DESCRIPTION' => lorem_paragraph_html(),
-                'ID' => strval($k),
-                'FILE_SIZE' => lorem_word(),
-                'SUBMITTER' => placeholder_numeric_id(),
-                'CAT' => lorem_word(),
-                'IMAGE_URL' => placeholder_image_url(),
-                'VIEW_URL' => placeholder_url(),
-                'ADD_DATE_RAW' => placeholder_date_raw(),
-                'EDIT_DATE_RAW' => placeholder_date_raw(),
-                'ADD_DATE' => placeholder_date(),
-                'EDIT_DATE' => placeholder_date(),
-                'VIEWS' => placeholder_number(),
-                '_EDIT_URL' => placeholder_url(),
-                'COMMENT_COUNT' => true,
-            ];
-            $entry = do_lorem_template('GALLERY_IMAGE', $map);
-            $entries->attach(do_lorem_template('GALLERY_ENTRY_WRAP', ['ENTRY' => $entry] + $map));
-        }
+        $entries->attach(do_lorem_template('GALLERY_ENTRY_WRAP', ['ENTRY' => $entry] + $map));
+
+        $video_details = do_lorem_template('GALLERY_VIDEO_INFO', [
+            'HEIGHT' => placeholder_number(),
+            'WIDTH' => placeholder_number(),
+            'LENGTH' => placeholder_number(),
+            'CLOSED_CAPTIONS_URL' => placeholder_url(),
+        ]);
+        $map = [
+            'MEDIA_TYPE' => 'video',
+            'TITLE' => lorem_phrase(),
+            'DESCRIPTION' => lorem_phrase(),
+            'ID' => placeholder_numeric_id(),
+            'FILE_SIZE' => lorem_word(),
+            'SUBMITTER' => placeholder_numeric_id(),
+            'FULL_URL' => placeholder_url(),
+            'THUMB_URL' => placeholder_image_url(),
+            'CAT' => lorem_word(),
+            'VIEW_URL' => placeholder_url(),
+            'VIDEO_DETAILS' => $video_details,
+            'ADD_DATE_RAW' => placeholder_date_raw(),
+            'EDIT_DATE_RAW' => placeholder_date_raw(),
+            'ADD_DATE' => placeholder_date(),
+            'EDIT_DATE' => placeholder_date(),
+            '_EDIT_URL' => placeholder_url(),
+            'VIEWS' => placeholder_number(),
+            'COMMENT_COUNT' => true,
+        ];
+        $entry = do_lorem_template('GALLERY_VIDEO', $map);
+        $entries->attach(do_lorem_template('GALLERY_ENTRY_WRAP', ['ENTRY' => $entry] + $map));
 
         // Create 'BLOCK_MAIN_GALLERY_EMBED' with 'GALLERY_ENTRY_WRAP' as sub-template
         return lorem_globalise(do_lorem_template('BLOCK_MAIN_GALLERY_EMBED', [
@@ -933,70 +961,6 @@ class Hook_addon_registry_galleries
             'DESCRIPTION' => lorem_paragraph_html(),
             'COMMENT_COUNT' => placeholder_number(),
         ]), null, '', true);
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return Tempcode Preview
-     */
-    public function tpl_preview__gallery_entries() : object
-    {
-        $entry = new Tempcode();
-        $map = [
-            'MEDIA_TYPE' => 'image',
-            'TITLE' => lorem_phrase(),
-            'DESCRIPTION' => lorem_paragraph_html(),
-            'ID' => placeholder_numeric_id(),
-            'FILE_SIZE' => lorem_word(),
-            'SUBMITTER' => placeholder_numeric_id(),
-            'IMAGE_URL' => placeholder_image_url(),
-            'CAT' => lorem_word(),
-            'VIEW_URL' => placeholder_url(),
-            'ADD_DATE_RAW' => placeholder_date_raw(),
-            'EDIT_DATE_RAW' => placeholder_date_raw(),
-            'ADD_DATE' => placeholder_date(),
-            'EDIT_DATE' => placeholder_date(),
-            'VIEWS' => placeholder_number(),
-            '_EDIT_URL' => placeholder_url(),
-            'COMMENT_COUNT' => true,
-        ];
-        $entry = do_lorem_template('GALLERY_IMAGE', $map);
-        $entries = new Tempcode();
-        $entries->attach(do_lorem_template('GALLERY_ENTRY_WRAP', ['ENTRY' => $entry] + $map));
-
-        $video_details = do_lorem_template('GALLERY_VIDEO_INFO', [
-            'HEIGHT' => placeholder_number(),
-            'WIDTH' => placeholder_number(),
-            'LENGTH' => placeholder_number(),
-            'CLOSED_CAPTIONS_URL' => placeholder_url(),
-        ]);
-        $map = [
-            'MEDIA_TYPE' => 'video',
-            'TITLE' => lorem_phrase(),
-            'DESCRIPTION' => lorem_phrase(),
-            'ID' => placeholder_numeric_id(),
-            'FILE_SIZE' => lorem_word(),
-            'SUBMITTER' => placeholder_numeric_id(),
-            'FULL_URL' => placeholder_url(),
-            'THUMB_URL' => placeholder_image_url(),
-            'CAT' => lorem_word(),
-            'VIEW_URL' => placeholder_url(),
-            'VIDEO_DETAILS' => $video_details,
-            'ADD_DATE_RAW' => placeholder_date_raw(),
-            'EDIT_DATE_RAW' => placeholder_date_raw(),
-            'ADD_DATE' => placeholder_date(),
-            'EDIT_DATE' => placeholder_date(),
-            '_EDIT_URL' => placeholder_url(),
-            'VIEWS' => placeholder_number(),
-            'COMMENT_COUNT' => true,
-        ];
-        $entry = do_lorem_template('GALLERY_VIDEO', $map);
-        $entries->attach(do_lorem_template('GALLERY_ENTRY_WRAP', ['ENTRY' => $entry] + $map));
-
-        return lorem_globalise($entries, null, '', true);
     }
 
     /**

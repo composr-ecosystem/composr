@@ -247,7 +247,7 @@ class Hook_addon_registry_commandr
     public function tpl_previews() : array
     {
         return [
-            'templates/COMMANDR_MAIN.tpl' => 'administrative__commandr_main',
+            'templates/COMMANDR_MAIN.tpl' => 'administrative__commandr_main_screen',
             'templates/COMMANDR_MAIN_SCREEN.tpl' => 'administrative__commandr_main_screen',
             'templates/COMMANDR_COMMAND.tpl' => 'administrative__commandr_command',
             'templates/COMMANDR_ARRAY.tpl' => 'administrative__commandr_array',
@@ -271,29 +271,13 @@ class Hook_addon_registry_commandr
      *
      * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__commandr_main() : object
+    public function tpl_preview__administrative__commandr_main_screen() : object
     {
-        return lorem_globalise(do_lorem_template('COMMANDR_MAIN', [
+        $content = do_lorem_template('COMMANDR_MAIN', [
             'COMMANDS' => lorem_phrase(),
             'SUBMIT_URL' => placeholder_url(),
             'page' => lorem_phrase(),
             'PROMPT' => lorem_phrase(),
-        ]), null, '', true);
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return Tempcode Preview
-     */
-    public function tpl_preview__administrative__commandr_main_screen() : object
-    {
-        $content = do_lorem_template('COMMANDR_MAIN', [
-            'SUBMIT_URL' => placeholder_url(),
-            'PROMPT' => lorem_phrase(),
-            'COMMANDS' => lorem_phrase(),
         ]);
 
         return lorem_globalise(do_lorem_template('COMMANDR_MAIN_SCREEN', [
