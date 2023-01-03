@@ -13,7 +13,7 @@
  * @package    testing_platform
  */
 
-// php _tests/index.php _broken_links
+// php _tests/index.php __broken_links
 
 /**
  * Composr test case class (unit testing).

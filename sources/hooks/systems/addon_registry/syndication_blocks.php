@@ -197,8 +197,8 @@ class Hook_addon_registry_syndication_blocks
                 'CATEGORY' => lorem_phrase(),
                 'FULL_URL' => placeholder_link(),
                 'FULL_URL_RAW' => placeholder_url(),
-                'NEWS' => lorem_paragraph(),
-                'NEWS_FULL' => lorem_paragraph(),
+                'NEWS' => lorem_paragraph_html(),
+                'NEWS_FULL' => lorem_paragraph_html(),
                 'BLOCK_ID' => placeholder_codename(),
                 'DATE_RAW' => placeholder_date_raw(),
             ]));

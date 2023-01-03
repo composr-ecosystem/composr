@@ -166,9 +166,9 @@ class Hook_addon_registry_setupwizard
     public function tpl_preview__administrative__setupwizard_block_preview() : object
     {
         return lorem_globalise(do_lorem_template('SETUPWIZARD_BLOCK_PREVIEW', [
-            'LEFT' => lorem_paragraph(),
-            'RIGHT' => lorem_paragraph(),
-            'START' => lorem_paragraph(),
+            'LEFT' => lorem_paragraph_html(),
+            'RIGHT' => lorem_paragraph_html(),
+            'START' => lorem_paragraph_html(),
         ]), null, '', true);
     }
 

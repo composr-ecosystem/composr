@@ -242,7 +242,7 @@ class Hook_addon_registry_forum_blocks
                 'REP_IMAGE_URL' => placeholder_image_url(),
                 'AUTHOR' => lorem_word(),
                 'AUTHOR_URL' => placeholder_url(),
-                'NEWS' => lorem_paragraph(),
+                'NEWS' => lorem_paragraph_html(),
                 'GIVE_CONTEXT' => false,
                 'FORUM_ID' => null,
                 '_AUTHOR' => null,

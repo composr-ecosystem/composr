@@ -15,6 +15,8 @@
 
 // php _tests/index.php ___health_check
 
+// Or better, just run through the UI chunk-by-chunk
+
 /**
  * Composr test case class (unit testing).
  */

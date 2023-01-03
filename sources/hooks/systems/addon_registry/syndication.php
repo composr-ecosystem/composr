@@ -172,7 +172,7 @@ class Hook_addon_registry_syndication
         $content = do_lorem_template('RSS_ABBR', [], null, false, null, '.xml', 'xml');
         $content->attach(do_lorem_template('RSS_ENTRY', [
             'TITLE' => lorem_phrase(),
-            'SUMMARY' => lorem_paragraph(),
+            'SUMMARY' => lorem_paragraph_html(),
             'VIEW_URL' => placeholder_url(),
             'DATE' => placeholder_date(),
             'EDIT_DATE' => placeholder_date(),
@@ -180,7 +180,6 @@ class Hook_addon_registry_syndication
             'CATEGORY' => lorem_word(),
             'AUTHOR' => lorem_word(),
             'IF_COMMENTS' => $comments,
-            'NEWS' => lorem_paragraph(),
             'ID' => placeholder_codename(),
         ], null, false, null, '.xml', 'xml'));
 
@@ -216,7 +215,7 @@ class Hook_addon_registry_syndication
     {
         $content = do_lorem_template('ATOM_ENTRY', [
             'TITLE' => lorem_phrase(),
-            'SUMMARY' => lorem_paragraph(),
+            'SUMMARY' => lorem_paragraph_html(),
             'VIEW_URL' => placeholder_url(),
             'DATE' => placeholder_date(),
             'EDIT_DATE' => placeholder_date(),
@@ -224,6 +223,7 @@ class Hook_addon_registry_syndication
             'CATEGORY' => lorem_word(),
             'AUTHOR' => lorem_word(),
             'IF_COMMENTS' => '',
+            'ID' => placeholder_codename(),
         ], null, false, null, '.xml', 'xml');
 
         return do_lorem_template('ATOM_WRAPPER', [

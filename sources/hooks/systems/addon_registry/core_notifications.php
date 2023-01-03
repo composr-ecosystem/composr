@@ -211,7 +211,7 @@ class Hook_addon_registry_core_notifications
             do_lorem_template('NOTIFICATION_WEB', [
                 'ID' => placeholder_numeric_id(),
                 'SUBJECT' => lorem_phrase(),
-                'MESSAGE' => lorem_paragraph(),
+                'MESSAGE' => lorem_paragraph_html(),
                 'FROM_USERNAME' => lorem_phrase(),
                 'FROM_MEMBER_ID' => placeholder_numeric_id(),
                 'FROM_URL' => placeholder_url(),
@@ -245,7 +245,7 @@ class Hook_addon_registry_core_notifications
             'TITLE' => lorem_screen_title(),
             'ID' => placeholder_numeric_id(),
             'SUBJECT' => lorem_phrase(),
-            'MESSAGE' => lorem_paragraph(),
+            'MESSAGE' => lorem_paragraph_html(),
             'FROM_USERNAME' => lorem_phrase(),
             'FROM_MEMBER_ID' => placeholder_numeric_id(),
             'FROM_URL' => placeholder_url(),
@@ -283,7 +283,7 @@ class Hook_addon_registry_core_notifications
         return lorem_globalise(do_lorem_template('NOTIFICATION_WEB', [
             'ID' => placeholder_numeric_id(),
             'SUBJECT' => lorem_phrase(),
-            'MESSAGE' => lorem_paragraph(),
+            'MESSAGE' => lorem_paragraph_html(),
             'FROM_USERNAME' => lorem_phrase(),
             'FROM_MEMBER_ID' => placeholder_numeric_id(),
             'FROM_URL' => placeholder_url(),
@@ -309,7 +309,7 @@ class Hook_addon_registry_core_notifications
         return lorem_globalise(do_lorem_template('NOTIFICATION_WEB_DESKTOP', [
             'ID' => placeholder_numeric_id(),
             'SUBJECT' => lorem_phrase(),
-            'MESSAGE' => lorem_paragraph(),
+            'MESSAGE' => lorem_paragraph_html(),
             'FROM_USERNAME' => lorem_phrase(),
             'FROM_MEMBER_ID' => placeholder_numeric_id(),
             'FROM_URL' => placeholder_url(),
@@ -334,7 +334,7 @@ class Hook_addon_registry_core_notifications
         return lorem_globalise(do_lorem_template('NOTIFICATION_PT_DESKTOP', [
             'ID' => placeholder_numeric_id(),
             'SUBJECT' => lorem_phrase(),
-            'MESSAGE' => lorem_paragraph(),
+            'MESSAGE' => lorem_paragraph_html(),
             'FROM_USERNAME' => lorem_phrase(),
             'FROM_MEMBER_ID' => placeholder_numeric_id(),
             'URL' => placeholder_url(),

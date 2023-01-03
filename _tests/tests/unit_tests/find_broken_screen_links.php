@@ -13,8 +13,6 @@
  * @package    testing_platform
  */
 
-// php _tests/index.php _find_broken_screen_links
-
 // This covers internal links. Also see _broken_links, which does scanning for external links.
 
 /**

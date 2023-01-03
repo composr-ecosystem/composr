@@ -219,7 +219,6 @@ class Hook_addon_registry_polls
             'CATEGORY' => '',
             'AUTHOR' => lorem_word(),
             'ID' => placeholder_codename(),
-            'NEWS' => lorem_paragraph(),
             'DATE' => placeholder_date(),
         ], null, false, null, '.xml', 'xml'), null, '', true);
     }

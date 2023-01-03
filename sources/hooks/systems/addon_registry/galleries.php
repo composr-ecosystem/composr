@@ -371,7 +371,7 @@ class Hook_addon_registry_galleries
             'VIEWS' => placeholder_number(),
             'URL' => placeholder_url(),
             'IMAGE_URL' => placeholder_image_url(),
-            'DESCRIPTION' => lorem_paragraph(),
+            'DESCRIPTION' => lorem_paragraph_html(),
             'GIVE_CONTEXT' => true,
         ]), null, '', true);
     }
@@ -396,7 +396,7 @@ class Hook_addon_registry_galleries
             'VIEWS' => placeholder_number(),
             'URL' => placeholder_url(),
             'VIDEO_URL' => placeholder_url(),
-            'DESCRIPTION' => lorem_paragraph(),
+            'DESCRIPTION' => lorem_paragraph_html(),
             'THUMB_URL' => placeholder_image_url(),
             'VIDEO_WIDTH' => placeholder_number(),
             'VIDEO_HEIGHT' => placeholder_number(),
@@ -578,7 +578,7 @@ class Hook_addon_registry_galleries
             $map = [
                 'MEDIA_TYPE' => 'image',
                 'TITLE' => lorem_phrase(),
-                'DESCRIPTION' => lorem_paragraph(),
+                'DESCRIPTION' => lorem_paragraph_html(),
                 'ID' => strval($k),
                 'FILE_SIZE' => lorem_word(),
                 'SUBMITTER' => placeholder_numeric_id(),
@@ -930,7 +930,7 @@ class Hook_addon_registry_galleries
             'MEMBER_INFO' => lorem_paragraph(),
             'URL' => placeholder_url(),
             'TITLE' => lorem_phrase(),
-            'DESCRIPTION' => lorem_paragraph(),
+            'DESCRIPTION' => lorem_paragraph_html(),
             'COMMENT_COUNT' => placeholder_number(),
         ]), null, '', true);
     }
@@ -948,7 +948,7 @@ class Hook_addon_registry_galleries
         $map = [
             'MEDIA_TYPE' => 'image',
             'TITLE' => lorem_phrase(),
-            'DESCRIPTION' => lorem_paragraph(),
+            'DESCRIPTION' => lorem_paragraph_html(),
             'ID' => placeholder_numeric_id(),
             'FILE_SIZE' => lorem_word(),
             'SUBMITTER' => placeholder_numeric_id(),
@@ -1210,7 +1210,7 @@ class Hook_addon_registry_galleries
             $map = [
                 'RATING_DETAILS' => lorem_phrase(),
                 'TITLE' => lorem_phrase(),
-                'DESCRIPTION' => lorem_paragraph(),
+                'DESCRIPTION' => lorem_paragraph_html(),
                 'ID' => placeholder_random_id(),
                 'MEDIA_TYPE' => 'image',
                 'FILE_SIZE' => lorem_word(),
@@ -1239,7 +1239,7 @@ class Hook_addon_registry_galleries
             $map = [
                 'RATING_DETAILS' => lorem_phrase(),
                 'TITLE' => lorem_phrase(),
-                'DESCRIPTION' => lorem_paragraph(),
+                'DESCRIPTION' => lorem_paragraph_html(),
                 'ID' => placeholder_random_id(),
                 'MEDIA_TYPE' => 'image',
                 'FILE_SIZE' => lorem_word(),
@@ -1294,7 +1294,7 @@ class Hook_addon_registry_galleries
             'ADD_GALLERY_URL' => placeholder_url(),
             'EDIT_URL' => placeholder_url(),
             'TITLE' => lorem_screen_title(),
-            'DESCRIPTION' => lorem_paragraph(),
+            'DESCRIPTION' => lorem_paragraph_html(),
             'IMAGE_URL' => placeholder_url(),
             'VIDEO_URL' => placeholder_url(),
             'MAY_DOWNLOAD' => true,
