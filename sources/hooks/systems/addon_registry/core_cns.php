@@ -819,7 +819,13 @@ class Hook_addon_registry_core_cns
      */
     public function tpl_preview__block_main_members() : object
     {
-        return $this->do_block_main_members_preview('BLOCK_MAIN_MEMBERS', 'listing');
+        $tpl = $this->do_block_main_members_preview('BLOCK_MAIN_MEMBERS', 'listing');
+        $tpl->attach($this->do_block_main_members_preview('BLOCK_MAIN_MEMBERS', 'boxes'));
+        $tpl->attach($this->do_block_main_members_preview('BLOCK_MAIN_MEMBERS', 'photos'));
+        $tpl->attach($this->do_block_main_members_preview('BLOCK_MAIN_MEMBERS', 'media'));
+        $tpl->attach($this->do_block_main_members_preview('BLOCK_MAIN_MEMBERS', 'avatars'));
+
+        return $tpl;
     }
 
     /**
@@ -831,7 +837,13 @@ class Hook_addon_registry_core_cns
      */
     public function tpl_preview__block_main_members_complex() : object
     {
-        return $this->do_block_main_members_preview('BLOCK_MAIN_MEMBERS_COMPLEX', 'boxes');
+        $tpl = $this->do_block_main_members_preview('BLOCK_MAIN_MEMBERS_COMPLEX', 'listing');
+        $tpl->attach($this->do_block_main_members_preview('BLOCK_MAIN_MEMBERS_COMPLEX', 'boxes'));
+        $tpl->attach($this->do_block_main_members_preview('BLOCK_MAIN_MEMBERS_COMPLEX', 'photos'));
+        $tpl->attach($this->do_block_main_members_preview('BLOCK_MAIN_MEMBERS_COMPLEX', 'media'));
+        $tpl->attach($this->do_block_main_members_preview('BLOCK_MAIN_MEMBERS_COMPLEX', 'avatars'));
+
+        return $tpl;
     }
 
     /**
@@ -910,6 +922,63 @@ class Hook_addon_registry_core_cns
             ]
         ];
 
+        $result_entries = new Tempcode();
+        $header_row = new Tempcode();
+        foreach (placeholder_array(6) as $i => $v) {
+            $username = do_lorem_template('CNS_MEMBER_DIRECTORY_USERNAME', [
+                'ID' => placeholder_first_admin_id(),
+                'USERNAME' => lorem_word(),
+                'URL' => placeholder_url(),
+                'AVATAR_URL' => placeholder_avatar(),
+                'PHOTO_URL' => placeholder_image(),
+                'VALIDATED' => ($i > 1),
+                'CONFIRMED' => ($i > 0),
+            ]);
+
+            $cells = new Tempcode();
+
+            $cells->attach(do_lorem_template('RESULTS_TABLE_FIELD', [
+                'VALUE' => $username,
+            ]));
+            $cells->attach(do_lorem_template('RESULTS_TABLE_FIELD', [
+                'VALUE' => lorem_word(),
+            ]));
+            $cells->attach(do_lorem_template('RESULTS_TABLE_FIELD', [
+                'VALUE' => placeholder_number(),
+            ]));
+            $cells->attach(do_lorem_template('RESULTS_TABLE_FIELD', [
+                'VALUE' => placeholder_number(),
+            ]));
+            $cells->attach(do_lorem_template('RESULTS_TABLE_FIELD', [
+                'VALUE' => placeholder_date(),
+            ]));
+            $cells->attach(do_lorem_template('RESULTS_TABLE_FIELD', [
+                'VALUE' => placeholder_date(),
+            ]));
+
+            $entries = do_lorem_template('RESULTS_TABLE_ENTRY', [
+                'VALUES' => $cells,
+            ]);
+
+            $result_entries->attach($entries);
+
+            $header_row->attach(do_lorem_template('RESULTS_TABLE_FIELD_TITLE', [
+                'VALUE' => lorem_word(),
+            ]));
+        }
+
+        $results = do_lorem_template('RESULTS_TABLE', [
+            'WIDTHS' => [],
+            'TEXT_ID' => placeholder_random_id(),
+            'HEADER_ROW' => $header_row,
+            'RESULT_ENTRIES' => $result_entries,
+            'FOOTER_ROW' => null,
+            'MESSAGE' => '',
+            'SORT' => '',
+            'PAGINATION' => '',
+            'NONRESPONSIVE' => false,
+        ]);
+
         return lorem_globalise(do_lorem_template($tpl, [
             'BLOCK_ID' => '',
             'START' => strval(0),
@@ -921,12 +990,14 @@ class Hook_addon_registry_core_cns
             'DISPLAY_MODE' => $display_mode,
             'MEMBER_BOXES' => $member_boxes,
             'PAGINATION' => placeholder_pagination(),
-            'RESULTS_TABLE' => placeholder_table(),
+            'RESULTS_TABLE' => $results,
             'USERGROUPS' => $usergroups,
             'SYMBOLS' => $symbols,
             'HAS_ACTIVE_FILTER' => true,
-            'INCLUDE_FORM' => false,
+            'INCLUDE_FORM' => true,
             'SORT' => '',
+            'FILTERS_ROW_A' => placeholder_query_string(),
+            'FILTERS_ROW_B' => placeholder_query_string(),
         ]), null, '', true);
     }
 

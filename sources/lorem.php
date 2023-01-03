@@ -334,6 +334,16 @@ function placeholder_button() : object
 }
 
 /**
+ * Get a placeholder for a query string.
+ *
+ * @return string Place holder query
+ */
+function placeholder_query_string() : string
+{
+    return 'lorem=Lorem,ipsum=Ipsum';
+}
+
+/**
  * Get options for drop-down box.
  *
  * @return string Place holder text
