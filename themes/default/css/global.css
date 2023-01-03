@@ -3095,7 +3095,7 @@ hr.spaced-rule {
 }
 
 .inline-flex {
-	display: inline-flex;
+	{$BETA_CSS_PROPERTY,display: inline-flex;}
 }
 
 .flex {
@@ -6076,7 +6076,7 @@ input[type="button"].btn-block {
 .btn-group,
 .btn-group-vertical {
 	position: relative;
-	display: inline-flex;
+	{$BETA_CSS_PROPERTY,display: inline-flex;}
 	vertical-align: middle;
 }
 

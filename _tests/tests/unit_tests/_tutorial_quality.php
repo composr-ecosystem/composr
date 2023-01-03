@@ -31,6 +31,8 @@ class _tutorial_quality_test_set extends cms_test_case
             cms_ob_end_clean();
         }
 
+        disable_php_memory_limit();
+
         cms_extend_time_limit(TIME_LIMIT_EXTEND__CRAWL);
     }
 

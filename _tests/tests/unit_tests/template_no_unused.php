@@ -40,6 +40,7 @@ class template_no_unused_test_set extends cms_test_case
             'COMCODE_TABULAR_FLEX',
             'COMCODE_TABULAR_INLINE_BLOCKS',
             'COMCODE_TABULAR_FLOATS',
+            'FACEBOOK_FOOTER',
             'GALLERY_HOMEPAGE_HERO_SLIDE',
             'BLOCK_MAIN_NEWS_GRID',
             'BLOCK_MAIN_NEWS_GRID_ITEM',

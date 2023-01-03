@@ -503,7 +503,7 @@ hr.cns-sig-barrier {
 }
 
 .cns-topic-control-functions form {
-	display: inline-flex;
+	{$BETA_CSS_PROPERTY,display: inline-flex;}
 	padding: 10px;
 }
 
@@ -539,7 +539,7 @@ hr.cns-sig-barrier {
 }
 
 .cns-topic-actions form {
-	display: inline-flex;
+	{$BETA_CSS_PROPERTY,display: inline-flex;}
 	margin-right: 1em;
 }
 

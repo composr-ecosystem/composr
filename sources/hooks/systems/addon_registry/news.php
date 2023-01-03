@@ -227,6 +227,7 @@ class Hook_addon_registry_news
             'templates/NEWS_WORDPRESS_IMPORT_SCREEN.tpl' => 'administrative__news_wordpress_import_screen',
             'templates/NEWS_BRIEF.tpl' => 'block_main_news',
             'templates/NEWS_BOX.tpl' => 'block_main_news',
+            'templates/AJAX_PAGINATION.tpl' => 'block_main_news',
             'templates/CNS_MEMBER_PROFILE_BLOG.tpl' => 'cns_member_profile_blog',
             'templates/BLOCK_MAIN_IMAGE_FADER_NEWS.tpl' => 'block_main_image_fader_news',
             'templates/BLOCK_MAIN_NEWS_GRID.tpl' => 'block_main_news_grid',
@@ -412,6 +413,9 @@ class Hook_addon_registry_news
                 'NEWS_TITLE_PLAIN' => lorem_phrase(),
                 'ID' => placeholder_numeric_id(),
                 'NEWS_TITLE' => lorem_phrase(),
+                'BLOG' => false,
+                'SUBMITTER' => placeholder_first_admin_id(),
+                'DATE_RAW' => placeholder_date_raw(),
             ]));
         }
 
@@ -489,7 +493,6 @@ class Hook_addon_registry_news
                 'BLOG' => false,
                 'SUBMITTER' => placeholder_first_admin_id(),
                 'DATE_RAW' => placeholder_date_raw(),
-                'NEWS_TITLE_PLAIN' => lorem_phrase(),
             ]));
         }
 

@@ -331,10 +331,6 @@ th.form-table-field-name a, /* Extra specificity to take precedence over th.de-t
 	max-width: 100%;
 }
 
-.input-captcha {
-	/*display: inline-flex;*/
-}
-
 .input-dimensions {
 	display: inline-block;
 }
@@ -625,8 +621,8 @@ span.validated-checkbox + input[name="validated"].input-tick {
 	{$BETA_CSS_PROPERTY,user-select: none;}
 }
 .css-colour-chooser-from span, .css-colour-chooser-to span {
-	color: #FFFFFF;
-	{$BETA_CSS_PROPERTY,mix-blend-mode: difference;}
+	color: #FFFFFF; /*{$,hardcoded_ok}*/
+	mix-blend-mode: difference;
 	padding: 5px;
 }
 /*{+START,CSS_MODE,desktop}*/

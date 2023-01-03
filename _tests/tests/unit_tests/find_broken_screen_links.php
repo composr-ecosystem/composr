@@ -72,7 +72,7 @@ class find_broken_screen_links_test_set extends cms_test_case
                 }
                 if ($matches[5][$i] != '') {
                     $this->assertTrue($matches[5][$i] == $page, 'Mismatch between searched zone and page in ' . $path . ' (' . $matches[4][$i] . ' vs ' . $page . ')');
-                    $this->assertTrue(get_module_zone($matches[5][$i]) === null, 'Could have used get_module_zone instead of get_page_zone in ' . $path . ' (' . $matches[5][$i] . ')');
+                    $this->assertTrue(get_module_zone($matches[5][$i], 'modules', null, 'php', true, false) === null, 'Could have used get_module_zone instead of get_page_zone in ' . $path . ' (' . $matches[5][$i] . ')');
                 }
 
                 // Exceptions

@@ -157,7 +157,7 @@ class template_parameter_consistency_test_set extends cms_test_case
 
     protected function check_template_call($parameters, $known_parameters, $template, $template_c, $templates_with_exotic_params, &$missing_parameters)
     {
-       foreach ($known_parameters as $parameter) {
+        foreach ($known_parameters as $parameter) {
             $ok = (array_key_exists($parameter, $parameters)) ||
                 ($parameter == '_GUID') ||
                 (in_array($template, $templates_with_exotic_params)) ||

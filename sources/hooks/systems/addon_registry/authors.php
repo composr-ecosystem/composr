@@ -182,8 +182,11 @@ class Hook_addon_registry_authors
                 'DATE' => placeholder_date(),
                 'FULL_URL' => placeholder_url(),
                 'NEWS_TITLE_PLAIN' => lorem_phrase(),
-                'ID' => placeholder_codename(),
+                'ID' => placeholder_numeric_id(),
                 'NEWS_TITLE' => lorem_phrase(),
+                'BLOG' => false,
+                'SUBMITTER' => placeholder_first_admin_id(),
+                'DATE_RAW' => placeholder_date_raw(),
             ]);
             $news_released->attach($tpl);
         }

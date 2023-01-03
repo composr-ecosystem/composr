@@ -50,7 +50,7 @@
             }
 
             button.disabled = !hasEdits;
-            $dom.$('.translate-pagination').style.display = hasEdits ? 'none' : 'block';
+            $dom.$('.js-translate-pagination').style.display = hasEdits ? 'none' : 'block';
         });
     };
 

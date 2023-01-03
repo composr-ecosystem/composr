@@ -381,6 +381,7 @@ function init__webstandards()
         'align-items' => $enforce_flex_align,
         'align-self' => $enforce_flex_align,
         'justify-content' => $enforce_flex_align,
+        'gap' => '(' . $enforce_number . ' (' . $enforce_number . ')?)',
 
         /* Purposely left out these 'supported' CSS features due to very poor actual browser support or generally irrelevancy */
         /*
@@ -402,6 +403,7 @@ function init__webstandards()
         'text-size-adjust' => '(none|auto|\d%|\d\d%|100%)', // Relevant for mobile devices
         'writing-mode' => '(tb-rl|lr-tb)', // Not supported in IE11 but used as progressive enhancement
         'scroll-padding-top' => $enforce_length,
+        'mix-blend-mode' => '\w+',
 
         /* SVG embedded in website CSS */
         'fill' => $enforce_css_color,

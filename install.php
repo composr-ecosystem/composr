@@ -1091,7 +1091,7 @@ function step_4() : object
             $cookie_text->attach(do_lang_tempcode('COOKIE_TEXT__CMS_PREFIX'));
         }
         $options->attach(make_option(do_lang_tempcode('COOKIE'), example('COOKIE_EXAMPLE', $cookie_text), 'user_cookie', $user_cookie, false, true));
-        $cookie_password_text = do_lang_tempcode('COOKIE_TEXT');
+        $cookie_password_text = do_lang_tempcode('COOKIE_PASSWORD_TEXT');
         if (substr($pass_cookie, 0, 5) != 'cms__') {
             $cookie_password_text->attach('<br />');
             $cookie_password_text->attach(do_lang_tempcode('COOKIE_TEXT__CMS_PREFIX'));

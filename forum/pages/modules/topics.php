@@ -1831,7 +1831,7 @@ class Module_topics
             require_code('captcha');
             if (use_captcha()) {
                 $specialisation->attach(form_input_captcha($hidden_fields));
-                $text->attach(paragraph(do_lang_tempcode('FORM_TIME_SECURITY')));
+                $text->attach(paragraph(do_lang_tempcode('captcha:FORM_TIME_SECURITY')));
             }
         }
 
@@ -2106,7 +2106,7 @@ class Module_topics
             require_code('captcha');
             if (use_captcha()) {
                 $specialisation->attach(form_input_captcha($hidden_fields));
-                $text->attach(paragraph(do_lang_tempcode('FORM_TIME_SECURITY')));
+                $text->attach(paragraph(do_lang_tempcode('captcha:FORM_TIME_SECURITY')));
             }
         }
 

@@ -44,10 +44,10 @@
 	<p class="proceed-button">
 		<button disabled="disabled" id="translate-button" accesskey="u" data-disable-on-click="1" class="btn btn-primary btn-scr buttons--save" type="submit">{+START,INCLUDE,ICON}NAME=buttons/save{+END} {!SAVE}</button>
 	</p>
-
-	{+START,IF_NON_EMPTY,{PAGINATION}}
-		<div class="translate-pagination clearfix pagination-spacing">
-			{PAGINATION}
-		</div>
-	{+END}
 </form>
+
+{+START,IF_NON_EMPTY,{PAGINATION}}
+	<div class="js-translate-pagination clearfix pagination-spacing">
+		{PAGINATION}
+	</div>
+{+END}

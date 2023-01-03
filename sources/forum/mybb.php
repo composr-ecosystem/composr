@@ -701,7 +701,7 @@ class Forum_driver_mybb extends Forum_driver_base
             $out[$i]['closed'] = (($r['closed'] == '') && ($r['visible'] == 1)) ? 0 : 1;
 
             // Get first non-spacer post
-            $fp_rows = $this->db->query('SELECT subject,message,uid FROM ' . $this->db->get_table_prefix() . 'posts p WHERE message NOT LIKE \'' . db_encode_like(substr(do_lang('SPACER_POST', '', '', '', get_site_default_lang()), 0, 20) . '%') . '\' AND tid=' . strval($r['tid']) . ' ORDER BY dateline ASC', 1);
+            $fp_rows = $this->db->query('SELECT subject,message,uid,dateline FROM ' . $this->db->get_table_prefix() . 'posts p WHERE message NOT LIKE \'' . db_encode_like(substr(do_lang('SPACER_POST', '', '', '', get_site_default_lang()), 0, 20) . '%') . '\' AND tid=' . strval($r['tid']) . ' ORDER BY dateline ASC', 1);
 
             // Filter topics with no posts
             if (!array_key_exists(0, $fp_rows)) {

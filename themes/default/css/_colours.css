@@ -122,7 +122,6 @@ See global.css for actual CSS rules.
 {$THEMEWIZARD_COLOR,#114478,box_title_text_hover,100% a.hover}
 {$THEMEWIZARD_COLOR,#ffffff,box_title_text_2,100% (box_title_background_2 contrast 0)}
 {$THEMEWIZARD_COLOR,#e9f3fd,box_title_link,90% (box_title_background_2 contrast 0) + 10% box_title_background_2}
-{$THEMEWIZARD_COLOR,#d2dbe4,box_title_link_hover,90% box_title_link + 10% BW}
 
 /* Special colour for code/quote boxes */
 {$THEMEWIZARD_COLOR,#2388ef,code_title_background,100% seed}

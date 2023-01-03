@@ -107,7 +107,7 @@
 	z-index: 2;
 	bottom: 2em;
 	left: 50%;
-	display: inline-flex;
+	{$BETA_CSS_PROPERTY,display: inline-flex;}
 	list-style: none;
 	transform: translateX(-50%);
 }

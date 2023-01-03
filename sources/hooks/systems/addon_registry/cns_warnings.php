@@ -159,7 +159,6 @@ class Hook_addon_registry_cns_warnings
     public function tpl_preview__cns_member_profile_warnings() : object
     {
         $_content = do_template('COLUMNED_TABLE_SCREEN', [
-            '_GUID' => '9dfa0fb6ea396d3b57cb447bc228a885',
             'TITLE' => '',
             'TEXT' => lorem_paragraph(),
             'TABLE' => placeholder_table(),

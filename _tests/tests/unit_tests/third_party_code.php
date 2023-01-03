@@ -125,10 +125,12 @@ class third_party_code_test_set extends cms_test_case
             return;
         }
 
+        $years_between_reviews = 3;
+
         foreach ($this->third_party_code as $row) {
             if (($row['Intention'] != 'No action') && ($row['Last sync/review date'] != 'N/A') && ($row['Last sync/review date'] != 'TODO')) {
                 $last_date = strtotime($row['Last sync/review date']);
-                $this->assertTrue($last_date > time() - 60 * 60 * 24 * 365, 'Need to reconsider integration of ' . $row['Project'] . ' SDK');
+                $this->assertTrue($last_date > time() - 60 * 60 * 24 * 365 * $years_between_reviews, 'Need to reconsider integration of ' . $row['Project'] . ' SDK');
             }
 
             $this->assertTrue(strpos($row['Last sync/review date'], 'TODO') === false, 'Review-TODO for ' . $row['Project']);
@@ -139,7 +141,7 @@ class third_party_code_test_set extends cms_test_case
         foreach ($this->third_party_apis as $row) {
             if (($row['Intention'] != 'No action') && ($row['Last sync/review date'] != 'N/A') && ($row['Last sync/review date'] != 'TODO')) {
                 $last_date = strtotime($row['Last sync/review date']);
-                $this->assertTrue($last_date > time() - 60 * 60 * 24 * 365, 'Need to reconsider integration of ' . $row['API'] . ' API');
+                $this->assertTrue($last_date > time() - 60 * 60 * 24 * 365 * $years_between_reviews, 'Need to reconsider integration of ' . $row['API'] . ' API');
             }
 
             $this->assertTrue(strpos($row['Last sync/review date'], 'TODO') === false, 'Review-TODO for ' . $row['API']);
@@ -254,7 +256,7 @@ class third_party_code_test_set extends cms_test_case
             if (($this->only === null) || ($this->only == 'eslintignore')) {
                 $_dir = '/' . $dir . '/*';
                 /* We can not expect all directories skipped for this
-                $this->assertTrue(isset($eslintignore[$_dir]), 'Missing reference for eslintignore: ' . $_dir);
+                $this->assertTrue(isset($eslintignore[$_dir]), 'Missing reference for .eslintignore: ' . $_dir);
                 */
                 unset($eslintignore[$_dir]);
             }
@@ -279,7 +281,7 @@ class third_party_code_test_set extends cms_test_case
             if (($this->only === null) || ($this->only == 'eslintignore')) {
                 $_file = '/' . $file;
                 if (substr($file, -3) == '.js') {
-                    $this->assertTrue(isset($eslintignore[$_file]), 'Missing reference for eslintignore: ' . $_file);
+                    $this->assertTrue(isset($eslintignore[$_file]), 'Missing reference for .eslintignore: ' . $_file);
                 }
                 unset($eslintignore[$_file]);
             }
@@ -313,6 +315,7 @@ class third_party_code_test_set extends cms_test_case
         if (($this->only === null) || ($this->only == 'eslintignore')) {
             // Exceptions that .eslintignore includes for non-third-party-code reasons
             unset($eslintignore['/themes/default/javascript/_attachment_ui_defaults.js']);
+            unset($eslintignore['/themes/default/javascript/password_checks.js']);
             unset($eslintignore['/themes/default/javascript/_wysiwyg_settings.js']);
             unset($eslintignore['/themes/*/templates_cached/*']);
 

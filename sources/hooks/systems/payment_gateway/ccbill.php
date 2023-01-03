@@ -27,7 +27,7 @@ class Hook_payment_gateway_ccbill
     // https://ccbill.com/doc/dynamic-pricing-user-guide
     // Requires:
     //  you have to contact support to enable dynamic pricing and generate the encryption key for your account
-    //  You must set the "Approval URL" and "Denial URL" in Sub-account basic info for BOTH sub-sccounts (see tut_ecommerce documentation)
+    //  You must set the "Approval URL" and "Denial URL" in Sub-account basic info for BOTH sub-accounts (see tut_ecommerce documentation)
     //  the "Account ID" (a 6-digit number given to you) is the Composr "Gateway username"
     //  the two 4-digit "Subaccount IDs" are the Composr "Gateway VPN username" (comma-delimited with single transactions first, recurring transactions second).
     //  your Salt key is the Composr "Gateway digest code".

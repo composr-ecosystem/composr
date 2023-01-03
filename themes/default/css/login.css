@@ -83,7 +83,7 @@ table.login-page-form {
 }
 
 .login-page-options .associated-details {
-	display: inline-flex;
+	{$BETA_CSS_PROPERTY,display: inline-flex;}
 }
 
 .login-note {

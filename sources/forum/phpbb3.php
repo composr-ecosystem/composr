@@ -777,7 +777,7 @@ class Forum_driver_phpbb3 extends Forum_driver_base
         $local_ip = '127.0.0.1';
         $is_new = ($topic_id === null);
         if ($is_new) {
-            $map = ['forum_id' => $forum_id, 'topic_title' => $content_title . ', ' . $topic_identifier_encapsulation_prefix . ': #' . $topic_identifier, 'topic_poster' => $member_id, 'topic_first_poster_name' => $this->get_username($member_id), 'topic_last_poster_name' => $this->get_username($member_id), 'topic_time' => $time, 'topic_last_post_time' => $time, 'topic_views' => 0, 'topic_status' => 0, 'topic_visibility' => ($validated !== null) && ($validated == 0) ? 0 : 1, 'topic_type' => 0, 'topic_first_post_id' => 0, 'topic_last_post_id' => 0, 'topic_moved_id' => 0];
+            $map = ['forum_id' => $forum_id, 'topic_title' => $content_title . ', ' . $topic_identifier_encapsulation_prefix . ': #' . $topic_identifier, 'topic_poster' => $member_id, 'topic_first_poster_name' => $this->get_username($member_id), 'topic_last_poster_name' => $this->get_username($member_id), 'topic_time' => $time, 'topic_last_post_time' => $time, 'topic_views' => 0, 'topic_status' => 0, 'topic_visibility' => ($validated === 0) ? 0 : 1, 'topic_type' => 0, 'topic_first_post_id' => 0, 'topic_last_post_id' => 0, 'topic_moved_id' => 0];
             $topic_id = $this->db->query_insert('topics', $map, true);
 
             $home_link = '[url]' . $content_url . '[/url]';

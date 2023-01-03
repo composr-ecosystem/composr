@@ -91,7 +91,7 @@ class Tempcode_test_set extends cms_test_case
 		<td>1</td>
 	</tr>
 	<tr>
-		<th>$FROM_TIMESTAMP,Y-m-d,33424322</th>
+		<th>$FROM_TIMESTAMP*,Y-m-d,33424322</th>
 		<td>1971-01-22</td>
 	</tr>
 	<tr>
@@ -206,6 +206,14 @@ class Tempcode_test_set extends cms_test_case
 		<td>3.2</td>
 	</tr>
 	<tr>
+		<th>$ROUND,3.29,1</th>
+		<td>3.3</td>
+	</tr>
+	<tr>
+		<th>$ROUND,36.66,0</th>
+		<td>37</td>
+	</tr>
+    <tr>
 		<th>$MAX,3,2</th>
 		<td>3</td>
 	</tr>
@@ -226,8 +234,8 @@ class Tempcode_test_set extends cms_test_case
 		<td>1</td>
 	</tr>
 	<tr>
-		<th>$DIV,3,2</th>
-		<td>1</td>
+		<th>$DIV,7,2</th>
+		<td>3</td>
 	</tr>
 	<tr>
 		<th>$SUBTRACT,3,2</th>

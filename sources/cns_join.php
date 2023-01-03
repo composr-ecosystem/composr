@@ -114,7 +114,7 @@ function cns_join_form(object $url, bool $captcha_if_enabled = true, bool $intro
             if (use_captcha()) {
                 $fields->attach(form_input_captcha($hidden));
                 $text->attach(' ');
-                $text->attach(do_lang_tempcode('FORM_TIME_SECURITY'));
+                $text->attach(do_lang_tempcode('captcha:FORM_TIME_SECURITY'));
             }
         }
     }

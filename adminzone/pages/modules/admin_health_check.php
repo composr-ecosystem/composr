@@ -120,9 +120,16 @@ class Module_admin_health_check
         } else {
             $sections_to_run = (get_option('hc_cron_sections_to_run') == '') ? [] : explode(',', get_option('hc_cron_sections_to_run'));
 
-            $show_passes = true;
-            $show_skips = true;
-            $show_manual_checks = true;
+            if ($GLOBALS['DEV_MODE']) {
+                // So we can see issues more easily
+                $show_passes = false;
+                $show_skips = false;
+                $show_manual_checks = false;
+            } else {
+                $show_passes = true;
+                $show_skips = true;
+                $show_manual_checks = true;
+            }
         }
 
         $automatic_repair = false; // We don't want this in the UI, it's implemented for possible future use only

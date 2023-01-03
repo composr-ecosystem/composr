@@ -34,6 +34,8 @@ class Hook_privacy_captcha extends Hook_privacy_base
             return null;
         }
 
+        require_lang('captcha');
+
         return [
             'cookies' => [
             ],

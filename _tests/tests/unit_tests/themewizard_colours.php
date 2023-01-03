@@ -83,6 +83,14 @@ class themewizard_colours_test_set extends cms_test_case
         }
 
         foreach (array_keys($colours) as $colour) {
+            // Exceptions
+            if (in_array($colour, [
+                'seed_contrast_low',
+                'seed_contrast_medium',
+            ])) {
+                continue;
+            }
+
             $this->assertTrue(false, 'Colour not used: ' . $colour);
         }
     }

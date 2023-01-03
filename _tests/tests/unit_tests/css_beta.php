@@ -54,8 +54,8 @@ class css_beta_test_set extends cms_test_case
 
                 // For specific properties
                 'display: flex',
+                'display: inline-flex',
             ];
-            // ^ Also keep in sync with BETA_CSS_PROPERTY.php comment
 
             foreach ($directories as $dir) {
                 $files = get_directory_contents($dir);
@@ -89,10 +89,6 @@ class css_beta_test_set extends cms_test_case
                         }
 
                         foreach ($in_beta as $property) {
-                            if ($property == 'display') {
-                                $property .= ': flex'; // May be used in either, depending on context, so fiddle it to be more specific
-                            }
-
                             $is_not_as_beta = (strpos($c, "\t" . $property) !== false) || (strpos($c, ' ' . $property) !== false);
                             $this->assertTrue(!$is_not_as_beta, 'Property ' . $property . ' should be defined as beta in ' . $e . ' for theme ' . $theme);
                         }

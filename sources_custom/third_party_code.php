@@ -130,7 +130,7 @@ function list_untouchable_third_party_files()
         'themes/default/javascript/plupload.js',
         'themes/default/javascript/select2.js',
         'themes/default/javascript/sound.js',
-        'themes/default/javascript/theme_colours.js',
+        'themes/default/javascript/toastify.js',
         'themes/default/javascript/widget_color.js',
         'themes/default/javascript/widget_date.js',
         'themes/default/javascript/xsl_mopup.js',

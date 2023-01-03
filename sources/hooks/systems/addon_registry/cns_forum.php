@@ -1395,7 +1395,6 @@ class Hook_addon_registry_cns_forum
         $avatar = do_template('CNS_TOPIC_POST_AVATAR', ['AVATAR' => placeholder_avatar()]);
 
         $last_edited = do_template('CNS_TOPIC_POST_LAST_EDITED', [
-            '_GUID' => '77a28e8bc3cf2ec2211aafdb5ba192bf',
             'LAST_EDIT_DATE_RAW' => placeholder_date(),
             'LAST_EDIT_DATE' => placeholder_date(),
             'LAST_EDIT_PROFILE_URL' => placeholder_url(),

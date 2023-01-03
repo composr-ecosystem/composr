@@ -31,24 +31,6 @@ class Hook_symbol_BETA_CSS_PROPERTY
      */
     public function run(array $param) : string
     {
-        /*
-        Properties currently used:
-         filter
-         flex-wrap
-         flex-grow
-         order
-         user-select
-         text-size-adjust
-         text-overflow
-         touch-action
-         appearance
-
-        Property settings currently used:
-         display
-          flex
-        */
-        // ^ Also keep in sync with css_beta.php code
-
         $value = '';
 
         if (!empty($param[0])) {
@@ -67,7 +49,7 @@ class Hook_symbol_BETA_CSS_PROPERTY
             $value = '';
             $matches = [];
 
-            $vendors = ['', '-o-', '-webkit-', '-ms-', '-moz-'];
+            $vendors = ['', '-webkit-', '-ms-', '-moz-'];
             foreach ($vendors as $prefix) {
                 // Skip over some
                 if ((strpos($param[0], ':') !== false) && (isset($is_supported[$prefix][substr($param[0], 0, strpos($param[0], ':'))]))) {
@@ -88,6 +70,17 @@ class Hook_symbol_BETA_CSS_PROPERTY
                     }
 
                     $value .= 'display: ' . $prefix . 'flex;';
+                    $value .= "\n\t";
+                    continue;
+                }
+                if (preg_match('#^display:\s*inline-flex(.*)$#s', $param[0], $matches) != 0) {
+                    if ($prefix == '-ms-') {
+                        // For IE10 we need an additional option
+                        $value .= 'display: -ms-inline-flexbox;';
+                        $value .= "\n\t";
+                    }
+
+                    $value .= 'display: ' . $prefix . 'inline-flex;';
                     $value .= "\n\t";
                     continue;
                 }

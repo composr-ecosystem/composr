@@ -359,7 +359,7 @@ class file_type_safelisting_test_set extends cms_test_case
     public function testNoInvalidImageTypesPopulating()
     {
         require_code('images');
-        $images = $GLOBALS['SITE_DB']->query_select('images', array('url'));
+        $images = $GLOBALS['SITE_DB']->query_select('images', ['url']);
         foreach ($images as $image) {
             $this->assertTrue(is_image($image['url'], IMAGE_CRITERIA_WEBSAFE));
         }
