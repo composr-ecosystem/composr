@@ -682,6 +682,17 @@ function placeholder_img_code(string $type = '') : string
 }
 
 /**
+ * Get a placeholder diff HTML.
+ *
+ * @param  string $type The theme image directory to find a code under
+ * @return string The diff HTML
+ */
+function placeholder_diff_html() : string
+{
+    return 'Lorem ipsum <del>Lorem ipsum dolor</del><ins>dolor</ins>';
+}
+
+/**
  * Get pagination.
  *
  * @return Tempcode Pagination

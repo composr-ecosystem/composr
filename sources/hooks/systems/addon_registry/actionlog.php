@@ -149,9 +149,9 @@ class Hook_addon_registry_actionlog
         return [
             // Revisions
             'templates/REVISIONS_WRAP.tpl' => 'administrative__show_revisions_wrap',
-            'templates/REVISIONS_DIFF_ICON.tpl' => 'administrative__show_revision_diff_icon',
+            'templates/REVISIONS_DIFF_ICON.tpl' => 'administrative__show_revisions_wrap',
             'templates/REVISIONS_SCREEN.tpl' => 'revisions_screen',
-            'templates/REVISION_UNDO.tpl' => 'revision_undo',
+            'templates/REVISION_UNDO.tpl' => 'administrative__show_revisions_wrap',
             'templates/ACTIONLOG_FOLLOWUP_URLS.tpl' => 'administrative__actionlog_followup_urls',
             'templates/DIFF_SCREEN.tpl' => 'administrative__diff_screen',
         ];
@@ -166,28 +166,86 @@ class Hook_addon_registry_actionlog
      */
     public function tpl_preview__administrative__show_revisions_wrap() : object
     {
-        return lorem_globalise(do_lorem_template('REVISIONS_WRAP', [
-            'RESULTS' => placeholder_table(),
-        ]), null, '', true);
-    }
+        $array = placeholder_array(6);
+        $cells = new Tempcode();
 
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return Tempcode Preview
-     */
-    public function tpl_preview__administrative__show_revision_diff_icon() : object
-    {
-        return lorem_globalise(do_lorem_template('REVISIONS_DIFF_ICON', [
-            'MORE_RECENT_REVISION' => '',
-            'REVISION' => '',
-            'RENDERED_DIFF_IMMEDIATELY_AFTER' => lorem_phrase(),
-            'RENDERED_DIFF_EVERYTHING_AFTER' => lorem_phrase(),
-            'DIFF_IMMEDIATELY_AFTER_URL' => placeholder_url(),
-            'DIFF_EVERYTHING_AFTER_URL' => placeholder_url(),
-        ]), null, '', true);
+        foreach ($array as $k => $v) {
+            if ($k == 3) {
+                $cells->attach(do_lorem_template('RESULTS_TABLE_FIELD_TITLE', [
+                    'VALUE' => $v,
+                ]));
+            } else {
+                $cells->attach(do_lorem_template('RESULTS_TABLE_FIELD_TITLE_SORTABLE', [
+                    'VALUE' => $v,
+                    'SORT_URL_DESC' => placeholder_url(),
+                    'SORT_DESC_SELECTED' => true,
+                    'SORT_URL_ASC' => placeholder_url(),
+                    'SORT_ASC_SELECTED' => false,
+                    'HASH' => null,
+                ]));
+            }
+        }
+        $header_row = $cells;
+
+        $result_entries = new Tempcode();
+        foreach ($array as $k1 => $v) {
+            $cells = new Tempcode();
+            foreach ($array as $k2 => $v2) {
+                if ($k2 == 3) {
+                    $value = do_lorem_template('REVISIONS_DIFF_ICON', [
+                        'MORE_RECENT_REVISION' => '',
+                        'REVISION' => placeholder_numeric_id(),
+                        'RENDERED_DIFF_IMMEDIATELY_AFTER' => placeholder_diff_html(),
+                        'RENDERED_DIFF_EVERYTHING_AFTER' => placeholder_diff_html(),
+                        'DIFF_IMMEDIATELY_AFTER_URL' => placeholder_url(),
+                        'DIFF_EVERYTHING_AFTER_URL' => placeholder_url(),
+                    ]);
+                } else {
+                    $value = lorem_word();
+                }
+                $cells->attach(do_lorem_template('RESULTS_TABLE_FIELD', [
+                    'VALUE' => $value,
+                ]));
+            }
+            $result_entries->attach(do_lorem_template('RESULTS_TABLE_ENTRY', [
+                'VALUES' => $cells,
+            ]));
+        }
+
+        $selectors = new Tempcode();
+        foreach ($array as $k => $v) {
+            $selectors->attach(do_lorem_template('PAGINATION_SORTER', [
+                'SELECTED' => '',
+                'NAME' => $v,
+                'VALUE' => $v,
+            ]));
+        }
+        $sort = do_lorem_template('PAGINATION_SORT', [
+            'HIDDEN' => '',
+            'SORT' => lorem_word(),
+            'URL' => placeholder_url(),
+            'SELECTORS' => $selectors,
+        ]);
+
+        $results_table = do_lorem_template('RESULTS_TABLE', [
+            'WIDTHS' => [],
+            'TEXT_ID' => placeholder_codename(),
+            'HEADER_ROW' => $header_row,
+            'RESULT_ENTRIES' => $result_entries,
+            'FOOTER_ROW' => new Tempcode(),
+            'MESSAGE' => '',
+            'SORT' => $sort,
+            'PAGINATION' => placeholder_pagination(),
+            'NONRESPONSIVE' => false
+        ]);
+
+        $tpl = do_lorem_template('REVISIONS_WRAP', [
+            'RESULTS' => $results_table,
+        ]);
+        $tpl->attach(do_lorem_template('REVISION_UNDO', [
+        ]));
+
+        return lorem_globalise($tpl, null, '', true);
     }
 
     /**
@@ -222,19 +280,6 @@ class Hook_addon_registry_actionlog
             'WITHOUT_WHITESPACE' => false,
             'WITHOUT_HTML_TAGS' => false,
             'UNIFIED_DIFF' => false,
-        ]), null, '', true);
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return Tempcode Preview
-     */
-    public function tpl_preview__revision_undo() : object
-    {
-        return lorem_globalise(do_lorem_template('REVISION_UNDO', [
         ]), null, '', true);
     }
 
