@@ -25,9 +25,19 @@
         });
 
         $dom.on(container, 'click', '.js-click-show-wiki-merge-button', function () {
+            var massSelects = $dom.$$($cms.getMainCmsWindow().document, '.wiki-mass-select-marker');
+            var hasTickedBox = massSelects.find(function (selectMarker) {
+                return selectMarker.classList.contains('cns-on');
+            });
             var wikiMergeButton = $dom.$('#wiki-merge-button');
-            wikiMergeButton.classList.remove('button-faded');
-            $dom.show(wikiMergeButton);
+
+            if (hasTickedBox) {
+                wikiMergeButton.classList.remove('button-faded');
+                $dom.show(wikiMergeButton);
+            } else {
+                wikiMergeButton.classList.add('button-faded');
+                $dom.hide(wikiMergeButton);
+            }
         });
     };
 
