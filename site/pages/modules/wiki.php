@@ -882,7 +882,7 @@ class Module_wiki
 
         $page_id = get_param_integer('id');
 
-        $page_title = $GLOBALS['SITE_DB']->query_select_value('wiki_pages', 'page_title', ['id' => $page_id]);
+        $page_title = $GLOBALS['SITE_DB']->query_select_value('wiki_pages', 'title', ['id' => $page_id]);
 
         $message = post_param_string('post');
         check_comcode($message, null, false, null, true);

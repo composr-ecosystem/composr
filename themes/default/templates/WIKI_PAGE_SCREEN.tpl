@@ -1,4 +1,5 @@
 {$REQUIRE_JAVASCRIPT,wiki}
+{$REQUIRE_JAVASCRIPT,core_form_interfaces}
 
 <div data-tpl="wikiPageScreen">
 	{TITLE}
