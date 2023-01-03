@@ -275,7 +275,7 @@ class Hook_addon_registry_shopping
             'VIEW_URL' => placeholder_url(),
             'EDIT_URL' => placeholder_url(),
             'TRACKBACK_DETAILS' => lorem_phrase(),
-            'RATING_DETAILS' => lorem_phrase(),
+            'RATING_DETAILS' => placeholder_rating('catalogue_entry'),
             'COMMENT_DETAILS' => lorem_phrase(),
             'RATING' => new Tempcode(),
             'ALLOW_RATING' => false,

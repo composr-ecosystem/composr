@@ -718,7 +718,7 @@ class Hook_addon_registry_galleries
             '_TITLE' => lorem_phrase(),
             'DESCRIPTION' => lorem_paragraph_html(),
             'CAT' => placeholder_codename(),
-            'RATING_DETAILS' => '',
+            'RATING_DETAILS' => placeholder_rating('video'),
             'THUMB_URL' => placeholder_image_url(),
             'FULL_URL' => placeholder_url(),
             'ID' => placeholder_numeric_id(),
@@ -753,6 +753,13 @@ class Hook_addon_registry_galleries
             ]));
         }
 
+        $trackbacks = do_lorem_template('TRACKBACK_WRAPPER', [
+            'TRACKBACKS' => placeholder_trackbacks(),
+            'TRACKBACK_FEEDBACK_TYPE' => lorem_word(),
+            'TRACKBACK_ID' => placeholder_codename(),
+            'TRACKBACK_TITLE' => lorem_phrase(),
+        ]);
+
         return lorem_globalise(do_lorem_template('GALLERY_CAROUSEL_MODE_SCREEN', [
             '_TITLE' => lorem_phrase(),
             'VIEW_URL' => placeholder_url(),
@@ -764,13 +771,13 @@ class Hook_addon_registry_galleries
             'ENTRY_VIEWS' => placeholder_number(),
             'ENTRY_ADD_DATE_RAW' => placeholder_date_raw(),
             'ENTRY_EDIT_DATE_RAW' => placeholder_date_raw(),
-            'ENTRY_TRACKBACK_DETAILS' => lorem_sentence_html(),
+            'ENTRY_TRACKBACK_DETAILS' => $trackbacks,
             'ENTRY_RATING_DETAILS' => lorem_sentence_html(),
             'ENTRY_COMMENT_DETAILS' => lorem_sentence_html(),
             'ENTRY_EDIT_URL' => placeholder_url(),
             'WARNING_DETAILS' => '',
             'TAGS' => placeholder_tags(),
-            'RATING_DETAILS' => lorem_sentence_html(),
+            'RATING_DETAILS' => placeholder_rating('gallery'),
             'COMMENT_DETAILS' => placeholder_comments_form(),
             'REP_IMAGE_URL' => placeholder_image_url(),
             'TITLE' => lorem_screen_title(),
@@ -812,7 +819,7 @@ class Hook_addon_registry_galleries
             '_TITLE' => lorem_phrase(),
             'DESCRIPTION' => lorem_paragraph_html(),
             'FILE_SIZE' => placeholder_filesize(),
-            'RATING_DETAILS' => '',
+            'RATING_DETAILS' => placeholder_rating('image'),
             'CAT' => placeholder_codename(),
             'IMAGE_URL' => placeholder_image_url(),
             'ID' => placeholder_numeric_id(),
@@ -845,6 +852,13 @@ class Hook_addon_registry_galleries
             ]));
         }
 
+        $trackbacks = do_lorem_template('TRACKBACK_WRAPPER', [
+            'TRACKBACKS' => placeholder_trackbacks(),
+            'TRACKBACK_FEEDBACK_TYPE' => lorem_word(),
+            'TRACKBACK_ID' => placeholder_codename(),
+            'TRACKBACK_TITLE' => lorem_phrase(),
+        ]);
+
         return lorem_globalise(do_lorem_template('GALLERY_CAROUSEL_MODE_SCREEN', [
             '_TITLE' => lorem_phrase(),
             'VIEW_URL' => placeholder_url(),
@@ -853,13 +867,13 @@ class Hook_addon_registry_galleries
             'ENTRY_VIEWS' => placeholder_number(),
             'ENTRY_ADD_DATE_RAW' => placeholder_date_raw(),
             'ENTRY_EDIT_DATE_RAW' => placeholder_date_raw(),
-            'ENTRY_TRACKBACK_DETAILS' => lorem_sentence_html(),
+            'ENTRY_TRACKBACK_DETAILS' => $trackbacks,
             'ENTRY_RATING_DETAILS' => lorem_sentence_html(),
             'ENTRY_COMMENT_DETAILS' => lorem_sentence_html(),
             'ENTRY_EDIT_URL' => placeholder_url(),
             'WARNING_DETAILS' => '',
             'TAGS' => placeholder_tags(),
-            'RATING_DETAILS' => lorem_sentence_html(),
+            'RATING_DETAILS' => placeholder_rating('gallery'),
             'COMMENT_DETAILS' => placeholder_comments_form(false),
             'REP_IMAGE_URL' => placeholder_image_url(),
             'TITLE' => lorem_screen_title(),
@@ -931,7 +945,7 @@ class Hook_addon_registry_galleries
             'TAGS' => placeholder_tags(),
             'CAT' => lorem_word(),
             'MEMBER_DETAILS' => lorem_sentence_html(),
-            'RATING_DETAILS' => lorem_sentence_html(),
+            'RATING_DETAILS' => placeholder_rating('gallery'),
             'COMMENT_DETAILS' => placeholder_comments_form(false),
             'ADD_GALLERY_URL' => placeholder_url(),
             'EDIT_URL' => placeholder_url(),
@@ -1008,7 +1022,7 @@ class Hook_addon_registry_galleries
             'EDIT_DATE_RAW' => placeholder_date_raw(),
             'ADD_DATE' => placeholder_date(),
             'EDIT_DATE' => placeholder_date(),
-            'RATING_DETAILS' => lorem_sentence_html(),
+            'RATING_DETAILS' => placeholder_rating('video'),
             'TRACKBACK_DETAILS' => lorem_sentence_html(),
             'COMMENT_DETAILS' => placeholder_comments_form(false),
             'EDIT_URL' => placeholder_url(),
@@ -1076,7 +1090,7 @@ class Hook_addon_registry_galleries
 
         foreach (placeholder_array() as $k => $v) {
             $map = [
-                'RATING_DETAILS' => lorem_phrase(),
+                'RATING_DETAILS' => placeholder_rating('image'),
                 'TITLE' => lorem_phrase(),
                 'DESCRIPTION' => lorem_paragraph_html(),
                 'ID' => placeholder_random_id(),
@@ -1105,11 +1119,11 @@ class Hook_addon_registry_galleries
 
         foreach (placeholder_array() as $k => $v) {
             $map = [
-                'RATING_DETAILS' => lorem_phrase(),
+                'RATING_DETAILS' => placeholder_rating('video'),
                 'TITLE' => lorem_phrase(),
                 'DESCRIPTION' => lorem_paragraph_html(),
                 'ID' => placeholder_random_id(),
-                'MEDIA_TYPE' => 'image',
+                'MEDIA_TYPE' => 'video',
                 'FILE_SIZE' => lorem_word(),
                 'SUBMITTER' => placeholder_numeric_id(),
                 'FULL_URL' => placeholder_url(),
@@ -1157,7 +1171,7 @@ class Hook_addon_registry_galleries
             'TAGS' => placeholder_tags(),
             'CAT' => '',
             'MEMBER_DETAILS' => '',
-            'RATING_DETAILS' => '',
+            'RATING_DETAILS' => placeholder_rating('gallery'),
             'COMMENT_DETAILS' => '',
             'ADD_GALLERY_URL' => placeholder_url(),
             'EDIT_URL' => placeholder_url(),

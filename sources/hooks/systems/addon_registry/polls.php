@@ -360,26 +360,13 @@ class Hook_addon_registry_polls
     {
         require_lang('trackbacks');
 
-        $trackbacks = new Tempcode();
-        foreach (placeholder_array(1) as $k => $v) {
-            $trackbacks->attach(do_lorem_template('TRACKBACK', [
-                'ID' => placeholder_numeric_id(),
-                '_DATE' => placeholder_date_raw(),
-                'DATE' => placeholder_date(),
-                'URL' => placeholder_url(),
-                'TITLE' => lorem_phrase(),
-                'EXCERPT' => lorem_paragraph(),
-                'NAME' => placeholder_codename(),
-            ]));
-        }
         $trackback_details = do_lorem_template('TRACKBACK_WRAPPER', [
-            'TRACKBACKS' => $trackbacks,
+            'TRACKBACKS' => placeholder_trackbacks(),
             'TRACKBACK_FEEDBACK_TYPE' => placeholder_codename(),
             'TRACKBACK_ID' => placeholder_numeric_id(),
             'TRACKBACK_TITLE' => lorem_phrase(),
         ]);
 
-        $rating_details = '';
         $comments = '';
         $comment_details = do_lorem_template('COMMENTS_WRAPPER', [
             'TYPE' => lorem_word(),
@@ -409,7 +396,7 @@ class Hook_addon_registry_polls
             '_VIEWS' => placeholder_number(),
             'VIEWS' => placeholder_number(),
             'TRACKBACK_DETAILS' => $trackback_details,
-            'RATING_DETAILS' => $rating_details,
+            'RATING_DETAILS' => placeholder_rating('polls'),
             'COMMENT_DETAILS' => $comment_details,
             'EDIT_URL' => placeholder_url(),
             'POLL_DETAILS' => $poll_details,

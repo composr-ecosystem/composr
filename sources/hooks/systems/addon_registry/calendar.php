@@ -799,7 +799,7 @@ class Hook_addon_registry_calendar
             'BACK_URL' => placeholder_url(),
             'CONTENT' => lorem_phrase(),
             'SUBSCRIBED' => $subscribed,
-            'RATING_DETAILS' => lorem_sentence_html(),
+            'RATING_DETAILS' => placeholder_rating('event'),
             'TRACKBACK_DETAILS' => lorem_sentence_html(),
             'VALIDATED' => true,
             'COMMENT_DETAILS' => placeholder_comments_form(false),

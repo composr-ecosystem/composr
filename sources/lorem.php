@@ -730,6 +730,78 @@ function placeholder_comments_form(bool $reviews = true, bool $first_post = fals
 }
 
 /**
+ * Get placeholder trackbacks.
+ *
+ * @param  integer $num_trackbacks The number of trackbacks to generate
+ * @return Tempcode The trackbacks
+ */
+function placeholder_trackbacks(int $num_trackbacks = 3) : object
+{
+    $trackbacks = new Tempcode();
+    foreach (placeholder_array($num_trackbacks) as $k => $value) {
+        $trackbacks->attach(do_lorem_template('TRACKBACK', [
+            'ID' => strval($k),
+            '_DATE' => placeholder_date_raw(),
+            'DATE' => placeholder_date(),
+            'URL' => placeholder_url(),
+            'TITLE' => lorem_phrase(),
+            'EXCERPT' => lorem_paragraph(),
+            'NAME' => $value,
+        ]));
+    }
+
+    return $trackbacks;
+}
+
+/**
+ * Get placeholder inline ratings.
+ *
+ * @param  ID_TEXT $content_type The content type
+ * @param  ID_TEXT $template The template to use
+ * @return Tempcode The ratings
+ */
+function placeholder_rating(string $content_type, string $template = 'RATING_BOX') : object
+{
+    $all_rating_criteria = [];
+    $all_rating_criteria[] = [
+        'TITLE' => lorem_phrase(),
+        'RATING' => make_string_tempcode('6'),
+        '_NUM_RATINGS' => placeholder_number(),
+        'NUM_RATINGS' => placeholder_number(),
+        'TYPE' => lorem_word(),
+    ];
+    $rating_form = do_lorem_template('RATING_FORM', [
+        'LIKES' => true,
+        'CONTENT_TYPE' => $content_type,
+        'ID' => placeholder_codename(),
+        'URL' => placeholder_url(),
+        'ALLOW_RATING' => true,
+        'ALL_RATING_CRITERIA' => $all_rating_criteria,
+        'HAS_RATINGS' => true,
+        '_OVERALL_NUM_RATINGS' => placeholder_number(),
+        'OVERALL_NUM_RATINGS' => placeholder_number(),
+        'SIMPLISTIC' => true,
+        'ERROR' => '',
+        'CONTENT_URL' => placeholder_url(),
+        'CONTENT_TITLE' => lorem_phrase(),
+    ]);
+
+    return do_lorem_template($template, [
+        '_OVERALL_NUM_RATINGS' => placeholder_number(),
+        'OVERALL_NUM_RATINGS' => placeholder_number(),
+        'LIKES' => true,
+        'CONTENT_TYPE' => $content_type,
+        'ID' => placeholder_codename(),
+        'HAS_RATINGS' => true,
+        'ALL_RATING_CRITERIA' => $all_rating_criteria,
+        '_NUM_RATINGS' => '10',
+        'NUM_RATINGS' => '10',
+        'RATING_FORM' => $rating_form,
+        'ERROR' => '',
+    ]);
+}
+
+/**
  * Get pagination.
  *
  * @return Tempcode Pagination

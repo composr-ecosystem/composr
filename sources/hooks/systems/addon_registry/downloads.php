@@ -469,7 +469,7 @@ class Hook_addon_registry_downloads
             'AUTHOR_URL' => placeholder_url(),
             'AUTHOR' => lorem_phrase(),
             'TRACKBACK_DETAILS' => lorem_sentence_html(),
-            'RATING_DETAILS' => lorem_sentence_html(),
+            'RATING_DETAILS' => placeholder_rating('downloads'),
             'COMMENT_DETAILS' => lorem_sentence_html(),
             'MAY_DOWNLOAD' => true,
             'NUM_IMAGES' => '3',

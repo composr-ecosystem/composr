@@ -197,7 +197,7 @@ class Hook_addon_registry_core_feedback_features
     {
         return [
             'templates/COMMENTS_DEFAULT_TEXT.tpl' => 'comments_default_text',
-            'templates/TRACKBACK.tpl' => 'administrative__trackback_delete_screen',
+            'templates/TRACKBACK.tpl' => 'trackback_wrapper',
             'templates/TRACKBACK_DELETE_SCREEN.tpl' => 'administrative__trackback_delete_screen',
             'xml/TRACKBACK_XML_NO_ERROR.xml' => 'trackback_xml_wrapper',
             'xml/TRACKBACK_XML_ERROR.xml' => 'trackback_xml_wrapper',
@@ -243,22 +243,9 @@ class Hook_addon_registry_core_feedback_features
      */
     public function tpl_preview__administrative__trackback_delete_screen() : object
     {
-        $trackbacks = new Tempcode();
-        foreach (placeholder_array() as $k => $value) {
-            $trackbacks->attach(do_lorem_template('TRACKBACK', [
-                'ID' => strval($k),
-                '_DATE' => placeholder_date_raw(),
-                'DATE' => placeholder_date(),
-                'URL' => placeholder_url(),
-                'TITLE' => lorem_phrase(),
-                'EXCERPT' => lorem_phrase(),
-                'NAME' => $value,
-            ]));
-        }
-
         return lorem_globalise(do_lorem_template('TRACKBACK_DELETE_SCREEN', [
             'TITLE' => lorem_screen_title(),
-            'TRACKBACKS' => $trackbacks,
+            'TRACKBACKS' => placeholder_trackbacks(),
             'LOTS' => lorem_phrase(),
         ]), null, '', true);
     }
@@ -412,24 +399,8 @@ class Hook_addon_registry_core_feedback_features
      */
     public function tpl_preview__trackback_wrapper() : object
     {
-        $trackbacks = placeholder_array();
-
-        $content = new Tempcode();
-
-        foreach ($trackbacks as $i => $value) {
-            $content->attach(do_lorem_template('TRACKBACK', [
-                'ID' => placeholder_codename() . strval($i),
-                '_DATE' => placeholder_date_raw(),
-                'DATE' => placeholder_date(),
-                'URL' => placeholder_url(),
-                'TITLE' => lorem_phrase(),
-                'EXCERPT' => '',
-                'NAME' => placeholder_codename(),
-            ]));
-        }
-
         return lorem_globalise(do_lorem_template('TRACKBACK_WRAPPER', [
-            'TRACKBACKS' => $content,
+            'TRACKBACKS' => placeholder_trackbacks(),
             'TRACKBACK_FEEDBACK_TYPE' => lorem_word(),
             'TRACKBACK_ID' => placeholder_codename(),
             'TRACKBACK_TITLE' => lorem_phrase(),
@@ -469,43 +440,7 @@ class Hook_addon_registry_core_feedback_features
      */
     public function tpl_preview__rating() : object
     {
-        $all_rating_criteria = [];
-        $all_rating_criteria[] = [
-            'TITLE' => lorem_phrase(),
-            'RATING' => make_string_tempcode('6'),
-            '_NUM_RATINGS' => placeholder_number(),
-            'NUM_RATINGS' => placeholder_number(),
-            'TYPE' => lorem_word(),
-        ];
-        $rating_form = do_lorem_template('RATING_FORM', [
-            'LIKES' => true,
-            'CONTENT_TYPE' => 'downloads',
-            'ID' => placeholder_codename(),
-            'URL' => placeholder_url(),
-            'ALLOW_RATING' => true,
-            'ALL_RATING_CRITERIA' => $all_rating_criteria,
-            'HAS_RATINGS' => true,
-            '_OVERALL_NUM_RATINGS' => placeholder_number(),
-            'OVERALL_NUM_RATINGS' => placeholder_number(),
-            'SIMPLISTIC' => true,
-            'ERROR' => '',
-            'CONTENT_URL' => placeholder_url(),
-            'CONTENT_TITLE' => lorem_phrase(),
-        ]);
-
-        return lorem_globalise(do_lorem_template('RATING_BOX', [
-            '_OVERALL_NUM_RATINGS' => placeholder_number(),
-            'OVERALL_NUM_RATINGS' => placeholder_number(),
-            'LIKES' => true,
-            'CONTENT_TYPE' => 'downloads',
-            'ID' => placeholder_codename(),
-            'HAS_RATINGS' => true,
-            'ALL_RATING_CRITERIA' => $all_rating_criteria,
-            '_NUM_RATINGS' => '10',
-            'NUM_RATINGS' => '10',
-            'RATING_FORM' => $rating_form,
-            'ERROR' => '',
-        ]), null, '', true);
+        return lorem_globalise(placeholder_rating(lorem_word()), null, '', true);
     }
 
     /**
@@ -517,44 +452,7 @@ class Hook_addon_registry_core_feedback_features
      */
     public function tpl_preview__rating_inline_static() : object
     {
-        $all_rating_criteria = [];
-        foreach (placeholder_array() as $i => $v) {
-            $all_rating_criteria[] = [
-                'TITLE' => lorem_phrase(),
-                'RATING' => '3',
-                '_OVERALL_NUM_RATINGS' => placeholder_number(),
-                'OVERALL_NUM_RATINGS' => placeholder_number(),
-                'TYPE' => lorem_word() . strval($i),
-            ];
-        }
-        $rating_form = do_lorem_template('RATING_FORM', [
-            'CONTENT_TYPE' => lorem_word(),
-            'ID' => placeholder_codename(),
-            'URL' => placeholder_url(),
-            'LIKES' => true,
-            'ALLOW_RATING' => true,
-            'ALL_RATING_CRITERIA' => $all_rating_criteria,
-            'HAS_RATINGS' => true,
-            'SIMPLISTIC' => false,
-            'ERROR' => '',
-            'CONTENT_URL' => placeholder_url(),
-            'CONTENT_TITLE' => lorem_phrase(),
-            '_OVERALL_NUM_RATINGS' => placeholder_number(),
-            'OVERALL_NUM_RATINGS' => placeholder_number(),
-        ]);
-        return lorem_globalise(do_lorem_template('RATING_INLINE_STATIC', [
-            'CONTENT_TYPE' => lorem_word(),
-            'ID' => placeholder_codename(),
-            'ALL_RATING_CRITERIA' => $all_rating_criteria,
-            'HAS_RATINGS' => true,
-            '_NUM_RATINGS' => placeholder_number(),
-            'NUM_RATINGS' => placeholder_number(),
-            '_OVERALL_NUM_RATINGS' => placeholder_number(),
-            'OVERALL_NUM_RATINGS' => placeholder_number(),
-            'RATING_FORM' => $rating_form,
-            'ERROR' => '',
-            'LIKES' => false,
-        ]), null, '', true);
+        return lorem_globalise(placeholder_rating(lorem_word(), 'RATING_INLINE_STATIC'), null, '', true);
     }
 
     /**
@@ -566,44 +464,7 @@ class Hook_addon_registry_core_feedback_features
      */
     public function tpl_preview__rating_inline_dynamic() : object
     {
-        $all_rating_criteria = [];
-        foreach (placeholder_array() as $i => $v) {
-            $all_rating_criteria[] = [
-                'TITLE' => lorem_phrase(),
-                'RATING' => '3',
-                '_OVERALL_NUM_RATINGS' => placeholder_number(),
-                'OVERALL_NUM_RATINGS' => placeholder_number(),
-                'TYPE' => lorem_word() . strval($i),
-            ];
-        }
-        $rating_form = do_lorem_template('RATING_FORM', [
-            'CONTENT_TYPE' => lorem_word(),
-            'ID' => placeholder_codename(),
-            'URL' => placeholder_url(),
-            'ALLOW_RATING' => true,
-            'ALL_RATING_CRITERIA' => $all_rating_criteria,
-            'HAS_RATINGS' => true,
-            'SIMPLISTIC' => false,
-            'ERROR' => '',
-            'LIKES' => true,
-            'CONTENT_URL' => placeholder_url(),
-            'CONTENT_TITLE' => lorem_phrase(),
-            '_OVERALL_NUM_RATINGS' => placeholder_number(),
-            'OVERALL_NUM_RATINGS' => placeholder_number(),
-        ]);
-        return lorem_globalise(do_lorem_template('RATING_INLINE_DYNAMIC', [
-            'CONTENT_TYPE' => lorem_word(),
-            'ID' => placeholder_codename(),
-            'ALL_RATING_CRITERIA' => $all_rating_criteria,
-            'HAS_RATINGS' => true,
-            '_NUM_RATINGS' => placeholder_number(),
-            'NUM_RATINGS' => placeholder_number(),
-            '_OVERALL_NUM_RATINGS' => placeholder_number(),
-            'OVERALL_NUM_RATINGS' => placeholder_number(),
-            'RATING_FORM' => $rating_form,
-            'ERROR' => '',
-            'LIKES' => false,
-        ]), null, '', true);
+        return lorem_globalise(placeholder_rating(lorem_word(), 'RATING_INLINE_DYNAMIC'), null, '', true);
     }
 
     /**

@@ -682,7 +682,7 @@ class Hook_addon_registry_news
             '_VIEWS' => placeholder_number(),
             'VIEWS' => placeholder_number(),
             'COMMENT_DETAILS' => placeholder_comments_form(false),
-            'RATING_DETAILS' => lorem_sentence(),
+            'RATING_DETAILS' => placeholder_rating('news'),
             'TRACKBACK_DETAILS' => lorem_sentence(),
             'DATE' => placeholder_date(),
             'AUTHOR' => lorem_word(),
