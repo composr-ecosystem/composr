@@ -427,6 +427,10 @@ class Hook_addon_registry_tickets
      */
     public function uninstall_test_content()
     {
+        if (get_forum_type() == 'none') {
+            return; // Does not support the none forum driver
+        }
+
         require_code('tickets');
         require_code('tickets2');
         require_lang('tickets');
@@ -444,6 +448,10 @@ class Hook_addon_registry_tickets
      */
     public function install_test_content()
     {
+        if (get_forum_type() == 'none') {
+            return; // Does not support the none forum driver
+        }
+
         require_code('tickets');
         require_code('tickets2');
         require_lang('tickets');
