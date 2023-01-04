@@ -8,23 +8,23 @@
 			<div class="clearfix cguid-{_GUID|*} raw-ajax-grow-spot">
 				<!-- TODO: This needs making looking good -->
 				{+START,LOOP,CONTENT_DATA}
-					<div style="float: left; position: relative">
+					<div class="multi-content-tile">
 						{+START,IF_NON_EMPTY,{CONTENT_URL}}<a href="{CONTENT_URL*}">{+END}<img width="200" height="200" alt="" src="{$THUMBNAIL*,{CONTENT_IMAGE_URL},200x200,,,,crop}" />{+START,IF_NON_EMPTY,{CONTENT_URL}}</a>{+END}
 
-						<ul style="position: absolute; bottom: 0; background: rgba(255,255,255,0.6); margin-bottom: 0; padding-bottom: 0;">
-							<li>{+START,IF_PASSED,CONTENT_TYPE_ICON}{+START,IF,{$NEQ,{CONTENT_IMAGE_URL},{CONTENT_TYPE_ICON}}}<img src="{CONTENT_TYPE_ICON*}" alt="{CONTENT_TYPE_LABEL}" /> {+END}{+END}{CONTENT_TITLE_HTML}</li>
-
-							{+START,IF_PASSED,CONTENT_TIME}
-								<li>{CONTENT_TIME_LABEL}: {CONTENT_TIME*}</li>
-							{+END}
+						<div class="multi-content-tile-details">
+							<span data-cms-tooltip="{ contents: '{CONTENT_TYPE_LABEL;^*}: {CONTENT_TITLE_PLAIN;^*}'}">{+START,IF_PASSED,CONTENT_TYPE_ICON}{+START,IF,{$NEQ,{CONTENT_IMAGE_URL},{CONTENT_TYPE_ICON}}}<img src="{CONTENT_TYPE_ICON*}" alt="{CONTENT_TYPE_LABEL}" width="24" /> {+END}{+END}{$TRUNCATE_LEFT,{CONTENT_TYPE_LABEL*}: {CONTENT_TITLE_PLAIN*},26}</span>
 
 							{+START,IF_PASSED,CONTENT_AUTHOR}
-								<li>{!AUTHOR}: {CONTENT_AUTHOR*}</li>
+								<br />{!SUBMITTED_BY,{CONTENT_AUTHOR*}}
 							{+END}
 							{+START,IF_NON_PASSED,CONTENT_AUTHOR}
-								<li>{!SUBMITTER}: {CONTENT_USERNAME*}</li>
+								<br />{!SUBMITTED_BY,{CONTENT_USERNAME*}}
 							{+END}
-						</ul>
+
+							{+START,IF_PASSED,_CONTENT_TIME}
+								<br />{!_AGO*,{$MAKE_RELATIVE_DATE,{_CONTENT_TIME}}}
+							{+END}
+						</div>
 					</div>
 				{+END}
 			</div>

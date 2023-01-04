@@ -243,11 +243,13 @@ PHP;
             }
 
             $image_field = $info['image_field'];
-            if (is_array($image_field)) {
-                $image_field = array_pop($image_field); // Anything ahead is just stuff we need to preload for the "CALL:" to work
-            }
-            if (($render_mode_requires_image) && (strpos($image_field, 'CALL:') === false)) {
-                $extra_where[$content_type] .= ' AND ' . db_string_not_equal_to($info['image_field'], '');
+            if ($image_field !== null) {
+                if (is_array($image_field)) {
+                    $image_field = array_pop($image_field); // Anything ahead is just stuff we need to preload for the "CALL:" to work
+                }
+                if (($render_mode_requires_image) && (strpos($image_field, 'CALL:') === false)) {
+                    $extra_where[$content_type] .= ' AND ' . db_string_not_equal_to($info['image_field'], '');
+                }
             }
         }
 
@@ -352,7 +354,7 @@ PHP;
 
             // Render
             if ($render_mode_requires_image) {
-                $image_url = $object->get_image_url($row);
+                $image_url = $object->get_image_url($row, IMAGE_URL_FALLBACK_HARD);
                 if ($image_url == '') {
                     continue;
                 }
@@ -398,9 +400,16 @@ PHP;
 
             $timestamp = $object->get_most_relevant_time($row);
 
+            // FUDGE: Use a short label for comcode pages
+            if ($content_type == 'comcode_page') {
+                $content_type_label = do_lang('zones:COMCODE_PAGE_FRIENDLY');
+            } else {
+                $content_type_label = $object->get_content_type_label($row);
+            }
+
             $_content_data = [
                 'CONTENT_TYPE' => $content_type,
-                'CONTENT_TYPE_LABEL' => $object->get_content_type_label($row),
+                'CONTENT_TYPE_LABEL' => $content_type_label,
                 'CONTENT_TYPE_ICON' => ($info['alternate_icon_theme_image'] === null) ? null : find_theme_image($info['alternate_icon_theme_image']),
                 'CONTENT_ID' => $content_id,
                 'CONTENT_URL' => $object->get_view_url($row),

@@ -365,7 +365,7 @@ function _get_timezoned_date_time(bool $include_time, int $timestamp, bool $use_
 }
 
 /**
- * Similar to get_timezoned_date_time, except works via Tempcode so is cache-safe for relative date display.
+ * Similar to get_timezoned_date_time, except works via Tempcode so is cache-safe for contextual date display.
  *
  * @param  TIME $timestamp Input timestamp
  * @return Tempcode Formatted date/time
@@ -376,7 +376,7 @@ function get_timezoned_date_time_tempcode(int $timestamp) : object
 }
 
 /**
- * Similar to get_timezoned_date, except works via Tempcode so is cache-safe for relative date display.
+ * Similar to get_timezoned_date, except works via Tempcode so is cache-safe for contextual date display.
  *
  * @param  TIME $timestamp Input timestamp
  * @return Tempcode Formatted date

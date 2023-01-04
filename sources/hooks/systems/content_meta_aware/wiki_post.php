@@ -57,8 +57,8 @@ class Hook_content_meta_aware_wiki_post extends Hook_CMA
             'parent_spec__field_name' => 'child_id',
             'category_is_string' => false,
 
-            'title_field' => 'the_message',
-            'title_field_dereference' => true,
+            'title_field' => null,
+            'title_field_dereference' => false,
             'description_field' => 'the_message',
             'description_field_dereference' => true,
             'description_field_supports_comcode' => true,
@@ -115,6 +115,30 @@ class Hook_content_meta_aware_wiki_post extends Hook_CMA
             'default_prominence_weight' => PROMINENCE_WEIGHT_NONE,
             'default_prominence_flags' => 0,
         ];
+    }
+
+    /**
+     * Get content title of a content row.
+     *
+     * @param  array $row The database row for the content
+     * @param  integer $render_type A FIELD_RENDER_* constant
+     * @param  boolean $falled_back_to_id Whether this has had to fall back to an ID due to missing title (returned by reference)
+     * @param  boolean $resource_fs_style Whether to use the content API as resource-fs requires (may be slightly different)
+     * @return mixed Content title (string or Tempcode, depending on $render_type)
+     */
+    public function get_title(array $row, int $render_type = 1, bool &$falled_back_to_id = false, bool $resource_fs_style = false)
+    {
+        $falled_back_to_id = false;
+        $ret = parent::get_title($row, $render_type, $falled_back_to_id, $resource_fs_style);
+        if ($falled_back_to_id) {
+            $wiki_page_title = $GLOBALS['SITE_DB']->query_select_value_if_there('wiki_pages', 'title', ['id' => $row['page_id']]);
+            if ($wiki_page_title !== null) {
+                $ret = do_lang('wiki:WIKI_POST_ON', $wiki_page_title);
+            } else {
+                $ret = do_lang('wiki:WIKI_POST_ON', ltrim($ret, '#'));
+            }
+        }
+        return $ret;
     }
 
     /**

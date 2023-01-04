@@ -375,7 +375,7 @@ function block_helper_script()
                         $list->attach(form_input_list_entry('', true));
                     }
                     foreach (array_keys($hooks) as $hook) {
-                        $list->attach(form_input_list_entry($hook, $hook == $default));
+                        $list->attach(form_input_list_entry($hook, in_array($hook, explode(',', $default))));
                     }
                     if ($is_multi_list) {
                         $fields->attach(form_input_multi_list($parameter_title, escape_html($description), $parameter, $list, null, 0));

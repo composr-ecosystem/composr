@@ -1075,7 +1075,7 @@ class Hook_addon_registry_galleries
 
         foreach (placeholder_array() as $k => $v) {
             $map = [
-                'RATING_DETAILS' => placeholder_rating('image'),
+                'RATING_DETAILS' => placeholder_rating('image', 'RATING_INLINE_STATIC'),
                 'TITLE' => lorem_phrase(),
                 'DESCRIPTION' => lorem_paragraph_html(),
                 'ID' => placeholder_random_id(),
@@ -1104,7 +1104,7 @@ class Hook_addon_registry_galleries
 
         foreach (placeholder_array() as $k => $v) {
             $map = [
-                'RATING_DETAILS' => placeholder_rating('video'),
+                'RATING_DETAILS' => placeholder_rating('video', 'RATING_INLINE_STATIC'),
                 'TITLE' => lorem_phrase(),
                 'DESCRIPTION' => lorem_paragraph_html(),
                 'ID' => placeholder_random_id(),
@@ -1156,7 +1156,7 @@ class Hook_addon_registry_galleries
             'TAGS' => placeholder_tags(),
             'CAT' => '',
             'MEMBER_DETAILS' => placeholder_member_box(),
-            'RATING_DETAILS' => placeholder_rating('gallery'),
+            'RATING_DETAILS' => placeholder_rating('gallery', 'RATING_INLINE_STATIC'),
             'COMMENT_DETAILS' => placeholder_comments(placeholder_comments_form(false)),
             'ADD_GALLERY_URL' => placeholder_url(),
             'EDIT_URL' => placeholder_url(),
