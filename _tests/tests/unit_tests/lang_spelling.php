@@ -289,7 +289,7 @@ class lang_spelling_test_set extends cms_test_case
         }
         if (
             (preg_match('#([^\]/A-Za-z"_<\']+)comcode([^A-Za-z"\']+)#', $string) != 0) &&
-            (!in_array($file, ['stress_test_loader.php', 'global.css', 'zones.ini']))
+            (!in_array($file, ['stress_test_loader.php', 'global.css', 'zones.ini', 'blocks.ini']))
         ) {
             $ob->assertTrue(false, 'The term \'comcode\' was used in ' . $path . '. This should be changed to \'Comcode\'.');
         }

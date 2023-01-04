@@ -11778,6 +11778,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         AUTHOR_MAIL
         MISSING_RESOURCE_SHORT
         COMCODE_PAGE_FRIENDLY
+        WIKI_POST_ON
     ')));
 
     if ($GLOBALS['DEV_MODE']) {

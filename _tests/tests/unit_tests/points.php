@@ -46,6 +46,11 @@ class points_test_set extends cms_test_case
             return;
         }
 
+        if (get_forum_type() == 'none') {
+            $this->assertTrue(false, 'Test does not work with the none forum driver.');
+            return;
+        }
+
         require_code('points');
         require_code('points2');
 

@@ -201,7 +201,7 @@ class Hook_addon_registry_actionlog
                         'DIFF_EVERYTHING_AFTER_URL' => placeholder_url(),
                     ]);
                 } else {
-                    $value = lorem_word();
+                    $value = make_string_tempcode(lorem_word());
                 }
                 $cells->attach(do_lorem_template('RESULTS_TABLE_FIELD', [
                     'VALUE' => $value,

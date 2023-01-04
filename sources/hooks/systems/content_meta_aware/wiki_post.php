@@ -131,9 +131,13 @@ class Hook_content_meta_aware_wiki_post extends Hook_CMA
         $falled_back_to_id = false;
         $ret = parent::get_title($row, $render_type, $falled_back_to_id, $resource_fs_style);
         if ($falled_back_to_id) {
-            $wiki_page_title = $GLOBALS['SITE_DB']->query_select_value_if_there('wiki_pages', 'title', ['id' => $row['page_id']]);
-            if ($wiki_page_title !== null) {
-                $ret = do_lang('wiki:WIKI_POST_ON', $wiki_page_title);
+            if (array_key_exists('page_id', $row)) {
+                $wiki_page_title = $GLOBALS['SITE_DB']->query_select_value_if_there('wiki_pages', 'title', ['id' => $row['page_id']]);
+                if ($wiki_page_title !== null) {
+                    $ret = do_lang('wiki:WIKI_POST_ON', $wiki_page_title);
+                } else {
+                    $ret = do_lang('wiki:WIKI_POST_ON', ltrim($ret, '#'));
+                }
             } else {
                 $ret = do_lang('wiki:WIKI_POST_ON', ltrim($ret, '#'));
             }

@@ -284,6 +284,8 @@ class cms_test_case extends WebTestCase
                 $start = null;
                 do {
                     $rows = $GLOBALS['FORUM_DRIVER']->get_next_members($start);
+                    if (count($rows) == 0) break;
+
                     $_member_id = $GLOBALS['FORUM_DRIVER']->mrow_member_id($rows[0]);
                     if ($_member_id != $first_admin) {
                         $member_id = $_member_id;

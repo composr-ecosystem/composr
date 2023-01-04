@@ -617,7 +617,7 @@ class Forum_driver_none extends Forum_driver_base
      */
     public function get_next_members(?int $member_id, int $total = 1) : array
     {
-        if ($member_id < 1) {
+        if (($member_id === null) || ($member_id < 1)) {
             return [[1]];
         }
 

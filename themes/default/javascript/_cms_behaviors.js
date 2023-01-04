@@ -158,7 +158,6 @@
                                     if (!tds[j].classList.contains('responsive-table-no-prefix-no-indent')/*This class specifies no indentation for a th/td label, so we must forcefully keep data-th as blank*/ && (thsFirstRow[j] != null)) {
                                         data = thsFirstRow[j].textContent.replace(/^\s+/, '').replace(/\s+$/, '');
                                     }
-                                    
                                     tds[j].setAttribute('data-th', data);
                                 }
                             }

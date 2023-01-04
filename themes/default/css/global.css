@@ -7852,15 +7852,15 @@ span:not(:empty)+#lightbox-position-in-set::before, span:not(:empty)+#lightbox-f
 */
 
 .multi-content-tile {
-	float: left; 
+	float: left;
 	position: relative;
 }
 
 .multi-content-tile-details {
-	position: absolute; 
-	bottom: 0; 
-	background: {$COLOR_RGBA,{$GET,WB},0.8}; 
-	margin-bottom: 0; 
+	position: absolute;
+	bottom: 0;
+	background: {$COLOR_RGBA,{$GET,WB},0.8};
+	margin-bottom: 0;
 	padding-bottom: 0;
 	width: 100%;
 }
