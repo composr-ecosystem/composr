@@ -218,7 +218,8 @@ PHP;
             $object = get_content_object($content_type);
             $info = ($object === null) ? null : $object->info($zone, true, ($select_b == '') ? null : $select_b);
             if ($info === null) {
-                return do_template('RED_ALERT', ['TEXT' => do_lang_tempcode('NO_SUCH_CONTENT_TYPE', escape_html($content_type))]);
+                unset($content_types[$i]);
+                continue;
             }
 
             if (($sort == 'prominence') && ($info['default_prominence_weight'] == PROMINENCE_WEIGHT_NONE)) {
