@@ -129,6 +129,11 @@ function require_lang_compile(string $codename, ?string $lang, ?string $type, st
                 return true;
             }
 
+            // Maybe a permission issue with the cache path?
+            if (!cms_is_writable(get_custom_file_base() . '/caches/lang')) {
+                critical_error('CRIT_LANG_PERM');
+            }
+
             if (($codename !== 'critical_error') || ($lang !== get_site_default_lang())) {
                 $error_msg = do_lang_tempcode('MISSING_LANG_FILE', escape_html($codename), escape_html($lang));
                 if (get_page_name() == 'admin_themes') {
