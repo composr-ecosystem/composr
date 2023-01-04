@@ -173,6 +173,8 @@ class Forum_driver_none extends Forum_driver_base
         $PROBED_FORUM_CONFIG['sql_database'] = 'cms';
         $PROBED_FORUM_CONFIG['sql_user'] = $GLOBALS['DB_DRIVER']->default_user();
         $PROBED_FORUM_CONFIG['sql_pass_exists'] = ($GLOBALS['DB_DRIVER']->default_password() != '');
+        $PROBED_FORUM_CONFIG['cookie_member_id'] = 'cms_member_id';
+        $PROBED_FORUM_CONFIG['cookie_member_hash'] = 'cms_member_hash';
         return true;
     }
 
