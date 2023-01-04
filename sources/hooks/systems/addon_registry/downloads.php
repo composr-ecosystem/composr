@@ -583,13 +583,16 @@ class Hook_addon_registry_downloads
             1,
             1
         );
-        $GLOBALS['SITE_DB']->query_insert('review_supplement', [
-            'r_rating' => 3,
-            'r_rating_for_type' => 'downloads',
-            'r_rating_for_id' => $content_id,
-            'r_rating_type' => '',
-            'r_topic_id' => $GLOBALS['LAST_TOPIC_ID'],
-            'r_post_id' => $GLOBALS['LAST_POST_ID'],
-        ]);
+
+        if (array_key_exists('LAST_POST_ID', $GLOBALS) && ($GLOBALS['LAST_POST_ID'] !== null)) {
+            $GLOBALS['SITE_DB']->query_insert('review_supplement', [
+                'r_rating' => 3,
+                'r_rating_for_type' => 'downloads',
+                'r_rating_for_id' => $content_id,
+                'r_rating_type' => '',
+                'r_topic_id' => $GLOBALS['LAST_TOPIC_ID'],
+                'r_post_id' => $GLOBALS['LAST_POST_ID'],
+            ]);
+        }
     }
 }
