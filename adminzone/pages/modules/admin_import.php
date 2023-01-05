@@ -650,7 +650,6 @@ class Module_admin_import
         $refresh_time = either_param_integer('refresh_time', 0); // Shouldn't default, but reported on some systems to do so
         cms_set_time_limit($refresh_time);
         send_http_output_ping();
-        cms_ini_set('log_errors', '0');
         global $I_REFRESH_URL, $I_REFRESH_TIME;
         $I_REFRESH_URL = $refresh_url;
         $I_REFRESH_TIME = $refresh_time;
@@ -659,7 +658,7 @@ class Module_admin_import
             register_tick_function('i_timed_refresh');
         }
 
-        cms_ini_set('log_errors', '0');
+        // cms_ini_set('log_errors', '0');
 
         // Get data from session
         $session_row = $GLOBALS['SITE_DB']->query_select('import_session', ['*'], ['imp_session' => get_session_id()], '', 1);

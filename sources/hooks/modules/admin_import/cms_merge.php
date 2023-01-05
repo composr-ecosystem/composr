@@ -261,7 +261,9 @@ class Hook_import_cms_merge
         $sites_site_info = $SITE_INFO;
         $SITE_INFO = $backup_site_info;
 
-        $answer = ($sites_site_info['db_forums'] == get_db_forums()) && ($sites_site_info['db_forums_host'] == get_db_forums_host()) && (@$sites_site_info['cns_table_prefix'] === @$SITE_INFO['cns_table_prefix']);
+        $array_prefix = array_key_exists('db_forums', $sites_site_info) ? 'db_forums' : 'db_site';
+
+        $answer = ($sites_site_info[$array_prefix] == get_db_forums()) && ($sites_site_info[$array_prefix . '_host'] == get_db_forums_host()) && (@$sites_site_info['table_prefix'] === @$SITE_INFO['table_prefix']);
 
         return $answer;
     }
@@ -714,7 +716,7 @@ class Hook_import_cms_merge
         $row_start = 0;
         $rows = [];
         do {
-            $rows = $db->query_select('attachments', ['*'], 'ORDER BY id', 200, $row_start);
+            $rows = $db->query_select('attachments', ['*'], [], 'ORDER BY id', 200, $row_start);
             $this->_fix_comcode_ownership($rows);
             foreach ($rows as $row) {
                 if (import_check_if_imported('attachment', strval($row['id']))) {
@@ -938,7 +940,7 @@ class Hook_import_cms_merge
                     $row['site_url'],
                     $row['display_likelihood'],
                     $row['notes'],
-                    $row['the_type'],
+                    $row['deployment_agreement'],
                     $row['expiry_date'],
                     $submitter,
                     $row['validated'],
@@ -1412,7 +1414,7 @@ class Hook_import_cms_merge
             $GLOBALS['SITE_DB']->query_delete('newsletter_subscribers', ['email' => $row['email'], 'language' => $row['language']], '', 1);
             $GLOBALS['SITE_DB']->query_insert('newsletter_subscribers', ['n_forename' => $row['n_forename'], 'n_surname' => $row['n_surname'], 'join_time' => $row['join_time'], 'email' => $row['email'], 'code_confirm' => $row['code_confirm'], 'pass_salt' => $row['pass_salt'], 'the_password' => $row['the_password'], 'language' => $row['language']]);
             if ($old_format) {
-                $rows[] = ['newsletter_id' => db_get_first_id(), 'email' => $row['email'], 'the_level' => $row['the_level']];
+                $rows[] = ['newsletter_id' => db_get_first_id(), 'email' => $row['email']];
             }
         }
         if (!$old_format) {
@@ -1426,13 +1428,13 @@ class Hook_import_cms_merge
             if ($newsletter_id === null) {
                 continue;
             }
-            $GLOBALS['SITE_DB']->query_insert('newsletter_subscribe', ['newsletter_id' => $newsletter_id, 'email' => $row['email'], 'the_level' => $row['the_level']]);
+            $GLOBALS['SITE_DB']->query_insert('newsletter_subscribe', ['newsletter_id' => $newsletter_id, 'email' => $row['email']]);
         }
 
         $rows = $db->query_select('newsletter_archive', ['*']);
         $this->_fix_comcode_ownership($rows);
         foreach ($rows as $row) {
-            $GLOBALS['SITE_DB']->query_insert('newsletter_archive', ['date_and_time' => $row['date_and_time'], 'subject' => $row['subject'], 'newsletter' => $row['newsletter'], 'language' => $row['language'], 'importance_level' => $row['importance_level']]);
+            $GLOBALS['SITE_DB']->query_insert('newsletter_archive', ['date_and_time' => $row['date_and_time'], 'subject' => $row['subject'], 'newsletter' => $row['newsletter'], 'language' => $row['language']]);
         }
 
         $rows = $db->query_select('newsletter_periodic', ['*'], [], '', null, 0, true);
@@ -1917,7 +1919,7 @@ class Hook_import_cms_merge
     {
         require_code('wordfilter');
 
-        $rows = $db->query_select('wordfilter', ['word'], [], '', null, 0, true);
+        $rows = $db->query_select('wordfilter', ['*'], [], '', null, 0, true);
         if ($rows === null) {
             return;
         }
@@ -2056,7 +2058,7 @@ class Hook_import_cms_merge
      */
     public function import_themes(object $db, string $table_prefix, string $file_base)
     {
-        $rows = $db->query('SELECT * FROM ' . $table_prefix . 'theme_images WHERE path LIKE \'' . db_encode_like('%/images\_custom/%') . '\'');
+        $rows = $db->query('SELECT * FROM ' . $table_prefix . 'theme_images WHERE url LIKE \'' . db_encode_like('%/images\_custom/%') . '\'');
         $this->_fix_comcode_ownership($rows);
         foreach ($rows as $row) {
             if (!is_dir(get_file_base() . '/themes/' . $row['theme']) && !is_dir(get_custom_file_base() . '/themes/' . $row['theme'])) {
@@ -2326,7 +2328,7 @@ class Hook_import_cms_merge
 
             $id = (get_param_integer('keep_preserve_ids', 0) == 0) ? null : $row['id'];
 
-            $rep_image = $row['cc_rep_image'];
+            $rep_image = $row['rep_image'];
 
             $id_new = actual_add_catalogue_category($row['c_name'], $this->get_lang_string($db, $row['cc_title']), $this->get_lang_string($db, $row['cc_description']), $row['cc_notes'], ($row['cc_parent_id'] === null) ? null : -$row['cc_parent_id'], $rep_image, $row['cc_move_days_lower'], $row['cc_move_days_higher'], $row['cc_move_target'], $row['cc_add_date'], $id);
 
@@ -2336,7 +2338,11 @@ class Hook_import_cms_merge
 
         $rows = $GLOBALS['SITE_DB']->query('SELECT id,cc_parent_id FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_categories WHERE cc_parent_id<0');
         foreach ($rows as $row) {
-            $parent_id = import_id_remap_get('catalogue_category', -$row['cc_parent_id'], true);
+            if ($row['cc_parent_id'] !== null) {
+                $parent_id = import_id_remap_get('catalogue_category', strval(-$row['cc_parent_id']), true);
+            } else {
+                $parent_id = null;
+            }
             $GLOBALS['SITE_DB']->query_update('catalogue_categories', ['cc_parent_id' => $parent_id], ['id' => $row['id']], '', 1);
         }
         $rows = $db->query_select('catalogue_entries', ['*'], [], 'ORDER BY id');
@@ -2990,7 +2996,7 @@ class Hook_import_cms_merge
             if ($id_new === null) {
                 $title = $this->get_lang_string($db, $row['g_title']);
 
-                $id_new = cns_make_group($name, $row['g_is_default'], $row['g_is_super_admin'], $row['g_is_super_moderator'], $title, '', $row['g_promotion_target'], $row['g_promotion_threshold'], $row['g_promotion_approval'], -$row['g_group_leader'], $row['g_flood_control_submit_secs'], $row['g_flood_control_access_secs'], $row['g_max_daily_upload_mb'], $row['g_max_attachments_per_post'], $row['g_max_avatar_width'], $row['g_max_avatar_height'], $row['g_max_post_length_comcode'], $row['g_max_sig_length_comcode'], $row['g_gift_points_base'], $row['g_gift_points_per_day'], $row['g_enquire_on_new_ips'], $row['g_is_presented_at_install'], $row['g_hidden'], $row['g_order'], $row['g_rank_image_pri_only'], $row['g_open_membership'], $row['g_is_private_club']);
+                $id_new = cns_make_group($name, $row['g_is_default'], $row['g_is_super_admin'], $row['g_is_super_moderator'], $title, '', $row['g_promotion_target'], $row['g_promotion_threshold'], $row['g_promotion_approval'], ($row['g_group_leader'] !== null) ? -$row['g_group_leader'] : null, $row['g_flood_control_submit_secs'], $row['g_flood_control_access_secs'], $row['g_max_daily_upload_mb'], $row['g_max_attachments_per_post'], $row['g_max_avatar_width'], $row['g_max_avatar_height'], $row['g_max_post_length_comcode'], $row['g_max_sig_length_comcode'], $row['g_gift_points_base'], $row['g_gift_points_per_day'], $row['g_enquire_on_new_ips'], $row['g_is_presented_at_install'], $row['g_hidden'], $row['g_order'], $row['g_rank_image_pri_only'], $row['g_open_membership'], $row['g_is_private_club']);
             }
 
             import_id_remap_put('group', strval($row['id']), $id_new);
@@ -3027,7 +3033,7 @@ class Hook_import_cms_merge
         $row_start = 0;
         $rows = [];
         do {
-            $rows = $db->query_select('f_members', ['*'], 'ORDER BY id', 200, $row_start);
+            $rows = $db->query_select('f_members', ['*'], [], 'ORDER BY id', 200, $row_start);
             $this->_fix_comcode_ownership($rows);
             foreach ($rows as $row) {
                 if (import_check_if_imported('member', strval($row['id']))) {
@@ -3094,20 +3100,16 @@ class Hook_import_cms_merge
                     if (array_key_exists(0, $rows2)) {
                         $row2 = [];
                         foreach ($rows2[0] as $key => $val) {
-                            if ($val === null) {
-                                $val = '';
-                            }
                             if (preg_match('#^field_\d+$#', $key) != 0) {
                                 $cpf_id = import_id_remap_get('cpf', substr($key, 6), true);
                                 if ($cpf_id === null) {
                                     continue;
                                 }
                                 $cpf_type = $cpf_types[$cpf_id];
-                                if (($cpf_type == 'short_trans') || ($cpf_type == 'long_trans')) {
+                                if ((($cpf_type == 'short_trans') || ($cpf_type == 'long_trans'))) {
                                     unset($row2['field_' . strval($cpf_id) . '__text_parsed']);
                                     unset($row2['field_' . strval($cpf_id) . '__source_user']);
-
-                                    $row2 = insert_lang_comcode('field_' . strval($cpf_id), $this->get_lang_string($db, intval($val)), 3) + $row2;
+                                    $row2 = insert_lang_comcode('field_' . strval($cpf_id), $this->get_lang_string($db, $val), 3) + $row2;
                                 } else {
                                     $row2['field_' . strval($cpf_id)] = $val;
                                 }
