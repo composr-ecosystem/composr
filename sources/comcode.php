@@ -256,7 +256,6 @@ function comcode_to_tempcode(string $comcode, ?int $source_member = null, bool $
  */
 function strip_comcode(string $in, bool $for_extract = false, array $tags_to_preserve = [], bool $include_urls = false) : string
 {
-
     $text = $in;
 
     if ($text == '') {
