@@ -67,7 +67,6 @@ class Hook_import_cms_merge
             'comcode_pages',
             'staff_checklist_cus_tasks',
             'notifications',
-            'awards',
             'downloads_and_categories', // including rating, trackbacks, seo
             'cns_forum_groupings',
             'cns_emoticons',
@@ -96,12 +95,13 @@ class Hook_import_cms_merge
             'ip_bans',
             'wordfilter',
             'zones',
-            'permissions', // including HTTPS
             'attachment_references',
-            'feedback',
             'ecommerce',
             'cns_welcome_emails',
             'quizzes',
+            'awards',
+            'feedback',
+            'permissions', // including HTTPS
             'leader_boards',
         ];
         $info['dependencies'] = [
@@ -129,13 +129,12 @@ class Hook_import_cms_merge
            'menu_items' => [],
            'cns_custom_profile_fields' => ['cns_groups'],
            'cns_multi_moderations' => ['cns_forums'],
-           //'cns_groups' => ['catalogues'], Cyclic dependency, so we won't do this one
+           // 'cns_groups' => ['catalogues'], Cyclic dependency
            'cns_members' => ['cns_groups', 'cns_custom_profile_fields', 'attachments'],
            'cns_forums' => ['cns_forum_groupings', 'cns_members', 'cns_groups', 'catalogues'],
            'cns_topics' => ['cns_forums', 'cns_members', 'catalogues'],
            'cns_polls_and_votes' => ['cns_topics', 'cns_members'],
            'cns_posts' => ['custom_comcode', 'cns_topics', 'cns_members', 'attachments', 'catalogues'],
-           'cns_private_topics' => ['custom_comcode', 'cns_members'],
            'cns_post_templates' => ['cns_forums'],
            'cns_warnings' => ['cns_members', 'cns_groups', 'cns_topics', 'cns_forums'],
            'newsletter_subscriptions' => ['attachments'],
@@ -147,6 +146,8 @@ class Hook_import_cms_merge
            'aggregate_type_instances' => [],
            'leader_boards' => ['cns_members', 'cns_groups'],
         ];
+
+        $info['import'] = sort_imports_by_dependencies($info['import'], $info['dependencies']);
 
         $_cleanup_url = build_url(['page' => 'admin_cleanup'], get_module_zone('admin_cleanup'));
         $cleanup_url = $_cleanup_url->evaluate();
@@ -748,7 +749,7 @@ class Hook_import_cms_merge
         $row_start = 0;
         $rows = [];
         do {
-            $rows = $db->query_select('attachment_refs', ['*'], '', 200, $row_start);
+            $rows = $db->query_select('attachment_refs', ['*'], [], '', 200, $row_start);
             $this->_fix_comcode_ownership($rows);
             foreach ($rows as $row) {
                 $import_type_fixed = $row['r_referer_type'];
@@ -1469,7 +1470,7 @@ class Hook_import_cms_merge
             }
 
             $id = (get_param_integer('keep_preserve_ids', 0) == 0) ? null : $row['id'];
-            $id = add_download_category($this->get_lang_string($db, $row['category']), -$row['parent_id'], $this->get_lang_string($db, $row['the_description']), $row['notes'], $row['rep_image'], $id);
+            $id = add_download_category($this->get_lang_string($db, $row['category']), ($row['parent_id'] === null) ? null : -$row['parent_id'], $this->get_lang_string($db, $row['the_description']), $row['notes'], $row['rep_image'], $id);
 
             import_id_remap_put('download_category', strval($row['id']), $id);
         }
@@ -3336,7 +3337,7 @@ class Hook_import_cms_merge
                 continue;
             }
 
-            $forum_groupings_id = import_id_remap_get('forum_groupings', strval($row['f_forum_groupings_id']), true);
+            $forum_groupings_id = import_id_remap_get('forum_groupings', strval($row['f_forum_grouping_id']), true);
 
             $id_new = cns_make_forum($row['f_name'], $this->get_lang_string($db, $row['f_description']), $forum_groupings_id, [], db_get_first_id(), $row['f_position'], $row['f_post_count_increment'], $row['f_order_sub_alpha'], $this->get_lang_string($db, $row['f_intro_question']), $row['f_intro_answer'], $row['f_redirection'], $row['f_order'], $row['f_is_threaded'], $row['f_allows_anonymous_posts'], $row['f_mail_email_address'], $row['f_mail_server_type'], $row['f_mail_server_host'], $row['f_mail_server_port'], $row['f_mail_folder'], $row['f_mail_username'], $row['f_mail_password'], $row['f_mail_nonmatch_policy'], $row['f_mail_unconfirmed_notice'], $row['f_poll_default_options_xml']);
             import_id_remap_put('forum', strval($row['id']), $id_new);
@@ -3394,7 +3395,7 @@ class Hook_import_cms_merge
         $row_start = 0;
         $rows = [];
         do {
-            $rows = $db->query_select('f_topics', ['*'], 'ORDER BY id', 200, $row_start);
+            $rows = $db->query_select('f_topics', ['*'], [], 'ORDER BY id', 200, $row_start);
             $this->_fix_comcode_ownership($rows);
             foreach ($rows as $row) {
                 if (import_check_if_imported('topic', strval($row['id']))) {
@@ -3472,7 +3473,7 @@ class Hook_import_cms_merge
         $row_start = 0;
         $rows = [];
         do {
-            $rows = $db->query_select('f_special_pt_access', ['*'], 'ORDER BY s_topic_id,s_member_id', 200, $row_start);
+            $rows = $db->query_select('f_special_pt_access', ['*'], [], 'ORDER BY s_topic_id,s_member_id', 200, $row_start);
             $this->_fix_comcode_ownership($rows);
             foreach ($rows as $row) {
                 $row['s_member_id'] = import_id_remap_get('member', strval($row['s_member_id']), true);
@@ -3521,7 +3522,7 @@ class Hook_import_cms_merge
 
         $rows = [];
         do {
-            $rows = $db->query_select('f_posts', ['*'], 'ORDER BY id', 200, $row_start);
+            $rows = $db->query_select('f_posts', ['*'], [], 'ORDER BY id', 200, $row_start);
             $this->_fix_comcode_ownership($rows);
             foreach ($rows as $row) {
                 if (import_check_if_imported('post', strval($row['id']))) {
@@ -3546,6 +3547,8 @@ class Hook_import_cms_merge
                     $TOPIC_FORUM_CACHE[$topic_id] = $forum_id;
                 }
 
+                $topic_is_pt = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_pt_from', ['id' => $topic_id]);
+
                 $last_edit_by = $row['p_last_edit_by'];
                 if ($last_edit_by !== null) {
                     $last_edit_by = import_id_remap_get('member', strval($last_edit_by), true);
@@ -3558,7 +3561,7 @@ class Hook_import_cms_merge
                     }
                 }
                 $id = (get_param_integer('keep_preserve_ids', 0) == 0) ? null : $row['id'];
-                $id_new = cns_make_post($topic_id, $row['p_title'], $this->get_lang_string($db, $row['p_post']), 0, false, $row['p_validated'], $row['p_is_emphasised'], $row['p_poster_name_if_guest'], $row['p_ip_address'], $row['p_time'], $member_id, $intended_solely_for, $row['p_last_edit_time'], $last_edit_by, false, false, $forum_id, false, '', 0, $id, false, true);
+                $id_new = cns_make_post($topic_id, $row['p_title'], $this->get_lang_string($db, $row['p_post']), 0, false, $row['p_validated'], $row['p_is_emphasised'], $row['p_poster_name_if_guest'], $row['p_ip_address'], $row['p_time'], $member_id, $intended_solely_for, $row['p_last_edit_time'], $last_edit_by, false, false, $forum_id, false, '', $id, false, false, ($topic_is_pt !== null), false, $row['p_parent_id'], false);
 
                 import_id_remap_put('post', strval($row['id']), $id_new);
             }

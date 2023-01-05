@@ -254,8 +254,13 @@ function comcode_to_tempcode(string $comcode, ?int $source_member = null, bool $
  * @param  boolean $include_urls Whether to include URLs in the text version
  * @return string Purified plain-text
  */
-function strip_comcode(string $in, bool $for_extract = false, array $tags_to_preserve = [], bool $include_urls = false) : string
+function strip_comcode(?string $in, bool $for_extract = false, array $tags_to_preserve = [], bool $include_urls = false) : string
 {
+    // TODO: temporary; remove this and the null directive in the function after testing cms_merge
+    if ($in === null) {
+        $in = '';
+    }
+
     $text = $in;
 
     if ($text == '') {

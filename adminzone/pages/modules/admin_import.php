@@ -658,7 +658,10 @@ class Module_admin_import
             register_tick_function('i_timed_refresh');
         }
 
-        // cms_ini_set('log_errors', '0');
+        // Do not log errors if not in dev mode; we will collect them later and present a general message.
+        if (!$GLOBALS['DEV_MODE']) {
+            cms_ini_set('log_errors', '0');
+        }
 
         // Get data from session
         $session_row = $GLOBALS['SITE_DB']->query_select('import_session', ['*'], ['imp_session' => get_session_id()], '', 1);

@@ -223,3 +223,53 @@ function set_database_index_maintenance(bool $on)
         pop_db_scope_check();
     }
 }
+
+/**
+ * Sort a list of imports according to dependencies to help ensure imports are listed in the order they should be run.
+ * Note: this is not very performant, but it is assumed the import tool will rarely ever be used by multiple people at the same time.
+ *
+ * @param  array $imports List of imports
+ * @param  array $dependencies Map of imports to their dependencies
+ * @return array The newly-sorted imports
+ */
+function sort_imports_by_dependencies(array $imports, array $dependencies) : array
+{
+    $_imports = [];
+
+    // Imports with no dependencies should go first
+    foreach ($imports as $import) {
+        if (!isset($dependencies[$import]) || count($dependencies[$import]) == 0) {
+            $_imports[] = $import;
+            unset($dependencies[$import]); // We want to ignore these imports in future foreach loops as we already determined these go first
+        }
+    }
+
+    // Now loop through the imports with dependencies until we've processed all of them
+    $fatal_exit = false;
+    do {
+        $fatal_exit = true; // This should be set to false if we processed at least 1 import this iteration. Otherwise, bail from the loop.
+        foreach ($dependencies as $import => $dependency_array) {
+            // Remove all the dependencies we already processed as going before this import
+            foreach ($dependency_array as $i => $dependency) {
+                if (in_array($dependency, $_imports)) {
+                    unset($dependencies[$import][$i]);
+                    $fatal_exit = false; // We made a dependency check modification, so we can safely assume no infinite loop happened
+                }
+            }
+
+            // If all dependencies are set to go before this import, we can safely set this import to go next.
+            if (count($dependency_array) == 0) {
+                $_imports[] = $import;
+                unset($dependencies[$import]);
+                $fatal_exit = false; // We added an import to our array; we know we are not in an infinite loop.
+            }
+        }
+    } while ((count($dependencies) > 0) && !$fatal_exit);
+
+    // Did we exit the loop prematurely (probably because of a cyclic dependency)?
+    if ($fatal_exit) {
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+    }
+
+    return $_imports;
+}

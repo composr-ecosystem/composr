@@ -302,7 +302,7 @@ function dload_script()
  * Add a download category.
  *
  * @param  SHORT_TEXT $category The name of the download category
- * @param  AUTO_LINK $parent_id The parent download category
+ * @param  AUTO_LINK $parent_id The parent download category (null: this is a root category)
  * @param  LONG_TEXT $description A description
  * @param  LONG_TEXT $notes Hidden notes pertaining to this download category
  * @param  URLPATH $rep_image The representative image for the category (blank: none)
@@ -312,7 +312,7 @@ function dload_script()
  * @param  ?LONG_TEXT $meta_description Meta description for this resource (null: do not edit) (blank: implicit)
  * @return AUTO_LINK The ID of the newly added download category
  */
-function add_download_category(string $category, int $parent_id, string $description, string $notes = '', string $rep_image = '', ?int $id = null, ?int $add_time = null, ?string $meta_keywords = '', ?string $meta_description = '') : int
+function add_download_category(string $category, ?int $parent_id, string $description, string $notes = '', string $rep_image = '', ?int $id = null, ?int $add_time = null, ?string $meta_keywords = '', ?string $meta_description = '') : int
 {
     require_code('global4');
     prevent_double_submit('ADD_DOWNLOAD_CATEGORY', null, $category);

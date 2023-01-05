@@ -86,6 +86,8 @@ class Hook_import_mybb
            'cns_multi_moderations' => ['cns_forums', 'cns_members', 'cns_topics', 'cns_posts', 'cns_private_topics', 'cns_forum_groupings'],
         ];
 
+        $info['import'] = sort_imports_by_dependencies($info['import'], $info['dependencies']);
+
         $_cleanup_url = build_url(['page' => 'admin_cleanup'], get_module_zone('admin_cleanup'));
         $cleanup_url = $_cleanup_url->evaluate();
         $info['final_message'] = do_lang_tempcode('FORUM_CACHE_CLEAR', escape_html($cleanup_url));

@@ -218,27 +218,37 @@ function generate_catalogue_entry_title(array $row, int $render_type = 1, bool $
     }
     $field = $field_values[$unique_key_num];
 
-    $value = $field['effective_value'];
+    $val = $field['cf_default'];
+    $val_is_escaped = false;
+    if (array_key_exists('effective_value_pure', $field)) {
+        $val = $field['effective_value_pure'];
+    } elseif (array_key_exists('effective_value', $field)) {
+        $val = $field['effective_value'];
+    }
+
+    if (array_key_exists('effective_value', $field)) { // Implies Comcode was involved
+        $val_is_escaped = true;
+    }
 
     switch ($render_type) {
         case FIELD_RENDER_COMCODE:
-            if (is_object($field['effective_value'])) { // Implies Comcode was involved
-                return $field['effective_value_pure'];
+            if ($val_is_escaped) {
+                return $val;
             }
-            return comcode_escape($field['effective_value_pure']);
+            return comcode_escape($val);
 
         case FIELD_RENDER_HTML:
-            if (is_object($field['effective_value'])) {
-                return $field['effective_value'];
+            if (is_object($val)) {
+                return $val;
             }
-            return make_string_tempcode(escape_html($field['effective_value']));
+            return make_string_tempcode(escape_html($val));
     }
 
     // FIELD_RENDER_PLAIN:
-    if (is_object($field['effective_value'])) {
-        return strip_html($field['effective_value']->evaluate());
+    if (is_object($val)) {
+        return strip_html($val->evaluate());
     }
-    return $field['effective_value'];
+    return $val;
 }
 
 /**
