@@ -4549,7 +4549,7 @@ function get_login_url() : array
 
         default:
             $join_url = $GLOBALS['FORUM_DRIVER']->join_url(true);
-            if (!is_string($join_url)) {
+            if (is_string($join_url)) {
                 $join_url = make_string_tempcode($join_url);
             }
             break;
