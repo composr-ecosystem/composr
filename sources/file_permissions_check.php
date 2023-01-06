@@ -582,7 +582,7 @@ class CMSPermissionsScannerSimplified extends CMSPermissionsScanner
         }
 
         if (($is_directory) && (function_exists('is_executable'))) {
-            if (!is_executable($path)) {
+            if (!is_executable($path) && (strpos(PHP_OS, 'WIN') === false)) {
                 $fileperm_problems |= self::BITMASK_PERMISSIONS_EXECUTE;
             }
         }
