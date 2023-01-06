@@ -44,7 +44,7 @@ class download_indexing_test_set extends cms_test_case
 
             $this->assertTrue(strpos($data_mash, 'foobar') !== false);
         } else {
-            $this->asssertTrue(false, 'PHP Gzip extension is not enabled on server, cannot run test');
+            $this->assertTrue(false, 'PHP Gzip extension is not enabled on server, cannot run test');
         }
 
         unlink($temp_name);
@@ -53,7 +53,7 @@ class download_indexing_test_set extends cms_test_case
     public function testZipIndexing()
     {
         if ((!function_exists('zip_open')) && (get_option('unzip_cmd') == '')) {
-            $this->asssertTrue(false, 'Zip is not enabled on server, cannot run test');
+            $this->assertTrue(false, 'Zip is not enabled on server, cannot run test');
             return;
         }
 
@@ -79,11 +79,11 @@ class download_indexing_test_set extends cms_test_case
     public function testPdfIndexing()
     {
         if (!addon_installed('composr_tutorials')) {
-            $this->asssertTrue(false, 'Composr tutorials addon needed');
+            $this->assertTrue(false, 'Composr tutorials addon needed');
             return;
         }
         if (_find_pdftohtml() == 'pdftohtml'/*could not explicitly find*/) {
-            $this->asssertTrue(false, 'pdftohtml is not available on server');
+            $this->assertTrue(false, 'pdftohtml is not available on server');
             return;
         }
 
