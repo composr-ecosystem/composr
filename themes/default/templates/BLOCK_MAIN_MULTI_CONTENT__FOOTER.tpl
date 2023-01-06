@@ -10,7 +10,7 @@
 
 		{+START,INCLUDE,AJAX_PAGINATION}
 			WRAPPER_ID={$GET,ajax_block_main_multi_content_wrapper}
-			ALLOW_INFINITE_SCROLL=1
+			ALLOW_INFINITE_SCROLL=2
 		{+END}
 	{+END}
 {+END}

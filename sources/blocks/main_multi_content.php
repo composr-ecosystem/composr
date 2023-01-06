@@ -187,14 +187,27 @@ PHP;
             $content_type = $map['param'];
             $content_types = explode(',', $map['param']);
         } else {
+            $wants_all_content_types = ($map['param'] == '*');
+
+            $_default_content_types = 'catalogue_entry,comcode_page,download,event,image,news,poll,quiz,topic,video,wiki_page';
+            $default_content_types = explode(',', $_default_content_types);
+
             $content_type = '*';
             $_content_types = find_all_hook_obs('systems', 'content_meta_aware', 'Hook_content_meta_aware_');
             $content_types = [];
             foreach ($_content_types as $_content_type => $object) {
                 $info = $object->info();
-                if (($info !== null) && ((!$render_mode_requires_image) || ($info['image_field'] !== null))) {
-                    $content_types[] = $_content_type;
+                if (($wants_all_content_types) || (in_array($_content_type, $default_content_types))) {
+                    if (($info !== null) && ((!$render_mode_requires_image) || ($info['image_field'] !== null))) {
+                        $content_types[] = $_content_type;
+                    }
                 }
+            }
+
+            if ($wants_all_content_types) {
+                $content_type = '*';
+            } else {
+                $content_type = $_default_content_types;
             }
         }
 
