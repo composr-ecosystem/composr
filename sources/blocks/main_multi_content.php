@@ -265,6 +265,12 @@ PHP;
                     $extra_where[$content_type] .= ' AND ' . db_string_not_equal_to($info['image_field'], '');
                 }
             }
+
+            // We do not want to display panel_* or hidden (_*) comcode pages. Add a WHERE clause for that.
+            if ($content_type == 'comcode_page') {
+                $extra_where[$content_type] .= ' AND ' . $info['title_field'] . ' NOT LIKE \'' . db_encode_like('\_%') . '\' AND ' . $info['title_field'] . ' NOT LIKE \'' . db_encode_like('panel\_%') . '\'';
+            }
+
         }
 
         // Read rows
