@@ -7854,15 +7854,29 @@ span:not(:empty)+#lightbox-position-in-set::before, span:not(:empty)+#lightbox-f
 .multi-content-tile {
 	float: left;
 	position: relative;
+	margin: 0.3em;
 }
 
-.multi-content-tile-details {
+.multi-content-tile-details-top {
+	position: absolute;
+	top: 0;
+	background: {$COLOR_RGBA,{$GET,WB},0.8};
+	margin-top: 0;
+	padding: 0.2em;
+	width: 100%;
+}
+
+.multi-content-tile-details-bottom {
 	position: absolute;
 	bottom: 0;
 	background: {$COLOR_RGBA,{$GET,WB},0.8};
 	margin-bottom: 0;
-	padding-bottom: 0;
+	padding: 0.2em;
 	width: 100%;
+}
+
+html.is-mouse-enabled .multi-content-tile-details-bottom {
+	display: none;
 }
 
 /*

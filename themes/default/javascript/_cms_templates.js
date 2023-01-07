@@ -696,4 +696,24 @@
             $dom.fadeOut(massDeleteForm);
         }
     }
+
+    // TODO: #5235
+    $cms.templates.blockMainMultiContentTiles = function blockMainMultiContentTiles(params, container) {
+        $dom.on(container, 'mouseover', '.multi-content-tile', function (e, el) {
+            if (document.documentElement.classList.contains('is-mouse-enabled')) {
+                var detailsTilesBottom = $dom.$$$(el, '.multi-content-tile-details-bottom');
+                detailsTilesBottom.forEach(function detailsTilesBottom(tileBottom) {
+                    $dom.fadeIn(tileBottom);
+                });
+            }
+        });
+        $dom.on(container, 'mouseout', '.multi-content-tile', function (e, el) {
+            if (document.documentElement.classList.contains('is-mouse-enabled')) {
+                var detailsTilesBottom = $dom.$$$(el, '.multi-content-tile-details-bottom');
+                detailsTilesBottom.forEach(function detailsTilesBottom(tileBottom) {
+                    $dom.fadeOut(tileBottom);
+                });
+            }
+        });
+    }
 }(window.$cms, window.$util, window.$dom));

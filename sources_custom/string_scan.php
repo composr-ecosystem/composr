@@ -11779,6 +11779,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         MISSING_RESOURCE_SHORT
         COMCODE_PAGE_FRIENDLY
         WIKI_POST_ON
+        SUBMITTED_BY_FRIENDLY
     ')));
 
     if ($GLOBALS['DEV_MODE']) {
