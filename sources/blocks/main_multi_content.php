@@ -176,7 +176,7 @@ PHP;
         $include_breadcrumbs = (isset($map['include_breadcrumbs']) ? $map['include_breadcrumbs'] : '0') == '1';
         $render_mode = empty($map['render_mode']) ? 'tiles' : $map['render_mode'];
         if (!in_array($render_mode, ['boxes', 'carousel', 'grid', 'list', 'mosaic', 'slider', 'table', 'tiles'])) {
-            $render_mode = 'boxes';
+            $render_mode = 'tiles';
         }
 
         $render_mode_requires_image = in_array($render_mode, ['carousel', 'grid', 'mosaic', 'slider']);
@@ -187,7 +187,7 @@ PHP;
             $content_type = $map['param'];
             $content_types = explode(',', $map['param']);
         } else {
-            $wants_all_content_types = ($map['param'] == '*');
+            $wants_all_content_types = (!@cms_empty_safe($map['param']) && ($map['param'] == '*'));
 
             $_default_content_types = 'catalogue_entry,comcode_page,download,event,image,news,poll,quiz,topic,video,wiki_page';
             $default_content_types = explode(',', $_default_content_types);
@@ -214,7 +214,7 @@ PHP;
         // Read pagination parameters
         $max = get_param_integer($block_id . '_max', isset($map['max']) ? intval($map['max']) : 30);
         $start = get_param_integer($block_id . '_start', isset($map['start']) ? intval($map['start']) : 0);
-        $do_pagination = ((isset($map['pagination']) ? $map['pagination'] : '0') == '1');
+        $do_pagination = ((isset($map['pagination']) ? $map['pagination'] : '1') == '1');
         $attach_to_url_filter = ((isset($map['attach_to_url_filter']) ? $map['attach_to_url_filter'] : '0') == '1');
         $root = @cms_empty_safe($map['root']) ? get_param_integer('keep_' . $content_type . '_root', null) : intval($map['root']);
 
