@@ -202,7 +202,7 @@ function messages_script()
                 ], true);
                 require_code('files');
                 cms_file_put_contents_safe(get_custom_file_base() . '/data_custom/modules/chat/chat_last_event.bin', strval($event_id), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
-                if ($allow_list == '') {
+                if (($allow_list === false) || ($allow_list == '')) {
                     require_code('chat2');
                     delete_chatroom($room_id);
                 } else {
