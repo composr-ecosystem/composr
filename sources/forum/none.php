@@ -154,7 +154,7 @@ class Forum_driver_none extends Forum_driver_base
         $c = [];
         $c['name'] = 'admin_username';
         $c['default'] = 'admin';
-        $c['description'] = do_lang('DESCRIPTION_ADMIN_USERNAME');
+        $c['description'] = do_lang('DESCRIPTION_ADMIN_USERNAME_MASTER_PASSWORD');
         $c['title'] = do_lang('ADMIN_USERNAME');
         return [$c];
     }

@@ -2794,7 +2794,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CHOOSE_FORUM_EDIT_2
         CHOOSE_LANG_DESCRIP
         CHOOSE_LANG_DESCRIP_ADD_TO_MAIN_LANG_FIRST
-        CHOOSE_MASTER_PASSWORD
         CHOOSE_OPEN_NEW_WINDOW
         CHOOSE_POLL
         CHOOSE_SAVED_WARNING
@@ -11780,6 +11779,9 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         COMCODE_PAGE_FRIENDLY
         WIKI_POST_ON
         SUBMITTED_BY_FRIENDLY
+        CHOOSE_MASTER_PASSWORD_ADMIN
+        CHOOSE_MASTER_PASSWORD_NO_ADMIN
+        DESCRIPTION_ADMIN_USERNAME_MASTER_PASSWORD
     ')));
 
     if ($GLOBALS['DEV_MODE']) {

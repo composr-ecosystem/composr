@@ -977,7 +977,7 @@ function step_4() : object
     }
     $options->attach(make_option(do_lang_tempcode('EMAIL_ADDRESS'), example('', 'INSTALLER_EMAIL_ADDRESS'), 'email', post_param_string('email', '', INPUT_FILTER_POST_IDENTIFIER), false, false));
     $master_password = '';
-    $options->attach(make_option(do_lang_tempcode('MASTER_PASSWORD'), example('', 'CHOOSE_MASTER_PASSWORD'), 'master_password', $master_password, true));
+    $options->attach(make_option(do_lang_tempcode('MASTER_PASSWORD'), ($forum_type == 'none') ? example('', 'CHOOSE_MASTER_PASSWORD_ADMIN') : example('', 'CHOOSE_MASTER_PASSWORD_NO_ADMIN'), 'master_password', $master_password, true));
     require_lang('config');
     require_lang('privacy');
     $options->attach(make_tick(do_lang_tempcode('SEND_ERROR_EMAILS_OCPRODUCTS'), example('', 'CONFIG_OPTION_send_error_emails_ocproducts'), 'send_error_emails_ocproducts', 1));
