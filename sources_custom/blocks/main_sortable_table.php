@@ -406,7 +406,7 @@ PHP;
                     if ($float_value >= 0.0) {
                         $range = $maximums[$j] - $minimums[$j];
                         $offset = $float_value - $minimums[$j];
-                        $percentage_fills[$j] = ($offset / $range) * 100.0;
+                        $percentage_fills[$j] = ($range == 0) ? 0.0 : (($offset / $range) * 100.0);
                     }
                 }
 

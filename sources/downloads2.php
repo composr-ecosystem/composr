@@ -302,7 +302,7 @@ function dload_script()
  * Add a download category.
  *
  * @param  SHORT_TEXT $category The name of the download category
- * @param  AUTO_LINK $parent_id The parent download category (null: this is a root category)
+ * @param  ?AUTO_LINK $parent_id The parent download category (null: this is a root category)
  * @param  LONG_TEXT $description A description
  * @param  LONG_TEXT $notes Hidden notes pertaining to this download category
  * @param  URLPATH $rep_image The representative image for the category (blank: none)

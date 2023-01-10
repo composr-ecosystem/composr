@@ -1326,7 +1326,7 @@ class Hook_import_vb3
         }
         $row_start = 0;
         do {
-            $rows = $db->query_select('subscribethread', ['*'], '', 200, $row_start);
+            $rows = $db->query_select('subscribethread', ['*'], [], '', 200, $row_start);
             foreach ($rows as $row) {
                 if (import_check_if_imported('topic_notification', strval($row['subscribethreadid']))) {
                     continue;

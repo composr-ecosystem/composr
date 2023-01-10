@@ -258,7 +258,7 @@ function sort_imports_by_dependencies(array $imports, array $dependencies) : arr
             }
 
             // If all dependencies are set to go before this import, we can safely set this import to go next.
-            if (count($dependency_array) == 0) {
+            if (empty($dependency_array)) {
                 $_imports[] = $import;
                 unset($dependencies[$import]);
                 $fatal_exit = false; // We added an import to our array; we know we are not in an infinite loop.

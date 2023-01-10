@@ -266,7 +266,7 @@ PHP;
                 }
             }
 
-            // We do not want to display panel_* or hidden (_*) comcode pages. Add a WHERE clause for that.
+            // We do not want to display panel_* or hidden (_*) comcode pages. Add a WHERE clause for that. FUDGE.
             if ($content_type == 'comcode_page') {
                 $extra_where[$content_type] .= ' AND ' . $info['title_field'] . ' NOT LIKE \'' . db_encode_like('\_%') . '\' AND ' . $info['title_field'] . ' NOT LIKE \'' . db_encode_like('panel\_%') . '\'';
             }

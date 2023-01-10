@@ -584,7 +584,7 @@ class Hook_addon_registry_downloads
             1
         );
 
-        if (array_key_exists('LAST_POST_ID', $GLOBALS) && ($GLOBALS['LAST_POST_ID'] !== null)) {
+        if (array_key_exists('LAST_POST_ID', $GLOBALS) && ($GLOBALS['LAST_POST_ID'] !== null/*i.e. did make_post_forum_topic succeed*/)) {
             $GLOBALS['SITE_DB']->query_insert('review_supplement', [
                 'r_rating' => 3,
                 'r_rating_for_type' => 'downloads',

@@ -263,8 +263,7 @@ class Hook_import_cms_merge
         $SITE_INFO = $backup_site_info;
 
         $array_prefix = array_key_exists('db_forums', $sites_site_info) ? 'db_forums' : 'db_site';
-
-        $answer = ($sites_site_info[$array_prefix] == get_db_forums()) && ($sites_site_info[$array_prefix . '_host'] == get_db_forums_host()) && (@$sites_site_info['table_prefix'] === @$SITE_INFO['table_prefix']);
+        $answer = ($sites_site_info[$array_prefix] == get_db_forums()) && (@$sites_site_info[$array_prefix . '_host'] == get_db_forums_host()) && (@$sites_site_info['table_prefix'] === @$SITE_INFO['table_prefix']);
 
         return $answer;
     }
@@ -1385,24 +1384,18 @@ class Hook_import_cms_merge
     public function import_newsletter_subscriptions(object $db, string $table_prefix, string $file_base)
     {
         $rows = $db->query_select('newsletters', ['*'], [], '', null, 0, true);
-        if ($rows !== null) {
-            $this->_fix_comcode_ownership($rows);
-            foreach ($rows as $row) {
-                if (import_check_if_imported('newsletter', strval($row['id']))) {
-                    continue;
-                }
-
-                $map = [];
-                $map += insert_lang('title', $this->get_lang_string($db, $row['title']), 2);
-                $map += insert_lang('the_description', $this->get_lang_string($db, $row['the_description']), 2);
-                $id_new = $GLOBALS['SITE_DB']->query_insert('newsletters', $map, true);
-
-                import_id_remap_put('newsletter', strval($row['id']), $id_new);
+        $this->_fix_comcode_ownership($rows);
+        foreach ($rows as $row) {
+            if (import_check_if_imported('newsletter', strval($row['id']))) {
+                continue;
             }
 
-            $old_format = false;
-        } else {
-            $old_format = true;
+            $map = [];
+            $map += insert_lang('title', $this->get_lang_string($db, $row['title']), 2);
+            $map += insert_lang('the_description', $this->get_lang_string($db, $row['the_description']), 2);
+            $id_new = $GLOBALS['SITE_DB']->query_insert('newsletters', $map, true);
+
+            import_id_remap_put('newsletter', strval($row['id']), $id_new);
         }
 
         $rowsn = $db->query_select('newsletter_subscribers', ['*'], [], '', null, 0, true);
@@ -1414,21 +1407,10 @@ class Hook_import_cms_merge
         foreach ($rowsn as $row) {
             $GLOBALS['SITE_DB']->query_delete('newsletter_subscribers', ['email' => $row['email'], 'language' => $row['language']], '', 1);
             $GLOBALS['SITE_DB']->query_insert('newsletter_subscribers', ['n_forename' => $row['n_forename'], 'n_surname' => $row['n_surname'], 'join_time' => $row['join_time'], 'email' => $row['email'], 'code_confirm' => $row['code_confirm'], 'pass_salt' => $row['pass_salt'], 'the_password' => $row['the_password'], 'language' => $row['language']]);
-            if ($old_format) {
-                $rows[] = ['newsletter_id' => db_get_first_id(), 'email' => $row['email']];
-            }
         }
-        if (!$old_format) {
-            $rows = $db->query_select('newsletter_subscribe', ['*']);
-        }
+        $rows = $db->query_select('newsletter_subscribe', ['*']);
         foreach ($rows as $row) {
-            $newsletter_id = $row['newsletter_id'];
-            if (!$old_format) {
-                $newsletter_id = import_id_remap_get('newsletter', strval($newsletter_id), true);
-            }
-            if ($newsletter_id === null) {
-                continue;
-            }
+            $newsletter_id = import_id_remap_get('newsletter', strval($row['newsletter_id']), true);
             $GLOBALS['SITE_DB']->query_insert('newsletter_subscribe', ['newsletter_id' => $newsletter_id, 'email' => $row['email']]);
         }
 
