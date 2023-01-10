@@ -73,7 +73,7 @@ class search_test_set extends cms_test_case
                 'search_under' => '!',
             ],
             [
-                '_name' => 'test author (test username)',
+                '_name' => 'test author (username)',
                 '_no_results' => null,
                 'only_search_meta' => false,
                 'only_titles' => false,
@@ -83,7 +83,7 @@ class search_test_set extends cms_test_case
                 'search_under' => '!',
             ],
             [
-                '_name' => 'test author (admin ID)',
+                '_name' => 'admin author (ID)',
                 '_no_results' => [],
                 'only_search_meta' => false,
                 'only_titles' => false,
@@ -105,7 +105,7 @@ class search_test_set extends cms_test_case
         ];
 
         // These parameters are used in all test cases
-        $content = 'Lorem';
+        $content = 'Lorem'; // Implies the site was installed with test content
         list($content_where) = build_content_where($content, false);
         $direction = 'DESC';
         $max = 1;
