@@ -310,7 +310,9 @@ class Hook_search_cns_posts extends FieldsSearchHook
 
                     $_cats[] = strval(intval($cat));
                 }
-                $extra_join_clause .= ' AND ixxx.i_forum_id IN (' . implode(',', $_cats) . ')';
+                if (count($_cats) > 0) {
+                    $extra_join_clause .= ' AND ixxx.i_forum_id IN (' . implode(',', $_cats) . ')';
+                }
 
                 if (count($_cats) <= 1) {
                     $use_simple_index = false;

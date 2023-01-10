@@ -192,7 +192,7 @@ class Hook_search_downloads extends FieldsSearchHook
         global $SEARCH_QUERY_TERMS;
         $highlight_bits = ($SEARCH_QUERY_TERMS === null) ? [] : $SEARCH_QUERY_TERMS;
 
-        $_text_summary = get_translated_text($row['description']);
+        $_text_summary = get_translated_text($row['the_description']);
         $LAX_COMCODE = true;
         $text_summary_h = comcode_to_tempcode($_text_summary, null, false, null, null, COMCODE_NORMAL, $highlight_bits);
         $LAX_COMCODE = false;

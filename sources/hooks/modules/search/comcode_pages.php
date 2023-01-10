@@ -211,18 +211,24 @@ class Hook_search_comcode_pages extends FieldsSearchHook
             // Category filter
             if (($search_under != '!') && ($search_under != '-1')) {
                 $cats = explode(',', $search_under);
-                $extra_join_clause .= ' AND (';
+                $first_cat = false;
                 foreach ($cats as $i => $cat) {
                     if (trim($cat) == '') {
                         continue;
                     }
 
-                    if ($i != 0) {
+                    if (!$first_cat) {
+                        $extra_join_clause .= ' AND (';
+                        $first_cat = true;
+                    } else {
                         $extra_join_clause .= ' OR ';
                     }
+
                     $extra_join_clause .= db_string_equal_to('ixxx.i_zone_name', $cat);
                 }
-                $extra_join_clause .= ')';
+                if ($first_cat) {
+                    $extra_join_clause .= ')';
+                }
             }
 
             if ((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) {

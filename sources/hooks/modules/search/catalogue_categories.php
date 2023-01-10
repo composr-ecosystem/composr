@@ -59,12 +59,12 @@ class Hook_search_catalogue_categories extends FieldsSearchHook
         $info['permissions'] = [
             [
                 'type' => 'zone',
-                'zone_name' => get_module_zone('calendar'),
+                'zone_name' => get_module_zone('catalogues'),
             ],
             [
                 'type' => 'page',
-                'zone_name' => get_module_zone('calendar'),
-                'page_name' => 'calendar',
+                'zone_name' => get_module_zone('catalogues'),
+                'page_name' => 'catalogues',
             ],
         ];
 
