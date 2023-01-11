@@ -238,10 +238,15 @@ function sort_imports_by_dependencies(array $imports, array $dependencies) : arr
 
     // Imports with no dependencies should go first
     foreach ($imports as $import) {
-        if (!isset($dependencies[$import]) || count($dependencies[$import]) == 0) {
+        if (!isset($dependencies[$import]) || empty($dependencies[$import])) {
             $_imports[] = $import;
             unset($dependencies[$import]); // We want to ignore these imports in future foreach loops as we already determined these go first
         }
+    }
+
+    // Return immediately if there are no more dependencies to process; otherwise the loop below will exit with $fatal_exit = true.
+    if (empty($dependencies)) {
+        return $_imports;
     }
 
     // Now loop through the imports with dependencies until we've processed all of them
