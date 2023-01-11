@@ -519,7 +519,9 @@ class Module_admin_import
 
         // Build importer-specific list of input types to select from
         $check_all = (get_param_string('keep_import_tick_all', '') != '');
-        $_import_list = $info['import'];
+        $imports = $info['import'];
+        $dependencies = isset($info['dependencies']) ? $info['dependencies'] : null;
+        $_import_list = sort_imports_by_dependencies($imports, $dependencies);
         $_import_list_2 = [];
         foreach ($_import_list as $import) {
             if ($import === null) {
@@ -707,7 +709,9 @@ class Module_admin_import
         $out = new Tempcode();
         $import_last = '-1';
         $all_skipped = true;
-        $_import_list = $info['import'];
+        $imports = $info['import'];
+        $dependencies = isset($info['dependencies']) ? $info['dependencies'] : null;
+        $_import_list = sort_imports_by_dependencies($imports, $dependencies);
         $_import_list[] = 'cns_switch';
         foreach ($_import_list as $import) {
             $import_this = either_param_integer('import_' . $import, 0);

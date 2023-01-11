@@ -47,6 +47,8 @@ class Hook_import_cms_merge
      */
     public function info() : ?array
     {
+        require_lang('cns');
+
         $info = [];
         $info['supports_advanced_import'] = true;
         $info['product'] = do_lang('COMPOSR_SITE_MERGER');
@@ -129,7 +131,7 @@ class Hook_import_cms_merge
            'menu_items' => [],
            'cns_custom_profile_fields' => ['cns_groups'],
            'cns_multi_moderations' => ['cns_forums'],
-           // 'cns_groups' => ['catalogues'], Cyclic dependency
+           // 'cns_groups' => ['catalogues'], Cyclic dependency (catalogues depends on cns_members which depends on cns_groups)
            'cns_members' => ['cns_groups', 'cns_custom_profile_fields', 'attachments'],
            'cns_forums' => ['cns_forum_groupings', 'cns_members', 'cns_groups', 'catalogues'],
            'cns_topics' => ['cns_forums', 'cns_members', 'catalogues'],
@@ -146,8 +148,6 @@ class Hook_import_cms_merge
            'aggregate_type_instances' => [],
            'leader_boards' => ['cns_members', 'cns_groups'],
         ];
-
-        $info['import'] = sort_imports_by_dependencies($info['import'], $info['dependencies']);
 
         $_cleanup_url = build_url(['page' => 'admin_cleanup'], get_module_zone('admin_cleanup'));
         $cleanup_url = $_cleanup_url->evaluate();

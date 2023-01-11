@@ -47,6 +47,8 @@ class Hook_import_smf2
      */
     public function info() : ?array
     {
+        require_lang('cns');
+
         $info = [];
         $info['supports_advanced_import'] = false;
         $info['product'] = 'SMF 2.0.x';
@@ -87,8 +89,6 @@ class Hook_import_smf2
            'notifications' => ['cns_topics', 'cns_members', 'cns_polls_and_votes'],
            'cns_personal_topics' => ['cns_members'],
         ];
-
-        $info['import'] = sort_imports_by_dependencies($info['import'], $info['dependencies']);
 
         $_cleanup_url = build_url(['page' => 'admin_cleanup'], get_module_zone('admin_cleanup'));
         $cleanup_url = $_cleanup_url->evaluate();

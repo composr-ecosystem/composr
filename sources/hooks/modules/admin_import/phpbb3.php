@@ -60,6 +60,8 @@ class Hook_import_phpbb3
      */
     public function info() : ?array
     {
+        require_lang('cns');
+
         $info = [];
         $info['supports_advanced_import'] = false;
         $info['product'] = 'phpBB 3.3.x';
@@ -100,8 +102,6 @@ class Hook_import_phpbb3
            'friends' => ['cns_members'],
            'reported_posts_forum' => ['cns_members', 'cns_topics', 'cns_posts'],
         ];
-
-        $info['import'] = sort_imports_by_dependencies($info['import'], $info['dependencies']);
 
         $_cleanup_url = build_url(['page' => 'admin_cleanup'], get_module_zone('admin_cleanup'));
         $cleanup_url = $_cleanup_url->evaluate();

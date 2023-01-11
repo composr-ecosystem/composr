@@ -974,6 +974,7 @@ We hope other users will appreciate your efforts and give you some points to rew
             '_tests/tests/unit_tests/__leader_board.php',
             '_tests/tests/unit_tests/mobile_detect.php',
             '_tests/tests/unit_tests/new_window_labels.php',
+            '_tests/tests/unit_tests/import.php',
             'data_custom/search_test.php',
         ];
     }

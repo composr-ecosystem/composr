@@ -229,11 +229,17 @@ function set_database_index_maintenance(bool $on)
  * Note: this is not very performant, but it is assumed the import tool will rarely ever be used by multiple people at the same time.
  *
  * @param  array $imports List of imports
- * @param  array $dependencies Map of imports to their dependencies
- * @return array The newly-sorted imports
+ * @param  array $dependencies Map of imports to their dependencies (null: no dependencies)
+ * @param  boolean $silent_fail Whether to return null if an infinite loop / cyclic dependency occurred opposed to fatally exiting
+ * @return array The newly-sorted imports (null: Error occurred and $silent_fail was true)
  */
-function sort_imports_by_dependencies(array $imports, array $dependencies) : array
+function sort_imports_by_dependencies(array $imports, ?array $dependencies, bool $silent_fail = false) : ?array
 {
+    // No processing necessary if there are no dependencies
+    if (($dependencies === null) || empty($dependencies)) {
+        return $imports;
+    }
+
     $_imports = [];
 
     // Imports with no dependencies should go first
@@ -273,6 +279,9 @@ function sort_imports_by_dependencies(array $imports, array $dependencies) : arr
 
     // Did we exit the loop prematurely (probably because of a cyclic dependency)?
     if ($fatal_exit) {
+        if ($silent_fail) {
+            return null;
+        }
         fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
 

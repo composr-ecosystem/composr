@@ -47,6 +47,8 @@ class Hook_import_vb3
      */
     public function info() : ?array
     {
+        require_lang('cns');
+
         $info = [];
         $info['supports_advanced_import'] = false;
         $info['product'] = 'vBulletin 3.0.x / 3.5.x';
@@ -86,8 +88,6 @@ class Hook_import_vb3
            'logs' => ['cns_members', 'cns_posts'],
            'calendar' => ['cns_members'],
         ];
-
-        $info['import'] = sort_imports_by_dependencies($info['import'], $info['dependencies']);
 
         $_cleanup_url = build_url(['page' => 'admin_cleanup'], get_module_zone('admin_cleanup'));
         $cleanup_url = $_cleanup_url->evaluate();

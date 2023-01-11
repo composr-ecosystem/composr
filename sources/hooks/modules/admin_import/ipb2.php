@@ -44,6 +44,8 @@ class Hook_import_ipb2
      */
     public function info() : ?array
     {
+        require_lang('cns');
+
         $info = [];
         $info['supports_advanced_import'] = false;
         $info['product'] = 'Invision Board 2.0.x';
@@ -83,8 +85,6 @@ class Hook_import_ipb2
            'cns_warnings' => ['cns_members'],
            'calendar' => ['cns_members'],
         ];
-
-        $info['import'] = sort_imports_by_dependencies($info['import'], $info['dependencies']);
 
         $_cleanup_url = build_url(['page' => 'admin_cleanup'], get_module_zone('admin_cleanup'));
         $cleanup_url = $_cleanup_url->evaluate();
