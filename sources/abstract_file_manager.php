@@ -20,6 +20,8 @@
  * @package    core
  */
 
+use phpDocumentor\Reflection\Types\Resource;
+
 /*
 The abstract file manager allows easy and transparent file system maintenance, even when it has to be piped through FTP.
 */
@@ -446,24 +448,6 @@ function _rescope_path(string $path) : string
 }
 
 /**
- * Sets permissions over the open AFM connection.
- *
- * @param  PATH $basic_path The path of the file/directory we are setting permissions of
- * @param  integer $bitmask File permissions bitmask
- */
-function afm_set_perms(string $basic_path, int $bitmask)
-{
-    $path = _rescope_path($basic_path);
-
-    $conn = _ftp_info();
-    if ($conn !== false) {
-        ftp_chmod($conn, $bitmask, $path);
-    } else {
-        chmod($path, $bitmask);
-    }
-}
-
-/**
  * Make a directory over the open AFM connection.
  *
  * @param  PATH $basic_path The path to and of the directory we are making
@@ -487,16 +471,16 @@ function afm_make_directory(string $basic_path, bool $world_access, bool $recurs
             foreach ($parts as $part) {
                 $build_up .= '/' . $part;
                 @ftp_mkdir($conn, $build_up);
-                @ftp_chmod($conn, $access, $build_up);
+                _ftp_chmod($conn, $access, $build_up);
             }
         }
         if (!file_exists(get_custom_file_base() . '/' . $basic_path)) {
-            $success = @ftp_mkdir($conn, $path);
+            $success = ftp_mkdir($conn, $path);
             if (!is_string($success)) {
                 warn_exit(protect_from_escaping(cms_error_get_last()), false, true);
             }
         }
-        @ftp_chmod($conn, $access, $path);
+        _ftp_chmod($conn, $access, $path);
 
         clearstatcache();
 
@@ -612,7 +596,7 @@ function afm_make_file(string $basic_path, string $contents, bool $world_access,
 
         @unlink($path2);
 
-        @ftp_chmod($conn, $access, $path);
+        _ftp_chmod($conn, $access, $path);
 
         clearstatcache();
 
@@ -733,4 +717,29 @@ function afm_delete_file(string $basic_path)
 function website_default_php_file_permissions() : int
 {
     return fileperms(get_file_base() . '/sources/global.php');
+}
+
+/**
+ * Set permissions on a newly-created file via FTP, assuming an FTP filesystem cache issue if 'No such file or directory' error is thrown.
+ * It is implied that mkdir was called on the same filename prior to calling this and it returned success.
+ *
+ * @param  mixed $ftp The FTP connection
+ * @param  int $permissions The permissions to set
+ * @param  PATH $filename The file path
+ * @return ~int The new file permissions on success (false: error)
+ * @ignore
+ */
+function _ftp_chmod($ftp, int $permissions, string $filename)
+{
+    $chmod = @ftp_chmod($ftp, $permissions, $filename);
+
+    // If an error occurred, check if it was a file/directory issue. If so, fatal_exit with FTP configuration information.
+    if ($chmod === false) {
+        $prev_error = error_get_last();
+        if (isset($prev_error['message']) && (strpos($prev_error['message'], 'No such file or directory') !== false)) {
+            fatal_exit(do_lang_tempcode('FTP_CACHE_ERROR', $filename));
+        }
+    }
+
+    return $chmod;
 }

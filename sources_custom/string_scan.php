@@ -8401,6 +8401,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_csp_on_forms
         ENABLE_NOTIFICATIONS_NA
         ENABLE_NOTIFICATIONS__ALL
+        FTP_CACHE_ERROR
     ')));
 
     $non_admin_files = [
