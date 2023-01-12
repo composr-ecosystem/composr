@@ -274,6 +274,7 @@ class Hook_sitemap_entry_point extends Hook_sitemap_base
             ],
             'children' => null,
             'has_possible_children' => false,
+            'zone_dir' => $details[0],
 
             // These are likely to be changed in individual hooks
             'sitemap_priority' => SITEMAP_IMPORTANCE_MEDIUM,

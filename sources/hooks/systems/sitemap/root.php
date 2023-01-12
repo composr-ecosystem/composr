@@ -114,6 +114,7 @@ class Hook_sitemap_root extends Hook_sitemap_base
             'permissions' => [],
             'has_possible_children' => true,
             'children' => [],
+            'zone_dir' => 'root',
 
             // These are likely to be changed in individual hooks
             'sitemap_priority' => SITEMAP_IMPORTANCE_ULTRA,

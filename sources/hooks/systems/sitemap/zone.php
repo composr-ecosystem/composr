@@ -172,6 +172,7 @@ class Hook_sitemap_zone extends Hook_sitemap_base
             ],
             'children' => null,
             'has_possible_children' => true,
+            'zone_dir' => 'zone',
 
             // These are likely to be changed in individual hooks
             'sitemap_priority' => SITEMAP_IMPORTANCE_ULTRA,

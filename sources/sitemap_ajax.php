@@ -274,6 +274,7 @@ function _sitemap_node_to_xml(array $admin_groups, array $groups, array $node, b
      ' . (isset($node['version']) ? ('version="' . xmlentities(integer_format($node['version'])) . '"') : '') . '
      ' . ($permissions_needed ? '' : ('draggable="' . ($draggable ? 'page' : 'false') . '"')) . '
      ' . ($permissions_needed ? '' : ('droppable="' . (($type == 'zone') ? 'page' : 'false') . '"')) . '
+     ' . (isset($node['zone_dir']) ? ('zone_dir="' . xmlentities($node['zone_dir']) . '"') : '') . '
      type="' . xmlentities(($type === null) ? '' : $type) . '"
      id="' . xmlentities($id) . '"' . $view_perms . $privilege_perms . '>
     ');

@@ -8,11 +8,11 @@
         var editZoneUrl = params.editZoneUrl,
             addZoneUrl = params.addZoneUrl,
             zoneEditorUrl = params.zoneEditorUrl,
-            permissionTreeEditorUrl = params.permissonTreeEditorUrl,
+            permissionTreeEditorUrl = params.permissionTreeEditorUrl,
             editPageUrl = params.editPageUrl,
             addPageUrl = params.addPageUrl,
             deleteUrl = params.deleteUrl,
-            statsUrl = params.statusUrl;
+            statsUrl = params.statsUrl;
 
         $cms.requireJavascript('tree_list').then(function () {
             window.sitemap = $cms.ui.createTreeList('tree-list', '{$FIND_SCRIPT_NOHTTP;,sitemap}?start_links=1&get_perms=0&label_content_types=1&keep_full_structure=1' + $cms.keep(), null, '', false, null, true);
@@ -44,15 +44,19 @@
             var type = node.getAttribute('type');
             var pageLink = node.getAttribute('serverid');
             var pageLinkBits = pageLink.split(/:/);
-            var fullType = type;
-            if (fullType.includes('/')) {
-                fullType = fullType.substr(0, fullType.indexOf('/'));
+            var zoneDir = node.getAttribute('zone_dir');
+
+            if (zoneDir) {
+                zoneDir = zoneDir.toLowerCase();
+                if (zoneDir.includes('/')) {
+                    zoneDir = zoneDir.substr(0, zoneDir.indexOf('/'));
+                }
             }
 
             var actionBuildup = '';
             var infoBuildup = '';
             var path;
-            switch (fullType) {
+            switch (zoneDir) {
                 case 'root':
                     actionBuildup += actionsTplItem.replace(/\[1\]/, '{!zones:ADD_ZONE;^}').replace(/\[2\]/, addZoneUrl);
                     break;
@@ -61,18 +65,18 @@
                     actionBuildup += actionsTplItem.replace(/\[1\]/, '{!zones:ZONE_EDITOR;^}').replace(/\[2\]/, zoneEditorUrl.replace(/%21/, pageLink.replace(/:/, '', pageLink)));
                     actionBuildup += actionsTplItem.replace(/\[1\]/, '{!permissions:PERMISSIONS_TREE;^}').replace(/\[2\]/, permissionTreeEditorUrl.replace(/%21/, pageLink.replace(/:/, '%3A', pageLink)));
                     actionBuildup += actionsTplItem.replace(/\[1\]/, '{!zones:EDIT_ZONE;^}').replace(/\[2\]/, editZoneUrl.replace(/%21/, pageLink.replace(/:/, '', pageLink)));
-                    actionBuildup += actionsTplItem.replace(/\[1\]/, '{!zones:COMCODE_PAGE_ADD;^}').replace(/\[2\]/, addPageUrl.replace(/%21/, pageLink.replace(/:/, '', pageLink)));
+                    actionBuildup += actionsTplItem.replace(/\[1\]/, '{!zones:COMCODE_PAGE_ADD;^}').replace(/\[2\]/, addPageUrl.replace(/%21/, pageLink.replace(/:/, '', pageLink) + '%3Aexample'));
                     break;
 
                 case 'modules':
                 case 'modules_custom':
-                case 'minimodule':
-                case 'minimodule_custom':
-                    path = pageLinkBits[0] + ((pageLinkBits[0] === '') ? '' : '/') + 'pages/' + type + '/' + pageLinkBits[1] + '.php';
+                case 'minimodules':
+                case 'minimodules_custom':
+                    path = pageLinkBits[0] + ((pageLinkBits[0] === '') ? '' : '/') + 'pages/' + zoneDir + '/' + pageLinkBits[1] + '.php';
                     if ($ADDON_INSTALLED_code_editor && !$cms.configOption('single_public_zone')) { // eslint-disable-line camelcase
                         actionBuildup += actionsTplItem.replace(/\[1\]/, '{!EDIT;^}').replace(/\[2\]/, '{$BASE_URL;,0}/code_editor.php?path=' + encodeURIComponent(path));
                     }
-                    switch (type) {
+                    switch (zoneDir) {
                         case 'modules':
                         case 'modules_custom':
                             actionBuildup += actionsTplItem.replace(/\[1\]/, '{!permissions:PERMISSIONS_TREE;^}').replace(/\[2\]/, permissionTreeEditorUrl.replace(/%21/, pageLink.replace(/:/, '%3A', pageLink)));
@@ -86,22 +90,22 @@
                                 infoBuildup += infoTplItem.replace(/\[1\]/, '{!VERSION;^}').replace(/\[2\]/, $cms.filter.html(node.getAttribute('version')));
                             }
                             break;
-                        case 'minimodule':
-                        case 'minimodule_custom':
+                        case 'minimodules':
+                        case 'minimodules_custom':
                             break;
                     }
                     break;
 
                 case 'comcode':
                 case 'comcode_custom':
-                    path = pageLinkBits[0] + '/pages/' + fullType + '/' + pageLinkBits[1] + '.txt';
+                    path = pageLinkBits[0] + '/pages/' + zoneDir + '/' + pageLinkBits[1] + '.txt';
                     actionBuildup += actionsTplItem.replace(/\[1\]/, '{!permissions:PERMISSIONS_TREE;^}').replace(/\[2\]/, permissionTreeEditorUrl.replace(/%21/, pageLink.replace(/:/, '%3A', pageLink)));
                     actionBuildup += actionsTplItem.replace(/\[1\]/, '{!EDIT;^}').replace(/\[2\]/, editPageUrl.replace(/%21/, pageLink));
                     break;
 
                 case 'html':
                 case 'html_custom':
-                    path = pageLinkBits[0] + '/pages/' + fullType + '/' + pageLinkBits[1] + '.htm';
+                    path = pageLinkBits[0] + '/pages/' + zoneDir + '/' + pageLinkBits[1] + '.htm';
                     break;
 
                 case 'entry_point':
@@ -109,15 +113,18 @@
             }
 
             // Pages
-            if (['modules', 'modules_custom', 'comcode', 'comcode_custom', 'html', 'html_custom'].includes(fullType)) {
+            if ((type == 'page') || (type == 'comcode_page')) {
                 actionBuildup += actionsTplItem.replace(/\[1\]/, '{!DELETE;^}').replace(/\[2\]/, deleteUrl.replace(/%5B1%5D/, pageLinkBits[0]).replace(/\[2\]/, pageLinkBits[1]));
+                // TODO: Needs re-working for new KPI stats system
+                /*
                 if ($ADDON_INSTALLED_stats && statsUrl) { // eslint-disable-line camelcase
                     actionBuildup += actionsTplItem.replace(/\[1\]/, '{!stats:MODULE_TRANS_NAME_admin_stats;^}').replace(/\[2\]/, statsUrl.replace(/%21/, path));
                 }
+                */
             }
 
-            // All
-            if (fullType !== 'root') {
+            // All except root
+            if (zoneDir !== 'root') {
                 actionBuildup += actionsTplItem.replace(/\[1\]/, '{!VIEW;^}').replace(/\[2\]/, $cms.filter.html('{$FIND_SCRIPT_NOHTTP;,page_link_redirect}?id=' + encodeURIComponent(pageLink) + $cms.keep()));
                 infoBuildup += infoTplItem.replace(/\[1\]/, '{!zones:PAGE_LINK;^}').replace(/\[2\]/, '<kbd>' + $cms.filter.html(pageLink) + '</kbd>');
                 if (element.selectedEditlink) {
