@@ -115,12 +115,6 @@
             // Pages
             if ((type == 'page') || (type == 'comcode_page')) {
                 actionBuildup += actionsTplItem.replace(/\[1\]/, '{!DELETE;^}').replace(/\[2\]/, deleteUrl.replace(/%5B1%5D/, pageLinkBits[0]).replace(/\[2\]/, pageLinkBits[1]));
-                // TODO: Needs re-working for new KPI stats system
-                /*
-                if ($ADDON_INSTALLED_stats && statsUrl) { // eslint-disable-line camelcase
-                    actionBuildup += actionsTplItem.replace(/\[1\]/, '{!stats:MODULE_TRANS_NAME_admin_stats;^}').replace(/\[2\]/, statsUrl.replace(/%21/, path));
-                }
-                */
             }
 
             // All except root
