@@ -115,6 +115,10 @@ function gather_kpis(?string $pivot_filter = null) : array
         $kpi_method = $graph_details['support_kpis'];
 
         $filters = json_decode($kpi_row['k_filters'], true);
+        if (!is_array($filters)) {
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        }
+
         $pivot = ($kpi_row['k_pivot'] == '') ? null : $kpi_row['k_pivot'];
 
         $graph_final_details = stats_generate_data($graph_name, $filters, $pivot, $hook_ob, $graph_details, true);
@@ -1271,7 +1275,7 @@ class CMSStatsDateMonthRangeFilter extends CMSStatsFilter
 
             $options = new Tempcode();
             foreach ($_options as $option_key => $option_label) {
-                $options->attach(form_input_list_entry($option_key, $value == $option_key, $option_label));
+                $options->attach(form_input_list_entry(strval($option_key), $value == $option_key, $option_label));
             }
 
             return form_input_list($this->label, new Tempcode(), $this->filter_name, $options, null, false, true);

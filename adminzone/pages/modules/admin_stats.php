@@ -742,7 +742,7 @@ class Module_admin_stats extends Standard_crud_module
 
         $fields->attach(form_input_float(do_lang_tempcode('TARGET'), do_lang_tempcode('DESCRIPTION_KPI_TARGET'), 'target_to_reach', $target, false));
 
-        $fields->attach(form_input_line(do_lang_tempcode('TITLE'), do_lang_tempcode('DESCRIPTION_TITLE'), 'title', $title, true));
+        $fields->attach(form_input_line(do_lang_tempcode('TITLE'), do_lang_tempcode('DESCRIPTION_TITLE'), 'title', is_object($title) ? $title->evaluate() : $title, true));
 
         $fields->attach(form_input_text(do_lang_tempcode('NOTES'), do_lang_tempcode('DESCRIPTION_NOTES'), 'notes', $notes, false));
 
@@ -778,7 +778,7 @@ class Module_admin_stats extends Standard_crud_module
         }
         $myrow = $rows[0];
 
-        $filters = unserialize($myrow['k_filters']);
+        $filters = json_decode($myrow['k_filters'], true);
         $pivot = ($myrow['k_pivot'] == '') ? null : $myrow['k_pivot'];
         return $this->get_form_fields(intval($id), $filters, $pivot, $myrow['k_target'], $myrow['k_title'], $myrow['k_notes']);
     }
@@ -797,14 +797,14 @@ class Module_admin_stats extends Standard_crud_module
         $notes = post_param_string('notes');
 
         list(, $graph_details) = stats_find_graph_details($graph_name, true);
-        $filters = null;
+        $filters = [];
         $pivot = null;
         list($filters, $pivot) = _stats_get_graph_context($graph_details, $filters, $pivot, true);
 
         $id = $GLOBALS['SITE_DB']->query_insert('stats_kpis', [
             'k_graph_name' => $graph_name,
             'k_pivot' => ($pivot === null) ? '' : $pivot,
-            'k_filters' => serialize($filters),
+            'k_filters' => json_encode($filters),
             'k_target' => $target,
             'k_title' => $title,
             'k_added' => time(),
@@ -832,14 +832,14 @@ class Module_admin_stats extends Standard_crud_module
         $notes = post_param_string('notes');
 
         list(, $graph_details) = stats_find_graph_details($graph_name, true);
-        $filters = null;
+        $filters = [];
         $pivot = null;
         list($filters, $pivot) = _stats_get_graph_context($graph_details, $filters, $pivot, true);
 
         $GLOBALS['SITE_DB']->query_update('stats_kpis', [
             'k_graph_name' => $graph_name,
             'k_pivot' => ($pivot === null) ? '' : $pivot,
-            'k_filters' => serialize($filters),
+            'k_filters' => json_encode($filters),
             'k_target' => $target,
             'k_title' => $title,
             'k_notes' => $notes,
