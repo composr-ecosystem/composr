@@ -473,7 +473,7 @@ function afm_make_directory(string $basic_path, bool $world_access, bool $recurs
             }
         }
         if (!file_exists(get_custom_file_base() . '/' . $basic_path)) {
-            $success = ftp_mkdir($conn, $path);
+            $success = @ftp_mkdir($conn, $path);
             if (!is_string($success)) {
                 warn_exit(protect_from_escaping(cms_error_get_last()), false, true);
             }
