@@ -20,8 +20,6 @@
  * @package    core
  */
 
-use phpDocumentor\Reflection\Types\Resource;
-
 /*
 The abstract file manager allows easy and transparent file system maintenance, even when it has to be piped through FTP.
 */
