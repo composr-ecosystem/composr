@@ -43,26 +43,18 @@ function gravatar_script(bool $from_driver = false)
     $is_error = true; // We'll only set to false once everything is good
 
     if (($avatar_url == '') && ($email_address != '')) {
+        require_code('http');
         $gravatar_url = 'https://www.gravatar.com/avatar/' . md5($email_address) . '?d=404';
-        $f = @fopen($gravatar_url, 'rb');
+        $f = cms_http_request($gravatar_url, ['trigger_error' => false]);
     } else {
         $f = false; // We already have an avatar, or can't get a gravatar, so let it get to error state
     }
 
-    if (($f !== false) && (!empty($http_response_header))) {
-        // Work out appropriate content type (with restrictions)
-        $content_type = 'image/png';
-        $matches = [];
-        foreach ($http_response_header as $header) {
-            if (preg_match('#^HTTP/[\d\.]* 20#i', $header, $matches) != 0) {
-                $is_error = false;
-            }
-            if (preg_match('#^Content-Type:\s*(.*)\s*#i', $header, $matches) != 0) {
-                $content_type = $matches[1];
-            }
-        }
-        if (substr($content_type, 0, 6) != 'image/') {
+    if (($f !== false) && ($f->data !== null)) {
+        if (substr($f->download_mime_type, 0, 6) != 'image/') {
             fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        } else {
+            $is_error = false;
         }
     }
 
@@ -87,18 +79,9 @@ function gravatar_script(bool $from_driver = false)
     // All good, so show gravatar...
 
     cms_ini_set('ocproducts.xss_detect', '0');
+    header('Content-Type: ' . $f->download_mime_type);
 
-    foreach ($http_response_header as $header) {
-        if (preg_match('#^Content-Type:\s*(.*)\s*#i', $header) == 0) {
-            header($header);
-        }
-    }
-
-    header('Content-Type: ' . $content_type);
-
-    cms_ob_end_clean();
-    fpassthru($f);
-    @fclose($f);
+    echo $f->data;
 }
 
 /**
