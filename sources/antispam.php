@@ -12,6 +12,20 @@
 
 */
 
+/*
+  Note: The implementation of antispam does not currently utilize hooks for spam services, although that may be ideal.
+  Stop Forum Spam syndicates to Tornevall automatically and recommends checking the Tornevall blocklist first, using
+  Stop Forum Spam as a fallback. This coupling of two services would make hook implementation complex as Tornevall would
+  need to override Stop Forum Spam if it runs.
+  Furthermore, Tornevall acts as an RBL and uses the RBL option in Composr which is different from how we check
+  Stop Forum Spam. Therefore, the hooks would also need to specify RBL domain when applicable so antispam.php runs the hook
+  checks for defined domains that exist in the hook, and then fallback to its basic implementation here otherwise.
+  Finally, hooks must be able to define privacy policy information specific to its service which can be fetched in the
+  core.php privacy hook (or ideally, a new antispam.php hook).
+
+  See tracker #5243.
+*/
+
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
