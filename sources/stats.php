@@ -671,8 +671,8 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
     public const GRAPH_PIE_CHART = 2;
     public const GRAPH_BAR_CHART = 3;
 
-    protected const KPI_HIGH_IS_GOOD = 1;
-    protected const KPI_LOW_IS_GOOD = 2;
+    public const KPI_HIGH_IS_GOOD = 1;
+    public const KPI_LOW_IS_GOOD = 2;
 
     /**
      * Find all the feedback type codes. Useful for creating filters that are filtering by feedback type code.
@@ -955,7 +955,7 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
         // If $range_value has a value, this means $_range_value had only one value. Treat this as a month range length from (now - value) to now.
         if ($range_value !== null) {
             $epoch = new DateTime('1970-01-01');
-            $_start = new DateTime(date('Y-m-d H:i:s', strtotime('-' . strval($range_value) . ' months')));
+            $_start = new DateTime(date('Y-m-d H:i:s', strtotime(strval(0 - ($range_value - 1)) . ' months')));
             $_end = new DateTime();
 
             $start_interval = $_start->diff($epoch);
