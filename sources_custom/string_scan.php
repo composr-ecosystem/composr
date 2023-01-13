@@ -8404,6 +8404,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         FTP_CACHE_ERROR
         JESTER_OWO_SHOWN_FOR
         CONFIG_OPTION_jestr_owo_shown_for
+        SPAM_CHECK_STOPFORUMSPAM
+        CONFIG_OPTION_spam_check_stopforumspam
     ')));
 
     $non_admin_files = [

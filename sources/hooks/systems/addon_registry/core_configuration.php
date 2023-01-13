@@ -256,6 +256,7 @@ class Hook_addon_registry_core_configuration
             'sources/hooks/systems/config/spam_check_level.php',
             'sources/hooks/systems/config/spam_check_usernames.php',
             'sources/hooks/systems/config/spam_stale_threshold.php',
+            'sources/hooks/systems/config/spam_check_stopforumspam.php',
             'sources/hooks/systems/config/stopforumspam_api_key.php',
             'sources/hooks/systems/config/login_error_secrecy.php',
             'sources/hooks/systems/config/stuck_nav.php',

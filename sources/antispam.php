@@ -64,6 +64,11 @@ function inject_action_spamcheck(?string $username = null, ?string $email = null
  */
 function check_for_spam(?string $username, ?string $email, bool $page_level)
 {
+    // Prevent AJAX errors from spam checks by skipping checks on such calls
+    if (running_script('script') || running_script('sheet')) {
+        return;
+    }
+
     if ($username !== null) {
         $username = trim($username);
         if ($username == '') {
@@ -403,7 +408,7 @@ function handle_perceived_spammer_by_confidence(string $user_ip, float $confiden
  */
 function check_stopforumspam(?string $username = null, ?string $email = null)
 {
-    if (get_option('spam_block_lists') == '') {
+    if (get_option('spam_check_stopforumspam') == '0') {
         return;
     }
 

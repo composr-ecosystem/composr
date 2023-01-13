@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_stopforumspam_api_key
+class Hook_config_spam_check_stopforumspam
 {
     /**
      * Gets the details relating to the config option.
@@ -31,14 +31,14 @@ class Hook_config_stopforumspam_api_key
     public function get_details() : ?array
     {
         return [
-            'human_name' => 'STOPFORUMSPAM_API_KEY',
-            'type' => 'line',
+            'human_name' => 'SPAM_CHECK_STOPFORUMSPAM',
+            'type' => 'tick',
             'category' => 'SECURITY',
             'group' => 'SPAMMER_DETECTION',
-            'explanation' => 'CONFIG_OPTION_stopforumspam_api_key',
+            'explanation' => 'CONFIG_OPTION_spam_check_stopforumspam',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
-            'order_in_category_group' => 15,
+            'order_in_category_group' => 14,
             'required' => false,
             'public' => false,
             'addon' => 'core_configuration',
@@ -54,6 +54,6 @@ class Hook_config_stopforumspam_api_key
      */
     public function get_default() : ?string
     {
-        return '';
+        return '0';
     }
 }
