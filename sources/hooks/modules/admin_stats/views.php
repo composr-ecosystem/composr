@@ -770,15 +770,17 @@ class Hook_admin_stats_views extends CMSStatsProvider
 
         switch ($bucket) {
             case 'total_views':
-                $data = $this->fill_data_by_date_pivots($pivot, $filters[$bucket . '__month_range'][0], $filters[$bucket . '__month_range'][1]);
+                $range = $this->convert_month_range_filter_to_pair($filters[$bucket . '__month_range']);
+
+                $data = $this->fill_data_by_date_pivots($pivot, $range[0], $range[1]);
 
                 $where = [
                     'p_bucket' => $bucket,
                     'p_pivot' => $pivot,
                 ];
                 $extra = '';
-                $extra .= ' AND p_month>=' . strval($filters[$bucket . '__month_range'][0]);
-                $extra .= ' AND p_month<=' . strval($filters[$bucket . '__month_range'][1]);
+                $extra .= ' AND p_month>=' . strval($range[0]);
+                $extra .= ' AND p_month<=' . strval($range[1]);
                 $data_rows = $GLOBALS['SITE_DB']->query_select('stats_preprocessed', ['p_data'], $where, $extra);
                 foreach ($data_rows as $data_row) {
                     $_data = @unserialize($data_row['p_data']);
@@ -816,15 +818,17 @@ class Hook_admin_stats_views extends CMSStatsProvider
                 ];
 
             case 'total_unique_views':
-                $data = $this->fill_data_by_date_pivots($pivot, $filters[$bucket . '__month_range'][0], $filters[$bucket . '__month_range'][1]);
+                $range = $this->convert_month_range_filter_to_pair($filters[$bucket . '__month_range']);
+
+                $data = $this->fill_data_by_date_pivots($pivot, $range[0], $range[1]);
 
                 $where = [
                     'p_bucket' => $bucket,
                     'p_pivot' => $pivot,
                 ];
                 $extra = '';
-                $extra .= ' AND p_month>=' . strval($filters[$bucket . '__month_range'][0]);
-                $extra .= ' AND p_month<=' . strval($filters[$bucket . '__month_range'][1]);
+                $extra .= ' AND p_month>=' . strval($range[0]);
+                $extra .= ' AND p_month<=' . strval($range[1]);
                 $data_rows = $GLOBALS['SITE_DB']->query_select('stats_preprocessed', ['p_data'], $where, $extra);
                 foreach ($data_rows as $data_row) {
                     $_data = @unserialize($data_row['p_data']);
@@ -855,15 +859,17 @@ class Hook_admin_stats_views extends CMSStatsProvider
                 ];
 
             case 'total_referrals':
-                $data = $this->fill_data_by_date_pivots($pivot, $filters[$bucket . '__month_range'][0], $filters[$bucket . '__month_range'][1]);
+                $range = $this->convert_month_range_filter_to_pair($filters[$bucket . '__month_range']);
+
+                $data = $this->fill_data_by_date_pivots($pivot, $range[0], $range[1]);
 
                 $where = [
                     'p_bucket' => $bucket,
                     'p_pivot' => $pivot,
                 ];
                 $extra = '';
-                $extra .= ' AND p_month>=' . strval($filters[$bucket . '__month_range'][0]);
-                $extra .= ' AND p_month<=' . strval($filters[$bucket . '__month_range'][1]);
+                $extra .= ' AND p_month>=' . strval($range[0]);
+                $extra .= ' AND p_month<=' . strval($range[1]);
                 $data_rows = $GLOBALS['SITE_DB']->query_select('stats_preprocessed', ['p_data'], $where, $extra);
                 foreach ($data_rows as $data_row) {
                     $_data = @unserialize($data_row['p_data']);
@@ -892,15 +898,17 @@ class Hook_admin_stats_views extends CMSStatsProvider
 
             case 'average_session_total_views':
             case 'average_session_duration':
-                $data = $this->fill_data_by_date_pivots($pivot, $filters[$bucket . '__month_range'][0], $filters[$bucket . '__month_range'][1]);
+                $range = $this->convert_month_range_filter_to_pair($filters[$bucket . '__month_range']);
+
+                $data = $this->fill_data_by_date_pivots($pivot, $range[0], $range[1]);
 
                 $where = [
                     'p_bucket' => $bucket,
                     'p_pivot' => $pivot,
                 ];
                 $extra = '';
-                $extra .= ' AND p_month>=' . strval($filters[$bucket . '__month_range'][0]);
-                $extra .= ' AND p_month<=' . strval($filters[$bucket . '__month_range'][1]);
+                $extra .= ' AND p_month>=' . strval($range[0]);
+                $extra .= ' AND p_month<=' . strval($range[1]);
                 $data_rows = $GLOBALS['SITE_DB']->query_select('stats_preprocessed', ['p_data'], $where, $extra);
                 foreach ($data_rows as $data_row) {
                     $_data = @unserialize($data_row['p_data']);
@@ -945,6 +953,8 @@ class Hook_admin_stats_views extends CMSStatsProvider
                 ];
 
             case 'session_durations':
+                $range = $this->convert_month_range_filter_to_pair($filters[$bucket . '__month_range']);
+
                 $data = [];
                 foreach ($this->session_duration_brackets as $bracket) {
                     $bracket = $this->cleanup_session_duration($bracket);
@@ -956,8 +966,8 @@ class Hook_admin_stats_views extends CMSStatsProvider
                     'p_pivot' => $pivot,
                 ];
                 $extra = '';
-                $extra .= ' AND p_month>=' . strval($filters[$bucket . '__month_range'][0]);
-                $extra .= ' AND p_month<=' . strval($filters[$bucket . '__month_range'][1]);
+                $extra .= ' AND p_month>=' . strval($range[0]);
+                $extra .= ' AND p_month<=' . strval($range[1]);
                 $data_rows = $GLOBALS['SITE_DB']->query_select('stats_preprocessed', ['p_data'], $where, $extra);
                 foreach ($data_rows as $data_row) {
                     $_data = @unserialize($data_row['p_data']);
@@ -985,6 +995,8 @@ class Hook_admin_stats_views extends CMSStatsProvider
                 ];
 
             case 'user_agent_types':
+                $range = $this->convert_month_range_filter_to_pair($filters[$bucket . '__month_range']);
+
                 $data = [];
 
                 $where = [
@@ -992,8 +1004,8 @@ class Hook_admin_stats_views extends CMSStatsProvider
                     'p_pivot' => $pivot,
                 ];
                 $extra = '';
-                $extra .= ' AND p_month>=' . strval($filters[$bucket . '__month_range'][0]);
-                $extra .= ' AND p_month<=' . strval($filters[$bucket . '__month_range'][1]);
+                $extra .= ' AND p_month>=' . strval($range[0]);
+                $extra .= ' AND p_month<=' . strval($range[1]);
                 $data_rows = $GLOBALS['SITE_DB']->query_select('stats_preprocessed', ['p_data'], $where, $extra);
                 foreach ($data_rows as $data_row) {
                     $_data = @unserialize($data_row['p_data']);
@@ -1038,6 +1050,8 @@ class Hook_admin_stats_views extends CMSStatsProvider
                 ];
 
             case 'referrer_type':
+                $range = $this->convert_month_range_filter_to_pair($filters[$bucket . '__month_range']);
+
                 $data = [];
 
                 $where = [
@@ -1045,8 +1059,8 @@ class Hook_admin_stats_views extends CMSStatsProvider
                     'p_pivot' => $pivot,
                 ];
                 $extra = '';
-                $extra .= ' AND p_month>=' . strval($filters[$bucket . '__month_range'][0]);
-                $extra .= ' AND p_month<=' . strval($filters[$bucket . '__month_range'][1]);
+                $extra .= ' AND p_month>=' . strval($range[0]);
+                $extra .= ' AND p_month<=' . strval($range[1]);
                 $data_rows = $GLOBALS['SITE_DB']->query_select('stats_preprocessed', ['p_data'], $where, $extra);
                 foreach ($data_rows as $data_row) {
                     $_data = @unserialize($data_row['p_data']);
@@ -1106,6 +1120,8 @@ class Hook_admin_stats_views extends CMSStatsProvider
             case 'session_entry_pages':
             case 'session_exit_pages':
             case 'session_total_views':
+                $range = $this->convert_month_range_filter_to_pair($filters[$bucket . '__month_range']);
+
                 $data = [];
 
                 $where = [
@@ -1113,8 +1129,8 @@ class Hook_admin_stats_views extends CMSStatsProvider
                     'p_pivot' => $pivot,
                 ];
                 $extra = '';
-                $extra .= ' AND p_month>=' . strval($filters[$bucket . '__month_range'][0]);
-                $extra .= ' AND p_month<=' . strval($filters[$bucket . '__month_range'][1]);
+                $extra .= ' AND p_month>=' . strval($range[0]);
+                $extra .= ' AND p_month<=' . strval($range[1]);
                 $data_rows = $GLOBALS['SITE_DB']->query_select('stats_preprocessed', ['p_data'], $where, $extra);
                 foreach ($data_rows as $data_row) {
                     $_data = @unserialize($data_row['p_data']);
@@ -1182,6 +1198,8 @@ class Hook_admin_stats_views extends CMSStatsProvider
                 ];
 
             case 'load_times_spread':
+                $range = $this->convert_month_range_filter_to_pair($filters[$bucket . '__month_range']);
+
                 $data = [];
                 foreach ($this->speed_brackets as $bracket) {
                     $bracket = $this->cleanup_speed($bracket);
@@ -1193,8 +1211,8 @@ class Hook_admin_stats_views extends CMSStatsProvider
                     'p_pivot' => $pivot,
                 ];
                 $extra = '';
-                $extra .= ' AND p_month>=' . strval($filters[$bucket . '__month_range'][0]);
-                $extra .= ' AND p_month<=' . strval($filters[$bucket . '__month_range'][1]);
+                $extra .= ' AND p_month>=' . strval($range[0]);
+                $extra .= ' AND p_month<=' . strval($range[1]);
                 $data_rows = $GLOBALS['SITE_DB']->query_select('stats_preprocessed', ['p_data'], $where, $extra);
                 foreach ($data_rows as $data_row) {
                     $_data = @unserialize($data_row['p_data']);
@@ -1214,6 +1232,8 @@ class Hook_admin_stats_views extends CMSStatsProvider
             case 'requested_languages':
                 require_code('lang2');
 
+                $range = $this->convert_month_range_filter_to_pair($filters[$bucket . '__month_range']);
+
                 $data = [];
 
                 $where = [
@@ -1221,8 +1241,8 @@ class Hook_admin_stats_views extends CMSStatsProvider
                     'p_pivot' => $pivot,
                 ];
                 $extra = '';
-                $extra .= ' AND p_month>=' . strval($filters[$bucket . '__month_range'][0]);
-                $extra .= ' AND p_month<=' . strval($filters[$bucket . '__month_range'][1]);
+                $extra .= ' AND p_month>=' . strval($range[0]);
+                $extra .= ' AND p_month<=' . strval($range[1]);
                 $data_rows = $GLOBALS['SITE_DB']->query_select('stats_preprocessed', ['p_data'], $where, $extra);
                 foreach ($data_rows as $data_row) {
                     $_data = @unserialize($data_row['p_data']);
@@ -1261,6 +1281,8 @@ class Hook_admin_stats_views extends CMSStatsProvider
             case 'countries':
                 require_code('locations');
 
+                $range = $this->convert_month_range_filter_to_pair($filters[$bucket . '__month_range']);
+
                 $data = [];
 
                 $where = [
@@ -1268,8 +1290,8 @@ class Hook_admin_stats_views extends CMSStatsProvider
                     'p_pivot' => $pivot,
                 ];
                 $extra = '';
-                $extra .= ' AND p_month>=' . strval($filters[$bucket . '__month_range'][0]);
-                $extra .= ' AND p_month<=' . strval($filters[$bucket . '__month_range'][1]);
+                $extra .= ' AND p_month>=' . strval($range[0]);
+                $extra .= ' AND p_month<=' . strval($range[1]);
                 $data_rows = $GLOBALS['SITE_DB']->query_select('stats_preprocessed', ['p_data'], $where, $extra);
                 foreach ($data_rows as $data_row) {
                     $_data = @unserialize($data_row['p_data']);
@@ -1303,6 +1325,8 @@ class Hook_admin_stats_views extends CMSStatsProvider
                 ];
 
             case 'average_page_speed':
+                $range = $this->convert_month_range_filter_to_pair($filters[$bucket . '__month_range']);
+
                 $data = [];
 
                 $where = [
@@ -1310,8 +1334,8 @@ class Hook_admin_stats_views extends CMSStatsProvider
                     'p_pivot' => $pivot,
                 ];
                 $extra = '';
-                $extra .= ' AND p_month>=' . strval($filters[$bucket . '__month_range'][0]);
-                $extra .= ' AND p_month<=' . strval($filters[$bucket . '__month_range'][1]);
+                $extra .= ' AND p_month>=' . strval($range[0]);
+                $extra .= ' AND p_month<=' . strval($range[1]);
                 $data_rows = $GLOBALS['SITE_DB']->query_select('stats_preprocessed', ['p_data'], $where, $extra);
                 foreach ($data_rows as $data_row) {
                     $_data = @unserialize($data_row['p_data']);
@@ -1349,6 +1373,8 @@ class Hook_admin_stats_views extends CMSStatsProvider
                 ];
 
             case 'session_bounce_rates':
+                $range = $this->convert_month_range_filter_to_pair($filters[$bucket . '__month_range']);
+
                 $data = [];
 
                 $where = [
@@ -1356,8 +1382,8 @@ class Hook_admin_stats_views extends CMSStatsProvider
                     'p_pivot' => $pivot,
                 ];
                 $extra = '';
-                $extra .= ' AND p_month>=' . strval($filters[$bucket . '__month_range'][0]);
-                $extra .= ' AND p_month<=' . strval($filters[$bucket . '__month_range'][1]);
+                $extra .= ' AND p_month>=' . strval($range[0]);
+                $extra .= ' AND p_month<=' . strval($range[1]);
                 $data_rows = $GLOBALS['SITE_DB']->query_select('stats_preprocessed', ['p_data'], $where, $extra);
                 foreach ($data_rows as $data_row) {
                     $_data = @unserialize($data_row['p_data']);
@@ -1401,6 +1427,8 @@ class Hook_admin_stats_views extends CMSStatsProvider
                 ];
 
             case 'page_average_speeds':
+                $range = $this->convert_month_range_filter_to_pair($filters[$bucket . '__month_range']);
+
                 $data = [];
 
                 $where = [
@@ -1408,8 +1436,8 @@ class Hook_admin_stats_views extends CMSStatsProvider
                     'p_pivot' => $pivot,
                 ];
                 $extra = '';
-                $extra .= ' AND p_month>=' . strval($filters[$bucket . '__month_range'][0]);
-                $extra .= ' AND p_month<=' . strval($filters[$bucket . '__month_range'][1]);
+                $extra .= ' AND p_month>=' . strval($range[0]);
+                $extra .= ' AND p_month<=' . strval($range[1]);
                 $data_rows = $GLOBALS['SITE_DB']->query_select('stats_preprocessed', ['p_data'], $where, $extra);
                 foreach ($data_rows as $data_row) {
                     $_data = @unserialize($data_row['p_data']);

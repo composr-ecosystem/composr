@@ -936,6 +936,47 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
     }
 
     /**
+     * Convert a month range filter array to a range pair if it only specifies one value.
+     *
+     * @param  mixed $_range_value The value of the $bucket . __month_range filter property
+     * @return array An array pair of start, end indicating the month range; start and end are the number of months since epoch (1970)
+     */
+    protected function convert_month_range_filter_to_pair($_range_value) : array
+    {
+        // Work out what our range value is as an integer if applicable if $_range_value is not already a range pair
+        $range_value = null;
+        if (is_array($_range_value) && (count($_range_value) == 1) && (is_integer($_range_value[0]))) {
+            $range_value = $_range_value[0];
+        }
+        if (is_integer($_range_value)) {
+            $range_value = $_range_value;
+        }
+
+        // If $range_value has a value, this means $_range_value had only one value. Treat this as a month range length from (now - value) to now.
+        if ($range_value !== null) {
+            $epoch = new DateTime('1970-01-01');
+            $_start = new DateTime(date('Y-m-d H:i:s', strtotime('-' . strval($range_value) . ' months')));
+            $_end = new DateTime();
+
+            $start_interval = $_start->diff($epoch);
+            $start_months = ($start_interval->y * 12) + $start_interval->m;
+
+            $end_interval = $_end->diff($epoch);
+            $end_months = ($end_interval->y * 12) + $end_interval->m;
+
+            return [$start_months, $end_months];
+        }
+
+        // If $_range_value is an array with exactly two integer values, assume it is already in month range format and return as-is.
+        if (is_array($_range_value) && (count($_range_value) == 2) && is_integer($_range_value[0]) && is_integer($_range_value[1])) {
+            return [$_range_value[0], $_range_value[1]];
+        }
+
+        // If we reach this point, then $_range_value was invalid.
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+    }
+
+    /**
      * Make a date pivot value look nice.
      *
      * @param  string $pivot Current pivot

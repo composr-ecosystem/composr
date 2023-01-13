@@ -106,8 +106,10 @@ class Hook_admin_stats_google_keywords extends CMSStatsProvider
     {
         // https://developers.google.com/webmaster-tools/search-console-api-original/v3/searchanalytics/query
 
-        $_start_month = $filters[$bucket . '__month_range'][0];
-        $_end_month = $filters[$bucket . '__month_range'][1];
+        $range = $this->convert_month_range_filter_to_pair($filters[$bucket . '__month_range']);
+
+        $_start_month = $range[0];
+        $_end_month = $range[1];
         if (!empty($filters[$bucket . '__keyword'])) {
             $keyword = str_replace(['*', '?'], ['', ''], $filters[$bucket . '__keyword']);
         } else {

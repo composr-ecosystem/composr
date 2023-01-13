@@ -132,15 +132,17 @@ class Hook_admin_stats_transactions extends CMSStatsProvider
      */
     public function generate_final_data(string $bucket, string $pivot, array $filters) : ?array
     {
-        $data = $this->fill_data_by_date_pivots($pivot, $filters[$bucket . '__month_range'][0], $filters[$bucket . '__month_range'][1]);
+        $range = $this->convert_month_range_filter_to_pair($filters[$bucket . '__month_range']);
+
+        $data = $this->fill_data_by_date_pivots($pivot, $range[0], $range[1]);
 
         $where = [
             'p_bucket' => $bucket,
             'p_pivot' => $pivot,
         ];
         $extra = '';
-        $extra .= ' AND p_month>=' . strval($filters[$bucket . '__month_range'][0]);
-        $extra .= ' AND p_month<=' . strval($filters[$bucket . '__month_range'][1]);
+        $extra .= ' AND p_month>=' . strval($range[0]);
+        $extra .= ' AND p_month<=' . strval($range[1]);
         $data_rows = $GLOBALS['SITE_DB']->query_select('stats_preprocessed', ['p_data'], $where, $extra);
         foreach ($data_rows as $data_row) {
             $_data = @unserialize($data_row['p_data']);
