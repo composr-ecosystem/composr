@@ -649,9 +649,10 @@ class Forum_driver_phpbb3 extends Forum_driver_base
      * Get the avatar URL for the specified member ID.
      *
      * @param  MEMBER $member_id The member ID
+     * @param  boolean $fallback_support Whether fallback support should be allowed (passed by reference)
      * @return URLPATH The URL (blank: none)
      */
-    protected function _get_member_avatar_url(int $member_id) : string
+    protected function _get_member_avatar_url(int $member_id, bool &$fallback_support) : string
     {
         $avatar_gallery_path = $this->db->query_select_value('config', 'config_value', ['config_name' => 'avatar_gallery_path']);
 

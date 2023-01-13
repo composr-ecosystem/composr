@@ -107,7 +107,7 @@ abstract class Forum_driver_base
      */
     public function get_member_avatar_url(int $member, bool $fallback_support = true) : string
     {
-        $avatar = $this->_get_member_avatar_url($member);
+        $avatar = $this->_get_member_avatar_url($member, $fallback_support);
 
         if (($avatar == '') && ($member != $this->get_guest_id()) && ($fallback_support)) {
             if (($this->get_member_email_address($member) == '') || (get_option('gravatars') == '0')) {

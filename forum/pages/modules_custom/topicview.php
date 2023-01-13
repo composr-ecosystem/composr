@@ -96,6 +96,14 @@ function jestr_filtering($in)
         }
     }
 
+    $option = get_option('jestr_owo_shown_for');
+    if ($option != '') {
+        $passes = (!empty(array_intersect(selectcode_to_idlist_using_memory($option, $GLOBALS['FORUM_DRIVER']->get_usergroup_list()), $GLOBALS['FORUM_DRIVER']->get_members_groups(get_member()))));
+        if ($passes) {
+            $in = jestr_owo_filter($in);
+        }
+    }
+
     return $in;
 }
 
@@ -220,6 +228,21 @@ function jestr_string_changes_filter($in)
             }
         }
     }
+
+    return $in;
+}
+
+function jestr_owo_filter($in)
+{
+    $in = str_replace(
+        [
+            'r', 'R', 'l', 'L'
+        ],
+        [
+            'w', 'W', 'w', 'W'
+        ],
+        $in
+    );
 
     return $in;
 }

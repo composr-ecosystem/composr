@@ -153,6 +153,7 @@ The jokes you can play are:
             'sources_custom/hooks/systems/config/jestr_leet_shown_for.php',
             'sources_custom/hooks/systems/config/jestr_name_changes.php',
             'sources_custom/hooks/systems/config/jestr_name_changes_shown_for.php',
+            'sources_custom/hooks/systems/config/jestr_owo_shown_for.php',
             'sources_custom/hooks/systems/config/jestr_piglatin_shown_for.php',
             'sources_custom/hooks/systems/config/jestr_string_changes.php',
             'sources_custom/hooks/systems/config/jestr_string_changes_shown_for.php',

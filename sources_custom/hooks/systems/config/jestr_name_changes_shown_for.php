@@ -33,6 +33,7 @@ class Hook_config_jestr_name_changes_shown_for
             'explanation' => 'CONFIG_OPTION_jestr_name_changes_shown_for',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
+            'order_in_category_group' => 2,
             'required' => false,
             'public' => false,
             'addon' => 'jestr',

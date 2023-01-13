@@ -809,9 +809,10 @@ class Forum_driver_ipb3 extends Forum_driver_base
      * Get the avatar URL for the specified member ID.
      *
      * @param  MEMBER $member_id The member ID
+     * @param  boolean $fallback_support Whether fallback support should be allowed (passed by reference)
      * @return URLPATH The URL (blank: none)
      */
-    protected function _get_member_avatar_url(int $member_id) : string
+    protected function _get_member_avatar_url(int $member_id, bool &$fallback_support) : string
     {
         $member_extra_rows = $this->db->query_select('profile_portal', ['avatar_location', 'avatar_type'], ['pp_member_id' => $member_id]);
         if (!array_key_exists(0, $member_extra_rows)) {

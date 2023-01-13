@@ -8402,6 +8402,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ENABLE_NOTIFICATIONS_NA
         ENABLE_NOTIFICATIONS__ALL
         FTP_CACHE_ERROR
+        JESTER_OWO_SHOWN_FOR
+        CONFIG_OPTION_jestr_owo_shown_for
     ')));
 
     $non_admin_files = [

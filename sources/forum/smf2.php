@@ -355,9 +355,10 @@ class Forum_driver_smf2 extends Forum_driver_base
      * Get the avatar URL for the specified member ID.
      *
      * @param  MEMBER $member_id The member ID
+     * @param  boolean $fallback_support Whether fallback support should be allowed (passed by reference)
      * @return URLPATH The URL (blank: none)
      */
-    protected function _get_member_avatar_url(int $member_id) : string
+    protected function _get_member_avatar_url(int $member_id, bool &$fallback_support) : string
     {
         $ret = $this->get_member_row_field($member_id, 'avatar');
         if ($ret == '') {

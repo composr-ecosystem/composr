@@ -16,7 +16,7 @@
 /**
  * Hook class.
  */
-class Hook_config_jestr_string_changes_shown_for
+class Hook_config_jestr_owo_shown_for
 {
     /**
      * Gets the details relating to the config option.
@@ -26,14 +26,14 @@ class Hook_config_jestr_string_changes_shown_for
     public function get_details() : ?array
     {
         return [
-            'human_name' => 'JESTER_STRING_CHANGES_SHOWN_FOR',
+            'human_name' => 'JESTER_OWO_SHOWN_FOR',
             'type' => 'line',
             'category' => 'FEATURE',
             'group' => 'JESTER_TITLE',
-            'explanation' => 'CONFIG_OPTION_jestr_string_changes_shown_for',
+            'explanation' => 'CONFIG_OPTION_jestr_owo_shown_for',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
-            'order_in_category_group' => 5,
+            'order_in_category_group' => 8,
             'required' => false,
             'public' => false,
             'addon' => 'jestr',
