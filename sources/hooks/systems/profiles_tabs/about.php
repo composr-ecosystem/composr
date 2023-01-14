@@ -117,7 +117,7 @@ class Hook_profiles_tabs_about
             $modules[] = ['views', do_lang_tempcode('MASQUERADE_AS_MEMBER'), build_url(['page' => '', 'keep_su' => $member_info['username']], ''), 'menu/site_meta/user_actions/login'];
         }
         if ((has_actual_page_access($member_id_viewing, 'search')) && (addon_installed('search'))) {
-            $modules[] = ['content', do_lang_tempcode('SEARCH'), build_url(['page' => 'search', 'type' => 'results', 'author' => $member_info['username']], get_module_zone('search')), 'buttons/search', 'search'];
+            $modules[] = ['content', do_lang_tempcode('SEARCH'), build_url(['page' => 'search', 'type' => 'results', 'author' => $member_info['username']], get_module_zone('search')), 'buttons/search', 'search nofollow'];
         }
         if (addon_installed('authors')) {
             $author = $GLOBALS['SITE_DB']->query_value_if_there('SELECT author FROM ' . get_table_prefix() . 'authors WHERE (member_id=' . strval($member_id_of) . ') OR (member_id IS NULL AND ' . db_string_equal_to('author', $member_info['username']) . ')');
