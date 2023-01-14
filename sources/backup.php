@@ -518,9 +518,10 @@ function deliver_remote_backup(string $file)
         $ftp_connection = @ftp_connect($copy_server, intval($copy_port));
         if ($ftp_connection !== false) {
             if (@ftp_login($ftp_connection, $copy_user, $copy_password)) {
-                @ftp_delete($ftp_connection, $path_stub . $_file);
-                if (@ftp_put($ftp_connection, $copy_path, $path_stub, FTP_BINARY) === false) {
+                if (@ftp_put($ftp_connection, $copy_path, $path_stub . $_file, FTP_BINARY) === false) {
                     $error = true;
+                } else {
+                    @ftp_delete($ftp_connection, $path_stub . $_file);
                 }
             } else {
                 $error = true;
