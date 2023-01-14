@@ -23,6 +23,8 @@
 	<form title="{!PRIMARY_PAGE_FORM}" action="{MULTI_ACTION*}" method="post">
 		{$INSERT_FORM_POST_SECURITY}
 
+		<input type="hidden" name="csrf_token_preserve" value="1" />
+
 		<div class="not-too-tall-addons">
 			<table class="columned-table wide-table results-table autosized-table zebra responsive-table">
 				<thead>

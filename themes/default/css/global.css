@@ -2362,6 +2362,10 @@ p.red-alert,
 	padding: 1em;
 }
 
+.red-alert + .red-alert {
+	margin-top: 1em;
+}
+
 div.red-alert,
 p.red-alert {
 	border: 1px solid {$?,{$THEME_OPTION,borders},{$GET,light_error_border},transparent};
