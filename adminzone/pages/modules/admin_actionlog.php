@@ -482,7 +482,7 @@ class Module_admin_actionlog
                 }
 
                 if ($row['ip'] != get_ip_address()) {
-                    if (get_option('stopforumspam_api_key') . get_option('tornevall_api_username') != '') {
+                    if ((get_option('stopforumspam_api_key') != '') || (get_option('spam_use_tornevall') == '1')) {
                         $fields['SYNDICATE_TO_STOPFORUMSPAM'] = do_template('ACTIONLOGS_TOGGLE_LINK', [
                             '_GUID' => '7d10045c6b3b48f256e2f8eb5535809c',
                             'LABEL' => do_lang_tempcode('PROCEED'),

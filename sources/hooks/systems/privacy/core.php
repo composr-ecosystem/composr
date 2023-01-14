@@ -96,7 +96,7 @@ class Hook_privacy_core extends Hook_privacy_base
             ],
 
             'general' => [
-                ((get_option('spam_check_level') == 'NEVER') || (get_option('spam_check_stopforumspam') == '0' && (get_option('stopforumspam_api_key') == ''))) ? null : [
+                ((get_option('spam_check_level') == 'NEVER') || (get_option('spam_check_stopforumspam') == '0' && (get_option('stopforumspam_api_key') == '') && (get_option('spam_use_tornevall') == '0'))) ? null : [
                     'heading' => do_lang('INFORMATION_TRANSFER'),
                     'action' => do_lang_tempcode('PRIVACY_ACTION_stopforumspam'),
                     'reason' => do_lang_tempcode('PRIVACY_REASON_stopforumspam'),

@@ -31,7 +31,7 @@
 				<div class="mini-indent">
 					<div><em>{!BANNED}, {$LCASE,{IP_BANNED*}}</em>{+START,IF_PASSED,IP_BAN_LINK} {IP_BAN_LINK}{+END}</div>
 
-					{+START,IF_NON_EMPTY,{$CONFIG_OPTION,stopforumspam_api_key}{$CONFIG_OPTION,tornevall_api_username}}
+					{+START,IF,{$OR,{$IS_NON_EMPTY,{$CONFIG_OPTION,stopforumspam_api_key}},{$EQ,{$CONFIG_OPTION,spam_use_tornevall},1}}}
 						<div><span class="associated-link"><a href="{$PAGE_LINK*,_SEARCH:admin_ip_ban:syndicate_ip_ban:ip={IP}:member_id={MEMBER_ID}:reason={!MANUAL}:redirect={$SELF_URL&}}">{!SYNDICATE_TO_STOPFORUMSPAM}</a></span></div>
 					{+END}
 				</div>

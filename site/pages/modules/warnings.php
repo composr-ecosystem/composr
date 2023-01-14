@@ -363,15 +363,7 @@ class Module_warnings extends Standard_crud_module
                     $fields->attach(form_input_tick(do_lang_tempcode('WHETHER_BANNED_IP'), do_lang_tempcode('DESCRIPTION_WHETHER_BANNED_IP'), 'banned_ip', $spam_mode || $already_banned_ip, null, '1', false, $already_banned_ip));
                 }
 
-                $stopforumspam_api_key = get_option('stopforumspam_api_key');
-                if ($stopforumspam_api_key === null) {
-                    $stopforumspam_api_key = '';
-                }
-                $tornevall_api_username = get_option('tornevall_api_username');
-                if ($tornevall_api_username === null) {
-                    $tornevall_api_username = '';
-                }
-                if ($stopforumspam_api_key . $tornevall_api_username != '') {
+                if ((get_option('stopforumspam_api_key') != '') || (get_option('spam_use_tornevall') == '1')) {
                     require_lang('submitban');
                     $fields->attach(form_input_tick(do_lang_tempcode('SYNDICATE_TO_STOPFORUMSPAM'), do_lang_tempcode('DESCRIPTION_SYNDICATE_TO_STOPFORUMSPAM'), 'stopforumspam', $spam_mode));
                 }
