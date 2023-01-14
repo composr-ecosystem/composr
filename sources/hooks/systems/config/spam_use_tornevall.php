@@ -42,6 +42,7 @@ class Hook_config_spam_use_tornevall
             'required' => false,
             'public' => false,
             'addon' => 'core_configuration',
+
             'maintenance_code' => 'tornevall',
         ];
     }
