@@ -107,7 +107,7 @@ From there you can choose to run tests that have been written.
 Tests are stored under the [tt]_tests/tests[/tt] directory, and are classed as either "regression tests" (tests written to illustrate a bug, that fail before we fix the bug, but pass after we fix the bug) or "unit tests" (a test designed to test some part of Composr, we usually actually refer to these as \'automated tests\').
 Tests are PHP scripts, so a good understand if PHP is required to write them.
 
-The testing framework is built around SimpleTest (http://www.simpletest.org/), so all their API can be used. We have extended it a little bit, so:
+The testing framework is built around SimpleTest (https://github.com/simpletest/simpletest), so all their API can be used. We have extended it a little bit, so:
 - you can call up page-links
 - any pages loaded up are saved as HTML so you can check them via other means also (e.g. passing through an HTML validator, or checking them manually for aesthetic issues).
 - you can make Composr think you are a logged in administrator
