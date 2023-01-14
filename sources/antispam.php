@@ -78,7 +78,7 @@ function inject_action_spamcheck(?string $username = null, ?string $email = null
  */
 function check_for_spam(?string $username, ?string $email, bool $page_level)
 {
-    // Prevent AJAX errors from spam checks by skipping checks on such calls
+    // Prevent console/styling/behaviour errors when a spam check results in an error screen on a clean template cache scenario
     if (running_script('script') || running_script('sheet')) {
         return;
     }

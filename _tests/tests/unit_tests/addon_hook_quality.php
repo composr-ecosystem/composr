@@ -35,12 +35,14 @@ class addon_hook_quality_test_set extends cms_test_case
             $this->assertTrue(method_exists($ob, 'get_default_icon'), 'Missing get_default_icon for ' . $addon_name);
             $this->assertTrue(method_exists($ob, 'get_file_list'), 'Missing get_file_list for ' . $addon_name);
 
-            $description = $ob->get_description();
+            if (method_exists($ob, 'get_description')) {
+                $description = $ob->get_description();
 
-            try {
-                check_comcode($description);
-            } catch (Exception $e) {
-                $this->assertTrue(false, 'Failed to parse addon description for ' . $addon_name . ', ' . $e->getMessage());
+                try {
+                    check_comcode($description);
+                } catch (Exception $e) {
+                    $this->assertTrue(false, 'Failed to parse addon description for ' . $addon_name . ', ' . $e->getMessage());
+                }
             }
         }
 

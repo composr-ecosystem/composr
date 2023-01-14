@@ -57,6 +57,23 @@ class __broken_links_test_set extends cms_test_case
         $this->check_recorded_links();
     }
 
+    public function testAddonDescriptions()
+    {
+        $addons = find_all_hook_obs('systems', 'addon_registry', 'Hook_addon_registry_');
+        foreach ($addons as $addon_name => $ob) {
+            if (($this->only !== null) && ($this->only != $addon_name)) {
+                continue;
+            }
+
+            if (method_exists($ob, 'get_description')) {
+                $description = $ob->get_description();
+                $tempcode = comcode_to_tempcode($description);
+
+                $this->scan_html($tempcode->evaluate(), $addon_name);
+            }
+        }
+    }
+
     public function testTutorials()
     {
         set_option('is_on_comcode_page_cache', '1');
