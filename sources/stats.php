@@ -1316,7 +1316,10 @@ class CMSStatsDateMonthRangeFilter extends CMSStatsFilter
 
             $options = new Tempcode();
             foreach ($_options as $option_key => $option_label) {
-                $options->attach(form_input_list_entry(strval($option_key), $value == $option_key, $option_label));
+                if (!is_string($option_key)) {
+                    $option_key = strval($option_key);
+                }
+                $options->attach(form_input_list_entry($option_key, $value == $option_key, $option_label));
             }
 
             return form_input_list($this->label, new Tempcode(), $this->filter_name, $options, null, false, true);

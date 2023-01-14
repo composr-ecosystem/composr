@@ -1311,7 +1311,7 @@ function put_value_in_stack_trace($value) : string
         if (($value === null) || (is_array($value) && (strlen(json_encode($value)) > MAX_STACK_TRACE_VALUE_LENGTH))) {
             $_value = gettype($value);
         } elseif (is_object($value) && (is_a($value, 'Tempcode'))) {
-            if (strlen(json_encode($value)) > 1000) { // Don't display Tempcode if it's really long, and
+            if (strlen(json_encode($value)) > 1000) { // Don't display Tempcode if it's really long, and would use too much memory/space
                 $_value = 'Tempcode -> ...';
             } else {
                 $_value = $value->evaluate();

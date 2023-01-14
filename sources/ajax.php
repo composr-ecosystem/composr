@@ -502,7 +502,7 @@ function sheet_script()
     $sheet = get_param_string('sheet');
     if ($sheet != '') {
         $theme = get_param_string('theme', null);
-        if ((!is_dir(get_file_base() . '/themes/' . $theme)) && (!is_dir(get_custom_file_base() . '/themes/' . $theme))) { // Sanity check
+        if (($theme !== null) && (!is_dir(get_file_base() . '/themes/' . $theme)) && (!is_dir(get_custom_file_base() . '/themes/' . $theme))) { // Sanity check
             $theme = null;
         }
 
@@ -529,7 +529,7 @@ function script_script()
     $script = get_param_string('script');
     if ($script != '') {
         $theme = get_param_string('theme', null);
-        if ((!is_dir(get_file_base() . '/themes/' . $theme)) && (!is_dir(get_custom_file_base() . '/themes/' . $theme))) { // Sanity check
+        if (($theme !== null) && (!is_dir(get_file_base() . '/themes/' . $theme)) && (!is_dir(get_custom_file_base() . '/themes/' . $theme))) { // Sanity check
             $theme = null;
         }
 

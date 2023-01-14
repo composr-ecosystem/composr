@@ -211,22 +211,22 @@ class Hook_search_comcode_pages extends FieldsSearchHook
             // Category filter
             if (($search_under != '!') && ($search_under != '-1')) {
                 $cats = explode(',', $search_under);
-                $first_cat = false;
+                $done_at_least_one_cat = false;
                 foreach ($cats as $i => $cat) {
                     if (trim($cat) == '') {
                         continue;
                     }
 
-                    if (!$first_cat) {
+                    if (!$done_at_least_one_cat) {
                         $extra_join_clause .= ' AND (';
-                        $first_cat = true;
+                        $done_at_least_one_cat = true;
                     } else {
                         $extra_join_clause .= ' OR ';
                     }
 
                     $extra_join_clause .= db_string_equal_to('ixxx.i_zone_name', $cat);
                 }
-                if ($first_cat) {
+                if ($done_at_least_one_cat) {
                     $extra_join_clause .= ')';
                 }
             }

@@ -18,7 +18,7 @@
  * @package    core
  */
 
-/*EXTRA FUNCTIONS: shell_exec|escapeshellarg|posix_.*|fileowner|filegroup|get_current_user|is_executable*/
+/*EXTRA FUNCTIONS: shell_exec|escapeshellarg|posix_.*|fileowner|filegroup|get_current_user|is_executable|strtolower*/
 
 // Everything in this file can run without Composr having bootstrapped, although it will run better if it has
 

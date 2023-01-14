@@ -718,24 +718,24 @@ function website_default_php_file_permissions() : int
 }
 
 /**
- * Set permissions on a newly-created file via FTP, assuming an FTP filesystem cache issue if 'No such file or directory' error is thrown.
- * It is implied that mkdir was called on the same filename prior to calling this and it returned success.
+ * Set permissions on a newly-created path via FTP, assuming an FTP filesystem cache issue if 'No such file or directory' error is thrown.
+ * It is implied that the directory/file was created on the same filename prior to calling this and it returned success.
  *
  * @param  mixed $ftp The FTP connection
  * @param  int $permissions The permissions to set
- * @param  PATH $filename The file path
+ * @param  PATH $ftp_path The file path
  * @return ~int The new file permissions on success (false: error)
  * @ignore
  */
-function _ftp_chmod($ftp, int $permissions, string $filename)
+function _ftp_chmod($ftp, int $permissions, string $ftp_path)
 {
-    $chmod = @ftp_chmod($ftp, $permissions, $filename);
+    $chmod = @ftp_chmod($ftp, $permissions, $ftp_path);
 
     // If an error occurred, check if it was a file/directory issue. If so, fatal_exit with FTP configuration information.
     if ($chmod === false) {
         $prev_error = error_get_last();
         if (isset($prev_error['message']) && (strpos($prev_error['message'], 'No such file or directory') !== false)) {
-            fatal_exit(do_lang_tempcode('FTP_CACHE_ERROR', $filename));
+            fatal_exit(do_lang_tempcode('FTP_CACHE_ERROR', $ftp_path));
         }
     }
 
