@@ -726,7 +726,7 @@ class Module_admin_addons
             }
 
             if (substr($key, 0, 10) == 'uninstall_') {
-                if (!addon_installed(filter_naughty_harsh($passed), true, false, false)) {
+                if (addon_installed(filter_naughty_harsh($passed), true, false, false)) {
                     $writable_paths = array_merge($writable_paths, get_addon_uninstall_writable_paths($passed));
                 }
             }
@@ -744,7 +744,7 @@ class Module_admin_addons
             }
 
             if (substr($key, 0, 10) == 'uninstall_') {
-                if (!addon_installed(filter_naughty_harsh($passed), true, false, false)) {
+                if (addon_installed(filter_naughty_harsh($passed), true, false, false)) {
                     $addons_to_remove[] = $passed;
                 }
             }
