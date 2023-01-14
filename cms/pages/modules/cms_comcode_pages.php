@@ -1063,12 +1063,6 @@ class Module_cms_comcode_pages
         $include_on_sitemap = comcode_page_include_on_sitemap($zone, $file);
         $fields2->attach(form_input_tick(do_lang_tempcode('INCLUDE_ON_SITEMAP'), do_lang_tempcode('DESCRIPTION_INCLUDE_ON_SITEMAP'), 'include_on_sitemap', $include_on_sitemap));
 
-        if (!$new) {
-            if ($delete_url->is_empty()) {
-                $fields2->attach(form_input_tick(do_lang_tempcode('DELETE'), do_lang_tempcode('DESCRIPTION_DELETE'), 'delete', false));
-            }
-        }
-
         if (get_option('is_on_comcode_page_children') == '1') {
             $_pages = find_all_pages_wrap($zone);
             cms_mb_ksort($_pages, SORT_NATURAL | SORT_FLAG_CASE);
