@@ -1010,9 +1010,10 @@ function get_hook_ob(string $type, string $subtype, string $hook, string $classn
  * @param  ID_TEXT $type The type of hook
  * @set blocks endpoints modules systems
  * @param  ID_TEXT $subtype The hook sub-type to find hook implementations for (e.g. the name of a module)
+ * @param  boolean $check_custom Whether to consider and prioritise sources_custom hooks
  * @return array A map of hook implementation name to [sources|sources_custom]
  */
-function find_all_hooks(string $type, string $subtype) : array
+function find_all_hooks(string $type, string $subtype, bool $check_custom = true) : array
 {
     global $HOOKS_CACHE;
     if (isset($HOOKS_CACHE[$type . '/' . $subtype])) {
@@ -1038,15 +1039,17 @@ function find_all_hooks(string $type, string $subtype) : array
         }
     }
 
-    $doing_custom_scan = (!isset($GLOBALS['DOING_USERS_INIT'])) && ((!in_safe_mode()) || ($GLOBALS['RELATIVE_PATH'] === '_tests') && ($subtype === 'addon_registry'));
-    if ($doing_custom_scan) { // The !isset is because of if the user init causes a DB query to load sessions which loads DB hooks which checks for safe mode which leads to a permissions check for safe mode and thus a failed user check (as sessions not loaded yet)
-        $dir = get_file_base() . '/sources_custom/hooks/' . $type . '/' . $subtype;
-        $dh = is_dir($dir) ? scandir($dir) : false;
-        if ($dh !== false) {
-            foreach ($dh as $file) {
-                $basename = basename($file, '.php');
-                if (($file[0] != '.') && ($file === $basename . '.php')/* && (preg_match('#^[\w\-]*$#', $basename) != 0) Let's trust - performance*/) {
-                    $out[$basename] = 'sources_custom';
+    if ($check_custom) {
+        $doing_custom_scan = (!isset($GLOBALS['DOING_USERS_INIT'])) && ((!in_safe_mode()) || (($GLOBALS['RELATIVE_PATH'] === '_tests') && ($subtype === 'addon_registry')));
+        if ($doing_custom_scan) { // The !isset is because of if the user init causes a DB query to load sessions which loads DB hooks which checks for safe mode which leads to a permissions check for safe mode and thus a failed user check (as sessions not loaded yet)
+            $dir = get_file_base() . '/sources_custom/hooks/' . $type . '/' . $subtype;
+            $dh = is_dir($dir) ? scandir($dir) : false;
+            if ($dh !== false) {
+                foreach ($dh as $file) {
+                    $basename = basename($file, '.php');
+                    if (($file[0] != '.') && ($file === $basename . '.php')/* && (preg_match('#^[\w\-]*$#', $basename) != 0) Let's trust - performance*/) {
+                        $out[$basename] = 'sources_custom';
+                    }
                 }
             }
         }

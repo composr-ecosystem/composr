@@ -28,7 +28,7 @@
  * @param  string $command Command to run
  * @return string Command output
  */
-function execute_nicely(string $command) : string
+function execute_nicely(string $command): string
 {
     $ret = @trim(shell_exec($command . ' 2>&1'));
     if ($ret != '') {
@@ -47,7 +47,7 @@ function execute_nicely(string $command) : string
  * @param  integer $minimum_level Minimum RESULT_TYPE_* level
  * @return array A tuple: Messages to show, Commands to run, Paths with issues, Whether any issues were found
  */
-function scan_permissions(bool $live_output = false, bool $live_commands = false, ?string $web_username = null, ?bool $has_ftp_loopback_for_write = null, int $minimum_level = 3) : array
+function scan_permissions(bool $live_output = false, bool $live_commands = false, ?string $web_username = null, ?bool $has_ftp_loopback_for_write = null, int $minimum_level = 3): array
 {
     $sensitive_paths = [
         '_config.php',
@@ -130,20 +130,16 @@ function scan_permissions(bool $live_output = false, bool $live_commands = false
  * Get the list of folders/files that need CHmodding for write access.
  *
  * @param  boolean $runtime Include folders/files that are created dynamically
- * @param  boolean $non_bundled Whether to look at requirements of non-bundled addons
+ * @param  boolean $check_custom Whether to consider and prioritise sources_custom hooks
  * @return array The list of paths; ** represents directory-wildcards
  */
-function get_chmod_array(bool $runtime = true, bool $non_bundled = true) : array
+function get_chmod_array(bool $runtime = true, bool $check_custom = true): array
 {
     $chmod = [];
 
     if (function_exists('find_all_hooks')) {
-        $hooks = find_all_hooks('systems', 'addon_registry'); // TODO: Make find_all_hooks do the non_bundled checks work; rename to check_custom.
+        $hooks = find_all_hooks('systems', 'addon_registry', $check_custom);
         foreach ($hooks as $hook => $place) {
-            if (($place == 'sources_custom') && (!$non_bundled)) {
-                continue;
-            }
-
             /*require_code('hooks/systems/addon_registry/' . filter_naughty_harsh($hook));
             $object = object_factory('Hook_addon_registry_' . filter_naughty_harsh($hook));
             $chmod = array_merge($chmod, $object->get_chmod_array());*/
@@ -156,7 +152,7 @@ function get_chmod_array(bool $runtime = true, bool $non_bundled = true) : array
             $chmod = array_merge($chmod, $_chmod);
         }
     } else { // Manually scan hooks using PHP
-        if ($non_bundled) {
+        if ($check_custom) {
             // sources_custom should be first in case of overrides
             $base_dirs = [__DIR__ . '/../sources_custom/hooks/systems/addon_registry', __DIR__ . '/../sources/hooks/systems/addon_registry'];
         } else {
@@ -332,7 +328,7 @@ abstract class CMSPermissionsScanner
      * @param  PATH $rel_path The relative path to the base directory
      * @return boolean Whether it is filtered
      */
-    protected function filtered(string $rel_path) : bool
+    protected function filtered(string $rel_path): bool
     {
         if ($rel_path == '') {
             return false;
@@ -376,7 +372,7 @@ abstract class CMSPermissionsScanner
      * @param  string $prefix The raw prefix
      * @return string The prefix
      */
-    protected function message_prefix(string $prefix) : string
+    protected function message_prefix(string $prefix): string
     {
         if ($this->minimum_level >= self::RESULT_TYPE_ERROR_MISSING) {
             return '';
@@ -461,7 +457,7 @@ abstract class CMSPermissionsScanner
      * @param  string $function Function name
      * @return boolean Whether it is
      */
-    protected function php_function_allowed(string $function) : bool
+    protected function php_function_allowed(string $function): bool
     {
         if (!function_exists($function)) {
             return false;
@@ -481,7 +477,7 @@ abstract class CMSPermissionsScanner
      * @param  boolean $found_any_issue Whether any issues were found, returned by reference
      * @return array A tuple: Messages to show, Commands to run
      */
-    abstract public function process_directory(string $path, string $rel_path = '', ?string $attr = null, bool $top_level = true, array &$paths = [], bool &$found_any_issue = false) : array;
+    abstract public function process_directory(string $path, string $rel_path = '', ?string $attr = null, bool $top_level = true, array &$paths = [], bool &$found_any_issue = false): array;
 
 
     /**
@@ -490,7 +486,7 @@ abstract class CMSPermissionsScanner
      * @param  PATH $path The path the message is about
      * @return string The message
      */
-    protected function output_success(string $path) : string
+    protected function output_success(string $path): string
     {
         $message = 'Success: ' . $path;
 
@@ -520,7 +516,7 @@ class CMSPermissionsScannerSimplified extends CMSPermissionsScanner
      * @param  boolean $found_any_issue Whether any issues were found, returned by reference
      * @return array A tuple: Messages to show, Commands to run
      */
-    public function process_directory(string $path, string $rel_path = '', ?string $attr = null, bool $top_level = true, array &$paths = [], bool &$found_any_issue = false) : array
+    public function process_directory(string $path, string $rel_path = '', ?string $attr = null, bool $top_level = true, array &$paths = [], bool &$found_any_issue = false): array
     {
         $messages = [];
         $commands = [];
@@ -580,7 +576,7 @@ class CMSPermissionsScannerSimplified extends CMSPermissionsScanner
      * @param  boolean $found_any_issue Whether any issues were found, returned by reference
      * @return array A tuple: Messages to show, Commands to run, Paths with issues
      */
-    protected function process_node(string $path, string $rel_path, bool $is_directory, array &$paths = [], bool &$found_any_issue = false) : array
+    protected function process_node(string $path, string $rel_path, bool $is_directory, array &$paths = [], bool &$found_any_issue = false): array
     {
         // (We will assume the file owner is not something we want to change, just the permissions to work best with that owner)
 
@@ -656,7 +652,7 @@ class CMSPermissionsScannerSimplified extends CMSPermissionsScanner
      * @param  integer $perms_involved The permissions the issue is about
      * @return array A pair: The message, A command (which may be null)
      */
-    protected function output_issue(string $path, int $perms_involved) : array
+    protected function output_issue(string $path, int $perms_involved): array
     {
         $perms_involved_written = $this->convert_constants_to_written($perms_involved);
 
@@ -671,7 +667,7 @@ class CMSPermissionsScannerSimplified extends CMSPermissionsScanner
      * @param  integer $_perms Permissions
      * @return string Written permissions
      */
-    protected function convert_constants_to_written(int $_perms) : string
+    protected function convert_constants_to_written(int $_perms): string
     {
         $perms = [];
 
@@ -775,7 +771,7 @@ class CMSPermissionsScannerLinux extends CMSPermissionsScanner
      * @param  boolean $directory_contents Whether this is a directory to get the contents of
      * @return array A map of file paths to extended attribute strings
      */
-    protected function process_lsattr(string $path, bool $directory_contents = false) : array
+    protected function process_lsattr(string $path, bool $directory_contents = false): array
     {
         $lsattr = [];
         if (($this->has_lsattr) && ($this->php_function_allowed('shell_exec'))) {
@@ -806,7 +802,7 @@ class CMSPermissionsScannerLinux extends CMSPermissionsScanner
      * @param  boolean $found_any_issue Whether any issues were found, returned by reference
      * @return array A tuple: Messages to show, Commands to run
      */
-    public function process_directory(string $path, string $rel_path = '', ?string $attr = null, bool $top_level = true, array &$paths = [], bool &$found_any_issue = false) : array
+    public function process_directory(string $path, string $rel_path = '', ?string $attr = null, bool $top_level = true, array &$paths = [], bool &$found_any_issue = false): array
     {
         $messages = [];
         $commands = [];
@@ -903,7 +899,7 @@ class CMSPermissionsScannerLinux extends CMSPermissionsScanner
      * @param  boolean $found_any_issue Whether any issues were found, returned by reference
      * @return array A tuple: Messages to show, Commands to run, Paths with issues
      */
-    protected function process_node(string $path, string $rel_path, bool $is_directory, string $attr, array &$paths = [], bool &$found_any_issue = false) : array
+    protected function process_node(string $path, string $rel_path, bool $is_directory, string $attr, array &$paths = [], bool &$found_any_issue = false): array
     {
         // (We will assume the file owner is not something we want to change, just the permissions to work best with that owner)
 
@@ -1213,7 +1209,7 @@ class CMSPermissionsScannerLinux extends CMSPermissionsScanner
      * @param  integer $perms_involved_octal The permissions the issue is about
      * @return array A pair: The message, A command (which may be null)
      */
-    protected function output_issue(string $path, int $result_type, string $operator, int $perms_involved_octal) : array
+    protected function output_issue(string $path, int $result_type, string $operator, int $perms_involved_octal): array
     {
         $perms_involved_written = $this->convert_octal_to_written($perms_involved_octal);
 
@@ -1254,7 +1250,7 @@ class CMSPermissionsScannerLinux extends CMSPermissionsScanner
      * @set - +
      * @return string Chmod command
      */
-    public function generate_chmod_command(string $path, int $octal, string $operator) : string
+    public function generate_chmod_command(string $path, int $octal, string $operator): string
     {
         $owner_perms = [];
         if (($octal & self::BITMASK_PERMISSIONS_SETUID) != 0) {
@@ -1318,7 +1314,7 @@ class CMSPermissionsScannerLinux extends CMSPermissionsScanner
      * @param  integer $octal Permissions
      * @return string Written permissions
      */
-    protected function convert_octal_to_written(int $octal) : string
+    protected function convert_octal_to_written(int $octal): string
     {
         $perms = [];
 
@@ -1480,7 +1476,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
      * @param  boolean $found_any_issue Whether any issues were found, returned by reference
      * @return array A tuple: Messages to show, Commands to run
      */
-    public function process_directory(string $path, string $rel_path = '', ?string $attr = null, bool $top_level = true, array &$paths = [], bool &$found_any_issue = false) : array
+    public function process_directory(string $path, string $rel_path = '', ?string $attr = null, bool $top_level = true, array &$paths = [], bool &$found_any_issue = false): array
     {
         $messages = [];
         $commands = [];
@@ -1541,7 +1537,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
      * @param  boolean $found_any_issue Whether any issues were found, returned by reference
      * @return array A tuple: Messages to show, Commands to run, Paths with issues
      */
-    protected function process_node(string $path, string $rel_path, bool $is_directory, array &$paths = [], bool &$found_any_issue = false) : array
+    protected function process_node(string $path, string $rel_path, bool $is_directory, array &$paths = [], bool &$found_any_issue = false): array
     {
         $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
 
@@ -1727,7 +1723,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
             }
 
             // Update ACL to match and create commands to recreate permissions we do not want to lose (everything non-inherited except $problematic_denys and $excessive)
-            list($permissions_negative, $permissions_positive, , ) = $acl[$sid];
+            list($permissions_negative, $permissions_positive,,) = $acl[$sid];
             foreach (array_keys($permissions_negative) as $deny) {
                 if (in_array($deny, $dont_want_back_denys)) {
                     unset($permissions_negative[$deny]);
@@ -1772,7 +1768,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
 
                 if ($this->minimum_level <= $check_type_level) {
                     if ($operator == '+') {
-                        list($perms_involved, , $disable_inheritance, $do_reset) = $this->find_missing_file_perms($users, $acl, $perms);
+                        list($perms_involved,, $disable_inheritance, $do_reset) = $this->find_missing_file_perms($users, $acl, $perms);
                     } else {
                         list($perms_involved, $disable_inheritance, $do_reset) = $this->find_excessive_file_perms($users, $acl, $perms);
                     }
@@ -1824,7 +1820,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
      * @param  PATH $path The path
      * @return array ACL
      */
-    public function find_acl(string $path) : array
+    public function find_acl(string $path): array
     {
         $acl = [];
 
@@ -1893,7 +1889,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
      * @param  integer $perms A bitmask of permissions that could be missing
      * @return array A tuple: A list of missing permissions, A list of problematic denys, Whether we will need to disable inheritance, Whether we will need to do a full 'reset', The SID we ended up using
      */
-    protected function find_missing_file_perms(array $users, array $acl, int $perms) : array
+    protected function find_missing_file_perms(array $users, array $acl, int $perms): array
     {
         $missing = [];
         $problematic_denys = [];
@@ -1969,7 +1965,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
      * @param  integer $perms A bitmask of permissions that would excessive
      * @return array A tuple: A list of excessive permissions, Whether we will need to disable inheritance, Whether we will need to do a full 'reset', The SID we ended up using
      */
-    protected function find_excessive_file_perms(array $users, array $acl, int $perms) : array
+    protected function find_excessive_file_perms(array $users, array $acl, int $perms): array
     {
         $excessive = [];
         $disable_inheritance = false;
@@ -2031,7 +2027,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
      * @param  integer $check_flags The flags specifying how to do our checks
      * @return boolean Whether it is
      */
-    protected function has_read_access(array $users, array $acl, array &$permissions_involved, bool &$due_to_inheritance, ?string &$sid_used, int $check_flags) : bool
+    protected function has_read_access(array $users, array $acl, array &$permissions_involved, bool &$due_to_inheritance, ?string &$sid_used, int $check_flags): bool
     {
         $due_to_inheritance = false;
         $permissions_involved = [];
@@ -2098,7 +2094,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
      * @param  array $permissions_involved A list of permissions involved, returned by reference
      * @return boolean Whether it is
      */
-    protected function _has_partial_read_setting(array $permissions, array &$permissions_involved) : bool
+    protected function _has_partial_read_setting(array $permissions, array &$permissions_involved): bool
     {
         $possibilities = ['F', 'M', 'GR', 'R', 'RX', 'RD', 'RA', 'REA', 'RC'];
         foreach ($possibilities as $possibility) {
@@ -2116,7 +2112,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
      * @param  array $permissions_involved A list of permissions involved, returned by reference
      * @return boolean Whether it is
      */
-    protected function _has_complete_read_setting(array $permissions, array &$permissions_involved) : bool
+    protected function _has_complete_read_setting(array $permissions, array &$permissions_involved): bool
     {
         $possibilities = ['F', 'M', 'GR', 'R', 'RX', 'RD', 'RA', 'REA', 'RC'];
         foreach ($possibilities as $possibility) {
@@ -2146,7 +2142,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
      * @param  integer $check_flags The flags specifying how to do our checks
      * @return boolean Whether it is
      */
-    protected function has_write_access(array $users, array $acl, array &$permissions_involved, bool &$due_to_inheritance, ?string &$sid_used, int $check_flags) : bool
+    protected function has_write_access(array $users, array $acl, array &$permissions_involved, bool &$due_to_inheritance, ?string &$sid_used, int $check_flags): bool
     {
         $due_to_inheritance = false;
         $permissions_involved = [];
@@ -2213,7 +2209,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
      * @param  array $permissions_involved A list of permissions involved, returned by reference
      * @return boolean Whether it is
      */
-    protected function _has_partial_write_setting(array $permissions, array &$permissions_involved) : bool
+    protected function _has_partial_write_setting(array $permissions, array &$permissions_involved): bool
     {
         $possibilities = ['F', 'M', 'GW', 'W', 'WD', 'WA', 'WEA', 'AD', 'D', 'DC'];
         foreach ($possibilities as $possibility) {
@@ -2231,7 +2227,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
      * @param  array $permissions_involved A list of permissions involved, returned by reference
      * @return boolean Whether it is
      */
-    protected function _has_complete_write_setting(array $permissions, array &$permissions_involved) : bool
+    protected function _has_complete_write_setting(array $permissions, array &$permissions_involved): bool
     {
         $possibilities = ['F', 'M', 'GW', 'W', 'WD', 'WA', 'WEA', 'AD', 'D', 'DC'];
         foreach ($possibilities as $possibility) {
@@ -2260,7 +2256,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
      * @param  integer $check_flags The flags specifying how to do our checks
      * @return boolean Whether it is
      */
-    protected function has_execute_access(array $users, array $acl, array &$permissions_involved, bool &$due_to_inheritance, ?string &$sid_used, int $check_flags) : bool
+    protected function has_execute_access(array $users, array $acl, array &$permissions_involved, bool &$due_to_inheritance, ?string &$sid_used, int $check_flags): bool
     {
         $due_to_inheritance = false;
         $permissions_involved = [];
@@ -2327,7 +2323,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
      * @param  array $permissions_involved A list of permissions involved, returned by reference
      * @return boolean Whether it is
      */
-    protected function _has_partial_execute_setting(array $permissions, array &$permissions_involved) : bool
+    protected function _has_partial_execute_setting(array $permissions, array &$permissions_involved): bool
     {
         $possibilities = ['F', 'M', 'GE', 'RX', 'X'];
         foreach ($possibilities as $possibility) {
@@ -2345,7 +2341,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
      * @param  array $permissions_involved A list of permissions involved, returned by reference
      * @return boolean Whether it is
      */
-    protected function _has_complete_execute_setting(array $permissions, array &$permissions_involved) : bool
+    protected function _has_complete_execute_setting(array $permissions, array &$permissions_involved): bool
     {
         $possibilities = ['F', 'M', 'GE', 'RX', 'X'];
         foreach ($possibilities as $possibility) {
@@ -2370,7 +2366,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
      * @param  string $sid The Sid the permissions are for
      * @return array A pair: The message, A command
      */
-    protected function output_issue_reset(string $path, string $sid) : array
+    protected function output_issue_reset(string $path, string $sid): array
     {
         $message = 'Problematic: There are grants or denys we don\'t want for ' . $path . ' on ' . $sid . ', so we will now assume reset to a fresh state and put anything back we want or do not care about';
         $command = $this->generate_chmod_command($path, $sid, [], '+', true);
@@ -2384,7 +2380,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
      * @param  PATH $path The path the message is about
      * @return array A pair: The message, A comman
      */
-    protected function output_issue_disable_inheritance(string $path) : array
+    protected function output_issue_disable_inheritance(string $path): array
     {
         $message = 'Problematic: Permission inheritance is creating problems for us for ' . $path . ', so we will now advise disabling it and will henceforth assume it is disabled';
         $command = $this->generate_disable_inheritance_command($path);
@@ -2403,7 +2399,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
      * @param  array $perms_involved The permissions the issue is about
      * @return array A pair: The message, A command (which may be null)
      */
-    protected function output_issue(string $path, int $result_type, string $operator, string $sid, array $perms_involved) : array
+    protected function output_issue(string $path, int $result_type, string $operator, string $sid, array $perms_involved): array
     {
         $written_perms = $this->convert_permissions_to_written($perms_involved);
 
@@ -2441,7 +2437,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
      * @param  array $permissions Permissions
      * @return string Written permissions
      */
-    protected function convert_permissions_to_written(array $permissions) : string
+    protected function convert_permissions_to_written(array $permissions): string
     {
         $written_perms = [];
 
@@ -2485,7 +2481,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
      * @param  boolean $reset Reset permissions for the SID
      * @return string Chmod command
      */
-    public function generate_chmod_command(string $path, string $sid, array $perms_involved, string $operator, bool $reset = false) : string
+    public function generate_chmod_command(string $path, string $sid, array $perms_involved, string $operator, bool $reset = false): string
     {
         // https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/icacls
 
@@ -2508,7 +2504,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
      * @param  PATH $path The path the command is for
      * @return string Chmod command
      */
-    protected function generate_disable_inheritance_command(string $path) : string
+    protected function generate_disable_inheritance_command(string $path): string
     {
         return 'icacls ' . escapeshellarg($path) . ' /inheritancelevel:r';
     }
