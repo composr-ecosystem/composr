@@ -139,7 +139,6 @@ function get_chmod_array(bool $runtime = true, bool $non_bundled = true) : array
 
     if (function_exists('find_all_hooks')) {
         $hooks = find_all_hooks('systems', 'addon_registry');
-        $hook_keys = array_keys($hooks);
         foreach ($hooks as $hook => $place) {
             if (($place == 'sources_custom') && (!$non_bundled)) {
                 continue;
@@ -155,6 +154,24 @@ function get_chmod_array(bool $runtime = true, bool $non_bundled = true) : array
             $_hook_bits = extract_module_functions($path, ['get_chmod_array']);
             $_chmod = is_array($_hook_bits[0]) ? call_user_func_array($_hook_bits[0][0], $_hook_bits[0][1]) : cms_eval($_hook_bits[0], $path);
             $chmod = array_merge($chmod, $_chmod);
+        }
+    } else { // Manually scan hooks using PHP
+        $base_dir = __DIR__ . '/hooks/systems/addon_registry';
+        $files = scandir($base_dir);
+        foreach ($files as $file) {
+            $path_parts = pathinfo($file);
+            if ($path_parts['extension'] != 'php') {
+                continue;
+            }
+
+            $hook_name = $path_parts['filename'];
+
+            require_once($base_dir . '/' . $file);
+            $class = 'Hook_addon_registry_' . $hook_name;
+            $object = new $class();
+            if (method_exists($object, 'get_chmod_array')) {
+                $chmod = array_merge($chmod, $object->get_chmod_array());
+            }
         }
     }
 
