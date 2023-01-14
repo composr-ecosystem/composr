@@ -46,12 +46,22 @@ class Hook_oembed_hybridauth_admin
 
         $providers = find_all_hybridauth_admin_providers_matching(HYBRIDAUTH__AUTHENTICATED_OEMBED);
         foreach ($providers as $provider => $info) {
+            if (!$info['enabled']) {
+                continue;
+            }
+
             try {
                 $adapter = $hybridauth->getAdapter($provider);
-                if (!$adapter->isConnected()) {
-                    continue;
-                }
+                $connected = $adapter->isConnected();
+            } catch (Exception $e) {
+                $connected = false;
+            }
 
+            if (!$connected) {
+                continue;
+            }
+
+            try {
                 $data = $adapter->getOEmbedFromURL($url, $params);
 
                 if ($data !== null) {

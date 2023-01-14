@@ -41,7 +41,7 @@ class Hook_hybridauth_google
                 'text_colour' => 'FFFFFF',
                 'icon' => 'links/google',
 
-                'keys' => [
+                'keys' => (get_option('google_apis_client_id') == '' || get_option('google_apis_client_secret') == '') ? [] : [
                     'id' => get_option('google_apis_client_id'),
                     'secret' => get_option('google_apis_client_secret'),
                 ],
@@ -50,7 +50,7 @@ class Hook_hybridauth_google
             'YouTube' => [
                 'enabled' => (get_option('google_allow_signups') == '1') && (get_option('google_apis_client_id') != ''),
 
-                'keys' => [
+                'keys' => (get_option('google_apis_client_id') == '' || get_option('google_apis_client_secret') == '') ? [] : [
                     'id' => get_option('google_apis_client_id'),
                     'secret' => get_option('google_apis_client_secret'),
                 ],

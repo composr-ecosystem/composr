@@ -41,7 +41,7 @@ class Hook_hybridauth_twitter
                 'text_colour' => 'FFFFFF',
                 'icon' => 'links/twitter',
 
-                'keys' => [
+                'keys' => (get_option('twitter_api_key') == '' || get_option('twitter_api_secret') == '') ? [] : [
                     'id' => get_option('twitter_api_key'),
                     'secret' => get_option('twitter_api_secret'),
                 ],
