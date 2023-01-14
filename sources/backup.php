@@ -509,19 +509,18 @@ function deliver_remote_backup(string $file)
 
         $copy_path = get_option('backup_server_path');
         if ($copy_path == '') {
-            $copy_path = $_file;
-        } elseif ((substr($copy_path, -1) == '/') || ($copy_path == '')) {
-            $copy_path .= $_file;
-        }
+            $copy_path = $_file; // Saves into the root FTP directory
+        } elseif (substr($copy_path, -1) == '/') {
+            $copy_path .= $_file; // Path of directory to save into configured
+        } // Otherwise exact path to filename to save to configured
 
         $error = false;
         $ftp_connection = @ftp_connect($copy_server, intval($copy_port));
         if ($ftp_connection !== false) {
             if (@ftp_login($ftp_connection, $copy_user, $copy_password)) {
+                @ftp_delete($ftp_connection, $copy_path); // Delete remote file in case it already exists
                 if (@ftp_put($ftp_connection, $copy_path, $path_stub . $_file, FTP_BINARY) === false) {
                     $error = true;
-                } else {
-                    @ftp_delete($ftp_connection, $path_stub . $_file);
                 }
             } else {
                 $error = true;
