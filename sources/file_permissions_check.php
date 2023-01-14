@@ -138,7 +138,7 @@ function get_chmod_array(bool $runtime = true, bool $non_bundled = true) : array
     $chmod = [];
 
     if (function_exists('find_all_hooks')) {
-        $hooks = find_all_hooks('systems', 'addon_registry');
+        $hooks = find_all_hooks('systems', 'addon_registry'); // TODO: Make find_all_hooks do the non_bundled checks work; rename to check_custom.
         foreach ($hooks as $hook => $place) {
             if (($place == 'sources_custom') && (!$non_bundled)) {
                 continue;
@@ -156,21 +156,35 @@ function get_chmod_array(bool $runtime = true, bool $non_bundled = true) : array
             $chmod = array_merge($chmod, $_chmod);
         }
     } else { // Manually scan hooks using PHP
-        $base_dir = __DIR__ . '/hooks/systems/addon_registry';
-        $files = scandir($base_dir);
-        foreach ($files as $file) {
-            $path_parts = pathinfo($file);
-            if ($path_parts['extension'] != 'php') {
-                continue;
-            }
+        if ($non_bundled) {
+            // sources_custom should be first in case of overrides
+            $base_dirs = [__DIR__ . '/../sources_custom/hooks/systems/addon_registry', __DIR__ . '/../sources/hooks/systems/addon_registry'];
+        } else {
+            $base_dirs = [__DIR__ . '/../sources/hooks/systems/addon_registry'];
+        }
 
-            $hook_name = $path_parts['filename'];
+        $hooks_processed = [];
+        foreach ($base_dirs as $base_dir) {
+            $files = scandir($base_dir);
+            foreach ($files as $file) {
+                $path_parts = pathinfo($file);
+                if (!isset($path_parts['extension']) || (strtolower($path_parts['extension']) != 'php')) { // Skip non-PHP files
+                    continue;
+                }
 
-            require_once($base_dir . '/' . $file);
-            $class = 'Hook_addon_registry_' . $hook_name;
-            $object = new $class();
-            if (method_exists($object, 'get_chmod_array')) {
-                $chmod = array_merge($chmod, $object->get_chmod_array());
+                $hook_name = strtolower($path_parts['filename']);
+                if (array_key_exists($hook_name, $hooks_processed)) { // If we already processed the hook (e.g. override), don't process it again
+                    continue;
+                }
+
+                require_once($base_dir . '/' . $file);
+                $class = 'Hook_addon_registry_' . $hook_name;
+                $object = new $class();
+
+                if (method_exists($object, 'get_chmod_array')) {
+                    $chmod = array_merge($chmod, $object->get_chmod_array());
+                    $hooks_processed[] = $hook_name;
+                }
             }
         }
     }
