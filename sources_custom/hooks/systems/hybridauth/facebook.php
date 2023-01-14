@@ -41,7 +41,7 @@ class Hook_hybridauth_facebook
                 'text_colour' => 'FFFFFF',
                 'icon' => 'links/facebook',
 
-                'keys' => [
+                'keys' => (get_option('facebook_appid') == '' || get_option('facebook_secret_code') == '') ? [] : [
                     'id' => get_option('facebook_appid'),
                     'secret' => get_option('facebook_secret_code'),
                 ],

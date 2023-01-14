@@ -120,12 +120,22 @@ class Hook_media_rendering_hybridauth_admin extends Media_renderer_with_fallback
 
         $providers = find_all_hybridauth_admin_providers_matching(HYBRIDAUTH__ADVANCEDAPI_READ_ATOMS_FROM_URL);
         foreach ($providers as $provider => $info) {
+            if (!$info['enabled']) {
+                continue;
+            }
+
             try {
                 $adapter = $hybridauth->getAdapter($provider);
-                if (!$adapter->isConnected()) {
-                    continue;
-                }
+                $connected = $adapter->isConnected();
+            } catch (Exception $e) {
+                $connected = false;
+            }
 
+            if (!$connected) {
+                continue;
+            }
+
+            try {
                 $atom = $adapter->getAtomFullFromURL($url);
                 if ($atom !== null) {
                     $ATOM_URL_RENDERING_CACHE[$url] = [$atom, $provider];
