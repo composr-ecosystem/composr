@@ -67,6 +67,8 @@ See global.css for actual CSS rules.
 {$THEMEWIZARD_COLOR,#1b67b6,heading_text,76% seed + 24% BW}
 {$THEMEWIZARD_COLOR,#175ba0,a.link,67% seed + 33% BW}
 {$THEMEWIZARD_COLOR,#114478,a.hover,75% a.link + 25% BW}
+{$THEMEWIZARD_COLOR,#6db5ff,a.link_light,67% (seed val_to 100) + 33% FFFFFF}
+{$THEMEWIZARD_COLOR,#92c8ff,a.hover_light,75% a.link_light + 25% FFFFFF}
 {$THEMEWIZARD_COLOR,#b2d6fa,th_secondary_text,35% seed + 65% WB}
 {$THEMEWIZARD_COLOR,#99c7f8,hr,60% area_background + 40% seed}
 {$THEMEWIZARD_COLOR,#1b67b6,divider_line,76% seed + 24% BW}
@@ -139,8 +141,6 @@ See global.css for actual CSS rules.
 /* Footer */
 {$THEMEWIZARD_COLOR,#ffffff,panel_bottom_text,100% WB}
 {$THEMEWIZARD_COLOR,#ffffff,footer_text,100% text_light}
-{$THEMEWIZARD_COLOR,#6db5ff,footer_link,67% (seed val_to 100) + 33% FFFFFF}
-{$THEMEWIZARD_COLOR,#92c8ff,footer_link_hover,75% footer_link + 25% FFFFFF}
 
 /* Range of bright varying colours, used for group colours */
 {$THEMEWIZARD_COLOR,#9c029a,gcol_1,100% #9C029A}

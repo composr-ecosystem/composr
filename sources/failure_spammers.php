@@ -37,15 +37,13 @@ function syndicate_spammer_report(string $ip_addr, string $username, string $ema
     $did_something = false;
 
     // Syndicate to dnsbl.tornevall.org
+    // See https://docs.tornevall.net/display/TORNEVALL/Endpoint%3A+dnsbl+-+DNSBL+v5+with+API+v3
     // ================================
 
-    $can_do_torn = (get_option('tornevall_api_username') != '');
+    $can_do_torn = (get_option('spam_use_tornevall') != '');
 
     if ($can_do_torn) {
         $torn_url = 'https://api.tornevall.net/3.0/dnsbl/';
-
-        $username = get_option('tornevall_api_username');
-        $password = get_option('tornevall_api_password');
 
         $payload = json_encode(['ip' => [$ip_addr]]);
         require_code('character_sets');

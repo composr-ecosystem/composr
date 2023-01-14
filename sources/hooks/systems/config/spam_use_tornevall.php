@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_tornevall_api_password
+class Hook_config_spam_use_tornevall
 {
     /**
      * Gets the details relating to the config option.
@@ -31,17 +31,18 @@ class Hook_config_tornevall_api_password
     public function get_details() : ?array
     {
         return [
-            'human_name' => 'TORNEVALL_API_PASSWORD',
-            'type' => 'line',
+            'human_name' => 'SPAM_USE_TORNEVALL',
+            'type' => 'tick',
             'category' => 'SECURITY',
             'group' => 'SPAMMER_DETECTION',
-            'explanation' => 'CONFIG_OPTION_tornevall_api_password',
+            'explanation' => 'CONFIG_OPTION_spam_use_tornevall',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'order_in_category_group' => 16,
             'required' => false,
             'public' => false,
             'addon' => 'core_configuration',
+            'maintenance_code' => 'tornevall',
         ];
     }
 
@@ -52,6 +53,6 @@ class Hook_config_tornevall_api_password
      */
     public function get_default() : ?string
     {
-        return class_exists('SoapClient') ? '' : null;
+        return '0';
     }
 }

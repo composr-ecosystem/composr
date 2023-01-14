@@ -42,7 +42,6 @@ class Hook_config_spam_check_stopforumspam
             'required' => false,
             'public' => false,
             'addon' => 'core_configuration',
-
             'maintenance_code' => 'stop_forum_spam',
         ];
     }

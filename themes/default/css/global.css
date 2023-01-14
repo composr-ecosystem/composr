@@ -165,11 +165,11 @@ a:hover, .button-hyperlink:hover {
 }
 
 .footer-inner a, .footer-inner .button-hyperlink {
-	color: {$GET,footer_link} !important;
+	color: {$GET,a.link_light} !important;
 }
 
 .footer-inner a:hover, .footer-inner .button-hyperlink:hover {
-	color: {$GET,footer_link_hover} !important;
+	color: {$GET,a.hover_light} !important;
 }
 
 a:not([href]):not([tabindex]) {
@@ -3743,7 +3743,7 @@ div.zebra-0+div.zebra-1, div.zebra-1+div.zebra-0 {
 	color: inherit !important;
 }
 .tooltip.have-links a, .tooltip.have-links a:visited, .tooltip.have-links a:hover {
-	color: {$GET,a.link} !important;
+	color: {$GET,a.link_light} !important;
 	text-decoration: underline !important;
 }
 .tooltip .tooltip-fields {

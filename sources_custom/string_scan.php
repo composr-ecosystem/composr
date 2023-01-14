@@ -3964,8 +3964,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_topic_pin_price
         CONFIG_OPTION_topic_pin_tax_code
         CONFIG_OPTION_topic_pin_price_points
-        CONFIG_OPTION_tornevall_api_password
-        CONFIG_OPTION_tornevall_api_username
         CONFIG_OPTION_tree_lists
         CONFIG_OPTION_unzip_cmd
         CONFIG_OPTION_unzip_dir
@@ -7747,8 +7745,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         INSERT_MISC_SYMBOL
         MAPQUEST_GEOCODE_API_KEY
         MISSING_BLOCK
-        TORNEVALL_API_PASSWORD
-        TORNEVALL_API_USERNAME
+        SPAM_USE_TORNEVALL
+        CONFIG_OPTION_spam_use_tornevall
         TOTAL_DOWNLOADS_IN_ARCHIVE
         TOTAL_NEWS_ENTRIES
         TO_COLOUR
