@@ -105,7 +105,7 @@ To use SES via SMTP, you need to use TLS, which means you need the [tt]better_ma
 It is not optional that you have to remove bounced addresses from your newsletter: Amazon may penalise you if you don\'t. You therefore need to listen to the bounces that Amazon picks up.
 You need to:
 1) Set up an Amazon SNS topic
-2) Set up an HTTP subscription to the topic to http://baseurl/data_custom/amazon_sns_topic_handler.php
+2) Set up an HTTP subscription to the topic to [tt]http://baseurl/data_custom/amazon_sns_topic_handler.php[/tt]
 3) Set up SNS to publish to the topic
 ';
     }
