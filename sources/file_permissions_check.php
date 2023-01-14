@@ -714,9 +714,11 @@ class CMSPermissionsScannerLinux extends CMSPermissionsScanner
     {
         $this->web_user = null;
 
+        $is_cli = (function_exists('php_sapi_name')) && (php_sapi_name() == 'cli') && (empty($_SERVER['REMOTE_ADDR']));
+
         if ($username === null) {
             if ($this->php_function_allowed('posix_getuid')) {
-                $this->web_user = posix_getuid();
+                $this->web_user = $is_cli ? false : posix_getuid();
             }
         } else {
             if (is_numeric($username)) {
@@ -925,7 +927,7 @@ class CMSPermissionsScannerLinux extends CMSPermissionsScanner
         $perms_dangerous |= self::BITMASK_PERMISSIONS_SETGID;
         $perms_dangerous |= self::BITMASK_PERMISSIONS_SETUID;
 
-        if (($this->web_user === null) || ($file_owner == $this->web_user)) {
+        if (($this->web_user === null) || ($file_owner === $this->web_user)) {
             // suEXEC style...
 
             $perms_irrelevant |= self::BITMASK_PERMISSIONS_STICKY;
@@ -971,9 +973,13 @@ class CMSPermissionsScannerLinux extends CMSPermissionsScanner
             // nobody style...
 
             $file_group = @filegroup($path);
-            $web_user_groups = $this->posix_getgroups($this->web_user);
-            $file_owner_groups = $this->posix_getgroups($file_owner);
-            $group_based = $web_user_groups !== null && $file_owner_groups !== null && in_array($file_group, $web_user_groups) && in_array($this->web_user, $file_owner_groups);
+            if ($this->web_user === false) {
+                $group_based = false;
+            } else {
+                $web_user_groups = $this->posix_getgroups($this->web_user);
+                $file_owner_groups = $this->posix_getgroups($file_owner);
+                $group_based = $web_user_groups !== null && $file_owner_groups !== null && in_array($file_group, $web_user_groups) && in_array($this->web_user, $file_owner_groups);
+            }
 
             if ($is_directory) {
                 $perms_desired |= self::BITMASK_PERMISSIONS_OWNER_EXECUTE;
@@ -1366,8 +1372,10 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
 
         // Web server user
         if ($username === null) {
+            $is_cli = (function_exists('php_sapi_name')) && (php_sapi_name() == 'cli') && (empty($_SERVER['REMOTE_ADDR']));
+
             $current_user = (function_exists('get_current_user') ? get_current_user() : 'DefaultAppPool');
-            if ((!function_exists('is_cli')) || (is_cli()) || ($current_user == 'DefaultAppPool')) {
+            if (($is_cli) || ($current_user == 'DefaultAppPool')) {
                 if ((strpos(__FILE__, 'htdocs') !== false) || (strpos(__FILE__, 'httpdocs') !== false)) {
                     $this->key_users[] = 'SYSTEM'; // The services user which Apache will use
                 } else {

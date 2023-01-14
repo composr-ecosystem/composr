@@ -21,7 +21,13 @@ if (!fixperms_is_cli()) {
     exit('This script must be called on the command line.');
 }
 
-$opts = getopt('h', ['help', 'trial', 'verbose', 'full', 'web_username::', 'is_suexec_like', 'has_ftp_loopback_for_write::', 'minimum_level::']);
+$opts = getopt('h', ['help', 'trial', 'verbose', 'full', 'web_username::', 'is_suexec_like', 'has_ftp_loopback_for_write::', 'minimum_level::', 'web-username::', 'is-suexec-like', 'has-ftp-loopback-for-write::', 'minimum-level::']);
+foreach ($opts as $opt => $val) { // Tolerance for use of dashes instead of underscores (common mistake)
+    if (strpos($opt, '-') !== false) {
+        $opts[str_replace('-', '_', $opt)] = $val;
+        unset($opts[$opt]);
+    }
+}
 
 if ((array_key_exists('h', $opts)) || (array_key_exists('help', $opts))) {
     exit('
@@ -40,7 +46,7 @@ Usage: php fixperms.php [options]
 
     --web_username=<username|user_id>         On Linux/Mac OS:
                                                specify the username that the website runs under
-                                               (if not passed assumes the current user)
+                                               (if not passed assumes other permissions will be needed)
                                               On Windows:
                                                specify the username that the website runs under
                                                (if not passed assumes IUSR or SYSTEM depending on base directory)
