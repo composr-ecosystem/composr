@@ -531,6 +531,8 @@ abstract class Forum_driver_base
                     }
                     return $theme;
                 }
+            } else {
+                $theme = '-1';
             }
         }
 
