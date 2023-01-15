@@ -558,6 +558,7 @@ class Hook_addon_registry_galleries
     public function tpl_preview__gallery_popular() : object
     {
         return lorem_globalise(do_lorem_template('GALLERY_POPULAR', [
+            'CHILDREN' => lorem_sentence_html(),
             'CAT' => 'root',
         ]), null, '', true);
     }

@@ -976,8 +976,8 @@ class Hook_addon_registry_core_cns
             'HAS_ACTIVE_FILTER' => true,
             'INCLUDE_FORM' => true,
             'SORT' => '',
-            'FILTERS_ROW_A' => placeholder_query_string(),
-            'FILTERS_ROW_B' => placeholder_query_string(),
+            'FILTERS_ROW_A' => placeholder_comma_list(),
+            'FILTERS_ROW_B' => placeholder_comma_list(),
         ]), null, '', true);
     }
 

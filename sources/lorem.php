@@ -334,11 +334,11 @@ function placeholder_button() : object
 }
 
 /**
- * Get a placeholder for a query string.
+ * Get a placeholder for a comma-list.
  *
- * @return string Place holder query
+ * @return string Place holder comma-list
  */
-function placeholder_query_string() : string
+function placeholder_comma_list() : string
 {
     return 'lorem=Lorem,ipsum=Ipsum';
 }
