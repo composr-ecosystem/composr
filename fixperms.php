@@ -168,5 +168,5 @@ echo "Done\n";
  */
 function fixperms_is_cli() : bool
 {
-    return (php_sapi_name() == 'cli') && (empty($_SERVER['REMOTE_ADDR']));
+    return (function_exists('php_sapi_name')) && (php_sapi_name() == 'cli') && (empty($_SERVER['REMOTE_ADDR']));
 }

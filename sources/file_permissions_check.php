@@ -1009,18 +1009,21 @@ class CMSPermissionsScannerLinux extends CMSPermissionsScanner
             }
 
             if ($is_directory) {
-                $perms_desired |= self::BITMASK_PERMISSIONS_OWNER_EXECUTE;
-                $perms_desired |= self::BITMASK_PERMISSIONS_OWNER_READ;
-                $perms_desired |= self::BITMASK_PERMISSIONS_OWNER_WRITE;
+                // Because of precedence we would expect all of ugo to have permissions
+                $perms_needed |= self::BITMASK_PERMISSIONS_OWNER_EXECUTE;
+                $perms_needed |= self::BITMASK_PERMISSIONS_OWNER_READ;
+                $perms_needed |= self::BITMASK_PERMISSIONS_OWNER_WRITE;
 
                 if ($group_based) {
                     $perms_needed |= self::BITMASK_PERMISSIONS_GROUP_EXECUTE;
                 } else {
+                    $perms_needed |= self::BITMASK_PERMISSIONS_GROUP_EXECUTE; // Because of precedence we would expect all of ugo to have permissions
                     $perms_needed |= self::BITMASK_PERMISSIONS_OTHER_EXECUTE;
                 }
                 if ($group_based) {
                     $perms_needed |= self::BITMASK_PERMISSIONS_GROUP_READ;
                 } else {
+                    $perms_needed |= self::BITMASK_PERMISSIONS_GROUP_READ; // Because of precedence we would expect all of ugo to have permissions
                     $perms_needed |= self::BITMASK_PERMISSIONS_OTHER_READ;
                 }
                 if (($on_chmod_list) || (!$this->has_ftp_loopback_for_write)) {
@@ -1029,23 +1032,31 @@ class CMSPermissionsScannerLinux extends CMSPermissionsScanner
                         $perms_needed |= self::BITMASK_PERMISSIONS_GROUP_WRITE;
                         $perms_dangerous |= self::BITMASK_PERMISSIONS_OTHER_WRITE;
                     } else {
+                        $perms_needed |= self::BITMASK_PERMISSIONS_GROUP_WRITE; // Because of precedence we would expect all of ugo to have permissions
                         $perms_needed |= self::BITMASK_PERMISSIONS_OTHER_WRITE;
                     }
                 } else {
                     $perms_irrelevant |= self::BITMASK_PERMISSIONS_STICKY;
+                    $perms_avoided |= self::BITMASK_PERMISSIONS_GROUP_WRITE;
                     $perms_avoided |= self::BITMASK_PERMISSIONS_OTHER_WRITE;
                 }
             } else {
+                // Because of precedence we would expect all of ugo to have permissions
                 if ($is_shell_script) {
-                    $perms_desired |= self::BITMASK_PERMISSIONS_OWNER_EXECUTE;
+                    $perms_needed |= self::BITMASK_PERMISSIONS_OWNER_EXECUTE;
                 } else {
                     $perms_avoided |= self::BITMASK_PERMISSIONS_OWNER_EXECUTE;
                 }
-                $perms_desired |= self::BITMASK_PERMISSIONS_OWNER_READ;
-                $perms_desired |= self::BITMASK_PERMISSIONS_OWNER_WRITE;
+                $perms_needed |= self::BITMASK_PERMISSIONS_OWNER_READ;
+                $perms_needed |= self::BITMASK_PERMISSIONS_OWNER_WRITE;
 
                 if ($is_shell_script) {
-                    $perms_desired |= self::BITMASK_PERMISSIONS_OTHER_EXECUTE;
+                    if ($group_based) {
+                        $perms_needed |= self::BITMASK_PERMISSIONS_GROUP_EXECUTE;
+                    } else {
+                        $perms_needed |= self::BITMASK_PERMISSIONS_GROUP_EXECUTE; // Because of precedence we would expect all of ugo to have permissions
+                        $perms_needed |= self::BITMASK_PERMISSIONS_OTHER_EXECUTE;
+                    }
                 } else {
                     $perms_avoided |= self::BITMASK_PERMISSIONS_OTHER_EXECUTE;
                     $perms_avoided |= self::BITMASK_PERMISSIONS_GROUP_EXECUTE;
@@ -1053,6 +1064,7 @@ class CMSPermissionsScannerLinux extends CMSPermissionsScanner
                 if ($group_based) {
                     $perms_needed |= self::BITMASK_PERMISSIONS_GROUP_READ;
                 } else {
+                    $perms_needed |= self::BITMASK_PERMISSIONS_GROUP_READ; // Because of precedence we would expect all of ugo to have permissions
                     $perms_needed |= self::BITMASK_PERMISSIONS_OTHER_READ;
                 }
                 if (($on_chmod_list) || (!$this->has_ftp_loopback_for_write)) {
@@ -1061,6 +1073,7 @@ class CMSPermissionsScannerLinux extends CMSPermissionsScanner
                         $perms_needed |= self::BITMASK_PERMISSIONS_GROUP_WRITE;
                         $perms_dangerous |= self::BITMASK_PERMISSIONS_OTHER_WRITE;
                     } else {
+                        $perms_needed |= self::BITMASK_PERMISSIONS_GROUP_WRITE; // Because of precedence we would expect all of ugo to have permissions
                         $perms_needed |= self::BITMASK_PERMISSIONS_OTHER_WRITE;
                     }
                 } else {
@@ -1723,7 +1736,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
             }
 
             // Update ACL to match and create commands to recreate permissions we do not want to lose (everything non-inherited except $problematic_denys and $excessive)
-            list($permissions_negative, $permissions_positive,,) = $acl[$sid];
+            list($permissions_negative, $permissions_positive, , ) = $acl[$sid];
             foreach (array_keys($permissions_negative) as $deny) {
                 if (in_array($deny, $dont_want_back_denys)) {
                     unset($permissions_negative[$deny]);
@@ -1768,7 +1781,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
 
                 if ($this->minimum_level <= $check_type_level) {
                     if ($operator == '+') {
-                        list($perms_involved,, $disable_inheritance, $do_reset) = $this->find_missing_file_perms($users, $acl, $perms);
+                        list($perms_involved, , $disable_inheritance, $do_reset) = $this->find_missing_file_perms($users, $acl, $perms);
                     } else {
                         list($perms_involved, $disable_inheritance, $do_reset) = $this->find_excessive_file_perms($users, $acl, $perms);
                     }
