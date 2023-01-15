@@ -158,9 +158,6 @@ if (!function_exists('critical_error')) {
             case 'CRIT_LANG':
                 $error = '<div>The most basic critical error language file (lang/' . fallback_lang() . '/critical_error.ini) is missing. It is likely that other files are also, for whatever reason, missing from this Composr installation.</div>';
                 break;
-            case 'CRIT_LANG_PERM':
-                $error = '<div>Could not write into the caches/lang directory.</div>';
-                break;
         }
 
         global $SITE_INFO;

@@ -49,6 +49,7 @@ function init__files()
 
         define('FILE_WRITE_FAILURE_SILENT', 1);
         define('FILE_WRITE_FAILURE_SOFT', 2);
+        define('FILE_WRITE_FAILURE_CRITICAL', 32);
         define('FILE_WRITE_SYNC_FILE', 4);
         define('FILE_WRITE_FIX_PERMISSIONS', 8);
         define('FILE_WRITE_BOM', 16);
@@ -269,7 +270,7 @@ function cms_file_put_contents_safe(string $path, string $contents, int $flags =
     // Error condition: If it failed to save
     if ($num_bytes_written === false) {
         if (($flags & FILE_WRITE_FAILURE_SILENT) == 0) {
-            $error_message = intelligent_write_error_inline($path);
+            $error_message = intelligent_write_error_inline($path, ($flags & FILE_WRITE_FAILURE_CRITICAL) != 0);
         } else {
             $error_message = '';
         }
@@ -320,8 +321,8 @@ function _cms_file_put_contents_safe_failed($error_message, string $path, int $f
     }
 
     static $looping = false;
-    if ($looping) {
-        critical_error('PASSON', 'Could not write to ' . htmlentities($path)); // Bail out hard if would cause a loop
+    if ($looping || ($flags & FILE_WRITE_FAILURE_CRITICAL) != 0) {
+        critical_error('PASSON', is_string($error_message) ? $error_message : ('Could not write to ' . htmlentities($path))); // Bail out hard if would cause a loop
     }
     $looping = true;
 

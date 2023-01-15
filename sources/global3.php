@@ -550,12 +550,13 @@ function intelligent_write_error(string $path)
  * Discern the cause of a file-write error, and return an appropriate error message.
  *
  * @param  PATH $path File path that could not be written
+ * @param  boolean $force_hardcoded Whether to force a hard-coded error message, useful if we have not finished bootstrapping
  * @return mixed Message (string or Tempcode)
  */
-function intelligent_write_error_inline(string $path)
+function intelligent_write_error_inline(string $path, bool $force_hardcoded = false)
 {
     require_code('files2');
-    return _intelligent_write_error_inline($path);
+    return _intelligent_write_error_inline($path, $force_hardcoded);
 }
 
 /**

@@ -129,11 +129,6 @@ function require_lang_compile(string $codename, ?string $lang, ?string $type, st
                 return true;
             }
 
-            // Maybe a permission issue with the cache path?
-            if (!cms_is_writable(get_custom_file_base() . '/caches/lang')) {
-                critical_error('CRIT_LANG_PERM');
-            }
-
             if (($codename !== 'critical_error') || ($lang !== get_site_default_lang())) {
                 $error_msg = do_lang_tempcode('MISSING_LANG_FILE', escape_html($codename), escape_html($lang));
                 if (get_page_name() == 'admin_themes') {
@@ -159,7 +154,8 @@ function require_lang_compile(string $codename, ?string $lang, ?string $type, st
     // Cache
     if ($desire_cache) {
         require_code('files');
-        cms_file_put_contents_safe($cache_path, serialize($load_target), FILE_WRITE_FAILURE_SOFT | FILE_WRITE_FIX_PERMISSIONS);
+        $flags = (($codename == 'global' || $codename == 'critical_error') ? FILE_WRITE_FAILURE_CRITICAL/*too early in boot for error display mechanism*/ : FILE_WRITE_FAILURE_SOFT) | FILE_WRITE_FIX_PERMISSIONS;
+        cms_file_put_contents_safe($cache_path, serialize($load_target), $flags);
     }
 
     if ($desire_cache) {

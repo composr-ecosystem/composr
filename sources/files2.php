@@ -91,15 +91,23 @@ function _intelligent_write_error(string $path)
  * Discern the cause of a file-write error, and return an appropriate error message.
  *
  * @param  PATH $path File path that could not be written
+ * @param  boolean $force_hardcoded Whether to force a hard-coded error message, useful if we have not finished bootstrapping
  * @return mixed Message (string or Tempcode)
  *
  * @ignore
  */
-function _intelligent_write_error_inline(string $path)
+function _intelligent_write_error_inline(string $path, bool $force_hardcoded = false)
 {
     static $looping = false;
-    if ($looping || !function_exists('do_lang_tempcode')) { // In case do_lang_tempcode below spawns a recursive failure, due to the file being the language cache itself
-        return 'Could not write to ' . htmlentities($path); // Bail out hard if would cause a loop
+    if ($force_hardcoded || $looping/* Bail out hard if would cause a loop */ || !function_exists('do_lang_tempcode')/* In case do_lang_tempcode below spawns a recursive failure, due to the file being the language cache itself */) {
+        if (file_exists($path)) {
+            $ret = 'Cannot write to <kbd>' . escape_html($path) . '</kbd>. File permissions for it (or the directory it is in) may have not been set correctly.';
+        } elseif (file_exists(dirname($path))) {
+            $ret = 'Cannot create a <kbd>' . escape_html($path) . '</kbd> file. File permissions for the <kbd>' . escape_html(dirname($path)) . '</kbd> directory likely have not been set correctly.';
+        } else {
+            $ret = 'An expected directory, <kbd>' . escape_html($path) . '</kbd>, is missing.';
+        }
+        return $ret;
     }
     $looping = true;
 
