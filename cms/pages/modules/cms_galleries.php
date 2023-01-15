@@ -985,19 +985,7 @@ class Module_cms_galleries extends Standard_crud_module
      */
     public function add_actualisation() : array
     {
-        list(
-            $url,
-            $filename,
-            $title,
-            $cat,
-        ) = image_get_defaults__post();
-
-        if (can_submit_to_gallery($cat) === false) {
-            access_denied('SUBMIT_HERE');
-        }
-        make_member_gallery_if_needed($cat);
-        $this->check_images_allowed($cat);
-
+        $cat = post_param_string('cat', 'root');
         $description = post_param_string('description', '');
 
         $validated = post_param_integer('validated', 0);
@@ -1011,6 +999,18 @@ class Module_cms_galleries extends Standard_crud_module
         $watermark = (post_param_integer('watermark', 0) == 1);
         $watermarks = $watermark ? find_gallery_watermarks($cat) : null;
         set_images_cleanup_pipeline_settings(IMG_RECOMPRESS_LOSSLESS, $maximum_dimension, $watermarks, get_value('keep_gallery_gps', '0') == '0');
+
+        list(
+            $url,
+            $filename,
+            $title
+        ) = image_get_defaults__post();
+
+        if (can_submit_to_gallery($cat) === false) {
+            access_denied('SUBMIT_HERE');
+        }
+        make_member_gallery_if_needed($cat);
+        $this->check_images_allowed($cat);
 
         reset_images_cleanup_pipeline_settings();
 
@@ -1068,13 +1068,7 @@ class Module_cms_galleries extends Standard_crud_module
     public function edit_actualisation(string $_id) : ?object
     {
         $id = intval($_id);
-
-        list(
-            $url,
-            $filename,
-            $title,
-            $cat,
-        ) = image_get_defaults__post(true);
+        $cat = post_param_string('cat', STRING_MAGIC_NULL);
 
         if ($cat != STRING_MAGIC_NULL) {
             if (can_submit_to_gallery($cat) === false) {
@@ -1085,15 +1079,21 @@ class Module_cms_galleries extends Standard_crud_module
             $this->check_images_allowed($cat);
         }
 
-        $description = post_param_string('description', STRING_MAGIC_NULL);
-
-        $validated = post_param_integer('validated', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
-
         // Images cleanup pipeline
         $maximum_dimension = intval(get_option('maximum_image_size'));
         $watermark = (post_param_integer('watermark', 0) == 1);
         $watermarks = $watermark ? find_gallery_watermarks($cat) : null;
         set_images_cleanup_pipeline_settings(IMG_RECOMPRESS_LOSSLESS, $maximum_dimension, $watermarks, get_value('keep_gallery_gps', '0') == '0');
+
+        list(
+            $url,
+            $filename,
+            $title
+        ) = image_get_defaults__post(true);
+
+        $description = post_param_string('description', STRING_MAGIC_NULL);
+
+        $validated = post_param_integer('validated', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
 
         if (!fractional_edit()) {
             require_code('upload_syndication');
