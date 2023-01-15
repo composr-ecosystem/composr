@@ -450,7 +450,7 @@ function cns_render_forumview(?int $id, ?array $forum_info, string $current_filt
 
             foreach ($filter_cats as $fi => $filter_cat) {
                 if ($filter_cat != '') {
-                    $filtered_url = build_url(['page' => 'forumview', 'category' => $filter_cat], get_module_zone('forumview'), [], true, false, false, 'tab--pts');
+                    $filtered_url = build_url(['page' => 'forumview', 'type' => 'pt', 'category' => $filter_cat], get_module_zone('forumview'), [], true, false, false, 'tab--pts');
                     $filter_active = $filter_cat == $current_filter_cat;
                     $filters_arr[] = [
                         'URL' => $filter_active ? new Tempcode() : $filtered_url,
@@ -463,7 +463,7 @@ function cns_render_forumview(?int $id, ?array $forum_info, string $current_filt
             $filters = do_template('CNS_PT_FILTERS', [
                 '_GUID' => '1ffed81e1cfb82d0741d0669cdc38876',
                 'FILTERS' => $filters_arr,
-                'RESET_URL' => build_url(['page' => 'forumview', 'category' => null], get_module_zone('forumview'), [], true),
+                'RESET_URL' => build_url(['page' => 'forumview', 'type' => 'pt', 'category' => null], get_module_zone('forumview'), [], true),
             ]);
         }
     }
