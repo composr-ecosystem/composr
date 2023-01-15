@@ -182,7 +182,7 @@ class Module_forumview
 
         if ($type == 'pt') { // Not used anymore by default, but code still here
             $id = null;
-            $forum_info = [];
+            $forum_info = null;
             $compound_name = 'kfs';
             $of_member_id = $this->of_member_id;
             $sort_default = 'first_post';
