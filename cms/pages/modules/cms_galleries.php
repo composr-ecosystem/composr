@@ -1068,7 +1068,7 @@ class Module_cms_galleries extends Standard_crud_module
     public function edit_actualisation(string $_id) : ?object
     {
         $id = intval($_id);
-        $cat = post_param_string('cat', STRING_MAGIC_NULL);
+        $cat = post_param_string('cat', fractional_edit() ? STRING_MAGIC_NULL : 'root');
 
         if ($cat != STRING_MAGIC_NULL) {
             if (can_submit_to_gallery($cat) === false) {
