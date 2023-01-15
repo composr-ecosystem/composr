@@ -605,9 +605,9 @@ function cns_button_screen_wrap(array $buttons) : object
 /**
  * Set the forum context.
  *
- * @param  AUTO_LINK $forum_id Forum ID
+ * @param  ?AUTO_LINK $forum_id Forum ID (null: Private Topics)
  */
-function cns_set_context_forum(int $forum_id)
+function cns_set_context_forum(?int $forum_id)
 {
     global $SET_CONTEXT_FORUM;
     $SET_CONTEXT_FORUM = $forum_id;
