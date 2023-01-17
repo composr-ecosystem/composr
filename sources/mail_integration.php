@@ -592,7 +592,7 @@ abstract class EmailIntegration
 
                 // Send creation e-mail
                 $system_subject = do_lang('MAIL_INTEGRATION_AUTOMATIC_ACCOUNT_SUBJECT', $subject, $from_email, [get_site_name(), $username], get_site_default_lang());
-                $system_message = do_lang('MAIL_INTEGRATION_AUTOMATIC_ACCOUNT_MAIL', strip_comcode($body), $from_email, [$subject, get_site_name(), $username, $password], get_site_default_lang());
+                $system_message = do_lang('MAIL_INTEGRATION_AUTOMATIC_ACCOUNT_MAIL', strip_comcode($body), $from_email, [$subject, get_site_name(), $username, escape_html($password)], get_site_default_lang());
                 $this->send_system_email($system_subject, $system_message, $from_email, $email_bounce_to);
 
                 $this->log_message('Created a new account for the member under the ID ' . strval($member_id));

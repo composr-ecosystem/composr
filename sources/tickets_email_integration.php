@@ -251,15 +251,12 @@ class TicketsEmailIntegration extends EmailIntegration
             try {
                 // Create the ticket...
                 $ticket_url = ticket_add_post($new_ticket_id, $ticket_type_id, $subject, $body, false, $member_id);
-                if ($ticket_url === null) {
-                    throw new Exception('A ticket could not be created; ticket URL returned null.');
-                }
 
                 $actually_posted = true;
                 $this->log_message('Created new ticket, ' . $new_ticket_id);
             } catch (Exception $e) {
                 $this->log_message('An error occurred: ' . $e->getMessage());
-                $this->send_bounce_email__error($subject, $_body_text, $_body_html, $from_email, $email_bounce_to);
+                $this->send_bounce_email__error($subject, $e->getMessage(), $_body_text, $_body_html, $from_email, $email_bounce_to);
             }
             set_throw_errors(false);
 
@@ -292,7 +289,7 @@ class TicketsEmailIntegration extends EmailIntegration
                 $this->log_message('Posted in ticket, ' . $existing_ticket_id);
             } catch (Exception $e) {
                 $this->log_message('An error occurred: ' . $e->getMessage());
-                $this->send_bounce_email__error($subject, $_body_text, $_body_html, $from_email, $email_bounce_to);
+                $this->send_bounce_email__error($subject, $e->getMessage(), $_body_text, $_body_html, $from_email, $email_bounce_to);
             }
             set_throw_errors(false);
 
@@ -427,12 +424,13 @@ class TicketsEmailIntegration extends EmailIntegration
      * Send out an e-mail about an error occurring.
      *
      * @param  string $subject Subject line of original message
+     * @param  string $error The error message to send to the member
      * @param  ?string $_body_text E-mail body in text format (null: not present)
      * @param  ?string $_body_html E-mail body in HTML format (null: not present)
      * @param  EMAIL $email E-mail address we tried to bind to
      * @param  EMAIL $email_bounce_to E-mail address of sender (usually the same as $email, but not if it was a forwarded e-mail)
      */
-    protected function send_bounce_email__error(string $subject, ?string $_body_text, ?string $_body_html, string $email, string $email_bounce_to)
+    protected function send_bounce_email__error(string $subject, string $error, ?string $_body_text, ?string $_body_html, string $email, string $email_bounce_to)
     {
         if ($_body_html === null) {
             $body = $this->email_comcode_from_text($_body_text);
@@ -441,7 +439,7 @@ class TicketsEmailIntegration extends EmailIntegration
         }
 
         $extended_subject = do_lang('TICKET_ERROR_SUBJECT', $subject, $email, [get_site_name()], get_site_default_lang());
-        $extended_message = do_lang('TICKET_ERROR_MAIL', strip_comcode($body), $email, [$subject, get_site_name()], get_site_default_lang());
+        $extended_message = do_lang('TICKET_ERROR_MAIL', strip_comcode($body), $email, [$subject, get_site_name(), strip_comcode($error)], get_site_default_lang());
 
         $this->send_system_email($extended_subject, $extended_message, $email, $email_bounce_to);
     }
