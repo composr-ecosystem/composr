@@ -509,6 +509,8 @@ function cms_is_writable(string $path) : bool
         return is_writable($path);
     }
 
+    // Windows is more tricky...
+
     if (!file_exists($path)) {
         return false;
     }

@@ -127,7 +127,7 @@ function _intelligent_write_error_inline(string $path, bool $force_hardcoded = f
 /**
  * Find details of where we can save temporary files, taking into account PHP's platform-dependent difficulties.
  *
- * @return array A tuple: preferred temporary path to save to, whether there's a problem saving in the system path, the system path to save to, the local path to save to
+ * @return array A tuple: preferred temporary path to save to, whether there's an identified problem saving in the system path, the system path to save to, the local path to save to
  */
 function cms_get_temp_dir() : array
 {
@@ -136,9 +136,9 @@ function cms_get_temp_dir() : array
         make_missing_directory($local_path);
     }
     $server_path = rtrim(sys_get_temp_dir(), '/\\');
-    $problem_saving = ((get_option('force_local_temp_dir') == '1') || ((ini_get('open_basedir') != '') && (preg_match('#(^|:|;)' . preg_quote($server_path, '#') . '($|:|;|/)#', ini_get('open_basedir')) == 0)));
-    $path = ($problem_saving ? $local_path : $server_path);
-    return [$path, $problem_saving, $server_path, $local_path];
+    $identified_problem_saving = ((get_option('force_local_temp_dir') == '1') || ((ini_get('open_basedir') != '') && (preg_match('#(^|:|;)' . preg_quote($server_path, '#') . '($|:|;|/)#', ini_get('open_basedir')) == 0)));
+    $path = ($identified_problem_saving ? $local_path : $server_path);
+    return [$path, $identified_problem_saving, $server_path, $local_path];
 }
 
 /**
@@ -151,12 +151,20 @@ function cms_get_temp_dir() : array
  */
 function _cms_tempnam(string $prefix = '')
 {
-    list($tmp_path, $problem_saving, $server_path, $local_path) = cms_get_temp_dir();
+    list($tmp_path, $identified_problem_saving, $server_path, $local_path) = cms_get_temp_dir();
     if (php_function_allowed('tempnam')) {
         // Create a real temporary file
         //  We have to use "@" in case of "file created in the system's temporary directory" notice
         $tempnam = @tempnam($tmp_path, 'tmpfile__' . $prefix);
-        if ((($tempnam === false) || ($tempnam == ''/*Should not be blank, but seen in the wild*/)) && (!$problem_saving)) {
+
+        $seemed_to_save_okay = (($tempnam !== false) && ($tempnam != ''/*Should not be blank, but seen in the wild*/));
+
+        if ($seemed_to_save_okay && !cms_is_writable($tempnam)/*Windows maybe created a file but not a writable one!*/) {
+            @unlink($tempnam);
+            $seemed_to_save_okay = false;
+        }
+
+        if ((!$seemed_to_save_okay) && ($tmp_path != $local_path)) {
             $tempnam = @tempnam($local_path, 'tmpfile__' . $prefix); // Try saving in local path even if we didn't think there'd be a problem saving into the system path
         }
     } else {
