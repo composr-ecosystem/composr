@@ -255,9 +255,9 @@ function build_preview(bool $multi_return = false)
         if (!$is_hidden) {
             if ($spellcheck) {
                 require_code('comcode_from_html');
-                $mispellings = run_spellcheck(clean_html_for_spellcheck($val), null, false);
+                $misspellings = run_spellcheck(clean_html_for_spellcheck($val), null, false);
                 $_misspellings = [];
-                foreach ($mispellings as $word_bad => $words_good) {
+                foreach ($misspellings as $word_bad => $words_good) {
                     $_misspellings[] = ['WORD' => $word_bad, 'CORRECTIONS' => implode(', ', $words_good)];
                 }
                 if (!empty($_misspellings)) {
