@@ -83,7 +83,7 @@ function basic_newsletter_join(string $email, ?string $language = null, bool $ge
     if ($code_confirm === null) {
         // New, set their details
         require_code('crypt');
-        $password = get_secure_random_string();
+        $password = get_secure_random_password(null, $forename . $surname, $email);
         $salt = get_secure_random_string();
         $code_confirm = $get_confirm_mail ? get_secure_random_number() : 0;
         add_newsletter_subscriber($email, time(), $code_confirm, ratchet_hash($password, $salt), $salt, $language, $forename, $surname);

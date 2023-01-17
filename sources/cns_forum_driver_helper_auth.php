@@ -126,7 +126,7 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
                 exit();
             } else {
                 require_code('crypt');
-                $member_id = cns_member_external_linker($username, get_secure_random_string(), 'ldap');
+                $member_id = cns_member_external_linker('ldap', $username, get_secure_random_password(null, $username));
                 $row = $this_ref->get_member_row($member_id);
             }
         }

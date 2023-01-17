@@ -543,12 +543,14 @@ abstract class EmailIntegration
             case 'create_account':
                 if (get_forum_type() != 'cns') {
                     $mail_nonmatch_policy = 'block';
+                    $this->log_message('Not using Conversr; will use block policy instead.');
                     break;
                 }
 
                 require_code('type_sanitisation');
                 if (!is_valid_email_address($from_email)) {
                     $mail_nonmatch_policy = 'block';
+                    $this->log_message('The e-mail address of the sender is not valid; will use block policy instead.');
                     break;
                 }
 
@@ -561,7 +563,7 @@ abstract class EmailIntegration
 
                     if ($i >= 1000) {
                         $mail_nonmatch_policy = 'block';
-                        $this->log_message('Too many matching usernames; will use block policy instead.');
+                        $this->log_message('Tried to make a username based on the sender e-mail address, but could not. Using block policy instead.');
                         break;
                     }
                 }
@@ -577,7 +579,8 @@ abstract class EmailIntegration
 
             case 'create_account':
                 require_code('crypt');
-                $password = get_secure_random_string();
+                $password = get_secure_random_password(null, $username, $from_email);
+
                 require_code('cns_members_action');
                 $member_id = cns_make_member($username, $password, $from_email);
 
@@ -716,6 +719,8 @@ abstract class EmailIntegration
                 $body .= "\n\n" . '[attachment framed="1" thumb="1"]' . strval($attachment['composr_id']) . '[/attachment]';
             }
         }
+
+        $this->log_message('Handled ' . strval($num_attachments_handed) . ' attachments with ' . strval(count($errors)) . ' errors.');
 
         return $errors;
     }

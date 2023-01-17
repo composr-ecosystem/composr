@@ -117,7 +117,7 @@ function do_user_import()
                 // Add
                 if ($password === null) {
                     require_code('crypt');
-                    $password = get_secure_random_string();
+                    $password = get_secure_random_password(null, $username, $email_address);
                 }
                 cns_make_member(
                     $username, // username

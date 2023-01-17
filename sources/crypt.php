@@ -78,6 +78,78 @@ function get_secure_random_string() : string
 }
 
 /**
+ * Generate a cryptographically-secure pseudo-random password using uppercase letters, lowercase letters, numbers, and symbols.
+ *
+ * @param  ?integer $strength The minimum password strength we want; the generated password could be stronger but will never be weaker (null: use configured strength)
+ * @param  SHORT_TEXT $username The username of the member for which we are generating a password (blank: do not check username in password strength check)
+ * @param  SHORT_TEXT $email_address The e-mail address of the member (blank: do not check e-mail address in password strength check)
+ * @param  TIME $dob The date of birth of the member (null: do not check dob in password strength check)
+ * @return string The random password
+ */
+function get_secure_random_password(?int $strength = null, string $username = '', string $email_address = '', ?int $dob = null) : string
+{
+    require_code('password_rules');
+
+    if ($strength === null) {
+        $strength = intval(get_option('minimum_password_strength'));
+    }
+
+    // Define our character groups
+    $digits = str_split('0123456789');
+    $lowercase = str_split('qwertyuiopasdfghjklzxcvbnm');
+    $uppercase = str_split('QWERTYUIOPASDFGHJKLZXCVBNM');
+    $special = str_split('!@#$%^&*+=-_?.,:;()/|~`\'"'); // <> is ignored as it is XML, [] is ignored as it is Comcode, and {} is ignored as it is Tempcode
+
+    $password = [];
+    $characters = intval(get_option('minimum_password_length')); // Start off with minimum password length
+    $failed = false;
+
+    // Start generating our password
+    do {
+        // Generate our characters
+        for ($i = 0; $i < $characters; $i++) {
+            switch (random_int(1, 10)) {
+                case 1:
+                case 2:
+                    $password[] = $digits[random_int(0, (count($digits) - 1))];
+                    break;
+                case 3:
+                case 4:
+                case 5:
+                    $password[] = $lowercase[random_int(0, (count($lowercase) - 1))];
+                    break;
+                case 6:
+                case 7:
+                case 8:
+                    $password[] = $uppercase[random_int(0, (count($uppercase) - 1))];
+                    break;
+                case 9:
+                case 10:
+                    $password[] = $special[random_int(0, (count($special) - 1))];
+                    break;
+            }
+        }
+
+        // Test the password strength
+        $password_strength = test_password(implode('', $password), $username, $email_address, $dob);
+
+        if ($password_strength < $strength) {
+            // Failed; reset the password to do the loop again, but increase the character count by 1.
+            $password = [];
+            $characters++;
+
+            // If we exceed the maximum length allowed, bail with an internal error.
+            if ($characters > min(255, intval(get_option('maximum_password_length')))) {
+                $failed = true;
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            }
+        }
+    } while (empty($password) && !$failed);
+
+    return implode('', $password);
+}
+
+/**
  * Get a secure random number, the best this PHP version / our MySQL schema can do.
  * Will be between 1 and max signed 32 bit integer (so it can be stored in a 32 bit database).
  *

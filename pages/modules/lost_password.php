@@ -342,7 +342,7 @@ class Module_lost_password
 
         // Generate new password
         require_code('crypt');
-        $new_password = get_secure_random_string();
+        $new_password = get_secure_random_password(null, $username, $email);
 
         $temporary_passwords = ($password_reset_process != 'emailed');
 

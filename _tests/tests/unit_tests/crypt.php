@@ -52,7 +52,7 @@ class crypt_test_set extends cms_test_case
 
     public function testRatchet()
     {
-        $password = get_secure_random_string();
+        $password = get_secure_random_password();
         $salt = get_secure_random_string();
         $pass_hash_salted = ratchet_hash($password, $salt);
         $this->assertTrue(ratchet_hash_verify($password, $salt, $pass_hash_salted));
