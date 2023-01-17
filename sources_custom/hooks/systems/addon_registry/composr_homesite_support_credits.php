@@ -2815,7 +2815,6 @@ class Hook_addon_registry_composr_homesite_support_credits
             'tracker/vendor/webmozart/assert/LICENSE',
             'tracker/vendor/webmozart/assert/README.md',
             'tracker/vendor/webmozart/assert/src/Assert.php',
-            'tracker/vendor/bin/phpunit',
             'tracker/verify.php',
             'tracker/view_all_bug_page.php',
             'tracker/view_all_inc.php',

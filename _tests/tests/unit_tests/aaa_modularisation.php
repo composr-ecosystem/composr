@@ -106,6 +106,14 @@ class aaa_modularisation_test_set extends cms_test_case
             $this->assertTrue($ok, 'Files in core_all_icons generally must also be distributed in exactly one other addon [the owner addon of that icon]]: ' . $path);
         }
 
+        // Check no symlinks (breaks archive extraction on Windows)...
+
+        foreach ($addon_data as $addon_files) {
+            foreach ($addon_files as $_path) {
+                $this->assertTrue(!is_link(get_file_base() . '/' . $_path), 'We do not want symlinks in the repository: ' . $_path);
+            }
+        }
+
         // Check declared packages in files against the addon they're supposed to be within, and for files not including in any addon...
 
         require_code('files2');
