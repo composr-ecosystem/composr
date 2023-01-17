@@ -112,11 +112,12 @@ function do_work()
     require_code('authors');
     require_code('cns_members_action');
     require_code('notifications');
+    require_code('crypt');
     echo 'STARTING: Create members' . "\n";
     for ($i = $GLOBALS['FORUM_DB']->query_select_value('f_members', 'COUNT(*)'); $i < $num_wanted; $i++) {
         $member_id = cns_make_member(
             uniqid('', false), // username
-            uniqid('', true), // password
+            get_secure_random_password(), // password, necessary to use crypt so we do not error on a password not being strong enough
             uniqid('', true) . '@example.com', // email_address
             null, // primary_group
             null, // secondary_groups

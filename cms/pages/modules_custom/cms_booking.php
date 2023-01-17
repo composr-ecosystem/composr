@@ -1173,9 +1173,10 @@ class Module_cms_booking_bookings extends Standard_crud_module
             $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
             if ($member_id === null) {
                 require_code('cns_members_action');
+                require_code('crypt');
                 $member_id = cns_make_member(
                     $username, // username
-                    uniqid('', true), // password
+                    get_secure_random_password(), // password
                     '', // email_address
                     null, // primary_group
                     null, // secondary_groups
