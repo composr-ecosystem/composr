@@ -141,11 +141,31 @@ class TicketsEmailIntegration extends EmailIntegration
                 if (strpos($matches[2], '_') !== false) {
                     $existing_ticket_id = $matches[2];
 
+                    $this->log_message('Detected ticket ID from subject: ' . $existing_ticket_id);
+
                     // Validate
                     $topic_id = $GLOBALS['FORUM_DRIVER']->find_topic_id_for_topic_identifier(get_option('ticket_forum_name'), $existing_ticket_id, do_lang('SUPPORT_TICKET', null, null, null, $lang));
+
+                    // Could not find in main forum, but might exist in a ticket type sub-forum? Scan all the ticket type sub-forums too.
+                    if (($topic_id === null) && get_option('ticket_type_forums') == '1') {
+                        require_code('tickets2');
+                        $ticket_types = build_types_list(null);
+                        foreach ($ticket_types as $ticket_type) {
+                            $topic_id = $GLOBALS['FORUM_DRIVER']->find_topic_id_for_topic_identifier($ticket_type['NAME'], $existing_ticket_id, do_lang('SUPPORT_TICKET', null, null, null, $lang));
+                            if ($topic_id !== null) {
+                                break;
+                            }
+                        }
+                    }
+
                     if ($topic_id === null) {
                         $existing_ticket_id = null; // Invalid
+                        $this->log_message('Ticket ID provided did not match an existing ticket; ignoring it.');
+                    } elseif ($existing_ticket_id !== null) {
+                        $this->log_message('Ticket ID provided matched an existing ticket. Will treat this e-mail as a reply to it.');
                     }
+                } else {
+                    $this->log_message('The ticket ID provided was an invalid format; ignoring it.');
                 }
             }
         }
@@ -169,7 +189,7 @@ class TicketsEmailIntegration extends EmailIntegration
             $member_id = $this->handle_missing_member($from_email, $email_bounce_to, get_option('ticket_mail_nonmatch_policy'), $subject, $_body_text, $_body_html);
         }
         if ($member_id === null) {
-            $this->log_message('Could not bind to a member');
+            $this->log_message('Could not bind to a member; not proceeding any further with this e-mail.');
 
             return;
         } else {
@@ -191,7 +211,7 @@ class TicketsEmailIntegration extends EmailIntegration
             'member_id' => $member_id,
         ]);
 
-        $this->log_message('Recording ' . $from_email . ' as a valid posted for member #' . strval($member_id));
+        $this->log_message('Remembering ' . $from_email . ' has posted on behalf of member #' . strval($member_id) . ' for the future.');
 
         // Check there can be no forgery vulnerability
         $member_id_comcode = $this->degrade_member_id_for_comcode($member_id);
@@ -208,6 +228,7 @@ class TicketsEmailIntegration extends EmailIntegration
         $body .= "\n\n" . do_lang('TICKET_EMAILED_IN', null, null, null, get_lang($member_id));
 
         // Post
+        $actually_posted = false;
         if ($existing_ticket_id === null) {
             $new_ticket_id = strval($member_id) . '_' . uniqid('', false);
 
@@ -225,14 +246,28 @@ class TicketsEmailIntegration extends EmailIntegration
                 $ticket_type_id = $GLOBALS['SITE_DB']->query_select_value('ticket_types', 'MIN(id)');
             }
 
-            // Create the ticket...
+            // Catch exceptions during the ticket creation process so we can send a bounce e-mail.
+            set_throw_errors(true);
+            try {
+                // Create the ticket...
+                $ticket_url = ticket_add_post($new_ticket_id, $ticket_type_id, $subject, $body, false, $member_id);
+                if ($ticket_url === null) {
+                    throw new Exception('A ticket could not be created; ticket URL returned null.');
+                }
 
-            $ticket_url = ticket_add_post($new_ticket_id, $ticket_type_id, $subject, $body, false, $member_id);
+                $actually_posted = true;
+                $this->log_message('Created new ticket, ' . $new_ticket_id);
+            } catch (Exception $e) {
+                $this->log_message('An error occurred: ' . $e->getMessage());
+                $this->send_bounce_email__error($subject, $_body_text, $_body_html, $from_email, $email_bounce_to);
+            }
+            set_throw_errors(false);
 
-            // Send e-mail (to staff)
-            send_ticket_email($new_ticket_id, $subject, $body, $ticket_url, $from_email, $ticket_type_id, $member_id, true);
-
-            $this->log_message('Created new ticket, ' . $new_ticket_id);
+            if ($actually_posted) {
+                // Send e-mail (to staff)
+                send_ticket_email($new_ticket_id, $subject, $body, $ticket_url, $from_email, $ticket_type_id, $member_id, true);
+                $this->log_message('Confirmation e-mail sent to staff');
+            }
         } else {
             // Reply to the ticket...
 
@@ -240,21 +275,35 @@ class TicketsEmailIntegration extends EmailIntegration
                 'ticket_id' => $existing_ticket_id,
             ]);
 
-            $ticket_url = ticket_add_post($existing_ticket_id, $ticket_type_id, $subject, $body, false, $member_id);
+            // Catch exceptions during the ticket reply process so we can send a bounce e-mail.
+            set_throw_errors(true);
+            try {
+                // Add a ticket reply
+                $ticket_url = ticket_add_post($existing_ticket_id, $ticket_type_id, $subject, $body, false, $member_id);
 
-            $details = get_ticket_meta_details($existing_ticket_id);
-            if (empty($details)) {
-                warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'ticket'), false, true);
+                // Check that a reply was actually created
+                $details = get_ticket_meta_details($existing_ticket_id);
+                if (empty($details)) {
+                    warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'ticket'), false, true);
+                }
+                list($__title) = $details;
+
+                $actually_posted = true;
+                $this->log_message('Posted in ticket, ' . $existing_ticket_id);
+            } catch (Exception $e) {
+                $this->log_message('An error occurred: ' . $e->getMessage());
+                $this->send_bounce_email__error($subject, $_body_text, $_body_html, $from_email, $email_bounce_to);
             }
-            list($__title) = $details;
+            set_throw_errors(false);
 
-            // Send e-mail (to staff & to confirm receipt to $member_id)
-            send_ticket_email($existing_ticket_id, $__title, $body, $ticket_url, $from_email, null, $member_id, true);
-
-            $this->log_message('Posted in ticket, ' . $existing_ticket_id);
+            if ($actually_posted) {
+                // Send e-mail (to staff & to confirm receipt to $member_id)
+                send_ticket_email($existing_ticket_id, $__title, $body, $ticket_url, $from_email, null, $member_id, true);
+                $this->log_message('Confirmation e-mail sent to staff');
+            }
         }
 
-        if (!empty($attachment_errors)) {
+        if (!empty($attachment_errors) && $actually_posted) {
             $this->log_message('Had some issues creating an attachment(s) [non-fatal], e-mailing them about it');
 
             $this->send_bounce_email__attachment_errors($subject, $body, $from_email, $email_bounce_to, $attachment_errors, $ticket_url);
@@ -274,24 +323,40 @@ class TicketsEmailIntegration extends EmailIntegration
     protected function find_member_id(string $from_email, array $tags = [], ?string $existing_ticket_id = null) : ?int
     {
         $member_id = null;
-        foreach ($tags as $tag) {
-            $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($tag);
-            if ($member_id !== null) {
-                break;
-            }
-        }
-        if ($member_id === null) {
-            $member_id = $GLOBALS['SITE_DB']->query_select_value_if_there('ticket_known_emailers', 'member_id', [
-                'email_address' => $from_email,
-            ]);
-        }
         if ($member_id === null) {
             $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_email_address($from_email);
+            if ($member_id !== null) {
+                $this->log_message('Determined member ID from matching account e-mail address: ' . strval($member_id) . ' (from e-mail address ' . $from_email . ')');
+            }
         }
+
+        if (get_option('ticket_mail_tags') == '1') {
+            foreach ($tags as $tag) {
+                $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($tag);
+                if ($member_id !== null) {
+                    $this->log_message('Determined member ID from specified username tag in subject: ' . strval($member_id) . ' (from tag ' . $tag . ')');
+                    break;
+                }
+            }
+
+            if ($member_id === null) {
+                $member_id = $GLOBALS['SITE_DB']->query_select_value_if_there('ticket_known_emailers', 'member_id', [
+                    'email_address' => $from_email,
+                ]);
+                if ($member_id !== null) {
+                    $this->log_message('Assumed member ID from prior ticket e-mails from this address: ' . strval($member_id) . ' (from e-mail address ' . $from_email . ')');
+                }
+            }
+        }
+
         if ($member_id === null) {
-            if ($existing_ticket_id === null) {
+            if ($existing_ticket_id !== null) {
                 $_temp = explode('_', $existing_ticket_id);
                 $member_id = intval($_temp[0]);
+
+                if ($member_id !== null) {
+                    $this->log_message('Assumed member ID from ticket ID: ' . strval($member_id) . ' (from ticket ID ' . $existing_ticket_id . ')');
+                }
             }
         }
 
@@ -353,7 +418,30 @@ class TicketsEmailIntegration extends EmailIntegration
         }
 
         $extended_subject = do_lang('TICKET_CANNOT_BIND_SUBJECT', $subject, $email, [get_site_name()], get_site_default_lang());
-        $extended_message = do_lang('TICKET_CANNOT_BIND_MAIL', strip_comcode($body), $email, [$subject, get_site_name()], get_site_default_lang());
+        $extended_message = do_lang(get_option('ticket_mail_tags') == '1' ? 'TICKET_CANNOT_BIND_TAGS_ON_MAIL' : 'TICKET_CANNOT_BIND_TAGS_OFF_MAIL', strip_comcode($body), $email, [$subject, get_site_name()], get_site_default_lang());
+
+        $this->send_system_email($extended_subject, $extended_message, $email, $email_bounce_to);
+    }
+
+    /**
+     * Send out an e-mail about an error occurring.
+     *
+     * @param  string $subject Subject line of original message
+     * @param  ?string $_body_text E-mail body in text format (null: not present)
+     * @param  ?string $_body_html E-mail body in HTML format (null: not present)
+     * @param  EMAIL $email E-mail address we tried to bind to
+     * @param  EMAIL $email_bounce_to E-mail address of sender (usually the same as $email, but not if it was a forwarded e-mail)
+     */
+    protected function send_bounce_email__error(string $subject, ?string $_body_text, ?string $_body_html, string $email, string $email_bounce_to)
+    {
+        if ($_body_html === null) {
+            $body = $this->email_comcode_from_text($_body_text);
+        } else {
+            $body = $this->email_comcode_from_html($_body_html, $GLOBALS['FORUM_DRIVER']->get_guest_id());
+        }
+
+        $extended_subject = do_lang('TICKET_ERROR_SUBJECT', $subject, $email, [get_site_name()], get_site_default_lang());
+        $extended_message = do_lang('TICKET_ERROR_MAIL', strip_comcode($body), $email, [$subject, get_site_name()], get_site_default_lang());
 
         $this->send_system_email($extended_subject, $extended_message, $email, $email_bounce_to);
     }

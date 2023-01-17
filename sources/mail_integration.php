@@ -536,6 +536,8 @@ abstract class EmailIntegration
     {
         $member_id = null;
 
+        $this->log_message('Could not find member ID; handling missing member based on the ' . $mail_nonmatch_policy . ' policy.');
+
         // Pre-checks to make sure our operation is actually possible
         switch ($mail_nonmatch_policy) {
             case 'create_account':
@@ -559,6 +561,7 @@ abstract class EmailIntegration
 
                     if ($i >= 1000) {
                         $mail_nonmatch_policy = 'block';
+                        $this->log_message('Too many matching usernames; will use block policy instead.');
                         break;
                     }
                 }
@@ -569,6 +572,7 @@ abstract class EmailIntegration
         switch ($mail_nonmatch_policy) {
             case 'post_as_guest':
                 $member_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
+                $this->log_message('Using guest member ID ' . strval($member_id));
                 break;
 
             case 'create_account':
@@ -588,12 +592,15 @@ abstract class EmailIntegration
                 $system_message = do_lang('MAIL_INTEGRATION_AUTOMATIC_ACCOUNT_MAIL', strip_comcode($body), $from_email, [$subject, get_site_name(), $username, $password], get_site_default_lang());
                 $this->send_system_email($system_subject, $system_message, $from_email, $email_bounce_to);
 
+                $this->log_message('Created a new account for the member under the ID ' . strval($member_id));
+
                 break;
 
             case 'block':
             default:
                 // E-mail back, saying user not found
                 $this->send_bounce_email__cannot_bind($subject, $_body_text, $_body_html, $from_email, $email_bounce_to);
+                $this->log_message('Bounce e-mail sent.');
                 break;
         }
 
@@ -888,6 +895,7 @@ abstract class EmailIntegration
     protected function is_non_human_email(string $subject, ?string $_body_text, ?string $_body_html, string $full_header, string $from_email) : bool
     {
         if (array_key_exists($from_email, find_system_email_addresses())) {
+            $this->log_message('Considered non-human due to: e-mail was from a system address.');
             return true;
         }
 

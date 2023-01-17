@@ -33,7 +33,7 @@ class Hook_config_ticket_mail_nonmatch_policy
         return [
             'human_name' => 'TICKET_MAIL_NONMATCH_POLICY',
             'type' => 'list',
-            'category' => 'FEATURE',
+            'category' => 'MESSAGES',
             'group' => 'SUPPORT_TICKETS_MAIL',
             'explanation' => 'CONFIG_OPTION_ticket_mail_nonmatch_policy',
             'shared_hosting_restricted' => '0',

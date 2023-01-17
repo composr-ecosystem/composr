@@ -1613,7 +1613,7 @@ function banned_exit(?string $reasoned_ban = null)
 }
 
 /**
- * Specify if errors should be thrown, rather than resulting in HTML exit screens.
+ * Specify if errors from PHP and Composr should all be thrown as exceptions rather than resulting in HTML exit screens.
  *
  * @param  boolean $_throwing_errors Whether we should throw errors
  */

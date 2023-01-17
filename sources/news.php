@@ -288,14 +288,18 @@ function create_selection_list_news_categories($it = null, bool $show_all_person
         if ($count > 500) { // Uh oh, loads, need to limit things more
             $where .= ' AND (nc_owner IS NULL OR nc_owner=' . strval(get_member()) . ')';
         }
+
+        // Adopt some cats
         $_cats = $GLOBALS['SITE_DB']->query('SELECT *,c.id as n_id FROM ' . get_table_prefix() . 'news_categories c ' . $where . ' ORDER BY c.id', null, 0, false, true, ['nc_title' => 'SHORT_TRANS']);
 
+        // Give our cats a nice name
         foreach ($_cats as $i => $cat) {
             $_cats[$i]['nice_title'] = get_translated_text($cat['nc_title']);
         }
+
+        // Rearrange our felines by name
         sort_maps_by($_cats, 'nice_title', false, true);
 
-        // Sort
         $title_ordered_cats = $_cats;
         $_cats = [];
         foreach ($title_ordered_cats as $cat) {

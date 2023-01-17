@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_ticket_mail_folder
+class Hook_config_ticket_mail_tags
 {
     /**
      * Gets the details relating to the config option.
@@ -31,14 +31,13 @@ class Hook_config_ticket_mail_folder
     public function get_details() : ?array
     {
         return [
-            'human_name' => 'MAIL_FOLDER',
-            'type' => 'line',
+            'human_name' => 'TICKET_MAIL_TAGS',
+            'type' => 'tick',
             'category' => 'MESSAGES',
             'group' => 'SUPPORT_TICKETS_MAIL',
-            'explanation' => 'CONFIG_OPTION_ticket_mail_folder',
-            'shared_hosting_restricted' => '1',
-            'list_options' => '',
-            'order_in_category_group' => 6,
+            'explanation' => 'CONFIG_OPTION_ticket_mail_tags',
+            'shared_hosting_restricted' => '0',
+            'order_in_category_group' => 12,
             'required' => false,
             'public' => false,
             'addon' => 'tickets',
@@ -60,6 +59,6 @@ class Hook_config_ticket_mail_folder
             return null;
         }
 
-        return '';
+        return '0';
     }
 }

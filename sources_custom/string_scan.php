@@ -7636,8 +7636,11 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         THREADED_BUTTONS
         THUMB_WIDTH
         TICKET_AUTO_ASSIGN
-        TICKET_CANNOT_BIND_MAIL
+        TICKET_CANNOT_BIND_TAGS_ON_MAIL
+        TICKET_CANNOT_BIND_TAGS_OFF_MAIL
         TICKET_CANNOT_BIND_SUBJECT
+        TICKET_ERROR_MAIL
+        TICKET_ERROR_SUBJECT
         TICKET_FORUM_NAME
         TICKET_GUEST_EMAILS_MANDATORY
         TICKET_MAIL_ON
@@ -8404,6 +8407,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_jestr_owo_shown_for
         SPAM_CHECK_STOPFORUMSPAM
         CONFIG_OPTION_spam_check_stopforumspam
+        TICKET_MAIL_TAGS
+        CONFIG_OPTION_ticket_mail_tags
     ')));
 
     $non_admin_files = [
