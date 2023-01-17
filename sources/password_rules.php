@@ -80,7 +80,7 @@ function test_password(string $password, string $username = '', string $email_ad
     $spell_checker = _find_spell_checker();
     if ($spell_checker !== null) {
         $test = run_spellcheck__words([cms_mb_strtolower($password)], null, /*$skip_known_words_in_db = */true, /*$provide_corrections = */false);
-        if (count($test) == 0) { // Fully matches dictionary
+        if (($test !== null) && (count($test) == 0)) { // Fully matches dictionary
             $password = '';
         }
     }

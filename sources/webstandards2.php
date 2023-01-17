@@ -619,6 +619,9 @@ function check_spelling(string $value) : array
         init__spelling();
     }
     $misspellings = run_spellcheck($value, $lang, false, false, false);
+    if ($misspellings === null) {
+        $misspellings = []; // Ignore spell check errors
+    }
     spellchecker_shutdown();
 
     $errors = [];

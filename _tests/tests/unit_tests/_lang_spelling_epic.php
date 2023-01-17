@@ -3405,6 +3405,10 @@ class _lang_spelling_epic_test_set extends cms_test_case
                 $c = preg_replace('#`[^`\n]*`#', '', $c); // Protected
 
                 $misspellings = run_spellcheck($c, null, false/*would be too slow and is not needed*/, false, false);
+                if ($misspellings === null) {
+                    $misspellings = [];
+                    $this->assertTrue(false, 'The spell check failed to run.');
+                }
                 foreach (array_keys($misspellings) as $word) {
                     $this->assertTrue(false, 'Misspelling: ' . $word . ' (' . $path . ')');
                 }
@@ -3430,6 +3434,10 @@ class _lang_spelling_epic_test_set extends cms_test_case
             $c = clean_comcode_for_spellcheck($c);
 
             $misspellings = run_spellcheck($c, null, false/*would be too slow and is not needed*/, false, false);
+            if ($misspellings === null) {
+                $misspellings = [];
+                $this->assertTrue(false, 'The spell check failed to run.');
+            }
             foreach (array_keys($misspellings) as $word) {
                 $this->assertTrue(false, 'Misspelling: ' . $word . ' (' . $addon_name . ' addon description)');
             }

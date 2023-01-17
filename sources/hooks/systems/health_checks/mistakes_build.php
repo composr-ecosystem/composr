@@ -470,6 +470,9 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
             $text = clean_comcode_for_spellcheck($c);
 
             $misspellings = run_spellcheck($text, null, true, false);
+            if ($misspellings === null) {
+                $misspellings = []; // Ignore spell check errors
+            }
             foreach (array_keys($misspellings) as $word) {
                 $this->assertTrue(false, do_lang('SPELLING_PROBLEM', $word, $path));
             }
@@ -529,6 +532,9 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
             $text = clean_html_for_spellcheck($html);
 
             $misspellings = run_spellcheck($text, null, true, false);
+            if ($misspellings === null) {
+                $misspellings = []; // Ignore spell check errors
+            }
             foreach (array_keys($misspellings) as $word) {
                 $this->assertTrue(false, do_lang('SPELLING_PROBLEM', $word, $field_title));
             }
@@ -704,6 +710,9 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
                     $text = clean_comcode_for_spellcheck($c);
 
                     $misspellings = run_spellcheck($text, null, true, false);
+                    if ($misspellings === null) {
+                        $misspellings = []; // Ignore spell check errors
+                    }
                     foreach (array_keys($misspellings) as $word) {
                         $this->assertTrue(false, 'Misspelling: ' . $word . ' (' . $table . ')');
                     }

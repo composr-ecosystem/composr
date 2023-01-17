@@ -91,6 +91,9 @@ function spell_correct_phrase(string $text) : string
     }
 
     $errors = run_spellcheck($text);
+    if ($errors === null) {
+        $errors = []; // Ignore spell check errors
+    }
 
     $regexp = (get_charset() == 'utf-8') ? WORD_REGEXP_UNICODE : WORD_REGEXP;
     $parts = preg_split($regexp, $text, -1, PREG_SPLIT_DELIM_CAPTURE);
@@ -115,19 +118,19 @@ function spell_correct_phrase(string $text) : string
  * @param  boolean $skip_known_words_in_db Whether to avoid spellchecking known keywords etc
  * @param  boolean $provide_corrections Whether to provide corrections
  * @param  boolean $unicode_accepted Whether Unicode is accepted
- * @return array A map of misspellings, lower case bad word => array of corrections
+ * @return ?array A map of misspellings, lower case bad word => array of corrections (null: error)
  */
-function run_spellcheck(string $text, ?string $lang = null, bool $skip_known_words_in_db = true, bool $provide_corrections = true, bool $unicode_accepted = true) : array
+function run_spellcheck(string $text, ?string $lang = null, bool $skip_known_words_in_db = true, bool $provide_corrections = true, bool $unicode_accepted = true) : ?array
 {
     $spell_checker = _find_spell_checker();
 
     if ($spell_checker === null) {
-        return [];
+        return null;
     }
 
     $words = _find_words($text, $unicode_accepted);
     if (empty($words)) {
-        return [];
+        return []; // Not an error, just no words detected; return empty array.
     }
 
     return run_spellcheck__words($words, $lang, $skip_known_words_in_db, $provide_corrections, $unicode_accepted);
@@ -141,14 +144,14 @@ function run_spellcheck(string $text, ?string $lang = null, bool $skip_known_wor
  * @param  boolean $skip_known_words_in_db Whether to avoid spellchecking known keywords etc
  * @param  boolean $provide_corrections Whether to provide corrections
  * @param  boolean $unicode_accepted Whether Unicode is accepted
- * @return array A map of misspellings, lower case bad word => array of corrections
+ * @return ?array A map of misspellings, lower case bad word => array of corrections (null: error)
  */
-function run_spellcheck__words(array $words, ?string $lang = null, bool $skip_known_words_in_db = true, bool $provide_corrections = true, bool $unicode_accepted = true) : array
+function run_spellcheck__words(array $words, ?string $lang = null, bool $skip_known_words_in_db = true, bool $provide_corrections = true, bool $unicode_accepted = true) : ?array
 {
     $spell_checker = _find_spell_checker();
 
     if ($spell_checker === null) {
-        return [];
+        return null;
     }
 
     $errors = [];
@@ -156,7 +159,7 @@ function run_spellcheck__words(array $words, ?string $lang = null, bool $skip_kn
     // Initialise
     $spell_link = spellcheck_initialise($lang);
     if ($spell_link === null) {
-        return [];
+        return null;
     }
     if ($skip_known_words_in_db) {
         $okay_words = [
