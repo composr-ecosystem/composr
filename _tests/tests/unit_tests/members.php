@@ -32,6 +32,7 @@ class members_test_set extends cms_test_case
 
         require_code('cns_members_action');
         require_code('cns_members_action2');
+        require_code('crypt');
         require_lang('cns');
 
         $this->member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username('testmember');
@@ -41,7 +42,7 @@ class members_test_set extends cms_test_case
 
         $this->member_id = cns_make_member(
             'testmember', // username
-            '123456aB$!x', // password
+            get_secure_random_password(null, 'testmember', 'test123@example.com'), // password
             'test123@example.com', // email_address
             null, // primary_group
             null, // secondary_groups

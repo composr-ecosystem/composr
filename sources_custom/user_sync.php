@@ -222,7 +222,7 @@ function user_sync__inbound($since = null)
             // Import to standard member record
             if ($member_id === null) {
                 $user_data['pass_hash_salted'] = ($user_data['pass_hash_salted'] === null) ? $default_password : $user_data['pass_hash_salted'];
-                $password = ($user_data['pass_hash_salted'] === null) ? get_secure_random_string() : $user_data['pass_hash_salted'];
+                $password = ($user_data['pass_hash_salted'] === null) ? get_secure_random_password(null, $username, $email_address) : $user_data['pass_hash_salted'];
                 $password_compatibility_scheme = $temporary_password ? 'temporary' : (($user_data['pass_hash_salted'] === null) ? 'plain'/*so we can find it from the DB*/ : null);
 
                 $member_id = cns_make_member(

@@ -592,7 +592,7 @@ abstract class EmailIntegration
 
                 // Send creation e-mail
                 $system_subject = do_lang('MAIL_INTEGRATION_AUTOMATIC_ACCOUNT_SUBJECT', $subject, $from_email, [get_site_name(), $username], get_site_default_lang());
-                $system_message = do_lang('MAIL_INTEGRATION_AUTOMATIC_ACCOUNT_MAIL', strip_comcode($body), $from_email, [$subject, get_site_name(), $username, escape_html($password)], get_site_default_lang());
+                $system_message = do_lang('MAIL_INTEGRATION_AUTOMATIC_ACCOUNT_MAIL', strip_comcode($body), $from_email, [$subject, get_site_name(), $username, comcode_escape($password)], get_site_default_lang());
                 $this->send_system_email($system_subject, $system_message, $from_email, $email_bounce_to);
 
                 $this->log_message('Created a new account for the member under the ID ' . strval($member_id));
@@ -1002,8 +1002,8 @@ abstract class EmailIntegration
      *
      * @param  string $subject Subject line of original message
      * @param  string $body Body of original message
-     * @param  EMAIL $email E-mail address we were to bind to
-     * @param  EMAIL $email_bounce_to E-mail address of sender (usually the same as $email, but not if it was a forwarded e-mail)
+     * @param  EMAIL $email E-mail address we were to bind to; not actually used
+     * @param  EMAIL $email_bounce_to E-mail address of sender (usually the same as $email, but not if it was a forwarded e-mail); not always for bounces, sometimes just for informational responses
      */
     protected function send_system_email(string $subject, string $body, string $email, string $email_bounce_to)
     {
