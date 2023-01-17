@@ -28,7 +28,9 @@ class zip_test_set extends cms_test_case
     public function testMZip()
     {
         // Test m-ZIP is working
-        $this->doPrefixedFunctionTest('m_');
+        if (@file_exists('/usr/bin/unzip')) {
+            $this->doPrefixedFunctionTest('m_');
+        }
     }
 
     public function testZip()
