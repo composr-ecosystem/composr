@@ -697,7 +697,7 @@ class Module_admin_email_log
         $to_email = post_param_string('to_email');
 
         require_code('mail');
-        $mail_ob = dispatch_mail('Testing', 'Testing', [$to_email], 'Tester', '', '', ['priority' => 1, 'bypass_queue' => true]);
+        $mail_ob = dispatch_mail('Testing', 'Testing', [$to_email], 'Tester', '', '', ['priority' => 1, 'bypass_queue' => true, 'leave_attachments_on_failure' => true]);
 
         return do_template('FULL_MESSAGE_SCREEN', [
             'TITLE' => $this->title,

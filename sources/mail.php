@@ -562,6 +562,7 @@ abstract class Mail_dispatcher_base
     public $is_bulk = false;
     public $sender_email = null;
     public $plain_subject = false;
+    public $leave_attachments_on_failure = false;
 
     // Configuration
     public $smtp_sockets_use = false;
@@ -634,6 +635,7 @@ abstract class Mail_dispatcher_base
         $this->is_bulk = isset($advanced_parameters['is_bulk']) ? $advanced_parameters['is_bulk'] : false;
         $this->sender_email = isset($advanced_parameters['sender_email']) ? $advanced_parameters['sender_email'] : null; // E-mail address to use as a sender address (null: default)
         $this->plain_subject = isset($advanced_parameters['plain_subject']) ? $advanced_parameters['plain_subject'] : false; // Avoid templating the subject to have an additional prefix/suffix
+        $this->leave_attachments_on_failure = isset($advanced_parameters['leave_attachments_on_failure']) ? $advanced_parameters['leave_attachments_on_failure'] : false; // If a message may be re-sent we need to leave attachment files in place
 
         $this->extra_cc_addresses = isset($advanced_parameters['extra_cc_addresses']) ? $advanced_parameters['extra_cc_addresses'] : []; // Extra CC addresses to use (null: none)
         $this->extra_bcc_addresses = isset($advanced_parameters['extra_bcc_addresses']) ? $advanced_parameters['extra_bcc_addresses'] : []; // Extra BCC addresses to use (null: none)
@@ -707,9 +709,6 @@ abstract class Mail_dispatcher_base
             if ($through_queue) {
                 $this->log('QUEUED', 'Entered queue');
 
-                require_code('files2');
-                clean_temporary_mail_attachments($this->attachments);
-
                 return null;
             }
         }
@@ -740,17 +739,15 @@ abstract class Mail_dispatcher_base
             $GLOBALS['SITE_DB']->query_update('logged_mail_messages', ['m_queued' => 1], ['id' => $queue_id], '', 1);
         }
 
-        if ($worked) {
-            // Attachment cleanup
-            foreach ($this->real_attachments as $r) {
-                if ($r['temp']) {
-                    @unlink($r['path']);
-                }
+        // Attachment cleanup
+        foreach ($this->real_attachments as $r) {
+            if ($r['temp']) {
+                @unlink($r['path']);
             }
-            foreach ($this->cid_attachments as $r) {
-                if ($r['temp']) {
-                    @unlink($r['path']);
-                }
+        }
+        foreach ($this->cid_attachments as $r) {
+            if ($r['temp']) {
+                @unlink($r['path']);
             }
         }
 
@@ -777,8 +774,10 @@ abstract class Mail_dispatcher_base
         // Stop loops (unlock)
         $SENDING_MAIL = false;
 
-        require_code('files2');
-        clean_temporary_mail_attachments($this->attachments);
+        if ($worked || !$this->leave_attachments_on_failure) {
+            require_code('files2');
+            clean_temporary_mail_attachments($this->attachments);
+        }
 
         return [$worked, $error];
     }
@@ -1092,7 +1091,7 @@ abstract class Mail_dispatcher_base
                     'mime' => $mime_type,
                     'filename' => $filename,
                     'path' => $path,
-                    'temp' => false,
+                    'temp' => false, // It may be a second reference to a temp file, so we won't mark it as needing cleanup here
                 ];
             } else {
                 $result = cms_http_request($path, ['trigger_error' => false]);

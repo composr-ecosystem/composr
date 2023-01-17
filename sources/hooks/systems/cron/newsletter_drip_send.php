@@ -129,6 +129,7 @@ class Hook_cron_newsletter_drip_send
                         'allow_ext_images' => (get_option('newsletter_allow_ext_images') == '1'),
                         'website_email' => get_option('newsletter_website_email'),
                         'is_bulk' => true,
+                        'leave_attachments_on_failure' => true,
                     ]
                 );
 

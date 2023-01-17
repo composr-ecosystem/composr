@@ -200,7 +200,7 @@ function is_temp_file(string $path) : bool
 
 /**
  * Delete any attachment files from disk that were created as temporary files.
- * We cannot do this after the mail_wrap function is called because the mail queue will need them - it has to be once the mail is finished with.
+ * We cannot do this after calls to the dispatch_mail function because the mail queue will need them - it has to be once the mail is finished with.
  *
  * @param  ?array $attachments A list of attachments (each attachment being a map, absolute path=>filename) (null: none)
  */

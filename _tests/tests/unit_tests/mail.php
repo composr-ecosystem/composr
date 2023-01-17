@@ -32,10 +32,15 @@ class mail_test_set extends cms_test_case
             $this->assertTrue(file_exists($a));
             $this->assertTrue(file_exists($b));
 
+            $expect_files_still = false;
+
             switch ($mode) {
                 case 'MAIL':
                     require_code('mail');
-                    dispatch_mail('test', 'test', ['test@example.com'], null, '', '', ['attachments' => $attachments]);
+                    $dispatcher = dispatch_mail('test', 'test', ['test@example.com'], null, '', '', ['attachments' => $attachments, 'bypass_queue' => true, 'leave_attachments_on_failure' => true]);
+                    if (!$dispatcher->worked) {
+                        $expect_files_still = true;
+                    }
                     break;
 
                 case 'NOTIFICATIONS':
@@ -46,11 +51,16 @@ class mail_test_set extends cms_test_case
                     break;
             }
 
-            $this->assertTrue(!file_exists($a));
-            $this->assertTrue(!file_exists($b));
+            if (!$expect_files_still) {
+                $this->assertTrue(!file_exists($a));
+                $this->assertTrue(!file_exists($b));
+            }
 
             if (file_exists($a)) {
                 unlink($a);
+            }
+            if (file_exists($b)) {
+                unlink($b);
             }
         }
     }

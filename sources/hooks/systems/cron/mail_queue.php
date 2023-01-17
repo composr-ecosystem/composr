@@ -105,6 +105,7 @@ class Hook_cron_mail_queue
                         'require_recipient_valid_since' => $join_time,
                         'sender_email' => $sender_email,
                         'plain_subject' => $plain_subject == 1,
+                        'leave_attachments_on_failure' => true,
                     ]
                 );
                 $success = $mail_ob->worked;
