@@ -196,16 +196,18 @@ function apply_emoticons(string $text) : string
  */
 function comcode_to_tempcode(string $comcode, ?int $source_member = null, bool $as_admin = false, ?string $pass_id = null, ?object $db = null, int $flags = 0, array $highlight_bits = [], ?int $on_behalf_of_member = null) : object
 {
+    $may_cache = ($pass_id === null && $db === null && $flags == 0 && empty($highlight_bits) && $on_behalf_of_member === null);
+
     // We may get called many times for the same input, e.g. due to Health Checks on previewed content - so do some caching
     static $cache = [];
-    if (isset($cache[$comcode])) {
-        return $cache[$comcode];
+    if ($may_cache && isset($cache[$source_member][$as_admin][$comcode])) {
+        return $cache[$source_member][$as_admin][$comcode];
     }
 
     $matches = [];
     if (preg_match('#^\{\!([A-Z_]+)\}$#', $comcode, $matches) != 0) {
         $ret = do_lang_tempcode($matches[1]);
-        $cache[$comcode] = $ret;
+        $cache[$source_member][$as_admin][$comcode] = $ret;
         return $ret;
     }
 
@@ -226,7 +228,7 @@ function comcode_to_tempcode(string $comcode, ?int $source_member = null, bool $
         } else {
             $ret = make_string_tempcode(apply_emoticons(escape_html($comcode)));
         }
-        $cache[$comcode] = $ret;
+        $cache[$source_member][$as_admin][$comcode] = $ret;
         return $ret;
     }
 
@@ -241,7 +243,9 @@ function comcode_to_tempcode(string $comcode, ?int $source_member = null, bool $
     if ($long) {
         cms_profile_end_for('comcode_to_tempcode/LONG', ($source_member === null) ? '' : ('owned by member #' . strval($source_member)));
     }
-    $cache[$comcode] = $ret;
+    if ($may_cache) {
+        $cache[$source_member][$as_admin][$comcode] = $ret;
+    }
     return $ret;
 }
 
