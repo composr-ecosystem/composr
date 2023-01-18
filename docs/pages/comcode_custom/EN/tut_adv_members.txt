@@ -350,10 +350,31 @@ You can force a member to change their password upon next login (e.g. if you wan
 echo temporary > /members/bob/m_password_compat_scheme
 [/code]
 (this assumes you are doing it for a member, [tt]bob[/tt]).
-You can also run SQL queries. To force all members to change their passwords:
+You can also run SQL queries. To force all members to change their passwords (useful, for example, in the event you are made aware of a data breach):
 [code="SQL"]
 UPDATE cms_f_members SET m_password_compat_scheme='temporary' WHERE m_password_compat_scheme=''
 [/code]
+
+[title="2"]Password strength[/title]
+
+There exists a setting for specifying the minimum allowed strength of new member passwords (Admin Zone > Setup > Configuration > Security options > Usernames and passwords). The option allows you to specify a minimum strength from 1 to 10 with 1 accepting all passwords, 5 being considered the standard, and 10 for sites dealing with very high-risk business or information. You should be reasonable about this option; higher values mean more secure member accounts but also more inconvenience when members are trying to choose a password.
+
+The way password strengths are calculated is a bit complex. The following conditions factor positively towards a password's strength score:
+ - Use of upper-case letters
+ - Use of lower-case letters
+ - Use of numbers
+ - Use of other special characters
+
+The following will negatively impact the strength score of a password:
+ - Using the same characters repeatedly
+ - Using your username, e-mail address, date of birth, or a dictionary word in the password
+ - Using shorter passwords
+
+Here are some general guidelines regarding some of the strength options:
+ - The [tt]1 (Accept all)[/tt] option will accept any and all passwords, including dictionary words, usernames, e-mails, and dates of birth.
+ - Any option [tt]2[/tt] or above will not allow the use of a dictionary word, username, e-mail address, or date of birth, unless accompanied by additional characters.
+ - The [tt]5 (Standard)[/tt] option roughly equates to an 8-character password that uses at least one uppercase letter, lowercase letter, number, and symbol, and has no repeating characters. When any of those conditions are not met, the password length must be longer to reach a score of 5.
+ - The [tt]10 (Ultra-secure)[/tt] option roughly equates to a 16-character password that uses at least one uppercase letter, lowercase letter, number, and symbol, and has no repeating characters. When any of those conditions are not met, the password length must be longer to reach a score of 10.
 
 [title="2"]See also[/title]
 

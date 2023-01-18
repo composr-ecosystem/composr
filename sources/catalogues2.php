@@ -1099,6 +1099,10 @@ function actual_add_catalogue_entry(int $category_id, int $validated, string $no
         }
     }
 
+    if ($title === null) {
+        $title = do_lang('_UNKNOWN');
+    }
+
     static $done_one_posting_field = false;
 
     $id = $GLOBALS['SITE_DB']->query_insert('catalogue_entries', $imap, true);

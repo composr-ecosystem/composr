@@ -85,54 +85,57 @@ function test_password(string $password, string $username = '', string $email_ad
         }
     }
 
-    // Positive scoring...
-
-    $strength = 0;
-    $running_maximum = 0;
-
-    // Consider if password is not all the same case
-    if ((cms_mb_strtolower($password) != $password) && (cms_mb_strtoupper($password) != $password)) {
-        $strength += 10;
+    // Return 1 for the strength immediately if there is no password.
+    if ($password == '') {
+        return 1;
     }
-    $running_maximum += 10;
 
-    // Consider the string length
+    $strength = 0.5;
+
+    // Consider numbers
+    if (preg_match('#[0-9]#', $password) == 1) {
+        $strength += 1.0;
+    }
+
+    // Consider lowercase letters
+    if (preg_match('#[a-z]#', $password) == 1) {
+        $strength += 2.6;
+    }
+
+    // Consider uppercase letters
+    if (preg_match('#[A-Z]#', $password) == 1) {
+        $strength += 2.6;
+    }
+
+    // Consider special characters
+    if (preg_match('#[^a-zA-Z0-9]#', $password) == 1) {
+        $strength += 3.3;
+    }
+
+    // The strengths above all add up to 10. Calculations below will modulate the strength according to additional factors.
+
+    // Factor password length
     $length = cms_mb_strlen($password);
-    if ($length >= 8 && $length <= 15) {
-        $strength += 16;
-    } elseif ($length >= 16 && $length <= 35) {
-        $strength += 32; // Check if length greater than 35 chars
-    } elseif ($length > 35) {
-        $strength += 48;
-    }
-    $running_maximum += 48;
-
-    // Consider digits
-    $strength += min(12, preg_match_all('#[0-9]#', $password) * 3);
-    $running_maximum += 12;
-
-    // Consider special chars
-    $strength += min(32, preg_match_all('#[^a-zA-Z0-9]#', $password) * 8);
-    $running_maximum += 32;
-
-    // Consider number of unique chars
     $chars = preg_split('#(.)#', $password, -1, PREG_SPLIT_DELIM_CAPTURE);
-    $num_unique_chars = count(array_unique($chars)) - 1;
-    $strength += min(25, ($num_unique_chars - 1) * 2);
-    $running_maximum += 25;
+    $num_unique_chars = count(array_unique($chars));
 
-    $running_maximum = 70; // Actually we'll reduce it (from 127), as we don't want to rate everything against the very best
+    // Reduce strength on a percentage when characters are not unique.
+    $strength *= (floatval($num_unique_chars) / floatval($length));
+
+
+    // Multiply strength score depending on password length
+    $strength *= ($length / 16);
 
     // Clamp the strength to be a number 1-10...
+    $strength_final = intval($strength);
 
-    if ($strength < 0) {
-        $strength = 0;
+    if ($strength_final < 1) {
+        $strength_final = 1;
     }
-    $strength = 1 + intval(round(9.0 * floatval($strength) / floatval($running_maximum)));
-    if ($strength > 10) {
-        $strength = 10;
+    if ($strength_final > 10) {
+        $strength_final = 10;
     }
-    return $strength;
+    return $strength_final;
 }
 
 /**

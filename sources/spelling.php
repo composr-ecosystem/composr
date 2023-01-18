@@ -195,10 +195,10 @@ function run_spellcheck__words(array $words, ?string $lang = null, bool $skip_kn
             }
             $or_list .= db_string_equal_to('meta_keyword', $word);
         }
-        $_non_words = $GLOBALS['SITE_DB']->query('SELECT DISTINCT ' . $GLOBALS['SITE_DB']->translate_field_ref('meta_keyword') . ' FROM ' . get_table_prefix() . 'seo_meta_keywords WHERE ' . $or_list, null, 0, false, false, ['meta_keyword' => 'SHORT_TRANS']);
+        $_non_words = $GLOBALS['SITE_DB']->query('SELECT DISTINCT ' . $GLOBALS['SITE_DB']->translate_field_ref('meta_keyword') . ' AS trans_meta_keyword FROM ' . get_table_prefix() . 'seo_meta_keywords WHERE ' . $or_list, null, 0, false, false, ['meta_keyword' => 'SHORT_TRANS']);
         foreach ($_non_words as $_non_word) {
-            if ($_non_word['meta_keyword'] != '') {
-                $okay_words[] = $_non_word['meta_keyword'];
+            if ($_non_word['trans_meta_keyword'] != '') {
+                $okay_words[] = $_non_word['trans_meta_keyword'];
             }
         }
 

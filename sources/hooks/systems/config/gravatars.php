@@ -41,6 +41,8 @@ class Hook_config_gravatars
             'required' => false,
             'public' => false,
             'addon' => 'core_configuration',
+
+            'maintenance_code' => 'gravatar',
         ];
     }
 
