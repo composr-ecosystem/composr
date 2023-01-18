@@ -3932,6 +3932,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         MAILING_LIST
         MEMBER_DEFAULT_SETTINGS
         DESCRIPTION_MAILING_LIST
+        _MAILING_LIST_SERVER
         CONFIG_OPTION_ssw
         CONFIG_OPTION_staff_address
         CONFIG_OPTION_stats_store_time
