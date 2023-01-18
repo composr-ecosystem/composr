@@ -287,7 +287,7 @@ class Module_admin_cns_forums extends Standard_crud_module
             require_lang('config');
             require_lang('cns_mailinglists');
 
-            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'ab47ed06695dc2cd99211772fe4c5643', 'SECTION_HIDDEN' => $mail_username == '', 'TITLE' => do_lang_tempcode('MAILING_LIST'), 'HELP' => do_lang_tempcode('DESCRIPTION_MAILING_LIST')]));
+            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'ab47ed06695dc2cd99211772fe4c5643', 'SECTION_HIDDEN' => $mail_username == '', 'TITLE' => do_lang_tempcode('MAILING_LIST'), 'HELP' => do_lang_tempcode('DESCRIPTION_MAILING_LIST', is_maintained_description('email_integration', do_lang('_MAILING_LIST_SERVER')))]));
 
             $fields->attach(form_input_email(do_lang_tempcode('EMAIL_ADDRESS'), do_lang_tempcode('CONFIG_OPTION_website_email'), 'mail_email_address', $mail_email_address, false));
             $mail_server_types = new Tempcode();

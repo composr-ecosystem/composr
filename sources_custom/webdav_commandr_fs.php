@@ -445,6 +445,8 @@ namespace webdav_commandr_fs {
                 $result = $GLOBALS['FORUM_DRIVER']->authorise_login($username, null, $password);
             }
             if ($result['id'] !== null) {
+                require_code('users_inactive_occasionals');
+                create_session($result['id']);
                 return $GLOBALS['FORUM_DRIVER']->is_super_admin($result['id']);
             }
             return false;
