@@ -229,10 +229,22 @@ function rename_privilege(string $old, string $new)
 /**
  * Delete a privilege.
  *
- * @param  ID_TEXT $name The codename of the permission
+ * @param  mixed $privileges The codename of the privilege(s) to delete
  */
-function delete_privilege(string $name)
+function delete_privilege($privileges)
 {
-    $GLOBALS['SITE_DB']->query_delete('privilege_list', ['the_name' => $name], '', 1);
-    $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'group_privileges WHERE ' . db_string_equal_to('privilege', $name));
+    if (!is_array($privileges)) {
+        $privileges = [$privileges];
+    }
+
+    $privilege_list_query = 'DELETE FROM ' . get_table_prefix() . 'privilege_list WHERE 1=0';
+    $group_privileges_query = 'DELETE FROM ' . get_table_prefix() . 'group_privileges WHERE 1=0';
+
+    foreach ($privileges as $privilege) {
+        $privilege_list_query .= ' OR ' . db_string_equal_to('the_name', $privilege);
+        $group_privileges_query .= ' OR ' . db_string_equal_to('privilege', $privilege);
+    }
+
+    $GLOBALS['SITE_DB']->query($privilege_list_query);
+    $GLOBALS['SITE_DB']->query($group_privileges_query);
 }

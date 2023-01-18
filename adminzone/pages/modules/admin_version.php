@@ -46,52 +46,55 @@ class Module_admin_version
      */
     public function uninstall()
     {
-        $GLOBALS['SITE_DB']->drop_table_if_exists('url_id_monikers');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('cache');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('cache_on');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('captchas');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('rating');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('member_tracking');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('trackbacks');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('menu_items');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('values_elective');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('tutorial_links');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('edit_pings');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('webstandards_checked_once');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('member_privileges');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('member_zone_access');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('member_page_access');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('member_category_access');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('tracking');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('autosave');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('messages_to_render');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('url_title_cache');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('review_supplement');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('logged_mail_messages');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('incoming_uploads');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('f_group_member_timeouts');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('temp_block_permissions');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('cron_caching_requests');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('notifications_enabled');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('digestives_tin');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('digestives_consumed');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('unbannable_ip');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('alternative_ids');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('content_privacy');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('content_privacy__members');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('task_queue');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('comcode_pages');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('cached_comcode_pages');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('email_bounces');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('sitemap_cache');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('urls_checked');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('content_regions');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('post_tokens');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('cron_progression');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('translation_cache');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('ft_index_commonality');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('cpages_fulltext_index');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('daily_visits');
+        $tables = [
+            'url_id_monikers',
+            'cache',
+            'cache_on',
+            'captchas',
+            'rating',
+            'member_tracking',
+            'trackbacks',
+            'menu_items',
+            'values_elective',
+            'tutorial_links',
+            'edit_pings',
+            'webstandards_checked_once',
+            'member_privileges',
+            'member_zone_access',
+            'member_page_access',
+            'member_category_access',
+            'tracking',
+            'autosave',
+            'messages_to_render',
+            'url_title_cache',
+            'review_supplement',
+            'logged_mail_messages',
+            'incoming_uploads',
+            'f_group_member_timeouts',
+            'temp_block_permissions',
+            'cron_caching_requests',
+            'notifications_enabled',
+            'digestives_tin',
+            'digestives_consumed',
+            'unbannable_ip',
+            'alternative_ids',
+            'content_privacy',
+            'content_privacy__members',
+            'task_queue',
+            'comcode_pages',
+            'cached_comcode_pages',
+            'email_bounces',
+            'sitemap_cache',
+            'urls_checked',
+            'content_regions',
+            'post_tokens',
+            'cron_progression',
+            'translation_cache',
+            'ft_index_commonality',
+            'cpages_fulltext_index',
+            'daily_visits',
+        ];
+        $GLOBALS['SITE_DB']->drop_table_if_exists($tables);
 
         /* We don't want to get rid of on-disk data when reinstalling
         $zones = find_all_zones(true);
@@ -106,9 +109,12 @@ class Module_admin_version
 
         delete_attachments('comcode_page');
 
-        delete_privilege('edit_meta_fields');
-        delete_privilege('view_private_content');
-        delete_privilege('perform_webstandards_check_by_default');
+        $privileges = [
+            'edit_meta_fields',
+            'view_private_content',
+            'perform_webstandards_check_by_default',
+        ];
+        delete_privilege($privileges);
     }
 
     /**

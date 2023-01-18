@@ -42,8 +42,12 @@ class Module_admin_customers
     public function uninstall()
     {
         /* NB: Does not delete CPFs and multi-mods. But that doesn't actually matter */
-        $GLOBALS['SITE_DB']->drop_table_if_exists('credit_purchases');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('credit_charge_log');
+
+        $tables = [
+            'credit_purchases',
+            'credit_charge_log',
+        ];
+        $GLOBALS['SITE_DB']->drop_table_if_exists($tables);
 
         if (strpos(get_db_type(), 'mysql') === false) {
             return;
@@ -51,38 +55,41 @@ class Module_admin_customers
 
         // MANTIS TABLE DELETION
 
-        $GLOBALS['SITE_DB']->query("DROP TABLE IF EXISTS `mantis_api_token_table`");
-        $GLOBALS['SITE_DB']->query("DROP TABLE IF EXISTS `mantis_bug_file_table`");
-        $GLOBALS['SITE_DB']->query("DROP TABLE IF EXISTS `mantis_bug_history_table`");
-        $GLOBALS['SITE_DB']->query("DROP TABLE IF EXISTS `mantis_bug_monitor_table`");
-        $GLOBALS['SITE_DB']->query("DROP TABLE IF EXISTS `mantis_bug_relationship_table`");
-        $GLOBALS['SITE_DB']->query("DROP TABLE IF EXISTS `mantis_bug_revision_table`");
-        $GLOBALS['SITE_DB']->query("DROP TABLE IF EXISTS `mantis_bug_table`");
-        $GLOBALS['SITE_DB']->query("DROP TABLE IF EXISTS `mantis_bug_tag_table`");
-        $GLOBALS['SITE_DB']->query("DROP TABLE IF EXISTS `mantis_bug_text_table`");
-        $GLOBALS['SITE_DB']->query("DROP TABLE IF EXISTS `mantis_bugnote_table`");
-        $GLOBALS['SITE_DB']->query("DROP TABLE IF EXISTS `mantis_bugnote_text_table`");
-        $GLOBALS['SITE_DB']->query("DROP TABLE IF EXISTS `mantis_category_table`");
-        $GLOBALS['SITE_DB']->query("DROP TABLE IF EXISTS `mantis_config_table`");
-        $GLOBALS['SITE_DB']->query("DROP TABLE IF EXISTS `mantis_custom_field_project_table`");
-        $GLOBALS['SITE_DB']->query("DROP TABLE IF EXISTS `mantis_custom_field_string_table`");
-        $GLOBALS['SITE_DB']->query("DROP TABLE IF EXISTS `mantis_custom_field_table`");
-        $GLOBALS['SITE_DB']->query("DROP TABLE IF EXISTS `mantis_email_table`");
-        $GLOBALS['SITE_DB']->query("DROP TABLE IF EXISTS `mantis_filters_table`");
-        $GLOBALS['SITE_DB']->query("DROP TABLE IF EXISTS `mantis_news_table`");
-        $GLOBALS['SITE_DB']->query("DROP TABLE IF EXISTS `mantis_plugin_table`");
-        $GLOBALS['SITE_DB']->query("DROP TABLE IF EXISTS `mantis_project_file_table`");
-        $GLOBALS['SITE_DB']->query("DROP TABLE IF EXISTS `mantis_project_hierarchy_table`");
-        $GLOBALS['SITE_DB']->query("DROP TABLE IF EXISTS `mantis_project_table`");
-        $GLOBALS['SITE_DB']->query("DROP TABLE IF EXISTS `mantis_project_user_list_table`");
-        $GLOBALS['SITE_DB']->query("DROP TABLE IF EXISTS `mantis_project_version_table`");
-        $GLOBALS['SITE_DB']->query("DROP TABLE IF EXISTS `mantis_sponsorship_table`");
-        $GLOBALS['SITE_DB']->query("DROP TABLE IF EXISTS `mantis_tag_table`");
-        $GLOBALS['SITE_DB']->query("DROP TABLE IF EXISTS `mantis_tokens_table`");
-        $GLOBALS['SITE_DB']->query("DROP TABLE IF EXISTS `mantis_user_pref_table`");
-        $GLOBALS['SITE_DB']->query("DROP TABLE IF EXISTS `mantis_user_print_pref_table`");
-        $GLOBALS['SITE_DB']->query("DROP TABLE IF EXISTS `mantis_user_profile_table`");
-        $GLOBALS['SITE_DB']->query("DROP TABLE IF EXISTS `mantis_user_table`");
+        $tables = [
+            'mantis_api_token_table',
+            'mantis_bug_file_table',
+            'mantis_bug_history_table',
+            'mantis_bug_monitor_table',
+            'mantis_bug_relationship_table',
+            'mantis_bug_revision_table',
+            'mantis_bug_table',
+            'mantis_bug_tag_table',
+            'mantis_bug_text_table',
+            'mantis_bugnote_table',
+            'mantis_bugnote_text_table',
+            'mantis_category_table',
+            'mantis_config_table',
+            'mantis_custom_field_project_table',
+            'mantis_custom_field_string_table',
+            'mantis_custom_field_table',
+            'mantis_email_table',
+            'mantis_filters_table',
+            'mantis_news_table',
+            'mantis_plugin_table',
+            'mantis_project_file_table',
+            'mantis_project_hierarchy_table',
+            'mantis_project_table',
+            'mantis_project_user_list_table',
+            'mantis_project_version_table',
+            'mantis_sponsorship_table',
+            'mantis_tag_table',
+            'mantis_tokens_table',
+            'mantis_user_pref_table',
+            'mantis_user_print_pref_table',
+            'mantis_user_profile_table',
+            'mantis_user_table',
+        ];
+        $GLOBALS['SITE_DB']->query('DROP TABLE IF EXISTS ' . implode(',' , $tables));
     }
 
     /**

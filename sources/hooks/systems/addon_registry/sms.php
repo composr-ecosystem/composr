@@ -129,12 +129,18 @@ class Hook_addon_registry_sms
      */
     public function uninstall()
     {
-        $GLOBALS['SITE_DB']->drop_table_if_exists('sms_log');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('confirmed_mobiles');
+        $tables = [
+            'sms_log',
+            'confirmed_mobiles',
+        ];
+        $GLOBALS['SITE_DB']->drop_table_if_exists($tables);
 
-        delete_privilege('use_sms');
-        delete_privilege('sms_higher_limit');
-        delete_privilege('sms_higher_trigger_limit');
+        $privileges = [
+            'use_sms',
+            'sms_higher_limit',
+            'sms_higher_trigger_limit',
+        ];
+        delete_privilege($privileges);
     }
 
     /**

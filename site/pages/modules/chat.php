@@ -46,18 +46,24 @@ class Module_chat
      */
     public function uninstall()
     {
-        $GLOBALS['SITE_DB']->drop_table_if_exists('chat_rooms');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('chat_messages');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('chat_blocking');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('chat_friends');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('chat_active');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('chat_events');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('chat_sound_effects');
+        $tables = [
+            'chat_rooms',
+            'chat_messages',
+            'chat_blocking',
+            'chat_friends',
+            'chat_active',
+            'chat_events',
+            'chat_sound_effects',
+        ];
+        $GLOBALS['SITE_DB']->drop_table_if_exists($tables);
 
-        delete_privilege('create_private_room');
-        delete_privilege('start_im');
-        delete_privilege('moderate_my_private_rooms');
-        delete_privilege('ban_chatters_from_rooms');
+        $privileges = [
+            'create_private_room',
+            'start_im',
+            'moderate_my_private_rooms',
+            'ban_chatters_from_rooms',
+        ];
+        delete_privilege($privileges);
 
         $GLOBALS['SITE_DB']->query_delete('group_page_access', ['page_name' => 'cms_chat']);
         $GLOBALS['SITE_DB']->query_delete('group_category_access', ['module_the_name' => 'chat']);

@@ -47,9 +47,12 @@ class Block_main_leader_board
      */
     public function uninstall()
     {
-        $GLOBALS['SITE_DB']->drop_table_if_exists('leader_board');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('leader_boards');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('leader_boards_groups');
+        $tables = [
+            'leader_board',
+            'leader_boards',
+            'leader_boards_groups',
+        ];
+        $GLOBALS['SITE_DB']->drop_table_if_exists($tables);
     }
 
     /**

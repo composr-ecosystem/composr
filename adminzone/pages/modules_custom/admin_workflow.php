@@ -48,12 +48,14 @@ class Module_admin_workflow extends Standard_crud_module
      */
     public function uninstall()
     {
-        // Remove database tables
-        $GLOBALS['SITE_DB']->drop_table_if_exists('workflows');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('workflow_permissions');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('workflow_approval_points');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('workflow_content');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('workflow_content_status');
+        $tables = [
+            'workflows',
+            'workflow_permissions',
+            'workflow_approval_points',
+            'workflow_content',
+            'workflow_content_status',
+        ];
+        $GLOBALS['SITE_DB']->drop_table_if_exists($tables);
     }
 
     /**

@@ -117,18 +117,17 @@ class Database_Static_mysql_pdo extends Database_super_mysql
             return null;
         }
 
-        static $version = null;
-        if ($version === null) {
-            $version = ''; // Temporary, to avoid infinite recursion
+        if ($this->version === null) {
+            $this->version = ''; // Temporary, to avoid infinite recursion
             $_version = $this->query('SELECT version() AS version', $connection, null, 0, true);
             if (array_key_exists(0, $_version)) {
-                $version = $_version[0]['version'];
+                $this->version = $_version[0]['version'];
             } else {
-                $version = '';
+                $this->version = '';
             }
         }
-        if ($version != '') {
-            if (version_compare($version, '8', '>=')) {
+        if ($this->version != '') {
+            if (version_compare($this->version, '8', '>=')) {
                 $query = $this->fix_mysql8_query($query); // LEGACY: This can be removed once all user DBs are upgraded to MySQL 8 (as ALTER TABLE calls themselves are now MySQL 8 compatible by default
             }
         }

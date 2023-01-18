@@ -908,16 +908,26 @@ abstract class DatabaseDriver
      * Get SQL for deleting a table.
      * When running this SQL you must suppress errors.
      *
-     * @param  ID_TEXT $table The table name
+     * @param  mixed $table The table name(s)
      * @return array List of SQL queries to run
      */
-    public function drop_table_if_exists__sql(string $table) : array
+    public function drop_table_if_exists__sql($table) : array
     {
-        if ($this->has_drop_table_if_exists()) {
-            return ['DROP TABLE IF EXISTS ' . $table];
+        if (!is_array($table)) {
+            $table = [$table];
         }
 
-        return ['DROP TABLE ' . $table];
+        $ret = [];
+        if ($this->has_drop_table_if_exists()) {
+            foreach ($table as $t) {
+                $ret[] = 'DROP TABLE IF EXISTS ' . $t;
+            }
+        } else {
+            foreach ($table as $t) {
+                $ret[] = 'DROP TABLE ' . $t;
+            }
+        }
+        return $ret;
     }
 
     /**
@@ -2813,9 +2823,9 @@ class DatabaseConnector
     /**
      * Drop the given table, or if it doesn't exist, silently return.
      *
-     * @param  ID_TEXT $table The table name
+     * @param  mixed $table The table name(s)
      */
-    public function drop_table_if_exists(string $table)
+    public function drop_table_if_exists($table)
     {
         require_code('database_helper');
         _helper_drop_table_if_exists($this, $table);

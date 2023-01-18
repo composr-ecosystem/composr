@@ -59,8 +59,11 @@ class Module_admin_awards extends Standard_crud_module
      */
     public function uninstall()
     {
-        $GLOBALS['SITE_DB']->drop_table_if_exists('award_archive');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('award_types');
+        $tables = [
+            'award_archive',
+            'award_types',
+        ];
+        $GLOBALS['SITE_DB']->drop_table_if_exists($tables);
     }
 
     /**

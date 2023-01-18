@@ -65,9 +65,12 @@ class Module_admin_addons
      */
     public function uninstall()
     {
-        $GLOBALS['SITE_DB']->drop_table_if_exists('addons');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('addons_files');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('addons_dependencies');
+        $tables = [
+            'addons',
+            'addons_files',
+            'addons_dependencies',
+        ];
+        $GLOBALS['SITE_DB']->drop_table_if_exists($tables);
 
         if (!$GLOBALS['DEV_MODE']) {
             require_code('files');

@@ -58,17 +58,20 @@ class Module_admin_stats extends Standard_crud_module
      */
     public function uninstall()
     {
-        $GLOBALS['SITE_DB']->drop_table_if_exists('stats');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('stats_preprocessed');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('stats_preprocessed_flat');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('stats_kpis');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('stats_events');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('stats_link_tracker');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('stats_known_events');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('stats_known_tracking');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('stats_known_links');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('usersonline_track');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('ip_country');
+        $tables = [
+            'stats',
+            'stats_preprocessed',
+            'stats_preprocessed_flat',
+            'stats_kpis',
+            'stats_events',
+            'stats_link_tracker',
+            'stats_known_events',
+            'stats_known_tracking',
+            'stats_known_links',
+            'usersonline_track',
+            'ip_country',
+        ];
+        $GLOBALS['SITE_DB']->drop_table_if_exists($tables);
     }
 
     /**

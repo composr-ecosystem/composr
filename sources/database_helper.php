@@ -500,38 +500,52 @@ function _helper_delete_index_if_exists(object $this_ref, string $table_name, st
  * Drop the given table, or if it doesn't exist, silently return.
  *
  * @param  object $this_ref Link to the real database object
- * @param  ID_TEXT $table The table name
+ * @param  mixed $table The table name(s)
  *
  * @ignore
  */
-function _helper_drop_table_if_exists(object $this_ref, string $table)
+function _helper_drop_table_if_exists(object $this_ref, $table)
 {
-    if (($table != 'db_meta') && ($table != 'db_meta_indices')) {
-        if ((!running_script('install')) && (multi_lang_content())) {
-            require_code('lang3');
-            $attrs = $this_ref->query_select('db_meta', ['m_name', 'm_type'], ['m_table' => $table]);
-            $_attrs = [];
-            foreach ($attrs as $attr) {
-                if (in_array(preg_replace('#[^\w]#', '', $attr['m_type']), ['SHORT_TRANS', 'LONG_TRANS', 'SHORT_TRANS__COMCODE', 'LONG_TRANS__COMCODE'])) {
-                    $_attrs[] = $attr['m_name'];
-                }
-            }
-            mass_delete_lang($table, $_attrs, $this_ref);
-        }
-
-        // In case DB needs pre-cleanup for full-text indexes if they get left behind (for example)
-        $indices = $this_ref->query_select('db_meta_indices', ['*'], ['i_table' => $table]);
-        foreach ($indices as $index) {
-            $this_ref->delete_index_if_exists($table, $index['i_name']);
-        }
-
-        $this_ref->query_delete('db_meta', ['m_table' => $table]);
-        $this_ref->query_delete('db_meta_indices', ['i_table' => $table]);
+    if (!is_array($table)) {
+        $table = [$table];
     }
 
-    $this_ref->ensure_connected();
+    $_tables = [];
+    foreach ($table as $t) {
+        if (($t != 'db_meta') && ($t != 'db_meta_indices')) {
+            if ((!running_script('install')) && (multi_lang_content())) {
+                require_code('lang3');
+                $attrs = $this_ref->query_select('db_meta', ['m_name', 'm_type'], ['m_table' => $t]);
+                $_attrs = [];
+                foreach ($attrs as $attr) {
+                    if (in_array(preg_replace('#[^\w]#', '', $attr['m_type']), ['SHORT_TRANS', 'LONG_TRANS', 'SHORT_TRANS__COMCODE', 'LONG_TRANS__COMCODE'])) {
+                        $_attrs[] = $attr['m_name'];
+                    }
+                }
+                mass_delete_lang($t, $_attrs, $this_ref);
+            }
 
-    $queries = $this_ref->driver->drop_table_if_exists__sql($this_ref->table_prefix . $table);
+            // In case DB needs pre-cleanup for full-text indexes if they get left behind (for example)
+            if (strpos(get_db_type(), 'mysql') === false) {
+                $indices = $this_ref->query_select('db_meta_indices', ['*'], ['i_table' => $t]);
+                foreach ($indices as $index) {
+                    $this_ref->delete_index_if_exists($t, $index['i_name']);
+                }
+            }
+
+            $this_ref->query_delete('db_meta', ['m_table' => $t]);
+            $this_ref->query_delete('db_meta_indices', ['i_table' => $t]);
+        }
+
+        $this_ref->ensure_connected();
+
+        unset($this_ref->table_exists_cache[$t]);
+        unset($this_ref->table_exists_real_cache[$t]);
+
+        $_tables[] = $this_ref->table_prefix . $t;
+    }
+
+    $queries = $this_ref->driver->drop_table_if_exists__sql($_tables);
     foreach ($queries as $sql) {
         $this_ref->query($sql, null, 0, true); // Might already exist so suppress errors
     }
@@ -539,9 +553,6 @@ function _helper_drop_table_if_exists(object $this_ref, string $table)
     if (function_exists('persistent_cache_delete')) {
         persistent_cache_delete('TABLE_LANG_FIELDS_CACHE');
     }
-
-    unset($this_ref->table_exists_cache[$table]);
-    unset($this_ref->table_exists_real_cache[$table]);
 }
 
 /**

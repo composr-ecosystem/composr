@@ -41,14 +41,17 @@ class Module_booking
      */
     public function uninstall()
     {
-        $GLOBALS['SITE_DB']->drop_table_if_exists('bookable');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('bookable_blacked');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('bookable_blacked_for');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('bookable_codes');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('booking');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('bookable_supplement');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('bookable_supplement_for');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('booking_supplement');
+        $tables = [
+            'bookable',
+            'bookable_blacked',
+            'bookable_blacked_for',
+            'bookable_codes',
+            'booking',
+            'bookable_supplement',
+            'bookable_supplement_for',
+            'booking_supplement',
+        ];
+        $GLOBALS['SITE_DB']->drop_table_if_exists($tables);
     }
 
     /**

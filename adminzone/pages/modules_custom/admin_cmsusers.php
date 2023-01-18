@@ -41,8 +41,11 @@ class Module_admin_cmsusers
      */
     public function uninstall()
     {
-        $GLOBALS['SITE_DB']->drop_table_if_exists('may_feature');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('logged');
+        $tables = [
+            'may_feature',
+            'logged',
+        ];
+        $GLOBALS['SITE_DB']->drop_table_if_exists($tables);
     }
 
     /**

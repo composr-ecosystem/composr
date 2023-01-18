@@ -46,13 +46,19 @@ class Module_tickets
      */
     public function uninstall()
     {
-        $GLOBALS['SITE_DB']->drop_table_if_exists('ticket_types');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('tickets');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('ticket_known_emailers');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('ticket_extra_access');
+        $tables = [
+            'ticket_types',
+            'tickets',
+            'ticket_known_emailers',
+            'ticket_extra_access',
+        ];
+        $GLOBALS['SITE_DB']->drop_table_if_exists($tables);
 
-        delete_privilege('view_others_tickets');
-        delete_privilege('support_operator');
+        $privileges = [
+            'view_others_tickets',
+            'support_operator',
+        ];
+        delete_privilege($privileges);
 
         $GLOBALS['SITE_DB']->query_delete('group_category_access', ['module_the_name' => 'tickets']);
 

@@ -2026,14 +2026,25 @@ function step_5_uninstall() : object
  */
 function step_5_core() : object
 {
-    $GLOBALS['SITE_DB']->drop_table_if_exists('db_meta');
+    $tables = [
+        'db_meta',
+        'db_meta_indices',
+        'translate',
+        'values',
+        'config',
+        'group_privileges',
+        'privilege_list',
+        'attachments',
+        'attachment_refs',
+    ];
+    $GLOBALS['SITE_DB']->drop_table_if_exists($tables);
+
     $GLOBALS['SITE_DB']->create_table('db_meta', [
         'm_table' => '*ID_TEXT',
         'm_name' => '*ID_TEXT',
         'm_type' => 'ID_TEXT',
     ]);
 
-    $GLOBALS['SITE_DB']->drop_table_if_exists('db_meta_indices');
     $GLOBALS['SITE_DB']->create_table('db_meta_indices', [
         'i_table' => '*ID_TEXT',
         'i_name' => '*ID_TEXT',
@@ -2042,7 +2053,6 @@ function step_5_core() : object
 
     $GLOBALS['SITE_DB']->create_index('db_meta', 'findtransfields', ['m_type']);
 
-    $GLOBALS['SITE_DB']->drop_table_if_exists('translate');
     $fields = [
         'id' => '*AUTO',
         'language' => '*LANGUAGE_NAME',
@@ -2066,7 +2076,6 @@ function step_5_core() : object
         $GLOBALS['SITE_DB']->create_index('translate', 'decache', ['text_parsed(2)']); // Makes Comcode cache emptying a little faster, but this is not a common operation
     }
 
-    $GLOBALS['SITE_DB']->drop_table_if_exists('values');
     $GLOBALS['SITE_DB']->create_table('values', [
         'the_name' => '*ID_TEXT',
         'the_value' => 'SHORT_TEXT',
@@ -2074,7 +2083,6 @@ function step_5_core() : object
     ]);
     $GLOBALS['SITE_DB']->create_index('values', 'date_and_time', ['date_and_time']);
 
-    $GLOBALS['SITE_DB']->drop_table_if_exists('config');
     $GLOBALS['SITE_DB']->create_table('config', [
         'c_name' => '*ID_TEXT',
         'c_set' => 'BINARY',
@@ -2101,7 +2109,6 @@ function step_5_core() : object
     }
 
     // Privileges
-    $GLOBALS['SITE_DB']->drop_table_if_exists('group_privileges');
     $GLOBALS['SITE_DB']->create_table('group_privileges', [
         'group_id' => '*INTEGER',
         'privilege' => '*ID_TEXT',
@@ -2112,14 +2119,12 @@ function step_5_core() : object
     ], false, false, true);
     $GLOBALS['SITE_DB']->create_index('group_privileges', 'group_id', ['group_id']);
 
-    $GLOBALS['SITE_DB']->drop_table_if_exists('privilege_list');
     $GLOBALS['SITE_DB']->create_table('privilege_list', [ // Why does this table exist? It could be done cleanly in hooks (which are easier to version) like config is, but when we add a privilege we do need to carefully define who gets it (as an immediate-op with potential complex code) -- it is cleaner to just handle definition in same place as that code).
         'p_section' => 'ID_TEXT',
         'the_name' => '*ID_TEXT',
         'the_default' => '*BINARY',
     ]);
 
-    $GLOBALS['SITE_DB']->drop_table_if_exists('attachments');
     $GLOBALS['SITE_DB']->create_table('attachments', [
         'id' => '*AUTO',
         'a_member_id' => 'MEMBER',
@@ -2135,7 +2140,6 @@ function step_5_core() : object
     $GLOBALS['SITE_DB']->create_index('attachments', 'ownedattachments', ['a_member_id']);
     $GLOBALS['SITE_DB']->create_index('attachments', 'attachmentlimitcheck', ['a_add_time']);
 
-    $GLOBALS['SITE_DB']->drop_table_if_exists('attachment_refs');
     $GLOBALS['SITE_DB']->create_table('attachment_refs', [
         'id' => '*AUTO',
         'r_referer_type' => 'ID_TEXT',

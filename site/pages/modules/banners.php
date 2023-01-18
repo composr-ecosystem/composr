@@ -46,18 +46,24 @@ class Module_banners
      */
     public function uninstall()
     {
-        $GLOBALS['SITE_DB']->drop_table_if_exists('banners');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('banners_types');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('banner_types');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('banner_clicks');
+        $tables = [
+            'banners',
+            'banners_types',
+            'banner_types',
+            'banner_clicks',
+        ];
+        $GLOBALS['SITE_DB']->drop_table_if_exists($tables);
 
         $GLOBALS['SITE_DB']->query_delete('group_category_access', ['module_the_name' => 'banners']);
 
-        delete_privilege('full_banner_setup');
-        delete_privilege('view_anyones_banner_stats');
-        delete_privilege('banner_free');
-        delete_privilege('use_html_banner');
-        delete_privilege('use_php_banner');
+        $privileges = [
+            'full_banner_setup',
+            'view_anyones_banner_stats',
+            'banner_free',
+            'use_html_banner',
+            'use_php_banner',
+        ];
+        delete_privilege($privileges);
 
         require_code('files');
         if (!$GLOBALS['DEV_MODE']) {

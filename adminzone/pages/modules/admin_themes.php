@@ -46,9 +46,12 @@ class Module_admin_themes
      */
     public function uninstall()
     {
-        $GLOBALS['SITE_DB']->drop_table_if_exists('theme_images');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('theme_template_relations');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('theme_screen_tree');
+        $tables = [
+            'theme_images',
+            'theme_template_relations',
+            'theme_screen_tree',
+        ];
+        $GLOBALS['SITE_DB']->drop_table_if_exists($tables);
 
         require_code('files');
         $langs = find_all_langs(true);

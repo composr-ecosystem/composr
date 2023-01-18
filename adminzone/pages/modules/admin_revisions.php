@@ -52,9 +52,12 @@ class Module_admin_revisions
     {
         $GLOBALS['SITE_DB']->drop_table_if_exists('revisions');
 
-        delete_privilege('view_revisions');
-        delete_privilege('undo_revisions');
-        delete_privilege('delete_revisions');
+        $privileges = [
+            'view_revisions',
+            'undo_revisions',
+            'delete_revisions',
+        ];
+        delete_privilege($privileges);
     }
 
     /**

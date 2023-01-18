@@ -134,12 +134,11 @@ class Database_Static_mysql extends Database_super_mysql
             $this->last_select_db = $db_name;
         }
 
-        static $version = null;
-        if ($version === null) {
-            $version = @mysql_get_server_info($db_link);
+        if ($this->version === null) {
+            $this->version = @mysql_get_server_info($db_link);
         }
-        if ($version !== false) {
-            if (version_compare($version, '8', '>=')) {
+        if ($this->version !== false) {
+            if (version_compare($this->version, '8', '>=')) {
                 $query = $this->fix_mysql8_query($query); // LEGACY: This can be removed once all user DBs are upgraded to MySQL 8 (as ALTER TABLE calls themselves are now MySQL 8 compatible by default
             }
         }

@@ -48,9 +48,12 @@ class Module_filedump
     {
         $GLOBALS['SITE_DB']->drop_table_if_exists('filedump');
 
-        delete_privilege('delete_anything_filedump');
-        delete_privilege('upload_filedump');
-        delete_privilege('upload_anything_filedump');
+        $privileges = [
+            'delete_anything_filedump',
+            'upload_filedump',
+            'upload_anything_filedump',
+        ];
+        delete_privilege($privileges);
 
         $GLOBALS['SITE_DB']->query_delete('group_page_access', ['page_name' => 'filedump']);
 

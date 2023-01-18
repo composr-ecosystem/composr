@@ -46,11 +46,13 @@ class Module_subscriptions
      */
     public function uninstall()
     {
-        $GLOBALS['SITE_DB']->drop_table_if_exists('ecom_subscriptions');
-
         push_db_scope_check(false);
-        $GLOBALS['SITE_DB']->drop_table_if_exists('f_usergroup_subs');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('f_usergroup_sub_mails');
+        $tables = [
+            'ecom_subscriptions',
+            'f_usergroup_subs',
+            'f_usergroup_sub_mails',
+        ];
+        $GLOBALS['SITE_DB']->drop_table_if_exists($tables);
         pop_db_scope_check();
     }
 
