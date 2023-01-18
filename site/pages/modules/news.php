@@ -46,10 +46,13 @@ class Module_news
      */
     public function uninstall()
     {
-        $GLOBALS['SITE_DB']->drop_table_if_exists('news');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('news_categories');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('news_rss_cloud');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('news_category_entries');
+        $tables = [
+            'news',
+            'news_categories',
+            'news_rss_cloud',
+            'news_category_entries',
+        ];
+        $GLOBALS['SITE_DB']->drop_table_if_exists($tables);
 
         $GLOBALS['SITE_DB']->query_delete('group_category_access', ['module_the_name' => 'news']);
 
@@ -58,8 +61,11 @@ class Module_news
 
         delete_attachments('news');
 
-        delete_privilege('autocomplete_keyword_news');
-        delete_privilege('autocomplete_title_news');
+        $privileges = [
+            'autocomplete_keyword_news',
+            'autocomplete_title_news',
+        ];
+        delete_privilege($privileges);
     }
 
     /**

@@ -53,23 +53,29 @@ class Module_calendar
      */
     public function uninstall()
     {
-        $GLOBALS['SITE_DB']->drop_table_if_exists('calendar_events');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('calendar_types');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('calendar_reminders');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('calendar_interests');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('calendar_jobs');
+        $tables = [
+            'calendar_events',
+            'calendar_types',
+            'calendar_reminders',
+            'calendar_interests',
+            'calendar_jobs',
+        ];
+        $GLOBALS['SITE_DB']->drop_table_if_exists($tables);
 
-        delete_privilege('set_reminders');
-        delete_privilege('view_event_subscriptions');
-        delete_privilege('view_calendar');
-        delete_privilege('add_public_events');
-        delete_privilege('edit_viewable_events');
-        delete_privilege('edit_owned_events');
-        delete_privilege('sense_personal_conflicts');
-        delete_privilege('calendar_add_to_others');
+        $privileges = [
+            'set_reminders',
+            'view_event_subscriptions',
+            'view_calendar',
+            'add_public_events',
+            'edit_viewable_events',
+            'edit_owned_events',
+            'sense_personal_conflicts',
+            'calendar_add_to_others',
 
-        delete_privilege('autocomplete_keyword_event');
-        delete_privilege('autocomplete_title_event');
+            'autocomplete_keyword_event',
+            'autocomplete_title_event',
+        ];
+        delete_privilege($privileges);
 
         $GLOBALS['SITE_DB']->query_delete('group_category_access', ['module_the_name' => 'calendar']);
     }

@@ -40,10 +40,13 @@ class Module_tutorials
      */
     public function uninstall()
     {
-        $GLOBALS['SITE_DB']->drop_table_if_exists('tutorials_external');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('tutorials_external_tags');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('tutorials_tags');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('tutorials_internal');
+        $tables = [
+            'tutorials_external',
+            'tutorials_external_tags',
+            'tutorials_tags',
+            'tutorials_internal',
+        ];
+        $GLOBALS['SITE_DB']->drop_table_if_exists($tables);
     }
 
     /**

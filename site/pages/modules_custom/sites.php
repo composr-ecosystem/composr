@@ -56,10 +56,13 @@ class Module_sites
      */
     public function uninstall()
     {
-        $GLOBALS['SITE_DB']->drop_table_if_exists('sites');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('sites_email');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('sites_deletion_codes');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('sites_advert_pings');
+        $tables = [
+            'sites',
+            'sites_email',
+            'sites_deletion_codes',
+            'sites_advert_pings',
+        ];
+        $GLOBALS['SITE_DB']->drop_table_if_exists($tables);
     }
 
     /**

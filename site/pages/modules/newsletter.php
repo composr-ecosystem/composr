@@ -46,15 +46,21 @@ class Module_newsletter
      */
     public function uninstall()
     {
-        $GLOBALS['SITE_DB']->drop_table_if_exists('newsletter_subscribers');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('newsletters');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('newsletter_archive');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('newsletter_subscribe');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('newsletter_drip_send');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('newsletter_periodic');
+        $tables = [
+            'newsletter_subscribers',
+            'newsletters',
+            'newsletter_archive',
+            'newsletter_subscribe',
+            'newsletter_drip_send',
+            'newsletter_periodic',
+        ];
+        $GLOBALS['SITE_DB']->drop_table_if_exists($tables);
 
-        delete_value('newsletter_whatsnew');
-        delete_value('newsletter_send_time');
+        $values = [
+            'newsletter_whatsnew',
+            'newsletter_send_time',
+        ];
+        delete_values($values);
 
         delete_privilege('change_newsletter_subscriptions');
     }

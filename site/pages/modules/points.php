@@ -43,19 +43,25 @@ class Module_points
      */
     public function uninstall()
     {
-        $GLOBALS['SITE_DB']->drop_table_if_exists('points_ledger');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('escrow');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('escrow_logs');
+        $tables = [
+            'points_ledger',
+            'escrow',
+            'escrow_logs',
+        ];
+        $GLOBALS['SITE_DB']->drop_table_if_exists($tables);
 
-        delete_privilege('send_points_to_self');
-        delete_privilege('view_points_ledger');
-        delete_privilege('use_points');
-        delete_privilege('trace_anonymous_points_transactions');
-        delete_privilege('use_points_escrow');
-        delete_privilege('moderate_points_escrow');
-        delete_privilege('send_points');
-        delete_privilege('moderate_points');
-        delete_privilege('amend_point_transactions');
+        $privileges = [
+            'send_points_to_self',
+            'view_points_ledger',
+            'use_points',
+            'trace_anonymous_points_transactions',
+            'use_points_escrow',
+            'moderate_points_escrow',
+            'send_points',
+            'moderate_points',
+            'amend_point_transactions',
+        ];
+        delete_privilege($privileges);
 
         $GLOBALS['FORUM_DRIVER']->install_delete_custom_field('points_balance');
         $GLOBALS['FORUM_DRIVER']->install_delete_custom_field('points_lifetime');

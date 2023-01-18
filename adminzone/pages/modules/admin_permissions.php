@@ -46,36 +46,26 @@ class Module_admin_permissions
      */
     public function uninstall()
     {
-        $GLOBALS['SITE_DB']->drop_table_if_exists('group_zone_access');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('group_page_access');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('match_key_messages');
+        $tables = [
+            'group_zone_access',
+            'group_page_access',
+            'match_key_messages',
+        ];
+        $GLOBALS['SITE_DB']->drop_table_if_exists($tables);
 
         $privilege_list_query = 'DELETE FROM ' . get_table_prefix() . 'privilege_list WHERE 1=0';
         $group_privileges_query = 'DELETE FROM ' . get_table_prefix() . 'group_privileges WHERE 1=0';
 
         $false_permissions = get_false_permissions();
-        foreach ($false_permissions as $permission) {
-            //delete_privilege($permission[1]);
-            $privilege_list_query .= ' OR ' . db_string_equal_to('the_name', $permission[1]);
-            $group_privileges_query .= ' OR ' . db_string_equal_to('privilege', $permission[1]);
-        }
-
         $true_permissions = get_true_permissions();
+        $privileges = ['assume_any_member', 'unfiltered_input', 'see_query_errors', 'bypass_spam_heuristics', 'avoid_captcha'];
+        foreach ($false_permissions as $permission) {
+            $privileges[] = $permission[1];
+        }
         foreach ($true_permissions as $permission) {
-            //delete_privilege($permission[1]);
-            $privilege_list_query .= ' OR ' . db_string_equal_to('the_name', $permission[1]);
-            $group_privileges_query .= ' OR ' . db_string_equal_to('privilege', $permission[1]);
+            $privileges[] = $permission[1];
         }
-
-        //delete_privilege('assume_any_member');
-        //delete_privilege('unfiltered_input');
-        //delete_privilege('see_query_errors');
-        //delete_privilege('bypass_spam_heuristics');
-        //delete_privilege('avoid_captcha');
-        foreach (['assume_any_member', 'unfiltered_input', 'see_query_errors', 'bypass_spam_heuristics', 'avoid_captcha'] as $_permission) {
-            $privilege_list_query .= ' OR ' . db_string_equal_to('the_name', $_permission);
-            $group_privileges_query .= ' OR ' . db_string_equal_to('privilege', $_permission);
-        }
+        delete_privilege($privileges);
 
         $GLOBALS['SITE_DB']->query($privilege_list_query);
         $GLOBALS['SITE_DB']->query($group_privileges_query);

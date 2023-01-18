@@ -46,21 +46,27 @@ class Module_galleries
      */
     public function uninstall()
     {
-        $GLOBALS['SITE_DB']->drop_table_if_exists('galleries');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('images');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('videos');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('video_transcoding');
+        $tables = [
+            'galleries',
+            'images',
+            'videos',
+            'video_transcoding',
+        ];
+        $GLOBALS['SITE_DB']->drop_table_if_exists($tables);
 
-        delete_privilege('may_download_gallery');
-        delete_privilege('high_personal_gallery_limit');
-        delete_privilege('no_personal_gallery_limit');
+        $privileges = [
+            'may_download_gallery',
+            'high_personal_gallery_limit',
+            'no_personal_gallery_limit',
 
-        delete_privilege('autocomplete_keyword_gallery');
-        delete_privilege('autocomplete_title_gallery');
-        delete_privilege('autocomplete_keyword_image');
-        delete_privilege('autocomplete_title_image');
-        delete_privilege('autocomplete_keyword_videos');
-        delete_privilege('autocomplete_title_videos');
+            'autocomplete_keyword_gallery',
+            'autocomplete_title_gallery',
+            'autocomplete_keyword_image',
+            'autocomplete_title_image',
+            'autocomplete_keyword_videos',
+            'autocomplete_title_videos',
+        ];
+        delete_privilege($privileges);
 
         $GLOBALS['SITE_DB']->query_delete('group_category_access', ['module_the_name' => 'galleries']);
 

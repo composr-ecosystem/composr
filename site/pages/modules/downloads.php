@@ -46,26 +46,35 @@ class Module_downloads
      */
     public function uninstall()
     {
-        $GLOBALS['SITE_DB']->drop_table_if_exists('download_categories');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('download_downloads');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('download_logging');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('download_licences');
+        $tables = [
+            'download_categories',
+            'download_downloads',
+            'download_logging',
+            'download_licences',
+        ];
+        $GLOBALS['SITE_DB']->drop_table_if_exists($tables);
 
-        delete_privilege('download');
+        $privileges = [
+            'download',
 
-        delete_privilege('autocomplete_keyword_download_category');
-        delete_privilege('autocomplete_title_download_category');
-        delete_privilege('autocomplete_keyword_download');
-        delete_privilege('autocomplete_title_download');
+            'autocomplete_keyword_download_category',
+            'autocomplete_title_download_category',
+            'autocomplete_keyword_download',
+            'autocomplete_title_download',
+        ];
+        delete_privilege($privileges);
 
         $GLOBALS['SITE_DB']->query_delete('group_category_access', ['module_the_name' => 'downloads']);
 
         $GLOBALS['SITE_DB']->query_delete('trackbacks', ['trackback_for_type' => 'downloads']);
 
-        delete_value('download_bandwidth');
-        delete_value('archive_size');
-        delete_value('num_archive_downloads');
-        delete_value('num_downloads_downloaded');
+        $values = [
+            'download_bandwidth',
+            'archive_size',
+            'num_archive_downloads',
+            'num_downloads_downloaded',
+        ];
+        delete_values($values);
 
         require_code('files');
         if (!$GLOBALS['DEV_MODE']) {

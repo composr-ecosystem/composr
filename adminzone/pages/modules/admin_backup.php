@@ -65,12 +65,15 @@ class Module_admin_backup
      */
     public function uninstall()
     {
-        delete_value('last_backup');
-        delete_value('backup_max_size');
-        delete_value('backup_schedule_time');
-        delete_value('backup_recurrance_days');
-        delete_value('backup_max_size');
-        delete_value('backup_b_type');
+        $values = [
+            'last_backup',
+            'backup_max_size',
+            'backup_schedule_time',
+            'backup_recurrance_days',
+            'backup_max_size',
+            'backup_b_type',
+        ];
+        delete_values($values);
 
         //require_code('files');
         //deldir_contents(get_custom_file_base() . '/exports/backups', true);

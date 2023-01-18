@@ -33,6 +33,8 @@ class clean_reinstall_test_set extends cms_test_case
             $files[$i] = $c;
         }
 
+        /*
+        Not realistic to test anymore now that we have optimised ourselves to delete via arrays. If we moved to hooks that would be better.
         $privileges = $GLOBALS['SITE_DB']->query_select('privilege_list', ['the_name']);
         foreach ($privileges as $privilege) {
             foreach ($files as $c) {
@@ -47,7 +49,10 @@ class clean_reinstall_test_set extends cms_test_case
             $is_listed = (strpos($c1, '\'' . $privilege['the_name'] . '\'') !== false) || (strpos($_c2, '\'' . $privilege['the_name'] . '\'') !== false);
             $this->assertTrue($is_listed, 'Could not find uninstall for privilege: ' . $privilege['the_name']);
         }
+        */
 
+        /*
+        We may now use dynamic code for this, doing multiple drops as once for performance. This test is not needed anyway as installation tests will pick up the problem.
         $tables = $GLOBALS['SITE_DB']->query_select('db_meta', ['DISTINCT m_table']);
         foreach ($tables as $table) {
             foreach ($files as $c) {
@@ -58,6 +63,6 @@ class clean_reinstall_test_set extends cms_test_case
 
             $is_installer = (strpos(cms_file_get_contents_safe(get_file_base() . '/install.php', FILE_READ_LOCK), '\'' . $table['m_table'] . '\'') !== false);
             $this->assertTrue($is_installer, 'Could not find uninstall for table: ' . $table['m_table']);
-        }
+        }*/
     }
 }

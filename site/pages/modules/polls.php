@@ -46,13 +46,15 @@ class Module_polls
      */
     public function uninstall()
     {
-        $GLOBALS['SITE_DB']->drop_table_if_exists('poll');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('poll_votes');
+        $GLOBALS['SITE_DB']->drop_table_if_exists(['poll', 'poll_votes']);
 
-        delete_privilege('choose_poll');
+        $privileges = [
+            'choose_poll',
 
-        delete_privilege('autocomplete_keyword_poll');
-        delete_privilege('autocomplete_title_poll');
+            'autocomplete_keyword_poll',
+            'autocomplete_title_poll',
+        ];
+        delete_privilege($privileges);
 
         $GLOBALS['SITE_DB']->query_delete('trackbacks', ['trackback_for_type' => 'polls']);
     }

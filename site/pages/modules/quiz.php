@@ -46,20 +46,26 @@ class Module_quiz
      */
     public function uninstall()
     {
-        $GLOBALS['SITE_DB']->drop_table_if_exists('quizzes');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('quiz_questions');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('quiz_question_answers');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('quiz_entries');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('quiz_member_last_visit');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('quiz_winner');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('quiz_entry_answer');
+        $tables = [
+            'quizzes',
+            'quiz_questions',
+            'quiz_question_answers',
+            'quiz_entries',
+            'quiz_member_last_visit',
+            'quiz_winner',
+            'quiz_entry_answer',
+        ];
+        $GLOBALS['SITE_DB']->drop_table_if_exists($tables);
 
-        delete_privilege('bypass_quiz_repeat_time_restriction');
-        delete_privilege('bypass_quiz_timer');
-        delete_privilege('view_others_quiz_results');
+        $privileges = [
+            'bypass_quiz_repeat_time_restriction',
+            'bypass_quiz_timer',
+            'view_others_quiz_results',
 
-        delete_privilege('autocomplete_keyword_quiz');
-        delete_privilege('autocomplete_title_quiz');
+            'autocomplete_keyword_quiz',
+            'autocomplete_title_quiz',
+        ];
+        delete_privilege($privileges);
     }
 
     /**

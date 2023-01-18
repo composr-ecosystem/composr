@@ -51,8 +51,11 @@ class Module_admin_disastr extends Standard_crud_module
      */
     public function uninstall()
     {
-        $GLOBALS['SITE_DB']->drop_table_if_exists('diseases');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('members_diseases');
+        $tables = [
+            'diseases',
+            'members_diseases',
+        ];
+        $GLOBALS['SITE_DB']->drop_table_if_exists($tables);
 
         //require_code('files');
         //deldir_contents(get_custom_file_base() . '/uploads/disastr_addon', true);

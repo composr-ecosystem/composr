@@ -389,13 +389,21 @@ abstract class Database_super_sqlserver extends DatabaseDriver
      * Get SQL for deleting a table.
      * When running this SQL you must suppress errors.
      *
-     * @param  ID_TEXT $table The table name
+     * @param  mixed $table The table name(s)
      * @param  mixed $connection The DB connection
      * @return array List of SQL queries to run
      */
-    public function drop_table_if_exists(string $table, $connection) : array
+    public function drop_table_if_exists__sql($table, $connection) : array
     {
-        return ['IF EXISTS(SELECT * FROM sys.objects WHERE object_id=OBJECT_ID(\'' . $table . '\') AND type IN (\'U\')) DROP TABLE ' . $table];
+        if (!is_array($table)) {
+            $table = [$table];
+        }
+
+        $ret = [];
+        foreach ($table as $t) {
+            $ret[] = 'IF EXISTS(SELECT * FROM sys.objects WHERE object_id=OBJECT_ID(\'' . $t . '\') AND type IN (\'U\')) DROP TABLE ' . $t;
+        }
+        return $ret;
     }
 
     /**

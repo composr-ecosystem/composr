@@ -51,8 +51,11 @@ class Module_admin_giftr extends Standard_crud_module
      */
     public function uninstall()
     {
-        $GLOBALS['SITE_DB']->drop_table_if_exists('giftr');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('members_gifts');
+        $tables = [
+            'giftr',
+            'members_gifts',
+        ];
+        $GLOBALS['SITE_DB']->drop_table_if_exists($tables);
 
         //require_code('files');
         //deldir_contents(get_custom_file_base() . '/uploads/giftr_addon', true);

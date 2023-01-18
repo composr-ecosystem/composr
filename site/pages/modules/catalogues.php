@@ -46,23 +46,25 @@ class Module_catalogues
      */
     public function uninstall()
     {
-        $GLOBALS['SITE_DB']->drop_table_if_exists('catalogues');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('catalogue_fields');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('catalogue_categories');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('catalogue_entries');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('catalogue_efv_long_trans');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('catalogue_efv_short_trans');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('catalogue_efv_long');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('catalogue_efv_short');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('catalogue_efv_float');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('catalogue_efv_integer');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('catalogue_entry_linkage');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('catalogue_cat_treecache');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('catalogue_childcountcache');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('ce_fulltext_index');
+        $tables = [
+            'catalogues',
+            'catalogue_fields',
+            'catalogue_categories',
+            'catalogue_entries',
+            'catalogue_efv_long_trans',
+            'catalogue_efv_short_trans',
+            'catalogue_efv_long',
+            'catalogue_efv_short',
+            'catalogue_efv_float',
+            'catalogue_efv_integer',
+            'catalogue_entry_linkage',
+            'catalogue_cat_treecache',
+            'catalogue_childcountcache',
+            'ce_fulltext_index',
+        ];
+        $GLOBALS['SITE_DB']->drop_table_if_exists($tables);
 
-        $GLOBALS['SITE_DB']->query_delete('group_category_access', ['module_the_name' => 'catalogues_category']);
-        $GLOBALS['SITE_DB']->query_delete('group_category_access', ['module_the_name' => 'catalogues_catalogue']);
+        $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'group_category_access WHERE ' . db_string_equal_to('module_the_name', 'catalogues_category') . ' OR ' . db_string_equal_to('module_the_name', 'catalogues_catalogue'));
 
         $GLOBALS['SITE_DB']->query_delete('trackbacks', ['trackback_for_type' => 'catalogues']);
 
@@ -71,10 +73,12 @@ class Module_catalogues
             deldir_contents(get_custom_file_base() . '/uploads/catalogues', true);
         }
 
-        delete_privilege('high_catalogue_entry_timeout');
-
-        delete_privilege('autocomplete_keyword_catalogue_category');
-        delete_privilege('autocomplete_title_catalogue_category');
+        $privileges = [
+            'high_catalogue_entry_timeout',
+            'autocomplete_keyword_catalogue_category',
+            'autocomplete_title_catalogue_category',
+        ];
+        delete_privilege($privileges);
     }
 
     /**

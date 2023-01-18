@@ -28,6 +28,7 @@
 abstract class Database_super_mysql extends DatabaseDriver
 {
     protected $table_prefix;
+    protected $version = null;
 
     /**
      * Set up the database driver.
@@ -666,7 +667,13 @@ abstract class Database_super_mysql extends DatabaseDriver
         } else {
             $type = 'INDEX';
         }
-        return [$this->fix_mysql8_query('ALTER TABLE ' . $table_name . ' ADD ' . $type . ' ' . $index_name . ' (' . $_fields . ')')];
+
+        $ret = 'ALTER TABLE ' . $table_name . ' ADD ' . $type . ' ' . $index_name . ' (' . $_fields . ')';
+        if (running_script('install') && ((is_numeric($this->version) && $this->version >= 50600) || (is_string($this->version) && version_compare($this->version, '5.6', '>=')))) {
+            $ret .= ', LOCK=EXCLUSIVE'; // Optimisation
+        }
+
+        return [$this->fix_mysql8_query($ret)];
     }
 
     /**
@@ -678,7 +685,29 @@ abstract class Database_super_mysql extends DatabaseDriver
      */
     public function drop_index__sql(string $table_name, string $index_name) : ?string
     {
-        return 'DROP INDEX ' . $index_name . ' ON ' . $table_name;
+        $ret = 'DROP INDEX ' . $index_name . ' ON ' . $table_name;
+        if (running_script('install') && ((is_numeric($this->version) && $this->version >= 50600) || (is_string($this->version) && version_compare($this->version, '5.6', '>=')))) {
+            $ret .= ', ALGORITHM=INPLACE LOCK=NONE'; // Optimisation
+        }
+        return $ret;
+    }
+
+    /**
+     * Get SQL for deleting a table.
+     * When running this SQL you must suppress errors.
+     *
+     * @param  mixed $table The table name(s)
+     * @return array List of SQL queries to run
+     */
+    public function drop_table_if_exists__sql($table) : array
+    {
+        if (!is_array($table)) {
+            $table = [$table];
+        }
+
+        $sql = 'DROP TABLE IF EXISTS ' . implode(', ', $table);
+
+        return [$sql];
     }
 
     /**

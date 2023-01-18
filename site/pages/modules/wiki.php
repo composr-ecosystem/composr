@@ -46,20 +46,29 @@ class Module_wiki
      */
     public function uninstall()
     {
-        $GLOBALS['SITE_DB']->drop_table_if_exists('wiki_children');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('wiki_pages');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('wiki_posts');
+        $tables = [
+            'wiki_children',
+            'wiki_pages',
+            'wiki_posts',
+        ];
+        $GLOBALS['SITE_DB']->drop_table_if_exists($tables);
 
-        delete_value('num_wiki_pages');
-        delete_value('num_wiki_posts');
-        delete_value('num_wiki_files');
+        $privileges = [
+            'wiki_manage_tree',
+            'wiki_edit_pages',
+            'wiki_edit',
+        ];
+        delete_privilege($privileges);
+
+        $values = [
+            'num_wiki_pages',
+            'num_wiki_posts',
+            'num_wiki_files',
+        ];
+        delete_values($values);
 
         delete_attachments('wiki_page');
         delete_attachments('wiki_post');
-
-        delete_privilege('wiki_manage_tree');
-        delete_privilege('wiki_edit_pages');
-        delete_privilege('wiki_edit');
 
         $GLOBALS['SITE_DB']->query_delete('group_category_access', ['module_the_name' => 'wiki_page']);
     }

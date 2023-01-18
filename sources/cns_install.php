@@ -89,20 +89,18 @@ function uninstall_cns()
 {
     global $CNS_TRUE_PERMISSIONS, $CNS_FALSE_PERMISSIONS;
 
-    foreach ($CNS_TRUE_PERMISSIONS as $permission) {
-        delete_privilege($permission);
-    }
-    foreach ($CNS_FALSE_PERMISSIONS as $permission) {
-        delete_privilege($permission);
-    }
+    delete_privilege(array_merge($CNS_TRUE_PERMISSIONS, $CNS_FALSE_PERMISSIONS));
 
     $GLOBALS['FORUM_DB']->query_delete('group_category_access', ['module_the_name' => 'forums']);
 
-    delete_value('cns_newest_member_id');
-    delete_value('cns_newest_member_username');
-    delete_value('cns_member_count');
-    delete_value('cns_topic_count');
-    delete_value('cns_post_count');
+    $values = [
+        'cns_newest_member_id',
+        'cns_newest_member_username',
+        'cns_member_count',
+        'cns_topic_count',
+        'cns_post_count',
+    ];
+    delete_values($values);
 
     require_code('files');
     if (!$GLOBALS['DEV_MODE']) {
@@ -115,53 +113,58 @@ function uninstall_cns()
 
     require_all_core_cms_code();
 
-    $GLOBALS['FORUM_DB']->drop_table_if_exists('f_emoticons');
-    $GLOBALS['FORUM_DB']->drop_table_if_exists('f_forum_group_access');
-    $GLOBALS['FORUM_DB']->drop_table_if_exists('f_custom_fields');
-    $GLOBALS['FORUM_DB']->drop_table_if_exists('f_member_custom_fields');
-    $GLOBALS['FORUM_DB']->drop_table_if_exists('f_groups');
-    $GLOBALS['FORUM_DB']->drop_table_if_exists('f_forum_groupings');
-    $GLOBALS['FORUM_DB']->drop_table_if_exists('f_forums');
-    $GLOBALS['FORUM_DB']->drop_table_if_exists('f_forum_intro_ip');
-    $GLOBALS['FORUM_DB']->drop_table_if_exists('f_forum_intro_member');
-    $GLOBALS['FORUM_DB']->drop_table_if_exists('f_topics');
-    $GLOBALS['FORUM_DB']->drop_table_if_exists('f_posts');
-    $GLOBALS['FORUM_DB']->drop_table_if_exists('f_polls');
-    $GLOBALS['FORUM_DB']->drop_table_if_exists('f_poll_answers');
-    $GLOBALS['FORUM_DB']->drop_table_if_exists('f_poll_votes');
-    $GLOBALS['FORUM_DB']->drop_table_if_exists('f_post_templates');
-    $GLOBALS['FORUM_DB']->drop_table_if_exists('f_warnings');
-    $GLOBALS['FORUM_DB']->drop_table_if_exists('f_moderator_logs');
-    $GLOBALS['FORUM_DB']->drop_table_if_exists('f_member_known_login_ips');
-    $GLOBALS['FORUM_DB']->drop_table_if_exists('f_members');
-    $GLOBALS['FORUM_DB']->drop_table_if_exists('f_group_members');
-    $GLOBALS['FORUM_DB']->drop_table_if_exists('f_group_approvals');
-    $GLOBALS['FORUM_DB']->drop_table_if_exists('f_read_logs');
-    $GLOBALS['FORUM_DB']->drop_table_if_exists('f_forum_tracking');
-    $GLOBALS['FORUM_DB']->drop_table_if_exists('f_topic_tracking');
-    $GLOBALS['FORUM_DB']->drop_table_if_exists('f_multi_moderations');
-    $GLOBALS['FORUM_DB']->drop_table_if_exists('f_invites');
-    $GLOBALS['FORUM_DB']->drop_table_if_exists('f_forum_group_access');
-    $GLOBALS['FORUM_DB']->drop_table_if_exists('f_special_pt_access');
-    $GLOBALS['FORUM_DB']->drop_table_if_exists('f_saved_warnings');
-    $GLOBALS['FORUM_DB']->drop_table_if_exists('f_member_cpf_perms');
-    $GLOBALS['FORUM_DB']->drop_table_if_exists('f_group_join_log');
-    $GLOBALS['FORUM_DB']->drop_table_if_exists('f_password_history');
-    $GLOBALS['FORUM_DB']->drop_table_if_exists('f_pposts_fulltext_index');
-    $GLOBALS['FORUM_DB']->drop_table_if_exists('f_posts_fulltext_index');
+    $tables = [
+        'f_emoticons',
+        'f_custom_fields',
+        'f_member_custom_fields',
+        'f_groups',
+        'f_forum_groupings',
+        'f_forums',
+        'f_forum_intro_ip',
+        'f_forum_intro_member',
+        'f_topics',
+        'f_posts',
+        'f_polls',
+        'f_poll_answers',
+        'f_poll_votes',
+        'f_post_templates',
+        'f_warnings',
+        'f_moderator_logs',
+        'f_member_known_login_ips',
+        'f_members',
+        'f_group_members',
+        'f_group_approvals',
+        'f_read_logs',
+        'f_forum_tracking',
+        'f_topic_tracking',
+        'f_multi_moderations',
+        'f_invites',
+        'f_forum_group_access',
+        'f_special_pt_access',
+        'f_saved_warnings',
+        'f_member_cpf_perms',
+        'f_group_join_log',
+        'f_password_history',
+        'f_pposts_fulltext_index',
+        'f_posts_fulltext_index',
+    ];
+    $GLOBALS['FORUM_DB']->drop_table_if_exists($tables);
 
     $GLOBALS['FORUM_DB']->query_delete('group_privileges', ['module_the_name' => 'forums']);
 
-    delete_privilege('exceed_post_edit_time_limit');
-    delete_privilege('exceed_post_delete_time_limit');
+    $privileges = [
+        'bypass_required_cpfs',
+        'bypass_required_cpfs_if_already_empty',
+        'bypass_email_address',
+        'bypass_email_address_if_already_empty',
+        'bypass_dob',
+        'bypass_dob_if_already_empty',
+        'appear_under_birthdays',
 
-    delete_privilege('bypass_required_cpfs');
-    delete_privilege('bypass_required_cpfs_if_already_empty');
-    delete_privilege('bypass_email_address');
-    delete_privilege('bypass_email_address_if_already_empty');
-    delete_privilege('bypass_dob');
-    delete_privilege('bypass_dob_if_already_empty');
-    delete_privilege('appear_under_birthdays');
+        'exceed_post_edit_time_limit',
+        'exceed_post_delete_time_limit',
+    ];
+    delete_privilege($privileges);
 }
 
 /**

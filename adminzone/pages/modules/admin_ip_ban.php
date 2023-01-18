@@ -46,8 +46,11 @@ class Module_admin_ip_ban
      */
     public function uninstall()
     {
-        $GLOBALS['SITE_DB']->drop_table_if_exists('banned_ip');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('usersubmitban_member');
+        $tables = [
+            'banned_ip',
+            'usersubmitban_member',
+        ];
+        $GLOBALS['SITE_DB']->drop_table_if_exists($tables);
     }
 
     /**

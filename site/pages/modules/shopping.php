@@ -46,10 +46,13 @@ class Module_shopping
      */
     public function uninstall()
     {
-        $GLOBALS['SITE_DB']->drop_table_if_exists('shopping_cart');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('shopping_order_details');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('shopping_orders');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('shopping_logging');
+        $tables = [
+            'shopping_cart',
+            'shopping_order_details',
+            'shopping_orders',
+            'shopping_logging',
+        ];
+        $GLOBALS['SITE_DB']->drop_table_if_exists($tables);
 
         require_code('menus2');
         delete_menu_item_simple('_SEARCH:catalogues:index:products');

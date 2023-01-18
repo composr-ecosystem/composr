@@ -41,16 +41,19 @@ class Module_buildr
      */
     public function uninstall()
     {
-        $GLOBALS['SITE_DB']->drop_table_if_exists('w_attempts');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('w_inventory');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('w_itemdef');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('w_items');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('w_members');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('w_messages');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('w_portals');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('w_realms');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('w_rooms');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('w_travelhistory');
+        $tables = [
+            'w_attempts',
+            'w_inventory',
+            'w_itemdef',
+            'w_items',
+            'w_members',
+            'w_messages',
+            'w_portals',
+            'w_realms',
+            'w_rooms',
+            'w_travelhistory',
+        ];
+        $GLOBALS['SITE_DB']->drop_table_if_exists($tables);
 
         require_code('files');
         if (!$GLOBALS['DEV_MODE']) {

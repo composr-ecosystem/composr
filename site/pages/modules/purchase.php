@@ -73,10 +73,18 @@ class Module_purchase
      */
     public function uninstall()
     {
-        $GLOBALS['SITE_DB']->drop_table_if_exists('ecom_transactions');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('ecom_trans_expecting');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('ecom_trans_addresses');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('ecom_sales_expecting');
+        $tables = [
+            'ecom_transactions',
+            'ecom_trans_expecting',
+            'ecom_trans_addresses',
+            'ecom_sales_expecting',
+
+            'ecom_sales',
+            'ecom_prods_prices',
+            'ecom_prods_custom',
+            'ecom_prods_permissions',
+        ];
+        $GLOBALS['SITE_DB']->drop_table_if_exists($tables);
 
         delete_privilege('access_ecommerce_in_test_mode');
 
@@ -91,11 +99,6 @@ class Module_purchase
         foreach ($cpf as $_cpf) {
             $GLOBALS['FORUM_DRIVER']->install_delete_custom_field($_cpf);
         }
-
-        $GLOBALS['SITE_DB']->drop_table_if_exists('ecom_sales');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('ecom_prods_prices');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('ecom_prods_custom');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('ecom_prods_permissions');
 
         require_code('files');
         if (!$GLOBALS['DEV_MODE']) {
