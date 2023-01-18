@@ -42,6 +42,8 @@ class Hook_config_ticket_mail_nonmatch_policy
             'required' => true,
             'public' => false,
             'addon' => 'tickets',
+
+            'maintenance_code' => 'email_integration',
         ];
     }
 

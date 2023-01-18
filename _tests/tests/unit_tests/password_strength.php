@@ -22,21 +22,44 @@ class password_strength_test_set extends cms_test_case
     {
         require_code('password_rules');
 
-        $username = 'theusername';
+        $username = 'theU$ERname';
         $email_address = 'bob@example.com';
 
         $expects = [
+            // Score 1 tests
             '' => 1,
-            'theusername' => 1,
+            'aaa' => 1,
+            'XxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXx' => 1,
             'useruseruseruseruseruseruseruseruseruser' => 1,
-            'usernamexyzabc' => 2,
-            'abc123' => 3,
-            'abc123d' => 4,
-            'AbC123D' => 5,
-            'AbC123De' => 7,
-            'AbC123DeF' => 8,
-            'AbC123De#' => 9,
-            'Aa1#$acthfegrehde' => 10,
+            '1234567890' => 1,
+
+            // Score 1 tainted tests
+            'theU$ERname' => 1,
+            'bob@example.com' => 1,
+
+            // Sequential strengths with intentional passwords test
+            'abc123' => 1,
+            'abcd123' => 2,
+            'abcD123' => 3,
+            '@bcD123' => 4,
+            '@bcD1234' => 5,
+            '@bcDe1234' => 6,
+            '@bcDef1234$' => 7,
+            '@bcDefG1234$' => 8,
+            '@bcDefGH1234$6' => 9,
+            '@bcDefGH1234$67' => 10,
+
+            // Sequential strengths with random passwords test
+            'p' => 1,
+            'Ca0L' => 2,
+            'm.X7%' => 3,
+            'BCI-u=q' => 4,
+            '&dkXouA(' => 5,
+            'q11&SPNgyJ' => 6,
+            'dx+F,Y1tG0b' => 7,
+            'OXE9iNmjM1!K' => 8,
+            'dfyALhO)Eh3b78V' => 9,
+            '64_WpFYiBQd4Ka\'M0' => 10,
         ];
 
         require_code('spelling');

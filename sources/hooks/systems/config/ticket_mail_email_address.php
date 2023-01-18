@@ -42,6 +42,8 @@ class Hook_config_ticket_mail_email_address
             'required' => true,
             'public' => false,
             'addon' => 'tickets',
+
+            'maintenance_code' => 'email_integration',
         ];
     }
 

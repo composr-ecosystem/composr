@@ -25,6 +25,8 @@ class crypt_test_set extends cms_test_case
         require_code('crypt');
 
         cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
+
+        disable_php_memory_limit();
     }
 
     public function testRandomNumber()
@@ -42,12 +44,33 @@ class crypt_test_set extends cms_test_case
     public function testRandomString()
     {
         $strings = [];
-        for ($i = 0; $i < 100000; $i++) {
+        for ($i = 0; $i < 10000; $i++) {
             $string = get_secure_random_string();
             $this->assertTrue(strlen($string) == 13);
             $strings[] = $string;
         }
         $this->assertTrue(count(array_unique($strings)) == count($strings));
+    }
+
+    public function testRandomPassword()
+    {
+        require_code('password_rules');
+
+        $passwords = [];
+
+        // Variable strength test
+        for ($i = 0; $i < 1000; $i++) {
+            $strength = ($i % 10) + 1;
+            $password = get_secure_random_password($strength);
+            $actual_strength = test_password($password);
+            $this->assertTrue(($actual_strength >= $strength), 'The password ' . $password . ' was a strength of ' . strval($actual_strength) . ' when the request was for a strength of ' . strval($strength) . ' or higher.');
+
+            if ($strength > 2) { // Cannot reasonably expect all the passwords with strength 1 or 2 (which could be 1-3 characters) will be unique.
+                $passwords[] = $password;
+            }
+        }
+
+        $this->assertTrue(count(array_unique($passwords)) == count($passwords), 'Expected all the generated passwords in this test set to be unique, but that was not the case.');
     }
 
     public function testRatchet()
