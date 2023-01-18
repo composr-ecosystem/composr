@@ -1032,7 +1032,6 @@ function reinstall_addon_soft(string $addon_name, ?array $ini_info = null)
     $GLOBALS['SITE_DB']->query_delete('addons_dependencies', ['addon_name' => $addon_name]);
     $GLOBALS['SITE_DB']->query_delete('addons', ['addon_name' => $addon_name], '', 1);
 
-    $GLOBALS['SITE_DB']->query_delete('addons', ['addon_name' => $addon_name], '', 1);
     $GLOBALS['SITE_DB']->query_insert('addons', [
         'addon_name' => $addon_name,
         'addon_author' => $addon_info['author'],

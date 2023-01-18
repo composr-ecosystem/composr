@@ -154,6 +154,7 @@ class Database_Static_mysqli extends Database_super_mysql
         $this->apply_sql_limit_clause($query, $max, $start);
 
         $results = @mysqli_query($db_link, $query);
+
         if (($results === false) && ((!$fail_ok) || (strpos(mysqli_error($db_link), 'is marked as crashed and should be repaired') !== false))) {
             $err = mysqli_error($db_link);
 

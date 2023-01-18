@@ -446,7 +446,7 @@ abstract class Forum_driver_base
         if ($usergroup_list_cache === null) {
             $usergroup_list_cache = [];
         }
-        if (!running_script('install')) {
+        if (!running_script('install') || get_param_integer('step', 1) != 6) {
             $usergroup_list_cache[$hide_hidden][$only_permissive][$force_show_all][serialize($force_find)][$for_member][$skip_hidden] = $ret;
         }
         return $ret;

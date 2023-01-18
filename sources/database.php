@@ -172,16 +172,33 @@ function multi_lang_content() : bool
 /**
  * Reload language fields from the database.
  *
- * @param  boolean $full Whether we need to know about non-Comcode language fields
+ * @param  boolean $full Whether we need to know about non-Comcode language fields (forced to true for multi-lang-content sites, or if $fields is passed)
  * @param  ?string $only_table The only table to reload for (null: all tables)
+ * @param  ?array $fields Full list of table fields, used for installation code only and $only_table must be passed (null: look up)
  */
-function reload_lang_fields(bool $full = false, ?string $only_table = null)
+function reload_lang_fields(bool $full = false, ?string $only_table = null, array $fields = null)
 {
     global $TABLE_LANG_FIELDS_CACHE;
     if ($only_table === null) {
         $TABLE_LANG_FIELDS_CACHE = [];
     } else {
         unset($TABLE_LANG_FIELDS_CACHE[$only_table]);
+    }
+
+    // Installer optimisation
+    if ($fields !== null && $only_table !== null) {
+        $TABLE_LANG_FIELDS_CACHE[$only_table] = [];
+        foreach ($fields as $key => $val) {
+            if (strpos($val, '_TRANS') !== false) {
+                $TABLE_LANG_FIELDS_CACHE[$only_table][$key] = $val;
+            }
+        }
+
+        if (function_exists('persistent_cache_set')) {
+            persistent_cache_set('TABLE_LANG_FIELDS_CACHE', $TABLE_LANG_FIELDS_CACHE);
+        }
+
+        return;
     }
 
     $msn_running = (is_on_multi_site_network()) && (get_forum_type() == 'cns') && (isset($GLOBALS['FORUM_DB']));

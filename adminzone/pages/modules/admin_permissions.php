@@ -50,21 +50,35 @@ class Module_admin_permissions
         $GLOBALS['SITE_DB']->drop_table_if_exists('group_page_access');
         $GLOBALS['SITE_DB']->drop_table_if_exists('match_key_messages');
 
+        $privilege_list_query = 'DELETE FROM ' . get_table_prefix() . 'privilege_list WHERE 1=0';
+        $group_privileges_query = 'DELETE FROM ' . get_table_prefix() . 'group_privileges WHERE 1=0';
+
         $false_permissions = get_false_permissions();
         foreach ($false_permissions as $permission) {
-            delete_privilege($permission[1]);
+            //delete_privilege($permission[1]);
+            $privilege_list_query .= ' OR ' . db_string_equal_to('the_name', $permission[1]);
+            $group_privileges_query .= ' OR ' . db_string_equal_to('privilege', $permission[1]);
         }
 
         $true_permissions = get_true_permissions();
         foreach ($true_permissions as $permission) {
-            delete_privilege($permission[1]);
+            //delete_privilege($permission[1]);
+            $privilege_list_query .= ' OR ' . db_string_equal_to('the_name', $permission[1]);
+            $group_privileges_query .= ' OR ' . db_string_equal_to('privilege', $permission[1]);
         }
 
-        delete_privilege('assume_any_member');
-        delete_privilege('unfiltered_input');
-        delete_privilege('see_query_errors');
-        delete_privilege('bypass_spam_heuristics');
-        delete_privilege('avoid_captcha');
+        //delete_privilege('assume_any_member');
+        //delete_privilege('unfiltered_input');
+        //delete_privilege('see_query_errors');
+        //delete_privilege('bypass_spam_heuristics');
+        //delete_privilege('avoid_captcha');
+        foreach (['assume_any_member', 'unfiltered_input', 'see_query_errors', 'bypass_spam_heuristics', 'avoid_captcha'] as $_permission) {
+            $privilege_list_query .= ' OR ' . db_string_equal_to('the_name', $_permission);
+            $group_privileges_query .= ' OR ' . db_string_equal_to('privilege', $_permission);
+        }
+
+        $GLOBALS['SITE_DB']->query($privilege_list_query);
+        $GLOBALS['SITE_DB']->query($group_privileges_query);
     }
 
     /**
@@ -125,18 +139,48 @@ class Module_admin_permissions
 
             // False privileges
             $false_permissions = get_false_permissions();
+            $group_privileges_insert = [];
+            $privilege_list_insert = [];
             foreach ($false_permissions as $permission) {
-                add_privilege($permission[0], $permission[1], false);
+                list($_group_privileges_insert, $_privilege_list_insert) = add_privilege($permission[0], $permission[1], false, false, false, false);
+                if (empty($privilege_list_insert)) {
+                    $group_privileges_insert = $_group_privileges_insert;
+                    $privilege_list_insert = $_privilege_list_insert;
+                } else {
+                    foreach (array_keys($group_privileges_insert) as $key) {
+                        $group_privileges_insert[$key] = array_merge($group_privileges_insert[$key], $_group_privileges_insert[$key]);
+                    }
+                    foreach (array_keys($privilege_list_insert) as $key) {
+                        $privilege_list_insert[$key] = array_merge($privilege_list_insert[$key], $_privilege_list_insert[$key]);
+                    }
+                }
             }
+            $GLOBALS['SITE_DB']->query_insert('group_privileges', $group_privileges_insert);
+            $GLOBALS['SITE_DB']->query_insert('privilege_list', $privilege_list_insert);
 
             // For admins only
             add_privilege('STAFF_ACTIONS', 'assume_any_member', false, true);
 
             // True privileges
             $true_permissions = get_true_permissions();
+            $group_privileges_insert = [];
+            $privilege_list_insert = [];
             foreach ($true_permissions as $permission) {
-                add_privilege($permission[0], $permission[1], true);
+                list($_group_privileges_insert, $_privilege_list_insert) = add_privilege($permission[0], $permission[1], true, false, false, false);
+                if (empty($privilege_list_insert)) {
+                    $group_privileges_insert = $_group_privileges_insert;
+                    $privilege_list_insert = $_privilege_list_insert;
+                } else {
+                    foreach (array_keys($group_privileges_insert) as $key) {
+                        $group_privileges_insert[$key] = array_merge($group_privileges_insert[$key], $_group_privileges_insert[$key]);
+                    }
+                    foreach (array_keys($privilege_list_insert) as $key) {
+                        $privilege_list_insert[$key] = array_merge($privilege_list_insert[$key], $_privilege_list_insert[$key]);
+                    }
+                }
             }
+            $GLOBALS['SITE_DB']->query_insert('group_privileges', $group_privileges_insert);
+            $GLOBALS['SITE_DB']->query_insert('privilege_list', $privilege_list_insert);
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 8)) {

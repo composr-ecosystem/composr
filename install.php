@@ -2357,7 +2357,7 @@ function step_7() : object
 {
     big_installation_common();
 
-    $log = new Tempcode();
+    $log = [];
 
     if (method_exists($GLOBALS['FORUM_DRIVER'], 'forum_install_as_needed')) {
         $GLOBALS['FORUM_DRIVER']->forum_install_as_needed();
@@ -2366,21 +2366,17 @@ function step_7() : object
     $time_start = microtime(true);
 
     // We must install these modules first
-    $time_before = microtime(true);
-    if (reinstall_module('adminzone', 'admin_version')) {
-        $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => 'da46e6eb9069c8f700636ab61f76f895', 'SOMETHING' => do_lang_tempcode('INSTALLED_MODULE', 'admin_version')]));
-    }
-    $time_after = microtime(true);
-    if (get_param_integer('keep_show_timings', 0) == 1) {
-        $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '1aafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('&raquo; Module installation of admin_version took ' . float_format($time_after - $time_before) . ' seconds')]));
-    }
-    $time_before = microtime(true);
-    if (reinstall_module('adminzone', 'admin_permissions')) {
-        $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '11de3814d6a00a0e015466a0277fa7a1', 'SOMETHING' => do_lang_tempcode('INSTALLED_MODULE', 'admin_permissions')]));
-    }
-    $time_after = microtime(true);
-    if (get_param_integer('keep_show_timings', 0) == 1) {
-        $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '1aafb3dd014d589fcc057bba54fc4bb3', 'SOMETHING' => protect_from_escaping('&raquo; Module installation of admin_permissions took ' . float_format($time_after - $time_before) . ' seconds')]));
+    foreach (['admin_version', 'admin_permissions'] as $module) {
+        $time_before = microtime(true);
+        if (reinstall_module('adminzone', $module)) {
+            $time_after = microtime(true);
+            $time = $time_after - $time_before;
+            if (get_param_integer('keep_show_timings', 0) == 1) {
+                $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '1aafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('Module installation of ' . escape_html($module) . ' took ' . float_format($time) . ' seconds')])];
+            } else {
+                $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => 'da46e6eb9069c8f700636ab61f76f895', 'SOMETHING' => do_lang_tempcode('INSTALLED_MODULE', escape_html($module))])];
+            }
+        }
     }
 
     $modules = find_all_modules('adminzone');
@@ -2389,14 +2385,14 @@ function step_7() : object
             send_http_output_ping();
 
             $time_before = microtime(true);
-
             if (reinstall_module('adminzone', $module)) {
-                $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '9fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => do_lang_tempcode('INSTALLED_MODULE', escape_html($module))]));
-            }
-
-            $time_after = microtime(true);
-            if (get_param_integer('keep_show_timings', 0) == 1) {
-                $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '1fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('&raquo; Module installation of ' . escape_html($module) . ' took ' . float_format($time_after - $time_before) . ' seconds')]));
+                $time_after = microtime(true);
+                $time = $time_after - $time_before;
+                if (get_param_integer('keep_show_timings', 0) == 1) {
+                    $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '1fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('Module installation of ' . escape_html($module) . ' took ' . float_format($time) . ' seconds')])];
+                } else {
+                    $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '9fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => do_lang_tempcode('INSTALLED_MODULE', escape_html($module))])];
+                }
             }
         }
     }
@@ -2411,19 +2407,26 @@ function step_7() : object
         //if ($place == 'sources_custom') continue;  Now we are actually installing custom addons too
 
         $time_before = microtime(true);
-
         reinstall_addon_soft($addon_name);
-        $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '9fafb3dd014d589fcc057bba54fc4ag3', 'SOMETHING' => do_lang_tempcode('INSTALLED_ADDON', escape_html($addon_name))]));
-
         $time_after = microtime(true);
+        $time = $time_after - $time_before;
         if (get_param_integer('keep_show_timings', 0) == 1) {
-            $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '2fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('&raquo; Addon installation of ' . escape_html($addon_name) . ' took ' . float_format($time_after - $time_before) . ' seconds')]));
+            $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '2fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('Addon installation of ' . escape_html($addon_name) . ' took ' . float_format($time) . ' seconds')])];
+        } else {
+            $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '9fafb3dd014d589fcc057bba54fc4ag3', 'SOMETHING' => do_lang_tempcode('INSTALLED_ADDON', escape_html($addon_name))])];
         }
     }
 
     $time_end = microtime(true);
     if (get_param_integer('keep_show_timings', 0) == 1) {
-        $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '2fafb3dd024d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('TOTAL TIME: ' . float_format($time_end - $time_start) . ' seconds')]));
+        $time = $time_end - $time_start;
+        $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '2fafb3dd024d589fcc057bba54fc4ab4', 'SOMETHING' => protect_from_escaping('TOTAL TIME: ' . float_format($time) . ' seconds')])];
+    }
+
+    sort_maps_by($log, '!time');
+    $_log = new Tempcode();
+    foreach ($log as $l) {
+        $_log->attach($l['out']);
     }
 
     $url = prepare_installer_url('install.php?step=8');
@@ -2433,7 +2436,7 @@ function step_7() : object
         'PREVIOUS_STEP' => '6',
         'CURRENT_STEP' => '7',
         'URL' => $url,
-        'LOG' => $log,
+        'LOG' => $_log,
         'HIDDEN' => build_keep_post_fields(),
     ]);
 }
@@ -2447,7 +2450,9 @@ function step_8() : object
 {
     big_installation_common();
 
-    $log = new Tempcode();
+    $log = [];
+
+    $time_start = microtime(true);
 
     foreach ((get_option('single_public_zone') == '1') ? [''] : ['', 'site'] as $zone) {
         $modules = find_all_modules($zone);
@@ -2457,14 +2462,27 @@ function step_8() : object
             $time_before = microtime(true);
 
             if (reinstall_module($zone, $module)) {
-                $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '9b3c23369e8ca719256ae44b3d42fd4c', 'SOMETHING' => do_lang_tempcode('INSTALLED_MODULE', escape_html($module))]));
-            }
-
-            $time_after = microtime(true);
-            if (get_param_integer('keep_show_timings', 0) == 1) {
-                $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '3fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('&raquo; Module installation of ' . escape_html($module) . ' took ' . float_format($time_after - $time_before) . ' seconds')]));
+                $time_after = microtime(true);
+                $time = $time_after - $time_before;
+                if (get_param_integer('keep_show_timings', 0) == 1) {
+                    $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '3fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('Module installation of ' . escape_html($module) . ' took ' . float_format($time) . ' seconds')])];
+                } else {
+                    $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '9b3c23369e8ca719256ae44b3d42fd4c', 'SOMETHING' => do_lang_tempcode('INSTALLED_MODULE', escape_html($module))])];
+                }
             }
         }
+    }
+
+    $time_end = microtime(true);
+    if (get_param_integer('keep_show_timings', 0) == 1) {
+        $time = $time_end - $time_start;
+        $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '2fafb3dd024d589fcc057bba54fc4ab5', 'SOMETHING' => protect_from_escaping('TOTAL TIME: ' . float_format($time) . ' seconds')])];
+    }
+
+    sort_maps_by($log, '!time');
+    $_log = new Tempcode();
+    foreach ($log as $l) {
+        $_log->attach($l['out']);
     }
 
     $url = prepare_installer_url('install.php?step=9');
@@ -2474,7 +2492,7 @@ function step_8() : object
         'PREVIOUS_STEP' => '7',
         'CURRENT_STEP' => '8',
         'URL' => $url,
-        'LOG' => $log,
+        'LOG' => $_log,
         'HIDDEN' => build_keep_post_fields(),
     ]);
 }
@@ -2488,7 +2506,9 @@ function step_9() : object
 {
     big_installation_common();
 
-    $log = new Tempcode();
+    $log = [];
+
+    $time_start = microtime(true);
 
     foreach (['forum', 'cms', 'buildr'] as $zone) {
         if (!is_file(get_file_base() . '/' . $zone . '/index.php')) {
@@ -2502,12 +2522,13 @@ function step_9() : object
             $time_before = microtime(true);
 
             if (reinstall_module($zone, $module)) {
-                $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => 'c1d95b9713006acb491b44ff6c79099c', 'SOMETHING' => do_lang_tempcode('INSTALLED_MODULE', escape_html($module))]));
-            }
-
-            $time_after = microtime(true);
-            if (get_param_integer('keep_show_timings', 0) == 1) {
-                $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '4fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('&raquo; Module installation of ' . escape_html($module) . ' took ' . float_format($time_after - $time_before) . ' seconds')]));
+                $time_after = microtime(true);
+                $time = $time_after - $time_before;
+                if (get_param_integer('keep_show_timings', 0) == 1) {
+                    $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '4fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('Module installation of ' . escape_html($module) . ' took ' . float_format($time) . ' seconds')])];
+                } else {
+                    $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => 'c1d95b9713006acb491b44ff6c79099c', 'SOMETHING' => do_lang_tempcode('INSTALLED_MODULE', escape_html($module))])];
+                }
             }
         }
     }
@@ -2519,13 +2540,26 @@ function step_9() : object
         $time_before = microtime(true);
 
         if (reinstall_block($block)) {
-            $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => 'dc9f833239d501f77729778b5c6681b6', 'SOMETHING' => do_lang_tempcode('INSTALLED_BLOCK', escape_html($block))]));
+            $time_after = microtime(true);
+            $time = $time_after - $time_before;
+            if (get_param_integer('keep_show_timings', 0) == 1) {
+                $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '4fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('Block installation of ' . escape_html($block) . ' took ' . float_format($time) . ' seconds')])];
+            } else {
+                $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => 'dc9f833239d501f77729778b5c6681b6', 'SOMETHING' => do_lang_tempcode('INSTALLED_BLOCK', escape_html($block))])];
+            }
         }
+    }
 
-        $time_after = microtime(true);
-        if (get_param_integer('keep_show_timings', 0) == 1) {
-            $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '4fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('&raquo; Block installation of ' . escape_html($block) . ' took ' . float_format($time_after - $time_before) . ' seconds')]));
-        }
+    $time_end = microtime(true);
+    if (get_param_integer('keep_show_timings', 0) == 1) {
+        $time = $time_end - $time_start;
+        $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '2fafb3dd024d589fcc057bba54fc4ab6', 'SOMETHING' => protect_from_escaping('TOTAL TIME: ' . float_format($time) . ' seconds')])];
+    }
+
+    sort_maps_by($log, '!time');
+    $_log = new Tempcode();
+    foreach ($log as $l) {
+        $_log->attach($l['out']);
     }
 
     $url = prepare_installer_url('install.php?step=10');
@@ -2535,7 +2569,7 @@ function step_9() : object
         'PREVIOUS_STEP' => '8',
         'CURRENT_STEP' => '9',
         'URL' => $url,
-        'LOG' => $log,
+        'LOG' => $_log,
         'HIDDEN' => build_keep_post_fields(),
     ]);
 }
@@ -2604,7 +2638,7 @@ function step_10() : object
  */
 function step_10_populate_database() : object
 {
-    $log = new Tempcode();
+    $log = [];
 
     // Make sure that any menu items here come after what we have already
     global $ADD_MENU_COUNTER;
@@ -2621,21 +2655,27 @@ function step_10_populate_database() : object
                 send_http_output_ping();
 
                 $time_before = microtime(true);
-
                 if (reinstall_module($zone, $module)) {
-                    $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '25eb1c88fe122ec5a817f334d5f6bc5e', 'SOMETHING' => do_lang_tempcode('INSTALLED_MODULE', escape_html($module))]));
-                }
-
-                $time_after = microtime(true);
-                if (get_param_integer('keep_show_timings', 0) == 1) {
-                    $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '4fafb3dd0146689fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('&raquo; Module installation of ' . escape_html($module) . ' took ' . float_format($time_after - $time_before) . ' seconds')]));
+                    $time_after = microtime(true);
+                    $time = $time_after - $time_before;
+                    if (get_param_integer('keep_show_timings', 0) == 1) {
+                        $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '4fafb3dd0146689fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('Module installation of ' . escape_html($module) . ' took ' . float_format($time) . ' seconds')])];
+                    } else {
+                        $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '25eb1c88fe122ec5a817f334d5f6bc5e', 'SOMETHING' => do_lang_tempcode('INSTALLED_MODULE', escape_html($module))])];
+                    }
                 }
             }
         }
     }
     //$log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '6a160da6fd9031e90b37a40aea149137', 'SOMETHING' => do_lang('TABLES_CREATED', 'Composr'])));
 
-    return $log;
+    sort_maps_by($log, '!time');
+    $_log = new Tempcode();
+    foreach ($log as $l) {
+        $_log->attach($l['out']);
+    }
+
+    return $_log;
 }
 
 /**

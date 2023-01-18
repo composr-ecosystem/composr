@@ -306,7 +306,7 @@ function _helper_create_table(object $this_ref, string $table_name, array $field
         }
     }
 
-    reload_lang_fields(false, $table_name);
+    reload_lang_fields(false, $table_name, $fields);
 }
 
 /**
@@ -351,6 +351,8 @@ function _helper_create_index(object $this_ref, string $table_name, string $inde
             _check_sizes($table_name, false, $fields_with_types, $index_name, false, true, true/*indexes don't use so many bytes as keys somehow*/);
         }
     } else {
+        $db_types = null;
+
         foreach ($fields as $field_name) {
             $fields_with_types[$field_name] = null;
         }
@@ -369,11 +371,9 @@ function _helper_create_index(object $this_ref, string $table_name, string $inde
 
     $ok_to_create = true;
 
-    reload_lang_fields(true, $table_name);
-
     $is_full_text = ($index_name[0] == '#');
 
-    $_fields = _helper_generate_index_fields($table_name, $fields_with_types, $is_full_text);
+    $_fields = _helper_generate_index_fields($table_name, $fields_with_types, $is_full_text, $db_types);
 
     $insert_map = ['i_table' => $table_name, 'i_name' => $index_name, 'i_fields' => implode(',', $fields)];
     $test = $this_ref->query_select('db_meta_indices', ['*'], $insert_map);
@@ -386,7 +386,7 @@ function _helper_create_index(object $this_ref, string $table_name, string $inde
         $this_ref->ensure_connected();
 
         if ($unique_key_fields === null) {
-            $unique_key_fields = implode(',', _helper_get_table_key_fields($table_name));
+            $unique_key_fields = implode(',', _helper_get_table_key_fields($table_name, $db_types));
         }
 
         // Check if it's a fulltext index that we do not have multiple
@@ -405,12 +405,23 @@ function _helper_create_index(object $this_ref, string $table_name, string $inde
  * Get the key tables for a table.
  *
  * @param  ID_TEXT $table_name Table name
+ * @param  ?array $db_types Database types for whole table from meta registry (null: lookup as needed)
  * @return array List of key fields
  *
  * @ignore
  */
-function _helper_get_table_key_fields(string $table_name) : array
+function _helper_get_table_key_fields(string $table_name, ?array $db_types = null) : array
 {
+    if ($db_types !== null) {
+        $ret = [];
+        foreach ($db_types as $key => $val) {
+            if (substr($val, 0, 1) == '*') {
+                $ret[] = $key;
+            }
+        }
+        return $ret;
+    }
+
     return collapse_1d_complexity('m_name', $GLOBALS['SITE_DB']->query_select('db_meta', ['m_name'], ['m_table' => $table_name], ' AND m_type LIKE \'' . db_encode_like('*%') . '\''));
 }
 

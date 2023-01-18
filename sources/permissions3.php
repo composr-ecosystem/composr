@@ -126,8 +126,10 @@ function privilege_exists(string $name) : bool
  * @param  boolean $default Whether this privilege is granted to all usergroups by default
  * @param  boolean $not_even_mods Whether this privilege is not granted to supermoderators by default (something very sensitive); only applies if $default is true
  * @param  boolean $not_for_probation An exception for if $default is true, don't assign the privilege to the probation group
+ * @param  boolean $insert Whether to insert into the database (if this is set to false you need to read the return parameters and do it yourself - which is used for efficient bulk inserts across many privileges at once)
+ * @return array A pair: The map parameter for the group_privileges table, the map parameter for the privilege_list table.
  */
-function add_privilege(string $section, string $name, bool $default = false, bool $not_even_mods = false, bool $not_for_probation = false)
+function add_privilege(string $section, string $name, bool $default = false, bool $not_even_mods = false, bool $not_for_probation = false, $insert = true) : array
 {
     if (get_forum_type() == 'cns') {
         require_code('cns_groups');
@@ -157,16 +159,27 @@ function add_privilege(string $section, string $name, bool $default = false, boo
         }
     }
 
-    $GLOBALS['SITE_DB']->query_insert('group_privileges', [
+    $group_privileges_insert = [
         'privilege' => $ins_privilege,
         'group_id' => $ins_group_id,
         'the_page' => $ins_the_page,
         'module_the_name' => $ins_module_the_name,
         'category_name' => $ins_category_name,
         'the_value' => $ins_the_value,
-    ]);
+    ];
 
-    $GLOBALS['SITE_DB']->query_insert('privilege_list', ['p_section' => $section, 'the_name' => $name, 'the_default' => ($default ? 1 : 0)]);
+    $privilege_list_insert = [
+        'p_section' => [$section],
+        'the_name' => [$name],
+        'the_default' => [$default ? 1 : 0],
+    ];
+
+    if ($insert) {
+        $GLOBALS['SITE_DB']->query_insert('group_privileges', $group_privileges_insert);
+        $GLOBALS['SITE_DB']->query_insert('privilege_list', $privilege_list_insert);
+    }
+
+    return [$group_privileges_insert, $privilege_list_insert];
 }
 
 /**
