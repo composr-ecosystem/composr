@@ -1,7 +1,7 @@
 {$REQUIRE_JAVASCRIPT,core_form_interfaces}
 
 <span data-tpl="formScreenInputPassword" data-tpl-params="{+START,PARAMS_JSON,VALUE,NAME}{_*}{+END}">
-	{+START,IF,{$MATCH_KEY_MATCH,:join}}
+	{+START,IF,{$OR,{$MATCH_KEY_MATCH,:join},{$MATCH_KEY_MATCH,_WILD:members}}}
 		<span style="display: none" id="password-strength-{NAME*}" class="password-strength js-mouseover-activate-password-strength-tooltip">
 			<span class="password-strength-inner"></span>
 		</span>
