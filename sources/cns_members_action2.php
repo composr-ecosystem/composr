@@ -525,20 +525,6 @@ function cns_get_member_fields_settings(bool $mini_mode = true, string $special_
         }
     }
 
-    // Password
-    if (cns_field_editable('password', $special_type)) {
-        if (($member_id === null) || ($member_id == get_member()) || (has_privilege(get_member(), 'assume_any_member'))) {
-            $temporary_password = ($member_id !== null) && ($member_id == get_member() && ($GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_password_compat_scheme') == 'temporary'));
-            if ($temporary_password) {
-                $password_field_description = do_lang_tempcode('DESCRIPTION_PASSWORD_TEMPORARY');
-            } else {
-                $password_field_description = do_lang_tempcode('DESCRIPTION_PASSWORD' . (($member_id !== null) ? '_EDIT' : ''));
-            }
-            $fields->attach(form_input_password(do_lang_tempcode(($member_id === null) ? 'PASSWORD' : 'NEW_PASSWORD'), $password_field_description, ($member_id === null) ? 'password' : 'edit_password', $mini_mode || $temporary_password));
-            $fields->attach(form_input_password(do_lang_tempcode('CONFIRM_PASSWORD'), '', 'password_confirm', $mini_mode || $temporary_password));
-        }
-    }
-
     // Work out what options we need to present
     $doing_timezones = (get_option_with_overrides('enable_timezones', $adjusted_config_options) == (($member_id === null) ? '2' : '1'));
     $_langs = find_all_langs();
@@ -613,6 +599,20 @@ function cns_get_member_fields_settings(bool $mini_mode = true, string $special_
         }
     }
     */
+
+    // Password (intentionally put down here as the username, e-mail address, and DOB may influence the password strength)
+    if (cns_field_editable('password', $special_type)) {
+        if (($member_id === null) || ($member_id == get_member()) || (has_privilege(get_member(), 'assume_any_member'))) {
+            $temporary_password = ($member_id !== null) && ($member_id == get_member() && ($GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_password_compat_scheme') == 'temporary'));
+            if ($temporary_password) {
+                $password_field_description = do_lang_tempcode('DESCRIPTION_PASSWORD_TEMPORARY');
+            } else {
+                $password_field_description = do_lang_tempcode('DESCRIPTION_PASSWORD' . (($member_id !== null) ? '_EDIT' : ''));
+            }
+            $fields->attach(form_input_password(do_lang_tempcode(($member_id === null) ? 'PASSWORD' : 'NEW_PASSWORD'), $password_field_description, ($member_id === null) ? 'password' : 'edit_password', $mini_mode || $temporary_password));
+            $fields->attach(form_input_password(do_lang_tempcode('CONFIRM_PASSWORD'), '', 'password_confirm', $mini_mode || $temporary_password));
+        }
+    }
 
     require_lang('config');
 
