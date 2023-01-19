@@ -205,6 +205,7 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
             switch ($password_compatibility_scheme) {
                 case '': // Composr style salted MD5 algorithm
                 case 'temporary': // as above, but forced temporary password
+                case 'expired': // as above, but forced temporary password because the previous one expired
                     require_code('crypt');
                     if (!ratchet_hash_verify($password_mixed, $row['m_pass_salt'], $row['m_pass_hash_salted'])) {
                         $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');

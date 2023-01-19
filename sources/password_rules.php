@@ -172,11 +172,19 @@ function bump_password_times_forward()
  */
 function member_password_expired(int $member_id) : bool
 {
+    // Expired in the database
+    if ($GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_password_compat_scheme') == 'expired') {
+        return true;
+    }
+
     $expiry_days = intval(get_option('password_expiry_days'));
 
     if ($expiry_days > 0) {
         $last_time = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_last_visit_time');
         if ($last_time < time() - 60 * 60 * 24 * $expiry_days) {
+            // Make sure the expiration sticks because m_last_visit_time is going to get updated
+            $GLOBALS['FORUM_DB']->query_update('f_members', ['m_password_compat_scheme' => 'expired'], ['id' => $member_id]);
+
             return true;
         }
     }

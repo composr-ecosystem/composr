@@ -265,7 +265,7 @@ function handle_active_logout()
 }
 
 /**
- * Make sure temporary passwords restrict you to the edit account page. May not return, if it needs to do a redirect.
+ * Actualiser for enforcing expired and temporary passwords. Will redirect_exit if the member needs to change their password.
  *
  * @param  MEMBER $member_id The current member
  *
@@ -273,50 +273,47 @@ function handle_active_logout()
  */
 function _enforce_temporary_passwords(int $member_id)
 {
-    if ((get_forum_type() == 'cns') && (running_script('index')) && ($member_id != db_get_first_id()) && (!$GLOBALS['IS_ACTUALLY_ADMIN']) && ($GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_password_compat_scheme') == 'temporary') && (get_page_name() != 'lost_password') && ((get_page_name() != 'members') || (get_param_string('type', 'browse') != 'view'))) {
-        $force_change_message = null;
-        $redirect_url = null;
+    $force_change_message = null;
+    $redirect_url = null;
 
-        $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
-        $email_address = $GLOBALS['FORUM_DRIVER']->get_member_email_address($member_id);
+    $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
 
-        // Expired?
-        if (intval(get_option('password_expiry_days')) > 0) {
-            require_code('password_rules');
-            require_code('crypt');
-            if (member_password_expired($member_id)) {
-                require_lang('password_rules');
-                $force_change_message = do_lang_tempcode('PASSWORD_EXPIRED', escape_html($username), escape_html(integer_format(intval(get_option('password_expiry_days')))), escape_html(mask_email_address($email_address)));
-                require_code('urls');
-                $redirect_url = build_url(['page' => 'lost_password', 'username' => $username], '');
-            }
+    // Expired?
+    if (intval(get_option('password_expiry_days')) > 0) {
+        require_code('password_rules');
+        require_code('crypt');
+        if (member_password_expired($member_id)) {
+            require_lang('password_rules');
+            $force_change_message = do_lang_tempcode('PASSWORD_EXPIRED', escape_html($username), escape_html(integer_format(intval(get_option('password_expiry_days')))));
+            require_code('urls');
+            $redirect_url = build_url(['page' => 'lost_password', 'username' => $username], '');
         }
+    }
 
-        // Temporary?
-        if ($GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_password_compat_scheme') == 'temporary') {
-            require_lang('cns');
-            $force_change_message = do_lang_tempcode('YOU_HAVE_TEMPORARY_PASSWORD', escape_html($username));
+    // Temporary?
+    if ($GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_password_compat_scheme') == 'temporary') {
+        require_lang('cns');
+        $force_change_message = do_lang_tempcode('YOU_HAVE_TEMPORARY_PASSWORD', escape_html($username));
+        require_code('urls');
+        $redirect_url = build_url(['page' => 'members', 'type' => 'view', 'id' => $member_id], get_module_zone('members'), [], false, false, false, 'tab--edit--settings');
+    } elseif (intval(get_option('password_change_days')) > 0) { // Too old?
+        require_code('password_rules');
+        if (member_password_too_old($member_id)) {
+            require_lang('password_rules');
+            $force_change_message = do_lang_tempcode('PASSWORD_TOO_OLD', escape_html($username), escape_html(integer_format(intval(get_option('password_change_days')))));
             require_code('urls');
             $redirect_url = build_url(['page' => 'members', 'type' => 'view', 'id' => $member_id], get_module_zone('members'), [], false, false, false, 'tab--edit--settings');
-        } elseif (intval(get_option('password_change_days')) > 0) { // Too old?
-            require_code('password_rules');
-            if (member_password_too_old($member_id)) {
-                require_lang('password_rules');
-                $force_change_message = do_lang_tempcode('PASSWORD_TOO_OLD', escape_html($username), escape_html(integer_format(intval(get_option('password_change_days')))));
-                require_code('urls');
-                $redirect_url = build_url(['page' => 'members', 'type' => 'view', 'id' => $member_id], get_module_zone('members'), [], false, false, false, 'tab--edit--settings');
-            }
         }
+    }
 
-        if ($force_change_message !== null) {
-            delete_cache_entry('side_users_online');
+    if ($force_change_message !== null) {
+        delete_cache_entry('side_users_online');
 
-            require_code('urls');
-            require_code('site2');
-            require_lang('cns');
+        require_code('urls');
+        require_code('site2');
+        require_lang('cns');
 
-            redirect_exit($redirect_url, get_screen_title('LOGGED_IN'), $force_change_message);
-        }
+        redirect_exit($redirect_url, get_screen_title('LOGGED_IN'), $force_change_message, false, 'warn');
     }
 }
 

@@ -317,16 +317,45 @@ function get_member(bool $quick_only = false) : int
 }
 
 /**
- * Make sure temporary passwords restrict you to the edit account page. May not return, if it needs to do a redirect.
+ * Make sure expired and temporary passwords restrict the member to the edit account or lost password page. Otherwise, redirect the member to change their password.
  *
  * @param  MEMBER $member_id The current member
  */
 function enforce_temporary_passwords(int $member_id)
 {
-    if ((get_forum_type() == 'cns') && (running_script('index')) && ($member_id != db_get_first_id()) && (!$GLOBALS['IS_ACTUALLY_ADMIN']) && ($GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_password_compat_scheme') == 'temporary') && (get_page_name() != 'lost_password') && ((get_page_name() != 'members') || (get_param_string('type', 'browse') != 'view'))) {
-        require_code('users_active_actions');
-        _enforce_temporary_passwords($member_id);
+    // Enforcement is only supported by Conversr
+    if (get_forum_type() !== 'cns') {
+        return;
     }
+
+    // No enforcement if using an external connection, such as Commandr or WebDAV
+    if (!running_script('index')) {
+        return;
+    }
+
+    // Guests should not have password enforcement
+    if ($member_id == $GLOBALS['FORUM_DRIVER']->get_guest_id()) {
+        return;
+    }
+
+    // If we are SUed into another member, do not enforce passwords
+    if (($GLOBALS['IS_ACTUALLY_ADMIN']) && (get_param_string('keep_su', null) !== null)) {
+        return;
+    }
+
+    // Only enforce passwords on Composr schemes
+    $scheme = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_password_compat_scheme');
+    if (!in_array($scheme, ['', 'temporary', 'expired'])) {
+        return;
+    }
+
+    // If the member is trying to reset or change their password, do not enforce passwords
+    if ((get_page_name() == 'lost_password') || ((get_page_name() == 'members') && (get_param_string('type', 'browse') == 'view'))) {
+        return;
+    }
+
+    require_code('users_active_actions');
+    _enforce_temporary_passwords($member_id);
 }
 
 /**
