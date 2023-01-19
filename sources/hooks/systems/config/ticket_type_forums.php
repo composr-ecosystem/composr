@@ -42,8 +42,6 @@ class Hook_config_ticket_type_forums
             'required' => true,
             'public' => false,
             'addon' => 'tickets',
-
-            'maintenance_code' => 'email_integration',
         ];
     }
 
