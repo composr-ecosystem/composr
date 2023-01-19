@@ -949,7 +949,7 @@ class Virtual_shell
                     require_code('hooks/systems/commandr_commands/' . filter_naughty_harsh($hook));
                     $object = object_factory('Hook_commandr_command_' . filter_naughty_harsh($hook));
                     $hook_return = $object->run($this->parsed_input[SECTION_OPTIONS], $this->parsed_input[SECTION_PARAMETERS], $this->fs);
-                    log_it('COMMANDR_COMMAND', $hook, implode(', ', $this->parsed_input[SECTION_PARAMETERS]));
+                    log_it('COMMANDR_COMMAND', $hook, implode(' ', $this->parsed_input[SECTION_PARAMETERS]));
                     $this->parse_runtime['commandr_command'] = COMMAND_LONE;
                     break;
                 }
