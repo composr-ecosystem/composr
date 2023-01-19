@@ -167,7 +167,7 @@ function convert_template_tree_metadata_to_screen_tree(array $metadata) : ?array
             foreach ($to_merge as $__child) {
                 $sz = serialize([$__child['type'], $__child['subdir'], $__child['name']]);
                 if (isset($children[$sz])) {
-                    $children[$sz]['instance_calls'] = array_unique(array_merge($children[$sz]['instance_calls'], $__child['instance_calls']));
+                    $children[$sz]['instance_calls'] = array_unique(array_merge($children[$sz]['instance_calls'], $__child['instance_calls']), SORT_REGULAR);
                 } else {
                     $children[$sz] = $__child;
                 }
