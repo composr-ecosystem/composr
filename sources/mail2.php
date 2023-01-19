@@ -137,6 +137,10 @@ function _imap_server_spec(string $host, int $port, ?string $type = null) : stri
  */
 function find_mail_folders(string $host, int $port, ?string $type, string $username, string $password) : array
 {
+    if (addon_installed('imap')) {
+        require_code('imap');
+    }
+
     if (!function_exists('imap_open')) {
         warn_exit(do_lang_tempcode('IMAP_NEEDED'));
     }
@@ -213,7 +217,7 @@ function is_mail_bounced(string $email, ?string $host = null, ?int $port = null,
         $password = get_option('mail_password');
     }
 
-    if ($password == '' || !function_exists('imap_open')) {
+    if ($password == '' || (!function_exists('imap_open') && !addon_installed('imap'))) {
         return null; // Not configured, so cannot proceed
     }
 
@@ -327,6 +331,10 @@ function find_mail_bounces(string $host, int $port, string $type, string $folder
  */
 function _find_mail_bounces(string $host, int $port, string $type, string $folder, string $username, string $password, bool $bounces_only = true, ?int $since = null) : array
 {
+    if (addon_installed('imap')) {
+        require_code('imap');
+    }
+
     if (!function_exists('imap_open')) {
         warn_exit(do_lang_tempcode('IMAP_NEEDED'));
     }

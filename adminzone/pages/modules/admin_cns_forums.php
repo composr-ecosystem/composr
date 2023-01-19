@@ -283,7 +283,7 @@ class Module_admin_cns_forums extends Standard_crud_module
         $fields->attach(form_input_tick(do_lang_tempcode('ALLOWS_ANONYMOUS_POSTS'), do_lang_tempcode('DESCRIPTION_ALLOWS_ANONYMOUS_POSTS'), 'allows_anonymous_posts', $allows_anonymous_posts == 1));
         $fields->attach(form_input_text(do_lang_tempcode('POLL_DEFAULT_OPTIONS_XML'), do_lang_tempcode('DESCRIPTION_POLL_DEFAULT_OPTIONS_XML'), 'poll_default_options_xml', $poll_default_options_xml, false));
 
-        if (function_exists('imap_open')) {
+        if (function_exists('imap_open') || addon_installed('imap')) {
             require_lang('config');
             require_lang('cns_mailinglists');
 

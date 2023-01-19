@@ -131,6 +131,10 @@ abstract class EmailIntegration
     {
         require_code('mail2');
 
+        if (addon_installed('imap')) {
+            require_code('imap');
+        }
+
         if (!function_exists('imap_open')) {
             $this->log_message('IMAP is not available');
 

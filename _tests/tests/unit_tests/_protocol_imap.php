@@ -49,6 +49,10 @@ class _protocol_imap_test_set extends cms_test_case
 
     public function setUp()
     {
+        if (addon_installed('imap')) {
+            require_code('imap');
+        }
+
         if (!function_exists('imap_open')) {
             $this->assertTrue(false, 'PHP IMAP extension is required');
             return;
@@ -62,7 +66,9 @@ class _protocol_imap_test_set extends cms_test_case
         require_code('mail2');
         list($mbox, $server_spec, $host, $username, $password, $port, $type) = $this->get_imap_connection();
         if ($mbox === false) {
-            $this->assertTrue(false, 'IMAP connection failed: ' . @strval(imap_errors()));
+            $_errors = imap_errors();
+            $errors = ($_errors === false) ? 'Unknown error' : implode('; ', $_errors);
+            $this->assertTrue(false, 'IMAP connection failed: ' . $errors);
             return;
         }
 
@@ -95,6 +101,10 @@ class _protocol_imap_test_set extends cms_test_case
 
     public function testBounceFinder()
     {
+        if (addon_installed('imap')) {
+            require_code('imap');
+        }
+
         if (!function_exists('imap_open')) {
             return;
         }

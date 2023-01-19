@@ -46,7 +46,7 @@ class Hook_addon_registry_imap
      */
     public function get_category() : string
     {
-        return 'TODO';
+        return 'Development';
     }
 
     /**
@@ -56,7 +56,7 @@ class Hook_addon_registry_imap
      */
     public function get_author() : string
     {
-        return 'TODO';
+        return 'Patrick Schmalstig';
     }
 
     /**
@@ -66,7 +66,9 @@ class Hook_addon_registry_imap
      */
     public function get_copyright_attribution() : array
     {
-        return [];
+        return [
+            'javanile/php-imap2'
+        ];
     }
 
     /**
@@ -76,7 +78,7 @@ class Hook_addon_registry_imap
      */
     public function get_licence() : string
     {
-        return 'TODO';
+        return 'GNU General Public License v3.0';
     }
 
     /**
@@ -86,7 +88,7 @@ class Hook_addon_registry_imap
      */
     public function get_description() : string
     {
-        return 'TODO';
+        return 'This addon adds an actively-maintained drop-in replacement for the questionably-maintained PHP IMAP extension by using javanile php-imap2. This addon is also useful for those without the PHP IMAP extension available to them. In the future, we have to be able to add oAuth support, which is supported by this library.';
     }
 
     /**
@@ -107,8 +109,13 @@ class Hook_addon_registry_imap
     public function get_dependencies() : array
     {
         return [
-            'requires' => [], // TODO
-            'recommends' => [],
+            'requires' => [],
+            'recommends' => [ // These addons use IMAP to some optional capacity
+                'cns_forum',
+                'tickets',
+                'ecommerce',
+                'newsletter'
+            ],
             'conflicts_with' => [],
         ];
     }

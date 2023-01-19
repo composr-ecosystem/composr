@@ -1053,6 +1053,20 @@ class ImapClient
             $this->debug("Connecting to $_host...");
         }
 
+        // TODO
+        $this->prefs['socket_options'] = [
+            'http' => [
+                'ssl' => [
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                    // 'cafile' => get_file_base() . '/data/curl-ca-bundle.crt',
+                    'SNI_enabled' => true,
+                    'disable_compression' => true,
+                    'allow_self_signed' => true,
+                ]
+            ]
+        ];
+
         if (!empty($this->prefs['socket_options'])) {
             $context  = stream_context_create($this->prefs['socket_options']);
             $this->fp = stream_socket_client($host . ':' . $this->prefs['port'], $errno, $errstr,
