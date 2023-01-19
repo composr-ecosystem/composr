@@ -879,8 +879,6 @@ class Virtual_shell
 
         $this->fs = object_factory('commandr_fs');
 
-        log_it('COMMANDR_COMMAND', $this->output[STREAM_STDCOMMAND]);
-
         // Start parsing with the command
         $this->_extract_command();
         if (trim($this->parsed_input[SECTION_COMMAND]) == '') {
@@ -951,6 +949,7 @@ class Virtual_shell
                     require_code('hooks/systems/commandr_commands/' . filter_naughty_harsh($hook));
                     $object = object_factory('Hook_commandr_command_' . filter_naughty_harsh($hook));
                     $hook_return = $object->run($this->parsed_input[SECTION_OPTIONS], $this->parsed_input[SECTION_PARAMETERS], $this->fs);
+                    log_it('COMMANDR_COMMAND', $hook, implode(', ', $this->parsed_input[SECTION_PARAMETERS]));
                     $this->parse_runtime['commandr_command'] = COMMAND_LONE;
                     break;
                 }
@@ -958,6 +957,7 @@ class Virtual_shell
 
             if ($hook_return !== null) {
                 $this->output[STREAM_STDCOMMAND] = $hook_return[0];
+
                 if (is_object($hook_return[1])) {
                     $this->output[STREAM_STDHTML] = $hook_return[1]->evaluate();
                 } else {
