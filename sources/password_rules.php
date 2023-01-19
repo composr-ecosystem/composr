@@ -247,9 +247,9 @@ function check_password_complexity(string $password, string $username, string $e
         if ($strength < $minimum_strength) {
             require_lang('password_rules');
             if ($return_errors) {
-                return do_lang_tempcode('PASSWORD_NOT_COMPLEX_ENOUGH');
+                return do_lang_tempcode('PASSWORD_NOT_COMPLEX_ENOUGH', strval($_minimum_password_strength), strval($strength));
             }
-            warn_exit(do_lang_tempcode('PASSWORD_NOT_COMPLEX_ENOUGH'));
+            warn_exit(do_lang_tempcode('PASSWORD_NOT_COMPLEX_ENOUGH', strval($_minimum_password_strength), strval($strength)));
         }
     }
 

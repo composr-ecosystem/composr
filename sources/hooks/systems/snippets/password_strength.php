@@ -31,12 +31,17 @@ class Hook_snippet_password_strength
     public function run() : object
     {
         require_code('password_rules');
-        $score = test_password(
+
+        $ret = [];
+        $ret['strength'] = test_password(
             post_param_string('password', false, INPUT_FILTER_PASSWORD),
             post_param_string('username', '', INPUT_FILTER_POST_IDENTIFIER),
             post_param_string('email_address', '', INPUT_FILTER_POST_IDENTIFIER),
             post_param_date('birthday', true, false)
         );
-        return make_string_tempcode(strval($score));
+
+        $ret['minStrength'] = intval(get_option('minimum_password_strength'));
+
+        return make_string_tempcode(json_encode($ret));
     }
 }

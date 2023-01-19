@@ -370,16 +370,18 @@
                 }
             }
 
-            $cms.loadSnippet('password_strength', post, true).then(function (strength) {
-                strength = Number(strength);
+            $cms.loadSnippet('password_strength', post, true).then(function (resp) {
+                var data = JSON.parse(resp);
+
+                var strength = Number(data.strength);
+                var minStrength = Number(data.minStrength);
+
                 ind.style.display = 'block';
                 ind.style.width = (strength * 10) + 'px';
-                if (strength >= 6) {
+                if (strength >= minStrength) {
                     ind.style.backgroundColor = 'green';
-                } else if (strength < 4) {
-                    ind.style.backgroundColor = 'red';
                 } else {
-                    ind.style.backgroundColor = 'orange';
+                    ind.style.backgroundColor = 'red';
                 }
 
                 ind.parentNode.style.display = (input.value.length === 0) ? 'none' : 'block';

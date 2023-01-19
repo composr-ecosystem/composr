@@ -278,13 +278,15 @@ function _enforce_temporary_passwords(int $member_id)
         $redirect_url = null;
 
         $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
+        $email_address = $GLOBALS['FORUM_DRIVER']->get_member_email_address($member_id);
 
         // Expired?
         if (intval(get_option('password_expiry_days')) > 0) {
             require_code('password_rules');
+            require_code('crypt');
             if (member_password_expired($member_id)) {
                 require_lang('password_rules');
-                $force_change_message = do_lang_tempcode('PASSWORD_EXPIRED', escape_html($username), escape_html(integer_format(intval(get_option('password_expiry_days')))));
+                $force_change_message = do_lang_tempcode('PASSWORD_EXPIRED', escape_html($username), escape_html(integer_format(intval(get_option('password_expiry_days')))), escape_html(mask_email_address($email_address)));
                 require_code('urls');
                 $redirect_url = build_url(['page' => 'lost_password', 'username' => $username], '');
             }
