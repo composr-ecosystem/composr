@@ -98,6 +98,8 @@ class Hook_cron_log_purging
                         $found_some_date = true;
                         if ($time >= $threshold_time) {
                             $found_pivot = true;
+                            $lines[] = $line;
+                            continue;
                         }
                     }
                 }
@@ -110,8 +112,9 @@ class Hook_cron_log_purging
 
         flock($myfile, LOCK_EX);
         ftruncate($myfile, 0);
+        rewind($myfile);
         foreach ($lines as $line) {
-            fwrite($myfile, $line);
+            fwrite($myfile, $line . "\n");
         }
         flock($myfile, LOCK_UN);
 
