@@ -22,6 +22,13 @@
  */
 class Mail_dispatcher_override extends Mail_dispatcher_base
 {
+    // Configuration if using SMTP
+    public $smtp_sockets_host;
+    public $smtp_sockets_port;
+    public $smtp_sockets_username;
+    public $smtp_sockets_password;
+    public $smtp_from_address;
+
     /**
      * Construct e-mail dispatcher.
      *
@@ -29,6 +36,13 @@ class Mail_dispatcher_override extends Mail_dispatcher_base
      */
     public function __construct(array $advanced_parameters = [])
     {
+        $this->smtp_sockets_use = (get_option('smtp_sockets_use') == '1');
+        $this->smtp_sockets_host = get_option('smtp_sockets_host');
+        $this->smtp_sockets_port = intval(get_option('smtp_sockets_port'));
+        $this->smtp_sockets_username = get_option('smtp_sockets_username');
+        $this->smtp_sockets_password = get_option('smtp_sockets_password');
+        $this->smtp_from_address = get_option('smtp_from_address');
+
         require_code('swift_mailer/lib/swift_required');
 
         parent::__construct($advanced_parameters);
