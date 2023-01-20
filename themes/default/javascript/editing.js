@@ -551,7 +551,7 @@
 
             // Monitor pasting, for anti-spam reasons
             editor.on('paste', function (event) {
-                if (event.data.html && event.data.html.length > $cms.configOption('spam_heuristic_pasting')) {
+                if (event.data.dataValue && event.data.dataValue.length > $cms.configOption('spam_heuristic_pasting')) {
                     $cms.setPostDataFlag('paste');
                 }
             });
