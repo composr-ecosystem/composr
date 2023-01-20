@@ -44,6 +44,18 @@ class Functions
         return false;
     }
 
+    // Added by ChrisG
+    public static function getVerifyPeerEnabledFromMailbox($mailbox)
+    {
+        $mailboxParts = is_array($mailbox) ? $mailbox : self::parseMailboxString($mailbox);
+
+        if (in_array('novalidate-cert', $mailboxParts['path'])) {
+            return false;
+        }
+
+        return true;
+    }
+
     public static function expectedNumberOfMessages($sequence)
     {
         if (strpos($sequence, ',') > 0) {

@@ -88,6 +88,17 @@ class ComposerStaticInitc01efb5bec94f7e8e4963ea9b7018aa0
                 0 => __DIR__ . '/..' . '/pimple/pimple/src',
             ),
         ),
+        'A' => 
+        array (
+            'Auth' => 
+            array (
+                0 => __DIR__ . '/..' . '/pear/auth_sasl',
+            ),
+        ),
+    );
+
+    public static $classMap = array (
+        'PEAR_Exception' => __DIR__ . '/..' . '/pear/pear_exception/PEAR/Exception.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
@@ -96,6 +107,7 @@ class ComposerStaticInitc01efb5bec94f7e8e4963ea9b7018aa0
             $loader->prefixLengthsPsr4 = ComposerStaticInitc01efb5bec94f7e8e4963ea9b7018aa0::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInitc01efb5bec94f7e8e4963ea9b7018aa0::$prefixDirsPsr4;
             $loader->prefixesPsr0 = ComposerStaticInitc01efb5bec94f7e8e4963ea9b7018aa0::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInitc01efb5bec94f7e8e4963ea9b7018aa0::$classMap;
 
         }, null, ClassLoader::class);
     }
