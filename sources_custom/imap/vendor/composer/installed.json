@@ -183,6 +183,118 @@
         ]
     },
     {
+        "name": "pear/auth_sasl",
+        "version": "v1.1.0",
+        "version_normalized": "1.1.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/pear/Auth_SASL.git",
+            "reference": "db1ead3dc0bf986d2bab0dbc04d114800cf91dee"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/pear/Auth_SASL/zipball/db1ead3dc0bf986d2bab0dbc04d114800cf91dee",
+            "reference": "db1ead3dc0bf986d2bab0dbc04d114800cf91dee",
+            "shasum": ""
+        },
+        "require": {
+            "pear/pear_exception": "@stable"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "@stable"
+        },
+        "time": "2017-03-07T14:37:05+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "Auth": "./"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "include-path": [
+            "./"
+        ],
+        "license": [
+            "BSD"
+        ],
+        "authors": [
+            {
+                "name": "Anish Mistry",
+                "email": "amistry@am-productions.biz",
+                "role": "Lead"
+            },
+            {
+                "name": "Richard Heyes",
+                "email": "richard@php.net",
+                "role": "Lead"
+            },
+            {
+                "name": "Michael Bretterklieber",
+                "email": "michael@bretterklieber.com",
+                "role": "Lead"
+            }
+        ],
+        "description": "Abstraction of various SASL mechanism responses"
+    },
+    {
+        "name": "pear/pear_exception",
+        "version": "v1.0.2",
+        "version_normalized": "1.0.2.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/pear/PEAR_Exception.git",
+            "reference": "b14fbe2ddb0b9f94f5b24cf08783d599f776fff0"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/pear/PEAR_Exception/zipball/b14fbe2ddb0b9f94f5b24cf08783d599f776fff0",
+            "reference": "b14fbe2ddb0b9f94f5b24cf08783d599f776fff0",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.2.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "<9"
+        },
+        "time": "2021-03-21T15:43:46+00:00",
+        "type": "class",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.0.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "classmap": [
+                "PEAR/"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "include-path": [
+            "."
+        ],
+        "license": [
+            "BSD-2-Clause"
+        ],
+        "authors": [
+            {
+                "name": "Helgi Thormar",
+                "email": "dufuz@php.net"
+            },
+            {
+                "name": "Greg Beaver",
+                "email": "cellog@php.net"
+            }
+        ],
+        "description": "The PEAR Exception base class.",
+        "homepage": "https://github.com/pear/PEAR_Exception",
+        "keywords": [
+            "exception"
+        ]
+    },
+    {
         "name": "pimple/pimple",
         "version": "v3.5.0",
         "version_normalized": "3.5.0.0",

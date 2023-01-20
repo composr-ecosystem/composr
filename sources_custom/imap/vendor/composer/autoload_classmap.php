@@ -6,4 +6,5 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'PEAR_Exception' => $vendorDir . '/pear/pear_exception/PEAR/Exception.php',
 );

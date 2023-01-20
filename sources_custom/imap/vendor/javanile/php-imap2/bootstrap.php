@@ -1,5 +1,6 @@
 <?php
-// TODO: PatrickS for ocProducts: Modified file to use destrictify/restrictify
+
+// ChrisG/PatrickS for ocProducts: Modified file to use destrictify/restrictify
 
 /*
  * This file is part of the PHP IMAP2 package.
@@ -21,7 +22,7 @@ use Javanile\Imap2\Timeout;
 use Javanile\Imap2\Functions;
 
 define('IMAP2_CHARSET', 'UTF-8');
-define('IMAP2_RETROFIT_MODE', function_exists('imap_open'));
+define('IMAP2_RETROFIT_MODE', false/*ChrisG: We would not have this library installed if we wanted to revert to the regular IMAP extension when we call an imap2_* function*/);
 
 if (!defined('NIL')) {
     define('NIL', 0);
@@ -238,10 +239,7 @@ if (!function_exists('imap_open')) {
     /** @codeCoverageIgnore */
     function imap_open($mailbox, $user, $password, $flags = 0, $retries = 0, $options = [])
     {
-        destrictify();
-        $ret = imap2_open($mailbox, $user, $password, $flags, $retries, $options);
-        restrictify();
-        return $ret;
+        return imap2_open($mailbox, $user, $password, $flags, $retries, $options);
     }
 }
 if (!function_exists('imap2_open')) {
@@ -251,7 +249,11 @@ if (!function_exists('imap2_open')) {
             return imap_open($mailbox, $user, $password, $flags, $retries, $options);
         }
 
-        return Connection::open($mailbox, $user, $password, $flags, $retries, $options);
+        destrictify();
+        $ret = Connection::open($mailbox, $user, $password, $flags, $retries, $options);
+        restrictify();
+
+        return $ret;
     }
 }
 
@@ -262,10 +264,7 @@ if (!function_exists('imap_reopen')) {
     /** @codeCoverageIgnore */
     function imap_reopen($imap, $mailbox, $flags = 0, $retries = 0)
     {
-        destrictify();
-        $ret = imap2_reopen($imap, $mailbox, $flags, $retries);
-        restrictify();
-        return $ret;
+        return imap2_reopen($imap, $mailbox, $flags, $retries);
     }
 }
 if (!function_exists('imap2_reopen')) {
@@ -286,10 +285,7 @@ if (!function_exists('imap_ping')) {
     /** @codeCoverageIgnore */
     function imap_ping($imap)
     {
-        destrictify();
-        $ret = Connection::ping($imap);
-        restrictify();
-        return $ret;
+        return Connection::ping($imap);
     }
 }
 if (!function_exists('imap2_ping')) {
@@ -313,6 +309,7 @@ if (!function_exists('imap_close')) {
         destrictify();
         $ret = Connection::close($imap, $flags);
         restrictify();
+
         return $ret;
     }
 }
@@ -323,7 +320,11 @@ if (!function_exists('imap2_close')) {
             return imap_close($imap, $flags);
         }
 
-        return Connection::close($imap, $flags);
+        destrictify();
+        $ret = Connection::close($imap, $flags);
+        restrictify();
+
+        return $ret;
     }
 }
 
@@ -334,10 +335,7 @@ if (!function_exists('imap_timeout')) {
     /** @codeCoverageIgnore */
     function imap_timeout($timeoutType, $timeout = -1)
     {
-        destrictify();
-        $ret = imap2_timeout($timeoutType, $timeout);
-        restrictify();
-        return $ret;
+        return imap2_timeout($timeoutType, $timeout);
     }
 }
 if (!function_exists('imap2_timeout')) {
@@ -357,10 +355,7 @@ if (!function_exists('imap2_timeout')) {
 if (!function_exists('imap_check')) {
     function imap_check($imap)
     {
-        destrictify();
-        $ret = Mailbox::check($imap);
-        restrictify();
-        return $ret;
+        return Mailbox::check($imap);
     }
 }
 if (!function_exists('imap2_check')) {
@@ -376,10 +371,7 @@ if (!function_exists('imap2_check')) {
 if (!function_exists('imap_status')) {
     function imap_status($imap, $mailbox, $flags)
     {
-        destrictify();
-        $ret = imap2_status($imap, $mailbox, $flags);
-        restrictify();
-        return $ret;
+        return imap2_status($imap, $mailbox, $flags);
     }
 }
 if (!function_exists('imap2_status')) {
@@ -400,10 +392,7 @@ if (!function_exists('imap_num_msg')) {
     /** @codeCoverageIgnore */
     function imap_num_msg($imap)
     {
-        destrictify();
-        $ret = imap2_num_msg($imap);
-        restrictify();
-        return $ret;
+        return imap2_num_msg($imap);
     }
 }
 if (!function_exists('imap2_num_msg')) {
@@ -423,10 +412,7 @@ if (!function_exists('imap2_num_msg')) {
 if (!function_exists('imap_num_recent')) {
     function imap_num_recent($imap)
     {
-        destrictify();
-        $ret = imap2_num_recent($imap);
-        restrictify();
-        return $ret;
+        return imap2_num_recent($imap);
     }
 }
 if (!function_exists('imap2_num_recent')) {
@@ -447,16 +433,17 @@ if (!function_exists('imap_list')) {
     /** @codeCoverageIgnore */
     function imap_list($imap, $reference, $pattern)
     {
-        destrictify();
-        $ret = imap2_list($imap, $reference, $pattern);
-        restrictify();
-        return $ret;
+        return imap2_list($imap, $reference, $pattern);
     }
 }
 if (!function_exists('imap2_list')) {
     function imap2_list($imap, $reference, $pattern)
     {
-        return Mailbox::list($imap, $reference, $pattern);
+        destrictify();
+        $ret = Mailbox::list($imap, $reference, $pattern);
+        restrictify();
+
+        return $ret;
     }
 }
 
@@ -467,16 +454,17 @@ if (!function_exists('imap_listmailbox')) {
     /** @codeCoverageIgnore */
     function imap_listmailbox($imap, $reference, $pattern)
     {
-        destrictify();
-        $ret = imap2_listmailbox($imap, $reference, $pattern);
-        restrictify();
-        return $ret;
+        return imap2_listmailbox($imap, $reference, $pattern);
     }
 }
 if (!function_exists('imap2_listmailbox')) {
     function imap2_listmailbox($imap, $reference, $pattern)
     {
-        return Mailbox::list($imap, $reference, $pattern);
+        destrictify();
+        $ret = Mailbox::list($imap, $reference, $pattern);
+        restrictify();
+
+        return $ret;
     }
 }
 
@@ -487,16 +475,17 @@ if (!function_exists('imap_listscan')) {
     /** @codeCoverageIgnore */
     function imap_listscan($imap, $reference, $pattern, $content)
     {
-        destrictify();
-        $ret = imap2_listscan($imap, $reference, $pattern, $content);
-        restrictify();
-        return $ret;
+        return imap2_listscan($imap, $reference, $pattern, $content);
     }
 }
 if (!function_exists('imap2_listscan')) {
     function imap2_listscan($imap, $reference, $pattern, $content)
     {
-        return Mailbox::listScan($imap, $reference, $pattern, $content);
+        destrictify();
+        $ret = Mailbox::listScan($imap, $reference, $pattern, $content);
+        restrictify();
+
+        return $ret;
     }
 }
 
@@ -507,10 +496,7 @@ if (!function_exists('imap_scan')) {
     /** @codeCoverageIgnore */
     function imap_scan($imap, $reference, $pattern, $content)
     {
-        destrictify();
-        $ret = imap2_scan($imap, $reference, $pattern, $content);
-        restrictify();
-        return $ret;
+        return imap2_scan($imap, $reference, $pattern, $content);
     }
 }
 if (!function_exists('imap2_scan')) {
@@ -527,10 +513,7 @@ if (!function_exists('imap_scanmailbox')) {
     /** @codeCoverageIgnore */
     function imap_scanmailbox($imap, $reference, $pattern, $content)
     {
-        destrictify();
-        $ret = imap2_scanmailbox($imap, $reference, $pattern, $content);
-        restrictify();
-        return $ret;
+        return imap2_scanmailbox($imap, $reference, $pattern, $content);
     }
 }
 if (!function_exists('imap2_scanmailbox')) {
@@ -547,10 +530,7 @@ if (!function_exists('imap_getmailboxes')) {
     /** @codeCoverageIgnore */
     function imap_getmailboxes($imap, $reference, $pattern)
     {
-        destrictify();
-        $ret = imap2_getmailboxes($imap, $reference, $pattern);
-        restrictify();
-        return $ret;
+        return imap2_getmailboxes($imap, $reference, $pattern);
     }
 }
 if (!function_exists('imap2_getmailboxes')) {
@@ -571,16 +551,17 @@ if (!function_exists('imap_listsubscribed')) {
     /** @codeCoverageIgnore */
     function imap_listsubscribed($imap, $reference, $pattern)
     {
-        destrictify();
-        $ret = imap2_listsubscribed($imap, $reference, $pattern);
-        restrictify();
-        return $ret;
+        return imap2_listsubscribed($imap, $reference, $pattern);
     }
 }
 if (!function_exists('imap2_listsubscribed')) {
     function imap2_listsubscribed($imap, $reference, $pattern)
     {
-        return Mailbox::listSubscribed($imap, $reference, $pattern);
+        destrictify();
+        $ret = Mailbox::listSubscribed($imap, $reference, $pattern);
+        restrictify();
+
+        return $ret;
     }
 }
 
@@ -591,10 +572,7 @@ if (!function_exists('imap_lsub')) {
     /** @codeCoverageIgnore */
     function imap_lsub($imap, $reference, $pattern)
     {
-        destrictify();
-        $ret = imap2_lsub($imap, $reference, $pattern);
-        restrictify();
-        return $ret;
+        return imap2_lsub($imap, $reference, $pattern);
     }
 }
 if (!function_exists('imap2_lsub')) {
@@ -611,10 +589,7 @@ if (!function_exists('imap_getsubscribed')) {
     /** @codeCoverageIgnore */
     function imap_getsubscribed($imap, $reference, $pattern)
     {
-        destrictify();
-        $ret = imap2_getsubscribed($imap, $reference, $pattern);
-        restrictify();
-        return $ret;
+        return imap2_getsubscribed($imap, $reference, $pattern);
     }
 }
 if (!function_exists('imap2_getsubscribed')) {
@@ -631,10 +606,7 @@ if (!function_exists('imap_subscribe')) {
     /** @codeCoverageIgnore */
     function imap_subscribe($imap, $mailbox)
     {
-        destrictify();
-        $ret = imap2_subscribe($imap, $mailbox);
-        restrictify();
-        return $ret;
+        return imap2_subscribe($imap, $mailbox);
     }
 }
 if (!function_exists('imap2_subscribe')) {
@@ -650,10 +622,7 @@ if (!function_exists('imap2_subscribe')) {
 if (!function_exists('imap_unsubscribe')) {
     function imap_unsubscribe($imap, $mailbox)
     {
-        destrictify();
-        $ret = imap2_unsubscribe($imap, $mailbox);
-        restrictify();
-        return $ret;
+        return imap2_unsubscribe($imap, $mailbox);
     }
 }
 if (!function_exists('imap2_unsubscribe')) {
@@ -669,10 +638,7 @@ if (!function_exists('imap2_unsubscribe')) {
 if (!function_exists('imap_createmailbox')) {
     function imap_createmailbox($imap, $mailbox)
     {
-        destrictify();
-        $ret = imap2_createmailbox($imap, $mailbox);
-        restrictify();
-        return $ret;
+        return imap2_createmailbox($imap, $mailbox);
     }
 }
 if (!function_exists('imap2_createmailbox')) {
@@ -692,10 +658,7 @@ if (!function_exists('imap2_createmailbox')) {
 if (!function_exists('imap_create')) {
     function imap_create($imap, $mailbox)
     {
-        destrictify();
-        $ret = imap2_create($imap, $mailbox);
-        restrictify();
-        return $ret;
+        return imap2_create($imap, $mailbox);
     }
 }
 if (!function_exists('imap2_create')) {
@@ -715,10 +678,7 @@ if (!function_exists('imap2_create')) {
 if (!function_exists('imap_deletemailbox')) {
     function imap_deletemailbox($imap, $mailbox)
     {
-        destrictify();
-        $ret = imap2_deletemailbox($imap, $mailbox);
-        restrictify();
-        return $ret;
+        return imap2_deletemailbox($imap, $mailbox);
     }
 }
 if (!function_exists('imap2_deletemailbox')) {
@@ -728,7 +688,11 @@ if (!function_exists('imap2_deletemailbox')) {
             return imap_deletemailbox($imap, $mailbox);
         }
 
-        return Mailbox::deleteMailbox($imap, $mailbox);
+        destrictify();
+        $ret = Mailbox::deleteMailbox($imap, $mailbox);
+        restrictify();
+
+        return $ret;
     }
 }
 
@@ -738,10 +702,7 @@ if (!function_exists('imap2_deletemailbox')) {
 if (!function_exists('imap_renamemailbox')) {
     function imap_renamemailbox($imap, $from, $to)
     {
-        destrictify();
-        $ret = imap2_renamemailbox($imap, $from, $to);
-        restrictify();
-        return $ret;
+        return imap2_renamemailbox($imap, $from, $to);
     }
 }
 if (!function_exists('imap2_renamemailbox')) {
@@ -757,10 +718,7 @@ if (!function_exists('imap2_renamemailbox')) {
 if (!function_exists('imap_rename')) {
     function imap_rename($imap, $from, $to)
     {
-        destrictify();
-        $ret = imap2_rename($imap, $from, $to);
-        restrictify();
-        return $ret;
+        return imap2_rename($imap, $from, $to);
     }
 }
 if (!function_exists('imap2_rename')) {
@@ -776,10 +734,7 @@ if (!function_exists('imap2_rename')) {
 if (!function_exists('imap_mailboxmsginfo')) {
     function imap_mailboxmsginfo($imap)
     {
-        destrictify();
-        $ret = imap2_mailboxmsginfo($imap);
-        restrictify();
-        return $ret;
+        return imap2_mailboxmsginfo($imap);
     }
 }
 if (!function_exists('imap2_mailboxmsginfo')) {
@@ -799,10 +754,7 @@ if (!function_exists('imap2_mailboxmsginfo')) {
 if (!function_exists('imap_search')) {
     function imap_search($imap, $criteria, $flags = SE_FREE, $charset = "")
     {
-        destrictify();
-        $ret = imap2_search($imap, $criteria, $flags, $charset);
-        restrictify();
-        return $ret;
+        return imap2_search($imap, $criteria, $flags, $charset);
     }
 }
 if (!function_exists('imap2_search')) {
@@ -811,8 +763,12 @@ if (!function_exists('imap2_search')) {
         if (IMAP2_RETROFIT_MODE && is_resource($imap) && get_resource_type($imap) == 'imap') {
             return imap_search($imap, $criteria, $flags, $charset);
         }
+        
+        destrictify();
+        $ret = Message::search($imap, $criteria, $flags, $charset);
+        restrictify();
 
-        return Message::search($imap, $criteria, $flags, $charset);
+        return $ret;
     }
 }
 
@@ -822,10 +778,7 @@ if (!function_exists('imap2_search')) {
 if (!function_exists('imap_headers')) {
     function imap_headers($imap)
     {
-        destrictify();
-        $ret = imap2_headers($imap);
-        restrictify();
-        return $ret;
+        return imap2_headers($imap);
     }
 }
 if (!function_exists('imap2_headers')) {
@@ -845,10 +798,7 @@ if (!function_exists('imap2_headers')) {
 if (!function_exists('imap_msgno')) {
     function imap_msgno($imap, $messageUid)
     {
-        destrictify();
-        $ret = imap2_msgno($imap, $messageUid);
-        restrictify();
-        return $ret;
+        return imap2_msgno($imap, $messageUid);
     }
 }
 if (!function_exists('imap2_msgno')) {
@@ -868,10 +818,7 @@ if (!function_exists('imap2_msgno')) {
 if (!function_exists('imap_uid')) {
     function imap_uid($imap, $messageNum)
     {
-        destrictify();
-        $ret = imap2_uid($imap, $messageNum);
-        restrictify();
-        return $ret;
+        return imap2_uid($imap, $messageNum);
     }
 }
 if (!function_exists('imap2_uid')) {
@@ -891,17 +838,13 @@ if (!function_exists('imap2_uid')) {
 if (!function_exists('imap_sort')) {
     function imap_sort($imap, $criteria, $reverse, $flags = 0, $searchCriteria = null, $charset = null)
     {
-        destrictify();
-        $ret = imap2_sort($imap, $criteria, $reverse, $flags, $searchCriteria, $charset);
-        restrictify();
-        return $ret;
+        return imap2_sort($imap, $criteria, $reverse, $flags, $searchCriteria, $charset);
     }
 }
 if (!function_exists('imap2_sort')) {
     function imap2_sort($imap, $criteria, $reverse, $flags = 0, $searchCriteria = null, $charset = null)
     {
-        destrictify();
-        $ret = Message::sort($imap, $criteria, $reverse, $flags, $searchCriteria, $charset);
+        return Message::sort($imap, $criteria, $reverse, $flags, $searchCriteria, $charset);
     }
 }
 
@@ -911,10 +854,7 @@ if (!function_exists('imap2_sort')) {
 if (!function_exists('imap_append')) {
     function imap_append($imap, $folder, $message, $options = null, $internalDate = null)
     {
-        destrictify();
-        $ret = imap2_append($imap, $folder, $message, $options, $internalDate);
-        restrictify();
-        return $ret;
+        return imap2_append($imap, $folder, $message, $options, $internalDate);
     }
 }
 if (!function_exists('imap2_append')) {
@@ -934,10 +874,7 @@ if (!function_exists('imap2_append')) {
 if (!function_exists('imap_headerinfo')) {
     function imap_headerinfo($imap, $messageNum, $fromLength = 0, $subjectLength = 0, $defaultHost = null)
     {
-        destrictify();
-        $ret = imap2_headerinfo($imap, $messageNum, $fromLength, $subjectLength, $defaultHost);
-        restrictify();
-        return $ret;
+        return imap2_headerinfo($imap, $messageNum, $fromLength, $subjectLength, $defaultHost);
     }
 }
 if (!function_exists('imap2_headerinfo')) {
@@ -947,7 +884,11 @@ if (!function_exists('imap2_headerinfo')) {
             return imap_headerinfo($imap, $messageNum, $fromLength, $subjectLength, $defaultHost);
         }
 
-        return Message::headerInfo($imap, $messageNum, $fromLength, $subjectLength, $defaultHost);
+        destrictify();
+        $ret = Message::headerInfo($imap, $messageNum, $fromLength, $subjectLength, $defaultHost);
+        restrictify();
+
+        return $ret;
     }
 }
 
@@ -957,10 +898,7 @@ if (!function_exists('imap2_headerinfo')) {
 if (!function_exists('imap_header')) {
     function imap_header($imap, $messageNum, $fromLength = 0, $subjectLength = 0, $defaultHost = null)
     {
-        destrictify();
-        $ret = imap2_header($imap, $messageNum, $fromLength, $subjectLength, $defaultHost);
-        restrictify();
-        return $ret;
+        return imap2_header($imap, $messageNum, $fromLength, $subjectLength, $defaultHost);
     }
 }
 if (!function_exists('imap2_header')) {
@@ -976,10 +914,7 @@ if (!function_exists('imap2_header')) {
 if (!function_exists('imap_body')) {
     function imap_body($imap, $messageNum, $flags = 0)
     {
-        destrictify();
-        $ret = imap2_body($imap, $messageNum, $flags);
-        restrictify();
-        return $ret;
+        return imap2_body($imap, $messageNum, $flags);
     }
 }
 if (!function_exists('imap2_body')) {
@@ -989,7 +924,11 @@ if (!function_exists('imap2_body')) {
             return imap_body($imap, $messageNum, $flags);
         }
 
-        return Message::body($imap, $messageNum, $flags);
+        destrictify();
+        $ret = Message::body($imap, $messageNum, $flags);
+        restrictify();
+
+        return $ret;
     }
 }
 
@@ -999,10 +938,7 @@ if (!function_exists('imap2_body')) {
 if (!function_exists('imap_fetchtext')) {
     function imap_fetchtext($imap, $messageNum, $flags = 0)
     {
-        destrictify();
-        $ret = imap2_fetchtext($imap, $messageNum, $flags);
-        restrictify();
-        return $ret;
+        return imap2_fetchtext($imap, $messageNum, $flags);
     }
 }
 if (!function_exists('imap2_fetchtext')) {
@@ -1022,10 +958,7 @@ if (!function_exists('imap2_fetchtext')) {
 if (!function_exists('imap_fetchbody')) {
     function imap_fetchbody($imap, $messageNum, $section, $flags = 0)
     {
-        destrictify();
-        $ret = imap2_fetchbody($imap, $messageNum, $section, $flags);
-        restrictify();
-        return $ret;
+        return imap2_fetchbody($imap, $messageNum, $section, $flags);
     }
 }
 if (!function_exists('imap2_fetchbody')) {
@@ -1035,7 +968,11 @@ if (!function_exists('imap2_fetchbody')) {
             return imap_fetchbody($imap, $messageNum, $section, $flags);
         }
 
-        return Message::fetchBody($imap, $messageNum, $section, $flags);
+        destrictify();
+        $ret = Message::fetchBody($imap, $messageNum, $section, $flags);
+        restrictify();
+
+        return $ret;
     }
 }
 
@@ -1045,10 +982,7 @@ if (!function_exists('imap2_fetchbody')) {
 if (!function_exists('imap_bodystruct')) {
     function imap_bodystruct($imap, $messageNum, $section)
     {
-        destrictify();
-        $ret = imap2_bodystruct($imap, $messageNum, $section);
-        restrictify();
-        return $ret;
+        return imap2_bodystruct($imap, $messageNum, $section);
     }
 }
 if (!function_exists('imap2_bodystruct')) {
@@ -1068,10 +1002,7 @@ if (!function_exists('imap2_bodystruct')) {
 if (!function_exists('imap_savebody')) {
     function imap_savebody($imap, $file, $messageNum, $section = "", $flags = 0)
     {
-        destrictify();
-        $ret = imap2_savebody($imap, $file, $messageNum, $section, $flags);
-        restrictify();
-        return $ret;
+        return imap2_savebody($imap, $file, $messageNum, $section, $flags);
     }
 }
 if (!function_exists('imap2_savebody')) {
@@ -1091,10 +1022,7 @@ if (!function_exists('imap2_savebody')) {
 if (!function_exists('imap_fetchstructure')) {
     function imap_fetchstructure($imap, $messageNum, $flags = 0)
     {
-        destrictify();
-        $ret = imap2_fetchstructure($imap, $messageNum, $flags);
-        restrictify();
-        return $ret;
+        return imap2_fetchstructure($imap, $messageNum, $flags);
     }
 }
 if (!function_exists('imap2_fetchstructure')) {
@@ -1104,7 +1032,11 @@ if (!function_exists('imap2_fetchstructure')) {
             return imap_fetchstructure($imap, $messageNum, $flags);
         }
 
-        return Message::fetchStructure($imap, $messageNum, $flags);
+        destrictify();
+        $ret = Message::fetchStructure($imap, $messageNum, $flags);
+        restrictify();
+
+        return $ret;
     }
 }
 
@@ -1114,10 +1046,7 @@ if (!function_exists('imap2_fetchstructure')) {
 if (!function_exists('imap_fetchheader')) {
     function imap_fetchheader($imap, $messageNum, $flags = 0)
     {
-        destrictify();
-        $ret = imap2_fetchheader($imap, $messageNum, $flags);
-        restrictify();
-        return $ret;
+        return imap2_fetchheader($imap, $messageNum, $flags);
     }
 }
 if (!function_exists('imap2_fetchheader')) {
@@ -1127,7 +1056,11 @@ if (!function_exists('imap2_fetchheader')) {
             return imap_fetchheader($imap, $messageNum, $flags);
         }
 
-        return Message::fetchHeader($imap, $messageNum, $flags);
+        destrictify();
+        $ret = Message::fetchHeader($imap, $messageNum, $flags);
+        restrictify();
+
+        return $ret;
     }
 }
 
@@ -1137,10 +1070,7 @@ if (!function_exists('imap2_fetchheader')) {
 if (!function_exists('imap_fetch_overview')) {
     function imap_fetch_overview($imap, $sequence, $flags = 0)
     {
-        destrictify();
-        $ret = imap2_fetch_overview($imap, $sequence, $flags);
-        restrictify();
-        return $ret;
+        return imap2_fetch_overview($imap, $sequence, $flags);
     }
 }
 if (!function_exists('imap2_fetch_overview')) {
@@ -1160,10 +1090,7 @@ if (!function_exists('imap2_fetch_overview')) {
 if (!function_exists('imap_fetchmime')) {
     function imap_fetchmime($imap, $messageNum, $section, $flags = 0)
     {
-        destrictify();
-        $ret = imap2_fetchmime($imap, $messageNum, $section, $flags);
-        restrictify();
-        return $ret;
+        return imap2_fetchmime($imap, $messageNum, $section, $flags);
     }
 }
 if (!function_exists('imap2_fetchmime')) {
@@ -1173,7 +1100,11 @@ if (!function_exists('imap2_fetchmime')) {
             return imap_fetchmime($imap, $messageNum, $section, $flags);
         }
 
-        return Message::fetchMime($imap, $messageNum, $section, $flags);
+        destrictify();
+        $ret = Message::fetchMime($imap, $messageNum, $section, $flags);
+        restrictify();
+
+        return $ret;
     }
 }
 
@@ -1183,10 +1114,7 @@ if (!function_exists('imap2_fetchmime')) {
 if (!function_exists('imap_delete')) {
     function imap_delete($imap, $messageNums, $flags = 0)
     {
-        destrictify();
-        $ret = imap2_delete($imap, $messageNums, $flags);
-        restrictify();
-        return $ret;
+        return imap2_delete($imap, $messageNums, $flags);
     }
 }
 if (!function_exists('imap2_delete')) {
@@ -1196,7 +1124,11 @@ if (!function_exists('imap2_delete')) {
             return imap_delete($imap, $messageNums, $flags);
         }
 
-        return Message::delete($imap, $messageNums, $flags);
+        destrictify();
+        $ret = Message::delete($imap, $messageNums, $flags);
+        restrictify();
+
+        return $ret;
     }
 }
 
@@ -1206,10 +1138,7 @@ if (!function_exists('imap2_delete')) {
 if (!function_exists('imap_undelete')) {
     function imap_undelete($imap, $messageNums, $flags = 0)
     {
-        destrictify();
-        $ret = imap2_undelete($imap, $messageNums, $flags);
-        restrictify();
-        return $ret;
+        return imap2_undelete($imap, $messageNums, $flags);
     }
 }
 if (!function_exists('imap2_undelete')) {
@@ -1229,10 +1158,7 @@ if (!function_exists('imap2_undelete')) {
 if (!function_exists('imap_clearflag_full')) {
     function imap_clearflag_full($imap, $sequence, $flag, $options = 0)
     {
-        destrictify();
-        $ret = imap2_clearflag_full($imap, $sequence, $flag, $options);
-        restrictify();
-        return $ret;
+        return imap2_clearflag_full($imap, $sequence, $flag, $options);
     }
 }
 if (!function_exists('imap2_clearflag_full')) {
@@ -1242,7 +1168,11 @@ if (!function_exists('imap2_clearflag_full')) {
             return imap_clearflag_full($imap, $sequence, $flag, $options);
         }
 
-        return Message::clearFlagFull($imap, $sequence, $flag, $options);
+        destrictify();
+        $ret = Message::clearFlagFull($imap, $sequence, $flag, $options);
+        restrictify();
+
+        return $ret;
     }
 }
 
@@ -1252,10 +1182,7 @@ if (!function_exists('imap2_clearflag_full')) {
 if (!function_exists('imap_setflag_full')) {
     function imap_setflag_full($imap, $sequence, $flag, $options = 0)
     {
-        destrictify();
-        $ret = imap2_setflag_full($imap, $sequence, $flag, $options);
-        restrictify();
-        return $ret;
+        return imap2_setflag_full($imap, $sequence, $flag, $options);
     }
 }
 if (!function_exists('imap2_setflag_full')) {
@@ -1265,7 +1192,11 @@ if (!function_exists('imap2_setflag_full')) {
             return imap_setflag_full($imap, $sequence, $flag, $options);
         }
 
-        return Message::setFlagFull($imap, $sequence, $flag, $options);
+        destrictify();
+        $ret = Message::setFlagFull($imap, $sequence, $flag, $options);
+        restrictify();
+
+        return $ret;
     }
 }
 
@@ -1275,10 +1206,7 @@ if (!function_exists('imap2_setflag_full')) {
 if (!function_exists('imap_mail_compose')) {
     function imap_mail_compose($envelope, $bodies)
     {
-        destrictify();
-        $ret = imap2_mail_compose($envelope, $bodies);
-        restrictify();
-        return $ret;
+        return imap2_mail_compose($envelope, $bodies);
     }
 }
 if (!function_exists('imap2_mail_compose')) {
@@ -1294,10 +1222,7 @@ if (!function_exists('imap2_mail_compose')) {
 if (!function_exists('imap_mail_copy')) {
     function imap_mail_copy($imap, $messageNums, $mailbox, $flags = 0)
     {
-        destrictify();
-        $ret = imap2_mail_copy($imap, $messageNums, $mailbox, $flags);
-        restrictify();
-        return $ret;
+        return imap2_mail_copy($imap, $messageNums, $mailbox, $flags);
     }
 }
 if (!function_exists('imap2_mail_copy')) {
@@ -1317,10 +1242,7 @@ if (!function_exists('imap2_mail_copy')) {
 if (!function_exists('imap_mail_move')) {
     function imap_mail_move($imap, $messageNums, $mailbox, $flags = 0)
     {
-        destrictify();
-        $ret = imap2_mail_move($imap, $messageNums, $mailbox, $flags);
-        restrictify();
-        return $ret;
+        return imap2_mail_move($imap, $messageNums, $mailbox, $flags);
     }
 }
 if (!function_exists('imap2_mail_move')) {
@@ -1340,10 +1262,7 @@ if (!function_exists('imap2_mail_move')) {
 if (!function_exists('imap_mail')) {
     function imap_mail($to, $subject, $message, $additionalHeaders = null, $cc = null, $bcc = null, $returnPath = null)
     {
-        destrictify();
-        $ret = imap2_mail($to, $subject, $message, $additionalHeaders, $cc, $bcc, $returnPath);
-        restrictify();
-        return $ret;
+        return imap2_mail($to, $subject, $message, $additionalHeaders, $cc, $bcc, $returnPath);
     }
 }
 if (!function_exists('imap2_mail')) {
@@ -1363,10 +1282,7 @@ if (!function_exists('imap2_mail')) {
 if (!function_exists('imap_expunge')) {
     function imap_expunge($imap)
     {
-        destrictify();
-        $ret = imap2_expunge($imap);
-        restrictify();
-        return $ret;
+        return imap2_expunge($imap);
     }
 }
 if (!function_exists('imap2_expunge')) {
@@ -1382,10 +1298,7 @@ if (!function_exists('imap2_expunge')) {
 if (!function_exists('imap_gc')) {
     function imap_gc($imap, $flags)
     {
-        destrictify();
-        $ret = imap2_gc($imap, $flags);
-        restrictify();
-        return $ret;
+        return imap2_gc($imap, $flags);
     }
 }
 if (!function_exists('imap2_gc')) {
@@ -1401,10 +1314,7 @@ if (!function_exists('imap2_gc')) {
 if (!function_exists('imap_get_quota')) {
     function imap_get_quota($imap, $quotaRoot)
     {
-        destrictify();
-        $ret = imap2_get_quota($imap, $quotaRoot);
-        restrictify();
-        return $ret;
+        return imap2_get_quota($imap, $quotaRoot);
     }
 }
 if (!function_exists('imap2_get_quota')) {
@@ -1420,10 +1330,7 @@ if (!function_exists('imap2_get_quota')) {
 if (!function_exists('imap_set_quota')) {
     function imap_set_quota($imap, $quotaRoot, $mailboxSize)
     {
-        destrictify();
-        $ret = imap2_set_quota($imap, $quotaRoot, $mailboxSize);
-        restrictify();
-        return $ret;
+        return imap2_set_quota($imap, $quotaRoot, $mailboxSize);
     }
 }
 if (!function_exists('imap2_set_quota')) {
@@ -1439,10 +1346,7 @@ if (!function_exists('imap2_set_quota')) {
 if (!function_exists('imap_get_quotaroot')) {
     function imap_get_quotaroot($imap, $mailbox)
     {
-        destrictify();
-        $ret = imap2_get_quotaroot($imap, $mailbox);
-        restrictify();
-        return $ret;
+        return imap2_get_quotaroot($imap, $mailbox);
     }
 }
 if (!function_exists('imap2_get_quotaroot')) {
@@ -1458,10 +1362,7 @@ if (!function_exists('imap2_get_quotaroot')) {
 if (!function_exists('imap_getacl')) {
     function imap_getacl($imap, $mailbox)
     {
-        destrictify();
-        $ret = imap2_getacl($imap, $mailbox);
-        restrictify();
-        return $ret;
+        return imap2_getacl($imap, $mailbox);
     }
 }
 if (!function_exists('imap2_getacl')) {
@@ -1477,10 +1378,7 @@ if (!function_exists('imap2_getacl')) {
 if (!function_exists('imap_setacl')) {
     function imap_setacl($imap, $mailbox, $userId, $rights)
     {
-        destrictify();
-        $ret = imap2_setacl($imap, $mailbox, $userId, $rights);
-        restrictify();
-        return $ret;
+        return imap2_setacl($imap, $mailbox, $userId, $rights);
     }
 }
 if (!function_exists('imap2_setacl')) {
@@ -1496,10 +1394,7 @@ if (!function_exists('imap2_setacl')) {
 if (!function_exists('imap_thread')) {
     function imap_thread($imap, $flags = SE_FREE)
     {
-        destrictify();
-        $ret = imap2_thread($imap, $flags);
-        restrictify();
-        return $ret;
+        return imap2_thread($imap, $flags);
     }
 }
 if (!function_exists('imap2_thread')) {
@@ -1515,16 +1410,17 @@ if (!function_exists('imap2_thread')) {
 if (!function_exists('imap_errors')) {
     function imap_errors()
     {
-        destrictify();
-        $ret = imap2_errors();
-        restrictify();
-        return $ret;
+        return imap2_errors();
     }
 }
 if (!function_exists('imap2_errors')) {
     function imap2_errors()
     {
-        return Errors::errors();
+        destrictify();
+        $ret = Errors::errors();
+        restrictify();
+
+        return $ret;
     }
 }
 
@@ -1534,16 +1430,17 @@ if (!function_exists('imap2_errors')) {
 if (!function_exists('imap_last_error')) {
     function imap_last_error()
     {
-        destrictify();
-        $ret = imap2_last_error();
-        restrictify();
-        return $ret;
+        return imap2_last_error();
     }
 }
 if (!function_exists('imap2_last_error')) {
     function imap2_last_error()
     {
-        return Errors::lastError();
+        destrictify();
+        $ret = Errors::lastError();
+        restrictify();
+
+        return $ret;
     }
 }
 
@@ -1553,10 +1450,7 @@ if (!function_exists('imap2_last_error')) {
 if (!function_exists('imap_alerts')) {
     function imap_alerts()
     {
-        destrictify();
-        $ret = imap2_alerts();
-        restrictify();
-        return $ret;
+        return imap2_alerts();
     }
 }
 if (!function_exists('imap2_alerts')) {
@@ -1572,10 +1466,7 @@ if (!function_exists('imap2_alerts')) {
 if (!function_exists('imap_8bit')) {
     function imap_8bit($string)
     {
-        destrictify();
-        $ret = imap2_8bit($string);
-        restrictify();
-        return $ret;
+        return imap2_8bit($string);
     }
 }
 if (!function_exists('imap2_8bit')) {
@@ -1591,10 +1482,7 @@ if (!function_exists('imap2_8bit')) {
 if (!function_exists('imap_base64')) {
     function imap_base64($string)
     {
-        destrictify();
-        $ret = imap2_base64($string);
-        restrictify();
-        return $ret;
+        return imap2_base64($string);
     }
 }
 if (!function_exists('imap2_base64')) {
@@ -1604,7 +1492,11 @@ if (!function_exists('imap2_base64')) {
             return imap_base64($string);
         }
 
-        return Polyfill::base64($string);
+        destrictify();
+        $ret = Polyfill::base64($string);
+        restrictify();
+
+        return $ret;
     }
 }
 
@@ -1614,10 +1506,7 @@ if (!function_exists('imap2_base64')) {
 if (!function_exists('imap_binary')) {
     function imap_binary($string)
     {
-        destrictify();
-        $ret = imap2_binary($string);
-        restrictify();
-        return $ret;
+        return imap2_binary($string);
     }
 }
 if (!function_exists('imap2_binary')) {
@@ -1637,10 +1526,7 @@ if (!function_exists('imap2_binary')) {
 if (!function_exists('imap_mime_header_decode')) {
     function imap_mime_header_decode($string)
     {
-        destrictify();
-        $ret = imap2_mime_header_decode($string);
-        restrictify();
-        return $ret;
+        return imap2_mime_header_decode($string);
     }
 }
 if (!function_exists('imap2_mime_header_decode')) {
@@ -1660,10 +1546,7 @@ if (!function_exists('imap2_mime_header_decode')) {
 if (!function_exists('imap_mutf7_to_utf8')) {
     function imap_mutf7_to_utf8($string)
     {
-        destrictify();
-        $ret = imap2_mutf7_to_utf8($string);
-        restrictify();
-        return $ret;
+        return imap2_mutf7_to_utf8($string);
     }
 }
 if (!function_exists('imap2_mutf7_to_utf8')) {
@@ -1686,6 +1569,7 @@ if (!function_exists('imap_qprint')) {
         destrictify();
         $ret = Polyfill::qPrint($string);
         restrictify();
+
         return $ret;
     }
 }
@@ -1705,6 +1589,7 @@ if (!function_exists('imap_rfc822_parse_adrlist')) {
         destrictify();
         $ret = Polyfill::rfc822ParseAdrList($string, $defaultHostname);
         restrictify();
+
         return $ret;
     }
 }
@@ -1721,10 +1606,7 @@ if (!function_exists('imap2_rfc822_parse_adrlist')) {
 if (!function_exists('imap_rfc822_parse_headers')) {
     function imap_rfc822_parse_headers($headers, $defaultHostname = 'UNKNOWN')
     {
-        destrictify();
-        $ret = Polyfill::rfc822ParseHeaders($headers, $defaultHostname);
-        restrictify();
-        return $ret;
+        return Polyfill::rfc822ParseHeaders($headers, $defaultHostname);
     }
 }
 if (!function_exists('imap2_rfc822_parse_headers')) {
@@ -1740,10 +1622,7 @@ if (!function_exists('imap2_rfc822_parse_headers')) {
 if (!function_exists('imap_rfc822_write_address')) {
     function imap_rfc822_write_address($mailbox, $hostname, $personal)
     {
-        destrictify();
-        $ret = Polyfill::rfc822WriteHeaders($mailbox, $hostname, $personal);
-        restrictify();
-        return $ret;
+        return Polyfill::rfc822WriteHeaders($mailbox, $hostname, $personal);
     }
 }
 if (!function_exists('imap2_rfc822_write_address')) {
@@ -1759,16 +1638,13 @@ if (!function_exists('imap2_rfc822_write_address')) {
 if (!function_exists('imap_utf7_decode')) {
     function imap_utf7_decode($string)
     {
-        destrictify();
-        $ret = Polyfill::utf7Decode($string);
-        restrictify();
-        return $ret;
+        return Polyfill::utf7Decode($string);
     }
 }
 if (!function_exists('imap2_utf7_decode')) {
     function imap2_utf7_decode($string)
     {
-       return imap_utf7_decode($string);
+        return imap_utf7_decode($string);
     }
 }
 
@@ -1778,10 +1654,7 @@ if (!function_exists('imap2_utf7_decode')) {
 if (!function_exists('imap_utf7_encode')) {
     function imap_utf7_encode($string)
     {
-        destrictify();
-        $ret = Polyfill::utf7Encode($string);
-        restrictify();
-        return $ret;
+        return Polyfill::utf7Encode($string);
     }
 }
 if (!function_exists('imap2_utf7_encode')) {
@@ -1797,10 +1670,7 @@ if (!function_exists('imap2_utf7_encode')) {
 if (!function_exists('imap_utf8_to_mutf7')) {
     function imap_utf8_to_mutf7($string)
     {
-        destrictify();
-        $ret = Polyfill::utf8ToMutf7($string);
-        restrictify();
-        return $ret;
+        return Polyfill::utf8ToMutf7($string);
     }
 }
 if (!function_exists('imap2_utf8_to_mutf7')) {
@@ -1816,10 +1686,7 @@ if (!function_exists('imap2_utf8_to_mutf7')) {
 if (!function_exists('imap_utf8')) {
     function imap_utf8($string)
     {
-        destrictify();
-        $ret = Polyfill::utf8($string);
-        restrictify();
-        return $ret;
+        return Polyfill::utf8($string);
     }
 }
 if (!function_exists('imap2_utf8')) {

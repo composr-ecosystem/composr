@@ -1,5 +1,6 @@
 {
     "require": {
-        "javanile/php-imap2": "^0.1.10"
+        "javanile/php-imap2": "^0.1.10",
+        "pear/auth_sasl": "^1.1"
     }
 }

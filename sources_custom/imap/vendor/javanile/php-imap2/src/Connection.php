@@ -18,6 +18,7 @@ class Connection
     protected $mailbox;
     protected $user;
     protected $password;
+    protected $verifypeerEnabled; // Added by ChrisG
     protected $flags;
     protected $retries;
     protected $options;
@@ -36,6 +37,7 @@ class Connection
     {
         $this->user = $user;
         $this->password = $password;
+        $this->verifypeerEnabled = true; // Added by ChrisG
         $this->flags = $flags;
         $this->retries = $retries;
         $this->options = $options;
@@ -54,6 +56,7 @@ class Connection
         $this->host = Functions::getHostFromMailbox($mailboxParts);
         $this->port = @$mailboxParts['port'];
         $this->sslMode = Functions::getSslModeFromMailbox($mailboxParts);
+        $this->verifypeerEnabled = Functions::getVerifyPeerEnabledFromMailbox($mailboxParts); // Added by ChrisG
         $this->currentMailbox = $mailboxParts['mailbox'];
     }
 
@@ -135,6 +138,16 @@ class Connection
             'auth_type' => $this->flags & OP_XOAUTH2 ? 'XOAUTH2' : 'CHECK',
             'timeout' => -1,
             'force_caps' => false,
+
+            // Added by ChrisG
+            'http' => [
+                'ssl' => [
+                    'verify_peer' => $this->verifypeerEnabled,
+                    'verify_peer_name' => $this->verifypeerEnabled,
+                    'cafile' => get_file_base() . '/data/curl-ca-bundle.crt',
+                    'SNI_enabled' => true,
+                ]
+            ]
         ]);
 
         if (empty($success)) {

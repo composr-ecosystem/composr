@@ -67,7 +67,10 @@ class Hook_addon_registry_imap
     public function get_copyright_attribution() : array
     {
         return [
-            'javanile/php-imap2'
+            'Javanile',
+            'Francesco Bianco',
+            'Other javanile/php-imap2 contributors',
+            'RoundCube contributors including Aleksander Machniak, Ryo Chijiiwa',
         ];
     }
 
@@ -481,6 +484,25 @@ class Hook_addon_registry_imap
             'sources_custom/imap/vendor/zbateson/stream-decorators/src/QuotedPrintableStream.php',
             'sources_custom/imap/vendor/zbateson/stream-decorators/src/SeekingLimitStream.php',
             'sources_custom/imap/vendor/zbateson/stream-decorators/src/UUStream.php',
+            'sources_custom/imap/vendor/composer/include_paths.php',
+            'sources_custom/imap/vendor/pear/auth_sasl/.gitignore',
+            'sources_custom/imap/vendor/pear/auth_sasl/.travis.yml',
+            'sources_custom/imap/vendor/pear/auth_sasl/Auth/SASL.php',
+            'sources_custom/imap/vendor/pear/auth_sasl/Auth/SASL/Anonymous.php',
+            'sources_custom/imap/vendor/pear/auth_sasl/Auth/SASL/Common.php',
+            'sources_custom/imap/vendor/pear/auth_sasl/Auth/SASL/CramMD5.php',
+            'sources_custom/imap/vendor/pear/auth_sasl/Auth/SASL/DigestMD5.php',
+            'sources_custom/imap/vendor/pear/auth_sasl/Auth/SASL/External.php',
+            'sources_custom/imap/vendor/pear/auth_sasl/Auth/SASL/Login.php',
+            'sources_custom/imap/vendor/pear/auth_sasl/Auth/SASL/Plain.php',
+            'sources_custom/imap/vendor/pear/auth_sasl/Auth/SASL/SCRAM.php',
+            'sources_custom/imap/vendor/pear/auth_sasl/README.md',
+            'sources_custom/imap/vendor/pear/auth_sasl/composer.json',
+            'sources_custom/imap/vendor/pear/auth_sasl/package.xml',
+            'sources_custom/imap/vendor/pear/auth_sasl/phpunit.xml.dist',
+            'sources_custom/imap/vendor/pear/pear_exception/LICENSE',
+            'sources_custom/imap/vendor/pear/pear_exception/PEAR/Exception.php',
+            'sources_custom/imap/vendor/pear/pear_exception/composer.json',
         ];
     }
 }

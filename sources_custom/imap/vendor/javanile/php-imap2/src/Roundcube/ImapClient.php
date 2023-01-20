@@ -26,7 +26,7 @@
 
 namespace Javanile\Imap2\Roundcube;
 
-use Javanile\Imap2\Auth_SASL;
+//use Javanile\Imap2\Auth_SASL; // ChrisG, needs to be PEAR package
 use Javanile\Imap2\Exception;
 use Javanile\Imap2\GSSAPIContext;
 use Javanile\Imap2\KRB5CCache;
@@ -567,7 +567,7 @@ class ImapClient
     protected function authenticate($user, $pass, $type = 'PLAIN')
     {
         if ($type == 'CRAM-MD5' || $type == 'DIGEST-MD5') {
-            if ($type == 'DIGEST-MD5' && !class_exists('Auth_SASL')) {
+            if ($type == 'DIGEST-MD5' && !class_exists('\Auth_SASL')) { // ChrisG, needs to be PEAR package
                 return $this->setError(self::ERROR_BYE,
                     "The Auth_SASL package is required for DIGEST-MD5 authentication");
             }
@@ -624,7 +624,7 @@ class ImapClient
                     $user  = '';
                 }
 
-                $auth_sasl = new Auth_SASL;
+                $auth_sasl = new \Auth_SASL; // ChrisG, needs to be PEAR package
                 $auth_sasl = $auth_sasl->factory('digestmd5');
                 $reply     = base64_encode($auth_sasl->getResponse($authc, $pass,
                     base64_decode($challenge), $this->host, 'imap', $user));
@@ -1052,20 +1052,6 @@ class ImapClient
             $_host = ($this->prefs['ssl_mode'] == 'tls' ? 'tls://' : '') . $host . ':' . $this->prefs['port'];
             $this->debug("Connecting to $_host...");
         }
-
-        // TODO
-        $this->prefs['socket_options'] = [
-            'http' => [
-                'ssl' => [
-                    'verify_peer' => false,
-                    'verify_peer_name' => false,
-                    // 'cafile' => get_file_base() . '/data/curl-ca-bundle.crt',
-                    'SNI_enabled' => true,
-                    'disable_compression' => true,
-                    'allow_self_signed' => true,
-                ]
-            ]
-        ];
 
         if (!empty($this->prefs['socket_options'])) {
             $context  = stream_context_create($this->prefs['socket_options']);
