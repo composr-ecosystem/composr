@@ -1205,14 +1205,14 @@ class Module_admin_setupwizard
                     'high' => '31',
                 ],
                 'minimum_password_length' => [
-                    'low' => '5',
+                    'low' => '4',
                     'medium' => '8',
-                    'high' => '10',
+                    'high' => '12',
                 ],
                 'minimum_password_strength' => [
                     'low' => '2',
-                    'medium' => '4',
-                    'high' => '6',
+                    'medium' => '5',
+                    'high' => '8',
                 ],
                 'login_error_secrecy' => [
                     'low' => '0',

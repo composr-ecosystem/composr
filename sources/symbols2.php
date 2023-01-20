@@ -2674,7 +2674,7 @@ function ecv2_THEME_COLOUR_IS_BRIGHT(string $lang, array $escaped, array $param)
     if (!$IN_MINIKERNEL_VERSION) {
         if (addon_installed('themewizard')) {
             require_code('themewizard');
-            if (strlen($param[0]) == 6) {
+            if (strlen($param[0]) == 7) {
                 $r = floatval(hexdec(substr($param[0], 1, 2)));
                 $g = floatval(hexdec(substr($param[0], 3, 2)));
                 $b = floatval(hexdec(substr($param[0], 5, 2)));
@@ -2684,7 +2684,7 @@ function ecv2_THEME_COLOUR_IS_BRIGHT(string $lang, array $escaped, array $param)
                 if ($_value >= 0.5) {
                     $value = '1';
                 }
-            } elseif(strlen($param[0]) == 3) {
+            } elseif(strlen($param[0]) == 4) {
                 $r = floatval(hexdec(substr($param[0], 1, 1) . '0'));
                 $g = floatval(hexdec(substr($param[0], 2, 1) . '0'));
                 $b = floatval(hexdec(substr($param[0], 3, 2) . '0'));

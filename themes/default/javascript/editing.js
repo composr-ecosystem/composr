@@ -542,16 +542,16 @@
 
             // Weird issues in Chrome cutting+pasting blocks etc
             editor.on('paste', function (event) {
-                if (event.data.html) {
-                    event.data.html = event.data.html.replace(/<meta charset="utf-8">/g, '');
-                    event.data.html = event.data.html.replace(/<br class="Apple-interchange-newline">/g, '<br>');
-                    event.data.html = event.data.html.replace(/<div style="text-align: center;"><font class="Apple-style-span" face="'Lucida Grande'"><span class="Apple-style-span" style="font-size: 11px; white-space: pre;"><br><\/span><\/font><\/div>$/, '<br><br>');
+                if (event.data.dataValue) {
+                    event.data.dataValue = event.data.dataValue.replace(/<meta charset="utf-8">/g, '');
+                    event.data.dataValue = event.data.dataValue.replace(/<br class="Apple-interchange-newline">/g, '<br>');
+                    event.data.dataValue = event.data.dataValue.replace(/<div style="text-align: center;"><font class="Apple-style-span" face="'Lucida Grande'"><span class="Apple-style-span" style="font-size: 11px; white-space: pre;"><br><\/span><\/font><\/div>$/, '<br><br>');
                 }
             });
 
             // Monitor pasting, for anti-spam reasons
             editor.on('paste', function (event) {
-                if (event.data.html && event.data.html.length > $cms.configOption('spam_heuristic_pasting')) {
+                if (event.data.dataValue && event.data.dataValue.length > $cms.configOption('spam_heuristic_pasting')) {
                     $cms.setPostDataFlag('paste');
                 }
             });

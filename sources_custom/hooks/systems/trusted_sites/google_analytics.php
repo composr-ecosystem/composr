@@ -40,6 +40,9 @@ class Hook_trusted_sites_google_analytics
 
         if ((get_option('ga_property_view_id') != '') && (get_option('google_apis_client_id') != '') && (get_option('google_apis_client_secret') != '')) {
             $sites[] = 'apis.google.com';
+            $sites[] = 'google-analytics.com';
+            $sites[] = 'stats.g.doubleclick.net';
         }
+
     }
 }

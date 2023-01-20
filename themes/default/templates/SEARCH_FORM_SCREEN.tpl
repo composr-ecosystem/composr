@@ -115,6 +115,7 @@
 										MAX_DATE_DAY=
 										MAX_DATE_MONTH=
 										MAX_DATE_YEAR=
+										READ_ONLY=0
 									{+END}
 									<div class="accessibility-hidden"><label for="cutoff_to">{DATE_RANGE_LABEL*} {!TO}</label></div>
 									{+START,INCLUDE,FORM_SCREEN_INPUT_DATE}
@@ -131,6 +132,7 @@
 										MAX_DATE_DAY=
 										MAX_DATE_MONTH=
 										MAX_DATE_YEAR=
+										READ_ONLY=0
 									{+END}
 								</td>
 							</tr>

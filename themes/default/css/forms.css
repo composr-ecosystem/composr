@@ -9,7 +9,13 @@
 	.form-table, .form-table > tbody, .form-table > thead, .form-table > tbody > tr, .form-table > thead > tr, .form-table > tr, .form-table > tbody > tr > th, .form-table > thead > tr > th, .form-table > tr > th, .form-table > tbody > tr > td, .form-table > thead > tr > td, .form-table > tr > td {
 		display: block;
 		width: auto;
-		overflow: hidden;
+	}
+
+	/* Because we no-longer naturally contain floats inside of table cells, we have to simulate it. */
+	.form-table > tbody > tr > th::after, .form-table > thead > tr > th::after, .form-table > tr > th::after, .form-table > tbody > tr > td::after, .form-table > thead > tr > td::after, .form-table > tr > td::after {
+		clear: both;
+		content: "";
+		display: table;
 	}
 
 	.form-table > tbody > tr > th, .form-table > thead > tr > th, .form-table > tr > th, .form-table > tbody > tr > td, .form-table > thead > tr > td, .form-table > tr > td {

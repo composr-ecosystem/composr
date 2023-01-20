@@ -59,4 +59,16 @@ class Hook_config_maintenance_script_htaccess
 
         return '0';
     }
+
+    /**
+     * Code to run after the option is saved.
+     *
+     * @param  string $new_value The new value
+     */
+    public function postsave_handler(string $new_value)
+    {
+        // Re-adjust the htaccess file
+        require_code('two_factor');
+        adjust_htaccess();
+    }
 }

@@ -27,6 +27,8 @@ class antispam_test_set extends cms_test_case
 
     public function testHeuristics()
     {
+        // NOTE: Do not forget to manually test the heavy pasting heuristic as it is not covered in this test; paste a bunch of stuff in a form and see if post_data gets paste added to it.
+
         $_POST['foo_alien_code'] = '[link]http://example.com[/link] <a href="http://example.com">foo</a>';
         $_POST['foo_autonomous'] = '[font="Times New Roman"]foo[/font]';
         set_option('spam_heuristic_country', 'IN');

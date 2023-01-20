@@ -7397,7 +7397,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_CATEGORY_DESCRIPTION__SEARCH
         CONFIG_CATEGORY_SEARCH
         CONFIG_OPTION_background_template_compilation
-        CONFIG_OPTION_error_handling_database_strict
+
         CONFIG_OPTION_error_handling_deprecated
         CONFIG_OPTION_error_handling_deprecated_VALUE_ATTACH
         CONFIG_OPTION_error_handling_deprecated_VALUE_FATAL
@@ -7481,7 +7481,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         EDITED_BY
         EMPTY_QUEUE
         ERROR_HANDLING
-        ERROR_HANDLING_DATABASE_STRICT
         ERROR_HANDLING_DEPRECATED
         ERROR_HANDLING_ERRORS
         ERROR_HANDLING_NOTICES

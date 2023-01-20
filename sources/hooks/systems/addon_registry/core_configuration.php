@@ -327,7 +327,6 @@ class Hook_addon_registry_core_configuration
             'sources/hooks/systems/config/description.php',
             'sources/hooks/systems/config/detect_lang_browser.php',
             'sources/hooks/systems/config/detect_lang_forum.php',
-            'sources/hooks/systems/config/error_handling_database_strict.php',
             'sources/hooks/systems/config/error_handling_deprecated.php',
             'sources/hooks/systems/config/error_handling_errors.php',
             'sources/hooks/systems/config/error_handling_notices.php',
