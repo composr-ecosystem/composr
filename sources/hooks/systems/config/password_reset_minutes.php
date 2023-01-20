@@ -52,6 +52,6 @@ class Hook_config_password_reset_minutes
      */
     public function get_default() : ?string
     {
-        return '120';
+        return '60';
     }
 }
