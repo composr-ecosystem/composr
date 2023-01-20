@@ -95,18 +95,27 @@ function maintenance_script_htaccess_option_available() : bool
  */
 function adjust_htaccess()
 {
+    $option_enabled = (get_option('maintenance_script_htaccess') == '1');
+
     $path = get_file_base() . '/.htaccess';
 
     $contents = cms_file_get_contents_safe($path, FILE_READ_LOCK);
 
     $lines = [
         '<FilesMatch ^((rootkit_detection|upgrader|uninstall|data/upgrader2|config_editor|code_editor)\.php)$>',
-        'Require all denied',
     ];
-    $ips = $GLOBALS['FORUM_DB']->query_select('f_member_known_login_ips', ['i_ip'], ['i_val_code' => '']);
-    foreach ($ips as $ip) {
-        $lines[] = 'Require ip ' . $ip['i_ip'];
+
+    if ($option_enabled) {
+        $lines[] = 'Require all denied';
+
+        $ips = $GLOBALS['FORUM_DB']->query_select('f_member_known_login_ips', ['i_ip'], ['i_val_code' => '']);
+        foreach ($ips as $ip) {
+            $lines[] = 'Require ip ' . $ip['i_ip'];
+        }
+    } else {
+        $lines[] = 'Require all granted';
     }
+
     $lines = array_merge($lines, [
         '</FilesMatch>',
     ]);
