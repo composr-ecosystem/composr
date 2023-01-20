@@ -1152,7 +1152,7 @@ html.is-scrolled .header-modern.is-sticky.with-white-navbar {
 
 .header-classic.with-seed-navbar .global-navigation,
 .header-modern.with-seed-navbar {
-	color: {$GET,WB};
+	color: {$GET,seed_contrast_BW};
 	background: {$GET,seed};
 }
 
@@ -1160,7 +1160,7 @@ header.with-seed-navbar .logo-link,
 header.with-seed-navbar .menu-dropdown-toggle-btn,
 header.with-seed-navbar.is-hover-interface .menu-dropdown-item-a.toplevel-link,
 header.with-seed-navbar.is-hover-interface .top-button {
-	color: {$GET,WB};
+	color: {$GET,seed_contrast_BW};
 }
 
 header.with-seed-navbar .menu-dropdown-item.toplevel:hover > a,
@@ -1169,6 +1169,24 @@ header.with-seed-navbar .menu-dropdown-item-a.toplevel-link:focus,
 header.with-seed-navbar .top-button:hover {
 	background: rgba(0, 0, 0, 0.05);
 }
+
+/*{+START,IF,{$NOT,{$THEME_DARK}}}*/
+	/*{+START,IF,{$NOT,{$THEME_COLOUR_IS_BRIGHT,{$GET,seed}}}}*/
+		header.with-seed-navbar .toplevel-link img.icon,
+		header.with-seed-navbar .top-buttons img.icon {
+				filter: invert(100%);
+		}
+	/*{+END}*/
+/*{+END}*/
+
+/*{+START,IF,{$THEME_DARK}}*/
+	/*{+START,IF,{$THEME_COLOUR_IS_BRIGHT,{$GET,seed}}}*/
+	header.with-seed-navbar .toplevel-link img.icon,
+	header.with-seed-navbar .top-buttons img.icon {
+			filter: none;
+	}
+/*{+END}*/
+/*{+END}*/
 
 .global-navigation .menu-dropdown {
 	{$BETA_CSS_PROPERTY,display: flex;}
@@ -1229,7 +1247,7 @@ header.with-seed-navbar .top-button:hover {
 	background: rgba(255, 0, 0, 0.7);
 	padding: 0 3px;
 	font-size: 11px;
-	color: {$GET,WB};
+	color: {$GET,text_light};
 	z-index: 10;
 }
 

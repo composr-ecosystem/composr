@@ -25,6 +25,7 @@ See global.css for actual CSS rules.
 {$THEMEWIZARD_COLOR,#dbedff,seed_contrast_low,100% (seed contrast 3)} /* AA compliance */
 {$THEMEWIZARD_COLOR,#09213b,seed_contrast_medium,100% (seed contrast 4.5)} /* AA + AAA (for large text) compliance */
 {$THEMEWIZARD_COLOR,#ffffff,seed_contrast_high,100% (seed contrast 7)} /* AA + AAA compliance */
+{$THEMEWIZARD_COLOR,#ffffff,seed_contrast_BW,100% (seed contrast 0)} /* AA + AAA compliance */
 
 /* The fundamental website */
 {$THEMEWIZARD_COLOR,#e3f0fd,fixed_width_background,11% (seed sat_to 100) + 89% WB}
