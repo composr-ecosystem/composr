@@ -603,7 +603,7 @@ function cns_get_member_fields_settings(bool $mini_mode = true, string $special_
     // Password (intentionally put down here as the username, e-mail address, and DOB may influence the password strength)
     if (cns_field_editable('password', $special_type)) {
         if (($member_id === null) || ($member_id == get_member()) || (has_privilege(get_member(), 'assume_any_member'))) {
-            $compat_scheme = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_password_compat_scheme');
+            $compat_scheme = ($member_id === null) ? '' : $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_password_compat_scheme');
             $temporary_password = ($member_id !== null) && ($member_id == get_member() && (($compat_scheme == 'temporary') || ($compat_scheme == 'expired')));
             if ($temporary_password) {
                 $password_field_description = do_lang_tempcode('DESCRIPTION_PASSWORD_TEMPORARY');

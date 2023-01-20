@@ -383,7 +383,14 @@ function get_captcha_questions() : array
 
     if ($question_total < count($questions)) {
         srand(crc32(get_session_id())); // The session ID will seed which questions are picked; consistent across executions
-        $keys = array_rand($questions, $question_total);
+
+        $_keys = array_rand($questions, $question_total);
+        if (!is_array($_keys)) {
+            $keys = [$_keys];
+        } else {
+            $keys = $_keys;
+        }
+
         srand();
 
         $__questions = [];
