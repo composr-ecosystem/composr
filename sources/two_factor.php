@@ -87,6 +87,13 @@ function maintenance_script_htaccess_option_available() : bool
         return false;
     }
 
+    // two-factor is not compatible with the 'require valid-user' directive for HTTP-Auth. Note this will still hide the option if require valid-user is commented out.
+    $path = get_file_base() . '/.htaccess';
+    $contents = cms_file_get_contents_safe($path, FILE_READ_LOCK);
+    if (($contents !== false) && (strpos($contents, 'require valid-user') !== false)) {
+        return false;
+    }
+
     return true;
 }
 
@@ -95,7 +102,7 @@ function maintenance_script_htaccess_option_available() : bool
  */
 function adjust_htaccess()
 {
-    $option_enabled = (get_option('maintenance_script_htaccess') == '1');
+    $option_enabled = ((maintenance_script_htaccess_option_available()) && (get_option('maintenance_script_htaccess') === '1'));
 
     $path = get_file_base() . '/.htaccess';
 
@@ -104,6 +111,7 @@ function adjust_htaccess()
     $lines = [
         '<FilesMatch ^((rootkit_detection|upgrader|uninstall|data/upgrader2|config_editor|code_editor)\.php)$>',
     ];
+    $start_pos = strpos($contents, $lines[0]);
 
     if ($option_enabled) {
         $lines[] = 'Require all denied';
@@ -112,26 +120,28 @@ function adjust_htaccess()
         foreach ($ips as $ip) {
             $lines[] = 'Require ip ' . $ip['i_ip'];
         }
-    } else {
-        $lines[] = 'Require all granted';
     }
 
     $lines = array_merge($lines, [
         '</FilesMatch>',
     ]);
-
     $final_line = $lines[count($lines) - 1];
 
-    $start_pos = strpos($contents, $lines[0]);
+    if (!$option_enabled) {
+        $lines = []; // Clear $lines if option is disabled so we erase the entire FilesMatch block instead of leaving it in empty (which breaks Apache)
+    }
+
     if ($start_pos === false) {
-        $contents .= "\n" . implode("\n", $lines) . "\n";
+        if (!empty($lines)) {
+            $contents .= "\n" . implode("\n", $lines) . "\n";
+        }
     } else {
         $end_pos = strpos($contents, $final_line, $start_pos);
         if ($end_pos === false) {
             fatal_exit(do_lang_tempcode('INTERNAL_ERROR')); // Should never happen, things would crash if so! But we can't proceed
         }
 
-        $contents = substr($contents, 0, $start_pos) . implode("\n", $lines) . substr($contents, $end_pos + strlen($final_line));
+        $contents = trim(substr($contents, 0, $start_pos) . (!empty($lines) ? implode("\n", $lines) : '') . substr($contents, $end_pos + strlen($final_line))) . "\n";
     }
 
     require_code('files');

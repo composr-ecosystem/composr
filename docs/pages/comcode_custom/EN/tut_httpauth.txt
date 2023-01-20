@@ -46,18 +46,31 @@ This takes some time to get-your-head-around, but makes sense when you do. If it
 
 These instructions apply only to Apache web server users.
 
-[title="3"]If you want to protect the entire site[/title]
+[title="3"]Remove maintenance script htaccess code if it exists[/title]
 
-Define your HTTP-auth settings at the top of the main [tt].htaccess[/tt] file (the file in Composr's base directory).
+Before adding in our HTTP-Auth directives into the [tt].htaccess[/tt] file (the file in Composr's base directory), we must first remove any code created by the &ldquo;Auto-maintained maintenance script IP-barrier&rdquo; config option. It is not compatible with HTTP-Auth. If you see anything in the file that looks like the following, remove it:
 
 e.g. [tt].htaccess[/tt]:
 [code="htaccess"]
+<FilesMatch ^((rootkit_detection|upgrader|uninstall|data/upgrader2|config_editor|code_editor)\.php)$>
+Require all denied
+... (Require ip directives here) ...
+</FilesMatch>
+[/code]
+
+[title="3"]If you want to protect the entire site[/title]
+
+Define your HTTP-auth settings in the [tt].htaccess[/tt] file (the file in Composr's base directory) within the [tt]<RequireAll>[/tt] section, under the IP bans comment and all IP ban listings.
+
+e.g. [tt].htaccess[/tt]:
+[code="htaccess"]
+<RequireAll>
+... (IP ban comments and directives here) ...
 AuthType Basic
 AuthName "Restricted Content"
 AuthUserFile /var/www/.htpasswd
 require valid-user
-
-... (original file follows) ...
+</RequireAll>
 [/code]
 We have to give an absolute path for the Apache [tt]AuthUserFile[/tt] setting. This is a little annoying but it's an Apache requirement. These files can be generated using online tools or Linux commands (see links under "See also").
 
@@ -67,12 +80,14 @@ You must define the core HTTP-auth settings (i.e. define the [tt]AuthType[/tt], 
 
 e.g. [tt].htaccess[/tt]:
 [code="htaccess"]
+<RequireAll>
+... (IP ban comments and directives here) ...
 AuthType Basic
 AuthName "Restricted Content"
 AuthUserFile /var/www/.htpasswd
-
-... (original file follows) ...
+</RequireAll>
 [/code]
+
 We have to give an absolute path for the Apache [tt]AuthUserFile[/tt] setting. This is a little annoying but it's an Apache requirement. These files can be generated using online tools or Linux commands (see links under "See also").
 
 Then place only (*) the actual restrictions on the files placed within individual zones, and the [tt]data[/tt] directory also (&dagger;).

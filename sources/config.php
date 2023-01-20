@@ -401,7 +401,7 @@ function get_theme_option(string $name, ?string $default = null, ?string $theme 
  *
  * @param  ID_TEXT $name The name of the option
  * @param  boolean $missing_ok Where to accept a missing option (and return null)
- * @return ?SHORT_TEXT The value (null: either null value, or no option found while $missing_ok set)
+ * @return ?SHORT_TEXT The value (null: either null value meaning disabled option, or no option found while $missing_ok set)
  */
 function get_option(string $name, bool $missing_ok = false) : ?string
 {
