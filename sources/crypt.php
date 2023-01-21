@@ -65,8 +65,8 @@ function get_site_salt() : string
 }
 
 /**
- * Get a randomised string acceptable for use as passwords, tokens, etc.
- * Will be 13 bytes long and base64.
+ * Get a randomised string acceptable for use as tokens, etc.
+ * Will be 13 bytes long and base16. Do not use for passwords; use get_secure_random_password() instead.
  *
  * @return string The randomised password
  */
