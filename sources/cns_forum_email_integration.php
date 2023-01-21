@@ -153,7 +153,7 @@ class ForumEmailIntegration extends EmailIntegration
 
             $type = $row['f_mail_server_type'];
             $host = $row['f_mail_server_host'];
-            $port = ($row['f_mail_server_port'] == '') ? null : intval($row['f_mail_server_port']);
+            $port = ($row['f_mail_server_port'] === null) ? null : intval($row['f_mail_server_port']);
             $folder = $row['f_mail_folder'];
             $username = $row['f_mail_username'];
             $password = $row['f_mail_password'];

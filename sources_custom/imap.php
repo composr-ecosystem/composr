@@ -16,6 +16,8 @@
 function init__imap()
 {
     if (addon_installed('imap')) {
+        require_code('developer_tools');
+
         destrictify();
         require_code('imap/vendor/autoload');
         restrictify();
