@@ -15,13 +15,13 @@ function checkPasswords(form) {
         return true;
     }
 
-    if (form.elements['cns_admin_password_confirm'] != null) {
+    if ((form.elements['cns_admin_password_confirm'] != null) && (form.elements['cns_admin_password_confirm'].value != '')) {
         if (!checkPassword(form, 'cns_admin_password', '{!ADMIN_USERS_PASSWORD;^/}')) {
             return false;
         }
     }
 
-    if (form.elements['master_password_confirm'] != null) {
+    if ((form.elements['master_password_confirm'] != null) && (form.elements['master_password_confirm'].value != '')) {
         if (!checkPassword(form, 'master_password', '{!MASTER_PASSWORD;^/}')) {
             return false;
         }
