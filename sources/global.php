@@ -1120,17 +1120,17 @@ if (empty($SITE_INFO)) {
 if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
     if (empty($SITE_INFO['trusted_proxies'])) {
         $trusted_proxies = '173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/13,104.24.0.0/14,172.64.0.0/13,131.0.72.0/22,2400:cb00::/32,2606:4700::/32,2803:f800::/32,2405:b500::/32,2405:8100::/32,2a06:98c0::/29,2c0f:f248::/32';
-        $is_cloudflare = true;
+        $might_be_cloudflare = true;
     } else {
         $trusted_proxies = $SITE_INFO['trusted_proxies'];
-        $is_cloudflare = false;
+        $might_be_cloudflare = false;
     }
     foreach (explode(',', $trusted_proxies) as $proxy) {
         if (((strpos($proxy, '/') !== false) && (ip_cidr_check($_SERVER['REMOTE_ADDR'], $proxy))) || ($_SERVER['REMOTE_ADDR'] == $proxy)) {
             if (ip_cidr_check($_SERVER['REMOTE_ADDR'], $proxy)) {
-                $_SERVER['REMOTE_ADDR'] = (($is_cloudflare) && (isset($_SERVER['HTTP_CF_CONNECTING_IP']))) ? $_SERVER['HTTP_CF_CONNECTING_IP'] : $_SERVER['HTTP_X_FORWARDED_FOR'];
+                $_SERVER['REMOTE_ADDR'] = (($might_be_cloudflare) && (isset($_SERVER['HTTP_CF_CONNECTING_IP']))) ? $_SERVER['HTTP_CF_CONNECTING_IP'] : $_SERVER['HTTP_X_FORWARDED_FOR'];
                 $_SERVER['HTTP_X_FORWARDED_FOR'] = '';
-                if ($is_cloudflare) {
+                if ($might_be_cloudflare) {
                     unset($_SERVER['HTTP_CF_CONNECTING_IP']);
                 }
                 if ((isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) && ($_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) {
