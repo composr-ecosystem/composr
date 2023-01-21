@@ -234,10 +234,12 @@ class ForumEmailIntegration extends EmailIntegration
 
         global $LAX_COMCODE, $OVERRIDE_MEMBER_ID_COMCODE;
         $OVERRIDE_MEMBER_ID_COMCODE = $member_id_comcode;
-        $LAX_COMCODE = true;
+        push_lax_comcode(true);
 
         // Add in attachments
         $attachment_errors = $this->save_attachments($attachments, $member_id, $member_id_comcode, $body);
+
+        pop_lax_comcode();
 
         // Mark that this was e-mailed in
         $body = static_evaluate_tempcode(do_template('CNS_POST_FROM_MAILING_LIST', [
