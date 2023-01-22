@@ -83,7 +83,7 @@ function get_secure_random_string() : string
  * @param  ?integer $strength The minimum password strength we want; the generated password could be stronger but will never be weaker (null: use configured strength)
  * @param  SHORT_TEXT $username The username of the member for which we are generating a password (blank: do not check username in password strength check)
  * @param  SHORT_TEXT $email_address The e-mail address of the member (blank: do not check e-mail address in password strength check)
- * @param  TIME $dob The date of birth of the member (null: do not check dob in password strength check)
+ * @param  ?TIME $dob The date of birth of the member (null: do not check dob in password strength check)
  * @return string The random password
  */
 function get_secure_random_password(?int $strength = null, string $username = '', string $email_address = '', ?int $dob = null) : string

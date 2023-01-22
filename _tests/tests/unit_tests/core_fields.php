@@ -18,6 +18,13 @@
  */
 class core_fields_test_set extends cms_test_case
 {
+    public function setUp()
+    {
+        parent::setUp();
+
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
+    }
+    
     public function testCoreFields()
     {
         require_code('fields');

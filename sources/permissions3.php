@@ -127,9 +127,9 @@ function privilege_exists(string $name) : bool
  * @param  boolean $not_even_mods Whether this privilege is not granted to supermoderators by default (something very sensitive); only applies if $default is true
  * @param  boolean $not_for_probation An exception for if $default is true, don't assign the privilege to the probation group
  * @param  boolean $insert Whether to insert into the database (if this is set to false you need to read the return parameters and do it yourself - which is used for efficient bulk inserts across many privileges at once)
- * @return array A pair: The map parameter for the group_privileges table, the map parameter for the privilege_list table.
+ * @return array A pair: The map parameter for the group_privileges table, the map parameter for the privilege_list table
  */
-function add_privilege(string $section, string $name, bool $default = false, bool $not_even_mods = false, bool $not_for_probation = false, $insert = true) : array
+function add_privilege(string $section, string $name, bool $default = false, bool $not_even_mods = false, bool $not_for_probation = false, bool $insert = true) : array
 {
     if (get_forum_type() == 'cns') {
         require_code('cns_groups');

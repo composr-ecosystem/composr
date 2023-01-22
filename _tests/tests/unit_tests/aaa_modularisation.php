@@ -117,6 +117,7 @@ class aaa_modularisation_test_set extends cms_test_case
         // Check declared packages in files against the addon they're supposed to be within, and for files not including in any addon...
 
         require_code('files2');
+        require_code('third_party_code');
         $unput_files = []; // A map of non-existent packages to a list in them
         $ignore = IGNORE_CUSTOM_DIR_FLOATING_CONTENTS | IGNORE_UPLOADS | IGNORE_FLOATING | IGNORE_CUSTOM_ZONES | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_LANGS | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_REVISION_FILES;
         //$ignore = IGNORE_FLOATING | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_LANGS | IGNORE_UNSHIPPED_VOLATILE; Uncomment for more careful testing
@@ -125,9 +126,16 @@ class aaa_modularisation_test_set extends cms_test_case
         foreach ($forum_drivers as &$forum_driver) {
             $forum_driver = basename($forum_driver, '.php');
         }
+
+        $exceptions = array_merge(list_untouchable_third_party_directories(), [
+        ]);
+
         foreach ($files as $path) {
             // Exceptions
             if (preg_match('#^(' . implode('|', $forum_drivers) . ')/#i', $path) != 0) {
+                continue;
+            }
+            if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $path) != 0) {
                 continue;
             }
 

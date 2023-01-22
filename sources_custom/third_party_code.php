@@ -39,6 +39,7 @@ function list_untouchable_third_party_directories()
         'sources_custom/aws_ses',
         'sources_custom/Cloudinary',
         'sources_custom/composr_mobile_sdk',
+        'sources_custom/imap',
         'sources_custom/geshi',
         'sources_custom/getid3',
         'sources_custom/programe',

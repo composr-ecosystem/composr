@@ -10,7 +10,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    image_source_files
+ * @package    imap
  */
 
 /**
@@ -142,6 +142,8 @@ class Hook_addon_registry_imap
     {
         return [
             'sources_custom/hooks/systems/addon_registry/imap.php',
+            'sources_custom/imap.php',
+
             'sources_custom/imap/composer.json',
             'sources_custom/imap/composer.lock',
             'sources_custom/imap/vendor/autoload.php',

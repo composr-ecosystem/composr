@@ -722,9 +722,9 @@ function website_default_php_file_permissions() : int
  * It is implied that the directory/file was created on the same filename prior to calling this and it returned success.
  *
  * @param  mixed $ftp The FTP connection
- * @param  int $permissions The permissions to set
+ * @param  integer $permissions The permissions to set
  * @param  PATH $ftp_path The file path
- * @return ~int The new file permissions on success (false: error)
+ * @return ~integer The new file permissions on success (false: error)
  * @ignore
  */
 function _ftp_chmod($ftp, int $permissions, string $ftp_path)

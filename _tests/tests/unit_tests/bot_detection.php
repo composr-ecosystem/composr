@@ -23,6 +23,13 @@
  */
 class bot_detection_test_set extends cms_test_case
 {
+    public function setUp()
+    {
+        parent::setUp();
+
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
+    }
+
     public function testUADetect()
     {
         $_SERVER['HTTP_USER_AGENT'] = 'aaaa';
