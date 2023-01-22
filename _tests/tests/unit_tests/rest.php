@@ -40,6 +40,8 @@ class rest_test_set extends cms_test_case
         if ($this->path === null) {
             $this->path = '/var/news/general/hello' . substr(md5(uniqid('', true)), 0, 10) . '.cms';
         }
+
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__CRAWL);
     }
 
     public function testCreate()
