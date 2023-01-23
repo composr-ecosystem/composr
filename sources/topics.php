@@ -1047,7 +1047,7 @@ class CMS_Topic
         $tempcode = do_template('CNS_POST_MAP_ITEM', [
             '_GUID' => '763f031c2c8d4af986ff38bc51c8f6f4',
             'TITLE' => $this->topic_title,
-            'URL' => '#post_' . strval($post['id']),
+            'URL' => '#post-' . strval($post['id']),
             'POST_NUMBER' => strval($post['number']),
             'POSTER_ID' => strval($post['member']),
             'POSTER_IS_GUEST' => is_guest($post['member']),

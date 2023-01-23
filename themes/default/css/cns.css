@@ -568,7 +568,19 @@ hr.cns-sig-barrier {
 
 .box---post-map li {
 	list-style: none;
-	margin-bottom: 0.5em;
+	margin: 0;
+	line-height: normal;
+	font-size: 14px;
+}
+
+.box---post-map li img {
+	vertical-align: top;
+}
+
+.box---post-map li > span {
+	padding-top: 3.5px;
+	display: inline-block;
+	vertical-align: top;
 }
 
 .cns-post-map-item-unread {
