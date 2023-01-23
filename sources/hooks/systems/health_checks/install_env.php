@@ -391,7 +391,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
             return;
         }
 
-        $min = 1024 * 1024 * 4;
+        $min = 1024 * 1024 * 4; // 4MB; if you change this value, also change it in the installer confirm_db_credentials.
 
         if (isset($GLOBALS['SITE_DB']->connection_write)) {
             $vars = $GLOBALS['SITE_DB']->query('SHOW VARIABLES LIKE \'max_allowed_packet\'');
