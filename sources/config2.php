@@ -219,12 +219,10 @@ function build_config_inputter(string $name, array $details, ?string $current_va
 
         case 'forum_grouping':
             if (get_forum_type() == 'cns') {
-                $tmp_value = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forum_groupings', 'id', ['c_title' => $current_value]);
-
                 require_code('cns_forums2');
                 $_list = new Tempcode();
                 $_list->attach(form_input_list_entry('', false, do_lang_tempcode('NA_EM')));
-                $_list->attach(cns_create_selection_list_forum_groupings(null, $tmp_value));
+                $_list->attach(cns_create_selection_list_forum_groupings(null, intval($current_value)));
                 return form_input_list($title, $explanation_with_default, $config_field_name, $_list, null, false, $required);
             }
             return form_input_line($title, $explanation_with_default, $config_field_name, $current_value, $required);
@@ -468,6 +466,7 @@ function set_option(string $name, string $value, int $will_be_formally_set = 1, 
         $map = [
             'c_set' => $will_be_formally_set,
             'c_value' => $value,
+            'c_needs_dereference' => $needs_dereference,
         ];
         if ($needs_dereference == 1) { // Translated
             $current_value = multi_lang_content() ? $CONFIG_OPTIONS_CACHE[$name]['c_value_trans'] : $CONFIG_OPTIONS_CACHE[$name]['c_value'];

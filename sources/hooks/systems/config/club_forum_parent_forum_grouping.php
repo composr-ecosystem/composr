@@ -55,6 +55,6 @@ class Hook_config_club_forum_parent_forum_grouping
             return null;
         }
 
-        return strval(db_get_first_id());
+        return '2';
     }
 }
