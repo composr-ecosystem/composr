@@ -417,7 +417,7 @@ function get_default_option(string $name) : ?string
  *
  * @param  ID_TEXT $name The name of the value
  * @param  LONG_TEXT $value The value
- * @param  BINARY $will_be_formally_set Whether this was a human-set value
+ * @param  BINARY $will_be_formally_set Whether this was an intentionally-set value; if we set it to zero we are saying that we are only setting this value for performance purposes, to its default value
  * @param  ?object $ob The config hook responsible for this option (null: fetch it ourselves)
  */
 function set_option(string $name, string $value, int $will_be_formally_set = 1, ?object $ob = null)

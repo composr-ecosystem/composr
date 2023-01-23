@@ -53,7 +53,7 @@ class __leader_board_test_set extends cms_test_case
         // Turn on voting power for this test
         if (get_forum_type() == 'cns') {
             $this->old_voting_power = get_option('enable_poll_point_weighting');
-            set_option('enable_poll_point_weighting', '1', 0);
+            set_option('enable_poll_point_weighting', '1');
         }
     }
 
@@ -628,7 +628,7 @@ class __leader_board_test_set extends cms_test_case
 
         // Reset voting power for this test
         if (get_forum_type() == 'cns') {
-            set_option('enable_poll_point_weighting', $this->old_voting_power, 0);
+            set_option('enable_poll_point_weighting', $this->old_voting_power);
         }
 
         parent::tearDown();

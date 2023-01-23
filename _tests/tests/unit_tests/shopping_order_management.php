@@ -30,7 +30,7 @@ class shopping_order_management_test_set extends cms_test_case
         parent::setUp();
 
         $this->tasks_background = get_option('tasks_background');
-        set_option('tasks_background', '1', 0);
+        set_option('tasks_background', '1');
 
         require_code('ecommerce');
         require_code('autosave');
@@ -190,7 +190,7 @@ class shopping_order_management_test_set extends cms_test_case
     {
         $GLOBALS['SITE_DB']->query_delete('shopping_orders', ['id' => $this->order_id], '', 1);
 
-        set_option('tasks_background', $this->tasks_background, 0);
+        set_option('tasks_background', $this->tasks_background);
 
         parent::tearDown();
     }

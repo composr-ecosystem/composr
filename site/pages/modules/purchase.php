@@ -381,9 +381,9 @@ class Module_purchase
                 $username = get_option('payment_gateway_username', true);
                 $vpn_username = get_option('payment_gateway_vpn_username', true);
                 if (($username === null) || ($username == '')) { // Merge into username if no value is set
-                    set_option('payment_gateway_username', $paypal_email, 0);
+                    set_option('payment_gateway_username', $paypal_email);
                 } elseif (($vpn_username === null) || ($vpn_username == '')) { // Merge into vpn_username if no value is set
-                    set_option('payment_gateway_vpn_username', $paypal_email, 0);
+                    set_option('payment_gateway_vpn_username', $paypal_email);
                 }
             }
             delete_config_option('primary_paypal_email');
@@ -406,7 +406,7 @@ class Module_purchase
                         if ($config_option == 'payment_gateway_username') {
                             $username_had_format = true;
                         }
-                        set_option($config_value, 'live=' . $_config_bits[0] . ',testing=' . $_config_bits[1], 0);
+                        set_option($config_value, 'live=' . $_config_bits[0] . ',testing=' . $_config_bits[1]);
                     }
                 }
             }
@@ -418,9 +418,9 @@ class Module_purchase
                 if (($test_username !== null) && ($test_username != '')) {
                     $_config_bits = explode(';', $test_username);
                     if (count($_config_bits) > 1) {
-                        set_option('payment_gateway_username', 'live=' . $_config_bits[0] . ',testing=' . $_config_bits[1], 0);
+                        set_option('payment_gateway_username', 'live=' . $_config_bits[0] . ',testing=' . $_config_bits[1]);
                     } elseif (($config_value !== null) && ($config_value != '')) {
-                        set_option('payment_gateway_username', 'live=' . $config_value . ',testing=' . $test_username, 0);
+                        set_option('payment_gateway_username', 'live=' . $config_value . ',testing=' . $test_username);
                     }
                 }
             }

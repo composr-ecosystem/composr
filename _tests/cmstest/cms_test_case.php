@@ -32,7 +32,7 @@ class cms_test_case extends WebTestCase
         if (!$done_once) {
             // Make sure the site is open
             $this->site_closed = get_option('site_closed');
-            set_option('site_closed', '0', 0);
+            set_option('site_closed', '0');
             $done_once = true;
             cms_register_shutdown_function_if_available([$this, 'reopen_site']);
         }
@@ -63,7 +63,7 @@ class cms_test_case extends WebTestCase
     public function reopen_site()
     {
         if ($this->site_closed !== null) {
-            set_option('site_closed', $this->site_closed, 0);
+            set_option('site_closed', $this->site_closed);
         }
     }
 

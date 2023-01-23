@@ -68,7 +68,7 @@ class points_test_set extends cms_test_case
 
         $this->enable_gift_points = get_option('enable_gift_points');
 
-        set_option('enable_gift_points', '1', 0);
+        set_option('enable_gift_points', '1');
 
         $this->gift_points_sent = gift_points_sent($this->admin_user);
 
@@ -255,7 +255,7 @@ class points_test_set extends cms_test_case
         $points_to_send = 10;
 
         // Disable gift points for this test
-        set_option('enable_gift_points', '0', 0);
+        set_option('enable_gift_points', '0');
 
         points_flush_runtime_cache();
         $initial_points_spent = points_used($this->admin_user);
@@ -295,7 +295,7 @@ class points_test_set extends cms_test_case
         $this->assertTrue($reversed_correct, 'Points did not reverse as expected for reverse transaction.');
 
         // Re-enable gift points for the test suite
-        set_option('enable_gift_points', '1', 0);
+        set_option('enable_gift_points', '1');
 
         // Do not keep unit tests in the ledger
         if (!$this->disable_clean_up) {
@@ -503,7 +503,7 @@ class points_test_set extends cms_test_case
             }
         }
 
-        set_option('enable_gift_points', $this->enable_gift_points, 0);
+        set_option('enable_gift_points', $this->enable_gift_points);
 
         parent::tearDown();
     }
