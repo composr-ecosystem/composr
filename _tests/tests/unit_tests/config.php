@@ -23,59 +23,6 @@ class config_test_set extends cms_test_case
         disable_php_memory_limit();
     }
 
-    public function testSaneDefaults()
-    {
-        if (($this->only !== null) && ($this->only != 'testSaneDefaults')) {
-            return;
-        }
-
-        $hooks = find_all_hook_obs('systems', 'config', 'Hook_config_');
-        foreach ($hooks as $hook => $ob) {
-            $details = $ob->get_details();
-
-            $default = $ob->get_default();
-
-            switch ($details['type']) {
-                case 'integer':
-                    $this->assertTrue((empty($default)) || (strval(intval($default)) == $default), 'Integer fields expect integer values, for ' . $hook);
-                    break;
-
-                case 'float':
-                    $this->assertTrue((empty($default)) || (is_numeric($default)), 'Float fields expect numeric values, for ' . $hook);
-                    break;
-
-                case 'tick':
-                    $this->assertTrue((empty($default)) || (in_array($default, ['0', '1'])), 'Tick fields expect boolean values, for ' . $hook);
-                    break;
-            }
-        }
-    }
-
-    public function testNoBadLists()
-    {
-        if (($this->only !== null) && ($this->only != 'testNoBadLists')) {
-            return;
-        }
-
-        $hooks = find_all_hook_obs('systems', 'config', 'Hook_config_');
-        foreach ($hooks as $hook => $ob) {
-            $details = $ob->get_details();
-
-            $default = $ob->get_default();
-
-            switch ($details['type']) {
-                case 'list':
-                case 'theme_image':
-                    $this->assertTrue(!cms_empty_safe($details['list_options']), 'List options expected, for ' . $hook);
-                    break;
-
-                default:
-                    $this->assertTrue(cms_empty_safe($details['list_options']), 'No list options expected, for ' . $hook);
-                    break;
-            }
-        }
-    }
-
     public function testMissingOptions()
     {
         if (($this->only !== null) && ($this->only != 'testMissingOptions')) {
@@ -238,45 +185,6 @@ class config_test_set extends cms_test_case
         }
     }
 
-    public function testCorrectPublicSetting()
-    {
-        if (($this->only !== null) && ($this->only != 'testCorrectPublicSetting')) {
-            return;
-        }
-
-        require_code('files2');
-        $files = get_directory_contents(get_file_base(), '', IGNORE_ALIEN | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, ['js']);
-        $found = [];
-        foreach ($files as $path) {
-            if ((in_safe_mode()) && (should_ignore_file($path, IGNORE_NONBUNDLED))) {
-                continue;
-            }
-
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
-
-            $matches = [];
-            $num_matches = preg_match_all('#\$cms\.configOption\(\'(\w+)\'\)#', $c, $matches);
-            for ($i = 0; $i < $num_matches; $i++) {
-                $hook = $matches[1][$i];
-
-                if (empty($found[$hook])) {
-                    $found[$hook] = false;
-                }
-            }
-        }
-
-        $hooks = find_all_hook_obs('systems', 'config', 'Hook_config_');
-        foreach ($hooks as $hook => $hook_ob) {
-            $details = $hook_ob->get_details();
-            $public = !empty($details['public']);
-            if ($public) {
-                $this->assertTrue(isset($found[$hook]), 'Config option is public but not used in JS: ' . $hook);
-            } else {
-                $this->assertTrue(!isset($found[$hook]), 'Config option is not public but is used in JS: ' . $hook);
-            }
-        }
-    }
-
     public function testConfigHookCompletenessAndConsistency()
     {
         if (($this->only !== null) && ($this->only != 'testConfigHookCompletenessAndConsistency')) {
@@ -407,6 +315,99 @@ class config_test_set extends cms_test_case
                         }
                     }
                 }
+            }
+        }
+    }
+
+    
+    public function testSaneDefaults()
+    {
+        if (($this->only !== null) && ($this->only != 'testSaneDefaults')) {
+            return;
+        }
+
+        $hooks = find_all_hook_obs('systems', 'config', 'Hook_config_');
+        foreach ($hooks as $hook => $ob) {
+            $details = $ob->get_details();
+
+            $default = $ob->get_default();
+
+            switch ($details['type']) {
+                case 'integer':
+                    $this->assertTrue((empty($default)) || (strval(intval($default)) == $default), 'Integer fields expect integer values, for ' . $hook);
+                    break;
+
+                case 'float':
+                    $this->assertTrue((empty($default)) || (is_numeric($default)), 'Float fields expect numeric values, for ' . $hook);
+                    break;
+
+                case 'tick':
+                    $this->assertTrue((empty($default)) || (in_array($default, ['0', '1'])), 'Tick fields expect boolean values, for ' . $hook);
+                    break;
+            }
+        }
+    }
+
+    public function testNoBadLists()
+    {
+        if (($this->only !== null) && ($this->only != 'testNoBadLists')) {
+            return;
+        }
+
+        $hooks = find_all_hook_obs('systems', 'config', 'Hook_config_');
+        foreach ($hooks as $hook => $ob) {
+            $details = $ob->get_details();
+
+            $default = $ob->get_default();
+
+            switch ($details['type']) {
+                case 'list':
+                case 'theme_image':
+                    $this->assertTrue(!cms_empty_safe($details['list_options']), 'List options expected, for ' . $hook);
+                    break;
+
+                default:
+                    $this->assertTrue(cms_empty_safe($details['list_options']), 'No list options expected, for ' . $hook);
+                    break;
+            }
+        }
+    }
+
+    public function testCorrectPublicSetting()
+    {
+        if (($this->only !== null) && ($this->only != 'testCorrectPublicSetting')) {
+            return;
+        }
+
+        require_code('files2');
+        $files = get_directory_contents(get_file_base(), '', IGNORE_ALIEN | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, ['js']);
+        $found = [];
+        foreach ($files as $path) {
+            if ((in_safe_mode()) && (should_ignore_file($path, IGNORE_NONBUNDLED))) {
+                continue;
+            }
+
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
+
+            $matches = [];
+            $num_matches = preg_match_all('#\$cms\.configOption\(\'(\w+)\'\)#', $c, $matches);
+            for ($i = 0; $i < $num_matches; $i++) {
+                $hook = $matches[1][$i];
+
+                if (empty($found[$hook])) {
+                    $found[$hook] = false;
+                }
+            }
+        }
+
+        $hooks = find_all_hook_obs('systems', 'config', 'Hook_config_');
+        foreach ($hooks as $hook => $hook_ob) {
+            $details = $hook_ob->get_details();
+            $public = !empty($details['public']);
+            if ($public) {
+                $this->assertTrue(isset($found[$hook]), 'Config option is public but not used in JS: ' . $hook);
+            } else {
+                $this->assertTrue(!isset($found[$hook]), 'Config option is not public but is used in JS: ' . $hook);
             }
         }
     }

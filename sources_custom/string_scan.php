@@ -8403,8 +8403,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ENABLE_NOTIFICATIONS_NA
         ENABLE_NOTIFICATIONS__ALL
         FTP_CACHE_ERROR
-        JESTER_OWO_SHOWN_FOR
-        CONFIG_OPTION_jestr_owo_shown_for
         SPAM_CHECK_STOPFORUMSPAM
         CONFIG_OPTION_spam_check_stopforumspam
         TICKET_MAIL_TAGS
@@ -11790,7 +11788,21 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CHOOSE_MASTER_PASSWORD_ADMIN
         CHOOSE_MASTER_PASSWORD_NO_ADMIN
         DESCRIPTION_ADMIN_USERNAME_MASTER_PASSWORD
+        PRIVACY_ACTION_tornevall
+        PRIVACY_REASON_tornevall
     ')));
+
+    // Remove blank lines
+    foreach ($lang_strings_admin_initial as $i => $value) {
+        if ($value == '') {
+            unset($lang_strings_admin_initial[$i]);
+        }
+    }
+    foreach ($lang_strings_non_admin_initial as $i => $value) {
+        if ($value == '') {
+            unset($lang_strings_non_admin_initial[$i]);
+        }
+    }
 
     if ($GLOBALS['DEV_MODE']) {
         $duplicates = [];

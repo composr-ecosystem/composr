@@ -1,6 +1,6 @@
 <?php
 
-// ChrisG/PatrickS for ocProducts: Modified file to use destrictify/restrictify
+// ChrisG/PatrickS: Modified file to use Composr's destrictify/restrictify
 
 /*
  * This file is part of the PHP IMAP2 package.

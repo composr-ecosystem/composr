@@ -240,7 +240,7 @@ class basic_code_formatting_test_set extends cms_test_case
             if (isset($this->text_formats[$ext])) {
                 $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
 
-                $this->assertTrue(strpos($c, "\r") === false, 'Windows text format detected for ' . $path);
+                $this->assertTrue(strpos($c, "\r") === false, 'Windows text format detected for ' . $path . '. This may be expected when using git for Windows. But make sure you commit and build in Linux/UNIX format.');
 
                 if ($ext == 'svg') {
                     continue;

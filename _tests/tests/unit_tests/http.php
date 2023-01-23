@@ -18,27 +18,33 @@
  */
 class http_test_set extends cms_test_case
 {
+    public function setUp()
+    {
+        parent::setUp();
+
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
+    }
     public function testSimple()
     {
-        $result = cms_http_request('http://example.com/');
+        $result = cms_http_request('http://example.com/', ['trigger_error' => false]);
         $this->assertTrue($result->data !== null && strpos($result->data, 'Example Domain') !== false);
     }
 
     public function testSimpleHttps()
     {
-        $result = cms_http_request('https://example.com/');
+        $result = cms_http_request('https://example.com/', ['trigger_error' => false]);
         $this->assertTrue($result->data !== null && strpos($result->data, 'Example Domain') !== false);
     }
 
     public function testHead()
     {
-        $result = cms_http_request('http://example.com/', ['byte_limit' => 0]);
+        $result = cms_http_request('http://example.com/', ['byte_limit' => 0, 'trigger_error' => false]);
         $this->assertTrue($result->data !== null);
     }
 
     public function testHeadHttps()
     {
-        $result = cms_http_request('https://example.com/', ['byte_limit' => 0]);
+        $result = cms_http_request('https://example.com/', ['byte_limit' => 0, 'trigger_error' => false]);
         $this->assertTrue($result->data !== null);
     }
 
@@ -56,25 +62,25 @@ class http_test_set extends cms_test_case
 
     public function testRedirect()
     {
-        $result = cms_http_request('http://jigsaw.w3.org/HTTP/300/301.html', ['convert_to_internal_encoding' => true]);
+        $result = cms_http_request('http://jigsaw.w3.org/HTTP/300/301.html', ['convert_to_internal_encoding' => true, 'trigger_error' => false]);
         $this->assertTrue($result->data !== null && strpos($result->data, 'Redirect test page') !== false);
     }
 
     public function testRedirectHttps()
     {
-        $result = cms_http_request('https://jigsaw.w3.org/HTTP/300/301.html', ['convert_to_internal_encoding' => true]);
+        $result = cms_http_request('https://jigsaw.w3.org/HTTP/300/301.html', ['convert_to_internal_encoding' => true, 'trigger_error' => false]);
         $this->assertTrue($result->data !== null && strpos($result->data, 'Redirect test page') !== false);
     }
 
     public function testRedirectDisabled()
     {
-        $result = cms_http_request('https://jigsaw.w3.org/HTTP/300/301.html', ['convert_to_internal_encoding' => true, 'no_redirect' => true]);
+        $result = cms_http_request('https://jigsaw.w3.org/HTTP/300/301.html', ['convert_to_internal_encoding' => true, 'no_redirect' => true, 'trigger_error' => false]);
         $this->assertTrue($result->data === null);
     }
 
     public function testHttpAuth()
     {
-        $result = cms_http_request('https://jigsaw.w3.org/HTTP/Basic/', ['convert_to_internal_encoding' => true, 'auth' => ['guest', 'guest']]);
+        $result = cms_http_request('https://jigsaw.w3.org/HTTP/Basic/', ['convert_to_internal_encoding' => true, 'auth' => ['guest', 'guest'], 'trigger_error' => false]);
         $this->assertTrue($result->data !== null && strpos($result->data, 'Your browser made it!') !== false);
     }
 
@@ -82,7 +88,7 @@ class http_test_set extends cms_test_case
     {
         $write_path = cms_tempnam();
         $write = fopen($write_path, 'wb');
-        $result = cms_http_request('http://example.com/', ['convert_to_internal_encoding' => true, 'write_to_file' => $write]);
+        $result = cms_http_request('http://example.com/', ['convert_to_internal_encoding' => true, 'write_to_file' => $write, 'trigger_error' => false]);
         $this->assertTrue(strpos(cms_file_get_contents_safe($write_path, FILE_READ_LOCK), 'Example Domain') !== false);
         fclose($write);
         unlink($write_path);
@@ -92,7 +98,7 @@ class http_test_set extends cms_test_case
     {
         $write_path = cms_tempnam();
         $write = fopen($write_path, 'wb');
-        $result = cms_http_request('https://example.com/', ['convert_to_internal_encoding' => true, 'write_to_file' => $write]);
+        $result = cms_http_request('https://example.com/', ['convert_to_internal_encoding' => true, 'write_to_file' => $write, 'trigger_error' => false]);
         $this->assertTrue(strpos(cms_file_get_contents_safe($write_path, FILE_READ_LOCK), 'Example Domain') !== false);
         fclose($write);
         unlink($write_path);

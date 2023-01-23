@@ -28,6 +28,7 @@ class lang_html_safe_test_set extends cms_test_case
     {
         parent::setUp();
 
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
         disable_php_memory_limit();
     }
 

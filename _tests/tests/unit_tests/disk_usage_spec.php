@@ -42,7 +42,14 @@ class disk_usage_spec_test_set extends cms_test_case
                 $files = $ob->get_file_list();
 
                 foreach ($files as $path) {
-                    $s = filesize($path);
+                    $s = @filesize($path);
+                    if (($s === null) || ($s === false)) {
+                        if ($this->debug) {
+                            $this->dump($path, 'This file was skipped as it could not be found or accessed.');
+                        }
+                        continue;
+                    }
+
                     if ($s % 512 != 0) {
                         $s += 512; // Round up to nearest block
                     }

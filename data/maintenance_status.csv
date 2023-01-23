@@ -75,7 +75,7 @@ platform_modsecurity,ModSecurity,ocProducts,,Not regularly tested. Could potenti
 platform_suhosin,Suhosin,ocProducts,,Not regularly tested. Could potentially break due to third-party changes.,No,
 textmate,Textmate integration,ocProducts,,Needs to be separately tested. Needs a testing platform.,No,
 theme_mobile_mode,Mobile mode support,ocProducts,ocProducts,Needs to be separately tested. Liable to break due to cross-cutting complexity.,No,
-timezone_list,Timezone list,ocProducts,ocProducts,,No,Tested by timezones automated test.
+timezone_list,Timezone list,ocProducts,ocProducts,,No,Tested by ___timezones automated test.
 detect_bot,"Bot detection (user-agent list, IP safelist, and DNS safelist)",ocProducts,,Not regularly tested. Could potentially break due to third-party changes.,No,Partly tested by ua_detection automated test.
 detect_mobile,Mobile user agent detection,ocProducts,,Not regularly tested. Could potentially break due to third-party changes.,No,Partly tested by ua_detection automated test.
 standard_opengraph,Open Graph,ocProducts,,Not regularly tested. Could potentially break due to third-party changes.,No,

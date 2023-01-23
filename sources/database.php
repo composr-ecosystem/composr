@@ -176,7 +176,7 @@ function multi_lang_content() : bool
  * @param  ?string $only_table The only table to reload for (null: all tables)
  * @param  ?array $fields Full list of table fields, used for installation code only and $only_table must be passed (null: look up)
  */
-function reload_lang_fields(bool $full = false, ?string $only_table = null, array $fields = null)
+function reload_lang_fields(bool $full = false, ?string $only_table = null, ?array $fields = null)
 {
     global $TABLE_LANG_FIELDS_CACHE;
     if ($only_table === null) {

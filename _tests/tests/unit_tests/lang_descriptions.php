@@ -28,6 +28,8 @@ class lang_descriptions_test_set extends cms_test_case
         require_code('lang2');
 
         $this->lang_files = get_lang_files(fallback_lang());
+
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
     }
 
     public function testDescriptionsLoad()

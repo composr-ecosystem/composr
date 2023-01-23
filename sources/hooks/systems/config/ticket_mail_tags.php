@@ -36,6 +36,7 @@ class Hook_config_ticket_mail_tags
             'category' => 'MESSAGES',
             'group' => 'SUPPORT_TICKETS_MAIL',
             'explanation' => 'CONFIG_OPTION_ticket_mail_tags',
+            'list_options' => '',
             'shared_hosting_restricted' => '0',
             'order_in_category_group' => 12,
             'required' => false,

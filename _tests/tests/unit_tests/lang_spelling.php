@@ -24,6 +24,8 @@ class lang_spelling_test_set extends cms_test_case
 
         require_code('lang_compile');
         require_code('files2');
+
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
     }
 
     public function testLangMistakes()
