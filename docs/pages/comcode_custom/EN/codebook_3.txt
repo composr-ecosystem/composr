@@ -1340,4 +1340,4 @@ See the notes at the top of [tt]sources/version2.php[/tt] for a full run-down of
 
 We're glad you've made it to the end of our Code Book. Thanks for reading this far, and we hope you find Composr an effective and enjoyable environment to code for.
 
-{$SET,tutorial_tags,Development,PHP,debrand,Development,expert}{$SET,tutorial_add_date,Jan 2006}{$SET,tutorial_summary,The programmer's guide for Composr development. Miscellaneous technical guidance.}[block]main_tutorial_rating[/block]
+{$SET,tutorial_tags,Development,PHP,debrand,expert}{$SET,tutorial_add_date,Jan 2006}{$SET,tutorial_summary,The programmer's guide for Composr development. Miscellaneous technical guidance.}[block]main_tutorial_rating[/block]

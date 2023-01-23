@@ -414,8 +414,6 @@ Generally you should rarely use the Composr inbuilt theming tools when acting as
 
 The only caveat with theme images is that if Composr has already searched for it a theme image in your theme, and only found the default one, you'd need to empty the theme_images table to make it search again. That's safe as long as you only add/edit via filesystem and never from inside Composr.
 
-{$SET,tutorial_tags,Development,PHP,Development,CSS,JavaScript,expert}{$SET,tutorial_add_date,Jan 2006}{$SET,tutorial_summary,The programmer's guide for Composr development. Front-end development.}[block]main_tutorial_rating[/block]
-
 [title="2"]Meta-analysis of the code-base[/title]
 
 [title="3"]Language string word count[/title]
@@ -523,3 +521,5 @@ function do_dir($dir)
     return $out;
 }
 [/codebox]
+
+{$SET,tutorial_tags,Development,PHP,CSS,JavaScript,expert}{$SET,tutorial_add_date,Jan 2006}{$SET,tutorial_summary,The programmer's guide for Composr development. Front-end development.}[block]main_tutorial_rating[/block]

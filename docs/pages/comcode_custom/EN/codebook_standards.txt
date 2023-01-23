@@ -2446,4 +2446,4 @@ It will also make patch upgrades harder, but for most client projects you'll be 
 |}
 [/surround]
 
-{$SET,tutorial_tags,Development,PHP,Development,CSS,JavaScript,expert}{$SET,tutorial_add_date,Jun 2017}{$SET,tutorial_summary,The programmer's guide for Composr development. Coding Standards.}[block]main_tutorial_rating[/block]
+{$SET,tutorial_tags,Development,PHP,CSS,JavaScript,expert}{$SET,tutorial_add_date,Jun 2017}{$SET,tutorial_summary,The programmer's guide for Composr development. Coding Standards.}[block]main_tutorial_rating[/block]

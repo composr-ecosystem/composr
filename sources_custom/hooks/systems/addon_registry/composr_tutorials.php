@@ -1193,6 +1193,7 @@ The documentation is primarily maintained on our website, and this archive is on
             'data_custom/images/docs/tut_install_windows_server/iis_manager.png',
             'data_custom/images/docs/tut_install_windows_server/webpi.png',
             'data_custom/images/docs/tut_install_windows_server/remote_desktop.png',
+            'data_custom/images/docs/codebook_standards_obscure/1.png',
 
             'data_custom/images/docs/codebook/index.html',
             'data_custom/images/docs/codebook_1/index.html',
@@ -1389,6 +1390,7 @@ The documentation is primarily maintained on our website, and this archive is on
             'data_custom/images/docs/tut_website_health/index.html',
             'data_custom/images/docs/tut_wiki/index.html',
             'data_custom/images/docs/tut_wysiwyg/index.html',
+            'data_custom/images/docs/codebook_standards_obscure/index.html',
 
             'docs/pages/comcode_custom/EN/tut_install.txt',
             'docs/pages/comcode_custom/EN/tut_install_linux.txt',

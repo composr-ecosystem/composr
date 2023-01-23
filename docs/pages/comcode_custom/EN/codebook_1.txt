@@ -1543,4 +1543,4 @@ This is a good example of why type strictness is important to us. This will crea
 $secondary_groups = array_map('intval', explode(',', $row['additionalGroups']));
 [/code]
 
-{$,Quick Cache}{$SET,tutorial_tags,Development,PHP,Development,expert}{$SET,tutorial_add_date,Jan 2006}{$SET,tutorial_summary,The programmer's guide for Composr development. Back-end development, part 1.}[block]main_tutorial_rating[/block]
+{$,Quick Cache}{$SET,tutorial_tags,Development,PHP,expert}{$SET,tutorial_add_date,Jan 2006}{$SET,tutorial_summary,The programmer's guide for Composr development. Back-end development, part 1.}[block]main_tutorial_rating[/block]

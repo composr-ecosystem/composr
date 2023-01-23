@@ -2,6 +2,7 @@
 
 &laquo; Return to [page="_SEARCH:codebook"]Code Book table of contents[/page]{$REQUIRE_CSS,tutorials}
 
+[media description="" width="300" float="right" framed="0"]data_custom/images/docs/codebook_standards_obscure/1.png[/media]
 This section covers coding standards that should be upheld, but are either:
 1) relate to a very specific Composr scenario that most developers won't be facing day-to-day
 2) so obvious you don't need to learn them in advance either
@@ -12,9 +13,9 @@ It serves as a reference guide for settling disagreements, as a general referenc
 
 {$SET,cs_count,1}[surround="coding-standards-tables"]
 
-[title="3"]Back-end programming[/title]
+[title="2"]Back-end programming[/title]
 
-[title="4"]General[/title]
+[title="3"]General[/title]
 
 {|
 ! Standard
@@ -94,7 +95,7 @@ Block access when closed
 | Any URL that a user may reasonably navigate to manually that is not passed through [tt]index.php[/tt], must show the closed site message by its own means. Look to see how other code does it for example.
 |}
 
-[title="4"]Files[/title]
+[title="3"]Files[/title]
 
 {|
 ! Standard
@@ -118,7 +119,7 @@ No .php files in writable directories
 | suPHP will not allow .php files in directories with group/other write permissions.
 |}
 
-[title="4"]Log files[/title]
+[title="3"]Log files[/title]
 
 {|
 ! Standard
@@ -170,7 +171,7 @@ Reference in [tt]web.config[/tt] file
 | We support IIS, which does not support wild-card blocking of file access. So we must manually block access to each individual log file.
 |}
 
-[title="4"]URLs and file paths[/title]
+[title="3"]URLs and file paths[/title]
 
 {|
 ! Standard
@@ -194,7 +195,7 @@ Reference in [tt]web.config[/tt] file
 | If running a blank custom directory, none of the bundled directory structure will be initially present. You must therefore detect and auto-create missing directories, using [tt]make_missing_directory[/tt].
 |}
 
-[title="4"]Databases[/title]
+[title="3"]Databases[/title]
 
 {|
 ! Standard
@@ -232,7 +233,7 @@ Stay within common denominator of limits
 | There are maximum numbers of indices, fields, fields in keys and indexes, total field size in keys and indexes, length of field names, and length of table names.
 |}
 
-[title="4"]Templates and Interfaces[/title]
+[title="3"]Templates and Interfaces[/title]
 
 {|
 ! Standard
@@ -256,7 +257,7 @@ Stay within common denominator of limits
 | 
 |}
 
-[title="4"]Modifying core classes[/title]
+[title="3"]Modifying core classes[/title]
 
 {|
 ! Standard
@@ -273,7 +274,7 @@ Stay within common denominator of limits
 | Use object-orientated principles properly where Composr does already. For example, forum drivers all have a database object as a property, rather than referencing the global [tt]FORUM_DB[/tt] object. This is because they provide a core service and cannot make assumptions about the environment (e.g. it must be possible to have multiple simultaneous forum drivers running).
 |}
 
-[title="4"]Blocks[/title]
+[title="3"]Blocks[/title]
 
 {|
 ! Standard
@@ -290,7 +291,7 @@ Blocks should not exit
 | If a block hits an error condition it must return an error message, not call a function like [tt]warn_exit[/tt]. An error on a block can't be a fatal thing.
 |}
 
-[title="4"]Attachments[/title]
+[title="3"]Attachments[/title]
 
 {|
 ! Standard
@@ -307,7 +308,7 @@ Blocks should not exit
 | If you are supporting Composr attachments in a field, run the [tt]check_comcode[/tt] function on the Comcode that references the attachments before the main row for the content is added to the database. This ensures the Comcode is valid, so you can proceed to add the content row (using the integer [tt]0[/tt] temporarily as the field value for where the Comcode will be placed). The attachment Comcode can then be fully parsed (given the ID of the content row, so it can store its security properly) and then the content row updated with the new content language string ID for that parsed Comcode.
 |}
 
-[title="4"]Comcode parser/renderer code[/title]
+[title="3"]Comcode parser/renderer code[/title]
 
 {|
 ! Standard
@@ -331,7 +332,7 @@ Don't use [tt]require_javascript[/tt] or [tt]require_css[/tt]
 | When implementing tags, CSS must all be in [tt]global.css[/tt], and any JavaScript must be by using a symbol to load the JavaScript file -- this is because any inclusion code put in the PHP rendering code only runs when the Comcode is first compiled, and not when it is loaded out of the cache.
 |}
 
-[title="4"]Regular expressions[/title]
+[title="3"]Regular expressions[/title]
 
 If you are writing regular expressions to extract data from HTML, you should anticipate...
 {|
@@ -428,7 +429,7 @@ You [b]may[/b] assume...
 | 
 |}
 
-[title="4"]Installation code[/title]
+[title="3"]Installation code[/title]
 
 {|
 ! Standard
@@ -459,9 +460,9 @@ Reinstalls must be handled correctly
 | If a module is reinstalled, it should not give errors about existing tables or privileges. For this to work, the uninstall function must fully uninstall what the install function creates.
 |}
 
-[title="3"]Front-end programming[/title]
+[title="2"]Front-end programming[/title]
 
-[title="4"]Spelling/grammar/lexicon[/title]
+[title="3"]Spelling/grammar/lexicon[/title]
 
 (examples of what not to do are in [i]italics[/i])
 
@@ -519,7 +520,7 @@ When in general trying to draw attention to a word/term/phrase that isn't part o
 | A &lsquo;link&rsquo; is specifically a hyperlink (i.e. something that can be clicked), it is not a synonym for &lsquo;URL&rsquo;. Most of the time in code you will use the term &lsquo;URL&rsquo;. A &lsquo;link&rsquo; goes to a &lsquo;URL&rsquo;.
 |}
 
-[title="4"]Markup/Tempcode[/title]
+[title="3"]Markup/Tempcode[/title]
 
 {|
 ! Standard
@@ -536,7 +537,7 @@ Exclude robots appropriately
 | You need to stop search engines indexing utility scripts, or pages that only should be navigated to manually by a human. This can be done using an [tt]attach_to_screen_header[/tt] call that adds a [tt]meta[/tt] tag for HTML pages, a [tt]NOINDEX[/tt] parameter to the [tt]STANDALONE_HTML_WRAP[/tt] template, or a [tt]X-Robots-Tag[/tt] HTTP header for non-HTML pages.
 |}
 
-[title="4"]JavaScript[/title]
+[title="3"]JavaScript[/title]
 
 {|
 ! Standard
@@ -574,7 +575,7 @@ Don't use any deprecated methods (so no [tt]escape[/tt])
 | Using [tt]nodeName[/tt] is not reliable when namespaces are involved, and may also return in upper case. [tt]localName[/tt] is much more reliable, although only works on HTML Element DOM nodes not any DOM node.
 |}
 
-[title="4"]Documentation[/title]
+[title="3"]Documentation[/title]
 
 {|
 ! Standard
@@ -675,7 +676,7 @@ Include a summary
 | Include a summary. Refer to existing tutorials for an example.
 |}
 
-[title="3"]Agency standards[/title]
+[title="2"]Agency standards[/title]
 
 {|
 ! Standard
@@ -707,4 +708,4 @@ Include a summary
 |}
 [/surround]
 
-{$SET,tutorial_tags,Development,PHP,Development,CSS,JavaScript,expert}{$SET,tutorial_add_date,Jun 2017}{$SET,tutorial_summary,The programmer's guide for Composr development. Coding Standards.}[block]main_tutorial_rating[/block]
+{$SET,tutorial_tags,Development,PHP,CSS,JavaScript,expert}{$SET,tutorial_add_date,Jun 2017}{$SET,tutorial_summary,The programmer's guide for Composr development. Coding Standards.}[block]main_tutorial_rating[/block]

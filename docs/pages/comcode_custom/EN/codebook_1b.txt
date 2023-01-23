@@ -1165,4 +1165,4 @@ Your addon can then be managed through the bugfix push system, and will be pushe
 Anything to be executed regularly (e.g. every day) should be implemented as a system scheduler hook.
 You can simulate Cron executing by manually calling [tt]http://yourbaseurl/data/cron_bridge.php?limit_hooks=example&verbose=1&force=1[/tt]). This URL will only call the system scheduler hook named [tt]example[/tt], it will produce extra diagnostic information, and it will disable locking (so crashes that leave the system scheduler hook locked won't interrupt your debugging).
 
-{$SET,tutorial_tags,Development,PHP,core_forum_drivers,Development,expert}{$SET,tutorial_add_date,Jan 2006}{$SET,tutorial_summary,The programmer's guide for Composr development. Back-end development, part 2.}[block]main_tutorial_rating[/block]
+{$SET,tutorial_tags,Development,PHP,core_forum_drivers,expert}{$SET,tutorial_add_date,Jan 2006}{$SET,tutorial_summary,The programmer's guide for Composr development. Back-end development, part 2.}[block]main_tutorial_rating[/block]
