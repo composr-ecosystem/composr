@@ -76,7 +76,7 @@ class Hook_snippet_block
                     $sql .= db_string_not_equal_to('p_session_id', '') . ' AND p_time<' . strval(time() - $expiry_time);
                     $sql .= ' OR ';
                     if (!empty($SITE_INFO['static_caching_hours'])) {
-                        $expiry_time = $SITE_INFO['static_caching_hours'] * 60;
+                        $expiry_time = floatval($SITE_INFO['static_caching_hours']) * 60.0;
                     }
                     $sql .= db_string_equal_to('p_session_id', '') . ' AND p_time<' . strval(time() - $expiry_time);
                     $sql .= ' AND NOT EXISTS(SELECT * FROM ' . get_table_prefix() . 'sessions WHERE the_session=p_session_id)';
