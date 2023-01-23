@@ -222,7 +222,7 @@ function build_config_inputter(string $name, array $details, ?string $current_va
                 require_code('cns_forums2');
                 $_list = new Tempcode();
                 $_list->attach(form_input_list_entry('', false, do_lang_tempcode('NA_EM')));
-                $_list->attach(cns_create_selection_list_forum_groupings(null, intval($current_value)));
+                $_list->attach(cns_create_selection_list_forum_groupings(null, ($current_value === null) ? null : intval($current_value)));
                 return form_input_list($title, $explanation_with_default, $config_field_name, $_list, null, false, $required);
             }
             return form_input_line($title, $explanation_with_default, $config_field_name, $current_value, $required);
@@ -288,9 +288,6 @@ function get_submitted_config_value(string $name, array $details, bool $theme_wi
         }
     } elseif (($details['type'] == 'forum_grouping') && (get_forum_type() == 'cns')) {
         $value = post_param_string($config_field_name, null);
-        if (is_numeric($value)) {
-            $value = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forum_groupings', 'c_title', ['id' => post_param_integer($config_field_name)]);
-        }
         if ($value === null) {
             $value = '';
         }

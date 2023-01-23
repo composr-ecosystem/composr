@@ -308,10 +308,7 @@ class Module_cms_cns_groups extends Standard_crud_module
         if (is_numeric($_cat)) {
             $cat = intval($_cat);
         } else {
-            $cat = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forum_groupings', 'id', ['c_title' => $_cat]);
-            if ($cat === null) {
-                $cat = $GLOBALS['FORUM_DB']->query_select_value('f_forum_groupings', 'MIN(id)');
-            }
+            $cat = $GLOBALS['FORUM_DB']->query_select_value('f_forum_groupings', 'MIN(id)');
         }
         $_forum = get_option('club_forum_parent_forum');
         if (is_numeric($_forum)) {
