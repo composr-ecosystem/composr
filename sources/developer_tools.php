@@ -158,6 +158,7 @@ function destrictify(bool $db_too = false)
     }
     global $PREVIOUS_XSS_STATE;
     @array_push($PREVIOUS_XSS_STATE, ini_get('ocproducts.xss_detect'));
+    cms_ini_set('ocproducts.type_strictness', '0');
     cms_ini_set('ocproducts.xss_detect', '0');
     $include_path = ini_get('include_path');
     $include_path .= PATH_SEPARATOR . './';

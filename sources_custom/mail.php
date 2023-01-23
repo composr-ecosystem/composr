@@ -36,14 +36,18 @@ class Mail_dispatcher_override extends Mail_dispatcher_base
      */
     public function __construct(array $advanced_parameters = [])
     {
+        require_code('developer_tools');
+
+        destrictify();
+        require_code('swift_mailer/vendor/autoload');
+        restrictify();
+
         $this->smtp_sockets_use = (get_option('smtp_sockets_use') == '1');
         $this->smtp_sockets_host = get_option('smtp_sockets_host');
         $this->smtp_sockets_port = intval(get_option('smtp_sockets_port'));
         $this->smtp_sockets_username = get_option('smtp_sockets_username');
         $this->smtp_sockets_password = get_option('smtp_sockets_password');
         $this->smtp_from_address = get_option('smtp_from_address');
-
-        require_code('swift_mailer/lib/swift_required');
 
         parent::__construct($advanced_parameters);
     }
@@ -70,7 +74,7 @@ class Mail_dispatcher_override extends Mail_dispatcher_base
      * @param  LONG_TEXT $message_raw The message, as Comcode
      * @param  ?array $to_emails The destination (recipient) e-mail address(es) [array of strings] (null: site staff address)
      * @param  ?mixed $to_names The recipient name(s). Array or string. (null: site name)
-     * @param  EMAIL $from_email The from address (blank: site staff address)
+     * @param  EMAIL $from_email The reply-to address (blank: site staff address)
      * @param  string $from_name The from name (blank: site name)
      * @return ?array A pair: Whether it worked, and an error message (null: skipped)
      */
@@ -88,7 +92,7 @@ class Mail_dispatcher_override extends Mail_dispatcher_base
      *
      * @param  array $to_emails To e-mail addresses
      * @param  array $to_names To names
-     * @param  EMAIL $from_email From e-mail address
+     * @param  EMAIL $from_email Reply-to e-mail address
      * @param  string $from_name From name
      * @param  string $subject_wrapped Subject line
      * @param  string $headers Headers to use
@@ -107,9 +111,14 @@ class Mail_dispatcher_override extends Mail_dispatcher_base
         static $mailer = null;
         if ($mailer === null) {
             // Create the Transport
+
+            destrictify();
+
             $transport = (new Swift_SmtpTransport($this->smtp_sockets_host, $this->smtp_sockets_port))
                 ->setUsername($this->smtp_sockets_username)
                 ->setPassword($this->smtp_sockets_password);
+
+            restrictify();
 
             $encryption = get_value('mail_encryption');
             if ($encryption === null) {
@@ -131,6 +140,8 @@ class Mail_dispatcher_override extends Mail_dispatcher_base
                 'cafile' => $crt_path,
                 'SNI_enabled' => true,
             ];
+
+            destrictify();
 
             $transport->setEncryption($encryption);
             $transport->setStreamOptions(['ssl' => $ssl_options]);
@@ -157,6 +168,8 @@ class Mail_dispatcher_override extends Mail_dispatcher_base
                 }
             }
 
+            restrictify();
+
             if ($error !== null) {
                 return [$worked, $error];
             }
@@ -167,15 +180,17 @@ class Mail_dispatcher_override extends Mail_dispatcher_base
         foreach ($to_emails as $i => $_to_email) {
             $to_array[$_to_email] = $to_names[$i];
         }
+
+        destrictify();
+
         $message = new Swift_Message($subject_wrapped);
-        if ($this->sender_email !== null) {
-            $message->setFrom([$this->sender_email => $from_name]);
-        }
+        $message->setFrom([$this->_sender_email => $from_name]);
+
         // else maybe server won't let us set it due to safelist security, and we must let it use it's default (i.e. accountname@hostname)
         $message
             ->setReplyTo([$from_email => $from_name])
             ->setTo($to_array)
-            ->setDate(time())
+            ->setDate(new DateTime())
             ->setPriority($this->priority)
             ->setCharset($charset)
             ->setBody($html_evaluated, 'text/html', $charset);
@@ -192,8 +207,10 @@ class Mail_dispatcher_override extends Mail_dispatcher_base
         }
 
         // DKIM
-        $signer = new Swift_Signers_DKIMSigner(get_option('dkim_private_key'), get_domain(), get_option('dkim_selector'));
-        $message->attachSigner($signer);
+        if ((get_option('dkim_private_key') != '') && (get_option('dkim_selector') != '')) {
+            $signer = new Swift_Signers_DKIMSigner(get_option('dkim_private_key'), get_domain(), get_option('dkim_selector'));
+            $message->attachSigner($signer);
+        }
 
         // Attachments
         foreach ($this->real_attachments as $r) {
@@ -226,6 +243,8 @@ class Mail_dispatcher_override extends Mail_dispatcher_base
                 $error = 'Rejected addresses: ' . implode(', ', $failures);
             }
         }
+
+        restrictify();
 
         return [$worked, $error];
     }

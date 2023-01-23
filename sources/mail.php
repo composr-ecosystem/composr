@@ -102,7 +102,7 @@ http://people.dsv.su.se/~jpalme/ietf/ietf-mail-attributes.html
  * @param  LONG_TEXT $message_raw The message, as Comcode
  * @param  ?array $to_emails The destination (recipient) e-mail address(es) [array of strings] (null: site staff address)
  * @param  ?mixed $to_names The recipient name(s). Array or string. (null: site name)
- * @param  EMAIL $from_email The from address (blank: site staff address)
+ * @param  EMAIL $from_email The reply-to address (blank: site staff address)
  * @param  string $from_name The from name (blank: site name)
  * @param  array $advanced_parameters A map of additional parameters. See comments within this function implementation to know what can be sent.
  * @return object Our dispatcher object, which may contain some result data
@@ -198,7 +198,7 @@ class Mail_dispatcher_php extends Mail_dispatcher_base
      *
      * @param  array $to_emails To e-mail addresses
      * @param  array $to_names To names
-     * @param  EMAIL $from_email From e-mail address
+     * @param  EMAIL $from_email Reply_to e-mail address
      * @param  string $from_name From name
      * @param  string $subject_wrapped Subject line
      * @param  string $headers Headers to use
@@ -338,7 +338,7 @@ class Mail_dispatcher_smtp extends Mail_dispatcher_base
      * @param  LONG_TEXT $message_raw The message, as Comcode
      * @param  ?array $to_emails The destination (recipient) e-mail address(es) [array of strings] (null: site staff address)
      * @param  ?mixed $to_names The recipient name(s). Array or string. (null: site name)
-     * @param  EMAIL $from_email The from address (blank: site staff address)
+     * @param  EMAIL $from_email The reply-to address (blank: site staff address)
      * @param  string $from_name The from name (blank: site name)
      * @return ?array A pair: Whether it worked, and an error message (null: skipped)
      */
@@ -356,7 +356,7 @@ class Mail_dispatcher_smtp extends Mail_dispatcher_base
      *
      * @param  array $to_emails To e-mail addresses
      * @param  array $to_names To names
-     * @param  EMAIL $from_email From e-mail address
+     * @param  EMAIL $from_email Reply-to e-mail address
      * @param  string $from_name From name
      * @param  string $subject_wrapped Subject line
      * @param  string $headers Headers to use
@@ -660,7 +660,7 @@ abstract class Mail_dispatcher_base
      * @param  LONG_TEXT $message_raw The message, as Comcode
      * @param  ?array $to_emails The destination (recipient) e-mail address(es) [array of strings] (null: site staff address)
      * @param  ?mixed $to_names The recipient name(s). Array or string. (null: site name)
-     * @param  EMAIL $from_email The from address (blank: site staff address)
+     * @param  EMAIL $from_email The reply-to address (blank: site staff address)
      * @param  string $from_name The from name (blank: site name)
      * @return ?array A pair: Whether it worked, and an error message (null: skipped)
      */
@@ -787,7 +787,7 @@ abstract class Mail_dispatcher_base
      *
      * @param  array $to_emails To e-mail addresses
      * @param  array $to_names To names
-     * @param  EMAIL $from_email From e-mail address
+     * @param  EMAIL $from_email Reply-to e-mail address
      * @param  string $from_name From name
      * @param  string $subject_wrapped Subject line
      * @param  string $headers Headers to use
@@ -807,7 +807,7 @@ abstract class Mail_dispatcher_base
      * @param  LONG_TEXT $message_raw The message, as Comcode
      * @param  array $to_emails To e-mail addresses
      * @param  array $to_names To names
-     * @param  EMAIL $from_email From e-mail address
+     * @param  EMAIL $from_email Reply-to e-mail address
      * @param  string $from_name From name
      * @param  LANGUAGE_NAME $lang Language
      * @param  ID_TEXT $theme Theme
@@ -1179,7 +1179,7 @@ abstract class Mail_dispatcher_base
      * @param  LONG_TEXT $message_raw The message, as Comcode
      * @param  ?array $to_emails The destination (recipient) e-mail address(es) [array of strings] (null: site staff address)
      * @param  ?mixed $to_names The recipient name(s). Array or string. (null: site name)
-     * @param  EMAIL $from_email From e-mail address
+     * @param  EMAIL $from_email Reply-to e-mail address
      * @param  string $from_name From name
      * @param  LANGUAGE_NAME $lang Language
      * @param  ID_TEXT $theme Theme
@@ -1303,7 +1303,7 @@ abstract class Mail_dispatcher_base
      * @param  LONG_TEXT $message_raw The message, as Comcode
      * @param  array $to_emails The destination (recipient) e-mail addresses [array of strings]
      * @param  array $to_names The recipient names [array of strings]
-     * @param  EMAIL $from_email The from address (blank: site staff address)
+     * @param  EMAIL $from_email The reply-to address (blank: site staff address)
      * @param  string $from_name The from name (blank: site name)
      * @return ?AUTO_LINK The queue ID (null: could not log)
      */
