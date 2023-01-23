@@ -63,28 +63,94 @@ function google_analytics_initialise($weak_test = false)
 function enumerate_google_analytics_metrics()
 {
     $ret = [
-        'hits' => 'Hits',
-        'bounces' => 'Bounces',
-        'duration' => 'Session duration',
-        'read_time' => 'Read time',
-        'speed' => 'Speed',
-        'browsers' => 'Browsers',
-        'operating_systems' => 'Operating systems',
-        'device_types' => 'Device types',
-        'screen_sizes' => 'Screen sizes',
-        'countries' => 'Countries',
-        'ages' => 'Ages',
-        'genders' => 'Genders',
-        'languages' => 'Languages',
-        'interests_affinities' => 'Interests: affinities',
-        'interests_markets' => 'Interests: markets',
-        'interests_other' => 'Interests: other',
-        'referrers' => 'Referrers',
-        'referrers_social' => 'Referrals: social',
-        'referral_mediums' => 'Referrals: mediums',
-        'entry_pages' => 'Entry pages',
-        'exit_pages' => 'Exit pages',
-        'popular_pages' => 'Popular pages',
+        'hits' => [
+            'label' => 'Hits',
+            'category' => 'google_analytics_page_hits',
+        ],
+        'bounces' => [
+            'label' => 'Bounces',
+            'category' => 'google_analytics_page_hits',
+        ],
+        'duration' => [
+            'label' => 'Session duration',
+            'category' => 'google_analytics_sessions_devices',
+        ],
+        'read_time' => [
+            'label' => 'Read time',
+            'category' => 'google_analytics_sessions_devices',
+        ],
+        'speed' => [
+            'label' => 'Speed',
+            'category' => 'google_analytics_performance',
+        ],
+        'browsers' => [
+            'label' => 'Browsers',
+            'category' => 'google_analytics_sessions_devices',
+        ],
+        'operating_systems' => [
+            'label' => 'Operating systems',
+            'category' => 'google_analytics_sessions_devices',
+        ],
+        'device_types' => [
+            'label' => 'Device types',
+            'category' => 'google_analytics_sessions_devices',
+        ],
+        'screen_sizes' => [
+            'label' => 'Screen sizes',
+            'category' => 'google_analytics_sessions_devices',
+        ],
+        'countries' => [
+            'label' => 'Countries',
+            'category' => 'google_analytics_demographics',
+        ],
+        'ages' => [
+            'label' => 'Ages',
+            'category' => 'google_analytics_demographics',
+        ],
+        'genders' => [
+            'label' => 'Genders',
+            'category' => 'google_analytics_demographics',
+        ],
+        'languages' => [
+            'label' => 'Languages',
+            'category' => 'google_analytics_demographics',
+        ],
+        'interests_affinities' => [
+            'label' => 'Interests: affinities',
+            'category' => 'google_analytics_demographics',
+        ],
+        'interests_markets' => [
+            'label' => 'Interests: markets',
+            'category' => 'google_analytics_demographics',
+        ],
+        'interests_other' => [
+            'label' => 'Interests: other',
+            'category' => 'google_analytics_demographics',
+        ],
+        'referrers' => [
+            'label' => 'Referrers',
+            'category' => 'google_analytics_page_hits',
+        ],
+        'referrers_social' => [
+            'label' => 'Referrals: social',
+            'category' => 'google_analytics_page_hits',
+        ],
+        'referral_mediums' => [
+            'label' => 'Referrals: medium',
+            'category' => 'google_analytics_page_hits',
+        ],
+        'entry_pages' => [
+            'label' => 'Entry pages',
+            'category' => 'google_analytics_page_hits',
+        ],
+        'exit_pages' => [
+            'label' => 'Exit pages',
+            'category' => 'google_analytics_page_hits',
+        ],
+        'popular_pages' => [
+            'label' => 'Popular pages',
+            'category' => 'google_analytics_page_hits',
+        ],
     ];
 
     return $ret;

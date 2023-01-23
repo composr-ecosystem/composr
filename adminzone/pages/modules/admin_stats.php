@@ -886,6 +886,7 @@ class Module_admin_stats extends Standard_crud_module
         $install_actions = [];
         $category_actions = [];
         $kpi_actions = [];
+        $redirect_actions = [];
 
         $test = $GLOBALS['SITE_DB']->query_select_value_if_there('ip_country', 'id');
         if ($test === null) {
@@ -901,7 +902,7 @@ class Module_admin_stats extends Standard_crud_module
                 foreach ($info as $id => $graph_details) {
                     $label = do_lang_tempcode($graph_details['label_lang_string']);
                     $label->attach(' (' . escape_html(integer_format(1)) . ')');
-                    $category_actions[] = [$graph_details['icon'], ['_SELF', ['type' => 'redirect', 'id' => $id], '_SELF'], protect_from_escaping($label)];
+                    $redirect_actions[] = [$graph_details['icon'], ['_SELF', ['type' => 'redirect', 'id' => $id], '_SELF'], protect_from_escaping($label)];
                 }
             }
         }
@@ -946,13 +947,13 @@ class Module_admin_stats extends Standard_crud_module
             null,
             null,
             null,
-            $category_actions,
             $kpi_actions,
-            [],
+            $category_actions,
+            $redirect_actions,
+            ((!empty($redirect_actions)) ? do_lang('REDIRECTS') : null),
             null,
-            null,
-            do_lang('CATEGORIES'),
-            do_lang('KPIS')
+            do_lang('KPIS'),
+            do_lang('CATEGORIES')
         );
     }
 }

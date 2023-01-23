@@ -38,8 +38,20 @@ class Hook_admin_stats_google_analytics extends CMSStatsBlob
         }
 
         return [
-            'google_analytics' => [
-                'label_lang_string' => 'GOOGLE_ANALYTICS_SIMPLIFIED',
+            'google_analytics_page_hits' => [
+                'label_lang_string' => 'GOOGLE_ANALYTICS_PAGE_HITS',
+                'icon' => 'spare/analytics',
+            ],
+            'google_analytics_sessions_devices' => [
+                'label_lang_string' => 'GOOGLE_ANALYTICS_SESSIONS_DEVICES',
+                'icon' => 'spare/analytics',
+            ],
+            'google_analytics_demographics' => [
+                'label_lang_string' => 'GOOGLE_ANALYTICS_DEMOGRAPHICS',
+                'icon' => 'spare/analytics',
+            ],
+            'google_analytics_performance' => [
+                'label_lang_string' => 'GOOGLE_ANALYTICS_PERFORMANCE',
                 'icon' => 'spare/analytics',
             ],
         ];
@@ -69,10 +81,10 @@ class Hook_admin_stats_google_analytics extends CMSStatsBlob
 
         $ret = [];
 
-        foreach ($metrics as $metric_name => $metric_label) {
+        foreach ($metrics as $metric_name => $metric_details) {
             $ret['google_analytics__' . $metric_name] = [
-                'label' => make_string_tempcode($metric_label),
-                'category' => 'google_analytics',
+                'label' => make_string_tempcode($metric_details['label']),
+                'category' => $metric_details['category'],
                 'filters' => [],
                 'pivot' => null,
             ];
