@@ -1287,19 +1287,7 @@ function step_5() : object
     }
 
     // Check database credentials / load DB connection
-    require_code('database');
-    $table_prefix = post_param_string('table_prefix', false, INPUT_FILTER_POST_IDENTIFIER);
-    $post_db_site = post_param_string('db_site', false, INPUT_FILTER_POST_IDENTIFIER);
-    $post_db_host = post_param_string('db_site_host', false, INPUT_FILTER_POST_IDENTIFIER);
-    $post_db_user = post_param_string('db_site_user', false, INPUT_FILTER_POST_IDENTIFIER);
-    $post_db_password = post_param_string('db_site_password', false, INPUT_FILTER_PASSWORD);
-    if (($table_prefix === false) || ($post_db_site === false) || ($post_db_host === false) || ($post_db_user === false) || ($post_db_password === false)) {
-        warn_exit(do_lang_tempcode('MISSING_DB_PARAMETERS'));
-    }
-    if (($post_db_user == 'root') && (!file_exists(get_file_base() . '/.git'))) {
-        warn_exit(do_lang_tempcode('NO_ROOT_DB_WITHOUT_GIT'));
-    }
-    $tmp = new DatabaseConnector($post_db_site, $post_db_host, $post_db_user, $post_db_password, $table_prefix);
+    $tmp = confirm_db_credentials(true);
 
     // Give warning if database contains data
     if (post_param_integer('confirm', 0) == 0) {
@@ -3439,26 +3427,44 @@ END;
 }
 
 /**
- * Check for POSTed database settings and ensure they are valid.
+ * Check for POSTed database settings and ensure they are valid. Also checks for max_allowed_packet.
  *
- * @param  boolean $unset Whether to unset the connection after we test it
+ * @param  boolean $return_connection Whether to return the database connection (false: close the connection after verifying it and return null)
+ * @return mixed Either null of $return_connection is false, or the database connection
  */
-function confirm_db_credentials(bool $unset = true)
+function confirm_db_credentials(bool $return_connection = false)
 {
     require_code('database');
+    $post_db_type = post_param_string('db_type', false, INPUT_FILTER_POST_IDENTIFIER);
     $table_prefix = post_param_string('table_prefix', false, INPUT_FILTER_POST_IDENTIFIER);
     $post_db_site = post_param_string('db_site', false, INPUT_FILTER_POST_IDENTIFIER);
     $post_db_host = post_param_string('db_site_host', false, INPUT_FILTER_POST_IDENTIFIER);
     $post_db_user = post_param_string('db_site_user', false, INPUT_FILTER_POST_IDENTIFIER);
     $post_db_password = post_param_string('db_site_password', false, INPUT_FILTER_PASSWORD);
-    if (($table_prefix === false) || ($post_db_site === false) || ($post_db_host === false) || ($post_db_user === false) || ($post_db_password === false)) {
+    if (($post_db_type === false) || ($table_prefix === false) || ($post_db_site === false) || ($post_db_host === false) || ($post_db_user === false) || ($post_db_password === false)) {
         warn_exit(do_lang_tempcode('MISSING_DB_PARAMETERS'));
     }
     if (($post_db_user == 'root') && (!file_exists(get_file_base() . '/.git'))) {
         warn_exit(do_lang_tempcode('NO_ROOT_DB_WITHOUT_GIT'));
     }
     $tmp = new DatabaseConnector($post_db_site, $post_db_host, $post_db_user, $post_db_password, $table_prefix);
-    if ($unset) {
-        unset($tmp);
+
+    // Check max allowed packet if mySQLi
+    if (($post_db_type == 'mysql') || ($post_db_type == 'mysqli')) {
+        $min = 1024 * 1024 * 4; // 4MB
+        $vars = $tmp->query('SHOW VARIABLES LIKE \'max_allowed_packet\'');
+        foreach ($vars as $var) {
+            $current = intval($var['Value']);
+            if ($current < $min) {
+                warn_exit(do_lang_tempcode('MAX_ALLOWED_PACKET_TOO_LOW', integer_format($min), integer_format($current)));
+            }
+        }
     }
+
+    if (!$return_connection) {
+        unset($tmp);
+        return null;
+    }
+
+    return $tmp;
 }
