@@ -476,10 +476,8 @@ function set_option(string $name, string $value, int $will_be_formally_set = 1, 
             } else {
                 $map += lang_remap('c_value_trans', $current_value, $value);
             }
-            $GLOBALS['SITE_DB']->query_update('config', $map, ['c_name' => $name], '', 1);
-        } else { // Not translated
-            $GLOBALS['SITE_DB']->query_update('config', $map, ['c_name' => $name], '', 1);
         }
+        $GLOBALS['SITE_DB']->query_insert_or_replace('config', $map, ['c_name' => $name]); // We use query_insert_or_replace instead of query_update in case $CONFIG_OPTIONS_CACHE[$name] is set but no actual DB row exists right now
 
         // For use by get_option during same script execution
         $CONFIG_OPTIONS_CACHE[$name] = $map + ['_cached_string_value' => $value] + $CONFIG_OPTIONS_CACHE[$name];
