@@ -606,7 +606,7 @@ function update_ticket_type_lead_times()
         $tickets = $GLOBALS['SITE_DB']->query_select('tickets', ['*'], ['ticket_type' => $ticket_type['id']]);
         foreach ($tickets as $ticket) {
             $max_rows = 0;
-            $topic = $GLOBALS['FORUM_DRIVER']->show_forum_topics($ticket['forum_id'], 1, 0, $max_rows, $ticket['ticket_id'], do_lang('SUPPORT_TICKET') . ': #' . $ticket['ticket_id'], true, 'lasttime', false);
+            $topic = $GLOBALS['FORUM_DRIVER']->show_forum_topics($ticket['forum_id'], 1, 0, $max_rows, '', do_lang('SUPPORT_TICKET') . ': #' . $ticket['ticket_id'], true, 'lasttime', false);
             if ($topic === null) {
                 continue;
             }
@@ -633,7 +633,7 @@ function update_ticket_type_lead_times()
 
             // Find the first post by someone other than the ticket owner
             $i = $first_key + 1;
-            while ((array_key_exists($i, $ticket_posts)) && ($ticket_posts[$i]['member'] != $ticket_posts[$first_key]['member'])) {
+            while ((array_key_exists($i, $ticket_posts)) && ($ticket_posts[$i]['member'] == $ticket_posts[$first_key]['member'])) {
                 $i++;
             }
 
