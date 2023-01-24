@@ -2,7 +2,7 @@ Codename,Title,Bug-fix sponsor,Current active sponsor,Notes,Non-bundled addon,Te
 multi_lang_content,Content translations,ocProducts,,Not regularly tested. Liable to break due to cross-cutting complexity.,No,Randomised mode at dev install. Partly tested by running of full test set.
 character_sets,Character sets,,,Not regularly tested.,No,
 db_connection_pooling_with_replication,Configuration of multiple database servers (with only one taking write queries),ocProducts,,Not regularly tested,No,
-readonly_db,Stability when the database is read-only (if a webhost has locked out write access due to quota issues),ocProducts,,Not regularly tested,No,
+readonly_db,Stability when the database is read-only (if a webhost has locked out write access due to quota issues),,,Not regularly tested,No,
 forum_ipb,Invision Board forum driver,,,Not regularly tested. Already out-dated. Needs ongoing maintenance.,No,Partly tested by running of full test set
 forum_mybb,MyBB forum driver,,,Not regularly tested. May become out-dated. Needs ongoing maintenance.,No,Partly tested by running of full test set
 forum_none,No forums or members forum driver,,,Not regularly tested. Liable to break due to cross-cutting complexity.,No,Partly tested by running of full test set
