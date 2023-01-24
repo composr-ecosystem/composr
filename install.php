@@ -651,7 +651,7 @@ function step_3() : object
     $dbs_found = 0;
     foreach (array_keys($databases) as $database) {
         if (GOOGLE_APPENGINE) {
-            if ($database != 'mysql' && $database != 'mysqli') {
+            if (strpos($database, 'mysql') !== false) {
                 continue;
             }
         }
@@ -3450,7 +3450,7 @@ function confirm_db_credentials(bool $return_connection = false)
     $tmp = new DatabaseConnector($post_db_site, $post_db_host, $post_db_user, $post_db_password, $table_prefix);
 
     // Check max allowed packet if mySQLi
-    if (($post_db_type == 'mysql') || ($post_db_type == 'mysqli')) {
+    if (strpos($post_db_type, 'mysql') !== false) {
         $min = 1024 * 1024 * 4; // 4MB; if you change this value, also change it in the health_check install_env hook.
         $vars = $tmp->query('SHOW VARIABLES LIKE \'max_allowed_packet\'');
         foreach ($vars as $var) {
