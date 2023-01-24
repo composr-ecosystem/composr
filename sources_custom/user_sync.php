@@ -88,10 +88,16 @@ function user_sync__inbound($since = null)
         $temporary_password,
         ) = get_user_sync_env();
 
-    // Connect to the database
     if (!class_exists('PDO')) {
         warn_exit('PDO must be installed.', false, true);
     }
+
+    // PDO does not have a 'mysqli' driver
+    if ($db_type == 'mysqli') {
+        $db_type = 'mysql';
+    }
+
+    // Connect to the database
     $connect_string = $db_type . ':host=' . $db_host . ';dbname=' . $db_name;
     $dbh = new PDO($connect_string, $db_user, $db_password);
     $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);

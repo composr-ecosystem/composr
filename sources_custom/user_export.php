@@ -46,7 +46,7 @@ function do_user_export($to_file = true)
         }
     }
 
-    $outfile_path = null;
+    $outfile_path = USER_EXPORT_PATH;
     require_code('files_spreadsheets_write');
     $sheet_writer = spreadsheet_open_write($outfile_path);
 
