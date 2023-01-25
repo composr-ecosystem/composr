@@ -548,6 +548,9 @@ class Hook_actionlog_core extends Hook_actionlog
                         return $hook;
                     }
                     $info = $ob->info();
+                    if ($info === null) {
+                        return $hook;
+                    }
                     return $info['title']->evaluate();
                 }
                 break;
