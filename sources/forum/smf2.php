@@ -180,6 +180,7 @@ class Forum_driver_smf2 extends Forum_driver_base
             $boardurl = '';
             $db_prefix = '';
             $cookiename = '';
+            $auth_secret = '';
             @include($path . '/Settings.php');
             $PROBED_FORUM_CONFIG['sql_host'] = $db_server;
             $PROBED_FORUM_CONFIG['sql_database'] = $db_name;
@@ -189,7 +190,7 @@ class Forum_driver_smf2 extends Forum_driver_base
             $PROBED_FORUM_CONFIG['board_url'] = $boardurl;
             $PROBED_FORUM_CONFIG['cookie_member_id'] = $cookiename . ':0';
             $PROBED_FORUM_CONFIG['cookie_member_hash'] = $cookiename . ':1';
-
+            $PROBED_FORUM_CONFIG['auth_secret'] = $auth_secret;
             return true;
         }
         return false;
@@ -666,7 +667,7 @@ class Forum_driver_smf2 extends Forum_driver_base
             $topic_filter .= ' AND t_locked=0';
         }
 
-        $rows = $this->db->query('SELECT t.num_replies, t.id_topic AS t_id_topic, t.id_member_updated AS t_id_member_updated, t.id_member_started AS t_id_member_started, t.locked AS t_locked, p.subject AS p_subject FROM ' . $this->db->get_table_prefix() . 'topics t LEFT JOIN ' . $this->db->get_table_prefix() . 'messages p ON t.id_first_msg=p.id_msg WHERE (' . $id_list . ')' . $topic_filter . ' ORDER BY ' . (($date_key == 'lasttime') ? 'id_last_msg' : 'id_first_msg') . ' DESC', $limit, $start, null, false, true);
+        $rows = $this->db->query('SELECT t.num_replies, t.id_topic AS t_id_topic, t.id_member_updated AS t_id_member_updated, t.id_member_started AS t_id_member_started, t.locked AS t_locked, p.subject AS p_subject FROM ' . $this->db->get_table_prefix() . 'topics t LEFT JOIN ' . $this->db->get_table_prefix() . 'messages p ON t.id_first_msg=p.id_msg WHERE (' . $id_list . ')' . $topic_filter . ' ORDER BY ' . (($date_key == 'lasttime') ? 'id_last_msg' : 'id_first_msg') . ' DESC', $limit, $start);
         $max_rows = $this->db->query_value_if_there('SELECT COUNT(*) FROM ' . $this->db->get_table_prefix() . 'topics t LEFT JOIN ' . $this->db->get_table_prefix() . 'messages p ON t.ID_FIRST_MSG=p.ID_MSG WHERE (' . $id_list . ')' . $topic_filter);
 
         // Generate output
@@ -922,12 +923,13 @@ class Forum_driver_smf2 extends Forum_driver_base
         if ($this->EMOTICON_CACHE !== null) {
             return $this->EMOTICON_CACHE;
         }
-        $rows = $this->db->query_select('smileys', ['*']);
+        $rows = $this->db->query('SELECT * FROM ' . $this->db->get_table_prefix() . 'smiley_files sf JOIN ' . $this->db->get_table_prefix() . 'smileys s ON s.id_smiley=sf.id_smiley');
         $this->EMOTICON_CACHE = [];
         foreach ($rows as $myrow) {
+            $set = $myrow['smiley_set'];
             $src = $myrow['filename'];
             if (url_is_local($src)) {
-                $src = $this->get_emo_dir() . $src;
+                $src = $this->get_emo_dir() . $set . '/' . $src;
             }
             $this->EMOTICON_CACHE[$myrow['code']] = ['EMOTICON_IMG_CODE_DIR', $src, $myrow['code']];
         }
@@ -1162,14 +1164,28 @@ class Forum_driver_smf2 extends Forum_driver_base
     {
         list($stub,) = explode(':', get_member_cookie());
 
-        if (!$GLOBALS['SMF_NEW']) { // SMF 1.0 style
-            $row = $this->get_member_row($member_id);
-            $_password = $this->password_hash($row['passwd'], 'ys');
-            $bits = explode('::', $_password);
-            $_password = $bits[0];
-        } else { // SMF 1.1 style
-            $row = $this->get_member_row($member_id);
-            $_password = sha1($row['passwd'] . $row['password_salt']);
+        // Create our cookie depending on SMF version
+        $_password = null;
+        switch ($GLOBALS['SMF_PW_STYLE']) {
+            case 2.0:
+                $row = $this->get_member_row($member_id);
+                $_password = $this->cookie_hash_salt($row['passwd'], $row['password_salt']);
+                break;
+            case 1.1:
+                $row = $this->get_member_row($member_id);
+                $_password = sha1($row['passwd'] . $row['password_salt']);
+                break;
+            case 1.0:
+                $row = $this->get_member_row($member_id);
+                $_password = $this->_legacy_password_hash($row['passwd'], 'ys');
+                $bits = explode('::', $_password);
+                $_password = $bits[0];
+                break;
+        }
+
+        // Might be null from $this->cookie_hash_salt if no auth_secret was set in SMF 2. So, don't set a cookie.
+        if ($_password === null) {
+            return;
         }
 
         $data = [$member_id, $_password, (time() + intval(get_cookie_days()) * 24 * 60 * 60), 3];
@@ -1248,27 +1264,41 @@ class Forum_driver_smf2 extends Forum_driver_base
             return $out;
         }
 
-        $GLOBALS['SMF_NEW'] = array_key_exists('pm_ignore_list', $row);
+        // Verify password below
+        if (substr($row['passwd'], 0, 4) == '$2y$') { // SMF 2 password
+            $GLOBALS['SMF_PW_STYLE'] = 2.0;
+            if ($cookie_login) {
+                $cookie_hash = $this->cookie_hash_salt($row['passwd'], $row['password_salt']);
+                if ($cookie_hash === null) {
+                    $out['error'] = do_lang_tempcode('INTERNAL_ERROR');
+                    return $out;
+                }
+                $passes = hash_equals($cookie_hash, $password_mixed);
+            } else {
+                $passes = password_verify(cms_strtolower_ascii($username) . $password_mixed, $row['passwd']);
+            }
+        } else { // SMF 1 and 1.1 password
+            $GLOBALS['SMF_PW_STYLE'] = array_key_exists('pm_ignore_list', $row) ? 1.1 : 1.0;
+            $password_hashed = $cookie_login ? $password_mixed : $this->_legacy_password_hash($password_mixed, $row['passwd']);
+            $bits = explode('::', $password_hashed);
+            if (!array_key_exists(1, $bits)) {
+                $bits[1] = $bits[0];
+            }
+            if ($cookie_login) {
+                if ($GLOBALS['SMF_PW_STYLE'] == 1.1) {
+                    $passes = hash_equals(sha1($row['passwd'] . $row['password_salt']), $bits[1]);
+                } else {
+                    $passes = hash_equals($this->_legacy_password_hash($row['passwd'], 'ys', true), $bits[0]);
+                }
+            } else {
+                if ($GLOBALS['SMF_PW_STYLE'] == 1.1) {
+                    $passes = hash_equals($row['passwd'], $bits[1]);
+                } else {
+                    $passes = hash_equals($row['passwd'], $bits[0]);
+                }
+            }
+        }
 
-        // Main authentication
-        $password_hashed = $cookie_login ? $password_mixed : $this->password_hash($password_mixed, strval($row['id_member']));
-        $bits = explode('::', $password_hashed);
-        if (!array_key_exists(1, $bits)) {
-            $bits[1] = $bits[0];
-        }
-        if ($cookie_login) {
-            if ($GLOBALS['SMF_NEW']) {
-                $passes = hash_equals(sha1($row['passwd'] . $row['password_salt']), $bits[1]);
-            } else {
-                $passes = hash_equals($this->password_hash($row['passwd'], 'ys', true), $bits[0]);
-            }
-        } else {
-            if ($GLOBALS['SMF_NEW']) {
-                $passes = hash_equals($row['passwd'], $bits[1]);
-            } else {
-                $passes = hash_equals($row['passwd'], $bits[0]);
-            }
-        }
         if (!$passes) {
             $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
             return $out;
@@ -1280,18 +1310,20 @@ class Forum_driver_smf2 extends Forum_driver_base
         }
 
         $out['id'] = $row['id_member'];
+
         return $out;
     }
 
     /**
-     * SMF hashing.
+     * LEGACY: SMF hashing for SMF 1 and 1.1.
      *
      * @param  string $password_raw The value to hash
      * @param  string $key Special key to hash with
      * @param  boolean $smf1_only Whether to just use original SMF hashing
      * @return string The hashed data
+     * @ignore
      */
-    protected function password_hash(string $password_raw, string $key, bool $smf1_only = false) : string
+    protected function _legacy_password_hash(string $password_raw, string $key, bool $smf1_only = false) : string
     {
         $key = cms_strtolower_ascii($key);
         $new_key = str_pad((strlen($key) <= 64) ? $key : pack('H*', md5($key)), 64, chr(0x00));
@@ -1303,6 +1335,35 @@ class Forum_driver_smf2 extends Forum_driver_base
         $b = sha1($key . $password_raw); // SMF 1.1 style
 
         return $a . '::' . $b;
+    }
+
+    /**
+     * Hashes password with salt and authentication secret for use in the SMF 2 cookie.
+     *
+     * @param  string $password The password
+     * @param  string $salt The salt
+     * @return ?string The hashed password (null: error, and a cookie should not be set)
+     */
+    protected function cookie_hash_salt(string $password, string $salt) : ?string
+    {
+        // TODO: Does not work yet
+        return null;
+
+        /*
+        global $PROBED_FORUM_CONFIG;
+
+        // We have to probe the Settings.php file for the auth_secret
+        if ($this->install_test_load_from(get_forum_base_url()) && $PROBED_FORUM_CONFIG['auth_secret'] != '') {
+            // Append the salt to get a user-specific authentication secret.
+            $secret_key = $PROBED_FORUM_CONFIG['auth_secret'] . $salt;
+
+            // Now use that to generate an HMAC of the password.
+            return hash_hmac('sha512', $password, $secret_key);
+        }
+
+        // Ignore cookie log-in if auth_secret is not defined; only SMF can generate it.
+        return null;
+        */
     }
 
     /**

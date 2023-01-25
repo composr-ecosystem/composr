@@ -43,9 +43,6 @@ function _delete_cache_entry($cached_for, ?array $identifier = null, ?int $membe
 
     $where = '';
 
-    $bot_statuses = [true, false];
-    $timezones = array_keys(get_timezone_list());
-
     foreach ($cached_for as $_cached_for) {
         if (is_array($_cached_for)) {
             $_identifier = $_cached_for[1];
