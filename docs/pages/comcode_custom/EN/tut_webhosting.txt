@@ -313,7 +313,7 @@ If you wish to integrate an existing forum into Composr, rather than use our own
  - {$IS_MAINTAINED,forum_mybb,myBB 1.8}
  - {$IS_MAINTAINED,forum_vb,vBulletin .7}
  - {$IS_MAINTAINED,forum_wbb,Burning Board 2.2/Lite}
- - {$IS_MAINTAINED,forum_smf,Simple Machine Forum 1.1}
+ - {$IS_MAINTAINED,forum_smf,Simple Machine Forum 2.1}
 If your forum is not on the list, professional developers are available to add support.
 
 Please note that many 'forum systems' are referred to as 'bulletin boards', and that a 'forum' within 'forums' is often referred to as a 'board'. We consistently use the terms 'discussion forums', 'forums' and 'forum' to describe these.

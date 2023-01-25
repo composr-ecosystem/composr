@@ -51,7 +51,7 @@ class Hook_import_smf2
 
         $info = [];
         $info['supports_advanced_import'] = false;
-        $info['product'] = 'SMF 2.0.x';
+        $info['product'] = 'SMF 2.1.x';
         $info['prefix'] = 'smf_';
         $info['import'] = [
             'config',

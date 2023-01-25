@@ -55,4 +55,19 @@ class Hook_config_forum_in_portal
     {
         return has_no_forum() ? null : '0';
     }
+
+    /**
+     * Code to run after the option is saved.
+     *
+     * @param  string $new_value The new value
+     */
+    public function postsave_handler(string $new_value)
+    {
+        // Need to clear some additional caches so URLs render properly
+        require_code('caches3');
+
+        erase_block_cache(true);
+        erase_cached_templates();
+        erase_persistent_cache();
+    }
 }

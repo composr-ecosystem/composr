@@ -25,6 +25,8 @@
  */
 class Forum_driver_smf2 extends Forum_driver_base
 {
+    protected static $SETTINGS_CACHE = [];
+
     /**
      * Check the connected DB is valid for this forum driver.
      *
@@ -362,19 +364,25 @@ class Forum_driver_smf2 extends Forum_driver_base
     protected function _get_member_avatar_url(int $member_id, bool &$fallback_support) : string
     {
         $ret = $this->get_member_row_field($member_id, 'avatar');
+
+        // Uploaded avatars
         if ($ret == '') {
-            $attach_id = $this->db->query_select_value_if_there('attachments', 'id_attach', ['id_member' => $member_id]);
-            if ($attach_id === null) {
+            $filename = $this->db->query_select_value_if_there('attachments', 'filename', ['id_member' => $member_id]);
+            if ($filename === null) {
                 return '';
             }
-            return get_forum_base_url() . '/index.php?action=dlattach;attach=' . strval($attach_id) . ';type=avatar';
+            return $this->get_setting('custom_avatar_url') . '/' . strval($filename);
         }
+
+        // Gravatar
+        if (substr($ret, 0, 11) == 'gravatar://') {
+            // Ignore custom Gravatar e-mail addresses for privacy reasons
+            return find_script('gravatar') . '?id=' . strval($member_id) . '&from_driver=1';
+        }
+
+        // Avatar URLs and avatar gallery
         if (url_is_local($ret)) {
-            static $base_url = null; //get_forum_base_url().'/avatars';
-            if ($base_url === null) {
-                $base_url = $this->db->query_select_value_if_there('settings', 'value', ['variable' => 'avatar_url']);
-            }
-            $ret = $base_url . '/' . $ret;
+            $ret = $this->get_setting('avatar_url') . '/' . $ret;
         }
         return $ret;
     }
@@ -904,13 +912,18 @@ class Forum_driver_smf2 extends Forum_driver_base
     }
 
     /**
-     * Find the base URL to the emoticons.
+     * Get an SMF setting.
      *
-     * @return URLPATH The base URL
+     * @param  ID_TEXT $setting The name of the setting
+     * @return string The setting value
      */
-    public function get_emo_dir() : string
+    public function get_setting(string $setting) : string
     {
-        return get_forum_base_url() . '/Smileys/default/';
+        if (isset($SETTINGS_CACHE[$setting])) {
+            return $SETTINGS_CACHE[$setting];
+        }
+        $SETTINGS_CACHE[$setting] = $this->db->query_select_value('settings', 'value', ['variable' => $setting]);
+        return $SETTINGS_CACHE[$setting];
     }
 
     /**
@@ -923,13 +936,14 @@ class Forum_driver_smf2 extends Forum_driver_base
         if ($this->EMOTICON_CACHE !== null) {
             return $this->EMOTICON_CACHE;
         }
+        // TODO: Need backwards compatibility with <=1.1 which used a single table.
         $rows = $this->db->query('SELECT * FROM ' . $this->db->get_table_prefix() . 'smiley_files sf JOIN ' . $this->db->get_table_prefix() . 'smileys s ON s.id_smiley=sf.id_smiley');
         $this->EMOTICON_CACHE = [];
         foreach ($rows as $myrow) {
             $set = $myrow['smiley_set'];
             $src = $myrow['filename'];
             if (url_is_local($src)) {
-                $src = $this->get_emo_dir() . $set . '/' . $src;
+                $src = $this->get_setting('smileys_url') . '/' . $set . '/' . $src;
             }
             $this->EMOTICON_CACHE[$myrow['code']] = ['EMOTICON_IMG_CODE_DIR', $src, $myrow['code']];
         }

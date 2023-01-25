@@ -136,10 +136,12 @@ Make sure:
 Super-administrator membership is determined by membership of the 'Administrator' usergroup (#1).
 Super-moderator membership is determined by membership of the 'Global Moderator' usergroup (#2).
 
-In order for frame-embed of SMF to work ("Show forum within website"), you need to remove this line from SMF's [tt]index.php[/tt] file:
+When running an SMF version below 2.0, in order for frame-embed of SMF to work ("Show forum within website"), you need to remove this line from SMF's [tt]index.php[/tt] file:
 [code="PHP"]
 header('X-Frame-Options: SAMEORIGIN');
 [/code]
+
+When using a Gravatar, for privacy reasons, the Composr software does not support a custom e-mail address like SMF does. Therefore, if a custom Gravatar e-mail address is specified in SMF, it will be ignored and instead the member's account e-mail address will be used.
 
 [title="3"]vBulletin[/title]
 
