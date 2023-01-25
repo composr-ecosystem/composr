@@ -110,6 +110,7 @@ class Hook_addon_registry_user_sync
             'requires' => [
                 'commandr',
                 'Conversr',
+                'PHP PDO_MYSQL extension'
             ],
             'recommends' => [],
             'conflicts_with' => [],
