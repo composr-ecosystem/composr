@@ -143,7 +143,9 @@ header('X-Frame-Options: SAMEORIGIN');
 
 When using a Gravatar, for privacy reasons, the Composr software does not support a custom e-mail address like SMF does. Therefore, if a custom Gravatar e-mail address is specified in SMF, it will be ignored and instead the member's account e-mail address will be used.
 
-Cookie log-in (&ldquo;Remember me&rdquo;) is not implemented in the Composr software for SMF; members must log in separately both in the Composr site and in SMF. SMF encodes lots of data into their cookie which would be too complex and fragile to replicate in the Composr software.
+Cookie log-in (&ldquo;Remember me&rdquo;) is not implemented in the Composr software for SMF; members must log in separately both in the Composr site and in SMF. SMF encodes lots of data into their cookie which would be too complex and fragile to replicate in the Composr software. See [url="tracker issue #5258"]https://compo.sr/tracker/view.php?id=5258[/url].
+
+When using the &ldquo;Show forum within website&rdquo; option, the log-in form in SMF will throw an unauthorized error. It is unknown if this issue exists on other forms. See [url="tracker issue #5259"]https://compo.sr/tracker/view.php?id=5259[/url].
 
 [title="3"]vBulletin[/title]
 
