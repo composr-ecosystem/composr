@@ -214,6 +214,7 @@ class Database_Static_xml extends DatabaseDriver
             'LONG_TRANS__COMCODE' => 'integer',
             'SHORT_TRANS__COMCODE' => 'integer',
             'SHORT_TEXT' => 'SHORT_TEXT',
+            'TEXT' => 'TEXT',
             'LONG_TEXT' => 'LONG_TEXT',
             'ID_TEXT' => 'ID_TEXT',
             'MINIID_TEXT' => 'MINIID_TEXT',

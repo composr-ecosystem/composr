@@ -452,6 +452,7 @@ abstract class Database_super_mysql extends DatabaseDriver
             'LONG_TRANS__COMCODE' => 'integer',
             'SHORT_TRANS__COMCODE' => 'integer',
             'SHORT_TEXT' => 'varchar(255)',
+            'TEXT' => 'varchar(16377)', // InnoDB limit for default page_size (- 6 bytes for pointers)
             'LONG_TEXT' => 'longtext',
             'ID_TEXT' => 'varchar(80)',
             'MINIID_TEXT' => 'varchar(40)',

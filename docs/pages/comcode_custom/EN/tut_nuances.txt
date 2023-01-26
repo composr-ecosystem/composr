@@ -113,6 +113,14 @@ to
 
 "#wrap" is specific to phpBB but most forums will have something similar you can bind your CSS to, or otherwise you can add something via changing a forum template.
 
+[title="2"]A note about long_text custom profile fields (advanced)[/title]
+
+When using a third-party forum driver, custom profile fields which would normally be of type [tt]LONG_TEXT[/tt] will instead be [tt]TEXT[/tt], which translates to the database type [tt]varchar(16377)[/tt] (or your database adapter's equivalent type). This is to work around a MySQL limitation of the longtext type where a default value is not supported (see [url="MySQL bug #21532"]https://bugs.mysql.com/bug.php?id=21532[/url]), resulting in the inability to create new member accounts on the forum itself due to database errors. We also had to work around the possibility a forum is using InnoDB, which has a default [tt]page_size[/tt] of 16,384 bytes (though 7 of those bytes are reserved).
+
+This does not affect most people as custom profile fields cannot be managed manually when using a third-party forum driver. However, when developing addons that utilize custom profile fields, this is important to remember as fields cannot hold more than 16,377 characters of data.
+
+It is not recommended to explicitly use the [tt]TEXT[/tt] field type for custom profile fields; use [tt]LONG_TEXT[/tt] as you normally would. The Composr software will automatically use [tt]TEXT[/tt] when using a third-party forum driver.
+
 [title="2"]Cookie integration (advanced, non-supported)[/title]
 
 Composr, where possible, will allow you to use the same cookies for logging into Composr as you do for your forum. However this is difficult to setup as:

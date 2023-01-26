@@ -68,14 +68,15 @@ abstract class Forum_driver_base
     protected function remap_composr_field_type_to_db_type(string $type, $default = null) : array
     {
         switch ($type) {
-            case 'short_text':
-                return ['SHORT_TEXT', ($default !== null) ? $default : ''];
+            case 'text':
+            case 'long_text': // Must use TEXT for long_text as TEXT uses varchar, which supports default values, unlike MySQL's longtext.
+                return ['TEXT', ($default !== null) ? $default : ''];
             case 'integer':
                 return ['INTEGER', ($default !== null) ? $default : 0];
             case 'float':
                 return ['REAL', ($default !== null) ? $default : 0.0];
         }
-        return ['LONG_TEXT', ($default !== null) ? $default : ''];
+        return ['SHORT_TEXT', ($default !== null) ? $default : ''];
     }
 
     /**
