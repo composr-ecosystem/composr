@@ -183,6 +183,7 @@ class Forum_driver_smf2 extends Forum_driver_base
             $db_prefix = '';
             $cookiename = '';
             $auth_secret = '';
+
             @include($path . '/Settings.php');
             $PROBED_FORUM_CONFIG['sql_host'] = $db_server;
             $PROBED_FORUM_CONFIG['sql_database'] = $db_name;
@@ -192,7 +193,9 @@ class Forum_driver_smf2 extends Forum_driver_base
             $PROBED_FORUM_CONFIG['board_url'] = $boardurl;
             $PROBED_FORUM_CONFIG['cookie_member_id'] = $cookiename . ':0';
             $PROBED_FORUM_CONFIG['cookie_member_hash'] = $cookiename . ':1';
-            $PROBED_FORUM_CONFIG['auth_secret'] = $auth_secret;
+            $PROBED_FORUM_CONFIG['set_values'] = [
+                ['smf_auth_secret', $auth_secret],
+            ];
             return true;
         }
         return false;
@@ -915,14 +918,19 @@ class Forum_driver_smf2 extends Forum_driver_base
      * Get an SMF setting.
      *
      * @param  ID_TEXT $setting The name of the setting
-     * @return string The setting value
+     * @param  boolean $allow_missing Whether to allow a missing setting without throwing an error
+     * @return ?string The setting value (null: Setting does not exist and $allow_setting is true)
      */
-    public function get_setting(string $setting) : string
+    public function get_setting(string $setting, bool $allow_missing = false) : ?string
     {
         if (isset($SETTINGS_CACHE[$setting])) {
             return $SETTINGS_CACHE[$setting];
         }
-        $SETTINGS_CACHE[$setting] = $this->db->query_select_value('settings', 'value', ['variable' => $setting]);
+        if ($allow_missing) {
+            $SETTINGS_CACHE[$setting] = $this->db->query_select_value_if_there('settings', 'value', ['variable' => $setting]);
+        } else {
+            $SETTINGS_CACHE[$setting] = $this->db->query_select_value('settings', 'value', ['variable' => $setting]);
+        }
         return $SETTINGS_CACHE[$setting];
     }
 
@@ -1168,7 +1176,7 @@ class Forum_driver_smf2 extends Forum_driver_base
     }
 
     /**
-     * Create a member login cookie.
+     * Create a member login cookie for SMF 2.1.
      *
      * @param  MEMBER $member_id The member ID
      * @param  ?SHORT_TEXT $username The username (null: lookup)
@@ -1176,35 +1184,30 @@ class Forum_driver_smf2 extends Forum_driver_base
      */
     public function create_login_cookie(int $member_id, ?string $username, string $password_raw)
     {
+        return;
+
+        // TODO: #5258 Not implemented. Currently, making this work for SMF would make for very fragile code. Consider SSI or REST instead.
+
+        /*
         list($stub,) = explode(':', get_member_cookie());
 
-        // Create our cookie depending on SMF version
-        $_password = null;
-        switch ($GLOBALS['SMF_PW_STYLE']) {
-            case 2.0:
-                $row = $this->get_member_row($member_id);
-                $_password = $this->cookie_hash_salt($row['passwd'], $row['password_salt']);
-                break;
-            case 1.1:
-                $row = $this->get_member_row($member_id);
-                $_password = sha1($row['passwd'] . $row['password_salt']);
-                break;
-            case 1.0:
-                $row = $this->get_member_row($member_id);
-                $_password = $this->_legacy_password_hash($row['passwd'], 'ys');
-                $bits = explode('::', $_password);
-                $_password = $bits[0];
-                break;
-        }
+        // Create our cookie
+        $row = $this->get_member_row($member_id);
+        $_password = $this->cookie_hash_salt($row['passwd'], $row['password_salt']);
+        $expiry_time = (time() + intval(get_cookie_days()) * 24 * 60 * 60); // Actually we must use what SMF uses for cookie time.
+        $local_cookie_domain = '';
+        $global_cookie_domain = '';
+        $use_local_cookies = $this->get_setting('localCookies', true);
+        $use_global_cookies = $this->get_setting('globalCookies', true);
 
-        // Might be null from $this->cookie_hash_salt if no auth_secret was set in SMF 2. So, don't set a cookie.
-        if ($_password === null) {
-            return;
-        }
+        // if use_local_cookies then we need to get the local cookie domain. Same for global cookies.
 
-        $data = [$member_id, $_password, (time() + intval(get_cookie_days()) * 24 * 60 * 60), 3];
+        // Note: SMF also encodes third-party plugin data into their cookie. This is not possible to do for Composr.
 
-        cms_setcookie($stub, serialize($data), false, true);
+        $data = json_encode([$member_id, $_password, $expiry_time, $local_cookie_domain, $global_cookie_domain]);
+
+        cms_setcookie($stub, $data, false, true);
+        */
     }
 
     /**
@@ -1282,11 +1285,8 @@ class Forum_driver_smf2 extends Forum_driver_base
         if (substr($row['passwd'], 0, 4) == '$2y$') { // SMF 2 password
             $GLOBALS['SMF_PW_STYLE'] = 2.0;
             if ($cookie_login) {
+                // TODO: Cookie login probably does not work
                 $cookie_hash = $this->cookie_hash_salt($row['passwd'], $row['password_salt']);
-                if ($cookie_hash === null) {
-                    $out['error'] = do_lang_tempcode('INTERNAL_ERROR');
-                    return $out;
-                }
                 $passes = hash_equals($cookie_hash, $password_mixed);
             } else {
                 $passes = password_verify(cms_strtolower_ascii($username) . $password_mixed, $row['passwd']);
@@ -1356,28 +1356,15 @@ class Forum_driver_smf2 extends Forum_driver_base
      *
      * @param  string $password The password
      * @param  string $salt The salt
-     * @return ?string The hashed password (null: error, and a cookie should not be set)
+     * @return string The hashed password
      */
-    protected function cookie_hash_salt(string $password, string $salt) : ?string
+    protected function cookie_hash_salt(string $password, string $salt) : string
     {
-        // TODO: Does not work yet
-        return null;
+        // Append the salt to get a user-specific authentication secret.
+        $secret_key = get_value('smf_auth_secret') . $salt;
 
-        /*
-        global $PROBED_FORUM_CONFIG;
-
-        // We have to probe the Settings.php file for the auth_secret
-        if ($this->install_test_load_from(get_forum_base_url()) && $PROBED_FORUM_CONFIG['auth_secret'] != '') {
-            // Append the salt to get a user-specific authentication secret.
-            $secret_key = $PROBED_FORUM_CONFIG['auth_secret'] . $salt;
-
-            // Now use that to generate an HMAC of the password.
-            return hash_hmac('sha512', $password, $secret_key);
-        }
-
-        // Ignore cookie log-in if auth_secret is not defined; only SMF can generate it.
-        return null;
-        */
+        // Now use that to generate an HMAC of the password.
+        return hash_hmac('sha512', $password, $secret_key);
     }
 
     /**

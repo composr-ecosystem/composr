@@ -1112,6 +1112,14 @@ function step_4() : object
     $text = new Tempcode();
     $options = new Tempcode();
     $hidden = new Tempcode();
+
+    // Attach values to set
+    if (isset($PROBED_FORUM_CONFIG['set_values'])) {
+        foreach ($PROBED_FORUM_CONFIG['set_values'] as $value_pair) {
+            $hidden->attach(form_input_hidden('value__' . strval($value_pair[0]), strval($value_pair[1])));
+        }
+    }
+
     $options->attach(make_tick(do_lang_tempcode('MULTI_LANG_CONTENT'), is_maintained_description('multi_lang_content', example('', 'MULTI_LANG_CONTENT_TEXT')), 'multi_lang_content', $multi_lang_content));
     $general_advanced_options = do_template('INSTALLER_STEP_4_SECTION', ['_GUID' => 'g051465e86a7a53ec078e0d9de773993', 'HIDDEN' => $hidden, 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options]);
 
@@ -1826,6 +1834,10 @@ if (!function_exists(\'git_repos\')) {
             continue;
         }
 
+        if (substr($key, 0, 7) == 'value__') {
+            continue;
+        }
+
         if (($key == 'admin_username') && (post_param_string('forum_type') != 'none')) {
             continue;
         }
@@ -1854,7 +1866,7 @@ if (!function_exists(\'git_repos\')) {
         $config_contents .= '$SITE_INFO[\'' . $key . '\'] = \'' . $_val . "';\n";
     }
 
-    // Derive a random session cookie name, to stop conflicts between sites
+    // Derive a session cookie name based on the base_url, to stop conflicts between sites
     if (!isset($_POST['session_cookie'])) {
         $config_contents .= '$SITE_INFO[\'session_cookie\'] = \'cms_session__' . md5($base_url) . "';\n";
     }
@@ -2252,6 +2264,15 @@ function step_5_core_2() : object
     ]);
     $GLOBALS['SITE_DB']->create_index('seo_meta_keywords', 'keywords_alt_key', ['meta_for_type', 'meta_for_id']);
     $GLOBALS['SITE_DB']->create_index('seo_meta_keywords', 'ftjoin_dmeta_keywords', ['meta_keyword']);
+
+    // Set POSTed values where necessary
+    foreach ($_POST as $_key => $value) {
+        if (substr($_key, 0, 7) == 'value__') {
+            $key = substr($_key, 7);
+            set_value($key, $value);
+            unset($_POST[$_key]);
+        }
+    }
 
     return do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '685ebf53cf9fc3f728168fed2f01a5a1', 'SOMETHING' => do_lang_tempcode('SECONDARY_CORE_INSTALLED')]);
 }
