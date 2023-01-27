@@ -250,7 +250,7 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
                     }
                     require_code('hooks/systems/cns_auth/' . filter_naughty_harsh($password_compatibility_scheme, true));
                     $ob = object_factory('Hook_cns_auth_' . filter_naughty_harsh($password_compatibility_scheme, true));
-                    $error = $ob->auth($row['m_username'], $row['member_id'], $password_mixed, $cookie_login, $row);
+                    $error = $ob->auth($row['m_username'], $row['id'], $password_mixed, $row);
                     if ($error !== null) {
                         $out['error'] = $error;
                         return $out;
