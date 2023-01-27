@@ -366,9 +366,10 @@ class Forum_driver_smf2 extends Forum_driver_base
      */
     protected function _get_member_avatar_url(int $member_id, bool &$fallback_support) : string
     {
+        // Could be remote avatar URL off the bat, in which case $ret is untouched and simply returned at the bottom of the function
         $ret = $this->get_member_row_field($member_id, 'avatar');
 
-        // Uploaded avatars
+        // Uploaded avatars; need to get the attachment
         if ($ret == '') {
             $filename = $this->db->query_select_value_if_there('attachments', 'filename', ['id_member' => $member_id]);
             if ($filename === null) {
@@ -383,10 +384,11 @@ class Forum_driver_smf2 extends Forum_driver_base
             return find_script('gravatar') . '?id=' . strval($member_id) . '&from_driver=1';
         }
 
-        // Avatar URLs and avatar gallery
+        // Avatar gallery
         if (url_is_local($ret)) {
-            $ret = $this->get_setting('avatar_url') . '/' . $ret;
+            return $this->get_setting('avatar_url') . '/' . $ret;
         }
+
         return $ret;
     }
 
