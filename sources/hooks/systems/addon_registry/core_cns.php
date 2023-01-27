@@ -418,6 +418,7 @@ class Hook_addon_registry_core_cns
             'sources/hooks/systems/cns_auth/converge.php',
             'sources/hooks/systems/cns_auth/phpbb3.php',
             'sources/hooks/systems/cns_auth/smf.php',
+            'sources/hooks/systems/cns_auth/smf2.php',
             'sources/hooks/systems/cns_auth/vb3.php',
             'sources/hooks/systems/cns_auth/index.html',
             'sources_custom/hooks/systems/cns_auth/index.html',
