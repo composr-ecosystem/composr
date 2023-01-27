@@ -650,23 +650,8 @@ class Hook_import_smf2
         global $STRICT_FILE;
         require($file_base . '/Settings.php');
 
-        $options = $db->query('SELECT * FROM ' . $table_prefix . 'settings WHERE variable LIKE \'' . db_encode_like('%avatar%') . '\'');
-        $options_array = [];
-
-        $avatar_path = '';
-        $avatar_gallery_path = '';
-
-        foreach ($options as $option) {
-            $options_array[$option['variable']] = $option['value'];
-
-            if ($option['variable'] == 'custom_avatar_dir') {
-                $avatar_path = $option['value'];
-            }
-
-            if ($option['variable'] == 'avatar_directory') {
-                $avatar_gallery_path = $option['value'];
-            }
-        }
+        $avatar_path = $this->get_setting($db, 'custom_avatar_dir');
+        $avatar_gallery_path = $this->get_setting($db, 'avatar_directory');
 
         $row_start = 0;
         $rows = [];
@@ -1140,6 +1125,7 @@ class Hook_import_smf2
      * @param  string $data The file data
      * @param  string $filename The optimal filename
      * @param  ID_TEXT $sections The upload type (e.g. cns_photos)
+     * @param  integer $id_folder The attachmentUploadDir where the file is located
      * @param  object $db The database connector to import from
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  string $output_filename The filename to output to
@@ -1148,7 +1134,7 @@ class Hook_import_smf2
      * @param  string $ext The file extension to use
      * @return URLPATH The URL
      */
-    public function data_to_disk(string $data, string $filename, string $sections, object $db, string $table_prefix = '', string $output_filename = '', string $file_base = '', string $attachment_id = '', string $ext = '.png') : string
+    public function data_to_disk(string $data, string $filename, string $sections, int $id_folder, object $db, string $table_prefix = '', string $output_filename = '', string $file_base = '', string $attachment_id = '', string $ext = '.png') : string
     {
         $boardurl = '';
         $boarddir = '';
@@ -1158,10 +1144,12 @@ class Hook_import_smf2
 
         $forum_dir = preg_replace('#\\\\#', '/', $boarddir); // Full path to the forum folder
 
-        $attachments_dir = $forum_dir . '/attachments/'; // Forum attachments directory
+        $attachments_dirs = json_decode($this->get_setting($db, 'attachmentUploadDir'), true);
+        $attachments_dir = $attachments_dirs[strval($id_folder)]; // Forum attachments directory
+
         $filename_fixed = $filename . $ext;
-        $file_path = $attachments_dir . $filename;
-        $data = ($data == '') ? @cms_file_get_contents_safe($file_path, FILE_READ_LOCK) : $data;
+        $file_path = $attachments_dir . '/' . $filename . '.dat';
+        $data = ($data == '') ? cms_file_get_contents_safe($file_path, FILE_READ_LOCK) : $data;
         $filename = ($output_filename == '') ? $filename_fixed : $output_filename;
 
         list($path, $url) = find_unique_path('uploads/' . $sections, $filename);
@@ -1207,9 +1195,9 @@ class Hook_import_smf2
                 $post = get_translated_text($post_row[0]['p_post']);
                 $member_id = $post_row[0]['p_poster'];
                 $ext = '.' . $row['fileext'];
-                $filename = $row['id_attach'] . '_' . $row['file_hash'];
+                $filename = strval($row['id_attach']) . '_' . $row['file_hash'];
 
-                $url = $this->data_to_disk('', $filename, 'attachments', $db, $table_prefix, $row['filename'], $file_base, $row['id_attach'], $ext);
+                $url = $this->data_to_disk('', $filename, 'attachments', $row['id_folder'], $db, $table_prefix, $row['filename'], $file_base, strval($row['id_attach']), $ext);
                 $a_id = $GLOBALS['FORUM_DB']->query_insert('attachments', ['a_member_id' => $member_id, 'a_file_size' => $row['size'], 'a_url' => $url, 'a_thumb_url' => $url, 'a_original_filename' => $row['filename'], 'a_num_downloads' => $row['downloads'], 'a_last_downloaded_time' => null, 'a_add_time' => $row['poster_time'], 'a_description' => ''], true);
 
                 $GLOBALS['FORUM_DB']->query_insert('attachment_refs', ['r_referer_type' => 'cns_post', 'r_referer_id' => strval($post_id), 'a_id' => $a_id]);
@@ -1463,17 +1451,9 @@ class Hook_import_smf2
      */
     public function import_wordfilter(object $db, string $table_prefix, string $file_base)
     {
-        $rows = $db->query('SELECT * FROM ' . $table_prefix . 'settings WHERE ' . db_string_equal_to('variable', 'censor_vulgar') . ' OR ' . db_string_equal_to('variable', 'censor_proper'));
 
-        $censor_vulgar = [];
-        $censor_proper = [];
-        foreach ($rows as $row) {
-            if ($row['variable'] == 'censor_vulgar') {
-                $censor_vulgar = preg_split('/[\n\r]+/', $row['value']);
-            } else {
-                $censor_proper = preg_split('/[\n\r]+/', $row['value']);
-            }
-        }
+        $censor_vulgar = preg_split('/[\n\r]+/', $this->get_setting($db, 'censor_vulgar'));
+        $censor_proper = preg_split('/[\n\r]+/', $this->get_setting($db, 'censor_proper'));
 
         foreach ($censor_vulgar as $key => $row) {
             add_wordfilter_word($censor_vulgar[$key], array_key_exists($key, $censor_proper) ? $censor_proper[$key] : '');
@@ -1908,5 +1888,28 @@ class Hook_import_smf2
 
             $row_start += 200;
         } while (!empty($rows));
+    }
+
+    /**
+     * Get an SMF setting.
+     *
+     * @param  object $db The database connector to import from
+     * @param  ID_TEXT $setting The name of the setting
+     * @param  boolean $allow_missing Whether to allow a missing setting without throwing an error
+     * @return ?string The setting value (null: Setting does not exist and $allow_setting is true)
+     */
+    protected function get_setting(object $db, string $setting, bool $allow_missing = false) : ?string
+    {
+        static $SETTINGS_CACHE;
+
+        if (isset($SETTINGS_CACHE[$setting])) {
+            return $SETTINGS_CACHE[$setting];
+        }
+        if ($allow_missing) {
+            $SETTINGS_CACHE[$setting] = $db->query_select_value_if_there('settings', 'value', ['variable' => $setting]);
+        } else {
+            $SETTINGS_CACHE[$setting] = $db->query_select_value('settings', 'value', ['variable' => $setting]);
+        }
+        return $SETTINGS_CACHE[$setting];
     }
 }
