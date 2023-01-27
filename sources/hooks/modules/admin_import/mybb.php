@@ -80,7 +80,7 @@ class Hook_import_mybb
            'cns_member_files' => ['cns_members'],
            'cns_forums' => ['cns_forum_groupings', 'cns_members', 'cns_groups'],
            'cns_topics' => ['cns_forums', 'cns_members'],
-           'cns_polls_and_votes' => ['cns_topics', 'cns_members'],
+           'cns_polls_and_votes' => ['cns_topics', 'cns_posts', 'cns_members'],
            'cns_posts' => ['cns_topics', 'cns_members'],
            'cns_post_files' => ['cns_posts', 'cns_private_topics'],
            'notifications' => ['cns_topics', 'cns_members', 'cns_polls_and_votes'],

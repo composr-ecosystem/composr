@@ -83,7 +83,7 @@ class Hook_import_smf2
            'cns_member_files' => ['cns_members'],
            'cns_forums' => ['cns_forum_groupings', 'cns_members', 'cns_groups'],
            'cns_topics' => ['cns_forums', 'cns_members'],
-           'cns_polls_and_votes' => ['cns_topics', 'cns_members'],
+           'cns_polls_and_votes' => ['cns_topics', 'cns_posts', 'cns_members'],
            'cns_posts' => ['cns_topics', 'cns_members'],
            'cns_post_files' => ['cns_posts', 'cns_personal_topics'],
            'notifications' => ['cns_topics', 'cns_members', 'cns_polls_and_votes'],
@@ -146,6 +146,12 @@ class Hook_import_smf2
         $config_remapping['staff_address'] = $webmaster_email;
         $config_remapping['site_name'] = $mbname;
         $board_url = $boardurl;
+
+        // Cookie secret
+        if (isset($auth_secret)) {
+            set_value('smf_auth_secret', $auth_secret);
+        }
+
         global $ADDITIONAL_DATA;
 
         foreach ($rows as $row) {
@@ -372,9 +378,24 @@ class Hook_import_smf2
                     $primary_group = import_id_remap_get('group', strval($primary_group));
                 }
 
-                $custom_fields = [
-                    cns_make_predefined_content_field('cms_firstname') => $row['real_name'],
-                ];
+                $custom_fields = [];
+
+                // Parse SMF's real_name into our first and last name
+                $firstname_field = find_cms_cpf_field_id('cms_firstname');
+                $lastname_field = find_cms_cpf_field_id('cms_lastname');
+                if (($row['real_name'] != '') && (($firstname_field !== null) || ($lastname_field !== null))) {
+                    if ($lastname_field !== null) {
+                        $name_parts = explode(' ', $row['real_name']);
+                        $custom_fields['cms_lastname'] = $name_parts[count($name_parts) - 1];
+                        if ($firstname_field !== null) {
+                            unset($name_parts[count($name_parts) - 1]);
+                            $custom_fields['cms_firstname'] = implode(' ', $name_parts);
+                        }
+                    } else {
+                        $custom_fields['cms_firstname'] = $row['real_name'];
+                    }
+                }
+
                 if ($row['website_url'] != '') {
                     $custom_fields[cns_make_predefined_content_field('website')] = $row['website_url'];
                 }
@@ -386,16 +407,15 @@ class Hook_import_smf2
                 if ($row['birthdate'] != '') {
                     $birthdate = $row['birthdate'];
                     $birthdata = explode('-', $birthdate);
-                    $bday_day = empty($birthdata[0]) ? null : $birthdata[0];
+                    $bday_year = (empty($birthdata[0]) || (intval($birthdata[0]) < 1100)) ? null : $birthdata[0];
                     $bday_month = empty($birthdata[1]) ? null : $birthdata[1];
-                    $bday_year = empty($birthdata[2]) ? null : $birthdata[2];
+                    $bday_day = empty($birthdata[2]) ? null : $birthdata[2];
                 } else {
                     list($bday_day, $bday_month, $bday_year) = [null, null, null];
                 }
 
                 $views_signatures = 1;
                 $preview_posts = 1;
-                $track_posts = $row['notify_announcements'];
                 $title = '';
 
                 // These are done in the members-files stage
@@ -403,7 +423,7 @@ class Hook_import_smf2
                 $photo_url = '';
 
                 $password = $row['passwd'];
-                $type = 'smf';
+                $type = (substr($password, 0, 4) == '$2y$') ? 'smf2' : 'smf';
                 $salt = $row['password_salt'];
                 $allow_emails = (intval($row['instant_messages']) > 0) ? 1 : 0;
 
@@ -416,9 +436,9 @@ class Hook_import_smf2
                     $row['email_address'], // email_address
                     $primary_group, // primary_group
                     null, // secondary_groups
-                    $bday_day, // dob_day
-                    $bday_month, // dob_month
-                    $bday_year, // dob_year
+                    intval($bday_day), // dob_day
+                    intval($bday_month), // dob_month
+                    intval($bday_year), // dob_year
                     $custom_fields, // custom_fields
                     ($row['time_offset'] == 0) ? '' : strval($row['time_offset']), // timezone
                     $language, // language
@@ -430,12 +450,12 @@ class Hook_import_smf2
                     $preview_posts, // preview_posts
                     $reveal_age, // reveal_age
                     $views_signatures, // views_signatures
-                    $track_posts, // auto_monitor_contrib_content
+                    null, // auto_monitor_contrib_content
                     null, // smart_topic_notification
                     null, // mailing_list_style
                     1, // auto_mark_read
                     null, // sound_enabled
-                    1, // allow_emails
+                    $allow_emails, // allow_emails
                     1, // allow_emails_from_staff
                     0, // highlighted_name
                     '*', // pt_allow
@@ -627,35 +647,26 @@ class Hook_import_smf2
      */
     public function import_cns_member_files(object $db, string $table_prefix, string $file_base)
     {
-        $boardurl = '';
-        $boarddir = '';
-
         global $STRICT_FILE;
         require($file_base . '/Settings.php');
 
         $options = $db->query('SELECT * FROM ' . $table_prefix . 'settings WHERE variable LIKE \'' . db_encode_like('%avatar%') . '\'');
         $options_array = [];
 
-        $homeurl = $boardurl;
-
         $avatar_path = '';
         $avatar_gallery_path = '';
-        $avatar_path = 'members';
 
         foreach ($options as $option) {
             $options_array[$option['variable']] = $option['value'];
 
-            if ($option['variable'] == 'avatar_url') {
+            if ($option['variable'] == 'custom_avatar_dir') {
+                $avatar_path = $option['value'];
+            }
+
+            if ($option['variable'] == 'avatar_directory') {
                 $avatar_gallery_path = $option['value'];
             }
         }
-
-        $avatar_gallery_path = str_replace($boardurl, '', $avatar_gallery_path);
-
-        $forum_dir = preg_replace('#\\\\#', '/', $boarddir);
-
-        $avatar_gallery_path = $forum_dir . $avatar_gallery_path;
-        $avatar_path = $forum_dir . '/' . $avatar_path;
 
         $row_start = 0;
         $rows = [];
@@ -689,22 +700,23 @@ class Hook_import_smf2
                         }
                     }
                 } else {
-                    if (preg_match('#http\:#', $row['avatar']) != 0) {
+                    if (!url_is_local($row['avatar'])) {
                         // Remote file is set as avatar
                         $avatar_url = $row['avatar'];
                     } elseif (strlen($row['avatar']) > 0) {
                         // Gallery
                         $filename_with_subdir = $row['avatar'];
                         $filename = preg_replace('#.*\/#', '', $filename_with_subdir); // We need just a filename
+                        $subdir = strrpos($filename, '/');
 
                         if ((file_exists(get_custom_file_base() . '/uploads/cns_avatars/' . $filename)) || (@copy($avatar_gallery_path . '/' . $filename_with_subdir, get_custom_file_base() . '/uploads/cns_avatars/' . $filename))) {
-                            $avatar_url = 'uploads/cns_avatars/' . substr($filename, strrpos($filename, '/'));
+                            $avatar_url = 'uploads/cns_avatars/' . substr($filename, (($subdir !== false) ? $subdir : 0));
                             sync_file(get_custom_file_base() . '/' . $avatar_url);
                         } else {
                             // Try as a pack avatar then
                             $striped_filename = str_replace('/', '_', $filename);
                             if (file_exists(get_custom_file_base() . '/uploads/cns_avatars/' . $striped_filename)) {
-                                $avatar_url = 'uploads/cns_avatars/' . substr($filename, strrpos($filename, '/'));
+                                $avatar_url = 'uploads/cns_avatars/' . substr($filename, (($subdir !== false) ? $subdir : 0));
                             } else {
                                 if ($STRICT_FILE) {
                                     warn_exit(do_lang_tempcode('MISSING_AVATAR', escape_html($filename)));
@@ -1178,7 +1190,7 @@ class Hook_import_smf2
         do {
             $rows = $db->query('SELECT * FROM ' . $table_prefix . 'attachments a JOIN ' . $table_prefix . 'messages m ON a.id_msg=m.id_msg WHERE a.id_msg<>0', 200, $row_start);
             foreach ($rows as $row) {
-                if (substr($row['filename'], -5) == 'thumb') {
+                if (substr($row['filename'], -6) == '_thumb') {
                     continue;
                 }
                 if (import_check_if_imported('post_files', strval($row['id_attach']))) {
@@ -1239,7 +1251,8 @@ class Hook_import_smf2
                 continue;
             }
 
-            $is_open = ($row['expire_time'] == 0 || $row['expire_time'] > time()) ? 1 : 0;
+            $is_open = ($row['voting_locked'] == 0);
+            // $is_open = ($row['expire_time'] == 0 || $row['expire_time'] > time()) ? 1 : 0;
 
             $answers = [];
             $poll_choices = $db->query_select('poll_choices', ['*'], ['id_poll' => $row['id_poll']]);
@@ -1262,7 +1275,7 @@ class Hook_import_smf2
                 $row2['id_member'] = import_id_remap_get('member', strval($row2['id_member']), true);
             }
 
-            $id_new = cns_make_poll($topic_id, $row['question'], 0, $is_open, 1, $maximum, 0, $answers, 0, 0, 1, 0, false);
+            $id_new = cns_make_poll($topic_id, $row['question'], ($row['hide_results'] == 2) ? 1 : 0, ($row['voting_locked'] == 0) ? 1 : 0, 1, $maximum, 0, $answers, 0, $row['change_vote'], $row['guest_vote'], 0, false, ($row['expire_time'] == 0) ? null : $row['expire_time']);
 
             $answers = collapse_1d_complexity('id', $GLOBALS['FORUM_DB']->query_select('f_poll_answers', ['id'], ['pa_poll_id' => $id_new]));
 
@@ -1685,6 +1698,7 @@ class Hook_import_smf2
             list($end_year, $end_month, $end_day, $end_hour, $end_minute) = array_map('intval', explode('-', date('Y-m-d-h-i', strtotime($row['end_date']))));
 
             $description = '';
+            $att_imported = false;
             if (!empty($row['id_topic'])) {
                 $atts = $db->query_select('attachments', ['*'], ['id_msg' => $row['id_topic']], 'ORDER BY id_msg ASC');
                 $attid = isset($atts[0]['id_attach']) ? $atts[0]['id_attach'] : null;
@@ -1697,7 +1711,7 @@ class Hook_import_smf2
                 $description .= "\n\n" . '[attachment]' . strval($attid_new) . '[/attachment]';
             }
 
-            $id_new = add_calendar_event(db_get_first_id() + 1, $recurrence, $recurrences, 0, $row['title'], $description, 3, $start_year, $start_month, $start_day, 'day_of_month', $start_hour, $start_minute, $end_year, $end_month, $end_day, 'day_of_month', $end_hour, $end_minute, null, 1, null, 1, 1, 1, 1, '', $submitter);
+            $id_new = add_calendar_event(db_get_first_id() + 1, $recurrence, $recurrences, 0, $row['title'], $description, 3, ($start_year < 1970) ? 1970 : $start_year, $start_month, $start_day, 'day_of_month', $start_hour, $start_minute, $end_year, $end_month, $end_day, 'day_of_month', $end_hour, $end_minute, null, 1, null, 1, 1, 1, 1, '', $submitter);
             if ($att_imported) {
                 $GLOBALS['FORUM_DB']->query_insert('attachment_refs', ['r_referer_type' => 'calendar', 'r_referer_id' => strval($id_new), 'a_id' => $attid_new]);
             }
@@ -1719,7 +1733,7 @@ class Hook_import_smf2
             list($start_year, $start_month, $start_day, $start_hour, $start_minute) = array_map('intval', explode('-', date('Y-m-d-h-i', strtotime($row['event_date']))));
             list($end_year, $end_month, $end_day, $end_hour, $end_minute) = array_map('intval', explode('-', date('Y-m-d-h-i', strtotime($row['event_date']))));
 
-            $id_new = add_calendar_event(db_get_first_id() + 1, $recurrence, $recurrences, 0, $row['title'], $row['title'], 3, $start_year, $start_month, $start_day, 'day_of_month', $start_hour, $start_minute, $end_year, $end_month, $end_day, 'day_of_month', $end_hour, $end_minute, null, 1, null, 1, 1, 1, 1, '', $submitter);
+            $id_new = add_calendar_event(db_get_first_id() + 1, $recurrence, $recurrences, 0, $row['title'], $row['title'], 3, ($start_year < 1970) ? 1970 : $start_year, $start_month, $start_day, 'day_of_month', $start_hour, $start_minute, $end_year, $end_month, $end_day, 'day_of_month', $end_hour, $end_minute, null, 1, null, 1, 1, 1, 1, '', $submitter);
 
             import_id_remap_put('event_holiday', strval($row['id_holiday']), $id_new);
         }
@@ -1761,6 +1775,7 @@ class Hook_import_smf2
     {
         require_code('news');
         require_code('news2');
+        require_code('feedback');
 
         $rows = $db->query_select('tp_variables', ['value1 AS title', 'id'], ['type' => 'category'], '', null, 0, true);
         if ($rows === null) {
@@ -1813,7 +1828,7 @@ class Hook_import_smf2
                 $allow_rating = 1 - $row['locked'];
                 $allow_comments = 1 - $row['locked'];
                 $allow_trackbacks = 1;
-                $news_categories = null;
+                $news_categories = [];
                 $time = $row['date'];
                 $views = $row['views'];
                 $edit_date = null;
