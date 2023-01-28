@@ -279,9 +279,11 @@ function _composr_error_handler(string $type, int $errno, string $errstr, string
             @error_log('PHP ' . cms_ucwords_ascii($type) . ': ' . $php_error_label, 0);
         }
 
-        // Send error e-mail
-        $trace = get_html_trace();
-        relay_error_notification($php_error_label . '[html]' . $trace->evaluate() . '[/html]');
+        // Send a notification
+        if ($type != 'error') { // We want to get out of this process ASAP for [fatal] errors, so skip the notification in that case.
+            $trace = get_html_trace();
+            relay_error_notification($php_error_label . '[html]' . $trace->evaluate() . '[/html]');
+        }
     }
 
     // Apply security to filter what is shown
@@ -1123,7 +1125,7 @@ function relay_error_notification(string $text, bool $ocproducts = true, string 
     // Make sure we don't send too many error e-mails
     if ((function_exists('get_value')) && (!$GLOBALS['BOOTSTRAPPING']) && (array_key_exists('SITE_DB', $GLOBALS)) && ($GLOBALS['SITE_DB'] !== null)) {
         $num = intval(get_value('num_error_mails_' . date('Y-m-d'), null, true)) + 1;
-        if ($num == 51) {
+        if ($num == 51) { // TODO: turn this into a value?
             return; // We've sent too many error e-mails today
         }
         $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'values_elective WHERE the_name LIKE \'' . db_encode_like('num\_error\_mails\_%') . '\'');

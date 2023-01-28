@@ -443,7 +443,15 @@ function php_function_allowed($function)
             return false;
         }
     }
-    $blocked = @strval(ini_get('disable_functions') . ',' . ini_get('suhosin.executor.func.blacklist') . ',' . ini_get('suhosin.executor.include.blacklist') . ',' . ini_get('suhosin.executor.eval.blacklist'));
+    $to_block = ['disable_functions', 'suhosin.executor.func.blacklist', 'suhosin.executor.include.blacklist', 'suhosin.executor.eval.blacklist'];
+    $_blocked = [];
+    foreach ($to_block as $func) {
+        $ini_val = ini_get($func);
+        if ($ini_val !== false) {
+            $_blocked[] = $ini_val;
+        }
+    }
+    $blocked = implode(',', $_blocked);
     return (@preg_match('#(\s|,|^)' . preg_quote($function, '#') . '(\s|$|,)#i', $blocked) == 0);
 }
 

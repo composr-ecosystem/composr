@@ -2844,7 +2844,15 @@ function object_factory(string $class, bool $failure_ok = false, array $paramete
  */
 function cms_ini_set(string $var, string $value)
 {
-    $blocked = @strval(ini_get('disable_functions') . ',' . ini_get('suhosin.executor.func.blacklist') . ',' . ini_get('suhosin.executor.include.blacklist') . ',' . ini_get('suhosin.executor.eval.blacklist'));
+    $to_block = ['disable_functions', 'suhosin.executor.func.blacklist', 'suhosin.executor.include.blacklist', 'suhosin.executor.eval.blacklist'];
+    $_blocked = [];
+    foreach ($to_block as $func) {
+        $ini_val = ini_get($func);
+        if ($ini_val !== false) {
+            $_blocked[] = $ini_val;
+        }
+    }
+    $blocked = implode(',', $_blocked);
     if (@preg_match('#(\s|,|^)ini_set(\s|$|,)#i', $blocked) != 0) {
         return false;
     }

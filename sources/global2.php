@@ -1276,8 +1276,9 @@ function catch_fatal_errors()
 {
     $error = error_get_last(); // If the last error is E_*_ERROR then it would have been fatal, so we should show it via this function
     if ($error !== null) {
-        //@var_dump($error);@debug_print_backtrace();exit(); // Useful for debugging
+        // @var_dump($error);@debug_print_backtrace(); // Useful for debugging
 
+        // Smart refresh when we timed out
         if (substr($error['message'], 0, 26) == 'Maximum execution time of ') {
             if (function_exists('i_force_refresh')) {
                 i_force_refresh();
@@ -1298,6 +1299,12 @@ function catch_fatal_errors()
             case E_CORE_ERROR:
             case E_COMPILE_ERROR:
             case E_USER_ERROR:
+            case E_PARSE:
+
+            // While not fatalistic in PHP, these error types are not supported by user-defined error handlers in PHP. So we also have to catch them here. We will treat these as fatalistic anyway.
+            case E_CORE_WARNING: // Error during bootstrap, so before set_error_handler could have been called
+            case E_COMPILE_WARNING:
+            case E_STRICT: // Not used much in PHP, as most of this has now been enforced in the language and E_DEPRECATED tends to be used now.
                 push_suppress_error_death(false); // We can't recover as we've lost our execution track. Force a nice death rather than trying to display a recoverable error.
                 $GLOBALS['DYING_BADLY'] = true; // Tells composr_error_handler to roll through, definitely an error.
                 $GLOBALS['EXITING'] = 2; // Fudge to force a critical error, we're too desperate to show a Tempcode stack trace.
