@@ -189,7 +189,7 @@ function load_value_options()
  * @param  ?string $default Default value (null: also is a configuration option, look in that -- OR we have a hard-coded default for it)
  * @param  ?ID_TEXT $theme Theme to load for (null: active theme) (blank: non-existent theme)
  * @param  boolean $missing_ok Where to accept a missing option (and return null)
- * @return ?SHORT_TEXT The value (null: either null value, or no option found while $missing_ok set)
+ * @return ?SHORT_TEXT The value (null: means either disabled option, or no option found while $missing_ok set)
  */
 function get_theme_option(string $name, ?string $default = null, ?string $theme = null, bool $missing_ok = false) : ?string
 {
@@ -401,7 +401,7 @@ function get_theme_option(string $name, ?string $default = null, ?string $theme 
  *
  * @param  ID_TEXT $name The name of the option
  * @param  boolean $missing_ok Where to accept a missing option (and return null)
- * @return ?SHORT_TEXT The value (null: either null value meaning disabled option, or no option found while $missing_ok set)
+ * @return ?SHORT_TEXT The value (null: means either disabled option, or no option found while $missing_ok set)
  */
 function get_option(string $name, bool $missing_ok = false) : ?string
 {

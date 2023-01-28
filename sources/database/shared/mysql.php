@@ -105,7 +105,7 @@ abstract class Database_super_mysql extends DatabaseDriver
      */
     public function has_default_for_text_fields() : bool
     {
-        return false;
+        return false; // https://bugs.mysql.com/bug.php?id=21532
     }
 
     /**

@@ -141,7 +141,7 @@ function adjust_htaccess()
             fatal_exit(do_lang_tempcode('INTERNAL_ERROR')); // Should never happen, things would crash if so! But we can't proceed
         }
 
-        $contents = trim(substr($contents, 0, $start_pos) . (!empty($lines) ? implode("\n", $lines) : '') . substr($contents, $end_pos + strlen($final_line))) . "\n";
+        $contents = trim(substr($contents, 0, $start_pos) . implode("\n", $lines) . substr($contents, $end_pos + strlen($final_line))) . "\n";
     }
 
     require_code('files');

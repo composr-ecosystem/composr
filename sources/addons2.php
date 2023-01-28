@@ -763,6 +763,9 @@ function has_feature(string $dependency) : bool
     if ((cms_strtolower_ascii($dependency) == 'php zip extension') && (function_exists('zip_open'))) {
         return true;
     }
+    if ((cms_strtolower_ascii($dependency) == 'php pdo_mysql extension') && (defined('PDO::ATTR_DRIVER_NAME'))) {
+        return true;
+    }
     if (substr($dependency, 0, 4) == 'php ') {
         $phpv = PHP_VERSION;
         if (version_compare(substr($phpv, 0, strlen(substr($dependency, 4))), substr($dependency, 4), '>=')) {
