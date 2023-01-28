@@ -113,6 +113,14 @@ to
 
 "#wrap" is specific to phpBB but most forums will have something similar you can bind your CSS to, or otherwise you can add something via changing a forum template.
 
+[title="2"]A note about long_text custom profile fields (advanced)[/title]
+
+When using a third-party forum driver, custom profile fields which would normally be of type [tt]LONG_TEXT[/tt] will instead be [tt]TEXT[/tt], which translates to the database type [tt]varchar(16377)[/tt] (or your database adapter's equivalent type). This is to work around a MySQL limitation of the longtext type where a default value is not supported (see [url="MySQL bug #21532"]https://bugs.mysql.com/bug.php?id=21532[/url]), resulting in the inability to create new member accounts on the forum itself due to database errors. We also had to work around the possibility a forum is using InnoDB, which has a default [tt]page_size[/tt] of 16,384 bytes (though 7 of those bytes are reserved).
+
+This does not affect most people as custom profile fields cannot be managed manually when using a third-party forum driver. However, when developing addons that utilize custom profile fields, this is important to remember as fields cannot hold more than 16,377 characters of data.
+
+It is not recommended to explicitly use the [tt]TEXT[/tt] field type for custom profile fields; use [tt]LONG_TEXT[/tt] as you normally would. The Composr software will automatically use [tt]TEXT[/tt] when using a third-party forum driver.
+
 [title="2"]Cookie integration (advanced, non-supported)[/title]
 
 Composr, where possible, will allow you to use the same cookies for logging into Composr as you do for your forum. However this is difficult to setup as:
@@ -136,10 +144,16 @@ Make sure:
 Super-administrator membership is determined by membership of the 'Administrator' usergroup (#1).
 Super-moderator membership is determined by membership of the 'Global Moderator' usergroup (#2).
 
-In order for frame-embed of SMF to work ("Show forum within website"), you need to remove this line from SMF's [tt]index.php[/tt] file:
+When running an SMF version below 2.0, in order for frame-embed of SMF to work ("Show forum within website"), you need to remove this line from SMF's [tt]index.php[/tt] file:
 [code="PHP"]
 header('X-Frame-Options: SAMEORIGIN');
 [/code]
+
+When using a Gravatar, for privacy reasons, the Composr software does not support a custom e-mail address like SMF does. Therefore, if a custom Gravatar e-mail address is specified in SMF, it will be ignored and instead the member's account e-mail address will be used.
+
+Cookie log-in (&ldquo;Remember me&rdquo;) is not implemented in the Composr software for SMF; members must log in separately both in the Composr site and in SMF. SMF encodes lots of data into their cookie which would be too complex and fragile to replicate in the Composr software. See [url="tracker issue #5258"]https://compo.sr/tracker/view.php?id=5258[/url].
+
+When using the &ldquo;Show forum within website&rdquo; option, the log-in form in SMF will throw an unauthorized error. It is unknown if this issue exists on other forms. See [url="tracker issue #5259"]https://compo.sr/tracker/view.php?id=5259[/url].
 
 [title="3"]vBulletin[/title]
 

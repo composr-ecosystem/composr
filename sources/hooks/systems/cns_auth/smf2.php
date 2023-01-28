@@ -21,10 +21,8 @@
 /**
  * Hook class.
  */
-class Hook_cns_auth_smf
+class Hook_cns_auth_smf2
 {
-    // LEGACY: SMF 1.
-
     /**
      * Try and authenticate for our password compatibility scheme.
      *
@@ -39,7 +37,7 @@ class Hook_cns_auth_smf
         $username = cms_mb_strtolower($username);
         $password_given = strtr($password_raw, array_flip(get_html_translation_table(HTML_SPECIALCHARS, ENT_QUOTES)) + ['&#039;' => '\'', '&nbsp;' => ' ']); // prepare inputted password
 
-        if (!hash_equals(sha1($username . $password_given), $row['m_pass_hash_salted'])) {
+        if (!password_verify(cms_strtolower_ascii($username) . $password_given, $row['m_pass_hash_salted'])) {
             return do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
         }
 

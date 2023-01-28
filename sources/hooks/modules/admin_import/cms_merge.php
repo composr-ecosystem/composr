@@ -135,7 +135,7 @@ class Hook_import_cms_merge
            'cns_members' => ['cns_groups', 'cns_custom_profile_fields', 'attachments'],
            'cns_forums' => ['cns_forum_groupings', 'cns_members', 'cns_groups', 'catalogues'],
            'cns_topics' => ['cns_forums', 'cns_members', 'catalogues'],
-           'cns_polls_and_votes' => ['cns_topics', 'cns_members'],
+           'cns_polls_and_votes' => ['cns_topics', 'cns_posts', 'cns_members'],
            'cns_posts' => ['custom_comcode', 'cns_topics', 'cns_members', 'attachments', 'catalogues'],
            'cns_post_templates' => ['cns_forums'],
            'cns_warnings' => ['cns_members', 'cns_groups', 'cns_topics', 'cns_forums'],

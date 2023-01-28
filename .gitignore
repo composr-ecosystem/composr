@@ -179,5 +179,8 @@ pages/html_custom/*/*.htm
 /nbproject
 _old_backups
 /_tests/codechecker/netbeans/target/
+
+; Third party forum folders
 /mybb
 /phpBB3
+/smf

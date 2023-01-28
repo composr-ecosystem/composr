@@ -22,7 +22,7 @@ function init__user_import()
 
     define('USER_IMPORT_MATCH_KEY', 'id'); // defined in terms of the local key
 
-    define('USER_IMPORT_URL', get_base_url() . '/data_custom/modules/user_export/in.csv'); // Can be remote, we do an HTTP download to the path below (even if local)...
+    define('USER_IMPORT_URL', get_base_url() . '/data_custom/modules/user_export/in2.csv'); // Can be remote, we do an HTTP download to the path below (even if local)...
     define('USER_IMPORT_TEMP_PATH', 'data_custom/modules/user_export/in.csv');
 
     global $USER_IMPORT_WANTED;
@@ -57,6 +57,9 @@ function do_user_import()
 
     global $USER_IMPORT_WANTED;
     $header_row = $sheet_reader->read_row();
+    if ($header_row === false) {
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+    }
     foreach ($USER_IMPORT_WANTED as $local_key => $remote_key) {
         $remote_index = array_search($remote_key, $header_row);
         if ($remote_index !== false) {
@@ -103,8 +106,8 @@ function do_user_import()
             }
         }
         $language = isset($USER_IMPORT_WANTED['m_language']) ? $row[$USER_IMPORT_WANTED['m_language']] : null;
-        $photo_url = isset($USER_IMPORT_WANTED['m_photo_url']) ? $row[$USER_IMPORT_WANTED['m_photo_url']] : null;
-        $reveal_age = isset($USER_IMPORT_WANTED['m_reveal_age']) ? $row[$USER_IMPORT_WANTED['m_reveal_age']] : 1;
+        $photo_url = isset($USER_IMPORT_WANTED['m_photo_url']) ? $row[$USER_IMPORT_WANTED['m_photo_url']] : '';
+        $reveal_age = isset($USER_IMPORT_WANTED['m_reveal_age']) ? $row[$USER_IMPORT_WANTED['m_reveal_age']] : 0;
         $allow_emails = isset($USER_IMPORT_WANTED['m_allow_emails']) ? $row[$USER_IMPORT_WANTED['m_allow_emails']] : 1;
         $allow_emails_from_staff = isset($USER_IMPORT_WANTED['m_allow_emails_from_staff']) ? $row[$USER_IMPORT_WANTED['m_allow_emails_from_staff']] : 1;
         $validated = isset($USER_IMPORT_WANTED['m_validated']) ? $row[$USER_IMPORT_WANTED['m_validated']] : 1;

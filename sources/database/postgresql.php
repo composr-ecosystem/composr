@@ -267,7 +267,8 @@ class Database_Static_postgresql extends DatabaseDriver
             'SHORT_TRANS' => 'bigint',
             'LONG_TRANS__COMCODE' => 'integer',
             'SHORT_TRANS__COMCODE' => 'integer',
-            'SHORT_TEXT' => 'text',
+            'SHORT_TEXT' => 'varchar(255)',
+            'TEXT' => 'varchar(16377)', // InnoDB limit for default page_size (- 6 bytes for pointers)
             'LONG_TEXT' => 'text',
             'ID_TEXT' => 'varchar(80)',
             'MINIID_TEXT' => 'varchar(40)',

@@ -88,10 +88,16 @@ function user_sync__inbound($since = null)
         $temporary_password,
         ) = get_user_sync_env();
 
-    // Connect to the database
     if (!class_exists('PDO')) {
         warn_exit('PDO must be installed.', false, true);
     }
+
+    // PDO does not have a 'mysqli' driver
+    if ($db_type == 'mysqli') {
+        $db_type = 'mysql';
+    }
+
+    // Connect to the database
     $connect_string = $db_type . ':host=' . $db_host . ';dbname=' . $db_name;
     $dbh = new PDO($connect_string, $db_user, $db_password);
     $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
@@ -121,7 +127,7 @@ function user_sync__inbound($since = null)
                 $sql .= ' AND ' . $username_field . '=' . $dbh->quote(is_array($DO_USER_ONLY_ID) ? $DO_USER_ONLY_ID[$j] : $DO_USER_ONLY_ID);
             }
         }
-        $sth = $dbh->query($sql, 18446744073709551615, $DO_USER_SYNC_OFFSET);
+        $sth = $dbh->query($sql . ' LIMIT ' . strval($DO_USER_SYNC_OFFSET) . ', 18446744073709551615');
 
         // Handle each user
         while (($user = $sth->fetch(PDO::FETCH_ASSOC)) !== false) {
@@ -176,7 +182,6 @@ function user_sync__inbound($since = null)
             $allow_emails = $user_data['allow_emails'];
             $allow_emails_from_staff = $user_data['allow_emails_from_staff'];
             $validated = $user_data['validated'];
-            $on_probation_until = $user_data['on_probation_until'];
             $is_perm_banned = @strval($user_data['is_perm_banned']);
             $join_time = $user_data['join_time'];
 
@@ -546,6 +551,12 @@ function user_sync__outbound($member_id)
     if (!class_exists('PDO')) {
         warn_exit('PDO must be installed.', false, true);
     }
+
+    // PDO does not have a 'mysqli' driver
+    if ($db_type == 'mysqli') {
+        $db_type = 'mysql';
+    }
+
     $dbh = new PDO($db_type . ':host=' . $db_host . ';dbname=' . $db_name, $db_user, $db_password);
     $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
 

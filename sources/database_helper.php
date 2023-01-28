@@ -101,6 +101,7 @@ function _check_sizes(string $table_name, bool $primary_key, array $fields, stri
         'LONG_TRANS__COMCODE' => 255 + 1,
         'SHORT_TRANS__COMCODE' => 255 + 1,
         'SHORT_TEXT' => $primary_key ? (150) : (255 + 1), /* We underestimate for primary key, as it is very unlikely to be very high and the higher limit only exists on our own 'xml' database driver as a run-time limit */
+        'TEXT' => $primary_key ? (150) : (255 + 1), /* We underestimate for primary key, as it is very unlikely to be very high and the higher limit only exists on our own 'xml' database driver as a run-time limit */
         'LONG_TEXT' => 255 + 1,
         'ID_TEXT' => $primary_key ? (16) : (80 + 1), /* We underestimate for primary key, as it is very unlikely to be very high and the higher limit only exists on our own 'xml' database driver as a run-time limit */
         'MINIID_TEXT' => 40 + 1,
@@ -151,7 +152,7 @@ function _check_sizes(string $table_name, bool $primary_key, array $fields, stri
         }
         $total_size_unicode += $data_sizes[(array_key_exists('unicode_' . $field, $data_sizes) ? 'unicode_' : '') . $field];
 
-        if (($null) && (!$skip_null_check) && (($field == 'MINIID_TEXT') || ($field == 'ID_TEXT') || ($field == 'LANGUAGE_NAME') || ($field == 'IP') || ($field == 'URLPATH') || ($field == 'LONG_TEXT') || ($field == 'SHORT_TEXT'))) { // Needed for Oracle, really
+        if (($null) && (!$skip_null_check) && (($field == 'LANGUAGE_NAME') || ($field == 'IP') || ($field == 'URLPATH') || ($field == 'TEXT') || (strpos($field, '_TEXT') !== false))) { // Needed for Oracle, really
             fatal_exit('You may not have a NULL string field');
         }
         /*if (($key) && (substr($id_name, 0, 1) != '#') && (!$size_restricted) && (($field == 'LONG_TEXT'))) {      We now size restrict using "(255)"
@@ -451,7 +452,7 @@ function _helper_generate_index_fields(string $table_name, array $fields, bool $
 
             if ((strpos($field_name, '(') === false) && (!$is_full_text) && ((!multi_lang_content()) || (strpos($db_type, '_TRANS') === false))) {
                 if (strpos($field_name, '(') === false) {
-                    if ((strpos($db_type, 'SHORT_TEXT') !== false) || (strpos($db_type, 'SHORT_TRANS') !== false) || (strpos($db_type, 'LONG_TEXT') !== false) || (strpos($db_type, 'LONG_TRANS') !== false) || (strpos($db_type, 'URLPATH') !== false)) {
+                    if ((strpos($db_type, 'TEXT') === 0) || (strpos($db_type, 'SHORT_TEXT') !== false) || (strpos($db_type, 'SHORT_TRANS') !== false) || (strpos($db_type, 'LONG_TEXT') !== false) || (strpos($db_type, 'LONG_TRANS') !== false) || (strpos($db_type, 'URLPATH') !== false)) {
                         $_fields .= '(250)'; // 255 would be too much with MySQL's UTF. Only MySQL supports index lengths, but the other drivers will strip them back out again.
                     }
                 }

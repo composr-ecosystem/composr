@@ -2634,13 +2634,8 @@ function cns_make_predefined_content_field(string $type) : int
         $show_in_post_previews = 1;
     }
 
-    if (substr($type, 0, 4) == 'cms_') {
-        $title = do_lang('SPECIAL_CPF__' . $type);
-        $description = '';
-    } else {
-        $title = do_lang('DEFAULT_CPF_' . $type . '_NAME');
-        $description = do_lang('DEFAULT_CPF_' . $type . '_DESCRIPTION');
-    }
+    $title = do_lang('DEFAULT_CPF_' . $type . '_NAME');
+    $description = do_lang('DEFAULT_CPF_' . $type . '_DESCRIPTION');
 
     return cns_make_custom_field($title, 0, $description, '', $public_view, $owner_view, $owner_set, 0, $_type, $required, $show_in_posts, $show_in_post_previews, null, '', 0, '', $include_in_main_search, $allow_template_search, $icon, $section, $tempcode, true);
 }

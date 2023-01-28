@@ -80,6 +80,7 @@ function _password_censor($text, $scan_type = 1, $explicit_only = false)
             }
         }
 
+        // Check for text to encrypt
         $matches = [];
         $num_matches = preg_match_all('#\[encrypt[^\]]*\](.*)\[/encrypt\]#Us', $text, $matches);
         for ($i = 0; $i < $num_matches; $i++) {
@@ -97,7 +98,7 @@ function _password_censor($text, $scan_type = 1, $explicit_only = false)
     } else { // Try and detect things to censor
         if ($scan_type != PASSWORD_CENSOR__PRE_SCAN) {
             $matches = [];
-            $num_matches = preg_match_all('#(^|[^\w])([^\s"\'=]{5,30})#', $text, $matches);
+            $num_matches = preg_match_all('#(^|[^\w])([^\s"\'=]{5,255})#', $text, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
                 $m = $matches[2][$i];
 
@@ -109,9 +110,12 @@ function _password_censor($text, $scan_type = 1, $explicit_only = false)
                 $m = ltrim($m, '<[{(');
                 $m = rtrim($m, '>]})');
 
+                // Skip blanks
                 if ($m == '') {
                     continue;
                 }
+
+                // Skip explicit labels
                 if (cms_strtolower_ascii(trim($m, ':')) == 'password') {
                     continue;
                 }
@@ -121,6 +125,7 @@ function _password_censor($text, $scan_type = 1, $explicit_only = false)
                 if (cms_strtolower_ascii($m) == 'reminder') {
                     continue;
                 }
+
                 if ($GLOBALS['FORUM_DRIVER']->get_member_from_username($m) !== null) {
                     continue; // A username
                 }
@@ -128,25 +133,29 @@ function _password_censor($text, $scan_type = 1, $explicit_only = false)
                     continue; // Part of a URL
                 }
 
+                // Add a point for each category of characters found
                 $c = 0;
-                if (preg_match('#\d#', $m) != 0) {
+                if (preg_match('#\d#', $m) != 0) { // Digit
                     $c++;
                 }
-                if (preg_match('#,+[A-Z]#', $m) != 0) {
+                if (preg_match('#,+[A-Z]#', $m) != 0) { // Uppercase letters
                     $c++;
                 }
-                if (preg_match('#[a-z]#', $m) != 0) {
+                if (preg_match('#[a-z]#', $m) != 0) { // Lowercase letters
                     $c++;
                 }
-                if (preg_match('#[^\w]#', $m) != 0) {
+                if (preg_match('#[^\w]#', $m) != 0) { // Symbols
                     $c++;
                 }
-                if ((is_numeric($m)) && (strlen($m) > 6)) {
+                if ((is_numeric($m)) && (strlen($m) > 6)) { // Numerical strings greater than 6 characters long
                     $c++;
                 }
+
                 if (preg_match('#(password|pass|pword|pw|p/w|pwd)\s*:?=?\s+' . preg_quote($m, '#') . '#i', $text) != 0) {
-                    $c += 2;
+                    $c += 2; // Add 2 points if we find anything that looks like a password label before the match; almost certainly a password.
                 }
+
+                // If the score is 3 points or more, censor it.
                 if ($c >= 3) {
                     $text = str_replace($m, '(auto-censored)', $text);
                 }

@@ -147,7 +147,8 @@ class Database_Static_ibm extends DatabaseDriver
             'SHORT_TRANS' => 'bigint',
             'LONG_TRANS__COMCODE' => 'integer',
             'SHORT_TRANS__COMCODE' => 'integer',
-            'SHORT_TEXT' => 'text',
+            'SHORT_TEXT' => 'varchar(255)',
+            'TEXT' => 'lvarchar(16377)', // InnoDB limit for default page_size (- 6 bytes for pointers)
             'LONG_TEXT' => 'clob',
             'ID_TEXT' => 'varchar(80)',
             'MINIID_TEXT' => 'varchar(40)',

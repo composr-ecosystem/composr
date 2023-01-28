@@ -167,6 +167,7 @@ abstract class Database_super_sqlserver extends DatabaseDriver
             'LONG_TRANS__COMCODE' => 'bigint',
             'SHORT_TRANS__COMCODE' => 'bigint',
             'SHORT_TEXT' => 'nvarchar(255)',
+            'TEXT' => 'nvarchar(16377)', // InnoDB limit for default page_size (- 6 bytes for pointers)
             'LONG_TEXT' => 'nvarchar(MAX)', // 'TEXT' cannot be indexed.
             'ID_TEXT' => 'nvarchar(80)',
             'MINIID_TEXT' => 'nvarchar(40)',

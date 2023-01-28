@@ -25,6 +25,8 @@
  */
 class Forum_driver_smf2 extends Forum_driver_base
 {
+    protected static $SETTINGS_CACHE = [];
+
     /**
      * Check the connected DB is valid for this forum driver.
      *
@@ -180,6 +182,8 @@ class Forum_driver_smf2 extends Forum_driver_base
             $boardurl = '';
             $db_prefix = '';
             $cookiename = '';
+            $auth_secret = '';
+
             @include($path . '/Settings.php');
             $PROBED_FORUM_CONFIG['sql_host'] = $db_server;
             $PROBED_FORUM_CONFIG['sql_database'] = $db_name;
@@ -189,7 +193,9 @@ class Forum_driver_smf2 extends Forum_driver_base
             $PROBED_FORUM_CONFIG['board_url'] = $boardurl;
             $PROBED_FORUM_CONFIG['cookie_member_id'] = $cookiename . ':0';
             $PROBED_FORUM_CONFIG['cookie_member_hash'] = $cookiename . ':1';
-
+            $PROBED_FORUM_CONFIG['set_values'] = [
+                ['smf_auth_secret', $auth_secret],
+            ];
             return true;
         }
         return false;
@@ -360,21 +366,29 @@ class Forum_driver_smf2 extends Forum_driver_base
      */
     protected function _get_member_avatar_url(int $member_id, bool &$fallback_support) : string
     {
+        // Could be remote avatar URL off the bat, in which case $ret is untouched and simply returned at the bottom of the function
         $ret = $this->get_member_row_field($member_id, 'avatar');
+
+        // Uploaded avatars; need to get the attachment
         if ($ret == '') {
-            $attach_id = $this->db->query_select_value_if_there('attachments', 'id_attach', ['id_member' => $member_id]);
-            if ($attach_id === null) {
+            $filename = $this->db->query_select_value_if_there('attachments', 'filename', ['id_member' => $member_id]);
+            if ($filename === null) {
                 return '';
             }
-            return get_forum_base_url() . '/index.php?action=dlattach;attach=' . strval($attach_id) . ';type=avatar';
+            return $this->get_setting('custom_avatar_url') . '/' . strval($filename);
         }
+
+        // Gravatar
+        if (substr($ret, 0, 11) == 'gravatar://') {
+            // Ignore custom Gravatar e-mail addresses for privacy reasons
+            return find_script('gravatar') . '?id=' . strval($member_id) . '&from_driver=1';
+        }
+
+        // Avatar gallery
         if (url_is_local($ret)) {
-            static $base_url = null; //get_forum_base_url().'/avatars';
-            if ($base_url === null) {
-                $base_url = $this->db->query_select_value_if_there('settings', 'value', ['variable' => 'avatar_url']);
-            }
-            $ret = $base_url . '/' . $ret;
+            return $this->get_setting('avatar_url') . '/' . $ret;
         }
+
         return $ret;
     }
 
@@ -666,7 +680,7 @@ class Forum_driver_smf2 extends Forum_driver_base
             $topic_filter .= ' AND t_locked=0';
         }
 
-        $rows = $this->db->query('SELECT t.num_replies, t.id_topic AS t_id_topic, t.id_member_updated AS t_id_member_updated, t.id_member_started AS t_id_member_started, t.locked AS t_locked, p.subject AS p_subject FROM ' . $this->db->get_table_prefix() . 'topics t LEFT JOIN ' . $this->db->get_table_prefix() . 'messages p ON t.id_first_msg=p.id_msg WHERE (' . $id_list . ')' . $topic_filter . ' ORDER BY ' . (($date_key == 'lasttime') ? 'id_last_msg' : 'id_first_msg') . ' DESC', $limit, $start, null, false, true);
+        $rows = $this->db->query('SELECT t.num_replies, t.id_topic AS t_id_topic, t.id_member_updated AS t_id_member_updated, t.id_member_started AS t_id_member_started, t.locked AS t_locked, p.subject AS p_subject FROM ' . $this->db->get_table_prefix() . 'topics t LEFT JOIN ' . $this->db->get_table_prefix() . 'messages p ON t.id_first_msg=p.id_msg WHERE (' . $id_list . ')' . $topic_filter . ' ORDER BY ' . (($date_key == 'lasttime') ? 'id_last_msg' : 'id_first_msg') . ' DESC', $limit, $start);
         $max_rows = $this->db->query_value_if_there('SELECT COUNT(*) FROM ' . $this->db->get_table_prefix() . 'topics t LEFT JOIN ' . $this->db->get_table_prefix() . 'messages p ON t.ID_FIRST_MSG=p.ID_MSG WHERE (' . $id_list . ')' . $topic_filter);
 
         // Generate output
@@ -903,13 +917,23 @@ class Forum_driver_smf2 extends Forum_driver_base
     }
 
     /**
-     * Find the base URL to the emoticons.
+     * Get an SMF setting.
      *
-     * @return URLPATH The base URL
+     * @param  ID_TEXT $setting The name of the setting
+     * @param  boolean $allow_missing Whether to allow a missing setting without throwing an error
+     * @return ?string The setting value (null: Setting does not exist and $allow_setting is true)
      */
-    public function get_emo_dir() : string
+    public function get_setting(string $setting, bool $allow_missing = false) : ?string
     {
-        return get_forum_base_url() . '/Smileys/default/';
+        if (isset($SETTINGS_CACHE[$setting])) {
+            return $SETTINGS_CACHE[$setting];
+        }
+        if ($allow_missing) {
+            $SETTINGS_CACHE[$setting] = $this->db->query_select_value_if_there('settings', 'value', ['variable' => $setting]);
+        } else {
+            $SETTINGS_CACHE[$setting] = $this->db->query_select_value('settings', 'value', ['variable' => $setting]);
+        }
+        return $SETTINGS_CACHE[$setting];
     }
 
     /**
@@ -922,12 +946,14 @@ class Forum_driver_smf2 extends Forum_driver_base
         if ($this->EMOTICON_CACHE !== null) {
             return $this->EMOTICON_CACHE;
         }
-        $rows = $this->db->query_select('smileys', ['*']);
+        // TODO: Need backwards compatibility with <=1.1 which used a single table.
+        $rows = $this->db->query('SELECT * FROM ' . $this->db->get_table_prefix() . 'smiley_files sf JOIN ' . $this->db->get_table_prefix() . 'smileys s ON s.id_smiley=sf.id_smiley');
         $this->EMOTICON_CACHE = [];
         foreach ($rows as $myrow) {
+            $set = $myrow['smiley_set'];
             $src = $myrow['filename'];
             if (url_is_local($src)) {
-                $src = $this->get_emo_dir() . $src;
+                $src = $this->get_setting('smileys_url') . '/' . $set . '/' . $src;
             }
             $this->EMOTICON_CACHE[$myrow['code']] = ['EMOTICON_IMG_CODE_DIR', $src, $myrow['code']];
         }
@@ -1152,7 +1178,7 @@ class Forum_driver_smf2 extends Forum_driver_base
     }
 
     /**
-     * Create a member login cookie.
+     * Create a member login cookie for SMF 2.1.
      *
      * @param  MEMBER $member_id The member ID
      * @param  ?SHORT_TEXT $username The username (null: lookup)
@@ -1160,21 +1186,30 @@ class Forum_driver_smf2 extends Forum_driver_base
      */
     public function create_login_cookie(int $member_id, ?string $username, string $password_raw)
     {
+        return;
+
+        // TODO: #5258 Not implemented. Currently, making this work for SMF would make for very fragile code. Consider SSI or REST instead.
+
+        /*
         list($stub,) = explode(':', get_member_cookie());
 
-        if (!$GLOBALS['SMF_NEW']) { // SMF 1.0 style
-            $row = $this->get_member_row($member_id);
-            $_password = $this->password_hash($row['passwd'], 'ys');
-            $bits = explode('::', $_password);
-            $_password = $bits[0];
-        } else { // SMF 1.1 style
-            $row = $this->get_member_row($member_id);
-            $_password = sha1($row['passwd'] . $row['password_salt']);
-        }
+        // Create our cookie
+        $row = $this->get_member_row($member_id);
+        $_password = $this->cookie_hash_salt($row['passwd'], $row['password_salt']);
+        $expiry_time = (time() + intval(get_cookie_days()) * 24 * 60 * 60); // Actually we must use what SMF uses for cookie time.
+        $local_cookie_domain = '';
+        $global_cookie_domain = '';
+        $use_local_cookies = $this->get_setting('localCookies', true);
+        $use_global_cookies = $this->get_setting('globalCookies', true);
 
-        $data = [$member_id, $_password, (time() + intval(get_cookie_days()) * 24 * 60 * 60), 3];
+        // if use_local_cookies then we need to get the local cookie domain. Same for global cookies.
 
-        cms_setcookie($stub, serialize($data), false, true);
+        // Note: SMF also encodes third-party plugin data into their cookie. This is not possible to do for Composr.
+
+        $data = json_encode([$member_id, $_password, $expiry_time, $local_cookie_domain, $global_cookie_domain]);
+
+        cms_setcookie($stub, $data, false, true);
+        */
     }
 
     /**
@@ -1248,27 +1283,38 @@ class Forum_driver_smf2 extends Forum_driver_base
             return $out;
         }
 
-        $GLOBALS['SMF_NEW'] = array_key_exists('pm_ignore_list', $row);
+        // Verify password below
+        if (substr($row['passwd'], 0, 4) == '$2y$') { // SMF 2 password
+            $GLOBALS['SMF_PW_STYLE'] = 2.0;
+            if ($cookie_login) {
+                // TODO: Cookie login probably does not work
+                $cookie_hash = $this->cookie_hash_salt($row['passwd'], $row['password_salt']);
+                $passes = hash_equals($cookie_hash, $password_mixed);
+            } else {
+                $passes = password_verify(cms_strtolower_ascii($username) . $password_mixed, $row['passwd']);
+            }
+        } else { // SMF 1 and 1.1 password
+            $GLOBALS['SMF_PW_STYLE'] = array_key_exists('pm_ignore_list', $row) ? 1.1 : 1.0;
+            $password_hashed = $cookie_login ? $password_mixed : $this->_legacy_password_hash($password_mixed, $row['passwd']);
+            $bits = explode('::', $password_hashed);
+            if (!array_key_exists(1, $bits)) {
+                $bits[1] = $bits[0];
+            }
+            if ($cookie_login) {
+                if ($GLOBALS['SMF_PW_STYLE'] == 1.1) {
+                    $passes = hash_equals(sha1($row['passwd'] . $row['password_salt']), $bits[1]);
+                } else {
+                    $passes = hash_equals($this->_legacy_password_hash($row['passwd'], 'ys', true), $bits[0]);
+                }
+            } else {
+                if ($GLOBALS['SMF_PW_STYLE'] == 1.1) {
+                    $passes = hash_equals($row['passwd'], $bits[1]);
+                } else {
+                    $passes = hash_equals($row['passwd'], $bits[0]);
+                }
+            }
+        }
 
-        // Main authentication
-        $password_hashed = $cookie_login ? $password_mixed : $this->password_hash($password_mixed, strval($row['id_member']));
-        $bits = explode('::', $password_hashed);
-        if (!array_key_exists(1, $bits)) {
-            $bits[1] = $bits[0];
-        }
-        if ($cookie_login) {
-            if ($GLOBALS['SMF_NEW']) {
-                $passes = hash_equals(sha1($row['passwd'] . $row['password_salt']), $bits[1]);
-            } else {
-                $passes = hash_equals($this->password_hash($row['passwd'], 'ys', true), $bits[0]);
-            }
-        } else {
-            if ($GLOBALS['SMF_NEW']) {
-                $passes = hash_equals($row['passwd'], $bits[1]);
-            } else {
-                $passes = hash_equals($row['passwd'], $bits[0]);
-            }
-        }
         if (!$passes) {
             $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
             return $out;
@@ -1280,18 +1326,20 @@ class Forum_driver_smf2 extends Forum_driver_base
         }
 
         $out['id'] = $row['id_member'];
+
         return $out;
     }
 
     /**
-     * SMF hashing.
+     * LEGACY: SMF hashing for SMF 1 and 1.1.
      *
      * @param  string $password_raw The value to hash
      * @param  string $key Special key to hash with
      * @param  boolean $smf1_only Whether to just use original SMF hashing
      * @return string The hashed data
+     * @ignore
      */
-    protected function password_hash(string $password_raw, string $key, bool $smf1_only = false) : string
+    protected function _legacy_password_hash(string $password_raw, string $key, bool $smf1_only = false) : string
     {
         $key = cms_strtolower_ascii($key);
         $new_key = str_pad((strlen($key) <= 64) ? $key : pack('H*', md5($key)), 64, chr(0x00));
@@ -1303,6 +1351,22 @@ class Forum_driver_smf2 extends Forum_driver_base
         $b = sha1($key . $password_raw); // SMF 1.1 style
 
         return $a . '::' . $b;
+    }
+
+    /**
+     * Hashes password with salt and authentication secret for use in the SMF 2 cookie.
+     *
+     * @param  string $password The password
+     * @param  string $salt The salt
+     * @return string The hashed password
+     */
+    protected function cookie_hash_salt(string $password, string $salt) : string
+    {
+        // Append the salt to get a user-specific authentication secret.
+        $secret_key = get_value('smf_auth_secret') . $salt;
+
+        // Now use that to generate an HMAC of the password.
+        return hash_hmac('sha512', $password, $secret_key);
     }
 
     /**

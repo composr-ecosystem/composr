@@ -95,7 +95,7 @@ class Hook_import_phpbb3
            'cns_forums' => ['cns_members', 'cns_groups'],
            'cns_custom_profile_fields' => ['cns_groups'],
            'cns_topics' => ['cns_forums', 'cns_members'],
-           'cns_polls_and_votes' => ['cns_topics', 'cns_members'],
+           'cns_polls_and_votes' => ['cns_topics', 'cns_posts', 'cns_members'],
            'cns_posts' => ['cns_topics', 'cns_members', 'attachments'],
            'notifications' => ['cns_topics', 'cns_members'],
            'cns_private_topics' => ['cns_members', 'attachments'],
