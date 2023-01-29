@@ -319,7 +319,6 @@ class config_test_set extends cms_test_case
         }
     }
 
-    
     public function testSaneDefaults()
     {
         if (($this->only !== null) && ($this->only != 'testSaneDefaults')) {

@@ -270,7 +270,6 @@ PHP;
             if ($content_type == 'comcode_page') {
                 $extra_where[$content_type] .= ' AND ' . $info['title_field'] . ' NOT LIKE \'' . db_encode_like('\_%') . '\' AND ' . $info['title_field'] . ' NOT LIKE \'' . db_encode_like('panel\_%') . '\'';
             }
-
         }
 
         // Read rows

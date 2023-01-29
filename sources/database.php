@@ -729,7 +729,7 @@ abstract class DatabaseDriver
             case 'LONG_TRANS__COMCODE':
             case 'SHORT_TRANS__COMCODE':
             case 'SHORT_TEXT':
-            case 'TEXT'; // Do not explicitly use; mainly used for MySQL compatibility with third-party forum drivers (LONG_TEXT does not support default values; see https://bugs.mysql.com/bug.php?id=21532). Use LONG_TEXT instead; Composr will switch to TEXT when necessary.
+            case 'TEXT': // Do not explicitly use; mainly used for MySQL compatibility with third-party forum drivers (LONG_TEXT does not support default values; see https://bugs.mysql.com/bug.php?id=21532). Use LONG_TEXT instead; Composr will switch to TEXT when necessary.
             case 'LONG_TEXT':
             case 'ID_TEXT':
             case 'MINIID_TEXT':

@@ -415,7 +415,7 @@ class TicketsEmailIntegration extends EmailIntegration
         }
 
         $extended_subject = do_lang('TICKET_CANNOT_BIND_SUBJECT', $subject, $email, [get_site_name()], get_site_default_lang());
-        $extended_message = do_lang(get_option('ticket_mail_tags') == '1' ? 'TICKET_CANNOT_BIND_TAGS_ON_MAIL' : 'TICKET_CANNOT_BIND_TAGS_OFF_MAIL', strip_comcode($body), $email, [$subject, get_site_name()], get_site_default_lang());
+        $extended_message = do_lang((get_option('ticket_mail_tags') == '1') ? 'TICKET_CANNOT_BIND_TAGS_ON_MAIL' : 'TICKET_CANNOT_BIND_TAGS_OFF_MAIL', strip_comcode($body), $email, [$subject, get_site_name()], get_site_default_lang());
 
         $this->send_system_email($extended_subject, $extended_message, $email, $email_bounce_to);
     }

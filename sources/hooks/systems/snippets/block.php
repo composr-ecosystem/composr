@@ -72,7 +72,7 @@ class Hook_snippet_block
                     global $SITE_INFO;
 
                     $sql = 'DELETE FROM ' . get_table_prefix() . 'temp_block_permissions WHERE ';
-                    $expiry_time = intval(60.0 * 60.0 * floatval(get_option('session_expiry_time')));
+                    $expiry_time = 60.0 * 60.0 * floatval(get_option('session_expiry_time'));
                     $sql .= db_string_not_equal_to('p_session_id', '') . ' AND p_time<' . strval(time() - $expiry_time);
                     $sql .= ' OR ';
                     if (!empty($SITE_INFO['static_caching_hours'])) {

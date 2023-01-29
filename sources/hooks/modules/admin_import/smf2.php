@@ -138,6 +138,7 @@ class Hook_import_smf2
         $mbname = '';
         $boardurl = '';
         $cookiename = '';
+        $auth_secret = null;
 
         require($file_base . '/Settings.php');
 
@@ -149,7 +150,7 @@ class Hook_import_smf2
         $board_url = $boardurl;
 
         // Cookie secret
-        if (isset($auth_secret)) {
+        if ($auth_secret !== null) {
             set_value('smf_auth_secret', $auth_secret);
         }
 
@@ -1461,7 +1462,6 @@ class Hook_import_smf2
      */
     public function import_wordfilter(object $db, string $table_prefix, string $file_base)
     {
-
         $censor_vulgar = preg_split('/[\n\r]+/', $this->get_setting($db, 'censor_vulgar'));
         $censor_proper = preg_split('/[\n\r]+/', $this->get_setting($db, 'censor_proper'));
 
@@ -1947,16 +1947,21 @@ class Hook_import_smf2
      */
     protected function get_setting(object $db, string $setting, bool $allow_missing = false) : ?string
     {
-        static $SETTINGS_CACHE;
+        // TODO: Test cqc_hooks says $SETTINGS_CACHE referenced before initialised. Cache disabled for now.
 
-        if (isset($SETTINGS_CACHE[$setting])) {
-            return $SETTINGS_CACHE[$setting];
-        }
+        // static $SETTINGS_CACHE = [];
+
+        // if (isset($SETTINGS_CACHE[$setting])) {
+        //     return $SETTINGS_CACHE[$setting];
+        // }
         if ($allow_missing) {
-            $SETTINGS_CACHE[$setting] = $db->query_select_value_if_there('settings', 'value', ['variable' => $setting]);
+            // $SETTINGS_CACHE[$setting] = $db->query_select_value_if_there('settings', 'value', ['variable' => $setting]);
+            $ret = $db->query_select_value_if_there('settings', 'value', ['variable' => $setting]);
         } else {
-            $SETTINGS_CACHE[$setting] = $db->query_select_value('settings', 'value', ['variable' => $setting]);
+            // $SETTINGS_CACHE[$setting] = $db->query_select_value('settings', 'value', ['variable' => $setting]);
+            $ret = $db->query_select_value_if_there('settings', 'value', ['variable' => $setting]);
         }
-        return $SETTINGS_CACHE[$setting];
+        // return $SETTINGS_CACHE[$setting];
+        return $ret;
     }
 }

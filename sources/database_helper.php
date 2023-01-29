@@ -374,7 +374,7 @@ function _helper_create_index(object $this_ref, string $table_name, string $inde
 
     $is_full_text = ($index_name[0] == '#');
 
-    $_fields = _helper_generate_index_fields($table_name, $fields_with_types, $is_full_text, $db_types);
+    $_fields = _helper_generate_index_fields($table_name, $fields_with_types, $is_full_text);
 
     $insert_map = ['i_table' => $table_name, 'i_name' => $index_name, 'i_fields' => implode(',', $fields)];
     $test = $this_ref->query_select('db_meta_indices', ['*'], $insert_map);

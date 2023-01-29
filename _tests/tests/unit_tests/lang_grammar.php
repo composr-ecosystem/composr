@@ -24,7 +24,7 @@ class lang_grammar_test_set extends cms_test_case
 
         cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
     }
-    
+
     public function testUnbalancedSmartQuotes()
     {
         require_code('lang2');

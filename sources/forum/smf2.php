@@ -18,6 +18,8 @@
  * @package    core_forum_drivers
  */
 
+ /*EXTRA FUNCTIONS: hash_hmac*/
+
 /**
  * Forum driver class.
  *
@@ -25,8 +27,6 @@
  */
 class Forum_driver_smf2 extends Forum_driver_base
 {
-    protected static $SETTINGS_CACHE = [];
-
     /**
      * Check the connected DB is valid for this forum driver.
      *
@@ -925,6 +925,8 @@ class Forum_driver_smf2 extends Forum_driver_base
      */
     public function get_setting(string $setting, bool $allow_missing = false) : ?string
     {
+        static $SETTINGS_CACHE = [];
+
         if (isset($SETTINGS_CACHE[$setting])) {
             return $SETTINGS_CACHE[$setting];
         }
@@ -934,6 +936,23 @@ class Forum_driver_smf2 extends Forum_driver_base
             $SETTINGS_CACHE[$setting] = $this->db->query_select_value('settings', 'value', ['variable' => $setting]);
         }
         return $SETTINGS_CACHE[$setting];
+    }
+
+    /**
+     * Find the base URL to the emoticons.
+     *
+     * @return URLPATH The base URL
+     */
+    public function get_emo_dir() : string
+    {
+        $url = $this->get_setting('smileys_url');
+
+        // If the setting is not specified, we have to bail on error since get_emo_dir cannot return null.
+        if ($url === null) {
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        }
+
+        return $url . '/';
     }
 
     /**
@@ -953,7 +972,7 @@ class Forum_driver_smf2 extends Forum_driver_base
             $set = $myrow['smiley_set'];
             $src = $myrow['filename'];
             if (url_is_local($src)) {
-                $src = $this->get_setting('smileys_url') . '/' . $set . '/' . $src;
+                $src = $this->get_emo_dir() . $set . '/' . $src;
             }
             $this->EMOTICON_CACHE[$myrow['code']] = ['EMOTICON_IMG_CODE_DIR', $src, $myrow['code']];
         }
@@ -1362,6 +1381,10 @@ class Forum_driver_smf2 extends Forum_driver_base
      */
     protected function cookie_hash_salt(string $password, string $salt) : string
     {
+        if (!function_exists('hash_hmac')) {
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        }
+
         // Append the salt to get a user-specific authentication secret.
         $secret_key = get_value('smf_auth_secret') . $salt;
 
