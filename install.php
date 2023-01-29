@@ -2029,6 +2029,20 @@ function step_5_core() : object
     $tables = [
         'db_meta',
         'db_meta_indices',
+    ];
+    $GLOBALS['SITE_DB']->drop_table_if_exists($tables);
+    $GLOBALS['SITE_DB']->create_table('db_meta', [
+        'm_table' => '*ID_TEXT',
+        'm_name' => '*ID_TEXT',
+        'm_type' => 'ID_TEXT',
+    ]);
+    $GLOBALS['SITE_DB']->create_table('db_meta_indices', [
+        'i_table' => '*ID_TEXT',
+        'i_name' => '*ID_TEXT',
+        'i_fields' => 'LONG_TEXT',
+    ]);
+
+    $tables = [
         'translate',
         'values',
         'config',
@@ -2038,18 +2052,6 @@ function step_5_core() : object
         'attachment_refs',
     ];
     $GLOBALS['SITE_DB']->drop_table_if_exists($tables);
-
-    $GLOBALS['SITE_DB']->create_table('db_meta', [
-        'm_table' => '*ID_TEXT',
-        'm_name' => '*ID_TEXT',
-        'm_type' => 'ID_TEXT',
-    ]);
-
-    $GLOBALS['SITE_DB']->create_table('db_meta_indices', [
-        'i_table' => '*ID_TEXT',
-        'i_name' => '*ID_TEXT',
-        'i_fields' => 'LONG_TEXT',
-    ]);
 
     $GLOBALS['SITE_DB']->create_index('db_meta', 'findtransfields', ['m_type']);
 
