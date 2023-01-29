@@ -126,9 +126,9 @@ Compatibility notes:
  - SMF has an advanced IP and member banning system. Please consider the following nuances:
   - The Composr software does not support banning by e-mail (members can easily create more e-mails) or hostname (hostname should be banned at the server or firewall level). Those triggers will be ignored.
   - The Composr software does not support member bans that expire; they will be imported instead as probation time.
-  - Non-expiring partial bans on members in SMF where they are restricted on posting but not logging in will be imported as a 'permanent' probation (due to the 32-bit integer problem, the expiration will be 19 January, 2038).
+  - Non-expiring partial bans on members in SMF where they are restricted on posting but not logging in will be imported as a 'permanent' probation (due to the 32-bit integer problem{$,See tracker $3046}, the expiration will be 19 January, 2038).
   - IP triggers in SMF will always be treated as full bans when imported into the Composr software; those IP addresses will not have any access to the site. Expiration will be respected if there is one.
-  - IP ranges are not supported in the Composr software; any IP triggers specified as a range in SMF will be ignored.
+  - IP ranges are not supported in the Composr software; any IP triggers specified as a range in SMF will be ignored. IP range bans can be done on the web server level and are much more efficient than through the Composr software.
 
 [title="3"]Composr merge (advanced)[/title]
 
