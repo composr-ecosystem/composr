@@ -47,23 +47,6 @@ Here are a few more:
 
 We aren't in a position to tell you which is best at this time, we're just listing some options for you.
 
-[title="3"]Microsoft Web Platform Installer (advanced)[/title]
-
-This tutorial is primarily about how to install an Apache set up on Windows. However, we actually have a {$IS_MAINTAINED,install_microsoft,Microsoft Web Platform installer} for Composr. If you download the Microsoft Web Platform Installer, you'll find Composr is in there. This uses {$IS_MAINTAINED,platform_iis,IIS}, not Apache.
-
-If you'd like to use Microsoft Web Platform, proceed to the [url="Web Platform website"]https://www.iis.net/downloads/microsoft/web-platform-installer[/url].
-
-[title="4"]WebMatrix[/title]
-
-One small note -- if you are developing locally, then choose to use WebMatrix to push a local site live, make sure you adjust the base URL setting in your [tt]_config.php[/tt] file to reflect your live URL.
-
-[title="4"]Manually deploying a package[/title]
-
-You can also find the packages on our [url="download directory"]https://compo.sr/downloads/browse/composr-releases/microsoft-integration.htm[/url].
-To install these you need IIS and Microsoft Web Deploy installed. From IIS manager you can right click on a site, and choose to deploy.
-
-You may find it is buggy, e.g. complaining about a MySQL Connector not being installed, even if it is. To workaround this you need to install a similar webapp package from Microsoft Web Platform Installer. This 'magically' seems to fix the dependency problem.
-
 [title="2"]Manually installing the software[/title]
 
 [title="3"]Web server[/title]

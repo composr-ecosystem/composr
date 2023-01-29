@@ -15,7 +15,6 @@ Your options are:
    - {$IS_MAINTAINED,install_aps,APS}
    - {$IS_MAINTAINED,install_installatron,Installatron}
   - Windows:
-   - {$IS_MAINTAINED,install_microsoft,Microsoft Web Platform} installed
    - Bitnami
  - [b]Use the quick installer[/b]. This tutorial covers this case.
  - [b]Use the manual installer[/b]. You are unlikely to need to use the manual installer. If you do, the [page="_SEARCH:tut_install_permissions"]File permissions[/page] tutorial provides supplementary information to the installation fundamentals described in this tutorial.
