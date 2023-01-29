@@ -485,6 +485,17 @@ if (window.alert !== null) {
 </script>
 END;
                     return;
+                } else {
+                    echo <<<END
+<script>
+var msg='Your action was successful.';
+if (window.alert !== null) {
+    window.alert(msg);
+} else {
+    console.log(msg+' (popup blocker stopping alert)');
+}
+</script>
+END;
                 }
             } else { // Via FTP
                 $path2 = @tempnam((((ini_get('open_basedir') != '') && (preg_match('#(^|:|;)/tmp($|:|;|/)#', ini_get('open_basedir')) == 0)) ? (get_custom_file_base() . '/temp/') : '/tmp/'), 'cmsce');
