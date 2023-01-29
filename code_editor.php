@@ -287,12 +287,13 @@ END;
  */
 function ce_is_suexec_like() : bool
 {
+    global $FILE_BASE;
     static $answer = null;
     if ($answer === null) {
         $answer = (function_exists('posix_getuid')) &&
             (!isset($_SERVER['HTTP_X_MOSSO_DT'])) &&
             (is_integer(@posix_getuid())) &&
-            (posix_getuid() == @fileowner(get_file_base() . '/sources/global.php'));
+            (posix_getuid() == @fileowner($FILE_BASE . '/sources/global.php'));
     }
     return $answer;
 }
@@ -485,17 +486,6 @@ if (window.alert !== null) {
 </script>
 END;
                     return;
-                } else {
-                    echo <<<END
-<script>
-var msg='Your action was successful.';
-if (window.alert !== null) {
-    window.alert(msg);
-} else {
-    console.log(msg+' (popup blocker stopping alert)');
-}
-</script>
-END;
                 }
             } else { // Via FTP
                 $path2 = @tempnam((((ini_get('open_basedir') != '') && (preg_match('#(^|:|;)/tmp($|:|;|/)#', ini_get('open_basedir')) == 0)) ? (get_custom_file_base() . '/temp/') : '/tmp/'), 'cmsce');
