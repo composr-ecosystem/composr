@@ -88,6 +88,7 @@ class Hook_import_smf2
            'cns_post_files' => ['cns_posts', 'cns_personal_topics'],
            'notifications' => ['cns_topics', 'cns_members', 'cns_polls_and_votes'],
            'cns_personal_topics' => ['cns_members'],
+           'ip_bans' => ['cns_members'],
         ];
 
         $_cleanup_url = build_url(['page' => 'admin_cleanup'], get_module_zone('admin_cleanup'));
@@ -730,46 +731,47 @@ class Hook_import_smf2
      */
     public function import_ip_bans(object $db, string $table_prefix, string $file_base)
     {
-        global $SITE_INFO;
-
         require_code('failure');
 
         $rows = $db->query_select('ban_groups u LEFT JOIN ' . $table_prefix . 'ban_items b ON u.id_ban_group=b.id_ban_group', ['*']);
 
         foreach ($rows as $row) {
-            $ban_time = $row['ban_time']; // When is banned user
+            if (import_check_if_imported('ip_ban_group', strval($row['id_ban_group']))) {
+                continue;
+            }
+
             $ban_till = $row['expire_time']; // Member is banned until
 
             if (($ban_till === null) || ($ban_till > time())) {
-                $uid = $GLOBALS['CNS_DRIVER']->get_member_from_username($row['name']);
+                $uid = ($row['id_member'] > 0) ? import_id_remap_get('member', strval($row['id_member'])) : 0;
 
-                if (($uid !== null) && ($uid != 1 && $uid != 2)) {
+                // Member banning
+                if (($uid !== null) && ($row['id_member'] > 1)) { // 0 = no member-based banning, and 1 = our super-admin which should never be banned
                     if ($ban_till === null) {
-                        $GLOBALS['FORUM_DB']->query_update('f_members', ['m_is_perm_banned' => '1'], ['id' => $uid]);
+                        if (($row['cannot_access'] == 1) || ($row['cannot_login'] == 1)) { // Permanent ban
+                            $GLOBALS['FORUM_DB']->query_update('f_members', ['m_is_perm_banned' => '1'], ['id' => $uid]);
+                        } elseif ($row['cannot_post'] == 1) { // "Permanent" probation
+                            $GLOBALS['FORUM_DB']->query_update('f_members', ['m_on_probation_until' => 2147483647/*TODO: #3046 in tracker*/], ['id' => $uid]);
+                        }
                     } else {
+                        // treat temporary bans as probation since Composr does not have temporary member bans
                         $GLOBALS['FORUM_DB']->query_update('f_members', ['m_on_probation_until' => $ban_till], ['id' => $uid]);
                     }
+                }
 
-                    if (($row['ip_low1'] >= 127) && ($ban_till === null)) {
-                        if (import_check_if_imported('ip_ban', strval($uid))) {
-                            continue;
-                        }
+                // IP banning
+                if (($row['ip_low'] !== null) && ($row['ip_high'] !== null)) {
+                    $ip_low = inet_ntop($row['ip_low']);
+                    $ip_high = inet_ntop($row['ip_high']);
 
-                        for ($i = $row['ip_low1']; $i <= $row['ip_high1']; $i++) {
-                            for ($j = $row['ip_low2']; $j <= $row['ip_high2']; $j++) {
-                                for ($h = $row['ip_low3']; $h <= $row['ip_high3']; $h++) {
-                                    for ($f = $row['ip_low4']; $f <= $row['ip_high4']; $f++) {
-                                        $ip_to_ban = strval($i) . '.' . strval($j) . '.' . strval($h) . '.' . strval($f);
-
-                                        add_ip_ban($ip_to_ban);
-                                        import_id_remap_put('ip_ban', $ip_to_ban, 0);
-                                    }
-                                }
-                            }
-                        }
+                    if (($ip_low == $ip_high) && (!import_check_if_imported('ip_ban', $ip_low))) {
+                        add_ip_ban($ip_low, 'SMF imported ban', $ban_till);
+                        import_id_remap_put('ip_ban', $ip_low, 0);
                     }
                 }
             }
+
+            import_id_remap_put('ip_ban_group', strval($row['id_ban_group']), 0);
         }
     }
 
@@ -1045,7 +1047,8 @@ class Hook_import_smf2
                 $title = $row['subject'];
                 $title = @html_entity_decode($title, ENT_QUOTES);
 
-                $post_description = str_replace(['[html]', '[/html]'], ['', ''], html_to_comcode($row['body']));
+                $post_description = str_replace(['[html]', '[/html]'], ['', ''], $row['body']);
+                $post_description = '[semihtml]' . $post_description . '[/semihtml]';
 
                 $post = $this->fix_links($post_description, $db, $table_prefix, $file_base);
 
@@ -1201,7 +1204,14 @@ class Hook_import_smf2
                 $a_id = $GLOBALS['FORUM_DB']->query_insert('attachments', ['a_member_id' => $member_id, 'a_file_size' => $row['size'], 'a_url' => $url, 'a_thumb_url' => $url, 'a_original_filename' => $row['filename'], 'a_num_downloads' => $row['downloads'], 'a_last_downloaded_time' => null, 'a_add_time' => $row['poster_time'], 'a_description' => ''], true);
 
                 $GLOBALS['FORUM_DB']->query_insert('attachment_refs', ['r_referer_type' => 'cns_post', 'r_referer_id' => strval($post_id), 'a_id' => $a_id]);
-                $post .= "\n\n" . '[attachment]' . strval($a_id) . '[/attachment]';
+
+                // Replace the SMF attach tag with the Comcode attachment tag, or append to the end of the post if not found.
+                $post_before = $post;
+                $comcode_for_attachment = '[attachment]' . strval($a_id) . '[/attachment]';
+                $post = preg_replace('#\[attach[^\]]*\sid=' . strval($row['id_attach']) . '[^\]]*\](.*)\[\/attach\]#Ui', $comcode_for_attachment, $post);
+                if ($post == $post_before) {
+                    $post .= "\n\n" . $comcode_for_attachment;
+                }
 
                 $GLOBALS['FORUM_DB']->query_update('f_posts', update_lang_comcode_attachments('p_post', $post_row[0]['p_post'], $post, 'cns_post', strval($post_id)), ['id' => $post_id], '', 1);
 
@@ -1650,6 +1660,7 @@ class Hook_import_smf2
     {
         require_code('calendar2');
 
+        // Calendar events
         $rows = $db->query_select('calendar');
         foreach ($rows as $row) {
             if (import_check_if_imported('event', strval($row['id_event']))) {
@@ -1674,8 +1685,28 @@ class Hook_import_smf2
                 }
             }
 
-            list($start_year, $start_month, $start_day, $start_hour, $start_minute) = array_map('intval', explode('-', date('Y-m-d-h-i', strtotime($row['start_date']))));
-            list($end_year, $end_month, $end_day, $end_hour, $end_minute) = array_map('intval', explode('-', date('Y-m-d-h-i', strtotime($row['end_date']))));
+            list($start_year, $start_month, $start_day) = array_map('intval', explode('-', date('Y-m-d', strtotime($row['start_date']))));
+            list($end_year, $end_month, $end_day) = array_map('intval', explode('-', date('Y-m-d', strtotime($row['end_date']))));
+
+            if (($row['start_time'] !== null) && ($row['end_time'] !== null)) {
+                list($start_hour, $start_minute) = array_map('intval', explode('-', date('h-i', strtotime($row['start_time']))));
+                list($end_hour, $end_minute) = array_map('intval', explode('-', date('h-i', strtotime($row['end_time']))));
+            } else {
+                // All-day event
+                $start_hour = null;
+                $start_minute = null;
+                $end_hour = 23;
+                $end_minute = 59;
+            }
+
+            // SMF does not use null when there is no end date; they use a very low year.
+            if ($end_year < 1970) {
+                $end_year = null;
+                $end_month = null;
+                $end_day = null;
+                $end_hour = null;
+                $end_minute = null;
+            }
 
             $description = '';
             $att_imported = false;
@@ -1695,9 +1726,11 @@ class Hook_import_smf2
             if ($att_imported) {
                 $GLOBALS['FORUM_DB']->query_insert('attachment_refs', ['r_referer_type' => 'calendar', 'r_referer_id' => strval($id_new), 'a_id' => $attid_new]);
             }
+
             import_id_remap_put('event', strval($row['id_event']), $id_new);
         }
 
+        // Holidays
         $rows = [];
         $rows = $db->query_select('calendar_holidays');
         foreach ($rows as $row) {
@@ -1710,8 +1743,22 @@ class Hook_import_smf2
             $recurrence = 'none';
             $recurrences = null;
 
-            list($start_year, $start_month, $start_day, $start_hour, $start_minute) = array_map('intval', explode('-', date('Y-m-d-h-i', strtotime($row['event_date']))));
-            list($end_year, $end_month, $end_day, $end_hour, $end_minute) = array_map('intval', explode('-', date('Y-m-d-h-i', strtotime($row['event_date']))));
+            // Holidays are all-day events
+            $start_hour = null;
+            $start_minute = null;
+            $end_hour = null;
+            $end_minute = null;
+
+            list($start_year, $start_month, $start_day) = array_map('intval', explode('-', date('Y-m-d', strtotime($row['event_date']))));
+            list($end_year, $end_month, $end_day) = array_map('intval', explode('-', date('Y-m-d', strtotime($row['event_date']))));
+
+            // SMF does not use null when there is no end date; they use a very low year.
+            if ($end_year < 1970) {
+                $end_year = null;
+                $end_month = null;
+                $end_day = null;
+                $recurrence = 'yearly 1';
+            }
 
             $id_new = add_calendar_event(db_get_first_id() + 1, $recurrence, $recurrences, 0, $row['title'], $row['title'], 3, ($start_year < 1970) ? 1970 : $start_year, $start_month, $start_day, 'day_of_month', $start_hour, $start_minute, $end_year, $end_month, $end_day, 'day_of_month', $end_hour, $end_minute, null, 1, null, 1, 1, 1, 1, '', $submitter);
 
