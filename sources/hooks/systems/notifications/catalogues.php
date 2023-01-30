@@ -32,7 +32,7 @@ class Hook_notification_catalogues extends Hook_Notification
      */
     public function supports_categories(string $notification_code) : bool
     {
-        if ($notification_code == 'catalogue_entry') {
+        if (substr($notification_code, 0, strlen('catalogue_entry__')) == 'catalogue_entry__') {
             return true;
         }
         return false;
@@ -53,7 +53,7 @@ class Hook_notification_catalogues extends Hook_Notification
 
         $filtered = [];
 
-        if ($notification_code == 'catalogue_entry') {
+        if (substr($notification_code, 0, strlen('catalogue_entry__')) == 'catalogue_entry__') {
             require_code('catalogues');
 
             $name = substr($notification_code, strlen('catalogue_entry__'));
@@ -84,7 +84,7 @@ class Hook_notification_catalogues extends Hook_Notification
      */
     public function get_initial_setting(string $notification_code, ?string $category, int $member_id) : int
     {
-        if ($notification_code == 'catalogue_entry') {
+        if (substr($notification_code, 0, strlen('catalogue_entry__')) == 'catalogue_entry__') {
             return A_NA;
         }
         return A__STATISTICAL;
@@ -134,7 +134,7 @@ class Hook_notification_catalogues extends Hook_Notification
      */
     public function list_members_who_have_enabled(string $notification_code, ?string $category = null, ?array $to_member_ids = null, ?int $from_member_id = null, int $start = 0, int $max = 300) : array
     {
-        if (substr($notification_code, 0, strlen('catalogue_entry')) == 'catalogue_entry') {
+        if (substr($notification_code, 0, strlen('catalogue_entry__')) == 'catalogue_entry__') {
             $members = $this->_all_members_who_have_enabled($notification_code, $category, $to_member_ids, $start, $max);
             $members = $this->_all_members_who_have_enabled_with_page_access($members, 'catalogues', $notification_code, $category, $to_member_ids, $start, $max);
             $catalogue_category_id = intval($category);
