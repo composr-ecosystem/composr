@@ -49,11 +49,12 @@ function download_gallery_script()
     }
 
     $num_videos = $GLOBALS['SITE_DB']->query_select_value('videos', 'COUNT(*)', ['cat' => $cat, 'validated' => 1]);
+    $num_images = $GLOBALS['SITE_DB']->query_select_value('images', 'COUNT(*)', ['cat' => $cat, 'validated' => 1]);
 
     require_lang('galleries');
 
     require_code('tasks');
-    $ret = call_user_func_array__long_task(do_lang('DOWNLOAD_GALLERY_CONTENTS'), get_screen_title('DOWNLOAD_GALLERY_CONTENTS'), 'download_gallery', [$cat], false, $num_videos == 0);
+    $ret = call_user_func_array__long_task(do_lang('DOWNLOAD_GALLERY_CONTENTS'), get_screen_title('DOWNLOAD_GALLERY_CONTENTS'), 'download_gallery', [$cat], false, (($num_videos == 0) && ($num_images < intval(get_value('download_gallery_queue_images', '5', true)))));
 
     $echo = globalise($ret, null, '', true);
     $echo->evaluate_echo(null);
