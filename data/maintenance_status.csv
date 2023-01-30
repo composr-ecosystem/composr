@@ -64,7 +64,6 @@ lang_us,American English,ocProducts,,"We automatically can convert most British 
 lang_other,Non-English languages,,,"We may distribute other language packs, but we cannot support them due to developers not knowing the language.",No,
 popup_blockers,Aggressive pop-up blockers,ocProducts,,"Some pop-up blockers (E.g. ""Better pop-up blocker"" on Chrome"") may break common JavaScript. We try and workaround it, but it is not regularly tested.",No,
 install_installatron,Installatron installer,ocProducts,,We maintain builds via an automated process. Not regularly tested due to needing a testing platform.,No,
-install_microsoft,Microsoft Web Platform installer,ocProducts,,We maintain builds via an automated process. Not regularly tested due to needing a testing platform. Microsoft do run their own manual tests.,No,
 install_aps,APS installer,,,We maintain builds via an automated process. Not regularly tested due to needing a testing platform.,No,
 transifex,Transifex integration,ocProducts,ocProducts,Could potentially break due to third-party changes.,Yes,_api_transifex automated test. Part of release process.
 rootkit_detector,Rootkit detector,ocProducts,,Not compatible with all systems. Intended for developers.,No,Partly tested by rootkit_detection automated test.
@@ -132,8 +131,6 @@ webdav,WebDav access for The Repository,ocProducts,,Could potentially break due 
 os_windows,Windows servers,ocProducts,ocProducts,,No,
 os_linux,Linux servers,ocProducts,ocProducts,,No,
 os_macos,Mac OS servers,ocProducts,ocProducts,,No,
-os_solaris,Solaris servers,,,Will largely work due to Linux and Mac OS X support,No,
-os_bsd,BSD servers,,,Will largely work due to Linux and Mac OS X support,No,
 pop3,POP3 e-mail accounts,,,We allow configuration of using POP3 instead of IMAP for various inbox checking features but do not actively test it works (it relies on PHP's IMAP addon supporting POP3 well),No,
 openweathermap,OpenWeatherMap,ocProducts,,,Yes,_api_weather automated test.
 composr_mobile_sdk_notifications,Composr Mobile SDK Android and iOS notifications handling,,,,Yes,
