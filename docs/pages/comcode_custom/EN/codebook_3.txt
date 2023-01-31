@@ -695,6 +695,7 @@ Values are like hidden configuration options. They are either hidden because the
  - Experimental functionality
   - [tt]download_associated_media[/tt] -- set this to '1' to add an option on posting forms to have any referenced media automatically downloading locally, to protect against the risk of future broken links
   - [tt]highlight_extracted_file_data[/tt] -- set this to '1' if downloads searches should show highlighted data from extracted keywords, if there's no match on the body text of the download
+  - [tt]download_gallery_queue_images[/tt] -- set this to a string of the number of images that exist in a gallery before gallery export triggers the task queue (if enabled)
 
 [title="4"]Hidden 'keep' parameters[/title]
 

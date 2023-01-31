@@ -38,7 +38,7 @@ For members that have permission, gallery contents may be downloaded in a ZIP fi
 
 These ZIP files contain only the actual image and video files, and not any meta content such as descriptions.
 
-If the task queue is active, a gallery with no videos and less than 5 images (by default) will bypass the queue and will be downloaded immediately. The number of images in a gallery when a task queue is triggered can be configured by setting the [tt]download_gallery_queue_images[/tt] elective value.
+If the task queue is active, a gallery with no videos and less than 5 images (by default) will bypass the queue and will be downloaded immediately.
 
 [title="2"]Member Galleries -- quick start[/title]
 
