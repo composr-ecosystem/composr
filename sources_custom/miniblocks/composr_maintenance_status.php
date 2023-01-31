@@ -39,7 +39,7 @@ while (($row = $sheet_reader->read_row()) !== false) {
     }
 
     // Remove bundled if include_non_bundled is 'only'
-    if (($nonbundled_addons == 'only') && (cms_strtolower_ascii($data[4]) == 'no')) {
+    if (($nonbundled_addons == 'only') && (cms_strtolower_ascii($data[4]) != 'yes')) {
         continue;
     }
 
