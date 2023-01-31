@@ -264,11 +264,12 @@ function cns_get_all_custom_fields_match_member(int $member_id, ?int $public_vie
             }
         }
 
-        // Decrypt the value if appropriate
-        if ((isset($field_to_show['cf_encrypted'])) && ($field_to_show['cf_encrypted'] == 1) && ($member_value != '') && ($member_value != $field_to_show['cf_default']) && ($member_value !== null)) {
+        // Load decryption context
+        $decrypt = null;
+        if ((isset($field_to_show['cf_encrypted'])) && ($field_to_show['cf_encrypted'] == 1) && ($member_value !== null) && ($member_value != '') && ($member_value != $field_to_show['cf_default'])) {
             require_code('encryption');
-            if ((is_encryption_enabled()) && (post_param_string('decrypt', null) !== null)) {
-                $member_value = decrypt_data($member_value, post_param_string('decrypt'));
+            if (is_encryption_enabled()) {
+                $decrypt = post_param_string('decrypt', null);
             }
         }
 
@@ -281,8 +282,15 @@ function cns_get_all_custom_fields_match_member(int $member_id, ?int $public_vie
                 $member_value = ''; // This is meant to be '' for blank, not new Tempcode()
             } else {
                 $member_value_raw = get_translated_text($member_mappings['field_' . strval($field_to_show['id'])], $GLOBALS['FORUM_DB']);
-                $member_mappings_copy = db_map_restrict($member_mappings, ['mf_member_id', 'field_' . strval($field_to_show['id'])]);
-                $member_value = get_translated_tempcode('f_member_custom_fields', $member_mappings_copy, 'field_' . strval($field_to_show['id']), $GLOBALS['FORUM_DB']);
+
+                if ($decrypt !== null) {
+                    $member_value_raw = decrypt_data($member_value_raw, $decrypt);
+                    $member_value = comcode_to_tempcode($member_value_raw, $member_id);
+                } else {
+                    $member_mappings_copy = db_map_restrict($member_mappings, ['mf_member_id', 'field_' . strval($field_to_show['id'])]);
+                    $member_value = get_translated_tempcode('f_member_custom_fields', $member_mappings_copy, 'field_' . strval($field_to_show['id']), $GLOBALS['FORUM_DB']);
+                }
+
                 if ((is_object($member_value)) && ($member_value->is_empty())) {
                     $member_value = '';
                 }
@@ -290,7 +298,12 @@ function cns_get_all_custom_fields_match_member(int $member_id, ?int $public_vie
         } else {
             if ($member_value === null) {
                 $member_value = '';
+            } else {
+                if ($decrypt !== null) {
+                    $member_value = decrypt_data(get_translated_text($member_value, $GLOBALS['FORUM_DB']), $decrypt);
+                }
             }
+
             $member_value_raw = $member_value;
         }
 

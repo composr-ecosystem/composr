@@ -287,12 +287,13 @@ END;
  */
 function ce_is_suexec_like() : bool
 {
+    global $FILE_BASE;
     static $answer = null;
     if ($answer === null) {
         $answer = (function_exists('posix_getuid')) &&
             (!isset($_SERVER['HTTP_X_MOSSO_DT'])) &&
             (is_integer(@posix_getuid())) &&
-            (posix_getuid() == @fileowner(get_file_base() . '/sources/global.php'));
+            (posix_getuid() == @fileowner($FILE_BASE . '/sources/global.php'));
     }
     return $answer;
 }

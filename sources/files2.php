@@ -112,16 +112,16 @@ function _intelligent_write_error_inline(string $path, bool $force_hardcoded = f
     $looping = true;
 
     if (file_exists($path)) {
-        $ret = do_lang_tempcode('WRITE_ERROR', escape_html($path));
+        $tret = do_lang_tempcode('WRITE_ERROR', escape_html($path));
     } elseif (file_exists(dirname($path))) {
-        $ret = do_lang_tempcode('WRITE_ERROR_CREATE', escape_html($path), escape_html(dirname($path)));
+        $tret = do_lang_tempcode('WRITE_ERROR_CREATE', escape_html($path), escape_html(dirname($path)));
     } else {
-        $ret = do_lang_tempcode('WRITE_ERROR_MISSING_DIRECTORY', escape_html(dirname($path)), escape_html(dirname($path, 2)));
+        $tret = do_lang_tempcode('WRITE_ERROR_MISSING_DIRECTORY', escape_html(dirname($path)), escape_html(dirname($path, 2)));
     }
 
     $looping = false;
 
-    return $ret;
+    return $tret;
 }
 
 /**

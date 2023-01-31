@@ -64,7 +64,6 @@ lang_us,American English,ocProducts,,"We automatically can convert most British 
 lang_other,Non-English languages,,,"We may distribute other language packs, but we cannot support them due to developers not knowing the language.",No,
 popup_blockers,Aggressive pop-up blockers,ocProducts,,"Some pop-up blockers (E.g. ""Better pop-up blocker"" on Chrome"") may break common JavaScript. We try and workaround it, but it is not regularly tested.",No,
 install_installatron,Installatron installer,ocProducts,,We maintain builds via an automated process. Not regularly tested due to needing a testing platform.,No,
-install_microsoft,Microsoft Web Platform installer,ocProducts,,We maintain builds via an automated process. Not regularly tested due to needing a testing platform. Microsoft do run their own manual tests.,No,
 install_aps,APS installer,,,We maintain builds via an automated process. Not regularly tested due to needing a testing platform.,No,
 transifex,Transifex integration,ocProducts,ocProducts,Could potentially break due to third-party changes.,Yes,_api_transifex automated test. Part of release process.
 rootkit_detector,Rootkit detector,ocProducts,,Not compatible with all systems. Intended for developers.,No,Partly tested by rootkit_detection automated test.
@@ -116,19 +115,29 @@ php_unsupported,Detect if a PHP version is used that is no longer maintained by 
 external_health_check,Various tools that the Health Check will link out to when manual checks are enabled.,ocProducts,,Not regularly Tested.,No,Partly tested by _special_links automated test.
 google_safe_browsing_api,The Google Safe Browsing API.,ocProducts,,Not regularly Tested.,No,___health_check automated test to run Health Checks.
 google_recaptcha,The Google Safe Browsing API.,ocProducts,,Not regularly Tested.,No,___health_check automated test to run Health Checks.
+google_search_console,The Google Search Console API.,ocProducts,,Not regularly Tested.,No,
 moz,Moz API.,ocProducts,,Not regularly Tested.,No,_api_moz automated test.
 google_analytics,Google Analytics integration.,ocProducts,,Not regularly Tested.,No,
 cors,Running across multiple domains and Cross-Origin Resource Sharing (CORS),ocProducts,,Not regularly Tested.,No,
 inline_editing,Inline Editing,ocProducts,,"Not regularly Tested, and themes are not typically expected to support it out-of-the-box.",No,
 download_pdf_indexing,Download PDF search indexing,ocProducts,,Not regularly Tested.,No,download_indexing automated test.
 oembed,Default oEmbed configuration,ocProducts,,Not regularly Tested.,No,_oembed automated test.
+facebook,Facebook integration,ocProducts,ocProducts,Could potentially break due to third-party changes.,Yes,
 facebook_media,Facebook media (video embed),ocProducts,,Could potentially break due to third-party changes.,Yes,
+tapatalk,Tapatalk,ocProducts,,Could potentially break due to third-party changes.,Yes,
+google_maps,"Google maps (DataMappr, UserMappr)",ocProducts,,Could potentially break due to third-party changes.,Yes,
+hybridauth,Hybridauth login and syndication,ocProducts,,"Could potentially break due to third-party changes, but we rely on the Hybridauth project to fix any issues and are involved in that project.",Yes,
 webdav,WebDav access for The Repository,ocProducts,,Could potentially break due to third-party changes.,Yes,webdav automated test.
 os_windows,Windows servers,ocProducts,ocProducts,,No,
 os_linux,Linux servers,ocProducts,ocProducts,,No,
-os_macos,Mac OS servers,ocProducts,,,No,
+os_macos,Mac OS servers,ocProducts,ocProducts,,No,
 pop3,POP3 e-mail accounts,,,We allow configuration of using POP3 instead of IMAP for various inbox checking features but do not actively test it works (it relies on PHP's IMAP addon supporting POP3 well),No,
+openweathermap,OpenWeatherMap,ocProducts,,,Yes,_api_weather automated test.
 composr_mobile_sdk_notifications,Composr Mobile SDK Android and iOS notifications handling,,,,Yes,
+sugarcrm,Sugar CRM integration,,,,Yes,SugarCRM Health Check
+cloudinary,Cloudinary integration,,,,Yes,_api_cloudinary automated test
+aws_ses,AWS SES notifications,,,,Yes,aws_ses automated test
+confluence,Confluence integration,ocProducts,,,Yes,_api_confluence automated test
 youtube,YouTube media,ocProducts,,Not regularly tested. Could potentially break due to third-party changes.,No,
 theme_upgrader,Theme Upgrader,,,There is code to upgrade themes built into the upgrader but it manually needs writing out for between-version upgrades.,No,
 theme_wizard,Theme Wizard,ocProducts,ocProducts,It is easy for the Theme Wizard to break if not tested after CSS changes.,No,

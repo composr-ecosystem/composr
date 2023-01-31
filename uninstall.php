@@ -51,6 +51,7 @@ appengine_general_guard();
 
 if (uninstall_check_master_password(post_param_string('given_password', null, INPUT_FILTER_PASSWORD))) {
     $uninstalled = do_template('BASIC_HTML_WRAP', ['_GUID' => '5614c65c4f388fd47aabb24b9624ce65', 'TITLE' => do_lang_tempcode('UNINSTALL'), 'CONTENT' => do_lang_tempcode('UNINSTALLED')]);
+    $ret = $uninstalled->evaluate();
 
     $tables = collapse_1d_complexity('m_table', $GLOBALS['SITE_DB']->query_select('db_meta', ['DISTINCT m_table']));
     foreach ($tables as $table) {
@@ -59,7 +60,7 @@ if (uninstall_check_master_password(post_param_string('given_password', null, IN
     $GLOBALS['SITE_DB']->drop_table_if_exists('db_meta_indices');
     $GLOBALS['SITE_DB']->drop_table_if_exists('db_meta');
 
-    $uninstalled->evaluate_echo();
+    echo $ret;
 } else {
     $echo = do_template('BASIC_HTML_WRAP', ['_GUID' => '009e7517e7df76167b4d13ca77308704', 'NOINDEX' => true, 'TITLE' => do_lang_tempcode('UNINSTALL'), 'CONTENT' => do_template('UNINSTALL_SCREEN')]);
     $echo->evaluate_echo();

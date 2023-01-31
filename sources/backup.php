@@ -512,7 +512,7 @@ function deliver_remote_backup(string $file)
             $copy_path = $_file; // Saves into the root FTP directory
         } elseif (substr($copy_path, -1) == '/') {
             $copy_path .= $_file; // Path of directory to save into configured
-        } // Otherwise exact path to filename to save to configured
+        }
 
         $error = false;
         $ftp_connection = @ftp_connect($copy_server, intval($copy_port));

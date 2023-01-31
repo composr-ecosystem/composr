@@ -348,7 +348,11 @@ function rbl_resolve(string $ip, string $rbl_domain, bool $page_level) : ?array
     if ($result[0] != '127') { // This is how the RBL indicates an error happened
         if (!$page_level) {
             require_code('failure');
-            $error = do_lang('ERROR_CHECKING_FOR_SPAMMERS', $rbl_domain, $_result, $ip);
+            if (cms_gethostbyname($rbl_domain) == $_result) {
+                $error = do_lang('ERROR_CHECKING_FOR_SPAMMERS_RBL_IS_NORMAL_DNS', $rbl_domain, $_result, $ip);
+            } else {
+                $error = do_lang('ERROR_CHECKING_FOR_SPAMMERS', $rbl_domain, $_result, $ip);
+            }
             cms_error_log($error, 'error_occurred_api');
         }
         return null;

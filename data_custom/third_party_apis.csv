@@ -12,7 +12,6 @@ Google Geocoding,geocoding_google,https://developers.google.com/maps/documentati
 Google Maps Embed,google_maps,https://developers.google.com/maps/documentation/embed/guide,Maintain,No,N/A,1,N/A,N/A,
 Google ReCAPTCHA,google_recaptcha,https://developers.google.com/recaptcha/intro,Maintain,Yes,Apr 10th 2020,2,N/A,N/A,"The v3 API has issues, and is a paradigm-shift (https://stackoverflow.com/questions/51171349/how-does-googles-recaptcha-v3-work); we will stay off it for now at least"
 Google Safe Browsing,google_safe_browsing_api,https://developers.google.com/safe-browsing/,Maintain,Yes,Apr 10th 2020,4,_api_google_safe_browsing,Malware,
-Google Search Console,google_search_console,https://developers.google.com/webmaster-tools/search-console-api-original,Maintain,Yes,Apr 10th 2020,3,_api_google_search_console,Google Search Console,
 Google Translate,google_translate,https://cloud.google.com/translate/docs/,Maintain,No,Apr 10th 2020,2,_api_translation,Translation,
 IP Stack,ipstack,https://ipstack.com/documentation,Maintain,Yes,Apr 10th 2020,N/A,_api_ipstack,ipstack,
 MapQuest,geocoding_mapquest,https://developer.mapquest.com/documentation/geocoding-api/,Maintain,Yes,Apr 10th 2020,1,_api_geocoding,Geocoding,

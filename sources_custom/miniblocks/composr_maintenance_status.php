@@ -19,6 +19,8 @@ if (!addon_installed('composr_homesite')) {
     return do_template('RED_ALERT', ['_GUID' => 'rltg3g7ssx2l3oux03qnqnwhwgj8vrcs', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('composr_homesite'))]);
 }
 
+$nonbundled_addons = isset($map['include_non_bundled']) ? $map['include_non_bundled'] : 'exclude';
+
 require_code('files_spreadsheets_read');
 $sheet_reader = spreadsheet_open_read(get_file_base() . '/data/maintenance_status.csv', null, CMS_Spreadsheet_Reader::ALGORITHM_RAW);
 
@@ -29,7 +31,13 @@ $rows = [];
 while (($row = $sheet_reader->read_row()) !== false) {
     $codename = $row[0];
     unset($row[0]);
-    $rows[$codename] = ['DATA' => array_values($row), 'CODENAME' => $codename];
+    $data = array_values($row);
+
+    if (($nonbundled_addons != 'include') && (cms_strtolower_ascii($data[4]) == 'yes')) {
+        continue;
+    }
+
+    $rows[$codename] = ['DATA' => $data, 'CODENAME' => $codename];
 }
 
 $sheet_reader->close();

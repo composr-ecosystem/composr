@@ -1203,8 +1203,7 @@ class Module_cms_catalogues extends Standard_crud_module
         }
 
         $catalogue_name = get_param_string('catalogue_name');
-        $this->_export_catalogue($catalogue_name);
-        return new Tempcode();
+        return $this->_export_catalogue($catalogue_name);
     }
 
     /**
