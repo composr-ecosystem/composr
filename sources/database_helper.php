@@ -38,7 +38,7 @@ function init__database_helper()
 
         define('DB_MAX_IDENTIFIER_LENGTH', 44);
 
-        define('DB_MAX_PRIMARY_KEY_SIZE', 251);
+        define('DB_MAX_PRIMARY_KEY_SIZE', 328); // 328 is what group_privileges uses
         define('DB_MAX_KEY_SIZE', 1000);
         define('DB_MAX_ROW_SIZE', 24000);
 
@@ -100,10 +100,10 @@ function _check_sizes(string $table_name, bool $primary_key, array $fields, stri
         'SHORT_TRANS' => 4,
         'LONG_TRANS__COMCODE' => 255 + 1,
         'SHORT_TRANS__COMCODE' => 255 + 1,
-        'SHORT_TEXT' => $primary_key ? (150) : (255 + 1), /* We underestimate for primary key, as it is very unlikely to be very high and the higher limit only exists on our own 'xml' database driver as a run-time limit */
-        'TEXT' => $primary_key ? (150) : (255 + 1), /* We underestimate for primary key, as it is very unlikely to be very high and the higher limit only exists on our own 'xml' database driver as a run-time limit */
-        'LONG_TEXT' => 255 + 1,
-        'ID_TEXT' => $primary_key ? (16) : (80 + 1), /* We underestimate for primary key, as it is very unlikely to be very high and the higher limit only exists on our own 'xml' database driver as a run-time limit */
+        'SHORT_TEXT' => 255 + 1,
+        'TEXT' => 16377 + 1,
+        'LONG_TEXT' => 1,
+        'ID_TEXT' => 80 + 1,
         'MINIID_TEXT' => 40 + 1,
         'IP' => 15 + 1,
         'LANGUAGE_NAME' => 5 + 1,
@@ -176,25 +176,25 @@ function _check_sizes(string $table_name, bool $primary_key, array $fields, stri
         }
     }
     if ((!$skip_size_check) && (substr($id_name, 0, 1) != '#')) {
-        if ($key_size >= ($primary_key ? DB_MAX_PRIMARY_KEY_SIZE : DB_MAX_KEY_SIZE)) {
+        if ($key_size > ($primary_key ? DB_MAX_PRIMARY_KEY_SIZE : DB_MAX_KEY_SIZE)) {
             if ($return_on_error) {
                 return false;
             }
             fatal_exit('Key too long at ' . integer_format($key_size) . ' bytes [' . $id_name . ']'); // 252 for firebird
         }
-        if (($total_size >= DB_MAX_ROW_SIZE) && ($table_name != 'f_member_custom_fields')) {
+        if (($total_size > DB_MAX_ROW_SIZE) && ($table_name != 'f_member_custom_fields')) {
             if ($return_on_error) {
                 return false;
             }
             fatal_exit('Fieldset (row) too long at ' . integer_format($total_size) . ' bytes [' . $id_name . ']');
         }
-        if ($key_size_unicode >= DB_MAX_KEY_SIZE) {
+        if ($key_size_unicode > DB_MAX_KEY_SIZE) {
             if ($return_on_error) {
                 return false;
             }
             fatal_exit('Unicode version of key too long at ' . integer_format($key_size_unicode) . ' bytes [' . $id_name . ']'); // 252 for firebird
         }
-        if (($total_size_unicode >= DB_MAX_ROW_SIZE) && ($table_name != 'f_member_custom_fields')) {
+        if (($total_size_unicode > DB_MAX_ROW_SIZE) && ($table_name != 'f_member_custom_fields')) {
             if ($return_on_error) {
                 return false;
             }
