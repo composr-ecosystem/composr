@@ -19,7 +19,7 @@ if (!addon_installed('composr_homesite')) {
     return do_template('RED_ALERT', ['_GUID' => 'rltg3g7ssx2l3oux03qnqnwhwgj8vrcs', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('composr_homesite'))]);
 }
 
-$nonbundled_addons = isset($map['include_non_bundled']) ? $map['include_non_bundled'] : 'exclude';
+$nonbundled_addons = isset($map['include_non_bundled']) ? cms_strtolower_ascii($map['include_non_bundled']) : 'exclude';
 
 require_code('files_spreadsheets_read');
 $sheet_reader = spreadsheet_open_read(get_file_base() . '/data/maintenance_status.csv', null, CMS_Spreadsheet_Reader::ALGORITHM_RAW);
@@ -33,7 +33,13 @@ while (($row = $sheet_reader->read_row()) !== false) {
     unset($row[0]);
     $data = array_values($row);
 
-    if (($nonbundled_addons != 'include') && (cms_strtolower_ascii($data[4]) == 'yes')) {
+    // Remove non-bundled if include_non_bundled is not 'include' or 'only'
+    if (($nonbundled_addons != 'include') && ($nonbundled_addons != 'only') && (cms_strtolower_ascii($data[4]) == 'yes')) {
+        continue;
+    }
+
+    // Remove bundled if include_non_bundled is 'only'
+    if (($nonbundled_addons == 'only') && (cms_strtolower_ascii($data[4]) == 'no')) {
         continue;
     }
 
