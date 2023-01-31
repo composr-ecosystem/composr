@@ -1343,6 +1343,7 @@ LINK1_TEXT=' . do_lang('DEFAULT_LINK1_TEXT', null, null, null, $lang) . '
 LINK2_URL=' . do_lang('DEFAULT_LINK2_URL', null, null, null, $lang) . '
 LINK2_TEXT=' . do_lang('DEFAULT_LINK2_TEXT', null, null, null, $lang) . '
 {+END}
+{$,page hint: no_wysiwyg}
                         ');
 
                         if ($lang == user_lang()) {
