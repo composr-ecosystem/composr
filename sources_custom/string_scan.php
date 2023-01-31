@@ -11790,6 +11790,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_ADMIN_USERNAME_MASTER_PASSWORD
         PRIVACY_ACTION_tornevall
         PRIVACY_REASON_tornevall
+        ERROR_CHECKING_FOR_SPAMMERS_RBL_IS_NORMAL_DNS
     ')));
 
     // Remove blank lines
