@@ -943,7 +943,7 @@ class Module_galleries
         }
 
         // Navigation
-        list(, , , $first_entry_id, , , $first_type) = $this->build_set_navigation($this->generate_gallery_contents_selectcode($cat), '', '', $probe_id, $root, $probe_type, get_param_integer('wide_high', 0), $start, $max, $cat, $url_sort, $dir, $image_select, $video_select, $days);
+        list(, , , $first_entry_id, , , $first_type) = $this->build_set_navigation(' AND ' . $this->generate_gallery_contents_selectcode($cat), '', '', $probe_id, $root, $probe_type, get_param_integer('wide_high', 0), $start, $max, $cat, $url_sort, $dir, $image_select, $video_select, $days);
 
         // Render
         return do_template('GALLERY_CAROUSEL_MODE_SCREEN', [

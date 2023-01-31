@@ -13,7 +13,7 @@
 	{$SET,bound_catalogue_entry,{$CATALOGUE_ENTRY_FOR,gallery,{CAT}}}
 	{+START,IF_NON_EMPTY,{$GET,bound_catalogue_entry}}{$CATALOGUE_ENTRY_ALL_FIELD_VALUES,{$GET,bound_catalogue_entry}}{+END}
 
-	{$SET,children,{$BLOCK,block=main_multi_content,param=gallery,render_mode=boxes,pinned=,select={CAT}>,zone,{$ZONE},sort={GALLERY_SORT*},max={$CONFIG_OPTION,subgallery_link_limit},no_links=1,pagination=1,give_context=0,include_breadcrumbs=0,render_if_empty=0,guid=module}}
+	{$SET,children,{$BLOCK,block=main_multi_content,param=gallery,render_mode=boxes,pinned=,select={CAT}>,zone={$ZONE},sort={GALLERY_SORT*},max={$CONFIG_OPTION,subgallery_link_limit},no_links=1,pagination=1,give_context=0,include_breadcrumbs=0,render_if_empty=0,guid=module}}
 	{+START,IF_NON_EMPTY,{$GET,children}}
 		<h2 class="heading-subgalleries">{!SUBGALLERIES}</h2>
 
