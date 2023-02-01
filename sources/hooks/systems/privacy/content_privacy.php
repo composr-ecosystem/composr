@@ -46,7 +46,7 @@ class Hook_privacy_content_privacy extends Hook_privacy_base
             'positive' => [
                 [
                     'heading' => do_lang('INFORMATION_STORAGE'),
-                    'explanation' => do_lang_tempcode('PRIVACY_SETTINGS_EXPLANATION', escape_html(static_evaluate_tempcode(build_url(['page' => 'members', 'type' => 'view'], get_module_zone('members'), [], false, false, false, 'tab__edit__privacy')))),
+                    'explanation' => do_lang_tempcode('PRIVACY_SETTINGS_EXPLANATION', escape_html(static_evaluate_tempcode(build_url(['page' => 'members', 'type' => 'view'], get_module_zone('members'), [], false, false, false, 'tab--edit--privacy')))),
                 ],
             ],
 
