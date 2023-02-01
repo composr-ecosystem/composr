@@ -201,6 +201,8 @@ class Hook_health_check_security extends Hook_Health_Check
      */
     public function testDirectorySecuring(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
+        // This test may generate errors in the web server logs...
+
         if ($check_context == CHECK_CONTEXT__INSTALL) {
             return;
         }
