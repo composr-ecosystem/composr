@@ -559,6 +559,8 @@ function cns_member_validate_into_group(int $group_id, int $prospective_member_i
  */
 function cns_update_group_approvals(int $member_id, ?int $status_member_id = null, array $groups_to_check = []) : void
 {
+    require_lang('cns');
+
     if ($status_member_id === null) {
         $status_member_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
     }
