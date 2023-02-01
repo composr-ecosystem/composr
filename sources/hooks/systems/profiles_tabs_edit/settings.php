@@ -315,6 +315,10 @@ class Hook_profiles_tabs_edit_settings
 
             require_code('cns_groups_action2');
             cns_update_group_approvals($member_id_of, $member_id_viewing, $old_groups);
+
+            // Tidy up auto-save
+            require_code('autosave');
+            clear_cms_autosave();
         } elseif (post_param_integer('validated', 0) == 1) { // Special support for just approving
             $GLOBALS['FORUM_DB']->query_update('f_members', ['m_validated' => 1], ['id' => $member_id_of], '', 1);
 
