@@ -1794,7 +1794,7 @@
     }
 
     function convertTooltip(el) {
-        var title = el.title ? el.title : ((el.localName === 'img') ? el.alt : (((el.localName === 'svg') && el.querySelector('title')) ? $dom.html(el.querySelector('title')) : ''));
+        var title = el.title ? el.title : ((el.localName === 'img') ? '' : (((el.localName === 'svg') && el.querySelector('title')) ? $dom.html(el.querySelector('title')) : ''));
 
         if (!title || $cms.browserMatches('touch_enabled') || el.classList.contains('leave-native-tooltip') || el.classList.contains('cms-keep-ui-controlled') || el.parentNode && el.parentNode.classList.contains('tooltip') || el.dataset['mouseoverActivateTooltip']) {
             return;
