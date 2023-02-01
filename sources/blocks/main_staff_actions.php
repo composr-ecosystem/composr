@@ -117,8 +117,6 @@ PHP;
         require_css('adminzone_dashboard');
         require_code('actionlog');
 
-        // TODO: Memory checkpoint begin
-
         $block_id = get_block_id($map);
 
         $filter_by_member = (get_param_integer('filter_by_member', array_key_exists('filter_by_member', $map) ? intval($map['filter_by_member']) : 0) == 1);
@@ -159,8 +157,6 @@ PHP;
             $sortable . ' ' . $sort_order
         );
 
-        // TODO: memory checkpoint end. Used 2.4 MB.
-
         $where = [];
         if ($filter_by_member) {
             $where['member_id'] = get_member();
@@ -178,7 +174,6 @@ PHP;
         $done_already = [];
         $_start = $start;
 
-        // TODO: memory checkpoint begin
         do {
             $rows = $GLOBALS['SITE_DB']->query_select('actionlogs r', ['*'], $where, 'ORDER BY ' . $_sortable, $max, $_start);
             foreach ($rows as $myrow) {
@@ -268,11 +263,7 @@ PHP;
             $_start += $max;
         } while (!empty($rows));
 
-        // TODO: memory checkpoint end. Used 1 MB memory.
-
         $content = results_table(do_lang_tempcode('ACTIONS'), $start, 'sa_start', $max, 'sa_max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sa_sort', new Tempcode(), [], null, 5, '1c8645bc2a3ff5bec2e003142185561g', false, 'tray-actionlog');
-
-        // TODO: Used a total of 3.7 MB memory
 
         // Render block wrapper template around actions table
         return do_template('BLOCK_MAIN_STAFF_ACTIONS', [
