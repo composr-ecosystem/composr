@@ -1018,7 +1018,10 @@ function _download_latest_data_ip_country()
 
     $tmp_name_gzip = cms_tempnam();
     $myfile = fopen($tmp_name_gzip, 'wb');
-    cms_http_request('https://download.db-ip.com/free/dbip-country-lite-' . date('Y-m') . '.csv.gz', ['convert_to_internal_encoding' => true, 'write_to_file' => $myfile, 'timeout' => 30.0]);
+
+    // We use strtotime yesterday because the new month's database might not be published until sometime after midnight UTC.
+    cms_http_request('https://download.db-ip.com/free/dbip-country-lite-' . date('Y-m', strtotime('yesterday')) . '.csv.gz', ['convert_to_internal_encoding' => true, 'write_to_file' => $myfile, 'timeout' => 30.0]);
+
     fclose($myfile);
 
     $tmp_name_csv = cms_tempnam();
