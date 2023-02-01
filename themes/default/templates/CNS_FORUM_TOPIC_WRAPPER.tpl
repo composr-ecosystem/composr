@@ -24,7 +24,7 @@
 			<tr>
 				{+START,IF,{$DESKTOP}}
 					{+START,IF,{$CONFIG_OPTION,is_on_topic_emoticons}}
-						<th class="cns-forum-box-left column-desktop"></th>
+						<th class="cns-forum-box-left column-desktop"><span class="accessibility-hidden">{!TOPIC_EMOTICON}</span></th>
 					{+END}
 				{+END}
 				<th>{!TITLE}</th>

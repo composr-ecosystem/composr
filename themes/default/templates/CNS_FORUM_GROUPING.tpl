@@ -30,7 +30,7 @@
 			<thead>
 				<tr>
 					{+START,IF,{$DESKTOP}}
-						<th class="ocf-forum-box-left cell-desktop"></th>
+						<th class="ocf-forum-box-left cell-desktop"><span class="accessibility-hidden">{!FORUM}: {!STATUS}</span></th>
 					{+END}
 					<th {+START,IF,{$MOBILE}} class="cns-forum-box-left"{+END}>
 						{!FORUM_NAME}
