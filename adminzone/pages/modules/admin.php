@@ -1198,7 +1198,7 @@ class Module_admin
                     }
                 }
 
-                $url = build_url(['page' => 'admin_lang', 'type' => 'browse', 'lang' => user_lang(), 'lang_file' => $lang_file], get_module_zone('admin_lang'), [], false, false, false, 'jmp-' . $n);
+                $url = build_url(['page' => 'admin_lang', 'type' => 'browse', 'lang' => user_lang(), 'lang_file' => $lang_file, 'search' => $n], get_module_zone('admin_lang'), [], false, false, false);
                 $breadcrumbs = new Tempcode();
                 $breadcrumbs->attach(hyperlink(build_url(['page' => 'admin', 'type' => 'style'], 'adminzone'), do_lang_tempcode('STYLE'), false, false));
                 $breadcrumbs->attach(do_template('BREADCRUMB_SEPARATOR'));
