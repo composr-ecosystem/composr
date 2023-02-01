@@ -160,6 +160,8 @@ function cms_fopen_text_write(string $path, bool $locking = false, ?string $mode
         $charset = get_charset();
     }
 
+    $file_already_existed = is_file($path);
+
     $myfile = fopen($path, $mode);
 
     if ($myfile !== false) {
@@ -170,7 +172,7 @@ function cms_fopen_text_write(string $path, bool $locking = false, ?string $mode
             }
         }
 
-        if ((strpos($mode, 'a') === false) || (ftell($myfile) == 0)) {
+        if ((strpos($mode, 'a') === false) || (!$file_already_existed)) {
             if (array_key_exists($charset, $boms)) {
                 fwrite($myfile, $boms[$charset]);
             }
