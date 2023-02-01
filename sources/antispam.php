@@ -543,9 +543,17 @@ function check_spam_heuristics(bool $page_level)
         return;
     }
 
-    list($confidence_level, $scoring) = calculation_internal_heuristic_confidence();
-
     $user_ip = get_ip_address();
+
+    // Check exclusions
+    $exclusions = explode(',', get_option('spam_check_exclusions'));
+    foreach ($exclusions as $e) {
+        if (trim($e) == $user_ip) {
+            return;
+        }
+    }
+
+    list($confidence_level, $scoring) = calculation_internal_heuristic_confidence();
     handle_perceived_spammer_by_confidence($user_ip, $confidence_level, $scoring, $page_level);
 }
 
