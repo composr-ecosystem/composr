@@ -449,9 +449,7 @@
                 }
             };
             crf();
-            if (form.elements['delete']) {
-                form.elements['delete'].onchange = crf;
-            }
+            form.elements['delete'].onclick = crf;
         }
 
         if (document.getElementById('is_presented_at_install')) {
