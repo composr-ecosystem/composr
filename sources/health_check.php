@@ -498,9 +498,10 @@ abstract class Hook_Health_Check
             }
         }
 
-        $http_result = $this->get_page_http_content($page_link);
+        $error_message = '';
+        $http_result = $this->get_page_http_content($page_link, $error_message);
         if ($http_result->data === null) {
-            $this->assertTrue(false, 'The server cannot download from self-hosted page-link [tt]' . $page_link . '[/tt]');
+            $this->assertTrue(false, $error_message);
             return '';
         }
         return $http_result->data;
@@ -510,17 +511,25 @@ abstract class Hook_Health_Check
      * Download a page by page-link.
      *
      * @param  string $page_link Page-link
+     * @param  string $error_message The error message returned (passed by reference) (blank: no error)
      * @return object Response data
      */
-    protected function get_page_http_content(string $page_link = ':') : object
+    protected function get_page_http_content(string $page_link = ':', string &$error_message = '') : object
     {
+        $error_message = '';
         global $HEALTH_CHECK_PAGE_RESPONSE_CACHE;
         if (!array_key_exists($page_link, $HEALTH_CHECK_PAGE_RESPONSE_CACHE)) {
-            $HEALTH_CHECK_PAGE_RESPONSE_CACHE[$page_link] = cms_http_request($this->get_page_url($page_link), ['convert_to_internal_encoding' => true, 'timeout' => 20.0, 'trigger_error' => false, 'no_redirect' => true]);
+            $page_link_url = $this->get_page_url($page_link);
+            $ob = cms_http_request($page_link_url, ['convert_to_internal_encoding' => true, 'timeout' => 20.0, 'trigger_error' => false, 'no_redirect' => true]);
+            $HEALTH_CHECK_PAGE_RESPONSE_CACHE[$page_link] = $ob;
+            $error_message = 'The server cannot download from self-hosted page-link, [url="' . $page_link_url . '"][tt]' . $page_link . '[/tt][/url] (' . $ob->message . ')';
+            if (get_option('site_closed') == '1') {
+                $error_message .= ' (the site is currently closed)';
+            }
 
             // Server blocked to access itself
             if ($page_link == ':') {
-                $this->assertTrue($HEALTH_CHECK_PAGE_RESPONSE_CACHE[$page_link] !== null, 'The server cannot download from self-hosted page-link [tt]' . $page_link . '[/tt]');
+                $this->assertTrue($HEALTH_CHECK_PAGE_RESPONSE_CACHE[$page_link] !== null, $error_message);
             }
         }
         return $HEALTH_CHECK_PAGE_RESPONSE_CACHE[$page_link];
