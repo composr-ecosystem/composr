@@ -1864,7 +1864,7 @@ abstract class Standard_crud_module
         }
         $view_url = null;
         if ($this->view_entry_point !== null) {
-            list($zone, $attributes,) = page_link_decode(str_replace('_ID', $id, $this->view_entry_point));
+            list($zone, $attributes,) = page_link_decode(($id !== null) ? str_replace('_ID', $id, $this->view_entry_point) : str_replace(':_ID', '', $this->view_entry_point));
             $page = $attributes['page'];
             unset($attributes['page']);
             $view_url = [$page, $attributes, $zone, (!isset($this->view_label)) ? null : $this->view_label];
