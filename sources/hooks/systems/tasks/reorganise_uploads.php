@@ -35,6 +35,14 @@ class Hook_task_reorganise_uploads
             $ob->run();
         }
 
+        // May be useful for debugging
+        /*
+        global $REORGANISE_UPLOADS_ERRORMSGS;
+        foreach ($REORGANISE_UPLOADS_ERRORMSGS as $i => $err) {
+            task_log($this, $err);
+        }
+        */
+
         return null;
     }
 }
