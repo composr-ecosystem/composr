@@ -781,6 +781,6 @@ class Module_admin_cns_groups extends Standard_crud_module
      */
     public function delete_actualisation(string $id)
     {
-        cns_delete_group(intval($id), post_param_integer('new_usergroup'));
+        cns_delete_group(intval($id), post_param_integer('new_usergroup', null));
     }
 }
