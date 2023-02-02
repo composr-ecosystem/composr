@@ -80,7 +80,7 @@ class Hook_health_check_security_ssl extends Hook_Health_Check
      */
     protected function hasSSLEnabled() : bool
     {
-        if (substr(get_base_url(), 0, 7) != 'https://') {
+        if (substr(get_base_url(), 0, 8) != 'https://') {
             return false;
         }
         return true;
