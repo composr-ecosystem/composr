@@ -269,7 +269,7 @@ function _get_lang_file_map(string $b, array &$entries, string $section = 'strin
             return;
         }
 
-        $lines = /*cms_file_safe We may not know charset yet*/file($b);
+        $lines = /*cms_file_safe We may not know charset yet*/cms_file_safe($b);
     } else {
         $lines = explode("\n", $b);
     }
