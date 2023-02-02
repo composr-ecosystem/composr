@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_deep_clean
+class Hook_commandr_command_deep_clean
 {
     /**
      * Run function for Commandr hooks.
