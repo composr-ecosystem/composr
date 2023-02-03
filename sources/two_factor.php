@@ -94,6 +94,13 @@ function maintenance_script_htaccess_option_available() : bool
         return false;
     }
 
+    // Disable option if we have too many IP addresses; we do not want the htaccess file to get too long.
+    $ips = $GLOBALS['FORUM_DB']->query_select_value('f_member_known_login_ips', 'COUNT(DISTINCT i_ip)', ['i_val_code' => '']);
+    $ips += $GLOBALS['FORUM_DB']->query_select_value('f_members', 'COUNT(DISTINCT m_ip_address)', ['m_validated' => 1]);
+    if ($ips >= 500) {
+        return false;
+    }
+
     return true;
 }
 
@@ -116,7 +123,8 @@ function adjust_htaccess()
     if ($option_enabled) {
         $lines[] = 'Require all denied';
 
-        $ips = $GLOBALS['FORUM_DB']->query_select('f_member_known_login_ips', ['i_ip'], ['i_val_code' => '']);
+        $ips = $GLOBALS['FORUM_DB']->query_select('f_member_known_login_ips', ['DISTINCT i_ip'], ['i_val_code' => '']);
+        $ips = array_merge($ips, $GLOBALS['FORUM_DB']->query_select('f_members', ['DISTINCT m_ip_address AS i_ip'], ['m_validated' => 1]));
         foreach ($ips as $ip) {
             $lines[] = 'Require ip ' . $ip['i_ip'];
         }
