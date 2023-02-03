@@ -463,7 +463,7 @@ function get_url(string $specify_name, string $attach_name, string $upload_folde
     require_code('images');
     if ((($enforce_type & CMS_UPLOAD_VIDEO) != 0) || (($enforce_type & CMS_UPLOAD_AUDIO) != 0)) {
         require_code('files2');
-        $max_size = get_max_file_size(null, null, false);
+        $max_size = get_max_file_size(($upload_folder == 'uploads/attachments') ? get_member() : null, null, false);
     } else {
         $max_size = get_max_image_size(false);
     }

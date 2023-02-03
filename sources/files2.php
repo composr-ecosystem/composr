@@ -529,7 +529,7 @@ function get_upload_limit_config_url() : ?object
 /**
  * Get the maximum allowed upload filesize, as specified in the configuration.
  *
- * @param  ?MEMBER $source_member Member we consider quota for (null: do not consider quota)
+ * @param  ?MEMBER $source_member Member we consider quota for (null: do not consider quota because we are not dealing with attachments)
  * @param  ?object $db Database connector to get quota from (null: site DB)
  * @param  boolean $consider_php_limits Whether to consider limitations in PHP's configuration
  * @return integer The maximum allowed upload filesize, in bytes
