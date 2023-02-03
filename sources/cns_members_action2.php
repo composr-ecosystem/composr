@@ -2082,7 +2082,7 @@ function cns_member_choose_avatar(string $avatar_url, ?int $member_id = null)
             if (($sx > $width) || ($sy > $height)) {
                 // Size down, if possible
                 require_code('images');
-                if ((!is_image($avatar_url, IMAGE_CRITERIA_GD_WRITE)) || (!url_is_local($avatar_url))) {
+                if ((!is_image($avatar_url, IMAGE_CRITERIA_GD_WRITE)) || (!url_is_local($avatar_url)) || (substr($avatar_url, 0, 20) != 'uploads/cns_avatars/')) {
                     if ((url_is_local($avatar_url)) && (substr($avatar_url, 0, 20) == 'uploads/cns_avatars/')) {
                         unlink(get_custom_file_base() . '/' . rawurldecode($avatar_url));
                         sync_file(get_custom_file_base() . '/' . rawurldecode($avatar_url));
