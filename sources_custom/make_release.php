@@ -609,6 +609,11 @@ function populate_build_files_list($dir = '', $pretend_dir = '')
             if (should_ignore_file($pretend_dir . $file, IGNORE_NONBUNDLED | IGNORE_FLOATING | IGNORE_CUSTOM_DIRS | IGNORE_UPLOADS | IGNORE_CUSTOM_ZONES | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_LANGS | IGNORE_UNSHIPPED_VOLATILE | IGNORE_REVISION_FILES | IGNORE_ALIEN)) {
                 continue;
             }
+
+            // Special case for temp directory: ignore everything except .htaccess and index.html (we need htaccess to deny all access)
+            if (($pretend_dir == 'temp/') && ($file != '.htaccess') && ($file != 'index.html')) {
+                continue;
+            }
         }
 
         if ($is_dir) {
