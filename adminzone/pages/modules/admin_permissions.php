@@ -1391,14 +1391,22 @@ class Module_admin_permissions
         }
 
         $p_section = get_param_string('id');
+
+        // Determine the next section
         $_sections = $this->_get_ordered_sections();
         $array_keys = array_keys($_sections);
         $current_key = array_search($p_section, $array_keys);
         $next_key = $current_key;
+        $infinite_loop = false;
         do {
             $next_key++;
             if ($next_key >= count($array_keys)) {
                 $next_key = 0;
+                if ($infinite_loop) {
+                    warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                } else {
+                    $infinite_loop = true;
+                }
             }
         } while ($array_keys[$next_key] == '');
         $next_section = $array_keys[$next_key];
