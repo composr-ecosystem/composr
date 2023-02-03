@@ -21,7 +21,7 @@
 /*EXTRA FUNCTIONS: fileowner|filegroup|collator_.**/
 
 /*
-global3.php contains further support functions, which are shared between the installer and the main installation (i.e. global.php and global2.php are not used by the installer, and the installer emulates these functions functionality via minikernel.php).
+    global3.php contains further support functions, which are shared between the installer and the main installation (i.e. global.php and global2.php are not used by the installer, and the installer emulates these functions functionality via minikernel.php).
 */
 
 /**

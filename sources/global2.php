@@ -20,7 +20,10 @@
 
 /*EXTRA FUNCTIONS: ucwords*/
 
-// NB: Make sure to update the version in minikernel.php too if you add new common functions or change behaviours
+/*
+    main bootstrapping and library code.
+    NB: Make sure to update the version in minikernel.php too if you add new common functions or change behaviours
+*/
 
 /**
  * Standard code module initialisation function.

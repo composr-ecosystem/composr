@@ -78,8 +78,8 @@ function maintenance_script_htaccess_option_available() : bool
         return false;
     }
 
-    $server_software = $_SERVER['SERVER_SOFTWARE'];
-    if ((stripos($server_software, 'Apache') === false) && (stripos($server_software, 'LiteSpeed') === false)) {
+    require_code('global4');
+    if (!is_possibly_apache()) {
         return false;
     }
 

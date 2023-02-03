@@ -399,7 +399,8 @@ class Module_admin_redirects
 
         list($ref_point_end, $c) = $this->check_url_redirect_availability();
 
-        if (substr($_SERVER['SERVER_SOFTWARE'], 0, 6) != 'Apache') {
+        require_code('global4');
+        if (!is_possibly_apache()) {
             attach_message(do_lang_tempcode('URL_REDIRECT_ERROR_NOT_APACHE'), 'warn');
         }
 

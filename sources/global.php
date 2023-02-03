@@ -14,6 +14,10 @@
 
 /*EXTRA FUNCTIONS: strtoupper|strtolower*/
 
+/*
+    initial bootstrap loaded by any frontend script
+*/
+
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd

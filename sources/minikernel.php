@@ -20,13 +20,17 @@
 
 /*EXTRA FUNCTIONS: strtoupper|strtolower|ucfirst*/
 
-// Composr can install basically from the real final code, except for...
-// -- global.php
-// -- global2.php
-// -- users.php
-// --  things that depend on functionality of those that hasn't been emulated here
-// This file emulates cut-down versions of the code in those files, for the most part.
-// Once Composr is installed, this file is never used.
+/*
+    the equivalent of global2 for "Composr not yet installed" situations like the installer or backup restorer
+
+    Composr can install basically from the real final code, except for...
+    -- global.php
+    -- global2.php
+    -- users.php
+    --  things that depend on functionality of those that hasn't been emulated here
+    This file emulates cut-down versions of the code in those files, for the most part.
+    Once Composr is installed, this file is never used.
+*/
 
 /**
  * Standard code module initialisation function.
