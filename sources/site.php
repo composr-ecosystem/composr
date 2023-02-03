@@ -546,7 +546,7 @@ function do_site_prep()
                 (get_param_integer('keep_failover', null) !== 0) &&
                 ((strpos($ruri, '/pg/') === false) || ($url_scheme != 'PG')) &&
                 ((strpos($ruri, '.htm') === false) || ($url_scheme != 'HTM')) &&
-                ((substr($ruri, -1) != '/') || (get_option('url_scheme_omit_default_zone_pages') == '0'))
+                ((substr(preg_replace('#\?.*$#', '', $ruri), -1) != '/') || (get_option('url_scheme_omit_default_zone_pages') == '0'))
             ) {
                 require_code('permissions');
                 set_http_status_code(301);

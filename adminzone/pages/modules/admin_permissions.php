@@ -748,7 +748,15 @@ class Module_admin_permissions
             $_sections[$i]['trans'] = do_lang($s['p_section']);
         }
         sort_maps_by($_sections, 'trans', false, true);
-        $orderings = ['SUBMISSION', 'GENERAL_SETTINGS', 'FORUMS_AND_MEMBERS', 'STAFF_ACTIONS', '_COMCODE', '_FEEDBACK', 'POINTS'];
+        $orderings = [
+            'SUBMISSION',
+            'GENERAL_SETTINGS',
+            'FORUMS_AND_MEMBERS',
+            'STAFF_ACTIONS',
+            '_COMCODE',
+            '_FEEDBACK',
+            'POINTS'
+        ];
         $_sections_prior = [];
         foreach ($orderings as $ordering) {
             if (array_key_exists($ordering, $_sections)) {
@@ -758,13 +766,12 @@ class Module_admin_permissions
             }
         }
         if (!empty($_sections_prior)) {
-            $_sections_prior[''] = null;
+            $_sections_prior[''] = null; // Necessary so we know where to put the "Other" header label
         }
         $_sections = array_merge($_sections_prior, $_sections);
 
         return $_sections;
     }
-
 
     /**
      * The UI to choose a group to edit content permissions for.
@@ -1386,19 +1393,15 @@ class Module_admin_permissions
         $p_section = get_param_string('id');
         $_sections = $this->_get_ordered_sections();
         $array_keys = array_keys($_sections);
-        $next_section = $array_keys[0];
-        $counter = 0;
-        foreach ($_sections as $s) {
-            if ($s === null) {
-                continue;
+        $current_key = array_search($p_section, $array_keys);
+        $next_key = $current_key;
+        do {
+            $next_key++;
+            if ($next_key >= count($array_keys)) {
+                $next_key = 0;
             }
-
-            if ($counter > array_search($p_section, $array_keys)) {
-                $next_section = $s['p_section'];
-                break;
-            }
-            $counter++;
-        }
+        } while ($array_keys[$next_key] == '');
+        $next_section = $array_keys[$next_key];
 
         $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, true);
         $privileges = collapse_1d_complexity('the_name', $GLOBALS['SITE_DB']->query_select('privilege_list', ['the_name'], ['p_section' => $p_section]));
