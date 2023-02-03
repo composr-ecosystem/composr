@@ -13,10 +13,12 @@
  * @package    testing_platform
  */
 
+// ___api_twitter rather than _api_twitter because Twitter API will no longer be free and hence we will not be able to auto-test it so easily
+
 /**
  * Composr test case class (unit testing).
  */
-class _api_twitter_test_set extends cms_test_case
+class ___api_twitter_test_set extends cms_test_case
 {
     public function testTwitterApi()
     {
