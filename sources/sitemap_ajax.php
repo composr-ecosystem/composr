@@ -470,6 +470,9 @@ function _get_overridable_privileges_for_privilege_page(?string $privilege_page)
 
     $zone = get_module_zone($privilege_page, 'modules', null, 'php', true, false);
     $_overridables = extract_module_functions_page($zone, $privilege_page, ['get_privilege_overrides']);
+    if ($_overridables[0] === null) {
+        return [];
+    }
     $overridable_privileges = is_array($_overridables[0]) ? call_user_func_array($_overridables[0][0], $_overridables[0][1]) : cms_eval($_overridables[0], $zone . ':' . $privilege_page);
     if (!is_array($overridable_privileges)) {
         $overridable_privileges = [];
