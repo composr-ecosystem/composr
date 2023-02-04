@@ -52,6 +52,6 @@ class Hook_config_infinite_scrolling
      */
     public function get_default() : ?string
     {
-        return '1';
+        return '0';
     }
 }
