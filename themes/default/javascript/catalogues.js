@@ -142,8 +142,6 @@
             for (var i = 0; i < allOrderers.length; i++) {
                 allOrderers[i].selectedIndex = i;
             }
-
-            console.dir(allOrderers);
         };
     }
 }(window.$cms, window.$util, window.$dom));
