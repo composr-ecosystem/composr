@@ -935,8 +935,10 @@
                     // ^ Can be a string or a map of additional query string parameters that will be added to the call URL.
                     callParamsFromTarget = arrVal(options.callParamsFromTarget),
                     // ^ An array of regexes that we will match with query string params in the target's [href] or [action] URL and if matched, pass them along with the block call.
-                    targetsSelector = strVal(options.targetsSelector);
+                    targetsSelector = strVal(options.targetsSelector),
                     // ^ A selector can be provided for additional targets, by default only child elements with [data-ajaxify-target="1"] will be ajaxified.
+                    updateURL = boolVal(options.updateURL);
+                    // ^ Whether the URL in the browser should be updated on an AJAX request
 
                 if (typeof callParams === 'string') {
                     var _callParams = $util.iterableToArray((new URLSearchParams(callParams)).entries());
@@ -1056,7 +1058,9 @@
                     $cms.callBlock($util.rel(thisCallUrl), '', ajaxifyContainer, false, false, postParams).then(function () {
                         window.scrollTo(0, $dom.findPosY(ajaxifyContainer, true));
                         window.hasJsState = true;
-                        window.history.pushState({}, document.title, newWindowUrl.toString()); // Update window URL
+                        if (updateURL) {
+                            window.history.pushState({}, document.title, newWindowUrl.toString()); // Update window URL
+                        }
                     });
                 }
             });
