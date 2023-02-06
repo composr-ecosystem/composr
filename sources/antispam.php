@@ -411,10 +411,13 @@ function handle_perceived_spammer_by_confidence(string $user_ip, float $confiden
         global $SPAM_REMOVE_VALIDATION;
         $SPAM_REMOVE_VALIDATION = true;
 
-        require_code('notifications');
-        $subject = do_lang('NOTIFICATION_SPAM_CHECK_BLOCK_SUBJECT_APPROVE', $user_ip, $blocked_by, float_format($confidence_level), get_site_default_lang());
-        $message = do_notification_lang('NOTIFICATION_SPAM_CHECK_BLOCK_BODY_APPROVE', $user_ip, $blocked_by, float_format($confidence_level), get_site_default_lang());
-        dispatch_notification('core_staff:spam_check_block', null, $subject, $message, null, A_FROM_SYSTEM_PRIVILEGED);
+        // Only send notification if this was a POST request
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            require_code('notifications');
+            $subject = do_lang('NOTIFICATION_SPAM_CHECK_BLOCK_SUBJECT_APPROVE', $user_ip, $blocked_by, float_format($confidence_level), get_site_default_lang());
+            $message = do_notification_lang('NOTIFICATION_SPAM_CHECK_BLOCK_BODY_APPROVE', $user_ip, $blocked_by, float_format($confidence_level), get_site_default_lang());
+            dispatch_notification('core_staff:spam_check_block', null, $subject, $message, null, A_FROM_SYSTEM_PRIVILEGED);
+        }
     }
 }
 
