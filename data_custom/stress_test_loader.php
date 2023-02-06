@@ -572,6 +572,7 @@ function do_work()
     for ($i = $GLOBALS['SITE_DB']->query_select_value('catalogues', 'COUNT(*)'); $i < $num_wanted; $i++) {
         $catalogue_name = uniqid('', false);
         actual_add_catalogue($catalogue_name, random_line(), random_text(), mt_rand(0, 3), 1, '', 30);
+        actual_add_catalogue_field($catalogue_name, uniqid('', false), random_text());
     }
     echo 'FINISHED: Catalogues' . "\n";
     $catalogue_name = 'products';
