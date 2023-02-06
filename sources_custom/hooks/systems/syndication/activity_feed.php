@@ -46,7 +46,7 @@ class Hook_syndication_activity_feed
             $member_id = get_member();
         }
 
-        if ((!has_privilege($member_id, 'syndicate_site_activity')) || (!$syndication_context['syndicate_activity'])) {
+        if (($syndication_context['syndicate_site_activity']) || (!$syndication_context['syndicate_activity'])) {
             $sitewide_too = false;
         }
 
