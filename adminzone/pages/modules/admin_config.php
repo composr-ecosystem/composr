@@ -250,7 +250,7 @@ class Module_admin_config
                 return $this->advanced_banning();
             }
             if ($type == '_advanced_banning') {
-                return $this->advanced_banning();
+                return $this->_advanced_banning();
             }
         }
 
