@@ -2101,7 +2101,7 @@ class DatabaseConnector
         $translate_order_by = db_function('X_ORDER_BY_BOOLEAN', [db_string_equal_to('language', $lang)]);
         if ($translate_order_by !== null) {
             if ($lang != get_site_default_lang()) {
-                $translate_order_by = ',' . db_function('X_ORDER_BY_BOOLEAN', [db_string_equal_to('language', get_site_default_lang())]);
+                $translate_order_by .= ',' . db_function('X_ORDER_BY_BOOLEAN', [db_string_equal_to('language', get_site_default_lang())]);
             }
         }
         $subquery = 'SELECT language FROM ' . $this->table_prefix . 'translate WHERE id=' . $field;
