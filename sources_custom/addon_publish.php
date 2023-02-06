@@ -290,6 +290,11 @@ function generate_addon_description($info)
         $description .= "\n\n[title=\"2\"]Incompatibilities[/title]\n\n" . $incompatibilities;
     }
 
+    $recommendations = implode(', ', $info['recommendations']);
+    if ($recommendations != '') {
+        $description .= "\n\n[title=\"2\"]Optional recommendations[/title]\n\n" . $recommendations;
+    }
+
     $licence = $info['licence'];
     if ($licence != '') {
         $description .= "\n\n[title=\"2\"]Licence[/title]\n\n" . $licence;
