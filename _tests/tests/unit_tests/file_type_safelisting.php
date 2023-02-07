@@ -325,7 +325,36 @@ class file_type_safelisting_test_set extends cms_test_case
         $file_types_expected = array_diff($file_types_expected, ['htm']); // No .htm files which may be web-generated
         sort($file_types_expected);
 
-        $this->assertTrue($file_types == $file_types_expected, 'Difference of: ' . serialize(array_diff($file_types_expected, $file_types)) . '/' . serialize(array_diff($file_types, $file_types_expected)));
+        $this->assertTrue($file_types == $file_types_expected, 'recommended.htaccess difference of: ' . serialize(array_diff($file_types_expected, $file_types)) . '/' . serialize(array_diff($file_types, $file_types_expected)));
+    }
+
+    public function testDirectoryProtectRealFileList()
+    {
+        $hook = get_hook_ob('systems', 'addon_registry', 'directory_protect', 'Hook_addon_registry_', true);
+
+        if (($hook === null) || !addon_installed('directory_protect')) {
+            $this->assertTrue(false, 'Directory protect addon required for this test.');
+            return;
+        }
+
+        $description = $hook->get_description();
+
+        $file_types_expected = $this->file_types;
+        $file_types_expected = array_diff($file_types_expected, ['htm']); // No .htm files which may be web-generated
+        sort($file_types_expected);
+
+        $file_types = [];
+        $matches = [];
+        preg_match('#RewriteCond \$1 \\\\\.\((.*)\)\(\$\|\\\\\?\) \[OR\]#', $description, $matches);
+        if (!array_key_exists(1, $matches)) {
+            $this->assertTrue(false, 'Directory protect addon description has an invalid code example.');
+        } else {
+            $file_types = explode('|', $matches[1]);
+            $file_types = array_diff($file_types, ['swf']); // We don't do mime-typing but do allow download
+            sort($file_types);
+
+            $this->assertTrue($file_types == $file_types_expected, 'Directory protect addon description difference of: ' . serialize(array_diff($file_types_expected, $file_types)) . '/' . serialize(array_diff($file_types, $file_types_expected)));
+        }
     }
 
     public function testOtherValidTypes()
