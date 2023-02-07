@@ -299,7 +299,7 @@ function _cms_http_request(string $url, array $options = []) : object
         }
     }
 
-    $filesystem->run($url, $options);
+    $test = $filesystem->run($url, $options);
     if ($test === false) {
         fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
