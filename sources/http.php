@@ -278,21 +278,21 @@ function _cms_http_request(string $url, array $options = []) : object
     $filesystem = new HttpDownloaderFilesystem();
     $filesystem_priority = $filesystem->may_run_for($url, $options);
 
-    if ($curl_priority > $sockets_priority && $curl_priority > $file_wrapper_priority && $curl_priority > $filesystem_priority) {
+    if (!empty($options['force_curl']) || empty($options['force_sockets']) && empty($options['force_file_wrapper']) && $curl_priority > $sockets_priority && $curl_priority > $file_wrapper_priority && $curl_priority > $filesystem_priority) {
         $test = $curl->run($url, $options);
         if ($test !== false) {
             return $curl;
         }
     }
 
-    if ($sockets_priority > $file_wrapper_priority && $sockets_priority > $filesystem_priority) {
+    if (!empty($options['force_sockets']) || empty($options['force_file_wrapper']) && $sockets_priority > $file_wrapper_priority && $sockets_priority > $filesystem_priority) {
         $test = $sockets->run($url, $options);
         if ($test !== false) {
             return $sockets;
         }
     }
 
-    if ($file_wrapper_priority > $filesystem_priority) {
+    if (!empty($options['force_file_wrapper']) || $file_wrapper_priority > $filesystem_priority) {
         $test = $file_wrapper->run($url, $options);
         if ($test !== false) {
             return $file_wrapper;
