@@ -943,7 +943,7 @@ function semihtml_to_comcode(string $semihtml, bool $force = false, bool $quick 
             }
         }
         $semihtml = cms_preg_replace_safe('#(&nbsp;|</CDATA__space>|\s)*<br\s*/>#i', '<br />', $semihtml); // Spaces on end of line -> (Remove)
-    } while (cms_preg_replace_safe('#(\s|<br[^<>]*>|&nbsp;)#i', '', $semihtml) != preg_replace('#(\s|<br[^<>]*>|&nbsp;)#i', '', $old_semihtml) && cms_preg_safety_guard_ok($safety_guard));
+    } while (cms_preg_replace_safe('#(\s|<br[^<>]*>|&nbsp;)#i', '', $semihtml) != cms_preg_replace_safe('#(\s|<br[^<>]*>|&nbsp;)#i', '', $old_semihtml) && cms_preg_safety_guard_ok($safety_guard));
 
     // Undone center tagging
     $semihtml = comcode_preg_replace('left', '#^\[left\]\[center\](.*)\[/center\]\[/left\]$#si', '[left]${1}[/left]', $semihtml);

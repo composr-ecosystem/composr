@@ -4943,7 +4943,7 @@ function cms_preg_safety_guard_ok(array &$guard) : bool
     if ($guard['i'] > 100 || $guard['init_time'] < time() - 5) {
         // Too thorny, do not continue
         if ($GLOBALS['DEV_MODE']) {
-            // fatal_exit('Prevented possible infinite loop');
+            fatal_exit('Prevented possible infinite loop');
         }
         return false;
     }
