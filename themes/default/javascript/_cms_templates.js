@@ -598,10 +598,18 @@
         }
 
         if (pingUrl) {
-            $cms.doAjaxRequest(pingUrl);
+            var previousPingFinished = false;
+            $cms.doAjaxRequest(pingUrl, function () {
+                previousPingFinished = true;
+            });
 
             setInterval(function () {
-                $cms.doAjaxRequest(pingUrl, function () {}, null, 2000);
+                if (previousPingFinished) {
+                    previousPingFinished = false;
+                    $cms.doAjaxRequest(pingUrl, function () {
+                        previousPingFinished = true;
+                    }, null, 2000);
+                }
             }, 12000);
         }
     };
