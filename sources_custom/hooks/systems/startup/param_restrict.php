@@ -35,7 +35,7 @@ class Hook_startup_param_restrict
                 $key = strval($key);
             }
 
-            if ((strpos($key, 'max') !== false) && (is_numeric($val))) {
+            if ((strpos($key, 'max') !== false) && (is_string($val)) && (is_numeric($val))) {
                 if (intval($val) > $max) {
                     $_GET[$key] = strval($max);
                 }
