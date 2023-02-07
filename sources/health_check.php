@@ -353,7 +353,7 @@ abstract class Hook_Health_Check
     }
 
     /**
-     * Add something to the health check log for the current test.
+     * Add something to the health check log for the current test. Will automatically prepend the category and section.
      *
      * @param  string $contents The text to add to the log
      */
