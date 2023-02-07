@@ -302,10 +302,11 @@ function _strip_comcode(string $in, bool $for_extract = false, array $tags_to_pr
     ], $tags_to_preserve);
     foreach ($tags_to_strip_just_tags as $s) {
         if (stripos($text, '[' . $s) !== false) {
+            $safety_guard = cms_preg_safety_guard_init();
             do {
                 $text_before = $text;
                 $text = preg_replace('#\[' . $s . '[^\]]*\](.*)\[/' . $s . '\]#Usi', '\1', $text);
-            } while ($text_before != $text);
+            } while ($text_before != $text && cms_preg_safety_guard_ok($safety_guard));
         }
     }
 

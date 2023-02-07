@@ -4922,6 +4922,36 @@ function cms_preg_replace_callback_safe(string $pattern, $callback, string $subj
 }
 
 /**
+ * Initialise a simple structure for use with cms_preg_safety_guard_ok to protect us within complex regexp loops that keep going so long as stuff is changing.
+ *
+ * @return array Data structure (meant to be a black box)
+ */
+function cms_preg_safety_guard_init() : array
+{
+    $guard = ['i' => 0, 'init_time' => time()];
+    return $guard;
+}
+
+/**
+ * Protect us from infinite loop bugs within complex regexp loops that keep going so long as stuff is changing.
+ *
+ * @param  array $guard Data structure from cms_preg_safety_guard_init
+ * @return boolean Whether it is safe to keep looping
+ */
+function cms_preg_safety_guard_ok(array &$guard) : bool
+{
+    if ($guard['i'] > 100 || $guard['init_time'] < time() - 5) {
+        // Too thorny, do not continue
+        if ($GLOBALS['DEV_MODE']) {
+            fatal_exit('Prevented possible infinite loop');
+        }
+        return false;
+    }
+    $guard['i']++;
+    return true;
+}
+
+/**
  * Split string by a regular expression.
  * Automatically applies utf-8 if possible and appropriate. \s is not actually Unicode-safe, for example (as it matches non-breaking-spaces).
  * Also automatically applies the 'D' modifier so that trailing blank lines don't mess with '$'.
