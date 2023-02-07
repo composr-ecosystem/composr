@@ -40,7 +40,7 @@
 		</tr>
 		<tr>
 			<th>{!COST}</th>
-			<td><label class="accessibility-hidden" for="cost">{!COST}</label><input type="text" name="cost" id="cost" class="form-control" value="{COST*}" /></td>
+			<td><label class="accessibility-hidden" for="price">{!COST}</label><input type="text" name="price" id="price" class="form-control" value="{PRICE*}" /></td>
 			<td>{!W_EG_ITEM_COPY_PRICE}</td>
 		</tr>
 		{+START,IF_PASSED,X}{+START,IF_PASSED,Y}{+START,IF_PASSED,REALM}

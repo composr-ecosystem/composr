@@ -352,6 +352,19 @@ abstract class Hook_Health_Check
         }
     }
 
+    /**
+     * Add something to the health check log for the current test.
+     *
+     * @param  string $contents The text to add to the log
+     */
+    protected function log(string $contents)
+    {
+        global $HEALTH_CHECK_LOG_FILE;
+        if ($HEALTH_CHECK_LOG_FILE !== null) {
+            fwrite($HEALTH_CHECK_LOG_FILE, loggable_date() . '  ' . $this->category_label . ' \\ ' . $this->current_section_label . ': ' . $contents . "\n");
+        }
+    }
+
     /*
     CHECK REPORTING
     */
