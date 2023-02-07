@@ -166,6 +166,7 @@
         });
     };
 
+    var lockedPolling = false;
     $coreNotifications.pollForNotifications = function pollForNotifications(forcedUpdate, delay) {
         forcedUpdate = Boolean(forcedUpdate);
         delay = Boolean(delay);
@@ -181,6 +182,11 @@
             return; /* Don't hurt server performance needlessly when running in a background tab - let an e-mail notification alert them instead */
         }
 
+        if (lockedPolling) {
+            return;
+        }
+        lockedPolling = true;
+
         var url = '{$FIND_SCRIPT_NOHTTP;,notifications}?type=poller';
         if (window.maxNotificationsToShow !== undefined) {
             url += '&max=' + window.maxNotificationsToShow;
@@ -194,6 +200,8 @@
     };
 
     function _pollForNotifications(responseXml) {
+        lockedPolling = false;
+
         if (!responseXml || responseXml.getElementsByTagName === undefined) {
             return; // Some kind of error
         }
