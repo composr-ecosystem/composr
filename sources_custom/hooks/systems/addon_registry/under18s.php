@@ -86,7 +86,7 @@ class Hook_addon_registry_under18s
      */
     public function get_description() : string
     {
-        return 'Example of an implicit usergroup hook, to automatically put all members under 18 into a special usergroup.';
+        return 'Example of an implicit usergroup hook, to automatically put all members under 18 into the Probation usergroup.';
     }
 
     /**
