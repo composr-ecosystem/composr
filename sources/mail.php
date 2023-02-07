@@ -145,6 +145,51 @@ function dispatch_mail(string $subject_line, string $message_raw, ?array $to_ema
         }
     }
 
+    // Some basic validation, don't allow e-mailing with bad data - front-end validation should have stopped us getting to this point, so we don't need to show nice localised errors; privacy must be protected for any e-mail addresses
+    $data_errors = [];
+    if (($from_email != '') && (!is_valid_email_address($from_email))) {
+        $data_errors[] = 'Invalid from e-mail address';
+    }
+    if ($to_emails !== null) {
+        foreach ($to_emails as $to_email) {
+            if ((!empty($from_email)) && (!is_valid_email_address($to_email))) {
+                $data_errors[] = 'Invalid destination e-mail address';
+            }
+        }
+    }
+    if (!empty($advanced_parameters['extra_cc_addresses'])) {
+        foreach ($advanced_parameters['extra_cc_addresses'] as $extra_cc_address) {
+            if (($extra_cc_address != '') && (!is_valid_email_address($extra_cc_address))) {
+                $data_errors[] = 'Invalid CC e-mail address';
+            }
+        }
+    }
+    if (!empty($advanced_parameters['extra_bcc_addresses'])) {
+        foreach ($advanced_parameters['extra_bcc_addresses'] as $extra_bcc_address) {
+            if (($extra_bcc_address != '') && (!is_valid_email_address($extra_bcc_address))) {
+                $data_errors[] = 'Invalid BCC e-mail address';
+            }
+        }
+    }
+    if (strlen($from_name) > 255) {
+        $data_errors[] = 'From name is too long';
+    }
+    if ($to_names !== null) {
+        foreach (is_array($to_names) ? $to_names : [$to_names] as $to_name) {
+            if (strlen($to_name) > 500/*Arbitrary sanity check we are setting*/) {
+                $data_errors[] = 'To name is too long';
+            }
+        }
+    }
+    if (strlen($subject_line) > 500/*Arbitrary sanity check we are setting*/) {
+        $data_errors[] = 'Subject line is too long';
+    }
+    if (!empty($data_errors)) {
+        $dispatcher->worked = false;
+        $dispatcher->error = implode('; ', $data_errors);
+        return $dispatcher;
+    }
+
     global $SITE_INFO;
     if (!empty($SITE_INFO['redirect_email_output'])) {
         $to_emails = [$SITE_INFO['redirect_email_output']];
