@@ -918,11 +918,11 @@ class Module_buildr
             $price = post_param_integer('price', -1);
 
             if ($price == -1) {
-                $member = get_param_integer('member');
+                $owner = get_param_integer('owner');
                 list($realm, $x, $y) = get_loc_details($member_id);
 
-                $price = $GLOBALS['SITE_DB']->query_select_value('w_items', 'price', ['copy_owner' => $member, 'location_x' => $x, 'location_y' => $y, 'location_realm' => $realm, 'name' => get_param_string('item', false, INPUT_FILTER_GET_COMPLEX)]);
-                $not_infinite = $GLOBALS['SITE_DB']->query_select_value('w_items', 'not_infinite', ['copy_owner' => $member, 'location_x' => $x, 'location_y' => $y, 'location_realm' => $realm, 'name' => get_param_string('item', false, INPUT_FILTER_GET_COMPLEX)]);
+                $price = $GLOBALS['SITE_DB']->query_select_value('w_items', 'price', ['copy_owner' => $owner, 'location_x' => $x, 'location_y' => $y, 'location_realm' => $realm, 'name' => get_param_string('item', false, INPUT_FILTER_GET_COMPLEX)]);
+                $not_infinite = $GLOBALS['SITE_DB']->query_select_value('w_items', 'not_infinite', ['copy_owner' => $owner, 'location_x' => $x, 'location_y' => $y, 'location_realm' => $realm, 'name' => get_param_string('item', false, INPUT_FILTER_GET_COMPLEX)]);
 
                 $tpl = do_template('W_ITEMCOPY_SCREEN', [
                     '_GUID' => 'a8d28f6516408dba96a8b57ddcd7cee6',
@@ -933,7 +933,7 @@ class Module_buildr
                     'Y' => strval($y),
                     'REALM' => strval($realm),
                     'ITEM' => get_param_string('item', false, INPUT_FILTER_GET_COMPLEX),
-                    'OWNER' => strval($member),
+                    'OWNER' => strval($owner),
                     'PRICE' => strval($price),
                 ]);
                 return $tpl;
@@ -1063,7 +1063,7 @@ class Module_buildr
             return output_room_screen($member_id);
         }
 
-        buildr_refresh_with_message(do_lang('SUCCESS'));
+        buildr_refresh_with_message(do_lang_tempcode('SUCCESS'));
         return new Tempcode();
     }
 }

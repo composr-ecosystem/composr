@@ -159,7 +159,7 @@ function download_map(int $realm, int $sx, int $sy)
             $bx = $_x * $room_size + $border_size + $room_size - 1;
             $by = $_y * $room_size + $border_size + $room_size - 1;
 
-            $owner = $GLOBALS['FORUM_DRIVER']->get_username($room['owner']);
+            $owner = ($room['owner'] !== null) ? $GLOBALS['FORUM_DRIVER']->get_username($room['owner']) : do_lang('NA');
 
             // Draw room
             if (($x == $sx) && ($y == $sy)) {
@@ -186,13 +186,13 @@ function download_map(int $realm, int $sx, int $sy)
             $room_name2 = substr($name, $roomnameclip, $roomnameclip);
             $room_name3 = substr($name, $roomnameclip * 2, $roomnameclip);
             $room_name4 = substr($name, $roomnameclip * 3);
-            imagestring($my_img, $my_font, $ax + 2, $ay + 2 + (imagefontheight($my_font) + 2) * 0, $room_name1, $txcolor);
-            imagestring($my_img, $my_font, $ax + 2, $ay + 2 + (imagefontheight($my_font) + 2) * 1, $room_name2, $txcolor);
-            imagestring($my_img, $my_font, $ax + 2, $ay + 2 + (imagefontheight($my_font) + 2) * 2, $room_name3, $txcolor);
-            imagestring($my_img, $my_font, $ax + 2, $ay + 2 + (imagefontheight($my_font) + 2) * 3, $room_name4, $txcolor);
+            imagestring($my_img, $my_font, $ax + 2, $ay + 2 + (imagefontheight($my_font) + 2) * 0, $room_name1 ? $room_name1 : do_lang('NA'), $txcolor);
+            imagestring($my_img, $my_font, $ax + 2, $ay + 2 + (imagefontheight($my_font) + 2) * 1, $room_name2 ? $room_name2 : do_lang('NA'), $txcolor);
+            imagestring($my_img, $my_font, $ax + 2, $ay + 2 + (imagefontheight($my_font) + 2) * 2, $room_name3 ? $room_name3 : do_lang('NA'), $txcolor);
+            imagestring($my_img, $my_font, $ax + 2, $ay + 2 + (imagefontheight($my_font) + 2) * 3, $room_name4 ? $room_name4 : do_lang('NA'), $txcolor);
             imagestring($my_img, $my_font, $ax + 2, $ay + 2 + (imagefontheight($my_font) + 2) * 4, $portal, $txcolor);
-            imagestring($my_img, $my_font, $ax + 2, $ay + 2 + (imagefontheight($my_font) + 2) * 6, ":$x:$y", $txcolor);
-            imagestring($my_img, $my_font, $ax + 2, $ay + 2 + (imagefontheight($my_font) + 2) * 7, "$owner", $txcolor);
+            imagestring($my_img, $my_font, $ax + 2, $ay + 2 + (imagefontheight($my_font) + 2) * 6, ':' . strval($x) . ':' . strval($y), $txcolor);
+            imagestring($my_img, $my_font, $ax + 2, $ay + 2 + (imagefontheight($my_font) + 2) * 7, strval($owner), $txcolor);
         }
     }
 
