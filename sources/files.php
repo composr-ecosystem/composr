@@ -611,6 +611,7 @@ function should_ignore_file(string $path, int $bitmask = 0) : bool
         'closed.html.old' => '',
 
         // Legacy temporary files
+        'temp' => '',
         'safe_mode_temp' => '', // LEGACY
 
         // Composr testing platform
