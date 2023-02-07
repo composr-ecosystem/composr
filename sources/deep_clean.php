@@ -33,7 +33,8 @@ function deep_clean(string $d, string $heading = '') : string
 
     if ($is_html) {
         // Wrapper divs
-        while (cms_preg_match_safe('#^\s*<div[^<>]*>#i', $d) != 0 && cms_preg_match_safe('#</div>\s*$#i', $d) != 0) {
+        $safety_guard = cms_preg_safety_guard_init();
+        while (cms_preg_match_safe('#^\s*<div[^<>]*>#i', $d) != 0 && cms_preg_match_safe('#</div>\s*$#i', $d) != 0 && cms_preg_safety_guard_ok($safety_guard)) {
             $matches = [];
             $count = preg_match_all('#</?div[^<>]*>#i', $d, $matches);
             $nesting_tally = 0;

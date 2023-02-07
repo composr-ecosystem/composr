@@ -702,10 +702,11 @@ function semihtml_to_comcode(string $semihtml, bool $force = false, bool $quick 
     $semihtml = cms_preg_replace_safe('#(\s)\s*#', '${1}', $semihtml);
 
     // Clean redundant CSS syntax
+    $safety_guard = cms_preg_safety_guard_init();
     do {
         $old = $semihtml;
         $semihtml = preg_replace('# style="([^"]*); ?; ?+[^"]*#', ' style="$1;', $semihtml);
-    } while ($old != $semihtml);
+    } while ($old != $semihtml && cms_preg_safety_guard_ok($safety_guard));
     $semihtml = str_replace(' style=""', '', $semihtml);
 
     // Cleanup impossible stuff in code tags
@@ -727,10 +728,11 @@ function semihtml_to_comcode(string $semihtml, bool $force = false, bool $quick 
 
     // Remove proprietary stylings put in by RTF->HTML conversions performed by certain browsers
     $old_semihtml = '';
+    $safety_guard = cms_preg_safety_guard_init();
     do {
         $old_semihtml = $semihtml;
         $semihtml = preg_replace('#(<[^>]* style="(?U)[^">]*(?-U))-\w+-[^";>]*(;\s*)?#s', '${1}', $semihtml);
-    } while ($semihtml != $old_semihtml);
+    } while ($semihtml != $old_semihtml && cms_preg_safety_guard_ok($safety_guard));
 
     // Perform lots of conversions. We can't convert everything. Sometimes we reverse-convert what Comcode forward-converts; sometimes we match generic HTML; sometimes we match Microsoft Word or Open Office; sometimes we do lossy match
     $semihtml = convert_html_headers_to_titles($semihtml, strpos($semihtml, '[contents') !== false);
@@ -885,6 +887,7 @@ function semihtml_to_comcode(string $semihtml, bool $force = false, bool $quick 
     // Our cleanup loop. These optimisations trickle-through, as they depend on each other. We keep looping until we've done all we can.
     $old_semihtml = '';
     $text_formatting_tags = ['b', 'i', 'u', 'tt', 'font', 'title', 'center', 'left', 'right', 'color'];
+    $safety_guard = cms_preg_safety_guard_init();
     do {
         $old_semihtml = $semihtml;
 
@@ -940,7 +943,7 @@ function semihtml_to_comcode(string $semihtml, bool $force = false, bool $quick 
             }
         }
         $semihtml = cms_preg_replace_safe('#(&nbsp;|</CDATA__space>|\s)*<br\s*/>#i', '<br />', $semihtml); // Spaces on end of line -> (Remove)
-    } while (cms_preg_replace_safe('#(\s|<br[^<>]*>|&nbsp;)#i', '', $semihtml) != preg_replace('#(\s|<br[^<>]*>|&nbsp;)#i', '', $old_semihtml));
+    } while (cms_preg_replace_safe('#(\s|<br[^<>]*>|&nbsp;)#i', '', $semihtml) != preg_replace('#(\s|<br[^<>]*>|&nbsp;)#i', '', $old_semihtml) && cms_preg_safety_guard_ok($safety_guard));
 
     // Undone center tagging
     $semihtml = comcode_preg_replace('left', '#^\[left\]\[center\](.*)\[/center\]\[/left\]$#si', '[left]${1}[/left]', $semihtml);
@@ -1154,6 +1157,7 @@ function comcode_preg_replace(string $element, string $pattern, $replacement, st
     }
 
     $old_semihtml = '';
+    $safety_guard = cms_preg_safety_guard_init();
     do {
         $old_semihtml = $semihtml;
 
@@ -1193,7 +1197,7 @@ function comcode_preg_replace(string $element, string $pattern, $replacement, st
                 }
             }
         }
-    } while (cms_preg_replace_safe('#(\s|<br[^<>]*>|&nbsp;)#i', '', $semihtml) != cms_preg_replace_safe('#(\s|<br[^<>]*>|&nbsp;)#i', '', $old_semihtml));
+    } while (cms_preg_replace_safe('#(\s|<br[^<>]*>|&nbsp;)#i', '', $semihtml) != cms_preg_replace_safe('#(\s|<br[^<>]*>|&nbsp;)#i', '', $old_semihtml) && cms_preg_safety_guard_ok($safety_guard));
 
     return $semihtml;
 }
@@ -1257,6 +1261,7 @@ function array_html_preg_replace(string $element, array $array, string $semihtml
 
     // Long way
     $old_semihtml = '';
+    $safety_guard = cms_preg_safety_guard_init();
     do {
         $old_semihtml = $semihtml;
 
@@ -1307,7 +1312,7 @@ function array_html_preg_replace(string $element, array $array, string $semihtml
             }
             unset($array[$index]); // If we are going to recurse, we don't want extra work -- let's record that this one completed
         }
-    } while (cms_preg_replace_safe('#(\s|<br[^<>]*>|&nbsp;)#i', '', $semihtml) != cms_preg_replace_safe('#(\s|<br[^<>]*>|&nbsp;)#i', '', $old_semihtml));
+    } while (cms_preg_replace_safe('#(\s|<br[^<>]*>|&nbsp;)#i', '', $semihtml) != cms_preg_replace_safe('#(\s|<br[^<>]*>|&nbsp;)#i', '', $old_semihtml) && cms_preg_safety_guard_ok($safety_guard));
 
     return $semihtml;
 }
