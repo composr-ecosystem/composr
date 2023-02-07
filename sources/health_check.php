@@ -361,7 +361,7 @@ abstract class Hook_Health_Check
     {
         global $HEALTH_CHECK_LOG_FILE;
         if ($HEALTH_CHECK_LOG_FILE !== null) {
-            fwrite($HEALTH_CHECK_LOG_FILE, loggable_date() . ' ' . $this->category_label . ' \\ ' . $this->current_section_label . ': ' . $contents . "\n");
+            fwrite($HEALTH_CHECK_LOG_FILE, loggable_date() . '  ' . $this->category_label . ' \\ ' . $this->current_section_label . ': ' . $contents . "\n");
         }
     }
 
