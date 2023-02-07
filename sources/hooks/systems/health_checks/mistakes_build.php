@@ -352,6 +352,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
     public function testBrokenWebPostForms(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if ($check_context != CHECK_CONTEXT__SPECIFIC_PAGE_LINKS) {
+            $this->log('Skipped; not running on specific page links.');
             return;
         }
 
@@ -541,6 +542,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
         }
 
         foreach ($html_segments as $field_title => $html) {
+
             $text = clean_html_for_spellcheck($html);
 
             $misspellings = run_spellcheck($text, null, true, false);

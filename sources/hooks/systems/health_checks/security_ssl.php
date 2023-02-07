@@ -260,6 +260,7 @@ class Hook_health_check_security_ssl extends Hook_Health_Check
     public function testSSLCorrectness(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if ($check_context != CHECK_CONTEXT__LIVE_SITE) {
+            $this->log('Skipped; we are not running from a live site.');
             return;
         }
 

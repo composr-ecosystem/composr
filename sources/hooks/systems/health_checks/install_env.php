@@ -485,6 +485,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
     public function testDiskSpaceInstallation(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if ($check_context != CHECK_CONTEXT__INSTALL) {
+            $this->log('Skipped; we are not running from installer.');
             return;
         }
 
@@ -562,6 +563,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
     public function testSELinux(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if ($check_context != CHECK_CONTEXT__LIVE_SITE) {
+            $this->log('Skipped; we are not running from a live site.');
             return;
         }
 
@@ -596,6 +598,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
     public function testUmask(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if ($check_context != CHECK_CONTEXT__LIVE_SITE) {
+            $this->log('Skipped; we are not running from a live site.');
             return;
         }
 
@@ -709,6 +712,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
         }
 
         if ($check_context == CHECK_CONTEXT__INSTALL) {
+            $this->log('Skipped; we are running from installer.');
             return; // Too pedantic to confuse people at installation
         }
 

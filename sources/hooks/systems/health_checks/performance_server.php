@@ -105,6 +105,7 @@ class Hook_health_check_performance_server extends Hook_Health_Check
     public function testDiskSpace(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if ($check_context == CHECK_CONTEXT__INSTALL) {
+            $this->log('Skipped; we are running from installer.');
             return; // We have a separate check for disk space at installation
         }
         if ($check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS) {
@@ -164,6 +165,7 @@ class Hook_health_check_performance_server extends Hook_Health_Check
     public function testCPUSpeed(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if (($check_context == CHECK_CONTEXT__INSTALL) && (get_param_integer('skip_slow_checks', 0) == 1)) {
+            $this->log('Skipped; we are running from installer and slow checks were skipped.');
             return;
         }
         if ($check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS) {
@@ -336,6 +338,7 @@ class Hook_health_check_performance_server extends Hook_Health_Check
     public function testIOSpeed(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if (($check_context == CHECK_CONTEXT__INSTALL) && (get_param_integer('skip_slow_checks', 0) == 1)) {
+            $this->log('Skipped; we are running from installer and slow checks were skipped.');
             return;
         }
         if ($check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS) {

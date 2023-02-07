@@ -348,6 +348,7 @@ function _convert_image(string $from, string &$to, ?int $width, ?int $height, ?i
         cms_set_time_limit($old_limit);
         return $from;
     }
+
     $source = cms_imagecreatefromstring($from_file, $ext);
     if ($source === false) {
         if ($exit_on_error) {
