@@ -1999,6 +1999,9 @@ function post_param_string(string $name, $default = false, int $filters = INPUT_
             download_associated_media($ret);
         }
 
+        if ((((($filters & INPUT_FILTER_WYSIWYG_TO_COMCODE) != 0) || ($filters & INPUT_FILTER_COMCODE_CLEANUP) != 0)) && (isset($_POST[$name . '__is_wysiwyg'])) && ($_POST[$name . '__is_wysiwyg'] === '1')) {
+            $ret = cms_trim($ret, true); // We do the trimming because CKEditor adds a trailing nbsp
+        }
         comcode_page_hints_post($name, $ret);
     }
 
