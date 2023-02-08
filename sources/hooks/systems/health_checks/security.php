@@ -43,7 +43,7 @@ class Hook_health_check_security extends Hook_Health_Check
         $this->process_checks_section('testExternalSecurityScan', 'External security scan', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         if (($show_unusable_categories) || ($check_context != CHECK_CONTEXT__INSTALL)) {
             if (($show_unusable_categories) || ((get_option('hc_google_safe_browsing_api_enabled') == '1') && (get_option('google_apis_api_key') != ''))) {
-                $this->process_checks_section('testMalware', 'Malware', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+                $this->process_checks_section('testMalware', 'Malware (tests the configured/contextual pages only)', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
             }
         }
         $this->process_checks_section('testDirectorySecuring', 'Directory securing', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);

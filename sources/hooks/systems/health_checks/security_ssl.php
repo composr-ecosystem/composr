@@ -44,8 +44,8 @@ class Hook_health_check_security_ssl extends Hook_Health_Check
     {
         $this->process_checks_section('testSSLIsOn', 'SSL on', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testManualSSLGrading', 'SSL grading', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
-        $this->process_checks_section('testIncorrectHTTPSEmbedding', 'Insecure embedding', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
-        $this->process_checks_section('testIncorrectHTTPSLinking', 'Insecure linking', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+        $this->process_checks_section('testIncorrectHTTPSEmbedding', 'Insecure embedding (tests the configured/contextual pages only)', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+        $this->process_checks_section('testIncorrectHTTPSLinking', 'Insecure linking (tests the configured/contextual pages only)', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testSSLCorrectness', 'SSL correctness', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testSSLExpiry', 'SSL expiry', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testCAARecord', 'CAA record present', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
