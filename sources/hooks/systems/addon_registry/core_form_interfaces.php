@@ -1475,6 +1475,7 @@ class Hook_addon_registry_core_form_interfaces
             'REQUIRED' => '',
             'NAME' => $name,
             'VALUE' => '',
+            'PASSWORD_STRENGTH' => false,
         ]);
         $fields->attach(do_lorem_template('FORM_SCREEN_FIELD', [
             'REQUIRED' => true,

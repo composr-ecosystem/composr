@@ -610,7 +610,7 @@ function cns_get_member_fields_settings(bool $mini_mode = true, string $special_
             } else {
                 $password_field_description = do_lang_tempcode('DESCRIPTION_PASSWORD' . (($member_id !== null) ? '_EDIT' : ''));
             }
-            $fields->attach(form_input_password(do_lang_tempcode(($member_id === null) ? 'PASSWORD' : 'NEW_PASSWORD'), $password_field_description, ($member_id === null) ? 'password' : 'edit_password', $mini_mode || $temporary_password));
+            $fields->attach(form_input_password(do_lang_tempcode(($member_id === null) ? 'PASSWORD' : 'NEW_PASSWORD'), $password_field_description, ($member_id === null) ? 'password' : 'edit_password', $mini_mode || $temporary_password, null, '', null, true));
             $fields->attach(form_input_password(do_lang_tempcode('CONFIRM_PASSWORD'), '', 'password_confirm', $mini_mode || $temporary_password));
         }
     }

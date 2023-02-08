@@ -1429,9 +1429,10 @@ function form_input_huge($pretty_name, $description, string $name, string $defau
  * @param  ?integer $tabindex The tab index of the field (null: not specified)
  * @param  string $default The default value for this input field
  * @param  ~?mixed $autocomplete The autocomplete field name. (false: explicitly disable autocomplete) (null: no autocomplete attribute unless there's a default for this $name)
+ * @param  boolean $password_strength Show a password strength meter
  * @return Tempcode The input field
  */
-function form_input_password($pretty_name, $description, string $name, bool $required, ?int $tabindex = null, string $default = '', $autocomplete = null) : object
+function form_input_password($pretty_name, $description, string $name, bool $required, ?int $tabindex = null, string $default = '', $autocomplete = null, bool $password_strength = false) : object
 {
     $tabindex = get_form_field_tabindex($tabindex);
 
@@ -1449,6 +1450,7 @@ function form_input_password($pretty_name, $description, string $name, bool $req
         'NAME' => $name,
         'VALUE' => $default,
         'AUTOCOMPLETE' => $autocomplete,
+        'PASSWORD_STRENGTH' => $password_strength,
     ]);
     return _form_input($name, $pretty_name, $description, $input, $required, false, $tabindex);
 }

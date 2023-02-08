@@ -633,6 +633,7 @@ class Hook_addon_registry_core_cns
             'REQUIRED' => '',
             'NAME' => $name,
             'VALUE' => '',
+            'PASSWORD_STRENGTH' => true,
         ]);
         $fields->attach(do_lorem_template('FORM_SCREEN_FIELD', [
             'REQUIRED' => true,
@@ -651,6 +652,7 @@ class Hook_addon_registry_core_cns
             'REQUIRED' => '',
             'NAME' => $name,
             'VALUE' => '',
+            'PASSWORD_STRENGTH' => false,
         ]);
         $fields->attach(do_lorem_template('FORM_SCREEN_FIELD', [
             'REQUIRED' => true,
