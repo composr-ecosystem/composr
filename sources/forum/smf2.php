@@ -966,7 +966,7 @@ class Forum_driver_smf2 extends Forum_driver_base
             return $this->EMOTICON_CACHE;
         }
         // TODO: Need backwards compatibility with <=1.1 which used a single table.
-        $rows = $this->db->query('SELECT * FROM ' . $this->db->get_table_prefix() . 'smiley_files sf JOIN ' . $this->db->get_table_prefix() . 'smileys s ON s.id_smiley=sf.id_smiley');
+        $rows = $this->db->query('SELECT * FROM ' . $this->db->get_table_prefix() . 'smiley_files sf JOIN ' . $this->db->get_table_prefix() . 'smileys s ON s.id_smiley=sf.id_smiley ORDER BY sf.smiley_set');
         $this->EMOTICON_CACHE = [];
         foreach ($rows as $myrow) {
             $set = $myrow['smiley_set'];
