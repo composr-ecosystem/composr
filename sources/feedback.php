@@ -839,6 +839,9 @@ function actualise_post_comment(bool $allow_comments, string $content_type, stri
 
     if ($post_title === null) {
         $post_title = post_param_string('title', null);
+        if ($post_title !== null) {
+            $post_title = substr($post_title, 0, 255);
+        }
     }
     if (($post_title === null) && (!$forum_tie)) {
         return false;

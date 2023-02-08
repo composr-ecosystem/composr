@@ -1493,7 +1493,7 @@ if (!function_exists('imap2_base64')) {
         }
 
         destrictify();
-        $ret = base64_decode($string); // PatrickS (https://www.php.net/manual/en/function.imap-base64.php)
+        $ret = base64_decode($string); // PatrickS (https://github.com/javanile/php-imap2/issues/45)
         restrictify();
 
         return $ret;
