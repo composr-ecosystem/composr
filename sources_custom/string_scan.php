@@ -11791,6 +11791,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PRIVACY_ACTION_tornevall
         PRIVACY_REASON_tornevall
         ERROR_CHECKING_FOR_SPAMMERS_RBL_IS_NORMAL_DNS
+        PRIVACY_ACTION_cloudflare
+        PRIVACY_REASON_cloudflare
     ')));
 
     // Remove blank lines
