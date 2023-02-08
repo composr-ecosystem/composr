@@ -47,6 +47,7 @@ class Hook_addon_registry_google_search_console
     public function get_category() : string
     {
         // Best to just categorise properly as it's not bundled
+        //return is_maintained('google_search_console') ? 'Third Party Integration' : 'Development';
         return 'Third Party Integration';
     }
 
