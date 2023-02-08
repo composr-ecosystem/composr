@@ -605,13 +605,8 @@ function populate_build_files_list($dir = '', $pretend_dir = '')
     while (($file = readdir($dh)) !== false) {
         $is_dir = is_dir(get_file_base() . '/' . $dir . $file);
 
-        if (($dir != 'data_custom') || (!should_ignore_file($pretend_dir . $file, IGNORE_SHIPPED_VOLATILE))) {
-            if (should_ignore_file($pretend_dir . $file, IGNORE_NONBUNDLED | IGNORE_FLOATING | IGNORE_CUSTOM_DIRS | IGNORE_UPLOADS | IGNORE_CUSTOM_ZONES | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_LANGS | IGNORE_UNSHIPPED_VOLATILE | IGNORE_REVISION_FILES | IGNORE_ALIEN)) {
-                continue;
-            }
-
-            // Special case for temp directory: ignore everything except .htaccess and index.html (we need htaccess to deny all access)
-            if (($pretend_dir == 'temp/') && ($file != '.htaccess') && ($file != 'index.html')) {
+        if (($dir != 'data_custom') || (should_ignore_file($pretend_dir . $file)) || (!should_ignore_file($pretend_dir . $file, IGNORE_SHIPPED_VOLATILE))) { // If it isn't a violatile data_custom file which we are going to re-write dynamically
+            if (($pretend_dir . $file != 'temp') && (($pretend_dir != 'temp/') || !in_array($file, ['.htaccess', 'index.html'])) && should_ignore_file($pretend_dir . $file, IGNORE_NONBUNDLED | IGNORE_FLOATING | IGNORE_CUSTOM_DIRS | IGNORE_UPLOADS | IGNORE_CUSTOM_ZONES | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_LANGS | IGNORE_UNSHIPPED_VOLATILE | IGNORE_REVISION_FILES | IGNORE_ALIEN)) {
                 continue;
             }
         }

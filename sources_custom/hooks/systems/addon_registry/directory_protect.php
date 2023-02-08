@@ -90,7 +90,7 @@ class Hook_addon_registry_directory_protect
 
 You will need to add a new rule into your .htaccess file to control the routing. Assuming all the files were under a \'videos\' directory:
 [code]
-RewriteRule ^/?(videos/.*)$ data_custom/directory_protect.php\\?file=$1 [L,QSA]
+RewriteRule ^/?(videos/.*)$ data_custom/directory_protect.php\?file=$1 [L,QSA]
 [/code]
 
 Put the rule above this part of the Composr default:
