@@ -98,7 +98,7 @@ function _password_censor($text, $scan_type = 1, $explicit_only = false)
     } else { // Try and detect things to censor
         if ($scan_type != PASSWORD_CENSOR__PRE_SCAN) {
             $matches = [];
-            $num_matches = preg_match_all('#(^|[^\w])([^\s"\'=]{5,255})#', $text, $matches);
+            $num_matches = preg_match_all('#(^|[^\w])([^\s"\'=:]{5,255})#', $text, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
                 $m = $matches[2][$i];
 
@@ -135,7 +135,7 @@ function _password_censor($text, $scan_type = 1, $explicit_only = false)
 
                 // Add a point for each category of characters found
                 $c = 0;
-                if (preg_match('#\d#', $m) != 0) { // Digit
+                if (preg_match('#\d#', $m) != 0) { // Digits
                     $c++;
                 }
                 if (preg_match('#,+[A-Z]#', $m) != 0) { // Uppercase letters
@@ -147,12 +147,20 @@ function _password_censor($text, $scan_type = 1, $explicit_only = false)
                 if (preg_match('#[^\w]#', $m) != 0) { // Symbols
                     $c++;
                 }
-                if ((is_numeric($m)) && (strlen($m) > 6)) { // Numerical strings greater than 6 characters long
+                if ((is_numeric($m)) && (strlen($m) >= 4)) { // Numerical strings greater than or equal to 4 characters long with no delimiters; possibly a sensitive PIN or ID number
+                    $c++;
+                }
+                if ((is_numeric($m)) && (strlen($m) >= 8)) { // Numerical strings greater than or equal to 8 characters long with no delimiters; almost certainly a PIN number of some sort
                     $c++;
                 }
 
-                if (preg_match('#(password|pass|pword|pw|p/w|pwd)\s*:?=?\s+' . preg_quote($m, '#') . '#i', $text) != 0) {
-                    $c += 2; // Add 2 points if we find anything that looks like a password label before the match; almost certainly a password.
+                // Add points if a label exists indicating this is probably a password
+                if (preg_match('#(password|pass|pword|pw|p/w|pwd|pin)\s*:?=?\s*\n' . preg_quote($m, '#') . '#i', $text) != 0) {
+                    $c++; // Potential passwords are on a new line; less likely to be an actual password than if they were on the same line but we should still add 1 point
+                } elseif (preg_match('#(code|secret|key)\s*:?=?\s*\n?' . preg_quote($m, '#') . '#i', $text) != 0) {
+                    $c++; // The words "code", "secret", and "key" are less likely to indicate a password, but they could, so add 1 point
+                } elseif (preg_match('#(password|pass|pword|pw|p/w|pwd|pin)\s*:?=?\s*' . preg_quote($m, '#') . '#i', $text) != 0) {
+                    $c += 2; // Password labels with a colon or equal sign on the same line are almost certainly passwords. Add 2 points.
                 }
 
                 // If the score is 3 points or more, censor it.
