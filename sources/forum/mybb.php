@@ -97,9 +97,9 @@ class Forum_driver_mybb extends Forum_driver_base
      *
      * @param  string $name The name of the new custom field
      * @param  integer $length The length of the new custom field (ignored for Conversr, $type used instead)
-     * @param  BINARY $locked Whether the field is locked
-     * @param  BINARY $viewable Whether the field is for viewing
-     * @param  BINARY $settable Whether the field is for setting
+     * @param  BINARY $locked Whether the field is locked, e.g. cannot be deleted
+     * @param  BINARY $viewable Whether the field is for viewing by the owner and the public (0: cannot be viewed unless the viewing member has view_any_profile_field privilege)
+     * @param  BINARY $settable Whether the field is for setting by the owner
      * @param  BINARY $required Whether the field is required
      * @param  string $description Description
      * @param  string $type The field type (it's the same as the Composr field types, although we only expect forum drivers to specifically support short_text/long_text/integer/float and for the rest to be mapped to long_text)
@@ -129,9 +129,9 @@ class Forum_driver_mybb extends Forum_driver_base
      * @param  string $old_name The name of the existing custom field to edit
      * @param  string $name The new name of the custom field
      * @param  integer $length The length of the custom field (ignored for Conversr, $type used instead)
-     * @param  BINARY $locked Whether the field is locked
-     * @param  BINARY $viewable Whether the field is for viewing
-     * @param  BINARY $settable Whether the field is for setting
+     * @param  BINARY $locked Whether the field is locked, e.g. cannot be deleted
+     * @param  BINARY $viewable Whether the field is for viewing by the owner and the public (0: cannot be viewed unless the viewing member has view_any_profile_field privilege)
+     * @param  BINARY $settable Whether the field is for setting by the owner
      * @param  BINARY $required Whether the field is required
      * @param  string $description Description
      * @param  string $type The field type (it's the same as the Composr field types, although we only expect forum drivers to specifically support short_text/long_text/integer/float and for the rest to be mapped to long_text)

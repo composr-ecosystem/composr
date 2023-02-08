@@ -223,7 +223,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
      * @param  BINARY $show_in_post_previews Whether the field is shown in post previews
      * @param  ?integer $order The order the field is given relative to the order of the other Custom Profile Fields (null: last)
      * @param  LONG_TEXT $only_group The usergroups that this field is confined to (comma-separated list)
-     * @param  BINARY $locked Whether the field is locked
+     * @param  BINARY $locked Whether the field is locked, e.g. cannot be deleted
      * @param  SHORT_TEXT $options Field options
      * @param  BINARY $include_in_main_search Whether to include in main keyword search
      * @param  BINARY $allow_template_search Whether to allow template search
