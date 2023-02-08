@@ -92,8 +92,7 @@ function user_sync__inbound($since = null)
         warn_exit('PDO must be installed.', false, true);
     }
 
-    // PDO does not have a 'mysqli' driver
-    if ($db_type == 'mysqli') {
+    if (strpos($db_type, 'mysql') !== false) {
         $db_type = 'mysql';
     }
 
@@ -552,8 +551,7 @@ function user_sync__outbound($member_id)
         warn_exit('PDO must be installed.', false, true);
     }
 
-    // PDO does not have a 'mysqli' driver
-    if ($db_type == 'mysqli') {
+    if (strpos($db_type, 'mysql') !== false) {
         $db_type = 'mysql';
     }
 

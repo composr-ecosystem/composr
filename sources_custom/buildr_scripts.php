@@ -186,10 +186,10 @@ function download_map(int $realm, int $sx, int $sy)
             $room_name2 = substr($name, $roomnameclip, $roomnameclip);
             $room_name3 = substr($name, $roomnameclip * 2, $roomnameclip);
             $room_name4 = substr($name, $roomnameclip * 3);
-            imagestring($my_img, $my_font, $ax + 2, $ay + 2 + (imagefontheight($my_font) + 2) * 0, $room_name1 ? $room_name1 : do_lang('NA'), $txcolor);
-            imagestring($my_img, $my_font, $ax + 2, $ay + 2 + (imagefontheight($my_font) + 2) * 1, $room_name2 ? $room_name2 : do_lang('NA'), $txcolor);
-            imagestring($my_img, $my_font, $ax + 2, $ay + 2 + (imagefontheight($my_font) + 2) * 2, $room_name3 ? $room_name3 : do_lang('NA'), $txcolor);
-            imagestring($my_img, $my_font, $ax + 2, $ay + 2 + (imagefontheight($my_font) + 2) * 3, $room_name4 ? $room_name4 : do_lang('NA'), $txcolor);
+            imagestring($my_img, $my_font, $ax + 2, $ay + 2 + (imagefontheight($my_font) + 2) * 0, cms_empty_safe($room_name1) ? do_lang('NA') : $room_name1, $txcolor);
+            imagestring($my_img, $my_font, $ax + 2, $ay + 2 + (imagefontheight($my_font) + 2) * 1, cms_empty_safe($room_name2) ? do_lang('NA') : $room_name2, $txcolor);
+            imagestring($my_img, $my_font, $ax + 2, $ay + 2 + (imagefontheight($my_font) + 2) * 2, cms_empty_safe($room_name3) ? do_lang('NA') : $room_name3, $txcolor);
+            imagestring($my_img, $my_font, $ax + 2, $ay + 2 + (imagefontheight($my_font) + 2) * 3, cms_empty_safe($room_name4) ? do_lang('NA') : $room_name4, $txcolor);
             imagestring($my_img, $my_font, $ax + 2, $ay + 2 + (imagefontheight($my_font) + 2) * 4, $portal, $txcolor);
             imagestring($my_img, $my_font, $ax + 2, $ay + 2 + (imagefontheight($my_font) + 2) * 6, ':' . strval($x) . ':' . strval($y), $txcolor);
             imagestring($my_img, $my_font, $ax + 2, $ay + 2 + (imagefontheight($my_font) + 2) * 7, strval($owner), $txcolor);

@@ -108,7 +108,6 @@ PHP;
      */
     public function run(array $map) : object
     {
-
         if (!addon_installed('actionlog')) {
             return do_template('RED_ALERT', ['_GUID' => 'kimazz9b50kv3de1drxujlw7p5haozvo', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('actionlog'))]);
         }
@@ -142,7 +141,6 @@ PHP;
         inform_non_canonical_parameter('sa_sort');
 
         require_code('templates_results_table');
-
         $header_row = results_header_row(
             [
                 do_lang_tempcode('USERNAME'),

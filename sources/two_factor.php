@@ -125,7 +125,7 @@ function adjust_htaccess()
 
         $ips = $GLOBALS['FORUM_DB']->query_select('f_member_known_login_ips', ['DISTINCT i_ip'], ['i_val_code' => '']);
         $ips = array_merge($ips, $GLOBALS['FORUM_DB']->query_select('f_members', ['DISTINCT m_ip_address AS i_ip'], ['m_validated' => 1]));
-	    $ips = array_unique(collapse_1d_complexity('i_ip', $ips));
+        $ips = array_unique(collapse_1d_complexity('i_ip', $ips));
         foreach ($ips as $ip) {
             $lines[] = 'Require ip ' . $ip;
         }
