@@ -103,10 +103,6 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
         $index_table = 'ce_fulltext_index';
         $clean_scan = ($GLOBALS['SITE_DB']->query_select_value_if_there($index_table, 'i_ngram') === null);
 
-        $fields_to_index = [
-            'meta_keywords' => APPEARANCE_CONTEXT_META,
-            'meta_description' => APPEARANCE_CONTEXT_BODY,
-        ];
         $key_transfer_map = [
             'id' => 'i_catalogue_entry_id',
         ];
@@ -122,6 +118,7 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
         $since_clause = $engine->generate_since_where_clause($db, $index_table, ['ce_add_date' => false, 'ce_edit_date' => true], $since, $statistics_map);
         $sql .= $since_clause;
         $sql .= ' AND r.c_name NOT LIKE \'' . db_encode_like('\_%') . '\''; // Don't want results drawn from the hidden custom-field catalogues
+        $sql .= ' ORDER BY r.id';
         $max = 100;
         $start = 0;
         do {
@@ -129,8 +126,12 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
             foreach ($rows as $row) {
                 $langs = find_all_langs();
                 foreach (array_keys($langs) as $lang) {
-                    $content_fields = $row;
+                    $fields_to_index = [
+                        'meta_keywords' => APPEARANCE_CONTEXT_META,
+                        'meta_description' => APPEARANCE_CONTEXT_BODY,
+                    ];
 
+                    $content_fields = $row;
                     $engine->get_content_fields_from_catalogue_entry($content_fields, $fields_to_index, $row['c_name'], $row['id'], $lang);
 
                     list($keywords, $description) = seo_meta_get_for('catalogue_entry', strval($row['id']));
