@@ -1172,10 +1172,10 @@ function upgrade_addon_soft(string $addon_name) : int
 
     $upgrade_from = $rows[0]['addon_version'];
 
-    $code_file = 'hooks/systems/addon_registry/' . filter_naughty($addon_name);
-    if (!is_file(get_file_base() . '/sources_custom/' . $code_file . '.php')) {
+    if (!hook_exists('systems', 'addon_registry', $addon_name)) {
         return 0;
     }
+    $code_file = 'hooks/systems/addon_registry/' . filter_naughty($addon_name);
     require_code($code_file);
     $ob = object_factory('Hook_addon_registry_' . filter_naughty_harsh($addon_name));
 
@@ -1500,6 +1500,8 @@ function uninstall_addon(string $addon_name, bool $clear_caches = true)
  */
 function uninstall_addon_soft(string $addon_name)
 {
+    $was_installed = addon_installed($addon_name);
+
     $GLOBALS['SITE_DB']->query_delete('addons', ['addon_name' => $addon_name], '', 1);
 
     $GLOBALS['SITE_DB']->query_delete('addons_files', ['addon_name' => $addon_name]);
@@ -1509,11 +1511,11 @@ function uninstall_addon_soft(string $addon_name)
     require_code('files2');
     require_all_core_cms_code();
 
-    if (addon_installed($addon_name)) {
-        $code_file = 'hooks/systems/addon_registry/' . filter_naughty($addon_name);
-        if (!is_file(get_file_base() . '/sources_custom/' . $code_file . '.php')) {
+    if ($was_installed) {
+        if (!hook_exists('systems', 'addon_registry', $addon_name)) {
             return;
         }
+        $code_file = 'hooks/systems/addon_registry/' . filter_naughty($addon_name);
         require_code($code_file);
         $ob = object_factory('Hook_addon_registry_' . filter_naughty_harsh($addon_name));
 
