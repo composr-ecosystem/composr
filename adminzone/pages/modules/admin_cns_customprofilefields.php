@@ -33,6 +33,8 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
     protected $donext_entry_content_type = 'cpf';
     protected $donext_category_content_type = null;
 
+    public $js_function_calls = ['moduleAdminCnsCustomProfileFields'];
+
     /**
      * Find entry-points available within this module.
      *
@@ -104,6 +106,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
         require_lang('cns');
         require_lang('cns_special_cpf');
         require_css('cns_admin');
+        require_javascript('core_cns');
 
         set_helper_panel_tutorial('tut_adv_members');
 
@@ -256,10 +259,6 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
         $fields->attach(form_input_tick(do_lang_tempcode('OWNER_VIEW'), do_lang_tempcode('DESCRIPTION_OWNER_VIEW'), 'owner_view', $owner_view == 1));
         $fields->attach(form_input_tick(do_lang_tempcode('OWNER_SET'), do_lang_tempcode('DESCRIPTION_OWNER_SET'), 'owner_set', $owner_set == 1));
         $fields->attach(form_input_tick(do_lang_tempcode('PUBLIC_VIEW'), do_lang_tempcode('DESCRIPTION_PUBLIC_VIEW'), 'public_view', $public_view == 1));
-        if ((($locked == 0) || ($allow_full_edit)) && (is_encryption_enabled()) && ($name == '')) {
-            require_lang('encryption');
-            $fields->attach(form_input_tick(do_lang_tempcode('ENCRYPTED'), do_lang_tempcode('DESCRIPTION_ENCRYPTED'), 'encrypted', $encrypted == 1));
-        }
 
         require_code('fields');
         $type_list = create_selection_list_field_type($type, $name != '');
@@ -267,6 +266,13 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
             $fields->attach(form_input_list(do_lang_tempcode('TYPE'), do_lang_tempcode('DESCRIPTION_FIELD_TYPE'), 'type', $type_list));
         } else {
             $hidden->attach(form_input_hidden('type', $type));
+        }
+
+        if ((($locked == 0) || ($allow_full_edit)) && (is_encryption_enabled()) && ($name == '')) {
+            require_lang('encryption');
+            $fields->attach(form_input_tick(do_lang_tempcode('ENCRYPTED'), do_lang_tempcode('DESCRIPTION_ENCRYPTED'), 'encrypted', $encrypted == 1));
+        } else {
+            $hidden->attach(form_input_hidden('encrypted', strval($encrypted)));
         }
 
         require_lang('cns_autofill');
@@ -601,7 +607,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
         $description = get_translated_text($myrow['cf_description'], $GLOBALS['FORUM_DB']);
         $default = $myrow['cf_default'];
         require_code('encryption');
-        $encrypted = (($myrow['cf_encrypted'] == 1) && (is_encryption_enabled())) ? 1 : 0;
+        $encrypted = ($myrow['cf_encrypted'] == 1) ? 1 : 0;
         $public_view = (($myrow['cf_public_view'] == 1) && ($encrypted == 0)) ? 1 : 0;
         $owner_view = $myrow['cf_owner_view'];
         $owner_set = $myrow['cf_owner_set'];

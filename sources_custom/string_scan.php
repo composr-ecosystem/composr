@@ -163,6 +163,15 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         THEME_IMAGE_RECOLOUR_DESCRIPTION
         MATCH_TYPE
         CONFIG_OPTION_sprite_icons
+        CPF_ENCRYPTION_NOT_AVAILABLE
+        CMD_CPF_ENCRYPT_HELP
+        CMD_CPF_ENCRYPT_HELP_PARAM_0
+        CMD_CPF_DECRYPT_HELP
+        CMD_CPF_DECRYPT_HELP_PARAM_0
+        CMD_CPF_DECRYPT_HELP_PARAM_1
+        CPF_ENCRYPT_RESULT
+        CPF_DECRYPT_RESULT
+        NOT_ENCRYPTABLE_FIELD
         CAPABILITIES
         DESCRIPTION_THEME_LANGUAGE
         THEME_CAPABILITY_administrative

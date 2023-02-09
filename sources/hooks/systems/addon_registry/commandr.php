@@ -224,6 +224,8 @@ class Hook_addon_registry_commandr
             'sources/hooks/systems/commandr_commands/integrity_check.php',
             'sources/hooks/systems/commandr_commands/deep_clean.php',
             'sources/hooks/systems/commandr_commands/obfuscate_directory.php',
+            'sources/hooks/systems/commandr_commands/cpf_decrypt.php',
+            'sources/hooks/systems/commandr_commands/cpf_encrypt.php',
             'sources/hooks/systems/commandr_fs/bin.php',
             'sources/hooks/systems/commandr_fs/database.php',
             'sources/hooks/systems/commandr_fs/etc.php',

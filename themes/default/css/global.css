@@ -4080,6 +4080,13 @@ div.ajax-loading, p.ajax-loading {
 	{$BETA_CSS_PROPERTY,user-select: none;}
 }
 
+.ajax-tree-list a, .ajax-tree-list label {
+	vertical-align: middle;
+}
+.ajax-tree-list .icon {
+	vertical-align: baseline;
+}
+
 .ajax-tree-expand-icon {
 	display: inline-block;
 	cursor: pointer;
