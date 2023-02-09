@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_cleanpu_url_metadata_cache
+class Hook_cleanup_url_metadata_cache
 {
     /**
      * Find details about this cleanup hook.
