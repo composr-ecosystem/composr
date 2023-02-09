@@ -15,9 +15,10 @@
 
 .addon-actions {
 	white-space: nowrap;
+	line-height: normal;
 }
 
-.addon-actions * {
+.addon-actions > * {
 	vertical-align: middle;
 }
 
