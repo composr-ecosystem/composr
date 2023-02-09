@@ -859,7 +859,7 @@ function cns_get_member_fields_profile(bool $mini_mode = true, ?int $member_id =
         if ($existing_field) {
             $value = $custom_fields[$custom_field['trans_name']]['RAW'];
 
-            if (($custom_field['cf_encrypted'] == 1) && (is_encryption_enabled())) {
+            if (is_data_encrypted($value)) {
                 $value = remove_magic_encryption_marker($value);
             }
 
@@ -1730,16 +1730,18 @@ function cns_set_custom_field(int $member_id, int $field_id, $value, ?string $ty
 
     if ($ANY_FIELD_ENCRYPTED) {
         $encrypted = $GLOBALS['FORUM_DB']->query_select_value('f_custom_fields', 'cf_encrypted', ['id' => $field_id]);
-        if ($encrypted) {
+        if (($encrypted) && (is_string($value))) {
             require_code('encryption');
-            $current = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_member_custom_fields', $db_fieldname, ['mf_member_id' => $member_id]);
-            if ($current === null) {
-                return null;
+            if (is_encryption_enabled()) {
+                $current = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_member_custom_fields', $db_fieldname, ['mf_member_id' => $member_id]);
+                if ($current === null) {
+                    return null;
+                }
+                if ((is_data_encrypted($current)) && (remove_magic_encryption_marker($value) == remove_magic_encryption_marker($current))) {
+                    return null;
+                }
+                $value = encrypt_data($value);
             }
-            if ((remove_magic_encryption_marker($value) == remove_magic_encryption_marker($current)) && (is_data_encrypted($current))) {
-                return null;
-            }
-            $value = encrypt_data($value);
         }
     } else {
         $encrypted = false;

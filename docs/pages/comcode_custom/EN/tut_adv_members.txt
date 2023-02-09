@@ -148,7 +148,10 @@ Some CPFS are only activated by certain addons. They are preinstalled as they ma
 
 [title="3"]{$IS_MAINTAINED,cpf_encryption,Encrypted CPFs} (advanced)[/title]
 
-When creating a Custom Profile Field, it is possible to mark it as encrypted inside the database. If you have the OpenSSL PHP extension installed and configured, Composr can automatically encrypt the contents of such CPFs, such that their sensitive data would not be revealed if the server were to be compromised.
+If you have the OpenSSL PHP extension installed and configured, Composr can automatically encrypt the contents of select CPFs, such that their sensitive data would not be revealed if the server were to be compromised. When adding/editing a textual Custom Profile Field, it is possible to mark it as encrypted inside the database.
+Encryption operates with a site-wide passphrase, i.e. only staff with access to the passphrase can view the data, not even the members who entered it.
+
+Note that encrypted CPFs are only supported for text-based fields. Encrypted fields should probably not be set as publicly viewable, as the public would not be able to view the contents of the field anyway (not having the passphrase).
 
 [title="4"]Configuring the functionality[/title]
 
@@ -168,13 +171,19 @@ The final step is to configure Composr to use the key pair to encrypt data. Set 
 
 [title="4"]Using the functionality[/title]
 
-To mark a CPF as encrypted, tick (check) the "Encryption" box when creating the field, making sure to first have encryption set up on your server and on Composr.
+To mark a CPF as encrypted, tick (check) the "Encryption" checkbox when creating the field, making sure to first have encryption set up on your server and on Composr (otherwise you will not see the setting).
+
+Members fill in data normally on their profiles and encryption happens automatically under-the-hood.
+
+When viewing an encrypted CPF on a member's profile screen, the encrypted data will not be decrypted or shown (the server literally does not know how). To decrypt and view the data, click the "Decrypt" link for the CPF. An overlay will allow the decryption passphrase to be entered and the data decrypted. The decryption passphrase is the passphrase used to unlock the private key, as specified when originally generating the public/private key pair. Typically only staff will have knowledge of the passphrase, since there's only one for the entire site.
 
 When editing the value of an encrypted CPF, the encrypted data will be shown. To change the value, simply overwrite it with the data you want to change it to. Leaving the value alone will [i]not[/i] cause it to be doubly-encrypted so don't worry.
 
-When viewing an encrypted CPF on a member's profile screen, the encrypted data will not be decrypted or shown (the server literally does not know how). To decrypt and view the data, click the "Decrypt" JavaScript link for the CPF. A pop-up will allow the decryption passphrase to be entered and the data decrypted. The decryption passphrase is the passphrase used to unlock the private key, as specified when originally generating the public/private key pair. Typically only staff will have knowledge of the passphrase, since there's only one for the entire site.
+[title="4"]Changing the settings on an existing field[/title]
 
-Note that encrypted CPFs are not supported for any kind of CPF value that is not typed in (such as list selections).
+The "Encryption" checkbox only affects new data entered into a field. If you subsequently removing Encryption from a field existing data will remain encrypted and remain encryptable. If you subsequently add Encryption to a field existing data will remain unencrypted.
+
+The <kbd>cpf_decrypt</kbd>/<kbd>cpf_encrypt</kbd> Commandr commands allow you to bulk-change the encryption status of existing data.
 
 [title="3"]Statistics[/title]
 

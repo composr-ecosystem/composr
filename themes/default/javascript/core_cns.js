@@ -476,6 +476,24 @@
         }
     };
 
+    $cms.functions.moduleAdminCnsCustomProfileFields = function moduleAdminCnsCustomProfileFields() {
+        var form;
+
+        if (document.getElementById('encrypted')) {
+            form = document.getElementById('type').form;
+            var crf = function () {
+                var type = form.elements['type'].value;
+                var encryptable = (type.indexOf('_text') != -1) || (type.indexOf('_trans') != -1) || (type.indexOf('posting') != -1); // See also cpf_decrypt.php and cpf_encrypt.php
+                form.elements['encrypted'].disabled = !encryptable;
+                if (!encryptable) {
+                    form.elements['encrypted'].checked = false;
+                }
+            };
+            form.elements['type'].onchange = crf;
+            crf();
+        }
+    };
+
     $cms.templates.cnsViewGroupScreen = function cnsViewGroupScreen(params, container) {
         $dom.on(container, 'click', '.js-add-member-to-group', function (e, btn) {
             var form = btn.form;
