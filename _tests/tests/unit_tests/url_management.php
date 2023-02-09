@@ -20,6 +20,13 @@ class url_management_test_set extends cms_test_case
 {
     protected $backup_url_scheme;
 
+    public function setUp()
+    {
+        parent::setUp();
+
+        $GLOBALS['SITE_INFO']['block_url_schemes'] = '0';
+    }
+
     public function testUrlToPageLink()
     {
         $zone_pathed = (get_option('single_public_zone') == '1') ? '' : 'site/';
