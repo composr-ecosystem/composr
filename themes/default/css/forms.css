@@ -701,9 +701,21 @@ span.validated-checkbox + input[name="validated"].input-tick {
 /*{+END}*/
 
 .preview-checking-box {
-	width: 34em;
+	max-width: 34em;
 	margin: 1em auto 3em auto;
 }
+
+/*{+START,CSS_MODE,desktop}*/
+	.preview-checking-box label + label {
+		margin-left: 1em;
+	}
+/*{+END}*/
+
+/*{+START,CSS_MODE,mobile}*/
+	.preview-checking-box label {
+		display: block;
+	}
+/*{+END}*/
 
 /* Posting forms */
 
