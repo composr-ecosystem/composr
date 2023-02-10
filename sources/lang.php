@@ -819,7 +819,12 @@ function _do_lang(string $codename, $parameter1 = null, $parameter2 = null, $par
                     return ''; // Probably failing to load global.ini, so just output with some text missing
                 }
 
-                trigger_error(do_lang('MISSING_LANG_STRING', escape_html($codename)), E_USER_NOTICE);
+                // Cannot trigger error using MISSING_LANG_STRING if MISSING_LANG_STRING is what is missing!
+                if ($codename != 'MISSING_LANG_STRING') {
+                    trigger_error(do_lang('MISSING_LANG_STRING', escape_html($codename)), E_USER_NOTICE);
+                } else {
+                    critical_error('CRIT_LANG');
+                }
                 return '';
             } else {
                 if ($SMART_CACHE !== null) {
