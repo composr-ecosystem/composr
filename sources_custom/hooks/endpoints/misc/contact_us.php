@@ -16,7 +16,7 @@
 /**
  * Hook class.
  */
-class Hook_endpoint_account_contact_us
+class Hook_endpoint_misc_contact_us
 {
     /**
      * Run an API endpoint.

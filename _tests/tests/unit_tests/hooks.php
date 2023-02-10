@@ -98,9 +98,20 @@ class hooks_test_set extends cms_test_case
             }
         }
 
-        // Loop over each structure to see if there are multiple prefixes (inconsistency)
+        $prefix_to_hook_type = [];
         foreach ($hook_structure as $hook_type => $hook_prefixes) {
+            // Check that the hook type is not using multiple prefixes
             $this->assertTrue((count($hook_prefixes) < 2), 'Multiple class prefixes used for the ' . $hook_type . ' hooks: ' . implode(', ', $hook_prefixes));
+
+            // Check that a prefix is not being used by multiple hook types/subtypes
+            foreach ($hook_prefixes as $hook_prefix) {
+                $already_used = (isset($prefix_to_hook_type[$hook_prefix]) && $prefix_to_hook_type[$hook_prefix] != $hook_type);
+                $this->assertTrue(!$already_used, 'The hook type ' . $hook_type . ' is using the prefix ' . $hook_prefix . ' which is also being used by another hook type.');
+
+                if (!$already_used) {
+                    $prefix_to_hook_type[$hook_prefix] = $hook_type;
+                }
+            }
         }
     }
 }
