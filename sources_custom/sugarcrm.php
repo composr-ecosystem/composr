@@ -660,7 +660,7 @@ function sync_lead_metadata_into_sugarcrm()
 
     require_code('user_metadata_display');
 
-    // Find all local members with an e-mail address TODO: remove id
+    // Find all local members with an e-mail address
     $sql = 'SELECT id,m_email_address FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE ' . db_string_not_equal_to('m_email_address', '');
     $sql .= ' ORDER BY id';
     $start = 0;
