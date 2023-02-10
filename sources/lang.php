@@ -823,7 +823,7 @@ function _do_lang(string $codename, $parameter1 = null, $parameter2 = null, $par
                 if ($codename != 'MISSING_LANG_STRING') {
                     trigger_error(do_lang('MISSING_LANG_STRING', escape_html($codename)), E_USER_NOTICE);
                 } else {
-                    critical_error('RELAY', 'Missing language string codename: MISSING_LANG_STRING. This language string is required to show errors regarding missing language strings. It is likely another missing language string error is being masked by this error.');
+                    critical_error('CRIT_LANG');
                 }
                 return '';
             } else {
