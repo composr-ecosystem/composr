@@ -639,7 +639,7 @@ function _log_it(string $type, ?string $a = null, ?string $b = null, ?int $relat
     }
 
     // Run hooks, if any exist
-    $hooks = find_all_hook_obs('systems', 'upon_action_logging', 'upon_action_logging');
+    $hooks = find_all_hook_obs('systems', 'upon_action_logging', 'Hook_upon_action_logging_');
     foreach ($hooks as $ob) {
         $ob->run($type, $a, $b);
     }
