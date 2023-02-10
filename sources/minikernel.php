@@ -735,7 +735,10 @@ function running_script($is_this_running)
 function get_charset()
 {
     if (function_exists('do_lang')) {
-        return do_lang('charset');
+        $ret = do_lang('charset', null, null, null, null, false);
+        if ($ret !== null) {
+            return $ret;
+        }
     }
     global $SITE_INFO;
     $lang = (!empty($SITE_INFO['default_lang'])) ? $SITE_INFO['default_lang'] : 'EN';
