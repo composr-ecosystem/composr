@@ -39,7 +39,7 @@ class Hook_checklist_tickets
 
         $outstanding = 0;
 
-        $tickets = get_tickets([], false, true);
+        $tickets = get_tickets(['only_open' => true], false, true);
         if ($tickets !== null) {
             foreach ($tickets as $topic) {
                 if ($topic['closed'] == 0) {
