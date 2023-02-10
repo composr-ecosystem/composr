@@ -299,11 +299,8 @@ function _build_sitemap_menu(string $menu_id) : array
         }
 
         if ($icon !== null) {
-            if (find_theme_image('icons/' . $icon, true) == '' && find_theme_image('icons/' . $icon, true) != '') {
-                $node['extra_meta']['image'] = find_theme_image('icons/' . $icon);
-            } else {
-                $node['extra_meta']['image'] = find_theme_image('icons/' . $icon);
-            }
+            $node['extra_meta']['image'] = find_theme_image('icons/' . $icon);
+            $node['extra_meta']['icon'] = $icon;
         }
 
         switch ($include) {
@@ -342,6 +339,7 @@ function _get_menu_root_wrapper() : array
         'extra_meta' => [
             'description' => null,
             'image' => null,
+            'icon' => null,
         ],
         'has_possible_children' => true,
         'children' => [],
@@ -385,6 +383,7 @@ function _build_stored_menu_branch(array $item, array $items) : array
         'extra_meta' => [
             'description' => get_translated_tempcode('menu_items', $item, 'i_caption_long'),
             'image' => ($item['i_theme_img_code'] == '') ? null : find_theme_image($item['i_theme_img_code']),
+            'icon' => ($item['i_theme_img_code'] == '' || substr($item['i_theme_img_code'], 0, 6) != 'icons/') ? null : substr($item['i_theme_img_code'], 6),
         ],
         'has_possible_children' => true,
         'children' => [],
@@ -762,13 +761,20 @@ function _render_menu_branch(array $branch, string $codename, int $source_member
     $new_window = isset($branch['modifiers']['new_window']);
 
     // Image
-    $img = isset($branch['extra_meta']['image']) ? $branch['extra_meta']['image'] : '';
+    if (get_theme_option('menu_icons') == '1') {
+        $img = isset($branch['extra_meta']['image']) ? $branch['extra_meta']['image'] : '';
+        $icon = isset($branch['extra_meta']['icon']) ? $branch['extra_meta']['icon'] : null;
+    } else {
+        $img = '';
+        $icon = null;
+    }
 
     // Render!
     $rendered_branch = [
         // Basic properties
         'CAPTION' => $caption,
-        'IMG' => (get_theme_option('menu_icons') == '1') ? $img : '',
+        'IMG' => $img,
+        'ICON' => $icon,
 
         // Link properties
         'URL' => $url,

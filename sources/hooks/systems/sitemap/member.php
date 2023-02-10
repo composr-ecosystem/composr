@@ -156,6 +156,7 @@ class Hook_sitemap_member extends Hook_sitemap_content
             if (empty($struct['extra_meta']['image'])) {
                 $test = find_theme_image('cns_default_avatars/default', true);
                 $struct['extra_meta']['image'] = $test;
+                $struct['extra_meta']['icon'] = null;
             }
             $struct['extra_meta']['image'] = ensure_protocol_suitability($struct['extra_meta']['image']);
         }
