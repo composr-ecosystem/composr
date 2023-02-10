@@ -246,9 +246,10 @@ QUERYING ADDONS
  * @param  boolean $installed_too Whether to include addons that are installed already
  * @param  boolean $gather_mtimes Whether to gather mtimes of the TARs and sort by them
  * @param  array $already_known Addons we already have details for, performance optimisation
+ * @param  boolean $get_info Whether to get full details about each addon
  * @return array Maps of maps describing the available addons (filename => details)
  */
-function find_available_addons(bool $installed_too = true, bool $gather_mtimes = true, array $already_known = []) : array
+function find_available_addons(bool $installed_too = true, bool $gather_mtimes = true, array $already_known = [], bool $get_info = true) : array
 {
     $addons_available_for_installation = [];
     $files = [];
@@ -296,22 +297,24 @@ function find_available_addons(bool $installed_too = true, bool $gather_mtimes =
         if ($info_file !== null) {
             $info = cms_parse_ini_file_fast(null, $info_file['data']);
 
-            if (!empty($info['copyright_attribution'])) {
-                $info['copyright_attribution'] = explode("\n", $info['copyright_attribution']);
-            } else {
-                $info['copyright_attribution'] = [];
-            }
-            if (empty($info['licence'])) {
-                $info['category'] = '(Unstated)';
-            }
+            if ($get_info) {
+                if (!empty($info['copyright_attribution'])) {
+                    $info['copyright_attribution'] = explode("\n", $info['copyright_attribution']);
+                } else {
+                    $info['copyright_attribution'] = [];
+                }
+                if (empty($info['licence'])) {
+                    $info['category'] = '(Unstated)';
+                }
 
-            $files_rows = tar_get_directory($tar);
-            $info['files'] = [];
-            foreach ($files_rows as $file_row) {
-                $info['files'][] = $file_row['path'];
-            }
+                $files_rows = tar_get_directory($tar);
+                $info['files'] = [];
+                foreach ($files_rows as $file_row) {
+                    $info['files'][] = $file_row['path'];
+                }
 
-            $info += get_default_addon_info();
+                $info += get_default_addon_info();
+            }
 
             // Special details for installable addons
             $info['mtime'] = $_file[1];
@@ -1103,7 +1106,7 @@ function find_updated_addons() : array
         //warn_exit(do_lang('INTERNAL_ERROR'));
     }
 
-    $available_addons = find_available_addons();
+    $available_addons = find_available_addons(true, true, [], false);
     sort_maps_by($available_addons, 'mtime');
     $available_addons = array_reverse($available_addons);
 
@@ -1124,10 +1127,12 @@ function find_updated_addons() : array
                 break;
             }
         }
-        if ((!$found) && (addon_installed($addon_bits[3]))) { // Don't have our original .tar, so lets say we need to reinstall
-            $mtime = find_addon_effective_mtime($addon_bits[3]);
-            if (($addon_bits[0] !== null) && ($mtime !== null) && ($mtime < $addon_bits[0])) { // If server has it and is newer
-                $updated_addons[$addon_bits[3]] = [$addon_bits[1]];
+        if ((!$found) && (addon_installed($addon_bits[3], false, false))) { // Don't have our original .tar, so lets say we need to reinstall
+            if ($addon_bits[0] !== null) { // If server has it
+                $mtime = find_addon_effective_mtime($addon_bits[3], $addon_bits[0]);
+                if (($mtime !== null) && ($mtime < $addon_bits[0])) { // If it is newer
+                    $updated_addons[$addon_bits[3]] = [$addon_bits[1]];
+                }
             }
         }
     }
@@ -1138,17 +1143,23 @@ function find_updated_addons() : array
  * Find effective modification date of an addon.
  *
  * @param  string $addon_name The name of the addon
+ * @param  ?TIME $newer_than_ok Optimisation: If the date is newer than this then that's good enough for a comparison and we can not look harder (null: no optimisation)
  * @return ?TIME Modification time (null: could not find any files)
  */
-function find_addon_effective_mtime(string $addon_name) : ?int
+function find_addon_effective_mtime(string $addon_name, ?int $newer_than_ok = null) : ?int
 {
     $addon_info = read_addon_info($addon_name);
+
+    // Note we could look at install time, but we do not trust that
 
     $mtime = null;
     foreach ($addon_info['files'] as $filepath) {
         if (@file_exists(get_file_base() . '/' . $filepath)) { //@d due to possible bad file paths
             $_mtime = filemtime(get_file_base() . '/' . $filepath);
             $mtime = ($mtime === null) ? $_mtime : max($mtime, $_mtime);
+            if (($newer_than_ok !== null) && ($mtime > $newer_than_ok)) {
+                return $mtime;
+            }
         }
     }
     return $mtime;

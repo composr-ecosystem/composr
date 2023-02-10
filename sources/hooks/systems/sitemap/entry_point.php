@@ -248,6 +248,7 @@ class Hook_sitemap_entry_point extends Hook_sitemap_base
             'extra_meta' => [
                 'description' => null,
                 'image' => ($icon === null) ? null : find_theme_image('icons/' . $icon),
+                'icon' => ($icon === null) ? null : $icon,
                 'add_time' => (($meta_gather & SITEMAP_GATHER_TIMES) != 0) ? filectime(get_file_base() . '/' . $path) : null,
                 'edit_time' => (($meta_gather & SITEMAP_GATHER_TIMES) != 0) ? filemtime(get_file_base() . '/' . $path) : null,
                 'submitter' => null,
