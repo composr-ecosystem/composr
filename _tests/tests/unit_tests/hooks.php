@@ -36,9 +36,9 @@ class hooks_test_set extends cms_test_case
             'systems/non_active_urls',
         ];
 
-        // Prefixes that will be ignored. Key is prefix, value is hook type/subtype.
-        $exceptions_prefixes = [
-            'Hx_health_check_', // systems/health_checks; Hx extends the original Hook_health_check_ class in a sources_custom override
+        // Remap the key prefix to the value prefix.
+        $prefix_remaps = [
+            'Hx_health_check_' => 'Hook_health_check_', // systems/health_checks; Hx_health_check is a Hook_health_check override
         ];
 
         // Grab the hook files
@@ -86,8 +86,13 @@ class hooks_test_set extends cms_test_case
                     $hook_prefix = $class_preg[1];
                 }
 
+                // Remap the prefix if necessary
+                if (array_key_exists($hook_prefix, $prefix_remaps)) {
+                    $hook_prefix = $prefix_remaps[$hook_prefix];
+                }
+
                 // Put the class name prefix in our structure array if it is not already in there and not to be ignored
-                if (!in_array($hook_prefix, $hook_structure[$hook_type . '/' . $hook_subtype]) && !in_array($hook_prefix, $exceptions_prefixes)) {
+                if (!in_array($hook_prefix, $hook_structure[$hook_type . '/' . $hook_subtype])) {
                     $hook_structure[$hook_type . '/' . $hook_subtype][] = $hook_prefix;
                 }
             }
