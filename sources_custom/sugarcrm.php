@@ -91,6 +91,7 @@ function get_or_create_sugarcrm_account($company, $timestamp = null)
         );
         $account_id = $response['id'];
     }
+
     return $account_id;
 }
 
@@ -105,8 +106,9 @@ function get_sugarcrm_account($company)
             'where' => 'name=\'' . db_escape_string($company) . '\'',
         ]
     );
+
     if (isset($response[0])) {
-        return $response[0];
+        return $response[0]['id'];
     }
     return null;
 }
@@ -233,7 +235,7 @@ function save_composr_account_into_sugarcrm_as_configured($member_id, $timestamp
     return $contact_id;
 }
 
-function save_message_into_sugarcrm($sync_type, $mappings, $subject, $body, $from_email, $from_name, $attachments, $data, $posted_data, $timestamp = null, $guarded = false)
+function save_message_into_sugarcrm($sync_type, $mappings, $subject, $body, $from_email, $from_name, $attachments = [], $data = [], $posted_data = [], $timestamp = null, $guarded = false)
 {
     /*
     Notes...
@@ -658,7 +660,7 @@ function sync_lead_metadata_into_sugarcrm()
 
     require_code('user_metadata_display');
 
-    // Find all local members with an e-mail address
+    // Find all local members with an e-mail address TODO: remove id
     $sql = 'SELECT id,m_email_address FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE ' . db_string_not_equal_to('m_email_address', '');
     $sql .= ' ORDER BY id';
     $start = 0;
@@ -669,7 +671,7 @@ function sync_lead_metadata_into_sugarcrm()
         foreach ($rows as $row) {
             // For each member, write the metadata URL into SugarCRM
 
-            $where = "leads.id IN (SELECT bean_id FROM email_addr_bean_rel eabr JOIN email_addresses ea ON (eabr.email_address_id = ea.id) WHERE bean_module = 'Leads' AND ea.email_address='" . db_escape_string($row['m_email_address']) . "' AND eabr.deleted=0) AND (leads.status='New' OR leads.status='Assigned') AND " . $metadata_field . "=''";
+            $where = "leads.id IN (SELECT bean_id FROM email_addr_bean_rel eabr JOIN email_addresses ea ON (eabr.email_address_id = ea.id) WHERE bean_module = 'Leads' AND ea.email_address='" . db_escape_string($row['m_email_address']) . "' AND eabr.deleted=0) AND (leads.status='New' OR leads.status='Assigned') AND (leads." . $metadata_field . "='' OR leads." . $metadata_field . " IS NULL)";
 
             $response = $SUGARCRM->get(
                 'Leads',
