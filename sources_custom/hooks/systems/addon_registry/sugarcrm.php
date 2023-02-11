@@ -89,7 +89,7 @@ class Hook_addon_registry_sugarcrm
         return 'Provides a number of Composr integrations with SugarCRM:
 1) Sync new accounts into SugarCRM (Accounts, and Contacts and/or Leads)
 2) Sync contact form messages into SugarCRM (Cases or Leads)
-3) Insert URLs into Contacts to view Composr metadata of corresponding members
+3) Insert URLs into Contacts to view Composr metadata of corresponding members (see &ldquo;Contacts metadata field&rdquo; and &ldquo;Lead metadata field&rdquo; config options)
 
 Form messages are taken from [tt]main_contact_simple[/tt] block, [tt]main_contact_catalogues[/tt] block, and [tt]form_to_email.php[/tt].
 

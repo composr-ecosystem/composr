@@ -219,13 +219,16 @@ function _form_to_email(array $extra_boring_fields = [], ?string $subject = null
 
     // Find to details if enabled...
 
-    $to_name = null;
+    $to_name = '';
     if (($to_email === null) && (get_value('allow_member_mail_relay') !== null)) {
         $to = post_param_integer('to_members_email', null, INPUT_FILTER_POST_IDENTIFIER);
         if ($to !== null) {
             $to_email = $GLOBALS['FORUM_DRIVER']->get_member_email_address($to);
             $to_name = $GLOBALS['FORUM_DRIVER']->get_username($to, true);
         }
+    }
+    if ($to_email === null) {
+        $to_email = '';
     }
 
     // Find attachments...
