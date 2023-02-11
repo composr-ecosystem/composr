@@ -427,6 +427,13 @@ class Module_admin_errorlog
             $last_error = '';
             $enabled = true;
 
+            if (isset($cron_progression[$hook])) {
+                $last_run = $cron_progression[$hook]['c_last_run'];
+                $last_execution_secs = $cron_progression[$hook]['c_last_execution_secs'];
+                $last_error = $cron_progression[$hook]['c_last_error'];
+                $enabled = ($cron_progression[$hook]['c_enabled'] == 1);
+            }
+
             $info = $object->info($last_run, null); // Low priority for calculating queued items
             if ($info !== null) {
                 $label = $info['label'];
@@ -434,13 +441,6 @@ class Module_admin_errorlog
                 $minutes_between_runs = $info['minutes_between_runs'];
             } else {
                 $available = false;
-            }
-
-            if (isset($cron_progression[$hook])) {
-                $last_run = $cron_progression[$hook]['c_last_run'];
-                $last_execution_secs = $cron_progression[$hook]['c_last_execution_secs'];
-                $last_error = $cron_progression[$hook]['c_last_error'];
-                $enabled = ($cron_progression[$hook]['c_enabled'] == 1);
             }
 
             $actions = new Tempcode();
