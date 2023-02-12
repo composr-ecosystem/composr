@@ -1007,6 +1007,16 @@ abstract class DatabaseDriver
     }
 
     /**
+     * Find the maximum number of indexes supported.
+     *
+     * @return ?integer Maximum number of indexes (null: no limit or inconsequentially-large limit)
+     */
+    public function get_max_indexes() : ?int
+    {
+        return 64;
+    }
+
+    /**
      * Find whether batch inserts are supported.
      *
      * @return boolean Whether they are

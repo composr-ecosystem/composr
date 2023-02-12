@@ -167,7 +167,7 @@ abstract class Database_super_sqlserver extends DatabaseDriver
             'LONG_TRANS__COMCODE' => 'bigint',
             'SHORT_TRANS__COMCODE' => 'bigint',
             'SHORT_TEXT' => 'nvarchar(255)',
-            'TEXT' => 'nvarchar(16377)', // Set consistently as 16377 across all drivers due to InnoDB having the lowest limit, the limit relating to the default page_size (- 6 bytes for pointers) ; this field type should only be used as an alternative to LONG_TEXT that can be defaulted to '' if not specified, necessary for adding fields to the table's of external systems
+            'TEXT' => 'nvarchar(4000)', // Set consistently as 4000 across all drivers due to SQL Server having the lowest limit ; this field type should only be used as an alternative to LONG_TEXT that can be defaulted to '' if not specified, necessary for adding fields to the table's of external systems
             'LONG_TEXT' => 'nvarchar(MAX)', // 'TEXT' cannot be indexed.
             'ID_TEXT' => 'nvarchar(80)',
             'MINIID_TEXT' => 'nvarchar(40)',
@@ -224,7 +224,7 @@ abstract class Database_super_sqlserver extends DatabaseDriver
             $_fields .= ' ' . $perhaps_null . ',' . "\n";
         }
 
-        $query_create = 'CREATE TABLE ' . $table_name . ' (' . "\n" . $_fields . '    PRIMARY KEY (' . $keys . ")\n)";
+        $query_create = 'CREATE TABLE ' . $table_name . ' (' . "\n" . $_fields . '    CONSTRAINT PK_' . $table_name . ' PRIMARY KEY NONCLUSTERED (' . $keys . ")\n)";
         $ret = [$query_create];
 
         return $ret;
@@ -272,6 +272,16 @@ abstract class Database_super_sqlserver extends DatabaseDriver
     public function get_delimited_identifier(bool $end = false) : string
     {
         return $end ? ']' : '[';
+    }
+
+    /**
+     * Find the maximum number of indexes supported.
+     *
+     * @return ?integer Maximum number of indexes (null: no limit or inconsequentially-large limit)
+     */
+    public function get_max_indexes() : ?int
+    {
+        return 64;
     }
 
     /**
@@ -371,7 +381,7 @@ abstract class Database_super_sqlserver extends DatabaseDriver
             }
         }
 
-        return ['CREATE INDEX ' . $index_name . '__' . $table_name . ' ON ' . $table_name . '(' . $_fields . ')'];
+        return ['CREATE NONCLUSTERED INDEX ' . $index_name . '__' . $table_name . ' ON ' . $table_name . '(' . $_fields . ')'];
     }
 
     /**

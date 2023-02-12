@@ -1641,7 +1641,7 @@ function cns_edit_custom_field(int $id, string $name, string $description, strin
     }
     $GLOBALS['FORUM_DB']->alter_table_field('f_member_custom_fields', 'field_' . strval($id), $_type); // LEGACY: Field type should not have changed, but bugs can happen, especially between CMS versions, so we allow a CPF edit as a "fixup" op
 
-    build_cpf_indices($id, $include_in_main_search == 1, $type, $_type);
+    build_cpf_indices($id, $include_in_main_search == 1 || $allow_template_search == 1, $type, $_type);
 
     log_it('EDIT_CUSTOM_PROFILE_FIELD', strval($id), $name);
 
@@ -2683,7 +2683,7 @@ function rebuild_all_cpf_indices(bool $leave_existing = false)
         $type = $field['cf_type'];
         list($_type) = get_cpf_storage_for($type);
 
-        $okay = build_cpf_indices($id, $field['cf_include_in_main_search'] == 1, $type, $_type, true);
+        $okay = build_cpf_indices($id, $field['cf_include_in_main_search'] == 1 || $field['cf_allow_template_search'] == 1, $type, $_type, true);
         if (!$okay) { // Limit was hit
             break;
         }

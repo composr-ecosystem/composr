@@ -1114,7 +1114,7 @@ class DatabaseRepair
                     $type = 'SHORT_TEXT';
                 }
                 break;
-            case 'varchar(16377)':
+            case 'varchar(4000)':
                 $type = 'TEXT';
                 break;
             case 'tinyint(1)':

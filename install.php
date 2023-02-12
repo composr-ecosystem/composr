@@ -3468,6 +3468,9 @@ function confirm_db_credentials(bool $return_connection = false)
     require_code('database');
     $post_db_type = post_param_string('db_type', false, INPUT_FILTER_POST_IDENTIFIER);
     $table_prefix = post_param_string('table_prefix', false, INPUT_FILTER_POST_IDENTIFIER);
+    if (($table_prefix !== false) && (strlen($table_prefix) > 18)) {
+        warn_exit(do_lang_tempcode('LONG_TABLE_PREFIX', '18', $table_prefix));
+    }
     $post_db_site = post_param_string('db_site', false, INPUT_FILTER_POST_IDENTIFIER);
     $post_db_host = post_param_string('db_site_host', false, INPUT_FILTER_POST_IDENTIFIER);
     $post_db_user = post_param_string('db_site_user', false, INPUT_FILTER_POST_IDENTIFIER);

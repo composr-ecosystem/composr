@@ -8350,6 +8350,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         POINTS_FOSS_UA_INCLUDE
         DB_META_CORRUPT_MISSING
         MISSING_DB_PARAMETERS
+        LONG_TABLE_PREFIX
         NO_ROOT_DB_WITHOUT_GIT
         STAFF_SECURITY_ASPECT_CHANGED_BODY
         STAFF_SECURITY_ASPECT_CHANGED_SUBJECT

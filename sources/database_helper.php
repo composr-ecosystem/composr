@@ -36,7 +36,7 @@ function init__database_helper()
         //  We also limit field names to not conflict with keywords (those defined in get_db_keyword) and various other hard-coded restrictions).
         //  These limits are intentionally conservative, sometimes much more than all supported databases. This is in case we hit a future more restrictive system and because we want to encourage good database design.
 
-        define('DB_MAX_IDENTIFIER_LENGTH', 44);
+        define('DB_MAX_IDENTIFIER_LENGTH', 44); // Remember we need some space for long table prefixes, we reserve 19 bytes
 
         define('DB_MAX_PRIMARY_KEY_SIZE', 328); // 328 is what group_privileges uses
         define('DB_MAX_KEY_SIZE', 1000);
@@ -45,21 +45,27 @@ function init__database_helper()
         /*
         Source...
 
-        Limitation                                     Access    MySQL (InnoDB)      MySQL (MyISAM)    PostgreSQL    Oracle    DB2    Firebird    SQLite    CUBRID    Ingres    SQL Anywhere    Informix    FileMaker
+        Limitation                                     Access    MySQL (InnoDB)      MySQL (MyISAM)    PostgreSQL    Oracle    DB2    Firebird    SQLite    CUBRID    Ingres    SQL Anywhere    Informix    FileMaker   SQL Server
 
-        Max table name length                          64        64                  64                63            128       128    63          /         254       256       128             128         100
-        Max field identifier length                    64        64                  64                63            128       128    63          /         254       256       128             128         100
-        Max index name length                          64        64                  64                63            128       128    63          /         254       256       128             128         100
-        Max fields in table                            255       1017                /                 1600          1000      8000   /           2000      /         1024      45000           32768       99
-        Max indexes for table (excluding primary key)  32        64                  64                /             /         14900  200         /         /         125       4294967296      /           /
-        Max fields in index                            10        16                  16                32            32        120    /           2000      /         32        /               16          /
-        Max key size                                   /         3072                1000              /             /         32767  8000        /         /         /         /               797         /
-        Max key size (primary keys)                    255       3072                1000              /             /         32767  8000        /         /         /         /               797         /
-        Max key size (considering unicode)             /         3072                1000              /             /         32767  8000        /         /         /         /               797         /
-        Max row field size                             /         65535 (*2)          65535             /             /         /      65536       /         /         /         /               32767       /
+        Max table name length                          64        64                  64                63            128       128    63          /         254       256       128             128         100         128
+        Max field identifier length                    64        64                  64                63            128       128    63          /         254       256       128             128         100         128
+        Max index name length                          64        64                  64                63            128       128    63          /         254       256       128             128         100         128
+        Max fields in table                            255       1017                /                 1600          1000      8000   /           2000      /         1024      45000           32768       99          1024
+        Max indexes for table (excluding primary key)  32        64                  64                /             /         14900  200         /         /         125       4294967296      /           /           999
+        Max fields in index                            10        16                  16                32            32        120    /           2000      /         32        /               16          /           32
+        Max key size                                   /         3072                1000              /             /         32767  8000        /         /         /         /               797 (*3)    /           1700 (*4)
+        Max key size (primary keys)                    255       3072                1000              /             /         32767  8000        /         /         /         /               797 (*3)    /           1700 (*4)
+        Max key size (considering unicode)             /         3072                1000              /             /         32767  8000        /         /         /         /               797 (*3)    /           1700 (*4)
+        Max row field size                             /         65535 (*2)          65535             /             /         /      65536       /         /         /         /               32767       /           8060 (*5)
+        Best unicode ~varchar length                   4000      16377               65535             65535         65535     4046   32765       /         /         16000     32767           32739       /           4000
 
         *1 It is 767 in < 5.7, but that's so intolerably low when we consider Unicode that we cannot support it
         *2 ~8000 is defined as a limit but this doesn't count VARCHARs which use most of the space
+        *3 This is on the default 4KB key size. It's tolerable on an 8KB page size (1615)
+        *4 1700 only because we force non-clustered indexes, otherwise it is an unworkable 900
+        *5 Only the first 24 bytes of strings are stored in the main rows, so practically the limit is higher
+
+        Some limits depend on page size, and we are assuming nothing lower than the default one is chosen.
 
         */
     }
@@ -101,7 +107,7 @@ function _check_sizes(string $table_name, bool $primary_key, array $fields, stri
         'LONG_TRANS__COMCODE' => 255 + 1,
         'SHORT_TRANS__COMCODE' => 255 + 1,
         'SHORT_TEXT' => 255 + 1,
-        'TEXT' => 16377 + 1,
+        'TEXT' => 4000 + 1,
         'LONG_TEXT' => 1,
         'ID_TEXT' => 80 + 1,
         'MINIID_TEXT' => 40 + 1,
@@ -397,7 +403,7 @@ function _helper_create_index(object $this_ref, string $table_name, string $inde
 
         $queries = $this_ref->driver->create_index__sql($this_ref->table_prefix . $table_name, $index_name, $_fields, $this_ref->connection_read, $table_name, $unique_key_fields, $this_ref->table_prefix);
         foreach ($queries as $i => $sql) {
-            $this_ref->query($sql, null, 0, $is_full_text/*May fail on database backends that don't cleanup full-text well when dropping tables*/);
+            $this_ref->query($sql, null, 0, (strpos(get_db_type(), 'mysql') === false) && $is_full_text/*May fail on database backends that don't cleanup full-text well when dropping tables*/);
         }
     }
 }
