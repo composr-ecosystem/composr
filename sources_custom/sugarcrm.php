@@ -143,9 +143,7 @@ function get_sugarcrm_contact($email_address, $account_id = null)
     }
 
     if (isset($response[0])) {
-        // Return first result
-        $contact_details = $response[0];
-        return $contact_details;
+        return $response;
     }
 
     return null;
@@ -420,7 +418,7 @@ function save_message_into_sugarcrm($sync_type, $mappings, $subject, $body, $fro
     // Create relationship between Contact (if exists) and Lead
     if ($sync_type == 'leads') {
         if (($from_email != '') && ($contact_details !== null)) {
-            $contact_id = $contact_details['id'];
+            $contact_id = $contact_details[0]['id'];
             sugarcrm_log_action('set_relationship', ['Contacts', $contact_id, 'leads', [$entity_id]]);
             $SUGARCRM->set_relationship('Contacts', $contact_id, 'leads', [$entity_id]);
         }
@@ -457,7 +455,7 @@ function save_message_into_sugarcrm($sync_type, $mappings, $subject, $body, $fro
                 'parent_id' => ['name' => 'parent_id', 'value' => $entity_id],
             ];
             if ($contact_details !== null) {
-                $sugarcrm_data['contact_id'] = ['name' => 'contact_id', 'value' => $contact_details['id']];
+                $sugarcrm_data['contact_id'] = ['name' => 'contact_id', 'value' => $contact_details[0]['id']];
             }
             sugarcrm_log_action('Notes', [array_values($sugarcrm_data)]);
             $response = $SUGARCRM->set(
@@ -586,7 +584,7 @@ function save_account_into_sugarcrm($member_id, $mappings, $username, $first_nam
         );
         $contact_id = $response['id'];
     } else {
-        $contact_id = $contact_details['id'];
+        $contact_id = $contact_details[0]['id'];
     }
     return $contact_id;
 }
@@ -633,7 +631,7 @@ function sync_contact_metadata_into_sugarcrm()
                 $metadata_url = generate_secure_user_metadata_display_url($row['id']);
 
                 $sugarcrm_data = [
-                    ['name' => 'id', 'value' => $contact_details['id']],
+                    ['name' => 'id', 'value' => $contact_details[0]['id']],
                     ['name' => $metadata_field, 'value' => $metadata_url],
                 ];
                 sugarcrm_log_action('Contacts', [array_values($sugarcrm_data)]);
@@ -698,6 +696,157 @@ function sync_lead_metadata_into_sugarcrm()
 
         $start += 100;
     } while (count($rows) == $max);
+}
+
+function sync_newsletter_opt_into_sugarcrm()
+{
+    global $SUGARCRM;
+    static $error_count = 0;
+
+    $start = 0;
+    $max = 100;
+    do {
+        $rows = $GLOBALS['FORUM_DB']->query_select('mail_opt_sync_queue', ['*'], [], ' AND processed_time IS NULL', $max, $start);
+
+        foreach ($rows as $row) {
+            $opt_out = ($row['opt'] != 'opt-in');
+
+            // Find the e-mail address id
+            $response = $SUGARCRM->get(
+                'EmailAddresses',
+                ['id'],
+                [
+                    'where' => "email_address='" . db_escape_string($row['email_address']) . "'",
+                ]
+            );
+            if (!is_array($response) || !isset($response[0])) {
+                sugarcrm_log_action('GET EmailAddresses', [$response]);
+                if (_sugarcrm_opt_sync_error($error_count)) {
+                    return;
+                } else {
+                    continue;
+                }
+            } else {
+                $email_id = $response[0]['id'];
+            }
+
+            // Next, process the opt-in / opt-out
+            $sugarcrm_data = [
+                ['name' => 'id', 'value' => $email_id],
+                ['name' => 'opt_out', 'value' => $opt_out ? 1 : 0],
+                ['name' => 'confirm_opt_in', 'value' => $opt_out ? 'not-opt-in' : 'opt-in'],
+            ];
+            sugarcrm_log_action('EmailAddresses', [array_values($sugarcrm_data)]);
+            $response = $SUGARCRM->set(
+                'EmailAddresses',
+                array_values($sugarcrm_data),
+            );
+            if (!is_array($response) || !isset($response['id'])) {
+                sugarcrm_log_action('SET EmailAddresses', [$response]);
+                if (_sugarcrm_opt_sync_error($error_count)) {
+                    return;
+                } else {
+                    continue;
+                }
+            }
+
+            $message = 'Automated message: The website processed an ' . $row['opt'] . ' for this e-mail address.';
+            $contact_details = get_sugarcrm_contact($row['email_address']);
+
+            // Add a note onto a Lead if there is one
+            $existing_leads = $SUGARCRM->get(
+                'Leads',
+                ['id'],
+                [
+                    'where' => 'leads.id in (SELECT eabr.bean_id FROM email_addr_bean_rel eabr JOIN email_addresses ea ON (ea.id = eabr.email_address_id) WHERE eabr.deleted=0 AND ea.email_address = \'' . db_escape_string($row['email_address']) . '\')',
+                ]
+            );
+            if (!is_array($existing_leads)) {
+                sugarcrm_log_action('GET Leads', [$existing_leads]);
+                if (_sugarcrm_opt_sync_error($error_count)) {
+                    return;
+                } else {
+                    continue;
+                }
+            }
+            foreach ($existing_leads as $lead) {
+                $sugarcrm_data = [
+                    'name' => ['name' => 'name', 'value' => 'Mailing-list ' . $row['opt']],
+                    'description' => ['name' => 'description', 'value' => $message],
+                    'parent_type' => ['name' => 'parent_type', 'value' => 'Leads'],
+                    'parent_id' => ['name' => 'parent_id', 'value' => $lead['id']],
+                ];
+                sugarcrm_log_action('Notes', [array_values($sugarcrm_data)]);
+                $response = $SUGARCRM->set(
+                    'Notes',
+                    array_values($sugarcrm_data)
+                );
+                if (!is_array($response) || (!isset($response['id']))) {
+                    sugarcrm_log_action('SET Notes', [$response]);
+                    if (_sugarcrm_opt_sync_error($error_count)) {
+                        return;
+                    } else {
+                        continue;
+                    }
+                }
+            }
+
+            // Add a History note onto Contacts if there is any
+            if ($contact_details !== null) {
+                foreach ($contact_details as $contact) {
+                    $sugarcrm_data = [
+                        'name' => ['name' => 'name', 'value' => 'Mailing-list ' . $row['opt']],
+                        'description' => ['name' => 'description', 'value' => $message],
+                        'parent_type' => ['name' => 'parent_type', 'value' => 'Contacts'],
+                        'contact_id' => ['name' => 'contact_id', 'value' => $contact['id']],
+                    ];
+                    sugarcrm_log_action('Notes', [array_values($sugarcrm_data)]);
+                    $response = $SUGARCRM->set(
+                        'Notes',
+                        array_values($sugarcrm_data)
+                    );
+                    if (!is_array($response) || (!isset($response['id']))) {
+                        sugarcrm_log_action('SET Notes', [$response]);
+                        if (_sugarcrm_opt_sync_error($error_count)) {
+                            return;
+                        } else {
+                            continue;
+                        }
+                    }
+                }
+            }
+
+            // All is well; mark as processed
+            $GLOBALS['SITE_DB']->query_update('mail_opt_sync_queue', ['processed_time' => time()], ['id' => $row['id']]);
+        }
+
+        $start += 100;
+    } while (count($rows) == $max);
+}
+
+/**
+ * Trigger this when an error occurred syncing opt statuses to SugarCRM.
+ * A cron lock-out will be registered and a notification will be dispatched if 5 or more errors occur.
+ *
+ * @param  integer $error_count The number of errors so far (passed by reference) (< 0: forcefully trigger lock-out)
+ * @return boolean Whether a lock-out occurred
+ */
+function _sugarcrm_opt_sync_error(int &$error_count) : bool
+{
+    $error_count++;
+
+    // TODO: Needs ported to v10
+    if (($error_count >= 5) || ($error_count <= 0)) {
+        require_lang('sugarcrm');
+        require_code('notifications');
+
+        $mail = do_notification_lang('SUGARCRM_NEWSLETTER_OPT_SYNC_ERROR_MAIL', null, null, null, get_site_default_lang());
+        dispatch_notification('error_occurred', 'error_occurred_api', do_lang('SUGARCRM_NEWSLETTER_OPT_SYNC_ERROR', null, null, null, get_site_default_lang()), $mail, null, A_FROM_SYSTEM_PRIVILEGED);
+        set_value('sugarcrm_opt_sync_lock', '1', true);
+        return true;
+    }
+
+    return false;
 }
 
 function read_composr_cpfs($member_id)
