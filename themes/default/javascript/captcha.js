@@ -119,28 +119,58 @@
         }
 
         var extraChecks = [],
-            validValue;
+            validValues = null;
         extraChecks.push(function (e, form, erroneous, alerted, firstFieldWithError) { // eslint-disable-line no-unused-vars
-            var captchaEl = form.elements['captcha'],
-                value = captchaEl.value;
+            var values = [],
+                captchaValues = [],
+                captchaElements = [],
+                catchaValuesExpected = 0,
+                questionCaptcha = false;
+            for (var i = 0; i < form.elements.length; i++) {
+                if ((form.elements[i].name !== undefined) && (form.elements[i].name.match(/^captcha(_|$)/))) {
+                    if (form.elements[i].name.indexOf('_') != -1) {
+                        questionCaptcha = true;
+                    }
 
-            if ((value === validValue) || (value === '')) {
-                return true;
+                    captchaElements.push(form.elements[i]);
+                    if (form.elements[i].value != '') {
+                        captchaValues.push(form.elements[i].value);
+                    }
+                    values.push(form.elements[i].value);
+                    catchaValuesExpected++;
+                }
+            }
+
+            if ((validValues !== null) && (validValues.length === values.length)) {
+                var areSame = validValues.every(function (element, index) {
+                    return element === values[index];
+                });
+
+                if (areSame) {
+                    // All valid
+                    return true;
+                }
             }
 
             return function () {
-                var url = '{$FIND_SCRIPT_NOHTTP;,snippet}?snippet=captcha_wrong&name=' + encodeURIComponent(value) + $cms.keep();
+                var url = '{$FIND_SCRIPT_NOHTTP;,snippet}?snippet=captcha_wrong&name=' + encodeURIComponent(captchaValues.join('||'));
+                if (questionCaptcha) {
+                    url += '&question_captcha=1';
+                }
+                url += $cms.keep();
                 return $cms.form.doAjaxFieldTest(url).then(function (valid) {
                     if (valid) {
-                        validValue = value;
+                        validValues = captchaValues;
                     } else {
-                        $cms.functions.refreshCaptcha(document.getElementById('captcha-readable'), document.getElementById('captcha-audio'));
-                    }
-
-                    if (!valid) {
                         erroneous.valueOf = function () { return true; };
                         alerted.valueOf = function () { return true; };
-                        firstFieldWithError = captchaEl;
+                        firstFieldWithError = captchaElements[0];
+                        validValues = [];
+                        for (var i = 0; i < captchaValues.length; i++) {
+                            validValues.push(null);
+                        }
+
+                        $cms.functions.refreshCaptcha(document.getElementById('captcha-readable'), document.getElementById('captcha-audio'));
                     }
                 });
             };

@@ -96,11 +96,28 @@
                 values.push(form.elements['email'].value);
             }
 
+            var captchaValues = [],
+                captchaElements = [],
+                catchaValuesExpected = 0,
+                questionCaptcha = false;
             if (params.useCaptcha && ($cms.configOption('recaptcha_site_key') === '')) {
-                values.push(form.elements['captcha'].value);
+                for (var i = 0; i < form.elements.length; i++) {
+                    if ((form.elements[i].name !== undefined) && (form.elements[i].name.match(/^captcha(_|$)/))) {
+                        if (form.elements[i].name.indexOf('_') != -1) {
+                            questionCaptcha = true;
+                        }
+
+                        captchaElements.push(form.elements[i]);
+                        if (form.elements[i].value != '') {
+                            captchaValues.push(form.elements[i].value);
+                        }
+                        values.push(form.elements[i].value);
+                        catchaValuesExpected++;
+                    }
+                }
             }
 
-            if ((validValues != null) && (validValues.length === values.length)) {
+            if ((validValues !== null) && (validValues.length === values.length)) {
                 var areSame = validValues.every(function (element, index) {
                     return element === values[index];
                 });
@@ -164,16 +181,22 @@
                     }
                 }
 
-                if (params.useCaptcha && ($cms.configOption('recaptcha_site_key') === '') && (form.elements['captcha'].value !== '')) {
-                    url = params.snippetScript + '?snippet=captcha_wrong&name=' + encodeURIComponent(form.elements['captcha'].value) + $cms.keep();
+                if (params.useCaptcha && ($cms.configOption('recaptcha_site_key') === '') && (captchaValues.length == catchaValuesExpected)) {
+                    url = params.snippetScript + '?snippet=captcha_wrong&name=' + encodeURIComponent(captchaValues.join('||'));
+                    if (questionCaptcha) {
+                        url += '&question_captcha=1';
+                    }
+                    url += $cms.keep();
                     var captchaPromise = $cms.form.doAjaxFieldTest(url).then(function (valid) {
                         if (valid) {
-                            validValues.push(form.elements['captcha'].value);
+                            validValues = validValues.concat(captchaValues);
                         } else {
                             erroneous.valueOf = function () { return true; };
                             alerted.valueOf = function () { return true; };
-                            firstFieldWithError = form.elements['captcha'];
-                            validValues.push(null);
+                            firstFieldWithError = captchaElements[0];
+                            for (var i = 0; i < captchaValues.length; i++) {
+                                validValues.push(null);
+                            }
 
                             $cms.functions.refreshCaptcha(document.getElementById('captcha-readable'), document.getElementById('captcha-audio'));
                         }

@@ -249,6 +249,8 @@ function form_input_captcha(object $hidden) : object
     $tabindex = get_form_field_tabindex(null);
 
     if (uses_question_captcha()) {
+        require_javascript('captcha');
+
         $tpl = new Tempcode();
 
         require_code('form_templates');
@@ -348,8 +350,14 @@ function uses_question_captcha() : bool
         return false;
     }
 
-    if (!match_key_match($question_pages)) {
-        return false;
+    if (running_script('snippet')) {
+        if (get_param_integer('question_captcha', 0) == 0) {
+            return false;
+        }
+    } else {
+        if (!match_key_match($question_pages)) {
+            return false;
+        }
     }
 
     return true;
@@ -493,10 +501,25 @@ function check_captcha(?string $code_entered = null, bool $regenerate_on_error =
 
     if (uses_question_captcha()) {
         $questions = get_captcha_questions();
+
+        if ($code_entered === null) {
+            $answers = [];
+            foreach (array_keys($questions) as $i) {
+                $answers[$i] = post_param_string('captcha_' . strval($i));
+            }
+        } else {
+            $answers = explode('||', $code_entered);
+            foreach (array_keys($questions) as $i) {
+                if (!array_key_exists($i, $answers)) {
+                    $answers[$i] = '';
+                }
+            }
+        }
+
         foreach ($questions as $i => $details) {
             list($question, $answer) = $details;
 
-            if (normalise_captcha_question_answer(post_param_string('captcha_' . strval($i))) != normalise_captcha_question_answer($answer)) {
+            if (normalise_captcha_question_answer($answers[$i]) != normalise_captcha_question_answer($answer)) {
                 $error_message = do_lang_tempcode('INCORRECT_CAPTCHA_QUESTION_ANSWER', comcode_to_tempcode($question, null, true));
 
                 return false;
@@ -596,6 +619,7 @@ function check_captcha(?string $code_entered = null, bool $regenerate_on_error =
 
 /**
  * Get code to do an AJAX check of the CAPTCHA.
+ * Note we don't use this on the join form, as core_cns.js has its own CAPTCHA check integrated into the validation flow.
  *
  * @return string Function name
  */
