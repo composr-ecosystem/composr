@@ -206,6 +206,9 @@ CRM software supported:
             'sources_custom/user_metadata_display.php',
             'sources_custom/hooks/systems/cron/sugarcrm_sync_contact_metadata.php',
             'sources_custom/hooks/systems/cron/sugarcrm_sync_lead_metadata.php',
+
+            'pages/modules_custom/newsletter_opt.php',
+            'sources_custom/hooks/systems/cron/sugarcrm_sync_newsletter_opt.php',
         ];
     }
 }
