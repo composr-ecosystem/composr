@@ -173,7 +173,9 @@ function embed_feedback_systems(string $content_type, string $content_id, int $a
 
     actualise_rating($allow_rating == 1, $content_type, $content_id, $content_url, $content_title);
     if ((post_param_string('title', null) !== null) || ($validated == 1)) {
-        actualise_post_comment($allow_comments >= 1, $content_type, $content_id, $content_url, $content_title, $forum, true, null, false, true, false, null, null, $time);
+        if (post_param_string('_block_id', '') == 'non_block') {
+            actualise_post_comment($allow_comments >= 1, $content_type, $content_id, $content_url, $content_title, $forum, true, null, false, true, false, null, null, $time);
+        }
     }
     $rating_details = get_rating_box($content_url, $content_title, $content_type, $content_id, $allow_rating == 1, $submitter);
     $comment_details = get_comments($content_type, $allow_comments == 1, $content_id, false, $forum, null, null, false, null, $submitter, $allow_comments == 2);
@@ -833,10 +835,6 @@ function actualise_post_comment(bool $allow_comments, string $content_type, stri
         }
     }
 
-    if (post_param_string('_block_id', '') != 'non_block') {
-        return false;
-    }
-
     if ($post_title === null) {
         $post_title = post_param_string('title', null);
         if ($post_title !== null) {
@@ -975,7 +973,7 @@ function actualise_post_comment(bool $allow_comments, string $content_type, stri
     if ((!$private) && ($post != '')) {
         $real_content_type = convert_composr_type_codes('feedback_type_code', $real_feedback_type, 'content_type');
 
-        $content_type_title = $real_content_type;
+        $content_type_title = ($real_content_type == '') ? $real_feedback_type : $real_content_type;
         if ($cma_info !== null) {
             $content_type_title = static_evaluate_tempcode($cma_ob->get_content_type_label($content_row));
         }
@@ -987,7 +985,7 @@ function actualise_post_comment(bool $allow_comments, string $content_type, stri
         $subject = do_lang('NEW_COMMENT_SUBJECT', get_site_name(), ($content_title == '') ? cms_mb_strtolower($content_type_title) : $content_title, [$post_title, $displayname, $username], get_site_default_lang());
         $username = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
         $message_raw = do_notification_lang('NEW_COMMENT_BODY', comcode_escape(get_site_name()), comcode_escape(($content_title == '') ? cms_mb_strtolower($content_type_title) : $content_title), [($post_title == '') ? do_lang('NO_SUBJECT') : $post_title, $post, comcode_escape($content_url_flat), comcode_escape($displayname), strval(get_member()), comcode_escape($username)], get_site_default_lang());
-        if (addon_installed('content_privacy')) {
+        if ((addon_installed('content_privacy')) && ($real_content_type != '')) {
             require_code('content_privacy');
             $privacy_limits = privacy_limits_for($real_content_type, $content_id);
         } else {
@@ -1011,7 +1009,7 @@ function actualise_post_comment(bool $allow_comments, string $content_type, stri
         if ($privacy_ok) {
             // Activity
             require_code('users2');
-            if ((may_view_content_behind(get_modal_user(), $real_content_type, $content_id)) && ($real_content_type != '')) {
+            if (($real_content_type != '') && (may_view_content_behind(get_modal_user(), $real_content_type, $content_id))) {
                 if ($submitter === null) {
                     $submitter = $GLOBALS['FORUM_DRIVER']->get_guest_id();
                 }
