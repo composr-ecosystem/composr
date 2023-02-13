@@ -150,8 +150,8 @@ PHP;
             '_GUID' => '375aa1907fc6b2ca6b23ab5b5139aaef',
             'BLOCK_ID' => $block_id,
             'CHILDREN' => $children,
-            'THE_PAGE' => $page,
-            'THE_ZONE' => $zone,
+            'PAGE' => $page,
+            'ZONE' => $zone,
         ]);
     }
 }
