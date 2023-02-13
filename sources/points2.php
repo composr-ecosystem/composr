@@ -242,7 +242,6 @@ function points_refund(int $sender_id, int $recipient_id, string $reason, int $t
  * @param  integer $amount_gift_points Number of gift points transacted
  * @param  BINARY $anonymous Whether the sender_id for this transaction should be hidden
  * @param  integer $status The status of this transaction (see LEDGER_STATUS_*)
- * @set normal reversing reversed
  * @param  BINARY $locked Whether this transaction is irreversible
  * @param  ?array $linked_to The database row of the points_ledger this one relates to (null: does not relate to another ledger)
  * @param  ID_TEXT $t_type An identifier to relate this transaction with other transactions of the same $type (e.g. content type)
