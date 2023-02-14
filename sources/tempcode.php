@@ -981,7 +981,6 @@ function do_template(string $codename, array $parameters = [], ?string $lang = n
         }
 
         $out->seq_parts = $_data->seq_parts;
-
         foreach ($out->seq_parts as &$seq_parts_group) {
             foreach ($seq_parts_group as &$seq_part) {
                 if ($seq_part[1] !== []) {

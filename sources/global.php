@@ -550,6 +550,10 @@ function cms_ini_set(string $var, string $value)
         return false;
     }
 
+    if ($var == 'memory_limit' && PHP_DEBUG == 1) {
+        $value = '-1';
+    }
+
     return @ini_set($var, $value);
 }
 

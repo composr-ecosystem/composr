@@ -284,6 +284,10 @@ function object_factory(string $class, bool $failure_ok = false, array $paramete
  */
 function cms_ini_set(string $var, string $value)
 {
+    if ($var == 'memory_limit' && PHP_DEBUG == 1) {
+        $value = '-1';
+    }
+
     $to_block = ['disable_functions', 'suhosin.executor.func.blacklist', 'suhosin.executor.include.blacklist', 'suhosin.executor.eval.blacklist'];
     $_blocked = [];
     foreach ($to_block as $func) {

@@ -55,7 +55,7 @@ class cms_test_case extends WebTestCase
 
         // We need to be compatible with low memory limits
         if (memory_get_usage() < 30/*a little give*/ * 1024 * 1024) { // If not already in a high-memory (raised-memory) test set
-            @ini_set('memory_limit', '32M');
+            cms_ini_set('memory_limit', '32M');
             set_value('memory_limit', '32M');
         }
     }
