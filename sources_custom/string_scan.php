@@ -244,6 +244,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         LAYOUT_MODE
         ALLOW_TEMPLATE_SEARCH
         ADD_BLOCK
+        TWO_FACTOR_AUTHENTICATION
         HAVE_DEFAULT_HOMEPAGE_HERO_SLIDES
         NOT_SUPPORTED_ON_DB
         DESCRIPTION_ALLOW_TEMPLATE_SEARCH

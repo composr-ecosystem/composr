@@ -131,6 +131,8 @@ webdav,WebDav access for The Repository,ocProducts,,Could potentially break due 
 os_windows,Windows servers,ocProducts,ocProducts,,No,
 os_linux,Linux servers,ocProducts,ocProducts,,No,
 os_macos,Mac OS servers,ocProducts,ocProducts,,No,
+infinite_scrolling,Infinite scrolling,ocProducts,,,No,
+two_factor,E-mail+IP two-factor authentication,ocProducts,,,No,
 pop3,POP3 e-mail accounts,,,We allow configuration of using POP3 instead of IMAP for various inbox checking features but do not actively test it works (it relies on PHP's IMAP addon supporting POP3 well),No,
 openweathermap,OpenWeatherMap,ocProducts,,,Yes,_api_weather automated test.
 composr_mobile_sdk_notifications,Composr Mobile SDK Android and iOS notifications handling,,,,Yes,
