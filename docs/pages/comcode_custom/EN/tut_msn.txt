@@ -16,8 +16,6 @@ At the time of writing this note (2016), a more normal approach to sharing membe
 
 The site sharing the forum is the "central site", and all other sites are "satellite sites".
 
-At the time of writing this note (2016), a more normal approach to sharing member databases is to leave it to Facebook, using the Facebook addon to handle log-ins. Usage of Facebook has obvious disadvantages, but also for most people the advantages far outweigh them. Facebook is de facto the world's standard identity service.
-
 If you are using the Composr forum system (Conversr) as your forum, then it is possible to run Conversr from each site, without members even knowing (from a feature and visual point of view) that a multi-site-network is in action. All you need to do to achieve this is to:
 1) set the forum-base URL to that of the central Composr site
 2) enable the "Show forum within website" configuration option (Admin Zone > Setup > Configuration > Site options > Advanced) shown in the screen-shot
