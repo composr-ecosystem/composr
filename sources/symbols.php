@@ -1628,9 +1628,9 @@ function ecv_REFRESH(string $lang, array $escaped, array $param) : string
     global $REFRESH_URL;
     if (!empty($REFRESH_URL[0])) { // The page itself has actually told it to refresh itself
         if (!isset($REFRESH_URL[1])) {
-            $REFRESH_URL[1] = 1;
+            $REFRESH_URL[1] = 1.0;
         }
-        $refresh = do_template('META_REFRESH_LINE', ['_GUID' => '6ee20694dfa474f160481a3ab5331d87', 'URL' => $REFRESH_URL[0], 'TIME' => strval($REFRESH_URL[1])]);
+        $refresh = do_template('META_REFRESH_LINE', ['_GUID' => '6ee20694dfa474f160481a3ab5331d87', 'URL' => $REFRESH_URL[0], 'TIME' => float_to_raw_string($REFRESH_URL[1], 2, true)]);
     } else {
         $refresh = new Tempcode();
     }

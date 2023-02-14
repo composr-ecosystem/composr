@@ -635,7 +635,7 @@ function _load_blank_output_state(bool $just_tempcode = false, bool $true_blank 
 
         global $REFRESH_URL, $FORCE_META_REFRESH, $QUICK_REDIRECT;
         $REFRESH_URL[0] = '';
-        $REFRESH_URL[1] = 0;
+        $REFRESH_URL[1] = 0.0;
         $FORCE_META_REFRESH = false;
         $QUICK_REDIRECT = false;
 

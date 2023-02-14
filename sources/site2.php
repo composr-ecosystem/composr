@@ -149,7 +149,7 @@ function redirect_exit($url, ?object $title = null, $text = null, bool $intermed
  * @sets_output_state
  *
  * @param  mixed $url Refresh to this URL (URLPATH or Tempcode URL)
- * @param  float $multiplier Take this many times longer than a 'standard Composr refresh'
+ * @param  float $multiplier Take this many times longer than a 'standard Composr refresh' which is 2.5 seconds; will only apply if doing a meta refresh as approach to a redirect header
  */
 function assign_refresh($url, float $multiplier = 0.0)
 {
