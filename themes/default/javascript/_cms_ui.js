@@ -257,7 +257,7 @@
      * @param { boolean } [lightsOff] - set to true if the image is to be dimmed
      * @param { boolean } [forceWidth] - set to true if you want width to not be a max width
      * @param { Window } [win] - window to open in
-     * @param { boolean } [haveLinks] - set to true if we activate/deactivate by clicking due to possible links in the tooltip or the need for it to work on mobile
+     * @param { boolean } [haveLinks] - set to true if we activate/deactivate by clicking, and we don't have the tooltip follow the cursor - due to possible links or scrolling in the tooltip or the need for it to work on mobile
      */
     $cms.ui.activateTooltip = function activateTooltip(el, event, tooltip, width, pic, height, bottom, delay, lightsOff, forceWidth, win, haveLinks) {
         el = $dom.elArg(el);

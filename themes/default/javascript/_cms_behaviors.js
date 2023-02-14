@@ -664,6 +664,10 @@
                         return;
                     }
 
+                    if (el.ttitle == '') {
+                        return;
+                    }
+
                     if (options.haveLinks && el.tooltipId && $dom.$id(el.tooltipId) && $dom.isDisplayed($dom.$id(el.tooltipId))) {
                         $cms.ui.deactivateTooltip(el);
                         return;
@@ -1820,13 +1824,23 @@
             return;
         }
 
+        if ($dom.parent(el, '.tooltip')) {
+            title = '';
+        }
+
         if (el.textContent) {
             var prefix = el.textContent + ': ';
             if (title.substr(0, prefix.length) === prefix) {
                 title = title.substring(prefix.length, title.length);
-            } else if (title === el.textContent) {
-                return;
+            } else {
+                if (title === el.textContent) {
+                    title = '';
+                }
             }
+        }
+
+        if (title == '') {
+            return;
         }
 
         // And now define nice listeners for it all...
