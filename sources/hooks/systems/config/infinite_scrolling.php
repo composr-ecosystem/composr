@@ -42,6 +42,8 @@ class Hook_config_infinite_scrolling
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
+
+            'maintenance_code' => 'infinite_scrolling',
         ];
     }
 

@@ -42,6 +42,8 @@ class Hook_config_maintenance_script_htaccess
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
+
+            'maintenance_code' => 'two_factor',
         ];
     }
 

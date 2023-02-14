@@ -42,6 +42,8 @@ class Hook_config_ip_forwarding
             'required' => false,
             'public' => false,
             'addon' => 'core_configuration',
+
+            'maintenance_code' => 'http_proxy',
         ];
     }
 

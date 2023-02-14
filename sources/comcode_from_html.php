@@ -321,19 +321,25 @@ function _detagonise(array $matches) : string
 function _dedirectiveise(array $matches) : string
 {
     $attributes_arr = [];
-    $attributes_xml = isset($matches[1]) ? $matches[1] : '';
     $matches_attributes = [];
-    $num_matches_attributes = preg_match_all('#\s+([\w\-]+)\s*=\s*"([^"]*)"#', $attributes_xml, $matches_attributes);
+    $num_matches_attributes = preg_match_all('#\s+([\w\-]+)\s*=\s*"([^"]*)"#', $matches[1], $matches_attributes);
     for ($i = 0; $i < $num_matches_attributes; $i++) {
         $attributes_arr[$matches_attributes[1][$i]] = $matches_attributes[2][$i];
     }
 
-    $attributes = '';
-    if (!@cms_empty_safe($attributes_arr['params'])) {
-        $attributes = html_entity_decode($attributes_arr['params'], ENT_QUOTES);
+    if (@cms_empty_safe($attributes_arr['params'])) {
+        return ''; // Should not happen
     }
 
-    return $attributes;
+    $directive_opener = html_entity_decode($attributes_arr['params'], ENT_QUOTES);
+
+    $directive_middle = html_entity_decode(str_replace('<br />', '', $matches[2]), ENT_QUOTES);
+
+    $directive_closer = '{+END}';
+
+    $directive = $directive_opener . $directive_middle . $directive_closer;
+
+    return $directive;
 }
 
 /**
@@ -387,8 +393,7 @@ function remove_wysiwyg_comcode_markup(string &$semihtml)
         }
     }
     if (stripos($semihtml, '<tempcode') !== false) {
-        $semihtml = cms_preg_replace_callback_safe('#<tempcode( [^<>]*)' . '>\s*#', '_dedirectiveise', $semihtml);
-        $semihtml = preg_replace('#</tempcode\s*>#', '{+END}', $semihtml);
+        $semihtml = cms_preg_replace_callback_safe('#<tempcode( [^<>]*)' . '>(.*)</tempcode>#Us', '_dedirectiveise', $semihtml);
     }
 
     // Our symbols as meta tags

@@ -278,21 +278,21 @@ function _cms_http_request(string $url, array $options = []) : object
     $filesystem = new HttpDownloaderFilesystem();
     $filesystem_priority = $filesystem->may_run_for($url, $options);
 
-    if (!empty($options['force_curl']) || empty($options['force_sockets']) && empty($options['force_file_wrapper']) && $curl_priority > $sockets_priority && $curl_priority > $file_wrapper_priority && $curl_priority > $filesystem_priority) {
+    if (!empty($options['force_curl']) || empty($options['force_sockets']) && empty($options['force_file_wrapper']) && empty($options['force_filesystem']) && $curl_priority > $sockets_priority && $curl_priority > $file_wrapper_priority && $curl_priority > $filesystem_priority) {
         $test = $curl->run($url, $options);
         if ($test !== false) {
             return $curl;
         }
     }
 
-    if (!empty($options['force_sockets']) || empty($options['force_file_wrapper']) && $sockets_priority > $file_wrapper_priority && $sockets_priority > $filesystem_priority) {
+    if (!empty($options['force_sockets']) || empty($options['force_file_wrapper']) && empty($options['force_filesystem']) && $sockets_priority > $file_wrapper_priority && $sockets_priority > $filesystem_priority) {
         $test = $sockets->run($url, $options);
         if ($test !== false) {
             return $sockets;
         }
     }
 
-    if (!empty($options['force_file_wrapper']) || $file_wrapper_priority > $filesystem_priority) {
+    if (!empty($options['force_file_wrapper']) || empty($options['force_filesystem']) && $file_wrapper_priority > $filesystem_priority) {
         $test = $file_wrapper->run($url, $options);
         if ($test !== false) {
             return $file_wrapper;
@@ -455,7 +455,8 @@ abstract class HttpDownloader
         $this->connect_to = $this->url_parts['host'];
 
         $config_ip_forwarding = function_exists('get_option') ? get_option('ip_forwarding') : '';
-        $this->do_ip_forwarding = ($config_ip_forwarding != '') && ($config_ip_forwarding != '0') && (is_our_server($this->connect_to));
+        $no_proxy = ((!function_exists('get_option')) || (get_option('proxy') == ''));
+        $this->do_ip_forwarding = ($config_ip_forwarding != '') && ($config_ip_forwarding != '0') && (is_our_server($this->connect_to)) && ($no_proxy);
 
         if ($this->do_ip_forwarding) { // For cases where we have IP-forwarding, and a strong firewall (i.e. blocked to our own domain's IP by default)
             if ($config_ip_forwarding == '1') {
@@ -472,7 +473,7 @@ abstract class HttpDownloader
                 }
                 $this->connect_to = $config_ip_forwarding;
             }
-        } elseif ($this->url_parts['scheme'] == 'http') {
+        } elseif (($this->url_parts['scheme'] == 'http') && ($no_proxy)) {
             $this->connect_to = cms_gethostbyname($this->connect_to); // for DNS caching
         }
         if (!array_key_exists('scheme', $this->url_parts)) {
@@ -1146,6 +1147,7 @@ class HttpDownloaderCurl extends HttpDownloader
         }
 
         curl_close($ch);
+
         // Process HTTP status
         switch ((substr($this->message, 0, 1) == '2') ? '200' : $this->message) {
             case '200':
@@ -1320,8 +1322,12 @@ class HttpDownloaderSockets extends HttpDownloader
         $this->url_parts = @cms_parse_url_safe(normalise_idn_url($url));
         $this->read_in_options($options);
 
-        if (isset($this->url_parts['scheme']) && ($this->url_parts['scheme'] == 'http') && (!GOOGLE_APPENGINE) && (php_function_allowed('fsockopen'))) {
-            return HttpDownloader::RUN_PRIORITY_MEDIUM;
+        if (isset($this->url_parts['scheme']) && (!GOOGLE_APPENGINE) && (php_function_allowed('fsockopen'))) {
+            if ($this->url_parts['scheme'] == 'http') {
+                return HttpDownloader::RUN_PRIORITY_MEDIUM;
+            }
+            if ((defined('OPENSSL_VERSION_NUMBER')) && ($this->url_parts['scheme'] == 'https')) {
+            }
         }
 
         return HttpDownloader::RUN_PRIORITY_NO;
@@ -1352,7 +1358,11 @@ class HttpDownloaderSockets extends HttpDownloader
             $proxy_port = get_option('proxy_port');
             $mysock = @fsockopen($proxy, intval($proxy_port), $errno, $errstr, $this->timeout);
         } else {
-            $mysock = @fsockopen($this->connect_to, array_key_exists('port', $this->url_parts) ? $this->url_parts['port'] : 80, $errno, $errstr, $this->timeout);
+            $connect_to = $this->connect_to;
+            if (strtolower(substr($url, 0, 8)) == 'https://') {
+                $connect_to = 'tls://' . $this->connect_to;
+            }
+            $mysock = @fsockopen($connect_to, array_key_exists('port', $this->url_parts) ? $this->url_parts['port'] : 80, $errno, $errstr, $this->timeout);
         }
 
         if ($mysock !== false) {
@@ -1851,10 +1861,21 @@ class HttpDownloaderFileWrapper extends HttpDownloader
                 !$this->do_ip_forwarding &&
                 ((!function_exists('get_value')) || (get_value('disable_ssl_for__' . $this->url_parts['host']) === '0'));
 
+            $header = rtrim((($this->url_parts['host'] != $this->connect_to) ? ('Host: ' . $this->url_parts['host'] . "\r\n") : '') . $this->get_header_string());
+
+            $proxy = function_exists('get_option') ? get_option('proxy') : '';
+            if ($proxy != '') {
+                $proxy_user = get_option('proxy_user');
+                if ($proxy_user != '') {
+                    $proxy_password = get_option('proxy_password');
+                    $header .= "\r\n" . 'Proxy-Authorization: Basic ' . base64_encode($proxy_user . ':' . $proxy_password);
+                }
+            }
+
             $opts = [
                 'http' => [
                     'method' => $this->http_verb,
-                    'header' => rtrim((($this->url_parts['host'] != $this->connect_to) ? ('Host: ' . $this->url_parts['host'] . "\r\n") : '') . $this->get_header_string()),
+                    'header' => $header,
                     'content' => $this->raw_payload,
                     'follow_location' => $this->no_redirect ? 0 : 1,
                     'ignore_errors' => $this->ignore_http_status,
@@ -1872,16 +1893,10 @@ class HttpDownloaderFileWrapper extends HttpDownloader
                 $opts['http']['user_agent'] = $this->ua;
             }
 
-            $proxy = function_exists('get_option') ? get_option('proxy') : '';
             if ($proxy != '') {
                 $port = get_option('proxy_port');
-                $proxy_user = get_option('proxy_user');
-                if ($proxy_user != '') {
-                    $proxy_password = get_option('proxy_password');
-                    $opts['http']['proxy'] = 'tcp://' . $proxy_user . ':' . $proxy_password . '@' . $proxy . ':' . $port;
-                } else {
-                    $opts['http']['proxy'] = 'tcp://' . $proxy . ':' . $port;
-                }
+                $opts['http']['proxy'] = 'tcp://' . $proxy . ':' . $port;
+                $opts['http']['request_fulluri'] = true;
             }
 
             $context = stream_context_create($opts);
