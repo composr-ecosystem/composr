@@ -26,7 +26,7 @@
 				{CATEGORY*}
 			</p>
 		{+END}
-		<p {+START,IF,{$DESKTOP}} data-cms-tooltip="{ contents: '{$GET;^*,description}', width: '50%' }"{+END}>
+		<p {+START,IF,{$DESKTOP}} data-cms-tooltip="{ contents: '{$TRUNCATE_LEFT;^*,{$GET,description},800,0,1}', width: '50%' }"{+END}>
 			{PRETTY_NAME}
 		</p>
 		{+START,SET,FILE_LIST_PRE}
@@ -41,7 +41,7 @@
 		{+END}
 		{+START,IF,{$DESKTOP}}
 			<div class="block-desktop">
-				<p {+START,IF,{$DESKTOP}} data-cms-tooltip="{ contents: '{$GET;^*,FILE_LIST}', width: '50%' }"{+END}>
+				<p {+START,IF,{$DESKTOP}} data-cms-tooltip="{ contents: '{$TRUNCATE_LEFT;^*,{$GET,FILE_LIST},800,0,1}', width: '50%' }"{+END}>
 					{+START,IF_PASSED,FILENAME}
 						{FILENAME*}
 					{+END}

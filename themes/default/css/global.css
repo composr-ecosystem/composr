@@ -6737,8 +6737,13 @@ td > .comcode-code-wrap > .comcode-quote, td > .comcode-code-wrap > .comcode-cod
 	padding: 5px;
 	margin-left: 8px;
 	background-color: {$GET,code_background};
-	color: {$GET,code_text};
+	color: {$GET,code_text} !important;/*So can look okay in a tooltip*/
 	overflow: hidden;
+}
+
+.comcode-quote-inner *,
+.comcode-code-inner * {
+	color: inherit !important;/*So can look okay in a tooltip*/
 }
 
 .comcode-quote-inner-titled {
