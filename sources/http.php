@@ -278,21 +278,21 @@ function _cms_http_request(string $url, array $options = []) : object
     $filesystem = new HttpDownloaderFilesystem();
     $filesystem_priority = $filesystem->may_run_for($url, $options);
 
-    if (!empty($options['force_curl']) || empty($options['force_sockets']) && empty($options['force_file_wrapper']) && $curl_priority > $sockets_priority && $curl_priority > $file_wrapper_priority && $curl_priority > $filesystem_priority) {
+    if (!empty($options['force_curl']) || empty($options['force_sockets']) && empty($options['force_file_wrapper']) && empty($options['force_filesystem']) && $curl_priority > $sockets_priority && $curl_priority > $file_wrapper_priority && $curl_priority > $filesystem_priority) {
         $test = $curl->run($url, $options);
         if ($test !== false) {
             return $curl;
         }
     }
 
-    if (!empty($options['force_sockets']) || empty($options['force_file_wrapper']) && $sockets_priority > $file_wrapper_priority && $sockets_priority > $filesystem_priority) {
+    if (!empty($options['force_sockets']) || empty($options['force_file_wrapper']) && empty($options['force_filesystem']) && $sockets_priority > $file_wrapper_priority && $sockets_priority > $filesystem_priority) {
         $test = $sockets->run($url, $options);
         if ($test !== false) {
             return $sockets;
         }
     }
 
-    if (!empty($options['force_file_wrapper']) || $file_wrapper_priority > $filesystem_priority) {
+    if (!empty($options['force_file_wrapper']) || empty($options['force_filesystem']) && $file_wrapper_priority > $filesystem_priority) {
         $test = $file_wrapper->run($url, $options);
         if ($test !== false) {
             return $file_wrapper;
@@ -1320,8 +1320,12 @@ class HttpDownloaderSockets extends HttpDownloader
         $this->url_parts = @cms_parse_url_safe(normalise_idn_url($url));
         $this->read_in_options($options);
 
-        if (isset($this->url_parts['scheme']) && ($this->url_parts['scheme'] == 'http') && (!GOOGLE_APPENGINE) && (php_function_allowed('fsockopen'))) {
-            return HttpDownloader::RUN_PRIORITY_MEDIUM;
+        if (isset($this->url_parts['scheme']) && (!GOOGLE_APPENGINE) && (php_function_allowed('fsockopen'))) {
+            if ($this->url_parts['scheme'] == 'http') {
+                return HttpDownloader::RUN_PRIORITY_MEDIUM;
+            }
+            if ((defined('OPENSSL_VERSION_NUMBER')) && ($this->url_parts['scheme'] == 'https')) {
+            }
         }
 
         return HttpDownloader::RUN_PRIORITY_NO;
@@ -1352,7 +1356,11 @@ class HttpDownloaderSockets extends HttpDownloader
             $proxy_port = get_option('proxy_port');
             $mysock = @fsockopen($proxy, intval($proxy_port), $errno, $errstr, $this->timeout);
         } else {
-            $mysock = @fsockopen($this->connect_to, array_key_exists('port', $this->url_parts) ? $this->url_parts['port'] : 80, $errno, $errstr, $this->timeout);
+            $connect_to = $this->connect_to;
+            if (strtolower(substr($url, 0, 8)) == 'https://') {
+                $connect_to = 'tls://' . $this->connect_to;
+            }
+            $mysock = @fsockopen($connect_to, array_key_exists('port', $this->url_parts) ? $this->url_parts['port'] : 80, $errno, $errstr, $this->timeout);
         }
 
         if ($mysock !== false) {
