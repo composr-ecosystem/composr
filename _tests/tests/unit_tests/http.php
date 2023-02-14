@@ -25,6 +25,35 @@ class http_test_set extends cms_test_case
         cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
     }
 
+    public function testProxyServer()
+    {
+        // This test ONLY runs if called explicitly because it requires a proxy to be set up on localhost
+        // Configure roughly as follows:
+        //  sudo a2enmod proxy proxy_http
+        //  Edit /etc/apache2/mods-enabled/proxy.conf
+        //   https://www.techrepublic.com/article/save-money-and-provide-security-with-apache-as-a-proxy-server/
+        //   https://stackoverflow.com/questions/5011102/apache-reverse-proxy-with-basic-authentication
+        //   https://www.web2generators.com/apache-tools/htpasswd-generator
+        if (($this->only === null) || ($this->only != 'proxy')) {
+            return;
+        }
+
+        set_option('proxy', '127.0.0.1');
+        set_option('proxy_port', '8080');
+        set_option('proxy_user', 'test');
+        set_option('proxy_password', 'test');
+
+        foreach (['curl', 'sockets', 'file_wrapper'] as $implementation) {
+            $options = [];
+//TODO            $options['trigger_error'] = false;
+            $options['force_' . $implementation] = true;
+            $result = cms_http_request('http://example.com', $options);
+            $this->assertTrue($result->data !== null && strpos($result->data, 'Example Domain') !== false, 'Failed on ' . $implementation);
+        }
+
+        set_option('proxy', '');
+    }
+
     public function testSimpleLocalForceImplementations()
     {
         if (($this->only !== null) && ($this->only != 'local')) {
@@ -32,7 +61,8 @@ class http_test_set extends cms_test_case
         }
 
         foreach (['curl', 'sockets', 'file_wrapper', 'filesystem'] as $implementation) {
-            $options = ['trigger_error' => false];
+            $options = [];
+            $options['trigger_error'] = false;
             $options['force_' . $implementation] = true;
             $result = cms_http_request(get_base_url() . '/data/index.html', $options);
             $this->assertTrue(is_string($result->data) && $result->data == '', 'Failed on ' . $implementation);

@@ -42,6 +42,8 @@ class Hook_config_proxy_user
             'required' => false,
             'public' => false,
             'addon' => 'core_configuration',
+
+            'maintenance_code' => 'http_proxy',
         ];
     }
 

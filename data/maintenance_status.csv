@@ -146,4 +146,5 @@ theme_wizard,Theme Wizard,ocProducts,ocProducts,It is easy for the Theme Wizard 
 theme_wizard_extreme_seeds,Theme Wizard: Extreme seeds,,,Very light or dark seeds may break on the Theme Wizard.,No,
 dark_mode,Theme Wizard: Dark themes,ocProducts,,It is easy for dark theme support to break if not tested after any CSS changes.,No,
 gravatar,Gravatar,ocProducts,,Not regularly tested. Could potentially break due to third-party changes.,No,
-email_integration,E-mail integration,ocProducts,,We have e-mail integration capabilities for forum posts and support tickets. These receive bug fixes only.,No,
+email_integration,E-mail integration,ocProducts,,We have e-mail integration capabilities for forum posts and support tickets.,No,
+http_proxy,HTTP proxy support,ocProducts,,The ability for the HTTP downloaders to run via proxy servers,No,
