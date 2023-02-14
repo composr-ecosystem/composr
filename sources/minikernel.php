@@ -1477,3 +1477,13 @@ function get_localhost_ips() : array
         '127.0.0.1',
     ];
 }
+
+/**
+ * Get the date/time string as we log it. Designed to be consistent with how PHP puts dates into the error-log.
+ *
+ * @return string Date/time string
+ */
+function loggable_date() : string
+{
+    return gmdate('[d-M-Y H:i:s \U\T\C]');
+}

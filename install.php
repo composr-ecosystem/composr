@@ -1744,6 +1744,7 @@ function installer_health_checks(?array $sections_to_run = null) : array
     $_warnings = [];
     if (addon_installed('health_check')) {
         require_code('health_check');
+        health_check_log_start();
         $hook_obs = find_all_hook_obs('systems', 'health_checks', 'Hook_health_check_');
         foreach ($hook_obs as $ob) {
             list(, $sections) = $ob->run($sections_to_run, CHECK_CONTEXT__INSTALL);
@@ -1759,6 +1760,7 @@ function installer_health_checks(?array $sections_to_run = null) : array
                 }
             }
         }
+        health_check_log_stop();
     }
     return $_warnings;
 }

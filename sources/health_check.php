@@ -189,13 +189,7 @@ function run_health_check(bool &$has_fails, ?array $sections_to_run = null, bool
         }
     }
 
-    $_log_file = get_custom_file_base() . '/data_custom/health_check.log';
-    global $HEALTH_CHECK_LOG_FILE;
-    if (is_file($_log_file)) {
-        $HEALTH_CHECK_LOG_FILE = fopen($_log_file, 'at');
-
-        fwrite($HEALTH_CHECK_LOG_FILE, loggable_date() . '  (HEALTH CHECK STARTING)' . "\n");
-    }
+    health_check_log_start();
 
     $categories = [];
 
@@ -287,13 +281,36 @@ function run_health_check(bool &$has_fails, ?array $sections_to_run = null, bool
     }
     cms_mb_ksort($categories, SORT_NATURAL | SORT_FLAG_CASE);
 
+    health_check_log_stop();
+
+    return $categories;
+}
+
+/**
+ * Start Health Check logging.
+ */
+function health_check_log_start()
+{
+    $_log_file = get_custom_file_base() . '/data_custom/health_check.log';
+    global $HEALTH_CHECK_LOG_FILE;
+    if (is_file($_log_file)) {
+        $HEALTH_CHECK_LOG_FILE = fopen($_log_file, 'at');
+
+        fwrite($HEALTH_CHECK_LOG_FILE, loggable_date() . '  (HEALTH CHECK STARTING)' . "\n");
+    }
+}
+
+/**
+ * Stop Health Check logging.
+ */
+function health_check_log_stop()
+{
+    global $HEALTH_CHECK_LOG_FILE;
     if ($HEALTH_CHECK_LOG_FILE !== null) {
         fwrite($HEALTH_CHECK_LOG_FILE, loggable_date() . '  (HEALTH CHECK ENDING)' . "\n");
 
         fclose($HEALTH_CHECK_LOG_FILE);
     }
-
-    return $categories;
 }
 
 /**
@@ -337,9 +354,11 @@ abstract class Hook_Health_Check
             if ($HEALTH_CHECK_LOG_FILE !== null) {
                 fwrite($HEALTH_CHECK_LOG_FILE, loggable_date() . '  STARTING ' . $this->category_label . ' \\ ' . $section_label . "\n");
             }
+            $time_before = microtime(true);
             call_user_func([$this, $method], $check_context, $show_manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+            $time_after = microtime(true);
             if ($HEALTH_CHECK_LOG_FILE !== null) {
-                fwrite($HEALTH_CHECK_LOG_FILE, loggable_date() . '  FINISHED ' . $this->category_label . ' \\ ' . $section_label . "\n");
+                fwrite($HEALTH_CHECK_LOG_FILE, loggable_date() . '  FINISHED ' . $this->category_label . ' \\ ' . $section_label . ' (' . float_format($time_after - $time_before) . ' seconds)' . "\n");
             }
         } else {
             if (strpos($section_label, ',') !== false) {
