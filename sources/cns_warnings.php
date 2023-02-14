@@ -221,6 +221,11 @@ function find_member_content(int $member_id, int $max = 30) : array
     foreach ($rows as $row) {
         $ob = get_content_object($row['content_type']);
 
+        $submitter = $ob->get_submitter($row);
+        if (($submitter === null) || ($submitter != $member_id)) {
+            continue;
+        }
+
         $content_id = $ob->get_id($row);
         $content_title = $ob->get_title($row);
         $content_url = $ob->get_view_url($row);

@@ -1598,11 +1598,11 @@ function preprocess_raw_data_for(string $hook_name, int $start_time = 0, ?int $e
     foreach (array_keys($info) as $bucket) {
         $data_buckets[$bucket] = [];
 
-        $data_row = $GLOBALS['SITE_DB']->query_select_value_if_there('stats_preprocessed_flat', 'p_data', [
+        $p_data = $GLOBALS['SITE_DB']->query_select_value_if_there('stats_preprocessed_flat', 'p_data', [
             'p_bucket' => $bucket,
         ]);
-        if ($data_row !== null) {
-            $data_buckets[$bucket] = @unserialize($data_row['p_data']);
+        if ($p_data !== null) {
+            $data_buckets[$bucket] = @unserialize($p_data);
             if ($data_buckets[$bucket] === false) {
                 $data_buckets[$bucket] = [];
             }
