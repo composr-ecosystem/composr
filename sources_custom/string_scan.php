@@ -10548,7 +10548,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         Q_SURE_LOSE
         Q_SURE_REMOVE_FROM_GROUP
         RANDOM
-        RANDOM_CONTENT
         RANDOM_PAGE
         RANK_PROMOTED_MAIL
         RANK_PROMOTED_MAIL_SUBJECT

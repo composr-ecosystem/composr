@@ -117,9 +117,6 @@ PHP;
 
         // Read content ID, if there is one
         $content_id = isset($map['id']) ? $map['id'] : null;
-        if ($content_id === '') {
-            return do_template('RED_ALERT', ['_GUID' => 'rt44x3hfhc4frhbenjk01ka042716x6g', 'TEXT' => do_lang_tempcode('NO_PARAMETER_SENT', 'id')]); // Might have happened due to some bad chaining in a template
-        }
         if (($content_type == 'member') && ($content_id !== null) && (!is_numeric($content_id))) { // FUDGE: For member URL preview boxes to work
             $content_id = @strval($GLOBALS['FORUM_DRIVER']->get_member_from_username($content_id));
         }
@@ -135,7 +132,7 @@ PHP;
         // Read display parameters
         $guid = isset($map['guid']) ? $map['guid'] : '';
         $zone = isset($map['zone']) ? $map['zone'] : '_SEARCH';
-        $title = isset($map['title']) ? make_string_tempcode(escape_html($map['title'])) : null;
+        $title = isset($map['title']) ? make_string_tempcode(escape_html($map['title'])) : '';
         $give_context = (isset($map['give_context']) ? $map['give_context'] : '0') == '1';
         $include_breadcrumbs = (isset($map['include_breadcrumbs']) ? $map['include_breadcrumbs'] : '0') == '1';
 
@@ -191,14 +188,6 @@ PHP;
                 return new Tempcode();
             }
 
-            if ($title === null) {
-                if ($content_id === null) {
-                    $title = do_lang('RANDOM_CONTENT', do_lang($info['content_type_label']));
-                } else {
-                    $title = do_lang($info['content_type_label']);
-                }
-            }
-
             return do_template('BLOCK_NO_ENTRIES', [
                 '_GUID' => ($guid != '') ? $guid : '12d8cdc62cd78480b83c8daaaa68b686',
                 'BLOCK_ID' => $block_id,
@@ -211,15 +200,6 @@ PHP;
         }
 
         $row = $rows[0];
-
-        // Block title
-        if ($title === null) {
-            if ($content_id === null) {
-                $title = do_lang_tempcode('RANDOM_CONTENT', $object->get_content_type_label($row));
-            } else {
-                $title = $object->get_content_type_label($row);
-            }
-        }
 
         // Links...
 
