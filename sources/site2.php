@@ -118,7 +118,7 @@ function get_page_warning_details(string $zone, string $codename, object $edit_u
 }
 
 /**
- * Assign a redirect to the specified URL and output a message.
+ * Assign an immediate redirect to the specified URL and output a message.
  * Call this if doing a redirect deep within code that would not normally be able to return a UI screen.
  *
  * @sets_output_state
@@ -172,6 +172,7 @@ function assign_refresh($url, float $multiplier = 0.0)
         log_hack_attack_and_exit('HEADER_SPLIT_HACK');
     }
 
+    $refresh_time = 2.5 * $multiplier;
     $must_show_message = ($multiplier != 0.0);
 
     // FUDGE so that redirects can't count as flooding
@@ -184,26 +185,25 @@ function assign_refresh($url, float $multiplier = 0.0)
         }
     }
 
-    // Emergency meta tag
-    if (headers_sent()) {
-        if ($GLOBALS['RELATIVE_PATH'] != '_tests') {
-            cms_ini_set('ocproducts.xss_detect', '0');
-            echo '<meta http-equiv="Refresh" content="0; URL=' . escape_html($url) . '" />'; // XHTMLXHTML
-        }
-        return;
-    }
-
     global $FORCE_META_REFRESH;
 
     if ($must_show_message) {
         $FORCE_META_REFRESH = true;
     }
 
-    if (($FORCE_META_REFRESH) && (running_script('index'))) {
+    if ((headers_sent()) || (($FORCE_META_REFRESH) && (running_script('index')))) {
         // Redirect via meta tag in standard Composr output. This ties to the {$REFRESH} symbol used in HTML_HEAD.tpl
         global $REFRESH_URL;
         $REFRESH_URL[0] = $url;
-        $REFRESH_URL[1] = 2.5 * $multiplier;
+        $REFRESH_URL[1] = $refresh_time;
+
+        // Emergency meta tag
+        if (headers_sent()) {
+            if ($GLOBALS['RELATIVE_PATH'] != '_tests') {
+                cms_ini_set('ocproducts.xss_detect', '0');
+                echo '<meta http-equiv="Refresh" content="' . float_to_raw_string($refresh_time, 2, true) . '; URL=' . escape_html($url) . '" />'; // XHTMLXHTML
+            }
+        }
     } else {
         // HTTP redirect
 
