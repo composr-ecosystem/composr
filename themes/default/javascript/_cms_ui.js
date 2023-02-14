@@ -666,7 +666,8 @@
      */
     $cms.ui.alert = function alert(notice, title, unescaped) {
         var options,
-            single = false;
+            single = false,
+            width = 600;
 
         if ($util.isObj(notice)) {
             options = notice;
@@ -674,6 +675,7 @@
             title = strVal(options.title) || '{!MESSAGE;^}';
             unescaped = Boolean(options.unescaped);
             single = Boolean(options.single);
+            width = intVal(options.width) || width;
         } else {
             notice = strVal(notice);
             title = strVal(title) || '{!MESSAGE;^}';
@@ -700,7 +702,7 @@
                 type: 'alert',
                 text: unescaped ? notice : $cms.filter.html(notice).replace(/\n/g, '<br />'),
                 yesButton: '{!INPUTSYSTEM_OK;^}',
-                width: '600',
+                width: '' + width,
                 yes: function () {
                     currentAlertNotice = null;
                     currentAlertTitle = null;

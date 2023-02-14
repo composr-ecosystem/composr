@@ -204,11 +204,6 @@ class Hook_addon_registry_core_addon_management
 
             $status = do_lang_tempcode('STATUS_NOT_INSTALLED');
 
-            $pretty_name = do_lorem_template('ADDON_NAME', [
-                'IMAGE_URL' => placeholder_image_url(),
-                'NAME' => lorem_word(),
-            ]);
-
             $addons['Test']['COLOURS']['green']['ADDONS'][$value] = do_lorem_template('ADDON_SCREEN_ADDON', [
                 'DESCRIPTION' => lorem_paragraph(),
                 'DESCRIPTION_PARSED' => lorem_paragraph_html(),
@@ -216,7 +211,7 @@ class Hook_addon_registry_core_addon_management
                 'COLOUR' => 'orange',
                 'STATUS' => $status,
                 'NAME' => $value,
-                'PRETTY_NAME' => $pretty_name,
+                'IMAGE_URL' => placeholder_image_url(),
                 'FILENAME' => lorem_word(),
                 'AUTHOR' => lorem_phrase(),
                 'ORGANISATION' => lorem_word(),

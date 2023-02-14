@@ -37,7 +37,7 @@
 	<tbody>
 		{+START,LOOP,MODULES}
 			<tr class="{$CYCLE,results_table_zebra,zebra-0,zebra-1}">
-				<td class="addon-name">
+				<td>
 					{NAME*}
 				</td>
 				<td>

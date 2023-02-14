@@ -1,9 +1,11 @@
 {$REQUIRE_JAVASCRIPT,core_addon_management}
 
 <tr>
-	<td class="addon-name">
+	<td>
 		{+START,SET,description}
 			{DESCRIPTION_PARSED}
+
+			<h2>{!metadata:METADATA}</h2>
 
 			{+START,IF_NON_EMPTY,{ORGANISATION}}
 				<p>
@@ -25,37 +27,20 @@
 				<span class="field-name">{!CATEGORY}:</span>
 				{CATEGORY*}
 			</p>
-		{+END}
-		<p {+START,IF,{$DESKTOP}} data-cms-tooltip="{ contents: '{$TRUNCATE_LEFT;^*,{$GET,description},800,0,1}', width: '50%' }"{+END}>
-			{PRETTY_NAME}
-		</p>
-		{+START,SET,FILE_LIST_PRE}
+
 			<p class="lonely-label">{!FILES}:</p>
-		{+END}
-		{+START,SET,FILE_LIST}
 			<ul>
 				{+START,LOOP,FILE_LIST}
-					<li>{_loop_var*}</li>
+					<li><kbd>{_loop_var*}</kbd></li>
 				{+END}
 			</ul>
 		{+END}
-		{+START,IF,{$DESKTOP}}
-			<div class="block-desktop">
-				<p {+START,IF,{$DESKTOP}} data-cms-tooltip="{ contents: '{$TRUNCATE_LEFT;^*,{$GET,FILE_LIST},800,0,1}', width: '50%' }"{+END}>
-					{+START,IF_PASSED,FILENAME}
-						{FILENAME*}
-					{+END}
-					{+START,IF_NON_PASSED,FILENAME}
-						{!HOVER_FOR_CONTENTS}
-					{+END}
-				</p>
-			</div>
+
+		{+START,IF_PASSED,IMAGE_URL}
+			<img width="16" height="16" src="{IMAGE_URL*}" alt="" />
 		{+END}
-		{+START,IF_PASSED,FILENAME}
-			<div class="block-mobile">
-				{FILENAME*}
-			</div>
-		{+END}
+
+		<span class="addon-name"{+START,IF,{$DESKTOP}} data-cms-tooltip="{ contents: '{$TRUNCATE_LEFT;^*,{$GET,description},800,0,1}', width: '50%' }"{+END} data-addon-details="{$GET*,description}">{NAME*}</span>
 	</td>
 	<td>
 		{AUTHOR*}

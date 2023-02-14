@@ -5761,7 +5761,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         HONEYPOT_URL
         HOST
         HOT_TOPIC_DEFINITION
-        HOVER_FOR_CONTENTS
         DESCRIPTION_PRICE
         DESCRIPTION_TAX_CODE
         PRICE_POINTS

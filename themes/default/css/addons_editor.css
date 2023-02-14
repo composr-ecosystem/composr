@@ -10,7 +10,9 @@
 }
 
 .addon-name {
-	font-style: italic;
+	border-bottom: 2px dotted {$GET,dark_border};
+	display: inline-block;
+	cursor: pointer;
 }
 
 .addon-actions {
