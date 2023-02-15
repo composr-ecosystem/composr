@@ -934,7 +934,7 @@ function placeholder_member_box() : object
         'MEMBER_ID' => placeholder_first_admin_id(),
     ]);
 
-    return do_lorem_template('CNS_MEMBER_BOX', [
+    $map = [
         'GIVE_CONTEXT' => false,
         'MEMBER_ID' => placeholder_first_admin_id(),
         'USERNAME' => lorem_word(),
@@ -950,14 +950,17 @@ function placeholder_member_box() : object
         'ONLINE' => false,
         'AVATAR_URL' => placeholder_avatar(),
         'IP_ADDRESS' => placeholder_ip(),
-        '_NUM_WARNINGS' => placeholder_number(),
-        'NUM_WARNINGS' => placeholder_number(),
         'GALLERIES' => placeholder_number(),
         'DOB_LABEL' => lorem_word(),
         'DOB' => placeholder_date(),
         '_DOB' => placeholder_date_raw(),
         '_DOB_CENSORED' => false,
-    ]);
+    ];
+    if (addon_installed('cns_warnings')) {
+        $map['_NUM_WARNINGS'] = placeholder_number();
+        $map['NUM_WARNINGS'] = placeholder_number();
+    }
+    return do_lorem_template('CNS_MEMBER_BOX', $map);
 }
 
 /**
