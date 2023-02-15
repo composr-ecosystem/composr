@@ -43,12 +43,18 @@ class Hook_admin_stats_actionlogs extends CMSStatsProvider
         $rows1 = (get_forum_type() == 'cns') ? $GLOBALS['FORUM_DB']->query_select('f_moderator_logs', ['DISTINCT l_the_type']) : [];
         $rows2 = $GLOBALS['SITE_DB']->query_select('actionlogs', ['DISTINCT the_type']);
         foreach ($rows1 as $row) {
+            if ($this->should_skip_type($row['l_the_type'])) {
+                continue;
+            }
             $lang = do_lang($row['l_the_type'], null, null, null, null, false);
             if ($lang !== null) {
                 $_action_type_list[$row['l_the_type']] = $lang;
             }
         }
         foreach ($rows2 as $row) {
+            if ($this->should_skip_type($row['the_type'])) {
+                continue;
+            }
             $lang = do_lang($row['the_type'], null, null, null, null, false);
             if ($lang !== null) {
                 $_action_type_list[$row['the_type']] = $lang;
@@ -99,6 +105,9 @@ class Hook_admin_stats_actionlogs extends CMSStatsProvider
                 $month = get_stats_month_for_timestamp($timestamp);
 
                 $type = $row['the_type'];
+                if ($this->should_skip_type($type)) {
+                    continue;
+                }
 
                 foreach (array_keys($date_pivots) as $pivot) {
                     $pivot_value = $this->calculate_date_pivot_value($pivot, $timestamp);
@@ -160,5 +169,28 @@ class Hook_admin_stats_actionlogs extends CMSStatsProvider
             'x_axis_label' => do_lang_tempcode('TIME_IN_TIMEZONE', escape_html(make_nice_timezone_name(get_site_timezone()))),
             'y_axis_label' => do_lang_tempcode('COUNT_TOTAL'),
         ];
+    }
+
+    /**
+     * Determine whether we should skip the provided action log type in the stats module.
+     *
+     * @param  ID_TEXT $type The action log type
+     * @return boolean Whether to skip it
+     */
+    protected function should_skip_type(string $type) : bool
+    {
+        require_code('actionlog');
+
+        $flags = get_handler_flags($type);
+
+        // Do not count GDPR nor user action flagged logs towards the statistics
+        if (($flags & ACTIONLOG_FLAG__GDPR) != 0) {
+            return true;
+        }
+        if (($flags & ACTIONLOG_FLAG__USER_ACTION) != 0) {
+            return true;
+        }
+
+        return false;
     }
 }
