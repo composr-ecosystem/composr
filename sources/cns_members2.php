@@ -222,7 +222,7 @@ function render_member_box(int $member_id, bool $preview = false, bool $show_ava
         ]));
     }
 
-    return do_template('CNS_MEMBER_BOX', [
+    $map = [
         '_GUID' => ($guid != '') ? $guid : 'dfskfdsf9',
         'GIVE_CONTEXT' => $give_context,
         'MEMBER_ID' => strval($member_id),
@@ -239,14 +239,17 @@ function render_member_box(int $member_id, bool $preview = false, bool $show_ava
         'ONLINE' => $member_info['online'],
         'AVATAR_URL' => ($show_avatar && isset($member_info['avatar'])) ? $member_info['avatar'] : '',
         'IP_ADDRESS' => ((has_privilege(get_member(), 'see_ip')) && (isset($member_info['ip_address']))) ? $member_info['ip_address'] : null,
-        '_NUM_WARNINGS' => strval($member_info['num_warnings']),
-        'NUM_WARNINGS' => integer_format($member_info['num_warnings'], 0),
         'GALLERIES' => isset($member_info['galleries']) ? $member_info['galleries'] : null,
         'DOB_LABEL' => isset($member_info['dob_label']) ? $member_info['dob_label'] : '',
         'DOB' => isset($member_info['dob']) ? $member_info['dob'] : '',
         '_DOB' => isset($member_info['_dob']) ? strval($member_info['_dob']) : '',
         '_DOB_CENSORED' => isset($member_info['_dob_censored']) ? strval($member_info['_dob_censored']) : '',
-    ]);
+    ];
+    if (addon_installed('cns_warnings')) {
+        $map['_NUM_WARNINGS'] = strval($member_info['num_warnings']);
+        $map['NUM_WARNINGS'] = integer_format($member_info['num_warnings'], 0);
+    };
+    return do_template('CNS_MEMBER_BOX', $map);
 }
 
 /**

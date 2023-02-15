@@ -27,8 +27,8 @@
 					{+START,IF_PASSED,IP_ADDRESS}
 						<tr><th class="de-th">{!IP_ADDRESS}:</th><td>{$TRUNCATE_LEFT,{IP_ADDRESS},15,1}</td></tr>
 					{+END}
-					{+START,IF_PASSED,WARNINGS}
-						<tr><th class="de-th">{!MODULE_TRANS_NAME_warnings}:</th><td>{WARNINGS*}</td></tr>
+					{+START,IF_PASSED,NUM_WARNINGS}
+						<tr><th class="de-th">{!cns_warnings:MODULE_TRANS_NAME_warnings}:</th><td>{NUM_WARNINGS*}</td></tr>
 					{+END}
 					{+START,IF_PASSED,GALLERIES}
 						<tr><th class="de-th">{!galleries:GALLERIES}:</th><td>{GALLERIES*}</td></tr>

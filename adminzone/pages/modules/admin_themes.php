@@ -1140,7 +1140,7 @@ class Module_admin_themes
         if (strpos($id, '/') !== false) {
             $target_dir .= '/' . str_replace('/' . basename($id), '', $id);
         }
-        $urls = get_url('url', 'file', $target_dir, 0, CMS_UPLOAD_ANYTHING, false, '', '', false, false, false, false, null, null, null, basename($id) . '.XXX');
+        $urls = get_url('url', 'file', $target_dir, 0, CMS_UPLOAD_IMAGE, false, '', '', false, false, false, false, null, null, null, basename($id) . '.XXX');
         if ($urls[0] == '') {
             return warn_screen($this->title, do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD'));
         }
@@ -1315,7 +1315,7 @@ class Module_admin_themes
             if (strpos($id, '/') !== false) {
                 $target_dir .= '/' . str_replace('/' . basename($id), '', $id);
             }
-            $urls = get_url('url', 'file', $target_dir, 0, CMS_UPLOAD_ANYTHING, false, '', '', false, false, false, false, null, null, null, basename($id) . '.XXX');
+            $urls = get_url('url', 'file', $target_dir, 0, CMS_UPLOAD_IMAGE, false, '', '', false, false, false, false, null, null, null, basename($id) . '.XXX');
 
             if ((url_is_local($urls[0])) && (!file_exists(((substr($urls[0], 0, 15) == 'themes/default/') ? get_file_base() : get_custom_file_base()) . '/' . rawurldecode($urls[0])))) {
                 warn_screen($this->title, do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD'));

@@ -850,7 +850,8 @@ class Hook_addon_registry_core_cns
         $poster_details = do_lorem_template('CNS_GUEST_DETAILS', [
             'CUSTOM_FIELDS' => $custom_fields,
         ]);
-        $box = do_lorem_template('CNS_MEMBER_BOX', [
+
+        $map = [
             'GIVE_CONTEXT' => false,
             'MEMBER_ID' => placeholder_first_admin_id(),
             'USERNAME' => lorem_phrase(),
@@ -871,9 +872,12 @@ class Hook_addon_registry_core_cns
             'DOB' => placeholder_date(),
             '_DOB' => placeholder_date_raw(),
             '_DOB_CENSORED' => placeholder_date_raw(),
-            '_NUM_WARNINGS' => placeholder_number(),
-            'NUM_WARNINGS' => placeholder_number(),
-        ]);
+        ];
+        if (addon_installed('cns_warnings')) {
+            $map['_NUM_WARNINGS'] = placeholder_number();
+            $map['NUM_WARNINGS']  = placeholder_number();
+        }
+        $box = do_lorem_template('CNS_MEMBER_BOX', $map);
 
         $member_boxes = [];
         $member_boxes[] = [
