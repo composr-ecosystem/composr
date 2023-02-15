@@ -1480,7 +1480,7 @@ function current_script() : string
     // Strip down current URL so we can do a simple compare
     global $WHAT_IS_RUNNING_CACHE;
     if ($WHAT_IS_RUNNING_CACHE === null) {
-        $script_name = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : '';
+        $script_name = $_SERVER['SCRIPT_NAME'];
         $stripped_current_url = basename($script_name);
         $WHAT_IS_RUNNING_CACHE = substr($stripped_current_url, 0, strpos($stripped_current_url, '.'));
     }

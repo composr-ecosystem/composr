@@ -296,7 +296,9 @@ function health_check_log_start()
     if (is_file($_log_file)) {
         $HEALTH_CHECK_LOG_FILE = fopen($_log_file, 'at');
 
-        fwrite($HEALTH_CHECK_LOG_FILE, loggable_date() . '  (HEALTH CHECK STARTING)' . "\n");
+        $origin = running_script('index') ? get_self_url_easy() : $_SERVER['SCRIPT_NAME'];
+
+        fwrite($HEALTH_CHECK_LOG_FILE, loggable_date() . '  (HEALTH CHECK STARTING FROM ' . $origin . ')' . "\n");
     }
 }
 

@@ -457,13 +457,13 @@ class Hook_health_check_install_env extends Hook_Health_Check
 
         // Test to see if we have any ModSecurity issue that blocks config form submissions, via posting through some perfectly legitimate things that it might be paranoid about
         $test_url = get_custom_base_url() . '/data/empty.php';
-        $test_a = cms_http_request($test_url, ['byte_limit' => 0, 'trigger_error' => false, 'no_redirect' => true]);
+        $test_a = cms_http_request($test_url, ['byte_limit' => 0, 'trigger_error' => false, 'no_redirect' => true, 'post_params' => ['test_a' => '/usr/bin/unzip -o @_SRC_@ -x -d @_DST_@', 'test_b' => '<iframe src="http://example.com/"></iframe>', 'test_c' => '<script>console.log(document.cookie);</script>']]);
         $message_a = $test_a->message;
-        if ($message_a == '200') {
-            $test_b = cms_http_request($test_url, ['byte_limit' => 0, 'trigger_error' => false, 'no_redirect' => true, 'post_params' => ['test_a' => '/usr/bin/unzip -o @_SRC_@ -x -d @_DST_@', 'test_b' => '<iframe src="http://example.com/"></iframe>', 'test_c' => '<script>console.log(document.cookie);</script>']]);
+        if ($message_a != '200') {
+            $test_b = cms_http_request($test_url, ['byte_limit' => 0, 'trigger_error' => false, 'no_redirect' => true]);
             $message_b = $test_b->message;
-            if ($message_b != '200') {
-                $this->assertTrue(false, do_lang('MODSECURITY', $message_b));
+            if ($message_b == '200') {
+                $this->assertTrue(false, do_lang('MODSECURITY', $message_a));
             } else {
                 $this->assertTrue(true, do_lang('MODSECURITY', do_lang('NA')));
             }

@@ -1327,6 +1327,7 @@ class HttpDownloaderSockets extends HttpDownloader
                 return HttpDownloader::RUN_PRIORITY_MEDIUM;
             }
             if ((defined('OPENSSL_VERSION_NUMBER')) && ($this->url_parts['scheme'] == 'https')) {
+                return HttpDownloader::RUN_PRIORITY_MEDIUM;
             }
         }
 
