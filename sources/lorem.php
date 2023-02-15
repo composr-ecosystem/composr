@@ -522,8 +522,9 @@ function placeholder_breadcrumbs() : object
  * @param  boolean $light_error Whether to not produce a stack trace if the template is missing
  * @param  ?ID_TEXT $fallback Alternate template to use if the primary one does not exist (null: none)
  * @param  string $suffix File type suffix of template file (e.g. .tpl)
+ * @set .tpl .js .xml .txt .css
  * @param  string $directory Subdirectory type to look in
- * @set templates css javascript xml text
+ * @set templates javascript xml text css
  * @return Tempcode The Tempcode for this template
  */
 function do_lorem_template(string $codename, array $parameters = [], ?string $lang = null, bool $light_error = false, ?string $fallback = null, string $suffix = '.tpl', string $directory = 'templates') : object

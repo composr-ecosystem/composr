@@ -872,7 +872,7 @@ function do_template(string $codename, array $parameters = [], ?string $lang = n
         (!$RECORD_LANG_STRINGS/*Tempcode compilation embeds lang strings*/) &&
         !$inlining_mode;
     if (!$loaded_this_once) {
-        $found = find_template_place($codename, $lang, $theme, $suffix, $directory, $non_custom_only);
+        $found = find_template_place($codename, $theme, $suffix, $directory, $non_custom_only);
         $TEMPLATE_DISK_ORIGIN_CACHE[$codename][$lang][$theme][$suffix][$directory][$non_custom_only] = $found;
     } else {
         $found = $TEMPLATE_DISK_ORIGIN_CACHE[$codename][$lang][$theme][$suffix][$directory][$non_custom_only];
@@ -1128,6 +1128,7 @@ function strip_invisible_output_encoding(string $string) : string
  * @param  string $suffix File type suffix of template file (e.g. .tpl)
  * @set .tpl .js .xml .txt .css
  * @param  string $directory Subdirectory type to look in
+ * @set templates javascript xml text css
  * @param  ID_TEXT $theme Theme to use
  * @param  TIME $tcp_time Time of cache file
  * @return boolean Whether decache is NOT needed
@@ -1184,7 +1185,7 @@ function dependencies_are_good(string $codename, string $suffix, string $directo
             continue;
         }
 
-        $found = find_template_place($d, '', $theme, $suffix, $directory);
+        $found = find_template_place($d, $theme, $suffix, $directory);
         $full_path = get_custom_file_base() . '/themes/' . $found[0] . $found[1] . $d . $found[2];
         if (!is_file($full_path)) {
             $full_path = get_file_base() . '/themes/' . $found[0] . $found[1] . $d . $found[2];

@@ -79,12 +79,12 @@ class Hook_cron_downloads_followup_email
 
         // Set the templates names to use. Use CUSTOM template if it exists, else use the default template.
         $theme = 'default';
-        if (find_template_place('DOWNLOADS_FOLLOWUP_EMAIL_CUSTOM', null, $theme, '.tpl', 'templates') === null) {
+        if (find_template_place('DOWNLOADS_FOLLOWUP_EMAIL_CUSTOM', $theme, '.tpl', 'templates') === null) {
             $mail_template = 'DOWNLOADS_FOLLOWUP_EMAIL';
         } else {
             $mail_template = 'DOWNLOADS_FOLLOWUP_EMAIL_CUSTOM';
         }
-        if (find_template_place('DOWNLOADS_FOLLOWUP_EMAIL_CUSTOM', null, $theme, '.tpl', 'templates') === null) {
+        if (find_template_place('DOWNLOADS_FOLLOWUP_EMAIL_CUSTOM', $theme, '.tpl', 'templates') === null) {
             $download_list_template = 'DOWNLOADS_FOLLOWUP_EMAIL_DOWNLOAD_LIST';
         } else {
             $download_list_template = 'DOWNLOADS_FOLLOWUP_EMAIL_DOWNLOAD_LIST_CUSTOM';

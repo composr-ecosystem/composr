@@ -335,7 +335,7 @@ function find_template_path(string $file, string $subdir, string $theme) : ?stri
 
     $suffix = '.' . get_file_extension($file);
     $_file = basename($file, $suffix);
-    list($searched_theme, $searched_directory, $searched_suffix) = find_template_place($_file, get_site_default_lang(), $theme, $suffix, $subdir);
+    list($searched_theme, $searched_directory, $searched_suffix) = find_template_place($_file, $theme, $suffix, $subdir);
     if ($searched_theme === null) {
         return null;
     }

@@ -1038,21 +1038,21 @@ function set_http_status_code(int $code)
  * Search for a template.
  *
  * @param  ID_TEXT $codename The codename of the template being loaded
- * @param  ?LANGUAGE_NAME $lang The language to load the template in (templates can embed language references) (null: users own language)
  * @param  ID_TEXT $theme The theme to use
  * @param  string $suffix File type suffix of template file (e.g. .tpl)
+ * @set .tpl .js .xml .txt .css
  * @param  string $directory Subdirectory type to look in
- * @set templates css
+ * @set templates javascript xml text css
  * @param  boolean $non_custom_only Whether to only search in the default templates
  * @param  boolean $fallback_other_themes Allow fallback to other themes, in case it is defined only in a specific theme we would not normally look in
  * @return ?array List of parameters needed for the _do_template function to be able to load the template (null: could not find the template)
  */
-function find_template_place(string $codename, ?string $lang, string $theme, string $suffix, string $directory, bool $non_custom_only = false, bool $fallback_other_themes = true) : ?array
+function find_template_place(string $codename, string $theme, string $suffix, string $directory, bool $non_custom_only = false, bool $fallback_other_themes = true) : ?array
 {
     global $FILE_ARRAY, $CURRENT_SHARE_USER;
 
     static $tp_cache = [];
-    $sz = serialize([$codename, $lang, $theme, $suffix, $directory, $non_custom_only, $fallback_other_themes]);
+    $sz = serialize([$codename, $theme, $suffix, $directory, $non_custom_only, $fallback_other_themes]);
     if (isset($tp_cache[$sz])) {
         return $tp_cache[$sz];
     }

@@ -238,7 +238,6 @@ function substitute_comment_encapsulated_tempcode(string $data) : string
  * @param  ?string $suffix File type suffix of template file (e.g. .tpl) (null: not from a file)
  * @set .tpl .js .xml .txt .css
  * @param  ?string $directory Subdirectory type to look in (null: not from a file)
- * @set templates javascript xml text css
  * @return array A pair: array Compiled result structure, array preprocessable bits (special stuff needing attention that is referenced within the template)
  */
 function compile_template(string $data, string $template_name, string $theme, string $lang, bool $tolerate_errors = false, ?array &$parameters = null, ?array &$parameters_used = null, ?string $suffix = null, ?string $directory = null) : array
@@ -945,7 +944,7 @@ function compile_template(string $data, string $template_name, string $theme, st
                                         $_force_original = '0';
                                     }
 
-                                    $found = find_template_place($included_template_name, '', $_theme, $_ex, $_td, ($template_name === $included_template_name) || ($_force_original == '1'));
+                                    $found = find_template_place($included_template_name, $_theme, $_ex, $_td, ($template_name === $included_template_name) || ($_force_original == '1'));
 
                                     if (($found !== null) && ($found[1] !== null)) {
                                         $_theme = $found[0];
@@ -1199,6 +1198,7 @@ function may_optimise_out_symbol(string $symbol) : bool
  * @param  ID_TEXT $_codename The actual codename to use for the template in the cache (e.g. foo_mobile)
  * @param  LANGUAGE_NAME $lang The language the template is in the context of
  * @param  string $suffix File type suffix of template file (e.g. .tpl)
+ * @set .tpl .js .xml .txt .css
  * @param  ?ID_TEXT $theme_orig The theme to cache in (null: main theme)
  * @param  ?array $parameters Parameters to hard-code in during compilation (null: no hard-coding)
  * @param  boolean $non_custom_only Whether we only searched in the default templates
@@ -1284,8 +1284,7 @@ function _do_template(string $theme, string $directory, string $codename, string
  * @param  ?array $parameters Parameters to hard-code in during compilation (null: no hard-coding)
  * @param  ?string $suffix File type suffix of template file (e.g. .tpl) (null: not from a file)
  * @set .tpl .js .xml .txt .css
- * @param  ?string $directory Subdirectory type to look in (null: not from a file)
- * @set templates javascript xml text css
+ * @param  ?string $directory Subdirectory type to look in. Surrounded by '/', unlike with $directory parameters to most other functions (performance reasons) (null: not from a file)
  * @return mixed The converted/compiled template as Tempcode, OR if a directive, encoded directive information
  */
 function template_to_tempcode(string $text, int $symbol_pos = 0, bool $inside_directive = false, string $codename = '', ?string $theme = null, ?string $lang = null, bool $tolerate_errors = false, ?array &$parameters = null, ?string $suffix = null, ?string $directory = null)
