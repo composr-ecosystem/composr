@@ -30,7 +30,7 @@ class Hook_privacy_core extends Hook_privacy_base
      */
     public function info() : ?array
     {
-        global $USING_CLOUDFLARE_PROXY;
+        global $MIGHT_BE_USING_CF;
 
         $deletion_exemptions = '';
         $deletion_exemptions .= '<ul>';
@@ -113,7 +113,7 @@ class Hook_privacy_core extends Hook_privacy_base
                     'action' => do_lang_tempcode('PRIVACY_ACTION_dnsbl'),
                     'reason' => do_lang_tempcode('PRIVACY_REASON_dnsbl'),
                 ],
-                (empty($USING_CLOUDFLARE_PROXY)) ? null : [
+                (empty($MIGHT_BE_USING_CF)) ? null : [
                     'heading' => do_lang('INFORMATION_TRANSFER'),
                     'action' => do_lang_tempcode('PRIVACY_ACTION_cloudflare', escape_html(get_site_name())),
                     'reason' => do_lang_tempcode('PRIVACY_REASON_cloudflare'),
