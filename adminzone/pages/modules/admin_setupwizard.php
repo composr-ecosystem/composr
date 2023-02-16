@@ -197,7 +197,7 @@ class Module_admin_setupwizard
             }
         }
 
-        $_done_once = get_value('setupwizard_completed');
+        $_done_once = get_value('setupwizard_completed', null, true);
         $done_once = $_done_once !== null;
 
         $post_url = build_url(['page' => '_SELF', 'type' => 'step2'], '_SELF', ['keep_theme_seed' => true, 'keep_theme_dark' => true, 'keep_theme_source' => true, 'keep_theme_algorithm' => true]);
@@ -1417,7 +1417,7 @@ class Module_admin_setupwizard
         delete_cache_entry('menu');
 
         // We're done
-        set_value('setupwizard_completed', '1');
+        set_value('setupwizard_completed', '1', true);
 
         log_it('SETUPWIZARD');
 
