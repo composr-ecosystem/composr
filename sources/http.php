@@ -1403,6 +1403,7 @@ class HttpDownloaderSockets extends HttpDownloader
             $out .= 'Connection: Close' . "\r\n";
             $out .= $this->get_header_string();
             $out .= $this->raw_payload;
+            $out .= "\r\n";
 
             @fwrite($mysock, $out);
             if ($this->raw_post_handle !== null) {
