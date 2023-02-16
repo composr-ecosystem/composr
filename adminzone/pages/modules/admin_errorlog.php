@@ -205,9 +205,9 @@ class Module_admin_errorlog
 
                 if (($_line != '') && (strpos($_line, '<?php') === false)) {
                     $matches = [];
-                    if (preg_match('#^\[(.+?) (.+?)\] (.{1,20}):  ?(.*)#', $_line, $matches) != 0) {
+                    if (preg_match('#^\[([^\[\]]+) ([^\[\]]+)\] (.{1,22}):  ?(.*)#', $_line, $matches) != 0) {
                         $stuff[] = [$matches[1], $matches[2], $matches[3], $matches[4]];
-                    } elseif (preg_match('#^\[(.+?) (.+?)\] (.*)#', $_line, $matches) != 0) {
+                    } elseif (preg_match('#^\[([^\[\]]+) ([^\[\]]+)\] (.*)#', $_line, $matches) != 0) {
                         $stuff[] = [$matches[1], $matches[2], 'N/A', $matches[3]];
                     }
                 }
@@ -313,7 +313,7 @@ class Module_admin_errorlog
                         }
                     }
 
-                    // Any special support for reformatting particular logs
+                    // FUDGE: Any special support for reformatting particular logs
                     foreach ($lines as $i => $line) {
                         // Special support for permission log
                         $matches = [];
