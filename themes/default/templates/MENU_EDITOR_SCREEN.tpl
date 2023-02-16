@@ -53,7 +53,7 @@
 						<h2>{!CHOOSE_ENTRY_POINT}</h2>
 
 						<div class="accessibility-hidden"><label for="tree-list">{!ENTRY}</label></div>
-						<input class="form-control js-input-change-update-selection" style="display: none" type="text" id="tree-list" name="tree_list" />
+						<input class="form-control js-tree-input-change-update-selection" style="display: none" type="text" id="tree-list" name="tree_list" />
 						<div id="tree-list--root-tree-list">
 							<!-- List put in here -->
 						</div>
