@@ -1362,8 +1362,12 @@ class HttpDownloaderSockets extends HttpDownloader
             $connect_to = $this->connect_to;
             if (strtolower(substr($url, 0, 8)) == 'https://') {
                 $connect_to = 'tls://' . $this->connect_to;
+                $default_port = 443;
+            } else {
+                $default_port = 80;
             }
-            $mysock = @fsockopen($connect_to, array_key_exists('port', $this->url_parts) ? $this->url_parts['port'] : 80, $errno, $errstr, $this->timeout);
+            $port = array_key_exists('port', $this->url_parts) ? $this->url_parts['port'] : $default_port;
+            $mysock = @fsockopen($connect_to, $port, $errno, $errstr, $this->timeout);
         }
 
         if ($mysock !== false) {
