@@ -1400,11 +1400,9 @@ class HttpDownloaderSockets extends HttpDownloader
                 $out = $this->http_verb . ' ' . escape_header($url2) . " HTTP/1.1\r\n";
             }
             $out .= 'Host: ' . $this->url_parts['host'] . "\r\n";
+            $out .= 'Connection: Close' . "\r\n";
             $out .= $this->get_header_string();
             $out .= $this->raw_payload;
-            if (!$this->sending_request_content) {
-                $out .= 'Connection: Close' . "\r\n\r\n";
-            }
 
             @fwrite($mysock, $out);
             if ($this->raw_post_handle !== null) {
@@ -1564,6 +1562,21 @@ class HttpDownloaderSockets extends HttpDownloader
 
                     $tally = 0;
                     foreach ($lines as $lno => $line) {
+                        if (empty($line)) {
+                            $data_started = true;
+                            $buffer_unprocessed = @substr($old_line, $tally);
+                            if ($buffer_unprocessed === false) {
+                                $buffer_unprocessed = '';
+                            }
+
+                            if (($chunked) && (isset($buffer_unprocessed[1])) && ($buffer_unprocessed[0] == "\r") && ($buffer_unprocessed[1] == "\n")) {
+                                // Explicit termination after headers, we should not try and wait for more
+                                break 2; // Termination case
+                            }
+
+                            break;
+                        }
+
                         $line .= "\r\n";
 
                         $tally += strlen($line);
@@ -1726,21 +1739,6 @@ class HttpDownloaderSockets extends HttpDownloader
                                     }
                                     break;
                             }
-                        }
-
-                        if ($line == "\r\n") {
-                            $data_started = true;
-                            $buffer_unprocessed = @substr($old_line, $tally);
-                            if ($buffer_unprocessed === false) {
-                                $buffer_unprocessed = '';
-                            }
-
-                            if (($chunked) && (isset($buffer_unprocessed[1])) && ($buffer_unprocessed[0] == "\r") && ($buffer_unprocessed[1] == "\n")) {
-                                // Explicit termination after headers, we should not try and wait for more
-                                break 2; // Termination case
-                            }
-
-                            break;
                         }
                     }
                 }
