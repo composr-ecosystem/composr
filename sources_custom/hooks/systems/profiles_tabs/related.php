@@ -53,7 +53,7 @@ class Hook_profiles_tabs_related
         $order = 150;
 
         if ($leave_to_ajax_if_possible) {
-            return [$title, null, $order, ''];
+            return [$title, null, $order, 'menu/social/members'];
         }
 
         require_css('cns_member_directory');
@@ -62,6 +62,6 @@ class Hook_profiles_tabs_related
         $filter = do_lang('RELATED_CPF') . '=' . $cpf_value . ',id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ',id<>' . strval($member_id_of);
         $content = do_block('main_multi_content', ['param' => 'member', 'render_mode' => 'boxes', 'pinned' => '', 'sort' => 'title', 'filter' => $filter, 'no_links' => '1', 'guid' => 'module']);
 
-        return [$title, $content, $order, ''];
+        return [$title, $content, $order, 'menu/social/members'];
     }
 }
