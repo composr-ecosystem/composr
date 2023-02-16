@@ -138,7 +138,7 @@
             });
         });
 
-        $dom.on(container, 'change', '.js-input-change-update-selection', function (e, input) {
+        $dom.on(container, 'change', '.js-tree-input-change-update-selection', function (e, input) {
             var el = $dom.$('#url_' + window.currentSelection),
                 urlEl,
                 captionEl;
@@ -554,11 +554,13 @@
         window.currentSelection = i;
         var form = $dom.$id('edit-form');
 
+        // Note that we use old-school event handlers because we need to overwrite the previous event handler for the previous selected field
+
         form.elements['caption_long'].value = $dom.$id('caption_long_' + i).value;
-        form.elements['caption_long'].addEventListener('change', function () {
+        form.elements['caption_long'].onchange = function () {
             $dom.$('#caption_long_' + i).value = this.value;
             $dom.$('#caption_long_' + i).disabled = (this.value === '');
-        });
+        };
 
         form.elements['url'].value = $dom.$id('url_' + i).value;
         form.elements['url'].onchange = function () {
@@ -566,10 +568,10 @@
         };
 
         form.elements['page_only'].value = $dom.$id('page_only_' + i).value;
-        form.elements['page_only'].addEventListener('change', function () {
+        form.elements['page_only'].onchange = function () {
             $dom.$('#page_only_' + i).value = this.value;
             $dom.$('#page_only_' + i).disabled = (this.value === '');
-        });
+        };
 
         var s;
         for (s = 0; s < form.elements['theme_img_code'].options.length; s++) {
@@ -582,42 +584,42 @@
             $cms.ui.alert('{!menus:MISSING_THEME_IMAGE_FOR_MENU;^}'.replace(/\\{1\\}/, $cms.filter.html($dom.$id('theme_img_code_' + i).value)));
         }
         form.elements['theme_img_code'].selectedIndex = s;
-        form.elements['theme_img_code'].addEventListener('change', function () {
+        form.elements['theme_img_code'].onchange = function () {
             $dom.$('#theme_img_code_' + i).value = this.value;
             $dom.$('#theme_img_code_' + i).disabled = (this.selectedIndex === 0);
-        });
+        };
         if (window.jQuery && window.jQuery.fn.select2) {
             window.jQuery(form.elements['theme_img_code']).trigger('change');
         }
 
         form.elements['new_window'].checked = $dom.$id('new_window_' + i).value === '1';
-        form.elements['new_window'].addEventListener('click', function () {
+        form.elements['new_window'].onclick = function () {
             $dom.$('#new_window_' + i).value = this.checked ? '1' : '0';
             $dom.$('#new_window_' + i).disabled = !this.checked;
-        });
+        };
 
         form.elements['check_perms'].checked = $dom.$id('check_perms_' + i).value === '1';
-        form.elements['check_perms'].addEventListener('click', function () {
+        form.elements['check_perms'].onclick = function () {
             $dom.$('#check_perms_' + i).value = this.checked ? '1' : '0';
             $dom.$('#check_perms_' + i).disabled = !this.checked;
-        });
+        };
 
         form.elements['branch_type'].selectedIndex = $dom.$id('branch_type_' + i).selectedIndex;
-        form.elements['branch_type'].addEventListener('change', function (event) {
+        form.elements['branch_type'].onchange = function (event) {
             $dom.$('#branch_type_' + i).selectedIndex = this.selectedIndex;
             if ($dom.$('#branch_type_' + i).onchange) {
                 $dom.$('#branch_type_' + i).onchange(event);
             }
-        });
+        };
         if (window.jQuery && window.jQuery.fn.select2) {
             window.jQuery(form.elements['branch_type']).trigger('change');
         }
 
         form.elements['include_sitemap'].selectedIndex = $dom.$id('include_sitemap_' + i).value;
-        form.elements['include_sitemap'].addEventListener('change', function () {
+        form.elements['include_sitemap'].onchange = function () {
             $dom.$('#include_sitemap_' + i).value = this.selectedIndex;
             $dom.$('#include_sitemap_' + i).disabled = (this.selectedIndex === 0);
-        });
+        };
         if (window.jQuery && window.jQuery.fn.select2) {
             window.jQuery(form.elements['include_sitemap']).trigger('change');
         }
