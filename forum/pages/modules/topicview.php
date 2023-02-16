@@ -155,7 +155,7 @@ class Module_topicview
             cns_revoke_vote_in_poll($topic_info);
 
             // Success
-            attach_message(do_lang_tempcode('SUCCESS', 'inform'));
+            attach_message(do_lang_tempcode('SUCCESS'), 'inform');
 
             // We must re-read topic info with updated poll stuff
             $topic_info = cns_read_in_topic($id, $start, $max, $view_poll_results == 1);

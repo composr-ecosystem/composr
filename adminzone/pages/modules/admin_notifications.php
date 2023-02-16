@@ -316,7 +316,7 @@ class Module_admin_notifications
                 log_it('NOTIFICATIONS_DEFAULT');
             }
 
-            attach_message(do_lang_tempcode('SUCCESS'));
+            attach_message(do_lang_tempcode('SUCCESS'), 'inform');
         }
 
         // Sort labels

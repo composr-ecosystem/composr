@@ -85,7 +85,7 @@ if (!empty($_POST)) {
 
     log_it('CLASSIFIEDS_PRICING');
 
-    attach_message(do_lang_tempcode('SUCCESS'));
+    attach_message(do_lang_tempcode('SUCCESS'), 'inform');
 }
 
 $title = get_screen_title('CLASSIFIEDS');
