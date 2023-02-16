@@ -291,7 +291,7 @@ function hard_filter_input_data__filesystem(string &$val)
  * Filter data according to the dynamic firewall.
  *
  * @param  string $name The name of the parameter
- * @param  string $val The value retrieved
+ * @param  string $val The value retrieved (passed / changed by reference)
  */
 function hard_filter_input_data__dynamic_firewall(string $name, string &$val)
 {
@@ -304,9 +304,10 @@ function hard_filter_input_data__dynamic_firewall(string $name, string &$val)
                 list($check_name, $check_val) = $parts;
                 $check_name_is_regexp = (isset($check_name[0]) && $check_name[0] == '#' && $check_name[strlen($check_name) - 1] == '#');
                 $check_val_is_regexp = (isset($check_val[0]) && $check_val[0] == '#' && $check_val[strlen($check_val) - 1] == '#');
-                if ($check_name_is_regexp && preg_match($check_name, $name) != 0 || !$check_name_is_regexp && $check_name == $name) {
-                    if ($check_val_is_regexp && preg_match($check_val, $val) == 0 || !$check_val_is_regexp && $check_val != $val) {
+                if (($check_name_is_regexp && preg_match($check_name, $name) != 0) || (!$check_name_is_regexp && $check_name == $name)) { // Must have positive match
+                    if (($check_val_is_regexp && preg_match($check_val, $val) == 0) || (!$check_val_is_regexp && $check_val != $val)) { // Must have negative match
                         $val = 'filtered';
+                        return;
                     }
                 }
             }
