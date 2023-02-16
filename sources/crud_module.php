@@ -1012,8 +1012,17 @@ abstract class Standard_crud_module
 
         list($id, $text) = $this->add_actualisation();
 
-        $description = ($this->do_next_description === null) ? paragraph(do_lang_tempcode($this->success_message_str)) : $this->do_next_description;
+        $description_is_multi_line = false;
+        if ($this->do_next_description === null) {
+            $description = do_lang_tempcode($this->success_message_str);
+        } else {
+            $description = $this->do_next_description;
+        }
         if ($text !== null) {
+            if (!$description_is_multi_line) {
+                $description = paragraph($description);
+                $description_is_multi_line = true;
+            }
             $description->attach($text);
         }
 
@@ -1033,6 +1042,10 @@ abstract class Standard_crud_module
                     send_validation_request($this->doing, $this->table, $this->non_integer_id, $id, $edit_url);
                 }
 
+                if (!$description_is_multi_line) {
+                    $description = paragraph($description);
+                    $description_is_multi_line = true;
+                }
                 $description->attach(paragraph(do_lang_tempcode('SUBMIT_UNVALIDATED', $this->content_type)));
             }
 
