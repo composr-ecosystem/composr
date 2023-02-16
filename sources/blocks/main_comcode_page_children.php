@@ -150,6 +150,8 @@ PHP;
             '_GUID' => '375aa1907fc6b2ca6b23ab5b5139aaef',
             'BLOCK_ID' => $block_id,
             'CHILDREN' => $children,
+
+            // These are for the page it is on (PAGE and ZONE are also used in the template, which are properties of CHILDREN)
             'THE_PAGE' => $page,
             'THE_ZONE' => $zone,
         ]);

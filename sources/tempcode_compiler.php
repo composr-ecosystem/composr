@@ -477,7 +477,7 @@ function compile_template(string $data, string $template_name, string $theme, st
                                 case '"CANONICAL_URL"':
                                 case '"INSERT_SPAMMER_BLACKHOLE"':
                                     foreach ($stack as $level_test) { // Make sure if it's a LOOP then we evaluate the parameters early, as these have extra bindings we don't know about
-                                        if (($level_test[3] === PARSE_DIRECTIVE) && (isset($level_test[5][1], $level_test[5][1][0])) && ($level_test[5][1][0] === '"LOOP"')) { // For a loop, we need to do full evaluation of symbol parameters as it may be bound to a loop variable
+                                        if (($level_test[4] === PARSE_DIRECTIVE) && (isset($level_test[6][1], $level_test[6][1][0])) && ($level_test[6][1][0] === '"LOOP"')) { // For a loop, we need to do full evaluation of symbol parameters as it may be bound to a loop variable
                                             $eval_openers = tc_eval_opener_params($_opener_params);
                                             if (is_array($eval_openers)) {
                                                 $pp_bit = [[], TC_SYMBOL, str_replace('"', '', $first_param), $eval_openers];
