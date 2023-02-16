@@ -765,7 +765,7 @@ html.is-mouse-only .touch-only {
 	color: {$GET,WB};
 }
 
-comcode-{$REPLACE,\,,::selection \,comcode-,{$COMCODE_TAGS;,{$WYSIWYG_COMCODE__XML_BLOCK}}\,{$COMCODE_TAGS;,{$WYSIWYG_COMCODE__XML_INLINE}}}, tempcode ::selection {
+comcode-{$REPLACE,\,,::selection\, comcode-,{$COMCODE_TAGS;,{$WYSIWYG_COMCODE__XML_BLOCK}}\,{$COMCODE_TAGS;,{$WYSIWYG_COMCODE__XML_INLINE}}}::selection, tempcode::selection {
 	background-color: {$GET,green_highlight_text};
 }
 
