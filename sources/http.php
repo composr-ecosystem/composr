@@ -1564,6 +1564,8 @@ class HttpDownloaderSockets extends HttpDownloader
                     $tally = 0;
                     foreach ($lines as $lno => $line) {
                         if (empty($line)) {
+                            $tally += 2;
+
                             $data_started = true;
                             $buffer_unprocessed = @substr($old_line, $tally);
                             if ($buffer_unprocessed === false) {

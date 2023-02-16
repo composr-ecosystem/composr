@@ -133,7 +133,7 @@ function output_ical(bool $headers_and_exit = true)
                 if (array_key_exists(0, $attachments)) {
                     $attachment = $attachments[0];
                     require_code('mime_types');
-                    echo "ATTACH;FMTTYPE=" . ical_escape(get_mime_type($attachment['a_original_filename'], has_privilege($event['e_submitter'], 'comcode_dangerous'))) . ":" . ical_escape(find_script('attachments') . '?id=' . strval($attachment['id'])) . "\r\n";
+                    echo "ATTACH;FMTTYPE=" . ical_escape(get_mime_type($attachment['a_original_filename'], has_privilege($event['e_submitter'], 'comcode_dangerous'))) . ":" . ical_escape(find_script('attachment') . '?id=' . strval($attachment['id'])) . "\r\n";
                 }
             }
             echo "DESCRIPTION:" . ical_escape(strip_comcode($description)) . "\r\n";

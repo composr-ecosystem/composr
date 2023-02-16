@@ -431,10 +431,10 @@ class Hook_health_check_install_env extends Hook_Health_Check
         if ($check_context == CHECK_CONTEXT__INSTALL) {
             $url = get_base_url() . '/install.php?type=test_blank_result';
         } else {
-            $url = find_script('blank');
+            $url = find_script('empty') . '?truly=1';
         }
 
-        $blank = (http_get_contents($url, ['trigger_error' => false, 'timeout' => 1.0]) == '');
+        $blank = (http_get_contents($url, ['trigger_error' => false, 'timeout' => 1.0]) === '');
         $this->assertTrue($blank, do_lang('INTERFERING_AD_SCRIPT'));
     }
 

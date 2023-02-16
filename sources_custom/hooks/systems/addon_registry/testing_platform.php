@@ -954,6 +954,7 @@ We hope other users will appreciate your efforts and give you some points to rew
             '_tests/tests/unit_tests/url_monikers.php',
             '_tests/tests/unit_tests/urls_simplifier.php',
             '_tests/tests/unit_tests/us_english.php',
+            '_tests/tests/unit_tests/scripts.php',
             '_tests/tests/unit_tests/usergroup_subscriptions.php',
             '_tests/tests/unit_tests/versioning.php',
             '_tests/tests/unit_tests/warnings.php',
