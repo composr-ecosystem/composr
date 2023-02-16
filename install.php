@@ -2187,10 +2187,16 @@ function step_5_core_2() : object
     $trans5 = insert_lang('zone_header_text', do_lang('CMS'), 1, null, false, null, $INSTALL_LANG);
     $h5 = insert_lang('zone_title', do_lang('CMS'), 1, null, false, null, $INSTALL_LANG);
     $GLOBALS['SITE_DB']->query_insert('zones', ['zone_name' => 'cms', 'zone_default_page' => 'cms', 'zone_theme' => 'admin', 'zone_require_session' => 1] + $trans5 + $h5);
-    if (file_exists(get_file_base() . '/docs')) { // installing from Git
+    // FUDGE: Installing from Git...
+    if (file_exists(get_file_base() . '/docs')) {
         $trans6 = insert_lang('zone_header_text', '', 1, null, false, null, $INSTALL_LANG);
         $h6 = insert_lang('zone_title', do_lang('TUTORIALS'), 1, null, false, null, $INSTALL_LANG);
         $GLOBALS['SITE_DB']->query_insert('zones', ['zone_name' => 'docs', 'zone_default_page' => 'tutorials', 'zone_theme' => '-1', 'zone_require_session' => 0] + $trans6 + $h6);
+    }
+    if (file_exists(get_file_base() . '/buildr')) {
+        $trans6 = insert_lang('zone_header_text', '', 1, null, false, null, $INSTALL_LANG);
+        $h6 = insert_lang('zone_title', 'buildr', 1, null, false, null, $INSTALL_LANG);
+        $GLOBALS['SITE_DB']->query_insert('zones', ['zone_name' => 'buildr', 'zone_default_page' => 'home', 'zone_theme' => '-1', 'zone_require_session' => 0] + $trans6 + $h6);
     }
 
     // Forums
@@ -2527,7 +2533,7 @@ function step_9() : object
 
     $time_start = microtime(true);
 
-    foreach (['forum', 'cms', 'buildr'] as $zone) {
+    foreach (['forum', 'cms'] as $zone) {
         if (!is_file(get_file_base() . '/' . $zone . '/index.php')) {
             continue;
         }
@@ -2662,8 +2668,12 @@ function step_10_populate_database() : object
     $ADD_MENU_COUNTER = 100;
 
     $zones = find_all_zones();
-    if (file_exists(get_file_base() . '/docs')) { // installing from Git
+    // FUDGE: Installing from Git
+    if (file_exists(get_file_base() . '/docs')) {
         $zones[] = 'docs';
+    }
+    if (file_exists(get_file_base() . '/buildr')) {
+        $zones[] = 'buildr';
     }
     foreach (array_unique($zones)/*in case find_all_zones did find docs*/ as $zone) {
         if (($zone != 'site') && ($zone != 'adminzone') && ($zone != 'forum') && ($zone != 'cms') && (($zone != '') || (get_option('single_public_zone') == '0'))) {
