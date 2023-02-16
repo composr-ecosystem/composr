@@ -265,12 +265,16 @@ class Facebook extends OAuth2 implements AtomInterface
      * Retrieve the user birthday.
      *
      * @param User\Profile $userProfile
-     * @param string $birthday
+     * @param ?string $birthday (null: no birthday set)
      *
      * @return \Hybridauth\User\Profile
      */
     protected function fetchBirthday(User\Profile $userProfile, $birthday)
     {
+        if ($birthday === null) {
+            return $userProfile;
+        }
+
         $result = (new Parser())->parseBirthday($birthday, '/');
 
         $userProfile->birthYear = (int)$result[0];
@@ -367,14 +371,15 @@ class Facebook extends OAuth2 implements AtomInterface
      * Get a page access token.
      *
      * @param string $pageId Page we need to work with
+     * @param boolean $writable Pages returned need to have write access
      *
      * @return array A list: Access token, extra headers for auth, extra parameters for auth
      * @throws InvalidArgumentException
      */
-    protected function getPageAccessTokenDetails($pageId)
+    protected function getPageAccessTokenDetails($pageId, $writable = true)
     {
         // Retrieve writable user pages and filter by given one.
-        $pages = $this->getUserPages(true);
+        $pages = $this->getUserPages($writable);
         $pages = array_filter($pages, function ($page) use ($pageId) {
             return $page->id == $pageId;
         });
@@ -562,6 +567,9 @@ class Facebook extends OAuth2 implements AtomInterface
             $filter = new Filter();
         }
 
+        $category = $this->getDefaultCategory($filter);
+        $isPersonal = ($category->identifier == '-');
+
         $fieldsShared = [
             'id',
             'created_time',
@@ -578,10 +586,6 @@ class Facebook extends OAuth2 implements AtomInterface
 
         $atoms = [];
         $hasResults = false;
-
-        $category = $this->getDefaultCategory($filter);
-
-        $isPersonal = ($category->identifier == '-');
 
         if ($isPersonal) {
             $path = 'me';
@@ -608,8 +612,14 @@ class Facebook extends OAuth2 implements AtomInterface
             'limit' => min(100, $filter->limit),
         ];
 
+        $tokenHeaders = [];
+        if (!$isPersonal) {
+            list(, $tokenHeaders, $tokenParameters) = $this->getPageAccessTokenDetails($category->identifier, false);
+            $params = $tokenParameters + $params;
+        }
+
         do {
-            $response = $this->apiRequest($path, 'GET', $params);
+            $response = $this->apiRequest($path, 'GET', $params, $tokenHeaders);
 
             $data = new Collection($response);
             if (!$data->exists('data')) {
@@ -693,7 +703,17 @@ class Facebook extends OAuth2 implements AtomInterface
             'fields' => implode(',', $fields),
         ];
 
-        $item = $this->apiRequest($path, 'GET', $params);
+        $tokenHeaders = [];
+        if (!$isPersonal) {
+            list(, $tokenHeaders, $tokenParameters) = $this->getPageAccessTokenDetails($categories[$identifier_parts[0]], false);
+            $params = $tokenParameters + $params;
+        }
+
+        $item = $this->apiRequest($path, 'GET', $params, $tokenHeaders);
+
+        if (!$isPersonal) {
+            $this->backupRequest(true);
+        }
 
         return $this->parseFacebookPost($item, $categories[$isPersonal ? '-' : $identifier_parts[0]], $isPersonal);
     }
@@ -1225,5 +1245,49 @@ class Facebook extends OAuth2 implements AtomInterface
     {
         // Could in theory implement, but nobody would want their Pages being manipulated by this API
         throw new NotImplementedException('Provider does not support this feature.');
+    }
+
+    /**
+     * Backup and restore the apiRequestHeaders and apiRequestParameters when necessary.
+     * Useful for patching in page access token, for example.
+     *
+     * @param  boolean $restore Whether to restore the backed-up request opposed to backing up the current request
+     */
+    protected function backupRequest(bool $restore = false)
+    {
+        static $backupRequestHeaders;
+        static $backupRequestParameters;
+
+        if (($restore) && (!empty($backupRequestHeaders) || !empty($backupRequestParameters))) {
+            $this->apiRequestHeaders = $backupRequestHeaders;
+            $this->apiRequestParameters = $backupRequestParameters;
+        } else {
+            $backupRequestHeaders = $this->apiRequestHeaders;
+            $backupRequestParameters = $this->apiRequestParameters;
+        }
+    }
+
+    /**
+     * Fetch and patch in a page token into the Authorization header.
+     * This calls $this->backupRequest(false), but you must call $this->backupRequest(true) when finished using the page token.
+     *
+     * @param  string $path The page ID
+     */
+    protected function patchInPageToken(string $path)
+    {
+        $params = [
+            'fields' => 'access_token',
+            'access_token' => $this->getStoredData('access_token'),
+        ];
+
+        $response = $this->apiRequest($path, 'GET', $params);
+
+        $data = new Collection($response);
+        if (!$data->exists('access_token')) {
+            throw new UnexpectedApiResponseException('Provider API did not return a page access token.');
+        }
+
+        $this->backupRequest(false);
+        $this->apiRequestHeaders['Authorization'] = 'Bearer ' . $data->get('access_token');
     }
 }

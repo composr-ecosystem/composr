@@ -98,7 +98,7 @@ try {
     warn_exit($e->getMessage());
 }
 
-prepare_backend_response('text/xml', BACKEND_RESPONSE_CSP_SUPER_STRICT | BACKEND_RESPONSE_CHARSET_UTF8);
+prepare_backend_response('text/xml', BACKEND_RESPONSE_CSP_STRICT | BACKEND_RESPONSE_CHARSET_UTF8);
 
 echo $feed;
 
