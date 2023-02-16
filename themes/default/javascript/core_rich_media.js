@@ -425,6 +425,7 @@
             lastAttachmentBrowseButton = attachmentBrowseButton;
 
             $cms.requireJavascript('plupload').then(function () {
+                attachmentBrowseButton.style.display = '';
                 window.$plupload.prepareSimplifiedFileInput('attachment_multi', 'file' + window.numAttachments, postingFieldName, strVal(params.filter), attachmentBrowseButton);
             });
         }
