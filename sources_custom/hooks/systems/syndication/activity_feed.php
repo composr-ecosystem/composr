@@ -143,7 +143,7 @@ class Hook_syndication_activity_feed
 
         return [
             'syndicate_activity' => post_param_integer('syndicate_activity', 0) == 1,
-            'has_privilege' => has_privilege(get_member(), 'syndicate_site_activity'),
+            'syndicate_site_activity' => has_privilege(get_member(), 'syndicate_site_activity'),
         ];
     }
 }
