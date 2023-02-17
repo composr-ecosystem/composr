@@ -148,6 +148,10 @@ class Facebook extends OAuth2 implements AtomInterface
 
         $this->validateAccessTokenExchange($response);
 
+        if ($accessToken = $this->getStoredData('access_token')) {
+            $this->apiRequestParameters['appsecret_proof'] = hash_hmac('sha256', $accessToken, $this->clientSecret);
+        }
+
         return $response;
     }
 
@@ -613,10 +617,11 @@ class Facebook extends OAuth2 implements AtomInterface
         ];
 
         $tokenHeaders = [];
+        $tokenParameters = [];
         if (!$isPersonal) {
             list(, $tokenHeaders, $tokenParameters) = $this->getPageAccessTokenDetails($category->identifier, false);
-            $params = $tokenParameters + $params;
         }
+        $params = $tokenParameters + $params;
 
         do {
             $response = $this->apiRequest($path, 'GET', $params, $tokenHeaders);
@@ -658,6 +663,7 @@ class Facebook extends OAuth2 implements AtomInterface
             if (!empty($data->get('paging')->next)) {
                 $queryString = parse_url($data->get('paging')->next, PHP_URL_QUERY);
                 parse_str($queryString, $params);
+                $params = $tokenParameters + $params;
             }
         } while (($filter->deepProbe) && (!empty($dataArray)) && (!empty($data->get('paging')->next)));
 
@@ -1032,7 +1038,7 @@ class Facebook extends OAuth2 implements AtomInterface
 
         list(, $tokenHeaders, $tokenParameters) = $this->getPageAccessTokenDetails($pageId);
 
-        $params += $tokenParameters;
+        $params = $tokenParameters + $params;
 
         $headers = ['Content-Type' => 'application/json'];
         $headers += $tokenHeaders;
@@ -1102,7 +1108,7 @@ class Facebook extends OAuth2 implements AtomInterface
 
         list(, $tokenHeaders, $tokenParameters) = $this->getPageAccessTokenDetails($pageId);
 
-        $params += $tokenParameters;
+        $params = $tokenParameters + $params;
 
         $result = $this->apiRequest($path, 'POST', $params, $tokenHeaders);
 
@@ -1176,7 +1182,7 @@ class Facebook extends OAuth2 implements AtomInterface
             }
         }
 
-        $params += $tokenParameters;
+        $params = $tokenParameters + $params;
 
         $headers = ['Content-Type' => 'application/json'];
         $headers += $tokenHeaders;
