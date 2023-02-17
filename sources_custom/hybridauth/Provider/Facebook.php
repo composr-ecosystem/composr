@@ -711,10 +711,6 @@ class Facebook extends OAuth2 implements AtomInterface
 
         $item = $this->apiRequest($path, 'GET', $params, $tokenHeaders);
 
-        if (!$isPersonal) {
-            $this->backupRequest(true);
-        }
-
         return $this->parseFacebookPost($item, $categories[$isPersonal ? '-' : $identifier_parts[0]], $isPersonal);
     }
 
@@ -1245,49 +1241,5 @@ class Facebook extends OAuth2 implements AtomInterface
     {
         // Could in theory implement, but nobody would want their Pages being manipulated by this API
         throw new NotImplementedException('Provider does not support this feature.');
-    }
-
-    /**
-     * Backup and restore the apiRequestHeaders and apiRequestParameters when necessary.
-     * Useful for patching in page access token, for example.
-     *
-     * @param  boolean $restore Whether to restore the backed-up request opposed to backing up the current request
-     */
-    protected function backupRequest(bool $restore = false)
-    {
-        static $backupRequestHeaders;
-        static $backupRequestParameters;
-
-        if (($restore) && (!empty($backupRequestHeaders) || !empty($backupRequestParameters))) {
-            $this->apiRequestHeaders = $backupRequestHeaders;
-            $this->apiRequestParameters = $backupRequestParameters;
-        } else {
-            $backupRequestHeaders = $this->apiRequestHeaders;
-            $backupRequestParameters = $this->apiRequestParameters;
-        }
-    }
-
-    /**
-     * Fetch and patch in a page token into the Authorization header.
-     * This calls $this->backupRequest(false), but you must call $this->backupRequest(true) when finished using the page token.
-     *
-     * @param  string $path The page ID
-     */
-    protected function patchInPageToken(string $path)
-    {
-        $params = [
-            'fields' => 'access_token',
-            'access_token' => $this->getStoredData('access_token'),
-        ];
-
-        $response = $this->apiRequest($path, 'GET', $params);
-
-        $data = new Collection($response);
-        if (!$data->exists('access_token')) {
-            throw new UnexpectedApiResponseException('Provider API did not return a page access token.');
-        }
-
-        $this->backupRequest(false);
-        $this->apiRequestHeaders['Authorization'] = 'Bearer ' . $data->get('access_token');
     }
 }
