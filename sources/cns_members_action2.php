@@ -581,11 +581,10 @@ function cns_get_member_fields_settings(bool $mini_mode = true, string $special_
     // DOB
     if (cns_field_editable('dob', $special_type)) {
         $can_edit_birthday = cns_can_edit_birthday($member_id);
-        $display_dob_help = ($member_id === null || !$can_edit_birthday);
         $default_time = ($dob_month === null) ? null : usertime_to_utctime(mktime(0, 0, 0, $dob_month, $dob_day, $dob_year));
         if (get_option_with_overrides('dobs', $adjusted_config_options) >= (($member_id === null) ? '2' : '1')) {
             $dob_required = member_field_is_required($member_id, 'dob');
-            $fields->attach(form_input_date(do_lang_tempcode($dob_required ? 'DATE_OF_BIRTH' : 'ENTER_YOUR_BIRTHDAY'), $display_dob_help ? do_lang_tempcode('DATE_OF_BIRTH_NO_SELF_EDIT') : '', 'birthday', $dob_required, false, false, $default_time, -130, null, null, true, null, true, null, !$can_edit_birthday));
+            $fields->attach(form_input_date(do_lang_tempcode($dob_required ? 'DATE_OF_BIRTH' : 'ENTER_YOUR_BIRTHDAY'), $can_edit_birthday ? '' : do_lang_tempcode('DATE_OF_BIRTH_NO_SELF_EDIT'), 'birthday', $dob_required, false, false, $default_time, -130, null, null, true, null, true, null, (($member_id !== null) && (!$can_edit_birthday))));
             if (addon_installed('cns_forum')) {
                 $fields->attach(form_input_tick(do_lang_tempcode('RELATED_FIELD', do_lang_tempcode('REVEAL_AGE')), do_lang_tempcode('DESCRIPTION_REVEAL_AGE'), 'reveal_age', $reveal_age == 1));
             }
@@ -2702,9 +2701,10 @@ function rebuild_all_cpf_indices(bool $leave_existing = false)
 function cns_can_edit_birthday(?int $member_id) : bool
 {
     $can_edit_birthday = true;
+    $_birthday_points = get_option('points_birthday');
+    $birthday_points = ($_birthday_points !== null) && ($_birthday_points != '') && (intval($_birthday_points) > 0);
+
     if ($member_id !== null) {
-        $_birthday_points = get_option('points_birthday');
-        $birthday_points = ($_birthday_points !== null) && ($_birthday_points != '') && (intval($_birthday_points) > 0);
         $_dob_day = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_dob_day');
         $_dob_month = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_dob_month');
         $_dob_year = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_dob_year');
@@ -2712,6 +2712,8 @@ function cns_can_edit_birthday(?int $member_id) : bool
         $can_edit_birthday = ((!$birthday_points) || // Birthday points is disabled
             (get_member() != $member_id) || // Editing member is not the same as the member being edited
             (!is_guest($member_id) && (($_dob_day === null) || ($_dob_month === null) || ($_dob_year === null)))); // Date of birth day, month, or year are not set, and we are not a guest.
+    } else {
+        $can_edit_birthday = (!$birthday_points);
     }
 
     return $can_edit_birthday;
