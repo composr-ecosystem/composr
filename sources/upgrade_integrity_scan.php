@@ -60,7 +60,7 @@ function load_integrity_manifest(bool $previous = false) : array
  * Load up a list of files for the addons we have installed (addon_registry based ones only).
  *
  * @param  array $manifest Manifest of file checksums
- * @return array A pair: List of hook files, List of files
+ * @return array A pair: List of files, a list of hook files
  */
 function load_files_list_of_installed_addons(array $manifest) : array
 {
@@ -96,7 +96,7 @@ function load_files_list_of_installed_addons(array $manifest) : array
     foreach ($hook_files as $addon_name => $hook_path) {
         $hook_file = cms_file_get_contents_safe($hook_path, FILE_READ_LOCK);
         $matches = [];
-        if (preg_match('#function get_file_list\(\)\s*\{([^\}]*)\}#', $hook_file, $matches) != 0) { // A bit of a hack, but saves a lot of RAM
+        if (preg_match('#function get_file_list\(\)\s+:\s+array\s*\{([^\}]*)\}#', $hook_file, $matches) != 0) { // A bit of a hack, but saves a lot of RAM
             $files_to_check = array_merge($files_to_check, cms_eval($matches[1], $hook_path));
         }
     }
