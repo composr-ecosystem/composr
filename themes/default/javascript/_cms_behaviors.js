@@ -139,7 +139,7 @@
     $cms.behaviors.initializeTables = {
         attach: function attach(context) {
             // We could have an image-gd-text being transformed into a js-th-label-text-override, so wait until next frame to initialize tables.
-            setTimeout(function() {
+            setTimeout(function () {
                 var tables = $util.once($dom.$$$(context, 'table, .fake-table'), 'behavior.initializeTables');
 
                 tables.forEach(function (table) {
@@ -664,7 +664,7 @@
                         return;
                     }
 
-                    if (el.ttitle == '') {
+                    if (el.ttitle === '') {
                         return;
                     }
 
@@ -1839,7 +1839,7 @@
             }
         }
 
-        if (title == '') {
+        if (title === '') {
             return;
         }
 

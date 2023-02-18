@@ -53,15 +53,15 @@
         if (usernameField) {
             var checkPtUsername = function (event) {
                 var usernameField = event.target;
-                if (usernameField.value.trim() != '') {
+                if (usernameField.value.trim() !== '') {
                     $cms.loadSnippet('pt_rules&username=' + usernameField.value.trim()).then(function (result) {
-                        if (result == '-1') {
+                        if (result === '-1') {
                             // Missing member
                             $cms.ui.alert('{!MEMBER_NO_EXIST;^}');
-                        } else if (result == '-2') {
+                        } else if (result === '-2') {
                             // Permission denied
                             $cms.ui.alert('{!cns:NO_PT_FROM_ALLOW;^}');
-                        } else if (result != '') {
+                        } else if (result !== '') {
                             // Rules
                             $cms.ui.confirm('{!cns:PT_RULES_PAGE_INTRO;^,xxx}'.replace(/xxx/, usernameField.value.trim()) + '<br /><br />' + result, function (result2) {
                                 if (!result2) {
@@ -231,7 +231,7 @@
             return;
         }
 
-        if (newTopicFormOrigAction == null) {
+        if (newTopicFormOrigAction === null) {
             newTopicFormOrigAction = addPollCheckbox.form.action;
         }
 
@@ -276,8 +276,6 @@
     };
 
     $cms.templates.cnsTopicScreen = function (params, /**Element*/container) {
-        var markedPostActionsForm = container.querySelector('form.js-form-marked-post-actions');
-
         if ((params.serializedOptions !== undefined) && (params.hash !== undefined)) {
             window.commentsSerializedOptions = params.serializedOptions;
             window.commentsHash = params.hash;

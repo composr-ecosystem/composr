@@ -227,7 +227,7 @@
 
         var spot, display, button, count, unread;
 
-        spot = $dom.$('#web-notifications-spot')
+        spot = $dom.$('#web-notifications-spot');
         if (spot) {
             display = responseXml.getElementsByTagName('display_web_notifications');
             button = $dom.$('#web-notifications-button');
@@ -240,7 +240,7 @@
             }
         }
 
-        spot = $dom.$('#pts-spot')
+        spot = $dom.$('#pts-spot');
         if (spot) {
             display = responseXml.getElementsByTagName('display_pts');
             button = $dom.$('#pts-button');

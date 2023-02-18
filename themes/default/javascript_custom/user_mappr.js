@@ -99,7 +99,7 @@
              $util.inform(last_point.lat() + ', ' + last_point.lng());
              \});
              }*/
-        }
+        };
 
         function addDataPoint(dataPoint, bounds, markers, infoWindow, map) {
             var latLng = new google.maps.LatLng(dataPoint[1], dataPoint[2]);

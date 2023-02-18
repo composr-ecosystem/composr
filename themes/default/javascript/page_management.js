@@ -1,8 +1,7 @@
 (function ($cms, $util, $dom) {
     'use strict';
 
-    var $ADDON_INSTALLED_code_editor = boolVal('{$ADDON_INSTALLED,code_editor}'), // eslint-disable-line camelcase
-        $ADDON_INSTALLED_stats = boolVal('{$ADDON_INSTALLED,stats}'); // eslint-disable-line camelcase
+    var $ADDON_INSTALLED_code_editor = boolVal('{$ADDON_INSTALLED,code_editor}'); // eslint-disable-line camelcase
 
     $cms.templates.sitemapEditorScreen = function sitemapEditorScreen(params, container) {
         var editZoneUrl = params.editZoneUrl,
@@ -11,8 +10,7 @@
             permissionTreeEditorUrl = params.permissionTreeEditorUrl,
             editPageUrl = params.editPageUrl,
             addPageUrl = params.addPageUrl,
-            deleteUrl = params.deleteUrl,
-            statsUrl = params.statsUrl;
+            deleteUrl = params.deleteUrl;
 
         $cms.requireJavascript('tree_list').then(function () {
             window.sitemap = $cms.ui.createTreeList('tree-list', '{$FIND_SCRIPT_NOHTTP;,sitemap}?start_links=1&get_perms=0&label_content_types=1&keep_full_structure=1' + $cms.keep(), null, '', false, null, true);
@@ -113,7 +111,7 @@
             }
 
             // Pages
-            if ((type == 'page') || (type == 'comcode_page')) {
+            if ((type === 'page') || (type === 'comcode_page')) {
                 actionBuildup += actionsTplItem.replace(/\[1\]/, '{!DELETE;^}').replace(/\[2\]/, deleteUrl.replace(/%5B1%5D/, pageLinkBits[0]).replace(/\[2\]/, pageLinkBits[1]));
             }
 

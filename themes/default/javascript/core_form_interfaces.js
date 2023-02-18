@@ -316,7 +316,7 @@
         }
     });
 
-    $cms.templates.formScreenFieldInput = function formScreenField_input(params) {
+    $cms.templates.formScreenFieldInput = function formScreenFieldInput(params) {
         var el = $dom.$('#form-table-field-input--' + strVal(params.randomisedId));
         if (el) {
             $cms.form.setUpChangeMonitor(el.parentElement);

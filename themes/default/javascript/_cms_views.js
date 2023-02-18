@@ -532,7 +532,7 @@
                     setTimeout(function () {
                         if (self.el) {
                             $dom.on(self.el, 'click', function (e) {
-                                if ((self.overlayEl != e.target) && (!self.overlayEl.contains(e.target))) {
+                                if ((self.overlayEl !== e.target) && (!self.overlayEl.contains(e.target))) {
                                     // Background overlay clicked
                                     self.option('finished');
                                 }
@@ -2132,7 +2132,7 @@
 
             var search = $dom.$(target, 'input[type="search"]');
             if (search) {
-                setTimeout(function() {
+                setTimeout(function () {
                     search.focus();
                 }, 100);
             }

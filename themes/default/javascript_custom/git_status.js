@@ -1,4 +1,4 @@
-(function ($cms, $util, $dom) {
+(function ($cms, $util) {
     'use strict';
 
     $cms.views.GitStatus = GitStatus;
@@ -146,4 +146,4 @@
             $cms.ui.alert(notice, null, 'Paths');
         }
     });
-}(window.$cms, window.$util, window.$dom));
+}(window.$cms, window.$util));
