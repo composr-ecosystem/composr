@@ -170,7 +170,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
      * @param  ID_TEXT $direction Order direction
      * @param  SHORT_TEXT $author Username/Author to match for
      * @param  ?MEMBER $author_id Member-ID to match for (null: unknown)
-     * @param  mixed $cutoff Cutoff date (TIME or a pair representing the range)
+     * @param  mixed $cutoff Cutoff date (TIME or a pair representing the range or null)
      * @return array List of maps (template, orderer)
      */
     public function run(string $search_query, string $content_where, string $where_clause, string $search_under, bool $only_search_meta, bool $only_titles, int $max, int $start, string $sort, string $direction, string $author, ?int $author_id, $cutoff) : array
@@ -186,10 +186,14 @@ class Hook_search_comcode_pages extends FieldsSearchHook
                 break;
         }
 
+        $this->_handle_date_check($cutoff, 'p_add_date', $where_clause);
+
         require_lang('zones');
 
         // Calculate and perform query
-        $composr_fast_custom_index = can_use_composr_fast_custom_index('comcode_pages', $search_query, Composr_fast_custom_index::active_search_has_special_filtering() || $cutoff !== null || $author != '' || ($search_under != '-1' && $search_under != '!'));
+        $db = $GLOBALS['SITE_DB'];
+        $index_table = 'cpages_fulltext_index';
+        $composr_fast_custom_index = can_use_composr_fast_custom_index('comcode_pages', $db, $index_table, $search_query, Composr_fast_custom_index::active_search_has_special_filtering() || $cutoff !== null || $author != '' || ($search_under != '-1' && $search_under != '!'));
         if ($composr_fast_custom_index) {
             // This search hook implements the Composr fast custom index, which we use where possible...
 
@@ -253,8 +257,6 @@ class Hook_search_comcode_pages extends FieldsSearchHook
                 // ^ Nothing done with trans_fields and nontrans_fields
             }
 
-            $db = $GLOBALS['SITE_DB'];
-            $index_table = 'cpages_fulltext_index';
             $key_transfer_map = ['the_zone' => 'i_zone_name', 'the_page' => 'i_page_name'];
             $rows = $engine->get_search_rows($db, $index_table, $db->get_table_prefix() . $table, $key_transfer_map, $where_clause, $extra_join_clause, $search_query, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction);
         } else {
@@ -368,6 +370,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
                         if (!$this->_handle_date_check_runtime($cutoff, filemtime($path))) {
                             continue;
                         }
+
                         $contents = cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
                         if ($only_titles) {
                             $contents = preg_replace('#^.*\[title(="1")?\](.*)\[/title\].*$#Us', '${2}', $contents);

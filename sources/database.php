@@ -20,6 +20,13 @@
 
 /*EXTRA FUNCTIONS: fb*/
 
+/*
+Struggling to remember the functions needed for dereferencing translated fields?
+
+translate_field_ref - for referencing the dereferenced version of a field
+find_lang_fields - for manually specifying the fields needed to dereference when joins are used
+*/
+
 /**
  * Standard code module initialisation function.
  *
@@ -258,7 +265,7 @@ function reload_lang_fields(bool $full = false, ?string $only_table = null, ?arr
 }
 
 /**
- * Find lang fields to load within a query.
+ * Find lang fields to load within a query. Usually used when JOINs are involved in a query and hence Composr cannot automatically determine what the fields will be.
  *
  * @param  string $table Table name
  * @param  ?string $alias Table alias (null: none)

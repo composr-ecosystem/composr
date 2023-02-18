@@ -567,7 +567,7 @@ class Module_search
      * @param  ID_TEXT $id Codename for what's being searched (blank: mixed search)
      * @param  string $author Author name
      * @param  ?AUTO_LINK $author_id Author ID (null: none given)
-     * @param  mixed $cutoff Cutoff date (TIME or a pair representing the range)
+     * @param  mixed $cutoff Cutoff date (TIME or a pair representing the range or null)
      * @param  ID_TEXT $sort Sort key
      * @param  ID_TEXT $direction Sort direction
      * @set ASC DESC

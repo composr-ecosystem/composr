@@ -131,7 +131,7 @@ function has_escaped_dynamic_sql(string $query) : bool
             }
 
             if (!$ok) {
-                //@var_dump($_strings);@var_dump($GLOBALS['DB_ESCAPE_STRING_LIST']);@var_dump($full_trace);@var_dump($str);@var_dump($query);exit(); // Useful for debugging
+                //@var_dump($strings);@var_dump($GLOBALS['DB_ESCAPE_STRING_LIST']);@var_dump($full_trace);@var_dump($str);@var_dump($query);exit(); // Useful for debugging
 
                 return false; // :-(.
             }
@@ -167,8 +167,7 @@ function _get_quoted_substrings(string $string, bool $recurse = false) : array
             if (($ignore !== $i/*If not escaped*/) && ($string[$i] == $found_start)) { // We've found a string
                 $output[$buffer] = true;
                 $output[trim($buffer, ' %')] = true;
-                $output[trim($buffer, '"')] = true;
-                $output[trim($buffer, "'")] = true;
+                $output[trim($buffer, $found_start)] = true;
                 $buffer = '';
                 $found_start = null; // We've closed our string, ready ourselves for next
                 continue;

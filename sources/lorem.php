@@ -415,7 +415,7 @@ function placeholder_image() : object
  */
 function placeholder_date() : string
 {
-    return get_timezoned_date_time(123456789);
+    return get_timezoned_date_time(987654321);
 }
 
 /**
@@ -425,7 +425,7 @@ function placeholder_date() : string
  */
 function placeholder_date_raw() : string
 {
-    return strval(123456789);
+    return strval(987654321);
 }
 
 /**
