@@ -233,7 +233,7 @@ function check_rbl(string $rbl, string $user_ip, bool $we_have_a_result_already 
 
     // Blocking based on efnet.org settings (not used by default)
     // http://efnetrbl.org/
-    if (strpos($rbl, 'efnet.org') !== false) {
+    if ((strpos($rbl, 'efnet.org') !== false) || (strpos($rbl, 'efnetrbl.org') !== false)) {
         $block = [
             'efnet_openproxy' => true,              // EFNet: Block open proxies registered at rbl.efnet.org
             'efnet_spamtrap50' => false,            // EFNet: Block trojan spreading client (IRC-based)
