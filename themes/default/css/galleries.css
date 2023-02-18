@@ -99,18 +99,18 @@
 	}
 /*{+END}*/
 
-.gallery-entry-info {
+.gallery-entry-meta-details {
 	background-color: {$GET,area_5_background};
 	margin-top: 0;
 }
 
 /*{+START,CSS_MODE,mobile}*/
-	.gallery-entry-info ul.horizontal-links {
+	.gallery-entry-meta-details ul.horizontal-links {
 		width: auto;
 		margin: -5px -5px -5px 0;
 	}
 
-	.gallery-entry-info ul.horizontal-links li {
+	.gallery-entry-meta-details ul.horizontal-links li {
 		display: inline-block;
 		margin: 5px 5px 5px 0;
 	}

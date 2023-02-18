@@ -38,12 +38,13 @@
 	{+END}
 {+END}
 
-{$REVIEW_STATUS,catalogue_category,{ID}}
-
 {+START,IF,{$THEME_OPTION,show_content_tagging}}{TAGS}{+END}
 
-{$,Load up the staff actions template to display staff actions uniformly (we relay our parameters to it)...}
+{+START,IF,{$THEME_OPTION,show_screen_actions}}{$BLOCK,failsafe=1,block=main_screen_actions,title={$METADATA,title}}{+END}
 
+{$REVIEW_STATUS,catalogue_category,{ID}}
+
+{$,Load up the staff actions template to display staff actions uniformly (we relay our parameters to it)...}
 {+START,INCLUDE,STAFF_ACTIONS}
 	1_URL={ADD_ENTRY_URL*}
 	1_TITLE={!do_next:NEXT_ITEM_add}
@@ -62,5 +63,3 @@
 	4_TITLE={!EDIT_THIS_CATALOGUE}
 	4_ICON=menu/cms/catalogues/edit_this_catalogue
 {+END}
-
-{+START,IF,{$THEME_OPTION,show_screen_actions}}{$BLOCK,failsafe=1,block=main_screen_actions,title={$METADATA,title}}{+END}

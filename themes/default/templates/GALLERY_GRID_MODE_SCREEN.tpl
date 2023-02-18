@@ -44,6 +44,8 @@
 		RIGHT=1
 	{+END}
 
+	{+START,IF,{$THEME_OPTION,show_screen_actions}}{$BLOCK,failsafe=1,block=main_screen_actions,title={$METADATA,title}}{+END}
+
 	{$,Load up the staff actions template to display staff actions uniformly (we relay our parameters to it)...}
 	{+START,INCLUDE,STAFF_ACTIONS}
 		1_URL={IMAGE_URL*}
@@ -99,8 +101,6 @@
 			{COMMENT_DETAILS}
 		</div>
 	{+END}
-
-	{+START,IF,{$THEME_OPTION,show_screen_actions}}{$BLOCK,failsafe=1,block=main_screen_actions,title={$METADATA,title}}{+END}
 
 	{$,Uncomment the below if you want the root gallery to show recent and top content, then customise the GALLERY_POPULAR.tpl template to control specifics}
 	{$,\{+START,INCLUDE,GALLERY_POPULAR\}\{+END\}}

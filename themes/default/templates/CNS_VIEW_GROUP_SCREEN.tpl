@@ -60,8 +60,6 @@
 		</nav>
 	{+END}
 
-	{$REVIEW_STATUS,group,{ID}}
-
 	{+START,INCLUDE,NOTIFICATION_BUTTONS}
 		NOTIFICATIONS_TYPE=cns_member_joined_group
 		NOTIFICATIONS_ID={ID}
@@ -76,6 +74,8 @@
 
 		{+START,IF,{$THEME_OPTION,show_screen_actions}}{$BLOCK,failsafe=1,block=main_screen_actions,title={$METADATA,title}}{+END}
 	{+END}{+END}
+
+	{$REVIEW_STATUS,group,{ID}}
 
 	{$,Load up the staff actions template to display staff actions uniformly (we relay our parameters to it)...}
 	{+START,INCLUDE,STAFF_ACTIONS}

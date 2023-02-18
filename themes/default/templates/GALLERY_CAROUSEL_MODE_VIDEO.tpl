@@ -14,7 +14,7 @@
 	{+END}
 
 	<div class="entry-boxes lined-up-boxes">
-		<div class="box gallery-entry-info left">
+		<div class="box gallery-entry-meta-details left" role="note">
 			<div class="box-inner">
 				<ul class="horizontal-links">
 					<li>

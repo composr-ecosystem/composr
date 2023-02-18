@@ -5,8 +5,8 @@
 		{WARNING_DETAILS}
 	{+END}
 
-	<div class="news-entry-details">
-		<ul class="news-entry-details-col-start horizontal-links vertical-alignment-normalise-line-height">
+	<div class="news-entry-meta-details" role="note">
+		<ul class="news-entry-meta-details-col-start horizontal-links vertical-alignment-normalise-line-height">
 			<li class="news-entry-date">
 				{+START,INCLUDE,ICON}NAME=menu/rich_content/calendar{+END}
 				<time class="news-entry-date" datetime="{$FROM_TIMESTAMP*,Y-m-d\TH:i:s\Z,{ADD_DATE_RAW}}" itemprop="datePublished">{DATE*}</time>
@@ -23,7 +23,7 @@
 				{+END}{+END}
 			</li>
 		</ul>
-		<ul class="news-entry-details-col-end horizontal-links vertical-alignment-normalise-line-height">
+		<ul class="news-entry-meta-details-col-end horizontal-links vertical-alignment-normalise-line-height">
 			{+START,IF,{$INLINE_STATS}}<li class="news-entry-views">{+START,INCLUDE,ICON}NAME=cns_topic_modifiers/hot{+END} <span>{!VIEWS_SIMPLE,{VIEWS*}}</span></li>{+END}
 			{+START,IF_PASSED,COMMENT_COUNT}<li class="news-entry-comments">{+START,INCLUDE,ICON}NAME=feedback/comment{+END} <span>{$COMMENT_COUNT,news,{ID}}</span></li>{+END}
 		</ul>
@@ -52,6 +52,8 @@
 	{+END}
 
 	{+START,IF,{$THEME_OPTION,show_content_tagging}}{TAGS}{+END}
+
+	{+START,IF,{$THEME_OPTION,show_screen_actions}}{+START,IF_PASSED,_TITLE}{$BLOCK,failsafe=1,block=main_screen_actions,title={_TITLE}}{+END}{+END}
 
 	{$,Load up the staff actions template to display staff actions uniformly (we relay our parameters to it)...}
 	{+START,INCLUDE,STAFF_ACTIONS}
@@ -123,9 +125,6 @@
 		{+END}
 	</div>
 
-	<div class="clearfix lined-up-boxes">
-	</div>
-
 	{$REVIEW_STATUS,news,{ID}}
 
 	<div class="content-screen-comments">
@@ -139,6 +138,4 @@
 			</div>
 		</div>
 	{+END}
-
-	{+START,IF,{$THEME_OPTION,show_screen_actions}}{+START,IF_PASSED,_TITLE}{$BLOCK,failsafe=1,block=main_screen_actions,title={_TITLE}}{+END}{+END}
 </div>

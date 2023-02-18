@@ -33,16 +33,18 @@
 		</p>
 	{+END}
 
-	{$REVIEW_STATUS,gallery,{CAT}}
-
-	{+START,IF,{$THEME_OPTION,show_content_tagging}}{TAGS}{+END}
-
 	{+START,INCLUDE,NOTIFICATION_BUTTONS}
 		NOTIFICATIONS_TYPE=gallery_entry
 		NOTIFICATIONS_ID={CAT}
 		BREAK=1
 		RIGHT=1
 	{+END}
+
+	{+START,IF,{$THEME_OPTION,show_content_tagging}}{TAGS}{+END}
+
+	{+START,IF,{$THEME_OPTION,show_screen_actions}}{$BLOCK,failsafe=1,block=main_screen_actions,title={$METADATA,title}}{+END}
+
+	{$REVIEW_STATUS,gallery,{CAT}}
 
 	{$,Load up the staff actions template to display staff actions uniformly (we relay our parameters to it)...}
 	{+START,INCLUDE,STAFF_ACTIONS}
@@ -99,8 +101,6 @@
 			{COMMENT_DETAILS}
 		</div>
 	{+END}
-
-	{+START,IF,{$THEME_OPTION,show_screen_actions}}{$BLOCK,failsafe=1,block=main_screen_actions,title={$METADATA,title}}{+END}
 
 	{$,Uncomment the below if you want the root gallery to show recent and top content, then customise the GALLERY_POPULAR.tpl template to control specifics}
 	{$,\{+START,INCLUDE,GALLERY_POPULAR\}\{+END\}}

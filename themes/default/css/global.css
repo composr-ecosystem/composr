@@ -5048,19 +5048,11 @@ ul.horizontal-links li img {
 ul.associated-link li img {
 	max-width: 14px;
 }
-ul.horizontal-links li img,
-ul.associated-link li img,
-ul.horizontal-links li time,
-ul.horizontal-links a,
-ul.horizontal-links form {
+ul.horizontal-links li > img, ul.associated-link li > img, ul.horizontal-links li > time, ul.horizontal-links li > a, ul.horizontal-links li > form {
 	vertical-align: middle;
 }
 /*{+START,CSS_MODE,mobile}*/
-	ul.horizontal-links li img,
-	ul.horizontal-links li time,
-	ul.associated-link li img,
-	ul.horizontal-links a,
-	ul.horizontal-links form {
+	ul.horizontal-links li > img, ul.associated-link li > img, ul.horizontal-links li > time, ul.horizontal-links li > a, ul.horizontal-links li > form {
 		white-space: nowrap !important;
 	}
 

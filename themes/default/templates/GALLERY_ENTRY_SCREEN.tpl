@@ -8,7 +8,7 @@
 	{NAV}
 
 	{+START,SET,boxes}
-		<div class="box gallery-entry-info left">
+		<div class="box gallery-entry-meta-details left" role="note">
 			<div class="box-inner">
 				<ul class="horizontal-links vertical-alignment-normalise-line-height">
 					<li>
@@ -90,6 +90,8 @@
 
 	{+START,IF,{$THEME_OPTION,show_content_tagging}}{TAGS}{+END}
 
+	{+START,IF,{$THEME_OPTION,show_screen_actions}}{$BLOCK,failsafe=1,block=main_screen_actions,title={$METADATA,title}}{+END}
+
 	{$,Load up the staff actions template to display staff actions uniformly (we relay our parameters to it)...}
 	{+START,INCLUDE,STAFF_ACTIONS}
 		1_URL={EDIT_URL*}
@@ -115,6 +117,4 @@
 			</div>
 		</div>
 	{+END}
-
-	{+START,IF,{$THEME_OPTION,show_screen_actions}}{$BLOCK,failsafe=1,block=main_screen_actions,title={$METADATA,title}}{+END}
 <!--DO_NOT_REMOVE_THIS_COMMENT--></div>

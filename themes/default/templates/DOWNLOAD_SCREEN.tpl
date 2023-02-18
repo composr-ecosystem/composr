@@ -8,7 +8,7 @@
 	{WARNING_DETAILS}
 
 	<div class="clearfix">
-		<div class="download-metadata">
+		<div class="download-meta-details" role="note">
 			<div class="download-now-wrapper">
 				<div class="box box---download-screen" data-toggleable-tray="{}">
 					<div class="box-inner">
@@ -160,6 +160,8 @@
 
 	{+START,IF,{$THEME_OPTION,show_content_tagging}}{TAGS}{+END}
 
+	{+START,IF,{$THEME_OPTION,show_screen_actions}}{$BLOCK,failsafe=1,block=main_screen_actions,title={NAME}}{+END}
+
 	{$,Load up the staff actions template to display staff actions uniformly (we relay our parameters to it)...}
 	{+START,INCLUDE,STAFF_ACTIONS}
 		1_URL={EDIT_URL*}
@@ -199,6 +201,4 @@
 			</div>
 		</div>
 	{+END}
-
-	{+START,IF,{$THEME_OPTION,show_screen_actions}}{$BLOCK,failsafe=1,block=main_screen_actions,title={NAME}}{+END}
 </div>

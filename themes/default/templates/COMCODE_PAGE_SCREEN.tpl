@@ -28,9 +28,9 @@
 				{$BLOCK-,failsafe=1,block=main_screen_actions}
 			{+END}
 
-			{$REVIEW_STATUS,comcode_page,{NATIVE_ZONE}:{NAME}}
-
 			{+START,IF,{$THEME_OPTION,show_content_tagging}}{TAGS}{+END}
+
+			{$REVIEW_STATUS,comcode_page,{NATIVE_ZONE}:{NAME}}
 		{+END}
 
 		{+START,IF_NON_EMPTY,{EDIT_URL}}

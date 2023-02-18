@@ -112,10 +112,10 @@
 			</div>
 		</div>
 
-		{$REVIEW_STATUS,wiki_page,{ID}}
-
 		{+START,IF,{$THEME_OPTION,show_content_tagging}}{TAGS}{+END}
 
 		{+START,IF,{$THEME_OPTION,show_screen_actions}}{$BLOCK,failsafe=1,block=main_screen_actions,title={$METADATA,title}}{+END}
+
+		{$REVIEW_STATUS,wiki_page,{ID}}
 	</div>
 </div>
