@@ -83,16 +83,18 @@
 					{MEMBER_DETAILS}
 				</div></div>
 			</div>
-
-			{+START,IF_NON_EMPTY,{$GET,entries}}
-				<div class="ratings right">
-					{RATING_DETAILS}
-				</div>
-			{+END}
 		{+END}
 	</div>
 
-	{+START,IF_NON_EMPTY,{$GET,entries}}
+	{+START,IF_NON_EMPTY,{RATING_DETAILS}}
+		<div class="clearfix">
+			<div class="ratings">
+				{RATING_DETAILS}
+			</div>
+		</div>
+	{+END}
+
+	{+START,IF_NON_EMPTY,{COMMENT_DETAILS}}
 		<div class="content-screen-comments">
 			{COMMENT_DETAILS}
 		</div>

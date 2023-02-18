@@ -62,8 +62,10 @@
 			</div>
 		</div>
 
-		<div class="ratings right">
-			{RATING_DETAILS}
-		</div>
+		{+START,IF_NON_EMPTY,{RATING_DETAILS}}
+			<div class="ratings right">
+				{RATING_DETAILS}
+			</div>
+		{+END}
 	</div>
 </div>

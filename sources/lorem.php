@@ -884,11 +884,11 @@ function placeholder_rating(string $content_type, string $template = 'RATING_BOX
 {
     $all_rating_criteria = [];
     $all_rating_criteria[] = [
-        'TITLE' => lorem_phrase(),
-        'RATING' => make_string_tempcode('6'),
+        'TITLE' => '',
+        'RATING' => make_string_tempcode('10'),
         '_NUM_RATINGS' => placeholder_number(),
         'NUM_RATINGS' => placeholder_number(),
-        'TYPE' => lorem_word(),
+        'TYPE' => '',
     ];
     $rating_form = do_lorem_template('RATING_FORM', [
         'LIKES' => true,
