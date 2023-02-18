@@ -695,7 +695,12 @@ function generate_svg_sprite(string $theme, bool $monochrome, bool $userland) : 
 
     foreach ($icon_paths as $icon_name => $icon_path) {
         $xml = new CMS_simple_xml_reader(cms_file_get_contents_safe($icon_path, FILE_READ_LOCK | FILE_READ_BOM));
-        $output .= '<symbol viewBox="' . $xml->gleamed[1]['viewBox'] . '" id="icon_' . str_replace('/', '__', $icon_name) . '">' . "\n";
+        if (isset($xml->gleamed[1]['viewBox'])) {
+            $view_box = $xml->gleamed[1]['viewBox'];
+        } else {
+            $view_box = '0 0 ' . $xml->gleamed[1]['width'] . ' ' . $xml->gleamed[1]['height'];
+        }
+        $output .= '<symbol viewBox="' . $view_box . '" id="icon_' . str_replace('/', '__', $icon_name) . '">' . "\n";
         foreach ($xml->gleamed[3] as $child) {
             if (!is_array($child)) {
                 // whitespace?
