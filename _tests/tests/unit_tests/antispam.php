@@ -70,7 +70,7 @@ class antispam_test_set extends cms_test_case
         require_code('antispam');
         $key = '';
 
-        $prev_stale = intval(get_option('spam_stale_threshold'));
+        $prev_stale = get_option('spam_stale_threshold');
         set_option('spam_stale_threshold', '20', 0);
 
         // Arrays of HTTPBL IP query, expected ANTISPAM_RESPONSE_*, expected confidence score (float, 0.0 - 1.0).
@@ -80,6 +80,7 @@ class antispam_test_set extends cms_test_case
             ['127.1.1.2', ANTISPAM_RESPONSE_ACTIVE, ((1.0 / 255.0) * 4.0)], // Test threat type 2
             ['127.1.1.4', ANTISPAM_RESPONSE_ACTIVE, ((1.0 / 255.0) * 4.0)], // Test threat type 4
             ['127.1.40.1', ANTISPAM_RESPONSE_ACTIVE, ((40.0 / 255.0) * 4.0)], // Test threat level 40
+            ['127.1.80.1', ANTISPAM_RESPONSE_ACTIVE, ((80.0 / 255.0) * 4.0)], // Test threat level 80
             ['127.10.1.1', ANTISPAM_RESPONSE_ACTIVE, ((1.0 / 255.0) * 4.0)], // Test 10 days old
             ['127.40.1.1', ANTISPAM_RESPONSE_STALE, null], // Test 40 days old
         ];
