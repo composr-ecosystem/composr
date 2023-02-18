@@ -2693,10 +2693,10 @@ function rebuild_all_cpf_indices(bool $leave_existing = false)
 }
 
 /**
- * Check if the current member is allowed to set / edit a member's birthday.
+ * Check if the date of birth field can be edited based on whether it is set and birthday points are given.
  *
  * @param  ?MEMBER $member_id The member being edited (null: we are creating a new member)
- * @return boolean Whether or not the current member can edit the birthday of the specified member
+ * @return boolean If $member_id is null, whether the new member will be able to edit their DOB once set, and if $member_id is not null, whether the provided member can edit their DOB right now
  */
 function cns_can_edit_birthday(?int $member_id) : bool
 {
