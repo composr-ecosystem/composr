@@ -899,7 +899,7 @@ We hope other users will appreciate your efforts and give you some points to rew
             '_tests/tests/unit_tests/rest.php',
             '_tests/tests/unit_tests/rootkit_detection.php',
             '_tests/tests/unit_tests/rss.php',
-            '_tests/tests/unit_tests/search.php',
+            '_tests/tests/unit_tests/___search.php',
             '_tests/tests/unit_tests/sensible_git_branches.php',
             '_tests/tests/unit_tests/seo.php',
             '_tests/tests/unit_tests/_setupwizard.php',
