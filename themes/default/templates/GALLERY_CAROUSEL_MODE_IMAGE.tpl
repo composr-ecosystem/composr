@@ -14,7 +14,7 @@
 	{+END}{+END}
 
 	<div class="entry-boxes lined-up-boxes">
-		<div class="box gallery-entry-meta-details left" role="note">
+		<div class="box gallery-entry-meta-details" role="note">
 			<div class="box-inner">
 				<ul class="horizontal-links">
 					<li>
@@ -63,8 +63,10 @@
 		</div>
 
 		{+START,IF_NON_EMPTY,{RATING_DETAILS}}
-			<div class="ratings right">
-				{RATING_DETAILS}
+			<div class="clearfix">
+				<div class="ratings">
+					{RATING_DETAILS}
+				</div>
 			</div>
 		{+END}
 	</div>

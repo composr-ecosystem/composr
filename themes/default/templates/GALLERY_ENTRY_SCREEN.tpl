@@ -8,7 +8,7 @@
 	{NAV}
 
 	{+START,SET,boxes}
-		<div class="box gallery-entry-meta-details left" role="note">
+		<div class="box gallery-entry-meta-details" role="note">
 			<div class="box-inner">
 				<ul class="horizontal-links vertical-alignment-normalise-line-height">
 					<li>
@@ -31,13 +31,6 @@
 
 					{+START,IF,{$INLINE_STATS}}
 						<li>{+START,INCLUDE,ICON}NAME=cns_topic_modifiers/hot{+END} <span>{VIEWS*} {!COUNT_VIEWS}</span></li>
-					{+END}
-
-					{+START,IF_NON_EMPTY,{RATING_DETAILS}}
-						{$SET-,rating,{$RATING,{MEDIA_TYPE}s,{ID},{SUBMITTER},,,RATING_INLINE_DYNAMIC}}
-						{+START,IF_NON_EMPTY,{$TRIM,{$GET,rating}}}
-							<li><span>{!RATING} {$GET,rating}</span></li>
-						{+END}
 					{+END}
 
 					{+START,IF_NON_EMPTY,{$REVIEW_STATUS,{MEDIA_TYPE},{ID}}}
@@ -94,6 +87,14 @@
 			2_ICON=buttons/report
 			2_REL=report
 		{+END}
+	{+END}
+
+	{+START,IF_NON_EMPTY,{RATING_DETAILS}}
+		<div class="clearfix">
+			<div class="ratings">
+				{RATING_DETAILS}
+			</div>
+		</div>
 	{+END}
 
 	<div class="content-screen-comments">
