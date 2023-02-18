@@ -76,18 +76,6 @@
 		{+END}
 	{+END}
 
-	<div class="clearfix lined-up-boxes">
-		{+START,IF_NON_EMPTY,{MEMBER_DETAILS}}
-			<div class="right">
-				<div class="box box---gallery-member-details"><div class="box-inner">
-					<h2>{_TITLE*}</h2>
-
-					{MEMBER_DETAILS}
-				</div></div>
-			</div>
-		{+END}
-	</div>
-
 	{+START,IF_NON_EMPTY,{RATING_DETAILS}}
 		<div class="clearfix">
 			<div class="ratings">

@@ -53,16 +53,6 @@
 				</ul>
 			</div>
 		</div>
-
-		{+START,IF_NON_EMPTY,{MEMBER_DETAILS}}{+START,IF_PASSED,MEMBER_ID}
-			<div class="gallery-member-details right">
-				<div class="box box---gallery-entry-screen"><div class="box-inner">
-					<h2>{GALLERY_TITLE*}</h2>
-
-					{MEMBER_DETAILS}
-				</div></div>
-			</div>
-		{+END}{+END}
 	{+END}
 
 	<div class="media-box">

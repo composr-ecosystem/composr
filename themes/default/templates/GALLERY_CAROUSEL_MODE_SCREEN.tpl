@@ -78,24 +78,6 @@
 		RIGHT=1
 	{+END}
 
-	<div class="clearfix lined-up-boxes carousel-mode-details">
-		{+START,IF_NON_EMPTY,{MEMBER_DETAILS}}
-			<div class="right">
-				<div class="box box---gallery-carousel-mode-screen--member"><div class="box-inner">
-					<h2>{_TITLE*}</h2>
-
-					{MEMBER_DETAILS}
-				</div></div>
-			</div>
-		{+END}
-
-		{+START,IF_NON_EMPTY,{RATING_DETAILS}}
-			<div class="ratings right">
-				{RATING_DETAILS}
-			</div>
-		{+END}
-	</div>
-
 	{+START,IF,{$THEME_OPTION,show_content_tagging}}{TAGS}{+END}
 
 	{+START,IF,{$THEME_OPTION,show_screen_actions}}{$BLOCK,failsafe=1,block=main_screen_actions,title={$METADATA,title}}{+END}
@@ -130,6 +112,14 @@
 			6_ICON=buttons/report
 			6_REL=report
 		{+END}
+	{+END}
+
+	{+START,IF_NON_EMPTY,{RATING_DETAILS}}
+		<div class="clearfix>
+			<div class="ratings">
+				{RATING_DETAILS}
+			</div>
+		</div>
 	{+END}
 
 	{+START,IF_NON_EMPTY,{ENTRIES}{CURRENT_ENTRY}}
