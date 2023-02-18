@@ -17,7 +17,17 @@
 	padding: 5px;
 	background-color: {$GET,area_5_background};
 	border-radius: {$GET,border_radius};
+	align-items: center;
 }
+
+/*{+START,CSS_MODE,desktop}*/
+	.gallery-nav-prev-btn,
+	.gallery-nav-next-btn {
+		width: 195px;
+		{$BETA_CSS_PROPERTY,display: flex;}
+		justify-content: space-between;
+	}
+/*{+END}*/
 
 .gallery-nav-prev-btn:hover,
 .gallery-nav-next-btn:hover {
@@ -54,6 +64,19 @@
 	flex-grow: 1;
 	text-align: center;
 }
+
+.gallery-nav-margin-left {
+}
+.gallery-nav-margin-right {
+}
+/*{+START,CSS_MODE,desktop}*/
+	.gallery-nav-margin-left {
+		margin-left: 195px;
+	}
+	.gallery-nav-margin-right {
+		margin-right: 195px;
+	}
+/*{+END}*/
 
 .gallery-nav .btn.buttons--slideshow {
 	margin-right: 15px;

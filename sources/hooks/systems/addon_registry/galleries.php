@@ -983,8 +983,6 @@ class Hook_addon_registry_galleries
             'CATEGORY_NAME' => lorem_word(),
         ]);
 
-        $video = lorem_sentence_html();
-
         return lorem_globalise(do_lorem_template('GALLERY_ENTRY_SCREEN', [
             'CAT' => placeholder_codename(),
             'MEDIA_TYPE' => 'video',
@@ -996,7 +994,7 @@ class Hook_addon_registry_galleries
             'TAGS' => placeholder_tags(),
             'TITLE' => lorem_screen_title(),
             'SUBMITTER' => placeholder_numeric_id(),
-            'URL' => placeholder_url(),
+            'URL' => placeholder_image_url(), // Raw URL
             'MEMBER_DETAILS' => placeholder_member_box(),
             '_X' => placeholder_number(),
             'X' => placeholder_number(),
@@ -1012,10 +1010,10 @@ class Hook_addon_registry_galleries
             'TRACKBACK_DETAILS' => placeholder_trackbacks_wrapper(),
             'COMMENT_DETAILS' => placeholder_comments(placeholder_comments_form(false)),
             'EDIT_URL' => placeholder_url(),
-            'IMAGE_URL' => placeholder_image_url(),
+            'IMAGE_URL' => placeholder_image_url(), // Thumbnail URL
             'NAV' => $nav,
             'DESCRIPTION' => lorem_phrase(),
-            'VIDEO' => $video,
+            'VIDEO' => null,
             'WARNING_DETAILS' => '',
             'VIDEO_DETAILS' => null,
         ]), null, '', true);

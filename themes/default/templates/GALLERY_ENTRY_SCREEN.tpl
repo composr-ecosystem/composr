@@ -10,28 +10,33 @@
 	{+START,SET,boxes}
 		<div class="box gallery-entry-info left">
 			<div class="box-inner">
-				<ul class="horizontal-links">
-					<li>{+START,INCLUDE,ICON}NAME=menu/rich_content/calendar{+END} {!ADDED} <time datetime="{$FROM_TIMESTAMP*,Y-m-d\TH:i:s\Z,{ADD_DATE_RAW}}" itemprop="datePublished">{ADD_DATE*}</time></li>
+				<ul class="horizontal-links vertical-alignment-normalise-line-height">
+					<li>
+						{+START,INCLUDE,ICON}NAME=menu/rich_content/calendar{+END} 
+						<span>{!ADDED} <time datetime="{$FROM_TIMESTAMP*,Y-m-d\TH:i:s\Z,{ADD_DATE_RAW}}" itemprop="datePublished">{ADD_DATE*}</time></span>
+					</li>
 
 					<li>
 						{+START,INCLUDE,ICON}NAME=content_types/member{+END}
-						{!BY}
-						<a rel="author" href="{$MEMBER_PROFILE_URL*,{SUBMITTER}}" itemprop="author">{$USERNAME*,{SUBMITTER},1}</a>
-						{+START,INCLUDE,MEMBER_TOOLTIP}{+END}
+						<span>
+							{!BY}
+							<a rel="author" href="{$MEMBER_PROFILE_URL*,{SUBMITTER}}" itemprop="author">{$USERNAME*,{SUBMITTER},1}</a>
+							{+START,INCLUDE,MEMBER_TOOLTIP}{+END}
+						</span>
 					</li>
 
 					{+START,IF_NON_EMPTY,{EDIT_DATE}}
-						<li>{+START,INCLUDE,ICON}NAME=admin/edit{+END} {!EDITED} {EDIT_DATE*}</li>
+						<li>{+START,INCLUDE,ICON}NAME=admin/edit{+END} <span>{!EDITED} {EDIT_DATE*}</span></li>
 					{+END}
 
 					{+START,IF,{$INLINE_STATS}}
-						<li>{+START,INCLUDE,ICON}NAME=cns_topic_modifiers/hot{+END} {VIEWS*} {!COUNT_VIEWS}</li>
+						<li>{+START,INCLUDE,ICON}NAME=cns_topic_modifiers/hot{+END} <span>{VIEWS*} {!COUNT_VIEWS}</span></li>
 					{+END}
 
 					{+START,IF_NON_EMPTY,{RATING_DETAILS}}
 						{$SET-,rating,{$RATING,{MEDIA_TYPE}s,{ID},{SUBMITTER},,,RATING_INLINE_DYNAMIC}}
 						{+START,IF_NON_EMPTY,{$TRIM,{$GET,rating}}}
-							<li>{!RATING} {$GET,rating}</li>
+							<li><span>{!RATING} {$GET,rating}</span></li>
 						{+END}
 					{+END}
 
@@ -58,12 +63,6 @@
 				</div></div>
 			</div>
 		{+END}{+END}
-
-		{+START,IF_NON_EMPTY,{TRACKBACK_DETAILS}}
-			<div class="trackbacks right">
-				{TRACKBACK_DETAILS}
-			</div>
-		{+END}
 	{+END}
 
 	<div class="media-box">
@@ -108,6 +107,14 @@
 	<div class="content-screen-comments">
 		{COMMENT_DETAILS}
 	</div>
+
+	{+START,IF_NON_EMPTY,{TRACKBACK_DETAILS}}
+		<div class="clearfix">
+			<div class="trackbacks">
+				{TRACKBACK_DETAILS}
+			</div>
+		</div>
+	{+END}
 
 	{+START,IF,{$THEME_OPTION,show_screen_actions}}{$BLOCK,failsafe=1,block=main_screen_actions,title={$METADATA,title}}{+END}
 <!--DO_NOT_REMOVE_THIS_COMMENT--></div>

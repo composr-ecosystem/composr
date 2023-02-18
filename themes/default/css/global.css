@@ -2158,6 +2158,10 @@ div.edited {
 	line-height: 1.9em;
 }
 
+.vertical-alignment-normalise-line-height {
+	line-height: 0;
+}
+
 
 /* Makes an item of media (e.g. an image) get framed nicely. NB: We do not use this for galleries (which are more elaborate), although that has similar styling with .gallery-grid-cell */
 .media-box {
@@ -4253,17 +4257,6 @@ div.ajax-loading, p.ajax-loading {
 	padding-left: 2px;
 }
 
-/*{+START,CSS_MODE,desktop}*/
-	.trackbacks {
-		width: 14em;
-	}
-/*{+END}*/
-/*{+START,CSS_MODE,mobile}*/
-	.trackbacks {
-		width: 100%;
-	}
-/*{+END}*/
-
 .box---trackback label {
 	display: block;
 }
@@ -5057,12 +5050,14 @@ ul.associated-link li img {
 }
 ul.horizontal-links li img,
 ul.associated-link li img,
+ul.horizontal-links li time,
 ul.horizontal-links a,
 ul.horizontal-links form {
 	vertical-align: middle;
 }
 /*{+START,CSS_MODE,mobile}*/
 	ul.horizontal-links li img,
+	ul.horizontal-links li time,
 	ul.associated-link li img,
 	ul.horizontal-links a,
 	ul.horizontal-links form {

@@ -347,22 +347,34 @@ class Module_news
             } else {
                 $first_bc = ['_SELF:_SELF:select', do_lang_tempcode('NEWS_CATEGORIES')];
             }
+            $is_selecting_single_cat = false;
+            $news_cat = $myrow['news_category'];
+            $matches = [];
+            if (preg_match('#^(\d+)[*\#]$#', $select, $matches) != 0) {
+                $news_cat = intval($matches[1]);
+                $is_selecting_single_cat = true;
+            }
             if ($blog === 1) {
                 $parent_title = do_lang_tempcode('BLOG_NEWS_ARCHIVE');
             } else {
-                if (is_numeric($select)) {
-                    $news_cat_rows = $GLOBALS['SITE_DB']->query_select('news_categories', ['nc_title'], ['id' => intval($select)], '', 1);
-                    if (array_key_exists(0, $news_cat_rows)) {
-                        $news_cat_rows[0]['_nc_title'] = get_translated_text($news_cat_rows[0]['nc_title']);
-                        $parent_title = protect_from_escaping(escape_html($news_cat_rows[0]['_nc_title']));
-                    } else {
-                        $parent_title = do_lang_tempcode('NEWS_ARCHIVE');
-                    }
+                $news_cat_rows = $GLOBALS['SITE_DB']->query_select('news_categories', ['nc_title'], ['id' => $news_cat], '', 1);
+                if (array_key_exists(0, $news_cat_rows)) {
+                    $news_cat_rows[0]['_nc_title'] = get_translated_text($news_cat_rows[0]['nc_title']);
+                    $parent_title = protect_from_escaping(escape_html($news_cat_rows[0]['_nc_title']));
                 } else {
                     $parent_title = do_lang_tempcode('NEWS_ARCHIVE');
                 }
             }
-            breadcrumb_set_parents([$first_bc, ['_SELF:_SELF:browse' . (($blog === 1) ? ':blog=1' : (($blog === 0) ? ':blog=0' : '')) . (($select == '*') ? '' : (is_numeric($select) ? (':id=' . $select) : (':select=' . $select))) . (($select_and == '*') ? '' : (':select_and=' . $select_and)) . propagate_filtercode_page_link(), $parent_title]]);
+            $breadcrumb_pagelink = '_SELF:_SELF:browse';
+            $breadcrumb_pagelink .= (($blog === 1) ? ':blog=1' : (($blog === 0) ? ':blog=0' : ''));
+            if (($is_selecting_single_cat) || ($select == '*')) {
+                $breadcrumb_pagelink .= ':id=' . strval($news_cat);
+            } else {
+                $breadcrumb_pagelink .= ':select=' . $select;
+            }
+            $breadcrumb_pagelink .= (($select_and == '*') ? '' : (':select_and=' . $select_and));
+            $breadcrumb_pagelink .= propagate_filtercode_page_link();
+            breadcrumb_set_parents([$first_bc, [$breadcrumb_pagelink, $parent_title]]);
             breadcrumb_set_self(protect_from_escaping(get_translated_tempcode('news', $myrow, 'title')));
 
             // Permissions
