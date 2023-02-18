@@ -1762,6 +1762,39 @@ class Tempcode
     }
 
     /**
+     * Find if this Tempcode object uses less memory (very roughly!) than the given number of bytes.
+     *
+     * @param  integer $bytes_available The number of bytes
+     * @return boolean Whether it is
+     */
+    public function is_smaller_than(&$bytes_available)
+    {
+        foreach ($this->code_to_preexecute as $part) {
+            $bytes_available -= strlen($part);
+        }
+        if ($bytes_available < 0) {
+            return false;
+        }
+        foreach ($this->seq_parts as $seq_parts_group) {
+            foreach ($seq_parts_group as $seq_part) {
+                $bytes_available -= strlen($seq_part[0]) + 1 + strlen($seq_part[3]);
+                foreach ($seq_part[1] as $param) {
+                    if (is_string($param)) {
+                        $bytes_available -= strlen($param);
+                    } elseif (is_object($param)) {
+                        $param->is_smaller_than($bytes_available); // Recurse
+                    }
+                    if ($bytes_available < 0) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return ($bytes_available > 0);
+    }
+
+    /**
      * PHP magic function to handle serialisation.
      *
      * @return array What is to be serialised
