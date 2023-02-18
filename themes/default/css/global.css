@@ -2132,7 +2132,7 @@ body .accessibility-hidden { /* Contents should be made visible (or interpreted)
 	}
 /*{+END}*/
 div.edited {
-	margin: 2em 0;
+	margin: 2em 0 1em 0;
 }
 .edited > * {
 	vertical-align: middle;
