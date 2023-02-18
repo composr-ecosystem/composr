@@ -115,7 +115,7 @@
 	{+END}
 
 	{+START,IF_NON_EMPTY,{RATING_DETAILS}}
-		<div class="clearfix>
+		<div class="clearfix">
 			<div class="ratings">
 				{RATING_DETAILS}
 			</div>
