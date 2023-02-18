@@ -702,7 +702,7 @@
                 type: 'alert',
                 text: unescaped ? notice : $cms.filter.html(notice).replace(/\n/g, '<br />'),
                 yesButton: '{!INPUTSYSTEM_OK;^}',
-                width: '' + width,
+                width: width.toString(),
                 yes: function () {
                     currentAlertNotice = null;
                     currentAlertTitle = null;

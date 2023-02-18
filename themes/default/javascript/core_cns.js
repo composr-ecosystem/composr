@@ -103,12 +103,12 @@
             if (params.useCaptcha && ($cms.configOption('recaptcha_site_key') === '')) {
                 for (var i = 0; i < form.elements.length; i++) {
                     if ((form.elements[i].name !== undefined) && (form.elements[i].name.match(/^captcha(_|$)/))) {
-                        if (form.elements[i].name.indexOf('_') != -1) {
+                        if (form.elements[i].name.indexOf('_') !== -1) {
                             questionCaptcha = true;
                         }
 
                         captchaElements.push(form.elements[i]);
-                        if (form.elements[i].value != '') {
+                        if (form.elements[i].value !== '') {
                             captchaValues.push(form.elements[i].value);
                         }
                         values.push(form.elements[i].value);
@@ -181,7 +181,7 @@
                     }
                 }
 
-                if (params.useCaptcha && ($cms.configOption('recaptcha_site_key') === '') && (captchaValues.length == catchaValuesExpected)) {
+                if (params.useCaptcha && ($cms.configOption('recaptcha_site_key') === '') && (captchaValues.length === catchaValuesExpected)) {
                     url = params.snippetScript + '?snippet=captcha_wrong&name=' + encodeURIComponent(captchaValues.join('||'));
                     if (questionCaptcha) {
                         url += '&question_captcha=1';
@@ -296,7 +296,7 @@
                 btn.form.submit();
             });
         }
-    }
+    };
 
     $cms.functions.hookProfilesTabsEditPhotoRenderTab = function hookProfilesTabsEditPhotoRenderTab() {
         var suffix = $cms.filter.id('{!DELETE;^}').toLowerCase();
@@ -506,7 +506,7 @@
             form = document.getElementById('type').form;
             var crf = function () {
                 var type = form.elements['type'].value;
-                var encryptable = (type.indexOf('_text') != -1) || (type.indexOf('_trans') != -1) || (type.indexOf('posting') != -1); // See also cpf_decrypt.php and cpf_encrypt.php
+                var encryptable = (type.indexOf('_text') !== -1) || (type.indexOf('_trans') !== -1) || (type.indexOf('posting') !== -1); // See also cpf_decrypt.php and cpf_encrypt.php
                 form.elements['encrypted'].disabled = !encryptable;
                 if (!encryptable) {
                     form.elements['encrypted'].checked = false;

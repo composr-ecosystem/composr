@@ -66,7 +66,7 @@
             });
             google.maps.event.addListener(map, 'click', _placeMarker);
             google.maps.event.addListener(marker, 'click', _placeMarker);
-        }
+        };
 
         function _placeMarker() {
             document.getElementById(name + '_latitude').value = lastPoint.lat();
@@ -252,6 +252,6 @@
             google.maps.event.addListener(window.dataMap, 'click', function () {
                 $util.inform(lastPoint.lat() + ', ' + lastPoint.lng());
             });
-        }
+        };
     };
 }(window.$cms));

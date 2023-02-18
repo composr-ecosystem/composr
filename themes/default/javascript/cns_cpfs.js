@@ -1,4 +1,4 @@
-(function ($cms, $util, $dom) {
+(function ($cms) {
     'use strict';
 
     $cms.functions.moduleAdminCnsCustomProfileFields_createSelectionListChooseTable = function (formId) { // eslint-disable-line camelcase
@@ -15,4 +15,4 @@
         }
         selectSubmit.style.display = 'none';
     };
-}(window.$cms, window.$util, window.$dom));
+}(window.$cms));

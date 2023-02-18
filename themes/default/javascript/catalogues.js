@@ -126,12 +126,12 @@
     function catalogueFieldReindexAround(allOrderers, ob) {
         return function () {
             // Sort allOrderers by selectedIndex
-            allOrderers = allOrderers.sort(function(a, b) {
-                if ((a.selectedIndex == b.selectedIndex)) {
+            allOrderers = allOrderers.sort(function (a, b) {
+                if ((a.selectedIndex === b.selectedIndex)) {
                     // The one we just changed takes priority when orders are the same
-                    if (a.name == ob.name) {
+                    if (a.name === ob.name) {
                         return -1;
-                    } else if (b.name == ob.name) {
+                    } else if (b.name === ob.name) {
                         return 1;
                     }
                 }

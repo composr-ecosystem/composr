@@ -171,10 +171,17 @@ function mixed()
    return null;
 }
 
-Comparison to other PHP linters
--------------------------------
+Comparison to other LAMP linters
+--------------------------------
 
-Here are some checks other linters do which we do not do (no duplication of remarks across projects, written in tool quality order)...
+Here are some checks other linters do which we do not do (no duplication of remarks across projects, written in rough tool quality order)...
+
+ESLint:
+ > As with PHP CodeSniffer, the CQC can chain to ESLint
+ > (We are aware JSHint exists, but we don't use it)
+
+Google Lighthouse:
+ > Run manually to find performance problems etc
 
 PhpStorm's Code Inspector:
  - "Unreachable statement" (Reason: Often caught between a rock and a hard place with these, e.g. other lint checks for 'break' always being defined, or other lints insist on 'return' being defined yet a code path exits; the CQC only checks if you have code after an actual 'return' statement)
@@ -190,10 +197,6 @@ PhpStorm's Code Inspector:
 
 PHP CodeSniffer:
  > The CQC can chain a connection to the popular PHP CodeSniffer package, for additional checks. These checks capture more detailed coding standards errors, like putting spaces or line-breaks in the wrong place
-
-ESLint:
- > As with PHP CodeSniffer, the CQC can chain to ESLint
- > (We are aware JSHint exists, but we don't use it)
 
 Zend Studio's Code Analyzer (Problems):
  - "Assignment in condition" (Reason: The CQC doesn't have a problem with assignments as conditions, but it does something similar - separates the concept of expressions and commands; a command must be bracketed to become an expression)

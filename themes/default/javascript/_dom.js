@@ -1477,7 +1477,7 @@
             }
         }
 
-        if (form.localName == 'form') {
+        if (form.localName === 'form') {
             form.submit();
         } else {
             $dom.trigger(form, 'click');

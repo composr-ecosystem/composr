@@ -124,20 +124,18 @@
             var values = [],
                 captchaValues = [],
                 captchaElements = [],
-                catchaValuesExpected = 0,
                 questionCaptcha = false;
             for (var i = 0; i < form.elements.length; i++) {
                 if ((form.elements[i].name !== undefined) && (form.elements[i].name.match(/^captcha(_|$)/))) {
-                    if (form.elements[i].name.indexOf('_') != -1) {
+                    if (form.elements[i].name.indexOf('_') !== -1) {
                         questionCaptcha = true;
                     }
 
                     captchaElements.push(form.elements[i]);
-                    if (form.elements[i].value != '') {
+                    if (form.elements[i].value !== '') {
                         captchaValues.push(form.elements[i].value);
                     }
                     values.push(form.elements[i].value);
-                    catchaValuesExpected++;
                 }
             }
 

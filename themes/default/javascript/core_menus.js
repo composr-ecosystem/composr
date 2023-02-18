@@ -535,7 +535,7 @@
 
     function adjustPaneHeights(docked) {
         var menuEditorWrapEl = $dom.$('.js-el-menu-editor-wrap');
-        if (typeof docked == 'undefined') {
+        if (typeof docked === undefined) {
             docked = menuEditorWrapEl.classList.contains('docked');
         }
         if (docked) {

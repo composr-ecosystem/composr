@@ -773,6 +773,7 @@ We hope other users will appreciate your efforts and give you some points to rew
             '_tests/tests/unit_tests/database_query_parameterised.php',
             '_tests/tests/unit_tests/database_relations.php',
             '_tests/tests/unit_tests/db_correctness.php',
+            '_tests/tests/unit_tests/_eslint.php',
             '_tests/tests/unit_tests/___demonstratr.php',
             '_tests/tests/unit_tests/dev_environment.php',
             '_tests/tests/unit_tests/diff.php',
