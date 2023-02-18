@@ -19,10 +19,10 @@
  */
 
 /**
-* Generate comcode text containing an explanation of the punitive actions being taken based on what was entered in the warning form.
-*
-* @return string comcode to be included in the warning private topic
-*/
+ * Generate comcode text containing an explanation of the punitive actions being taken based on what was entered in the warning form.
+ *
+ * @return string comcode to be included in the warning private topic
+ */
 function generate_punitive_text() : string
 {
     $message_punitive = post_param_integer('include_punitive_text', 0);
@@ -177,12 +177,12 @@ function generate_punitive_text() : string
 }
 
 /**
-* Find a member's content.
-*
-* @param  MEMBER $member_id Member ID
-* @param  integer $max Maximum results
-* @return array List of content rows
-*/
+ * Find a member's content.
+ *
+ * @param  MEMBER $member_id Member ID
+ * @param  integer $max Maximum results
+ * @return array List of content rows
+ */
 function find_member_content(int $member_id, int $max = 30) : array
 {
     if (!has_privilege(get_member(), 'delete_highrange_content')) {
@@ -216,7 +216,7 @@ function find_member_content(int $member_id, int $max = 30) : array
     }
 
     require_code('content');
-    list($rows) = content_rows_for_multi_type($content_types, null, '', '', 'recent DESC', 0, $max);
+    list($rows) = content_rows_for_multi_type($content_types, null, '', '', 'recent DESC', 0, $max * 10);
 
     foreach ($rows as $row) {
         $ob = get_content_object($row['content_type']);
@@ -240,6 +240,10 @@ function find_member_content(int $member_id, int $max = 30) : array
             $content_add_time,
             false
         ];
+
+        if (count($content) >= $max) {
+            break;
+        }
     }
 
     return $content;
