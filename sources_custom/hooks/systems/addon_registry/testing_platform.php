@@ -977,6 +977,8 @@ We hope other users will appreciate your efforts and give you some points to rew
             '_tests/tests/unit_tests/mobile_detect.php',
             '_tests/tests/unit_tests/new_window_labels.php',
             '_tests/tests/unit_tests/import.php',
+            '_tests/tests/unit_tests/firewall_rules.php',
+            '_tests/tests/unit_tests/hooks.php',
             'data_custom/search_test.php',
         ];
     }
