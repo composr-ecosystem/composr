@@ -80,8 +80,7 @@
 			<ul class="cntLi">
 				<li>[b]Get noticed[/b]: People who contribute significantly will be well respected and thanked by the community. It feels good!</li>
 				<li>[b]Build a career[/b]: Members who've made big contributions are automatically highlighted via our [page="site:stars"]community stars[/page] and [page="site:groups"]ranks[/page]. This is definitely something worth putting on your CV/Résumé.</li>
-				<li>[b]Build a business[/b]: ocProducts doesn't want to have a monopoly on commercial Composr work. We have a directory of [page="site:partners"]partners[/page] and we actively refer out projects that come through to third-party implementors (it's even a part of our project briefing wizard). Your role and importance in the community could directly lead to paid work for you.</li>
-				<li>[b]Get free support[/b]: We have a [page="docs:tut_software_feedback"]referral scheme[/page] for you to earn money if you refer projects to ocProducts.</li>
+				<li>[b]Build a business[/b]: We have a directory of [page="site:partners"]partners[/page] and we actively refer out projects that come through to third-party implementors (it's even a part of our project briefing wizard). Your role and importance in the community could directly lead to paid work for you.</li>
 				<li>[b]Move things forward[/b]: You're making the web development world a better place for people who aren't necessarily programmers or millionaires. By its very nature the Open Source model depends on people to share talents in big and small ways.</li>
 				<li>[b]Give back[/b]: You can be a big help to the hard-working core developer team who've continued to spend years on very modest incomes to see the vision come to pass. </li>
 			</ul>

@@ -79,13 +79,13 @@
 
 			<p>We often commit fixes to Git before patch releases come out.</p>
 
-			<p>Be aware that the Git repository also has all the ocProducts addons in it. We develop them in there, to keep them up-to-date. There is a script called [tt]delete_alien_files.php[/tt] which will erase them. You need to first delete the [tt]sources_custom/hooks/systems/addon_registry/*.php[/tt] files of any addons you don't want, then run the script, then run the commands the script says (after reviewing), then install.</p>
+			<p>Be aware that the Git repository also has many non-bundled addons in it. We develop them in there, to keep them up-to-date. There is a script called [tt]delete_alien_files.php[/tt] which will erase them. You need to first delete the [tt]sources_custom/hooks/systems/addon_registry/*.php[/tt] files of any addons you don't want, then run the script, then run the commands the script says (after reviewing), then install.</p>
 
 			<h3 class="colrBl">Git write access</h3>
 
 			<div class="sept"></div>
 
-			<p>Composr development is sponsored and led by ocProducts, who is the primary developer. However we do [page=":contact:contribute_code"]accept and encourage external contributions[/page]. Composr is a community project after all, even if we do centrally ensure its quality.</p>
+			<p>We [page=":contact:contribute_code"]accept and encourage external contributions[/page].</p>
 			<p>We will provide write-access to Git as appropriate (essentially when someone shows a serious commitment to the project in the form of high-quality code).</p>
 		</div>
 	</div>

@@ -1,6 +1,12 @@
 [semihtml]
 {$REQUIRE_CSS,composr_homesite__professional_support}
 
+<p>
+	Support and development services are no longer available from ocProducts Ltd as we are winding down operations and the core developers are transitioning Composr's management and development to a new model.
+	For support options please engage with the community on the <a href="{$PAGE_LINK*,forumview:}">forum</a> and in the <a href="{$PAGE_LINK*,:partners}">partner directory</a>.
+</p>
+
+<!--
 <div class="cntRow">
 	<div class="float_surrounder">
 		<div class="cntLeft">
@@ -82,8 +88,6 @@ Hourly cost (approx):
 		<p>&dagger; Response times aren't guaranteed, but if we miss a regular response time we will charge it at the back-burner rate. If time is a factor and you are expecting to put through some complex queries, or a stream of queries, [page=":contact:support_notice"]please let us know[/page] as far in advance as possible so that we can arrange staff availability (we have to schedule primary staff assignments weeks or months in advance, and it can get extremely hectic). If you expect to be putting in tickets that will require an hour or more a day over an extended period of days, it is a good idea to arrange a staff secondment with us.</p>
 
 		<p><span class="colrRd">*</span> We have a minimum charge, but where possible we provide value by handling tickets in bunches.</p>
-
-		<!--<p>&dagger;&dagger; VAT applies for EU customers. VAT not included in figures quoted here.</p>-->
 	</div>
 </div>
 
@@ -104,7 +108,7 @@ Hourly cost (approx):
 					<li class="ffth"><a href="#">Feature sponsorship</a></li>
 				</ul>
 
-				<!-- The text below is intensively short. The main text goes in contact.php (the decision tree). This page is mostly about explaining options/benefits to people and sign-posting, rather than educating on or leading through process. -->
+				<! -- The text below is intensively short. The main text goes in contact.php (the decision tree). This page is mostly about explaining options/benefits to people and sign-posting, rather than educating on or leading through process. -- >
 
 				<ul class="verticalslider_contents">
 					<li>
@@ -181,7 +185,7 @@ Hourly cost (approx):
 			<div class="accordionContent">
 				{+START,INCLUDE,_SUPPORT_BOX_FEATURE_SPONSORSHIP}{+END}
 			</div>
-		</div><!--accordion closed-->
+		</div>
 	</div>
 
 	<script>//<![CDATA[
@@ -190,4 +194,5 @@ Hourly cost (approx):
 		});
 	//]]></script>
 {+END}
+-->
 [/semihtml]

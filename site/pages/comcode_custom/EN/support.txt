@@ -97,6 +97,7 @@
 	</ul>
 </div>
 
+<!--
 <div class="cntRow">
 	<h2 class="colrBl leftH3Like">Get in touch:</h2>
 </div>
@@ -172,16 +173,11 @@
 		</div>
 	</div>
 </div>
+-->
 
 <div class="cntRow">
-	<p>Composr is primarily sponsored/developed by ocProducts Ltd, a [tooltip="Company number 05321273
-
-Our address is: [b][address]ocProducts Ltd, Walkley House, Burnaby Crescent, Sheffield, S6 2RZ[/address][/b]"]UK-based company[/tooltip] specialising in cutting-edge website solutions.</p>
-
-	<!-- TODO: Re-enable when there are more partners to list. For now directory more for internal use, when we do skill matching after customer has used Briefr
 	<h3 class="colrBl">Partner programme</h3>
 
-	<p>In addition to support from ocProducts, there may be other providers who can provide services to you. Composr implementors may be listed in the [page="site:catalogues:category:catalogue_name=partners"]partner directory[/page].</p>
-	-->
+	<p>Composr implementors may be listed in the [page="site:catalogues:category:catalogue_name=partners"]partner directory[/page].</p>
 </div>
 [/semihtml]

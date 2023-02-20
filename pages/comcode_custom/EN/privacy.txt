@@ -16,7 +16,7 @@ We will not share private details other than what can be seen in the forum profi
 All private-posts and posts, whether 'deleted' or not, are stored on the server and may be reviewed if we feel we have cause for an investigation. If you do want to keep something private, do not use our services for transmitting it. Situations involving investigations can be anything at our discretion, for example, to investigate specific incidents of our services being used for racism or harassment.
 
 Composr:
- - Will identify your website URL and website name to a central ocProducts server when you access the Admin Zone, so that we can measure deployment statistics and identify where our software works effectively and when it does not. This data is not shared publicly. You may disable this functionality if you wish to by requesting a programmer remove the [tt]user.php[/tt] remote call in [tt]sources/site.php[/tt].
+ - Will identify your website URL and website name to a central project server when you access the Admin Zone, so that we can measure deployment statistics and identify where our software works effectively and when it does not. This data is not shared publicly. You may disable this functionality if you wish to by requesting a programmer remove the [tt]user.php[/tt] remote call in [tt]sources/site.php[/tt].
 
 {+START,IF,{$CNS}}
 [title="2"]Privacy settings[/title]

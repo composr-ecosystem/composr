@@ -20,7 +20,6 @@
 				<li>Learn <a class="list-link" href="{$PAGE_LINK*,:compare}">50 reasons why Composr is different</a> to other CMSs.</li>
 				<li>Learn <a class="list-link" href="{$PAGE_LINK*,:antifeatures}">what Composr is not</a> (this page contains <strong>vitally important</strong> details to help you plan your project).</li>
 				<li>Learn our <a class="list-link" href="{$PAGE_LINK*,:vision}">vision for Composr</a>, as well as the future of the web.</li>
-				<!-- <li>Browse the <a class="list-link" href="{$PAGE_LINK*,ocproducts:portfolio}">ocProducts portfolio</a> to see example Composr sites.</li> Disabled for now because practically speaking we may not always be working on new site builds, and rarely have time to keep this updated -->
 				<li>Set up a <a class="list-link" href="{$PAGE_LINK*,:demo}">personal demo</a>. Supply some details and we'll instantly set up your temporary site.</li>
 
 				<li class="list-none">We also link to the shared demo below to illustrate all the features (click the blue arrows).</li>

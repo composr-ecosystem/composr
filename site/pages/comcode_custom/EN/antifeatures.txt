@@ -231,7 +231,7 @@
 				<div>
 					<p>No CMS can eliminate the need for programmers in all cases. If your site has complex or relatively unusual requirements, then you will need a programmer.</p>
 
-					<p>We make Composr as powerful and flexible as we possibly can (without making it an overly-complex mess), but we acknowledge occasional real-world limitations &ndash; and we provide [page="site:professional_support"]professional services[/page] when they are needed. Composr catalogues are not a [url="4GL system"]http://en.wikipedia.org/wiki/Fourth-generation_programming_language[/url] and even if they were, 4GLs have not become predominant because they usually fail in their goals.</p>
+					<p>We make Composr as powerful and flexible as we possibly can (without making it an overly-complex mess), but we acknowledge occasional real-world limitations. Composr catalogues are not a [url="4GL system"]http://en.wikipedia.org/wiki/Fourth-generation_programming_language[/url] and even if they were, 4GLs have not become predominant because they usually fail in their goals.</p>
 				</div>
 
 				<h3><a href="#">A way to get &ldquo;a world-class website on the cheap&rdquo;</a></h3>
@@ -259,7 +259,7 @@
 
 					[list="a"]
 						[*]In-house PHP programming skills to back things up where needed;
-						[*]Or, you budget a chunk of your quoted price for ocProducts support (or from a third party)
+						[*]Or, you budget a chunk of your quoted price for a professional development agency
 					[/list]
 
 					<p>It is frankly very poor business to quote extremely low (to undercut the more established companies that do employ programmers) because you'll &ldquo;just deploy Composr&rdquo; because for 99.9% of projects there will be some proportion of project-specific things that Composr can't quite do out of the box; or generally there may be a need for good support on how to configure more advanced features in clever ways.</p>

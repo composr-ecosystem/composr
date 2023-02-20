@@ -2,8 +2,7 @@
 
 [surround="spaced_list"]
 [list=1]
-[*][b]The Composr CMS forum is [i]not[/i] an [i]official[/i] support channel[/b] ([page="site:professional_support"]click here for paid professional support[/page]).
-The forum is an area where community members can support each other, and it is best to help others as much as you yourself are helped -- this community works best when users work together for mutual benefit.
+[*]The forum is an area where community members can support each other, and it is best to help others as much as you yourself are helped -- this community works best when users work together for mutual benefit.
 
 For members who we see strongly helping the community, for instance a creating an excellent tutorial, contributing a formal user-testing report, running a successful advocacy drive, or releasing a high-quality theme/addon, there is a far higher chance the paid staff will consider investing back with some free support.
 

@@ -58,7 +58,7 @@
 
 [block="Translator saviour"]main_stars[/block]
 
-<h2 class="colrBl">Special mentions for ocProducts staff</h2>
+<h2 class="colrBl">Special mentions for original team</h2>
 
 <div class="cntRow">
 	<p>Over a dozen developers have contributed to Composr CMS in an official capacity. However, much of the early development for ocPortal (the precursor to Composr CMS) was done through donated time from the original development team. Key contributors include:</p>
@@ -73,13 +73,13 @@
 
 			<td class="blk2">
 				<strong>Name :</strong> Chris Graham<br />
-				CEO, ocProducts<br /><br />
-				<a class="link_exempt" target="_blank" title="Chris Graham's Twitter profile {!LINK_NEW_WINDOW}" href="http://twitter.com/occhris"><img src="{$IMG*,icons/24x24/links/twitter}" srcset="{$IMG*,icons/48x48/links/twitter} 2x" alt="" /></a>
+				Founder<br /><br />
+				<a class="link_exempt" target="_blank" title="Chris Graham's Mastadon profile {!LINK_NEW_WINDOW}" href="https://linuxrocks.online/@gamerevolt"></a>
 			</td>
 
 			<td class="blk3">
 				<ul>
-					<li>Original developer of ocPortal, continuing lead developer of Composr CMS</li>
+					<li>Original developer of ocPortal, former lead developer of Composr CMS</li>
 					<li>Masters degree in Computer Science from The University Of Sheffield</li>
 					<li>Undertaken work for over 15 FTSE-100 companies, as well as many small and mid-sized organisations. Includes a number of banks and major brands.</li>
 				</ul>
@@ -93,7 +93,7 @@
 
 			<td class="blk2">
 				<strong>Name :</strong> Robert Goacher<br />
-				Company secretary
+				Founder
 			</td>
 
 			<td class="blk3">
@@ -113,7 +113,7 @@
 
 			<td class="blk2">
 				<strong>Name :</strong> Allen Ellis<br />
-				Design/marketing (former)
+				Founder
 			</td>
 
 			<td class="blk3">
@@ -132,7 +132,7 @@
 
 			<td class="blk2">
 				<strong>Name :</strong> Philip Withnall<br />
-				Development (former)
+				Early developer
 			</td>
 
 			<td class="blk3">
@@ -158,7 +158,7 @@
 		<li>Chris Warburton (former developer for ocProducts, made some key contributions to ocPortal)</li>
 		<li>Jim Davidson (written many tutorials via Arvixe)</li>
 		<li>[url="Arvixe hosting"]http://arvixe.evyy.net/c/302199/279421/3370[/url] (sponsorship of Composr CMS tutorials)</li>
-		<li>All 20 or so former and current developers and managers for ocProducts</li>
+		<li>All 20 or so former developers and managers for ocProducts</li>
 	</ul>
 </div>
 [/semihtml]

@@ -88,9 +88,7 @@
 
 [title="2"]How is Composr developed?[/title]
 
-Composr is a community project, with ocProducts Ltd ensuring a balanced quality product is delivered for free to all users. Most core developers work directly for ocProducts Ltd, which was founded out of passion for the project goals and for Open Source, but external contributors are just as welcome.
-
-Development generally moves forward by incorporating advancements made for commercial Composr projects, and features directly sponsored. ocProducts generally spends more time on client work than is directly funded, in order to implement things in a reusable way so that everyone benefits -- and each new client benefits from all the work done before.
+Composr was originally developed and supported by ocProducts Ltd. It is now a community project, transitioning to a new governance model. For now, the main original founder is sponsoring further development directly.
 
 Before you make requests, it's a good idea to check they aren't already made, and that you are only posting something generic enough to be useful for 15% of users or higher. Be aware that money may be needed in some cases to get traction on things (looks at the stats below to see how much has already been contributed, but why the developers do need to get most future development funded). Ideas are always extremely welcome regardless, even if only for inspiration or to help us all see the path ahead.
 
@@ -130,29 +128,9 @@ Before you make requests, it's a good idea to check they aren't already made, an
 
 [title="2"]Where do the cost estimates come from?[/title]
 
-[hide="If you don't mind some maths, we're happy to reveal the exact costings"][html]<p>The hourly development time is estimated, then cost is calculated at the minimum ocProducts Ltd support cost of 33 GBP/hour.</p>
+[hide="If you don't mind some maths, we're happy to reveal the exact costings"][html]<p>The hourly development time is estimated, then cost is calculated at a support cost of 33 GBP/hour.</p>
 
 <p><strong>So where does this figure come from?</strong></p>
 
-<p>ocProducts is based in the UK, where the average programmer salary is <a target="_blank" href="http://www.itjobswatch.co.uk/jobs/uk/programmer.do">roughly 38,000 GBP/year</a> (17% less than what programmers in the USA are paid, on average). This is higher than UK average salary due to the amount of advanced education and experience required to become good.</p>
-
-<p>It generally is accepted it costs about 130% salary for a company to maintain an employee (the actual salary, plus office costs, additional tax, insurance, etc).</p>
-
-<p>There are about 235 working days per year in the UK (after taking out weekends and holiday entitlements).</p>
-
-<p>That can be brought to about 220 working days after considering the need for regular training (even if that just means reading blogs and books), sick leave, and various other kinds of regular overhead.</p>
-
-<p>There are 8 working hours per day.</p>
-
-<p>There is only about 80% efficiency in working hours when you consider the fixed costs of maintaining Composr and legal costs (which we seek to spread over a few employees), and variable costs such as hiring, accountancy, preparing and delivering work, negotiation, general management, and normal human things like having chats, going to the toilet and having snack breaks.</p>
-
-<p>38,000 &times; 1.3 &divide; 8 &divide; 220 &divide; 0.8</p>
-
-<p>That comes down to 35 GBP per hour (a small loss), and that's for a company not seeking to make a profit to grow or to re-pay early-stage R&amp;D investments with <abbr title="Return On Investment">ROI</abbr>. Fortunately we're in a cheaper part of the UK, so the salaries are below national averages, we are passionate about our work, and that we don't normally operate on this bare-minimum rate for the majority of our business.</p>
-
-<p><strong>Now a short rant&hellip;</strong></p>
-
-<p>Unfortunately we are regularly asked to work for much less than our rates (few people know how it is calculated and how skilled the work is, and it seems expensive when comparing to other things, especially in today's global economy). Very regularly we are asked to work even for free, or people assume we'll have no life and work evenings and weekends. Sometimes we're fine about this, if it's something we're already passionate about, but in most cases, we're already really over-stretched. We're a professional project, not volunteer run &ndash; which is reflected in the quality of Composr.</p>
-
-<p>So I hope it is clear why we have developed quite a tough defensive approach to asking that our rates are met for individual Composr service-requests we receive. It's also hard for us just to make accurate cost estimations for the work we do (we're constantly exposed to risk of not getting paid) and to make sure a flow of work keeps coming in.</p>
+<p>It was originally derived as what ocProducts Ltd would need to draw in to pay its development staff, back in 2004. A lot has changed since then and ocProducts Ltd is no longer the main force behind the Composr CMS product, so actual figures will depend on who is willing to do the work.</p>
 [/html][/hide]
