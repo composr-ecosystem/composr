@@ -855,9 +855,26 @@ function read_composr_cpfs($member_id)
     $_cpfs = cns_get_all_custom_fields_match_member($member_id);
     $cpfs = [];
     foreach ($_cpfs as $cpf_title => $cpf) {
-        if ($cpf_title != do_lang('cns:SMART_TOPIC_NOTIFICATION')) {
-            $cpfs[$cpf_title] = $cpf['RAW'];
+        if ($cpf_title == do_lang('cns:SMART_TOPIC_NOTIFICATION')) {
+            continue;
         }
+
+        if ($cpf['TYPE'] == 'tick') {
+            switch ($cpf['RAW']) {
+                case '1':
+                    $cpfs[$cpf_title] = do_lang('YES');
+                    break;
+                case '0':
+                    $cpfs[$cpf_title] = do_lang('NO');
+                    break;
+                default:
+                    $cpfs[$cpf_title] = do_lang('_UNKNOWN');
+                    break;
+            }
+            continue;
+        }
+
+        $cpfs[$cpf_title] = $cpf['RAW'];
     }
     return $cpfs;
 }
