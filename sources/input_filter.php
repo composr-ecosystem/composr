@@ -45,8 +45,13 @@ function check_input_field_string(string $name, string &$val, ?bool $posted, int
         return;
     }
 
-    if ((($filters & INPUT_FILTER_JS_URLS) != 0) && (preg_match('#^\s*((((j\s*a\s*v\s*a\s*)|(v\s*b\s*))?s\s*c\s*r\s*i\s*p\s*t)|(d\s*a\s*t\s*a))\s*:#i', $val) !== 0)) {
-        log_hack_attack_and_exit('SCRIPT_URL_HACK_2', $val);
+    if (($filters & INPUT_FILTER_JS_URLS) != 0) {
+        if (preg_match('#^\s*(((j\s*a\s*v\s*a\s*)|(v\s*b\s*))?s\s*c\s*r\s*i\s*p\s*t)\s*:#i', $val) !== 0) {
+            log_hack_attack_and_exit('SCRIPT_URL_HACK_2', $val);
+        }
+        if (preg_match('#^\s*(d\s*a\s*t\s*a\s*)\s*:.*,#i', $val) !== 0) {
+            log_hack_attack_and_exit('SCRIPT_URL_HACK_2', $val);
+        }
     }
 
     if ((($filters & INPUT_FILTER_VERY_STRICT) != 0) && (preg_match('#\n|\000|<#mi', $val) !== 0)) {
