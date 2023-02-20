@@ -222,7 +222,7 @@
         }
     };
 
-    var newTopicFormOrigAction;
+    var newTopicFormOrigAction = null;
     $cms.functions.newTopicFormChangeActionIfAddingPoll = function newTopicFormChangeActionIfAddingPoll(options) {
         var addPollCheckbox = (document.getElementsByName('add_poll') || [])[0],
             addPollUrl = strVal(options.addPollUrl);
