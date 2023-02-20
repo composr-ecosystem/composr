@@ -44,7 +44,7 @@
 				</div>
 			{+END}{+END}
 			<div class="site_icon">
-				<a class="buttons__report button_screen_item" href="{$PAGE_LINK*,site:contact:report_community_site:site_name={FIELD_0_PLAIN}}" title="Report {FIELD_0_PLAIN*}"><span>Report</span></a>
+				<a class="buttons__report button_screen_item" href="{$PAGE_LINK*,forum:}" title="Report {FIELD_0_PLAIN*}"><span>Report on forum</span></a>
 			</div>
 
 			{+START,IF,{$HAS_PRIVILEGE,rate}}{+START,IF,{$OR,{$IS_GUEST},{$NEQ,{SUBMITTER},{$MEMBER}}}}

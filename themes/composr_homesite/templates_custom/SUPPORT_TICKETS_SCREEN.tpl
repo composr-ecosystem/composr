@@ -1,5 +1,11 @@
 {TITLE}
 
+<p>
+	Support and development services are no longer available from ocProducts Ltd as we are winding down operations and the core developers are transitioning Composr's management and development to a new model.
+	For support options please engage with the community on the <a href="{$PAGE_LINK*,forumview:}">forum</a> and in the <a href="{$PAGE_LINK*,:partners}">partner directory</a>.
+</p>
+
+<!--
 {+START,IF_NON_EMPTY,{MESSAGE}}
 	<p>{MESSAGE}</p>
 {+END}
@@ -71,4 +77,4 @@
 <p class="buttons_group">
 	<a class="button_screen buttons__add_ticket" rel="add" href="{$PAGE_LINK*,:contact}"><span>{!ADD_TICKET}</span></a>
 </p>
-
+-->
