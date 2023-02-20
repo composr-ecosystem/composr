@@ -1,3 +1,23 @@
+Disallow: /
+
+User-agent: Barkrowler
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: Linespider
+Disallow: /
+
+User-agent: serpstatbot
+Disallow: /
+
+User-agent: Yeti
+Disallow: /
+
+User-agent: ZoominfoBot
+Disallow: /
+
 User-agent: MJ12bot
 Disallow: /
 
