@@ -415,7 +415,7 @@
         /**
          * Bind Plupload to the specified browse button (`attachmentBrowseButton`)
          * @param _postingFieldName
-         * @param attachmentBrowseButton
+         * @param attachmentBrowseButton - Must be the DOM of the button and not simply the id
          */
         function rebuildAttachmentButtonForNext(attachmentBrowseButton) {
             if (attachmentBrowseButton === undefined) {
