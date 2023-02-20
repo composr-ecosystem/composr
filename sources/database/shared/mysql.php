@@ -140,10 +140,24 @@ class Database_super_mysql
             require_code('database_search');
             $stopwords = get_stopwords_list();
         }
-        if (isset($stopwords[trim(strtolower($content), '"')])) {
+        $words = preg_split('#\s+#', strtolower($content));
+        $all_stopwords = true;
+        foreach ($words as $word) {
+            if (trim($word) != '') {
+                $word = trim($word, $boolean ? '"+-' : '"');
+                if (!isset($stopwords[$word])) {
+                    $all_stopwords = false;
+                }
+            }
+        }
+        if ($all_stopwords) {
             // This is an imperfect solution for searching for a stop-word
             // It will not cover the case where the stop-word is within the wider text. But we can't handle that case efficiently anyway
-            return db_string_equal_to('?', trim($content, '"'));
+            $_content = trim($content, $boolean ? '"+-' : '"');
+            if (cms_mb_strlen($_content) > 8) {
+                return '? LIKE \'' . db_encode_like($_content) . '%\'';
+            }
+            return db_string_equal_to('?', $_content);
         }
 
         if (!$boolean) {

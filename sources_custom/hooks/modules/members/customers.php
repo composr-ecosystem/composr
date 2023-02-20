@@ -32,7 +32,7 @@ class Hook_members_customers
 
         require_lang('customers');
         return array(
-            array('views', do_lang_tempcode('GIVE_CREDITS'), build_url(array('page' => 'admin_ecommerce_logs', 'type' => 'trigger', 'member_id' => $member_id), get_module_zone('admin_ecommerce')), 'menu/_generic_spare/1'),
+            array('views', do_lang_tempcode('GIVE_CREDITS'), build_url(array('page' => 'admin_ecommerce_logs', 'type' => 'trigger', 'member_id' => $member_id), get_module_zone('admin_ecommerce_logs')), 'menu/_generic_spare/1'),
             array('views', do_lang_tempcode('CHARGE_CUSTOMER'), build_url(array('page' => 'admin_customers', 'type' => 'charge', 'username' => $GLOBALS['FORUM_DRIVER']->get_username($member_id)), get_module_zone('admin_customers')), 'menu/_generic_spare/2'),
         );
     }

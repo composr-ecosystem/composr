@@ -138,7 +138,7 @@ class Module_admin_invoices
     {
         require_code('ecommerce');
 
-        $type = get_param_string('type', 'add');
+        $type = get_param_string('type', 'browse');
 
         if ($type == 'browse') {
             return $this->browse();

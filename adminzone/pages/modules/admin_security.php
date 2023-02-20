@@ -204,7 +204,7 @@ class Module_admin_security
         $fields = new Tempcode();
         foreach ($rows as $row) {
             $time = get_timezoned_date($row['date_and_time']);
-            $lookup_url = build_url(array('page' => 'admin_lookup', 'param' => $row['ip']), '_SELF');
+            $lookup_url = build_url(array('page' => 'admin_lookup', 'param' => $row['ip']), get_module_zone('admin_lookup'));
             $fields->attach(results_entry(array($row['failed_account'], $time, hyperlink($lookup_url, $row['ip'], false, true)), true));
         }
         $failed_logins = results_table(do_lang_tempcode('FAILED_LOGINS'), $start, 'failed_start', $max, 'failed_max', $max_rows, $fields_title, $fields, $sortables, $_sortable, $sort_order, 'failed_sort', new Tempcode());
@@ -265,8 +265,8 @@ class Module_admin_security
         $row = $this->row;
         $time = $this->time;
 
-        $lookup_url = build_url(array('page' => 'admin_lookup', 'param' => $row['ip']), '_SELF');
-        $member_url = build_url(array('page' => 'admin_lookup', 'param' => $row['member_id']), '_SELF');
+        $lookup_url = build_url(array('page' => 'admin_lookup', 'param' => $row['ip']), get_module_zone('admin_lookup'));
+        $member_url = build_url(array('page' => 'admin_lookup', 'param' => $row['member_id']), get_module_zone('admin_lookup'));
         $reason = do_lang($row['reason'], $row['reason_param_a'], $row['reason_param_b']);
 
         $post = with_whitespace(unixify_line_format($row['data_post']));

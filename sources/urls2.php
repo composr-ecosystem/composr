@@ -739,15 +739,11 @@ function suggest_new_idmoniker_for($page, $type, $id, $zone, $moniker_src, $is_n
     }
 
     if ($moniker === null) {
-        if (is_numeric($moniker_src)) {
-            $moniker = $id; // No need for a proper moniker, as it would just be a number (which is not a valid moniker)
-        } else {
-            $scope = _give_moniker_scope($page, $type, $id, $zone, '');
-            $moniker = $scope . _choose_moniker($page, $type, $id, $moniker_src, null, $scope);
+        $scope = _give_moniker_scope($page, $type, $id, $zone, '');
+        $moniker = $scope . _choose_moniker($page, $type, $id, $moniker_src, null, $scope);
 
-            if (($page == 'news') && ($type == 'view') && (get_value('google_news_urls') === '1')) {
-                $moniker .= '-' . str_pad($id, 3, '0', STR_PAD_LEFT);
-            }
+        if (($page == 'news') && ($type == 'view') && (get_value('google_news_urls') === '1')) {
+            $moniker .= '-' . str_pad($id, 3, '0', STR_PAD_LEFT);
         }
     }
 
@@ -800,9 +796,6 @@ function _choose_moniker($page, $type, $id, $moniker_src, $no_exists_check_for =
     // Check it does not already exist
     $moniker_origin = $moniker;
     $next_num = 1;
-    if (is_numeric($moniker)) {
-        $moniker .= '-1';
-    }
     $test = mixed();
     do {
         if (!is_null($no_exists_check_for)) {

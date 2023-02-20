@@ -70,9 +70,9 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
                 'i_ngram',
                 'i_ac',
                 'i_add_time',
-                'i_poster_id',
+                /*Disabled in v10 due to index key limit 'i_poster_id',
                 'i_starter',
-                'i_for',
+                'i_for',*/
                 'i_occurrence_rate', // For sorting
             ));
         }

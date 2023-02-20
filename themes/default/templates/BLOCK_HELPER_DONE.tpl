@@ -11,6 +11,15 @@
 	element=target_window.document.getElementById('{FIELD_NAME;/}');
 	if (!element)
 	{
+		var overlay=target_window.document.getElementById('overlay_iframe');
+		if (overlay)
+		{
+			target_window=overlay.contentWindow;
+			element=target_window.document.getElementById('{FIELD_NAME;/}');
+		}
+	}
+	if (!element)
+	{
 		target_window=target_window.frames['iframe_page'];
 		element=target_window.document.getElementById('{FIELD_NAME;/}');
 	}

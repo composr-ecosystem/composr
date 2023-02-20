@@ -104,14 +104,14 @@ class Block_main_gallery_embed
         }
         if ($map['select'] != '*') {
             require_code('selectcode');
-            $where_sup .= ' AND ' . selectcode_to_sqlfragment($map['select'], 'id');
+            $where_sup .= ' AND ' . selectcode_to_sqlfragment($map['select'], 'r.id');
         }
         if (!array_key_exists('video_select', $map)) {
             $map['video_select'] = '*';
         }
         if ($map['video_select'] != '*') {
             require_code('selectcode');
-            $where_sup .= ' AND ' . selectcode_to_sqlfragment($map['video_select'], 'id');
+            $where_sup .= ' AND ' . selectcode_to_sqlfragment($map['video_select'], 'r.id');
         }
 
         // Day filtering
@@ -124,7 +124,7 @@ class Block_main_gallery_embed
 
         // Sorting
         $sort = array_key_exists('sort', $map) ? $map['sort'] : 'add_date DESC';
-        if (($sort != 'fixed_random ASC') && ($sort != 'average_rating DESC') && ($sort != 'average_rating ASC') && ($sort != 'compound_rating DESC') && ($sort != 'compound_rating ASC') && ($sort != 'add_date DESC') && ($sort != 'add_date ASC') && ($sort != 'edit_date DESC') && ($sort != 'edit_date ASC') && ($sort != 'url DESC') && ($sort != 'url ASC')) {
+        if (($sort != 'title ASC') && ($sort != 'title DESC') && ($sort != 'fixed_random ASC') && ($sort != 'average_rating DESC') && ($sort != 'average_rating ASC') && ($sort != 'compound_rating DESC') && ($sort != 'compound_rating ASC') && ($sort != 'add_date DESC') && ($sort != 'add_date ASC') && ($sort != 'edit_date DESC') && ($sort != 'edit_date ASC') && ($sort != 'url DESC') && ($sort != 'url ASC')) {
             $sort = 'add_date DESC';
         }
         list($_sort, $_dir) = explode(' ', $sort, 2);

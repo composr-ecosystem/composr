@@ -1027,6 +1027,8 @@ function email_bugnote_add( $p_bugnote_id, $p_files = array(), $p_exclude_user_i
 
 		$t_contents = $t_message . "\n";
 
+		email_add_mass_mail_text( $t_contents );
+
 		email_store( $t_user_email, $t_subject, $t_contents );
 
 		log_event( LOG_EMAIL_VERBOSE, 'queued bugnote email for note ~' . $p_bugnote_id .
@@ -1638,8 +1640,7 @@ function email_bug_info_to_one_user( array $p_visible_bug_data, $p_message_id, $
 		$t_mail_headers['In-Reply-To'] = $t_message_md5;
 	}
 
-	// Composr - add "Do not reply" notice
-	$t_message = lang_get('cms_do_not_reply') . "\n\n\n" . $t_message;
+	email_add_mass_mail_text( $t_message );
 
 	# send mail
 	email_store( $t_user_email, $t_subject, $t_message, $t_mail_headers );
@@ -2040,5 +2041,25 @@ function email_get_actions() {
 	}
 
 	return $t_actions;
+}
+
+/**
+ * Add header and footer around email with standard messages.
+ *
+ * @param string $t_message Bug message
+ */
+function email_add_mass_mail_text( &$t_message )
+{
+	// Composr...
+
+	$pref_url = config_get_global( 'path' ) . 'account_prefs_page.php';
+	$header = sprintf( lang_get('cms_mass_mail_header'), $pref_url );
+	$footer = sprintf( lang_get('cms_mass_mail_footer'), $pref_url );
+	if ($header != '') {
+		$t_message = $header . $t_message;
+	}
+	if ($footer != '') {
+		$t_message .= $footer;
+	}
 }
 

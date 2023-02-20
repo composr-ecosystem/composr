@@ -73,10 +73,10 @@ class Hook_search_cns_posts extends FieldsSearchHook
                 'i_ac',
                 'i_add_time',
                 'i_forum_id',
-                'i_poster_id',
+                /*Disabled in v10 due to index key limit 'i_poster_id',
                 'i_open',
                 'i_pinned',
-                'i_starter',
+                'i_starter',*/
                 'i_occurrence_rate', // For sorting
             ));
         }

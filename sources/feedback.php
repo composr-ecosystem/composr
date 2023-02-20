@@ -792,7 +792,7 @@ function actualise_post_comment($allow_comments, $content_type, $content_id, $co
     }
 
     if (is_null($post)) {
-        $post = post_param_string('post', null);
+        $post = post_param_string('post', '');
         if (($post == do_lang('POST_WARNING')) || ($post == do_lang('THREADED_REPLY_NOTICE', do_lang('POST_WARNING')))) {
             $post = '';
         }

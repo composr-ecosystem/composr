@@ -177,7 +177,7 @@ function selectcode_to_sqlfragment($filter, $field_name, $parent_spec__table_nam
                 $out_or .= ' OR ';
             }
             $out_or .= $field_name . '>=' . strval(intval($matches[1]));
-        } elseif (preg_match('#^(.+)(\#|\*|>)$#', $token, $matches) != 0) { // e.g. '3#' or '3*' or '3>'
+        } elseif (preg_match('#^(.+)(\#|\*|>)$#', $token, $matches) != 0 && $category_field_name !== null) { // e.g. '3#' or '3*' or '3>'
             if (($matches[2] == '#') || ($parent_spec__parent_name === null)) {
                 if ($out_or != '') {
                     $out_or .= ' OR ';
@@ -209,7 +209,7 @@ function selectcode_to_sqlfragment($filter, $field_name, $parent_spec__table_nam
                     }
                 }
             }
-        } elseif (preg_match('#^(.+)\~$#', $token, $matches) != 0) { // e.g. '3~'
+        } elseif (preg_match('#^(.+)\~$#', $token, $matches) != 0 && $category_field_name !== null) { // e.g. '3~'
             if ($parent_spec__parent_name === null) {
                 if ($out_and != '') {
                     $out_and .= ' AND ';
@@ -351,7 +351,7 @@ function _selectcode_to_generic($filter, $field_name, $table_name, $ids_and_pare
                     }
                 }
             }
-        } elseif (preg_match('#^(.+)(\#|\*|>)$#', $token, $matches) != 0) { // e.g. '3#' or '3*' or '3>'
+        } elseif (preg_match('#^(.+)(\#|\*|>)$#', $token, $matches) != 0 && $category_field_name !== null) { // e.g. '3#' or '3*' or '3>'
             _ensure_loaded__ids_and_parents($field_name, $table_name, $ids_and_parents, $ids_and_parents_callback, $category_field_name, $db);
 
             if ($matches[2] == '#') {
@@ -377,7 +377,7 @@ function _selectcode_to_generic($filter, $field_name, $table_name, $ids_and_pare
                     }
                 }
             }
-        } elseif (preg_match('#^(.+)\~$#', $token, $matches) != 0) { // e.g. '3~'
+        } elseif (preg_match('#^(.+)\~$#', $token, $matches) != 0 && $category_field_name !== null) { // e.g. '3~'
             _ensure_loaded__ids_and_parents($field_name, $table_name, $ids_and_parents, $ids_and_parents_callback, $category_field_name, $db);
 
             $subtree = _selectcode_subtree_fetch($matches[1], $parent_spec__table_name, $parent_spec__parent_name, $parent_spec__field_name, $numeric_category_set_ids, $db, $cached_mappings);

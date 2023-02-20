@@ -375,7 +375,9 @@ function upgrade_script()
                                     $addon_file_path = $upgrade_file['path'];
                                     if (strpos($addon_data, '\'' . addslashes($addon_file_path) . '\'') !== false) {
                                         $found = $addon_name;
-                                        break;
+                                        if (file_exists(get_file_base() . '/sources/hooks/systems/addon_registry/' . $found . '.php')) {
+                                            break;
+                                        } // otherwise keep looking for an addon we have installed containing this file
                                     }
                                 }
                             }

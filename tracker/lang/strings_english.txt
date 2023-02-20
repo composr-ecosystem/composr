@@ -264,7 +264,7 @@ $s_project_view_state_enum_string = '10:public,50:private';
 $s_view_state_enum_string = '10:public,50:private';
 
 $s_priority_enum_string = '10:none,20:low,30:normal,40:high,50:urgent,60:immediate';
-$s_severity_enum_string = '10:feature,20:trivial,30:text,40:tweak,50:minor,60:major,70:crash,80:block';
+$s_severity_enum_string = '10:Feature-request,20:Trivial-bug,50:Minor-bug,60:Major-bug,95:Security-hole';
 $s_reproducibility_enum_string = '10:always,30:sometimes,50:random,70:have not tried,90:unable to reproduce,100:N/A';
 $s_status_enum_string = '10:new,20:feedback,30:acknowledged,40:confirmed,50:assigned,80:resolved,90:closed';
 $s_resolution_enum_string = '10:open,20:fixed,30:reopened,40:unable to reproduce,50:not fixable,60:duplicate,70:no change required,80:suspended,90:won\'t fix';
@@ -1784,7 +1784,8 @@ $s_cms_login_instruct = 'Login using your regular %1$s username and password.';
 $s_cms_hint_message = '<strong>Hint</strong>: To find bugs with no risks attach, do a search with the following tag filter&hellip; <samp>-Existing tags,-Breaks themes,-Breaks translations significantly,-Changes core website behaviour,-Core rearchitecting,-Creates Comcode incompatibility,-Database change,-Deprecates functionality,-General incompatibility,-Large database change,-Major rearchitecting,-Risk of breaking upgrade bootstraper,-Type: Cross-cutting feature</samp>';
 $s_cms_return_instruct = '<a class="back-to-login-link pull-left" href="%1$s">Return to the main %2$s website</a>.';
 $s_cms_not_myself = 'Not myself';
-$s_cms_do_not_reply = 'THIS IS AN AUTOMATED E-MAIL. PLEASE DO NOT REPLY DIRECTLY. Reply from within the tracker itself.';
+$s_cms_mass_mail_header = "THIS IS AN AUTOMATED E-MAIL. PLEASE DO NOT REPLY DIRECTLY. Reply from within the tracker itself.\n\n\n";
+$s_cms_mass_mail_footer = "\n\n------------------\n\nTo unsubscribe from e-mails like these, uncheck your e-mail notifications in your account preferences (%1\$s)";
 
 // Composr - overridden strings
 $s_status_enum_string = '10:non-assigned,20:feedback,30:acknowledged,40:confirmed,50:assigned,80:resolved,90:closed';

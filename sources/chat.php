@@ -422,7 +422,7 @@ function _chat_messages_script_ajax($room_id, $backlog = false, $message_id = nu
         }
         $welcome = ((array_key_exists(get_member(), get_chatters_in_room($room_id))) || (!$backlog) || (get_param_integer('no_reenter_message', 0) == 1)) ? null : $room_row['c_welcome'];
     } else {
-        $room_check = $GLOBALS['SITE_DB']->query('SELECT id,is_im,c_welcome,allow_list_groups,disallow_list_groups,allow_list,disallow_list,room_owner FROM ' . get_table_prefix() . 'chat_rooms WHERE is_im=1 AND allow_list LIKE \'' . db_encode_like('%' . strval(get_member()) . '%') . '\'');
+        $room_check = $GLOBALS['SITE_DB']->query('SELECT id,is_im,c_welcome,allow_list_groups,disallow_list_groups,allow_list,disallow_list,room_owner FROM ' . get_table_prefix() . 'chat_rooms WHERE ' . sql_members_in_im_conversation(array(get_member())));
 
         $welcome = null;
     }
@@ -471,9 +471,9 @@ function _chat_messages_script_ajax($room_id, $backlog = false, $message_id = nu
 
         if ((addon_installed('actionlog')) && (has_actual_page_access(get_member(), 'admin_actionlog')) && (preg_match('#[:\.]#', $_message['ip_address']) != 0)) {
             if (is_guest($_message['member_id'])) {
-                $ban_url = build_url(array('page' => 'admin_ip_ban', 'type' => 'toggle_ip_ban', 'id' => $_message['ip_address']), get_module_zone('admin_actionlog'));
+                $ban_url = build_url(array('page' => 'admin_ip_ban', 'type' => 'toggle_ip_ban', 'id' => $_message['ip_address']), get_module_zone('admin_ip_ban'));
             } else {
-                $ban_url = build_url(array('page' => 'admin_ip_ban', 'type' => 'toggle_submitter_ban', 'id' => $_message['member_id']), get_module_zone('admin_actionlog'));
+                $ban_url = build_url(array('page' => 'admin_ip_ban', 'type' => 'toggle_submitter_ban', 'id' => $_message['member_id']), get_module_zone('admin_ip_ban'));
             }
         } else {
             $ban_url = new Tempcode();
@@ -523,7 +523,7 @@ function _chat_messages_script_ajax($room_id, $backlog = false, $message_id = nu
     // IM events and invitations, but only for the lobby IM interface
     $invitations_output = '';
     if ($room_id < 0) {
-        $room_check = list_to_map('id', $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'chat_rooms WHERE is_im=1 AND allow_list LIKE \'' . db_encode_like('%' . strval(get_member()) . '%') . '\''));
+        $room_check = list_to_map('id', $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'chat_rooms WHERE ' . sql_members_in_im_conversation(array(get_member()))));
         foreach ($room_check as $room) {
             if (check_chatroom_access($room, true, null, true)) {
                 if ((($room['allow_list'] == strval(get_member()) . ',' . strval(get_member())/*Opened room with self? Weird*/) || ($room['allow_list'] == strval(get_member()))) && (is_null($event_id)/*Only on fresh start, not repeat AJAX requests*/)) { // If it's just you in the room, close that room down
@@ -1621,4 +1621,19 @@ function get_chat_sound_tpl()
     require_code('chat_sounds');
     $sound_effects = get_effect_settings(true, null, true);
     return do_template('CHAT_SOUND', array('_GUID' => '102c9574a2563143683970595df74011', 'SOUND_EFFECTS' => $sound_effects));
+}
+
+/**
+ * Get SQL for finding an IM conversation between certain members.
+ *
+ * @param array $member_ids The member IDs
+ * @return string SQL
+ */
+function sql_members_in_im_conversation($member_ids)
+{
+    $sql = 'is_im=1';
+    foreach ($member_ids as $member_id) {
+        $sql .= ' AND ' . db_function('CONCAT', array('\',\'', 'allow_list', '\',\'')) . ' LIKE \'' . db_encode_like('%,' . strval($member_id) . ',%') . '\'';
+    }
+    return $sql;
 }

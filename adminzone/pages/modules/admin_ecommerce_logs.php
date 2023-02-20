@@ -578,28 +578,18 @@ class Module_admin_ecommerce_logs
 
         $transactions = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'transactions WHERE t_time<' . strval($to) . ' AND ' . db_string_equal_to('t_status', 'Completed') . ' ORDER BY t_time');
         foreach ($transactions as $transaction) {
-            if ($transaction['t_time'] > $from) {
-                $types['TRANS']['AMOUNT'] += get_transaction_fee(floatval($transaction['t_amount']), $transaction['t_via']);
-            }
-
-            if ($unpaid_invoices_count) {
-                foreach ($products as $type_code => $details) {
-                    if (($transaction['t_type_code'] == $type_code) && ($details[0] == PRODUCT_INVOICE)) {
-                        continue 2;
-                    }
-                }
-            }
-
             $type_code = $transaction['t_type_code'];
 
             $transaction['t_amount'] = currency_convert(floatval($transaction['t_amount']), $transaction['t_currency'], get_option('currency'));
 
-            $types['CLOSING']['AMOUNT'] += floatval($transaction['t_amount']);
+            $types['CLOSING']['AMOUNT'] += floatval($transaction['t_amount']) - get_transaction_fee(floatval($transaction['t_amount']), $transaction['t_via']);
 
             if ($transaction['t_time'] < $from) {
                 $types['OPENING']['AMOUNT'] += floatval($transaction['t_amount']) - get_transaction_fee(floatval($transaction['t_amount']), $transaction['t_via']);
                 continue;
             }
+
+            $types['TRANS']['AMOUNT'] -= get_transaction_fee(floatval($transaction['t_amount']), $transaction['t_via']);
 
             if (($transaction['t_type_code'] == 'OTHER') && (floatval($transaction['t_amount']) < 0.0)) {
                 $types['COST']['AMOUNT'] += floatval($transaction['t_amount']);
