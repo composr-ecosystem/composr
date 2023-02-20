@@ -1,4 +1,7 @@
 {$REQUIRE_JAVASCRIPT,core_menus}
+{$REQUIRE_CSS,widget_select2}
+{$REQUIRE_JAVASCRIPT,jquery}
+{$REQUIRE_JAVASCRIPT,select2}
 
 <div data-tpl="menuEditorScreen" data-tpl-params="{+START,PARAMS_JSON,ALL_MENUS,MENU_TYPE}{_*}{+END}">
 	{TITLE}

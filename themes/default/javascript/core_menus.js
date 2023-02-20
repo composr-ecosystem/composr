@@ -109,6 +109,10 @@
         $dom.$('#caption_long').addEventListener('dblclick', doubleClick);
         $dom.$('#page_only').addEventListener('dblclick', doubleClick);
 
+        if (window.jQuery && (window.jQuery.fn.select2 != null)) {
+            window.jQuery('#branch_type, #include_sitemap').select2(); // NB: #theme_img_code will also be select2, but that is handled via formScreenInputList
+        }
+
         window.currentSelection = '';
         $cms.requireJavascript('tree_list').then(function () {
             window.sitemap = $cms.ui.createTreeList('tree-list', '{$FIND_SCRIPT_NOHTTP;,sitemap}?get_perms=0' + $cms.keep() + '&start_links=1', null, '', false, null, false, true);
