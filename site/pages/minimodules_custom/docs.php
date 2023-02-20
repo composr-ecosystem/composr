@@ -27,6 +27,10 @@ function handle_confluence_page_error_result($id, $result, $http_message, $http_
     warn_exit($http_message_b);
 }
 
+// We reference remote media, which Confluence often moves around - so we cannot trust static caching to not create broken images sporadically
+global $INVALIDATED_FAST_SPIDER_CACHE;
+$INVALIDATED_FAST_SPIDER_CACHE = true;
+
 i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
 $error_msg = new Tempcode();
