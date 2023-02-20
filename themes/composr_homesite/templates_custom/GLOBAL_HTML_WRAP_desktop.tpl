@@ -92,17 +92,21 @@
 
 			<div class="screenInner">
 				{+START,IF,{$IN_STR,{$ZONE},docs}}
+					<!-- Disabled affiliate
 					<div style="text-align: center; margin-bottom: 5px;">
 						<div id="amzn-assoc-ad-b42f4d41-65e0-4af7-b4a8-d8352681f987"></div><script async src="//z-na.amazon-adsystem.com/widgets/onejs?MarketPlace=US&adInstanceId=b42f4d41-65e0-4af7-b4a8-d8352681f987"></script>
 					</div>
+					-->
 				{+END}
 
 				{MIDDLE}
 
 				{+START,IF,{$IN_STR,{$ZONE},docs}}
+					<!-- Disabled affiliate
 					<div style="text-align: center; margin-top: 5px;">
 						<div id="amzn-assoc-ad-b42f4d41-65e0-4af7-b4a8-d8352681f987"></div><script async src="//z-na.amazon-adsystem.com/widgets/onejs?MarketPlace=US&adInstanceId=b42f4d41-65e0-4af7-b4a8-d8352681f987"></script>
 					</div>
+					-->
 				{+END}
 			</div>
 
