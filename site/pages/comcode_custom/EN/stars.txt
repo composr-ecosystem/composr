@@ -74,7 +74,7 @@
 			<td class="blk2">
 				<strong>Name :</strong> Chris Graham<br />
 				Founder<br /><br />
-				<a class="link_exempt" target="_blank" title="Chris Graham's Mastadon profile {!LINK_NEW_WINDOW}" href="https://linuxrocks.online/@gamerevolt"></a>
+				<a class="link_exempt" target="_blank" title="Chris Graham's Mastadon profile {!LINK_NEW_WINDOW}" href="https://linuxrocks.online/@gamerevolt">Mastadon</a>
 			</td>
 
 			<td class="blk3">
