@@ -868,7 +868,7 @@ function read_composr_cpfs($member_id)
                     $cpfs[$cpf_title] = do_lang('NO');
                     break;
                 default:
-                    $cpfs[$cpf_title] = do_lang('_UNKNOWN');
+                    $cpfs[$cpf_title] = do_lang('NO');
                     break;
             }
             continue;
