@@ -1294,7 +1294,7 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
         $vm_subject = do_lang('VALIDATED_MEMBER_SUBJECT', get_site_name(), null, get_lang($member_id));
         $vm_body = do_lang('MEMBER_VALIDATED', get_site_name(), $old_username, $login_url, get_lang($member_id));
 
-        // Necessary to use dispatch_email in case the member was locked out of their account
+        // Necessary to use dispatch_mail in case the member was locked out of their account
         dispatch_mail($vm_subject, $vm_body, [$email_address], $old_username, '', '', ['require_recipient_valid_since' => $join_time]);
 
         $current_username = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
