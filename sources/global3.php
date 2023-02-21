@@ -4311,6 +4311,10 @@ function disable_smart_decaching_temporarily()
 function has_interesting_post_fields() : bool
 {
     foreach (array_keys($_POST) as $field_name) {
+        if (!is_string($field_name)) {
+            $field_name = strval($field_name);
+        }
+
         if (!is_control_field($field_name, false, true)) {
             return true;
         }

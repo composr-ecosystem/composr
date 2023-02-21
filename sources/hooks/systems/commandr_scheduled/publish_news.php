@@ -79,6 +79,8 @@ class Hook_commandr_scheduled_publish_news
             }
         }
 
+        erase_static_cache();
+
         return ['', '', do_lang('SUCCESS'), ''];
     }
 }
