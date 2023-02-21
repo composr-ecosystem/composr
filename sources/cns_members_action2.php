@@ -1376,6 +1376,8 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
     unset($GLOBALS['MEMBER_CACHE_FIELD_MAPPINGS'][$member_id]);
     unset($GLOBALS['TIMEZONE_MEMBER_CACHE'][$member_id]);
     unset($GLOBALS['USER_NAME_CACHE'][$member_id]);
+    unset($GLOBALS['USERS_GROUPS_CACHE'][$member_id]);
+    unset($GLOBALS['GROUP_MEMBERS_CACHE'][$member_id]);
 
     if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
         require_code('resource_fs');
