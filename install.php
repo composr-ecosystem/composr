@@ -2262,7 +2262,6 @@ function step_5_core_2() : object
         'meta_description' => 'LONG_TRANS',
     ]);
     $GLOBALS['SITE_DB']->create_index('seo_meta', 'alt_key', ['meta_for_type', 'meta_for_id']);
-    $GLOBALS['SITE_DB']->create_index('seo_meta', 'ftjoin_dmeta_description', ['meta_description']);
 
     $GLOBALS['SITE_DB']->drop_table_if_exists('seo_meta_keywords');
     $GLOBALS['SITE_DB']->create_table('seo_meta_keywords', [
