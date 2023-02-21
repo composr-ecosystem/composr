@@ -47,6 +47,11 @@ table.bubble-bar-chart {
 	width: 100%;
 }
 
+table.bubble-bar-chart th.full-width-label {
+	padding-top: 5px;
+	text-align: center;
+}
+
 table.bubble-bar-chart thead th {
 	padding: 0 20px 6px 20px;
 }

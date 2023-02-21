@@ -31,8 +31,9 @@ $show_data_labels = !isset($map['show_data_labels']) ? true : ($map['show_data_l
 $horizontal = !isset($map['horizontal']) ? false : ($map['horizontal'] == '1');
 $stacked = !isset($map['stacked']) ? true : ($map['stacked'] == '1');
 $clamp_y_axis = !isset($map['clamp_y_axis']) ? false : intval($map['clamp_y_axis']);
+$logarithmic = !isset($map['logarithmic']) ? false : ($map['logarithmic'] == '1');
 
-$color_pool = empty($map['color_pool']) ? [] : explode(',', $map['color_pool']);
+$color_pool = @cms_empty_safe($map['color_pool']) ? [] : _parse_color_pool_string($map['color_pool']);
 
 $file = empty($map['file']) ? 'uploads/website_specific/graph_test/stacked_bar_chart.csv' : $map['file'];
 
@@ -44,9 +45,15 @@ $num_datasets = count($header) - 1;
 
 $sheet_data = [];
 while (($line = $sheet_reader->read_row()) !== false) {
-    if (implode('', $line) != '') {
-        $sheet_data[] = $line;
+    if (implode('', $line) == '') {
+        continue;
     }
+
+    if (substr($line[0], 0, 1) == '#') {
+        continue; // Comment line
+    }
+
+    $sheet_data[] = $line;
 }
 
 $labels = [];
@@ -70,7 +77,7 @@ for ($i = 0; $i < $num_datasets; $i++) {
 }
 $sheet_reader->close();
 
-$options = ['begin_at_zero' => $begin_at_zero, 'show_data_labels' => $show_data_labels, 'horizontal' => $horizontal, 'stacked' => $stacked, 'clamp_y_axis' => $clamp_y_axis];
+$options = ['begin_at_zero' => $begin_at_zero, 'show_data_labels' => $show_data_labels, 'horizontal' => $horizontal, 'stacked' => $stacked, 'clamp_y_axis' => $clamp_y_axis, 'logarithmic' => $logarithmic];
 if (!empty($map['id'])) {
     $options['id'] = $map['id'];
 }

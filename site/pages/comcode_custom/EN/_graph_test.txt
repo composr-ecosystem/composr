@@ -13,7 +13,3 @@
 {$,[block file="uploads/website_specific/graph_test/pins_on_map.csv"]pins_on_map[/block]}
 
 {$,[block file="uploads/website_specific/graph_test/countries_on_map.csv"]countries_on_map[/block]}
-
-{$,[block economic_zones="1"]pitr_world_map[/block]}
-
-{$,[block]pitr_world_map[/block]}
