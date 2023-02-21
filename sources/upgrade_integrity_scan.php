@@ -638,14 +638,14 @@ function upgrader__integrity_scan_screen() : string
         if (strpos($val, ':') !== false) {
             $bits = explode(':', $val);
 
-            if (!is_file(get_file_base() . '/' . $bits[1])) {
+            if (!is_file(get_file_base() . '/' . base64_decode($bits[1]))) {
                 continue; // Maybe user pressed refresh
             }
 
             if ($bits[0] == 'quarantine') {
                 afm_delete_file('_old/' . base64_decode($bits[1])); // In case target already exists
                 afm_make_directory(dirname('_old/' . base64_decode($bits[1])), false, true);
-                afm_move($bits[1], '_old/' . base64_decode($bits[1]));
+                afm_move(base64_decode($bits[1]), '_old/' . base64_decode($bits[1]));
             } elseif ($bits[0] == 'move') {
                 afm_delete_file(base64_decode($bits[2])); // In case target (older version) already exists
                 afm_move(base64_decode($bits[1]), base64_decode($bits[2]));
