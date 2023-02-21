@@ -73,6 +73,9 @@ function disable_content_translation()
 
     reload_lang_fields(true);
 
+    global $HAS_MULTI_LANG_CONTENT;
+    $HAS_MULTI_LANG_CONTENT = false;
+
     $db = $GLOBALS['SITE_DB'];
 
     $type_remap = $db->driver->get_type_remap(true);
@@ -128,9 +131,6 @@ function disable_content_translation()
         reload_lang_fields(true, $field['m_table']);
     }
 
-    global $HAS_MULTI_LANG_CONTENT;
-    $HAS_MULTI_LANG_CONTENT = false;
-
     // Empty translate table
     $GLOBALS['SITE_DB']->query_delete('translate');
 
@@ -157,6 +157,9 @@ function enable_content_translation()
     cms_disable_time_limit();
 
     reload_lang_fields(true);
+
+    global $HAS_MULTI_LANG_CONTENT;
+    $HAS_MULTI_LANG_CONTENT = true;
 
     $db = $GLOBALS['SITE_DB'];
 
@@ -228,9 +231,6 @@ function enable_content_translation()
 
         reload_lang_fields(true, $field['m_table']);
     }
-
-    global $HAS_MULTI_LANG_CONTENT;
-    $HAS_MULTI_LANG_CONTENT = true;
 
     _update_base_config_for_content_translation(true);
 
