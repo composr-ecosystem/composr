@@ -64,6 +64,9 @@
 					{+START,IF_PASSED_AND_TRUE,STACKED}
 						stacked: true,
 					{+END}
+					{+START,IF,{$AND,{HORIZONTAL},{LOGARITHMIC}}}
+						type: 'logarithmic',
+					{+END}
 				}],
 				yAxes: [{
 					{+START,IF_NON_EMPTY,{Y_AXIS_LABEL}}
@@ -82,6 +85,9 @@
 					},
 					{+START,IF_PASSED_AND_TRUE,STACKED}
 						stacked: true,
+					{+END}
+					{+START,IF,{$AND,{$NOT,{HORIZONTAL}},{LOGARITHMIC}}}
+						type: 'logarithmic',
 					{+END}
 				}],
 			},

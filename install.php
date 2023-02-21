@@ -334,8 +334,8 @@ function step_1() : object
     global $DATADOTCMS_FILE;
     if (!@is_resource($DATADOTCMS_FILE)) { // Do an integrity check - missing corrupt files
         $sdc = get_param_integer('skip_disk_checks', null);
-        if (($sdc === 1) || (($sdc !== 0) && (file_exists(get_file_base() . '/.git')))) {
-            if (!file_exists(get_file_base() . '/.git')) {
+        if (($sdc === 1) || (($sdc !== 0) && (file_exists(get_file_base() . '/.git') || file_exists(get_file_base() . '/.phpcs.xml')))) {
+            if (!file_exists(get_file_base() . '/.git') && !file_exists(get_file_base() . '/.phpcs.xml')) {
                 $warnings->attach(do_template('INSTALLER_WARNING', ['MESSAGE' => do_lang_tempcode('INSTALL_SLOW_SERVER')]));
             }
         } else {

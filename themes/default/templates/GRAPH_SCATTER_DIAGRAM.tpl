@@ -63,6 +63,9 @@
 							labelString: '{X_AXIS_LABEL;^/}',
 						}
 					{+END}
+					{+START,IF,{LOGARITHMIC}}
+						type: 'logarithmic',
+					{+END}
 				}],
 				yAxes: [{
 					{+START,IF_NON_EMPTY,{Y_AXIS_LABEL}}
@@ -79,6 +82,9 @@
 							max: {MAX%},
 						{+END}
 					},
+					{+START,IF,{LOGARITHMIC}}
+						type: 'logarithmic',
+					{+END}
 				}],
 			},
 			tooltips: {

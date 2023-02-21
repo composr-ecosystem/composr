@@ -89,6 +89,9 @@
 							max: {MAX%},
 						{+END}
 					},
+					{+START,IF,{LOGARITHMIC}}
+						type: 'logarithmic',
+					{+END}
 				}],
 			},
 			tooltips: {

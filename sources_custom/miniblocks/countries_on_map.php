@@ -25,7 +25,7 @@ $height = empty($map['height']) ? null : $map['height'];
 
 $intensity_label = @cms_empty_safe($map['intensity_label']) ? 'Intensity' : $map['intensity_label'];
 
-$color_pool = empty($map['color_pool']) ? null : explode(',', $map['color_pool']);
+$color_pool = @cms_empty_safe($map['color_pool']) ? [] : _parse_color_pool_string($map['color_pool']);
 
 $show_labels = !empty($map['show_labels']);
 
@@ -35,6 +35,10 @@ $data = [];
 require_code('files_spreadsheets_read');
 $sheet_reader = spreadsheet_open_read(get_custom_file_base() . '/' . $file, null, CMS_Spreadsheet_Reader::ALGORITHM_RAW);
 while (($line = $sheet_reader->read_row()) !== false) {
+    if (substr($line[0], 0, 1) == '#') {
+        continue; // Comment line
+    }
+
     if (count($line) < 2) {
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }

@@ -49,7 +49,7 @@
 				<tbody>
 					{+START,LOOP,DATASETS}
 						<tr>
-							<th>{Y_LABEL*}</th>
+							<th{+START,IF_NON_EMPTY,{DATASET_TOOLTIP}} style="cursor: pointer" data-cms-tooltip="{ contents: '{DATASET_TOOLTIP*;^}' }"{+END}>{Y_LABEL*}</th>
 							{+START,LOOP,DATAPOINTS}
 								<td data-cms-tooltip="{Y_LABEL*}, {LABEL*}: {VALUE*} {$?*,{$EQ,{VALUE},1},{$PREG_REPLACE,s$,,{Z_AXIS_LABEL}},{Z_AXIS_LABEL}}{+START,IF_NON_EMPTY,{TOOLTIP}} &ndash; {TOOLTIP*}{+END}">
 									<span style="background-color: {COLOR*}; opacity: {$ADD,{$GET,base_opacity},{$MULT,{$SUBTRACT,1.0,{$GET,base_opacity}},{$DIV_FLOAT,{$SUBTRACT,{VALUE},{MIN}},{$GET,divisor}}}}" class="bubble-bar-chart-cell">
@@ -109,7 +109,7 @@
 			<tbody>
 				{+START,LOOP,DATASETS}
 					<tr>
-						<th colspan="{DATAPOINTS*}">{Y_LABEL*}</th>
+						<th colspan="{DATAPOINTS*}" class="full-width-label">{Y_LABEL*}</th>
 					</tr>
 					<tr>
 						{+START,LOOP,DATAPOINTS}
