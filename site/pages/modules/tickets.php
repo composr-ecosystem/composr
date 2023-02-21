@@ -1053,7 +1053,7 @@ class Module_tickets
         // Category filter
         $where_clause = 'r.' . $info['category'] . '=' . strval($catalogue_id);
         list($content_where) = build_content_where($search_query);
-        $hook_results = $object->run($search_query, $content_where, $where_clause, '-1', false, false, null, 0, 'relevance', 'ASC', '', null, null);
+        $hook_results = $object->run($search_query, $content_where, $where_clause, '-1', false, false, 100, 0, 'relevance', 'ASC', '', null, null);
         if (($hook_results === null) || (empty($hook_results))) {
             return null;
         }
