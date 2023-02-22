@@ -866,6 +866,9 @@ function actualise_post_comment(bool $allow_comments, string $content_type, stri
     }
 
     $email = post_param_string('email', '', INPUT_FILTER_POST_IDENTIFIER);
+
+    require_code('type_sanitisation');
+
     if ($email != '') {
         $body = '> ' . str_replace("\n", "\n" . '> ', $post);
         if (substr($body, -2) == '> ') {
@@ -874,7 +877,11 @@ function actualise_post_comment(bool $allow_comments, string $content_type, stri
         if (get_page_name() != 'tickets') {
             $post .= '[staff_note]';
         }
-        $post .= "\n\n" . '[email subject="Re: ' . comcode_escape($post_title) . ' [' . get_site_name() . ']" body="' . comcode_escape($body) . '"]' . $email . '[/email]' . "\n\n";
+        if (!is_valid_email_address($email)) {
+            $post .= "\n\n" . $email . "\n\n";
+        } else {
+            $post .= "\n\n" . '[email subject="Re: ' . comcode_escape($post_title) . ' [' . get_site_name() . ']" body="' . comcode_escape($body) . '"]' . $email . '[/email]' . "\n\n";
+        }
         if (get_page_name() != 'tickets') {
             $post .= '[/staff_note]';
         }

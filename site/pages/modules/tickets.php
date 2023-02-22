@@ -916,9 +916,9 @@ class Module_tickets
             }
         }
 
-        // Wrap around e-mail address if needed...
+        $email = post_param_string('email', '', INPUT_FILTER_POST_IDENTIFIER | INPUT_FILTER_EMAIL_ADDRESS);
 
-        $email = post_param_string('email', '', INPUT_FILTER_POST_IDENTIFIER);
+        // Wrap around e-mail address if needed...
         if ($ticket_type_id !== null) {
             $post = ticket_wrap_with_email_address($post, $email, ($ticket_type_details['guest_emails_mandatory'] == 1));
         }

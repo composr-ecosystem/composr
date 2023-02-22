@@ -114,6 +114,13 @@ function check_input_field_string(string $name, string &$val, ?bool $posted, int
         }
     }
 
+    if (($filters & INPUT_FILTER_EMAIL_ADDRESS) != 0) {
+        require_code('type_sanitisation');
+        if (($val != '') && (!is_valid_email_address($val))) {
+            warn_exit(do_lang_tempcode('INVALID_EMAIL_ADDRESS'));
+        }
+    }
+
     if (!$GLOBALS['BOOTSTRAPPING']) {
         // Additional checks for non-privileged users
         if ((function_exists('has_privilege') || !$posted) && $name !== 'page'/*Too early in boot if 'page'*/) {

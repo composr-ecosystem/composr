@@ -330,7 +330,7 @@ function report_content(string $content_type, string $content_id, string $report
         ], null, false, null, '.txt', 'text'));
     }
 
-    $email = post_param_string('email', '', INPUT_FILTER_POST_IDENTIFIER);
+    $email = post_param_string('email', '', INPUT_FILTER_POST_IDENTIFIER | INPUT_FILTER_EMAIL_ADDRESS);
     $_report_post = ticket_wrap_with_email_address($_report_post, $email);
 
     return _report_content($content_type, $content_id, $report_title, $_report_post, $anonymous, $open, $time, $member_id);
@@ -387,7 +387,7 @@ function report_post(int $post_id, string $report_post, int $anonymous = 0, int 
     }
     $report_title = do_lang('REPORTED_POST_TITLE', $_title);
 
-    $email = post_param_string('email', '', INPUT_FILTER_POST_IDENTIFIER);
+    $email = post_param_string('email', '', INPUT_FILTER_POST_IDENTIFIER | INPUT_FILTER_EMAIL_ADDRESS);
     $_report_post = ticket_wrap_with_email_address($_report_post, $email);
 
     $content_type = 'post';
@@ -417,7 +417,7 @@ function _report_content(string $content_type, string $content_id, string $repor
         $member_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
         $email = '';
     } else {
-        $email = post_param_string('email', $GLOBALS['FORUM_DRIVER']->get_member_email_address($member_id), INPUT_FILTER_POST_IDENTIFIER);
+        $email = post_param_string('email', $GLOBALS['FORUM_DRIVER']->get_member_email_address($member_id), INPUT_FILTER_POST_IDENTIFIER | INPUT_FILTER_EMAIL_ADDRESS);
     }
 
     $forum_id = get_ticket_forum_id();

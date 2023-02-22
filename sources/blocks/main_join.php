@@ -125,7 +125,8 @@ class Block_main_join
 
             list($message, , $ready) = cns_join_actual($captcha_if_enabled, false, true, true, null, null, null, null, $adjusted_config_options);
 
-            $email_address = post_param_string('email', '', INPUT_FILTER_POST_IDENTIFIER);
+            $email_address = post_param_string('email', '', INPUT_FILTER_POST_IDENTIFIER | INPUT_FILTER_EMAIL_ADDRESS);
+
             $email_sent = $this->send_email($map, $email_address);
 
             if ($ready) {

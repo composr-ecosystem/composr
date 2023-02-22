@@ -334,7 +334,7 @@ class Module_admin_cns_members
 
         $username = post_param_string('username', false, INPUT_FILTER_POST_IDENTIFIER);
         $password = post_param_string('password', false, INPUT_FILTER_PASSWORD);
-        $email_address = post_param_string('email', member_field_is_required(null, 'email_address') ? false : '', INPUT_FILTER_POST_IDENTIFIER);
+        $email_address = post_param_string('email', member_field_is_required(null, 'email_address') ? false : '', INPUT_FILTER_POST_IDENTIFIER | INPUT_FILTER_EMAIL_ADDRESS);
 
         $primary_group = (has_privilege(get_member(), 'assume_any_member')) ? post_param_integer('primary_group') : null;
         if (!array_key_exists('secondary_groups', $_POST)) {

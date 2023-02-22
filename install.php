@@ -2094,7 +2094,7 @@ function step_5_core() : object
         'c_value_trans' => '?LONG_TRANS', // If it's a translatable/Comcode one, we store the language ID in here (or just a string if we don't have multi-lang-content enabled)
         'c_needs_dereference' => 'BINARY',
     ]);
-    $email = post_param_string('email', '', INPUT_FILTER_POST_IDENTIFIER);
+    $email = post_param_string('email', '', INPUT_FILTER_POST_IDENTIFIER | INPUT_FILTER_EMAIL_ADDRESS);
     if ($email != '') {
         $GLOBALS['SITE_DB']->query_insert('config', [
             'c_name' => 'staff_address',

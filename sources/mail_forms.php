@@ -163,7 +163,7 @@ function _form_to_email(array $extra_boring_fields = [], ?string $subject = null
 
     // Find from details if simple...
 
-    $from_email = post_param_string('email', '', INPUT_FILTER_POST_IDENTIFIER);
+    $from_email = post_param_string('email', '', INPUT_FILTER_POST_IDENTIFIER | INPUT_FILTER_EMAIL_ADDRESS);
     $from_name = post_param_string('name', '');
 
     // Find body...

@@ -482,7 +482,7 @@ class Module_sites
 
         $codename = cms_mb_strtolower(post_param_string('codename'));
         $name = post_param_string('name', '');
-        $email_address = post_param_string('email', false, INPUT_FILTER_POST_IDENTIFIER);
+        $email_address = post_param_string('email', false, INPUT_FILTER_POST_IDENTIFIER | INPUT_FILTER_EMAIL_ADDRESS);
         $description = post_param_string('description', '');
         $category = post_param_string('category', '');
         $show_in_directory = post_param_integer('show_in_directory', 0);
