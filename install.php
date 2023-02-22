@@ -2983,10 +2983,9 @@ function handle_self_referencing_embedment()
                 break;
         }
 
+        $output = '';
         if (preg_match('#^themes/default/css/#', $type) != 0) {
             header('Content-Type: text/css; charset=' . get_charset());
-
-            $output = '';
             foreach (['themes/default/css/_base.css', 'themes/default/css/_colours.css', $type] as $_type) {
                 if (!file_exists(get_file_base() . '/' . $_type)) {
                     if (function_exists('file_array_get')) {
@@ -3036,6 +3035,19 @@ function handle_self_referencing_embedment()
 
         if (preg_match('#^themes/default/images/.*\.svg$#', $type) != 0) {
             header('Content-Type: image/svg+xml; charset=' . get_charset());
+            if (!file_exists(get_file_base() . '/' . $type)) {
+                if (function_exists('file_array_get')) {
+                    $output = unixify_line_format(handle_string_bom(file_array_get($type)));
+                }
+            } else {
+                $output = cms_file_get_contents_safe(get_file_base() . '/' . $type, FILE_READ_LOCK);
+            }
+            print($output);
+            exit();
+        }
+
+        if (preg_match('#^themes/default/images/.*\.gif$#', $type) != 0) {
+            header('Content-Type: image/gif; charset=' . get_charset());
             if (!file_exists(get_file_base() . '/' . $type)) {
                 if (function_exists('file_array_get')) {
                     $output = unixify_line_format(handle_string_bom(file_array_get($type)));
