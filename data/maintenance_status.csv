@@ -149,3 +149,4 @@ gravatar,Gravatar,ocProducts,,Not regularly tested. Could potentially break due 
 email_integration,E-mail integration,ocProducts,,We have e-mail integration capabilities for forum posts and support tickets.,No,
 http_proxy,HTTP proxy support,ocProducts,,The ability for the HTTP downloaders to run via proxy servers,No,
 ratings_structure,Ratings structure,,,The ability to create more complex structures for ratings than the default simple single dimension; only available via custom programming / the custom_ratings addon.,No,
+ffmpeg_thumbs,FFMPEG thumbnail generation,,,Automatic of video thumbnails via FFMPEG.,No,

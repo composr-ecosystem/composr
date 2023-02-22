@@ -42,6 +42,8 @@ class Hook_config_ffmpeg_path
             'required' => false,
             'public' => false,
             'addon' => 'galleries',
+
+            'maintenance_code' => 'ffmpeg_thumbs',
         ];
     }
 
