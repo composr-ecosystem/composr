@@ -1317,16 +1317,17 @@ function ecv_IMG(string $lang, array $escaped, array $param) : string
         if ((isset($GLOBALS['SITE_DB'])) && (function_exists('find_theme_image')) && (!$GLOBALS['IN_MINIKERNEL_VERSION']) && ($GLOBALS['FORUM_DRIVER'] !== null)) {
             $value = find_theme_image($param[0], !empty($param[3]) || running_script('upgrader'), false, (isset($param[2]) && $param[2] !== '') ? $param[2] : null, null, ((!empty($param[1])) && (get_forum_type() == 'cns')) ? $GLOBALS['FORUM_DB'] : $GLOBALS['SITE_DB']);
         } else {
+            $path = 'themes/default/images/';
+            $value = $path . $param[0] . '.png';
+            if (!is_file(get_file_base() . '/' . $value)) {
+                $value = $path . $param[0] . '.gif';
+            }
+            if (!is_file(get_file_base() . '/' . $value)) {
+                $value = $path . $param[0] . '.svg';
+            }
+
             if (running_script('install')) {
-                $value = 'install.php?type=themes/default/images/' . $param[0] . '.svg'; // Assumes SVG
-            } else {
-                $value = 'themes/default/images/' . $param[0] . '.png';
-                if (!is_file(get_file_base() . '/' . $value)) {
-                    $value = 'themes/default/images/' . $param[0] . '.gif';
-                }
-                if (!is_file(get_file_base() . '/' . $value)) {
-                    $value = 'themes/default/images/' . $param[0] . '.svg';
-                }
+                $value = 'install.php?type=' . $value;
             }
         }
     }
