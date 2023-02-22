@@ -527,7 +527,7 @@ function menu_items_being_saved() : array
     $ids = [];
     foreach ($_POST as $key => $val) {
         if (is_string($val)) {
-            if (substr($key, 0, 7) == 'parent_') {
+            if ((is_string($key)) && (substr($key, 0, 7) == 'parent_')) {
                 $ids[intval(substr($key, 7))] = $val;
             }
         }

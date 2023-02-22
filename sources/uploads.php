@@ -188,7 +188,7 @@ function is_plupload(bool $fake_prepopulation = false) : bool
         if (!is_string($value)) {
             continue;
         }
-        if (!is_string($key)) {
+        if (is_integer($key)) {
             $key = strval($key);
         }
 

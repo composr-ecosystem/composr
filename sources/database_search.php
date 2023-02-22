@@ -577,7 +577,7 @@ class Composr_fast_custom_index
     public static function active_search_has_special_filtering() : bool
     {
         foreach ($_GET as $key => $val) {
-            if ((substr($key, 0, 7) == 'option_') && (substr($key, 0, 12) != 'option_tick_') && ($val != '')) {
+            if ((is_string($key)) && (substr($key, 0, 7) == 'option_') && (substr($key, 0, 12) != 'option_tick_') && ($val != '')) {
                 return true;
             }
         }

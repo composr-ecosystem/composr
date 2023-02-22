@@ -80,6 +80,10 @@ class Block_main_include_module
             return do_template('RED_ALERT', ['_GUID' => 'tc67wb1v1sg1hsvegsxqkxhf1iodh2m1', 'TEXT' => do_lang_tempcode('MISSING_PAGE', escape_html($attributes['page']))]);
         }
         foreach ($_GET as $key => $val) {
+            if (is_integer($key)) {
+                $key = strval($key);
+            }
+
             if ((substr($key, 0, 5) == 'keep_') || ($merge_parameters)) {
                 $_GET[$key] = $val;
             }

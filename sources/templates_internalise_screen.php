@@ -37,6 +37,10 @@ function internalise_own_screen(object $screen_content, ?int $refresh_time = nul
 
     $params = '';
     foreach ($_GET as $key => $param) {
+        if (is_integer($key)) {
+            $key = strval($key);
+        }
+
         if (!is_string($param)) {
             continue;
         }

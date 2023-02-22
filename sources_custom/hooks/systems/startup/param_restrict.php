@@ -31,7 +31,7 @@ class Hook_startup_param_restrict
         $max = 100;
 
         foreach ($_GET as $key => $val) {
-            if (!is_string($key)) {
+            if (is_integer($key)) {
                 $key = strval($key);
             }
 

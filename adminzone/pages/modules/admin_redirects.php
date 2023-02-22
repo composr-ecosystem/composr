@@ -316,7 +316,7 @@ class Module_admin_redirects
                 continue;
             }
 
-            if ((substr($key, 0, 10) == 'from_page_') && ($val != '')) {
+            if ((is_string($key)) && (substr($key, 0, 10) == 'from_page_') && ($val != '')) {
                 $their_i = array_search($val, $found);
                 $i = substr($key, 10);
                 if (($their_i !== false) && (post_param_string('from_zone_' . $i) == post_param_string('from_zone_' . strval($their_i)))) {
@@ -559,7 +559,7 @@ class Module_admin_redirects
                 continue;
             }
 
-            if (substr($key, 0, 5) == 'from_') {
+            if ((is_string($key)) && (substr($key, 0, 5) == 'from_')) {
                 $i = substr($key, 5);
                 $from = $val;
                 $to = post_param_string('to_' . $i);

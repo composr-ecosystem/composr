@@ -295,6 +295,10 @@ class Module_contact_member
         $extra_bcc_addresses = [];
         if (!is_guest()) {
             foreach ($_POST as $key => $val) {
+                if (is_integer($key)) {
+                    $key = strval($key);
+                }
+
                 if (($val != '') && ((substr($key, 0, 3) == 'cc_') || (substr($key, 0, 4) == 'bcc_'))) {
                     $address = post_param_string($key);
                     if (!is_valid_email_address($address)) {
