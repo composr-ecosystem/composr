@@ -2985,7 +2985,7 @@ function ip_banned(string $ip, bool $force_db = false, bool $handle_uncertaintie
     }
 
     global $SITE_INFO;
-    if ((!$force_db) && (((isset($SITE_INFO['known_suexec'])) && ($SITE_INFO['known_suexec'] == '1')) || (cms_is_writable(get_file_base() . '/.htaccess')))) {
+    if ((is_file(get_file_base() . '/.htaccess')) && ((!$force_db) && (((isset($SITE_INFO['known_suexec'])) && ($SITE_INFO['known_suexec'] == '1')) || (cms_is_writable(get_file_base() . '/.htaccess'))))) {
         $bans = [];
         $htaccess_file = cms_file_get_contents_safe(get_file_base() . '/.htaccess', FILE_READ_LOCK);
         $ban_count = preg_match_all('#\n(Require not ip|Require not Ip) (.*)#i', $htaccess_file, $bans); // We define 'ip' and 'Ip' due to Turkish issue
