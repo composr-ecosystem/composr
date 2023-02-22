@@ -376,6 +376,7 @@ function phase_2()
         echo '
             <li><strong>Transifex</strong>: Import language strings into Transifex<ul>
                 <li>Push new language data by calling <kbd>data_custom/transifex_push.php</kbd></li>
+                <li>Update <kbd>_api_transifex</kbd> test if required</li>
             </ul></li>
         ';
     } else {
