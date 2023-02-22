@@ -867,7 +867,8 @@ abstract class Mail_dispatcher_base
             $this->_sender_email = $this->sender_email;
         } else {
             $system_addresses = find_system_email_addresses();
-            if ((get_option('use_true_from') == '1') || (preg_replace('#^.*@#', '', $from_email) == get_domain()) || (in_array(preg_replace('#^.*@#', '', $from_email), $system_addresses))) {
+            if ((get_option('use_true_from') == '1') || ((get_option('use_true_from') == '0') && ((preg_replace('#^.*@#', '', $from_email) == get_domain()) || (in_array(preg_replace('#^.*@#', '', $from_email), $system_addresses))))) {
+                // We either use_true_from, or we use the smart setting and the reply-to address is on the same domain as a domain we have authority over - so use the reply-to as the sender/from because it is more user-friendly to the recipient (who won't be confused about an unnecessarily drawn distinction)
                 $this->_sender_email = $from_email;
             } elseif ($this->website_email != '') {
                 $this->_sender_email = $this->website_email;
