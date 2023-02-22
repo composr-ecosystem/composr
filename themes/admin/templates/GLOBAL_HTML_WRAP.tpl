@@ -18,7 +18,7 @@
 		<header class="header header-admin" itemscope="itemscope" itemtype="http://schema.org/WPHeader" data-view="Header">
 			{$,The main logo}
 			<h1 class="logo">
-				<a class="logo-link" target="_self" href="{$PAGE_LINK*,:}" rel="home">{+START,TRIM}
+				<a class="logo-link" target="_self" href="{$PAGE_LINK*,{$?,{$HAS_ZONE_ACCESS,site},site,}:}" rel="home">{+START,TRIM}
 					{+START,IF,{$NOT,{$THEME_OPTION,use_site_name_text_as_logo}}}
 						<img class="logo-image" src="{$IMG*,logo/small_white_logo}" width="{$IMG_WIDTH*,{$IMG,logo/small_white_logo}}" height="{$IMG_HEIGHT*,{$IMG,logo/small_white_logo}}" alt="{$SITE_NAME*}" />
 					{+END}

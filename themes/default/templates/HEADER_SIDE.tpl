@@ -10,7 +10,7 @@
 		<div class="global-navigation js-side-menu-toggleable" {+START,IF,{$DESKTOP}}style="display: none;"{+END} id="global-navigation">
 			{$,The main logo}
 			<h1 class="logo">
-				<a class="logo-link" target="_self" href="{$PAGE_LINK*,:}" rel="home" title="{!HOME}" accesskey="r">{+START,TRIM}
+				<a class="logo-link" target="_self" href="{$PAGE_LINK*,{$?,{$HAS_ZONE_ACCESS,site},site,}:}" rel="home" title="{!HOME}" accesskey="r">{+START,TRIM}
 					{+START,IF,{$NOT,{$THEME_OPTION,use_site_name_text_as_logo}}}
 						<img class="logo-image logo-image-color" src="{$IMG*,logo/small_logo}" alt="{$SITE_NAME*}" />
 					{+END}
