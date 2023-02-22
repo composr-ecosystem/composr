@@ -1020,9 +1020,13 @@ function fix_colour($x, bool $hue = false) : int
  */
 function rgb_to_hsv(string $rgb) : array
 {
-    $red = hexdec(substr($rgb, 0, 2));
-    $green = hexdec(substr($rgb, 2, 2));
-    $blue = hexdec(substr($rgb, 4, 2));
+    $offset = 0;
+    if (strpos($rgb, '#') === 0) {
+        $offset = 1;
+    }
+    $red = hexdec(substr($rgb, $offset, 2));
+    $green = hexdec(substr($rgb, $offset + 2, 2));
+    $blue = hexdec(substr($rgb, $offset + 4, 2));
 
     $r = $red / 255.0;
     $g = $green / 255.0;
