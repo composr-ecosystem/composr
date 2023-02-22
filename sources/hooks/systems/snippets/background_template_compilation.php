@@ -30,7 +30,7 @@ class Hook_snippet_background_template_compilation
      */
     public function run() : object
     {
-        if (((get_value('setupwizard_completed') !== '1') && (!$GLOBALS['DEV_MODE'])) || (get_param_string('page', null) === 'admin_config')) { // Don't want to do this prematurely!
+        if (((get_value('setupwizard_completed', null, true) !== '1') && (!$GLOBALS['DEV_MODE'])) || (get_param_string('page', null) === 'admin_config')) { // Don't want to do this prematurely!
             return new Tempcode();
         }
 
