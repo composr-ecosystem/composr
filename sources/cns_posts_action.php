@@ -349,6 +349,8 @@ function cns_make_post(int $topic_id, string $title, string $post, int $skip_sig
         }
     }
 
+    $post_counts = ($forum_id === null) ? 1 : $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_post_count_increment', ['id' => $forum_id]);
+
     if ($update_caching) {
         if (function_exists('get_member')) {
             if (function_exists('cns_ping_topic_read')) {
@@ -409,7 +411,6 @@ function cns_make_post(int $topic_id, string $title, string $post, int $skip_sig
         }
 
         if ($forum_id !== null) {
-            $post_counts = ($forum_id === null) ? 1 : $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_post_count_increment', ['id' => $forum_id]);
             if (($post_counts === 1) && (!$anonymous) && ($validated == 1)) {
                 // Update post count
                 cms_profile_start_for('cns_make_post:cns_force_update_member_post_count');
@@ -435,7 +436,7 @@ function cns_make_post(int $topic_id, string $title, string $post, int $skip_sig
     }
 
     // Award points when necessary (otherwise it is awarded in cns_validate_post)
-    if ((addon_installed('points')) && (!running_script('install')) && (!get_mass_import_mode()) && ($validated == 1) && (!$anonymous) && ($intended_solely_for === null) && (!$is_pt)) {
+    if (($post_counts === 1) && (addon_installed('points')) && (!running_script('install')) && (!get_mass_import_mode()) && ($validated == 1) && (!$anonymous) && ($intended_solely_for === null) && (!$is_pt)) {
         $post_points = intval(get_option('points_posting'));
         if ($post_points > 0) {
             require_code('points2');

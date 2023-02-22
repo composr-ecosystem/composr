@@ -59,24 +59,10 @@ function cns_validate_post(int $post_id, ?int $topic_id = null, ?int $forum_id =
         't_validated' => 1,
     ], ['id' => $topic_id], '', 1);
 
-    // Award points when necessary and if not already awarded
-    $post_points = 0;
-    if ((addon_installed('points')) && (!is_guest($post_info[0]['p_poster'])) && ($post_info[0]['p_intended_solely_for'] === null) && ($topic_info[0]['t_pt_from'] === null)) {
-        $already_awarded = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'id', ['t_type' => 'post', 't_subtype' => 'add', 't_type_id' => strval($post_id)]);
-        if ($already_awarded === null) {
-            $post_points = intval(get_option('points_posting'));
-            if ($post_points > 0) {
-                require_code('points2');
-                points_credit_member($poster, do_lang('FORUM_POST'), $post_points, 0, null, 0, 'post', 'add', strval($post_id));
-            }
-        }
-    }
-
-    send_content_validated_notification('post', strval($post_id), $post_points);
-
     $_url = build_url(['page' => 'topicview', 'id' => $topic_id], 'forum', [], false, false, true, 'post_' . strval($post_id));
     $url = $_url->evaluate();
 
+    $post_points = 0;
     if ($forum_id !== null) {
         $post_counts = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_post_count_increment', ['id' => $forum_id]);
         if ($post_counts === 1) {
@@ -84,7 +70,21 @@ function cns_validate_post(int $post_id, ?int $topic_id = null, ?int $forum_id =
             require_code('cns_posts_action2');
             cns_member_handle_promotion($poster);
         }
+
+        // Award points when necessary and if not already awarded
+        if (($post_counts === 1) && (addon_installed('points')) && (!is_guest($post_info[0]['p_poster'])) && ($post_info[0]['p_intended_solely_for'] === null) && ($topic_info[0]['t_pt_from'] === null)) {
+            $already_awarded = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'id', ['t_type' => 'post', 't_subtype' => 'add', 't_type_id' => strval($post_id)]);
+            if ($already_awarded === null) {
+                $post_points = intval(get_option('points_posting'));
+                if ($post_points > 0) {
+                    require_code('points2');
+                    points_credit_member($poster, do_lang('FORUM_POST'), $post_points, 0, null, 0, 'post', 'add', strval($post_id));
+                }
+            }
+        }
     }
+
+    send_content_validated_notification('post', strval($post_id), $post_points);
 
     cns_send_topic_notification($url, $topic_id, $post_id, $forum_id, $poster, $is_starter, $post, $topic_info[0]['t_cache_first_title'], null, ($topic_info[0]['t_pt_from'] !== null), null, null, $post_info[0]['p_poster_name_if_guest']);
 
