@@ -547,7 +547,7 @@ class Module_admin_lang
             if (!is_string($val)) {
                 continue;
             }
-            if (substr($key, 0, 6) != 'trans_') {
+            if ((is_string($key)) && (substr($key, 0, 6) != 'trans_')) {
                 continue;
             }
 

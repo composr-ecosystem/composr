@@ -718,6 +718,10 @@ class Module_admin_addons
         require_code('abstract_file_manager');
         $writable_paths = [];
         foreach ($_POST as $key => $passed) {
+            if (is_integer($key)) {
+                $key = strval($key);
+            }
+
             if (substr($key, 0, 8) == 'install_') {
                 $writable_paths = array_merge($writable_paths, get_addon_install_writable_paths($passed));
             }
@@ -733,6 +737,10 @@ class Module_admin_addons
         $addons_to_remove = [];
 
         foreach ($_POST as $key => $passed) {
+            if (is_integer($key)) {
+                $key = strval($key);
+            }
+
             if (substr($key, 0, 8) == 'install_') {
                 send_http_output_ping();
 
@@ -748,7 +756,7 @@ class Module_admin_addons
         }
 
         foreach ($_POST as $key => $passed) {
-            if (substr($key, 0, 8) == 'install_') {
+            if ((is_string($key)) && (substr($key, 0, 8) == 'install_')) {
                 send_http_output_ping();
 
                 // DB pass
@@ -1228,7 +1236,7 @@ class Module_admin_addons
             // Get from existing addon_registry hook if selected
             $files = [];
             foreach ($_POST as $key => $val) {
-                if (preg_match('#^file_\d+$#', $key) != 0) {
+                if ((is_string($key)) && (preg_match('#^file_\d+$#', $key) != 0)) {
                     $files[] = $val;
                 }
             }
@@ -1449,7 +1457,7 @@ class Module_admin_addons
                 continue;
             }
 
-            if (substr($key, 0, 5) == 'file_') {
+            if ((is_string($key)) && (substr($key, 0, 5) == 'file_')) {
                 $files[] = $val;
             }
         }

@@ -692,6 +692,10 @@ class Module_admin_permissions
 
         $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, true);
         foreach ($_POST as $key => $val) {
+            if (is_integer($key)) {
+                $key = strval($key);
+            }
+
             // See if we can tidy it back to a page-link (assuming it's not one already)
             $page_link = url_to_page_link($val, true);
             if ($page_link != '') {
@@ -1096,6 +1100,10 @@ class Module_admin_permissions
         $group_id = get_param_integer('group_id');
 
         foreach ($_POST as $key => $val) {
+            if (is_integer($key)) {
+                $key = strval($key);
+            }
+
             $matches = [];
 
             if (preg_match('#^perm__([^:]*)$#', $key, $matches) != 0) {

@@ -1398,6 +1398,10 @@ function get_html_trace() : object
     $post = [];
     if (count($_POST) < 200) {
         foreach ($_POST as $key => $val) {
+            if (is_integer($key)) {
+                $key = strval($key);
+            }
+
             if (is_password_field($key)) {
                 continue;
             }

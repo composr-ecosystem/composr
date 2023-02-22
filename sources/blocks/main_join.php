@@ -181,6 +181,10 @@ class Block_main_join
                 $subject = empty($map['subject']) ? do_lang('_WELCOME') : $map['subject'];
                 $body = http_get_contents($url, ['convert_to_internal_encoding' => true]);
                 foreach ($_POST as $key => $val) {
+                    if (is_integer($key)) {
+                        $key = strval($key);
+                    }
+
                     if (is_string($val)) {
                         $body = str_replace('{' . $key . '}', $val, $body);
                     }

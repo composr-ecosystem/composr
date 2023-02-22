@@ -565,6 +565,10 @@ function _build_url(array $parameters, string $zone_name = '', array $skip = [],
         $keep_cant_use = [];
         $HAS_KEEP_IN_URL_CACHE = false;
         foreach ($_GET as $key => $val) {
+            if (is_integer($key)) {
+                $key = strval($key);
+            }
+
             if (is_array($val)) {
                 if ($keep_all) {
                     if ((!array_key_exists($key, $parameters)) && (!isset($skip[$key]))) {
@@ -1571,6 +1575,10 @@ function get_current_page_link(bool $include_keep_components = true, ?int $maxle
         }
     }
     foreach ($_GET as $key => $val) {
+        if (is_integer($key)) {
+            $key = strval($key);
+        }
+
         if (($key == 'page') || ($key == 'type') || ($key == 'id')) {
             continue;
         }

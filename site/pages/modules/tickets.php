@@ -1133,6 +1133,10 @@ class Module_tickets
         ]);
 
         foreach ($_POST as $key => $username) {
+            if (is_integer($key)) {
+                $key = strval($key);
+            }
+
             if (substr($key, 0, strlen('access_')) != 'access_') {
                 continue;
             }

@@ -115,7 +115,7 @@ function read_privacy_fields(string $prefix = '') : array
 
     $additional_access = [];
     foreach ($_POST as $key => $value) {
-        if (strpos($key, $prefix . 'privacy_friends_list_') === 0) {
+        if ((is_string($key)) && (strpos($key, $prefix . 'privacy_friends_list_') === 0)) {
             if ($value != '') {
                 $additional_access[] = $value;
             }

@@ -306,6 +306,10 @@ class Module_admin_custom_comcode extends Standard_crud_module
 
         $parameters = '';
         foreach ($_POST as $key => $val) {
+            if (is_integer($key)) {
+                $key = strval($key);
+            }
+
             if (substr($key, 0, 11) != 'parameters_') {
                 continue;
             }
@@ -346,6 +350,10 @@ class Module_admin_custom_comcode extends Standard_crud_module
 
         $parameters = '';
         foreach ($_POST as $key => $val) {
+            if (is_integer($key)) {
+                $key = strval($key);
+            }
+
             if (substr($key, 0, 11) != 'parameters_') {
                 continue;
             }

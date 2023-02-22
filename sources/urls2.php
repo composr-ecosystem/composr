@@ -117,6 +117,10 @@ function _build_keep_form_fields(string $page = '', bool $keep_all = false, arra
     $out = new Tempcode();
 
     foreach ($_GET as $key => $val) {
+        if (is_integer($key)) {
+            $key = strval($key);
+        }
+
         $process_for_key = ((is_string($key)) && (substr($key, 0, 5) == 'keep_') || ($keep_all)) && (!in_array($key, $exclude)) && ($key != 'page') && (!skippable_keep($key, $val));
         if (!$process_for_key) {
             continue;

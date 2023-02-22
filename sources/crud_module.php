@@ -1811,7 +1811,7 @@ abstract class Standard_crud_module
         if ($this->supports_mass_delete) {
             foreach ($_POST as $key => $val) {
                 $matches = [];
-                if (($val === '1') && (preg_match('#^' . preg_quote($this->content_type) . '_(.*)$#', $key, $matches) != 0)) {
+                if ((is_string($key)) && ($val === '1') && (preg_match('#^' . preg_quote($this->content_type) . '_(.*)$#', $key, $matches) != 0)) {
                     $id = $matches[1];
 
                     if ($this->permissions_require !== null) {
@@ -1828,14 +1828,14 @@ abstract class Standard_crud_module
         }
         if (($this->cat_crud_module !== null) && ($this->cat_crud_module->content_type !== null)) {
             foreach ($_POST as $key => $val) {
-                if (($val === '1') && (strpos($key, '_') !== false)) {
+                if ((is_string($key)) && ($val === '1') && (strpos($key, '_') !== false)) {
                     $this->cat_crud_module->mass_delete(false);
                 }
             }
         }
         if (($this->alt_crud_module !== null) && ($this->alt_crud_module->content_type !== null)) {
             foreach ($_POST as $key => $val) {
-                if (($val === '1') && (strpos($key, '_') !== false)) {
+                if ((is_string($key)) && ($val === '1') && (strpos($key, '_') !== false)) {
                     $this->alt_crud_module->mass_delete(false);
                 }
             }

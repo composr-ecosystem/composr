@@ -759,7 +759,7 @@ class Module_admin_cns_members
         log_it('DELETE_LURKERS');
 
         foreach ($_POST as $key => $val) {
-            if (substr($key, 0, 7) == 'lurker_') {
+            if ((is_string($key)) && (substr($key, 0, 7) == 'lurker_')) {
                 $member_id = intval(substr($key, 7));
                 cns_delete_member($member_id);
             }

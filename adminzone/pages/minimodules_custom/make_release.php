@@ -226,6 +226,10 @@ function phase_1_pre()
             <input type="hidden" name="intermediary_tasks" value="1" />
     ';
     foreach ($_POST as $key => $val) {
+        if (is_integer($key)) {
+            $key = strval($key);
+        }
+
         echo '
             <input type="hidden" name="' . escape_html($key) . '" value="' . escape_html($val) . '" />
         ';

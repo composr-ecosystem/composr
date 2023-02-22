@@ -245,6 +245,10 @@ class Module_recommend
         $fields->attach(form_input_email(do_lang_tempcode('YOUR_EMAIL_ADDRESS'), '', 'email', $recommender_email_address, true));
         $already = [];
         foreach ($_POST as $key => $email_address) {
+            if (is_integer($key)) {
+                $key = strval($key);
+            }
+
             if (substr($key, 0, 14) != 'email_address_') {
                 continue;
             }
@@ -405,6 +409,10 @@ class Module_recommend
         $already = [];
         $email_counter = 0;
         foreach ($_POST as $key => $input_value) {
+            if (is_integer($key)) {
+                $key = strval($key);
+            }
+
             if (substr($key, 0, 14) == 'email_address_') {
                 $already[] = $input_value; // e-mail address
                 $email_counter++;
@@ -560,6 +568,10 @@ class Module_recommend
         $names_to_send = [];
 
         foreach ($_POST as $key => $email_address) {
+            if (is_integer($key)) {
+                $key = strval($key);
+            }
+
             if (substr($key, 0, 14) != 'email_address_') {
                 continue;
             }
@@ -584,6 +596,10 @@ class Module_recommend
         $adrbook_names = [];
         $adrbook_use_these = [];
         foreach ($_POST as $key => $email_address) {
+            if (is_integer($key)) {
+                $key = strval($key);
+            }
+
             if (preg_match('#details_email_|details_name_|^use_details_#', $key) == 0) {
                 continue;
             }
