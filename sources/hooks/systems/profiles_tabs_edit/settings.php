@@ -136,6 +136,10 @@ class Hook_profiles_tabs_edit_settings
             );
             $actual_custom_fields = ((post_param_integer('submitting_profile_tab', 0) == 1) || (fractional_edit())) ? cns_read_in_custom_fields($custom_fields, $member_id_of) : [];
 
+            $auto_monitor_contrib_content = null;
+            $smart_topic_notification = null;
+            $mailing_list_style = null;
+
             if (!fractional_edit()) {
                 $timezone = post_param_string('timezone', get_site_timezone());
                 $theme_old = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id_of, 'm_theme');
@@ -144,15 +148,10 @@ class Hook_profiles_tabs_edit_settings
                 $preview_posts = post_param_integer('preview_posts', 0);
                 $views_signatures = post_param_integer('views_signatures', 0);
 
-                /*
-                Actually managed on the notifications tab, even though technically account settings
+
                 $auto_monitor_contrib_content = post_param_integer('auto_monitor_contrib_content',0);
                 $smart_topic_notification = post_param_integer('smart_topic_notification', 0);
                 $mailing_list_style = post_param_integer('mailing_list_style', 0);
-                */
-                $auto_monitor_contrib_content = null;
-                $smart_topic_notification = null;
-                $mailing_list_style = null;
 
                 $auto_mark_read = post_param_integer('auto_mark_read', 0);
                 $sound_enabled = post_param_integer('sound_enabled', 0);
