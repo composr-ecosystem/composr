@@ -50,6 +50,8 @@ class search_test_set extends cms_test_case
             return;
         }
 
+        require_code('xml');
+
         $session_id = $this->establish_admin_callback_session();
 
         $url = find_script('opensearch');

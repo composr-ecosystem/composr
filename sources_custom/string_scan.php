@@ -11802,6 +11802,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ERROR_CHECKING_FOR_SPAMMERS_RBL_IS_NORMAL_DNS
         PRIVACY_ACTION_cloudflare
         PRIVACY_REASON_cloudflare
+        MODULE_TRANS_NAME_newsletter_opt
     ')));
 
     // Remove blank lines

@@ -93,7 +93,7 @@
 
 				{+START,IF,{$DESKTOP}}
 					{+START,IF_NON_EMPTY,{MARKED_POST_ACTIONS}}
-						<form class="form-marked-post-actions desktop-only js-form-marked-post-actions" title="{!MARKED_POST_ACTIONS}" action="{$URL_FOR_GET_FORM*,{ACTION_URL}}" method="get">
+						<form class="desktop-only" title="{!MARKED_POST_ACTIONS}" action="{$URL_FOR_GET_FORM*,{ACTION_URL}}" method="get">
 							{$HIDDENS_FOR_GET_FORM,{ACTION_URL}}
 							<label for="mpa-type">{!_MARKED_POST_ACTIONS}:</label>
 							<select id="mpa-type" name="type" class="form-control form-control-sm js-moderator-action-submit-form">

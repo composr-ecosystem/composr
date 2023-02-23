@@ -1767,7 +1767,7 @@ class Tempcode
      * @param  integer $bytes_available The number of bytes
      * @return boolean Whether it is
      */
-    public function is_smaller_than(&$bytes_available)
+    public function is_smaller_than(int &$bytes_available) : bool
     {
         foreach ($this->code_to_preexecute as $part) {
             $bytes_available -= strlen($part);

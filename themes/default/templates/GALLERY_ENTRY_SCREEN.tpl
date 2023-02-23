@@ -27,7 +27,7 @@
 		<div class="box-inner">
 			<ul class="horizontal-links vertical-alignment-normalise-line-height">
 				<li>
-					{+START,INCLUDE,ICON}NAME=menu/rich_content/calendar{+END} 
+					{+START,INCLUDE,ICON}NAME=menu/rich_content/calendar{+END}
 					<span>{!ADDED} <time datetime="{$FROM_TIMESTAMP*,Y-m-d\TH:i:s\Z,{ADD_DATE_RAW}}" itemprop="datePublished">{ADD_DATE*}</time></span>
 				</li>
 

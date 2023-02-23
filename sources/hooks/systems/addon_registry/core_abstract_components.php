@@ -456,6 +456,8 @@ class Hook_addon_registry_core_abstract_components
             'BUBBLE' => false,
             'CLAMP_Y_AXIS' => false,
             'MAX' => null,
+            'LOGARITHMIC' => false,
+            'HAS_WORDWRAP' => false,
         ]));
     }
 
@@ -513,6 +515,8 @@ class Hook_addon_registry_core_abstract_components
             'FILL' => false,
             'CLAMP_Y_AXIS' => false,
             'MAX' => null,
+            'LOGARITHMIC' => false,
+            'HAS_WORDWRAP' => false,
         ]));
     }
 
@@ -555,6 +559,7 @@ class Hook_addon_registry_core_abstract_components
             'DATAPOINTS' => $_datapoints,
             'SHOW_DATA_LABELS' => true,
             'DOUGHNUT' => false,
+            'HAS_WORDWRAP' => false,
         ]));
     }
 
@@ -602,6 +607,8 @@ class Hook_addon_registry_core_abstract_components
             'HORIZONTAL' => false,
             'CLAMP_Y_AXIS' => false,
             'MAX' => null,
+            'LOGARITHMIC' => false,
+            'HAS_WORDWRAP' => false,
         ]));
     }
 
@@ -689,6 +696,7 @@ class Hook_addon_registry_core_abstract_components
             'STACKED' => true,
             'CLAMP_Y_AXIS' => false,
             'MAX' => null,
+            'LOGARITHMIC' => false,
         ]));
     }
 
@@ -772,6 +780,7 @@ class Hook_addon_registry_core_abstract_components
             'COLOR' => '#FF0000',
             'MIN' => '1',
             'MAX' => '5',
+            'HAS_WORDWRAP' => false,
         ]));
     }
 }

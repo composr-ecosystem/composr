@@ -1076,7 +1076,7 @@ function compile_template(string $data, string $template_name, string $theme, st
 }
 
 /**
- * Find some opening params as a PHP array, for temporary use within the compiler logic.
+ * Append some data to the current level of the Tempcode stack.
  *
  * @param  array $current_level_data The data being appended together on the current level of the stack
  * @param  boolean $just_done_string Whether the most recent thing appended to $current_level_data was a simple string literal

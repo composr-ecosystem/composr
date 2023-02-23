@@ -186,7 +186,6 @@ Sample spreadsheet files for all the other blocks are provided under [tt]uploads
             'themes/default/templates_custom/COUNTRIES_ON_MAP.tpl',
             'themes/default/templates_custom/PINS_ON_MAP.tpl',
             'site/pages/comcode_custom/EN/_graph_test.txt',
-            'site/pages/minimodules_custom/_graph_color_pool.php',
             'themes/default/images/icons/sortable_tables/filter.svg',
             'themes/default/images/icons/sortable_tables/sortable.svg',
             'themes/default/images/icons/sortable_tables/index.html',

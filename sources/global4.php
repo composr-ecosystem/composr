@@ -18,7 +18,7 @@
  * @package    core
  */
 
-/*EXTRA FUNCTIONS: fileowner*/
+/*EXTRA FUNCTIONS: fileowner|php_sapi_name*/
 
 /*
     Optional general library code that must be manually loaded

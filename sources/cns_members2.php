@@ -248,7 +248,7 @@ function render_member_box(int $member_id, bool $preview = false, bool $show_ava
     if (addon_installed('cns_warnings')) {
         $map['_NUM_WARNINGS'] = strval($member_info['num_warnings']);
         $map['NUM_WARNINGS'] = integer_format($member_info['num_warnings'], 0);
-    };
+    }
     return do_template('CNS_MEMBER_BOX', $map);
 }
 

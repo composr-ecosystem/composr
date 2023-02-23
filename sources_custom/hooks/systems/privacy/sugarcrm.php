@@ -47,6 +47,18 @@ class Hook_privacy_sugarcrm extends Hook_privacy_base
             ],
 
             'database_records' => [
+                'mail_opt_sync_queue' => [
+                    'timestamp_field' => 'add_time',
+                    'retention_days' => null,
+                    'retention_handle_method' => PRIVACY_METHOD__LEAVE,
+                    'member_id_fields' => [],
+                    'ip_address_fields' => [],
+                    'email_fields' => ['email_address'],
+                    'additional_anonymise_fields' => [],
+                    'extra_where' => null,
+                    'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'allowed_handle_methods' => PRIVACY_METHOD__DELETE,
+                ]
             ],
         ];
     }

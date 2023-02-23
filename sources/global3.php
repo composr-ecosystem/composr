@@ -1890,7 +1890,7 @@ function cms_parse_url_safe(string $url, int $component = -1)
                     return 'http';
 
                 case PHP_URL_PORT:
-                    return (strtolower(cms_parse_url_safe($url, PHP_URL_SCHEME)) == 'https') ? 443 : 80;
+                    return (cms_strtolower_ascii(cms_parse_url_safe($url, PHP_URL_SCHEME)) == 'https') ? 443 : 80;
 
                 case PHP_URL_PATH:
                 case PHP_URL_QUERY:
@@ -1904,7 +1904,7 @@ function cms_parse_url_safe(string $url, int $component = -1)
         }
 
         if (!array_key_exists('port', $ret)) {
-            $ret['port'] = (strtolower($ret['scheme']) == 'https') ? '443' : '80';
+            $ret['port'] = (cms_strtolower_ascii($ret['scheme']) == 'https') ? '443' : '80';
         }
 
         if (!array_key_exists('path', $ret)) {

@@ -542,7 +542,6 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
         }
 
         foreach ($html_segments as $field_title => $html) {
-
             $text = clean_html_for_spellcheck($html);
 
             $misspellings = run_spellcheck($text, null, true, false);

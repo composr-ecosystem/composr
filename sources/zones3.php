@@ -669,7 +669,7 @@ function get_template_contents(string $name) : string
  * @param  ?LONG_TEXT $meta_description Meta description for this resource (blank: implicit) (null: no change, or no change if $text is null)
  * @return PATH The save path
  */
-function save_comcode_page(string $zone, string $new_file, string $lang = null, string $text = null, ?int $validated = null, ?int $include_on_sitemap = 1, ?string $parent_page = null, ?int $order = null, ?int $add_time = null, ?int $edit_time = null, int $show_as_edit = 0, ?int $submitter = null, ?string $file = null, ?string $meta_keywords = '', ?string $meta_description = '') : string
+function save_comcode_page(string $zone, string $new_file, ?string $lang = null, ?string $text = null, ?int $validated = null, ?int $include_on_sitemap = 1, ?string $parent_page = null, ?int $order = null, ?int $add_time = null, ?int $edit_time = null, int $show_as_edit = 0, ?int $submitter = null, ?string $file = null, ?string $meta_keywords = '', ?string $meta_description = '') : string
 {
     if ($lang === null) {
         $lang = get_site_default_lang();

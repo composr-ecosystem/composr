@@ -866,7 +866,7 @@ class DatabaseRepair
 
         $is_autoincrement = ($field_type == '*AUTO');
         $queries = $GLOBALS['SITE_DB']->driver->alter_table_field__sql(get_table_prefix() . $table_name, $field_name, $db_type, $field_type[0] == '?', $is_autoincrement, $field_name);
-        foreach ($queries as $query){
+        foreach ($queries as $query) {
             $this->add_fixup_query($query);
         }
     }

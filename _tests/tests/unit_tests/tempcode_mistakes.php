@@ -42,7 +42,8 @@ class Tempcode_mistakes_test_set extends cms_test_case
                 $this->assertTrue(preg_match($regexp, $c) == 0, 'Found dodgy looking IF_PASSED situation in ' . $file);
 
                 // By convention we have HTML coming out nicely formatted EXCEPT where there is Tempcode guarding an attribute at the start of the tag where we want the raw .tpl to work well in a code editor
-                $this->assertTrue(preg_match('#<\w+\{\+#', $c) == 0, 'Code editors would find it hard to detect a tag start in ' . $file);
+                $matches = [];
+                $this->assertTrue(preg_match('#<\w+\{\+#', $c, $matches) == 0, 'Code editors would find it hard to detect a tag start in ' . $file . ' (' . implode(' | ', $matches) . ')');
             }
         }
     }
