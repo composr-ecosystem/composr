@@ -261,14 +261,17 @@ class Hook_fields_list_multi extends ListFieldHook
         switch ($widget) {
             case 'vertical_checkboxes':
             case 'horizontal_checkboxes':
-                $i = 0;
-                do {
+                $list = $this->get_input_list_map($field);
+                foreach ($list as $i => $l) {
                     $_tmp_name = $tmp_name . '_' . strval($i);
+                    $on_form = post_param_string('tick_on_form__' . $_tmp_name, null);
+                    if ($on_form === null) {
+                        continue;
+                    }
                     if (post_param_integer($_tmp_name, 0) == 1) {
                         $ret[] = post_param_string('label_for__' . $_tmp_name);
                     }
-                    $i++;
-                } while (post_param_string('tick_on_form__' . $_tmp_name, null) !== null);
+                }
                 break;
 
             case 'multilist':
