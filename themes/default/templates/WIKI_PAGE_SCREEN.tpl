@@ -44,7 +44,7 @@
 							<a title="{CHILD*}: {!WIKI_PAGES}" href="{URL*}">{CHILD*}</a>
 							{+START,IF,{$OR,{$GT,{MY_CHILD_POSTS},0},{$GT,{MY_CHILD_CHILDREN},0},{$IS_NON_EMPTY,{BODY_CONTENT}}}}
 								<br />
-								{+START,IF_PASSED,BODY_CONTENT}{!BODY_CONTENT}, {+END}
+								{+START,IF,{$GT,{BODY_CONTENT},0}}{!BODY_CONTENT}, {+END}
 								{!POST_PLU,{MY_CHILD_POSTS*}},
 								{!CHILD_PLU,{MY_CHILD_CHILDREN*}}
 							{+END}
