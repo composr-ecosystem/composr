@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -643,7 +643,7 @@ Translations may also be downloaded directly from Transifex.";
 {$open} /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 

@@ -284,7 +284,7 @@ Here's a helpful script to search a codebase for a function call happening on a 
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
