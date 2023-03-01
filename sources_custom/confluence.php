@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -287,7 +287,7 @@ function _build_confluence_id_url($id)
     $mappings_by_complex_id = list_to_map('id', $mappings);
 
     if (isset($mappings_by_complex_id[$id])) {
-        $slug = $mappings_by_complex_id[$id]['slug'];
+        $slug = urldecode($mappings_by_complex_id[$id]['slug']);
         $map = ['page' => 'docs', 'type' => $slug];
     } else {
         $map = ['page' => 'docs', 'type' => $id];
