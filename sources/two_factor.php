@@ -109,9 +109,13 @@ function maintenance_script_htaccess_option_available() : bool
  */
 function adjust_htaccess()
 {
-    $option_enabled = ((maintenance_script_htaccess_option_available()) && (get_option('maintenance_script_htaccess') === '1'));
-
     $path = get_file_base() . '/.htaccess';
+
+    if (!is_file($path)) {
+        return;
+    }
+
+    $option_enabled = ((maintenance_script_htaccess_option_available()) && (get_option('maintenance_script_htaccess') === '1'));
 
     $contents = cms_file_get_contents_safe($path, FILE_READ_LOCK);
 
