@@ -4745,10 +4745,13 @@ if (!function_exists('geshi_highlight')) {
         $geshi->set_header_type(GESHI_HEADER_NONE);
 
         if ($return) {
-            return '<code>' . $geshi->parse_code() . '</code>';
+            $ret = '<code>' . $geshi->parse_code() . '</code>';
+            $ret .= '<style>' . $geshi->get_stylesheet() . '</style>';
+            return $ret;
         }
 
         echo '<code>' . $geshi->parse_code() . '</code>';
+        echo '<style>' . $geshi->get_stylesheet() . '</style>';
 
         if ($geshi->error()) {
             return false;
