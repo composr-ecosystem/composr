@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -34,8 +34,10 @@ class Hook_symbol_DECRYPT
 
         if (!@cms_empty_safe($param[1])) {
             require_code('encryption');
-            if (is_encryption_enabled()) {
+            if ((is_encryption_enabled()) && (is_data_encrypted($param[0]))) {
                 $value = decrypt_data($param[0], $param[1]);
+            } else {
+                $value = $param[0];
             }
         }
 

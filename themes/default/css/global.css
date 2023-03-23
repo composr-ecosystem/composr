@@ -1,6 +1,6 @@
 /*
  {$BRAND_NAME`}
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 */
 
 /*
@@ -765,7 +765,7 @@ html.is-mouse-only .touch-only {
 	color: {$GET,WB};
 }
 
-comcode-{$REPLACE,\,,::selection \,comcode-,{$COMCODE_TAGS;,{$WYSIWYG_COMCODE__XML_BLOCK}}\,{$COMCODE_TAGS;,{$WYSIWYG_COMCODE__XML_INLINE}}}, tempcode ::selection {
+comcode-{$REPLACE,\,,::selection\, comcode-,{$COMCODE_TAGS;,{$WYSIWYG_COMCODE__XML_BLOCK}}\,{$COMCODE_TAGS;,{$WYSIWYG_COMCODE__XML_INLINE}}}::selection, tempcode::selection {
 	background-color: {$GET,green_highlight_text};
 }
 
@@ -2132,7 +2132,7 @@ body .accessibility-hidden { /* Contents should be made visible (or interpreted)
 	}
 /*{+END}*/
 div.edited {
-	margin: 2em 0;
+	margin: 2em 0 1em 0;
 }
 .edited > * {
 	vertical-align: middle;
@@ -2156,6 +2156,10 @@ div.edited {
 /* Used to align next to a floated button(s) */
 .vertical-alignment-buttons {
 	line-height: 1.9em;
+}
+
+.vertical-alignment-normalise-line-height {
+	line-height: 0;
 }
 
 
@@ -4080,6 +4084,13 @@ div.ajax-loading, p.ajax-loading {
 	{$BETA_CSS_PROPERTY,user-select: none;}
 }
 
+.ajax-tree-list a, .ajax-tree-list label {
+	vertical-align: middle;
+}
+.ajax-tree-list .icon {
+	vertical-align: baseline;
+}
+
 .ajax-tree-expand-icon {
 	display: inline-block;
 	cursor: pointer;
@@ -4245,17 +4256,6 @@ div.ajax-loading, p.ajax-loading {
 .rating-likers a+a {
 	padding-left: 2px;
 }
-
-/*{+START,CSS_MODE,desktop}*/
-	.trackbacks {
-		width: 14em;
-	}
-/*{+END}*/
-/*{+START,CSS_MODE,mobile}*/
-	.trackbacks {
-		width: 100%;
-	}
-/*{+END}*/
 
 .box---trackback label {
 	display: block;
@@ -5048,17 +5048,11 @@ ul.horizontal-links li img {
 ul.associated-link li img {
 	max-width: 14px;
 }
-ul.horizontal-links li img,
-ul.associated-link li img,
-ul.horizontal-links a,
-ul.horizontal-links form {
+ul.horizontal-links li > img, ul.associated-link li > img, ul.horizontal-links li > time, ul.horizontal-links li > a, ul.horizontal-links li > form {
 	vertical-align: middle;
 }
 /*{+START,CSS_MODE,mobile}*/
-	ul.horizontal-links li img,
-	ul.associated-link li img,
-	ul.horizontal-links a,
-	ul.horizontal-links form {
+	ul.horizontal-links li > img, ul.associated-link li > img, ul.horizontal-links li > time, ul.horizontal-links li > a, ul.horizontal-links li > form {
 		white-space: nowrap !important;
 	}
 
@@ -6730,8 +6724,13 @@ td > .comcode-code-wrap > .comcode-quote, td > .comcode-code-wrap > .comcode-cod
 	padding: 5px;
 	margin-left: 8px;
 	background-color: {$GET,code_background};
-	color: {$GET,code_text};
+	color: {$GET,code_text} !important;/*So can look okay in a tooltip*/
 	overflow: hidden;
+}
+
+.comcode-quote-inner *,
+.comcode-code-inner * {
+	color: inherit !important;/*So can look okay in a tooltip*/
 }
 
 .comcode-quote-inner-titled {

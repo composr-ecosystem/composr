@@ -34,16 +34,18 @@
 	{ENTRIES}
 {+END}
 
-{$REVIEW_STATUS,catalogue_category,{ID}}
-
-{+START,IF,{$THEME_OPTION,show_content_tagging}}{TAGS}{+END}
-
 {+START,INCLUDE,NOTIFICATION_BUTTONS}
 	NOTIFICATIONS_TYPE=catalogue_entry__{CATALOGUE}
 	NOTIFICATIONS_ID={ID}
 	BREAK=1
 	RIGHT=1
 {+END}
+
+{+START,IF,{$THEME_OPTION,show_content_tagging}}{TAGS}{+END}
+
+{+START,IF,{$THEME_OPTION,show_screen_actions}}{$BLOCK,failsafe=1,block=main_screen_actions,title={$METADATA,title}}{+END}
+
+{$REVIEW_STATUS,catalogue_category,{ID}}
 
 {$,Load up the staff actions template to display staff actions uniformly (we relay our parameters to it)...}
 {+START,INCLUDE,STAFF_ACTIONS}
@@ -64,8 +66,6 @@
 	4_TITLE={!EDIT_THIS_CATALOGUE}
 	4_ICON=menu/cms/catalogues/edit_this_catalogue
 {+END}
-
-{+START,IF,{$THEME_OPTION,show_screen_actions}}{$BLOCK,failsafe=1,block=main_screen_actions,title={$METADATA,title}}{+END}
 
 {$,Display top/recent entries. By default it is only shown on the A-Z screen, which has a blank ID}
 {+START,IF_NON_EMPTY,{$GET,subcategories}}{+START,IF,{$EQ,{ID},}}

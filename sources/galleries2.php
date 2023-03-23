@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -1505,7 +1505,7 @@ function _watermark_corner($source, string $watermark_url, int $x, int $y)
  * @param  boolean $uniqify Whether to force the name as unique, if there's a conflict
  * @return ID_TEXT The name
  */
-function add_gallery(string $name, string $fullname, string $description, string $notes, string $parent_id, int $accept_images = 1, int $accept_videos = 1, int $is_member_synched = 0, ?string $layout_mode = null, string $rep_image = '', string $watermark_top_left = '', string $watermark_top_right = '', string $watermark_bottom_left = '', string $watermark_bottom_right = '', string $gallery_sort = '', string $media_sort = '', int $allow_rating = 1, int $allow_comments = 1, bool $skip_exists_check = false, ?int $add_date = null, ?int $g_owner = null, ?string $meta_keywords = '', ?string $meta_description = '', bool $uniqify = false) : string
+function add_gallery(string $name, string $fullname, string $description, string $notes, string $parent_id, int $accept_images = 1, int $accept_videos = 1, int $is_member_synched = 0, ?string $layout_mode = null, string $rep_image = '', string $watermark_top_left = '', string $watermark_top_right = '', string $watermark_bottom_left = '', string $watermark_bottom_right = '', string $gallery_sort = '', string $media_sort = '', int $allow_rating = 0, int $allow_comments = 0, bool $skip_exists_check = false, ?int $add_date = null, ?int $g_owner = null, ?string $meta_keywords = '', ?string $meta_description = '', bool $uniqify = false) : string
 {
     require_code('galleries');
 

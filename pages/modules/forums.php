@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -91,6 +91,10 @@ class Module_forums
         $access_url = get_param_string('url', $base_url . '/', INPUT_FILTER_URL_GENERAL);
 
         foreach ($_GET as $key => $val) {
+            if (is_integer($key)) {
+                $key = strval($key);
+            }
+
             if ($key == 'page') {
                 continue;
             }

@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -18,7 +18,11 @@
  * @package    core
  */
 
-/*EXTRA FUNCTIONS: fileowner*/
+/*EXTRA FUNCTIONS: fileowner|php_sapi_name*/
+
+/*
+    Optional general library code that must be manually loaded
+*/
 
 /**
  * Standard code module initialisation function.
@@ -635,7 +639,7 @@ function _log_it(string $type, ?string $a = null, ?string $b = null, ?int $relat
     }
 
     // Run hooks, if any exist
-    $hooks = find_all_hook_obs('systems', 'upon_action_logging', 'upon_action_logging');
+    $hooks = find_all_hook_obs('systems', 'upon_action_logging', 'Hook_upon_action_logging_');
     foreach ($hooks as $ob) {
         $ob->run($type, $a, $b);
     }
@@ -885,4 +889,27 @@ function get_exact_usernames_and_suexec() : array
     }
 
     return [$username, $suexec];
+}
+
+/**
+ * Check whether we might be running Apache.
+ * This should not be used to definitively detect Apache; only use this for code which would probably not break the site if we really are not running Apache.
+ *
+ * @return boolean Whether we might be running Apache
+ */
+function is_possibly_apache() : bool
+{
+    // Check server variable
+    $server_software = $_SERVER['SERVER_SOFTWARE'];
+    if ((stripos($server_software, 'Apache') !== false) || (is_maintained('platform_litespeed') && stripos($server_software, 'LiteSpeed') !== false)) {
+        return true;
+    }
+
+    // Check PHP SAPI
+    $sapi = php_sapi_name();
+    if ((stripos($sapi, 'apache') !== false) || (is_maintained('platform_litespeed') && stripos($sapi, 'LiteSpeed') !== false) || (stripos($sapi, 'cgi') !== false)) {
+        return true;
+    }
+
+    return false;
 }

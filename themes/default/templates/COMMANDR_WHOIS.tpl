@@ -30,7 +30,7 @@
 			<th>{!ACTIONS}</th>
 			<td>
 				<ul class="actions-list">
-					<li>{+START,INCLUDE,ICON}NAME=buttons/proceed2{+END} <a rel="noopener" href="https://ip.me/?ip={IP*}">Reverse-DNS/WHOIS/Geo-Lookup</a></li>
+					<li>{+START,INCLUDE,ICON}NAME=buttons/proceed2{+END} <a rel="noopener" href="https://ip.me/ip/{IP*}">Reverse-DNS/WHOIS/Geo-Lookup</a></li>
 					<li>{+START,INCLUDE,ICON}NAME=buttons/proceed2{+END} <a rel="noopener" href="https://ping.eu/ping/?host={IP*}">Ping</a></li>
 					<li>{+START,INCLUDE,ICON}NAME=buttons/proceed2{+END} <a rel="noopener" href="https://ping.eu/traceroute/?host={IP*}">Tracert</a></li>
 				</ul>

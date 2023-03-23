@@ -21,6 +21,8 @@
 test_a
 /caches/http/*.bin
 /temp/*
+!/temp/index.html
+!/temp/.htaccess
 /sources_custom/user_sync__customise.php
 /www.pid
 /_critical_error.html

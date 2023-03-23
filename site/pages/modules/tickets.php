@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -916,9 +916,9 @@ class Module_tickets
             }
         }
 
-        // Wrap around e-mail address if needed...
+        $email = post_param_string('email', '', INPUT_FILTER_POST_IDENTIFIER | INPUT_FILTER_EMAIL_ADDRESS);
 
-        $email = post_param_string('email', '', INPUT_FILTER_POST_IDENTIFIER);
+        // Wrap around e-mail address if needed...
         if ($ticket_type_id !== null) {
             $post = ticket_wrap_with_email_address($post, $email, ($ticket_type_details['guest_emails_mandatory'] == 1));
         }
@@ -1053,7 +1053,7 @@ class Module_tickets
         // Category filter
         $where_clause = 'r.' . $info['category'] . '=' . strval($catalogue_id);
         list($content_where) = build_content_where($search_query);
-        $hook_results = $object->run($search_query, $content_where, $where_clause, '-1', false, false, null, 0, 'relevance', 'ASC', '', null, null);
+        $hook_results = $object->run($search_query, $content_where, $where_clause, '-1', false, false, 100, 0, 'relevance', 'ASC', '', null, null);
         if (($hook_results === null) || (empty($hook_results))) {
             return null;
         }
@@ -1133,6 +1133,10 @@ class Module_tickets
         ]);
 
         foreach ($_POST as $key => $username) {
+            if (is_integer($key)) {
+                $key = strval($key);
+            }
+
             if (substr($key, 0, strlen('access_')) != 'access_') {
                 continue;
             }

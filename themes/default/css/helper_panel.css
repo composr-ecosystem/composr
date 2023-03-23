@@ -1,16 +1,7 @@
 /*
  {$BRAND_NAME`}
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 */
-
-/*{+START,CSS_MODE,desktop}*/
-	.helper-panel-visible ~ .global-middle {
-		margin-right: 265px !important;
-	}
-	.helper-panel-hidden ~ .global-middle {
-		margin-right: 16px !important;
-	}
-/*{+END}*/
 
 .global-helper-panel {
 	position: relative;

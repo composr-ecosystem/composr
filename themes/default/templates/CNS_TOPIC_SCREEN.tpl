@@ -93,7 +93,7 @@
 
 				{+START,IF,{$DESKTOP}}
 					{+START,IF_NON_EMPTY,{MARKED_POST_ACTIONS}}
-						<form class="form-marked-post-actions desktop-only js-form-marked-post-actions" title="{!MARKED_POST_ACTIONS}" action="{$URL_FOR_GET_FORM*,{ACTION_URL}}" method="get">
+						<form class="desktop-only" title="{!MARKED_POST_ACTIONS}" action="{$URL_FOR_GET_FORM*,{ACTION_URL}}" method="get">
 							{$HIDDENS_FOR_GET_FORM,{ACTION_URL}}
 							<label for="mpa-type">{!_MARKED_POST_ACTIONS}:</label>
 							<select id="mpa-type" name="type" class="form-control form-control-sm js-moderator-action-submit-form">
@@ -162,6 +162,12 @@
 			</div>
 		{+END}
 
+		{+START,IF_NON_EMPTY,{FORUM_ID}}
+			{+START,IF,{$THEME_OPTION,show_screen_actions}}{+START,IF_PASSED,_TITLE}{$BLOCK,failsafe=1,block=main_screen_actions,title={_TITLE}}{+END}{+END}
+		{+END}
+
+		{$REVIEW_STATUS,topic,{ID}}
+
 		{+START,SET,double_post_message}
 			{+START,IF_EMPTY,{QUICK_REPLY}}{+START,IF,{$EQ,{LAST_POSTER},{$MEMBER}}}{+START,IF,{$NOT,{$IS_GUEST}}}{+START,IF,{$NOT,{MAY_DOUBLE_POST}}}
 				<div class="box box---members-viewing"><div class="box-inner">
@@ -175,12 +181,6 @@
 
 				{$GET,double_post_message}
 			</div>
-		{+END}
-
-		{$REVIEW_STATUS,topic,{ID}}
-
-		{+START,IF_NON_EMPTY,{FORUM_ID}}
-			{+START,IF,{$THEME_OPTION,show_screen_actions}}{+START,IF_PASSED,_TITLE}{$BLOCK,failsafe=1,block=main_screen_actions,title={_TITLE}}{+END}{+END}
 		{+END}
 	</div>
 </div>

@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -47,6 +47,7 @@ class Hook_addon_registry_google_search_console
     public function get_category() : string
     {
         // Best to just categorise properly as it's not bundled
+        //return is_maintained('google_search_console') ? 'Third Party Integration' : 'Development';
         return 'Third Party Integration';
     }
 

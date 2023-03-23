@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -123,7 +123,7 @@ function special_page_types(string $special_page_type, object &$out, ?string $ou
         }*/
 
         foreach (array_keys($CSSS) as $name) {
-            $search = find_template_place($name, get_site_default_lang(), $GLOBALS['FORUM_DRIVER']->get_theme(), '.css', 'css');
+            $search = find_template_place($name, $GLOBALS['FORUM_DRIVER']->get_theme(), '.css', 'css');
             if ($search !== null) {
                 list($theme, $type, $suffix) = $search;
                 $txtmte_url = 'txmt://open?url=file://' . get_file_base() . '/themes/' . $theme . '/' . $type . '/' . $name . $suffix;
@@ -184,7 +184,6 @@ function special_page_types(string $special_page_type, object &$out, ?string $ou
         foreach (array_keys($RECORDED_TEMPLATES_USED) as $name) {
             $search = find_template_place(
                 basename($name, '.' . get_file_extension($name)),
-                get_site_default_lang(),
                 $GLOBALS['FORUM_DRIVER']->get_theme(),
                 '.' . get_file_extension($name),
                 dirname($name)

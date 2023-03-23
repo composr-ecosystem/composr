@@ -37,12 +37,12 @@
             var button = $dom.$('#translate-button'),
                 hasEdits = false;
 
-            if (textarea.value != textarea.defaultValue) {
+            if (textarea.value !== textarea.defaultValue) {
                 hasEdits = true;
             } else {
                 var fields = $dom.$$('.js-textarea-translate-field');
                 for (var i = 0; i < fields.length; i++) {
-                    if (fields[i].value != fields[i].defaultValue) {
+                    if (fields[i].value !== fields[i].defaultValue) {
                         hasEdits = true;
                         break;
                     }

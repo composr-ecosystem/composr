@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -316,7 +316,7 @@ class Module_admin_redirects
                 continue;
             }
 
-            if ((substr($key, 0, 10) == 'from_page_') && ($val != '')) {
+            if ((is_string($key)) && (substr($key, 0, 10) == 'from_page_') && ($val != '')) {
                 $their_i = array_search($val, $found);
                 $i = substr($key, 10);
                 if (($their_i !== false) && (post_param_string('from_zone_' . $i) == post_param_string('from_zone_' . strval($their_i)))) {
@@ -399,7 +399,8 @@ class Module_admin_redirects
 
         list($ref_point_end, $c) = $this->check_url_redirect_availability();
 
-        if (substr($_SERVER['SERVER_SOFTWARE'], 0, 6) != 'Apache') {
+        require_code('global4');
+        if (!is_possibly_apache()) {
             attach_message(do_lang_tempcode('URL_REDIRECT_ERROR_NOT_APACHE'), 'warn');
         }
 
@@ -413,7 +414,7 @@ class Module_admin_redirects
         foreach ($c_lines as $c_line) {
             $matches = [];
             if (preg_match(Module_admin_redirects::URL_REDIRECT_HTACCESS_COMMENT_LINE, $c_line, $matches) != 0) {
-                $note = $matches[1];
+                $note = trim($matches[1]);
             } elseif (preg_match(Module_admin_redirects::URL_REDIRECT_HTACCESS_REDIRECT_LINE, $c_line, $matches) != 0) {
                 $from = $matches[1];
                 $to = $matches[2];
@@ -558,7 +559,7 @@ class Module_admin_redirects
                 continue;
             }
 
-            if (substr($key, 0, 5) == 'from_') {
+            if ((is_string($key)) && (substr($key, 0, 5) == 'from_')) {
                 $i = substr($key, 5);
                 $from = $val;
                 $to = post_param_string('to_' . $i);

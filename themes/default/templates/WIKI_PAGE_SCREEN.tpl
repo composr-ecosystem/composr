@@ -44,7 +44,7 @@
 							<a title="{CHILD*}: {!WIKI_PAGES}" href="{URL*}">{CHILD*}</a>
 							{+START,IF,{$OR,{$GT,{MY_CHILD_POSTS},0},{$GT,{MY_CHILD_CHILDREN},0},{$IS_NON_EMPTY,{BODY_CONTENT}}}}
 								<br />
-								{+START,IF_PASSED,BODY_CONTENT}{!BODY_CONTENT}, {+END}
+								{+START,IF,{$GT,{BODY_CONTENT},0}}{!BODY_CONTENT}, {+END}
 								{!POST_PLU,{MY_CHILD_POSTS*}},
 								{!CHILD_PLU,{MY_CHILD_CHILDREN*}}
 							{+END}
@@ -112,10 +112,10 @@
 			</div>
 		</div>
 
-		{$REVIEW_STATUS,wiki_page,{ID}}
-
 		{+START,IF,{$THEME_OPTION,show_content_tagging}}{TAGS}{+END}
 
 		{+START,IF,{$THEME_OPTION,show_screen_actions}}{$BLOCK,failsafe=1,block=main_screen_actions,title={$METADATA,title}}{+END}
+
+		{$REVIEW_STATUS,wiki_page,{ID}}
 	</div>
 </div>

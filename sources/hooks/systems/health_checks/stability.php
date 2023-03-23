@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -41,7 +41,7 @@ class Hook_health_check_stability extends Hook_Health_Check
     public function run(?array $sections_to_run, int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null, bool $show_unusable_categories = false) : array
     {
         $this->process_checks_section('testManualLogs', 'Manual stability checks', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
-        $this->process_checks_section('testPageIntegrity', 'Page integrity', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+        $this->process_checks_section('testPageIntegrity', 'Page integrity (tests the configured/contextual pages only)', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testBlockIntegrity', 'Block integrity (slow)', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testErrorLog', 'Error log', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
 
@@ -61,9 +61,11 @@ class Hook_health_check_stability extends Hook_Health_Check
     public function testManualLogs(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if ($check_context == CHECK_CONTEXT__INSTALL) {
+            $this->log('Skipped; we are running from installer.');
             return;
         }
         if ($check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS) {
+            $this->log('Skipped; running on specific page links.');
             return;
         }
 
@@ -100,6 +102,7 @@ class Hook_health_check_stability extends Hook_Health_Check
     public function testPageIntegrity(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if ($check_context == CHECK_CONTEXT__INSTALL) {
+            $this->log('Skipped; we are running from installer.');
             return;
         }
 
@@ -139,9 +142,11 @@ class Hook_health_check_stability extends Hook_Health_Check
     public function testBlockIntegrity(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if ($check_context == CHECK_CONTEXT__INSTALL) {
+            $this->log('Skipped; we are running from installer.');
             return;
         }
         if ($check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS) {
+            $this->log('Skipped; running on specific page links.');
             return;
         }
 
@@ -170,9 +175,11 @@ class Hook_health_check_stability extends Hook_Health_Check
     public function testErrorLog(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if ($check_context == CHECK_CONTEXT__INSTALL) {
+            $this->log('Skipped; we are running from installer.');
             return;
         }
         if ($check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS) {
+            $this->log('Skipped; running on specific page links.');
             return;
         }
 

@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -268,6 +268,7 @@ class Hook_sitemap_forum extends Hook_sitemap_content
 
         $struct['extra_meta'] = [
             'image' => (($meta_gather & SITEMAP_GATHER_IMAGE) != 0) ? find_theme_image('icons/menu/social/forum/forums') : null,
+            'icon' => (($meta_gather & SITEMAP_GATHER_IMAGE) != 0) ? 'menu/social/forum/forums' : null,
         ] + $struct['extra_meta'];
 
 

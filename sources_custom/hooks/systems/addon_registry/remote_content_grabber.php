@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -86,7 +86,7 @@ class Hook_addon_registry_remote_content_grabber
      */
     public function get_description() : string
     {
-        return 'A class to download remote content and move it locally.';
+        return 'A class to download remote content and move it locally. This addon is hard-coded to use Photobucket, as an example.';
     }
 
     /**

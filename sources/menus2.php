@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -527,7 +527,7 @@ function menu_items_being_saved() : array
     $ids = [];
     foreach ($_POST as $key => $val) {
         if (is_string($val)) {
-            if (substr($key, 0, 7) == 'parent_') {
+            if ((is_string($key)) && (substr($key, 0, 7) == 'parent_')) {
                 $ids[intval(substr($key, 7))] = $val;
             }
         }

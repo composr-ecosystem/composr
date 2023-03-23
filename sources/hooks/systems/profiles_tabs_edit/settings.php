@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -136,22 +136,21 @@ class Hook_profiles_tabs_edit_settings
             );
             $actual_custom_fields = ((post_param_integer('submitting_profile_tab', 0) == 1) || (fractional_edit())) ? cns_read_in_custom_fields($custom_fields, $member_id_of) : [];
 
+            $auto_monitor_contrib_content = null;
+            $smart_topic_notification = null;
+            $mailing_list_style = null;
+
             if (!fractional_edit()) {
                 $timezone = post_param_string('timezone', get_site_timezone());
+                $theme_old = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id_of, 'm_theme');
                 $theme = post_param_string('theme', null);
 
                 $preview_posts = post_param_integer('preview_posts', 0);
                 $views_signatures = post_param_integer('views_signatures', 0);
 
-                /*
-                Actually managed on the notifications tab, even though technically account settings
-                $auto_monitor_contrib_content = post_param_integer('auto_monitor_contrib_content',0);
+                $auto_monitor_contrib_content = post_param_integer('auto_monitor_contrib_content', 0);
                 $smart_topic_notification = post_param_integer('smart_topic_notification', 0);
                 $mailing_list_style = post_param_integer('mailing_list_style', 0);
-                */
-                $auto_monitor_contrib_content = null;
-                $smart_topic_notification = null;
-                $mailing_list_style = null;
 
                 $auto_mark_read = post_param_integer('auto_mark_read', 0);
                 $sound_enabled = post_param_integer('sound_enabled', 0);
@@ -302,19 +301,30 @@ class Hook_profiles_tabs_edit_settings
                 if ($redirect !== null) {
                     require_code('site2');
                     assign_refresh($redirect, 0.0); // redirect_screen not used because there is already a legitimate output screen happening
+                } elseif ((!fractional_edit()) && ($member_id_of == $member_id_viewing)) { // If we are changing theme, assign a refresh so the theme change is reflected for the member
+                    if (($theme !== null) && ($theme !== $theme_old)) {
+                        require_code('site2');
+                        assign_refresh(get_self_url(false, false, ['redirected' => 1]), 0.0); // redirect_screen not used because there is already a legitimate output screen happening
+                    }
                 }
-
-                if (($username !== null) && ($username != $username_old)) {
-                    $title = get_screen_title('MEMBER_ACCOUNT', true, [escape_html($username), escape_html($username)]);
-                    require_code('site2');
-                    redirect_exit(get_self_url(), $title, do_lang_tempcode('SUCCESS_SAVE'));
-                }
-
-                attach_message(do_lang_tempcode('SUCCESS_SAVE'), 'inform');
             }
 
             require_code('cns_groups_action2');
             cns_update_group_approvals($member_id_of, $member_id_viewing, $old_groups);
+
+            // Tidy up auto-save
+            require_code('autosave');
+            clear_cms_autosave();
+
+            if (!fractional_edit()) {
+                if (($username !== null) && ($username != $username_old)) {
+                    $title = get_screen_title('MEMBER_ACCOUNT', true, [escape_html($username), escape_html($username)]);
+                    require_code('site2');
+                    redirect_exit(get_self_url(), $title, do_lang_tempcode('SUCCESS_SAVE'));
+                } else {
+                    attach_message(do_lang_tempcode('SUCCESS_SAVE'), 'inform');
+                }
+            }
         } elseif (post_param_integer('validated', 0) == 1) { // Special support for just approving
             $GLOBALS['FORUM_DB']->query_update('f_members', ['m_validated' => 1], ['id' => $member_id_of], '', 1);
 

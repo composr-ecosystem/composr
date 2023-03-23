@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -125,13 +125,17 @@ class Hook_sitemap_comcode_page extends Hook_sitemap_page
         $row = $this->_load_row_from_page_groupings($row, $meta_gather, $zone, $page);
 
         if ($page == DEFAULT_ZONE_PAGE_NAME) {
-            $test_icon = find_theme_image('icons/menu/menu/' . $page, true);
+            $test_icon = 'menu/menu/' . $page;
+            $test_image = find_theme_image('icons/' . $test_icon, true);
         } else {
-            $test_icon = find_theme_image('icons/menu/pages/' . $page, true);
+            $test_icon = 'menu/pages/' . $page;
+            $test_image = find_theme_image('icons/' . $test_icon, true);
         }
-        if ($test_icon == '') {
-            $test_icon = find_theme_image('icons/menu/site_meta/' . $page, true);
-            if ($test_icon == '') {
+        if ($test_image == '') {
+            $test_icon = 'menu/site_meta/' . $page;
+            $test_image = find_theme_image('icons/' . $test_icon, true);
+            if ($test_image == '') {
+                $test_image = null;
                 $test_icon = null;
             }
         }
@@ -146,7 +150,8 @@ class Hook_sitemap_comcode_page extends Hook_sitemap_page
             'url' => null,
             'extra_meta' => [
                 'description' => null,
-                'image' => $test_icon,
+                'image' => $test_image,
+                'icon' => $test_icon,
                 'add_time' => (($meta_gather & SITEMAP_GATHER_TIMES) != 0) ? filectime($full_path) : null,
                 'edit_time' => (($meta_gather & SITEMAP_GATHER_TIMES) != 0) ? filemtime($full_path) : null,
                 'submitter' => null,

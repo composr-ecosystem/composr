@@ -44,6 +44,8 @@
 		RIGHT=1
 	{+END}
 
+	{+START,IF,{$THEME_OPTION,show_screen_actions}}{$BLOCK,failsafe=1,block=main_screen_actions,title={$METADATA,title}}{+END}
+
 	{$,Load up the staff actions template to display staff actions uniformly (we relay our parameters to it)...}
 	{+START,INCLUDE,STAFF_ACTIONS}
 		1_URL={IMAGE_URL*}
@@ -74,31 +76,19 @@
 		{+END}
 	{+END}
 
-	<div class="clearfix lined-up-boxes">
-		{+START,IF_NON_EMPTY,{MEMBER_DETAILS}}
-			<div class="right">
-				<div class="box box---gallery-member-details"><div class="box-inner">
-					<h2>{_TITLE*}</h2>
-
-					{MEMBER_DETAILS}
-				</div></div>
+	{+START,IF_NON_EMPTY,{RATING_DETAILS}}
+		<div class="clearfix">
+			<div class="ratings">
+				{RATING_DETAILS}
 			</div>
+		</div>
+	{+END}
 
-			{+START,IF_NON_EMPTY,{$GET,entries}}
-				<div class="ratings right">
-					{RATING_DETAILS}
-				</div>
-			{+END}
-		{+END}
-	</div>
-
-	{+START,IF_NON_EMPTY,{$GET,entries}}
+	{+START,IF_NON_EMPTY,{COMMENT_DETAILS}}
 		<div class="content-screen-comments">
 			{COMMENT_DETAILS}
 		</div>
 	{+END}
-
-	{+START,IF,{$THEME_OPTION,show_screen_actions}}{$BLOCK,failsafe=1,block=main_screen_actions,title={$METADATA,title}}{+END}
 
 	{$,Uncomment the below if you want the root gallery to show recent and top content, then customise the GALLERY_POPULAR.tpl template to control specifics}
 	{$,\{+START,INCLUDE,GALLERY_POPULAR\}\{+END\}}

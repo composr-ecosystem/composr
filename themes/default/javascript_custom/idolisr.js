@@ -3,7 +3,7 @@
 
     $cms.templates.pointsSend = function pointsSend(params, container) {
         var sendPointsFormLastValid;
-        var processIdolisrFields = function(e, el) {
+        var processIdolisrFields = function (e, el) {
             var anonymous = document.getElementById('points-anon-span');
             var role = document.getElementById('points-role-span');
             if (el.value === "send") {
@@ -17,7 +17,7 @@
                 }
                 role.style.display = "none";
             }
-        }
+        };
 
         $dom.on(container, 'click', '.js-points-check-form', function (e, btn) {
             var form = btn.form;

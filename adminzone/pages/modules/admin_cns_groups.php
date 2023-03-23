@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -301,7 +301,7 @@ class Module_admin_cns_groups extends Standard_crud_module
 
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '242da621a54eb63efd528e678dbceeaa', 'SECTION_HIDDEN' => true, 'TITLE' => do_lang_tempcode('SECURITY')]));
         $fields->attach(form_input_tick(do_lang_tempcode('HIDDEN_USERGROUP'), do_lang_tempcode('DESCRIPTION_GROUP_HIDDEN'), 'hidden', $group_is_hidden == 1));
-        $fields->attach(form_input_tick(do_lang_tempcode('ENQUIRE_ON_NEW_IPS'), do_lang_tempcode('DESCRIPTION_ENQUIRE_ON_NEW_IPS'), 'enquire_on_new_ips', $enquire_on_new_ips == 1));
+        $fields->attach(form_input_tick(do_lang_tempcode('ENQUIRE_ON_NEW_IPS'), do_lang_tempcode('DESCRIPTION_ENQUIRE_ON_NEW_IPS', is_maintained_description('two_factor', do_lang_tempcode('TWO_FACTOR_AUTHENTICATION'))), 'enquire_on_new_ips', $enquire_on_new_ips == 1));
 
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'e894918a6e1b56fdd5f1574cd68a3a91', 'SECTION_HIDDEN' => true, 'TITLE' => do_lang_tempcode('RESTRICTIONS')]));
         $fields->attach(form_input_integer(do_lang_tempcode('MAX_ATTACHMENTS_PER_POST'), do_lang_tempcode('DESCRIPTION_MAX_ATTACHMENTS_PER_POST'), 'max_attachments_per_post', $max_attachments_per_post, true));
@@ -781,6 +781,6 @@ class Module_admin_cns_groups extends Standard_crud_module
      */
     public function delete_actualisation(string $id)
     {
-        cns_delete_group(intval($id), post_param_integer('new_usergroup'));
+        cns_delete_group(intval($id), post_param_integer('new_usergroup', null));
     }
 }

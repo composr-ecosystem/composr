@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -189,13 +189,7 @@ function run_health_check(bool &$has_fails, ?array $sections_to_run = null, bool
         }
     }
 
-    $_log_file = get_custom_file_base() . '/data_custom/health_check.log';
-    global $HEALTH_CHECK_LOG_FILE;
-    if (is_file($_log_file)) {
-        $HEALTH_CHECK_LOG_FILE = fopen($_log_file, 'at');
-
-        fwrite($HEALTH_CHECK_LOG_FILE, loggable_date() . '  (HEALTH CHECK STARTING)' . "\n");
-    }
+    health_check_log_start();
 
     $categories = [];
 
@@ -287,13 +281,38 @@ function run_health_check(bool &$has_fails, ?array $sections_to_run = null, bool
     }
     cms_mb_ksort($categories, SORT_NATURAL | SORT_FLAG_CASE);
 
+    health_check_log_stop();
+
+    return $categories;
+}
+
+/**
+ * Start Health Check logging.
+ */
+function health_check_log_start()
+{
+    $_log_file = get_custom_file_base() . '/data_custom/health_check.log';
+    global $HEALTH_CHECK_LOG_FILE;
+    if (is_file($_log_file)) {
+        $HEALTH_CHECK_LOG_FILE = fopen($_log_file, 'at');
+
+        $origin = running_script('index') ? get_self_url_easy() : $_SERVER['SCRIPT_NAME'];
+
+        fwrite($HEALTH_CHECK_LOG_FILE, loggable_date() . '  (HEALTH CHECK STARTING FROM ' . $origin . ')' . "\n");
+    }
+}
+
+/**
+ * Stop Health Check logging.
+ */
+function health_check_log_stop()
+{
+    global $HEALTH_CHECK_LOG_FILE;
     if ($HEALTH_CHECK_LOG_FILE !== null) {
         fwrite($HEALTH_CHECK_LOG_FILE, loggable_date() . '  (HEALTH CHECK ENDING)' . "\n");
 
         fclose($HEALTH_CHECK_LOG_FILE);
     }
-
-    return $categories;
 }
 
 /**
@@ -337,9 +356,11 @@ abstract class Hook_Health_Check
             if ($HEALTH_CHECK_LOG_FILE !== null) {
                 fwrite($HEALTH_CHECK_LOG_FILE, loggable_date() . '  STARTING ' . $this->category_label . ' \\ ' . $section_label . "\n");
             }
+            $time_before = microtime(true);
             call_user_func([$this, $method], $check_context, $show_manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+            $time_after = microtime(true);
             if ($HEALTH_CHECK_LOG_FILE !== null) {
-                fwrite($HEALTH_CHECK_LOG_FILE, loggable_date() . '  FINISHED ' . $this->category_label . ' \\ ' . $section_label . "\n");
+                fwrite($HEALTH_CHECK_LOG_FILE, loggable_date() . '  FINISHED ' . $this->category_label . ' \\ ' . $section_label . ' (' . float_format($time_after - $time_before) . ' seconds)' . "\n");
             }
         } else {
             if (strpos($section_label, ',') !== false) {
@@ -349,6 +370,19 @@ abstract class Hook_Health_Check
                 fatal_exit('Duplicate section: ' . $section_label);
             }
             $this->results[$section_label] = null;
+        }
+    }
+
+    /**
+     * Add something to the health check log for the current test. Will automatically prepend the category and section.
+     *
+     * @param  string $contents The text to add to the log
+     */
+    protected function log(string $contents)
+    {
+        global $HEALTH_CHECK_LOG_FILE;
+        if ($HEALTH_CHECK_LOG_FILE !== null) {
+            fwrite($HEALTH_CHECK_LOG_FILE, loggable_date() . '  ' . $this->category_label . ' \\ ' . $this->current_section_label . ': ' . $contents . "\n");
         }
     }
 
@@ -498,9 +532,10 @@ abstract class Hook_Health_Check
             }
         }
 
-        $http_result = $this->get_page_http_content($page_link);
+        $error_message = '';
+        $http_result = $this->get_page_http_content($page_link, $error_message);
         if ($http_result->data === null) {
-            $this->assertTrue(false, 'The server cannot download from self-hosted page-link [tt]' . $page_link . '[/tt]');
+            $this->assertTrue(false, $error_message);
             return '';
         }
         return $http_result->data;
@@ -510,17 +545,25 @@ abstract class Hook_Health_Check
      * Download a page by page-link.
      *
      * @param  string $page_link Page-link
+     * @param  string $error_message The error message returned (passed by reference) (blank: no error)
      * @return object Response data
      */
-    protected function get_page_http_content(string $page_link = ':') : object
+    protected function get_page_http_content(string $page_link = ':', string &$error_message = '') : object
     {
+        $error_message = '';
         global $HEALTH_CHECK_PAGE_RESPONSE_CACHE;
         if (!array_key_exists($page_link, $HEALTH_CHECK_PAGE_RESPONSE_CACHE)) {
-            $HEALTH_CHECK_PAGE_RESPONSE_CACHE[$page_link] = cms_http_request($this->get_page_url($page_link), ['convert_to_internal_encoding' => true, 'timeout' => 20.0, 'trigger_error' => false, 'no_redirect' => true]);
+            $page_link_url = $this->get_page_url($page_link);
+            $ob = cms_http_request($page_link_url, ['convert_to_internal_encoding' => true, 'timeout' => 20.0, 'trigger_error' => false, 'no_redirect' => true]);
+            $HEALTH_CHECK_PAGE_RESPONSE_CACHE[$page_link] = $ob;
+            $error_message = 'The server cannot download from self-hosted page-link, [url="' . $page_link_url . '"][tt]' . $page_link . '[/tt][/url] (' . $ob->message . ')';
+            if (get_option('site_closed') == '1') {
+                $error_message .= ' (the site is currently closed)';
+            }
 
             // Server blocked to access itself
             if ($page_link == ':') {
-                $this->assertTrue($HEALTH_CHECK_PAGE_RESPONSE_CACHE[$page_link] !== null, 'The server cannot download from self-hosted page-link [tt]' . $page_link . '[/tt]');
+                $this->assertTrue($HEALTH_CHECK_PAGE_RESPONSE_CACHE[$page_link] !== null, $error_message);
             }
         }
         return $HEALTH_CHECK_PAGE_RESPONSE_CACHE[$page_link];

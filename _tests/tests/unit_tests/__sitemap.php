@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -249,7 +249,7 @@ class __sitemap_test_set extends cms_test_case
                 }
 
                 if ((strpos($test[0], '_CUSTOM') === false) && (!in_array($k, ['adminzone:admin_config:base', ':keymap']))) {
-                    $this->assertTrue($c['extra_meta']['image'] != '', 'Missing icon for: ' . $k);
+                    $this->assertTrue($c['extra_meta']['image'] != '', 'Missing image for: ' . $k);
                 }
             }
         }
@@ -297,6 +297,7 @@ class __sitemap_test_set extends cms_test_case
         $props_meta = [
             'description',
             'image',
+            'icon',
             'add_time',
             'edit_time',
             'submitter',

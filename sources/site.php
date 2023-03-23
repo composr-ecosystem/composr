@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -546,7 +546,7 @@ function do_site_prep()
                 (get_param_integer('keep_failover', null) !== 0) &&
                 ((strpos($ruri, '/pg/') === false) || ($url_scheme != 'PG')) &&
                 ((strpos($ruri, '.htm') === false) || ($url_scheme != 'HTM')) &&
-                ((substr($ruri, -1) != '/') || (get_option('url_scheme_omit_default_zone_pages') == '0'))
+                ((substr(preg_replace('#\?.*$#', '', $ruri), -1) != '/') || (get_option('url_scheme_omit_default_zone_pages') == '0'))
             ) {
                 require_code('permissions');
                 set_http_status_code(301);
@@ -1023,9 +1023,9 @@ function do_site()
     $zone = get_zone_name();
     if ((($zone == 'adminzone') || ($zone == 'cms')) && (get_param_integer('wide_high', 0) == 0) && (get_param_integer('keep_wide_high', 0) == 0)) {
         if ((get_param_integer('cancel_sw_warn', 0) == 1) || (!addon_installed('setupwizard'))) {
-            set_value('setupwizard_completed', '1');
+            set_value('setupwizard_completed', '1', true);
         } else {
-            $_done_sw_once = get_value('setupwizard_completed');
+            $_done_sw_once = get_value('setupwizard_completed', null, true);
             $done_sw_once = $_done_sw_once !== null;
             if ((!$done_sw_once) && (get_page_name() != 'admin_setupwizard') && (has_actual_page_access(get_member(), 'admin_setupwizard'))) {
                 require_lang('config');

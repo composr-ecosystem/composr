@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -30,24 +30,43 @@ $title = empty($map['title']) ? '' : $map['title'];
 
 $show_data_labels = !isset($map['show_data_labels']) ? true : ($map['show_data_labels'] == '1');
 
-$color_pool = empty($map['color_pool']) ? [] : explode(',', $map['color_pool']);
+$wordwrap_tooltip_at = !isset($map['wordwrap_tooltip_at']) ? null : intval($map['wordwrap_tooltip_at']);
+
+$color_pool = @cms_empty_safe($map['color_pool']) ? [] : _parse_color_pool_string($map['color_pool']);
 
 $file = empty($map['file']) ? 'uploads/website_specific/graph_test/bubble_bar_chart.csv' : $map['file'];
 
-$myfile = fopen(get_custom_file_base() . '/' . $file, 'rb');
+require_code('files_spreadsheets_read');
+$sheet_reader = spreadsheet_open_read(get_custom_file_base() . '/' . $file, null, CMS_Spreadsheet_Reader::ALGORITHM_RAW);
 
-$header = fgetcsv($myfile);
+$header = $sheet_reader->read_row();
 
 $sheet_data = [];
-while (($line = fgetcsv($myfile)) !== false) {
+while (($line = $sheet_reader->read_row()) !== false) {
     if (implode('', $line) != '') {
         $sheet_data[] = $line;
     }
+    if (substr($line[0], 0, 1) == '#') {
+        continue; // Comment line
+    }
 }
+
+$sheet_reader->close();
 
 $datasets = [];
 foreach ($sheet_data as $line) {
     $num_datasets = count($line);
+
+    if (empty($header[$num_datasets - 1])) {
+        $tooltip = $line[$num_datasets - 1];
+        if ($wordwrap_tooltip_at !== null) {
+            $tooltip = wordwrap($tooltip, $wordwrap_tooltip_at);
+        }
+
+        $num_datasets--;
+    } else {
+        $tooltip = '';
+    }
 
     $datapoints = [];
     for ($i = 0; $i < $num_datasets - 1; $i++) {
@@ -56,12 +75,12 @@ foreach ($sheet_data as $line) {
 
     $datasets[] = [
         'label' => $line[0],
+        'tooltip' => $tooltip,
         'datapoints' => $datapoints,
     ];
 }
-fclose($myfile);
 
-$options = ['show_data_labels' => $show_data_labels];
+$options = ['show_data_labels' => $show_data_labels, 'wordwrap_tooltip_at' => $wordwrap_tooltip_at];
 if (!empty($map['id'])) {
     $options['id'] = $map['id'];
 }

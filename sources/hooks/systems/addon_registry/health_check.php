@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -210,7 +210,7 @@ class Hook_addon_registry_health_check
             'sources/hooks/systems/page_groupings/health_check.php',
             'sources/hooks/systems/commandr_commands/health_check.php',
             'sources/hooks/systems/commandr_commands/health_check_pages.php',
-            'sources_custom/hooks/systems/actionlog/health_check.php',
+            'sources/hooks/systems/actionlog/health_check.php',
             'data/xml_config/page_errors.xml',
             'sources_custom/hooks/systems/health_checks/.htaccess',
             'sources_custom/hooks/systems/health_checks/index.html',

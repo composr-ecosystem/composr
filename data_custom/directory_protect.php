@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -70,7 +70,7 @@ if (!is_file($_full)) {
 
 $size = filesize($_full);
 
-// Check permissions
+// Check permissions; if the member has access to a page referencing the requested resource, then they have permission to access the resource.
 $search = ['"' . $file . '"', "'" . $file . "'", '"/' . $file . '"', "'/" . $file . "'", '"' . get_custom_base_url() . '/' . $file . '"', "'" . get_custom_base_url() . '/' . $file . "'"];
 $okay = false;
 $zones = find_all_zones();
@@ -80,7 +80,7 @@ foreach ($zones as $zone) {
         list($page_type, $ext) = $_scope;
         $pages = array_keys(find_all_pages($zone, $page_type, $ext));
         foreach ($pages as $page) {
-            $page_path = get_custom_file_base() . (($zone == '') ? '' : ('/' . $zone)) . '/pages/' . $page_type . '/' . $page . '.' . $ext;
+            $page_path = get_custom_file_base() . '/' . zone_black_magic_filterer(filter_naughty($zone) . (($zone == '') ? '' : '/') . '/pages/' . $page_type . '/' . $page . '.' . $ext, true);
             $page_contents = cms_file_get_contents_safe($page_path, FILE_READ_LOCK | FILE_READ_BOM);
             foreach ($search as $s) {
                 if (strpos($page_contents, $s) !== false) {

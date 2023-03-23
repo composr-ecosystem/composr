@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -233,7 +233,7 @@ function check_rbl(string $rbl, string $user_ip, bool $we_have_a_result_already 
 
     // Blocking based on efnet.org settings (not used by default)
     // http://efnetrbl.org/
-    if (strpos($rbl, 'efnet.org') !== false) {
+    if ((strpos($rbl, 'efnet.org') !== false) || (strpos($rbl, 'efnetrbl.org') !== false)) {
         $block = [
             'efnet_openproxy' => true,              // EFNet: Block open proxies registered at rbl.efnet.org
             'efnet_spamtrap50' => false,            // EFNet: Block trojan spreading client (IRC-based)
@@ -411,10 +411,13 @@ function handle_perceived_spammer_by_confidence(string $user_ip, float $confiden
         global $SPAM_REMOVE_VALIDATION;
         $SPAM_REMOVE_VALIDATION = true;
 
-        require_code('notifications');
-        $subject = do_lang('NOTIFICATION_SPAM_CHECK_BLOCK_SUBJECT_APPROVE', $user_ip, $blocked_by, float_format($confidence_level), get_site_default_lang());
-        $message = do_notification_lang('NOTIFICATION_SPAM_CHECK_BLOCK_BODY_APPROVE', $user_ip, $blocked_by, float_format($confidence_level), get_site_default_lang());
-        dispatch_notification('core_staff:spam_check_block', null, $subject, $message, null, A_FROM_SYSTEM_PRIVILEGED);
+        // Only send notification if this was a POST request
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            require_code('notifications');
+            $subject = do_lang('NOTIFICATION_SPAM_CHECK_BLOCK_SUBJECT_APPROVE', $user_ip, $blocked_by, float_format($confidence_level), get_site_default_lang());
+            $message = do_notification_lang('NOTIFICATION_SPAM_CHECK_BLOCK_BODY_APPROVE', $user_ip, $blocked_by, float_format($confidence_level), get_site_default_lang());
+            dispatch_notification('core_staff:spam_check_block', null, $subject, $message, null, A_FROM_SYSTEM_PRIVILEGED);
+        }
     }
 }
 
@@ -543,9 +546,17 @@ function check_spam_heuristics(bool $page_level)
         return;
     }
 
-    list($confidence_level, $scoring) = calculation_internal_heuristic_confidence();
-
     $user_ip = get_ip_address();
+
+    // Check exclusions
+    $exclusions = explode(',', get_option('spam_check_exclusions'));
+    foreach ($exclusions as $e) {
+        if (trim($e) == $user_ip) {
+            return;
+        }
+    }
+
+    list($confidence_level, $scoring) = calculation_internal_heuristic_confidence();
     handle_perceived_spammer_by_confidence($user_ip, $confidence_level, $scoring, $page_level);
 }
 

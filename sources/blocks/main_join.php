@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -125,7 +125,8 @@ class Block_main_join
 
             list($message, , $ready) = cns_join_actual($captcha_if_enabled, false, true, true, null, null, null, null, $adjusted_config_options);
 
-            $email_address = post_param_string('email', '', INPUT_FILTER_POST_IDENTIFIER);
+            $email_address = post_param_string('email', '', INPUT_FILTER_POST_IDENTIFIER | INPUT_FILTER_EMAIL_ADDRESS);
+
             $email_sent = $this->send_email($map, $email_address);
 
             if ($ready) {
@@ -180,6 +181,10 @@ class Block_main_join
                 $subject = empty($map['subject']) ? do_lang('_WELCOME') : $map['subject'];
                 $body = http_get_contents($url, ['convert_to_internal_encoding' => true]);
                 foreach ($_POST as $key => $val) {
+                    if (is_integer($key)) {
+                        $key = strval($key);
+                    }
+
                     if (is_string($val)) {
                         $body = str_replace('{' . $key . '}', $val, $body);
                     }

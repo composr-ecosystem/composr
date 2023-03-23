@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -30,8 +30,11 @@ $begin_at_zero = !isset($map['begin_at_zero']) ? true : ($map['begin_at_zero'] =
 $show_data_labels = !isset($map['show_data_labels']) ? true : ($map['show_data_labels'] == '1');
 $fill = !isset($map['fill']) ? false : ($map['fill'] == '1');
 $clamp_y_axis = !isset($map['clamp_y_axis']) ? false : intval($map['clamp_y_axis']);
+$logarithmic = !isset($map['logarithmic']) ? false : ($map['logarithmic'] == '1');
 
-$color_pool = empty($map['color_pool']) ? [] : explode(',', $map['color_pool']);
+$wordwrap_tooltip_at = !isset($map['wordwrap_tooltip_at']) ? null : intval($map['wordwrap_tooltip_at']);
+
+$color_pool = @cms_empty_safe($map['color_pool']) ? [] : _parse_color_pool_string($map['color_pool']);
 
 $file = empty($map['file']) ? 'uploads/website_specific/graph_test/line_chart.csv' : $map['file'];
 
@@ -41,6 +44,10 @@ $sheet_reader = spreadsheet_open_read(get_custom_file_base() . '/' . $file, null
 $x_labels = $sheet_reader->read_row();
 array_shift($x_labels); // Irrelevant corner
 while (($line = $sheet_reader->read_row()) !== false) {
+    if (substr($line[0], 0, 1) == '#') {
+        continue; // Comment line
+    }
+
     if (count($line) < 2) {
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
@@ -55,11 +62,15 @@ while (($line = $sheet_reader->read_row()) !== false) {
             ];
             $i++;
         } elseif ($i > 0) {
+            $tooltip = $x;
+            if ($wordwrap_tooltip_at !== null) {
+                $tooltip = wordwrap($tooltip, $wordwrap_tooltip_at);
+            }
             if (isset($datapoints[$i - 1]['tooltip'])) {
-                $datapoints[$i - 1]['tooltip'] .= "\n" . $x;
+                $datapoints[$i - 1]['tooltip'] .= "\n" . $tooltip;
             } else {
                 $datapoints[$i - 1] += [
-                    'tooltip' => $x,
+                    'tooltip' => $tooltip,
                 ];
             }
         }
@@ -72,7 +83,7 @@ while (($line = $sheet_reader->read_row()) !== false) {
 }
 $sheet_reader->close();
 
-$options = ['begin_at_zero' => $begin_at_zero, 'show_data_labels' => $show_data_labels, 'fill' => $fill, 'clamp_y_axis' => $clamp_y_axis];
+$options = ['begin_at_zero' => $begin_at_zero, 'show_data_labels' => $show_data_labels, 'fill' => $fill, 'clamp_y_axis' => $clamp_y_axis, 'wordwrap_tooltip_at' => $wordwrap_tooltip_at, 'logarithmic' => $logarithmic];
 if (!empty($map['id'])) {
     $options['id'] = $map['id'];
 }

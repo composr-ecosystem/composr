@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -872,7 +872,7 @@ function do_template(string $codename, array $parameters = [], ?string $lang = n
         (!$RECORD_LANG_STRINGS/*Tempcode compilation embeds lang strings*/) &&
         !$inlining_mode;
     if (!$loaded_this_once) {
-        $found = find_template_place($codename, $lang, $theme, $suffix, $directory, $non_custom_only);
+        $found = find_template_place($codename, $theme, $suffix, $directory, $non_custom_only);
         $TEMPLATE_DISK_ORIGIN_CACHE[$codename][$lang][$theme][$suffix][$directory][$non_custom_only] = $found;
     } else {
         $found = $TEMPLATE_DISK_ORIGIN_CACHE[$codename][$lang][$theme][$suffix][$directory][$non_custom_only];
@@ -981,7 +981,6 @@ function do_template(string $codename, array $parameters = [], ?string $lang = n
         }
 
         $out->seq_parts = $_data->seq_parts;
-
         foreach ($out->seq_parts as &$seq_parts_group) {
             foreach ($seq_parts_group as &$seq_part) {
                 if ($seq_part[1] !== []) {
@@ -1129,6 +1128,7 @@ function strip_invisible_output_encoding(string $string) : string
  * @param  string $suffix File type suffix of template file (e.g. .tpl)
  * @set .tpl .js .xml .txt .css
  * @param  string $directory Subdirectory type to look in
+ * @set templates javascript xml text css
  * @param  ID_TEXT $theme Theme to use
  * @param  TIME $tcp_time Time of cache file
  * @return boolean Whether decache is NOT needed
@@ -1185,7 +1185,7 @@ function dependencies_are_good(string $codename, string $suffix, string $directo
             continue;
         }
 
-        $found = find_template_place($d, '', $theme, $suffix, $directory);
+        $found = find_template_place($d, $theme, $suffix, $directory);
         $full_path = get_custom_file_base() . '/themes/' . $found[0] . $found[1] . $d . $found[2];
         if (!is_file($full_path)) {
             $full_path = get_file_base() . '/themes/' . $found[0] . $found[1] . $d . $found[2];
@@ -1759,6 +1759,39 @@ class Tempcode
             require_code('themes_meta_tree');
             $this->metadata = create_template_tree_metadata();
         }
+    }
+
+    /**
+     * Find if this Tempcode object uses less memory (very roughly!) than the given number of bytes.
+     *
+     * @param  integer $bytes_available The number of bytes
+     * @return boolean Whether it is
+     */
+    public function is_smaller_than(int &$bytes_available) : bool
+    {
+        foreach ($this->code_to_preexecute as $part) {
+            $bytes_available -= strlen($part);
+        }
+        if ($bytes_available < 0) {
+            return false;
+        }
+        foreach ($this->seq_parts as $seq_parts_group) {
+            foreach ($seq_parts_group as $seq_part) {
+                $bytes_available -= strlen($seq_part[0]) + 1 + strlen($seq_part[3]);
+                foreach ($seq_part[1] as $param) {
+                    if (is_string($param)) {
+                        $bytes_available -= strlen($param);
+                    } elseif (is_object($param)) {
+                        $param->is_smaller_than($bytes_available); // Recurse
+                    }
+                    if ($bytes_available < 0) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return ($bytes_available > 0);
     }
 
     /**

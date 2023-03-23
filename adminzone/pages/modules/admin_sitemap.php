@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -317,7 +317,7 @@ class Module_admin_sitemap
 
         $pages = [];
         foreach ($_POST as $key => $val) {
-            if ((substr($key, 0, 6) == 'page__') && ($val === '1')) {
+            if ((is_string($key)) && (substr($key, 0, 6) == 'page__') && ($val === '1')) {
                 $page = substr($key, 6);
                 $page_details = _request_page($page, $zone, null, null, false);
                 if ($page_details === false) {

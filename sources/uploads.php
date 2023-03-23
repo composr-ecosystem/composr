@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -188,7 +188,7 @@ function is_plupload(bool $fake_prepopulation = false) : bool
         if (!is_string($value)) {
             continue;
         }
-        if (!is_string($key)) {
+        if (is_integer($key)) {
             $key = strval($key);
         }
 
@@ -463,7 +463,7 @@ function get_url(string $specify_name, string $attach_name, string $upload_folde
     require_code('images');
     if ((($enforce_type & CMS_UPLOAD_VIDEO) != 0) || (($enforce_type & CMS_UPLOAD_AUDIO) != 0)) {
         require_code('files2');
-        $max_size = get_max_file_size(null, null, false);
+        $max_size = get_max_file_size(($upload_folder == 'uploads/attachments') ? get_member() : null, null, false);
     } else {
         $max_size = get_max_image_size(false);
     }

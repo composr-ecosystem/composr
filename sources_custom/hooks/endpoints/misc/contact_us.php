@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -16,7 +16,7 @@
 /**
  * Hook class.
  */
-class Hook_endpoint_account_contact_us
+class Hook_endpoint_misc_contact_us
 {
     /**
      * Run an API endpoint.

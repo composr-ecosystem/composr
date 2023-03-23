@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -163,6 +163,15 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         THEME_IMAGE_RECOLOUR_DESCRIPTION
         MATCH_TYPE
         CONFIG_OPTION_sprite_icons
+        CPF_ENCRYPTION_NOT_AVAILABLE
+        CMD_CPF_ENCRYPT_HELP
+        CMD_CPF_ENCRYPT_HELP_PARAM_0
+        CMD_CPF_DECRYPT_HELP
+        CMD_CPF_DECRYPT_HELP_PARAM_0
+        CMD_CPF_DECRYPT_HELP_PARAM_1
+        CPF_ENCRYPT_RESULT
+        CPF_DECRYPT_RESULT
+        NOT_ENCRYPTABLE_FIELD
         CAPABILITIES
         DESCRIPTION_THEME_LANGUAGE
         THEME_CAPABILITY_administrative
@@ -235,6 +244,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         LAYOUT_MODE
         ALLOW_TEMPLATE_SEARCH
         ADD_BLOCK
+        TWO_FACTOR_AUTHENTICATION
         HAVE_DEFAULT_HOMEPAGE_HERO_SLIDES
         NOT_SUPPORTED_ON_DB
         DESCRIPTION_ALLOW_TEMPLATE_SEARCH
@@ -5751,7 +5761,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         HONEYPOT_URL
         HOST
         HOT_TOPIC_DEFINITION
-        HOVER_FOR_CONTENTS
         DESCRIPTION_PRICE
         DESCRIPTION_TAX_CODE
         PRICE_POINTS
@@ -8341,6 +8350,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         POINTS_FOSS_UA_INCLUDE
         DB_META_CORRUPT_MISSING
         MISSING_DB_PARAMETERS
+        LONG_TABLE_PREFIX
         NO_ROOT_DB_WITHOUT_GIT
         STAFF_SECURITY_ASPECT_CHANGED_BODY
         STAFF_SECURITY_ASPECT_CHANGED_SUBJECT
@@ -10538,7 +10548,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         Q_SURE_LOSE
         Q_SURE_REMOVE_FROM_GROUP
         RANDOM
-        RANDOM_CONTENT
         RANDOM_PAGE
         RANK_PROMOTED_MAIL
         RANK_PROMOTED_MAIL_SUBJECT
@@ -11791,6 +11800,9 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PRIVACY_ACTION_tornevall
         PRIVACY_REASON_tornevall
         ERROR_CHECKING_FOR_SPAMMERS_RBL_IS_NORMAL_DNS
+        PRIVACY_ACTION_cloudflare
+        PRIVACY_REASON_cloudflare
+        MODULE_TRANS_NAME_newsletter_opt
     ')));
 
     // Remove blank lines

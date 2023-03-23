@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -1081,6 +1081,10 @@ class Hook_addon_registry_core
             'sources_custom/hooks/systems/upon_page_load/index.html',
             'sources/hooks/systems/upon_access_denied/index.html',
             'sources_custom/hooks/systems/upon_access_denied/index.html',
+            'sources/hooks/systems/upon_action_logging/.htaccess',
+            'sources_custom/hooks/systems/upon_action_logging/.htaccess',
+            'sources/hooks/systems/upon_action_logging/index.html',
+            'sources_custom/hooks/systems/upon_action_logging/index.html',
             'sources/hooks/systems/upon_query/index.html',
             'sources_custom/hooks/systems/upon_query/index.html',
             'sources/hooks/systems/upon_login/index.html',

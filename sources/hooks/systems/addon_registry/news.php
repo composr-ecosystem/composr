@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -663,7 +663,7 @@ class Hook_addon_registry_news
     public function tpl_preview__news_full_screen() : object
     {
         require_javascript('editing');
-
+        require_css('news');
         require_lang('news');
 
         return lorem_globalise(do_lorem_template('NEWS_ENTRY_SCREEN', [
@@ -691,8 +691,8 @@ class Hook_addon_registry_news
             'AUTHOR_ENTRY_MEMBER_ID' => null,
             'AUTHOR_ENTRY_DESCRIPTION' => lorem_paragraph_html(),
             'AUTHOR_ENTRY_SKILLS' => lorem_paragraph_html(),
-            'NEWS_FULL' => lorem_paragraph_html(),
-            'NEWS_FULL_PLAIN' => lorem_sentence(),
+            'NEWS_FULL' => lorem_chunk_html(),
+            'NEWS_FULL_PLAIN' => lorem_chunk(),
             'EDIT_URL' => placeholder_url(),
             'ARCHIVE_URL' => placeholder_url(),
             'SUBMIT_URL' => placeholder_url(),

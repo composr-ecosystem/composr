@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -306,6 +306,10 @@ class Module_admin_custom_comcode extends Standard_crud_module
 
         $parameters = '';
         foreach ($_POST as $key => $val) {
+            if (is_integer($key)) {
+                $key = strval($key);
+            }
+
             if (substr($key, 0, 11) != 'parameters_') {
                 continue;
             }
@@ -346,6 +350,10 @@ class Module_admin_custom_comcode extends Standard_crud_module
 
         $parameters = '';
         foreach ($_POST as $key => $val) {
+            if (is_integer($key)) {
+                $key = strval($key);
+            }
+
             if (substr($key, 0, 11) != 'parameters_') {
                 continue;
             }

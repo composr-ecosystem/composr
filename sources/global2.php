@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -20,7 +20,10 @@
 
 /*EXTRA FUNCTIONS: ucwords*/
 
-// NB: Make sure to update the version in minikernel.php too if you add new common functions or change behaviours
+/*
+    main bootstrapping and library code.
+    NB: Make sure to update the version in minikernel.php too if you add new common functions or change behaviours
+*/
 
 /**
  * Standard code module initialisation function.
@@ -47,6 +50,7 @@ function init__global2()
     define('INPUT_FILTER_MODSECURITY_URL_PARAMETER', 8192); // Decode a URL-in-URL parameter that was encoded to bypass ModSecurity protection. Applies to POST/GET
     define('INPUT_FILTER_URL_RECODING', 16384); // Re-encodes Unicode to %-encoding and Punycode for a valid URL
     define('INPUT_FILTER_TRIMMED', 32768); // Trimmed as user would expect, intended for critical data where white-space could cause a problem
+    define('INPUT_FILTER_EMAIL_ADDRESS', 65536); // Enforces e-mail address validation and warn_exit when invalid
     //Compound ones intended for direct use
     define('INPUT_FILTER_DEFAULT_POST', INPUT_FILTER_WORDFILTER | INPUT_FILTER_WYSIWYG_TO_COMCODE | INPUT_FILTER_COMCODE_CLEANUP | INPUT_FILTER_DOWNLOAD_ASSOCIATED_MEDIA | INPUT_FILTER_FIELDS_XML | INPUT_FILTER_URL_SCHEMES | INPUT_FILTER_JS_URLS | INPUT_FILTER_SPAM_HEURISTIC | INPUT_FILTER_EARLY_XSS | INPUT_FILTER_DYNAMIC_FIREWALL | INPUT_FILTER_TRUSTED_SITES);
     define('INPUT_FILTER_DEFAULT_GET', INPUT_FILTER_JS_URLS | INPUT_FILTER_VERY_STRICT | INPUT_FILTER_SPAM_HEURISTIC | INPUT_FILTER_EARLY_XSS | INPUT_FILTER_DYNAMIC_FIREWALL | INPUT_FILTER_URL_SCHEMES);
@@ -1477,7 +1481,7 @@ function current_script() : string
     // Strip down current URL so we can do a simple compare
     global $WHAT_IS_RUNNING_CACHE;
     if ($WHAT_IS_RUNNING_CACHE === null) {
-        $script_name = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : '';
+        $script_name = $_SERVER['SCRIPT_NAME'];
         $stripped_current_url = basename($script_name);
         $WHAT_IS_RUNNING_CACHE = substr($stripped_current_url, 0, strpos($stripped_current_url, '.'));
     }
@@ -1996,6 +2000,9 @@ function post_param_string(string $name, $default = false, int $filters = INPUT_
             download_associated_media($ret);
         }
 
+        if ((((($filters & INPUT_FILTER_WYSIWYG_TO_COMCODE) != 0) || ($filters & INPUT_FILTER_COMCODE_CLEANUP) != 0)) && (isset($_POST[$name . '__is_wysiwyg'])) && ($_POST[$name . '__is_wysiwyg'] === '1')) {
+            $ret = cms_trim($ret, true); // We do the trimming because CKEditor adds a trailing nbsp
+        }
         comcode_page_hints_post($name, $ret);
     }
 

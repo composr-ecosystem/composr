@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -60,7 +60,7 @@ if ((empty($get)) && (empty($_POST))) {
 $provider = get_param_string('provider', null);
 if ($provider !== null) {
     $alternate_config = get_param_string('alternate_config', null);
-    list($hybridauth, $admin_storage) = initiate_hybridauth_admin(0, $alternate_config);
+    list($hybridauth, $admin_storage) = initiate_hybridauth_admin(0, $alternate_config, $provider);
 
     if (!has_page_access(get_member(), 'admin_oauth', 'adminzone')) {
         access_denied('PAGE_ACCESS');

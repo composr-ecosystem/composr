@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -65,9 +65,11 @@ class Hook_health_check_upkeep extends Hook_Health_Check
     public function testComposrVersion(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if ($check_context == CHECK_CONTEXT__INSTALL) {
+            $this->log('Skipped; we are running from installer.');
             return;
         }
         if ($check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS) {
+            $this->log('Skipped; running on specific page links.');
             return;
         }
 
@@ -102,6 +104,7 @@ class Hook_health_check_upkeep extends Hook_Health_Check
     public function testPHPVersion(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if ($check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS) {
+            $this->log('Skipped; running on specific page links.');
             return;
         }
 
@@ -123,6 +126,7 @@ class Hook_health_check_upkeep extends Hook_Health_Check
     public function testPHPVersionDistroSafe(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if ($check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS) {
+            $this->log('Skipped; running on specific page links.');
             return;
         }
 
@@ -148,6 +152,7 @@ class Hook_health_check_upkeep extends Hook_Health_Check
     public function testAdminAccountStaleness(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if ($check_context != CHECK_CONTEXT__LIVE_SITE) {
+            $this->log('Skipped; we are not running from a live site.');
             return;
         }
 
@@ -183,9 +188,11 @@ class Hook_health_check_upkeep extends Hook_Health_Check
     public function testCopyrightDate(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if ($check_context == CHECK_CONTEXT__INSTALL) {
+            $this->log('Skipped; we are running from installer.');
             return;
         }
         if ($check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS) {
+            $this->log('Skipped; running on specific page links.');
             return;
         }
 
@@ -236,6 +243,7 @@ class Hook_health_check_upkeep extends Hook_Health_Check
     public function testStaffChecklist(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if ($check_context != CHECK_CONTEXT__LIVE_SITE) {
+            $this->log('Skipped; we are not running from a live site.');
             return;
         }
 

@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -73,6 +73,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
     public function testServerSoftware(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if ($check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS) {
+            $this->log('Skipped; running on specific page links.');
             return;
         }
 
@@ -142,6 +143,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
     public function testSuExec(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if ($check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS) {
+            $this->log('Skipped; running on specific page links.');
             return;
         }
 
@@ -163,6 +165,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
     public function testDirectoryName(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if ($check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS) {
+            $this->log('Skipped; running on specific page links.');
             return;
         }
 
@@ -182,6 +185,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
     public function testBaseURL(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if ($check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS) {
+            $this->log('Skipped; running on specific page links.');
             return;
         }
 
@@ -242,6 +246,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
     public function testPHPVersion(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if ($check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS) {
+            $this->log('Skipped; running on specific page links.');
             return;
         }
 
@@ -271,6 +276,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
     public function testPHPPlatform(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if ($check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS) {
+            $this->log('Skipped; running on specific page links.');
             return;
         }
 
@@ -302,6 +308,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
     public function testMySQLVersion(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if ($check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS) {
+            $this->log('Skipped; running on specific page links.');
             return;
         }
 
@@ -379,10 +386,12 @@ class Hook_health_check_install_env extends Hook_Health_Check
     public function testMySQLSettings(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if ($check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS) {
+            $this->log('Skipped; running on specific page links.');
             return;
         }
 
         if ($check_context == CHECK_CONTEXT__INSTALL) {
+            $this->log('Skipped; we are running from installer.');
             return;
         }
 
@@ -415,16 +424,17 @@ class Hook_health_check_install_env extends Hook_Health_Check
     public function testForInjectedAdScripts(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if ($check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS) {
+            $this->log('Skipped; running on specific page links.');
             return;
         }
 
         if ($check_context == CHECK_CONTEXT__INSTALL) {
             $url = get_base_url() . '/install.php?type=test_blank_result';
         } else {
-            $url = find_script('blank');
+            $url = find_script('empty') . '?truly=1';
         }
 
-        $blank = (http_get_contents($url, ['trigger_error' => false, 'timeout' => 1.0]) == '');
+        $blank = (http_get_contents($url, ['trigger_error' => false, 'timeout' => 1.0]) === '');
         $this->assertTrue($blank, do_lang('INTERFERING_AD_SCRIPT'));
     }
 
@@ -441,18 +451,19 @@ class Hook_health_check_install_env extends Hook_Health_Check
     public function testModSecurity(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if ($check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS) {
+            $this->log('Skipped; running on specific page links.');
             return;
         }
 
         // Test to see if we have any ModSecurity issue that blocks config form submissions, via posting through some perfectly legitimate things that it might be paranoid about
         $test_url = get_custom_base_url() . '/data/empty.php';
-        $test_a = cms_http_request($test_url, ['byte_limit' => 0, 'trigger_error' => false, 'no_redirect' => true]);
+        $test_a = cms_http_request($test_url, ['byte_limit' => 0, 'trigger_error' => false, 'no_redirect' => true, 'post_params' => ['test_a' => '/usr/bin/unzip -o @_SRC_@ -x -d @_DST_@', 'test_b' => '<iframe src="http://example.com/"></iframe>', 'test_c' => '<script>console.log(document.cookie);</script>']]);
         $message_a = $test_a->message;
-        if ($message_a == '200') {
-            $test_b = cms_http_request($test_url, ['byte_limit' => 0, 'trigger_error' => false, 'no_redirect' => true, 'post_params' => ['test_a' => '/usr/bin/unzip -o @_SRC_@ -x -d @_DST_@', 'test_b' => '<iframe src="http://example.com/"></iframe>', 'test_c' => '<script>console.log(document.cookie);</script>']]);
+        if ($message_a != '200') {
+            $test_b = cms_http_request($test_url, ['byte_limit' => 0, 'trigger_error' => false, 'no_redirect' => true]);
             $message_b = $test_b->message;
-            if ($message_b != '200') {
-                $this->assertTrue(false, do_lang('MODSECURITY', $message_b));
+            if ($message_b == '200') {
+                $this->assertTrue(false, do_lang('MODSECURITY', $message_a));
             } else {
                 $this->assertTrue(true, do_lang('MODSECURITY', do_lang('NA')));
             }
@@ -474,6 +485,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
     public function testDiskSpaceInstallation(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if ($check_context != CHECK_CONTEXT__INSTALL) {
+            $this->log('Skipped; we are not running from installer.');
             return;
         }
 
@@ -502,6 +514,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
     public function testUnicode(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if ($check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS) {
+            $this->log('Skipped; running on specific page links.');
             return;
         }
 
@@ -529,6 +542,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
     public function testPCRE(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if ($check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS) {
+            $this->log('Skipped; running on specific page links.');
             return;
         }
 
@@ -549,6 +563,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
     public function testSELinux(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if ($check_context != CHECK_CONTEXT__LIVE_SITE) {
+            $this->log('Skipped; we are not running from a live site.');
             return;
         }
 
@@ -583,6 +598,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
     public function testUmask(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if ($check_context != CHECK_CONTEXT__LIVE_SITE) {
+            $this->log('Skipped; we are not running from a live site.');
             return;
         }
 
@@ -691,10 +707,12 @@ class Hook_health_check_install_env extends Hook_Health_Check
     protected function testLocaleStability(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if ($check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS) {
+            $this->log('Skipped; running on specific page links.');
             return;
         }
 
         if ($check_context == CHECK_CONTEXT__INSTALL) {
+            $this->log('Skipped; we are running from installer.');
             return; // Too pedantic to confuse people at installation
         }
 

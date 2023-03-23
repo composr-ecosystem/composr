@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -735,7 +735,7 @@ function buy(int $member_id, string $item_name, int $copy_owner)
             buildr_refresh_with_message(do_lang_tempcode('W_EXPENSIVE', escape_html(integer_format($price, 0))), 'warn');
         }
         points_debit_member($member_id, do_lang('W_PURCHASED_BUILDR', escape_html($item_name)), $price);
-        points_credit_member($copy_owner, do_lang('W_SOLD_BUILDR', escape_html($item_name)), $price * 0.7);
+        points_credit_member($copy_owner, do_lang('W_SOLD_BUILDR', escape_html($item_name)), intval($price * 0.7));
     }
 
     basic_pickup($member_id, $item_name, $copy_owner);

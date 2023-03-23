@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -60,7 +60,7 @@ function load_integrity_manifest(bool $previous = false) : array
  * Load up a list of files for the addons we have installed (addon_registry based ones only).
  *
  * @param  array $manifest Manifest of file checksums
- * @return array A pair: List of hook files, List of files
+ * @return array A pair: List of files, a list of hook files
  */
 function load_files_list_of_installed_addons(array $manifest) : array
 {
@@ -96,7 +96,7 @@ function load_files_list_of_installed_addons(array $manifest) : array
     foreach ($hook_files as $addon_name => $hook_path) {
         $hook_file = cms_file_get_contents_safe($hook_path, FILE_READ_LOCK);
         $matches = [];
-        if (preg_match('#function get_file_list\(\)\s*\{([^\}]*)\}#', $hook_file, $matches) != 0) { // A bit of a hack, but saves a lot of RAM
+        if (preg_match('#function get_file_list\(\)\s+:\s+array\s*\{([^\}]*)\}#', $hook_file, $matches) != 0) { // A bit of a hack, but saves a lot of RAM
             $files_to_check = array_merge($files_to_check, cms_eval($matches[1], $hook_path));
         }
     }
@@ -638,14 +638,14 @@ function upgrader__integrity_scan_screen() : string
         if (strpos($val, ':') !== false) {
             $bits = explode(':', $val);
 
-            if (!is_file(get_file_base() . '/' . $bits[1])) {
+            if (!is_file(get_file_base() . '/' . base64_decode($bits[1]))) {
                 continue; // Maybe user pressed refresh
             }
 
             if ($bits[0] == 'quarantine') {
                 afm_delete_file('_old/' . base64_decode($bits[1])); // In case target already exists
                 afm_make_directory(dirname('_old/' . base64_decode($bits[1])), false, true);
-                afm_move($bits[1], '_old/' . base64_decode($bits[1]));
+                afm_move(base64_decode($bits[1]), '_old/' . base64_decode($bits[1]));
             } elseif ($bits[0] == 'move') {
                 afm_delete_file(base64_decode($bits[2])); // In case target (older version) already exists
                 afm_move(base64_decode($bits[1]), base64_decode($bits[2]));

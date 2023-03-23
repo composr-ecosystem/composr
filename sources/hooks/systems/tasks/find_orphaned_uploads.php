@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -47,7 +47,7 @@ class Hook_task_find_orphaned_uploads
                 if (url_is_local($url)) {
                     $known_urls[rawurldecode($url)] = true;
                 } else {
-                    if (substr($url, 0, strlen($base_url)) == $base_url) {
+                    if ((substr($url, 0, strlen($base_url)) == $base_url) && (strlen($url) > strlen($base_url))) {
                         $known_urls[rawurldecode(substr($url, strlen($base_url) + 1))] = true;
                     }
                 }
@@ -91,7 +91,7 @@ class Hook_task_find_orphaned_uploads
         if ($dh !== false) {
             while (($file = readdir($dh)) !== false) {
                 if ($file[0] != '.') {
-                    if ($dir == 'uploads') {
+                    if (substr($dir, 0, 7) == 'uploads') {
                         if (in_array($file, ['filedump', 'auto_thumbs', 'website_specific', 'index.html', '.htaccess'])) {
                             continue;
                         }

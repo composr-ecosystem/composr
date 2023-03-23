@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -61,6 +61,7 @@ function build_comcode_menu(string $comcode, string $menu, int $source_member, s
                     'extra_meta' => [
                         'description' => null,
                         'image' => null,
+                        'icon' => null,
                     ],
                     'has_possible_children' => true,
                     'children' => [],
@@ -148,6 +149,7 @@ function build_comcode_menu(string $comcode, string $menu, int $source_member, s
                 'extra_meta' => [
                     'description' => null,
                     'image' => null,
+                    'icon' => null,
                 ],
                 'has_possible_children' => true,
                 'children' => [],
@@ -175,6 +177,7 @@ function build_comcode_menu(string $comcode, string $menu, int $source_member, s
                 'extra_meta' => [
                     'description' => null,
                     'image' => null,
+                    'icon' => null,
                 ],
                 'has_possible_children' => true,
                 'children' => [],

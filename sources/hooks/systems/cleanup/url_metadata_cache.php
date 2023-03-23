@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_cleanpu_url_metadata_cache
+class Hook_cleanup_url_metadata_cache
 {
     /**
      * Find details about this cleanup hook.

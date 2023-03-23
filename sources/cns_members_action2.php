@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -584,7 +584,7 @@ function cns_get_member_fields_settings(bool $mini_mode = true, string $special_
         $default_time = ($dob_month === null) ? null : usertime_to_utctime(mktime(0, 0, 0, $dob_month, $dob_day, $dob_year));
         if (get_option_with_overrides('dobs', $adjusted_config_options) >= (($member_id === null) ? '2' : '1')) {
             $dob_required = member_field_is_required($member_id, 'dob');
-            $fields->attach(form_input_date(do_lang_tempcode($dob_required ? 'DATE_OF_BIRTH' : 'ENTER_YOUR_BIRTHDAY'), $can_edit_birthday ? '' : do_lang_tempcode('DATE_OF_BIRTH_NO_SELF_EDIT'), 'birthday', $dob_required, false, false, $default_time, -130, null, null, true, null, true, null, !$can_edit_birthday));
+            $fields->attach(form_input_date(do_lang_tempcode($dob_required ? 'DATE_OF_BIRTH' : 'ENTER_YOUR_BIRTHDAY'), $can_edit_birthday ? '' : do_lang_tempcode('DATE_OF_BIRTH_NO_SELF_EDIT'), 'birthday', $dob_required, false, false, $default_time, -130, null, null, true, null, true, null, (($member_id !== null) && (!$can_edit_birthday))));
             if (addon_installed('cns_forum')) {
                 $fields->attach(form_input_tick(do_lang_tempcode('RELATED_FIELD', do_lang_tempcode('REVEAL_AGE')), do_lang_tempcode('DESCRIPTION_REVEAL_AGE'), 'reveal_age', $reveal_age == 1));
             }
@@ -610,7 +610,7 @@ function cns_get_member_fields_settings(bool $mini_mode = true, string $special_
             } else {
                 $password_field_description = do_lang_tempcode('DESCRIPTION_PASSWORD' . (($member_id !== null) ? '_EDIT' : ''));
             }
-            $fields->attach(form_input_password(do_lang_tempcode(($member_id === null) ? 'PASSWORD' : 'NEW_PASSWORD'), $password_field_description, ($member_id === null) ? 'password' : 'edit_password', $mini_mode || $temporary_password));
+            $fields->attach(form_input_password(do_lang_tempcode(($member_id === null) ? 'PASSWORD' : 'NEW_PASSWORD'), $password_field_description, ($member_id === null) ? 'password' : 'edit_password', $mini_mode || $temporary_password, null, '', null, true));
             $fields->attach(form_input_password(do_lang_tempcode('CONFIRM_PASSWORD'), '', 'password_confirm', $mini_mode || $temporary_password));
         }
     }
@@ -859,7 +859,7 @@ function cns_get_member_fields_profile(bool $mini_mode = true, ?int $member_id =
         if ($existing_field) {
             $value = $custom_fields[$custom_field['trans_name']]['RAW'];
 
-            if (($custom_field['cf_encrypted'] == 1) && (is_encryption_enabled())) {
+            if (is_data_encrypted($value)) {
                 $value = remove_magic_encryption_marker($value);
             }
 
@@ -1294,7 +1294,7 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
         $vm_subject = do_lang('VALIDATED_MEMBER_SUBJECT', get_site_name(), null, get_lang($member_id));
         $vm_body = do_lang('MEMBER_VALIDATED', get_site_name(), $old_username, $login_url, get_lang($member_id));
 
-        // Necessary to use dispatch_email in case the member was locked out of their account
+        // Necessary to use dispatch_mail in case the member was locked out of their account
         dispatch_mail($vm_subject, $vm_body, [$email_address], $old_username, '', '', ['require_recipient_valid_since' => $join_time]);
 
         $current_username = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
@@ -1376,6 +1376,8 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
     unset($GLOBALS['MEMBER_CACHE_FIELD_MAPPINGS'][$member_id]);
     unset($GLOBALS['TIMEZONE_MEMBER_CACHE'][$member_id]);
     unset($GLOBALS['USER_NAME_CACHE'][$member_id]);
+    unset($GLOBALS['USERS_GROUPS_CACHE'][$member_id]);
+    unset($GLOBALS['GROUP_MEMBERS_CACHE'][$member_id]);
 
     if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
         require_code('resource_fs');
@@ -1641,7 +1643,7 @@ function cns_edit_custom_field(int $id, string $name, string $description, strin
     }
     $GLOBALS['FORUM_DB']->alter_table_field('f_member_custom_fields', 'field_' . strval($id), $_type); // LEGACY: Field type should not have changed, but bugs can happen, especially between CMS versions, so we allow a CPF edit as a "fixup" op
 
-    build_cpf_indices($id, $include_in_main_search == 1, $type, $_type);
+    build_cpf_indices($id, $include_in_main_search == 1 || $allow_template_search == 1, $type, $_type);
 
     log_it('EDIT_CUSTOM_PROFILE_FIELD', strval($id), $name);
 
@@ -1730,16 +1732,18 @@ function cns_set_custom_field(int $member_id, int $field_id, $value, ?string $ty
 
     if ($ANY_FIELD_ENCRYPTED) {
         $encrypted = $GLOBALS['FORUM_DB']->query_select_value('f_custom_fields', 'cf_encrypted', ['id' => $field_id]);
-        if ($encrypted) {
+        if (($encrypted) && (is_string($value))) {
             require_code('encryption');
-            $current = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_member_custom_fields', $db_fieldname, ['mf_member_id' => $member_id]);
-            if ($current === null) {
-                return null;
+            if (is_encryption_enabled()) {
+                $current = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_member_custom_fields', $db_fieldname, ['mf_member_id' => $member_id]);
+                if ($current === null) {
+                    return null;
+                }
+                if ((is_data_encrypted($current)) && (remove_magic_encryption_marker($value) == remove_magic_encryption_marker($current))) {
+                    return null;
+                }
+                $value = encrypt_data($value);
             }
-            if ((remove_magic_encryption_marker($value) == remove_magic_encryption_marker($current)) && (is_data_encrypted($current))) {
-                return null;
-            }
-            $value = encrypt_data($value);
         }
     } else {
         $encrypted = false;
@@ -2082,7 +2086,7 @@ function cns_member_choose_avatar(string $avatar_url, ?int $member_id = null)
             if (($sx > $width) || ($sy > $height)) {
                 // Size down, if possible
                 require_code('images');
-                if ((!is_image($avatar_url, IMAGE_CRITERIA_GD_WRITE)) || (!url_is_local($avatar_url))) {
+                if ((!is_image($avatar_url, IMAGE_CRITERIA_GD_WRITE)) || (!url_is_local($avatar_url)) || (substr($avatar_url, 0, 20) != 'uploads/cns_avatars/')) {
                     if ((url_is_local($avatar_url)) && (substr($avatar_url, 0, 20) == 'uploads/cns_avatars/')) {
                         unlink(get_custom_file_base() . '/' . rawurldecode($avatar_url));
                         sync_file(get_custom_file_base() . '/' . rawurldecode($avatar_url));
@@ -2681,7 +2685,7 @@ function rebuild_all_cpf_indices(bool $leave_existing = false)
         $type = $field['cf_type'];
         list($_type) = get_cpf_storage_for($type);
 
-        $okay = build_cpf_indices($id, $field['cf_include_in_main_search'] == 1, $type, $_type, true);
+        $okay = build_cpf_indices($id, $field['cf_include_in_main_search'] == 1 || $field['cf_allow_template_search'] == 1, $type, $_type, true);
         if (!$okay) { // Limit was hit
             break;
         }
@@ -2691,24 +2695,27 @@ function rebuild_all_cpf_indices(bool $leave_existing = false)
 }
 
 /**
- * Check if the current member is allowed to set / edit a member's birthday.
+ * Check if the date of birth field can be edited based on whether it is set and birthday points are given.
  *
  * @param  ?MEMBER $member_id The member being edited (null: we are creating a new member)
- * @return boolean Whether or not the current member can edit the birthday of the specified member
+ * @return boolean If $member_id is null, whether the new member will be able to edit their DOB once set, and if $member_id is not null, whether the provided member can edit their DOB right now
  */
 function cns_can_edit_birthday(?int $member_id) : bool
 {
     $can_edit_birthday = true;
+    $_birthday_points = get_option('points_birthday');
+    $birthday_points = ($_birthday_points !== null) && ($_birthday_points != '') && (intval($_birthday_points) > 0);
+
     if ($member_id !== null) {
-        $_birthday_points = get_option('points_birthday');
-        $birthday_points = ($_birthday_points !== null) && ($_birthday_points != '') && (intval($_birthday_points) > 0);
         $_dob_day = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_dob_day');
         $_dob_month = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_dob_month');
         $_dob_year = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_dob_year');
 
         $can_edit_birthday = ((!$birthday_points) || // Birthday points is disabled
             (get_member() != $member_id) || // Editing member is not the same as the member being edited
-            (($_dob_day === null) || ($_dob_month === null) || ($_dob_year === null))); // Date of birth day, month, or year are not set.
+            (!is_guest($member_id) && (($_dob_day === null) || ($_dob_month === null) || ($_dob_year === null)))); // Date of birth day, month, or year are not set, and we are not a guest.
+    } else {
+        $can_edit_birthday = (!$birthday_points);
     }
 
     return $can_edit_birthday;

@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -114,7 +114,7 @@ function confluence_current_page_raw()
 
     $current_page = substr($current_url_path, strlen($root_url_path));
     if (substr($current_page, 0, 1) == '/') {
-        $current_page = urldecode(substr($current_page, 1));
+        $current_page = cms_urldecode_post_process(urldecode(substr($current_page, 1)));
     }
 
     return $current_page;
@@ -287,7 +287,7 @@ function _build_confluence_id_url($id)
     $mappings_by_complex_id = list_to_map('id', $mappings);
 
     if (isset($mappings_by_complex_id[$id])) {
-        $slug = $mappings_by_complex_id[$id]['slug'];
+        $slug = urldecode($mappings_by_complex_id[$id]['slug']);
         $map = ['page' => 'docs', 'type' => $slug];
     } else {
         $map = ['page' => 'docs', 'type' => $id];

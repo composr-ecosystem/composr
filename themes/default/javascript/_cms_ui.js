@@ -257,7 +257,7 @@
      * @param { boolean } [lightsOff] - set to true if the image is to be dimmed
      * @param { boolean } [forceWidth] - set to true if you want width to not be a max width
      * @param { Window } [win] - window to open in
-     * @param { boolean } [haveLinks] - set to true if we activate/deactivate by clicking due to possible links in the tooltip or the need for it to work on mobile
+     * @param { boolean } [haveLinks] - set to true if we activate/deactivate by clicking, and we don't have the tooltip follow the cursor - due to possible links or scrolling in the tooltip or the need for it to work on mobile
      */
     $cms.ui.activateTooltip = function activateTooltip(el, event, tooltip, width, pic, height, bottom, delay, lightsOff, forceWidth, win, haveLinks) {
         el = $dom.elArg(el);
@@ -666,7 +666,8 @@
      */
     $cms.ui.alert = function alert(notice, title, unescaped) {
         var options,
-            single = false;
+            single = false,
+            width = 600;
 
         if ($util.isObj(notice)) {
             options = notice;
@@ -674,6 +675,7 @@
             title = strVal(options.title) || '{!MESSAGE;^}';
             unescaped = Boolean(options.unescaped);
             single = Boolean(options.single);
+            width = intVal(options.width) || width;
         } else {
             notice = strVal(notice);
             title = strVal(title) || '{!MESSAGE;^}';
@@ -700,7 +702,7 @@
                 type: 'alert',
                 text: unescaped ? notice : $cms.filter.html(notice).replace(/\n/g, '<br />'),
                 yesButton: '{!INPUTSYSTEM_OK;^}',
-                width: '600',
+                width: width.toString(),
                 yes: function () {
                     currentAlertNotice = null;
                     currentAlertTitle = null;

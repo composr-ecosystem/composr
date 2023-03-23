@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -225,7 +225,7 @@ function block_helper_script()
         $defaults = parse_single_comcode_tag(get_param_string('parse_defaults', '', INPUT_FILTER_GET_COMPLEX), 'block');
         foreach ($_GET as $key => $val) {
             $matches = [];
-            if (preg_match('#^default_(.*)$#', $key, $matches) != 0) {
+            if ((is_string($key)) && (preg_match('#^default_(.*)$#', $key, $matches) != 0)) {
                 $defaults[$matches[1]] = $val;
             }
         }

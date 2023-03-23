@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -103,10 +103,6 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
         $index_table = 'ce_fulltext_index';
         $clean_scan = ($GLOBALS['SITE_DB']->query_select_value_if_there($index_table, 'i_ngram') === null);
 
-        $fields_to_index = [
-            'meta_keywords' => APPEARANCE_CONTEXT_META,
-            'meta_description' => APPEARANCE_CONTEXT_BODY,
-        ];
         $key_transfer_map = [
             'id' => 'i_catalogue_entry_id',
         ];
@@ -122,6 +118,7 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
         $since_clause = $engine->generate_since_where_clause($db, $index_table, ['ce_add_date' => false, 'ce_edit_date' => true], $since, $statistics_map);
         $sql .= $since_clause;
         $sql .= ' AND r.c_name NOT LIKE \'' . db_encode_like('\_%') . '\''; // Don't want results drawn from the hidden custom-field catalogues
+        $sql .= ' ORDER BY r.id';
         $max = 100;
         $start = 0;
         do {
@@ -129,8 +126,12 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
             foreach ($rows as $row) {
                 $langs = find_all_langs();
                 foreach (array_keys($langs) as $lang) {
-                    $content_fields = $row;
+                    $fields_to_index = [
+                        'meta_keywords' => APPEARANCE_CONTEXT_META,
+                        'meta_description' => APPEARANCE_CONTEXT_BODY,
+                    ];
 
+                    $content_fields = $row;
                     $engine->get_content_fields_from_catalogue_entry($content_fields, $fields_to_index, $row['c_name'], $row['id'], $lang);
 
                     list($keywords, $description) = seo_meta_get_for('catalogue_entry', strval($row['id']));
@@ -218,7 +219,7 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
      * @param  ID_TEXT $direction Order direction
      * @param  SHORT_TEXT $author Username/Author to match for
      * @param  ?MEMBER $author_id Member-ID to match for (null: unknown)
-     * @param  mixed $cutoff Cutoff date (TIME or a pair representing the range)
+     * @param  mixed $cutoff Cutoff date (TIME or a pair representing the range or null)
      * @return array List of maps (template, orderer)
      */
     public function run(string $search_query, string $content_where, string $where_clause, string $search_under, bool $only_search_meta, bool $only_titles, int $max, int $start, string $sort, string $direction, string $author, ?int $author_id, $cutoff) : array
@@ -255,7 +256,9 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
 
         // Calculate and perform query
         $permissions_module = 'forums';
-        if (can_use_composr_fast_custom_index('catalogue_entries', $search_query, Composr_fast_custom_index::active_search_has_special_filtering() || $cutoff !== null || $author != '' || ($search_under != '-1' && $search_under != '!'))) {
+        $db = $GLOBALS['SITE_DB'];
+        $index_table = 'ce_fulltext_index';
+        if (can_use_composr_fast_custom_index('catalogue_entries', $db, $index_table, $search_query, Composr_fast_custom_index::active_search_has_special_filtering() || $cutoff !== null || $author != '' || ($search_under != '-1' && $search_under != '!'))) {
             // This search hook implements the Composr fast custom index, which we use where possible...
 
             $table = 'catalogue_entries r';
@@ -330,8 +333,6 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
                 }
             }
 
-            $db = $GLOBALS['SITE_DB'];
-            $index_table = 'ce_fulltext_index';
             $key_transfer_map = ['id' => 'i_catalogue_entry_id'];
             $index_permissions_field = 'i_category_id';
             $rows = $engine->get_search_rows($db, $index_table, $db->get_table_prefix() . $table, $key_transfer_map, $where_clause, $extra_join_clause, $search_query, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction, $permissions_module, $index_permissions_field);

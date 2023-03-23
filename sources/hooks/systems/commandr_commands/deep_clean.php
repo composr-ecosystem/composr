@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_deep_clean
+class Hook_commandr_command_deep_clean
 {
     /**
      * Run function for Commandr hooks.

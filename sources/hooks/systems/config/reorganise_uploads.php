@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -52,5 +52,16 @@ class Hook_config_reorganise_uploads
     public function get_default() : ?string
     {
         return '2';
+    }
+
+    /**
+     * Code to run after the option is saved.
+     *
+     * @param  string $new_value The new value
+     */
+    public function postsave_handler(string $new_value)
+    {
+        require_code('tasks');
+        call_user_func_array__long_task(do_lang('config:REORGANISE_UPLOADS'), null, 'reorganise_uploads');
     }
 }

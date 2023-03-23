@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -1744,6 +1744,7 @@ function installer_health_checks(?array $sections_to_run = null) : array
     $_warnings = [];
     if (addon_installed('health_check')) {
         require_code('health_check');
+        health_check_log_start();
         $hook_obs = find_all_hook_obs('systems', 'health_checks', 'Hook_health_check_');
         foreach ($hook_obs as $ob) {
             list(, $sections) = $ob->run($sections_to_run, CHECK_CONTEXT__INSTALL);
@@ -1759,6 +1760,7 @@ function installer_health_checks(?array $sections_to_run = null) : array
                 }
             }
         }
+        health_check_log_stop();
     }
     return $_warnings;
 }
@@ -2092,7 +2094,7 @@ function step_5_core() : object
         'c_value_trans' => '?LONG_TRANS', // If it's a translatable/Comcode one, we store the language ID in here (or just a string if we don't have multi-lang-content enabled)
         'c_needs_dereference' => 'BINARY',
     ]);
-    $email = post_param_string('email', '', INPUT_FILTER_POST_IDENTIFIER);
+    $email = post_param_string('email', '', INPUT_FILTER_POST_IDENTIFIER | INPUT_FILTER_EMAIL_ADDRESS);
     if ($email != '') {
         $GLOBALS['SITE_DB']->query_insert('config', [
             'c_name' => 'staff_address',
@@ -2185,10 +2187,16 @@ function step_5_core_2() : object
     $trans5 = insert_lang('zone_header_text', do_lang('CMS'), 1, null, false, null, $INSTALL_LANG);
     $h5 = insert_lang('zone_title', do_lang('CMS'), 1, null, false, null, $INSTALL_LANG);
     $GLOBALS['SITE_DB']->query_insert('zones', ['zone_name' => 'cms', 'zone_default_page' => 'cms', 'zone_theme' => 'admin', 'zone_require_session' => 1] + $trans5 + $h5);
-    if (file_exists(get_file_base() . '/docs')) { // installing from Git
+    // FUDGE: Installing from Git...
+    if (file_exists(get_file_base() . '/docs')) {
         $trans6 = insert_lang('zone_header_text', '', 1, null, false, null, $INSTALL_LANG);
         $h6 = insert_lang('zone_title', do_lang('TUTORIALS'), 1, null, false, null, $INSTALL_LANG);
         $GLOBALS['SITE_DB']->query_insert('zones', ['zone_name' => 'docs', 'zone_default_page' => 'tutorials', 'zone_theme' => '-1', 'zone_require_session' => 0] + $trans6 + $h6);
+    }
+    if (file_exists(get_file_base() . '/buildr')) {
+        $trans6 = insert_lang('zone_header_text', '', 1, null, false, null, $INSTALL_LANG);
+        $h6 = insert_lang('zone_title', 'buildr', 1, null, false, null, $INSTALL_LANG);
+        $GLOBALS['SITE_DB']->query_insert('zones', ['zone_name' => 'buildr', 'zone_default_page' => 'home', 'zone_theme' => '-1', 'zone_require_session' => 0] + $trans6 + $h6);
     }
 
     // Forums
@@ -2525,7 +2533,7 @@ function step_9() : object
 
     $time_start = microtime(true);
 
-    foreach (['forum', 'cms', 'buildr'] as $zone) {
+    foreach (['forum', 'cms'] as $zone) {
         if (!is_file(get_file_base() . '/' . $zone . '/index.php')) {
             continue;
         }
@@ -2660,8 +2668,12 @@ function step_10_populate_database() : object
     $ADD_MENU_COUNTER = 100;
 
     $zones = find_all_zones();
-    if (file_exists(get_file_base() . '/docs')) { // installing from Git
+    // FUDGE: Installing from Git
+    if (file_exists(get_file_base() . '/docs')) {
         $zones[] = 'docs';
+    }
+    if (file_exists(get_file_base() . '/buildr')) {
+        $zones[] = 'buildr';
     }
     foreach (array_unique($zones)/*in case find_all_zones did find docs*/ as $zone) {
         if (($zone != 'site') && ($zone != 'adminzone') && ($zone != 'forum') && ($zone != 'cms') && (($zone != '') || (get_option('single_public_zone') == '0'))) {
@@ -2846,6 +2858,10 @@ function object_factory(string $class, bool $failure_ok = false, array $paramete
  */
 function cms_ini_set(string $var, string $value)
 {
+    if ($var == 'memory_limit' && PHP_DEBUG == 1) {
+        $value = '-1';
+    }
+
     $to_block = ['disable_functions', 'suhosin.executor.func.blacklist', 'suhosin.executor.include.blacklist', 'suhosin.executor.eval.blacklist'];
     $_blocked = [];
     foreach ($to_block as $func) {
@@ -2967,13 +2983,16 @@ function handle_self_referencing_embedment()
                 break;
         }
 
+        $output = '';
         if (preg_match('#^themes/default/css/#', $type) != 0) {
             header('Content-Type: text/css; charset=' . get_charset());
-
-            $output = '';
             foreach (['themes/default/css/_base.css', 'themes/default/css/_colours.css', $type] as $_type) {
                 if (!file_exists(get_file_base() . '/' . $_type)) {
-                    $file = unixify_line_format(handle_string_bom(file_array_get($_type)));
+                    if (function_exists('file_array_get')) {
+                        $file = unixify_line_format(handle_string_bom(file_array_get($_type)));
+                    } else {
+                        exit();
+                    }
                 } else {
                     $file = cms_file_get_contents_safe(get_file_base() . '/' . $_type, FILE_READ_LOCK | FILE_READ_BOM);
                 }
@@ -2991,7 +3010,9 @@ function handle_self_referencing_embedment()
         if (preg_match('#^data/polyfills/#', $type) != 0) {
             header('Content-Type: text/javascript; charset=' . get_charset());
             if (!file_exists(get_file_base() . '/' . $type)) {
-                $output = unixify_line_format(handle_string_bom(file_array_get($type)));
+                if (function_exists('file_array_get')) {
+                    $output = unixify_line_format(handle_string_bom(file_array_get($type)));
+                }
             } else {
                 $output = cms_file_get_contents_safe(get_file_base() . '/' . $type, FILE_READ_LOCK);
             }
@@ -3002,7 +3023,9 @@ function handle_self_referencing_embedment()
         if (preg_match('#^themes/default/images/.*\.png$#', $type) != 0) {
             header('Content-Type: image/png');
             if (!file_exists(get_file_base() . '/' . $type)) {
-                $output = handle_string_bom(file_array_get($type));
+                if (function_exists('file_array_get')) {
+                    $output = handle_string_bom(file_array_get($type));
+                }
             } else {
                 $output = cms_file_get_contents_safe(get_file_base() . '/' . $type, FILE_READ_LOCK);
             }
@@ -3013,7 +3036,22 @@ function handle_self_referencing_embedment()
         if (preg_match('#^themes/default/images/.*\.svg$#', $type) != 0) {
             header('Content-Type: image/svg+xml; charset=' . get_charset());
             if (!file_exists(get_file_base() . '/' . $type)) {
-                $output = unixify_line_format(handle_string_bom(file_array_get($type)));
+                if (function_exists('file_array_get')) {
+                    $output = unixify_line_format(handle_string_bom(file_array_get($type)));
+                }
+            } else {
+                $output = cms_file_get_contents_safe(get_file_base() . '/' . $type, FILE_READ_LOCK);
+            }
+            print($output);
+            exit();
+        }
+
+        if (preg_match('#^themes/default/images/.*\.gif$#', $type) != 0) {
+            header('Content-Type: image/gif; charset=' . get_charset());
+            if (!file_exists(get_file_base() . '/' . $type)) {
+                if (function_exists('file_array_get')) {
+                    $output = unixify_line_format(handle_string_bom(file_array_get($type)));
+                }
             } else {
                 $output = cms_file_get_contents_safe(get_file_base() . '/' . $type, FILE_READ_LOCK);
             }
@@ -3468,6 +3506,9 @@ function confirm_db_credentials(bool $return_connection = false)
     require_code('database');
     $post_db_type = post_param_string('db_type', false, INPUT_FILTER_POST_IDENTIFIER);
     $table_prefix = post_param_string('table_prefix', false, INPUT_FILTER_POST_IDENTIFIER);
+    if (($table_prefix !== false) && (strlen($table_prefix) > 18)) {
+        warn_exit(do_lang_tempcode('LONG_TABLE_PREFIX', '18', $table_prefix));
+    }
     $post_db_site = post_param_string('db_site', false, INPUT_FILTER_POST_IDENTIFIER);
     $post_db_host = post_param_string('db_site_host', false, INPUT_FILTER_POST_IDENTIFIER);
     $post_db_user = post_param_string('db_site_user', false, INPUT_FILTER_POST_IDENTIFIER);

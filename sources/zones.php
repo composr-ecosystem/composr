@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -1682,7 +1682,7 @@ function find_all_modules(string $zone) : array
  * @param  PATH $path The path to the module (or any PHP file with a class)
  * @param  array $functions Array of functions to be executing
  * @param  array $params A list of parameters to pass to our functions
- * @param  boolean $prefer_direct_code_call Whether to do this "properly" (via proper OOP), which will consume more memory
+ * @param  boolean $prefer_direct_code_call Whether to do this "properly" (via proper OOP), which will consume more memory; it may have to recurse and do this anyway if it sees references to a parent class
  * @param  ?string $class_name Class name to use (null: autodetect, which is a little slower)
  * @return array A list of pieces of code to do the equivalent of executing the requested functions with the requested parameters
  */

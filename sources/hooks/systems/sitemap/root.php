@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -100,6 +100,7 @@ class Hook_sitemap_root extends Hook_sitemap_base
             'extra_meta' => [
                 'description' => null,
                 'image' => null,
+                'icon' => null,
                 'add_time' => (($meta_gather & SITEMAP_GATHER_TIMES) != 0) ? website_creation_time() : null,
                 'edit_time' => null,
                 'submitter' => null,
@@ -127,6 +128,7 @@ class Hook_sitemap_root extends Hook_sitemap_base
             $struct['type'] = 'zone';
             if (($meta_gather & SITEMAP_GATHER_IMAGE) != 0) {
                 $struct['extra_meta']['image'] = find_theme_image('icons/menu/welcome');
+                $struct['extra_meta']['icon'] = 'menu/welcome';
             }
 
             if (($options & SITEMAP_GEN_LABEL_CONTENT_TYPES) != 0) {

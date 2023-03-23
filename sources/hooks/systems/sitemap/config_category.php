@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -148,6 +148,7 @@ class Hook_sitemap_config_category extends Hook_sitemap_base
             'extra_meta' => [
                 'description' => null,
                 'image' => (($meta_gather & SITEMAP_GATHER_IMAGE) != 0) ? find_theme_image('icons/menu/adminzone/setup/config/config') : null,
+                'icon' => (($meta_gather & SITEMAP_GATHER_IMAGE) != 0) ? 'menu/adminzone/setup/config/config' : null,
                 'add_time' => null,
                 'edit_time' => null,
                 'submitter' => null,

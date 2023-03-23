@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -128,6 +128,7 @@ class Hook_sitemap_catalogue_category extends Hook_sitemap_content
                 $struct['title'] = null;
             }
             $struct['extra_meta']['image'] = null;
+            $struct['extra_meta']['icon'] = null;
             $this->_ameliorate_with_row($options, $struct, $row_x, $meta_gather);
         }
 

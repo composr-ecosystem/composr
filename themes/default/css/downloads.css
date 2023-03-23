@@ -1,6 +1,6 @@
 /*
  {$BRAND_NAME`}
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 */
 
 /* Download boxes */
@@ -57,24 +57,24 @@
 /* Floated Right */
 
 /*{+START,CSS_MODE,desktop}*/
-	.download-metadata {
+	.download-meta-details {
 		float: right;
 		width: 17em;
 	}
 /*{+END}*/
 
 /*{+START,CSS_MODE,mobile}*/
-	.download-metadata .right {
+	.download-meta-details .right {
 		float: none;
 	}
 /*{+END}*/
 
-.download-metadata .ratings, .download-metadata .trackbacks {
+.download-meta-details .ratings, .download-meta-details .trackbacks {
 	width: 100%;
 	margin-top: 1em;
 }
 
-.download-metadata .ratings br {
+.download-meta-details .ratings br {
 	display: none;
 }
 

@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -22,8 +22,8 @@ function init__user_import()
 
     define('USER_IMPORT_MATCH_KEY', 'id'); // defined in terms of the local key
 
-    define('USER_IMPORT_URL', get_base_url() . '/data_custom/modules/user_export/in2.csv'); // Can be remote, we do an HTTP download to the path below (even if local)...
-    define('USER_IMPORT_TEMP_PATH', 'data_custom/modules/user_export/in.csv');
+    define('USER_IMPORT_URL', get_base_url() . '/data_custom/modules/user_export/in.csv'); // Can be remote, we do an HTTP download to the path below (even if local)...
+    define('USER_IMPORT_TEMP_PATH', 'data_custom/modules/user_export/in_temp.csv');
 
     global $USER_IMPORT_WANTED;
     $USER_IMPORT_WANTED = [

@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -110,7 +110,7 @@ class Hook_addon_registry_user_sync
             'requires' => [
                 'commandr',
                 'Conversr',
-                'php pdo_mysql extension'
+                'PHP pdo_mysql extension'
             ],
             'recommends' => [],
             'conflicts_with' => [],

@@ -162,7 +162,7 @@
             ticktickticker = $dom.$('#ticktickticker-news' + params.bottomNewsId),
             myId = 'ticker-' + $util.random(),
             width = params.bottomNewsWidth,
-            dynamicWidth = (width == ''),
+            dynamicWidth = (width === ''),
             speed = 40;
 
         if (dynamicWidth) {
@@ -184,7 +184,7 @@
         var lastTime = 0;
         var animationFunc = function (timestamp) {
             if (timestamp - lastTime >= 1000 / speed) {
-                tickerTick(myId, width);
+                window.tickerTick(myId, width);
                 lastTime = timestamp;
             }
 

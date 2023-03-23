@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -205,9 +205,9 @@ class Module_admin_errorlog
 
                 if (($_line != '') && (strpos($_line, '<?php') === false)) {
                     $matches = [];
-                    if (preg_match('#^\[(.+?) (.+?)\] (.{1,20}):  ?(.*)#', $_line, $matches) != 0) {
+                    if (preg_match('#^\[([^\[\]]+) ([^\[\]]+)\] (.{1,22}):  ?(.*)#', $_line, $matches) != 0) {
                         $stuff[] = [$matches[1], $matches[2], $matches[3], $matches[4]];
-                    } elseif (preg_match('#^\[(.+?) (.+?)\] (.*)#', $_line, $matches) != 0) {
+                    } elseif (preg_match('#^\[([^\[\]]+) ([^\[\]]+)\] (.*)#', $_line, $matches) != 0) {
                         $stuff[] = [$matches[1], $matches[2], 'N/A', $matches[3]];
                     }
                 }
@@ -313,7 +313,7 @@ class Module_admin_errorlog
                         }
                     }
 
-                    // Any special support for reformatting particular logs
+                    // FUDGE: Any special support for reformatting particular logs
                     foreach ($lines as $i => $line) {
                         // Special support for permission log
                         $matches = [];
@@ -427,6 +427,13 @@ class Module_admin_errorlog
             $last_error = '';
             $enabled = true;
 
+            if (isset($cron_progression[$hook])) {
+                $last_run = $cron_progression[$hook]['c_last_run'];
+                $last_execution_secs = $cron_progression[$hook]['c_last_execution_secs'];
+                $last_error = $cron_progression[$hook]['c_last_error'];
+                $enabled = ($cron_progression[$hook]['c_enabled'] == 1);
+            }
+
             $info = $object->info($last_run, null); // Low priority for calculating queued items
             if ($info !== null) {
                 $label = $info['label'];
@@ -434,13 +441,6 @@ class Module_admin_errorlog
                 $minutes_between_runs = $info['minutes_between_runs'];
             } else {
                 $available = false;
-            }
-
-            if (isset($cron_progression[$hook])) {
-                $last_run = $cron_progression[$hook]['c_last_run'];
-                $last_execution_secs = $cron_progression[$hook]['c_last_execution_secs'];
-                $last_error = $cron_progression[$hook]['c_last_error'];
-                $enabled = ($cron_progression[$hook]['c_enabled'] == 1);
             }
 
             $actions = new Tempcode();

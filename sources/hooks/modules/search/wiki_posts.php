@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -109,7 +109,7 @@ class Hook_search_wiki_posts extends FieldsSearchHook
      * @param  ID_TEXT $direction Order direction
      * @param  SHORT_TEXT $author Username/Author to match for
      * @param  ?MEMBER $author_id Member-ID to match for (null: unknown)
-     * @param  mixed $cutoff Cutoff date (TIME or a pair representing the range)
+     * @param  mixed $cutoff Cutoff date (TIME or a pair representing the range or null)
      * @return array List of maps (template, orderer)
      */
     public function run(string $search_query, string $content_where, string $where_clause, string $search_under, bool $only_search_meta, bool $only_titles, int $max, int $start, string $sort, string $direction, string $author, ?int $author_id, $cutoff) : array

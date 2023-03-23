@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -38,7 +38,7 @@ class Hook_spam_heuristics_posting_speed
 
         $csrf_token = post_param_string('csrf_token', null);
         if ($csrf_token !== null) {
-            $generation_time = $GLOBALS['SITE_DB']->query_select_value_if_there('post_tokens', 'generation_time', ['token' => $csrf_token]);
+            $generation_time = $GLOBALS['SITE_DB']->query_select_value_if_there('post_tokens', 'MAX(generation_time)', ['token' => $csrf_token]);
             if ($generation_time !== null) {
                 $posted_seconds_ago = (time() - $generation_time);
                 $threshold = intval(get_option('spam_heuristic_posting_speed'));

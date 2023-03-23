@@ -38,6 +38,8 @@
 
 {+START,IF,{$THEME_OPTION,show_content_tagging}}{TAGS}{+END}
 
+{+START,IF,{$THEME_OPTION,show_screen_actions}}{$BLOCK,failsafe=1,block=main_screen_actions,title={$METADATA,title}}{+END}
+
 {$REVIEW_STATUS,download_category,{ID}}
 
 {$,Load up the staff actions template to display staff actions uniformly (we relay our parameters to it)...}
@@ -56,8 +58,6 @@
 	3_REL=edit
 	3_ICON=admin/edit_this_category
 {+END}
-
-{+START,IF,{$THEME_OPTION,show_screen_actions}}{$BLOCK,failsafe=1,block=main_screen_actions,title={$METADATA,title}}{+END}
 
 {+START,IF_NON_EMPTY,{$GET,subcategories}}{+START,IF,{$EQ,{ID},{$DB_FIRST_ID}}}{+START,IF,{$NOT,{$CONFIG_OPTION,downloads_subcat_narrowin}}}
 	<hr class="spaced-rule" />

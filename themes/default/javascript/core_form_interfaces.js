@@ -316,7 +316,7 @@
         }
     });
 
-    $cms.templates.formScreenFieldInput = function formScreenField_input(params) {
+    $cms.templates.formScreenFieldInput = function formScreenFieldInput(params) {
         var el = $dom.$('#form-table-field-input--' + strVal(params.randomisedId));
         if (el) {
             $cms.form.setUpChangeMonitor(el.parentElement);
@@ -759,41 +759,44 @@
     };
 
     $cms.templates.formScreenInputList = function formScreenInputList(params, selectEl) {
+        var imageSources;
+
         if (params.inlineList) {
             return;
         }
 
+        if (params.images !== undefined) {
+            imageSources = JSON.parse(strVal(params.imageSources) || '{}');
+        }
+
         var select2Options = {
             dropdownAutoWidth: window.parent === window, /*Otherwise can overflow*/
-            formatResult: (params.images === undefined) ? formatSelectSimple : formatSelectImage
+            templateResult: (params.images === undefined) ? formatSelectSimple : formatSelectImage
         };
-
         if (window.jQuery && (window.jQuery.fn.select2 != null) && (selectEl.options.length > 20)/*only for long lists*/ && (!$dom.html(selectEl.options[1]).match(/^\d+$/)/*not for lists of numbers*/)) {
             selectEl.classList.remove('form-control');
             window.jQuery(selectEl).select2(select2Options);
         }
 
-        function formatSelectSimple(opt) {
-            if (!opt.id) { // optgroup
-                return opt.text;
+        function formatSelectSimple(state) {
+            if (!state.id) { // optgroup
+                return state.text;
             }
-            return '<span title="' + $cms.filter.html(opt.element[0].title) + '">' + $cms.filter.html(opt.text) + '</span>';
+            return $('<span title="' + $cms.filter.html(state.element[0].title) + '">' + $cms.filter.html(state.text) + '</span>');
         }
 
-        function formatSelectImage(opt) {
-            if (!opt.id) {
-                return opt.text; // optgroup
+        function formatSelectImage(state) {
+            if (!state.id) {
+                return state.text; // optgroup
             }
 
-            var imageSources = JSON.parse(strVal(params.imageSources) || '{}');
-
             for (var imageName in imageSources) {
-                if (opt.id === imageName) {
-                    return '<span class="vertical-alignment inline-lined-up"><img style="width: 24px;" src="' + imageSources[imageName] + '" /> ' + $cms.filter.html(opt.text) + '</span>';
+                if (state.id === imageName) {
+                    return $('<span class="vertical-alignment inline-lined-up"><img style="width: 24px;" src="' + imageSources[imageName] + '" /> ' + $cms.filter.html(state.text) + '</span>');
                 }
             }
 
-            return $cms.filter.html(opt.text);
+            return $cms.filter.html(state.text);
         }
     };
 

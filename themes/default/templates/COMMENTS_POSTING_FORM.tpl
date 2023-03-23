@@ -83,7 +83,7 @@
 
 										<td>
 											<div>
-												<input aria-errormessage="error-email-msg" id="email" name="email" value="{$MEMBER_EMAIL*}" type="text" tabindex="2" maxlength="255" class="form-control form-control-wide{+START,IF,{$NOT,{EMAIL_OPTIONAL}}} input-text-required{+END}" />
+												<input aria-errormessage="error-email-msg" id="email" name="email" type="email" value="{$MEMBER_EMAIL*}" type="text" tabindex="2" maxlength="255" class="form-control form-control-wide{+START,IF,{$NOT,{EMAIL_OPTIONAL}}} input-text-required{+END}" />
 											</div>
 
 											<div id="error-email" style="display: none" class="input-error-here">
@@ -265,7 +265,7 @@
 								{+END}
 
 								{+START,IF_PASSED,ATTACHMENTS}{+START,IF,{$AND,{TRUE_ATTACHMENT_UI},{$BROWSER_MATCHES,simplified_attachments_ui}}}
-									<button tabindex="7" id="js-attachment-browse-button--post" class="btn btn-primary {$?,{$IS_EMPTY,{COMMENT_URL}},button-scr,button-scri} for-field-post buttons--thumbnail" type="button">{+START,INCLUDE,ICON}NAME=buttons/thumbnail{+END} {!comcode:ADD_COMCODE_IMAGES}</button>
+									<button tabindex="7" id="js-attachment-browse-button--post" style="display: none;" class="btn btn-primary {$?,{$IS_EMPTY,{COMMENT_URL}},button-scr,button-scri} for-field-post buttons--thumbnail" type="button">{+START,INCLUDE,ICON}NAME=buttons/thumbnail{+END} {!comcode:ADD_COMCODE_IMAGES}</button>
 								{+END}{+END}
 
 								{+START,SET,button_title}{+START,IF_PASSED,SUBMIT_NAME}{SUBMIT_NAME*}{+END}{+START,IF_NON_PASSED,SUBMIT_NAME}{+START,IF_NON_EMPTY,{TITLE}}{TITLE*}{+END}{+START,IF_EMPTY,{TITLE}}{!SEND}{+END}{+END}{+END}

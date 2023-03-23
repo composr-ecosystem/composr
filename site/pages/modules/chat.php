@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -1071,7 +1071,7 @@ class Module_chat
         if ($member_id === null) {
             $members = [];
             foreach ($_POST as $key => $val) {
-                if ((substr($key, 0, 7) == 'select_') && ($val == '1')) {
+                if ((is_string($key)) && (substr($key, 0, 7) == 'select_') && ($val == '1')) {
                     $members[] = intval(substr($key, 7));
                 }
             }

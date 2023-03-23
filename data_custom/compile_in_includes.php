@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -83,12 +83,14 @@ if ((!$undo) && (!$do)) {
     exit('Must give do or undo parameter');
 }
 
+cms_ini_set('ocproducts.xss_detect', '0');
+
 $file_base = dirname(__DIR__);
 
 require_code('files');
 
 require_code('files2');
-$files = get_directory_contents($file_base, '');
+$files = performance_compile__get_directory_contents($file_base, $file_base);
 
 foreach ($files as $path) {
     if ((substr($path, -4) == '.php') && (strpos($path, '_custom') !== false)) {
@@ -226,7 +228,7 @@ foreach ($files as $path) {
 
 echo 'DONE';
 
-function get_directory_contents($path, $rel_path = '')
+function performance_compile__get_directory_contents($path, $rel_path = '')
 {
     $out = [];
 
@@ -240,7 +242,7 @@ function get_directory_contents($path, $rel_path = '')
         if ($is_file) {
             $out[] = $rel_path . (($rel_path == '') ? '' : '/') . $file;
         } elseif (is_dir($path . '/' . $file)) {
-            $out = array_merge($out, get_directory_contents($path . '/' . $file, $rel_path . (($rel_path == '') ? '' : '/') . $file));
+            $out = array_merge($out, performance_compile__get_directory_contents($path . '/' . $file, $rel_path . (($rel_path == '') ? '' : '/') . $file));
         }
     }
     closedir($d);

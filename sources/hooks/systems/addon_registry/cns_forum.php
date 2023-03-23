@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -1911,7 +1911,7 @@ class Hook_addon_registry_cns_forum
                 'CUSTOM_FIELDS' => $custom_fields,
             ]);
 
-            $poster_details_mem = do_lorem_template('CNS_MEMBER_BOX', [
+            $map = [
                 'GIVE_CONTEXT' => false,
                 'MEMBER_ID' => placeholder_numeric_id(),
                 'USERNAME' => lorem_phrase(),
@@ -1932,9 +1932,12 @@ class Hook_addon_registry_cns_forum
                 'DOB' => placeholder_date(),
                 '_DOB' => placeholder_date_raw(),
                 '_DOB_CENSORED' => placeholder_date_raw(),
-                '_NUM_WARNINGS' => placeholder_number(),
-                'NUM_WARNINGS' => placeholder_number(),
-            ]);
+            ];
+            if (addon_installed('cns_warnings')) {
+                $map['_NUM_WARNINGS'] = placeholder_number();
+                $map['NUM_WARNINGS'] = placeholder_number();
+            }
+            $poster_details_mem = do_lorem_template('CNS_MEMBER_BOX', $map);
 
             $poster = do_lorem_template('CNS_POSTER_MEMBER', [
                 'ID' => placeholder_random_id(),

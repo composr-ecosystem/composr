@@ -4,7 +4,6 @@
 
 {$SET,menu_id,r-{$RAND}-d}
 {+START,IF_NON_EMPTY,{MENU}}{$SET,menu_id,r-{MENU|}-d}{+END}
-	{$SET,RAND,{$RAND}}
 	{$SET,HAS_CHILDREN,{$HAS_ACTUAL_PAGE_ACCESS,admin,adminzone}}
 
 	<div class="menu-dropdown menu-dropdown-admin" data-view="DropdownMenu" data-view-params="{+START,PARAMS_JSON,MENU,JAVASCRIPT_HIGHLIGHTING,menu_id}{_*}{+END}">

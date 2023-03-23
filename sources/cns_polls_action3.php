@@ -1,7 +1,7 @@
 <?php /*
 
 Composr
-Copyright (c) ocProducts, 2004-2022
+Copyright (c) ocProducts, 2004-2023
 
 See docs/LICENSE.md for full licensing information.
 
@@ -13,10 +13,10 @@ NOTE TO PROGRAMMERS:
 */
 
 /**
-* @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
-* @copyright  ocProducts Ltd
-* @package    core_cns
-*/
+ * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
+ * @copyright  ocProducts Ltd
+ * @package    core_cns
+ */
 
 /**
  * Get default poll options for a specified forum.

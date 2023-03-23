@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -42,6 +42,8 @@ class Hook_config_proxy_password
             'required' => false,
             'public' => false,
             'addon' => 'core_configuration',
+
+            'maintenance_code' => 'http_proxy',
         ];
     }
 

@@ -45,7 +45,7 @@
 					// Attach Plupload to the Image button on the WYSIWYG editor
 					setTimeout(function () {
 						var imageButton = document.getElementById('cke_' + editor.element.$.id).querySelector('.cke_button__composr_image');
-						window.rebuildAttachmentButtonForNext(imageButton.id);
+						window.rebuildAttachmentButtonForNext(imageButton);
 					}, 0);
 
 					usesPlupload = true;

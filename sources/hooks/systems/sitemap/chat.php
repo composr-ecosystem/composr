@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -141,6 +141,7 @@ class Hook_sitemap_chat extends Hook_sitemap_content
         ] + $partial_struct;
 
         $struct['extra_meta']['image'] = find_theme_image('icons/menu/social/chat/chat');
+        $struct['extra_meta']['icon'] = 'menu/social/chat/chat';
 
         if (!$this->_check_node_permissions($struct, $options)) {
             return null;

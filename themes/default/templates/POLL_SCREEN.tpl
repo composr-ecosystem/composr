@@ -18,18 +18,17 @@
 {$SET,bound_catalogue_entry,{$CATALOGUE_ENTRY_FOR,poll,{ID}}}
 {+START,IF_NON_EMPTY,{$GET,bound_catalogue_entry}}{$CATALOGUE_ENTRY_ALL_FIELD_VALUES,{$GET,bound_catalogue_entry}}{+END}
 
-<div class="clearfix lined-up-boxes">
-	{+START,IF_NON_EMPTY,{TRACKBACK_DETAILS}}
-		<div class="trackbacks right">
-			{TRACKBACK_DETAILS}
-		</div>
-	{+END}
-	{+START,IF_NON_EMPTY,{RATING_DETAILS}}
-		<div class="ratings right">
-			{RATING_DETAILS}
-		</div>
-	{+END}
-</div>
+{+START,IF_NON_EMPTY,{EDIT_DATE_RAW}}
+	<div class="edited" role="note">
+		<img alt="" width="9" height="6" src="{$IMG*,edited}" />
+		<span>{!EDITED}</span>
+		<time datetime="{$FROM_TIMESTAMP*,Y-m-d\TH:i:s\Z,{EDIT_DATE_RAW}}">{$DATE*,,,,{EDIT_DATE_RAW}}</time>
+	</div>
+{+END}
+
+{+START,IF,{$THEME_OPTION,show_screen_actions}}{$BLOCK,failsafe=1,block=main_screen_actions,title={$METADATA,title}}{+END}
+
+{$REVIEW_STATUS,poll,{ID}}
 
 {$,Load up the staff actions template to display staff actions uniformly (we relay our parameters to it)...}
 {+START,INCLUDE,STAFF_ACTIONS}
@@ -46,18 +45,22 @@
 	{+END}
 {+END}
 
+{+START,IF_NON_EMPTY,{RATING_DETAILS}}
+	<div class="clearfix">
+		<div class="ratings">
+			{RATING_DETAILS}
+		</div>
+	</div>
+{+END}
+
 <div class="content-screen-comments">
 	{COMMENT_DETAILS}
 </div>
 
-{+START,IF_NON_EMPTY,{EDIT_DATE_RAW}}
-	<div class="edited" role="note">
-		<img alt="" width="9" height="6" src="{$IMG*,edited}" />
-		<span>{!EDITED}</span>
-		<time datetime="{$FROM_TIMESTAMP*,Y-m-d\TH:i:s\Z,{EDIT_DATE_RAW}}">{$DATE*,,,,{EDIT_DATE_RAW}}</time>
+{+START,IF_NON_EMPTY,{TRACKBACK_DETAILS}}
+	<div class="clearfix">
+		<div class="trackbacks">
+			{TRACKBACK_DETAILS}
+		</div>
 	</div>
 {+END}
-
-{$REVIEW_STATUS,poll,{ID}}
-
-{+START,IF,{$THEME_OPTION,show_screen_actions}}{$BLOCK,failsafe=1,block=main_screen_actions,title={$METADATA,title}}{+END}

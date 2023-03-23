@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -406,7 +406,7 @@ function _insert_lang(string $field_name, string $text, int $level, ?object $db 
  * Remap the specified content language string, and return details of the content language string.
  *
  * @param  ID_TEXT $field_name The field name
- * @param  mixed $lang_id The ID (if multi-lang-content on), or the string itself
+ * @param  mixed $lang_id The ID (if multi-lang-content on), or the string itself (if multi-lang-content off)
  * @param  string $text The text to remap to
  * @param  ?object $db The database connector to use (null: standard site connector)
  * @param  boolean $comcode Whether it is to be parsed as Comcode

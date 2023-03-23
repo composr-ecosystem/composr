@@ -1,6 +1,6 @@
 /*
  {$BRAND_NAME`}
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 */
 
 .not-too-tall-addons {
@@ -10,14 +10,17 @@
 }
 
 .addon-name {
-	font-style: italic;
+	border-bottom: 2px dotted {$GET,dark_border};
+	display: inline-block;
+	cursor: pointer;
 }
 
 .addon-actions {
 	white-space: nowrap;
+	line-height: normal;
 }
 
-.addon-actions * {
+.addon-actions > * {
 	vertical-align: middle;
 }
 

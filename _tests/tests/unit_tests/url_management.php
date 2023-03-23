@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -19,6 +19,13 @@
 class url_management_test_set extends cms_test_case
 {
     protected $backup_url_scheme;
+
+    public function setUp()
+    {
+        parent::setUp();
+
+        $GLOBALS['SITE_INFO']['block_url_schemes'] = '0';
+    }
 
     public function testUrlToPageLink()
     {

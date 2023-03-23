@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -692,6 +692,10 @@ class Module_admin_permissions
 
         $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, true);
         foreach ($_POST as $key => $val) {
+            if (is_integer($key)) {
+                $key = strval($key);
+            }
+
             // See if we can tidy it back to a page-link (assuming it's not one already)
             $page_link = url_to_page_link($val, true);
             if ($page_link != '') {
@@ -748,7 +752,15 @@ class Module_admin_permissions
             $_sections[$i]['trans'] = do_lang($s['p_section']);
         }
         sort_maps_by($_sections, 'trans', false, true);
-        $orderings = ['SUBMISSION', 'GENERAL_SETTINGS', 'FORUMS_AND_MEMBERS', 'STAFF_ACTIONS', '_COMCODE', '_FEEDBACK', 'POINTS'];
+        $orderings = [
+            'SUBMISSION',
+            'GENERAL_SETTINGS',
+            'FORUMS_AND_MEMBERS',
+            'STAFF_ACTIONS',
+            '_COMCODE',
+            '_FEEDBACK',
+            'POINTS'
+        ];
         $_sections_prior = [];
         foreach ($orderings as $ordering) {
             if (array_key_exists($ordering, $_sections)) {
@@ -758,13 +770,12 @@ class Module_admin_permissions
             }
         }
         if (!empty($_sections_prior)) {
-            $_sections_prior[''] = null;
+            $_sections_prior[''] = null; // Necessary so we know where to put the "Other" header label
         }
         $_sections = array_merge($_sections_prior, $_sections);
 
         return $_sections;
     }
-
 
     /**
      * The UI to choose a group to edit content permissions for.
@@ -1089,6 +1100,10 @@ class Module_admin_permissions
         $group_id = get_param_integer('group_id');
 
         foreach ($_POST as $key => $val) {
+            if (is_integer($key)) {
+                $key = strval($key);
+            }
+
             $matches = [];
 
             if (preg_match('#^perm__([^:]*)$#', $key, $matches) != 0) {
@@ -1384,21 +1399,25 @@ class Module_admin_permissions
         }
 
         $p_section = get_param_string('id');
+
+        // Determine the next section
         $_sections = $this->_get_ordered_sections();
         $array_keys = array_keys($_sections);
-        $next_section = $array_keys[0];
-        $counter = 0;
-        foreach ($_sections as $s) {
-            if ($s === null) {
-                continue;
+        $current_key = array_search($p_section, $array_keys);
+        $next_key = $current_key;
+        $infinite_loop = false;
+        do {
+            $next_key++;
+            if ($next_key >= count($array_keys)) {
+                $next_key = 0;
+                if ($infinite_loop) {
+                    warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                } else {
+                    $infinite_loop = true;
+                }
             }
-
-            if ($counter > array_search($p_section, $array_keys)) {
-                $next_section = $s['p_section'];
-                break;
-            }
-            $counter++;
-        }
+        } while ($array_keys[$next_key] == '');
+        $next_section = $array_keys[$next_key];
 
         $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, true);
         $privileges = collapse_1d_complexity('the_name', $GLOBALS['SITE_DB']->query_select('privilege_list', ['the_name'], ['p_section' => $p_section]));

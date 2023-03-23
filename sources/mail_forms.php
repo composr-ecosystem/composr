@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -83,6 +83,8 @@ function form_to_email(?string $subject = null, string $subject_prefix = '', str
     $details = _form_to_email([], $subject, $subject_prefix, $subject_suffix, $body_prefix, $body_suffix, $fields, $to_email, $is_via_post);
     list($subject, $body, $to_email, $to_name, $from_email, $from_name, $attachments, $body_parts) = $details;
 
+    var_dump($from_email, $to_email);
+
     // Check CAPTCHA
     if (addon_installed('captcha')) {
         if (post_param_integer('_security', 0) == 1) {
@@ -163,7 +165,7 @@ function _form_to_email(array $extra_boring_fields = [], ?string $subject = null
 
     // Find from details if simple...
 
-    $from_email = post_param_string('email', '', INPUT_FILTER_POST_IDENTIFIER);
+    $from_email = post_param_string('email', '', INPUT_FILTER_POST_IDENTIFIER | INPUT_FILTER_EMAIL_ADDRESS);
     $from_name = post_param_string('name', '');
 
     // Find body...
@@ -219,13 +221,16 @@ function _form_to_email(array $extra_boring_fields = [], ?string $subject = null
 
     // Find to details if enabled...
 
-    $to_name = null;
+    $to_name = '';
     if (($to_email === null) && (get_value('allow_member_mail_relay') !== null)) {
         $to = post_param_integer('to_members_email', null, INPUT_FILTER_POST_IDENTIFIER);
         if ($to !== null) {
             $to_email = $GLOBALS['FORUM_DRIVER']->get_member_email_address($to);
             $to_name = $GLOBALS['FORUM_DRIVER']->get_username($to, true);
         }
+    }
+    if ($to_email === null) {
+        $to_email = '';
     }
 
     // Find attachments...

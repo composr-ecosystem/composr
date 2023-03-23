@@ -87,6 +87,9 @@
 							max: {MAX%},
 						{+END}
 						},
+						{+START,IF,{$AND,{HORIZONTAL},{LOGARITHMIC}}}
+							type: 'logarithmic',
+						{+END}
 					}],
 				{+END}
 				yAxes: [{
@@ -106,6 +109,9 @@
 							max: {MAX%},
 						{+END}
 						},
+					{+END}
+					{+START,IF,{$AND,{$NOT,{HORIZONTAL}},{LOGARITHMIC}}}
+						type: 'logarithmic',
 					{+END}
 				}],
 			},

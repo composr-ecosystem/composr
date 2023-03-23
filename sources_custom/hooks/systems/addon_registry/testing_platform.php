@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -773,6 +773,7 @@ We hope other users will appreciate your efforts and give you some points to rew
             '_tests/tests/unit_tests/database_query_parameterised.php',
             '_tests/tests/unit_tests/database_relations.php',
             '_tests/tests/unit_tests/db_correctness.php',
+            '_tests/tests/unit_tests/_eslint.php',
             '_tests/tests/unit_tests/___demonstratr.php',
             '_tests/tests/unit_tests/dev_environment.php',
             '_tests/tests/unit_tests/diff.php',
@@ -821,7 +822,7 @@ We hope other users will appreciate your efforts and give you some points to rew
             '_tests/tests/unit_tests/disk_usage_spec.php',
             '_tests/tests/unit_tests/httpauth.php',
             '_tests/tests/unit_tests/http_obscure_cases.php',
-            '_tests/tests/unit_tests/_api_twitter.php',
+            '_tests/tests/unit_tests/___api_twitter.php',
             '_tests/tests/unit_tests/http.php',
             '_tests/tests/unit_tests/_http_timeouts.php',
             '_tests/tests/unit_tests/hyperlink_targets.php',
@@ -899,6 +900,7 @@ We hope other users will appreciate your efforts and give you some points to rew
             '_tests/tests/unit_tests/rest.php',
             '_tests/tests/unit_tests/rootkit_detection.php',
             '_tests/tests/unit_tests/rss.php',
+            '_tests/tests/unit_tests/___search.php',
             '_tests/tests/unit_tests/search.php',
             '_tests/tests/unit_tests/sensible_git_branches.php',
             '_tests/tests/unit_tests/seo.php',
@@ -954,6 +956,7 @@ We hope other users will appreciate your efforts and give you some points to rew
             '_tests/tests/unit_tests/url_monikers.php',
             '_tests/tests/unit_tests/urls_simplifier.php',
             '_tests/tests/unit_tests/us_english.php',
+            '_tests/tests/unit_tests/scripts.php',
             '_tests/tests/unit_tests/usergroup_subscriptions.php',
             '_tests/tests/unit_tests/versioning.php',
             '_tests/tests/unit_tests/warnings.php',
@@ -975,6 +978,8 @@ We hope other users will appreciate your efforts and give you some points to rew
             '_tests/tests/unit_tests/mobile_detect.php',
             '_tests/tests/unit_tests/new_window_labels.php',
             '_tests/tests/unit_tests/import.php',
+            '_tests/tests/unit_tests/firewall_rules.php',
+            '_tests/tests/unit_tests/hooks.php',
             'data_custom/search_test.php',
         ];
     }

@@ -62,7 +62,7 @@ If you don't like the presence of the metadata options then you can disable the 
 
 [title="2"]Open Graph[/title]
 
-This is covered in the [page="_SEARCH:sup_facebook"]Facebook[/page] tutorial.
+This is covered in the [page="_SEARCH:sup_facebook"]Facebook Support / Open Graph[/page] tutorial.
 
 [title="2"]Twitter Cards[/title]
 
@@ -135,6 +135,6 @@ In your HTML the icon tags look similar to:
  - [page="_SEARCH:tut_markup"]Guide to web technologies (including HTML, CSS, and JavaScript)[/page]
  - [page="_SEARCH:tut_browsers"]Browser version requirements[/page]
  - [page="_SEARCH:tut_website_health"]Website Health[/page]
- - [page="_SEARCH:sup_facebook"]Facebook Support[/page]
+ - [page="_SEARCH:sup_facebook"]Facebook Support / Open Graph[/page]
 
 {$SET,tutorial_tags,core,Advice & Guidance,Introduction,regular}{$SET,tutorial_add_date,Mar 2015}{$SET,tutorial_summary,An explanation of how metadata works within Composr.}[block]main_tutorial_rating[/block]

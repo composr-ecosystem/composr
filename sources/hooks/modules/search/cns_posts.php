@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -221,7 +221,7 @@ class Hook_search_cns_posts extends FieldsSearchHook
      * @param  ID_TEXT $direction Order direction
      * @param  SHORT_TEXT $author Username/Author to match for
      * @param  ?MEMBER $author_id Member-ID to match for (null: unknown)
-     * @param  mixed $cutoff Cutoff date (TIME or a pair representing the range)
+     * @param  mixed $cutoff Cutoff date (TIME or a pair representing the range or null)
      * @return array List of maps (template, orderer)
      */
     public function run(string $search_query, string $content_where, string $where_clause, string $search_under, bool $only_search_meta, bool $only_titles, int $max, int $start, string $sort, string $direction, string $author, ?int $author_id, $cutoff) : array
@@ -257,7 +257,9 @@ class Hook_search_cns_posts extends FieldsSearchHook
 
         // Calculate and perform query
         $permissions_module = 'forums';
-        if (can_use_composr_fast_custom_index('cns_posts', $search_query, Composr_fast_custom_index::active_search_has_special_filtering() || $cutoff !== null || $author != '' || ($search_under != '-1' && $search_under != '!') || get_param_integer('option_tick_cns_posts_starter', 0) == 1)) {
+        $db = $GLOBALS['FORUM_DB'];
+        $index_table = 'f_posts_fulltext_index';
+        if (can_use_composr_fast_custom_index('cns_posts', $db, $index_table, $search_query, Composr_fast_custom_index::active_search_has_special_filtering() || $cutoff !== null || $author != '' || ($search_under != '-1' && $search_under != '!') || get_param_integer('option_tick_cns_posts_starter', 0) == 1)) {
             // This search hook implements the Composr fast custom index, which we use where possible...
 
             $table = 'f_posts r';
@@ -339,8 +341,6 @@ class Hook_search_cns_posts extends FieldsSearchHook
                 // ^ Nothing done with trans_fields and nontrans_fields
             }
 
-            $db = $GLOBALS['FORUM_DB'];
-            $index_table = 'f_posts_fulltext_index';
             $key_transfer_map = ['id' => 'i_post_id'];
             $index_permissions_field = 'i_forum_id';
             $rows = $engine->get_search_rows($db, $index_table, $db->get_table_prefix() . $table, $key_transfer_map, $where_clause, $extra_join_clause, $search_query, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction, $permissions_module, $index_permissions_field, false, $use_simple_index ? 'main_19' : null);

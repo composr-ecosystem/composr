@@ -78,27 +78,11 @@
 		RIGHT=1
 	{+END}
 
-	<div class="clearfix lined-up-boxes carousel-mode-details">
-		{+START,IF_NON_EMPTY,{MEMBER_DETAILS}}
-			<div class="right">
-				<div class="box box---gallery-carousel-mode-screen--member"><div class="box-inner">
-					<h2>{_TITLE*}</h2>
+	{+START,IF,{$THEME_OPTION,show_content_tagging}}{TAGS}{+END}
 
-					{MEMBER_DETAILS}
-				</div></div>
-			</div>
-
-			{+START,IF_NON_EMPTY,{ENTRIES}{CURRENT_ENTRY}}
-				<div class="ratings right">
-					{RATING_DETAILS}
-				</div>
-			{+END}
-		{+END}
-	</div>
+	{+START,IF,{$THEME_OPTION,show_screen_actions}}{$BLOCK,failsafe=1,block=main_screen_actions,title={$METADATA,title}}{+END}
 
 	{$REVIEW_STATUS,gallery,{CAT}}
-
-	{+START,IF,{$THEME_OPTION,show_content_tagging}}{TAGS}{+END}
 
 	{$,Load up the staff actions template to display staff actions uniformly (we relay our parameters to it)...}
 	{+START,INCLUDE,STAFF_ACTIONS}
@@ -130,13 +114,19 @@
 		{+END}
 	{+END}
 
+	{+START,IF_NON_EMPTY,{RATING_DETAILS}}
+		<div class="clearfix">
+			<div class="ratings">
+				{RATING_DETAILS}
+			</div>
+		</div>
+	{+END}
+
 	{+START,IF_NON_EMPTY,{ENTRIES}{CURRENT_ENTRY}}
 		<div class="content-screen-comments">
 			{COMMENT_DETAILS}
 		</div>
 	{+END}
-
-	{+START,IF,{$THEME_OPTION,show_screen_actions}}{$BLOCK,failsafe=1,block=main_screen_actions,title={$METADATA,title}}{+END}
 
 	{$,Uncomment the below if you want the root gallery to show recent and top content, then customise the GALLERY_POPULAR.tpl template to control specifics}
 	{$,\{+START,INCLUDE,GALLERY_POPULAR\}\{+END\}}

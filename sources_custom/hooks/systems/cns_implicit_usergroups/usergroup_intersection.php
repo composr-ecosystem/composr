@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See text/EN/licence.txt for full licencing information.
 
@@ -25,12 +25,12 @@ class Hook_implicit_usergroups_usergroup_intersection
      */
     public function get_bound_group_ids() : array
     {
-        return [11]; // Change this to the ID of the target usergroup
+        return [203]; // Change this to the ID of the target usergroup
     }
 
     public function get_intersected_group_ids()
     {
-        return [5, 7, 8]; // Change this to the IDs of the usergroups we're doing the intersection of
+        return [12, 2]; // Change this to the IDs of the usergroups we're doing the intersection of
     }
 
     protected function _where()

@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -42,6 +42,8 @@ class Hook_config_infinite_scrolling
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
+
+            'maintenance_code' => 'infinite_scrolling',
         ];
     }
 
@@ -52,6 +54,6 @@ class Hook_config_infinite_scrolling
      */
     public function get_default() : ?string
     {
-        return '1';
+        return '0';
     }
 }

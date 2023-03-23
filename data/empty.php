@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -21,4 +21,6 @@
 header('X-Robots-Tag: noindex');
 @header_remove('x-powered-by'); // Security
 
-echo '<!DOCTYPE html>';
+if (empty($_GET['truly'])) {
+    echo '<!DOCTYPE html>';
+}

@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -434,8 +434,9 @@ function canonicalise_sitemap_page_link(string &$page_link)
     if (isset($map['page'])) {
         $_zone = get_page_zone($map['page'], false);
         if ($_zone !== null) {
-            $page_link = preg_replace('#^_SEARCH:#', $_zone . ':', $page_link);
+            $zone = $_zone;
         }
+        $page_link = preg_replace('#^_SEARCH:#', $zone . ':', $page_link);
     }
 }
 
@@ -465,9 +466,10 @@ function notify_sitemap_node_add(string $page_link, ?int $add_date = null, ?int 
         if ($zone == '_SEARCH') {
             $_zone = get_page_zone($map['page'], false);
             if ($_zone !== null) {
-                $page_link = preg_replace('#^_SEARCH:#', $_zone . ':', $page_link);
+                $zone = $_zone;
             }
         }
+        $page_link = preg_replace('#^_SEARCH:#', $zone . ':', $page_link);
 
         require_code('global4');
         if (!comcode_page_include_on_sitemap($zone, $map['page'])) {

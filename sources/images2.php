@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -301,7 +301,7 @@ function _convert_image(string $from, string &$to, ?int $width, ?int $height, ?i
     // Load
     $ext = get_file_extension($from);
     if ($using_path) {
-        if ((!check_memory_limit_for($from, $exit_on_error)) || ($ext == 'svg'/*SVG is pass-through*/)) {
+        if (($ext == 'svg'/*SVG is pass-through*/) || (!check_memory_limit_for($from, $exit_on_error))) {
             if ($using_path) {
                 copy($from, $to);
                 fix_permissions($to);
@@ -315,7 +315,7 @@ function _convert_image(string $from, string &$to, ?int $width, ?int $height, ?i
     } else {
         $file_path_stub = convert_url_to_path($from);
         if ($file_path_stub !== null) {
-            if ((!check_memory_limit_for($from, $exit_on_error)) || ($ext == 'svg'/* SVG is pass-through */)) {
+            if (($ext == 'svg'/* SVG is pass-through */) || (!check_memory_limit_for($file_path_stub, $exit_on_error))) {
                 cms_set_time_limit($old_limit);
                 return $from;
             }

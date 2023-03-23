@@ -139,7 +139,7 @@
     $cms.behaviors.initializeTables = {
         attach: function attach(context) {
             // We could have an image-gd-text being transformed into a js-th-label-text-override, so wait until next frame to initialize tables.
-            setTimeout(function() {
+            setTimeout(function () {
                 var tables = $util.once($dom.$$$(context, 'table, .fake-table'), 'behavior.initializeTables');
 
                 tables.forEach(function (table) {
@@ -664,6 +664,10 @@
                         return;
                     }
 
+                    if (el.ttitle === '') {
+                        return;
+                    }
+
                     if (options.haveLinks && el.tooltipId && $dom.$id(el.tooltipId) && $dom.isDisplayed($dom.$id(el.tooltipId))) {
                         $cms.ui.deactivateTooltip(el);
                         return;
@@ -750,7 +754,7 @@
                 if (options.triggers.includes('hover')) {
                     $dom.on(el, 'mouseenter', function (e) {
                         // Arguments: el, event, tooltip, width, pic, height, bottom, delay, lightsOff, forceWidth, win, haveLinks
-                        $cms.ui.activateTooltip(el, e, options.contents, options.width, options.img, options.height, options.position === 'bottom', options.delay, options.dimImg);
+                        $cms.ui.activateTooltip(el, e, options.contents, options.width, options.img, options.height, options.position === 'bottom', options.delay, options.dimImg, false, null, true);
                     });
                 }
 
@@ -935,8 +939,10 @@
                     // ^ Can be a string or a map of additional query string parameters that will be added to the call URL.
                     callParamsFromTarget = arrVal(options.callParamsFromTarget),
                     // ^ An array of regexes that we will match with query string params in the target's [href] or [action] URL and if matched, pass them along with the block call.
-                    targetsSelector = strVal(options.targetsSelector);
+                    targetsSelector = strVal(options.targetsSelector),
                     // ^ A selector can be provided for additional targets, by default only child elements with [data-ajaxify-target="1"] will be ajaxified.
+                    updateURL = boolVal(options.updateURL);
+                    // ^ Whether the URL in the browser should be updated on an AJAX request
 
                 if (typeof callParams === 'string') {
                     var _callParams = $util.iterableToArray((new URLSearchParams(callParams)).entries());
@@ -1056,7 +1062,9 @@
                     $cms.callBlock($util.rel(thisCallUrl), '', ajaxifyContainer, false, false, postParams).then(function () {
                         window.scrollTo(0, $dom.findPosY(ajaxifyContainer, true));
                         window.hasJsState = true;
-                        window.history.pushState({}, document.title, newWindowUrl.toString()); // Update window URL
+                        if (updateURL) {
+                            window.history.pushState({}, document.title, newWindowUrl.toString()); // Update window URL
+                        }
                     });
                 }
             });
@@ -1794,7 +1802,7 @@
     }
 
     function convertTooltip(el) {
-        var title = el.title ? el.title : ((el.localName === 'img') ? el.alt : (((el.localName === 'svg') && el.querySelector('title')) ? $dom.html(el.querySelector('title')) : ''));
+        var title = el.title ? el.title : ((el.localName === 'img') ? '' : (((el.localName === 'svg') && el.querySelector('title')) ? $dom.html(el.querySelector('title')) : ''));
 
         if (!title || $cms.browserMatches('touch_enabled') || el.classList.contains('leave-native-tooltip') || el.classList.contains('cms-keep-ui-controlled') || el.parentNode && el.parentNode.classList.contains('tooltip') || el.dataset['mouseoverActivateTooltip']) {
             return;
@@ -1816,13 +1824,23 @@
             return;
         }
 
+        if ($dom.parent(el, '.tooltip')) {
+            title = '';
+        }
+
         if (el.textContent) {
             var prefix = el.textContent + ': ';
             if (title.substr(0, prefix.length) === prefix) {
                 title = title.substring(prefix.length, title.length);
-            } else if (title === el.textContent) {
-                return;
+            } else {
+                if (title === el.textContent) {
+                    title = '';
+                }
             }
+        }
+
+        if (title === '') {
+            return;
         }
 
         // And now define nice listeners for it all...

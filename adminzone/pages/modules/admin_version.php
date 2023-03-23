@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -1205,6 +1205,9 @@ class Module_admin_version
                 'd_member_id' => '*MEMBER',
                 'd_date_and_time' => 'TIME',
             ]);
+
+            set_value('setupwizard_completed', get_value('setupwizard_completed', '0'), true);
+            delete_value('setupwizard_completed');
         }
     }
 

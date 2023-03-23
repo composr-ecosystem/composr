@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -663,7 +663,7 @@ function prepare_post_for_tapatalk(array $post, bool $return_html = false) : str
         'HAS_POLL' => $has_poll,
         'POST_ID' => strval($post['id']),
         'POST_TITLE' => $post['p_title'],
-        'POST_URL' => find_script('pagelink_redirect') . '?id=' . get_page_zone('topicview') . ':topicview:findpost:' . strval($post['post_id']), // Redirect needed so not detected as a local URL
+        'POST_URL' => find_script('page_link_redirect') . '?id=' . get_page_zone('topicview') . ':topicview:findpost:' . strval($post['post_id']), // Redirect needed so not detected as a local URL
         'POSTER_ID' => strval($post['p_poster']),
         'LAST_EDIT_TIME' => ($post['p_last_edit_time'] === null) ? null : strval($post['p_last_edit_time']),
         'LAST_EDIT_BY' => ($post['p_last_edit_by'] === null) ? null : strval($post['p_last_edit_by']),

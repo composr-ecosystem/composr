@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -154,6 +154,7 @@ class Hook_sitemap_page_grouping extends Hook_sitemap_base
             'extra_meta' => [
                 'description' => $description,
                 'image' => ($icon === null) ? null : find_theme_image('icons/' . $icon),
+                'icon' => ($icon === null) ? null : $icon,
                 'add_time' => null,
                 'edit_time' => null,
                 'submitter' => null,
@@ -231,6 +232,7 @@ class Hook_sitemap_page_grouping extends Hook_sitemap_base
                             'extra_meta' => [
                                 'description' => $child_description,
                                 'image' => ($icon === null) ? null : find_theme_image('icons/' . $icon),
+                                'icon' => ($icon === null) ? null : $icon,
                                 'add_time' => null,
                                 'edit_time' => null,
                                 'submitter' => null,

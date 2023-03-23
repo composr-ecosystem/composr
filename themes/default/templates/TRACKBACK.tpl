@@ -2,7 +2,7 @@
 	<h4>{TITLE*} &ndash; {DATE*} <a class="associated-link horiz-field-sep" href="{URL*}">{NAME*}</a></h4>
 
 	{+START,IF_NON_EMPTY,{EXCERPT}}
-		<p>{EXCERPT}</p>
+		<p>{$TRUNCATE_LEFT,{EXCERPT},100,1}</p>
 	{+END}
 
 	{+START,IF,{$HAS_ACTUAL_PAGE_ACCESS,_SEARCH:admin_trackbacks}}

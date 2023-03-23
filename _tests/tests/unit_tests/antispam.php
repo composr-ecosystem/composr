@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -61,6 +61,43 @@ class antispam_test_set extends cms_test_case
     {
         list($result) = check_rbl('rbl.efnetrbl.org', '127.0.0.1');
         $this->assertTrue($result != ANTISPAM_RESPONSE_ERROR);
+    }
+
+    public function testHTTPBL()
+    {
+        // Disabled by default as it requires a key.
+        /*
+        require_code('antispam');
+        $key = '';
+
+        $prev_stale = get_option('spam_stale_threshold');
+        set_option('spam_stale_threshold', '20', 0);
+
+        // Arrays of HTTPBL IP query, expected ANTISPAM_RESPONSE_*, expected confidence score (float, 0.0 - 1.0).
+        $tests = [
+            ['127.1.1.0', ANTISPAM_RESPONSE_UNLISTED, null], // Test unlisted
+            ['127.1.1.1', ANTISPAM_RESPONSE_ACTIVE, ((1.0 / 255.0) * 4.0)], // Test threat type 1
+            ['127.1.1.2', ANTISPAM_RESPONSE_ACTIVE, ((1.0 / 255.0) * 4.0)], // Test threat type 2
+            ['127.1.1.4', ANTISPAM_RESPONSE_ACTIVE, ((1.0 / 255.0) * 4.0)], // Test threat type 4
+            ['127.1.40.1', ANTISPAM_RESPONSE_ACTIVE, ((40.0 / 255.0) * 4.0)], // Test threat level 40
+            ['127.1.80.1', ANTISPAM_RESPONSE_ACTIVE, ((80.0 / 255.0) * 4.0)], // Test threat level 80
+            ['127.10.1.1', ANTISPAM_RESPONSE_ACTIVE, ((1.0 / 255.0) * 4.0)], // Test 10 days old
+            ['127.40.1.1', ANTISPAM_RESPONSE_STALE, null], // Test 40 days old
+        ];
+        foreach ($tests as $test) {
+            $spam_check = check_rbl($key . '.*.dnsbl.httpbl.org', $test[0]);
+            $this->assertTrue(($spam_check[0] == $test[1]), 'Expected ' . $test[0] . ' test to return constant ' . strval($test[1]) . ' but instead got ' . strval($spam_check[0]));
+            if (($test[2] === null) && ($spam_check[1] !== null)) {
+                $this->assertTrue(false, 'Expected ' . $test[0] . ' test to return unlisted but instead got a confidence of ' . float_to_raw_string($spam_check[1]));
+            } elseif (($test[2] !== null) && ($spam_check[1] === null)) {
+                $this->assertTrue(($spam_check[1] == $test[2]), 'Expected ' . $test[0] . ' test to return a confidence of ' . float_to_raw_string($test[2]) . ' but instead got unlisted');
+            } elseif (($test[2] !== null) && ($spam_check[1] !== null)) {
+                $this->assertTrue(($spam_check[1] == $test[2]), 'Expected ' . $test[0] . ' test to return a confidence of ' . float_to_raw_string($test[2]) . ' but instead got ' . float_to_raw_string($spam_check[1]));
+            }
+        }
+
+        set_option('spam_stale_threshold', $prev_stale, 0);
+        */
     }
 
     public function testStopForumSpam()

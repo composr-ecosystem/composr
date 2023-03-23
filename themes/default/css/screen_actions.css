@@ -1,10 +1,10 @@
 /*
  {$BRAND_NAME`}
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 */
 
 .screen-actions-outer {
-	margin: 2em 0;
+	margin-top: 1em;
 	overflow: visible !important;
 
 	/* Needed so the ::after clearfix works in a constrained context */

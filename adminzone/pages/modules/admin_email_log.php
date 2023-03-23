@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -518,6 +518,10 @@ class Module_admin_email_log
                 $extra_cc_addresses = [];
                 $extra_bcc_addresses = [];
                 foreach ($_POST as $key => $input_value) {
+                    if (is_integer($key)) {
+                        $key = strval($key);
+                    }
+
                     if (substr($key, 0, 8) == 'to_name_') {
                         $to_name[] = $input_value;
                     }

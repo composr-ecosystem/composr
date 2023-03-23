@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -141,11 +141,13 @@ function opensearch_script()
  * Find if we can use the Composr fast custom index.
  *
  * @param  string $hook The hook it is for (assumption that this hook is at least capable in some situations)
+ * @param  ?object $db Database connection (null: do not do indexed-already check)
+ * @param  ?string $index_table Index table (null: do not do indexed-already check)
  * @param  ?string $search_query Search uery to run for (null: no query to check at this point)
  * @param  ?boolean $has_heavy_filtering Whether there is heavy filtering (which suggests to use Composr fast custom index) (null: unknown at this point)
  * @return boolean Whether we can
  */
-function can_use_composr_fast_custom_index(string $hook, ?string $search_query = null, ?bool $has_heavy_filtering = null) : bool
+function can_use_composr_fast_custom_index(string $hook, ?object $db = null, ?string $index_table = null, ?string $search_query = null, ?bool $has_heavy_filtering = null) : bool
 {
     if ($search_query !== null) {
         $tokeniser = Composr_fast_custom_index::get_tokeniser(user_lang());
@@ -166,6 +168,12 @@ function can_use_composr_fast_custom_index(string $hook, ?string $search_query =
 
     if (!cron_installed()) {
         return false; // No indexing working
+    }
+
+    if (($db !== null) && ($index_table !== null)) {
+        if ($db->query_select_value_if_there($index_table, 'i_ngram') === null) {
+            return false; // Nothing yet indexed
+        }
     }
 
     // Explicit interactive choice...
@@ -521,13 +529,13 @@ class Composr_fast_custom_index
 
         $t_rows_sql = 'SELECT ' . $select . ' FROM ' . $join . ' WHERE 1=1' . $where_clause . $extra_where_clause . ' ORDER BY ' . $order . ' ' . $direction;
 
-        if (($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) || ($GLOBALS['IS_ACTUALLY_ADMIN'])) {
+        if (($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) || ($GLOBALS['IS_ACTUALLY_ADMIN']) || ($GLOBALS['DEV_MODE'])) {
             if (get_param_integer('keep_show_query', 0) == 1) {
                 attach_message($t_rows_sql, 'inform');
             }
             if (get_param_integer('keep_just_show_query', 0) == 1) {
                 cms_ini_set('ocproducts.xss_detect', '0');
-                header('Content-Type: text/plain; charset=' . get_charset());
+                @header('Content-Type: text/plain; charset=' . get_charset());
                 exit($t_rows_sql);
             }
         }
@@ -569,7 +577,7 @@ class Composr_fast_custom_index
     public static function active_search_has_special_filtering() : bool
     {
         foreach ($_GET as $key => $val) {
-            if ((substr($key, 0, 7) == 'option_') && (substr($key, 0, 12) != 'option_tick_') && ($val != '')) {
+            if ((is_string($key)) && (substr($key, 0, 7) == 'option_') && (substr($key, 0, 12) != 'option_tick_') && ($val != '')) {
                 return true;
             }
         }
@@ -1259,7 +1267,7 @@ abstract class FieldsSearchHook
     /**
      * Insert a date range check into a WHERE clause.
      *
-     * @param  mixed $cutoff Cutoff date (TIME or a pair representing the range)
+     * @param  mixed $cutoff Cutoff date (TIME or a pair representing the range or null)
      * @param  string $field The field name of the timestamp field in the database
      * @param  string $where_clause Additional where clause will be written into here
      */
@@ -1282,7 +1290,7 @@ abstract class FieldsSearchHook
     /**
      * Do a date range check for a known timestamp.
      *
-     * @param  mixed $cutoff Cutoff date (TIME or a pair representing the range)
+     * @param  mixed $cutoff Cutoff date (TIME or a pair representing the range or null)
      * @param  TIME $compare Timestamp to compare to
      * @return boolean Whether the date matches the requirements of $cutoff
      */
@@ -1926,14 +1934,14 @@ function in_memory_search_match(array $filter, string $title, ?string $post = nu
  * @param  ID_TEXT $direction Order direction
  * @param  ID_TEXT $table The table name
  * @param  string $select What to select
- * @param  array $fields The translatable fields to search over (or an ! which is skipped). The first of these must be the title field or an '!'; if it is '!' then the title field will be the first raw-field
+ * @param  array $trans_fields The translatable fields to search over (or an !=>! which is skipped, or an <blank>=><blank> which is skipped). The first of these will be the title field unless it is !=>! (in which case the title fields will be the first raw-field) or <blank>=><blank> (in which case there is no title field)
  * @param  array $raw_fields The non-translatable fields to search over
  * @param  ?string $permissions_module The permission module to check category access for (null: none)
  * @param  ?string $permissions_field The field that specifies the permissions ID to check category access for (null: none)
  * @param  boolean $permissions_field_is_string Whether the permissions field is a string
  * @return array The rows found
  */
-function get_search_rows(?string $meta_type, string $id_field, string $search_query, string $content_where, string $where_clause, bool $only_search_meta, bool $only_titles, int $max, int $start, string &$order, string $direction, string $table, string $select = '*', array $fields = [], array $raw_fields = [], ?string $permissions_module = null, ?string $permissions_field = null, bool $permissions_field_is_string = false) : array
+function get_search_rows(?string $meta_type, string $id_field, string $search_query, string $content_where, string $where_clause, bool $only_search_meta, bool $only_titles, int $max, int $start, string &$order, string $direction, string $table, string $select = '*', array $trans_fields = [], array $raw_fields = [], ?string $permissions_module = null, ?string $permissions_field = null, bool $permissions_field_is_string = false) : array
 {
     $db = get_db_for($table);
 
@@ -1963,7 +1971,7 @@ function get_search_rows(?string $meta_type, string $id_field, string $search_qu
     }
 
     // No possible results, because no title field?
-    if ((!empty($fields)) && ($only_titles) && (key($fields) == '')) {
+    if ((empty($trans_fields)) || (($only_titles) && (key($trans_fields) == ''))) {
         return [];
     }
 
@@ -1988,7 +1996,7 @@ function get_search_rows(?string $meta_type, string $id_field, string $search_qu
     $translate_table_joins = [];
     $translate_table_joins_stock = [];
     if (multi_lang_content()) {
-        foreach (array_keys($fields) as $i => $field) { // Translatable fields present in 'select'
+        foreach (array_keys($trans_fields) as $i => $field) { // Translatable fields present in 'select'
             if (($field == '') || ($field == '!')) {
                 $translate_table_joins[$field] = '';
                 continue;
@@ -2065,7 +2073,11 @@ function get_search_rows(?string $meta_type, string $id_field, string $search_qu
         $t_count += $t_keyword_search_rows_count;
 
         cms_profile_start_for('SEARCH:t_keyword_search_rows');
-        $t_keyword_search_rows = $db->query(remove_unneeded_joins_rough($keywords_query), $max + $start);
+        $keywords_query_final = remove_unneeded_joins_rough($keywords_query);
+        if (get_param_integer('keep_show_query', 0) == 1) {
+            attach_message($keywords_query_final, 'inform');
+        }
+        $t_keyword_search_rows = $db->query($keywords_query_final, $max + $start);
         cms_profile_end_for('SEARCH:t_keyword_search_rows', $keywords_query);
         if ($t_keyword_search_rows === null) {
             warn_exit(do_lang_tempcode('SEARCH_QUERY_TOO_SLOW'), false, true);
@@ -2089,7 +2101,7 @@ function get_search_rows(?string $meta_type, string $id_field, string $search_qu
                 // Each of the fields represents an 'OR' match, so we put it together into a list ($where_alternative_matches) of specifiers for each. Hopefully we will 'UNION' them rather than 'OR' them as it is much more efficient in terms of table index usage
 
                 $where_alternative_matches = [];
-                foreach (array_keys($fields) as $i => $field) { // Translatable fields
+                foreach (array_keys($trans_fields) as $i => $field) { // Translatable fields
                     if (($field == '') || ($field == '!')) {
                         continue;
                     }
@@ -2117,9 +2129,10 @@ function get_search_rows(?string $meta_type, string $id_field, string $search_qu
 
                     $where_alternative_matches[] = [$_where_clause, $_select, $_table_clause, 't' . strval($i), $field];
                 }
+                reset($trans_fields);
                 if ($content_where != '') { // Non-translatable fields
                     foreach ($raw_fields as $i => $field) {
-                        if (($only_titles) && ($i != 0)) {
+                        if ((($only_titles) && ($i != 0)) || (empty($trans_fields)) || (key($trans_fields) != '!')) {
                             break;
                         }
 
@@ -2238,9 +2251,9 @@ function get_search_rows(?string $meta_type, string $id_field, string $search_qu
             $indices_for_table = $GLOBALS['SITE_DB']->query_select('db_meta_indices', ['i_name', 'i_fields'], ['i_table' => $simple_table]);
 
             $where_clause_and = '';
-            $all_fields = array_merge($raw_fields, array_keys($fields));
+            $all_fields = array_merge($raw_fields, array_keys($trans_fields));
             reset($raw_fields);
-            reset($fields);
+            reset($trans_fields);
             $search_clause_sets = [$include_where, $body_where];
             foreach ($search_clause_sets as $_where) {
                 foreach ($_where as $__where) {
@@ -2269,8 +2282,6 @@ function get_search_rows(?string $meta_type, string $id_field, string $search_qu
                         }
                     }
 
-                    $fields_keys = array_keys($fields);
-
                     $where_clause_or = '';
                     $where_clause_or_fields = '';
                     foreach ($all_fields as $field) {
@@ -2278,8 +2289,20 @@ function get_search_rows(?string $meta_type, string $id_field, string $search_qu
                             continue;
                         }
 
-                        if (($only_titles) && ($field !== current($raw_fields)) && (!isset($fields_keys[0]) || $field !== $fields_keys[0]) && (!isset($fields_keys[1]) || $fields_keys[0] !== '!' || $field !== $fields_keys[1])) {
-                            break;
+                        if ($only_titles) {
+                            if ((empty($trans_fields)) || (key($trans_fields) == '')) {
+                                continue;
+                            }
+
+                            if (key($trans_fields) != '!') {
+                                if ($field != key($trans_fields)) {
+                                    continue;
+                                }
+                            } else {
+                                if ($field != current($raw_fields)) {
+                                    continue;
+                                }
+                            }
                         }
 
                         if ((strpos($__where, ' AGAINST ') !== false) && ($has_combined_index_coverage)) {
@@ -2317,8 +2340,20 @@ function get_search_rows(?string $meta_type, string $id_field, string $search_qu
                         continue;
                     }
 
-                    if (($only_titles) && ($field !== current($raw_fields)) && ($field !== key($fields))) {
-                        break;
+                    if ($only_titles) {
+                        if ((empty($trans_fields)) || (key($trans_fields) == '')) {
+                            continue;
+                        }
+
+                        if (key($trans_fields) != '!') {
+                            if ($field != key($trans_fields)) {
+                                continue;
+                            }
+                        } else {
+                            if ($field != current($raw_fields)) {
+                                continue;
+                            }
+                        }
                     }
 
                     $where_clause .= ' AND ' . preg_replace('#\?#', $field, $exclude_where);
@@ -2370,7 +2405,7 @@ function get_search_rows(?string $meta_type, string $id_field, string $search_qu
 
             $LAST_SEARCH_QUERY = $query;
             cms_profile_start_for('SEARCH:t_main_search_rows');
-            $t_main_search_rows = $db->query(remove_unneeded_joins_rough($query), $max + $start, 0, false, true/*, $fields Actually will hurt performance - we usually won't show text_parsed fields as we re-parse Comcode with syntax highlighting*/);
+            $t_main_search_rows = $db->query(remove_unneeded_joins_rough($query), $max + $start, 0, false, true/*, $trans_fields Actually will hurt performance - we usually won't show text_parsed fields as we re-parse Comcode with syntax highlighting*/);
             cms_profile_end_for('SEARCH:t_main_search_rows', $query);
             if ($t_main_search_rows === null) {
                 warn_exit(do_lang_tempcode('SEARCH_QUERY_TOO_SLOW'), false, true);

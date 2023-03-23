@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -547,7 +547,7 @@ class Module_admin_lang
             if (!is_string($val)) {
                 continue;
             }
-            if (substr($key, 0, 6) != 'trans_') {
+            if ((is_string($key)) && (substr($key, 0, 6) != 'trans_')) {
                 continue;
             }
 
@@ -624,10 +624,13 @@ class Module_admin_lang
         if ($search != '') {
             $search = trim($search, '" ');
 
+            require_lang($lang_file);
+            require_all_open_lang_files();
+
             $fields = new Tempcode();
             global $LANGUAGE_STRINGS_CACHE;
             foreach ($LANGUAGE_STRINGS_CACHE[user_lang()] as $key => $value) {
-                if (stripos($value, $search) !== false) {
+                if ((stripos($value, $search) !== false) || (stripos($key, $search) !== false)) {
                     $fields->attach(form_input_text($key, '', 'trans_' . $key, str_replace('\n', "\n", $value), false));
                 }
             }

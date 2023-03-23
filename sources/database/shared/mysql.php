@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -452,7 +452,7 @@ abstract class Database_super_mysql extends DatabaseDriver
             'LONG_TRANS__COMCODE' => 'integer',
             'SHORT_TRANS__COMCODE' => 'integer',
             'SHORT_TEXT' => 'varchar(255)',
-            'TEXT' => 'varchar(16377)', // Set consistently as 16377 across all drivers due to InnoDB having the lowest limit, the limit relating to the default page_size (- 6 bytes for pointers) ; this field type should only be used as an alternative to LONG_TEXT that can be defaulted to '' if not specified, necessary for adding fields to the table's of external systems
+            'TEXT' => 'varchar(4000)', // Set consistently as 4000 across all drivers due to SQL Server having the lowest limit ; this field type should only be used as an alternative to LONG_TEXT that can be defaulted to '' if not specified, necessary for adding fields to the table's of external systems
             'LONG_TEXT' => 'longtext',
             'ID_TEXT' => 'varchar(80)',
             'MINIID_TEXT' => 'varchar(40)',

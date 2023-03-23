@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -32,6 +32,8 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
     protected $table = 'f_custom_fields';
     protected $donext_entry_content_type = 'cpf';
     protected $donext_category_content_type = null;
+
+    public $js_function_calls = ['moduleAdminCnsCustomProfileFields'];
 
     /**
      * Find entry-points available within this module.
@@ -104,12 +106,13 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
         require_lang('cns');
         require_lang('cns_special_cpf');
         require_css('cns_admin');
+        require_javascript('core_cns');
 
         set_helper_panel_tutorial('tut_adv_members');
 
-        breadcrumb_set_parents([['_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')]]);
-
         $ret = parent::pre_run($top_level);
+
+        breadcrumb_set_parents([['_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')], ['_SEARCH:admin_cns_customprofilefields:browse', do_lang_tempcode('CUSTOM_PROFILE_FIELDS')]]);
 
         if ($type == 'stats') {
             breadcrumb_set_parents([]);
@@ -223,7 +226,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
      * @param  BINARY $show_in_post_previews Whether the field is shown in post previews
      * @param  ?integer $order The order the field is given relative to the order of the other Custom Profile Fields (null: last)
      * @param  LONG_TEXT $only_group The usergroups that this field is confined to (comma-separated list)
-     * @param  BINARY $locked Whether the field is locked
+     * @param  BINARY $locked Whether the field is locked, e.g. cannot be deleted
      * @param  SHORT_TEXT $options Field options
      * @param  BINARY $include_in_main_search Whether to include in main keyword search
      * @param  BINARY $allow_template_search Whether to allow template search
@@ -256,10 +259,6 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
         $fields->attach(form_input_tick(do_lang_tempcode('OWNER_VIEW'), do_lang_tempcode('DESCRIPTION_OWNER_VIEW'), 'owner_view', $owner_view == 1));
         $fields->attach(form_input_tick(do_lang_tempcode('OWNER_SET'), do_lang_tempcode('DESCRIPTION_OWNER_SET'), 'owner_set', $owner_set == 1));
         $fields->attach(form_input_tick(do_lang_tempcode('PUBLIC_VIEW'), do_lang_tempcode('DESCRIPTION_PUBLIC_VIEW'), 'public_view', $public_view == 1));
-        if ((($locked == 0) || ($allow_full_edit)) && (is_encryption_enabled()) && ($name == '')) {
-            require_lang('encryption');
-            $fields->attach(form_input_tick(do_lang_tempcode('ENCRYPTED'), do_lang_tempcode('DESCRIPTION_ENCRYPTED'), 'encrypted', $encrypted == 1));
-        }
 
         require_code('fields');
         $type_list = create_selection_list_field_type($type, $name != '');
@@ -267,6 +266,13 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
             $fields->attach(form_input_list(do_lang_tempcode('TYPE'), do_lang_tempcode('DESCRIPTION_FIELD_TYPE'), 'type', $type_list));
         } else {
             $hidden->attach(form_input_hidden('type', $type));
+        }
+
+        if ((($locked == 0) || ($allow_full_edit)) && (is_encryption_enabled()) && ($name == '')) {
+            require_lang('encryption');
+            $fields->attach(form_input_tick(do_lang_tempcode('ENCRYPTED'), do_lang_tempcode('DESCRIPTION_ENCRYPTED'), 'encrypted', $encrypted == 1));
+        } else {
+            $hidden->attach(form_input_hidden('encrypted', strval($encrypted)));
         }
 
         require_lang('cns_autofill');
@@ -398,21 +404,27 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
      */
     public function create_selection_list_choose_table(array $url_map) : array
     {
+        $index_focused_view = (get_param_integer('index_focused', 0) == 1); // Useful for debugging
+
         require_code('templates_results_table');
         $form_id = 'selection_table';
-        $current_ordering = get_param_string('sort', 'cf_order ASC', INPUT_FILTER_GET_COMPLEX);
+        $current_ordering = get_param_string('sort', $index_focused_view ? 'cf_include_in_main_search DESC' : 'cf_order ASC', INPUT_FILTER_GET_COMPLEX);
         if (strpos($current_ordering, ' ') === false) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
         list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
-        $sortables = [
-            'cf_name' => do_lang_tempcode('NAME'),
-            'cf_owner_view' => do_lang_tempcode('OWNER_VIEW'),
-            'cf_owner_set' => do_lang_tempcode('OWNER_SET'),
-            'cf_public_view' => do_lang_tempcode('PUBLIC_VIEW'),
-            'cf_required' => do_lang_tempcode('REQUIRED'),
-            'cf_order' => do_lang_tempcode('ORDER'),
-        ];
+        $sortables = [];
+        $sortables['cf_name'] = do_lang_tempcode('NAME');
+        if ($index_focused_view) {
+            $sortables['cf_include_in_main_search'] = do_lang_tempcode('INCLUDE_IN_MAIN_SEARCH');
+            $sortables['cf_allow_template_search'] = do_lang_tempcode('ALLOW_TEMPLATE_SEARCH');
+        } else {
+            $sortables['cf_owner_view'] = do_lang_tempcode('OWNER_VIEW');
+            $sortables['cf_owner_set'] = do_lang_tempcode('OWNER_SET');
+            $sortables['cf_public_view'] = do_lang_tempcode('PUBLIC_VIEW');
+            $sortables['cf_required'] = do_lang_tempcode('REQUIRED');
+        }
+        $sortables['cf_order'] = do_lang_tempcode('ORDER');
         if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
@@ -421,16 +433,28 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
 
         $standard_ordering = (($current_ordering == 'cf_order ASC') && ($num_cpfs < 200));
 
-        $fh = [
-            do_lang_tempcode('NAME'),
-            do_lang_tempcode('OWNER_VIEW'),
-            do_lang_tempcode('OWNER_SET'),
-            do_lang_tempcode('PUBLIC_VIEW'),
-            do_lang_tempcode('REQUIRED'),
-        ];
-        $fh[] = do_lang_tempcode('SHOW_ON_JOIN_FORM');
-        //$fh[]=do_lang_tempcode('SHOW_IN_POSTS'); Save space
-        //$fh[]=do_lang_tempcode('SHOW_IN_POST_PREVIEWS');
+        $fh = [];
+
+        $fh[] = do_lang_tempcode('NAME');
+        if ($index_focused_view) {
+            if (!isset($_GET['max'])) {
+                $_GET['max'] = '100';
+            }
+        }
+        if ($index_focused_view) {
+            $fh[] = do_lang_tempcode('INCLUDE_IN_MAIN_SEARCH');
+            $fh[] = do_lang_tempcode('ALLOW_TEMPLATE_SEARCH');
+            $fh[] = 'Has index';
+            $fh[] = 'Has fulltext index';
+        } else {
+            $fh[] = do_lang_tempcode('OWNER_VIEW');
+            $fh[] = do_lang_tempcode('OWNER_SET');
+            $fh[] = do_lang_tempcode('PUBLIC_VIEW');
+            $fh[] = do_lang_tempcode('REQUIRED');
+            $fh[] = do_lang_tempcode('SHOW_ON_JOIN_FORM');
+            //$fh[]=do_lang_tempcode('SHOW_IN_POSTS'); Save space
+            //$fh[]=do_lang_tempcode('SHOW_IN_POST_PREVIEWS');
+        }
         $fh[] = do_lang_tempcode('ORDER');
         $fh[] = do_lang_tempcode('ACTIONS');
         $header_row = results_header_row($fh, $sortables, 'sort', $sortable . ' ' . $sort_order);
@@ -514,18 +538,29 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
                     'LIST' => $order_list,
                 ]);
             } else {
-                $orderer = make_string_tempcode('#' . escape_html($order + 1));
+                $orderer = make_string_tempcode('#' . escape_html(strval($order + 1)));
             }
 
             $fr = [];
             $fr[] = $name;
-            $fr[] = ($row['cf_owner_view'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO');
-            $fr[] = ($row['cf_owner_set'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO');
-            $fr[] = ($row['cf_public_view'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO');
-            $fr[] = ($row['cf_required'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO');
-            $fr[] = ($row['cf_show_on_join_form'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO');
-            //$fr[]=($row['cf_show_in_posts']==1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO');
-            //$fr[]=($row['cf_show_in_post_previews']==1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO');
+            if ($index_focused_view) {
+                $fr[] = ($row['cf_include_in_main_search'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO');
+                $fr[] = ($row['cf_allow_template_search'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO');
+
+                $has_index = ($GLOBALS['FORUM_DB']->query_select_value_if_there('db_meta_indices', 'i_fields', ['i_table' => 'f_member_custom_fields', 'i_name' => 'mcf' . strval($row['id'])]) !== null);
+                $fr[] = $has_index ? do_lang_tempcode('YES') : do_lang_tempcode('NO');
+
+                $has_fulltext_index = ($GLOBALS['FORUM_DB']->query_select_value_if_there('db_meta_indices', 'i_fields', ['i_table' => 'f_member_custom_fields', 'i_name' => '#mcf_ft_' . strval($row['id'])]) !== null);
+                $fr[] = $has_fulltext_index ? do_lang_tempcode('YES') : do_lang_tempcode('NO');
+            } else {
+                $fr[] = ($row['cf_owner_view'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO');
+                $fr[] = ($row['cf_owner_set'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO');
+                $fr[] = ($row['cf_public_view'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO');
+                $fr[] = ($row['cf_required'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO');
+                $fr[] = ($row['cf_show_on_join_form'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO');
+                //$fr[]=($row['cf_show_in_posts']==1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO');
+                //$fr[]=($row['cf_show_in_post_previews']==1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO');
+            }
             $fr[] = protect_from_escaping($orderer);
             if ($used) {
                 $edit_link = hyperlink($edit_url, do_lang_tempcode('EDIT'), false, false, do_lang('EDIT') . ' #' . strval($row['id']));
@@ -601,7 +636,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
         $description = get_translated_text($myrow['cf_description'], $GLOBALS['FORUM_DB']);
         $default = $myrow['cf_default'];
         require_code('encryption');
-        $encrypted = (($myrow['cf_encrypted'] == 1) && (is_encryption_enabled())) ? 1 : 0;
+        $encrypted = ($myrow['cf_encrypted'] == 1) ? 1 : 0;
         $public_view = (($myrow['cf_public_view'] == 1) && ($encrypted == 0)) ? 1 : 0;
         $owner_view = $myrow['cf_owner_view'];
         $owner_set = $myrow['cf_owner_set'];

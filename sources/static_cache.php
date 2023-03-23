@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -386,6 +386,10 @@ function static_cache(int $mode)
                     }
                 }
                 foreach ($_GET as $key => $val) {
+                    if (is_integer($key)) {
+                        $key = strval($key);
+                    }
+
                     if (($key == 'page') || ($key == 'type') || ($key == 'id') || (is_array($val)) || (substr($key, 0, 5) == 'keep_')) {
                         continue;
                     }

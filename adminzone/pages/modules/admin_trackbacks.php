@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -149,7 +149,7 @@ class Module_admin_trackbacks
                 continue;
             }
 
-            if (substr($key, 0, 10) == 'trackback_') {
+            if ((is_string($key)) && (substr($key, 0, 10) == 'trackback_')) {
                 $id = intval(substr($key, 10));
                 switch ($val) {
                     case '2':

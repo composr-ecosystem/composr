@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -32,8 +32,7 @@ class Hook_contentious_overrides_configured
      * @param  ID_TEXT $lang The language it is for
      * @param  ?string $suffix File type suffix of template file (e.g. .tpl) (null: not from a file)
      * @set .tpl .js .xml .txt .css
-     * @param  ?string $directory Subdirectory type to look in (null: not from a file)
-     * @set templates javascript xml text css
+     * @param  ?string $directory Subdirectory type to look in. Surrounded by '/', unlike with $directory parameters to most other functions (performance reasons) (null: not from a file)
      */
     public function compile_template(string &$data, string $template_name, string $theme, string $lang, ?string $suffix, ?string $directory)
     {
@@ -66,7 +65,7 @@ class Hook_contentious_overrides_configured
                     continue;
                 }
 
-                $found = find_template_place($file, '', $theme, $suffix, $directory);
+                $found = find_template_place($file, $theme, $suffix, str_replace(['/', '\\', '_custom'], ['', '', ''], $directory));
                 if ($found !== null) {
                     $full_path = get_custom_file_base() . '/themes/' . $found[0] . $found[1] . $file . $found[2];
                     $data .= cms_file_get_contents_safe($full_path);

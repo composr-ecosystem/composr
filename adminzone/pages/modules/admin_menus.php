@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -303,7 +303,7 @@ class Module_admin_menus
         $list = new Tempcode();
         $list->attach(form_input_list_entry('', false, do_lang_tempcode('NONE_EM')));
         require_code('themes2');
-        $list->attach(create_selection_list_theme_images(null, null, false, true));
+        $list->attach(create_selection_list_theme_images(null, null, false, true, 'icons'));
         $fields_template->attach(form_input_list(do_lang_tempcode('THEME_IMAGE'), do_lang_tempcode('DESCRIPTION_THEME_IMAGE_FOR_MENU_ITEM'), 'theme_img_code', $list, null, false, false, get_all_image_ids_type('icons', true)));
         $fields_template->attach(form_input_line(do_lang_tempcode('RESTRICT_PAGE_VISIBILITY'), do_lang_tempcode('MENU_ENTRY_MATCH_KEYS'), 'page_only', '', false));
         $list = new Tempcode();

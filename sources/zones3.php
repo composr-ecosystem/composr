@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -654,8 +654,8 @@ function get_template_contents(string $name) : string
  *
  * @param  ID_TEXT $zone The zone
  * @param  ID_TEXT $new_file The page
- * @param  LANGUAGE_NAME $lang The language
- * @param  ID_TEXT $text The page text
+ * @param  ?LANGUAGE_NAME $lang The language (null: default website language)
+ * @param  ?ID_TEXT $text The page text (null: unchanged)
  * @param  ?BINARY $validated The validated status (null: 1 / don't change)
  * @param  ?BINARY $include_on_sitemap Include on the sitemap (null: default / don't change)
  * @param  ?ID_TEXT $parent_page The page parent (null: none / don't change if $order is also null)
@@ -663,16 +663,25 @@ function get_template_contents(string $name) : string
  * @param  ?TIME $add_time Add time (null: now / don't change)
  * @param  ?TIME $edit_time Edit time (null: not edited)
  * @param  BINARY $show_as_edit Whether to show as edited
- * @param  ?MEMBER $submitter The submitter (null: current member)
+ * @param  ?MEMBER $submitter The submitter (null: current member, or first admin if running execute_temp script)
  * @param  ?ID_TEXT $file The old page name (null: not being renamed)
- * @param  ?SHORT_TEXT $meta_keywords Meta keywords for this resource (blank: implicit) (null: no change)
- * @param  ?LONG_TEXT $meta_description Meta description for this resource (blank: implicit) (null: no change)
+ * @param  ?SHORT_TEXT $meta_keywords Meta keywords for this resource (blank: implicit) (null: no change, or no change if $text is null)
+ * @param  ?LONG_TEXT $meta_description Meta description for this resource (blank: implicit) (null: no change, or no change if $text is null)
  * @return PATH The save path
  */
-function save_comcode_page(string $zone, string $new_file, string $lang, string $text, ?int $validated = null, ?int $include_on_sitemap = 1, ?string $parent_page = null, ?int $order = null, ?int $add_time = null, ?int $edit_time = null, int $show_as_edit = 0, ?int $submitter = null, ?string $file = null, ?string $meta_keywords = '', ?string $meta_description = '') : string
+function save_comcode_page(string $zone, string $new_file, ?string $lang = null, ?string $text = null, ?int $validated = null, ?int $include_on_sitemap = 1, ?string $parent_page = null, ?int $order = null, ?int $add_time = null, ?int $edit_time = null, int $show_as_edit = 0, ?int $submitter = null, ?string $file = null, ?string $meta_keywords = '', ?string $meta_description = '') : string
 {
+    if ($lang === null) {
+        $lang = get_site_default_lang();
+    }
+
     if ($submitter === null) {
-        $submitter = get_member();
+        if (running_script('execute_temp')) {
+            require_code('users_active_actions');
+            $submitter = get_first_admin_user();
+        } else {
+            $submitter = get_member();
+        }
     }
     if ($file === null) {
         $file = $new_file; // Not renamed
@@ -756,7 +765,9 @@ function save_comcode_page(string $zone, string $new_file, string $lang, string 
     if ($meta_keywords !== null) {
         require_code('content2');
         if (($meta_keywords == '') && ($meta_description == '')) {
-            seo_meta_set_for_implicit('comcode_page', $zone . ':' . $new_file, [$text], $text);
+            if ($text !== null) {
+                seo_meta_set_for_implicit('comcode_page', $zone . ':' . $new_file, [$text], $text);
+            }
         } else {
             seo_meta_set_for_explicit('comcode_page', $zone . ':' . $new_file, $meta_keywords, $meta_description);
         }
@@ -786,24 +797,26 @@ function save_comcode_page(string $zone, string $new_file, string $lang, string 
 
     // Find file
     $full_path = zone_black_magic_filterer(get_custom_file_base() . (($zone == '') ? '' : '/') . filter_naughty($zone) . '/pages/comcode_custom/' . filter_naughty($lang) . '/' . filter_naughty($new_file) . '.txt');
-    $file_changed = ((!file_exists($full_path)) || ($text != cms_file_get_contents_safe($full_path, FILE_READ_LOCK | FILE_READ_BOM)));
+    if ($text !== null) {
+        $file_changed = ((!file_exists($full_path)) || ($text != cms_file_get_contents_safe($full_path, FILE_READ_LOCK | FILE_READ_BOM)));
 
-    // Save revision
-    if ($file_changed) {
-        if (addon_installed('actionlog')) {
-            require_code('revisions_engine_files');
-            $revision_engine = new RevisionEngineFiles();
-            list(, , $existing_path) = find_comcode_page($lang, $file, $zone);
-            if ($existing_path != '') {
-                $revision_engine->add_revision(dirname($full_path), $new_file, 'txt', cms_file_get_contents_safe($existing_path, FILE_READ_LOCK | FILE_READ_BOM), filemtime($existing_path));
+        // Save revision
+        if ($file_changed) {
+            if (addon_installed('actionlog')) {
+                require_code('revisions_engine_files');
+                $revision_engine = new RevisionEngineFiles();
+                list(, , $existing_path) = find_comcode_page($lang, $file, $zone);
+                if ($existing_path != '') {
+                    $revision_engine->add_revision(dirname($full_path), $new_file, 'txt', cms_file_get_contents_safe($existing_path, FILE_READ_LOCK | FILE_READ_BOM), filemtime($existing_path));
+                }
             }
         }
-    }
 
-    // Store page on disk
-    if ($file_changed) {
-        require_code('files');
-        cms_file_put_contents_safe($full_path, $text, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+        // Store page on disk
+        if ($file_changed) {
+            require_code('files');
+            cms_file_put_contents_safe($full_path, $text, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+        }
     }
 
     // Empty caching

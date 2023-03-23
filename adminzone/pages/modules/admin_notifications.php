@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -316,7 +316,7 @@ class Module_admin_notifications
                 log_it('NOTIFICATIONS_DEFAULT');
             }
 
-            attach_message(do_lang_tempcode('SUCCESS'));
+            attach_message(do_lang_tempcode('SUCCESS'), 'inform');
         }
 
         // Sort labels

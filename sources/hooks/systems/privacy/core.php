@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -30,6 +30,8 @@ class Hook_privacy_core extends Hook_privacy_base
      */
     public function info() : ?array
     {
+        global $MIGHT_BE_USING_CF;
+
         $deletion_exemptions = '';
         $deletion_exemptions .= '<ul>';
         $deletion_exemptions .= '<li>' . do_lang('PERSONAL_DATA_DELETION_EXPLANATION_EXEMPTION_logged') . '</li>';
@@ -110,6 +112,11 @@ class Hook_privacy_core extends Hook_privacy_base
                     'heading' => do_lang('INFORMATION_TRANSFER'),
                     'action' => do_lang_tempcode('PRIVACY_ACTION_dnsbl'),
                     'reason' => do_lang_tempcode('PRIVACY_REASON_dnsbl'),
+                ],
+                (empty($MIGHT_BE_USING_CF)) ? null : [
+                    'heading' => do_lang('INFORMATION_TRANSFER'),
+                    'action' => do_lang_tempcode('PRIVACY_ACTION_cloudflare', escape_html(get_site_name())),
+                    'reason' => do_lang_tempcode('PRIVACY_REASON_cloudflare'),
                 ],
                 [
                     'heading' => do_lang('INFORMATION_STORAGE'),

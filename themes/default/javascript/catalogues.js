@@ -113,7 +113,7 @@
         var s = document.getElementsByTagName('select');
         var allOrderers = [];
         for (var i = 0; i < s.length; i++) {
-            if (s[i].name.indexOf('order') !== -1) {
+            if ((s[i].name.startsWith('new_field_') || s[i].name.startsWith('existing_field_')) && s[i].name.endsWith('_order')) {
                 allOrderers.push(s[i]);
             }
         }
@@ -125,29 +125,22 @@
 
     function catalogueFieldReindexAround(allOrderers, ob) {
         return function () {
-            var nextIndex = 0;
-
-            // Sort our all_orderers array by selectedIndex
-            for (var i = 0; i < allOrderers.length; i++) {
-                for (var j = i + 1; j < allOrderers.length; j++) {
-                    if (allOrderers[j].selectedIndex < allOrderers[i].selectedIndex) {
-                        var temp = allOrderers[i];
-                        allOrderers[i] = allOrderers[j];
-                        allOrderers[j] = temp;
+            // Sort allOrderers by selectedIndex
+            allOrderers = allOrderers.sort(function (a, b) {
+                if ((a.selectedIndex === b.selectedIndex)) {
+                    // The one we just changed takes priority when orders are the same
+                    if (a.name === ob.name) {
+                        return -1;
+                    } else if (b.name === ob.name) {
+                        return 1;
                     }
                 }
-            }
+                return a.selectedIndex - b.selectedIndex;
+            });
 
-            // Go through all fields, assigning them the order (into selectedIndex). We are reordering *around* the field that has just had it's order set.
-            for (var k = 0; k < allOrderers.length; k++) {
-                if (nextIndex === ob.selectedIndex) {
-                    nextIndex++;
-                }
-
-                if (allOrderers[k] !== ob) {
-                    allOrderers[k].selectedIndex = nextIndex;
-                    nextIndex++;
-                }
+            // Reset selection according to new order
+            for (var i = 0; i < allOrderers.length; i++) {
+                allOrderers[i].selectedIndex = i;
             }
         };
     }

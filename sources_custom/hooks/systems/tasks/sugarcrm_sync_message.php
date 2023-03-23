@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -24,7 +24,7 @@ class Hook_task_sugarcrm_sync_message
      * @param  string $subject The subject of the message
      * @param  string $body The body of the message
      * @param  EMAIL $to_email E-mail address to send to
-     * @param  string $to_name The recipient name. Array or string
+     * @param  string $to_name The recipient name
      * @param  EMAIL $from_email The from address
      * @param  string $from_name The from name
      * @param  array $attachments A list of attachments (each attachment being a map, absolute path=>filename)

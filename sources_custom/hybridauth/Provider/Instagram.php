@@ -145,7 +145,9 @@ class Instagram extends OAuth2 implements AtomInterface
 
         $this->validateApiResponse('Unable to exchange the access token');
 
-        $this->validateAccessTokenExchange($response);
+        if ($accessToken = $this->getStoredData('access_token')) {
+            $this->apiRequestParameters['appsecret_proof'] = hash_hmac('sha256', $accessToken, $this->clientSecret);
+        }
 
         return $response;
     }

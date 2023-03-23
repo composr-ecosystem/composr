@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -52,9 +52,10 @@ function is_encryption_enabled() : bool
  * Note that this will blindly re-encrypt data which has already been encrypted. You should check data with is_data_encrypted() first.
  *
  * @param  string $data Data to be encrypted
+ * @param  ?string $error_msg Error message returned (null: do not return an error message) (blank: fill in error message if there is one)
  * @return string Encrypted data, with magic marker
  */
-function encrypt_data(string $data) : string
+function encrypt_data(string $data, ?string &$error_msg = null) : string
 {
     require_lang('encryption');
 
@@ -78,7 +79,11 @@ function encrypt_data(string $data) : string
     // See http://php.net/manual/en/function.openssl-pkey-get-public.php
     $key = openssl_pkey_get_public('file://' . str_replace('{file_base}', get_file_base(), get_option('encryption_key')));
     if ($key === false) {
-        attach_message(do_lang_tempcode('ENCRYPTION_KEY_ERROR'), 'warn');
+        if ($error_msg === null) {
+            attach_message(do_lang_tempcode('ENCRYPTION_KEY_ERROR'), 'warn');
+        } else {
+            $error_msg = do_lang('ENCRYPTION_KEY_ERROR');
+        }
         return '';
     }
 
@@ -89,14 +94,20 @@ function encrypt_data(string $data) : string
         $data = (strlen($input) <= $maxlength) ? '' : substr($data, $maxlength);
         $encrypted = '';
         if (!openssl_public_encrypt($input, $encrypted, $key)) {
-            attach_message(do_lang_tempcode('ENCRYPTION_ERROR'), 'warn');
+            if ($error_msg === null) {
+                attach_message(do_lang_tempcode('ENCRYPTION_ERROR'), 'warn');
+            } else {
+                $error_msg = do_lang('ENCRYPTION_ERROR');
+            }
             return '';
         }
 
         $output .= $encrypted;
     }
 
-    @openssl_free_key($key); // LEGACY
+    if (function_exists('openssl_free_key')) {
+        @openssl_free_key($key); // LEGACY (deprecated in PHP 8)
+    }
 
     return '(Encrypted!)' . base64_encode($output);
 }
@@ -104,10 +115,10 @@ function encrypt_data(string $data) : string
 /**
  * Determine if some data has already been encrypted: i.e. if it has a magic encryption marker.
  *
- * @param  string $data Data to check
+ * @param  mixed $data Data to check
  * @return boolean Encrypted?
  */
-function is_data_encrypted(string $data) : bool
+function is_data_encrypted($data) : bool
 {
     if (!is_string($data)) {
         return false;
@@ -136,9 +147,10 @@ function remove_magic_encryption_marker(string $data) : string
  *
  * @param  string $data Data to be decrypted
  * @param  string $passphrase Passphrase to unlock the site's private key
+ * @param  ?string $error_msg Error message returned (null: do not return an error message) (blank: fill in error message if there is one)
  * @return string Decrypted data
  */
-function decrypt_data(string $data, string $passphrase) : string
+function decrypt_data(string $data, string $passphrase, ?string &$error_msg = null) : string
 {
     require_lang('encryption');
 
@@ -155,7 +167,11 @@ function decrypt_data(string $data, string $passphrase) : string
 
     // Check the passphrase isn't empty (if it is legitimately empty, we're doing the site a favour by bailing out)
     if ($passphrase == '') {
-        attach_message(do_lang_tempcode('ENCRYPTION_KEY_ERROR'), 'warn');
+        if ($error_msg === null) {
+            attach_message(do_lang_tempcode('ENCRYPTION_KEY_ERROR'), 'warn');
+        } else {
+            $error_msg = do_lang('ENCRYPTION_KEY_ERROR');
+        }
         return '';
     }
 
@@ -164,16 +180,27 @@ function decrypt_data(string $data, string $passphrase) : string
 
     $key = openssl_pkey_get_private(['file://' . str_replace('{file_base}', get_file_base(), get_option('decryption_key')), $passphrase]);
     if ($key === false) {
-        attach_message(do_lang_tempcode('ENCRYPTION_KEY_ERROR'), 'warn');
+        if ($error_msg === null) {
+            attach_message(do_lang_tempcode('ENCRYPTION_KEY_ERROR'), 'warn');
+        } else {
+            $error_msg = do_lang('ENCRYPTION_KEY_ERROR');
+        }
         return '';
     }
 
+    $decrypted = '';
     if (!openssl_private_decrypt($data, $decrypted, $key)) {
-        attach_message(do_lang_tempcode('DECRYPTION_ERROR'), 'warn');
+        if ($error_msg === null) {
+            attach_message(do_lang_tempcode('DECRYPTION_ERROR'), 'warn');
+        } else {
+            $error_msg = do_lang('DECRYPTION_ERROR');
+        }
         return $decrypted;
     }
 
-    @openssl_free_key($key); // LEGACY
+    if (function_exists('openssl_free_key')) {
+        @openssl_free_key($key); // LEGACY (deprecated in PHP 8)
+    }
 
     return $decrypted;
 }

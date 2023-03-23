@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -34,6 +34,14 @@ class Hook_task_reorganise_uploads
         foreach ($hooks as $hook => $ob) {
             $ob->run();
         }
+
+        // May be useful for debugging
+        /*
+        global $REORGANISE_UPLOADS_ERRORMSGS;
+        foreach ($REORGANISE_UPLOADS_ERRORMSGS as $i => $err) {
+            task_log($this, $err);
+        }
+        */
 
         return null;
     }

@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -600,7 +600,7 @@ class database_misc_test_set extends cms_test_case
                 $fields,
                 $raw_fields
             );
-            $this->assertTrue(count($rows) == $expected, $test_codename . ' failed, got ' . integer_format(count($rows)) . ' rows but expected ' . integer_format($expected) . ' rows; ' . $GLOBALS['LAST_SEARCH_QUERY']);
+            $this->assertTrue((count($rows) == $expected), $test_codename . ' failed, got ' . integer_format(count($rows)) . ' rows but expected ' . integer_format($expected) . ' rows.');
         }
 
         if ($this->only === null) {

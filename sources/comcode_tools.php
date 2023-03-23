@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -99,7 +99,7 @@ function comcode_convert_script()
 
         if (either_param_integer('is_semihtml', 0) == 1) {
             require_code('comcode_from_html');
-            $data = semihtml_to_comcode($data);
+            $data = trim(semihtml_to_comcode(cms_trim($data, true))); // We do the trimming because CKEditor adds a trailing nbsp
         }
 
         $tpl = comcode_to_tempcode($data, get_member(), false, null, $db, (either_param_integer('semihtml', 0) == 1) ? COMCODE_SEMIPARSE_MODE : COMCODE_NORMAL);
@@ -122,7 +122,7 @@ function comcode_convert_script()
         $out .= trim(trim($evaluated));
     } elseif ($from_html == 1) { // "Convert HTML/semihtml to Comcode"
         require_code('comcode_from_html');
-        $out = trim(semihtml_to_comcode($data, post_param_integer('force', 0) == 1));
+        $out = trim(semihtml_to_comcode(cms_trim($data, true), post_param_integer('force', 0) == 1)); // We do the trimming because CKEditor adds a trailing nbsp
     }
 
     $box_title = get_param_string('box_title', '', INPUT_FILTER_GET_COMPLEX);

@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -2305,6 +2305,10 @@ class Module_topics
                 }
             }
             foreach ($_POST as $key => $_invited_member) {
+                if (is_integer($key)) {
+                    $key = strval($key);
+                }
+
                 if (substr($key, 0, 13) != 'to_member_id_') {
                     continue;
                 }
@@ -2663,6 +2667,10 @@ class Module_topics
                 }
             }
             foreach ($_POST as $key => $_invited_member) {
+                if (is_integer($key)) {
+                    $key = strval($key);
+                }
+
                 if (substr($key, 0, 13) != 'to_member_id_') {
                     continue;
                 }
@@ -3325,7 +3333,7 @@ class Module_topics
                 continue;
             }
 
-            if (substr($key, 0, 7) == 'answer_') {
+            if ((is_string($key)) && (substr($key, 0, 7) == 'answer_')) {
                 if ($val != '') {
                     $answers[] = $val;
                 }
@@ -4140,7 +4148,7 @@ class Module_topics
                     continue;
                 }
 
-                if (substr($key, 0, 7) == 'answer_') {
+                if ((is_string($key)) && (substr($key, 0, 7) == 'answer_')) {
                     if ($val != '') {
                         $answers[] = $val;
                     }

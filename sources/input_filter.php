@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -45,8 +45,13 @@ function check_input_field_string(string $name, string &$val, ?bool $posted, int
         return;
     }
 
-    if ((($filters & INPUT_FILTER_JS_URLS) != 0) && (preg_match('#^\s*((((j\s*a\s*v\s*a\s*)|(v\s*b\s*))?s\s*c\s*r\s*i\s*p\s*t)|(d\s*a\s*t\s*a))\s*:#i', $val) !== 0)) {
-        log_hack_attack_and_exit('SCRIPT_URL_HACK_2', $val);
+    if (($filters & INPUT_FILTER_JS_URLS) != 0) {
+        if (preg_match('#^\s*(((j\s*a\s*v\s*a\s*)|(v\s*b\s*))?s\s*c\s*r\s*i\s*p\s*t)\s*:#i', $val) !== 0) {
+            log_hack_attack_and_exit('SCRIPT_URL_HACK_2', $val);
+        }
+        if (preg_match('#^\s*(d\s*a\s*t\s*a\s*)\s*:.*,#i', $val) !== 0) {
+            log_hack_attack_and_exit('SCRIPT_URL_HACK_2', $val);
+        }
     }
 
     if ((($filters & INPUT_FILTER_VERY_STRICT) != 0) && (preg_match('#\n|\000|<#mi', $val) !== 0)) {
@@ -106,6 +111,13 @@ function check_input_field_string(string $name, string &$val, ?bool $posted, int
             $val = get_base_url() . '/' . substr($val, 9);
         } elseif (substr($val, 0, 10) == 'https-cms:') {
             $val = get_base_url() . '/' . substr($val, 10);
+        }
+    }
+
+    if (($filters & INPUT_FILTER_EMAIL_ADDRESS) != 0) {
+        require_code('type_sanitisation');
+        if (($val != '') && (!is_valid_email_address($val))) {
+            warn_exit(do_lang_tempcode('INVALID_EMAIL_ADDRESS'));
         }
     }
 
@@ -291,7 +303,7 @@ function hard_filter_input_data__filesystem(string &$val)
  * Filter data according to the dynamic firewall.
  *
  * @param  string $name The name of the parameter
- * @param  string $val The value retrieved
+ * @param  string $val The value retrieved (passed / changed by reference)
  */
 function hard_filter_input_data__dynamic_firewall(string $name, string &$val)
 {
@@ -304,9 +316,10 @@ function hard_filter_input_data__dynamic_firewall(string $name, string &$val)
                 list($check_name, $check_val) = $parts;
                 $check_name_is_regexp = (isset($check_name[0]) && $check_name[0] == '#' && $check_name[strlen($check_name) - 1] == '#');
                 $check_val_is_regexp = (isset($check_val[0]) && $check_val[0] == '#' && $check_val[strlen($check_val) - 1] == '#');
-                if ($check_name_is_regexp && preg_match($check_name, $name) != 0 || !$check_name_is_regexp && $check_name == $name) {
-                    if ($check_val_is_regexp && preg_match($check_val, $val) == 0 || !$check_val_is_regexp && $check_val != $val) {
+                if (($check_name_is_regexp && preg_match($check_name, $name) != 0) || (!$check_name_is_regexp && $check_name == $name)) { // Must have positive match
+                    if (($check_val_is_regexp && preg_match($check_val, $val) == 0) || (!$check_val_is_regexp && $check_val != $val)) { // Must have negative match
                         $val = 'filtered';
+                        return;
                     }
                 }
             }

@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -226,6 +226,10 @@ function phase_1_pre()
             <input type="hidden" name="intermediary_tasks" value="1" />
     ';
     foreach ($_POST as $key => $val) {
+        if (is_integer($key)) {
+            $key = strval($key);
+        }
+
         echo '
             <input type="hidden" name="' . escape_html($key) . '" value="' . escape_html($val) . '" />
         ';
@@ -372,6 +376,7 @@ function phase_2()
         echo '
             <li><strong>Transifex</strong>: Import language strings into Transifex<ul>
                 <li>Push new language data by calling <kbd>data_custom/transifex_push.php</kbd></li>
+                <li>Update <kbd>_api_transifex</kbd> test if required</li>
             </ul></li>
         ';
     } else {

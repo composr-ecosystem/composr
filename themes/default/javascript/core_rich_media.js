@@ -415,7 +415,7 @@
         /**
          * Bind Plupload to the specified browse button (`attachmentBrowseButton`)
          * @param _postingFieldName
-         * @param attachmentBrowseButton
+         * @param attachmentBrowseButton - Must be the DOM of the button and not simply the id
          */
         function rebuildAttachmentButtonForNext(attachmentBrowseButton) {
             if (attachmentBrowseButton === undefined) {
@@ -425,6 +425,7 @@
             lastAttachmentBrowseButton = attachmentBrowseButton;
 
             $cms.requireJavascript('plupload').then(function () {
+                attachmentBrowseButton.style.display = '';
                 window.$plupload.prepareSimplifiedFileInput('attachment_multi', 'file' + window.numAttachments, postingFieldName, strVal(params.filter), attachmentBrowseButton);
             });
         }
@@ -573,7 +574,7 @@
             };
         }
 
-        if (container.style.display == 'block') {
+        if (container.style.display === 'block') {
             // Comcode may specify different default which is only known to COMCODE_TAB_BODY template, and needs to be handled for COMCODE_TAB_HEAD
             $cms.ui.selectTab('g', tabSets + '-' + title, false, true);
         }
@@ -829,7 +830,7 @@
 
         var id = 'ticker-' + $util.random(),
             width = params.width,
-            dynamicWidth = (width == ''),
+            dynamicWidth = (width === ''),
             speed = params.speed;
 
         if (dynamicWidth) {

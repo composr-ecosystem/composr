@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -706,6 +706,7 @@ abstract class Hook_sitemap_base
                 if (($meta_gather & SITEMAP_GATHER_IMAGE) != 0) {
                     if (!isset($struct['extra_meta']['image'])) {
                         $struct['extra_meta']['image'] = ($icon === null) ? null : find_theme_image('icons/' . $icon);
+                        $struct['extra_meta']['icon'] = ($icon === null) ? null : $icon;
                     }
                 }
             }
@@ -875,6 +876,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
             'extra_meta' => [
                 'description' => null,
                 'image' => null,
+                'icon' => null,
                 'add_time' => null,
                 'edit_time' => null,
                 'submitter' => null,
@@ -936,6 +938,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
                 $struct['extra_meta']['image'] = $cma_ob->get_image_url($row);
                 if ($struct['extra_meta']['image'] == '') {
                     $struct['extra_meta']['image'] = null;
+                    $struct['extra_meta']['icon'] = null;
                 }
             }
         }

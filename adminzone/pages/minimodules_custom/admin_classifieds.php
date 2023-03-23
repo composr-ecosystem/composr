@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -85,7 +85,7 @@ if (!empty($_POST)) {
 
     log_it('CLASSIFIEDS_PRICING');
 
-    attach_message(do_lang_tempcode('SUCCESS', 'inform'));
+    attach_message(do_lang_tempcode('SUCCESS'), 'inform');
 }
 
 $title = get_screen_title('CLASSIFIEDS');

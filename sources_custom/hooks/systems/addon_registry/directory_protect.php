@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -90,15 +90,21 @@ class Hook_addon_registry_directory_protect
 
 You will need to add a new rule into your .htaccess file to control the routing. Assuming all the files were under a \'videos\' directory:
 [code]
-RewriteRule ^/?(videos/.*)$ data_custom/directory_protect.php\\?file=$1 [L,QSA]
+RewriteRule ^/?(videos/.*)$ data_custom/directory_protect.php\?file=$1 [L,QSA]
+[/code]
 
 Put the rule above this part of the Composr default:
-# Anything that would point to a real file should actually be allowed to do so
-RewriteCond %{DOCUMENT_ROOT}/git/$1 -f [OR]
-RewriteCond %{DOCUMENT_ROOT}/git/$1 -l [OR]
-RewriteCond %{DOCUMENT_ROOT}/git/$1 -d
-RewriteRule (.*) - [L]
-RewriteRule (.*) - [L]
+[code]
+# Anything that would point to a real file should actually be allowed to do so. If you have a "RewriteBase /subdir" command, you may need to change to "%{DOCUMENT_ROOT}/subdir/$1".
+RewriteCond $1 ^\d+.shtml [OR]
+RewriteCond $1 \.(1st|3g2|3gp|3gp2|3gpp|3p|7z|aac|ai|aif|aifc|aiff|asf|atom|avi|bin|bmp|br|bz2|css|csv|cur|diff|dmg|doc|docx|dot|dotx|eml|exe|f4v|gif|gz|html|ico|ics|ini|iso|jpe|jpeg|jpg|js|json|keynote|log|m2v|m4v|mdb|mid|mov|mp2|mp3|mp4|mpa|mpe|mpeg|mpg|mpv2|numbers|odb|odc|odg|odi|odp|ods|odt|ogg|ogv|otf|pages|patch|pdf|php|png|ppt|pptx|ps|psd|pub|qt|ra|ram|rar|rm|rss|rtf|sql|svg|swf|tar|tga|tgz|tif|tiff|torrent|tpl|ttf|txt|yaml|yml|vsd|vtt|wav|weba|webm|webp|wma|wmv|woff|woff2|xls|xlsx|xml|xsd|xsl|zip)($|\?) [OR]
+RewriteCond %{DOCUMENT_ROOT}/$1 -f [OR]
+RewriteCond %{DOCUMENT_ROOT}/$1 -l [OR]
+RewriteCond %{DOCUMENT_ROOT}/$1 -d [OR]
+RewriteCond $1 -f [OR]
+RewriteCond $1 -l [OR]
+RewriteCond $1 -d
+RewriteRule ^/?(.*) - [L]
 [/code]';
     }
 

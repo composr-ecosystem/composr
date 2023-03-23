@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -50,6 +50,7 @@ function get_table_purpose_flags() : array
         'group_points' => TABLE_PURPOSE__NORMAL,
         'locations' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__AUTOGEN_STATIC,
         'logged' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE,
+        'mail_opt_sync_queue' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE,
         'may_feature' => TABLE_PURPOSE__NORMAL,
         'members_diseases' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE | TABLE_PURPOSE__SUBDATA/*under f_members*/,
         'members_gifts' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE | TABLE_PURPOSE__SUBDATA/*under f_members*/,

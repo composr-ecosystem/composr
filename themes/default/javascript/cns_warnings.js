@@ -2,9 +2,7 @@
     'use strict';
 
     $cms.templates.cnsSavedWarning = function cnsSavedWarning(params, container) {
-        var id = $cms.filter.id(params.title);
-
-        $dom.on(container, 'click', '.js-use-warning', function (e) {
+        $dom.on(container, 'click', '.js-use-warning', function () {
             var win = $cms.getMainCmsWindow();
 
             var explanation = win.document.getElementById('explanation');

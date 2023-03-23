@@ -338,6 +338,8 @@ The infinite scrolling is programmed to load more results each time you scroll d
 It is [i]not[/i] based on the proportion of previous 'waves' of results that the user has read. This means that if that maximum is relatively small then a lot of AJAX requests will be fired off as the user scrolls down in a machine-gun-like manner.
 It's therefore not recommended to have the maximum-per-page setting too low.
 
+Also keep in mind that infinite scrolling is only designed for an element at the bottom of the page. If you have anything below it aside from the footer (including anything in the right panel of the zone, which gets pushed down to the bottom of the page in mobile view), then you may encounter a rapid firing of AJAX requests and loading of results.
+
 [title="2"]See also[/title]
 
  - [page="_SEARCH:tut_drinking"]Drinking from the feature pool[/page]

@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -415,7 +415,7 @@ function placeholder_image() : object
  */
 function placeholder_date() : string
 {
-    return get_timezoned_date_time(123456789);
+    return get_timezoned_date_time(987654321);
 }
 
 /**
@@ -425,7 +425,7 @@ function placeholder_date() : string
  */
 function placeholder_date_raw() : string
 {
-    return strval(123456789);
+    return strval(987654321);
 }
 
 /**
@@ -522,8 +522,9 @@ function placeholder_breadcrumbs() : object
  * @param  boolean $light_error Whether to not produce a stack trace if the template is missing
  * @param  ?ID_TEXT $fallback Alternate template to use if the primary one does not exist (null: none)
  * @param  string $suffix File type suffix of template file (e.g. .tpl)
+ * @set .tpl .js .xml .txt .css
  * @param  string $directory Subdirectory type to look in
- * @set templates css javascript xml text
+ * @set templates javascript xml text css
  * @return Tempcode The Tempcode for this template
  */
 function do_lorem_template(string $codename, array $parameters = [], ?string $lang = null, bool $light_error = false, ?string $fallback = null, string $suffix = '.tpl', string $directory = 'templates') : object
@@ -883,11 +884,11 @@ function placeholder_rating(string $content_type, string $template = 'RATING_BOX
 {
     $all_rating_criteria = [];
     $all_rating_criteria[] = [
-        'TITLE' => lorem_phrase(),
-        'RATING' => make_string_tempcode('6'),
+        'TITLE' => '',
+        'RATING' => make_string_tempcode('10'),
         '_NUM_RATINGS' => placeholder_number(),
         'NUM_RATINGS' => placeholder_number(),
-        'TYPE' => lorem_word(),
+        'TYPE' => '',
     ];
     $rating_form = do_lorem_template('RATING_FORM', [
         'LIKES' => true,
@@ -934,7 +935,7 @@ function placeholder_member_box() : object
         'MEMBER_ID' => placeholder_first_admin_id(),
     ]);
 
-    return do_lorem_template('CNS_MEMBER_BOX', [
+    $map = [
         'GIVE_CONTEXT' => false,
         'MEMBER_ID' => placeholder_first_admin_id(),
         'USERNAME' => lorem_word(),
@@ -950,14 +951,17 @@ function placeholder_member_box() : object
         'ONLINE' => false,
         'AVATAR_URL' => placeholder_avatar(),
         'IP_ADDRESS' => placeholder_ip(),
-        '_NUM_WARNINGS' => placeholder_number(),
-        'NUM_WARNINGS' => placeholder_number(),
         'GALLERIES' => placeholder_number(),
         'DOB_LABEL' => lorem_word(),
         'DOB' => placeholder_date(),
         '_DOB' => placeholder_date_raw(),
         '_DOB_CENSORED' => false,
-    ]);
+    ];
+    if (addon_installed('cns_warnings')) {
+        $map['_NUM_WARNINGS'] = placeholder_number();
+        $map['NUM_WARNINGS'] = placeholder_number();
+    }
+    return do_lorem_template('CNS_MEMBER_BOX', $map);
 }
 
 /**

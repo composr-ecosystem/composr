@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -932,7 +932,6 @@ class Module_galleries
             require_code('cns_members');
             require_code('cns_members2');
         }
-        $member_details = (($member_id === null) || (get_forum_type() != 'cns')) ? new Tempcode() : render_member_box($member_id, true, true, [], false);
 
         // Rep-image
         $rep_image_url = '';
@@ -973,7 +972,6 @@ class Module_galleries
             'COMMENT_DETAILS' => $comment_details,
             'REP_IMAGE_URL' => $rep_image_url,
             'TITLE' => $title,
-            'MEMBER_DETAILS' => $member_details,
             'DESCRIPTION' => $description,
             'CURRENT_ENTRY' => $current_entry,
             'ENTRIES' => $entries,
@@ -1030,7 +1028,6 @@ class Module_galleries
             require_code('cns_members');
             require_code('cns_members2');
         }
-        $member_details = (($member_id === null) || (get_forum_type() != 'cns')) ? new Tempcode() : render_member_box($member_id, true, true, [], false);
 
         // Render
         return do_template('GALLERY_GRID_MODE_SCREEN', [
@@ -1039,7 +1036,6 @@ class Module_galleries
             'MEMBER_ID' => ($member_id === null) ? '' : strval($member_id),
             'TAGS' => get_loaded_tags('galleries'),
             'CAT' => $cat,
-            'MEMBER_DETAILS' => $member_details,
             'RATING_DETAILS' => $rating_details,
             'COMMENT_DETAILS' => $comment_details,
             'ADD_GALLERY_URL' => $add_gallery_url,
@@ -1102,7 +1098,6 @@ class Module_galleries
             require_code('cns_members');
             require_code('cns_members2');
         }
-        $member_details = (($member_id === null) || (get_forum_type() != 'cns')) ? new Tempcode() : render_member_box($member_id, true, true, [], false);
 
         // Render
         return do_template('GALLERY_MOSAIC_MODE_SCREEN', [
@@ -1110,7 +1105,6 @@ class Module_galleries
             'MEMBER_ID' => ($member_id === null) ? '' : strval($member_id),
             'TAGS' => get_loaded_tags('galleries'),
             'CAT' => $cat,
-            'MEMBER_DETAILS' => $member_details,
             'RATING_DETAILS' => $rating_details,
             'COMMENT_DETAILS' => $comment_details,
             'ADD_GALLERY_URL' => $add_gallery_url,
@@ -1382,7 +1376,6 @@ class Module_galleries
             require_code('cns_members');
             require_code('cns_members2');
         }
-        $member_details = (($member_id === null) || (get_forum_type() != 'cns')) ? new Tempcode() : render_member_box($member_id, true, true, [], false);
 
         return do_template('GALLERY_ENTRY_SCREEN', [
             '_GUID' => '332a19b6a72505f8e1eb4d288df247ce',
@@ -1396,7 +1389,6 @@ class Module_galleries
             'TAGS' => get_loaded_tags('images'),
             'TITLE' => $this->title,
             'SUBMITTER' => strval($myrow['submitter']),
-            'MEMBER_DETAILS' => $member_details,
             '_X' => strval($x),
             'X' => integer_format($x),
             '_N' => strval($n),
@@ -1511,7 +1503,6 @@ class Module_galleries
             require_code('cns_members');
             require_code('cns_members2');
         }
-        $member_details = (($member_id === null) || (get_forum_type() != 'cns')) ? new Tempcode() : render_member_box($member_id, true, true, [], false);
 
         $video_details = show_video_details($myrow);
 
@@ -1529,7 +1520,6 @@ class Module_galleries
             'SUBMITTER' => strval($myrow['submitter']),
             'URL' => $url,
             'VIDEO_DETAILS' => $video_details,
-            'MEMBER_DETAILS' => $member_details,
             '_X' => strval($x),
             'X' => integer_format($x),
             '_N' => strval($n),

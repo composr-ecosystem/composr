@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -819,7 +819,12 @@ function _do_lang(string $codename, $parameter1 = null, $parameter2 = null, $par
                     return ''; // Probably failing to load global.ini, so just output with some text missing
                 }
 
-                trigger_error(do_lang('MISSING_LANG_STRING', escape_html($codename)), E_USER_NOTICE);
+                // Cannot trigger error using MISSING_LANG_STRING if MISSING_LANG_STRING is what is missing!
+                if ($codename != 'MISSING_LANG_STRING') {
+                    trigger_error(do_lang('MISSING_LANG_STRING', escape_html($codename)), E_USER_NOTICE);
+                } else {
+                    critical_error('CRIT_LANG');
+                }
                 return '';
             } else {
                 if ($SMART_CACHE !== null) {
@@ -1076,7 +1081,7 @@ function insert_lang(string $field_name, string $text, int $level, ?object $db =
  * Remap the specified Comcode content language string, and return details of the content language string.
  *
  * @param  ID_TEXT $field_name The field name
- * @param  mixed $lang_id The ID (if multi-lang-content on), or the string itself
+ * @param  mixed $lang_id The ID (if multi-lang-content on), or the string itself (if multi-lang-content off)
  * @param  string $text The text to remap to
  * @param  ?object $db The database connector to use (null: standard site connector)
  * @param  ?string $pass_id The special identifier for this content language string on the page it will be displayed on; this is used to provide an explicit binding between languaged elements and greater templated areas (null: none)
@@ -1098,7 +1103,7 @@ function lang_remap_comcode(string $field_name, $lang_id, string $text, ?object 
  * Remap the specified content language string, and return details of the content language string.
  *
  * @param  ID_TEXT $field_name The field name
- * @param  mixed $lang_id The ID (if multi-lang-content on), or the string itself
+ * @param  mixed $lang_id The ID (if multi-lang-content on), or the string itself (if multi-lang-content off)
  * @param  string $text The text to remap to
  * @param  ?object $db The database connector to use (null: standard site connector)
  * @param  boolean $comcode Whether it is to be parsed as Comcode
@@ -1190,7 +1195,7 @@ function get_translated_tempcode(string $table, array $row, string $field_name, 
     if (multi_lang_content()) {
         $entry = $row[$field_name];
 
-        if ($entry == 0) {
+        if ($entry === 0) {
             trigger_error(do_lang('ZERO_CONTENT_LANG_STRING'), E_USER_NOTICE);
             return new Tempcode();
         }
@@ -1292,7 +1297,7 @@ function get_translated_tempcode(string $table, array $row, string $field_name, 
 /**
  * Try to return the human-readable version of the content language string ID, passed in as $entry.
  *
- * @param  mixed $entry The ID (if multi-lang-content on), or the string itself
+ * @param  mixed $entry The ID (if multi-lang-content on), or the string itself (if multi-lang-content is off)
  * @param  ?object $db The database connector to use (null: standard site connector)
  * @param  ?LANGUAGE_NAME $lang The language (null: uses the current language)
  * @param  boolean $force Whether to force it to the specified language
@@ -1304,7 +1309,7 @@ function get_translated_text($entry, ?object $db = null, ?string $lang = null, b
         return $entry;
     }
 
-    if ($entry == 0) {
+    if ($entry === 0) {
         trigger_error(do_lang('ZERO_CONTENT_LANG_STRING'), E_USER_NOTICE);
         return '';
     }

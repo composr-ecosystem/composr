@@ -16,22 +16,19 @@
 
 	{ENTRY}
 
-	<div class="clearfix lined-up-boxes">
-		{+START,IF_NON_EMPTY,{TRACKBACK_DETAILS}}
-			<div class="trackbacks right">
-				{TRACKBACK_DETAILS}
-			</div>
-		{+END}
-		{+START,IF_NON_EMPTY,{RATING_DETAILS}}
-			<div class="ratings right">
-				{RATING_DETAILS}
-			</div>
-		{+END}
-	</div>
-
-	{$REVIEW_STATUS,catalogue_entry,{ID}}
+	{+START,IF_NON_EMPTY,{EDIT_DATE_RAW}}
+		<div class="edited" role="note">
+			<img alt="" width="9" height="6" src="{$IMG*,edited}" />
+			<span>{!EDITED}</span>
+			<time datetime="{$FROM_TIMESTAMP*,Y-m-d\TH:i:s\Z,{EDIT_DATE_RAW}}">{$DATE*,,,,{EDIT_DATE_RAW}}</time>
+		</div>
+	{+END}
 
 	{+START,IF,{$THEME_OPTION,show_content_tagging}}{TAGS}{+END}
+
+	{+START,IF,{$THEME_OPTION,show_screen_actions}}{$BLOCK,failsafe=1,block=main_screen_actions,title={$METADATA,title}}{+END}
+
+	{$REVIEW_STATUS,catalogue_entry,{ID}}
 
 	{$,Load up the staff actions template to display staff actions uniformly (we relay our parameters to it)...}
 	{+START,INCLUDE,STAFF_ACTIONS}
@@ -48,19 +45,25 @@
 		{+END}
 	{+END}
 
+	{+START,IF_NON_EMPTY,{RATING_DETAILS}}
+		<div class="clearfix">
+			<div class="ratings">
+				{RATING_DETAILS}
+			</div>
+		</div>
+	{+END}
+
 	<div class="content-screen-comments">
 		{COMMENT_DETAILS}
 	</div>
 
-	{+START,IF_NON_EMPTY,{EDIT_DATE_RAW}}
-		<div class="edited" role="note">
-			<img alt="" width="9" height="6" src="{$IMG*,edited}" />
-			<span>{!EDITED}</span>
-			<time datetime="{$FROM_TIMESTAMP*,Y-m-d\TH:i:s\Z,{EDIT_DATE_RAW}}">{$DATE*,,,,{EDIT_DATE_RAW}}</time>
+	{+START,IF_NON_EMPTY,{TRACKBACK_DETAILS}}
+		<div class="clearfix">
+			<div class="trackbacks">
+				{TRACKBACK_DETAILS}
+			</div>
 		</div>
 	{+END}
 
 	{$,Uncomment and modify to create a reply link <a href="\{$PAGE_LINK*,site:contact_member:browse:\{SUBMITTER\}:subject=Response to listing, \{FIELD_1\}:message=\}">Respond</a>}
-
-	{+START,IF,{$THEME_OPTION,show_screen_actions}}{$BLOCK,failsafe=1,block=main_screen_actions,title={$METADATA,title}}{+END}
 </div>

@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -53,6 +53,35 @@ function _normalise_graph_dims(?string &$width, ?string &$height)
 }
 
 /**
+ * Parse a colour pool string.
+ *
+ * @param  string $str Colour pool string
+ * @return array $color_pool Colour pool
+ */
+function _parse_color_pool_string(string $str) : array
+{
+    $original_color_pool = [];
+    _generate_graph_color_pool($original_color_pool);
+
+    $_color_pool = empty($str) ? [] : explode(',', $str);
+    $color_pool = [];
+    foreach ($_color_pool as $i => $x) {
+        if (strpos($x, '=') !== false) {
+            // Mapping labels directly to colors
+            list($key, $val) = explode('=', $x, 2);
+            $color_pool[$key] = $val;
+        } elseif (substr($x, 0, 1) == '#') {
+            // Straight forward color pool
+            $color_pool[] = $x;
+        } else {
+            // Just map labels to the default color pool in the order given
+            $color_pool[$x] = $original_color_pool[$i % count($original_color_pool)];
+        }
+    }
+    return $color_pool;
+}
+
+/**
  * Extend/generate a colour pool of colours to use on graphs.
  *
  * @param  array $color_pool Existing colour pool
@@ -77,11 +106,18 @@ function _generate_graph_color_pool(array &$color_pool)
  *
  * @param  integer $i Index
  * @param  array $color_pool Colour pool
+ * @param  ?string $label Named colour label to look up (null: no named label)
  * @return string Colour
  */
-function _search_graph_color_pool(int $i, array $color_pool) : string
+function _search_graph_color_pool(int $i, array $color_pool, ?string $label = null) : string
 {
-    return $color_pool[$i % count($color_pool)];
+    $_color_pool = array_values($color_pool);
+
+    if (($label !== null) && (isset($color_pool[$label]))) {
+        return $color_pool[$label];
+    }
+
+    return $_color_pool[$i % count($_color_pool)];
 }
 
 /**
@@ -162,6 +198,10 @@ function graph_scatter_diagram(array $datapoints, $x_axis_label = '', $y_axis_la
         $clamp_y_axis = false;
     }
 
+    $has_wordwrap = isset($options['wordwrap_tooltip_at']);
+
+    $logarithmic = isset($options['logarithmic']) ? $options['logarithmic'] : false;
+
     return do_template('GRAPH_SCATTER_DIAGRAM', [
         '_GUID' => 'a3fc255270253893b7550f18f9f94fca',
         'ID' => $id,
@@ -173,7 +213,9 @@ function graph_scatter_diagram(array $datapoints, $x_axis_label = '', $y_axis_la
         'BEGIN_AT_ZERO' => $begin_at_zero,
         'BUBBLE' => $bubble,
         'CLAMP_Y_AXIS' => $clamp_y_axis,
+        'LOGARITHMIC' => $logarithmic,
         'MAX' => strval(intval(ceil($max))),
+        'HAS_WORDWRAP' => $has_wordwrap,
     ]);
 }
 
@@ -242,7 +284,7 @@ function graph_line_chart(array $datasets, ?array $x_labels = null, $x_axis_labe
 
         $_datasets[] = [
             'LABEL' => $dataset['label'],
-            'COLOR' => isset($dataset['color']) ? $dataset['color'] : _search_graph_color_pool($i, $color_pool),
+            'COLOR' => isset($dataset['color']) ? $dataset['color'] : _search_graph_color_pool($i, $color_pool, $dataset['label']),
             'DATAPOINTS' => $datapoints,
         ];
     }
@@ -260,6 +302,10 @@ function graph_line_chart(array $datasets, ?array $x_labels = null, $x_axis_labe
         $clamp_y_axis = false;
     }
 
+    $has_wordwrap = isset($options['wordwrap_tooltip_at']);
+
+    $logarithmic = isset($options['logarithmic']) ? $options['logarithmic'] : false;
+
     return do_template('GRAPH_LINE_CHART', [
         '_GUID' => '4a45757f02c5356c6b87a1c8d6366d49',
         'ID' => $id,
@@ -273,7 +319,9 @@ function graph_line_chart(array $datasets, ?array $x_labels = null, $x_axis_labe
         'SHOW_DATA_LABELS' => $show_data_labels,
         'FILL' => $fill,
         'CLAMP_Y_AXIS' => $clamp_y_axis,
+        'LOGARITHMIC' => $logarithmic,
         'MAX' => strval(intval(ceil($max))),
+        'HAS_WORDWRAP' => $has_wordwrap,
     ]);
 }
 
@@ -310,7 +358,7 @@ function graph_pie_chart(array $datapoints, array $options = [], ?array $color_p
                 'LABEL' => $p['label'],
                 'VALUE' => $value,
                 'TOOLTIP' => array_key_exists('tooltip', $p) ? $p['tooltip'] : '',
-                'COLOR' => _search_graph_color_pool($i, $color_pool),
+                'COLOR' => _search_graph_color_pool($i, $color_pool, $p['label']),
             ];
         } else {
             $value = is_string($x) ? $x : number_raw_string($x);
@@ -319,7 +367,7 @@ function graph_pie_chart(array $datapoints, array $options = [], ?array $color_p
                 'LABEL' => $value,
                 'VALUE' => number_raw_string($p),
                 'TOOLTIP' => '',
-                'COLOR' => _search_graph_color_pool($i, $color_pool),
+                'COLOR' => _search_graph_color_pool($i, $color_pool, @strval($x)),
             ];
         }
         $i++;
@@ -327,6 +375,8 @@ function graph_pie_chart(array $datapoints, array $options = [], ?array $color_p
 
     $show_data_labels = isset($options['show_data_labels']) ? $options['show_data_labels'] : true;
     $doughnut = isset($options['doughnut']) ? $options['doughnut'] : false;
+
+    $has_wordwrap = isset($options['wordwrap_tooltip_at']);
 
     return do_template('GRAPH_PIE_CHART', [
         '_GUID' => '24a351a8cc04f0777b2016ab2ede35cc',
@@ -336,6 +386,7 @@ function graph_pie_chart(array $datapoints, array $options = [], ?array $color_p
         'DATAPOINTS' => $_datapoints,
         'SHOW_DATA_LABELS' => $show_data_labels,
         'DOUGHNUT' => $doughnut,
+        'HAS_WORDWRAP' => $has_wordwrap,
     ]);
 }
 
@@ -376,7 +427,7 @@ function graph_bar_chart(array $datapoints, $x_axis_label = '', $y_axis_label = 
                 'LABEL' => $p['label'],
                 'VALUE' => $value,
                 'TOOLTIP' => array_key_exists('tooltip', $p) ? $p['tooltip'] : '',
-                'COLOR' => _search_graph_color_pool($i, $color_pool),
+                'COLOR' => _search_graph_color_pool($i, $color_pool, $p['label']),
             ];
         } else {
             $value = number_raw_string($p);
@@ -385,7 +436,7 @@ function graph_bar_chart(array $datapoints, $x_axis_label = '', $y_axis_label = 
                 'LABEL' => is_string($x) ? $x : number_raw_string($x),
                 'VALUE' => $value,
                 'TOOLTIP' => '',
-                'COLOR' => _search_graph_color_pool($i, $color_pool),
+                'COLOR' => _search_graph_color_pool($i, $color_pool, @strval($x)),
             ];
         }
 
@@ -407,6 +458,10 @@ function graph_bar_chart(array $datapoints, $x_axis_label = '', $y_axis_label = 
         $clamp_y_axis = false;
     }
 
+    $logarithmic = isset($options['logarithmic']) ? $options['logarithmic'] : false;
+
+    $has_wordwrap = isset($options['wordwrap_tooltip_at']);
+
     return do_template('GRAPH_BAR_CHART', [
         '_GUID' => '173df546b9bcb31ca064910e1952e484',
         'ID' => $id,
@@ -419,7 +474,9 @@ function graph_bar_chart(array $datapoints, $x_axis_label = '', $y_axis_label = 
         'SHOW_DATA_LABELS' => $show_data_labels,
         'HORIZONTAL' => $horizontal,
         'CLAMP_Y_AXIS' => $clamp_y_axis,
+        'LOGARITHMIC' => $logarithmic,
         'MAX' => strval(intval(ceil($max))),
+        'HAS_WORDWRAP' => $has_wordwrap,
     ]);
 }
 
@@ -462,7 +519,7 @@ function graph_stacked_bar_chart(array $datasets, array $labels, $x_axis_label =
                     'LABEL' => $p['label'],
                     'VALUE' => $value,
                     'TOOLTIP' => array_key_exists('tooltip', $p) ? $p['tooltip'] : '',
-                    'COLOR' => _search_graph_color_pool($i, $color_pool),
+                    'COLOR' => _search_graph_color_pool($i, $color_pool, $p['label']),
                 ];
             } else {
                 $value = number_raw_string($p);
@@ -471,7 +528,7 @@ function graph_stacked_bar_chart(array $datasets, array $labels, $x_axis_label =
                     'LABEL' => @strval($x),
                     'VALUE' => $value,
                     'TOOLTIP' => '',
-                    'COLOR' => _search_graph_color_pool($i, $color_pool),
+                    'COLOR' => _search_graph_color_pool($i, $color_pool, @strval($x)),
                 ];
             }
 
@@ -480,7 +537,7 @@ function graph_stacked_bar_chart(array $datasets, array $labels, $x_axis_label =
 
         $_datasets[] = [
             'LABEL' => $dataset['label'],
-            'COLOR' => isset($dataset['color']) ? $dataset['color'] : _search_graph_color_pool($i, $color_pool),
+            'COLOR' => isset($dataset['color']) ? $dataset['color'] : _search_graph_color_pool($i, $color_pool, $dataset['label']),
             'DATAPOINTS' => $datapoints,
         ];
     }
@@ -506,6 +563,8 @@ function graph_stacked_bar_chart(array $datasets, array $labels, $x_axis_label =
         $clamp_y_axis = false;
     }
 
+    $logarithmic = isset($options['logarithmic']) ? $options['logarithmic'] : false;
+
     return do_template('GRAPH_STACKED_BAR_CHART', [
         'ID' => $id,
         'WIDTH' => $width,
@@ -519,6 +578,7 @@ function graph_stacked_bar_chart(array $datasets, array $labels, $x_axis_label =
         'HORIZONTAL' => $horizontal,
         'STACKED' => $stacked,
         'CLAMP_Y_AXIS' => $clamp_y_axis,
+        'LOGARITHMIC' => $logarithmic,
         'MAX' => strval(intval(ceil($max))),
     ]);
 }
@@ -593,11 +653,14 @@ function graph_bubble_bar_chart(array $datasets, $x_axis_label = '', $y_axis_lab
 
         $_datasets[] = [
             'Y_LABEL' => $dataset['label'],
+            'DATASET_TOOLTIP' => $dataset['tooltip'],
             'DATAPOINTS' => $datapoints,
         ];
     }
 
     $show_data_labels = isset($options['show_data_labels']) ? $options['show_data_labels'] : true;
+
+    $has_wordwrap = isset($options['wordwrap_tooltip_at']);
 
     return do_template('GRAPH_BUBBLE_BAR_CHART', [
         'ID' => $id,
@@ -613,6 +676,7 @@ function graph_bubble_bar_chart(array $datasets, $x_axis_label = '', $y_axis_lab
         'COLOR' => _search_graph_color_pool(0, $color_pool),
         'MIN' => float_to_raw_string($min, 2, true),
         'MAX' => float_to_raw_string($max, 2, true),
+        'HAS_WORDWRAP' => $has_wordwrap,
     ]);
 }
 

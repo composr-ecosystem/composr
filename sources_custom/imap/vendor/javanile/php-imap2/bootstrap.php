@@ -763,7 +763,7 @@ if (!function_exists('imap2_search')) {
         if (IMAP2_RETROFIT_MODE && is_resource($imap) && get_resource_type($imap) == 'imap') {
             return imap_search($imap, $criteria, $flags, $charset);
         }
-        
+
         destrictify();
         $ret = Message::search($imap, $criteria, $flags, $charset);
         restrictify();
@@ -1493,7 +1493,7 @@ if (!function_exists('imap2_base64')) {
         }
 
         destrictify();
-        $ret = Polyfill::base64($string);
+        $ret = base64_decode($string); // PatrickS (https://github.com/javanile/php-imap2/issues/45)
         restrictify();
 
         return $ret;

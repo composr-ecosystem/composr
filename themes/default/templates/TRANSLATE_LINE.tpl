@@ -2,8 +2,6 @@
 
 <tr data-tpl="translateLine">
 	<th class="translate-line-first">
-		<a id="jmp-{NAME*}"></a>
-
 		<kbd>{NAME*}</kbd>
 
 		{+START,IF_NON_EMPTY,{DESCRIPTION}}

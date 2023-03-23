@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -326,6 +326,9 @@ function generate_catalogue_entry_content_type_label(array $row) : object
     if (!array_key_exists('c_name', $row)) {
         return do_lang_tempcode('catalogues:CATALOGUE_ENTRY');
     }
+
+    require_code('catalogues');
+
     $catalogue = load_catalogue_row($row['c_name']);
     return do_lang_tempcode('catalogues:CATALOGUE_GENERIC', escape_html(get_translated_text($catalogue['c_title'])));
 }
@@ -341,6 +344,9 @@ function generate_catalogue_entry_content_type_universal_label(array $row) : str
     if (!array_key_exists('c_name', $row)) {
         return 'Catalogue entry';
     }
+
+    require_code('catalogues');
+
     $catalogue = load_catalogue_row($row['c_name']);
     return get_translated_text($catalogue['c_title']) . ' entry';
 }

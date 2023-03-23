@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -42,7 +42,11 @@ class Hook_syndication_activity_feed
             return null;
         }
 
-        if ((!$syndication_context['has_privilege']) || (!$syndication_context['syndicate_activity'])) {
+        if ($member_id === null) {
+            $member_id = get_member();
+        }
+
+        if (($syndication_context['syndicate_site_activity']) || (!$syndication_context['syndicate_activity'])) {
             $sitewide_too = false;
         }
 
@@ -139,7 +143,7 @@ class Hook_syndication_activity_feed
 
         return [
             'syndicate_activity' => post_param_integer('syndicate_activity', 0) == 1,
-            'has_privilege' => has_privilege(get_member(), 'syndicate_site_activity'),
+            'syndicate_site_activity' => has_privilege(get_member(), 'syndicate_site_activity'),
         ];
     }
 }

@@ -16,6 +16,24 @@
 	{WARNING_DETAILS}
 
 	<div class="clearfix">
+		<div class="box box---calendar-event-screen-description"><div class="box-inner">
+			<h2>{!DESCRIPTION}</h2>
+
+			<div class="clearfix">
+				{+START,IF_NON_EMPTY,{LOGO}}
+					<img class="event-type-image" width="24" height="24" src="{$IMG*,{LOGO}}" alt="{TYPE*}" title="{TYPE*}" />
+				{+END}
+				{+START,IF_NON_EMPTY,{CONTENT}}
+					<div class="description" itemprop="description">{CONTENT}</div>
+				{+END}
+				{+START,IF_EMPTY,{CONTENT}}
+					<div class="no-description">{!NO_DESCRIPTION}</div>
+				{+END}
+			</div>
+		</div></div>
+	</div>
+
+	<div class="clearfix">
 		{+START,IF_NON_EMPTY,{SUBSCRIBE_URL}}
 			<div class="event-right">
 				{+START,IF_NON_EMPTY,{SUBSCRIBED}}
@@ -58,40 +76,7 @@
 			</div>
 		{+END}
 
-		<div {+START,IF_NON_EMPTY,{SUBSCRIBE_URL}} class="event-left"{+END}>
-			<div class="box box---calendar-event-screen-description"><div class="box-inner">
-				<h2>{!DESCRIPTION}</h2>
-
-				<div class="clearfix">
-					{+START,IF_NON_EMPTY,{LOGO}}
-						<img class="event-type-image" width="24" height="24" src="{$IMG*,{LOGO}}" alt="{TYPE*}" title="{TYPE*}" />
-					{+END}
-					{+START,IF_NON_EMPTY,{CONTENT}}
-						<div class="description" itemprop="description">{CONTENT}</div>
-					{+END}
-					{+START,IF_EMPTY,{CONTENT}}
-						<div class="no-description">{!NO_DESCRIPTION}</div>
-					{+END}
-				</div>
-			</div></div>
-		</div>
-	</div>
-
-	<div class="clearfix">
-		<div class="event-right">
-			{+START,IF_NON_EMPTY,{TRACKBACK_DETAILS}}
-				<div class="trackbacks right">
-					{TRACKBACK_DETAILS}
-				</div>
-			{+END}
-			{+START,IF_NON_EMPTY,{RATING_DETAILS}}
-				<div class="ratings right">
-					{RATING_DETAILS}
-				</div>
-			{+END}
-		</div>
-
-		<div class="event-left">
+		<div{+START,IF_NON_EMPTY,{SUBSCRIBE_URL}} class="event-left"{+END}>
 			<table class="map-table wide-table results-table autosized-table" role="note">
 				<tbody>
 					{+START,IF_NON_EMPTY,{TIME}}
@@ -167,8 +152,18 @@
 		</div>
 	</div>
 
+	{+START,IF_NON_EMPTY,{EDIT_DATE_RAW}}
+		<div class="edited" role="note">
+			<img alt="" width="9" height="6" src="{$IMG*,edited}" />
+			<span>{!EDITED}</span>
+			<time datetime="{$FROM_TIMESTAMP*,Y-m-d\TH:i:s\Z,{EDIT_DATE_RAW}}">{$DATE*,,,,{EDIT_DATE_RAW}}</time>
+		</div>
+	{+END}
+
 	<div itemscope="itemscope" itemtype="http://schema.org/WebPage">
 		{+START,IF,{$THEME_OPTION,show_content_tagging}}{TAGS}{+END}
+
+		{+START,IF,{$THEME_OPTION,show_screen_actions}}{$BLOCK,failsafe=1,block=main_screen_actions,title={$METADATA,title}}{+END}
 
 		{$,Load up the staff actions template to display staff actions uniformly (we relay our parameters to it)...}
 		{+START,INCLUDE,STAFF_ACTIONS}
@@ -188,19 +183,25 @@
 			{+END}
 		{+END}
 
+		{+START,IF_NON_EMPTY,{RATING_DETAILS}}
+			<div class="clearfix">
+				<div class="ratings">
+					{RATING_DETAILS}
+				</div>
+			</div>
+		{+END}
+
 		<div class="content-screen-comments">
 			{COMMENT_DETAILS}
 		</div>
 	</div>
 
-	{+START,IF_NON_EMPTY,{EDIT_DATE_RAW}}
-		<div class="edited" role="note">
-			<img alt="" width="9" height="6" src="{$IMG*,edited}" />
-			<span>{!EDITED}</span>
-			<time datetime="{$FROM_TIMESTAMP*,Y-m-d\TH:i:s\Z,{EDIT_DATE_RAW}}">{$DATE*,,,,{EDIT_DATE_RAW}}</time>
+	{+START,IF_NON_EMPTY,{TRACKBACK_DETAILS}}
+		<div class="clearfix">
+			<div class="trackbacks">
+				{TRACKBACK_DETAILS}
+			</div>
 		</div>
 	{+END}
-
-	{+START,IF,{$THEME_OPTION,show_screen_actions}}{$BLOCK,failsafe=1,block=main_screen_actions,title={$METADATA,title}}{+END}
 </div>
 {$SET,supports_schema_reviews,0}

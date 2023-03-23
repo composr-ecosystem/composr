@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -288,6 +288,11 @@ function generate_addon_description($info)
     $incompatibilities = implode(', ', $info['incompatibilities']);
     if ($incompatibilities != '') {
         $description .= "\n\n[title=\"2\"]Incompatibilities[/title]\n\n" . $incompatibilities;
+    }
+
+    $recommendations = implode(', ', $info['recommendations']);
+    if ($recommendations != '') {
+        $description .= "\n\n[title=\"2\"]Optional recommendations[/title]\n\n" . $recommendations;
     }
 
     $licence = $info['licence'];

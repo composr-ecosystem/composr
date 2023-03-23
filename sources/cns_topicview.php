@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -46,6 +46,10 @@ function find_post_id_url(int $post_id) : string
     // Now redirect accordingly
     $map = ['page' => 'topicview', 'type' => null, 'id' => $topic_id, 'topic_start' => ($start == 0) ? null : $start, 'post_id' => $post_id, 'threaded' => get_param_integer('threaded', null)];
     foreach ($_GET as $key => $val) {
+        if (is_integer($key)) {
+            $key = strval($key);
+        }
+
         if ((substr($key, 0, 3) == 'kfs') || (in_array($key, ['topic_start', 'topic_max']))) {
             $map[$key] = $val;
         }
@@ -105,6 +109,10 @@ function find_first_unread_url(int $topic_id) : string
     // Now redirect accordingly
     $map = ['page' => 'topicview', 'id' => $topic_id, 'type' => null, 'topic_start' => ($start == 0) ? null : $start, 'post_id' => $first_unread_id];
     foreach ($_GET as $key => $val) {
+        if (is_integer($key)) {
+            $key = strval($key);
+        }
+
         if ((substr($key, 0, 3) == 'kfs') || (in_array($key, ['topic_start', 'topic_max']))) {
             $map[$key] = $val;
         }

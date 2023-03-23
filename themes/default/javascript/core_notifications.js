@@ -166,6 +166,7 @@
         });
     };
 
+    var lockedPolling = false;
     $coreNotifications.pollForNotifications = function pollForNotifications(forcedUpdate, delay) {
         forcedUpdate = Boolean(forcedUpdate);
         delay = Boolean(delay);
@@ -181,6 +182,11 @@
             return; /* Don't hurt server performance needlessly when running in a background tab - let an e-mail notification alert them instead */
         }
 
+        if (lockedPolling) {
+            return;
+        }
+        lockedPolling = true;
+
         var url = '{$FIND_SCRIPT_NOHTTP;,notifications}?type=poller';
         if (window.maxNotificationsToShow !== undefined) {
             url += '&max=' + window.maxNotificationsToShow;
@@ -194,6 +200,8 @@
     };
 
     function _pollForNotifications(responseXml) {
+        lockedPolling = false;
+
         if (!responseXml || responseXml.getElementsByTagName === undefined) {
             return; // Some kind of error
         }
@@ -219,7 +227,7 @@
 
         var spot, display, button, count, unread;
 
-        spot = $dom.$('#web-notifications-spot')
+        spot = $dom.$('#web-notifications-spot');
         if (spot) {
             display = responseXml.getElementsByTagName('display_web_notifications');
             button = $dom.$('#web-notifications-button');
@@ -232,7 +240,7 @@
             }
         }
 
-        spot = $dom.$('#pts-spot')
+        spot = $dom.$('#pts-spot');
         if (spot) {
             display = responseXml.getElementsByTagName('display_pts');
             button = $dom.$('#pts-button');

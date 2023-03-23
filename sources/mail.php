@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -143,6 +143,51 @@ function dispatch_mail(string $subject_line, string $message_raw, ?array $to_ema
             $dispatcher = null;
             trigger_error(do_lang('NO_PHP_EMAILING_AVAILABLE'), E_USER_NOTICE);
         }
+    }
+
+    // Some basic validation, don't allow e-mailing with bad data - front-end validation should have stopped us getting to this point, so we don't need to show nice localised errors; privacy must be protected for any e-mail addresses
+    $data_errors = [];
+    if (($from_email != '') && (!is_valid_email_address($from_email))) {
+        $data_errors[] = 'Invalid from e-mail address';
+    }
+    if ($to_emails !== null) {
+        foreach ($to_emails as $to_email) {
+            if ((!empty($from_email)) && (!is_valid_email_address($to_email))) {
+                $data_errors[] = 'Invalid destination e-mail address';
+            }
+        }
+    }
+    if (!empty($advanced_parameters['extra_cc_addresses'])) {
+        foreach ($advanced_parameters['extra_cc_addresses'] as $extra_cc_address) {
+            if (($extra_cc_address != '') && (!is_valid_email_address($extra_cc_address))) {
+                $data_errors[] = 'Invalid CC e-mail address';
+            }
+        }
+    }
+    if (!empty($advanced_parameters['extra_bcc_addresses'])) {
+        foreach ($advanced_parameters['extra_bcc_addresses'] as $extra_bcc_address) {
+            if (($extra_bcc_address != '') && (!is_valid_email_address($extra_bcc_address))) {
+                $data_errors[] = 'Invalid BCC e-mail address';
+            }
+        }
+    }
+    if (strlen($from_name) > 255) {
+        $data_errors[] = 'From name is too long';
+    }
+    if ($to_names !== null) {
+        foreach (is_array($to_names) ? $to_names : [$to_names] as $to_name) {
+            if (strlen($to_name) > 500/*Arbitrary sanity check we are setting*/) {
+                $data_errors[] = 'To name is too long';
+            }
+        }
+    }
+    if (strlen($subject_line) > 500/*Arbitrary sanity check we are setting*/) {
+        $data_errors[] = 'Subject line is too long';
+    }
+    if (!empty($data_errors)) {
+        $dispatcher->worked = false;
+        $dispatcher->error = implode('; ', $data_errors);
+        return $dispatcher;
     }
 
     global $SITE_INFO;
@@ -822,7 +867,8 @@ abstract class Mail_dispatcher_base
             $this->_sender_email = $this->sender_email;
         } else {
             $system_addresses = find_system_email_addresses();
-            if ((get_option('use_true_from') == '1') || (preg_replace('#^.*@#', '', $from_email) == get_domain()) || (in_array(preg_replace('#^.*@#', '', $from_email), $system_addresses))) {
+            if ((get_option('use_true_from') == '1') || ((get_option('use_true_from') == '0') && ((preg_replace('#^.*@#', '', $from_email) == get_domain()) || (in_array(preg_replace('#^.*@#', '', $from_email), $system_addresses))))) {
+                // We either use_true_from, or we use the smart setting and the reply-to address is on the same domain as a domain we have authority over - so use the reply-to as the sender/from because it is more user-friendly to the recipient (who won't be confused about an unnecessarily drawn distinction)
                 $this->_sender_email = $from_email;
             } elseif ($this->website_email != '') {
                 $this->_sender_email = $this->website_email;

@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -19,6 +19,13 @@
  */
 
 /*EXTRA FUNCTIONS: fb*/
+
+/*
+Struggling to remember the functions needed for dereferencing translated fields?
+
+translate_field_ref - for referencing the dereferenced version of a field
+find_lang_fields - for manually specifying the fields needed to dereference when joins are used
+*/
 
 /**
  * Standard code module initialisation function.
@@ -258,7 +265,7 @@ function reload_lang_fields(bool $full = false, ?string $only_table = null, ?arr
 }
 
 /**
- * Find lang fields to load within a query.
+ * Find lang fields to load within a query. Usually used when JOINs are involved in a query and hence Composr cannot automatically determine what the fields will be.
  *
  * @param  string $table Table name
  * @param  ?string $alias Table alias (null: none)
@@ -1004,6 +1011,16 @@ abstract class DatabaseDriver
     public function get_minimum_search_length($connection) : int
     {
         return 4;
+    }
+
+    /**
+     * Find the maximum number of indexes supported.
+     *
+     * @return ?integer Maximum number of indexes (null: no limit or inconsequentially-large limit)
+     */
+    public function get_max_indexes() : ?int
+    {
+        return 64;
     }
 
     /**
@@ -2101,7 +2118,7 @@ class DatabaseConnector
         $translate_order_by = db_function('X_ORDER_BY_BOOLEAN', [db_string_equal_to('language', $lang)]);
         if ($translate_order_by !== null) {
             if ($lang != get_site_default_lang()) {
-                $translate_order_by = ',' . db_function('X_ORDER_BY_BOOLEAN', [db_string_equal_to('language', get_site_default_lang())]);
+                $translate_order_by .= ',' . db_function('X_ORDER_BY_BOOLEAN', [db_string_equal_to('language', get_site_default_lang())]);
             }
         }
         $subquery = 'SELECT language FROM ' . $this->table_prefix . 'translate WHERE id=' . $field;

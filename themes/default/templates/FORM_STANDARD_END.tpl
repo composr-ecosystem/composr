@@ -8,9 +8,9 @@
 					{+START,IF,{$CONFIG_OPTION,enable_markup_webstandards}}
 						<p>
 							<span class="field-name">{!WEBSTANDARDS}:</span>
-							<input title="{!DESCRIPTION_WEBSTANDARDS_ON_PREVIEW_0}"{+START,IF,{$NOT,{$HAS_PRIVILEGE,perform_webstandards_check_by_default}}} checked="checked"{+END} type="radio" name="perform_webstandards_check" value="0" id="perform_webstandards_check_no" /><label for="perform_webstandards_check_no">{!NO}</label>
-							<input title="{!DESCRIPTION_WEBSTANDARDS_ON_PREVIEW_1}"{+START,IF,{$HAS_PRIVILEGE,perform_webstandards_check_by_default}} checked="checked"{+END} type="radio" name="perform_webstandards_check" value="1" id="perform_webstandards_check_yes" /><label for="perform_webstandards_check_yes">{!YES}</label>
-							<input title="{!DESCRIPTION_WEBSTANDARDS_ON_PREVIEW_2}" type="radio" name="perform_webstandards_check" value="2" id="perform_webstandards_check_more" /><label for="perform_webstandards_check_more">{!MANUAL_CHECKS_TOO}</label>
+							<label for="perform_webstandards_check_no"><input title="{!DESCRIPTION_WEBSTANDARDS_ON_PREVIEW_0}"{+START,IF,{$NOT,{$HAS_PRIVILEGE,perform_webstandards_check_by_default}}} checked="checked"{+END} type="radio" name="perform_webstandards_check" value="0" id="perform_webstandards_check_no" /> {!NO}</label>
+							<label for="perform_webstandards_check_yes"><input title="{!DESCRIPTION_WEBSTANDARDS_ON_PREVIEW_1}"{+START,IF,{$HAS_PRIVILEGE,perform_webstandards_check_by_default}} checked="checked"{+END} type="radio" name="perform_webstandards_check" value="1" id="perform_webstandards_check_yes" /> {!YES}</label>
+							<label for="perform_webstandards_check_more"><input title="{!DESCRIPTION_WEBSTANDARDS_ON_PREVIEW_2}" type="radio" name="perform_webstandards_check" value="2" id="perform_webstandards_check_more" /> {!MANUAL_CHECKS_TOO}</label>
 						</p>
 					{+END}
 					{+START,IF,{$CONFIG_OPTION,enable_spell_check}}

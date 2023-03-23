@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -42,7 +42,7 @@ function database_repair_inbuilt() : object
     $tables = $GLOBALS['SITE_DB']->query_select('db_meta', ['DISTINCT m_table']);
 
     $GLOBALS['SITE_DB']->ensure_connected();
-    $driver = $GLOBALS['DB_DRIVER'];
+    $db = $GLOBALS['SITE_DB'];
 
     foreach ($tables as $table) {
         if ($table['m_table'] == 'sessions') {
@@ -52,11 +52,11 @@ function database_repair_inbuilt() : object
         $table = get_table_prefix() . $table['m_table'];
 
         // Check/Repair
-        $result = $driver->query('CHECK TABLE ' . $table . ' FAST');
+        $result = $db->query('CHECK TABLE ' . $table . ' FAST');
         $status_row = end($result);
         if ($status_row['Msg_type'] != 'status') {
             $out->attach(paragraph(do_lang_tempcode('TABLE_ERROR', escape_html($table), escape_html($status_row['Msg_type']), [escape_html($status_row['Msg_text'])]), 'dfsdgdsgfgd'));
-            $result2 = $driver->query('REPAIR TABLE ' . $table);
+            $result2 = $db->query('REPAIR TABLE ' . $table);
             $status_row_2 = end($result2);
             $out->attach(paragraph(do_lang_tempcode('TABLE_FIXED', escape_html($table), escape_html($status_row_2['Msg_type']), [escape_html($status_row_2['Msg_text'])]), 'dfsdfgdst4'));
         }
@@ -865,8 +865,10 @@ class DatabaseRepair
         $db_type = $type_remap[$_field_type];
 
         $is_autoincrement = ($field_type == '*AUTO');
-        $query = $GLOBALS['SITE_DB']->driver->alter_table_field__sql(get_table_prefix() . $table_name, $field_name, $db_type, $field_type[0] == '?', $is_autoincrement);
-        $this->add_fixup_query($query);
+        $queries = $GLOBALS['SITE_DB']->driver->alter_table_field__sql(get_table_prefix() . $table_name, $field_name, $db_type, $field_type[0] == '?', $is_autoincrement, $field_name);
+        foreach ($queries as $query) {
+            $this->add_fixup_query($query);
+        }
     }
 
     /**
@@ -1114,7 +1116,7 @@ class DatabaseRepair
                     $type = 'SHORT_TEXT';
                 }
                 break;
-            case 'varchar(16377)':
+            case 'varchar(4000)':
                 $type = 'TEXT';
                 break;
             case 'tinyint(1)':

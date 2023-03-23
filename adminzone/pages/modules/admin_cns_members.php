@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -334,7 +334,7 @@ class Module_admin_cns_members
 
         $username = post_param_string('username', false, INPUT_FILTER_POST_IDENTIFIER);
         $password = post_param_string('password', false, INPUT_FILTER_PASSWORD);
-        $email_address = post_param_string('email', member_field_is_required(null, 'email_address') ? false : '', INPUT_FILTER_POST_IDENTIFIER);
+        $email_address = post_param_string('email', member_field_is_required(null, 'email_address') ? false : '', INPUT_FILTER_POST_IDENTIFIER | INPUT_FILTER_EMAIL_ADDRESS);
 
         $primary_group = (has_privilege(get_member(), 'assume_any_member')) ? post_param_integer('primary_group') : null;
         if (!array_key_exists('secondary_groups', $_POST)) {
@@ -759,7 +759,7 @@ class Module_admin_cns_members
         log_it('DELETE_LURKERS');
 
         foreach ($_POST as $key => $val) {
-            if (substr($key, 0, 7) == 'lurker_') {
+            if ((is_string($key)) && (substr($key, 0, 7) == 'lurker_')) {
                 $member_id = intval(substr($key, 7));
                 cns_delete_member($member_id);
             }

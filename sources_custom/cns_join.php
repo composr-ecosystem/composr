@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -94,13 +94,13 @@ function set_from_referrer_field()
     if ($referrer_member !== null) {
         $GLOBALS['FORUM_DB']->query_delete('f_invites', [
             'i_inviter' => $referrer_member,
-            'i_email_address' => post_param_string('email', false, INPUT_FILTER_POST_IDENTIFIER),
+            'i_email_address' => post_param_string('email', false, INPUT_FILTER_POST_IDENTIFIER | INPUT_FILTER_EMAIL_ADDRESS),
         ]);
         $GLOBALS['FORUM_DB']->query_insert('f_invites', [
             'i_time' => time(),
             'i_taken' => 1,
             'i_inviter' => $referrer_member,
-            'i_email_address' => post_param_string('email', false, INPUT_FILTER_POST_IDENTIFIER),
+            'i_email_address' => post_param_string('email', false, INPUT_FILTER_POST_IDENTIFIER | INPUT_FILTER_EMAIL_ADDRESS),
         ]);
     }
 }

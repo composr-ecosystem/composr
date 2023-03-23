@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -112,7 +112,7 @@ function javascript_enforce(string $j, ?string $theme = null, bool $allow_defer 
     }
 
     if ((!$is_cached) || ($support_smart_decaching)) {
-        $found = find_template_place($j, '', $theme, '.js', 'javascript');
+        $found = find_template_place($j, $theme, '.js', 'javascript');
         if ($found === null) {
             return '';
         }
@@ -346,7 +346,7 @@ function css_enforce(string $c, ?string $theme = null, bool $allow_defer = false
     }
 
     if ((!$is_cached) || ($support_smart_decaching)) {
-        $found = find_template_place($c, '', $theme, '.css', 'css');
+        $found = find_template_place($c, $theme, '.css', 'css');
         if ($found === null) {
             return '';
         }

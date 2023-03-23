@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -90,7 +90,11 @@ class Hook_snippet_block
             list($zone, $attributes) = page_link_decode(url_to_page_link($self_url));
             list($old_get, $old_zone, $old_current_script) = set_execution_context(
                 $attributes,
-                $zone
+                $zone,
+                'index',
+                false,
+                null,
+                false
             );
         }
 

@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -23,7 +23,7 @@ class Hook_contentious_overrides_facebook_support
         if (addon_installed('facebook_support')) {
             if ((($template_name == 'global') && ($suffix == '.js'))) {
                 $j = 'facebook_support';
-                $found = find_template_place($j, '', $theme, '.js', 'javascript');
+                $found = find_template_place($j, $theme, '.js', 'javascript');
                 if ($found !== null) {
                     $full_path = get_custom_file_base() . '/themes/' . $found[0] . $found[1] . $j . $found[2];
                     $data .= cms_file_get_contents_safe($full_path);

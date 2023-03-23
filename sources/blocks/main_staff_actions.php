@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -171,6 +171,7 @@ PHP;
         $max_rows = $GLOBALS['SITE_DB']->query_select_value('actionlogs', 'COUNT(*)', $where);
         $done_already = [];
         $_start = $start;
+
         do {
             $rows = $GLOBALS['SITE_DB']->query_select('actionlogs r', ['*'], $where, 'ORDER BY ' . $_sortable, $max, $_start);
             foreach ($rows as $myrow) {

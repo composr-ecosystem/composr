@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -255,8 +255,8 @@ function actual_copy_theme(string $theme, string $to, array $theme_images_to_ski
         }
         $theme_images_to_skip_path_map[$path] = $theme_image;
     }
-    $theme_images_to_skip_flipped = array_flip($theme_images_to_skip);
-    $css_files_to_skip_flipped = array_flip($css_files_to_skip);
+    $theme_images_to_skip_flipped = array_keys($theme_images_to_skip);
+    $css_files_to_skip_flipped = array_keys($css_files_to_skip);
 
     if ((file_exists(get_custom_file_base() . '/themes/' . $to)) || ($to == 'default' || $to == 'admin')) {
         warn_exit(do_lang_tempcode('ALREADY_EXISTS', escape_html($to)));
@@ -290,10 +290,10 @@ function actual_copy_theme(string $theme, string $to, array $theme_images_to_ski
     $contents = get_directory_contents(get_custom_file_base() . '/themes/' . $theme, '', null);
     foreach ($contents as $file) {
         // Skip files as requested
-        if ((preg_match('#^images(?_custom)/(.*)\.(' . implode('|', $THEME_IMAGE_EXTENSIONS) . ')$#', $file, $matches) != 0) && (isset($theme_images_to_skip_path_map['themes/' . $theme . '/' . $file]))) {
+        if ((preg_match('#^images(_custom)?/(.*)\.(' . implode('|', $THEME_IMAGE_EXTENSIONS) . ')$#', $file, $matches) != 0) && (isset($theme_images_to_skip_path_map['themes/' . $theme . '/' . $file]))) {
             continue;
         }
-        if ((preg_match('#^css(?_custom)/(\w+)\.css$#', $file, $matches) != 0) && (isset($css_files_to_skip_flipped[$matches[1]]))) {
+        if ((preg_match('#^css(_custom)?/(\w+)\.css$#', $file, $matches) != 0) && (isset($css_files_to_skip_flipped[$matches[1]]))) {
             continue;
         }
         if (($file == 'theme.ini') && (!$include_themeini)) {
@@ -695,7 +695,12 @@ function generate_svg_sprite(string $theme, bool $monochrome, bool $userland) : 
 
     foreach ($icon_paths as $icon_name => $icon_path) {
         $xml = new CMS_simple_xml_reader(cms_file_get_contents_safe($icon_path, FILE_READ_LOCK | FILE_READ_BOM));
-        $output .= '<symbol viewBox="' . $xml->gleamed[1]['viewBox'] . '" id="icon_' . str_replace('/', '__', $icon_name) . '">' . "\n";
+        if (isset($xml->gleamed[1]['viewBox'])) {
+            $view_box = $xml->gleamed[1]['viewBox'];
+        } else {
+            $view_box = '0 0 ' . $xml->gleamed[1]['width'] . ' ' . $xml->gleamed[1]['height'];
+        }
+        $output .= '<symbol viewBox="' . $view_box . '" id="icon_' . str_replace('/', '__', $icon_name) . '">' . "\n";
         foreach ($xml->gleamed[3] as $child) {
             if (!is_array($child)) {
                 // whitespace?

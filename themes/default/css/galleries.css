@@ -1,6 +1,6 @@
 /*
  {$BRAND_NAME`}
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 */
 
 /* All layout modes and viewing entries */
@@ -17,7 +17,17 @@
 	padding: 5px;
 	background-color: {$GET,area_5_background};
 	border-radius: {$GET,border_radius};
+	align-items: center;
 }
+
+/*{+START,CSS_MODE,desktop}*/
+	.gallery-nav-prev-btn,
+	.gallery-nav-next-btn {
+		width: 195px;
+		{$BETA_CSS_PROPERTY,display: flex;}
+		justify-content: space-between;
+	}
+/*{+END}*/
 
 .gallery-nav-prev-btn:hover,
 .gallery-nav-next-btn:hover {
@@ -55,6 +65,19 @@
 	text-align: center;
 }
 
+.gallery-nav-margin-left {
+}
+.gallery-nav-margin-right {
+}
+/*{+START,CSS_MODE,desktop}*/
+	.gallery-nav-margin-left {
+		margin-left: 195px;
+	}
+	.gallery-nav-margin-right {
+		margin-right: 195px;
+	}
+/*{+END}*/
+
 .gallery-nav .btn.buttons--slideshow {
 	margin-right: 15px;
 }
@@ -76,18 +99,18 @@
 	}
 /*{+END}*/
 
-.gallery-entry-info {
+.gallery-entry-meta-details {
 	background-color: {$GET,area_5_background};
 	margin-top: 0;
 }
 
 /*{+START,CSS_MODE,mobile}*/
-	.gallery-entry-info ul.horizontal-links {
+	.gallery-entry-meta-details ul.horizontal-links {
 		width: auto;
 		margin: -5px -5px -5px 0;
 	}
 
-	.gallery-entry-info ul.horizontal-links li {
+	.gallery-entry-meta-details ul.horizontal-links li {
 		display: inline-block;
 		margin: 5px 5px 5px 0;
 	}
@@ -593,18 +616,6 @@ html.is-gallery-slideshow body#main-website #main-website-inner {
 .gallery-carousel-mode-entry .entry-title,
 .gallery-carousel-mode-entry .entry-description {
 	text-align: center;
-}
-
-.gallery-carousel-mode-entry .entry-boxes {
-	overflow: hidden;
-}
-
-.gallery-carousel-mode-entry .entry-title + .entry-boxes {
-	margin-top: 20px;
-}
-
-.gallery-carousel-mode-entry .ratings {
-	margin-bottom: 1em;
 }
 
 .gallery-carousel-mode-entry .video-details .results-table {

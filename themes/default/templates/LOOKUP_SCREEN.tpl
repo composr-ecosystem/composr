@@ -85,7 +85,7 @@
 				<!-- If you like new windows, add this... title="{!LINK_NEW_WINDOW}" target="_blank" -->
 				<nav>
 					<ul class="actions-list">
-						<li>{+START,INCLUDE,ICON}NAME=buttons/proceed2{+END} <a rel="external noopener" target="_blank" href="https://ip.me/?ip={IP*}" title="Reverse-DNS/WHOIS/Geo-Lookup {!LINK_NEW_WINDOW}">Reverse-DNS/WHOIS/Geo-Lookup</a></li>
+						<li>{+START,INCLUDE,ICON}NAME=buttons/proceed2{+END} <a rel="external noopener" target="_blank" href="https://ip.me/ip/{IP*}" title="Reverse-DNS/WHOIS/Geo-Lookup {!LINK_NEW_WINDOW}">Reverse-DNS/WHOIS/Geo-Lookup</a></li>
 						<li>{+START,INCLUDE,ICON}NAME=buttons/proceed2{+END} <a rel="external noopener" target="_blank" href="https://ping.eu/ping/?host={IP*}" title="Ping {!LINK_NEW_WINDOW}">Ping</a></li>
 						<li>{+START,INCLUDE,ICON}NAME=buttons/proceed2{+END} <a rel="external noopener" target="_blank" href="https://ping.eu/traceroute/?host={IP*}" title="Tracert {!LINK_NEW_WINDOW}">Tracert</a></li>
 					</ul>

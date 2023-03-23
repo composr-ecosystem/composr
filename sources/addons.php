@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -175,6 +175,7 @@ function read_addon_info(string $addon_name, bool $get_dependencies_on_this = fa
             'files' => $file_list,
             'dependencies' => array_key_exists('requires', $dep) ? $dep['requires'] : [],
             'incompatibilities' => array_key_exists('conflicts_with', $dep) ? $dep['conflicts_with'] : [],
+            'recommendations' => array_key_exists('recommends', $dep) ? $dep['recommends'] : [],
             'default_icon' => $default_icon,
         ];
         if ($get_dependencies_on_this) {

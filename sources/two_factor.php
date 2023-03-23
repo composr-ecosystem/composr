@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -78,19 +78,27 @@ function maintenance_script_htaccess_option_available() : bool
         return false;
     }
 
-    $server_software = $_SERVER['SERVER_SOFTWARE'];
-    if ((stripos($server_software, 'Apache') === false) && (stripos($server_software, 'LiteSpeed') === false)) {
+    require_code('global4');
+    if (!is_possibly_apache()) {
         return false;
     }
 
-    if (!cms_is_writable(get_file_base() . '/.htaccess')) {
+    $path = get_file_base() . '/.htaccess';
+
+    if (!is_file($path) || !cms_is_writable($path)) {
         return false;
     }
 
     // two-factor is not compatible with the 'require valid-user' directive for HTTP-Auth. Note this will still hide the option if require valid-user is commented out.
-    $path = get_file_base() . '/.htaccess';
     $contents = cms_file_get_contents_safe($path, FILE_READ_LOCK);
     if (($contents !== false) && (strpos($contents, 'require valid-user') !== false)) {
+        return false;
+    }
+
+    // Disable option if we have too many IP addresses; we do not want the htaccess file to get too long.
+    $ips = $GLOBALS['FORUM_DB']->query_select_value('f_member_known_login_ips', 'COUNT(DISTINCT i_ip)', ['i_val_code' => '']);
+    $ips += $GLOBALS['FORUM_DB']->query_select_value('f_members', 'COUNT(DISTINCT m_ip_address)', ['m_validated' => 1]);
+    if ($ips >= 500) {
         return false;
     }
 
@@ -102,9 +110,13 @@ function maintenance_script_htaccess_option_available() : bool
  */
 function adjust_htaccess()
 {
-    $option_enabled = ((maintenance_script_htaccess_option_available()) && (get_option('maintenance_script_htaccess') === '1'));
-
     $path = get_file_base() . '/.htaccess';
+
+    if (!is_file($path)) {
+        return;
+    }
+
+    $option_enabled = ((maintenance_script_htaccess_option_available()) && (get_option('maintenance_script_htaccess') === '1'));
 
     $contents = cms_file_get_contents_safe($path, FILE_READ_LOCK);
 
@@ -116,9 +128,11 @@ function adjust_htaccess()
     if ($option_enabled) {
         $lines[] = 'Require all denied';
 
-        $ips = $GLOBALS['FORUM_DB']->query_select('f_member_known_login_ips', ['i_ip'], ['i_val_code' => '']);
+        $ips = $GLOBALS['FORUM_DB']->query_select('f_member_known_login_ips', ['DISTINCT i_ip'], ['i_val_code' => '']);
+        $ips = array_merge($ips, $GLOBALS['FORUM_DB']->query_select('f_members', ['DISTINCT m_ip_address AS i_ip'], ['m_validated' => 1]));
+        $ips = array_unique(collapse_1d_complexity('i_ip', $ips));
         foreach ($ips as $ip) {
-            $lines[] = 'Require ip ' . $ip['i_ip'];
+            $lines[] = 'Require ip ' . $ip;
         }
     }
 

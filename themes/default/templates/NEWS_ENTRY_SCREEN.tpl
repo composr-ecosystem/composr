@@ -5,13 +5,8 @@
 		{WARNING_DETAILS}
 	{+END}
 
-	<div class="news-entry-details">
-		<ul class="news-entry-details-col-start horizontal-links">
-			{+START,LOOP,CATEGORIES}
-				<li class="news-entry-category">
-					<a href="{$PAGE_LINK*,_SELF:_SELF:browse:{_loop_key}{$?,{BLOG},:blog=1,}}" class="btn btn-secondary">{_loop_var*}</a>
-				</li>
-			{+END}
+	<div class="news-entry-meta-details" role="note">
+		<ul class="news-entry-meta-details-col-start horizontal-links vertical-alignment-normalise-line-height">
 			<li class="news-entry-date">
 				{+START,INCLUDE,ICON}NAME=menu/rich_content/calendar{+END}
 				<time class="news-entry-date" datetime="{$FROM_TIMESTAMP*,Y-m-d\TH:i:s\Z,{ADD_DATE_RAW}}" itemprop="datePublished">{DATE*}</time>
@@ -28,25 +23,37 @@
 				{+END}{+END}
 			</li>
 		</ul>
-		<ul class="news-entry-details-col-end horizontal-links">
-			{+START,IF,{$INLINE_STATS}}<li class="news-entry-views">{+START,INCLUDE,ICON}NAME=cns_topic_modifiers/hot{+END} {!VIEWS_SIMPLE,{VIEWS*}}</li>{+END}
-			{+START,IF_PASSED,COMMENT_COUNT}<li class="news-entry-comments">{+START,INCLUDE,ICON}NAME=feedback/comment{+END} {$COMMENT_COUNT,news,{ID}}</li>{+END}
+		<ul class="news-entry-meta-details-col-end horizontal-links vertical-alignment-normalise-line-height">
+			{+START,IF,{$INLINE_STATS}}<li class="news-entry-views">{+START,INCLUDE,ICON}NAME=cns_topic_modifiers/hot{+END} <span>{!VIEWS_SIMPLE,{VIEWS*}}</span></li>{+END}
+			{+START,IF_PASSED,COMMENT_COUNT}<li class="news-entry-comments">{+START,INCLUDE,ICON}NAME=feedback/comment{+END} <span>{$COMMENT_COUNT,news,{ID}}</span></li>{+END}
 		</ul>
 	</div>
 
-	<div class="news-entry-image">
+	<div class="news-entry-image right float-separation">
 		<img width="100" height="100" src="{$THUMBNAIL*,{REP_IMAGE_URL},100x100}" alt="" />
 	</div>
 
 	<div itemprop="articleBody" class="clearfix">
-		{NEWS_FULL}
+		<p>
+			{NEWS_FULL}
+		</p>
 		{$METADATA_IMAGE_EXTRACT,{NEWS_FULL}}
 	</div>
 
 	{$SET,bound_catalogue_entry,{$CATALOGUE_ENTRY_FOR,news,{ID}}}
 	{+START,IF_NON_EMPTY,{$GET,bound_catalogue_entry}}{$CATALOGUE_ENTRY_ALL_FIELD_VALUES,{$GET,bound_catalogue_entry}}{+END}
 
+	{+START,IF_NON_EMPTY,{EDIT_DATE_RAW}}
+		<div class="edited" role="note">
+			<img alt="" width="9" height="6" src="{$IMG*,edited}" />
+			<span>{!EDITED}</span>
+			<time datetime="{$FROM_TIMESTAMP*,Y-m-d\TH:i:s\Z,{EDIT_DATE_RAW}}">{$DATE*,,,,{EDIT_DATE_RAW}}</time>
+		</div>
+	{+END}
+
 	{+START,IF,{$THEME_OPTION,show_content_tagging}}{TAGS}{+END}
+
+	{+START,IF,{$THEME_OPTION,show_screen_actions}}{+START,IF_PASSED,_TITLE}{$BLOCK,failsafe=1,block=main_screen_actions,title={_TITLE}}{+END}{+END}
 
 	{$,Load up the staff actions template to display staff actions uniformly (we relay our parameters to it)...}
 	{+START,INCLUDE,STAFF_ACTIONS}
@@ -93,35 +100,29 @@
 	{+END}
 
 	<div class="clearfix">
-		{+START,IF_NON_EMPTY,{TRACKBACK_DETAILS}}
-			<div class="trackbacks right">
-				{TRACKBACK_DETAILS}
-			</div>
-		{+END}
 		{+START,IF_NON_EMPTY,{RATING_DETAILS}}
-			<div class="ratings">
+			<div class="box box---news-entry-screen">
+				<nav class="box-inner">
+					<p class="lonely-label">
+						{$?,{BLOG},{!BLOG_NEWS_UNDER_THESE},{!NEWS_UNDER_THESE}}
+					</p>
+					<ul>
+						{+START,LOOP,CATEGORIES}
+							<li><a href="{$PAGE_LINK*,_SELF:_SELF:browse:{_loop_key}{$?,{BLOG},:blog=1,}}">{_loop_var*}</a></li>
+						{+END}
+					</ul>
+
+					{+START,IF,{$NOT,{$_GET,blog}}}
+						{$,Actually breadcrumbs will do fine!,<div>
+							<a class="btn btn-primary btn-scr buttons--all2" rel="archives" href="\{ARCHIVE_URL*\}">{+START,INCLUDE,ICON}NAME=buttons/all2{+END} <span>\{!VIEW_ARCHIVE\}</span></a>
+						</div>}
+					{+END}
+				</nav>
+			</div>
+			<div class="ratings right force-normal-margin">
 				{RATING_DETAILS}
 			</div>
 		{+END}
-	</div>
-
-	<div class="clearfix lined-up-boxes">
-		<aside class="box box---news-entry-screen"><nav class="box-inner">
-			<p class="lonely-label">
-				{$?,{BLOG},{!BLOG_NEWS_UNDER_THESE},{!NEWS_UNDER_THESE}}
-			</p>
-			<ul>
-				{+START,LOOP,CATEGORIES}
-					<li><a href="{$PAGE_LINK*,_SELF:_SELF:browse:{_loop_key}{$?,{BLOG},:blog=1,}}">{_loop_var*}</a></li>
-				{+END}
-			</ul>
-
-			{+START,IF,{$NOT,{$_GET,blog}}}
-				{$,Actually breadcrumbs will do fine!,<div>
-					<a class="btn btn-primary btn-scr buttons--all2" rel="archives" href="\{ARCHIVE_URL*\}">{+START,INCLUDE,ICON}NAME=buttons/all2{+END} <span>\{!VIEW_ARCHIVE\}</span></a>
-				</div>}
-			{+END}
-		</nav></aside>
 	</div>
 
 	{$REVIEW_STATUS,news,{ID}}
@@ -130,13 +131,11 @@
 		{COMMENT_DETAILS}
 	</div>
 
-	{+START,IF,{$THEME_OPTION,show_screen_actions}}{+START,IF_PASSED,_TITLE}{$BLOCK,failsafe=1,block=main_screen_actions,title={_TITLE}}{+END}{+END}
-
-	{+START,IF_NON_EMPTY,{EDIT_DATE_RAW}}
-		<div class="edited" role="note">
-			<img alt="" width="9" height="6" src="{$IMG*,edited}" />
-			<span>{!EDITED}</span>
-			<time datetime="{$FROM_TIMESTAMP*,Y-m-d\TH:i:s\Z,{EDIT_DATE_RAW}}">{$DATE*,,,,{EDIT_DATE_RAW}}</time>
+	{+START,IF_NON_EMPTY,{TRACKBACK_DETAILS}}
+		<div class="clearfix">
+			<div class="trackbacks">
+				{TRACKBACK_DETAILS}
+			</div>
 		</div>
 	{+END}
 </div>

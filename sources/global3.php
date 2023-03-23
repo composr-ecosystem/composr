@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -21,7 +21,7 @@
 /*EXTRA FUNCTIONS: fileowner|filegroup|collator_.**/
 
 /*
-global3.php contains further support functions, which are shared between the installer and the main installation (i.e. global.php and global2.php are not used by the installer, and the installer emulates these functions functionality via minikernel.php).
+    global3.php contains further support functions, which are shared between the installer and the main installation (i.e. global.php and global2.php are not used by the installer, and the installer emulates these functions functionality via minikernel.php).
 */
 
 /**
@@ -635,7 +635,7 @@ function _load_blank_output_state(bool $just_tempcode = false, bool $true_blank 
 
         global $REFRESH_URL, $FORCE_META_REFRESH, $QUICK_REDIRECT;
         $REFRESH_URL[0] = '';
-        $REFRESH_URL[1] = 0;
+        $REFRESH_URL[1] = 0.0;
         $FORCE_META_REFRESH = false;
         $QUICK_REDIRECT = false;
 
@@ -1038,21 +1038,21 @@ function set_http_status_code(int $code)
  * Search for a template.
  *
  * @param  ID_TEXT $codename The codename of the template being loaded
- * @param  ?LANGUAGE_NAME $lang The language to load the template in (templates can embed language references) (null: users own language)
  * @param  ID_TEXT $theme The theme to use
  * @param  string $suffix File type suffix of template file (e.g. .tpl)
+ * @set .tpl .js .xml .txt .css
  * @param  string $directory Subdirectory type to look in
- * @set templates css
+ * @set templates javascript xml text css
  * @param  boolean $non_custom_only Whether to only search in the default templates
  * @param  boolean $fallback_other_themes Allow fallback to other themes, in case it is defined only in a specific theme we would not normally look in
  * @return ?array List of parameters needed for the _do_template function to be able to load the template (null: could not find the template)
  */
-function find_template_place(string $codename, ?string $lang, string $theme, string $suffix, string $directory, bool $non_custom_only = false, bool $fallback_other_themes = true) : ?array
+function find_template_place(string $codename, string $theme, string $suffix, string $directory, bool $non_custom_only = false, bool $fallback_other_themes = true) : ?array
 {
     global $FILE_ARRAY, $CURRENT_SHARE_USER;
 
     static $tp_cache = [];
-    $sz = serialize([$codename, $lang, $theme, $suffix, $directory, $non_custom_only, $fallback_other_themes]);
+    $sz = serialize([$codename, $theme, $suffix, $directory, $non_custom_only, $fallback_other_themes]);
     if (isset($tp_cache[$sz])) {
         return $tp_cache[$sz];
     }
@@ -1890,7 +1890,7 @@ function cms_parse_url_safe(string $url, int $component = -1)
                     return 'http';
 
                 case PHP_URL_PORT:
-                    return 80;
+                    return (cms_strtolower_ascii(cms_parse_url_safe($url, PHP_URL_SCHEME)) == 'https') ? 443 : 80;
 
                 case PHP_URL_PATH:
                 case PHP_URL_QUERY:
@@ -1904,7 +1904,7 @@ function cms_parse_url_safe(string $url, int $component = -1)
         }
 
         if (!array_key_exists('port', $ret)) {
-            $ret['port'] = '80';
+            $ret['port'] = (cms_strtolower_ascii($ret['scheme']) == 'https') ? '443' : '80';
         }
 
         if (!array_key_exists('path', $ret)) {
@@ -2985,7 +2985,7 @@ function ip_banned(string $ip, bool $force_db = false, bool $handle_uncertaintie
     }
 
     global $SITE_INFO;
-    if ((!$force_db) && (((isset($SITE_INFO['known_suexec'])) && ($SITE_INFO['known_suexec'] == '1')) || (cms_is_writable(get_file_base() . '/.htaccess')))) {
+    if ((is_file(get_file_base() . '/.htaccess')) && ((!$force_db) && (((isset($SITE_INFO['known_suexec'])) && ($SITE_INFO['known_suexec'] == '1')) || (cms_is_writable(get_file_base() . '/.htaccess'))))) {
         $bans = [];
         $htaccess_file = cms_file_get_contents_safe(get_file_base() . '/.htaccess', FILE_READ_LOCK);
         $ban_count = preg_match_all('#\n(Require not ip|Require not Ip) (.*)#i', $htaccess_file, $bans); // We define 'ip' and 'Ip' due to Turkish issue
@@ -4311,6 +4311,10 @@ function disable_smart_decaching_temporarily()
 function has_interesting_post_fields() : bool
 {
     foreach (array_keys($_POST) as $field_name) {
+        if (!is_string($field_name)) {
+            $field_name = strval($field_name);
+        }
+
         if (!is_control_field($field_name, false, true)) {
             return true;
         }
@@ -4919,6 +4923,36 @@ function cms_preg_replace_callback_safe(string $pattern, $callback, string $subj
         }
     }
     return preg_replace_callback($pattern, $callback, $subject, $limit);
+}
+
+/**
+ * Initialise a simple structure for use with cms_preg_safety_guard_ok to protect us within complex regexp loops that keep going so long as stuff is changing.
+ *
+ * @return array Data structure (meant to be a black box)
+ */
+function cms_preg_safety_guard_init() : array
+{
+    $guard = ['i' => 0, 'init_time' => time()];
+    return $guard;
+}
+
+/**
+ * Protect us from infinite loop bugs within complex regexp loops that keep going so long as stuff is changing.
+ *
+ * @param  array $guard Data structure from cms_preg_safety_guard_init
+ * @return boolean Whether it is safe to keep looping
+ */
+function cms_preg_safety_guard_ok(array &$guard) : bool
+{
+    if ($guard['i'] > 100 || $guard['init_time'] < time() - 5) {
+        // Too thorny, do not continue
+        if ($GLOBALS['DEV_MODE']) {
+            fatal_exit('Prevented possible infinite loop');
+        }
+        return false;
+    }
+    $guard['i']++;
+    return true;
 }
 
 /**

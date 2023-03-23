@@ -15,7 +15,7 @@
 			{+END}</a>
 		{+END}
 
-		<div class="gallery-nav-status">
+		<div class="gallery-nav-status{+START,IF_EMPTY,{BACK_URL}} gallery-nav-margin-left{+END}{+START,IF_EMPTY,{NEXT_URL}} gallery-nav-margin-right{+END}">
 			<span>
 				<span class="must-show-together">{!GALLERY_MOBILE_PAGE_OF,{X*},{N*}}</span>
 			</span>

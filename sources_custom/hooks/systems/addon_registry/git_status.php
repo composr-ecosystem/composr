@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -139,7 +139,7 @@ This is useful when using Git for deployment on staging and live servers, where 
             'adminzone/pages/minimodules_custom/admin_git_status.php',
             'themes/default/templates_custom/GIT_STATUS_SCREEN.tpl',
             'themes/default/templates_custom/GIT_STATUS_FILE_SCREEN.tpl',
-            'themes/default/javascript/git_status.js',
+            'themes/default/javascript_custom/git_status.js',
             'themes/default/css_custom/git_status.css',
             'sources_custom/hooks/systems/config/git_live_branch.php',
             'lang_custom/EN/git_status.ini',

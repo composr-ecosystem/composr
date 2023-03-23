@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -1012,8 +1012,17 @@ abstract class Standard_crud_module
 
         list($id, $text) = $this->add_actualisation();
 
-        $description = ($this->do_next_description === null) ? paragraph(do_lang_tempcode($this->success_message_str)) : $this->do_next_description;
+        $description_is_multi_line = false;
+        if ($this->do_next_description === null) {
+            $description = do_lang_tempcode($this->success_message_str);
+        } else {
+            $description = $this->do_next_description;
+        }
         if ($text !== null) {
+            if (!$description_is_multi_line) {
+                $description = paragraph($description);
+                $description_is_multi_line = true;
+            }
             $description->attach($text);
         }
 
@@ -1033,6 +1042,10 @@ abstract class Standard_crud_module
                     send_validation_request($this->doing, $this->table, $this->non_integer_id, $id, $edit_url);
                 }
 
+                if (!$description_is_multi_line) {
+                    $description = paragraph($description);
+                    $description_is_multi_line = true;
+                }
                 $description->attach(paragraph(do_lang_tempcode('SUBMIT_UNVALIDATED', $this->content_type)));
             }
 
@@ -1798,7 +1811,7 @@ abstract class Standard_crud_module
         if ($this->supports_mass_delete) {
             foreach ($_POST as $key => $val) {
                 $matches = [];
-                if (($val === '1') && (preg_match('#^' . preg_quote($this->content_type) . '_(.*)$#', $key, $matches) != 0)) {
+                if ((is_string($key)) && ($val === '1') && (preg_match('#^' . preg_quote($this->content_type) . '_(.*)$#', $key, $matches) != 0)) {
                     $id = $matches[1];
 
                     if ($this->permissions_require !== null) {
@@ -1815,14 +1828,14 @@ abstract class Standard_crud_module
         }
         if (($this->cat_crud_module !== null) && ($this->cat_crud_module->content_type !== null)) {
             foreach ($_POST as $key => $val) {
-                if (($val === '1') && (strpos($key, '_') !== false)) {
+                if ((is_string($key)) && ($val === '1') && (strpos($key, '_') !== false)) {
                     $this->cat_crud_module->mass_delete(false);
                 }
             }
         }
         if (($this->alt_crud_module !== null) && ($this->alt_crud_module->content_type !== null)) {
             foreach ($_POST as $key => $val) {
-                if (($val === '1') && (strpos($key, '_') !== false)) {
+                if ((is_string($key)) && ($val === '1') && (strpos($key, '_') !== false)) {
                     $this->alt_crud_module->mass_delete(false);
                 }
             }
@@ -1864,7 +1877,7 @@ abstract class Standard_crud_module
         }
         $view_url = null;
         if ($this->view_entry_point !== null) {
-            list($zone, $attributes,) = page_link_decode(str_replace('_ID', $id, $this->view_entry_point));
+            list($zone, $attributes,) = page_link_decode(($id !== null) ? str_replace('_ID', $id, $this->view_entry_point) : str_replace(':_ID', '', $this->view_entry_point));
             $page = $attributes['page'];
             unset($attributes['page']);
             $view_url = [$page, $attributes, $zone, (!isset($this->view_label)) ? null : $this->view_label];

@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -224,14 +224,18 @@ function enumerate_hybridauth_providers($alternate_config = null)
 
     // Expand any holes in the skeleton structure with defaults
     foreach ($providers as $provider => &$info) {
-        $config = ['composr-config' => [], 'keys-config' => [], 'hybridauth-config' => []];
         if (isset($config_structure[$provider])) {
             if (($alternate_config !== null) && (isset($config_structure[$provider]['alternate_configs'][$alternate_config]))) {
-                $config = $config_structure[$provider]['alternate_configs'][$alternate_config];
+                $config_override = $config_structure[$provider]['alternate_configs'][$alternate_config];
+            } else {
+                $config_override = ['composr-config' => [], 'keys-config' => [], 'hybridauth-config' => []];
             }
+            $config = [];
             foreach (['composr-config', 'keys-config', 'hybridauth-config'] as $config_section) {
-                $config[$config_section] = $config_structure[$provider][$config_section] + $config[$config_section];
+                $config[$config_section] = $config_override[$config_section] + $config_structure[$provider][$config_section];
             }
+        } else {
+            $config = ['composr-config' => [], 'keys-config' => [], 'hybridauth-config' => []];
         }
 
         $info['keys'] = $config['keys-config'] + $info['keys'];

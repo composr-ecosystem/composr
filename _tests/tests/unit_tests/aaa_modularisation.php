@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -82,6 +82,7 @@ class aaa_modularisation_test_set extends cms_test_case
         }
 
         // Check core_all_icons files also in other addons
+
         foreach ($addon_data['core_all_icons'] as $path) {
             if ($path == 'sources/hooks/systems/addon_registry/core_all_icons.php') {
                 continue;
@@ -203,6 +204,56 @@ class aaa_modularisation_test_set extends cms_test_case
             echo '<br /><strong>' . htmlentities($addon_name) . '</strong>';
             foreach ($paths as $path) {
                 $this->assertTrue(false, 'Could not find the addon for... \'' . $path . '\',');
+            }
+        }
+    }
+
+    public function testCustomNonCustomFiles()
+    {
+        // List any _custom files in bundled addons, or non-custom files in non-bundled addons...
+        require_code('addons');
+        $hooks = find_all_hooks('systems', 'addon_registry');
+        foreach ($hooks as $hook => $place) {
+            $hook_path = get_file_base() . '/' . $place . '/hooks/systems/addon_registry/' . filter_naughty_harsh($hook) . '.php';
+            $addon_info = read_addon_info($hook, false, null, null, $hook_path);
+
+            foreach (array_map('cms_strtolower_ascii', $addon_info['files']) as $file) {
+                // Normalise
+                if (strpos($file, '/') !== false) {
+                    $dir = dirname($file);
+                    $filename = basename($file);
+                } else {
+                    $dir = '';
+                    $filename = $file;
+                }
+
+                // FUDGE: Exceptions
+                $exceptions = [
+                    '_tests/',
+                    'uploads/',
+                    'docs/',
+                    'buildr/',
+                    'aps/',
+                    'mobiquo/',
+                    'tracker/',
+                    'exports/',
+                    'data_custom/firewall_rules.txt', // bundled as-is
+                    'data_custom/errorlog.php', // bundled as blank
+                    'data_custom/execute_temp.php', // bundled but actually taking contents of execute_temp.php.bundle
+                ];
+                foreach ($exceptions as $untouchable) {
+                    if (strpos($file, $untouchable) !== false) {
+                        continue 2;
+                    }
+                }
+
+                if (($dir != '') && preg_match('#^(?!index\.html$)(?!\.htaccess$).*$#i', $filename) != 0) {
+                    if ($place == 'sources') {
+                        $this->assertTrue((preg_match('#^.*_custom(/.*)?$#i', $dir) == 0), 'The bundled addon ' . $hook . ' has a file that appears to be non-bundled: ' . $file);
+                    } elseif ($place == 'sources_custom') {
+                        $this->assertTrue((preg_match('#^.*_custom(/.*)?$#i', $dir) != 0), 'The non-bundled addon ' . $hook . ' has a file that appears to be bundled: ' . $file);
+                    }
+                }
             }
         }
     }

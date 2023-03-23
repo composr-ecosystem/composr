@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -20,13 +20,17 @@
 
 /*EXTRA FUNCTIONS: strtoupper|strtolower|ucfirst*/
 
-// Composr can install basically from the real final code, except for...
-// -- global.php
-// -- global2.php
-// -- users.php
-// --  things that depend on functionality of those that hasn't been emulated here
-// This file emulates cut-down versions of the code in those files, for the most part.
-// Once Composr is installed, this file is never used.
+/*
+    the equivalent of global2 for "Composr not yet installed" situations like the installer or backup restorer
+
+    Composr can install basically from the real final code, except for...
+    -- global.php
+    -- global2.php
+    -- users.php
+    --  things that depend on functionality of those that hasn't been emulated here
+    This file emulates cut-down versions of the code in those files, for the most part.
+    Once Composr is installed, this file is never used.
+*/
 
 /**
  * Standard code module initialisation function.
@@ -55,6 +59,7 @@ function init__minikernel()
         define('INPUT_FILTER_MODSECURITY_URL_PARAMETER', 8192); // Decode a URL-in-URL parameter that was encoded to bypass ModSecurity protection. Applies to POST/GET
         define('INPUT_FILTER_URL_RECODING', 16384); // Re-encodes Unicode to %-encoding and Punycode for a valid URL
         define('INPUT_FILTER_TRIMMED', 32768); // Trimmed as user would expect, intended for critical data where white-space could cause a problem
+        define('INPUT_FILTER_EMAIL_ADDRESS', 65536); // Enforces e-mail address validation and warn_exit when invalid
         //Compound ones intended for direct use
         define('INPUT_FILTER_DEFAULT_POST', INPUT_FILTER_WORDFILTER | INPUT_FILTER_WYSIWYG_TO_COMCODE | INPUT_FILTER_COMCODE_CLEANUP | INPUT_FILTER_DOWNLOAD_ASSOCIATED_MEDIA | INPUT_FILTER_FIELDS_XML | INPUT_FILTER_URL_SCHEMES | INPUT_FILTER_JS_URLS | INPUT_FILTER_SPAM_HEURISTIC | INPUT_FILTER_EARLY_XSS | INPUT_FILTER_DYNAMIC_FIREWALL | INPUT_FILTER_TRUSTED_SITES);
         define('INPUT_FILTER_DEFAULT_GET', INPUT_FILTER_JS_URLS | INPUT_FILTER_VERY_STRICT | INPUT_FILTER_SPAM_HEURISTIC | INPUT_FILTER_EARLY_XSS | INPUT_FILTER_DYNAMIC_FIREWALL | INPUT_FILTER_URL_SCHEMES);
@@ -731,7 +736,10 @@ function running_script($is_this_running)
 function get_charset()
 {
     if (function_exists('do_lang')) {
-        return do_lang('charset');
+        $ret = do_lang('charset', null, null, null, null, false);
+        if ($ret !== null) {
+            return $ret;
+        }
     }
     global $SITE_INFO;
     $lang = (!empty($SITE_INFO['default_lang'])) ? $SITE_INFO['default_lang'] : 'EN';
@@ -1469,4 +1477,14 @@ function get_localhost_ips() : array
         '::1',
         '127.0.0.1',
     ];
+}
+
+/**
+ * Get the date/time string as we log it. Designed to be consistent with how PHP puts dates into the error-log.
+ *
+ * @return string Date/time string
+ */
+function loggable_date() : string
+{
+    return gmdate('[d-M-Y H:i:s \U\T\C]');
 }

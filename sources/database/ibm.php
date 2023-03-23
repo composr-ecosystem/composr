@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -148,7 +148,7 @@ class Database_Static_ibm extends DatabaseDriver
             'LONG_TRANS__COMCODE' => 'integer',
             'SHORT_TRANS__COMCODE' => 'integer',
             'SHORT_TEXT' => 'varchar(255)',
-            'TEXT' => 'lvarchar(16377)', // Set consistently as 16377 across all drivers due to InnoDB having the lowest limit, the limit relating to the default page_size (- 6 bytes for pointers) ; this field type should only be used as an alternative to LONG_TEXT that can be defaulted to '' if not specified, necessary for adding fields to the table's of external systems
+            'TEXT' => 'lvarchar(4000)', // Set consistently as 4000 across all drivers due to SQL Server having the lowest limit ; this field type should only be used as an alternative to LONG_TEXT that can be defaulted to '' if not specified, necessary for adding fields to the table's of external systems
             'LONG_TEXT' => 'clob',
             'ID_TEXT' => 'varchar(80)',
             'MINIID_TEXT' => 'varchar(40)',
@@ -219,6 +219,16 @@ class Database_Static_ibm extends DatabaseDriver
     public function rename_table__sql(string $old, string $new) : string
     {
         return 'RENAME TABLE ' . $old . ' TO ' . $new;
+    }
+
+    /**
+     * Find the maximum number of indexes supported.
+     *
+     * @return ?integer Maximum number of indexes (null: no limit or inconsequentially-large limit)
+     */
+    public function get_max_indexes() : ?int
+    {
+        return null;
     }
 
     /**

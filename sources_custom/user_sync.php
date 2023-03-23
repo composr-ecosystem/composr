@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -92,8 +92,7 @@ function user_sync__inbound($since = null)
         warn_exit('PDO must be installed.', false, true);
     }
 
-    // PDO does not have a 'mysqli' driver
-    if ($db_type == 'mysqli') {
+    if (strpos($db_type, 'mysql') !== false) {
         $db_type = 'mysql';
     }
 
@@ -330,7 +329,7 @@ function user_sync__inbound($since = null)
                 $members_groups = $GLOBALS['CNS_DRIVER']->get_members_groups($member_id);
                 foreach ($groups as $group_id) {
                     if (!in_array($group_id, $members_groups)) {
-                        cns_add_member_to_group($member_id, $group_id);
+                        cns_add_member_to_secondary_group($member_id, $group_id);
                     }
                 }
                 foreach ($members_groups as $group_id) {
@@ -552,8 +551,7 @@ function user_sync__outbound($member_id)
         warn_exit('PDO must be installed.', false, true);
     }
 
-    // PDO does not have a 'mysqli' driver
-    if ($db_type == 'mysqli') {
+    if (strpos($db_type, 'mysql') !== false) {
         $db_type = 'mysql';
     }
 

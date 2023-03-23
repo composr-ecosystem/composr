@@ -1,6 +1,6 @@
 /*
  {$BRAND_NAME`}
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 */
 
 /* Bubble bar charts */
@@ -45,6 +45,11 @@ table.bubble-bar-chart {
 	border-collapse: collapse;
 	line-height: normal;
 	width: 100%;
+}
+
+table.bubble-bar-chart th.full-width-label {
+	padding-top: 5px;
+	text-align: center;
 }
 
 table.bubble-bar-chart thead th {

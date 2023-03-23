@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -116,7 +116,7 @@ class Module_admin_phpinfo
         // Gather and cleanup the above...
 
         require_code('xhtml');
-        $out = '<div style="overflow: auto; width: calc(100vw - 4em)">'; // Workaround to stretching problem with "pre" and tables
+        $out = '<div style="overflow: auto">';
         $out .= xhtmlise_html(ob_get_contents());
         ob_end_clean();
 
@@ -223,7 +223,7 @@ class Module_admin_phpinfo
             foreach ($commands as $command) {
                 $output = @shell_exec($command);
                 if (!empty($output)) {
-                    $out .= '<p style="margin-bottom: 0"><strong>' . escape_html($command) . '</strong>:</p><p style="margin-top: 0; font-family: courier; white-space: pre !important; overflow: auto; width: 100%">' . escape_html($output) . '</p>';
+                    $out .= '<p style="margin-bottom: 0"><strong>' . escape_html($command) . '</strong>:</p><p style="margin-top: 0; font-family: courier; white-space: pre-wrap !important; overflow: auto; width: 100%">' . escape_html($output) . '</p>';
                 }
             }
         }

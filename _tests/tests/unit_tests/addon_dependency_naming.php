@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -33,7 +33,7 @@ class addon_dependency_naming_test_set extends cms_test_case
             'PHP xml extension',
             'PHP zip extension',
             'PHP mbstring extension',
-            'php pdo_mysql extension',
+            'PHP pdo_mysql extension',
         ];
 
         $addons = find_all_hook_obs('systems', 'addon_registry', 'Hook_addon_registry_');

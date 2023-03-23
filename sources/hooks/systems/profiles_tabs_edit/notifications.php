@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -55,6 +55,8 @@ class Hook_profiles_tabs_edit_notifications
 
         $order = 100;
 
+        // The actualiser is handled by the settings tab
+        /*
         if (get_param_integer('submitting_settings_tab', 0) == 1) {
             $auto_monitor_contrib_content = post_param_integer('auto_monitor_contrib_content', 0);
             $smart_topic_notification = post_param_integer('smart_topic_notification', 0);
@@ -72,6 +74,7 @@ class Hook_profiles_tabs_edit_notifications
             unset($GLOBALS['FORUM_DRIVER']->MEMBER_ROWS_CACHED[$member_id_of]);
             unset($GLOBALS['MEMBER_CACHE_FIELD_MAPPINGS'][$member_id_of]);
         }
+        */
 
         if (($leave_to_ajax_if_possible) && ($_SERVER['REQUEST_METHOD'] != 'POST')) {
             return null;

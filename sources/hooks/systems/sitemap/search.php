@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -164,6 +164,7 @@ class Hook_sitemap_search extends Hook_sitemap_base
                 'extra_meta' => [
                     'description' => null,
                     'image' => null,
+                    'icon' => null,
                     'add_time' => null,
                     'edit_time' => null,
                     'submitter' => null,
@@ -225,6 +226,7 @@ class Hook_sitemap_search extends Hook_sitemap_base
             'extra_meta' => [
                 'description' => null,
                 'image' => null,
+                'icon' => null,
                 'add_time' => null,
                 'edit_time' => null,
                 'submitter' => null,

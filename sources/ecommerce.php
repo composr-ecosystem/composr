@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -189,7 +189,7 @@ function get_product_purchase_steps(object $product_object, string $type_code, b
 
     $more_params = '';
     foreach ($_GET as $key => $val) {
-        if ((is_string($val)) && (!in_array($key, ['page', 'type', 'category', 'type_code', 'purchase_id', 'points', 'cancel', 'from', 'message']))) {
+        if ((is_string($key)) && (is_string($val)) && (!in_array($key, ['page', 'type', 'category', 'type_code', 'purchase_id', 'points', 'cancel', 'from', 'message']))) {
             $more_params .= ':' . $key . '=' . cms_urlencode($val);
         }
     }

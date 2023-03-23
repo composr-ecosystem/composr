@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -427,7 +427,6 @@ class Module_admin_addons
                 $colour = $updated ? 'red' : 'green';
                 $description = $row['description'];
                 $file_list = $row['files'];
-                $pretty_name = do_template('ADDON_NAME', ['_GUID' => '86b940f63744eb0690059efd69c1d58c', 'IMAGE_URL' => find_addon_icon($addon_name, false, null), 'NAME' => $addon_name]);
 
                 $addon_tpl = static_evaluate_tempcode(do_template('ADDON_SCREEN_ADDON', [
                     '_GUID' => '9a06f5a9c9e3085c10ab7fb17c3efcd1',
@@ -437,8 +436,8 @@ class Module_admin_addons
                     'FILE_LIST' => $file_list,
                     'COLOUR' => $colour,
                     'STATUS' => $status,
-                    'PRETTY_NAME' => $pretty_name,
                     'NAME' => $addon_name,
+                    'IMAGE_URL' => find_addon_icon($addon_name, false, null),
                     'FILENAME' => null,
                     'AUTHOR' => $row['author'],
                     'ORGANISATION' => $row['organisation'],
@@ -504,11 +503,6 @@ class Module_admin_addons
                     if ($addon_info['version'] == '(version-synched)') {
                         $addon_info['version'] = float_to_raw_string(cms_version_number());
                     }
-                    $pretty_name = do_template('ADDON_NAME', [
-                        '_GUID' => '4802523382da01432bf04120ad01c677',
-                        'IMAGE_URL' => find_addon_icon($addon_name, false, $addon_info['tar_path']),
-                        'NAME' => $addon_name,
-                    ]);
 
                     $addon_tpl = static_evaluate_tempcode(do_template('ADDON_SCREEN_ADDON', [
                         '_GUID' => 'cb61bdb9ce0cef5cd520440c5f62008f',
@@ -518,8 +512,8 @@ class Module_admin_addons
                         'FILE_LIST' => $file_list,
                         'COLOUR' => $colour,
                         'STATUS' => $status,
-                        'PRETTY_NAME' => $pretty_name,
                         'NAME' => $addon_name,
+                        'IMAGE_URL' => find_addon_icon($addon_name, false, $addon_info['tar_path']),
                         'FILENAME' => $filename,
                         'AUTHOR' => $addon_info['author'],
                         'ORGANISATION' => $addon_info['organisation'],
@@ -724,6 +718,10 @@ class Module_admin_addons
         require_code('abstract_file_manager');
         $writable_paths = [];
         foreach ($_POST as $key => $passed) {
+            if (is_integer($key)) {
+                $key = strval($key);
+            }
+
             if (substr($key, 0, 8) == 'install_') {
                 $writable_paths = array_merge($writable_paths, get_addon_install_writable_paths($passed));
             }
@@ -739,6 +737,10 @@ class Module_admin_addons
         $addons_to_remove = [];
 
         foreach ($_POST as $key => $passed) {
+            if (is_integer($key)) {
+                $key = strval($key);
+            }
+
             if (substr($key, 0, 8) == 'install_') {
                 send_http_output_ping();
 
@@ -754,7 +756,7 @@ class Module_admin_addons
         }
 
         foreach ($_POST as $key => $passed) {
-            if (substr($key, 0, 8) == 'install_') {
+            if ((is_string($key)) && (substr($key, 0, 8) == 'install_')) {
                 send_http_output_ping();
 
                 // DB pass
@@ -1234,7 +1236,7 @@ class Module_admin_addons
             // Get from existing addon_registry hook if selected
             $files = [];
             foreach ($_POST as $key => $val) {
-                if (preg_match('#^file_\d+$#', $key) != 0) {
+                if ((is_string($key)) && (preg_match('#^file_\d+$#', $key) != 0)) {
                     $files[] = $val;
                 }
             }
@@ -1455,7 +1457,7 @@ class Module_admin_addons
                 continue;
             }
 
-            if (substr($key, 0, 5) == 'file_') {
+            if ((is_string($key)) && (substr($key, 0, 5) == 'file_')) {
                 $files[] = $val;
             }
         }

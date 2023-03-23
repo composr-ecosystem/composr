@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -250,7 +250,7 @@ class Module_admin_config
                 return $this->advanced_banning();
             }
             if ($type == '_advanced_banning') {
-                return $this->advanced_banning();
+                return $this->_advanced_banning();
             }
         }
 

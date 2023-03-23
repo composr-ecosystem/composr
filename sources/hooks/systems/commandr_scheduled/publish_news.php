@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2022
+ Copyright (c) ocProducts, 2004-2023
 
  See docs/LICENSE.md for full licensing information.
 
@@ -78,6 +78,8 @@ class Hook_commandr_scheduled_publish_news
                 syndicate_content('news', strval($id), [[$is_blog ? 'news:ACTIVITY_ADD_NEWS_BLOG' : 'news:ACTIVITY_ADD_NEWS', $submitter]]);
             }
         }
+
+        erase_static_cache();
 
         return ['', '', do_lang('SUCCESS'), ''];
     }
