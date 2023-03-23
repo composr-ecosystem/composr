@@ -38,6 +38,7 @@ class Hook_logs_core
             'queries.log' => ['days_to_keep' => (get_option('days_to_keep__queries_log') == '') ? null : intval(get_option('days_to_keep__queries_log'))],
             'mail_integration.log' => ['days_to_keep' => (get_option('days_to_keep__mail_integration_log') == '') ? null : intval(get_option('days_to_keep__mail_integration_log'))],
             'debug_fs.log' => ['days_to_keep' => (get_option('days_to_keep__debug_fs_log') == '') ? null : intval(get_option('days_to_keep__debug_fs_log'))],
+            'require_code.log' => ['days_to_keep' => (get_option('days_to_keep__require_code_log') == '') ? null : intval(get_option('days_to_keep__require_code_log'))],
         ];
     }
 }

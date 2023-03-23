@@ -774,6 +774,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_days_to_keep__debug_fs_log
         DAYS_TO_KEEP__ERROR_LOG
         CONFIG_OPTION_days_to_keep__error_log
+        DAYS_TO_KEEP__REQUIRE_CODE_LOG
+        CONFIG_OPTION_days_to_keep__require_code_log
         DAYS_TO_KEEP__MAIL_INTEGRATION_LOG
         CONFIG_OPTION_days_to_keep__mail_integration_log
         DAYS_TO_KEEP__PERMISSION_CHECKS_LOG
