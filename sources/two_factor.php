@@ -83,12 +83,13 @@ function maintenance_script_htaccess_option_available() : bool
         return false;
     }
 
-    if (!cms_is_writable(get_file_base() . '/.htaccess')) {
+    $path = get_file_base() . '/.htaccess';
+
+    if (!is_file($path) || !cms_is_writable($path)) {
         return false;
     }
 
     // two-factor is not compatible with the 'require valid-user' directive for HTTP-Auth. Note this will still hide the option if require valid-user is commented out.
-    $path = get_file_base() . '/.htaccess';
     $contents = cms_file_get_contents_safe($path, FILE_READ_LOCK);
     if (($contents !== false) && (strpos($contents, 'require valid-user') !== false)) {
         return false;
@@ -109,9 +110,13 @@ function maintenance_script_htaccess_option_available() : bool
  */
 function adjust_htaccess()
 {
-    $option_enabled = ((maintenance_script_htaccess_option_available()) && (get_option('maintenance_script_htaccess') === '1'));
-
     $path = get_file_base() . '/.htaccess';
+
+    if (!is_file($path)) {
+        return;
+    }
+
+    $option_enabled = ((maintenance_script_htaccess_option_available()) && (get_option('maintenance_script_htaccess') === '1'));
 
     $contents = cms_file_get_contents_safe($path, FILE_READ_LOCK);
 

@@ -2453,7 +2453,9 @@ function do_code_box(string $type, object $embed, bool $numbers = true, bool $in
             }
             $title = do_lang_tempcode('comcode:CODE_IN_LANGUAGE', escape_html($type));
             require_code('xhtml');
-            $_embed = xhtmlise_html($geshi->parse_code());
+            $html = $geshi->parse_code();
+            $html .= '<style>' . $geshi->get_stylesheet(true) . '</style>';
+            $_embed = xhtmlise_html($html);
             restrictify();
         }
     } else {

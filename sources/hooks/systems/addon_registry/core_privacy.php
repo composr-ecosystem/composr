@@ -129,6 +129,7 @@ class Hook_addon_registry_core_privacy
             'sources/hooks/systems/config/days_to_keep__permission_checks_log.php',
             'sources/hooks/systems/config/days_to_keep__queries_log.php',
             'sources/hooks/systems/config/days_to_keep__tasks_log.php',
+            'sources/hooks/systems/config/days_to_keep__require_code_log.php',
             'themes/default/images/icons/menu/pages/privacy_policy.svg',
             'themes/default/images/icons_monochrome/menu/pages/privacy_policy.svg',
             'pages/comcode/EN/privacy.txt',

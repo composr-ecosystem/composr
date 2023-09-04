@@ -65,6 +65,9 @@ function require_code(string $codename, bool $light_exit = false, ?bool $has_cus
 
     if ((isset($_GET['keep_show_loading_code'])) && ($_GET['keep_show_loading_code'] === '1')) {
         $before = memory_get_usage();
+
+        $contents = gmdate('[d-M-Y H:i:s \U\T\C]') . ': Requiring ' . $codename . ' (current memory at ' . @number_format($before) . ' bytes)' . "\n";
+        @file_put_contents($FILE_BASE . '/data_custom/require_code.log', $contents, FILE_APPEND | LOCK_EX);
     }
 
     // Calculate custom/non-custom status...
@@ -226,6 +229,8 @@ function require_code(string $codename, bool $light_exit = false, ?bool $has_cus
         }
 
         if ((isset($_GET['keep_show_loading_code'])) && ($_GET['keep_show_loading_code'] === '1')) {
+            $contents = gmdate('[d-M-Y H:i:s \U\T\C]') . ': ' . $codename . ' (' . @number_format(memory_get_usage() - $before) . ' bytes used, now at ' . @number_format(memory_get_usage()) . ')' . "\n";
+            @file_put_contents($FILE_BASE . '/data_custom/require_code.log', $contents, FILE_APPEND | LOCK_EX);
             if (function_exists('attach_message')) {
                 attach_message('require_code: ' . $codename . ' (' . @number_format(memory_get_usage() - $before) . ' bytes used, now at ' . @number_format(memory_get_usage()) . ')', 'inform');
             } else {
@@ -246,6 +251,8 @@ function require_code(string $codename, bool $light_exit = false, ?bool $has_cus
 
         // Optional process tracking (has to run before init function called)
         if ((isset($_GET['keep_show_loading_code'])) && ($_GET['keep_show_loading_code'] === '1')) {
+            $contents = gmdate('[d-M-Y H:i:s \U\T\C]') . ': ' . $codename . ' (' . @number_format(memory_get_usage() - $before) . ' bytes used, now at ' . @number_format(memory_get_usage()) . ')' . "\n";
+            @file_put_contents($FILE_BASE . '/data_custom/require_code.log', $contents, FILE_APPEND | LOCK_EX);
             if (function_exists('attach_message')) {
                 attach_message('require_code: ' . $codename . ' (' . @number_format(memory_get_usage() - $before) . ' bytes used, now at ' . @number_format(memory_get_usage()) . ')', 'inform');
             } else {
