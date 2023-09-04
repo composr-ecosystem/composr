@@ -210,7 +210,7 @@
                 }
             }
 
-            if (!checkPasswords(step4Form)) {
+            if (!checkPasswords(step4Form, true)) {
                 return;
             }
 
@@ -247,19 +247,19 @@
          * @param form
          * @return {boolean}
          */
-        function checkPasswords(form) {
+        function checkPasswords(form, ignoreBlankMasterPassword) {
             if (form.confirm) {
                 return true;
             }
 
             if (form.elements['cns_admin_password_confirm'] != null) {
-                if (!checkPassword(form, 'cns_admin_password', '{!ADMIN_USERS_PASSWORD;^}')) {
+                if (!checkPassword(form, 'cns_admin_password', '{!ADMIN_USERS_PASSWORD;^}', false)) {
                     return false;
                 }
             }
 
             if (form.elements['master_password_confirm'] != null) {
-                if (!checkPassword(form, 'master_password', '{!MASTER_PASSWORD;^}')) {
+                if (!checkPassword(form, 'master_password', '{!MASTER_PASSWORD;^}', ignoreBlankMasterPassword)) {
                     return false;
                 }
             }
@@ -268,7 +268,11 @@
                 window.alert(passwordPrompt);
             }
 
-            function checkPassword(form, fieldName, fieldLabel) {
+            function checkPassword(form, fieldName, fieldLabel, ignoreBlankPassword) {
+                if (ignoreBlankPassword && form.elements[fieldName].value == '') {
+                    return true;
+                }
+
                 // Check matches with confirm field
                 if (form.elements[fieldName + '_confirm'].value !== form.elements[fieldName].value) {
                     window.alert($util.format('{!PASSWORDS_DO_NOT_MATCH;^/}', [fieldLabel]));

@@ -83,6 +83,9 @@ function content_review_get_fields(string $content_type, ?string $content_id = n
         require_code('content');
         $content_ob = get_content_object($content_type);
         $content_info = $content_ob->info();
+        if ($content_info === null) {
+            return new Tempcode();
+        }
 
         // Allow specification of time in days OR months OR years OR not at all
 

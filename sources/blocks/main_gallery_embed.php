@@ -50,7 +50,7 @@ class Block_main_gallery_embed
     {
         $info = [];
         $info['cache_on'] = <<<'PHP'
-        (preg_match('#<\w+>#', ((array_key_exists('filter', $map) ? $map['filter'] : '') . (array_key_exists('video_filter', $map) ? $map['video_filter'] : ''))) != 0)
+        (((isset($map['param'])) && (strpos($map['param'], '*') !== false || strpos($map['param'], '>') !== false)) || (preg_match('#<\w+>#', ((array_key_exists('filter', $map) ? $map['filter'] : '') . (array_key_exists('video_filter', $map) ? $map['video_filter'] : ''))) != 0))
         ?
         null
         :

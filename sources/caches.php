@@ -768,7 +768,7 @@ function _get_cache_entries(array $dets) : array
 
     $rets = [];
 
-    // Bulk load
+    // Bulk load from database, if persistent cache not enabled
     if ($GLOBALS['PERSISTENT_CACHE'] === null) {
         $do_query = false;
 
@@ -832,7 +832,7 @@ function _get_cache_entries(array $dets) : array
         $cache_rows = $do_query ? $GLOBALS['SITE_DB']->query($sql) : [];
     }
 
-    // Each requested entry
+    // Iterate over each requested entry to get it
     foreach ($dets as $det) {
         list($codename, $cache_identifier, $md5_cache_identifier, $special_cache_flags, $ttl, $tempcode, $caching_via_cron, $map) = $det;
 
@@ -843,8 +843,15 @@ function _get_cache_entries(array $dets) : array
         }
 
         if ($GLOBALS['PERSISTENT_CACHE'] !== null) {
-            $theme = $GLOBALS['FORUM_DRIVER']->get_theme();
-            $lang = user_lang();
+            $staff_status = null;
+            $member_id = null;
+            $groups = null;
+            $is_bot = null;
+            $timezone = null;
+            $theme = null;
+            $lang = null;
+            get_cache_signature_details($special_cache_flags, $staff_status, $member_id, $groups, $is_bot, $timezone, $theme, $lang);
+
             $cache_row = persistent_cache_get(['CACHE', $codename, $md5_cache_identifier, $lang, $theme, $staff_status, $member_id, $groups, $is_bot, $timezone]);
 
             if ($cache_row === null) { // No

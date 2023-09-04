@@ -731,15 +731,11 @@ function suggest_new_idmoniker_for(string $page, string $type, string $id, strin
     }
 
     if ($moniker === null) {
-        if (is_numeric($moniker_src)) {
-            $moniker = $id; // No need for a proper moniker, as it would just be a number (which is not a valid moniker)
-        } else {
-            $scope = _give_moniker_scope($page, $type, $id, $zone, '');
-            $moniker = $scope . _choose_moniker($page, $type, $id, $moniker_src, null, $scope);
+        $scope = _give_moniker_scope($page, $type, $id, $zone, '');
+        $moniker = $scope . _choose_moniker($page, $type, $id, $moniker_src, null, $scope);
 
-            if (($page == 'news') && ($type == 'view') && (get_value('google_news_urls') === '1')) {
-                $moniker .= '-' . str_pad($id, 3, '0', STR_PAD_LEFT);
-            }
+        if (($page == 'news') && ($type == 'view') && (get_value('google_news_urls') === '1')) {
+            $moniker .= '-' . str_pad($id, 3, '0', STR_PAD_LEFT);
         }
     }
 
@@ -997,6 +993,9 @@ function find_id_via_url_moniker(string $content_type, string $url_moniker) : ?s
     require_code('content');
     $cma_ob = object_factory('Hook_content_meta_aware_' . filter_naughty_harsh($content_type, true));
     $cma_info = $cma_ob->info();
+    if ($cma_info === null) {
+        return null;
+    }
     if (!$cma_info['support_url_monikers']) {
         return null;
     }

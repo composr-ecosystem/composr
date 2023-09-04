@@ -29,7 +29,7 @@ class hooks_test_set extends cms_test_case
     {
         require_code('files2');
 
-        // Hook type/subtypes to ignore
+        // Hook type/sub-types to ignore
         $exceptions_hooks = [
             // These hooks do not have classes
             'systems/disposable_values',
@@ -48,7 +48,7 @@ class hooks_test_set extends cms_test_case
         $hook_structure = [];
 
         foreach ($files as $path) {
-            // Determine hook type and subtype from the path
+            // Determine hook type and sub-type from the path
             $path_parts = explode('/', $path);
             $hook_type = $path_parts[count($path_parts) - 3];
             $hook_subtype = $path_parts[count($path_parts) - 2];
@@ -103,7 +103,7 @@ class hooks_test_set extends cms_test_case
             // Check that the hook type is not using multiple prefixes
             $this->assertTrue((count($hook_prefixes) < 2), 'Multiple class prefixes are being used for the ' . $hook_type . ' hooks: ' . implode(', ', $hook_prefixes));
 
-            // Check that a prefix is not being used by multiple hook types/subtypes
+            // Check that a prefix is not being used by multiple hook types/sub-types
             foreach ($hook_prefixes as $hook_prefix) {
                 $already_used = (isset($prefix_to_hook_type[$hook_prefix]) && $prefix_to_hook_type[$hook_prefix] != $hook_type);
                 $this->assertTrue(!$already_used, 'The class prefix ' . $hook_prefix . ' is being used in hooks across multiple types/subtypes.');

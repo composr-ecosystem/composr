@@ -907,7 +907,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
         $a = ($_a === null) ? '1=1' : ('m_join_time>' . strval($_a));
         $_b = post_param_date('end');
         $b = ($_b === null) ? '1=1' : ('m_join_time<' . strval($_b));
-        $members_in_range = $GLOBALS['FORUM_DB']->query('SELECT ' . $f_name . ',COUNT(' . $f_name . ') AS cnt FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members m LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields f ON m.id=f.mf_member_id WHERE ' . $a . ' AND ' . $b . ' GROUP BY ' . $f_name . ' ORDER BY cnt', 300/*reasonable limit*/);
+        $members_in_range = $GLOBALS['FORUM_DB']->query('SELECT ' . $f_name . ',COUNT(' . $f_name . ') AS cnt FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members m LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields f ON m.id=f.mf_member_id WHERE ' . $a . ' AND ' . $b . ' GROUP BY ' . $f_name . ' ORDER BY cnt DESC', 300/*reasonable limit*/);
         if (count($members_in_range) == 300) {
             attach_message(do_lang_tempcode('TOO_MUCH_CHOOSE__TOP_ONLY', escape_html(integer_format(300))), 'warn');
         }

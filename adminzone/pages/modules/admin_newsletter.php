@@ -790,6 +790,10 @@ class Module_admin_newsletter extends Standard_crud_module
         disable_php_memory_limit();
 
         $cutoff_time = post_param_date('cutoff');
+        if ($cutoff_time === null) {
+            warn_exit(do_lang_tempcode('NO_PARAMETER_SENT', escape_html('cutoff')));
+        }
+
         $lang = choose_language($this->title);
         $chosen_categories = newsletter_get_category_choices($cutoff_time, $lang);
 

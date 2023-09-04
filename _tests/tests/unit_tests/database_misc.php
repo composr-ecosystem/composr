@@ -512,7 +512,7 @@ class database_misc_test_set extends cms_test_case
 
     public function testFullTextSearch()
     {
-        if (($this->only !== null) && ($this->only != 'fulltext')) {
+        if (($this->only !== null) && (!in_array($this->only, ['fulltext', 'by_keyword', 'boolean_yes__success', 'boolean_no__success', 'boolean_yes__fail', 'boolean_no__fail']))) {
             return;
         }
 

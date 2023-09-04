@@ -137,6 +137,11 @@ function create_session(int $member_id, int $session_confirmed = 0, bool $invisi
         require_code('crypt');
         $new_session = get_secure_random_string();
 
+        $shy_session = ((isset($SITE_INFO['any_guest_cached_too'])) && ($SITE_INFO['any_guest_cached_too'] == '1') && (is_guest($member_id)));
+        if ($shy_session) {
+            $new_session = '[' . $new_session . ']';
+        }
+
         // Store session
         $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
         $new_session_row = [
@@ -301,7 +306,7 @@ function set_session_id(string $id, bool $guest_session = false)
         $_GET['keep_session'] = strval($id);
     }
 
-    if ((function_exists('get_session_id')) && ($id != get_session_id()) && (running_script('index'))) {
+    if ((function_exists('get_session_id')) && (function_exists('decache')/*not happening during early boot*/) && ($id != get_session_id()) && (running_script('index'))) {
         delete_cache_entry('side_users_online');
     }
 }

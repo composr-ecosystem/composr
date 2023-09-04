@@ -57,31 +57,33 @@ class Hook_config_oembed_manual_patterns
         // Update oembed automated test if updating this too
 
         $default .= "(https?://(www\.)?youtube\.com/watch\?v=.*|https?://youtu\.be/\..*) = https://www.youtube.com/oembed\n";
-        $default .= "(https?://vimeo\.com/\d+) = http://vimeo.com/api/oembed.{format}\n";
-        $default .= "(https?://(www\.)?dailymotion\.com/video/.*|https?://dai\.ly/.*) = http://www.dailymotion.com/services/oembed\n";
-        $default .= "(https?://www\.slideshare\.net/.*/.*) = http://www.slideshare.net/api/oembed/2\n";
-        $default .= "(https?://.*\.flickr\.com/photos/.*|https?://flic\.kr/p/.*) = http://www.flickr.com/services/oembed?format={format}\n";
-        //$default .= "(https?://(www\.)?instagram\.com/p/.*) = http://api.instagram.com/oembed\n"; Requires API key now :(
-        $default .= "(https?://soundcloud\.com/.*/.*) = http://soundcloud.com/oembed?format={format}\n";
+        $default .= "(https?://vimeo\.com/\d+) = https://vimeo.com/api/oembed.{format}\n";
+        $default .= "(https?://(www\.)?dailymotion\.com/video/.*|https?://dai\.ly/.*) = https://www.dailymotion.com/services/oembed\n";
+        $default .= "(https?://www\.slideshare\.net/.*/.*) = https://www.slideshare.net/api/oembed/2\n";
+        $default .= "(https?://.*\.flickr\.com/photos/.*|https?://flic\.kr/p/.*) = https://www.flickr.com/services/oembed?format={format}\n";
+        //$default .= "(https?://(www\.)?instagram\.com/p/.*) = https://api.instagram.com/oembed\n"; Requires API key now :(
+        $default .= "(https?://soundcloud\.com/.*/.*) = https://soundcloud.com/oembed?format={format}\n";
         $default .= "(https?://twitter\.com/.*/status/\d+) = https://api.twitter.com/1/statuses/oembed.{format}\n";
         //$default .= "(https?://(www\.)?facebook\.com/.*) = https://www.facebook.com/plugins/page/oembed.{format}/\n"; // Facebook may give "Security Check Required" when trying to auto-detect, so hard-code - Requires API key now :(
 
-        $default .= "(https?://.*\.tumblr\.com/post/.*) = http://api.embed.ly/1/oembed?key=123456\n";
-        $default .= "(https?://edition\.cnn\.com/.*) = http://api.embed.ly/1/oembed?key=123456\n";
-        $default .= "(https?://maps\.google\.(co\.uk|com)/.*) = http://api.embed.ly/1/oembed?key=123456\n";
-        $default .= "(https?://www\.google\.(co\.uk|com)/maps/.*) = http://api.embed.ly/1/oembed?key=123456\n";
-        $default .= "(https?://www\.imdb\.com/title/.*) = http://api.embed.ly/1/oembed?key=123456\n";
-        $default .= "(https?://(www\.)?scribd\.com/(doc|document|documents)/.*) = http://api.embed.ly/1/oembed?key=123456\n";
-        $default .= "(https?://\w+\.wiki(pedia|media)\.org/wiki/.*) = http://api.embed.ly/1/oembed?key=123456\n";
-        $default .= "(https?://xkcd\.com/\d+/?) = http://api.embed.ly/1/oembed?key=123456\n";
+        /*
+        $default .= "(https?://.*\.tumblr\.com/post/.*) = https://api.embed.ly/1/oembed?key=123456\n";
+        $default .= "(https?://edition\.cnn\.com/.*) = https://api.embed.ly/1/oembed?key=123456\n";
+        $default .= "(https?://maps\.google\.(co\.uk|com)/.*) = https://api.embed.ly/1/oembed?key=123456\n";
+        $default .= "(https?://www\.google\.(co\.uk|com)/maps/.*) = https://api.embed.ly/1/oembed?key=123456\n";
+        $default .= "(https?://www\.imdb\.com/title/.*) = https://api.embed.ly/1/oembed?key=123456\n";
+        $default .= "(https?://(www\.)?scribd\.com/(doc|document|documents)/.*) = https://api.embed.ly/1/oembed?key=123456\n";
+        $default .= "(https?://\w+\.wiki(pedia|media)\.org/wiki/.*) = https://api.embed.ly/1/oembed?key=123456\n";
+        $default .= "(https?://xkcd\.com/\d+/?) = https://api.embed.ly/1/oembed?key=123456\n";
+        */
 
         return $default;
 
         // Don't trust noembed.com too much, things they say work often do not
-        // embedly is paid now, but I guess if you sign up to the paid service you can simply not pay for it if you don't want to, and have a free limit - my old account still works
+        // embedly is paid now
         // NB: To put everything through...
-        //  embed.ly, you would do ".* = http://api.embed.ly/1/oembed?key=123456"
-        //  Noembed, you would do ".* = http://noembed.com/embed"
+        //  embed.ly, you would do ".* = https://api.embed.ly/1/oembed?key=123456"
+        //  Noembed, you would do ".* = https://noembed.com/embed"
         // iframely is interesting. It is self-hosted.
         // Largely though, Composr contains equivalent features to these products.
     }

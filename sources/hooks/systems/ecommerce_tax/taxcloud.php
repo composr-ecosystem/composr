@@ -30,7 +30,7 @@ class Hook_ecommerce_tax_taxcloud
         'verifyAddress' => 'https://api.taxcloud.com/1.0/TaxCloud/VerifyAddress', // Verify an address validity
         'authorizedWithCapture' => 'https://api.taxcloud.com/1.0/TaxCloud/AuthorizedWithCapture', // Mark transaction as complete
         'TIC' => 'https://taxcloud.com/tic/json/', // Look up TIC tax codes in JSON format
-        'TICText' => 'https://taxcloud.net/tic/?format=text', // Look up TIC tax codes in text format
+        'TICText' => 'https://app.taxcloud.com/tic/text/', // Look up TIC tax codes in text format
     ];
 
     /**
@@ -356,7 +356,7 @@ class Hook_ecommerce_tax_taxcloud
             $default_set = 'tic';
         }
         require_code('http');
-        list($__tics) = cache_and_carry('cms_http_request', [$this->urls['TIC'], ['convert_to_internal_encoding' => true, 'timeout' => 20.0, 'trigger_error' => false]]);
+        list($__tics) = cache_and_carry('cms_http_request', [$this->urls['TIC'], ['convert_to_internal_encoding' => true, 'timeout' => 3.0, 'trigger_error' => false]]);
         $_tics = @json_decode($__tics, true);
         if (is_array($_tics)) {
             $tics = new Tempcode();

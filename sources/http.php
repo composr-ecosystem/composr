@@ -1105,7 +1105,7 @@ class HttpDownloaderCurl extends HttpDownloader
         /*if ((count($curl_headers)!=0) && (!empty($this->files))) { // Useful for debugging
             var_dump(curl_getinfo($ch,CURLINFO_HEADER_OUT));exit();
         }*/
-        if ($curl_result === false) {
+        if (($curl_result === false) && ((curl_errno($ch) != CURLE_WRITE_ERROR) || ($this->byte_limit === null))) {
             // Error
             $error = curl_error($ch);
             $curl_errno = curl_errno($ch);
@@ -1299,6 +1299,17 @@ class HttpDownloaderCurl extends HttpDownloader
             }
             $this->curl_body .= $str;
         }
+
+        if ($this->byte_limit !== null) {
+            $current_len = strlen($this->curl_body);
+            $this_len = strlen($str);
+            $amount_over_limit = $current_len + $this_len - $this->byte_limit;
+            if ($amount_over_limit > 0) {
+                $this->curl_body = substr($this->curl_body, 0, $this->byte_limit);
+                return strlen($str) - $amount_over_limit;
+            }
+        }
+
         return strlen($str);
     }
 }

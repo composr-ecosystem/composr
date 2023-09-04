@@ -542,7 +542,7 @@ function check_alien(string $dir, string $rela = '', bool $raw = false, ?array $
         }
         sort($dir_files);
         foreach ($dir_files as $file) {
-            if (should_ignore_file($rela . $file, IGNORE_ACCESS_CONTROLLERS | IGNORE_CUSTOM_DIR_FLOATING_CONTENTS | IGNORE_UPLOADS | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_ZONES | IGNORE_NONBUNDLED | IGNORE_FLOATING | IGNORE_UNSHIPPED_VOLATILE | IGNORE_REVISION_FILES | IGNORE_EDITFROM_FILES)) {
+            if (should_ignore_file($rela . $file, IGNORE_CUSTOM_DIR_FLOATING_CONTENTS | IGNORE_UPLOADS | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_ZONES | IGNORE_NONBUNDLED | IGNORE_FLOATING | IGNORE_UNSHIPPED_VOLATILE | IGNORE_REVISION_FILES | IGNORE_EDITFROM_FILES)) {
                 continue;
             }
 

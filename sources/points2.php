@@ -521,7 +521,7 @@ function points_dispatch_notification(int $id, int $sender_id, int $recipient_id
         // Sender
         if (!is_guest($sender_id)) {
             $transaction_type = is_guest($recipient_id) ? do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_DEBITED_L') : do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_SENT_L');
-            $url = points_url($sender_id);
+            $url = points_url($sender_id, true);
             $message_raw = do_notification_lang(
                 is_guest($recipient_id) ? 'NOTIFICATION_POINTS_TRANSACTION_GUEST' : 'NOTIFICATION_POINTS_TRANSACTION',
                 $transaction_type,
@@ -549,7 +549,7 @@ function points_dispatch_notification(int $id, int $sender_id, int $recipient_id
             } else {
                 $transaction_type = do_lang_tempcode('NOTIFICATION_POINTS_TRANSACTION_RECEIVED_L');
             }
-            $url = points_url($recipient_id);
+            $url = points_url($recipient_id, true);
             $message_raw = do_notification_lang(
                 is_guest($sender_id) ? 'NOTIFICATION_POINTS_TRANSACTION_GUEST' : 'NOTIFICATION_POINTS_TRANSACTION',
                 $transaction_type,
@@ -591,7 +591,7 @@ function points_dispatch_notification(int $id, int $sender_id, int $recipient_id
         $primary_member = $their_username;
         $secondary_member = do_lang('NOTIFICATION_POINTS_TRANSACTION_FROM_L', escape_html($_your_username));
     }
-    $url = build_url(['page' => 'admin_points', 'type' => 'view', 'id' => $id], get_module_zone('admin_points'));
+    $url = build_url(['page' => 'admin_points', 'type' => 'view', 'id' => $id], get_module_zone('admin_points'), [], false, false, true);
     $message_raw = do_notification_lang(
         ($secondary_member != '') ? 'NOTIFICATION_POINTS_TRANSACTION_STAFF' : 'NOTIFICATION_POINTS_TRANSACTION_STAFF_GUEST',
         $transaction_type,

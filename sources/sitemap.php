@@ -1071,6 +1071,9 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
         $this->_make_zone_concrete($zone, $page_link);
 
         $cma_info = $this->_get_cma_info();
+        if ($cma_info === null) {
+            return null;
+        }
 
         $matches = [];
         preg_match('#^([^:]*):([^:]*):([^:]*):([^:]*)#', $page_link, $matches);
@@ -1303,7 +1306,7 @@ function get_root_comcode_pages(string $zone, bool $include_zone = false) : arra
     $non_root = [];
     $root = [];
     foreach ($rows[$zone] as $row) {
-        if (($row['p_parent_page'] == '') && (isset($pages[$row['p_parent_page']]))) {
+        if (($row['p_parent_page'] == '') && (isset($pages[$row['the_page']]))) {
             $root[$row['the_page']] = $row['p_validated'];
         } else {
             $non_root[$row['the_page']] = $row['p_validated'];

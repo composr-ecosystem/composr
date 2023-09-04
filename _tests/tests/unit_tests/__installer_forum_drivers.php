@@ -17,6 +17,7 @@
 
 /*
 Note that this test installs Composr to a new database ON TOP your dev install, using a new _config.php file.
+It assumes phpBB is in ../forums/phpBB3 relative to your base directory and there is a db.sql file in there which is a DB dump for it.
 The test installs using the root MySQL user, and whatever is defined in your $SITE_INFO['mysql_root_password'] (or blank).
 Your _config.php file is backed up to _config.php.bak in case the test fails and leaves you with a broken install.
 If the test fails, make sure to manually revert _config.php before re-running it.
@@ -37,7 +38,7 @@ class __installer_forum_drivers_test_set extends cms_test_case
         $username = 'root';
         $password = isset($SITE_INFO['mysql_root_password']) ? $SITE_INFO['mysql_root_password'] : '';
 
-        $board_path = dirname(get_file_base()) . '/phpBB3';
+        $board_path = dirname(get_file_base()) . '/forums/phpBB3';
         if (!file_exists($board_path)) {
             $this->assertTrue(false, 'Cannot run test, ' . $board_path . ' is not there. This test makes some implicit assumptions, check the code to see');
             return;
@@ -46,7 +47,7 @@ class __installer_forum_drivers_test_set extends cms_test_case
             $this->assertTrue(false, 'Cannot run test, ' . $board_path . '/db.sql is not there');
             return;
         }
-        $forum_base_url = dirname(get_base_url()) . '/phpBB3';
+        $forum_base_url = dirname(get_base_url()) . '/forums/phpBB3';
         $database_forums = 'forum_phpbb_31';
         $extra_settings = [
             'phpbb_table_prefix' => 'phpbb_',

@@ -74,10 +74,12 @@ function form_for_filtercode(string $filter, array $labels = [], ?string $conten
         $ob = get_content_object($content_type);
         $info = $ob->info();
 
-        $table = $info['table'];
-        if (get_forum_type() == 'cns') {
-            if (($content_type == 'post') || ($content_type == 'topic') || ($content_type == 'member') || ($content_type == 'group') || ($content_type == 'forum')) {
-                $db = $GLOBALS['FORUM_DB'];
+        if ($info !== null) {
+            $table = $info['table'];
+            if (get_forum_type() == 'cns') {
+                if (($content_type == 'post') || ($content_type == 'topic') || ($content_type == 'member') || ($content_type == 'group') || ($content_type == 'forum')) {
+                    $db = $GLOBALS['FORUM_DB'];
+                }
             }
         }
     }
@@ -117,7 +119,7 @@ function form_for_filtercode(string $filter, array $labels = [], ?string $conten
         require_code('content');
         $ob2 = get_content_object($content_type);
         $info2 = $ob2->info();
-        if (($info2['support_custom_fields']) || ($content_type == 'catalogue_entry')) {
+        if (($info2 !== null) && (($info2['support_custom_fields']) || ($content_type == 'catalogue_entry'))) {
             require_code('fields');
             $catalogue_fields = list_to_map('id', get_catalogue_fields(($content_type == 'catalogue_entry') ? $catalogue_name : ('_' . $content_type)));
             foreach ($catalogue_fields as $catalogue_field) {
@@ -799,14 +801,16 @@ function filtercode_to_sql(object $db, ?array $filters, ?string $content_type = 
         require_code('content');
         $ob = get_content_object($content_type);
         $info = $ob->info();
-        $info['content_type'] = $content_type; // We'll need this later, so add it in
+        if ($info !== null) {
+            $info['content_type'] = $content_type; // We'll need this later, so add it in
 
-        if (array_key_exists('filtercode', $info)) {
-            if (strpos($info['filtercode'], '::') !== false) {
-                list($code_file, $conv_func) = explode('::', $info['filtercode']);
-                require_code($code_file);
-            } else {
-                $conv_func = $info['filtercode'];
+            if (array_key_exists('filtercode', $info)) {
+                if (strpos($info['filtercode'], '::') !== false) {
+                    list($code_file, $conv_func) = explode('::', $info['filtercode']);
+                    require_code($code_file);
+                } else {
+                    $conv_func = $info['filtercode'];
+                }
             }
         }
     }

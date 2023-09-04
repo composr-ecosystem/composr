@@ -701,7 +701,7 @@ If you are managing your own server, you may want to consider:
  - Disabling web server version/architecture disclosure (for Apache set [tt]ServerSignature Off[/tt] and [tt]ServerTokens Prod[/tt] in [tt]httpd.conf[/tt] and typically comment out the contents of [tt]welcome.conf[/tt])
  - Enabling automatic updates (for RedHat-based releases install the [tt]dnf-automatic[/tt] package and set [tt]apply_updates = yes[/tt] in [tt]/etc/dnf/automatic.conf[/tt] and run [tt]systemctl enable --now dnf-automatic.timer[/tt])
  - Installing MySQL/MariaDB from an official repository rather than the distribution repository, for faster deployment of security fixes
- - Running a scanner tool such as [url="OWASP ZAP"]https://owasp.org/www-project-zap/[/url]
+ - Running a scanner tool such as [url="ZAP"]https://www.zaproxy.org/[/url]
 
 [concepts
  1_key="SSL"          1_value="Secure Socket Layer -- encryption over Internet connections so as to avoid interception of information"

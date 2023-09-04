@@ -739,7 +739,7 @@ function sync_newsletter_opt_into_sugarcrm()
             sugarcrm_log_action('EmailAddresses', [array_values($sugarcrm_data)]);
             $response = $SUGARCRM->set(
                 'EmailAddresses',
-                array_values($sugarcrm_data),
+                array_values($sugarcrm_data)
             );
             if (!is_array($response) || !isset($response['id'])) {
                 sugarcrm_log_action('SET EmailAddresses', [$response]);
@@ -835,7 +835,6 @@ function _sugarcrm_opt_sync_error(int &$error_count) : bool
 {
     $error_count++;
 
-    // TODO: Needs ported to v10
     if (($error_count >= 5) || ($error_count <= 0)) {
         require_lang('sugarcrm');
         require_code('notifications');

@@ -344,6 +344,16 @@ function placeholder_comma_list() : string
 }
 
 /**
+ * Get a placeholder for a comma-list, different from placeholder_comma_list and a single entry.
+ *
+ * @return string Place holder comma-list
+ */
+function placeholder_comma_list_b() : string
+{
+    return 'foo=bar';
+}
+
+/**
  * Get options for drop-down box.
  *
  * @return string Place holder text
@@ -711,9 +721,10 @@ function placeholder_diff_html() : string
  * @param  SHORT_TEXT $display The CSS display mode
  * @param  ID_TEXT $expand_type The expansion type
  * @set expand
+ * @param  boolean $has_comment_url Whether a comment URL will be there
  * @return Tempcode The placeholder comment form
  */
-function placeholder_comments_form(bool $reviews = true, bool $first_post = false, string $display = 'block', string $expand_type = 'expand') : object
+function placeholder_comments_form(bool $reviews = true, bool $first_post = false, string $display = 'block', string $expand_type = 'expand', bool $has_comment_url = true) : object
 {
     $rules = do_lorem_template('COMMENTS_DEFAULT_TEXT', []);
 
@@ -736,7 +747,7 @@ function placeholder_comments_form(bool $reviews = true, bool $first_post = fals
         'DISPLAY' => $display,
         'FIRST_POST_URL' => $first_post ? placeholder_url() : '',
         'FIRST_POST' => $first_post ? lorem_paragraph_html() : '',
-        'COMMENT_URL' => placeholder_url(),
+        'COMMENT_URL' => $has_comment_url ? placeholder_url() : '',
         'REVIEWS' => $reviews,
         'ANALYTIC_EVENT_CATEGORY' => null,
     ]);

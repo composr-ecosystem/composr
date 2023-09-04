@@ -448,6 +448,7 @@ class Module_admin_addons
                     'ACTIONS' => $actions,
                     'TYPE' => 'uninstall',
                     'PASSTHROUGH' => $addon_name,
+                    'BUNDLED' => in_array('sources/hooks/systems/addon_registry/' . $addon_name . '.php', $file_list),
                 ]));
 
                 if ($do_caching) {
@@ -481,6 +482,8 @@ class Module_admin_addons
                 }
 
                 if ($addon_tpl === null) {
+                    $bundled = in_array('sources/hooks/systems/addon_registry/' . $addon_info['name'] . '.php', $file_list);
+
                     $actions = new Tempcode();
                     $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
                         '_GUID' => 'e6e2bdac62c0d3afcd5251b3d525a1c9',
@@ -490,13 +493,15 @@ class Module_admin_addons
                         'ICON' => 'admin/install',
                         'GET' => true,
                     ]));
-                    $actions->attach(do_template('COLUMNED_TABLE_ACTION', ['_GUID' => '657b47e4039d573b98417add3c3a3f11',
-                        'NAME' => $addon_name,
-                        'URL' => build_url(['page' => '_SELF', 'type' => 'addon_tar_delete', 'file' => $filename], '_SELF'),
-                        'ACTION_TITLE' => do_lang_tempcode('DELETE'),
-                        'ICON' => 'admin/delete',
-                        'GET' => true,
-                    ]));
+                    if (!$bundled) {
+                        $actions->attach(do_template('COLUMNED_TABLE_ACTION', ['_GUID' => '657b47e4039d573b98417add3c3a3f11',
+                            'NAME' => $addon_name,
+                            'URL' => build_url(['page' => '_SELF', 'type' => 'addon_tar_delete', 'file' => $filename], '_SELF'),
+                            'ACTION_TITLE' => do_lang_tempcode('DELETE'),
+                            'ICON' => 'admin/delete',
+                            'GET' => true,
+                        ]));
+                    }
                     $status = do_lang_tempcode('STATUS_NOT_INSTALLED');
                     $description = $addon_info['description'];
                     $file_list = $addon_info['files'];
@@ -524,6 +529,7 @@ class Module_admin_addons
                         'ACTIONS' => $actions,
                         'TYPE' => 'install',
                         'PASSTHROUGH' => $filename,
+                        'BUNDLED' => $bundled,
                     ]));
 
                     if ($do_caching) {

@@ -83,7 +83,7 @@
 
 										<td>
 											<div>
-												<input aria-errormessage="error-email-msg" id="email" name="email" type="email" value="{$MEMBER_EMAIL*}" type="text" tabindex="2" maxlength="255" class="form-control form-control-wide{+START,IF,{$NOT,{EMAIL_OPTIONAL}}} input-text-required{+END}" />
+												<input aria-errormessage="error-email-msg" id="email" name="email" type="email" value="{$MEMBER_EMAIL*}" tabindex="2" maxlength="255" class="form-control form-control-wide{+START,IF,{$NOT,{EMAIL_OPTIONAL}}} input-text-required{+END}" />
 											</div>
 
 											<div id="error-email" style="display: none" class="input-error-here">

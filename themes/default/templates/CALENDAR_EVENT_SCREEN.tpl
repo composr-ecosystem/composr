@@ -76,7 +76,7 @@
 			</div>
 		{+END}
 
-		<div{+START,IF_NON_EMPTY,{SUBSCRIBE_URL}} class="event-left"{+END}>
+		<div {+START,IF_NON_EMPTY,{SUBSCRIBE_URL}}class="event-left"{+END}>
 			<table class="map-table wide-table results-table autosized-table" role="note">
 				<tbody>
 					{+START,IF_NON_EMPTY,{TIME}}

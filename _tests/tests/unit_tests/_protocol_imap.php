@@ -153,6 +153,8 @@ class _protocol_imap_test_set extends cms_test_case
         }
 
         imap_close($mbox);
+
+        // There are "Unexpected resource left open of type, stream" errors due to something deep in some Composer package
     }
 
     protected function inject_email($to, $from, $subject, $body)
@@ -166,7 +168,16 @@ class _protocol_imap_test_set extends cms_test_case
         $c_body = [
             'contents.data' => $body,
         ];
-        $mime = imap_mail_compose($c_envelope, [$c_body]);
+
+        //$mime = imap_mail_compose($c_envelope, [$c_body]); Not available for imap addon, just PHP imap extension
+
+        $mime = '';
+        $mime .= "From: " . $c_envelope['from'] . "\n";
+        $mime .= "To: " . $c_envelope['to'] . "\n";
+        $mime .= "Subject: " . $c_envelope['subject'] . "\n";
+        $mime .= "Date: " . $c_envelope['date'] . "\n";
+        $mime .= "\n";
+        $mime .= $c_body['contents.data'];
 
         $lmtp_socket_path = $this->key_options['mail_server_lmtp_socket'];
         $socket = @fsockopen($lmtp_socket_path);

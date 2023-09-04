@@ -265,7 +265,7 @@ class Hook_media_rendering_oembed extends Media_renderer_with_fallback
 
         // Call endpoint
         require_code('http');
-        $result = cache_and_carry('cms_http_request', [$endpoint, ['trigger_error' => false, 'timeout' => 2.0]]);
+        $result = cache_and_carry('cms_http_request', [$endpoint, ['byte_liit' => 1024 * 100, 'trigger_error' => false, 'timeout' => 2.0]]);
         if ($result === false || $result[4] != '200') {
             return null;
         }

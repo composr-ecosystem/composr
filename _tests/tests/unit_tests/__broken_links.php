@@ -236,6 +236,12 @@ class __broken_links_test_set extends cms_test_case
             return;
         }
 
+        if (preg_match('#^https?://twitter.com/#', $url) != 0) { // Requires logins nowadays
+            return;
+        }
+        if (preg_match('#^https?://((dev|bugs)\.)?mysql.com/#', $url) != 0) {  // Just won't check from a bot guest user
+            return;
+        }
         if (preg_match('#^http://december\.com/html/4/element/#', $url) != 0) {
             return;
         }
@@ -265,6 +271,7 @@ class __broken_links_test_set extends cms_test_case
         }
         if (in_array($url, [
             // These just won't check from a bot guest user
+            'https://portal.azure.com/',
             'https://cloud.google.com/console',
             'https://www.google.com/webmasters/tools/home',
             'https://console.developers.google.com/project',

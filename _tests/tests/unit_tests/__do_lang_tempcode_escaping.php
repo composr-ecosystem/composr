@@ -41,6 +41,7 @@ class __do_lang_tempcode_escaping_test_set extends cms_test_case
             'get_timezoned_date_time',
             'do_lang_tempcode',
             'make_fractionable_editable',
+            'is_maintained_description',
         ];
 
         require_code('files2');

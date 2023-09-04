@@ -1,7 +1,5 @@
 {+START,SET,side_personal_stats_supplemental}
-	<p class="proceed-button">
-		{$HYBRIDAUTH_BUTTONS,1}
-	</p>
+	{$PARAGRAPH,{$HYBRIDAUTH_BUTTONS,1},proceed-button}
 {+END}
 
 {+START,INCLUDE,BLOCK_SIDE_PERSONAL_STATS_NO}{+END}

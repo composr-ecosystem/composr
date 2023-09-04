@@ -1753,7 +1753,7 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
             // Make them both HTML strings
             $url = $embed->evaluate();
             $switch_over = ((!looks_like_url($url)) && (looks_like_url($attributes['param'], true)));
-            if ((strpos($attributes['param'], '[') !== false) || (strpos($attributes['param'], '{') !== false)) { // Extra Comcode parsing wanted?
+            if ((strpos(preg_replace('#\[\d*\]#', '', $attributes['param']), '[') !== false) || (strpos($attributes['param'], '{') !== false)) { // Extra Comcode parsing wanted?
                 $param_temp = comcode_to_tempcode(escape_html($attributes['param']), $source_member, $as_admin, null, $db, COMCODE_NORMAL, $highlight_bits, $on_behalf_of_member);
                 global $ADVERTISING_BANNERS_CACHE;
                 $temp_ab = $ADVERTISING_BANNERS_CACHE;
@@ -1767,7 +1767,7 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
             // Do we need to switch around?
             if ($switch_over) {
                 $url = $attributes['param'];
-                if ((strpos($url, '[') !== false) || (strpos($url, '{') !== false)) { // Extra Comcode parsing wanted?
+                if ((strpos(preg_replace('#\[\d*\]#', '', $url), '[') !== false) || (strpos($url, '{') !== false)) { // Extra Comcode parsing wanted?
                     $url = static_evaluate_tempcode(comcode_to_tempcode($url, $source_member, $as_admin, null, $db, COMCODE_NORMAL, $highlight_bits, $on_behalf_of_member));
                 }
                 $caption = $embed;

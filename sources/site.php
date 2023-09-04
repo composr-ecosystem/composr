@@ -334,10 +334,16 @@ function breadcrumbs(bool $show_self = true) : object
 
     // Substitutions
     if ((addon_installed('breadcrumbs')) && (function_exists('xml_parser_create'))) {
+        // We may need to add in the final label so load_breadcrumb_substitutions can see and match on it; we will then pop that final label knowing that load_breadcrumb_substitutions altered the BREADCRUMB_SET_SELF global if it needed to
         require_code('breadcrumbs');
-        $needs_pop = ($GLOBALS['BREADCRUMB_SET_SELF'] !== null) || ($GLOBALS['DISPLAYED_TITLE'] !== null);
-        if ($needs_pop) {
-            $BREADCRUMB_SET_PARENTS[] = [null, ($GLOBALS['BREADCRUMB_SET_SELF'] !== null) ? $GLOBALS['BREADCRUMB_SET_SELF'] : $GLOBALS['DISPLAYED_TITLE']];
+        $needs_pop = false;
+        if (($GLOBALS['BREADCRUMB_SET_SELF'] !== null) || ($GLOBALS['DISPLAYED_TITLE'] !== null)) {
+            $last_segment_label = isset($BREADCRUMB_SET_PARENTS[count($BREADCRUMB_SET_PARENTS) - 1]) ? $BREADCRUMB_SET_PARENTS[count($BREADCRUMB_SET_PARENTS) - 1][1] : null;
+            $new_last_segment_label = ($GLOBALS['BREADCRUMB_SET_SELF'] !== null) ? $GLOBALS['BREADCRUMB_SET_SELF'] : $GLOBALS['DISPLAYED_TITLE'];
+            if (($last_segment_label === null) || ((is_object($new_last_segment_label) ? $new_last_segment_label->evaluate() : $new_last_segment_label) != (is_object($last_segment_label) ? $last_segment_label->evaluate() : $last_segment_label))) {
+                $BREADCRUMB_SET_PARENTS[] = [null, $last_segment_label];
+                $needs_pop = true;
+            }
         }
         $BREADCRUMB_SET_PARENTS = load_breadcrumb_substitutions($BREADCRUMB_SET_PARENTS);
         if ($needs_pop) {

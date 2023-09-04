@@ -272,6 +272,10 @@ class Hook_profiles_tabs_edit_settings
                     $groups = list_to_map('id', $GLOBALS['FORUM_DB']->query_select('f_groups', ['*'], ($group_count > 200) ? ['g_is_private_club' => 0] : []));
 
                     foreach ($_POST['secondary_groups'] as $group_id) { // Add to new secondary groups
+                        if (!isset($groups[intval($group_id)])) {
+                            continue; // Deleted since form submitted
+                        }
+
                         $group = $groups[intval($group_id)];
 
                         if (($group['g_hidden'] == 1) && (!in_array($group['id'], $members_groups)) && (!has_privilege($member_id_viewing, 'see_hidden_groups'))) {

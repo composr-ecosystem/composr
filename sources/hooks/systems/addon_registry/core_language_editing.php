@@ -177,6 +177,8 @@ class Hook_addon_registry_core_language_editing
      */
     public function tpl_preview__administrative__translate_language_criticise_screen() : object
     {
+        require_lang('lang');
+
         $file = new Tempcode();
         $files = '';
         foreach (placeholder_array() as $value) {
@@ -208,6 +210,7 @@ class Hook_addon_registry_core_language_editing
     public function tpl_preview__administrative__translate_screen_content_screen() : object
     {
         require_lang('lang');
+
         $lines = new Tempcode();
         foreach (placeholder_array() as $key => $value) {
             $actions = do_lorem_template('TRANSLATE_ACTION', [
@@ -254,6 +257,7 @@ class Hook_addon_registry_core_language_editing
     public function tpl_preview__administrative__translate_screen() : object
     {
         require_lang('lang');
+
         $lines = '';
         foreach (placeholder_array() as $i => $value) {
             $temp = do_lorem_template('TRANSLATE_LINE', [

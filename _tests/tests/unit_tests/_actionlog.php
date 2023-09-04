@@ -66,7 +66,7 @@ class _actionlog_test_set extends cms_test_case
                     continue; // Points to non-existent zones
                 }
 
-                if (($this->only !== null) && ($this->only != $handler)) {
+                if (($this->only !== null) && ($this->only != $handler) && (strpos($this->only, '://') === false)) {
                     continue;
                 }
 
@@ -94,14 +94,14 @@ class _actionlog_test_set extends cms_test_case
                             $url = $url->evaluate();
                         }
 
-                        if (($this->only !== null) && ($this->only != $hook)) {
+                        if (($this->only !== null) && ($this->only != $hook) && ($this->only != $handler) && ($this->only != $url)) {
                             continue;
                         }
 
                         static $done_urls = [];
 
                         if (!array_key_exists($url, $done_urls)) {
-                            $http_result = cms_http_request($url, ['byte_limit' => 0, 'trigger_error' => false, 'cookies' => [get_session_cookie() => $session_id, 'ignore_http_status' => true]]);
+                            $http_result = cms_http_request($url, ['timeout' => 10, 'byte_limit' => 0, 'trigger_error' => false, 'cookies' => [get_session_cookie() => $session_id], 'ignore_http_status' => true]);
                             $ok = in_array($http_result->message, ['200', '404']);
                             $this->assertTrue($ok, 'Unexpected HTTP response, ' . $http_result->message . ', for ' . $url . ' from ' . $handler);
                             if ($this->debug && !$ok) {

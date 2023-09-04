@@ -122,7 +122,7 @@ if( $t_can_see_monitors || $t_can_add_others ) {
 ?>
 
 		<div class="space-10"></div>
-		<form method="get" action="bug_monitor_add.php" class="form-inline noprint">
+		<form method="post" action="bug_monitor_add.php" class="form-inline noprint">
 			<?php echo form_security_field( 'bug_monitor_add' ) ?>
 			<input type="hidden" name="bug_id" value="<?php echo (integer)$f_bug_id; ?>" />
 			<label for="bug_monitor_list_username"><?php echo lang_get( 'username' ) ?></label>

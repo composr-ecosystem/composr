@@ -315,7 +315,7 @@ class Hook_addon_registry_tickets
             'POSTER' => lorem_phrase(),
             'TITLE' => lorem_screen_title(),
             'COMMENTS' => $comments,
-            'COMMENT_FORM' => placeholder_comments_form(false),
+            'COMMENT_FORM' => placeholder_comments_form(false, false, 'block', 'expand', false),
             'STAFF_DETAILS' => placeholder_url(),
             'URL' => placeholder_url(),
             'ADD_TICKET_URL' => placeholder_url(),

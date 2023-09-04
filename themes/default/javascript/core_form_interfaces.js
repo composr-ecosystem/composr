@@ -1128,6 +1128,13 @@
             element = targetWin.document.getElementById(params.fieldName);
 
         if (!element) {
+            var overlay = target_window.document.getElementById('overlay-iframe');
+            if (overlay) {
+                targetWin = overlay.contentWindow;
+                element = targetWin.document.getElementById(params.fieldName);
+            }
+        }
+        if (!element) {
             targetWin = targetWin.frames['iframe_page'];
             element = targetWin.document.getElementById(params.fieldName);
         }

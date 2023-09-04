@@ -524,11 +524,11 @@ class Hook_addon_registry_core_cns
             'templates/CNS_VIEW_GROUP_MEMBER.tpl' => 'cns_view_group_screen',
             'templates/CNS_VIEW_GROUP_MEMBER_SECONDARY.tpl' => 'cns_view_group_screen',
             'templates/CNS_VIEW_GROUP_SCREEN.tpl' => 'cns_view_group_screen',
-            'templates/BLOCK_MAIN_MEMBERS.tpl' => 'block_main_members',
-            'templates/BLOCK_MAIN_MEMBERS_COMPLEX.tpl' => 'block_main_members_complex',
-            'templates/CNS_MEMBER_DIRECTORY_SCREEN_FILTERS.tpl' => 'block_main_members',
-            'templates/CNS_MEMBER_DIRECTORY_SCREEN_FILTER.tpl' => 'block_main_members',
-            'templates/CNS_MEMBER_DIRECTORY_USERNAME.tpl' => 'block_main_members',
+            'templates/BLOCK_MAIN_MEMBERS.tpl' => 'block_main_members_listing',
+            'templates/BLOCK_MAIN_MEMBERS_COMPLEX.tpl' => 'block_main_members_complex_listing',
+            'templates/CNS_MEMBER_DIRECTORY_SCREEN_FILTERS.tpl' => 'block_main_members_listing',
+            'templates/CNS_MEMBER_DIRECTORY_SCREEN_FILTER.tpl' => 'block_main_members_listing',
+            'templates/CNS_MEMBER_DIRECTORY_USERNAME.tpl' => 'block_main_members_listing',
             'templates/CNS_POST_MAP.tpl' => 'cns_post_map',
             'templates/CNS_POST_MAP_ITEM.tpl' => 'cns_post_map',
             'templates/BLOCK_MAIN_JOIN_DONE.tpl' => 'block_main_join_done',
@@ -800,15 +800,11 @@ class Hook_addon_registry_core_cns
      *
      * @return Tempcode Preview
      */
-    public function tpl_preview__block_main_members() : object
+    public function tpl_preview__block_main_members_listing() : object
     {
         $tpl = $this->do_block_main_members_preview('BLOCK_MAIN_MEMBERS', 'listing');
-        $tpl->attach($this->do_block_main_members_preview('BLOCK_MAIN_MEMBERS', 'boxes'));
-        $tpl->attach($this->do_block_main_members_preview('BLOCK_MAIN_MEMBERS', 'photos'));
-        $tpl->attach($this->do_block_main_members_preview('BLOCK_MAIN_MEMBERS', 'media'));
-        $tpl->attach($this->do_block_main_members_preview('BLOCK_MAIN_MEMBERS', 'avatars'));
 
-        return $tpl;
+        return lorem_globalise($tpl, null, '', true);
     }
 
     /**
@@ -818,15 +814,123 @@ class Hook_addon_registry_core_cns
      *
      * @return Tempcode Preview
      */
-    public function tpl_preview__block_main_members_complex() : object
+    public function tpl_preview__block_main_members_boxes() : object
+    {
+        $tpl = $this->do_block_main_members_preview('BLOCK_MAIN_MEMBERS', 'boxes');
+
+        return lorem_globalise($tpl, null, '', true);
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return Tempcode Preview
+     */
+    public function tpl_preview__block_main_members_photos() : object
+    {
+        $tpl = $this->do_block_main_members_preview('BLOCK_MAIN_MEMBERS', 'photos');
+
+        return lorem_globalise($tpl, null, '', true);
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return Tempcode Preview
+     */
+    public function tpl_preview__block_main_members_media() : object
+    {
+        $tpl = $this->do_block_main_members_preview('BLOCK_MAIN_MEMBERS', 'media');
+
+        return lorem_globalise($tpl, null, '', true);
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return Tempcode Preview
+     */
+    public function tpl_preview__block_main_members_avatars() : object
+    {
+        $tpl = $this->do_block_main_members_preview('BLOCK_MAIN_MEMBERS', 'avatars');
+
+        return lorem_globalise($tpl, null, '', true);
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return Tempcode Preview
+     */
+    public function tpl_preview__block_main_members_complex_listing() : object
     {
         $tpl = $this->do_block_main_members_preview('BLOCK_MAIN_MEMBERS_COMPLEX', 'listing');
-        $tpl->attach($this->do_block_main_members_preview('BLOCK_MAIN_MEMBERS_COMPLEX', 'boxes'));
-        $tpl->attach($this->do_block_main_members_preview('BLOCK_MAIN_MEMBERS_COMPLEX', 'photos'));
-        $tpl->attach($this->do_block_main_members_preview('BLOCK_MAIN_MEMBERS_COMPLEX', 'media'));
-        $tpl->attach($this->do_block_main_members_preview('BLOCK_MAIN_MEMBERS_COMPLEX', 'avatars'));
 
-        return $tpl;
+        return lorem_globalise($tpl, null, '', true);
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return Tempcode Preview
+     */
+    public function tpl_preview__block_main_members_complex_boxes() : object
+    {
+        $tpl = $this->do_block_main_members_preview('BLOCK_MAIN_MEMBERS_COMPLEX', 'boxes');
+
+        return lorem_globalise($tpl, null, '', true);
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return Tempcode Preview
+     */
+    public function tpl_preview__block_main_members_complex_photos() : object
+    {
+        $tpl = $this->do_block_main_members_preview('BLOCK_MAIN_MEMBERS_COMPLEX', 'photos');
+
+        return lorem_globalise($tpl, null, '', true);
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return Tempcode Preview
+     */
+    public function tpl_preview__block_main_members_complex_media() : object
+    {
+        $tpl = $this->do_block_main_members_preview('BLOCK_MAIN_MEMBERS_COMPLEX', 'media');
+
+        return lorem_globalise($tpl, null, '', true);
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return Tempcode Preview
+     */
+    public function tpl_preview__block_main_members_complex_avatars() : object
+    {
+        $tpl = $this->do_block_main_members_preview('BLOCK_MAIN_MEMBERS_COMPLEX', 'avatars');
+
+        return lorem_globalise($tpl, null, '', true);
     }
 
     /**
@@ -966,7 +1070,7 @@ class Hook_addon_registry_core_cns
             'NONRESPONSIVE' => false,
         ]);
 
-        return lorem_globalise(do_lorem_template($tpl, [
+        return do_lorem_template($tpl, [
             'BLOCK_ID' => '',
             'START' => strval(0),
             'MAX' => strval(30),
@@ -984,8 +1088,8 @@ class Hook_addon_registry_core_cns
             'INCLUDE_FORM' => true,
             'SORT' => '',
             'FILTERS_ROW_A' => placeholder_comma_list(),
-            'FILTERS_ROW_B' => placeholder_comma_list(),
-        ]), null, '', true);
+            'FILTERS_ROW_B' => placeholder_comma_list_b(),
+        ]);
     }
 
     /**

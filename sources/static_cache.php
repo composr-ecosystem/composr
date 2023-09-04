@@ -136,6 +136,11 @@ function can_static_cache_request(bool $consider_failover_mode = false) : bool
         }
     }
 
+    global $INVALIDATED_FAST_SPIDER_CACHE;
+    if ($INVALIDATED_FAST_SPIDER_CACHE) {
+        return false;
+    }
+
     return true;
 }
 

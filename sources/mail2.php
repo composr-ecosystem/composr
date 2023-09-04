@@ -164,6 +164,8 @@ function find_mail_folders(string $host, int $port, ?string $type, string $usern
         $folders['INBOX'] = 'INBOX';
     }
 
+    imap_close($mbox);
+
     return $folders;
 }
 

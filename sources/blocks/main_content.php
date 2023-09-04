@@ -66,7 +66,7 @@ class Block_main_content
     {
         $info = [];
         $info['cache_on'] = <<<'PHP'
-        [
+        (array_key_exists('check', $map) && $map['check'] == '1') ? null : [
             array_key_exists('as_guest', $map) ? ($map['as_guest'] == '1') : false,
             array_key_exists('render_if_empty', $map) ? $map['render_if_empty'] : '1',
             array_key_exists('guid', $map) ? $map['guid'] : '',
@@ -81,7 +81,6 @@ class Block_main_content
             array_key_exists('select', $map) ? $map['select'] : '',
             array_key_exists('select_b', $map) ? $map['select_b'] : '',
             array_key_exists('zone', $map) ? $map['zone'] : '_SEARCH',
-            array_key_exists('check', $map) ? ($map['check'] == '1') : true,
         ]
 PHP;
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT | CACHE_AGAINST_PERMISSIVE_GROUPS;

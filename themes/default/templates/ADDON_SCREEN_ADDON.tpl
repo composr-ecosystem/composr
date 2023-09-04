@@ -42,7 +42,7 @@
 
 		<span class="addon-name"{+START,IF,{$DESKTOP}} data-cms-tooltip="{ contents: '{$TRUNCATE_LEFT;^*,{$GET,description},800,0,1}', width: '50%' }"{+END} data-addon-details="{$GET*,description}">{NAME*}</span>
 	</td>
-	<td>
+	<td class="{$?,{BUNDLED},bundled,non_bundled}">
 		{AUTHOR*}
 	</td>
 	<td>

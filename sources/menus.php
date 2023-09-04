@@ -33,20 +33,33 @@ function init__menus()
 }
 
 /**
+ * Find if a menu is a Sitemap menu (as opposed to a stored menu).
+ *
+ * @param  SHORT_TEXT $menu The menu identifier
+ * @return boolean Whether it is a Sitemap menu
+ */
+function is_sitemap_menu(string $menu) : bool
+{
+    return (preg_match('#^[' . URL_CONTENT_REGEXP . ']+((:\d+)|(;.*))?$#', $menu) == 0);
+}
+
+/**
  * Take a menu identifier, and return a menu created from it.
  *
  * @param  ID_TEXT $type The type of the menu (determines which templates to use)
  * @param  SHORT_TEXT $menu_id The menu identifier to use (may be the name of a editable menu, or syntax to load from the Sitemap)
  * @param  boolean $silent_failure Whether to silently return blank if the menu does not exist
  * @param  boolean $apply_highlighting Whether to apply current-screen highlighting
+ * @param  string $tray_status The default expansion status of the node
+ * @set tray_open tray_closed
  * @return array A tuple: The generated Tempcode of the menu, the menu nodes, whether we flattened
  */
-function build_menu(string $type, string $menu_id, bool $silent_failure = false, bool $apply_highlighting = true) : array
+function build_menu(string $type, string $menu_id, bool $silent_failure = false, bool $apply_highlighting = true, string $tray_status = 'tray_closed') : array
 {
-    $is_sitemap_menu = (preg_match('#^[' . URL_CONTENT_REGEXP . ']+((:\d+)|(;.*))?$#', $menu_id) == 0);
+    $is_sitemap_menu = is_sitemap_menu($menu_id);
 
     if ($is_sitemap_menu) {
-        $root = _build_sitemap_menu($menu_id);
+        $root = _build_sitemap_menu($menu_id, $tray_status);
 
         if ($root === null) {
             return [new Tempcode(), [], false];
@@ -175,10 +188,12 @@ function _build_stored_menu(string $menu_id) : array
  * Take a menu identifier, and return a Sitemap-based menu created from it.
  *
  * @param  SHORT_TEXT $menu_id The menu identifier to use (syntax to load from the Sitemap)
+ * @param  string $tray_status The default expansion status of the node
+ * @set tray_open tray_closed
  * @return array The Sitemap node structure (called a 'branch structure' for menus)
  * @ignore
  */
-function _build_sitemap_menu(string $menu_id) : array
+function _build_sitemap_menu(string $menu_id, string $tray_status = 'tray_closed') : array
 {
     static $cache = [];
     if (isset($cache[$menu_id])) {
@@ -312,11 +327,35 @@ function _build_sitemap_menu(string $menu_id) : array
                 $root['children'][] = $node;
                 break;
         }
+
+        if ($tray_status == 'tray_open') {
+            _recursively_set_expanded($root);
+        }
     }
 
     $cache[$menu_id] = $root;
 
     return $root;
+}
+
+/**
+ * Set node expansion on the whole hierarchy of Sitemap nodes.
+ *
+ * @param  array $node The node
+ *
+ * @ignore
+ */
+function _recursively_set_expanded(array &$node)
+{
+    if (!isset($node['modifiers']['expanded'])) {
+        $node['modifiers']['expanded'] = 1;
+    }
+
+    if (isset($node['children'])) {
+        foreach ($node['children'] as &$child) {
+            _recursively_set_expanded($child);
+        }
+    }
 }
 
 /**

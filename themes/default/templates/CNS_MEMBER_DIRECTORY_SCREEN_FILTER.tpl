@@ -6,7 +6,7 @@
 	{+START,IF_NON_EMPTY,{$CPF_LIST,{NAME}}}
 		<select class="form-control form-control-wide search-option-value" id="filter_{BLOCK_ID*}_{NAME|*}" name="filter_{BLOCK_ID*}_{NAME|*}">
 			<option value="">---</option>
-			{+START,LOOP,{$CPF_LIST,{LABEL}}}
+			{+START,LOOP,{$CPF_LIST,{NAME}}}
 				<option {+START,IF,{$AND,{$NEQ,{_loop_key},},{$EQ,{$_GET,filter_{BLOCK_ID}_{NAME|}},{_loop_key}}}} selected="selected"{+END} value="{_loop_key*}">{_loop_var*}</option>
 			{+END}
 		</select>

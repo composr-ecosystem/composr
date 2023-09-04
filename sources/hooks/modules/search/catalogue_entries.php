@@ -378,7 +378,7 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
                     return []; // No fields in catalogue -- very odd
                 }
 
-                $rows = get_search_rows('catalogue_entry', 'id', $search_query, $content_where, $where_clause . $where_clause_2, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction, $table, 'r.*,r.id AS id,r.cc_id AS r_cc_id,' . $title_field . ' AS b_cv_value' . $extra_select, $trans_fields, $nontrans_fields);
+                $rows = get_search_rows('catalogue_entry', 'id', $search_query, $content_where, $where_clause . $where_clause_2, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction, $table, 'r.*,r.id AS r_id,r.cc_id AS r_cc_id,' . $title_field . ' AS b_cv_value' . $extra_select, $trans_fields, $nontrans_fields);
             } else {
                 if (multi_lang_content() && $GLOBALS['SITE_DB']->query_select_value('translate', 'COUNT(*)') > 10000) { // Big sites can't do indiscriminate catalogue translatable searches for performance reasons
                     $trans_fields = [];
@@ -401,7 +401,7 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
 
                 $join .= $privacy_join;
 
-                $rows = get_search_rows('catalogue_entry', 'id', $search_query, $content_where, $where_clause, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction, 'catalogue_entries r LEFT JOIN ' . get_table_prefix() . 'catalogue_fields f ON r.c_name=f.c_name' . $join, 'r.*,r.id AS id,r.cc_id AS r_cc_id' . $extra_select, $trans_fields, $non_trans_fields);
+                $rows = get_search_rows('catalogue_entry', 'id', $search_query, $content_where, $where_clause, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction, 'catalogue_entries r LEFT JOIN ' . get_table_prefix() . 'catalogue_fields f ON r.c_name=f.c_name' . $join, 'r.*,r.id AS r_id,r.cc_id AS r_cc_id' . $extra_select, $trans_fields, $non_trans_fields);
             }
         }
 

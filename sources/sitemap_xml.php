@@ -283,7 +283,6 @@ function ping_sitemap_xml(string $url, bool $trigger_error = false) : string
             // Submit to search engines
             $services = [
                 'http://www.google.com/webmasters/tools/ping?sitemap=',
-                'http://www.bing.com/webmaster/ping.aspx?siteMap=',
             ];
             foreach ($services as $service) {
                 $result = http_get_contents($service . urlencode($url), ['convert_to_internal_encoding' => true, 'trigger_error' => $trigger_error]);

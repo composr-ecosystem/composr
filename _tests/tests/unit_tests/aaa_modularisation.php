@@ -129,6 +129,7 @@ class aaa_modularisation_test_set extends cms_test_case
         }
 
         $exceptions = array_merge(list_untouchable_third_party_directories(), [
+            'themes/admin/images_custom', // If admin sprites are generated
         ]);
 
         foreach ($files as $path) {
@@ -179,7 +180,7 @@ class aaa_modularisation_test_set extends cms_test_case
                     }
                 }
 
-                $this->assertTrue(false, 'Could not find the addon for... \'' . htmlentities($path) . '\',');
+                $this->assertTrue(false, 'Could not find the addon for... \'' . $path . '\',');
             }
         }
 
@@ -240,6 +241,8 @@ class aaa_modularisation_test_set extends cms_test_case
                     'data_custom/firewall_rules.txt', // bundled as-is
                     'data_custom/errorlog.php', // bundled as blank
                     'data_custom/execute_temp.php', // bundled but actually taking contents of execute_temp.php.bundle
+                    'themes/default/images/icons/',
+                    'themes/default/images/icons_monochrome/',
                 ];
                 foreach ($exceptions as $untouchable) {
                     if (strpos($file, $untouchable) !== false) {

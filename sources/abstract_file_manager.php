@@ -735,7 +735,7 @@ function _ftp_chmod($ftp, int $permissions, string $ftp_path)
     if ($chmod === false) {
         $prev_error = error_get_last();
         if (isset($prev_error['message']) && (strpos($prev_error['message'], 'No such file or directory') !== false)) {
-            fatal_exit(do_lang_tempcode('FTP_CACHE_ERROR', $ftp_path));
+            fatal_exit(do_lang_tempcode('FTP_CACHE_ERROR', escape_html($ftp_path)));
         }
     }
 

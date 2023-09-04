@@ -3755,7 +3755,12 @@ class Database_Static_xml extends DatabaseDriver
                         if ($as === null) {
                             $as = $this->_param_name_for(((isset($want[1])) && ($want[0] == 'FIELD')) ? $want[1] : ('arb' . strval($i)), $i);
                         }
-                        $_record[preg_replace('#^.*\.#', '', $as)] = $this->_execute_expression($want, $record, $query, $db, $fail_ok, $records);
+                        $as_raw = preg_replace('#^.*\.#', '', $as);
+                        $field_value = $this->_execute_expression($want, $record, $query, $db, $fail_ok, $records);
+                        if ((array_key_exists($as_raw, $_record))/* && ($field_value != $_record[$as_raw])*/) {
+                            warn_exit('Duplicate name for manually selected column ' . $as_raw . ' in results, for query ' . $query);
+                        }
+                        $_record[$as_raw] = $field_value;
                         break;
                 }
             }

@@ -152,6 +152,8 @@ class Hook_addon_registry_syndication_blocks
      */
     public function tpl_preview__block_side_rss() : object
     {
+        require_lang('news');
+
         $content = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
             $content->attach(do_lorem_template('BLOCK_SIDE_RSS_SUMMARY', [

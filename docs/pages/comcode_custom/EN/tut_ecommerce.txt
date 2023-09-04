@@ -714,7 +714,7 @@ Tax calculation has been kept as simple as reasonably possible because it's impo
 To provide a reasonable level of support we have:
  - Architected the calculations to go through tax hooks (systems/ecommerce_tax). Developers may expand on the functionality of the tax system by adding new tax hooks, say, to add support for another third party tax service.
  - Included support for international taxation of many countries (though not all of them) by integration of the [url="TaxJar"]https://taxjar.com/[/url] web service.
- - Included support for USA taxation across state/country/city lines by integration of the free [url="TaxCloud"]https://taxcloud.net/[/url] web service.
+ - Included support for USA taxation across state/country/city lines by integration of the free [url="TaxCloud"]https://taxcloud.com/[/url] web service.
   - This allows support for 'nexuses'
   - This allows support for destination taxation state rules
  - Special support for EU digital goods taxation.

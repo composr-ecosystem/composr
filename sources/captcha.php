@@ -45,10 +45,9 @@ function captcha_script()
 
     header('X-Robots-Tag: noindex');
 
-    $code_needed = $GLOBALS['SITE_DB']->query_select_value_if_there('captchas', 'si_code', ['si_session_id' => get_session_id()]);
+    $code_needed = $GLOBALS['SITE_DB']->query_select_value_if_there('captchas', 'si_code', ['si_session_id' => get_session_id(true)]);
     if ($code_needed === null) {
-        generate_captcha();
-        $code_needed = $GLOBALS['SITE_DB']->query_select_value_if_there('captchas', 'si_code', ['si_session_id' => get_session_id()]);
+        $code_needed = generate_captcha();
         /*
         set_http_status_code(500);    This would actually be very slightly insecure, as it could be used to probe (binary) login state via rogue sites that check if CAPTCHAs had been generated
         warn_exit(do_lang_tempcode('CAPTCHA_NO_SESSION'));
@@ -390,7 +389,7 @@ function get_captcha_questions() : array
     }
 
     if ($question_total < count($questions)) {
-        srand(crc32(get_session_id())); // The session ID will seed which questions are picked; consistent across executions
+        srand(crc32(get_session_id(true))); // The session ID will seed which questions are picked; consistent across executions
 
         $_keys = array_rand($questions, $question_total);
         if (!is_array($_keys)) {
@@ -413,17 +412,19 @@ function get_captcha_questions() : array
 
 /**
  * Generate a CAPTCHA image.
+ *
+ * @return ?string The code (null: on CAPTCHA generated)
  */
-function generate_captcha()
+function generate_captcha() : ?string
 {
     if (get_option('recaptcha_site_key') != '') {
-        return;
+        return null;
     }
 
     global $INVALIDATED_FAST_SPIDER_CACHE;
     $INVALIDATED_FAST_SPIDER_CACHE = true;
 
-    $session = get_session_id();
+    $session = get_session_id(true);
     if ($session == '') {
         if (php_function_allowed('error_log')) {
             error_log('CAPTCHA generated against blank session - static caching is misconfigured');
@@ -451,6 +452,8 @@ function generate_captcha()
 
     require_code('files');
     cms_file_put_contents_safe(get_custom_file_base() . '/uploads/captcha/' . $session . '.wav', captcha_audio($si_code), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+
+    return $si_code;
 }
 
 /**
@@ -576,7 +579,7 @@ function check_captcha(?string $code_entered = null, bool $regenerate_on_error =
         $code_entered = post_param_string('captcha');
     }
 
-    $code_needed = $GLOBALS['SITE_DB']->query_select_value_if_there('captchas', 'si_code', ['si_session_id' => get_session_id()]);
+    $code_needed = $GLOBALS['SITE_DB']->query_select_value_if_there('captchas', 'si_code', ['si_session_id' => get_session_id(true)]);
     if ($code_needed === null) {
         if (get_option('captcha_single_guess') == '1') {
             generate_captcha();
@@ -594,7 +597,7 @@ function check_captcha(?string $code_entered = null, bool $regenerate_on_error =
 
                 // Delete current CAPTCHA
                 if (!running_script('snippet')) {
-                    $GLOBALS['SITE_DB']->query_delete('captchas', ['si_session_id' => get_session_id()]); // Only allowed to check once
+                    $GLOBALS['SITE_DB']->query_delete('captchas', ['si_session_id' => get_session_id(true)]); // Only allowed to check once
                 }
             });
         } else {

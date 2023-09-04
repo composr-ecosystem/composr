@@ -43,6 +43,5 @@ class Hook_trusted_sites_google_analytics
             $sites[] = 'google-analytics.com';
             $sites[] = 'stats.g.doubleclick.net';
         }
-
     }
 }

@@ -34,9 +34,7 @@
 	</div>
 
 	<div itemprop="articleBody" class="clearfix">
-		<p>
-			{NEWS_FULL}
-		</p>
+		{$PARAGRAPH,{NEWS_FULL}}
 		{$METADATA_IMAGE_EXTRACT,{NEWS_FULL}}
 	</div>
 

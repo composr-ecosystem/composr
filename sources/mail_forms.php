@@ -83,8 +83,6 @@ function form_to_email(?string $subject = null, string $subject_prefix = '', str
     $details = _form_to_email([], $subject, $subject_prefix, $subject_suffix, $body_prefix, $body_suffix, $fields, $to_email, $is_via_post);
     list($subject, $body, $to_email, $to_name, $from_email, $from_name, $attachments, $body_parts) = $details;
 
-    var_dump($from_email, $to_email);
-
     // Check CAPTCHA
     if (addon_installed('captcha')) {
         if (post_param_integer('_security', 0) == 1) {

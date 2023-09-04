@@ -205,7 +205,7 @@ function generate_resource_fs_moniker(string $resource_type, string $resource_id
     }
     $resource_info = $resource_object->info();
     if ($resource_info === null) {
-        return null;
+        return [null, null, null];
     }
     $resource_fs_hook = $resource_info['commandr_filesystem_hook'];
 
@@ -326,7 +326,7 @@ function find_commandr_fs_filename_via_id(string $resource_type, string $resourc
 {
     $resource_fs_ob = get_resource_commandr_fs_object($resource_type);
     if ($resource_fs_ob === null) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        return null;
     }
     $filename = $resource_fs_ob->convert_id_to_filename($resource_type, $resource_id);
     if ($filename !== null) {

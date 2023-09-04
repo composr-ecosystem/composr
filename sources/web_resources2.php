@@ -109,34 +109,6 @@ function css_compile(string $active_theme, string $theme, string $c, string $ful
 }
 
 /**
- * preg_replace callback, to handle CSS file inclusion.
- *
- * @param  array $matches Matched variables
- * @return array A pair: success status, The text of the compiled file
- *
- * @ignore
- */
-function _css_cms_include(array $matches) : array
-{
-    global $CSS_COMPILE_ACTIVE_THEME;
-
-    $theme = $matches[1];
-    $c = $matches[3];
-    if (($theme == 'default' || $theme == 'admin') && ($matches[2] == 'css')) {
-        $full_path = get_file_base() . '/themes/' . filter_naughty($theme) . '/' . filter_naughty($matches[2]) . '/' . filter_naughty($c) . '.css';
-    } else {
-        $full_path = get_custom_file_base() . '/themes/' . filter_naughty($theme) . '/' . filter_naughty($matches[2]) . '/' . filter_naughty($c) . '.css';
-        if (!is_file($full_path)) {
-            $full_path = get_file_base() . '/themes/' . filter_naughty($theme) . '/' . filter_naughty($matches[2]) . '/' . filter_naughty($c) . '.css';
-        }
-    }
-    if (!is_file($full_path)) {
-        return [false, ''];
-    }
-    return _css_compile($CSS_COMPILE_ACTIVE_THEME, $theme, $c, $full_path);
-}
-
-/**
  * Return a specific compiled CSS file.
  *
  * @param  ID_TEXT $active_theme The theme the file is being loaded for
@@ -171,9 +143,6 @@ function _css_compile(string $active_theme, string $theme, string $c, string $fu
     $num_msgs_after = count($ATTACHED_MESSAGES_RAW);
     global $CSS_COMPILE_ACTIVE_THEME;
     $CSS_COMPILE_ACTIVE_THEME = $active_theme;
-
-    // Support @ocp_include preprocessing commands
-    $out = preg_replace_callback('#\@cms_include\(\'?(\w+)/(\w+)/(\w+)\'?\);#', '_css_cms_include', $out);
 
     // Strip empty comments (would have encapsulated Tempcode comments)
     $out = cms_preg_replace_safe('#/\*\s*\*/#', '', $out);

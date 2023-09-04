@@ -45,7 +45,7 @@ class http_test_set extends cms_test_case
 
         foreach (['curl', 'sockets', 'file_wrapper'] as $implementation) {
             $options = [];
-//TODO            $options['trigger_error'] = false;
+            $options['trigger_error'] = false;
             $options['force_' . $implementation] = true;
             $result = cms_http_request('http://example.com', $options);
             $this->assertTrue($result->data !== null && strpos($result->data, 'Example Domain') !== false, 'Failed on ' . $implementation);
@@ -60,11 +60,20 @@ class http_test_set extends cms_test_case
             return;
         }
 
-        foreach (['curl', 'sockets', 'file_wrapper', 'filesystem'] as $implementation) {
+        $url = get_base_url() . '/data/index.html';
+
+        $handlers = ['curl', 'filesystem'];
+
+        if (strpos($url, 'https://') === false) {
+            // May not be reliable for HTTPS
+            $handlers = array_merge($handlers, ['sockets', 'file_wrapper']);
+        }
+
+        foreach ($handlers as $implementation) {
             $options = [];
             $options['trigger_error'] = false;
             $options['force_' . $implementation] = true;
-            $result = cms_http_request(get_base_url() . '/data/index.html', $options);
+            $result = cms_http_request($url, $options);
             $this->assertTrue(is_string($result->data) && $result->data == '', 'Failed on ' . $implementation);
         }
     }

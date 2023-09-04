@@ -1977,6 +1977,10 @@ function post_param_string(string $name, $default = false, int $filters = INPUT_
         return null;
     }
     if ((trim($ret) === '') && ($default !== '') && (array_key_exists('require__' . $name, $_POST)) && ($_POST['require__' . $name] !== '0')) {
+        // __param already triggered improperly_filled_in_post for completely missing or unparsable POST parameters.
+        // This branch handles cases of BLANK parameters for when the POST environment said blank parameters were not acceptable.
+        // A blank parameter is never remapped to $default - the blank is considered its true value, it is just a question of whether that is acceptable as a value vs an error.
+
         if ($default === null) {
             return null;
         }
@@ -2012,6 +2016,16 @@ function post_param_string(string $name, $default = false, int $filters = INPUT_
         } else {
             require_code('comcode_from_html');
             $ret = trim(semihtml_to_comcode($ret));
+
+            // Now that we potentially stripped down our code a lot, we can try again and see if it is blank
+            if ((trim($ret) === '') && ($default !== '') && (array_key_exists('require__' . $name, $_POST)) && ($_POST['require__' . $name] !== '0')) {
+                if ($default === null) {
+                    return null;
+                }
+
+                require_code('failure');
+                improperly_filled_in_post($name);
+            }
         }
     } else {
         if ((($filters & INPUT_FILTER_COMCODE_CLEANUP) != 0) && (substr($ret, 0, 10) === '[semihtml]') && (substr(trim($ret), -11) === '[/semihtml]')) {
@@ -2064,7 +2078,7 @@ function get_param_string(string $name, $default = false, int $filters = INPUT_F
 {
     $ret = __param($_GET, $name, $default);
     if (($ret === '') && (isset($_GET['require__' . $name])) && ($default !== $ret) && ($_GET['require__' . $name] !== '0')) {
-        // We didn't give some required input
+        // We didn't give some required input. See equivalent comments in the post_param_string function
         set_http_status_code(400);
         warn_exit(do_lang_tempcode('NO_PARAMETER_SENT', escape_html($name)));
     }
@@ -2113,7 +2127,7 @@ function __param(array $array, string $name, $default, bool $integer = false, ?b
 
     $val = $array[$name];
     if (is_array($val)) {
-        $val = trim(implode(',', $val), ' ,');
+        $val = @trim(implode(',', $val), ' ,'); // @ because it could be any complex arbitrary data structure (Composr does not do this, but bots may generate such URLs)
     }
 
     return $val;
@@ -2453,6 +2467,6 @@ function currently_logging_in() : bool
     if ($CURRENTLY_LOGGING_IN) {
         return true;
     }
-    $page = get_param_string('page', ''); // Not get_page_name for bootstrap order reasons
+    $page = get_param_string('page', '', INPUT_FILTER_GET_COMPLEX); // Not get_page_name for bootstrap order reasons
     return ($page == 'login');
 }

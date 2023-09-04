@@ -2953,35 +2953,80 @@ function _compare_ip_address(string $wild, array $full_parts, string $delimiter)
  * Check to see if an IP address is banned.
  *
  * @param  string $ip The IP address to check for banning
- * @param  boolean $force_db Force check via database
+ * @param  boolean $force_db Force check via database only
  * @param  boolean $handle_uncertainties Handle uncertainties (used for the external bans - if true, we may return null, showing we need to do an external check). Only works with $force_db.
+ * @param  ?boolean $is_unbannable Whether the IP is unbannable (returned by reference) (null: not set yet by caller)
+ * @param  ?integer $ban_until When the ban will expire, will always be more than the current timestamp (null: not set yet by caller / no expiration)
+ * @param  boolean $check_caching Whether to check internal run-time caching (disable if doing automated tests)
  * @return ?boolean Whether the IP address is banned (null: unknown)
  */
-function ip_banned(string $ip, bool $force_db = false, bool $handle_uncertainties = false) : ?bool
+function ip_banned(string $ip, bool $force_db = false, bool $handle_uncertainties = false, ?bool &$is_unbannable = null, ?int &$ban_until = null, bool $check_caching = true) : ?bool
 {
     // NB: This function will make the first query called, so we will be a bit smarter, checking for errors
 
+    $is_unbannable = false;
+    $ban_until = null;
+
     static $cache = [];
-    if ($handle_uncertainties) {
-        if (array_key_exists($ip, $cache)) {
-            return $cache[$ip];
-        }
+
+    $sz = serialize([$force_db, $handle_uncertainties]);
+    if ((isset($cache[$sz][$ip])) && ($check_caching)) {
+        $is_unbannable = $cache[$sz][$ip]['is_unbannable'];
+        $ban_until = $cache[$sz][$ip]['ban_until'];
+        return $cache[$sz][$ip]['ret'];
     }
 
+    // Edge case: No securitylogging addon
     if (!addon_installed('securitylogging')) {
-        return false;
-    }
-    if ($ip == '') {
-        return false;
+        $ret = false;
+        $cache[$sz][$ip] = [
+            'is_unbannable' => $is_unbannable,
+            'ban_until' => $ban_until,
+            'ret' => $ret,
+        ];
+        return $ret;
     }
 
-    // Check exclusions first
+    // Edge case: Commonly invalid IP
+    if ($ip == '') {
+        $ret = false;
+        $cache[$sz][$ip] = [
+            'is_unbannable' => $is_unbannable,
+            'ban_until' => $ban_until,
+            'ret' => $ret,
+        ];
+        return $ret;
+    }
+
+    // Edge case: Excluded via config option (different from checking i_ban_positive===false, as this option is referenced in antispam.php too)
     $_exclusions = get_option('spam_check_exclusions');
     $exclusions = explode(',', $_exclusions);
     foreach ($exclusions as $exclusion) {
         if (trim($ip) == $exclusion) {
-            return false;
+            $ret = false;
+            $is_unbannable = true;
+            $cache[$sz][$ip] = [
+                'is_unbannable' => $is_unbannable,
+                'ban_until' => $ban_until,
+                'ret' => $ret,
+            ];
+            return $ret;
         }
+    }
+
+    // Read in IP bans - we need to check both DB and .htaccess for completeness (expiring bans will not be in .htaccess)
+    $ip_bans = function_exists('persistent_cache_get') ? persistent_cache_get('IP_BANS') : null;
+    if ($ip_bans === null) {
+        $ip_bans = $GLOBALS['SITE_DB']->query_select('banned_ip', ['*'], [], '', null, 0, true);
+        if (!is_array($ip_bans)) { // LEGACY
+            $ip_bans = $GLOBALS['SITE_DB']->query_select('usersubmitban_ip', ['*'], [], '', null, 0, true);
+        }
+        if ($ip_bans !== null) {
+            persistent_cache_set('IP_BANS', $ip_bans);
+        }
+    }
+    if ($ip_bans === null) {
+        critical_error('DATABASE_FAIL');
     }
 
     global $SITE_INFO;
@@ -2989,26 +3034,12 @@ function ip_banned(string $ip, bool $force_db = false, bool $handle_uncertaintie
         $bans = [];
         $htaccess_file = cms_file_get_contents_safe(get_file_base() . '/.htaccess', FILE_READ_LOCK);
         $ban_count = preg_match_all('#\n(Require not ip|Require not Ip) (.*)#i', $htaccess_file, $bans); // We define 'ip' and 'Ip' due to Turkish issue
-        $ip_bans = [];
         for ($i = 0; $i < $ban_count; $i++) {
-            $ip_bans[$bans[1][$i]] = ['ip' => $bans[1][$i]];
-        }
-    } else {
-        $ip_bans = function_exists('persistent_cache_get') ? persistent_cache_get('IP_BANS') : null;
-        if ($ip_bans === null) {
-            $ip_bans = $GLOBALS['SITE_DB']->query_select('banned_ip', ['*'], [], '', null, 0, true);
-            if (!is_array($ip_bans)) { // LEGACY
-                $ip_bans = $GLOBALS['SITE_DB']->query_select('usersubmitban_ip', ['*'], [], '', null, 0, true);
-            }
-            if ($ip_bans !== null) {
-                persistent_cache_set('IP_BANS', $ip_bans);
-            }
-        }
-        if ($ip_bans === null) {
-            critical_error('DATABASE_FAIL');
+            $ip_bans[$bans[2][$i]] = ['ip' => ip_apache_to_wild($bans[2][$i])];
         }
     }
 
+    // Get IP components, used for wildcard checks
     $ip4 = (strpos($ip, '.') !== false);
     if ($ip4) {
         $ip_parts = explode('.', $ip);
@@ -3016,6 +3047,7 @@ function ip_banned(string $ip, bool $force_db = false, bool $handle_uncertaintie
         $ip_parts = explode(':', $ip);
     }
 
+    // Check all bans in the database
     $server_ips = null;
     foreach ($ip_bans as $ban) {
         if ((isset($ban['i_ban_until'])) && ($ban['i_ban_until'] < time())) {
@@ -3024,7 +3056,9 @@ function ip_banned(string $ip, bool $force_db = false, bool $handle_uncertaintie
         }
 
         if ((($ip4) && (_compare_ip_address($ban['ip'], $ip_parts, '.'))) || ((!$ip4) && (_compare_ip_address($ban['ip'], $ip_parts, ':')))) {
-            // Will ignore any bans that seem to be the server itself!
+            // Found a ban, which may be a positive or negative ban...
+
+            // Edge case: Do not consider bans for anything that would match the server's own IP or a localhost IP (may only match as a wildcard)
             if ($server_ips === null) {
                 $server_ips = get_server_ips();
             }
@@ -3034,24 +3068,93 @@ function ip_banned(string $ip, bool $force_db = false, bool $handle_uncertaintie
                 }
             }
 
+            // Get result
             if (array_key_exists('i_ban_positive', $ban)) {
                 $ret = ($ban['i_ban_positive'] == 1);
+                if (!$ret) {
+                    $is_unbannable = true;
+                }
+                $ban_until = $ban['i_ban_until'];
             } else {
+                // LEGACY
                 $ret = true;
+                $ban_until = null;
             }
 
-            if ($handle_uncertainties) {
-                $cache[$ip] = $ret;
-            }
+            $cache[$sz][$ip] = [
+                'is_unbannable' => $is_unbannable,
+                'ban_until' => $ban_until,
+                'ret' => $ret,
+            ];
             return $ret;
         }
     }
 
+    // Nothing found
     $ret = $handle_uncertainties ? null : false;
-    if ($handle_uncertainties) {
-        $cache[$ip] = $ret;
-    }
+    $cache[$sz][$ip] = [
+        'is_unbannable' => $is_unbannable,
+        'ban_until' => $ban_until,
+        'ret' => $ret,
+    ];
+
     return $ret;
+}
+
+/**
+ * Convert Apache netmask syntax in IP addresses to simple Composr wildcard syntax.
+ *
+ * @param  IP $ip The IP address (potentially encoded with netmask syntax)
+ * @return string The Composr-style IP wildcard
+ */
+function ip_apache_to_wild(string $ip) : string
+{
+    $matches = [];
+    if (preg_match('#^(.*)/(\d+)$#', $ip, $matches) == 0) {
+        $ip = normalise_ip_address($ip, 4);
+        if ($ip == '') {
+            return '';
+        }
+
+        return $ip;
+    }
+
+    $ip_section = $matches[1];
+    $range_bits = $matches[2];
+
+    $ipv6 = (strpos($ip, ':') !== false);
+    if ($ipv6) {
+        $delimiter = ':';
+        $bits_per_part = 16;
+        $expected_blank_part = '0000';
+    } else {
+        $delimiter = '.';
+        $bits_per_part = 8;
+        $expected_blank_part = '0';
+    }
+
+    if (($range_bits % $bits_per_part) != 0) {
+        return '';
+    }
+
+    $parts = explode($delimiter, $ip_section);
+    $ip = '';
+    $bits_used = 0;
+    foreach ($parts as $part) {
+        if ($ip != '') {
+            $ip .= $delimiter;
+        }
+        if ($bits_used >= $range_bits) {
+            if ($part != $expected_blank_part) {
+                return '';
+            }
+            $ip .= '*';
+        } else {
+            $ip .= $part;
+        }
+        $bits_used += $bits_per_part;
+    }
+    return $ip;
 }
 
 /**

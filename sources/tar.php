@@ -153,6 +153,7 @@ function tar_get_directory(array &$resource, bool $tolerate_errors = false) : ?a
             $size = octdec(rtrim(substr($header, 124, 12)));
             $mtime = octdec(rtrim(substr($header, 136, 12)));
             $chksum = octdec(rtrim(substr($header, 148, 8)));
+            $type_flag = substr($header, 156, 1);
             $block_size = file_size_to_tar_block_size($size);
             //$is_ok = substr($header, 156, 1) == '0';  Actually, this isn't consistently useful
 
@@ -167,7 +168,10 @@ function tar_get_directory(array &$resource, bool $tolerate_errors = false) : ?a
             }
 
             //if ($is_ok) {
-            if ($path == '././@LongLink') {
+            if ($type_flag == 'x' || $type_flag == 'g') {
+                // Unsupported pax header
+                fseek($myfile, $block_size, SEEK_CUR);
+            } elseif ($path == '././@LongLink') {
                 $next_name = fread($myfile, $size);
                 fseek($myfile, $block_size - $size, SEEK_CUR);
             } else {

@@ -60,6 +60,9 @@ function dispatch_member_mention_notifications(string $content_type, string $con
 
         $cma_ob = get_content_object($content_type);
         $info = $cma_ob->info();
+        if ($info === null) {
+            continue;
+        }
         list($content_title, $submitter_id, $cma_info, $row, , $content_url_email_safe, $cma_ob) = content_get_details($content_type, $content_id);
 
         if ($content_title === null) {

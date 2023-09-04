@@ -1,8 +1,28 @@
-<?php
+<?php /*
+
+ Composr
+ Copyright (c) ocProducts, 2004-2023
+
+ See docs/LICENSE.md for full licensing information.
+
+*/
+
+/**
+ * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
+ * @copyright  ocProducts Ltd
+ * @package    visualisation
+ */
+
+i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
+
+$error_msg = new Tempcode();
+if (!addon_installed__messaged('visualisation', $error_msg)) {
+    return $error_msg;
+}
 
 require_code('graphs');
 
-$color_pool = array();
+$color_pool = [];
 _generate_graph_color_pool($color_pool);
 
 echo '<div class="float-surrounder">';

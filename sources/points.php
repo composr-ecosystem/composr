@@ -351,13 +351,13 @@ function points_url(int $member_id, bool $skip_keep = false, ?int $send_amount =
     }
 
     if (get_forum_type() == 'cns') {
-        $url = $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, true, null, ['conversr_tab' => 'points', 'extra_get_params' => $map]);
+        $url = $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, !$skip_keep, null, ['conversr_tab' => 'points', 'extra_get_params' => $map]);
         if (!is_object($url)) {
             $url = make_string_tempcode($url);
         }
     } else {
         $map = array_merge($map, ['page' => 'points', 'type' => 'member', 'id' => $member_id]);
-        $url = build_url($map, get_module_zone('points'));
+        $url = build_url($map, get_module_zone('points'), [], false, false, $skip_keep);
     }
 
     return $url;

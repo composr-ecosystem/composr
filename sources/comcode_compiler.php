@@ -562,6 +562,9 @@ function __comcode_to_tempcode(string $comcode, int $source_member, bool $as_adm
     $emoticons = isset($GLOBALS['FORUM_DRIVER']) ? $GLOBALS['FORUM_DRIVER']->find_emoticons() : []; // We'll be needing the emoticon array
     $emoticon_start_chars = [];
     foreach (array_keys($emoticons) as $emoticon) {
+        if (is_integer($emoticon)) {
+            $emoticon = strval($emoticon);
+        }
         $emoticon_start_chars[$emoticon[0]] = true;
     }
     $shortcuts = [

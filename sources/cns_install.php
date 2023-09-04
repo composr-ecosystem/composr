@@ -986,7 +986,7 @@ function install_cns(?float $upgrade_from = null)
             '', // theme
             '', // title
             '', // photo_url
-            'themes/default/images/cns_default_avatars/default_set/cool_flare.png', // avatar_url
+            'themes/default/images/cns_default_avatars/default.png', // avatar_url
             '', // signature
             null, // preview_posts
             1, // reveal_age

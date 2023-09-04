@@ -76,8 +76,8 @@ function init__notifications()
 }
 
 /**
- * Wraps do_lang, keeping a record of the last call. You can use when building the notification $message.
- * This allows notification handlers to possibly repeat the call with a customised language string.
+ * Wraps do_lang, keeping a record of the last call. You can use when building the notification $message (i.e. the body NOT the subject).
+ * This allows notification handlers (e.g. push notifications) to possibly repeat the call with very customised output.
  * See do_lang for more documentation.
  *
  * @param  ID_TEXT $codename The language string codename
@@ -337,7 +337,13 @@ class Notification_dispatcher
         $no_cc = $this->no_cc;
 
         if ($GLOBALS['DEV_MODE']) {
-            if ((strpos($this->message, 'keep_devtest') !== false) && ($this->notification_code != 'ticket_reply') && (strpos($this->notification_code, 'error_occurred') !== false) && ($this->notification_code != 'hack_attack') && ($this->notification_code != 'auto_ban') && (strpos($this->message, running_script('index') ? static_evaluate_tempcode(build_url(['page' => '_SELF'], '_SELF', [], true, false, true)) : get_self_url_easy()) === false) && ((strpos($_SERVER['HTTP_REFERER'], 'keep_devtest') === false) || (strpos($this->message, $_SERVER['HTTP_REFERER']) === false))) { // Bad URL - it has to be general, not session-specific
+            if (
+                (strpos($this->message, 'keep_devtest') !== false) &&
+                (!in_array($this->notification_code, ['ticket_reply', 'hack_attack', 'auto_ban'])) &&
+                (strpos($this->notification_code, 'error_occurred') === false) &&
+                (strpos($this->message, running_script('index') ? static_evaluate_tempcode(build_url(['page' => '_SELF'], '_SELF', [], true, false, true)) : get_self_url_easy()) === false) &&
+                ((strpos($_SERVER['HTTP_REFERER'], 'keep_devtest') === false) || (strpos($this->message, $_SERVER['HTTP_REFERER']) === false))
+            ) { // Bad URL - it has to be general, not session-specific
                 fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
             }
         }

@@ -555,8 +555,8 @@ function compile_template(string $data, string $template_name, string $theme, st
                             $looked_up = tempcode_compiler_eval('return ' . $new_line . ';', $tpl_funcs, [], $cl);
                             if (!cms_empty_safe($looked_up)) {
                                 $new_line = '"' . php_addslashes($looked_up) . '"';
+                                tc_add_to_current_level_data($current_level_data, $just_done_string, $new_line, true);
                             }
-                            tc_add_to_current_level_data($current_level_data, $just_done_string, $new_line, true);
                         } else {
                             tc_add_to_current_level_data($current_level_data, $just_done_string, $new_line);
                         }

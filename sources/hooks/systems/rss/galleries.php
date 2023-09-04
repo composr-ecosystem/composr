@@ -69,7 +69,7 @@ class Hook_rss_galleries
             require_code('locations');
             $extra_where .= sql_region_filter('video', 'r.id');
         }
-        $query = 'SELECT r.*,\'video\' AS type,r.id AS id FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'videos r' . $extra_join . ' WHERE add_date>' . strval($cutoff) . ' AND ' . $filters . (((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) ? ' AND validated=1 ' : '') . $extra_where . ' ORDER BY add_date DESC';
+        $query = 'SELECT r.*,\'video\' AS type,r.id AS r_id FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'videos r' . $extra_join . ' WHERE add_date>' . strval($cutoff) . ' AND ' . $filters . (((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) ? ' AND validated=1 ' : '') . $extra_where . ' ORDER BY add_date DESC';
         $rows1 = $GLOBALS['SITE_DB']->query($query, $max, 0, false, false, ['title' => 'SHORT_TRANS', 'the_description' => 'LONG_TRANS__COMCODE']);
 
         $extra_join = '';
@@ -82,11 +82,15 @@ class Hook_rss_galleries
             require_code('locations');
             $extra_where .= sql_region_filter('image', 'r.id');
         }
-        $query = 'SELECT r.*,\'image\' AS type FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'images r' . $extra_join . ' WHERE add_date>' . strval($cutoff) . ' AND ' . $filters . (((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) ? ' AND validated=1 ' : '') . $extra_where . ' ORDER BY add_date DESC';
+        $query = 'SELECT r.*,\'image\' AS type,r.id AS r_id FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'images r' . $extra_join . ' WHERE add_date>' . strval($cutoff) . ' AND ' . $filters . (((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) ? ' AND validated=1 ' : '') . $extra_where . ' ORDER BY add_date DESC';
         $rows2 = browser_matches('itunes') ? [] : $GLOBALS['SITE_DB']->query($query, $max, 0, false, false, ['title' => 'SHORT_TRANS', 'the_description' => 'LONG_TRANS__COMCODE']);
 
         $rows = array_merge($rows1, $rows2);
         foreach ($rows as $row) {
+            // Workaround that some DB backends don't allow multiple fields to have the same name, so we have to use r_id for our specifically selected field instead of id
+            $row['id'] = $row['r_id'];
+            unset($row['r_id']);
+
             if (has_category_access(get_member(), 'galleries', $row['cat'])) {
                 $id = strval($row['id']);
                 $author = $GLOBALS['FORUM_DRIVER']->get_username($row['submitter'], false, USERNAME_DEFAULT_BLANK);

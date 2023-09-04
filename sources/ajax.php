@@ -564,6 +564,9 @@ function snippet_script()
     cms_ini_set('ocproducts.xss_detect', '0');
 
     $hook = filter_naughty_harsh(get_param_string('snippet'));
+    if ((!is_file(get_file_base() . '/sources/hooks/systems/snippets/' . $hook . '.php')) && (!is_file(get_file_base() . '/sources_custom/hooks/systems/snippets/' . $hook . '.php'))) {
+        warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
+    }
     require_code('hooks/systems/snippets/' . $hook, true);
     $object = object_factory('Hook_snippet_' . $hook);
     $tempcode = $object->run();

@@ -271,6 +271,17 @@ class Module_contact_member
             enforce_captcha();
         }
 
+        $subject = trim(post_param_string('subject'));
+        $message = trim(post_param_string('message'));
+
+        // Stop spam bots, who are not subject to normal JS validation and may remove hidden require field
+        if ($subject == '') {
+            warn_exit(do_lang_tempcode('NO_PARAMETER_SENT', 'subject'));
+        }
+        if ($message == '') {
+            warn_exit(do_lang_tempcode('NO_PARAMETER_SENT', 'message'));
+        }
+
         $member_id = $this->member_id;
         $to_name = $this->to_name;
 

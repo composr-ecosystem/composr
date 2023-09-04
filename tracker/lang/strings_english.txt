@@ -264,7 +264,7 @@ $s_project_view_state_enum_string = '10:public,50:private';
 $s_view_state_enum_string = '10:public,50:private';
 
 $s_priority_enum_string = '10:none,20:low,30:normal,40:high,50:urgent,60:immediate';
-$s_severity_enum_string = '10:feature,20:trivial,30:text,40:tweak,50:minor,60:major,70:crash,80:block';
+$s_severity_enum_string = '10:Feature-request,20:Trivial-bug,50:Minor-bug,60:Major-bug,95:Security-hole';
 $s_reproducibility_enum_string = '10:always,30:sometimes,50:random,70:have not tried,90:unable to reproduce,100:N/A';
 $s_status_enum_string = '10:new,20:feedback,30:acknowledged,40:confirmed,50:assigned,80:resolved,90:closed';
 $s_resolution_enum_string = '10:open,20:fixed,30:reopened,40:unable to reproduce,50:not fixable,60:duplicate,70:no change required,80:suspended,90:won\'t fix';
@@ -1816,13 +1816,16 @@ $s_undo = 'Undo';
 // Composr - new strings
 $s_cms_my_view_welcome_message = 'Welcome to the feature tracker, the tool used to plan new versions of %1$s (amongst other things). All %2$s planned features are organised on this feature tracker. Please be aware that %3$s maintains no formal roadmap for %1$s (for good reasons that we explain in our FAQ &ndash; in summary, it wouldn\'t work) so no conclusions about &ldquo;what is around the corner&rdquo; should be drawn from the issues here (unless you can sponsor/contribute things). It does however provide a real foundation for transparency and engagement. For more information, see the appropriate part of the <a href="%4$s">providing feedback tutorial</a>.';
 $s_cms_not_logged_in_bad = '<strong>You are not logged in</strong>. This means you will not get any e-mail notifications, and if you reply we will not know for sure you are the original poster of the issue.';
-$s_cms_bug_report_guidance = 'Bug reporting guidance is in the <a href="%1$s">providing feedback tutorial</a>.';
+$s_cms_bug_report_guidance = 'This is the public tracker for features/bugs, not a private support system and not a discussion forum. Bug reporting guidance is in the <a href="%1$s">providing feedback tutorial</a>.';
 $s_cms_sourcecode_link = 'GitLab';
 $s_cms_home_link = 'compo.sr';
 $s_cms_login_instruct = 'Login using your regular %1$s username and password.';
 $s_cms_hint_message = '<strong>Hint</strong>: To find bugs with no risks attach, do a search with the following tag filter&hellip; <samp>-Existing tags,-Breaks themes,-Breaks translations significantly,-Changes core website behaviour,-Core rearchitecting,-Creates Comcode incompatibility,-Database change,-Deprecates functionality,-General incompatibility,-Large database change,-Major rearchitecting,-Risk of breaking upgrade bootstraper,-Type: Cross-cutting feature</samp>';
 $s_cms_return_instruct = '<a class="back-to-login-link pull-left" href="%1$s">Return to the main %2$s website</a>.';
 $s_cms_do_not_reply = 'THIS IS AN AUTOMATED E-MAIL. PLEASE DO NOT REPLY DIRECTLY. Reply from within the tracker itself.';
+$s_cms_not_myself = 'Not myself';
+$s_cms_mass_mail_header = "THIS IS AN AUTOMATED E-MAIL. PLEASE DO NOT REPLY DIRECTLY. Reply from within the tracker itself.\n\n\n";
+$s_cms_mass_mail_footer = "\n\n------------------\n\nTo unsubscribe from e-mails like these, uncheck your e-mail notifications in your account preferences (%1\$s)";
 
 // Composr - overridden strings
 $s_status_enum_string = '10:non-assigned,20:feedback,30:acknowledged,40:confirmed,50:assigned,80:resolved,90:closed';

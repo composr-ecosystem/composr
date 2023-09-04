@@ -715,6 +715,9 @@ function get_catalogue_entries(string $catalogue_name, ?int $category_id, ?int $
         } elseif (($order_by == 'compound_rating') || ($order_by == 'average_rating') || ($order_by == 'fixed_random')) {
             $ob = object_factory('Hook_content_meta_aware_catalogue_entry');
             $info = $ob->info();
+            if ($info === null) {
+                fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            }
             $bits = _catalogues_filtercode($GLOBALS['SITE_DB'], $info, $catalogue_name, $extra_join, $order_by, '', [], 'r'); // Used to get JOIN for ordering
             if ($bits !== null) {
                 list($virtual_order_by,) = $bits;
@@ -724,6 +727,9 @@ function get_catalogue_entries(string $catalogue_name, ?int $category_id, ?int $
         } elseif ((is_numeric($order_by)) && (isset($fields[intval($order_by)]))) { // Ah, so it's saying the nth field of this catalogue
             $ob = object_factory('Hook_content_meta_aware_catalogue_entry');
             $info = $ob->info();
+            if ($info === null) {
+                fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            }
             $order_by_field_id = $fields[intval($order_by)]['id'];
             $bits = _catalogues_filtercode($GLOBALS['SITE_DB'], $info, $catalogue_name, $extra_join, 'field_' . strval($order_by_field_id), '', [], 'r'); // Used to get JOIN for ordering
             if ($bits !== null) {

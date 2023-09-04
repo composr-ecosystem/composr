@@ -2243,7 +2243,9 @@ class DatabaseConnector
                             $source_user = $field . '__source_user';
                             $parsed = $field . '__text_parsed';
 
-                            $query = $before_from . ',' . $source_user . ',' . $parsed . substr($query, $from_pos);
+                            if ($before_from != 'SELECT ' . $field_prefix . '*') {
+                                $query = $before_from . ',' . $source_user . ',' . $parsed . substr($query, $from_pos);
+                            }
                         }
                     }
                 }

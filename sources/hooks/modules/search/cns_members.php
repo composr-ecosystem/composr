@@ -339,7 +339,7 @@ class Hook_search_cns_members extends FieldsSearchHook
         $where_clause .= ' AND r.id IS NOT NULL';
 
         // Calculate and perform query
-        $rows = get_search_rows(null, 'id', $search_query, $content_where, $where_clause, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction, 'f_members r JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields a ON r.id=a.mf_member_id' . $table, 'r.*,a.*,r.id AS id', ['!' => '!', 'm_signature' => 'LONG_TRANS__COMCODE'] + $trans_fields, $raw_fields);
+        $rows = get_search_rows(null, 'id', $search_query, $content_where, $where_clause, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction, 'f_members r JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields a ON r.id=a.mf_member_id' . $table, 'r.*,a.*,r.id AS r_id', ['!' => '!', 'm_signature' => 'LONG_TRANS__COMCODE'] + $trans_fields, $raw_fields);
 
         $out = [];
         foreach ($rows as $i => $row) {

@@ -66,7 +66,7 @@ For example, [tt]mycomposrtestsite.com[/tt], with a line like the following in y
 127.0.0.1 mycomposrtestsite.com
 [/code]
 
-All major operating systems support a hosts file. Rackspace provide a nice [url="tutorial for editing the hosts file"]https://www.howtogeek.com/howto/27350/beginner-geek-how-to-edit-your-hosts-file/[/url].
+All major operating systems support a hosts file. Rackspace provide a nice [url="tutorial for editing the hosts file"]https://www.howtogeek.com/27350/beginner-geek-how-to-edit-your-hosts-file/[/url].
 
 Note there is no need to use a real domain name, it can be completely made up.
 

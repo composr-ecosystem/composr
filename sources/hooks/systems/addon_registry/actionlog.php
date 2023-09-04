@@ -232,7 +232,7 @@ class Hook_addon_registry_actionlog
             'TEXT_ID' => placeholder_codename(),
             'HEADER_ROW' => $header_row,
             'RESULT_ENTRIES' => $result_entries,
-            'FOOTER_ROW' => new Tempcode(),
+            'FOOTER_ROW' => null,
             'MESSAGE' => '',
             'SORT' => $sort,
             'PAGINATION' => placeholder_pagination(),

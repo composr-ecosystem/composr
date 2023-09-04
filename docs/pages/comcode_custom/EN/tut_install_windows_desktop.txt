@@ -70,7 +70,7 @@ Follow the instructions to get it integrated with your web server: these may be 
 [title="3"]MySQL[/title]
 
 [media float="right" framed="0"]data_custom/images/docs/tut_install_windows_desktop/mysql.png[/media]
-Go to http://mysql.com and download and install the latest stable Windows release. MySQL comes with a powerful Windows installer, so configuring MySQL itself should be a walk in the park.
+Go to http://mysql.com/ and download and install the latest stable Windows release. MySQL comes with a powerful Windows installer, so configuring MySQL itself should be a walk in the park.
 
 Depending on your PHP installation, you may need to enable the [tt]mysql[/tt] PHP extension in the [tt]php.ini[/tt] file, and then to restart your web server. Also enable GD2 if it is not already enabled.
 

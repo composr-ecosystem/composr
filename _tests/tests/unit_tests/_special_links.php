@@ -81,10 +81,12 @@ class _special_links_test_set extends cms_test_case
             'https://www.bing.com/webmasters/about/' => false,
             'https://webmaster.yandex.com/welcome/' => false,
             'https://www.thehoth.com/' => true,
+            'https://www.authoritylabs.com/ranking-tool/' => true,
+            'https://moz.com/' => true,
             //'https://serps.com/tools/' => true,   Unreliable
             'https://validator.w3.org/' => true,
             'https://jigsaw.w3.org/css-validator/' => true,
-            'https://achecker.achecks.ca/checker/index.php' => true,
+            'https://achecks.org/checker/index.php' => true,
             'https://www.bing.com/webmasters/help/url-inspection-55a30305' => true,
             'https://developers.google.com/search/docs/appearance/structured-data' => true,
             'https://webmaster.yandex.com/tools/microtest/' => false,

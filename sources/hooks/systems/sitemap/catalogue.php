@@ -249,35 +249,37 @@ class Hook_sitemap_catalogue extends Hook_sitemap_content
                     require_code('content');
                     $cc_cma_ob = get_content_object('catalogue_category');
                     $cc_cma_info = $cc_cma_ob->info();
-                    $cc_select = $this->select_fields($cc_cma_info);
+                    if ($cc_cma_info !== null) {
+                        $cc_select = $this->select_fields($cc_cma_info);
 
-                    $children_entries = [];
-                    $start = 0;
-                    do {
-                        $where = ['c_name' => $content_id, 'cc_parent_id' => null];
-                        $rows = $GLOBALS['SITE_DB']->query_select('catalogue_categories', $cc_select, $where, '', $max_rows_per_loop, $start);
-                        foreach ($rows as $child_row) {
-                            $child_page_link = $zone . ':' . $page . ':category:' . strval($child_row['id']);
-                            $child_node = $child_hook_ob->get_node($child_page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level + 1, $options, $zone, $meta_gather, $child_row);
-                            if ($child_node !== null) {
-                                if (($meta_gather & SITEMAP_GATHER_IMAGE) != 0) {
-                                    $test_icon = 'admin/view_this_category';
-                                    $test_image = find_theme_image('icons/' . $test_icon, true);
-                                    if ($test_image != '') {
-                                        $child_node['extra_meta']['image'] = $test_image;
-                                        $struct['extra_meta']['icon'] = $test_icon;
+                        $children_entries = [];
+                        $start = 0;
+                        do {
+                            $where = ['c_name' => $content_id, 'cc_parent_id' => null];
+                            $rows = $GLOBALS['SITE_DB']->query_select('catalogue_categories', $cc_select, $where, '', $max_rows_per_loop, $start);
+                            foreach ($rows as $child_row) {
+                                $child_page_link = $zone . ':' . $page . ':category:' . strval($child_row['id']);
+                                $child_node = $child_hook_ob->get_node($child_page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level + 1, $options, $zone, $meta_gather, $child_row);
+                                if ($child_node !== null) {
+                                    if (($meta_gather & SITEMAP_GATHER_IMAGE) != 0) {
+                                        $test_icon = 'admin/view_this_category';
+                                        $test_image = find_theme_image('icons/' . $test_icon, true);
+                                        if ($test_image != '') {
+                                            $child_node['extra_meta']['image'] = $test_image;
+                                            $struct['extra_meta']['icon'] = $test_icon;
+                                        }
                                     }
+
+                                    $children_entries[] = $child_node;
                                 }
-
-                                $children_entries[] = $child_node;
                             }
-                        }
-                        $start += $max_rows_per_loop;
-                    } while (count($rows) == $max_rows_per_loop);
+                            $start += $max_rows_per_loop;
+                        } while (count($rows) == $max_rows_per_loop);
 
-                    sort_maps_by($children_entries, 'title', false, true);
+                        sort_maps_by($children_entries, 'title', false, true);
 
-                    $children = array_merge($children, $children_entries);
+                        $children = array_merge($children, $children_entries);
+                    }
                 }
 
                 $struct['children'] = $children;

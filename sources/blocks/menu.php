@@ -97,12 +97,12 @@ class Block_menu
 
         $silent_failure = ((isset($map['silent_failure']) ? $map['silent_failure'] : '0') == '1');
 
-        $tray_status = isset($map['tray_status']) ? $map['tray_status'] : '';
+        $tray_status = empty($map['tray_status']) ? 'tray_closed' : $map['tray_status'];
 
         $javascript_highlighting = ((isset($map['javascript_highlighting']) ? $map['javascript_highlighting'] : '1') == '1');
 
         require_code('menus');
-        list($content, $root, $flattened) = build_menu($type, $menu, false, !$javascript_highlighting);
+        list($content, $root, $flattened) = build_menu($type, $menu, false, !$javascript_highlighting, $tray_status);
         if ($flattened) {
             $LANGS_REQUESTED = $bak; // We've flattened with apply_quick_caching, we don't need to load up all those language files next time
         }
@@ -157,7 +157,7 @@ function block_menu__cache_on(array $map) : array
         isset($map['type']) ? $map['type'] : 'embossed',
         isset($map['title']) ? $map['title'] : '',
         ((isset($map['silent_failure']) ? $map['silent_failure'] : '0') == '1'),
-        isset($map['tray_status']) ? $map['tray_status'] : '',
+        empty($map['tray_status']) ? 'tray_closed' : $map['tray_status'],
     ];
 
     if (!$javascript_highlighting) {

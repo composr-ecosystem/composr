@@ -309,7 +309,7 @@ Another approach is to use JavaScript to randomly decide the version ourselves, 
 [color="red"]The below instructions need updating, as Google Analytics Content Experiments are now Google Optimize, which we have not tested.[/color]
 
 For this to work we need to:
-1) [url="Follow Google's tutorial"]https://marketingplatform.google.com/about/optimize[/url]
+1) [url="Follow Google's tutorial"]https://support.google.com/optimize/answer/6197440?hl=en#zippy=%2Cin-this-article[/url]
 2) Write the Composr code to pick the random version
 3) Don't put any code in [tt]HTML_HEAD.tpl[/tt] (remove it if you added it already)
 

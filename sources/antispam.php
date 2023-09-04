@@ -192,7 +192,7 @@ function check_rbl(string $rbl, string $user_ip, bool $we_have_a_result_already 
     }
 
     // Blocking based on dnsbl.tornevall.org settings (used by default because stopforumspam syndicates to this and ask us to check this first, for performance)
-    // http://dnsbl.tornevall.org/?do=usage
+    // https://docs.tornevall.net/display/TORNEVALL/DNSBLv5%3A+About+and+usage
     if (strpos($rbl, 'tornevall.org') !== false) {
         $block = [
             'tornevall_abuse' => true,              // TornevallRBL: Block on 'abuse'

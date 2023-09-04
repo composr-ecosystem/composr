@@ -192,6 +192,7 @@ Sample spreadsheet files for all the other blocks are provided under [tt]uploads
             'themes/default/images/icons_monochrome/sortable_tables/filter.svg',
             'themes/default/images/icons_monochrome/sortable_tables/sortable.svg',
             'themes/default/images/icons_monochrome/sortable_tables/index.html',
+            'site/pages/minimodules_custom/_graph_color_pool.php',
         ];
     }
 }

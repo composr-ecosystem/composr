@@ -98,7 +98,7 @@ function check_csrf_token(?string $token)
         }
 
         $session_match = false;
-        if ($token_row['session_id'] == get_session_id()) {
+        if ($token_row['session_id'] == get_session_id() || $token_row['session_id'] == get_session_id(true)) {
             $session_match = true;
         }
 

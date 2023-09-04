@@ -1111,7 +1111,11 @@ function convert_url_to_path(string $url) : ?string
 function fixup_protocolless_urls(string $in) : string
 {
     require_code('urls2');
-    return _fixup_protocolless_urls($in);
+    $ret = _fixup_protocolless_urls($in);
+    if ((strlen($ret) >= 255) && (strlen($in) < 255)) {
+        return $in; // Don't allow transformations to create a fatal error by a URL too long (this is worse than just leaving a broken URL)
+    }
+    return $ret;
 }
 
 /**

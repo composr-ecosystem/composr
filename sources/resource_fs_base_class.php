@@ -261,6 +261,9 @@ abstract class Resource_fs_base
     protected function _has_parent_child_relationship(?string $above, string $under) : ?array
     {
         $sub_info = $this->_get_cma_info($under);
+        if ($sub_info === null) {
+            return null;
+        }
 
         $is_file = $this->is_file_type($under);
 
@@ -299,6 +302,11 @@ abstract class Resource_fs_base
         }
 
         $folder_info = ($above === null) ? $sub_info : $this->_get_cma_info($above);
+
+        if ($folder_info === null) {
+            return null;
+        }
+
         return [
             'cat_field' => $sub_info['parent_category_field'],
             'linker_table' => $is_file ? null : $sub_info['parent_spec__table_name'],
@@ -1257,6 +1265,9 @@ abstract class Resource_fs_base
         }
 
         $cma_info = $this->_get_cma_info($resource_type);
+        if ($cma_info === null) {
+            return;
+        }
         $permission_module = $cma_info['permission_module'];
         if (is_array($permission_module)) {
             $permission_module = array_pop($permission_module);
@@ -1300,6 +1311,9 @@ abstract class Resource_fs_base
         }
 
         $cma_info = $this->_get_cma_info($resource_type);
+        if ($cma_info === null) {
+            return;
+        }
         $permission_module = $cma_info['permission_module'];
         if (is_array($permission_module)) {
             $permission_module = array_pop($permission_module);
@@ -1369,6 +1383,9 @@ abstract class Resource_fs_base
         }
 
         $cma_info = $this->_get_cma_info($resource_type);
+        if ($cma_info === null) {
+            return [];
+        }
         $permission_module = $cma_info['permission_module'];
         if (is_array($permission_module)) {
             $permission_module = array_pop($permission_module);
@@ -1423,6 +1440,9 @@ abstract class Resource_fs_base
         }
 
         $cma_info = $this->_get_cma_info($resource_type);
+        if ($cma_info === null) {
+            return;
+        }
         $permission_module = $cma_info['permission_module'];
         if (is_array($permission_module)) {
             $permission_module = array_pop($permission_module);
@@ -1486,6 +1506,9 @@ abstract class Resource_fs_base
         }
 
         $cma_info = $this->_get_cma_info($resource_type);
+        if ($cma_info === null) {
+            return [];
+        }
         $permission_module = $cma_info['permission_module'];
         if (is_array($permission_module)) {
             $permission_module = array_pop($permission_module);
@@ -1537,6 +1560,9 @@ abstract class Resource_fs_base
         }
 
         $cma_info = $this->_get_cma_info($resource_type);
+        if ($cma_info === null) {
+            return;
+        }
         $permission_module = $cma_info['permission_module'];
         if (is_array($permission_module)) {
             $permission_module = array_pop($permission_module);
@@ -1572,6 +1598,9 @@ abstract class Resource_fs_base
         }
 
         $cma_info = $this->_get_cma_info($resource_type);
+        if ($cma_info === null) {
+            return null;
+        }
         $permission_module = $cma_info['permission_module'];
         if (is_array($permission_module)) {
             $permission_module = array_pop($permission_module);
@@ -1660,6 +1689,9 @@ abstract class Resource_fs_base
         }
 
         $cma_info = $this->_get_cma_info($resource_type);
+        if ($cma_info === null) {
+            return;
+        }
         $permission_module = $cma_info['permission_module'];
         if (is_array($permission_module)) {
             $permission_module = array_pop($permission_module);
@@ -1708,6 +1740,9 @@ abstract class Resource_fs_base
         }
 
         $cma_info = $this->_get_cma_info($resource_type);
+        if ($cma_info === null) {
+            return [];
+        }
         $permission_module = $cma_info['permission_module'];
         if (is_array($permission_module)) {
             $permission_module = array_pop($permission_module);
@@ -1803,6 +1838,9 @@ abstract class Resource_fs_base
         }
 
         $cma_info = $this->_get_cma_info($resource_type);
+        if ($cma_info === null) {
+            return;
+        }
         $permission_module = $cma_info['permission_module'];
         if (is_array($permission_module)) {
             $permission_module = array_pop($permission_module);
@@ -1844,6 +1882,9 @@ abstract class Resource_fs_base
         }
 
         $cma_info = $this->_get_cma_info($resource_type);
+        if ($cma_info === null) {
+            return [];
+        }
         $permission_module = $cma_info['permission_module'];
         if (is_array($permission_module)) {
             $permission_module = array_pop($permission_module);
@@ -2029,6 +2070,9 @@ abstract class Resource_fs_base
     protected function _resource_load_extend(string $resource_type, string $resource_id, array &$properties, string $filename, string $path)
     {
         $cma_info = $this->_get_cma_info($resource_type);
+        if ($cma_info === null) {
+            return;
+        }
         $db = $cma_info['db'];
 
         $reserved_fields = [
@@ -2151,6 +2195,9 @@ abstract class Resource_fs_base
     protected function _resource_save_extend_pre(array &$properties, string $resource_type, string $filename, string $label)
     {
         $cma_info = $this->_get_cma_info($resource_type);
+        if ($cma_info === null) {
+            return;
+        }
         $db = $cma_info['db'];
 
         // New Attachment IDs need generating and substituting
@@ -2197,6 +2244,9 @@ abstract class Resource_fs_base
         }
 
         $cma_info = $this->_get_cma_info($resource_type);
+        if ($cma_info === null) {
+            return;
+        }
         $db = $cma_info['db'];
 
         // Alternative IDs
@@ -2356,6 +2406,9 @@ abstract class Resource_fs_base
         }
 
         $cma_info = $this->_get_cma_info($type);
+        if ($cma_info === null) {
+            return [];
+        }
         $db = $cma_info['db'];
 
         require_code('fields');
@@ -2423,6 +2476,9 @@ abstract class Resource_fs_base
         }
 
         $cma_info = $this->_get_cma_info($type);
+        if ($cma_info === null) {
+            return [];
+        }
         $db = $cma_info['db'];
 
         $properties = [];
@@ -2473,6 +2529,9 @@ abstract class Resource_fs_base
         }
 
         $cma_info = $this->_get_cma_info($type);
+        if ($cma_info === null) {
+            return;
+        }
         $db = $cma_info['db'];
 
         $existing = get_bound_content_entry($type, $id);
@@ -2550,14 +2609,17 @@ abstract class Resource_fs_base
 
         // Find folders
         foreach ($folder_types as $resource_type) {
+            $folder_info = $this->_get_cma_info($resource_type);
+            if ($folder_info === null) {
+                continue;
+            }
+
             $relationship = $this->_has_parent_child_relationship($cat_resource_type, $resource_type);
             if ($relationship === null) {
                 continue;
             }
 
             $_cat_id = ($relationship['cat_field_numeric'] ? (($cat_id == '') ? null : intval($cat_id)) : $cat_id);
-
-            $folder_info = $this->_get_cma_info($resource_type);
 
             $select = [];
             $table = $folder_info['table'] . ' main';
@@ -2618,12 +2680,16 @@ abstract class Resource_fs_base
 
         // Find files
         foreach ($file_types as $resource_type) {
+            $file_info = $this->_get_cma_info($resource_type);
+            if ($file_info === null) {
+                continue;
+            }
+
             $relationship = $this->_has_parent_child_relationship($cat_resource_type, $resource_type);
             if ($relationship === null) {
                 continue;
             }
 
-            $file_info = $this->_get_cma_info($resource_type);
             $where = [];
             if ($this->folder_resource_type !== null) {
                 $_cat_id = ($relationship['cat_field_numeric'] ? (($cat_id == '') ? null : intval($cat_id)) : $cat_id);
@@ -2665,29 +2731,31 @@ abstract class Resource_fs_base
             list($cat_resource_type, $cat_id) = $this->folder_convert_filename_to_id(implode('/', $meta_dir));
             require_code('content');
             $folder_info = $this->_get_cma_info($cat_resource_type);
-            $folder = content_get_row($cat_id, $folder_info);
+            if ($folder_info !== null) {
+                $folder = content_get_row($cat_id, $folder_info);
 
-            $filetime = null;
-            if (method_exists($this, '_get_file_edit_date')) {
-                $filetime = $this->_get_folder_edit_date($folder, end($meta_dir));
-            }
-            if ($filetime === null) {
-                if ($folder_info['edit_time_field'] !== null) {
-                    $filetime = $folder[$folder_info['edit_time_field']];
+                $filetime = null;
+                if (method_exists($this, '_get_file_edit_date')) {
+                    $filetime = $this->_get_folder_edit_date($folder, end($meta_dir));
                 }
                 if ($filetime === null) {
-                    if ($folder_info['add_time_field'] !== null) {
-                        $filetime = $folder[$folder_info['add_time_field']];
+                    if ($folder_info['edit_time_field'] !== null) {
+                        $filetime = $folder[$folder_info['edit_time_field']];
+                    }
+                    if ($filetime === null) {
+                        if ($folder_info['add_time_field'] !== null) {
+                            $filetime = $folder[$folder_info['add_time_field']];
+                        }
                     }
                 }
-            }
 
-            $listing[] = [
-                RESOURCE_FS_SPECIAL_DIRECTORY_FILE,
-                COMMANDR_FS_FILE,
-                null/*don't calculate a filesize*/,
-                $filetime,
-            ];
+                $listing[] = [
+                    RESOURCE_FS_SPECIAL_DIRECTORY_FILE,
+                    COMMANDR_FS_FILE,
+                    null/*don't calculate a filesize*/,
+                    $filetime,
+                ];
+            }
         }
 
         return $listing;

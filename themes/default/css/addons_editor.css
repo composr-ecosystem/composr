@@ -24,10 +24,10 @@
 	vertical-align: middle;
 }
 
-.status-green {
+.status-green, td.bundled {
 	color: {$GET,green_highlight_text} !important;
 }
 
-.status-orange {
+.status-orange, td.non_bundled {
 	color: {$GET,orange_highlight_text} !important;
 }

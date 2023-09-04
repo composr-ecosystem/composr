@@ -74,7 +74,7 @@ class Block_main_multi_content
     {
         $info = [];
         $info['cache_on'] = <<<'PHP'
-        (preg_match('#<\w+>#', (array_key_exists('filter', $map) ? $map['filter'] : '')) != 0)
+        ((array_key_exists('check', $map) && $map['check'] == '1') || (preg_match('#<\w+>#', (array_key_exists('filter', $map) ? $map['filter'] : '')) != 0))
         ?
         null
         :
@@ -100,7 +100,6 @@ class Block_main_multi_content
             array_key_exists('select_b', $map) ? $map['select_b'] : '',
             array_key_exists('zone', $map) ? $map['zone'] : '_SEARCH',
             array_key_exists('sort', $map) ? $map['sort'] : 'recent',
-            array_key_exists('check', $map) ? ($map['check'] == '1') : true,
             empty($map['render_mode']) ? 'boxes' : $map['render_mode'],
         ]
 PHP;

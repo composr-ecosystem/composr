@@ -97,12 +97,12 @@ function test_password(string $password, string $username = '', string $email_ad
         $strength += 1.0;
     }
 
-    // Consider lowercase letters
+    // Consider lower case letters
     if (preg_match('#[a-z]#', $password) == 1) {
         $strength += 2.6;
     }
 
-    // Consider uppercase letters
+    // Consider upper case letters
     if (preg_match('#[A-Z]#', $password) == 1) {
         $strength += 2.6;
     }

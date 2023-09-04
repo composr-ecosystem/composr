@@ -229,7 +229,10 @@ function _upgrader_file_upgrade_screen() : string
                     $addon_file_path = $upgrade_file['path'];
                     if (strpos($addon_data, '\'' . addslashes($addon_file_path) . '\'') !== false) {
                         $found = $addon_name;
-                        break;
+                        if (file_exists(get_file_base() . '/sources/hooks/systems/addon_registry/' . $found . '.php')) {
+                            break;
+                        }
+                        // ^ otherwise keep looking for an addon we have installed containing this file
                     }
                 }
             }
@@ -268,6 +271,21 @@ function _upgrader_file_upgrade_screen() : string
         }
     }
 
+    $files_previous_path = 'data/files_previous.bin';
+    $file_data = tar_get_file($upgrade_resource, $files_previous_path);
+    if ($file_data !== null) {
+        $files_previous = unserialize($file_data['data']);
+    } else {
+        $files_previous = [];
+    }
+    $files_current_path = 'data/files.bin';
+    $file_data = tar_get_file($upgrade_resource, $files_current_path);
+    if ($file_data !== null) {
+        $files_current = unserialize($file_data['data']);
+    } else {
+        $files_current = [];
+    }
+
     // Copy it into our archived addon so that addon is kept up-to-date
     foreach ($files_for_tar_updating as $found => $files) {
         $old_addon_file = tar_open(get_file_base() . '/imports/addons/' . $found . '.tar', 'rb');
@@ -276,9 +294,20 @@ function _upgrader_file_upgrade_screen() : string
             // New version of TAR file
             $new_addon_file = tar_open(get_file_base() . '/imports/addons/' . $found . '.new.tar', 'wb');
 
-            // Add files from old TAR file, except ones we are replacing
+            // Add files from old TAR file, except ones we are replacing or ones that should no longer exist
             foreach ($directory2 as $d) {
+                if (substr($d['path'], -1) == '/') {
+                    // Ignore folders
+                    continue;
+                }
+
                 if (array_key_exists($d['path'], $files)) {
+                    // We are replacing this
+                    continue;
+                }
+
+                if ((array_key_exists($d['path'], $files_previous)) && (!array_key_exists($d['path'], $files_current))) {
+                    // Has been deleted
                     continue;
                 }
 

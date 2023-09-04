@@ -107,6 +107,14 @@ class template_previews_meta_test_set extends cms_test_case
                 if (in_array($matches[1][$i], [
                     'iframe',
                     'overlay',
+                    'block_main_members_boxes',
+                    'block_main_members_photos',
+                    'block_main_members_media',
+                    'block_main_members_avatars',
+                    'block_main_members_complex_boxes',
+                    'block_main_members_complex_photos',
+                    'block_main_members_complex_media',
+                    'block_main_members_complex_avatars',
                 ])) {
                     continue;
                 }

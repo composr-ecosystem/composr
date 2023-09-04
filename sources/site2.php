@@ -310,7 +310,7 @@ function page_not_found(string $page, string $zone) : object
 
             $threshold = 75.0;
             if (($similarity > $threshold) && (has_page_access(get_member(), $_page, $_zone))) {
-                $did_mean[$similarity] = [$_zone, $_page];
+                $did_mean[intval($similarity * 10000000.0)] = [$_zone, $_page];
             }
         }
     }

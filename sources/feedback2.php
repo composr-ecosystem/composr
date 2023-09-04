@@ -58,6 +58,9 @@ function set_comment_forum_for(string $feedback_code, ?string $category_id, stri
         require_code('hooks/systems/content_meta_aware/' . filter_naughty_harsh($cma_hook, true));
         $cma_ob = object_factory('Hook_content_meta_aware_' . filter_naughty_harsh($cma_hook, true));
         $info = $cma_ob->info();
+        if ($info === null) {
+            return;
+        }
         $category_is_string = (isset($info['category_is_string']) && $info['category_is_string']);
         $topics = [];
         $start = 0;

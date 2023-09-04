@@ -496,7 +496,7 @@ function _chat_messages_script_ajax(int $room_id, bool $backlog = false, ?int $m
             $moderator = false;
         }
 
-        if ((addon_installed('actionlog')) && (has_actual_page_access(get_member(), 'admin_actionlog')) && (preg_match('#[:\.]#', $_message['ip_address']) != 0)) {
+        if ((addon_installed('actionlog')) && (has_actual_page_access(get_member(), 'admin_ip_ban')) && (preg_match('#[:\.]#', $_message['ip_address']) != 0)) {
             if (is_guest($_message['member_id'])) {
                 $ban_url = build_url(['page' => 'admin_ip_ban', 'type' => 'toggle_ip_ban', 'id' => $_message['ip_address']], get_module_zone('admin_ip_ban'));
             } else {
@@ -506,7 +506,7 @@ function _chat_messages_script_ajax(int $room_id, bool $backlog = false, ?int $m
             $ban_url = new Tempcode();
         }
 
-        if (($room_id != -1) && (addon_installed('actionlog')) && (addon_installed('securitylogging')) && ((has_actual_page_access(get_member(), 'admin_actionlog')) || (has_actual_page_access(get_member(), 'cms_chat')))) {
+        if (($room_id != -1) && (addon_installed('actionlog')) && (addon_installed('securitylogging')) && ((has_actual_page_access(get_member(), 'admin_ip_ban')) || (has_actual_page_access(get_member(), 'cms_chat')))) {
             $staff_actions = do_template('CHAT_STAFF_ACTIONS', [
                 '_GUID' => 'd3fbcaa9eee688452091583ee436e465',
                 'CHAT_BAN_URL' => $chat_ban_url,

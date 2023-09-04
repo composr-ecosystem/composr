@@ -79,8 +79,6 @@ function authors_script()
         }
     }
 
-    $rows = array_unique($rows);
-
     $field_name = filter_naughty_harsh(get_param_string('field_name'));
 
     $authors = [];

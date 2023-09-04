@@ -211,7 +211,7 @@ Note that there is no guarantee there are not ways that cunning super-moderators
 Composr has a special feature to help you diagnose problems with your permission settings.
 [list="1"]
 [*] To use this feature you need to either use:
-1) Mozilla Firefox with the [url="FirePHP"]http://www.firephp.org/[/url] addon installed
+1) Mozilla Firefox with the [url="FirePHP"]https://addons.mozilla.org/en-US/firefox/addon/firephp/[/url] addon installed
 2) Google Chrome with the [url="FirePHP for Chrome"]https://chrome.google.com/webstore/detail/firephp-for-chrome/goajlbdffkligccnfgibeilhdnnpaead[/url] addon installed
 [*] Using an admin login, bring up your website and add [tt]&keep_firephp=1&keep_su=test[/tt] to the end of the URL (change [tt]test[/tt] to the username you want to test with)
 [*] You should find messages added to Chrome's Console  (find it @ View --> Developer --> JavaScript Console)

@@ -388,17 +388,18 @@ function get_displayname(string $username) : string
 /**
  * Get the current session ID.
  *
- * @param  boolean $ignore_static_cache Whether to ignore the fact there may be a static cache; used to get true session ID during authentication code to break a paradox
+ * @param  boolean $ignore_static_cache Whether to ignore the fact there may be a static cache; used to get true session ID during authentication code to break a paradoxs
  * @return ID_TEXT The current session ID (blank: none)
  */
 function get_session_id(bool $ignore_static_cache = false) : string
 {
     require_code('static_cache');
-    if ((!$ignore_static_cache) && (can_static_cache_request())) {
-        return ''; // We should not even try and count/distinguish sessions for guests if the static cache may be involved
-    }
 
     $cookie_var = get_session_cookie();
+
+    if (!empty($GLOBALS['INVALIDATED_FAST_SPIDER_CACHE'])) {
+        $ignore_static_cache = true;
+    }
 
     if (!isset($_COOKIE[$cookie_var])) {
         if (array_key_exists('keep_session', $_GET)) {
@@ -407,7 +408,14 @@ function get_session_id(bool $ignore_static_cache = false) : string
         return '';
     }
 
-    return isset($_COOKIE[$cookie_var]) ? $_COOKIE[$cookie_var] : '';
+    if (isset($_COOKIE[$cookie_var])) {
+        $ret = $_COOKIE[$cookie_var];
+        if ((!$ignore_static_cache) && (substr($ret, 0, 1) == '[') && (substr($ret, -1) == ']') && (can_static_cache_request())) {
+            return ''; // Shy session, so we do not retrieve it
+        }
+        return $ret;
+    }
+    return '';
 }
 
 /**

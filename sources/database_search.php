@@ -1971,8 +1971,13 @@ function get_search_rows(?string $meta_type, string $id_field, string $search_qu
     }
 
     // No possible results, because no title field?
-    if ((empty($trans_fields)) || (($only_titles) && (key($trans_fields) == ''))) {
-        return [];
+    if ($only_titles) {
+        if (empty($trans_fields) || key($trans_fields) != '') {
+            return [];
+        }
+        if (key($trans_fields) == '!' && empty($raw_fields)) {
+            return [];
+        }
     }
 
     $table_clause = $db->get_table_prefix() . $table;
@@ -2132,7 +2137,7 @@ function get_search_rows(?string $meta_type, string $id_field, string $search_qu
                 reset($trans_fields);
                 if ($content_where != '') { // Non-translatable fields
                     foreach ($raw_fields as $i => $field) {
-                        if ((($only_titles) && ($i != 0)) || (empty($trans_fields)) || (key($trans_fields) != '!')) {
+                        if (($only_titles) && (($i != 0) || (empty($trans_fields)) || (key($trans_fields) != '!'))) {
                             break;
                         }
 
@@ -2150,7 +2155,7 @@ function get_search_rows(?string $meta_type, string $id_field, string $search_qu
             }
 
             if (empty($where_alternative_matches)) {
-                $where_alternative_matches[] = [$where_clause, null, $table_clause, null, null];
+                $where_alternative_matches[] = ['', null, '', null, null];
             } else {
                 if (($order == '') && ($db->driver->has_expression_ordering_by_alias()) && ($content_where != '')) {
                     $order = 'contextual_relevance DESC';
@@ -2207,7 +2212,6 @@ function get_search_rows(?string $meta_type, string $id_field, string $search_qu
                 }
             }
             $_count_query_main_search = 'SELECT (' . implode(' + ', $count_query_parts) . ')';
-
             if (($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) || ($GLOBALS['IS_ACTUALLY_ADMIN'])) {
                 if (get_param_integer('keep_show_query', 0) == 1) {
                     attach_message($query, 'inform');
@@ -2996,7 +3000,9 @@ function build_search_results_interface(array $results, int $start, int $max, st
             require_code('content');
             $cma_ob = get_content_object($content_type);
             $cma_info = $cma_ob->info();
-            $id = extract_content_str_id_from_data($result['data'], $cma_info);
+            if ($cma_info !== null) {
+                $id = extract_content_str_id_from_data($result['data'], $cma_info);
+            }
         }
 
         if (($i >= $start) && ($i < $start + $max)) {

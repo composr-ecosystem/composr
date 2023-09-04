@@ -622,7 +622,7 @@ function _log_hack_attack_and_exit(string $reason, string $reason_param_a = '', 
 
     // HTTP statuses...
 
-    if (function_exists('attach_to_screen_header')) {
+    if (!$GLOBALS['BOOTSTRAPPING']) {
         attach_to_screen_header('<meta name="robots" content="noindex" />'); // XHTMLXHTML
     }
 
@@ -892,27 +892,39 @@ function is_unbannable_bot_ip(string $ip) : bool
  * @param  LONG_TEXT $descrip Explanation for ban
  * @param  ?TIME $ban_until When to ban until (null: no limit)
  * @param  boolean $ban_positive Whether this is a positive ban (as opposed to a cached negative)
+ * @param  boolean $check_caching Whether to check internal run-time caching (disable if doing automated tests)
  * @return boolean Whether a change actually happened
  */
-function add_ip_ban(string $ip, string $descrip = '', ?int $ban_until = null, bool $ban_positive = true) : bool
+function add_ip_ban(string $ip, string $descrip = '', ?int $ban_until = null, bool $ban_positive = true, bool $check_caching = true) : bool
 {
+    // Edge case: No securitylogging addon
     if (!addon_installed('securitylogging')) {
         return false;
     }
+
+    // Edge case: Invalid IP
     require_code('type_sanitisation');
     if (!is_valid_ip($ip, true)) {
         return false;
     }
 
+    // Some reasons we cannot ban it?
     require_code('global4');
-    if (($ban_until !== null) && (ip_banned($ip, true))) {
-        return false; // Don't allow shortening ban period automatically, or having a negative ban negating a positive one!
+    $is_unbannable_existing = null;
+    $ban_until_existing = null;
+    $already_banned = ip_banned($ip, true, false, $is_unbannable_existing, $ban_until_existing, $check_caching);
+    if ($is_unbannable_existing) {
+        return false; // Don't allow automatically banning of what is marked as unbannable
+    }
+    if (($already_banned) && ($ban_until !== null) && (($ban_until_existing === null) || ($ban_until < $ban_until_existing))) {
+        return false; // Don't allow automatically shortening of an existing ban period
     }
 
+    // Ban it
     $GLOBALS['SITE_DB']->query_delete('banned_ip', ['ip' => $ip], '', 1);
     $GLOBALS['SITE_DB']->query_insert('banned_ip', ['ip' => $ip, 'i_descrip' => $descrip, 'i_ban_until' => $ban_until, 'i_ban_positive' => $ban_positive ? 1 : 0], false, true); // To stop weird race-like conditions
     persistent_cache_delete('IP_BANS');
-    if ((cms_is_writable(get_file_base() . '/.htaccess')) && ($ban_until === null)) {
+    if ((cms_is_writable(get_file_base() . '/.htaccess')) && (is_null($ban_until)) && ($ban_positive)) {
         $contents = cms_file_get_contents_safe(get_file_base() . '/.htaccess', FILE_READ_UNIXIFIED_TEXT);
         $ip_cleaned = ip_wild_to_apache($ip);
         if (($ip_cleaned != '') && (stripos($contents, "\n" . 'Require not ip ' . $ip_cleaned) === false)) {
@@ -947,8 +959,12 @@ function ip_wild_to_apache(string $ip) : string
     $ipv6 = (strpos($ip, ':') !== false);
     if ($ipv6) {
         $delimiter = ':';
+        $bits_per_part = 16;
+        $expected_blank_part = '0000';
     } else {
         $delimiter = '.';
+        $bits_per_part = 8;
+        $expected_blank_part = '0';
     }
     $parts = explode($delimiter, $ip);
     $ip_section = '';
@@ -958,18 +974,10 @@ function ip_wild_to_apache(string $ip) : string
             $ip_section .= $delimiter;
         }
         if ($part == '*') {
-            if ($ipv6) {
-                $ip_section .= '0000';
-            } else {
-                $ip_section .= '0';
-            }
+            $ip_section .= $expected_blank_part;
         } else {
             $ip_section .= $part;
-            if ($ipv6) {
-                $range_bits += 16;
-            } else {
-                $range_bits += 8;
-            }
+            $range_bits += $bits_per_part;
         }
     }
     return $ip_section . '/' . strval($range_bits);
@@ -1125,7 +1133,7 @@ function relay_error_notification(string $text, bool $ocproducts = true, string 
     // Make sure we don't send too many error e-mails
     if ((function_exists('get_value')) && (!$GLOBALS['BOOTSTRAPPING']) && (array_key_exists('SITE_DB', $GLOBALS)) && ($GLOBALS['SITE_DB'] !== null)) {
         $num = intval(get_value('num_error_mails_' . date('Y-m-d'), null, true)) + 1;
-        if ($num == 51) { // TODO: turn this into a value?
+        if ($num == 51) { // TODO: turn this into a value? #5399
             return; // We've sent too many error e-mails today
         }
         $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'values_elective WHERE the_name LIKE \'' . db_encode_like('num\_error\_mails\_%') . '\'');

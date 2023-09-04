@@ -244,6 +244,10 @@ class Module_login
         }
 
         $url = enforce_sessioned_url(either_param_string('redirect', false, INPUT_FILTER_URL_INTERNAL)); // Now that we're logged in, we need to ensure the redirect URL contains our new session ID
+        if ($url == '') {
+            $_url = build_url(['page' => ''], '_SELF');
+            $url = $_url->evaluate();
+        }
 
         if (!has_interesting_post_fields()) {
             $page_after_login = get_option('page_after_login');

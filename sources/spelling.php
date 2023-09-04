@@ -75,6 +75,8 @@ function clean_comcode_for_spellcheck(string $comcode) : string
 
     $text = strip_comcode($comcode);
 
+    $text = preg_replace('#&\w+;#', ' ', $text);
+
     return $text;
 }
 

@@ -29,7 +29,7 @@
 					TAB=thumbnails
 				{+END}
 
-				<form title="{!ACTION}" action="{POST_URL*}" method="post">
+				<form title="{!ACTION}" action="{POST_URL*}#g-thumbnails" method="post">
 					{$INSERT_FORM_POST_SECURITY}
 
 					{+START,IF_NON_EMPTY,{THUMBNAILS}}
@@ -82,7 +82,7 @@
 					TAB=listing
 				{+END}
 
-				<form title="{!ACTION}" action="{POST_URL*}" method="post">
+				<form title="{!ACTION}" action="{POST_URL*}#g-listing" method="post">
 					{$INSERT_FORM_POST_SECURITY}
 
 					{+START,IF_NON_EMPTY,{LISTING}}

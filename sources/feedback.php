@@ -127,8 +127,10 @@ function get_details_behind_feedback_code(string $content_type, string $content_
         require_code('content');
         $cma_ob = get_content_object($real_content_type);
         $info = $cma_ob->info();
-        list($content_title, $submitter_id, $cma_info, $content_row, $content_url, $content_url_email_safe) = content_get_details($real_content_type, $content_id);
-        return [$content_title, $submitter_id, $content_url, $content_url_email_safe, $cma_info, $content_row, $cma_ob];
+        if ($info !== null) {
+            list($content_title, $submitter_id, $cma_info, $content_row, $content_url, $content_url_email_safe) = content_get_details($real_content_type, $content_id);
+            return [$content_title, $submitter_id, $content_url, $content_url_email_safe, $cma_info, $content_row, $cma_ob];
+        }
     }
 
     return [null, null, null, null, null, null, null];
@@ -686,11 +688,14 @@ function actualise_specific_rating(?int $rating, string $page_name, int $member_
                 if ($real_content_type != '') {
                     require_code('content');
                     $cma_ob = get_content_object($real_content_type);
-                    $cma_content_row = content_get_row($content_id, $cma_ob->info());
-                    if ($cma_content_row !== null) {
-                        push_no_keep_context();
-                        $rendered = static_evaluate_tempcode($cma_ob->render_box($cma_content_row, '_SEARCH', $real_content_type != 'post'/*FUDGE - to conserve space*/, true));
-                        pop_no_keep_context();
+                    $cma_info = $cma_ob->info();
+                    if ($cma_info !== null) {
+                        $cma_content_row = content_get_row($content_id, $cma_ob->info());
+                        if ($cma_content_row !== null) {
+                            push_no_keep_context();
+                            $rendered = static_evaluate_tempcode($cma_ob->render_box($cma_content_row, '_SEARCH', $real_content_type != 'post'/*FUDGE - to conserve space*/, true));
+                            pop_no_keep_context();
+                        }
                     }
                 }
                 if ($points_liked > 0) {
@@ -846,7 +851,7 @@ function actualise_post_comment(bool $allow_comments, string $content_type, stri
     }
 
     if ($post === null) {
-        $post = post_param_string('post', null);
+        $post = post_param_string('post', '');
         if (($post == do_lang('POST_WARNING')) || ($post == do_lang('THREADED_REPLY_NOTICE', do_lang('POST_WARNING')))) {
             $post = '';
         }

@@ -46,9 +46,11 @@ function upgrader_db_upgrade_screen() : string
     $_version_database_cns = get_value('cns_version');
     if ($_version_database_cns === null) { // LEGACY
         $_version_database_cns = get_value('ocf_version');
+        set_value('cns_version', $_version_database_cns);
     }
     if ($_version_database_cns === null) {
         $_version_database_cns = get_value('version');
+        set_value('cns_version', $_version_database_cns);
     }
     if ($_version_database_cns === null) {
         $version_database_cns = $version_files;

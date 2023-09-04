@@ -813,10 +813,14 @@ function ecv2_ESCAPE(string $lang, array $escaped, array $param) : string
     }
 
     if (isset($param[0])) {
-        $d_escaping = [(!empty($param[1])) ? constant($param[1]) : ENTITY_ESCAPED];
-        for ($i = 0; $i < max(1, ((isset($param[2])) && (is_numeric($param[2]))) ? intval($param[2]) : 1); $i++) {
-            if (is_string($param[0])) {
-                apply_tempcode_escaping($d_escaping, $param[0]);
+        $d_escaping = [(!empty($param[1])) ? @constant($param[1]) : ENTITY_ESCAPED];
+        if ($d_escaping[0] === null) {
+            attach_message(do_lang('_UNKNOWN') . ': ' . $param[1], 'warn');
+        } else {
+            for ($i = 0; $i < max(1, ((isset($param[2])) && (is_numeric($param[2]))) ? intval($param[2]) : 1); $i++) {
+                if (is_string($param[0])) {
+                    apply_tempcode_escaping($d_escaping, $param[0]);
+                }
             }
         }
         $value = $param[0];

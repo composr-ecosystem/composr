@@ -12,7 +12,7 @@
 		<div id="install-newsletter">
 			<p class="accessibility-hidden"><label for="email">{!EMAIL_ADDRESS}</label></p>
 			<div>
-				<input maxlength="255" class="form-control form-control-wide" id="email" name="email" type="email" type="text" placeholder="{!EMAIL_ADDRESS_FOR_NEWSLETTER}" size="25" />
+				<input maxlength="255" class="form-control form-control-wide" id="email" name="email" type="email" placeholder="{!EMAIL_ADDRESS_FOR_NEWSLETTER}" size="25" />
 			</div>
 
 			<p>

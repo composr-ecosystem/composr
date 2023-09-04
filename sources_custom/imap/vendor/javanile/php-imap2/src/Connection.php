@@ -248,6 +248,7 @@ class Connection
 
         $client = $imap->getClient();
         if ($client->close()) {
+        $client->closeConnection();
             return true;
         }
 

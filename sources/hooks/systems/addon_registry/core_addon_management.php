@@ -157,7 +157,7 @@ class Hook_addon_registry_core_addon_management
         return [
             'templates/ADDON_SCREEN.tpl' => 'administrative__addon_screen',
             'templates/ADDON_SCREEN_ADDON.tpl' => 'administrative__addon_screen',
-            'templates/ADDON_NAME.tpl' => 'administrative__addon_screen',
+            'templates/ADDON_NAME.tpl' => 'administrative__addon_name_screen',
             'templates/ADDON_MULTI_CONFIRM_SCREEN.tpl' => 'administrative__addon_multi_confirm_screen',
             'templates/ADDON_INSTALL_CONFIRM_SCREEN.tpl' => 'administrative__addon_install_confirm_screen',
             'templates/ADDON_UNINSTALL_CONFIRM_SCREEN.tpl' => 'administrative__addon_uninstall_confirm_screen',
@@ -169,6 +169,19 @@ class Hook_addon_registry_core_addon_management
             'templates/ADDON_INSTALL_FILES.tpl' => 'administrative__addon_install_confirm_screen',
             'templates/ADDON_INSTALL_WARNING.tpl' => 'administrative__addon_install_confirm_screen',
         ];
+    }
+
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return Tempcode Preview
+     */
+    public function tpl_preview__administrative__addon_name_screen() : object
+    {
+        return lorem_globalise(do_lorem_template('ADDON_NAME', ['IMAGE_URL' => placeholder_image_url(), 'NAME' => lorem_word()]), null, '', true);
     }
 
     /**
@@ -223,6 +236,7 @@ class Hook_addon_registry_core_addon_management
                 'TYPE' => 'uninstall',
                 'PASSTHROUGH' => lorem_phrase(),
                 'UPDATED_ADDONS' => false,
+                'BUNDLED' => true,
             ]);
         }
 

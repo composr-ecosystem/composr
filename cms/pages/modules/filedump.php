@@ -677,7 +677,7 @@ class Module_filedump
             $create_folder_form = new Tempcode();
         }
 
-        $post_url = build_url(['page' => '_SELF', 'type' => 'mass', 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => 'mass', 'redirect' => get_self_url(true, false, ['filename' => null/*Don't auto-open the embed overlay*/])], '_SELF');
 
         require_code('templates_pagination');
         $pagination_listing = pagination(do_lang_tempcode('FILES'), $start, 'start', $max, 'max', $max_rows, false, null, null, 'tab--listing');

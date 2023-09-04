@@ -171,7 +171,7 @@ function code_editor_do_login()
     echo <<<END
     <h1 class="screen-title">Composr Code Editor</h1>
 END;
-    if (@$_POST['given_password']) {
+    if (isset($_POST['given_password'])) {
         echo '<p><strong>Invalid password</strong></p>';
     }
     $_ftp_domain = code_editor_escape_html($ftp_domain);

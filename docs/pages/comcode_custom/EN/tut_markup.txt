@@ -1257,7 +1257,6 @@ It should also be stressed as a last point that [b]JavaScript is not secure[/b];
  - http://www.yourhtmlsource.com/
  - http://www.html.net/
  - http://www.tizag.com/
- - https://www.davesite.com/webstation/html/
  - http://www.w3schools.com/html/default.asp
  - http://en.wikiversity.org/wiki/Web_design
 

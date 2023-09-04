@@ -2167,8 +2167,12 @@ class Module_topics
         $specialisation2->attach(metadata_get_fields('post', null));
 
         $topic_posts = new Tempcode();
-        $posts = $GLOBALS['FORUM_DB']->query('SELECT *,p.id AS id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts p WHERE p_topic_id=' . strval($topic_id) . ' AND (p_intended_solely_for IS NULL OR p_intended_solely_for=' . strval(get_member()) . ' OR p_poster=' . strval(get_member()) . ') AND p_validated=1 ORDER BY p_time DESC,p.id DESC', 20);
+        $posts = $GLOBALS['FORUM_DB']->query('SELECT *,p.id AS p_id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts p WHERE p_topic_id=' . strval($topic_id) . ' AND (p_intended_solely_for IS NULL OR p_intended_solely_for=' . strval(get_member()) . ' OR p_poster=' . strval(get_member()) . ') AND p_validated=1 ORDER BY p_time DESC,p.id DESC', 20);
         foreach ($posts as $row) {
+            // Workaround that some DB backends don't allow multiple fields to have the same name, so we have to use p_id for our specifically selected field instead of id
+            $row['id'] = $row['p_id'];
+            unset($row['p_id']);
+
             $topic_posts->attach(render_post_box($row, true, false, false));
         }
         if (!$topic_posts->is_empty()) {
@@ -2340,6 +2344,7 @@ class Module_topics
         if ($title === null) {
             $title = '';
         }
+        $title = substr($title, 0, 255); // Spambots may bypass normal UI restriction, and we don't want a crash
 
         $check_permissions = true;
         $topic_validated = $validated;

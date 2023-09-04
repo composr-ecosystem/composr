@@ -42,7 +42,7 @@ class Hook_symbol_CPF_LIST
                 return $cache[$param[0]];
             }
 
-            if (($param[0] == 'm_primary_group|gm_group_id') || ($param[0] == 'm_primary_group') || ($param[0] == 'gm_group_id')) {
+            if (($param[0] == 'usergroup') || ($param[0] == 'm_primary_group|gm_group_id') || ($param[0] == 'm_primary_group') || ($param[0] == 'gm_group_id')) {
                 $where = '1=1';
                 if (has_privilege(get_member(), 'see_hidden_groups')) {
                     $members_groups = $GLOBALS['CNS_DRIVER']->get_members_groups(get_member());
@@ -69,7 +69,11 @@ class Hook_symbol_CPF_LIST
                     }
                     $value .= strval($m['id']) . '=' . $m['text'];
                 }
+
+                $cache[$param[0]] = $value;
+                return $value;
             }
+
             require_code('cns_members');
             $cpf_id = find_cpf_field_id($param[0]);
             if ($cpf_id !== null) {
