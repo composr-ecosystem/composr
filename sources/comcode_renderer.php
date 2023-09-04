@@ -2447,6 +2447,7 @@ function do_code_box(string $type, object $embed, bool $numbers = true, bool $in
             require_code('developer_tools');
             destrictify();
             $geshi = new GeSHi($evaluated, ($type == 'HTML') ? 'html5' : cms_strtolower_ascii($type));
+            $geshi->enable_classes(); // Slight perf improvement
             $geshi->set_header_type(GESHI_HEADER_DIV);
             if ($numbers) {
                 $geshi->enable_line_numbers(GESHI_NORMAL_LINE_NUMBERS);
