@@ -498,7 +498,9 @@ function already_rated(array $rating_for_types, string $content_id, ?array &$pre
     $cache_key = serialize([$rating_for_types, $content_id]);
     if (isset($cache[$cache_key])) {
         list($has_fully_rated, $previous_ratings) = $cache[$cache_key];
-        return $has_fully_rated;
+        if ($has_fully_rated) { // Only return if true. If cache says false, we should proceed checking again if we really didn't fully rate.
+            return true;
+        }
     }
 
     // Main query
