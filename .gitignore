@@ -23,6 +23,7 @@ test_a
 /caches/*/*.htm
 /caches/*/*.xml
 /caches/*/*.gz
+/caches/*/*.bin
 /themes/*/templates_cached/*/*.js
 /themes/*/templates_cached/*/*.css
 /themes/*/templates_cached/*/*.tcp
