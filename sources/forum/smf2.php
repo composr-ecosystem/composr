@@ -965,7 +965,6 @@ class Forum_driver_smf2 extends Forum_driver_base
         if ($this->EMOTICON_CACHE !== null) {
             return $this->EMOTICON_CACHE;
         }
-        // TODO: Need backwards compatibility with <=1.1 which used a single table.
         $rows = $this->db->query('SELECT * FROM ' . $this->db->get_table_prefix() . 'smiley_files sf JOIN ' . $this->db->get_table_prefix() . 'smileys s ON s.id_smiley=sf.id_smiley ORDER BY sf.smiley_set');
         $this->EMOTICON_CACHE = [];
         foreach ($rows as $myrow) {
@@ -1306,7 +1305,7 @@ class Forum_driver_smf2 extends Forum_driver_base
         if (substr($row['passwd'], 0, 4) == '$2y$') { // SMF 2 password
             $GLOBALS['SMF_PW_STYLE'] = 2.0;
             if ($cookie_login) {
-                // TODO: Cookie login probably does not work
+                // TODO: Cookie login probably does not work #5258
                 $cookie_hash = $this->cookie_hash_salt($row['passwd'], $row['password_salt']);
                 $passes = hash_equals($cookie_hash, $password_mixed);
             } else {

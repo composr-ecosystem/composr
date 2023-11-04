@@ -1947,21 +1947,18 @@ class Hook_import_smf2
      */
     protected function get_setting(object $db, string $setting, bool $allow_missing = false) : ?string
     {
-        // TODO: Test cqc_hooks says $SETTINGS_CACHE referenced before initialised. Cache disabled for now.
+        static $settings_cache = [];
 
-        // static $SETTINGS_CACHE = [];
-
-        // if (isset($SETTINGS_CACHE[$setting])) {
-        //     return $SETTINGS_CACHE[$setting];
-        // }
+        if (isset($settings_cache[$setting])) {
+            return $settings_cache[$setting];
+        }
         if ($allow_missing) {
-            // $SETTINGS_CACHE[$setting] = $db->query_select_value_if_there('settings', 'value', ['variable' => $setting]);
+            $settings_cache[$setting] = $db->query_select_value_if_there('settings', 'value', ['variable' => $setting]);
             $ret = $db->query_select_value_if_there('settings', 'value', ['variable' => $setting]);
         } else {
-            // $SETTINGS_CACHE[$setting] = $db->query_select_value('settings', 'value', ['variable' => $setting]);
+            $settings_cache[$setting] = $db->query_select_value('settings', 'value', ['variable' => $setting]);
             $ret = $db->query_select_value_if_there('settings', 'value', ['variable' => $setting]);
         }
-        // return $SETTINGS_CACHE[$setting];
-        return $ret;
+        return $settings_cache[$setting];
     }
 }
