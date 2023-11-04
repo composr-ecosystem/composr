@@ -500,6 +500,7 @@ class Hook_addon_registry_testing_platform
             '_tests/tests/unit_tests/index.html',
             '_tests/tests/unit_tests/iotd.php',
             '_tests/tests/unit_tests/persistent_cache.php',
+            '_tests/tests/unit_tests/ip_bans.php',
             '_tests/tests/unit_tests/ssl.php',
             '_tests/tests/unit_tests/geocoding.php',
             '_tests/tests/unit_tests/optimisations_fragile.php',

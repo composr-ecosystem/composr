@@ -755,27 +755,39 @@ function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_
  * @param  LONG_TEXT $descrip Explanation for ban
  * @param  ?TIME $ban_until When to ban until (null: no limit)
  * @param  boolean $ban_positive Whether this is a positive ban (as opposed to a cached negative)
+ * @param  boolean $check_caching Whether to check internal run-time caching (disable if doing automated tests)
  * @return boolean Whether a change actually happened
  */
-function add_ip_ban($ip, $descrip = '', $ban_until = null, $ban_positive = true)
+function add_ip_ban($ip, $descrip = '', $ban_until = null, $ban_positive = true, $check_caching = true)
 {
+    // Edge case: No securitylogging addon
     if (!addon_installed('securitylogging')) {
         return false;
     }
+
+    // Edge case: Invalid IP
     require_code('type_sanitisation');
     if (!is_valid_ip($ip, true)) {
         return false;
     }
 
+    // Some reasons we cannot ban it?
     require_code('global4');
-    if ((!is_null($ban_until)) && (ip_banned($ip, true))) {
-        return false; // Don't allow shortening ban period automatically, or having a negative ban negating a positive one!
+    $is_unbannable_existing = null;
+    $ban_until_existing = null;
+    $already_banned = ip_banned($ip, true, false, $is_unbannable_existing, $ban_until_existing, $check_caching);
+    if ($is_unbannable_existing) {
+        return false; // Don't allow automatically banning of what is marked as unbannable
+    }
+    if (($already_banned) && ($ban_until !== null) && (($ban_until_existing === null) || ($ban_until < $ban_until_existing))) {
+        return false; // Don't allow automatically shortening of an existing ban period
     }
 
+    // Ban it
     $GLOBALS['SITE_DB']->query_delete('banned_ip', array('ip' => $ip), '', 1);
     $GLOBALS['SITE_DB']->query_insert('banned_ip', array('ip' => $ip, 'i_descrip' => $descrip, 'i_ban_until' => $ban_until, 'i_ban_positive' => $ban_positive ? 1 : 0), false, true); // To stop weird race-like conditions
     persistent_cache_delete('IP_BANS');
-    if ((is_writable_wrap(get_file_base() . '/.htaccess')) && (is_null($ban_until))) {
+    if ((is_writable_wrap(get_file_base() . '/.htaccess')) && (is_null($ban_until)) && ($ban_positive)) {
         $contents = unixify_line_format(cms_file_get_contents_safe(get_file_base() . '/.htaccess'));
         $ip_cleaned = ip_wild_to_apache($ip);
         if (($ip_cleaned != '') && (stripos($contents, "\n" . 'deny from ' . $ip_cleaned) === false) && (stripos($contents, "\n" . 'require not ip ' . $ip_cleaned) === false)) {
@@ -814,8 +826,12 @@ function ip_wild_to_apache($ip)
     $ipv6 = (strpos($ip, ':') !== false);
     if ($ipv6) {
         $delimiter = ':';
+        $bits_per_part = 16;
+        $expected_blank_part = '0000';
     } else {
         $delimiter = '.';
+        $bits_per_part = 8;
+        $expected_blank_part = '0';
     }
     $parts = explode($delimiter, $ip);
     $ip_section = '';
@@ -825,18 +841,10 @@ function ip_wild_to_apache($ip)
             $ip_section .= $delimiter;
         }
         if ($part == '*') {
-            if ($ipv6) {
-                $ip_section .= '0000';
-            } else {
-                $ip_section .= '0';
-            }
+            $ip_section .= $expected_blank_part;
         } else {
             $ip_section .= $part;
-            if ($ipv6) {
-                $range_bits += 16;
-            } else {
-                $range_bits += 8;
-            }
+            $range_bits += $bits_per_part;
         }
     }
     return $ip_section . '/' . strval($range_bits);

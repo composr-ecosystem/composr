@@ -47,6 +47,14 @@ class ip_addresses_test_set extends cms_test_case
         $this->assertTrue(ip_wild_to_apache('f:db8::a00:20ff:fea7:*') == '000F:0DB8:0000:0000:0A00:20FF:FEA7:0000/112');
         $this->assertTrue(ip_wild_to_apache('*:f:db8::a00:20ff:fea7:') == ''); // Considered invalid, * must be on end
 
+        $this->assertTrue(ip_apache_to_wild('192.168.1.1') == '192.168.1.1');
+        $this->assertTrue(ip_apache_to_wild('192.168.1.0/24') == '192.168.1.*');
+        $this->assertTrue(ip_apache_to_wild('192.168.0.0/16') == '192.168.*.*');
+        $this->assertTrue(ip_apache_to_wild('192.0.0.0/8') == '192.*.*.*');
+        $this->assertTrue(ip_apache_to_wild('/24') == ''); // Invalid
+        $this->assertTrue(ip_apache_to_wild('192.168.1.0/23') == ''); // Can only handle whole segments being wildcarded
+        $this->assertTrue(ip_apache_to_wild('192.168.1.1/24') == ''); // Can only handle whole segments being wildcarded
+
         $this->assertTrue(compare_ip_address('192.168.1.1', '192.168.1.1'));
         $this->assertTrue(!compare_ip_address('192.168.1.1', '192.168.1.2'));
         $this->assertTrue(compare_ip_address('2001:db8::a00:20ff:fea7:ccea', '2001:db8::a00:20ff:fea7:ccea'));
