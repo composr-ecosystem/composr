@@ -167,10 +167,6 @@ function get_table_descriptions() : array
         'translation_cache' => 'cache of translated content',
         'hybridauth_content_map' => 'mapping of Composr content to a Hybridauth provider',
         'patreon_patrons' => 'a list of Patreon patrons',
-
-        // TODO: buildr
-
-        ''
     ];
     return $ret + $more;
 }
@@ -209,7 +205,7 @@ function get_relation_map() : array
         'workflow_content.workflow_id' => 'workflows.id',
         'workflow_content_status.workflow_content_id' => 'workflow_content.id',
         'workflow_content_status.workflow_approval_point_id' => 'workflow_approval_points.id',
-
+        // TODO: Buildr
     ];
     return $ret + $more;
 }
