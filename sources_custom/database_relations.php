@@ -48,6 +48,7 @@ function get_table_purpose_flags() : array
         'diseases' => TABLE_PURPOSE__NORMAL,
         'giftr' => TABLE_PURPOSE__NORMAL,
         'group_points' => TABLE_PURPOSE__NORMAL,
+        'karma' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE | TABLE_PURPOSE__SUBDATA/*under f_members*/,
         'locations' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__AUTOGEN_STATIC,
         'logged' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE,
         'mail_opt_sync_queue' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE,
@@ -104,6 +105,72 @@ function get_table_descriptions() : array
     }
 
     $more = [
+        'activities' => 'a log of activities posted in the activity feed',
+        'bank' => 'a ledger of transactions and dividends from bankr',
+        'bookable' => 'a database of booking events and their metadata',
+        'bookable_blacked' => 'a database of date ranges that cannot be booked',
+        'bookable_blacked_for' => 'mappings of bookable_blacked to bookable',
+        'bookable_codes' => 'individual codes that can be booked in a bookable',
+        'bookable_supplement' => 'additional metadata for bookable_codes',
+        'bookable_supplement_for' => 'mappings of bookable_supplement to bookable',
+        'booking' => 'a database of bookings made by members',
+        'booking_supplement' => 'mappings of booking to bookable_supplement',
+        'cached_weather_codes' => 'a cache of weather codes and their description',
+        'ecom_classifieds_prices' => 'a list of available classified ads and the associated catalogues that can be purchased',
+        'community_billboard' => 'community billboard messages that have been purchased by members',
+        'content_read' => 'a log of when members have read certain content',
+        'credit_charge_log' => 'a log of support credits charged from members',
+        'credit_purchases' => 'a log of support credits purchased by members',
+        'device_token_details' => 'the IDs of devices signed up for notifications in the mobile SDK',
+        'diseases' => 'a database of disastr diseases',
+        'giftr' => 'a database of virtual gifts that can be purchased',
+        'group_points' => 'a list of points that are awarded per group membership',
+        'karma' => 'a log of karma that has been applied to members',
+        'locations' => 'a database of geographical locations',
+        'logged' => 'cms homesite logs',
+        'mail_opt_sync_queue' => 'a log of newsletter opt statuses for members to be synced to SugarCRM',
+
+        // TODO: verify accuracy
+        'may_feature' => 'URLs that have opted in to be featured on the Composr homesite',
+
+        'members_diseases' => 'a log of diseases members caught',
+        'members_gifts' => 'a log of virtual gifts exchanged with members',
+        'members_mentors' => 'a log of members and their mentor',
+        'referees_qualified_for' => 'qualified referrals',
+        'referrer_override' => 'overrides for referrals',
+        'reported_content' => 'a log of content that has been reported',
+
+        // TODO: verify accuracy
+        'sites' => 'a list of featured sites',
+        'sites_advert_pings' => 'a log of advertisement pings from sites',
+        'sites_deletion_codes' => 'a list of deletion codes for sites',
+        'sites_email' => 'a list of emails between sites',
+
+        'tutorials_external' => 'a list of external tutorials that have been submitted',
+        'tutorials_external_tags' => 'tags for external tutorials',
+        'tutorials_internal' => 'a list of tutorials written as an internal Comcode page',
+        'workflow_approval_points' => 'records which workflows require which points to approve',
+        'workflow_content' => 'records which site resources are in which workflows, along with any notes made during the approval process',
+        'workflow_content_status' => 'records the status of each approval point for a piece of content and the member who approved the point (if any)',
+        'workflow_permissions' => 'stores which usergroups are allowed to approve which points',
+        'workflows' => 'a list of workflows',
+        'w_attempts' => 'buildr', // TODO: what is this?
+        'w_inventory' => 'a log of what items members own in buildr',
+        'w_itemdef' => 'available items in buildr',
+        'w_items' => 'the location and price of items in buildr',
+        'w_members' => 'a log of members and their location / status in buildr',
+        'w_messages' => 'chat messages for buildr',
+        'w_portals' => 'available portals in buildr',
+        'w_realms' => 'available realms in buildr',
+        'w_rooms' => 'constructed rooms in buildr',
+        'w_travelhistory' => 'a log of where members moved in buildr',
+        'translation_cache' => 'cache of translated content',
+        'hybridauth_content_map' => 'mapping of Composr content to a Hybridauth provider',
+        'patreon_patrons' => 'a list of Patreon patrons',
+
+        // TODO: buildr
+
+        ''
     ];
     return $ret + $more;
 }
@@ -122,6 +189,27 @@ function get_relation_map() : array
     }
 
     $more = [
+        'bookable_blacked_for.bookable_id' => 'bookable.id',
+        'bookable_blacked_for.blacked_id' => 'bookable_blacked.id',
+        'bookable_codes.bookable_id' => 'bookable.id',
+        'bookable_supplement_for.supplement_id' => 'bookable_supplement.id',
+        'bookable_supplement_for.bookable_id' => 'bookable.id',
+        'booking.bookable_id' => 'bookable.id',
+        'bookable.calendar_type' => 'calendar_types.id',
+        'booking.paid_trans_id' => null, // TODO: not implemented
+        'booking_supplement.booking_id' => 'booking.id',
+        'booking_supplement.supplement_id' => 'bookable_supplement.id',
+        'ecom_classifieds_prices.c_catalogue_name' => 'catalogues.c_name',
+        'members_diseases.disease_id' => 'diseases.id',
+        'members_gifts.gift_id' => 'giftr.id',
+        'reported_content.r_session_id' => 'sessions.the_session',
+        'tutorials_external_tags.t_id' => 'tutorials_external.id',
+        'workflow_approval_points.workflow_id' => 'workflows.id',
+        'workflow_permissions.workflow_approval_point_id' => 'workflow_approval_points.id',
+        'workflow_content.workflow_id' => 'workflows.id',
+        'workflow_content_status.workflow_content_id' => 'workflow_content.id',
+        'workflow_content_status.workflow_approval_point_id' => 'workflow_approval_points.id',
+
     ];
     return $ret + $more;
 }
