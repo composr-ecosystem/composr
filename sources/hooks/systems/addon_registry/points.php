@@ -197,6 +197,7 @@ class Hook_addon_registry_points
             'sources_custom/hooks/systems/points/index.html',
             'sources_custom/hooks/systems/points_transact/.htaccess',
             'sources_custom/hooks/systems/points_transact/index.html',
+            'sources/hooks/systems/cns_warnings/points.php',
         ];
     }
 

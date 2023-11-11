@@ -131,6 +131,14 @@ class Hook_addon_registry_cns_warnings
             'sources/hooks/systems/preview/warnings.php',
 
             'sources/hooks/modules/admin_stats/warnings.php',
+
+            'sources/hooks/systems/cns_warnings/.htaccess',
+            'sources/hooks/systems/cns_warnings/index.html',
+            'sources/hooks/systems/cns_warnings/formal.php',
+            'sources/hooks/systems/cns_warnings/ban_member.php',
+            'sources/hooks/systems/cns_warnings/probation.php',
+            'sources/hooks/systems/cns_warnings/content.php',
+            'sources/hooks/systems/cns_warnings/silencing.php',
         ];
     }
 
