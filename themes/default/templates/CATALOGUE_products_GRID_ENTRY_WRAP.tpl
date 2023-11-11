@@ -1,9 +1,19 @@
 <section class="box box___catalogue_products_grid_entry_wrap"><div class="box_inner">
 	<h3><span class="name">{FIELD_0}</span></h3>
 
+	{+START,SET,TOOLTIP}
+		{+START,IF_NON_EMPTY,{$TRIM,{FIELDS_GRID}}}
+			<table class="map_table results_table">
+				<tbody>
+					{FIELDS_GRID}
+				</tbody>
+			</table>
+		{+END}
+	{+END}
+
 	{+START,IF_NON_EMPTY,{FIELD_7_THUMB}}
 		<div class="catalogue_entry_box_thumbnail">
-			<a href="{VIEW_URL*}">{FIELD_7_THUMB}</a>
+			<a onmouseover="if (typeof window.activate_tooltip!='undefined') activate_tooltip(this,event,'{$TRIM*;^,{$GET,TOOLTIP}}','500px');" href="{VIEW_URL*}">{FIELD_7_THUMB}</a>
 		</div>
 	{+END}
 
