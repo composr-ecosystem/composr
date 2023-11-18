@@ -134,7 +134,7 @@ function cns_check_post($post, $topic_id = null, $poster = null)
  * @param  ?AUTO_LINK $id Force an ID (null: don't force an ID)
  * @param  boolean $anonymous Whether to make the post anonymous
  * @param  boolean $skip_post_checks Whether to skip post checks
- * @param  ?boolean $is_pt Whether this is for a new Private Topic (null: work it out)
+ * @param  ?boolean $is_pt Whether this is for a new Private Topic (null: work it out, but always assume false if $is_starter evaluates to false)
  * @param  boolean $insert_comcode_as_admin Whether to explicitly insert the Comcode with admin privileges
  * @param  ?AUTO_LINK $parent_id Parent post ID (null: none-threaded/root-of-thread)
  * @param  boolean $send_notification Whether to send out notifications
