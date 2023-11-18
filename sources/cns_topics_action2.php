@@ -562,7 +562,7 @@ function cns_invite_to_pt(int $member_id, int $topic_id)
 
     require_code('cns_posts_action');
     $post = do_lang('INVITED_TO_PT', $username, $current_displayname, $current_username, $displayname);
-    cns_make_post($topic_id, '', $post, 0, false, 1, 1, do_lang('SYSTEM'), null, null, db_get_first_id(), null, null, null, false);
+    cns_make_post($topic_id, '', $post, 0, false, 1, 1, do_lang('SYSTEM'), null, null, db_get_first_id(), null, null, null, false, true, null, true, '', null, false, false, true);
 
     require_code('notifications');
     $subject = do_lang('INVITED_TO_TOPIC_SUBJECT', get_site_name(), $topic_title, get_lang($member_id));

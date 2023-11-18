@@ -274,7 +274,7 @@ function cns_send_topic_notification(string $url, int $topic_id, int $post_id, ?
         ];
     }
 
-    dispatch_notification('cns_topic', strval($topic_id), $subject, $mail, (empty($limit_to)) ? null : $limit_to, $sender_member_id, ['no_notify_for__notification_code' => $no_notify_for__notification_code, 'no_notify_for__code_category' => $no_notify_for__code_category, 'extra' => $extra]);
+    dispatch_notification('cns_topic', strval($topic_id), $subject, $mail, (empty($limit_to) && !$is_pt) ? null : $limit_to, $sender_member_id, ['no_notify_for__notification_code' => $no_notify_for__notification_code, 'no_notify_for__code_category' => $no_notify_for__code_category, 'extra' => $extra]);
 }
 
 /**
