@@ -479,9 +479,15 @@ function workflow_update_handler() : object
     $content_id = post_param_string('content_id');
     $workflow_notes = post_param_string('workflow_notes');
 
+    // Grab the names of our workflow approval points
+    $approval_points = get_all_approval_points($workflow_id);
+    if ($approval_points == array()) {
+        warn_exit(do_lang_tempcode('_MISSING_RESOURCE', escape_html(strval($content_id)), do_lang_tempcode('WORKFLOW')));
+    }
+
     // Find out which approvals have been given
     $approvals = [];
-    foreach (array_keys(get_all_approval_points($workflow_id)) as $approval_id) {
+    foreach (array_keys($approval_points) as $approval_id) {
         $approvals[$approval_id] = post_param_integer('approval_' . strval($approval_id), 0);
     }
 
@@ -500,7 +506,7 @@ function workflow_update_handler() : object
 
     // Now get the groups
     $group_ids = []; // Only remember 1 copy of each group
-    foreach (array_keys(get_all_approval_points($workflow_id)) as $point_id) {
+    foreach (array_keys($approval_points) as $point_id) {
         foreach (get_usergroups_for_approval_point($point_id) as $group) {
             if (!in_array($group, $group_ids)) {
                 if (post_param_integer('send_' . strval($group), 0) == 1) {
@@ -537,7 +543,7 @@ function workflow_update_handler() : object
             $accounted_for_statuses[] = $old_value['workflow_approval_point_id'];
 
             // See if the database status is the same status as the given status
-            if (($old_value['status_code'] ? 1 : 0) != $approvals[$old_value['workflow_approval_point_id']]) {
+            if (($old_value['status_code'] ? true : false) != $approvals[$old_value['workflow_approval_point_id']]) {
                 // If not then see if we have permission to change it
                 $members_with_permission = [];
                 foreach ($GLOBALS['FORUM_DRIVER']->member_group_query(get_usergroups_for_approval_point($old_value['workflow_approval_point_id'])) as $permitted) {
@@ -554,7 +560,7 @@ function workflow_update_handler() : object
         }
         if (!$noted) {
             // If we're here then this status has either not been passed or it does not need modifying. Either way we can grab a valid status from the database.
-            $all_approval_statuses[$old_value['workflow_approval_point_id']] = $old_value['status_code'];
+            $all_approval_statuses[$old_value['workflow_approval_point_id']] = ($old_value['status_code'] ? true : false);
         }
     }
     // Now add any unaccounted-for points to those which need updating
@@ -569,9 +575,9 @@ function workflow_update_handler() : object
     foreach ($updated_approvals as $approval_id => $status_code) {
         $success_message = do_lang('APPROVAL_CHANGED_DESCRIPTION');
         if (in_array($approval_id, $new_approvals)) {
-            $GLOBALS['SITE_DB']->query_insert('workflow_content_status', ['status_code' => $status_code, 'approved_by' => get_member(), 'workflow_content_id' => $content_id, 'workflow_approval_point_id' => $approval_id]);
+            $GLOBALS['SITE_DB']->query_insert('workflow_content_status', ['status_code' => ($status_code ? 1 : 0), 'approved_by' => get_member(), 'workflow_content_id' => $content_id, 'workflow_approval_point_id' => $approval_id]);
         } else {
-            $GLOBALS['SITE_DB']->query_update('workflow_content_status', ['status_code' => $status_code, 'approved_by' => get_member()], ['workflow_content_id' => $content_id, 'workflow_approval_point_id' => $approval_id], '', 1);
+            $GLOBALS['SITE_DB']->query_update('workflow_content_status', ['status_code' => ($status_code ? 1 : 0), 'approved_by' => get_member()], ['workflow_content_id' => $content_id, 'workflow_approval_point_id' => $approval_id], '', 1);
         }
     }
 
@@ -581,12 +587,12 @@ function workflow_update_handler() : object
     $notes_disapproved = [];
     foreach ($updated_approvals as $approval_id => $status_code) {
         if ($status_code) {
-            $notes_approved[] = $approval_id;
+            $notes_approved[] = $approval_points[$approval_id];
         } else {
             // Just because it's not approved, doesn't mean that it was unchecked.
             // It may have just been added to the workflow.
             if (!in_array($approval_id, $new_approvals)) {
-                $notes_disapproved[] = $approval_id;
+                $notes_disapproved[] = $approval_points[$approval_id];
             }
         }
     }
@@ -594,8 +600,6 @@ function workflow_update_handler() : object
         $note_title = get_timezoned_date(time(), false) . ' ' . $GLOBALS['FORUM_DRIVER']->get_username(get_member());
         $workflow_notes = $workflow_notes . "\n\n" . $note_title . "\n" . str_repeat('-', strlen($note_title));
 
-        $notes_approved = array_map('get_translated_text', $notes_approved);
-        $notes_disapproved = array_map('get_translated_text', $notes_disapproved);
         if (!empty($notes_approved)) {
             $workflow_notes .= "\n" . do_lang('WORKFLOW_APPROVED') . ': ' . implode(', ', $notes_approved);
         }
@@ -665,19 +669,32 @@ function workflow_update_handler() : object
     // Make a nicely formatted list of the statuses
     $status_list = '';
     foreach ($all_approval_statuses as $point => $status) {
-        $status_list .= strval($approvals[$point]) . ': ';
+        $status_list .= $approvals[$point] . ': ';
+        if ($status_list != '') {
+            $status_list .= ', ';
+        }
+        $status_list .= $approval_points[$point] . ': ';
         $status_list .= ($status == 1) ? 'approved' : 'not approved';
         $status_list .= ', ';
     }
 
-    // At last we can send the e-mail
+    // We cannot pass send_to_members to the notification dispatcher as it's in the incorrect format; fix this.
+    $actual_send_to_members = array();
+    foreach ($send_to_members as $member_id => $status) {
+        if ($status != 1) {
+            continue;
+        }
+        $actual_send_to_members[] = intval($member_id);
+    }
+
+    // Send the e-mail
     require_code('notifications');
     if (!empty($send_to_members)) {
         $success_message .= do_lang('APPROVAL_CHANGED_NOTIFICATIONS');
     }
     $subject = do_lang('APPROVAL_EMAIL_SUBJECT', $content_title, null, null, get_site_default_lang());
     $body = do_notification_lang('APPROVAL_EMAIL_BODY', post_param_string('http_referer', $_SERVER['HTTP_REFERER']), $status_list, $workflow_notes, get_site_default_lang());
-    dispatch_notification('workflow_step', strval($workflow_id), $subject, $body, $send_to_members);
+    dispatch_notification('workflow_step', strval($workflow_id), $subject, $body, $actual_send_to_members);
 
     // Finally return a success message
     $return_url = post_param_string('return_url', false, INPUT_FILTER_URL_INTERNAL);
@@ -696,6 +713,8 @@ function workflow_update_handler() : object
  */
 function add_content_to_workflow(string $content_type = '', string $content_id = '', ?int $workflow_id = null, bool $remove_existing = false) : ?int
 {
+    require_code('content');
+
     // Have we been given a valid workflow to use? If not, use system default
     if ($workflow_id === null) {
         $default_workflow = get_default_workflow();

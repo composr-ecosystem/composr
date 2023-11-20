@@ -28,10 +28,6 @@ class Hook_notification_workflow_step extends Hook_Notification
      */
     public function get_initial_setting(string $notification_code, ?string $category, int $member_id) : int
     {
-        if (!$this->is_first_admin($member_id)) {
-            return A_NA;
-        }
-
         return A__STATISTICAL;
     }
 

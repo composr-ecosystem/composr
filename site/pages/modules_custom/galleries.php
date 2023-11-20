@@ -34,24 +34,25 @@ function init__site__pages__modules_custom__galleries($code)
         return $code;
     }
 
+    require_code('override_api');
+
     // Add a redirection for the workflow handling
-    $code = override_str_replace_exactly(
-        "// What are we doing?\n        \$type = get_param_string('type', 'browse');",
-        "
-        <ditto>
-        if (\$type == 'workflow') {
+    insert_code_before__by_command(
+        $code,
+        "run",
+        "return new Tempcode();",
+        "if (\$type == 'workflow') {
             require_code('workflows'); // Load workflow-related code
             return workflow_update_handler();
-        }
-        ",
-        $code
+        }"
     );
 
     // Add workflow warnings to carousel mode galleries. This has to be done for images...
-    $code = override_str_replace_exactly(
+    insert_code_before__by_command(
+        $code,
+        "do_gallery_carousel_mode",
         "\$current_entry = do_template('GALLERY_CAROUSEL_MODE_IMAGE'",
-        "
-        // Add the workflow form if this entry is non-validated
+        "// Add the workflow form if this entry is non-validated
         if (\$row['validated'] == 0) {
             require_code('workflows');
 
@@ -62,17 +63,15 @@ function init__site__pages__modules_custom__galleries($code)
                     \$warning_details->attach(get_workflow_form(\$workflow_content_id));
                 }
             }
-        }
-        <ditto>
-        ",
-        $code
+        }"
     );
 
     // ...and videos separately.
-    $code = override_str_replace_exactly(
+    insert_code_before__by_command(
+        $code,
+        "do_gallery_carousel_mode",
         "\$current_entry = do_template('GALLERY_CAROUSEL_MODE_VIDEO'",
-        "
-        // Add the workflow form if this entry is non-validated
+        "// Add the workflow form if this entry is non-validated
         if (\$row['validated'] == 0) {
             require_code('workflows');
 
@@ -83,62 +82,37 @@ function init__site__pages__modules_custom__galleries($code)
                     \$warning_details->attach(get_workflow_form(\$workflow_content_id));
                 }
             }
-        }
-        <ditto>
-        ",
-        $code
+        }"
     );
 
     // Add workflow warnings to images
-    $code = override_str_replace_exactly(
-        "} else {
-            \$warning_details = new Tempcode();
-        }
-
-        if ((has_actual_page_access(null, 'cms_galleries', null, null)) && (has_edit_permission('mid', get_member(), \$myrow['submitter'], 'cms_galleries', ['galleries', \$cat]))) {
-            \$edit_url = build_url(['page' => 'cms_galleries', 'type' => '_edit', 'id' => \$id], get_module_zone('cms_galleries'));
-        } else {
-            \$edit_url = new Tempcode();
-        }",
-        "
-        <ditto>
-
-        if (\$myrow['validated'] == 0) {
+    insert_code_before__by_command(
+        $code,
+        "show_image",
+        "\$add_date = get_timezoned_date_time(\$myrow['add_date']);",
+        "if (\$myrow['validated'] == 0) {
             require_code('workflows');
 
             \$workflow_content_id = get_workflow_content_id('image', strval(\$myrow['id']));
             if (\$workflow_content_id !== null) {
                 \$warning_details->attach(get_workflow_form(\$workflow_content_id));
             }
-        }
-        ",
-        $code
+        }"
     );
 
     // ...and videos separately.
-    $code = override_str_replace_exactly(
-        "} else {
-            \$warning_details = new Tempcode();
-        }
-
-        if ((has_actual_page_access(null, 'cms_galleries', null, null)) && (has_edit_permission('mid', get_member(), \$myrow['submitter'], 'cms_galleries', ['galleries', \$cat]))) {
-            \$edit_url = build_url(['page' => 'cms_galleries', 'type' => '_edit_other', 'id' => \$id], get_module_zone('cms_galleries'));
-        } else {
-            \$edit_url = new Tempcode();
-        }",
-        "
-        <ditto>
-
-        if (\$myrow['validated'] == 0) {
+    insert_code_before__by_command(
+        $code,
+        "show_video",
+        "\$add_date = get_timezoned_date_time(\$myrow['add_date']);",
+        "if (\$myrow['validated'] == 0) {
             require_code('workflows');
 
             \$workflow_content_id = get_workflow_content_id('video', strval(\$myrow['id']));
             if (\$workflow_content_id !== null) {
                 \$warning_details->attach(get_workflow_form(\$workflow_content_id));
             }
-        }
-        ",
-        $code
+        }"
     );
 
     return $code;
