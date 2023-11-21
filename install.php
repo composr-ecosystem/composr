@@ -1279,9 +1279,9 @@ function step_5()
     require_code('database');
     if (post_param_integer('confirm', 0) == 0) {
         $tmp = new DatabaseConnector(trim(post_param_string('db_site')), trim(post_param_string('db_site_host')), trim(post_param_string('db_site_user')), trim(post_param_string('db_site_password')), $table_prefix);
-        $test = $tmp->query_select_value_if_there('config', 'c_value', array('c_name' => 'is_on_block_cache'), '', true);
+        $test = $tmp->query_select_value_if_there('db_meta', 'COUNT(*)', null, '', true);
         unset($tmp);
-        if (!is_null($test)) {
+        if (!is_null($test) && $test > 0) {
             global $INSTALL_LANG;
             $sections = new Tempcode();
 
@@ -1958,12 +1958,12 @@ function step_5_uninstall()
     require_code('database_action');
     require_code('config');
 
+    // Verify database
+    $sitedb = new DatabaseConnector(trim(post_param_string('db_site')), trim(post_param_string('db_site_host')), trim(post_param_string('db_site_user')), trim(post_param_string('db_site_password')), trim(post_param_string('table_prefix')));
     if (post_param_string('forum_type') != 'none') {
-        $tmp = new DatabaseConnector(get_db_forums(), get_db_forums_host(), get_db_forums_user(), get_db_forums_password(), '');
-        unset($tmp);
+        $forumdb = new DatabaseConnector(get_db_forums(), get_db_forums_host(), get_db_forums_user(), get_db_forums_password(), trim(array_key_exists('table_prefix', $_POST) ? $_POST['table_prefix'] : get_default_table_prefix()));
     }
-
-    $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => 'dae0677246aa2f1394b90c3739490ff7', 'SOMETHING' => do_lang_tempcode('DATABASE_VALID', 'Composr'))));
+    $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => 'dcuiwecu3794f8343h9fh9echiduchiu', 'SOMETHING' => do_lang_tempcode('DATABASE_VALID', 'Composr'))));
 
     // UNINSTALL STUFF
 
@@ -1971,6 +1971,30 @@ function step_5_uninstall()
     require_code('files');
     deldir_contents('uploads/attachments', true);
     deldir_contents('uploads/attachments_thumbs', true);
+    $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => 'dae0677246aa2f1394b90c3739490ff7', 'SOMETHING' => do_lang_tempcode('DELETED_ATTACHMENTS'))));
+
+    // Delete database tables
+    $tables = $sitedb->query_select('db_meta', array('DISTINCT m_table'), null, '', null, null, true);
+    if (!is_null($tables)) {
+        foreach ($tables as $i => $table) {
+            // These tables must be dropped last
+            if (($table['m_table'] == 'db_meta') || ($table['m_table'] == 'db_meta_indices')) {
+                continue;
+            }
+
+            if (strpos($table['m_table'], 'f_') === 0) {
+                $forumdb->drop_table_if_exists($table['m_table']);
+            } else {
+                $sitedb->drop_table_if_exists($table['m_table']);
+            }
+        }
+        $sitedb->drop_table_if_exists('db_meta');
+        $sitedb->drop_table_if_exists('db_meta_indices');
+        $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => 'ci3u3uocbociu3g98fcucg3ovc', 'SOMETHING' => do_lang_tempcode('DROPPED_TABLES'))));
+    }
+
+    unset($sitedb);
+    unset($forumdb);
 
     return $log;
 }
