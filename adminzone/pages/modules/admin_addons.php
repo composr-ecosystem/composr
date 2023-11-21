@@ -913,7 +913,7 @@ class Module_admin_addons
 
         $hidden = form_input_hidden('file', $file);
 
-        return do_template('CONFIRM_SCREEN', array('_GUID' => 'fe96098c1f09d091fc10785134803135', 'TITLE' => $this->title, 'URL' => $url, 'PREVIEW' => $preview, 'HIDDEN' => $hidden, 'FIELDS' => ''));
+        return do_template('CONFIRM_SCREEN', array('_GUID' => '1445d1204cc561ecb643b016d1528cf7', 'TITLE' => $this->title, 'URL' => $url, 'PREVIEW' => $preview, 'HIDDEN' => $hidden, 'FIELDS' => ''));
     }
 
     /**

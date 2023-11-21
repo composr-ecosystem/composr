@@ -301,7 +301,7 @@ class Module_admin_cns_members
         $fields->attach(form_input_text(do_lang_tempcode('MESSAGE'), '', 'email_message', $default_email_message, false));
 
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array(
-            '_GUID' => '101063c817a45c10bca5c384e1f32bf1',
+            '_GUID' => 'da4f1906d417d5964fb57bc97c61b6c4',
             'SECTION_HIDDEN' => $default_temporary_password,
             'TITLE' => do_lang_tempcode('OPTIONS'),
         )));

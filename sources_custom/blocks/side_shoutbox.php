@@ -121,7 +121,7 @@ class Block_side_shoutbox
             if ((strpos($evaluated, '[private') === false) || (($shoutbox_message != '') && (strpos($evaluated, '[private="' . $GLOBALS['FORUM_DRIVER']->get_username(get_member()) . '"]') !== false))) {
                 $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($_message['username']);
                 $member = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($member_id, true, $_message['username']);
-                $_tpl[] = do_template('BLOCK_SIDE_SHOUTBOX_MESSAGE', array('_GUID' => 'a6f86aa48af7de7ec78423864c82c626', 'MEMBER' => $member, 'MESSAGE' => $_message['the_message'], 'TIME_RAW' => strval($_message['date_and_time']), 'TIME' => $_message['date_and_time_nice']));
+                $_tpl[] = do_template('BLOCK_SIDE_SHOUTBOX_MESSAGE', array('_GUID' => 'c23088a9cfcf733e3cacd64d35c0a0d2', 'MEMBER' => $member, 'MESSAGE' => $_message['the_message'], 'TIME_RAW' => strval($_message['date_and_time']), 'TIME' => $_message['date_and_time_nice']));
             }
         }
 

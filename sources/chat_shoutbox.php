@@ -76,7 +76,7 @@ function shoutbox_script($ret = false, $room_id = null, $num_messages = null)
         if ((strpos($evaluated, '[private') === false) || (($shoutbox_message != '') && (strpos($evaluated, '[private="' . $GLOBALS['FORUM_DRIVER']->get_username(get_member()) . '"]') !== false))) {
             $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($_message['username']);
             $member = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($member_id, true, $_message['username']);
-            $_tpl[] = do_template('BLOCK_SIDE_SHOUTBOX_MESSAGE', array('_GUID' => 'a6f86aa48af7de7ec78423864c82c626', 'USER' => $member, 'MESSAGE' => $_message['the_message'], 'TIME_RAW' => strval($_message['date_and_time']), 'TIME' => $_message['date_and_time_nice']));
+            $_tpl[] = do_template('BLOCK_SIDE_SHOUTBOX_MESSAGE', array('_GUID' => 'd02eb210dc97f5337880f6767163c72e', 'USER' => $member, 'MESSAGE' => $_message['the_message'], 'TIME_RAW' => strval($_message['date_and_time']), 'TIME' => $_message['date_and_time_nice']));
         }
     }
 

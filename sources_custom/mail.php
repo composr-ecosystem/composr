@@ -237,7 +237,7 @@ function mail_wrap($subject_line, $message_raw, $to_email = null, $to_name = nul
     }
 
     // Our subject
-    $subject = do_template('MAIL_SUBJECT', array('_GUID' => '44a57c666bb00f96723256e26aade9e5', 'SUBJECT_LINE' => $subject_line), $lang, false, null, '.txt', 'text', $theme);
+    $subject = do_template('MAIL_SUBJECT', array('_GUID' => 'be0817ac7a954ade56ff1a3426218de2', 'SUBJECT_LINE' => $subject_line), $lang, false, null, '.txt', 'text', $theme);
     $tightened_subject = $subject->evaluate($lang); // Note that this is slightly against spec, because characters aren't forced to be printable us-ascii. But it's better we allow this (which works in practice) than risk incompatibility via charset-base64 encoding.
     $tightened_subject = str_replace(array("\r", "\n"), array('', ''), $tightened_subject);
 
