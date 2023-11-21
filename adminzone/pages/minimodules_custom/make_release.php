@@ -77,7 +77,7 @@ function phase_0()
     if ($previous_version !== null) {
         $changes = "The following changes have been made since version " . $previous_version . "...\n";
         $_changes = shell_exec('git log --pretty=oneline HEAD...refs/tags/' . $previous_version);
-        $discovered_tracker_issues = array(); // List of issues referenced on Git to pull from Mantis 
+        $discovered_tracker_issues = array(); // List of issues referenced on Git to pull from Mantis
         $__changes = array();
         $dig_deep = false;
         foreach (explode("\n", $_changes) as $change) {
@@ -142,6 +142,7 @@ function phase_0()
     <ul>
         <li>Go through the auto-reported error emails, to make sure they are handled (for each: fix if relevant, delete if not).</li>
         <li>Run the <a href="' . escape_html(get_base_url() . '/_tests') . '">unit tests</a><!--, with dev mode on, on the custom Composr PHP version-->.</li>
+        <li>Edit sources/version.php to reflect the new version being released (and refresh this page so the pre-defined fields below represent the new version).</li>
     </ul>';
 
     echo '

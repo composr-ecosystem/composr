@@ -54,7 +54,7 @@ class newsletter_test_set extends cms_test_case
             '123' => 'yz'
         );
 
-        $wrapped = do_template('NEWSLETTER_DEFAULT_FCOMCODE', array('CONTENT' => $message, 'LANG' => fallback_lang(), 'SUBJECT' => $subject), null, false, null, '.txt', 'text');
+        $wrapped = do_template('NEWSLETTER_DEFAULT_FCOMCODE', array('_GUID' => '63a20bf29bab0a18c33683438b1e7755', 'CONTENT' => $message, 'LANG' => fallback_lang(), 'SUBJECT' => $subject), null, false, null, '.txt', 'text');
 
         $newsletter_message_substituted = newsletter_variable_substitution($wrapped->evaluate(), $subject, $forename, $surname, $name, $email_address, $sendid, $hash, $extra_mappings);
 

@@ -309,7 +309,13 @@ class Module_admin_points
 
             $preview = $GLOBALS['FORUM_DRIVER']->get_username($member) . ': ' . integer_format($amount);
 
-            return do_template('CONFIRM_SCREEN', array('TITLE' => $this->title, 'PREVIEW' => $preview, 'URL' => get_self_url(false, false, array('member' => null, 'amount' => null, 'reason' => null)), 'FIELDS' => $hidden));
+            return do_template('CONFIRM_SCREEN', array(
+                '_GUID' => '3e1ad2e9644e41b4241061fd8b192426',
+                'TITLE' => $this->title,
+                'PREVIEW' => $preview,
+                'URL' => get_self_url(false, false, array('member' => null, 'amount' => null, 'reason' => null)),
+                'FIELDS' => $hidden
+            ));
         }
 
         $amount = post_param_integer('amount');

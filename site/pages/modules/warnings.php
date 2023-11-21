@@ -503,7 +503,7 @@ class Module_warnings extends Standard_crud_module
                         $posts_deletable[$post['id']] = array($post_context, $post['id'], $post['p_topic_id'], $post['t_cache_first_title'], $post['p_time'], $post['p_cache_forum_id']);
                     }
                     if (count($spam_urls) > 0) {
-                        $this->add_text->attach(paragraph(do_template('CNS_WARN_SPAM_URLS', array('USERNAME' => $username, 'SPAM_URLS' => $spam_urls))));
+                        $this->add_text->attach(paragraph(do_template('CNS_WARN_SPAM_URLS', array('_GUID' => '7db866a195f2348de8a233adf09a824a', 'USERNAME' => $username, 'SPAM_URLS' => $spam_urls))));
                     }
                 }
             }
