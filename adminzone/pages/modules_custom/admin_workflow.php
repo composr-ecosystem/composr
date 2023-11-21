@@ -36,8 +36,8 @@ class Module_admin_workflow extends Standard_crud_module
         $info = array();
         $info['author'] = 'Chris Warburton';
         $info['organisation'] = 'ocProducts';
-        $info['hacked_by'] = null;
-        $info['hack_version'] = null;
+        $info['hacked_by'] = 'Patrick Schmalstig';
+        $info['hack_version'] = 1;
         $info['version'] = 1;
         $info['locked'] = false;
         return $info;
