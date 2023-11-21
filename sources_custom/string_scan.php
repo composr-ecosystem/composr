@@ -4861,6 +4861,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         INSTALLED_ADDON
         INSTALLED_BLOCK
         INSTALLED_CNS
+        DROPPED_TABLES
+        DELETED_ATTACHMENTS
         INSTALLED_MODULE
         INSTALLER
         INSTALLER_STEP
