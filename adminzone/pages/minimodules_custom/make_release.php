@@ -75,7 +75,6 @@ function phase_0()
         $previous_version = $matches[1];
     }
     if ($previous_version !== null) {
-        $changes = "The following changes have been made since version " . $previous_version . "...\n";
         $_changes = shell_exec('git log --pretty=oneline HEAD...refs/tags/' . $previous_version);
         $discovered_tracker_issues = array(); // List of issues referenced on Git to pull from Mantis
         $__changes = array();
@@ -109,17 +108,28 @@ function phase_0()
         $_discovered_tracker_issues = implode(',', array_keys($discovered_tracker_issues));
         $_result = http_download_file($api_url, null, true, false, 'Composr', array('parameters' => array($_discovered_tracker_issues, $on_disk_version, $dig_deep ? $previous_version : null)));
         $tracker_issue_titles = json_decode($_result, true);
-        foreach ($tracker_issue_titles as $key => $summary) {
-            if (strpos($summary, '[General]') === false) { // Only ones in the main Composr project
-                $url = get_brand_base_url() . '/tracker/view.php?id=' . substr($key, 1);
-                $changes .= ' - [url="' . comcode_escape($summary) . '"]' . $url . '[/url]' . "\n";
+
+        // Start populating changes
+        if (count($tracker_issue_titles) > 0) {
+            $changes = "The following tracker issues have been resolved since version " . $previous_version . "...\n";
+            ksort($tracker_issue_titles); // Sort by tracker ID (usually results in oldest to newest sorting)
+            foreach ($tracker_issue_titles as $key => $summary) {
+                if (strpos($summary, '[[All Projects] General]') === false) { // Only ones in the main Composr project
+                    $url = get_brand_base_url() . '/tracker/view.php?id=' . substr($key, 1);
+                    $changes .= ' - [url="' . comcode_escape($summary) . '"]' . $url . '[/url]' . "\n";
+                }
             }
+            $changes .= "\n";
         }
 
         // Show Git-only commits
-        foreach ($__changes as $git_id => $change_label) {
-            $url = COMPOSR_REPOS_URL . '/commit/' . $git_id;
-            $changes .= ' - [url="' . comcode_escape($change_label) . '"]' . $url . '[/url]' . "\n";
+        if (count($__changes) > 0) {
+            $changes .= "The following changes were made via git since version " . $previous_version . "...\n";
+            $__changes = array_reverse($__changes, true); // Sort by commit time, oldest to newest
+            foreach ($__changes as $git_id => $change_label) {
+                $url = COMPOSR_REPOS_URL . '/commit/' . $git_id;
+                $changes .= ' - [url="' . comcode_escape($change_label) . '"]' . $url . '[/url]' . "\n";
+            }
         }
     } else {
         $changes = 'All reported bugs since the last release have been fixed.';
