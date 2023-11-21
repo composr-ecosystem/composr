@@ -131,7 +131,7 @@ class Module_leader_board
             }
             $list[''] = $tpl_li;
 
-            return do_template('INDEX_SCREEN_FANCIER_SCREEN', ['TITLE' => $this->title, 'ARRAY' => true, 'CONTENT' => $list, 'POST' => '', 'PRE' => '']);
+            return do_template('INDEX_SCREEN_FANCIER_SCREEN', ['_GUID' => '5b0515d0deeb576ba8c6fd496ffffad5', 'TITLE' => $this->title, 'ARRAY' => true, 'CONTENT' => $list, 'POST' => '', 'PRE' => '']);
         }
 
         // Get leader-board

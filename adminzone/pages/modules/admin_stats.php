@@ -467,7 +467,7 @@ class Module_admin_stats extends Standard_crud_module
             $graphs[] = $graph;
         }
 
-        return do_template('STATS_SCREEN', ['TITLE' => $this->title, 'GRAPHS' => $graphs]);
+        return do_template('STATS_SCREEN', ['_GUID' => 'a0e4ac56baa17004ff93c6096ff0f038', 'TITLE' => $this->title, 'GRAPHS' => $graphs]);
     }
 
     /**
@@ -485,7 +485,7 @@ class Module_admin_stats extends Standard_crud_module
         $graph = $this->templatify_graph($graph_name, $hook_ob, $graph_details);
         $graphs = [$graph];
 
-        return do_template('STATS_SCREEN', ['TITLE' => $this->title, 'GRAPHS' => $graphs]);
+        return do_template('STATS_SCREEN', ['_GUID' => 'ad070e6b3f02f9a69e0161225300e2a3', 'TITLE' => $this->title, 'GRAPHS' => $graphs]);
     }
 
     /**
@@ -635,6 +635,7 @@ class Module_admin_stats extends Standard_crud_module
         }
 
         return do_template('KPI_SCREEN', [
+            '_GUID' => 'edd8e8737647f494681d8b34fb67998c',
             'TITLE' => $this->title,
             'GRAPHS' => $graphs,
             'KPIS' => $kpis,

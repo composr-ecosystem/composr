@@ -89,5 +89,5 @@ function block_tooltip($label, $tooltip, bool $auto_escape) : object
         $tooltip = escape_html($tooltip);
     }
 
-    return do_template('BLOCK_TOOLTIP', ['LABEL' => $label, 'TOOLTIP' => $tooltip]);
+    return do_template('BLOCK_TOOLTIP', ['_GUID' => '1e22cd77b8432465a95ab2dfb2ce95f0', 'LABEL' => $label, 'TOOLTIP' => $tooltip]);
 }

@@ -76,7 +76,7 @@ PHP;
         $page_name = !empty($map['page_name']) ? $map['page_name'] : '_google_search';
 
         if (empty($map['param'])) {
-            return do_template('RED_ALERT', ['TEXT' => do_lang_tempcode('NO_PARAMETER_SENT', 'param')]);
+            return do_template('RED_ALERT', ['_GUID' => '8b1b8190e89d9a35c445f6606148c393', 'TEXT' => do_lang_tempcode('NO_PARAMETER_SENT', 'param')]);
         }
         $id = $map['param'];
 

@@ -1120,7 +1120,7 @@ function guid_scan($path)
     $GUID_ERRORS_MISSING = [];
     $GUID_ERRORS_DUPLICATE = [];
     $out = $GUID_ORIGINAL_CONTENTS;
-    preg_replace_callback("#do_template\('([^']*)', \[(\s*)'([^']+)' => ('[^']+')(.*)#", '_guid_scan_callback', $out); // First sweep. Bind template calls with a simple initial string value for the first parameter (the GUID hopefully) - finds us all the existing GUIDs
+    $out = preg_replace_callback("#do_template\('([^']*)', \[(\s*)'([^']+)' => ('[^']+')(.*)#", '_guid_scan_callback', $out); // First sweep. Bind template calls with a simple initial string value for the first parameter (the GUID hopefully) - finds us all the existing GUIDs
     $out = preg_replace_callback("#do_template\('([^']*)', \[(\s*)'([^']+)()(.*)' => #", '_guid_scan_callback', $out); // Second sweep. Bind all remaining template calls - allows us to look at each call
 
     return [
@@ -1168,7 +1168,7 @@ function _guid_scan_callback($match)
             }
             $GUID_ERRORS_DUPLICATE[] = $error_msg;
             $GUID_LANDSCAPE[$template_name][] = [$GUID_SCAN_PATH, $line_num, $new_guid];
-            return "do_template('" . $template_name . "', [" . $whitespace . "'_GUID' => '" . $new_guid . "'";
+            return "do_template('" . $template_name . "', [" . $whitespace . "'_GUID' => '" . $new_guid . "'" . $remaining_of_line;
         }
 
         // Record GUIDs
@@ -1181,7 +1181,7 @@ function _guid_scan_callback($match)
         if ($first_param_name != '_GUID') {
             $GUID_ERRORS_MISSING[] = 'Insert needed for ' . $template_name . ' in ' . $GUID_SCAN_PATH . ':' . strval($line_num);
             $GUID_LANDSCAPE[$template_name][] = [$GUID_SCAN_PATH, $line_num, $new_guid];
-            return "do_template('" . $template_name . "', [" . $whitespace . "'_GUID' => '" . $new_guid . "'," . $whitespace . "'" . $first_param_name . "' => " . (($first_param_value === null) ? ' ' : $first_param_value);
+            return "do_template('" . $template_name . "', [" . $whitespace . "'_GUID' => '" . $new_guid . "'," . (($whitespace !== '') ? $whitespace : ' ') . "'" . $first_param_name . $remaining_of_line . "' => ";
         }
     }
 

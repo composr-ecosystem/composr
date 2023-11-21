@@ -78,7 +78,7 @@ PHP;
         $block_id = get_block_id($map);
 
         if (empty($map['seller'])) {
-            return do_template('RED_ALERT', ['TEXT' => do_lang_tempcode('NO_PARAMETER_SENT', 'seller')]);
+            return do_template('RED_ALERT', ['_GUID' => '7d0bb5c1c16a31f8e8b1c3bd04831017', 'TEXT' => do_lang_tempcode('NO_PARAMETER_SENT', 'seller')]);
         }
 
         $title = empty($map['title']) ? do_lang_tempcode('BLOCK_EBAY_TITLE') : $map['title'];

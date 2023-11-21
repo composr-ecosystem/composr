@@ -403,6 +403,7 @@ function cns_join_actual(bool $captcha_if_enabled = true, bool $intro_message_if
         $privacy_policy_url = build_url(['page' => 'privacy'], '_SEARCH', [], false, false, true);
 
         $message = do_template('COPPA_MAIL', [
+            '_GUID' => 'a35c7a16288baec9ec6260d9d7195465',
             'FAX' => get_option('privacy_fax'),
             'POSTAL_ADDRESS' => get_option('privacy_postal_address'),
             'EMAIL_ADDRESS' => get_option('staff_address'),

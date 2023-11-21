@@ -417,6 +417,7 @@ class Hook_ecommerce_tax_taxjar
             require_javascript('jquery');
             require_javascript('select2');
             $input = do_template('FORM_SCREEN_INPUT_LIST', [
+                '_GUID' => 'e1578f690e8c0002bef748ac02296721',
                 'TABINDEX' => strval($tabindex),
                 'REQUIRED' => $_required,
                 'NAME' => $set_name . '_tj',

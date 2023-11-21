@@ -336,7 +336,7 @@ function step_1() : object
         $sdc = get_param_integer('skip_disk_checks', null);
         if (($sdc === 1) || (($sdc !== 0) && (file_exists(get_file_base() . '/.git')))) {
             if (!file_exists(get_file_base() . '/.git')) {
-                $warnings->attach(do_template('INSTALLER_WARNING', ['MESSAGE' => do_lang_tempcode('INSTALL_SLOW_SERVER')]));
+                $warnings->attach(do_template('INSTALLER_WARNING', ['_GUID' => 'c7896b2684fba62f3390624586bbbc3a', 'MESSAGE' => do_lang_tempcode('INSTALL_SLOW_SERVER')]));
             }
         } else {
             $files = @unserialize(cms_file_get_contents_safe(get_file_base() . '/data/files.bin', FILE_READ_LOCK));
@@ -396,7 +396,7 @@ function step_1() : object
                     ]));
                 } else {
                     foreach ($missing as $file) {
-                        $warnings->attach(do_template('INSTALLER_WARNING', ['MESSAGE' => do_lang_tempcode('MISSING_INSTALLATION_FILE', escape_html($file))]));
+                        $warnings->attach(do_template('INSTALLER_WARNING', ['_GUID' => 'e7240bff0162e4d43f7d4798212bbe5e', 'MESSAGE' => do_lang_tempcode('MISSING_INSTALLATION_FILE', escape_html($file))]));
                     }
                 }
                 if (count($corrupt) > 4) {
@@ -407,7 +407,7 @@ function step_1() : object
                     ]));
                 } else {
                     foreach ($corrupt as $file) {
-                        $warnings->attach(do_template('INSTALLER_WARNING', ['MESSAGE' => do_lang_tempcode('CORRUPT_INSTALLATION_FILE', escape_html($file))]));
+                        $warnings->attach(do_template('INSTALLER_WARNING', ['_GUID' => '7e8438874f7fd5dc79a77e73358ab4fc', 'MESSAGE' => do_lang_tempcode('CORRUPT_INSTALLATION_FILE', escape_html($file))]));
                     }
                 }
             }
@@ -417,20 +417,20 @@ function step_1() : object
     // Health Checks
     $_warnings = installer_health_checks();
     foreach ($_warnings as $_warning) {
-        $warnings->attach(do_template('INSTALLER_WARNING', ['MESSAGE' => $_warning]));
+        $warnings->attach(do_template('INSTALLER_WARNING', ['_GUID' => '6f6390d4410fae3b2a3761eb65b99db4', 'MESSAGE' => $_warning]));
     }
 
     // Some checks relating to installation permissions
     global $FILE_ARRAY;
     if (!@is_array($FILE_ARRAY)) { // Talk about manual permission setting a bit
         if ((is_suexec_like()) && (strpos(PHP_OS, 'WIN') === false)) { // NB: Could also be that files are owned by 'apache'/'nobody'. In these cases the users have consciously done something special and know what they're doing (they have open_basedir at least hopefully!) so we'll still consider this 'suexec'. It's too much an obscure situation.
-            $warnings->attach(do_template('INSTALLER_NOTICE', ['MESSAGE' => do_lang_tempcode('SUEXEC_SERVER')]));
+            $warnings->attach(do_template('INSTALLER_NOTICE', ['_GUID' => 'ed0c38f4e68b0cd456ec7029d061a070', 'MESSAGE' => do_lang_tempcode('SUEXEC_SERVER')]));
         } elseif (cms_is_writable(get_file_base() . '/install.php')) {
-            $warnings->attach(do_template('INSTALLER_NOTICE', ['MESSAGE' => do_lang_tempcode('RECURSIVE_SERVER')]));
+            $warnings->attach(do_template('INSTALLER_NOTICE', ['_GUID' => '2f22076de944028f70f40388c43fb96e', 'MESSAGE' => do_lang_tempcode('RECURSIVE_SERVER')]));
         }
     }
     if ((file_exists(get_file_base() . '/_config.php')) && (!cms_is_writable(get_file_base() . '/_config.php')) && (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) == 'WIN')) {
-        $warnings->attach(do_template('INSTALLER_WARNING', ['MESSAGE' => do_lang_tempcode('TROUBLESOME_WINDOWS_SERVER', escape_html(get_tutorial_url('tut_install_permissions')))]));
+        $warnings->attach(do_template('INSTALLER_WARNING', ['_GUID' => '368fe19bba96ef38027e7822e1a0a432', 'MESSAGE' => do_lang_tempcode('TROUBLESOME_WINDOWS_SERVER', escape_html(get_tutorial_url('tut_install_permissions')))]));
     }
 
     // Some sanity checks
@@ -445,7 +445,7 @@ function step_1() : object
 
     // GitLab downloads should not be used directly
     if (file_exists(get_file_base() . '/_tests')) {
-        $warnings->attach(do_template('INSTALLER_WARNING', ['MESSAGE' => 'You appear to be installing via the official GitLab repository. This is not intended for end-users and will lead to a bloated insecure site. You should use an official package from the Composr download page.']));
+        $warnings->attach(do_template('INSTALLER_WARNING', ['_GUID' => 'ce4972df590de8415b508ea368a708e1', 'MESSAGE' => 'You appear to be installing via the official GitLab repository. This is not intended for end-users and will lead to a bloated insecure site. You should use an official package from the Composr download page.']));
     }
 
     // Language selection...
@@ -496,7 +496,7 @@ function step_1() : object
     foreach (array_keys($langs) as $lang) {
         if (array_key_exists($lang, $lookup)) {
             $stub = ($lang == 'EN') ? '' : (' (unofficial, ' . strval(intval(round(100.0 * $lang_count[$lang] / $lang_count['EN']))) . '% changed)');
-            $entry = do_template('FORM_SCREEN_INPUT_LIST_ENTRY', ['SELECTED' => $lang == user_lang(), 'DISABLED' => false, 'NAME' => $lang, 'CLASS' => '', 'TEXT' => $lookup[$lang] . $stub]);
+            $entry = do_template('FORM_SCREEN_INPUT_LIST_ENTRY', ['_GUID' => 'fa5dac0d0c00c7cd95ba3223bc9a8776', 'SELECTED' => $lang == user_lang(), 'DISABLED' => false, 'NAME' => $lang, 'CLASS' => '', 'TEXT' => $lookup[$lang] . $stub]);
             $tlanguages->attach($entry);
             $tcount++;
         }
@@ -706,7 +706,7 @@ function step_3() : object
             $mapped_name = $database;
         }
         $mapped_name = is_maintained_description('database_' . $database, $mapped_name);
-        $tdatabase->attach(do_template('FORM_SCREEN_INPUT_LIST_ENTRY', ['SELECTED' => $selected, 'DISABLED' => false, 'NAME' => $database, 'CLASS' => '', 'TEXT' => $mapped_name]));
+        $tdatabase->attach(do_template('FORM_SCREEN_INPUT_LIST_ENTRY', ['_GUID' => '2dada7c84d14b2ec44fcfa27d9d41513', 'SELECTED' => $selected, 'DISABLED' => false, 'NAME' => $database, 'CLASS' => '', 'TEXT' => $mapped_name]));
 
         if ($database != 'xml') {
             $dbs_found++;
@@ -1060,7 +1060,7 @@ function step_4() : object
     if (GOOGLE_APPENGINE) {
         $title = do_lang_tempcode('DEV_DATABASE_SETTINGS');
         $text = do_lang_tempcode('DEV_DATABASE_SETTINGS_HELP');
-        $sections->attach(do_template('INSTALLER_STEP_4_SECTION', ['HIDDEN' => $hidden, 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options]));
+        $sections->attach(do_template('INSTALLER_STEP_4_SECTION', ['_GUID' => 'b83e25e6f09776a1b69c4e329bbd267d', 'HIDDEN' => $hidden, 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options]));
 
         $title = do_lang_tempcode('LIVE_DATABASE_SETTINGS');
         $text = do_lang_tempcode('LIVE_DATABASE_SETTINGS_HELP');
@@ -1069,7 +1069,7 @@ function step_4() : object
         $options->attach(make_option(do_lang_tempcode('DATABASE_NAME'), new Tempcode(), 'gae_live_db_site', '<application>', false, true));
         $options->attach(make_option(do_lang_tempcode('DATABASE_USERNAME'), new Tempcode(), 'gae_live_db_site_user', 'root', false, true));
         $options->attach(make_option(do_lang_tempcode('DATABASE_PASSWORD'), new Tempcode(), 'gae_live_db_site_password', '', true));
-        $sections->attach(do_template('INSTALLER_STEP_4_SECTION', ['HIDDEN' => '', 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options]));
+        $sections->attach(do_template('INSTALLER_STEP_4_SECTION', ['_GUID' => '4d6ef04f3ab75634cad2a82a53d55955', 'HIDDEN' => '', 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options]));
     } else {
         if (!$forum_options->is_empty()) {
             $sections->attach(do_template('INSTALLER_STEP_4_SECTION', ['_GUID' => '232b69a995f384275c1cd9269a42c3b8', 'HIDDEN' => '', 'TITLE' => $forum_title, 'TEXT' => $forum_text, 'OPTIONS' => $forum_options]));
@@ -1726,8 +1726,8 @@ function step_5_checks_b() : object
     // MySQL check (could not be checked earlier due to lack of active connection)
     $_warnings = installer_health_checks(['Installation environment \\ MySQL version']);
     foreach ($_warnings as $_warning) {
-        $warning = do_template('INSTALLER_WARNING', ['MESSAGE' => $_warning]);
-        $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['SOMETHING' => $warning]));
+        $warning = do_template('INSTALLER_WARNING', ['_GUID' => 'fb748246869dd9ebffa4d2967a2931cd', 'MESSAGE' => $_warning]);
+        $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '214790e075dc09f8dff8e69789311984', 'SOMETHING' => $warning]));
     }
 
     return $log;
@@ -2017,7 +2017,7 @@ function step_5_uninstall() : object
     require_code('files');
     deldir_contents('uploads/attachments', true);
     deldir_contents('uploads/attachments_thumbs', true);
-    $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => 'dae0677246aa2f1394b90c3739490ff7', 'SOMETHING' => do_lang_tempcode('DELETED_ATTACHMENTS')]));
+    $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => 'fcb01d21fc6041add6ba6a4a0bc79fb6', 'SOMETHING' => do_lang_tempcode('DELETED_ATTACHMENTS')]));
 
     // Delete database tables
     $tables = $sitedb->query_select('db_meta', ['DISTINCT m_table'], [], '', null, 0, true);
@@ -2590,7 +2590,7 @@ function step_9() : object
             $time_after = microtime(true);
             $time = $time_after - $time_before;
             if (get_param_integer('keep_show_timings', 0) == 1) {
-                $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '4fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('Block installation of ' . escape_html($block) . ' took ' . float_format($time) . ' seconds')])];
+                $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => 'da7e6b0948b6aa5702123808a4ca894f', 'SOMETHING' => protect_from_escaping('Block installation of ' . escape_html($block) . ' took ' . float_format($time) . ' seconds')])];
             } else {
                 $log[] = ['time' => $time, 'out' => do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => 'dc9f833239d501f77729778b5c6681b6', 'SOMETHING' => do_lang_tempcode('INSTALLED_BLOCK', escape_html($block))])];
             }
@@ -3112,8 +3112,8 @@ function make_option(object $nice_name, object $description, string $name, strin
         if ((substr($name, 0, 3) != 'db_') && (substr($name, 0, 12) != 'gae_live_db_') && ($name != 'ftp_password')) {
             $input2 = do_template('INSTALLER_INPUT_PASSWORD', ['_GUID' => '0f15bfe5b58f3ca7830a48791f1a6a6d', 'REQUIRED' => $_required, 'NAME' => $name . '_confirm', 'VALUE' => $value]);
             $b = do_template('INSTALLER_STEP_4_SECTION_OPTION', [
+                '_GUID' => 'bcbaa5585abb15ef6fbdc5a279c62fae',
                 'REQUIRED' => $required,
-                '_GUID' => 'c99e7339b7ffe81318ae84953e3c03a3',
                 'NAME' => $name,
                 'INPUT' => $input2,
                 'NICE_NAME' => $nice_name,
@@ -3139,7 +3139,7 @@ function make_option(object $nice_name, object $description, string $name, strin
  */
 function make_tick(object $nice_name, object $description, string $name, int $value) : object
 {
-    $input = do_template('INSTALLER_INPUT_TICK', ['CHECKED' => $value == 1, 'NAME' => $name]);
+    $input = do_template('INSTALLER_INPUT_TICK', ['_GUID' => 'a65cb6c868372c6237029113992d87fa', 'CHECKED' => $value == 1, 'NAME' => $name]);
     return do_template('INSTALLER_STEP_4_SECTION_OPTION', ['_GUID' => '0723f86908f66da7f67ebc4cd07bff2e', 'REQUIRED' => false, 'NAME' => $name, 'INPUT' => $input, 'NICE_NAME' => $nice_name, 'DESCRIPTION' => $description]);
 }
 

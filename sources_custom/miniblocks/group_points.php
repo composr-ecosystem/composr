@@ -20,7 +20,7 @@ if (!addon_installed('group_points')) {
 }
 
 if (!addon_installed('points')) {
-    return do_template('RED_ALERT', ['TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('points'))]);
+    return do_template('RED_ALERT', ['_GUID' => '76049c894635dde9a1aa0739b8d9ffd7', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('points'))]);
 }
 
 require_code('points');

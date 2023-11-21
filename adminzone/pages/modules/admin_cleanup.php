@@ -193,6 +193,7 @@ class Module_admin_cleanup
             $fields_other->attach($tick);
         }
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', [
+            '_GUID' => '61eb9a53529516e6de7d761a6c060c68',
             'SECTION_HIDDEN' =>  !$fields_other_expand,
             'TITLE' => do_lang_tempcode('OTHER'),
             'HELP' => do_lang_tempcode('CLEANUP_PAGE_MISC_TOOLS', escape_html(find_script('upgrader'))),

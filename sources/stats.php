@@ -197,7 +197,7 @@ function stats_generate_graph(string $graph_name, array $filters = [], $pivot = 
     if (($hook_ob === null) || ($graph_details === null)) {
         list($hook_ob, $graph_details) = stats_find_graph_details($graph_name, $for_kpi);
         if ($hook_ob === null) {
-            return do_template('RED_ALERT', ['TEXT' => do_lang_tempcode('MISSING_RESOURCE')]);
+            return do_template('RED_ALERT', ['_GUID' => 'ce20d9674823ecc54ddf3059d9b386a6', 'TEXT' => do_lang_tempcode('MISSING_RESOURCE')]);
         }
     }
 
@@ -316,6 +316,7 @@ function stats_generate_graph_form(string $graph_name, ?object &$hook_ob = null,
     list($fields, $hidden) = $_fields;
 
     $graph_form = do_template('FORM', [
+        '_GUID' => '7f2e3db1499412cf95a984f0c5986247',
         'SKIP_WEBSTANDARDS' => true,
         'FIELDS' => $fields,
         'GET' => true,
@@ -1353,6 +1354,7 @@ class CMSStatsDateMonthRangeFilter extends CMSStatsFilter
         $tabindex = get_form_field_tabindex();
 
         $input = do_template('FORM_SCREEN_INPUT_STATS_DATE_RANGE', [
+            '_GUID' => '01c83bc8745a294da28f13e6ab4f47a1',
             'TABINDEX' => strval($tabindex),
             'NAME' => $this->filter_name,
             'MONTHS' => $months,

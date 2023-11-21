@@ -185,7 +185,7 @@ PHP;
         }
 
         if (empty($boards)) {
-            return do_template('RED_ALERT', ['TEXT' => do_lang_tempcode('MISSING_RESOURCE', 'leader_board')]);
+            return do_template('RED_ALERT', ['_GUID' => '4c1a7f62c19ac80998fa1634454317bc', 'TEXT' => do_lang_tempcode('MISSING_RESOURCE', 'leader_board')]);
         }
 
         $board = $boards[0];
@@ -195,7 +195,7 @@ PHP;
 
         $rows = get_leader_board($leader_board_id, array_key_exists('timestamp', $map) ? intval($map['timestamp']) : null);
         if (empty($rows)) {
-            return do_template('RED_ALERT', ['TEXT' => do_lang_tempcode('LEADER_BOARD_NOT_GENERATED', escape_html($board['lb_title']))]);
+            return do_template('RED_ALERT', ['_GUID' => '21e220f0b11a3a1fd278d3ff8452b2d6', 'TEXT' => do_lang_tempcode('LEADER_BOARD_NOT_GENERATED', escape_html($board['lb_title']))]);
         }
 
         $date = $rows[0]['lb_date_and_time'];

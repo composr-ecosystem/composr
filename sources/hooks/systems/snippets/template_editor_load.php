@@ -217,7 +217,7 @@ class Hook_snippet_template_editor_load
         );
 
         if (get_param_integer('revisions_only', 0) == 1) {
-            return do_template('THEME_TEMPLATE_EDITOR_TAB_REVISIONS', ['REVISIONS' => $_revisions]);
+            return do_template('THEME_TEMPLATE_EDITOR_TAB_REVISIONS', ['_GUID' => '0e954365c8bbdf314c17ad80193a602d', 'REVISIONS' => $_revisions]);
         }
 
         return do_template('THEME_TEMPLATE_EDITOR_TAB', [

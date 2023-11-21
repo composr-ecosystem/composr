@@ -175,7 +175,7 @@ function i_force_refresh()
         global $I_REFRESH_URL, $I_REFRESH_TIME;
 
         $post = build_keep_post_fields([], true);
-        $refresh = do_template('JS_REFRESH', ['FORM_NAME' => 'redir_form']);
+        $refresh = do_template('JS_REFRESH', ['_GUID' => '748a4b4d970990453271f229f29a0a09', 'FORM_NAME' => 'redir_form']);
 
         $title = get_screen_title('IMPORT');
         $url = $I_REFRESH_URL;
@@ -185,7 +185,7 @@ function i_force_refresh()
                 $url .= '&' . $key . '=' . strval($val);
             }
         }
-        $middle = do_template('REDIRECT_POST_METHOD_SCREEN', ['REFRESH' => $refresh, 'TITLE' => $title, 'TEXT' => do_lang_tempcode('REFRESH_TIMEOUT_REACHED', strval($I_REFRESH_TIME)), 'URL' => $url, 'POST' => $post]);
+        $middle = do_template('REDIRECT_POST_METHOD_SCREEN', ['_GUID' => '63ad793efebb1abe05d2aa27a2b7de38', 'REFRESH' => $refresh, 'TITLE' => $title, 'TEXT' => do_lang_tempcode('REFRESH_TIMEOUT_REACHED', strval($I_REFRESH_TIME)), 'URL' => $url, 'POST' => $post]);
 
         $echo = globalise($middle, null, '', true);
         $echo->evaluate_echo();

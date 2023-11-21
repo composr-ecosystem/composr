@@ -680,6 +680,7 @@ class Module_admin_email_log
         $fields->attach(form_input_email(do_lang_tempcode('TO'), '', 'to_email', $to_email, true));
 
         return do_template('FORM_SCREEN', [
+            '_GUID' => '99f8b395f06f82b86abd1f75a0b7a11a',
             'TITLE' => $this->title,
             'SKIP_WEBSTANDARDS' => true,
             'HIDDEN' => '',
@@ -704,6 +705,7 @@ class Module_admin_email_log
         $mail_ob = dispatch_mail('Testing', 'Testing', [$to_email], 'Tester', '', '', ['priority' => 1, 'bypass_queue' => true, 'leave_attachments_on_failure' => true]);
 
         return do_template('FULL_MESSAGE_SCREEN', [
+            '_GUID' => 'a2dbc360e80dfc7ec8026e7f22fe2cc1',
             'TITLE' => $this->title,
             'TEXT' => protect_from_escaping($mail_ob->log),
         ]);

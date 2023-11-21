@@ -566,6 +566,7 @@ function graph_stacked_bar_chart(array $datasets, array $labels, $x_axis_label =
     $logarithmic = isset($options['logarithmic']) ? $options['logarithmic'] : false;
 
     return do_template('GRAPH_STACKED_BAR_CHART', [
+        '_GUID' => 'fda0ca8d168235248b4eee8028bd22ff',
         'ID' => $id,
         'WIDTH' => $width,
         'HEIGHT' => $height,
@@ -663,6 +664,7 @@ function graph_bubble_bar_chart(array $datasets, $x_axis_label = '', $y_axis_lab
     $has_wordwrap = isset($options['wordwrap_tooltip_at']);
 
     return do_template('GRAPH_BUBBLE_BAR_CHART', [
+        '_GUID' => 'ea48f3288b236e06db58af927c5ce0a2',
         'ID' => $id,
         'WIDTH' => $width,
         'HEIGHT' => $height,

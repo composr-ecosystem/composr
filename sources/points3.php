@@ -155,6 +155,7 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
 
         $out = new Tempcode();
         $transactions_header = protect_from_escaping(do_template('HELP_ICON_PHRASE', [
+            '_GUID' => 'c2a42ade2b3d79e5c0e5e2cf6280d4c8',
             'LABEL' => do_lang_tempcode('TRANSACTIONS'),
             'TOOLTIP' => do_lang_tempcode('DESCRIPTION_TRANSACTIONS_AGGREGATE'),
         ]));
@@ -230,7 +231,7 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
         $escrow_url = build_url(['page' => 'points', 'type' => 'escrow', 'id' => $member_id_of], get_module_zone('points'));
 
         $form = new Tempcode();
-        $form->attach(do_template('BUTTON_SCREEN', ['IMMEDIATE' => false, 'URL' => $escrow_url, 'TITLE' => do_lang_tempcode('ESCROW_TO'), 'IMG' => 'buttons/proceed', 'HIDDEN' => new Tempcode()]));
+        $form->attach(do_template('BUTTON_SCREEN', ['_GUID' => '97024f2bf9014f82367cefc8c9b6dcd9', 'IMMEDIATE' => false, 'URL' => $escrow_url, 'TITLE' => do_lang_tempcode('ESCROW_TO'), 'IMG' => 'buttons/proceed', 'HIDDEN' => new Tempcode()]));
 
         $escrow_template = do_template('ESCROW_TRANSACTIONS', [
             '_GUID' => 'ac97ee94388e4db2b8753273694cb2a1',
@@ -248,7 +249,7 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
     $export_points_ledger = new Tempcode();
     if (($member_id_of == $member_id_viewing) || (has_privilege($member_id_viewing, 'view_points_ledger'))) {
         $export_url = build_url(['page' => 'points', 'type' => 'export', 'id' => $member_id_of], get_module_zone('points'));
-        $export_points_ledger->attach(do_template('BUTTON_SCREEN', ['IMMEDIATE' => false, 'URL' => $export_url, 'TITLE' => do_lang_tempcode('EXPORT'), 'IMG' => 'admin/export_spreadsheet', 'HIDDEN' => new Tempcode()]));
+        $export_points_ledger->attach(do_template('BUTTON_SCREEN', ['_GUID' => '1c2ebca6837be4d6f5e495d2e43765b2', 'IMMEDIATE' => false, 'URL' => $export_url, 'TITLE' => do_lang_tempcode('EXPORT'), 'IMG' => 'admin/export_spreadsheet', 'HIDDEN' => new Tempcode()]));
     }
 
     return do_template('POINTS_PROFILE', array_merge(
@@ -369,6 +370,7 @@ function points_get_transactions(string $type, int $member_id_of, int $member_id
     $max_rows = $GLOBALS['SITE_DB']->query_select_value('points_ledger', 'COUNT(*)', $where, $end);
     if ($max_rows == 0) {
         return do_template('BLOCK_NO_ENTRIES', [
+            '_GUID' => 'aad1e575a032569a761aea36a5c6befb',
             'TITLE' => new Tempcode(),
             'MESSAGE' => do_lang_tempcode('NO_ENTRIES'),
         ]);

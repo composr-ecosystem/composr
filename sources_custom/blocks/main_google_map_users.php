@@ -126,7 +126,7 @@ PHP;
 
             $latitude_cpf_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_custom_fields', 'id', [$GLOBALS['FORUM_DB']->translate_field_ref('cf_name') => 'cms_latitude']);
             $longitude_cpf_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_custom_fields', 'id', [$GLOBALS['FORUM_DB']->translate_field_ref('cf_name') => 'cms_longitude']);
-            //return do_template('RED_ALERT', ['TEXT' => 'The maps block has not been installed correctly, the CPFs are missing.']);
+            //return do_template('RED_ALERT', ['_GUID' => 'c9680e93049c35c8611a63333df749e7', 'TEXT' => 'The maps block has not been installed correctly, the CPFs are missing.']);
         }
 
         // Data query

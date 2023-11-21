@@ -202,6 +202,7 @@ class Module_admin_banners
         $table = results_table(do_lang_tempcode('BANNERS'), $start, 'start', $max, 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort');
 
         $tpl = do_template('RESULTS_TABLE_SCREEN', [
+            '_GUID' => '82133b12ecdece7cd22f879c0c20ff44',
             'RESULTS_TABLE' => $table,
             'TITLE' => $this->title,
             'FILTERS_ROW_A' => null,

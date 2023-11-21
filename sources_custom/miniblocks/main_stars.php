@@ -16,7 +16,7 @@
 i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
 if (!addon_installed('idolisr')) {
-    return do_template('RED_ALERT', ['TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('idolisr'))]);
+    return do_template('RED_ALERT', ['_GUID' => '22e04956ec18c41717e3b34dba4c00c3', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('idolisr'))]);
 }
 
 if (!addon_installed('points')) {
@@ -32,7 +32,7 @@ $block_id = get_block_id($map);
 $stars = [];
 
 if (@cms_empty_safe($map['param'])) {
-    return do_template('RED_ALERT', ['TEXT' => do_lang_tempcode('NO_PARAMETER_SENT', 'param')]);
+    return do_template('RED_ALERT', ['_GUID' => 'f4feed787ebcf1d007ba53625c8accce', 'TEXT' => do_lang_tempcode('NO_PARAMETER_SENT', 'param')]);
 }
 
 $sql = 'SELECT recipient_id,SUM(amount_gift_points+amount_points) as cnt FROM ' . get_table_prefix() . 'points_ledger g WHERE ';

@@ -3259,6 +3259,7 @@ class Module_topics
         }
 
         return do_template('FORM_SCREEN', [
+            '_GUID' => '17380ed78308c3475fbd24e16587fe54',
             'HIDDEN' => $hidden,
             'TITLE' => $title,
             'FIELDS' => $fields,
@@ -3410,6 +3411,7 @@ class Module_topics
         ];
         if ($voting_power_enabled) {
             $field_titles[] = protect_from_escaping(do_template('HELP_ICON_PHRASE', [
+                '_GUID' => 'a8d2642b6887c528f42e096abdc94c24',
                 'LABEL' => do_lang_tempcode('VOTING_POWER'),
                 'TOOLTIP' => do_lang_tempcode('DESCRIPTION_VOTING_POWER'),
             ]));
@@ -3433,6 +3435,7 @@ class Module_topics
             ];
             if (get_option('enable_poll_point_weighting') == '1' && $results['point_weighting'] == 1) {
                 $_row[] = do_template('CNS_TOPIC_POLL_VOTING_POWER', [
+                    '_GUID' => 'cdcff35bdac710d4b03b3542bc1bb01a',
                     'GUID' => '690423ddee434df79de7bead4fb5e79e',
                     'EQUATION' => $vote['voting_equation'][0],
                     'EQUATION_WITH_NUMBERS' => $vote['voting_equation'][1],
@@ -4089,7 +4092,7 @@ class Module_topics
         $point_weighting = $poll_info['po_point_weighting'];
         $fields = $this->get_poll_form_fields($topic_info['t_forum_id'], false, $question, $answers, $is_private, $is_open, $requires_reply, $minimum_selections, $maximum_selections, $poll_closing_time, $view_member_votes, $vote_revocation, $guests_can_vote, $point_weighting);
 
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['TITLE' => do_lang_tempcode('ACTIONS')]));
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '2ba9cf458b012ee8a12429cbc8b07993', 'TITLE' => do_lang_tempcode('ACTIONS')]));
         $fields->attach(form_input_tick(do_lang_tempcode('ERASE_VOTES'), do_lang_tempcode('DESCRIPTION_ERASE_VOTES'), 'erase_votes', false));
         $fields->attach(form_input_line(do_lang_tempcode('REASON'), do_lang_tempcode('DESCRIPTION_REASON'), 'reason', '', false));
 

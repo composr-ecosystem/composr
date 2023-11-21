@@ -196,6 +196,7 @@ function embed_feedback_systems(string $content_type, string $content_id, int $a
     if (!$comment_details->is_empty()) {
         // AJAX support
         $comment_details->attach(do_template('COMMENT_AJAX_HANDLER', [
+            '_GUID' => '2949df9b0bf71aa6b703a67a5d0c5de9',
             'OPTIONS' => $serialized_options,
             'HASH' => $hash,
             'CONTENT_TYPE' => $content_type,

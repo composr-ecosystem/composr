@@ -462,6 +462,7 @@ class Hook_addon_registry_news
             $news_items[] = $this->get_news_map();
 
             $slides->attach(do_template('BLOCK_MAIN_NEWS_SLIDER_SLIDE', [
+                '_GUID' => '9a69edb950075476f82a10584fe997e9',
                 'BLOCK_ID' => lorem_word(),
                 'ACTIVE' => ($k == 0),
                 'NEWS_ITEMS' => $news_items,

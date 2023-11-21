@@ -466,6 +466,7 @@ class Module_admin_errorlog
             if ($available) {
                 $keep = symbol_tempcode('KEEP');
                 $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
+                    '_GUID' => '87fd7ab2c12752925c469678d43c8c46',
                     'URL' => find_script('cron_bridge') . '?limit_hooks=' . urlencode($hook) . '&manual_run=1' . $keep->evaluate(),
                     'NAME' => $label,
                     'ACTION_TITLE' => do_lang_tempcode('EXECUTE_SCRIPT'),
@@ -476,7 +477,7 @@ class Module_admin_errorlog
             }
 
             $_label = new Tempcode();
-            $_label->attach(do_template('ANCHOR', ['NAME' => 'cron_' . $hook]));
+            $_label->attach(do_template('ANCHOR', ['_GUID' => 'b0a57cc72db9fe96887fdcb42cda561e', 'NAME' => 'cron_' . $hook]));
             $_label->attach(make_string_tempcode(escape_html($label)));
             if (!$available) {
                 $_label->attach(' (' . do_lang('UNAVAILABLE') . ')');
@@ -516,6 +517,7 @@ class Module_admin_errorlog
         $table = results_table(do_lang_tempcode('CRON_HOOKS'), 0, 'start', 1000, 'max', 1000, $header_row, $result_entries);
 
         $tpl = do_template('RESULTS_TABLE_SCREEN', [
+            '_GUID' => '5e2911f8e43aec63f5a45f2a8fc375cd',
             'RESULTS_TABLE' => $table,
             'TITLE' => $this->title,
             'FILTERS_ROW_A' => null,

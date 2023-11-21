@@ -201,7 +201,7 @@ class Module_admin_actionlog
         $fields->attach(form_input_list(do_lang_tempcode('ACTION'), '', 'to_type', $action_type_list, null, false, false));
 
         // Filters
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['TITLE' => do_lang_tempcode('FILTER')]));
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '750bb028b5741a56f5220ff4cbd96f8f', 'TITLE' => do_lang_tempcode('FILTER')]));
         $fields->attach(form_input_line(do_lang_tempcode('PARAMETER_A'), '', 'param_a', '', false));
         $fields->attach(form_input_line(do_lang_tempcode('PARAMETER_B'), '', 'param_b', '', false));
 
@@ -415,7 +415,7 @@ class Module_admin_actionlog
         }
         $table = results_table(do_lang_tempcode('ACTIONS'), $start, 'start', $max, 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort');
 
-        $tpl = do_template('ACTIONLOGS_SCREEN', ['TABLE' => $table, 'TITLE' => $this->title]);
+        $tpl = do_template('ACTIONLOGS_SCREEN', ['_GUID' => '5a2e2876c8cfa442a2266d01fca5d79a', 'TABLE' => $table, 'TITLE' => $this->title]);
 
         require_code('templates_internalise_screen');
         return internalise_own_screen($tpl);

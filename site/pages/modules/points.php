@@ -721,6 +721,7 @@ class Module_points
                             $preview = do_lang_tempcode('ARE_YOU_SURE_TRANSACTION_POINTS', escape_html($member_of), escape_html(integer_format($amount)));
                         }
                         return do_template('CONFIRM_SCREEN', [
+                            '_GUID' => '22c701f5c1cb36d55dbc09bb6254591e',
                             'TITLE' => $this->title,
                             'PREVIEW' => $preview,
                             'URL' => get_self_url(false, false, ['confirm' => 1]),
@@ -758,6 +759,7 @@ class Module_points
                         $member_points_balance = points_balance($member_id_of);
                         $preview = do_lang_tempcode('ARE_YOU_SURE_TRANSACTION_CREDIT', escape_html($member_of), escape_html(integer_format($amount)), [escape_html(integer_format($member_points_balance)), escape_html(integer_format($member_points_balance + $amount)), escape_html(get_timezoned_date_time(time(), false))]);
                         return do_template('CONFIRM_SCREEN', [
+                            '_GUID' => 'd47561c4e730c016894ffea26cf40fdf',
                             'TITLE' => $this->title,
                             'PREVIEW' => $preview,
                             'URL' => get_self_url(false, false, ['confirm' => 1]),
@@ -788,6 +790,7 @@ class Module_points
                         $member_points_balance = points_balance($member_id_of);
                         $preview = do_lang_tempcode('ARE_YOU_SURE_TRANSACTION_DEBIT', escape_html($member_of), escape_html(integer_format($amount)), [escape_html(integer_format($member_points_balance)), escape_html(integer_format($member_points_balance - $amount)), escape_html(get_timezoned_date_time(time(), false))]);
                         return do_template('CONFIRM_SCREEN', [
+                            '_GUID' => '5d8220d71226c59e222f9376af68bd64',
                             'TITLE' => $this->title,
                             'PREVIEW' => $preview,
                             'URL' => get_self_url(false, false, ['confirm' => 1]),
@@ -851,6 +854,7 @@ class Module_points
         $escrow_url = build_url(['page' => '_SELF', 'type' => 'do_escrow', 'id' => $member_id_of], '_SELF');
 
         return do_template('FORM_SCREEN', [
+            '_GUID' => 'a8404b1fb2be0c2210a37498b381c4f7',
             'HIDDEN' => new Tempcode(),
             'TITLE' => $this->title,
             'FIELDS' => $fields,
@@ -916,6 +920,7 @@ class Module_points
                 $preview = do_lang_tempcode('ARE_YOU_SURE_ESCROW_POINTS', escape_html($member_of), escape_html(integer_format($amount)));
             }
             return do_template('CONFIRM_SCREEN', [
+                '_GUID' => '72d92df5bb094e18c1a6e92a89bd73b0',
                 'TITLE' => $this->title,
                 'PREVIEW' => $preview,
                 'URL' => get_self_url(false, false, ['confirm' => 1]),
@@ -991,14 +996,14 @@ class Module_points
                 if ($involved) {
                     $hidden = new Tempcode();
                     $escrow_url = build_url(['page' => 'points', 'type' => 'dispute_escrow', 'id' => $row['id']]);
-                    $buttons->attach(do_template('BUTTON_SCREEN', ['IMMEDIATE' => true, 'URL' => $escrow_url, 'TITLE' => do_lang_tempcode('ESCROW_DISPUTE'), 'IMG' => 'buttons/report', 'HIDDEN' => $hidden]));
+                    $buttons->attach(do_template('BUTTON_SCREEN', ['_GUID' => '76a89f1d22849a9215c47c58000ad036', 'IMMEDIATE' => true, 'URL' => $escrow_url, 'TITLE' => do_lang_tempcode('ESCROW_DISPUTE'), 'IMG' => 'buttons/report', 'HIDDEN' => $hidden]));
                 }
 
                 // Satisfy escrow buttons; not shown / allowed if an escrow is disputed
                 if (($row['status'] == ESCROW_STATUS_PENDING) && (($member_id_viewing == $row['sender_id'] && $row['sender_status'] == 0) || ($member_id_viewing == $row['recipient_id'] && $row['recipient_status'] == 0))) {
                     $hidden = new Tempcode();
                     $escrow_url = build_url(['page' => 'points', 'type' => 'satisfy_escrow', 'id' => $row['id']]);
-                    $buttons->attach(do_template('BUTTON_SCREEN', ['IMMEDIATE' => true, 'URL' => $escrow_url, 'TITLE' => do_lang_tempcode('ESCROW_SATISFIED'), 'IMG' => 'buttons/yes', 'HIDDEN' => $hidden]));
+                    $buttons->attach(do_template('BUTTON_SCREEN', ['_GUID' => '4090ee4d36dd4006ef9e4ba5262fe786', 'IMMEDIATE' => true, 'URL' => $escrow_url, 'TITLE' => do_lang_tempcode('ESCROW_SATISFIED'), 'IMG' => 'buttons/yes', 'HIDDEN' => $hidden]));
                 }
 
                 // Determine actual status
@@ -1016,7 +1021,7 @@ class Module_points
                 if ((!$involved) && ($row['status'] >= ESCROW_STATUS_PENDING) && (has_privilege($member_id_viewing, 'moderate_points_escrow'))) {
                     $hidden = new Tempcode();
                     $resolve_url = build_url(['page' => 'points', 'type' => 'moderate_escrow', 'id' => $row['id']]);
-                    $buttons->attach(do_template('BUTTON_SCREEN', ['IMMEDIATE' => true, 'URL' => $resolve_url, 'TITLE' => do_lang_tempcode('ESCROW_MODERATE'), 'IMG' => 'buttons/advanced', 'HIDDEN' => $hidden]));
+                    $buttons->attach(do_template('BUTTON_SCREEN', ['_GUID' => '2c872d12bb8beab7f64a0881f89acaa2', 'IMMEDIATE' => true, 'URL' => $resolve_url, 'TITLE' => do_lang_tempcode('ESCROW_MODERATE'), 'IMG' => 'buttons/advanced', 'HIDDEN' => $hidden]));
                 }
         }
 
@@ -1040,6 +1045,7 @@ class Module_points
         }
 
         return do_template('POINTS_ESCROW_SCREEN', [
+            '_GUID' => '7f960458fb37ff9a374e364df664d863',
             'TITLE' => get_screen_title('_ESCROW_VIEW', true, [strval($row['id'])]),
             'FIELDS' => $_fields,
             'BUTTONS' => $buttons,
@@ -1098,6 +1104,7 @@ class Module_points
             }
             $preview = do_lang_tempcode('ARE_YOU_SURE_ESCROW_SATISFY', escape_html($other_member), $escrow);
             return do_template('CONFIRM_SCREEN', [
+                '_GUID' => 'fcfc7796a32b475d9d19a370a1382b63',
                 'TITLE' => $this->title,
                 'PREVIEW' => $preview,
                 'URL' => get_self_url(false, false, ['confirm' => 1]),
@@ -1157,6 +1164,7 @@ class Module_points
             $url = build_url(['page' => '_SELF', 'type' => 'dispute_escrow', 'id' => $id], '_SELF');
 
             return do_template('FORM_SCREEN', [
+                '_GUID' => '7c7068dcdf6aa36c0ef83c61f24972a2',
                 'HIDDEN' => new Tempcode(),
                 'TITLE' => $this->title,
                 'FIELDS' => $fields,
@@ -1246,6 +1254,7 @@ class Module_points
 
             require_javascript('points_escrow');
             return do_template('FORM_SCREEN', [
+                '_GUID' => '4160b8a06c60cd52dbdbfb3dba5b6452',
                 'HIDDEN' => new Tempcode(),
                 'TITLE' => $this->title,
                 'FIELDS' => $fields,

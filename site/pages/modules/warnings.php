@@ -272,6 +272,7 @@ class Module_warnings extends Standard_crud_module
         // Warnings...
 
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', [
+            '_GUID' => '740461f4702d617aee5ecf46eb7d1af6',
             'TITLE' => do_lang_tempcode('WARNINGS'),
             'HELP' => do_lang_tempcode('HAS_ALREADY_X_WARNINGS', escape_html($username), escape_html(integer_format($num_warnings, 0)), [escape_html(get_site_name()), escape_html($rules_url), escape_html($history_url), escape_html($lookup_url)]),
         ]));

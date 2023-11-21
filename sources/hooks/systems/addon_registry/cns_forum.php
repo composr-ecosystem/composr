@@ -728,7 +728,7 @@ class Hook_addon_registry_cns_forum
 
             $marker = new Tempcode();
             if ($i == 2) {
-                $marker = do_template('CNS_TOPIC_MARKER', ['ID' => strval($i)]);
+                $marker = do_template('CNS_TOPIC_MARKER', ['_GUID' => '64f4d9a4d92869b2a7cee169e6494301', 'ID' => strval($i)]);
             }
 
             $topic_row_links = [];
@@ -1392,9 +1392,10 @@ class Hook_addon_registry_cns_forum
         require_css('cns');
         require_lang('cns');
 
-        $avatar = do_template('CNS_TOPIC_POST_AVATAR', ['AVATAR' => placeholder_avatar()]);
+        $avatar = do_template('CNS_TOPIC_POST_AVATAR', ['_GUID' => 'acb4f6efb8b1ae27ae719c99ddcf8057', 'AVATAR' => placeholder_avatar()]);
 
         $last_edited = do_template('CNS_TOPIC_POST_LAST_EDITED', [
+            '_GUID' => 'b75e04134d53797e2e91236536fa3ecd',
             'LAST_EDIT_DATE_RAW' => placeholder_date(),
             'LAST_EDIT_DATE' => placeholder_date(),
             'LAST_EDIT_PROFILE_URL' => placeholder_url(),
@@ -1434,6 +1435,7 @@ class Hook_addon_registry_cns_forum
         $_post = do_template('CNS_TOPIC_POST', $map);
 
         $posts = do_template('CNS_POST_BOX', [
+            '_GUID' => '98382ac3c88efdcebe7d3491bf70866e',
             'BREADCRUMBS' => placeholder_breadcrumbs(),
             'POST' => $_post,
         ] + $map + ['ACTUAL_POST' => lorem_paragraph()]);

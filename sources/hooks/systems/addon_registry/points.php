@@ -329,7 +329,7 @@ class Hook_addon_registry_points
         require_code('form_templates');
 
         $form = new Tempcode();
-        $form->attach(do_template('BUTTON_SCREEN', ['IMMEDIATE' => false, 'URL' => placeholder_url(), 'TITLE' => do_lang_tempcode('ESCROW_TO'), 'IMG' => 'buttons/proceed', 'HIDDEN' => new Tempcode()]));
+        $form->attach(do_template('BUTTON_SCREEN', ['_GUID' => 'be2d6b899b75d8ad77d7de2e0da74cdb', 'IMMEDIATE' => false, 'URL' => placeholder_url(), 'TITLE' => do_lang_tempcode('ESCROW_TO'), 'IMG' => 'buttons/proceed', 'HIDDEN' => new Tempcode()]));
 
         return lorem_globalise(do_lorem_template('ESCROW_TRANSACTIONS', [
             'MEMBER' => placeholder_numeric_id(),

@@ -270,6 +270,7 @@ function git_status__local_view()
     $media_current = git_render_preview_from_path($path);
 
     $tpl = do_template('GIT_STATUS_FILE_SCREEN', [
+        '_GUID' => '094403756020dac5e0da574c9cf954a8',
         'TITLE' => $title,
         'MEDIA_CURRENT' => $media_current,
     ]);
@@ -285,6 +286,7 @@ function git_status__remote_view()
     $media_current = git_render_preview_from_raw_data($path, get_git_file($path));
 
     $tpl = do_template('GIT_STATUS_FILE_SCREEN', [
+        '_GUID' => 'cce147b8587078b0a245f9225cf567d7',
         'TITLE' => $title,
         'MEDIA_CURRENT' => $media_current,
     ]);
@@ -323,6 +325,7 @@ function _git_status__diff($diff, $path, $is_remote)
         }
 
         $tpl = do_template('GIT_STATUS_FILE_SCREEN', [
+            '_GUID' => 'e32ef1292392f8285cf4c1aca299d51e',
             'TITLE' => $title,
             'MEDIA_BEFORE' => $media_before,
             'MEDIA_CURRENT' => $media_current,

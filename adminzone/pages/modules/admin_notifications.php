@@ -259,7 +259,7 @@ class Module_admin_notifications
                     ];
                 }
 
-                $notification_types_tempcode = do_template('NOTIFICATION_TYPES', ['NOTIFICATION_TYPES' => $notification_types]);
+                $notification_types_tempcode = do_template('NOTIFICATION_TYPES', ['_GUID' => 'cb512595f2b52019cbae646a5a5b894e', 'NOTIFICATION_TYPES' => $notification_types]);
 
                 if (!isset($notification_sections[$notification_details[0]])) {
                     $notification_sections[$notification_details[0]] = [

@@ -50,6 +50,7 @@ guid_scan_init();
 if ($limit_file == '') {
     require_code('files2');
     $files = get_directory_contents(get_file_base(), '', 0, true, true, ['php']);
+    $files[] = 'install.php';
 } else {
     $files = [$limit_file];
 }

@@ -55,6 +55,7 @@ if ($type == 'save') {
 }
 
 return do_template('XML_CONFIG_SCREEN', [
+    '_GUID' => 'feb50a2637586dbb75ed5ddb41e4f01b',
     'TITLE' => $title,
     'POST_URL' => $post_url,
     'XML' => $xml,

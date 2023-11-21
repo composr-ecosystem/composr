@@ -559,6 +559,7 @@ class RevisionEngineFiles
         $rendered_diff = diff_simple_text($text_older, $text_recent, $unified_diff, true);
 
         return do_template('DIFF_SCREEN', [
+            '_GUID' => 'b9a081d9a785d874d89c2766b7de5c68',
             'TITLE' => $title,
             'DIFF' => $rendered_diff,
             'WITHOUT_WHITESPACE' => $without_whitespace,

@@ -73,6 +73,7 @@ class Hook_symbol_HYBRIDAUTH_BUTTONS
             $url = find_script('hybridauth') . '?provider=' . urlencode($provider) . '&composr_return_url=' . $return_url_part . $keep->evaluate();
 
             $button = do_template('HYBRIDAUTH_BUTTON', [
+                '_GUID' => '274651f0ae26f38cd09bf11e30a8ef23',
                 'CODENAME' => $provider,
                 'LABEL' => $info['label'],
                 'BACKGROUND_COLOUR' => $info['background_colour'],

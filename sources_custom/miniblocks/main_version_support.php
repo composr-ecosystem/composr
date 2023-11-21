@@ -31,4 +31,4 @@ foreach ($branches as $branch) {
     ];
 }
 
-return do_template('CMS_BLOCK_MAIN_VERSION_SUPPORT', ['BRANCHES' => $_branches]);
+return do_template('CMS_BLOCK_MAIN_VERSION_SUPPORT', ['_GUID' => 'd712250b9397ccfca98f09227cb891f6', 'BRANCHES' => $_branches]);

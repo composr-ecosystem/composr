@@ -1070,7 +1070,7 @@ class Module_wiki
             $specialisation2->attach(metadata_get_fields('wiki_post', strval($post_id)));
 
             if (has_delete_permission('low', get_member(), $original_poster, 'cms_wiki', ['wiki_page', $page_id])) {
-                $specialisation2->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['TITLE' => do_lang_tempcode('ACTIONS')]));
+                $specialisation2->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '1bc81f9bcc3e86bcd20ceceaece7d501', 'TITLE' => do_lang_tempcode('ACTIONS')]));
                 $specialisation2->attach(form_input_tick(do_lang_tempcode('DELETE'), do_lang_tempcode('DESCRIPTION_DELETE'), 'delete', false));
             }
         } else {
@@ -1098,7 +1098,7 @@ class Module_wiki
             require_code('content2');
             $specialisation2->attach(metadata_get_fields('wiki_post', null));
 
-            $specialisation2->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['TITLE' => do_lang_tempcode('ACTIONS')])); // Send notification field will be added
+            $specialisation2->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'c414a5cd1e2a1d5597b9315dfa2db836', 'TITLE' => do_lang_tempcode('ACTIONS')])); // Send notification field will be added
         }
 
         $hidden_fields = new Tempcode();

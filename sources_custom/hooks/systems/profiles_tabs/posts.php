@@ -53,7 +53,7 @@ class Hook_profiles_tabs_posts
         }
 
         $topics = do_block('main_cns_involved_topics', ['member_id' => strval($member_id_of), 'max' => '10', 'start' => '0']);
-        $content = do_template('CNS_MEMBER_PROFILE_POSTS', ['MEMBER_ID' => strval($member_id_of), 'TOPICS' => $topics]);
+        $content = do_template('CNS_MEMBER_PROFILE_POSTS', ['_GUID' => '83c664cef192f27eb275c263f225ea9b', 'MEMBER_ID' => strval($member_id_of), 'TOPICS' => $topics]);
 
         return [$title, $content, $order, 'menu/social/forum/forums'];
     }

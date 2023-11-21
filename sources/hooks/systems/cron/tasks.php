@@ -77,7 +77,7 @@ class Hook_cron_tasks
             ], false));
         }
 
-        return do_template('COLUMNED_TABLE', ['HEADER_ROW' => $header_row, 'ROWS' => $_rows, 'NONRESPONSIVE' => false]);
+        return do_template('COLUMNED_TABLE', ['_GUID' => '65281e0eef3a4c7c47b5bf8fca00a6d8', 'HEADER_ROW' => $header_row, 'ROWS' => $_rows, 'NONRESPONSIVE' => false]);
     }
 
     /**

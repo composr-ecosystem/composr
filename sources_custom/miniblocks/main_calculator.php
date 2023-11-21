@@ -25,11 +25,11 @@ require_javascript('checking');
 require_javascript('calculatr');
 
 if (@cms_empty_safe($map['message'])) {
-    return do_template('RED_ALERT', ['TEXT' => do_lang_tempcode('NO_PARAMETER_SENT', 'message')]);
+    return do_template('RED_ALERT', ['_GUID' => '3cafd4203a10d09089a98990deb4afda', 'TEXT' => do_lang_tempcode('NO_PARAMETER_SENT', 'message')]);
 }
 
 if (@cms_empty_safe($map['equation'])) {
-    return do_template('RED_ALERT', ['TEXT' => do_lang_tempcode('NO_PARAMETER_SENT', 'equation')]);
+    return do_template('RED_ALERT', ['_GUID' => 'fa05eedcd4ab59087acd5cd5f6428f9c', 'TEXT' => do_lang_tempcode('NO_PARAMETER_SENT', 'equation')]);
 }
 
 $message = $map['message'];

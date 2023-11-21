@@ -325,10 +325,10 @@ PHP;
             $selectors = new Tempcode();
             foreach ($_selectors as $selector_value => $selector_name) {
                 $selected = ($sort == $selector_value);
-                $selectors->attach(do_template('PAGINATION_SORTER', ['SELECTED' => $selected, 'NAME' => do_lang_tempcode($selector_name), 'VALUE' => $selector_value]));
+                $selectors->attach(do_template('PAGINATION_SORTER', ['_GUID' => 'ca94ca30b88432c0cbbc2961a9b771c8', 'SELECTED' => $selected, 'NAME' => do_lang_tempcode($selector_name), 'VALUE' => $selector_value]));
             }
             $sort_url = get_self_url(false, false, ['sort' => null], false, true);
-            $sorting = do_template('PAGINATION_SORT', ['SORT' => 'sort', 'URL' => $sort_url, 'SELECTORS' => $selectors]);
+            $sorting = do_template('PAGINATION_SORT', ['_GUID' => '5d8c3356faa1125cdd33c527287e1e09', 'SORT' => 'sort', 'URL' => $sort_url, 'SELECTORS' => $selectors]);
         }
 
         // Pagination

@@ -55,6 +55,7 @@ class Hook_preview_themewizard
         list($colours) = calculate_themewizard_css_colours($seed, $dark, $source_theme, $algorithm);
 
         $preview = do_template('THEMEWIZARD_PREVIEW', [
+            '_GUID' => 'c7b91a925047e6f4bd1208e8ccd9e434',
             'SOURCE_THEME' => $source_theme,
             'ALGORITHM' => $algorithm,
             'RED' => $colours['red'],

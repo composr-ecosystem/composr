@@ -56,6 +56,7 @@ class Hook_checklist_kpis
         $url = build_url(['page' => 'admin_stats', 'type' => 'kpis'], get_module_zone('admin_stats'));
 
         $tpl = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', [
+            '_GUID' => '769eaf74214a8f4d5d50850c2c318c02',
             'URL' => $url,
             'STATUS' => $_status,
             'TASK' => $task_label,

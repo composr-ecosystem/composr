@@ -76,7 +76,7 @@ PHP;
         $block_id = get_block_id($map);
 
         if (!addon_installed('hybridauth')) {
-            return do_template('RED_ALERT', ['TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('hybridauth'))]);
+            return do_template('RED_ALERT', ['_GUID' => '1002b1292dfbc985f873480eb60407c6', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('hybridauth'))]);
         }
 
         require_code('hybridauth_admin');
@@ -95,7 +95,7 @@ PHP;
         list($hybridauth, $admin_storage, $providers) = initiate_hybridauth_admin();
 
         if (empty($map['param'])) {
-            return do_template('RED_ALERT', ['TEXT' => '\'param\' parameter is needed.']);
+            return do_template('RED_ALERT', ['_GUID' => '98e14965302d40e596c712058d7563f1', 'TEXT' => '\'param\' parameter is needed.']);
         }
 
         $provider = $map['param'];
@@ -147,15 +147,15 @@ PHP;
         try {
             $adapter = $hybridauth->getAdapter($provider);
         } catch (Exception $e) {
-            return do_template('RED_ALERT', ['TEXT' => $e->getMessage()]);
+            return do_template('RED_ALERT', ['_GUID' => '8f0a85e70e775ef2400bb69349f745fe', 'TEXT' => $e->getMessage()]);
         }
 
         if (!$adapter->isConnected()) {
-            return do_template('RED_ALERT', ['TEXT' => 'Connection to ' . $provider . ' is lost.']);
+            return do_template('RED_ALERT', ['_GUID' => '164607cb0ff8f3ccc43e415cf2f770c5', 'TEXT' => 'Connection to ' . $provider . ' is lost.']);
         }
 
         if (!$adapter instanceof Hybridauth\Adapter\AtomInterface) {
-            return do_template('RED_ALERT', ['TEXT' => 'Atom interface not implemented by ' . $provider]);
+            return do_template('RED_ALERT', ['_GUID' => 'ac3ea00f5bbd4d85ce1dad74c889d69b', 'TEXT' => 'Atom interface not implemented by ' . $provider]);
         }
 
         $feed = [];
@@ -278,13 +278,14 @@ PHP;
                 ];
             }
         } catch (Exception $e) {
-            return do_template('RED_ALERT', ['TEXT' => $e->getMessage()]);
+            return do_template('RED_ALERT', ['_GUID' => '9fcebd74147f4724a0cf20642d58a109', 'TEXT' => $e->getMessage()]);
         }
 
         cms_ini_set('ocproducts.type_strictness', $before_type_strictness);
         cms_ini_set('ocproducts.xss_detect', $before_xss_detect);
 
         return do_template('BLOCK_MAIN_HYBRIDAUTH_ADMIN_ATOMS', [
+            '_GUID' => 'd231298079cbdf9662a366e8479d872e',
             'PROVIDER' => $provider,
 
             'FEED_IDENTIFIER' => $this->convert_charset($user_profile->identifier),

@@ -228,7 +228,7 @@ class Module_admin_invoices
         $fields->attach(form_input_tax_code(do_lang_tempcode(get_option('tax_system')), do_lang_tempcode('DESCRIPTION_INVOICE_TAX_CODE'), 'tax_code', '', false));
         $fields->attach(form_input_text(do_lang_tempcode('NOTE'), do_lang_tempcode('DESCRIPTION_INVOICE_NOTE'), 'note', '', false));
 
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['SECTION_HIDDEN' => true, 'TITLE' => do_lang_tempcode('ADVANCED')]));
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '69252fa24b33a567c8e97783b9cbb9f4', 'SECTION_HIDDEN' => true, 'TITLE' => do_lang_tempcode('ADVANCED')]));
         $fields->attach(form_input_line(do_lang_tempcode('PROCESSING_CODE'), do_lang_tempcode('DESCRIPTION_PROCESSING_CODE'), 'processing_code', '', false));
 
         $post_url = build_url(['page' => '_SELF', 'type' => '_add'], '_SELF');
@@ -430,6 +430,7 @@ class Module_admin_invoices
             $actions = new Tempcode();
             $delete_url = build_url(['page' => '_SELF', 'type' => 'delete', 'id' => $row['id'], 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF');
             $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
+                '_GUID' => 'cb77af97ef9920f09cb885040c8a572b',
                 'URL' => $delete_url,
                 'HIDDEN' => new Tempcode(),
                 'NAME' => '#' . strval($row['id']),
@@ -442,6 +443,7 @@ class Module_admin_invoices
             if ($row['i_state'] == 'paid') {
                 $fulfil_url = build_url(['page' => '_SELF', 'type' => 'fulfil', 'id' => $row['id'], 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF');
                 $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
+                    '_GUID' => '0045e469fcf5b5490abf8138b638c0ed',
                     'URL' => $fulfil_url,
                     'HIDDEN' => new Tempcode(),
                     'NAME' => '#' . strval($row['id']),
@@ -534,6 +536,7 @@ class Module_admin_invoices
         $url = build_url(['page' => '_SELF', 'type' => 'view'], '_SELF');
 
         $tpl = do_template('RESULTS_TABLE_SCREEN', [
+            '_GUID' => '6a57f3550b09818b5737407e2f6eea56',
             'TITLE' => $this->title,
             'TEXT' => '',
             'RESULTS_TABLE' => $results_table,

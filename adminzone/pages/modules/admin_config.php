@@ -346,6 +346,7 @@ class Module_admin_config
                     // UI
                     $fields = form_input_multi_list('Keys', '', 'import_keys', $import_list, null, 15);
                     $form = do_template('FORM', [
+                        '_GUID' => '1a4c9009961ea4218b19ff7bce2935ce',
                         'TEXT' => protect_from_escaping('You are in developer mode and have a <kbd>keys.csv</kbd> file with keys that you can import into the configuration.'),
                         'HIDDEN' => '',
                         'FIELDS' => $fields,

@@ -245,7 +245,7 @@ class Hook_search_confluence extends FieldsSearchHook
 
         $url = build_confluence_id_url($myrow['content']['id']);
         $breadcrumbs = confluence_breadcrumbs(intval($myrow['content']['id']));
-        return do_template('SIMPLE_PREVIEW_BOX', ['TITLE' => $document_type . ': ' . $title, 'BREADCRUMBS' => ($breadcrumbs === null) ? null : breadcrumb_segments_to_tempcode($breadcrumbs), 'SUMMARY' => $text_summary, 'URL' => $url]);
+        return do_template('SIMPLE_PREVIEW_BOX', ['_GUID' => 'ae98db472a5e6e4e382255bc3131549d', 'TITLE' => $document_type . ': ' . $title, 'BREADCRUMBS' => ($breadcrumbs === null) ? null : breadcrumb_segments_to_tempcode($breadcrumbs), 'SUMMARY' => $text_summary, 'URL' => $url]);
     }
 
     protected function cleanup_text($in)

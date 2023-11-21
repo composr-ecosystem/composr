@@ -691,11 +691,12 @@ class Module_admin_ecommerce_reports
         $form = new Tempcode();
         if (count($rows) > 0) {
             $export_url = build_url(['page' => '_SELF', 'type' => 'export_sales'], '_SELF', [], true);
-            $form->attach(do_template('BUTTON_SCREEN', ['IMMEDIATE' => false, 'URL' => $export_url, 'TITLE' => do_lang_tempcode('EXPORT'), 'IMG' => 'admin/export_spreadsheet', 'HIDDEN' => new Tempcode()]));
+            $form->attach(do_template('BUTTON_SCREEN', ['_GUID' => 'c56fc0abd8cf7ea763a0244f7e118e8a', 'IMMEDIATE' => false, 'URL' => $export_url, 'TITLE' => do_lang_tempcode('EXPORT'), 'IMG' => 'admin/export_spreadsheet', 'HIDDEN' => new Tempcode()]));
         }
         $sales_table->attach($form);
 
         return do_template('ECOM_SALES_SCREEN', [
+            '_GUID' => '44039e850ea60fd7dfe3be5a29974261',
             'TITLE' => $this->title,
             'CONTENT' => $sales_table,
             'PAGINATION' => $pagination,
@@ -893,7 +894,7 @@ class Module_admin_ecommerce_reports
                     $_transaction_fields->attach(map_table_field(do_lang_tempcode($key), $val, true));
                 }
             }
-            $transaction_table = do_template('MAP_TABLE', ['FIELDS' => $_transaction_fields, 'RESPONSIVE' => true]);
+            $transaction_table = do_template('MAP_TABLE', ['_GUID' => '71ebfad2c0e8f284650496b3646fcd4d', 'FIELDS' => $_transaction_fields, 'RESPONSIVE' => true]);
 
             $result_entries->attach(results_entry([
                 escape_html($date),
@@ -916,7 +917,7 @@ class Module_admin_ecommerce_reports
         $form = new Tempcode();
         if (count($rows) > 0) {
             $export_url = build_url(['page' => '_SELF', 'type' => 'export_transactions'], '_SELF', [], true);
-            $form->attach(do_template('BUTTON_SCREEN', ['IMMEDIATE' => false, 'URL' => $export_url, 'TITLE' => do_lang_tempcode('EXPORT'), 'IMG' => 'admin/export_spreadsheet', 'HIDDEN' => new Tempcode()]));
+            $form->attach(do_template('BUTTON_SCREEN', ['_GUID' => 'dffe0df601b504c08ac59de95ef3a50f', 'IMMEDIATE' => false, 'URL' => $export_url, 'TITLE' => do_lang_tempcode('EXPORT'), 'IMG' => 'admin/export_spreadsheet', 'HIDDEN' => new Tempcode()]));
         }
 
         // Start building fields for the filter box
@@ -990,6 +991,7 @@ class Module_admin_ecommerce_reports
         $url = build_url(['page' => '_SELF', 'type' => 'logs'], '_SELF');
 
         $tpl = do_template('RESULTS_TABLE_SCREEN', [
+            '_GUID' => '04cd636d046a8b6667f5415929a84278',
             'TITLE' => $this->title,
             'TEXT' => do_lang_tempcode('TRANSACTION_LOGS_TEXT', escape_html(static_evaluate_tempcode(build_url(['page' => '_SELF', 'type' => 'sales'], '_SELF')))),
             'RESULTS_TABLE' => $results_table,
@@ -1435,7 +1437,7 @@ class Module_admin_ecommerce_reports
         // Export button
         $form = new Tempcode();
         $export_url = build_url(['page' => '_SELF', 'type' => 'export_subscriptions'], '_SELF', [], true);
-        $form->attach(do_template('BUTTON_SCREEN', ['IMMEDIATE' => false, 'URL' => $export_url, 'TITLE' => do_lang_tempcode('EXPORT'), 'IMG' => 'admin/export_spreadsheet', 'HIDDEN' => new Tempcode()]));
+        $form->attach(do_template('BUTTON_SCREEN', ['_GUID' => '38f0e331de0db2449c23378f9f41080e', 'IMMEDIATE' => false, 'URL' => $export_url, 'TITLE' => do_lang_tempcode('EXPORT'), 'IMG' => 'admin/export_spreadsheet', 'HIDDEN' => new Tempcode()]));
 
         // Start building fields for the filter box
         push_field_encapsulation(FIELD_ENCAPSULATION_RAW);
@@ -1493,6 +1495,7 @@ class Module_admin_ecommerce_reports
         $url = build_url(['page' => '_SELF', 'type' => 'view_subscriptions'], '_SELF');
 
         $tpl = do_template('RESULTS_TABLE_SCREEN', [
+            '_GUID' => '5b3d7b61edb6e369c51ecdacffbcf0e2',
             'TITLE' => $this->title,
             'RESULTS_TABLE' => $results_table,
             'FORM' => $form,
@@ -1537,6 +1540,6 @@ class Module_admin_ecommerce_reports
         $fields = form_input_hidden('id', strval($id));
         $map = ['page' => '_SELF', 'type' => get_param_string('type'), 'subscription_id' => $id];
         $url = build_url($map, '_SELF');
-        return do_template('CONFIRM_SCREEN', ['TITLE' => $this->title, 'FIELDS' => $fields, 'URL' => $url, 'PREVIEW' => $preview]);
+        return do_template('CONFIRM_SCREEN', ['_GUID' => 'b0ad0d49ad65fd2778ad309aeb26a5a5', 'TITLE' => $this->title, 'FIELDS' => $fields, 'URL' => $url, 'PREVIEW' => $preview]);
     }
 }

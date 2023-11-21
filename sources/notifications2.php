@@ -144,7 +144,7 @@ function notifications_ui(int $member_id_of) : object
                     ];
                 }
 
-                $notification_types_tempcode = do_template('NOTIFICATION_TYPES', ['NOTIFICATION_TYPES' => $notification_types]);
+                $notification_types_tempcode = do_template('NOTIFICATION_TYPES', ['_GUID' => 'b6bd5df8c3e20d64d97ab88bb46f765c', 'NOTIFICATION_TYPES' => $notification_types]);
 
                 if (!isset($notification_sections[$notification_details[0]])) {
                     $notification_sections[$notification_details[0]] = [

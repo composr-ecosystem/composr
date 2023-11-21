@@ -371,7 +371,7 @@ class Module_admin_themewizard
             ';
         }
         $fields->attach(form_input_radio(do_lang_tempcode('FONT'), '', 'font', $font_choices, true));
-        attach_to_screen_header(do_template('CSS_NEED_INLINE', ['CODE' => $font_code]));
+        attach_to_screen_header(do_template('CSS_NEED_INLINE', ['_GUID' => '77150bcb37d066516bf5653befe77501', 'CODE' => $font_code]));
 
         // Find the most appropriate theme to edit for
         $theme = $GLOBALS['SITE_DB']->query_select_value_if_there('zones', 'zone_theme', ['zone_name' => 'site']);

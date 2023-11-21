@@ -38,10 +38,10 @@ class Block_side_choose_showing
         }
 
         if (!addon_installed('calendar')) {
-            return do_template('RED_ALERT', ['TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('calendar'))]);
+            return do_template('RED_ALERT', ['_GUID' => 'fb845aa226d41500c7d3f52d45a916fb', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('calendar'))]);
         }
         if (!addon_installed('ecommerce')) {
-            return do_template('RED_ALERT', ['TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('ecommerce'))]);
+            return do_template('RED_ALERT', ['_GUID' => '1dfd3d076545fb3d978dc0f2f14924da', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('ecommerce'))]);
         }
 
         return make_string_tempcode('Not yet implemented');

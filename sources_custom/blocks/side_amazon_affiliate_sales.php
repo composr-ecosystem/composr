@@ -56,11 +56,11 @@ class Block_side_amazon_affiliate_sales
         $block_id = get_block_id($map);
 
         if (empty($map['associates_id'])) {
-            return do_template('RED_ALERT', ['TEXT' => do_lang_tempcode('NO_PARAMETER_SENT', 'associates_id')]);
+            return do_template('RED_ALERT', ['_GUID' => '38bca5b8b65f3e3e7de6ca62bb93113f', 'TEXT' => do_lang_tempcode('NO_PARAMETER_SENT', 'associates_id')]);
         }
 
         if (empty($map['subject_keywords'])) {
-            return do_template('RED_ALERT', ['TEXT' => do_lang_tempcode('NO_PARAMETER_SENT', 'subject_keywords')]);
+            return do_template('RED_ALERT', ['_GUID' => 'fb26704989860d0cc49138f602e403c7', 'TEXT' => do_lang_tempcode('NO_PARAMETER_SENT', 'subject_keywords')]);
         }
 
         $associates_id = $map['associates_id'];

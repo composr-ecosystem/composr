@@ -1184,6 +1184,7 @@ class Hook_addon_registry_galleries
         $carousel_entries = new Tempcode();
 
         $carousel_entries->attach(do_template('GALLERY_SLIDESHOW_CAROUSEL_ENTRY', [
+            '_GUID' => '4aebcb6841a8f31809762ec990b8931f',
             'INDEX' => strval(0),
             'DESCRIPTION' => lorem_sentence(),
             '_TITLE' => lorem_phrase(),

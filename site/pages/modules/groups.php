@@ -697,6 +697,7 @@ class Module_groups
 
             $url = $GLOBALS['FORUM_DRIVER']->member_profile_url($secondary_member['gm_member_id'], true);
             $temp = do_template('CNS_VIEW_GROUP_MEMBER', [
+                '_GUID' => 'ea5556b36e132c02b299f17a9893ac5e',
                 'ID' => strval($secondary_member['gm_member_id']),
                 'NAME' => $m_username,
                 'URL' => $url,
@@ -710,6 +711,7 @@ class Module_groups
                 $may_control_any = true;
                 $actions = new Tempcode();
                 $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
+                    '_GUID' => '122cd1957122a58bbcc7984ff7eaa865',
                     'NAME' => $m_username,
                     'URL' => $remove_url,
                     'ACTION_TITLE' => do_lang_tempcode('REMOVE_MEMBER_FROM_GROUP'),
@@ -756,6 +758,7 @@ class Module_groups
 
                     $accept_url = build_url(['page' => '_SELF', 'type' => 'accept', 'id' => $id, 'member_id' => $row['ga_member_id']], '_SELF');
                     $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
+                        '_GUID' => '9a3bb787ec6ac41d6491c2c0975baabd',
                         'NAME' => '#' . strval($row['id']),
                         'URL' => $accept_url,
                         'ACTION_TITLE' => do_lang_tempcode('ACCEPT_INTO_GROUP'),
@@ -765,6 +768,7 @@ class Module_groups
 
                     $decline_url = build_url(['page' => '_SELF', 'type' => 'decline', 'id' => $id, 'member_id' => $row['ga_member_id']], '_SELF');
                     $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
+                        '_GUID' => 'f8e96b5c1420201a571b9b4c6bf59653',
                         'NAME' => '#' . strval($row['id']),
                         'URL' => $decline_url,
                         'ACTION_TITLE' => do_lang_tempcode('DECLINE_FROM_GROUP'),

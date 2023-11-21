@@ -369,7 +369,7 @@ class Module_admin_shopping
         $form = new Tempcode();
         if (count($rows) > 0) {
             $export_url = build_url(['page' => '_SELF', 'type' => 'export_orders'], '_SELF', [], true);
-            $form->attach(do_template('BUTTON_SCREEN', ['IMMEDIATE' => false, 'URL' => $export_url, 'TITLE' => do_lang_tempcode('EXPORT'), 'IMG' => 'admin/export_spreadsheet', 'HIDDEN' => new Tempcode()]));
+            $form->attach(do_template('BUTTON_SCREEN', ['_GUID' => '1d670698a7e9ddf12c0b2b9347bd4522', 'IMMEDIATE' => false, 'URL' => $export_url, 'TITLE' => do_lang_tempcode('EXPORT'), 'IMG' => 'admin/export_spreadsheet', 'HIDDEN' => new Tempcode()]));
         }
 
         // Start building fields for the filter box
@@ -420,6 +420,7 @@ class Module_admin_shopping
         $url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
 
         $tpl = do_template('RESULTS_TABLE_SCREEN', [
+            '_GUID' => 'cc57b368038807807c7198a57a959bbf',
             'TITLE' => $this->title,
             'TEXT' => '',
             'RESULTS_TABLE' => $results_table,

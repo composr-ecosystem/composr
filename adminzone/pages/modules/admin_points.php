@@ -361,6 +361,7 @@ class Module_admin_points
                 if (has_privilege(get_member(), 'moderate_points')) {
                     $delete_url = build_url(['page' => '_SELF', 'type' => 'reverse', 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF');
                     $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
+                        '_GUID' => '50b8e7e63c19f377f9aa4ae29a9b4975',
                         'NAME' => '#' . strval($myrow['id']),
                         'URL' => $delete_url,
                         'HIDDEN' => form_input_hidden('id', strval($myrow['id'])),
@@ -375,6 +376,7 @@ class Module_admin_points
             if (has_privilege(get_member(), 'amend_point_transactions')) {
                 $edit_url = build_url(['page' => '_SELF', 'type' => 'amend', 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF');
                 $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
+                    '_GUID' => '9e30dbb3eef7938f417c6ab5dccc83ed',
                     'URL' => $edit_url,
                     'HIDDEN' => form_input_hidden('id', strval($myrow['id'])),
                     'NAME' => '#' . strval($myrow['id']),
@@ -473,6 +475,7 @@ class Module_admin_points
         $url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
 
         $tpl = do_template('RESULTS_TABLE_SCREEN', [
+            '_GUID' => 'e796e4efe18afa26424a3ceae282cf90',
             'TITLE' => $this->title,
             'RESULTS_TABLE' => $results_table,
             'FORM' => $form,

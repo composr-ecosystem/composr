@@ -34,6 +34,7 @@ class Hook_symbol_HYBRIDAUTH_BUTTONS_CSS
             }
 
             $_css = do_template('_hybridauth_button', [
+                '_GUID' => '9e32c801bc53a57f37b77a4ac8f95428',
                 'CODENAME' => $provider,
                 'BACKGROUND_COLOUR' => $info['background_colour'],
                 'TEXT_COLOUR' => $info['text_colour'],

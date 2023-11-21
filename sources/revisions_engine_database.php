@@ -630,6 +630,7 @@ class RevisionEngineDatabase
         $rendered_diff = diff_simple_text($text_older, $text_recent, false, true);
 
         return do_template('DIFF_SCREEN', [
+            '_GUID' => 'e419fdab8df70f8745112330a4f67cd6',
             'TITLE' => $title,
             'DIFF' => $rendered_diff,
             'WITHOUT_WHITESPACE' => $without_whitespace,

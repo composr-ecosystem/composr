@@ -89,7 +89,7 @@ if (!function_exists('mu_result')) {
 }
 
 if (@cms_empty_safe($map['param'])) {
-    return do_template('RED_ALERT', ['TEXT' => do_lang_tempcode('NO_PARAMETER_SENT', 'param')]);
+    return do_template('RED_ALERT', ['_GUID' => '8e2afe63b797f602d9469ecba4578028', 'TEXT' => do_lang_tempcode('NO_PARAMETER_SENT', 'param')]);
 }
 $to_version_dotted = $map['param'];
 

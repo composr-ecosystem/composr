@@ -64,7 +64,7 @@ class Hook_stats_calendar
             $events = calendar_matches($GLOBALS['FORUM_DRIVER']->get_guest_id(), $GLOBALS['FORUM_DRIVER']->get_guest_id(), true, utctime_to_usertime(time()), utctime_to_usertime(time() + 60 * 60 * 24 * 31));
             $this_month = count($events);
 
-            $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', ['
+            $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', ['_GUID' => '1f6ff43cc54711ebde42ebfe02be91dc', '
                 _GUID' => 'c3a3ad0d6ae8e4f98ac3a5d0ceabc841',
                 'KEY' => do_lang_tempcode('EVENTS_THIS_MONTH'),
                 'RAW_VALUE' => strval($this_month),

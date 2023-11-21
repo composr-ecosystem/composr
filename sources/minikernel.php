@@ -570,6 +570,7 @@ function fatal_exit($text)
     $css_nocache = _do_template('default', '/css/', 'no_cache', 'no_cache', 'EN', '.css');
     if (running_script('restore')) {
         $out_final = do_template('RESTORE_HTML_WRAP', [
+            '_GUID' => 'be91236730dafaab9c81e99aabac3198',
             'CSS_NOCACHE' => $css_nocache,
             'MESSAGE' => $echo,
             'ERROR' => true,

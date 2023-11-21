@@ -799,6 +799,7 @@ class Module_admin_permissions
         $post_url = build_url(['page' => '_SELF', 'type' => 'content_access'], '_SELF');
 
         return do_template('FORM_SCREEN', [
+            '_GUID' => '274e3751314d17c00c512a3b67690f1d',
             'TITLE' => $this->title,
             'GET' => true,
             'SKIP_WEBSTANDARDS' => true,
@@ -931,6 +932,7 @@ class Module_admin_permissions
         $color = ltrim(find_theme_seed($GLOBALS['FORUM_DRIVER']->get_theme()), '#');
 
         return do_template('PERMISSIONS_CONTENT_ACCESS_SCREEN', [
+            '_GUID' => '2fe42ea12ddacb75cc66914c74a4ef8d',
             'TITLE' => $this->title,
             'ZONES' => $zones,
             'MODULES' => $modules,

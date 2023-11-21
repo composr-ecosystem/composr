@@ -2331,6 +2331,7 @@ function display_receipt(string $txn_id, ?int $member_id_viewing = null) : objec
     $status = get_transaction_status_string($transaction_row['t_status']);
 
     return do_template('ECOM_INVOICE_OR_RECEIPT', [
+        '_GUID' => 'b121a0c6d92193e2816599958728631a',
         'INVOICE_ID' => '',
         'TXN_ID' => $txn_id,
         '_DATE' => strval($transaction_row['t_time']),
@@ -2386,6 +2387,7 @@ function display_invoice(int $id) : object
     ];
 
     return do_template('ECOM_INVOICE_OR_RECEIPT', [
+        '_GUID' => 'a85dec2751d55de86a5eb806fbfd0bc9',
         'INVOICE_ID' => strval($row['id']),
         'TXN_ID' => (($txn_id !== null) ? $txn_id : ''),
         '_DATE' => strval($row['i_time']),
