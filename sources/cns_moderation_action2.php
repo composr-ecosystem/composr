@@ -228,13 +228,14 @@ function warnings_script()
 }
 
 /**
- * Add a formal warning.
+ * Add a warning.
+ * Punitive actions must be added to the warning separately via systems/cns_warnings hooks.
  *
  * @param  MEMBER $member_id The member being warned
  * @param  LONG_TEXT $explanation An explanation for why the member is being warned
  * @param  ?MEMBER $by The member doing the warning (null: current member)
  * @param  ?TIME $time The time of the warning (null: now)
- * @param  BINARY $is_warning Whether this counts as a warning
+ * @param  BINARY $is_warning Whether this counts as a formal warning
  */
 function cns_make_warning(int $member_id, string $explanation, ?int $by = null, ?int $time = null, int $is_warning = 1) : int
 {
@@ -257,14 +258,6 @@ function cns_make_warning(int $member_id, string $explanation, ?int $by = null, 
         $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members SET m_cache_warnings=(m_cache_warnings+1) WHERE id=' . strval($member_id), 1);
     }
 
-    /*
-    if ($changed_usergroup_to === null) {
-        $changed_usergroup_from = null;
-    } else {
-        $changed_usergroup_from = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_primary_group');
-    }
-    */
-
     $map = [
         'w_member_id' => $member_id,
         'w_time' => $time,
@@ -272,17 +265,6 @@ function cns_make_warning(int $member_id, string $explanation, ?int $by = null, 
         'w_by' => $by,
         'w_is_warning' => $is_warning,
         'w_topic_id' => null,
-
-        /* TODO: use new f_warnings_punitive rows
-        'p_silence_from_topic' => $silence_from_topic,
-        'p_silence_from_forum' => $silence_from_forum,
-        'p_probation' => $probation,
-        'p_banned_ip' => $banned_ip,
-        'p_charged_points' => $charged_points,
-        'p_banned_member' => $banned_member,
-        'p_changed_usergroup_from' => $changed_usergroup_from,
-        'p_changed_usergroup_to' => $changed_usergroup_to,
-        */
     ];
 
     $id = $GLOBALS['FORUM_DB']->query_insert('f_warnings', $map, true);

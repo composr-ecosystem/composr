@@ -40,6 +40,27 @@ class Hook_cns_warnings_points
     }
 
     /**
+     * Generate punitive action text from a punitive action database row.
+     *
+     * @param  array $row The database row
+     * @return string The punitive action text
+     */
+    public function generate_text(array $row) : string
+    {
+        if (!addon_installed('cns_warnings') || !addon_installed('points')) {
+            return '';
+        }
+
+        switch ($row['p_action']) {
+            case '_PUNITIVE_CHARGE_POINTS':
+                return do_lang('_PUNITIVE_CHARGE_POINTS', integer_format(intval($row['p_param_a'])));
+
+            default:
+                return '';
+        }
+    }
+
+    /**
      * Render form fields for the warnings screen.
      *
      * @param  Tempcode &$add_text Tempcode to be included on the intro paragraph of the warnings screen (passed by reference)
@@ -93,19 +114,51 @@ class Hook_cns_warnings_points
         if (($charged_points > 0) && (has_privilege(get_member(), 'moderate_points'))) {
             require_code('points2');
 
-            // Note we pass false for sending notifications, which mean they only get sent to staff. The member will be 'notified' in the private topic message they receive, if they receive one.
-            points_debit_member($member_id, $explanation, $charged_points, 0, 1, false, 0, 'warning', 'add', strval($warning_id));
-
-            $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
+            $punitive_action_id = $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
                 'p_warning_id' => $warning_id,
                 'p_hook' => 'points',
                 'p_action' => '_PUNITIVE_CHARGE_POINTS',
                 'p_param_a' => strval($charged_points),
-                'p_param_b' => null,
+                'p_param_b' => '',
                 'p_reversed' => 0,
             ]);
 
+            // Note we pass false for sending notifications, which mean they only get sent to staff. The member will be 'notified' in the private topic message they receive, if they receive one.
+            points_debit_member($member_id, $explanation, $charged_points, 0, 1, false, 0, 'warning', 'add', strval($punitive_action_id));
+
             $punitive_messages[] = do_lang('PUNITIVE_CHARGE_POINTS', integer_format($charged_points), integer_format(points_balance($member_id)), null, null, false);
         }
+    }
+
+    /**
+     * Actualiser to undo a certain type of punitive action.
+     *
+     * @param  array $punitive_action The database row for the punitive action being undone
+     * @param  array $warning The database row for the warning associated with the punitive action being undone
+     */
+    public function undo_punitive_action(array $punitive_action, array $warning)
+    {
+        $error = new Tempcode();
+        if (!addon_installed__messaged('cns_warnings', $error)) {
+            warn_exit($error);
+        }
+
+        if (get_forum_type() != 'cns') {
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        }
+
+        $id = intval($punitive_action['id']);
+
+        $row = $GLOBALS['SITE_DB']->query_select('points_ledger', ['id', 'sender_id'], ['t_type' => 'warning', 't_subtype' => 'add', 't_type_id' => strval($id)]);
+        if (!array_key_exists(0, $row)) {
+            warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
+        }
+        $ledger = $row[0];
+
+        require_code('points2');
+        require_lang('points');
+        points_transaction_reverse($ledger['id']);
+
+        log_it('UNDO_CHARGE', strval($warning['id']), $GLOBALS['FORUM_DRIVER']->get_username($warning['w_member_id']));
     }
 }

@@ -108,68 +108,12 @@ class Hook_profiles_tabs_warnings
             }
 
             // Punitive actions
-            if (addon_installed('securitylogging')) {
-                if ($row['p_banned_ip'] != '') {
-                    $row_contents->attach('<br />' . do_lang('IP_BANNED')); // XHTMLXHTML
+            $prows = $GLOBALS['FORUM_DB']->query_select('f_warnings_punitive', ['*'], ['p_warning_id' => $row['id']]);
+            foreach ($prows as $prow) {
+                $hook = get_hook_ob('systems', 'cns_warnings', $prow['p_hook'], ('Hook_cns_warnings_' . $prow['p_hook']));
+                if (method_exists($hook, 'generate_text') && ($hook->get_details() !== null)) {
+                    $row_contents->attach('<br />' . $hook->generate_text($prow));
                 }
-            }
-            if ($row['p_banned_member'] > 0) {
-                $row_contents->attach('<br />' . do_lang('BANNED')); // XHTMLXHTML
-            }
-            if ($row['p_probation'] > 0) {
-                $row_contents->attach('<br />' . do_lang('PROBATION') . ': ' . escape_html(do_lang('DAYS', $row['p_probation']))); // XHTMLXHTML
-            }
-            if ($row['p_charged_points'] !== 0) {
-                $row_contents->attach('<br />' . do_lang('CHARGED_POINTS') . ': ' . escape_html(integer_format($row['p_charged_points'], 0))); // XHTMLXHTML
-            }
-            if (($row['p_changed_usergroup_from'] !== null) && ($row['p_changed_usergroup_to'] !== null)) {
-                $html = '<br />' . do_lang('CHANGED_USERGROUP_TO') . ' ' . escape_html(cns_get_group_name($row['p_changed_usergroup_to'], true));
-                $html .= ', ' . do_lang('FROM') . ' ' . escape_html(cns_get_group_name($row['p_changed_usergroup_from'], true));
-                $row_contents->attach($html); // XHTMLXHTML
-            }
-            if ($row['p_silence_from_forum'] !== null) {
-                $silence_from_forum_title = '#' . strval($row['p_silence_from_forum']);
-                if (get_forum_type() == 'cns') {
-                    $silence_from_forum_title = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_name', ['id' => $row['p_silence_from_forum']]);
-                    if ($silence_from_forum_title === null) {
-                        $silence_from_forum_title = '#' . strval($row['p_silence_from_forum']);
-                    }
-                }
-                $silence_until = $GLOBALS['FORUM_DB']->query_select_value_if_there('member_privileges', 'active_until', [
-                    'member_id' => $row['w_member_id'],
-                    'privilege' => 'submit_midrange_content',
-                    'the_page' => '',
-                    'module_the_name' => 'forums',
-                    'category_name' => strval($row['p_silence_from_forum']),
-                ], 'ORDER BY active_until DESC');
-                if ($silence_until !== null) {
-                    $silence_until = do_lang('PUNITIVE_SILENCED_UNTIL', get_timezoned_date_time($silence_until, false, false, get_member()));
-                } else {
-                    $silence_until = do_lang('PUNITIVE_SILENCE_EXPIRED');
-                }
-                $row_contents->attach('<br />' . do_lang('SILENCE_FROM_FORUM') . ': ' . $silence_from_forum_title . ' ' . $silence_until); // XHTMLXHTML
-            }
-            if ($row['p_silence_from_topic'] !== null) {
-                $silence_from_topic_title = '#' . strval($row['p_silence_from_topic']);
-                if (get_forum_type() == 'cns') {
-                    $silence_from_topic_title = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_cache_first_title', ['id' => $row['p_silence_from_topic']]);
-                    if ($silence_from_topic_title === null) {
-                        $silence_from_topic_title = '#' . strval($row['p_silence_from_topic']);
-                    }
-                }
-                $silence_until = $GLOBALS['FORUM_DB']->query_select_value_if_there('member_privileges', 'active_until', [
-                    'member_id' => $row['w_member_id'],
-                    'privilege' => 'submit_lowrange_content',
-                    'the_page' => '',
-                    'module_the_name' => 'topics',
-                    'category_name' => strval($row['p_silence_from_topic']),
-                ], 'ORDER BY active_until DESC');
-                if ($silence_until !== null) {
-                    $silence_until = do_lang('PUNITIVE_SILENCED_UNTIL', get_timezoned_date_time($silence_until, false, false, get_member()));
-                } else {
-                    $silence_until = do_lang('PUNITIVE_SILENCE_EXPIRED');
-                }
-                $row_contents->attach('<br />' . do_lang('SILENCE_FROM_TOPIC') . ': ' . $silence_from_topic_title . ' ' . $silence_until); // XHTMLXHTML
             }
 
             $table_rows->attach(columned_table_row([

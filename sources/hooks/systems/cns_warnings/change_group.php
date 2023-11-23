@@ -34,9 +34,41 @@ class Hook_cns_warnings_change_group
             return null;
         }
 
+        if (!get_forum_type() != 'cns') {
+            return null;
+        }
+
         return [
-            'order' => 4,
+            'order' => 5,
         ];
+    }
+
+    /**
+     * Generate punitive action text from a punitive action database row.
+     *
+     * @param  array $row The database row
+     * @return string The punitive action text
+     */
+    public function generate_text(array $row) : string
+    {
+        if (!addon_installed('cns_warnings')) {
+            return '';
+        }
+
+        if (!get_forum_type() != 'cns') {
+            return '';
+        }
+
+        switch ($row['p_action']) {
+            case '_PUNITIVE_CHANGE_USERGROUP':
+                require_code('cns_groups');
+                $from = cns_get_group_name(intval($row['p_param_a']), true);
+                $to = cns_get_group_name(intval($row['p_param_b']), true);
+                return do_lang('_PUNITIVE_CHANGE_USERGROUP', $from, $to);
+
+            default:
+                return '';
+        }
     }
 
     /**
@@ -57,6 +89,10 @@ class Hook_cns_warnings_change_group
     {
         if (!addon_installed('cns_warnings')) {
             return;
+        }
+
+        if (!get_forum_type() != 'cns') {
+            return '';
         }
 
         if (!$new) {
@@ -94,6 +130,10 @@ class Hook_cns_warnings_change_group
             return;
         }
 
+        if (!get_forum_type() != 'cns') {
+            return '';
+        }
+
         // Change group if we have the privilege and we requested to change it
         if ((has_privilege(get_member(), 'member_maintenance')) && (has_privilege(get_member(), 'assume_any_member'))) {
             $changed_usergroup_to = post_param_integer('changed_usergroup_to', null);
@@ -116,5 +156,38 @@ class Hook_cns_warnings_change_group
                 $punitive_messages[] = do_lang('PUNITIVE_CHANGE_USERGROUP', $_changed_usergroup_to, null, null, null, false);
             }
         }
+    }
+
+    /**
+     * Actualiser to undo a certain type of punitive action.
+     *
+     * @param  array $punitive_action The database row for the punitive action being undone
+     * @param  array $warning The database row for the warning associated with the punitive action being undone
+     */
+    public function undo_punitive_action(array $punitive_action, array $warning)
+    {
+        $error = new Tempcode();
+        if (!addon_installed__messaged('cns_warnings', $error)) {
+            warn_exit($error);
+        }
+
+        if (get_forum_type() != 'cns') {
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        }
+
+        $id = intval($punitive_action['id']);
+        $member_id = intval($warning['w_member_id']);
+        $changed_usergroup_from = intval($punitive_action['p_param_a']);
+
+        // Confirm that the group we want to switch back to actually exists
+        require_code('cns_groups');
+        $test = cns_get_group_name($changed_usergroup_from);
+        if (($test === null) || ($test == '')) {
+            warn_exit(do_lang_tempcode('_MISSING_RESOURCE', escape_html($changed_usergroup_from), 'group'));
+        }
+
+        $GLOBALS['FORUM_DB']->query_update('f_members', ['m_primary_group' => $changed_usergroup_from], ['id' => $member_id], '', 1);
+
+        log_it('UNDO_GROUP_CHANGE', strval($warning['id']), $GLOBALS['FORUM_DRIVER']->get_username($member_id));
     }
 }

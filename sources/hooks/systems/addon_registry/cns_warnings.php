@@ -129,6 +129,7 @@ class Hook_addon_registry_cns_warnings
             'sources/hooks/systems/actionlog/cns_warnings.php',
             'sources/cns_warnings.php',
             'sources/hooks/systems/preview/warnings.php',
+            'sources/hooks/systems/points_transact/cns_warnings.php',
 
             'sources/hooks/modules/admin_stats/warnings.php',
 

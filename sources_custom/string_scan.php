@@ -7797,6 +7797,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         UNDER_CONSTRUCTION
         UNDER_CONSTRUCTION_MARKERS
         UNDO
+        UNDONE
         UNDO_CHARGE
         UNDO_PROBATION
         UNDO_REVISION
@@ -8421,6 +8422,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_spam_check_stopforumspam
         TICKET_MAIL_TAGS
         CONFIG_OPTION_ticket_mail_tags
+        UNDO_PUNITIVE_ACTION
+        _UNDO_PUNITIVE_ACTION
     ')));
 
     $non_admin_files = [
@@ -8494,6 +8497,18 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PUNITIVE_CHANGE_USERGROUP
         PUNITIVE_CHARGE_POINTS
         PUNITIVE_DELETE_CONTENT
+        _PUNITIVE_SILENCE_FROM_TOPIC
+        _PUNITIVE_SILENCE_FROM_FORUM
+        _PUNITIVE_DELETE_POST
+        _PUNITIVE_DELETE_POST_AND_FOLLOWING
+        _PUNITIVE_PROBATION
+        _PUNITIVE_BAN_ACCOUNT
+        _PUNITIVE_IP_BANNED
+        _PUNITIVE_STOP_FORUM_SPAM
+        _PUNITIVE_CHANGE_USERGROUP
+        _PUNITIVE_CHARGE_POINTS
+        _PUNITIVE_DELETE_CONTENT
+        ACTION_LINK
         WARNING_NUMBER
         VIEW_WARNING
         CHANGED_USERGROUP_TO

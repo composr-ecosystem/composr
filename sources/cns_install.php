@@ -1593,8 +1593,8 @@ function install_cns(?float $upgrade_from = null)
             'p_warning_id' => 'AUTO_LINK',
             'p_hook' => 'ID_TEXT', // name of a hook in systems/cns_warnings that performed the action
             'p_action' => 'ID_TEXT', // A punitive action language string code, which p_param_a and p_param_b will be injected for written context
-            'p_param_a' => '?SHORT_TEXT', // some parameter relating to the action
-            'p_param_b' => '?SHORT_TEXT', // some other parameter relating to the action
+            'p_param_a' => 'SHORT_TEXT', // some parameter relating to the action
+            'p_param_b' => 'SHORT_TEXT', // some other parameter relating to the action
             'p_reversed' => 'BINARY', // Whether this punitive action was reversed
         ]);
         $GLOBALS['FORUM_DB']->create_index('f_warnings_punitive', 'warningsid', ['p_warning_id']);
@@ -1612,8 +1612,8 @@ function install_cns(?float $upgrade_from = null)
                             'p_warning_id' => $row['id'],
                             'p_hook' => 'silencing',
                             'p_action' => '_PUNITIVE_SILENCE_FROM_TOPIC',
-                            'p_param_a' => $row['p_silence_from_topic'],
-                            'p_param_b' => null, // f_warnings did not track time
+                            'p_param_a' => strval($row['p_silence_from_topic']),
+                            'p_param_b' => '', // f_warnings did not track time
                             'p_reversed' => 0,
                         ]);
                     }
@@ -1622,8 +1622,8 @@ function install_cns(?float $upgrade_from = null)
                             'p_warning_id' => $row['id'],
                             'p_hook' => 'silencing',
                             'p_action' => '_PUNITIVE_SILENCE_FROM_FORUM',
-                            'p_param_a' => $row['p_silence_from_forum'],
-                            'p_param_b' => null, // f_warnings did not track time
+                            'p_param_a' => strval($row['p_silence_from_forum']),
+                            'p_param_b' => '', // f_warnings did not track time
                             'p_reversed' => 0,
                         ]);
                     }
@@ -1632,8 +1632,8 @@ function install_cns(?float $upgrade_from = null)
                             'p_warning_id' => $row['id'],
                             'p_hook' => 'probation',
                             'p_action' => '_PUNITIVE_PROBATION',
-                            'p_param_a' => $row['p_probation'],
-                            'p_param_b' => null,
+                            'p_param_a' => strval($row['p_probation']),
+                            'p_param_b' => '',
                             'p_reversed' => 0,
                         ]);
                     }
@@ -1642,8 +1642,8 @@ function install_cns(?float $upgrade_from = null)
                             'p_warning_id' => $row['id'],
                             'p_hook' => 'ban_ip',
                             'p_action' => '_PUNITIVE_IP_BANNED',
-                            'p_param_a' => $row['p_banned_ip'],
-                            'p_param_b' => null,
+                            'p_param_a' => strval($row['p_banned_ip']),
+                            'p_param_b' => '',
                             'p_reversed' => 0,
                         ]);
                     }
@@ -1652,8 +1652,8 @@ function install_cns(?float $upgrade_from = null)
                             'p_warning_id' => $row['id'],
                             'p_hook' => 'points',
                             'p_action' => '_PUNITIVE_CHARGED_POINTS',
-                            'p_param_a' => $row['p_charged_points'],
-                            'p_param_b' => null,
+                            'p_param_a' => strval($row['p_charged_points']),
+                            'p_param_b' => '',
                             'p_reversed' => 0,
                         ]);
                     }
@@ -1662,8 +1662,8 @@ function install_cns(?float $upgrade_from = null)
                             'p_warning_id' => $row['id'],
                             'p_hook' => 'ban_member',
                             'p_action' => '_PUNITIVE_BAN_ACCOUNT',
-                            'p_param_a' => null,
-                            'p_param_b' => null,
+                            'p_param_a' => '',
+                            'p_param_b' => '',
                             'p_reversed' => 0,
                         ]);
                     }
@@ -1672,8 +1672,8 @@ function install_cns(?float $upgrade_from = null)
                             'p_warning_id' => $row['id'],
                             'p_hook' => 'change_group',
                             'p_action' => '_PUNITIVE_CHANGE_USERGROUP',
-                            'p_param_a' => $row['p_changed_usergroup_from'],
-                            'p_param_b' => $row['p_changed_usergroup_to'],
+                            'p_param_a' => strval($row['p_changed_usergroup_from']),
+                            'p_param_b' => strval($row['p_changed_usergroup_to']),
                             'p_reversed' => 0,
                         ]);
                     }

@@ -35,8 +35,29 @@ class Hook_cns_warnings_ban_ip
         }
 
         return [
-            'order' => 2,
+            'order' => 1,
         ];
+    }
+
+    /**
+     * Generate punitive action text from a punitive action database row.
+     *
+     * @param  array $row The database row
+     * @return string The punitive action text
+     */
+    public function generate_text(array $row) : string
+    {
+        if (!addon_installed('cns_warnings') || !addon_installed('securitylogging')) {
+            return '';
+        }
+
+        switch ($row['p_action']) {
+            case '_PUNITIVE_IP_BANNED':
+                return do_lang('_PUNITIVE_IP_BANNED', $row['p_param_a']);
+
+            default:
+                return '';
+        }
     }
 
     /**
@@ -102,12 +123,38 @@ class Hook_cns_warnings_ban_ip
                     'p_hook' => 'ban_ip',
                     'p_action' => '_PUNITIVE_IP_BANNED',
                     'p_param_a' => $banned_ip,
-                    'p_param_b' => null,
+                    'p_param_b' => '',
                     'p_reversed' => 0,
                 ]);
 
                 $punitive_messages[] = do_lang('PUNITIVE_BAN_IP', null, null, null, null, false);
             }
         }
+    }
+
+    /**
+     * Actualiser to undo a certain type of punitive action.
+     *
+     * @param  array $punitive_action The database row for the punitive action being undone
+     * @param  array $warning The database row for the warning associated with the punitive action being undone
+     */
+    public function undo_punitive_action(array $punitive_action, array $warning)
+    {
+        $error = new Tempcode();
+        if (!addon_installed__messaged('cns_warnings', $error)) {
+            warn_exit($error);
+        }
+        if (!addon_installed__messaged('securitylogging', $error)) {
+            warn_exit($error);
+        }
+
+        require_code('failure');
+
+        $banned_ip = $punitive_action['p_param_a'];
+        $member_id = intval($warning['w_member_id']);
+
+        remove_ip_ban($banned_ip);
+
+        log_it('IP_UNBANNED', $banned_ip, strval($member_id));
     }
 }

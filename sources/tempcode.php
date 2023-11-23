@@ -1693,7 +1693,7 @@ class Tempcode
 
     public $is_all_static; // Whether this Tempcode is entirely static content
     public $metadata; // Map of Tempcode metadata
-    public $is_empty; // Whether this Tempcode has no content
+    private $is_empty; // Whether this Tempcode has no content
 
     /**
      * Constructor of Tempcode.

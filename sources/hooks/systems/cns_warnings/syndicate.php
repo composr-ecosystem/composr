@@ -35,8 +35,29 @@ class Hook_cns_warnings_syndicate
         }
 
         return [
-            'order' => 2,
+            'order' => 3,
         ];
+    }
+
+    /**
+     * Generate punitive action text from a punitive action database row.
+     *
+     * @param  array $row The database row
+     * @return string The punitive action text
+     */
+    public function generate_text(array $row) : string
+    {
+        if (!addon_installed('cns_warnings')) {
+            return '';
+        }
+
+        switch ($row['p_action']) {
+            case '_PUNITIVE_STOP_FORUM_SPAM':
+                return do_lang('_PUNITIVE_STOP_FORUM_SPAM', $row['p_param_a'], $row['p_param_b']);
+
+            default:
+                return '';
+        }
     }
 
     /**

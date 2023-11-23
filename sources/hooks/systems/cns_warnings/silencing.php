@@ -35,8 +35,48 @@ class Hook_cns_warnings_silencing
         }
 
         return [
-            'order' => 5,
+            'order' => 6,
         ];
+    }
+
+    /**
+     * Generate punitive action text from a punitive action database row.
+     *
+     * @param  array $row The database row
+     * @return string The punitive action text
+     */
+    public function generate_text(array $row) : string
+    {
+        if (!addon_installed('cns_warnings')) {
+            return '';
+        }
+
+        switch ($row['p_action']) {
+            case '_PUNITIVE_SILENCE_FROM_FORUM':
+                $silence_from_forum_title = '#' . strval($row['p_param_a']);
+                if (get_forum_type() == 'cns') {
+                    $silence_from_forum_title = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_name', ['id' => intval($row['p_param_a'])]);
+                    if ($silence_from_forum_title === null) {
+                        $silence_from_forum_title = '#' . strval($row['p_param_a']);
+                    }
+                }
+                $silence_until = get_timezoned_date_time(intval($row['p_param_b']));
+                return do_lang('_PUNITIVE_SILENCE_FROM_FORUM', $silence_from_forum_title, ' ' . do_lang('PUNITIVE_SILENCED_UNTIL', $silence_until));
+
+            case '_PUNITIVE_SILENCE_FROM_TOPIC':
+                $silence_from_topic_title = '#' . strval($row['p_silence_from_topic']);
+                if (get_forum_type() == 'cns') {
+                    $silence_from_topic_title = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_cache_first_title', ['id' => $row['p_silence_from_topic']]);
+                    if ($silence_from_topic_title === null) {
+                        $silence_from_topic_title = '#' . strval($row['p_silence_from_topic']);
+                    }
+                }
+                $silence_until = get_timezoned_date_time(intval($row['p_param_b']));
+                return do_lang('_PUNITIVE_SILENCE_FROM_TOPIC', $silence_from_topic_title, ' ' . do_lang('PUNITIVE_SILENCED_UNTIL', $silence_until));
+
+            default:
+                return '';
+        }
     }
 
     /**
@@ -160,7 +200,7 @@ class Hook_cns_warnings_silencing
                 'p_hook' => 'silencing',
                 'p_action' => '_PUNITIVE_SILENCE_FROM_TOPIC',
                 'p_param_a' => strval($silence_from_topic),
-                'p_param_b' => strval(get_timezoned_date_time($_silence_from_topic, false, false, $member_id)),
+                'p_param_b' => strval($_silence_from_topic),
                 'p_reversed' => 0,
             ]);
 
@@ -221,6 +261,64 @@ class Hook_cns_warnings_silencing
             ]);
 
             $punitive_messages[] = do_lang('PUNITIVE_SILENCE_FROM_FORUM', $silence_from_forum_title, do_lang('PUNITIVE_UNTIL', get_timezoned_date_time($_silence_from_forum, false, false, $member_id)), null, null, false);
+        }
+    }
+
+    /**
+     * Actualiser to undo a certain type of punitive action.
+     *
+     * @param  array $punitive_action The database row for the punitive action being undone
+     * @param  array $warning The database row for the warning associated with the punitive action being undone
+     */
+    public function undo_punitive_action(array $punitive_action, array $warning)
+    {
+        $error = new Tempcode();
+        if (!addon_installed__messaged('cns_warnings', $error)) {
+            warn_exit($error);
+        }
+
+        if (get_forum_type() != 'cns') {
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        }
+
+        require_code('cns_general_action2');
+
+        $member_id = intval($warning['w_member_id']);
+        $silence_id = intval($punitive_action['p_param_a']);
+
+        switch ($punitive_action['p_action']) {
+            case '_PUNITIVE_SILENCE_FROM_TOPIC':
+                $GLOBALS['FORUM_DB']->query_delete('member_privileges', [
+                    'member_id' => $member_id,
+                    'privilege' => 'submit_lowrange_content',
+                    'the_page' => '',
+                    'module_the_name' => 'topics',
+                    'category_name' => strval($silence_id),
+                ]);
+
+                cns_mod_log_it('UNSILENCE_TOPIC', strval($member_id), strval($warning['id']));
+                break;
+            case '_PUNITIVE_SILENCE_FROM_FORUM':
+                $GLOBALS['FORUM_DB']->query_delete('member_privileges', [
+                    'member_id' => $member_id,
+                    'privilege' => 'submit_lowrange_content',
+                    'the_page' => '',
+                    'module_the_name' => 'forums',
+                    'category_name' => strval($silence_id),
+                    'the_value' => '0',
+                ]);
+                $GLOBALS['FORUM_DB']->query_delete('member_privileges', [
+                    'member_id' => $member_id,
+                    'privilege' => 'submit_midrange_content',
+                    'the_page' => '',
+                    'module_the_name' => 'forums',
+                    'category_name' => strval($silence_id),
+                    'the_value' => '0',
+                ]);
+
+                require_code('cns_general_action2');
+                cns_mod_log_it('UNSILENCE_FORUM', strval($member_id), strval($warning['id']));
+                break;
         }
     }
 }

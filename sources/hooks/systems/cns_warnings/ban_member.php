@@ -35,8 +35,34 @@ class Hook_cns_warnings_ban_member
         }
 
         return [
-            'order' => 3,
+            'order' => 2,
         ];
+    }
+
+    /**
+     * Generate punitive action text from a punitive action database row.
+     *
+     * @param  array $row The database row
+     * @return string The punitive action text
+     */
+    public function generate_text(array $row) : string
+    {
+        if (!addon_installed('cns_warnings')) {
+            return '';
+        }
+
+        $member = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_warnings', 'w_member_id', ['id' => $row['p_warning_id']]);
+        if ($member !== null) {
+            $member = $GLOBALS['FORUM_DRIVER']->get_username($member, true);
+        }
+
+        switch ($row['p_action']) {
+            case '_PUNITIVE_BAN_ACCOUNT':
+                return do_lang('_PUNITIVE_BAN_ACCOUNT', $member);
+
+            default:
+                return '';
+        }
     }
 
     /**
@@ -112,8 +138,8 @@ class Hook_cns_warnings_ban_member
                     'p_warning_id' => $warning_id,
                     'p_hook' => 'ban_member',
                     'p_action' => '_PUNITIVE_BAN_ACCOUNT',
-                    'p_param_a' => null,
-                    'p_param_b' => null,
+                    'p_param_a' => '',
+                    'p_param_b' => '',
                     'p_reversed' => 0,
                 ]);
 
@@ -122,5 +148,26 @@ class Hook_cns_warnings_ban_member
         } else {
             $banned_member = '0';
         }
+    }
+
+    /**
+     * Actualiser to undo a certain type of punitive action.
+     *
+     * @param  array $punitive_action The database row for the punitive action being undone
+     * @param  array $warning The database row for the warning associated with the punitive action being undone
+     */
+    public function undo_punitive_action(array $punitive_action, array $warning)
+    {
+        $error = new Tempcode();
+        if (!addon_installed__messaged('cns_warnings', $error)) {
+            warn_exit($error);
+        }
+
+        $member_id = intval($warning['w_member_id']);
+
+        $GLOBALS['FORUM_DB']->query_update('f_members', ['m_is_perm_banned' => '0'], ['id' => $member_id], '', 1);
+
+        require_code('cns_general_action2');
+        cns_mod_log_it('UNBAN_MEMBER', strval($warning['id']), $GLOBALS['FORUM_DRIVER']->get_username($member_id));
     }
 }

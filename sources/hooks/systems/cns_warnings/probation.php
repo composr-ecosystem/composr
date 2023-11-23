@@ -35,8 +35,29 @@ class Hook_cns_warnings_probation
         }
 
         return [
-            'order' => 6,
+            'order' => 4,
         ];
+    }
+
+    /**
+     * Generate punitive action text from a punitive action database row.
+     *
+     * @param  array $row The database row
+     * @return string The punitive action text
+     */
+    public function generate_text(array $row) : string
+    {
+        if (!addon_installed('cns_warnings')) {
+            return '';
+        }
+
+        switch ($row['p_action']) {
+            case '_PUNITIVE_PROBATION':
+                return do_lang('_PUNITIVE_PROBATION', $row['p_param_a']);
+
+            default:
+                return '';
+        }
     }
 
     /**
@@ -105,12 +126,41 @@ class Hook_cns_warnings_probation
                     'p_hook' => 'probation',
                     'p_action' => '_PUNITIVE_PROBATION',
                     'p_param_a' => strval($probation),
-                    'p_param_b' => null,
+                    'p_param_b' => '',
                     'p_reversed' => 0,
                 ]);
 
                 $punitive_messages[] = do_lang('PUNITIVE_PROBATION', strval($probation), strval(get_timezoned_date_time($on_probation_until, false, false, $member_id)), null, null, false);
             }
         }
+    }
+
+    /**
+     * Actualiser to undo a certain type of punitive action.
+     *
+     * @param  array $punitive_action The database row for the punitive action being undone
+     * @param  array $warning The database row for the warning associated with the punitive action being undone
+     */
+    public function undo_punitive_action(array $punitive_action, array $warning)
+    {
+        $error = new Tempcode();
+        if (!addon_installed__messaged('cns_warnings', $error)) {
+            warn_exit($error);
+        }
+
+        if (get_forum_type() != 'cns') {
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        }
+
+        $member_id = intval($warning['w_member_id']);
+        $probation = intval($punitive_action['p_param_a']);
+
+        $on_probation_until = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_on_probation_until');
+        if ($on_probation_until !== null) {
+            $GLOBALS['FORUM_DB']->query_update('f_members', ['m_on_probation_until' => $on_probation_until - $probation * 60 * 60 * 24], ['id' => $member_id], '', 1);
+        }
+
+        require_code('cns_general_action2');
+        cns_mod_log_it('STOP_PROBATION', strval($warning['id']), $GLOBALS['FORUM_DRIVER']->get_username($member_id));
     }
 }

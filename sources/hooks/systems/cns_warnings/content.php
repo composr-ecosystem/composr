@@ -35,8 +35,35 @@ class Hook_cns_warnings_content
         }
 
         return [
-            // No order because we want this to be one of the last entries
+            'order' => 1000, // We want content to be very low / towards the bottom because it has its own field separator.
         ];
+    }
+
+    /**
+     * Generate punitive action text from a punitive action database row.
+     *
+     * @param  array $row The database row
+     * @return string The punitive action text
+     */
+    public function generate_text(array $row) : string
+    {
+        if (!addon_installed('cns_warnings')) {
+            return '';
+        }
+
+        switch ($row['p_action']) {
+            case '_PUNITIVE_DELETE_POST':
+                return do_lang('_PUNITIVE_DELETE_POST', null, $row['p_param_b']);
+
+            case '_PUNITIVE_DELETE_POST_AND_FOLLOWING':
+                return do_lang('_PUNITIVE_DELETE_POST_AND_FOLLOWING', null, $row['p_param_b']);
+
+            case '_PUNITIVE_DELETE_CONTENT':
+                return do_lang('_PUNITIVE_DELETE_CONTENT', $row['p_param_a'], $row['p_param_b']);
+
+            default:
+                return '';
+        }
     }
 
     /**
@@ -136,11 +163,7 @@ class Hook_cns_warnings_content
             }
         }
 
-        $description = do_lang_tempcode('DESCRIPTION_DELETE_CONTENT');
-        if (addon_installed('points')) {
-            $description->attach(do_lang_tempcode('DESCRIPTION_DELETE_CONTENT_SUP_POINTS'));
-        }
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'c7eb70b13be74d8f3bd1f1c5e739d9ab', 'TITLE' => do_lang_tempcode('DELETE'), 'HELP' => $description]));
+        $_fields = new Tempcode();
 
         foreach ($posts_deletable as $_post_id => $_post_deletable) {
             list($post_context, $_post_id, $topic_id, $topic_title, $post_time, $forum_id) = $_post_deletable;
@@ -172,7 +195,7 @@ class Hook_cns_warnings_content
                     $list_options->attach(form_input_list_entry('delete_post_and_following', $spam_mode, do_lang_tempcode('HANDLE_POST__DELETE_TOPIC', escape_html($topic_title), escape_html(strval($_post_id)), [escape_html(strval($topic_id)), escape_html($post_url->evaluate())])));
                     break;
             }
-            $fields->attach(form_input_list($handle_label, '', 'handle_post__' . strval($_post_id), $list_options, null, false, false));
+            $_fields->attach(form_input_list($handle_label, '', 'handle_post__' . strval($_post_id), $list_options, null, false, false));
         }
 
         // See also privacy_purge.php - this code handles deletion of individually-identified high-level content items, while privacy-purging will delete/anonymise on mass for any kinds of database record
@@ -185,8 +208,14 @@ class Hook_cns_warnings_content
                 }
                 $content_description = do_lang_tempcode('DESCRIPTION_DELETE_THIS', escape_html($content_title), escape_html(get_timezoned_date_time($content_timestamp)), [escape_html($content_url), $content_type_title]);
 
-                $fields->attach(form_input_tick($content_title, $content_description, 'delete__' . $content_type . '_' . $content_id, $auto_selected));
+                $_fields->attach(form_input_tick($content_title, $content_description, 'delete__' . $content_type . '_' . $content_id, $auto_selected));
             }
+        }
+
+        if (!$_fields->is_empty()) {
+            $description = do_lang_tempcode('DESCRIPTION_DELETE_CONTENT', addon_installed('points') ? do_lang_tempcode('DESCRIPTION_DELETE_CONTENT_SUP_POINTS') : null);
+            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'c7eb70b13be74d8f3bd1f1c5e739d9ab', 'TITLE' => do_lang_tempcode('DELETE'), 'HELP' => $description]));
+            $fields->attach($_fields);
         }
     }
 
