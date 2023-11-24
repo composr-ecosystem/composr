@@ -336,7 +336,7 @@ function mask_phone_number(string $phone_number) : string
                 $ret = $number_parts[$i] . $ret;
                 $exposed_numbers++;
             } else {
-                $ret = '*' . $ret;
+                $ret = '@' . $ret; // Do not use * as the mask because * is a legitimate button on phones
             }
         } else { // Do not mask non-numeric characters
             $ret = $number_parts[$i] . $ret;
