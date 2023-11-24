@@ -332,7 +332,7 @@ function mask_phone_number(string $phone_number) : string
     // Go backwards since we're exposing the last 3 digits and any non-numeric character
     for ($i = (count($number_parts) - 1); $i >= 0; $i--) {
         // These characters are generally acceptable to be visible; do not mask them.
-    $acceptable_characters = ['+', '-', '#', '*', ' ', '(', ')', '[', ']', '.'/* might be used instead of - */, 'x'/* extension */];
+        $acceptable_characters = ['+', '-', '#', '*', ' ', '(', ')', '[', ']', '.'/* might be used instead of - */, 'x'/* extension */];
 
         $has_acceptable_character = false;
         foreach ($acceptable_characters as $character) {
