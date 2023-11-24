@@ -317,8 +317,8 @@ function mask_email_address(string $email_address) : string
 }
 
 /**
- * Replace most characters in a phone number with asterisks.
- * Since phone numbers can be saved in a wide variety of formats depending on the country, it can be difficult to mask phone numbers. Therefore, This function will mask (replace with asterisks) all numbers except the last 3 digits.
+ * Replace most characters in a phone number with the @ symbol.
+ * Since phone numbers can be saved in a wide variety of formats depending on the country, it can be difficult to mask phone numbers.
  *
  * @param  SHORT_TEXT $phone_number The phone number to mask
  * @return SHORT_TEXT The masked phone number
@@ -331,14 +331,24 @@ function mask_phone_number(string $phone_number) : string
 
     // Go backwards since we're exposing the last 3 digits and any non-numeric character
     for ($i = (count($number_parts) - 1); $i >= 0; $i--) {
-        if (is_numeric($number_parts[$i])) {
+        // These characters are generally acceptable to be visible; do not mask them.
+    $acceptable_characters = ['+', '-', '#', '*', ' ', '(', ')', '[', ']', '.'/* might be used instead of - */, 'x'/* extension */];
+
+        $has_acceptable_character = false;
+        foreach ($acceptable_characters as $character) {
+            if (strpos($number_parts[$i], $character) !== false) {
+                $has_acceptable_character = true;
+                break;
+            }
+        }
+        if (!$has_acceptable_character) {
             if ($exposed_numbers < 3) {
                 $ret = $number_parts[$i] . $ret;
                 $exposed_numbers++;
             } else {
                 $ret = '@' . $ret; // Do not use * as the mask because * is a legitimate button on phones
             }
-        } else { // Do not mask non-numeric characters
+        } else {
             $ret = $number_parts[$i] . $ret;
         }
     }
