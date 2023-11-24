@@ -99,24 +99,26 @@ class Hook_block_ui_renderers_catalogues
             if (($num_categories_top < 300) && ((!$has_default) || ($num_categories < 300))) { // catalogue category
                 $list = new Tempcode();
                 $structured_list = new Tempcode();
+                $category_map = [];
                 $categories = $GLOBALS['SITE_DB']->query_select('catalogue_categories', ['id', 'cc_title', 'c_name'], ($num_categories >= 300) ? ['cc_parent_id' => null] : [], 'ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('cc_title'));
-                $last_cat = null;
                 foreach ($categories as $cat) {
                     if (substr($cat['c_name'], 0, 1) == '_') {
                         continue;
                     }
 
-                    if (($last_cat === null) || ($cat['c_name'] != $last_cat)) {
-                        if (!$list->is_empty()) {
-                            $structured_list->attach(form_input_list_group($last_cat, $list));
-                        }
-                        $list = new Tempcode();
-                        $last_cat = $cat['c_name'];
+                    if(!isset($category_map[$cat['c_name']])) {
+                        $category_map[$cat['c_name']] = [];
                     }
-                    $list->attach(form_input_list_entry(strval($cat['id']), $has_default && strval($cat['id']) == $default, get_translated_text($cat['cc_title'])));
+
+                    $category_map[$cat['c_name']][] = $cat;
                 }
-                if (!$list->is_empty()) {
-                    $structured_list->attach(form_input_list_group($last_cat, $list));
+                ksort($category_map);
+                foreach ($category_map as $m_catalogue => $m_categories) {
+                    $list = new Tempcode();
+                    foreach ($m_categories as $m_category) {
+                        $list->attach(form_input_list_entry(strval($m_category['id']), $has_default && strval($m_category['id']) == $default, get_translated_text($m_category['cc_title'])));
+                    }
+                    $structured_list->attach(form_input_list_group($m_catalogue, $list));
                 }
                 return form_input_list(titleify($parameter), escape_html($description), $parameter, $structured_list, null, false, false);
             }
