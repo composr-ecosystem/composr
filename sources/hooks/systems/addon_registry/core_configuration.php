@@ -442,6 +442,7 @@ class Hook_addon_registry_core_configuration
             'themes/default/templates/XML_CONFIG_SCREEN.tpl',
             'themes/default/javascript/core_configuration.js',
             'sources/hooks/systems/config/use_site_name_text_as_logo.php',
+            'sources/hooks/systems/config/autosave_time.php',
         ];
     }
 
