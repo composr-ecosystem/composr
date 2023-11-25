@@ -823,7 +823,7 @@
 
         function handleFormSavingExplicit(event, form) {
             if (event.keyCode === 83/*s*/ && (navigator.platform.match('Mac') ? event.metaKey : event.ctrlKey) && (!navigator.platform.match('Mac') ? event.ctrlKey : event.metaKey) && (!event.altKey)) {
-                $util.inform('Doing explicit auto-save');
+                //$util.inform('Doing explicit auto-save');
 
                 event.preventDefault(); // Prevent browser save dialog
 
@@ -1164,7 +1164,7 @@
             // Save locally
             if (window.localStorage !== undefined) {
                 if ($cms.isDevMode()) {
-                    $util.inform('Doing local storage auto-save for ' + elementName + ' (' + autosaveName + ')');
+                    //$util.inform('Doing local storage auto-save for ' + elementName + ' (' + autosaveName + ')');
                 }
 
                 try {
