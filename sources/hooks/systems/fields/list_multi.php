@@ -117,14 +117,14 @@ class Hook_fields_list_multi extends ListFieldHook
             return $ev;
         }
 
-        if ($ev == '') {
+        $show_unset_values = (option_value_from_field_array($field, 'show_unset_values', 'off') == 'on');
+
+        if (($ev == '') && (!$show_unset_values)) {
             return '';
         }
 
         $exploded_inbuilt = ($field['cf_default'] == '') ? [] : array_flip(explode('|', $field['cf_default']));
         $exploded_chosen = ($ev == '') ? [] : array_flip(explode("\n", $ev));
-
-        $show_unset_values = (option_value_from_field_array($field, 'show_unset_values', 'off') == 'on');
 
         $custom_values = option_value_from_field_array($field, 'custom_values', 'off');
 
