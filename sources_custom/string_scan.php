@@ -8423,6 +8423,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_spam_check_stopforumspam
         TICKET_MAIL_TAGS
         CONFIG_OPTION_ticket_mail_tags
+        AUTOSAVE_TIME
+        CONFIG_OPTION_autosave_time
     ')));
 
     $non_admin_files = [

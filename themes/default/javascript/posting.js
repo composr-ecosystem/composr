@@ -23,6 +23,7 @@
     window.doInputI = doInputI;
     window.doInputFont = doInputFont;
 
+
     // ===========
     // ATTACHMENTS
     // ===========
@@ -822,25 +823,20 @@
 
         function handleFormSavingExplicit(event, form) {
             if (event.keyCode === 83/*s*/ && (navigator.platform.match('Mac') ? event.metaKey : event.ctrlKey) && (!navigator.platform.match('Mac') ? event.ctrlKey : event.metaKey) && (!event.altKey)) {
-                //$util.inform('Doing explicit auto-save');
+                $util.inform('Doing explicit auto-save');
 
                 event.preventDefault(); // Prevent browser save dialog
 
                 // Go through al fields to save
-                var post = '', foundValidatedField = false, temp;
+                var post = '', foundValidatedField = false;
                 for (var i = 0; i < form.elements.length; i++) {
                     if (form.elements[i].name === 'validated') {
                         foundValidatedField = true;
                     }
 
                     if (fieldSupportsAutosave(form.elements[i])) {
-                        temp = _handleFormSaving(event, form.elements[i], true);
-                        if (temp) {
-                            if (post !== '') {
-                                post += '&';
-                            }
-                            post += encodeURIComponent(temp[0]) + '=' + encodeURIComponent(temp[1]);
-                        }
+                        // As this is forced, callback is not async, so despite it being in a for loop, this will not cause problems.
+                        _handleFormSaving(event, form.elements[i], true, postFormSaving);
                     }
                 }
 
@@ -861,6 +857,15 @@
                             $cms.ui.alert(message, '{!javascript:DRAFT_SAVE;^}');
                         });
                     }
+                }
+            }
+
+            function postFormSaving (temp) {
+                if (temp) {
+                    if (post !== '') {
+                        post += '&';
+                    }
+                    post += encodeURIComponent(temp[0]) + '=' + encodeURIComponent(temp[1]);
                 }
             }
         }
@@ -1064,39 +1069,39 @@
     };
 
     function handleFormSaving(event, element, force) {
-        var temp = _handleFormSaving(event, element, force);
-        if (temp) {
-            var post = encodeURIComponent(temp[0]) + '=' + encodeURIComponent(temp[1]);
+        _handleFormSaving(event, element, force, postFormSaving);
 
-            // Save remotely
-            if (navigator.onLine) {
-                //$util.inform('Doing AJAX auto-save');
-
-                if ($cms.form.isModSecurityWorkaroundEnabled()) {
-                    post = $cms.form.modSecurityWorkaroundAjax(post);
+        function postFormSaving (temp) {
+            if (temp) {
+                var post = encodeURIComponent(temp[0]) + '=' + encodeURIComponent(temp[1]);
+    
+                // Save remotely
+                if (navigator.onLine) {
+                    $util.inform('Doing AJAX auto-save');
+    
+                    if ($cms.form.isModSecurityWorkaroundEnabled()) {
+                        post = $cms.form.modSecurityWorkaroundAjax(post);
+                    }
+                    $cms.doAjaxRequest('{$FIND_SCRIPT_NOHTTP;,autosave}?type=store' + $cms.keep(), null, post);
                 }
-                $cms.doAjaxRequest('{$FIND_SCRIPT_NOHTTP;,autosave}?type=store' + $cms.keep(), null, post);
             }
         }
     }
 
-    function _handleFormSaving(event, element, force) {
+    function _handleFormSaving(event, element, force, cb) {
         if (force === undefined) {
             force = (event.type === 'blur');
         }
 
         var thisDate = new Date();
-        if (!force) {
-            if ((thisDate.getTime() - window.lastAutosave.getTime()) < 20 * 1000) {
-                return null; // Only save every 20 seconds
-            }
-        }
+        //var saveFrequency = parseInt($cms.configOption('autosave_time')); TODO: Tracker #5268 uncomment when you figure out how to make this work
+        var saveFrequency = 20;
 
         if (element === undefined) {
             element = event.target;
         }
         if ((element === undefined) || (element === null)) {
-            return null; // Some weird error, perhaps an extension fired this event
+            return cb(null); // Some weird error, perhaps an extension fired this event
         }
 
         var value = $cms.form.cleverFindValue(element.form, element);
@@ -1104,25 +1109,18 @@
             value += String.fromCharCode(event.keyCode ? event.keyCode : event.charCode);
         }
 
-        // Mark it as saved, so the server can clear it out when we submit, signally local storage should get deleted too
         var elementName = (element.name === undefined) ? element[0].name : element.name;
         var autosaveName = getAutosaveName(elementName);
-        $cms.setCookie(encodeURIComponent(getAutosaveUrlStem()), '1', 0.167/*4 hours*/);
 
-        window.lastAutosave = thisDate;
+        if (!force) {
+            clearTimeout($posting.formSaveTimer);
+            $posting.formSaveTimer = setTimeout(checkSaveTime, 1000);
 
-        // Save locally
-        if (window.localStorage !== undefined) {
-            if ($cms.isDevMode()) {
-                //$util.inform('Doing local storage auto-save for ' + elementName + ' (' + autosaveName + ')');
-            }
-
-            try {
-                window.localStorage.setItem(autosaveName, value);
-            } catch (e) {} // Could have NS_ERROR_DOM_QUOTA_REACHED
+            return null;
         }
 
-        return [autosaveName, value];
+        actuallyAutosave();
+        return cb([autosaveName, value]);
 
         function isTypedInput(element) {
             // eslint-disable-next-line no-restricted-properties
@@ -1155,6 +1153,32 @@
             }
 
             return false;
+        }
+
+        function actuallyAutosave() {
+            // Mark it as saved, so the server can clear it out when we submit, signally local storage should get deleted too
+            $cms.setCookie(encodeURIComponent(getAutosaveUrlStem()), '1', 0.167/*4 hours*/);
+
+            window.lastAutosave = thisDate;
+
+            // Save locally
+            if (window.localStorage !== undefined) {
+                if ($cms.isDevMode()) {
+                    $util.inform('Doing local storage auto-save for ' + elementName + ' (' + autosaveName + ')');
+                }
+
+                try {
+                    window.localStorage.setItem(autosaveName, value);
+                } catch (e) {} // Could have NS_ERROR_DOM_QUOTA_REACHED
+            }
+        }
+
+        function checkSaveTime () {
+            if ((thisDate.getTime() - window.lastAutosave.getTime()) < saveFrequency * 1000) {
+                return cb(null); // Only save every configured number of seconds
+            }
+            actuallyAutosave();
+            cb([autosaveName, value]);
         }
     }
 
