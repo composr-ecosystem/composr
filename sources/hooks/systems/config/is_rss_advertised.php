@@ -34,7 +34,7 @@ class Hook_config_is_rss_advertised
             'human_name' => 'ENABLE_RSS_ADVERTISING',
             'type' => 'tick',
             'category' => 'FEATURE',
-            'group' => '_FEEDS',
+            'group' => 'FEEDS',
             'explanation' => 'CONFIG_OPTION_is_rss_advertised',
             'shared_hosting_restricted' => '0',
             'list_options' => '',

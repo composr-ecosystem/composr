@@ -34,7 +34,7 @@ class Hook_config_is_on_rss
             'human_name' => 'ENABLE_RSS',
             'type' => 'tick',
             'category' => 'FEATURE',
-            'group' => '_FEEDS',
+            'group' => 'FEEDS',
             'explanation' => 'CONFIG_OPTION_is_on_rss',
             'shared_hosting_restricted' => '0',
             'list_options' => '',

@@ -34,7 +34,7 @@ class Hook_config_rss_update_time
             'human_name' => 'UPDATE_TIME',
             'type' => 'integer',
             'category' => 'FEATURE',
-            'group' => '_FEEDS',
+            'group' => 'FEEDS',
             'explanation' => 'CONFIG_OPTION_rss_update_time',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
