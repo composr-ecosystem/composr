@@ -102,6 +102,7 @@ abstract class Standard_crud_module
     protected $edit_keep_validation = false;
     protected $supports_mass_delete = false;
     protected $title;
+    protected $is_chained_with_parent_browse = false;
 
     // These only needed if we are generate create_selection_list_entries automatically
     protected $table_prefix = '';

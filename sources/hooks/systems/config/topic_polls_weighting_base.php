@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_topic_polls_weighting_logarithmic_base
+class Hook_config_topic_polls_weighting_base
 {
     /**
      * Gets the details relating to the config option.
@@ -31,11 +31,11 @@ class Hook_config_topic_polls_weighting_logarithmic_base
     public function get_details() : ?array
     {
         return [
-            'human_name' => 'TOPIC_POLLS_WEIGHTING_LOGARITHMIC_BASE',
+            'human_name' => 'TOPIC_POLLS_WEIGHTING_BASE',
             'type' => 'float',
             'category' => 'FORUMS',
             'group' => 'POLL_POINT_WEIGHTING',
-            'explanation' => 'CONFIG_OPTION_topic_polls_weighting_logarithmic_base',
+            'explanation' => 'CONFIG_OPTION_topic_polls_weighting_base',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'order_in_category_group' => 1,
@@ -56,7 +56,7 @@ class Hook_config_topic_polls_weighting_logarithmic_base
             return null;
         }
 
-        return float_to_raw_string(M_E);
+        return '3';
     }
 
     /**

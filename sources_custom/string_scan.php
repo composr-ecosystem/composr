@@ -8278,7 +8278,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_topic_polls_weighting_ceiling
         CONFIG_OPTION_enable_poll_point_weighting
         TOPIC_POLLS_WEIGHTING_LOGARITHMIC_BASE
-        CONFIG_OPTION_topic_polls_weighting_logarithmic_base
+        CONFIG_OPTION_topic_polls_weighting_base
         CONFIG_OPTION_points_birthday
         DOC_CRON_HOOKS
         DESCRIPTION_ESCROW_MODERATE_ACTION
@@ -11632,6 +11632,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ERASE_VOTES
         DESCRIPTION_ERASE_VOTES
         POLL_POINT_WEIGHTING
+        CONFIG_GROUP_DESCRIP_POLL_POINT_WEIGHTING
         ENABLE_POLL_POINT_WEIGHTING
         DESCRIPTION_ENABLE_POLL_POINT_WEIGHTING
         POLL_VIEW_ALL_VOTES

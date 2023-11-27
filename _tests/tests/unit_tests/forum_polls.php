@@ -70,40 +70,37 @@ class forum_polls_test_set extends cms_test_case
             get_option('topic_polls_weighting_ceiling'),
             get_option('topic_polls_weighting_offset'),
             get_option('topic_polls_weighting_multiplier'),
-            get_option('topic_polls_weighting_logarithmic_base')
+            get_option('topic_polls_weighting_base')
         ];
 
         set_option('topic_polls_weighting_ceiling', '100');
         set_option('topic_polls_weighting_offset', '1');
         set_option('topic_polls_weighting_multiplier', '2');
-        set_option('topic_polls_weighting_logarithmic_base', '2');
+        set_option('topic_polls_weighting_base', '2');
 
         $with_1000_points = float_to_raw_string(cns_points_to_voting_power(1000), 2);
-        $this->assertTrue($with_1000_points == '20.94', '$with_1000_points: Expected 20.94, got ' . $with_1000_points);
+        $this->assertTrue($with_1000_points == '64.25', '$with_1000_points: Expected 64.25, got ' . $with_1000_points);
 
         $with_1_point = float_to_raw_string(cns_points_to_voting_power(1), 2);
-        $this->assertTrue($with_1_point == '4.17', '$with_1_point: Expected 4.17, got ' . $with_1_point);
+        $this->assertTrue($with_1_point == '3.00', '$with_1_point: Expected 3.00, got ' . $with_1_point);
 
         $with_0_points = float_to_raw_string(cns_points_to_voting_power(0), 2);
-        $this->assertTrue($with_0_points == '3.00', '$with_0_points: Expected 3.00, got ' . $with_0_points);
+        $this->assertTrue($with_0_points == '1.00', '$with_0_points: Expected 1.00, got ' . $with_0_points);
 
         $with_negative_1_points = float_to_raw_string(cns_points_to_voting_power(-1), 2);
-        $this->assertTrue($with_negative_1_points == '3.00', '$with_negative_1_points: Expected 3.00, got ' . $with_negative_1_points);
+        $this->assertTrue($with_negative_1_points == '0.00', '$with_negative_1_points: Expected 0.00, got ' . $with_negative_1_points);
 
-        $with_maxint_points_ceiling_100 = float_to_raw_string(cns_points_to_voting_power(PHP_INT_MAX), 2);
+        $with_maxint_points_ceiling_100 = float_to_raw_string(cns_points_to_voting_power(2147483647), 2);
         $this->assertTrue($with_maxint_points_ceiling_100 == '100.00', '$with_maxint_points_ceiling_100: Expected 100.00, got ' . $with_maxint_points_ceiling_100);
 
-        $with_minint_points = float_to_raw_string(cns_points_to_voting_power(PHP_INT_MIN));
-        $this->assertTrue($with_minint_points == '3.00', '$with_minint_points: Expected 3.00, got ' . $with_minint_points);
-
         set_option('topic_polls_weighting_ceiling', '');
-        $with_maxint_points_noceiling = float_to_raw_string(cns_points_to_voting_power(PHP_INT_MAX), 2);
-        $this->assertTrue($with_maxint_points_noceiling == '127.00', '$with_maxint_points_noceiling: Expected 127.00, got ' . $with_maxint_points_noceiling);
+        $with_maxint_points_noceiling = float_to_raw_string(cns_points_to_voting_power(2147483647), 2);
+        $this->assertTrue($with_maxint_points_noceiling == '92682.90', '$with_maxint_points_noceiling: Expected 92682.90, got ' . $with_maxint_points_noceiling);
 
         set_option('topic_polls_weighting_ceiling', $before_options[0]);
         set_option('topic_polls_weighting_offset', $before_options[1]);
         set_option('topic_polls_weighting_multiplier', $before_options[2]);
-        set_option('topic_polls_weighting_logarithmic_base', $before_options[3]);
+        set_option('topic_polls_weighting_base', $before_options[3]);
     }
 
     public function tearDown()

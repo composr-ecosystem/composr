@@ -878,8 +878,8 @@ class Module_admin_cns_forums extends Standard_crud_module
     {
         $fields = new Tempcode();
 
-        $logarithmic_base = floatval(get_option('topic_polls_weighting_logarithmic_base'));
-        $fields->attach(form_input_float(do_lang_tempcode('TOPIC_POLLS_WEIGHTING_LOGARITHMIC_BASE'), do_lang_tempcode('CONFIG_OPTION_topic_polls_weighting_logarithmic_base'), 'logarithmic_base', $logarithmic_base, true));
+        $base = floatval(get_option('topic_polls_weighting_base'));
+        $fields->attach(form_input_float(do_lang_tempcode('TOPIC_POLLS_WEIGHTING_BASE'), do_lang_tempcode('CONFIG_OPTION_topic_polls_weighting_base'), 'base', $base, true));
 
         $multiplier = floatval(get_option('topic_polls_weighting_multiplier'));
         $fields->attach(form_input_float(do_lang_tempcode('TOPIC_POLLS_WEIGHTING_MULTIPLIER'), do_lang_tempcode('CONFIG_OPTION_topic_polls_weighting_multiplier'), 'multiplier', $multiplier, true));

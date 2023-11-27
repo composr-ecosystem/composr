@@ -539,10 +539,20 @@ function cns_points_to_voting_power(int $points) : float
     $ceiling = get_option('topic_polls_weighting_ceiling'); // Could be blank
     $offset = intval(get_option('topic_polls_weighting_offset'));
     $multiplier = abs(floatval(get_option('topic_polls_weighting_multiplier')));
-    $base = abs(floatval(get_option('topic_polls_weighting_logarithmic_base')));
+    $base = abs(floatval(get_option('topic_polls_weighting_base')));
+    
+    // Sanity check: If negative points, then member has no voting power. This avoids root of a negative number, which equals i.
+    if ($points < 0) {
+        return 0.0;
+    }
+    
+    // Sanity check; if base is 1 or less, it should always be 1 so voting power is initially the number of points the member has.
+    if ($base <= 1.0) {
+        $base = 1.0;
+    }
 
     // Voting power formula (!cns_polls:VOTING_POWER_EQUATION)
-    $_voting_power = max(0, $offset + $multiplier * log(max(0, $points) + $base, $base));
+    $_voting_power = max(0, ($offset + ($multiplier * pow($points, (1 / $base)))));
 
     $voting_power = $_voting_power;
 
@@ -567,14 +577,19 @@ function cns_calculate_poll_voting_power_text(int $points) : array
     $ceiling = get_option('topic_polls_weighting_ceiling');
     $offset = intval(get_option('topic_polls_weighting_offset'));
     $multiplier = abs(floatval(get_option('topic_polls_weighting_multiplier')));
-    $base = abs(floatval(get_option('topic_polls_weighting_logarithmic_base')));
+    $base = abs(floatval(get_option('topic_polls_weighting_base')));
 
     // Give context for a blank ceiling in the equation text
     if ($ceiling === null || $ceiling == '') {
         $ceiling = "Infinity";
     }
+    
+    // Sanity check; if base is 1 or less, it should always be 1 so voting power is initially the number of points the member has.
+    if ($base <= 1.0) {
+        $base = 1.0;
+    }
 
-    $equation = with_whitespace(do_lang_tempcode('VOTING_POWER_EQUATION', 'maximumVotingPower', 'offset', ['multiplier', 'points', 'logBase']));
+    $equation = with_whitespace(do_lang_tempcode('VOTING_POWER_EQUATION', 'Voting power maximum', 'Offset', ['Multiplier', 'points balance', 'Root base']));
     $equation_with_numbers = with_whitespace(do_lang_tempcode('VOTING_POWER_EQUATION', escape_html($ceiling), escape_html(strval($offset)), [escape_html(float_to_raw_string($multiplier, 2, true)), escape_html(strval($points)), escape_html(float_to_raw_string($base, 2, true))]));
     $calculation = cns_points_to_voting_power($points);
 
