@@ -359,7 +359,7 @@ class Hook_addon_registry_cns_forum
             'sources/hooks/systems/config/forum_posts_per_page.php',
             'sources/hooks/systems/config/forum_topics_per_page.php',
             'sources/hooks/systems/config/delete_trashed_pts.php',
-            'sources/hooks/systems/config/topic_polls_weighting_logarithmic_base.php',
+            'sources/hooks/systems/config/topic_polls_weighting_base.php',
             'sources/hooks/systems/config/topic_polls_weighting_multiplier.php',
             'sources/hooks/systems/config/topic_polls_weighting_ceiling.php',
             'sources/hooks/systems/config/enable_poll_point_weighting.php',

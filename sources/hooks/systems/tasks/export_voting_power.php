@@ -26,19 +26,20 @@ class Hook_task_export_voting_power
     /**
      * Run the task hook.
      *
-     * @param  float $logarithmic_base The logarithmic base to use for this calculation
+     * @param  float $base The root base to use for this calculation
      * @param  float $multiplier The multiplier to use
      * @param  integer $offset The offset to use
      * @param  ?integer $ceiling The ceiling to use (null: no (infinite) ceiling)
      * @param  ?string $file_type The file type to export with (null: default)
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
-    public function run(float $logarithmic_base, float $multiplier, int $offset, ?int $ceiling, ?string $file_type = null) : ?array
+    public function run(float $base, float $multiplier, int $offset, ?int $ceiling, ?string $file_type = null) : ?array
     {
         if (!addon_installed('cns_forum') || !addon_installed('points') || get_forum_type() != 'cns') {
             return null;
         }
 
+        require_code('cns_polls_action2');
         require_lang('cns_polls');
         require_code('points');
 
@@ -65,20 +66,16 @@ class Hook_task_export_voting_power
 
                 // Calculate voting power
                 $points = points_balance($member_id);
-                $_voting_power = max(0, $offset + $multiplier * log(max(0, $points) + $logarithmic_base, $logarithmic_base));
-                $voting_power = $_voting_power;
-                if ($ceiling !== null) {
-                    $voting_power = min(abs($ceiling), $_voting_power);
-                }
+                $voting_power = cns_points_to_voting_power($points);
 
                 $data[] = [
                     'member' => $member_id,
                     'username' => $username,
                     'points' => $points,
-                    'voting_power' => floatval($voting_power),
+                    'voting_power' => $voting_power,
                 ];
 
-                $total_power += floatval($voting_power);
+                $total_power += $voting_power;
             }
         } while (count($rows) > 0);
 

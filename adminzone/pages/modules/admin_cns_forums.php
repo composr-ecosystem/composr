@@ -918,12 +918,12 @@ class Module_admin_cns_forums extends Standard_crud_module
      */
     public function _calculate_voting_power() : object
     {
-        $logarithmic_base = floatval(post_param_string('logarithmic_base'));
+        $base = floatval(post_param_string('base'));
         $multiplier = floatval(post_param_string('multiplier'));
         $offset = post_param_integer('offset');
         $ceiling = post_param_integer('ceiling', null);
 
         require_code('tasks');
-        return call_user_func_array__long_task(do_lang('VOTING_POWER_CALCULATOR'), $this->title, 'export_voting_power', [$logarithmic_base, $multiplier, $offset, $ceiling]);
+        return call_user_func_array__long_task(do_lang('VOTING_POWER_CALCULATOR'), $this->title, 'export_voting_power', [$base, $multiplier, $offset, $ceiling]);
     }
 }
