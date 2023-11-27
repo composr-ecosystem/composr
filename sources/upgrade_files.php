@@ -129,7 +129,7 @@ function _upgrader_file_upgrade_screen() : string
         } else {
             $upgrade_path = cms_tempnam();
             $upgrade_path_handle = fopen($upgrade_path, 'wb');
-            $request = cms_http_request($url, ['write_to_file' => $upgrade_path_handle]);
+            $request = cms_http_request($url, ['write_to_file' => $upgrade_path_handle, 'timeout' => 30.0]);
             fclose($upgrade_path_handle);
             $original_filename = $request->filename;
             $retrieval_method = FILE_RETRIEVAL_HTTP;

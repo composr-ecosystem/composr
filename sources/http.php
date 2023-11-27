@@ -357,6 +357,7 @@ abstract class HttpDownloader
     protected $sending_request_content = false;
     protected $raw_post_handle = null;
     protected $raw_post_path = null;
+    protected $timeout_before = null;
 
     // Output
     public $data = null; // ?string. The result returned from the last HTTP lookup.
