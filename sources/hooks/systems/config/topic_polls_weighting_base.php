@@ -70,6 +70,6 @@ class Hook_config_topic_polls_weighting_base
         require_code('tasks');
 
         // Flush voting power cache
-        call_user_func_array__long_task(do_lang('CACHE_TOPICS'), null, 'cns_topics_recache', [null, false, false, true]);
+        call_user_func_array__long_task(do_lang('CACHE_TOPICS'), null, 'cns_topics_recache', [null, false, false, true], false, false, false);
     }
 }

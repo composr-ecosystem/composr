@@ -366,7 +366,7 @@ class Hook_commandr_fs_forums extends Resource_fs_base
 
                 require_lang('cns');
                 require_code('tasks');
-                call_user_func_array__long_task(do_lang('CACHE_TOPICS'), null, 'cns_topics_recache', [$id, false, true, true]);
+                call_user_func_array__long_task(do_lang('CACHE_TOPICS'), null, 'cns_topics_recache', [$id, false, true, true], false, false, false);
             }
 
             if (isset($properties['special_pt_access'])) {
