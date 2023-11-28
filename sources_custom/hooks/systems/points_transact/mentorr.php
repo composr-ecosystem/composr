@@ -31,8 +31,9 @@ class Hook_points_transact__mentorr
      * @param  ID_TEXT $t_subtype An identifier to relate this transaction with other transactions of the same $type and $subtype (e.g. an action performed on the $type)
      * @param  ID_TEXT $t_type_id Some content or row ID of the specified $type
      * @param  ?TIME $time The time this transaction occurred (null: now)
+     * @param  boolean $force Whether the transaction was forced even if the sender did not have enough points
      */
-    public function points_transact(?int $id, int $sender_id, int $recipient_id, string $reason, int $total_points, ?int $amount_gift_points, int $anonymous, ?bool $send_notifications, int $locked, string $t_type, string $t_subtype, string $t_type_id, ?int $time)
+    public function points_transact(?int $id, int $sender_id, int $recipient_id, string $reason, int $total_points, ?int $amount_gift_points, int $anonymous, ?bool $send_notifications, int $locked, string $t_type, string $t_subtype, string $t_type_id, ?int $time, bool $force)
     {
         if ((!addon_installed('mentorr')) || (!addon_installed('points'))) {
             return;

@@ -110,7 +110,7 @@ class Hook_profiles_tabs_warnings
             // Punitive actions
             $prows = $GLOBALS['FORUM_DB']->query_select('f_warnings_punitive', ['*'], ['p_warning_id' => $row['id']]);
             foreach ($prows as $prow) {
-                $hook = get_hook_ob('systems', 'cns_warnings', $prow['p_hook'], ('Hook_cns_warnings_' . $prow['p_hook']));
+                $hook = get_hook_ob('systems', 'cns_warnings', $prow['p_hook'], 'Hook_cns_warnings_');
                 if (method_exists($hook, 'generate_text') && ($hook->get_details() !== null)) {
                     $row_contents->attach('<br />' . $hook->generate_text($prow));
                 }

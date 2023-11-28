@@ -131,8 +131,19 @@ class Module_warnings extends Standard_crud_module
         }
 
         if ($type == 'undo_punitive_action') {
-            $this->title = get_screen_title('UNDO_PUNITIVE_ACTION', true, [strval(get_param_integer('id'))]); // TODO: add to language string
-            breadcrumb_set_self(do_lang_tempcode('PUNITIVE_ACTION_NUMBER', strval(get_param_integer('id')))); // TODO: add to language string
+            $this->title = get_screen_title('_UNDO_PUNITIVE_ACTION', true, [strval(post_param_integer('id'))]);
+            breadcrumb_set_self(do_lang_tempcode('PUNITIVE_ACTION_NUMBER', strval(post_param_integer('id'))));
+
+            $warning_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_warnings_punitive', 'p_warning_id', ['id' => post_param_integer('id')]);
+            if ($warning_id !== null) {
+                $member_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_warnings', 'w_member_id', ['id' => $warning_id]);
+                if ($member_id !== null) {
+                    $breadcrumbs = [['_SEARCH:members', do_lang_tempcode('MEMBERS')], ['_SEARCH:members:view:' . strval($member_id), $GLOBALS['FORUM_DRIVER']->get_username($member_id)], ['_SEARCH:warnings:history:' . strval($member_id), do_lang_tempcode('WARNINGS')], ['_SEARCH:warnings:view:' . strval($warning_id), do_lang_tempcode('WARNING_NUMBER', strval($warning_id))]];
+                } else {
+                    $breadcrumbs = [['_SEARCH:warnings:history', do_lang_tempcode('WARNINGS')]];
+                }
+                breadcrumb_set_parents($breadcrumbs);
+            }
         }
 
 
@@ -727,7 +738,7 @@ class Module_warnings extends Standard_crud_module
         foreach ($rows as $row) {
             $action = new Tempcode();
 
-            $hook = get_hook_ob('systems', 'cns_warnings', $row['p_hook'], ('Hook_cns_warnings_' . $row['p_hook']));
+            $hook = get_hook_ob('systems', 'cns_warnings', $row['p_hook'], 'Hook_cns_warnings_');
             if (method_exists($hook, 'generate_text') && ($hook->get_details() !== null)) {
                 $action->attach($hook->generate_text($row));
             }
@@ -736,7 +747,7 @@ class Module_warnings extends Standard_crud_module
             if ($row['p_reversed'] == 0) {
                 if (method_exists($hook, 'undo_punitive_action') && ($hook->get_details() !== null)) {
                     $_undoing_url = build_url(['page' => '_SELF', 'type' => 'undo_punitive_action'], '_SELF');
-                    $_undoing_link = div(hyperlink($_undoing_url, do_lang_tempcode('UNDO'), false, false, '', null, form_input_hidden('id', strval($row['id']))), '46t54yhrtghdfhdhdfg');
+                    $_undoing_link = hyperlink($_undoing_url, do_lang_tempcode('UNDO'), false, false, '', null, form_input_hidden('id', strval($row['id'])));
                     $action->attach(do_lang_tempcode('ACTION_LINK', $_undoing_link));
                 }
             } else {
@@ -780,14 +791,14 @@ class Module_warnings extends Standard_crud_module
         }
 
         // Get the associated warning
-        $rows = $GLOBALS['FORUM_DB']->query_select('f_warnings_punitive', ['*'], ['id' => $id]);
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_warnings', ['*'], ['id' => $punitive_action['p_warning_id']]);
         if (!array_key_exists(0, $rows)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
         $warning = $rows[0];
 
         // Run the actualiser from the appropriate warnings hook
-        $hook = get_hook_ob('systems', 'cns_warnings', $punitive_action['p_hook'], ('Hook_cns_warnings_' . $punitive_action['p_hook']));
+        $hook = get_hook_ob('systems', 'cns_warnings', $punitive_action['p_hook'], 'Hook_cns_warnings_');
         if (method_exists($hook, 'undo_punitive_action') && ($hook->get_details() !== null)) {
             $hook->undo_punitive_action($punitive_action, $warning);
         } else {

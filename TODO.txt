@@ -1,9 +1,11 @@
-modified cns_make_warning
-modified f_warnings
-added f_warnings_punitive
-
 redo warnings punitive hook
 
 TODO: Add punitive action for sending emails to the sites posted as links by the spammer if warning for spam. The punitive action field should be multiple brief lines (fixed to lines equal to number of links posted) where the person issuing the warning specifies the email addresses of each site (this will then send the PREPARE_EMAIL_BODY email to them from the site... set reply-to to the staff email address).
 
 TODO: Add punitive action which when checked erases the member's profile (all fields that the member can edit which are not critical [like username / password / email / etc]) and erases their avatar / photo / signature / title. (great for spamming).
+
+
+
+
+
+

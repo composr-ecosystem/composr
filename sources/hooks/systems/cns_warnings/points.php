@@ -121,10 +121,10 @@ class Hook_cns_warnings_points
                 'p_param_a' => strval($charged_points),
                 'p_param_b' => '',
                 'p_reversed' => 0,
-            ]);
+            ], true);
 
             // Note we pass false for sending notifications, which mean they only get sent to staff. The member will be 'notified' in the private topic message they receive, if they receive one.
-            points_debit_member($member_id, $explanation, $charged_points, 0, 1, false, 0, 'warning', 'add', strval($punitive_action_id));
+            points_debit_member($member_id, do_lang('WARNING_NUMBER', strval($warning_id)), $charged_points, 0, 1, false, 0, 'warning', 'add', strval($punitive_action_id), null, true);
 
             $punitive_messages[] = do_lang('PUNITIVE_CHARGE_POINTS', integer_format($charged_points), integer_format(points_balance($member_id)), null, null, false);
         }

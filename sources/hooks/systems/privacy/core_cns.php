@@ -390,7 +390,7 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                 break;
 
             case 'f_warnings_punitive':
-                $hook = get_hook_ob('systems', 'cns_warnings', $row['p_hook'], ('Hook_cns_warnings_' . $row['p_hook']));
+                $hook = get_hook_ob('systems', 'cns_warnings', $row['p_hook'], 'Hook_cns_warnings_');
                 if (method_exists($hook, 'generate_text') && ($hook->get_details() !== null)) {
                     $ret += [
                         'p_action__dereferenced' => $hook->generate_text($row),

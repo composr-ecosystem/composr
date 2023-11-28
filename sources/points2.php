@@ -71,9 +71,10 @@ function points_credit_member(int $member_id, string $reason, int $total_points,
  * @param  ID_TEXT $t_subtype An identifier to relate this transaction with other transactions of the same $type and $subtype (e.g. an action performed on the $type)
  * @param  ID_TEXT $t_type_id Some content or row ID of the specified $type
  * @param  ?TIME $time The time this transaction occurred (null: now)
+ * @param  boolean $force Whether to force this debit to occur even if the member does not have enough points
  * @return ?AUTO_LINK The ID of the point transaction (null: no transaction took place)
  */
-function points_debit_member(int $member_id, string $reason, int $total_points, ?int $amount_gift_points = 0, int $anonymous = 0, ?bool $send_notifications = true, int $locked = 0, string $t_type = '', string $t_subtype = '', string $t_type_id = '', ?int $time = null) : ?int
+function points_debit_member(int $member_id, string $reason, int $total_points, ?int $amount_gift_points = 0, int $anonymous = 0, ?bool $send_notifications = true, int $locked = 0, string $t_type = '', string $t_subtype = '', string $t_type_id = '', ?int $time = null, bool $force = false) : ?int
 {
     if (is_guest($member_id)) { // Disallow debiting from the system to the system; makes no sense
         return null;
@@ -82,7 +83,7 @@ function points_debit_member(int $member_id, string $reason, int $total_points, 
         return null;
     }
 
-    $id = points_transact($member_id, $GLOBALS['FORUM_DRIVER']->get_guest_id(), $reason, $total_points, $amount_gift_points, $anonymous, $send_notifications, $locked, $t_type, $t_subtype, $t_type_id, $time);
+    $id = points_transact($member_id, $GLOBALS['FORUM_DRIVER']->get_guest_id(), $reason, $total_points, $amount_gift_points, $anonymous, $send_notifications, $locked, $t_type, $t_subtype, $t_type_id, $time, $force);
 
     return $id;
 }
@@ -102,9 +103,10 @@ function points_debit_member(int $member_id, string $reason, int $total_points, 
  * @param  ID_TEXT $t_subtype An identifier to relate this transaction with other transactions of the same $type and $subtype (e.g. an action performed on the $type)
  * @param  ID_TEXT $t_type_id Some content or row ID of the specified $type
  * @param  ?TIME $time The time this transaction occurred (null: now)
+ * @param  boolean $force Whether to force this transaction to occur even if the sender does not have enough points
  * @return ?AUTO_LINK The ID of the transaction (null: a transaction was not created)
  */
-function points_transact(int $sender_id, int $recipient_id, string $reason, int $total_points, ?int $amount_gift_points = null, int $anonymous = 0, ?bool $send_notifications = true, int $locked = 0, string $t_type = '', string $t_subtype = '', string $t_type_id = '', ?int $time = null) : ?int
+function points_transact(int $sender_id, int $recipient_id, string $reason, int $total_points, ?int $amount_gift_points = null, int $anonymous = 0, ?bool $send_notifications = true, int $locked = 0, string $t_type = '', string $t_subtype = '', string $t_type_id = '', ?int $time = null, bool $force = false) : ?int
 {
     // Negative transactions are never allowed; 0 transactions are ignored.
     if ($total_points <= 0) {
@@ -117,7 +119,7 @@ function points_transact(int $sender_id, int $recipient_id, string $reason, int 
     }
 
     // Determine how the points will be divided between gift and regular based on a member's available balance
-    $points_to_process = _points_transact_calculate($sender_id, $total_points, $amount_gift_points);
+    $points_to_process = _points_transact_calculate($sender_id, $total_points, $amount_gift_points, $force);
     if ($points_to_process === null) {
         return null; // Not enough points to proceed
     }
@@ -130,7 +132,7 @@ function points_transact(int $sender_id, int $recipient_id, string $reason, int 
     $hook_obs = find_all_hook_obs('systems', 'points_transact', 'Hook_points_transact__');
     foreach ($hook_obs as $name => $hook_ob) {
         if (method_exists($hook_ob, 'points_transact')) {
-            $hook_ob->points_transact($id, $sender_id, $recipient_id, $reason, $total_points, $amount_gift_points, $anonymous, $send_notifications, $locked, $t_type, $t_subtype, $t_type_id, $time);
+            $hook_ob->points_transact($id, $sender_id, $recipient_id, $reason, $total_points, $amount_gift_points, $anonymous, $send_notifications, $locked, $t_type, $t_subtype, $t_type_id, $time, $force);
         }
     }
 
@@ -311,9 +313,10 @@ function _points_transact(int $sender_id, int $recipient_id, string $reason, int
  * @param  MEMBER $sender_id The ID of the member sending the points
  * @param  integer $total_points The total number of points to transact (includes gift points when applicable)
  * @param  ?integer $amount_gift_points The strict number of $total_points which should come from the sender's gift points (null: use what gift points the sender has available)
+ * @param  boolean $force Whether this transaction is being forced (true: this function will never return null)
  * @return ?array Duple containing the number of regular points (key 0) and number of gift points (key 1) that should be transacted from the sender (null: not enough points to satisfy the conditions specified)
  */
-function _points_transact_calculate(int $sender_id, int $total_points, ?int $amount_gift_points = null) : ?array
+function _points_transact_calculate(int $sender_id, int $total_points, ?int $amount_gift_points = null, bool $force = false) : ?array
 {
     $actual_points = $total_points;
     $actual_gift_points = ($amount_gift_points !== null) ? $amount_gift_points : 0;
@@ -324,7 +327,13 @@ function _points_transact_calculate(int $sender_id, int $total_points, ?int $amo
             if (($amount_gift_points === null) || ($amount_gift_points > 0)) {
                 $sender_gift_points_balance = gift_points_balance($sender_id);
                 if ($amount_gift_points !== null && $sender_gift_points_balance < $amount_gift_points) {
-                    return null; // Not enough points to proceed
+                    if (!$force) {
+                        return null; // Not enough points to proceed
+                    }
+
+                    // We are forcing the transaction; just take what we can from gift points and delegate the rest to regular points
+                    $actual_points += ($amount_gift_points - $sender_gift_points_balance);
+                    $actual_gift_points = $sender_gift_points_balance;
                 }
                 if ($amount_gift_points === null) {
                     $actual_gift_points = min($total_points, $sender_gift_points_balance);
@@ -333,14 +342,14 @@ function _points_transact_calculate(int $sender_id, int $total_points, ?int $amo
                 $actual_gift_points = 0;
             }
         }
-        $actual_points = $total_points - $actual_gift_points;
+        $actual_points -= $actual_gift_points;
     } else {
         $actual_points = $total_points;
         $actual_gift_points = 0;
     }
 
-    // Make sure the member has enough points for the rest
-    if (!is_guest($sender_id) && ($actual_points > 0)) { // If actual_points <=0, transaction should pass even if balance is <=0
+    // Make sure the member has enough points for the rest (unless we are forcing this transaction)
+    if (!$force && !is_guest($sender_id) && ($actual_points > 0)) { // If actual_points <=0, transaction should pass even if balance is <=0
         $points_balance = points_balance($sender_id);
         if ($points_balance < $actual_points) {
             return null; // Not enough points to proceed
