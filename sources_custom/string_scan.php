@@ -8424,6 +8424,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_ticket_mail_tags
         UNDO_PUNITIVE_ACTION
         _UNDO_PUNITIVE_ACTION
+        ARE_YOU_SURE_UNDO_PUNITIVE_ACTION
         PUNITIVE_ACTION_NUMBER
     ')));
 

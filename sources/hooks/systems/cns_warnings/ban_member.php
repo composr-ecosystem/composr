@@ -51,6 +51,8 @@ class Hook_cns_warnings_ban_member
             return '';
         }
 
+        require_lang('cns_warnings');
+
         $member = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_warnings', 'w_member_id', ['id' => $row['p_warning_id']]);
         if ($member !== null) {
             $member = $GLOBALS['FORUM_DRIVER']->get_username($member, true);

@@ -51,12 +51,14 @@ class Hook_cns_warnings_content
             return '';
         }
 
+        require_lang('cns_warnings');
+
         switch ($row['p_action']) {
             case '_PUNITIVE_DELETE_POST':
-                return do_lang('_PUNITIVE_DELETE_POST', null, $row['p_param_b']);
+                return do_lang('_PUNITIVE_DELETE_POST', $row['p_param_b']);
 
             case '_PUNITIVE_DELETE_POST_AND_FOLLOWING':
-                return do_lang('_PUNITIVE_DELETE_POST_AND_FOLLOWING', null, $row['p_param_b']);
+                return do_lang('_PUNITIVE_DELETE_POST_AND_FOLLOWING', $row['p_param_b']);
 
             case '_PUNITIVE_DELETE_CONTENT':
                 return do_lang('_PUNITIVE_DELETE_CONTENT', $row['p_param_a'], $row['p_param_b']);
@@ -208,7 +210,7 @@ class Hook_cns_warnings_content
                 }
                 $content_description = do_lang_tempcode('DESCRIPTION_DELETE_THIS', escape_html($content_title), escape_html(get_timezoned_date_time($content_timestamp)), [escape_html($content_url), $content_type_title]);
 
-                $_fields->attach(form_input_tick($content_title, $content_description, 'delete__' . $content_type . '_' . $content_id, $auto_selected));
+                $_fields->attach(form_input_tick(do_lang_tempcode('CONTENT_IS_OF_TYPE', $content_type_title, escape_html($content_title)), $content_description, 'delete__' . $content_type . '_' . $content_id, $auto_selected));
             }
         }
 
@@ -327,12 +329,12 @@ class Hook_cns_warnings_content
                                 'p_warning_id' => $warning_id,
                                 'p_hook' => 'content',
                                 'p_action' => '_PUNITIVE_DELETE_CONTENT',
-                                'p_param_a' => strval(do_lang($content_type_title)),
+                                'p_param_a' => strval($content_type_title),
                                 'p_param_b' => strval($content_title),
                                 'p_reversed' => 0,
                             ]);
 
-                            $punitive_messages[] = do_lang('PUNITIVE_DELETE_CONTENT', strval(do_lang($content_type_title)), strval($content_title), null, null, false);
+                            $punitive_messages[] = do_lang('PUNITIVE_DELETE_CONTENT', strval($content_type_title), strval($content_title), null, null, false);
 
                             $done_deleting = true;
                         }

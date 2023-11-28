@@ -51,6 +51,8 @@ class Hook_cns_warnings_syndicate
             return '';
         }
 
+        require_lang('cns_warnings');
+
         switch ($row['p_action']) {
             case '_PUNITIVE_STOP_FORUM_SPAM':
                 return do_lang('_PUNITIVE_STOP_FORUM_SPAM', $row['p_param_a'], $row['p_param_b']);

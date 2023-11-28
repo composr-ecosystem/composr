@@ -75,7 +75,7 @@ function find_member_content(int $member_id, int $max = 30) : array
 
         $content[] = [
             $ob->get_content_type_label($row),
-            $hook,
+            $row['content_type'],
             $content_id,
             $content_title,
             $content_url,

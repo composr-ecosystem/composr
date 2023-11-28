@@ -240,7 +240,7 @@ class Module_warnings extends Standard_crud_module
         $fields = new Tempcode();
 
         $post_id = get_param_integer('post_id', null);
-        $spam_mode = ($post_id !== null) ? 1 : 0;
+        $spam_mode = get_param_integer('spam', 0) == 1;
         $ip_address = ($post_id === null) ? null : $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_ip_address', ['id' => $post_id]);
 
         $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
@@ -678,6 +678,8 @@ class Module_warnings extends Standard_crud_module
         require_code('actionlog');
         require_code('cns_topics');
         require_code('templates_tooltip');
+        require_code('templates_map_table');
+        require_code('templates_columned_table');
 
         $fields = [];
 
@@ -710,26 +712,45 @@ class Module_warnings extends Standard_crud_module
         }
 
         // Action logs
-        $fields['VIEW_ACTIONLOGS'] = new Tempcode();
-        $rows = $GLOBALS['SITE_DB']->query_select('actionlogs', ['*'], ['warning_id' => $id]);
+        $view_actionlogs = [];
+        $_rows = $GLOBALS['SITE_DB']->query_select('actionlogs', ['*'], ['warning_id' => $id], ' ORDER BY date_and_time');
+        $_rows2 = $GLOBALS['FORUM_DB']->query_select('f_moderator_logs', ['l_reason AS reason', 'id', 'l_by AS member_id', 'l_date_and_time AS date_and_time', 'l_the_type AS the_type', 'l_param_a AS param_a', 'l_param_b AS param_b', 'l_warning_id AS warning_id'], ['l_warning_id' => $id], ' ORDER BY date_and_time');
+        $rows = array_merge($_rows, $_rows2);
+        sort_maps_by($rows, 'date_and_time');
+
         foreach ($rows as $_row) {
             if ($_row['the_type'] === 'PRIVATE_TOPIC') {
                 continue;
             }
-            $test = actionlog_linkage($_row, null, null, false);
-            if ($test !== null) {
-                $fields['VIEW_ACTIONLOGS']->attach($test[0]);
-            }
+
+            $by = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($_row['member_id'], '', false);
+
+            $mode = array_key_exists('reason', $_row) ? 'cns' : 'cms';
+            $url = build_url(['page' => 'admin_actionlog', 'type' => 'view', 'id' => $_row['id'], 'mode' => $mode], get_module_zone('admin_actionlog'));
+            $date = hyperlink($url, get_timezoned_date_time($_row['date_and_time']), false, true, '#' . strval($_row['id']), null, null, null, '_top');
+
+            $linkage = actionlog_linkage($_row, null, null, false);
+            $action = do_lang($_row['the_type'], $_row['param_a'], $_row['param_b'], null, null, false);
+            $view_actionlogs[] = [$by, $date, ($action !== null) ? $action : $_row['the_type'], ($linkage !== null) ? $linkage[0] : ''];
         }
-        $rows2 = $GLOBALS['FORUM_DB']->query_select('f_moderator_logs', ['l_reason AS reason', 'id', 'l_by AS member_id', 'l_date_and_time AS date_and_time', 'l_the_type AS the_type', 'l_param_a AS param_a', 'l_param_b AS param_b', 'l_warning_id AS warning_id'], ['l_warning_id' => $id]);
-        foreach ($rows2 as $_row2) {
-            $test = actionlog_linkage($_row2, null, null, false);
-            if ($test !== null) {
-                $fields['VIEW_ACTIONLOGS']->attach($test[0]);
-            }
-        }
-        if ($fields['VIEW_ACTIONLOGS']->is_empty()) {
+
+        if (count($view_actionlogs) == 0) {
             $fields['VIEW_ACTIONLOGS'] = do_lang_tempcode('NA_EM');
+        } else {
+            $header_row = columned_table_header_row([
+                do_lang('BY'),
+                do_lang('DATE_TIME'),
+                do_lang('ACTION'),
+                do_lang('DETAILS')
+            ]);
+
+            $table_rows = new Tempcode();
+            foreach ($view_actionlogs as $actionlogs) {
+                $table_rows->attach(columned_table_row($actionlogs, true));
+            }
+
+            require_lang('actionlog');
+            $fields['VIEW_ACTIONLOGS'] = do_template('COLUMNED_TABLE', ['HEADER_ROW' => $header_row, 'ROWS' => $table_rows, 'NONRESPONSIVE' => false]);
         }
 
         // Punitive actions
@@ -754,7 +775,7 @@ class Module_warnings extends Standard_crud_module
                 $action->attach(do_lang_tempcode('ACTION_LINK', do_lang('UNDONE')));
             }
 
-            $fields['PUNITIVE_ACTIONS']->attach($action);
+            $fields['PUNITIVE_ACTIONS']->attach(div($action));
         }
 
         if ($fields['PUNITIVE_ACTIONS']->is_empty()) {
@@ -765,7 +786,6 @@ class Module_warnings extends Standard_crud_module
         // Edit action
         $fields['ACTIONS']->attach(hyperlink(build_url(['page' => '_SELF', 'type' => '_edit', 'id' => $row['id'], 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF'), do_lang('EDIT'), false, true, ''));
 
-        require_code('templates_map_table');
         return map_table_screen($this->title, $fields, true, null, null, true);
     }
 
@@ -797,6 +817,31 @@ class Module_warnings extends Standard_crud_module
         }
         $warning = $rows[0];
 
+        // Confirm the action
+        $confirm = get_param_integer('confirm', 0);
+        if ($confirm == 0) {
+            $undo_action = strval($id);
+            $hook = get_hook_ob('systems', 'cns_warnings', $punitive_action['p_hook'], 'Hook_cns_warnings_');
+            if (method_exists($hook, 'generate_text') && ($hook->get_details() !== null)) {
+                $undo_action = $hook->generate_text($punitive_action);
+            }
+
+            $member = $GLOBALS['FORUM_DRIVER']->get_username($warning['w_member_id']);
+
+            $preview = do_lang_tempcode('ARE_YOU_SURE_UNDO_PUNITIVE_ACTION', escape_html($undo_action), escape_html($member));
+            return do_template('CONFIRM_SCREEN', [
+                'TITLE' => $this->title,
+                'PREVIEW' => $preview,
+                'URL' => get_self_url(false, false, ['confirm' => 1]),
+                'FIELDS' => build_keep_post_fields(),
+            ]);
+        }
+
+        require_code('global4');
+
+        // Action log entries created from our hooks should be associated with this warning
+        set_related_warning_id($warning['id']);
+
         // Run the actualiser from the appropriate warnings hook
         $hook = get_hook_ob('systems', 'cns_warnings', $punitive_action['p_hook'], 'Hook_cns_warnings_');
         if (method_exists($hook, 'undo_punitive_action') && ($hook->get_details() !== null)) {
@@ -805,11 +850,13 @@ class Module_warnings extends Standard_crud_module
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
 
+        set_related_warning_id(null);
+
         // Mark punitive action as reversed
         $GLOBALS['FORUM_DB']->query_update('f_warnings_punitive', ['p_reversed' => 1], ['id' => $id]);
 
         // Show it worked / Refresh
-        $url = build_url(['page' => '_SELF', 'type' => 'history', 'id' => $warning['w_member_id']], '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => 'view', 'id' => $warning['id'], 'member_id' => $warning['w_member_id']], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 }

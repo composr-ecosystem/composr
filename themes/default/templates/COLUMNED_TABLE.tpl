@@ -1,7 +1,10 @@
 <table class="columned-table wide-table results-table autosized-table{+START,IF,{$NOT,{NONRESPONSIVE}}} responsive-table{+END}">
-	<thead>
-		{HEADER_ROW}
-	</thead>
+	{+START,IF_PASSED,HEADER_ROW}
+		<thead>
+			{HEADER_ROW}
+		</thead>
+	{+END}
+
 	<tbody>
 		{ROWS}
 	</tbody>

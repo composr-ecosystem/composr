@@ -51,6 +51,8 @@ class Hook_cns_warnings_silencing
             return '';
         }
 
+        require_lang('cns_warnings');
+
         switch ($row['p_action']) {
             case '_PUNITIVE_SILENCE_FROM_FORUM':
                 $silence_from_forum_title = '#' . strval($row['p_param_a']);
@@ -64,11 +66,11 @@ class Hook_cns_warnings_silencing
                 return do_lang('_PUNITIVE_SILENCE_FROM_FORUM', $silence_from_forum_title, ' ' . do_lang('PUNITIVE_SILENCED_UNTIL', $silence_until));
 
             case '_PUNITIVE_SILENCE_FROM_TOPIC':
-                $silence_from_topic_title = '#' . strval($row['p_silence_from_topic']);
+                $silence_from_topic_title = '#' . strval($row['p_param_a']);
                 if (get_forum_type() == 'cns') {
-                    $silence_from_topic_title = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_cache_first_title', ['id' => $row['p_silence_from_topic']]);
+                    $silence_from_topic_title = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_cache_first_title', ['id' => $row['p_param_a']]);
                     if ($silence_from_topic_title === null) {
-                        $silence_from_topic_title = '#' . strval($row['p_silence_from_topic']);
+                        $silence_from_topic_title = '#' . strval($row['p_param_a']);
                     }
                 }
                 $silence_until = get_timezoned_date_time(intval($row['p_param_b']));
@@ -256,7 +258,7 @@ class Hook_cns_warnings_silencing
                 'p_hook' => 'silencing',
                 'p_action' => '_PUNITIVE_SILENCE_FROM_FORUM',
                 'p_param_a' => strval($silence_from_forum),
-                'p_param_b' => strval(get_timezoned_date_time($_silence_from_forum, false, false, $member_id)),
+                'p_param_b' => strval($_silence_from_forum),
                 'p_reversed' => 0,
             ]);
 

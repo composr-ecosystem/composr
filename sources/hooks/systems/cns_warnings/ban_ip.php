@@ -51,6 +51,8 @@ class Hook_cns_warnings_ban_ip
             return '';
         }
 
+        require_lang('cns_warnings');
+
         switch ($row['p_action']) {
             case '_PUNITIVE_IP_BANNED':
                 return do_lang('_PUNITIVE_IP_BANNED', $row['p_param_a']);

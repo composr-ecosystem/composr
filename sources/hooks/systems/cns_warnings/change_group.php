@@ -34,7 +34,7 @@ class Hook_cns_warnings_change_group
             return null;
         }
 
-        if (!get_forum_type() != 'cns') {
+        if (get_forum_type() != 'cns') {
             return null;
         }
 
@@ -55,9 +55,11 @@ class Hook_cns_warnings_change_group
             return '';
         }
 
-        if (!get_forum_type() != 'cns') {
+        if (get_forum_type() != 'cns') {
             return '';
         }
+
+        require_lang('cns_warnings');
 
         switch ($row['p_action']) {
             case '_PUNITIVE_CHANGE_USERGROUP':
@@ -91,7 +93,7 @@ class Hook_cns_warnings_change_group
             return;
         }
 
-        if (!get_forum_type() != 'cns') {
+        if (get_forum_type() != 'cns') {
             return '';
         }
 
@@ -130,7 +132,7 @@ class Hook_cns_warnings_change_group
             return;
         }
 
-        if (!get_forum_type() != 'cns') {
+        if (get_forum_type() != 'cns') {
             return '';
         }
 

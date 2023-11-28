@@ -51,6 +51,8 @@ class Hook_cns_warnings_points
             return '';
         }
 
+        require_lang('cns_warnings');
+
         switch ($row['p_action']) {
             case '_PUNITIVE_CHARGE_POINTS':
                 return do_lang('_PUNITIVE_CHARGE_POINTS', integer_format(intval($row['p_param_a'])));
