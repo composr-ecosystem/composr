@@ -104,7 +104,7 @@ function cns_may_warn_members(?int $member_id = null) : bool
 }
 
 /**
- * Get all the warning rows for a certain member.
+ * Get all the warning and warnings_punitive rows for a certain member.
  *
  * @param  MEMBER $member_id The member
  * @return array The warning rows
@@ -115,5 +115,13 @@ function cns_get_warnings(int $member_id) : array
         return [];
     }
 
-    return $GLOBALS['FORUM_DB']->query_select('f_warnings', ['*'], ['w_member_id' => $member_id, 'w_is_warning' => 1], 'ORDER BY w_time');
+    // Get warnings
+    $warnings = $GLOBALS['FORUM_DB']->query_select('f_warnings', ['*'], ['w_member_id' => $member_id, 'w_is_warning' => 1], 'ORDER BY w_time');
+
+    // Load in punitive actions via the 'punitive' key of each warning
+    foreach ($warnings as $i => $warning) {
+        $warnings[$i]['punitive'] = $GLOBALS['FORUM_DB']->query_select('f_warnings_punitive', ['*'], ['p_warning_id' => $warning['id']], '');
+    }
+
+    return $warnings;
 }

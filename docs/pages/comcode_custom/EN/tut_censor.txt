@@ -78,6 +78,8 @@ The warnings form consists of the following options that can be utilised to easi
   - [b]Save explanatory details[/b]: If you want to save what you wrote in the "Reason" and "Message" fields for later use, you can provide a name here. The next time you want to use it, click the "Load an explanation/message" link at the top of the "Explanatory Text" section to pre-populate a saved reason and message.
   - [b]Include punitive actions in message[/b]: Auto-generate information about what punitive actions you are taking for the Private Topic sent to the member. This is beneficial so you do not have to write them yourself in the message. But it also allows you to better manage saved reasons / messages; you can re-use a saved reason / message without having to edit it for the punitive actions you are taking now.
 
+It is possible for other addons to hook into the warnings system via [tt]hooks/systems/cns_warnings[/tt] to add additional types of punitive actions that can be taken. See the existing hooks for examples on how to achieve this.
+
 A note about Private Topics sent for warnings: A private topic will not get sent to the member for their warning if nothing is written in the "Message" field and "Include punitive actions in message" is unticked (unchecked). Also, if "Message" is blank but "Include punitive actions in message" is ticked (checked), a private topic will get sent, but it will only contain the punitive actions taken.
 
 [title="3"]Probation[/title]

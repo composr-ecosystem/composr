@@ -216,9 +216,18 @@ function cns_may_post_topic(?int $forum_id, ?int $member_id = null) : bool
         return false;
     }
 
-    $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_warnings', 'id', ['p_silence_from_forum' => $forum_id, 'w_member_id' => $member_id]);
-    if ($test !== null) {
-        return false;
+    // TODO: Check if this will actually work considering these are timed
+    $warning_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_warnings', 'id', ['w_member_id' => $member_id]);
+    if ($warning_id !== null) {
+        $punitive_action = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_warnings_punitive', 'id', [
+            'p_warning_id' => $warning_id,
+            'p_action' => '_PUNITIVE_SILENCE_FROM_FORUM',
+            'p_param_a' => strval($forum_id),
+            'p_reversed' => 0,
+        ]);
+        if ($punitive_action !== null) {
+            return false;
+        }
     }
 
     return true;

@@ -138,7 +138,7 @@ class Hook_import_cms_merge
            'cns_polls_and_votes' => ['cns_topics', 'cns_posts', 'cns_members'],
            'cns_posts' => ['custom_comcode', 'cns_topics', 'cns_members', 'attachments', 'catalogues'],
            'cns_post_templates' => ['cns_forums'],
-           'cns_warnings' => ['cns_members', 'cns_groups', 'cns_topics', 'cns_forums'],
+           'cns_warnings' => ['cns_members', 'cns_groups', 'cns_topics', 'cns_forums', 'cns_posts'],
            'newsletter_subscriptions' => ['attachments'],
            'support_tickets' => ['cns_forums', 'cns_topics', 'cns_members'],
            'awards' => ['calendar', 'wiki', 'news_and_categories', 'images_and_galleries', 'catalogues', 'authors', 'cns_topics', 'cns_posts', 'cns_forums', 'cns_groups', 'cns_members', 'downloads_and_categories'],
@@ -3816,6 +3816,7 @@ class Hook_import_cms_merge
             return;
         }
 
+        // Start with the warnings themselves
         $rows = $db->query_select('f_warnings', ['*']);
         $this->_fix_comcode_ownership($rows);
         foreach ($rows as $row) {
@@ -3828,22 +3829,61 @@ class Hook_import_cms_merge
                 $by = $GLOBALS['FORUM_DRIVER']->get_guest_id();
             }
 
-            $silence_from_topic = import_id_remap_get('topic', strval($row['w_silence_from_topic']), true);
-            if ($silence_from_topic === null) {
-                $silence_from_topic = null;
+            $warning_id = cns_make_warning($member_id, $row['w_explanation'], $by, $row['w_time'], $row['w_is_warning']);
+            import_id_remap_put('warnings', strval($row['id']), $warning_id);
+        }
+
+        // Now migrate the punitive action logs
+        $rows = $db->query_select('f_warnings_punitive', ['*']);
+        $this->_fix_comcode_ownership($rows);
+        foreach ($rows as $row) {
+            $warning_id = import_id_remap_get('warnings', strval($row['p_warning_id']), true);
+            if ($warning_id === null) {
+                continue;
             }
 
-            $silence_from_forum = import_id_remap_get('forum', strval($row['w_silence_from_forum']), true);
-            if ($silence_from_forum === null) {
-                $silence_from_forum = null;
+            // Special considerations for ID remapping
+            $p_param_a = $row['p_param_a'];
+            if ($p_param_a !== '') {
+                switch ($row['p_action']) {
+                    case '_PUNITIVE_SILENCE_FROM_FORUM':
+                        $p_param_a = import_id_remap_get('forum', $p_param_a, true);
+                        break;
+                    case '_PUNITIVE_SILENCE_FROM_TOPIC':
+                        $p_param_a = import_id_remap_get('topic', $p_param_a, true);
+                        break;
+                    case '_PUNITIVE_CHANGE_USERGROUP':
+                        $p_param_a = import_id_remap_get('group', $p_param_a, true);
+                        break;
+                    case '_PUNITIVE_DELETE_POST':
+                    case '_PUNITIVE_DELETE_POST_AND_FOLLOWING':
+                        $p_param_a = import_id_remap_get('post', $p_param_a, true);
+                        break;
+                }
+                if ($p_param_a === null) {
+                    continue;
+                }
+            }
+            $p_param_b = $row['p_param_b'];
+            if ($p_param_b !== '') {
+                switch ($row['p_action']) {
+                    case '_PUNITIVE_CHANGE_USERGROUP':
+                        $p_param_b = import_id_remap_get('group', $p_param_b, true);
+                        break;
+                }
+                if ($p_param_b === null) {
+                    continue;
+                }
             }
 
-            $changed_usergroup_to = import_id_remap_get('group', strval($row['w_changed_usergroup_to']), true);
-            if ($changed_usergroup_to === null) {
-                $changed_usergroup_to = null;
-            }
-
-            cns_make_warning($member_id, $row['w_explanation'], $by, $row['w_time'], $row['w_is_warning'], $silence_from_topic, $silence_from_forum, $row['w_probation'], $row['w_banned_ip'], $row['w_charged_points'], $row['w_banned_member'], $changed_usergroup_to);
+            $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
+                'p_warning_id' => $warning_id,
+                'p_hook' => $row['p_hook'],
+                'p_action' => $row['p_action'],
+                'p_param_a' => ($p_param_a === null) ? '' : strval($p_param_a),
+                'p_param_b' => ($p_param_b === null) ? '' : strval($p_param_b),
+                'p_reversed' => $row['p_reversed'],
+            ]);
         }
     }
 

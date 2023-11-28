@@ -97,11 +97,12 @@ function cns_may_post_in_topic(?int $forum_id, int $topic_id, ?int $last_member_
         return false;
     }
 
-    $sql = 'SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_warnings WHERE (p_silence_from_topic=' . strval($topic_id);
+    // TODO: Check if this will actually work considering these are timed
+    $sql = 'SELECT p_warning_id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_warnings_punitive p RIGHT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_warnings w ON w.id=p.p_warning_id WHERE ((' . db_string_equal_to('p.p_action', '_PUNITIVE_SILENCE_FROM_TOPIC') . ' AND ' . db_string_equal_to('p.p_param_a', strval($topic_id)) . ')';
     if ($forum_id !== null) {
-        $sql .= ' OR p_silence_from_forum=' . strval($forum_id);
+        $sql .= ' OR (' . db_string_equal_to('p.p_action', '_PUNITIVE_SILENCE_FROM_FORUM') . ' AND ' . db_string_equal_to('p.p_param_a', strval($forum_id)) . ')';
     }
-    $sql .= ') AND w_member_id=' . strval($member_id);
+    $sql .= ') AND p.p_reversed=0 AND w.w_member_id=' . strval($member_id);
     $test = $GLOBALS['FORUM_DB']->query_value_if_there($sql, false, true);
     if ($test !== null) {
         return false;

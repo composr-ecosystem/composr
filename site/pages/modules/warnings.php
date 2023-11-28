@@ -130,6 +130,24 @@ class Module_warnings extends Standard_crud_module
             }
         }
 
+        if ($type == 'undo_punitive_action') {
+            $this->title = get_screen_title('_UNDO_PUNITIVE_ACTION', true, [strval(post_param_integer('id'))]);
+            breadcrumb_set_self(do_lang_tempcode('PUNITIVE_ACTION_NUMBER', strval(post_param_integer('id'))));
+
+            $warning_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_warnings_punitive', 'p_warning_id', ['id' => post_param_integer('id')]);
+            if ($warning_id !== null) {
+                $member_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_warnings', 'w_member_id', ['id' => $warning_id]);
+                if ($member_id !== null) {
+                    $breadcrumbs = [['_SEARCH:members', do_lang_tempcode('MEMBERS')], ['_SEARCH:members:view:' . strval($member_id), $GLOBALS['FORUM_DRIVER']->get_username($member_id)], ['_SEARCH:warnings:history:' . strval($member_id), do_lang_tempcode('WARNINGS')], ['_SEARCH:warnings:view:' . strval($warning_id), do_lang_tempcode('WARNING_NUMBER', strval($warning_id))]];
+                } else {
+                    $breadcrumbs = [['_SEARCH:warnings:history', do_lang_tempcode('WARNINGS')]];
+                }
+                breadcrumb_set_parents($breadcrumbs);
+            }
+        }
+
+
+        /* TODO: Remove these language strings?
         if ($type == 'undo_group_change') {
             $this->title = get_screen_title('UNDO_GROUP_CHANGE');
         }
@@ -158,6 +176,7 @@ class Module_warnings extends Standard_crud_module
         if ($type == 'undo_silence_from_forum') {
             $this->title = get_screen_title('UNSILENCE_FORUM');
         }
+        */
 
         return parent::pre_run($top_level);
     }
@@ -185,26 +204,8 @@ class Module_warnings extends Standard_crud_module
             return $this->view();
         }
 
-        if ($type == 'undo_group_change') {
-            return $this->undo_group_change();
-        }
-        if ($type == 'undo_charge') {
-            return $this->undo_charge();
-        }
-        if ($type == 'undo_probation') {
-            return $this->undo_probation();
-        }
-        if ($type == 'undo_banned_ip') {
-            return $this->undo_banned_ip();
-        }
-        if ($type == 'undo_banned_member') {
-            return $this->undo_banned_member();
-        }
-        if ($type == 'undo_silence_from_topic') {
-            return $this->undo_silence_from_topic();
-        }
-        if ($type == 'undo_silence_from_forum') {
-            return $this->undo_silence_from_forum();
+        if ($type == 'undo_punitive_action') {
+            return $this->undo_punitive_action();
         }
 
         return new Tempcode();
@@ -231,8 +232,6 @@ class Module_warnings extends Standard_crud_module
      */
     public function get_form_fields(bool $new = true, string $explanation = '', int $is_warning = 1, ?int $member_id = null) : array
     {
-        $spam_mode = (get_param_integer('spam', 0) == 1);
-
         if ($member_id === null) {
             $member_id = get_param_integer('member_id', get_member());
         }
@@ -241,6 +240,7 @@ class Module_warnings extends Standard_crud_module
         $fields = new Tempcode();
 
         $post_id = get_param_integer('post_id', null);
+        $spam_mode = get_param_integer('spam', 0) == 1;
         $ip_address = ($post_id === null) ? null : $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_ip_address', ['id' => $post_id]);
 
         $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
@@ -265,11 +265,8 @@ class Module_warnings extends Standard_crud_module
         // Information about their history, and the rules - to educate the warner/punisher
         if ($new) {
             $hidden->attach(form_input_hidden('member_id', strval($member_id)));
-
             $this->add_text = do_lang_tempcode('WARNINGS_FORM', escape_html($username), escape_html(integer_format($num_warnings, 0)), [escape_html(get_site_name()), escape_html($rules_url), escape_html($history_url), escape_html($lookup_url)]);
         }
-
-        // Warnings...
 
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', [
             '_GUID' => '740461f4702d617aee5ecf46eb7d1af6',
@@ -277,230 +274,39 @@ class Module_warnings extends Standard_crud_module
             'HELP' => do_lang_tempcode('HAS_ALREADY_X_WARNINGS', escape_html($username), escape_html(integer_format($num_warnings, 0)), [escape_html(get_site_name()), escape_html($rules_url), escape_html($history_url), escape_html($lookup_url)]),
         ]));
 
+        // Add warning type field
         $warning_radios = new Tempcode();
         $warning_radios->attach(form_input_radio_entry('is_warning', '1', $is_warning === 1, do_lang_tempcode('WARNING_FORMAL'), 0));
         $warning_radios->attach(form_input_radio_entry('is_warning', '0', $is_warning === 0, do_lang_tempcode('WARNING_OFF_THE_BOOK'), 0));
         $fields->attach(form_input_radio(do_lang_tempcode('WARNING_TYPE'), do_lang_tempcode('DESCRIPTION_WARNING_TYPE'), 'is_warning', $warning_radios, true));
 
+        // Add separator for punitive actions
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '322a026b7a56a3e4e9ac58e4979add35', 'TITLE' => do_lang_tempcode('PUNITIVE_ACTIONS')]));
 
-        // Punitive actions...
+        $hooks = find_all_hook_obs('systems', 'cns_warnings', 'Hook_cns_warnings_');
 
-        if ($new) {
-            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '322a026b7a56a3e4e9ac58e4979add35', 'TITLE' => do_lang_tempcode('PUNITIVE_ACTIONS')]));
-
-            define('POST_STANDALONE_AT_END', 0);
-            define('POST_STANDALONE_IN_MIDDLE', 1);
-            define('POST_AS_TOPIC_FULL', 2);
-            define('POST_AS_TOPIC_STARTER', 3);
-
-            $posts_deletable = [];
-            if (has_delete_permission('mid', get_member(), $member_id, 'topics')) {
-                $first_post_time = $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'MIN(p_time)', ['p_poster' => $member_id]);
-                if (
-                    (($GLOBALS['DEV_MODE']) || ($first_post_time > time() - 60 * 60 * 24 * 14)) && // i.e. a recent spammer, not a normal member being punished
-                    ((!is_guest($member_id)) || ($ip_address !== null))
-                ) {
-                    $where = [];
-                    if (is_guest($member_id)) {
-                        $where['p_ip_address'] = $ip_address;
-                    } else {
-                        $where['p_poster'] = $member_id;
-                    }
-                    $sup = 'ORDER BY p_time DESC';
-                    if (!has_privilege(get_member(), 'view_other_pt')) {
-                        $sup = ' AND p_cache_forum_id IS NOT NULL ' . $sup;
-                    }
-                    $posts_by_member = $GLOBALS['FORUM_DB']->query_select('f_posts p JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics t ON t.id=p.p_topic_id', ['p.*', 't_cache_first_post_id', 't_cache_last_post_id', 't_cache_num_posts', 't_cache_first_title', 'p_cache_forum_id'], $where, $sup, 10);
-                    $spam_urls = [];
-                    foreach ($posts_by_member as $post) {
-                        $just_post_row = db_map_restrict($post, ['id', 'p_post'], ['id' => 'p_id']);
-                        $post_text = get_translated_tempcode('f_posts', $just_post_row, 'p_post', $GLOBALS['FORUM_DB']);
-                        $matches = [];
-                        $num_matches = preg_match_all('#<a\s[^<>]*href=["\']([^"\']*)["\']#', $post_text->evaluate(), $matches);
-                        for ($i = 0; $i < $num_matches; $i++) {
-                            $spam_url = $matches[1][$i];
-                            if (!url_is_local($spam_url)) {
-                                $domain = cms_parse_url_safe(normalise_idn_url($spam_url), PHP_URL_HOST);
-                                if (($domain != get_domain()) && (!empty($domain))) {
-                                    if (!isset($spam_urls[$domain])) {
-                                        require_code('mail');
-                                        $ip = cms_gethostbyname($domain);
-                                        $spam_urls[$domain] = ['DOMAIN' => $domain, 'IP' => $ip, 'URLS' => [], 'POSTS' => []];
-                                    }
-                                    if (!isset($spam_urls[$domain]['URLS'][$spam_url])) {
-                                        $spam_urls[$domain]['URLS'][$spam_url] = ['I' => strval(count($spam_urls[$domain]['URLS'])), 'URL' => $spam_url];
-                                    }
-                                    if (!isset($spam_urls[$domain]['POSTS'][$post['id']])) {
-                                        $spam_urls[$domain]['POSTS'][$post['id']] = ['I' => strval(count($spam_urls[$domain]['POSTS'])), 'POST_TITLE' => $post['p_title'], 'POST' => strip_html($post_text->evaluate())];
-                                    }
-                                }
-                            }
-                        }
-
-                        if ($post['t_cache_first_post_id'] == $post['id']) {
-                            if ($post['t_cache_num_posts'] == 1) {
-                                $post_context = POST_AS_TOPIC_STARTER;
-                            } else {
-                                $post_context = POST_AS_TOPIC_FULL;
-                            }
-                        } else {
-                            if ($post['t_cache_last_post_id'] == $post['id']) {
-                                $post_context = POST_STANDALONE_AT_END;
-                            } else {
-                                $post_context = POST_STANDALONE_IN_MIDDLE;
-                            }
-                        }
-                        $posts_deletable[$post['id']] = [$post_context, $post['id'], $post['p_topic_id'], $post['t_cache_first_title'], $post['p_time'], $post['p_cache_forum_id']];
-                    }
-                    if (!empty($spam_urls)) {
-                        $this->add_text->attach(paragraph(do_template('CNS_WARN_SPAM_URLS', ['_GUID' => '54bf9592bb5cf793370ff4b38fff92a6', 'USERNAME' => $username, 'SPAM_URLS' => $spam_urls])));
-                    }
+        // Order our hooks so fields display in the order we want
+        $ordered_hooks = [];
+        $unordered_hooks = [];
+        foreach ($hooks as $hook_ob) {
+            if (method_exists($hook_ob, 'get_form_fields')) {
+                $info = $hook_ob->get_details();
+                if ($info === null) {
+                    continue;
                 }
-            }
-
-            if (addon_installed('securitylogging')) {
-                if (has_actual_page_access(get_member(), 'admin_ip_ban')) {
-                    $already_banned_ip = ip_banned($GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_ip_address'));
-                    $fields->attach(form_input_tick(do_lang_tempcode('WHETHER_BANNED_IP'), do_lang_tempcode('DESCRIPTION_WHETHER_BANNED_IP'), 'banned_ip', $spam_mode || $already_banned_ip, null, '1', false, $already_banned_ip));
-                }
-
-                if ((get_option('stopforumspam_api_key') != '') || (get_option('spam_use_tornevall') == '1')) {
-                    require_lang('submitban');
-                    $fields->attach(form_input_tick(do_lang_tempcode('SYNDICATE_TO_STOPFORUMSPAM'), do_lang_tempcode('DESCRIPTION_SYNDICATE_TO_STOPFORUMSPAM'), 'stopforumspam', $spam_mode));
-                }
-            }
-
-            if (has_privilege(get_member(), 'member_maintenance')) {
-                $already_banned = ($GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_is_perm_banned') != '0');
-
-                require_code('input_filter');
-                list(, $reasoned_bans) = load_advanced_banning();
-                if ((empty($reasoned_bans)) || ($already_banned)) {
-                    $fields->attach(form_input_tick(do_lang_tempcode('BAN_MEMBER'), do_lang_tempcode('DESCRIPTION_BANNED_MEMBER'), 'banned_member', $spam_mode || $already_banned, null, '1', false, $already_banned));
+                if (isset($info['order'])) {
+                    $ordered_hooks[$info['order']] = $hook_ob;
                 } else {
-                    $reasoned_bans_list = new Tempcode();
-                    $reasoned_bans_list->attach(form_input_list_entry('0', !$spam_mode, do_lang_tempcode('NO')));
-                    $reasoned_bans_list->attach(form_input_list_entry('1', $spam_mode, do_lang_tempcode('YES')));
-                    foreach (array_keys($reasoned_bans) as $reasoned_ban) {
-                        $reasoned_bans_list->attach(form_input_list_entry($reasoned_ban));
-                    }
-                    $fields->attach(form_input_list(do_lang_tempcode('BAN_MEMBER'), do_lang_tempcode('DESCRIPTION_BANNED_MEMBER'), 'banned_member', $reasoned_bans_list, null, false, false));
-                }
-            }
-
-            if ((has_privilege(get_member(), 'member_maintenance')) && (has_privilege(get_member(), 'assume_any_member'))) {
-                $rows = $GLOBALS['FORUM_DB']->query_select('f_groups', ['id', 'g_name'], ['g_is_private_club' => 0]);
-                $groups = new Tempcode();
-                $groups->attach(form_input_list_entry('', false, do_lang_tempcode('NA_EM')));
-                $current_group_id = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_primary_group');
-                foreach ($rows as $group) {
-                    if (($group['id'] != db_get_first_id()) && ($group['id'] != $current_group_id)) {
-                        $groups->attach(form_input_list_entry(strval($group['id']), false, get_translated_text($group['g_name'], $GLOBALS['FORUM_DB'])));
-                    }
-                }
-                $fields->attach(form_input_list(do_lang_tempcode('CHANGE_USERGROUP_TO'), do_lang_tempcode('DESCRIPTION_CHANGE_USERGROUP_TO'), 'changed_usergroup_to', $groups, null, false, false));
-            }
-
-            if (($post_id !== null) && (!$spam_mode)) {
-                $topic_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_topic_id', ['id' => $post_id]);
-                if ($topic_id !== null) {
-                    $forum_id = $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_forum_id', ['id' => $topic_id]);
-                    $hidden->attach(form_input_hidden('topic_id', strval($topic_id)));
-                    $hidden->attach(form_input_hidden('forum_id', strval($forum_id)));
-                    $silence_topic_time = null;//time() + 60 * 60 * 24 * 7;
-                    $silence_forum_time = null;//time() + 60 * 60 * 24 * 7;
-                    $active_until = $GLOBALS['FORUM_DB']->query_select_value_if_there('member_privileges', 'active_until', [
-                        'member_id' => $member_id,
-                        'privilege' => 'submit_lowrange_content',
-                        'the_page' => '',
-                        'module_the_name' => 'topics',
-                        'category_name' => strval($topic_id),
-                    ]);
-                    if ($active_until !== null) {
-                        $silence_topic_time = $active_until;
-                    }
-                    $active_until = $GLOBALS['FORUM_DB']->query_select_value_if_there('member_privileges', 'active_until', [
-                        'member_id' => $member_id,
-                        'privilege' => 'submit_lowrange_content',
-                        'the_page' => '',
-                        'module_the_name' => 'forums',
-                        'category_name' => strval($forum_id),
-                    ]);
-                    if ($active_until !== null) {
-                        $silence_forum_time = $active_until;
-                    }
-                    $fields->attach(form_input_date(do_lang_tempcode('SILENCE_FROM_TOPIC'), do_lang_tempcode('DESCRIPTION_SILENCE_FROM_TOPIC'), 'silence_from_topic', false, true, true, $silence_topic_time, 2));
-                    $fields->attach(form_input_date(do_lang_tempcode('SILENCE_FROM_FORUM'), do_lang_tempcode('DESCRIPTION_SILENCE_FROM_FORUM'), 'silence_from_forum', false, true, true, $silence_forum_time, 2));
-                }
-            }
-
-            if (has_privilege(get_member(), 'probate_members')) {
-                $fields->attach(form_input_integer(do_lang_tempcode('EXTEND_PROBATION'), do_lang_tempcode('DESCRIPTION_EXTEND_PROBATION'), 'probation', 0, true));
-            }
-
-            if (addon_installed('points')) {
-                if (has_privilege(get_member(), 'moderate_points')) {
-                    require_code('points');
-                    $num_points_currently = points_balance($member_id);
-                    $fields->attach(form_input_integer(do_lang_tempcode('CHARGED_POINTS'), do_lang_tempcode('DESCRIPTION_CHARGED_POINTS', escape_html(integer_format($num_points_currently, 0))), 'charged_points', 0, true));
+                    $unordered_hooks[] = $hook_ob;
                 }
             }
         }
+        ksort($ordered_hooks, SORT_NUMERIC);
+        $ordered_hooks = array_merge($ordered_hooks, $unordered_hooks);
 
-        // Moderation actions
-        if ($new) {
-            $description = do_lang_tempcode('DESCRIPTION_DELETE_CONTENT');
-            if (addon_installed('points')) {
-                $description->attach(do_lang_tempcode('DESCRIPTION_DELETE_CONTENT_SUP_POINTS'));
-            }
-            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'c7eb70b13be74d8f3bd1f1c5e739d9ab', 'TITLE' => do_lang_tempcode('DELETE'), 'HELP' => $description]));
-
-            foreach ($posts_deletable as $_post_id => $_post_deletable) {
-                list($post_context, $_post_id, $topic_id, $topic_title, $post_time, $forum_id) = $_post_deletable;
-                $post_url = $GLOBALS['FORUM_DRIVER']->post_url($_post_id, $forum_id, true);
-
-                $list_options = new Tempcode();
-                $list_options->attach(form_input_list_entry('', !$spam_mode, do_lang_tempcode('HANDLE_POST__NOTHING')));
-                switch ($post_context) {
-                    case POST_STANDALONE_AT_END:
-                        $handle_label = do_lang_tempcode('HANDLE_POST__POST_STANDALONE_AT_END', escape_html($topic_title), escape_html(strval($_post_id)), [escape_html(strval($topic_id)), escape_html($post_url->evaluate())]);
-                        $list_options->attach(form_input_list_entry('delete_post', $spam_mode, do_lang_tempcode('HANDLE_POST__DELETE_POST', escape_html($topic_title), escape_html(strval($_post_id)), [escape_html(strval($topic_id)), escape_html($post_url->evaluate())])));
-                        break;
-
-                    case POST_STANDALONE_IN_MIDDLE:
-                        $num_replies = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_topic_id=' . strval($topic_id) . ' AND p_time>' . strval($post_time));
-                        $handle_label = do_lang_tempcode('HANDLE_POST__POST_STANDALONE_IN_MIDDLE', escape_html($topic_title), escape_html(strval($_post_id)), [escape_html(strval($topic_id)), escape_html($post_url->evaluate()), escape_html(integer_format($num_replies, 0))]);
-                        $list_options->attach(form_input_list_entry('delete_post', $spam_mode, do_lang_tempcode('HANDLE_POST__DELETE_POST_WITH_GAP', escape_html($topic_title), escape_html(strval($_post_id)), [escape_html(strval($topic_id)), escape_html($post_url->evaluate()), escape_html(integer_format($num_replies, 0))])));
-                        $list_options->attach(form_input_list_entry('delete_post_and_following', false, do_lang_tempcode('HANDLE_POST__DELETE_POST_AND_FOLLOWING', escape_html($topic_title), escape_html(strval($_post_id)), [escape_html(strval($topic_id)), escape_html($post_url->evaluate()), escape_html(strval($num_replies))])));
-                        break;
-
-                    case POST_AS_TOPIC_FULL:
-                        $num_replies = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_topic_id=' . strval($topic_id) . ' AND p_time>' . strval($post_time));
-                        $handle_label = do_lang_tempcode('HANDLE_POST__POST_AS_TOPIC_FULL', escape_html($topic_title), escape_html(strval($_post_id)), [escape_html(strval($topic_id)), escape_html($post_url->evaluate()), escape_html(integer_format($num_replies, 0))]);
-                        $list_options->attach(form_input_list_entry('delete_post_and_following', $spam_mode, do_lang_tempcode('HANDLE_POST__DELETE_TOPIC_WITH_REPLIES', escape_html($topic_title), escape_html(strval($_post_id)), [escape_html(strval($topic_id)), escape_html($post_url->evaluate()), escape_html(integer_format($num_replies, 0))])));
-                        break;
-
-                    case POST_AS_TOPIC_STARTER:
-                        $handle_label = do_lang_tempcode('HANDLE_POST__POST_AS_TOPIC_STARTER', escape_html($topic_title), escape_html(strval($_post_id)), [escape_html(strval($topic_id)), escape_html($post_url->evaluate())]);
-                        $list_options->attach(form_input_list_entry('delete_post_and_following', $spam_mode, do_lang_tempcode('HANDLE_POST__DELETE_TOPIC', escape_html($topic_title), escape_html(strval($_post_id)), [escape_html(strval($topic_id)), escape_html($post_url->evaluate())])));
-                        break;
-                }
-                $fields->attach(form_input_list($handle_label, '', 'handle_post__' . strval($_post_id), $list_options, null, false, false));
-            }
-
-            // See also privacy_purge.php - this code handles deletion of individually-identified high-level content items, while privacy-purging will delete/anonymise on mass for any kinds of database record
-            if (addon_installed('commandr') && has_privilege(get_member(), 'delete_highrange_content')) {
-                $content = find_member_content($member_id);
-                foreach ($content as $content_details) {
-                    list($content_type_title, $content_type, $content_id, $content_title, $content_url, $content_timestamp, $auto_selected) = $content_details;
-                    if (is_object($content_url)) {
-                        $content_url = $content_url->evaluate();
-                    }
-                    $content_description = do_lang_tempcode('DESCRIPTION_DELETE_THIS', escape_html($content_title), escape_html(get_timezoned_date_time($content_timestamp)), [escape_html($content_url), $content_type_title]);
-
-                    $fields->attach(form_input_tick($content_title, $content_description, 'delete__' . $content_type . '_' . $content_id, $auto_selected));
-                }
-            }
+        // Iterate over each ordered hook to render their fields
+        foreach ($ordered_hooks as $i => $hook) {
+            $hook->get_form_fields($this->add_text, $fields, $hidden, $new, $explanation, $is_warning, $member_id, $spam_mode, $post_id, $ip_address);
         }
 
         // Explanatory text...
@@ -651,42 +457,6 @@ class Module_warnings extends Standard_crud_module
         $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id, false, USERNAME_DEFAULT_ERROR);
         $message_punitive = post_param_integer('include_punitive_text', 0);
 
-        // Gather post parameters for punitive actions
-        $charged_points = post_param_integer('charged_points', 0);
-        $silence_from_topic = post_param_integer('topic_id', null);
-        $_silence_from_topic = post_param_date('silence_from_topic', false);
-        $silence_from_forum = post_param_integer('forum_id', null);
-        $_silence_from_forum = post_param_date('silence_from_forum', false);
-        $probation = post_param_integer('probation', 0);
-        $banned_member = post_param_string('banned_member', '0');
-        $stopforumspam = post_param_integer('stopforumspam', 0);
-
-        // Get member IP address if banning their IP and permitted to do so
-        $_banned_ip = post_param_integer('banned_ip', 0);
-        $banned_ip = '';
-        if (addon_installed('securitylogging')) {
-            if (has_actual_page_access(get_member(), 'admin_ip_ban')) {
-                if ($_banned_ip == 1) {
-                    $banned_ip = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_ip_address');
-                }
-            }
-        }
-
-        // Get usergroup changes if changing usergroup and permitted to do so
-        if (has_privilege(get_member(), 'member_maintenance')) {
-            $changed_usergroup_to = post_param_integer('changed_usergroup_to', null);
-        } else {
-            $changed_usergroup_to = null;
-        }
-
-        // Set silence from topic or silence from forum to null if no date specified
-        if ($_silence_from_topic === null) {
-            $silence_from_topic = null;
-        }
-        if ($_silence_from_forum === null) {
-            $silence_from_forum = null;
-        }
-
         // Save explanatory details if asked to
         $save = post_param_string('save');
         if ($save != '') {
@@ -698,217 +468,47 @@ class Module_warnings extends Standard_crud_module
             ]);
         }
 
-        // Attach punitive actions to end of message
-        if ($message_punitive == 1) {
-            $_message = generate_punitive_text();
-            if ($message != '' && $_message != '') {
-                $message .= "\n\n" . $_message;
-            } else {
-                $message .= $_message;
-            }
-        }
-
         // Make the warning now so we can associate its warning ID with logs
-        $warning_id = cns_make_warning($member_id, $explanation, null, null, post_param_integer('is_warning', 0), $silence_from_topic, $silence_from_forum, $probation, $banned_ip, $charged_points, ($banned_member == '0') ? 0 : 1, $changed_usergroup_to);
+        $warning_id = cns_make_warning($member_id, $explanation, null, null, post_param_integer('is_warning', 0));
         set_related_warning_id($warning_id);
 
-        // Topic silencing
-        if ($silence_from_topic !== null && $_silence_from_topic !== false) {
-            $GLOBALS['FORUM_DB']->query_delete('member_privileges', [
-                'member_id' => $member_id,
-                'privilege' => 'submit_lowrange_content',
-                'the_page' => '',
-                'module_the_name' => 'topics',
-                'category_name' => strval($silence_from_topic),
-            ]);
-
-            $GLOBALS['FORUM_DB']->query_insert('member_privileges', [
-                'active_until' => $_silence_from_topic,
-                'member_id' => $member_id,
-                'privilege' => 'submit_lowrange_content',
-                'the_page' => '',
-                'module_the_name' => 'topics',
-                'category_name' => strval($silence_from_topic),
-                'the_value' => '0',
-            ]);
-
-            require_code('cns_general_action2');
-            cns_mod_log_it('SILENCE_FROM_TOPIC', strval($member_id), strval($silence_from_topic), $explanation);
-        }
-
-        // Forum silencing
-        if ($silence_from_forum !== null && $_silence_from_forum !== false) {
-            $GLOBALS['FORUM_DB']->query_delete('member_privileges', [
-                'member_id' => $member_id,
-                'privilege' => 'submit_lowrange_content',
-                'the_page' => '',
-                'module_the_name' => 'forums',
-                'category_name' => strval($silence_from_forum),
-            ]);
-            $GLOBALS['FORUM_DB']->query_delete('member_privileges', [
-                'member_id' => $member_id,
-                'privilege' => 'submit_midrange_content',
-                'the_page' => '',
-                'module_the_name' => 'forums',
-                'category_name' => strval($silence_from_forum),
-            ]);
-
-            $GLOBALS['FORUM_DB']->query_insert('member_privileges', [
-                'active_until' => $_silence_from_forum,
-                'member_id' => $member_id,
-                'privilege' => 'submit_lowrange_content',
-                'the_page' => '',
-                'module_the_name' => 'forums',
-                'category_name' => strval($silence_from_forum),
-                'the_value' => '0',
-            ]);
-            $GLOBALS['FORUM_DB']->query_insert('member_privileges', [
-                'active_until' => $_silence_from_forum,
-                'member_id' => $member_id,
-                'privilege' => 'submit_midrange_content',
-                'the_page' => '',
-                'module_the_name' => 'forums',
-                'category_name' => strval($silence_from_forum),
-                'the_value' => '0',
-            ]);
-
-            require_code('cns_general_action2');
-            cns_mod_log_it('SILENCE_FROM_FORUM', strval($member_id), strval($silence_from_forum), $explanation);
-        }
-
-        // Post deletion
-        $deleted_all = false;
-        if (has_delete_permission('mid', get_member(), $member_id, 'topics')) {
-            $where = ['p_poster' => $member_id];
-            $sup = 'ORDER BY p_time';
-            if (!has_privilege(get_member(), 'view_other_pt')) {
-                $sup = ' AND p_cache_forum_id IS NOT NULL ' . $sup;
+        // Grab our warning hooks and order them (so explanatory text is in the defined order)
+        $hooks = find_all_hook_obs('systems', 'cns_warnings', 'Hook_cns_warnings_');
+        // Order our hooks so fields display in the order we want
+        $ordered_hooks = [];
+        $unordered_hooks = [];
+        foreach ($hooks as $hook_ob) {
+            $info = $hook_ob->get_details();
+            if ($info === null) {
+                continue;
             }
-            $posts_already_deleted = [];
-            $posts_by_member = $GLOBALS['FORUM_DB']->query_select('f_posts', ['id', 'p_title', 'p_topic_id', 'p_time'], $where, $sup);
-            $deleted_all = true;
-            foreach ($posts_by_member as $post) {
-                if (isset($posts_already_deleted[$post['id']])) {
-                    continue;
-                }
-                $p_title = do_lang('POST_IN_TITLED', strval($post['p_title']), $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_cache_first_title', ['id' => $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_topic_id', ['id' => intval($post['id'])])]));
-                if (empty($post['p_title'])) {
-                    $p_title = do_lang('POST_IN_NUMBERED', strval($post['id']), $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_cache_first_title', ['id' => $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_topic_id', ['id' => intval($post['id'])])]));
-                }
-                require_code('cns_posts_action3');
-                $post_action = post_param_string('handle_post__' . strval($post['id']), '');
-                $posts = [];
-                switch ($post_action) {
-                    case 'delete_post':
-                        $posts[] = $post['id'];
-                        $posts_already_deleted[$post['id']] = true;
-                        break;
-                    case 'delete_post_and_following':
-                        $posts[] = $post['id'];
-                        $further_posts = $GLOBALS['FORUM_DB']->query_select('f_posts', ['id'], ['p_topic_id' => $post['p_topic_id']], 'AND p_time>' . strval($post['p_time']));
-                        foreach ($further_posts as $_post) {
-                            $posts[] = $_post['id'];
-                            $posts_already_deleted[$_post['id']] = true;
-                        }
-                        break;
-                    default:
-                        $deleted_all = false;
-                        break;
-                }
-                cns_delete_posts_topic($post['p_topic_id'], $posts, $explanation, false);
+            if (isset($info['order'])) {
+                $ordered_hooks[$info['order']] = $hook_ob;
+            } else {
+                $unordered_hooks[] = $hook_ob;
+            }
+        }
+        ksort($ordered_hooks, SORT_NUMERIC);
+        $ordered_hooks = array_merge($ordered_hooks, $unordered_hooks);
+
+        // Execute each punitive action in our hooks, receiving default punitive text pushed on to an array
+        $punitive_messages = [];
+        foreach ($ordered_hooks as $i => $hook) {
+            if (method_exists($hook_ob, 'actualise_punitive_action')) {
+                $hook->actualise_punitive_action($punitive_messages, $warning_id, $member_id, $username, $explanation, $message);
             }
         }
 
-        // Probation
-        if (has_privilege(get_member(), 'probate_members')) {
-            if ($probation != 0) {
-                $on_probation_until = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_on_probation_until');
-                if (($on_probation_until === null) || ($on_probation_until < time())) {
-                    $on_probation_until = time();
-                }
-                $on_probation_until += $probation * 60 * 60 * 24;
-                $GLOBALS['FORUM_DB']->query_update('f_members', ['m_on_probation_until' => $on_probation_until], ['id' => $member_id], '', 1);
-
-                require_code('cns_general_action2');
-                cns_mod_log_it('START_PROBATION', strval($member_id), $username, $explanation);
+        // Add punitive actions text to the bottom of the message if we requested it
+        if ((count($punitive_messages) > 0) && ($message_punitive == 1)) {
+            $message .= '[title="4" base="2"]' . do_lang('PUNITIVE_HEADER', null, null, null, null, false) . '[/title]';
+            $message .= do_lang('PUNITIVE_HEADER_DESCRIPTION', null, null, null, null, false) . "\n";
+            foreach ($punitive_messages as $value) {
+                $message .= ' - ' . $value . "\n";
             }
         }
 
-        // Ban member
-        if (has_privilege(get_member(), 'member_maintenance')) {
-            if ($banned_member != '0') {
-                $GLOBALS['FORUM_DB']->query_update('f_members', ['m_is_perm_banned' => $banned_member], ['id' => $member_id], '', 1);
-
-                require_code('cns_general_action2');
-                cns_mod_log_it('BAN_MEMBER', strval($member_id), $username, $explanation);
-            }
-        } else {
-            $banned_member = '0';
-        }
-
-        // IP ban
-        if (addon_installed('securitylogging')) {
-            if (has_actual_page_access(get_member(), 'admin_ip_ban')) {
-                if ($_banned_ip == 1) {
-                    require_code('failure');
-                    add_ip_ban($banned_ip, $explanation);
-                    log_it('IP_BANNED', $banned_ip);
-                }
-            }
-        }
-
-        // Stop Forum Spam report
-        if ($stopforumspam == 1) {
-            $banned_ip = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_ip_address');
-            require_code('failure');
-            require_code('failure_spammers');
-            syndicate_spammer_report($banned_ip, $username, $GLOBALS['FORUM_DRIVER']->get_member_email_address($member_id), $explanation, false);
-
-            require_code('cns_general_action2');
-            cns_mod_log_it('MARK_AS_SPAMMER', strval($member_id), $username, $explanation);
-        }
-
-        // Change group
-        if ((has_privilege(get_member(), 'member_maintenance')) && (has_privilege(get_member(), 'assume_any_member'))) {
-            if ($changed_usergroup_to !== null) {
-                $GLOBALS['FORUM_DB']->query_update('f_members', ['m_primary_group' => $changed_usergroup_to], ['id' => $member_id], '', 1);
-                cns_mod_log_it('GROUP_CHANGE', strval($member_id), strval($changed_usergroup_to));
-            }
-        }
-
-        // Charge points
-        if (addon_installed('points') && ($charged_points > 0) && (has_privilege(get_member(), 'moderate_points'))) {
-            require_code('points2');
-
-            // Note we pass false for sending notifications, which mean they only get sent to staff. The member will be 'notified' in the private topic message they receive.
-            points_debit_member($member_id, $explanation, $charged_points, 0, 1, false, 0, 'warning', 'add', strval($warning_id));
-        }
-
-        // Delete content
-        if (addon_installed('commandr') && has_privilege(get_member(), 'delete_highrange_content')) {
-            $content = find_member_content($member_id);
-            $done_deleting = false;
-            foreach ($content as $content_details) {
-                list($content_type_title, $content_type, $content_id, $content_title, $content_url, $content_timestamp, $auto_selected) = $content_details;
-
-                if (post_param_integer('delete__' . $content_type . '_' . $content_id, 0) == 1) {
-                    require_all_lang();
-                    require_code('resource_fs');
-                    $object_fs = get_resource_commandr_fs_object($content_type);
-                    if ($object_fs !== null) {
-                        $filename = $object_fs->convert_id_to_filename($content_type, $content_id);
-                        if ($filename !== null) {
-                            $subpath = $object_fs->search($content_type, $content_id, true);
-                            $object_fs->resource_delete($content_type, $filename, dirname($subpath));
-
-                            $done_deleting = true;
-                        }
-                    }
-                }
-            }
-        }
-
-        // Send PT
+        // Send PT if there is a message to send
         if ($message != '') {
             require_code('cns_topics_action');
             require_code('cns_topics_action2');
@@ -930,7 +530,7 @@ class Module_warnings extends Standard_crud_module
         set_related_warning_id(null);
 
         // Redirect after issuing the warning if applicable
-        if ((get_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL) == '') || ($deleted_all)) {
+        if ((get_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL) == '')) {
             require_code('site2');
             assign_refresh($GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, true), 0.0); // redirect_screen not used because there is already a legitimate output screen happening
             unset($_GET['redirect']);
@@ -1079,6 +679,8 @@ class Module_warnings extends Standard_crud_module
         require_code('actionlog');
         require_code('cns_topics');
         require_code('templates_tooltip');
+        require_code('templates_map_table');
+        require_code('templates_columned_table');
 
         $fields = [];
 
@@ -1110,244 +712,152 @@ class Module_warnings extends Standard_crud_module
             }
         }
 
-        if ($row['p_probation'] > 0) {
-            $fields['PROBATION'] = do_lang('DAYS', $row['p_probation']);
-        }
+        // Action logs
+        $view_actionlogs = [];
+        $_rows = $GLOBALS['SITE_DB']->query_select('actionlogs', ['*'], ['warning_id' => $id], ' ORDER BY date_and_time');
+        $_rows2 = $GLOBALS['FORUM_DB']->query_select('f_moderator_logs', ['l_reason AS reason', 'id', 'l_by AS member_id', 'l_date_and_time AS date_and_time', 'l_the_type AS the_type', 'l_param_a AS param_a', 'l_param_b AS param_b', 'l_warning_id AS warning_id'], ['l_warning_id' => $id], ' ORDER BY date_and_time');
+        $rows = array_merge($_rows, $_rows2);
+        sort_maps_by($rows, 'date_and_time');
 
-        if ($row['p_charged_points'] != 0) {
-            $fields['CHARGED_POINTS'] = integer_format($row['p_charged_points']);
-        }
-
-        // These actions are based on action logs
-        $rows = $GLOBALS['SITE_DB']->query_select('actionlogs', ['*'], ['warning_id' => $id]);
         foreach ($rows as $_row) {
             if ($_row['the_type'] === 'PRIVATE_TOPIC') {
                 continue;
             }
-            $test = actionlog_linkage($_row, null, null, false);
-            if ($test !== null) {
-                $fields[$_row['the_type']] = $test[0];
-            }
+
+            $by = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($_row['member_id'], '', false);
+
+            $mode = array_key_exists('reason', $_row) ? 'cns' : 'cms';
+            $url = build_url(['page' => 'admin_actionlog', 'type' => 'view', 'id' => $_row['id'], 'mode' => $mode], get_module_zone('admin_actionlog'));
+            $date = hyperlink($url, get_timezoned_date_time($_row['date_and_time']), false, true, '#' . strval($_row['id']), null, null, null, '_top');
+
+            $linkage = actionlog_linkage($_row, null, null, false);
+            $action = do_lang($_row['the_type'], $_row['param_a'], $_row['param_b'], null, null, false);
+            $view_actionlogs[] = [$by, $date, ($action !== null) ? $action : $_row['the_type'], ($linkage !== null) ? $linkage[0] : ''];
         }
-        $rows2 = $GLOBALS['FORUM_DB']->query_select('f_moderator_logs', ['l_reason AS reason', 'id', 'l_by AS member_id', 'l_date_and_time AS date_and_time', 'l_the_type AS the_type', 'l_param_a AS param_a', 'l_param_b AS param_b', 'l_warning_id AS warning_id'], ['l_warning_id' => $id]);
-        foreach ($rows2 as $_row2) {
-            if ($_row2['the_type'] === 'ADD_WARNING') {
-                continue;
+
+        if (count($view_actionlogs) == 0) {
+            $fields['VIEW_ACTIONLOGS'] = do_lang_tempcode('NA_EM');
+        } else {
+            $header_row = columned_table_header_row([
+                do_lang('BY'),
+                do_lang('DATE_TIME'),
+                do_lang('ACTION'),
+                do_lang('DETAILS')
+            ]);
+
+            $table_rows = new Tempcode();
+            foreach ($view_actionlogs as $actionlogs) {
+                $table_rows->attach(columned_table_row($actionlogs, true));
             }
-            $test = actionlog_linkage($_row2, null, null, false);
-            if ($test !== null) {
-                $fields[$_row2['the_type']] = $test[0];
+
+            require_lang('actionlog');
+            $fields['VIEW_ACTIONLOGS'] = do_template('COLUMNED_TABLE', ['HEADER_ROW' => $header_row, 'ROWS' => $table_rows, 'NONRESPONSIVE' => false]);
+        }
+
+        // Punitive actions
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_warnings_punitive', ['*'], ['p_warning_id' => $id]);
+        $fields['PUNITIVE_ACTIONS'] = new Tempcode();
+        foreach ($rows as $row) {
+            $action = new Tempcode();
+
+            $hook = get_hook_ob('systems', 'cns_warnings', $row['p_hook'], 'Hook_cns_warnings_');
+            if (method_exists($hook, 'generate_text') && ($hook->get_details() !== null)) {
+                $action->attach($hook->generate_text($row));
             }
+
+            // Undo actions
+            if ($row['p_reversed'] == 0) {
+                if (method_exists($hook, 'undo_punitive_action') && ($hook->get_details() !== null)) {
+                    $_undoing_url = build_url(['page' => '_SELF', 'type' => 'undo_punitive_action'], '_SELF');
+                    $_undoing_link = hyperlink($_undoing_url, do_lang_tempcode('UNDO'), false, false, '', null, form_input_hidden('id', strval($row['id'])));
+                    $action->attach(do_lang_tempcode('ACTION_LINK', $_undoing_link));
+                }
+            } else {
+                $action->attach(do_lang_tempcode('ACTION_LINK', do_lang('UNDONE')));
+            }
+
+            $fields['PUNITIVE_ACTIONS']->attach(div($action));
+        }
+
+        if ($fields['PUNITIVE_ACTIONS']->is_empty()) {
+            $fields['PUNITIVE_ACTIONS'] = do_lang_tempcode('NA_EM');
         }
 
         $fields['ACTIONS'] = new Tempcode();
-
         // Edit action
         $fields['ACTIONS']->attach(hyperlink(build_url(['page' => '_SELF', 'type' => '_edit', 'id' => $row['id'], 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF'), do_lang('EDIT'), false, true, ''));
 
-        // Undo actions
-        if ($row['p_probation'] != 0) {
-            $_undoing_url = build_url(['page' => '_SELF', 'type' => 'undo_probation'], '_SELF');
-            $_undoing_link = div(hyperlink($_undoing_url, do_lang_tempcode('REMOVE_PROBATION_DAYS', escape_html(integer_format($row['p_probation']))), false, false, '', null, form_input_hidden('id', strval($row['id']))), '46t54yhrtghdfhdhdfg');
-            $fields['ACTIONS']->attach($_undoing_link);
-        }
-        if (($row['p_changed_usergroup_from'] !== null) && ($row['p_changed_usergroup_to'] == $GLOBALS['FORUM_DRIVER']->get_member_row_field($row['w_member_id'], 'm_primary_group'))) {
-            $fields['ACTIONS']->attach(div(hyperlink(build_url(['page' => '_SELF', 'type' => 'undo_group_change'], '_SELF'), do_lang_tempcode('RESTORE_USERGROUP_TO', escape_html(cns_get_group_name($row['p_changed_usergroup_from'], false))), false, true, '', null, form_input_hidden('id', strval($row['id']))), '53y5ryrtyhrtyrt'));
-        }
-        if (addon_installed('points')) {
-            $charged_points = ($row['p_charged_points'] == 0) ? new Tempcode() : div(hyperlink(build_url(['page' => '_SELF', 'type' => 'undo_charge'], '_SELF'), do_lang_tempcode('RESTORE_POINTS', escape_html(integer_format($row['p_charged_points'], 0))), false, true, '', null, form_input_hidden('id', strval($row['id']))), 'dsgsgdfgddgdf');
-            $fields['ACTIONS']->attach($charged_points);
-        }
-        if ($row['p_banned_ip'] != '') {
-            $fields['ACTIONS']->attach(div(hyperlink(build_url(['page' => '_SELF', 'type' => 'undo_banned_ip'], '_SELF'), do_lang_tempcode('UNBAN_IP'), false, true, '', null, form_input_hidden('id', strval($row['id']))), '4teryeryrydfhyhrgf'));
-        }
-        if ($row['p_banned_member'] == 1) {
-            $fields['ACTIONS']->attach(div(hyperlink(build_url(['page' => '_SELF', 'type' => 'undo_banned_member'], '_SELF'), do_lang_tempcode('UNBAN_MEMBER'), false, true, '', null, form_input_hidden('id', strval($row['id']))), '56ytryrtyhrtyrt'));
-        }
-        if ($row['p_silence_from_topic'] !== null) {
-            $fields['ACTIONS']->attach(div(hyperlink(build_url(['page' => '_SELF', 'type' => 'undo_silence_from_topic'], '_SELF'), do_lang_tempcode('UNSILENCE_TOPIC'), false, true, '', null, form_input_hidden('id', strval($row['id']))), 'rgergdfhfhg'));
-        }
-        if ($row['p_silence_from_forum'] !== null) {
-            $fields['ACTIONS']->attach(div(hyperlink(build_url(['page' => '_SELF', 'type' => 'undo_silence_from_forum'], '_SELF'), do_lang_tempcode('UNSILENCE_FORUM'), false, true, '', null, form_input_hidden('id', strval($row['id']))), 'ghgfhfghggf'));
-        }
-        if ($fields['ACTIONS']->is_empty()) {
-            $fields['ACTIONS'] = do_lang_tempcode('NA_EM');
-        }
-
-        require_code('templates_map_table');
         return map_table_screen($this->title, $fields, true, null, null, true);
     }
 
     /**
-     * Actualiser to undo a certain type of punitive action.
+     * Actualiser to undo a punitive action.
      *
-     * @return Tempcode Result (redirect page)
+     * @return Tempcode Either a redirect screen if successful, or an error if not successful
      */
-    public function undo_group_change() : object
+    public function undo_punitive_action() : object
     {
         $id = post_param_integer('id');
-        $member_id = $GLOBALS['FORUM_DB']->query_select_value('f_warnings', 'w_member_id', ['id' => $id]);
-        $changed_usergroup_from = $GLOBALS['FORUM_DB']->query_select_value('f_warnings', 'p_changed_usergroup_from', ['id' => $id]);
-        $GLOBALS['FORUM_DB']->query_update('f_members', ['m_primary_group' => $changed_usergroup_from], ['id' => $member_id], '', 1);
 
-        log_it('UNDO_GROUP_CHANGE', strval($id), $GLOBALS['FORUM_DRIVER']->get_username($member_id));
-
-        // Show it worked / Refresh
-        $url = build_url(['page' => '_SELF', 'type' => 'history', 'id' => $member_id], '_SELF');
-        return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
-    }
-
-    /**
-     * Actualiser to undo a certain type of punitive action.
-     *
-     * @return Tempcode Result (redirect page)
-     */
-    public function undo_charge() : object
-    {
-        $id = post_param_integer('id');
-        $ledger = $GLOBALS['SITE_DB']->query_select('points_ledger', ['id', 'sender_id'], ['t_type' => 'warning', 't_subtype' => 'add', 't_type_id' => strval($id)]);
-        if (!array_key_exists(0, $ledger)) {
+        // Grab our punitive action
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_warnings_punitive', ['*'], ['id' => $id]);
+        if (!array_key_exists(0, $rows)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
+        $punitive_action = $rows[0];
 
-        require_code('points2');
-        require_lang('points');
-        points_transaction_reverse($ledger['id']);
-
-        log_it('UNDO_CHARGE', strval($id), $GLOBALS['FORUM_DRIVER']->get_username($ledger['sender_id']));
-
-        // Show it worked / Refresh
-        $url = build_url(['page' => '_SELF', 'type' => 'history', 'id' => $ledger['sender_id']], '_SELF');
-        return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
-    }
-
-    /**
-     * Actualiser to undo a certain type of punitive action.
-     *
-     * @return Tempcode Result (redirect page)
-     */
-    public function undo_probation() : object
-    {
-        $id = post_param_integer('id');
-        $member_id = $GLOBALS['FORUM_DB']->query_select_value('f_warnings', 'w_member_id', ['id' => $id]);
-        $probation = $GLOBALS['FORUM_DB']->query_select_value('f_warnings', 'p_probation', ['id' => $id]);
-        $on_probation_until = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_on_probation_until');
-        if ($on_probation_until !== null) {
-            $GLOBALS['FORUM_DB']->query_update('f_members', ['m_on_probation_until' => $on_probation_until - $probation * 60 * 60 * 24], ['id' => $member_id], '', 1);
+        // Do not allow reversing an already-reversed action
+        if ($punitive_action['p_reversed'] != 0) {
+            warn_exit(do_lang_tempcode('PUNITIVE_ACTION_ALREADY_UNDONE')); // TODO: add language string
         }
-        $GLOBALS['FORUM_DB']->query_update('f_warnings', ['p_probation' => 0], ['id' => $id], '', 1);
 
-        require_code('cns_general_action2');
-        cns_mod_log_it('STOP_PROBATION', strval($id), $GLOBALS['FORUM_DRIVER']->get_username($member_id));
+        // Get the associated warning
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_warnings', ['*'], ['id' => $punitive_action['p_warning_id']]);
+        if (!array_key_exists(0, $rows)) {
+            warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
+        }
+        $warning = $rows[0];
 
-        // Show it worked / Refresh
-        $url = build_url(['page' => '_SELF', 'type' => 'history', 'id' => $member_id], '_SELF');
-        return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
-    }
+        // Confirm the action
+        $confirm = get_param_integer('confirm', 0);
+        if ($confirm == 0) {
+            $undo_action = strval($id);
+            $hook = get_hook_ob('systems', 'cns_warnings', $punitive_action['p_hook'], 'Hook_cns_warnings_');
+            if (method_exists($hook, 'generate_text') && ($hook->get_details() !== null)) {
+                $undo_action = $hook->generate_text($punitive_action);
+            }
 
-    /**
-     * Actualiser to undo a certain type of punitive action.
-     *
-     * @return Tempcode Result (redirect page)
-     */
-    public function undo_banned_ip() : object
-    {
-        require_code('failure');
+            $member = $GLOBALS['FORUM_DRIVER']->get_username($warning['w_member_id']);
 
-        $id = post_param_integer('id');
-        $member_id = $GLOBALS['FORUM_DB']->query_select_value('f_warnings', 'w_member_id', ['id' => $id]);
-        $banned_ip = $GLOBALS['FORUM_DB']->query_select_value('f_warnings', 'p_banned_ip', ['id' => $id]);
-        remove_ip_ban($banned_ip);
-        $GLOBALS['FORUM_DB']->query_update('f_warnings', ['p_banned_ip' => ''], ['id' => $id], '', 1);
+            $preview = do_lang_tempcode('ARE_YOU_SURE_UNDO_PUNITIVE_ACTION', escape_html($undo_action), escape_html($member));
+            return do_template('CONFIRM_SCREEN', [
+                'TITLE' => $this->title,
+                'PREVIEW' => $preview,
+                'URL' => get_self_url(false, false, ['confirm' => 1]),
+                'FIELDS' => build_keep_post_fields(),
+            ]);
+        }
 
-        log_it('IP_UNBANNED', $banned_ip, strval($member_id));
+        require_code('global4');
 
-        // Show it worked / Refresh
-        $url = build_url(['page' => '_SELF', 'type' => 'history', 'id' => $member_id], '_SELF');
-        return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
-    }
+        // Action log entries created from our hooks should be associated with this warning
+        set_related_warning_id($warning['id']);
 
-    /**
-     * Actualiser to undo a certain type of punitive action.
-     *
-     * @return Tempcode Result (redirect page)
-     */
-    public function undo_banned_member() : object
-    {
-        $id = post_param_integer('id');
-        $member_id = $GLOBALS['FORUM_DB']->query_select_value('f_warnings', 'w_member_id', ['id' => $id]);
-        $banned_member = $GLOBALS['FORUM_DB']->query_select_value('f_warnings', 'p_banned_member', ['id' => $id]);
-        $GLOBALS['FORUM_DB']->query_update('f_members', ['m_is_perm_banned' => '0'], ['id' => $member_id], '', 1);
-        $GLOBALS['FORUM_DB']->query_update('f_warnings', ['p_banned_member' => 0], ['id' => $id], '', 1);
+        // Run the actualiser from the appropriate warnings hook
+        $hook = get_hook_ob('systems', 'cns_warnings', $punitive_action['p_hook'], 'Hook_cns_warnings_');
+        if (method_exists($hook, 'undo_punitive_action') && ($hook->get_details() !== null)) {
+            $hook->undo_punitive_action($punitive_action, $warning);
+        } else {
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        }
 
-        require_code('cns_general_action2');
-        cns_mod_log_it('UNBAN_MEMBER', strval($id), $GLOBALS['FORUM_DRIVER']->get_username($member_id));
+        set_related_warning_id(null);
+
+        // Mark punitive action as reversed
+        $GLOBALS['FORUM_DB']->query_update('f_warnings_punitive', ['p_reversed' => 1], ['id' => $id]);
 
         // Show it worked / Refresh
-        $url = build_url(['page' => '_SELF', 'type' => 'history', 'id' => $member_id], '_SELF');
-        return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
-    }
-
-    /**
-     * Actualiser to undo a certain type of punitive action.
-     *
-     * @return Tempcode Result (redirect page)
-     */
-    public function undo_silence_from_topic() : object
-    {
-        $id = post_param_integer('id');
-        $member_id = $GLOBALS['FORUM_DB']->query_select_value('f_warnings', 'w_member_id', ['id' => $id]);
-        $silence_from_topic = $GLOBALS['FORUM_DB']->query_select_value('f_warnings', 'p_silence_from_topic', ['id' => $id]);
-        $GLOBALS['FORUM_DB']->query_delete('member_privileges', [
-            'member_id' => $member_id,
-            'privilege' => 'submit_lowrange_content',
-            'the_page' => '',
-            'module_the_name' => 'topics',
-            'category_name' => strval($silence_from_topic),
-        ]);
-        $GLOBALS['FORUM_DB']->query_update('f_warnings', ['p_silence_from_topic' => null], ['id' => $id], '', 1);
-
-        require_code('cns_general_action2');
-        cns_mod_log_it('UNSILENCE_TOPIC', strval($member_id), strval($id));
-
-        // Show it worked / Refresh
-        $url = build_url(['page' => '_SELF', 'type' => 'history', 'id' => $member_id], '_SELF');
-        return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
-    }
-
-    /**
-     * Actualiser to undo a certain type of punitive action.
-     *
-     * @return Tempcode Result (redirect page)
-     */
-    public function undo_silence_from_forum() : object
-    {
-        $id = post_param_integer('id');
-        $member_id = $GLOBALS['FORUM_DB']->query_select_value('f_warnings', 'w_member_id', ['id' => $id]);
-        $silence_from_forum = $GLOBALS['FORUM_DB']->query_select_value('f_warnings', 'p_silence_from_forum', ['id' => $id]);
-        $GLOBALS['FORUM_DB']->query_delete('member_privileges', [
-            'member_id' => $member_id,
-            'privilege' => 'submit_lowrange_content',
-            'the_page' => '',
-            'module_the_name' => 'forums',
-            'category_name' => strval($silence_from_forum),
-            'the_value' => '0',
-        ]);
-        $GLOBALS['FORUM_DB']->query_delete('member_privileges', [
-            'member_id' => $member_id,
-            'privilege' => 'submit_midrange_content',
-            'the_page' => '',
-            'module_the_name' => 'forums',
-            'category_name' => strval($silence_from_forum),
-            'the_value' => '0',
-        ]);
-        $GLOBALS['FORUM_DB']->query_update('f_warnings', ['p_silence_from_forum' => null], ['id' => $id], '', 1);
-
-        require_code('cns_general_action2');
-        cns_mod_log_it('UNSILENCE_FORUM', strval($member_id), strval($id));
-
-        // Show it worked / Refresh
-        $url = build_url(['page' => '_SELF', 'type' => 'history', 'id' => $member_id], '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => 'view', 'id' => $warning['id'], 'member_id' => $warning['w_member_id']], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 }

@@ -35,9 +35,40 @@ class warnings_test_set extends cms_test_case
 
         $this->establish_admin_session();
 
-        $this->warn_id = cns_make_warning(1, 'nothing', null, null, 1, null, null, 0, '', 0, 0, null);
+        $this->warn_id = cns_make_warning(1, 'nothing', null, null, 1);
 
         $this->assertTrue('nothing' == $GLOBALS['FORUM_DB']->query_select_value('f_warnings', 'w_explanation', ['id' => $this->warn_id]));
+    }
+
+    public function testConsistentOrdering()
+    {
+        if (get_forum_type() != 'cns') {
+            return;
+        }
+
+        $groups = [];
+
+        $hooks = find_all_hook_obs('systems', 'cns_warnings', 'Hook_cns_warnings_');
+        foreach ($hooks as $hook => $ob) {
+            $info = $ob->get_details();
+            if (!isset($info['order'])) {
+                continue;
+            }
+            if (!isset($groups[$info['order']])) {
+                $groups[$info['order']] = [];
+            }
+            $groups[$info['order']][$hook] = $info;
+        }
+
+        foreach ($groups as $order => $hooks) {
+            if (count($hooks) > 1) {
+                $hook_names = [];
+                foreach ($hooks as $name => $hook) {
+                    $hook_names[] = $name;
+                }
+                $this->assertTrue(false, 'Duplicate order ' . $order . ' in hooks/systems/cns_warnings ' . implode(', ', $hook_names));
+            }
+        }
     }
 
     public function testEditWarning()

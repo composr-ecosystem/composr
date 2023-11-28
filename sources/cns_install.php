@@ -903,14 +903,6 @@ function install_cns(?float $upgrade_from = null)
             'w_by' => 'MEMBER',
             'w_is_warning' => 'BINARY',
             'w_topic_id' => '?AUTO_LINK',
-            'p_silence_from_topic' => '?AUTO_LINK',
-            'p_silence_from_forum' => '?AUTO_LINK',
-            'p_probation' => 'INTEGER',
-            'p_banned_ip' => 'IP',
-            'p_charged_points' => 'INTEGER',
-            'p_banned_member' => 'BINARY',
-            'p_changed_usergroup_from' => '?GROUP',
-            'p_changed_usergroup_to' => '?GROUP',
         ]);
         $GLOBALS['FORUM_DB']->create_index('f_warnings', 'warningsmemberid', ['w_member_id']);
 
@@ -1595,5 +1587,106 @@ function install_cns(?float $upgrade_from = null)
             'i_ngram',
             'i_occurrence_rate', // For sorting
         ]);
+
+        $GLOBALS['FORUM_DB']->create_table('f_warnings_punitive', [
+            'id' => '*AUTO',
+            'p_warning_id' => 'AUTO_LINK',
+            'p_hook' => 'ID_TEXT', // name of a hook in systems/cns_warnings that performed the action
+            'p_action' => 'ID_TEXT', // A punitive action language string code, which p_param_a and p_param_b will be injected for written context
+            'p_param_a' => 'SHORT_TEXT', // some parameter relating to the action
+            'p_param_b' => 'SHORT_TEXT', // some other parameter relating to the action
+            'p_reversed' => 'BINARY', // Whether this punitive action was reversed
+        ]);
+        $GLOBALS['FORUM_DB']->create_index('f_warnings_punitive', 'warningsid', ['p_warning_id']);
+        $GLOBALS['FORUM_DB']->create_index('f_warnings_punitive', 'warninghook', ['p_hook']);
+    }
+
+    if (($upgrade_from !== null) && ($upgrade_from < 11.0)) { // LEGACY
+        // Migrate old f_warnings columns to f_warnings_punitive rows. Then, delete the old columns.
+        $start = 0;
+            do {
+                $rows = $GLOBALS['FORUM_DB']->query_select('f_warnings', ['*'], [], '', 500, $start);
+                foreach ($rows as $i => $row) {
+                    if ($row['p_silence_from_topic'] !== null) {
+                        $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
+                            'p_warning_id' => $row['id'],
+                            'p_hook' => 'silencing',
+                            'p_action' => '_PUNITIVE_SILENCE_FROM_TOPIC',
+                            'p_param_a' => strval($row['p_silence_from_topic']),
+                            'p_param_b' => '', // f_warnings did not track time
+                            'p_reversed' => 0,
+                        ]);
+                    }
+                    if ($row['p_silence_from_forum'] !== null) {
+                        $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
+                            'p_warning_id' => $row['id'],
+                            'p_hook' => 'silencing',
+                            'p_action' => '_PUNITIVE_SILENCE_FROM_FORUM',
+                            'p_param_a' => strval($row['p_silence_from_forum']),
+                            'p_param_b' => '', // f_warnings did not track time
+                            'p_reversed' => 0,
+                        ]);
+                    }
+                    if ($row['p_probation'] !== null) {
+                        $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
+                            'p_warning_id' => $row['id'],
+                            'p_hook' => 'probation',
+                            'p_action' => '_PUNITIVE_PROBATION',
+                            'p_param_a' => strval($row['p_probation']),
+                            'p_param_b' => '',
+                            'p_reversed' => 0,
+                        ]);
+                    }
+                    if ($row['p_banned_ip'] !== null) {
+                        $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
+                            'p_warning_id' => $row['id'],
+                            'p_hook' => 'ban_ip',
+                            'p_action' => '_PUNITIVE_IP_BANNED',
+                            'p_param_a' => strval($row['p_banned_ip']),
+                            'p_param_b' => '',
+                            'p_reversed' => 0,
+                        ]);
+                    }
+                    if ($row['p_charged_points'] !== null) {
+                        $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
+                            'p_warning_id' => $row['id'],
+                            'p_hook' => 'points',
+                            'p_action' => '_PUNITIVE_CHARGED_POINTS',
+                            'p_param_a' => strval($row['p_charged_points']),
+                            'p_param_b' => '',
+                            'p_reversed' => 0,
+                        ]);
+                    }
+                    if ($row['p_banned_member'] !== null) {
+                        $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
+                            'p_warning_id' => $row['id'],
+                            'p_hook' => 'ban_member',
+                            'p_action' => '_PUNITIVE_BAN_ACCOUNT',
+                            'p_param_a' => '',
+                            'p_param_b' => '',
+                            'p_reversed' => 0,
+                        ]);
+                    }
+                    if ($row['p_changed_usergroup_from'] !== null) {
+                        $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
+                            'p_warning_id' => $row['id'],
+                            'p_hook' => 'change_group',
+                            'p_action' => '_PUNITIVE_CHANGE_USERGROUP',
+                            'p_param_a' => strval($row['p_changed_usergroup_from']),
+                            'p_param_b' => strval($row['p_changed_usergroup_to']),
+                            'p_reversed' => 0,
+                        ]);
+                    }
+                }
+                $start += 500;
+            } while (array_key_exists(0, $rows));
+            $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_silence_from_topic');
+            $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_silence_from_forum');
+            $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_probation');
+            $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_banned_ip');
+            $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_charged_points');
+            $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_banned_member');
+            $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_changed_usergroup_from');
+            $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_changed_usergroup_to');
     }
 }

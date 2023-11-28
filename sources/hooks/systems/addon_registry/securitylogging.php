@@ -135,6 +135,8 @@ class Hook_addon_registry_securitylogging
             'themes/default/javascript/securitylogging.js',
             'sources/hooks/systems/actionlog/securitylogging.php',
             'data/xml_config/advanced_banning.xml',
+            'sources/hooks/systems/cns_warnings/ban_ip.php',
+            'sources/hooks/systems/cns_warnings/syndicate.php',
 
             'sources/hooks/modules/admin_stats/security_incidents.php',
         ];

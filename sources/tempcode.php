@@ -1691,6 +1691,10 @@ class Tempcode
 
     public $codename; // The name of the template it came from
 
+    public $is_all_static; // Whether this Tempcode is entirely static content
+    public $metadata; // Map of Tempcode metadata
+    private $is_empty; // Whether this Tempcode has no content
+
     /**
      * Constructor of Tempcode.
      *

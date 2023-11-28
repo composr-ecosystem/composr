@@ -139,6 +139,18 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
                     'allowed_handle_methods' => PRIVACY_METHOD__DELETE,
                 ],
+                'f_warnings_punitive' => [
+                    'timestamp_field' => null,
+                    'retention_days' => null,
+                    'retention_handle_method' => PRIVACY_METHOD__LEAVE,
+                    'member_id_fields' => [],
+                    'ip_address_fields' => [],
+                    'email_fields' => [],
+                    'additional_anonymise_fields' => [],
+                    'extra_where' => null,
+                    'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'allowed_handle_methods' => PRIVACY_METHOD__DELETE,
+                ],
                 'f_members' => [
                     'timestamp_field' => 'm_join_time',
                     'retention_days' => null,
@@ -375,14 +387,13 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                     'w_member_id__dereferenced' => $GLOBALS['FORUM_DRIVER']->get_username($row['w_member_id']),
                     'w_by__dereferenced' => $GLOBALS['FORUM_DRIVER']->get_username($row['w_by']),
                 ];
-                if ($row['p_silence_from_topic'] !== null) {
+                break;
+
+            case 'f_warnings_punitive':
+                $hook = get_hook_ob('systems', 'cns_warnings', $row['p_hook'], 'Hook_cns_warnings_');
+                if (method_exists($hook, 'generate_text') && ($hook->get_details() !== null)) {
                     $ret += [
-                        'p_silence_from_topic__dereferenced' => $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_cache_first_title', ['id' => $row['p_silence_from_topic']]),
-                    ];
-                }
-                if ($row['p_silence_from_forum'] !== null) {
-                    $ret += [
-                        'p_silence_from_forum__dereferenced' => $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_name', ['id' => $row['p_silence_from_forum']]),
+                        'p_action__dereferenced' => $hook->generate_text($row),
                     ];
                 }
                 break;
@@ -503,6 +514,11 @@ class Hook_privacy_core_cns extends Hook_privacy_base
             case 'f_topics':
                 require_code('cns_topics_action2');
                 cns_delete_topic($row['id'], '', null, false);
+                break;
+
+            case 'f_warnings':
+                $GLOBALS['FORUM_DB']->query_delete('f_warnings_punitive', ['p_warning_id' => $row['id']]);
+                parent::delete($table_name, $row);
                 break;
 
             default:
