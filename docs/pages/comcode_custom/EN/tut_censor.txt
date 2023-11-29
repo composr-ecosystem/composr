@@ -68,9 +68,11 @@ The warnings form consists of the following options that can be utilised to easi
   - [b]Ban member[/b]: Unlike banning the IP address, the member can still access the website. But they can no longer log in to / use their account.
   - [b]Change usergroup to[/b]: Change the primary usergroup which this member belongs (such as to de-rank them).
   - [b]Extend probation[/b]: Start a probation period, or extend an existing one, by this many days. The member will only have the permissions assigned to the "Probation" usergroup regardless of any other usergroup they are in.
-  - [b]Charge points[/b]: Take points away from the member. It is permissible to charge more points than they have in their balance; this will put their balance in negative points. Charges will add an anonymous record in the points ledger.
  - [b]Delete[/b]
   - A list of recently posted content by the member will appear in this section. You can choose which content to delete. This is handy for quickly mass-deleting spam content posted by a member.
+ - [b]Charge or Reverse Points[/b]
+  - A list of point transactions involving this member within the last 7 days (50 maximum). You can choose which ones to reverse. You do not have to reverse ones for which you are deleting the associated content; they will be reversed automatically. Reversed points will be subtracted from the member's life-time points.
+  - [b]Charge points[/b]: Take points away from the member. It is permissible to charge more points than they have in their balance; this will put their balance in negative points. Charges will add an anonymous record in the points ledger. Charges will [b]not[/b] subtract from the member's life-time points.
  - [b]Explanatory Text[/b]
   - You can load a previously-saved explanatory reason and message by clicking the "Load an explanation/message" link.
   - [b]Reason[/b]: A brief reason / explanation for the warning, used in the logs. You might reference rule numbers or Terms of Service section numbers that were violated in here.

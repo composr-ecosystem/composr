@@ -8220,6 +8220,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PASSWORDS_DO_NOT_REUSE
         PASSWORD_INSECURE
         SPAM
+        DELETE_CONTENT
         DESCRIPTION_DELETE_CONTENT
         DESCRIPTION_DELETE_CONTENT_SUP_POINTS
         DESCRIPTION_DELETE_THIS
@@ -8430,6 +8431,12 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         _UNDO_PUNITIVE_ACTION
         ARE_YOU_SURE_UNDO_PUNITIVE_ACTION
         PUNITIVE_ACTION_NUMBER
+        PUNITIVE_POINTS
+        DESCRIPTION_PUNITIVE_POINTS
+        PUNITIVE_POINTS_TRANSACTION_FIELD
+        PUNITIVE_POINTS_TRANSACTION_FIELD_DESCRIPTION
+        PUNITIVE_REVERSE_POINTS_TRANSACTION
+        _PUNITIVE_REVERSE_POINTS_TRANSACTION
     ')));
 
     $non_admin_files = [
@@ -8687,6 +8694,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ACTIVITY_FILLED_SURVEY
         ACTIVITY_SEND_POINTS
         _ACTIVITY_SEND_POINTS
+        ACTIVITY_RECEIVE_POINTS
+        _ACTIVITY_RECEIVE_POINTS
         ACTIVITY_LIKES
         ACTIVITY_LIKES_UNTITLED
         ACTIVITY_PASSED_TEST
@@ -11756,6 +11765,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PRIVILEGE_use_points_escrow
         REVERSED_TRANSACTION
         VIEW_POINT_TRANSACTION
+        POINT_TRANSACTION
         _ESCROW
         _ESCROW_DISPUTE
         _ESCROW_VIEW
