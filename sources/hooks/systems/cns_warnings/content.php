@@ -325,6 +325,12 @@ class Hook_cns_warnings_content
                             $subpath = $object_fs->search($content_type, $content_id, true);
                             $object_fs->resource_delete($content_type, $filename, dirname($subpath));
 
+                            // Reverse associated points as well
+                            if (addon_installed('points')) {
+                                require_code('points2');
+                                points_transactions_reverse_all(null, null, $member_id, $content_type, 'add', $content_id);
+                            }
+
                             $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
                                 'p_warning_id' => $warning_id,
                                 'p_hook' => 'content',
