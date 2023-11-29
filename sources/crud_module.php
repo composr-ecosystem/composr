@@ -1671,20 +1671,10 @@ abstract class Standard_crud_module
 
         list($submitter) = $this->get_submitter($id);
         if (addon_installed('points')) {
-            require_code('points');
+            require_code('points2');
             $reverse = post_param_integer('reverse_point_transaction', 0);
             if ($reverse == 1) {
-                $points_test = $GLOBALS['SITE_DB']->query_select('points_ledger', ['id'], [
-                    'recipient_id' => $submitter,
-                    'status' => LEDGER_STATUS_NORMAL,
-                    't_type' => $this->content_type,
-                    't_subtype' => 'add',
-                    't_type_id' => $id,
-                ]);
-                if (array_key_exists(0, $points_test)) {
-                    require_code('points2');
-                    points_transaction_reverse($points_test[0]['id']);
-                }
+                points_transactions_reverse_all(true, null, $submitter, $this->content_type, 'add', $id);
             }
         }
 

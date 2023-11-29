@@ -275,10 +275,7 @@ function cns_delete_topic(int $topic_id, string $reason = '', ?int $post_target_
         if ($reverse_point_transaction && addon_installed('points')) {
             require_code('points2');
             foreach ($posts_deleted as $post) {
-                $ledger = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'id', ['t_type' => 'post', 't_subtype' => 'add', 't_type_id' => strval($post)]);
-                if ($ledger !== null) {
-                    points_transaction_reverse($ledger);
-                }
+                points_transactions_reverse_all(true, null, null, 'post', 'add', strval($post));
             }
         }
     }

@@ -415,12 +415,8 @@ function cns_revoke_vote_in_poll(array $topic_info, ?int $member_id = null)
 
     // Reverse points
     if (addon_installed('points')) {
-        require_code('points');
-        $ledger = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'id', ['status' => LEDGER_STATUS_NORMAL, 't_type' => 'topic_poll', 't_subtype' => 'vote', 't_type_id' => strval($poll['id'])]);
-        if ($ledger !== null) {
-            require_code('points2');
-            points_transaction_reverse($ledger, null);
-        }
+        require_code('points2');
+        points_transactions_reverse_all(null, null, null, 'topic_poll', 'vote', strval($poll['id']));
     }
 
     // Log the revocation
@@ -540,12 +536,12 @@ function cns_points_to_voting_power(int $points) : float
     $offset = intval(get_option('topic_polls_weighting_offset'));
     $multiplier = abs(floatval(get_option('topic_polls_weighting_multiplier')));
     $base = abs(floatval(get_option('topic_polls_weighting_base')));
-    
+
     // Sanity check: If negative points, then member has no voting power. This avoids root of a negative number, which equals i.
     if ($points < 0) {
         return 0.0;
     }
-    
+
     // Sanity check; if base is 1 or less, it should always be 1 so voting power is initially the number of points the member has.
     if ($base <= 1.0) {
         $base = 1.0;
@@ -583,7 +579,7 @@ function cns_calculate_poll_voting_power_text(int $points) : array
     if ($ceiling === null || $ceiling == '') {
         $ceiling = "Infinity";
     }
-    
+
     // Sanity check; if base is 1 or less, it should always be 1 so voting power is initially the number of points the member has.
     if ($base <= 1.0) {
         $base = 1.0;

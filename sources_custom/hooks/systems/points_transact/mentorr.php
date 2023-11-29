@@ -79,10 +79,7 @@ class Hook_points_transact__mentorr
 
         // If we are reversing a transaction, we should check if the transaction being reversed has a mentorr transaction tied to it, and if so, reverse that as well.
         if (($linked_to !== null) && ($status == LEDGER_STATUS_REVERSING)) {
-            $mentorr_record = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'id', ['status' => LEDGER_STATUS_NORMAL, 't_type' => 'mentorr', 't_subtype' => 'transact', 't_type_id' => strval($linked_to['id'])]);
-            if ($mentorr_record !== null) {
-                points_transaction_reverse($mentorr_record);
-            }
+            points_transactions_reverse_all(true, null, null, 'mentorr', 'transact', strval($linked_to['id']));
         }
     }
 }

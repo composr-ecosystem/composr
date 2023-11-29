@@ -501,12 +501,8 @@ function delete_chat_messages(array $where, bool $reverse_points = false)
 
             // Reverse points if requested
             if (($reverse_points) && (addon_installed('points'))) {
-                require_code('points');
-                $ledger_id = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'id', ['status' => LEDGER_STATUS_NORMAL, 't_type' => 'chat_message', 't_subtype' => 'add', 't_type_id' => strval($message['id'])]);
-                if ($ledger_id !== null) {
-                    require_code('points2');
-                    points_transaction_reverse($ledger_id);
-                }
+                require_code('points2');
+                points_transactions_reverse_all(true, null, null, 'chat_message', 'add', strval($message['id']));
             }
         }
 

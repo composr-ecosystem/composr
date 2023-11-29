@@ -384,6 +384,55 @@ function _points_refund_calculate(int $total_points, int $amount_gift_points = 0
 }
 
 /**
+ * Fully reverse all points transactions matching the provided criteria.
+ * You must provide at least one criteria to prevent accidental reversal of the entire ledger.
+ *
+ * @param  ?boolean $send_notifications Whether to send notifications for these transaction reversals (false: only the staff get it) (true: both the member and staff get it) (null: neither the member nor staff get it)
+ * @param  ?MEMBER $sender_id Filter by member who sent the points (null: do not filter)
+ * @param  ?MEMBER $recipient_id Filter by member who received the points (null: do not filter)
+ * @param  ID_TEXT $t_type Filter by content type (blank: do not filter)
+ * @param  ID_TEXT $t_subtype Filter by subtype / action (blank: do not filter)
+ * @param  ID_TEXT $t_type_id Filter by content ID (blank: do not filter)
+ * @return array An array of duples containing the ID of the original transaction, and null if the transaction could not be reversed or an array tuple of ID of the new transaction reversing, a boolean whether an escrow was also cancelled during the reversal, and an array of additional point transactions that were reversed because they had a reverse_link to this one
+ */
+function points_transactions_reverse_all(?bool $send_notifications = false, ?int $sender_id = null, ?int $recipient_id = null, string $t_type = '', string $t_subtype = '', string $t_type_id = '') : array
+{
+    // Build our where query
+    $where = [];
+    if ($sender_id !== null) {
+        $where['sender_id'] = $sender_id;
+    }
+    if ($recipient_id !== null) {
+        $where['recipient_id'] = $recipient_id;
+    }
+    if ($t_type != '') {
+        $where['t_type'] = $t_type;
+    }
+    if ($t_subtype != '') {
+        $where['t_subtype'] = $t_subtype;
+    }
+    if ($t_type_id != '') {
+        $where['t_type_id'] = $t_type_id;
+    }
+
+    // Prevent matching all points ledger records
+    if (count($where) == 0) {
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+    }
+
+    $where['locked'] = 0;
+
+    $out = [];
+
+    $rows = $GLOBALS['SITE_DB']->query_select('points_ledger', ['id'], $where);
+    foreach ($rows as $row) {
+        $out[] = [$row['id'], points_transaction_reverse($row['id'], $send_notifications, true)];
+    }
+
+    return $out;
+}
+
+/**
  * Fully reverse a points transaction.
  * This creates a new transaction that reverses the old one (e.g. refunding points), links the two transactions, and locks them.
  *
@@ -440,11 +489,10 @@ function points_transaction_reverse(int $id, ?bool $send_notifications = true, b
     }
 
     // Also reverse any transactions with reverse_link to this one (cyclic links are averted by the additional status/locked check towards the beginning of this function)
-    $also_reverse = $GLOBALS['SITE_DB']->query_select('points_ledger', ['id'], ['locked' => 0, 't_type' => 'reverse_link', 't_type_id' => strval($id)]);
+    $also_reverse = points_transactions_reverse_all(true, null, null, 'reverse_link', '', strval($id));
     $also_reversed = [];
     foreach ($also_reverse as $row2) {
-        points_transaction_reverse($row2['id'], true, true); // Do not warn_exit on errors pertaining to recursive reversals; just ignore them
-        $also_reversed[] = $row2['id'];
+        $also_reversed[] = $row2[0];
     }
 
     return [$new_record, $cancelled_escrow, $also_reversed];

@@ -144,10 +144,15 @@ class Hook_cns_warnings_points
         if (!addon_installed__messaged('cns_warnings', $error)) {
             warn_exit($error);
         }
-
+        if (!addon_installed__messaged('points', $error)) {
+            warn_exit($error);
+        }
         if (get_forum_type() != 'cns') {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
+
+        require_code('points2');
+        require_lang('points');
 
         $id = intval($punitive_action['id']);
 
@@ -157,8 +162,6 @@ class Hook_cns_warnings_points
         }
         $ledger = $row[0];
 
-        require_code('points2');
-        require_lang('points');
         points_transaction_reverse($ledger['id']);
 
         log_it('UNDO_CHARGE', strval($warning['id']), $GLOBALS['FORUM_DRIVER']->get_username($warning['w_member_id']));
