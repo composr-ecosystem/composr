@@ -83,9 +83,9 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
     $sent_table = new Tempcode();
     $spent_table = new Tempcode();
     if (($member_id_viewing == $member_id_of) || (has_privilege($member_id_viewing, 'view_points_ledger'))) {
-        $received_table = points_get_transactions('recipient', $member_id_of, $member_id_viewing, true, false);
-        $sent_table = points_get_transactions('sender', $member_id_of, $member_id_viewing, false, true);
-        $spent_table = points_get_transactions('debit', $member_id_of, $member_id_viewing, false, false);
+        $received_table = points_get_transactions_screen('recipient', $member_id_of, $member_id_viewing, true, false);
+        $sent_table = points_get_transactions_screen('sender', $member_id_of, $member_id_viewing, false, true);
+        $spent_table = points_get_transactions_screen('debit', $member_id_of, $member_id_viewing, false, false);
     }
 
     // Run points hooks for low-impact transactions / aggregate tables
@@ -299,18 +299,24 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
 }
 
 /**
- * Show the point transactions a member has had.
+ * Get the point transactions a member has had.
  *
  * @param  ID_TEXT $type The type of transactions we are looking for
- * @set sender recipient credit debit all
+ * @set sender recipient sender_recipient credit debit all
  * @param  MEMBER $member_id_of Who we are looking at transactions for
  * @param  MEMBER $member_id_viewing Who we are looking at transactions using the account of
- * @param  boolean $include_sender Whether to include the "Sender" column on the table
- * @param  boolean $include_recipient Whether to include the "Recipient" column on the table
+ * @param  integer $max Maximum number of records to return
+ * @param  integer $start The starting record number
+ * @param  SHORT_TEXT $sortable Fields by which we want to order (blank: no ordering)
+ * @param  ID_TEXT $sort_order Direction of ordering to use
+ * @set ASC DESC
+ * @param  ?integer $status Filter by the given ledger status (null: do not filter)
+ * @param  boolean $skip_locked Whether to skip locked records
  * @param  boolean $skip_low_impact Whether to skip low-impact records (like forum posts)
- * @return Tempcode The UI
+ * @param  ?TIME $after_time Only return transactions after this time (null: do not filter by time)
+ * @return array Duple of total rows in the database and an array of rows
  */
-function points_get_transactions(string $type, int $member_id_of, int $member_id_viewing, bool $include_sender = true, bool $include_recipient = true, bool $skip_low_impact = true) : object
+function points_get_transactions(string $type, int $member_id_of, int $member_id_viewing, int $max, int $start = 0, string $sortable = '', string $sort_order = 'DESC', ?int $status = null, bool $skip_locked = false, bool $skip_low_impact = true, ?int $after_time = null) : array
 {
     require_code('points');
 
@@ -318,29 +324,47 @@ function points_get_transactions(string $type, int $member_id_of, int $member_id
     $end = '';
 
     switch ($type) {
-        case 'sender':
+        case 'sender': // transactions where the member sent points to another member
             $where = ['sender_id' => $member_id_of];
-            if ($member_id_of != $member_id_viewing) { // Members should be able to see their own anonymous transactions
+
+            // Ignore anonymous transactions if we do not have the privilege to trace them
+            if (($member_id_of != $member_id_viewing) && !has_privilege($member_id_viewing, 'trace_anonymous_points_transactions')) {
                 $where['anonymous'] = 0;
             }
+
             $end = ' AND recipient_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()); // Do not include debits
             break;
-        case 'recipient':
+        case 'recipient': // Transactions where the member received points (either from other members or the system)
             $where = ['recipient_id' => $member_id_of];
-            $end = ''; // We also want to include credits, so do not filter out system senders
+            $end = '';
             break;
-        case 'credit':
+        case 'sender_recipient': // Transactions where the member sent points to other members or received points (either from other members or the system)
+            $end = ' AND ((sender_id=' . strval($member_id_of) . ' AND recipient_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
+            $end .= ') OR (recipient_id=' . strval($member_id_of) . '))'; // We also want to include credits, so do not filter out system senders
+
+            // Ignore anonymous transactions if we do not have the privilege to trace them
+            if (($member_id_of != $member_id_viewing) && !has_privilege($member_id_viewing, 'trace_anonymous_points_transactions')) {
+                $end .= ' AND anonymous<>0';
+            }
+            break;
+        case 'credit': // Transactions where the member received points from the system
             $where = ['recipient_id' => $member_id_of, 'sender_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id()];
             $end = '';
             break;
-        case 'debit':
+        case 'debit': // Transactions where the member sent points to the system
             $where = ['sender_id' => $member_id_of, 'recipient_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id()];
             $end = '';
             break;
-        case 'all':
-            $where = [];
-            $end = '';
+        case 'all': // All transactions involving the member
+            $end = ' AND (sender_id=' . strval($member_id_of) . ' OR recipient_id=' . strval($member_id_of) . ')';
             break;
+    }
+
+    if ($status !== null) {
+        $where['status'] = $status;
+    }
+    if ($skip_locked) {
+        $where['locked'] = 0;
     }
 
     // If a transaction has a t_type__t_subtype or a t_type matching the name of a points hook, then it is a low impact transaction; filter it out in the query.
@@ -356,6 +380,34 @@ function points_get_transactions(string $type, int $member_id_of, int $member_id
         }
     }
 
+    if ($after_time !== null) {
+        $end .= ' AND date_and_time>=' . strval($after_time);
+    }
+
+    $max_rows = $GLOBALS['SITE_DB']->query_select_value('points_ledger', 'COUNT(*)', $where, $end);
+
+    if ($sortable != '') {
+        $end .= ' ORDER BY ' . $sortable . ' ' . $sort_order;
+    }
+    $rows = $GLOBALS['SITE_DB']->query_select('points_ledger', ['*'], $where, $end, $max, $start);
+
+    return [$max_rows, $rows];
+}
+
+/**
+ * Show the point transactions a member has had in a table.
+ *
+ * @param  ID_TEXT $type The type of transactions we are looking for
+ * @set sender recipient credit debit all
+ * @param  MEMBER $member_id_of Who we are looking at transactions for
+ * @param  MEMBER $member_id_viewing Who we are looking at transactions using the account of
+ * @param  boolean $include_sender Whether to include the "Sender" column on the table
+ * @param  boolean $include_recipient Whether to include the "Recipient" column on the table
+ * @param  boolean $skip_low_impact Whether to skip low-impact records (like forum posts)
+ * @return Tempcode The UI
+ */
+function points_get_transactions_screen(string $type, int $member_id_of, int $member_id_viewing, bool $include_sender = true, bool $include_recipient = true, bool $skip_low_impact = true) : object
+{
     $start = get_param_integer('ledger_start_' . $type, 0);
     $max = get_param_integer('ledger_max_' . $type, intval(get_option('point_logs_per_page')));
     $sortables = ['date_and_time' => do_lang_tempcode('DATE'), 'amount' => do_lang_tempcode('AMOUNT')];
@@ -367,7 +419,8 @@ function points_get_transactions(string $type, int $member_id_of, int $member_id
     if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
         log_hack_attack_and_exit('ORDERBY_HACK');
     }
-    $max_rows = $GLOBALS['SITE_DB']->query_select_value('points_ledger', 'COUNT(*)', $where, $end);
+
+    list($max_rows, $rows) = points_get_transactions($type, $member_id_of, $member_id_viewing, $max, $start, $sortable, $sort_order, null, false, $skip_low_impact);
     if ($max_rows == 0) {
         return do_template('BLOCK_NO_ENTRIES', [
             '_GUID' => 'aad1e575a032569a761aea36a5c6befb',
@@ -375,7 +428,7 @@ function points_get_transactions(string $type, int $member_id_of, int $member_id
             'MESSAGE' => do_lang_tempcode('NO_ENTRIES'),
         ]);
     }
-    $rows = $GLOBALS['SITE_DB']->query_select('points_ledger', ['*'], $where, $end . ' ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
+
     $out = new Tempcode();
     $viewing_name = $GLOBALS['FORUM_DRIVER']->get_username($member_id_of, true);
 
