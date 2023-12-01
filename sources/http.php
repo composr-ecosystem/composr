@@ -219,7 +219,7 @@ function get_webpage_meta_details(string $url) : array
         }
 
         if (($result[1] == 'application/octet-stream') || ($result[1] == '')) {
-            // Lame, no real mime type - maybe the server is just not configured to know it - try and guess by using the file extension and our own Composr list
+            // Generic, no real mime type - maybe the server is just not configured to know it - try and guess by using the file extension and our own Composr list
             require_code('mime_types');
             require_code('files');
             $meta_details['t_mime_type'] = get_mime_type(get_file_extension($url), true);

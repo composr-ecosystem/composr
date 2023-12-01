@@ -266,7 +266,7 @@ ini_set('ocproducts.type_strictness','0');
 	{
 		if ($src_encoding == '')
 		{
-			// lame, but we know no better...
+			// generic, but we know no better...
 			$src_encoding = $GLOBALS['xmlrpc_internalencoding'];
 		}
 

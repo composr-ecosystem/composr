@@ -9,7 +9,7 @@
 	<hackattack codename="CAPTCHAFAIL" silent_to_user="true" percentage_score="1" silent_to_staff_notifications="true" silent_to_staff_log="true" />
 
 	<!-- Common spam so silence it to staff -->
-	<hackattack codename="LAME_SPAM_HACK" silent_to_staff_notifications="true" silent_to_staff_log="true" syndicate_as_spammer="true" />
+	<hackattack codename="BLACKHOLE_SPAM_HACK" silent_to_staff_notifications="true" silent_to_staff_log="true" syndicate_as_spammer="true" />
 
 	<!-- Very high-scored, enough to cause an instant ban by default, because we do not want to allow too much brute forcing; also see brute_force_login_minutes and brute_force_threshold options -->
 	<hackattack codename="BRUTEFORCE_LOGIN_HACK" percentage_score="1000" />

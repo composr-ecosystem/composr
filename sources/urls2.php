@@ -886,7 +886,7 @@ function _generate_moniker(string $moniker_src) : string
         $moniker = '-' . $moniker;
     }
 
-    // A bit lame, but maybe we'll have to
+    // Generic, but maybe we'll have to
     if ($moniker == '') {
         $moniker = 'untitled';
     }

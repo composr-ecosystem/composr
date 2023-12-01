@@ -5962,7 +5962,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         KEEP_SUBFOLDERS
         KEEP_WORDFILTER
         KEYWORDS
-        LAME_SPAM_HACK
+        BLACKHOLE_SPAM_HACK
         LANGUAGE_CACHE
         FIXED_CONTENT_LANG_STRING
         LANGUAGE_FILE

@@ -84,7 +84,7 @@ class Hook_media_rendering_vimeo extends Media_renderer_with_fallback
                 return $test;
             }
 
-            // Lame method (not so reliable)
+            // Legacy / generic method (not so reliable)
             $html = http_get_contents($src_url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]);
             if ($html === null) {
                 return null;

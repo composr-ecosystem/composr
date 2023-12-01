@@ -391,7 +391,7 @@ class Module_admin
         } else {
             foreach ($keywords as $i => $keyword_group) {
                 $_keyword_group = $keyword_group;
-                foreach ($keyword_group as $keyword) { // Lame pluralisation fudge, if we don't have stemming
+                foreach ($keyword_group as $keyword) { // Generic pluralisation fudge, if we don't have stemming
                     if ((strlen($keyword) > 3) && (substr($keyword, -1) == 's')) {
                         $_keyword_group[] = substr($keyword, 0, strlen($keyword) - 1);
                     } else {

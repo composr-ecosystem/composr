@@ -782,7 +782,7 @@ function _check_labelling(string $tag, array $attributes, bool $self_close, bool
 
     global $FOR_LABEL_IDS, $FOR_LABEL_IDS_2, $INPUT_TAG_IDS;
     if (($tag == 'td')/* || ($tag == 'div')*/) {
-        //$FOR_LABEL_IDS = []; // Can't work across table cells      Actually this is an ancient and lame restriction that hurts accessibility more than helping it
+        //$FOR_LABEL_IDS = []; // Can't work across table cells      Actually this is an ancient restriction that hurts accessibility more than helping it
     }
     if (($tag == 'label') && (isset($attributes['for']))) {
         $FOR_LABEL_IDS[$attributes['for']] = 1;

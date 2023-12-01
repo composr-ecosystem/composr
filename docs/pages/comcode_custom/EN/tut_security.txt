@@ -221,7 +221,7 @@ The following types of alert (hack-attack codenames) are defined:
  - [tt]SCRIPT_UPLOAD_HACK[/tt], The user tried to upload a PHP script. This may well be innocent (if they are uploading a saved web-page with [tt].php[/tt] in the URL for example, or if they are uploading a script they expect people to be able to download in raw form)
  - [tt]ASCII_ENTITY_URL_HACK[/tt], The user introduced HTML into a Comcode HTML tag that used ASCII-encoded entities. This is likely to be innocent, but is blocked because it can be used to trick JavaScript filtration
  - [tt]SCRIPT_URL_HACK[/tt] / [tt]SCRIPT_URL_HACK_2[/tt], This is highly likely to be a hack attempt, as a user explicitly specified a URL which was code and not a real URL
- - [tt]LAME_SPAM_HACK[/tt], This is a blocked spam attempt, where the anti-spam blackhole feature was activated -- this would only happen if a spam bot was posting and can be detected early, so doesn't go through the spam heuristics system
+ - [tt]BLACKHOLE_SPAM_HACK[/tt], This is a blocked spam attempt, where the anti-spam blackhole feature was activated -- this would only happen if a spam bot was posting and can be detected early, so doesn't go through the spam heuristics system
  - [tt]TRY_TO_DOWNLOAD_SCRIPT[/tt], The user tried to add a download with a manual URL that links to private files that are not meant to be downloadable. This may be an honest mistake -- but if it is [tt]_config.php[/tt], then it is very likely to be a hack attempt. A more detailed explanation follows further in this tutorial
  - [tt]TICKET_OTHERS_HACK[/tt], The user tried to access support tickets from another user. This is either a bug (we know of no way it would happen normally), or a hack attempt
  - [tt]TICKET_SYSTEM_WEIRD[/tt], The user tried to access a support ticket with an non-standard name. This is either a bug, or a hack attempt; if it is a hack attempt, it is probably not one that would get anywhere even if it was not blocked
@@ -305,7 +305,7 @@ We also have of internal checks that always run, many related to "Alert types" (
 [*] Referrer checks, to make sure POST requests aren't being made from non-trusted sites (i.e. CSRF-prevention, [tt]EVIL_POSTED_FORM_HACK[/tt])
 [*] [s]Input field length, so that strangely long parameter inputs are not accepted in most cases[/s] ([i]this was removed, it didn't raise security, and created bugs[/i])
 [*] External redirections, so that hackers can't create URLs linking to your site that immediately redirect you to an unsafe third-party site (this kind of thing can trick users into thinking they have clicked onto your site, when they're not there anymore). This isn't logged as a hack-attack, as it can happen too innocently, but it is filtered out.
-[*] Obvious spamming (some common spam patterns are so obvious, we can just route them direct to [tt]LAME_SPAM_HACK[/tt])
+[*] Obvious spamming
 [*] Generally making sure things are filled in when required, and expected numbers really are numbers
 [/list]
 

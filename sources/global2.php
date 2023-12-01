@@ -574,7 +574,7 @@ function init__global2()
         if (get_option('spam_blackhole_detection') == '1') {
             $blackhole = post_param_string('y' . md5(get_site_name() . ': antispam'), '');
             if ($blackhole != '') {
-                log_hack_attack_and_exit('LAME_SPAM_HACK', '<blackhole>' . $blackhole . '</blackhole>');
+                log_hack_attack_and_exit('BLACKHOLE_SPAM_HACK', '<blackhole>' . $blackhole . '</blackhole>');
             }
         }
 

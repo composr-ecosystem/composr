@@ -115,7 +115,7 @@ class Hook_page_groupings_catalogues
             }
         }
 
-        //$ret[] = ['rich_content', 'menu/rich_content/catalogues/catalogues', ['catalogues', [], get_module_zone('catalogues')], do_lang_tempcode('catalogues:CATALOGUES')];  Lame
+        //$ret[] = ['rich_content', 'menu/rich_content/catalogues/catalogues', ['catalogues', [], get_module_zone('catalogues')], do_lang_tempcode('catalogues:CATALOGUES')]; Generic
 
         return $ret;
     }
