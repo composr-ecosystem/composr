@@ -246,6 +246,9 @@ class lang_spelling_test_set extends cms_test_case
         if (stripos($string, 'him/her') !== false) {
             $ob->assertTrue(false, 'The phrase \'him/her\' was used in ' . $path . '. This should be changed to \'them\' (and the surrounding grammar may need tweaking).');
         }
+        if (preg_match('#\b(?:lame|Lame)\b#', $string) != 0) {
+            $ob->assertTrue(false, 'The word \'lame\' was used in ' . $path . '. If talking about the encoder, this should be changed to \'LAME\'. Otherwise, this should be changed to a more concise term such as \'generic\', \'general\', \'legacy\', or \'unreliable\'.');
+        }
 
         // No space or hyphen wanted (we want our canonical way)
         if (
