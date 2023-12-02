@@ -1869,6 +1869,17 @@ if (appengine_is_live()) {
 
     // ---
 
+    // If a _config.php file already exists, copy it to _config.php.bak.timestamp
+    $current_config = cms_file_get_contents_safe($config_path);
+    if ($current_config) {
+        $backup_config_file = $config_path . '.bak.' . time();
+        $success_status = cms_file_put_contents_safe($backup_config_file, $current_config, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_FIX_PERMISSIONS);
+        if (!$success_status) {
+            warn_exit(do_lang_tempcode('INSTALL_WRITE_ERROR', escape_html($backup_config_file)));
+        }
+    }
+
+    // Actually write the new _config.php
     $success_status = cms_file_put_contents_safe($config_path, $config_contents, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_FIX_PERMISSIONS);
     if (!$success_status) {
         warn_exit(do_lang_tempcode('INSTALL_WRITE_ERROR', escape_html($config_file)));
