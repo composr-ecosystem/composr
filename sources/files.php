@@ -508,6 +508,7 @@ function should_ignore_file($filepath, $bitmask = 0, $bitmask_defaults = 0)
                                                     array('\.\_.*', '.*'), // MacOS extended attributes
                                                     array('tmpfile__.*', '.*'), // cms_tempnam produced temporarily files (unfortunately we can't specify a .tmp suffix)
                                                     array('.*\.\d+.*', 'exports/file_backups'), // File backups (saved as revisions)
+                                                    array('_config\.php\.bak\.*', ''), // Backup config files
     );
     $ignore_filename_patterns = array( // Case insensitive; we'll use this only when we *need* directories that would match to be valid
     );

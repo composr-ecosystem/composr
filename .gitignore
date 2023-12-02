@@ -99,6 +99,7 @@ default/images/*/*__*.jpeg
 *test.png
 /info.php
 /_config.php
+/_config.php.bak.*
 /uploads/*/*
 !/uploads/*/index.html
 !/uploads/*/.htaccess
