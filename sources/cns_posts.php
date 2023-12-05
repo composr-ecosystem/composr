@@ -294,7 +294,7 @@ function cns_display_spacer_post(string $linked_type, string $linked_id) : array
             if ($cma_info !== null) {
                 $linked_rows = $GLOBALS['SITE_DB']->query_select($cma_info['table'], ['*'], get_content_where_for_str_id($linked_id, $cma_info), '', 1);
                 if (array_key_exists(0, $linked_rows)) {
-                    $new_post = $cma_ob->run($linked_rows[0], '_SEARCH', true, true);
+                    $new_post = $cma_ob->render_box($linked_rows[0], '_SEARCH', true, true);
                 }
                 $new_description = do_lang('THIS_IS_COMMENT_TOPIC', get_site_name());
             }
