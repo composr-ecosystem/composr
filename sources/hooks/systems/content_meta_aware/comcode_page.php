@@ -66,7 +66,7 @@ class Hook_content_meta_aware_comcode_page extends Hook_CMA
             'image_field_is_theme_image' => false,
             'alternate_icon_theme_image' => 'icons/content_types/page',
 
-            'view_page_link_pattern' => '_WILD:_WILD',
+            'view_page_link_pattern' => '_WILD',
             'edit_page_link_pattern' => '_SEARCH:cms_comcode_pages:_edit:page_link=_WILD',
             'view_category_page_link_pattern' => '_WILD:',
             'add_url' => ($get_extended_data && has_submit_permission('high', get_member(), get_ip_address(), 'cms_comcode_pages')) ? (get_module_zone('cms_comcode_pages') . ':cms_comcode_pages:edit') : null,
@@ -137,5 +137,24 @@ class Hook_content_meta_aware_comcode_page extends Hook_CMA
         require_code('zones2');
 
         return render_comcode_page_box($row, $give_context, $include_breadcrumbs, $root, $guid);
+    }
+
+    /**
+     * Get a view page-link for content.
+     *
+     * @param  ?array $row The database row for the content (null: no ID, assume passed in some other way)
+     * @param  string $append What to append to the view page-link
+     * @return string The page-link (blank: none)
+     */
+    public function get_view_page_link(?array $row, string $append = '') : string
+    {
+        $page_link = parent::get_view_page_link($row, $append);
+
+        // Assume the page is on the welcome zone if no colon exists; stick a colon at the beginning to indicate such.
+        if (strpos($page_link, ':') === false) {
+            $page_link = ':' . $page_link;
+        }
+
+        return $page_link;
     }
 }
