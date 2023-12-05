@@ -177,6 +177,7 @@ PHP;
                         $request['c_groups'],
                         $request['c_is_bot'],
                         $request['c_timezone'],
+                        $request['c_theme'],
                         $request['c_lang']
                     );
                 }
