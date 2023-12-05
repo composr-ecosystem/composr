@@ -114,7 +114,7 @@ Set the following to [b]666[/b] (full read/write permissions):
 
 The default 744 (directory) and 644 (file) permissions should be suitable. This grants read access to everyone, and write access just to the hosting account. There's no need to block read access for your files to other users.
 
-The exception is [tt]_config.php[/tt], which should be 600 for additional security (because it contains passwords). The installer will set this for you automatically, so you shouldn't need to worry.
+The exception is [tt]_config.php[/tt] and [tt]_config.php.bak.*[/tt], which should be 600 for additional security (because it contains passwords). The installer will set this for you automatically, so you shouldn't need to worry.
 
 [title="2"]CGI servers[/title]
 

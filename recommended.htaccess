@@ -65,6 +65,14 @@ AddType text/vtt .vtt
 RedirectMatch 404 /\.git
 </IfModule>
 
+# Deny access to config files; while normally they would return a blank screen, if PHP is disabled, the code (and thus the passwords) could be leaked.
+<FilesMatch "^_config\.php$">
+    Require all denied
+</FilesMatch>
+<FilesMatch "^_config\.php\.bak\.">
+    Require all denied
+</FilesMatch>
+
 <IfModule mod_rewrite.c>
 
 # Needed for mod_rewrite. Disable this line if your server does not have AllowOverride permission (can be one cause of Internal Server Errors)

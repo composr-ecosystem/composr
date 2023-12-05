@@ -1300,7 +1300,7 @@ function step_5() : object
     // Give warning if database contains data
     if (post_param_integer('confirm', 0) == 0) {
         $test = $tmp->query_select_value_if_there('db_meta', 'COUNT(*)', [], '', true);
-        if (($test !== null) && ($test > 0)) {
+        if ((($test !== null) && ($test > 0)) || file_exists(get_file_base() . '/_config.php')) {
             global $INSTALL_LANG;
             $sections = new Tempcode();
 
@@ -1313,7 +1313,7 @@ function step_5() : object
                 '_GUID' => 'aaf0386966dd4b75c8027a6b1f7454c6',
                 'URL' => $url,
                 'HIDDEN' => $hidden,
-                'MESSAGE' => do_lang_tempcode('WARNING_DB_OVERWRITE', escape_html(get_tutorial_url('tut_upgrade'))),
+                'MESSAGE' => do_lang_tempcode('WARNING_OVERWRITE', escape_html(get_tutorial_url('tut_upgrade'))),
                 'LANG' => $INSTALL_LANG,
                 'DB_TYPE' => post_param_string('db_type'),
                 'FORUM_TYPE' => $forum_type,
@@ -1912,6 +1912,16 @@ if (appengine_is_live()) {
     }
 
     // ---
+
+    // If a _config.php file already exists, copy it to _config.php.bak.timestamp
+    $current_config = cms_file_get_contents_safe($config_path);
+    if ($current_config) {
+        $backup_config_file = $config_path . '.bak.' . time();
+        $success_status = cms_file_put_contents_safe($backup_config_file, $current_config, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_FIX_PERMISSIONS);
+        if (!$success_status) {
+            warn_exit(do_lang_tempcode('INSTALL_WRITE_ERROR', escape_html($backup_config_file)));
+        }
+    }
 
     $success_status = cms_file_put_contents_safe($config_path, $config_contents, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_FIX_PERMISSIONS);
     if (!$success_status) {

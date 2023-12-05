@@ -221,7 +221,7 @@ class lang_spelling_test_set extends cms_test_case
         if (stripos($string, 'base-URL') !== false) {
             $ob->assertTrue(false, 'The word \'base-URL\' was used in ' . $path . '. This should be changed to \'base URL\'.');
         }
-        if (($key === null) || (!in_array($key, ['WARNING_DB_OVERWRITE']))) {
+        if (($key === null) || (!in_array($key, ['WARNING_OVERWRITE']))) {
             if (stripos($string, 'upper-case') !== false) {
                 $ob->assertTrue(false, 'The word \'upper-case\' was used in ' . $path . '. This should be changed to \'upper case\'.');
             }
