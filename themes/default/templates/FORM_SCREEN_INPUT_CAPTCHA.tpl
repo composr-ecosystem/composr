@@ -12,7 +12,9 @@
 				<iframe {$?,{$BROWSER_MATCHES,ie}, frameBorder="0" scrolling="no"} tabindex="-1" id="captcha-readable" class="captcha-frame" title="{!CONTACT_STAFF_TO_JOIN_IF_IMPAIRED}" src="{$FIND_SCRIPT*,captcha}?cache_break={$RAND&*}{$KEEP*,0,1}">{!CONTACT_STAFF_TO_JOIN_IF_IMPAIRED}</iframe>
 			{+END}
 			{+START,IF,{$NOT,{$CONFIG_OPTION,css_captcha,1}}}
-				<img id="captcha-readable" title="{!CONTACT_STAFF_TO_JOIN_IF_IMPAIRED}" alt="{!CONTACT_STAFF_TO_JOIN_IF_IMPAIRED}" src="{$FIND_SCRIPT*,captcha}?cache_break={$RAND&*}{$KEEP*,0,1}" />
+				<a data-open-as-overlay="{}" rel="nofollow" href="{$FIND_SCRIPT*,captcha}?cache_break={$RAND&*}&mode=large{$KEEP*,0,1}" title="{!captcha:CAPTCHA_CLICK_LARGE}" aria-haspopup="dialog">
+					<img id="captcha-readable" title="{!CONTACT_STAFF_TO_JOIN_IF_IMPAIRED}" alt="{!CONTACT_STAFF_TO_JOIN_IF_IMPAIRED}" src="{$FIND_SCRIPT*,captcha}?cache_break={$RAND&*}{$KEEP*,0,1}" />
+				</a>
 			{+END}
 			<div class="accessibility-hidden"><label for="captcha">{!captcha:AUDIO_CAPTCHA_HELP}</label></div>
 			<input {+START,IF_PASSED,TABINDEX} tabindex="{TABINDEX*}"{+END} maxlength="6" size="8" class="form-control input-text-required" type="text" id="captcha" name="captcha" />

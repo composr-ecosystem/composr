@@ -58,6 +58,7 @@ function captcha_script()
     cms_ini_set('ocproducts.xss_detect', '0');
 
     $mode = get_param_string('mode', '');
+    $large_mode = ($mode == 'large');
 
     // Audio version
     if (($mode == 'audio') && (get_option('audio_captcha') === '1')) {
@@ -94,12 +95,18 @@ function captcha_script()
         if (get_option('js_captcha') === '1') {
             echo '<div style="display: none" id="hidden-captcha">';
         }
-        echo '<div style="width: ' . strval($width) . 'px; font-size: 0; line-height: 0">';
+        echo '<div style="width: ' . ($large_mode ? strval($width * 4) : strval($width)) . 'px; font-size: 0; line-height: 0">';
+        if ($mode != 'large') {
+            echo '<a target="_blank" data-open-as-overlay="{}" rel="nofollow" href="' . find_script('captcha') . '?cache_break=' . time() . '&mode=large" title="' . do_lang('captcha:CAPTCHA_CLICK_LARGE') . '" aria-haspopup="dialog">';
+        }
         for ($j = 0; $j < $height; $j++) {
             for ($i = 0; $i < $width; $i++) {
                 $colour = imagecolorsforindex($img, imagecolorat($img, $i, $j));
-                echo '<span style="vertical-align: bottom; overflow: hidden; display: inline-block; -webkit-text-size-adjust: none; text-size-adjust: none; background: rgb(' . strval($colour['red']) . ',' . strval($colour['green']) . ',' . strval($colour['blue']) . '); width: 1px; height: 1px"></span>';
+                echo '<span style="vertical-align: bottom; overflow: hidden; display: inline-block; -webkit-text-size-adjust: none; text-size-adjust: none; background: rgb(' . strval($colour['red']) . ',' . strval($colour['green']) . ',' . strval($colour['blue']) . '); ' . ($large_mode ? 'width: 4px; height: 4px' : 'width: 1px; height: 1px') . '"></span>';
             }
+        }
+        if ($mode != 'large') {
+            echo '</a>';
         }
         echo '</div>';
         if (get_option('js_captcha') === '1') {

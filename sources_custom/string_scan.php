@@ -11838,6 +11838,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ERROR_CHECKING_FOR_SPAMMERS_RBL_IS_NORMAL_DNS
         PRIVACY_ACTION_cloudflare
         PRIVACY_REASON_cloudflare
+        CAPTCHA_CLICK_LARGE
     ')));
 
     // Remove blank lines
