@@ -369,9 +369,19 @@ function rbl_resolve(string $ip, string $rbl_domain, bool $page_level) : ?array
  * @param  float $confidence_level Confidence level (0.0 to 1.0)
  * @param  ID_TEXT $blocked_by Identifier for whatever did the blocking
  * @param  boolean $page_level Whether this is a page level check (i.e. we won't consider blocks or approval, just ban setting)
+ * @param  array $confidence_by_criterion Array of criteria matched to their specific confidence level (0.0 to 1.0)
  */
-function handle_perceived_spammer_by_confidence(string $user_ip, float $confidence_level, string $blocked_by, bool $page_level)
+function handle_perceived_spammer_by_confidence(string $user_ip, float $confidence_level, string $blocked_by, bool $page_level, array $confidence_by_criterion = [])
 {
+    // Parse our specific criterion: confidence level data
+    $additional_criteria = '';
+    foreach ($confidence_by_criterion as $criterion => $_confidence_level) {
+        if ($additional_criteria != '') {
+            $additional_criteria .= ', ';
+        }
+        $additional_criteria .= do_lang('THIS_WITH', $criterion, float_to_raw_string($_confidence_level));
+    }
+    
     // Ban
     $spam_ban_threshold = intval(get_option('spam_ban_threshold'));
     if (intval($confidence_level * 100.0) >= $spam_ban_threshold) {
@@ -381,7 +391,7 @@ function handle_perceived_spammer_by_confidence(string $user_ip, float $confiden
         if ($ban_happened) {
             require_code('notifications');
             $subject = do_lang('NOTIFICATION_SPAM_CHECK_BLOCK_SUBJECT_BAN', $user_ip, $blocked_by, float_format($confidence_level), get_site_default_lang());
-            $message = do_notification_lang('NOTIFICATION_SPAM_CHECK_BLOCK_BODY_BAN', $user_ip, $blocked_by, float_format($confidence_level), get_site_default_lang());
+            $message = do_notification_lang('NOTIFICATION_SPAM_CHECK_BLOCK_BODY_BAN', $user_ip, $blocked_by, [float_format($confidence_level), $additional_criteria], get_site_default_lang());
             dispatch_notification('core_staff:spam_check_block', null, $subject, $message, null, A_FROM_SYSTEM_PRIVILEGED);
         }
 
@@ -396,7 +406,7 @@ function handle_perceived_spammer_by_confidence(string $user_ip, float $confiden
         if (intval($confidence_level * 100.0) >= $spam_block_threshold) {
             require_code('notifications');
             $subject = do_lang('NOTIFICATION_SPAM_CHECK_BLOCK_SUBJECT_BLOCK', $user_ip, $blocked_by, float_format($confidence_level), get_site_default_lang());
-            $message = do_notification_lang('NOTIFICATION_SPAM_CHECK_BLOCK_BODY_BLOCK', $user_ip, $blocked_by, float_format($confidence_level), get_site_default_lang());
+            $message = do_notification_lang('NOTIFICATION_SPAM_CHECK_BLOCK_BODY_BLOCK', $user_ip, $blocked_by, [float_format($confidence_level), $additional_criteria], get_site_default_lang());
             dispatch_notification('core_staff:spam_check_block', null, $subject, $message, null, A_FROM_SYSTEM_PRIVILEGED);
 
             log_hack_attack_and_exit('ANTISPAM', 'block', float_to_raw_string($confidence_level));
@@ -415,7 +425,7 @@ function handle_perceived_spammer_by_confidence(string $user_ip, float $confiden
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             require_code('notifications');
             $subject = do_lang('NOTIFICATION_SPAM_CHECK_BLOCK_SUBJECT_APPROVE', $user_ip, $blocked_by, float_format($confidence_level), get_site_default_lang());
-            $message = do_notification_lang('NOTIFICATION_SPAM_CHECK_BLOCK_BODY_APPROVE', $user_ip, $blocked_by, float_format($confidence_level), get_site_default_lang());
+            $message = do_notification_lang('NOTIFICATION_SPAM_CHECK_BLOCK_BODY_APPROVE', $user_ip, $blocked_by, [float_format($confidence_level), $additional_criteria], get_site_default_lang());
             dispatch_notification('core_staff:spam_check_block', null, $subject, $message, null, A_FROM_SYSTEM_PRIVILEGED);
         }
     }
@@ -450,7 +460,7 @@ function check_stopforumspam(?string $username = null, ?string $email = null)
         $username = null;
     }
 
-    list($is_potential_blocked, $confidence_level) = _check_stopforumspam($user_ip, $username, $email);
+    list($is_potential_blocked, $confidence_level, $confidence_by_criterion) = _check_stopforumspam($user_ip, $username, $email);
 
     if (($confidence_level !== null) && ($is_potential_blocked == ANTISPAM_RESPONSE_ACTIVE)) {
         handle_perceived_spammer_by_confidence($user_ip, $confidence_level, 'stopforumspam.com', false);
@@ -463,7 +473,7 @@ function check_stopforumspam(?string $username = null, ?string $email = null)
  * @param  string $user_ip Check this IP address
  * @param  ?string $username Check this particular username that has just been supplied (null: none)
  * @param  ?EMAIL $email Check this particular e-mail address that has just been supplied (null: none)
- * @return array Pair: Listed for potential blocking as a ANTISPAM_RESPONSE_* constant, confidence level if attainable (0.0 to 1.0) (else null)
+ * @return array: Listed for potential blocking as a ANTISPAM_RESPONSE_* constant, confidence level if attainable (0.0 to 1.0) (else null), array of criteria matched to relevant confidence level for each (0.0 to 1.0)
  * @ignore
  */
 function _check_stopforumspam(string $user_ip, ?string $username = null, ?string $email = null) : array
@@ -471,6 +481,7 @@ function _check_stopforumspam(string $user_ip, ?string $username = null, ?string
     // http://www.stopforumspam.com/usage
 
     $confidence_level = null;
+    $confidence_by_criterion = [];
     $status = ANTISPAM_RESPONSE_UNLISTED;
 
     // Do the query with every detail we have
@@ -497,6 +508,7 @@ function _check_stopforumspam(string $user_ip, ?string $username = null, ?string
                     $c = $result[$criterion];
                     if ((array_key_exists('appears', $c)) && ($c['appears'] == 1)) {
                         $_confidence_level = $c['confidence'] / 100.0;
+                        $confidence_by_criterion[$criterion] = $_confidence_level;
 
                         $spam_stale_threshold = intval(get_option('spam_stale_threshold'));
                         $days_ago = floatval(time() - intval($c['lastseen'])) / (24.0 * 60.0 * 60.0);
@@ -523,16 +535,16 @@ function _check_stopforumspam(string $user_ip, ?string $username = null, ?string
             require_code('failure');
             $error = do_lang('ERROR_CHECKING_FOR_SPAMMERS', 'stopforumspam.com', $result['error'], $user_ip);
             cms_error_log($error, 'error_occurred_api');
-            return [ANTISPAM_RESPONSE_ERROR, $confidence_level];
+            return [ANTISPAM_RESPONSE_ERROR, $confidence_level, $confidence_by_criterion];
         }
     } else {
         require_code('failure');
         $error = do_lang('ERROR_CHECKING_FOR_SPAMMERS', 'stopforumspam.com', $_result->message, $user_ip);
         cms_error_log($error, 'error_occurred_api');
-        return [ANTISPAM_RESPONSE_ERROR, $confidence_level];
+        return [ANTISPAM_RESPONSE_ERROR, $confidence_level, $confidence_by_criterion];
     }
 
-    return [$status, $confidence_level];
+    return [$status, $confidence_level, $confidence_by_criterion];
 }
 
 /**
