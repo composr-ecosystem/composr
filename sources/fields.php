@@ -34,31 +34,18 @@ function catalogue_file_script()
     }
 
     $table = get_param_string('table');
-    $original_filename = get_param_string('original_filename', null, INPUT_FILTER_GET_COMPLEX);
-    $is_catalogue_type = ($table == 'catalogue_efv_short' || $table == 'catalogue_efv_long');
-    $is_member_type = ($table == 'f_member_custom_fields');
-
-    // Find file
-    switch ($table) {
-        case 'f_member_custom_fields':
-            $upload_dir = 'uploads/cns_cpf_upload';
-            break;
-
-        default:
-            $upload_dir = 'uploads/catalogues';
-            break;
-    }
-    $file = filter_naughty(get_param_string('file', false, INPUT_FILTER_GET_COMPLEX));
-    $_full = get_custom_file_base() . '/' . $upload_dir . '/' . filter_naughty(rawurldecode($file));
-    if (!file_exists($_full)) {
-        warn_exit(do_lang_tempcode('MISSING_RESOURCE', do_lang_tempcode('FILE')));
-    }
-    $size = filesize($_full);
-
+    
     // Security check; doesn't work for very old attachments (pre-v8) LEGACY note
     if ($table != 'catalogue_efv_short' && $table != 'catalogue_efv_long' && $table != 'f_member_custom_fields') { // FUDGE
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
+    
+    $original_filename = get_param_string('original_filename', null, INPUT_FILTER_GET_COMPLEX);
+    $is_catalogue_type = ($table == 'catalogue_efv_short' || $table == 'catalogue_efv_long');
+    $is_member_type = ($table == 'f_member_custom_fields');
+    
+    $file = filter_naughty(get_param_string('file', false, INPUT_FILTER_GET_COMPLEX));
+    
     $entry_id = get_param_integer('id');
     $field_id = get_param_integer('field_id', null);
     $id_field = filter_naughty_harsh(get_param_string('id_field'));
@@ -67,7 +54,7 @@ function catalogue_file_script()
         $field_id_field = filter_naughty_harsh($field_id_field);
     }
     $url_field = filter_naughty_harsh(get_param_string('url_field'));
-    $ev = $upload_dir . '/' . $file;
+    $ev = basename($file);
     if ($original_filename === null) {
         $original_filename = basename($file);
     }
@@ -79,12 +66,19 @@ function catalogue_file_script()
     if ($ev_check === null) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
     }
-    if (!in_array($ev, explode("\n", preg_replace('#( |::).*$#m', '', $ev_check)))) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR')); // ID mismatch for the file requested, to give a security error
+    
+    // Prepare the file
+    $_full = get_custom_file_base() . '/' . $ev_check;
+    if (!file_exists($_full)) {
+        warn_exit(do_lang_tempcode('MISSING_RESOURCE', do_lang_tempcode('FILE')));
     }
-    if ($original_filename !== null) {
-        $ev .= '::' . $original_filename;
+    $size = filesize($_full);
+    
+    // Security check: make sure we provided the correct file name in the URL
+    if (basename($ev_check) != $ev) {
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
+    
     if ($is_catalogue_type) { // Now check the match, if we support checking on it
         if (!is_our_server()/*We need to allow media renderer to get through*/) {
             $c_name = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'c_name', ['id' => $entry_id]);
