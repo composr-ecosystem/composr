@@ -87,7 +87,7 @@ function make_installers($skip_file_grab = false)
         download_latest_data_files();
         make_files_manifest();
         make_database_manifest();
-        if (get_param_integer('rebuild_sql', 0) == 1) {
+        if (post_param_integer('rebuild_sql', 0) == 1) {
             make_install_sql();
         }
     }
@@ -107,6 +107,7 @@ function make_installers($skip_file_grab = false)
     $make_bundled = (get_param_integer('skip_bundled', 0) == 0);
     $make_aps = false; // We don't use it right now and need to speed this all up (get_param_integer('skip_aps', 0) == 0);
     $make_omni_upgrader = (post_param_integer('make_omni_upgrader', 0) == 1);
+    $force_local = (get_param_integer('force_local', 0) == 1) ? '--force-local ' : ''; // tar flag for Windows
 
     cms_disable_time_limit();
     disable_php_memory_limit();
@@ -253,16 +254,16 @@ function make_installers($skip_file_grab = false)
         @unlink($bundled . '.gz');
 
         // Copy some files we need
-        copy(get_file_base() . '/install.sql', $builds_path . '/builds/build/' . $version_branch . '/install.sql');
+        $success = copy(get_file_base() . '/install.sql', $builds_path . '/builds/build/' . $version_branch . '/install.sql');
         fix_permissions($builds_path . '/builds/build/' . $version_branch . '/install.sql');
-        copy(get_file_base() . '/_config.php.template', $builds_path . '/builds/build/' . $version_branch . '/_config.php.template');
+        $success = copy(get_file_base() . '/_config.php.template', $builds_path . '/builds/build/' . $version_branch . '/_config.php.template');
         fix_permissions($builds_path . '/builds/build/' . $version_branch . '/_config.php.template');
 
         // Do the main work...
 
         chdir($builds_path . '/builds/build/' . $version_branch);
         if (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) == 'WIN') {
-            $cmd = 'tar --force-local -cvf ' . cms_escapeshellarg($bundled) . ' *'; // --force-local is required for Windows style absolute paths https://stackoverflow.com/a/37996249/362006
+            $cmd = 'tar -cvf ' . $force_local . cms_escapeshellarg($bundled) . ' *'; // --force-local may be required for Windows style absolute paths https://stackoverflow.com/a/37996249/362006
         } else {
             $cmd = 'tar -cvf ' . cms_escapeshellarg($bundled) . ' *';
         }
@@ -275,7 +276,7 @@ function make_installers($skip_file_grab = false)
 
         chdir(get_file_base() . '/data_custom/builds');
         if (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) == 'WIN') {
-            $cmd = 'tar --force-local -rvf ' . cms_escapeshellarg($bundled) . ' readme.txt'; // --force-local is required for Windows style absolute paths https://stackoverflow.com/a/37996249/362006
+            $cmd = 'tar -rvf ' . $force_local . cms_escapeshellarg($bundled) . ' readme.txt'; // --force-local may be required for Windows style absolute paths https://stackoverflow.com/a/37996249/362006
         } else {
             $cmd = 'tar -rvf ' . cms_escapeshellarg($bundled) . ' readme.txt';
         }
@@ -403,7 +404,7 @@ function make_installers($skip_file_grab = false)
         // Do the main work
         chdir($builds_path . '/builds/build/' . $version_branch);
         if (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) == 'WIN') {
-            $cmd = 'tar --force-local --exclude=_config.php --exclude=install.php -cvf ' . cms_escapeshellarg($omni_upgrader) . ' *'; // --force-local is required for Windows style absolute paths https://stackoverflow.com/a/37996249/362006
+            $cmd = 'tar --exclude=_config.php --exclude=install.php -cvf ' . $force_local . cms_escapeshellarg($omni_upgrader) . ' *'; // --force-local may be required for Windows style absolute paths https://stackoverflow.com/a/37996249/362006
         } else {
             $cmd = 'tar --exclude=_config.php --exclude=install.php -cvf ' . cms_escapeshellarg($omni_upgrader) . ' *';
         }
