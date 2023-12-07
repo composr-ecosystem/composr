@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2016
+ Copyright (c) ocProducts, 2004-2023
 
  See text/EN/licence.txt for full licencing information.
 
@@ -269,14 +269,14 @@ function is_temp_file($path)
     $_temp_dir = cms_get_temp_dir();
     $temp_dirs = array(
         realpath($_temp_dir[0]),
-        get_custom_file_base() . '/safe_mode_temp',
+        realpath(get_custom_file_base() . '/safe_mode_temp'),
     );
 
     foreach ($temp_dirs as $temp_dir) {
-        if (substr($path, 0, strlen($temp_dir) + 1) == $temp_dir . '/') {
+        if (substr($path, 0, strlen($temp_dir) + 1) == $temp_dir . '/') { // Unix
             return true;
         }
-        if (substr($path, 0, strlen($temp_dir) + 1) == $temp_dir . '\\') {
+        if (substr($path, 0, strlen($temp_dir) + 1) == $temp_dir . '\\') { // Windows
             return true;
         }
     }
