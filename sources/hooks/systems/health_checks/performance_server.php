@@ -573,7 +573,9 @@ class Hook_health_check_performance_server extends Hook_Health_Check
                 }
             } elseif (strpos(PHP_OS, 'Linux') !== false) {
                 $data = shell_exec('free');
-                if (preg_match('#^Mem:\s+(\d+)\s+(\d+)\s+(\d+)#m', $data, $matches) != 0) {
+                if (preg_match('#^Mem:\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)#m', $data, $matches) != 0) {
+                    $bytes_free = intval($matches[6]) * 1024;
+                } elseif (preg_match('#^Mem:\s+(\d+)\s+(\d+)\s+(\d+)#m', $data, $matches) != 0) {
                     $bytes_free = intval($matches[3]) * 1024;
                 }
             } elseif (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) == 'WIN') {
