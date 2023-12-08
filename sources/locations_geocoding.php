@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2016
+ Copyright (c) ocProducts, 2004-2023
 
  See text/EN/licence.txt for full licencing information.
 
@@ -138,7 +138,7 @@ function _google_geocode($url_params, &$error_msg = null)
         $error_msg = do_lang_tempcode('GOOGLE_GEOCODE_OVER_QUERY_LIMIT');
         return null;
     }
-    
+
     $key = get_option('google_geocode_api_key');
     if ($key == '') {
         $error_msg = do_lang_tempcode('GOOGLE_GEOCODE_API_NOT_CONFIGURED');

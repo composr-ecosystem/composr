@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2016
+ Copyright (c) ocProducts, 2004-2023
 
  See text/EN/licence.txt for full licencing information.
 
@@ -53,7 +53,7 @@ class _installer_test_set extends cms_test_case
 
         http_download_file($url);
 
-        $this->assertTrue($GLOBALS['HTTP_MESSAGE'] == '200');
+        $this->assertTrue($GLOBALS['HTTP_MESSAGE'] == '200', 'Expected build install.php to return HTTP status 200, but it instead returned ' . $GLOBALS['HTTP_MESSAGE']);
     }
 
     public function testDoesNotFullyCrash()
@@ -63,8 +63,8 @@ class _installer_test_set extends cms_test_case
         }
 
         $test = http_download_file(get_base_url() . '/install.php', null, false);
-        $this->assertTrue($GLOBALS['HTTP_MESSAGE'] == '200');
-        $this->assertTrue(strpos($test, 'type="submit"') !== false); // Has start button: meaning something worked
+        $this->assertTrue($GLOBALS['HTTP_MESSAGE'] == '200', 'Expected main install.php to return HTTP status 200, but it instead returned ' . $GLOBALS['HTTP_MESSAGE']);
+        $this->assertTrue(strpos($test, 'type="submit"') !== false, 'Expected main install.php to contain a start button, but it did not.'); // Has start button: meaning something worked
     }
 
     public function testFullInstall()
@@ -107,8 +107,17 @@ class _installer_test_set extends cms_test_case
         // Assumes we're using a blank root password, which is typically the case on development) - or you have it in $SITE_INFO['mysql_root_password']
         global $SITE_INFO;
         require_code('install_headless');
+
+        if (isset($SITE_INFO['mysql_root_password'])) {
+            $db_username = 'root';
+            $db_password = $SITE_INFO['mysql_root_password'];
+        } else {
+            $db_username = (strpos(get_db_site(), 'mysql') === false) ? get_db_site_user() : 'root';
+            $db_password = '';
+        }
+
         for ($i = 0; $i < 2; $i++) { // 1st trial is clean DB, 2nd trial is dirty DB
-            $success = do_install_to($database, (strpos(get_db_site(), 'mysql') === false) ? get_db_site_user() : 'root', isset($SITE_INFO['mysql_root_password']) ? $SITE_INFO['mysql_root_password'] : '', $table_prefix, $safe_mode);
+            $success = do_install_to($database, $db_username, $db_password, $table_prefix, $safe_mode);
             $fail_message = 'Failed on trial #' . strval($i + 1) . ' ';
             $fail_message .= ($safe_mode ? '(safe mode)' : '(no safe mode)');
             if (!isset($_GET['debug'])) {

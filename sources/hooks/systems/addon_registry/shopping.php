@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2016
+ Copyright (c) ocProducts, 2004-2023
 
  See text/EN/licence.txt for full licencing information.
 
@@ -714,12 +714,12 @@ class Hook_addon_registry_shopping
             'PRODUCT_CODE' => placeholder_id(),
             'PRICE' => placeholder_number(),
             'RATING' => $rating_inside,
-            'MAP_TABLE' => placeholder_table(),
             'ADD_TO_CART' => placeholder_url(),
             'FIELDS' => $fields,
             'URL' => placeholder_url(),
             'VIEW_URL' => placeholder_url(),
             'ALLOW_RATING' => false,
+            'FIELDS_GRID' => placeholder_table(),
         );
         $entry = do_lorem_template('CATALOGUE_products_GRID_ENTRY_WRAP', $map);
 

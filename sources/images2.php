@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2016
+ Copyright (c) ocProducts, 2004-2023
 
  See text/EN/licence.txt for full licencing information.
 
@@ -492,11 +492,11 @@ function _convert_image($from, $to, $width, $height, $box_width = -1, $exit_on_e
     // Clean up
     imagedestroy($source);
 
-    // Save
+    // Determine our output extension if not defined
     if (is_null($ext2)) {
-        $ext2 = get_file_extension($to);
+        $ext2 = get_file_extension($from);
         if ($ext2 == '') {
-            $ext2 = get_file_extension($from);
+            $ext2 = get_file_extension($to);
             if ($ext2 == '') {
                $ext2 = null;
             }

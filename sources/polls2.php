@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2016
+ Copyright (c) ocProducts, 2004-2023
 
  See text/EN/licence.txt for full licencing information.
 
@@ -362,5 +362,5 @@ function set_poll($id)
  */
 function unset_poll($id)
 {
-    $GLOBALS['SITE_DB']->query_update('poll', ['is_current' => 0, 'date_and_time' => time()], ['id' => $id], '', 1);
+    $GLOBALS['SITE_DB']->query_update('poll', array('is_current' => 0, 'date_and_time' => time()), array('id' => $id), '', 1);
 }

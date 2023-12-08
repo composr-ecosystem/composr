@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2016
+ Copyright (c) ocProducts, 2004-2023
 
  See text/EN/licence.txt for full licencing information.
 
@@ -560,6 +560,8 @@ class css_file_test_set extends cms_test_case
             'progressWrapper',
             'questionTable',
             'less_compact',
+            'bundled',
+            'non_bundled',
         );
         if (in_array($class, $exceptions)) {
             return true;

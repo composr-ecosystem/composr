@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2016
+ Copyright (c) ocProducts, 2004-2023
 
  See text/EN/licence.txt for full licencing information.
 
@@ -33,10 +33,10 @@ And change to use query_to_search_tokens
 4) Call 'delete_from_index' throughout any delete actualiser functions
 
 5) Turn hidden options into real ones, and also...
- Checkboxes for when to use nusearch  
-  Particular languages flagged to prefer it 
-  Heavy filtered queries 
-  If database driver does not have fulltext search 
+ Checkboxes for when to use nusearch
+  Particular languages flagged to prefer it
+  Heavy filtered queries
+  If database driver does not have fulltext search
   Any simple search query
   Queries matching a particular regular expression
 
@@ -899,7 +899,7 @@ class CRC24
 
         for ($i = 0; $i < $tableSize; ++$i) {
             $crc = $i;
- 
+
             $crc <<= $this->bitLength - 8;
 
             for ($j = 0; $j < 8; ++$j) {
