@@ -109,9 +109,19 @@ function phase_0()
         $_result = http_download_file($api_url, null, true, false, 'Composr', array('parameters' => array($_discovered_tracker_issues, $on_disk_version, $dig_deep ? $previous_version : null)));
         $tracker_issue_titles = json_decode($_result, true);
 
+        $on_disk_version_parts = explode('.', $on_disk_version);
+        $last = count($on_disk_version_parts) - 1;
+        $on_disk_version_parts[$last] = strval(intval($on_disk_version_parts[$last]) - 1);
+        $on_disk_version_previous = implode('.', $on_disk_version_parts);
+
+        $tracker_url = 'http://compo.sr/tracker/search.php?project_id=1';
+        if (($on_disk_version_parts[$last] >= 0) && (substr_count($on_disk_version, '.') == 2)) {
+            $tracker_url .= '&product_version=' . urlencode($on_disk_version_previous);
+        }
+
         // Start populating changes
         if (count($tracker_issue_titles) > 0) {
-            $changes = "The following tracker issues have been resolved since version " . $previous_version . "...\n";
+            $changes = 'The following [url="tracker issues"]' . $tracker_url . '[/url] have been resolved since version ' . $previous_version . "...\n";
             ksort($tracker_issue_titles); // Sort by tracker ID (usually results in oldest to newest sorting)
             foreach ($tracker_issue_titles as $key => $summary) {
                 if (strpos($summary, '[[All Projects] General]') === false) { // Only ones in the main Composr project
@@ -133,16 +143,6 @@ function phase_0()
         }
     } else {
         $changes = 'All reported bugs since the last release have been fixed.';
-    }
-
-    $on_disk_version_parts = explode('.', $on_disk_version);
-    $last = count($on_disk_version_parts) - 1;
-    $on_disk_version_parts[$last] = strval(intval($on_disk_version_parts[$last]) - 1);
-    $on_disk_version_previous = implode('.', $on_disk_version_parts);
-
-    $tracker_url = 'http://compo.sr/tracker/search.php?project_id=1';
-    if (($on_disk_version_parts[$last] >= 0) && (substr_count($on_disk_version, '.') == 2)) {
-        $tracker_url .= '&product_version=' . urlencode($on_disk_version_previous);
     }
 
     $post_url = static_evaluate_tempcode(get_self_url(false, false, array('type' => '1')));
