@@ -227,7 +227,7 @@ If you still are not convinced that Composr is the right choice for you, conside
 [title="2"]See also[/title]
 
  - [url="PHP documentation"]http://www.php.net/docs.php[/url]
- - [url="MySQL documentation"]http://dev.mysql.com/doc/mysql/en/[/url]
+ - [url="MySQL documentation"]https://dev.mysql.com/doc/[/url]
  - [page="_SEARCH:tut_programming"]Introduction to programming[/page]
  - [url="API guide"]{$BRAND_BASE_URL}/docs/api/[/url]
  - [page="_SEARCH:codebook"]Composr Code Book[/page]

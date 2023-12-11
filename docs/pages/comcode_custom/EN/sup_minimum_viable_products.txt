@@ -92,7 +92,6 @@ The market adapts to innovations such as Composr. The expectations from your web
 
 [title="2"]See also[/title]
 
- - https://pragprog.com/magazines/2010-10/way-of-the-agile-warrior
  - [page="_SEARCH:sup_complex_projects"]How to approach complex projects[/page]
  - [page="_SEARCH:sup_pricing"]Project pricing[/page]
  - [page="_SEARCH:sup_running_agency"]Guide to running a web agency[/page]

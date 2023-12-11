@@ -173,7 +173,7 @@ $decision_tree = array(
 
 There are 3 ways to contribute code to Composr:
 [list=\"1\"]
-[*] Make a [url=\"merge request\" target=\"_blank\"]https://docs.gitlab.com/ee/gitlab-basics/add-merge-request.html[/url] on [url=\"GitLab\" target=\"_blank\"]" . COMPOSR_REPOS_URL . "[/url]. It is also a good idea to [url=\"create an issue on the tracker\" target=\"_blank\"]" . get_base_url() . "/tracker/bug_report_page.php[/url] to reference your changes and merge request.
+[*] Make a [url=\"merge request\" target=\"_blank\"]https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html[/url] on [url=\"GitLab\" target=\"_blank\"]" . COMPOSR_REPOS_URL . "[/url]. It is also a good idea to [url=\"create an issue on the tracker\" target=\"_blank\"]" . get_base_url() . "/tracker/bug_report_page.php[/url] to reference your changes and merge request.
 [*] Post a patch [url=\"in an issue on the tracker\" target=\"_blank\"]" . get_base_url() . "/tracker/bug_report_page.php[/url].
 [*] [page=\"site:tickets:ticket:ticket_type=Partnership\"]Request direct git write-access[/page].\nWe can only provide write-access to Git when someone shows a serious commitment to the project in the form of high-quality code, because we need to be careful with security and quality.
 [/list]

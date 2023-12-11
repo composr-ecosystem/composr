@@ -1129,7 +1129,6 @@ You will find a number of options in Admin Zone > Setup > Configuration > Access
 
 [title="2"]See also[/title]
 
- - http://spyrestudios.com/website-accessibility-tools/
  - [page="_SEARCH:atag"]Authoring Tool Accessibility Guidelines 2.0 -- Composr version 3.0 compliance[/page]
  - [url="WAI specification"]http://www.w3.org/TR/WAI-WEBCONTENT/[/url]
  - [url="Popular accessibility validator"]http://wave.webaim.org/[/url]

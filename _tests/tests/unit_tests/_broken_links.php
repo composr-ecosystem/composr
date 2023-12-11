@@ -129,19 +129,24 @@ class _broken_links_test_set extends cms_test_case
         if (empty($url)) {
             return;
         }
-        if (preg_match('#^http://digg\.com/submit\?phase=2&url=#', $url) != 0) {
+        if (preg_match('#^https://digg\.com/submit\?phase=2&url=#', $url) != 0) {
             return;
         }
-        if (preg_match('#^http://december.com/html/4/element/#', $url) != 0) {
+        if (preg_match('#^https://december.com/html/4/element/#', $url) != 0) {
             return;
         }
-        if (preg_match('#^http://shareddemo.composr.info/#', $url) != 0) {
+        if (preg_match('#^https://shareddemo.composr.info/#', $url) != 0) {
             return;
         }
-        if (preg_match('#^http://compo.sr/docs10/#', $url) != 0) {
+        if (preg_match('#^https://compo.sr/docs10/#', $url) != 0) {
             return;
         }
-        if (in_array($url, array('https://cloud.google.com/console', 'https://www.google.com/webmasters/tools/home', 'https://console.developers.google.com/project', 'https://itouchmap.com/latlong.html', 'https://www.techsmith.com/jing-tool.html'))) {
+        if (in_array($url, array('https://cloud.google.com/console', 'https://console.cloud.google.com', 'https://console.developers.google.com/project', 'https://console.cloud.google.com/cloud-resource-manager', 'https://itouchmap.com/latlong.html', 'https://www.techsmith.com/jing-tool.html'))) {
+            return;
+        }
+
+        // These URLs have a CAPTCHA which prevents check_url_exists from working
+        if (in_array($url, array('https://stackoverflow.com/search?q=cms'))) {
             return;
         }
 

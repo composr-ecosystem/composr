@@ -9,7 +9,7 @@ The first thing you need to do to be able to set up your AdSense adverts is foll
 
 Once you have completed the form you have to wait until your application is accepted. Assuming your application is accepted, you will need to set up your AdSense ads. There is a bit of a catch 22 with AdSense for a brand new site as they won't accept an account until there is some proper content and your site is fully built. This means you may have to use a place holder for a while or leave some blank space where the AdSense ads will go until you have been accepted.
 
-If you haven't used this before I recommend running through Google AdSense academy which can be found here: [url]https://support.google.com/adsense/answer/3180977?hl=e[/url]
+If you haven't used this before I recommend running through Google AdSense academy which can be found here: [url]https://support.google.com/google-ads/answer/7539883?hl=en[/url]
 
 If you want to replace the existing banners with AdSense banners in the header you need to set Google AdSense to 728&times;90 or you will need to edit the styling to make the banners fit.
 

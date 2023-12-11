@@ -257,13 +257,10 @@ Here are some links I've collected over the years that talk about website quotat
 [*] http://www.howmuchdoesawebsitecost.com/
 [*] http://web.archive.org/web/20160401082354/http://www.bigclick.com.au/blog/2009/04/05/is-web-development-expensive/
 [*] http://stackoverflow.com/questions/209170/how-much-does-it-cost-to-develop-an-iphone-application
-[*] http://ezinearticles.com/?iPhone-App-Development---How-Long-Should-It-Take-to-Build-an-App?&id=5009146
-[*] http://www.ukbusinessforums.co.uk/forums/showthread.php?t=189357
 [*] https://moz.com/blog/seo-pricing-costs-of-services
-[*] http://www.atilus.com/webpost/what_does_a_website_cost//?what-does-a-website-cost/
+[*] https://atilus.com/what-does-a-website-cost-web-site-development-costs/
 [*] http://www.outofwebsite.com/web-design-tips/tips/archives/planning-budget.html
 [*] http://www.pearsonified.com/2006/06/how_much_should_a_design_cost.php
-[*] http://www.executionists.com/blog/cost-to-build-websites-2014/
 [*] http://www.creativebloq.com/app-design/how-much-make-app-9134501
 [*] https://news.ycombinator.com/item?id=4505112
 [/list]

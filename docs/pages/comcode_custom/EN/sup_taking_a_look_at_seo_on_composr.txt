@@ -5,7 +5,7 @@ Composr has a number of inbuilt features to aid your SEO efforts. Search engine 
 
 The first set of options you need to go through can be found in Admin Zone > Setup > Configuration > Site options. The first options you need to edit are in the General section of the list of options. It may be you have already filled in this section if you went through the set up wizard when you first built your website. This section includes the following options:
 [list]
-[*] Auto submit sitemap which will automatically submit your updated XML sitemap to Google. I still recommend setting up Google webmaster tools and submitting your sitemap here too so you can see how many pages have been indexed.
+[*] Auto submit sitemap which will automatically submit your updated XML sitemap to Google. I still recommend setting up Google Search Console and submitting your sitemap here too so you can see how many pages have been indexed.
 [*] Automatic keyword extraction which will automatically fill in the page keywords when you add news or a new page if you do not manually fill in this section. I do recommend filling the keywords section manually to make sure you have the keywords you want to target but if not Composr will fill this in for you.
 [*] Site name, Site scope and site description are the main information relating to what your site is about and will form the basis of the metadata for you main site pages.
 [*] Keywords are the main keywords associated with your site and will appear to Google spiders. There is some debate to the value of keywords for SEO but if you want to fill them in they can be found here.

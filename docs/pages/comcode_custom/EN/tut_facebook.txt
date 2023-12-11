@@ -66,7 +66,7 @@ For example, [tt]mycomposrtestsite.com[/tt], with a line like the following in y
 127.0.0.1 mycomposrtestsite.com
 [/code]
 
-All major operating systems support a hosts file. Rackspace provide a nice [url="tutorial for editing the hosts file"]http://www.rackspace.com/knowledge_center/article/how-do-i-modify-my-hosts-file[/url].
+All major operating systems support a hosts file. Rackspace provide a nice [url="tutorial for editing the hosts file"]https://docs.rackspace.com/docs/modify-your-hosts-file[/url].
 
 Note there is no need to use a real domain name, it can be completely made up.
 
@@ -100,7 +100,7 @@ Installing the addon to Composr will override some key templates to [tt]themes/d
 [media width="150" description="Composr configuration options" float="right"]data_custom/images/docs/tut_facebook/facebook_config.png[/media]
 1) Go to Admin Zone > Setup > Configuration > Composr API options > Facebook syndication / login.
 2) Configure the "Facebook app ID" and "Facebook app secret" options. You noted down the values earlier.
-3) Also configure the "Facebook page ID" option. This is a useful helper tool: http://findmyfbid.com/.
+3) Also configure the "Facebook page ID" option.
 
 Make sure your site is not closed (you can change the settings in Admin Zone > Setup > Configuration > Site Options > Closed site). Facebook integration cannot work if Facebook is denied from connecting back to your website.
 [/surround]

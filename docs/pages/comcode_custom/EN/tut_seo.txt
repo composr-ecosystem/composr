@@ -108,7 +108,7 @@ You then need to manually submit the URL of the Sitemap (which will show in the 
 To test your Sitemap is generating correctly, open up [tt]http://yourbaseurl/data_custom/sitemaps/index.xml[/tt]. You should see an [abbr="eXtensible Markup Language"]XML[/abbr] document with reference to individual sitemap(s).
 
 [box="Important note about Google"]
-For Google to accept the automated Sitemap submissions you need to first submit it via [url="Google webmaster tools"]https://www.google.com/webmasters/tools/home[/url]. After you have done this, future automated submissions will go straight through. Google webmaster tools is a great tool in its own right to see how your website is performing on Google.
+For Google to accept the automated Sitemap submissions you need to first submit it via [url="Google Search Console"]https://search.google.com/search-console/welcome[/url]. After you have done this, future automated submissions will go straight through. Google Search Console is a great tool in its own right to see how your website is performing on Google.
 
 Alternatively you can reference it in your [tt]robots.txt[/tt] file, as shown in the [page="_SEARCH:tut_security"]Security tutorial[/page].
 [/box]
@@ -133,14 +133,14 @@ This is very cryptic, but the ID number is on the end after [tt]%3A[/tt] (in thi
 Any underscores ([tt]_[/tt]) in page names will automatically be replaced by dashes ([tt]-[/tt]) in URLs, as this is the convention for URLs.
 This happens regardless of configuration.
 
-[title="2"]Google Webmaster Tools[/title]
+[title="2"]Google Search Console[/title]
 
-Google Webmaster Tools lets you monitor search engine crawling activity on your website. Other search engines often have similar systems.
+Google Search Console lets you monitor search engine crawling activity on your website. Other search engines often have similar systems.
 You first need to prove ownership of a particular site via an automated process, then the range of tools become available to you.
 
 [title="3"]Stay calm[/title]
 
-People often have questions regarding Google Webmaster Tools because it displays various errors and warnings and people fear these impact SEO.
+People often have questions regarding Google Search Console because it displays various errors and warnings and people fear these impact SEO.
 
 Most errors displayed have nothing to do with hurting your general search ranking, they are only warnings about specific URLs, rather the site as a whole. Any non-trivial site will have many of these errors, if only because sites change over time and Google has old URLs in its database. Google obviously is not going to penalise all these websites, and won't penalise you for some untidiness either.
 
@@ -148,7 +148,7 @@ It's important to understand that Google doesn't do a lot of negotiation about w
 
 Often access-denied errors show up. You should not think of Google being given a error as something necessarily wrong with your site. It simply means Google made a request, and received an error response. That is a normal and legitimate thing to happen, especially if it is a 401 "access denied" response. It's a normal part of the web, not a system failure. This is a subtle but important point: Google getting a 401 response is not like a police caution, it is normal and instructional. It is an error with respect to that URL not being accessible, but not an error with respect to a system failure or even implication of a bad link (it is valid to give users a link that returns a 401 response in some cases, for example, telling them to log in).
 
-An anally-retentive attitude isn't wholly bad for SEO, especially if you are tuning pages or crafting how things are linked together -- but it doesn't work well if you take Webmaster Tool warnings out of context, as something that needs to be eliminated 100%. Google Webmaster Tools provide these warnings to help you review things in general.
+An anally-retentive attitude isn't wholly bad for SEO, especially if you are tuning pages or crafting how things are linked together -- but it doesn't work well if you take Webmaster Tool warnings out of context, as something that needs to be eliminated 100%. Google Search Console provide these warnings to help you review things in general.
 
 Of course, if you are seeing an error on a particular URL and you want that URL to be crawled, you should look into it.
 
@@ -212,10 +212,10 @@ If you are going to go down the SEO route, make sure that you have someone who w
  - [page="_SEARCH:tut_configuration"]Basic configuration and getting started[/page]
  - [page="_SEARCH:tut_accessibility"]Helping improve site accessibility for disabled users[/page]
  - [page="_SEARCH:tut_metadata"]Metadata[/page]
- - [url="Submit to Google"]https://www.google.com/webmasters/tools/submit-url[/url]
+ - [url="Submit to Google"]https://search.google.com/search-console/welcome[/url]
  - [url="Submit to Bing"]http://www.bing.com/toolbox/submit-site-url[/url]
  - [url="Sitemaps specification"]http://www.sitemaps.org/[/url]
- - [url="Google webmaster tools"]https://www.google.com/webmasters/tools/home[/url]
+ - [url="Google Search Console"]https://search.google.com/search-console/welcome[/url]
  - https://www.werockyourweb.com/spyfu-vs-semrush-vs-moz-vs-raven-vs-majestic/
  - [url="moz.com"]https://moz.com/[/url]
  - [url="SEMrush"]https://www.semrush.com/[/url]

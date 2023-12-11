@@ -60,7 +60,7 @@ class special_links_test_set extends cms_test_case
         global $HTTP_DOWNLOAD_URL;
         $urls = array(
             'https://seositecheckup.com/' => true,
-            'https://www.google.com/webmasters/tools/home' => false,
+            'https://search.google.com/search-console/welcome' => false,
             'https://www.thehoth.com/' => true,
             'https://www.authoritylabs.com/ranking-tool/' => true,
             'https://validator.w3.org/' => true,

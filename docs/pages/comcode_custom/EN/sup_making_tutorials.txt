@@ -2,7 +2,7 @@
 
 This tutorial will show you how to add a new supplementary tutorial to Composr.
 You will need commit access to do this, which is given out to established community members.
-If you do not yet have commit access then you can submit a merge request, however. This isn't directly described in this tutorial, [url="but GitLab has a tutorial"]https://docs.gitlab.com/ee/gitlab-basics/add-merge-request.html[/url].
+If you do not yet have commit access then you can submit a merge request, however. This isn't directly described in this tutorial, [url="but GitLab has a tutorial"]https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html[/url].
 
 Git too complex? Very understandable, in which case you can ask a developer to help you, or simply submit a link to your own hosted copy of the tutorial via the obvious spot on the compo.sr website. We prefer to have things in git so they stay online, and stay updated, but something is always better than nothing.
 

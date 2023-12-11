@@ -30,15 +30,15 @@ This section is a short example-driven tutorial on creating a new Composr block 
 [title="3"]What You'll Need[/title]
 
  - A text editor, preferably one aimed at programmers. A word processor will not do, and neither will Windows Notepad (if you try to use Notepad it will cause you lots of headaches later!). Examples of good programming text editors are:
-  - [url="http://en.wikipedia.org/wiki/JEdit" target="_blank"]jEdit[/url] (Linux, Windows, Mac OSX)
-  - [url="http://en.wikipedia.org/wiki/Geany" target="_blank"]Geany[/url] (Linux, Windows, Mac OSX)
-  - [url="http://en.wikipedia.org/wiki/Kate_%28text_editor%29" target="_blank"]Kate[/url] (Linux, Windows, Mac OSX)
-  - [url="http://en.wikipedia.org/wiki/KWrite" target="_blank"]KWrite[/url] (Linux, Windows, Mac OSX)
-  - [url="http://en.wikipedia.org/wiki/Metapad" target="_blank"]MetaPad[/url] (Windows)
-  - [url="http://en.wikipedia.org/wiki/Notepad%2B%2B" target="_blank"]Notepad++[/url] (Windows)
-  - [url="http://en.wikipedia.org/wiki/Notepad2" target="_blank"]Notepad2[/url] (Windows)
+  - [url="https://en.wikipedia.org/wiki/JEdit" target="_blank"]jEdit[/url] (Linux, Windows, Mac OSX)
+  - [url="https://en.wikipedia.org/wiki/Geany" target="_blank"]Geany[/url] (Linux, Windows, Mac OSX)
+  - [url="https://en.wikipedia.org/wiki/Kate_%28text_editor%29" target="_blank"]Kate[/url] (Linux, Windows, Mac OSX)
+  - [url="https://en.wikipedia.org/wiki/KWrite" target="_blank"]KWrite[/url] (Linux, Windows, Mac OSX)
+  - [url="https://en.wikipedia.org/wiki/Metapad" target="_blank"]MetaPad[/url] (Windows)
+  - [url="https://en.wikipedia.org/wiki/Notepad%2B%2B" target="_blank"]Notepad++[/url] (Windows)
+  - [url="https://en.wikipedia.org/wiki/Notepad2" target="_blank"]Notepad2[/url] (Windows)
  - A working Composr installation (see the [page="docs:tutorials"]Composr documentation[/page] on how to get up and running). This doesn't necessarily have to be a live website, for example it could be installed on your home computer and only accessible to your home network.
- - Some HTML you would like to reference from inside Composr. Usually you can find lots of examples of this kind of thing under names like "embed code", "blog widget" and that kind of thing. It should be in the [url="http://en.wikipedia.org/wiki/HTML" target="_blank"]HTML[/url] format. For this example I'm using some code from the [url="http://www.osm.org" target="_blank"]OpenStreetMap project[/url], which I'll describe below.
+ - Some HTML you would like to reference from inside Composr. Usually you can find lots of examples of this kind of thing under names like "embed code", "blog widget" and that kind of thing. It should be in the [url="https://en.wikipedia.org/wiki/HTML" target="_blank"]HTML[/url] format. For this example I'm using some code from the [url="http://www.osm.org" target="_blank"]OpenStreetMap project[/url], which I'll describe below.
 
 [title="3"]Getting Started[/title]
 
@@ -109,7 +109,7 @@ In the previous section, we saw how to write the PHP necessary for Composr to ru
 
 [title="3"]Functions[/title]
 
-One of the most widely used ideas in programming is that of the [i]function[/i]. Like functions in Maths (such as [url="http://en.wikipedia.org/wiki/Sine"]sine[/url] and [url="http://en.wikipedia.org/wiki/Cosine"]cosine[/url]), functions can be used in PHP to re-use some process which has been defined before. All that is required to use a function is knowing its name, knowing what it needs to be given to act upon (eg. sine and cosine need to be given an angle to work with) and having it available to your program (not every function is available all of the time, since it would take up far too much memory to have them all waiting around and not being used). What makes functions so powerful is that in order to use them, we don't need to care about how they do what they do (their "implementation"), all we have to know is how to make them run ("calling" them).
+One of the most widely used ideas in programming is that of the [i]function[/i]. Like functions in Maths (such as [url="https://en.wikipedia.org/wiki/Sine"]sine[/url] and [url="https://en.wikipedia.org/wiki/Cosine"]cosine[/url]), functions can be used in PHP to re-use some process which has been defined before. All that is required to use a function is knowing its name, knowing what it needs to be given to act upon (eg. sine and cosine need to be given an angle to work with) and having it available to your program (not every function is available all of the time, since it would take up far too much memory to have them all waiting around and not being used). What makes functions so powerful is that in order to use them, we don't need to care about how they do what they do (their "implementation"), all we have to know is how to make them run ("calling" them).
 
 Using a function in PHP is the same as in Maths, where we just write the function's name, then put whatever we want it to act upon (its "arguments") inside some parentheses (brackets) next to the name. For instance "sine(2)". If we need to give a function multiple arguments then we put commas between them, for example if we wanted the maximum of a series of numbers we might say "max(6,3,98.5,12)". If a function doesn't require any arguments then we simply leave the brackets empty, for example if we want a random number we might write "random()". The difference between functions in Maths and functions in programming is that programming functions don't just turn numbers into other numbers, they can do anything that the language (in our case PHP) is capable of. Here are some examples of using PHP functions (with comments describing what they do):
 [code="PHP"]

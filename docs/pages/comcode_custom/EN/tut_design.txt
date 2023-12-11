@@ -123,7 +123,6 @@ There is an enormous amount to know when it comes to using this kind of software
 Therefore be aware you'll need to devote a considerable amount of time. However, don't worry as you don't need to learn every technique at once.
 
 You may find the best way to learn is through tutorials. Here are some sites featuring tutorials for Photoshop:
- - http://www.good-tutorials.com/
  - http://www.tutorialized.com/tutorials/Photoshop/1
  - http://www.photoshopstar.com/
  - http://design.tutsplus.com/
@@ -210,18 +209,12 @@ If in doubt, you could survey what is important, but chances are you won't get a
  - http://www.smashingmagazine.com/2008/05/applying-divine-proportion-to-web-design/
  - http://www.creativebloq.com/web-design/10-design-concepts-developers-9134391
  - https://web.archive.org/web/20090604122807/http://wefunction.com/2009/04/quality-within-web-design
- - http://webdesignfromscratch.com/
- - http://www.thedesignedtree.com/
+ - https://www.thedesignedtree.com/
  - http://findicons.com/
  - http://www.freeimages.com/
- - http://www.welie.com/patterns/
- - http://patterntap.com/patterntap
- - http://www.designyourway.net/drb/web-designers-should-focus-more-on-typography/
  - http://www.creativebloq.com/netmag/6-questions-every-homepage-should-answer-101413151
  - http://www.userfocus.co.uk/resources/guidelines.html
  - http://www.webdesignerdepot.com/2013/11/4-essential-ux-rules-taught-by-eye-tracking-research/
- - http://archived.getfinch.com/2011/03/ux-is-mostly-desirability/
- - http://www.designyourway.net/drb/small-design-and-usability-details-matter-a-lot-more-than-you-think/
  - https://econsultancy.com/blog/62892-the-a-z-of-ux-design-principles-from-the-big-tech-firms-experts
  - http://www.uxaxioms.com/
  - http://thedesignblitz.com/web-design-mistakes-to-avoid/
