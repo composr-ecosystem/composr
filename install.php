@@ -1986,6 +1986,7 @@ function step_5_uninstall()
     $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => 'dae0677246aa2f1394b90c3739490ff7', 'SOMETHING' => do_lang_tempcode('DELETED_ATTACHMENTS'))));
 
     // Delete database tables
+    /* TODO: disabled until tracker #5485 is fixed
     $tables = $sitedb->query_select('db_meta', array('DISTINCT m_table'), null, '', null, null, true);
     if (!is_null($tables)) {
         foreach ($tables as $i => $table) {
@@ -2004,6 +2005,7 @@ function step_5_uninstall()
         $sitedb->drop_table_if_exists('db_meta_indices');
         $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => 'ci3u3uocbociu3g98fcucg3ovc', 'SOMETHING' => do_lang_tempcode('DROPPED_TABLES'))));
     }
+    */
 
     unset($sitedb);
     unset($forumdb);
