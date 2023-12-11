@@ -134,7 +134,7 @@ function phase_0()
 
         // Show Git-only commits
         if (count($__changes) > 0) {
-            $changes .= "The following changes were made via git since version " . $previous_version . "...\n";
+            $changes .= 'The following changes were made via [url="git"]' . COMPOSR_REPOS_URL . '[/url] since version ' . $previous_version . "...\n";
             $__changes = array_reverse($__changes, true); // Sort by commit time, oldest to newest
             foreach ($__changes as $git_id => $change_label) {
                 $url = COMPOSR_REPOS_URL . '/commit/' . $git_id;
