@@ -43,7 +43,14 @@ class rest_test_set extends cms_test_case
         $raw_content_type = 'application/json';
         $result = http_download_file($url, null, true, false, 'Composr', $post_params, $cookies, null, null, null, null, null, null, 6.0, $raw_post, null, null, $http_verb, $raw_content_type);
         $_result = json_decode($result, true);
-        $this->assertTrue($_result['success']);
+        $fail_message = 'Could not POST ' . $this->path;
+        if (!isset($_GET['debug'])) {
+            $fail_message .= ' -- append &debug=1 to the URL to get debug output / pass debug CLI parameter';
+        }
+        $this->assertTrue($_result['success'], $fail_message);
+        if (isset($_GET['debug'])) {
+            @var_dump($_result);
+        }
     }
 
     public function testUpdate()
@@ -56,7 +63,14 @@ class rest_test_set extends cms_test_case
         $raw_content_type = 'application/json';
         $result = http_download_file($url, null, true, false, 'Composr', $post_params, $cookies, null, null, null, null, null, null, 6.0, $raw_post, null, null, $http_verb, $raw_content_type);
         $_result = json_decode($result, true);
-        $this->assertTrue($_result['success']);
+        $fail_message = 'Could not PUT ' . $this->path;
+        if (!isset($_GET['debug'])) {
+            $fail_message .= ' -- append &debug=1 to the URL to get debug output / pass debug CLI parameter';
+        }
+        $this->assertTrue($_result['success'], $fail_message);
+        if (isset($_GET['debug'])) {
+            @var_dump($_result);
+        }
     }
 
     public function testDelete()
@@ -69,6 +83,13 @@ class rest_test_set extends cms_test_case
         $raw_content_type = 'application/json';
         $result = http_download_file($url, null, true, false, 'Composr', $post_params, $cookies, null, null, null, null, null, null, 6.0, $raw_post, null, null, $http_verb, $raw_content_type);
         $_result = json_decode($result, true);
-        $this->assertTrue($_result['success']);
+        $fail_message = 'Could not DELETE ' . $this->path;
+        if (!isset($_GET['debug'])) {
+            $fail_message .= ' -- append &debug=1 to the URL to get debug output / pass debug CLI parameter';
+        }
+        $this->assertTrue($_result['success'], $fail_message);
+        if (isset($_GET['debug'])) {
+            @var_dump($_result);
+        }
     }
 }

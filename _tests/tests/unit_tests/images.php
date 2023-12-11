@@ -69,7 +69,7 @@ class images_test_set extends cms_test_case
 
         function convertImage($file, &$path, $convert_width, $convert_height, $box_width, $only_make_smaller, &$additional_information)
         {
-            $path = cms_tempnam();
+            $path = cms_tempnam() . '.png';
             if (!convert_image($file, $path, $convert_width, $convert_height, $box_width, true, null, true, $only_make_smaller)) {
                 $additional_information = 'convert_image failed.';
                 return false;
@@ -91,7 +91,7 @@ class images_test_set extends cms_test_case
         {
             list($image_width, $image_height) = getimagesize($path);
             if (($image_width !== $expected_width && $expected_width !== -1) || ($image_height !== $expected_height && $expected_height !== -1)) {
-                $additional_information = 'Expected dimensions of the converted image to be ' . $expected_width . 'x' . $expected_height . '. Instead, the dimensions were ' . $image_width . 'x' . $image_height . '.';
+                $additional_information = 'Expected dimensions of the converted image to be ' . $expected_width . 'x' . $expected_height . '. Instead, the dimensions were ' . $image_width . 'x' . $image_height . '. (output path: ' . $path . ')';
                 return false;
             }
             return array($image_width, $image_height);
@@ -101,7 +101,7 @@ class images_test_set extends cms_test_case
         {
             $file_contents = file_get_contents($path);
             if (!$file_contents) {
-                $additional_information = 'The contents of the generated convert_image file could not be read.';
+                $additional_information = 'The contents of the generated convert_image file could not be read. (output path: ' . $path . ')';
                 return false;
             }
             return $file_contents;

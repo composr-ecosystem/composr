@@ -40,19 +40,19 @@ class special_links_test_set extends cms_test_case
     public function testLookupLinks()
     {
         $data = http_download_file('https://ip.me/ip/12.34.56.78', null, false);
-        $this->assertTrue(($data !== null) && (strpos($data, 'AT&amp;T Services') !== false), 'External link not working, fix test and use within Composr (separate) [LOOKUP_SCREEN.tpl, COMMANDR_WHOIS.tpl]');
+        $this->assertTrue(($data !== null) && (strpos($data, 'AT&amp;T Business') !== false), 'External link (https://ip.me/ip/12.34.56.78) not working, fix test and use within Composr (separate) [LOOKUP_SCREEN.tpl, COMMANDR_WHOIS.tpl]');
 
         $data = http_download_file('https://ping.eu/ping/?host=12.34.56.78', null, false);
-        $this->assertTrue(($data !== null) && (strpos($data, 'Ping') !== false), 'External link not working, fix test and use within Composr (separate) [LOOKUP_SCREEN.tpl, COMMANDR_WHOIS.tpl]');
+        $this->assertTrue(($data !== null) && (strpos($data, 'Ping') !== false), 'External link (https://ping.eu/ping/?host=12.34.56.78) not working, fix test and use within Composr (separate) [LOOKUP_SCREEN.tpl, COMMANDR_WHOIS.tpl]');
 
         $data = http_download_file('https://ping.eu/traceroute/?host=12.34.56.78', null, false);
-        $this->assertTrue(($data !== null) && (strpos($data, 'Traceroute') !== false), 'External link not working, fix test and use within Composr (separate) [LOOKUP_SCREEN.tpl, COMMANDR_WHOIS.tpl]');
+        $this->assertTrue(($data !== null) && (strpos($data, 'Traceroute') !== false), 'External link (https://ping.eu/traceroute/?host=12.34.56.78) not working, fix test and use within Composr (separate) [LOOKUP_SCREEN.tpl, COMMANDR_WHOIS.tpl]');
     }
 
     public function testWhoIsLink()
     {
         $data = http_download_file('http://whois.domaintools.com/compo.sr', null, false);
-        $this->assertTrue(($data !== null) && (stripos($data, 'whois') !== false), 'External link not working, fix test and use within Composr (separate) [WARN_SPAM_URLS.tpl]');
+        $this->assertTrue(($data !== null) && (stripos($data, 'whois') !== false), 'External link (http://whois.domaintools.com/compo.sr) not working, fix test and use within Composr (separate) [WARN_SPAM_URLS.tpl]');
     }
 
     public function testHealthCheckLinks()

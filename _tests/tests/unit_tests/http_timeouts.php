@@ -40,28 +40,28 @@ class http_timeouts_test_set extends cms_test_case
         $url = 'https://compo.sr/docs/php-5.2.4-ocproducts.zip';
         $expected_size = 28941943;
         $r1 = $this->_testCurl($url, $timeout);
-        $this->assertTrue($r1[0]);
+        $this->assertTrue($r1[0], 'Expected Curl result for large file test to be a string, but it was not.');
         $this->assertTrue($r1[1] == $expected_size, 'Wrong download size @ ' . strval($r1[1]));
         $r2 = $this->_testURLWrappers($url, $timeout);
-        $this->assertTrue($r2[0]);
+        $this->assertTrue($r2[0], 'Expected URL Wrappers result for large file test to be a string, but it was not.');
         $this->assertTrue($r2[1] == $expected_size, 'Wrong download size @ ' . strval($r2[1]));
         if (strpos($url, 'https://') === false) {
             $r3 = $this->_testFSockOpen($url, $timeout);
-            $this->assertTrue($r3[0]);
+            $this->assertTrue($r3[0], 'Expected FSockOpen result for large file test to be a string, but it was not.');
             $this->assertTrue($r3[1] >= $expected_size, 'Wrong download size @ ' . strval($r3[1]));
         }
 
         // Test timeout being hit for something that really is timing out
         $url = get_base_url() . '/_tests/sleep.php?timeout=' . float_to_raw_string($timeout + 2);
         $r1 = $this->_testCurl($url, $timeout);
-        $this->assertTrue(!$r1[0]);
+        $this->assertTrue(!$r1[0], 'Expected Curl result for timeout to NOT be a string, but it was.');
         $this->assertTrue($r1[1] == 0, 'Wrong download size @ ' . strval($r1[1]));
         $r2 = $this->_testURLWrappers($url, $timeout);
-        $this->assertTrue(!$r2[0]);
+        $this->assertTrue(!$r2[0], 'Expected URL Wrappers result for timeout to NOT be a string, but it was.');
         $this->assertTrue($r2[1] == 0, 'Wrong download size @ ' . strval($r2[1]));
         if (strpos($url, 'https://') === false) {
             $r3 = $this->_testFSockOpen($url, $timeout);
-            $this->assertTrue(!$r3[0]);
+            $this->assertTrue(!$r3[0], 'Expected FSockOpen result for timeout to NOT be a string, but it was.');
             $this->assertTrue($r3[1] == 0, 'Wrong download size @ ' . strval($r3[1]));
         }
     }

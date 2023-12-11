@@ -560,6 +560,8 @@ class css_file_test_set extends cms_test_case
             'progressWrapper',
             'questionTable',
             'less_compact',
+            'bundled',
+            'non_bundled',
         );
         if (in_array($class, $exceptions)) {
             return true;

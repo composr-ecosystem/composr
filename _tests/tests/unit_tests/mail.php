@@ -29,8 +29,8 @@ class mail_test_set extends cms_test_case
 
             $GLOBALS['SITE_INFO']['no_email_output'] = '1';
 
-            $this->assertTrue(file_exists($a));
-            $this->assertTrue(file_exists($b));
+            $this->assertTrue(file_exists($a), $mode . ' 1 : Expected temp file to exist, but it did not.');
+            $this->assertTrue(file_exists($b), $mode . ' 1 : Expected safe mode temp file to exist, but it did not.');
 
             switch ($mode) {
                 case 'MAIL':
@@ -46,8 +46,8 @@ class mail_test_set extends cms_test_case
                     break;
             }
 
-            $this->assertTrue(!file_exists($a));
-            $this->assertTrue(!file_exists($b));
+            $this->assertTrue(!file_exists($a), $mode . ' 2 : Expected temp file to NOT exist, but it did.');
+            $this->assertTrue(!file_exists($b), $mode . ' 2 : Expected safe mode temp file to NOT exist, but it did.');
         }
     }
 }

@@ -202,7 +202,12 @@ class xhtml_substr_test_set extends cms_test_case
         $after = xhtml_substr($before, 0, 5, false, false, 0.0);
 
         $expected = $before;
-        $this->assertTrue(preg_replace('#\s#', '', $after) == preg_replace('#\s#', '', $expected));
+        $ok = preg_replace('#\s#', '', $after) == preg_replace('#\s#', '', $expected);
+        require_code('diff');
+        $this->assertTrue($ok);
+        if (!$ok) {
+            echo '<p>Differences detected in MEDIA_IMAGE_WEBSAFE.</p><code style="white-space: pre">' . diff_simple_2(trim($expected), trim($after), true) . '</code>';
+        }
     }
 
     public function testNoBreak()
