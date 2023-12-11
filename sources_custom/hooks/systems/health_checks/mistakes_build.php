@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2023
+ Copyright (c) ocProducts, 2004-2016
 
  See text/EN/licence.txt for full licencing information.
 
@@ -61,9 +61,9 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
 
         $this->state_check_manual('Check [url="HTML5 validation"]https://validator.w3.org/[/url] (take warnings with a pinch of salt, not every suggestion is appropriate)');
         $this->state_check_manual('Check [url="CSS validation"]https://jigsaw.w3.org/css-validator/[/url] (take warnings with a pinch of salt, not every suggestion is appropriate)');
-        $this->state_check_manual('Check [url="WCAG validation"]https://achecks.org/checker/index.php[/url] (take warnings with a pinch of salt, not every suggestion is appropriate)');
+        $this->state_check_manual('Check [url="WCAG validation"]https://achecker.achecks.ca/checker/index.php[/url] (take warnings with a pinch of salt, not every suggestion is appropriate)');
 
-        $this->state_check_manual('Check [url="schema.org/microformats validation"]https://developers.google.com/search/docs/appearance/structured-data[/url] on any key pages you want to be semantic');
+        $this->state_check_manual('Check [url="schema.org/microformats validation"]https://developers.google.com/search/docs/advanced/structured-data[/url] on any key pages you want to be semantic');
         $this->state_check_manual('Check [url="OpenGraph metadata"]https://developers.facebook.com/tools/debug/[/url] on any key pages you expect to be shared');
 
         $this->state_check_manual('Do a [url="general check"]https://www.woorank.com/[/url] (take warnings with a pinch of salt, not every suggestion is appropriate)');

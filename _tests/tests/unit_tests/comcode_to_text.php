@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2023
+ Copyright (c) ocProducts, 2004-2016
 
  See text/EN/licence.txt for full licencing information.
 
@@ -106,7 +106,7 @@ bar
         $this->assertTrue($ok);
         if (!$ok) {
             require_code('diff');
-            echo '<p>Diff comparing what we expected to what we actually got:</p><code style="white-space: pre">' . diff_simple_2(trim($expected), trim($got), true) . '</code>';
+            echo '<code style="white-space: pre">' . diff_simple_2(trim($got), trim($expected), true) . '</code>';
         }
     }
 }

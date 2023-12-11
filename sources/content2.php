@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2023
+ Copyright (c) ocProducts, 2004-2016
 
  See text/EN/licence.txt for full licencing information.
 
@@ -182,7 +182,7 @@ function metadata_get_fields($content_type, $content_id, $allow_no_owner = false
         $add_time_field = in_array('add_time', $fields_to_skip) ? null : $info['add_time_field'];
         if (!is_null($add_time_field)) {
             $add_time = is_null($content_row) ? null : $content_row[$add_time_field];
-            if (true || (@strftime('%Y', @mktime(0, 0, 0, 1, 1, 1963)) != '1963')) { // TODO: Fix in v11
+            if (true||@strftime('%Y', @mktime(0, 0, 0, 1, 1, 1963)) != '1963') { // TODO: Fix in v11
                 $year_start = 1970;
                 $total_years_to_show = 2038 - 1970 - 1; // https://en.wikipedia.org/wiki/Year_2038_problem
             } else {

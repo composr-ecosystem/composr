@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2023
+ Copyright (c) ocProducts, 2004-2016
 
  See text/EN/licence.txt for full licencing information.
 
@@ -1638,7 +1638,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
             // Make them both HTML strings
             $url = $embed->evaluate();
             $switch_over = ((!looks_like_url($url)) && (looks_like_url($attributes['param'], true)));
-
+    
             if ((strpos(preg_replace('#\[\d*\]#', '', $attributes['param']), '[') !== false) || (strpos($attributes['param'], '{') !== false)) { // Extra Comcode parsing wanted?
                 $param_temp = comcode_to_tempcode(escape_html($attributes['param']), $source_member, $as_admin, null, null, $connection, false, false, true, false, false, $highlight_bits, $on_behalf_of_member);
                 global $ADVERTISING_BANNERS_CACHE;

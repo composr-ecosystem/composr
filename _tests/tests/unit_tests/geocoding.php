@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2023
+ Copyright (c) ocProducts, 2004-2016
 
  See text/EN/licence.txt for full licencing information.
 
@@ -45,11 +45,7 @@ class geocoding_test_set extends cms_test_case
         require_code('locations_geocoding');
 
         $result = geocode('Berlin, DE');
-        if ($result === null) {
-            $this->assertTrue(false, 'Expected to receive geocode for Berlin, DE but did not.');
-        } else {
-            $this->assertTrue(($result[0] > 52.0) && ($result[0] < 53.0) && ($result[1] > 13.0) && ($result[1] < 14.0), 'Expected geocode for Berlin, DE to return 52.x,13.x but instead it returned ' . float_to_raw_string($result[0]) . ',' . float_to_raw_string($result[1]));
-        }
+        $this->assertTrue(($result !== null) && ($result[0] > 52.0) && ($result[0] < 53.0) && ($result[1] > 13.0) && ($result[1] < 14.0));
 
         // Note if this breaks there's also similar code in locations_catalogues_geoposition and locations_catalogues_geopositioning (non-bundled addons)
     }

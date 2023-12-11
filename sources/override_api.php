@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2023
+ Copyright (c) ocProducts, 2004-2016
 
  See text/EN/licence.txt for full licencing information.
 
@@ -42,7 +42,7 @@ function get_function_hash($code, $function)
  * @param  string $function Name of the function.
  * @param  integer $linenum Line number relative to start of function.
  * @param  string $newcode Code to insert.
- * @param  boolean $fail_ok Whether a failure should trigger an error
+ * @param  boolean $fail_ok Whether a failure should trigger an error (false: instead of returning, the function will bail with an error)
  * @return boolean Success status.
  */
 function insert_code_before__by_linenum(&$code, $function, $linenum, $newcode, $fail_ok = false)
@@ -80,7 +80,7 @@ function insert_code_before__by_linenum(&$code, $function, $linenum, $newcode, $
  * @param  string $function Name of the function.
  * @param  integer $linenum Line number relative to start of function.
  * @param  string $newcode Code to insert.
- * @param  boolean $fail_ok Whether a failure should trigger an error
+ * @param  boolean $fail_ok Whether a failure should trigger an error (false: instead of returning, the function will bail with an error)
  * @return boolean Success status.
  */
 function insert_code_after__by_linenum(&$code, $function, $linenum, $newcode, $fail_ok = false)
@@ -96,7 +96,7 @@ function insert_code_after__by_linenum(&$code, $function, $linenum, $newcode, $f
  * @param  string $command The command we're searching to insert by.
  * @param  string $newcode Code to insert.
  * @param  integer $instance_of_command We are inserting at this instance of the line (i.e. takes into account a literal line of code may exist in other places in a function).
- * @param  boolean $fail_ok Whether a failure should trigger an error
+ * @param  boolean $fail_ok Whether a failure should trigger an error (false: instead of returning, the function will bail with an error)
  * @return boolean Success status.
  */
 function insert_code_before__by_command(&$code, $function, $command, $newcode, $instance_of_command = 1, $fail_ok = false)
@@ -135,7 +135,7 @@ function insert_code_before__by_command(&$code, $function, $command, $newcode, $
  * @param  string $command The command we're searching to insert by.
  * @param  string $newcode Code to insert.
  * @param  integer $instance_of_command We are inserting at this instance of the line (i.e. takes into account a literal line of code may exist in other places in a function).
- * @param  boolean $fail_ok Whether a failure should trigger an error
+ * @param  boolean $fail_ok Whether a failure should trigger an error (false: instead of returning, the function will bail with an error)
  * @return boolean Success status.
  */
 function insert_code_after__by_command(&$code, $function, $command, $newcode, $instance_of_command = 1, $fail_ok = false)
@@ -173,7 +173,7 @@ function insert_code_after__by_command(&$code, $function, $command, $newcode, $i
  * @param  string $function Name of the function.
  * @param  string $command The command we're searching to insert by.
  * @param  integer $instance_of_command We remove the nth instance of this command.
- * @param  boolean $fail_ok Whether a failure should trigger an error
+ * @param  boolean $fail_ok Whether a failure should trigger an error (false: instead of returning, the function will bail with an error)
  * @return boolean Success status.
  */
 function remove_code(&$code, $function, $command, $instance_of_command = 1, $fail_ok = false)
