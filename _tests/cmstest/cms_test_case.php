@@ -94,13 +94,13 @@ class cms_test_case extends WebTestCase
         $this->dump($this->_browser->getContent());
     }
 
-    function get_canonical_username($username)
+    public function get_canonical_username($username)
     {
         if ($GLOBALS['FORUM_DRIVER']->get_member_from_username($username) === null) {
             if ($username == 'admin') {
                 $username = $GLOBALS['FORUM_DB']->query_select_value('f_members', 'm_username', array('m_primary_group' => db_get_first_id() + 1));
             } elseif ($username == 'test') {
-                $username = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT m_username FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE m_primary_group<>' .strval(db_get_first_id()) . ' AND m_primary_group<>' .strval(db_get_first_id() + 1));
+                $username = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT m_username FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE m_primary_group<>' . strval(db_get_first_id()) . ' AND m_primary_group<>' . strval(db_get_first_id() + 1));
             }
         }
         return $username;

@@ -26,8 +26,8 @@ class notifications_all_coded_test_set extends cms_test_case
 
         // Ensure all notification types used
         require_code('notifications');
-        $hook_obs= find_all_hooks('systems', 'notifications');
-        $notification_types = [];
+        $hook_obs = find_all_hooks('systems', 'notifications');
+        $notification_types = array();
         foreach (array_keys($hook_obs) as $hook) {
             require_code('hooks/systems/notifications/' . $hook);
             $hook_ob = object_factory('Hook_notification_' . $hook);

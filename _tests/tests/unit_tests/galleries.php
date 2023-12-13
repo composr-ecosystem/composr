@@ -37,7 +37,7 @@ class galleries_test_set extends cms_test_case
         require_code('permissions2');
         require_code('form_templates');
 
-        $GLOBALS['SITE_DB']->query_update('galleries', ['accept_images' => 1, 'accept_videos' => 1], ['name' => 'root'], '', 1);
+        $GLOBALS['SITE_DB']->query_update('galleries', array('accept_images' => 1, 'accept_videos' => 1), array('name' => 'root'), '', 1);
 
         $this->access_mapping = array(db_get_first_id() => 4);
         // Creating cms catalogues object

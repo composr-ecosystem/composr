@@ -25,13 +25,11 @@ class _installer_forum_drivers_test_set extends cms_test_case
         $password = isset($SITE_INFO['mysql_root_password']) ? $SITE_INFO['mysql_root_password'] : '';
 
         $board_path = dirname(get_file_base()) . '/phpBB3';
-        if (!file_exists($board_path))
-        {
+        if (!file_exists($board_path)) {
             $this->assertTrue(false, 'Cannot run test, ' . $board_path . ' is not there. This test makes some implicit assumptions, check the code to see');
             return;
         }
-        if (!file_exists($board_path . '/db.sql'))
-        {
+        if (!file_exists($board_path . '/db.sql')) {
             $this->assertTrue(false, 'Cannot run test, ' . $board_path . '/db.sql is not there');
             return;
         }
