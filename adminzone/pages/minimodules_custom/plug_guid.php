@@ -93,7 +93,7 @@ function callback($match)
         global $FOUND_GUID;
         $guid_value = str_replace('\'', '', $match[3]);
         if (array_key_exists($guid_value, $FOUND_GUID)) {
-            echo 'Repair needed for ' . escape_html($match[1]) . ' (line ' . $line . ', new GUID ' . $new_guid . ')<br />';
+            echo 'Repair needed for ' . escape_html($match[1]) . ' (line ' . strval($line) . ', new GUID ' . $new_guid . ')<br />';
             $GUID_LANDSCAPE[$match[1]][] = array($FILENAME, $line, $new_guid);
             return "do_template('" . $match[1] . "', array('_GUID' => '" . $new_guid . "'";
         }

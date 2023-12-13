@@ -778,8 +778,7 @@ function get_post_attachments($post_id, $attachment_id = null, $non_image_only =
             }
 
             if ($non_image_only) {
-                if (is_image($attachment_row[0]['a_original_filename'])) // Already as [img] tag
-                {
+                if (is_image($attachment_row[0]['a_original_filename'])) { // Already as [img] tag
                     if (!url_is_local($attachment_row[0]['a_url'])) {
                         if (!is_null($content)) {
                             $content = preg_replace('#\[img\][^\[\]]*' . preg_quote(find_script('attachment'), '#') . '\?id=' . strval($att['a_id']) . '[^\[\]]*\[\/img\]#U', '[img]' . $attachment_row[0]['a_url'] . '[/img]', $content);
@@ -966,8 +965,7 @@ function report_post($post_id, $reason = '')
     if (!is_null($topic_id)) {
         // Already a topic
         $first_post = false;
-    } else // New topic
-    {
+    } else { // New topic
         require_code('cns_topics_action');
         $topic_id = cns_make_topic($forum_id, '', '', 1, 1, 0, 0, 0, null, null, false);
         $first_post = true;

@@ -290,12 +290,10 @@ function tapatalk_strip_comcode($data)
     }
     if (count($smilies) != 0) {
         $len = strlen($data);
-        for ($i = 0; $i < $len; ++$i) // Has to go through in byte order so double application cannot happen (i.e. smiley contains [all or portion of] smiley code somehow)
-        {
+        for ($i = 0; $i < $len; ++$i) { // Has to go through in byte order so double application cannot happen (i.e. smiley contains [all or portion of] smiley code somehow)
             $char = $data[$i];
 
-            if ($char == '"') // This can cause severe HTML corruption so is a disallowed character
-            {
+            if ($char == '"') { // This can cause severe HTML corruption so is a disallowed character
                 $i++;
                 continue;
             }

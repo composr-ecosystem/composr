@@ -18,7 +18,7 @@
 
 class Block_main_choose_to_book
 {
-    function run()
+    public function run()
     {
         return new Tempcode();
     }

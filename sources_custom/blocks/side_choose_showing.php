@@ -17,7 +17,7 @@
 
 class Block_side_choose_showing
 {
-    function run()
+    public function run()
     {
         return new Tempcode();
     }

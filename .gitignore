@@ -151,3 +151,5 @@ pages/html_custom/*/*.htm
 /data_custom/fonts/*.ttf
 /nbproject
 
+; VS Code
+settings.json

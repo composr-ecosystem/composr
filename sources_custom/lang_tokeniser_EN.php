@@ -277,7 +277,9 @@ class LangTokeniser_EN
      */
     protected function phrase_to_word_list($phrase, &$total_word_tokens)
     {
-        static $utf = null, $word_regexp = null;
+        static $utf = null;
+        static $word_regexp = null;
+
         if ($utf === null) {
             $utf = (get_charset() == 'utf-8');
             $word_regexp = "#(\w'\w|\w)+#" . ($utf ? 'u' : '');

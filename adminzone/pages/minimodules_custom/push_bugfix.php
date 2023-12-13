@@ -250,7 +250,7 @@ $do_full_scan = (get_param_integer('full_scan', 0) == 1);
 if (($do_full_scan) || (count($git_found) == 0)) {
     $files = push_bugfix_do_dir($git_found, 24 * 60 * 60);
     if (count($files) == 0) {
-        $days = min(14, round(time() - filemtime(get_file_base() . '/index.php')) / (60 * 60 * 24) - 1);
+        $days = min(14, round(floatval(time() - filemtime(get_file_base() . '/index.php')) / (60 * 60 * 24) - 1));
         $files = push_bugfix_do_dir($git_found, 24 * 60 * 60 * $days);
     }
 } else {

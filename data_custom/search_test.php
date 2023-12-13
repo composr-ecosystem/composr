@@ -36,7 +36,7 @@ if (!file_exists($FILE_BASE . '/sources/global.php')) {
 }
 require($FILE_BASE . '/sources/global.php');
 
-@ini_set('ocproducts.xss_detect','0');
+@ini_set('ocproducts.xss_detect', '0');
 
 search_test_script();
 
@@ -180,7 +180,7 @@ function search_test_script()
                         }
 
                         if ($where_clause != '(') {
-                            $where_clause.=' OR ';
+                            $where_clause .= ' OR ';
                         }
                         if ($info['integer_category']) {
                             $where_clause .= ((strpos($info['category'], '.') !== false) ? '' : 'r.') . $info['category'] . '=' . strval((integer)$cat);

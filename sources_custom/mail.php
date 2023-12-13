@@ -482,9 +482,9 @@ function mail_wrap($subject_line, $message_raw, $to_email = null, $to_name = nul
     }
 
     // Create the Transport
-    $transport = (new Swift_SmtpTransport($host, $port))
-        ->setUsername($username)
-        ->setPassword($password);
+    $transport = new Swift_SmtpTransport($host, $port);
+    $transport->setUsername($username);
+    $transport->setPassword($password);
     if (($port == 419) || ($port == 465) || ($port == 587)) {
         $disabled_ssl_verify = ((function_exists('get_value')) && (get_value('disable_ssl_for__' . $host) === '1'));
 

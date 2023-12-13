@@ -17,7 +17,7 @@
 
 class Block_side_book_date_range
 {
-    function run()
+    public function run()
     {
         return new Tempcode();
     }

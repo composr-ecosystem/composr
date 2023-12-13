@@ -33,10 +33,10 @@ And change to use query_to_search_tokens
 4) Call 'delete_from_index' throughout any delete actualiser functions
 
 5) Turn hidden options into real ones, and also...
- Checkboxes for when to use nusearch  
-  Particular languages flagged to prefer it 
-  Heavy filtered queries 
-  If database driver does not have fulltext search 
+ Checkboxes for when to use nusearch
+  Particular languages flagged to prefer it
+  Heavy filtered queries
+  If database driver does not have fulltext search
   Any simple search query
   Queries matching a particular regular expression
 
@@ -118,7 +118,8 @@ function can_use_composr_fulltext_engine($hook, $query = null, $has_heavy_filter
     // Positive, must use for these reasons...
 
     if (($query !== null) && (!empty($trigger_words))) {
-        if (!empty(array_intersect(array_map('cms_mb_strtolower', array_keys($ngrams)), $trigger_words))) {
+        $test = array_intersect(array_map('cms_mb_strtolower', array_keys($ngrams)), $trigger_words);
+        if (!empty($test)) {
             return true; // We will use Composr fast custom index if there's certain stop words
         }
     }
@@ -791,7 +792,7 @@ class Composr_fulltext_engine
      * @param  LANGUAGE_NAME $lang Language codename
      * @return object Tokeniser
      */
-    static public function get_tokeniser($lang)
+    public static function get_tokeniser($lang)
     {
         static $tokeniser = array();
         if (!array_key_exists($lang, $tokeniser)) {
@@ -812,7 +813,7 @@ class Composr_fulltext_engine
      * @param  LANGUAGE_NAME $lang Language codename
      * @return ?object Stemmer (null: none)
      */
-    static public function get_stemmer($lang)
+    public static function get_stemmer($lang)
     {
         static $stemmer = array();
         if (!array_key_exists($lang, $stemmer)) {
@@ -859,28 +860,30 @@ class CRC24
         $this->lookupTable = $this->generateTable($this->poly);
     }
 
-    public function calculate(string $buffer): int
+    public function calculate($buffer)
     {
-        $bufferLength = strlen($buffer);
+        $buffer_length = strlen($buffer);
 
         $mask = (((1 << ($this->bitLength - 1)) - 1) << 1) | 1;
-        $highBit = 1 << ($this->bitLength - 1);
+        $high_bit = 1 << ($this->bitLength - 1);
 
         $crc = 0xb704ce;
 
-        for ($iterator = 0; $iterator < $bufferLength; ++$iterator) {
+        for ($iterator = 0; $iterator < $buffer_length; ++$iterator) {
             $character = ord($buffer[$iterator]);
 
-            for ($j = 0x80; $j; $j >>= 1) {
-                $bit = $crc & $highBit;
-                $crc <<= 1;
+            for ($j = 0; $j < 8; $j++) {
+                $_j = 0x80 & (1 << $j);
 
-                if ($character & $j) {
-                    $bit ^= $highBit;
+                $bit = $crc & $high_bit;
+                $crc = $crc << 1;
+
+                if (($character & $_j) > 0) {
+                    $bit = $bit ^ $high_bit;
                 }
 
-                if ($bit) {
-                    $crc ^= $this->poly;
+                if ($bit > 0) {
+                    $crc = $crc ^ $this->poly;
                 }
             }
         }
@@ -888,29 +891,29 @@ class CRC24
         return $crc & $mask;
     }
 
-    protected function generateTable(int $polynomial): array
+    protected function generateTable($polynomial)
     {
-        $tableSize = 256;
+        $table_size = 256;
 
         $mask = (((1 << ($this->bitLength - 1)) - 1) << 1) | 1;
-        $highBit = 1 << ($this->bitLength - 1);
+        $high_bit = 1 << ($this->bitLength - 1);
 
-        $crctab = [];
+        $crctab = array();
 
-        for ($i = 0; $i < $tableSize; ++$i) {
+        for ($i = 0; $i < $table_size; ++$i) {
             $crc = $i;
- 
-            $crc <<= $this->bitLength - 8;
+
+            $crc = $crc << $this->bitLength - 8;
 
             for ($j = 0; $j < 8; ++$j) {
-                $bit = $crc & $highBit;
-                $crc <<= 1;
-                if ($bit) {
-                    $crc ^= $polynomial;
+                $bit = $crc & $high_bit;
+                $crc = $crc << 1;
+                if ($bit > 0) {
+                    $crc = $crc ^ $polynomial;
                 }
             }
 
-            $crc &= $mask;
+            $crc = $crc & $mask;
             $crctab[] = $crc;
         }
 

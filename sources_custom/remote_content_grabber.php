@@ -22,8 +22,8 @@ function grab_photobucket_content()
             '^' . preg_quote('http://', '#') . '.*' . preg_quote('photobucket.com/', '#') . '.*$',
             '^' . preg_quote(find_script('external_url_proxy') . '?url=', '#') . preg_quote(urlencode('http://'), '#') . '.*' . preg_quote(urlencode('photobucket.com/'), '#') . '.*$',
         ),
-        'url_modifier' => function($url) { return $url . '~original'; },
-        'filename_extractor' => function($url) {
+        'url_modifier' => function($url) { return $url . '~original'; }, // TODO: Against coding standards to have a function directly on an array item
+        'filename_extractor' => function($url) { // TODO: Against coding standards to have a function directly on an array item
             if (strpos($url, find_script('external_url_proxy')) !== false) {
                 return preg_replace('#\?.*$#', '', basename(urldecode(preg_replace('#^.*\?url=$#', '', $url))));
             } else {
@@ -65,8 +65,8 @@ class RemoteContentGrabber
             'url_patterns' => array(
                 '^' . preg_quote('http://example.com/', '#') . '.*$',
             ),
-            'url_modifier' => function($url) { return $url; },
-            'filename_extractor' => function($url) { return preg_replace('#\?.*$#', '', basename($url)); },
+            'url_modifier' => function($url) { return $url; }, // TODO: Against coding standards to have a function directly on an array item
+            'filename_extractor' => function($url) { return preg_replace('#\?.*$#', '', basename($url)); }, // TODO: Against coding standards to have a function directly on an array item
 
             'db' => $GLOBALS['FORUM_DB'],
             'table' => 'f_posts',
