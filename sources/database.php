@@ -1745,7 +1745,12 @@ class DatabaseConnector
         if (!empty($lang_fields)) {
             if (multi_lang_content()) {
                 if ((strpos($query, 'text_original') !== false) || (function_exists('user_lang')) && ((is_null($start)) || ($start < 200))) {
-                    $lang = function_exists('user_lang') ? user_lang() : get_site_default_lang(); // We can we assume this, as we will cache against it -- if subsequently code wants something else it'd be a cache miss which is fine
+                    if (function_exists('user_lang')) {
+                        $lang = user_lang();
+                    } else {
+                        require_code('lang');
+                        $lang = get_site_default_lang();
+                    }
 
                     foreach ($lang_fields as $field => $field_type) {
                         $field_stripped = preg_replace('#.*\.#', '', $field);
