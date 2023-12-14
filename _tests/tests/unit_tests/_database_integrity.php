@@ -37,13 +37,8 @@ class _database_integrity_test_set extends cms_test_case
         if (strpos(get_db_type(), 'mysql') !== false) {
             $ob = new DatabaseRepair();
             list($phase, $sql) = $ob->search_for_database_issues();
-            $this->assertTrue($phase == 2);
-            $this->assertTrue($sql == '', $sql);
-
-            if (get_param_integer('debug', 0) == 1) {
-                @var_dump($phase);
-                @var_dump($sql);
-            }
+            $this->assertTrue($phase == 2, 'Errors occurred on phase 1.');
+            $this->assertTrue($sql == '', 'Database is not consistent; need to run the following queries: ' . $sql);
         }
     }
 }
