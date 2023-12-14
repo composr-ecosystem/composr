@@ -95,7 +95,7 @@ function handle_failover_auto_switching($iteration = 0)
     if (!empty($SITE_INFO['failover_check_urls'])) {
         $context = stream_context_create(array(
             'http' => array(
-                'user_agent' => 'ocportal_failover_test',
+                'user_agent' => 'composr_failover_test',
                 'timeout' => floatval(isset($SITE_INFO['failover_loadtime_threshold']) ? $SITE_INFO['failover_loadtime_threshold'] : 5) + 1.0,
             )
         ));
