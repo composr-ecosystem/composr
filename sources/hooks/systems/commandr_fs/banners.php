@@ -239,7 +239,7 @@ class Hook_commandr_fs_banners extends Resource_fs_base
             return array('banner_type', '');
         }
 
-        return parent::folder_convert_filename_to_id($filename, 'topic');
+        return parent::folder_convert_filename_to_id($filename, 'banner_type');
     }
 
     /**
