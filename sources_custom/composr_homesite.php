@@ -239,6 +239,10 @@ function get_composr_branches()
     require_code('version2');
 
     $_branches = shell_exec('git branch');
+    if ($_branches === null) {
+        return array();
+    }
+
     $branches = array();
     foreach (explode("\n", $_branches) as $_branch) {
         $matches = array();
