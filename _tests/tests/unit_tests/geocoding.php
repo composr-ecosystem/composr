@@ -60,20 +60,28 @@ class geocoding_test_set extends cms_test_case
 
         $errormsg = new Tempcode();
         $address = reverse_geocode(52.516667, 13.388889, $errormsg);
-        if ((get_param_integer('debug', 0) == 1) || ($address === null))  {
+        if ((isset($_GET['debug'])))  {
             var_dump($errormsg->evaluate());
             var_dump($address);
         }
-        $this->assertTrue($address[2] == 'Berlin');
-        $this->assertTrue($address[6] == 'DE');
+        if ($address === null) {
+            $this->assertTrue(false, 'Error: ' . $errormsg->evaluate());
+        } else {
+            $this->assertTrue($address[2] == 'Berlin', 'Expected Berlin but did not get it.');
+            $this->assertTrue($address[6] == 'DE', 'Expected DE but did not get it.');
+        }
 
         $errormsg = new Tempcode();
         $address = reverse_geocode(64.133333, -21.933333, $errormsg);
-        if ((get_param_integer('debug', 0) == 1) || ($address === null))  {
-            var_dump($errormsg);
+        if ((isset($_GET['debug'])))  {
+            var_dump($errormsg->evaluate());
             var_dump($address);
         }
-        $this->assertTrue($address[2] == 'Reykjavík');
-        $this->assertTrue($address[6] == 'IS');
+        if ($address === null) {
+            $this->assertTrue(false, 'Error: ' . $errormsg->evaluate());
+        } else {
+            $this->assertTrue($address[2] == 'Reykjavík', 'Expected Reykjavík but did not get it.');
+            $this->assertTrue($address[6] == 'IS', 'Expected IS but did not get it.');
+        }
     }
 }
