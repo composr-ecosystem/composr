@@ -435,7 +435,7 @@ function set_url_moniker($content_type, $content_id, $new_content_id = null)
 
     // Invalid moniker. Complain and exit function
     require_code('type_sanitisation');
-    if ((!is_alphanumeric(str_replace('/', '', $url_moniker))) || (is_numeric($url_moniker))) {
+    if (($url_moniker !== null) && ((!is_alphanumeric(str_replace('/', '', $url_moniker))) || (is_numeric($url_moniker)))) {
         attach_message(do_lang_tempcode('BAD_CODENAME'), 'warn');
         return;
     }
