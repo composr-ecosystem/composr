@@ -2480,7 +2480,7 @@ function ip_banned($ip, $force_db = false, $handle_uncertainties = false, &$is_u
  */
 function ip_apache_to_wild($ip)
 {
-    $matches = [];
+    $matches = array();
     if (preg_match('#^(.*)/(\d+)$#', $ip, $matches) == 0) {
         $ip = normalise_ip_address($ip, 4);
         if ($ip == '') {
