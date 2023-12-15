@@ -129,7 +129,7 @@ class comcode_test_set extends cms_test_case
 
     public function testMemberLinks()
     {
-        $actual = comcode_to_tempcode('{{admin}}');
+        $actual = comcode_to_tempcode('{{' . $this->get_canonical_username('admin') . '}}');
         $this->assertTrue(strpos($actual->evaluate(), '<a') !== false);
     }
 
