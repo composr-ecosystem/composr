@@ -33,7 +33,7 @@ disable_php_memory_limit();
 
 $type = get_param_string('type', '0');
 
-$title = get_screen_title('Composr release assistance tool - step ' . strval(intval($type) + 1) . '/3', false);
+$title = get_screen_title('Composr release assistance tool - step ' . strval(intval($type) + 1) . '/4', false);
 $title->evaluate_echo();
 
 switch ($type) {
@@ -46,27 +46,14 @@ switch ($type) {
     case '2':
         phase_2();
         break;
+    case '3':
+        phase_3();
+        break;
 }
 
-// Gather details
-function phase_0()
+function get_previous_version()
 {
-    $skip_check = (get_param_integer('skip', 0) == 1) ? 'checked="checked"' : '';
-
     require_code('version2');
-    $on_disk_version = get_version_dotted();
-
-    if (strpos($on_disk_version, 'alpha') !== false) {
-        $release_description = 'This version is an alpha release of the next major version of Composr';
-    } elseif (strpos($on_disk_version, 'beta') !== false) {
-        $release_description = 'This version is a beta release of the next major version of Composr';
-    } elseif (strpos($on_disk_version, 'RC') !== false) {
-        $release_description = 'This version is a release candidate for the next major version of Composr';
-    } elseif (substr_count($on_disk_version, '.') == 2) {
-        $release_description = 'This version is a patch release that introduces a number of bug fixes since the last release';
-    } else {
-        $release_description = 'This version is the gold release of the next version of Composr';
-    }
 
     $previous_version = null;
     $previous_tag = shell_exec('git describe --tags');
@@ -74,6 +61,82 @@ function phase_0()
     if (preg_match('#^(.*)-\w+-\w+$#', $previous_tag, $matches) != 0) {
         $previous_version = $matches[1];
     }
+
+    return $previous_version;
+}
+
+function get_new_version() {
+    require_code('version2');
+    $new_version = post_param_string('version', get_version_dotted());
+    $new_version = get_version_dotted__from_anything($new_version);
+    return $new_version;
+}
+
+// Gather version
+function phase_0()
+{
+    require_code('version2');
+    $on_disk_version = get_version_dotted();
+    $previous_version = get_previous_version();
+
+    $post_url = static_evaluate_tempcode(get_self_url(false, false, array('type' => '1')));
+
+    echo '
+    <p>Here are some things you should do if you have not already:</p>
+    <ul>
+        <li>Go through the auto-reported error emails, to make sure they are handled (for each: fix if relevant, delete if not).</li>
+        <li>Run the <a href="' . escape_html(get_base_url() . '/_tests') . '">unit tests</a><!--, with dev mode on, on the custom Composr PHP version-->.</li>
+    </ul>';
+
+    echo '
+    <form method="post" action="' . escape_html($post_url) . '">
+        ' . static_evaluate_tempcode(symbol_tempcode('INSERT_SPAMMER_BLACKHOLE')) . '
+
+        <p>I am going to ask you some questions which will allow you to quickly make the decisions needed to get the whole release out without any additional thought. If you don\'t like these questions (such as finding them personally intrusive), I don\'t care&hellip; I am merely a machine, a device, working against a precomputed script. Now that is out of the way&hellip;</p>
+        <hr />
+        <fieldset>
+            <legend>OLD version number</legend>
+            <label for="version">The old version number was detected below from git (or blank if I could not determine it). The auto-generated changelog on the next page will contain resolved tracker issues and git commits since this version.</label>
+            <br />
+            <input maxlength="14" size="14" readonly="readonly" disabled="disabled" type="text" name="previous_version" id="previous_version" value="' . escape_html(($previous_version !== null) ? $previous_version : '') . '" />
+        </fieldset>
+        <br />
+        <fieldset>
+            <legend>NEW version number</legend>
+            <label for="version">What is the full version number (no bloody A, B, C, or D) of the NEW version you are releasing right now? If you are only testing the make release process, you should leave this value alone (use the on-disk version).</label>
+            <br />
+            <input maxlength="14" size="14" type="text" name="version" id="version" value="' . escape_html($on_disk_version) . '" />
+        </fieldset>
+        <br />
+        <fieldset>
+        <legend style="display: none;">Submit</legend>
+        <p><input type="submit" class="buttons__proceed button_screen" value="Proceed" /></p>
+    </fieldset>
+    </form>
+    ';
+}
+
+// Gather other details
+function phase_1()
+{
+    $skip_check = (get_param_integer('skip', 0) == 1) ? 'checked="checked"' : '';
+
+    require_code('version2');
+    $new_version = get_new_version();
+    $previous_version = get_previous_version();
+
+    if (strpos($new_version, 'alpha') !== false) {
+        $release_description = 'This version is an alpha release of the next major version of Composr';
+    } elseif (strpos($new_version, 'beta') !== false) {
+        $release_description = 'This version is a beta release of the next major version of Composr';
+    } elseif (strpos($new_version, 'RC') !== false) {
+        $release_description = 'This version is a release candidate for the next major version of Composr';
+    } elseif (substr_count($new_version, '.') == 2) {
+        $release_description = 'This version is a patch release that introduces a number of bug fixes since the last release';
+    } else {
+        $release_description = 'This version is the gold release of the next version of Composr';
+    }
+
     if ($previous_version !== null) {
         $_changes = shell_exec('git log --pretty=oneline HEAD...refs/tags/' . $previous_version);
         $discovered_tracker_issues = array(); // List of issues referenced on Git to pull from Mantis
@@ -106,17 +169,17 @@ function phase_0()
 
         $api_url = get_brand_base_url() . '/data_custom/composr_homesite_web_service.php?call=get_tracker_issue_titles';
         $_discovered_tracker_issues = implode(',', array_keys($discovered_tracker_issues));
-        $_result = http_download_file($api_url, null, true, false, 'Composr', array('parameters' => array($_discovered_tracker_issues, $on_disk_version, $dig_deep ? $previous_version : null)));
+        $_result = http_download_file($api_url, null, true, false, 'Composr', array('parameters' => array($_discovered_tracker_issues, $new_version, $dig_deep ? $previous_version : null)));
         $tracker_issue_titles = json_decode($_result, true);
 
-        $on_disk_version_parts = explode('.', $on_disk_version);
-        $last = count($on_disk_version_parts) - 1;
-        $on_disk_version_parts[$last] = strval(intval($on_disk_version_parts[$last]) - 1);
-        $on_disk_version_previous = implode('.', $on_disk_version_parts);
+        $new_version_parts = explode('.', $new_version);
+        $last = count($new_version_parts) - 1;
+        $new_version_parts[$last] = strval(intval($new_version_parts[$last]) - 1);
+        $new_version_previous = implode('.', $new_version_parts);
 
         $tracker_url = 'http://compo.sr/tracker/search.php?project_id=1';
-        if (($on_disk_version_parts[$last] >= 0) && (substr_count($on_disk_version, '.') == 2)) {
-            $tracker_url .= '&product_version=' . urlencode($on_disk_version_previous);
+        if (($new_version_parts[$last] >= 0) && (substr_count($new_version, '.') == 2)) {
+            $tracker_url .= '&product_version=' . urlencode($new_version_previous);
         }
 
         // Start populating changes
@@ -145,28 +208,14 @@ function phase_0()
         $changes = 'All reported bugs since the last release have been fixed.';
     }
 
-    $post_url = static_evaluate_tempcode(get_self_url(false, false, array('type' => '1')));
-
-    echo '
-    <p>Here are some things you should do if you have not already:</p>
-    <ul>
-        <li>Go through the auto-reported error emails, to make sure they are handled (for each: fix if relevant, delete if not).</li>
-        <li>Run the <a href="' . escape_html(get_base_url() . '/_tests') . '">unit tests</a><!--, with dev mode on, on the custom Composr PHP version-->.</li>
-        <li>Edit sources/version.php to reflect the new version being released (and refresh this page so the pre-defined fields below represent the new version).</li>
-    </ul>';
+    $post_url = static_evaluate_tempcode(get_self_url(false, false, array('type' => '2')));
 
     echo '
     <form method="post" action="' . escape_html($post_url) . '">
         ' . static_evaluate_tempcode(symbol_tempcode('INSERT_SPAMMER_BLACKHOLE')) . '
 
-        <p>I am going to ask you some questions which will allow you to quickly make the decisions needed to get the whole release out without any additional thought. If you don\'t like these questions (such as finding them personally intrusive), I don\'t care&hellip; I am merely a machine, a device, working against a precomputed script. Now that is out of the way&hellip;</p>
+        <p>Now that I know the new and previous version, I have generated a changelog for you (because work smarter, not harder). Please review it carefully.</p>
         <hr />
-        <fieldset>
-            <legend>Version number</legend>
-            <label for="version">What is the full version number (no bloody A, B, C, or D)?</label>
-            <input maxlength="14" size="14" readonly="readonly" type="text" name="version" id="version" value="' . escape_html($on_disk_version) . '" />
-        </fieldset>
-        <br />
         <fieldset>
             <legend>Description</legend>
             <label for="descrip">Release description.</label>
@@ -175,7 +224,7 @@ function phase_0()
         <br />
         <fieldset>
             <legend>Changes</legend>
-            <label for="changes">For a patch release the default is usually fine (links to our hotfixes and git history). A list of changes is rarely of much use and takes many hours to put together. Users should just stay updated regardless, and will know if there is some specific hotfix that was already made available to them. For a major release much more consideration is needed.</label>
+            <label for="changes">For a patch release the default is usually fine (links to our hotfixes and git history). A list of changes takes many hours to put together. Users should just stay updated regardless, and will know if there is some specific hotfix that was already made available to them. For a major release much more consideration is needed.</label>
             <textarea name="changes" id="changes" style="width: 100%" cols="40" rows="20">' . escape_html($changes) . '</textarea>
             </fieldset>
             <fieldset>
@@ -197,11 +246,13 @@ function phase_0()
             <input type="checkbox" name="rebuild_sql" id="rebuild_sql" value="1" /><label for="rebuild_sql">Re-build .sql files (if the default database structure/contents has changed)</label>
             <p><input type="submit" class="buttons__proceed button_screen" value="Shake it baby" /></p>
         </fieldset>
+        <input type="hidden" name="version" value="' . escape_html($new_version) . '" />
+        <input type="hidden" name="previous_version" value="' . escape_html(($previous_version !== null) ? $previous_version : '') . '" />
     </form>
     ';
 }
 
-function phase_1_pre()
+function phase_2_pre()
 {
     echo '
     <p>As this is a substantial new release make sure you have done the following:</p>
@@ -226,7 +277,7 @@ function phase_1_pre()
     </ul>
     ';
 
-    $post_url = static_evaluate_tempcode(get_self_url(false, false, array('type' => '1')));
+    $post_url = static_evaluate_tempcode(get_self_url(false, false, array('type' => '2')));
 
     echo '
         <form action="' . escape_html($post_url) . '" method="post">
@@ -246,18 +297,18 @@ function phase_1_pre()
 }
 
 // Build release files
-function phase_1()
+function phase_2()
 {
     require_code('version2');
-
-    $version_dotted = get_version_dotted();
+    $new_version = get_new_version();
+    $previous_version = get_previous_version();
 
     $is_bleeding_edge = (post_param_integer('bleeding_edge', 0) == 1);
     $is_old_tree = (post_param_integer('old_tree', 0) == 1);
-    $is_substantial = is_substantial_release($version_dotted);
+    $is_substantial = is_substantial_release($new_version);
 
     if ((post_param_integer('intermediary_tasks', 0) == 0) && ($is_substantial) && (!$is_bleeding_edge)) {
-        phase_1_pre();
+        phase_2_pre();
         return;
     }
 
@@ -274,10 +325,60 @@ function phase_1()
     $old_tree = ($is_old_tree ? '1' : '0');
 
     if (post_param_integer('skip', 0) == 0) {
+        // Update version.php
+        if (($new_version !== $previous_version)) {
+            $version_file = cms_file_get_contents_safe(get_file_base() . '/sources/version.php');
+            if (!$version_file) {
+                fatal_exit('Failed to get sources/version.php file contents.');
+            }
+
+            list(, , , , $general_number, $long_dotted_number_with_qualifier) = get_version_components__from_dotted($new_version);
+
+            // Determine if this is a major release, and update version times accordingly
+            if (preg_match('#^\d+\.0\.0(\.beta1|\.RC1|)$#', $long_dotted_number_with_qualifier) != 0) { // e.g. 3.0.0 or 3.0.0.beta1 or 3.0.0.RC1
+                // cms_version_time() and cms_version_time_major()
+                $version_file = preg_replace('/\d{10}/', strval(time()), $version_file, 2);
+            } else {
+                // Just cms_version_time()
+                $version_file = preg_replace('/\d{10}/', strval(time()), $version_file, 1);
+            }
+
+            // Update cms_version_number()
+            $_replacement = $general_number;
+            $pattern = '/function cms_version_number\(\)\s*{\s*return\s*(.*?)\;\s*}/s';
+            $replacement = "function cms_version_number()\n{\n    return " . float_to_raw_string($_replacement, 1) . ";\n}";
+            $version_file = preg_replace($pattern, $replacement, $version_file);
+
+            // Update cms_version_minor(); first we must remove the major version part.
+            $parts = explode('.', $new_version);
+            array_shift($parts);
+            $_replacement = implode('.', $parts);
+            $pattern = '/function cms_version_minor\(\)\s*{\s*return\s*\'(.*?)\'\;\s*}/s';
+            $replacement = "function cms_version_minor()\n{\n    return '" . $_replacement . "';\n}";
+            $version_file = preg_replace($pattern, $replacement, $version_file);
+
+            // Update branch status flag
+            if (strpos($new_version, 'alpha') !== false) {
+                $_replacement = 'VERSION_ALPHA';
+            } elseif (strpos($new_version, 'beta') !== false) {
+                $_replacement = 'VERSION_BETA';
+            } elseif (strpos($new_version, 'RC') !== false) {
+                $_replacement = 'VERSION_SUPPORTED';
+            } else {
+                $_replacement = 'VERSION_MAINLINE';
+            }
+            $pattern = '/function cms_version_branch_status\(\)\s*{\s*return\s*(.*?)\;\s*}/s';
+            $replacement = "function cms_version_branch_status()\n{\n    return " . $_replacement . ";\n}";
+            $version_file = preg_replace($pattern, $replacement, $version_file);
+
+            // Save the updated file
+            cms_file_put_contents_safe(get_file_base() . '/sources/version.php', $version_file, FILE_WRITE_SYNC_FILE | FILE_WRITE_FIX_PERMISSIONS);
+        }
+
         echo make_installers(get_param_integer('keep_skip_file_grab', 0) == 1);
     }
 
-    $post_url = static_evaluate_tempcode(get_self_url(false, false, array('type' => '2')));
+    $post_url = static_evaluate_tempcode(get_self_url(false, false, array('type' => '3')));
 
     echo '
         <form action="' . escape_html($post_url) . '" method="post">
@@ -285,7 +386,8 @@ function phase_1()
 
             <input type="hidden" name="needed" value="' . escape_html($needed) . '" />
             <input type="hidden" name="justification" value="' . escape_html($justification) . '" />
-            <input type="hidden" name="version" value="' . escape_html($version_dotted) . '" />
+            <input type="hidden" name="version" value="' . escape_html($new_version) . '" />
+            <input type="hidden" name="previous_version" value="' . escape_html(($previous_version !== null) ? $previous_version : '') . '" />
             <input type="hidden" name="bleeding_edge" value="' . escape_html($bleeding_edge) . '" />
             <input type="hidden" name="old_tree" value="' . escape_html($old_tree) . '" />
             <input type="hidden" name="changes" value="' . escape_html($changes) . '" />
@@ -297,7 +399,7 @@ function phase_1()
 }
 
 // Provide exacting instructions for making the release
-function phase_2()
+function phase_3()
 {
     $justification = post_param_string('justification');
     if (substr($justification, -1) == '.') {
@@ -313,14 +415,14 @@ function phase_2()
 
     require_code('version2');
 
-    $version_dotted = get_version_dotted();
+    $new_version = get_version_dotted();
     $version_branch = get_version_branch();
     $version_number = float_to_raw_string(cms_version_number(), 2, true);
     $is_bleeding_edge = (post_param_integer('bleeding_edge', 0) == 1);
     $is_old_tree = (post_param_integer('old_tree', 0) == 1);
-    $is_substantial = is_substantial_release($version_dotted);
+    $is_substantial = is_substantial_release($new_version);
 
-    $push_url = get_brand_base_url() . '/adminzone/index.php?page=-make-release&version=' . urlencode($version_dotted) . '&is_bleeding_edge=' . ($is_bleeding_edge ? '1' : '0') . '&is_old_tree=' . ($is_old_tree ? '1' : '0') . '&descrip=' . urlencode($descrip) . '&needed=' . urlencode($needed) . '&justification=' . urlencode($justification);
+    $push_url = get_brand_base_url() . '/adminzone/index.php?page=-make-release&version=' . urlencode($new_version) . '&is_bleeding_edge=' . ($is_bleeding_edge ? '1' : '0') . '&is_old_tree=' . ($is_old_tree ? '1' : '0') . '&descrip=' . urlencode($descrip) . '&needed=' . urlencode($needed) . '&justification=' . urlencode($justification);
 
     echo '
     <p>Here\'s a list of things for you to do. Get to it!</p>
@@ -333,13 +435,13 @@ function phase_2()
     } else {
         $command_to_try = 'nautilus';
     }
-    $command_to_try .= ' ' . get_custom_file_base() . '/exports/builds/' . $version_dotted . '/';
+    $command_to_try .= ' ' . get_custom_file_base() . '/exports/builds/' . $new_version . '/';
     echo '
         <li>
-            <strong>Upload</strong>: Upload all built files (in <a href="#" onclick="fauxmodal_alert(\'&lt;kbd&gt;' . escape_html($command_to_try) . '&lt;/kbd&gt;\',null,\'Command to open folder\',true);"><kbd>exports/builds/' . escape_html($version_dotted) . '</kbd></a>) to compo.sr server (<a target="_blank" href="sftp://web1@compo.sr/composr/uploads/downloads"><kbd>uploads/downloads</kbd></a>)
+            <strong>Upload</strong>: Upload all built files (in <a href="#" onclick="fauxmodal_alert(\'&lt;kbd&gt;' . escape_html($command_to_try) . '&lt;/kbd&gt;\',null,\'Command to open folder\',true);"><kbd>exports/builds/' . escape_html($new_version) . '</kbd></a>) to compo.sr server (<a target="_blank" href="sftp://web1@compo.sr/composr/uploads/downloads"><kbd>uploads/downloads</kbd></a>)
         </li>
         <li>
-            Tag the release with <kbd>git commit -a -m "New build"; git push; git tag ' . escape_html($version_dotted) . ' ; git push origin ' . escape_html($version_dotted) . '</kbd>
+            Tag the release with <kbd>git commit -a -m "New build"; git push; git tag ' . escape_html($new_version) . ' ; git push origin ' . escape_html($new_version) . '</kbd>
         </li>
         <li>
             <strong>Add to compo.sr</strong>: Run the <form target="_blank" style="display: inline" action="' . escape_html($push_url) . '" method="post">' . static_evaluate_tempcode(symbol_tempcode('INSERT_SPAMMER_BLACKHOLE')) . '<input type="hidden" name="changes" value="' . escape_html($changes) . '" /><input class="hyperlink_button" type="submit" value="compo.sr setup script" /></form>. Note if you are re-releasing, this will still work &ndash; it will update existing entries appropriately.
@@ -352,7 +454,7 @@ function phase_2()
     if ((!$is_bleeding_edge) && (!$is_old_tree)) {
         require_code('make_release');
         $builds_path = get_builds_path();
-        $webpi = $builds_path . '/builds/' . $version_dotted . '/composr-' . $version_dotted . '-webpi.zip';
+        $webpi = $builds_path . '/builds/' . $new_version . '/composr-' . $new_version . '-webpi.zip';
         $ms_filesize = number_format(filesize($webpi)) . ' bytes';
         $ms_sha1 = sha1_file($webpi);
 
