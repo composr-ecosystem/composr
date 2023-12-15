@@ -20,7 +20,7 @@ class httpauth_test_set extends cms_test_case
 {
     public function testHttpAuth()
     {
-        $pwd = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'm_pass_hash_salted', array('m_username' => 'admin'));
+        $pwd = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'm_pass_hash_salted', array('m_username' => $this->get_canonical_username('admin')));
         if ($pwd !== '') {
             return; // Test only works with blank admin password
         }
@@ -29,10 +29,10 @@ class httpauth_test_set extends cms_test_case
 
         set_option('httpauth_is_enabled', '1');
 
-        $data = http_download_file($url->evaluate(), null, true, false, 'Composr', null, null, null, null, null, null, null, array('admin', ''));
+        $data = http_download_file($url->evaluate(), null, true, false, 'Composr', null, null, null, null, null, null, null, array($this->get_canonical_username('admin'), ''));
 
         set_option('httpauth_is_enabled', '0');
 
-        $this->assertTrue(strpos($data, '<span class="fn nickname">admin</span>') !== false);
+        $this->assertTrue(strpos($data, '<span class="fn nickname">' . $this->get_canonical_username('admin') . '</span>') !== false);
     }
 }

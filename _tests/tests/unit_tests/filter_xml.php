@@ -46,7 +46,7 @@ class filter_xml_test_set extends cms_test_case
         $post = array(
             'title' => $title,
             'main_news_category' => '7',
-            'author' => 'admin',
+            'author' => $this->get_canonical_username('admin'),
             'validated' => '1',
             'post' => 'Test Test Test Test Test',
             'news' => 'Test Test Test Test Test',
@@ -78,7 +78,7 @@ class filter_xml_test_set extends cms_test_case
         $post = array(
             'title' => $title,
             'main_news_category' => '7',
-            'author' => 'admin',
+            'author' => $this->get_canonical_username('admin'),
             'validated' => '1',
             'post' => 'Test Test Test Test Test',
             'news' => 'Test Test Test Test Test',
@@ -108,7 +108,7 @@ class filter_xml_test_set extends cms_test_case
         $post = array(
             'title' => $title,
             'main_news_category' => '7',
-            'author' => 'admin',
+            'author' => $this->get_canonical_username('admin'),
             'validated' => '1',
             'post' => 'Test Test Test Test Test',
             'news' => 'Test Test Test Test Test',
@@ -138,7 +138,7 @@ class filter_xml_test_set extends cms_test_case
         $post = array(
             'title' => $title,
             'main_news_category' => '7',
-            'author' => 'admin',
+            'author' => $this->get_canonical_username('admin'),
             'validated' => '1',
             'post' => 'Test Test Test Test Test',
             'news' => 'Test Test Test Test Test',
@@ -169,7 +169,7 @@ class filter_xml_test_set extends cms_test_case
         $post = array(
             'title' => $title,
             'main_news_category' => '7',
-            'author' => 'admin',
+            'author' => $this->get_canonical_username('admin'),
             'validated' => '1',
             'post' => 'Test Test Test Test Test',
             'news' => 'Test Test Test Test Test',
@@ -202,7 +202,7 @@ class filter_xml_test_set extends cms_test_case
         $post = array(
             'title' => $title,
             'main_news_category' => '7',
-            'author' => 'admin',
+            'author' => $this->get_canonical_username('admin'),
             'validated' => '1',
             'post' => 'Test Test Test Test Test',
             'news' => 'Test Test Test Test Test',
@@ -235,7 +235,7 @@ class filter_xml_test_set extends cms_test_case
         $post = array(
             'title' => $title,
             'main_news_category' => '7',
-            'author' => 'admin',
+            'author' => $this->get_canonical_username('admin'),
             'validated' => '1',
             'post' => 'Test Test Test Test Test',
             'news' => 'Test Test Test Test Test',
@@ -269,7 +269,7 @@ class filter_xml_test_set extends cms_test_case
         $post = array(
             'title' => $title,
             'main_news_category' => '7',
-            'author' => 'admin',
+            'author' => $this->get_canonical_username('admin'),
             'validated' => '1',
             'post' => 'Test Test Test Test Test',
             'news' => 'Test Test Test Test Test',
@@ -302,7 +302,7 @@ class filter_xml_test_set extends cms_test_case
         $post = array(
             'title' => $title,
             'main_news_category' => '7',
-            'author' => 'admin',
+            'author' => $this->get_canonical_username('admin'),
             'validated' => '1',
             'post' => 'Test Test Test Test Test',
             'news' => 'Test Test Test Test Test',
@@ -335,7 +335,7 @@ class filter_xml_test_set extends cms_test_case
         $post = array(
             'title' => $title,
             'main_news_category' => '7',
-            'author' => 'admin',
+            'author' => $this->get_canonical_username('admin'),
             'validated' => '1',
             'post' => 'Test Test Test Test Test',
             'news' => 'Test Test Test Test Test',
@@ -368,7 +368,7 @@ class filter_xml_test_set extends cms_test_case
         $post = array(
             'title' => $title,
             'main_news_category' => '7',
-            'author' => 'admin',
+            'author' => $this->get_canonical_username('admin'),
             'validated' => '1',
             'post' => 'Test Test Test Test Test',
             'news' => 'Test Test Test Test Test',
@@ -406,7 +406,7 @@ class filter_xml_test_set extends cms_test_case
             $post = array(
                 'title' => $title,
                 'main_news_category' => '7',
-                'author' => 'admin',
+                'author' => $this->get_canonical_username('admin'),
                 'validated' => '1',
                 'post' => 'Test Test Test Test Test',
                 'news' => 'Test Test Test Test Test',
@@ -445,7 +445,7 @@ class filter_xml_test_set extends cms_test_case
             $post = array(
                 'title' => $title,
                 'main_news_category' => '7',
-                'author' => 'admin',
+                'author' => $this->get_canonical_username('admin'),
                 'validated' => '1',
                 'post' => 'Test Test Test Test Test',
                 'news' => 'Test Test Test Test Test',
@@ -484,7 +484,7 @@ class filter_xml_test_set extends cms_test_case
             $post = array(
                 'title' => $title,
                 'main_news_category' => '7',
-                'author' => 'admin',
+                'author' => $this->get_canonical_username('admin'),
                 'validated' => '1',
                 'post' => 'Test Test Test Test Test',
                 'news' => 'Test Test Test Test Test',
@@ -524,7 +524,7 @@ class filter_xml_test_set extends cms_test_case
             $post = array(
                 'title' => $title,
                 'main_news_category' => '7',
-                'author' => 'admin',
+                'author' => $this->get_canonical_username('admin'),
                 'validated' => '1',
                 'post' => 'Test Test Test Test Test',
                 'news' => 'Test Test Test Test Test',
@@ -563,7 +563,7 @@ class filter_xml_test_set extends cms_test_case
             $post = array(
                 'title' => $title,
                 'main_news_category' => '7',
-                'author' => 'admin',
+                'author' => $this->get_canonical_username('admin'),
                 'validated' => '1',
                 'post' => 'Test Test Test Test Test',
                 'news' => 'Test Test Test Test Test',
@@ -602,7 +602,7 @@ class filter_xml_test_set extends cms_test_case
             $post = array(
                 'title' => $title,
                 'main_news_category' => '7',
-                'author' => 'admin',
+                'author' => $this->get_canonical_username('admin'),
                 'validated' => '1',
                 'post' => 'Test Test Test Test Test',
                 'news' => 'Test Test Test Test Test',

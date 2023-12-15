@@ -26,7 +26,7 @@ class cpfs_test_set extends cms_test_case
 
         require_code('cpf_install');
 
-        $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username('admin');
+        $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($this->get_canonical_username('admin'));
 
         install_name_fields();
 
