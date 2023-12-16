@@ -516,7 +516,6 @@ function should_ignore_file($filepath, $bitmask = 0, $bitmask_defaults = 0)
     if (($bitmask & IGNORE_BUNDLED_VOLATILE) != 0) {
         $ignore_filenames_and_dir_names += array(
             // Bundled stuff that is not necessarily in a *_custom dir yet is volatile
-            '_config.php' => '',
             'map.ini' => 'themes',
             'functions.bin' => 'data_custom',
             'errorlog.php' => 'data_custom',
@@ -531,6 +530,7 @@ function should_ignore_file($filepath, $bitmask = 0, $bitmask_defaults = 0)
 
         $ignore_filenames_and_dir_names += array(
             // Bundled stuff that is not necessarily in a *_custom dir yet is volatile and should not be included in shipped builds
+            '_config.php' => '',
             'latest.bin' => 'data_custom/modules/web_notifications',
             'permissioncheckslog.php' => 'data_custom',
             'failover_rewritemap.txt' => 'data_custom',

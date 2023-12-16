@@ -306,7 +306,6 @@ function make_installers($skip_file_grab = false)
         }
 
         // Move files out temporarily
-        rename($builds_path . '/builds/build/' . $version_branch . '/_config.php', $builds_path . '/builds/build/_config.php');
         rename($builds_path . '/builds/build/' . $version_branch . '/install.php', $builds_path . '/builds/build/install.php');
 
         // Put temporary files in main folder
@@ -344,7 +343,6 @@ function make_installers($skip_file_grab = false)
         rename($builds_path . '/builds/build/composr', $builds_path . '/builds/build/' . $version_branch);
 
         // Move back files moved out temporarily
-        rename($builds_path . '/builds/build/_config.php', $builds_path . '/builds/build/' . $version_branch . '/_config.php');
         rename($builds_path . '/builds/build/install.php', $builds_path . '/builds/build/' . $version_branch . '/install.php');
 
         // Remove temporary files from main folder
@@ -622,9 +620,6 @@ function populate_build_files_list($dir = '', $pretend_dir = '')
     $version_branch = get_version_branch();
 
     // Imply files into the root that we would have skipped
-    if ($pretend_dir == '') {
-        $MAKE_INSTALLERS__FILE_ARRAY[$pretend_dir . '_config.php'] = '';
-    }
     if ($pretend_dir == 'data_custom/') {
         $MAKE_INSTALLERS__FILE_ARRAY[$pretend_dir . 'execute_temp.php'] = file_get_contents(get_file_base() . '/data_custom/execute_temp.php.bundle');
     }

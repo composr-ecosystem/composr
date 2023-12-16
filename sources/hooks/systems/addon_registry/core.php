@@ -503,6 +503,7 @@ class Hook_addon_registry_core
             'sources/hooks/systems/sitemap/zone.php',
             'sources/hooks/systems/sitemap/entry_point.php',
             'web.config',
+            'data_custom/execute_temp.php.bundle',
             'data/html5.js', // LEGACY
             'data/external_url_proxy.php',
             'adminzone/.htaccess',
