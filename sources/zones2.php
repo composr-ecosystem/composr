@@ -347,7 +347,11 @@ function save_zone_base_url($zone, $base_url)
 
     if ($base_url != '') { // Add new entry, if appropriate
         $main_site_domain = parse_url(get_base_url(), PHP_URL_HOST);
-        $main_site_path = trim(parse_url(get_base_url(), PHP_URL_PATH), '/');
+        $main_site_path = parse_url(get_base_url(), PHP_URL_PATH);
+        if (($main_site_domain === null) || ($main_site_path === null)) {
+            warn_exit('INTERNAL_ERROR');
+        }
+        $main_site_path = trim($main_site_path, '/');
 
         if (url_is_local($base_url)) {
             $domain = $main_site_domain;

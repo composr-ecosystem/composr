@@ -417,7 +417,7 @@ abstract class Hook_Health_Check
         $domains = array();
 
         $host = parse_url(get_base_url(), PHP_URL_HOST);
-        if (preg_match('#[A-Z]#i', $host) != 0) {
+        if (($host !== null) && (preg_match('#[A-Z]#i', $host) != 0)) {
             $domains[''] = $host;
         }
 
@@ -448,6 +448,9 @@ abstract class Hook_Health_Check
     {
         if ($domain === null) {
             $domain = parse_url(get_base_url(), PHP_URL_HOST);
+        }
+        if ($domain === null) {
+            warn_exit('INTERNAL_ERROR');
         }
 
         return ($domain == 'localhost') || (trim($domain, '0123456789.') == '') || (strpos($domain, ':') !== false);
