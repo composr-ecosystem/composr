@@ -46,14 +46,16 @@ class env_vars_test_set extends cms_test_case
         return str_replace('index.php', '', $url);
     }
 
-    protected function runTest($param_name, $normalise) {
+    protected function runTest($param_name, $normalise)
+    {
         $this->wipeData(true);
         fixup_bad_php_env_vars();
         $test1 = $normalise ? $this->defaultDocNormalise($_SERVER[$param_name]) : $_SERVER[$param_name];
         $test2 = $normalise ? $this->defaultDocNormalise($this->bak[$param_name]) : $this->bak[$param_name];
         $this->assertTrue($test1 == $test2, $param_name . ' changed or is missing after wipe_data blankify + fixup_bad_php_env_vars');
         if (isset($_GET['debug'])) {
-            @var_dump($test1, $test2);
+            $dump = array($test1, $test2);
+            @var_dump($dump);
         }
 
         $this->wipeData(false);
@@ -62,7 +64,8 @@ class env_vars_test_set extends cms_test_case
         $test2 = $normalise ? $this->defaultDocNormalise($this->bak[$param_name]) : $this->bak[$param_name];
         $this->assertTrue($test1 == $test2, $param_name . ' changed or is missing after wipe_data non-blankify + fixup_bad_php_env_vars');
         if (isset($_GET['debug'])) {
-            @var_dump($test1, $test2);
+            $dump = array($test1, $test2);
+            @var_dump($dump);
         }
     }
 

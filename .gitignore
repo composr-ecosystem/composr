@@ -153,3 +153,4 @@ pages/html_custom/*/*.htm
 
 ; VS Code
 settings.json
+/.buildpath

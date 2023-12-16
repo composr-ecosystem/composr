@@ -65,7 +65,8 @@ function get_previous_version()
     return $previous_version;
 }
 
-function get_new_version() {
+function get_new_version()
+{
     require_code('version2');
     $new_version = post_param_string('version', get_version_dotted());
     $new_version = get_version_dotted__from_anything($new_version);
@@ -147,7 +148,7 @@ function phase_1()
             if (count($parts) == 2) {
                 $change_label = $parts[1];
                 $git_id = $parts[0];
-
+                $matches = array();
                 if (preg_match('#MANTIS-(\d+)#', $change_label, $matches) != 0) {
                     $tracker_id = $matches[1];
                     if ($tracker_id != '0') {
