@@ -98,6 +98,8 @@ class Hook_health_check_domains extends Hook_Health_Check
                         if (empty($data)) {
                             $data = '';
                         }
+                    } else {
+                        $data = '';
                     }
                 } else {
                     $this->state_check_skipped('No implementation for doing whois lookups on this platform');
