@@ -86,7 +86,12 @@ class Hook_health_check_performance_server extends Hook_Health_Check
             $cpu = null;
 
             if (strpos(PHP_OS, 'Darwin') !== false) {
-                $result = explode("\n", shell_exec('iostat'));
+                $shell = shell_exec('iostat');
+                if (!is_string($shell)) {
+                    $this->state_check_skipped('Failed to detect CPU load (this is usually because iostat is not available)');
+                    return;
+                }
+                $result = explode("\n", $shell);
                 array_shift($result);
                 array_shift($result);
                 if (isset($result[0])) {
@@ -96,7 +101,12 @@ class Hook_health_check_performance_server extends Hook_Health_Check
                     }
                 }
             } elseif (strpos(PHP_OS, 'Linux') !== false) {
-                $result = explode("\n", shell_exec('iostat'));
+                $shell = shell_exec('iostat');
+                if (!is_string($shell)) {
+                    $this->state_check_skipped('Failed to detect CPU load (this is usually because iostat is not available)');
+                    return;
+                }
+                $result = explode("\n", $shell);
                 array_shift($result);
                 array_shift($result);
                 array_shift($result);
@@ -108,7 +118,12 @@ class Hook_health_check_performance_server extends Hook_Health_Check
                 }
 
                 if ($cpu === null) {
-                    $result = explode("\n", shell_exec('top -b -n 1'));
+                    $shell = shell_exec('top -b -n 1');
+                    if (!is_string($shell)) {
+                        $this->state_check_skipped('Failed to detect CPU load (this is usually because top is not available)');
+                        return;
+                    }
+                    $result = explode("\n", $shell);
                     array_shift($result);
                     array_shift($result);
                     if (isset($result[0])) {
@@ -175,7 +190,7 @@ class Hook_health_check_performance_server extends Hook_Health_Check
                     $data = shell_exec('uptime');
 
                     $matches = array();
-                    if (preg_match('#load averages:\s*(\d+\.\d+)#', $data, $matches) != 0) {
+                    if ((is_string($data)) && (preg_match('#load averages:\s*(\d+\.\d+)#', $data, $matches) != 0)) {
                         $uptime = floatval($matches[1]);
                     }
                 } else {
@@ -213,7 +228,12 @@ class Hook_health_check_performance_server extends Hook_Health_Check
             $load = null;
 
             if (strpos(PHP_OS, 'Linux') !== false) {
-                $result = explode("\n", shell_exec('iostat'));
+                $shell = shell_exec('iostat');
+                if (!is_string($shell)) {
+                    $this->state_check_skipped('Failed to detect I/O load (this is usually because iostat is not available)');
+                    return;
+                }
+                $result = explode("\n", $shell);
                 array_shift($result);
                 array_shift($result);
                 array_shift($result);
@@ -225,7 +245,12 @@ class Hook_health_check_performance_server extends Hook_Health_Check
                 }
 
                 if ($load === null) {
-                    $result = explode("\n", shell_exec('top -b -n 1'));
+                    $shell = shell_exec('top -b -n 1');
+                    if (!is_string($shell)) {
+                        $this->state_check_skipped('Failed to detect I/O load (this is usually because top is not available)');
+                        return;
+                    }
+                    $result = explode("\n", $shell);
                     array_shift($result);
                     array_shift($result);
                     if (isset($result[0])) {
@@ -283,6 +308,10 @@ class Hook_health_check_performance_server extends Hook_Health_Check
                 $ps_cmd .= ' -A';
             }
             $_result = shell_exec($ps_cmd);
+            if (!is_string($_result)) {
+                $this->state_check_skipped('Failed to list running processes');
+                return;
+            }
             $result = explode("\n", $_result);
             foreach ($result as $r) {
                 $matches = array();
@@ -350,7 +379,7 @@ class Hook_health_check_performance_server extends Hook_Health_Check
 
             if (strpos(PHP_OS, 'Darwin') !== false) {
                 $data = shell_exec('vm_stat');
-                if (preg_match('#^Pages free:\s*(\d+)#m', $data, $matches) != 0) {
+                if ((is_string($data)) && (preg_match('#^Pages free:\s*(\d+)#m', $data, $matches) != 0)) {
                     $bytes_free = intval($matches[1]) * 4 * 1024;
                     if (preg_match('#^Pages inactive:\s*(\d+)#m', $data, $matches) != 0) { // We consider this free. Mac is going to try and use all RAM for something, so we have to use a weird definition
                         $bytes_free += intval($matches[1]) * 4 * 1024;
@@ -358,14 +387,14 @@ class Hook_health_check_performance_server extends Hook_Health_Check
                 }
             } elseif (strpos(PHP_OS, 'Linux') !== false) {
                 $data = shell_exec('free');
-                if (preg_match('#^Mem:\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)#m', $data, $matches) != 0) {
+                if ((is_string($data)) && (preg_match('#^Mem:\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)#m', $data, $matches) != 0)) {
                     $bytes_free = intval($matches[6]) * 1024;
                 } elseif (preg_match('#^Mem:\s+(\d+)\s+(\d+)\s+(\d+)#m', $data, $matches) != 0) {
                     $bytes_free = intval($matches[3]) * 1024;
                 }
             } elseif (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
                 $data = shell_exec('wmic OS get FreePhysicalMemory /Value');
-                if (preg_match('#FreePhysicalMemory=(\d+)#m', $data, $matches) != 0) {
+                if ((is_string($data)) && (preg_match('#FreePhysicalMemory=(\d+)#m', $data, $matches) != 0)) {
                     $bytes_free = intval($matches[1]) * 1024;
                 }
             } else {

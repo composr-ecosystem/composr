@@ -53,7 +53,7 @@ $REMOTE_BASE_URL = get_brand_base_url();
 global $GIT_PATH;
 $GIT_PATH = 'git';
 $git_result = shell_exec($GIT_PATH . ' --help 2>&1');
-if (strpos($git_result, 'git: command not found') !== false) {
+if (is_string($git_result) && (strpos($git_result, 'git: command not found') !== false)) {
     if (file_exists('/usr/local/git/bin/git')) {
         $GIT_PATH = '/usr/local/git/bin/git';
     } elseif (file_exists('C:\\Program Files (x86)\\Git\\bin\\git.exe')) {
@@ -72,14 +72,17 @@ if (cms_srv('REQUEST_METHOD') == 'POST') {
     $title = post_param_string('title');
     $notes = post_param_string('notes', '');
     $affects = post_param_string('affects', '');
+    $fixed_files = array();
     if (!is_null(post_param_string('fixed_files', null))) {
         $fixed_files = explode(',', post_param_string('fixed_files'));
     } else {
         $fixed_files = array();
         $git_command = $GIT_PATH . ' show --pretty="format:" --name-only ' . $git_commit_id;
         $git_result = shell_exec($git_command . ' 2>&1');
+        if (!is_string($git_result)) {
+            warn_exit('INTERNAL_ERROR');
+        }
         $_fixed_files = explode("\n", $git_result);
-        $fixed_files = array();
         foreach ($_fixed_files as $file) {
             if ($file != '') {
                 $fixed_files[] = $file;
@@ -590,6 +593,10 @@ function git_find_uncommitted_files($include_push_bugfix)
     chdir(get_file_base());
     $git_command = $GIT_PATH . ' status';
     $git_result = shell_exec($git_command . ' 2>&1');
+    if (!is_string($git_result)) {
+        attach_message('Warning: could not determine uncommitted files.', 'warn');
+        $git_result = '';
+    }
     $lines = explode("\n", $git_result);
     $git_found = array();
     foreach ($lines as $line) {
@@ -621,6 +628,9 @@ function do_git_commit($git_commit_message, $files, &$git_commit_command_data)
     // Current status
     $cmd = $GIT_PATH . ' status';
     $git_status_data = shell_exec($cmd . ' 2>&1');
+    if (!is_string($git_status_data)) {
+        warn_exit('INTERNAL_ERROR');
+    }
     $is_unpushed_prior = (strpos($git_status_data, 'Your branch is ahead') !== false);
 
     // Add
@@ -628,7 +638,10 @@ function do_git_commit($git_commit_message, $files, &$git_commit_command_data)
     foreach ($files as $file) {
         $cmd .= ' ' . escapeshellarg($file);
     }
-    $git_commit_command_data .= shell_exec($cmd . ' 2>&1');
+    $execute = shell_exec($cmd . ' 2>&1');
+    if (is_string($execute)) {
+        $git_commit_command_data .= $execute;
+    }
 
     // Commit
     $cmd = $GIT_PATH . ' commit';
@@ -636,14 +649,20 @@ function do_git_commit($git_commit_message, $files, &$git_commit_command_data)
         $cmd .= ' ' . escapeshellarg($file);
     }
     $cmd .= ' -m ' . escapeshellarg($git_commit_message);
-    $git_commit_command_data .= shell_exec($cmd . ' 2>&1');
+    $execute = shell_exec($cmd . ' 2>&1');
+    if (is_string($execute)) {
+        $git_commit_command_data .= $execute;
+    }
 
     $matches = array();
     if ((preg_match('# ([\da-z]+)\]#', $git_commit_command_data, $matches) != 0)) {
         if (!$is_unpushed_prior) {
             // Success, do a push too
             $cmd = $GIT_PATH . ' push';
-            $git_commit_command_data .= shell_exec($cmd . ' 2>&1');
+            $execute = shell_exec($cmd . ' 2>&1');
+            if (is_string($execute)) {
+                $git_commit_command_data .= $execute;
+            }
         }
 
         return $matches[1];

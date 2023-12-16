@@ -239,7 +239,7 @@ function get_composr_branches()
     require_code('version2');
 
     $_branches = shell_exec('git branch');
-    if ($_branches === null) {
+    if (empty($_branches)) {
         return array();
     }
 
@@ -250,6 +250,9 @@ function get_composr_branches()
             $git_branch = $matches[1];
 
             $version_file = shell_exec('git show ' . $git_branch . ':sources/version.php');
+            if (empty($version_file)) {
+                warn_exit('INTERNAL_ERROR');
+            }
 
             $tempnam = cms_tempnam();
             file_put_contents($tempnam, $version_file . "\n\necho serialize(array(cms_version_number(), defined('cms_version_branch_status') ? cms_version_branch_status() : 'Unknown', defined('cms_version_branch_eol') ? cms_version_branch_eol() : null));");

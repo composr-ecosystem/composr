@@ -28,8 +28,8 @@ $done = false;
 if ((php_function_allowed('shell_exec')) && (strpos(get_db_type(), 'mysql') !== false) && (strpos($intended_db_type, 'mysql') !== false)) {
     $cmd = 'mysqldump -h' . get_db_site_host() . ' -u' . get_db_site_user() . ' -p' . get_db_site_password() . ' ' . get_db_site() . ' 2>&1';
     $cmd .= ' > ' . $out_file_path;
-    $msg = shell_exec($cmd);
-    if (($msg == '') && (filesize($out_file_path) == 0)) {
+    $msg = @shell_exec($cmd);
+    if (((!is_string($msg)) || ($msg == '')) && (filesize($out_file_path) == 0)) { // TODO: This might be error-prone in later PHP versions
         $done = true;
     }
 }

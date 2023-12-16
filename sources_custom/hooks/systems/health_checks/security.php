@@ -201,9 +201,15 @@ class Hook_health_check_security extends Hook_Health_Check
 
                     $matches_local = array();
                     $dns_lookup_local = shell_exec('nslookup ' . $domain);
+                    if (!is_string($dns_lookup_local)) {
+                        $dns_lookup_local = '';
+                    }
                     $matched_local = preg_match($regexp, $dns_lookup_local, $matches_local);
                     $matches_remote = array();
                     $dns_lookup_remote = shell_exec('nslookup ' . $domain . ' 8.8.8.8');
+                    if (!is_string($dns_lookup_remote)) {
+                        $dns_lookup_remote = '';
+                    }
                     $matched_remote = preg_match($regexp, $dns_lookup_remote, $matches_remote);
                     if (($matched_local != 0) && ($matched_remote != 0)) {
                         $this->assert_true($matches_local[1] == $matches_remote[1], 'DNS lookup for our domain seems to be looking up differently ([tt]' . $matches_local[1] . '[/tt] vs [tt]' . $matches_remote[1] . '[/tt])');
