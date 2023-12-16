@@ -128,7 +128,7 @@ The Setup Wizard ("Configure my Composr first") will guide you through some basi
 
 [center][img]data_custom/images/docs/tut_install/congratulations.jpg[/img][/center]
 
-[title="2"]Advice for webhosters[/title]
+[title="2"]Advice for webhosts[/title]
 
 Note that Composr administrators have full control over their website code. They may execute their own custom PHP code trivially.
 

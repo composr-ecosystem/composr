@@ -281,6 +281,7 @@ class lang_spelling_test_set extends cms_test_case
             'eratic' => 'erratic',
             'psuedo' => 'pseudo',
             'licencing' => 'licensing',
+            'perf' => 'performance', // "perf" is strictly a noun, but we use it as an adjective in error a lot
         );
         if (strpos($file, 'calendar') !== false) {
             $common_spelling_mistakes['occurrence'] = 'recurrence';

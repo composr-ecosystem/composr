@@ -343,7 +343,7 @@ class Composr_fulltext_engine
                     }
                 } else {
                     $where_clause .= ' AND ' . (($set_type == 'and') ? 'EXISTS' : 'NOT EXISTS') . ' (SELECT * FROM ' . $db->get_table_prefix() . $index_table . ' i' . strval($i) . ' WHERE ' . $join_condition;
-                    $open_brackets++; // We keep opening up more brackets to stop the MySQL query optimiser doing whacky things, partly executing random subqueries into temporary tables before the first join
+                    $open_brackets++; // We keep opening up more brackets to stop the MySQL query optimiser doing wacky things, partly executing random subqueries into temporary tables before the first join
                 }
 
                 if (($set_type != 'not') && ($order_by_total_ngrams_matched != '')) {
@@ -387,7 +387,7 @@ class Composr_fulltext_engine
         if ($use_imprecise_ordering) {
             $contextual_relevance_sql = $order_by_occurrence_rates; // Will just be the occurrence rate of the least common term
         } else {
-            $contextual_relevance_sql = $order_by_total_ngrams_matched . ((($order_by_total_ngrams_matched == '') || ($order_by_occurrence_rates == '')) ? '' : '+') . $order_by_occurrence_rates; // $order_by_total_ngrams_matched will be the dominent factor (intended!) as it is an integer while $order_by_occurrence_rates cannot add to more than 1
+            $contextual_relevance_sql = $order_by_total_ngrams_matched . ((($order_by_total_ngrams_matched == '') || ($order_by_occurrence_rates == '')) ? '' : '+') . $order_by_occurrence_rates; // $order_by_total_ngrams_matched will be the dominant factor (intended!) as it is an integer while $order_by_occurrence_rates cannot add to more than 1
         }
         if ($contextual_relevance_sql == '') {
             $contextual_relevance_sql = '1';
