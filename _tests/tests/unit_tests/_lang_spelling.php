@@ -3254,7 +3254,11 @@ class _lang_spelling_test_set extends cms_test_case
             'targetable',
         );
 
-        $pspell_link = pspell_new('en');
+        $pspell_link = pspell_new('en', 'british');
+        if ($pspell_link === false) {
+            $this->assertTrue(false, 'Failed to load pspell EN dictionary');
+            return;
+        }
 
         foreach ($okay_words as $new_word) {
             pspell_add_to_session($pspell_link, $new_word);
