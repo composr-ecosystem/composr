@@ -125,6 +125,57 @@ function phase_1()
     require_code('version2');
     $new_version = get_new_version();
     $previous_version = get_previous_version();
+    
+    // Update version.php
+    if (($new_version !== $previous_version)) {
+        $version_file = cms_file_get_contents_safe(get_file_base() . '/sources/version.php');
+        if (!$version_file) {
+            fatal_exit('Failed to get sources/version.php file contents.');
+        }
+        
+        list(, , , , $general_number, $long_dotted_number_with_qualifier) = get_version_components__from_dotted($new_version);
+        
+        // Determine if this is a major release, and update version times accordingly
+        if (preg_match('#^\d+\.0\.0(\.beta1|\.RC1|)$#', $long_dotted_number_with_qualifier) != 0) { // e.g. 3.0.0 or 3.0.0.beta1 or 3.0.0.RC1
+            // cms_version_time() and cms_version_time_major()
+            $version_file = preg_replace('/\d{10}/', strval(time()), $version_file, 2);
+        } else {
+            // Just cms_version_time()
+            $version_file = preg_replace('/\d{10}/', strval(time()), $version_file, 1);
+        }
+        
+        // Update cms_version_number()
+        $_replacement = $general_number;
+        $pattern = '/function cms_version_number\(\)\s*{\s*return\s*(.*?)\;\s*}/s';
+        $replacement = "function cms_version_number()\n{\n    return " . float_to_raw_string($_replacement, 1) . ";\n}";
+        $version_file = preg_replace($pattern, $replacement, $version_file);
+        
+        // Update cms_version_minor(); first we must remove the major version part.
+        $parts = explode('.', $new_version);
+        array_shift($parts);
+        $_replacement = implode('.', $parts);
+        $pattern = '/function cms_version_minor\(\)\s*{\s*return\s*\'(.*?)\'\;\s*}/s';
+        $replacement = "function cms_version_minor()\n{\n    return '" . $_replacement . "';\n}";
+        $version_file = preg_replace($pattern, $replacement, $version_file);
+        
+        // Update branch status flag
+        if (strpos($new_version, 'alpha') !== false) {
+            $_replacement = 'VERSION_ALPHA';
+        } elseif (strpos($new_version, 'beta') !== false) {
+            $_replacement = 'VERSION_BETA';
+        } elseif (strpos($new_version, 'RC') !== false) {
+            $_replacement = 'VERSION_SUPPORTED';
+        } else {
+            $_replacement = 'VERSION_MAINLINE';
+        }
+        $pattern = '/function cms_version_branch_status\(\)\s*{\s*return\s*(.*?)\;\s*}/s';
+        $replacement = "function cms_version_branch_status()\n{\n    return " . $_replacement . ";\n}";
+        $version_file = preg_replace($pattern, $replacement, $version_file);
+        
+        // Save the updated file
+        require_code('files');
+        cms_file_put_contents_safe(get_file_base() . '/sources/version.php', $version_file, FILE_WRITE_SYNC_FILE | FILE_WRITE_FIX_PERMISSIONS);
+    }
 
     if (strpos($new_version, 'alpha') !== false) {
         $release_description = 'This version is an alpha release of the next major version of Composr';
@@ -327,56 +378,6 @@ function phase_2()
     $old_tree = ($is_old_tree ? '1' : '0');
 
     if (post_param_integer('skip', 0) == 0) {
-        // Update version.php
-        if (($new_version !== $previous_version)) {
-            $version_file = cms_file_get_contents_safe(get_file_base() . '/sources/version.php');
-            if (!$version_file) {
-                fatal_exit('Failed to get sources/version.php file contents.');
-            }
-
-            list(, , , , $general_number, $long_dotted_number_with_qualifier) = get_version_components__from_dotted($new_version);
-
-            // Determine if this is a major release, and update version times accordingly
-            if (preg_match('#^\d+\.0\.0(\.beta1|\.RC1|)$#', $long_dotted_number_with_qualifier) != 0) { // e.g. 3.0.0 or 3.0.0.beta1 or 3.0.0.RC1
-                // cms_version_time() and cms_version_time_major()
-                $version_file = preg_replace('/\d{10}/', strval(time()), $version_file, 2);
-            } else {
-                // Just cms_version_time()
-                $version_file = preg_replace('/\d{10}/', strval(time()), $version_file, 1);
-            }
-
-            // Update cms_version_number()
-            $_replacement = $general_number;
-            $pattern = '/function cms_version_number\(\)\s*{\s*return\s*(.*?)\;\s*}/s';
-            $replacement = "function cms_version_number()\n{\n    return " . float_to_raw_string($_replacement, 1) . ";\n}";
-            $version_file = preg_replace($pattern, $replacement, $version_file);
-
-            // Update cms_version_minor(); first we must remove the major version part.
-            $parts = explode('.', $new_version);
-            array_shift($parts);
-            $_replacement = implode('.', $parts);
-            $pattern = '/function cms_version_minor\(\)\s*{\s*return\s*\'(.*?)\'\;\s*}/s';
-            $replacement = "function cms_version_minor()\n{\n    return '" . $_replacement . "';\n}";
-            $version_file = preg_replace($pattern, $replacement, $version_file);
-
-            // Update branch status flag
-            if (strpos($new_version, 'alpha') !== false) {
-                $_replacement = 'VERSION_ALPHA';
-            } elseif (strpos($new_version, 'beta') !== false) {
-                $_replacement = 'VERSION_BETA';
-            } elseif (strpos($new_version, 'RC') !== false) {
-                $_replacement = 'VERSION_SUPPORTED';
-            } else {
-                $_replacement = 'VERSION_MAINLINE';
-            }
-            $pattern = '/function cms_version_branch_status\(\)\s*{\s*return\s*(.*?)\;\s*}/s';
-            $replacement = "function cms_version_branch_status()\n{\n    return " . $_replacement . ";\n}";
-            $version_file = preg_replace($pattern, $replacement, $version_file);
-
-            // Save the updated file
-            cms_file_put_contents_safe(get_file_base() . '/sources/version.php', $version_file, FILE_WRITE_SYNC_FILE | FILE_WRITE_FIX_PERMISSIONS);
-        }
-
         echo make_installers(get_param_integer('keep_skip_file_grab', 0) == 1);
     }
 
