@@ -723,18 +723,43 @@ class Module_news
         $prev_article_title = null;
         $next_article_url   = null;
         $next_article_title = null;
-
-        $_prev_article_title = $GLOBALS['SITE_DB']->query_select_value_if_there('news', 'title', ['id' => $id - 1], '', true);
-        $_next_article_title = $GLOBALS['SITE_DB']->query_select_value_if_there('news', 'title', ['id' => $id + 1], '', true);
-
-        if (!cms_empty_safe($_prev_article_title)) {
-            $prev_article_title = get_translated_text($_prev_article_title);
-            $prev_article_url   = build_url(['page' => '_SELF', 'type' => 'view', 'id' => $id - 1], '_SELF');
+        
+        // Find a previous article
+        $prev_articles = $GLOBALS['SITE_DB']->query_select('news', ['*'], [], ' AND date_and_time<' . strval($myrow['date_and_time']), 100/*Performance*/);
+        sort_maps_by($prev_articles, '!date_and_time');
+        foreach ($prev_articles as $prev_article) {
+            // Validation
+            if (($prev_article['validated'] == 0) && (addon_installed('unvalidated'))) {
+                if ((!has_privilege(get_member(), 'see_unvalidated')) && ((is_guest()) || ($prev_article['submitter'] != get_member()))) {
+                    continue;
+                }
+            }
+            
+            $_prev_article_title = $prev_article['title'];
+            if (!cms_empty_safe($_prev_article_title)) {
+                $prev_article_title = get_translated_text($_prev_article_title);
+                $prev_article_url   = build_url(['page' => '_SELF', 'type' => 'view', 'id' => $prev_article['id']], '_SELF');
+                break;
+            }
         }
-
-        if (!cms_empty_safe($_next_article_title)) {
-            $next_article_title = get_translated_text($_next_article_title);
-            $next_article_url = build_url(['page' => '_SELF', 'type' => 'view', 'id' => $id + 1], '_SELF');
+        
+        // Find a next article
+        $next_articles = $GLOBALS['SITE_DB']->query_select('news', ['*'], [], ' AND date_and_time>=' . strval($myrow['date_and_time']), 101/*Performance*/, 1);
+        sort_maps_by($next_articles, 'date_and_time');
+        foreach ($next_articles as $next_article) {
+            // Validation
+            if (($next_article['validated'] == 0) && (addon_installed('unvalidated'))) {
+                if ((!has_privilege(get_member(), 'see_unvalidated')) && ((is_guest()) || ($next_article['submitter'] != get_member()))) {
+                    continue;
+                }
+            }
+            
+            $_next_article_title = $next_article['title'];
+            if (!cms_empty_safe($_next_article_title)) {
+                $next_article_title = get_translated_text($_next_article_title);
+                $next_article_url   = build_url(['page' => '_SELF', 'type' => 'view', 'id' => $next_article['id']], '_SELF');
+                break;
+            }
         }
 
         $author_entry_url = '';
