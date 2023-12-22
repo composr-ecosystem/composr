@@ -225,9 +225,9 @@ function is_php_version_supported_by_phpdevs(string $v) : ?bool
     if ($data === null) {
         require_code('http');
         if (function_exists('set_option')) {
-            $data = cache_and_carry('http_get_contents', ['https://raw.githubusercontent.com/php/web-php/master/include/branches.inc', ['convert_to_internal_encoding' => true, 'trigger_error' => false]], 60 * 60 * 24 * 7);
+            $data = cache_and_carry('http_get_contents', ['https://raw.githubusercontent.com/php/web-php/master/include/version.inc', ['convert_to_internal_encoding' => true, 'trigger_error' => false]], 60 * 60 * 24 * 7);
         } else {
-            $data = http_get_contents('https://raw.githubusercontent.com/php/web-php/master/include/branches.inc', ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 3.0]);
+            $data = http_get_contents('https://raw.githubusercontent.com/php/web-php/master/include/version.inc', ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 3.0]);
         }
     }
 
@@ -238,23 +238,16 @@ function is_php_version_supported_by_phpdevs(string $v) : ?bool
     $matches = [];
 
     // Corruption?
-    if (preg_match('#\'\d+\.\d+\' => \[[^\(\)]*\'security\' => \'(\d\d\d\d-\d\d-\d\d)\'#Us', $data, $matches) == 0) {
+    if (preg_match('#\$data\[\'(\d+)\.(\d+)\'] = \[#', $data, $matches) == 0) {
         return null;
-    }
-
-    // Do we have actual data?
-    $matches = [];
-    if (preg_match('#\'' . preg_quote($v, '#') . '\' => \[[^\(\)]*\'security\' => \'(\d\d\d\d)-(\d\d)-(\d\d)\'#is', $data, $matches) != 0) {
-        $eol = mktime(0, 0, 0, intval($matches[2]), intval($matches[3]), intval($matches[1]));
-        return ($eol > time());
     }
 
     // Is it older than all releases provided?
     $matches = [];
     $min_version = null;
-    $num_matches = preg_match_all('#\'(\d+\.\d+)\' => \[#', $data, $matches);
+    $num_matches = preg_match_all('#\$data\[\'(\d+)\.(\d+)\'] = \[#', $data, $matches);
     for ($i = 0; $i < $num_matches; $i++) {
-        $version = floatval($matches[1][$i]);
+        $version = floatval($matches[1][$i] . '.' . $matches[2][$i]);
         if ($version != 3.0/*special case*/) {
             if (($min_version === null) || ($version < $min_version)) {
                 $min_version = $version;
