@@ -16,8 +16,14 @@
 function do_install_to($database, $username, $password, $table_prefix, $safe_mode, $forum_driver = 'cns', $board_path = null, $forum_base_url = null, $database_forums = null, $username_forums = null, $password_forums = null, $extra_settings = [], $do_index_test = true, $db_type = null)
 {
     // Most Composr MySQL drivers auto-create the DB if missing, if root, but mysql_pdo does not because of how the connection works
-    if ((get_db_site_user() == 'root') && (strpos(get_db_type(), 'mysql') !== false)) {
-        $GLOBALS['SITE_DB']->query('CREATE DATABASE IF NOT EXISTS ' . $database, null, 0, true);
+    if (strpos(get_db_type(), 'mysql') !== false) {
+        if (get_db_site_user() == 'root') {
+            $GLOBALS['SITE_DB']->query('CREATE DATABASE IF NOT EXISTS ' . $database, null, 0, true);
+        } else if ($username == 'root') {
+            $db = new DatabaseConnector(get_db_site(), get_db_site_host(), $username, $password, $table_prefix);
+            $db->query('CREATE DATABASE IF NOT EXISTS ' . $database, null, 0, true);
+            unset($db);
+        }
     }
 
     copy(get_file_base() . '/_config.php', get_file_base() . '/_config.php.bak');
