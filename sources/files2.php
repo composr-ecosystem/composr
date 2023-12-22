@@ -191,14 +191,14 @@ function is_temp_file(string $path) : bool
     $_temp_dir = cms_get_temp_dir();
     $temp_dirs = [
         realpath($_temp_dir[0]),
-        get_custom_file_base() . '/temp',
+        realpath(get_custom_file_base() . '/temp'),
     ];
 
     foreach ($temp_dirs as $temp_dir) {
-        if (substr($path, 0, strlen($temp_dir) + 1) == $temp_dir . '/') {
+        if (substr($path, 0, strlen($temp_dir) + 1) == $temp_dir . '/') { // Unix
             return true;
         }
-        if (substr($path, 0, strlen($temp_dir) + 1) == $temp_dir . '\\') {
+        if (substr($path, 0, strlen($temp_dir) + 1) == $temp_dir . '\\') { // Windows
             return true;
         }
     }
