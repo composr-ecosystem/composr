@@ -122,6 +122,7 @@ class Hook_addon_registry_core
             'data/maintenance_status.csv',
             'data/empty.php',
             'data/generate_csrf_token.php',
+            'data_custom/execute_temp.php.bundle',
             'sources/file_permissions_check.php',
             'themes/default/images/icons_sprite.svg',
             'themes/default/images/icons_monochrome_sprite.svg',

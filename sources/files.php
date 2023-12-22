@@ -874,7 +874,6 @@ function should_ignore_file(string $path, int $bitmask = 0) : bool
         $ignore_extensions['bin'] .= '|data_custom/modules/chat';
 
         $ignore_filenames_and_dir_names = array_merge($ignore_filenames_and_dir_names, [
-            '_config.php' => '',
             'map.ini' => 'themes',
             'functions.bin' => 'data_custom',
             'errorlog.php' => 'data_custom',
@@ -889,6 +888,7 @@ function should_ignore_file(string $path, int $bitmask = 0) : bool
         ]);
 
         $ignore_filenames_and_dir_names = array_merge($ignore_filenames_and_dir_names, [
+            '_config.php' => '',
             'upgrader.cms.tmp' => 'data_custom',
             'unit_test_positive_ignore_sampler.xxx' => 'data_custom', // To help us test this function. This file won't ever exist.
             'latest.bin' => 'data_custom/modules/web_notifications',

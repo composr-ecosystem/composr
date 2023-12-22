@@ -595,9 +595,6 @@ function populate_build_files_list($dir = '', $pretend_dir = '')
     $version_branch = get_version_branch();
 
     // Imply files into the root that we would have skipped
-    if ($pretend_dir == '') {
-        $MAKE_INSTALLERS__FILE_ARRAY[$pretend_dir . '_config.php'] = '';
-    }
     if ($pretend_dir == 'data_custom/') {
         $MAKE_INSTALLERS__FILE_ARRAY[$pretend_dir . 'execute_temp.php'] = cms_file_get_contents_safe(get_file_base() . '/data_custom/execute_temp.php.bundle', FILE_READ_LOCK);
     }
