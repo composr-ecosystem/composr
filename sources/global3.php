@@ -374,7 +374,7 @@ function cms_file_get_contents_safe(string $path, int $flags = 0, ?string $defau
     $handle_file_bom = ($flags & FILE_READ_BOM) != 0;
     $unixify_line_format = ($flags & FILE_READ_UNIXIFIED_TEXT) != 0;
 
-    $tmp = fopen($path, 'rb');
+    $tmp = @fopen($path, 'rb');
     if ($tmp === false) {
         return false;
     }
