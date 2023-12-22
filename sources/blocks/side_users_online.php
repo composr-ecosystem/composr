@@ -108,7 +108,7 @@ PHP;
                     $url = $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, true);
                     $online[] = [
                         'URL' => $url,
-                        'USERNAME' => $username,
+                        'USERNAME' => $GLOBALS['FORUM_DRIVER']->get_username($member_id, true),
                         'COLOUR' => $colour,
                         'MEMBER_ID' => strval($member_id),
                         'AVATAR_URL' => $GLOBALS['FORUM_DRIVER']->get_member_avatar_url($member_id),
@@ -139,7 +139,7 @@ PHP;
                     $birthdays[] = [
                         'AGE' => array_key_exists('age', $_birthday) ? integer_format($_birthday['age']) : null,
                         'PROFILE_URL' => $GLOBALS['CNS_DRIVER']->member_profile_url($_birthday['id'], true),
-                        'USERNAME' => $_birthday['username'],
+                        'USERNAME' => $GLOBALS['FORUM_DRIVER']->get_username($_birthday['id'], true),
                         'MEMBER_ID' => strval($_birthday['id']),
                         'BIRTHDAY_URL' => $birthday_url,
                     ];
