@@ -197,8 +197,8 @@ class Module_admin_setupwizard
             }
         }
 
-        $_done_once = get_value('setupwizard_completed', null, true);
-        $done_once = $_done_once !== null;
+        $_done_once = get_value('setupwizard_completed', '0', true);
+        $done_once = $_done_once != '0';
 
         $post_url = build_url(['page' => '_SELF', 'type' => 'step2'], '_SELF', ['keep_theme_seed' => true, 'keep_theme_dark' => true, 'keep_theme_source' => true, 'keep_theme_algorithm' => true]);
         $text = new Tempcode();
