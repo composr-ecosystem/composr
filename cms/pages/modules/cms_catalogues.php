@@ -800,6 +800,8 @@ class Module_cms_catalogues extends Standard_crud_module
         if ($catalogue_name === null) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'catalogue_category'));
         }
+        
+        $catalogue_title = get_translated_text($GLOBALS['SITE_DB']->query_select_value('catalogues', 'c_title', ['c_name' => $catalogue_name]));
 
         $map = $this->get_set_field_map($catalogue_name, get_member());
 
@@ -808,13 +810,20 @@ class Module_cms_catalogues extends Standard_crud_module
         $id = actual_add_catalogue_entry($category_id, $validated, $notes, $allow_rating, $allow_comments, $allow_trackbacks, $map, $metadata['add_time'], $metadata['submitter'], null, $metadata['views']);
 
         set_url_moniker('catalogue_entry', strval($id));
+        
+        require_code('content');
+        list($title,,,,, $url_safe) = content_get_details('catalogue_entry', strval($id));
 
         // Award points here instead of from give_submit_points (submit.php) because catalogues have their own submit point options
         if ((!is_guest()) && (addon_installed('points'))) {
             $points = $GLOBALS['SITE_DB']->query_select_value('catalogues', 'c_submit_points', ['c_name' => $catalogue_name]);
             if ($points > 0) {
                 require_code('points2');
-                points_credit_member(get_member(), do_lang('ADD_CATALOGUE_ENTRY'), $points, 0, true, 0, 'catalogue_entry', 'add', strval($id));
+                $lang_string = 'catalogues:ACTIVITY_CATALOGUE_' . $catalogue_name . '_ADD_NO_LINK';
+                if (do_lang($lang_string, null, null, null, null, false) === null) {
+                    $lang_string = 'catalogues:ACTIVITY_CATALOGUE_GENERIC_ADD_NO_LINK';
+                }
+                points_credit_member(get_member(), do_lang($lang_string, $catalogue_title, $title), $points, 0, true, 0, 'catalogue_entry', 'add', strval($id));
             }
         }
 
@@ -835,9 +844,6 @@ class Module_cms_catalogues extends Standard_crud_module
                 if ($privacy_ok) {
                     require_code('syndication');
 
-                    $map_copy = $map;
-                    $title = array_shift($map_copy);
-                    $catalogue_title = get_translated_text($GLOBALS['SITE_DB']->query_select_value('catalogues', 'c_title', ['c_name' => $catalogue_name]));
                     $lang_string = 'catalogues:ACTIVITY_CATALOGUE_' . $catalogue_name . '_ADD';
                     if (do_lang($lang_string, null, null, null, null, false) === null) {
                         $lang_string = 'catalogues:ACTIVITY_CATALOGUE_GENERIC_ADD';

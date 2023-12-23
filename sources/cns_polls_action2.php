@@ -202,6 +202,7 @@ function cns_vote_in_poll(int $poll_id, array $votes, ?int $member_id = null, ?a
         warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
     }
     $topic_id = $topic_info[0]['id'];
+    $topic_title = $topic_info[0]['t_cache_first_title'];
     $forum_id = $topic_info[0]['t_forum_id'];
     if ((!has_category_access($member_id, 'forums', strval($forum_id))) && ($forum_id !== null)) {
         warn_exit(do_lang_tempcode('VOTE_CHEAT'));
@@ -281,14 +282,13 @@ function cns_vote_in_poll(int $poll_id, array $votes, ?int $member_id = null, ?a
         if ($points_voting_cns > 0) {
             require_code('points2');
             require_lang('points');
-            points_credit_member($member_id, do_lang('CNS_VOTING'), $points_voting_cns, 0, null, 0, 'topic_poll', 'vote', strval($poll_id));
+            points_credit_member($member_id, do_lang('ACTIVITY_CNS_VOTING', $topic_title), $points_voting_cns, 0, null, 0, 'topic_poll', 'vote', strval($poll_id));
         }
     }
 
     // Send notification to topic subscribers if the poll is not private and is set to reveal which members voted for each option (otherwise this can be too revealing as members can predict the outcome of the poll)
     if ($rows[0]['po_is_private'] == 0 && $rows[0]['po_view_member_votes'] == 1) {
         $poll_title = $rows[0]['po_question'];
-        $topic_title = $topic_info[0]['t_cache_first_title'];
         $topic_url = $GLOBALS['FORUM_DRIVER']->topic_url($topic_id, '');
         $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
         $subject = do_lang('POLL_VOTE_MAIL_SUBJECT', $username, $answer, [$poll_title, $topic_title, $topic_url], get_lang($member_id));

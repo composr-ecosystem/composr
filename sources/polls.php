@@ -177,9 +177,12 @@ function vote_in_poll(int $poll_id, ?int $cast, ?array $myrow = null, ?int $memb
             if (addon_installed('points')) {
                 $points_voting = intval(get_option('points_voting'));
                 if ($points_voting > 0) {
+                    require_code('content');
+                    list($title) = content_get_details('poll', strval($poll_id));
+                    
                     require_code('points2');
                     require_lang('points');
-                    points_credit_member($member_id, do_lang('VOTING'), $points_voting, 0, null, 0, 'poll', 'vote', strval($poll_id));
+                    points_credit_member($member_id, do_lang('ACTIVITY_VOTING', $title), $points_voting, 0, null, 0, 'poll', 'vote', strval($poll_id));
                 }
             }
             $GLOBALS['SITE_DB']->query_update(

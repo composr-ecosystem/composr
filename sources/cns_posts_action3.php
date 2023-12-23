@@ -45,6 +45,7 @@ function cns_validate_post(int $post_id, ?int $topic_id = null, ?int $forum_id =
     }
 
     $topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_cache_first_post_id', 't_pt_from', 't_cache_first_title'], ['id' => $topic_id], '', 1);
+    $topic_title = $topic_info['t_cache_first_title'];
 
     $GLOBALS['FORUM_DB']->query_update('f_posts', [
         'p_validated' => 1,
@@ -78,7 +79,7 @@ function cns_validate_post(int $post_id, ?int $topic_id = null, ?int $forum_id =
                 $post_points = intval(get_option('points_posting'));
                 if ($post_points > 0) {
                     require_code('points2');
-                    points_credit_member($poster, do_lang('FORUM_POST'), $post_points, 0, null, 0, 'post', 'add', strval($post_id));
+                    points_credit_member($poster, do_lang('ACTIVITY_ADD_POST', strval($post_id), $topic_title), $post_points, 0, null, 0, 'post', 'add', strval($post_id));
                 }
             }
         }
@@ -247,7 +248,7 @@ function cns_edit_post(int $post_id, ?int $validated, string $title, string $pos
             $post_points = intval(get_option('points_posting'));
             if ($post_points > 0) {
                 require_code('points2');
-                points_credit_member($post_owner, do_lang('FORUM_POST'), $post_points, 0, null, 0, 'post', 'add', strval($post_id));
+                points_credit_member($post_owner, do_lang('ACTIVITY_ADD_POST', strval($post_id), $info[0]['t_cache_first_title']), $post_points, 0, null, 0, 'post', 'add', strval($post_id));
             }
         }
     }

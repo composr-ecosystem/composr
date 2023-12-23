@@ -1293,6 +1293,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ACTIVITY_ADD_VIDEO
         ACTIVITY_CALENDAR_EVENT
         ACTIVITY_CATALOGUE_GENERIC_ADD
+        ACTIVITY_CATALOGUE_GENERIC_ADD_NO_LINK
         ACTIVITY_CHOOSE_POLL
         ACTIVITY_FILEDUMP_UPLOAD
         ACTIVITY_GIVE_AWARD
@@ -8688,6 +8689,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ACTIVE
         ACTIVE_TOPICS_IN
         ACTIVITY
+        ACTIVITY_ADD_POST
         ACTIVITY_ADD_POST_IN
         ACTIVITY_ADD_TOPIC
         ACTIVITY_ENTERED_COMPETITION
@@ -11839,6 +11841,11 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PRIVACY_ACTION_cloudflare
         PRIVACY_REASON_cloudflare
         CAPTCHA_CLICK_LARGE
+        ACTIVITY_CHAT
+        ACTIVITY_CNS_VOTING
+        ACTIVITY_RATED
+        ACTIVITY_VOTING
+        ACTIVITY_WIKI_MAKE_POST
     ')));
 
     // Remove blank lines

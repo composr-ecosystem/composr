@@ -997,7 +997,11 @@ function chat_post_message(int $room_id, string $message, string $font_name, str
             $points_chat = intval(get_option('points_chat'));
             if ($points_chat > 0) {
                 require_code('points2');
-                points_credit_member($member_id, do_lang('CHAT'), $points_chat, 0, null, 0, 'chat_message', 'add', strval($message_id));
+                $chatroom_name = get_chatroom_name($room_id);
+                if ($chatroom_name === null) {
+                    $chatroom_name = do_lang('UNKNOWN');
+                }
+                points_credit_member($member_id, do_lang('ACTIVITY_CHAT', strval($message_id), $chatroom_name), $points_chat, 0, null, 0, 'chat_message', 'add', strval($message_id));
             }
         }
 

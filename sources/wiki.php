@@ -197,8 +197,10 @@ function wiki_add_post(int $page_id, string $message, int $validated = 1, ?int $
         $points_wiki_posting = intval($_points_wiki_posting);
 
         if ($points_wiki_posting > 0) {
+            require_code('content');
             require_code('points2');
-            points_credit_member($member_id, do_lang('WIKI_MAKE_POST'), $points_wiki_posting, 0, null, 0, 'wiki_post', 'add', strval($post_id));
+            list($page_title) = content_get_details('wiki_page', strval($page_id));
+            points_credit_member($member_id, do_lang('ACTIVITY_WIKI_MAKE_POST', strval($post_id), $page_title), $points_wiki_posting, 0, null, 0, 'wiki_post', 'add', strval($post_id));
         }
     }
 
@@ -438,8 +440,10 @@ function wiki_add_page(string $title, string $description, string $notes, int $s
         $points_wiki_posting = intval($_points_wiki_posting);
 
         if ($points_wiki_posting > 0) {
+            require_code('content');
             require_code('points2');
-            points_credit_member($member_id, do_lang('WIKI_ADD_PAGE'), $points_wiki_posting, 0, true, 0, 'wiki_page', 'add', strval($page_id));
+            list($page_title) = content_get_details('wiki_page', strval($page_id));
+            points_credit_member($member_id, do_lang('ACTIVITY_WIKI_ADD_PAGE', $page_title), $points_wiki_posting, 0, true, 0, 'wiki_page', 'add', strval($page_id));
         }
     }
 

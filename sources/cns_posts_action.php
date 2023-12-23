@@ -440,7 +440,7 @@ function cns_make_post(int $topic_id, string $title, string $post, int $skip_sig
         $post_points = intval(get_option('points_posting'));
         if ($post_points > 0) {
             require_code('points2');
-            points_credit_member($poster, do_lang('FORUM_POST'), $post_points, 0, null, 0, 'post', 'add', strval($post_id));
+            points_credit_member($poster, do_lang('ACTIVITY_ADD_POST', strval($post_id), $topic_title), $post_points, 0, null, 0, 'post', 'add', strval($post_id));
         }
     }
 

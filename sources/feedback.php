@@ -593,10 +593,14 @@ function actualise_credit_rating_points(string $content_type, string $content_id
     if ((!is_guest($member_id)) && (addon_installed('points'))) {
         $points_rating = intval(get_option('points_rating'));
         if ($points_rating > 0) {
+            require_code('content');
             require_code('points2');
+            require_lang('points');
+            
+            list($title) = content_get_details($content_type, $content_id);
 
             // All feedback ledger records will have a t_type_id format of content_type:content_id
-            points_credit_member($member_id, do_lang('RATING'), $points_rating, 0, null, 0, 'feedback', 'add', $content_type . ':' . $content_id);
+            points_credit_member($member_id, do_lang('ACTIVITY_RATED', $content_type, $title), $points_rating, 0, null, 0, 'feedback', 'add', $content_type . ':' . $content_id);
             attach_message(do_lang('SUBMIT_AWARD', integer_format(intval($points_rating), 0)));
         }
     }

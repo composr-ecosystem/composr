@@ -32,7 +32,9 @@ function init__site__pages__modules_custom__quiz($in)
         \$cost = intval(ceil(floatval(\$quiz['q_points_for_passing']) / 2.0));
         if (\$cost > 0) {
             require_code('points2');
-            points_debit_member(get_member(), 'Entered a test', \$cost, 0, 0, false, 0, 'quiz', 'enter_test', strval(\$quiz['id']));
+            require_code('content');
+            list(\$title) = content_get_details('quiz', strval(\$quiz['id']));
+            points_debit_member(get_member(), \"Entered the test, '\" . \$title . \"'\", \$cost, 0, 0, false, 0, 'quiz', 'enter_test', strval(\$quiz['id']));
             \$points_difference -= \$cost;
         }
         ",
