@@ -110,7 +110,7 @@ class Hook_health_check_upkeep extends Hook_Health_Check
 
         require_code('version2');
         $v = strval(PHP_MAJOR_VERSION) . '.' . strval(PHP_MINOR_VERSION);
-        $this->assertTrue(is_php_version_supported_by_phpdevs($v) !== false, 'PHP version supported by the PHP developers ' . $v);
+        $this->assertTrue(is_php_version_supported_by_phpdevs($v) !== false, 'Your PHP version is not supported by the PHP developers: ' . $v);
     }
 
     /**
