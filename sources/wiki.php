@@ -549,6 +549,23 @@ function wiki_edit_page(int $page_id, string $title, string $description, string
 
     require_code('content2');
     seo_meta_set_for_explicit('wiki_page', strval($page_id), $meta_keywords, $meta_description);
+    
+    // Award points if the wiki page was over 1kb in size
+    if ((addon_installed('points')) && (cms_mb_strlen($description) > 1024)) {
+        $_points_wiki_posting = get_option('points_wiki', true);
+        if ($_points_wiki_posting === null) {
+            $_points_wiki_posting = '0';
+        }
+        $points_wiki_posting = intval($_points_wiki_posting);
+        $already_earned_points = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'id', ['t_type' => 'wiki_page', 't_subtype' => 'add', 't_type_id' => strval($page_id), 'recipient_id' => $member_id]);
+        
+        if (($already_earned_points === null) && ($points_wiki_posting > 0)) {
+            require_code('content');
+            require_code('points2');
+            list($page_title) = content_get_details('wiki_page', strval($page_id));
+            points_credit_member($member_id, do_lang('ACTIVITY_WIKI_ADD_PAGE', $page_title), $points_wiki_posting, 0, true, 0, 'wiki_page', 'add', strval($page_id));
+        }
+    }
 
     if (post_param_integer('send_notification', null) !== 0) {
         dispatch_wiki_page_notification($page_id, 'EDIT');
