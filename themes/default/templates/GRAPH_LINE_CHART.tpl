@@ -1,6 +1,6 @@
 {$REQUIRE_JAVASCRIPT,charts}
 
-<div class="webstandards-checker-off" style="{+START,IF_NON_EMPTY,{WIDTH}}width: {WIDTH*}{+START,IF_NON_EMPTY,{HEIGHT}}; {+END}{+END}{+START,IF_NON_EMPTY,{HEIGHT}}height: {HEIGHT*}{+END}">
+<div class="webstandards-checker-off" style="{+START,IF_NON_EMPTY,{WIDTH}}width: {WIDTH*};{+END}{+START,IF_NON_EMPTY,{HEIGHT}}height: {HEIGHT*};{+END}">
 	<canvas id="chart_{ID%}"></canvas>
 </div>
 
@@ -40,32 +40,14 @@
 
 		var options = {
 			tension: 1,
+			cubicInterpolationMode: 'monotone',
 			maintainAspectRatio: (element.parentNode.parentNode.style.display == 'none'), /*Needed for correct sizing in hidden tabs*/
-			{+START,IF,{$NOR,{$EQ,{WIDTH},100%},{$IS_EMPTY,{WIDTH}}}}
-				responsive: false,
-			{+END}
-			{+START,IF,{$EQ,{DATASETS},1}}
-				legend: {
-					display: false,
-				},
-			{+END}
-			{+START,IF,{$NEQ,{DATASETS},1}}
-				legend: {
-					display: true,
-					{+START,IF,{$LT,{DATASETS},3}}
-						position: 'top',
-					{+END}
-					{+START,IF,{$GT,{DATASETS},2}}
-						position: 'right',
-					{+END}
-				},
-			{+END}
 			scales: {
-				xAxes: [{
+				x: {
 					{+START,IF_NON_EMPTY,{X_AXIS_LABEL}}
-						scaleLabel: {
+						title: {
 							display: true,
-							labelString: '{X_AXIS_LABEL;^/}',
+							text: '{X_AXIS_LABEL;^/}',
 						},
 					{+END}
 					{+START,IF_IN_ARRAY,X_LABELS,}{$,If blank labels have been placed we can assume this is to space things out manually}
@@ -73,57 +55,83 @@
 							autoSkip: false,
 						},
 					{+END}
-				}],
-				yAxes: [{
+				},
+				y: {
 					{+START,IF_NON_EMPTY,{Y_AXIS_LABEL}}
-						scaleLabel: {
+						title: {
 							display: true,
-							labelString: '{Y_AXIS_LABEL;^/}',
+							text: '{Y_AXIS_LABEL;^/}',
 						},
 					{+END}
+					{+START,IF,{BEGIN_AT_ZERO}}
+						beginAtZero: true,
+					{+END}
+					{+START,IF,{CLAMP_Y_AXIS}}
+						max: {MAX%},
+					{+END}
 					ticks: {
-						{+START,IF,{BEGIN_AT_ZERO}}
-							beginAtZero: true,
-						{+END}
-						{+START,IF,{CLAMP_Y_AXIS}}
-							max: {MAX%},
-						{+END}
+						callback: function(value, index, array) {
+							{+START,IF,{LOGARITHMIC}}
+								if ((!isNaN(value)) && (Math.round(Math.log10(value)) != Math.log10(value))) {
+									return;
+								}
+							{+END}
+
+							return value.toLocaleString();
+						},
 					},
+
 					{+START,IF,{LOGARITHMIC}}
 						type: 'logarithmic',
 					{+END}
-				}],
-			},
-			tooltips: {
-				callbacks: {
-					label: function(tooltipItem, data) {
-						var ret = '';
-
-						var tooltip = data.datasets[tooltipItem.datasetIndex].tooltips[tooltipItem.index];
-						if (tooltip != '') {
-							ret += tooltip;
-						}
-
-						{+START,IF,{$NEQ,{DATASETS},1}}
-							if (ret != '') {
-								ret += ': ';
-							}
-							ret += data.datasets[tooltipItem.datasetIndex].label;
-						{+END}
-
-						{+START,IF,{$NOT,{SHOW_DATA_LABELS}}}
-							if (ret != '') {
-								ret += ': ';
-							}
-							ret += data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-						{+END}
-
-						return ret.split("\n");
-					},
 				},
 			},
 
+			interaction: {
+            mode: 'x',
+			},
+
 			plugins: {
+				{+START,IF,{$EQ,{DATASETS},1}}
+					legend: {
+						display: false,
+					},
+				{+END}
+				{+START,IF,{$NEQ,{DATASETS},1}}
+					legend: {
+						display: true,
+						position: 'top',
+					},
+				{+END}
+				tooltip: {
+					intersect: false,
+					callbacks: {
+						label: function(tooltipItem) {
+							var ret = '';
+
+							var tooltip = tooltipItem.dataset.tooltips[tooltipItem.dataIndex];
+							if (tooltip != '') {
+								ret += tooltip;
+							}
+
+							{+START,IF,{$NEQ,{DATASETS},1}}
+								if (ret != '') {
+									ret += ': ';
+								}
+								ret += tooltipItem.dataset.label;
+							{+END}
+
+							{+START,IF,{$NOT,{SHOW_DATA_LABELS}}}
+								if (ret != '') {
+									ret += ': ';
+								}
+								ret += tooltipItem.dataset.data[tooltipItem.dataIndex].toLocaleString();
+							{+END}
+
+							return ret.split("\n");
+						},
+					},
+				},
 				{+START,IF,{$NOT,{SHOW_DATA_LABELS}}}
 					datalabels: false,
 				{+END}
@@ -136,8 +144,9 @@
 						font: {
 							weight: 'bold'
 						},
-						color: 'white',
-						formatter: Math.round
+						formatter: function(value, context) {
+							return value.toLocaleString();
+						},
 					},
 				{+END}
 			},

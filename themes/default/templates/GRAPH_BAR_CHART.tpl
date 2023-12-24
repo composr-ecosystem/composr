@@ -1,6 +1,6 @@
 {$REQUIRE_JAVASCRIPT,charts}
 
-<div class="webstandards-checker-off" style="{+START,IF_NON_EMPTY,{WIDTH}}width: {WIDTH*}{+START,IF_NON_EMPTY,{HEIGHT}}; {+END}{+END}{+START,IF_NON_EMPTY,{HEIGHT}}height: {HEIGHT*}{+END}">
+<div class="webstandards-checker-off" style="{+START,IF_NON_EMPTY,{WIDTH}}width: {WIDTH*};{+END}{+START,IF_NON_EMPTY,{HEIGHT}}height: {HEIGHT*};{+END}">
 	<canvas id="chart_{ID%}"></canvas>
 </div>
 
@@ -37,12 +37,9 @@
 
 		var options = {
 			maintainAspectRatio: (element.parentNode.parentNode.style.display == 'none'), /*Needed for correct sizing in hidden tabs*/
-			{+START,IF,{$NOR,{$EQ,{WIDTH},100%},{$IS_EMPTY,{WIDTH}}}}
-				responsive: false,
+			{+START,IF,{HORIZONTAL}}
+				indexAxis: 'y',
 			{+END}
-			legend: {
-				display: false,
-			},
 			layout: {
 				{+START,IF,{SHOW_DATA_LABELS}}
 					{+START,IF,{$NOT,{HORIZONTAL}}}
@@ -72,70 +69,103 @@
 				{+END}
 			},
 			scales: {
-				{+START,IF_NON_EMPTY,{X_AXIS_LABEL}}
-					xAxes: [{
-						scaleLabel: {
+				x: {
+					{+START,IF_NON_EMPTY,{X_AXIS_LABEL}}
+						title: {
 							display: true,
-							labelString: '{X_AXIS_LABEL;^/}',
+							text: '{X_AXIS_LABEL;^/}',
 						},
-						ticks: {
-						{+START,IF,{$AND,{HORIZONTAL},{BEGIN_AT_ZERO}}}
-							beginAtZero: true,
-						{+END}
+					{+END}
+					{+START,IF,{$AND,{HORIZONTAL},{BEGIN_AT_ZERO}}}
+						beginAtZero: true,
+					{+END}
+					{+START,IF,{$AND,{HORIZONTAL},{CLAMP_Y_AXIS}}}
+						max: {MAX%},
+					{+END}
+					ticks: {
 						autoSkip: false,
-						{+START,IF,{$AND,{HORIZONTAL},{CLAMP_Y_AXIS}}}
-							max: {MAX%},
+
+						{+START,IF,{HORIZONTAL}}
+							callback: function(value, index, array) {
+								{+START,IF,{$AND,{HORIZONTAL},{LOGARITHMIC}}}
+									if ((!isNaN(value)) && (Math.round(Math.log10(value)) != Math.log10(value))) {
+										return;
+									}
+								{+END}
+
+								return value.toLocaleString();
+							},
 						{+END}
-						},
-						{+START,IF,{$AND,{HORIZONTAL},{LOGARITHMIC}}}
-							type: 'logarithmic',
-						{+END}
-					}],
-				{+END}
-				yAxes: [{
+					},
+					{+START,IF,{$AND,{HORIZONTAL},{LOGARITHMIC}}}
+						type: 'logarithmic',
+					{+END}
+				},
+				y: {
 					{+START,IF_NON_EMPTY,{Y_AXIS_LABEL}}
-						scaleLabel: {
+						title: {
 							display: true,
-							labelString: '{Y_AXIS_LABEL;^/}',
+							text: '{Y_AXIS_LABEL;^/}',
 						},
 					{+END}
-					{+START,IF,{BEGIN_AT_ZERO}}
-						ticks: {
-						{+START,IF,{$AND,{$NOT,{HORIZONTAL}},{BEGIN_AT_ZERO}}}
-							beginAtZero: true,
-						{+END}
+					{+START,IF,{$AND,{$NOT,{HORIZONTAL}},{BEGIN_AT_ZERO}}}
+						beginAtZero: true,
+					{+END}
+					{+START,IF,{$AND,{$NOT,{HORIZONTAL}},{CLAMP_Y_AXIS}}}
+						max: {MAX%},
+					{+END}
+					ticks: {
 						autoSkip: false,
-						{+START,IF,{$AND,{$NOT,{HORIZONTAL}},{CLAMP_Y_AXIS}}}
-							max: {MAX%},
+
+						{+START,IF,{$NOT,{HORIZONTAL}}}
+							callback: function(value, index, array) {
+								{+START,IF,{$AND,{$NOT,{HORIZONTAL}},{LOGARITHMIC}}}
+									if ((!isNaN(value)) && (Math.round(Math.log10(value)) != Math.log10(value))) {
+										return;
+									}
+								{+END}
+
+								return value.toLocaleString();
+							},
 						{+END}
-						},
-					{+END}
+					},
 					{+START,IF,{$AND,{$NOT,{HORIZONTAL}},{LOGARITHMIC}}}
 						type: 'logarithmic',
 					{+END}
-				}],
-			},
-			tooltips: {
-				callbacks: {
-					label: function(tooltipItem, data) {
-						var ret = '';
-						{+START,IF,{$NOT,{SHOW_DATA_LABELS}}}
-							ret += data.datasets[0].data[tooltipItem.index];
-						{+END}
-						var tooltip = data.tooltips[tooltipItem.index];
-						if (tooltip != '') {
-							if (ret != '') {
-								ret += ': ';
-							}
-							ret += tooltip;
-						}
-
-						return ret.split("\n");
-					},
 				},
 			},
 
+			interaction: {
+            mode: 'index',
+				{+START,IF,{HORIZONTAL}}
+            	axis: 'y',
+				{+END}
+			},
+
 			plugins: {
+				legend: {
+					display: false,
+				},
+				tooltip: {
+					intersect: false,
+					callbacks: {
+						label: function(tooltipItem) {
+							var ret = '';
+							{+START,IF,{$NOT,{SHOW_DATA_LABELS}}}
+								ret += tooltipItem.dataset.data[tooltipItem.dataIndex].toLocaleString();
+							{+END}
+							var tooltip = data.tooltips[tooltipItem.dataIndex];
+							if (tooltip != '') {
+								if (ret != '') {
+									ret += ': ';
+								}
+								ret += tooltip;
+							}
+
+							return ret.split("\n");
+						},
+					},
+				},
 				{+START,IF,{$NOT,{SHOW_DATA_LABELS}}}
 					datalabels: false,
 				{+END}
@@ -150,19 +180,21 @@
 						{+END}
 						color: 'black',
 						display: function(context) {
-							return context.dataset.data[context.dataIndex] > 0;
+							return true;//context.dataset.data[context.dataIndex] > 15;
 						},
 						font: {
-							weight: 'bold'
+							weight: 'bold',
 						},
-						formatter: Math.round
+						formatter: function(value, context) {
+							return value.toLocaleString();
+						},
 					},
 				{+END}
 			},
 		};
 
 		new Chart(ctx, {
-			type: '{$?,{HORIZONTAL},horizontalBar,bar}',
+			type: 'bar',
 			data: data,
 			options: options,
 		});

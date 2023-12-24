@@ -23,7 +23,7 @@ require_code('maps');
 $width = empty($map['width']) ? null : $map['width'];
 $height = empty($map['height']) ? null : $map['height'];
 
-$color_pool = @cms_empty_safe($map['color_pool']) ? [] : _parse_color_pool_string($map['color_pool']);
+$color_pool = @cms_empty_safe($map['color_pool']) ? null : _parse_color_pool_string($map['color_pool']);
 
 $file = empty($map['file']) ? 'uploads/website_specific/graph_test/pins_on_map.csv' : $map['file'];
 

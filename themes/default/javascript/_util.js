@@ -1130,4 +1130,34 @@
 
         $util.properties(SubClass.prototype, protoProps);
     };
+
+    /**
+     * Formats a large number with commas and k/m shortening
+     * @param {Number} value 
+     * @param {Boolean} force 
+     * @returns {String}
+     */
+    $util.makeBigNumberNice = function makeBigNumberNice(value, force) {
+        if (!isNumeric(value)) {
+            return value;
+        }
+        
+        if (value >= 1000000) {
+            if (value % 100000 == 0) {
+                return ((value / 1000000) + 'm');
+            }
+            if (force) {
+                return ((value / 1000000).toFixed(0) + 'm');
+            }
+        } else if (value >= 1000) {
+            if (value % 100 == 0) {
+                return ((value / 1000) + 'k');
+            }
+            if (force) {
+                return ((value / 1000).toFixed(0) + 'k');
+            }
+        }
+
+        return value.toLocaleString("en-US");
+    }
 }(window.$util || (window.$util = {})));

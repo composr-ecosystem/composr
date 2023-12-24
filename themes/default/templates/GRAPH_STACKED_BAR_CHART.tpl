@@ -1,6 +1,6 @@
 {$REQUIRE_JAVASCRIPT,charts}
 
-<div class="webstandards-checker-off" style="{+START,IF_NON_EMPTY,{WIDTH}}width: {WIDTH*}{+START,IF_NON_EMPTY,{HEIGHT}}; {+END}{+END}{+START,IF_NON_EMPTY,{HEIGHT}}height: {HEIGHT*}{+END}">
+<div class="webstandards-checker-off" style="{+START,IF_NON_EMPTY,{WIDTH}}width: {WIDTH*};{+END}{+START,IF_NON_EMPTY,{HEIGHT}}height: {HEIGHT*};{+END}">
 	<canvas id="chart_{ID%}"></canvas>
 </div>
 
@@ -37,69 +37,130 @@
 
 		var options = {
 			maintainAspectRatio: (element.parentNode.parentNode.style.display == 'none'), /*Needed for correct sizing in hidden tabs*/
-			{+START,IF,{$NOR,{$EQ,{WIDTH},100%},{$IS_EMPTY,{WIDTH}}}}
-				responsive: false,
-			{+END}
-			{+START,IF,{$EQ,{DATASETS},1}}
-				legend: {
-					display: false,
-				},
-			{+END}
-			{+START,IF,{$NEQ,{DATASETS},1}}
-				legend: {
-					display: true,
-					labels: {
-					},
-					position: 'top',
-				},
+			{+START,IF,{HORIZONTAL}}
+				indexAxis: 'y',
 			{+END}
 			scales: {
-				xAxes: [{
+				x: {
+					{+START,IF,{$NAND,{HORIZONTAL},{LOGARITHMIC}}}
+						{+START,IF_PASSED_AND_TRUE,STACKED}
+							border: {
+								display: false,
+							},
+						{+END}
+					{+END}
 					{+START,IF_NON_EMPTY,{X_AXIS_LABEL}}
-						scaleLabel: {
+						title: {
 							display: true,
-							labelString: '{X_AXIS_LABEL;^/}',
-						},
-					{+END}
-					{+START,IF_PASSED_AND_TRUE,STACKED}
-						stacked: true,
-					{+END}
-					{+START,IF,{$AND,{HORIZONTAL},{LOGARITHMIC}}}
-						type: 'logarithmic',
-					{+END}
-				}],
-				yAxes: [{
-					{+START,IF_NON_EMPTY,{Y_AXIS_LABEL}}
-						scaleLabel: {
-							display: true,
-							labelString: '{Y_AXIS_LABEL;^/}',
+							text: '{X_AXIS_LABEL;^/}',
 						},
 					{+END}
 					ticks: {
-						{+START,IF,{BEGIN_AT_ZERO}}
-							beginAtZero: true,
+						{+START,IF,{HORIZONTAL}}
+							{+START,IF_PASSED_AND_TRUE,STACKED}
+								callback: function(value, index, array) {
+									return '';
+								},
+							{+END}
+							{+START,IF_NON_PASSED_OR_FALSE,STACKED}
+								callback: function(value, index, array) {
+									{+START,IF,{$AND,{HORIZONTAL},{LOGARITHMIC}}}
+										if ((!isNaN(value)) && (Math.round(Math.log10(value)) != Math.log10(value))) {
+											return;
+										}
+									{+END}
+
+									return value.toLocaleString();
+								},
+							{+END}
 						{+END}
-						{+START,IF,{CLAMP_Y_AXIS}}
-							max: {MAX%},
+					},
+
+					{+START,IF_PASSED_AND_TRUE,STACKED}
+						stacked: true,
+					{+END}
+
+					{+START,IF,{$AND,{HORIZONTAL},{LOGARITHMIC}}}
+						type: 'logarithmic',
+					{+END}
+				},
+				y: {
+					{+START,IF,{$NAND,{$NOT,{HORIZONTAL}},{LOGARITHMIC}}}
+						border: {
+							{+START,IF_PASSED_AND_TRUE,STACKED}
+								display: false,
+							{+END}
+						},
+					{+END}
+					{+START,IF_NON_EMPTY,{Y_AXIS_LABEL}}
+						title: {
+							display: true,
+							text: '{Y_AXIS_LABEL;^/}',
+						},
+					{+END}
+					{+START,IF,{BEGIN_AT_ZERO}}
+						beginAtZero: true,
+					{+END}
+					{+START,IF,{CLAMP_Y_AXIS}}
+						max: {MAX%},
+					{+END}
+					ticks: {
+						{+START,IF,{$NOT,{HORIZONTAL}}}
+							{+START,IF_PASSED_AND_TRUE,STACKED}
+								callback: function(value, index, array) {
+									return '';
+								},
+							{+END}
+							{+START,IF_NON_PASSED_OR_FALSE,STACKED}
+								callback: function(value, index, array) {
+									{+START,IF,{$AND,{HORIZONTAL},{LOGARITHMIC}}}
+										if ((!isNaN(value)) && (Math.round(Math.log10(value)) != Math.log10(value))) {
+											return;
+										}
+									{+END}
+
+									return value.toLocaleString();
+								},
+							{+END}
 						{+END}
 					},
 					{+START,IF_PASSED_AND_TRUE,STACKED}
 						stacked: true,
 					{+END}
+
 					{+START,IF,{$AND,{$NOT,{HORIZONTAL}},{LOGARITHMIC}}}
 						type: 'logarithmic',
 					{+END}
-				}],
-			},
-			tooltips: {
-				callbacks: {
-					label: function(tooltipItem, data) {
-						return data.datasets[tooltipItem.datasetIndex].label + ': ' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-					},
 				},
 			},
 
+			interaction: {
+            mode: 'index',
+				{+START,IF,{HORIZONTAL}}
+            	axis: 'y',
+				{+END}
+			},
+
 			plugins: {
+				{+START,IF,{$EQ,{DATASETS},1}}
+					legend: {
+						display: false,
+					},
+				{+END}
+				{+START,IF,{$NEQ,{DATASETS},1}}
+					legend: {
+						display: true,
+						position: 'top',
+					},
+				{+END}
+				tooltip: {
+					intersect: false,
+					callbacks: {
+						label: function(tooltipItem) {
+							return tooltipItem.dataset.label + ': ' + tooltipItem.dataset.data[tooltipItem.dataIndex].toLocaleString();
+						},
+					},
+				},
 				{+START,IF,{$NOT,{SHOW_DATA_LABELS}}}
 					datalabels: false,
 				{+END}
@@ -114,14 +175,16 @@
 						font: {
 							weight: 'bold'
 						},
-						formatter: Math.round
+						formatter: function(value, context) {
+							return value.toLocaleString();
+						},
 					},
 				{+END}
 			},
 		};
 
 		new Chart(ctx, {
-			type: '{$?,{HORIZONTAL},horizontalBar,bar}',
+			type: 'bar',
 			data: data,
 			options: options,
 		});

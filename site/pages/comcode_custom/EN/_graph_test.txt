@@ -1,15 +1,15 @@
-{$,[block file="uploads/website_specific/graph_test/pie_chart.csv"]graph_pie_chart[/block]}
+[block file="uploads/website_specific/graph_test/pie_chart.csv"]graph_pie_chart[/block]
 
-{$,[block file="uploads/website_specific/graph_test/bar_chart.csv" x_axis_label="Cheeses" y_axis_label="Preference"]graph_bar_chart[/block]}
+[block file="uploads/website_specific/graph_test/bar_chart.csv" x_axis_label="Cheeses" y_axis_label="Preference"]graph_bar_chart[/block]
 
-{$,[block file="uploads/website_specific/graph_test/stacked_bar_chart.csv" x_axis_label="Years" y_axis_label="Amount"]graph_stacked_bar_chart[/block]}
+[block file="uploads/website_specific/graph_test/stacked_bar_chart.csv" x_axis_label="Years" y_axis_label="Amount"]graph_stacked_bar_chart[/block]
 
-{$,[block file="uploads/website_specific/graph_test/bubble_bar_chart.csv" x_axis_label="Years" y_axis_label="Variety"]graph_bubble_bar_chart[/block]}
+[block file="uploads/website_specific/graph_test/bubble_bar_chart.csv" x_axis_label="Years" y_axis_label="Variety"]graph_bubble_bar_chart[/block]
 
-{$,[block file="uploads/website_specific/graph_test/scatter_diagram.csv" x_axis_label="A" y_axis_label="B"]graph_scatter_diagram[/block]}
+[block file="uploads/website_specific/graph_test/scatter_diagram.csv" x_axis_label="A" y_axis_label="B"]graph_scatter_diagram[/block]
 
-{$,[block file="uploads/website_specific/graph_test/line_chart.csv" x_axis_label="Years" y_axis_label="Volume"]graph_line_chart[/block]}
+[block file="uploads/website_specific/graph_test/line_chart.csv" x_axis_label="Years" y_axis_label="Volume"]graph_line_chart[/block]
 
-{$,[block file="uploads/website_specific/graph_test/pins_on_map.csv"]pins_on_map[/block]}
+[block file="uploads/website_specific/graph_test/pins_on_map.csv"]pins_on_map[/block]
 
-{$,[block file="uploads/website_specific/graph_test/countries_on_map.csv"]countries_on_map[/block]}
+[block file="uploads/website_specific/graph_test/countries_on_map.csv"]countries_on_map[/block]

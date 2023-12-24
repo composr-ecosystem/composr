@@ -290,7 +290,7 @@ function graph_line_chart(array $datasets, ?array $x_labels = null, $x_axis_labe
     }
 
     $begin_at_zero = isset($options['begin_at_zero']) ? $options['begin_at_zero'] : false;
-    $show_data_labels = isset($options['show_data_labels']) ? $options['show_data_labels'] : true;
+    $show_data_labels = isset($options['show_data_labels']) ? $options['show_data_labels'] : false;
     $fill = isset($options['fill']) ? $options['fill'] : false;
 
     if ((isset($options['clamp_y_axis'])) && ($options['clamp_y_axis'] != '0')) {
@@ -373,7 +373,7 @@ function graph_pie_chart(array $datapoints, array $options = [], ?array $color_p
         $i++;
     }
 
-    $show_data_labels = isset($options['show_data_labels']) ? $options['show_data_labels'] : true;
+    $show_data_labels = isset($options['show_data_labels']) ? $options['show_data_labels'] : false;
     $doughnut = isset($options['doughnut']) ? $options['doughnut'] : false;
 
     $has_wordwrap = isset($options['wordwrap_tooltip_at']);
@@ -446,7 +446,7 @@ function graph_bar_chart(array $datapoints, $x_axis_label = '', $y_axis_label = 
     }
 
     $begin_at_zero = isset($options['begin_at_zero']) ? $options['begin_at_zero'] : false;
-    $show_data_labels = isset($options['show_data_labels']) ? $options['show_data_labels'] : true;
+    $show_data_labels = isset($options['show_data_labels']) ? $options['show_data_labels'] : false;
     $horizontal = isset($options['horizontal']) ? $options['horizontal'] : false;
 
     if ((isset($options['clamp_y_axis'])) && ($options['clamp_y_axis'] != '0')) {
@@ -539,6 +539,7 @@ function graph_stacked_bar_chart(array $datasets, array $labels, $x_axis_label =
             'LABEL' => $dataset['label'],
             'COLOR' => isset($dataset['color']) ? $dataset['color'] : _search_graph_color_pool($i, $color_pool, $dataset['label']),
             'DATAPOINTS' => $datapoints,
+            'STACK' => isset($dataset['stack']) ? $dataset['stack'] : null,
         ];
     }
 
@@ -550,7 +551,7 @@ function graph_stacked_bar_chart(array $datasets, array $labels, $x_axis_label =
     }
 
     $begin_at_zero = isset($options['begin_at_zero']) ? $options['begin_at_zero'] : true;
-    $show_data_labels = isset($options['show_data_labels']) ? $options['show_data_labels'] : true;
+    $show_data_labels = isset($options['show_data_labels']) ? $options['show_data_labels'] : false;
     $horizontal = isset($options['horizontal']) ? $options['horizontal'] : false;
     $stacked = isset($options['stacked']) ? $options['stacked'] : true;
 
@@ -659,7 +660,7 @@ function graph_bubble_bar_chart(array $datasets, $x_axis_label = '', $y_axis_lab
         ];
     }
 
-    $show_data_labels = isset($options['show_data_labels']) ? $options['show_data_labels'] : true;
+    $show_data_labels = isset($options['show_data_labels']) ? $options['show_data_labels'] : false;
 
     $has_wordwrap = isset($options['wordwrap_tooltip_at']);
 

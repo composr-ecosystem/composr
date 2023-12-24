@@ -25,7 +25,7 @@ $height = empty($map['height']) ? null : $map['height'];
 
 $intensity_label = @cms_empty_safe($map['intensity_label']) ? 'Intensity' : $map['intensity_label'];
 
-$color_pool = @cms_empty_safe($map['color_pool']) ? [] : _parse_color_pool_string($map['color_pool']);
+$color_pool = @cms_empty_safe($map['color_pool']) ? null : _parse_color_pool_string($map['color_pool']);
 
 $show_labels = !empty($map['show_labels']);
 
