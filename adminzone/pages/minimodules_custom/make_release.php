@@ -320,7 +320,7 @@ function phase_2_pre()
     ';
     echo '
         <li>Upgrading prep:<ul>
-            <li>Copy <kbd>data/files.dat</kbd> from the most recent past release to <kbd>data/files_previous.dat</kbd> in the new release (the hosted upgrade generator does this for upgrade TARs dynamically, but we want our main release to have the correct metadata also)</li>
+            <li>Copy <kbd>data/files.bin</kbd> from the most recent past release to <kbd>data/files_previous.bin</kbd> in the new release (the hosted upgrade generator does this for upgrade TARs dynamically, but we want our main release to have the correct metadata also)</li>
             <li>Make sure any ocProducts themes are up-to-date (CSS changes, template changes, theme image changes).</li>
         </ul></li>
         <li>Look for <a target="_blank" title="LEGACY comments (this link will open in a new window)" href="https://compo.sr/tracker/view.php?id=1305">LEGACY comments</a> in the code and remove/update stuff as appropriate.</li>
