@@ -196,7 +196,7 @@ function cns_vote_in_poll(int $poll_id, array $votes, ?int $member_id = null, ?a
         warn_exit(do_lang_tempcode('VOTE_DENIED'));
     }
     if ($topic_info === null) {
-        $topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['id', 't_forum_id'], ['t_poll_id' => $poll_id], '', 1);
+        $topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['id', 't_forum_id', 't_cache_first_title'], ['t_poll_id' => $poll_id], '', 1);
     }
     if (!array_key_exists(0, $topic_info)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
