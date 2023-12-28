@@ -206,6 +206,7 @@ class Hook_addon_registry_catalogues
             'sources/hooks/modules/admin_setupwizard/catalogues.php',
             'sources/hooks/systems/attachments/catalogue_entry.php',
             'sources/blocks/main_cc_embed.php',
+            'sources/blocks/main_catalogues_form.php',
             'themes/default/css/catalogues.css',
             'sources/hooks/systems/symbols/CATALOGUE_ENTRY_BACKREFS.php',
             'sources/hooks/systems/symbols/CATALOGUE_ENTRY_FIELD_VALUE.php',

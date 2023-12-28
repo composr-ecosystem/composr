@@ -57,7 +57,7 @@ class Hook_block_ui_renderers_catalogues
             return null;
         }
 
-        if (($parameter == 'param') && (in_array($block, ['main_contact_catalogues']))) {
+        if (($parameter == 'param') && (in_array($block, ['main_contact_catalogues', 'main_catalogues_form']))) {
             require_code('catalogues');
             $structured_list = create_selection_list_catalogues($default);
 

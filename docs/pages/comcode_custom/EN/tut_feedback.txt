@@ -64,7 +64,7 @@ However, you can use the Commandr [tt]set_comment_forum[/tt] command to set it s
 If the [tt]tickets[/tt] addon is installed, Composr includes a contact block, [tt]main_contact_us[/tt], that allows you to have users leave messages that are then copied into a new support ticket.
 [/surround]
 
-[title="3"]Catalogues contact form[/title]
+[title="3"]Catalogues contact form (as e-mail)[/title]
 
 [surround="right float-separation"]
 [media width="170" description="Viewing the [tt]main_contact_catalogues[/tt] block"]data_custom/images/docs/tut_feedback/catalogue_block_3.png[/media]
@@ -72,7 +72,7 @@ If the [tt]tickets[/tt] addon is installed, Composr includes a contact block, [t
 [media width="170" description="Choosing the [tt]main_contact_catalogues[/tt] block from the block construction assistant"]data_custom/images/docs/tut_feedback/catalogue_block_1.png[/media]
 [/surround]
 [media width="150" description="Adding a contact catalogue" float="right"]data_custom/images/docs/tut_feedback/catalogue_add.png[/media]
-The [tt]main_contact_catalogues[/tt] block shows a form of custom fields coded into a catalogue. This is great for creating complex contact forms.
+The [tt]main_contact_catalogues[/tt] block shows a form of custom fields coded into a catalogue. This is great for creating complex contact forms sent out as e-mails.
 
 The process for using this block is as follows:
 1) Add a new catalogue, via Admin Zone > Content > Catalogues > Add catalogue. Include whatever fields on the catalogue that you want on the contact form. You'll probably also want to disable View access on all the usergroups.
@@ -85,6 +85,23 @@ You can set field options to tag fields used for the contact message:
  - [tt]tag=email[/tt] -- to set the 'from e-mail'. You can also pre-populate an "An e-mail address" field with the current member's e-mail address via a default value of [tt]![/tt].
  - [tt]tag=name[/tt] -- to set the 'from name'. You can also pre-populate an "A brief line of text" field with the current member's display name via a default value of [tt]NAME[/tt].
  - [tt]tag=subject[/tt] -- to set the 'subject'.
+ 
+[title="3"]Catalogues form (as entries)[/title]
+
+[surround="right float-separation"]
+[media width="170" description="Viewing the [tt]main_catalogues_form[/tt] block"]data_custom/images/docs/tut_feedback/catalogue_block_6.png[/media]
+[media width="170" description="The [tt]main_catalogues_form[/tt] block form"]data_custom/images/docs/tut_feedback/catalogue_block_5.png[/media]
+[media width="170" description="Choosing the [tt]main_catalogues_form[/tt] block from the block construction assistant"]data_custom/images/docs/tut_feedback/catalogue_block_4.png[/media]
+[/surround]
+[media width="150" description="Adding a catalogue form" float="right"]data_custom/images/docs/tut_feedback/catalogue_add.png[/media]
+The [tt]main_catalogues_form[/tt] block shows a form of custom fields coded into a catalogue. The submissions from this block are stored as unvalidated catalogue entries which can then be reviewed by staff.
+
+The process for using this block is as follows:
+1) Add a new catalogue, via Admin Zone > Content > Catalogues > Add catalogue. Include whatever fields on the catalogue that you want on the form. You'll probably also want to disable View access on all the usergroups if you do not want members seeing submitted entries.
+2) Optionally add categories to the catalogue; the generated form by the block will prompt the member to select a category if more than one exists.
+3) Go to add/edit the page where the block should go.
+4) Add the block to it in the normal way. When adding the block, you are asked which catalogue to use and whether members may only submit one entry per member (which also prevents guests from submitting).
+The user will fill in the block, and it will be added as an unvalidated entry into the appropriate catalogue and category. Staff may then review the entries and process them as necessary. If [tt]Members only; one entry each[/tt] is enabled, then deleting the entry will allow the member to re-submit the form.
 
 [title="3"]Simple e-mail form[/title]
 

@@ -1822,6 +1822,16 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BLOCK_main_cc_embed_PARAM_template_set
         BLOCK_main_cc_embed_PARAM_template_set_TITLE
         BLOCK_main_cc_embed_USE
+        BLOCK_main_catalogues_form_DESCRIPTION
+        BLOCK_main_catalogues_form_USE
+        BLOCK_main_catalogues_form_PARAM_param_TITLE
+        BLOCK_main_catalogues_form_PARAM_param
+        BLOCK_main_catalogues_form_PARAM_only_one_TITLE
+        BLOCK_main_catalogues_form_PARAM_only_one
+        BLOCK_main_catalogues_form_PARAM_redirect_TITLE
+        BLOCK_main_catalogues_form_PARAM_redirect
+        BLOCK_main_catalogues_form_PARAM_guid_TITLE
+        BLOCK_main_catalogues_form_PARAM_guid
         BLOCK_main_cns_involved_topics_DESCRIPTION
         BLOCK_main_cns_involved_topics_PARAM_max
         BLOCK_main_cns_involved_topics_PARAM_max_TITLE
@@ -11846,6 +11856,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ACTIVITY_RATED
         ACTIVITY_VOTING
         ACTIVITY_WIKI_MAKE_POST
+        ALREADY_SUBMITTED_CONTENT
     ')));
 
     // Remove blank lines
