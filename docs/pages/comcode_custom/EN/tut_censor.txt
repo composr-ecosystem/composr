@@ -40,11 +40,11 @@ Members may specify the privacy settings for content they post, if the [tt]conte
 [surround]
 [media width="150" description="Using the points system for punishment" float="right"]data_custom/images/docs/tut_censor/censor_point_in_right_direction.png[/media]
 There are a number of ways to punish members who do not follow site policy (such as trolls), including:
- - Charging points from the member (which might result in sustaining a reduced rank for a time, if you also moving them down to a lower ranking usergroup on the rank scale). This is done on the member's points profile or via the warn form.
+ - Charging points from the member
  - Banning them in various ways described under "Banning"
- - Moving them to a restricted usergroup (there's an inbuilt "Probation" feature to move them automatically into probation usergroup for a limited period of time). This is done by editing their account settings or via the warn form.
- - 'Verbally' (unofficially) warning them, via a Private Topic or other means of private communication.
- - Giving them a formal warning via the warn form (read on).
+ - Moving them to a restricted usergroup (there's an inbuilt "Probation" feature to move them automatically into probation usergroup for a limited period of time)
+ - 'Verbally' (unofficially) warning them, via a Private Topic or other means of private communication
+ - Giving them a formal warning via the warn form (read on)
 
 As all these methods work on members, but only banning by IP address works for guests, you may wish to consider making it a requirement for all users to join in order to participate on the website. In other words, you may wish to remove permission for guests to make submissions.
 [/surround]
@@ -57,7 +57,7 @@ All the various punishment tools are brought together for convenience on one scr
 
 This screen can be accessed from either:
 1) members' post ("Warn" button)
-2) or, from any member-profile screen ("Warn member" under Audit)
+2) or, from any member-profile screen ("Warn member" or "Deal with as spammer" under Audit)
 
 [title="3"]Warnings Form[/title]
 
@@ -68,19 +68,24 @@ The warnings form consists of the following options that can be utilised to easi
   - [b]Ban member[/b]: Unlike banning the IP address, the member can still access the website. But they can no longer log in to / use their account.
   - [b]Change usergroup to[/b]: Change the primary usergroup which this member belongs (such as to de-rank them).
   - [b]Extend probation[/b]: Start a probation period, or extend an existing one, by this many days. The member will only have the permissions assigned to the "Probation" usergroup regardless of any other usergroup they are in.
- - [b]Delete[/b]
+ - [b]Delete content[/b]
   - A list of recently posted content by the member will appear in this section. You can choose which content to delete. This is handy for quickly mass-deleting spam content posted by a member.
  - [b]Charge or Reverse Points[/b]
-  - A list of point transactions involving this member within the last 7 days (50 maximum). You can choose which ones to reverse. You do not have to reverse ones for which you are deleting the associated content; they will be reversed automatically. Reversed points will be subtracted from the member's life-time points.
+  - A list of point transactions involving this member within the last 7 days (50 maximum) will appear. You can choose which ones to reverse. You do not have to reverse ones for which you are deleting the associated content; they will be reversed automatically. Reversed points will be subtracted from the member's life-time points, unlike charging points.
   - [b]Charge points[/b]: Take points away from the member. It is permissible to charge more points than they have in their balance; this will put their balance in negative points. Charges will add an anonymous record in the points ledger. Charges will [b]not[/b] subtract from the member's life-time points.
  - [b]Explanatory Text[/b]
   - You can load a previously-saved explanatory reason and message by clicking the "Load an explanation/message" link.
   - [b]Reason[/b]: A brief reason / explanation for the warning, used in the logs. You might reference rule numbers or Terms of Service section numbers that were violated in here.
-  - [b]Message[/b]: You have the ability to write a Private Topic message to be sent to the member for their warning. You could include details about what punitive actions you are taking, reminders to re-read the rules / next steps to take, repercussions for future violations, and so on. Keep in mind that you may not want to include punitive actions in this field if you tick (check) the "Include punitive actions in message" tickbox (checkbox).
-  - [b]Save explanatory details[/b]: If you want to save what you wrote in the "Reason" and "Message" fields for later use, you can provide a name here. The next time you want to use it, click the "Load an explanation/message" link at the top of the "Explanatory Text" section to pre-populate a saved reason and message.
+  - [b]Message[/b]: You have the ability to write a Private Topic message to be sent to the member for their warning. You could include details about what punitive actions you are taking, reminders to re-read the rules / next steps to take, repercussions for future violations, and so on. You may not want to include punitive actions in this field if you tick (check) the [tt]Include punitive actions in message[/tt] tickbox (checkbox).
+  - [b]Save explanatory details[/b]: If you want to save what you wrote in the "Reason" and "Message" fields for later use, you can provide a name here. The next time you want to use it, click the "Load an explanation/message" link at the top of the "Explanatory Text" section to pre-populate a saved reason and message. If you have [tt]Include punitive actions in message[/tt] ticked (checked), the auto-generated punitive actions are not included in the saved message.
   - [b]Include punitive actions in message[/b]: Auto-generate information about what punitive actions you are taking for the Private Topic sent to the member. This is beneficial so you do not have to write them yourself in the message. But it also allows you to better manage saved reasons / messages; you can re-use a saved reason / message without having to edit it for the punitive actions you are taking now.
 
-It is possible for other addons to hook into the warnings system via [tt]hooks/systems/cns_warnings[/tt] to add additional types of punitive actions that can be taken. See the existing hooks for examples on how to achieve this.
+All punitive actions are defined in hooks under [tt]hooks/systems/cns_warnings[/tt]. You can develop additional punitive actions for the warnings system (e.g. through non-bundled addons) by making new hooks. See the "ban_member" hook for a basic example. In each hook are the following methods:
+ - [b]get_details[/b]: return null to disable the hook or an array of details, such as 'order' to define the field order on the warnings form.
+ - [b]generate_text[/b]: generate past-tense text to explain the punitive action taken (used in the warnings history)
+ - [b]get_form_fields[/b]: renders / attaches form fields, intro paragraph text, and/or hidden fields on the warning form for this punitive action
+ - [b]actualise_punitive_action[/b]: actualises / applies the punitive action on the member. You must add a record into the  f_warnings_punitive table for each punitive action applied, and you should also call log_it or cns_mod_log_it. The warnings module does not do these automatically as some hooks may apply more than one punitive action (e.g. deleting multiple forum posts). The logs will be associated with the warning ID.
+ - [b]undo_punitive_action[/b] (optional): reverses a punitive action when a staff member clicks "Undo" on the warning history for the action. If the method is not defined, then no undo action will be allowed for this hook. You do not need to do anything with f_warnings_punitive here; the warnings module will take care of that. However, you should log_it or cns_mod_log_it the reversal. The log will be associated with the warning ID. Note that if actualise_punitive_action applies more than one action, then each action will have their own individual undo capability, so undo_punitive_action should not undo more than one action at a time.
 
 A note about Private Topics sent for warnings: A private topic will not get sent to the member for their warning if nothing is written in the "Message" field and "Include punitive actions in message" is unticked (unchecked). Also, if "Message" is blank but "Include punitive actions in message" is ticked (checked), a private topic will get sent, but it will only contain the punitive actions taken.
 
