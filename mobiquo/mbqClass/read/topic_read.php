@@ -224,8 +224,7 @@ class CMSTopicRead
         // Enforce permissions
         if (get_allowed_forum_sql() != '') {
             array_push($conditions, 't_forum_id IN (' . get_allowed_forum_sql() . ')');
-        } else
-        {
+        } else {
             // No PTs at least
             array_push($conditions, 't_forum_id IS NOT NULL');
         }

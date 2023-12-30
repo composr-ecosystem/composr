@@ -1960,6 +1960,10 @@ class Module_cms_catalogues_alt extends Standard_crud_module
             } else {
                 $to_do = explode('|', $auto_fill);
             }
+
+            // Prevent double submission warnings for catalogue categories; they will break the creation of the catalogue
+            set_mass_import_mode(true);
+
             foreach ($to_do as $doing) {
                 if (trim($doing) == '') {
                     continue;
@@ -1987,6 +1991,8 @@ class Module_cms_catalogues_alt extends Standard_crud_module
                     }
                 }
             }
+
+            set_mass_import_mode(false);
         }
 
         if (($is_tree == 0) && (substr($name, 0, 1) != '_')) {

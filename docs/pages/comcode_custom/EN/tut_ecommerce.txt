@@ -37,7 +37,7 @@ To accept website payments via credit card, or to take subscriptions, [url="you 
 
 You will need to have SSL set up for your site, as PayPal requires IPN messages to go via SSL from Sep 30, 2016, and we have already imposed this in our default code.
 
-You must [b]not[/b] lock down PayPal to [url="only accept encrypted forms"]https://developer.paypal.com/docs/classic/paypal-payments-standard/integration-guide/encryptedwebpayments/#id08A3I0R00ZJ[/url].
+You must [b]not[/b] lock down PayPal to [tt]only accept encrypted forms[/tt].
 
 [title="3"]Configuration[/title]
 

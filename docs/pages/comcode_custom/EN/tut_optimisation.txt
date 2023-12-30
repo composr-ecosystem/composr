@@ -588,7 +588,6 @@ The CloudFlare service provides some of the same optimisations that mod_pagespee
 [title="2"]Preloaded links[/title]
 
 Web browsers are starting to support link preloading. If you have a situation where you can predict what links people will click, you can use a standard HTML approach to define preloading for those links.
-Various [url="HTTP streaming techniques"]https://www.patreon.com/posts/18644315[/url] are discussed in a blog post I wrote.
 
 [title="2"]Profiling[/title]
 

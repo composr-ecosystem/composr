@@ -1242,7 +1242,7 @@ function get_translated_text($entry, $connection = null, $lang = null, $force = 
         return $entry;
     }
 
-    if ($entry == 0) {
+    if ((is_string($entry)) || ($entry == 0)) {
         require_code('site');
         attach_message(do_lang_tempcode('FAILED_ENTRY'), 'warn');
         return '';

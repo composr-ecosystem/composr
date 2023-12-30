@@ -1962,9 +1962,9 @@ class Module_admin_themes
 
         $target_dir = 'themes/' . (($use_all_themes == 1) ? 'default' : $theme) . '/images_custom';
         if ((strpos($id, '/') !== false) && (str_replace(array('on', 'true', 'yes'), array('1', '1', '1'), strtolower(ini_get('safe_mode'))) != '1')) {
-            $target_dir .= '/' . dirname($id);
+            $target_dir .= '/' . str_replace('/' . basename($id), '', $id);
         }
-        $path = get_url('path', 'file', $target_dir, 0, CMS_UPLOAD_ANYTHING, false, '', '', false, false, false, false, null, null, null, basename($id . '.XXX'));
+        $path = get_url('path', 'file', $target_dir, 0, CMS_UPLOAD_ANYTHING, false, '', '', false, false, false, false, null, null, null, basename($id) . '.XXX');
         if ($path[0] == '') {
             return warn_screen($this->title, do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD'));
         }
@@ -2166,10 +2166,10 @@ class Module_admin_themes
             $target_dir = 'themes/' . $theme . '/images_custom';
             if (str_replace(array('on', 'true', 'yes'), array('1', '1', '1'), strtolower(ini_get('safe_mode'))) != '1') {
                 if (strpos($id, '/') !== false) {
-                    $target_dir .= '/' . dirname($id);
+                    $target_dir .= '/' . str_replace('/' . basename($id), '', $id);
                 }
             }
-            $path = get_url('path', 'file', $target_dir, 0, CMS_UPLOAD_ANYTHING, false, '', '', false, false, false, false, null, null, null, basename($id . '.XXX'));
+            $path = get_url('path', 'file', $target_dir, 0, CMS_UPLOAD_ANYTHING, false, '', '', false, false, false, false, null, null, null, basename($id) . '.XXX');
 
             if ((url_is_local($path[0])) && (!file_exists(((substr($path[0], 0, 15) == 'themes/default/') ? get_file_base() : get_custom_file_base()) . '/' . rawurldecode($path[0])))) {
                 warn_screen($this->title, do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD'));

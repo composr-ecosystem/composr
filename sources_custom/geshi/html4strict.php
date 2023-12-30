@@ -143,7 +143,7 @@ $language_data = array (
             )
         ),
     'URLS' => array(
-        2 => 'http://december.com/html/4/element/{FNAMEL}.html',
+        2 => 'https://johndecember.com/html/4/element/{FNAMEL}.html',
         3 => ''
         ),
     'OOLANG' => false,

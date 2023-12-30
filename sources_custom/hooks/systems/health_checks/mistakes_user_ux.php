@@ -148,7 +148,7 @@ class Hook_health_check_mistakes_user_ux extends Hook_Health_Check
 
         $protocol = parse_url($SITE_INFO['base_url'], PHP_URL_SCHEME);
 
-        if ($protocol == 'http') {
+        if (($protocol === null) || ($protocol == 'http')) {
             return;
         }
 

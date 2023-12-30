@@ -426,7 +426,6 @@ In the interest of providing other options, here are some good alternative resou
 Split testing tools:
  - [url="Visual Website Optimizer"]https://vwo.com/[/url]
  - [url="Optimizely"]https://www.optimizely.com/[/url]
- - [url="http://blog.crazyegg.com/2014/06/25/best-testing-software/"]Comparison article[/url]
 
 Hosted analytics tool:
  - http://piwik.org/

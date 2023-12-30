@@ -895,7 +895,7 @@ class Module_chat
                 $map['redirect'] = $redirect;
             }
             $url = build_url($map, '_SELF');
-            return do_template('CONFIRM_SCREEN', array('_GUID' => '3b76b0e41541d5a38671134e92128d9f', 'TITLE' => $this->title, 'FIELDS' => $fields, 'URL' => $url, 'PREVIEW' => $preview));
+            return do_template('CONFIRM_SCREEN', array('_GUID' => 'eb954a93e55b95e6999a401430583cc0', 'TITLE' => $this->title, 'FIELDS' => $fields, 'URL' => $url, 'PREVIEW' => $preview));
         }
         return null;
     }

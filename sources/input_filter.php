@@ -187,7 +187,11 @@ function check_posted_field($name, $val)
  */
 function strip_url_to_representative_domain($url)
 {
-    return preg_replace('#^www\.#', '', strtolower(parse_url(normalise_idn_url($url), PHP_URL_HOST)));
+    $parsed = parse_url(normalise_idn_url($url), PHP_URL_HOST);
+    if ($parsed === null) {
+        return '';
+    }
+    return preg_replace('#^www\.#', '', strtolower($parsed));
 }
 
 /**
@@ -219,7 +223,10 @@ function get_allowed_partner_sites()
 
     if (!empty($SITE_INFO['base_url'])) {
         $base_url = $SITE_INFO['base_url'];
-        $allowed_partners[] = parse_url($base_url, PHP_URL_HOST);
+        $parsed = parse_url($base_url, PHP_URL_HOST);
+        if ($parsed !== null) {
+            $allowed_partners[] = $parsed;
+        }
     } else {
         $host = cms_srv('HTTP_HOST');
         if ($host != '') {
@@ -229,7 +236,10 @@ function get_allowed_partner_sites()
 
     if (isset($SITE_INFO['custom_base_url'])) {
         $base_url = $SITE_INFO['custom_base_url'];
-        $allowed_partners[] = parse_url($base_url, PHP_URL_HOST);
+        $parsed = parse_url($base_url, PHP_URL_HOST);
+        if ($parsed !== null) {
+            $allowed_partners[] = $parsed;
+        }
     }
 
     return $allowed_partners;

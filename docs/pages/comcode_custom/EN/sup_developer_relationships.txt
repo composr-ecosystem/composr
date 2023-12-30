@@ -69,8 +69,7 @@ I hope this didn't come across too one-sided, but here's for ensuring that clien
 [title="2"]See also[/title]
 
  - https://clientsfromhell.net/
- - http://www.businesszone.co.uk/decide/scale/working-with-website-developers
- - https://acrobat.adobe.com/us/en/documents/esignatures.html
+ - https://www.adobe.com/sign.html
  - [page="_SEARCH:tut_software_feedback"]Problem and feedback reports, and development policies[/page]
  - [page="_SEARCH:sup_pricing"]Project pricing[/page]
  - [page="_SEARCH:sup_choosing_a_developer"]Choosing a software company for your project[/page]

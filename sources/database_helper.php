@@ -462,15 +462,17 @@ function _helper_delete_index_if_exists($this_ref, $table_name, $index_name)
 function _helper_drop_table_if_exists($this_ref, $table)
 {
     if (($table != 'db_meta') && ($table != 'db_meta_indices')) {
-        if ((function_exists('mass_delete_lang')) && (multi_lang_content())) {
-            $attrs = $this_ref->query_select('db_meta', array('m_name', 'm_type'), array('m_table' => $table));
-            $_attrs = array();
-            foreach ($attrs as $attr) {
-                if (in_array(preg_replace('#[^\w]#', '', $attr['m_type']), array('SHORT_TRANS', 'LONG_TRANS', 'SHORT_TRANS__COMCODE', 'LONG_TRANS__COMCODE'))) {
-                    $_attrs[] = $attr['m_name'];
+        if (!running_script('install')) { // TODO: Temporary workaround until tracker #5485 is fixed; we can assume installer will be deleting every table anyway.
+            if ((function_exists('mass_delete_lang')) && (multi_lang_content())) {
+                $attrs = $this_ref->query_select('db_meta', array('m_name', 'm_type'), array('m_table' => $table));
+                $_attrs = array();
+                foreach ($attrs as $attr) {
+                    if (in_array(preg_replace('#[^\w]#', '', $attr['m_type']), array('SHORT_TRANS', 'LONG_TRANS', 'SHORT_TRANS__COMCODE', 'LONG_TRANS__COMCODE'))) {
+                        $_attrs[] = $attr['m_name'];
+                    }
                 }
+                mass_delete_lang($table, $_attrs, $this_ref);
             }
-            mass_delete_lang($table, $_attrs, $this_ref);
         }
 
         // In case DB needs pre-cleanup for full-text indexes if they get left behind (for example)

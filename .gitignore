@@ -23,6 +23,7 @@ test_a
 /caches/*/*.htm
 /caches/*/*.xml
 /caches/*/*.gz
+/caches/*/*.bin
 /themes/*/templates_cached/*/*.js
 /themes/*/templates_cached/*/*.css
 /themes/*/templates_cached/*/*.tcp
@@ -100,6 +101,7 @@ default/images/*/*__*.jpeg
 *test.png
 /info.php
 /_config.php
+/_config.php.bak.*
 /uploads/*/*
 !/uploads/*/index.html
 !/uploads/*/.htaccess
@@ -151,3 +153,6 @@ pages/html_custom/*/*.htm
 /data_custom/fonts/*.ttf
 /nbproject
 
+; VS Code
+settings.json
+/.buildpath

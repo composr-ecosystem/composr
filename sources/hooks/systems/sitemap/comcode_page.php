@@ -89,7 +89,7 @@ class Hook_sitemap_comcode_page extends Hook_sitemap_page
             return null;
         }
 
-        // Conventionally $row will be a page-grouping tuple, but it may also be a DB row, so do a switcheroo if needed
+        // Conventionally $row will be a page-grouping tuple, but it may also be a DB row, so flip the variables if needed
         if (($row !== null) && ((count($row) == 0) || (array_key_exists('cc_page_title', $row)))) {
             $db_row = $row;
             $row = null;
@@ -248,7 +248,7 @@ class Hook_sitemap_comcode_page extends Hook_sitemap_page
                     $where['p_validated'] = 1;
                 }
 
-                // Optimisation: most of the time in practice parent relationships aren't used, but their use is a big perf hit here; so pre-compute if they are per-zone in advance
+                // Optimisation: most of the time in practice parent relationships aren't used, but their use is a big performance hit here; so pre-compute if they are per-zone in advance
                 static $children_in_zone = null;
                 if ($children_in_zone === null) {
                     $_children_in_zone = $GLOBALS['SITE_DB']->query_select('comcode_pages', array('the_zone', 'COUNT(*) AS cnt'), array(), ' AND ' . db_string_not_equal_to('p_parent_page', '') . ' GROUP BY the_zone');

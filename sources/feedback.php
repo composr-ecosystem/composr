@@ -239,7 +239,7 @@ function post_comment_script()
 
     // AJAX support
     $comment_details->attach(do_template('COMMENT_AJAX_HANDLER', array(
-        '_GUID' => 'da533e0f637e4c90ca7ef5a9a23f3203',
+        '_GUID' => 'd4fd4ec40eec322db1c311a6ced3485a',
         'OPTIONS' => $options,
         'HASH' => $hash,
         'CONTENT_TYPE' => $content_type,

@@ -80,7 +80,7 @@ class Hook_health_check_security_ssl extends Hook_Health_Check
         foreach ($page_links as $page_link) {
             $url = page_link_to_url($page_link);
             $protocol = parse_url($url, PHP_URL_SCHEME);
-            if ($protocol == 'http') {
+            if (($protocol === null) || ($protocol == 'http')) {
                 continue;
             }
 
@@ -122,7 +122,7 @@ class Hook_health_check_security_ssl extends Hook_Health_Check
         }
 
         $protocol = parse_url($SITE_INFO['base_url'], PHP_URL_SCHEME);
-        if ($protocol == 'http') {
+        if (($protocol === null) || ($protocol == 'http')) {
             return;
         }
 

@@ -303,6 +303,9 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
 
             return strval($id);
         } else { // Catalogue
+            if (substr($filename, 0, 10) == 'CATALOGUE-') { // Strip prefix if it exists
+                $filename = substr($filename, 10);
+            }
             list($properties, $label) = $this->_folder_magic_filter($filename, $path, $properties, 'catalogue');
 
             list($description, $display_type, $is_tree, $notes, $submit_points, $ecommerce, $send_view_reports, $default_review_freq, $add_time) = $this->__folder_read_in_properties_catalogue($path, $properties);
@@ -458,7 +461,7 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
 
             // How to handle the fields
             if ((array_key_exists('fields', $properties)) && ($properties['fields'] != '')) {
-                $_fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', array('id', 'cf_name', 'cf_description'), array('c_name' => $name), 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
+                $_fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', array('id', 'cf_name', 'cf_description'), array('c_name' => $resource_id), 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
 
                 $fields_data = $properties['fields'];
                 foreach ($fields_data as $i => $field_data) {
@@ -486,7 +489,7 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
                 }
             }
 
-            $this->_resource_save_extend('catalogue', $name, $filename, $label, $properties);
+            $this->_resource_save_extend('catalogue', $resource_id, $name, $label, $properties);
         } else {
             $label = $this->_default_property_str($properties, 'label');
 

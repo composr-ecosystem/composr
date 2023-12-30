@@ -180,7 +180,6 @@ You may also wish to have a presence on question and answer sites, such as:
 
 [title="2"]See also[/title]
 
- - https://www.email-standards.org/
  - [page="_SEARCH:tut_markup"]Guide to web technologies (including HTML, CSS, and JavaScript)[/page]
  - [page="_SEARCH:tut_metadata"]Metadata[/page]
  - [page="_SEARCH:tut_browsers"]Browser version requirements[/page]

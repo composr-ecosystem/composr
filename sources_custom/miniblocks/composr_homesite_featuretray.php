@@ -29,7 +29,7 @@ $feature_tree = array(
             array(
                 array('Twitter', 'Follow [url="https://twitter.com/composr_cms"]Composr[/url] on Twitter, and tweet about [url="#composr"]https://twitter.com/hashtag/composr[/url]. Answer [url="CMS questions"]twitter.com/search?q=CMS[/url].'),
                 array('Facebook', 'Become a fan of Composr [url="https://www.facebook.com/composrcms"]on Facebook[/url].'),
-                array('Stack Overflow', 'Answer CMS questions on [url="Stack Overflow"]http://stackoverflow.com/search?q=cms[/url].'),
+                array('Stack Overflow', 'Answer CMS questions on [url="Stack Overflow"]https://stackoverflow.com/search?q=cms[/url].'),
                 array('YouTube', 'Rate and comment on [url="http://youtube.com/c/ComposrCMSvideo"]our video tutorials[/url] on YouTube.'),
                 array('Post about Composr', 'If you see other CMSs compared on other websites, {$COMCODE,[page="forum:topicview:browse:{$FIND_ID_VIA_LABEL,topic,Composr evangelism}"]let us know about it[/page]}!'),
                 array('Tell a friend about Composr', '[page=":recommend"]Recommend Composr[/page] if a friend or your company is looking to make a website.'),

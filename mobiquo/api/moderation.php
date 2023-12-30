@@ -294,13 +294,11 @@ function m_move_post_func($raw_params)
     $result = $moderation_object->move_posts($posts, $topic_id, $new_topic_title, $forum_id);
 
     if ($result !== false) {
-        if (!is_null($topic_id)) // Moved to an existing topic
-        {
+        if (!is_null($topic_id)) { // Moved to an existing topic
             $response = mobiquo_val(array(
                 'result' => mobiquo_val(true, 'boolean'),
             ), 'struct');
-        } else // Moved to a new topic
-        {
+        } else { // Moved to a new topic
             $response = mobiquo_val(array(
                 'result' => mobiquo_val(true, 'boolean'),
                 'topic_id' => mobiquo_val($result, 'string'),

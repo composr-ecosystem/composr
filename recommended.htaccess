@@ -66,6 +66,14 @@ php_value auto_append_file none
 ErrorDocument 404 /index.php?page=404
 </FilesMatch>
 
+# Deny access to config files; while normally they would return a blank screen, if PHP is disabled, the code (and thus the passwords) could be leaked.
+<FilesMatch "^_config\.php$">
+    Require all denied
+</FilesMatch>
+<FilesMatch "^_config\.php\.bak\.">
+    Require all denied
+</FilesMatch>
+
 # Compress some static resources
 <IfModule mod_deflate.c>
 <IfModule mod_filter.c>

@@ -513,7 +513,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
         $breadcrumbs = breadcrumb_segments_to_tempcode(comcode_breadcrumbs($page, $zone));
 
         return do_template('COMCODE_PAGE_BOX', array(
-            '_GUID' => '79cd9e7d0b63ee916c4cd74b26c2f652',
+            '_GUID' => '4bc89179680eea1c34b904e5c19fccc0',
             'TITLE' => $title,
             'BREADCRUMBS' => $breadcrumbs,
             'PAGE' => $page,

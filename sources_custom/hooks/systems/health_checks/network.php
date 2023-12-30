@@ -96,6 +96,9 @@ class Hook_health_check_network extends Hook_Health_Check
                 $cmd = 'ping -c 10 8.8.8.8';
             }
             $data = shell_exec($cmd);
+            if (!is_string($data)) {
+                $data = '';
+            }
 
             $matches = array();
             if (preg_match('# (\d(\.\d+)?%) packet loss#', $data, $matches) != 0) {

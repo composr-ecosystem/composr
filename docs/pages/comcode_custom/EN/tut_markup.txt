@@ -63,7 +63,7 @@ Composr is built on top of standard web/Internet protocols, languages and [abbr=
 			<td>You don't need to know about this, unless you are configuring it to run on Composr generated e-mails.</td>
 		</tr>
 		<tr>
-			<td>[abbr="Sender Policy Framework"][url="http://www.openspf.org/"]SPF[/url][/abbr]</td>
+			<td>[abbr="Sender Policy Framework"][url="https://datatracker.ietf.org/doc/html/rfc7208"]SPF[/url][/abbr]</td>
 			<td>This is the protocol for limiting what servers can send e-mail for a particular domain.</td>
 			<td>It is advised to set this up to reduce spam and fraud.</td>
 		</tr>
@@ -97,7 +97,7 @@ Composr is built on top of standard web/Internet protocols, languages and [abbr=
 			<td>Knowledge of PHP is only required if changing core Composr code.</td>
 		</tr>
 		<tr>
-			<td>JavaScript (aka [url="http://www.ecma-international.org/publications/standards/Ecma-290.htm"]ECMAScript[/url]) [i](optional)[/i], [abbr="Document Object Model"][url="http://www.w3.org/DOM/DOMTR"]DOM[/url][/abbr], and [url="http://www.w3.org/TR/XMLHttpRequest/"]XMLHttpRequest[/url]</td>
+			<td>JavaScript (aka [url="https://ecma-international.org/publications-and-standards/standards/ecma-262/"]ECMAScript[/url]) [i](optional)[/i], [abbr="Document Object Model"][url="http://www.w3.org/DOM/DOMTR"]DOM[/url][/abbr], and [url="http://www.w3.org/TR/XMLHttpRequest/"]XMLHttpRequest[/url]</td>
 			<td>This is the standard to make web pages interactive; it ties into the (X)HTML.</td>
 			<td>You will only need to know JavaScript if doing particularly advanced themeing.</td>
 		</tr>
@@ -126,7 +126,7 @@ Composr is built on top of standard web/Internet protocols, languages and [abbr=
 			<td>We support the highest levels of compliance (AAA).</td>
 		</tr>
 		<tr>
-			<td>[url="http://en.wikipedia.org/wiki/Access_key#UK_Government_recommendation_for_access_keys"]UK Gov. recommendation for access keys[/url] and [url="https://zoek.officielebekendmakingen.nl/stcrt-2006-136-p23-SC75949.html"]Besluit Kwaliteit Rijksoverheidswebsites[/url] and [url="http://www.section508.gov"]Section 508[/url]</td>
+			<td>[url="https://en.wikipedia.org/wiki/Access_key#UK_Government_recommendation_for_access_keys"]UK Gov. recommendation for access keys[/url] and [url="https://zoek.officielebekendmakingen.nl/stcrt-2006-136-p23-SC75949.html"]Besluit Kwaliteit Rijksoverheidswebsites[/url] and [url="http://www.section508.gov"]Section 508[/url]</td>
 			<td>Detailed accessibility standards from particular countries.</td>
 			<td>We support these standards.</td>
 		</td>
@@ -145,7 +145,7 @@ Composr is built on top of standard web/Internet protocols, languages and [abbr=
 			<th colspan="3"><em>Data &amp; Feeds</em></th>
 		</tr>
 		<tr>
-			<td>[abbr="eXtensible Markup Language"][url="http://www.w3.org/TR/2008/REC-xml-20081126/"]XML[/url][/abbr] (including [abbr="Really Simple Syndication"][url="http://cyber.law.harvard.edu/rss/rss.html"]RSS[/url][/abbr], [url="http://tools.ietf.org/html/rfc4287"]Atom[/url], [abbr="Outline Processor Markup Language"][url="http://www.opml.org/spec1.html"]OPML[/url][/abbr], [abbr="Extensible Stylesheet Language Transformations"][url="http://www.w3.org/TR/xslt20/"]XSLT[/url][/abbr], [url="http://www.sitemaps.org/"]XML Sitemaps[/url] and [url="https://support.google.com/news/publisher/answer/74288?hl=en"]Google News Sitemaps[/url], and use in [abbr="Asynchronous JavaScript and XML"]AJAX[/abbr])</td>
+			<td>[abbr="eXtensible Markup Language"][url="http://www.w3.org/TR/2008/REC-xml-20081126/"]XML[/url][/abbr] (including [abbr="Really Simple Syndication"][url="http://cyber.law.harvard.edu/rss/rss.html"]RSS[/url][/abbr], [url="http://tools.ietf.org/html/rfc4287"]Atom[/url], [abbr="Outline Processor Markup Language"][url="http://opml.org/spec2.opml"]OPML[/url][/abbr], [abbr="Extensible Stylesheet Language Transformations"][url="http://www.w3.org/TR/xslt20/"]XSLT[/url][/abbr], [url="http://www.sitemaps.org/"]XML Sitemaps[/url] and [url="https://developers.google.com/search/docs/crawling-indexing/sitemaps/news-sitemap"]Google News Sitemaps[/url], and use in [abbr="Asynchronous JavaScript and XML"]AJAX[/abbr])</td>
 			<td>XML is a standard for structuring data, used for many web formats that Composr supports, as well as a few configurable parts of Composr. RSS, Atom and OPML are feed technology, to export Composr news. XSLT is a technology we use to make RSS, Atom and OPML display in a web browser.</td>
 			<td>You won't need much awareness of XML unless doing particular advanced configuration.</td>
 		</tr>
@@ -170,12 +170,12 @@ Composr is built on top of standard web/Internet protocols, languages and [abbr=
 			<td>You won't need to know JSON.</td>
 		</tr>
 		<tr>
-			<td>[abbr="Structured Query Language"][url="http://en.wikipedia.org/wiki/Sql"]SQL[/url][/abbr]</td>
+			<td>[abbr="Structured Query Language"][url="https://en.wikipedia.org/wiki/Sql"]SQL[/url][/abbr]</td>
 			<td>This is the standard for accessing/manipulating data inside databases; Composr uses it to talk to the database (e.g. [tt]SELECT * FROM table WHERE something='somevalue'[/tt]), which is usually the MySQL database application.</td>
 			<td>A basic understanding of SQL is useful. Sometimes going down to the database level, bypassing Composr, is useful. For example, to make a bulk text change across the system you could write some queries to do so.</td>
 		</tr>
 		<tr>
-			<td>[url="http://www.opensearch.org/Home"]OpenSearch 1.0[/url]</td>
+			<td>[url="https://www.opensearch.org"]OpenSearch[/url]</td>
 			<td>This allows site searching (with auto-completion) integrated direct into web browsers.</td>
 			<td>You are unlikely to need any awareness of this.</td>
 		</tr>
@@ -1228,9 +1228,7 @@ It should also be stressed as a last point that [b]JavaScript is not secure[/b];
  - http://webplatform.org
  - http://w3.org
  - http://caniuse.com/
- - https://developer.microsoft.com/en-us/microsoft-edge/platform/status/
  - http://webdesign.about.com/
- - https://www.udemy.com/how-to-become-a-web-developer-from-scratch
  - https://teamtreehouse.com/
 
 [title="3"]XHTML tools/references[/title]
@@ -1240,7 +1238,6 @@ It should also be stressed as a last point that [b]JavaScript is not secure[/b];
  - http://www.tizag.com/
  - http://www.davesite.com/webstation/html/
  - http://www.w3schools.com/html/default.asp
- - http://jarmin.com/accessibility/index.html
  - http://en.wikiversity.org/wiki/Web_design
 
 [title="3"]CSS tools/references[/title]
@@ -1274,7 +1271,6 @@ Some cool effects:
  - http://www.smashingmagazine.com/2008/09/11/75-really-useful-javascript-techniques/
  - http://www.turnjs.com/
  - http://www.chartjs.org/
- - http://git.aaronlumsden.com/progression/
  - http://inorganik.github.io/countUp.js/
  - http://www.zachleat.com/web/bigtext-makes-text-big/
  - http://freqdec.github.io/slabText/

@@ -56,11 +56,14 @@ foreach ($files as $i => $file) {
     $IN = file_get_contents(get_custom_file_base() . '/' . $file);
 
     $out = preg_replace_callback("#do_template\('([^']*)', array\(\s*'([^']+)' => ('[^\']+')#", 'callback', $IN); // Existing GUIDs
-    $out = preg_replace_callback("#do_template\('([^']*)', array\(\s*'([^']+)' => #", 'callback', $IN); // Potentially missing GUIDs
-
     if ($IN != $out) {
         echo '<span style="color: orange">Re-saved ' . escape_html($file) . '</span><br />';
+        cms_file_put_contents_safe(get_file_base() . '/' . $file, $out, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+    }
 
+    $out = preg_replace_callback("#do_template\('([^']*)', array\(\s*'([^']+)' => #", 'callback', $IN); // Potentially missing GUIDs
+    if ($IN != $out) {
+        echo '<span style="color: orange">Re-saved ' . escape_html($file) . '</span><br />';
         cms_file_put_contents_safe(get_file_base() . '/' . $file, $out, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
     }
 }
@@ -90,7 +93,7 @@ function callback($match)
         global $FOUND_GUID;
         $guid_value = str_replace('\'', '', $match[3]);
         if (array_key_exists($guid_value, $FOUND_GUID)) {
-            echo 'Repair needed for ' . escape_html($match[1]) . '<br />';
+            echo 'Repair needed for ' . escape_html($match[1]) . ' (line ' . strval($line) . ', new GUID ' . $new_guid . ')<br />';
             $GUID_LANDSCAPE[$match[1]][] = array($FILENAME, $line, $new_guid);
             return "do_template('" . $match[1] . "', array('_GUID' => '" . $new_guid . "'";
         }

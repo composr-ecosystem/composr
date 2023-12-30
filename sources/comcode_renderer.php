@@ -514,7 +514,7 @@ function test_url($url_full, $tag_type, $given_url, $source_member)
 
     // Exceptions that we don't want to check (typically things we use by default)
     if (in_array($url_full, array(
-        'https://www.google.com/webmasters/tools/home',
+        'https://search.google.com/search-console/welcome',
     ))) {
         return new Tempcode();
     }

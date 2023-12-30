@@ -142,7 +142,7 @@ class Hook_sitemap_catalogue extends Hook_sitemap_content
     }
 
     /**
-     * Find what fields we should select for the Sitemap to be buildable. We don't want to select too much for perf reasons.
+     * Find what fields we should select for the Sitemap to be buildable. We don't want to select too much for performance reasons.
      * Also find out what language fields we should load up for the table (returned by reference).
      *
      * @param  ?array $cma_info CMA info (null: standard for this hook)

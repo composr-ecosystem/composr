@@ -582,7 +582,7 @@ function fixup_bad_php_env_vars()
         if (isset($SITE_INFO['base_url'])) {
             // Algorithm: backwards from URL-path in base URL
             $base_url_path = parse_url($SITE_INFO['base_url'], PHP_URL_PATH);
-            if (substr(get_file_base(), -strlen($base_url_path)) == $base_url_path) {
+            if (($base_url_path !== null) && (substr(get_file_base(), -strlen($base_url_path)) == $base_url_path)) {
                 $document_root = substr(get_file_base(), 0, strlen(get_file_base()) - strlen($base_url_path));
             }
         }

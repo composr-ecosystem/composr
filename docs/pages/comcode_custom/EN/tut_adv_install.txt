@@ -55,7 +55,7 @@ Many webhosting control panels allow you to unzip uploaded files, using their fi
 If you have to use the manual installer and are not on a suEXEC-style system then you will need to set permissions on files and directories manually.
 
 [box="Note for Linux-server users" width="25em" float="right"]
-If you are on a suEXEC-system (where the PHP script is run as your own user), the default 744 and 644 permissions should be suitable (with _config.php being 600 for additional security). The installer will tell you if you are on a suEXEC-system, otherwise assume you are not and you still will need to set the permissions.
+If you are on a suEXEC-system (where the PHP script is run as your own user), the default 744 and 644 permissions should be suitable (with _config.php and _config.php.bak.* being 600 for additional security). The installer will tell you if you are on a suEXEC-system, otherwise assume you are not and you still will need to set the permissions.
 [/box]
 If you chose the manual installer, you now need to set the appropriate permissions for your files and folders (read on). You usually do not need to set any permissions if you chose the quick installer.
 
@@ -187,7 +187,7 @@ Remember -- if you chose the quick install option, it's likely that none of thes
 
 It has been reported to us that some CGI-based PHP installations (as opposed to module-based PHP installations) require PHP scripts to be given 'execute' permission. This is a very rare (and insecure) configuration, but if there is this requirement, the following files need to be given execute permission...
  - Any [tt]index.php[/tt] file
- - All PHP files in the root directory, except [tt]_config.php[/tt]
+ - All PHP files in the root directory, except [tt]_config.php[/tt] and all [tt]_config.php.bak.*[/tt] files.
  - All PHP files in the data directory
  - All PHP files in the main directory for a zone (e.g. [tt]/[/tt], and [tt]/adminzone[/tt]) directories
 

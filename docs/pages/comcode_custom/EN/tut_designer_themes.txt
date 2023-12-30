@@ -40,7 +40,7 @@ As a designer you will find a number of challenges that a designer does not norm
 7) [b]User levels[/b]: Sometimes not everything should show for every user. For example a link to add content might only be shown to administrators.
 8) [b]Expect deep nesting[/b]: You may find Composr's default templates have large numbers of nested [tt]div[/tt] tags. This is because Composr is designed in various kinds of component which often are surrounded in [tt]div[/tt] tags to keep them together. We have to design our styles in a modular way, so typically each style concept is applied to a different [tt]div[/tt] tag so that things aren't muddled up and the system is properly organised and partitioned. For example, we might have a [tt]div[/tt] to contain a row of floats, and a [tt]div[/tt] for each box being floated and then various [tt]div[/tt] tags for the content within those boxes; a manual static theme could use less [tt]div[/tt] tags, but it would be more inflexible for re-styling, less modular, and not viable for easy use in a [acronym title="Content Management System"]CMS[/acronym].
 
-[semihtml][b]This section is accompanied by an [url="annotated PDF"]{$BRAND_BASE_URL}/docs/making_a_theme.pdf[/url][/b] (note that some PDF software can't display annotations like the official [url="Adobe reader"]https://acrobat.adobe.com/us/en/acrobat/pdf-reader.html[/url] can)[/semihtml]
+[semihtml][b]This section is accompanied by an [url="annotated PDF"]{$BRAND_BASE_URL}/docs/making_a_theme.pdf[/url][/b] (note that some PDF software can't display annotations like the official [url="Adobe reader"]https://www.adobe.com/acrobat/pdf-reader.html[/url] can)[/semihtml]
 
 [title="2"]Static design[/title]
 

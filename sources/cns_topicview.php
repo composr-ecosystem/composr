@@ -744,7 +744,7 @@ function cns_render_post_buttons($topic_info, $_postdetails, $may_reply, $render
             $_title_full = new Tempcode();
             $_title_full->attach($_title);
             $_title_full->attach(do_lang_tempcode('ID_NUM', strval($_postdetails['id'])));
-            $buttons->attach(do_template('BUTTON_SCREEN_ITEM', array('_GUID' => 'fc13d12cfe58324d78befec29a663b4f', 'REL' => 'add reply nofollow', 'IMMEDIATE' => false, 'IMG' => 'buttons__new_quote', 'TITLE' => $_title, 'FULL_TITLE' => $_title_full, 'URL' => $action_url, 'JAVASCRIPT' => $javascript_explicit_quote)));
+            $buttons->attach(do_template('BUTTON_SCREEN_ITEM', array('_GUID' => '68ceb76ea8fea5c8e8dcaccb664f65dc', 'REL' => 'add reply nofollow', 'IMMEDIATE' => false, 'IMG' => 'buttons__new_quote', 'TITLE' => $_title, 'FULL_TITLE' => $_title_full, 'URL' => $action_url, 'JAVASCRIPT' => $javascript_explicit_quote)));
         }
     }
 

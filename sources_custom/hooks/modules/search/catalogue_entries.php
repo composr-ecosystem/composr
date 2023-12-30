@@ -204,7 +204,7 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
             $hidden = build_keep_post_fields();
 
             $title = get_screen_title('SEARCH');
-            return do_template('FORM_SCREEN', array('_GUID' => 'a2812ac8056903811f444682d45ee448', 'TARGET' => '_self', 'GET' => true, 'SKIP_WEBSTANDARDS' => true, 'HIDDEN' => $hidden, 'TITLE' => $title, 'TEXT' => '', 'URL' => $post_url, 'FIELDS' => $fields, 'SUBMIT_ICON' => 'buttons__search', 'SUBMIT_NAME' => $submit_name));
+            return do_template('FORM_SCREEN', array('_GUID' => '517bb62fcb7a69488b94ee77c486e530', 'TARGET' => '_self', 'GET' => true, 'SKIP_WEBSTANDARDS' => true, 'HIDDEN' => $hidden, 'TITLE' => $title, 'TEXT' => '', 'URL' => $post_url, 'FIELDS' => $fields, 'SUBMIT_ICON' => 'buttons__search', 'SUBMIT_NAME' => $submit_name));
         }
 
         return array('choose_catalogue_category', array('catalogue_name' => $catalogue_name));

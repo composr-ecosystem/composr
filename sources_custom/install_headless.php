@@ -33,7 +33,7 @@ function do_install_to($database, $username, $password, $table_prefix, $safe_mod
             @var_dump(escape_html($data));
             @var_dump($GLOBALS['HTTP_MESSAGE']);
 
-            $error = $url . ' : ' . preg_replace('#^.*An error has occurred#s', 'An error has occurred', strip_tags($data));
+            $error = $url . ' : ' . preg_replace('#^.*An error has occurred#s', 'An error has occurred', @strip_tags($data));
             @print(escape_html($error));
             @ob_end_flush();
         }

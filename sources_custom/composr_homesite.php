@@ -239,6 +239,10 @@ function get_composr_branches()
     require_code('version2');
 
     $_branches = shell_exec('git branch');
+    if (empty($_branches)) {
+        return array();
+    }
+
     $branches = array();
     foreach (explode("\n", $_branches) as $_branch) {
         $matches = array();
@@ -246,6 +250,9 @@ function get_composr_branches()
             $git_branch = $matches[1];
 
             $version_file = shell_exec('git show ' . $git_branch . ':sources/version.php');
+            if (empty($version_file)) {
+                warn_exit('INTERNAL_ERROR');
+            }
 
             $tempnam = cms_tempnam();
             file_put_contents($tempnam, $version_file . "\n\necho serialize(array(cms_version_number(), defined('cms_version_branch_status') ? cms_version_branch_status() : 'Unknown', defined('cms_version_branch_eol') ? cms_version_branch_eol() : null));");
@@ -700,8 +707,9 @@ if (\$_SERVER['HTTP_HOST'] == 'composr.info') {
  */
 function reset_aliases()
 {
-    return; // Needs customising for each deployment; Demonstratr personal demos currently not supporting email hosting
+    // Needs customising for each deployment; Demonstratr personal demos currently not supporting email hosting
 
+    /*
     require_code('files');
 
     // Rebuild virtualdomains
@@ -758,6 +766,7 @@ function reset_aliases()
     }
 
     shell_exec(special_demonstratr_dir() . '/reset_aliases');
+    */
 }
 
 /**
@@ -768,8 +777,9 @@ function reset_aliases()
  */
 function find_server_load($server)
 {
-    return 1; // Not currently supported, needs customising per-server
+    // Not currently supported, needs customising per-server
 
+    /*
     //$stats = http_download_file('http://' . $server . '/data_custom/stats.php?html=1');
     $stats = shell_exec('php /home/demonstratr/public_html/data_custom/stats.php 1');
     $matches = array();
@@ -780,6 +790,9 @@ function find_server_load($server)
     }
     $av_load = (floatval($load_15) + floatval($load_5) + floatval($load_1)) / 3.0;
     return $av_load;
+    */
+
+    return 1;
 }
 
 /**

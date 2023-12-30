@@ -1259,7 +1259,7 @@ function request_page($codename, $required, $zone = null, $page_type = null, $be
     $hooks = find_all_hooks('systems', 'upon_page_load');
     foreach ($hooks as $hook => $hook_dir) {
         require_code('hooks/systems/upon_page_load/' . filter_naughty_harsh($hook), false, $hook_dir == 'sources_custom');
-        $ob = object_factory('upon_page_load' . filter_naughty_harsh($hook), true);
+        $ob = object_factory('Hook_upon_page_load_' . filter_naughty_harsh($hook), true);
         if ($ob === null) {
             continue;
         }

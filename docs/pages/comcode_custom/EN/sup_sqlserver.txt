@@ -205,7 +205,7 @@ The main complexities of SQL Server support, for MySQL developers are:
 
 [title="2"]See also[/title]
 
- - https://www.microsoft.com/en-gb/sql-server/sql-server-editions-express
+ - https://www.microsoft.com/en-gb/sql-server/sql-server-2019
  - http://www.unixodbc.org/
  - http://www.freetds.org/
  - [page="_SEARCH:tut_sql"]Manually editing your database with phpMyAdmin[/page]

@@ -20,7 +20,7 @@ The stack bypasses the Setup Wizard, with a default set of addons installed. You
 
 [title="3"]WampServer[/title]
 
-[url="WampServer"]http://www.wampserver.com/en/[/url] lets you mass install the software for running an Apache-based server.
+[url="WampServer"]https://www.wampserver.com/en/[/url] lets you mass install the software for running an Apache-based server.
 
 [hide="Detailed graphic instructions for installing on WampServer"]
 Detailed WampServer installation instructions:
@@ -142,7 +142,7 @@ Just run through the installer normally, and by the end you should have a workin
 
 [title="2"]See also[/title]
 
- - [url="WAMP-Server"]http://www.wampserver.com/en/[/url]
+ - [url="WAMP-Server"]https://www.wampserver.com/en/[/url]
  - [url="MySQL homesite"]http://mysql.com/[/url]
  - [url="Apache homesite"]http://httpd.apache.org/[/url]
  - [url="PHP homesite"]http://php.net/[/url]

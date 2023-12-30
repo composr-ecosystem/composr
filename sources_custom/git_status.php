@@ -238,6 +238,10 @@ function git_exec($cmd)
     }
     chdir(get_git_file_base());
     $lines = shell_exec('git ' . $cmd . ' 2>&1');
+    if (!is_string($lines)) {
+        $cache[$cmd] = '';
+        return $cache[$cmd];
+    }
     $cache[$cmd] = explode("\n", trim($lines));
     return $cache[$cmd];
 }

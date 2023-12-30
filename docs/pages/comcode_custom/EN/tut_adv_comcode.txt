@@ -72,7 +72,7 @@ The following privileges impact Comcode permissions (referencing the tiers above
  - JavaScript code (reason: code can be malicious, for example steal cookies)
  - CSS code rules block ([tt]style[/tt] element) (reason: style changes can be used to deceive a visitor)
  - Code to embed external files, such as JavaScript, CSS, applets, or browser plugins (reason: external code can either be malicious or adjust existing code to be malicious)
- - Meta tags (reason: could inject the authorisation needed for taking over the Google Webmaster Tools, for example)
+ - Meta tags (reason: could inject the authorisation needed for taking over the Google Search Console, for example)
  - Code to change the overall page document structure (reason: can significantly change how the browser processes the page)
 There are sophisticated mechanisms in Comcode to maintain this security, such as ones to stop JavaScript-powered URLs, and ones to stop people trying to using HTML entities to bypass JavaScript filtering.
 [/box]

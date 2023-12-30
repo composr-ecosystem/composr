@@ -110,7 +110,7 @@ then every web-server-created/writable file, and your database, is fully writabl
 
 suEXEC means that PHP scripts load up under the user of your own hosting account, and are constrained as such too. [tt]open_basedir[/tt] restricts PHP to only operate within the directory of the hosting account, although it has [url="performance problems"]https://bugs.php.net/bug.php?id=52312[/url].
 
-If you are fortunate enough to be in situation 2 (suEXEC), but not fortunate enough to be in situation 1 (open_basedir), then Composr needs special configuration to make best use of it. You need to make it so that no files are 'world writable' (which is the case unless you have suddenly switched to this environment) and so that [tt]_config.php[/tt] is not world writable or world readable (to protect your database password). So, preferably you'd have both suEXEC and open_basedir. Composr is clever enough to detect your situation, and hence will not [concept]chmod[/concept] any PHP-created-files to a world-writable state as it normal does (it normally does this so that both the account holder user and the web server user have write access to this file -- and making them world writable is the only way to achieve this in a hosting environment).
+If you are fortunate enough to be in situation 2 (suEXEC), but not fortunate enough to be in situation 1 (open_basedir), then Composr needs special configuration to make best use of it. You need to make it so that no files are 'world writable' (which is the case unless you have suddenly switched to this environment) and so that [tt]_config.php[/tt] and any [tt]_config.php.bak.*[/tt] files are not world writable or world readable (to protect your database password). So, preferably you'd have both suEXEC and open_basedir. Composr is clever enough to detect your situation, and hence will not [concept]chmod[/concept] any PHP-created-files to a world-writable state as it normal does (it normally does this so that both the account holder user and the web server user have write access to this file -- and making them world writable is the only way to achieve this in a hosting environment).
 
 Webhosts may use "jail shell" and ensure home directories are not world-readable. These are further mitigations against account-vs-account tampering. So actually ideally you would have suEXEC, open_basedir, jail shell, and well configured home directory security.
 
@@ -452,6 +452,12 @@ While many files are world writable, this file is a particular target, because i
 To solve this problem, simply remove execute permission for the [tt]_config.php[/tt] file.
 
 It may seem an obvious solution, to not use an executable file to store configuration information. However this file contains critical data, and therefore if it was a file that would be downloaded if accessed instead of executed, this critical data would be exposed; the usual advice is to put the file outside of a downloadable location, or to restrict download, but this is tenuous due to differing web environments Composr must on: in trying to increase security, there would be a big likelihood we could incidentally decrease it.
+
+[title="3"]_config.php.bak.*[/title]
+
+When you install Composr in a directory that already contains a _config.php file (e.g. overwriting an existing installation), the installer will create a [tt]_config.php.bak.*[/tt] file (ending in the current timestamp). This is to preserve the previous configuration especially in the event it was modified to run different configurations for different git branches or sub-domains.
+
+You should take extra care after installing Composr to immediately move the backup off-site, to delete it, or to merge it into the new [tt]_config.php[/tt] file. Leaving these backup files on the server can be a security risk if someone gets access to them.
 
 [title="3"]Master password[/title]
 

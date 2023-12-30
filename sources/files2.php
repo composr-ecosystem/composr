@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2016
+ Copyright (c) ocProducts, 2004-2023
 
  See text/EN/licence.txt for full licencing information.
 
@@ -269,14 +269,14 @@ function is_temp_file($path)
     $_temp_dir = cms_get_temp_dir();
     $temp_dirs = array(
         realpath($_temp_dir[0]),
-        get_custom_file_base() . '/safe_mode_temp',
+        realpath(get_custom_file_base() . '/safe_mode_temp'),
     );
 
     foreach ($temp_dirs as $temp_dir) {
-        if (substr($path, 0, strlen($temp_dir) + 1) == $temp_dir . '/') {
+        if (substr($path, 0, strlen($temp_dir) + 1) == $temp_dir . '/') { // Unix
             return true;
         }
-        if (substr($path, 0, strlen($temp_dir) + 1) == $temp_dir . '\\') {
+        if (substr($path, 0, strlen($temp_dir) + 1) == $temp_dir . '\\') { // Windows
             return true;
         }
     }
@@ -1114,6 +1114,13 @@ function _http_download_file($url, $byte_limit = null, $trigger_error = true, $n
             if ((php_function_allowed('escapeshellcmd')) && (php_function_allowed('shell_exec')) && (substr($file_path, -4) == '.php')) {
                 $cmd = 'DOCUMENT_ROOT=' . escapeshellarg_wrap(dirname(get_file_base())) . ' PATH_TRANSLATED=' . escapeshellarg_wrap($file_path) . ' SCRIPT_NAME=' . escapeshellarg_wrap($file_path) . ' HTTP_USER_AGENT=' . escapeshellarg_wrap($ua) . ' QUERY_STRING=' . escapeshellarg_wrap($parsed['query']) . ' HTTP_HOST=' . escapeshellarg_wrap($parsed['host']) . ' ' . escapeshellcmd(find_php_path(true)) . ' ' . escapeshellarg_wrap($file_path);
                 $contents = shell_exec($cmd);
+                if (!is_string($contents)) {
+                    if ($trigger_error) {
+                        warn_exit('INTERNAL_ERROR');
+                    } else {
+                        return null;
+                    }
+                }
                 $split_pos = strpos($contents, "\r\n\r\n");
                 if ($split_pos !== false) {
                     $_headers = explode("\r\n", substr($contents, 0, $split_pos));
@@ -1137,11 +1144,11 @@ function _http_download_file($url, $byte_limit = null, $trigger_error = true, $n
                 $HTTP_FILENAME = basename($file_path);
             }
 
-            if ($byte_limit !== null) {
+            if (($byte_limit !== null) && ($contents !== null)) {
                 $contents = substr($contents, 0, $byte_limit);
             }
 
-            if (!is_null($write_to_file)) {
+            if (!is_null($write_to_file) && ($contents !== null)) {
                 fwrite($write_to_file, $contents);
                 return '';
             }

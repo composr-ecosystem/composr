@@ -202,28 +202,15 @@ If you need to manually embed widget code it is very simple. If you are in the W
 
 These widgets aren't Composr blocks, but we are including this explanation in this tutorial because of the similarity.
 
-[title="3"]Practical example: TokBox[/title]
+[title="3"]Practical example: Vonage Video API[/title]
 
 You can add a video chat box to your site without any special API integration, just via a simple HTML embed. Here's a brief step by step to go through the process:
 [list]
-[*] Sign up for an account at [url="TokBox"]http://www.tokbox.com/[/url]
+[*] Sign up for an account at [url="Vonage Video API"]https://www.vonage.com/communications-apis/video/features/video-chat-embeds/[/url]
 [*] Create a Comcode page on your site where you want the video chat/conferencing to be located
-[*] Go to [url="http://www.tokbox.com/#embed="]http://www.tokbox.com/#embed=[/url] and log in using the username and password from step 1 if you aren't already logged in.
-[*] Select the size you want your video chat to be
-[*] Choose whether you want to add text chat or not
-[*] Choose whether you want to show the list of participants or not
-[*] Click "Add to my site"
-[*] Click "Copy code"
-[*] Go to your previously created video chat/conference page and click to edit it
-[*] Disable the WYSIWYG editor (if the WYSIWYG editor is already disabled jump to step 12)
-[*] On the pop up agree and convert the page to Comcode
-[*] After the title or the text where you want to box to appear paste the code you have copied in between [tt][html][/tt] and [tt][/html][/tt] tags which will look something like this:
-[code="Comcode"]
-[html]
-<object type="application/x-shockwave-flash" data="http://www.tokbox.com/vc/zy57q6aodg1k7lvw" width="800" height="600" pid="4b9a2b80beb18ab2"> <param name="movie" value="http://www.tokbox.com/vc/zy57q6aodg1k7lvw"/> <param name="flashvars" value="guestList=true&textChat=true&showExpandButton=true"/></object><br /><a href="http://www.tokbox.com/">TokBox - Free Video Chat and Video Messaging</a>
-[/html]
-[/code]
-[*] Fill in the rest of the page data and save the page
+[*] Include the provide embed HTML code from Vonage on your Comcode page. You may have to go into [tt]View Source[/tt] mode if using WYSIWYG (ideally, you should disable WYSIWYG on this page). Save your Comcode page. If possible, save unvalidated so it is not yet visible to the public.
+[*] Click [tt]Click to start call[/tt] to test your embed.
+[*] Go back and fill in the rest of the page data and save the page, this time with validated set to on.
 [/list]
 
 If the size is not quite right you can modify the width and height easily to make sure it fits into your website nicely. Your website users will need to sign up to TokBox to use the video conference.

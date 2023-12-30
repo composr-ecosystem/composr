@@ -320,7 +320,7 @@ Go through this process:
 Initially you will be set up on an [tt]appspot.com[/tt] subdomain. You [url="may use your own domain"]https://cloud.google.com/appengine/docs/standard/python/mapping-custom-domains[/url]. Composr is set up to automatically detect your base URL from the access URL, so you do not need to worry about any configuration within Composr. Make sure though that you stop using the [tt]appspot.com[/tt] URL fully after switching to your custom domain name.
 
 If using SSL with your own custom domain, Composr's default configuration in [tt]_config.php[/tt] will assume that you want to serve uploaded data via that domain. To do that you need to setup [tt]storage.<domainname>[/tt] as per [url="Google's documentation on setting a CNAME record"]https://cloud.google.com/storage/docs/request-endpoints[/url].
-Of course you would also need to set up [url="your own SSL certificate"]https://cloud.google.com/appengine/docs/standard/python/securing-custom-domains-with-ssl[/url].
+Of course you would also need to set up [url="your own SSL certificate"]https://cloud.google.com/appengine/docs/standard/securing-custom-domains-with-ssl[/url].
 
 [title="3"]Error pages[/title]
 
@@ -343,8 +343,6 @@ You could create a [tt]404.php[/tt] if you need it to be dynamic, but it's proba
 [title="2"]Notes to programmers / architects[/title]
 
 The GAE API installs a version of PHP, but it does not have most of the limitations of the live version of PHP. Therefore be careful that you apply all the coding standards. In particular, ensure any custom files are written to using Composr's [tt]get_custom_file_base[/tt] function (which will be mapped to Google Cloud Storage live and [tt]data_custom/modules/google_appengine[/tt] in development).
-
-If you are developing and don't have Commandr working yet, the [url="PHP-minishell"]http://php-minishell.appspot.com/[/url] is quite useful for testing the environment.
 
 Be aware that filesystem latency may be considerably higher on GAE, as Cloud Storage may not be in the same machine as the actual running application. One hopes that the machine will be at least in the same data centre, with a fast non-congested link, but be mindful that there are reports of ~10ms latency. The same issue applies to Google Cloud SQL. Try and keep the number of filesystem and database queries you do down.
 It is also advisable to minimise the number of filesystem and database writes you make, as these have to replicate across each copy of your filesystem/database.

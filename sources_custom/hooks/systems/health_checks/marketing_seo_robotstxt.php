@@ -254,7 +254,7 @@ class Hook_health_check_marketing_seo_robotstxt extends Hook_Health_Check
                         continue 2; // Ignored rule
                     }
 
-                    if (preg_match('#^' . $rule . '#', $url_path) != 0) {
+                    if (($url_path !== null) && (preg_match('#^' . $rule . '#', $url_path) != 0)) {
                         if ($google_style) {
                             if (strlen($rule) > $best_precedence) {
                                 $allowed = ($key == 'allow');
@@ -285,7 +285,7 @@ class Hook_health_check_marketing_seo_robotstxt extends Hook_Health_Check
 
         $base_url = get_base_url();
         $base_url_path = parse_url($base_url, PHP_URL_PATH);
-        $robots_url = preg_replace('#' . preg_quote($base_url_path, '#') . '$#', '', $base_url) . '/robots.txt';
+        $robots_url = ($base_url_path !== null) ? (preg_replace('#' . preg_quote($base_url_path, '#') . '$#', '', $base_url) . '/robots.txt') : '/robots.txt';
 
         $agents_regexp = preg_quote('*');
         if ($user_agent !== null) {

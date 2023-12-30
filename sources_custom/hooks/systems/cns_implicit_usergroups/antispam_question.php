@@ -41,7 +41,7 @@ class Hook_implicit_usergroups_antispam_question
     /**
      * Constructor.
      */
-    function __construct()
+    public function __construct()
     {
         global $ANTISPAM_QUESTION_FIELD_ID;
         if (!isset($ANTISPAM_QUESTION_FIELD_ID)) {

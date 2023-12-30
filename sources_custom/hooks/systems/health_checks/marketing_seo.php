@@ -61,7 +61,7 @@ class Hook_health_check_marketing_seo extends Hook_Health_Check
         }
 
         $this->state_check_manual('Check for [url="SEO issues"]https://seositecheckup.com/[/url] (take warnings with a pinch of salt, not every suggestion is appropriate)');
-        $this->state_check_manual('Check for [url="search issues in Google Webmaster Tools"]https://www.google.com/webmasters/tools/home[/url]');
+        $this->state_check_manual('Check for [url="search issues in Google Search Console"]https://search.google.com/search-console/welcome[/url]');
         $this->state_check_manual('Analyse what [url="popular keywords you rank for"]https://www.thehoth.com/[/url] and [url="what you could try and rank for"]https://www.authoritylabs.com/ranking-tool/[/url]');
     }
 

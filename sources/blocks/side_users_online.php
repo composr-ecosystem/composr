@@ -98,7 +98,7 @@ class Block_side_users_online
                     $url = $GLOBALS['FORUM_DRIVER']->member_profile_url($member, true, true);
                     $online[] = array(
                         'URL' => $url,
-                        'USERNAME' => $username,
+                        'USERNAME' => $GLOBALS['FORUM_DRIVER']->get_username($member, true),
                         'COLOUR' => $colour,
                         'MEMBER_ID' => strval($member),
                         'AVATAR_URL' => $GLOBALS['FORUM_DRIVER']->get_member_avatar_url($member),
@@ -129,7 +129,7 @@ class Block_side_users_online
                     $birthdays[] = array(
                         'AGE' => array_key_exists('age', $_birthday) ? integer_format($_birthday['age']) : null,
                         'PROFILE_URL' => $GLOBALS['CNS_DRIVER']->member_profile_url($_birthday['id'], false, true),
-                        'USERNAME' => $_birthday['username'],
+                        'USERNAME' => $GLOBALS['FORUM_DRIVER']->get_username($_birthday['id'], true),
                         'MEMBER_ID' => strval($_birthday['id']),
                         'BIRTHDAY_URL' => $birthday_url,
                     );
