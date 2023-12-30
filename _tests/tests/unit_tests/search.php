@@ -25,6 +25,13 @@ class search_test_set extends cms_test_case
         $this->establish_admin_session();
 
         require_code('xml');
+
+        // Generate the commonality index if it has not been run yet
+        if (!$GLOBALS['SITE_DB']->table_exists('ft_index_commonality')) {
+            require_code('hooks/systems/cron/composr_fulltext_indexer');
+            $ob = new Hook_cron_composr_fulltext_indexer();
+            $ob->run();
+        }
     }
 
     public function testNoSearchHooksCrash()
@@ -84,7 +91,10 @@ class search_test_set extends cms_test_case
             foreach (array($this->get_canonical_username('admin'), $this->get_canonical_username('test')) as $username) {
                 $url = build_url($url_parts + array('keep_su' => $username, 'keep_safe_mode' => $safe_mode), get_module_zone('search'));
                 $data = http_download_file($url->evaluate(), null, true, false, 'Composr', null, array(get_session_cookie() => get_session_id()));
-                $this->assertTrue(strpos($data, do_lang('NO_RESULTS_SEARCH')) !== false); // We expect no results, but also no crash!
+                $this->assertTrue(strpos($data, do_lang('NO_RESULTS_SEARCH')) !== false, 'We expected a NO_RESULTS_SEARCH, but did not get it.'); // We expect no results, but also no crash!
+                if (isset($_GET['debug']) && ($_GET['debug'] == '1')) {
+                    @var_dump($data);
+                }
             }
         }
     }
