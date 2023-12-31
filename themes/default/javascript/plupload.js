@@ -16178,12 +16178,13 @@ expose(["plupload","plupload/core/Collection","plupload/core/ArrCollection","plu
             fileNameField = document.getElementById(plObj.settings.txtFileName),
             fileIdField = document.getElementById(plObj.settings.hidFileID);
 
-        if (fileNameField.value !== '-1') {
-            $dom.html(document.getElementById(plObj.settings.progress_target), ''); // Remove old progress indicators
+        // For non-multi fields, triggering a new upload means we want to cancel and remove the previous one
+        if ((fileNameField.value !== '-1') && (!plObj.settings.page_type.includes('_multi'))) {
+            $dom.html(document.getElementById(plObj.settings.progress_target), '');
+            fileIdField.value = '-1';
             plObj.stop();
         }
-
-        fileIdField.value = '-1';
+        
         fileNameField.value = '';
 
         files.some(function (file) {
@@ -16225,10 +16226,9 @@ expose(["plupload","plupload/core/Collection","plupload/core/ArrCollection","plu
             return;
         }
 
-        var fileIdField = document.getElementById(plObj.settings.hidFileID),
-            fileNameField = document.getElementById(plObj.settings.txtFileName);
+        var fileNameField = document.getElementById(plObj.settings.txtFileName);
 
-        if ((value === '1') && (fileIdField.value === '-1') && (fileNameField.value !== '')) {
+        if ((value === '1') && (fileNameField.value !== '')) {
             plObj.start();
 
             // plupload does not support cancelling mid-way (plObj.stop won't do that unfortunately)
