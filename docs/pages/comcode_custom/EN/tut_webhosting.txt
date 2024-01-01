@@ -87,7 +87,7 @@ The remainder of this section details Composr's requirements. If you have troubl
 We require:
  - At least 180MB of disk space (plus your needs for space for downloads, images, etc).
  - No maximum file size limit under 25MB (some free webhosts will impose such a limit).
- - No file type safelists (some free webhosts will impose such a limit -- which explains why [tt]data.cms[/tt] might disappear when you try to upload it).
+ - No file type safelists (some free webhosts will impose such a limit -- which explains why [tt]data.cms[/tt] might disappear when you try to upload it; sometimes you can work around that by renaming cms files as [tt]*.tar.gz[/tt], uploading it, then renaming it on the server back to [tt]*.cms[/tt]).
  - Certain file permissions are required as described in the [page="_SEARCH:tut_install_permissions"]File permissions[/page] tutorial.
  - That the server does not have a Firewall that stops outgoing connections or internal connections to itself (sometimes referred to 'HTTP loopback') -- this applies to both TCP port 80 and 443.
  - Connectivity to a mail server (SMTP) so that outgoing e-mail can be sent out to the staff e-mail address or the addresses of individual members.
@@ -165,12 +165,13 @@ We require:
 
 [title="3"]Database[/title]
 
-MySQL is the database software which Composr uses to store the majority of its data. {$IS_MAINTAINED,mariadb,MariaDB} may work as a drop-in MySQL replacement. Certain other database software may work, but is not fully supported; the requirements for other database software is discussed in tutorials specifically for that software.
+MySQL is the database software which Composr uses to store the majority of its data. {$IS_MAINTAINED,mariadb,MariaDB} will probably work as a drop-in MySQL replacement. Certain other database software may work, but is not fully supported; the requirements for other database software is discussed in tutorials specifically for that software.
 
 We require:
  - MySQL database software (if you want it to be fully supported).
  - MySQL version 5.5.3 (&dagger;) or higher.
  - At least 10MB of database storage space (which should be available on any reputable webhost).
+  - You may need a substantially larger amount of database space for sites utilising content translations, using the software's fulltext search, or heavily utilising content (e.g. social communities or catalogue-heavy sites).
  - The [tt]max_allowed_packet[/tt] server system setting must be at least [tt]4M[/tt] (this became the default in MySQL 5.6).
 
 (&dagger;) MySQL 5.5.3 introduces the utf8mb4 character set, which is required to store emojis. The installer assumes you will install with this support available, but upgrades from older versions may work in anything from MySQL 4.1+ if the database is kept in [tt]latin1[/tt] via having [tt]$SITE_INFO['database_charset'] = 'latin1';[/tt] in [tt]_config.php[/tt]. This compatibility will not be guaranteed, but as webhosts have been very slow to upgrade MySQL installations we will informally try and maintain it.
@@ -196,9 +197,9 @@ For slightly faster performance the [tt]ctype[/tt] extension helps.
 
 Ideally e-mails should be sendable directly from PHP's own mail functionality. For this to work an SMTP server (or relay server) has to be available on the web server machine, or on Windows the PHP SMTP configuration needs to be filled in. Composr can connect to external SMTP servers but it is less elegant and perhaps more error prone than using a local server or relay.
 
-[title="4"]Very specific features[/title]
+If you need to be able to easily remove 'bounce' e-mails from newsletter subscriber lists, you will need the PHP IMAP extension ([tt]imap[/tt]). If your IMAP server requires SSL (like gmail) then you will need to have IMAP-SSL support inside PHP (or you will get "invalid remote specification" errors). It is highly recommended you do this as your IP could get added to a spam blacklist for repeatedly sending e-mails to invalid addresses or addresses / domains that have blocked you.
 
-If you need to be able to easily remove 'bounce' e-mails from newsletter subscriber lists, you will need the PHP IMAP extension ([tt]imap[/tt]). If your IMAP server requires SSL (like gmail) then you will need to have IMAP-SSL support inside PHP (or you will get "invalid remote specification" errors).
+[title="4"]Very specific features[/title]
 
 If you want automatic thumbnail generation you need a server with FFMPEG on it. It must be accessible via PHP either via the unofficial PHP FFMPEG extension, or the ability for [tt]shell_exec[/tt] to run from PHP.
 
@@ -222,11 +223,11 @@ If using the eCommerce system with the Authorize.net payment gateway, then it is
 [media float="right" thumb="0" framed="0"]data_custom/images/docs/tip.png[/media]
 Composr recommends:
  - PHP versions:
-  - Don't accept EOL ("end-of-life"). If a webhost or Linux distribution has a PHP version that is EOL, it is not just out-dated, but also insecure (at the time of writing, anything less than PHP 7.4 is unsupported by the PHP developers).
+  - Don't accept EOL ("end-of-life"). If a webhost or Linux distribution has a PHP version that is EOL, it is not just out-dated, but also insecure (at the time of writing, anything less than PHP 8.0 is unsupported by the PHP developers).
   - Make sure your PHP version is updated with security fixes, even if you haven't updated to the latest major version.[media width="480" thumb="1" framed="1" description="Easy-reference summary of the key hosting recommendations." float="right"]data_custom/images/docs/tut_webhosting/image.png[/media]
  - A PHP opcode cache: Zend OpCache (bundled by default), APC (available for PHP 5.6 or lower only), APCu, XCache, Nusphere PhpExpress, or Wincache.
  - A PHP environment with [tt]open_basedir[/tt] enabled.
- - At least 100MB of disk space.
+ - At least 180MB of disk space.
  - Generally, if you are using shared webhosting then we advise picking a host that does nightly backups that you have access to restore -- we've seen a lot of webhosts not take any responsibility for backup, and it does need doing at the server level to work effectively.
 
 [title="2"]Web server compatibility[/title]
