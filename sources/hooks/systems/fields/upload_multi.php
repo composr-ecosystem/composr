@@ -145,21 +145,13 @@ class Hook_fields_upload_multi
     public function get_field_inputter(string $_cf_name, string $_cf_description, array $field, ?string $actual_value, bool $new) : ?array
     {
         $default = ($actual_value == '') ? null : explode("\n", $actual_value);
-        if ($default !== null) {
-            foreach ($default as $i => $_actual_value) {
-                if (strpos($_actual_value, '::') !== false) {
-                    list($_actual_value,) = explode('::', $_actual_value);
-                }
-                $default[$i] = $_actual_value;
-            }
-        }
 
         $say_required = ($field['cf_required'] == 1) && (($actual_value == '') || ($actual_value === null));
 
         $filetype_filter = option_value_from_field_array($field, 'filetype_filter', '');
 
         $input_name = @cms_empty_safe($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
-        $ffield = form_input_upload_multi($_cf_name, $_cf_description, $input_name, $say_required, null, ($field['cf_required'] == 1) ? null/*so unlink option not shown*/ : $default, true, $filetype_filter);
+        $ffield = form_input_upload_multi($_cf_name, $_cf_description, $input_name, $say_required, null, $default, true, $filetype_filter);
 
         $hidden = new Tempcode();
         handle_max_file_size($hidden);

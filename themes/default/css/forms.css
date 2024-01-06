@@ -305,7 +305,11 @@ th.form-table-field-name a, /* Extra specificity to take precedence over th.de-t
 .upload-field-msg {
 	margin-top: 0;
 	margin-bottom: 0.5em;
+	padding: 0.5em;
 	display: inline-block;
+	width: 100%;
+	border: solid 1px {$GET,area_4_background};
+	background-color: {$GET,area_2_background};
 }
 
 .people-list {

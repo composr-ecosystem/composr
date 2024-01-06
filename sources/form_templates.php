@@ -1718,11 +1718,11 @@ function make_previewable_url_absolute(?string $url) : array
             if ((is_file($htaccess_path)) && (stripos(cms_file_get_contents_safe($htaccess_path, FILE_READ_LOCK), 'Require not ip') !== false)) {
                 return [$_url, $is_image];
             }
-
-            require_code('images');
-            $is_image = is_image($_url, IMAGE_CRITERIA_WEBSAFE, true);
             $_url = ($custom ? get_custom_base_url() : get_base_url()) . '/' . $_url;
         }
+        
+        require_code('images');
+        $is_image = is_image($_url, IMAGE_CRITERIA_WEBSAFE, true);
     }
 
     return [$_url, $is_image];
@@ -1802,9 +1802,16 @@ function form_input_upload_multi($pretty_name, $description, string $name, bool 
 
     $edit = [];
     if (($default !== null) && (!empty($default))) {
-        foreach ($default as $file) {
-            list($_edit, $is_image) = make_previewable_url_absolute($file);
-            $edit[] = $_edit;
+        foreach ($default as $i => $_file) {
+            $file_bits = explode('::', $_file);
+            $image_url = '';
+            list($_edit, $is_image) = make_previewable_url_absolute($file_bits[0]);
+            if (($is_image === false) && array_key_exists(1, $file_bits)) {
+                list($image_url, $is_image) = make_previewable_url_absolute($file_bits[1]);
+            } else if ($is_image === true) {
+                $image_url = $_edit;
+            }
+            $edit[] = ['INDEX' => strval($i), 'URL' => $_edit, 'IMAGE_URL' => $image_url, 'IS_IMAGE' => $is_image];
         }
     }
     $input = do_template('FORM_SCREEN_INPUT_UPLOAD_MULTI', [
