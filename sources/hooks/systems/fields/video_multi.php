@@ -101,8 +101,8 @@ class Hook_fields_video_multi
         $ret = new Tempcode();
         $evs = explode("\n", $ev);
         foreach ($evs as $ev) {
-            if (strpos($ev, ' ') !== false) {
-                list(, $thumb_url, $_width, $_height, $_length) = explode(' ', $ev, 5);
+            if (strpos($ev, '::') !== false) {
+                list(, $thumb_url, $_width, $_height, $_length) = explode('::', $ev, 5);
                 $width = intval($_width);
                 $height = intval($_height);
                 $length = intval($_length);
@@ -116,7 +116,7 @@ class Hook_fields_video_multi
             $width = intval(option_value_from_field_array($field, 'width', strval($width)));
             $height = intval(option_value_from_field_array($field, 'height', strval($height)));
 
-            $basic_url = preg_replace('# .*$#', '', $ev);
+            $basic_url = preg_replace('#::.*$#', '', $ev);
             if (url_is_local($basic_url)) {
                 $keep = symbol_tempcode('KEEP');
                 $download_url = find_script('catalogue_file') . '?file=' . urlencode(basename($basic_url)) . '&table=' . urlencode(($table === null) ? '' : $table) . '&id=' . urlencode(strval($id)) . '&id_field=' . urlencode(($id_field === null) ? '' : $id_field) . '&url_field=' . urlencode(($url_field === null) ? '' : $url_field);
@@ -184,7 +184,7 @@ class Hook_fields_video_multi
         $say_required = ($field['cf_required'] == 1) && (($actual_value == '') || ($actual_value === null));
         $input_name = @cms_empty_safe($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
         require_code('images');
-        $ffield = form_input_upload_multi($_cf_name, $_cf_description, $input_name, $say_required, null, ($field['cf_required'] == 1) ? null/*so unlink option not shown*/ : (($actual_value == '') ? null : explode("\n", preg_replace('# .*$#m', '', $actual_value))), true, get_allowed_video_file_types());
+        $ffield = form_input_upload_multi($_cf_name, $_cf_description, $input_name, $say_required, null, ($field['cf_required'] == 1) ? null/*so unlink option not shown*/ : (($actual_value == '') ? null : explode("\n", preg_replace('#::.*$#m', '', $actual_value))), true, get_allowed_video_file_types());
 
         $hidden = new Tempcode();
         handle_max_file_size($hidden);
@@ -262,7 +262,7 @@ class Hook_fields_video_multi
                     if ($value != '') {
                         $value .= "\n";
                     }
-                    $value .= $ev . ' ' . $thumb_url . ' ' . (($width === null) ? '' : strval($width)) . ' ' . (($height === null) ? '' : strval($height)) . ' ' . (($length === null) ? '' : strval($length));
+                    $value .= $ev . '::' . $thumb_url . '::' . (($width === null) ? '' : strval($width)) . '::' . (($height === null) ? '' : strval($height)) . '::' . (($length === null) ? '' : strval($length));
                 }
 
                 $i++;
@@ -283,7 +283,7 @@ class Hook_fields_video_multi
         if ($value['cv_value'] != '') {
             $files = explode("\n", $value['cv_value']);
             foreach ($files as $ev) {
-                $path = preg_replace('# .*$#', '', $ev);
+                $path = preg_replace('#::.*$#', '', $ev);
                 @unlink(get_custom_file_base() . '/' . rawurldecode($path));
                 sync_file(rawurldecode($path));
             }

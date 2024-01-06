@@ -187,7 +187,7 @@ class Hook_fields_video
         }
 
         require_code('images');
-        $ffield = form_input_upload($_cf_name, $cf_description, $input_name, $say_required, ($field['cf_required'] == 1) ? null/*so unlink option not shown*/ : preg_replace('# .*$#', '', $actual_value), null, true, get_allowed_video_file_types());
+        $ffield = form_input_upload($_cf_name, $cf_description, $input_name, $say_required, ($field['cf_required'] == 1) ? null/*so unlink option not shown*/ : preg_replace('#::.*$#', '', $actual_value), null, true, get_allowed_video_file_types());
 
         $hidden = new Tempcode();
         handle_max_file_size($hidden);
@@ -250,7 +250,7 @@ class Hook_fields_video
                 list($width, $height, $length) = video_get_default_metadata($stripped_ev);
             }
 
-            $value = $ev . ' ' . $thumb_url . ' ' . (($width === null) ? '' : strval($width)) . ' ' . (($height === null) ? '' : strval($height)) . ' ' . (($length === null) ? '' : strval($length));
+            $value = $ev . '::' . $thumb_url . '::' . (($width === null) ? '' : strval($width)) . '::' . (($height === null) ? '' : strval($height)) . '::' . (($length === null) ? '' : strval($length));
         } else {
             $value = STRING_MAGIC_NULL;
         }
@@ -265,7 +265,7 @@ class Hook_fields_video
     public function cleanup($value)
     {
         if ($value['cv_value'] != '') {
-            $path = preg_replace('# .*$#', '', $value['cv_value']);
+            $path = preg_replace('#::.*$#', '', $value['cv_value']);
             @unlink(get_custom_file_base() . '/' . rawurldecode($path));
             sync_file(rawurldecode($path));
         }

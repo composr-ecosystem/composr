@@ -62,22 +62,34 @@ function catalogue_file_script()
     if ($field_id_field !== null) {
         $where[$field_id_field] = $field_id;
     }
-    $ev_check = $GLOBALS['SITE_DB']->query_select_value_if_there($table, $url_field, $where, '', true);
-    if ($ev_check === null) {
+    $_ev_check = $GLOBALS['SITE_DB']->query_select_value_if_there($table, $url_field, $where, '', true);
+    if ($_ev_check === null) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
     }
     
-    // Prepare the file
-    $_full = get_custom_file_base() . '/' . $ev_check;
-    if (!file_exists($_full)) {
+    $ev_checks = explode("\n", $_ev_check);
+    
+    // Check if the file exists in the field
+    $ev_path = false;
+    foreach ($ev_checks as $ev_item) {
+        $ev_check = explode('::', $ev_item);
+        if (basename($ev_check[0]) == $ev) {
+            $ev_path = $ev_item;
+            break;
+        }
+    }
+    if ($ev_path === false) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', do_lang_tempcode('FILE')));
     }
-    $size = filesize($_full);
     
-    // Security check: make sure we provided the correct file name in the URL
-    if (basename($ev_check) != $ev) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+    // Prepare the file
+    $_full_path = get_custom_file_base() . '/' . $ev_path;
+    $_path_bits = explode('::', $_full_path);
+    if (!file_exists($_path_bits[0])) {
+        warn_exit(do_lang_tempcode('MISSING_RESOURCE', do_lang_tempcode('FILE')));
     }
+    $_full = $_path_bits[0];
+    $size = filesize($_full);
     
     if ($is_catalogue_type) { // Now check the match, if we support checking on it
         if (!is_our_server()/*We need to allow media renderer to get through*/) {
