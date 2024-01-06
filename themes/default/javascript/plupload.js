@@ -16198,6 +16198,14 @@ expose(["plupload","plupload/core/Collection","plupload/core/ArrCollection","plu
                     dispatchForPageType(plObj.settings.page_type, name, file.name, plObj.settings.posting_field_name, files.length);
                 }
             }, 0);
+            
+            var onCancel = function onCancel() {
+                plObj.removeFile(file);
+                // TODO: Need to trigger UploadComplete if no other files are pending
+            }
+
+            var progress = new FileProgress(file, plObj.settings.progress_target, onCancel);
+            progress.setStatus('{!javascript:PLUPLOAD_QUEUED^;}');
 
             if (!plObj.settings.page_type.includes('_multi')) {
                 return true; // (break)
@@ -16244,6 +16252,20 @@ expose(["plupload","plupload/core/Collection","plupload/core/ArrCollection","plu
             }
         }
     }
+    
+    // Listener to the 'BeforeUpload' event
+    function onUploadStart(plObj, file) {
+        var onCancel = function onCancel() {
+            plObj.removeFile(file);
+            // TODO: Need to trigger UploadComplete if no other files are pending
+        }
+
+        var progress = new FileProgress(file, plObj.settings.progress_target, onCancel);
+        if (!progress.completed) { // In case it reflects progress after completion, which can happen
+            progress.setProgress(0);
+            progress.setStatus('{!javascript:PLUPLOAD_UPLOADING^;}');
+        }
+    }
 
     // Listener to the 'UploadProgress' event
     function onUploadUpdateProgress(plObj, file) {
@@ -16251,8 +16273,13 @@ expose(["plupload","plupload/core/Collection","plupload/core/ArrCollection","plu
         if (percent === 100) {
             return;
         }
+        
+        var onCancel = function onCancel() {
+            plObj.removeFile(file);
+            // TODO: Need to trigger UploadComplete if no other files are pending
+        }
 
-        var progress = new FileProgress(file, plObj.settings.progress_target);
+        var progress = new FileProgress(file, plObj.settings.progress_target, onCancel);
         if (!progress.completed) { // In case it reflects progress after completion, which can happen
             progress.setProgress(percent);
             progress.setStatus('{!javascript:PLUPLOAD_UPLOADING^;}');
@@ -16261,10 +16288,45 @@ expose(["plupload","plupload/core/Collection","plupload/core/ArrCollection","plu
 
     // Listener to the 'FileUploaded' event
     function onUploadFinished(plObj, file, data) {
-        var progress = new FileProgress(file, plObj.settings.progress_target);
+        var dataResponse = strVal(data.response);
+
+        if (dataResponse === '') { // NOT success, happens in plupload when clicking away from document (i.e. implicit cancel)
+            var progress = new FileProgress(file, plObj.settings.progress_target);
+            progress.setCancelled();
+            return;
+        }
+        
+        var decodedData = JSON.parse(dataResponse);
+        var uploadId = decodedData['upload_id'];
+        
+        var id = document.getElementById(plObj.settings.hidFileID);
+                
+        var onRemove = function onRemove() {
+            console.log('REMOVED!'); // TODO
+            plObj.removeFile(file);
+            
+            // Remove file ID from our list
+            id.value = id.value.split(':')
+            .filter(function removeFile(fileId) {
+                console.log('ID ' + fileId + ', upload ' + uploadId);
+                return (fileId !== uploadId);
+            })
+            .join(':');
+        }
+        
+        var progress = new FileProgress(file, plObj.settings.progress_target, null, onRemove);
+        
         progress.setComplete();
         progress.setStatus('{!javascript:PLUPLOAD_COMPLETE^;}');
 
+        if (id.value === '-1') {
+            id.value = '';
+        }
+        if (id.value !== '') {
+            id.value += ':'; // delimiter
+        }
+        id.value += uploadId;
+        
         var form = document.getElementById(plObj.settings.hidFileID).form,
             allUploadsComplete = $cms.form.areUploadsComplete(form);
 
@@ -16276,23 +16338,6 @@ expose(["plupload","plupload/core/Collection","plupload/core/ArrCollection","plu
         if (uploadButton) {
             uploadButton.disabled = false;
         }
-
-        var dataResponse = strVal(data.response);
-
-        if (dataResponse === '') { // NOT success, happens in plupload when clicking away from document (i.e. implicit cancel)
-            return;
-        }
-
-        var decodedData = JSON.parse(dataResponse);
-
-        var id = document.getElementById(plObj.settings.hidFileID);
-        if (id.value === '-1') {
-            id.value = '';
-        }
-        if (id.value !== '') {
-            id.value += ':'; // delimiter
-        }
-        id.value += decodedData['upload_id'];
 
         if (allUploadsComplete) {
             for (var c = 0; c < plObj.settings.onAllUploadsDoneCallbacks.length; c++) {
@@ -16521,6 +16566,7 @@ expose(["plupload","plupload/core/Collection","plupload/core/ArrCollection","plu
         ob.bind('Init', onPluploadLoaded, null, 1000);
         ob.bind('FilesAdded', onUploadDialogCompleted, null, 1000);
         ob.bind('QueueChanged', onUploadQueueChanged, null, 1000);
+        ob.bind('BeforeUpload', onUploadStart, null, 1000);
         ob.bind('UploadProgress', onUploadUpdateProgress, null, 1000);
         ob.bind('FileUploaded', onUploadFinished, null, 1000);
         ob.bind('Error', onUploadError, null, 1000);
@@ -16633,6 +16679,8 @@ expose(["plupload","plupload/core/Collection","plupload/core/ArrCollection","plu
             fileNameField.value = file.name.replace('C:\\fakepath\\', '');
             fileNameField.className = 'upload-response-field';
             document.getElementById('container-for-' + fieldName).appendChild(fileNameField);
+            
+            // TODO: onCancel
 
             // Progress bar
             var progress = new FileProgress(fileUpload.file_progress, 'container-for-' + fieldName);
@@ -16647,15 +16695,22 @@ expose(["plupload","plupload/core/Collection","plupload/core/ArrCollection","plu
     function html5UploadProgress(event, fieldName) {
         if (event.lengthComputable) {
             var percentage = Math.round((event.loaded * 100) / event.total);
+            
+            // TODO: onCancel
+            
             if (percentage < 100) {
                 var progress = new FileProgress(event.target.file_progress, 'container-for-' + fieldName);
                 progress.setProgress(percentage);
                 progress.setStatus('{!javascript:PLUPLOAD_UPLOADING^;}');
+            } else {
+                // TODO: onRemove
             }
         }
     }
 
     function buildHtml5UploadHandler(request, fileProgress, attachmentBase, fieldName) {
+        // TODO: onRemove
+        
         return function () {
             switch (request.readyState) {
                 case 4:
@@ -16706,16 +16761,22 @@ expose(["plupload","plupload/core/Collection","plupload/core/ArrCollection","plu
     // Constructor
     // file is a plupload file object
     // targetID is the HTML element id attribute that the FileProgress HTML structure will be added to.
+    // onCancel is a callback function to call if the file upload is cancelled.
+    // onRemove is a callback function to call if the file upload is removed.
     // Instantiating a new FileProgress object with an existing file will reuse/update the existing DOM elements
     /**
      * @param file
      * @param targetID
+     * @param onCancel
+     * @param onRemove
      * @class FileProgress
      */
-    function FileProgress(file, targetID) {
+    function FileProgress(file, targetID, onCancel, onRemove) {
         var targetEl = document.getElementById(targetID);
 
         this.fileProgressID = 'progress_' + ((!file || (file.id == null)) ? ('not_inited_' + targetID) : file.id);
+        this.onCancel = onCancel;
+        this.onRemove = onRemove;
 
         this.opacity = 100;
         this.height = 0;
@@ -16725,8 +16786,9 @@ expose(["plupload","plupload/core/Collection","plupload/core/ArrCollection","plu
             $dom.append(
                 targetEl,
                 '<div id="' + this.fileProgressID + '" class="progress-wrapper">' +
-                '<div class="progress-container" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">' +
-                '<a class="progress-cancel" href="#!" style="visibility: hidden"> </a>' +
+                '<div class="progress-container blue" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">' +
+                '<a class="js-progress-cancel" href="#!" style="visibility: hidden">{!javascript:PLUPLOAD_CANCEL^;}</a>' +
+                '<a class="js-progress-remove" href="#!" style="visibility: hidden">{!javascript:PLUPLOAD_REMOVE^;}</a>' +
                 '<div class="progress-name">' + (file && (file.name != null) ? file.name : '') + '</div>' +
                 '<div class="progress-bar-status">&nbsp;</div>' +
                 '<div class="progress-bar-in-progress"></div>' +
@@ -16749,6 +16811,22 @@ expose(["plupload","plupload/core/Collection","plupload/core/ArrCollection","plu
                 $dom.html(this.fileProgressElement.querySelector('.progress-name'), file.name);
             }
         }
+        
+        var self = this;
+        $dom.on(targetEl, 'click', '#' + this.fileProgressID + ' .js-progress-cancel', function () {
+            self.fileProgressElement.children[0].style.visibility = 'hidden';
+            if (typeof self.onCancel == 'function') {
+                self.onCancel();
+            }
+            self.setCancelled();
+        });
+        $dom.on(targetEl, 'click', '#' + this.fileProgressID + ' .js-progress-remove', function () {
+            self.fileProgressElement.children[1].style.visibility = 'hidden';
+            if (typeof self.onRemove == 'function') {
+                self.onRemove();
+            }
+            self.disappear();
+        });
 
         this.completed = this.fileProgressElement.completed;
 
@@ -16756,29 +16834,43 @@ expose(["plupload","plupload/core/Collection","plupload/core/ArrCollection","plu
     }
 
     $util.properties(FileProgress.prototype, /**@lends FileProgress#*/{
+        setQueued: function () {
+            this.fileProgressElement.classList.remove('yellow', 'red', 'green');
+            this.fileProgressElement.classList.add('blue');
+            this.fileProgressElement.children[4].className = 'progress-bar-in-progress';
+            this.fileProgressElement.children[4].style.width = '0%';
+            this.fileProgressElement.children[0].style.visibility = 'visible';
+            this.fileProgressElement.children[1].style.visibility = 'hidden';
+            this.fileProgressElement.setAttribute('aria-valuenow', '0');
+        },
         setProgress: function (percentage) {
-            this.fileProgressElement.classList.remove('blue', 'red');
-            this.fileProgressElement.classList.add('green');
-            this.fileProgressElement.children[3].className = 'progress-bar-in-progress';
-            this.fileProgressElement.children[3].style.width = percentage + '%';
+            this.fileProgressElement.classList.remove('blue', 'red', 'green');
+            this.fileProgressElement.classList.add('yellow');
+            this.fileProgressElement.children[4].className = 'progress-bar-in-progress';
+            this.fileProgressElement.children[4].style.width = percentage + '%';
+            this.fileProgressElement.children[0].style.visibility = 'visible';
+            this.fileProgressElement.children[1].style.visibility = 'hidden';
             this.fileProgressElement.setAttribute('aria-valuenow', percentage);
         },
         setComplete: function () {
             this.appear();
-            this.fileProgressElement.classList.remove('green', 'red');
-            this.fileProgressElement.classList.add('blue');
-            this.fileProgressElement.children[3].className = 'progress-bar-complete';
-            this.fileProgressElement.children[3].style.width = '';
+            this.fileProgressElement.classList.remove('blue', 'red', 'yellow');
+            this.fileProgressElement.classList.add('green');
+            this.fileProgressElement.children[4].className = 'progress-bar-complete';
+            this.fileProgressElement.children[4].style.width = '';
+            this.fileProgressElement.children[0].style.visibility = 'hidden';
+            this.fileProgressElement.children[1].style.visibility = 'visible';
             this.fileProgressElement.setAttribute('aria-valuenow', '100');
             this.completed = true;
             this.fileProgressElement.completed = this.completed;
         },
         setError: function () {
             this.appear();
-            this.fileProgressElement.classList.remove('green', 'blue');
+            this.fileProgressElement.classList.remove('green', 'blue', 'yellow');
             this.fileProgressElement.classList.add('red');
-            this.fileProgressElement.children[3].className = 'progress-bar-error';
-            this.fileProgressElement.children[3].style.width = '';
+            this.fileProgressElement.children[4].className = 'progress-bar-error';
+            this.fileProgressElement.children[4].style.width = '';
+            this.fileProgressElement.children[0].style.visibility = 'hidden';
             this.fileProgressElement.setAttribute('aria-valuenow', '0');
 
             var self = this;
@@ -16788,9 +16880,11 @@ expose(["plupload","plupload/core/Collection","plupload/core/ArrCollection","plu
         },
         setCancelled: function () {
             this.appear();
-            this.fileProgressElement.classList.remove('green', 'blue', 'red');
-            this.fileProgressElement.children[3].className = 'progress-bar-error';
-            this.fileProgressElement.children[3].style.width = '';
+            this.fileProgressElement.classList.remove('green', 'blue', 'red', 'yellow');
+            this.fileProgressElement.children[4].className = 'progress-bar-error';
+            this.fileProgressElement.children[4].style.width = '';
+            this.fileProgressElement.children[0].style.visibility = 'hidden';
+            this.fileProgressElement.children[1].style.visibility = 'hidden';
             this.fileProgressElement.setAttribute('aria-valuenow', '0');
 
             var self = this;
@@ -16799,7 +16893,7 @@ expose(["plupload","plupload/core/Collection","plupload/core/ArrCollection","plu
             }, 2000);
         },
         setStatus: function (status) {
-            $dom.html(this.fileProgressElement.children[2], status);
+            $dom.html(this.fileProgressElement.children[3], status);
         },
         // Makes sure the FileProgress box is visible
         appear: function () {

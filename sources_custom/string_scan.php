@@ -11857,6 +11857,9 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ACTIVITY_VOTING
         ACTIVITY_WIKI_MAKE_POST
         ALREADY_SUBMITTED_CONTENT
+        PLUPLOAD_CANCEL
+        PLUPLOAD_REMOVE
+        PLUPLOAD_QUEUED
     ')));
 
     // Remove blank lines
