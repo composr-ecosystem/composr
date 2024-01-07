@@ -705,7 +705,7 @@ If you have manually added new theme images and are not seeing field types for t
 | [i]None[/i]
 |-
 ! Supported field options
-| [i]None[/i]
+| [tt]strict_isbn_validation=on|off[/tt] (whether submitted values should strictly adhere to ISBN-10 or ISBN-13 checksums; default is 'off')
 |-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__isbn.png[/media]

@@ -124,6 +124,55 @@ class Hook_fields_isbn
     {
         $id = $field['id'];
         $tmp_name = 'field_' . strval($id);
-        return post_param_string($tmp_name, $editing ? STRING_MAGIC_NULL : '');
+        $value = post_param_string($tmp_name, $editing ? STRING_MAGIC_NULL : '');
+        
+        if (option_value_from_field_array($field, 'strict_isbn_validation', 'off') == 'on') {
+            if (!$this->is_valid_isbn($value)) {
+                warn_exit(do_lang_tempcode('javascript:NOT_VALID_ISBN', $value));
+            }
+        }
+        
+        return $value;
+    }
+    
+    /**
+     * Check if a provided code is valid ISBN-10 or ISBN-13.
+     * 
+     * @param  string $isbn The ISBN code to check
+     * @return boolean Whether the ISBN code is valid
+     */
+    protected function is_valid_isbn($isbn) 
+    {
+        // Remove hyphens and spaces from the ISBN; we will not consider these in validation
+        $clean_isbn = str_replace(array('-', ' '), '', $isbn);
+        
+        // Check if the ISBN is 10 or 13 digits long
+        if ((strlen($clean_isbn) == 10) || (strlen($clean_isbn) == 13)) {
+            // If it's 10 digits, validate using the ISBN-10 algorithm
+            if (strlen($clean_isbn) == 10) {
+                $checksum = 0;
+                for ($i = 0; $i < 9; $i++) {
+                    $checksum += (10 - $i) * intval($clean_isbn[$i]);
+                }
+                
+                $_last_digit = strtoupper($clean_isbn[9]);
+                $last_digit = ($_last_digit === 'X') ? 10 : intval($_last_digit);
+                
+                return ($checksum + $last_digit) % 11 == 0;
+            }
+            
+            // If it's 13 digits, validate using the ISBN-13 algorithm
+            if (strlen($clean_isbn) == 13) {
+                $checksum = 0;
+                for ($i = 0; $i < 12; $i++) {
+                    $factor = ($i % 2 == 0) ? 1 : 3;
+                    $checksum += $factor * intval($clean_isbn[$i]);
+                }
+                
+                return $checksum % 10 == 0;
+            }
+        }
+        
+        return false; // Invalid ISBN length
     }
 }
