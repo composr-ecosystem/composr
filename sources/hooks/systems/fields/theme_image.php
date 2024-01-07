@@ -165,6 +165,12 @@ class Hook_fields_theme_image
     {
         $id = $field['id'];
         $tmp_name = 'field_' . strval($id);
-        return post_param_string($tmp_name, $editing ? STRING_MAGIC_NULL : '');
+        $value = post_param_string($tmp_name, $editing ? STRING_MAGIC_NULL : '');
+        
+        if (($value != '') && ($value != STRING_MAGIC_NULL)) {
+            find_theme_image($value); // Will trigger its own error if the provided ID is not found or invalid
+        }
+        
+        return $value;
     }
 }

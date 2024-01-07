@@ -144,6 +144,7 @@ class Hook_fields_float
      */
     public function get_field_inputter($_cf_name, $_cf_description, $field, $actual_value, $new)
     {
+        fatal_exit('float field');
         if ($actual_value === do_lang('NA')) {
             $actual_value = null;
         }
@@ -169,6 +170,9 @@ class Hook_fields_float
         $ret = post_param_string($tmp_name, $editing ? STRING_MAGIC_NULL : '');
 
         if (($ret != STRING_MAGIC_NULL) && ($ret != '')) {
+            if (!is_numeric($ret)) {
+                warn_exit(do_lang_tempcode('javascript:NOT_FLOAT', $ret));
+            }
             $ret = float_to_raw_string(float_unformat($ret), 30);
         }
 

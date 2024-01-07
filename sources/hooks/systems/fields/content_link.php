@@ -208,6 +208,18 @@ class Hook_fields_content_link
     {
         $id = $field['id'];
         $tmp_name = 'field_' . strval($id);
-        return post_param_string($tmp_name, $editing ? STRING_MAGIC_NULL : '');
+        $type = preg_replace('#^choose\_#', '', substr($field['cf_type'], 3));
+        $input = post_param_string($tmp_name, $editing ? STRING_MAGIC_NULL : '');
+        
+        // Make sure content exists
+        if (($input != '') && ($input != STRING_MAGIC_NULL)) {
+            require_code('content');
+            list(, , $info) = content_get_details($type, $input);
+            if ($info === null) {
+                warn_exit(do_lang_tempcode('MISSING_RESOURCE', $type));
+            }
+        }
+        
+        return $input;
     }
 }

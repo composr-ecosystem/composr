@@ -173,6 +173,8 @@ class Hook_fields_integer
             } elseif ($test < -2147483648) {
                 $ret = '-2147483648';
             }
+        } elseif (($ret != '') && ($ret != STRING_MAGIC_NULL)) {
+            warn_exit(do_lang_tempcode('javascript:NOT_INTEGER', $ret));
         }
         return $ret;
     }

@@ -190,8 +190,15 @@ class Hook_fields_reference_multi
         if (!array_key_exists($tmp_name, $_POST)) {
             return $editing ? STRING_MAGIC_NULL : '';
         }
+        
+        require_code('content');
+        
         foreach (explode(',', $_POST[$tmp_name]) as $_value) {
             if ($_value != '') {
+                list($title) = content_get_details('catalogue_entry', $_value);
+                if ($title === null) {
+                    continue;
+                }
                 if ($value != '') {
                     $value .= "\n";
                 }

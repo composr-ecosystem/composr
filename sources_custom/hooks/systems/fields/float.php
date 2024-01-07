@@ -227,6 +227,13 @@ class Hook_fields_float
         }
 
         $ret = post_param_string($tmp_name, $default);
+        
+        if (($ret != STRING_MAGIC_NULL) && ($ret != '')) {
+            if (!is_numeric($ret)) {
+                warn_exit(do_lang_tempcode('javascript:NOT_FLOAT', $ret));
+            }
+            $ret = float_to_raw_string(float_unformat($ret), 30);
+        }
 
         if (($ret != STRING_MAGIC_NULL) && ($ret != '')) {
             $ret = float_to_raw_string(float_unformat($ret, $_cf_name == 'cms_latitude' || $_cf_name == 'cms_longitude'), 30);

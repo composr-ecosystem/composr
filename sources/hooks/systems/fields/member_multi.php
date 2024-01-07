@@ -177,7 +177,7 @@ class Hook_fields_member_multi
             }
             if (($_value !== null) && ($_value != '')) {
                 $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($_value);
-                if ($value != '') {
+                if (($value != '') && is_null($member_id)) {
                     $value .= "\n";
                 }
                 $value .= is_null($member_id) ? '' : strval($member_id);
