@@ -1766,7 +1766,7 @@ function form_input_upload($pretty_name, $description, string $name, bool $requi
         'EXISTING_URL' => $existing_url,
         'IS_IMAGE' => $is_image,
         'PLUPLOAD' => $plupload,
-        'EDIT' => (($default !== null) && (!$required)),
+        'EDIT' => ($default !== null),
         'TABINDEX' => strval($tabindex),
         'REQUIRED' => $_required,
         'NAME' => $name,

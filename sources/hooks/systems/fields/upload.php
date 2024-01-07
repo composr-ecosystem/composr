@@ -147,7 +147,7 @@ class Hook_fields_upload
             $cf_description->attach(do_lang_tempcode('IF_UNCHANGED_CURRENT_FILE_REMAINS'));
         }
 
-        $ffield = form_input_upload($_cf_name, $cf_description, $input_name, $say_required, ($field['cf_required'] == 1) ? null/*so unlink option not shown*/ : $actual_value, null, true, $filetype_filter);
+        $ffield = form_input_upload($_cf_name, $cf_description, $input_name, $say_required, $actual_value, null, true, $filetype_filter);
 
         $hidden = new Tempcode();
         handle_max_file_size($hidden);
