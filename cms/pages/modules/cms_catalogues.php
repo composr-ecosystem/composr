@@ -894,6 +894,10 @@ class Module_cms_catalogues extends Standard_crud_module
             }
         }
         $map = $this->get_set_field_map($catalogue_name, $submitter, $id);
+        
+        $metadata = actual_metadata_get_fields('catalogue_entry', strval($id));
+        
+        actual_edit_catalogue_entry($id, $category_id, $validated, $notes, $allow_rating, $allow_comments, $allow_trackbacks, $map, post_param_string('meta_keywords', STRING_MAGIC_NULL), post_param_string('meta_description', STRING_MAGIC_NULL), $metadata['edit_time'], $metadata['add_time'], $metadata['views'], $metadata['submitter'], true);
 
         if (addon_installed('content_privacy')) {
             require_code('content_privacy2');
@@ -938,10 +942,6 @@ class Module_cms_catalogues extends Standard_crud_module
                 }
             }
         }
-
-        $metadata = actual_metadata_get_fields('catalogue_entry', strval($id));
-
-        actual_edit_catalogue_entry($id, $category_id, $validated, $notes, $allow_rating, $allow_comments, $allow_trackbacks, $map, post_param_string('meta_keywords', STRING_MAGIC_NULL), post_param_string('meta_description', STRING_MAGIC_NULL), $metadata['edit_time'], $metadata['add_time'], $metadata['views'], $metadata['submitter'], true);
 
         if (addon_installed('content_reviews')) {
             content_review_set('catalogue_entry', strval($id));
