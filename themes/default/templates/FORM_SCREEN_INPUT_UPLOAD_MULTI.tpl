@@ -12,7 +12,7 @@
 	{+START,LOOP,EDIT}
 		<p class="upload-field-msg inline-block">
 			{+START,IF,{$AND,{IS_IMAGE},{$IS_NON_EMPTY,{URL}}}}
-				<img class="upload-field-image-preview" src="{$ENSURE_PROTOCOL_SUITABILITY*,{IMAGE_URL}}" title="" alt="{$ENSURE_PROTOCOL_SUITABILITY*,{IMAGE_URL}}" />
+				<a rel="lightbox" href="{$ENSURE_PROTOCOL_SUITABILITY*,{IMAGE_URL}}"><img class="upload-field-image-preview" src="{$ENSURE_PROTOCOL_SUITABILITY*,{IMAGE_URL}}" title="" alt="{$ENSURE_PROTOCOL_SUITABILITY*,{IMAGE_URL}}" /></a>
 			{+END}
 			<input type="checkbox" id="i-{NAME_STUB*}-{$ADD*,{INDEX},1}-unlink" name="{NAME_STUB*}_{$ADD*,{INDEX},1}_unlink" value="1" />
 			<label for="i-{NAME_STUB*}-{$ADD*,{INDEX},1}-unlink">

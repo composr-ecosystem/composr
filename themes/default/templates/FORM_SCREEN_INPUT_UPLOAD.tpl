@@ -4,7 +4,7 @@
 {+START,IF,{EDIT}}
 	<p class="upload-field-msg inline-block">
 		{+START,IF,{$AND,{IS_IMAGE},{$IS_NON_EMPTY,{EXISTING_URL}}}}
-			<img class="upload-field-image-preview" src="{$ENSURE_PROTOCOL_SUITABILITY*,{EXISTING_URL}}" title="" alt="{!EXISTING}" />
+			<a rel="lightbox" href="{$ENSURE_PROTOCOL_SUITABILITY*,{EXISTING_URL}}"><img class="upload-field-image-preview" src="{$ENSURE_PROTOCOL_SUITABILITY*,{EXISTING_URL}}" title="" alt="{!EXISTING}" /></a>
 		{+END}
 		<input type="checkbox" id="i-{NAME*}-unlink" name="{NAME*}_unlink" value="1" />
 		<label for="i-{NAME*}-unlink">

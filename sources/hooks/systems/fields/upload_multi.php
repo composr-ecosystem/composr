@@ -146,7 +146,7 @@ class Hook_fields_upload_multi
     {
         $default = ($actual_value == '') ? null : explode("\n", $actual_value);
 
-        $say_required = ($field['cf_required'] == 1) && (($actual_value == '') || ($actual_value === null));
+        $say_required = ($field['cf_required'] == 1);
 
         $filetype_filter = option_value_from_field_array($field, 'filetype_filter', '');
 

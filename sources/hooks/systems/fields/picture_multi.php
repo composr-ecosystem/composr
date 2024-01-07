@@ -205,7 +205,7 @@ class Hook_fields_picture_multi
         
         require_code('images');
 
-        $say_required = ($field['cf_required'] == 1) && (($actual_value == '') || ($actual_value === null));
+        $say_required = ($field['cf_required'] == 1);
         $input_name = @cms_empty_safe($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
         require_code('images');
         $ffield = form_input_upload_multi($_cf_name, $_cf_description, $input_name, $say_required, null, $default, true, get_allowed_image_file_types(IMAGE_CRITERIA_WEBSAFE));
