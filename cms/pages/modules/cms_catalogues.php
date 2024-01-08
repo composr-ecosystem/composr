@@ -773,6 +773,11 @@ class Module_cms_catalogues extends Standard_crud_module
             } else {
                 $value = $object->inputted_to_field_value($editing_id !== null, $field, 'uploads/catalogues', ($editing_id === null) ? null : _get_catalogue_entry_field($field['id'], $editing_id, $storage_type));
             }
+            
+            // Required field validation (a standard for all field hooks)
+            if (($field['cf_required'] == 1) && (($value == '') || ($value === null) || (($value == STRING_MAGIC_NULL) && !fractional_edit()))) {
+                warn_exit(do_lang_tempcode('_REQUIRED_NOT_FILLED_IN', $field['cf_name']));
+            }
 
             $map[$field['id']] = $value;
         }

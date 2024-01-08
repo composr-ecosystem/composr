@@ -99,6 +99,10 @@ class Hook_fields_tax_code
      */
     public function render_field_value(array &$field, $ev, int $i, ?array $only_fields, ?string $table = null, ?int $id = null, ?string $id_field = null, ?string $field_id_field = null, ?string $url_field = null, ?int $submitter = null, $ev_pure = null)
     {
+        if (!addon_installed('ecommerce')) {
+            return '';
+        }
+        
         if (is_object($ev)) {
             $ev = $ev->evaluate();
         }
@@ -157,6 +161,10 @@ class Hook_fields_tax_code
      */
     public function get_field_inputter(string $_cf_name, string $_cf_description, array $field, ?string $actual_value, bool $new) : ?object
     {
+        if (!addon_installed('ecommerce')) {
+            return null;
+        }
+        
         require_code('ecommerce');
 
         if ($actual_value == '') {
@@ -185,6 +193,10 @@ class Hook_fields_tax_code
      */
     public function inputted_to_field_value(bool $editing, array $field, ?string $upload_dir = 'uploads/catalogues', ?array $old_value = null) : ?string
     {
+        if (!addon_installed('ecommerce')) {
+            return null;
+        }
+        
         require_code('ecommerce');
 
         $id = $field['id'];

@@ -137,6 +137,12 @@ PHP;
             foreach ($special_fields as $field_num => $field) {
                 $ob = get_fields_hook($field['cf_type']);
                 $inputted_value = $ob->inputted_to_field_value(false, $field, null);
+                
+                // Required field validation (a standard for all field hooks)
+                if (($field['cf_required'] == 1) && (($inputted_value == '') || ($inputted_value === null) || (($inputted_value == STRING_MAGIC_NULL) && !fractional_edit()))) {
+                    warn_exit(do_lang_tempcode('_REQUIRED_NOT_FILLED_IN', $field['cf_name']));
+                }
+                
                 if ($inputted_value !== null) {
                     $field_results[get_translated_text($field['cf_name'])] = $inputted_value;
                 }
