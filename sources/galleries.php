@@ -1025,7 +1025,7 @@ function gallery_breadcrumbs(string $gallery, ?string $root = 'root', bool $incl
                 if (get_page_name() == 'galleries') {
                     $map += propagate_filtercode();
                 }
-                $page_link = build_page_link($map, $zone, $hash);
+                $page_link = build_page_link($map, $zone, [], $hash);
                 $below[] = [$page_link, $label];
             }
             return array_merge($below, $segments);
