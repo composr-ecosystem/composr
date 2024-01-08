@@ -11860,6 +11860,10 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PLUPLOAD_CANCEL
         PLUPLOAD_REMOVE
         PLUPLOAD_QUEUED
+        _REQUIRED_NOT_FILLED_IN
+        BAD_GUID
+        NOT_VALID_COUNTRY
+        NOT_VALID_US_STATE
     ')));
 
     // Remove blank lines
