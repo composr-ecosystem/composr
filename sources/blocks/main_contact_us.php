@@ -37,6 +37,8 @@ class Block_main_contact_us
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'tickets';
         $info['parameters'] = ['param', 'title', 'email_optional', 'subject', 'subject_prefix', 'subject_suffix', 'body_prefix', 'body_suffix', 'redirect', 'guid', 'attachments'];
         return $info;
     }

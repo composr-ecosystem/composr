@@ -11,6 +11,9 @@
 				{!NAME}
 			</th>
 			<th>
+				{!ADDON}
+			</th>
+			<th>
 				{!AUTHOR}
 			</th>
 			<th>
@@ -39,6 +42,9 @@
 			<tr class="{$CYCLE,results_table_zebra,zebra-0,zebra-1}">
 				<td>
 					{NAME*}
+				</td>
+				<td>
+					{ADDON*}
 				</td>
 				<td>
 					{AUTHOR*}

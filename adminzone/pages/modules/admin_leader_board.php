@@ -51,6 +51,8 @@ class Module_admin_leader_board extends Standard_crud_module
         $info['hack_version'] = null;
         $info['version'] = 1;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'leader_board';
         return $info;
     }
 

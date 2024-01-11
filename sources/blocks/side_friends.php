@@ -38,6 +38,7 @@ class Block_side_friends
         $info['version'] = 2;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'chat';
         $info['parameters'] = ['max'];
         return $info;
     }

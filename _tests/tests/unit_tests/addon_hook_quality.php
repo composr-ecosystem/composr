@@ -29,6 +29,8 @@ class addon_hook_quality_test_set extends cms_test_case
         foreach ($addons as $addon_name => $ob) {
             $this->assertTrue(method_exists($ob, 'get_chmod_array'), 'Missing get_chmod_array for ' . $addon_name);
             $this->assertTrue(method_exists($ob, 'get_version'), 'Missing get_version for ' . $addon_name);
+            $this->assertTrue(method_exists($ob, 'get_min_cms_version'), 'Missing get_min_cms_version for ' . $addon_name);
+            $this->assertTrue(method_exists($ob, 'get_max_cms_version'), 'Missing get_max_cms_version for ' . $addon_name);
             $this->assertTrue(method_exists($ob, 'get_description'), 'Missing get_description for ' . $addon_name);
             $this->assertTrue(method_exists($ob, 'get_applicable_tutorials'), 'Missing get_applicable_tutorials for ' . $addon_name);
             $this->assertTrue(method_exists($ob, 'get_dependencies'), 'Missing get_dependencies for ' . $addon_name);

@@ -33,6 +33,7 @@ class Block_main_tutorials_carousel
         $info['version'] = 1;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'composr_tutorials';
         $info['parameters'] = ['param'];
         return $info;
     }

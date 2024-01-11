@@ -37,6 +37,8 @@ class Block_main_staff_stats_graph
         $info['hack_version'] = null;
         $info['version'] = 1;
         $info['locked'] = true;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'stats';
         $info['parameters'] = ['param', 'pivot'];
         return $info;
     }

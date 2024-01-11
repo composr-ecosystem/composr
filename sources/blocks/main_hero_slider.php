@@ -37,6 +37,8 @@ class Block_main_hero_slider
         $info['hack_version'] = null;
         $info['version'] = 1;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'galleries';
         $info['parameters'] = [
             'gallery_name',
             'effect',

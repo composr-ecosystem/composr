@@ -630,7 +630,7 @@ function inform_about_addon_install(string $file, array $also_uninstalling = [],
     require_code('version');
     
     // Website software version incompatibilities
-    if (($info['min_cms_version'] == '') || (floatval($info['min_cms_version']) > cms_version_number()) || (($info['max_cms_version'] != '') && (floatval($info['max_cms_version']) < cms_version_number()))) {
+    if (($info['min_cms_version'] == '') || (floatval($info['min_cms_version']) > cms_version_number()) || ((!empty($info['max_cms_version']) && (floatval($info['max_cms_version']) < cms_version_number())))) {
         if (!$always_return) {
             warn_exit(do_lang_tempcode('ADDON_WARNING_INCOMPATIBILITIES_VERSION', escape_html(cms_version_number()), escape_html($addon_name)));
         }
@@ -866,7 +866,7 @@ function install_addon(string $file, ?array $files = null, bool $do_files = true
     
     // Stop! Don't install an addon if it is not compatible with this version of the website software
     require_code('version');
-    if (($info['min_cms_version'] == '') || (floatval($info['min_cms_version']) > cms_version_number()) || (($info['max_cms_version'] != '') && (floatval($info['max_cms_version']) < cms_version_number()))) {
+    if (($info['min_cms_version'] == '') || (floatval($info['min_cms_version']) > cms_version_number()) || ((!empty($info['max_cms_version']) && (floatval($info['max_cms_version']) < cms_version_number())))) {
         warn_exit(do_lang_tempcode('ADDON_WARNING_INCOMPATIBILITIES_VERSION', escape_html(cms_version_number()), escape_html($addon_name)));
     }
 

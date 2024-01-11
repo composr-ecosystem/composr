@@ -38,6 +38,7 @@ class Block_main_staff_links
         $info['version'] = 3;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'core_adminzone_dashboard';
         $info['update_require_upgrade'] = true;
         $info['parameters'] = [];
         return $info;

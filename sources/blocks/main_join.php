@@ -41,6 +41,8 @@ class Block_main_join
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'core_cns';
 
         $info['parameters'] = ['subject', 'path', 'to', 'captcha', 'dobs', 'member_email_receipt_configurability', 'staff_email_receipt_configurability', 'enable_timezones', 'enable_language_selection', 'guid'];
         // ^ You can also pass in field_<id> to make a CPF onto the join form or not.

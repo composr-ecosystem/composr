@@ -33,6 +33,8 @@ class Block_main_activity_feed_state
         $info['version'] = 1;
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'activity_feed';
         $info['parameters'] = ['param'];
         return $info;
     }

@@ -32,6 +32,8 @@ class Block_main_hybridauth_admin_atoms
         $info['hack_version'] = null;
         $info['version'] = 1;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'hybridauth';
         $info['parameters'] = ['param', 'max', 'category_filter', 'require_images', 'require_videos', 'require_audios', 'require_binaries', 'include_contributed_content', 'include_private', 'shuffle'];
         return $info;
     }

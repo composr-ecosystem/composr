@@ -38,6 +38,7 @@ class Block_side_stats
         $info['version'] = 3;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'stats_block';
         $info['parameters'] = [];
         return $info;
     }

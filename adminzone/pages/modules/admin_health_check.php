@@ -37,6 +37,8 @@ class Module_admin_health_check
         $info['hack_version'] = null;
         $info['version'] = 1;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'health_check';
         return $info;
     }
 

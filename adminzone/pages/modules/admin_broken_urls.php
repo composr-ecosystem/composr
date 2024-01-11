@@ -37,6 +37,8 @@ class Module_admin_broken_urls
         $info['hack_version'] = null;
         $info['version'] = 1;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'core_cleanup_tools';
         return $info;
     }
 

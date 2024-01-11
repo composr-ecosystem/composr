@@ -37,6 +37,8 @@ class Block_main_privacy_policy_auto
         $info['hack_version'] = null;
         $info['version'] = 1;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'core_privacy';
         $info['parameters'] = [];
         return $info;
     }

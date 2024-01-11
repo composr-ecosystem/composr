@@ -38,6 +38,7 @@ class Block_main_staff_checklist
         $info['version'] = 4;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'core_adminzone_dashboard';
         $info['update_require_upgrade'] = true;
         $info['parameters'] = [];
 

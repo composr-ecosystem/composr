@@ -37,6 +37,8 @@ class Block_main_image_fader
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'galleries';
         $info['parameters'] = ['param', 'time', 'zone', 'order', 'as_guest', 'check'];
         return $info;
     }

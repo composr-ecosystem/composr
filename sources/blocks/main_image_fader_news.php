@@ -38,6 +38,7 @@ class Block_main_image_fader_news
         $info['version'] = 2;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'news';
         $info['parameters'] = ['title', 'max', 'time', 'param', 'zone', 'blogs', 'as_guest', 'check'];
         return $info;
     }

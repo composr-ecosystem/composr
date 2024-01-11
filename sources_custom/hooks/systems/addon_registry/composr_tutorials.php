@@ -1214,6 +1214,9 @@ The documentation is primarily maintained on our website, and this archive is on
             'data_custom/images/docs/tut_install_windows_server/webpi.png',
             'data_custom/images/docs/tut_install_windows_server/remote_desktop.png',
             'data_custom/images/docs/codebook_standards_obscure/1.png',
+            'data_custom/images/docs/tut_feedback/catalogue_block_4.png',
+            'data_custom/images/docs/tut_feedback/catalogue_block_5.png',
+            'data_custom/images/docs/tut_feedback/catalogue_block_6.png',
 
             'data_custom/images/docs/codebook/index.html',
             'data_custom/images/docs/codebook_1/index.html',

@@ -32,6 +32,8 @@ class Block_main_google_results
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'google_search';
         $info['parameters'] = [];
         return $info;
     }

@@ -37,6 +37,8 @@ class Block_main_screen_actions
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'recommend';
         $info['parameters'] = ['title', 'url'];
         return $info;
     }

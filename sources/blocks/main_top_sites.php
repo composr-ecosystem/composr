@@ -37,6 +37,8 @@ class Block_main_top_sites
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'banners';
         $info['parameters'] = ['param'];
         return $info;
     }

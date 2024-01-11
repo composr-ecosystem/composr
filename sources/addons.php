@@ -262,8 +262,8 @@ function read_addon_info(string $addon_name, bool $get_dependencies_on_this = fa
         'licence' => $row['addon_licence'],
         'description' => $row['addon_description'],
         'install_time' => $row['addon_install_time'],
-        'min_cms_version' => $row['min_cms_version'],
-        'max_cms_version' => $row['max_cms_version'],
+        'min_cms_version' => $row['addon_min_cms_version'],
+        'max_cms_version' => $row['addon_max_cms_version'],
         'default_icon' => null,
     ];
 

@@ -1608,6 +1608,12 @@ class Module_admin_addons
                 $info['locked'] = false;
             }
 
+            if (isset($info['addon'])) {
+                $addon = $info['addon'];
+            } else {
+                $addon = do_lang_tempcode('NA_EM');
+            }
+            
             $author = $info['author'];
             $organisation = $info['organisation'];
             $version = $info['version'];
@@ -1699,7 +1705,7 @@ class Module_admin_addons
             if ($hack_version === null) {
                 $hack_version = do_lang_tempcode('NA_EM');
             }
-            $tpl_modules[] = ['STATUS' => $status, 'NAME' => $module, 'AUTHOR' => $author, 'ORGANISATION' => $organisation, 'VERSION' => strval($version), 'HACKED_BY' => $hacked_by, 'HACK_VERSION' => $hack_version, 'ACTIONS' => $actions];
+            $tpl_modules[] = ['STATUS' => $status, 'NAME' => $module, 'ADDON' => $addon, 'AUTHOR' => $author, 'ORGANISATION' => $organisation, 'VERSION' => strval($version), 'HACKED_BY' => $hacked_by, 'HACK_VERSION' => $hack_version, 'ACTIONS' => $actions];
         }
 
         return do_template('MODULE_SCREEN', ['_GUID' => '132b23107b49a23e0b11db862de1dd56', 'TITLE' => $this->title, 'MODULES' => $tpl_modules]);

@@ -33,6 +33,7 @@ class Block_side_shoutbox
         $info['version'] = 3;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'shoutr';
         $info['parameters'] = ['param', 'max'];
         return $info;
     }

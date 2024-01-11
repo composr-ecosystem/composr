@@ -1922,7 +1922,11 @@ function _check_block_installation_status(object $object, string $codename) : ?o
             $installed_hack_version = $rows[$codename]['block_hack_version'];
             $this_version = $info['version'];
             $this_hack_version = $info['hack_version'];
-            $addon = $info['addon'];
+            if (isset($info['addon'])) {
+                $addon = $info['addon'];
+            } else {
+                $addon = do_lang('NA');
+            }
             $min_cms_version = !empty($info['min_cms_version']) ? $info['min_cms_version'] : null;
             $max_cms_version = !empty($info['max_cms_version']) ? $info['max_cms_version'] : null;
 
