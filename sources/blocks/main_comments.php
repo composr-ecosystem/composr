@@ -37,6 +37,8 @@ class Block_main_comments
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'core_feedback_features';
         $info['parameters'] = ['param', 'page', 'reverse', 'forum', 'invisible_if_no_comments', 'reviews', 'max', 'title', 'explicit_allow'];
         return $info;
     }

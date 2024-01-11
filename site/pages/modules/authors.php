@@ -38,6 +38,8 @@ class Module_authors
         $info['version'] = 5;
         $info['update_require_upgrade'] = true;
         $info['locked'] = true;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'authors';
         return $info;
     }
 

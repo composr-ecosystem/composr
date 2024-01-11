@@ -37,6 +37,8 @@ class Module_admin_zones
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'core_zone_editor';
         return $info;
     }
 

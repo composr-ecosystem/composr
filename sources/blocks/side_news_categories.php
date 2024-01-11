@@ -37,6 +37,8 @@ class Block_side_news_categories
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'news';
         $info['parameters'] = ['select', 'check'];
         return $info;
     }

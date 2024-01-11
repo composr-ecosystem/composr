@@ -41,6 +41,8 @@ class Block_main_personal_galleries_list
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'galleries';
         $info['parameters'] = ['member_id', 'max', 'start', 'check'];
         return $info;
     }

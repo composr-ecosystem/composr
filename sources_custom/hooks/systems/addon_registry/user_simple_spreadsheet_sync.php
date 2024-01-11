@@ -30,7 +30,7 @@ class Hook_addon_registry_user_simple_spreadsheet_sync
     }
 
     /**
-     * Get the version of Composr this addon is for.
+     * Get the version of Composr this addon is for (used in generating the TAR filename).
      *
      * @return float Version number
      */
@@ -38,7 +38,27 @@ class Hook_addon_registry_user_simple_spreadsheet_sync
     {
         return cms_version_number();
     }
-
+    
+    /**
+     * Get the minimum required version of the website software needed to use this addon.
+     *
+     * @return float Minimum required website software version
+     */
+    public function get_min_cms_version() : float
+    {
+        return 11.0;
+    }
+    
+    /**
+     * Get the maximum compatible version of the website software to use this addon.
+     *
+     * @return ?float Maximum compatible website software version (null: no maximum version currently)
+     */
+    public function get_max_cms_version() : ?float
+    {
+        return null;
+    }
+    
     /**
      * Get the addon category.
      *

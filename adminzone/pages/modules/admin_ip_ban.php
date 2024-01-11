@@ -38,6 +38,8 @@ class Module_admin_ip_ban
         $info['version'] = 5;
         $info['locked'] = true;
         $info['update_require_upgrade'] = true;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'securitylogging';
         return $info;
     }
 

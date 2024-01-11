@@ -37,6 +37,8 @@ class Block_main_custom_comcode_tags
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'custom_comcode';
         $info['parameters'] = [];
         return $info;
     }

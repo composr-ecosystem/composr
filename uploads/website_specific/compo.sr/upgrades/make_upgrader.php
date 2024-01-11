@@ -186,6 +186,8 @@ function make_upgrade_get_path($from_version_dotted, $to_version_dotted, $addons
                 implode("\n", $addon_info['copyright_attribution']),
                 $addon_info['licence'],
                 $addon_info['description'],
+                $addon_info['min_cms_version'],
+                $addon_info['max_cms_version'],
                 $_wip_path . '/exports/addons',
                 [],
                 $new_base_path

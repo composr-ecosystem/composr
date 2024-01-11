@@ -37,6 +37,8 @@ class Module_admin_sitemap
         $info['hack_version'] = null;
         $info['version'] = 4;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'page_management';
         return $info;
     }
 

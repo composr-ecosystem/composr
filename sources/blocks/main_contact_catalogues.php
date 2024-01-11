@@ -37,6 +37,8 @@ class Block_main_contact_catalogues
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'catalogues';
         $info['parameters'] = ['to', 'param', 'subject', 'body_prefix', 'body_suffix', 'subject_prefix', 'subject_suffix', 'redirect', 'guid'];
         return $info;
     }

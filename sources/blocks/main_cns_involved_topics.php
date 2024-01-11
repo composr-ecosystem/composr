@@ -41,6 +41,8 @@ class Block_main_cns_involved_topics
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'cns_forum';
         $info['parameters'] = ['member_id', 'max', 'start', 'private_topics', 'check'];
         return $info;
     }

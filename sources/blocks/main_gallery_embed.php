@@ -37,6 +37,8 @@ class Block_main_gallery_embed
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'galleries';
         $info['parameters'] = ['param', 'filter', 'video_filter', 'select', 'video_select', 'zone', 'title', 'sort', 'days', 'render_if_empty', 'max', 'start', 'pagination', 'root', 'as_guest', 'check', 'show_sorting'];
         return $info;
     }

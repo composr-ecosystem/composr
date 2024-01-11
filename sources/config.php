@@ -228,6 +228,12 @@ function get_theme_option(string $name, ?string $default = null, ?string $theme 
                 require_code('version2');
                 $default = get_version_dotted();
                 break;
+            case 'min_cms_version':
+                $default = '';
+                break;
+            case 'max_cms_version':
+                $default = '';
+                break;
             case 'author':
                 $default = do_lang('UNKNOWN');
                 break;

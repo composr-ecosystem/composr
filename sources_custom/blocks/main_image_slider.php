@@ -32,6 +32,8 @@ class Block_main_image_slider
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'image_slider';
         $info['parameters'] = ['param', 'time', 'zone', 'order', 'as_guest', 'transitions', 'width', 'height', 'check'];
         return $info;
     }

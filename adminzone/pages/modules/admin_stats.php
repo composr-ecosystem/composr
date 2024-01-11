@@ -50,6 +50,8 @@ class Module_admin_stats extends Standard_crud_module
         $info['version'] = 10;
         $info['locked'] = true;
         $info['update_require_upgrade'] = true;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'stats';
         return $info;
     }
 

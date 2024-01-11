@@ -35,6 +35,8 @@ class Module_points
         $info['version'] = 9;
         $info['locked'] = true;
         $info['update_require_upgrade'] = true;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'points';
         return $info;
     }
 

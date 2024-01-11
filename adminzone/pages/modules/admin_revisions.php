@@ -42,6 +42,8 @@ class Module_admin_revisions
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'actionlog';
         return $info;
     }
 

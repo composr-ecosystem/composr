@@ -38,6 +38,8 @@ class Module_login
         $info['version'] = 3;
         $info['update_require_upgrade'] = true;
         $info['locked'] = true;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'core';
         return $info;
     }
 

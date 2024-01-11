@@ -54,6 +54,8 @@ class Module_topics
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'cns_forum';
         return $info;
     }
 

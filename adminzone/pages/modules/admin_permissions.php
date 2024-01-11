@@ -38,6 +38,8 @@ class Module_admin_permissions
         $info['version'] = 10;
         $info['update_require_upgrade'] = true;
         $info['locked'] = true;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'core_permission_management';
         return $info;
     }
 

@@ -1866,6 +1866,9 @@ function _check_module_installation_status(object $object, string $codename)
             $installed_hack_version = $rows[$codename]['module_hack_version'];
             $this_version = $info['version'];
             $this_hack_version = $info['hack_version'];
+            $addon = isset($info['addon']) ? $info['addon'] : do_lang('NA');
+            $min_cms_version = !empty($info['min_cms_version']) ? $info['min_cms_version'] : null;
+            $max_cms_version = !empty($info['max_cms_version']) ? $info['max_cms_version'] : null;
 
             // See if we need to do an upgrade
             if (
@@ -1873,6 +1876,20 @@ function _check_module_installation_status(object $object, string $codename)
                 (($installed_hack_version < $this_hack_version) && (array_key_exists('hack_require_upgrade', $info)))
             ) {
                 warn_exit(do_lang_tempcode('OUTDATED_ADDON_REMEDIES', escape_html($codename), escape_html(find_script('upgrader'))));
+            }
+            
+            // See if the module is not compatible with this version of the software
+            require_code('version');
+            if (($min_cms_version === null) || ($min_cms_version > cms_version_number()) || (($max_cms_version !== null) && ($max_cms_version < cms_version_number()))) {
+                warn_exit(do_lang_tempcode(
+                    'INCOMPATIBLE_ADDON_REMEDIES', 
+                    escape_html($codename), 
+                    escape_html(float_to_raw_string(cms_version_number())),
+                    [
+                        escape_html($addon),
+                        escape_html(build_url(['page' => 'admin_addons'], get_module_zone('admin_addons')))
+                    ]
+                    ));
             }
         } else {
             $_error_msg = do_lang('MISSING_MODULE', escape_html($codename));
@@ -1905,6 +1922,9 @@ function _check_block_installation_status(object $object, string $codename) : ?o
             $installed_hack_version = $rows[$codename]['block_hack_version'];
             $this_version = $info['version'];
             $this_hack_version = $info['hack_version'];
+            $addon = $info['addon'];
+            $min_cms_version = !empty($info['min_cms_version']) ? $info['min_cms_version'] : null;
+            $max_cms_version = !empty($info['max_cms_version']) ? $info['max_cms_version'] : null;
 
             // See if we need to do an upgrade
             if (
@@ -1913,6 +1933,21 @@ function _check_block_installation_status(object $object, string $codename) : ?o
             ) {
                 $error_msg = do_lang_tempcode('OUTDATED_ADDON_REMEDIES', escape_html($codename), escape_html(find_script('upgrader')));
                 return do_template('RED_ALERT', ['_GUID' => '7jsfqaeaaf07kawlhnvteul10wm34bcu', 'TEXT' => $error_msg]);
+            }
+            
+            // See if the module is not compatible with this version of the software
+            require_code('version');
+            if (($min_cms_version === null) || ($min_cms_version > cms_version_number()) || (($max_cms_version !== null) && ($max_cms_version < cms_version_number()))) {
+                $error_msg = do_lang_tempcode(
+                    'INCOMPATIBLE_ADDON_REMEDIES',
+                    escape_html($codename),
+                    escape_html(float_to_raw_string(cms_version_number())),
+                    [
+                        escape_html($addon),
+                        escape_html(build_url(['page' => 'admin_addons'], get_module_zone('admin_addons')))
+                    ]
+                    );
+                return do_template('RED_ALERT', ['_GUID' => 'lcdsdlkcnwsdoweirhf34u4f3iugfh', 'TEXT' => $error_msg]);
             }
         } else {
             $_error_msg = do_lang('MISSING_BLOCK', escape_html($codename));

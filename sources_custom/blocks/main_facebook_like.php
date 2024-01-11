@@ -32,6 +32,8 @@ class Block_main_facebook_like
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'facebook_support';
         $info['parameters'] = [];
         return $info;
     }

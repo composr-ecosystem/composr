@@ -37,8 +37,9 @@ class Block_main_staff_links
         $info['hack_version'] = null;
         $info['version'] = 3;
         $info['locked'] = false;
-        $info['parameters'] = [];
+        $info['min_cms_version'] = 11.0;
         $info['update_require_upgrade'] = true;
+        $info['parameters'] = [];
         return $info;
     }
 

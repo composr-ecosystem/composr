@@ -33,6 +33,8 @@ class Block_side_weather
         $info['version'] = 7;
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'weather';
         $info['parameters'] = ['param', 'units', 'max_days', 'api'];
         return $info;
     }

@@ -37,6 +37,8 @@ class Block_top_login
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'core';
         $info['parameters'] = [];
         return $info;
     }

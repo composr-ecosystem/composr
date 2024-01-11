@@ -38,6 +38,7 @@ class Module_galleries
         $info['version'] = 11;
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
         return $info;
     }
 

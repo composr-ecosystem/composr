@@ -37,6 +37,8 @@ class Block_side_printer_friendly
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'printer_friendly_block';
         $info['parameters'] = [];
         return $info;
     }

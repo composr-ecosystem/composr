@@ -37,6 +37,8 @@ class Block_bottom_forum_news
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'forum_blocks';
         $info['parameters'] = ['date_key', 'param', 'forum', 'check'];
         return $info;
     }

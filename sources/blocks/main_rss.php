@@ -37,6 +37,8 @@ class Block_main_rss
         $info['hack_version'] = null;
         $info['version'] = 3;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'syndication_blocks';
         $info['parameters'] = ['param', 'max_entries', 'title', 'copyright'];
         return $info;
     }

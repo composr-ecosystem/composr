@@ -390,6 +390,9 @@ function info()
 	// Setting 'update_require_upgrade' makes Composr realise it can do an upgrade
 	//  At run-time it will compare the version in the database, to the version above and prompt to upgrade if required
 	$info['update_require_upgrade'] = true;
+	// Setting min_cms_version is required and should be a float of the minimum major.minor version of the software required to install or upgrade to this version of the module
+	$info['min_cms_version'] = 11.0;
+	$info['addon'] = '';
 	...
 	return $info;
 }
@@ -572,7 +575,7 @@ class Module_example
         // Bare essentials of this function only here because I'm keeping this
         // example as short as possible. We would normally expect this function
         // to be properly defined.
-        return array('author' => 'Bob', 'organisation' => 'Bob Corp', 'version' => 1,'hack_version' => 1,'hacked_by' => 'Bob');
+        return array('author' => 'Bob', 'organisation' => 'Bob Corp', 'version' => 1,'hack_version' => 1,'hacked_by' => 'Bob','min_cms_version' => 11.0,'addon' => 'bob_corp_addon');
     }
 
     // This is the function called when the module is loaded up to produce

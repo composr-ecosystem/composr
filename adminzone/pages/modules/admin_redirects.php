@@ -43,6 +43,8 @@ class Module_admin_redirects
         $info['version'] = 4;
         $info['locked'] = true;
         $info['update_require_upgrade'] = true;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'redirects_editor';
         return $info;
     }
 

@@ -30,6 +30,8 @@ class Block_twitter_feed
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'twitter_support';
         $info['parameters'] = ['screen_name', 'title', 'max_statuses', 'style', 'show_profile_image', 'follow_button_size', 'twitter_logo_color', 'twitter_logo_size'];
         return $info;
     }

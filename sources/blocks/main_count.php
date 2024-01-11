@@ -37,6 +37,8 @@ class Block_main_count
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'counting_blocks';
         $info['parameters'] = ['param', 'start', 'hit_count'];
         return $info;
     }

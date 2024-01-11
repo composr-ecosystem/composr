@@ -41,6 +41,8 @@ class Block_main_friends_list
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'chat';
         $info['parameters'] = ['member_id', 'max', 'start', 'mutual'];
         return $info;
     }

@@ -37,6 +37,8 @@ class Module_admin_config
         $info['hack_version'] = null;
         $info['version'] = 15;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'core_configuration';
         return $info;
     }
 

@@ -49,6 +49,8 @@ class Module_admin_wordfilter extends Standard_crud_module
         $info['version'] = 5;
         $info['locked'] = true;
         $info['update_require_upgrade'] = true;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'wordfilter';
         return $info;
     }
 

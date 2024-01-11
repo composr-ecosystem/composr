@@ -37,6 +37,8 @@ class Block_menu
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'core_menus';
         $info['parameters'] = ['title', 'type', 'param', 'tray_status', 'silent_failure', 'javascript_highlighting'];
         return $info;
     }

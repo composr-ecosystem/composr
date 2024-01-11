@@ -37,6 +37,8 @@ class Block_top_notifications
         $info['hack_version'] = null;
         $info['version'] = 1;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'core_notifications';
         $info['parameters'] = ['max'];
         return $info;
     }

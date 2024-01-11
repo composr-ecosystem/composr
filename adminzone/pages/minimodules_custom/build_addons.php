@@ -139,6 +139,8 @@ foreach ($addons as $name => $place) {
         implode("\n", $addon_info['copyright_attribution']),
         $addon_info['licence'],
         $addon_info['description'],
+        $addon_info['min_cms_version'],
+        $addon_info['max_cms_version'],
         'exports/addons',
         $mtimes
     );
@@ -186,6 +188,8 @@ if (get_param_integer('export_themes', 0) == 1) {
         $copyright_attribution = get_theme_option('copyright_attribution', '', $theme);
         $licence = get_theme_option('licence', '(Unstated)', $theme);
         $description = get_theme_option('description', '', $theme);
+        $min_cms_version = get_theme_option('min_cms_version', '', $theme);
+        $max_cms_version = get_theme_option('max_cms_version', '', $theme);
         $dependencies = get_theme_option('dependencies', '', $theme);
         $incompatibilities = get_theme_option('incompatibilities', '', $theme);
 
@@ -222,6 +226,8 @@ if (get_param_integer('export_themes', 0) == 1) {
             $copyright_attribution,
             $licence,
             $description,
+            $min_cms_version,
+            $max_cms_version,
             'exports/addons'
         );
 

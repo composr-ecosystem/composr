@@ -26,6 +26,8 @@ class Block_side_book_date_range
         $info['hack_version'] = null;
         $info['version'] = 1;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'booking';
         $info['parameters'] = [];
         return $info;
     }

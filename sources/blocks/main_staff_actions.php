@@ -37,6 +37,8 @@ class Block_main_staff_actions
         $info['hack_version'] = null;
         $info['version'] = 3;
         $info['locked'] = true;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'core_adminzone_dashboard';
         $info['parameters'] = ['max', 'filter_by_member', 'include_duplicates', 'include_user_activities', 'sort'];
         return $info;
     }

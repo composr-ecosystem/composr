@@ -37,6 +37,7 @@ class Block_main_include_module
         $info['hack_version'] = null;
         $info['version'] = 1;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
         $info['parameters'] = ['param', 'strip_title', 'only_if_permissions', 'leave_page_and_zone', 'merge_parameters', 'use_http_status', 'use_metadata', 'use_attached_messages', 'use_breadcrumbs', 'use_refreshes', 'use_helper_panel'];
         return $info;
     }

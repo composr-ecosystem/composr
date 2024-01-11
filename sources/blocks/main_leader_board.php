@@ -37,6 +37,8 @@ class Block_main_leader_board
         $info['hack_version'] = null;
         $info['version'] = 4;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'leader_board';
         $info['parameters'] = ['zone', 'param', 'timestamp'];
         $info['update_require_upgrade'] = true;
         return $info;

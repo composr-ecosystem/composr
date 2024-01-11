@@ -38,6 +38,8 @@ class Module_banners
         $info['version'] = 8;
         $info['locked'] = true;
         $info['update_require_upgrade'] = true;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'banners';
         return $info;
     }
 

@@ -43,6 +43,8 @@ class Module_admin_community_billboard extends Standard_crud_module
         $info['update_require_upgrade'] = true;
         $info['version'] = 4;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'community_billboard';
         return $info;
     }
 

@@ -33,6 +33,8 @@ class Module_admin_cmsusers
         $info['version'] = 3;
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'composr_homesite';
         return $info;
     }
 

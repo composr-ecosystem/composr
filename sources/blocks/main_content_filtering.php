@@ -37,6 +37,7 @@ class Block_main_content_filtering
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
         $info['parameters'] = ['param', 'content_type', 'labels', 'types', 'links',];
         return $info;
     }

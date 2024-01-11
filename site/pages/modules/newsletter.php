@@ -38,6 +38,8 @@ class Module_newsletter
         $info['version'] = 13;
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'newsletter';
         return $info;
     }
 

@@ -37,6 +37,7 @@ class Block_side_stats
         $info['hack_version'] = null;
         $info['version'] = 3;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
         $info['parameters'] = [];
         return $info;
     }

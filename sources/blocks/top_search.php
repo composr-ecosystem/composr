@@ -37,6 +37,8 @@ class Block_top_search
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'search';
         $info['parameters'] = ['title', 'input_fields', 'limit_to', 'search_under', 'zone', 'sort', 'author', 'days', 'direction', 'only_titles', 'only_search_meta', 'extra'];
         return $info;
     }

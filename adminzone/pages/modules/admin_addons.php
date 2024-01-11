@@ -38,6 +38,8 @@ class Module_admin_addons
         $info['version'] = 5;
         $info['locked'] = true;
         $info['update_require_upgrade'] = true;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'core_addon_management';
         return $info;
     }
 
@@ -96,6 +98,8 @@ class Module_admin_addons
                 'addon_copyright_attribution' => 'SHORT_TEXT',
                 'addon_licence' => 'SHORT_TEXT',
                 'addon_description' => 'LONG_TEXT',
+                'addon_min_cms_version' => 'SHORT_TEXT',
+                'addon_max_cms_version' => 'SHORT_TEXT',
                 'addon_install_time' => 'TIME',
             ], false, false, true);
 
@@ -121,6 +125,18 @@ class Module_admin_addons
 
         if (($upgrade_from !== null) && ($upgrade_from < 5)) { // LEGACY
             $GLOBALS['SITE_DB']->alter_table_field('addons_files', 'filename', 'SHORT_TEXT', 'filepath');
+            $GLOBALS['SITE_DB']->add_table_field('addons', 'addon_min_cms_version', 'SHORT_TEXT');
+            $GLOBALS['SITE_DB']->add_table_field('addons', 'addon_max_cms_version', 'SHORT_TEXT');
+            
+            // Populate min_cms_version and max_cms_version (presumably from addon hooks) into the database
+            require_code('addons2');
+            $addons = find_installed_addons();
+            foreach ($addons as $addon_name => $details) {
+                $GLOBALS['SITE_DB']->query_update('addons', [
+                    'addon_min_cms_version' => $details['min_cms_version'],
+                    'addon_max_cms_version' => $details['max_cms_version'],
+                ], ['addon_name' => $addon_name]);
+            }
         }
     }
 
@@ -445,6 +461,8 @@ class Module_admin_addons
                     'COPYRIGHT_ATTRIBUTION' => implode("\n", $row['copyright_attribution']),
                     'LICENCE' => $row['licence'],
                     'VERSION' => $row['version'],
+                    'MIN_CMS_VERSION' => $row['min_cms_version'],
+                    'MAX_CMS_VERSION' => $row['max_cms_version'],
                     'ACTIONS' => $actions,
                     'TYPE' => 'uninstall',
                     'PASSTHROUGH' => $addon_name,
@@ -526,6 +544,8 @@ class Module_admin_addons
                         'COPYRIGHT_ATTRIBUTION' => implode("\n", $addon_info['copyright_attribution']),
                         'LICENCE' => $addon_info['licence'],
                         'VERSION' => $addon_info['version'],
+                        'MIN_CMS_VERSION' => $addon_info['min_cms_version'],
+                        'MAX_CMS_VERSION' => $addon_info['max_cms_version'],
                         'ACTIONS' => $actions,
                         'TYPE' => 'install',
                         'PASSTHROUGH' => $filename,
@@ -790,6 +810,8 @@ class Module_admin_addons
                 implode("\n", $addon_info['copyright_attribution']),
                 $addon_info['licence'],
                 $addon_info['description'],
+                $addon_info['min_cms_version'],
+                $addon_info['max_cms_version'],
                 'imports/addons'
             );
 
@@ -1009,6 +1031,8 @@ class Module_admin_addons
             implode(',', $addon_info['copyright_attribution']),
             $addon_info['licence'],
             $addon_info['description'],
+            $addon_info['min_cms_version'],
+            $addon_info['max_cms_version'],
             'imports/addons'
         );
 
@@ -1168,6 +1192,8 @@ class Module_admin_addons
 
         // Default metadata
         if ($theme === null) {
+            require_code('version');
+            
             $addon_name = '';
             $author = '';
             $organisation = '';
@@ -1175,6 +1201,8 @@ class Module_admin_addons
             $copyright_attribution = '';
             $licence = '';
             $description = '';
+            $min_cms_version = strval(cms_version_number());
+            $max_cms_version = '';
             $dependencies = '';
             $incompatibilities = '';
         } else {
@@ -1188,6 +1216,8 @@ class Module_admin_addons
             $copyright_attribution = get_theme_option('copyright_attribution', '', $theme);
             $licence = get_theme_option('licence', '(Unstated)', $theme);
             $description = get_theme_option('description', '', $theme);
+            $min_cms_version = get_theme_option('min_cms_version', '', $theme);
+            $max_cms_version = get_theme_option('max_cms_version', '', $theme);
             $dependencies = get_theme_option('dependencies', '', $theme);
             $incompatibilities = get_theme_option('incompatibilities', '', $theme);
 
@@ -1286,6 +1316,8 @@ class Module_admin_addons
                     $copyright_attribution = $existing_addon_info['copyright_attribution'];
                     $licence = $existing_addon_info['licence'];
                     $description = $existing_addon_info['description'];
+                    $min_cms_version = $existing_addon_info['min_cms_version'];
+                    $max_cms_version = $existing_addon_info['max_cms_version'];
                     $dependencies = empty($existing_addon_info['dependencies']['requires']) ? '' : implode(',', $existing_addon_info['dependencies']['requires']);
                     $incompatibilities = empty($existing_addon_info['dependencies']['conflicts_with']) ? '' : implode(',', $existing_addon_info['dependencies']['conflicts_with']);
                 }
@@ -1339,6 +1371,13 @@ class Module_admin_addons
         $fields .= $field->evaluate();
         $field = form_input_text(do_lang_tempcode('DESCRIPTION'), do_lang_tempcode('DESCRIPTION_DESCRIPTION'), 'description', $description, true);
         $fields .= $field->evaluate();
+        
+        require_code('version');
+        $field = form_input_float(do_lang_tempcode('MIN_CMS_VERSION'), do_lang_tempcode('DESCRIPTION_MIN_CMS_VERSION'), 'min_cms_version', floatval($min_cms_version), true);
+        $fields .= $field->evaluate();
+        $field = form_input_float(do_lang_tempcode('MAX_CMS_VERSION'), do_lang_tempcode('DESCRIPTION_MAX_CMS_VERSION'), 'max_cms_version', ($max_cms_version != '') ? floatval($max_cms_version) : null, false);
+        $fields .= $field->evaluate();
+        
         $field = form_input_line(do_lang_tempcode('DEPENDENCIES'), do_lang_tempcode('DESCRIPTION_DEPENDENCIES'), 'dependencies', $dependencies, false);
         $fields .= $field->evaluate();
         $field = form_input_line(do_lang_tempcode('INCOMPATIBILITIES'), do_lang_tempcode('DESCRIPTION_INCOMPATIBILITIES'), 'incompatibilities', $incompatibilities, false);
@@ -1480,7 +1519,9 @@ class Module_admin_addons
             post_param_string('category'),
             post_param_string('copyright_attribution'),
             post_param_string('licence'),
-            post_param_string('description')
+            post_param_string('description'),
+            post_param_string('min_cms_version'),
+            post_param_string('max_cms_version')
         );
 
         $download_url = get_custom_base_url() . '/exports/addons/' . $file;

@@ -38,6 +38,8 @@ class Module_recommend
         $info['version'] = 6;
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'recommend';
         return $info;
     }
 

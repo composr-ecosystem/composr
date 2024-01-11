@@ -39,6 +39,8 @@ class Module_cms_comcode_pages
         $info['hack_version'] = null;
         $info['version'] = 4;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'core_comcode_pages';
         return $info;
     }
 

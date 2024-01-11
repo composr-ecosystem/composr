@@ -32,6 +32,8 @@ class Block_main_unslider
         $info['hack_version'] = null;
         $info['version'] = 1;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'unslider';
         $info['parameters'] = ['pages', 'width', 'height', 'buttons', 'delay', 'speed', 'keypresses', 'slider_id', 'bgcolor'];
         return $info;
     }

@@ -43,6 +43,8 @@ class Module_admin_disastr extends Standard_crud_module
         $info['version'] = 3;
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'disastr';
         return $info;
     }
 

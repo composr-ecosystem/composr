@@ -37,6 +37,8 @@ class Block_main_cc_embed
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'catalogues';
         $info['parameters'] = ['select', 'param', 'filter', 'template_set', 'display_type', 'sorting', 'sort', 'max', 'start', 'pagination', 'root', 'as_guest', 'check'];
         return $info;
     }

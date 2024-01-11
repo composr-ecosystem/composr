@@ -128,11 +128,13 @@ CREATING ADDONS
  * @param  string $copyright_attribution Addon copyright attribution
  * @param  string $licence Addon licence
  * @param  string $description Addon description
+ * @param  string $min_cms_version Minimum required major.minor version of the website software to install this addon (blank: effectively 11.0)
+ * @param  string $max_cms_version Maximum allowed major.minor version of the website software to install this addon (blank: no maximum)
  * @param  PATH $dir Directory to save to
  * @param  array $mtimes A map of file mtimes to use
  * @param  ?PATH $file_base Alternate file base to get addon files from (null: main website file base)
  */
-function create_addon(string $file, array $files, string $addon_name, string $incompatibilities, string $dependencies, string $author, string $organisation, string $version, string $category, string $copyright_attribution, string $licence, string $description, string $dir = 'exports/addons', array $mtimes = [], ?string $file_base = null)
+function create_addon(string $file, array $files, string $addon_name, string $incompatibilities, string $dependencies, string $author, string $organisation, string $version, string $category, string $copyright_attribution, string $licence, string $description, string $min_cms_version, string $max_cms_version, string $dir = 'exports/addons', array $mtimes = [], ?string $file_base = null)
 {
     require_code('tar');
 
@@ -217,6 +219,8 @@ function create_addon(string $file, array $files, string $addon_name, string $in
         'description' => $description,
         'incompatibilities' => $incompatibilities,
         'dependencies' => $dependencies,
+        'min_cms_version' => $min_cms_version,
+        'max_cms_version' => $max_cms_version,
     ];
     foreach ($settings as $setting_name => $setting_value) {
         $addon_inf .= $setting_name . '="' . str_replace("\n", '\n', str_replace('"', '\'', $setting_value)) . '"' . "\n";
@@ -623,6 +627,17 @@ function inform_about_addon_install(string $file, array $also_uninstalling = [],
     // Check incompatibilities, and show general warning
     // NB: It's theoretically possible that there may be incompatibilities between two addons installing together, and we can't detect this (only incompatibilities for what is already installed). However it's very unlikely as multi-install is only really going to happen with official addons which have no such problems.
     $warnings = new Tempcode();
+    require_code('version');
+    
+    // Website software version incompatibilities
+    if (($info['min_cms_version'] == '') || (floatval($info['min_cms_version']) > cms_version_number()) || (($info['max_cms_version'] != '') && (floatval($info['max_cms_version']) < cms_version_number()))) {
+        if (!$always_return) {
+            warn_exit(do_lang_tempcode('ADDON_WARNING_INCOMPATIBILITIES_VERSION', escape_html(cms_version_number()), escape_html($addon_name)));
+        }
+        $warnings->attach(do_lang_tempcode('ADDON_WARNING_INCOMPATIBILITIES_VERSION', escape_html(cms_version_number()), escape_html($addon_name)));
+    }
+    
+    // Non-core addon
     if ($info['author'] != 'Core Team') {
         static $done_non_core_warn = false;
         if (!$done_non_core_warn) {
@@ -630,6 +645,8 @@ function inform_about_addon_install(string $file, array $also_uninstalling = [],
         }
         $done_non_core_warn = true;
     }
+    
+    // Addon incompatibilities
     $incompatibilities = collapse_1d_complexity('addon_name', $GLOBALS['SITE_DB']->query_select('addons_dependencies', ['addon_name'], ['addon_name_dependant_upon' => $addon_name, 'addon_name_incompatibility' => 1], 'ORDER BY addon_name'));
     $_incompatibilities = new Tempcode();
     foreach ($incompatibilities as $in) {
@@ -846,6 +863,12 @@ function install_addon(string $file, ?array $files = null, bool $do_files = true
     $addon_name = $info['name'];
 
     $was_already_installed = addon_installed($addon_name);
+    
+    // Stop! Don't install an addon if it is not compatible with this version of the website software
+    require_code('version');
+    if (($info['min_cms_version'] == '') || (floatval($info['min_cms_version']) > cms_version_number()) || (($info['max_cms_version'] != '') && (floatval($info['max_cms_version']) < cms_version_number()))) {
+        warn_exit(do_lang_tempcode('ADDON_WARNING_INCOMPATIBILITIES_VERSION', escape_html(cms_version_number()), escape_html($addon_name)));
+    }
 
     require_code('developer_tools');
     destrictify();
@@ -1047,6 +1070,8 @@ function reinstall_addon_soft(string $addon_name, ?array $ini_info = null)
         'addon_copyright_attribution' => implode("\n", $addon_info['copyright_attribution']),
         'addon_licence' => $addon_info['licence'],
         'addon_description' => $addon_info['description'],
+        'addon_min_cms_version' => $addon_info['min_cms_version'],
+        'addon_max_cms_version' => $addon_info['max_cms_version'],
         'addon_install_time' => time(),
     ]);
 
@@ -1200,7 +1225,11 @@ function upgrade_addon_soft(string $addon_name) : int
         }
     }
 
-    $GLOBALS['SITE_DB']->query_update('addons', ['addon_version' => $disk_version], ['addon_name' => $addon_name], '', 1);
+    $GLOBALS['SITE_DB']->query_update('addons', [
+        'addon_version' => $disk_version,
+        'addon_min_cms_version' => $ob->get_min_cms_version(),
+        'addon_max_cms_version' => $ob->get_max_cms_version(),
+    ], ['addon_name' => $addon_name], '', 1);
 
     return $ret;
 }

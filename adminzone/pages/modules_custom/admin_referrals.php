@@ -32,6 +32,8 @@ class Module_admin_referrals
         $info['hack_version'] = null;
         $info['version'] = 1;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'referrals';
         return $info;
     }
 

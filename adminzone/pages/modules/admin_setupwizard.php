@@ -37,6 +37,8 @@ class Module_admin_setupwizard
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'setupwizard';
         return $info;
     }
 
@@ -1311,6 +1313,8 @@ class Module_admin_setupwizard
                         implode("\n", $addon_info['copyright_attribution']),
                         $addon_info['licence'],
                         $addon_info['description'],
+                        $addon_info['min_cms_version'],
+                        $addon_info['max_cms_version'],
                         'imports/addons'
                     );
                 }

@@ -51,6 +51,8 @@ class Module_admin_awards extends Standard_crud_module
         $info['update_require_upgrade'] = true;
         $info['version'] = 5;
         $info['locked'] = true;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'awards';
         return $info;
     }
 

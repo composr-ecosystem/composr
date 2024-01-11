@@ -48,6 +48,8 @@ class Module_invoices
         $info['version'] = 3;
         $info['locked'] = false;
         $info['update_require_upgrade'] = true;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'ecommerce';
         return $info;
     }
 

@@ -37,6 +37,7 @@ class Block_main_comcode_page_children
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
         $info['parameters'] = ['param', 'zone'];
         return $info;
     }

@@ -32,6 +32,8 @@ class Block_side_google_search
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'google_search';
         $info['parameters'] = ['param', 'page_name'];
         return $info;
     }

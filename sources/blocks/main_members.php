@@ -37,6 +37,8 @@ class Block_main_members
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'core_cns';
         $info['parameters'] = [
             'display_mode',
             'must_have_avatar',

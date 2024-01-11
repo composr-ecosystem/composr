@@ -27,6 +27,8 @@ class Block_youtube_channel
         $info['hack_version'] = null;
         $info['version'] = 12;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'youtube_channel_integration_block';
         $info['parameters'] = ['name', 'playlist_id', 'title', 'template_main', 'template_style', 'start_video', 'max_videos', 'embed_player', 'description_type', 'embed_allowed', 'show_player', 'player_align', 'player_width', 'player_height', 'style', 'nothumbplayer', 'thumbnail', 'formorelead', 'formoretext', 'formoreurl'];
         return $info;
     }

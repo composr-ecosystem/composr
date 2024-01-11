@@ -32,6 +32,8 @@ class Block_main_facebook_page
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'facebook_support';
         $info['parameters'] = ['page_name', 'width', 'height', 'show_cover_photo', 'show_fans', 'show_posts'];
         return $info;
     }

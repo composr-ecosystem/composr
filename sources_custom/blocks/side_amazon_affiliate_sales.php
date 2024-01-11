@@ -32,6 +32,8 @@ class Block_side_amazon_affiliate_sales
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'amazon_affiliate_sales';
         $info['parameters'] = ['associates_id', 'product_line', 'subject_keywords', 'height', 'region'];
         return $info;
     }

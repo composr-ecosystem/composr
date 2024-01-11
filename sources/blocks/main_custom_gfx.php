@@ -37,6 +37,8 @@ class Block_main_custom_gfx
         $info['hack_version'] = null;
         $info['version'] = 1;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'custom_comcode';
         $info['parameters'] = ['param', 'data', 'font_size', 'x', 'y', 'color', 'font', 'center'];
         return $info;
     }

@@ -37,6 +37,8 @@ class Block_main_newsletter_signup
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'newsletter';
         $info['parameters'] = ['subject', 'path', 'to', 'param', 'button_only'];
         return $info;
     }

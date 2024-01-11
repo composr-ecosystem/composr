@@ -37,6 +37,8 @@ class Block_main_awards
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'awards';
         $info['parameters'] = ['param', 'zone', 'give_context', 'include_breadcrumbs', 'guid'];
         return $info;
     }

@@ -33,6 +33,8 @@ class Module_classifieds
         $info['version'] = 3;
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'classified_ads';
         return $info;
     }
 

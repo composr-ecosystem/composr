@@ -127,6 +127,8 @@ abstract class Standard_crud_module
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'core';
         return $info;
     }
 

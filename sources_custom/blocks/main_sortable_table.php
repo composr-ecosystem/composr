@@ -32,7 +32,26 @@ class Block_main_sortable_table
         $info['hack_version'] = null;
         $info['version'] = 1;
         $info['locked'] = false;
-        $info['parameters'] = ['param', 'default_sort_column', 'max', 'labels', 'labels_tooltip', 'columns_display', 'columns_tooltip', 'types', 'has_header_row', 'guid', 'class', 'stylings_header', 'stylings', 'classes', 'transform', 'max_rows', 'ignore_value'];
+        $info['min_cms_version'] = 11.0;
+        $info['parameters'] = [
+            'param',
+            'default_sort_column',
+            'max',
+            'labels',
+            'labels_tooltip',
+            'columns_display',
+            'columns_tooltip',
+            'types',
+            'has_header_row',
+            'guid',
+            'class',
+            'stylings_header',
+            'stylings',
+            'classes',
+            'transform',
+            'max_rows',
+            'ignore_value',
+        ];
         return $info;
     }
 

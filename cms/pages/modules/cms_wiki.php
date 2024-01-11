@@ -39,6 +39,8 @@ class Module_cms_wiki
         $info['hack_version'] = null;
         $info['version'] = 4;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'wiki';
         return $info;
     }
 

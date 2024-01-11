@@ -1335,6 +1335,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ADDON_NOT_TAR
         ADDON_WARNING_GENERAL
         ADDON_WARNING_INCOMPATIBILITIES
+        ADDON_WARNING_INCOMPATIBILITIES_VERSION
         ADDON_WARNING_MISSING_DEPENDENCIES
         ADDON_WARNING_OVERWRITE
         ADDON_WARNING_PHP
@@ -4101,6 +4102,10 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         COOKIE_TEXT__CMS_PREFIX
         COPPA
         COPPA_ENABLED
+        MIN_CMS_VERSION
+        DESCRIPTION_MIN_CMS_VERSION
+        MAX_CMS_VERSION
+        DESCRIPTION_MAX_CMS_VERSION
         COPYRIGHT
         COPYRIGHT_ATTRIBUTION
         COPY_MEMBERS_INTO
@@ -6219,6 +6224,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         MINUTES_BETWEEN_SENDS
         BROKEN_ADDON_REMEDIES
         OUTDATED_ADDON_REMEDIES
+        INCOMPATIBLE_ADDON_REMEDIES
         MISSING_MODULE
         MISSING_ADDON
         MISSING_AGGREGATE_TYPE

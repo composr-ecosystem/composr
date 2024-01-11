@@ -37,6 +37,8 @@ class Block_side_galleries
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'galleries';
         $info['parameters'] = ['param', 'depth', 'zone', 'show_empty', 'check'];
         return $info;
     }

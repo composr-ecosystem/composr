@@ -37,6 +37,8 @@ class Block_side_shoutbox
         $info['hack_version'] = null;
         $info['version'] = 3;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'chat';
         $info['parameters'] = ['param', 'max'];
         return $info;
     }

@@ -37,6 +37,7 @@ class Module_lost_password
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
         return $info;
     }
 
