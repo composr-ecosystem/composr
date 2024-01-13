@@ -782,6 +782,19 @@ function load_module_page($string, $codename, &$out = null)
             if (is_null($this_hacked_by)) {
                 $this_hacked_by = '';
             }
+            
+            $min_cms_version = !empty($info['min_cms_version']) ? $info['min_cms_version'] : null;
+            
+            // See if the module is for v11+
+            require_code('version');
+            if (($min_cms_version !== null) && ($min_cms_version > cms_version_number())) {
+                warn_exit(do_lang_tempcode(
+                    'INCOMPATIBLE_ADDON_REMEDIES',
+                    escape_html($codename),
+                    escape_html(float_to_raw_string(cms_version_number())),
+                    escape_html(build_url(['page' => 'admin_addons'], get_module_zone('admin_addons')))
+                    ));
+            }
 
             // See if we need to do an upgrade
             if (($installed_version < $this_version) && (array_key_exists('update_require_upgrade', $info))) {
@@ -806,6 +819,7 @@ function load_module_page($string, $codename, &$out = null)
 
                 persistent_cache_delete('MODULES');
             }
+            
         } else {
             require_code('zones2');
             $zone = substr($string, 0, strpos($string, '/'));
@@ -1268,6 +1282,27 @@ function do_block($codename, $map = null, $ttl = null)
         if ($new_security_scope) {
             _solemnly_enter();
         }
+        
+        // See if the block is for v11+. If so, red alert!
+        require_code('version');
+        if (method_exists($object, 'info')) {
+            $info = $object->info();
+            if (!is_null($info)) {
+                $min_cms_version = !empty($info['min_cms_version']) ? $info['min_cms_version'] : null;
+                if (($min_cms_version !== null) && ($min_cms_version > cms_version_number())) {
+                    if (!$GLOBALS['OUTPUT_STREAMING']) {
+                        restore_output_state(false, true);
+                    }
+                    return paragraph(do_lang_tempcode(
+                        'INCOMPATIBLE_ADDON_REMEDIES',
+                        escape_html($codename),
+                        escape_html(float_to_raw_string(cms_version_number())),
+                        escape_html(build_url(['page' => 'admin_addons'], get_module_zone('admin_addons')))
+                        ), '', 'red_alert');
+                }
+            }
+        }
+        
         $cache = $object->run($map);
         if ($new_security_scope) {
             $_cache = $cache->evaluate();

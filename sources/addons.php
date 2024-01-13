@@ -109,7 +109,7 @@ function read_addon_info($addon, $get_dependencies_on_this = false, $row = null,
     }
 
     if (is_file($path)) {
-        $_hook_bits = extract_module_functions($path, array('get_dependencies', 'get_version', 'get_category', 'get_copyright_attribution', 'get_licence', 'get_description', 'get_author', 'get_organisation', 'get_file_list', 'get_default_icon'));
+        $_hook_bits = extract_module_functions($path, array('get_dependencies', 'get_version', 'get_category', 'get_copyright_attribution', 'get_licence', 'get_description', 'get_author', 'get_organisation', 'get_file_list', 'get_default_icon', 'get_min_cms_version'));
         if ($_hook_bits[0] !== null) {
             $dep = is_array($_hook_bits[0]) ? call_user_func_array($_hook_bits[0][0], $_hook_bits[0][1]) : @eval($_hook_bits[0]);
         } else {
@@ -161,6 +161,14 @@ function read_addon_info($addon, $get_dependencies_on_this = false, $row = null,
         } else {
             $default_icon = mixed();
         }
+        
+        // LEGACY: Only used to ensure v11 addons are not being installed on v10.
+        if ($_hook_bits[10] !== null) {
+            $min_cms_version = is_array($_hook_bits[10]) ? call_user_func_array($_hook_bits[10][0], $_hook_bits[10][1]) : cms_eval($_hook_bits[10], $path, false);
+        } else {
+            $min_cms_version = null;
+        }
+        
 
         $addon_info = array(
             'name' => $addon,
@@ -171,6 +179,7 @@ function read_addon_info($addon, $get_dependencies_on_this = false, $row = null,
             'copyright_attribution' => $copyright_attribution,
             'licence' => $licence,
             'description' => $description,
+            'min_cms_version' => ($min_cms_version !== null) ? float_to_raw_string($min_cms_version, 2, true) : '',
             'install_time' => filemtime($path),
             'files' => $file_list,
             'dependencies' => array_key_exists('requires', $dep) ? $dep['requires'] : array(),
@@ -206,6 +215,7 @@ function read_addon_info($addon, $get_dependencies_on_this = false, $row = null,
             'copyright_attribution' => explode("\n", $ini_info['copyright_attribution']),
             'licence' => $ini_info['licence'],
             'description' => $ini_info['description'],
+            'min_cms_version' => !empty($ini_info['min_cms_version']) ? $ini_info['min_cms_version'] : '',
             'install_time' => time(),
             'files' => $ini_info['files'],
             'dependencies' => $dependencies,
@@ -240,6 +250,7 @@ function read_addon_info($addon, $get_dependencies_on_this = false, $row = null,
             'copyright_attribution' => explode("\n", $row['addon_copyright_attribution']),
             'licence' => $row['addon_licence'],
             'description' => $row['addon_description'],
+            'min_cms_version' => '',
             'install_time' => $row['addon_install_time'],
             'default_icon' => null,
         );

@@ -7124,6 +7124,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIRM_REALLY
         PASSWORDS_DO_NOT_REUSE
         PASSWORD_INSECURE
+        ADDON_WARNING_INCOMPATIBILITIES_VERSION
+        INCOMPATIBLE_ADDON_REMEDIES
     ')));
 
     $non_admin_files = array(
