@@ -255,6 +255,8 @@ QUERYING ADDONS
  */
 function find_available_addons(bool $installed_too = true, bool $gather_mtimes = true, array $already_known = [], bool $get_info = true) : array
 {
+    require_code('version');
+    
     $addons_available_for_installation = [];
     $files = [];
 
@@ -300,6 +302,11 @@ function find_available_addons(bool $installed_too = true, bool $gather_mtimes =
 
         if ($info_file !== null) {
             $info = cms_parse_ini_file_fast(null, $info_file['data']);
+            
+            // Skip incompatible addon TARs
+            if (((empty($info['min_cms_version'])) || (floatval($info['min_cms_version']) > cms_version_number())) || ((!empty($info['max_cms_version'])) && (floatval($info['max_cms_version']) < cms_version_number()))) {
+                continue;
+            }
 
             if ($get_info) {
                 if (!empty($info['copyright_attribution'])) {
