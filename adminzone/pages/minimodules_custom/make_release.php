@@ -58,14 +58,14 @@ switch ($type) {
 function get_previous_version()
 {
     require_code('version2');
-    
+
     $previous_version = null;
     $previous_tag = shell_exec('git describe --tags');
     $matches = [];
     if (preg_match('#^(.*)-\w+-\w+$#', $previous_tag, $matches) != 0) {
         $previous_version = $matches[1];
     }
-    
+
     return $previous_version;
 }
 
@@ -82,20 +82,20 @@ function phase_0()
     require_code('version2');
     $on_disk_version = get_version_dotted();
     $previous_version = get_previous_version();
-    
+
     $post_url = static_evaluate_tempcode(get_self_url(false, false, ['type' => '1']));
-    
+
     echo '
     <p>Here are some things you should do if you have not already:</p>
     <ul>
         <li>Go through the auto-reported error emails, to make sure they are handled (for each: fix if relevant, delete if not).</li>
         <li>Run the <a href="' . escape_html(get_base_url() . '/_tests') . '">unit tests</a><!--, with dev mode on, on the custom Composr PHP version-->.</li>
     </ul>';
-    
+
     echo '
     <form method="post" action="' . escape_html($post_url) . '">
         ' . static_evaluate_tempcode(symbol_tempcode('INSERT_FORM_POST_SECURITY')) . '
-            
+
         <p>I am going to ask you some questions which will allow you to quickly make the decisions needed to get the whole release out without any additional thought. If you don\'t like these questions (such as finding them personally intrusive), I don\'t care&hellip; I am merely a machine, a device, working against a precomputed script. Now that is out of the way&hellip;</p>
         <hr />
         <fieldset>
@@ -128,16 +128,16 @@ function phase_1()
     require_code('version2');
     $new_version = get_new_version();
     $previous_version = get_previous_version();
-    
+
     // Update version.php
     if (($new_version !== $previous_version)) {
         $version_file = cms_file_get_contents_safe(get_file_base() . '/sources/version.php');
         if (!$version_file) {
             fatal_exit('Failed to get sources/version.php file contents.');
         }
-        
+
         list(, , , , $general_number, $long_dotted_number_with_qualifier) = get_version_components__from_dotted($new_version);
-        
+
         // Determine if this is a major release, and update version times accordingly
         if (preg_match('#^\d+\.0\.0(\.beta1|\.RC1|)$#', $long_dotted_number_with_qualifier) != 0) { // e.g. 3.0.0 or 3.0.0.beta1 or 3.0.0.RC1
             // cms_version_time() and cms_version_time_major()
@@ -146,13 +146,13 @@ function phase_1()
             // Just cms_version_time()
             $version_file = preg_replace('/\d{10}/', strval(time()), $version_file, 1);
         }
-        
+
         // Update cms_version_number()
         $_replacement = $general_number;
         $pattern = '/function cms_version_number\(\) : float\s*{\s*return\s*(.*?)\;\s*}/s';
         $replacement = "function cms_version_number() : float\n{\n    return " . float_to_raw_string($_replacement, 1) . ";\n}";
         $version_file = preg_replace($pattern, $replacement, $version_file);
-        
+
         // Update cms_version_minor(); first we must remove the major version part.
         $parts = explode('.', $new_version);
         array_shift($parts);
@@ -160,7 +160,7 @@ function phase_1()
         $pattern = '/function cms_version_minor\(\) : string\s*{\s*return\s*\'(.*?)\'\;\s*}/s';
         $replacement = "function cms_version_minor() : string\n{\n    return '" . $_replacement . "';\n}";
         $version_file = preg_replace($pattern, $replacement, $version_file);
-        
+
         // Update branch status flag
         if (strpos($new_version, 'alpha') !== false) {
             $_replacement = 'VERSION_ALPHA';
@@ -174,7 +174,7 @@ function phase_1()
         $pattern = '/function cms_version_branch_status\(\) : string\s*{\s*return\s*(.*?)\;\s*}/s';
         $replacement = "function cms_version_branch_status() : string\n{\n    return " . $_replacement . ";\n}";
         $version_file = preg_replace($pattern, $replacement, $version_file);
-        
+
         // Save the updated file
         require_code('files');
         cms_file_put_contents_safe(get_file_base() . '/sources/version.php', $version_file, FILE_WRITE_SYNC_FILE | FILE_WRITE_FIX_PERMISSIONS);
@@ -227,12 +227,12 @@ function phase_1()
         $_discovered_tracker_issues = implode(',', array_keys($discovered_tracker_issues));
         $_result = http_get_contents($api_url, ['post_params' => ['parameters' => [$_discovered_tracker_issues, $new_version, $dig_deep ? $previous_version : null]]]);
         $tracker_issue_titles = json_decode($_result, true);
-        
+
         $new_version_parts = explode('.', $new_version);
         $last = count($new_version_parts) - 1;
         $new_version_parts[$last] = strval(intval($new_version_parts[$last]) - 1);
         $new_version_previous = implode('.', $new_version_parts);
-        
+
         $tracker_url = get_brand_base_url() . '/tracker/search.php?project_id=1';
         if (($new_version_parts[$last] >= 0) && (substr_count($new_version, '.') == 2)) {
             $tracker_url .= '&product_version=' . urlencode($new_version_previous);
@@ -268,7 +268,7 @@ function phase_1()
 
     $post_url = static_evaluate_tempcode(get_self_url(false, false, ['type' => '2']));
     $proceed_icon = do_template('ICON', ['_GUID' => '114667b8c304d0363000bdb3b0869471', 'NAME' => 'buttons/proceed']);
-    
+
     echo '
     <form method="post" action="' . escape_html($post_url) . '">
         ' . static_evaluate_tempcode(symbol_tempcode('INSERT_FORM_POST_SECURITY')) . '
@@ -289,10 +289,11 @@ function phase_1()
             <fieldset>
             <legend>Upgrade necessity</legend>
             <p>Upgrading is&hellip;</p>
-            <input type="radio" name="needed" id="unrecommended" ' . (((strpos($release_description, 'patch release') === false) && (strpos($release_description, 'gold') === false)) ? 'checked="checked" ' : '') . 'value="not recommended for live sites" /><label for="unrecommended">&hellip;not recommended for live sites&hellip;</label><br />
+            <input type="radio" name="needed" id="unrecommended" ' . (((strpos($release_description, 'patch release') === false) && (strpos($release_description, 'gold') === false)) ? 'checked="checked" ' : '') . 'value="not recommended" /><label for="unrecommended">&hellip;not recommended&hellip;</label><br />
             <input type="radio" name="needed" id="not-needed" ' . ((strpos($release_description, 'gold') !== false) ? 'checked="checked" ' : '') . 'value="not necessary" /><label for="not-needed">&hellip;not necessary&hellip;</label><br />
             <input type="radio" name="needed" id="suggested" value="suggested" /><label for="suggested">&hellip;suggested&hellip;</label><br />
             <input type="radio" name="needed" id="advised" ' . ((strpos($release_description, 'patch release') !== false) ? 'checked="checked" ' : '') . 'value="strongly advised" /><label for="advised">&hellip;strongly advised&hellip;</label><br />
+            <label for="criteria">&hellip;for</label><input type="text" name="criteria" id="criteria" value="' . (((strpos($release_description, 'patch release') === false) && (strpos($release_description, 'gold') === false)) ? 'live sites' : '') . '" /><br />
             <label for="justification">&hellip;due to</label><input type="text" name="justification" id="justification" value="" />
         </fieldset>
         <br />
@@ -372,6 +373,7 @@ function phase_2()
     require_code('make_release');
 
     $needed = post_param_string('needed');
+    $criteria = post_param_string('criteria');
     $justification = post_param_string('justification');
     $changes = post_param_string('changes');
     $descrip = post_param_string('descrip');
@@ -393,6 +395,7 @@ function phase_2()
             ' . static_evaluate_tempcode(symbol_tempcode('INSERT_FORM_POST_SECURITY')) . '
 
             <input type="hidden" name="needed" value="' . escape_html($needed) . '" />
+            <input type="hidden" name="criteria" value="' . escape_html($criteria) . '" />
             <input type="hidden" name="justification" value="' . escape_html($justification) . '" />
             <input type="hidden" name="version" value="' . escape_html($new_version) . '" />
             <input type="hidden" name="previous_version" value="' . escape_html(($previous_version !== null) ? $previous_version : '') . '" />
@@ -409,6 +412,14 @@ function phase_2()
 // Provide exacting instructions for making the release
 function phase_3()
 {
+    $criteria = post_param_string('criteria');
+    if (substr($criteria, -1) == '.') {
+        $criteria = substr($criteria, 0, strlen($criteria) - 1);
+    }
+    if ($criteria != '') {
+        $criteria = ' for ' . $criteria;
+    }
+
     $justification = post_param_string('justification');
     if (substr($justification, -1) == '.') {
         $justification = substr($justification, 0, strlen($justification) - 1);
@@ -430,7 +441,7 @@ function phase_3()
     $is_old_tree = (post_param_integer('old_tree', 0) == 1);
     $is_substantial = is_substantial_release($new_version);
 
-    $push_url = get_brand_base_url() . '/adminzone/index.php?page=-make-release&version=' . urlencode($new_version) . '&is_bleeding_edge=' . ($is_bleeding_edge ? '1' : '0') . '&is_old_tree=' . ($is_old_tree ? '1' : '0') . '&descrip=' . urlencode($descrip) . '&needed=' . urlencode($needed) . '&justification=' . urlencode($justification);
+    $push_url = get_brand_base_url() . '/adminzone/index.php?page=-make-release&version=' . urlencode($new_version) . '&is_bleeding_edge=' . ($is_bleeding_edge ? '1' : '0') . '&is_old_tree=' . ($is_old_tree ? '1' : '0') . '&descrip=' . urlencode($descrip) . '&needed=' . urlencode($needed) . '&criteria=' . urlencode($criteria) . '&justification=' . urlencode($justification);
 
     echo '
     <p>Here\'s a list of things for you to do. Get to it!</p>
