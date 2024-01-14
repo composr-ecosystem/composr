@@ -40,20 +40,48 @@ class database_relations_test_set extends cms_test_case
             $this->assertTrue(array_key_exists($table, $table_purposes), 'Table purposes not described: ' . $table);
         }
     }
-
-    /* We actually don't define descriptions for all tables, only important ones that aren't necessarily obvious. Sometimes it is good to uncomment this test just to see if anything stands out (i.e. new complex tables that accidentally weren't documented).
+    
     public function testTableDescriptionsDefined()
     {
+        require_code('privacy');
+        
         $table_descriptions = get_table_descriptions();
-
+        
+        $hook_obs = find_all_hook_obs('systems', 'privacy', 'Hook_privacy_');
+        foreach ($hook_obs as $hook => $hook_ob) {
+            $info = $hook_ob->info();
+            
+            if ($info === null) {
+                continue;
+            }
+            
+            foreach ($info['database_records'] as $table => $details) {
+                // table descriptions only required if any user data fields are defined
+                if ((count($info['database_records'][$table]['member_id_fields']) < 1) &&
+                    (count($info['database_records'][$table]['ip_address_fields']) < 1) &&
+                    (count($info['database_records'][$table]['email_fields']) < 1) &&
+                    count($info['database_records'][$table]['additional_anonymise_fields']) < 1) {
+                        continue;
+                    }
+                    
+                    $this->assertTrue(array_key_exists($table, $table_descriptions), 'Table description not defined but is required (one or more user data fields are defined in privacy hooks): ' . $table);
+            }
+        }
+    }
+    
+    /* Use this unit test instead of the one above if you wish to strictly require a table description on every table.
+     public function testTableDescriptionsDefined()
+     {
+        $table_descriptions = get_table_descriptions();
+     
         $all_tables = $GLOBALS['SITE_DB']->query_select('db_meta', ['DISTINCT m_table']);
         foreach ($all_tables as $table) {
             if (!table_has_purpose_flag($table['m_table'], TABLE_PURPOSE__NON_BUNDLED)) {
                 $this->assertTrue(array_key_exists($table['m_table'], $table_descriptions), 'Table description not provided: ' . $table['m_table']);
             }
         }
-    }
-    */
+     }
+     */
 
     public function testRelationsDefined()
     {
