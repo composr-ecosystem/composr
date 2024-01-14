@@ -471,7 +471,7 @@ function cns_get_members_groups(?int $member_id = null, bool $skip_secret = fals
                         $groups = array();
                         $groups[$group_id] = true;
 
-                        $GROUP_MEMBERS_CACHE[$member_id][$skip_secret][$handle_probation][$include_implicit] = $groups;
+                        $GROUP_MEMBERS_CACHE[$member_id][$skip_secret][$include_implicit] = $groups;
 
                         return $groups;
                     }
