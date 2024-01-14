@@ -72,8 +72,15 @@ class privacy_hooks_test_set extends cms_test_case
                 }
 
                 $this->assertTrue(count($details['member_id_fields']) + count($details['ip_address_fields']) + count($details['email_fields']) + count($details['additional_anonymise_fields']) > 0, 'No personal data in ' . $table . ', so should not be defined');
+                
+                // If more than one member / IP / email field is defined, we cannot allow delete as a method (except for retention).
+                if (($info['database_records'][$table]['removal_default_handle_method'] == PRIVACY_METHOD__DELETE) || (($info['database_records'][$table]['allowed_handle_methods'] & PRIVACY_METHOD__DELETE) != 0)) {
+                    $this->assertTrue((count($info['database_records'][$table]['member_id_fields']) <= 1), 'Cannot use PRIVACY_METHOD__DELETE on ' . $hook . '->' . $table . ' because it defines more than one member_id_fields. Consider using PRIVACY_METHOD__ANONYMISE instead.');
+                    $this->assertTrue((count($info['database_records'][$table]['ip_address_fields']) <= 1), 'Cannot use PRIVACY_METHOD__DELETE on ' . $hook . '->' . $table . ' because it defines more than one ip_address_fields. Consider using PRIVACY_METHOD__ANONYMISE instead.');
+                    $this->assertTrue((count($info['database_records'][$table]['email_fields']) <= 1), 'Cannot use PRIVACY_METHOD__DELETE on ' . $hook . '->' . $table . ' because it defines more than one email_fields. Consider using PRIVACY_METHOD__ANONYMISE instead.');
+                }
 
-                // Make comparison to what we want easier
+                // Make comparison to what we want easier for the next foreach loop
                 sort($details['member_id_fields']);
                 sort($details['ip_address_fields']);
                 sort($details['email_fields']);
