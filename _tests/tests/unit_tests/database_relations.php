@@ -43,6 +43,10 @@ class database_relations_test_set extends cms_test_case
     
     public function testTableDescriptionsDefined()
     {
+        if (addon_installed('privacy')) {
+            return;
+        }
+        
         require_code('privacy');
         
         $table_descriptions = get_table_descriptions();
