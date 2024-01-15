@@ -33,8 +33,8 @@ class Hook_implicit_usergroups_antispam_question
     Show on the join form = yes
     */
 
-    protected $field_name = 'What is Composr a kind of?';
-    protected $expected_answer = 'Content Management System';
+    protected $field_name = 'Check all (and only all) that apply about Composr';
+    protected $expected_answer = "Content Management System\nNo Licensing Costs\nOpen Source";
 
     protected $field_id = null;
 
