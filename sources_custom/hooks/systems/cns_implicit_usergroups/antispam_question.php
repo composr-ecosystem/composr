@@ -75,7 +75,9 @@ class Hook_implicit_usergroups_antispam_question
             return '1=0';
         }
 
-        return '(SELECT field_' . strval($this->field_id) . ' FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields mcf WHERE mcf.mf_member_id=id) NOT IN (\'\', \'' . db_escape_string($this->expected_answer) . '\')';
+        // return '(SELECT field_' . strval($this->field_id) . ' FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields mcf WHERE mcf.mf_member_id=id) NOT IN (\'\', \'' . db_escape_string($this->expected_answer) . '\')';
+        
+        return '(SELECT field_' . strval($this->field_id) . ' FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields mcf WHERE mcf.mf_member_id=id) NOT IN (\'' . db_escape_string($this->expected_answer) . '\')';
     }
 
     /**
@@ -133,9 +135,11 @@ class Hook_implicit_usergroups_antispam_question
         $mappings = cns_get_custom_field_mappings($member_id);
         $f = 'field_' . strval($this->field_id);
         if (!isset($mappings[$f])) {
-            return false;
+            //return false;
+            return true;
         }
         $val = $mappings[$f];
-        return ($val != $this->expected_answer) && ($val != '');
+        //return ($val != $this->expected_answer) && ($val != '');
+        return ($val != $this->expected_answer);
     }
 }
