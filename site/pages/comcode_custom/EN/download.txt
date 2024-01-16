@@ -134,7 +134,7 @@
 						</li>
 						<li>MySQL 5.5.3 or higher</li>
 						<li>Apache or IIS recommended</li>
-						<li>50MB of disk space</li>
+						<li>100MB of disk space</li>
 					</ul>
 
 					<!--
