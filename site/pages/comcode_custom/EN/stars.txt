@@ -19,11 +19,12 @@
 				<li>Programming god &ndash; For those who are great addon coders, or coding advice</li>
 				<li>Themeing genius &ndash; For those that put out great themes, or themeing advice</li>
 				<li>Community ambassador &ndash; For those that work inside and outside our community to strengthen us all</li>
+				<li>Tracker master &ndash; For those that report bugs or feature suggestions on [url="the tracker"]https://compo.sr/tracker[/url]</li>
 				<li>Translator saviour &ndash; For those that work on translations</li>
 			</ul>
 		</div>
 
-		<p>This page honours the top 'stars' for each of these 5 roles. That means:</p>
+		<p>This page honours the top 'stars' for each of these 7 roles. That means:</p>
 
 		<div class="list2">
 			<ul>
@@ -53,6 +54,10 @@
 <h2 class="colrBl">Community ambassador</h2>
 
 [block="Community ambassador"]main_stars[/block]
+
+<h2 class="colrBl">Tracker master</h2>
+
+[block="Tracker master"]main_stars[/block]
 
 <h2 class="colrBl">Translator saviour</h2>
 

@@ -5,6 +5,8 @@
 	<option value="Programming god">Programming god</option>
 	<option value="Themeing genius">Themeing genius</option>
 	<option value="Community ambassador">Community ambassador</option>
+	<option value="Tracker master">Tracker master</option>
+	<option value="Translator saviour">Translator saviour</option>
 {+END}
 
 {+START,IF,{$NOT,{$HAS_ACTUAL_PAGE_ACCESS,admin_points}}}
