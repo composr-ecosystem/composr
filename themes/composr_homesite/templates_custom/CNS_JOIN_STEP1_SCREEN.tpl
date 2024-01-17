@@ -7,15 +7,17 @@
 <div class="box box___cns_join_step1_screen"><div class="box_inner">
 	<h2>Anti-spam measures</h2>
 
-	<p>We have a number of very effective measures in place to eliminate spam. <strong>If</strong> you are only considering joining compo.sr to post spam links, consider how costly and ineffective it will be:</p>
+	<p>We have a number of very effective measures in place to eliminate spam. If you are only considering joining compo.sr to post spam links, <strong>you are wasting your time</strong>; consider how costly and ineffective it will be (for you, not for us):</p>
 	<ul>
-		<li>We block links by default in member profiles, so stealth outbound links will not be effective</li>
-		<li>Any link you have will be <kbd>rel=nofollow</kbd>, so will not help SEO at all</li>
-		<li>Banned spammer accounts are reporting automatically to StopForumSpam, which will ban your IP address across many online forums
-		<li>We will contact the owner of any site spammers have been linking to, to warn them what disreputable companies have been doing in their name</li>
-		<li>Spam posts are always deleted in under a day, so very few people will ever see them</li>
-		<li>Suspicious new accounts are automatically shadow-banned with high accuracy, until manually approved</li>
-		<li>You'll still need to solve CAPTCHAs for a while after joining, and bots will be effectively detected and publicly reported in multiple ways (Project HoneyPot, blackholes, ...)</li>
+		<li>We block links in member profiles until members make a legitimate forum post, so stealth outbound links will not be effective</li>
+		<li>Any link you post will be attributed with <kbd>rel=nofollow</kbd>, so will not help SEO at all</li>
+		<li>Banned spammer accounts are reported to StopForumSpam, which will ban your IP address across many other online forums</li>
+		<li>We will contact the owner of any site to which spammers have been linking, to warn them what disreputable companies have been doing in their name</li>
+		<li>Spam posts are always deleted quickly, and the responsible accounts banned, so very few people will ever see them</li>
+		<li>Suspicious new accounts are automatically shadow-banned from the forums with high accuracy, until manually approved</li>
+		<li>Suspicious new accounts are automatically locked out of putting anything in their profile, so stealth advertising will not be effective</li>
+		<li>You'll still need to solve CAPTCHAs for a while after joining, and bots will be effectively detected and publicly reported in multiple ways (Project Honey Pot, blackholes, ...)</li>
+		<li>Most of the above processes happen automatically by our website software and thus require effectively no human time on our part; that's the true versatility of Composr CMS!</li>
 	</ul>
 	<p>It's very clear to us who is and is not a spammer, so don't worry at all if you are not. If you are a spammer and this site is on a list of high-profile sites you're paid to spam, get that list adjusted as it is working against you.</p>
 </div></div>
