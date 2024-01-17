@@ -34,13 +34,13 @@
 	<!-- Prohibit probation members from doing stuff to spam -->
 	<filter groups="10">
 		<!-- No profile spam -->
-		<qualify pages="members" types="view" fields="field_1,field_2,field_3,field_4,field_5,avatar_alt_url,activity_status">
+		<qualify pages="members" types="view" fields="field_1,field_2,field_3,field_4,field_5,avatar_alt_url,activity_status,signature,txtFileName_photo_file,photo_url">
 			<maxLength error="Probation members and new members who failed the initial antispam screening may not have content in their profile. Please see the Forums -> Composr Chat if you are a legitimate member.">0</maxLength>
 			<replace></replace>
 		</qualify>
 		
-		<!-- No spamming avatars by uploading logos -->
-		<qualify pages="members" types="view" fields="hidFileID_avatar_file">
+		<!-- No spamming avatars/photos by uploading logos -->
+		<qualify pages="members" types="view" fields="hidFileID_avatar_file,hidFileID_photo_file">
 			<possibilitySet error="Probation members and new members who failed the initial antispam screening may not have content in their profile. Please see the Forums -> Composr Chat if you are a legitimate member." secretive="1">-1,0</possibilitySet>
 		</qualify>
 	</filter>
