@@ -356,6 +356,12 @@ function phase_2_pre()
 // Build release files
 function phase_2()
 {
+    global $SITE_INFO;
+
+    if ((post_param_integer('rebuild_sql', 0) == 1) && (strpos(get_db_type(), 'mysql') !== false) && (!isset($SITE_INFO['mysql_root_password']))) {
+        warn_exit('Cannot rebuild sql files without mysql_root_password being set in _config.php!');
+    }
+
     require_code('version2');
 
     $new_version = get_new_version();
