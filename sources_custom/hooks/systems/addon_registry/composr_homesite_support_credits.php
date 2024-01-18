@@ -157,6 +157,7 @@ class Hook_addon_registry_composr_homesite_support_credits
             'sources_custom/hooks/systems/page_groupings/support_credits.php',
             'sources_custom/hooks/systems/symbols/MANTIS_SPONSOR_WEEK_ACTIVITY.php',
             'sources_custom/hooks/systems/symbols/MANTIS_TOTAL.php',
+            'sources_custom/hooks/systems/symbols/MANTIS_TOTAL_BY_TAGS.php',
             'sources_custom/hooks/systems/symbols/MANTIS_WEEK_ACTIVITY.php',
             'sources_custom/mantis.php',
             'sources_custom/miniblocks/credit_exps.php',
