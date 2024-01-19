@@ -34,16 +34,12 @@ function init__lookup()
  * @param  mixed $param The user identifier for whom we are getting the page
  * @param  ?string $username The member's username (by reference) (null: unknown)
  * @param  ?AUTO_LINK $member_id The member's ID (by reference) (null: unknown)
- * @param  ?string $ip The member's IP (by reference) (null: unknown)
+ * @param  ?string $ip The member's IP from the forum (by reference) (null: unknown)
  * @param  ?string $email_address The member's e-mail address (by reference) (null: unknown)
- * @return array The member's IP addresses (IP address and most recent time of hit)
+ * @return array The member's IP addresses from the stats table (IP address and most recent time of hit)
  */
 function lookup_user($param, ?string &$username, ?int &$member_id, ?string &$ip, ?string &$email_address) : array
 {
-    if (!addon_installed('stats')) {
-        return [];
-    }
-
     require_code('type_sanitisation');
     require_lang('submitban');
 
@@ -109,6 +105,10 @@ function lookup_user($param, ?string &$username, ?int &$member_id, ?string &$ip,
             $ip = '127.0.0.1';
         }
         $email_address = $GLOBALS['FORUM_DRIVER']->get_member_email_address($member_id);
+    }
+    
+    if (!addon_installed('stats')) {
+        return [];
     }
 
     return $GLOBALS['SITE_DB']->query_select('stats', ['ip', 'MAX(date_and_time) AS date_and_time'], ['member_id' => $member_id], 'GROUP BY ip ORDER BY date_and_time DESC', 100);

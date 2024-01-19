@@ -15,7 +15,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    commandr
+ * @package    securitylogging
  */
 
 /**
@@ -33,6 +33,10 @@ class Hook_commandr_command_whois
      */
     public function run(array $options, array $parameters, object &$commandr_fs) : array
     {
+        if (!addon_installed('securitylogging')) {
+            return ['', '', '', do_lang('MISSING_ADDON', 'securitylogging')];
+        }        
+        
         require_code('lookup');
 
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
@@ -70,11 +74,7 @@ class Hook_commandr_command_whois
             $email_address = '';
         }
 
-        if (addon_installed('securitylogging')) {
-            $all_banned = collapse_1d_complexity('ip', $GLOBALS['SITE_DB']->query('SELECT ip FROM ' . get_table_prefix() . 'banned_ip WHERE i_ban_positive=1 AND (i_ban_until IS NULL OR i_ban_until>' . strval(time()) . ')'));
-        } else {
-            $all_banned = [];
-        }
+        $all_banned = collapse_1d_complexity('ip', $GLOBALS['SITE_DB']->query('SELECT ip FROM ' . get_table_prefix() . 'banned_ip WHERE i_ban_positive=1 AND (i_ban_until IS NULL OR i_ban_until>' . strval(time()) . ')'));
 
         $ip_list = new Tempcode();
         foreach ($known_ip_addresses as $row) {
