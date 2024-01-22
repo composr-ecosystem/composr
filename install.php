@@ -2269,7 +2269,7 @@ function step_5_core_2() : object
         'ip' => 'IP',
         'session_confirmed' => 'BINARY',
         'session_invisible' => 'BINARY',
-        'cache_username' => 'SHORT_TEXT',
+        'cache_username' => 'ID_TEXT',
         'the_zone' => 'ID_TEXT',
         'the_page' => 'ID_TEXT',
         'the_type' => 'ID_TEXT',

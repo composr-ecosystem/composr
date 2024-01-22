@@ -27,10 +27,11 @@ Such laws include, but are not limited to:
  - EU regulation required registering with a 'data commissioner'
  - California privacy regulation (California Online Privacy Protection Act, California Consumer Privacy Act)
  - US COPPA regulation (see the Child protection section)
+ - Other regulations on a state or regional basis
 
 {!DOC_GDPR}
 
-To further meet GDPR Composr has many additional provisions, including:
+To further meet GDPR, Composr has many additional provisions, including:
  - Logging of access to personal data in the action log
  - Automatic log purging, configurable per-log
  - Automatic scrubbing of old database records that contain personal data
@@ -69,7 +70,7 @@ For more information, see the [page="_SEARCH:tut_accessibility"]accessibility[/p
 
 [title="2"]eCommerce sales[/title]
 
-If you use your website to drive 'electronic' sales, then it is likely there is legislature regulating your activities. In the UK, these are known as the 'distance selling regulations' and are essentially involved in making sure that adequate provisions are put in place to make up for the lack of personal communication that is inherent in a brick&mortar store.
+If you use your website to drive 'electronic' sales, then it is likely there is legislation regulating your activities. In the UK, these are known as the 'distance selling regulations' and are essentially involved in making sure that adequate provisions are put in place to make up for the lack of personal communication that is inherent in a brick & mortar store.
 
 Your website would, of course, also be party to legislation on all forms of business, including issues such as tax. International VAT/sales-tax is a particularly complex and situational-dependant topic, so I will not make any attempt to explain it here.
 

@@ -49,9 +49,11 @@ class Hook_privacy_newsletter extends Hook_privacy_base
                     'timestamp_field' => null,
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => [],
+                    'owner_id_field' => null,
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => [],
                     'email_fields' => ['email'],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
@@ -61,9 +63,11 @@ class Hook_privacy_newsletter extends Hook_privacy_base
                     'timestamp_field' => 'join_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => [],
+                    'owner_id_field' => null,
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => [],
                     'email_fields' => ['email'],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => ['n_forename', 'n_surname'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
@@ -73,9 +77,11 @@ class Hook_privacy_newsletter extends Hook_privacy_base
                     'timestamp_field' => 'd_inject_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => [],
+                    'owner_id_field' => null,
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => [],
                     'email_fields' => ['d_to_email'],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => ['d_to_name'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
@@ -85,9 +91,11 @@ class Hook_privacy_newsletter extends Hook_privacy_base
                     'timestamp_field' => 'date_and_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => [],
+                    'owner_id_field' => null,
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => [],
                     'email_fields' => ['from_email'],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => ['from_name'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
@@ -97,9 +105,11 @@ class Hook_privacy_newsletter extends Hook_privacy_base
                     'timestamp_field' => null,
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => [],
+                    'owner_id_field' => null,
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => [],
                     'email_fields' => ['np_from_email'],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => ['np_from_name'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
@@ -138,18 +148,19 @@ class Hook_privacy_newsletter extends Hook_privacy_base
      * Delete a row.
      *
      * @param  ID_TEXT $table_name Table name
+     * @param  array $table_details Details of the table from the info function
      * @param  array $row Row raw from the database
      */
-    public function delete(string $table_name, array $row)
+    public function delete(string $table_name, array $table_details, array $row)
     {
         switch ($table_name) {
             case 'newsletter_subscribers':
                 $GLOBALS['SITE_DB']->query_delete('newsletter_subscribe', ['email' => $row['email']]);
-                parent::delete($table_name, $row);
+                parent::delete($table_name, $table_details, $row);
                 break;
 
             default:
-                parent::delete($table_name, $row);
+                parent::delete($table_name, $table_details, $row);
                 break;
         }
     }

@@ -58,10 +58,10 @@ function lookup_user($param, ?string &$username, ?int &$member_id, ?string &$ip,
     } elseif (is_valid_email_address($param)) {
         // From e-mail address
         $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_email_address($param);
-        $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id, false, USERNAME_DEFAULT_NULL);
         if ($member_id === null) {
             return [];
         }
+        $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id, false, USERNAME_DEFAULT_NULL);
         $ip = $GLOBALS['FORUM_DRIVER']->get_member_ip($member_id);
         if ($ip === null) {
             $ip = '127.0.0.1';

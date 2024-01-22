@@ -44,9 +44,11 @@ class Hook_privacy_referrals extends Hook_privacy_base
                     'timestamp_field' => 'q_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => ['q_referee', 'q_referrer'],
+                    'owner_id_field' => 'q_referrer',
+                    'additional_member_id_fields' => ['q_referee'],
                     'ip_address_fields' => [],
                     'email_fields' => ['q_email_address'],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
@@ -56,9 +58,11 @@ class Hook_privacy_referrals extends Hook_privacy_base
                     'timestamp_field' => null,
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => ['o_referrer'],
+                    'owner_id_field' => 'o_referrer',
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => [],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
@@ -66,28 +70,5 @@ class Hook_privacy_referrals extends Hook_privacy_base
                 ],
             ],
         ];
-    }
-
-    /**
-     * Serialise a row.
-     *
-     * @param  ID_TEXT $table_name Table name
-     * @param  array $row Row raw from the database
-     * @return array Row in a cleanly serialised format
-     */
-    public function serialise(string $table_name, array $row) : array
-    {
-        $ret = parent::serialise($table_name, $row);
-
-        switch ($table_name) {
-            case 'referees_qualified_for':
-                $ret += [
-                    'q_referee__dereferenced' => $GLOBALS['FORUM_DRIVER']->get_username($row['q_referee']),
-                    'q_referrer__dereferenced' => $GLOBALS['FORUM_DRIVER']->get_username($row['q_referrer']),
-                ];
-                break;
-        }
-
-        return $ret;
     }
 }

@@ -44,9 +44,11 @@ class Hook_privacy_buildr extends Hook_privacy_base
                     'timestamp_field' => null,
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => ['item_owner'],
+                    'owner_id_field' => 'item_owner',
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => [],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
@@ -56,9 +58,11 @@ class Hook_privacy_buildr extends Hook_privacy_base
                     'timestamp_field' => null,
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => ['owner'],
+                    'owner_id_field' => 'owner',
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => [],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
@@ -68,9 +72,11 @@ class Hook_privacy_buildr extends Hook_privacy_base
                     'timestamp_field' => null,
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => ['copy_owner'],
+                    'owner_id_field' => 'copy_owner',
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => [],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
@@ -80,9 +86,11 @@ class Hook_privacy_buildr extends Hook_privacy_base
                     'timestamp_field' => null,
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => ['id'],
+                    'owner_id_field' => 'id',
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => [],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
@@ -92,21 +100,25 @@ class Hook_privacy_buildr extends Hook_privacy_base
                     'timestamp_field' => 'm_datetime',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => ['destination', 'originator_id'],
+                    'owner_id_field' => 'originator_id',
+                    'additional_member_id_fields' => ['destination'],
                     'ip_address_fields' => [],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
-                    'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
                 ],
                 'w_portals' => [
                     'timestamp_field' => null,
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => ['owner'],
+                    'owner_id_field' => 'owner',
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => [],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
@@ -116,9 +128,11 @@ class Hook_privacy_buildr extends Hook_privacy_base
                     'timestamp_field' => null,
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => ['owner'],
+                    'owner_id_field' => 'owner',
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => [],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
@@ -128,9 +142,11 @@ class Hook_privacy_buildr extends Hook_privacy_base
                     'timestamp_field' => null,
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => ['member_id'],
+                    'owner_id_field' => 'member_id',
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => [],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
@@ -140,9 +156,11 @@ class Hook_privacy_buildr extends Hook_privacy_base
                     'timestamp_field' => null,
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => ['owner'],
+                    'owner_id_field' => 'owner',
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => [],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
@@ -201,9 +219,10 @@ class Hook_privacy_buildr extends Hook_privacy_base
      * Delete a row.
      *
      * @param  ID_TEXT $table_name Table name
+     * @param  array $table_details Details of the table from the info function
      * @param  array $row Row raw from the database
      */
-    public function delete(string $table_name, array $row)
+    public function delete(string $table_name, array $table_details, array $row)
     {
         require_lang('buildr');
 
@@ -233,7 +252,7 @@ class Hook_privacy_buildr extends Hook_privacy_base
                 break;
 
             default:
-                parent::delete($table_name, $row);
+                parent::delete($table_name, $table_details, $row);
                 break;
         }
     }

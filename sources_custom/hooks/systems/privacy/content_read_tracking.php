@@ -44,9 +44,11 @@ class Hook_privacy_content_read_tracking extends Hook_privacy_base
                     'timestamp_field' => 'r_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => ['r_member_id'],
+                    'owner_id_field' => 'r_member_id',
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => [],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
@@ -70,8 +72,9 @@ class Hook_privacy_content_read_tracking extends Hook_privacy_base
         switch ($table_name) {
             case 'content_read':
                 require_code('content');
-                list($title) = content_get_details($row['r_content_type'], $row['r_content_id']);
+                list($title, , $info) = content_get_details($row['r_content_type'], $row['r_content_id']);
                 $ret += [
+                    'content_type__dereferenced' => do_lang($info['content_type_label']),
                     'content_title__dereferenced' => $title,
                 ];
                 break;

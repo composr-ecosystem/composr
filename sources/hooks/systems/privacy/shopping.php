@@ -56,21 +56,25 @@ class Hook_privacy_shopping extends Hook_privacy_base
                     'timestamp_field' => 'l_date_and_time',
                     'retention_days' => intval(get_option('website_activity_store_time')),
                     'retention_handle_method' => PRIVACY_METHOD__DELETE,
-                    'member_id_fields' => ['l_member_id'],
+                    'owner_id_field' => 'l_member_id',
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => ['l_ip'],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
-                    'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
+                    'allowed_handle_methods' => PRIVACY_METHOD__DELETE,
                 ],
                 'shopping_cart' => [
                     'timestamp_field' => 'add_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => ['ordered_by'],
+                    'owner_id_field' => 'ordered_by',
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => [],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
@@ -80,9 +84,11 @@ class Hook_privacy_shopping extends Hook_privacy_base
                     'timestamp_field' => 'add_date',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => ['member_id'],
+                    'owner_id_field' => 'member_id',
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => [],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => db_string_not_equal_to('order_status', 'payment_received') . ' AND ' . db_string_not_equal_to('order_status', 'onhold'),
                     'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
@@ -104,7 +110,12 @@ class Hook_privacy_shopping extends Hook_privacy_base
         $ret = parent::serialise($table_name, $row);
 
         switch ($table_name) {
+            case 'shopping_cart':
+                unset($ret['session_id']);
+                break;
+                
             case 'shopping_orders':
+                unset($ret['session_id']);
                 $ret += [
                     'details' => $GLOBALS['SITE_DB']->query_select('shopping_order_details', ['*'], ['p_order_id' => $row['id']]),
                     'addresses' => $GLOBALS['SITE_DB']->query_select('ecom_trans_addresses', ['*'], ['a_txn_id' => $row['txn_id']]),
@@ -119,9 +130,10 @@ class Hook_privacy_shopping extends Hook_privacy_base
      * Delete a row.
      *
      * @param  ID_TEXT $table_name Table name
+     * @param  array $table_details Details of the table from the info function
      * @param  array $row Row raw from the database
      */
-    public function delete(string $table_name, array $row)
+    public function delete(string $table_name, array $table_details, array $row)
     {
         switch ($table_name) {
             case 'shopping_orders':
@@ -130,7 +142,7 @@ class Hook_privacy_shopping extends Hook_privacy_base
                 break;
 
             default:
-                parent::delete($table_name, $row);
+                parent::delete($table_name, $table_details, $row);
                 break;
         }
     }

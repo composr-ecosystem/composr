@@ -49,9 +49,11 @@ class Hook_privacy_awards extends Hook_privacy_base
                     'timestamp_field' => 'date_and_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => ['member_id'],
+                    'owner_id_field' => 'member_id',
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => [],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
@@ -77,8 +79,9 @@ class Hook_privacy_awards extends Hook_privacy_base
                 $content_type = $GLOBALS['SITE_DB']->query_select_value_if_there('award_types', 'a_content_type', ['id' => $row['a_type_id']]);
                 if ($content_type !== null) {
                     require_code('content');
-                    list($title) = content_get_details($content_type, $row['content_id']);
+                    list($title, , $info) = content_get_details($content_type, $row['content_id']);
                     $ret += [
+                        'content_type__dereferenced' => do_lang($info['content_type_label']),
                         'content_title__dereferenced' => $title,
                     ];
                 }

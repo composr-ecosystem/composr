@@ -49,39 +49,92 @@ class Hook_privacy_points extends Hook_privacy_base
                     'timestamp_field' => 'date_and_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => ['sender_id', 'recipient_id'],
+                    'owner_id_field' => 'sender_id',
+                    'additional_member_id_fields' => ['recipient_id'],
                     'ip_address_fields' => [],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
-                    'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
                 ],
                 'escrow_logs' => [
                     'timestamp_field' => 'date_and_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => ['member_id'],
+                    'owner_id_field' => 'member_id',
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => [],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
-                    'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
                 ],
                 'points_ledger' => [
                     'timestamp_field' => 'date_and_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => ['sender_id', 'recipient_id'],
+                    'owner_id_field' => 'sender_id',
+                    'additional_member_id_fields' => ['recipient_id'],
                     'ip_address_fields' => [],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
-                    'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
+                    'allowed_handle_methods' => PRIVACY_METHOD__DELETE,
                 ],
             ],
         ];
+    }
+    
+    /**
+     * Modify table details according to special hook behaviour and given data before performing the method.
+     *
+     * @param  ID_TEXT $table_name Table name
+     * @param  array $table_details Details of the table from the info function, passed by reference
+     * @param  ?array $row Row raw from the database (null: not applicable)
+     * @patam  ID_TEXT $method The name of the Hook_privacy_base method which called this function
+     */
+    protected function modify_table_details(string $table_name, array &$table_details, ?array $row, string $method)
+    {
+        if (($table_name != 'points_ledger') || ($row === null)) {
+            return;
+        }
+        
+        $applicable_methods = ['anonymise', 'delete', 'is_owner'];
+        if (!in_array($method, $applicable_methods)) {
+            return;
+        }
+        
+        // If sender_id is guest, then recipient_id is owner
+        if (($row[$table_details['owner_id_field']] !== null) && (is_guest($row[$table_details['owner_id_field']]))) {
+            $table_details['owner_id_field'] = 'recipient_id';
+            $table_details['additional_member_id_fields'] = [];
+        }
+    }
+    
+    /**
+     * Delete a row.
+     *
+     * @param  ID_TEXT $table_name Table name
+     * @param  array $table_details Details of the table from the info function
+     * @param  array $row Row raw from the database
+     */
+    public function delete(string $table_name, array $table_details, array $row)
+    {
+        switch ($table_name) {
+            case 'escrow':
+                $GLOBALS['SITE_DB']->query_delete('escrow_logs', ['escrow_id' => $row['id']]);
+                parent::delete($table_name, $table_details, $row);
+                break;
+                
+            default:
+                parent::delete($table_name, $table_details, $row);
+                break;
+        }
     }
 }

@@ -61,10 +61,11 @@ class database_relations_test_set extends cms_test_case
             
             foreach ($info['database_records'] as $table => $details) {
                 // table descriptions only required if any user data fields are defined
-                if ((count($info['database_records'][$table]['member_id_fields']) < 1) &&
+                if (($info['database_records'][$table]['owner_id_field'] == '') &&
+                    (count($info['database_records'][$table]['additional_member_id_fields']) < 1) &&
                     (count($info['database_records'][$table]['ip_address_fields']) < 1) &&
                     (count($info['database_records'][$table]['email_fields']) < 1) &&
-                    count($info['database_records'][$table]['additional_anonymise_fields']) < 1) {
+                    (count($info['database_records'][$table]['additional_anonymise_fields']) < 1)) {
                         continue;
                     }
                     

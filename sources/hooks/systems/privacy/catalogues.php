@@ -49,21 +49,25 @@ class Hook_privacy_catalogues extends Hook_privacy_base
                     'timestamp_field' => 'ce_add_date',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => ['ce_submitter'],
+                    'owner_id_field' => 'ce_submitter',
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => [],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
-                    'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
+                    'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
                 ],
                 'ce_fulltext_index' => [
                     'timestamp_field' => 'i_add_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => ['i_submitter'],
+                    'owner_id_field' => 'i_submitter',
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => [],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
@@ -98,9 +102,10 @@ class Hook_privacy_catalogues extends Hook_privacy_base
      * Delete a row.
      *
      * @param  ID_TEXT $table_name Table name
+     * @param  array $table_details Details of the table from the info function
      * @param  array $row Row raw from the database
      */
-    public function delete(string $table_name, array $row)
+    public function delete(string $table_name, array $table_details, array $row)
     {
         require_lang('catalogues');
 
@@ -111,7 +116,7 @@ class Hook_privacy_catalogues extends Hook_privacy_base
                 break;
 
             default:
-                parent::delete($table_name, $row);
+                parent::delete($table_name, $table_details, $row);
                 break;
         }
     }

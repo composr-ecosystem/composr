@@ -186,7 +186,7 @@ class Hook_cns_warnings_silencing
                 'the_page' => '',
                 'module_the_name' => 'topics',
                 'category_name' => strval($silence_from_topic),
-                'the_value' => '0',
+                'the_value' => 0,
             ]);
 
             require_code('cns_general_action2');
@@ -199,6 +199,9 @@ class Hook_cns_warnings_silencing
 
             $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
                 'p_warning_id' => $warning_id,
+                'p_member_id' => $member_id,
+                'p_ip_address' => '',
+                'p_email_address' => '',
                 'p_hook' => 'silencing',
                 'p_action' => '_PUNITIVE_SILENCE_FROM_TOPIC',
                 'p_param_a' => strval($silence_from_topic),
@@ -233,7 +236,7 @@ class Hook_cns_warnings_silencing
                 'the_page' => '',
                 'module_the_name' => 'forums',
                 'category_name' => strval($silence_from_forum),
-                'the_value' => '0',
+                'the_value' => 0,
             ]);
             $GLOBALS['FORUM_DB']->query_insert('member_privileges', [
                 'active_until' => $_silence_from_forum,
@@ -242,7 +245,7 @@ class Hook_cns_warnings_silencing
                 'the_page' => '',
                 'module_the_name' => 'forums',
                 'category_name' => strval($silence_from_forum),
-                'the_value' => '0',
+                'the_value' => 0,
             ]);
 
             require_code('cns_general_action2');
@@ -255,6 +258,9 @@ class Hook_cns_warnings_silencing
 
             $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
                 'p_warning_id' => $warning_id,
+                'p_member_id' => $member_id,
+                'p_ip_address' => '',
+                'p_email_address' => '',
                 'p_hook' => 'silencing',
                 'p_action' => '_PUNITIVE_SILENCE_FROM_FORUM',
                 'p_param_a' => strval($silence_from_forum),
@@ -285,7 +291,7 @@ class Hook_cns_warnings_silencing
 
         require_code('cns_general_action2');
 
-        $member_id = intval($warning['w_member_id']);
+        $member_id = intval($punitive_action['p_member_id']);
         $silence_id = intval($punitive_action['p_param_a']);
 
         switch ($punitive_action['p_action']) {

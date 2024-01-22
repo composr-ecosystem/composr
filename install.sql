@@ -10455,7 +10455,7 @@ INSERT INTO cms_db_meta (m_table, m_name, m_type) VALUES ('f_groups', 'g_max_ava
 ('f_forums', 'f_cache_last_topic_id', '?AUTO_LINK'),
 ('f_forums', 'f_cache_last_title', 'SHORT_TEXT'),
 ('f_forums', 'f_cache_last_time', '?TIME'),
-('f_forums', 'f_cache_last_username', 'SHORT_TEXT'),
+('f_forums', 'f_cache_last_username', 'ID_TEXT'),
 ('f_forums', 'f_cache_last_member_id', '?MEMBER'),
 ('f_forums', 'f_cache_last_forum_id', '?AUTO_LINK'),
 ('f_forums', 'f_redirection', 'SHORT_TEXT'),

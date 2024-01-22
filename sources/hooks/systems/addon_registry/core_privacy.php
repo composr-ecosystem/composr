@@ -105,7 +105,7 @@ class Hook_addon_registry_core_privacy
     {
         return [
             'requires' => [],
-            'recommends' => ['content_privacy', 'cns_cpfs'],
+            'recommends' => ['content_privacy', 'cns_cpfs', 'securitylogging', 'stats'],
             'conflicts_with' => [],
         ];
     }

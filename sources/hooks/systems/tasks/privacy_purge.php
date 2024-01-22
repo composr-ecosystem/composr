@@ -27,16 +27,16 @@ class Hook_task_privacy_purge
      * Run the task hook.
      *
      * @param  array $table_actions Map between table names and PRIVACY_METHOD_* constants
-     * @param  ?MEMBER $member_id_username Member ID to search for, based on username (null: none)
+     * @param  ID_TEXT $username Username to search for (blank: none)
      * @param  array $ip_addresses List of IP addresses to search for
      * @param  ?MEMBER $member_id Member ID to search for (null: none)
      * @param  string $email_address E-mail address to search for (blank: none)
      * @param  array $others List of other strings to search for, via additional-anonymise-fields
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
-    public function run(array $table_actions, ?int $member_id_username, array $ip_addresses, ?int $member_id, string $email_address, array $others) : ?array
+    public function run(array $table_actions, string $username, array $ip_addresses, ?int $member_id, string $email_address, array $others) : ?array
     {
-        // See also warnings.php - this code will delete/anonymise on mass for any kinds of database record, while warnings.php handles deletion of individually-identified high-level content items
+        // See also hooks/systems/cns_warnings/content.php - this code will delete/anonymise on mass for any kinds of database record, while hooks/systems/cns_warnings/content.php handles deletion of individually-identified high-level content items
 
         // SANITY: Don't allow mass-purging of everything by accident!
         foreach ($ip_addresses as $key => $ip) {
@@ -44,7 +44,16 @@ class Hook_task_privacy_purge
                 unset($ip_addresses[$key]);
             }
         }
-        if (($member_id_username === null) && empty($ip_addresses) && ($member_id === null) && ($email_address == '')) {
+        
+        if (($username == '') && ($member_id !== null)) {
+            $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
+        }
+        
+        if (($member_id === null) && ($username != '')) {
+            $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
+        }
+        
+        if (($username == '') && empty($ip_addresses) && ($member_id === null) && ($email_address == '')) {
             warn_exit(do_lang_tempcode('PRIVACY_PURGE_NO_FILTERS_SPECIFIED'));
         }
 
@@ -53,20 +62,36 @@ class Hook_task_privacy_purge
         require_code('privacy');
 
         set_mass_import_mode(true);
+        push_force_immediate_log_it(true);
 
+        // We must purge actionlogs and f_moderator_logs last because log_it and cns_mod_log_it may be called from purges.
         $hook_obs = find_all_hook_obs('systems', 'privacy', 'Hook_privacy_');
         foreach ($hook_obs as $hook_ob) {
             $details = $hook_ob->info();
             if ($details !== null) {
                 foreach ($details['database_records'] as $table_name => $table_details) {
-                    if ((array_key_exists($table_name, $table_actions)) && ($table_actions[$table_name] != PRIVACY_METHOD__LEAVE)) {
-                        $this->handle_for_table($hook_ob, $table_name, $table_details, $table_actions[$table_name], $member_id_username, $ip_addresses, $member_id, $email_address, $others);
+                    if (($table_name == 'actionlogs') && ($table_name == 'f_moderator_logs')) {
+                        continue;
                     }
+                    $this->handle_for_table($hook_ob, $table_name, $table_details, $table_actions[$table_name], $username, $ip_addresses, $member_id, $email_address, $others);
                 }
             }
         }
+        
+        // Now purge actionlogs and f_moderator_logs
+        $core_cns_hook = get_hook_ob('systems', 'privacy', 'core_cns', 'Hook_privacy_');
+        $details = $core_cns_hook->info();
+        if ($details !== null) {
+            $this->handle_for_table($core_cns_hook, 'f_moderator_logs', $details['database_records']['f_moderator_logs'], $table_actions['f_moderator_logs'], $username, $ip_addresses, $member_id, $email_address, $others);
+        }
+        $core_hook = get_hook_ob('systems', 'privacy', 'core', 'Hook_privacy_');
+        $details = $core_hook->info();
+        if ($details !== null) {
+            $this->handle_for_table($core_hook, 'actionlogs', $details['database_records']['actionlogs'], $table_actions['actionlogs'], $username, $ip_addresses, $member_id, $email_address, $others);
+        }
 
         set_mass_import_mode(false);
+        pop_force_immediate_log_it();
 
         require_code('caches3');
         erase_block_cache();
@@ -81,17 +106,21 @@ class Hook_task_privacy_purge
      * @param  string $table_name Table name
      * @param  array $table_details Table details
      * @param  integer $table_action A PRIVACY_METHOD_* constant
-     * @param  ?MEMBER $member_id_username Member ID to search for, based on username (null: none)
+     * @param  ID_TEXT $username Username to search for (blank: none)
      * @param  array $ip_addresses List of IP addresses to search for
      * @param  ?MEMBER $member_id Member ID to search for (null: none)
      * @param  string $email_address E-mail address to search for (blank: none)
      * @param  array $others List of other strings to search for, via additional-anonymise-fields
      */
-    protected function handle_for_table(object $hook_ob, string $table_name, array $table_details, int $table_action, ?int $member_id_username, array $ip_addresses, ?int $member_id, string $email_address, array $others)
+    protected function handle_for_table(object $hook_ob, string $table_name, array $table_details, int $table_action, string $username, array $ip_addresses, ?int $member_id, string $email_address, array $others)
     {
         $db = get_db_for($table_name);
-
-        $selection_sql = $hook_ob->get_selection_sql($table_name, $table_details, $member_id_username, $ip_addresses, $member_id, $email_address, $others);
+        
+        $selection_sql = $hook_ob->get_selection_sql($table_name, $table_details, $table_action, false, $username, $ip_addresses, $member_id, $email_address, $others);
+        if ($selection_sql == '') { // Blank result means we should not run for this table (no filters)
+            return;
+        }
+        
         $sql = 'SELECT * FROM ' . $db->get_table_prefix() . $table_name;
         $sql .= $selection_sql;
         $rows = $db->query($sql);
@@ -99,11 +128,16 @@ class Hook_task_privacy_purge
         foreach ($rows as $row) {
             switch ($table_action) {
                 case PRIVACY_METHOD__ANONYMISE:
-                    $hook_ob->anonymise($table_name, $row);
+                    $hook_ob->anonymise($table_name, $table_details, $row, $username, $ip_addresses, $member_id, $email_address, $others);
                     break;
 
                 case PRIVACY_METHOD__DELETE:
-                    $hook_ob->delete($table_name, $row);
+                    // Delete is only allowed on records which the individual owns; else, anonymise
+                    if ($hook_ob->is_owner($table_name, $table_details, $row, $member_id, $username, $email_address)) {
+                        $hook_ob->delete($table_name, $table_details, $row);
+                    } else {
+                        $hook_ob->anonymise($table_name, $table_details, $row, $username, $ip_addresses, $member_id, $email_address, $others);
+                    }
                     break;
             }
         }

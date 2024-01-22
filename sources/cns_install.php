@@ -700,7 +700,7 @@ function install_cns(?float $upgrade_from = null)
             'f_cache_last_topic_id' => '?AUTO_LINK',
             'f_cache_last_title' => 'SHORT_TEXT',
             'f_cache_last_time' => '?TIME',
-            'f_cache_last_username' => 'SHORT_TEXT',
+            'f_cache_last_username' => 'ID_TEXT',
             'f_cache_last_member_id' => '?MEMBER',
             'f_cache_last_forum_id' => '?AUTO_LINK',
             'f_redirection' => 'SHORT_TEXT',
@@ -1102,7 +1102,7 @@ function install_cns(?float $upgrade_from = null)
             'id' => '*AUTO',
             'ga_date_and_time' => 'TIME',
             'ga_member_id' => 'MEMBER',
-            'ga_member_username' => 'SHORT_TEXT',
+            'ga_member_username' => 'ID_TEXT',
             'ga_old_group_id' => '?GROUP', // null: join request, not null: rank (promotion)
             'ga_new_group_id' => 'GROUP',
             'ga_status' => 'SHORT_INTEGER', // -1 = declined, 0 = pending, 1 = approved
@@ -1591,6 +1591,9 @@ function install_cns(?float $upgrade_from = null)
         $GLOBALS['FORUM_DB']->create_table('f_warnings_punitive', [
             'id' => '*AUTO',
             'p_warning_id' => 'AUTO_LINK',
+            'p_member_id' => 'MEMBER', // The member to which the action applies
+            'p_ip_address' => 'IP', // The IP address to which the action applies, if applicable
+            'p_email_address' => 'SHORT_TEXT', // The e-mail address to which the action applies, if applicable
             'p_hook' => 'ID_TEXT', // name of a hook in systems/cns_warnings that performed the action
             'p_action' => 'ID_TEXT', // A punitive action language string code, which p_param_a and p_param_b will be injected for written context
             'p_param_a' => 'SHORT_TEXT', // some parameter relating to the action
@@ -1610,6 +1613,9 @@ function install_cns(?float $upgrade_from = null)
                     if ($row['p_silence_from_topic'] !== null) {
                         $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
                             'p_warning_id' => $row['id'],
+                            'p_member_id' => $row['w_member_id'],
+                            'p_ip_address' => '',
+                            'p_email_address' => '',
                             'p_hook' => 'silencing',
                             'p_action' => '_PUNITIVE_SILENCE_FROM_TOPIC',
                             'p_param_a' => strval($row['p_silence_from_topic']),
@@ -1620,6 +1626,9 @@ function install_cns(?float $upgrade_from = null)
                     if ($row['p_silence_from_forum'] !== null) {
                         $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
                             'p_warning_id' => $row['id'],
+                            'p_member_id' => $row['w_member_id'],
+                            'p_ip_address' => '',
+                            'p_email_address' => '',
                             'p_hook' => 'silencing',
                             'p_action' => '_PUNITIVE_SILENCE_FROM_FORUM',
                             'p_param_a' => strval($row['p_silence_from_forum']),
@@ -1630,6 +1639,9 @@ function install_cns(?float $upgrade_from = null)
                     if ($row['p_probation'] !== null) {
                         $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
                             'p_warning_id' => $row['id'],
+                            'p_member_id' => $row['w_member_id'],
+                            'p_ip_address' => '',
+                            'p_email_address' => '',
                             'p_hook' => 'probation',
                             'p_action' => '_PUNITIVE_PROBATION',
                             'p_param_a' => strval($row['p_probation']),
@@ -1640,9 +1652,12 @@ function install_cns(?float $upgrade_from = null)
                     if ($row['p_banned_ip'] !== null) {
                         $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
                             'p_warning_id' => $row['id'],
+                            'p_member_id' => $row['w_member_id'],
+                            'p_ip_address' => strval($row['p_banned_ip']),
+                            'p_email_address' => '',
                             'p_hook' => 'ban_ip',
                             'p_action' => '_PUNITIVE_IP_BANNED',
-                            'p_param_a' => strval($row['p_banned_ip']),
+                            'p_param_a' => '',
                             'p_param_b' => '',
                             'p_reversed' => 0,
                         ]);
@@ -1650,6 +1665,9 @@ function install_cns(?float $upgrade_from = null)
                     if ($row['p_charged_points'] !== null) {
                         $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
                             'p_warning_id' => $row['id'],
+                            'p_member_id' => $row['w_member_id'],
+                            'p_ip_address' => '',
+                            'p_email_address' => '',
                             'p_hook' => 'points',
                             'p_action' => '_PUNITIVE_CHARGED_POINTS',
                             'p_param_a' => strval($row['p_charged_points']),
@@ -1660,6 +1678,9 @@ function install_cns(?float $upgrade_from = null)
                     if ($row['p_banned_member'] !== null) {
                         $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
                             'p_warning_id' => $row['id'],
+                            'p_member_id' => $row['w_member_id'],
+                            'p_ip_address' => '',
+                            'p_email_address' => '',
                             'p_hook' => 'ban_member',
                             'p_action' => '_PUNITIVE_BAN_ACCOUNT',
                             'p_param_a' => '',
@@ -1670,6 +1691,9 @@ function install_cns(?float $upgrade_from = null)
                     if ($row['p_changed_usergroup_from'] !== null) {
                         $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
                             'p_warning_id' => $row['id'],
+                            'p_member_id' => $row['w_member_id'],
+                            'p_ip_address' => '',
+                            'p_email_address' => '',
                             'p_hook' => 'change_group',
                             'p_action' => '_PUNITIVE_CHANGE_USERGROUP',
                             'p_param_a' => strval($row['p_changed_usergroup_from']),

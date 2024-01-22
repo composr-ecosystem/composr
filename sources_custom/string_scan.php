@@ -8454,6 +8454,11 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PUNITIVE_POINTS_TRANSACTION_FIELD_DESCRIPTION
         PUNITIVE_REVERSE_POINTS_TRANSACTION
         _PUNITIVE_REVERSE_POINTS_TRANSACTION
+        _PRIVACY_PURGE_TABLE_RECORDS
+        PRIVACY_PURGE_COULD_NOT_ANONYMISE
+        TEXT_PRIVACY_DOWNLOAD
+        TEXT_PRIVACY_PURGE
+        TEXT_PRIVACY_SQL
     ')));
 
     $non_admin_files = [

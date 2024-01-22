@@ -237,7 +237,6 @@ class Hook_addon_registry_commandr
             'sources/hooks/systems/commandr_commands/users_online.php',
             'sources/hooks/systems/commandr_commands/version.php',
             'sources/hooks/systems/commandr_commands/whoami.php',
-            'sources/hooks/systems/commandr_commands/whois.php',
             'sources/hooks/systems/commandr_commands/write.php',
             'sources/hooks/systems/commandr_commands/database_upgrade.php',
             'sources/hooks/systems/commandr_commands/check_perms.php',

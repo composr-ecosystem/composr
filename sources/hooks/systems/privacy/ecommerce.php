@@ -82,9 +82,11 @@ class Hook_privacy_ecommerce extends Hook_privacy_base
                     'timestamp_field' => 'date_and_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => ['member_id'],
+                    'owner_id_field' => 'member_id',
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => [],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
@@ -94,9 +96,11 @@ class Hook_privacy_ecommerce extends Hook_privacy_base
                     'timestamp_field' => 's_time',
                     'retention_days' => intval(get_option('website_activity_store_time')),
                     'retention_handle_method' => PRIVACY_METHOD__DELETE,
-                    'member_id_fields' => ['s_member_id'],
+                    'owner_id_field' => 's_member_id',
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => [],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => db_string_not_equal_to('s_state', 'active'),
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
@@ -106,9 +110,11 @@ class Hook_privacy_ecommerce extends Hook_privacy_base
                     'timestamp_field' => 'i_time',
                     'retention_days' => intval(get_option('website_activity_store_time')),
                     'retention_handle_method' => PRIVACY_METHOD__DELETE,
-                    'member_id_fields' => ['i_member_id'],
+                    'owner_id_field' => 'i_member_id',
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => [],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => db_string_equal_to('i_state', 'paid') . ' OR ' . db_string_equal_to('i_state', 'delivered'),
                     'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
@@ -118,21 +124,25 @@ class Hook_privacy_ecommerce extends Hook_privacy_base
                     'timestamp_field' => 't_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => ['t_member_id'],
+                    'owner_id_field' => 't_member_id',
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => [],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
-                    'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
                 ],
                 'ecom_trans_expecting' => [
                     'timestamp_field' => 'e_time',
                     'retention_days' => 31,
                     'retention_handle_method' => PRIVACY_METHOD__DELETE,
-                    'member_id_fields' => ['e_member_id'],
+                    'owner_id_field' => 'e_member_id',
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => ['e_ip_address'],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
@@ -142,9 +152,11 @@ class Hook_privacy_ecommerce extends Hook_privacy_base
                     'timestamp_field' => null,
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE, // Handled with shopping_order, can't query by date
-                    'member_id_fields' => [],
+                    'owner_id_field' => null,
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => [],
                     'email_fields' => ['a_email'],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => ['a_firstname', 'a_lastname', 'a_street_address', 'a_city', 'a_state', 'a_post_code', 'a_country', 'a_phone'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
@@ -227,9 +239,10 @@ class Hook_privacy_ecommerce extends Hook_privacy_base
      * Delete a row.
      *
      * @param  ID_TEXT $table_name Table name
+     * @param  array $table_details Details of the table from the info function
      * @param  array $row Row raw from the database
      */
-    public function delete(string $table_name, array $row)
+    public function delete(string $table_name, array $table_details, array $row)
     {
         switch ($table_name) {
             case 'ecom_transactions':
@@ -238,7 +251,7 @@ class Hook_privacy_ecommerce extends Hook_privacy_base
                 break;
 
             default:
-                parent::delete($table_name, $row);
+                parent::delete($table_name, $table_details, $row);
                 break;
         }
     }

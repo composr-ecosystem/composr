@@ -147,6 +147,7 @@ class Hook_cns_warnings_change_group
 
                 $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
                     'p_warning_id' => $warning_id,
+                    'p_member_id' => $member_id,
                     'p_hook' => 'change_group',
                     'p_action' => '_PUNITIVE_CHANGE_USERGROUP',
                     'p_param_a' => strval($changed_usergroup_from),
@@ -178,7 +179,7 @@ class Hook_cns_warnings_change_group
         }
 
         $id = intval($punitive_action['id']);
-        $member_id = intval($warning['w_member_id']);
+        $member_id = intval($punitive_action['p_member_id']);
         $changed_usergroup_from = intval($punitive_action['p_param_a']);
 
         // Confirm that the group we want to switch back to actually exists

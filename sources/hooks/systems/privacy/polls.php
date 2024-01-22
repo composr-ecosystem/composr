@@ -49,9 +49,11 @@ class Hook_privacy_polls extends Hook_privacy_base
                     'timestamp_field' => 'add_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => ['submitter'],
+                    'owner_id_field' => 'submitter',
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => [],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
@@ -61,9 +63,11 @@ class Hook_privacy_polls extends Hook_privacy_base
                     'timestamp_field' => 'v_vote_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => ['v_voter_id'],
+                    'owner_id_field' => 'v_voter_id',
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => ['v_voter_ip'],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
@@ -103,9 +107,10 @@ class Hook_privacy_polls extends Hook_privacy_base
      * Delete a row.
      *
      * @param  ID_TEXT $table_name Table name
+     * @param  array $table_details Details of the table from the info function
      * @param  array $row Row raw from the database
      */
-    public function delete(string $table_name, array $row)
+    public function delete(string $table_name, array $table_details, array $row)
     {
         require_lang('polls');
 
@@ -116,7 +121,7 @@ class Hook_privacy_polls extends Hook_privacy_base
                 break;
 
             default:
-                parent::delete($table_name, $row);
+                parent::delete($table_name, $table_details, $row);
                 break;
         }
     }

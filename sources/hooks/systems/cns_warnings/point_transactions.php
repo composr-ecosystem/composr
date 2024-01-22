@@ -180,6 +180,9 @@ class Hook_cns_warnings_point_transactions
 
                 $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
                     'p_warning_id' => $warning_id,
+                    'p_member_id' => $member_id,
+                    'p_ip_address' => '',
+                    'p_email_address' => '',
                     'p_hook' => 'point_transactions',
                     'p_action' => '_PUNITIVE_REVERSE_POINTS_TRANSACTION',
                     'p_param_a' => strval($row['id']),

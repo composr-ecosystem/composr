@@ -200,7 +200,7 @@ class Hook_cns_warnings_content
             $_fields->attach(form_input_list($handle_label, '', 'handle_post__' . strval($_post_id), $list_options, null, false, false));
         }
 
-        // See also privacy_purge.php - this code handles deletion of individually-identified high-level content items, while privacy-purging will delete/anonymise on mass for any kinds of database record
+        // See also hooks/systems/tasks/privacy_purge.php - this code handles deletion of individually-identified high-level content items, while privacy-purging will delete/anonymise on mass for any kinds of database record
         if (addon_installed('commandr') && has_privilege(get_member(), 'delete_highrange_content')) {
             $content = find_member_content($member_id);
             foreach ($content as $content_details) {
@@ -269,6 +269,9 @@ class Hook_cns_warnings_content
                         $punitive_messages[] = do_lang('PUNITIVE_DELETE_POST', strval($p_title), null, null, null, false);
                         $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
                             'p_warning_id' => $warning_id,
+                            'p_member_id' => $member_id,
+                            'p_ip_address' => '',
+                            'p_email_address' => '',
                             'p_hook' => 'content',
                             'p_action' => '_PUNITIVE_DELETE_POST',
                             'p_param_a' => strval($post['id']),
@@ -285,6 +288,9 @@ class Hook_cns_warnings_content
                         }
                         $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
                             'p_warning_id' => $warning_id,
+                            'p_member_id' => $member_id,
+                            'p_ip_address' => '',
+                            'p_email_address' => '',
                             'p_hook' => 'content',
                             'p_action' => '_PUNITIVE_DELETE_POST_AND_FOLLOWING',
                             'p_param_a' => strval($post['id']),
@@ -333,6 +339,9 @@ class Hook_cns_warnings_content
 
                             $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
                                 'p_warning_id' => $warning_id,
+                                'p_member_id' => $member_id,
+                                'p_ip_address' => '',
+                                'p_email_address' => '',
                                 'p_hook' => 'content',
                                 'p_action' => '_PUNITIVE_DELETE_CONTENT',
                                 'p_param_a' => strval($content_type_title),

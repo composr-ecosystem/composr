@@ -125,6 +125,9 @@ class Hook_cns_warnings_probation
 
                 $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
                     'p_warning_id' => $warning_id,
+                    'p_member_id' => $member_id,
+                    'p_ip_address' => '',
+                    'p_email_address' => '',
                     'p_hook' => 'probation',
                     'p_action' => '_PUNITIVE_PROBATION',
                     'p_param_a' => strval($probation),
@@ -154,7 +157,7 @@ class Hook_cns_warnings_probation
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
 
-        $member_id = intval($warning['w_member_id']);
+        $member_id = intval($punitive_action['p_member_id']);
         $probation = intval($punitive_action['p_param_a']);
 
         $on_probation_until = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_on_probation_until');

@@ -27,28 +27,35 @@ class Hook_task_privacy_download
      * Run the task hook.
      *
      * @param  array $table_actions Map between table names and PRIVACY_METHOD_* constants
-     * @param  ?MEMBER $member_id_username Member ID to search for, based on username (null: none)
+     * @param  ID_TEXT $username Username to search for (blank: none)
      * @param  array $ip_addresses List of IP addresses to search for
      * @param  ?MEMBER $member_id Member ID to search for (null: none)
      * @param  string $email_address E-mail address to search for (blank: none)
      * @param  array $others List of other strings to search for, via additional-anonymise-fields
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
-    public function run(array $table_actions, ?int $member_id_username, array $ip_addresses, ?int $member_id, string $email_address, array $others) : ?array
+    public function run(array $table_actions, string $username, array $ip_addresses, ?int $member_id, string $email_address, array $others) : ?array
     {
-        require_code('privacy');
-
         disable_php_memory_limit();
-
-        if ($member_id_username !== null) {
-            $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id_username);
-        } elseif ($member_id !== null) {
+        
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
+        
+        require_code('privacy');
+        require_code('tar');
+        require_code('files2');
+        
+        // Create temporary file to use as archive
+        $filename = preg_replace('#[^\w]#', '_', ($username != '' ? $username : do_lang('UNKNOWN'))) . '.tar.gz';
+        $file_path = cms_tempnam();
+        $data_file = tar_open($file_path, 'wb');
+        
+        if (($username == '') && ($member_id !== null)) {
             $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
-        } else {
-            $username = do_lang('UNKNOWN');
         }
-
-        $data = [];
+        
+        if (($member_id === null) && ($username != '')) {
+            $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
+        }
 
         push_db_scope_check(false);
 
@@ -58,32 +65,61 @@ class Hook_task_privacy_download
             if ($details !== null) {
                 foreach ($details['database_records'] as $table_name => $table_details) {
                     if ((array_key_exists($table_name, $table_actions)) && ($table_actions[$table_name] == 1)) {
-                        $data[$table_name] = [];
+                        $data = [];
 
-                        $db = get_db_for($table_name);
-                        $selection_sql = $hook_ob->get_selection_sql($table_name, $table_details, $member_id_username, $ip_addresses, $member_id, $email_address, $others);
-                        $rows = $db->query('SELECT * FROM ' . $db->get_table_prefix() . $table_name . $selection_sql);
-                        foreach ($rows as $row) {
-                            $data[$table_name][] = $hook_ob->serialise($table_name, $row);
+                        $db = get_db_for($table_name);             
+                        $selection_sql = $hook_ob->get_selection_sql($table_name, $table_details, 1, false, $username, $ip_addresses, $member_id, $email_address, $others);
+                        if ($selection_sql != '') {
+                            $rows = $db->query('SELECT * FROM ' . $db->get_table_prefix() . $table_name . $selection_sql);
+                            foreach ($rows as $_row) {
+                                if (!$hook_ob->is_owner($table_name, $table_details, $_row, $member_id, $username, $email_address)) {
+                                    // We do not want to leak data from other users out to this user
+                                    $row = $hook_ob->anonymise($table_name, $table_details, $_row, $username, $ip_addresses, $member_id, $email_address, $others, true);
+                                    $data[] = $hook_ob->serialise($table_name, $row);
+                                    continue;
+                                }
+                                $data[] = $hook_ob->serialise($table_name, $_row);
+                            }
                         }
+                        
+                        $this->create_json_file($table_name, $data, $data_file);
                     }
                 }
             }
         }
 
         pop_db_scope_check();
+        
+        tar_close($data_file);
 
-        $filename = preg_replace('#[^\w]#', '_', $username) . '.json';
+        // Start streaming the archive
         $headers = [];
-        $headers['Content-Type'] = 'application/json';
+        $headers['Content-Type'] = 'application/x-gzip';
         $headers['Content-Disposition'] = 'attachment; filename="' . escape_header($filename) . '"';
 
         $ini_set = [];
         $ini_set['ocproducts.xss_detect'] = '0';
-
-        require_code('files2');
-        $outfile_path = cms_tempnam();
-        cms_file_put_contents_safe($outfile_path, json_encode($data, JSON_PRETTY_PRINT), FILE_WRITE_BOM);
-        return ['application/json', [$filename, $outfile_path], $headers, $ini_set];
+        return ['application/x-gzip', [$filename, $file_path], $headers, $ini_set];
+    }
+    
+    /**
+     * Create a JSON file from the given table data.
+     * 
+     * @param  string $table_name The name of the table from which this data comes
+     * @param  array $data The data to be saved
+     * @param  array $data_file The tar data file array
+     */
+    protected function create_json_file(string $table_name, array $data, array &$data_file)
+    {
+        // Don't create a JSON file if we have no data to put into it
+        if (count($data) <= 0) {
+            return null;
+        }
+        
+        $filename = preg_replace('#[^\w]#', '_', $table_name) . '.json';
+        $json_data = json_encode($data, JSON_PRETTY_PRINT);
+        
+        require_code('tar');
+        tar_add_file($data_file, $filename, $json_data);
     }
 }

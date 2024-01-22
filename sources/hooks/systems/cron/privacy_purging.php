@@ -76,15 +76,13 @@ class Hook_cron_privacy_purging
     {
         $db = get_db_for($table_name);
 
-        $selection_sql = $hook_ob->get_selection_sql($table_name, $table_details);
+        $selection_sql = $hook_ob->get_selection_sql($table_name, $table_details, $table_action, true);
+        if ($selection_sql == '') { // Blank result means we should not run for this table (no filters / retention period)
+            return;
+        }
+        
         $sql = 'SELECT * FROM ' . $db->get_table_prefix() . $table_name;
         $sql .= $selection_sql;
-        if (strpos($sql, ' WHERE ') === false) {
-            $sql .= ' WHERE ';
-        } else {
-            $sql .= ' AND ';
-        }
-        $sql .= $table_details['timestamp_field'] . '<=' . strval(time() - 60 * 60 * 24 * $table_details['retention_days']);
         $rows = $db->query($sql);
 
         foreach ($rows as $row) {

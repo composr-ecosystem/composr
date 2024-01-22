@@ -55,7 +55,7 @@ class Hook_cns_warnings_ban_ip
 
         switch ($row['p_action']) {
             case '_PUNITIVE_IP_BANNED':
-                return do_lang('_PUNITIVE_IP_BANNED', $row['p_param_a']);
+                return do_lang('_PUNITIVE_IP_BANNED', $row['p_ip_address']);
 
             default:
                 return '';
@@ -122,9 +122,12 @@ class Hook_cns_warnings_ban_ip
 
                 $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
                     'p_warning_id' => $warning_id,
+                    'p_member_id' => $member_id,
+                    'p_ip_address' => $banned_ip,
+                    'p_email_address' => '',
                     'p_hook' => 'ban_ip',
                     'p_action' => '_PUNITIVE_IP_BANNED',
-                    'p_param_a' => $banned_ip,
+                    'p_param_a' => '',
                     'p_param_b' => '',
                     'p_reversed' => 0,
                 ]);
@@ -152,8 +155,8 @@ class Hook_cns_warnings_ban_ip
 
         require_code('failure');
 
-        $banned_ip = $punitive_action['p_param_a'];
-        $member_id = intval($warning['w_member_id']);
+        $banned_ip = $punitive_action['p_ip_address'];
+        $member_id = intval($punitive_action['p_member_id']);
 
         remove_ip_ban($banned_ip);
 

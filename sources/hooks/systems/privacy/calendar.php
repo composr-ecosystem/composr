@@ -52,9 +52,11 @@ class Hook_privacy_calendar extends Hook_privacy_base
                     'timestamp_field' => 'e_add_date',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => ['e_submitter', 'e_member_calendar'],
+                    'owner_id_field' => 'e_submitter',
+                    'additional_member_id_fields' => ['e_member_calendar'],
                     'ip_address_fields' => [],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
@@ -64,9 +66,11 @@ class Hook_privacy_calendar extends Hook_privacy_base
                     'timestamp_field' => null,
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => ['n_member_id'],
+                    'owner_id_field' => 'n_member_id',
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => [],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
@@ -76,9 +80,11 @@ class Hook_privacy_calendar extends Hook_privacy_base
                     'timestamp_field' => null,
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => ['i_member_id'],
+                    'owner_id_field' => 'i_member_id',
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => [],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
@@ -88,9 +94,11 @@ class Hook_privacy_calendar extends Hook_privacy_base
                     'timestamp_field' => 'j_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => ['j_member_id'],
+                    'owner_id_field' => 'j_member_id',
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => [],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
@@ -156,9 +164,10 @@ class Hook_privacy_calendar extends Hook_privacy_base
      * Delete a row.
      *
      * @param  ID_TEXT $table_name Table name
+     * @param  array $table_details Details of the table from the info function
      * @param  array $row Row raw from the database
      */
-    public function delete(string $table_name, array $row)
+    public function delete(string $table_name, array $table_details, array $row)
     {
         require_lang('calendar');
 
@@ -167,9 +176,14 @@ class Hook_privacy_calendar extends Hook_privacy_base
                 require_code('calendar2');
                 delete_calendar_event($row['id']);
                 break;
+            case 'calendar_jobs':
+                // We must also delete the event because the job could otherwise be regenerated
+                require_code('calendar2');
+                delete_calendar_event($row['j_event_id']);
+                break;
 
             default:
-                parent::delete($table_name, $row);
+                parent::delete($table_name, $table_details, $row);
                 break;
         }
     }

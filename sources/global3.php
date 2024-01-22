@@ -174,6 +174,9 @@ function init__global3()
     global $ASCII_LCASE_MAP, $ASCII_UCASE_MAP;
     $ASCII_LCASE_MAP = ['a' => 'A', 'b' => 'B', 'c' => 'C', 'd' => 'D', 'e' => 'E', 'f' => 'F', 'g' => 'G', 'h' => 'H', 'i' => 'I', 'j' => 'J', 'k' => 'K', 'l' => 'L', 'm' => 'M', 'n' => 'N', 'o' => 'O', 'p' => 'P', 'q' => 'Q', 'r' => 'R', 's' => 'S', 't' => 'T', 'u' => 'U', 'v' => 'V', 'w' => 'W', 'x' => 'X', 'y' => 'Y', 'z' => 'Z'];
     $ASCII_UCASE_MAP = ['A' => 'a', 'B' => 'b', 'C' => 'c', 'D' => 'd', 'E' => 'e', 'F' => 'f', 'G' => 'g', 'H' => 'h', 'I' => 'i', 'J' => 'j', 'K' => 'k', 'L' => 'l', 'M' => 'm', 'N' => 'n', 'O' => 'o', 'P' => 'p', 'Q' => 'q', 'R' => 'r', 'S' => 's', 'T' => 't', 'U' => 'u', 'V' => 'v', 'W' => 'w', 'X' => 'x', 'Y' => 'y', 'Z' => 'z'];
+    
+    global $FORCE_IMMEDIATE_LOG_IT;
+    $FORCE_IMMEDIATE_LOG_IT = [];
 }
 
 /**
@@ -3176,12 +3179,48 @@ function log_it(string $type, ?string $a = null, ?string $b = null, bool $return
     if ($return_id) {
         return _log_it($type, $a, $b, $related_warning_id);
     }
+    
+    if (peek_force_immediate_log_it()) {
+        _log_it($type, $a, $b, $related_warning_id);
+        return null;
+    }
 
     cms_register_shutdown_function_safe(function () use ($type, $a, $b, $related_warning_id) {
         return _log_it($type, $a, $b, $related_warning_id);
     });
 
     return null;
+}
+
+/**
+ * Define whether log_it should forcefully execute immediately instead of trying to register itself in a shutdown function.
+ * 
+ * @param  boolean $value Whether log_it should forcefully log immediately
+ */
+function push_force_immediate_log_it(bool $value)
+{
+    global $FORCE_IMMEDIATE_LOG_IT;
+    $FORCE_IMMEDIATE_LOG_IT[] = $value;
+}
+
+/**
+ * Remove a push_force_immediate_log_it value off of the end of our chain.
+ */
+function pop_force_immediate_log_it()
+{
+    global $FORCE_IMMEDIATE_LOG_IT;
+    array_pop($FORCE_IMMEDIATE_LOG_IT);
+}
+
+/**
+ * Check whether log_it should be forcefully running immediately instead of registering as a shutdown function.
+ * 
+ * @return boolean Whether log_it should run immediately
+ */
+function peek_force_immediate_log_it() : bool
+{
+    global $FORCE_IMMEDIATE_LOG_IT;
+    return end($FORCE_IMMEDIATE_LOG_IT);
 }
 
 /**

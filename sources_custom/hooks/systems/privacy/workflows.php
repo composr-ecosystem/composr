@@ -44,9 +44,11 @@ class Hook_privacy_workflows extends Hook_privacy_base
                     'timestamp_field' => null,
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => ['original_submitter'],
+                    'owner_id_field' => 'original_submitter',
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => [],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
@@ -56,9 +58,11 @@ class Hook_privacy_workflows extends Hook_privacy_base
                     'timestamp_field' => null,
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => ['approved_by'],
+                    'owner_id_field' => 'approved_by',
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => [],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
@@ -82,9 +86,10 @@ class Hook_privacy_workflows extends Hook_privacy_base
         switch ($table_name) {
             case 'workflow_content':
                 require_code('content');
-                list($content_title) = content_get_details($row['content_type'], $row['content_id']);
+                list($title, , $info) = content_get_details($row['content_type'], $row['content_id']);
                 $ret += [
-                    'content_id__dereferenced' => $content_title,
+                    'content_type__dereferenced' => do_lang($info['content_type_label']),
+                    'content_title__dereferenced' => $title,
                 ];
                 $workflow_name = $GLOBALS['SITE_DB']->query_select_value_if_there('workflows', 'workflow_name', ['id' => $row['workflow_id']]);
                 if ($workflow_name !== null) {
@@ -95,14 +100,17 @@ class Hook_privacy_workflows extends Hook_privacy_base
                 break;
 
             case 'workflow_content_status':
-                $content_title = null;
+                $title = null;
+                $type = null;
                 $workflow_content_rows = $GLOBALS['SITE_DB']->query_select('workflow_content', ['*'], ['id' => $row['workflow_content_id']], '', 1);
                 if (array_key_exists(0, $workflow_content_rows)) {
                     require_code('content');
-                    list($content_title) = content_get_details($workflow_content_rows[0]['content_type'], $workflow_content_rows[0]['content_id']);
+                    list($title, , $info) = content_get_details($workflow_content_rows[0]['content_type'], $workflow_content_rows[0]['content_id']);
+                    $type = do_lang($info['content_type_label']);
                 }
                 $ret += [
-                    'workflow_content_id_dereferenced' => $content_title,
+                    'workflow_content_type__dereferenced' => $type,
+                    'workflow_content_title__dereferenced' => $title,
                 ];
                 $workflow_approval_name = $GLOBALS['SITE_DB']->query_select_value_if_there('workflow_approval_points', 'workflow_approval_name', ['id' => $row['id']]);
                 if ($workflow_approval_name !== null) {

@@ -53,10 +53,7 @@ class Hook_cns_warnings_ban_member
 
         require_lang('cns_warnings');
 
-        $member = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_warnings', 'w_member_id', ['id' => $row['p_warning_id']]);
-        if ($member !== null) {
-            $member = $GLOBALS['FORUM_DRIVER']->get_username($member, true);
-        }
+        $member = $GLOBALS['FORUM_DRIVER']->get_username($row['p_member_id'], true);
 
         switch ($row['p_action']) {
             case '_PUNITIVE_BAN_ACCOUNT':
@@ -138,6 +135,9 @@ class Hook_cns_warnings_ban_member
 
                 $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
                     'p_warning_id' => $warning_id,
+                    'p_member_id' => $member_id,
+                    'p_ip_address' => '',
+                    'p_email_address' => '',
                     'p_hook' => 'ban_member',
                     'p_action' => '_PUNITIVE_BAN_ACCOUNT',
                     'p_param_a' => '',
@@ -165,7 +165,7 @@ class Hook_cns_warnings_ban_member
             warn_exit($error);
         }
 
-        $member_id = intval($warning['w_member_id']);
+        $member_id = intval($punitive_action['p_member_id']);
 
         $GLOBALS['FORUM_DB']->query_update('f_members', ['m_is_perm_banned' => '0'], ['id' => $member_id], '', 1);
 

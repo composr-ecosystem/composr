@@ -3878,6 +3878,9 @@ class Hook_import_cms_merge
 
             $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
                 'p_warning_id' => $warning_id,
+                'p_member_id' => $row['p_member_id'],
+                'p_ip_address' => $row['p_ip_address'],
+                'p_email_address' => $row['p_email_address'],
                 'p_hook' => $row['p_hook'],
                 'p_action' => $row['p_action'],
                 'p_param_a' => ($p_param_a === null) ? '' : strval($p_param_a),

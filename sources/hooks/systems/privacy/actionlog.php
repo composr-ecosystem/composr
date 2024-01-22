@@ -49,9 +49,11 @@ class Hook_privacy_actionlog extends Hook_privacy_base
                     'timestamp_field' => null,
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => ['r_original_content_owner'],
+                    'owner_id_field' => 'r_original_content_owner',
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => [],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
@@ -75,8 +77,9 @@ class Hook_privacy_actionlog extends Hook_privacy_base
         switch ($table_name) {
             case 'revisions':
                 require_code('content');
-                list($title) = content_get_details($row['r_resource_type'], $row['r_resource_id']);
+                list($title, , $info) = content_get_details($row['r_resource_type'], $row['r_resource_id']);
                 $ret += [
+                    'content_type__dereferenced' => do_lang($info['content_type_label']),
                     'content_title__dereferenced' => $title,
                 ];
                 break;

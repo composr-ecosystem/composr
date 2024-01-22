@@ -58,9 +58,11 @@ class Hook_privacy_chat extends Hook_privacy_base
                     'timestamp_field' => 'date_and_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => ['member_likes', 'member_liked'],
+                    'owner_id_field' => 'member_likes',
+                    'additional_member_id_fields' => ['member_liked'],
                     'ip_address_fields' => [],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
@@ -70,9 +72,11 @@ class Hook_privacy_chat extends Hook_privacy_base
                     'timestamp_field' => 'e_date_and_time',
                     'retention_days' => intval(ceil(floatval(CHAT_EVENT_PRUNE) / 60.0 / 60.0 / 24.0)),
                     'retention_handle_method' => PRIVACY_METHOD__DELETE,
-                    'member_id_fields' => ['e_member_id'],
+                    'owner_id_field' => 'e_member_id',
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => [],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
@@ -82,9 +86,11 @@ class Hook_privacy_chat extends Hook_privacy_base
                     'timestamp_field' => 'date_and_time',
                     'retention_days' => intval(ceil(floatval(CHAT_ACTIVITY_PRUNE) / 60.0 / 60.0 / 24.0)),
                     'retention_handle_method' => PRIVACY_METHOD__DELETE,
-                    'member_id_fields' => ['member_id'],
+                    'owner_id_field' => 'member_id',
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => ['ip'],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
@@ -94,9 +100,11 @@ class Hook_privacy_chat extends Hook_privacy_base
                     'timestamp_field' => 'date_and_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => ['member_id'],
+                    'owner_id_field' => 'member_id',
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => ['ip_address'],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
@@ -106,9 +114,11 @@ class Hook_privacy_chat extends Hook_privacy_base
                     'timestamp_field' => 'date_and_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => ['member_blocker', 'member_blocked'],
+                    'owner_id_field' => 'member_blocker',
+                    'additional_member_id_fields' => ['member_blocked'],
                     'ip_address_fields' => [],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
@@ -118,9 +128,11 @@ class Hook_privacy_chat extends Hook_privacy_base
                     'timestamp_field' => null,
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => ['s_member'],
+                    'owner_id_field' => 's_member',
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => [],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
@@ -142,13 +154,6 @@ class Hook_privacy_chat extends Hook_privacy_base
         $ret = parent::serialise($table_name, $row);
 
         switch ($table_name) {
-            case 'chat_friends':
-                $ret += [
-                    'member_likes__dereferenced' => $GLOBALS['FORUM_DRIVER']->get_username($row['member_likes']),
-                    'member_liked__dereferenced' => $GLOBALS['FORUM_DRIVER']->get_username($row['member_liked']),
-                ];
-                break;
-
             case 'chat_events':
                 $ret += [
                     'e_room_id__dereferenced' => $GLOBALS['SITE_DB']->query_select_value_if_there('chat_rooms', 'room_name', ['id' => $row['e_room_id']]),
@@ -166,15 +171,31 @@ class Hook_privacy_chat extends Hook_privacy_base
                     'room_id__dereferenced' => $GLOBALS['SITE_DB']->query_select_value_if_there('chat_rooms', 'room_name', ['id' => $row['room_id']]),
                 ];
                 break;
-
-            case 'chat_blocking':
-                $ret += [
-                    'member_blocker__dereferenced' => $GLOBALS['FORUM_DRIVER']->get_username($row['member_blocker']),
-                    'member_blocked__dereferenced' => $GLOBALS['FORUM_DRIVER']->get_username($row['member_blocked']),
-                ];
-                break;
         }
 
         return $ret;
+    }
+    
+    /**
+     * Delete a row.
+     *
+     * @param  ID_TEXT $table_name Table name
+     * @param  array $table_details Details of the table from the info function
+     * @param  array $row Row raw from the database
+     */
+    public function delete(string $table_name, array $table_details, array $row)
+    {
+        require_lang('chat');
+        
+        switch ($table_name) {
+            case 'chat_friends':
+                require_code('chat2');
+                friend_remove($row['member_likes'], $row['member_liked']);
+                break;
+                
+            default:
+                parent::delete($table_name, $table_details, $row);
+                break;
+        }
     }
 }

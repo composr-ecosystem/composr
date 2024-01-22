@@ -49,15 +49,40 @@ class Hook_privacy_authors extends Hook_privacy_base
                     'timestamp_field' => null,
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => ['member_id'],
+                    'owner_id_field' => 'member_id',
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => [],
                     'email_fields' => [],
-                    'additional_anonymise_fields' => [],
+                    'username_fields' => [],
+                    'additional_anonymise_fields' => ['author'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
                 ],
             ],
         ];
+    }
+    
+    /**
+     * Delete a row.
+     *
+     * @param  ID_TEXT $table_name Table name
+     * @param  array $table_details Details of the table from the info function
+     * @param  array $row Row raw from the database
+     */
+    public function delete(string $table_name, array $table_details, array $row)
+    {
+        require_lang('authors');
+        
+        switch ($table_name) {
+            case 'authors':
+                require_code('authors');
+                delete_author($row['author']);
+                break;
+                
+            default:
+                parent::delete($table_name, $table_details, $row);
+                break;
+        }
     }
 }

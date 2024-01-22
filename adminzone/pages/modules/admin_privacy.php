@@ -114,7 +114,7 @@ class Module_admin_privacy
         $fields = new Tempcode();
 
         // Choose search: username / IP / e-mail / other-fields
-        $fields->attach(form_input_username(do_lang_tempcode('USERNAME'), '', 'username', '', false));
+        $fields->attach(form_input_username(do_lang_tempcode('USERNAME'), '', 'username', '', false, false));
         $fields->attach(form_input_line_multi(do_lang_tempcode('IP_ADDRESS'), '', 'ip_addresses[]', [], 0));
         $fields->attach(form_input_integer(do_lang_tempcode('MEMBER_ID'), '', 'member_id', get_param_integer('member_id', null), false));
         $fields->attach(form_input_email(do_lang_tempcode('EMAIL_ADDRESS'), '', 'email', '', false));
@@ -163,15 +163,8 @@ class Module_admin_privacy
         if ((empty($username)) && (empty($ip_addresses)) && (cms_empty_safe($member_id)) && (empty($email_address)) && (empty($others))) {
             warn_exit(do_lang_tempcode('NO_RESULTS')); // Obviously
         }
-
-        if ($username != '') {
-            $member_id_username = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
-            if ($member_id_username === null) {
-                warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($username)), false, false, 404);
-            }
-        } else {
-            $member_id_username = null;
-        }
+        
+        fill_in_missing_privacy_criteria($username, $ip_addresses, $member_id, $email_address);
 
         $action = post_param_string('result_action', 'purge');
 
@@ -189,7 +182,18 @@ class Module_admin_privacy
                     $details = $hook_ob->info();
                     if ($details !== null) {
                         foreach ($details['database_records'] as $table_name => $table_details) {
-                            $options[] = [$table_name, $table_name, true, ''];
+                            $pretty_name = do_lang('PRIVACY_PURGE_TABLE_RECORDS', $table_name, strval(0));
+                            $db = get_db_for($table_name);
+                            $_sql = $hook_ob->get_selection_sql($table_name, $table_details, PRIVACY_METHOD__DOWNLOAD, false, $username, $ip_addresses, $member_id, $email_address, $others);
+                            if ($_sql != '') {
+                                push_db_scope_check(false);
+                                $sql = 'SELECT COUNT(*) AS search_rows FROM ' . $db->get_table_prefix() . $table_name . $_sql . ';';
+                                $rows = $db->query($sql);
+                                pop_db_scope_check();
+                                $pretty_name = do_lang('PRIVACY_PURGE_TABLE_RECORDS', $table_name, integer_format($rows[0]['search_rows']));
+                            }
+                            
+                            $options[] = [$pretty_name, $table_name, true, ''];
                         }
                     }
                 }
@@ -202,7 +206,7 @@ class Module_admin_privacy
                     'SKIP_WEBSTANDARDS' => true,
                     'HIDDEN' => build_keep_post_fields(['csrf_token_preserve']),
                     'TITLE' => $this->title,
-                    'TEXT' => '',
+                    'TEXT' => do_lang_tempcode('TEXT_PRIVACY_DOWNLOAD'),
                     'SUBMIT_ICON' => 'buttons/download',
                     'SUBMIT_NAME' => do_lang_tempcode('DOWNLOAD'),
                     'FIELDS' => $fields,
@@ -216,6 +220,8 @@ class Module_admin_privacy
                     $details = $hook_ob->info();
                     if ($details !== null) {
                         foreach ($details['database_records'] as $table_name => $table_details) {
+                            // TODO: Add record counts
+                            
                             $purge_options = new Tempcode();
                             $purge_options->attach(form_input_list_entry(strval(PRIVACY_METHOD__LEAVE), $table_details['removal_default_handle_method'] == PRIVACY_METHOD__LEAVE, do_lang_tempcode('PRIVACY_METHOD__LEAVE')));
                             if (($table_details['allowed_handle_methods'] & PRIVACY_METHOD__ANONYMISE) != 0) {
@@ -235,7 +241,7 @@ class Module_admin_privacy
                     'SKIP_WEBSTANDARDS' => true,
                     'HIDDEN' => build_keep_post_fields(['csrf_token_preserve']),
                     'TITLE' => $this->title,
-                    'TEXT' => '',
+                    'TEXT' => do_lang_tempcode('TEXT_PRIVACY_PURGE'),
                     'SUBMIT_ICON' => 'admin/delete2',
                     'SUBMIT_NAME' => do_lang_tempcode('PURGE'),
                     'FIELDS' => $fields,
@@ -246,14 +252,17 @@ class Module_admin_privacy
 
             case 'sql':
                 $sql = new Tempcode();
+                $sql->attach(do_lang_tempcode('TEXT_PRIVACY_SQL'));
                 foreach ($hook_obs as $hook_ob) {
                     $details = $hook_ob->info();
                     if ($details !== null) {
                         foreach ($details['database_records'] as $table_name => $table_details) {
                             $db = get_db_for($table_name);
-                            $_sql = 'SELECT * FROM ' . $db->get_table_prefix() . $table_name;
-                            $_sql .= $hook_ob->get_selection_sql($table_name, $table_details, $member_id_username, $ip_addresses, $member_id, $email_address, $others) . ';';
-                            $sql->attach(paragraph(escape_html($_sql)));
+                            $__sql = $hook_ob->get_selection_sql($table_name, $table_details, PRIVACY_METHOD__LEAVE, false, $username, $ip_addresses, $member_id, $email_address, $others);
+                            if ($__sql != '') {
+                                $_sql = 'SELECT * FROM ' . $db->get_table_prefix() . $table_name . $__sql . ';';
+                                $sql->attach(paragraph(escape_html($_sql)));
+                            }
                         }
                     }
                 }
@@ -282,7 +291,8 @@ class Module_admin_privacy
         $member_id = post_param_integer('member_id', null);
         $email_address = post_param_string('email', '', INPUT_FILTER_POST_IDENTIFIER);
         $others = isset($_POST['others']) ? $_POST['others'] : [];
-        $member_id_username = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
+        
+        fill_in_missing_privacy_criteria($username, $ip_addresses, $member_id, $email_address);
 
         $table_actions = [];
         $hook_obs = find_all_hook_obs('systems', 'privacy', 'Hook_privacy_');
@@ -305,16 +315,16 @@ class Module_admin_privacy
 
         switch ($action) {
             case 'download':
-                log_it('PERSONAL_DATA_DOWNLOAD', ($member_id === null) ? '' : strval($member_id), json_encode([$member_id_username, $ip_addresses, $email_address, $others]));
+                log_it('PERSONAL_DATA_DOWNLOAD', ($member_id === null) ? '' : strval($member_id), json_encode([$username, $ip_addresses, $email_address, $others]));
 
                 require_code('tasks');
-                return call_user_func_array__long_task(do_lang('PERSONAL_DATA_DOWNLOAD'), $this->title, 'privacy_download', [$table_actions, $member_id_username, $ip_addresses, $member_id, $email_address, $others]);
+                return call_user_func_array__long_task(do_lang('PERSONAL_DATA_DOWNLOAD'), $this->title, 'privacy_download', [$table_actions, $username, $ip_addresses, $member_id, $email_address, $others]);
 
             case 'purge':
-                log_it('PERSONAL_DATA_PURGING', ($member_id === null) ? '' : strval($member_id), json_encode([$member_id_username, $ip_addresses, $email_address, $others]));
+                log_it('PERSONAL_DATA_PURGING', ($member_id === null) ? '' : strval($member_id), json_encode([$username, $ip_addresses, $email_address, $others]));
 
                 require_code('tasks');
-                return call_user_func_array__long_task(do_lang('PERSONAL_DATA_PURGING'), $this->title, 'privacy_purge', [$table_actions, $member_id_username, $ip_addresses, $member_id, $email_address, $others]);
+                return call_user_func_array__long_task(do_lang('PERSONAL_DATA_PURGING'), $this->title, 'privacy_purge', [$table_actions, $username, $ip_addresses, $member_id, $email_address, $others]);
         }
 
         return new Tempcode();

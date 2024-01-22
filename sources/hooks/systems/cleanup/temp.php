@@ -64,6 +64,7 @@ class Hook_cleanup_temp
             'uploads/incoming',
             'uploads/captcha',
             'temp',
+            'exports/privacy_download',
         ];
         foreach ($subdirs as $subdir) {
             $full = get_custom_file_base() . '/' . $subdir;

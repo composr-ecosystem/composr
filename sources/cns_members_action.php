@@ -328,52 +328,9 @@ function cns_make_member(string $username, string $password, string $email_addre
             }
         }
     }
-
-    $value = null;
-
-    // Store custom fields
-    $row = [];
-    $all_fields_types = collapse_2d_complexity('id', 'cf_type', $all_fields);
-    foreach ($custom_fields as $field_num => $value) {
-        if (!array_key_exists($field_num, $all_fields_types)) {
-            continue; // Trying to set a field we're not allowed to (doesn't apply to our group)
-        }
-
-        $row['field_' . strval($field_num)] = $value;
-    }
-
-    // Set custom field row
-    $all_fields_regardless = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', ['id', 'cf_type', 'cf_default', 'cf_required']);
-    foreach ($all_fields_regardless as $field) {
-        $ob = get_fields_hook($field['cf_type']);
-        list(, $default, $storage_type) = $ob->get_field_value_row_bits($field, $field['cf_required'] == 1, $field['cf_default'], $GLOBALS['FORUM_DB']);
-
-        if (array_key_exists('field_' . strval($field['id']), $row)) {
-            $value = $row['field_' . strval($field['id'])];
-        } else {
-            $value = $default;
-        }
-
-        $row['field_' . strval($field['id'])] = $value;
-        if (is_string($value)) { // Should not normally be needed, but the grabbing from cf_default further up is not converted yet
-            switch ($storage_type) {
-                case 'short_trans':
-                case 'long_trans':
-                    $row = insert_lang_comcode('field_' . strval($field['id']), $value, 3, $GLOBALS['FORUM_DB']) + $row;
-                    break;
-                case 'integer':
-                    $row['field_' . strval($field['id'])] = ($value == '') ? null : intval($value);
-                    break;
-                case 'float':
-                    $row['field_' . strval($field['id'])] = ($value == '') ? null : floatval($value);
-                    break;
-            }
-        }
-    }
-    $GLOBALS['FORUM_DB']->query_insert('f_member_custom_fields', ['mf_member_id' => $member_id] + $row);
-
-    require_code('locations_cpfs');
-    autofill_geo_cpfs($member_id);
+    
+    // Make member custom fields
+    _cns_make_member_cpfs($member_id, $custom_fields, $all_fields);
 
     // Any secondary work...
 
@@ -455,6 +412,66 @@ function cns_make_member(string $username, string $password, string $email_addre
     }
 
     return $member_id;
+}
+
+/**
+ * Make a member's custom fields row.
+ * This function assumes the row does not yet exist.
+ * 
+ * @param  MEMBER $member_id The member to which we are making the CPFs
+ * @param  array $custom_fields A map of custom field values (fieldID=>value)
+ * @param  array $all_fields A map of all member fields
+ * @ignore
+ */
+function _cns_make_member_cpfs(int $member_id, array $custom_fields, array $all_fields)
+{
+    require_code('fields');
+    
+    $value = null;
+    
+    // Store custom fields
+    $row = [];
+    $all_fields_types = collapse_2d_complexity('id', 'cf_type', $all_fields);
+    foreach ($custom_fields as $field_num => $value) {
+        if (!array_key_exists($field_num, $all_fields_types)) {
+            continue; // Trying to set a field we're not allowed to (doesn't apply to our group)
+        }
+        
+        $row['field_' . strval($field_num)] = $value;
+    }
+    
+    // Set custom field row
+    $all_fields_regardless = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', ['id', 'cf_type', 'cf_default', 'cf_required']);
+    foreach ($all_fields_regardless as $field) {
+        $ob = get_fields_hook($field['cf_type']);
+        list(, $default, $storage_type) = $ob->get_field_value_row_bits($field, $field['cf_required'] == 1, $field['cf_default'], $GLOBALS['FORUM_DB']);
+        
+        if (array_key_exists('field_' . strval($field['id']), $row)) {
+            $value = $row['field_' . strval($field['id'])];
+        } else {
+            $value = $default;
+        }
+        
+        $row['field_' . strval($field['id'])] = $value;
+        if (is_string($value)) { // Should not normally be needed, but the grabbing from cf_default further up is not converted yet
+            switch ($storage_type) {
+                case 'short_trans':
+                case 'long_trans':
+                    $row = insert_lang_comcode('field_' . strval($field['id']), $value, 3, $GLOBALS['FORUM_DB']) + $row;
+                    break;
+                case 'integer':
+                    $row['field_' . strval($field['id'])] = ($value == '') ? null : intval($value);
+                    break;
+                case 'float':
+                    $row['field_' . strval($field['id'])] = ($value == '') ? null : floatval($value);
+                    break;
+            }
+        }
+    }
+    $GLOBALS['FORUM_DB']->query_insert('f_member_custom_fields', ['mf_member_id' => $member_id] + $row);
+    
+    require_code('locations_cpfs');
+    autofill_geo_cpfs($member_id);
 }
 
 /**

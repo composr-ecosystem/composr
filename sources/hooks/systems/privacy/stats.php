@@ -49,9 +49,11 @@ class Hook_privacy_stats extends Hook_privacy_base
                     'timestamp_field' => 'date_and_time',
                     'retention_days' => intval(get_option('stats_store_time')),
                     'retention_handle_method' => PRIVACY_METHOD__DELETE,
-                    'member_id_fields' => ['member_id'],
+                    'owner_id_field' => 'member_id',
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => ['ip'],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
@@ -61,9 +63,11 @@ class Hook_privacy_stats extends Hook_privacy_base
                     'timestamp_field' => 'c_date_and_time',
                     'retention_days' => intval(get_option('website_activity_store_time')),
                     'retention_handle_method' => PRIVACY_METHOD__ANONYMISE,
-                    'member_id_fields' => ['c_member_id'],
+                    'owner_id_field' => 'c_member_id',
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => ['c_ip_address'],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
@@ -73,9 +77,11 @@ class Hook_privacy_stats extends Hook_privacy_base
                     'timestamp_field' => 'k_added',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => ['k_added_by'],
+                    'owner_id_field' => 'k_added_by',
+                    'additional_member_id_fields' => [],
                     'ip_address_fields' => [],
                     'email_fields' => [],
+                    'username_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
@@ -84,4 +90,25 @@ class Hook_privacy_stats extends Hook_privacy_base
             ],
         ];
     }
+    
+    /**
+     * Serialise a row.
+     *
+     * @param  ID_TEXT $table_name Table name
+     * @param  array $row Row raw from the database
+     * @return array Row in a cleanly serialised format
+     */
+    public function serialise(string $table_name, array $row) : array
+    {
+        $ret = parent::serialise($table_name, $row);
+        
+        switch ($table_name) {
+            case 'stats':
+                unset($ret['session_id']);
+                break;
+        }
+        
+        return $ret;
+    }
+    
 }

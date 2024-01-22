@@ -118,6 +118,9 @@ class Hook_cns_warnings_points
 
             $punitive_action_id = $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
                 'p_warning_id' => $warning_id,
+                'p_member_id' => $member_id,
+                'p_ip_address' => '',
+                'p_email_address' => '',
                 'p_hook' => 'points',
                 'p_action' => '_PUNITIVE_CHARGE_POINTS',
                 'p_param_a' => strval($charged_points),
@@ -164,6 +167,6 @@ class Hook_cns_warnings_points
 
         points_transaction_reverse($ledger['id']);
 
-        log_it('UNDO_CHARGE', strval($warning['id']), $GLOBALS['FORUM_DRIVER']->get_username($warning['w_member_id']));
+        log_it('UNDO_CHARGE', strval($warning['id']), $GLOBALS['FORUM_DRIVER']->get_username($punitive_action['p_member_id']));
     }
 }

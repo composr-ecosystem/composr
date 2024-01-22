@@ -55,7 +55,7 @@ class Hook_cns_warnings_syndicate
 
         switch ($row['p_action']) {
             case '_PUNITIVE_STOP_FORUM_SPAM':
-                return do_lang('_PUNITIVE_STOP_FORUM_SPAM', $row['p_param_a'], $row['p_param_b']);
+                return do_lang('_PUNITIVE_STOP_FORUM_SPAM', $row['p_ip_address'], $row['p_email_address']);
 
             default:
                 return '';
@@ -124,10 +124,13 @@ class Hook_cns_warnings_syndicate
 
             $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
                 'p_warning_id' => $warning_id,
+                'p_member_id' => $member_id,
+                'p_ip_address' => $banned_ip,
+                'p_email_address' => $email_address,
                 'p_hook' => 'syndicate',
                 'p_action' => '_PUNITIVE_STOP_FORUM_SPAM',
-                'p_param_a' => $banned_ip,
-                'p_param_b' => $email_address,
+                'p_param_a' => '',
+                'p_param_b' => '',
                 'p_reversed' => 0,
             ]);
 
