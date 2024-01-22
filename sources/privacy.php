@@ -49,14 +49,14 @@ function fill_in_missing_privacy_criteria(string &$username, array &$ip_addresse
     if (($username == '') && ($member_id === null) && ($email_address == '')) {
         return;
     }
-    
+
     // Do not fill in any criteria if the provided member ID is a guest
     if (($member_id !== null) && is_guest($member_id)) {
         return;
     }
-    
+
     $member_id_username = null;
-    
+
     // If both member ID and username specified, but username matches a different member, do not allow that username in criteria.
     if (($member_id !== null) && ($username != '')) {
         $member_id_username = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
@@ -64,17 +64,17 @@ function fill_in_missing_privacy_criteria(string &$username, array &$ip_addresse
             $username = '';
         }
     }
-    
+
     $_username = '';
     $_ip_addresses = [];
     $_member_id = $member_id; // We need member ID set right away in case $_member_id is never checked for
     $_email_address = '';
     $_ip_address = '';
-    
+
     // Use security logging to fill in missing information if we can, else use our own methods
     if (addon_installed('securitylogging')) {
         require_code('lookup');
-        
+
         // Fill in data by priority of what was specified: member ID, then username, then e-mail.
         $__ip_addresses = [];
         if ($member_id !== null) {
@@ -84,18 +84,18 @@ function fill_in_missing_privacy_criteria(string &$username, array &$ip_addresse
         } elseif ($email_address != '') {
             $__ip_addresses = lookup_user($email_address, $_username, $_member_id, $_ip_address, $_email_address);
         }
-        
+
         // We cannot safely use this criteria if our final member ID is a guest
         if (($_member_id !== null) && is_guest($_member_id)) {
             return;
         }
-        
+
         // Merge in our known IP addresses
         $_ip_addresses = array_merge($_ip_addresses, collapse_1d_complexity('ip', $__ip_addresses));
         if (($_ip_address != '') && ($_ip_address != '127.0.0.1')) {
             $_ip_addresses[] = $_ip_address;
         }
-        
+
         $username = $_username;
         $ip_addresses = $_ip_addresses;
         $member_id = $_member_id;
@@ -108,7 +108,7 @@ function fill_in_missing_privacy_criteria(string &$username, array &$ip_addresse
                 $_member_id = $member_id_username;
             }
         }
-        
+
         if (($_member_id !== null)) {
             // Cannot safely use username nor fill in missing criteria if we received guest
             if (is_guest($_member_id)) {
@@ -117,7 +117,7 @@ function fill_in_missing_privacy_criteria(string &$username, array &$ip_addresse
             }
             $member_id = $_member_id;
         }
-        
+
         // Fill in member ID from e-mail if e-mail provided but not member ID
         if (($member_id === null) && ($email_address != '')) {
             $member_id_email = $GLOBALS['FORUM_DRIVER']->get_member_from_email_address($email_address);
@@ -125,7 +125,7 @@ function fill_in_missing_privacy_criteria(string &$username, array &$ip_addresse
                 $_member_id = $member_id_email;
             }
         }
-        
+
         if (($_member_id !== null)) {
             // Cannot safely use e-mail nor fill in missing criteria if we received guest
             if (is_guest($_member_id)) {
@@ -134,17 +134,17 @@ function fill_in_missing_privacy_criteria(string &$username, array &$ip_addresse
             }
             $member_id = $_member_id;
         }
-        
+
         // Nothing more we can do if member ID is still null
         if ($member_id === null) {
             return;
         }
-        
+
         // Fill in username from member ID if username not provided
         if ($username == '') {
             $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id, false, USERNAME_DEFAULT_BLANK);
         }
-        
+
         // Fill in e-mail address from member ID if e-mail not provided
         if ($email_address == '') {
             $_email_address = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'm_email_address', ['id' => $member_id]);
@@ -152,7 +152,7 @@ function fill_in_missing_privacy_criteria(string &$username, array &$ip_addresse
                 $email_address = $_email_address;
             }
         }
-        
+
         // Fill in IP addresses from member ID
         $rows = $GLOBALS['FORUM_DB']->query_select('f_member_known_login_ips', ['i_ip'], ['i_member_id' => $member_id], ' ORDER BY i_time DESC');
         foreach ($rows as $row) {
@@ -165,7 +165,7 @@ function fill_in_missing_privacy_criteria(string &$username, array &$ip_addresse
             if (($row['i_ip'] == '') || ($row['i_ip'] != '127.0.0.1')) {
                 continue;
             }
-            
+
             $ip_addresses[] = $row['i_ip'];
         }
         $last_known_ip = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'm_ip_address', ['id' => $member_id]);
@@ -188,7 +188,7 @@ abstract class Hook_privacy_base
      * @return ?array A map of privacy details in a standardised format (null: disabled)
      */
     abstract public function info() : ?array;
-    
+
     /**
      * Modify table details according to special hook behaviour and given data before performing the method.
      *
@@ -220,17 +220,17 @@ abstract class Hook_privacy_base
      public function get_selection_sql(string $table_name, array $table_details, int $table_action, bool $purge_retention = false, string $username = '', array $ip_addresses = [], ?int $member_id = null, string $email_address = '', array $others = []) : string
     {
         $this->modify_table_details($table_name, $table_details, null, 'get_selection_sql');
-        
+
         $sql = '';
 
         $conditions = [];
-        
+
         if ($username != '') {
             foreach ($table_details['username_fields'] as $username_field) {
                 $conditions[] = db_string_equal_to($username_field, $username);
             }
         }
-        
+
         if ($member_id !== null) {
             if ($table_details['owner_id_field'] !== null) {
                 $conditions[] = $table_details['owner_id_field'] . '=' . strval($member_id);
@@ -239,7 +239,7 @@ abstract class Hook_privacy_base
                 $conditions[] = $member_id_field . '=' . strval($member_id);
             }
         }
-        
+
         foreach ($ip_addresses as $ip_address) {
             if (($ip_address == '') || ($ip_address == '127.0.0.1')) {
                 continue;
@@ -249,13 +249,13 @@ abstract class Hook_privacy_base
                 $conditions[] = db_string_equal_to($ip_address_field, $ip_address);
             }
         }
-        
+
         if ($email_address != '') {
             foreach ($table_details['email_fields'] as $email_address_field) {
                 $conditions[] = db_string_equal_to($email_address_field, $email_address);
             }
         }
-        
+
         foreach ($others as $other) {
             if ($other == '') {
                 continue;
@@ -265,7 +265,7 @@ abstract class Hook_privacy_base
                 $conditions[] = db_string_equal_to($other_field, $other);
             }
         }
-        
+
         // Return blank / do not run if we have no WHERE conditions by this point (unless purging by retention)
         if ((empty($conditions)) && (!$purge_retention)) {
             return '';
@@ -282,22 +282,22 @@ abstract class Hook_privacy_base
             }
             $sql .= ')';
         }
-        
+
         if ($purge_retention) {
             if (($table_details['timestamp_field'] !== null) && ($table_details['retention_handle_method'] != PRIVACY_METHOD__LEAVE)) {
                 $metadata = $this->get_field_metadata($table_name);
-                
+
                 if (strpos($sql, ' WHERE ') === false) {
                     $sql .= ' WHERE ';
                 } else {
                     $sql .= ' AND ';
                 }
-                
+
                 // Treat null as a never-expiring record
                 if (strpos($metadata[$table_details['timestamp_field']], '?') != 0) {
                     $sql .= $table_details['timestamp_field'] . ' IS NOT NULL AND ';
                 }
-                
+
                 $sql .= $table_details['timestamp_field'] . '<=' . strval(time() - 60 * 60 * 24 * $table_details['retention_days']);
             } elseif (empty($conditions)) { // Still no where clause, so we should not run this query
                 return '';
@@ -334,20 +334,18 @@ abstract class Hook_privacy_base
      */
     public function serialise(string $table_name, array $row) : array
     {
-        static $auto_link_cache = [];
-        
         $db = get_db_for($table_name);
         $metadata = $this->get_field_metadata($table_name);
-        
+
         require_code('database_relations');
         $relation_map = get_relation_map();
 
         $row2 = [];
         foreach ($metadata as $key => $type) {
             if (!isset($row[$key])) {
-               continue; 
+               continue;
             }
-            
+
             if (strpos($type, '_TRANS') !== false) {
                 $row2[$key] = get_translated_text($row[$key], $db);
             } elseif (strpos($type, 'TIME') !== false) {
@@ -359,18 +357,8 @@ abstract class Hook_privacy_base
             } elseif (strpos($type, 'GROUP') !== false) {
                 require_code('cns_groups');
                 $row2[$key . '__dereferenced'] = cns_get_group_name($row[$key]);
-            } elseif ((strpos($type, 'AUTO_LINK') !== false) && ($row[$key] !== null) && (!empty($relation_map[$table_name . '.' . $key]))) {
-                if (!isset($auto_link_cache[$table_name . '.' . $key][$row[$key]])) {
-                    $parts = explode('.', $relation_map[$table_name . '.' . $key]);
-                    $auto_db = get_db_for($parts[0]);
-                    $_references = $auto_db->query_select($parts[0], ['*'], [$parts[1] => $row[$key]]);
-                    $references = [];
-                    foreach ($_references as $_reference) {
-                        $references[] = $this->serialise($parts[0], $_reference);
-                    }
-                    $auto_link_cache[$table_name . '.' . $key][$row[$key]] = $references;
-                }
-                $row2[$key . '__dereferenced'] = $auto_link_cache[$table_name . '.' . $key][$row[$key]];
+            } elseif ((strpos($type, 'AUTO_LINK') !== false) && (isset($relation_map[$table_name . '.' . $key]))) {
+                $row2[$key . '__auto_link'] = $relation_map[$table_name . '.' . $key];
             } else {
                 $row2[$key] = $row[$key];
             }
@@ -396,7 +384,7 @@ abstract class Hook_privacy_base
     public function anonymise(string $table_name, array $table_details, array $row, string $username = '', array $ip_addresses = [], ?int $member_id = null, string $email_address = '', array $others = [], bool $reverse_logic_return = false) : ?array
     {
         $this->modify_table_details($table_name, $table_details, $row, 'anonymise');
-        
+
         $db = get_db_for($table_name);
         $metadata = $this->get_field_metadata($table_name);
 
@@ -414,7 +402,7 @@ abstract class Hook_privacy_base
         }
 
         $update = [];
-        
+
         // Anonymise owner ID
         $owner_id_field = $table_details['owner_id_field'];
         $should_anonymise = (($owner_id_field !== null) && ($row[$owner_id_field] === $member_id));
@@ -437,12 +425,12 @@ abstract class Hook_privacy_base
             if ($reverse_logic_return) {
                 $should_anonymise = (($member_id !== null) && ($row[$member_id_field] !== $member_id));
             }
-            
+
             // Don't anonymise the wrong members in case additional member fields were defined
             if (!$should_anonymise) {
                 continue;
             }
-            
+
             if (strpos($metadata[$member_id_field], '?') !== false) {
                 $anonymised_value = null;
             } else {
@@ -458,12 +446,12 @@ abstract class Hook_privacy_base
             if ($reverse_logic_return) {
                 $should_anonymise = ((count($ip_addresses) > 0) && (!in_array($row[$ip_address_field], $ip_addresses)));
             }
-            
+
             // Don't anonymise the wrong IP addresses in case additional IP fields were defined
             if (!$should_anonymise) {
                 continue;
             }
-            
+
             $update[$ip_address_field] = '';
         }
 
@@ -474,15 +462,15 @@ abstract class Hook_privacy_base
             if ($reverse_logic_return) {
                 $should_anonymise = (($email_address != '') && ($row[$email_field] !== $email_address));
             }
-            
+
             // Don't anonymise the wrong e-mail addresses in case additional e-mail fields were defined
             if (!$should_anonymise) {
                 continue;
             }
-            
+
             $update[$email_field] = '';
         }
-        
+
         // Anonymise username
         $username_fields = $table_details['username_fields'];
         foreach ($username_fields as $username_field) {
@@ -490,12 +478,12 @@ abstract class Hook_privacy_base
             if ($reverse_logic_return) {
                 $should_anonymise = (($username != '') && ($row[$username_field] !== $username));
             }
-            
+
             // Don't anonymise the wrong usernames in case additional username fields were defined
             if (!$should_anonymise) {
                 continue;
             }
-            
+
             if (strpos($metadata[$username_field], '?') !== false) {
                 $anonymised_value = null;
             } else {
@@ -525,10 +513,10 @@ abstract class Hook_privacy_base
             } elseif ($reverse_logic_return) {
                 break;
             }
-            
+
             $update[$additional_anonymise_field] = do_lang('UNKNOWN');
         }
-        
+
         if (!$reverse_logic_return) {
             // If any of our update fields are keys, then we have to delete rather than anonymise if allowed
             foreach ($update as $field => $value) {
@@ -537,22 +525,22 @@ abstract class Hook_privacy_base
                     if (($table_details['allowed_handle_methods'] & PRIVACY_METHOD__DELETE) != 0) {
                         $this->delete($table_name, $table_details, $row);
                     }
-                    
+
                     // Must error at this point
                     warn_exit(do_lang_tempcode('PRIVACY_PURGE_COULD_NOT_ANONYMISE', escape_html($table_name)));
                 }
             }
-            
+
             // Run query.
             $db->query_update($table_name, $update, $where/*, '', null, 0, false, true*/);
-            
+
             /* Cannot do this because we might be deleting records that belong to multiple people
              $db->query_delete($table_name, $where); // In case there was some duplication error causing the above query to fail
              */
-            
+
             return null;
         }
-        
+
         foreach ($update as $field => $value) {
             $row[$field] = $value;
         }
@@ -569,7 +557,7 @@ abstract class Hook_privacy_base
     public function delete(string $table_name, array $table_details, array $row)
     {
         $this->modify_table_details($table_name, $table_details, $row, 'delete');
-        
+
         $info = $this->info();
 
         $db = get_db_for($table_name);
@@ -596,7 +584,7 @@ abstract class Hook_privacy_base
         // Run query
         $db->query_delete($table_name, $where, '', 1);
     }
-    
+
     /**
      * Determine if, given the provided criteria and content, we have high confidence this individual owns the content.
      * You should run fill_in_missing_privacy_criteria before running this.
@@ -612,27 +600,27 @@ abstract class Hook_privacy_base
     public function is_owner(string $table_name, array $table_details, array $row, ?int $member_id, string $username, string $email_address) : bool
     {
         $this->modify_table_details($table_name, $table_details, $row, 'is_owner');
-        
+
         // Guest can never be owner
         if (($member_id !== null) && (is_guest($member_id))) {
             return false;
         }
-        
+
         // If member ID matches owner_id_field, they are the owner
         if (($table_details['owner_id_field'] !== null) && ($member_id !== null) && ($row[$table_details['owner_id_field']] == $member_id)) {
             return true;
         }
-        
+
         // If no owner ID field and exactly one username field, and username matches that field, they are owner
         if (($table_details['owner_id_field'] === null) && (count($table_details['username_fields']) == 1) && ($username != '') && ($row[$table_details['username_fields'][0]] == $username)) {
             return true;
         }
-        
+
         // If no owner ID field, exactly one e-mail field, and e-mail provided matches that field, they are owner
         if (($table_details['owner_id_field'] === null) && (count($table_details['email_fields']) == 1) && ($email_address != '') && ($row[$table_details['email_fields'][0]] == $email_address)) {
             return true;
         }
-        
+
         // If any criterium matches a database field that is a key, then consider them owner
         $metadata = $this->get_field_metadata($table_name);
         $criteria = [
@@ -651,13 +639,13 @@ abstract class Hook_privacy_base
                 if (strpos($metadata[$field], '*') === false) {
                     continue;
                 }
-                
+
                 if ($input == $row[$field]) {
                     return true;
                 }
             }
         }
-        
+
         // By this point, they are not owner
         return false;
     }
